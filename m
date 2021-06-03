@@ -2,68 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FCF039A148
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 14:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72EC839A14F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 14:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230435AbhFCMoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 08:44:19 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:37279 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbhFCMoT (ORCPT
+        id S230462AbhFCMoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 08:44:46 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:49664 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229966AbhFCMop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 08:44:19 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lomgB-00036e-GX; Thu, 03 Jun 2021 12:42:31 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Xinhui.Pan@amd.com, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/amd/display: remove variable active_disp
-Date:   Thu,  3 Jun 2021 13:42:31 +0100
-Message-Id: <20210603124231.84230-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 3 Jun 2021 08:44:45 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 153Cgp2W101671;
+        Thu, 3 Jun 2021 07:42:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1622724171;
+        bh=Ld2ZYEAAJsMe8VGDEMRHK4KP5BnvM8RHtb2fs8ozz44=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=SjeOvqCm8QWJHJNEpKhM4orHSFy3DQdmXXXfbsIHiZwRIli2yadTzQZ7QOZFs2vtk
+         0rtYbfitbaSF7e+25CjqjaQ2F6STjDMrzziY3fwkIwpFgqVvV1DrqsBu4BJSnlOCb4
+         kc8E8+87LfFEe0I/h/ZbsFLxyoLXxAUkEXSQHhrw=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 153CgpXE124022
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 3 Jun 2021 07:42:51 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 3 Jun
+ 2021 07:42:51 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 3 Jun 2021 07:42:51 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 153CgoAC025764;
+        Thu, 3 Jun 2021 07:42:50 -0500
+Date:   Thu, 3 Jun 2021 18:12:49 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+CC:     Maxime Ripard <mripard@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Benoit Parrot <bparrot@ti.com>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>, <dmaengine@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH v2 10/18] media: cadence: csi2rx: Populate subdev devnode
+Message-ID: <20210603124247.qk42workxhfirbum@ti.com>
+References: <20210526152308.16525-1-p.yadav@ti.com>
+ <20210526152308.16525-11-p.yadav@ti.com>
+ <9c38a72c-18e8-1e54-b3b4-85ff5d47857a@ideasonboard.com>
+ <20210528072401.2vdrtjdiepnr72vv@ti.com>
+ <e36baf77-6de8-595d-b440-92bcfcdd8467@ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <e36baf77-6de8-595d-b440-92bcfcdd8467@ideasonboard.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 28/05/21 10:35AM, Tomi Valkeinen wrote:
+> On 28/05/2021 10:24, Pratyush Yadav wrote:
+> > On 28/05/21 10:16AM, Tomi Valkeinen wrote:
+> > > On 26/05/2021 18:23, Pratyush Yadav wrote:
+> > > > The devnode can be used by media-ctl and other userspace tools to
+> > > > perform configurations on the subdev. Without it, media-ctl returns
+> > > > ENOENT when setting format on the sensor subdev.
+> > > > 
+> > > > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > > > ---
+> > > > 
+> > > > (no changes since v1)
+> > > > 
+> > > >    drivers/media/platform/cadence/cdns-csi2rx.c | 1 +
+> > > >    1 file changed, 1 insertion(+)
+> > > > 
+> > > > diff --git a/drivers/media/platform/cadence/cdns-csi2rx.c b/drivers/media/platform/cadence/cdns-csi2rx.c
+> > > > index 1df21f462f3c..49bed63d5faa 100644
+> > > > --- a/drivers/media/platform/cadence/cdns-csi2rx.c
+> > > > +++ b/drivers/media/platform/cadence/cdns-csi2rx.c
+> > > > @@ -613,6 +613,7 @@ static int csi2rx_probe(struct platform_device *pdev)
+> > > >    	csi2rx->pads[CSI2RX_PAD_SINK].flags = MEDIA_PAD_FL_SINK;
+> > > >    	for (i = CSI2RX_PAD_SOURCE_STREAM0; i < CSI2RX_PAD_MAX; i++)
+> > > >    		csi2rx->pads[i].flags = MEDIA_PAD_FL_SOURCE;
+> > > > +	csi2rx->subdev.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
+> > > >    	ret = media_entity_pads_init(&csi2rx->subdev.entity, CSI2RX_PAD_MAX,
+> > > >    				     csi2rx->pads);
+> > > > 
+> > > 
+> > > I don't understand this one. There's nothing to configure in cdns-csi2rx
+> > > from userspace, as far as I can see, so why is the dev node needed? And why
+> > > would the lack of csi2rx dev node cause sensor subdev config to fail?
+> > 
+> > Sensor config does not fail. But when I run media-ctl to set the format
+> > on /dev/media0, I get an error message that comes because the devnode
+> > for the bridge does not exist. I was not 100% sure about this patch but
+> > I figured if media-ctl expects it then it should be exposed.
+> > 
+> > I don't mind dropping this patch. Just want to make sure what the right
+> > thing to do here is. Should every element of the pipeline have a devnode
+> > or not?
+> 
+> Tbh, I don't know. But I don't see why they should have. Also, my test works
+> fine if I remove the devnode here.
+> 
+> What media-ctl parameters did you use which fails?
 
-The variable active_disp is being initialized with a value that
-is never read, it is being re-assigned immediately afterwards.
-Clean up the code by removing the need for variable active_disp.
+Media controller topology:
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/gpu/drm/amd/display/dc/bios/bios_parser_helper.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+  root@j7-evm:~# media-ctl -p
+  Media controller API version 5.13.0
+  
+  Media device information
+  ------------------------
+  driver         j721e-csi2rx
+  model          TI-CSI2RX
+  serial
+  bus info       platform:4500000.ticsi2rx
+  hw revision    0x1
+  driver version 5.13.0
+  
+  Device topology
+  - entity 1: cdns_csi2rx.4504000.csi-bridge (5 pads, 2 links)
+             type V4L2 subdev subtype Unknown flags 0
+             device node name /dev/v4l-subdev0
+         pad0: Sink
+                 <- "ov5640 9-003c":0 [ENABLED,IMMUTABLE]
+         pad1: Source
+                 -> "j721e-csi2rx":0 [ENABLED,IMMUTABLE]
+         pad2: Source
+         pad3: Source
+         pad4: Source
+  
+  - entity 7: ov5640 9-003c (1 pad, 1 link)
+             type V4L2 subdev subtype Sensor flags 0
+             device node name /dev/v4l-subdev1
+         pad0: Source
+                 [fmt:UYVY8_2X8/640x480@1/30 field:none colorspace:srgb xfer:srgb ycbcr:601 quantization:full-range]
+                 -> "cdns_csi2rx.4504000.csi-bridge":0 [ENABLED,IMMUTABLE]
+  
+  - entity 11: j721e-csi2rx (1 pad, 1 link)
+              type Node subtype V4L flags 0
+              device node name /dev/video0
+         pad0: Sink
+                 <- "cdns_csi2rx.4504000.csi-bridge":1 [ENABLED,IMMUTABLE]
 
-diff --git a/drivers/gpu/drm/amd/display/dc/bios/bios_parser_helper.c b/drivers/gpu/drm/amd/display/dc/bios/bios_parser_helper.c
-index 53d7513b5083..adc710fe4a45 100644
---- a/drivers/gpu/drm/amd/display/dc/bios/bios_parser_helper.c
-+++ b/drivers/gpu/drm/amd/display/dc/bios/bios_parser_helper.c
-@@ -82,9 +82,6 @@ void bios_set_scratch_critical_state(
- uint32_t bios_get_vga_enabled_displays(
- 	struct dc_bios *bios)
- {
--	uint32_t active_disp = 1;
--
--	active_disp = REG_READ(BIOS_SCRATCH_3) & 0XFFFF;
--	return active_disp;
-+	return REG_READ(BIOS_SCRATCH_3) & 0XFFFF;
- }
- 
+
+Setting resolution on the sensor (with cdns-csi2rx devnode present):
+
+  root@j7-evm:~# media-ctl --set-v4l2 '"ov5640 9-003c":0 [fmt:UYVY8_2X8/1920x1080@1/30]'
+
+The above command works. Setting resolution on the sensor (without the 
+devnode present):
+
+  root@j7-evm:~# media-ctl --set-v4l2 '"ov5640 9-003c":0 [fmt:UYVY8_2X8/1920x1080@1/30]'
+  Unable to setup formats: No such file or directory (2)
+
+This sets the format correctly on the sensor but fails when it tried to 
+set it on the bridge.
+
 -- 
-2.31.1
-
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
