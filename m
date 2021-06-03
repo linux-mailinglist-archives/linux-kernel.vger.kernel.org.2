@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D8C39ADD1
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 00:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CAD239ADD6
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 00:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbhFCWVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 18:21:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60146 "EHLO mail.kernel.org"
+        id S231478AbhFCWV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 18:21:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230265AbhFCWVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230344AbhFCWVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 3 Jun 2021 18:21:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2E00E613DA;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 46EBF6140A;
         Thu,  3 Jun 2021 22:20:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1622758806;
-        bh=qb4IAshVkzkipeG2yL2ZgC3T6gjoePkoZYpLUcM5NAQ=;
+        bh=hQN2UZAy+im+Fbux8BhW47nuaMvBm6++WvivhYqV+xU=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=lXy6wffNvrPHv75WMQoNyh2qHptohqkK2mf9otK9BD72GOoSqsHa3VPvbFrxUjTde
-         rn1rxW+LC3OS9/y3BbiXWyJoWRLkDhd/YTk6RfXLhyYsUgVE4KqgxQkeB9wpBItwKr
-         mfiG6aNqmZzxRn2KD001TogNyOe9ddZ1B2hlfqSYjxcVYWEvAo1r3tOBs1I1ehOlyC
-         13Wjdnetl/stQENVTMW4fLQfomMx1Itcj8JC5nehDJTjTyMub/rtvwGMOpXq2kzJel
-         0W0mLJHtrkqUa35fEzymrmrHc4oUwAF9/Tn/C5LWcQJ3Xd/NEttAlRojJxnXgZGiHJ
-         xR5WgGfgATuXA==
+        b=X4M0fR5bjn5NS3tLXSJ26IkT75xrCGfo8AFCnPKYU9CGhwfcXkRYjrzrE6shTAaOi
+         O3b99iMm435hoGLROa/1UMtIvaD68XMzrLhYV9aPinhRx+NYzmFJF0l48a2sL76Cb/
+         f9mlTGGnMmRJ7XPrv5mI51vDFb3dhlLfwDHJA6im/kETS6YT5C+o2QDL8YrCJA6soL
+         RkfdAgSGQbSj1CE4alwkd7kjqUyRqR0GPD+R+DJ/bTp3zBy5BNgmvd8DkCNoEUDDe6
+         5dQTxVW23oI8Ofi1gwmmxK3LAqXlcih/N5VA329UdIT+7nqeRgdSznsdDZKFQ3FWqi
+         KSutOiE9mLnZA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1AAEA60BFB;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3837360A6C;
         Thu,  3 Jun 2021 22:20:06 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 0/4] net: caif: fix 2 memory leaks
+Subject: Re: [PATCH net-next] net/x25: Return the correct errno code
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162275880610.4249.1070096143129152131.git-patchwork-notify@kernel.org>
+Message-Id: <162275880622.4249.2288247595417992464.git-patchwork-notify@kernel.org>
 Date:   Thu, 03 Jun 2021 22:20:06 +0000
-References: <cover.1622737854.git.paskripkin@gmail.com>
-In-Reply-To: <cover.1622737854.git.paskripkin@gmail.com>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        sjur.brandeland@stericsson.com, netdev@vger.kernel.org,
+References: <20210602140630.486073-1-zhengyongjun3@huawei.com>
+In-Reply-To: <20210602140630.486073-1-zhengyongjun3@huawei.com>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     ms@dev.tdt.de, davem@davemloft.net, kuba@kernel.org,
+        linux-x25@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -45,29 +45,19 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This series was applied to netdev/net.git (refs/heads/master):
+This patch was applied to netdev/net.git (refs/heads/master):
 
-On Thu,  3 Jun 2021 19:37:27 +0300 you wrote:
-> This patch series fix 2 memory leaks in caif
-> interface.
+On Wed, 2 Jun 2021 22:06:30 +0800 you wrote:
+> When kalloc or kmemdup failed, should return ENOMEM rather than ENOBUF.
 > 
-> Syzbot reported memory leak in cfserl_create().
-> The problem was in cfcnfg_add_phy_layer() function.
-> This function accepts struct cflayer *link_support and
-> assign it to corresponting structures, but it can fail
-> in some cases.
-> 
-> [...]
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  net/x25/af_x25.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Here is the summary with links:
-  - [1/4] net: caif: added cfserl_release function
-    https://git.kernel.org/netdev/net/c/bce130e7f392
-  - [2/4] net: caif: add proper error handling
-    https://git.kernel.org/netdev/net/c/a2805dca5107
-  - [3/4] net: caif: fix memory leak in caif_device_notify
-    https://git.kernel.org/netdev/net/c/b53558a950a8
-  - [4/4] net: caif: fix memory leak in cfusbl_device_notify
-    https://git.kernel.org/netdev/net/c/7f5d86669fa4
+  - [net-next] net/x25: Return the correct errno code
+    https://git.kernel.org/netdev/net/c/d7736958668c
 
 You are awesome, thank you!
 --
