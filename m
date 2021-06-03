@@ -2,57 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1230239AED2
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 01:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D70B039AED0
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 01:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbhFCXse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 19:48:34 -0400
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:45622 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFCXsb (ORCPT
+        id S229822AbhFCXrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 19:47:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFCXrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 19:48:31 -0400
-Received: by mail-wm1-f43.google.com with SMTP id v206-20020a1cded70000b02901a586d3fa23so336949wmg.4;
-        Thu, 03 Jun 2021 16:46:45 -0700 (PDT)
+        Thu, 3 Jun 2021 19:47:47 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61885C061756;
+        Thu,  3 Jun 2021 16:45:47 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id z8so7446560wrp.12;
+        Thu, 03 Jun 2021 16:45:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=J3I7Z3IpYgIYjLPyzXTfQAdZXADJUQoUkUspFp+drRA=;
-        b=KZAM+A4loSh0JysndBSJ72GE6LaT3HPWf12hXAiI0M+tTtsgeNxr98beIQq+ar9Enh
-         7apS6MNEYcXZF+bM/Y1REo9SViEyYk4rQ/MSdd8HTBreQU/KhMJQjg5+KuICxYvN1/0w
-         emXVj7HZtTtPANDfCKPkNq1DyE/2Ycsp26VOplNzKd0pa4c6pzs5HPaEg8ubbiuW5svA
-         o0IBDJOZNio8LQa4T5KJr0IUvnTNtZfLZ1e802FS6ihnsP7gMoA54pnZaP+Mq1BBHB9z
-         ax5fPZ9o3Pzxz3bFUy62zJ9i5erZaaYUJYNOgRCG6ACiZuEogNKUD55rb6CtAU07eZLZ
-         LaFQ==
+        bh=DDpKkJEpBzidYlkeMANWBeez3gCFIVHVIJwwQsDWjt0=;
+        b=I+7WZaLV9DlY4f5nogGpLDPw99qrFYNjh8wY3k4SWbJV0b9929G6I0rrLIvOD924uD
+         64eg2B0bWba+6aydiDt1OZnQNOd9lGKH6Cz0A8jOsgOLxgT8w3pVyDt3Gp8Z5lL6lDkj
+         cQxwGXg1/YFWKtDkkQG3MS36kTyK8GdNLyPKA+lPjRHJ5HbO14WEgOWTYGPgibfS1KRy
+         cXvifIEhuQF88BPheSNRedYFa0FV118GYdne3+YPYu3vVctmml+icOdXGs9MaDJYniVc
+         1o57uN0KYReGIeS+sqtnwBphMIQkEhhmgKspRbBl5UFsNIB85R97XfqEZivopqOSlPKy
+         NVyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=J3I7Z3IpYgIYjLPyzXTfQAdZXADJUQoUkUspFp+drRA=;
-        b=YvoER+EaPsSNLI/AOTVsl/jIUH89dI7SzNQjEzKyHshFZaiLrewosQz4LoloxvAb0r
-         Gh+UpLErEcmx5v5xLbUWrOFayN0fnLQQTzvlSW2YVM2v2gx9ljh6VwBEpqLjOWiw5Xy3
-         k3QaKZ3qWUxJ9bTVgIGws2CaX/psSr6ostBa4mFEajhqH4BW3tnJd+xXi03/1G5WRIcD
-         VW/exXl/x06791LN7qbvm2K8551TpIj6nsO2juKoSZcYQBrpP+Y8zdA+ScJzAKKzEgR2
-         k3tWPBpzoYbsG6L3+SU+v7nDHidWOAggpf64QXFbofuyTUSNBkBw9LX779ifnMo2g8Kn
-         Uxww==
-X-Gm-Message-State: AOAM53268frcWjXDHKZkiGcbql8HqXGtw0dFIEUlM3CpYRDaPSgcKw8V
-        R1t7CPRSAGvks/FfVjOmNSY=
-X-Google-Smtp-Source: ABdhPJxWcyDMjU0QBHePxiRnwZ8dA9Dk8sTLlahJBH1FRNAawoB75MV30rbGdwq9a97qBUXnyZM94w==
-X-Received: by 2002:a7b:c30f:: with SMTP id k15mr789432wmj.128.1622763944805;
-        Thu, 03 Jun 2021 16:45:44 -0700 (PDT)
+        bh=DDpKkJEpBzidYlkeMANWBeez3gCFIVHVIJwwQsDWjt0=;
+        b=svDejBmhC1NvZd1F8qtifs0JJdfvVegJMJQ7oFPrXyHjS3mZ4OEY6z24iSaz83VxMX
+         d9HSwLb0LRd8zXyP/G7Gn6cq5+vKCbK7Zd7zOYCzSfA3CCV/S3dJ2Ds7fCInd3PWhQKJ
+         gCKtyj5XMBN2+Ttwk+zFOIdIxVDAJDpVqwkJBj5dy/hsvQGb2Bd6KCiFnkIwNsAyX0wR
+         7ZLdDpSJUUmLQzxdtE8x1vWKch0E+pJb1HfKzRi40m9F3RgwhpP73luvlS4jjPWCmqS9
+         9ZtjcL8FBdjqeBeIOuFBLaXqKocyG87yh74jHZ8lll000QxD6LNTA/PoZIK9VgOJa5ai
+         cFzg==
+X-Gm-Message-State: AOAM5319bPdJRUG5/8K6AMckpBOrHXNFvqGmYdtj4oLnd8GArwx2gRKR
+        2VbfL6ntQK+13Jesn6BS490=
+X-Google-Smtp-Source: ABdhPJwwbg+XrW8BEK/oZR2y2d6MeM9SiTh++FgE33L8v8ZDnz9T4drDUXi6z945WFUIhaUp/qAu1w==
+X-Received: by 2002:a5d:548b:: with SMTP id h11mr828738wrv.131.1622763945982;
+        Thu, 03 Jun 2021 16:45:45 -0700 (PDT)
 Received: from xws.localdomain ([37.58.58.229])
-        by smtp.gmail.com with ESMTPSA id a11sm4743386wrr.48.2021.06.03.16.45.43
+        by smtp.gmail.com with ESMTPSA id a11sm4743386wrr.48.2021.06.03.16.45.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 16:45:44 -0700 (PDT)
+        Thu, 03 Jun 2021 16:45:45 -0700 (PDT)
 From:   Maximilian Luz <luzmaximilian@gmail.com>
 To:     Hans de Goede <hdegoede@redhat.com>
 Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
         Mark Gross <mgross@linux.intel.com>,
         platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/7] platform/surface: aggregator: Allow enabling of events without notifiers
-Date:   Fri,  4 Jun 2021 01:45:21 +0200
-Message-Id: <20210603234526.2503590-3-luzmaximilian@gmail.com>
+Subject: [PATCH 3/7] platform/surface: aggregator: Update copyright
+Date:   Fri,  4 Jun 2021 01:45:22 +0200
+Message-Id: <20210603234526.2503590-4-luzmaximilian@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210603234526.2503590-1-luzmaximilian@gmail.com>
 References: <20210603234526.2503590-1-luzmaximilian@gmail.com>
@@ -62,197 +65,260 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can already enable and disable SAM events via one of two ways: either
-via a (non-observer) notifier tied to a specific event group, or a
-generic event enable/disable request. In some instances, however,
-neither method may be desirable.
-
-The first method will tie the event enable request to a specific
-notifier, however, when we want to receive notifications for multiple
-event groups of the same target category and forward this to the same
-notifier callback, we may receive duplicate events, i.e. one event per
-registered notifier. The second method will bypass the internal
-reference counting mechanism, meaning that a disable request will
-disable the event regardless of any other client driver using it, which
-may break the functionality of that driver.
-
-To address this problem, add new functions that allow enabling and
-disabling of events via the event reference counting mechanism built
-into the controller, without needing to register a notifier.
-
-This can then be used in combination with observer notifiers to process
-multiple events of the same target category without duplication in the
-same callback function.
+It's 2021, update the copyright accordingly.
 
 Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
 ---
- .../platform/surface/aggregator/controller.c  | 135 ++++++++++++++++++
- include/linux/surface_aggregator/controller.h |   8 ++
- 2 files changed, 143 insertions(+)
+ drivers/platform/surface/aggregator/Kconfig             | 2 +-
+ drivers/platform/surface/aggregator/Makefile            | 2 +-
+ drivers/platform/surface/aggregator/bus.c               | 2 +-
+ drivers/platform/surface/aggregator/bus.h               | 2 +-
+ drivers/platform/surface/aggregator/controller.c        | 2 +-
+ drivers/platform/surface/aggregator/controller.h        | 2 +-
+ drivers/platform/surface/aggregator/core.c              | 2 +-
+ drivers/platform/surface/aggregator/ssh_msgb.h          | 2 +-
+ drivers/platform/surface/aggregator/ssh_packet_layer.c  | 2 +-
+ drivers/platform/surface/aggregator/ssh_packet_layer.h  | 2 +-
+ drivers/platform/surface/aggregator/ssh_parser.c        | 2 +-
+ drivers/platform/surface/aggregator/ssh_parser.h        | 2 +-
+ drivers/platform/surface/aggregator/ssh_request_layer.c | 2 +-
+ drivers/platform/surface/aggregator/ssh_request_layer.h | 2 +-
+ drivers/platform/surface/aggregator/trace.h             | 2 +-
+ include/linux/surface_aggregator/controller.h           | 2 +-
+ include/linux/surface_aggregator/device.h               | 2 +-
+ include/linux/surface_aggregator/serial_hub.h           | 2 +-
+ 18 files changed, 18 insertions(+), 18 deletions(-)
 
+diff --git a/drivers/platform/surface/aggregator/Kconfig b/drivers/platform/surface/aggregator/Kconfig
+index 3aaeea9f0433..fd6dc452f3e8 100644
+--- a/drivers/platform/surface/aggregator/Kconfig
++++ b/drivers/platform/surface/aggregator/Kconfig
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0+
+-# Copyright (C) 2019-2020 Maximilian Luz <luzmaximilian@gmail.com>
++# Copyright (C) 2019-2021 Maximilian Luz <luzmaximilian@gmail.com>
+ 
+ menuconfig SURFACE_AGGREGATOR
+ 	tristate "Microsoft Surface System Aggregator Module Subsystem and Drivers"
+diff --git a/drivers/platform/surface/aggregator/Makefile b/drivers/platform/surface/aggregator/Makefile
+index c112e2c7112b..c8498c41e758 100644
+--- a/drivers/platform/surface/aggregator/Makefile
++++ b/drivers/platform/surface/aggregator/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0+
+-# Copyright (C) 2019-2020 Maximilian Luz <luzmaximilian@gmail.com>
++# Copyright (C) 2019-2021 Maximilian Luz <luzmaximilian@gmail.com>
+ 
+ # For include/trace/define_trace.h to include trace.h
+ CFLAGS_core.o = -I$(src)
+diff --git a/drivers/platform/surface/aggregator/bus.c b/drivers/platform/surface/aggregator/bus.c
+index a9b660af0917..0169677c243e 100644
+--- a/drivers/platform/surface/aggregator/bus.c
++++ b/drivers/platform/surface/aggregator/bus.c
+@@ -2,7 +2,7 @@
+ /*
+  * Surface System Aggregator Module bus and device integration.
+  *
+- * Copyright (C) 2019-2020 Maximilian Luz <luzmaximilian@gmail.com>
++ * Copyright (C) 2019-2021 Maximilian Luz <luzmaximilian@gmail.com>
+  */
+ 
+ #include <linux/device.h>
+diff --git a/drivers/platform/surface/aggregator/bus.h b/drivers/platform/surface/aggregator/bus.h
+index 7712baaed6a5..ed032c2cbdb2 100644
+--- a/drivers/platform/surface/aggregator/bus.h
++++ b/drivers/platform/surface/aggregator/bus.h
+@@ -2,7 +2,7 @@
+ /*
+  * Surface System Aggregator Module bus and device integration.
+  *
+- * Copyright (C) 2019-2020 Maximilian Luz <luzmaximilian@gmail.com>
++ * Copyright (C) 2019-2021 Maximilian Luz <luzmaximilian@gmail.com>
+  */
+ 
+ #ifndef _SURFACE_AGGREGATOR_BUS_H
 diff --git a/drivers/platform/surface/aggregator/controller.c b/drivers/platform/surface/aggregator/controller.c
-index cd3a6b77f48d..49edddea417e 100644
+index 49edddea417e..e91ee7e72c14 100644
 --- a/drivers/platform/surface/aggregator/controller.c
 +++ b/drivers/platform/surface/aggregator/controller.c
-@@ -2287,6 +2287,141 @@ int ssam_notifier_unregister(struct ssam_controller *ctrl, struct ssam_event_not
- }
- EXPORT_SYMBOL_GPL(ssam_notifier_unregister);
+@@ -2,7 +2,7 @@
+ /*
+  * Main SSAM/SSH controller structure and functionality.
+  *
+- * Copyright (C) 2019-2020 Maximilian Luz <luzmaximilian@gmail.com>
++ * Copyright (C) 2019-2021 Maximilian Luz <luzmaximilian@gmail.com>
+  */
  
-+/**
-+ * ssam_controller_event_enable() - Enable the specified event.
-+ * @ctrl:  The controller to enable the event for.
-+ * @reg:   The event registry to use for enabling the event.
-+ * @id:    The event ID specifying the event to be enabled.
-+ * @flags: The SAM event flags used for enabling the event.
-+ *
-+ * Increment the event reference count of the specified event. If the event has
-+ * not been enabled previously, it will be enabled by this call.
-+ *
-+ * Note: In general, ssam_notifier_register() with a non-observer notifier
-+ * should be preferred for enabling/disabling events, as this will guarantee
-+ * proper ordering and event forwarding in case of errors during event
-+ * enabling/disabling.
-+ *
-+ * Return: Returns zero on success, %-ENOSPC if the reference count for the
-+ * specified event has reached its maximum, %-ENOMEM if the corresponding event
-+ * entry could not be allocated. If this is the first time that this event has
-+ * been enabled (i.e. the reference count was incremented from zero to one by
-+ * this call), returns the status of the event-enable EC-command.
-+ */
-+int ssam_controller_event_enable(struct ssam_controller *ctrl,
-+				 struct ssam_event_registry reg,
-+				 struct ssam_event_id id, u8 flags)
-+{
-+	u16 rqid = ssh_tc_to_rqid(id.target_category);
-+	struct ssam_nf_refcount_entry *entry;
-+	struct ssam_nf_head *nf_head;
-+	struct ssam_nf *nf;
-+	int status;
-+
-+	if (!ssh_rqid_is_event(rqid))
-+		return -EINVAL;
-+
-+	nf = &ctrl->cplt.event.notif;
-+	nf_head = &nf->head[ssh_rqid_to_event(rqid)];
-+
-+	mutex_lock(&nf->lock);
-+
-+	entry = ssam_nf_refcount_inc(nf, reg, id);
-+	if (IS_ERR(entry)) {
-+		mutex_unlock(&nf->lock);
-+		return PTR_ERR(entry);
-+	}
-+
-+	ssam_dbg(ctrl, "enabling event (reg: %#04x, tc: %#04x, iid: %#04x, rc: %d)\n",
-+		 reg.target_category, id.target_category, id.instance,
-+		 entry->refcount);
-+
-+	if (entry->refcount == 1) {
-+		status = ssam_ssh_event_enable(ctrl, reg, id, flags);
-+		if (status) {
-+			kfree(ssam_nf_refcount_dec(nf, reg, id));
-+			mutex_unlock(&nf->lock);
-+			return status;
-+		}
-+
-+		entry->flags = flags;
-+
-+	} else if (entry->flags != flags) {
-+		ssam_warn(ctrl,
-+			  "inconsistent flags when enabling event: got %#04x, expected %#04x (reg: %#04x, tc: %#04x, iid: %#04x)\n",
-+			  flags, entry->flags, reg.target_category,
-+			  id.target_category, id.instance);
-+	}
-+
-+	mutex_unlock(&nf->lock);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(ssam_controller_event_enable);
-+
-+/**
-+ * ssam_controller_event_disable() - Disable the specified event.
-+ * @ctrl:  The controller to disable the event for.
-+ * @reg:   The event registry to use for disabling the event.
-+ * @id:    The event ID specifying the event to be disabled.
-+ * @flags: The flags used when enabling the event.
-+ *
-+ * Decrement the reference count of the specified event. If the reference count
-+ * reaches zero, the event will be disabled.
-+ *
-+ * Note: In general, ssam_notifier_register()/ssam_notifier_unregister() with a
-+ * non-observer notifier should be preferred for enabling/disabling events, as
-+ * this will guarantee proper ordering and event forwarding in case of errors
-+ * during event enabling/disabling.
-+ *
-+ * Return: Returns zero on success, %-ENOENT if the given event has not been
-+ * enabled on the controller. If the reference count of the event reaches zero
-+ * during this call, returns the status of the event-disable EC-command.
-+ */
-+int ssam_controller_event_disable(struct ssam_controller *ctrl,
-+				  struct ssam_event_registry reg,
-+				  struct ssam_event_id id, u8 flags)
-+{
-+	u16 rqid = ssh_tc_to_rqid(id.target_category);
-+	struct ssam_nf_refcount_entry *entry;
-+	struct ssam_nf_head *nf_head;
-+	struct ssam_nf *nf;
-+	int status = 0;
-+
-+	if (!ssh_rqid_is_event(rqid))
-+		return -EINVAL;
-+
-+	nf = &ctrl->cplt.event.notif;
-+	nf_head = &nf->head[ssh_rqid_to_event(rqid)];
-+
-+	mutex_lock(&nf->lock);
-+
-+	entry = ssam_nf_refcount_dec(nf, reg, id);
-+	if (WARN_ON(!entry)) {
-+		mutex_unlock(&nf->lock);
-+		return -ENOENT;
-+	}
-+
-+	ssam_dbg(ctrl, "disabling event (reg: %#04x, tc: %#04x, iid: %#04x, rc: %d)\n",
-+		 reg.target_category, id.target_category, id.instance,
-+		 entry->refcount);
-+
-+	if (entry->flags != flags) {
-+		ssam_warn(ctrl,
-+			  "inconsistent flags when disabling event: got %#04x, expected %#04x (reg: %#04x, tc: %#04x, iid: %#04x)\n",
-+			  flags, entry->flags, reg.target_category,
-+			  id.target_category, id.instance);
-+	}
-+
-+	if (entry->refcount == 0) {
-+		status = ssam_ssh_event_disable(ctrl, reg, id, flags);
-+		kfree(entry);
-+	}
-+
-+	mutex_unlock(&nf->lock);
-+	return status;
-+}
-+EXPORT_SYMBOL_GPL(ssam_controller_event_disable);
-+
- /**
-  * ssam_notifier_disable_registered() - Disable events for all registered
-  * notifiers.
+ #include <linux/acpi.h>
+diff --git a/drivers/platform/surface/aggregator/controller.h b/drivers/platform/surface/aggregator/controller.h
+index 8297d34e7489..a0963c3562ff 100644
+--- a/drivers/platform/surface/aggregator/controller.h
++++ b/drivers/platform/surface/aggregator/controller.h
+@@ -2,7 +2,7 @@
+ /*
+  * Main SSAM/SSH controller structure and functionality.
+  *
+- * Copyright (C) 2019-2020 Maximilian Luz <luzmaximilian@gmail.com>
++ * Copyright (C) 2019-2021 Maximilian Luz <luzmaximilian@gmail.com>
+  */
+ 
+ #ifndef _SURFACE_AGGREGATOR_CONTROLLER_H
+diff --git a/drivers/platform/surface/aggregator/core.c b/drivers/platform/surface/aggregator/core.c
+index 8dc2c267bcd6..5d780e55f4a1 100644
+--- a/drivers/platform/surface/aggregator/core.c
++++ b/drivers/platform/surface/aggregator/core.c
+@@ -7,7 +7,7 @@
+  * Handles communication via requests as well as enabling, disabling, and
+  * relaying of events.
+  *
+- * Copyright (C) 2019-2020 Maximilian Luz <luzmaximilian@gmail.com>
++ * Copyright (C) 2019-2021 Maximilian Luz <luzmaximilian@gmail.com>
+  */
+ 
+ #include <linux/acpi.h>
+diff --git a/drivers/platform/surface/aggregator/ssh_msgb.h b/drivers/platform/surface/aggregator/ssh_msgb.h
+index 1221f642dda1..e562958ffdf0 100644
+--- a/drivers/platform/surface/aggregator/ssh_msgb.h
++++ b/drivers/platform/surface/aggregator/ssh_msgb.h
+@@ -2,7 +2,7 @@
+ /*
+  * SSH message builder functions.
+  *
+- * Copyright (C) 2019-2020 Maximilian Luz <luzmaximilian@gmail.com>
++ * Copyright (C) 2019-2021 Maximilian Luz <luzmaximilian@gmail.com>
+  */
+ 
+ #ifndef _SURFACE_AGGREGATOR_SSH_MSGB_H
+diff --git a/drivers/platform/surface/aggregator/ssh_packet_layer.c b/drivers/platform/surface/aggregator/ssh_packet_layer.c
+index 15d96eac6811..5e08049fc3ac 100644
+--- a/drivers/platform/surface/aggregator/ssh_packet_layer.c
++++ b/drivers/platform/surface/aggregator/ssh_packet_layer.c
+@@ -2,7 +2,7 @@
+ /*
+  * SSH packet transport layer.
+  *
+- * Copyright (C) 2019-2020 Maximilian Luz <luzmaximilian@gmail.com>
++ * Copyright (C) 2019-2021 Maximilian Luz <luzmaximilian@gmail.com>
+  */
+ 
+ #include <asm/unaligned.h>
+diff --git a/drivers/platform/surface/aggregator/ssh_packet_layer.h b/drivers/platform/surface/aggregator/ssh_packet_layer.h
+index e8757d03f279..2eb329f0b91a 100644
+--- a/drivers/platform/surface/aggregator/ssh_packet_layer.h
++++ b/drivers/platform/surface/aggregator/ssh_packet_layer.h
+@@ -2,7 +2,7 @@
+ /*
+  * SSH packet transport layer.
+  *
+- * Copyright (C) 2019-2020 Maximilian Luz <luzmaximilian@gmail.com>
++ * Copyright (C) 2019-2021 Maximilian Luz <luzmaximilian@gmail.com>
+  */
+ 
+ #ifndef _SURFACE_AGGREGATOR_SSH_PACKET_LAYER_H
+diff --git a/drivers/platform/surface/aggregator/ssh_parser.c b/drivers/platform/surface/aggregator/ssh_parser.c
+index e2dead8de94a..b77912f8f13b 100644
+--- a/drivers/platform/surface/aggregator/ssh_parser.c
++++ b/drivers/platform/surface/aggregator/ssh_parser.c
+@@ -2,7 +2,7 @@
+ /*
+  * SSH message parser.
+  *
+- * Copyright (C) 2019-2020 Maximilian Luz <luzmaximilian@gmail.com>
++ * Copyright (C) 2019-2021 Maximilian Luz <luzmaximilian@gmail.com>
+  */
+ 
+ #include <asm/unaligned.h>
+diff --git a/drivers/platform/surface/aggregator/ssh_parser.h b/drivers/platform/surface/aggregator/ssh_parser.h
+index 63c38d350988..3bd6e180fd16 100644
+--- a/drivers/platform/surface/aggregator/ssh_parser.h
++++ b/drivers/platform/surface/aggregator/ssh_parser.h
+@@ -2,7 +2,7 @@
+ /*
+  * SSH message parser.
+  *
+- * Copyright (C) 2019-2020 Maximilian Luz <luzmaximilian@gmail.com>
++ * Copyright (C) 2019-2021 Maximilian Luz <luzmaximilian@gmail.com>
+  */
+ 
+ #ifndef _SURFACE_AGGREGATOR_SSH_PARSER_H
+diff --git a/drivers/platform/surface/aggregator/ssh_request_layer.c b/drivers/platform/surface/aggregator/ssh_request_layer.c
+index 52a83a8fcf82..bfe1aaf38065 100644
+--- a/drivers/platform/surface/aggregator/ssh_request_layer.c
++++ b/drivers/platform/surface/aggregator/ssh_request_layer.c
+@@ -2,7 +2,7 @@
+ /*
+  * SSH request transport layer.
+  *
+- * Copyright (C) 2019-2020 Maximilian Luz <luzmaximilian@gmail.com>
++ * Copyright (C) 2019-2021 Maximilian Luz <luzmaximilian@gmail.com>
+  */
+ 
+ #include <asm/unaligned.h>
+diff --git a/drivers/platform/surface/aggregator/ssh_request_layer.h b/drivers/platform/surface/aggregator/ssh_request_layer.h
+index cb35815858d1..9c3cbae2d4bd 100644
+--- a/drivers/platform/surface/aggregator/ssh_request_layer.h
++++ b/drivers/platform/surface/aggregator/ssh_request_layer.h
+@@ -2,7 +2,7 @@
+ /*
+  * SSH request transport layer.
+  *
+- * Copyright (C) 2019-2020 Maximilian Luz <luzmaximilian@gmail.com>
++ * Copyright (C) 2019-2021 Maximilian Luz <luzmaximilian@gmail.com>
+  */
+ 
+ #ifndef _SURFACE_AGGREGATOR_SSH_REQUEST_LAYER_H
+diff --git a/drivers/platform/surface/aggregator/trace.h b/drivers/platform/surface/aggregator/trace.h
+index eb332bb53ae4..de64cf169060 100644
+--- a/drivers/platform/surface/aggregator/trace.h
++++ b/drivers/platform/surface/aggregator/trace.h
+@@ -2,7 +2,7 @@
+ /*
+  * Trace points for SSAM/SSH.
+  *
+- * Copyright (C) 2020 Maximilian Luz <luzmaximilian@gmail.com>
++ * Copyright (C) 2020-2021 Maximilian Luz <luzmaximilian@gmail.com>
+  */
+ 
+ #undef TRACE_SYSTEM
 diff --git a/include/linux/surface_aggregator/controller.h b/include/linux/surface_aggregator/controller.h
-index cf4bb48a850e..7965bdc669c5 100644
+index 7965bdc669c5..068e1982ad37 100644
 --- a/include/linux/surface_aggregator/controller.h
 +++ b/include/linux/surface_aggregator/controller.h
-@@ -838,4 +838,12 @@ int ssam_notifier_register(struct ssam_controller *ctrl,
- int ssam_notifier_unregister(struct ssam_controller *ctrl,
- 			     struct ssam_event_notifier *n);
+@@ -6,7 +6,7 @@
+  * managing access and communication to and from the SSAM EC, as well as main
+  * communication structures and definitions.
+  *
+- * Copyright (C) 2019-2020 Maximilian Luz <luzmaximilian@gmail.com>
++ * Copyright (C) 2019-2021 Maximilian Luz <luzmaximilian@gmail.com>
+  */
  
-+int ssam_controller_event_enable(struct ssam_controller *ctrl,
-+				 struct ssam_event_registry reg,
-+				 struct ssam_event_id id, u8 flags);
-+
-+int ssam_controller_event_disable(struct ssam_controller *ctrl,
-+				  struct ssam_event_registry reg,
-+				  struct ssam_event_id id, u8 flags);
-+
- #endif /* _LINUX_SURFACE_AGGREGATOR_CONTROLLER_H */
+ #ifndef _LINUX_SURFACE_AGGREGATOR_CONTROLLER_H
+diff --git a/include/linux/surface_aggregator/device.h b/include/linux/surface_aggregator/device.h
+index 6ff9c58b3e17..f636c5310321 100644
+--- a/include/linux/surface_aggregator/device.h
++++ b/include/linux/surface_aggregator/device.h
+@@ -7,7 +7,7 @@
+  * Provides support for non-platform/non-ACPI SSAM clients via dedicated
+  * subsystem.
+  *
+- * Copyright (C) 2019-2020 Maximilian Luz <luzmaximilian@gmail.com>
++ * Copyright (C) 2019-2021 Maximilian Luz <luzmaximilian@gmail.com>
+  */
+ 
+ #ifndef _LINUX_SURFACE_AGGREGATOR_DEVICE_H
+diff --git a/include/linux/surface_aggregator/serial_hub.h b/include/linux/surface_aggregator/serial_hub.h
+index 64276fbfa1d5..c3de43edcffa 100644
+--- a/include/linux/surface_aggregator/serial_hub.h
++++ b/include/linux/surface_aggregator/serial_hub.h
+@@ -6,7 +6,7 @@
+  * Surface System Aggregator Module (SSAM). Provides the interface for basic
+  * packet- and request-based communication with the SSAM EC via SSH.
+  *
+- * Copyright (C) 2019-2020 Maximilian Luz <luzmaximilian@gmail.com>
++ * Copyright (C) 2019-2021 Maximilian Luz <luzmaximilian@gmail.com>
+  */
+ 
+ #ifndef _LINUX_SURFACE_AGGREGATOR_SERIAL_HUB_H
 -- 
 2.31.1
 
