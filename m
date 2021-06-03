@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E0939A1F6
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E9539A1F9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231364AbhFCNQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 09:16:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230252AbhFCNQy (ORCPT
+        id S231380AbhFCNRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 09:17:11 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:53350 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230131AbhFCNRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 09:16:54 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE2CC06174A;
-        Thu,  3 Jun 2021 06:14:56 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id x73so4846237pfc.8;
-        Thu, 03 Jun 2021 06:14:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=fBZJTdUeyr2PC5gYyTUryXoQTSj7Qok3gQumRrIu0a0=;
-        b=HLmHLeJHhkSy2M1T5etFZSNqo3xvPd1u7R7Sa3lutKP4bDGIzQ2bPe1juOmclArj7M
-         xW3iZw7ylIMBV8KjRJDHpJVw3ERQwORmDIQjvmdRi1ujVsDrZkguyihpsdyzy1GtLSAl
-         oT95JVI8XG1BC8mvk1LPu3hCB5Vv6oMYtjCPwIDNUaAACOGJ4gl6tmf6jXISQYX1aKZb
-         676iI19Cfod9pghrn5Pey4UbdJTMMDMMXNTrr3nw4cVrkGCdNb8JWpD91cuxDM6Qme1L
-         yVx4tffFMm90E7GLDMHU/Nyi49Po3fSB6fWLpYjhvDskJ2n9C9Qoyjv0pGYEWJFxmHFE
-         ykyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=fBZJTdUeyr2PC5gYyTUryXoQTSj7Qok3gQumRrIu0a0=;
-        b=Ag2WI/bVpP42Kl7T04pNeOEEkCVoxBDMXIMWVVRPMu56xN1VpGa3maPomXrUhiBIXd
-         QES67rcBfzEvhqW3UrUXxOvRFoLOc+l7GJvgXdlgHKZnyML/LVlNzw7jgX1Izet5cVbs
-         Co8TlKGEqjpB0arv6VQ+YiJDMeNoLQ0Mttd67oK6DRe7AMUmYR2YMeL6zAOYyN5bFd9P
-         LlKUx3pVE9nFikq6toUxctiAwLLX+W7l7gb6VM9PU2Qm1zyPmMMxQdpAWmp0/op1YRnO
-         QQAJuhEkarq4hvd618ai29g6+HRJLvVpQB7GkHCa3Ae5spqWa5OqxrWpHBfJX+m5pMhD
-         VSqw==
-X-Gm-Message-State: AOAM532x04QHKecnYM2fjlaPONfRPE26CfJ4WLI45M1QJGjlJVIAOxD0
-        ay1VQCgGE4s2m+OX9tsBjjs=
-X-Google-Smtp-Source: ABdhPJz5om3H8xNHSo1eHwum2iMJd7/GurKhKeEuAnqyeHIy9F3fHJ+2KN2D5ZuvxvRIErdNyKFbgA==
-X-Received: by 2002:a62:3344:0:b029:24c:735c:4546 with SMTP id z65-20020a6233440000b029024c735c4546mr32657627pfz.1.1622726095612;
-        Thu, 03 Jun 2021 06:14:55 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2601:645:c000:35:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id y27sm633117pff.202.2021.06.03.06.14.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 06:14:55 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 06:14:52 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Guangbin Huang <huangguangbin2@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, salil.mehta@huawei.com,
-        lipeng321@huawei.com, tanhuazhong@huawei.com
-Subject: Re: [RESEND net-next 1/2] net: hns3: add support for PTP
-Message-ID: <20210603131452.GA6216@hoboy.vegasvil.org>
-References: <1622602664-20274-1-git-send-email-huangguangbin2@huawei.com>
- <1622602664-20274-2-git-send-email-huangguangbin2@huawei.com>
+        Thu, 3 Jun 2021 09:17:10 -0400
+Received: from relay2.suse.de (unknown [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 4C46A1FD3D;
+        Thu,  3 Jun 2021 13:15:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622726125; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=in/G7fzdUcdCv5ZvDLh1mBytHpj8YQlTgchvITKLgrI=;
+        b=s2HVubBUAFMVIIBjzD6M5Q/51LKPRFDNTX+TTbtibiMCt35kBNIuyO8UTr91ktRk6WvVrg
+        YUozOtp8nzkqaAWHnmIdwXvE/+KbqCVhfJqKoVvLJ+12M5gUE/Rg/qrXlMDhnHrMQ6vOuG
+        nUTUy6G7nHvpT3jxMX9wAubNQ0SlcCk=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id C6390A3B8B;
+        Thu,  3 Jun 2021 13:15:24 +0000 (UTC)
+Date:   Thu, 3 Jun 2021 15:15:24 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        Joe Perches <joe@perches.com>
+Subject: Re: [PATCH v3 4/4] slub: Force on no_hash_pointers when slub_debug
+ is enabled
+Message-ID: <YLjV7JLb2lmegRW9@alley>
+References: <20210601182202.3011020-1-swboyd@chromium.org>
+ <20210601182202.3011020-5-swboyd@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1622602664-20274-2-git-send-email-huangguangbin2@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210601182202.3011020-5-swboyd@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 10:57:43AM +0800, Guangbin Huang wrote:
+On Tue 2021-06-01 11:22:02, Stephen Boyd wrote:
+> Obscuring the pointers that slub shows when debugging makes for some
+> confusing slub debug messages:
+> 
+>  Padding overwritten. 0x0000000079f0674a-0x000000000d4dce17
+> 
+> Those addresses are hashed for kernel security reasons. If we're trying
+> to be secure with slub_debug on the commandline we have some big
+> problems given that we dump whole chunks of kernel memory to the kernel
+> logs. Let's force on the no_hash_pointers commandline flag when
+> slub_debug is on the commandline. This makes slub debug messages more
+> meaningful and if by chance a kernel address is in some slub debug
+> object dump we will have a better chance of figuring out what went
+> wrong.
+> 
+> Note that we don't use %px in the slub code because we want to reduce
+> the number of places that %px is used in the kernel. This also nicely
+> prints a big fat warning at kernel boot if slub_debug is on the
+> commandline so that we know that this kernel shouldn't be used on
+> production systems.
+> 
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 
-> @@ -4342,12 +4352,34 @@ static void hclge_periodic_service_task(struct hclge_dev *hdev)
->  	hclge_task_schedule(hdev, delta);
->  }
->  
-> +static void hclge_ptp_service_task(struct hclge_dev *hdev)
-> +{
-> +	if (!test_bit(HCLGE_STATE_PTP_EN, &hdev->state) ||
-> +	    !test_bit(HCLGE_STATE_PTP_TX_HANDLING, &hdev->state) ||
-> +	    !time_is_before_jiffies(hdev->ptp->tx_start + HZ))
-> +		return;
-> +
-> +	/* to prevent concurrence with the irq handler, disable vector0
-> +	 * before handling ptp service task.
-> +	 */
-> +	disable_irq(hdev->misc_vector.vector_irq);
+Acked-by: Petr Mladek <pmladek@suse.com>
 
-This won't work.  After all, the ISR thread might already be running.
-Use a proper spinlock instead.
-
-> +	/* check HCLGE_STATE_PTP_TX_HANDLING here again, since the irq
-> +	 * handler may handle it just before disable_irq().
-> +	 */
-> +	if (test_bit(HCLGE_STATE_PTP_TX_HANDLING, &hdev->state))
-> +		hclge_ptp_clean_tx_hwts(hdev);
-> +
-> +	enable_irq(hdev->misc_vector.vector_irq);
-> +}
-
-Thanks,
-Richard
+Best Regards,
+Petr
