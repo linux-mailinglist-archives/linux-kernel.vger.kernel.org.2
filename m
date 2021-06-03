@@ -2,91 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68FD739A4D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3486139A4EB
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbhFCPmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 11:42:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53290 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229854AbhFCPmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 11:42:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4F50611ED;
-        Thu,  3 Jun 2021 15:40:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622734826;
-        bh=mFAhNgmUD+wtIhwDrs/ENUxcjRAmrenuOPwzcjPUBhE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ki8nDtgjf9jwCjL2WGcL99KCyzystjkusR4WvwQzMFYK5PnVnLQoUkUJBT2nP57B+
-         e3qgJjXtUWbjITUVd0T7cNiVvBL+KA4KS7wEfZKT/4Hsg3HxUmvfWMpUavO9GpcMb2
-         KqDhVPCAAQCCdU0pFU1iWNclAyfWxlfH0gkfdTor3lWQ1DDfaBPZAWYZLsoSX/wjSZ
-         SeMJd17P8brabyO8/W3NeFScwHTimO6tHXX5c5tb5S8i/cFYUh2KpC0Ou1DHEQgZFy
-         Ss4VE2QlwyGVg0thG1u0fdcCP2kj6WWtw0c9EiNiuuuUWwx4ZgWA82C+Vsm0BbajFq
-         z6j5l6F77w91A==
-Date:   Thu, 3 Jun 2021 08:40:24 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Daniel Rosenberg <drosen@google.com>, Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com, stable@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] f2fs: Advertise encrypted casefolding in sysfs
-Message-ID: <YLj36Fmz3dSHmkSG@google.com>
-References: <20210603095038.314949-1-drosen@google.com>
- <20210603095038.314949-3-drosen@google.com>
- <YLipSQxNaUDy9Ff1@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLipSQxNaUDy9Ff1@kroah.com>
+        id S230208AbhFCPm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 11:42:57 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:17800 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230153AbhFCPm4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 11:42:56 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622734871; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=o1I/qHRsZyVY+hH5gJnA9ezwSvhf5J73xu0kbc1BX7o=; b=fAmXGHnRILvGkf4cyTNaLYfW7cNOXXZmYKja4ruYcYNoHlXW4OUum37xhsoJt17JPMRM0ebP
+ ac3Jc/akJj0VWFEJ9Wdm3ut+vBBXkbsTloY2DamQBB76dKdDaeR2jMamVQH0ZG7/CGwFGPWA
+ 14cQ92Em7BXhfxBHeOx79eapH4E=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 60b8f80ae27c0cc77f901e9f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Jun 2021 15:40:58
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3A670C433D3; Thu,  3 Jun 2021 15:40:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6A8DCC433D3;
+        Thu,  3 Jun 2021 15:40:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6A8DCC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        khsieh@codeaurora.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5] drm/msm/dp: power off DP phy at suspend
+Date:   Thu,  3 Jun 2021 08:40:46 -0700
+Message-Id: <1622734846-14179-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/03, Greg KH wrote:
-> On Thu, Jun 03, 2021 at 09:50:38AM +0000, Daniel Rosenberg wrote:
-> > Older kernels don't support encryption with casefolding. This adds
-> > the sysfs entry encrypted_casefold to show support for those combined
-> > features. Support for this feature was originally added by
-> > commit 7ad08a58bf67 ("f2fs: Handle casefolding with Encryption")
-> > 
-> > Fixes: 7ad08a58bf67 ("f2fs: Handle casefolding with Encryption")
-> > Cc: stable@vger.kernel.org # v5.11+
-> > Signed-off-by: Daniel Rosenberg <drosen@google.com>
-> > ---
-> >  fs/f2fs/sysfs.c | 15 +++++++++++++--
-> >  1 file changed, 13 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-> > index 09e3f258eb52..6604291a3cdf 100644
-> > --- a/fs/f2fs/sysfs.c
-> > +++ b/fs/f2fs/sysfs.c
-> > @@ -161,6 +161,9 @@ static ssize_t features_show(struct f2fs_attr *a,
-> >  	if (f2fs_sb_has_compression(sbi))
-> >  		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
-> >  				len ? ", " : "", "compression");
-> > +	if (f2fs_sb_has_casefold(sbi) && f2fs_sb_has_encrypt(sbi))
-> > +		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
-> > +				len ? ", " : "", "encrypted_casefold");
-> >  	len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
-> >  				len ? ", " : "", "pin_file");
-> >  	len += scnprintf(buf + len, PAGE_SIZE - len, "\n");
-> 
-> This is a HUGE abuse of sysfs and should not be encouraged and added to.
+Normal DP suspend operation contains two steps, display off followed
+by dp suspend, to complete system wide suspending cycle if display is
+up at that time. In this case, DP phy will be powered off at display
+off. However there is an exception case that depending on the timing
+of dongle plug in during system wide suspending, sometimes display off
+procedure may be skipped and dp suspend was called directly. In this
+case, dp phy is stay at powered on (phy->power_count = 1) so that at
+next resume dp driver crash at main link clock enable due to phy is
+not physically powered on. This patch will call dp_ctrl_off_link_stream()
+to tear down main link and power off phy at dp_pm_suspend() if main link
+had been brought up.
 
-This feature entry was originally added in 2017. Let me try to clean this up
-after merging this.
+Changes in V2:
+-- stashed changes into dp_ctrl.c
+-- add is_phy_on to monitor phy state
 
-> 
-> Please make these "one value per file" and do not keep growing a single
-> file that has to be parsed otherwise you will break userspace tools.
-> 
-> And I don't see a Documentation/ABI/ entry for this either :(
+Changes in V3:
+-- delete is_phy_on
+-- call dp_ctrl_off_link_stream() from dp_pm_suspend()
 
-There is in Documentation/ABI/testing/sysfs-fs-f2fs.
+Changes in V4:
+-- delete changes made at dp_power.c
+-- move main link status checking to dp_pm_suspend
 
-> 
-> not good...
-> 
-> greg k-h
+Changes in V5:
+-- correct commit id at Fixes tag
+
+Fixes: 8dbde399044b ("drm/msm/dp: handle irq_hpd with sink_count = 0 correctly)
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+Tested-by: Stephen Boyd <swboyd@chromium.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+---
+ drivers/gpu/drm/msm/dp/dp_ctrl.c    | 10 ++++++----
+ drivers/gpu/drm/msm/dp/dp_display.c |  7 ++++++-
+ 2 files changed, 12 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+index dbd8943..caf71fa 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+@@ -1827,10 +1827,12 @@ int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl)
+ 
+ 	dp_catalog_ctrl_mainlink_ctrl(ctrl->catalog, false);
+ 
+-	ret = dp_power_clk_enable(ctrl->power, DP_STREAM_PM, false);
+-	if (ret) {
+-		DRM_ERROR("Failed to disable pixel clocks. ret=%d\n", ret);
+-		return ret;
++	if (dp_power_clk_status(ctrl->power, DP_STREAM_PM)) {
++		ret = dp_power_clk_enable(ctrl->power, DP_STREAM_PM, false);
++		if (ret) {
++			DRM_ERROR("Failed to disable pclk. ret=%d\n", ret);
++			return ret;
++		}
+ 	}
+ 
+ 	ret = dp_power_clk_enable(ctrl->power, DP_CTRL_PM, false);
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index cdec0a3..9c59def 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -1327,8 +1327,13 @@ static int dp_pm_suspend(struct device *dev)
+ 
+ 	mutex_lock(&dp->event_mutex);
+ 
+-	if (dp->core_initialized == true)
++	if (dp->core_initialized == true) {
++		/* mainlink enabled */
++		if (dp_power_clk_status(dp->power, DP_CTRL_PM))
++			dp_ctrl_off_link_stream(dp->ctrl);
++
+ 		dp_display_host_deinit(dp);
++	}
+ 
+ 	dp->hpd_state = ST_SUSPENDED;
+ 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
