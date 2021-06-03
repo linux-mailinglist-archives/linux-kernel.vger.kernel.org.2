@@ -2,292 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6B639A383
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 704D039A38C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231633AbhFCOmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 10:42:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230044AbhFCOmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 10:42:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D416613BA;
-        Thu,  3 Jun 2021 14:40:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622731239;
-        bh=KGf62fdmoeSRTHAhVtk9Rm640Th/Ydn4WSDrtK56ZEQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=pCpjaDRK0XXmHijuRPw88TvMD2vX8uE25VD5M3nX8EzMbpwFEqJwzieWXH57vijZj
-         bEkFGXtyJP83lvl28lNT0q97eHPZ7xJo4wargWuuhuDeGn4ZSjt0yNRhq7SjpOxWhv
-         U4WW6T8IR+vO0kYjKsBsCwXHL/5EeYiVSm0onrQiL+jEE5HMpFa1SEt22SZseTIzzt
-         jyBT3LeD578JcieNQacPdA3GAgUdPdLACSvPXFtVvhGX4pRuG/a6nbPwSp7AtjaYtD
-         9fnchuB9dm/CFeaehDfi/RPQQvwQEJRSliSBcOrP427sfUNy8QLRkrdQ9q8sq1Ap+C
-         osgCBOQsQnEpQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id F23A55C014A; Thu,  3 Jun 2021 07:40:38 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 07:40:38 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Luming Yu <luming.yu@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Stultz <john.stultz@linaro.org>, sboyd@kernel.org,
-        corbet@lwn.net, Mark.Rutland@arm.com, maz@kernel.org,
-        kernel-team@fb.com, neeraju@codeaurora.org,
-        Andi Kleen <ak@linux.intel.com>, feng.tang@intel.com,
-        zhengjun.xing@intel.com
-Subject: Re: [PATCH V11 clocksource 0/6] Do not mark clocks unstable due to
- delays for v5.13
-Message-ID: <20210603144038.GN4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210429012909.GA3958584@paulmck-ThinkPad-P17-Gen-1>
- <CAJRGBZxre5=xt-RQFo6HU3rBYu7YuVtXZxNHicbKFX3FMB1T7A@mail.gmail.com>
- <20210430051059.GE975577@paulmck-ThinkPad-P17-Gen-1>
- <CAJRGBZzQ-eQMLHBVzhcTjqQMYEtop3SK=7TAMmC+5tNsfxM_GQ@mail.gmail.com>
- <20210501042834.GK975577@paulmck-ThinkPad-P17-Gen-1>
- <CAJRGBZzgXyNA1C12uiTo-ffa7Af5FB4ABRK_K9KgT9t4duRsdA@mail.gmail.com>
- <20210602174650.GH4397@paulmck-ThinkPad-P17-Gen-1>
- <20210602182413.GA1159254@paulmck-ThinkPad-P17-Gen-1>
- <CAJRGBZxj9VUYP-azVV3+mZcdizKPWgn4yc5dakO8dok6mZF4sQ@mail.gmail.com>
+        id S231574AbhFCOoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 10:44:37 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:57238 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229744AbhFCOog (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 10:44:36 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 153EgOXB104770;
+        Thu, 3 Jun 2021 09:42:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1622731344;
+        bh=8Ijv9UhqrX4N4JBpKzCRsR+ej46JBo6anCxAPeEUMPQ=;
+        h=From:To:CC:Subject:Date;
+        b=q9XSpqFptmst7UmoFKzsfIWJFK7OUdT/oIPVqFHtK3OQpPiLUocAMH6GkKCAfau3p
+         ujJBD1j0Bn0N8WaY/HzJnsrIUe/xBTbVcHlkMlsuj7Qn8gkBIQhKr8lhVSZt8SwSI8
+         sP9Zr9C4j4fd04rfBpYToFeEc1NbARZk8vejoBVg=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 153EgOgQ078876
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 3 Jun 2021 09:42:24 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 3 Jun
+ 2021 09:42:24 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 3 Jun 2021 09:42:24 -0500
+Received: from fllv0103.dal.design.ti.com (fllv0103.dal.design.ti.com [10.247.120.73])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 153EgOGP078619;
+        Thu, 3 Jun 2021 09:42:24 -0500
+Received: from localhost ([10.250.35.153])
+        by fllv0103.dal.design.ti.com (8.14.7/8.14.7) with ESMTP id 153EgOTq031160;
+        Thu, 3 Jun 2021 09:42:24 -0500
+From:   Suman Anna <s-anna@ti.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Wilken Gottwalt <wilken.gottwalt@posteo.net>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, <devicetree@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-sunxi@lists.linux.dev>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Suman Anna <s-anna@ti.com>
+Subject: [RFC PATCH] dt-bindings: hwlock: sun6i: Fix various warnings in binding
+Date:   Thu, 3 Jun 2021 09:42:16 -0500
+Message-ID: <20210603144216.10327-1-s-anna@ti.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJRGBZxj9VUYP-azVV3+mZcdizKPWgn4yc5dakO8dok6mZF4sQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 12:25:57PM +0800, Luming Yu wrote:
-> These options works as how they are designed. But it needs to
-> go through a manual work and can't scale in highly automated data center
-> fleets.
-> 
-> .if we really don't need a watch dog at runtime, we need some data proof.
-> 
-> Before we can disable TSC watchdog by default for all Linux instances, we
-> still need a solution based on your patch set to train the watch dog from doing
-> wrong things , just based on some other latency issues in system that might be
-> unavoidable. We really can't punish tsc for the latency issues from
-> unknown source.
-> 
-> I agree we still need to sort out the quality problems from these latency issues
-> noticed from watchdog rather than that we simply mute and hide as you
-> may suspect
-> that we may abuse the thresholds and the mechanism your patch set provides.
-> But it should be a focus after the patch is merged in upstream.
+The allwinner,sun6i-a31-hwspinlock.yaml binding has a mismatched
+$id and fails to compile the example due to undefined args specifier
+values for clocks and resets. Fix both of these issues.
 
-Works for me!
+Fixes: f9e784dcb63f ("dt-bindings: hwlock: add sun6i_hwspinlock")
+Signed-off-by: Suman Anna <s-anna@ti.com>
+---
+Hi Wilken,
 
-Would you be willing to provide your Reviewed-by, Acked-by, or Tested-by
-for the series?
+This fixes the warnings for now on linux-next, but I think the example
+should be including sun6i-a31-ccu.h files instead to be accurate, and
+those files are missing the definitions for CLK_BUS_SPINLOCK and
+RST_BUS_SPINLOCK. Feel free to send a newer version or do an incremental
+patch on top.
 
-							Thanx, Paul
+regards
+Suman
 
-> On Thu, Jun 3, 2021 at 2:24 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Wed, Jun 02, 2021 at 10:46:50AM -0700, Paul E. McKenney wrote:
-> > > On Wed, Jun 02, 2021 at 01:10:37PM +0800, Luming Yu wrote:
-> > > > Hi Paul,
-> > > >
-> > > > It appears that the patch set is not in 5.13.  Will it be in 5.14?
-> > >
-> > > Indeed it is not in v5.13.  There were some late-breaking reviews and
-> > > changes.  I am currently thinking in terms of v5.14.
-> > >
-> > > > And more data proof seems to indciate that  tsc is more stable than
-> > > > tsc-watchdog.
-> > >
-> > > The tsc-watchdog being HPET?  Or some other clocksource?
-> > >
-> > > > and we need the patch set to dis-arm wrong actions when watch dog is
-> > > > hit by a spik.
-> > >
-> > > It does depend on the hardware.  Thomas Gleixner provided a most
-> > > excellent summary of the possibilities here:
-> > >
-> > > https://lore.kernel.org/lkml/87a6pimt1f.ffs@nanos.tec.linutronix.de/
-> > >
-> > > And then if your hardware's TSC is the most trustworthy clocksource
-> > > on your system, you can always boot with tsc=reliable and avoid the
-> > > clocksource watchdog completely, with or without this patch series.
-> >
-> > Oh, and firmware can and apparently still sometimes does "adjust" the TSC,
-> > and so booting with tsc=reliable can such adjustments from you.
-> >
-> > > Or am I missing your point?
-> >
-> >                                                         Thanx, Paul
-> >
-> > > > On Sat, May 1, 2021 at 12:28 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > >
-> > > > > On Fri, Apr 30, 2021 at 02:52:58PM +0800, Luming Yu wrote:
-> > > > > > On Fri, Apr 30, 2021 at 1:11 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > > >
-> > > > > > > On Thu, Apr 29, 2021 at 07:13:40PM +0800, Luming Yu wrote:
-> > > > > > > > On Thu, Apr 29, 2021 at 9:30 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > > > > >
-> > > > > > > > > Hello!
-> > > > > > > > >
-> > > > > > > > > If there is a sufficient delay between reading the watchdog clock and the
-> > > > > > > > > clock under test, the clock under test will be marked unstable through no
-> > > > > > > > > fault of its own.  This series checks for this, doing limited retries
-> > > > > > > > > to get a good set of clock reads.  If the clock is marked unstable
-> > > > > > > > > and is marked as being per-CPU, cross-CPU synchronization is checked.
-> > > > > > > > > This series also provides delay injection, which may be enabled via
-> > > > > > > > > kernel boot parameters to test the checking for delays.
-> > > > > > > > >
-> > > > > > > > > Note that "sufficient delay" can be provided by SMIs, NMIs, and of course
-> > > > > > > > > vCPU preemption.
-> > > > > > > > >
-> > > > > > > > > 1.      Provide module parameters to inject delays in watchdog.
-> > > > > > > > >
-> > > > > > > > > 2.      Retry clock read if long delays detected.
-> > > > > > > > >
-> > > > > > > > > 3.      Check per-CPU clock synchronization when marked unstable.
-> > > > > > > > >
-> > > > > > > > > 4.      Provide a module parameter to fuzz per-CPU clock checking.
-> > > > > > > > >
-> > > > > > > > > 5.      Limit number of CPUs checked for clock synchronization.
-> > > > > > > > >
-> > > > > > > > > 6.      Reduce clocksource-skew threshold for TSC.
-> > > > > > > > >
-> > > > > > > > > Changes since v10, based on feedback from Thomas Gleixner, Peter Zijlstra,
-> > > > > > > > > Feng Tang, Andi Kleen, Luming Yu, Xing Zhengju, and the indefatigible
-> > > > > > > > > kernel test robot:
-> > > > > > > > >
-> > > > > > > > > o       Automatically compute the uncertainty margin for clocksource, and
-> > > > > > > > >         also allow them to be specified manually before that clocksource
-> > > > > > > > >         is registered.
-> > > > > > > > >
-> > > > > > > > > o       For the automatically computed uncertainty margins, bound them
-> > > > > > > > >         below by 100 microseconds (2 * WATCHDOG_MAX_SKEW).
-> > > > > > > > >
-> > > > > > > > > o       For the manually specified uncertainty margins, splat (but
-> > > > > > > > >         continue) if they are less than 100 microseconds (again 2 *
-> > > > > > > > >         WATCHDOG_MAX_SKEW).  The purpose of splatting is to discourage
-> > > > > > > > >         production use of this clock-skew-inducing debugging technique.
-> > > > > > > > >
-> > > > > > > > > o       Manually set the uncertainty margin for clocksource_jiffies
-> > > > > > > > >         (and thus refined_jiffies) to TICK_NSEC to compensate for the
-> > > > > > > > >         very low frequency of these clocks.
-> > > > > > > > >
-> > > > > > > > > o       Manually set the uncertainty margin for clocksource_tsc_early
-> > > > > > > > >         to 32 milliseconds.
-> > > > > > > > >
-> > > > > > > > > o       Apply numerous "Link:" fields to all patches.
-> > > > > > > > >
-> > > > > > > > > o       Add some acks and CCs.
-> > > > > > > > >
-> > > > > > > > > Changes since v9:
-> > > > > > > > >
-> > > > > > > > > o       Forgive tsc_early drift, based on feedback from Feng Tang; Xing,
-> > > > > > > > >         Zhengjun; and Thomas Gleixner.
-> > > > > > > > >
-> > > > > > > > > o       Improve CPU selection for clock-synchronization checking.
-> > > > > > > > >
-> > > > > > > > > Link: https://lore.kernel.org/lkml/20210419045155.GA596058@paulmck-ThinkPad-P17-Gen-1/
-> > > > > > > > >
-> > > > > > > > > Changes since v8, based on Thomas Gleixner feedback:
-> > > > > > > > >
-> > > > > > > > > o       Reduced clock-skew threshold to 200us and delay limit to 50us.
-> > > > > > > > >
-> > > > > > > > > o       Split out a cs_watchdog_read() function.
-> > > > > > > > >
-> > > > > > > > > o       Removed the pointless CLOCK_SOURCE_VERIFY_PERCPU from kvm_clock.
-> > > > > > > > >
-> > > > > > > > > o       Initialized cs_nsec_max and cs_nsec_min to avoid firsttime checks.
-> > > > > > > > >
-> > > > > > > > > Link: https://lore.kernel.org/lkml/20210414043435.GA2812539@paulmck-ThinkPad-P17-Gen-1/
-> > > > > > > > >
-> > > > > > > > > Changes since v7, based on Thomas Gleixner feedback:
-> > > > > > > > >
-> > > > > > > > > o       Fix embarrassing git-format-patch operator error.
-> > > > > > > > >
-> > > > > > > > > o       Merge pairwise clock-desynchronization checking into the checking
-> > > > > > > > >         of per-CPU clock synchronization when marked unstable.
-> > > > > > > > >
-> > > > > > > > > o       Do selective per-CPU checking rather than blindly checking all
-> > > > > > > > >         CPUs.  Provide a clocksource.verify_n_cpus kernel boot parameter
-> > > > > > > > >         to control this behavior, with the value -1 choosing the old
-> > > > > > > > >         check-all-CPUs behavior.  The default is to randomly check 8 CPUs.
-> > > > > > > > >
-> > > > > > > > > o       Fix the clock-desynchronization checking to avoid a potential
-> > > > > > > > >         use-after-free error for dynamically allocated clocksource
-> > > > > > > > >         structures.
-> > > > > > > > >
-> > > > > > > > > o       Remove redundance "wdagain_nsec < 0" from clocksource_watchdog()
-> > > > > > > > >         clocksource skew checking.
-> > > > > > > > >
-> > > > > > > > > o       Update commit logs and do code-style updates.
-> > > > > > > > >
-> > > > > > > > > Link: https://lore.kernel.org/lkml/20210106004013.GA11179@paulmck-ThinkPad-P72/
-> > > > > > > > >
-> > > > > > > > > Changes since v5:
-> > > > > > > > >
-> > > > > > > > > o       Rebased to v5.12-rc5.
-> > > > > > > > >
-> > > > > > > > > Changes since v4:
-> > > > > > > > >
-> > > > > > > > > o       Rebased to v5.12-rc1.
-> > > > > > > > >
-> > > > > > > > > Changes since v3:
-> > > > > > > > >
-> > > > > > > > > o       Rebased to v5.11.
-> > > > > > > > >
-> > > > > > > > > o       Apply Randy Dunlap feedback.
-> > > > > > > > >
-> > > > > > > > > Changes since v2:
-> > > > > > > > >
-> > > > > > > > > o       Rebased to v5.11-rc6.
-> > > > > > > > >
-> > > > > > > > > o       Updated Cc: list.
-> > > > > > > > >
-> > > > > > > > > Changes since v1:
-> > > > > > > > >
-> > > > > > > > > o       Applied feedback from Rik van Riel.
-> > > > > > > > >
-> > > > > > > > > o       Rebased to v5.11-rc3.
-> > > > > > > > >
-> > > > > > > > > o       Stripped "RFC" from the subject lines.
-> > > > > > > > >
-> > > > > > > > >                                                 Thanx, Paul
-> > > > > > > > >
-> > > > > > > > > ------------------------------------------------------------------------
-> > > > > > > > >
-> > > > > > > > >  Documentation/admin-guide/kernel-parameters.txt   |   32 +++
-> > > > > > > > >  arch/x86/kernel/tsc.c                             |    1
-> > > > > > > > >  b/Documentation/admin-guide/kernel-parameters.txt |   21 ++
-> > > > > > > > >  b/arch/x86/kernel/tsc.c                           |    3
-> > > > > > > > >  b/include/linux/clocksource.h                     |    2
-> > > > > > > > >  b/kernel/time/clocksource.c                       |   23 ++
-> > > > > > > > >  b/kernel/time/jiffies.c                           |   15 -
-> > > > > > > > >  include/linux/clocksource.h                       |    3
-> > > > > > > > >  kernel/time/clocksource.c                         |  227 ++++++++++++++++++++--
-> > > > > > > > >  9 files changed, 304 insertions(+), 23 deletions(-)
-> > > > > > > >
-> > > > > > > > Hi Paul,
-> > > > > > > > using the v11, I added a approve flag and made it work for my early
-> > > > > > > > inject test  where tsc is good
-> > > > > > > > through a cross tsc sync test. Ideally with the small tweak, we could
-> > > > > > > > get less tsc issues to debug.
-> > > > > > > >  And I'm not sure it would help in real trouble shooting cases. But we
-> > > > > > > > will see if it would help.
-> > > > > > >
-> > > > > > > Thank you for the patch!
-> > > > > > >
-> > > > > > > However, Thomas had me rework this code to put the error injection into
-> > > > > > > a kernel module, so this effect is now obtained in a different way.
-> > > > > > > So I am unable to make use of your patch.
-> > > > > >
-> > > > > > np, thanks for the heads up.
-> > > > > >
-> > > > > > we will also need to measure the tsc sync retest and prove it's robust
-> > > > > >  enough to trump the bad decision from clocksource watchdog based on HPET
-> > > > > > or other slow and old clocks while leaving good decisions pass through.
-> > > > > >
-> > > > > > we will re-spin the tsc story when your code is settled and landed in
-> > > > > > the mainline.
-> > > > >
-> > > > > My current series exports clocksource_verify_percpu(), which might help
-> > > > > measuring TSC synchronization.
-> > > > >
-> > > > >                                                         Thanx, Paul
+ .../bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml      | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml b/Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml
+index 733c3d01e56c..10e5a53e447b 100644
+--- a/Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml
++++ b/Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: http://devicetree.org/schemas/hwlock/allwinner,sun6i-hwspinlock.yaml#
++$id: http://devicetree.org/schemas/hwlock/allwinner,sun6i-a31-hwspinlock.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+ title: SUN6I hardware spinlock driver for Allwinner sun6i compatible SoCs
+@@ -36,6 +36,9 @@ additionalProperties: false
+ 
+ examples:
+   - |
++    #include <dt-bindings/clock/sun8i-a23-a33-ccu.h>
++    #include <dt-bindings/reset/sun8i-a23-a33-ccu.h>
++
+     hwlock@1c18000 {
+         compatible = "allwinner,sun6i-a31-hwspinlock";
+         reg = <0x01c18000 0x1000>;
+-- 
+2.30.1
+
