@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4A9399A8B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 08:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B359A399A8D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 08:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbhFCGU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 02:20:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41726 "EHLO mail.kernel.org"
+        id S229837AbhFCGVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 02:21:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229727AbhFCGU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 02:20:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40DAF6100A;
-        Thu,  3 Jun 2021 06:18:42 +0000 (UTC)
+        id S229667AbhFCGVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 02:21:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFFCE6100A;
+        Thu,  3 Jun 2021 06:19:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622701123;
-        bh=TW6SOGvkYRGFXEoLac/9lkzf6uKJi+kDsb421UC3MBU=;
+        s=k20201202; t=1622701163;
+        bh=epzZlkMg9+AF90DX6Ya+DaGXInmYp9+trcjFwb56wg8=;
         h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=mvNOgQiEaDh9KusshAxJoZLyKNh+7kiecylqAVt60X59SRMhTglrF1053MfwfWkQq
-         O+ONqvd0HGM+5POy0frGWpgXAU0AHUcstCM21nXgpEXVTLXMHCjEEvXWzGqCWkxHiI
-         WbGIjoSc7Sc+HHASY7znaFf+l238IvzuOrhShTHVIrwSFTgNXcMoLDemAB17t4ynzp
-         g7SvA5iWad/uN7+WT6pp3QDBTrJkB9Gy/8JyKbfHxAkvmcT5auP4X2pBTJgjCHOIhj
-         uMkCkKGzo5tUPojKmx69mKkLYsNNWjojKvAfVTekmUi4yOsTZjiYT6/mf4CJrqPloa
-         5AJuLwUVvnhxw==
+        b=J1CjHf9OCdcl/H9dkWKaYxwVkl18/L+2WA0Hk7nCvJ/ZymLp0gqfDl9t3g3UJaxop
+         zU3m5B6O0Oo8QVsAlyvg4M4/f5U58hn/o7hxVa4jN45AzfMXxXaJAlJ/VmH0ODoe8Z
+         JW3fBTopGWOpQ892PyAFI8CJCgjcVa1CTdmQRb5nSpP9ME8SYDQkK03ZXWUJ+qG34K
+         Zc6JTjWbKHXqlmLAJFVD2wBMDHm9fFVw24SSn1AxiJhvSoFzHCj1KaQ6XY6v8gthHP
+         YpGBR+r3gs2aPwYTEg3PLWNX3Wd02c4m19PIWBjBQ2l7D+u9sqYnq7rJFai6zMgPCo
+         5ZmT1wV0qMOwQ==
 From:   Felipe Balbi <balbi@kernel.org>
 To:     Johan Hovold <johan@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>,
-        Minas Harutyunyan <hminas@synopsys.com>
-Subject: Re: [PATCH 2/3] USB: dwc2: drop irq-flags initialisations
-In-Reply-To: <20210519093303.10789-3-johan@kernel.org>
+        Johan Hovold <johan@kernel.org>, Li Yang <leoyang.li@nxp.com>
+Subject: Re: [PATCH 3/3] USB: gadget: drop irq-flags initialisations
+In-Reply-To: <20210519093303.10789-4-johan@kernel.org>
 References: <20210519093303.10789-1-johan@kernel.org>
- <20210519093303.10789-3-johan@kernel.org>
-Date:   Thu, 03 Jun 2021 09:18:34 +0300
-Message-ID: <8735tzeait.fsf@kernel.org>
+ <20210519093303.10789-4-johan@kernel.org>
+Date:   Thu, 03 Jun 2021 09:19:09 +0300
+Message-ID: <87zgw7cvxe.fsf@kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; boundary="=-=-=";
         micalg=pgp-sha256; protocol="application/pgp-signature"
@@ -51,10 +50,10 @@ Johan Hovold <johan@kernel.org> writes:
 > There's no need to initialise irq-flags variables before saving the
 > interrupt state.
 >
-> While at it drop two redundant return-value initialisations from two of
-> the functions that got it wrong.
+> Drop the redundant initialisations from drivers that got this wrong.
 >
-> Cc: Minas Harutyunyan <hminas@synopsys.com>
+> Cc: Li Yang <leoyang.li@nxp.com>
+> Cc: Felipe Balbi <balbi@kernel.org>
 > Signed-off-by: Johan Hovold <johan@kernel.org>
 
 Acked-by: Felipe Balbi <balbi@kernel.org>
@@ -67,13 +66,13 @@ Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmC4dDoRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzlfNM9wDzUhzWggAvllpN00vgnjz60Jk0k7RhU/M9LSg46/0
-SKapbuJDCRcAEQAX7BfhhG3mLcNcGCCi8UGv7lz/2OlBzDRmGsPgnoIU7tIJ+H9e
-6O/5VcHbTMRrSVoQ21UvH4r40LXei/T0DjrSZmhgTlvgNw/6WQHiIC9LbFLZ7T5S
-NCNkL0YYbctNvv21PoqvcfH4PoajF/axDau9ffhEhtOwXwGwyNZmaS6SJc5Mz8c/
-xMwMcuXgRbaNK55M6egs9eFLsGAfvqo8I/psb53ExqZeT1PbnpeZC3krJJ+vhCAN
-4a9JR2IBXSMQkKNVjPQxXtv6Kf6tQ4KWI18rlXlPnlp87Mdu+P03Iw==
-=r83D
+iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmC4dF0RHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzlfNM9wDzUhBEwgAuPyUcqpIpRhPjoUAY0L+AywXlN7zDqLO
+xsm5hGpKTtt7juaQ95Sj4UpxgBuksFlB1VZ0i3Dsy0x3EiKexCMCx500o26rLm2u
+f2L58wRkCH+o3NUU+zHKzeAmRDEgxz/mrOlQkc1GTjbyAFTDIjCsq7OttRl4lGM9
+vIAUjV8GBAGa/yvgtyFFLCe9m5Jq6a+odod9RWYd++H/aX+XNlNQWfWlehVY0ISR
+/u1UXy1JcoIV1WejxifqspM1ktibDcspOjiylzQu/XMiUVEzjZjQba0L3uvVuOlB
+FylO1vLrjCpvc2aTZo3NJjG6CBnsz5WabLES2Nei3Q59YXAPO7hiUQ==
+=hdG9
 -----END PGP SIGNATURE-----
 --=-=-=--
