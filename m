@@ -2,104 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B0D039ACAE
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 23:21:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3658839ACB4
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 23:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbhFCVX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 17:23:28 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:56227 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229790AbhFCVX0 (ORCPT
+        id S230203AbhFCVYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 17:24:34 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:43904 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230081AbhFCVYd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 17:23:26 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 4F1695C0071;
-        Thu,  3 Jun 2021 17:21:41 -0400 (EDT)
-Received: from imap35 ([10.202.2.85])
-  by compute5.internal (MEProxy); Thu, 03 Jun 2021 17:21:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=XwJZ1Qrwq2Ad70llPp988Nl7IcepFjp
-        HsXsYGbVQhTE=; b=RispqkflI17cuT2skjfNAsoQ5+z+Jh/6D6UPAxAeSWeDToD
-        WBzRUkU/TJeoSf3oxUDbjsDEZd0Fr0gDRoClKNyC7rm16r3BVb4PFvjiEzK0t4fj
-        nVAIMl969LXgJfpgV97JkJSoKKW7SUpcAlz4UV/X9PJu8VBQBOqiLWdmfGxDUW3s
-        5W3E5EdMLDRlj+gEiwHLF7J0nBIoCUJb+D1NWafySpM/84P52Stl8tVnL4FscsEH
-        dFQAaGniPCvYlGuJLJBelHkG3rBuNKiJ3QPOOydyWtpx2UhkTPzxgsudD8+k0C+K
-        zUTVVtRrM8sbG0/JXVQh1tloylbso0gFJXndRVw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=XwJZ1Q
-        rwq2Ad70llPp988Nl7IcepFjpHsXsYGbVQhTE=; b=HzWH1FMZNnpImdXet+H2uK
-        HC8G5Bn4rHH7M9sEDyrdn/mE4VHSYXQncoklSpUyj4Bal0jrohSrPefk5dhG5VgM
-        3EcQjceahs1ba+hLtp8xfqF3dYbUu14Yvm+kRJ9Inf2GDyb90ApCZP239oZ66cqx
-        i846GIO8rY0Uunrpr9qdK5D6e5mVuZgK9GBzqOflZEXhtuViMmH+FvUjILzT8Di4
-        XieaKCutVtM5cPQhC+qXCp7vLNjOIZotjJDYxlsyUhnRWulTHbC8MTo8ObaDYIeX
-        tr33Us8BDEFSbBxmjc7aG+k5eC2KqHbEkoqZHVK74xxLIemFn590RUvLkg7UVkQA
-        ==
-X-ME-Sender: <xms:5Ee5YJTnoky7AfIPOX8rsqu85wVXkmGP90DuDeG65wMJB9GZGupb9A>
-    <xme:5Ee5YCyu0Rnei5jo6sP6RsPPz9fy9HXemuvW3iQrmMozLBrYzku87Z2QEFEpv4eN8
-    oEB6d2LGC1oFNceeg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdelledgudehlecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehn
-    ughrvghsucfhrhgvuhhnugdfuceorghnughrvghssegrnhgrrhgriigvlhdruggvqeenuc
-    ggtffrrghtthgvrhhnpeetgedvvdffgefhjeetveetveefgeffudduffegtdeujedvjeel
-    gfevgedukeefvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpegrnhgurhgvshesrghnrghrrgiivghlrdguvg
-X-ME-Proxy: <xmx:5Ee5YO0IsxAUYEcsXe971KrAflvrzAZf6Rp-03zyi7dRBlUERynIJw>
-    <xmx:5Ee5YBAnn_scYI3bCJvOR8unraRiTNjPNsbYjIcgBz0VCrEuGmW7Sw>
-    <xmx:5Ee5YCjG3z4mnA3xmFBRagXImGrcHqcTqjRKjRb9AL0KrWKW5TRjBA>
-    <xmx:5Ue5YNVZqdVsdnr-biDDLMnWhXFugIpAmnalCb8bvceuNiMb6q3BTw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 34FC115A005F; Thu,  3 Jun 2021 17:21:40 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
-Mime-Version: 1.0
-Message-Id: <16ead1e9-f07f-4a13-a066-122eca998d74@www.fastmail.com>
-In-Reply-To: <20210603211012.GA68208@worktop.programming.kicks-ass.net>
-References: <cover.1622558659.git.asml.silence@gmail.com>
- <e91af9d8f8d6e376635005fd111e9fe7a1c50fea.1622558659.git.asml.silence@gmail.com>
- <bd824ec8-48af-b554-67a1-7ce20fcf608c@kernel.dk>
- <409a624c-de75-0ee5-b65f-ee09fff34809@gmail.com>
- <bdc55fcd-b172-def4-4788-8bf808ccf6d6@kernel.dk>
- <5ab4c8bd-3e82-e87b-1ae8-3b32ced72009@gmail.com>
- <87sg211ccj.ffs@nanos.tec.linutronix.de>
- <20210603190338.gfykgkc7ac2akvdt@alap3.anarazel.de>
- <20210603211012.GA68208@worktop.programming.kicks-ass.net>
-Date:   Thu, 03 Jun 2021 14:21:15 -0700
-From:   "Andres Freund" <andres@anarazel.de>
-To:     "Peter Zijlstra" <peterz@infradead.org>
-Cc:     "Thomas Gleixner" <tglx@linutronix.de>,
-        "Pavel Begunkov" <asml.silence@gmail.com>,
-        "Jens Axboe" <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        "Ingo Molnar" <mingo@redhat.com>,
-        "Darren Hart" <dvhart@infradead.org>,
-        "Davidlohr Bueso" <dave@stgolabs.net>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC 4/4] io_uring: implement futex wait
-Content-Type: text/plain
+        Thu, 3 Jun 2021 17:24:33 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-286-Jvo2qcnVMfKEowSTBxAhDg-1; Thu, 03 Jun 2021 22:22:45 +0100
+X-MC-Unique: Jvo2qcnVMfKEowSTBxAhDg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.18; Thu, 3 Jun 2021 22:22:44 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Thu, 3 Jun 2021 22:22:44 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Manikishan Ghantasala' <manikishanghantasala@gmail.com>,
+        Alex Elder <elder@ieee.org>
+CC:     Rui Miguel Silva <rmfrfs@gmail.com>,
+        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "greybus-dev@lists.linaro.org" <greybus-dev@lists.linaro.org>,
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] staging: greybus: fixed the coding style, labels should
+ not be indented.
+Thread-Topic: [PATCH] staging: greybus: fixed the coding style, labels should
+ not be indented.
+Thread-Index: AQHXV7uPElUZ9thDckyuMtjnIAGFwKsCzNHA
+Date:   Thu, 3 Jun 2021 21:22:44 +0000
+Message-ID: <792dd57c0ef8454497e5ae4c4534dea2@AcuMS.aculab.com>
+References: <20210602133659.46158-1-manikishanghantasala@gmail.com>
+ <9a3878fd-3b59-76f5-ddc7-625c66f9fee8@ieee.org>
+ <CAKzJ-FNW8EPX2oQd1qr5NagnvjtWwvSeuAh8DNLetj11+BJ6RA@mail.gmail.com>
+In-Reply-To: <CAKzJ-FNW8EPX2oQd1qr5NagnvjtWwvSeuAh8DNLetj11+BJ6RA@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+RnJvbTogTWFuaWtpc2hhbiBHaGFudGFzYWxhDQo+IFNlbnQ6IDAyIEp1bmUgMjAyMSAxNToyOA0K
+PiANCj4gSSBhZ3JlZSB0aG9zZSBhcmUgY2FsbGVkIGJpdC1maWVsZCBtZW1iZXIgbmFtZXMgcmF0
+aGVyIHRoYW4gbGFiZWxzLg0KPiBCdXQgdGhlIHJlYXNvbiBJIG1lbnRpb25lZCBpcyBiZWNhdXNl
+IHRoZSAuL3NjcmlwdHMvY2hlY2twYXRjaC5wbA0KPiBnYXZlIG91dCBhIHdhcm5pbmcgc2F5aW5n
+ICJsYWJlbHMgc2hvdWxkIG5vdCBiZSBpbmRlbnRlZCIuDQo+IA0KPiBTb3JyeSBmb3IgdGhlIGNv
+bmZ1c2lvbiBpbiB0aGUgbmFtZSBJIHJlZmVycmVkIHRvLiBTbywgSSB0aGluayB0aGlzDQo+IGNo
+YW5nZSBpcyBuZWVkZWQgYXMgSSBmZWVsIHRoaXMgaXMgbm90IGZvbGxvd2luZyB0aGUgY29kaW5n
+LXN0eWxlIGJ5DQo+IGhhdmluZyBpbmRlbnQgYmVmb3JlIHRoZSB3aWR0aCBmb3IgYml0IGZpZWxk
+IG1lbWJlci4gSSB3ZW50IHRocm91Z2gNCj4gb3RoZXIgcGxhY2VzIGluIHNvdXJjZSBjb2RlIHRv
+IG1ha2Ugc3VyZSB0aGlzIGlzIGNvcnJlY3QsIGFuZCBzZW50IHRoZQ0KPiBwYXRjaCBhZnRlciBj
+b25maXJtYXRpb24uDQo+IA0KPiBSZWdhcmRzLA0KPiBNYW5pa2lzaGFuIEdoYW50YXNhbGENCj4g
+DQo+IE9uIFdlZCwgMiBKdW4gMjAyMSBhdCAxOToxMywgQWxleCBFbGRlciA8ZWxkZXJAaWVlZS5v
+cmc+IHdyb3RlOg0KPiA+DQo+ID4gT24gNi8yLzIxIDg6MzYgQU0sIHNoNG5udSB3cm90ZToNCj4g
+PiA+IEZyb206IE1hbmlraXNoYW4gR2hhbnRhc2FsYSA8bWFuaWtpc2hhbmdoYW50YXNhbGFAZ21h
+aWwuY29tPg0KPiA+ID4NCj4gPiA+IHN0YWdpbmc6IGdyZXlidXM6IGdwaW8uYzogQ2xlYXIgY29k
+aW5nLXN0eWxlIHByb2JsZW0NCj4gPiA+ICJsYWJlbHMgc2hvdWxkIG5vdCBiZSBpbmRlbnRlZCIg
+YnkgcmVtb3ZpbmcgaW5kZW50YXRpb24uDQo+ID4NCj4gPiBUaGVzZSBhcmUgbm90IGxhYmVscy4N
+Cj4gPg0KPiA+IEkgZG9uJ3QgcmVhbGx5IHVuZGVyc3RhbmQgd2hhdCB5b3UncmUgZG9pbmcgaGVy
+ZS4NCj4gPg0KPiA+IENhbiB5b3UgcGxlYXNlIGV4cGxhaW4gd2h5IHlvdSB0aGluayB0aGlzIG5l
+ZWRzIGNoYW5naW5nPw0KPiA+DQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIC1BbGV4DQo+ID4NCj4gPiA+IFNpZ25lZC1vZmYtYnk6IE1hbmlraXNoYW4gR2hhbnRh
+c2FsYSA8bWFuaWtpc2hhbmdoYW50YXNhbGFAZ21haWwuY29tPg0KPiA+ID4gLS0tDQo+ID4gPiAg
+IGRyaXZlcnMvc3RhZ2luZy9ncmV5YnVzL2dwaW8uYyB8IDYgKysrLS0tDQo+ID4gPiAgIDEgZmls
+ZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQo+ID4gPg0KPiA+ID4g
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvc3RhZ2luZy9ncmV5YnVzL2dwaW8uYyBiL2RyaXZlcnMvc3Rh
+Z2luZy9ncmV5YnVzL2dwaW8uYw0KPiA+ID4gaW5kZXggN2U2MzQ3ZmU5M2Y5Li40NjYxZjRhMjUx
+YmQgMTAwNjQ0DQo+ID4gPiAtLS0gYS9kcml2ZXJzL3N0YWdpbmcvZ3JleWJ1cy9ncGlvLmMNCj4g
+PiA+ICsrKyBiL2RyaXZlcnMvc3RhZ2luZy9ncmV5YnVzL2dwaW8uYw0KPiA+ID4gQEAgLTIwLDkg
+KzIwLDkgQEANCj4gPiA+ICAgc3RydWN0IGdiX2dwaW9fbGluZSB7DQo+ID4gPiAgICAgICAvKiBU
+aGUgZm9sbG93aW5nIGhhcyB0byBiZSBhbiBhcnJheSBvZiBsaW5lX21heCBlbnRyaWVzICovDQo+
+ID4gPiAgICAgICAvKiAtLT4gbWFrZSB0aGVtIGp1c3QgYSBmbGFncyBmaWVsZCAqLw0KPiA+ID4g
+LSAgICAgdTggICAgICAgICAgICAgICAgICAgICAgYWN0aXZlOiAgICAxLA0KPiA+ID4gLSAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgZGlyZWN0aW9uOiAxLCAgIC8qIDAgPSBvdXRwdXQsIDEg
+PSBpbnB1dCAqLw0KPiA+ID4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdmFsdWU6ICAg
+ICAxOyAgIC8qIDAgPSBsb3csIDEgPSBoaWdoICovDQo+ID4gPiArICAgICB1OCAgICAgICAgICAg
+ICAgICAgICAgICBhY3RpdmU6MSwNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IGRpcmVjdGlvbjoxLCAgICAvKiAwID0gb3V0cHV0LCAxID0gaW5wdXQgKi8NCj4gPiA+ICsgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIHZhbHVlOjE7ICAgICAgICAvKiAwID0gbG93LCAxID0g
+aGlnaCAqLw0KDQpXaHkgYXJlIHlvdSBldmVuIHVzaW5nIGJpdGZpZWxkcyBhdCBhbGw/DQpJZiB5
+b3UgY2FyZWQgYWJvdXQgdGhlIHN0cnVjdHVyZSBzaXplIHlvdSdkIG5vdCBoYXZlIGEgYnl0ZS1z
+aXplIHBhZCBoZXJlLg0KDQpTaW5jZSBJIGRvdWJ0IG1hbnkgY29waWVzIG9mIHRoaXMgc3RydWN0
+dXJlIGdldCBhbGxvY2F0ZWQgdGhlDQoodHlwaWNhbCkgaW5jcmVhc2UgaW4gY29kZSBzaXplIGZv
+ciB0aGUgYml0ZmllbGRzIHdpbGwgYWxzbw0KZXhjZWVkIGFueSBzaXplIHNhdmluZy4NCg0KSXNu
+J3QgdGhlIGtlcm5lbCBzdHlsZSBhbHNvIHRvIHJlcGVhdCB0aGUgdHlwZSBmb3IgZXZlcnkgZmll
+bGQ/DQoNCglEYXZpZA0KDQoNCj4gPiA+ICAgICAgIHUxNiAgICAgICAgICAgICAgICAgICAgIGRl
+Ym91bmNlX3VzZWM7DQo+ID4gPg0KPiA+ID4gICAgICAgdTggICAgICAgICAgICAgICAgICAgICAg
+aXJxX3R5cGU7DQo+ID4gPg0KPiA+DQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwg
+QnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVn
+aXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-On Thu, Jun 3, 2021, at 14:10, Peter Zijlstra wrote:
-> On Thu, Jun 03, 2021 at 12:03:38PM -0700, Andres Freund wrote:
-> > On 2021-06-01 23:53:00 +0200, Thomas Gleixner wrote:
-> > > You surely made your point that this is well thought out.
-> > 
-> > Really impressed with your effort to generously interpret the first
-> > version of a proof of concept patch that explicitly was aimed at getting
-> > feedback on the basic design and the different use cases.
-> 
-> You *completely* failed to describe any. I'm with tglx; I see no reason
-> to even look at the patches. If you don't have a problem, you don't need
-> a solution.
-
-Note that this is not my patch, and I hadn't posted anything on the thread when Thomas sent that email? So I'm not sure what you're even referring to here as me having failed to do. If you think the explanation of my use cases I have since sent is insufficient, I'm happy to reply to that/expand on them, but you're going to have to be a bit more specific on why I "failed to describe any".
-
-I just don't see why a simple "what's the use case" wouldn't be a lot more productive than this posturing. Particularly on a thread that is explicitly inviting people from outside the core kernel dev community to chime in.
-
-Andres
