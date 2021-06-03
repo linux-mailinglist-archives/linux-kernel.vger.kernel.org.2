@@ -2,156 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37FEE39968E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 02:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF453996D3
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 02:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbhFCACF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 20:02:05 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:36176 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbhFCACD (ORCPT
+        id S229629AbhFCAOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 20:14:46 -0400
+Received: from mail-qt1-f170.google.com ([209.85.160.170]:37673 "EHLO
+        mail-qt1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229541AbhFCAOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 20:02:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1622678420; x=1654214420;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=SdUpJvvyFR9K10zvTqThC0vjfAQjqJZ+6ncNcNrAKUQ=;
-  b=XwTQj5Qf77khw4YgQNETGgvISosEVKYw8vS85TJtkEDREsUr8OFIaDOk
-   Yocy4o96V8RJnFp4mzUoxVZ390Firfm+M7/ffK11eLbM1Nk714uwtdsuK
-   yGk/02397KAvvzjfyn0DQkRX8/vsxUCjgnRSVeRzOQfxtA1NntNHINa52
-   Tdx+PIVNnkACTF9TOjAkNTtqf8PTHri9yCjOaaZ+LhSfRhD6dB4B7eo0O
-   iefdJVPGYkZlYtDEsKTMdE/68nSdQkn14z2cwn1HcSw6Z2ByJWmPybx/d
-   zncHEYbYNXU86eLWJViOE9fPBBqgLoqHQ4wTyjfrtkbJ9Vq2Ci/M3mqPp
-   Q==;
-IronPort-SDR: 4fdc4bJ+vhcdnM3VrT+uvYaIcnhc1DsuSC+x8bTEJvpVu/x3kiR9gL6J/RCstwY6I9L9b/FIf5
- r4uovFb81g8uiWYt6lU/ymxjFCCZaH7QPka8ynxpmi70Z82SxNxUJWlOP1f4HNcdInfWCMDIxz
- +Qm5ynSNolISgXw0kA3KhjxORtXsViC5U0FFOe8pvT0TMCMzUG8A4pZkWDW/Y+3iZ5DGkzasTB
- 5e067YlqjWRCvdNhm37/hDVpG1WTMsFv5jbNH67SQtTeHtf02IAk4djljl48akEQwtbRVvVd2u
- /5g=
-X-IronPort-AV: E=Sophos;i="5.83,244,1616428800"; 
-   d="scan'208";a="274374127"
-Received: from mail-bn8nam12lp2175.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.175])
-  by ob1.hgst.iphmx.com with ESMTP; 03 Jun 2021 08:00:20 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RumM0Oq9jJi3hnGIQ2tVYu1mRLg+MbXoItbcNaIUwtVFnqNyPX2VVHAO/sHMxi4FOpCSFi2OclCQRpNLeQfYtxhB2GZWbt2m3YiB41XipOKANSEc+ULz2yLU0x/cmrrSFnAzTomdRMhm6X6xsTxGVUK7/NxmEIiFI3OcZEXlZSD4pgN4tqPDBXeqk55T4qsNWblkr2rt1StpLr7uv7NorNG/Jz/bCrC13e7Ao9+lw1MpuN0kKlDu/rr07ZGdXw+N6Lt2N3qW8IwOeWM8sv85jSe2qB/WTFr4LeWc92Ka6+Hj5yYAEOaUCiVmYeP6WBMnBuwlUVQ/jU2KpHZZg023Xw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SdUpJvvyFR9K10zvTqThC0vjfAQjqJZ+6ncNcNrAKUQ=;
- b=XeQmsWTV0Z1KNQVsKAUvN967FI9y943gZikwOaQKUuu5LJZ5XqQaLF4ys51emtLODPxXX6Npoz+DMMzMABFSB9YKGEYbsv+SYH7ur9Jq8w9xoK26KSdzt5nMdjA1Li1uKKaR5kjiYuqHBjFsD/kW+M9SQjUaeTUPnQu+4rr0jshNT7yxgGCwoky2pPJfLwoZaSmZ+dlWTwE3UBcfi0FJyEl+YjOb/3gdM0y+v2qQI3Id9H2w5opzmbJsdA9C5KxNNcry0QDFW3dLpr8d59FmXFqn5G92A2+/1fjD0CZB0PSf/x/+x0CxsWHgYjaTfhQuHodBswNBLzdz9D6/YQh1kg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Wed, 2 Jun 2021 20:14:45 -0400
+Received: by mail-qt1-f170.google.com with SMTP id z4so175430qts.4
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 17:12:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SdUpJvvyFR9K10zvTqThC0vjfAQjqJZ+6ncNcNrAKUQ=;
- b=DrfMmQmNqoSCO/ff/v1fQ+hxiYxLUPISgTQemfHssEk37K2Vi0l/HwasUBVeO9KbXfweefng6GANgza+6mYKC/bmFGkKA36/lYZLkoOV1xBMCtlyuRKEdaKqg2fTsicZWM2h1ACtY3ksJIv32a8BGpOZX+HwqjhG68NkDCrMGO0=
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
- by BYAPR04MB5333.namprd04.prod.outlook.com (2603:10b6:a03:c2::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22; Thu, 3 Jun
- 2021 00:00:17 +0000
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::6873:3d64:8f9f:faf0]) by BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::6873:3d64:8f9f:faf0%7]) with mapi id 15.20.4173.034; Thu, 3 Jun 2021
- 00:00:15 +0000
-From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-To:     Colin King <colin.king@canonical.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
-CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH][next] null_blk: Fix null pointer dereference on
- nullb->disk on blk_cleanup_disk call
-Thread-Topic: [PATCH][next] null_blk: Fix null pointer dereference on
- nullb->disk on blk_cleanup_disk call
-Thread-Index: AQHXV5cd0Xp2C0SVXk+O11uWdyIruw==
-Date:   Thu, 3 Jun 2021 00:00:15 +0000
-Message-ID: <BYAPR04MB49650078EC900016480DFA59863C9@BYAPR04MB4965.namprd04.prod.outlook.com>
-References: <20210602100659.11058-1-colin.king@canonical.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [199.255.45.62]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f07805cc-9f85-4297-ce60-08d926229135
-x-ms-traffictypediagnostic: BYAPR04MB5333:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR04MB53339B87FCF2AA2C28351D4A863C9@BYAPR04MB5333.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:576;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: aPDu1ea94bdl3UtJbN35Li9aAljJO3eCYKjaQwE+YAvn6g+++kxvtVSCKKmi9KK8lyNNOcI6co30gN8eevA9sl24I+vVhpeV8jRq5RM0t2b6xnMf3wZd+JUcEM7ffKFuHmSGhwcFRsEyLBlZtXJpDECNPpHz2/uDCFmXXaEXdRVErYAB4EWEv1EqyqrZg892CMYDtofZwuCxW6D8Odi/h4L54Hfzk0X6HVvmDr5PgAr3Bc7h1NNaCteOFrxA9qzZRUrP25n/NKia3hmH0hjeLvl1m5tG6h5G9LmFBoksGoAX3vhX14f2cBXNel+ng8Rljr4cYs8i7Mx3WJ1vEfgrV2ovr+aKD8SAqDHJKHDCm9Pa/Dg8VMF3q4+X5orhxLvCEE1qRK3TfN+d+3H7ldY7y1tVTGl8N33Z5KfeR/gLogmBRpvqqjqQRFDhSbncgQpWmcX6Jt//JS4C9XlWEuNQMvPxiaz5DfS4nVzhLRn8NKyfSjnLWnYSmZIlQj7nhthWw8U6sEcRfiIBHvDtTuxtp0VUCT1Wdqu4NApwN774p0S94DDxhKTZXt+LMr2hZl1DcKZp2E212wI0PUohNF2UYqL9Bij3RB8IMoJfjCem5JM=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(366004)(136003)(396003)(346002)(186003)(6506007)(7696005)(26005)(4326008)(53546011)(86362001)(316002)(33656002)(8676002)(110136005)(54906003)(478600001)(52536014)(9686003)(55016002)(8936002)(5660300002)(38100700002)(122000001)(4744005)(66556008)(66446008)(71200400001)(76116006)(66476007)(2906002)(64756008)(66946007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?bKXd0oillC8pDvfJz8c+RuqinBQhJ3ZbRvHf1LXqrRzgbWCxnunq0P+RaysA?=
- =?us-ascii?Q?+JSLyEleklByDUY3qf7/d9a9E0hHqPrcnc0E7Wvd8jSkSNi3alrSCy9NGBvF?=
- =?us-ascii?Q?ERNBg/rPZkZqiMpCM1h7ittxm2jhMBZJFNlBlK0umgrDzyxGWwZkSpT87Q1w?=
- =?us-ascii?Q?CReSMHj/3BNSC8W4A/2tuSUXWgAhsA7DHTUFUVhqgf4albYhTCa4HkbJLcw+?=
- =?us-ascii?Q?HGq7szr/66yMJ52VYxK5i3YxFYzIfSgAIDpt20CwRBX/N/sru4yH2OylaYnO?=
- =?us-ascii?Q?gmuENsYrGVeln9/4Aq2yHaJrzegxHmgFGW3F75oDa6GtTf5OIlPksLu9d91L?=
- =?us-ascii?Q?YWkmA06nchMTdM8vFrAyKANJ2pGTQvmCjEQQoj9mcO1xYr6MddiLIRpe9VL2?=
- =?us-ascii?Q?CPDC7ZXw/FkjrYvJ85s92Dh7nilPEdd3B+2gFv4XWEFhj6p4PLR9JHxWIHGO?=
- =?us-ascii?Q?WX50GaslNDyyR9korI5xKoUhEKduZ3JS1glBr4Jun7iTVNmjBrsTpOBZNeCx?=
- =?us-ascii?Q?xbqoueo9Z3kdu9Q/Fbb1vQNrwpNWNt1I2WBiRfr4Xm864ibJKJFgcdJfwTyX?=
- =?us-ascii?Q?u8envLs53YVsT/z+fj5AYHWTr4KacAPrAA+rmIOW41sqHz/O6uNy5f7rnNRt?=
- =?us-ascii?Q?hmXYd/SuSXVp9TkqWgCPCmyY3VFD6snam/FANF/hkCRnbNpNz7pjjM6ZhcRv?=
- =?us-ascii?Q?JKwkcJhbI9N1DKNMs8FdV1+UQtNXir36TVloSPj1lOyO0bYMeVk1hsu/vfv4?=
- =?us-ascii?Q?xl5YxVsIKKbFD/5RbhC7GAhCv1B4RqB70XdS8aa5JWbB20X9ZUtNlLXlASD8?=
- =?us-ascii?Q?bKUvtyNFcTwB2H2b+epSprkgc/fta5I+HJdcDn//qeFWGSN0/0h6MPCi2eN7?=
- =?us-ascii?Q?HRpIFLNVZ88kkeNSY0y26Fa3WZ2wFcyUTLT7W1rbGkdeUQoPM5W/LhjyJSrM?=
- =?us-ascii?Q?VJCf9u8F8R36NeeYCqEijjO/ELMkyYugCnluMRooMsgjlV4H5EsPsH1HU9DF?=
- =?us-ascii?Q?Y/1wWqt+b1t5b8jKx0XsCRlUuevZrJnFV+19mrmdqLGN3oW7dNZC7ml0tHJO?=
- =?us-ascii?Q?heTomzI+lPNce5Eax8lA+m4tJRhqqRCltrKZSYqVNrTzNfw6xZ5iZiDg1nhY?=
- =?us-ascii?Q?kauE30/KEHr/qLN1qi3R0yV2MMdv5eKneCFdlfIy/15GL1hgDJ5SNeq7spEH?=
- =?us-ascii?Q?btRpR52fXCegt/o3shdspEVTIKP5FK13V7OAJhbWdALZ54aufZVszXOO/aDy?=
- =?us-ascii?Q?4kqHP6ZjtNnMTx+cozetftXZml961OsU3xHPJBI+19onKD6prcwu+aKR51+P?=
- =?us-ascii?Q?foXKHPSBdrMd/cYXoIrkyV37?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/S09SjWkbFDCEaJs+p92hKplyZX7wJr8pT0fXmAavLU=;
+        b=M9UiPZp7z27WpewzmJpqzUxEphr7Hh3R7nkxwCntEL95T/9SH+uqkQrAzeIl9+TXSq
+         5DCP3ouiaYNxK58m3THItcbNOB1I1ZNR3mtUEfESoIQntmI9VHv5DPAsdgI4+2Xu314z
+         EwQjVuhSKB1/odasvdcpz4E+a277SB3T1Vhr0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/S09SjWkbFDCEaJs+p92hKplyZX7wJr8pT0fXmAavLU=;
+        b=LctcA2SFuT6pR68K8Gu8jKzte+gBiZ6MEkW7FQhBDwDb9OAlJXtKkZHdwscn4Gwfv0
+         bkpT/H+6ep7/i8a2szh4NIJUilGL2fm86NGgYJmOaZ7Vamu3cquLZEeJvPzugElBnzm7
+         +7gAqsHuaZ0ehaoTj+21lmz4MUQA1xKHHV2QHeO3dTF6UMHFk3C12UvcIwA7tET4Phzu
+         s/611r5MiU5A8Q4w2Q0v9msxbsotr+FOsJIcdSIxjdjASMna925diHy/Xxu7LO/lmT9c
+         ujluBJqwtonocsdNVEISWB4QIhN5MxPj8OYUqiJQQDqFNg35oWA7fUlGE4/v3zQTs6nZ
+         wOmw==
+X-Gm-Message-State: AOAM532ecu2YOJUG675CaPSm3rvjihao5/gAQUugAxcXplX7/pzuNx5T
+        Pxjk4+u9y6WTxk02tURZfrZeRVpy24ERNw==
+X-Google-Smtp-Source: ABdhPJzFPRIIMax1OwA+jHtNS4X1l6pr9Jm9J46+G/Ylk5fEsYYl2MmJCewNTsY//tieZd9qTx+kRA==
+X-Received: by 2002:ac8:5fce:: with SMTP id k14mr26574255qta.184.1622679104863;
+        Wed, 02 Jun 2021 17:11:44 -0700 (PDT)
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id i5sm882541qki.115.2021.06.02.17.11.44
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Jun 2021 17:11:44 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id i4so6352197ybe.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 17:11:44 -0700 (PDT)
+X-Received: by 2002:a25:80d4:: with SMTP id c20mr50138961ybm.345.1622678718994;
+ Wed, 02 Jun 2021 17:05:18 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR04MB4965.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f07805cc-9f85-4297-ce60-08d926229135
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jun 2021 00:00:15.5272
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: P9ZL9y15dNHRQr7esnG/EeC2EzVF3jW2dbFEBciW8U1XzTu35i72OB4N6ISMLpkAPde+lhixzhUbC9n5bUct0IhQ2BD1s0x04IsD5/47WrQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB5333
+References: <1622390172-31368-1-git-send-email-rajeevny@codeaurora.org> <1622390172-31368-2-git-send-email-rajeevny@codeaurora.org>
+In-Reply-To: <1622390172-31368-2-git-send-email-rajeevny@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 2 Jun 2021 17:05:06 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XMVKP=nK+-eTpxNK-AQ66rqvfMj_Q0TZrsG-CEWtbw8Q@mail.gmail.com>
+Message-ID: <CAD=FV=XMVKP=nK+-eTpxNK-AQ66rqvfMj_Q0TZrsG-CEWtbw8Q@mail.gmail.com>
+Subject: Re: [v5 1/5] drm/panel: add basic DP AUX backlight support
+To:     Rajeev Nandan <rajeevny@codeaurora.org>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Rob Clark <robdclark@gmail.com>, Lyude Paul <lyude@redhat.com>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Rob Herring <robh@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Krishna Manikandan <mkrishn@codeaurora.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>, linux-fbdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/2/21 03:07, Colin King wrote:=0A=
-> From: Colin Ian King <colin.king@canonical.com>=0A=
->=0A=
-> The error handling on a nullb->disk allocation currently jumps to=0A=
-> out_cleanup_disk that calls blk_cleanup_disk with a null pointer causing=
-=0A=
-> a null pointer dereference issue. Fix this by jumping to out_cleanup_tags=
-=0A=
-> instead.=0A=
->=0A=
-> Addresses-Coverity: ("Dereference after null check")=0A=
-> Fixes: 132226b301b5 ("null_blk: convert to blk_alloc_disk/blk_cleanup_dis=
-k")=0A=
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>=0A=
-=0A=
-Looks good.=0A=
-=0A=
-Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>=0A=
-=0A=
-=0A=
-=0A=
+Hi,
+
+On Sun, May 30, 2021 at 8:57 AM Rajeev Nandan <rajeevny@codeaurora.org> wrote:
+>
+> +static int dp_aux_backlight_update_status(struct backlight_device *bd)
+> +{
+> +       struct dp_aux_backlight *bl = bl_get_data(bd);
+> +       u16 brightness = backlight_get_brightness(bd);
+> +       int ret = 0;
+> +
+> +       if (brightness > 0) {
+> +               if (!bl->enabled) {
+> +                       drm_edp_backlight_enable(bl->aux, &bl->info, brightness);
+> +                       bl->enabled = true;
+> +                       return 0;
+> +               }
+> +               ret = drm_edp_backlight_set_level(bl->aux, &bl->info, brightness);
+> +       } else {
+> +               if (bl->enabled) {
+> +                       drm_edp_backlight_disable(bl->aux, &bl->info);
+> +                       bl->enabled = false;
+> +               }
+> +       }
+
+I was trying to figure out if there are any races / locking problems /
+problems trying to tweak the backlight when the panel is off. I don't
+_think_ there are. Specifically:
+
+1. Before turning the panel off, drm_panel will call
+backlight_disable(). That will set BL_CORE_FBBLANK which is not set by
+any other calls. Then it will call your
+dp_aux_backlight_update_status().
+
+2. Once BL_CORE_FBBLANK is set then backlight_get_brightness() will
+always return 0.
+
+This means that a transition from 0 -> non-zero (and enable) will
+always only happen when the panel is on, which is good. It also means
+that we'll always transition to 0 (disable the backlight) when the
+panel turns off.
+
+In terms of other races, it looks like the AUX transfer code handles
+grabbing a mutex around transfers so we should be safe there.
+
+So I guess the above is just a long-winded way of saying that this
+looks right to me. :-)
+
+BTW: we should probably make sure that the full set of people
+identified by `./scripts/get_maintainer.pl -f
+./drivers/video/backlight` are CCed on your series. I see Daniel
+already and I've added the rest.
+
+
+> +/**
+> + * drm_panel_dp_aux_backlight - create and use DP AUX backlight
+> + * @panel: DRM panel
+> + * @aux: The DP AUX channel to use
+> + *
+> + * Use this function to create and handle backlight if your panel
+> + * supports backlight control over DP AUX channel using DPCD
+> + * registers as per VESA's standard backlight control interface.
+> + *
+> + * When the panel is enabled backlight will be enabled after a
+> + * successful call to &drm_panel_funcs.enable()
+> + *
+> + * When the panel is disabled backlight will be disabled before the
+> + * call to &drm_panel_funcs.disable().
+> + *
+> + * A typical implementation for a panel driver supporting backlight
+> + * control over DP AUX will call this function at probe time.
+> + * Backlight will then be handled transparently without requiring
+> + * any intervention from the driver.
+> + *
+> + * drm_panel_dp_aux_backlight() must be called after the call to drm_panel_init().
+> + *
+> + * Return: 0 on success or a negative error code on failure.
+> + */
+> +int drm_panel_dp_aux_backlight(struct drm_panel *panel, struct drm_dp_aux *aux)
+> +{
+> +       struct dp_aux_backlight *bl;
+> +       struct backlight_properties props = { 0 };
+> +       u16 current_level;
+> +       u8 current_mode;
+> +       u8 edp_dpcd[EDP_DISPLAY_CTL_CAP_SIZE];
+> +       int ret;
+> +
+> +       if (!panel || !panel->dev || !aux)
+> +               return -EINVAL;
+> +
+> +       bl = devm_kzalloc(panel->dev, sizeof(*bl), GFP_KERNEL);
+> +       if (!bl)
+> +               return -ENOMEM;
+> +
+> +       bl->aux = aux;
+> +
+> +       ret = drm_dp_dpcd_read(aux, DP_EDP_DPCD_REV, edp_dpcd,
+> +                              EDP_DISPLAY_CTL_CAP_SIZE);
+> +       if (ret < 0)
+> +               return ret;
+> +
+> +       if (!drm_edp_backlight_supported(edp_dpcd)) {
+> +               DRM_DEV_INFO(panel->dev, "DP AUX backlight is not supported\n");
+> +               return 0;
+> +       }
+
+nit: move this part up above the memory allocation. There's no reason
+to allocate memory for "bl" if the backlight isn't supported.
+
+
+> @@ -64,8 +65,8 @@ enum drm_panel_orientation;
+>   * the panel. This is the job of the .unprepare() function.
+>   *
+>   * Backlight can be handled automatically if configured using
+> - * drm_panel_of_backlight(). Then the driver does not need to implement the
+> - * functionality to enable/disable backlight.
+> + * drm_panel_of_backlight() or drm_panel_dp_aux_backlight(). Then the driver
+> + * does not need to implement the functionality to enable/disable backlight.
+>   */
+>  struct drm_panel_funcs {
+>         /**
+> @@ -144,8 +145,8 @@ struct drm_panel {
+>          * Backlight device, used to turn on backlight after the call
+>          * to enable(), and to turn off backlight before the call to
+>          * disable().
+> -        * backlight is set by drm_panel_of_backlight() and drivers
+> -        * shall not assign it.
+> +        * backlight is set by drm_panel_of_backlight()/drm_panel_dp_aux_backlight()
+> +        * and drivers shall not assign it.
+
+Slight nit that I would have wrapped the drm_panel_dp_aux_backlight()
+to the next line just to avoid one really long line followed by a
+short one.
+
+Other than the two nits (ordering of memory allocation and word
+wrapping in a comment), this looks good to me. Feel free to add my
+Reviewed-by tag when you fix the nits.
+
+NOTE: Even though I have commit access to drm-misc now, I wouldn't
+feel comfortable merging this to drm-misc myself without review
+feedback from someone more senior. Obviously we're still blocked on my
+and Lyude's series landing first, but even assuming those just land
+as-is we'll need some more adult supervision before this can land. ;-)
+That being said, I personally think this looks pretty nice now.
+
+
+-Doug
+
+
+
+>          */
+>         struct backlight_device *backlight;
+>
+> @@ -208,11 +209,17 @@ static inline int of_drm_get_panel_orientation(const struct device_node *np,
+>  #if IS_ENABLED(CONFIG_DRM_PANEL) && (IS_BUILTIN(CONFIG_BACKLIGHT_CLASS_DEVICE) || \
+>         (IS_MODULE(CONFIG_DRM) && IS_MODULE(CONFIG_BACKLIGHT_CLASS_DEVICE)))
+>  int drm_panel_of_backlight(struct drm_panel *panel);
+> +int drm_panel_dp_aux_backlight(struct drm_panel *panel, struct drm_dp_aux *aux);
+>  #else
+>  static inline int drm_panel_of_backlight(struct drm_panel *panel)
+>  {
+>         return 0;
+>  }
+> +static inline int drm_panel_dp_aux_backlight(struct drm_panel *panel,
+> +                                            struct drm_dp_aux *aux)
+> +{
+> +       return 0;
+> +}
+>  #endif
+>
+>  #endif
+> --
+> 2.7.4
+>
