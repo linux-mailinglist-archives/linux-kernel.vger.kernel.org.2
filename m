@@ -2,169 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7884039A5EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2330939A602
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230251AbhFCQmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 12:42:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34758 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229719AbhFCQmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 12:42:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E41B0613F9
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 16:40:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622738457;
-        bh=DZ7wEU9QOU96tbC6StRBlgGMxmr8AzLKxGBZpB0fIe0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AXBK3pdGsVLPmwbwo32dY/Dyfr1XI9QaQYgb65BltbRFRJcT9n9bXsya6dlVjsuYl
-         EITaBSSlmDSR1nF93cvYS4Hb97+rJSQPsKXZU8bi0Gsv/aPC/jgoXVXhVetT6kstiR
-         J3IPWjiyJw+jrVNouBJVPeec6fvbJeRAnJSVgc+VSAmhqxYPk6Srf/jB1H8p/4bxe/
-         VcVE0vawMKBFdznpOamji3Qqcq/UA8ehD0BlXBzZ+NTk/31DrB3esgt046wEDRQQDu
-         fE00RA7/Iw/sDqcFuGziFGYPWqE1j14uhHqFHG0qrTO096HBA3qy1oR6jrOdfn1Eq0
-         5LqWHycZ3uA+Q==
-Received: by mail-ej1-f53.google.com with SMTP id k25so4699510eja.9
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 09:40:57 -0700 (PDT)
-X-Gm-Message-State: AOAM533GbMrA8H2S6tuwBsjbR6PNNOUaJvYQr0ei2kccgz8vhiny9Uag
-        ODwfXp11qkeEYMFGawjegJzAW/808DWK0xvnGQ==
-X-Google-Smtp-Source: ABdhPJzUxtg2E0qG2ooQeqqXPB4wNwvJpq85StCbQD5ND/sKCbPX2iWtOgoTxOLgxfrzW64wPGdr2zYVVXdmMeXF5us=
-X-Received: by 2002:a17:906:a110:: with SMTP id t16mr267460ejy.360.1622738456363;
- Thu, 03 Jun 2021 09:40:56 -0700 (PDT)
+        id S230030AbhFCQp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 12:45:27 -0400
+Received: from mail-lj1-f178.google.com ([209.85.208.178]:45806 "EHLO
+        mail-lj1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229695AbhFCQp1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 12:45:27 -0400
+Received: by mail-lj1-f178.google.com with SMTP id m3so7915559lji.12;
+        Thu, 03 Jun 2021 09:43:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=nuRSAtZPeAYZdMLrOA69vUXLR2r41hPNT21AloEibuE=;
+        b=ZQz3ZTOf0Y/MZx10PyGdhVsaZCuvAsy7tCceX45QGgZ0k9HwnJsnZHOUNiZTUPySnV
+         6UHM97aWhEt3dLkS/OPo4Gcxd8jAc2YDMWcSbGyTTpv3aRQ8Sx+NmIOopD1amVaCoh1t
+         ItjXmOyDWlzeoEMxlHKfCw0I9Xy4KeFjHe8Mn+Abt7szSRdPFCvJSv4zKhDEQebAxOgg
+         NODzemGJEe4pxXjwR8/GyISWxuRiDjD2XzBPN8VW+SJTRM9USTZpMzkiXbmO0snYY1b3
+         8NbGAoohfutQilRCnBKNfh7BLjBfgKhzSCDANjESpLJrTdrJVKfv8fmmofYJo5nRYRvb
+         XoKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=nuRSAtZPeAYZdMLrOA69vUXLR2r41hPNT21AloEibuE=;
+        b=nGg95zjEy0sHWi0vVchgo1xQiKwNjvfOpEhTH+NZri2mpnngdigHL/yz+ycisLKu9K
+         xbFdUaZQ5sXA7Kwh39okCUGPe3hRlkI/+xUD5azfAmSIRfrflwep9QF9PWPsWzUCeL2J
+         wVi/sxSJ0Y8btiswea5YqizhPQARdZK/honHkQj2YvTGJS5UahgkfglbAdKxZyLuPfz/
+         TO2NN8Twt/zRzPRllSFdvtdn82Znt24/8kSfMiU/2HZK+Mvp7+aYaS9Y1OcmfLjzyuhu
+         jx+WxVI0pVTERdoVEMlzwIk+OBSTWxLpaLo1KNL6/BL+LG9h0dnuTx8GgOLRE7NTvWB7
+         UMew==
+X-Gm-Message-State: AOAM530Rsfhr9nxS/HOBDIRT1uc/VbJVjghtpJm1GNovMQD+GOQeRNty
+        IRoQSGm9H/BfncjPWns9v4b7wAMuCAM=
+X-Google-Smtp-Source: ABdhPJwr9OTWggEswHE0pT6GFsR8fIogF7TJJ7dR9GipsthL0HLexmo2iSFcWhqHdJcTQninWpyWvA==
+X-Received: by 2002:a2e:a550:: with SMTP id e16mr215112ljn.136.1622738550178;
+        Thu, 03 Jun 2021 09:42:30 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.224.40])
+        by smtp.gmail.com with ESMTPSA id r22sm411638ljp.129.2021.06.03.09.42.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 09:42:29 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 19:42:27 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org,
+        sjur.brandeland@stericsson.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        syzbot+7ec324747ce876a29db6@syzkaller.appspotmail.com
+Subject: Re: [PATCH 3/4] net: caif: fix memory leak in caif_device_notify
+Message-ID: <20210603194227.18f48c58@gmail.com>
+In-Reply-To: <fcddc06204f166d2ef0d75360b89f6f629a3b0c4.1622737854.git.paskripkin@gmail.com>
+References: <cover.1622737854.git.paskripkin@gmail.com>
+        <fcddc06204f166d2ef0d75360b89f6f629a3b0c4.1622737854.git.paskripkin@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-References: <20210517195405.3079458-1-robh@kernel.org> <20210517195405.3079458-4-robh@kernel.org>
- <20210601135526.GA3326@C02TD0UTHF1T.local> <CAL_JsqKo2cQsWkG67HUDgyO=WXywzykM+UY4uOwdpA6FVZsc0A@mail.gmail.com>
- <20210601171159.GD3326@C02TD0UTHF1T.local>
-In-Reply-To: <20210601171159.GD3326@C02TD0UTHF1T.local>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 3 Jun 2021 11:40:44 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJpFriF9UWJz-i1F8SiSn2kYXWEHVe8O9MSHtQR70xUbg@mail.gmail.com>
-Message-ID: <CAL_JsqJpFriF9UWJz-i1F8SiSn2kYXWEHVe8O9MSHtQR70xUbg@mail.gmail.com>
-Subject: Re: [PATCH v8 3/5] arm64: perf: Enable PMU counter userspace access
- for perf event
-To:     Mark Rutland <mark.rutland@arm.com>, Will Deacon <will@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
-        Zachary.Leaf@arm.com, Raphael Gault <raphael.gault@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 1, 2021 at 12:12 PM Mark Rutland <mark.rutland@arm.com> wrote:
->
-> On Tue, Jun 01, 2021 at 10:00:53AM -0500, Rob Herring wrote:
-> > On Tue, Jun 1, 2021 at 8:55 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> > > On Mon, May 17, 2021 at 02:54:03PM -0500, Rob Herring wrote:
-> > > > +static void armv8pmu_enable_user_access(struct arm_pmu *cpu_pmu)
-> > > > +{
-> > > > +     struct pmu_hw_events *cpuc = this_cpu_ptr(cpu_pmu->hw_events);
-> > > > +
-> > > > +     if (!bitmap_empty(cpuc->dirty_mask, ARMPMU_MAX_HWEVENTS)) {
-> > > > +             int i;
-> > > > +             /* Don't need to clear assigned counters. */
-> > > > +             bitmap_xor(cpuc->dirty_mask, cpuc->dirty_mask, cpuc->used_mask, ARMPMU_MAX_HWEVENTS);
-> > > > +
-> > > > +             for_each_set_bit(i, cpuc->dirty_mask, ARMPMU_MAX_HWEVENTS) {
-> > > > +                     if (i == ARMV8_IDX_CYCLE_COUNTER)
-> > > > +                             write_sysreg(0, pmccntr_el0);
-> > > > +                     else
-> > > > +                             armv8pmu_write_evcntr(i, 0);
-> > > > +             }
-> > > > +             bitmap_zero(cpuc->dirty_mask, ARMPMU_MAX_HWEVENTS);
-> > > > +     }
-> > > > +
-> > > > +     write_sysreg(ARMV8_PMU_USERENR_ER | ARMV8_PMU_USERENR_CR, pmuserenr_el0);
-> > > > +}
-> > >
-> > > This still leaks the values of CPU-bound events, or task-bound events
-> > > owned by others, right?
-> >
-> > For CPU-bound events, yes. There's not any way to prevent that without
-> > per counter access controls.
-> >
-> > It is clearing other's task-bound events.
->
-> Sorry, I misspoke. When I said "task-bound events owned by others", I
-> had meant events bounds to this task, but owned by someone else (e.g.
-> the system administrator).
+On Thu,  3 Jun 2021 19:39:11 +0300
+Pavel Skripkin <paskripkin@gmail.com> wrote:
 
-Ah yeah, those would still be exposed, but that would only tell the
-task someone is watching them. Though I guess the task could write
-those counters and corrupt the data.
+> In case of caif_enroll_dev() fail, allocated
+> link_support won't be assigned to the corresponding
+> structure. So simply free allocated pointer in case
+> of error
+> 
+> Fixes: 7c18d2205ea7 ("caif: Restructure how link caif link layer
+> enroll") Cc: stable@vger.kernel.org
+> Reported-and-tested-by:
+> syzbot+7ec324747ce876a29db6@syzkaller.appspotmail.com Signed-off-by:
+> Pavel Skripkin <paskripkin@gmail.com> ---
+>  net/caif/caif_dev.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/caif/caif_dev.c b/net/caif/caif_dev.c
+> index fffbe41440b3..440139706130 100644
+> --- a/net/caif/caif_dev.c
+> +++ b/net/caif/caif_dev.c
+> @@ -370,6 +370,7 @@ static int caif_device_notify(struct
+> notifier_block *me, unsigned long what, struct cflayer *layer,
+> *link_support; int head_room = 0;
+>  	struct caif_device_entry_list *caifdevs;
+> +	int res;
+>  
+>  	cfg = get_cfcnfg(dev_net(dev));
+>  	caifdevs = caif_device_list(dev_net(dev));
+> @@ -395,8 +396,10 @@ static int caif_device_notify(struct
+> notifier_block *me, unsigned long what, break;
+>  			}
+>  		}
+> -		caif_enroll_dev(dev, caifdev, link_support,
+> head_room,
+> +		res = caif_enroll_dev(dev, caifdev, link_support,
+> head_room, &layer, NULL);
+> +		if (res)
+> +			cfserl_release(link_support);
+>  		caifdev->flowctrl = dev_flowctrl;
+>  		break;
+>  
 
-> Thanks for confirming!
->
-> > > > +static void armv8pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
-> > > > +{
-> > > > +     if (!(event->hw.flags & ARMPMU_EL0_RD_CNTR) || (atomic_read(&event->mmap_count) != 1))
-> > > > +             return;
-> > > > +
-> > > > +     if (atomic_inc_return(&event->ctx->nr_user) == 1) {
-> > > > +             unsigned long flags;
-> > > > +             atomic_inc(&event->pmu->sched_cb_usage);
-> > > > +             local_irq_save(flags);
-> > > > +             armv8pmu_enable_user_access(to_arm_pmu(event->pmu));
-> > > > +             local_irq_restore(flags);
-> > > > +     }
-> > > > +}
-> > > > +
-> > > > +static void armv8pmu_event_unmapped(struct perf_event *event, struct mm_struct *mm)
-> > > > +{
-> > > > +     if (!(event->hw.flags & ARMPMU_EL0_RD_CNTR) || (atomic_read(&event->mmap_count) != 1))
-> > > > +             return;
-> > > > +
-> > > > +     if (atomic_dec_and_test(&event->ctx->nr_user)) {
-> > > > +             atomic_dec(&event->pmu->sched_cb_usage);
-> > > > +             armv8pmu_disable_user_access();
-> > > > +     }
-> > > >  }
-> > >
-> > > We can open an event for task A, but call mmap()/munmap() for that event
-> > > from task B, which will do the enable/disable on task B rather than task
-> > > A. The core doesn't enforce that the mmap is performed on the same core,
-> > > so I don't think this is quite right, unfortunately.
-> >
-> > Why do we care and who wants to do that? It all seems like a
-> > convoluted scenario that isn't really going to happen. I prefer to not
-> > support that until someone asks for it. Maybe we should check for the
-> > condition (event->ctx->task != current) though.
->
-> My reason for caring is that it means our accounting structures aren't
-> aligned with the actual CPU state, and it's going to be very easy for
-> this to go wrong as things get reworked in future.
->
-> If we're saying someone shouldn't do this, then we should enforce that
-> they can't. If they can, then I'd prefer to have deterministic behaviour
-> that isn't going to cause us issues in future.
->
-> I think that we should treat this like changing other event properties
-> (e.g. the period, or enabling/disabling the event), with an
-> event_function_call, since that will do the right thing regardless. I
-> also expect that people will want to do setup/teardown in a single
-> thread, and this would make that work too.
+One thing Im wondering about is should I return this error
+from caif_device_notify()? I look forward to hearing your perspective on
+this question and patch series :)
 
-Looks like that will take some work in the core to get
-event_function_call to be called in this case.
 
-A much more simple solution is simply not enabling/disabling user
-access on mmap/unmap. That was added along the way for x86, but I
-don't think that buys us much given the departure from x86
-implementation. We already have to enable the feature via sysctl (as
-Will wants it default off) and the open has to request user access. If
-a task succeeded in opening the event, is there any scenario where it
-can't mmap its event? If so, could that condition not also be checked
-in open?
 
-Rob
+With regards,
+Pavel Skripkin
