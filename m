@@ -2,98 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A11939979E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 03:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74E8E3997A4
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 03:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbhFCBsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 21:48:40 -0400
-Received: from ozlabs.org ([203.11.71.1]:41029 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229567AbhFCBsi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 21:48:38 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FwTK82g8wz9sW7;
-        Thu,  3 Jun 2021 11:46:51 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1622684813;
-        bh=ynMpJRWwCkz86MbxAZ5P7Fs8o/NBJCBM3ePrUfjkQZw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Og5qbeWUW5IMVC/ZzrSS73TsyKrRt39tzHE0cVftwMnKcCRBGwIk1qy/+O+kYcSU9
-         VPTamEAEifp8s+XWJSEOTQYMC7XNx46Rb8saNvY7kxow12BU8kmv3HdJpmfwAvDMIh
-         d3Mof3dSLM9SbscPr5vaLP92PUdA58ZNnKnrHGM/iZ/cQBPQnsazxGHDz2+Ib960L9
-         D74XtFTa6bjaGN0+DvoBl28eEGhXuwK8GIgu1vKxcJkIx7nEmsu/EA1PJrz7JZVMqK
-         l4dQOvl8UyTHrkeeUzKj8TAiUd93/XAJRVmKiTeA1p8qBaNwW9PnDahz4KBRmyMsw0
-         x7M25pCKgTcrA==
-Date:   Thu, 3 Jun 2021 11:46:50 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the net-next tree with the net tree
-Message-ID: <20210603114650.70163765@canb.auug.org.au>
+        id S229810AbhFCBtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 21:49:08 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:43183 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229758AbhFCBtG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 21:49:06 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1531l7DF011614
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 2 Jun 2021 21:47:08 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 9660A15C3CAF; Wed,  2 Jun 2021 21:47:07 -0400 (EDT)
+Date:   Wed, 2 Jun 2021 21:47:07 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Ye Bin <yebin10@huawei.com>
+Cc:     jack@suse.cz, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] ext4: Fix bug on in ext4_es_cache_extent as
+ ext4_split_extent_at failed
+Message-ID: <YLg0mx3fhQSPHYb1@mit.edu>
+References: <20210506141042.3298679-1-yebin10@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/BO0FPj7bs4EEMlgyakhYDM_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210506141042.3298679-1-yebin10@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/BO0FPj7bs4EEMlgyakhYDM_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, May 06, 2021 at 10:10:42PM +0800, Ye Bin wrote:
+> We got follow bug_on when run fsstress with injecting IO fault:
+> [130747.323114] kernel BUG at fs/ext4/extents_status.c:762!
+> [130747.323117] Internal error: Oops - BUG: 0 [#1] SMP
+> ......
+> [130747.334329] Call trace:
+> [130747.334553]  ext4_es_cache_extent+0x150/0x168 [ext4]
+> [130747.334975]  ext4_cache_extents+0x64/0xe8 [ext4]
+> [130747.335368]  ext4_find_extent+0x300/0x330 [ext4]
+> [130747.335759]  ext4_ext_map_blocks+0x74/0x1178 [ext4]
+> [130747.336179]  ext4_map_blocks+0x2f4/0x5f0 [ext4]
+> [130747.336567]  ext4_mpage_readpages+0x4a8/0x7a8 [ext4]
+> [130747.336995]  ext4_readpage+0x54/0x100 [ext4]
+> [130747.337359]  generic_file_buffered_read+0x410/0xae8
+> [130747.337767]  generic_file_read_iter+0x114/0x190
+> [130747.338152]  ext4_file_read_iter+0x5c/0x140 [ext4]
+> [130747.338556]  __vfs_read+0x11c/0x188
+> [130747.338851]  vfs_read+0x94/0x150
+> [130747.339110]  ksys_read+0x74/0xf0
+> 
+> If call ext4_ext_insert_extent failed but new extent already inserted, we just
+> update "ex->ee_len = orig_ex.ee_len", this will lead to extent overlap, then
+> cause bug on when cache extent.
+> If call ext4_ext_insert_extent failed don't update ex->ee_len with old value.
+> Maybe there will lead to block leak, but it can be fixed by fsck later.
+> 
+> After we fixed above issue with v2 patch, but we got the same issue.
+> ext4_split_extent_at:
+> {
+>         ......
+>         err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
+>         if (err == -ENOSPC && (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
+>             ......
+>             ext4_ext_try_to_merge(handle, inode, path, ex); ->step(1)
+>             err = ext4_ext_dirty(handle, inode, path + path->p_depth); ->step(2)
+>             if (err)
+>                 goto fix_extent_len;
+>         ......
+>         }
+>         ......
+> fix_extent_len:
+>         ex->ee_len = orig_ex.ee_len; ->step(3)
+>         ......
+> }
+> If step(1) have been merged, but step(2) dirty extent failed, then go to
+> fix_extent_len label to fix ex->ee_len with orig_ex.ee_len. But "ex" may not be
+> old one, will cause overwritten. Then will trigger the same issue as previous.
+> If step(2) failed, just return error, don't fix ex->ee_len with old value.
+> 
+> This patch's modification is according to Jan Kara's suggestion in V3 patch:
+> ("https://patchwork.ozlabs.org/project/linux-ext4/patch/20210428085158.3728201-1-yebin10@huawei.com/")
+> "I see. Now I understand your patch. Honestly, seeing how fragile is trying
+> to fix extent tree after split has failed in the middle, I would probably
+> go even further and make sure we fix the tree properly in case of ENOSPC
+> and EDQUOT (those are easily user triggerable).  Anything else indicates a
+> HW problem or fs corruption so I'd rather leave the extent tree as is and
+> don't try to fix it (which also means we will not create overlapping
+> extents)."
+> 
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> Reviewed-by: Jan Kara <jack@suse.cz>
 
-Hi all,
+Applied, thanks.
 
-Today's linux-next merge of the net-next tree got a conflict in:
-
-  drivers/net/virtio_net.c
-
-between commits:
-
-  5c37711d9f27 ("virtio-net: fix for unable to handle page fault for addres=
-s")
-  8fb7da9e9907 ("virtio_net: get build_skb() buf by data ptr")
-
-from the net tree and commits:
-
-  6c66c147b9a4 ("virtio-net: fix for unable to handle page fault for addres=
-s")
-  7bf64460e3b2 ("virtio-net: get build_skb() buf by data ptr")
-
-from the net-next tree.
-
-These patches are different version of the same idea.
-
-I fixed it up (just used the latter versions) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/BO0FPj7bs4EEMlgyakhYDM_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC4NIoACgkQAVBC80lX
-0GyzKAgAo54mdzqKe5Pjbpc5sG0EVUqLSLMMGXLufC6FrzZL7zvJuFkmd+93x03E
-Sl4QUCsVu8geuQJFx/eyjbdzzHOVQKp65o/lZIb1ukSoJSmwSaAtX1oUKYPn8f12
-hBhsmumN/WFS9xpPUbhm8Xkx41hEzVBWqvuqC4kn/0jnBM9OVuqgjqqUQyuQDm7B
-hHkX+tHIxA6FaDcgah7lAsS1HH7adCwdhngyU4iQH2JCNbYFzEgCKUq26+URWwYl
-257nmq5FlyuOSks2VEYus8ffLFdNwDwfw/YI4XnUqBCHacvIltsL0Myr8+GtHOaZ
-59MPhSDlRAaHeV8hdmQEsAEqD5eUTw==
-=X3LT
------END PGP SIGNATURE-----
-
---Sig_/BO0FPj7bs4EEMlgyakhYDM_--
+					- Ted
