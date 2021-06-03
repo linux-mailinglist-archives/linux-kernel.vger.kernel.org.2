@@ -2,100 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BFA239AE65
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 00:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3429A39AE6C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 00:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbhFCWyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 18:54:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFCWym (ORCPT
+        id S229758AbhFCW7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 18:59:36 -0400
+Received: from mail-ej1-f49.google.com ([209.85.218.49]:44547 "EHLO
+        mail-ej1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229629AbhFCW7g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 18:54:42 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13254C06174A;
-        Thu,  3 Jun 2021 15:52:41 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id h16so4530638pjv.2;
-        Thu, 03 Jun 2021 15:52:41 -0700 (PDT)
+        Thu, 3 Jun 2021 18:59:36 -0400
+Received: by mail-ej1-f49.google.com with SMTP id c10so11557533eja.11;
+        Thu, 03 Jun 2021 15:57:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qFrqM5+WxjtGbTpbtf2w4MFDOOBEqwwFq+bBPvXL2oE=;
-        b=qte3jPhFf5hcVRYLFK9ul+KSmobwyqJZw5bYZ3DN6GgS8cQbP2BLL1ABa/OXxBnHex
-         WNqs9b+xX26sHbYPDUlDGJ/aKjSv1oBYchsO7XfOzcxNWsZfk2uRRbDHW+MtFK11AKUY
-         HIqJTq9vtoYLmjZRU02qnCM1JsE/xP2rVU06uWygtjcTNrtAdwEYQy7omyuziicyORC+
-         4EN/XKa1cZ0U/G81JhRcw3IEuNXDfJgULyVAsQgKk8Kynz6ukKgUBCKtcdx9WWZknXnF
-         /qW4rz9ztTbCd8vWNgX6I9scJLvj8LNIs6jby+mwWFM94oOaZKdK9hIbbAV3dCjZAgR6
-         MLtQ==
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=d0FPSnKWKgyYbiM8cigMcHZW9uwmiUJWHnRMyIytsDY=;
+        b=Zg72/ybcmMgZubOk5F1MC5rjdQD7HkORmiTwrToSzNILlOwM6xwmwTKfeW3QTdW9MO
+         UqpdbfTxaqXOvJdplo9wua3LC4lk6pShQ/lG3KcfjTxsD/PhpnA8d1KcgcfaBEwvDhVj
+         EFp50ejbyws7Ufql1owugAuPyj7UwoJ7Bv1ENT42Nforc/u+daOJnjMKsCOhV4CTc6c9
+         ZrUt2YonCrB66Z7bBKfwU0xEhydOcD4iiqpxFM83RYIcC07Jp2RfHKX98dG/6naWZnY0
+         qmJh4CGr9zcrG3kgC36YyKqNgyaxeTEK5UA54kPw9Y/uedQW8pDyfRxEp5eFowO5iSQG
+         nHWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qFrqM5+WxjtGbTpbtf2w4MFDOOBEqwwFq+bBPvXL2oE=;
-        b=WWQA1Q5Qo9XIX2XLQMqyIyoerUnBdLyspqxxfsZxe8vSmZE2ZGP5rS7mOkdspdEV3I
-         QEHhj62ne8aRNVkSGHCn1Sx2OjjYt2Nczgc0fpII4QNzdGIFArzdXXhTYr3XI/HbUeB3
-         4hLgUN8Uku1yyIWYgYWY4Wfz/+/ZzRDmp7Ut89ZOpx/hAvYH0kOw6ayrEF3raQ6yPUaX
-         TI2iX/HNgyrvhaNOJ4dFdqTam+XYFj4smyxmi/LT1RmkHa5wZpixsfwrQUBPLRU4SnRm
-         lkx9/S9zxZXjQtMHfpZ4W/7u9QIq/o84oN+XpTGkBHwPKkut2BDFF+1tmOP/R3vpOOx2
-         VgbA==
-X-Gm-Message-State: AOAM532lpEENfECvlqlfWzwlHji45z8DMsPE9JyzBEdS8j+RxIdvEY8d
-        5O0hXi4dIHe85j6XnQtB1Ll+SOiYkn2Y5g9Ycrns5m7H2LjqMg==
-X-Google-Smtp-Source: ABdhPJyUs+MYN1Cx+EkDqml0t1Q5qWBEGW/ehcsor/Fiq4Q9YhDgmIHwe1CQIi0hGIfFrasGNm0XSUn9FseypY3taMQ=
-X-Received: by 2002:a17:90a:7e92:: with SMTP id j18mr1596536pjl.231.1622760760605;
- Thu, 03 Jun 2021 15:52:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210531153410.93150-1-changbin.du@gmail.com> <20210531220128.26c0cb36@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <CAM_iQpUEjBDK44=mD5shkmmoDYhmHQaSZtR34rLRkgd9wSWiQQ@mail.gmail.com> <20210602091451.kbdul6nhobilwqvi@wittgenstein>
-In-Reply-To: <20210602091451.kbdul6nhobilwqvi@wittgenstein>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Thu, 3 Jun 2021 15:52:29 -0700
-Message-ID: <CAM_iQpUqgeoY_mA6cazUPCWwMK6yw9SaD6DRg-Ja4r6r_zOmLg@mail.gmail.com>
-Subject: Re: [PATCH] nsfs: fix oops when ns->ops is not provided
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Changbin Du <changbin.du@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        David Laight <David.Laight@aculab.com>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=d0FPSnKWKgyYbiM8cigMcHZW9uwmiUJWHnRMyIytsDY=;
+        b=AGg1xR9+NgSCIrf9b5aIjYIPX5C13drwmC4SlVlcA47ufpIX21Dli8b5kdPqA0jQpl
+         dMgxNEcx0f1pswDP+DAbFnQZJc5Uk008cDa/Umya9ckYUuydsC/4YI4x/3GJrO6IGElm
+         Wcki45RQfFHw0FXBGGL6aoZvXdFehOB84dUuu/5eMG0rnv7ZlodZ59jgvtt6ntiCPGc3
+         ckBofPTxMSLQJ8wZoJoonGRZquVo9Jp4GX2Gfa3pO3cgFdrTCHOlEkljvj5O0SitWxBJ
+         Z5HZJk9fEeRKEpqbGct5lTAtvcdJ8fAFZt8Fl8LorE3YJgTQ2OYSJvlD/aHpDKv1KqBT
+         TDIg==
+X-Gm-Message-State: AOAM533wD4hV4pK44M+Ky1zoK5bVTGc0QyjS+d0wIOWUyiie5If8bq7m
+        Y2JDz6IJXmLnsrDab4BasaWnCBYjuUkzfZQE1AY=
+X-Google-Smtp-Source: ABdhPJy8AreRDvIuBKD6CO2n0Z5xuE7xdGJAAqdVO0212AH+iFsrqnTrzEsdB9z58RTqpIXB6FiyWw==
+X-Received: by 2002:a17:907:7713:: with SMTP id kw19mr1335113ejc.249.1622761010060;
+        Thu, 03 Jun 2021 15:56:50 -0700 (PDT)
+Received: from [192.168.1.15] ([151.29.179.73])
+        by smtp.gmail.com with ESMTPSA id d22sm2055397ejj.47.2021.06.03.15.56.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 15:56:49 -0700 (PDT)
+Message-ID: <3b297a17f935d2a00bfa74afbbf064b01fe83607.camel@gmail.com>
+Subject: Re: [PATCH v6 03/20] perf record: Introduce thread local variable
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        linux-perf-users@vger.kernel.org, Ian Rogers <irogers@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Date:   Fri, 04 Jun 2021 00:56:48 +0200
+In-Reply-To: <c5a046f8bed989e4ede98f1fcdaa9d0b6bf78cac.1622025774.git.alexey.v.bayduraev@linux.intel.com>
+References: <cover.1622025774.git.alexey.v.bayduraev@linux.intel.com>
+         <c5a046f8bed989e4ede98f1fcdaa9d0b6bf78cac.1622025774.git.alexey.v.bayduraev@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 2, 2021 at 2:14 AM Christian Brauner
-<christian.brauner@ubuntu.com> wrote:
-> But the point is that ns->ops should never be accessed when that
-> namespace type is disabled. Or in other words, the bug is that something
-> in netns makes use of namespace features when they are disabled. If we
-> handle ->ops being NULL we might be tapering over a real bug somewhere.
+Hi,
 
-It is merely a protocol between fs/nsfs.c and other namespace users,
-so there is certainly no right or wrong here, the only question is which
-one is better.
+thank you very much for your work for adding threading capabilites to perf
+record. 
+I did some testing on your entire patchset, especially checking for memory
+issues using ASan. This is just the first of a couple of emails to point out
+some issues I found.
+I will also do additional tests in the future.
 
->
-> Jakub's proposal in the other mail makes sense and falls in line with
-> how the rest of the netns getters are implemented. For example
-> get_net_ns_fd_fd():
+On Wed, 2021-05-26 at 13:52 +0300, Alexey Bayduraev wrote:
+SNIP
+> @@ -2220,18 +2275,20 @@ static int __cmd_record(struct record *rec, int argc,
+> const char **argv)
+>                 goto out_child;
+>         }
+>  
+> -       if (!quiet)
+> -               fprintf(stderr, "[ perf record: Woken up %ld times to write data
+> ]\n", waking);
+> -
+>         if (target__none(&rec->opts.target))
+>                 record__synthesize_workload(rec, true);
+>  
+>  out_child:
+> +       record__stop_threads(rec, &waking);
+> +out_free_threads:
+>         record__free_thread_data(rec);
+>         evlist__finalize_ctlfd(rec->evlist);
+>         record__mmap_read_all(rec, true);
+>         record__aio_mmap_read_sync(rec);
 
-It does not make any sense to me. get_net_ns() merely increases
-the netns refcount, which is certainly fine for init_net too, no matter
-CONFIG_NET_NS is enabled or disabled. Returning EOPNOTSUPP
-there is literally saying we do not support increasing init_net refcount,
-which is of course false.
+record__mmap_read_all should be moved before record__free_thread_data since it
+uses the thread_data that's just been freed.
+Furthermore, record__mmap_read_all should also be moved before the
+out_free_threads label, since it cannot be called unless record__start_threads
+succeeded, otherwise thread would be NULL and will cause a segfault (it happens
+if there is an error somewhere else in perf, for example).
 
-> struct net *get_net_ns_by_fd(int fd)
-> {
->         return ERR_PTR(-EINVAL);
-> }
+In my tests the following order works, but it should be double checked for
+possible side-effects of this order change.
 
-There is a huge difference between just increasing netns refcount
-and retrieving it by fd, right? I have no idea why you bring this up,
-calling them getters is missing their difference.
+out_child:
+        record__stop_threads(rec, &waking);
+        record__mmap_read_all(rec, true);
+out_free_threads:
+        record__free_thread_data(rec);
+        evlist__finalize_ctlfd(rec->evlist);
+        record__aio_mmap_read_sync(rec);
 
-Thanks.
+Thanks,
+Riccardo
+
+> +       if (!quiet)
+> +               fprintf(stderr, "[ perf record: Woken up %ld times to write data
+> ]\n", waking);
+> +
+>         if (rec->session->bytes_transferred && rec->session->bytes_compressed) {
+>                 ratio = (float)rec->session->bytes_transferred/(float)rec-
+> >session->bytes_compressed;
+>                 session->header.env.comp_ratio = ratio + 0.5;
+SNIP
+
+
