@@ -2,164 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2FA39978A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 03:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A22AA39978C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 03:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229786AbhFCBff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 21:35:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbhFCBfe (ORCPT
+        id S229803AbhFCBgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 21:36:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41920 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229553AbhFCBgF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 21:35:34 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B60FC061756
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 18:33:50 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 66-20020a9d02c80000b02903615edf7c1aso4231789otl.13
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 18:33:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=HW6JmhxnQ8NnN3D++0VAfeTT+opPSeIySjhYQR+Ks4w=;
-        b=BZFPgzQMEd3tkLFJbQqD4H/umzSphsx2IRAN+toI9G/mcRGOCky9FYKQdMgXmxckLL
-         MNUHGxFzJ9zzfWNXAIaiY5y3O1iJ84jGTbJnQqxJVp7iotahONtTEa1hREKloDXcJYZe
-         AC2GyAH1MaQsKBRajGN/5vFShJdYKV7iFK2yY=
+        Wed, 2 Jun 2021 21:36:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622684060;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ay34ayc0XC/WtKXXL+jwzIp+HQgsy2OJ9U8cZG5Fktk=;
+        b=Iyz1Gaw1uWxsDteWAzzkxQNXmCVQe6oO6cLSYeCfxD4OeQZTZlmvWllAfNGTin4Qn5yIJ/
+        KHRtZYWP5Q9yGaArjHPmrGNamvaIckF9HAnfVaouDsft379JZGIknPkXLvhSPHTVZq6JA+
+        B+K4x+ECekjDzsNyOVsvjl4iUXLksik=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-374-qQcbRssrMz2AdMkxjj7-EQ-1; Wed, 02 Jun 2021 21:34:19 -0400
+X-MC-Unique: qQcbRssrMz2AdMkxjj7-EQ-1
+Received: by mail-pf1-f198.google.com with SMTP id g17-20020a056a0023d1b029028f419cb9a2so2577224pfc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 18:34:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=HW6JmhxnQ8NnN3D++0VAfeTT+opPSeIySjhYQR+Ks4w=;
-        b=AhUkRu8KmLUhtheXF4wA9z/qH42OdOf4IGXeRXJX6PyHcrxSkr8HUFo105l87/u4y7
-         RdExG7u1tFR7J6/TswoMZJPV49Y1fPmvwf+Y79Uzl3CqWt9DWdJIpGJrxrFh/E43JiD+
-         5030qinDLFeLIfyx8JXrywkl4j9BhDJ2NfWzzbF/t6p+wYn/CqIdCgqX05x9oBm+PYaO
-         oR0t+lSBQJJYrc9jzSTGvz51WzhFtXMLAzKbqeqI4bJZX/AEcm0rjbvY/EJyLd84LK+e
-         JNpiAOQkXR1TYDjM7rVDiRNDFo5IDAcyMK4sVLK772ZCbL7SMFboqdtG0zAIZKb0UWtR
-         qPIg==
-X-Gm-Message-State: AOAM533O1zsTTsfc626R+yU1Jm6EfgzHrDuZJ4VAq6FEfyBjHWT4Y4u8
-        QK53nJSpUBkl5mrzN6eOZhiBSZNE5PJ6AZeqIT40ZiUVFwA=
-X-Google-Smtp-Source: ABdhPJyS1G/yRiWKv8oRSfsDp9yy5+haP4zK2ZdJkDDu6TW7sZOkirdF/9vvQCfP91zUlcCMvaCsVhQgEUdVbDsa2Zc=
-X-Received: by 2002:a05:6830:3154:: with SMTP id c20mr29037276ots.233.1622684029763;
- Wed, 02 Jun 2021 18:33:49 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 2 Jun 2021 18:33:49 -0700
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Ay34ayc0XC/WtKXXL+jwzIp+HQgsy2OJ9U8cZG5Fktk=;
+        b=H1l++2+/vU5T5PCsnVCMWayJUdKvFp39pJEDq1Cb1BN5NCnzgPDPaooz7ICSs+HPyY
+         YuqCGAx1nEcIyzHoVeFAPdIsqyhTfmIQUtQ/1G5+ea0grpZa46KaYNGOQ7urh6wP/3CE
+         q7L9CcgO8CbdP+syFm7yBstebjS8QeT95VphcNXgvQ2JI+4KXrWTGajWQTGJcipboL2t
+         uZ9N5bu5OOGtP9oE0ciXfdqYmunHc+Z4Tc4Q3ISQT/pyWm68ytpso3a2Z9fpEhoxYsfd
+         WwGzXDYHolTjEA+oBTdVA648Q3vJyvjGxGBVLMQ50VAdANuLaA7lwMJUNElHgSZMoK+L
+         Pkfw==
+X-Gm-Message-State: AOAM533p6AoY+XJHSckdYNl5nMiERd8zEzXRhBa7r/0DdiiQBsRKCbiS
+        Yn+EwJs6IONyKsLmcX5p5uA744jhZ1yMFp54cAjs4sEJAmFwE4FCXjQJPbDfNFei4cHKgyGfEvH
+        9Slfqt1898hmtjyW4X8p4/bEuHLzW5oOqa1Vl1ikOivilYrJXTzuXL0D1ZjhR6xAICMY6aTWQ4c
+        n9
+X-Received: by 2002:a63:cd16:: with SMTP id i22mr17954385pgg.251.1622684058205;
+        Wed, 02 Jun 2021 18:34:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwJyXEZUAiaYZdr9WbuWSy8K0NWk52sC+zgmLSU88RNWlKo9NgUzTDhRO6ojpL1AFvITL5iKg==
+X-Received: by 2002:a63:cd16:: with SMTP id i22mr17954351pgg.251.1622684057916;
+        Wed, 02 Jun 2021 18:34:17 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id c15sm884731pgt.68.2021.06.02.18.34.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Jun 2021 18:34:17 -0700 (PDT)
+Subject: Re: Virtio hardening for TDX
+To:     Andi Kleen <ak@linux.intel.com>, mst@redhat.com
+Cc:     virtualization@lists.linux-foundation.org, hch@lst.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        iommu@lists.linux-foundation.org, x86@kernel.org,
+        sathyanarayanan.kuppuswamy@linux.intel.com, jpoimboe@redhat.com,
+        linux-kernel@vger.kernel.org
+References: <20210603004133.4079390-1-ak@linux.intel.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <63d01084-68d2-a8d5-931d-541a22b5f231@redhat.com>
+Date:   Thu, 3 Jun 2021 09:34:08 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <YLgt2ZJ6GZwUNL8T@google.com>
-References: <20210510220012.2003285-1-swboyd@chromium.org> <YJnllh7GfuVlL3ze@google.com>
- <CAE-0n539o_DWqHbPuarWozk4Rev_d++2Da=AvOYALwvB1j3dVA@mail.gmail.com> <YLgt2ZJ6GZwUNL8T@google.com>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Wed, 2 Jun 2021 18:33:49 -0700
-Message-ID: <CAE-0n52S72vWZkzwva2_uqsMMdgdKbX7-MKtNE5PdaetyeqN2Q@mail.gmail.com>
-Subject: Re: [PATCH] Input: elan_i2c: Disable irq on shutdown
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        Jingle Wu <jingle.wu@emc.com.tw>, Wolfram Sang <wsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210603004133.4079390-1-ak@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Dmitry Torokhov (2021-06-02 18:18:17)
-> Hi Stephen,
+
+在 2021/6/3 上午8:41, Andi Kleen 写道:
+> [v1: Initial post]
 >
-> Sorry for the long delay with the response.
+> With confidential computing like TDX the guest doesn't trust the host
+> anymore. The host is allowed to DOS of course, but it is not allowed
+> to read or write any guest memory not explicitely shared with it.
 >
-> On Mon, May 10, 2021 at 10:11:21PM -0700, Stephen Boyd wrote:
-> > Quoting Dmitry Torokhov (2021-05-10 19:01:58)
-> > > Hi Stephen,
-> > >
-> > > On Mon, May 10, 2021 at 03:00:12PM -0700, Stephen Boyd wrote:
-> > > > Touching an elan trackpad while shutting down the system sometimes leads
-> > > > to the following warning from i2c core. This is because the irq is still
-> > > > active and working, but the i2c bus for the device has been shutdown
-> > > > already. If the bus has been taken down then we shouldn't expect
-> > > > transfers to work. Disable the irq on shutdown so that this driver
-> > > > doesn't try to get the report in the irq handler after the i2c bus is
-> > > > shutdown.
-> > > >
-> > > >  i2c i2c-7: Transfer while suspended
-> > > >  WARNING: CPU: 0 PID: 196 at drivers/i2c/i2c-core.h:54 __i2c_transfer+0xb8/0x38c
-> > > >  Modules linked in: rfcomm algif_hash algif_skcipher af_alg uinput xt_cgroup
-> > > >  CPU: 0 PID: 196 Comm: irq/166-ekth300 Not tainted 5.4.115 #96
-> > > >  Hardware name: Google Lazor (rev3+) with KB Backlight (DT)
-> > > >  pstate: 60c00009 (nZCv daif +PAN +UAO)
-> > > >  pc : __i2c_transfer+0xb8/0x38c
-> > > >  lr : __i2c_transfer+0xb8/0x38c
-> > > >  sp : ffffffc011793c20
-> > > >  x29: ffffffc011793c20 x28: 0000000000000000
-> > > >  x27: ffffff85efd60348 x26: ffffff85efdb8040
-> > > >  x25: ffffffec39d579cc x24: ffffffec39d57bac
-> > > >  x23: ffffffec3aab17b9 x22: ffffff85f02d6400
-> > > >  x21: 0000000000000001 x20: ffffff85f02aa190
-> > > >  x19: ffffff85f02aa100 x18: 00000000ffff0a10
-> > > >  x17: 0000000000000044 x16: 00000000000000ec
-> > > >  x15: ffffffec3a0b9174 x14: 0000000000000006
-> > > >  x13: 00000000003fe680 x12: 0000000000000000
-> > > >  x11: 0000000000000000 x10: 00000000ffffffff
-> > > >  x9 : 806da3cb9f8c1d00 x8 : 806da3cb9f8c1d00
-> > > >  x7 : 0000000000000000 x6 : ffffffec3afd3bef
-> > > >  x5 : 0000000000000000 x4 : 0000000000000000
-> > > >  x3 : 0000000000000000 x2 : fffffffffffffcc7
-> > > >  x1 : 0000000000000000 x0 : 0000000000000023
-> > > >  Call trace:
-> > > >   __i2c_transfer+0xb8/0x38c
-> > > >   i2c_transfer+0xa0/0xf4
-> > > >   i2c_transfer_buffer_flags+0x64/0x98
-> > > >   elan_i2c_get_report+0x2c/0x88
-> > > >   elan_isr+0x68/0x3e4
-> > > >   irq_thread_fn+0x2c/0x70
-> > > >   irq_thread+0xf8/0x148
-> > > >   kthread+0x140/0x17c
-> > > >   ret_from_fork+0x10/0x18
-> > >
-> > > This does not seem to me that it is Elan-specific issue. I wonder if
-> > > this should be pushed into I2C core to shut off client->irq in shutdown
-> > > for everyone.
-> >
-> > It sounds nice if we don't have to play whack-a-mole, except for the
-> > part where the irq is requested in this driver via
-> > devm_request_threaded_irq(). The i2c bus code doesn't request the irq,
-> > so it doesn't enable it, hence the responsibility of enabling and
-> > disabling the irq is on the driver.
+> This has implication for virtio. Traditionally virtio didn't assume
+> the other side of the communication channel is malicious, and therefore
+> didn't do any boundary checks in virtio ring data structures.
 >
-> There is purity, and there is practicality. Drivers normally prepare
-> device for suspend and waking up from suspend, however I2C core does
-> handle enabling interrupt as wakeup source because this saves on
-> boilerplate. I2C core already does a lot of preparing for interrupt
-> being requested by drivers (parsing ACPI and DT tables, etc).
+> This patchkit does hardening for virtio.  In a TDX like model
+> the only host memory accesses allowed are in the virtio ring,
+> as well as the (forced) swiotlb buffer.
 >
-> > Maybe another option would be to
-> > disable all device irqs, similar to how that is done during suspend, but
-> > then we would need a split shutdown flow where there's irq enabled
-> > shutdown and irq disabled shutdown callbacks.
+> This patch kit does various changes to ensure there can be no
+> access outside these two areas. It is possible for the host
+> to break the communication, but this should result in a IO
+> error on the guest, but no memory safety violations.
 >
-> Yes, that would be quite large patch, and probably not needed for
-> devices/buses that do not use out of bound signalling of attention.
+> virtio is quite complicated with many modes. To simplify
+> the task we enforce that virtio is only in split mode without
+> indirect descriptors, when running as a TDX guest. We also
+> enforce use of the DMA API.
 >
-> > That would be a large
-> > change. Similarly, disabling it in the i2c bus code would be a large
-> > change that would mean auditing each i2c driver shutdown function to
-> > make sure we don't disable the irq more than the number of times it has
-> > been enabled.
+> Then these code paths are hardened against any corruptions
+> on the ring.
 >
-> I do not think keeping counter balanced would be important here, as we
-> are shutting down, and upon reboot everything will be reinitialized from
-> scratch. Also, we are lucky in that there is just a handful of I2C
-> drivers defining shutdown() methods.
+> This patchkit has components in three subsystems:
+> - Hardening changes to virtio, all in the generic virtio-ring
+> - Hardening changes to kernel/dma swiotlb to harden swiotlb against
+> malicious pointers. It requires an API change which needed a tree sweep.
+> - A single x86 patch to enable the arch_has_restricted_memory_access
+> for TDX
 >
-> > Please don't make me shave this yak.
+> It depends on Sathya's earlier patchkit that adds the basic infrastructure
+> for TDX. This is only needed for the "am I running in TDX" part.
+
+
+Note that it's probably needed by other cases as well:
+
+1) Other encrypted VM technology
+2) VDUSE[1]
+3) Smart NICs
+
+We have already had discussions and some patches have been posted[2][3][4].
+
+I think the basic idea is similar, basically,  we don't trust any 
+metadata provided by the device.
+
+[2] is the series that use the metadata stored in the private memory 
+which can't be accessed by swiotlb, this series aims to eliminate all 
+the possible attacks via virtqueue metadata
+[3] is one example for the the used length validation
+[4] is the fix for the malicious config space
+
+Thanks
+
+[1] https://www.spinics.net/lists/netdev/msg743264.html
+[2] https://www.spinics.net/lists/kvm/msg241825.html
+[3] https://patches.linaro.org/patch/450733/
+[4] https://lkml.org/lkml/2021/5/17/376
+
 >
-> I'm afraid someone has to... I'm adding Wolfram to CC to get his take on
-> this.
+>
 >
 
-I suppose another option would be to introduce some common function that
-i2c drivers can use for their shutdown op, like i2c_generic_shutdown()
-that would disable the irq? I would guess that it isn't a great idea to
-blanket disable the irq in case some i2c driver wants to do something
-that may require that irq to come in once more during shutdown to signal
-that things are off or something like that.
-
-Would having this common function that this driver opts into work for
-you?
