@@ -2,133 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F62399DFF
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 11:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2349D399E02
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 11:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229661AbhFCJrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 05:47:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57288 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229506AbhFCJq7 (ORCPT
+        id S229726AbhFCJr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 05:47:58 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:28025 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229611AbhFCJr5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 05:46:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622713515;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9K77UXySynClHeo9ATtGF2XuH4wNTDBsul1muCAvTwM=;
-        b=I27E6utm7Uv3QzjlaRw+R4K8y1f9ZmG/Zdlm0IIWZbngzCEn7d/HgBz/8hvN/jsAIzf53P
-        hYS6K/y3Qst4Jc5/wOqMf7nZwQH4ODN30f9wR3PojGguTX7N2L/GFyx4N7y7+YOK+OmI4b
-        ucvzTYLpZh74Vu0cu9MNW2Ya8Ty3i2w=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-434-6YxmiKD8Olyn2IFsOSGqtA-1; Thu, 03 Jun 2021 05:45:14 -0400
-X-MC-Unique: 6YxmiKD8Olyn2IFsOSGqtA-1
-Received: by mail-ej1-f70.google.com with SMTP id z1-20020a1709068141b02903cd421d7803so1741175ejw.22
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 02:45:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9K77UXySynClHeo9ATtGF2XuH4wNTDBsul1muCAvTwM=;
-        b=ZoK2PU0GLnW7F5Go8w8Vrbn/egGGoX9uvJuKLylCmRd119MuC4bHzxdL+XugulQ9ub
-         eznoUvB2CA0JQ0t7KPvZog0FOx1vLgGj8xIezSdFzQY7sFgooFur3OxqysvZjnA67HIu
-         hQpujqDlCf0x0/nkzPgQoznUb7c8+D9xKbIHpCxZoGZz7m9zL0Sd2OOKD/USaRclqr9q
-         zhLrPrHUiBQWyMsdSBfvcJbOz7yqCK6pgvVnafGqZn3a4A8X1jNaqdvFvvKLFned1tr7
-         kF8VzAeezddRS8ojrgedGmeOt4GMTdSJY0tlRF8WNgbRBCGBIHA4VCLPICP2Ufltb6CX
-         lyqg==
-X-Gm-Message-State: AOAM531lWeklnOAG0K58YHXhS6NSuRdkNhgcLG391JDp5ufV9/og7T7r
-        ZV4E6JdSAINiQBBFJpmAEWLahVl4nvBwr2eFXZLfaz6KiOTQD+OF2Mzsi/F/vfEryDGEBUsiCLB
-        wQdrdzi+Ej751/OLw+U268Bx+
-X-Received: by 2002:a50:fe18:: with SMTP id f24mr3271452edt.271.1622713513002;
-        Thu, 03 Jun 2021 02:45:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyurhkoltCn+jnF+TGZdGnn0Y3agunqtJr98jiLXvymFlzFLbc5tnTmdM8vnVODgLTt86X0kQ==
-X-Received: by 2002:a50:fe18:: with SMTP id f24mr3271436edt.271.1622713512810;
-        Thu, 03 Jun 2021 02:45:12 -0700 (PDT)
-Received: from x1.bristot.me (host-79-24-6-4.retail.telecomitalia.it. [79.24.6.4])
-        by smtp.gmail.com with ESMTPSA id w14sm1495617edj.6.2021.06.03.02.45.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Jun 2021 02:45:12 -0700 (PDT)
-Subject: Re: [PATCH v8 14/19] arm64: exec: Adjust affinity for compat tasks
- with mismatched 32-bit EL0
-To:     Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        kernel-team@android.com
-References: <20210602164719.31777-1-will@kernel.org>
- <20210602164719.31777-15-will@kernel.org>
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-Message-ID: <6594fc22-e99e-ee5e-c3ea-fb522e510b46@redhat.com>
-Date:   Thu, 3 Jun 2021 11:45:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Thu, 3 Jun 2021 05:47:57 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622713573; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=RWtLvLidpPamb4dlK5e/Mfjt23fvsVFCcB3loo+yQwM=; b=V7gF/LD/UaYPewKNEWsae0RnP5ezokbA7m5f5QV1f3IENMS9WeR3R16QzY04a9NieYuYD7gW
+ +5arhtTq+/w+SqTt2mMc2pXaO4nzrheDKWEYwjXtjKqqu505AdGj5JYU5/NGIaLDoRl+Yz71
+ w+Hexq3Y4fH2HhBwnya348OAzxg=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 60b8a4dc81efe91cda8bd766 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Jun 2021 09:46:04
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DE112C43460; Thu,  3 Jun 2021 09:46:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DD124C433F1;
+        Thu,  3 Jun 2021 09:46:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DD124C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Christian Lamparter <chunkeey@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        linux-wireless@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v3] wireless: carl9170: fix LEDS build errors & warnings
+References: <20210530031134.23274-1-rdunlap@infradead.org>
+        <8043ff50-d592-7666-f001-7505efa0d4c2@gmail.com>
+        <c49c07d5-1d6e-5b99-30b4-bc8f48b0fde3@infradead.org>
+Date:   Thu, 03 Jun 2021 12:46:00 +0300
+In-Reply-To: <c49c07d5-1d6e-5b99-30b4-bc8f48b0fde3@infradead.org> (Randy
+        Dunlap's message of "Sun, 30 May 2021 07:32:07 -0700")
+Message-ID: <87czt31dt3.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20210602164719.31777-15-will@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/2/21 6:47 PM, Will Deacon wrote:
-> When exec'ing a 32-bit task on a system with mismatched support for
-> 32-bit EL0, try to ensure that it starts life on a CPU that can actually
-> run it.
-> 
-> Similarly, when exec'ing a 64-bit task on such a system, try to restore
-> the old affinity mask if it was previously restricted.
-> 
-> Reviewed-by: Quentin Perret <qperret@google.com>
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
+Randy Dunlap <rdunlap@infradead.org> writes:
 
-[...]
+> On 5/30/21 2:31 AM, Christian Lamparter wrote:
+>> On 30/05/2021 05:11, Randy Dunlap wrote:
+>>> kernel test robot reports over 200 build errors and warnings
+>>> that are due to this Kconfig problem when CARL9170=3Dm,
+>>> MAC80211=3Dy, and LEDS_CLASS=3Dm.
+>>>
+>>> WARNING: unmet direct dependencies detected for MAC80211_LEDS
+>>> =C2=A0=C2=A0 Depends on [n]: NET [=3Dy] && WIRELESS [=3Dy] && MAC80211 =
+[=3Dy] &&
+>>> (LEDS_CLASS [=3Dm]=3Dy || LEDS_CLASS [=3Dm]=3DMAC80211 [=3Dy])
+>>> =C2=A0=C2=A0 Selected by [m]:
+>>> =C2=A0=C2=A0 - CARL9170_LEDS [=3Dy] && NETDEVICES [=3Dy] && WLAN [=3Dy]=
+ &&
+>>> WLAN_VENDOR_ATH [=3Dy] && CARL9170 [=3Dm]
+>>>
+>>> CARL9170_LEDS selects MAC80211_LEDS even though its kconfig
+>>> dependencies are not met. This happens because 'select' does not follow
+>>> any Kconfig dependency chains.
+>>>
+>>> Fix this by making CARL9170_LEDS depend on MAC80211_LEDS, where
+>>> the latter supplies any needed dependencies on LEDS_CLASS.
+>>=20
+>> Ok, this is not what I was expecting... I though you would just
+>> add a "depends on / imply MAC80211_LEDS" on your v2. (this was
+>> based on the assumption of what mac80211,=C2=A0 ath9k/_htc and mt76
+>> solutions of the same problem looked like).
+>
+> Do you want the user choice/prompt removed, like MT76 is?
+>
+>> But since (I assuming here) this patch passed the build-bots
+>> testing with flying colors in the different config permutations.
+>
+> It hasn't passed any build-bots testing that I know of.
+> I did 8 combinations of kconfigs (well, 2 of them were invalid),
+> but they all passed my own build testing.
 
->  
-> +#ifdef CONFIG_COMPAT
-> +int compat_elf_check_arch(const struct elf32_hdr *hdr)
-> +{
-> +	if (!system_supports_32bit_el0())
-> +		return false;
-> +
-> +	if ((hdr)->e_machine != EM_ARM)
-> +		return false;
-> +
-> +	if (!((hdr)->e_flags & EF_ARM_EABI_MASK))
-> +		return false;
-> +
-> +	/*
-> +	 * Prevent execve() of a 32-bit program from a deadline task
-> +	 * if the restricted affinity mask would be inadmissible on an
-> +	 * asymmetric system.
-> +	 */
-> +	return !static_branch_unlikely(&arm64_mismatched_32bit_el0) ||
-> +	       task_cpus_dl_admissible(current, system_32bit_el0_cpumask());
-> +}
-> +#endif
+So is this ok to take now? Or will there be v4?
 
-From the DL perspective:
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-Reviewed-by: Daniel Bristot de Oliveira <bristot@redhat.com>
-
-Thanks!
--- Daniel
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
