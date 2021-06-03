@@ -2,262 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00721399784
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 03:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86517399783
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 03:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229775AbhFCBb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 21:31:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229752AbhFCBb6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 21:31:58 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A08EC06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 18:30:05 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id 5so4642655ioe.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 18:30:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1EPsUK3ZQl7+7uFNMBcrFht4n1vdJ7J24h+88KiwMpc=;
-        b=KvuAjAnHVVVRfdZwaDotfcinb83HIkWpWCsSC7O8ghX/HKcwyr0UXcmASSiSQBk/Vg
-         oeCwg1ugPS+CvdMdjYU4l/bRYp1BkktHAFO4fMI6ouiYNRxTLnkxeQo0NiL1auj/Y600
-         Ao6bH12q5NCUvhBoAEVTzIXrTBfNgY5ldnWl3sxa8xQWS4kv5xF0NfklLhpa0uZwYBS4
-         SZQwJ+Jh8auS1WP5QDXydiFKUTmq5AahoKnff7rZ0SEA925/43wNbjh/vFjV5EbPTElw
-         WFGjD1dJlO6WaPNuOMkSBR3GA2pqbCZNzi6ezhwSNueTatzHU/o69wxILx9eeB7b3skd
-         SiEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1EPsUK3ZQl7+7uFNMBcrFht4n1vdJ7J24h+88KiwMpc=;
-        b=a1BobB4uT1/5KO+4Ruj48L/aJE+igxUOXV55o4Qx4/cn3vS8M72gEOCpFmWpBaUIfN
-         6V+RS5tm1BYNW7IDJpU1PTkBFIhuaoaMfDriQWvnFQdyGapAT+XLvVQDivu83cWEK5WJ
-         d8JjDQ4k7C4vpp6uhinA7guBn/Db7vDCizZ4TZeL2sZipjQjQq3cVYHrkMrvRNd+n0dw
-         aUa+R2GF2j89m8PSyDUt5R9YezQYHSh+SLr0ltbReC1FAcOqA2lv0x9N1RLooSOsCOpQ
-         m15SDiYZhgN0p9GhHKYCPoRm1CbE8L0hXzsRHnC61rKvq+TXamhqBE6gJHKVWmWphp6E
-         wUzg==
-X-Gm-Message-State: AOAM532eaCF2kYjPpVrZuQ2RyZ0+uKHFfwlg01lNSvvhTzH1VABS8n0n
-        9J4KvxHQrTKnPWQW8lXX8BdQdB8gmxIfdS/K7Do=
-X-Google-Smtp-Source: ABdhPJyPN8ijrJIbeAIUbnecL1Bof/mESSLz02vwmgD/9X5xR3EoAgO02mQHs/h0SaRAlM5yfugUvOXcVlWv5cCiV5U=
-X-Received: by 2002:a05:6602:2bef:: with SMTP id d15mr27361468ioy.13.1622683804926;
- Wed, 02 Jun 2021 18:30:04 -0700 (PDT)
+        id S229738AbhFCBbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 21:31:49 -0400
+Received: from mga09.intel.com ([134.134.136.24]:10937 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229568AbhFCBbr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 21:31:47 -0400
+IronPort-SDR: poI2OHQWp3yAE2w0FsTBCLoW4W6CxL1zJk2xRrlzOOkdkHjcikpn2PSYrcbO6CFO0dy1tM7vVM
+ m8MKDx30J2qg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10003"; a="203931205"
+X-IronPort-AV: E=Sophos;i="5.83,244,1616482800"; 
+   d="scan'208";a="203931205"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 18:30:03 -0700
+IronPort-SDR: Qsf5tNers27mQIryZu76sl3suwx4gVm3HYHea4LKii9/BXdNhS4sfAkny8AEXUAUzlj2JldG7p
+ odLX2VGaLg/A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,244,1616482800"; 
+   d="scan'208";a="479956653"
+Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
+  by orsmga001.jf.intel.com with ESMTP; 02 Jun 2021 18:30:03 -0700
+Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
+ ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Wed, 2 Jun 2021 18:30:01 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
+ via Frontend Transport; Wed, 2 Jun 2021 18:30:01 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.173)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.4; Wed, 2 Jun 2021 18:30:00 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HWa7576fROhpwNw4PLLlFgdHyLeUvebw/DuQmEZ/K1EYS1ooUQv82PVs5gJPt/EF+fcu0bCt41FUEtxznT28zlZc43RNLWAxKjlwVVFVadijX+eakagOws88vP0V9Thp7+dETVMO81qL5zzqtJUG0DtYczT0dnFoXT8pfiuQIfPOy2L3Qlg8S++/ReiJvpJs3WIm/vw1yt+dCSrmyPfm/LE3A3AhGRTDeHEueEAI8qQQBkX6ONjvOf9ojYZeL1TljoaVCge64J0lunTCm6bjrwcyXo/MVwvME07sPmbmRikpkj3wvWE2MdldbVI1s8cFwkbJHitSJb3B5PvhGdLz3Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Rs3SIqSOOgw+z1du5+K8aCWn8/L44v2eXmAiLJlruDo=;
+ b=JVsaV0juhGKP8OkF/QzyOuJ/GeIxAkEuQvJwEmnM7rjCb/2V8Fj7xQIyKbtnY873Ao0ilSOx05NBA1f3nEr8dWPVHXGYxh06mvzveiTt38Up1YEbuDbEewnqNA/hrO4/aSjdC6SBNEAz46QyDDgj4Ph1FKeg6GKLLoYhm0fI1wW3pxRM9ft/BYKCz7Ru73VuArMHIq97eovuhrpWHFIkrOdvBXj2zZc9UI5AYPl9QFQGsSAfU3KX1efMwCj46/CsX4ak9tTrxbD1tCM9gV+NlKcoCB3LcuFX4B1F83fm+oToTbf2WOIJv4TDZjMl1ibIAEg4xiKjTPnockFHg2U12g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Rs3SIqSOOgw+z1du5+K8aCWn8/L44v2eXmAiLJlruDo=;
+ b=Pg+sZdg/Bcxn+Xs7NcHcal7C75rS6Bn+tZf6+waaHwwOyNIMZmESiEXi/zoNcceqRKQazbTprSTjdEw74r9nwawqnCPlkRXJL4SXflXt02crqZM11OemwH1Rw6BITPAU/E7wcssk+FmCXkmVDIXU2q8rybdQNmLxmb0uDJLqJBE=
+Received: from MWHPR11MB1886.namprd11.prod.outlook.com (2603:10b6:300:110::9)
+ by MWHPR11MB1472.namprd11.prod.outlook.com (2603:10b6:301:d::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20; Thu, 3 Jun
+ 2021 01:29:58 +0000
+Received: from MWHPR11MB1886.namprd11.prod.outlook.com
+ ([fe80::6597:eb05:c507:c6c1]) by MWHPR11MB1886.namprd11.prod.outlook.com
+ ([fe80::6597:eb05:c507:c6c1%12]) with mapi id 15.20.4173.030; Thu, 3 Jun 2021
+ 01:29:58 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Alex Williamson (alex.williamson@redhat.com)" 
+        <alex.williamson@redhat.com>, "Raj, Ashok" <ashok.raj@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "David Gibson" <david@gibson.dropbear.id.au>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jason Wang <jasowang@redhat.com>
+Subject: RE: [RFC] /dev/ioasid uAPI proposal
+Thread-Topic: [RFC] /dev/ioasid uAPI proposal
+Thread-Index: AddSzQ970oLnVHLeQca/ysPD8zMJZwBGs/UAALTRUxAAFJZWgAAQLFRgAB7cjgAAE0ZXYA==
+Date:   Thu, 3 Jun 2021 01:29:58 +0000
+Message-ID: <MWHPR11MB18861FA1636BFB66E5E563508C3C9@MWHPR11MB1886.namprd11.prod.outlook.com>
+References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210528173538.GA3816344@nvidia.com>
+ <MWHPR11MB18866C362840EA2D45A402188C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210601174229.GP1002214@nvidia.com>
+ <MWHPR11MB1886283575628D7A2F4BFFAB8C3D9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210602160914.GX1002214@nvidia.com>
+In-Reply-To: <20210602160914.GX1002214@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.142.24]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9ebf9733-8455-43fc-3ae8-08d9262f19a8
+x-ms-traffictypediagnostic: MWHPR11MB1472:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR11MB1472AE6AC4688AE3F50EA58B8C3C9@MWHPR11MB1472.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: K6sRQHwLU4HCbAjFiLF6t5BdGMcmGd2QJWUzjZWZza78fJqWymGVf8IqXK5m0nin4aJK+GhSn+H2Mk0hM1Kyo9ZPGjECu/VkJedNc47nUtsCvWUH0qcaRif1oMp0OhAD39Tw5fsa3rbgGqkkM8aebzF3cRWIF8RG/JTIYYkMZ2W5QY/d0advx6qcfw+mm+LuXjz+uMOa8UZE45MdB2pfD+jgjL1/8AK47HBZH1IitBvoBZUDS6q6gSgfYB8tAZcLtezGi1yeNahMabB7vCuAYsQ+Af1cewoBaG6tVEQdV0j53XfVGrUGd+FMuCA3+WFdq8BpJPDI9qqETXmYz06GTsOmbHsxHjUdJv1rgQDeLwTfVs0eiAEBkdXspqT0Jx+iECoJJmkTZqoQrX1PX81MwRXbGMHSf4DaOtmp7Brw5QCDk70TgYpLNM12sNi17NKztzisEbRQi4o8C2048ywwkjJeIb9GqObDUao/brxcmMoWBxTt9WLQeIC2aX31txuvf9/BX9/V3+2milbsmlUXq0WhjHRojgKMMRjDCrfy1amfahPO1HVTw9xUdl3GMmGEsUvvkrYP9FW+oNcC5fK7WkMOwXAEUCVDxiifiYiqe2o=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1886.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(376002)(366004)(39860400002)(136003)(55016002)(8676002)(478600001)(186003)(83380400001)(26005)(9686003)(6916009)(316002)(7696005)(6506007)(2906002)(71200400001)(86362001)(76116006)(7416002)(5660300002)(66556008)(52536014)(66476007)(4326008)(66446008)(66946007)(54906003)(38100700002)(64756008)(8936002)(122000001)(33656002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?FYOMeqisashP+2t3er54C1PR8rtWx1wni42DMHzDqserw/a0BTJ1KVE6qC65?=
+ =?us-ascii?Q?yX7ir4EVm0f5+QdKkQ+7hJO/Hb4rlu5mkBf97ScaJKoTR3urQnKsMDfbaK5m?=
+ =?us-ascii?Q?gNa0/kMrUkKCkcmaSJCYNlNLUY778AXgA52ZcmnPvZ9SQaPZkFd5TiO4AT3S?=
+ =?us-ascii?Q?OmThh5O4pSqz8DPWoR6mPGk3tk6G+YP4QdEYWebLiTvimF5vhyUW1rtt9R0A?=
+ =?us-ascii?Q?k9zhcO1kgt/dEIj2DnQ70mBlxHcOCQalBn7mg3qWetWssFWqdTwgeZnXDjaz?=
+ =?us-ascii?Q?n0fjm3q6VfB5QJqgu96T05zlArdov9XU4jCaybjFzWjGDP4f+57TPTJLKxnv?=
+ =?us-ascii?Q?Qd4OwyaeQ/z0hGWmcSWKXdaTuzJLJgMh1UdqXJ5qECnXCTB6b6OpXtFBVbZg?=
+ =?us-ascii?Q?YQu6Z15I8UgIrwte3Pg6Agldg3F14/IpI3KQ290160Jx7m+Xsr8jE/SMgfjB?=
+ =?us-ascii?Q?Azi4nqMOFkuBhqH6dABmB5bT9BvgRrfVl8HhZW30v470WUzq7As+TU/nkMZV?=
+ =?us-ascii?Q?fEyoMQ0i6sa6E9DP2IsfVuMsqkyOCuB8E2khQ2F5955jtmGB+XXsLt62v8Dz?=
+ =?us-ascii?Q?6IxPxU1JXk6eZNh/+iZh8t6UOMx+Aj4rmZNZpePFG/prDnfNtOXXG+JVY/Pe?=
+ =?us-ascii?Q?Z6xEP4Pe0jVJdJ/ibYl6FLLFhEAv4I2d7lROvV6iz27blFCJyikYW5lQInob?=
+ =?us-ascii?Q?L/yi4ars2IZ1RkuiC+izQUPSU+6ewUeGz/CosZAYwe7UvrFzXgFnkS6yPkSr?=
+ =?us-ascii?Q?kRKUo23VKRM+Pk/Kj6QCa2xTbLivpupYEjX1BKjNT4ojuhlemTDkXEibZgfn?=
+ =?us-ascii?Q?skukdGs09hBFWIm+an1hTjls7zmb8Jzt9RfGRUVrI3KMlJjUV718JylA9DCW?=
+ =?us-ascii?Q?OoSdmiAz3PD0pZCThVb3Sl60X2x3xBcbXVmiF/+yk8Lo6Iy8ouzz+IJEx6ZY?=
+ =?us-ascii?Q?iI2yvQqUtTJZFrciglCPG064bNiGO/vCihhBTxnJSq0mKKiAvI7ivOMV1j3A?=
+ =?us-ascii?Q?e48zX59yMv0in0x/2mU0/C50j8RzRqF9N88RwA30qKoNXpe6Rdqw56sn9IB1?=
+ =?us-ascii?Q?9TJ7UkCyNOvHBoXa0AsOfYdil1hGlz+jfr8GCCtKs0fMRnms7eA+G3pKt+sV?=
+ =?us-ascii?Q?SrWjm00625ogJywIBjV6MQccWh2vHh5I4rUIGDk+dK9vxEr4oGeD4U02QA7E?=
+ =?us-ascii?Q?XAVp6rZiFkwv2VeLUrgCdtlWUoqqJ10nUES8354+nBG/GzftX9HMlw2iv4Cz?=
+ =?us-ascii?Q?MAYNz4AAe+0P1+iy1Nchk0JMgz4kFcpNi839MW9gWu6Em2dadAfY9yEDnugb?=
+ =?us-ascii?Q?04WjZ/xKvZl5TsHa+xRBj8b8?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20210602122555.10082-1-laoar.shao@gmail.com> <CAKfTPtCS6bVGK1EFUHygj+uZL5N2kEzyyEeoyT4Cuc7r-65yVw@mail.gmail.com>
- <CALOAHbA=bSVsmJMG_q5vkkk9U+CeoULgdSEgf95RxfzPh9TC2A@mail.gmail.com> <CAKfTPtDAW_Ttg_hM+GoH87nriATck4yHKE-y7HZbFd9ujLp3YQ@mail.gmail.com>
-In-Reply-To: <CAKfTPtDAW_Ttg_hM+GoH87nriATck4yHKE-y7HZbFd9ujLp3YQ@mail.gmail.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 3 Jun 2021 09:29:28 +0800
-Message-ID: <CALOAHbDbROJyEi=haWT5S0Veae1EOV=4mEX7SkvZyudfFaxaGQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] sched: do active load balance on the new idle cpu
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1886.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9ebf9733-8455-43fc-3ae8-08d9262f19a8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jun 2021 01:29:58.4600
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bc0JMIex2pfnlYw2WPfr97hK6Q6GPjEhRtz+KUzZmI4Hj0PS4WzNBQou5nRkeQ1k2AY0ischbV71DEa1Qj0mUQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1472
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 2, 2021 at 9:26 PM Vincent Guittot
-<vincent.guittot@linaro.org> wrote:
->
-> On Wed, 2 Jun 2021 at 14:58, Yafang Shao <laoar.shao@gmail.com> wrote:
-> >
-> > On Wed, Jun 2, 2021 at 8:37 PM Vincent Guittot
-> > <vincent.guittot@linaro.org> wrote:
+> From: Jason Gunthorpe
+> Sent: Thursday, June 3, 2021 12:09 AM
+>=20
+> On Wed, Jun 02, 2021 at 01:33:22AM +0000, Tian, Kevin wrote:
+> > > From: Jason Gunthorpe <jgg@nvidia.com>
+> > > Sent: Wednesday, June 2, 2021 1:42 AM
 > > >
-> > > On Wed, 2 Jun 2021 at 14:26, Yafang Shao <laoar.shao@gmail.com> wrote:
+> > > On Tue, Jun 01, 2021 at 08:10:14AM +0000, Tian, Kevin wrote:
+> > > > > From: Jason Gunthorpe <jgg@nvidia.com>
+> > > > > Sent: Saturday, May 29, 2021 1:36 AM
+> > > > >
+> > > > > On Thu, May 27, 2021 at 07:58:12AM +0000, Tian, Kevin wrote:
+> > > > >
+> > > > > > IOASID nesting can be implemented in two ways: hardware nesting
+> and
+> > > > > > software nesting. With hardware support the child and parent I/=
+O
+> page
+> > > > > > tables are walked consecutively by the IOMMU to form a nested
+> > > translation.
+> > > > > > When it's implemented in software, the ioasid driver is respons=
+ible
+> for
+> > > > > > merging the two-level mappings into a single-level shadow I/O p=
+age
+> > > table.
+> > > > > > Software nesting requires both child/parent page tables operate=
+d
+> > > through
+> > > > > > the dma mapping protocol, so any change in either level can be
+> > > captured
+> > > > > > by the kernel to update the corresponding shadow mapping.
+> > > > >
+> > > > > Why? A SW emulation could do this synchronization during
+> invalidation
+> > > > > processing if invalidation contained an IOVA range.
 > > > >
-> > > > We monitored our latency-sensitive RT tasks are randomly preempted by the
-> > > > kthreads migration/n, which means to migrate tasks on CPUn to other new
-> > > > idle CPU. The logical as follows,
+> > > > In this proposal we differentiate between host-managed and user-
+> > > > managed I/O page tables. If host-managed, the user is expected to u=
+se
+> > > > map/unmap cmd explicitly upon any change required on the page table=
+.
+> > > > If user-managed, the user first binds its page table to the IOMMU a=
+nd
+> > > > then use invalidation cmd to flush iotlb when necessary (e.g. typic=
+ally
+> > > > not required when changing a PTE from non-present to present).
 > > > >
-> > > >   new idle CPU                          CPU n
-> > > >   (no task to run)                      (busy running)
-> > > >   wakeup migration/n                    (busy running)
-> > > >   (idle)                                migraion/n preempts current task
-> > > >   run the migrated task                 (busy running)
+> > > > We expect user to use map+unmap and bind+invalidate respectively
+> > > > instead of mixing them together. Following this policy, map+unmap
+> > > > must be used in both levels for software nesting, so changes in eit=
+her
+> > > > level are captured timely to synchronize the shadow mapping.
 > > >
-> > > migration thread is only used when we want to migrate the currently
-> > > running task of the source cpu.
+> > > map+unmap or bind+invalidate is a policy of the IOASID itself set whe=
+n
+> > > it is created. If you put two different types in a tree then each IOA=
+SID
+> > > must continue to use its own operation mode.
+> > >
+> > > I don't see a reason to force all IOASIDs in a tree to be consistent?=
+?
 > >
-> > Could you pls explain it in detail ?
->
-> CPU A
-> become idle
-> call newidle_balance()
->   ...
->   load_balance()
->     ... CPU B is the busiest cpu
->     env.src_cpu = CPU B;
->
->     if (busiest->nr_running > 1) {
->       ...
->       There is more than 1 runnable threads on CPU B
->       Try to migrate cfs runnable but not running tasks from CPU B to CPU A
->       in your case, the migration of cfs task should happen here
-> because the RT task is running
->
->       Handle case of pinned tasks
->
->
->     if (!ld_moved)
->       no runnable but not running task was moved so we might want to
-> migrate the current running task
->
->       need_active_balance() should not return true in your case
-> because tasks should have been migrated during the step above
->
->       wake up stop/migration thread to preempt the current running
-> thread so we can migrate it
->
+> > only for software nesting. With hardware support the parent uses map
+> > while the child uses bind.
+> >
+> > Yes, the policy is specified per IOASID. But if the policy violates the
+> > requirement in a specific nesting mode, then nesting should fail.
+>=20
+> I don't get it.
+>=20
+> If the IOASID is a page table then it is bind/invalidate. SW or not SW
+> doesn't matter at all.
+>=20
+> > >
+> > > A software emulated two level page table where the leaf level is a
+> > > bound page table in guest memory should continue to use
+> > > bind/invalidate to maintain the guest page table IOASID even though i=
+t
+> > > is a SW construct.
+> >
+> > with software nesting the leaf should be a host-managed page table
+> > (or metadata). A bind/invalidate protocol doesn't require the user
+> > to notify the kernel of every page table change.
+>=20
+> The purpose of invalidate is to inform the implementation that the
+> page table has changed so it can flush the caches. If the page table
+> is changed and invalidation is not issued then then the implementation
+> is free to ignore the changes.
+>=20
+> In this way the SW mode is the same as a HW mode with an infinite
+> cache.
+>=20
+> The collaposed shadow page table is really just a cache.
+>=20
 
-Thanks for the explanation.
+OK. One additional thing is that we may need a 'caching_mode"
+thing reported by /dev/ioasid, indicating whether invalidation is
+required when changing non-present to present. For hardware=20
+nesting it's not reported as the hardware IOMMU will walk the
+guest page table in cases of iotlb miss. For software nesting=20
+caching_mode is reported so the user must issue invalidation=20
+upon any change in guest page table so the kernel can update
+the shadow page table timely.
 
->
-> so you have has a UC which doesn't migrate task in the 1st step when
-> trying to pull runnable and not running tasks but it makes
-> need_active_balance() return true. Woudl be good to know which
-> condition makes  need_active_balance() to return true
->
+Following this and your other comment with David, we will mark
+host-managed vs. guest-managed explicitly for I/O page table
+of each IOASID. map+unmap or bind+invalid is decided by
+which owner is specified by the user.
 
-I will analyze why need_active_balance() returns true.
-
->
-> > But I find the migration/n will pick a task from src_rq->cfs_tasks
-> > rather than the current running task, see also detach_one_task():
->
-> The current running task is migration/n one at that time
->
-> >
-> > detach_one_task
-> >     list_for_each_entry_reverse(p, &env->src_rq->cfs_tasks, se.group_node) {
-> >         detach_task(p, env);
-> >    }
-> >
-> >
-> > > This doesn't seem to be your case as it's a RT thread that is
-> > > currently running so the migration thread should not be woken up as we
-> > > don't need it to migrate a runnable but not running cfs thread from
-> > > coin to new idle CPU
-> > >
-> > > Do you have more details about the UC. Could it be a race between new
-> > > idle load balance starting migration thread to pull the cfs running
-> > > thread and the RT thread waking up and preempting cfs task before
-> > > migration threads which then preempt your RT threads
-> > >
-> > >
-> >
-> > No, it is not a race. Below is the detail from sched:sched_swith tracepoint:
-> >
-> > sensing_node-8880 [007] d... 4300.544185: sched_switch:
-> > prev_comm=sensing_node prev_pid=8880 prev_prio=98 prev_state=S ==>
-> > next_comm=sensing_node next_pid=8897 next_prio=98
-> > sensing_node-8897 [007] d... 4300.544214: sched_switch:
-> > prev_comm=sensing_node prev_pid=8897 prev_prio=98 prev_state=S ==>
-> > next_comm=sensing_node next_pid=8880 next_prio=98
-> > sensing_node-8880 [007] d... 4300.544506: sched_switch:
-> > prev_comm=sensing_node prev_pid=8880 prev_prio=98 prev_state=R ==>
-> > next_comm=migration/7 next_pid=47 next_prio=0
-> > migration/7-47 [007] d... 4300.544509: sched_switch:
-> > prev_comm=migration/7 prev_pid=47 prev_prio=0 prev_state=S ==>
-> > next_comm=sensing_node next_pid=8880 next_prio=98
-> >
-> > sensing_node is a RR task and it was preempted by migration/7.
-> >
-> > >
-> > > >
-> > > > As the new idle CPU is going to be idle, we'd better move the migration
-> > > > work on it instead of burdening the busy CPU. After this change, the
-> > > > logic is,
-> > > >  new idle CPU                           CPU n
-> > > >  (no task to run)                       (busy running)
-> > > >  migrate task from CPU n                (busy running)
-> > > >  run the migrated task                  (busy running)
-> > > >
-> > > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > > > ---
-> > > >  kernel/sched/fair.c | 17 +++++------------
-> > > >  1 file changed, 5 insertions(+), 12 deletions(-)
-> > > >
-> > > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > > index 3248e24a90b0..3e8b98b982ff 100644
-> > > > --- a/kernel/sched/fair.c
-> > > > +++ b/kernel/sched/fair.c
-> > > > @@ -9807,13 +9807,11 @@ static int load_balance(int this_cpu, struct rq *this_rq,
-> > > >                                 busiest->push_cpu = this_cpu;
-> > > >                                 active_balance = 1;
-> > > >                         }
-> > > > -                       raw_spin_unlock_irqrestore(&busiest->lock, flags);
-> > > >
-> > > > -                       if (active_balance) {
-> > > > -                               stop_one_cpu_nowait(cpu_of(busiest),
-> > > > -                                       active_load_balance_cpu_stop, busiest,
-> > > > -                                       &busiest->active_balance_work);
-> > > > -                       }
-> > > > +                       if (active_balance)
-> > > > +                               active_load_balance_cpu_stop(busiest);
-> > >
-> > > this doesn't make sense because we reach this point if we want to
-> > > migrate the current running task of the busiest cpu and in order to do
-> > > this we need the preempt this current running thread
-> > >
-> > > > +
-> > > > +                       raw_spin_unlock_irqrestore(&busiest->lock, flags);
-> > > >                 }
-> > > >         } else {
-> > > >                 sd->nr_balance_failed = 0;
-> > > > @@ -9923,7 +9921,6 @@ static int active_load_balance_cpu_stop(void *data)
-> > > >         struct task_struct *p = NULL;
-> > > >         struct rq_flags rf;
-> > > >
-> > > > -       rq_lock_irq(busiest_rq, &rf);
-> > > >         /*
-> > > >          * Between queueing the stop-work and running it is a hole in which
-> > > >          * CPUs can become inactive. We should not move tasks from or to
-> > > > @@ -9933,8 +9930,7 @@ static int active_load_balance_cpu_stop(void *data)
-> > > >                 goto out_unlock;
-> > > >
-> > > >         /* Make sure the requested CPU hasn't gone down in the meantime: */
-> > > > -       if (unlikely(busiest_cpu != smp_processor_id() ||
-> > > > -                    !busiest_rq->active_balance))
-> > > > +       if (unlikely(!busiest_rq->active_balance))
-> > > >                 goto out_unlock;
-> > > >
-> > > >         /* Is there any task to move? */
-> > > > @@ -9981,13 +9977,10 @@ static int active_load_balance_cpu_stop(void *data)
-> > > >         rcu_read_unlock();
-> > > >  out_unlock:
-> > > >         busiest_rq->active_balance = 0;
-> > > > -       rq_unlock(busiest_rq, &rf);
-> > > >
-> > > >         if (p)
-> > > >                 attach_one_task(target_rq, p);
-> > > >
-> > > > -       local_irq_enable();
-> > > > -
-> > > >         return 0;
-> > > >  }
-> > > >
-> > > > --
-> > > > 2.17.1
-> > > >
-> >
-> >
-> >
-> > --
-> > Thanks
-> > Yafang
-
-
-
--- 
 Thanks
-Yafang
+Kevin
