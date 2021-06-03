@@ -2,93 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 102C83996E6
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 02:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F5913996E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 02:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229625AbhFCA0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 20:26:00 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:42719 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbhFCAZ6 (ORCPT
+        id S229656AbhFCA2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 20:28:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229554AbhFCA2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 20:25:58 -0400
-Received: by mail-oi1-f178.google.com with SMTP id v142so4100374oie.9
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 17:24:04 -0700 (PDT)
+        Wed, 2 Jun 2021 20:28:16 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD4EC06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 17:26:30 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id v142so4107441oie.9
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 17:26:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:in-reply-to:references:from:user-agent:date:message-id
          :subject:to:cc;
-        bh=sf9HPjX/QRw5TUCBPMkwIobQvyDUNSU8DnXWCThttng=;
-        b=lXyYsmHjMCk031tkWhLnBU8kbmJTb+chywkiYEpXQeAU+2q/dSOjy3z1Cgk8KSjA9l
-         j+ZetNlnwdTzYQz1XalYZazk9biXAeuqG7EJRxw6mND10vlWJBJ6oY9szlC7B40w1baY
-         HwN3g6HA8M9ppv3NmmfcNnSKHX2k/2Ls1vF+w=
+        bh=B8ntVkRmR8E43fhNi8KeT7nhYBeBN9hBXViNMog7Bsk=;
+        b=C77vD+t8OtBkg9dljmgfMjBEEVMtuXrAmVngzfXqaHPLj956rAsj6wz7e3fjLkGPzP
+         tiAP7V6FNIdZrS6jzIY/5jXBiNp5ugOgm6fUMFOsAI6eKI+EswgiMUbnCVl4sonIXryP
+         XVKglZj+p1g766U4uQ7Ke/YHKdWFpew+aLbno=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:in-reply-to:references:from
          :user-agent:date:message-id:subject:to:cc;
-        bh=sf9HPjX/QRw5TUCBPMkwIobQvyDUNSU8DnXWCThttng=;
-        b=XHX2Sb1EawQDKz9lxjY3/bbdsQTiuyofXzFm0u0jpk+/Ock2JjLe332KTaqAhSJFJt
-         wrgd8VpUFsIGyHk+VtXdSDRAw4kQGar9xJpCKrPMW9rwolxpAPU5d0kQJSbPkrECG0ar
-         b42JlbvOlOwg6m6jNJg+BHwDJem/mv4Poaumiqr5ZX9uRhydXvHBME5SjwJYDqk22Y5w
-         oK1trSSPyWarrvF/IHShTVwjqzl5cfnP5arWpA/Yjf9Ss/jrlwIsQYVbz4WQAZTh0fWQ
-         hzHBHyFku8g0kFGEP2hF1qYvHQN1DKbd5B+247Q7Y0twMAiQ45fTPuqThoFb89+GpJdx
-         4Opw==
-X-Gm-Message-State: AOAM531EzwBaNJvTuPsHjhcMyQBO9dvdyaghNfktVpPmFJFy2Ry0ptAm
-        cJY4v4ns3OhADrykBALc4nlZUvle3SSXPHRpvvSqBA==
-X-Google-Smtp-Source: ABdhPJyY5laFn5SRHNT37MHyapZ0GwE1ObVpQfvDvSQd6CoIw7eXVr3cYfAO4YpBf2ZSmCLl+Qq0taNnfzOtiSyKJMA=
-X-Received: by 2002:aca:654d:: with SMTP id j13mr5653421oiw.125.1622679784640;
- Wed, 02 Jun 2021 17:23:04 -0700 (PDT)
+        bh=B8ntVkRmR8E43fhNi8KeT7nhYBeBN9hBXViNMog7Bsk=;
+        b=el1nlMIqIz4TcoeXEgynYpKTm4plYtaaohRbqaCUssFitDD3fRIHGlLq3x7zk4UDLN
+         rr3pU2WygBCdqGUicyNqOyluCNoMpvr6JPiCIOQWCeuCYmJJHuilkVLuFoiD/PYqHKHG
+         HcPvZsVEWExEh9h9t3x939mP43SVeyRKD9VO8lp4Q+i9HwkWCekuWAz/XzGmSixMSOzq
+         EYfi9L4gz45AwYgJ34HjNs6saF6jadmu0OVX9ZGQYWpF/qYZwILbIHMPzohfxRLRVOsu
+         rbyFJwCPBx30cuJf7mPn3Qb1fHQKMGR+NGWMONgIImaKpkUGMnfXmrsSdzc891/QpJaY
+         OdJg==
+X-Gm-Message-State: AOAM533b7fFnend66dVpco0LwyXRi89W6QmDtkoto59WUE+jc5P3HrH8
+        nxGul06L1xpm1nzJOo/cNfO9T22JaJDpNTG0fVr5gg==
+X-Google-Smtp-Source: ABdhPJzKY0HPWjI8NjFdoNKSw34eV8qhj0aoqdjvz+fGKCJfZaR3F2ARysDq3YKVHf9CSBzj/y9mnsOrvWthzU272K0=
+X-Received: by 2002:a54:4501:: with SMTP id l1mr23692943oil.19.1622679990245;
+ Wed, 02 Jun 2021 17:26:30 -0700 (PDT)
 Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 2 Jun 2021 17:23:04 -0700
+ HTTPREST; Wed, 2 Jun 2021 17:26:29 -0700
 MIME-Version: 1.0
-In-Reply-To: <1622652185-7157-1-git-send-email-khsieh@codeaurora.org>
-References: <1622652185-7157-1-git-send-email-khsieh@codeaurora.org>
+In-Reply-To: <YLUjbwFSJOSWS0IV@builder.lan>
+References: <1621596371-26482-1-git-send-email-mkshah@codeaurora.org>
+ <1621596371-26482-4-git-send-email-mkshah@codeaurora.org> <CAE-0n53ySKwDwzRYFYjnQnqVAujVrkik2U-PeCuS61xQU-hbWA@mail.gmail.com>
+ <YLUjbwFSJOSWS0IV@builder.lan>
 From:   Stephen Boyd <swboyd@chromium.org>
 User-Agent: alot/0.9.1
-Date:   Wed, 2 Jun 2021 17:23:04 -0700
-Message-ID: <CAE-0n522L0hmAK40xj3TGimBjeqQgqO2YWsGOrYv-BPqr33tkA@mail.gmail.com>
-Subject: Re: [PATCH v4] drm/msm/dp: power off DP phy at suspend
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
-        vkoul@kernel.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Date:   Wed, 2 Jun 2021 17:26:29 -0700
+Message-ID: <CAE-0n53hdd1tEmYwTL0CNi=S6CUxRhWnkJz-KoTj2UnedNKXmg@mail.gmail.com>
+Subject: Re: [PATCH v8 3/5] arm64: dts: qcom: sc7180: Enable SoC sleep stats
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Maulik Shah <mkshah@codeaurora.org>, evgreen@chromium.org,
+        mka@chromium.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, agross@kernel.org,
+        dianders@chromium.org, linux@roeck-us.net, rnayak@codeaurora.org,
+        lsrao@codeaurora.org, devicetree@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-06-02 09:43:05)
-> Normal DP suspend operation contains two steps, display off followed
-> by dp suspend, to complete system wide suspending cycle if display is
-> up at that time. In this case, DP phy will be powered off at display
-> off. However there is an exception case that depending on the timing
-> of dongle plug in during system wide suspending, sometimes display off
-> procedure may be skipped and dp suspend was called directly. In this
-> case, dp phy is stay at powered on (phy->power_count = 1) so that at
-> next resume dp driver crash at main link clock enable due to phy is
-> not physically powered on. This patch will call dp_ctrl_off_link_stream()
-> to tear down main link and power off phy at dp_pm_suspend() if main link
-> had been brought up.
+Quoting Bjorn Andersson (2021-05-31 10:57:03)
+> On Wed 26 May 18:30 CDT 2021, Stephen Boyd wrote:
 >
-> Changes in V2:
-> -- stashed changes into dp_ctrl.c
-> -- add is_phy_on to monitor phy state
+> > Quoting Maulik Shah (2021-05-21 04:26:09)
+> > > Add device node for SoC sleep stats driver which provides various
+> > > low power mode stats.
+> > >
+> > > Also update the reg size of aoss_qmp device to 0x400.
+> > >
+> > > Cc: devicetree@vger.kernel.org
+> > > Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+> > > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > > ---
+> > >  arch/arm64/boot/dts/qcom/sc7180.dtsi | 7 ++++++-
+> > >  1 file changed, 6 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> > > index 6228ba2..889d04d 100644
+> > > --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> > > +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> > > @@ -3215,7 +3215,7 @@
+> > >
+> > >                 aoss_qmp: power-controller@c300000 {
+> > >                         compatible = "qcom,sc7180-aoss-qmp";
+> > > -                       reg = <0 0x0c300000 0 0x100000>;
+> > > +                       reg = <0 0x0c300000 0 0x400>;
+> > >                         interrupts = <GIC_SPI 389 IRQ_TYPE_EDGE_RISING>;
+> > >                         mboxes = <&apss_shared 0>;
+> > >
+> > > @@ -3223,6 +3223,11 @@
+> > >                         #power-domain-cells = <1>;
+> > >                 };
+> > >
+> > > +               rpmh-sleep-stats@c3f0000 {
+> > > +                       compatible = "qcom,rpmh-sleep-stats";
+> > > +                       reg = <0 0x0c3f0000 0 0x400>;
+> > > +               };
+> > > +
+> >
+> > Does this need to be in DT? Can the sc7180-aoss-qmp driver use the
+> > aux-bus and stick the sleep stats device on there?
+> >
 >
-> Changes in V3:
-> -- delete is_phy_on
-> -- call dp_ctrl_off_link_stream() from dp_pm_suspend()
+> The AOSS memory space has N chunks of "message ram", one is used for the
+> QMP protocol (presumably the APSS specific one), a different one is used
+> for the sleep stats.
 >
-> Changes in V4:
-> -- delete changes made at dp_power.c
-> -- move main link status checking to dp_pm_suspend
+> I presume we could have come up with a binding for the entire AOSS/AOP
+> and then describe (either implicit or explicitly) the QMP and
+> debug-stats under that.
 >
-> Fixes: 0114f31a2903 ("drm/msm/dp: handle irq_hpd with sink_count = 0 correctly)
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> ---
+> But we'd also have to come up with the same container-device for the RPM
+> case.
 
-Ok, this seems to work and is nice and small
-
-Tested-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Because the rpm node doesn't include this region of memory today? I
+still fail to see why we're changing the existing binding and adding a
+DT node for this new region that is basically a debug feature.
