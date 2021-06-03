@@ -2,131 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B977399FE9
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EB97399FE6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbhFCLin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 07:38:43 -0400
-Received: from mail-wr1-f48.google.com ([209.85.221.48]:33318 "EHLO
-        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229769AbhFCLin (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 07:38:43 -0400
-Received: by mail-wr1-f48.google.com with SMTP id a20so5543657wrc.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 04:36:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hUWQYY6cwXoInPRfC/THU59jRaVeDOI2+m6C3p5kdkg=;
-        b=2POa4/DxL3JRww/m2F5CWyfeZDJIbslwiPuE4VWvkdtk0v8fJgU1idUSWF09zSdpqi
-         mfwRoAXiRBkv20g32UdgxUkb4qcetzXTquQ8NNgFNiJ3rAkXvcH6/zZQwTXMNrEzeqZT
-         U4Kwg5Za/uNzxxBdM3YExgc3L+pw9b6Pdff0cZN6hoNxJCAq+nq/UrHgBBooW0OJUl6d
-         N1qIh3w0wFmBIRnlQNtR+W5kiSUb/Af1wZxa1gaAeTg/SLrqidOB8vkIrxg8u8iAC9E6
-         ikNQoeiEaIBi+iVyUg1vJqXQnX6vPxVRJI6WaNABewvgqrctE0clhGEdUtbSbIyk4sPE
-         aXRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hUWQYY6cwXoInPRfC/THU59jRaVeDOI2+m6C3p5kdkg=;
-        b=Fl39BfXuMFkxC1qq8N03KSfI2y/7H/JYdq7uQRHAwdFXZ9A29qa8wTz4dlALARdZrw
-         7/a1efDPmL+IL7VIdn+9uyrSBcKa0QoLDGGoa4cOJIT9YemIZB5nop8u2kiNFfPaQfoX
-         MtdM+P0m4p1tHZIjoz2sAzFI0tM/LGpyuGcSXihnmYLmWPLKS+l+Lackyk/z1BO7q3cT
-         Yjtb1uFW3bcrqy9xJdMaJg0VtuTnmZXjiwr8JTzcQO/7K/DtqNW9NZw7xaH9N+fLicHc
-         5yqtYZ4AR04xNeZX6ubHkC2HM2+lvPkR0gKWdoquxAiZlVWl+67tNyRthKhPFYPq+RgT
-         Tqpg==
-X-Gm-Message-State: AOAM531gEt8F9Fg9dez2w37pgV6gz1denigz8XKv7hRIkPeqYrUOQqP/
-        7FhHwGj/1JljSk+GW1uBwO75DdGb3h7ivF2tQGindg==
-X-Google-Smtp-Source: ABdhPJyIhL6hTINCWDRrrSltrfTkfJaKF204Cw9/Y/5S0gfYKtqafpFSdqhlMdgytjfSJIu53WXZwcV8KyjqDBS+V5E=
-X-Received: by 2002:a5d:540b:: with SMTP id g11mr11167932wrv.390.1622720157797;
- Thu, 03 Jun 2021 04:35:57 -0700 (PDT)
+        id S230033AbhFCLhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 07:37:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37892 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229818AbhFCLhw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 07:37:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCF37613E7;
+        Thu,  3 Jun 2021 11:36:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622720168;
+        bh=C9DIzOphc6fr5cipQlhio6wxZ4sUPuZ30lMxnkXl5Zo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fz0CjwTisYMYUbWkaIXzpxZbgQn4ts9xE44dNWjcSFJzrNicz+zKibeah6MY/sIBq
+         FrXC6uzanqvQXWP/INu3jhmPEpJHSBWyC/nrmX4qXxfgEtvYwibg+bt1Z9f0Fzlcif
+         3DOicRZL1uus5oUTTP5FrlXBArMImqiV4Ohb8zb1FOB8GAFIzpHCoEfDtql5qsxM7s
+         wfiANDoD9vVykwpWlEFWlwbJQs4HNuHZClZacw0gftegHMeC70oHX3xlP31TDAPaL7
+         nmZwnN8AINC12/aSmrsM6HQwF7UEEz1QMlnlaPDol9wosiiDVrE2NNnkga0v6O/iEo
+         nbvg5GDTnO+mQ==
+Date:   Thu, 3 Jun 2021 12:36:01 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        kernel-team@android.com, Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [RFC][PATCH] freezer,sched: Rewrite core freezer logic
+Message-ID: <20210603113600.GA592@willie-the-truck>
+References: <20210525151432.16875-1-will@kernel.org>
+ <20210525151432.16875-17-will@kernel.org>
+ <YLXt+/Wr5/KWymPC@hirez.programming.kicks-ass.net>
+ <YLYZv4v68OnAlx+3@hirez.programming.kicks-ass.net>
+ <20210602125452.GG30593@willie-the-truck>
+ <YLiwahWvnnkeL+vc@hirez.programming.kicks-ass.net>
+ <20210603105856.GB32641@willie-the-truck>
+ <YLi8Ttw3Xb3ynUW2@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20210603082749.1256129-1-alex@ghiti.fr> <20210603082749.1256129-3-alex@ghiti.fr>
-In-Reply-To: <20210603082749.1256129-3-alex@ghiti.fr>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Thu, 3 Jun 2021 17:05:46 +0530
-Message-ID: <CAAhSdy0w4DsGMdWZ3k2Qti0mwQQmFXHbJw2RXbjH+hQ8fPKxfQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] riscv: Introduce set_kernel_memory helper
-To:     Alexandre Ghiti <alex@ghiti.fr>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Zong Li <zong.li@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLi8Ttw3Xb3ynUW2@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 2:00 PM Alexandre Ghiti <alex@ghiti.fr> wrote:
->
-> This helper should be used for setting permissions to the kernel
-> mapping as it takes pointers as arguments and then avoids explicit cast
-> to unsigned long needed for the set_memory_* API.
->
-> Suggested-by: Christoph Hellwig <hch@infradead.org>
-> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+On Thu, Jun 03, 2021 at 01:26:06PM +0200, Peter Zijlstra wrote:
+> On Thu, Jun 03, 2021 at 11:58:56AM +0100, Will Deacon wrote:
+> > On Thu, Jun 03, 2021 at 12:35:22PM +0200, Peter Zijlstra wrote:
+> > > On Wed, Jun 02, 2021 at 01:54:53PM +0100, Will Deacon wrote:
+> 
+> > > > > @@ -116,20 +173,8 @@ bool freeze_task(struct task_struct *p)
+> > > > >  {
+> > > > >  	unsigned long flags;
+> > > > >  
+> > > > >  	spin_lock_irqsave(&freezer_lock, flags);
+> > > > > +	if (!freezing(p) || frozen(p) || __freeze_task(p)) {
+> > > > >  		spin_unlock_irqrestore(&freezer_lock, flags);
+> > > > >  		return false;
+> > > > >  	}
+> > > > 
+> > > > I've been trying to figure out how this serialises with ttwu(), given that
+> > > > frozen(p) will go and read p->state. I suppose it works out because only the
+> > > > freezer can wake up tasks from the FROZEN state, but it feels a bit brittle.
+> > > 
+> > > p->pi_lock; both ttwu() and __freeze_task() (which is essentially a
+> > > variant of set_special_state()) take ->pi_lock. I'll put in a comment.
+> > 
+> > The part I struggled with was freeze_task(), which doesn't take ->pi_lock
+> > yet calls frozen(p).
+> 
+> Ah, I can't read... I assumed you were asking about __freeze_task().
+> 
+> So frozen(p) checks for p->state == TASK_FROZEN (and complicated), which
+> is a stable state. Once you're frozen you stay frozen until thaw, which
+> is after freezing per construction.
+> 
+> The tricky bit is __freeze_task(), that does take pi_lock. It checks for
+> FREEZABLE and if set, changes to FROZEN. And this does in fact race with
+> ttwu() and relies on pi_lock to serialize.
+> 
+> A concurrent wakeup (from a non-frozen task) can try and wake the task
+> we're trying to freeze. If we win, ttwu will see FROZEN and ignore, if
+> ttwu() wins, we don't see FREEZABLE and do another round of freezing.
 
-Looks good to me.
+Good, thanks. That's where I'd ended up. It means that nobody else better
+try waking up FROZEN tasks!
 
-Reviewed-by: Anup Patel <anup@brainfault.org>
+> > > > > @@ -137,7 +182,7 @@ bool freeze_task(struct task_struct *p)
+> > > > >  	if (!(p->flags & PF_KTHREAD))
+> > > > >  		fake_signal_wake_up(p);
+> > > > >  	else
+> > > > > -		wake_up_state(p, TASK_INTERRUPTIBLE);
+> > > > > +		wake_up_state(p, TASK_INTERRUPTIBLE); // TASK_NORMAL ?!?
+> > > > >  
+> > > > >  	spin_unlock_irqrestore(&freezer_lock, flags);
+> > > > >  	return true;
+> > > > > @@ -148,8 +193,8 @@ void __thaw_task(struct task_struct *p)
+> > > > >  	unsigned long flags;
+> > > > >  
+> > > > >  	spin_lock_irqsave(&freezer_lock, flags);
+> > > > > -	if (frozen(p))
+> > > > > -		wake_up_process(p);
+> > > > > +	WARN_ON_ONCE(freezing(p));
+> > > > > +	wake_up_state(p, TASK_FROZEN | TASK_NORMAL);
+> > > > 
+> > > > Why do we need TASK_NORMAL here?
+> > > 
+> > > It's a left-over from hacking, but I left it in because anything
+> > > TASK_NORMAL should be able to deal with spuriuos wakeups, something
+> > > try_to_freeze() now also relies on.
+> > 
+> > I just worry that it might hide bugs if TASK_FROZEN is supposed to be
+> > sufficient, as it would imply that we have some unfrozen tasks kicking
+> > around. I dunno, maybe just a comment saying that everything _should_ be
+> > FROZEN at this point?
+> 
+> I'll take it out. It really shouldn't matter.
 
-Regards,
-Anup
+Perfect.
 
-> ---
->  arch/riscv/include/asm/set_memory.h |  5 +++++
->  arch/riscv/mm/pageattr.c            | 10 ++++++++++
->  2 files changed, 15 insertions(+)
->
-> diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm/set_memory.h
-> index 086f757e8ba3..7a411fed9e0e 100644
-> --- a/arch/riscv/include/asm/set_memory.h
-> +++ b/arch/riscv/include/asm/set_memory.h
-> @@ -16,6 +16,7 @@ int set_memory_rw(unsigned long addr, int numpages);
->  int set_memory_x(unsigned long addr, int numpages);
->  int set_memory_nx(unsigned long addr, int numpages);
->  int set_memory_rw_nx(unsigned long addr, int numpages);
-> +int set_kernel_memory(char *start, char *end, int (*set_memory)(unsigned long, int));
->  void protect_kernel_text_data(void);
->  #else
->  static inline int set_memory_ro(unsigned long addr, int numpages) { return 0; }
-> @@ -24,6 +25,10 @@ static inline int set_memory_x(unsigned long addr, int numpages) { return 0; }
->  static inline int set_memory_nx(unsigned long addr, int numpages) { return 0; }
->  static inline void protect_kernel_text_data(void) {}
->  static inline int set_memory_rw_nx(unsigned long addr, int numpages) { return 0; }
-> +static inline int set_kernel_memory(char *start, char *end, int (*set_memory)(unsigned long, int))
-> +{
-> +       return 0;
-> +}
->  #endif
->
->  #if defined(CONFIG_64BIT) && defined(CONFIG_STRICT_KERNEL_RWX)
-> diff --git a/arch/riscv/mm/pageattr.c b/arch/riscv/mm/pageattr.c
-> index 5e49e4b4a4cc..c47ac6a432ac 100644
-> --- a/arch/riscv/mm/pageattr.c
-> +++ b/arch/riscv/mm/pageattr.c
-> @@ -156,6 +156,16 @@ int set_memory_nx(unsigned long addr, int numpages)
->         return __set_memory(addr, numpages, __pgprot(0), __pgprot(_PAGE_EXEC));
->  }
->
-> +int set_kernel_memory(char *startp, char *endp,
-> +                     int (*set_memory)(unsigned long start, int num_pages))
-> +{
-> +       unsigned long start = (unsigned long)startp;
-> +       unsigned long end = (unsigned long)endp;
-> +       int num_pages = PAGE_ALIGN(end - start) >> PAGE_SHIFT;
-> +
-> +       return set_memory(start, num_pages);
-> +}
-> +
->  int set_direct_map_invalid_noflush(struct page *page)
->  {
->         int ret;
-> --
-> 2.30.2
->
+Will
