@@ -2,130 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9BAE39A270
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5644739A276
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230227AbhFCNrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 09:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34188 "EHLO
+        id S230282AbhFCNtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 09:49:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbhFCNrc (ORCPT
+        with ESMTP id S229967AbhFCNtl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 09:47:32 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD81C06174A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 06:45:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=pOZ1KTG84jUOwZV4iyoT08ALYRTSycIVbayoyIWOUck=; b=XrVgjPIm3zrW47fILGapTjzAv
-        3O/W1kx/TwUDLt6X9dLc49Y/7ll7KNFil833TJX1GSAlD/2QuflP5JRPOqxznYltX9YgAiMzRkvR5
-        QRS/9lR+U5Yrl8QjmZ4jZjtRyNkhERKk5cAjPg+DqxFYgAqFKrOHUGmB1CJKhjWhqfSTXLbGtRPEf
-        TEz2HsIYQLGtLCsapRK06jYPZrVqzd9M0DSCiNPUUi+S19BcJ9HqxxMybN3wpoHCGwN9/JqoV9bMw
-        VW1acw2ZUxk6uToxHYGyu+p8vsBh16FJtRahxxTe+C5eJA9Q81jshXRKDYUSolBDRreubmvLc7FYe
-        jrS04zL7A==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44674)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lonfG-0002qw-QE; Thu, 03 Jun 2021 14:45:38 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lonfE-00029t-9E; Thu, 03 Jun 2021 14:45:36 +0100
-Date:   Thu, 3 Jun 2021 14:45:36 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>, arm@kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        Stefan Agner <stefan@agner.ch>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Stefano Stabellini <stefano.stabellini@eu.citrix.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/6] ARM: xen: Register with kernel restart handler
-Message-ID: <20210603134536.GT30436@shell.armlinux.org.uk>
-References: <20191015145147.1106247-1-thierry.reding@gmail.com>
- <20191015145147.1106247-3-thierry.reding@gmail.com>
- <CAF2Aj3hbW7+pNp+_jnMVL8zeSxAvSbV1ZFZ_4PAUj6J0TxMk7g@mail.gmail.com>
- <20210603131124.GA1040254@roeck-us.net>
+        Thu, 3 Jun 2021 09:49:41 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A299C06174A;
+        Thu,  3 Jun 2021 06:47:57 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id b11so7210877edy.4;
+        Thu, 03 Jun 2021 06:47:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QlhaCMUqZtCg3qakQldsporL1nDLMTcjY1NaDx201K8=;
+        b=Vh0oF+HindfSV0XGe82AFy+QuEUOKjyVL8LmuvHXkOndpkGG7jgtSkNwhRT5Sj+uuL
+         z3ETKB8rQHlI1ECmP6Ec5BcJzcKGp6SCJgx9JfBxu3flGhC/yB6evq2pzE3kWAWdDp2y
+         1KOX8S8Tbo6hZVl0Cb4o3VQ4KY6mLjWDMGbiHnZnKa4mkaCyyPVeEKVUliA8u8IDJu6g
+         FYqx36yQu0MMI1pjHWufYQc7n8xxt53MsTo7HCMjB4YlQvk/cEUHD0592Yng6zmUDG9M
+         MTaCI3xP8OytO7s4X9xQQPAOGc2xfmFH/LGeHM+PlND0rCB3UoxoHjxF6x4Hw5yt2HAr
+         Bbcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QlhaCMUqZtCg3qakQldsporL1nDLMTcjY1NaDx201K8=;
+        b=s6sjzMAJGBemcCWd/F6/WZqCUoNArFx+DUwC+8LxnZmQw7cMnbhsd20VrkqREJB66s
+         P7na/rGu1FNJCM8FzUDJjaF4F/gd7ZhVqTN4Sqw3No7yxzRgsJOaoYe2eE78TrN5h8UF
+         JWjUQYRL0TykgSLeDAThxuKSyvqqbvmnYzR+XxkSD6uiE3a7l6cVHRn5tqgtC7IocUqZ
+         vmuK7bQuVegqvl4t3QtxRYGmDS0Xpf4QdDRYy0eUrJgKTMNPvDZm+3KGwgPO52WpwrgJ
+         PqpgwG9xOgg2NDRiXWzyvK/XDQ12AtLvXiiR0hKuRJhATWQRNOk8RYKvT3FCwf6pQJI4
+         3iQg==
+X-Gm-Message-State: AOAM533CJqgPCpgfxa/tMn2jlQijdLzaj0uUs4FRoKLOoZHIvruZoPwf
+        C7Bh04CO5A7z+yu1HW7mnOQ=
+X-Google-Smtp-Source: ABdhPJzi7ErweKz24Kf330r66hHGcoUHaSoZBM3vcqvXgmfhYEoPaPrbAizYpEnVRy4LaNZ5bYF3mw==
+X-Received: by 2002:a50:fd0d:: with SMTP id i13mr44463701eds.163.1622728075107;
+        Thu, 03 Jun 2021 06:47:55 -0700 (PDT)
+Received: from skbuf ([188.26.52.84])
+        by smtp.gmail.com with ESMTPSA id cw10sm1103773ejb.62.2021.06.03.06.47.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 06:47:54 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 16:47:52 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     "Sit, Michael Wei Hong" <michael.wei.hong.sit@intel.com>
+Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        "Jose.Abreu@synopsys.com" <Jose.Abreu@synopsys.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "peppe.cavallaro@st.com" <peppe.cavallaro@st.com>,
+        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+        "Voon, Weifeng" <weifeng.voon@intel.com>,
+        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
+        "Tan, Tee Min" <tee.min.tan@intel.com>,
+        "vee.khee.wong@linux.intel.com" <vee.khee.wong@linux.intel.com>,
+        "Wong, Vee Khee" <vee.khee.wong@intel.com>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RESEND PATCH net-next v4 0/3] Enable 2.5Gbps speed for stmmac
+Message-ID: <20210603134752.6kjkhzbxmhz3nfyu@skbuf>
+References: <20210603115032.2470-1-michael.wei.hong.sit@intel.com>
+ <20210603130851.GS30436@shell.armlinux.org.uk>
+ <20210603132809.2z3jhpuxaryaql6v@skbuf>
+ <SA2PR11MB505112FA44105D2F3DDB113E9D3C9@SA2PR11MB5051.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210603131124.GA1040254@roeck-us.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <SA2PR11MB505112FA44105D2F3DDB113E9D3C9@SA2PR11MB5051.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 06:11:24AM -0700, Guenter Roeck wrote:
-> On Thu, Jun 03, 2021 at 01:43:36PM +0100, Lee Jones wrote:
-> > On Tue, 15 Oct 2019 at 15:52, Thierry Reding <thierry.reding@gmail.com>
+On Thu, Jun 03, 2021 at 01:43:09PM +0000, Sit, Michael Wei Hong wrote:
+> Vladimir,
+> 
+> > -----Original Message-----
+> > From: Vladimir Oltean <olteanv@gmail.com>
+> > Sent: Thursday, June 3, 2021 9:28 PM
+> > To: Russell King (Oracle) <linux@armlinux.org.uk>
+> > Cc: Sit, Michael Wei Hong <michael.wei.hong.sit@intel.com>;
+> > Jose.Abreu@synopsys.com; andrew@lunn.ch;
+> > hkallweit1@gmail.com; kuba@kernel.org;
+> > netdev@vger.kernel.org; peppe.cavallaro@st.com;
+> > alexandre.torgue@foss.st.com; davem@davemloft.net;
+> > mcoquelin.stm32@gmail.com; Voon, Weifeng
+> > <weifeng.voon@intel.com>; Ong, Boon Leong
+> > <boon.leong.ong@intel.com>; Tan, Tee Min
+> > <tee.min.tan@intel.com>; vee.khee.wong@linux.intel.com;
+> > Wong, Vee Khee <vee.khee.wong@intel.com>; linux-stm32@st-
+> > md-mailman.stormreply.com; linux-arm-
+> > kernel@lists.infradead.org; linux-kernel@vger.kernel.org
+> > Subject: Re: [RESEND PATCH net-next v4 0/3] Enable 2.5Gbps
+> > speed for stmmac
+> > 
+> > Michael,
+> > 
+> > On Thu, Jun 03, 2021 at 02:08:51PM +0100, Russell King (Oracle)
 > > wrote:
-> > 
-> > > From: Guenter Roeck <linux@roeck-us.net>
+> > > Hi,
 > > >
-> > > Register with kernel restart handler instead of setting arm_pm_restart
-> > > directly.
+> > > On Thu, Jun 03, 2021 at 07:50:29PM +0800, Michael Sit Wei Hong
+> > wrote:
+> > > > Intel mGbE supports 2.5Gbps link speed by overclocking the
+> > clock
+> > > > rate by 2.5 times to support 2.5Gbps link speed. In this mode,
+> > the
+> > > > serdes/PHY operates at a serial baud rate of 3.125 Gbps and
+> > the PCS
+> > > > data path and GMII interface of the MAC operate at 312.5
+> > MHz instead of 125 MHz.
+> > > > This is configured in the BIOS during boot up. The kernel
+> > driver is
+> > > > not able access to modify the clock rate for 1Gbps/2.5G mode
+> > on the
+> > > > fly. The way to determine the current 1G/2.5G mode is by
+> > reading a
+> > > > dedicated adhoc register through mdio bus.
 > > >
-> > > Select a high priority of 192 to ensure that default restart handlers
-> > > are replaced if Xen is running.
+> > > How does this interact with Vladimir's "Convert xpcs to
+> > phylink_pcs_ops"
+> > > series? Is there an inter-dependency between these, or a
+> > preferred
+> > > order that they should be applied?
 > > >
-> > > Acked-by: Arnd Bergmann <arnd@arndb.de>
-> > > Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> > > Reviewed-by: Stefano Stabellini <stefano.stabellini@eu.citrix.com>
-> > > Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> > > Signed-off-by: Thierry Reding <treding@nvidia.com>
-> > > ---
-> > >  arch/arm/xen/enlighten.c | 12 ++++++++++--
-> > >  1 file changed, 10 insertions(+), 2 deletions(-)
-> > >
+> > > Thanks.
 > > 
-> > This patch does appear to be useful.
+> > My preferred order would be for my series to go in first, if
+> > possible, because I don't have hardware readily available to test,
+> > and VK already has tested my patches a few times until they
+> > reached a stable state.
 > > 
-> > Is this just being solved in downstream trees at the moment?
+> > I went through your patches and I think rebasing on top of my
+> > phylink_pcs_ops conversion should be easy.
 > > 
-> > It would be nice if we could relinquish people of this burden and get it
-> > into Mainline finally.
-> > 
-> 
-> There must have been half a dozen attempts to send this patch series
-> upstream. I have tried, and others have tried. Each attempt failed with
-> someone else objecting for non-technical reasons (such as "we need more
-> reviews") or no reaction at all, and maintainers just don't pick it up.
-> 
-> So, yes, this patch series can only be found in downstream trees,
-> and it seems pointless to submit it yet again.
+> > Thanks.
+> Sure! I am okay to let you merge your codes and rebase my changes later on
+> Do let me know when I can start rebasing and send in the next revision
 
-It has plenty of reviews and acks, so that's not the problem. If you
-look back at the 2019 attempt:
-
-1) there was a pull request sent on the 2 October 2019 to the arm soc
-   guys to merge a series that quite obviously is outside of their
-   remit as it touches mostly ARM core code - it should have been
-   sent to me but wasn't, not even as a Cc.
-
-2) I raised that issue, and as I could find no trace of the patches,
-   I asked for the to be posted - which they were, eventually, two
-   weeks later. It looks like I completely missed the patches amongst
-   all the other email I don't bother to read anymore though. In any
-   case, the pull request by that time would have been completely
-   forgotten about.
-
-And that's where it ended - no apparent follow-ups until now.
-
-*Shrug*.
-
-So in summary, I was expected to notice the patches amongst all the
-other email, and then remember that there was a pull request that
-wasn't even addressed to me...
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Well, you are already copied to my patches, so you should get the
+notification email at the same time as I would.
+https://patchwork.kernel.org/project/netdevbpf/cover/20210602162019.2201925-1-olteanv@gmail.com/
