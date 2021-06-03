@@ -2,105 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9DC939A67E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1FC39A67B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbhFCRBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 13:01:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38532 "EHLO mail.kernel.org"
+        id S229999AbhFCRAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 13:00:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229719AbhFCRBR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 13:01:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44AA461159;
-        Thu,  3 Jun 2021 16:59:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622739572;
-        bh=2bpSvYxrY6Qyoz1hWqDvV4VCCHIO33THExEDG03/W3k=;
-        h=From:To:Cc:Subject:Date:From;
-        b=fV5pSS4urHEafoFoZwLNHvHg9OTCMFs+Cm+gxmYqs6XZWm/xmfgGGs1ag3mSztZ3P
-         TvktoNobawWbgUuzATf6FieJXcv2EuX4oKDwWu7v2pgYcZlOGIqbRYZUiK+lsH7vWz
-         PR3WxR2cC3ouzxOw+Lcq6vBX/YAugHrPYYRGWI1ujxozzINwBfTOkmrxbS2mQ4RqUa
-         awPbtlmFY4KgeHm8eIG5vxFVe8tyj2519mLC8W8kmPh929q3f/+EN2cXUgwDjoSHA3
-         /m0tBjx6/bomrbi3XoaUvdWAd4fX4iierZo4Tz3GLPGmlgedx1sbFC4W2tonVD+9IJ
-         JpSaA9LtWe12w==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH net-next] net: ks8851: Make ks8851_read_selftest() return void
-Date:   Thu,  3 Jun 2021 09:56:13 -0700
-Message-Id: <20210603165612.2088040-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.32.0.rc0
+        id S229719AbhFCRAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 13:00:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E671B61159;
+        Thu,  3 Jun 2021 16:58:42 +0000 (UTC)
+Date:   Thu, 3 Jun 2021 17:58:40 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v13 6/8] KVM: arm64: Expose KVM_ARM_CAP_MTE
+Message-ID: <20210603165840.GG20338@arm.com>
+References: <20210524104513.13258-1-steven.price@arm.com>
+ <20210524104513.13258-7-steven.price@arm.com>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210524104513.13258-7-steven.price@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-clang points out that ret in ks8851_read_selftest() is set but unused:
+On Mon, May 24, 2021 at 11:45:11AM +0100, Steven Price wrote:
+> It's now safe for the VMM to enable MTE in a guest, so expose the
+> capability to user space.
+> 
+> Signed-off-by: Steven Price <steven.price@arm.com>
 
-drivers/net/ethernet/micrel/ks8851_common.c:1028:6: warning: variable
-'ret' set but not used [-Wunused-but-set-variable]
-        int ret = 0;
-            ^
-1 warning generated.
-
-The return code of this function has never been checked so just remove
-ret and make the function return void.
-
-Fixes: 3ba81f3ece3c ("net: Micrel KS8851 SPI network driver")
-Suggested-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- drivers/net/ethernet/micrel/ks8851_common.c | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/net/ethernet/micrel/ks8851_common.c b/drivers/net/ethernet/micrel/ks8851_common.c
-index 13eef6e9bd2d..831518466de2 100644
---- a/drivers/net/ethernet/micrel/ks8851_common.c
-+++ b/drivers/net/ethernet/micrel/ks8851_common.c
-@@ -1022,30 +1022,23 @@ static int ks8851_mdio_write(struct mii_bus *bus, int phy_id, int reg, u16 val)
-  *
-  * Read and check the TX/RX memory selftest information.
-  */
--static int ks8851_read_selftest(struct ks8851_net *ks)
-+static void ks8851_read_selftest(struct ks8851_net *ks)
- {
- 	unsigned both_done = MBIR_TXMBF | MBIR_RXMBF;
--	int ret = 0;
- 	unsigned rd;
- 
- 	rd = ks8851_rdreg16(ks, KS_MBIR);
- 
- 	if ((rd & both_done) != both_done) {
- 		netdev_warn(ks->netdev, "Memory selftest not finished\n");
--		return 0;
-+		return;
- 	}
- 
--	if (rd & MBIR_TXMBFA) {
-+	if (rd & MBIR_TXMBFA)
- 		netdev_err(ks->netdev, "TX memory selftest fail\n");
--		ret |= 1;
--	}
- 
--	if (rd & MBIR_RXMBFA) {
-+	if (rd & MBIR_RXMBFA)
- 		netdev_err(ks->netdev, "RX memory selftest fail\n");
--		ret |= 2;
--	}
--
--	return 0;
- }
- 
- /* driver bus management functions */
-
-base-commit: 270d47dc1fc4756a0158778084a236bc83c156d2
--- 
-2.32.0.rc0
-
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
