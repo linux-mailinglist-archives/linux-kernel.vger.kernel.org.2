@@ -2,99 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2974399F40
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 12:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27042399F42
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 12:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbhFCKvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 06:51:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58974 "EHLO mail.kernel.org"
+        id S229864AbhFCKwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 06:52:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:37990 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229610AbhFCKvh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 06:51:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5078613D7;
-        Thu,  3 Jun 2021 10:49:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622717380;
-        bh=6OlX9x3+XHXJ7v9moQR32AIeoio0fEe7x+xwomJdmyU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F/gF71yJf6oppuBrOyO9EOvDTJb86upBKKZe1ZSQJFYiBnIJwRScFKj+EQ3KhcqpA
-         yiw78D0N1SGXbOz7eC3XHaHkZ9WtEpIlMgksl4OVy/Gdm25DnBAsQSdiXHLP9qqQPV
-         nPUH+rwfSX5nVvGYiQAb9ozRcTazm10kq2pN4hiI=
-Date:   Thu, 3 Jun 2021 12:49:37 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "tiantao (H)" <tiantao6@huawei.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Tian Tao <tiantao6@hisilicon.com>, rafael@kernel.org,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        jonathan.cameron@huawei.com, song.bao.hua@hisilicon.com,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH v3 1/3] lib: bitmap: introduce bitmap_print_to_buf
-Message-ID: <YLizweXUvRgB1l9I@kroah.com>
-References: <1622712162-7028-1-git-send-email-tiantao6@hisilicon.com>
- <1622712162-7028-2-git-send-email-tiantao6@hisilicon.com>
- <YLil8ZOpQSsAB5i0@smile.fi.intel.com>
- <95f5e01d-79c1-28f3-f27b-bee4398308de@huawei.com>
+        id S229817AbhFCKw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 06:52:29 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7C0431063;
+        Thu,  3 Jun 2021 03:50:44 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0F8FC3F774;
+        Thu,  3 Jun 2021 03:50:41 -0700 (PDT)
+Subject: Re: [sched/pelt] e906550aca:
+ WARNING:at_kernel/sched/fair.c:#update_blocked_averages
+To:     kernel test robot <oliver.sang@intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     0day robot <lkp@intel.com>, LKML <linux-kernel@vger.kernel.org>,
+        lkp@lists.01.org, ltp@lists.linux.it, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com, rostedt@goodmis.org,
+        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+        odin@uged.al, aubrey.li@linux.intel.com, yu.c.chen@intel.com
+References: <20210602064526.GB9872@xsang-OptiPlex-9020>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <56316b95-3ec5-74e6-a4f7-d91aea022abe@arm.com>
+Date:   Thu, 3 Jun 2021 12:50:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <95f5e01d-79c1-28f3-f27b-bee4398308de@huawei.com>
+In-Reply-To: <20210602064526.GB9872@xsang-OptiPlex-9020>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 06:33:25PM +0800, tiantao (H) wrote:
-> 
-> 在 2021/6/3 17:50, Andy Shevchenko 写道:
-> > On Thu, Jun 03, 2021 at 05:22:40PM +0800, Tian Tao wrote:
-> > > New API bitmap_print_to_buf() with bin_attribute to avoid maskp
-> > > exceeding PAGE_SIZE. bitmap_print_to_pagebuf() is a special case
-> > > of bitmap_print_to_buf(), so in bitmap_print_to_pagebuf() call
-> > > bitmap_print_to_buf().
-> > ...
-> > 
-> > >   /**
-> > > + * bitmap_print_to_buf - convert bitmap to list or hex format ASCII string
-> > > + * @list: indicates whether the bitmap must be list
-> > > + * @buf: the kernel space buffer to read to
-> > > + * @maskp: pointer to bitmap to convert
-> > > + * @nmaskbits: size of bitmap, in bits
-> > > + * @off: offset in data buffer below
-> > > + * @count: the maximum number of bytes to print
-> > > + *
-> > > + * The role of bitmap_print_to_buf() and bitmap_print_to_pagebuf() is
-> > > + * the same, the difference is that buf of bitmap_print_to_buf()
-> > > + * can be more than one pagesize.
-> > > + */
-> > > +int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
-> > > +			int nmaskbits, loff_t off, size_t count)
-> > > +{
-> > > +	const char *fmt = list ? "%*pbl\n" : "%*pb\n";
-> > > +	ssize_t size;
-> > > +	void *data;
-> > > +
-> > > +	if (off == LLONG_MAX && count == PAGE_SIZE - offset_in_page(buf))
-> > > +		return scnprintf(buf, count, fmt, nmaskbits, maskp);
-> > > +
-> > > +	data = kasprintf(GFP_KERNEL, fmt, nmaskbits, maskp);
-> > > +	if (!data)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	size = memory_read_from_buffer(buf, count, &off, data, strlen(data) + 1);
-> > Are you sure you have put parameters in the correct order?
-> 
-> yes, I already test it.
+On 02/06/2021 08:45, kernel test robot wrote:
 
-Great, can you add the test to the patch series as well so that we can
-make sure it does not break in the future?
+[...]
 
-thanks,
+> kern :warn : [   40.989618] WARNING: CPU: 2 PID: 253 at kernel/sched/fair.c:8029 update_blocked_averages (kbuild/src/consumer/kernel/sched/fair.c:8029 kbuild/src/consumer/kernel/sched/fair.c:8065 kbuild/src/consumer/kernel/sched/fair.c:8152) 
 
-greg k-h
+Hit something like this on my Ubuntu i7-7567U as well.
+
+With more debugging:
+
+[    7.388006] WARNING: CPU: 1 PID: 926 at kernel/sched/fair.c:8029 update_blocked_averages+0x30d/0x7e0
+...
+[    7.388167] path=/autogroup-2 load_avg=1 util_avg=0 runnable_avg=1
+
+IMHO, this is because this patch needs:
+
+(1) sched/pelt: ensure that *_sum is always synced with *_avg (2021-06-03 Vincent Guittot)
+
+https://lkml.kernel.org/r/20210601085832.12626-1-vincent.guittot@linaro.org
+
+(2) sched/fair: Keep load_avg and load_sum synced (2021-06-03 Vincent Guittot)
+
+tip/sched/urgent 7c7ad626d9a0
+
+Using both patches underneath makes this warning go away.
+
