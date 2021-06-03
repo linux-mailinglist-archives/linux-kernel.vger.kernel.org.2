@@ -2,113 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38EBD39AC29
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 22:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A54A39AC2F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 23:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbhFCVA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 17:00:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45796 "EHLO mail.kernel.org"
+        id S230050AbhFCVBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 17:01:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229881AbhFCVA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 17:00:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FC4D6121D;
-        Thu,  3 Jun 2021 20:58:42 +0000 (UTC)
+        id S229656AbhFCVBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 17:01:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8FCB86121D;
+        Thu,  3 Jun 2021 21:00:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622753922;
-        bh=ZgUmVsDe/y2JJgsw/jVz/sgrfKejv8VUjfp3+iSfR4U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=HKjMpAIrJAUBto2R9uu3vI7wBwsvSe1z73kIePLZq7GjGn21ladp6L9ustGjlDtNV
-         33Xrdy04OSBcZMBcVTCL3cs8BHm7ObfyXlJ1uE7byEBNHpSUM5Hb0buLxlzUsOvZHr
-         hWEDPxbDMd6Ik3/eprIYIxWY7UfLm7BZrDDjjExcETb5I/R6lmKiqS7KfISY38pV6k
-         e0y+SpPBuV96iuMYCJmpnvkKZjjSDploQx9ULlp9wP/0RoGkcfZ5gEVxciKDwqRJuS
-         nvkzjdiYXNrK31chC2RgnOV8uaH1HTBAvCfgDhISJOXNCq7DHxB3dJQdVNp1VEJ5OQ
-         QxsUpXuAKh7dg==
-Date:   Thu, 3 Jun 2021 15:58:41 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Jim Quinlan <jim2101024@gmail.com>, linux-pci@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 4/4] PCI: brcmstb: add shutdown call to driver
-Message-ID: <20210603205841.GA2139914@bjorn-Precision-5520>
+        s=k20201202; t=1622754004;
+        bh=HpPngmB+9glNRVTA0aVyKBaV3ArWxSfk09rbGm2BcFc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=UjHwBk1c7e+KhUDfehoiUnh1jaeC6cv3HvmItYKbqbN/2tO+TyGdYMmiLO/734Uv1
+         6a0dM40sSpEH9T/azrxM6q1lbIzALX0wWR76nPv7b27jbJLPfKN1xxtgpq8eI3yVr+
+         mQOE1lzsuUzZHnepVFXj0civ/5tcplOUZqNQZbAgvRMBAP1o1sGtqK5JtUbSsGctID
+         7mp1JoN9WHWAgVW9j2sAODUqiKq7lWg3oatB6VEGD+s1SjizXMRPoNtBddyFnvU2nB
+         jkmDtdFhLhZ4deDP/psgREjHsqkDie2G2FJDO0P16FK3A0G7j9lrUSZw3BPOKRsh/M
+         2UGYk75NkaWXA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7D2E5609D9;
+        Thu,  3 Jun 2021 21:00:04 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dbd96bb2-4873-a37c-567d-ffd731beb927@gmail.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] rtnetlink: Fix missing error code in rtnl_bridge_notify()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162275400450.32659.9570791901198917491.git-patchwork-notify@kernel.org>
+Date:   Thu, 03 Jun 2021 21:00:04 +0000
+References: <1622628904-93532-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1622628904-93532-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 10:30:37AM -0700, Florian Fainelli wrote:
-> On 6/3/21 10:23 AM, Bjorn Helgaas wrote:
-> > On Wed, May 26, 2021 at 10:03:47AM -0700, Florian Fainelli wrote:
-> >> On 5/25/21 2:18 PM, Bjorn Helgaas wrote:
-> >>> On Tue, Apr 27, 2021 at 01:51:39PM -0400, Jim Quinlan wrote:
-> >>>> The shutdown() call is similar to the remove() call except the former does
-> >>>> not need to invoke pci_{stop,remove}_root_bus(), and besides, errors occur
-> >>>> if it does.
-> >>>
-> >>> This doesn't explain why shutdown() is necessary.  "errors occur"
-> >>> might be a hint, except that AFAICT, many similar drivers do invoke
-> >>> pci_stop_root_bus() and pci_remove_root_bus() (several of them while
-> >>> holding pci_lock_rescan_remove()), without implementing .shutdown().
-> >>
-> >> We have to implement .shutdown() in order to meet a certain power budget
-> >> while the chip is being put into S5 (soft off) state and still support
-> >> Wake-on-WLAN, for our latest chips this translates into roughly 200mW of
-> >> power savings at the wall. We could probably add a word or two in a v2
-> >> that indicates this is done for power savings.
-> > 
-> > "Saving power" is a great reason to do this.  But we still need to
-> > connect this to the driver model and the system-level behavior
-> > somehow.
-> > 
-> > The pci_driver comment says @shutdown is to "stop idling DMA
-> > operations" and it hooks into reboot_notifier_list in kernel/sys.c.
-> > That's incorrect or at least incomplete because reboot_notifier_list
-> > isn't mentioned at all in kernel/sys.c, and I don't see the connection
-> > between @shutdown and reboot_notifier_list.
-> > 
-> > AFAICT, @shutdown is currently used in this path:
-> > 
-> >   kernel_restart_prepare or kernel_shutdown_prepare
-> >     device_shutdown
-> >       dev->bus->shutdown
-> >         pci_device_shutdown                     # pci_bus_type.shutdown
-> >           drv->shutdown
-> > 
-> > so we're going to either reboot or halt/power-off the entire system,
-> > and we're not going to use this device again until we're in a
-> > brand-new kernel and we re-enumerate the device and re-register the
-> > driver.
-> > 
-> > I'm not quite sure how either of those fits into the power-saving
-> > reason.  I guess going to S5 is probably via the kernel_power_off()
-> > path and that by itself doesn't turn off as much power to the PCIe
-> > controller as it could?  And this new .shutdown() method will get
-> > called in that path and will turn off more power, but will still leave
-> > enough for wake-on-LAN to work?  And when we *do* wake from S5,
-> > obviously that means a complete boot with a new kernel.
+Hello:
+
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Wed,  2 Jun 2021 18:15:04 +0800 you wrote:
+> The error code is missing in this code scenario, add the error code
+> '-EINVAL' to the return value 'err'.
 > 
-> Correct, the S5 shutdown is via kernel_power_off() and will turn off all
-> that we can in the PCIe root complex and its PHY, drop the PCIe link to
-> the end-point which signals that the end-point can enter its own suspend
-> logic, too. And yes, when we do wake-up from S5 it means booting a
-> completely new kernel. S5 is typically implemented in our chips by
-> keeping just a little bit of logic active to service wake-up events
-> (infrared remotes, GPIOs, RTC, etc.).
+> Eliminate the follow smatch warning:
+> 
+> net/core/rtnetlink.c:4834 rtnl_bridge_notify() warn: missing error code
+> 'err'.
+> 
+> [...]
 
-Which part of that does this patch change?  Is it that the new
-.shutdown() turns off more power than machine_power_off() does by
-itself?
+Here is the summary with links:
+  - rtnetlink: Fix missing error code in rtnl_bridge_notify()
+    https://git.kernel.org/netdev/net/c/a8db57c1d285
 
-Bjorn
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
