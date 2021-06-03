@@ -2,171 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A93BD39AAA8
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A10F139AAAD
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbhFCTJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 15:09:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48480 "EHLO
+        id S229786AbhFCTKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 15:10:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFCTJS (ORCPT
+        with ESMTP id S229667AbhFCTKc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 15:09:18 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 212F1C06174A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 12:07:33 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id u30so7020211qke.7
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 12:07:33 -0700 (PDT)
+        Thu, 3 Jun 2021 15:10:32 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69949C06174A;
+        Thu,  3 Jun 2021 12:08:47 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id c11so8481338ljd.6;
+        Thu, 03 Jun 2021 12:08:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=j1A5KVJOcx2Sm/u6BzmYkKLVORkN+8973B9sz+toaOM=;
-        b=DxJJe+sS3pZmKekJ7WUEU3udkpFiy/cthYRmwPXFXjO2t48zZcaDEQtfe95cyb0nh2
-         Ty5LJLkKnflgq4BScb5FM3CWAhaiJnk88gFHBAgw+V0xG4eQgIXAJ2cEqTlQv0Icxmyy
-         J2JTuNFMIYeACbppEwU/kYMwCZQ3/hVpN9M8bUunh9aeCxT+Py7p8K/dPdtb8O3avyQp
-         dBK97ei4/1FXNfqBi+fKboPMNKZOz3dnRTPsxL8bBl8Rwe1coC5uyY0WSaUo7n3KIQyy
-         HTXnFw32p9oV8LhjMDc0nSJpFKTLDdgrTosILMhS05fLozoUjpsUTe1Ok5390BX2f1nA
-         2LrQ==
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tSg8tzkQArywSk43mbgKRBHIz2Yfe5Of+oE/8zi9t+M=;
+        b=JG/HwBkaJ55V8FyaTfwresS1WJPGo918x+rSkU/RebcMnjdEsBfpTwRL4BM9L07kV+
+         tjfFI0DnEFbVaAgk2uBRZUk9fVWCJrjU6wc2faqB83+GS+5jL62wjZwyOiI8u8DDMVRJ
+         N+O4tuUwbg1NPBAqYAUl+Pfl9XKckm/N8ZKfHwQYFb3XGGKSnrVfdz3lRisd4Q2tGDIQ
+         lLoob6FG5LWx7ALMFe6D5KjPlVg6P4G/bTrGhYrB7Mxtar1tsorADQTnl3PK/CgJpeNf
+         fQZUFJXt+ZeEiMDPRKAkpWz+AfM3pLGoS+3l7DdSnCDpGKRtgfng/qvo70QLaNqgDEAb
+         0GqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=j1A5KVJOcx2Sm/u6BzmYkKLVORkN+8973B9sz+toaOM=;
-        b=akylpLEbKEJ6Ll2FjiO1wn85So8Lr6fmWUIlbGVq+jDvlxn9j1t7Dg8n7mXtsTM6tI
-         e9P0m7IUaWBKwfFWvauQzz0UXC+XwHRLkfrz/AgjV9PLzremyEbu6D72MRV6Xjq3vSSi
-         WDraOGFO/VDOiqZHiRcMzs4UdQ2sxFJI/WqMhuCoFOO4+JfjF2zo2SjtsREwIKqB/F4C
-         5yddsFy7VpNjgSvuv3+uMxanE7d6cUrmrAko/lD+BEoQc+tcLerm3scYZ4QR0ANkvs6K
-         PBwqeKGdDyrDh7uEtImZ68xsydUXIQNLuABq0+Oc5gaC5M6Pk71iJOvGhKILrZBlf5yT
-         Hazg==
-X-Gm-Message-State: AOAM530z3MgQ94j2imzWlUFNrOIdRAUqwUW7mMa5W+i8ziMrmqV0BsO0
-        nhGU3VPys09WuSWJonG2bHC9bxHgdNOXAQ==
-X-Google-Smtp-Source: ABdhPJy0iLvQA3EpRpciKhPlEkLxhoPyCANwdMooLs3uoQCCY5zReAZamVDSUB5Nz1XmH4UP27XScg==
-X-Received: by 2002:ae9:f310:: with SMTP id p16mr697061qkg.267.1622747251960;
-        Thu, 03 Jun 2021 12:07:31 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id v8sm2451410qkg.102.2021.06.03.12.07.30
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 03 Jun 2021 12:07:31 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 12:07:18 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-cc:     Hugh Dickins <hughd@google.com>, Ming Lin <mlin@kernel.org>,
-        Simon Ser <contact@emersion.fr>, Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: [PATCH 2/2] mm: adds NOSIGBUS extension for out-of-band shmem
- read
-In-Reply-To: <CAHk-=wiHJ2GF503wnhCC4jsaSWNyq5=NqOy7jpF_v_t82AY0UA@mail.gmail.com>
-Message-ID: <alpine.LSU.2.11.2106031142250.11088@eggly.anvils>
-References: <1622589753-9206-1-git-send-email-mlin@kernel.org> <1622589753-9206-3-git-send-email-mlin@kernel.org> <alpine.LSU.2.11.2106011913590.3353@eggly.anvils> <79a27014-5450-1345-9eea-12fc9ae25777@kernel.org> <alpine.LSU.2.11.2106021719500.8333@eggly.anvils>
- <CAHk-=wiHJ2GF503wnhCC4jsaSWNyq5=NqOy7jpF_v_t82AY0UA@mail.gmail.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tSg8tzkQArywSk43mbgKRBHIz2Yfe5Of+oE/8zi9t+M=;
+        b=HxJBNaFcNRaYbiaY6joelkTTgC/B61ynPYx13iQWLONj5k7pg+cuFF2vXIo1Mwazat
+         qi9nKT1CydTS2BnWFXWeufu947+akGFZuEkupivvFDZnvJntpk4ex/wSTjGTw27S9SxO
+         cbMv6Ngo6CyAwEMsUJewpPI4vqhjq4Kj/nOAzlRgERURDjgHlWdfs+gd4B7DqKhv7yYh
+         H93u5II0h5d7fWgxzWcDm/UYnvbqeMwIv4nj6ekfArIcA7ZP61Qc1kJUAVV91JD6p2Px
+         Oi9w/4WZjw1+iKR7m6G3MJZPBxEaycbRhNSqZ7QhcG9djz83Y1UXELwx4i2PGgFrFFXK
+         c+5w==
+X-Gm-Message-State: AOAM532LBiQI7hZsCHlAlt5jwI3hbHpD6zXwMnOZMPO0kZv/Ztl5jscY
+        zStHiyGwIP7s/KZErEuqSNCnSSe8M74=
+X-Google-Smtp-Source: ABdhPJw3EI+7WIk7yuTpQPpGCBcBGAHcCTKZfUumUYF3Byn1/NF3wKOLTi0a7tcmGemaz7fF42KTRg==
+X-Received: by 2002:a2e:bf14:: with SMTP id c20mr602441ljr.57.1622747324663;
+        Thu, 03 Jun 2021 12:08:44 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-170-222.dynamic.spd-mgts.ru. [79.139.170.222])
+        by smtp.googlemail.com with ESMTPSA id o19sm396996lfd.22.2021.06.03.12.08.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Jun 2021 12:08:44 -0700 (PDT)
+Subject: Re: [PATCH v2 3/4] PM: domains: Drop/restore performance state votes
+ for devices at runtime PM
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-pm@vger.kernel.org
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org
+References: <20210603093438.138705-1-ulf.hansson@linaro.org>
+ <20210603093438.138705-4-ulf.hansson@linaro.org>
+ <a7f55fce-dd4a-22ab-f7e2-4821e765a634@gmail.com>
+Message-ID: <1f71868c-7274-b4f8-e66d-dfb47cf44731@gmail.com>
+Date:   Thu, 3 Jun 2021 22:08:43 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <a7f55fce-dd4a-22ab-f7e2-4821e765a634@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Jun 2021, Linus Torvalds wrote:
-> On Wed, Jun 2, 2021 at 5:46 PM Hugh Dickins <hughd@google.com> wrote:
-> >
-> > Ideally you can simply call do_anonymous_page() from __do_fault()
-> > in the VM_FAULT_SIGBUS on VM_NOSIGBUS case.
+03.06.2021 22:02, Dmitry Osipenko пишет:
+> 03.06.2021 12:34, Ulf Hansson пишет:
+>> A subsystem/driver that need to manage OPPs for its device, should
+>> typically drop its vote for the OPP when the device becomes runtime
+>> suspended. In this way, the corresponding aggregation of the performance
+>> state votes that is managed in genpd for the attached PM domain, may find
+>> that the aggregated vote can be decreased. Hence, it may allow genpd to set
+>> the lower performance state for the PM domain, thus avoiding to waste
+>> energy.
+>>
+>> To accomplish this, typically a subsystem/driver would need to call
+>> dev_pm_opp_set_rate|opp() for its device from its ->runtime_suspend()
+>> callback, to drop the vote for the OPP. Accordingly, it needs another call
+>> to dev_pm_opp_set_rate|opp() to restore the vote for the OPP from its
+>> ->runtime_resume() callback.
+>>
+>> To avoid boilerplate code in subsystems/driver to deal with these things,
+>> let's instead manage this internally in genpd.
+>>
+>> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+>> ---
+>>
+>> Changes in v2:
+>> 	- Rebased.
+>> 	- A few minor cosmetic changes.
+>> 	- Deal with the error path in genpd_runtime_resume().
 > 
-> Heh.
+> I tested this on NVIDIA Tegra by removing the boilerplate code from
+> drivers' RPM and haven't noticed any problems, the performance state is
+> dropped/restored as expected. Thank you.
 > 
-> We're actually then back to my original patch.
-> 
-> That one doesn't handle shared mappings (even read-only ones), for the
-> simple reason that do_anonymous_page() refuses to insert anonymous
-> pages into a shared mapping, and has
-> 
->         /* File mapping without ->vm_ops ? */
->         if (vma->vm_flags & VM_SHARED)
->                 return VM_FAULT_SIGBUS;
-> 
-> at the very top.
-> 
-> But yes, if we just remove that check, I think my original patch
-> should actually "JustWork(tm)".
 
-But no!
-
-Sorry, I don't have time for this at present, so haven't looked at
-your original patch.
-
-But the point that we've arrived at, that I'm actually now fairly
-happy with, is do *not* permit MAP_NOSIGBUS on MAP_SHARED mappings.
-
-I didn't check the placement yet, easy to get wrong, but I believe
-Ming Lin is now enforcing that over at the mmap() end.
-
-On a MAP_PRIVATE mapping, the nasty opaque blob of zeroes can
-claim some precedent in what already happens with COW'ed pages.
-
-Which leaves MAP_NOSIGBUS on MAP_SHARED as currently unsupported,
-perhaps never supported on anything, perhaps one day supported on
-shmem; but if it's ever supported then that one will naturally be
-transparent to future changes in page cache - we call that "shared".
-
-Of course, internally, there's the in-between case of MAP_SHARED
-without PROT_WRITE and without writable fd: VM_MAYSHARE without
-VM_SHARED or VM_MAYWRITE.  We *could* let that one accept
-MAP_NOSIGBUS, but who wants to write the manpage for it?
-
-Please stick to MAP_PRIVATE: that's good enough.
-
-> 
-> I'm attaching it again, with old name and old commentary (ie that
-> 
->     /* FIXME! We don't have a VM_NOFAULT bit */
-> 
-> should just be replaced with that VM_NOSIGBUS bit instead, and the
-> #if'ed out region should be enabled.
-> 
-> Oh, and we need to think hard about one more case: mprotect().
-> 
-> In particular, I think the attached patch fails horribly for the case
-> of a shared mapping that starts out read-only, then inserts a zero
-> page, then somebody does mprotect(MAP_WRITE), and then writes to the
-> page. I haven't checked what the write protect fault handler does, but
-> I think that for a shared mapping it will just make the page dirty and
-> writable.
-
-Obviously the finished patch will need to be scrutinized carefully, but
-I think the mprotect() questions vanish when restricted to MAP_PRIVATE.
-
-> 
-> Which would be horribly wrong for VM_NOSIGBUS.
-> 
-> So that support infrastructure that adds MAP_NOSIGBUS, and checks that
-> it is only done on a read-only mapping, also has to make sure that it
-> clears the VM_MAYWRITE bit when it sets VM_NOSIGBUS.
-> 
-> That way mprotect can't then later make it writable.
-> 
-> Hugh, comments on this approach?
-
-Comments above, just stick to MAP_PRIVATE.
-
-Hugh
-
-> 
-> Again: this patch is my *OLD* one, I didn't try to update it to the
-> new world order. It requires
-> 
->  - Ming's MAP_NOSIGBUS ccode
-> 
->  - removal of that "File mapping without ->vm_ops" case
-> 
->  - that FIXME fixed and name updated
-> 
->  - and that VM_MAYWRITE clearing if VM_NOSIGBUS is set, to avoid the
-> mprotect issue.
-> 
-> Hmm?
-> 
->                   Linus
+Tested-by: Dmitry Osipenko <digetx@gmail.com>
