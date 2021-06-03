@@ -2,75 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A4B3997C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 03:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABCA33997C9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 03:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhFCB4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Jun 2021 21:56:20 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:35667 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbhFCB4S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Jun 2021 21:56:18 -0400
-Received: by mail-oi1-f174.google.com with SMTP id v22so4742963oic.2;
-        Wed, 02 Jun 2021 18:54:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5REQDOInYr+Rxz1Hbv6uToT1N9uIZqHL7TEfsvN/SsI=;
-        b=J/6igK7mF37CqBPQZOipUyxkssIU402nVi6+zXqw27rO2T6YA9zKhRelS0bm18UwYh
-         yojWCZ+IOmZDppVllR01fCbIndUuBp3Lc/n2w9gpN82nqjB4UYpvd0rh2ZPeUjRs/o7m
-         yRf0O59iBWESrqINQsO/yKQAQJzwZv6VQ1BEFEaBSiUWxWWA565deHFfsYtAQAtwLmal
-         POCSgUvJDj9+4nTOGVFoD8PAaIADB77+lFMk7Whv7dWE2GYUWFg7mxzUiIu/S2ysLwHq
-         urA+EEFvR2VPHcbMGqZC9J6phTcmJx/yELDeAQbFoDC+5Px3DN/HWAicIUyHLXeCZdgK
-         qfVg==
-X-Gm-Message-State: AOAM533tbh5vwLeTxCsnyzMJNIRkid9hkFxi9GgG+FIM1wbgqSTyLKbv
-        sJN6v+3Ke4uPXk3Jh9eVnQ==
-X-Google-Smtp-Source: ABdhPJxBGswFS8v+XqMBHoWogwVlR6GsKdAifZEzB0x0rZK9KvzU/6hbXOChq/jsdSef8Qr7NwM5Vg==
-X-Received: by 2002:aca:fc84:: with SMTP id a126mr5806199oii.49.1622685274188;
-        Wed, 02 Jun 2021 18:54:34 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id u6sm377910otk.63.2021.06.02.18.54.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 18:54:33 -0700 (PDT)
-Received: (nullmailer pid 378697 invoked by uid 1000);
-        Thu, 03 Jun 2021 01:54:32 -0000
-Date:   Wed, 2 Jun 2021 20:54:32 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 02/12] dt-bindings: power: supply: cpcap-charger: update
- cpcap-charger.yaml reference
-Message-ID: <20210603015432.GA378600@robh.at.kernel.org>
-References: <cover.1622648507.git.mchehab+huawei@kernel.org>
- <e9ce216362b7b9dcf84d707a3854247123440bf7.1622648507.git.mchehab+huawei@kernel.org>
+        id S229736AbhFCB6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Jun 2021 21:58:20 -0400
+Received: from mga03.intel.com ([134.134.136.65]:25459 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229567AbhFCB6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Jun 2021 21:58:19 -0400
+IronPort-SDR: oRsrnTnzhLYAbUj1uKUow/1HRm0BZTc3ahGuCFiwZ3dvqAzT4hupl/yAoyh98kitDRxUr9Vooa
+ cKiZnrH/QDEQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10003"; a="203972542"
+X-IronPort-AV: E=Sophos;i="5.83,244,1616482800"; 
+   d="scan'208";a="203972542"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 18:56:35 -0700
+IronPort-SDR: C5MKCIFgSivqj4s0xMPWU5bJ61YOvmOkiOYqHbOXSTq5KqhrzVWVu5om4euFeO0TYD42KUMP+C
+ 3oyspki/GTFg==
+X-IronPort-AV: E=Sophos;i="5.83,244,1616482800"; 
+   d="scan'208";a="550518879"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.87.193]) ([10.209.87.193])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 18:56:28 -0700
+Subject: Re: Virtio hardening for TDX
+To:     Jason Wang <jasowang@redhat.com>, mst@redhat.com
+Cc:     virtualization@lists.linux-foundation.org, hch@lst.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        iommu@lists.linux-foundation.org, x86@kernel.org,
+        sathyanarayanan.kuppuswamy@linux.intel.com, jpoimboe@redhat.com,
+        linux-kernel@vger.kernel.org
+References: <20210603004133.4079390-1-ak@linux.intel.com>
+ <63d01084-68d2-a8d5-931d-541a22b5f231@redhat.com>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <33504152-624a-45cc-51b3-10ce7aa2428f@linux.intel.com>
+Date:   Wed, 2 Jun 2021 18:56:27 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e9ce216362b7b9dcf84d707a3854247123440bf7.1622648507.git.mchehab+huawei@kernel.org>
+In-Reply-To: <63d01084-68d2-a8d5-931d-541a22b5f231@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 02 Jun 2021 17:43:08 +0200, Mauro Carvalho Chehab wrote:
-> Changeset ce49e4282200 ("dt-bindings: power: supply: cpcap-charger: Convert to DT schema format")
-> renamed: Documentation/devicetree/bindings/power/supply/cpcap-charger.txt
-> to: Documentation/devicetree/bindings/power/supply/cpcap-charger.yaml.
-> 
-> Update its cross-reference accordingly.
-> 
-> Fixes: ce49e4282200 ("dt-bindings: power: supply: cpcap-charger: Convert to DT schema format")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  Documentation/devicetree/bindings/mfd/motorola-cpcap.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
 
-Applied, thanks!
+> Note that it's probably needed by other cases as well:
+>
+> 1) Other encrypted VM technology
+> 2) VDUSE[1]
+> 3) Smart NICs
+
+Right. I don't see any reason why these shouldn't work. You may just 
+need to add the enable for the lockdown, but you can reuse the basic 
+infrastructure.
+
+>
+> We have already had discussions and some patches have been 
+> posted[2][3][4].
+
+Thanks.
+
+Yes [2] is indeed an alternative. We considered this at some point, but 
+since we don't care about DOS in our case it seemed simpler to just 
+harden the existing code.  But yes if it's there it's useful for TDX too.
+
+FWIW I would argue that the descriptor boundary checking should be added 
+in any case, security case or separated metadata or not, because it can 
+catch bugs and is very cheap. Checking boundaries is good practice.
+
+[4] would be an independent issue, that's something we didn't catch.
+
+Also the swiotlb hardening implemented in this patchkit doesn't seem to 
+be in any of the other patches.
+
+So I would say my patches are mostly orthogonal to these patches below 
+and not conflicting, even though they address a similar problem space.
+
+-Andi
+
+
