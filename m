@@ -2,69 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1AC39A9BF
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA91439A9B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbhFCSHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 14:07:32 -0400
-Received: from mail-ej1-f43.google.com ([209.85.218.43]:37495 "EHLO
-        mail-ej1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231284AbhFCSHW (ORCPT
+        id S230185AbhFCSFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 14:05:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229906AbhFCSFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 14:07:22 -0400
-Received: by mail-ej1-f43.google.com with SMTP id ce15so10569468ejb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 11:04:31 -0700 (PDT)
+        Thu, 3 Jun 2021 14:05:23 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAB82C06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 11:03:38 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id x18so6413028ila.10
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 11:03:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jhuorpEwWaM24p5GKEX8o1M3vPLTB9Mbm2fC2Wr3lLc=;
-        b=MO7ybZYyh1zLZK3xW5pB0qSJ7+MeBnGLfNZk6FGlHi4Qsus1eXoKj/MJ/Dm9Zhd0He
-         81yBlPed88OQVbDUeCVxNwV0MEIHm84UZOHPzK0uAPxHJ06k7AO4aXC81BQ6wJdzaI7w
-         qAgCXn3UpsuLBt3cAZnlh9LlG8xmGgHiiLso/NfT+U8TEy4Jd/HdrNlEMV8X8i1I454M
-         wbeeF1e4b7GEGLLcSNuJSXNXix4xSbpsJPLBRdL2++uW6BZa/Il4qyeDuIH0kfzrP9Hl
-         FA5PZnNrN7pNHWDWPCkqyLfZI6D7dswnlTAAx5npDKro4SEO6/Eys6eFYWNolPfEfE0N
-         dvOA==
+        d=linaro.org; s=google;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6Ob9fN3eHmxejSCkba7i1gC+Yl9GGWt/OzvnuxIALQw=;
+        b=paVepX0VnqMe8YBRXCY7eHE/0n6xXvBQNbLJvBmfN3wOMegjaKdslfblqpqiucU+Cp
+         fiUpmrDG6u7+ok89LGdVRGozVPyCF9jWnQlFgpJFYMm0/8m3kcwTZ3SFjzknda8UBWvi
+         58H8RmovxQR6GpI0A47fN/L2WVkCpxB554lXY+I4r5blY7B8zxX3vomkrE2wHf+Vf4gz
+         fyhmUEkfK9GlwcWjteoNileGVMkR/k3qDR8tvoL3TB0DFKwwWUYwYk2Br+6eOv5GkCbq
+         6mOv0IuRSwF9+sPdpC608OFuupKa5CV2P2JqKhEDyLmAsUn960ROdvuYUVsqfZaGOeFl
+         SuzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jhuorpEwWaM24p5GKEX8o1M3vPLTB9Mbm2fC2Wr3lLc=;
-        b=nOlr/7E5V9uF06GPgBZ7K8NDiRJ4TKtQOrqdWcqs3MNE/lYPx12CLG4HHtyv+Uy/cx
-         4WzyPJBdpARFODFHqCrJM12X2fvm9VankawGSxxD8G9rARuG7UEehdr0MEceMUmnkFmn
-         QLXeRxmJgBn53jyPqJEy1qgY/yW2RMaaXLZSzMTThAljiH+W8aDCSc9kcZLqC1DWM0p2
-         6e1dT09seMQzXgLL8II6xnVJf44zZBsAz0+R10/par39/E/GYOcwmQpKUHH+EC27S9MY
-         KfFg7jNwKwtCoyhpqizE+KV7ZYF1NrKrJY9vKofae7Tv89uLT2UkR5Bu9XenNRF68Jzs
-         Z1Ng==
-X-Gm-Message-State: AOAM532yM4TP0iyXu4mg6QkS+rzSCJ3YXQlokiXIfk1BiEKy2vp17HUO
-        u6q0EkKYXTH/xsfFxOP8Rb3oGnJEMjF32kjbCME=
-X-Google-Smtp-Source: ABdhPJy/HSvM6SWAJNO+/5mUui3RjSzM8+GY+x941nZByI3bRfV+ASnzQ+GE7gjz53O5+Wo0R2Dt32XKtr1k+6zzpxM=
-X-Received: by 2002:a17:906:1682:: with SMTP id s2mr566367ejd.172.1622743409439;
- Thu, 03 Jun 2021 11:03:29 -0700 (PDT)
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6Ob9fN3eHmxejSCkba7i1gC+Yl9GGWt/OzvnuxIALQw=;
+        b=PyFmIQ3Ew28sKaXIUVpBMbXika8JoXXIKIy/m0wuSLxzCW7ivGhnHX2FiKyNHu5WYU
+         2UpRHfRNTdqeOUR49LJ9mj2fFXPoVdD1LsNFGH/sB+xRUw4Bx62k426hmZFma4OlmqtI
+         ttwxZ7D66mzXnlrDeR85oTataOOc3wlf5qYcmCpGP3pWGxqq7LZFoqF95yBMNaMqIwHn
+         QpyjVe647GcLScoxXy44Paq6XlyzJjE1Nk2WsVE8pJ1+9FhsTwy2ki16Caca+Pmn+GYJ
+         yKhq+FfSRZD2bxG0GsHQHQIJVzR+yG15Xc+hkV61Twq8GhFo3pGXOK6Mh9XDd2fVzaV0
+         SC1g==
+X-Gm-Message-State: AOAM531/wQszKGai6M603gIq4SVRbREjSAfE3HroHdq28ufWkgbJPi5s
+        dM9WM1xUpIpg7C6XAlnWjH3nerHX6MIDbIdH
+X-Google-Smtp-Source: ABdhPJzGAIJoYGGO+qgsBYG8XqqUFYBQYiAq0Zbx+HUR+ZZ8zj9HkilaFJyuTtxWZMynAWzYbbGIgQ==
+X-Received: by 2002:a92:608:: with SMTP id x8mr461607ilg.217.1622743417937;
+        Thu, 03 Jun 2021 11:03:37 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id r11sm2210347ilt.81.2021.06.03.11.03.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Jun 2021 11:03:37 -0700 (PDT)
+Subject: Re: [PATCH v2] arm64: dts: qcom: sdm845-mtp: enable IPA
+From:   Alex Elder <elder@linaro.org>
+To:     bjorn.andersson@linaro.org, agross@kernel.org
+Cc:     evgreen@chromium.org, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200519123258.29228-1-elder@linaro.org>
+Message-ID: <a9904eae-3de3-8b40-f0be-790c787133bc@linaro.org>
+Date:   Thu, 3 Jun 2021 13:03:35 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210601090140.261768-1-narmstrong@baylibre.com> <20210601090140.261768-3-narmstrong@baylibre.com>
-In-Reply-To: <20210601090140.261768-3-narmstrong@baylibre.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Thu, 3 Jun 2021 20:03:18 +0200
-Message-ID: <CAFBinCC0RJ=HGzOHSy+8C-WsA2rd-Yiri3_sF--h4vGcz58N=A@mail.gmail.com>
-Subject: Re: [PATCH 2/6] arm64: dts: meson-sm1-odroid: set tf_io regulator
- gpio as open source
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     khilman@baylibre.com, jbrunet@baylibre.com,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        tobetter@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200519123258.29228-1-elder@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 1, 2021 at 11:01 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
->
-> According to Odroid-C4 & HC4 Schematics, the TF_3V3N_1V8_EN can be in Hi-Z for 3v3,
-> and since it's the default GPIOAO_6 mode at reset, let switch this GPIO as Open-Source
-> to drive for 1, and input for 0.
->
-> Fixes: 88d537bc92ca ("arm64: dts: meson: convert meson-sm1-odroid-c4 to dtsi")
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+On 5/19/20 7:32 AM, Alex Elder wrote:
+> Enable IPA on the SDM845 MTP.
+> 
+> Signed-off-by: Alex Elder <elder@linaro.org>
+> ---
+> 
+> v2: This device uses the AP--not the modem--for early initialization.
+
+Ping.  This patch didn't get accepted (over a year ago!),
+but it still applies cleanly on top-of-tree.  If you
+would like me to re-send it, let me know.  Thanks.
+
+https://lore.kernel.org/lkml/20200519123258.29228-1-elder@linaro.org/
+
+					-Alex
+
+> 
+>   arch/arm64/boot/dts/qcom/sdm845-mtp.dts | 5 +++++
+>   1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+> index 1372fe8601f5..91ede9296aff 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+> @@ -448,6 +448,11 @@
+>   	clock-frequency = <400000>;
+>   };
+>   
+> +&ipa {
+> +	status = "okay";
+> +	memory-region = <&ipa_fw_mem>;
+> +};
+> +
+>   &mdss {
+>   	status = "okay";
+>   };
+> 
+
