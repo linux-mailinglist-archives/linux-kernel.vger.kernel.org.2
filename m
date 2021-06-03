@@ -2,380 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F9139A133
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 14:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F8AA39A135
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 14:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbhFCMjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 08:39:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:40334 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230312AbhFCMjL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 08:39:11 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 62FB61063;
-        Thu,  3 Jun 2021 05:37:26 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.3.42])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC4053F774;
-        Thu,  3 Jun 2021 05:37:21 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 13:37:15 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v8 02/19] arm64: Allow mismatched 32-bit EL0 support
-Message-ID: <20210603123715.GA48596@C02TD0UTHF1T.local>
-References: <20210602164719.31777-1-will@kernel.org>
- <20210602164719.31777-3-will@kernel.org>
+        id S230294AbhFCMjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 08:39:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27679 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230010AbhFCMjt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 08:39:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622723885;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6k5ciUK+sIaydjgCr/sudyzMRQeRQr7DMKnBdxTkkZE=;
+        b=MgMkG3c4zJYgA/Ga5NYwjTwmGK/rLJ2oaaXooaUE4YkSZtZvxqtkMvptQsx8tlGrpD4l7v
+        Z0DsdjGBH8Z2rzLIv2fffRzbCWutsEqy0WBkIXJo3c7w7Nn/GNa1ojI4l3L6RIeqeUz72F
+        KP+1R8YXFYuGpDlWw0wJ6F6KBf8iORc=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-7-uXqbiGZFN6iz2OMpfuWYYw-1; Thu, 03 Jun 2021 08:38:03 -0400
+X-MC-Unique: uXqbiGZFN6iz2OMpfuWYYw-1
+Received: by mail-wm1-f69.google.com with SMTP id 13-20020a05600c228db029019a69dab6easo749811wmf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 05:38:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=6k5ciUK+sIaydjgCr/sudyzMRQeRQr7DMKnBdxTkkZE=;
+        b=oYhitUlwBowgIfEFIvP/nPrPa3zcBagbyTx4Kbdfsuwe2lWQ5BpvjtA6GjQZVFkBQs
+         aGqewNN/TdYRvQdcSWWanet0lNOZrUNqh2+djhgqlc89AuPG06xC2VR8XVY7zI5Y6veS
+         quGbZJrnJvTZdG4RTckagk+8928K4esO+krGKXetl6tHKJGI7vbf6CIsEit1tZhJXaeu
+         q5oubgMJxHSIh3NUJDROjluHut8lNZqC5mda5mzcFzLYveqT68YLSJMj9sweMntTclsQ
+         W0iO0OdaKac4eweOvhffFJl8EdiAZqtSJbkXlYO/UuRwlWb72M/xccnhy65YRKIDGb3U
+         CGsw==
+X-Gm-Message-State: AOAM531xj2UOLR+91sU0z4OJJ2di/SmMI3RKOepigm/RwIOHknl+8H+n
+        SpCLy07hf9mmA5wDGNABpc8zwh1kvOoEhzM0HIOpn9vR+zHTuz7wS0407RG69e2zOIAvMlVkMLr
+        zEcGiKri8MRNv1aSJztp4Vrek
+X-Received: by 2002:a5d:4287:: with SMTP id k7mr25571971wrq.98.1622723882494;
+        Thu, 03 Jun 2021 05:38:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxM5Eysmn7AfpvK4TGIsHHlar7/8HnQegM1qMM4zo5AgkevEN94wjMw62F9oOehTj6OT0PCOA==
+X-Received: by 2002:a5d:4287:: with SMTP id k7mr25571955wrq.98.1622723882264;
+        Thu, 03 Jun 2021 05:38:02 -0700 (PDT)
+Received: from gator.home (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
+        by smtp.gmail.com with ESMTPSA id c7sm5445129wml.33.2021.06.03.05.38.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 05:38:01 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 14:37:59 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     "Duan, Zhenzhong" <zhenzhong.duan@intel.com>
+Cc:     "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH] selftests: kvm: fix overlapping addresses in
+ memslot_perf_test
+Message-ID: <20210603123759.ovlgws3ycnem4t3d@gator.home>
+References: <20210528191134.3740950-1-pbonzini@redhat.com>
+ <285623f6-52e4-7f8d-fab6-0476a00af68b@oracle.com>
+ <fc41bfc4-949f-03c5-3b20-2c1563ad7f62@redhat.com>
+ <73511f2e-7b5d-0d29-b8dc-9cb16675afb3@oracle.com>
+ <68bda0ef-b58f-c335-a0c7-96186cbad535@oracle.com>
+ <DM8PR11MB5670B1AA392BF7502501D43B923C9@DM8PR11MB5670.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210602164719.31777-3-will@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <DM8PR11MB5670B1AA392BF7502501D43B923C9@DM8PR11MB5670.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 05:47:02PM +0100, Will Deacon wrote:
-> When confronted with a mixture of CPUs, some of which support 32-bit
-> applications and others which don't, we quite sensibly treat the system
-> as 64-bit only for userspace and prevent execve() of 32-bit binaries.
+On Thu, Jun 03, 2021 at 05:26:33AM +0000, Duan, Zhenzhong wrote:
+> > -----Original Message-----
+> > From: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
+> > Sent: Thursday, June 3, 2021 7:07 AM
+> > To: Paolo Bonzini <pbonzini@redhat.com>; Duan, Zhenzhong
+> > <zhenzhong.duan@intel.com>
+> > Cc: linux-kernel@vger.kernel.org; kvm@vger.kernel.org; Andrew Jones
+> > <drjones@redhat.com>
+> > Subject: Re: [PATCH] selftests: kvm: fix overlapping addresses in
+> > memslot_perf_test
+> > 
+> > On 30.05.2021 01:13, Maciej S. Szmigiero wrote:
+> > > On 29.05.2021 12:20, Paolo Bonzini wrote:
+> > >> On 28/05/21 21:51, Maciej S. Szmigiero wrote:
+> > >>> On 28.05.2021 21:11, Paolo Bonzini wrote:
+> > >>>> The memory that is allocated in vm_create is already mapped close
+> > >>>> to GPA 0, because test_execute passes the requested memory to
+> > >>>> prepare_vm.  This causes overlapping memory regions and the test
+> > >>>> crashes.  For simplicity just move MEM_GPA higher.
+> > >>>>
+> > >>>> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> > >>>
+> > >>> I am not sure that I understand the issue correctly, is
+> > >>> vm_create_default() already reserving low GPAs (around 0x10000000)
+> > >>> on some arches or run environments?
+> > >>
+> > >> It maps the number of pages you pass in the second argument, see
+> > >> vm_create.
+> > >>
+> > >>    if (phy_pages != 0)
+> > >>      vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS,
+> > >>                                  0, 0, phy_pages, 0);
+> > >>
+> > >> In this case:
+> > >>
+> > >>    data->vm = vm_create_default(VCPU_ID, mempages, guest_code);
+> > >>
+> > >> called here:
+> > >>
+> > >>    if (!prepare_vm(data, nslots, maxslots, tdata->guest_code,
+> > >>                    mem_size, slot_runtime)) {
+> > >>
+> > >> where mempages is mem_size, which is declared as:
+> > >>
+> > >>          uint64_t mem_size = tdata->mem_size ? : MEM_SIZE_PAGES;
+> > >>
+> > >> but actually a better fix is just to pass a small fixed value (e.g.
+> > >> 1024) to vm_create_default, since all other regions are added by hand
+> > >
+> > > Yes, but the argument that is passed to vm_create_default() (mem_size
+> > > in the case of the test) is not passed as phy_pages to vm_create().
+> > > Rather, vm_create_with_vcpus() calculates some upper bound of extra
+> > > memory that is needed to cover that much guest memory (including for
+> > > its page tables).
+> > >
+> > > The biggest possible mem_size from memslot_perf_test is 512 MiB + 1
+> > > page, according to my calculations this results in phy_pages of 1029
+> > > (~4 MiB) in the x86-64 case and around 1540 (~6 MiB) in the s390x case
+> > > (here I am not sure about the exact number, since s390x has some
+> > > additional alignment requirements).
+> > >
+> > > Both values are well below 256 MiB (0x10000000UL), so I was wondering
+> > > what kind of circumstances can make these allocations collide (maybe I
+> > > am missing something in my analysis).
+> > 
+> > I see now that there has been a patch merged last week called
+> > "selftests: kvm: make allocation of extra memory take effect" by Zhenzhong
+> > that now allocates also the whole memory size passed to
+> > vm_create_default() (instead of just page tables for that much memory).
+> > 
+> > The commit message of this patch says that "perf_test_util and
+> > kvm_page_table_test use it to alloc extra memory currently", however both
+> > kvm_page_table_test and lib/perf_test_util framework explicitly add the
+> > required memory allocation by doing a vm_userspace_mem_region_add()
+> > call for the same memory size that they pass to vm_create_default().
+> > 
+> > So now they allocate this memory twice.
+> > 
+> > @Zhenzhong: did you notice improper operation of either
+> > kvm_page_table_test or perf_test_util-based tests (demand_paging_test,
+> > dirty_log_perf_test,
+> > memslot_modification_stress_test) before your patch?
+> No
 > 
-> Unfortunately, some crazy folks have decided to build systems like this
-> with the intention of running 32-bit applications, so relax our
-> sanitisation logic to continue to advertise 32-bit support to userspace
-> on these systems and track the real 32-bit capable cores in a cpumask
-> instead. For now, the default behaviour remains but will be tied to
-> a command-line option in a later patch.
+> > 
+> > They seem to work fine for me without the patch (and I guess other people
+> > would have noticed earlier, too, if they were broken).
+> > 
+> > After this patch not only these tests allocate their memory twice but it is
+> > harder to make vm_create_default() allocate the right amount of memory for
+> > the page tables in cases where the test needs to explicitly use
+> > vm_userspace_mem_region_add() for its allocations (because it wants the
+> > allocation placed at a specific GPA or in a specific memslot).
+> > 
+> > One has to basically open-code the page table size calculations from
+> > vm_create_with_vcpus() in the particular test then, taking also into account
+> > that vm_create_with_vcpus() will not only allocate the passed memory size
+> > (calculated page tables size) but also behave like it was allocating space for
+> > page tables for these page tables (even though the passed memory size itself
+> > is supposed to cover them).
+> Looks we have different understanding to the parameter extra_mem_pages of vm_create_default().
 > 
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
->  arch/arm64/include/asm/cpufeature.h |   8 +-
->  arch/arm64/kernel/cpufeature.c      | 114 ++++++++++++++++++++++++----
->  arch/arm64/tools/cpucaps            |   3 +-
->  3 files changed, 110 insertions(+), 15 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-> index 338840c00e8e..603bf4160cd6 100644
-> --- a/arch/arm64/include/asm/cpufeature.h
-> +++ b/arch/arm64/include/asm/cpufeature.h
-> @@ -630,9 +630,15 @@ static inline bool cpu_supports_mixed_endian_el0(void)
->  	return id_aa64mmfr0_mixed_endian_el0(read_cpuid(ID_AA64MMFR0_EL1));
->  }
->  
-> +const struct cpumask *system_32bit_el0_cpumask(void);
-> +DECLARE_STATIC_KEY_FALSE(arm64_mismatched_32bit_el0);
-> +
->  static inline bool system_supports_32bit_el0(void)
->  {
-> -	return cpus_have_const_cap(ARM64_HAS_32BIT_EL0);
-> +	u64 pfr0 = read_sanitised_ftr_reg(SYS_ID_AA64PFR0_EL1);
-> +
-> +	return static_branch_unlikely(&arm64_mismatched_32bit_el0) ||
-> +	       id_aa64pfr0_32bit_el0(pfr0);
->  }
+> In your usage, extra_mem_pages is only used for page table calculations, real extra memory allocation
+> happens in the extra call of vm_userspace_mem_region_add().
 
-Note that read_sanitised_ftr_reg() has to do a bsearch() to find the
-arm64_ftr_reg, so this will make system_32bit_el0_cpumask() a fair
-amount more expensive than it needs to be.
+Yes, this is the meaning that kvm selftests has always had for
+extra_mem_pages of vm_create_default(). If we'd rather have a different
+meaning, that's fine, but we need to change all the callers of the
+function as well.
 
-Can we follow the pattern we have for arm64_ftr_reg_ctrel0, and have a
-arm64_ftr_reg_id_aa64pfr0_el1 that we can address directly here?
-
-That said. I reckon this could be much cleaner if we maintained separate
-caps:
-
-ARM64_ALL_CPUS_HAVE_32BIT_EL0
-ARM64_SOME_CPUS_HAVE_32BIT_EL0
-
-... and allow arm64_mismatched_32bit_el0 to be set dependent on
-ARM64_SOME_CPUS_HAVE_32BIT_EL0. With that, this can be simplified to:
-
-static inline bool system_supports_32bit_el0(void)
-{
-	return (cpus_have_const_cap(ARM64_ALL_CPUS_HAVE_32BIT_EL0)) ||
-		static_branch_unlikely(&arm64_mismatched_32bit_el0))
-}
-
->  static inline bool system_supports_4kb_granule(void)
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index a4db25cd7122..4194a47de62d 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -107,6 +107,24 @@ DECLARE_BITMAP(boot_capabilities, ARM64_NPATCHABLE);
->  bool arm64_use_ng_mappings = false;
->  EXPORT_SYMBOL(arm64_use_ng_mappings);
->  
-> +/*
-> + * Permit PER_LINUX32 and execve() of 32-bit binaries even if not all CPUs
-> + * support it?
-> + */
-> +static bool __read_mostly allow_mismatched_32bit_el0;
-> +
-> +/*
-> + * Static branch enabled only if allow_mismatched_32bit_el0 is set and we have
-> + * seen at least one CPU capable of 32-bit EL0.
-> + */
-> +DEFINE_STATIC_KEY_FALSE(arm64_mismatched_32bit_el0);
-> +
-> +/*
-> + * Mask of CPUs supporting 32-bit EL0.
-> + * Only valid if arm64_mismatched_32bit_el0 is enabled.
-> + */
-> +static cpumask_var_t cpu_32bit_el0_mask __cpumask_var_read_mostly;
-> +
->  /*
->   * Flag to indicate if we have computed the system wide
->   * capabilities based on the boot time active CPUs. This
-> @@ -767,7 +785,7 @@ static void __init sort_ftr_regs(void)
->   * Any bits that are not covered by an arm64_ftr_bits entry are considered
->   * RES0 for the system-wide value, and must strictly match.
->   */
-> -static void __init init_cpu_ftr_reg(u32 sys_reg, u64 new)
-> +static void init_cpu_ftr_reg(u32 sys_reg, u64 new)
->  {
->  	u64 val = 0;
->  	u64 strict_mask = ~0x0ULL;
-> @@ -863,7 +881,7 @@ static void __init init_cpu_hwcaps_indirect_list(void)
->  
->  static void __init setup_boot_cpu_capabilities(void);
->  
-> -static void __init init_32bit_cpu_features(struct cpuinfo_32bit *info)
-> +static void init_32bit_cpu_features(struct cpuinfo_32bit *info)
->  {
->  	init_cpu_ftr_reg(SYS_ID_DFR0_EL1, info->reg_id_dfr0);
->  	init_cpu_ftr_reg(SYS_ID_DFR1_EL1, info->reg_id_dfr1);
-> @@ -979,6 +997,22 @@ static void relax_cpu_ftr_reg(u32 sys_id, int field)
->  	WARN_ON(!ftrp->width);
->  }
->  
-> +static void update_mismatched_32bit_el0_cpu_features(struct cpuinfo_arm64 *info,
-> +						     struct cpuinfo_arm64 *boot)
-
-Could we s/update/lazy_init/ here?
-
-IIUC this caters for the case where CPU0 doesn't have AArch32 but a
-secondary does. That, and the naming looks odd in update_cpu_features()
-when we have:
-
-	update_mismatched_32bit_el0_cpu_features(...)
-	update_32bit_cpu_features(...);
-
-> +{
-> +	static bool boot_cpu_32bit_regs_overridden = false;
-> +
-> +	if (!allow_mismatched_32bit_el0 || boot_cpu_32bit_regs_overridden)
-> +		return;
-> +
-> +	if (id_aa64pfr0_32bit_el0(boot->reg_id_aa64pfr0))
-> +		return;
-> +
-> +	boot->aarch32 = info->aarch32;
-> +	init_32bit_cpu_features(&boot->aarch32);
-> +	boot_cpu_32bit_regs_overridden = true;
-> +}
-
-Can't we share this with the boot CPU path if we do:
-
-/*
- * Initialize the common AArch32 features on the first CPU with AArch32.
- */
-static void lazy_init_32bit_el0_cpu_features(struct cpuinfo_arm64 *info,
-					     struct cpuinfo_arm64 *boot)
-{
-	static bool initialised = false;
-	if (initialised || !id_aa64pfr0_32bit_el0(info->reg_id_aa64pfr0))
-		return;
-	
-	boot->aarch32 = info->aarch32;
-	init_32bit_cpu_features(&boot->aarch32);
-	initiaised = true;
-}
-
-... or is the allow_mismatched_32bit_el0 check necessary for late
-hotplug?
-
-
-> +
->  static int update_32bit_cpu_features(int cpu, struct cpuinfo_32bit *info,
->  				     struct cpuinfo_32bit *boot)
->  {
-> @@ -1139,6 +1173,7 @@ void update_cpu_features(int cpu,
->  	 * (e.g. SYS_ID_AA64PFR0_EL1), so we call it last.
->  	 */
->  	if (id_aa64pfr0_32bit_el0(info->reg_id_aa64pfr0)) {
-> +		update_mismatched_32bit_el0_cpu_features(info, boot);
->  		taint |= update_32bit_cpu_features(cpu, &info->aarch32,
->  						   &boot->aarch32);
->  	}
-> @@ -1251,6 +1286,28 @@ has_cpuid_feature(const struct arm64_cpu_capabilities *entry, int scope)
->  	return feature_matches(val, entry);
->  }
->  
-> +const struct cpumask *system_32bit_el0_cpumask(void)
-> +{
-> +	if (!system_supports_32bit_el0())
-> +		return cpu_none_mask;
-> +
-> +	if (static_branch_unlikely(&arm64_mismatched_32bit_el0))
-> +		return cpu_32bit_el0_mask;
-> +
-> +	return cpu_possible_mask;
-> +}
-> +
-> +static bool has_32bit_el0(const struct arm64_cpu_capabilities *entry, int scope)
-> +{
-> +	if (!has_cpuid_feature(entry, scope))
-> +		return allow_mismatched_32bit_el0;
-> +
-> +	if (scope == SCOPE_SYSTEM)
-> +		pr_info("detected: 32-bit EL0 Support\n");
-> +
-> +	return true;
-> +}
-> +
->  static bool has_useable_gicv3_cpuif(const struct arm64_cpu_capabilities *entry, int scope)
->  {
->  	bool has_sre;
-> @@ -1869,10 +1926,9 @@ static const struct arm64_cpu_capabilities arm64_features[] = {
->  		.cpu_enable = cpu_copy_el2regs,
->  	},
->  	{
-> -		.desc = "32-bit EL0 Support",
-> -		.capability = ARM64_HAS_32BIT_EL0,
-> +		.capability = ARM64_HAS_32BIT_EL0_DO_NOT_USE,
->  		.type = ARM64_CPUCAP_SYSTEM_FEATURE,
-> -		.matches = has_cpuid_feature,
-> +		.matches = has_32bit_el0,
->  		.sys_reg = SYS_ID_AA64PFR0_EL1,
->  		.sign = FTR_UNSIGNED,
->  		.field_pos = ID_AA64PFR0_EL0_SHIFT,
-> @@ -2381,7 +2437,7 @@ static const struct arm64_cpu_capabilities compat_elf_hwcaps[] = {
->  	{},
->  };
->  
-> -static void __init cap_set_elf_hwcap(const struct arm64_cpu_capabilities *cap)
-> +static void cap_set_elf_hwcap(const struct arm64_cpu_capabilities *cap)
->  {
->  	switch (cap->hwcap_type) {
->  	case CAP_HWCAP:
-> @@ -2426,7 +2482,7 @@ static bool cpus_have_elf_hwcap(const struct arm64_cpu_capabilities *cap)
->  	return rc;
->  }
->  
-> -static void __init setup_elf_hwcaps(const struct arm64_cpu_capabilities *hwcaps)
-> +static void setup_elf_hwcaps(const struct arm64_cpu_capabilities *hwcaps)
->  {
->  	/* We support emulation of accesses to CPU ID feature registers */
->  	cpu_set_named_feature(CPUID);
-> @@ -2601,7 +2657,7 @@ static void check_early_cpu_features(void)
->  }
->  
->  static void
-> -verify_local_elf_hwcaps(const struct arm64_cpu_capabilities *caps)
-> +__verify_local_elf_hwcaps(const struct arm64_cpu_capabilities *caps)
->  {
->  
->  	for (; caps->matches; caps++)
-> @@ -2612,6 +2668,14 @@ verify_local_elf_hwcaps(const struct arm64_cpu_capabilities *caps)
->  		}
->  }
->  
-> +static void verify_local_elf_hwcaps(void)
-> +{
-> +	__verify_local_elf_hwcaps(arm64_elf_hwcaps);
-> +
-> +	if (id_aa64pfr0_32bit_el0(read_cpuid(ID_AA64PFR0_EL1)))
-> +		__verify_local_elf_hwcaps(compat_elf_hwcaps);
-> +}
-> +
->  static void verify_sve_features(void)
->  {
->  	u64 safe_zcr = read_sanitised_ftr_reg(SYS_ZCR_EL1);
-> @@ -2676,11 +2740,7 @@ static void verify_local_cpu_capabilities(void)
->  	 * on all secondary CPUs.
->  	 */
->  	verify_local_cpu_caps(SCOPE_ALL & ~SCOPE_BOOT_CPU);
-> -
-> -	verify_local_elf_hwcaps(arm64_elf_hwcaps);
-> -
-> -	if (system_supports_32bit_el0())
-> -		verify_local_elf_hwcaps(compat_elf_hwcaps);
-> +	verify_local_elf_hwcaps();
->  
->  	if (system_supports_sve())
->  		verify_sve_features();
-> @@ -2815,6 +2875,34 @@ void __init setup_cpu_features(void)
->  			ARCH_DMA_MINALIGN);
->  }
->  
-> +static int enable_mismatched_32bit_el0(unsigned int cpu)
-> +{
-> +	struct cpuinfo_arm64 *info = &per_cpu(cpu_data, cpu);
-> +	bool cpu_32bit = id_aa64pfr0_32bit_el0(info->reg_id_aa64pfr0);
-> +
-> +	if (cpu_32bit) {
-> +		cpumask_set_cpu(cpu, cpu_32bit_el0_mask);
-> +		static_branch_enable_cpuslocked(&arm64_mismatched_32bit_el0);
-> +		setup_elf_hwcaps(compat_elf_hwcaps);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int __init init_32bit_el0_mask(void)
-> +{
-> +	if (!allow_mismatched_32bit_el0)
-> +		return 0;
-> +
-> +	if (!zalloc_cpumask_var(&cpu_32bit_el0_mask, GFP_KERNEL))
-> +		return -ENOMEM;
-> +
-> +	return cpuhp_setup_state(CPUHP_AP_ONLINE_DYN,
-> +				 "arm64/mismatched_32bit_el0:online",
-> +				 enable_mismatched_32bit_el0, NULL);
-> +}
-
-Shouldn't we clear this on a hot-unplug?
+If we decide to leave vm_create_default() the way it was by reverting this
+patch, then maybe we should consider renaming the parameter and/or
+documenting the function.
 
 Thanks,
-Mark.
+drew
 
-> +subsys_initcall_sync(init_32bit_el0_mask);
-> +
->  static void __maybe_unused cpu_enable_cnp(struct arm64_cpu_capabilities const *cap)
->  {
->  	cpu_replace_ttbr1(lm_alias(swapper_pg_dir));
-> diff --git a/arch/arm64/tools/cpucaps b/arch/arm64/tools/cpucaps
-> index 21fbdda7086e..49305c2e6dfd 100644
-> --- a/arch/arm64/tools/cpucaps
-> +++ b/arch/arm64/tools/cpucaps
-> @@ -3,7 +3,8 @@
->  # Internal CPU capabilities constants, keep this list sorted
->  
->  BTI
-> -HAS_32BIT_EL0
-> +# Unreliable: use system_supports_32bit_el0() instead.
-> +HAS_32BIT_EL0_DO_NOT_USE
->  HAS_32BIT_EL1
->  HAS_ADDRESS_AUTH
->  HAS_ADDRESS_AUTH_ARCH
-> -- 
-> 2.32.0.rc0.204.g9fa02ecfa5-goog
 > 
+> In my understanding, extra_mem_pages is used for a VM who wants a custom memory size in slot0, 
+> rather than the default DEFAULT_GUEST_PHY_PAGES size.
+> 
+> I understood your comments and do agree that my patch bring some trouble to your code, sorry for that.
+> I'm fine to revert that patch and I think it's better to let the maintainers to decide what extra_mem_pages
+> Is used for.
+> 
+> Thanks
+> Zhenzhong
+> > 
+> > Due to the above, I suspect the previous behavior was, in fact, correct.
+> > 
+> > Thanks,
+> > Maciej
+
