@@ -2,101 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E70C4399BA9
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 09:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D9F4399BB5
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 09:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbhFCHg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 03:36:29 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:28472 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229567AbhFCHg2 (ORCPT
+        id S229738AbhFCHjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 03:39:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53315 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229576AbhFCHjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 03:36:28 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1537ROxn019474;
-        Thu, 3 Jun 2021 09:34:31 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=selector1;
- bh=M8auMruCTancpOkSvfb5Dqc6xkUzb7oAmg9WAVNNKKw=;
- b=sE/6zk8pEdJUvam5nVDtSSp5T4mk7u6Cwgioe0iSaLimTF99/PSM0708+HCHb+y7FpT2
- hM0PvzsspYHy6edpPJkOSELH9Hvjnda3M9fJKJarUeNczCXns5C4EVDu/yN0vGmNAyPm
- wnBCPtAW+k5ZvTsyUGNazCws18wv+8jZOwbb2birdTXk5uj4mNoVB4AjlK+jedxaUBBR
- lwTGYdpHMeHVJIFoHXGSyMpRWRZVeQuUROF8/WoMhe6n2nbk4pJ8L5trLefCSZwd0OcX
- vyUTchffh6BMjYgdj0I3IFvowL99j7+XPEJZn9I0ACDs68KjRQY4Vfn9f9ZVypoplY05 qQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 38x3gv33cx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Jun 2021 09:34:31 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CF02010002A;
-        Thu,  3 Jun 2021 09:34:30 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3FD1B2138CF;
-        Thu,  3 Jun 2021 09:34:30 +0200 (CEST)
-Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 3 Jun 2021 09:34:29
- +0200
-From:   <patrice.chotard@foss.st.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-CC:     <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>,
-        <patrice.chotard@foss.st.com>
-Subject: spi: stm32-qspi: Always wait BUSY bit to be cleared in stm32_qspi_wait_cmd()
-Date:   Thu, 3 Jun 2021 09:34:21 +0200
-Message-ID: <20210603073421.8441-1-patrice.chotard@foss.st.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 3 Jun 2021 03:39:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622705853;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pn+lH6sffLfQFOlhNqIHBoOQtQXxd+QKLAWzZG0wEls=;
+        b=jNLHu0GfIUerSFeF4wboz6siqDqNoK2jruC9s+rULYR1YGk/iDpbY7a+oNADGY/Giou6yn
+        PTM6wFgpiFMlHPyxc3Mc9PKhbAVgN8oNT7WvMHh9YAjWeuz32xLQylEq9iygFat0hRXcO6
+        a0MdK91Tgup3QRY+OuZHC/sc4+E1Q6c=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-328-pVBGelepNxKgy42jXkCocQ-1; Thu, 03 Jun 2021 03:37:32 -0400
+X-MC-Unique: pVBGelepNxKgy42jXkCocQ-1
+Received: by mail-pg1-f197.google.com with SMTP id 4-20020a6317440000b029021689797ccaso3462247pgx.4
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 00:37:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=pn+lH6sffLfQFOlhNqIHBoOQtQXxd+QKLAWzZG0wEls=;
+        b=Q/4/CvpNvQVGuVpN2xmwEfv/86IOkYIZAysA4KWH/KmA/ZrDSF28Ybqowlf74CYHio
+         qXiwMLQ0Lq05XrQy+z/OgIe4SGr2CITT3sMsacszbb1hJ1iMp8pQQgBTTqAPLt3orcdd
+         Ub7Q62sjdyO/SRPhJK/6pGpvTQVtQO0Y2o0AnA5E/D+OPXXFIhNiU6aVprL2sUSlheYV
+         KEdpSRtGFbGYQnsrawSgFLtmvAMIgHqOBQjlzo8i/EIMyDxu9OQWhHmQCFR8ntdjT69Y
+         EL90GWsRaEmTj3CimNmWYQzwslCIVpee7528DJ7mNV0bfppo0SNgaXM5Kohij2o73gE8
+         rPWQ==
+X-Gm-Message-State: AOAM531Y+V4h8FCf5pUAgn5FK1jQCaPrGiqcLL8Bg/t8X6+7VdGYdvVU
+        2qjI0sN/30ZnBaKIT/DpfUuL2MIMSU+Y4+HnAI1627VxEWx/MNOpTklbDnyVQmabIB8Js+irqOg
+        mYZZZboswzQfxmL6T8UeQhez99MeyiRMO9H2vxJCOqPCOZ4rpqZqxj9/OZO+T1pO38/tivuHSFx
+        Ap
+X-Received: by 2002:a17:90a:390d:: with SMTP id y13mr35351566pjb.52.1622705851266;
+        Thu, 03 Jun 2021 00:37:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyTqWD/nEiY9eQgpWpCRmj0CbNPmYM6Y2ORnmD/a5cBt9X5O5wta2GGPKhK8EoVnMkzO6bZ9Q==
+X-Received: by 2002:a17:90a:390d:: with SMTP id y13mr35351532pjb.52.1622705850859;
+        Thu, 03 Jun 2021 00:37:30 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id s15sm1404541pjr.18.2021.06.03.00.37.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Jun 2021 00:37:30 -0700 (PDT)
+Subject: Re: [PATCH] vdpa/mlx5: Clear vq ready indication upon device reset
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20210602085924.62777-1-elic@nvidia.com>
+ <6e4f9e1b-2c67-fae6-6edd-1982d0f48e22@redhat.com>
+ <782562f2-6903-68cb-d753-ac90aea854e4@redhat.com>
+ <20210603073046.GA58414@mtl-vdi-166.wap.labs.mlnx>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <af2561a4-7b46-3c0c-2956-f5dd37577b8d@redhat.com>
+Date:   Thu, 3 Jun 2021 15:37:23 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-03_04:2021-06-02,2021-06-03 signatures=0
+In-Reply-To: <20210603073046.GA58414@mtl-vdi-166.wap.labs.mlnx>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Patrice Chotard <patrice.chotard@foss.st.com>
 
-In U-boot side, an issue has been encountered when QSPI source clock is
-running at low frequency (24 MHz for example), waiting for TCF bit to be
-set didn't ensure that all data has been send out the FIFO, we should also
-wait that BUSY bit is cleared.
+在 2021/6/3 下午3:30, Eli Cohen 写道:
+> On Thu, Jun 03, 2021 at 03:06:31PM +0800, Jason Wang wrote:
+>> 在 2021/6/3 下午3:00, Jason Wang 写道:
+>>> 在 2021/6/2 下午4:59, Eli Cohen 写道:
+>>>> After device reset, the virtqueues are not ready so clear the ready
+>>>> field.
+>>>>
+>>>> Failing to do so can result in virtio_vdpa failing to load if the device
+>>>> was previously used by vhost_vdpa and the old values are ready.
+>>>> virtio_vdpa expects to find VQs in "not ready" state.
+>>>>
+>>>> Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5
+>>>> devices")
+>>>> Signed-off-by: Eli Cohen <elic@nvidia.com>
+>>>
+>>> Acked-by: Jason Wang <jasowang@redhat.com>
+>>
+>> A second thought.
+>>
+>> destroy_virtqueue() could be called many places.
+>>
+>> One of them is the mlx5_vdpa_change_map(), if this is case, this looks
+>> wrong.
+> Right, although most likely VQs become ready only after all map changes
+> occur becuase I did not encounter any issue while testing.
 
-To prevent similar issue in kernel driver, we implement similar behavior
-by always waiting BUSY bit to be cleared.
 
-Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
----
- drivers/spi/spi-stm32-qspi.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Yes, but it's not guaranteed that the map won't be changed. Userspace 
+can update the mapping when new memory is plugged into the guest for 
+example.
 
-diff --git a/drivers/spi/spi-stm32-qspi.c b/drivers/spi/spi-stm32-qspi.c
-index 7e640ccc7e77..594f64136208 100644
---- a/drivers/spi/spi-stm32-qspi.c
-+++ b/drivers/spi/spi-stm32-qspi.c
-@@ -294,7 +294,7 @@ static int stm32_qspi_wait_cmd(struct stm32_qspi *qspi,
- 	int err = 0;
- 
- 	if (!op->data.nbytes)
--		return stm32_qspi_wait_nobusy(qspi);
-+		goto wait_nobusy;
- 
- 	if (readl_relaxed(qspi->io_base + QSPI_SR) & SR_TCF)
- 		goto out;
-@@ -315,6 +315,9 @@ static int stm32_qspi_wait_cmd(struct stm32_qspi *qspi,
- out:
- 	/* clear flags */
- 	writel_relaxed(FCR_CTCF | FCR_CTEF, qspi->io_base + QSPI_FCR);
-+wait_nobusy:
-+	if (!err)
-+		err = stm32_qspi_wait_nobusy(qspi);
- 
- 	return err;
- }
--- 
-2.17.1
+
+>> It looks to me it's simpler to do this in clear_virtqueues() which can only
+>> be called during reset.
+> There is no clear_virtqueues() function. You probably mean to insert a
+> call in mlx5_vdpa_set_status() in case it performs reset. This function
+> will go over all virtqueues and clear their ready flag.
+
+
+Right.
+
+
+>
+> Alternatively we can add boolean argument to teardown_driver() that
+> signifies if we are in reset flow and in this case we clear ready.
+
+
+Yes, but doing in set_status() seems easier.
+
+Thanks
+
+
+>
+>> Thanks
+>>
+>>
+>>>
+>>>> ---
+>>>>    drivers/vdpa/mlx5/net/mlx5_vnet.c | 1 +
+>>>>    1 file changed, 1 insertion(+)
+>>>>
+>>>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>> b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>> index 02a05492204c..e8bc0842b44c 100644
+>>>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>> @@ -862,6 +862,7 @@ static void destroy_virtqueue(struct
+>>>> mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtq
+>>>>            return;
+>>>>        }
+>>>>        umems_destroy(ndev, mvq);
+>>>> +    mvq->ready = false;
+>>>>    }
+>>>>      static u32 get_rqpn(struct mlx5_vdpa_virtqueue *mvq, bool fw)
 
