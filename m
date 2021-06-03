@@ -2,70 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 696EF399B53
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 09:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED2A399B55
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 09:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbhFCHP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 03:15:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49306 "EHLO
+        id S229837AbhFCHQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 03:16:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20377 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229576AbhFCHPz (ORCPT
+        by vger.kernel.org with ESMTP id S229576AbhFCHQl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 03:15:55 -0400
+        Thu, 3 Jun 2021 03:16:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622704451;
+        s=mimecast20190719; t=1622704497;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zL7aJqhus7yWQntKyImh1IsMt1S+2O5OTo6wvEOUBgg=;
-        b=Br704sCqgVBSLj/CZ1H1lplUWeaCk1R+wfZzWu8nrhYhYKA5msCpaNGQZBIemIkOys0bjc
-        jmZTuW0U2iY3dz/eBlHQKHfCz0qNn5ysJwP/YHz4dXKXTTeKQTU8qIw3QkYYjck1U7tW4j
-        q5lBK15T0ke4WC/QTA/Jzdv7g9EGPeQ=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-566-LYunrfi5NfGyKQqWXsONww-1; Thu, 03 Jun 2021 03:14:10 -0400
-X-MC-Unique: LYunrfi5NfGyKQqWXsONww-1
-Received: by mail-pg1-f200.google.com with SMTP id 4-20020a6317440000b029021689797ccaso3432489pgx.4
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 00:14:09 -0700 (PDT)
+        bh=nnbuU0fDADScyN4D+Z91sdr8ftGo7PShkTKmw8niS1s=;
+        b=aA9dQ+bV4tLvjeSPO2NdHw8HdVrkiBGhY2CK+qTGcvq62fh/u3lHc/80EpI4r9owUSzc7K
+        mOwD2dSz4Lp1l4/nFxCZQLykaW4YNGYt7QIVkWCjhJQeNvdb2QHbs0ra8idz8DlQcBUoXu
+        BmNjQkWcCtXo1FLG6FJObMGC0Jel9wA=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-213--Q7ADfmeM1G_JrRq-25APg-1; Thu, 03 Jun 2021 03:14:56 -0400
+X-MC-Unique: -Q7ADfmeM1G_JrRq-25APg-1
+Received: by mail-pl1-f197.google.com with SMTP id b15-20020a1709027e0fb02900fef41cdedfso2259520plm.3
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 00:14:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=zL7aJqhus7yWQntKyImh1IsMt1S+2O5OTo6wvEOUBgg=;
-        b=l/q9XD2YcXqvBSzXlTj2YJN1F3o/BHw3JcH68S/9NSdtLjiU0LNQruiUo2Fv7MqKSa
-         v5Wd9htv70jZqqrG4J4hEn2YKPR+P6ummR7i8ZzbtAG+GYi51MeSWZ16AEGGFDBVppB5
-         +aNrBHf2MTWr5J8aaLBiC5Z/FZP7TrptdjGY1P7XltovXjY/1kDbpjPM1BD6N1UTl5r5
-         Zlf+FcFsR5wClAUwuSOZrlEzngubvQsaTmWveVPCvCQlhMxFoywyiN+NMiffNwhgeKQu
-         XZ0JsAZtrVjT5PkOhseblQi5ghayYb0VBLZcOb1HwJDhLBx0MtKuHbV1hrKTcy0H/HKj
-         ICug==
-X-Gm-Message-State: AOAM531od/jZmRJAVwXDRJPuD3AwIBLAYy9l/G4eK8kpXhtbbHxnJ6pO
-        GAdnyOhXgs2P/ssNffjHyMShh753wLhGPErOfGulTmgk0B92NpLGE7iJjVT47enw3klXYt337IJ
-        gQiHAx/dvK8KrckoRDqqu4QBTlqzVu2T7vKoE5CO4RqAFX8hWvnhSlbD8T1/aPIV8MY2pfpxZ5F
-        OA
-X-Received: by 2002:a05:6a00:b83:b029:2ec:7400:ae59 with SMTP id g3-20020a056a000b83b02902ec7400ae59mr129959pfj.11.1622704448409;
-        Thu, 03 Jun 2021 00:14:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJza5Yg1MWyygPq1dd+sj5xBhdm780OGEiBEA5IDxRZNXGREqaIkuTNqhkYi1BdoYjLzPgcrtA==
-X-Received: by 2002:a05:6a00:b83:b029:2ec:7400:ae59 with SMTP id g3-20020a056a000b83b02902ec7400ae59mr129917pfj.11.1622704447912;
-        Thu, 03 Jun 2021 00:14:07 -0700 (PDT)
+        bh=nnbuU0fDADScyN4D+Z91sdr8ftGo7PShkTKmw8niS1s=;
+        b=j6jBUfb+KEEAReVHu1CwQ9Rfj7bODWnF+GrPactxyvA4rr266ejRUioKOKrDFJIIj0
+         Ge4Vrjp20oF3RcMMrKH9Wil8AzrwgaILYLKuqaFwGIDbRuxyYYtg97WNNZdUHefXHUjw
+         nBwOk1LFLgnOdk4HEyzqCYPscUNgIv9jWiyw0SvZ3uV/xLalMfRAly+c9vZEXhdJfVT8
+         jJQlNfCVjfmTk10aSr2ft75Ibr9GZ2BhGvgD1U+7psP3MKKaJmFQTyW7SKIK93UCyY8D
+         v4T9hhWQXKDw0QBMNMY6JbvVfK2hYFHs94MRZsFibfQmtR2Nqqgu9bFuC1H3OE8eCAiZ
+         km3w==
+X-Gm-Message-State: AOAM530J0AL0JOzZm13r6AigoL/Nd5gR3f96L47eOqDeDU9NNGvVaBAw
+        L2aCw4UyTwpNtBLzx46GcTevYiqRvLForkQU96ITxH28M0t6v9gEr2M0EBksOsQ6L16bt4Nffbk
+        Fa1m1euZTU6mZ5u07oBrfGwfL
+X-Received: by 2002:a17:902:7205:b029:ed:6fc0:bbd4 with SMTP id ba5-20020a1709027205b02900ed6fc0bbd4mr34978949plb.4.1622704494547;
+        Thu, 03 Jun 2021 00:14:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzcMf1yi5YrM3ZQ0E6Vd9YMsWvJYGeeRw+gZHSHDc3E71UInsJbTim5M4WExk813zBaqHxkoQ==
+X-Received: by 2002:a17:902:7205:b029:ed:6fc0:bbd4 with SMTP id ba5-20020a1709027205b02900ed6fc0bbd4mr34978932plb.4.1622704494247;
+        Thu, 03 Jun 2021 00:14:54 -0700 (PDT)
 Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id ip7sm1095621pjb.39.2021.06.03.00.14.05
+        by smtp.gmail.com with ESMTPSA id c130sm1454035pfc.51.2021.06.03.00.14.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Jun 2021 00:14:07 -0700 (PDT)
-Subject: Re: [PATCH v2] vdpa/mlx5: Add support for running with virtio_vdpa
-To:     Eli Cohen <elic@nvidia.com>, mst@redhat.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20210602085854.62690-1-elic@nvidia.com>
+        Thu, 03 Jun 2021 00:14:53 -0700 (PDT)
+Subject: Re: [RFC PATCH] vdpa: mandate 1.0 device
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, parav@nvidia.com,
+        Lingshan Zhu <lingshan.zhu@intel.com>, mapfelba@redhat.com
+References: <20210409115343-mutt-send-email-mst@kernel.org>
+ <42891807-cb24-5352-f8cb-798e9d1a1854@redhat.com>
+ <20210412050730-mutt-send-email-mst@kernel.org>
+ <01918e14-7f7a-abf2-5864-292a32f0233c@redhat.com>
+ <d5632a4d-4d0b-b08d-06f9-c56f16734607@redhat.com>
+ <20210421035331-mutt-send-email-mst@kernel.org>
+ <3d5754f3-c012-67ad-5f01-fc16ec53df4e@redhat.com>
+ <529543956.24692551.1620722593826.JavaMail.zimbra@redhat.com>
+ <20210511061740-mutt-send-email-mst@kernel.org>
+ <CACGkMEuvqUL04_wHqSKPUufu5O6ydhytHAx0NryLODNHkEO+Fw@mail.gmail.com>
+ <20210602103025.GA17279@mtl-vdi-166.wap.labs.mlnx>
 From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <5d11538f-62ef-c545-4f7e-61001f4c20f5@redhat.com>
-Date:   Thu, 3 Jun 2021 15:14:03 +0800
+Message-ID: <c885b2e2-0f90-d215-27c7-02f0d1527991@redhat.com>
+Date:   Thu, 3 Jun 2021 15:14:49 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <20210602085854.62690-1-elic@nvidia.com>
-Content-Type: text/plain; charset=gbk; format=flowed
+In-Reply-To: <20210602103025.GA17279@mtl-vdi-166.wap.labs.mlnx>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
 Precedence: bulk
@@ -73,235 +84,235 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-�� 2021/6/2 ����4:58, Eli Cohen д��:
-> In order to support running vdpa using vritio_vdpa driver, we need  to
-> create a different kind of MR, one that has 1:1 mapping, since the
-> addresses referring to virtqueues are dma addresses.
+在 2021/6/2 下午6:30, Eli Cohen 写道:
+> On Wed, May 12, 2021 at 05:24:21PM +0800, Jason Wang wrote:
 >
-> We create the 1:1 MR in mlx5_vdpa_dev_add() only in case firmware
-> supports the general capability umem_uid_0. The reason for that is that
-> 1:1 MRs must be created with uid == 0 while virtqueue objects can be
-> created with uid == 0 only when the firmware capability is on.
->
-> If the set_map() callback is called with new translations provided
-> through iotlb, the driver will destroy the 1:1 MR and create a regular
-> one.
->
-> Signed-off-by: Eli Cohen <elic@nvidia.com>
+> Michael,
+> Did you and Jason came into agreement regarding this?
 
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+Probably, let me send a formal patch and see what happens.
+
+Thanks
 
 
-> ---
-> v0 --> v1:
->      1. Clear user_mr after successful creation of DMA MR
->      2. Check return code of mlx5_vdpa_create_mr() and emit warning
->         if failed.
+> Do you think we
+> can have the bits in 5.13 and still have time for me to push the vdpa
+> too stuff?
 >
-> v1 --> v2:
->      Only set mr->initialized if successful
 >
->   drivers/vdpa/mlx5/core/mlx5_vdpa.h |  1 +
->   drivers/vdpa/mlx5/core/mr.c        | 86 +++++++++++++++++++++++++-----
->   drivers/vdpa/mlx5/net/mlx5_vnet.c  | 15 +++++-
->   3 files changed, 87 insertions(+), 15 deletions(-)
->
-> diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-> index b6cc53ba980c..09a16a3d1b2a 100644
-> --- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-> +++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-> @@ -35,6 +35,7 @@ struct mlx5_vdpa_mr {
->   
->   	/* serialize mkey creation and destruction */
->   	struct mutex mkey_mtx;
-> +	bool user_mr;
->   };
->   
->   struct mlx5_vdpa_resources {
-> diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
-> index 800cfd1967ad..f0b89b62de36 100644
-> --- a/drivers/vdpa/mlx5/core/mr.c
-> +++ b/drivers/vdpa/mlx5/core/mr.c
-> @@ -360,7 +360,7 @@ static int add_direct_chain(struct mlx5_vdpa_dev *mvdev, u64 start, u64 size, u8
->    * indirect memory key that provides access to the enitre address space given
->    * by iotlb.
->    */
-> -static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
-> +static int create_user_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
->   {
->   	struct mlx5_vdpa_mr *mr = &mvdev->mr;
->   	struct mlx5_vdpa_direct_mr *dmr;
-> @@ -374,9 +374,6 @@ static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb
->   	int err = 0;
->   	int nnuls;
->   
-> -	if (mr->initialized)
-> -		return 0;
-> -
->   	INIT_LIST_HEAD(&mr->head);
->   	for (map = vhost_iotlb_itree_first(iotlb, start, last); map;
->   	     map = vhost_iotlb_itree_next(map, start, last)) {
-> @@ -414,7 +411,7 @@ static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb
->   	if (err)
->   		goto err_chain;
->   
-> -	mr->initialized = true;
-> +	mr->user_mr = true;
->   	return 0;
->   
->   err_chain:
-> @@ -426,33 +423,94 @@ static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb
->   	return err;
->   }
->   
-> -int mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
-> +static int create_dma_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_mr *mr)
-> +{
-> +	int inlen = MLX5_ST_SZ_BYTES(create_mkey_in);
-> +	void *mkc;
-> +	u32 *in;
-> +	int err;
-> +
-> +	in = kzalloc(inlen, GFP_KERNEL);
-> +	if (!in)
-> +		return -ENOMEM;
-> +
-> +	mkc = MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
-> +
-> +	MLX5_SET(mkc, mkc, access_mode_1_0, MLX5_MKC_ACCESS_MODE_PA);
-> +	MLX5_SET(mkc, mkc, length64, 1);
-> +	MLX5_SET(mkc, mkc, lw, 1);
-> +	MLX5_SET(mkc, mkc, lr, 1);
-> +	MLX5_SET(mkc, mkc, pd, mvdev->res.pdn);
-> +	MLX5_SET(mkc, mkc, qpn, 0xffffff);
-> +
-> +	err = mlx5_vdpa_create_mkey(mvdev, &mr->mkey, in, inlen);
-> +	if (!err)
-> +		mr->user_mr = false;
-> +
-> +	kfree(in);
-> +	return err;
-> +}
-> +
-> +static void destroy_dma_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_mr *mr)
-> +{
-> +	mlx5_vdpa_destroy_mkey(mvdev, &mr->mkey);
-> +}
-> +
-> +static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
->   {
->   	struct mlx5_vdpa_mr *mr = &mvdev->mr;
->   	int err;
->   
-> -	mutex_lock(&mr->mkey_mtx);
-> +	if (mr->initialized)
-> +		return 0;
-> +
-> +	if (iotlb)
-> +		err = create_user_mr(mvdev, iotlb);
-> +	else
-> +		err = create_dma_mr(mvdev, mr);
-> +
-> +	if (!err)
-> +		mr->initialized = true;
-> +
-> +	return err;
-> +}
-> +
-> +int mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
-> +{
-> +	int err;
-> +
-> +	mutex_lock(&mvdev->mr.mkey_mtx);
->   	err = _mlx5_vdpa_create_mr(mvdev, iotlb);
-> -	mutex_unlock(&mr->mkey_mtx);
-> +	mutex_unlock(&mvdev->mr.mkey_mtx);
->   	return err;
->   }
->   
-> -void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
-> +static void destroy_user_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_mr *mr)
->   {
-> -	struct mlx5_vdpa_mr *mr = &mvdev->mr;
->   	struct mlx5_vdpa_direct_mr *dmr;
->   	struct mlx5_vdpa_direct_mr *n;
->   
-> -	mutex_lock(&mr->mkey_mtx);
-> -	if (!mr->initialized)
-> -		goto out;
-> -
->   	destroy_indirect_key(mvdev, mr);
->   	list_for_each_entry_safe_reverse(dmr, n, &mr->head, list) {
->   		list_del_init(&dmr->list);
->   		unmap_direct_mr(mvdev, dmr);
->   		kfree(dmr);
->   	}
-> +}
-> +
-> +void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
-> +{
-> +	struct mlx5_vdpa_mr *mr = &mvdev->mr;
-> +
-> +	mutex_lock(&mr->mkey_mtx);
-> +	if (!mr->initialized)
-> +		goto out;
-> +
-> +	if (mr->user_mr)
-> +		destroy_user_mr(mvdev, mr);
-> +	else
-> +		destroy_dma_mr(mvdev, mr);
-> +
->   	memset(mr, 0, sizeof(*mr));
->   	mr->initialized = false;
->   out:
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> index fdf3e74bffbd..02a05492204c 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -1780,6 +1780,10 @@ static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
->   		ndev->mvdev.status = 0;
->   		ndev->mvdev.mlx_features = 0;
->   		++mvdev->generation;
-> +		if (MLX5_CAP_GEN(mvdev->mdev, umem_uid_0)) {
-> +			if (mlx5_vdpa_create_mr(mvdev, NULL))
-> +				mlx5_vdpa_warn(mvdev, "create MR failed\n");
-> +		}
->   		return;
->   	}
->   
-> @@ -1859,6 +1863,7 @@ static void mlx5_vdpa_free(struct vdpa_device *vdev)
->   	ndev = to_mlx5_vdpa_ndev(mvdev);
->   
->   	free_resources(ndev);
-> +	mlx5_vdpa_destroy_mr(mvdev);
->   	mlx5_vdpa_free_resources(&ndev->mvdev);
->   	mutex_destroy(&ndev->reslock);
->   }
-> @@ -2023,9 +2028,15 @@ static int mlx5_vdpa_dev_add(struct vdpa_mgmt_dev *v_mdev, const char *name)
->   	if (err)
->   		goto err_mtu;
->   
-> +	if (MLX5_CAP_GEN(mvdev->mdev, umem_uid_0)) {
-> +		err = mlx5_vdpa_create_mr(mvdev, NULL);
-> +		if (err)
-> +			goto err_res;
-> +	}
-> +
->   	err = alloc_resources(ndev);
->   	if (err)
-> -		goto err_res;
-> +		goto err_mr;
->   
->   	mvdev->vdev.mdev = &mgtdev->mgtdev;
->   	err = _vdpa_register_device(&mvdev->vdev, 2 * mlx5_vdpa_max_qps(max_vqs));
-> @@ -2037,6 +2048,8 @@ static int mlx5_vdpa_dev_add(struct vdpa_mgmt_dev *v_mdev, const char *name)
->   
->   err_reg:
->   	free_resources(ndev);
-> +err_mr:
-> +	mlx5_vdpa_destroy_mr(mvdev);
->   err_res:
->   	mlx5_vdpa_free_resources(&ndev->mvdev);
->   err_mtu:
+>> On Wed, May 12, 2021 at 3:54 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>>> On Tue, May 11, 2021 at 04:43:13AM -0400, Jason Wang wrote:
+>>>>
+>>>> ----- 原始邮件 -----
+>>>>> 在 2021/4/21 下午4:03, Michael S. Tsirkin 写道:
+>>>>>> On Wed, Apr 21, 2021 at 03:41:36PM +0800, Jason Wang wrote:
+>>>>>>> 在 2021/4/12 下午5:23, Jason Wang 写道:
+>>>>>>>> 在 2021/4/12 下午5:09, Michael S. Tsirkin 写道:
+>>>>>>>>> On Mon, Apr 12, 2021 at 02:35:07PM +0800, Jason Wang wrote:
+>>>>>>>>>> 在 2021/4/10 上午12:04, Michael S. Tsirkin 写道:
+>>>>>>>>>>> On Fri, Apr 09, 2021 at 12:47:55PM +0800, Jason Wang wrote:
+>>>>>>>>>>>> 在 2021/4/8 下午11:59, Michael S. Tsirkin 写道:
+>>>>>>>>>>>>> On Thu, Apr 08, 2021 at 04:26:48PM +0800, Jason Wang wrote:
+>>>>>>>>>>>>>> This patch mandates 1.0 for vDPA devices. The goal is to have the
+>>>>>>>>>>>>>> semantic of normative statement in the virtio
+>>>>>>>>>>>>>> spec and eliminate the
+>>>>>>>>>>>>>> burden of transitional device for both vDPA bus and vDPA parent.
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> uAPI seems fine since all the vDPA parent mandates
+>>>>>>>>>>>>>> VIRTIO_F_ACCESS_PLATFORM which implies 1.0 devices.
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> For legacy guests, it can still work since Qemu will mediate when
+>>>>>>>>>>>>>> necessary (e.g doing the endian conversion).
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> Signed-off-by: Jason Wang <jasowang@redhat.com>
+>>>>>>>>>>>>> Hmm. If we do this, don't we still have a problem with
+>>>>>>>>>>>>> legacy drivers which don't ack 1.0?
+>>>>>>>>>>>> Yes, but it's not something that is introduced in this
+>>>>>>>>>>>> commit. The legacy
+>>>>>>>>>>>> driver never work ...
+>>>>>>>>>>> My point is this neither fixes or prevents this.
+>>>>>>>>>>>
+>>>>>>>>>>> So my suggestion is to finally add ioctls along the lines
+>>>>>>>>>>> of PROTOCOL_FEATURES of vhost-user.
+>>>>>>>>>>>
+>>>>>>>>>>> Then that one can have bits for legacy le, legacy be and modern.
+>>>>>>>>>>>
+>>>>>>>>>>> BTW I looked at vhost-user and it does not look like that
+>>>>>>>>>>> has a solution for this problem either, right?
+>>>>>>>>>> Right.
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>>>>> Note 1.0 affects ring endianness which is not mediated in QEMU
+>>>>>>>>>>>>> so QEMU can't pretend to device guest is 1.0.
+>>>>>>>>>>>> Right, I plan to send patches to do mediation in the
+>>>>>>>>>>>> Qemu to unbreak legacy
+>>>>>>>>>>>> drivers.
+>>>>>>>>>>>>
+>>>>>>>>>>>> Thanks
+>>>>>>>>>>> I frankly think we'll need PROTOCOL_FEATURES anyway, it's
+>>>>>>>>>>> too useful ...
+>>>>>>>>>>> so why not teach drivers about it and be done with it? You
+>>>>>>>>>>> can't emulate
+>>>>>>>>>>> legacy on modern in a cross endian situation because of vring
+>>>>>>>>>>> endian-ness ...
+>>>>>>>>>> So the problem still. This can only work when the hardware can support
+>>>>>>>>>> legacy vring endian-ness.
+>>>>>>>>>>
+>>>>>>>>>> Consider:
+>>>>>>>>>>
+>>>>>>>>>> 1) the leagcy driver support is non-normative in the spec
+>>>>>>>>>> 2) support a transitional device in the kenrel may requires the
+>>>>>>>>>> hardware
+>>>>>>>>>> support and a burden of kernel codes
+>>>>>>>>>>
+>>>>>>>>>> I'd rather simply drop the legacy driver support
+>>>>>>>>> My point is this patch does not drop legacy support. It merely mandates
+>>>>>>>>> modern support.
+>>>>>>>> I am not sure I get here. This patch fails the set_feature if VERSION_1
+>>>>>>>> is not negotiated. This means:
+>>>>>>>>
+>>>>>>>> 1) vDPA presents a modern device instead of transitonal device
+>>>>>>>> 2) legacy driver can't be probed
+>>>>>>>>
+>>>>>>>> What I'm missing?
+>>>>>>> Hi Michael:
+>>>>>>>
+>>>>>>> Do you agree to find the way to present modern device? We need a
+>>>>>>> conclusion
+>>>>>>> to make the netlink API work to move forward.
+>>>>>>>
+>>>>>>> Thanks
+>>>>>> I think we need a way to support legacy with no data path overhead. qemu
+>>>>>> setting VERSION_1 for a legacy guest affects the ring format so it does
+>>>>>> not really work. This seems to rule out emulating config space entirely
+>>>>>> in userspace.
+>>>>>
+>>>>> So I'd rather drop the legacy support in this case. It never work for
+>>>>> vDPA in the past and virtio-vDPA doesn't even need that. Note that
+>>>>> ACCESS_PLATFORM is mandated for all the vDPA parents right now which
+>>>>> implies modern device and LE. I wonder what's the value for supporting
+>>>>> legacy in this case or do we really encourage vendors to ship card with
+>>>>> legacy support (e.g endian support in the hardware)?
+>>>> Hi Michael:
+>>>>
+>>>> Any thoughts on this approach?
+>>>>
+>>>> My understanding is that dropping legacy support will simplify a lot of stuffs.
+>>>>
+>>>> Thanks
+>>> So basically the main condition is that strong memory barriers aren't
+>>> needed for virtio, smp barriers are enough.
+>>> Are there architectures besides x86 (where it's kind of true - as long as
+>>> one does not use non-temporals) where that is true?
+>>> If all these architectures are LE then we don't need to worry
+>>> about endian support in the hardware.
+>> So I agree it's better not to add those stuffs in either qemu or
+>> kernel. See below.
+>>
+>>> In other words I guess yes we could have qemu limit things to x86 and
+>>> then just pretend to the card that it's virtio 1.
+>>> So endian-ness we can address.
+>>>
+>>> Problem is virtio 1 has effects beyond this. things like header size
+>>> with mergeable buffers off for virtio net.
+>>>
+>>> So I am inclined to say let us not do the "pretend it's virtio 1" game
+>>> in qemu.
+>> I fully agree.
+>>
+>>    Let us be honest to the card about what happens.
+>>> But if you want to limit things to x86 either in kernel or in qemu,
+>>> that's ok by me.
+>> So what I want to do is:
+>>
+>> 1) mandate 1.0 device on the kernel
+>> 2) don't try to pretend transitional or legacy device on top of modern
+>> device in Qemu, so qemu will fail to start if vhost-vDPA is started
+>> with a legacy or transitional device
+>>
+>> And this simply the management API which can assume LE for
+>> pre-configuration via config space.
+>>
+>> So if I'm not misunderstanding, we can merge this patch and I can do
+>> the Qemu work on top?
+>>
+>> Thanks
+>>
+>>>>>
+>>>>>> So I think we should add an ioctl along the lines of
+>>>>>> protocol features. Then I think we can reserve feature bits
+>>>>>> for config space format: legacy LE, legacy BE, modern.
+>>>>>
+>>>>> We had VHOST_SET_VRING_ENDIAN but this will complicates both the vDPA
+>>>>> parent and management. What's more important, legacy behaviour is not
+>>>>> restrictied by the spec.
+>>>>>
+>>>>>
+>>>>>> Querying the feature bits will provide us with info about
+>>>>>> what does the device support. Acking them will tell device
+>>>>>> what does guest need.
+>>>>>
+>>>>> I think this can work, but I wonder how much we can gain from such
+>>>>> complexitiy.
+>>>>>
+>>>>> Thanks
+>>>>>
+>>>>>
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>>>>>> to have a simple and easy
+>>>>>>>>>> abstarction in the kenrel. For legacy driver in the guest,
+>>>>>>>>>> hypervisor is in
+>>>>>>>>>> charge of the mediation:
+>>>>>>>>>>
+>>>>>>>>>> 1) config space access endian conversion
+>>>>>>>>>> 2) using shadow virtqueue to change the endian in the vring
+>>>>>>>>>>
+>>>>>>>>>> Thanks
+>>>>>>>>> I'd like to avoid shadow virtqueue hacks if at all possible.
+>>>>>>>>> Last I checked performance wasn't much better than just emulating
+>>>>>>>>> virtio in software.
+>>>>>>>> I think the legacy driver support is just a nice to have. Or do you see
+>>>>>>>> any value to that? I guess for mellanox and intel, only modern device is
+>>>>>>>> supported in the hardware.
+>>>>>>>>
+>>>>>>>> Thanks
+>>>>>>>>
+>>>>>>>>
+>>>>>>>>>>>>>
+>>>>>>>>>>>>>> ---
+>>>>>>>>>>>>>>       include/linux/vdpa.h | 6 ++++++
+>>>>>>>>>>>>>>       1 file changed, 6 insertions(+)
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
+>>>>>>>>>>>>>> index 0fefeb976877..cfde4ec999b4 100644
+>>>>>>>>>>>>>> --- a/include/linux/vdpa.h
+>>>>>>>>>>>>>> +++ b/include/linux/vdpa.h
+>>>>>>>>>>>>>> @@ -6,6 +6,7 @@
+>>>>>>>>>>>>>>       #include <linux/device.h>
+>>>>>>>>>>>>>>       #include <linux/interrupt.h>
+>>>>>>>>>>>>>>       #include <linux/vhost_iotlb.h>
+>>>>>>>>>>>>>> +#include <uapi/linux/virtio_config.h>
+>>>>>>>>>>>>>>       /**
+>>>>>>>>>>>>>>        * vDPA callback definition.
+>>>>>>>>>>>>>> @@ -317,6 +318,11 @@ static inline int
+>>>>>>>>>>>>>> vdpa_set_features(struct vdpa_device *vdev, u64
+>>>>>>>>>>>>>> features)
+>>>>>>>>>>>>>>       {
+>>>>>>>>>>>>>>               const struct vdpa_config_ops *ops = vdev->config;
+>>>>>>>>>>>>>> +        /* Mandating 1.0 to have semantics of
+>>>>>>>>>>>>>> normative statements in
+>>>>>>>>>>>>>> +         * the spec. */
+>>>>>>>>>>>>>> +        if (!(features & BIT_ULL(VIRTIO_F_VERSION_1)))
+>>>>>>>>>>>>>> +        return -EINVAL;
+>>>>>>>>>>>>>> +
+>>>>>>>>>>>>>>           vdev->features_valid = true;
+>>>>>>>>>>>>>>               return ops->set_features(vdev, features);
+>>>>>>>>>>>>>>       }
+>>>>>>>>>>>>>> --
+>>>>>>>>>>>>>> 2.25.1
+>>>>>
 
