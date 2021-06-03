@@ -2,65 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F154C39A2C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47EC539A2C6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231546AbhFCOF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 10:05:58 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:43260 "EHLO vps0.lunn.ch"
+        id S231287AbhFCOIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 10:08:31 -0400
+Received: from foss.arm.com ([217.140.110.172]:42244 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229967AbhFCOF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 10:05:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=+F4TYRlKaPioKXq/PeE5dbOcDH3xCZTOmCks5Pjeaeg=; b=o1A+oRPk1Yoi2i1p2TF/mhhyl+
-        5w9RjXPqbXxgDyv5484mlhlvNJcMAXhKdQ62NSzaiALuAMCrvp00ZyfXs4A1m3NO+o/iWZwJlVbJp
-        mSqirkz8AKpsUrIDX/16Zw8lWeX7boE3PwLAHdU+qw2XGEOghKeUVqBvowXiJytPrp/M=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lonx1-007d6E-Tn; Thu, 03 Jun 2021 16:03:59 +0200
-Date:   Thu, 3 Jun 2021 16:03:59 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Sander Vanheule <sander@svanheule.net>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Michael Walle <michael@walle.cc>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 3/5] mfd: Add RTL8231 core device
-Message-ID: <YLjhT1zL/6okGP3p@lunn.ch>
-References: <cover.1620735871.git.sander@svanheule.net>
- <cover.1622713678.git.sander@svanheule.net>
- <56fb027587fa067a249237ecaf40828cd508cdcc.1622713678.git.sander@svanheule.net>
- <CAHp75VeLUufwYagvQ2M+VKsivUzmnHHHQeH4E8-uN2avRWmBag@mail.gmail.com>
- <acc18a3b1c02b8f89023451d816031e70bec9320.camel@svanheule.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <acc18a3b1c02b8f89023451d816031e70bec9320.camel@svanheule.net>
+        id S229744AbhFCOIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 10:08:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4B24911FB;
+        Thu,  3 Jun 2021 07:06:45 -0700 (PDT)
+Received: from e120325.arm.com (unknown [10.57.85.170])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 2036B3F73D;
+        Thu,  3 Jun 2021 07:06:42 -0700 (PDT)
+From:   Beata Michalska <beata.michalska@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, valentin.schneider@arm.com,
+        dietmar.eggemann@arm.com, corbet@lwn.net, rdunlap@infradead.org,
+        linux-doc@vger.kernel.org
+Subject: [PATCH v7 0/3] Rework CPU capacity asymmetry detection
+Date:   Thu,  3 Jun 2021 15:06:24 +0100
+Message-Id: <20210603140627.8409-1-beata.michalska@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I wanted to make the masking explicit, but since regmap-mdio currently requires
-> a register address width of 5 bit, it could move there.
-> 
-> Actually, can we safely assume that any MDIO driver implementing clause-22
-> access (5-bit register address width) will just ignore higher bits? In that
-> case, I could just drop these functions and not even modify regmap-mdio. It
-> appears to work for bitbanged MDIO.
+As of now, the asym_cpu_capacity_level will try to locate the lowest
+topology level where the highest available CPU capacity is being
+visible to all CPUs. This works perfectly fine for most of existing
+asymmetric designs out there, though for some possible and completely
+valid setups, combining different cpu microarchitectures within
+clusters, this might not be the best approach, resulting in pointing
+at a level, at which some of the domains might not see any asymmetry
+at all. This could be problematic for misfit migration and/or energy
+aware placement. And as such, for affected platforms it might result
+in custom changes to wake-up and CPU selection paths.
 
-How are C45 addresses handled? The API to the MDIO bus driver uses a
-register value which is 32 bits in width. Bit 30 indicates the address
-is a C45 address, and then you have 21 bits of actual address.
-regmap-mdio needs to be generic and support both C22 and C45.
+As mentioned in the previous version, based on the available sources out there,
+one of the potentially affected (by original approach) platforms might be
+Exynos 9820/990 with it's 'sliced' LLC(SLC) divided between the two custom (big)
+cores and the remaining A75/A55 cores, which seems to be reflected in the
+made available dt entries for those platforms.
 
-   Andrew
+The following patches rework how the asymmetric detection is being
+carried out, allowing pinning the asymmetric topology level to the lowest one,
+where full range of CPU capacities is visible to all CPUs within given
+sched domain. The asym_cpu_capacity_level will also keep track of those
+levels where any scope of asymmetry is being observed, to denote
+corresponding sched domains with the SD_ASYM_CPUCAPACITY flag
+and to enable misfit migration for those.
+
+In order to distinguish the sched domains with partial vs full range
+of CPU capacity asymmetry, new sched domain flag has been introduced:
+SD_ASYM_CPUCAPACITY_FULL.
+
+The overall idea of changing the asymmetry detection has been suggested
+by Valentin Schneider <valentin.schneider@arm.com>
+
+Verified on (mostly):
+    - QEMU (version 4.2.1) with variants of possible asymmetric topologies
+	- machine: virt
+	- modifying the device-tree 'cpus' node for virt machine:
+
+	qemu-system-aarch64 -kernel $KERNEL_IMG
+	    -drive format=qcow2,file=$IMAGE
+	    -append 'root=/dev/vda earlycon console=ttyAMA0 sched_debug
+	     sched_verbose loglevel=15 kmemleak=on' -m 2G  --nographic
+	    -cpu cortex-a57 -machine virt -smp cores=8
+	    -machine dumpdtb=$CUSTOM_DTB.dtb
+
+	$KERNEL_PATH/scripts/dtc/dtc -I dtb -O dts $CUSTOM_DTB.dts >
+	$CUSTOM_DTB.dtb
+
+	(modify the dts)
+
+	$KERNEL_PATH/scripts/dtc/dtc -I dts -O dtb $CUSTOM_DTB.dts >
+	$CUSTOM_DTB.dtb
+
+	qemu-system-aarch64 -kernel $KERNEL_IMG
+	    -drive format=qcow2,file=$IMAGE
+	    -append 'root=/dev/vda earlycon console=ttyAMA0 sched_debug
+	     sched_verbose loglevel=15 kmemleak=on' -m 2G  --nographic
+	    -cpu cortex-a57 -machine virt -smp cores=8
+	    -machine dtb=$CUSTOM_DTB.dtb
+v7:
+ - Dropping memory in case there is no asymmetry
+ - Changing classify function to get cpumask (sd span) and re-arranging
+   the function
+ - Adding warning for detecting asymmetry on SMT level
+v6:
+ - improving code readability
+v5:
+ - building CPUs list based on their capacity now triggered upon init
+   and explicit request from arch specific code to rebuild sched domains
+ - detecting asymmetry scope now done directly in sd_init
+v4:
+ - Based on Peter's idea, reworking asym detection to use per-cpu
+   capacity list to serve as base for determining the asym scope
+v3:
+ - Additional style/doc fixes
+v2:
+ - Fixed style issues
+ - Reworked accessing the cached topology data as suggested by Valentin
+
+
+Beata Michalska (3):
+  sched/core: Introduce SD_ASYM_CPUCAPACITY_FULL sched_domain flag
+  sched/topology: Rework CPU capacity asymmetry detection
+  sched/doc: Update the CPU capacity asymmetry bits
+
+ Documentation/scheduler/sched-capacity.rst |   6 +-
+ Documentation/scheduler/sched-energy.rst   |   2 +-
+ include/linux/sched/sd_flags.h             |  10 +
+ kernel/sched/topology.c                    | 206 +++++++++++++--------
+ 4 files changed, 143 insertions(+), 81 deletions(-)
+
+-- 
+2.17.1
+
