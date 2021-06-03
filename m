@@ -2,78 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A58B93999A1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 07:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC90D3999A6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 07:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229656AbhFCFBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 01:01:47 -0400
-Received: from mout01.posteo.de ([185.67.36.65]:53373 "EHLO mout01.posteo.de"
+        id S229726AbhFCFHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 01:07:53 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:24619 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229487AbhFCFBq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 01:01:46 -0400
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 189A6240029
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 07:00:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1622696401; bh=dL/KmPixUXTojIuJrQETWc69RpMTqw/20H+9c1u/B+c=;
-        h=Date:From:To:Cc:Subject:From;
-        b=DlTV5yurNw4NPJ+UTzdYP7y4eUgk4yNPiuDCgkXGPuaDwjYdRvRdN+Z4UOONqBDn1
-         7zUVg0XGKmAkyYoaNr050xNMi24j7KXmqGWpiB9LO2MSUmAd+D0wsixokO7M0z7M3o
-         CIwB116WuxVZqrSjdibGkuV0VffBo9MyB8Vw2eXH1UKv+9cQ0LkbMLDa6lE6xPviDi
-         1wR3QMdFzkTcrxJduU+MhgTZ7O+KlEsKuU1RfMJz7pePq043+s3DUfoafIFxqWmlI4
-         AR5zhVN+zBbDOhkVfdzJvepbR/LrbuiA4ki5Gvp/9N1gplw2WRjbDtlpaPZqjGpa/g
-         V9PEx4UiT401w==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4FwYbz5RT2z9rxL;
-        Thu,  3 Jun 2021 06:59:59 +0200 (CEST)
-Date:   Thu,  3 Jun 2021 04:59:55 +0000
-From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [PATCH v7 1/2] dt-bindings: hwlock: add sun6i_hwspinlock
-Message-ID: <20210603065955.1bcbe0a8@monster.powergraphx.local>
-In-Reply-To: <CAL_Jsq+z=VApY+5oXYaLzndfBf=EueiA_d+5=1GSjKqcLOPO-g@mail.gmail.com>
-References: <cover.1615713499.git.wilken.gottwalt@posteo.net>
-        <b7a1f5532e0ae474473858055fd9bbabff9e1449.1615713499.git.wilken.gottwalt@posteo.net>
-        <CAL_Jsq+z=VApY+5oXYaLzndfBf=EueiA_d+5=1GSjKqcLOPO-g@mail.gmail.com>
+        id S229695AbhFCFHw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 01:07:52 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622696768; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=yjEmiZ7jjHZMO1rvh/z4s+iEoOvJbPXaLOM9FC5ynDg=; b=DE2IYMtWEeadyJcnWNOxrHZ5iA1d8EsYdWmE+0lz5V8fy2v+bzy3ubx927A6etTTpK26t7Qu
+ lxVKeoMhU5vROgrX7AUV1cUyFvwpt8xIQxD/fYoeEyj0vXt4t6YLw6h9LMy2xb9wv/aMSOh5
+ dREiChd9HNCzQUoTloU884p8pK4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60b8632b2eaeb98b5ecf4065 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Jun 2021 05:05:47
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0F8F1C4323A; Thu,  3 Jun 2021 05:05:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 05F97C433F1;
+        Thu,  3 Jun 2021 05:05:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 05F97C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        swboyd@chromium.org, judyhsiao@chromium.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: [PATCH] ASoC: qcom: Fix for DMA interrupt clear reg overwriting
+Date:   Thu,  3 Jun 2021 10:35:30 +0530
+Message-Id: <20210603050530.15898-1-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Jun 2021 17:12:26 -0500
-Rob Herring <robh+dt@kernel.org> wrote:
+This patch fixes the DMA interrupt registers overwriting
+issue in lpass platform interrupt handler.
 
-> On Sun, Mar 14, 2021 at 4:30 AM Wilken Gottwalt
-> <wilken.gottwalt@posteo.net> wrote:
-> >
-> > Adds documentation on how to use the sun6i_hwspinlock driver for sun6i
-> > compatible series SoCs.
-> 
-> To repeat what I said on v5: please Cc DT patches to the DT list so
-> checks run and they get in my queue.
-> 
-> Now this is breaking dt_binding_check in linux-next, so drop, revert or fix it.
->
-> Error:
-> Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.example.dts:22.28-29
-> syntax error FATAL ERROR: Unable to parse input tree
-> make[1]: *** [scripts/Makefile.lib:402:
-> Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.example.dt.yaml]
-> Error 1
-> 
-> 
-> You need to include the headers for the defines.
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+---
+ sound/soc/qcom/lpass-platform.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-Oh sorry, I totally missed both of the issues. I will make a new patch set and
-fix that and some more minor issues I found.
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+index 0df9481ea4c6..e02caa121fa4 100644
+--- a/sound/soc/qcom/lpass-platform.c
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -526,7 +526,7 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
+ 			return -EINVAL;
+ 		}
+ 
+-		ret = regmap_write(map, reg_irqclr, val_irqclr);
++		ret = regmap_update_bits(map, reg_irqclr, val_irqclr, val_irqclr);
+ 		if (ret) {
+ 			dev_err(soc_runtime->dev, "error writing to irqclear reg: %d\n", ret);
+ 			return ret;
+@@ -650,7 +650,7 @@ static irqreturn_t lpass_dma_interrupt_handler(
+ 	struct lpass_variant *v = drvdata->variant;
+ 	irqreturn_t ret = IRQ_NONE;
+ 	int rv;
+-	unsigned int reg = 0, val = 0;
++	unsigned int reg = 0, val = 0, val_clr = 0, val_mask = 0;
+ 	struct regmap *map;
+ 	unsigned int dai_id = cpu_dai->driver->id;
+ 
+@@ -676,8 +676,9 @@ static irqreturn_t lpass_dma_interrupt_handler(
+ 	return -EINVAL;
+ 	}
+ 	if (interrupts & LPAIF_IRQ_PER(chan)) {
+-
+-		rv = regmap_write(map, reg, LPAIF_IRQ_PER(chan) | val);
++		val_clr = (LPAIF_IRQ_PER(chan) | val);
++		val_mask = LPAIF_IRQ_ALL(chan);
++		rv = regmap_update_bits(map, reg, val_mask, val_clr);
+ 		if (rv) {
+ 			dev_err(soc_runtime->dev,
+ 				"error writing to irqclear reg: %d\n", rv);
+@@ -688,7 +689,9 @@ static irqreturn_t lpass_dma_interrupt_handler(
+ 	}
+ 
+ 	if (interrupts & LPAIF_IRQ_XRUN(chan)) {
+-		rv = regmap_write(map, reg, LPAIF_IRQ_XRUN(chan) | val);
++		val_clr = (LPAIF_IRQ_XRUN(chan) | val);
++		val_mask = LPAIF_IRQ_ALL(chan);
++		rv = regmap_update_bits(map, reg, val_mask, val_clr);
+ 		if (rv) {
+ 			dev_err(soc_runtime->dev,
+ 				"error writing to irqclear reg: %d\n", rv);
+@@ -700,7 +703,9 @@ static irqreturn_t lpass_dma_interrupt_handler(
+ 	}
+ 
+ 	if (interrupts & LPAIF_IRQ_ERR(chan)) {
+-		rv = regmap_write(map, reg, LPAIF_IRQ_ERR(chan) | val);
++		val_clr = (LPAIF_IRQ_ERR(chan) | val);
++		val_mask = LPAIF_IRQ_ALL(chan);
++		rv = regmap_update_bits(map, reg, val_mask, val_clr);
+ 		if (rv) {
+ 			dev_err(soc_runtime->dev,
+ 				"error writing to irqclear reg: %d\n", rv);
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-greetings,
-Will
