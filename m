@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82FE399DE7
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 11:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC16399DE8
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 11:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229878AbhFCJhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 05:37:34 -0400
-Received: from mail-lj1-f169.google.com ([209.85.208.169]:44611 "EHLO
-        mail-lj1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbhFCJhd (ORCPT
+        id S229894AbhFCJhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 05:37:37 -0400
+Received: from mail-lf1-f41.google.com ([209.85.167.41]:39637 "EHLO
+        mail-lf1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229810AbhFCJhg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 05:37:33 -0400
-Received: by mail-lj1-f169.google.com with SMTP id d2so2134716ljj.11
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 02:35:49 -0700 (PDT)
+        Thu, 3 Jun 2021 05:37:36 -0400
+Received: by mail-lf1-f41.google.com with SMTP id p17so7076544lfc.6
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 02:35:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=lFoDekDYb/UgHdylIZARPBsEDFKjhn6BdLJDbtckeQE=;
-        b=JwdfSDzJpLBesUo4+88/C3oqVb/3B86q53A6DEJr2ZBkKnyTIRPbDaSACI/sePRLIp
-         gwg+b6LjuKTGQI/vxI2t9qZrQtdgJTaGhkMl02vSnx+QbSvvdaZn44F72bqAfLFY6wKo
-         GFxgoPbOcNT8sJJd690+WTKApuI3sWs1NsKPt/HEqrPCJVmGrpfh46PaEp3eGZOKLN0d
-         b5n3chr1U+LbMeJHTigal0Oc7hYVdmo6DwpAH4gkrBdIW0jBgiLFgDDFbvmn8K9uw+Pl
-         uYkXHmfMTdXpFwK8IDnr68gi50LJ8pMRtBuotoQZo9dZ1lQPDJi8ldsN8OZLe6ay0DQy
-         klnA==
+        bh=nq0h2Rai/tpUtSdSLeC5esAyt1vXtkpXm4C0UDmlQDU=;
+        b=hvMBLrYHCWMkWfU02Uc00BYq14sjtXmNCStD4dBtsXGCWBEjBBlJ9efW5N1AKdpqP7
+         qrJnw+wWMzym/dBQYz45G2EhMvy/qWPkOd0m1PVBGC1NSzC2zxptrE01rJ1oJMSx3+nR
+         ynDBRJO3tF4ZGcO7EWiBJUrx/5yloKy28jlr91fFiFglRRVejNwXUBgGhYWx6+i8ao3t
+         qI/5ZevLBZwv7jGf9yxW/MJ0wLcoReVVlDUNbJWNCpxwb478Sb/fCg93UmihIUKSNe6D
+         GfXjjW9ftXQfcPuz0+XRQJeqK+HNi6BZlMMF9jy5IWfTZurZ5d+GNelIO0vMeiP5Gs6K
+         1YRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=lFoDekDYb/UgHdylIZARPBsEDFKjhn6BdLJDbtckeQE=;
-        b=CnKlEWWngqGZA5SQn5Zes2/ilcI4FaI16d1OgWuZy6VKpWfFcrQOGE3DWZ04LpYmos
-         36SWBHzKLFhilzZK+ORHNv3lyP/7BUuB6VTPw4gJIfiS5EnI8QkgHawpoYMQqxWzxE+5
-         DOzeNoSl6DEagn3bfd9gYhFvv6OJG48b3O1wjhyfvwluXDKBAB2pKa0QKz9Y76dZji4A
-         QNLJCh0gMKZiDvw2wNQZwbQ8jMnzGmiIKFdPsUE7LW7asYJWbo9XFwR373596JI1uQCg
-         xKyrI3WvRYtayxQg6NDU5HI3tKGdxL3It1fljgK+4ESgPHCogFqQSuRe927XMQncMZmV
-         vA6w==
-X-Gm-Message-State: AOAM531oxGSgP1KGd0Fzz0Q9SqSijXsmMhFooFfO/ewWAzgEaAZDPBv8
-        rmNft0QPyM9txN/ZvyRBTDuWuw==
-X-Google-Smtp-Source: ABdhPJwg8KCHV0Hm4Ebc/CXC0Dea/8+lkoKKVArxsAIppRYHAbwPcXW5vLK4PJ8lxuaB3Ecfq3EHaA==
-X-Received: by 2002:a2e:a594:: with SMTP id m20mr29675302ljp.114.1622712888689;
-        Thu, 03 Jun 2021 02:34:48 -0700 (PDT)
+        bh=nq0h2Rai/tpUtSdSLeC5esAyt1vXtkpXm4C0UDmlQDU=;
+        b=WOLi4E0vJdQLGbDzKWrk7rHYEeDVSAbUWwOitFYMP7VJPjax0gBLjypENHDzjPvWrv
+         OPN6g6B0HnR4v6mA5VbOXyNoV5T5HYfsW6a0HMUfMfgrNyycs9CHRSLN/qp6gp8d3paO
+         eoA+S3Mp1IGb+7Wg4fQhd6n+4gAHIAlXZUdKDBTywPswnHfHy/2tcSP5y1djshoO8mgt
+         IKXsQEJoVz5DqAJACWdhpFGPKOyPw01f0ISfNEn/CFRFPLYPCI+r6SU95aG9swEceIRo
+         d4PPqlH1z+wQqkYI03JNCIFF6labkq+14awEql293mro0WX0PicdOsXNRMBbZ6bCdLxA
+         H9eQ==
+X-Gm-Message-State: AOAM530D3d/yQF+8tn1Yf+wRn2Ay/W74Ro5XILSsZl1IRFworiEbW3im
+        T8QY+PqCJy3GhNVSUsMo9svCVA==
+X-Google-Smtp-Source: ABdhPJxpFSsYKrqvgqC4Q7kRSbSGZehZRwk2RDVpSloOM744iqlLBfS8I/728O1G7Wf6U2RfB4aqgQ==
+X-Received: by 2002:a19:484d:: with SMTP id v74mr17856139lfa.396.1622712890381;
+        Thu, 03 Jun 2021 02:34:50 -0700 (PDT)
 Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
-        by smtp.gmail.com with ESMTPSA id q4sm263373lfc.172.2021.06.03.02.34.47
+        by smtp.gmail.com with ESMTPSA id q4sm263373lfc.172.2021.06.03.02.34.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 02:34:47 -0700 (PDT)
+        Thu, 03 Jun 2021 02:34:49 -0700 (PDT)
 From:   Ulf Hansson <ulf.hansson@linaro.org>
 To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
         Viresh Kumar <viresh.kumar@linaro.org>,
@@ -59,9 +59,9 @@ Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/4] PM: domains: Return early if perf state is already set for the device
-Date:   Thu,  3 Jun 2021 11:34:36 +0200
-Message-Id: <20210603093438.138705-3-ulf.hansson@linaro.org>
+Subject: [PATCH v2 3/4] PM: domains: Drop/restore performance state votes for devices at runtime PM
+Date:   Thu,  3 Jun 2021 11:34:37 +0200
+Message-Id: <20210603093438.138705-4-ulf.hansson@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210603093438.138705-1-ulf.hansson@linaro.org>
 References: <20210603093438.138705-1-ulf.hansson@linaro.org>
@@ -71,36 +71,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When dev_pm_genpd_set_performance_state() gets called to set a new
-performance state for the device, let's take a quicker path by doing an
-early return, if it turns out that the new state is already set for the
-device.
+A subsystem/driver that need to manage OPPs for its device, should
+typically drop its vote for the OPP when the device becomes runtime
+suspended. In this way, the corresponding aggregation of the performance
+state votes that is managed in genpd for the attached PM domain, may find
+that the aggregated vote can be decreased. Hence, it may allow genpd to set
+the lower performance state for the PM domain, thus avoiding to waste
+energy.
 
-Suggested-by: Viresh Kumar <viresh.kumar@linaro.org>
+To accomplish this, typically a subsystem/driver would need to call
+dev_pm_opp_set_rate|opp() for its device from its ->runtime_suspend()
+callback, to drop the vote for the OPP. Accordingly, it needs another call
+to dev_pm_opp_set_rate|opp() to restore the vote for the OPP from its
+->runtime_resume() callback.
+
+To avoid boilerplate code in subsystems/driver to deal with these things,
+let's instead manage this internally in genpd.
+
 Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 ---
 
 Changes in v2:
-	- New patch.
+	- Rebased.
+	- A few minor cosmetic changes.
+	- Deal with the error path in genpd_runtime_resume().
 
 ---
- drivers/base/power/domain.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/base/power/domain.c | 27 +++++++++++++++++++++++++--
+ include/linux/pm_domain.h   |  1 +
+ 2 files changed, 26 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-index 5c476ed1c6c9..ef25a5b18587 100644
+index ef25a5b18587..e5d97174c254 100644
 --- a/drivers/base/power/domain.c
 +++ b/drivers/base/power/domain.c
-@@ -387,6 +387,9 @@ static int genpd_set_performance_state(struct device *dev, unsigned int state)
- 	int ret;
+@@ -400,6 +400,23 @@ static int genpd_set_performance_state(struct device *dev, unsigned int state)
+ 	return ret;
+ }
  
- 	prev_state = gpd_data->performance_state;
-+	if (prev_state == state)
-+		return 0;
++static int genpd_drop_performance_state(struct device *dev)
++{
++	unsigned int prev_state = dev_gpd_data(dev)->performance_state;
 +
- 	gpd_data->performance_state = state;
- 	state = _genpd_reeval_performance_state(genpd, state);
++	if (!genpd_set_performance_state(dev, 0))
++		return prev_state;
++
++	return 0;
++}
++
++static void genpd_restore_performance_state(struct device *dev,
++					    unsigned int state)
++{
++	if (state)
++		genpd_set_performance_state(dev, state);
++}
++
+ /**
+  * dev_pm_genpd_set_performance_state- Set performance state of device's power
+  * domain.
+@@ -842,7 +859,8 @@ static int genpd_runtime_suspend(struct device *dev)
+ {
+ 	struct generic_pm_domain *genpd;
+ 	bool (*suspend_ok)(struct device *__dev);
+-	struct gpd_timing_data *td = &dev_gpd_data(dev)->td;
++	struct generic_pm_domain_data *gpd_data = dev_gpd_data(dev);
++	struct gpd_timing_data *td = &gpd_data->td;
+ 	bool runtime_pm = pm_runtime_enabled(dev);
+ 	ktime_t time_start;
+ 	s64 elapsed_ns;
+@@ -899,6 +917,7 @@ static int genpd_runtime_suspend(struct device *dev)
+ 		return 0;
  
+ 	genpd_lock(genpd);
++	gpd_data->rpm_pstate = genpd_drop_performance_state(dev);
+ 	genpd_power_off(genpd, true, 0);
+ 	genpd_unlock(genpd);
+ 
+@@ -916,7 +935,8 @@ static int genpd_runtime_suspend(struct device *dev)
+ static int genpd_runtime_resume(struct device *dev)
+ {
+ 	struct generic_pm_domain *genpd;
+-	struct gpd_timing_data *td = &dev_gpd_data(dev)->td;
++	struct generic_pm_domain_data *gpd_data = dev_gpd_data(dev);
++	struct gpd_timing_data *td = &gpd_data->td;
+ 	bool runtime_pm = pm_runtime_enabled(dev);
+ 	ktime_t time_start;
+ 	s64 elapsed_ns;
+@@ -940,6 +960,8 @@ static int genpd_runtime_resume(struct device *dev)
+ 
+ 	genpd_lock(genpd);
+ 	ret = genpd_power_on(genpd, 0);
++	if (!ret)
++		genpd_restore_performance_state(dev, gpd_data->rpm_pstate);
+ 	genpd_unlock(genpd);
+ 
+ 	if (ret)
+@@ -978,6 +1000,7 @@ static int genpd_runtime_resume(struct device *dev)
+ err_poweroff:
+ 	if (!pm_runtime_is_irq_safe(dev) || genpd_is_irq_safe(genpd)) {
+ 		genpd_lock(genpd);
++		gpd_data->rpm_pstate = genpd_drop_performance_state(dev);
+ 		genpd_power_off(genpd, true, 0);
+ 		genpd_unlock(genpd);
+ 	}
+diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
+index dfcfbcecc34b..21a0577305ef 100644
+--- a/include/linux/pm_domain.h
++++ b/include/linux/pm_domain.h
+@@ -198,6 +198,7 @@ struct generic_pm_domain_data {
+ 	struct notifier_block *power_nb;
+ 	int cpu;
+ 	unsigned int performance_state;
++	unsigned int rpm_pstate;
+ 	ktime_t	next_wakeup;
+ 	void *data;
+ };
 -- 
 2.25.1
 
