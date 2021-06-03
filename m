@@ -2,45 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9E439A935
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 304C339A938
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbhFCRbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 13:31:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54974 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229695AbhFCRbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 13:31:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42F596108E;
-        Thu,  3 Jun 2021 17:30:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622741406;
-        bh=llvjpn94Mq/0bBFmfUQXNoQsqLHPIas8SBwQkn5JSiI=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=nAhc+KLhUgxxZc7r2vzg12qBQkePZerJV3fPOF3D30yv+zXUwWa3/TNiCfyxV5O0o
-         I7VthY0Ns3AgKPNnipqyFAPKYeLC2wcV3Ey+stQGqcmJGgjej+Vov+dUnp/2CVsDx0
-         VQu0qs0BrdQsYjfyng8hSnew6Zya/Sj8KrdXRbgmLSdbAam7TK1/a+ZCKr54/DET6Y
-         z3Wo4UU9drzRh5oZ6HS3Vgqdwrsm8CPiRetCYxyOJoha4K/9XPaUJNfSpyuu+ETd9J
-         KYXe9n3HmQq3oexxGjASqjepokvk/sDzuT/4bM1aqjM4SL4WiedHhuCbpdrR84Zu9Y
-         g1lzw15vwbqNA==
-Subject: Re: [patch 3/8] x86/fpu: Invalidate FPU state after a failed XRSTOR
- from a user buffer
-To:     Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>, stable@vger.kernel.org
-References: <20210602095543.149814064@linutronix.de>
- <20210602101618.627715436@linutronix.de> <YLeedfdsnsKqcbGx@zn.tnic>
-From:   Andy Lutomirski <luto@kernel.org>
-Message-ID: <6220f2da-1d5b-843c-fa82-58a28fbcdd6b@kernel.org>
-Date:   Thu, 3 Jun 2021 10:30:05 -0700
+        id S230382AbhFCRc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 13:32:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230053AbhFCRc0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 13:32:26 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C700C06174A;
+        Thu,  3 Jun 2021 10:30:41 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d16so5388620pfn.12;
+        Thu, 03 Jun 2021 10:30:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OEEmRrvyAG7HsQxvCTXsvqFaf1IXsLAfiEx1WPpz0iU=;
+        b=Oek/Iyf/BMWcXdZg8AGcTY9vNhugpCgwYyy+YNwqTcbwQB3Lt/+obhcVP4dy+tbdmm
+         4EgKlAWDIx+E6cFh+Jkm4eKDd0Yz+Jgpr/8exVdfBdWFGKWHw1oSGtdm6hUaFt5ksZ7i
+         wr/aOGqWcNo4St3yitpBODuSVq44kqIaxjMPMB14GA/CRIPAMyazqpy6vphSJqlRutMy
+         xUBiY+C6634+Av2cYoIvOw6n4L/puHUArA2TcZTMq9+GAbIgnyBbAH3NpqoC7uOtLjCY
+         25z0skxycK4NJrTT8CgSeg2UcqRoKHL8w+o99tEPJeS1/hzo87OkMhFks9PeSSn6qRkT
+         whwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OEEmRrvyAG7HsQxvCTXsvqFaf1IXsLAfiEx1WPpz0iU=;
+        b=GDwZpdRQI5+3ZIIsGOHhjIi/jPSCbaMGVz7D26sLdt2gi0n/S+ihNUmur5Rg7fxB9i
+         KqH+Srd882lzF15/H14yjgtBtGjCmIpwZqaYqIeUH1wZH8g3yPHWlUM3XUprujYDlaoK
+         eROkZ/a8iasVA0U80HJ2I6be2iB/OXaZ5XsjCwmUMltnHNNXsyzwUXq8ZjjYzg97s7LQ
+         xOEU2idRnYQfKOvPFTIbmxZCvtnJLRpJoPv64Km7il1uCfd2x2OdHCFh1tVo4m88warS
+         Y6EL65SBbLAJ70YXdGuoRzCHq0vIjvYMvuMt0O7zVF0GMghspfhX4dW8ZQA2Vlo9jYUB
+         /tQg==
+X-Gm-Message-State: AOAM533uNDghx+7FbnFOHs3bkZf1Z3VQZ3q8QgqdjGCoACzMjwxGPvvr
+        TdGb1TgxFtmB3YG9UhoIX4UVBYrhLNA=
+X-Google-Smtp-Source: ABdhPJw6cKOan4hAw8pMtRcgDq0oVpE1nVRCul6xqIIl5d2LXMjbe0oR3pa/yaNXUCm52ZUj7TFi8A==
+X-Received: by 2002:a05:6a00:88b:b029:2de:33b3:76c9 with SMTP id q11-20020a056a00088bb02902de33b376c9mr248158pfj.30.1622741440660;
+        Thu, 03 Jun 2021 10:30:40 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id d131sm2788059pfd.176.2021.06.03.10.30.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Jun 2021 10:30:40 -0700 (PDT)
+Subject: Re: [PATCH v1 4/4] PCI: brcmstb: add shutdown call to driver
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Jim Quinlan <jim2101024@gmail.com>, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210603172313.GA2123252@bjorn-Precision-5520>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <dbd96bb2-4873-a37c-567d-ffd731beb927@gmail.com>
+Date:   Thu, 3 Jun 2021 10:30:37 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <YLeedfdsnsKqcbGx@zn.tnic>
+In-Reply-To: <20210603172313.GA2123252@bjorn-Precision-5520>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -48,59 +78,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/2/21 8:06 AM, Borislav Petkov wrote:
-> On Wed, Jun 02, 2021 at 11:55:46AM +0200, Thomas Gleixner wrote:
->> From: Andy Lutomirski <luto@kernel.org>
+On 6/3/21 10:23 AM, Bjorn Helgaas wrote:
+> On Wed, May 26, 2021 at 10:03:47AM -0700, Florian Fainelli wrote:
+>> On 5/25/21 2:18 PM, Bjorn Helgaas wrote:
+>>> On Tue, Apr 27, 2021 at 01:51:39PM -0400, Jim Quinlan wrote:
+>>>> The shutdown() call is similar to the remove() call except the former does
+>>>> not need to invoke pci_{stop,remove}_root_bus(), and besides, errors occur
+>>>> if it does.
+>>>
+>>> This doesn't explain why shutdown() is necessary.  "errors occur"
+>>> might be a hint, except that AFAICT, many similar drivers do invoke
+>>> pci_stop_root_bus() and pci_remove_root_bus() (several of them while
+>>> holding pci_lock_rescan_remove()), without implementing .shutdown().
 >>
->> If XRSTOR fails due to sufficiently complicated paging errors (e.g.
->> concurrent TLB invalidation),
+>> We have to implement .shutdown() in order to meet a certain power budget
+>> while the chip is being put into S5 (soft off) state and still support
+>> Wake-on-WLAN, for our latest chips this translates into roughly 200mW of
+>> power savings at the wall. We could probably add a word or two in a v2
+>> that indicates this is done for power savings.
 > 
-> I can't connect "concurrent TLB invalidation" to "sufficiently
-> complicated paging errors". Can you elaborate pls?
-
-Think "complex microarchitectural conditions".
-
-How about:
-
-As far as I can tell, both Intel and AMD consider it to be
-architecturally valid for XRSTOR to fail with #PF but nonetheless change
-user state.  The actual conditions under which this might occur are
-unclear [1], but it seems plausible that this might be triggered if one
-sibling thread unmaps a page and invalidates the shared TLB while
-another sibling thread is executing XRSTOR on the page in question.
-
-__fpu__restore_sig() can execute XRSTOR while the hardware registers are
-preserved on behalf of a different victim task (using the
-fpu_fpregs_owner_ctx mechanism), and, in theory, XRSTOR could fail but
-modify the registers.  If this happens, then there is a window in which
-__fpu__restore_sig() could schedule out and the victim task could
-schedule back in without reloading its own FPU registers.  This would
-result in part of the FPU state that __fpu__restore_sig() was attempting
-to load leaking into the victim task's user-visible state.
-
-Invalidate preserved FPU registers on XRSTOR failure to prevent this
-situation from corrupting any state.
-
-[1] Frequent readers of the errata lists might imagine "complex
-microarchitectural conditions".
-
->> +			 * failed.  In the event that the ucode was
->> +			 * unfriendly and modified the registers at all, we
->> +			 * need to make sure that we aren't corrupting an
->> +			 * innocent non-current task's registers.
->> +			 */
->> +			__cpu_invalidate_fpregs_state();
->> +		} else {
->> +			/*
->> +			 * As above, we may have just clobbered current's
->> +			 * user FPU state.  We will either successfully
->> +			 * load it or clear it below, so no action is
->> +			 * required here.
->> +			 */
->> +		}
+> "Saving power" is a great reason to do this.  But we still need to
+> connect this to the driver model and the system-level behavior
+> somehow.
 > 
-> I'm wondering if that comment can simply be above the TIF_NEED_FPU_LOAD
-> testing, standalone, instead of having it in an empty else? And then get
-> rid of that else.
+> The pci_driver comment says @shutdown is to "stop idling DMA
+> operations" and it hooks into reboot_notifier_list in kernel/sys.c.
+> That's incorrect or at least incomplete because reboot_notifier_list
+> isn't mentioned at all in kernel/sys.c, and I don't see the connection
+> between @shutdown and reboot_notifier_list.
+> 
+> AFAICT, @shutdown is currently used in this path:
+> 
+>   kernel_restart_prepare or kernel_shutdown_prepare
+>     device_shutdown
+>       dev->bus->shutdown
+>         pci_device_shutdown                     # pci_bus_type.shutdown
+>           drv->shutdown
+> 
+> so we're going to either reboot or halt/power-off the entire system,
+> and we're not going to use this device again until we're in a
+> brand-new kernel and we re-enumerate the device and re-register the
+> driver.
+> 
+> I'm not quite sure how either of those fits into the power-saving
+> reason.  I guess going to S5 is probably via the kernel_power_off()
+> path and that by itself doesn't turn off as much power to the PCIe
+> controller as it could?  And this new .shutdown() method will get
+> called in that path and will turn off more power, but will still leave
+> enough for wake-on-LAN to work?  And when we *do* wake from S5,
+> obviously that means a complete boot with a new kernel.
 
-I'm fine either way.
+Correct, the S5 shutdown is via kernel_power_off() and will turn off all
+that we can in the PCIe root complex and its PHY, drop the PCIe link to
+the end-point which signals that the end-point can enter its own suspend
+logic, too. And yes, when we do wake-up from S5 it means booting a
+completely new kernel. S5 is typically implemented in our chips by
+keeping just a little bit of logic active to service wake-up events
+(infrared remotes, GPIOs, RTC, etc.).
+-- 
+Florian
