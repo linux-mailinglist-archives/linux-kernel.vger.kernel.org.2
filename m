@@ -2,68 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9971399B10
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 08:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 192D3399B15
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 08:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbhFCGzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 02:55:17 -0400
-Received: from m12-12.163.com ([220.181.12.12]:53122 "EHLO m12-12.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229635AbhFCGzQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 02:55:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=mBvMJ
-        Eh9aqlScxKpyPWsWaK3wDZYy+MwI4+SHB8/0bE=; b=Sfa2SbecY83/DFgg6igSU
-        K1dvCDI1k82ohqYWVKafE5t8nO2bFvJau9Xms+hXDXq/mFvIZ2r+VL2W4/TRLgS8
-        Auh23auov+suak7X5OD0lvHTKMC4ERIyQBQ7Is49haTAKMZdSRWPe1Jy/M5KhLBv
-        NqE/QpvYqzBi7LWYGkGzFg=
-Received: from ubuntu.localdomain (unknown [218.17.89.92])
-        by smtp8 (Coremail) with SMTP id DMCowAAHvTQqfLhg_u8kHw--.41627S2;
-        Thu, 03 Jun 2021 14:52:27 +0800 (CST)
-From:   13145886936@163.com
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        gushengxian <gushengxian@yulong.com>
-Subject: [PATCH] mm: opt code indent
-Date:   Wed,  2 Jun 2021 23:52:15 -0700
-Message-Id: <20210603065215.3313-1-13145886936@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S229758AbhFCG7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 02:59:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhFCG7W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 02:59:22 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F265AC06174A;
+        Wed,  2 Jun 2021 23:57:27 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id x9so4583884ilp.4;
+        Wed, 02 Jun 2021 23:57:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aNhL/pCq/YfCQK2j2fUpAq1gpLmTFSOWf12RosUThJ4=;
+        b=j+TWFj9YDJWmJ6pah4ZDuXT4p37G/KxRcVzkwlXlGZcgHTgRPWSJ6XvHB7r0p47oUd
+         sAQUWE98CXCGCDh+iQ6lFibUAY63LDSrr1Tw0I/XtaEsPHmQXyPj5ZiygW/qjd4FVRVL
+         BHMztfQkmBBQB7Knb132Ue5aRwW/KQtn4UUS94ECdypz7lNet2s7akalRYbAoQigMYle
+         SwfFd2wvrlvNEuNpChd26R3rOO4wPTHhcgi5cLeyOBL03mzdaUVp5g6nQdCD7IXRXpFZ
+         /7rmaT4rbnh9g1hsQyDRtmLXATmuOpUt/k7i4t1jEzeMFI7hDp7buwC9/eEAbsMds5Il
+         Xfxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aNhL/pCq/YfCQK2j2fUpAq1gpLmTFSOWf12RosUThJ4=;
+        b=PEBf0HaEjBz5ydw2Z2JTPDZyb/Uxr9/EDo4yeQVrBHUaZ9hIXIpOrDv1agtPl3oXB9
+         nNxa+Pk3zgKR3tAzX3ZhYT9Kb1v2FmxF6Pyhl400x9lKzCcbRXIyS3nrs9VA8v5BEx57
+         YTnw0v8oHaGG4ovHSe7lB1LHhAut/IlQKEDnV7Uqi3D0ncb9WmQhc34h0yyBIztXroqS
+         FhjPW8jd3DtDvU4Xjavs1Bcf8OvVvwZODhtUYBpfBm+ZeR0INB1/vc+BLd9wxdIi41a4
+         J+8PwQN0dddi/nixhlbcbQ6rFZlJcDm/9CzOAQzeOGDHsvSRaEKuFO4Z9aCwLWq8re03
+         dtzQ==
+X-Gm-Message-State: AOAM530dxL/i+9uh576OFiZAgv0D8dowDf6do51nEUD9IX1YhZm9zSxs
+        D7sGKtMPP4AIArs9oxC5b7jHuvDSBF2rL11OP4Y=
+X-Google-Smtp-Source: ABdhPJzXdb7acv90///XjJCxH53FWwGHNU3BDyM0pIsZ6uB6sIZu+hcQtp9BLkNDr3TgAYiGohV66F2WlnWuN5vwtG0=
+X-Received: by 2002:a05:6e02:1352:: with SMTP id k18mr5295294ilr.275.1622703447242;
+ Wed, 02 Jun 2021 23:57:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DMCowAAHvTQqfLhg_u8kHw--.41627S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrCF18GFyDGw4kCFW8Gr4DJwb_yoWxGrX_JF
-        ykJr4IqayUAr93W347Z3WavrWvqw1kuay3ZF1Y9Fyft34Dtay0gas8Zr4ktryUt3yruF9x
-        G39a9rZxCr129jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnivtJUUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/xtbBdgumg1UMRIepUQAAs6
+References: <20210603015314.GA21290@xsang-OptiPlex-9020>
+In-Reply-To: <20210603015314.GA21290@xsang-OptiPlex-9020>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Thu, 3 Jun 2021 09:57:15 +0300
+Message-ID: <CAOQ4uxjdtfriARxh_CiTxFi8=T6j065HtbJGnuAas7oyPNADKg@mail.gmail.com>
+Subject: Re: [fanotify] a8b98c808e: stress-ng.fanotify.ops_per_sec 32.2% improvement
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Jan Kara <jack@suse.cz>, Matthew Bobrowski <repnop@google.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kbuild test robot <lkp@intel.com>, ying.huang@intel.com,
+        feng.tang@intel.com, zhengjun.xing@linux.intel.com,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: gushengxian <gushengxian@yulong.com>
+On Thu, Jun 3, 2021 at 4:36 AM kernel test robot <oliver.sang@intel.com> wrote:
+>
+>
+>
+> Greeting,
+>
+> FYI, we noticed a 32.2% improvement of stress-ng.fanotify.ops_per_sec due to commit:
+>
+>
+> commit: a8b98c808eab3ec8f1b5a64be967b0f4af4cae43 ("fanotify: fix permission model of unprivileged group")
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+>
+>
 
-Code indent should use tabs where possible.
+I guess now we know what caused the reported regression:
+https://lore.kernel.org/lkml/20210511124632.GL24154@quack2.suse.cz/
 
-Signed-off-by: gushengxian <gushengxian@yulong.com>
----
- mm/filemap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I didn't know that capable() is so significant.
 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index ba1068a1837f..a8163cff10a0 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2669,7 +2669,7 @@ generic_file_read_iter(struct kiocb *iocb, struct iov_iter *iter)
- 		} else {
- 			retval = filemap_write_and_wait_range(mapping,
- 						iocb->ki_pos,
--					        iocb->ki_pos + count - 1);
-+						iocb->ki_pos + count - 1);
- 			if (retval < 0)
- 				return retval;
- 		}
--- 
-2.25.1
+FWIW, here is a link to the test code:
+https://github.com/ColinIanKing/stress-ng/blob/master/stress-fanotify.c#L474
 
+It creates events in a loop by child process while the parent process
+reads the generated events in a loop (on two different fanotify groups).
 
+Thanks,
+Amir.
