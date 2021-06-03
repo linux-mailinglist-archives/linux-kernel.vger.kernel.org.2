@@ -2,68 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55C7D399B83
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 09:24:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA89A399B6C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 09:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbhFCH0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 03:26:18 -0400
-Received: from m12-16.163.com ([220.181.12.16]:38785 "EHLO m12-16.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229734AbhFCH0S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 03:26:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Cu7Es
-        3G/4F3KvdpCSwvOPH/npsuhFA7k0V+dMtpqY64=; b=Ao5rV/5D9jzHwD8pop+Ds
-        10BS9LpGuhm94achYR/vzS+iVkmJkcDNtRV6eHSysul5y9XQqA3aTU2Qfm1Oya86
-        DNRC7ZwY/+a3x7Q2oBxNbpt8ajN8QVPnkPibYLtp7Gompm30M2GnpZxbh/pNx91t
-        +IlefjpW+LWDDNTzsZmV6c=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp12 (Coremail) with SMTP id EMCowADHz9ekg7hgadPSuw--.2698S2;
-        Thu, 03 Jun 2021 15:24:21 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     FlorianSchandinat@gmx.de
-Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, lijian <lijian@yulong.com>
-Subject: [PATCH] video: fbdev: via: hw.c:  Fix a typo
-Date:   Thu,  3 Jun 2021 15:23:22 +0800
-Message-Id: <20210603072322.19235-1-lijian_8010a29@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S229813AbhFCHZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 03:25:30 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:48659 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229567AbhFCHZ3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 03:25:29 -0400
+X-UUID: 3d87c1fb88a247fc922f2ebe67620855-20210603
+X-UUID: 3d87c1fb88a247fc922f2ebe67620855-20210603
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <roger.lu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 896726967; Thu, 03 Jun 2021 15:23:41 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 3 Jun 2021 15:23:39 +0800
+Received: from mtksdaap41.mediatek.inc (172.21.77.4) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 3 Jun 2021 15:23:39 +0800
+From:   Roger Lu <roger.lu@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Enric Balletbo Serra <eballetbo@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+CC:     Fan Chen <fan.chen@mediatek.com>,
+        HenryC Chen <HenryC.Chen@mediatek.com>,
+        YT Lee <yt.lee@mediatek.com>,
+        Xiaoqing Liu <Xiaoqing.Liu@mediatek.com>,
+        Charles Yang <Charles.Yang@mediatek.com>,
+        Angus Lin <Angus.Lin@mediatek.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Nishanth Menon <nm@ti.com>, Roger Lu <roger.lu@mediatek.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH v18 0/7] soc: mediatek: SVS: introduce MTK SVS
+Date:   Thu, 3 Jun 2021 15:23:31 +0800
+Message-ID: <20210603072338.11244-1-roger.lu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EMCowADHz9ekg7hgadPSuw--.2698S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKrykArW5Aw1UGr1fAr1fWFg_yoWxZFc_CF
-        yxZ393WrWqyw109w18JFW3C340vay8uF9av3WDtryfAry7u343trykurySg3y7Ww4UXFnr
-        WF4qgr10krySkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUexgA7UUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbi3x+lUGB0GZ9+KwABsz
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
+1. SVS driver uses OPP adjust event in [1] to update OPP table voltage part.
+2. SVS driver gets thermal/GPU device by node [2][3] and CPU device by get_cpu_device().
+After retrieving subsys device, SVS driver calls device_link_add() to make sure probe/suspend callback priority.
+3. SVS dts refers to reset controller [4] to help reset SVS HW.
 
-Change 'orignal' to 'original'.
+#mt8183 SVS related patches
+[1] https://patchwork.kernel.org/patch/11193513/
+[2] https://patchwork.kernel.org/project/linux-mediatek/patch/20201013102358.22588-2-michael.kao@mediatek.com/
+[3] https://patchwork.kernel.org/project/linux-mediatek/patch/20200306041345.259332-3-drinkcat@chromium.org/
 
-Signed-off-by: lijian <lijian@yulong.com>
----
- drivers/video/fbdev/via/hw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+#mt8192 SVS related patches
+[1] https://patchwork.kernel.org/patch/11193513/
+[2] https://patchwork.kernel.org/project/linux-mediatek/patch/20201223074944.2061-1-michael.kao@mediatek.com/
+[3] https://lore.kernel.org/patchwork/patch/1360551/
+[4] https://patchwork.kernel.org/project/linux-mediatek/patch/20200817030324.5690-5-crystal.guo@mediatek.com/
 
-diff --git a/drivers/video/fbdev/via/hw.c b/drivers/video/fbdev/via/hw.c
-index 66afd7be00cc..e9d0fac8fb17 100644
---- a/drivers/video/fbdev/via/hw.c
-+++ b/drivers/video/fbdev/via/hw.c
-@@ -1542,7 +1542,7 @@ static void init_gfx_chip_info(int chip_type)
- 		else
- 			viaparinfo->chip_info->gfx_chip_revision =
- 			CLE266_REVISION_CX;
--		/* restore orignal CR4F value */
-+		/* restore original CR4F value */
- 		viafb_write_reg(CR4F, VIACR, tmp);
- 	}
- 
--- 
-2.25.1
+changes since v17:
+- Rebase to Linux kernel 5.13-rc1
+
+Roger Lu (7):
+  [v18,1/7] dt-bindings: soc: mediatek: add mtk svs dt-bindings
+  [v18,2/7] arm64: dts: mt8183: add svs device information
+  [v18,3/7] soc: mediatek: SVS: introduce MTK SVS engine
+  [v18,4/7] soc: mediatek: SVS: add debug commands
+  [v18,5/7] dt-bindings: soc: mediatek: add mt8192 svs dt-bindings
+  [v18,6/7] arm64: dts: mt8192: add svs device information
+  [v18,7/7] soc: mediatek: SVS: add mt8192 SVS GPU driver
+
+ .../bindings/soc/mediatek/mtk-svs.yaml        |   92 +
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi      |   15 +
+ arch/arm64/boot/dts/mediatek/mt8192.dtsi      |   34 +
+ drivers/soc/mediatek/Kconfig                  |   10 +
+ drivers/soc/mediatek/Makefile                 |    1 +
+ drivers/soc/mediatek/mtk-svs.c                | 2525 +++++++++++++++++
+ 6 files changed, 2677 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
+ create mode 100644 drivers/soc/mediatek/mtk-svs.c
 
 
