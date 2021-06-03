@@ -2,92 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5CD39ABB5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 22:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E24B139ABB7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 22:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbhFCUXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 16:23:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36318 "EHLO
+        id S229911AbhFCUYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 16:24:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFCUXR (ORCPT
+        with ESMTP id S229576AbhFCUYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 16:23:17 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4490C06174A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 13:21:19 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id y15so5773767pfl.4
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 13:21:19 -0700 (PDT)
+        Thu, 3 Jun 2021 16:24:32 -0400
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3514C06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 13:22:47 -0700 (PDT)
+Received: by mail-oo1-xc2a.google.com with SMTP id v13-20020a4aa40d0000b02902052145a469so1701467ool.3
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 13:22:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=22cHXWv9iZQXx/sdhYmRqkO8JAZp4DKO+xohWwIb59Y=;
-        b=CwYWBjmP9s0p7+KjLehn2GHvcj0PUMS4cjGX5d+Cg0kCMk7Uwohb2YymU4yuOMAgEV
-         h6hvR0PTu8QHfDAJI2I+hg6f5F3FgdBtLxkdRN+q50qtFyT8i5o3Cm9kFrWcwDht0OC6
-         QMZ8vIX8uLZZ3NcrOnJFut1DnVhvsjJa9WEjk=
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=cMLM4cflpxEbsfu/ce/EkzAINJ+710gVrefVr0HI+qY=;
+        b=L0SkuWBv+83YGqTd6ik3MB9wor9LeocWUua6DOQob5uCIeKncJusY/+64rblVTnKgZ
+         tTRCUuoUgWaAQg7TsuVlaO5NxTdPq6WOncJXARM0/uRiV35POzwPmEbSKaXyAuzCtWDc
+         ONq7D/gq3ivz6aXRSTHk3Dn7oHzaEooVJ3WyM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=22cHXWv9iZQXx/sdhYmRqkO8JAZp4DKO+xohWwIb59Y=;
-        b=UP4Drv9I0JwbKj77R520i3vwrRg1K6LjRewme+xy40qzmWYJj1Mk8Ad/hEL+dQ9jRo
-         E99pYyKjG2znc9d8mkvC6oR4La6xQ8qHPgZjGk5euF2AlhJF498GrVtOnnfAGwtqfLBX
-         lGU5PXlUgt5qBaTFz4jaxBDdHvJ/blRJMurNQmLJJ6U6LRIgzFStXLfWY2rOh42rUxAR
-         kIwuFR024FZ9HQ/c6/SKiy1wjRtr1Lf1GzFTDpv6IlvR8lwrnIybjV5krIYaMQFftpiZ
-         sQao0teiPKie7fKkd6Rn/wXVrQCncrUZ26MZeKX3Q2AT+Z4WlJ3e/vDY8FK2HBOV8JCq
-         Rh/g==
-X-Gm-Message-State: AOAM533MH7RupG6GOyShd+oZLvtgTWArKtTjnk8G08Y/yeX1mactDwXj
-        1uj841auHS5obs88EY59+OInCIcnF+Ikkg==
-X-Google-Smtp-Source: ABdhPJzSqKrU1aeFkW97aOCihszyvcSTKgLaKNTofS40qreZjNJCOuYucO8oUkGoOQGdIopF5oiK4g==
-X-Received: by 2002:a63:4b43:: with SMTP id k3mr1218443pgl.450.1622751677743;
-        Thu, 03 Jun 2021 13:21:17 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:201:f64:a52d:f801:58d1])
-        by smtp.gmail.com with ESMTPSA id c62sm2999511pfa.12.2021.06.03.13.21.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 13:21:17 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Saravana Kannan <saravanak@google.com>
-Subject: [PATCH v2] driver core: Make cycle dev_info() message dev_dbg()
-Date:   Thu,  3 Jun 2021 13:21:16 -0700
-Message-Id: <20210603202116.1841261-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=cMLM4cflpxEbsfu/ce/EkzAINJ+710gVrefVr0HI+qY=;
+        b=k9KLyGpbm5gJUxIMauJECOCN/Pmq1FQC+JRP8aRtEcVKuoWqOzE2dkqMUHLwB01neu
+         HUMVvBGfZZePytomCa4Wzm01UFYJPI4vGedrhd+qT0cuQf39X7knsWoAed27VViPn6+d
+         OFwRiZ+r5J1jdAJmURzUMEyn8dUEa22G5UN14iyRP4rdZTelrfGHr33WmYhZ3vC0XDgy
+         MSL/Vgk//mNoDU03BoizzbioYfyQ9fmWrGHRtoFFnhKuYQkTF/Z3VaHFwVfUTdStvIa9
+         L4RC0BNh8sjt5KRNyOBZnT8wBmB9JARaHMcLd1oUis59tCJ0MQsyq9SXvJx64AzevIIq
+         7mMQ==
+X-Gm-Message-State: AOAM5320zjl8donCrEs8fuw2f8dJWZNHmhRRcIFSdof+z11hI/QpoGXY
+        ahFKKOzBc/Ax9ROLjLZmHhiD2q5iB7yK5rY7C4S1Gg==
+X-Google-Smtp-Source: ABdhPJwJRX5XWGLQvcvpQ5gyjX7E4oP0MOspFx028qV6yYflYoKemYC4DYS5FSHp16wnBONkFO2dTwSCsw/L7BS4wVU=
+X-Received: by 2002:a4a:85ca:: with SMTP id u10mr857805ooh.80.1622751767413;
+ Thu, 03 Jun 2021 13:22:47 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 3 Jun 2021 20:22:47 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1622734846-14179-1-git-send-email-khsieh@codeaurora.org>
+References: <1622734846-14179-1-git-send-email-khsieh@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 3 Jun 2021 20:22:47 +0000
+Message-ID: <CAE-0n51-CsHPwYmceUq1kTaG=L+ifG3kX2pxJxTG_=r4Xm67_g@mail.gmail.com>
+Subject: Re: [PATCH v5] drm/msm/dp: power off DP phy at suspend
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
+        vkoul@kernel.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This seems to mostly print debug information about device link stuff at
-boot. It doesn't seem very useful outside of debugging so move it to
-dev_dbg().
+Can you Cc dri-devel?
 
-Cc: Saravana Kannan <saravanak@google.com>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
-
-Changes from v1 (https://lore.kernel.org/r/20210603064849.1376107-1-swboyd@chromium.org)
- * Dropped second hunk and rebased to -rc4
-
- drivers/base/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 54ba506e5a89..378bb894869a 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -1736,7 +1736,7 @@ static int fw_devlink_create_devlink(struct device *con,
- 		 */
- 		if (!device_link_add(con, sup_dev, flags) &&
- 		    !(flags & DL_FLAG_SYNC_STATE_ONLY)) {
--			dev_info(con, "Fixing up cyclic dependency with %s\n",
-+			dev_dbg(con, "Fixing up cyclic dependency with %s\n",
- 				 dev_name(sup_dev));
- 			device_links_write_lock();
- 			fw_devlink_relax_cycle(con, sup_dev);
-
-base-commit: 8124c8a6b35386f73523d27eacb71b5364a68c4c
--- 
-https://chromeos.dev
-
+Quoting Kuogee Hsieh (2021-06-03 08:40:46)
+> Normal DP suspend operation contains two steps, display off followed
+> by dp suspend, to complete system wide suspending cycle if display is
+> up at that time. In this case, DP phy will be powered off at display
+> off. However there is an exception case that depending on the timing
+> of dongle plug in during system wide suspending, sometimes display off
+> procedure may be skipped and dp suspend was called directly. In this
+> case, dp phy is stay at powered on (phy->power_count = 1) so that at
+> next resume dp driver crash at main link clock enable due to phy is
+> not physically powered on. This patch will call dp_ctrl_off_link_stream()
+> to tear down main link and power off phy at dp_pm_suspend() if main link
+> had been brought up.
+>
