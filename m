@@ -2,129 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5167B39A9C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E240A39A9C3
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 20:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbhFCSHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 14:07:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56607 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230446AbhFCSHe (ORCPT
+        id S230033AbhFCSIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 14:08:01 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:48499 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229850AbhFCSIA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 14:07:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622743549;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=tXbIN/K5Sz2sSiy4b9DqsJhGb0vXqIJSZXhXMYqqraU=;
-        b=hZxVJN9pBXBtQiEQUCOMPI0f7zZjMFFGb176A8o7vqz+AWCh6bp3mvnbnfcdHKxtEGjK5z
-        cMrf1mRwkLeBwRngOUNym3Ivg5zPc2ABkJUwpxis+iQhPNpwaEOeknf9W/4IZAQpCRSnvi
-        sbouwykpFvWnAGhmo+X6sNf0ZWY+0Ps=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-363-4Y8sJe0lNbmf8LLGWiYsvA-1; Thu, 03 Jun 2021 14:05:48 -0400
-X-MC-Unique: 4Y8sJe0lNbmf8LLGWiYsvA-1
-Received: by mail-qt1-f199.google.com with SMTP id z9-20020a05622a0609b02901f30a4fcf9bso3576948qta.4
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 11:05:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tXbIN/K5Sz2sSiy4b9DqsJhGb0vXqIJSZXhXMYqqraU=;
-        b=bqDoTphTRcxSxx+0VzDpwENY1Foh92dAkv5hu5Srl6eWVab1uKUUoilkrl3URg1spJ
-         AhyWlSPWUgXoIOgtN9WpEDvO2i4g25t/nxcOlJwVxdUkKH56vczBOB4LKy+CXG6WWGPb
-         kX/wkoOfnDK+Z4Njp3dVUHjmjsXMAjc/WiRb5bous5NhlKJZQFTyI0ei3H8cEN/BvN5T
-         eMbt6wJ1uq/3tfHwQBxRx6/uYO3b4I5UERs1bYthTfYPediy9e48sAG6nKirNrc7rhlM
-         8jWsH6ytBjOd9sQukXKXJirQKTlKPKR8prCcvT8QeGwHLblYt856QOq6/nCtkI3yST5b
-         RtmQ==
-X-Gm-Message-State: AOAM530lB4cecxd0dov8+eoauDMLwlpceEkmVPtDNVuviKRpr6DvhTYe
-        QxzNeYtu65oZHx/x0yy8C8Ca+XR1iQu/LKrzSfPaVsufyiHN2YjYyiYi2T3+lFK8tuIli4gzxgb
-        BRYfpwEbfsUch1tkvZ51dhV3h
-X-Received: by 2002:a05:620a:20da:: with SMTP id f26mr450086qka.203.1622743547976;
-        Thu, 03 Jun 2021 11:05:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzTyMQdXaZyjeReLDaxeCEsxV+Vpnor7t0rrbG3rdi1GTkkBklWCSv83UBY+w3pX9a5VlaRYA==
-X-Received: by 2002:a05:620a:20da:: with SMTP id f26mr450069qka.203.1622743547758;
-        Thu, 03 Jun 2021 11:05:47 -0700 (PDT)
-Received: from t490s.redhat.com (bras-base-toroon474qw-grc-61-184-147-118-108.dsl.bell.ca. [184.147.118.108])
-        by smtp.gmail.com with ESMTPSA id d2sm2344846qkn.95.2021.06.03.11.05.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 11:05:47 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     peterx@redhat.com, Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: [PATCH] mm/swap: Fix pte_same_as_swp() not removing uffd-wp bit when compare
-Date:   Thu,  3 Jun 2021 14:05:46 -0400
-Message-Id: <20210603180546.9083-1-peterx@redhat.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 3 Jun 2021 14:08:00 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 937CC5C0072;
+        Thu,  3 Jun 2021 14:06:14 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Thu, 03 Jun 2021 14:06:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=L7JL5l0QHtqSsOPix17Y5ib8Syw
+        C0opDRoDXdkot+QY=; b=fnJjmEBz2x+tbWb1S1R9JTR5zOjX6A02txQWKMzz7gL
+        kmdrh+hUUZKNMNExbJF5KlmSLzlUy3UhgUVkB7HaIZ2GsowHTUyE8dYF99CyUc0C
+        b0KeFg+HmDt7yq3ADcvYn+uzva+E2aW9YhUgklFjTLVVAklOo5duuT1xZu+0wjyW
+        EtnzOuUwyX9KzdbGZyPURi3pke2y5K9p8wmpvegCiymO26C78OQ/byzS+XD8uQkD
+        bnqguVTejqpF1gooU0Nj4FENRd0FStEWLp2MdU73qq/DWqiC5zcOlM2XGnnjRWGV
+        NZv/OHTeCB4QV6A9DrBjb6q47xiAzatkPCqTYCEW+kg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=L7JL5l
+        0QHtqSsOPix17Y5ib8SywC0opDRoDXdkot+QY=; b=HXkckYBehCeHod1L6gETOT
+        rNR82hjv9NHeB1BYmLpKA7CzP3Z6W8qqwD6fm51OLKFjiEavyd7Vdx43t59YZb+V
+        SY4uZmN4VVDTkLZ3oRiZsAuyMkqepa0/033eLcJ46Br/MbnKtkfCBweiJxxZsRVC
+        gOmNkcXykBHrOEP0DRd0A3SIAv6x/wupk8/pxNAk7kul3YYRQFcE2mXXi8Jgow75
+        Zoy8NK4a7EEnaSGEi3zaRHmRXD5nxW9wy1fUiVal+8tQz324onnEluPcQTSJkg++
+        e6FFo8idEKyWpd1mBa6YwtxT5shx/z7vKWty2vSJv/OHYU0/un4wE+Nwc2Ekp7fw
+        ==
+X-ME-Sender: <xms:Fhq5YNHuXLPzQ6bYXvS-3_Zw8PqDAOTgPGklvwxU1g5Gwh6hXa7lRA>
+    <xme:Fhq5YCWRw4vo7yfXTnNCBHsYqO0Y7BkD_pYnY9PpBCOxsb1C4H-1ZXo8CWxpzWAm6
+    O_JldZ0t9RyhlHyEg>
+X-ME-Received: <xmr:Fhq5YPJiKBL8DOEVoP_Wjhp65OcaMaqMYkbmCJ5Hw2BVKNOaGUDaBG47OcDQuBNWtoaUQlvinaM0sjnIPPw6RruRz7ZMbw9amQDMSmJHJxUou0oCMJu2iG8bmwWA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdelledguddukecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomheptehnughr
+    vghsucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecuggftrf
+    grthhtvghrnhepudekhfekleeugeevteehleffffejgeelueduleeffeeutdelffeujeff
+    hfeuffdunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvghssegrnhgrrhgriigvlhdruggv
+X-ME-Proxy: <xmx:Fhq5YDH5ElxUR4veE4hNWbal5ZUjZi5vXSaP8AAKrpHmpI1o5-QVAw>
+    <xmx:Fhq5YDXkZbMVDaW8HN6ljMZZ4FnY3o28snWBbZ4f9rutZWE9O8ol5A>
+    <xmx:Fhq5YONkLMXMwX6gMfxe0CQLYY6456nbVhBSLVmNaVz_RF4PP_mKMA>
+    <xmx:Fhq5YAhjUwwMcC6_jbouEwP1SqlODGs-DNv03QWOqJzSj3B9TX3YWg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 3 Jun 2021 14:06:13 -0400 (EDT)
+Date:   Thu, 3 Jun 2021 11:06:12 -0700
+From:   Andres Freund <andres@anarazel.de>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Memory uninitialized after "io_uring: keep table of pointers to
+ ubufs"
+Message-ID: <20210603180612.uchkn5qqa3j7rpgd@alap3.anarazel.de>
+References: <20210529003350.m3bqhb3rnug7yby7@alap3.anarazel.de>
+ <d2c5b250-5a0f-5de5-061f-38257216389d@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d2c5b250-5a0f-5de5-061f-38257216389d@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I found it by pure code review, that pte_same_as_swp() of unuse_vma() didn't
-take uffd-wp bit into account when comparing ptes.  pte_same_as_swp() returning
-false negative could cause failure to swapoff swap ptes that was wr-protected
-by userfaultfd.
+Hi,
 
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- include/linux/swapops.h | 15 +++++++++++----
- mm/swapfile.c           |  2 +-
- 2 files changed, 12 insertions(+), 5 deletions(-)
+On 2021-05-29 12:03:12 +0100, Pavel Begunkov wrote:
+> On 5/29/21 1:33 AM, Andres Freund wrote:
+> > Hi,
+> > 
+> > I started to see buffer registration randomly failing with ENOMEM on
+> > 5.13. Registering buffer or two often succeeds, but more than that
+> > rarely. Running the same program as root succeeds - but the user has a high
+> > rlimit.
+> > 
+> > The issue is that io_sqe_buffer_register() doesn't initialize
+> > imu. io_buffer_account_pin() does imu->acct_pages++, before calling
+> > io_account_mem(ctx, imu->acct_pages);
+> > 
+> > Which means that a random amount of memory is being accounted for. On the first
+> > few allocations this sometimes fails to fail because the memory is zero, but
+> > after a bit of reuse...
+> 
+> Makes sense, thanks for digging in. I've just sent a patch, would
+> be great if you can test it or send your own.
 
-diff --git a/include/linux/swapops.h b/include/linux/swapops.h
-index af3d2661e41e..d356ab4047f7 100644
---- a/include/linux/swapops.h
-+++ b/include/linux/swapops.h
-@@ -23,6 +23,16 @@
- #define SWP_TYPE_SHIFT	(BITS_PER_XA_VALUE - MAX_SWAPFILES_SHIFT)
- #define SWP_OFFSET_MASK	((1UL << SWP_TYPE_SHIFT) - 1)
- 
-+/* Clear all flags but only keep swp_entry_t related information */
-+static inline pte_t pte_swp_clear_flags(pte_t pte)
-+{
-+	if (pte_swp_soft_dirty(pte))
-+		pte = pte_swp_clear_soft_dirty(pte);
-+	if (pte_swp_uffd_wp(pte))
-+		pte = pte_swp_clear_uffd_wp(pte);
-+	return pte;
-+}
-+
- /*
-  * Store a type+offset into a swp_entry_t in an arch-independent format
-  */
-@@ -66,10 +76,7 @@ static inline swp_entry_t pte_to_swp_entry(pte_t pte)
- {
- 	swp_entry_t arch_entry;
- 
--	if (pte_swp_soft_dirty(pte))
--		pte = pte_swp_clear_soft_dirty(pte);
--	if (pte_swp_uffd_wp(pte))
--		pte = pte_swp_clear_uffd_wp(pte);
-+	pte = pte_swp_clear_flags(pte);
- 	arch_entry = __pte_to_swp_entry(pte);
- 	return swp_entry(__swp_type(arch_entry), __swp_offset(arch_entry));
- }
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 6212bc033602..1e07d1c776f2 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -1887,7 +1887,7 @@ unsigned int count_swap_pages(int type, int free)
- 
- static inline int pte_same_as_swp(pte_t pte, pte_t swp_pte)
- {
--	return pte_same(pte_swp_clear_soft_dirty(pte), swp_pte);
-+	return pte_same(pte_swp_clear_flags(pte), swp_pte);
- }
- 
- /*
--- 
-2.31.1
+Sorry for the slow response, I'm off this week. I did just get around to
+test and unsurprisingly: The patch does fix the issue.
 
+Greetings,
+
+Andres Freund
