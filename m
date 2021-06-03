@@ -2,68 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F87D39A294
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9FF739A296
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230525AbhFCN5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 09:57:04 -0400
-Received: from mga07.intel.com ([134.134.136.100]:32352 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229738AbhFCN5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 09:57:04 -0400
-IronPort-SDR: fIc/hf6nHugKq0FiJhkuK6xEzI9Btozra7WnMZB9cEckJa5Z0R6q3p01poTt074ezC2cpCCXFJ
- 2PixF+vV7pNw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="267910102"
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="267910102"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 06:55:09 -0700
-IronPort-SDR: WSa7HuZNkrlwz34Gbfei5TXfLURTgD2GlmLyG8N/jgYZni0MyjUmN6cSa58+JEkd6TyCxYnzg9
- guBhNlSSzzuA==
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="550698748"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.7.237]) ([10.209.7.237])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 06:55:09 -0700
-Subject: Re: [PATCH v1 1/8] virtio: Force only split mode with protected guest
-To:     Jason Wang <jasowang@redhat.com>, mst@redhat.com
-Cc:     virtualization@lists.linux-foundation.org, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        iommu@lists.linux-foundation.org, x86@kernel.org,
-        sathyanarayanan.kuppuswamy@linux.intel.com, jpoimboe@redhat.com,
-        linux-kernel@vger.kernel.org
-References: <20210603004133.4079390-1-ak@linux.intel.com>
- <20210603004133.4079390-2-ak@linux.intel.com>
- <28c8302b-6833-10b4-c0eb-67456e7c4069@redhat.com>
- <09e17c7f-ce51-1a46-72c4-12223bee4e3a@linux.intel.com>
- <1c08bc42-7448-351e-78bf-fcf68d2b2561@redhat.com>
- <5a2d0d70-fa6b-f08d-f222-5c00cf5f9d44@linux.intel.com>
- <9b10bb24-eb27-510e-cf0d-7818ab9166ef@redhat.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <9d6bc785-9613-a2e8-f78f-4547747a331d@linux.intel.com>
-Date:   Thu, 3 Jun 2021 06:55:08 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S231220AbhFCN6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 09:58:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229738AbhFCN6K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 09:58:10 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65530C06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 06:56:09 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id w9so3172582qvi.13
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 06:56:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=uged.al; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fFoCEkJHlYaCqbo7kftj3nQYJl4JAya0mNURfk0G9Fo=;
+        b=iOGRGKMMJ7mjrGAdEcby7lsIBWbsY9FmTD/4P6CUXobrP5vRdX5NYZlmK1uLe9dvLm
+         z1YBOrXjyC64sc+6mGqhkgxtKmepkCsmdBv5T1o8rkEUgNLLB3G1th843k76n+w7wHd+
+         wBxBLE9mapL58Sm8CD8BxlTz4dg7g3OzYg5zu1jJpMfAT1rIWGWNmJ6u55SGUEFkKclh
+         HSKpx6Dyn20lsWeyWlv8dS05FWBs9MzSCS2jCUsGC3/IyBZrQVetFMVgDLEFwVPdDCmt
+         VEFQd4XCnOAdznbWTJ7tKlTjnPFWvqvNoJk32txKZ4ZL09ETySALU4AfVW13V++mNOlH
+         oRqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fFoCEkJHlYaCqbo7kftj3nQYJl4JAya0mNURfk0G9Fo=;
+        b=EyEKpA50wqrhnvwUxAgoNnnZU1YZtc48e5Dza+R71t4q+P+U9aHvddhxAoNzZL2SZP
+         lXwk+R3Ywo0S7bodConn9iluLNHr1FBm9tB69XaQhRUseUMfZ/6GuwzFgb6i4GeLTkAV
+         kw9PPZJs2qmp8VDkDqPPiThJU4YU7omkqgW+aANrlL/1Coa/nsvrJQ6WQvySb5gvuKRq
+         nxVcO0+80c/k8r2j1tJNAtKjv/wj0AidIPk6jw6vBK0IthEhqi3ZfHx1Mm6D+VK6iyzm
+         G9xFJEv1m9JyqXHSnMcA+apZbVAMcTLMJqcgCZpdDZgY9ejelmXd8W1/QPIDJ7cKIt4g
+         DUDQ==
+X-Gm-Message-State: AOAM531evN7LZHOIB9wgwpmb2uDMkYhd0IIJBgpvN5dhCkBQWWfjp2V/
+        RJIaiYr/j4IkysUZQAj44dotDDXB3lEBGtNCA0i6cw==
+X-Google-Smtp-Source: ABdhPJzgYoxPqkgvsYk9l6uq26oBNtV19sZUxDEha83osjjivigH/jyWaB4Pso/7pgj/Enw04BwYsAaKsWyd7xEPUvE=
+X-Received: by 2002:a0c:fa4a:: with SMTP id k10mr12353155qvo.18.1622728568553;
+ Thu, 03 Jun 2021 06:56:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <9b10bb24-eb27-510e-cf0d-7818ab9166ef@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210603113847.163512-1-odin@uged.al> <CAKfTPtAK3gEqChUmoUXo7KLqPAFo=shH4Yi=QLjrwpuu6Ow6-Q@mail.gmail.com>
+ <CAFpoUr2HBexs5784nU7hyDSs0eNiEut=-4wWcnpMtSVtFeaLLA@mail.gmail.com> <CAKfTPtDLiN2GXxPG9AhxAihx++jV+W6VeBRdYgVwNmb8RiTkhQ@mail.gmail.com>
+In-Reply-To: <CAKfTPtDLiN2GXxPG9AhxAihx++jV+W6VeBRdYgVwNmb8RiTkhQ@mail.gmail.com>
+From:   Odin Ugedal <odin@uged.al>
+Date:   Thu, 3 Jun 2021 15:55:29 +0200
+Message-ID: <CAFpoUr3=v9L-0QqKJeR=P_PvPnSAxrKObwj3ZS+ypMyMd17jsA@mail.gmail.com>
+Subject: Re: [PATCH v2] sched/fair: Correctly insert cfs_rq's to list on unthrottle
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> If it's only a matter of waiting other PELT patches to be merged, we
+> should use cfs_rq_is_decayed().
 
-> Ok, but what I meant is this, if we don't read from the descriptor 
-> ring, and validate all the other metadata supplied by the device (used 
-> id and len). Then there should be no way for the device to suppress 
-> the dma flags to write to the indirect descriptor table.
+ACK. will post a v3.
+
+> if load_avg!=0, we will update it periodically and sync
+> tg_load_avg_contrib with the former. So it's not a problem.
 >
-> Or do you have an example how it can do that?
+> The other way was a problem because we stop updating load_avg and
+> tg_load_avg_contrib when load_avg/load_sum is null so the
+> tg_load_avg_contrib is stalled with a possibly very old value
 
-I don't. If you can validate everything it's probably ok
+Yeah, that makes sense.
 
-The only drawback is even more code to audit and test.
-
--Andi
-
-
+Thanks
+Odin
