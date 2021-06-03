@@ -2,223 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44BFA3998E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 06:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7203998EA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 06:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbhFCEQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 00:16:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49351 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229441AbhFCEQv (ORCPT
+        id S229744AbhFCERb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 00:17:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhFCERa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 00:16:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622693699;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=c2PxtKW9qJ+Vtox4Ih/NvHqS0Jy9B5n5YztFOiLLauQ=;
-        b=AWIycqS6B6h5zwy0MerKa7Ykrhv09Feovcd+InUOIi1vQ8n5wwMwVbZ4X4LbhunOXYKMm5
-        zKCAl1Vy2uERzYK+BNrMfZLDIOgutcQWEb+yZBAOLJAWI6vUFoSWfm3CMn7Mkmf7O58/Mg
-        RL1nAbylv6uWh9vHED/rz0k3Bs6dXXw=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-220-ipp0CUazNimzHJ5vtc5m4Q-1; Thu, 03 Jun 2021 00:14:58 -0400
-X-MC-Unique: ipp0CUazNimzHJ5vtc5m4Q-1
-Received: by mail-ot1-f71.google.com with SMTP id 88-20020a9d06e10000b029030513a66c79so2719161otx.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 21:14:57 -0700 (PDT)
+        Thu, 3 Jun 2021 00:17:30 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4887C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 21:15:46 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id k7so2871148pjf.5
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 21:15:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ACX9rMbN+WVThypXBQEdnoXRc0uA+XrZOXTgO72q+S8=;
+        b=dLgNK1Vx41z9q44npf1xeO2FjKBfyHRsKkRclb3uBXu1+oovIkoA3xl5AOneHjlVHX
+         pXPC3bMruhQyhvxDOlMlOm2EgmsXxHfalSe4JsOlcakqvaXigk8wqMhDTctSvH4ZkYe0
+         yL2H/WlZnRgaATssaPoK9pXQFHAiO1hNxzgc/KsEgV4hUlcdIdWm0HGFulCsDYokjXK3
+         MiZ6RjSkpr3UgDm/WTxG5fbYZOjGHgYae6TxUh+c46MZffzNZgqK2lzSp6evw2bU4vmP
+         HkCAVIHV211KRlfsC1q9qX7frF+0QEEs7M7LQ/QFtgrUcRVzE4bw2FJxdEbduGRMtgqZ
+         Ibzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=c2PxtKW9qJ+Vtox4Ih/NvHqS0Jy9B5n5YztFOiLLauQ=;
-        b=b6zqr1aH15RtcZdMVaR09NNnFGfipv4900M3BIEW9wuu7I4Zzt7xYIAFmVt4AFL4lS
-         qh9gOu9n/UP4CtiS2qbrejCepwwruvFaVJ+FVqVfEPNRtdXzrA1vfphbAOSykGCnfBVT
-         EzKIIgPSO9xOJy+xYdvadsGJWChNnt3Puwwwpw9hRf+9H/hZO6e57syG6kbdfPmVzpUB
-         i52dMNdDNEtYtDh0Y9gUnzGgQfwbBtJdc6OhHiIwMuoJM3370Uw3X3mRNRc0kbgB6J5D
-         fBCCQC9TtDd6Mx7Qv207PAPI0libZnKijPcVpWStBZp+EdB108DkiXmNVZtL4TbzCI/P
-         sDuw==
-X-Gm-Message-State: AOAM531EtD1jurJZkKHLZYHMaSUgscqI9yAfK2U8G2K8ZQaC3gaXvYWu
-        HZ4fUyxT3anFARdencp6sZIf08Brp8zj+2Xi5dZg9w5jexvWRNf04wVW6cbcgXvB76ZJhB8X5ql
-        vESzSUYeh/WPfgdyn3t7U1P0+
-X-Received: by 2002:a9d:75d2:: with SMTP id c18mr28307576otl.219.1622693697185;
-        Wed, 02 Jun 2021 21:14:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxMVK/MDbfe2aoBwzokzamUhEXIbT+izHOFTQ060sbCY3SaNEqBjqgWXgPdNAX/pdyZ+/rtsA==
-X-Received: by 2002:a9d:75d2:: with SMTP id c18mr28307561otl.219.1622693696891;
-        Wed, 02 Jun 2021 21:14:56 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id t39sm415459ooi.42.2021.06.02.21.14.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 21:14:56 -0700 (PDT)
-Date:   Wed, 2 Jun 2021 22:14:55 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        "David Woodhouse" <dwmw2@infradead.org>,
-        Jason Wang <jasowang@redhat.com>
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-Message-ID: <20210602221455.79a42878.alex.williamson@redhat.com>
-In-Reply-To: <MWHPR11MB1886DC8ECF5D56FE485D13D58C3C9@MWHPR11MB1886.namprd11.prod.outlook.com>
-References: <20210601162225.259923bc.alex.williamson@redhat.com>
-        <MWHPR11MB1886E8454A58661DC2CDBA678C3D9@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <20210602160140.GV1002214@nvidia.com>
-        <20210602111117.026d4a26.alex.williamson@redhat.com>
-        <20210602173510.GE1002214@nvidia.com>
-        <20210602120111.5e5bcf93.alex.williamson@redhat.com>
-        <20210602180925.GH1002214@nvidia.com>
-        <20210602130053.615db578.alex.williamson@redhat.com>
-        <20210602195404.GI1002214@nvidia.com>
-        <20210602143734.72fb4fa4.alex.williamson@redhat.com>
-        <20210602224536.GJ1002214@nvidia.com>
-        <20210602205054.3505c9c3.alex.williamson@redhat.com>
-        <MWHPR11MB1886DC8ECF5D56FE485D13D58C3C9@MWHPR11MB1886.namprd11.prod.outlook.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ACX9rMbN+WVThypXBQEdnoXRc0uA+XrZOXTgO72q+S8=;
+        b=pxxTs4xVPiW02s5SCjShM9e59plr5TSbOedlVUHWryah0VUthqxSbNOcE2nzATiHpt
+         Sq1mxtjixisamIyT3SXkCHFRcGQBlNxG98Xi4yIkX7hRypvTt5Z/Hi2IFb4EO3MAcggz
+         3C0odUn/h1/g9hkF5UbIVe9vgr7JjdjACBuiku6xQjdZUfjs2R3rxGgwKxumuJoZ6AAr
+         ZEIophZKWevg+GB0pdcgl4PooYyS9oxVXxtDZ3H6Xzi9R7/saEROtO/6Ymq2zIqka412
+         AQDKt+CDYrTBFIgkrg7udufYdd6QR6JZtLDWSSGq6GYEuF+aKDEwzVLSLlYDdsCfi8Zq
+         hvyA==
+X-Gm-Message-State: AOAM532ADYa9THiLIyKQUTrAtnmPZdwQ4xHLM03jbBZDcsW6ak1MQqC1
+        kOnR75Gf4xToLUMmbVEFn6iHQr/EdQQtbQ3UUPZnMQ==
+X-Google-Smtp-Source: ABdhPJzCoBS5kd86/SCGEZcD+gXz+gdgubc9i0tipov1et+C/LNyDYoVYfDdAhhd/mI7cjZ23uDL5REjVYf5ybzO404=
+X-Received: by 2002:a17:902:820a:b029:10c:a12b:e524 with SMTP id
+ x10-20020a170902820ab029010ca12be524mr4082153pln.79.1622693746180; Wed, 02
+ Jun 2021 21:15:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CAPcyv4j-ygPddjuZqq8PMvsN-E8rJQszc+WuUu1MBXVXiQZddg@mail.gmail.com>
+ <20210603033958.GA2069090@bjorn-Precision-5520>
+In-Reply-To: <20210603033958.GA2069090@bjorn-Precision-5520>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 2 Jun 2021 21:15:35 -0700
+Message-ID: <CAPcyv4i0y_4cMGEpNVShLUyUk3nyWH203Ry3S87BqnDJE0Rmxg@mail.gmail.com>
+Subject: Re: [PATCH v4] /dev/mem: Revoke mappings when a driver claims the region
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Ingo Molnar <mingo@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Russell King <linux@arm.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Jun 2021 03:22:27 +0000
-"Tian, Kevin" <kevin.tian@intel.com> wrote:
+On Wed, Jun 2, 2021 at 8:40 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> [+cc Pali, Oliver]
+>
+> On Thu, May 27, 2021 at 02:30:31PM -0700, Dan Williams wrote:
+> > On Thu, May 27, 2021 at 1:58 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > >
+> > > [+cc Daniel, Krzysztof, Jason, Christoph, linux-pci]
+> > >
+> > > On Thu, May 21, 2020 at 02:06:17PM -0700, Dan Williams wrote:
+> > > > Close the hole of holding a mapping over kernel driver takeover event of
+> > > > a given address range.
+> > > >
+> > > > Commit 90a545e98126 ("restrict /dev/mem to idle io memory ranges")
+> > > > introduced CONFIG_IO_STRICT_DEVMEM with the goal of protecting the
+> > > > kernel against scenarios where a /dev/mem user tramples memory that a
+> > > > kernel driver owns. However, this protection only prevents *new* read(),
+> > > > write() and mmap() requests. Established mappings prior to the driver
+> > > > calling request_mem_region() are left alone.
+> > > >
+> > > > Especially with persistent memory, and the core kernel metadata that is
+> > > > stored there, there are plentiful scenarios for a /dev/mem user to
+> > > > violate the expectations of the driver and cause amplified damage.
+> > > >
+> > > > Teach request_mem_region() to find and shoot down active /dev/mem
+> > > > mappings that it believes it has successfully claimed for the exclusive
+> > > > use of the driver. Effectively a driver call to request_mem_region()
+> > > > becomes a hole-punch on the /dev/mem device.
+> > >
+> > > This idea of hole-punching /dev/mem has since been extended to PCI
+> > > BARs via [1].
+> > >
+> > > Correct me if I'm wrong: I think this means that if a user process has
+> > > mmapped a PCI BAR via sysfs, and a kernel driver subsequently requests
+> > > that region via pci_request_region() or similar, we punch holes in the
+> > > the user process mmap.  The driver might be happy, but my guess is the
+> > > user starts seeing segmentation violations for no obvious reason and
+> > > is not happy.
+> > >
+> > > Apart from the user process issue, the implementation of [1] is
+> > > problematic for PCI because the mmappable sysfs attributes now depend
+> > > on iomem_init_inode(), an fs_initcall, which means they can't be
+> > > static attributes, which ultimately leads to races in creating them.
+> >
+> > See the comments in iomem_get_mapping(), and revoke_iomem():
+> >
+> >         /*
+> >          * Check that the initialization has completed. Losing the race
+> >          * is ok because it means drivers are claiming resources before
+> >          * the fs_initcall level of init and prevent iomem_get_mapping users
+> >          * from establishing mappings.
+> >          */
+> >
+> > ...the observation being that it is ok for the revocation inode to
+> > come on later in the boot process because userspace won't be able to
+> > use the fs yet. So any missed calls to revoke_iomem() would fall back
+> > to userspace just seeing the resource busy in the first instance. I.e.
+> > through the normal devmem_is_allowed() exclusion.
+>
+> I did see that comment, but the race I meant is different.  Pali wrote
+> up a nice analysis of it [3].
+>
+> Here's the typical enumeration flow for PCI:
+>
+>   acpi_pci_root_add                 <-- subsys_initcall (4)
+>     pci_acpi_scan_root
+>       ...
+>         pci_device_add
+>           device_initialize
+>           device_add
+>             device_add_attrs        <-- static sysfs attributes created
+>     ...
+>     pci_bus_add_devices
+>       pci_bus_add_device
+>         pci_create_sysfs_dev_files
+>           if (!sysfs_initialized) return;    <-- Ugh :)
+>           ...
+>             attr->mmap = pci_mmap_resource_uc
+>             attr->mapping = iomem_get_mapping()  <-- new dependency
+>               return iomem_inode->i_mapping
+>             sysfs_create_bin_file   <-- dynamic sysfs attributes created
+>
+>   iomem_init_inode                  <-- fs_initcall (5)
+>     iomem_inode = ...               <-- now iomem_get_mapping() works
+>
+>   pci_sysfs_init                    <-- late_initcall (7)
+>     sysfs_initialized = 1           <-- Ugh (see above)
+>     for_each_pci_dev(dev)           <-- Ugh
+>       pci_create_sysfs_dev_files(dev)
+>
+> The race is between the pci_sysfs_init() initcall (intended for
+> boot-time devices) and the pci_bus_add_device() path (used for all
+> devices including hot-added ones).  Pali outlined cases where we call
+> pci_create_sysfs_dev_files() from both paths for the same device.
+>
+> "sysfs_initialized" is a gross hack that prevents this most of the
+> time, but not always.  I want to get rid of it and pci_sysfs_init().
+>
+> Oliver had the excellent idea of using static sysfs attributes to do
+> this cleanly [4].  If we can convert things to static attributes, the
+> device core creates them in device_add(), so we don't have to create
+> them in pci_create_sysfs_dev_files().
+>
+> Krzysztof recently did some very nice work to convert most things to
+> static attributes, e.g., [5].  But we can't do this for the PCI BAR
+> attributes because they support ->mmap(), which now depends on
+> iomem_get_mapping(), which IIUC doesn't work until after fs_initcalls.
 
-> > From: Alex Williamson <alex.williamson@redhat.com>
-> > Sent: Thursday, June 3, 2021 10:51 AM
-> > 
-> > On Wed, 2 Jun 2021 19:45:36 -0300
-> > Jason Gunthorpe <jgg@nvidia.com> wrote:
-> >   
-> > > On Wed, Jun 02, 2021 at 02:37:34PM -0600, Alex Williamson wrote:
-> > >  
-> > > > Right.  I don't follow where you're jumping to relaying DMA_PTE_SNP
-> > > > from the guest page table... what page table?  
-> > >
-> > > I see my confusion now, the phrasing in your earlier remark led me
-> > > think this was about allowing the no-snoop performance enhancement in
-> > > some restricted way.
-> > >
-> > > It is really about blocking no-snoop 100% of the time and then
-> > > disabling the dangerous wbinvd when the block is successful.
-> > >
-> > > Didn't closely read the kvm code :\
-> > >
-> > > If it was about allowing the optimization then I'd expect the guest to
-> > > enable no-snoopable regions via it's vIOMMU and realize them to the
-> > > hypervisor and plumb the whole thing through. Hence my remark about
-> > > the guest page tables..
-> > >
-> > > So really the test is just 'were we able to block it' ?  
-> > 
-> > Yup.  Do we really still consider that there's some performance benefit
-> > to be had by enabling a device to use no-snoop?  This seems largely a
-> > legacy thing.  
-> 
-> Yes, there is indeed performance benefit for device to use no-snoop,
-> e.g. 8K display and some imaging processing path, etc. The problem is
-> that the IOMMU for such devices is typically a different one from the
-> default IOMMU for most devices. This special IOMMU may not have
-> the ability of enforcing snoop on no-snoop PCI traffic then this fact
-> must be understood by KVM to do proper mtrr/pat/wbinvd virtualization 
-> for such devices to work correctly.
+Ah, sorry, yes, I see the race now. And yes, anything that gets in the
+way of the static attribute conversion needs fixing. How about
+something like this?
 
-The case where the IOMMU does not support snoop-control for such a
-device already works fine, we can't prevent no-snoop so KVM will
-emulate wbinvd.  The harder one is if we should opt to allow no-snoop
-even if the IOMMU does support snoop-control.
- 
-> > > > This support existed before mdev, IIRC we needed it for direct
-> > > > assignment of NVIDIA GPUs.  
-> > >
-> > > Probably because they ignored the disable no-snoop bits in the control
-> > > block, or reset them in some insane way to "fix" broken bioses and
-> > > kept using it even though by all rights qemu would have tried hard to
-> > > turn it off via the config space. Processing no-snoop without a
-> > > working wbinvd would be fatal. Yeesh
-> > >
-> > > But Ok, back the /dev/ioasid. This answers a few lingering questions I
-> > > had..
-> > >
-> > > 1) Mixing IOMMU_CAP_CACHE_COHERENCY  
-> > and !IOMMU_CAP_CACHE_COHERENCY  
-> > >    domains.
-> > >
-> > >    This doesn't actually matter. If you mix them together then kvm
-> > >    will turn on wbinvd anyhow, so we don't need to use the DMA_PTE_SNP
-> > >    anywhere in this VM.
-> > >
-> > >    This if two IOMMU's are joined together into a single /dev/ioasid
-> > >    then we can just make them both pretend to be
-> > >    !IOMMU_CAP_CACHE_COHERENCY and both not set IOMMU_CACHE.  
-> > 
-> > Yes and no.  Yes, if any domain is !IOMMU_CAP_CACHE_COHERENCY then
-> > we
-> > need to emulate wbinvd, but no we'll use IOMMU_CACHE any time it's
-> > available based on the per domain support available.  That gives us the
-> > most consistent behavior, ie. we don't have VMs emulating wbinvd
-> > because they used to have a device attached where the domain required
-> > it and we can't atomically remap with new flags to perform the same as
-> > a VM that never had that device attached in the first place.
-> >   
-> > > 2) How to fit this part of kvm in some new /dev/ioasid world
-> > >
-> > >    What we want to do here is iterate over every ioasid associated
-> > >    with the group fd that is passed into kvm.  
-> > 
-> > Yeah, we need some better names, binding a device to an ioasid (fd) but
-> > then attaching a device to an allocated ioasid (non-fd)... I assume
-> > you're talking about the latter ioasid.
-> >   
-> > >    Today the group fd has a single container which specifies the
-> > >    single ioasid so this is being done trivially.
-> > >
-> > >    To reorg we want to get the ioasid from the device not the
-> > >    group (see my note to David about the groups vs device rational)
-> > >
-> > >    This is just iterating over each vfio_device in the group and
-> > >    querying the ioasid it is using.  
-> > 
-> > The IOMMU API group interfaces is largely iommu_group_for_each_dev()
-> > anyway, we still need to account for all the RIDs and aliases of a
-> > group.
-> >   
-> > >    Or perhaps more directly: an op attaching the vfio_device to the
-> > >    kvm and having some simple helper
-> > >          '(un)register ioasid with kvm (kvm, ioasid)'
-> > >    that the vfio_device driver can call that just sorts this out.  
-> > 
-> > We could almost eliminate the device notion altogether here, use an
-> > ioasidfd_for_each_ioasid() but we really want a way to trigger on each
-> > change to the composition of the device set for the ioasid, which is
-> > why we currently do it on addition or removal of a group, where the
-> > group has a consistent set of IOMMU properties.  Register a notifier
-> > callback via the ioasidfd?  Thanks,
-> >   
-> 
-> When discussing I/O page fault support in another thread, the consensus
-> is that an device handle will be registered (by user) or allocated (return
-> to user) in /dev/ioasid when binding the device to ioasid fd. From this 
-> angle we can register {ioasid_fd, device_handle} to KVM and then call 
-> something like ioasidfd_device_is_coherent() to get the property. 
-> Anyway the coherency is a per-device property which is not changed 
-> by how many I/O page tables are attached to it.
+diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+index beb8d1f4fafe..c8bc249750d6 100644
+--- a/drivers/pci/pci-sysfs.c
++++ b/drivers/pci/pci-sysfs.c
+@@ -1195,7 +1195,7 @@ static int pci_create_attr(struct pci_dev *pdev,
+int num, int write_combine)
+                }
+        }
+        if (res_attr->mmap)
+-               res_attr->mapping = iomem_get_mapping();
++               res_attr->mapping = iomem_get_mapping;
+        res_attr->attr.name = res_attr_name;
+        res_attr->attr.mode = 0600;
+        res_attr->size = pci_resource_len(pdev, num);
+diff --git a/fs/sysfs/file.c b/fs/sysfs/file.c
+index 9aefa7779b29..a3ee4c32a264 100644
+--- a/fs/sysfs/file.c
++++ b/fs/sysfs/file.c
+@@ -175,7 +175,7 @@ static int sysfs_kf_bin_open(struct kernfs_open_file *of)
+        struct bin_attribute *battr = of->kn->priv;
 
-The mechanics are different, but this is pretty similar in concept to
-KVM learning coherence using the groupfd today.  Do we want to
-compromise on kernel control of wbinvd emulation to allow userspace to
-make such decisions?  Ownership of a device might be reason enough to
-allow the user that privilege.  Thanks,
+        if (battr->mapping)
+-               of->file->f_mapping = battr->mapping;
++               of->file->f_mapping = battr->mapping();
 
-Alex
-
+        return 0;
+ }
+diff --git a/include/linux/sysfs.h b/include/linux/sysfs.h
+index d76a1ddf83a3..fbb7c7df545c 100644
+--- a/include/linux/sysfs.h
++++ b/include/linux/sysfs.h
+@@ -170,7 +170,7 @@ struct bin_attribute {
+        struct attribute        attr;
+        size_t                  size;
+        void                    *private;
+-       struct address_space    *mapping;
++       struct address_space *(*mapping)(void);
+        ssize_t (*read)(struct file *, struct kobject *, struct bin_attribute *,
+                        char *, loff_t, size_t);
+        ssize_t (*write)(struct file *, struct kobject *, struct
+bin_attribute *,
