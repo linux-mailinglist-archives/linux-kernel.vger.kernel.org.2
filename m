@@ -2,134 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4306439A49E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2AE739A4A0
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbhFCPec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 11:34:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:44144 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229641AbhFCPec (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 11:34:32 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7598D11B3;
-        Thu,  3 Jun 2021 08:32:47 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8B7263F73D;
-        Thu,  3 Jun 2021 08:32:46 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        id S229850AbhFCPfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 11:35:44 -0400
+Received: from mail.efficios.com ([167.114.26.124]:58866 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229617AbhFCPfn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 11:35:43 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id E594131C75D;
+        Thu,  3 Jun 2021 11:33:57 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id eJCp_a_nWEsK; Thu,  3 Jun 2021 11:33:57 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 8672F31CA04;
+        Thu,  3 Jun 2021 11:33:57 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 8672F31CA04
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1622734437;
+        bh=DKp9Kn9IOFj0rAa1smoreoI1xPw87j9ngxQ24mYrJBs=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=W0NLN8o2HF9zHyJNFN8BDFot3aaEfAH2+zoVLTmd57z+jKtE6U5EZcAprQHQ+vOCh
+         qpg93Ht8CIYSYPxeg0yDDT/rI1nuCyNBYRqYANHbfPRPUTiaWD8rracpx2KhvwfJSu
+         UT8hNkzFCWbsvoDGL7a+FM2r1YhKRCMw2YNogE+SH4P/H+/q7krRXge0Qr7YWMQ+LX
+         C+47md2mINyIRJtq1LIBfefRlwm4GwfzRGbq2jiYozeE3I0kfR+qfcjaOTOxkW3bi3
+         E0rAhytfp7wydLmIjOhz85W7ZYu7IY03t6lx3NLVFfRkJhC49qxM6PUKkkRwpl0EuD
+         0ZzqS91BP7xnA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 7cKoZnbOfF31; Thu,  3 Jun 2021 11:33:57 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 765FB31C813;
+        Thu,  3 Jun 2021 11:33:57 -0400 (EDT)
+Date:   Thu, 3 Jun 2021 11:33:57 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Taylor Blau <me@ttaylorr.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        git <git@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>
-Subject: Re: [RFC PATCH v2 00/10] irqchip/irq-gic: Optimize masking by leveraging EOImode=1
-In-Reply-To: <87tumhg9vm.mognet@arm.com>
-References: <20210525173255.620606-1-valentin.schneider@arm.com> <87zgwgs9x0.wl-maz@kernel.org> <87tumhg9vm.mognet@arm.com>
-Date:   Thu, 03 Jun 2021 16:32:41 +0100
-Message-ID: <878s3rezfq.mognet@arm.com>
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <trivial@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Message-ID: <654904857.6915.1622734437354.JavaMail.zimbra@efficios.com>
+In-Reply-To: <YLfe+HXl4hkzs44b@nand.local>
+References: <30399052.5964.1622647235870.JavaMail.zimbra@efficios.com> <YLej6F24Emm7SX35@zeniv-ca.linux.org.uk> <YLfe+HXl4hkzs44b@nand.local>
+Subject: Re: git feature request: git blame
+ --ignore-cleanup/--ignore-trivial
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - FF88 (Linux)/8.8.15_GA_4026)
+Thread-Topic: git feature request: git blame --ignore-cleanup/--ignore-trivial
+Thread-Index: XLr69/WnC7jKcuBW+k7l9LYtwadObQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/06/21 11:25, Valentin Schneider wrote:
-> On 27/05/21 12:17, Marc Zyngier wrote:
->> On Tue, 25 May 2021 18:32:45 +0100,
->> Valentin Schneider <valentin.schneider@arm.com> wrote:
->>> Benchmark
->>> +++++++++
->>>
->>> Finding a benchmark that leverages a force-threaded IRQ has proved to be
->>> somewhat of a pain, so I crafted my own. It's a bit daft, but so are most
->>> benchmarks (though this one might win a prize).
+----- On Jun 2, 2021, at 3:41 PM, Taylor Blau me@ttaylorr.com wrote:
+
+> On Wed, Jun 02, 2021 at 03:29:44PM +0000, Al Viro wrote:
+>> > Any maybe the patterns associated to "cleanup" and "trivial" commits
+>> > should be something that can be configured through a git config
+>> > file.
 >>
->> I love it (and wrote similar hacks in my time)! :D
->
-> Yay!
->
->> Can you put that up
->> somewhere so that I can run the same test on my own zoo and find out
->> how it fares?
->>
->
-> The setup part is really fugly and I was too ashamed of it to link it in
-> the cover letter; for ACPI I could simply use acpi_register_gsi() since
-> that uses the right domain by default, but for DT I ended up adding a DT
-> entry and a match table.
->
-> I'll see about unifying this and I'll send it out your way.
+>> Just an observation: quite a few subtle bugs arise from mistakes in
+>> what should've been a trivial cleanup.  Hell, I've seen bugs coming
+>> from rebase of provably no-op patches - with commit message unchanged.
+>> So IME this is counterproductive...
+> 
+> Yes, I find excluding revisions from 'git blame' to be rarely useful,
+> exactly for this reason.
+> 
+> You could probably use the '--ignore-revs-file' option of 'git blame' to
+> exclude commits you consider trivial ahead of time. If you had an
+> 'Is-trivial' trailer, I would probably do something like:
+> 
+>  $ git log --format='%H %(trailers:key=Is-trivial)' |
+>      grep "Is-trivial: true" | cut -d" " -f1 >exclude
+>  $ git blame --ignore-revs-file exclude ...
 
-Scratch the unification, but at least I cleaned up some of the
-initialization horrors. Patches + benchmark module are at:
+Nice trick! So within a project which standardize on a "Cleanup: " prefix
+at the beginning of the patch subject, this would look like:
 
-https://git.gitlab.arm.com/linux-arm/linux-vs.git -b mainline/irq/eoimodness-v2
+git log --format='%H Subject=("%s")' file.c | grep 'Subject=(\"Cleanup: ' | cut -d" " -f1 > exclude.txt
+git blame --ignore-revs-file exclude.txt file.c
 
-Note: I re-ran that on Juno/eMAG to make sure I didn't bust anything, and
-while the eMAG improvements are still there, now I get pretty much zilch on
-the Juno :/
+I fully understand that in many cases having the entire set of revisions is
+needed, because even a cleanup patch could be buggy, but IMHO it's nice to
+have a way to achieve this in situations where the cleanup patches get in the
+way of figuring out the most recent behavior changes in a given area of the
+code.
 
-I use the below script to drive the testing
+Thanks,
 
----
-#!/bin/bash
+Mathieu
 
-get_irq_count () {
-    cat /proc/interrupts | grep irq-prod | awk '{ print $2; }'
-}
-
-for f in $(find /sys/devices/system/cpu/cpufreq/ -name "policy*"); do
-    echo "performance" > "$f"/scaling_governor
-done
-
-KTHREAD_PID=$(ps -aux | grep irq-prod/ | head -n 1 | awk '{ print $2; }')
-taskset -pc 0 $KTHREAD_PID
-
-for ((i=0; i < 20; i++)); do
-    base_val=$(get_irq_count)
-
-    now=$(date +%s%3N)
-    echo 1 > /sys/kernel/irq_prod/active
-    sleep 5
-    echo 0 > /sys/kernel/irq_prod/active
-    end=$(date +%s%3N)
-
-    end_val=$(get_irq_count)
-    delta=$((end_val - base_val))
-    duration=$((end - now))
-
-    echo $((delta / (duration / 1000))) > $1/$i
-done
----
-
-This gives you a file per iteration with irqs/sec in it, and you can
-collate that however you wish - I use python + pandas:
-
----
-#!/usr/bin/env python3
-
-import pandas as pd
-
-keys = ["tip", "patch"]
-data = {k : [] for k in keys}
-
-for i in range(20):
-    for k in keys:
-        with open("/path/to/results/{}/{}".format(k, i), "r") as fh:
-            data[k].append(int(fh.read()))
-
-df = pd.DataFrame(data)
-df_stats = df.describe(percentiles=[.5, .9, .99])
-df_stats["delta"] = (df_stats["patch"] - df_stats["tip"]) / df_stats["tip"]
-print(df_stats)
----
-
-i.e.
-
-<load tip/irq/core>
-./bench_irq.sh tip
-<load series>
-./bench_irq.sh patch
-
-./compare.py
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
