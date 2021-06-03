@@ -2,83 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8770F39AB19
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2DB839AB1D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229697AbhFCTzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 15:55:49 -0400
-Received: from mga17.intel.com ([192.55.52.151]:45226 "EHLO mga17.intel.com"
+        id S229794AbhFCT4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 15:56:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229576AbhFCTzs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 15:55:48 -0400
-IronPort-SDR: cNWS7CAQAEfPotZtFLpnSONR1pv3JNA3uD6UIgIfBcYVYSK11r4LBYQ9VHgn9gHbqNl7A3lh0O
- HyfDijBCgxYA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="184507803"
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="184507803"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 12:53:45 -0700
-IronPort-SDR: j796NHDs2Zozxq/wBHEuvMXvyPgtLyCvrhm5igEiL3IiR3qXnYzpqEuyF5uad7fplBhS/dqAsL
- 5gvTbni69t6A==
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="550819682"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.7.237]) ([10.209.7.237])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 12:53:44 -0700
-Subject: Re: [PATCH v1 1/8] virtio: Force only split mode with protected guest
-To:     Andy Lutomirski <luto@kernel.org>, mst@redhat.com
-Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
-        hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
-        iommu@lists.linux-foundation.org,
-        the arch/x86 maintainers <x86@kernel.org>,
-        sathyanarayanan.kuppuswamy@linux.intel.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210603004133.4079390-1-ak@linux.intel.com>
- <20210603004133.4079390-2-ak@linux.intel.com>
- <cc5c8265-83f7-aeb1-bc30-3367fe68bc97@kernel.org>
- <a0e66b4c-cec5-2a26-9431-d5a21e22c8f2@linux.intel.com>
- <2b2dec75-a0c1-4013-ac49-a49f30d5ac3c@www.fastmail.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <3159e1f4-77cd-e071-b6f2-a2bb83cfc69a@linux.intel.com>
-Date:   Thu, 3 Jun 2021 12:53:43 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S229576AbhFCT4B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 15:56:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E280F6140B;
+        Thu,  3 Jun 2021 19:54:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622750056;
+        bh=A8bTRZWGyUBja/MSUQ29VA/mAZj6QtYjbvJCbANIqsE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=lfvGW1xaIASaWdfnsj8Xa660kIIT0mmbK6felqgEx4EDG7tPnuUtWGLq9bZeqboYv
+         jFvKEAaYpYW6PQOCOemYaLD6rVqaUJmOPXUycexgYypJfAlqP1xhsXpPhj2AD6fGgE
+         iOAZbfFS2LGvC0fw2keWywTtHxmEkVsSa5/RR0djNImU9X2aZtCSVY5pViIUIC+7MU
+         AYBLRvSSIkgyKad41421ycs7ejiZ1pdWOJMQJYtt6D8qItdbbJI89CpbkYfsaKPBLb
+         mGpj8e8CkhwtWk0dhrRb/AiSG6CcvKzb6zYq4JfvZ2Zvbzw+RRp0UHjrjQ6u3Mkr6i
+         XrlU86O1/zRgg==
+Received: by mail-ej1-f51.google.com with SMTP id ho18so31006ejc.8;
+        Thu, 03 Jun 2021 12:54:16 -0700 (PDT)
+X-Gm-Message-State: AOAM530rYgqkTinWhdF8evwklIuiAH8n/hHsIFY8sI/8En2vNX1hh5vf
+        +Jf4QmA1EAHrvK6STo0IO6AR143rEtEmJ1V3fQ==
+X-Google-Smtp-Source: ABdhPJwDQD3xcAB0EXKWI0UDWW+ahHSVny9rQ0wOAWpa2cEgFyxpNPLRRrZrFwuDL+b/HEK8on4d0VTBOUxATJD7qJU=
+X-Received: by 2002:a17:906:fa13:: with SMTP id lo19mr895806ejb.468.1622750055293;
+ Thu, 03 Jun 2021 12:54:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <2b2dec75-a0c1-4013-ac49-a49f30d5ac3c@www.fastmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210602215252.695994-1-keescook@chromium.org>
+ <20210602215252.695994-4-keescook@chromium.org> <CAL_JsqLO_YbT3VU0+uHH2t6ONs_dWfBhqds9okYD0254ZiBf=A@mail.gmail.com>
+In-Reply-To: <CAL_JsqLO_YbT3VU0+uHH2t6ONs_dWfBhqds9okYD0254ZiBf=A@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 3 Jun 2021 14:54:03 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLF6WhsoSWtxVUqUPDRMM8qwGwZqWa_xtNqsVyq8OCz6w@mail.gmail.com>
+Message-ID: <CAL_JsqLF6WhsoSWtxVUqUPDRMM8qwGwZqWa_xtNqsVyq8OCz6w@mail.gmail.com>
+Subject: Re: [PATCH 3/3] drm/pl111: depend on CONFIG_VEXPRESS_CONFIG
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Dave Airlie <airlied@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Arnd Bergmann <arnd@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Emma Anholt <emma@anholt.net>, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> Tell that to every crypto downgrade attack ever.
-
-That's exactly what this patch addresses.
-
+On Thu, Jun 3, 2021 at 1:42 PM Rob Herring <robh@kernel.org> wrote:
 >
-> I see two credible solutions:
+> On Wed, Jun 2, 2021 at 4:53 PM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > Avoid randconfig build failures by requiring VEXPRESS_CONFIG:
+> >
+> > aarch64-linux-gnu-ld: drivers/gpu/drm/pl111/pl111_versatile.o: in function `pl111_vexpress_clcd_init':
+> > pl111_versatile.c:(.text+0x220): undefined reference to `devm_regmap_init_vexpress_config'
 >
-> 1. Actually harden the virtio driver.
-That's exactly what this patchkit, and the alternative approaches, like 
-Jason's, are doing.
+> pl111_vexpress_clcd_init() starts with:
 >
-> 2. Have a new virtio-modern driver and use it for modern use cases. Maybe rename the old driver virtio-legacy or virtio-insecure.  They can share code.
-
-In most use cases the legacy driver is not insecure because there is no 
-memory protection anyways.
-
-Yes maybe such a split would be a good idea for maintenance and maybe 
-performance reasons, but at least from the security perspective I don't 
-see any need for it.
-
+> if (!IS_ENABLED(CONFIG_VEXPRESS_CONFIG))
+>                 return -ENODEV;
 >
-> Another snag you may hit: virtio’s heuristic for whether to use proper DMA ops or to bypass them is a giant kludge. I’m very slightly optimistic that getting the heuristic wrong will make the driver fail to operate but won’t allow the host to take over the guest, but I’m not really convinced. And I wrote that code!  A virtio-modern mode probably should not have a heuristic, and the various iommu-bypassing modes should be fixed to work at the bus level, not the device level
+> Isn't that supposed to be enough to avoid an undefined reference?
+>
+> Making the whole file depend on VEXPRESS_CONFIG is not right either.
+> Not all platforms need it.
 
-TDX and SEV use the arch hook to enforce DMA API, so that part is also 
-solved.
+Specifically, these defconfigs will break as they all use PL111 but
+don't need nor enable VEXPRESS_CONFIG:
 
+arch/arm/configs/integrator_defconfig:CONFIG_DRM_PL111=y
+arch/arm/configs/lpc18xx_defconfig:CONFIG_DRM_PL111=y
+arch/arm/configs/lpc32xx_defconfig:CONFIG_DRM_PL111=y
+arch/arm/configs/nhk8815_defconfig:CONFIG_DRM_PL111=y
+arch/arm/configs/realview_defconfig:CONFIG_DRM_PL111=y
+arch/arm/configs/spear3xx_defconfig:CONFIG_DRM_PL111=y
+arch/arm/configs/versatile_defconfig:CONFIG_DRM_PL111=y
 
--Andi
+These defconfigs should all be failing with the same error, but don't
+from what I've tried nor have I seen any kernelci failures.
 
+Rob
