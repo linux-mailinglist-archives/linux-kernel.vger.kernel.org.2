@@ -2,71 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D1C39A4E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 134FA39A4E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:41:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbhFCPmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 11:42:49 -0400
-Received: from mx01.ayax.eu ([188.137.98.110]:41858 "EHLO mx01.ayax.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229774AbhFCPmr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 11:42:47 -0400
-Received: from [192.168.192.146] (port=48290 helo=nx64de-df6d00)
-        by mx01.ayax.eu with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <gszymaszek@short.pl>)
-        id 1lopSj-00063B-Pd; Thu, 03 Jun 2021 17:40:49 +0200
-Date:   Thu, 3 Jun 2021 17:40:48 +0200
-From:   Grzegorz Szymaszek <gszymaszek@short.pl>
-To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc:     Grzegorz Szymaszek <gszymaszek@short.pl>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Marcin Sloniewski <marcin.sloniewski@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH] ARM: dts: stm32: fix the Odyssey SoM eMMC VQMMC supply
-Message-ID: <YLj4AMTCi84yO9GO@nx64de-df6d00>
-Mail-Followup-To: Grzegorz Szymaszek <gszymaszek@short.pl>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Marcin Sloniewski <marcin.sloniewski@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
+        id S230178AbhFCPmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 11:42:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49034 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229878AbhFCPmv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 11:42:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622734866;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AvsQH1hyQpvPjHL2hTxdfQHPQhfR4l9xQwXErWo9HxI=;
+        b=XtU0eqVa2mWhphEmu1GQCZZvR9Jvo+q4rC5u8AYKXwnvZMr+RohZAQBtYqMCEiDhRXd6KN
+        NtHBJt4w3RdpKDsGRRdo73wZ6DnzE+Me4mtnVKhUdbHnkCoM2B4YqWu/CsdurGqRV3uUb+
+        p1AXBbWi08/OVxMNAuo8gh26/leRvxc=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-477-peGmwcWTMVWp3sOszJTZ1w-1; Thu, 03 Jun 2021 11:41:04 -0400
+X-MC-Unique: peGmwcWTMVWp3sOszJTZ1w-1
+Received: by mail-ej1-f72.google.com with SMTP id nd10-20020a170907628ab02903a324b229bfso2112546ejc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 08:41:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AvsQH1hyQpvPjHL2hTxdfQHPQhfR4l9xQwXErWo9HxI=;
+        b=m4M4tLQ8t/63GDy6M0hS0k7bPsedV4XrhAHJ5gi11kjBipSTyyoNyspjcpUgyvgNXj
+         XU3hHmWBbya2eh3E9ruXiCICpoZvIXC8arL1av25IBAjLEiQTM684/OXvOAdrIRoJhAk
+         g9EdoSDWMs/6iOrKM74Rxk+4bi7YzVufXc83WFBx3bM8/fvSAsRyQgX5wpDEsoeAjWnt
+         LHRjrc4FTHT+9dloGr4BxGhiAp8hPNsfgvbXpPmf28YLBQxdKW36SEHUYn/A8xeC+gmz
+         K+MWZYsJzCJpjS1zeJr42tUc5iNmF6+tFpSGw+P3p8wisLeTs6Ujx95lVksvgwnZypYw
+         dGrA==
+X-Gm-Message-State: AOAM533YJHAsyl6bZKRV3yiRMDf3Kv00CiuJNtFxVjltL38mGGPBePm/
+        +pJeGAjhczbXg74AKgJANVYlwcVd+6uzN8GvFqZIPkLMbxWbC0o7tdk0EPCiA0gRnTDwci4596c
+        mv7qo7bDlaReChpYc5LWG5kx8
+X-Received: by 2002:a05:6402:4313:: with SMTP id m19mr80401edc.263.1622734860914;
+        Thu, 03 Jun 2021 08:41:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyY5YQ/utrtbJ0+zixQqmqhNKVQZErmThRj2KcDrDwxrmJQ2oZwOP9DefrKyZY+3MYgkheR+g==
+X-Received: by 2002:a05:6402:4313:: with SMTP id m19mr80384edc.263.1622734860773;
+        Thu, 03 Jun 2021 08:41:00 -0700 (PDT)
+Received: from steredhat ([5.170.129.82])
+        by smtp.gmail.com with ESMTPSA id l8sm1930416edt.69.2021.06.03.08.40.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 08:41:00 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 17:40:56 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, oxffffaa@gmail.com
+Subject: Re: [PATCH v10 18/18] virtio/vsock: update trace event for SEQPACKET
+Message-ID: <20210603154056.e3zyk2wmmutq4nia@steredhat>
+References: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
+ <20210520192008.1272910-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210520192008.1272910-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Seeed SoM-STM32MP157C device tree had the eMMC’s (SDMMC2) VQMMC
-supply set to v3v3 (buck4), the same as the VMMC supply. That was
-incorrect, as on the SoM, the VQMMC supply is provided from vdd (buck3)
-instead.
+On Thu, May 20, 2021 at 10:20:04PM +0300, Arseny Krasnov wrote:
+>Add SEQPACKET socket type to vsock trace event.
+>
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>---
+> include/trace/events/vsock_virtio_transport_common.h | 5 ++++-
+> 1 file changed, 4 insertions(+), 1 deletion(-)
+>
+>diff --git a/include/trace/events/vsock_virtio_transport_common.h b/include/trace/events/vsock_virtio_transport_common.h
+>index 6782213778be..b30c0e319b0e 100644
+>--- a/include/trace/events/vsock_virtio_transport_common.h
+>+++ b/include/trace/events/vsock_virtio_transport_common.h
+>@@ -9,9 +9,12 @@
+> #include <linux/tracepoint.h>
+>
+> TRACE_DEFINE_ENUM(VIRTIO_VSOCK_TYPE_STREAM);
+>+TRACE_DEFINE_ENUM(VIRTIO_VSOCK_TYPE_SEQPACKET);
+>
+> #define show_type(val) \
+>-	__print_symbolic(val, { VIRTIO_VSOCK_TYPE_STREAM, "STREAM" })
+>+	__print_symbolic(val, \
+>+				{ VIRTIO_VSOCK_TYPE_STREAM, "STREAM" }, \
+>+				{ VIRTIO_VSOCK_TYPE_SEQPACKET, "SEQPACKET" })
 
-Signed-off-by: Grzegorz Szymaszek <gszymaszek@short.pl>
----
- arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think we should fixe the indentation here (e.g. following show_op):
+  #define show_type(val) \
+	__print_symbolic(val, \
+			 { VIRTIO_VSOCK_TYPE_STREAM, "STREAM" }, \
+			 { VIRTIO_VSOCK_TYPE_SEQPACKET, "SEQPACKET" })
 
-diff --git a/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi b/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
-index 6cf49a0a9e69..b5601d270c8f 100644
---- a/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
-+++ b/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
-@@ -269,7 +269,7 @@ &sdmmc2 {
- 	st,neg-edge;
- 	bus-width = <8>;
- 	vmmc-supply = <&v3v3>;
--	vqmmc-supply = <&v3v3>;
-+	vqmmc-supply = <&vdd>;
- 	mmc-ddr-3_3v;
- 	status = "okay";
- };
--- 
-2.30.2
+Thanks,
+Stefano
+
+>
+> TRACE_DEFINE_ENUM(VIRTIO_VSOCK_OP_INVALID);
+> TRACE_DEFINE_ENUM(VIRTIO_VSOCK_OP_REQUEST);
+>-- 
+>2.25.1
+>
 
