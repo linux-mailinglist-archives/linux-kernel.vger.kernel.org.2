@@ -2,141 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1B7399FC6
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01FF7399FC8
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbhFCLac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 07:30:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60414 "EHLO
+        id S229791AbhFCLb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 07:31:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhFCLab (ORCPT
+        with ESMTP id S229629AbhFCLb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 07:30:31 -0400
-Received: from polaris.svanheule.net (polaris.svanheule.net [IPv6:2a00:c98:2060:a004:1::200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 535B6C06174A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 04:28:47 -0700 (PDT)
-Received: from [IPv6:2a02:a03f:eafb:ee01:398f:956e:2c86:f184] (unknown [IPv6:2a02:a03f:eafb:ee01:398f:956e:2c86:f184])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sander@svanheule.net)
-        by polaris.svanheule.net (Postfix) with ESMTPSA id 35D2B2080B3;
-        Thu,  3 Jun 2021 13:28:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-        s=mail1707; t=1622719725;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uy7edqnqtaAtBfOfz9dzIFfc/RSIZezcm98QJ+kd+pE=;
-        b=rjue1kvPQCF8teUA4zwFe2KhhwYS58jf/JZvoxI2Z2CeeO6RERVPNNTrN+01Bi1VBdNwnC
-        FrGIN2vSuHzr/rZrK4pmMPVjPvoJn9mTge44lYbJavcC+tkgeQ8nrWuz9RPhIX1bgEwc4K
-        yxCpBCt2ejTJRaEPyqxf2oOsxhPAdCufUu1UWcevbDk/jRJln+tds0HvcZiEWvqTYnlFES
-        E62QrB5ah+CPN35IsglmUoS76Ee9PNycwvVhVqwYKOpIBVtehDwG3ELV6KcjFbKYcGZb0F
-        udI5N0Fl3biJbM8fOFPoZyPGAlLmwnfD24b9cc6Ohbl0AOKIPGTVFuMmxanD5g==
-Message-ID: <acc18a3b1c02b8f89023451d816031e70bec9320.camel@svanheule.net>
-Subject: Re: [PATCH v4 3/5] mfd: Add RTL8231 core device
-From:   Sander Vanheule <sander@svanheule.net>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Michael Walle <michael@walle.cc>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Thu, 03 Jun 2021 13:28:42 +0200
-In-Reply-To: <CAHp75VeLUufwYagvQ2M+VKsivUzmnHHHQeH4E8-uN2avRWmBag@mail.gmail.com>
-References: <cover.1620735871.git.sander@svanheule.net>
-         <cover.1622713678.git.sander@svanheule.net>
-         <56fb027587fa067a249237ecaf40828cd508cdcc.1622713678.git.sander@svanheule.net>
-         <CAHp75VeLUufwYagvQ2M+VKsivUzmnHHHQeH4E8-uN2avRWmBag@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Thu, 3 Jun 2021 07:31:57 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B37C06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 04:30:13 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id gb17so8688924ejc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 04:30:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JQPG6yu+Jm/v1G300jVvmHhYJLJT/kgFqNxsmCD/SVU=;
+        b=UuqGhLwhKPL2UZnJsZIyrY79pLOgLOqaHSPoNPoeWc4N8hx4767TnTwEsF3LZNtla/
+         TPZGQVe+8BS7Rw28Rr950sI7gD11EViAabcSK9u58VHuMCAx2R8h+yL+P3NSDkYdJwy8
+         LXhaBkjbtGs8KE5u0+ntseLSRBv+usQy6/MIw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=JQPG6yu+Jm/v1G300jVvmHhYJLJT/kgFqNxsmCD/SVU=;
+        b=hxVoiL8zMxk1sxUU/yN9de4+Y8Y08ERLbw/AopdvazAeN40M69FP6jTn2OnuFIhbFz
+         Cad1fb2ULms8/OclhOhGQFPr11A4dHMrUPPi4wJMDA2XEQ263WmixaHeG6FkBTPJQ5Dv
+         /12ryYgWhaftupyw2lS01EQ6F2saZzFPmGLD99hdyD/vi4GQ7RImvHLTzaZAWpiFbRAF
+         lD5M5Ats+nO1C+gB0PxlE91CRuRVK0bDymmkWGPUco8l5IpwqT1cbM5B8CHQbwpfVWve
+         jozMZnyZtwhmewtiehidJbweH3/e9nd4KyQzoexd/skP0wnFaXTD0cwp+djkahnFgcwV
+         EhdQ==
+X-Gm-Message-State: AOAM530Z0VwsnjPiV6eyv1hGN/FgXcvjb86vmNOgTm9czpCWAQCNx+FX
+        oAuSCWTVop9EDsa1ucAk8E0yPw==
+X-Google-Smtp-Source: ABdhPJwMUYfrOxIGftaR7UridML3dSa22TrXpD7HPzzADNMlpuQKbmkVQuxyFkP0lSzr1wU3d3ESbQ==
+X-Received: by 2002:a17:907:72d2:: with SMTP id du18mr38469724ejc.438.1622719811673;
+        Thu, 03 Jun 2021 04:30:11 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id c14sm1402302ejm.4.2021.06.03.04.30.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 04:30:10 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 13:30:08 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Michal Simek <michal.simek@xilinx.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RESEND 17/26] drm/xlnx/zynqmp_disp: Fix incorrectly named enum
+ 'zynqmp_disp_layer_id'
+Message-ID: <YLi9QI76rFWva6ID@phenom.ffwll.local>
+Mail-Followup-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        Hyun Kwon <hyun.kwon@xilinx.com>, David Airlie <airlied@linux.ie>,
+        Michal Simek <michal.simek@xilinx.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210602143300.2330146-1-lee.jones@linaro.org>
+ <20210602143300.2330146-18-lee.jones@linaro.org>
+ <YLev02lSORBOlqw+@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLev02lSORBOlqw+@pendragon.ideasonboard.com>
+X-Operating-System: Linux phenom 5.10.32scarlett+ 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-06-03 at 13:58 +0300, Andy Shevchenko wrote:
-> On Thu, Jun 3, 2021 at 1:01 PM Sander Vanheule <sander@svanheule.net> wrote:
+On Wed, Jun 02, 2021 at 07:20:35PM +0300, Laurent Pinchart wrote:
+> Hi Lee,
+> 
+> Thank you for the patch.
+> 
+> On Wed, Jun 02, 2021 at 03:32:51PM +0100, Lee Jones wrote:
+> > Fixes the following W=1 kernel build warning(s):
 > > 
-> > The RTL8231 is implemented as an MDIO device, and provides a regmap
-> > interface for register access by the core and child devices.
+> >  drivers/gpu/drm/xlnx/zynqmp_disp.c:101: warning: expecting prototype for enum zynqmp_disp_id. Prototype was for enum zynqmp_disp_layer_id instead
 > > 
-> > The chip can also be a device on an SMI bus, an I2C-like bus by Realtek.
-> > Since kernel support for SMI is limited, and no real-world SMI
-> > implementations have been encountered for this device, this is currently
-> > unimplemented. The use of the regmap interface should make any future
-> > support relatively straightforward.
+> > Cc: Hyun Kwon <hyun.kwon@xilinx.com>
+> > Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: Michal Simek <michal.simek@xilinx.com>
+> > Cc: dri-devel@lists.freedesktop.org
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> 
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+I'm assuming you'll merge these two for xlnx somehow?
+-Daniel
+
+> 
+> > ---
+> >  drivers/gpu/drm/xlnx/zynqmp_disp.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
 > > 
-> > After reset, all pins are muxed to GPIO inputs before the pin drivers
-> > are enabled. This is done to prevent accidental system resets, when a
-> > pin is connected to the parent SoC's reset line.
-> > 
-> > To provide different read and write semantics for the GPIO data
-> > registers, a secondary virtual register range is used to enable separate
-> > cacheing properties of pin input and output values.
+> > diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> > index 109d627968ac0..ca1161ec9e16f 100644
+> > --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> > +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> > @@ -91,7 +91,7 @@ struct zynqmp_disp_format {
+> >  };
+> >  
+> >  /**
+> > - * enum zynqmp_disp_id - Layer identifier
+> > + * enum zynqmp_disp_layer_id - Layer identifier
+> >   * @ZYNQMP_DISP_LAYER_VID: Video layer
+> >   * @ZYNQMP_DISP_LAYER_GFX: Graphics layer
+> >   */
 > 
-> caching
+> -- 
+> Regards,
 > 
-> ...
-> 
-> 
-> > +static int rtl8231_reg_read(void *context, unsigned int reg, unsigned int
-> > *val)
-> > +{
-> > +       struct mdio_device *mdio_dev = context;
-> > +       int ret;
-> > +
-> > +       ret = mdiobus_read(mdio_dev->bus, mdio_dev->addr,
-> > RTL8231_REAL_REG(reg));
-> > +
-> > +       if (ret < 0)
-> > +               return ret;
-> > +
-> > +       *val = ret & 0xffff;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int rtl8231_reg_write(void *context, unsigned int reg, unsigned int
-> > val)
-> > +{
-> > +       struct mdio_device *mdio_dev = context;
-> > +
-> > +       return mdiobus_write(mdio_dev->bus, mdio_dev->addr,
-> > RTL8231_REAL_REG(reg), val);
-> > +}
-> 
-> Hmm... Maybe we can amend regmap-mdio to avoid duplication of the
-> above? Something like xlate in gpio-regmap or so?
-> 
+> Laurent Pinchart
 
-I wanted to make the masking explicit, but since regmap-mdio currently requires
-a register address width of 5 bit, it could move there.
-
-Actually, can we safely assume that any MDIO driver implementing clause-22
-access (5-bit register address width) will just ignore higher bits? In that
-case, I could just drop these functions and not even modify regmap-mdio. It
-appears to work for bitbanged MDIO.
-
-
-> > +       mdiodev->reset_gpio = devm_gpiod_get_optional(dev, "reset",
-> > GPIOD_OUT_LOW);
-> 
-> Missed
-> 
->   if (IS_ERR(mdiodev->reset_gpio))
->     return PTR_ERR(mdiodev->reset_gpio);
-> 
-
-Will fix.
-
-Best,
-Sander
-
-
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
