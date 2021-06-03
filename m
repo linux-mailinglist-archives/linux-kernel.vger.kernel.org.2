@@ -2,85 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7194A39AE60
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 00:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BFA239AE65
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 00:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbhFCWuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 18:50:02 -0400
-Received: from smtp-fw-9103.amazon.com ([207.171.188.200]:13061 "EHLO
-        smtp-fw-9103.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbhFCWuB (ORCPT
+        id S229800AbhFCWyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 18:54:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFCWym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 18:50:01 -0400
+        Thu, 3 Jun 2021 18:54:42 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13254C06174A;
+        Thu,  3 Jun 2021 15:52:41 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id h16so4530638pjv.2;
+        Thu, 03 Jun 2021 15:52:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1622760496; x=1654296496;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version:subject;
-  bh=6euWPpB9RMCLFG8HoR+UPvFKQ4CrIwpMPDw8qTgPtHE=;
-  b=fZvlImqhvNzL8z7IkS6q3zTybsNPBAZPeeAbwQr4hU1VTY/6tGhYwYlx
-   zkcbmiDxz++6NH+60HeUYamY+McH2j8QyoGENh7sKiYFQbB/0PQYMhfV3
-   2GL0EBMGaaDM5On2GoHVOaYXa2aIomPuLbn1hdKquasJ29tzFWxJiHpWW
-   0=;
-X-IronPort-AV: E=Sophos;i="5.83,246,1616457600"; 
-   d="scan'208";a="936528897"
-Subject: Re: [RFC PATCH] x86/mce: Provide sysfs interface to show CMCI storm state
-Thread-Topic: [RFC PATCH] x86/mce: Provide sysfs interface to show CMCI storm state
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9103.sea19.amazon.com with ESMTP; 03 Jun 2021 22:48:15 +0000
-Received: from EX13MTAUWC001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com (Postfix) with ESMTPS id 15E7EA0036;
-        Thu,  3 Jun 2021 22:48:13 +0000 (UTC)
-Received: from EX13D12UWC004.ant.amazon.com (10.43.162.182) by
- EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Thu, 3 Jun 2021 22:48:13 +0000
-Received: from EX13D12UWC004.ant.amazon.com (10.43.162.182) by
- EX13D12UWC004.ant.amazon.com (10.43.162.182) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Thu, 3 Jun 2021 22:48:12 +0000
-Received: from EX13D12UWC004.ant.amazon.com ([10.43.162.182]) by
- EX13D12UWC004.ant.amazon.com ([10.43.162.182]) with mapi id 15.00.1497.018;
- Thu, 3 Jun 2021 22:48:12 +0000
-From:   "BeSerra, Christopher" <beserra@amazon.com>
-To:     "Luck, Tony" <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>
-CC:     "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Thread-Index: AQHXVyGNojI1HFwphkuSoXpNyCJ//ar/nTKAgAABSACAAtL6AA==
-Date:   Thu, 3 Jun 2021 22:48:12 +0000
-Message-ID: <4B422201-A96F-4EB7-A42F-9A1BF89D4794@amazon.com>
-References: <20210601200505.966849-1-tony.luck@intel.com>
- <YLaaLws+4FEHOqQs@zn.tnic> <1cc039a15b4248e1a625dbb6fc275169@intel.com>
-In-Reply-To: <1cc039a15b4248e1a625dbb6fc275169@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.43.160.110]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <8EB668A68112FA44A02902B61A65253F@amazon.com>
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qFrqM5+WxjtGbTpbtf2w4MFDOOBEqwwFq+bBPvXL2oE=;
+        b=qte3jPhFf5hcVRYLFK9ul+KSmobwyqJZw5bYZ3DN6GgS8cQbP2BLL1ABa/OXxBnHex
+         WNqs9b+xX26sHbYPDUlDGJ/aKjSv1oBYchsO7XfOzcxNWsZfk2uRRbDHW+MtFK11AKUY
+         HIqJTq9vtoYLmjZRU02qnCM1JsE/xP2rVU06uWygtjcTNrtAdwEYQy7omyuziicyORC+
+         4EN/XKa1cZ0U/G81JhRcw3IEuNXDfJgULyVAsQgKk8Kynz6ukKgUBCKtcdx9WWZknXnF
+         /qW4rz9ztTbCd8vWNgX6I9scJLvj8LNIs6jby+mwWFM94oOaZKdK9hIbbAV3dCjZAgR6
+         MLtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qFrqM5+WxjtGbTpbtf2w4MFDOOBEqwwFq+bBPvXL2oE=;
+        b=WWQA1Q5Qo9XIX2XLQMqyIyoerUnBdLyspqxxfsZxe8vSmZE2ZGP5rS7mOkdspdEV3I
+         QEHhj62ne8aRNVkSGHCn1Sx2OjjYt2Nczgc0fpII4QNzdGIFArzdXXhTYr3XI/HbUeB3
+         4hLgUN8Uku1yyIWYgYWY4Wfz/+/ZzRDmp7Ut89ZOpx/hAvYH0kOw6ayrEF3raQ6yPUaX
+         TI2iX/HNgyrvhaNOJ4dFdqTam+XYFj4smyxmi/LT1RmkHa5wZpixsfwrQUBPLRU4SnRm
+         lkx9/S9zxZXjQtMHfpZ4W/7u9QIq/o84oN+XpTGkBHwPKkut2BDFF+1tmOP/R3vpOOx2
+         VgbA==
+X-Gm-Message-State: AOAM532lpEENfECvlqlfWzwlHji45z8DMsPE9JyzBEdS8j+RxIdvEY8d
+        5O0hXi4dIHe85j6XnQtB1Ll+SOiYkn2Y5g9Ycrns5m7H2LjqMg==
+X-Google-Smtp-Source: ABdhPJyUs+MYN1Cx+EkDqml0t1Q5qWBEGW/ehcsor/Fiq4Q9YhDgmIHwe1CQIi0hGIfFrasGNm0XSUn9FseypY3taMQ=
+X-Received: by 2002:a17:90a:7e92:: with SMTP id j18mr1596536pjl.231.1622760760605;
+ Thu, 03 Jun 2021 15:52:40 -0700 (PDT)
 MIME-Version: 1.0
+References: <20210531153410.93150-1-changbin.du@gmail.com> <20210531220128.26c0cb36@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <CAM_iQpUEjBDK44=mD5shkmmoDYhmHQaSZtR34rLRkgd9wSWiQQ@mail.gmail.com> <20210602091451.kbdul6nhobilwqvi@wittgenstein>
+In-Reply-To: <20210602091451.kbdul6nhobilwqvi@wittgenstein>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Thu, 3 Jun 2021 15:52:29 -0700
+Message-ID: <CAM_iQpUqgeoY_mA6cazUPCWwMK6yw9SaD6DRg-Ja4r6r_zOmLg@mail.gmail.com>
+Subject: Re: [PATCH] nsfs: fix oops when ns->ops is not provided
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Changbin Du <changbin.du@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        David Laight <David.Laight@aculab.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhlcmUgYXJlIGNvcm5lciBjYXNlcyB3aGVyZSB0aGUgQ0UgY291bnQgaXMgMCB3aGVuIGEgc3Rv
-cm0gb2NjdXJzLiAgRURBQyBjb21wbGV0ZWx5IG1pc3NlZCBsb2dnaW5nIENFcy4NCg0K77u/T24g
-Ni8xLzIxLCAxOjQxIFBNLCAiTHVjaywgVG9ueSIgPHRvbnkubHVja0BpbnRlbC5jb20+IHdyb3Rl
-Og0KDQogICAgQ0FVVElPTjogVGhpcyBlbWFpbCBvcmlnaW5hdGVkIGZyb20gb3V0c2lkZSBvZiB0
-aGUgb3JnYW5pemF0aW9uLiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1
-bmxlc3MgeW91IGNhbiBjb25maXJtIHRoZSBzZW5kZXIgYW5kIGtub3cgdGhlIGNvbnRlbnQgaXMg
-c2FmZS4NCg0KDQoNCiAgICA+IEJ1dCBJJ20gdW5jbGVhciBhcyB0byB3aGF0IHRoaXMgd2hvbGUg
-dXNlIGNhc2UgaXMuIFRoZSB2ZXJ5IGZpcnN0DQogICAgPiAiU2NyaXB0cyB0aGF0IHByb2Nlc3Mg
-ZXJyb3IgbG9ncyIgYWxyZWFkeSBzb3VuZHMgbGlrZSBhIGJhZCBpZGVhIC0gSSdkDQogICAgPiBl
-eHBlY3QgdXNlcnNwYWNlIGNvbnN1bWVycyB0byBvcGVuIHRoZSB0cmFjZV9tY2VfcmVjb3JkKCkg
-YW5kIGdldCB0aGUNCiAgICA+IE1DRSByZWNvcmRzIGZyb20gdGhlcmUuIEFuZCBpbiB0aGF0IGNh
-c2UgQ01DSSBzdG9ybSBzaG91bGRuJ3QgbWF0dGVyLi4uDQoNCiAgICBJIHRoaW5rIHRoZSBwcm9i
-bGVtIGlzIGtub3dpbmcgdGhhdCBtYW55IGVycm9ycyBhcmUgYmVpbmcgbWlzc2VkIGJlY2F1c2UN
-CiAgICBvZiB0aGUgc3dpdGNoIHRvIHBvbGwgbW9kZS4gQWxsIG1ldGhvZHMgdG8gdHJhY2sgZXJy
-b3JzLCBpbmNsdWRpbmcgdGhlIHRyYWNlX21jZV9yZWNvcmQoKQ0KICAgIHRlY2huaXF1ZSBhcmUg
-ZXF1YWxseSBhZmZlY3RlZCBieSBtaXNzZWQgZXJyb3JzLg0KDQogICAgQnV0IG1heWJlIENocmlz
-IGNhbiBiZXR0ZXIgZGVzY3JpYmUgd2hhdCB0aGUgcHJvYmxlbSBpcyAuLi4NCg0KICAgIC1Ub255
-DQoNCg==
+On Wed, Jun 2, 2021 at 2:14 AM Christian Brauner
+<christian.brauner@ubuntu.com> wrote:
+> But the point is that ns->ops should never be accessed when that
+> namespace type is disabled. Or in other words, the bug is that something
+> in netns makes use of namespace features when they are disabled. If we
+> handle ->ops being NULL we might be tapering over a real bug somewhere.
+
+It is merely a protocol between fs/nsfs.c and other namespace users,
+so there is certainly no right or wrong here, the only question is which
+one is better.
+
+>
+> Jakub's proposal in the other mail makes sense and falls in line with
+> how the rest of the netns getters are implemented. For example
+> get_net_ns_fd_fd():
+
+It does not make any sense to me. get_net_ns() merely increases
+the netns refcount, which is certainly fine for init_net too, no matter
+CONFIG_NET_NS is enabled or disabled. Returning EOPNOTSUPP
+there is literally saying we do not support increasing init_net refcount,
+which is of course false.
+
+> struct net *get_net_ns_by_fd(int fd)
+> {
+>         return ERR_PTR(-EINVAL);
+> }
+
+There is a huge difference between just increasing netns refcount
+and retrieving it by fd, right? I have no idea why you bring this up,
+calling them getters is missing their difference.
+
+Thanks.
