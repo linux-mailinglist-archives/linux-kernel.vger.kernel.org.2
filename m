@@ -2,151 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6987439AEA3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 01:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7CFA39AEAB
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 01:28:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229840AbhFCX3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 19:29:33 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:1091 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFCX3c (ORCPT
+        id S229964AbhFCXaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 19:30:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFCXaL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 19:29:32 -0400
+        Thu, 3 Jun 2021 19:30:11 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B7DC06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 16:28:10 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id w15so9182201ljo.10
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 16:28:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1622762867; x=1654298867;
-  h=date:from:to:cc:message-id:references:mime-version:
-   in-reply-to:subject;
-  bh=7ofG02ZB3R9ItNYAJX7AOjZDSEYR5bDQ9ZvKLyyiy6M=;
-  b=s4NMXVO77pvXXOzL6ItqV0+U/phI6tQWM0ia443Om1cx37MmlxxJCtjr
-   Yvf2Y4bVgAHVhXLPlGod7ZVD/Acyg8qWO9czjI7AHB7eA6daJEvo5nGtV
-   ZfAVn/LWvNlPoskfE4NzdPz1PwT9DU1UddnFipRXO7RnHoYcOSjWxVPBu
-   4=;
-X-IronPort-AV: E=Sophos;i="5.83,246,1616457600"; 
-   d="scan'208";a="116516910"
-Subject: Re: [PATCH v3 01/11] xen/manage: keep track of the on-going suspend mode
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-4e24fd92.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 03 Jun 2021 23:27:45 +0000
-Received: from EX13MTAUEE002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-4e24fd92.us-west-2.amazon.com (Postfix) with ESMTPS id 4C241A1D18;
-        Thu,  3 Jun 2021 23:27:43 +0000 (UTC)
-Received: from EX13D08UEE002.ant.amazon.com (10.43.62.92) by
- EX13MTAUEE002.ant.amazon.com (10.43.62.24) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Thu, 3 Jun 2021 23:27:42 +0000
-Received: from EX13MTAUEE002.ant.amazon.com (10.43.62.24) by
- EX13D08UEE002.ant.amazon.com (10.43.62.92) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Thu, 3 Jun 2021 23:27:42 +0000
-Received: from dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com
- (172.22.96.68) by mail-relay.amazon.com (10.43.62.224) with Microsoft SMTP
- Server id 15.0.1497.18 via Frontend Transport; Thu, 3 Jun 2021 23:27:42 +0000
-Received: by dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com (Postfix, from userid 4335130)
-        id 72A74409AC; Thu,  3 Jun 2021 23:27:42 +0000 (UTC)
-Date:   Thu, 3 Jun 2021 23:27:42 +0000
-From:   Anchal Agarwal <anchalag@amazon.com>
-To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
-CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
-        "jgross@suse.com" <jgross@suse.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "sstabellini@kernel.org" <sstabellini@kernel.org>,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        "roger.pau@citrix.com" <roger.pau@citrix.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "len.brown@intel.com" <len.brown@intel.com>,
-        "pavel@ucw.cz" <pavel@ucw.cz>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dwmw@amazon.co.uk" <dwmw@amazon.co.uk>
-Message-ID: <20210603232742.GB14368@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
-References: <20200930212944.GA3138@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
- <8cd59d9c-36b1-21cf-e59f-40c5c20c65f8@oracle.com>
- <20210521052650.GA19056@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
- <0b1f0772-d1b1-0e59-8e99-368e54d40fbf@oracle.com>
- <20210526044038.GA16226@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
- <33380567-f86c-5d85-a79e-c1cd889f8ec2@oracle.com>
- <20210528215008.GA19622@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
- <1ff91b30-3963-728e-aefb-57944197bdde@oracle.com>
- <20210602193743.GA28861@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
- <2cb71322-9d3d-395e-293b-24888f5be759@oracle.com>
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yp2xRS7FBwt+MIq6S/QXxDvwXDIU2o3m3x2Gm2/0e9o=;
+        b=MPHHM8hgXKQMT2F3JT70zdDS0t7cPi9LrYCnvh+CZ4kgONtffvYF4ixcKpCqqoO1Fs
+         lJ2z7gOX0dMnOUZDsvDEoig7HUnPRq1rZ/Ye6SoLbryAHRbJhWlS4o9Bjo68dOwqmmec
+         F1c6lUNcrK7UQ3b2+QDUfywN8IxfiMOKNfIpCZBVSE2I5EjCxtcpwNB3ySLJ7m+C/DcJ
+         n2hjy3cxhoujdU5akqnPzk4ppjraB4hTA22266tJLfRLaNTqSaGHibK1uKWHHgbwS8ZO
+         B4zbM+2OAZKY2NJaEpT3bmSNiZtXlnzqNNnDvxjzgqyJBaT1jzTOFQ3uGZn7oXSPjY9e
+         9c0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yp2xRS7FBwt+MIq6S/QXxDvwXDIU2o3m3x2Gm2/0e9o=;
+        b=brO/ezDTKlTIWQ+bkDE6JHpUaVkCs0hIfgWKDSw4kAScDFV6od8A8EDgA0FAd8oFDg
+         ybql3JfoGpMZMHV4d+eWGDGAm4/nn7tN8UJKM0dmkrI0YrnDfPrXlr4MPsXUhIQ4yBxr
+         0W8tPSjTQKe35rwbdJ1ktcvaJCGmWeWu17zlgIo/ra/EZTe5yxZbC8KXed87wtAixWSY
+         SaxJrrNOLcyQL46Qb9hYiOv1s09/ZlC0ymMNdWmrb9D+Rv08/bq513wCgFuEe6Vcp5CE
+         dbZZVKf3lyJhTbPMdPnSx+PbO8YQgQZJGUj/jYfwDvJo9nKO1M+OZLfmyxcwQ4hQ6rzP
+         Cg3Q==
+X-Gm-Message-State: AOAM530EMytZ5sGMw/btr/KZnkRAkz81PK2XFsfSXipcqQgNWpVz/69w
+        ywOM04siAyE2JJn7W9lXT3x0P59+QCW8V6pIykXSxA==
+X-Google-Smtp-Source: ABdhPJzXbiQOm/LTa/9I1aTG6l1jQZ5G6mYyNqgFW8DJe4zWHMlzneqPaWc1OYbyRPsdbcfjM4egzmVvxwPKp5INQg0=
+X-Received: by 2002:a05:651c:b1f:: with SMTP id b31mr1302202ljr.0.1622762887714;
+ Thu, 03 Jun 2021 16:28:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <2cb71322-9d3d-395e-293b-24888f5be759@oracle.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+References: <20210226164345.3889993-1-arnd@kernel.org> <CAK8P3a2E0pv6PKzcCoRZH0G_gGrhWeiDwN7h090iQpd6c=XG1Q@mail.gmail.com>
+In-Reply-To: <CAK8P3a2E0pv6PKzcCoRZH0G_gGrhWeiDwN7h090iQpd6c=XG1Q@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 3 Jun 2021 16:27:56 -0700
+Message-ID: <CAKwvOdna9KPAsN6+qTDkWMdXYDg5AGUnp=ek5McxtDXLSQdVWg@mail.gmail.com>
+Subject: Re: [PATCH] ARM: ep93xx: don't use clang IAS for crunch
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Hartley Sweeten <hsweeten@visionengravers.com>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        SoC Team <soc@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 04:11:46PM -0400, Boris Ostrovsky wrote:
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
-> 
-> 
-> 
-> On 6/2/21 3:37 PM, Anchal Agarwal wrote:
-> > On Tue, Jun 01, 2021 at 10:18:36AM -0400, Boris Ostrovsky wrote:
-> >>
-> > The resume won't fail because in the image the xen_vcpu and xen_vcpu_info are
-> > same. These are the same values that got in there during saving of the
-> > hibernation image. So whatever xen_vcpu got as a value during boot time registration on resume is
-> > essentially lost once the jump into the saved kernel image happens. Interesting
-> > part is if KASLR is not enabled boot time vcpup mfn is same as in the image.
-> 
-> 
-> Do you start the your guest right after you've hibernated it? What happens if you create (and keep running) a few other guests in-between? mfn would likely be different then I'd think.
-> 
+On Fri, Feb 26, 2021 at 10:01 AM Arnd Bergmann <arnd@kernel.org> wrote:
 >
-Yes, I just run it in loops on a single guest and I am able to see the issue in
-20-40 iterations sometime may be sooner. Yeah, you could be right and this could
-definitely happen more often depending what's happening on dom0 side.
-> > Once you enable KASLR this value changes sometimes and whenever that happens
-> > resume gets stuck. Does that make sense?
+> On Fri, Feb 26, 2021 at 5:44 PM Arnd Bergmann <arnd@kernel.org> wrote:
 > >
-> > No it does not resume successfully if hypercall fails because I was trying to
-> > explicitly reset vcpu and invoke hypercall.
-> > I am just wondering why does restore logic fails to work here or probably I am
-> > missing a critical piece here.
-> 
-> 
-> If you are not using KASLR then xen_vcpu_info is at the same address every time you boot. So whatever you registered before hibernating stays the same when you boot second time and register again, and so successful comparison in xen_vcpu_setup() works. (Mostly by chance.)
+> >  obj-$(CONFIG_CRUNCH)           += crunch.o crunch-bits.o
+> > -AFLAGS_crunch-bits.o           := -Wa,-mcpu=ep9312
+> > +AFLAGS_crunch-bits.o           := -Wa,-mcpu=ep9312 $(cc-option, -fno-integrated-as)
 >
-That's what I thought so too.
-> 
-> But if KASLR is on then this comparison not failing should cause xen_vcpu pointer in the loaded image to become bogus because xen_vcpu is now registered for a different xen_vcpu_info address during boot.
-> 
-The reason for that I think is once you jump into the image that information is
-getting lost. But there is  some residue somewhere that's causing the resume to
-fail. I haven't been able to pinpoint the exact field value that may be causing
-that issue.
-Correct me if I am wrong here, but even if hypothetically I put a hack to tell the kernel
-somehow re-register vcpu it won't pass because there is no hypercall to
-unregister it in first place? Can the resumed kernel use the new values in that
-case [Now this is me just throwing wild guesses!!]
+> I reworked that patch just before sending it out, and ended up with two typos
+> in there, it should be
+>
+> +AFLAGS_crunch-bits.o           := -Wa,-mcpu=ep9312 $(call cc-option,
+> -no-integrated-as)
+>
+> I'll wait for others to comment before I send the fixed version.
 
-> 
-> >>> Another line of thought is something what kexec does to come around this problem
-> >>> is to abuse soft_reset and issue it during syscore_resume or may be before the image get loaded.
-> >>> I haven't experimented with that yet as I am assuming there has to be a way to re-register vcpus during resume.
-> >>
-> >> Right, that sounds like it should work.
-> >>
-> > You mean soft reset or re-register vcpu?
-> 
-> 
-> Doing something along the lines of a soft reset. It should allow you to re-register. Not sure how you can use it without Xen changes though.
-> 
-No not without xen changes. It won't work. I will have xen changes in place to
-test that on our infrastructure. 
-
---
-Anchal
-> 
-> 
-> -boris
-> 
+Probably good for that v2?
+-- 
+Thanks,
+~Nick Desaulniers
