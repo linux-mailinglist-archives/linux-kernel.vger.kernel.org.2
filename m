@@ -2,96 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 062E5399E7D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 12:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A900399E71
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 12:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbhFCKJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 06:09:04 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42414 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbhFCKJD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 06:09:03 -0400
-Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 3199E1FD4D;
-        Thu,  3 Jun 2021 10:07:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1622714838;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=x+tyGtuKQivyTVwpYXg7bis6FjooMqzN5iLMRFOcQec=;
-        b=kedhPNIKxxlLkgtanscuy8Da/1hGttsm7IZX+nwk7mrI7UCxyR1qdFdHwilJq+U5sZavyJ
-        V93s+waeZztWccmCqxWILsnKVGDH7jMnHuL9+oY9xXDzRlw6PgCWFvnnltWODLGtdjbEc3
-        SitUzEZe64ITaLQhSR8OKR+ydOe/Qdc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1622714838;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=x+tyGtuKQivyTVwpYXg7bis6FjooMqzN5iLMRFOcQec=;
-        b=zx/L4dGILHdCZS13FlebeyvZZm8lMOYlmZEJMOzL0cMZ//ee0B+HMoNGqcE8/A18QxxdOD
-        BrRL9I1o/jnlt2Bw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 2A820A3B81;
-        Thu,  3 Jun 2021 10:07:18 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 2A518DA72C; Thu,  3 Jun 2021 12:04:37 +0200 (CEST)
-Date:   Thu, 3 Jun 2021 12:04:37 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>
-Cc:     "dsterba@suse.cz" <dsterba@suse.cz>,
-        Niklas Cassel <Niklas.Cassel@wdc.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] blk-zoned: allow BLKREPORTZONE without CAP_SYS_ADMIN
-Message-ID: <20210603100436.GV31483@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Niklas Cassel <Niklas.Cassel@wdc.com>, Jens Axboe <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210531135444.122018-1-Niklas.Cassel@wdc.com>
- <20210531135444.122018-3-Niklas.Cassel@wdc.com>
- <20210603095117.GU31483@twin.jikos.cz>
- <DM6PR04MB7081B69E31BB7ADDF02E2D9BE73C9@DM6PR04MB7081.namprd04.prod.outlook.com>
+        id S229799AbhFCKHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 06:07:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47368 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229620AbhFCKHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 06:07:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CBA2611CA;
+        Thu,  3 Jun 2021 10:04:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622714699;
+        bh=ruv4xX6Eg/YETRybxUhFp8CkZkACBGmGpdG3fCfTNYU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=G45+ZBzfThzxAH4ZUIGo4rpnqPa6od3F0KNjIxTAh/TfAMROu2xvHCoQTFNLRtRb7
+         BVcbWAi/urwY1OQkhDRsSjlzoctHOVjWIvz/j86jj2PtZ3fpaiABbrWwE8vyQqkfIB
+         KiKruC8CbO0DqbV4tOWh2O0khvtt4TUDlSTFEYV8=
+Date:   Thu, 3 Jun 2021 12:04:57 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com, stable@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] f2fs: Advertise encrypted casefolding in sysfs
+Message-ID: <YLipSQxNaUDy9Ff1@kroah.com>
+References: <20210603095038.314949-1-drosen@google.com>
+ <20210603095038.314949-3-drosen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DM6PR04MB7081B69E31BB7ADDF02E2D9BE73C9@DM6PR04MB7081.namprd04.prod.outlook.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20210603095038.314949-3-drosen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 10:00:08AM +0000, Damien Le Moal wrote:
-> On 2021/06/03 18:54, David Sterba wrote:
-> > On Mon, May 31, 2021 at 01:54:53PM +0000, Niklas Cassel wrote:
-> >> From: Niklas Cassel <niklas.cassel@wdc.com>
-> >>
-> >> Performing a BLKREPORTZONE operation should be allowed under the same
-> >> permissions as read(). (read() does not require CAP_SYS_ADMIN).
-> >>
-> >> Remove the CAP_SYS_ADMIN requirement, and instead check that the fd was
-> >> successfully opened with FMODE_READ. This way BLKREPORTZONE will match
-> >> the access control requirement of read().
-> > 
-> > Does this mean that a process that does not have read nor write access
-> > to the device itself (blocks) is capable of reading the zone
-> > information? Eg. some monitoring tool.
+On Thu, Jun 03, 2021 at 09:50:38AM +0000, Daniel Rosenberg wrote:
+> Older kernels don't support encryption with casefolding. This adds
+> the sysfs entry encrypted_casefold to show support for those combined
+> features. Support for this feature was originally added by
+> commit 7ad08a58bf67 ("f2fs: Handle casefolding with Encryption")
 > 
-> With this change, to do a report zones, the process will only need to have read
-> access to the device. And if it has read access, it also means that it can read
-> the zones content.
+> Fixes: 7ad08a58bf67 ("f2fs: Handle casefolding with Encryption")
+> Cc: stable@vger.kernel.org # v5.11+
+> Signed-off-by: Daniel Rosenberg <drosen@google.com>
+> ---
+>  fs/f2fs/sysfs.c | 15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+> index 09e3f258eb52..6604291a3cdf 100644
+> --- a/fs/f2fs/sysfs.c
+> +++ b/fs/f2fs/sysfs.c
+> @@ -161,6 +161,9 @@ static ssize_t features_show(struct f2fs_attr *a,
+>  	if (f2fs_sb_has_compression(sbi))
+>  		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
+>  				len ? ", " : "", "compression");
+> +	if (f2fs_sb_has_casefold(sbi) && f2fs_sb_has_encrypt(sbi))
+> +		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
+> +				len ? ", " : "", "encrypted_casefold");
+>  	len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
+>  				len ? ", " : "", "pin_file");
+>  	len += scnprintf(buf + len, PAGE_SIZE - len, "\n");
 
-Ok, so this is a bit restricting. The zone information is like block
-device metadata, comparing it to a file that has permissionx 0600 I can
-see the all the stat info (name, tiemstamps) but can't read the data.
+This is a HUGE abuse of sysfs and should not be encouraged and added to.
 
-But as the ioctl work, it needs a file descriptor and there's probably
-no way to separate the permissions to read blocks and just the metadata.
-For a monitoring/reporting tool this would be useful. Eg. for btrfs it
-could be part of filesystem status overview regarding full or near-full
-zones and emitting an early warning or poking some service to start the
-reclaim.
+Please make these "one value per file" and do not keep growing a single
+file that has to be parsed otherwise you will break userspace tools.
+
+And I don't see a Documentation/ABI/ entry for this either :(
+
+not good...
+
+greg k-h
