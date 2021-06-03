@@ -2,112 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D701839AAFB
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F4439AAFF
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbhFCTgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 15:36:18 -0400
-Received: from smtprelay0050.hostedemail.com ([216.40.44.50]:38438 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229617AbhFCTgR (ORCPT
+        id S229845AbhFCThZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 15:37:25 -0400
+Received: from mail-40133.protonmail.ch ([185.70.40.133]:31392 "EHLO
+        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229620AbhFCThY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 15:36:17 -0400
-Received: from omf15.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 5FFD6100E7B45;
-        Thu,  3 Jun 2021 19:34:31 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf15.hostedemail.com (Postfix) with ESMTPA id 23E44C417C;
-        Thu,  3 Jun 2021 19:34:30 +0000 (UTC)
-Message-ID: <7a7e5cf61177b168f465f2502fde7a1e04293063.camel@perches.com>
-Subject: Re: General kernel misuse of vsnprintf SPECIAL %#<foo> (was: Re:
- [PATCH v2 0/4] iio: Drop use of %hhx and %hx format strings)
-From:   Joe Perches <joe@perches.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-iio@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Thu, 03 Jun 2021 12:34:28 -0700
-In-Reply-To: <20210603202546.0d12e7ad@jic23-huawei>
-References: <20210603180612.3635250-1-jic23@kernel.org>
-         <9499203f1e993872b384aabdec59ac223a8ab931.camel@perches.com>
-         <20210603202546.0d12e7ad@jic23-huawei>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 3 Jun 2021 15:37:24 -0400
+Date:   Thu, 03 Jun 2021 19:35:35 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail3; t=1622748936;
+        bh=upIN3rRVlmuGccakb3pkBawIHaqI8SnKPwFBlV2wP3A=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=ih7mvRTeDlgXaPIULSRAbKPIdZ9gIUzCeK3vte6y6mP23bMDrzDX/Sk0/vEeOrpuf
+         J8GFqBTsHW24SKyj5MSoG+PkQPicFn7ty0v81/yNQDLSyDWhGPcrQ32+XDWiqZdYtV
+         ztFTRmbt4a8ylZb3s0Cy9aHF/16s0JBBLsyeiAnKSkZL9fuOXi4QVLI2PhTNTaLZMd
+         904/8+WerJVMz1mnBlJMEXr2yj7w9LpjPPnk7yCcRdJIAmARpg93jg64mW5L1fMjRD
+         U0+Pqsp0jVn+x5DN/ZAqdTOuPnBTT86gzF0OJYSVZd/7x5rTi++MsSMfXHX2bDEdvn
+         choACIjT9vlYQ==
+To:     Andy Lutomirski <luto@amacapital.net>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>, Ming Lin <mlin@kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+Reply-To: Simon Ser <contact@emersion.fr>
+Subject: Re: [PATCH 2/2] mm: adds NOSIGBUS extension for out-of-band shmem read
+Message-ID: <ESvSq0tQ6RgG4pGNwnmAG4jf38xY8Uhg6hL-MBsU0nRE_rXmW_musHce9lnlWWKxkPMAnuH1Yg6o0V1lpO-RWlT7BktnvJEnQoYApKHIe48=@emersion.fr>
+In-Reply-To: <1FD047D2-F5F3-4AC6-A4E4-DB8FB1568821@amacapital.net>
+References: <CAHk-=wiNT0RhwHkLa14ts0PGQtVtDZbJniOQJ66wxzXz4Co2mw@mail.gmail.com> <1FD047D2-F5F3-4AC6-A4E4-DB8FB1568821@amacapital.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.40
-X-Stat-Signature: xfx481amwwrkh5cxkk8dbt4ascae8j68
-X-Rspamd-Server: rspamout02
-X-Rspamd-Queue-Id: 23E44C417C
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18R1oAoqYfHFawgc7TCtPiuf41w4Q+rl74=
-X-HE-Tag: 1622748870-966212
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-06-03 at 20:25 +0100, Jonathan Cameron wrote:
-> On Thu, 03 Jun 2021 11:58:15 -0700 Joe Perches <joe@perches.com> wrote:
-> > It looks to me as though %#<foo> is relatively commonly misused in the kernel.
-> > 
-> > Pehaps for the decimal portion of the format, checkpatch could have some
-> > test for use of non-standard lengths.
-> > 
-> > Given the use is generally meant for a u8, u16, u32, or u64, perhaps
-> > checkpatch should emit a warning whenever the length is not 4, 6, 10, or 18.
-> 
-> Would have saved me some trouble, so I'm definitely in favour of checkpatch
-> catching this.
-> 
-> I wonder if a better option is to match on 1, 2, 4, 8, 16 as likely to be
-> caused by people getting the usage wrong rather than a deliberate attempt
-> to pretty print something a little unusual?
+On Thursday, June 3rd, 2021 at 9:24 PM, Andy Lutomirski <luto@amacapital.ne=
+t> wrote:
 
-Dunno.  %#0x and %x[123] seems pretty silly as it'll always emit the number
-of digits in the value.
+> I don=E2=80=99t understand the use case well enough to comment on whether=
+ MAP_PRIVATE
+> is sufficient, but I=E2=80=99m with Hugh: if this feature is implemented =
+for
+> MAP_SHARED, it should be fully coherent.
 
-There aren't too many other odd uses other than those.
+I've tried to explain what we'd need from user-space PoV in [1].
+tl;dr the MAP_PRIVATE restriction would get us pretty far, even if it
+won't allow us to have all of the bells and whistles.
 
-> > $ git grep -P -h -o '%#\d+\w+' | sort | uniq -c | sort -rn
-
-8 and 16 are perhaps commonly misused.
-> >     392 %#08x
-> >      17 %#08lx
-> >       9 %#08zx
-> >       6 %#8x
-> >       4 %#08llx
-> >       1 %#8lx
-> >       1 %#08
-
-> >       7 %#16llx
-> >       5 %#16
-> >       4 %#016Lx
-> >       1 %#16x
-> >       1 %#16lx
-
-These are the odd ones:
-
-> >     144 %#02x
-> >      27 %#0x
-> >      23 %#2x
-> >      17 %#3lx
-> >      15 %#3x
-> >      14 %#03x
-> >       6 %#012llx
-> >       4 %#05x
-> >       4 %#02X
-> >       3 %#01x
-> >       2 %#09x
-> >       2 %#05lx
-> >       1 %#5x
-> >       1 %#5lx
-> >       1 %#2Lx
-> >       1 %#2llx
-> >       1 %#12x
-> >       1 %#0lx
-> >       1 %#05llx
-> >       1 %#03X
-
-
+[1]: https://lore.kernel.org/linux-mm/vs1Us2sm4qmfvLOqNat0-r16GyfmWzqUzQ4KH=
+bXJwEcjhzeoQ4sBTxx7QXDG9B6zk5AeT7FsNb3CSr94LaKy6Novh1fbbw8D_BBxYsbPLms=3D@e=
+mersion.fr/T/#mb321a8d39e824740877ba95f1df780ffd52c3862
