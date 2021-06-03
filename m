@@ -2,98 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E685139A467
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0968F39A473
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 17:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232011AbhFCPWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 11:22:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231826AbhFCPWN (ORCPT
+        id S232069AbhFCPX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 11:23:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24535 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231623AbhFCPXz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 11:22:13 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16701C06174A;
-        Thu,  3 Jun 2021 08:20:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=N2VWo8wKw7dopgHVxyfYdau0jmOFUHRM6wN4YMv4xKI=; b=dxttJ+W0F2wEGpLOdBnsncftqU
-        378QRkd3zGU6qPRq7ZEn2zXSaGuaWTjr4Iu3BB4VB84Tc0JbhACJWicFbHmjNs9GIEoirpQqCr+0H
-        lFdV0pNI8XXltxYdJQGvTYiQCDW7DEW7INM4EEmUwb0vGTcYN6nrj5quXvvdPPx0EidwbJfYsmcyd
-        EkIP04P5/QCR7hYcuYL+rNmQkTxNKhKCvZ5z85iOhR50g6rIa53wBMifcAIFYjHKGNTqn1tymNTOe
-        +phsZB0dztLLgDh+cwCy9pCViMl617E1ipJ8/fzhSkaZQmGVIpnkEDg7DOmxKdedtuR2aNZUvbBPM
-        oYuU6Bkw==;
-Received: from [2601:1c0:6280:3f0::ce7d]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lop91-009LaP-BE; Thu, 03 Jun 2021 15:20:27 +0000
-Subject: Re: [PATCH v3] wireless: carl9170: fix LEDS build errors & warnings
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Christian Lamparter <chunkeey@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        linux-wireless@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-References: <20210530031134.23274-1-rdunlap@infradead.org>
- <8043ff50-d592-7666-f001-7505efa0d4c2@gmail.com>
- <c49c07d5-1d6e-5b99-30b4-bc8f48b0fde3@infradead.org>
- <87czt31dt3.fsf@codeaurora.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <5e5a50e0-7e42-9fd3-f927-d3b695a21912@infradead.org>
-Date:   Thu, 3 Jun 2021 08:20:25 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Thu, 3 Jun 2021 11:23:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622733730;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Tk288Zz+uIifCmQruWzx1HX+KXbfFOTwP0kxM+VMUEc=;
+        b=U8LwQwctwhWDGUPTzbAdEPnOu+DroSh7QMht5ehK558ivZu1syxHd+HELRIWnTeV+atK2x
+        2+8R8m9EIcaPLA5zHQ5CcxMvyjrUD759HOdDZRTTHW7cuS7obrO9B1UST53p/qzOYVaijv
+        cWgsyfgi8Q/LNNiX+O/6xA7GwADSO+o=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-589-R8yDZk8vPUuwLjPj8zIMzg-1; Thu, 03 Jun 2021 11:22:08 -0400
+X-MC-Unique: R8yDZk8vPUuwLjPj8zIMzg-1
+Received: by mail-ej1-f69.google.com with SMTP id gv42-20020a1709072beab02903eab8e33118so2064017ejc.19
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 08:22:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Tk288Zz+uIifCmQruWzx1HX+KXbfFOTwP0kxM+VMUEc=;
+        b=cJVckda1fHp8cfia29FuS+/mPqgf9gOOcaxwj42Fu0EScafckFCEDkytav8XFGyRPq
+         8NdLs6rqeiJPg2uBohBtCSKphbE/ET5unuIUpsbGjYwwGSfaxGl1L/L0MQSbgtKtTvOe
+         eTSSEVdHBv0C8akxRNuljgdRzNokzlnzzUgcN/Z7fH1KI/bTxmoIV9S3OLmwGms0w5kV
+         YBXAa+vXO92RGkMlabSeKmzKduOxnAlPPZZSG/1PFUBrCM+lO9txLVX6YNV0k0wElz3b
+         DEn+5JwgAcIdjryrp/FdzQLJ5v010B5jw+kZKUg1CzoKnmgi0//UDnd0OLk8FKhKN4jA
+         LS0w==
+X-Gm-Message-State: AOAM5323JWpVy/wE/uQAI7iLiDp838mKNDI6EGlYsbwv5cqK4TTzErDK
+        XhuexfJ6a/YGF9/6FcudYJpVukJnqeQ20jAQ4aZi+WWITBlNH4DM4byvRGIZoFk7XC2ah/bJRLX
+        eszTDjQyUQbg0l0vWdsts3myW
+X-Received: by 2002:a17:906:6c88:: with SMTP id s8mr125416ejr.129.1622733727731;
+        Thu, 03 Jun 2021 08:22:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxoln++JLRLzRUvRIPFKCkhnzbJCumWsfqvvpdAzdKrFm/EKznU/MHMYhIJo8u5lC88unTUOw==
+X-Received: by 2002:a17:906:6c88:: with SMTP id s8mr125391ejr.129.1622733727545;
+        Thu, 03 Jun 2021 08:22:07 -0700 (PDT)
+Received: from steredhat ([5.170.129.82])
+        by smtp.gmail.com with ESMTPSA id z22sm1197140ejm.71.2021.06.03.08.22.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 08:22:07 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 17:22:03 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, oxffffaa@gmail.com
+Subject: Re: [PATCH v10 14/18] virtio/vsock: enable SEQPACKET for transport
+Message-ID: <20210603152203.gezrjp2xiv53eqpm@steredhat>
+References: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
+ <20210520191901.1272423-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-In-Reply-To: <87czt31dt3.fsf@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210520191901.1272423-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/3/21 2:46 AM, Kalle Valo wrote:
-> Randy Dunlap <rdunlap@infradead.org> writes:
-> 
->> On 5/30/21 2:31 AM, Christian Lamparter wrote:
->>> On 30/05/2021 05:11, Randy Dunlap wrote:
->>>> kernel test robot reports over 200 build errors and warnings
->>>> that are due to this Kconfig problem when CARL9170=m,
->>>> MAC80211=y, and LEDS_CLASS=m.
->>>>
->>>> WARNING: unmet direct dependencies detected for MAC80211_LEDS
->>>>    Depends on [n]: NET [=y] && WIRELESS [=y] && MAC80211 [=y] &&
->>>> (LEDS_CLASS [=m]=y || LEDS_CLASS [=m]=MAC80211 [=y])
->>>>    Selected by [m]:
->>>>    - CARL9170_LEDS [=y] && NETDEVICES [=y] && WLAN [=y] &&
->>>> WLAN_VENDOR_ATH [=y] && CARL9170 [=m]
->>>>
->>>> CARL9170_LEDS selects MAC80211_LEDS even though its kconfig
->>>> dependencies are not met. This happens because 'select' does not follow
->>>> any Kconfig dependency chains.
->>>>
->>>> Fix this by making CARL9170_LEDS depend on MAC80211_LEDS, where
->>>> the latter supplies any needed dependencies on LEDS_CLASS.
->>>
->>> Ok, this is not what I was expecting... I though you would just
->>> add a "depends on / imply MAC80211_LEDS" on your v2. (this was
->>> based on the assumption of what mac80211,  ath9k/_htc and mt76
->>> solutions of the same problem looked like).
->>
->> Do you want the user choice/prompt removed, like MT76 is?
->>
->>> But since (I assuming here) this patch passed the build-bots
->>> testing with flying colors in the different config permutations.
->>
->> It hasn't passed any build-bots testing that I know of.
->> I did 8 combinations of kconfigs (well, 2 of them were invalid),
->> but they all passed my own build testing.
-> 
-> So is this ok to take now? Or will there be v4?
+On Thu, May 20, 2021 at 10:18:57PM +0300, Arseny Krasnov wrote:
+>To make transport work with SOCK_SEQPACKET two updates were
+>added:
 
-It's all good AFAIK unless Christian wants something changed.
+Present is better, and you can also mention that we enable it only if 
+the feature is negotiated with the device.
 
-Christian?
-
--- 
-~Randy
+>1) SOCK_SEQPACKET ops for virtio transport and 'seqpacket_allow()'
+>   callback.
+>2) Handling of SEQPACKET bit: guest tries to negotiate it with vhost.
+>
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>---
+> v9 -> v10:
+> 1) Use 'virtio_has_feature()' to check feature bit.
+> 2) Move assignment to 'seqpacket_allow' before 'rcu_assign_pointer()'.
+>
+> net/vmw_vsock/virtio_transport.c | 24 ++++++++++++++++++++++++
+> 1 file changed, 24 insertions(+)
+>
+>diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+>index 2700a63ab095..bc5ee8df723a 100644
+>--- a/net/vmw_vsock/virtio_transport.c
+>+++ b/net/vmw_vsock/virtio_transport.c
+>@@ -62,6 +62,7 @@ struct virtio_vsock {
+> 	struct virtio_vsock_event event_list[8];
+>
+> 	u32 guest_cid;
+>+	bool seqpacket_allow;
+> };
+>
+> static u32 virtio_transport_get_local_cid(void)
+>@@ -443,6 +444,8 @@ static void virtio_vsock_rx_done(struct virtqueue 
+>*vq)
+> 	queue_work(virtio_vsock_workqueue, &vsock->rx_work);
+> }
+>
+>+static bool virtio_transport_seqpacket_allow(u32 remote_cid);
+>+
+> static struct virtio_transport virtio_transport = {
+> 	.transport = {
+> 		.module                   = THIS_MODULE,
+>@@ -469,6 +472,10 @@ static struct virtio_transport virtio_transport = {
+> 		.stream_is_active         = virtio_transport_stream_is_active,
+> 		.stream_allow             = virtio_transport_stream_allow,
+>
+>+		.seqpacket_dequeue        = 
+>virtio_transport_seqpacket_dequeue,
+>+		.seqpacket_enqueue        = virtio_transport_seqpacket_enqueue,
+>+		.seqpacket_allow          = virtio_transport_seqpacket_allow,
+>+
+> 		.notify_poll_in           = virtio_transport_notify_poll_in,
+> 		.notify_poll_out          = virtio_transport_notify_poll_out,
+> 		.notify_recv_init         = virtio_transport_notify_recv_init,
+>@@ -485,6 +492,19 @@ static struct virtio_transport virtio_transport = {
+> 	.send_pkt = virtio_transport_send_pkt,
+> };
+>
+>+static bool virtio_transport_seqpacket_allow(u32 remote_cid)
+>+{
+>+	struct virtio_vsock *vsock;
+>+	bool seqpacket_allow;
+>+
+>+	rcu_read_lock();
+>+	vsock = rcu_dereference(the_virtio_vsock);
+>+	seqpacket_allow = vsock->seqpacket_allow;
+>+	rcu_read_unlock();
+>+
+>+	return seqpacket_allow;
+>+}
+>+
+> static void virtio_transport_rx_work(struct work_struct *work)
+> {
+> 	struct virtio_vsock *vsock =
+>@@ -608,6 +628,9 @@ static int virtio_vsock_probe(struct virtio_device *vdev)
+> 	vsock->event_run = true;
+> 	mutex_unlock(&vsock->event_lock);
+>
+>+	if (virtio_has_feature(vdev, VIRTIO_VSOCK_F_SEQPACKET))
+>+		vsock->seqpacket_allow = true;
+>+
+> 	vdev->priv = vsock;
+> 	rcu_assign_pointer(the_virtio_vsock, vsock);
+>
+>@@ -695,6 +718,7 @@ static struct virtio_device_id id_table[] = {
+> };
+>
+> static unsigned int features[] = {
+>+	VIRTIO_VSOCK_F_SEQPACKET
+> };
+>
+> static struct virtio_driver virtio_vsock_driver = {
+>-- 
+>2.25.1
+>
 
