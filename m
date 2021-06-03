@@ -2,113 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3E6E39AD70
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 00:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1601E39AD74
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 00:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbhFCWJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 18:09:08 -0400
-Received: from mail-ed1-f45.google.com ([209.85.208.45]:33606 "EHLO
-        mail-ed1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbhFCWJI (ORCPT
+        id S230372AbhFCWJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 18:09:58 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:52678 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229924AbhFCWJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 18:09:08 -0400
-Received: by mail-ed1-f45.google.com with SMTP id f5so3840417eds.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 15:07:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u1tlwNvgMK6HDkbzCbRrxIHsT2mloTx7ykpfpBmaMA0=;
-        b=nbHY1PV1SLGjG+b/ZqVO2Y+L5GYBOYqCA8RXJRsiWjEUYVCKtFajPZ1nvKxCcDcLf1
-         /GTOlyTfe1nDDR8MAKDVYj97GlJ3cQ/T9SyzQlRbD1ulhLfpp46JbkubYXN+vo0ANPpK
-         C8uhf5c4bkB7N4AkNIOYUfXJbe6bQIV5TXdwie2vnsvSHXkj8LnrZa545RWWGmSrd1KW
-         S593SvG+od8ttC/tp19kfPvurTNlV/3wfpMOkTjw1CwYo8Ha55r2OfTCd8radlQ+9y7I
-         FQotCJXeJEGWfSLJvkG/TN/VtRipfPu10vVAg9riVmNhHxzUPSGIXRcSPNKga5FFCxkf
-         samw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u1tlwNvgMK6HDkbzCbRrxIHsT2mloTx7ykpfpBmaMA0=;
-        b=oRdQmxCodPa+ZaV28oYSWAKluh1xzWQiaTzcfhYZnWZ5t0MpYS8vffX1hbCPJOes33
-         ZIu5re6EK8qy5xQE+vhIH3UYP6N1V4BRZ/jjootAOYikqGqKO4joCZG5KRHWyEgYtQeh
-         A6Sh5dWMKyEtwpa/4oG5o1oeJU0/2wRt0WKliwI5hPk1bii9TZyLhAnXQH5rELd0q2Zc
-         DSvNcPnvKOkUcBNr8gJKmN26LPBzk2gcMgNggjm4ASp0M679x/OeuMFimQSqWmgjeYI3
-         rz1xSkJS2abNxG5SOOvVTB8MtJzfhDNcE9l0qsKWoRIKuMUd/SHUbxJm/qEX9Xxp/VUu
-         IX4w==
-X-Gm-Message-State: AOAM5339qKSJAcFBCiz1svoYT/59OdYo8sVHA0TY5mEmL50HWtgYo3o2
-        20vQJlv5V56gHA0B9ZB2NZl92fiH5+iAUylZaws=
-X-Google-Smtp-Source: ABdhPJy5tcNmtBjOEe53PFEOp8BmQ21C1hdKaX/CIPNuMFm5M8qRylXlT4ZD6fDK2mLZMDof33vts+CxB15fPfyy2XQ=
-X-Received: by 2002:a05:6402:42d2:: with SMTP id i18mr1488267edc.168.1622757973907;
- Thu, 03 Jun 2021 15:06:13 -0700 (PDT)
+        Thu, 3 Jun 2021 18:09:56 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lovVZ-0000zv-DN; Thu, 03 Jun 2021 22:08:09 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Eugen Hristev <eugen.hristev@microchip.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] Input: resistive-adc-touch: Fix uninitialized variable 'press'
+Date:   Thu,  3 Jun 2021 23:08:09 +0100
+Message-Id: <20210603220809.155118-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <alpine.LSU.2.11.2106011353270.2148@eggly.anvils> <alpine.LSU.2.11.2106011409390.2148@eggly.anvils>
-In-Reply-To: <alpine.LSU.2.11.2106011409390.2148@eggly.anvils>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 3 Jun 2021 15:06:01 -0700
-Message-ID: <CAHbLzkp0g5sveHfQoWQAWd6qfFaiNEVfYgFsBf7vOiMQm8uc8Q@mail.gmail.com>
-Subject: Re: [PATCH 4/7] mm/thp: fix page_address_in_vma() on file THP tails
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
-        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 1, 2021 at 2:11 PM Hugh Dickins <hughd@google.com> wrote:
->
-> From: Jue Wang <juew@google.com>
->
-> Anon THP tails were already supported, but memory-failure may need to use
-> page_address_in_vma() on file THP tails, which its page->mapping check did
-> not permit: fix it.
->
-> hughd adds: no current usage is known to hit the issue, but this does fix
-> a subtle trap in a general helper: best fixed in stable sooner than later.
->
-> Fixes: 800d8c63b2e9 ("shmem: add huge pages support")
-> Signed-off-by: Jue Wang <juew@google.com>
-> Signed-off-by: Hugh Dickins <hughd@google.com>
-> Cc: <stable@vger.kernel.org>
+From: Colin Ian King <colin.king@canonical.com>
 
-Reviewed-by: Yang Shi <shy828301@gmail.com>
+In the case where st->ch_map[GRTS_CH_PRESSURE] < GRTS_MAX_CHANNELS is false
+and also st->ch_map[GRTS_CH_Z1] < GRTS_MAX_CHANNELS is false the variable
+press is not initialized and contains garbage. This affects a later
+comparison of press < st->pressure_min.  Fix this by initializing press
+to 0 and allows us to also remove an else clause that sets press to 0.
 
-> ---
->  mm/rmap.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index 144de54efc1c..e05c300048e6 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -716,11 +716,11 @@ unsigned long page_address_in_vma(struct page *page, struct vm_area_struct *vma)
->                 if (!vma->anon_vma || !page__anon_vma ||
->                     vma->anon_vma->root != page__anon_vma->root)
->                         return -EFAULT;
-> -       } else if (page->mapping) {
-> -               if (!vma->vm_file || vma->vm_file->f_mapping != page->mapping)
-> -                       return -EFAULT;
-> -       } else
-> +       } else if (!vma->vm_file) {
-> +               return -EFAULT;
-> +       } else if (vma->vm_file->f_mapping != compound_head(page)->mapping) {
->                 return -EFAULT;
-> +       }
->
->         return vma_address(page, vma);
->  }
-> --
-> 2.32.0.rc0.204.g9fa02ecfa5-goog
->
->
+Addresses-Coverity: ("Uninitialized scalar variable")
+Fixes: 60b7db914ddd ("Input: resistive-adc-touch - rework mapping of channels")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/input/touchscreen/resistive-adc-touch.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/input/touchscreen/resistive-adc-touch.c b/drivers/input/touchscreen/resistive-adc-touch.c
+index ea7dd9d2b2ac..744544a723b7 100644
+--- a/drivers/input/touchscreen/resistive-adc-touch.c
++++ b/drivers/input/touchscreen/resistive-adc-touch.c
+@@ -59,7 +59,7 @@ static int grts_cb(const void *data, void *private)
+ {
+ 	const u16 *touch_info = data;
+ 	struct grts_state *st = private;
+-	unsigned int x, y, press;
++	unsigned int x, y, press = 0;
+ 
+ 	x = touch_info[st->ch_map[GRTS_CH_X]];
+ 	y = touch_info[st->ch_map[GRTS_CH_Y]];
+@@ -84,8 +84,6 @@ static int grts_cb(const void *data, void *private)
+ 		 */
+ 		if (Rt < GRTS_DEFAULT_PRESSURE_MAX)
+ 			press = GRTS_DEFAULT_PRESSURE_MAX - Rt;
+-		else
+-			press = 0;
+ 	}
+ 
+ 	if ((!x && !y) || (st->pressure && (press < st->pressure_min))) {
+-- 
+2.31.1
+
