@@ -2,119 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C46639AE24
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 00:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 325FD39AE42
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 00:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbhFCWjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 18:39:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229610AbhFCWjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 18:39:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 383EC613FF;
-        Thu,  3 Jun 2021 22:37:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622759854;
-        bh=Q7AfV/pFWoppLJ7RBW4CDh3xUENOSj+9wxs4Ekg70Qg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Z6lmdhTmAOwe1A+Cq5SsLmxCrBGgXbdHlYkMm3YzL3+698KCYhoBnKYjGxZilzbb2
-         zMMuOhF+EYQUu+TnpDTtdHqhTgK/oWXrbkmA/0dyV2Rl9+62bk4kd2+J0VmsUJE+Vy
-         0UANhxnqSm401KUJYlH033zb9/7xF1YwuZvA5GVHYkdR88s5N2OW0Top3Y/Z+Hcw2i
-         +HuSkUjbRxDjL6bZKvq2hPR5d8DpLO2/x2DpucQMjzfzPAVa/5JXF+hjPvM+ADXGju
-         NmB/zgvIs8NYy0lHBfQ07qsCKq0ijx6hwpSWat+MkQxbqjinHQUan0gLQx1rDQ2/DO
-         oLLorWUQ/52cQ==
-Date:   Thu, 3 Jun 2021 15:37:33 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>
-Cc:     "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>
-Subject: Re: [PATCH v3 0/3] fsdax: Factor helper functions to simplify the
- code
-Message-ID: <20210603223733.GF26380@locust>
-References: <20210422134501.1596266-1-ruansy.fnst@fujitsu.com>
- <OSBPR01MB29205D645B33F4721E890660F4569@OSBPR01MB2920.jpnprd01.prod.outlook.com>
- <OSBPR01MB29201A0E8100416023E77F80F4509@OSBPR01MB2920.jpnprd01.prod.outlook.com>
+        id S229929AbhFCWnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 18:43:21 -0400
+Received: from mail-wm1-f46.google.com ([209.85.128.46]:55988 "EHLO
+        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229697AbhFCWnS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 18:43:18 -0400
+Received: by mail-wm1-f46.google.com with SMTP id g204so4270872wmf.5;
+        Thu, 03 Jun 2021 15:41:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AGHMFQROySDuAI1WX8+v+a7AxJ/f1867TETlzbkJ1nQ=;
+        b=r8a9gJC5FypqHxKB+UOi77NVllKbePD3mMj9P4XqyUwlU8wayWLqr+0Dico3Q4l7ta
+         yGgbybsjhf0T0dJuofwy7w8ltOo3CW6920PcGOeif6QF821ltJ6S3Cr+CscucllsudIt
+         cREXhX/6AltO6rsuQQ5ffy4hmQ1bWTFzZLcJTQDeVqEOrdM6UIB+rR7Rff7xtMigNdYs
+         YQBJPgaCsqanE7Lb5DToFWJ3m2VCcbVLFJJS/aX6WLIbw4sEfgu7/1IN5qv51mx4rl1T
+         FW1DHE7bBQNRw7qGF6hgSBlii2HOGycI4g3yr+Pf+bA1aNEnwstZnnPTD1ckRh34Uilb
+         Fshg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AGHMFQROySDuAI1WX8+v+a7AxJ/f1867TETlzbkJ1nQ=;
+        b=ogUhIWJl+AUj1Da/SxE/XmVd8lcvWDoNLe8QRZ9qJKRQoceaZt2nMlR05K6SLPj1iN
+         Y3VbHST4CroSyeuKbeEki80LRW6RzJ5pR20CcEkojjVXbILZ0nN+845hQLNb0oj32Qzq
+         tjw8linDa/NKcFW6r/dMs/kx0MX4Twwm5CIXMiU28HcUaGJLFhKfjkEWs/LNmmkpWRc1
+         PwACXe3P0fymfgzdsj4R2h6aCYB6kRcP12h1T8fjiPRW6VgmottPuufx0f3RR8KKyYYF
+         hV8mkTYZGmuf34toBgdwUVSko+Au01qJ7oPuSF7mOkzk9CE1Me2O0fQfR+7JZ6t34PAj
+         jhXg==
+X-Gm-Message-State: AOAM5312/z1n10Ft1VT5aEoZsRDz8RVLSeMiETUcNqb14LLm7m7Gx7sU
+        OVSyBVO2BLnnintwrcFDr28=
+X-Google-Smtp-Source: ABdhPJy+3T3gQHQj3wZJFUax3BGw5seXgjSn2gkSQDt8uOtA+WSf1j5i6XYDGFIzhJt+KkxEjgGZ9g==
+X-Received: by 2002:a7b:c052:: with SMTP id u18mr594606wmc.105.1622760020478;
+        Thu, 03 Jun 2021 15:40:20 -0700 (PDT)
+Received: from valhalla.home ([91.110.88.218])
+        by smtp.gmail.com with ESMTPSA id f14sm4612103wry.40.2021.06.03.15.40.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 15:40:19 -0700 (PDT)
+From:   Daniel Scally <djrscally@gmail.com>
+To:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, devel@acpica.org
+Cc:     Len Brown <lenb@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        laurent.pinchart@ideasonboard.com, kieran.bingham@ideasonboard.com
+Subject: [PATCH v5 0/6] Introduce intel_skl_int3472 module
+Date:   Thu,  3 Jun 2021 23:40:01 +0100
+Message-Id: <20210603224007.120560-1-djrscally@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OSBPR01MB29201A0E8100416023E77F80F4509@OSBPR01MB2920.jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 10:23:25AM +0000, ruansy.fnst@fujitsu.com wrote:
-> > 
-> > Hi, Dan
-> > 
-> > Do you have any comments on this?
-> 
-> Ping
+Hello all
 
-This patchset has acquired multiple RVB tags but (AFAIK) Dan still
-hasn't responded.  To get this moving again, it might be time to send
-this direct to Al with a note that the maintainer hasn't been
-responsive.
+Bit longer than hoped but here's v5.
 
---D
+v4:
+https://lore.kernel.org/lkml/20210520140928.3252671-1-djrscally@gmail.com/
 
-> > 
-> > 
-> > --
-> > Thanks,
-> > Ruan Shiyang.
-> > 
-> > > -----Original Message-----
-> > > From: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> > > Sent: Thursday, April 22, 2021 9:45 PM
-> > > Subject: [PATCH v3 0/3] fsdax: Factor helper functions to simplify the
-> > > code
-> > >
-> > > From: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
-> > >
-> > > The page fault part of fsdax code is little complex. In order to add
-> > > CoW feature and make it easy to understand, I was suggested to factor
-> > > some helper functions to simplify the current dax code.
-> > >
-> > > This is separated from the previous patchset called "V3 fsdax,xfs: Add
-> > > reflink&dedupe support for fsdax", and the previous comments are here[1].
-> > >
-> > > [1]:
-> > > https://patchwork.kernel.org/project/linux-nvdimm/patch/20210319015237
-> > > .99
-> > > 3880-3-ruansy.fnst@fujitsu.com/
-> > >
-> > > Changes from V2:
-> > >  - fix the type of 'major' in patch 2
-> > >  - Rebased on v5.12-rc8
-> > >
-> > > Changes from V1:
-> > >  - fix Ritesh's email address
-> > >  - simplify return logic in dax_fault_cow_page()
-> > >
-> > > (Rebased on v5.12-rc8)
-> > > ==
-> > >
-> > > Shiyang Ruan (3):
-> > >   fsdax: Factor helpers to simplify dax fault code
-> > >   fsdax: Factor helper: dax_fault_actor()
-> > >   fsdax: Output address in dax_iomap_pfn() and rename it
-> > >
-> > >  fs/dax.c | 443
-> > > +++++++++++++++++++++++++++++--------------------------
-> > >  1 file changed, 234 insertions(+), 209 deletions(-)
-> > >
-> > > --
-> > > 2.31.1
-> > 
-> > 
-> 
+v3
+https://lore.kernel.org/lkml/20210222130735.1313443-1-djrscally@gmail.com/
+
+v2
+https://lore.kernel.org/platform-driver-x86/20210118003428.568892-1-djrscally@gmail.com/
+
+v1
+https://lore.kernel.org/linux-media/20201130133129.1024662-1-djrscally@gmail.com/T/#m91934e12e3d033da2e768e952ea3b4a125ee3e67
+
+The only changes are the dropped patches, renamed functions in 2/6 and most of
+Andy's suggestions on 5/6 - I didn't hit them all yet but didn't want to delay
+this any more.
+
+Series level changelog:
+
+	- Dropped all but the essential patches to simplify merge plan - thanks
+	Hans.
+
+Daniel Scally (6):
+  ACPI: scan: Extend acpi_walk_dep_device_list()
+  ACPI: scan: Add function to fetch dependent of acpi device
+  gpiolib: acpi: Export acpi_get_gpiod()
+  gpiolib: acpi: Add acpi_gpio_get_io_resource()
+  platform/x86: Add intel_skl_int3472 driver
+  mfd: tps68470: Remove tps68470 MFD driver
+
+ MAINTAINERS                                   |   5 +
+ drivers/acpi/ec.c                             |   2 +-
+ drivers/acpi/pmic/Kconfig                     |   2 +-
+ drivers/acpi/pmic/intel_pmic_chtdc_ti.c       |   2 +-
+ drivers/acpi/scan.c                           | 104 ++++-
+ drivers/gpio/Kconfig                          |   2 +-
+ drivers/gpio/gpiolib-acpi.c                   |  61 ++-
+ drivers/i2c/i2c-core-acpi.c                   |   8 +-
+ drivers/mfd/Kconfig                           |  18 -
+ drivers/mfd/Makefile                          |   1 -
+ drivers/mfd/tps68470.c                        |  97 ----
+ drivers/platform/surface/aggregator/core.c    |   6 +-
+ drivers/platform/surface/surface3_power.c     |  22 +-
+ .../platform/surface/surface_acpi_notify.c    |   7 +-
+ drivers/platform/x86/Kconfig                  |   2 +
+ drivers/platform/x86/Makefile                 |   1 +
+ drivers/platform/x86/intel-int3472/Kconfig    |  30 ++
+ drivers/platform/x86/intel-int3472/Makefile   |   5 +
+ .../intel_skl_int3472_clk_and_regulator.c     | 196 ++++++++
+ .../intel-int3472/intel_skl_int3472_common.c  | 106 +++++
+ .../intel-int3472/intel_skl_int3472_common.h  | 118 +++++
+ .../intel_skl_int3472_discrete.c              | 417 ++++++++++++++++++
+ .../intel_skl_int3472_tps68470.c              | 137 ++++++
+ include/acpi/acpi_bus.h                       |   8 +
+ include/linux/acpi.h                          |  11 +-
+ include/linux/gpio/consumer.h                 |   2 +
+ 26 files changed, 1205 insertions(+), 165 deletions(-)
+ delete mode 100644 drivers/mfd/tps68470.c
+ create mode 100644 drivers/platform/x86/intel-int3472/Kconfig
+ create mode 100644 drivers/platform/x86/intel-int3472/Makefile
+ create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_clk_and_regulator.c
+ create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_common.c
+ create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_common.h
+ create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c
+ create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_tps68470.c
+
+-- 
+2.25.1
+
