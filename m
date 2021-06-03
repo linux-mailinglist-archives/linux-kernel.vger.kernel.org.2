@@ -2,215 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC46E39ACB3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 23:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5406D39ACBB
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 23:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230188AbhFCVYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 17:24:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49460 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229924AbhFCVYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 17:24:32 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S230116AbhFCV0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 17:26:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50723 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229719AbhFCV0j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 17:26:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622755493;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=I7Je95OOknB79OPSw/FKhXFURHd0Sf3BEVJm/9BIKEw=;
+        b=bnohuAg2YecIkqbajG00yS8pND2TgomI1VgBjiyuXgGPleGDoYKtt3qTsiROHIkS+j/PQ+
+        VPEBLA7z42/kjQcZr/CoZgfYBjzHkBzUFZ8m/SWgB6rH/aCF+ljfgz6An6yB3cuyKwtiSd
+        3q8AxpnmtAYhKYrRY124lp1i5IxwpuQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-166-9iMlZqdCMdy7xsPCWHQhVw-1; Thu, 03 Jun 2021 17:24:52 -0400
+X-MC-Unique: 9iMlZqdCMdy7xsPCWHQhVw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B872613FF;
-        Thu,  3 Jun 2021 21:22:46 +0000 (UTC)
-Date:   Thu, 3 Jun 2021 17:22:44 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Kate Carcia <kcarcia@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8838419253C3;
+        Thu,  3 Jun 2021 21:24:50 +0000 (UTC)
+Received: from llong.com (ovpn-116-222.rdu2.redhat.com [10.10.116.222])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D20BB60D06;
+        Thu,  3 Jun 2021 21:24:42 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Clark Willaims <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH V3 5/9] tracing/trace: Add a generic function to
- read/write u64 values from tracefs
-Message-ID: <20210603172244.6d2a6059@gandalf.local.home>
-In-Reply-To: <c585e3316f49c9e33acc79452588fc26ce11dfa4.1621024265.git.bristot@redhat.com>
-References: <cover.1621024265.git.bristot@redhat.com>
-        <c585e3316f49c9e33acc79452588fc26ce11dfa4.1621024265.git.bristot@redhat.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Juri Lelli <juri.lelli@redhat.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH 0/5] cgroup/cpuset: Enable cpuset partition with no load balancing
+Date:   Thu,  3 Jun 2021 17:24:11 -0400
+Message-Id: <20210603212416.25934-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 May 2021 22:51:14 +0200
-Daniel Bristot de Oliveira <bristot@redhat.com> wrote:
+This patchset makes the following two major changes to the cpuset v2 code:
 
-> Provides a generic read and write implementation to save/read u64 values
-> from a file on tracefs. The trace_ull_config structure defines where to
-> read/write the value, the min and the max acceptable values, and a lock
-> to protect the write.
+ Patch 2: Add a new partition state "root-nolb" to create a partition
+ root with load balancing disabled. This is for handling intermitten
+ workloads that have a strict low latency requirement.
 
-This states what the patch is doing, but does not say why it is doing it.
-> 
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Alexandre Chartre <alexandre.chartre@oracle.com>
-> Cc: Clark Willaims <williams@redhat.com>
-> Cc: John Kacur <jkacur@redhat.com>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: linux-doc@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
-> ---
->  kernel/trace/trace.c | 87 ++++++++++++++++++++++++++++++++++++++++++++
->  kernel/trace/trace.h | 19 ++++++++++
->  2 files changed, 106 insertions(+)
-> 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 560e4c8d3825..b4cd89010813 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -7516,6 +7516,93 @@ static const struct file_operations snapshot_raw_fops = {
->  
->  #endif /* CONFIG_TRACER_SNAPSHOT */
->  
-> +/*
-> + * trace_ull_config_write - Generic write function to save u64 value
+ Patch 3: Allow partition roots that are not the top cpuset to distribute
+ all its cpus to child partitions as long as there is no task associated
+ with that partition root. This allows more flexibility for middleware
+ to manage multiple partitions.
 
+Patch 4 updates the cgroup-v2.rst file accordingly. Patch 5 adds a test
+to test the new cpuset partition code.
 
-That is a horrible name. What the hell is the "config"?
+Waiman Long (5):
+  cgroup/cpuset: Don't call validate_change() for some flag changes
+  cgroup/cpuset: Add new cpus.partition type with no load balancing
+  cgroup/cpuset: Allow non-top parent partition root to distribute out
+    all CPUs
+  cgroup/cpuset: Update description of cpuset.cpus.partition in
+    cgroup-v2.rst
+  kselftest/cgroup: Add cpuset v2 partition root state test
 
-> + * @filp: The active open file structure
-> + * @ubuf: The userspace provided buffer to read value into
-> + * @cnt: The maximum number of bytes to read
-> + * @ppos: The current "file" position
-> + *
-> + * This function provides a generic write implementation to save u64 values
-> + * from a file on tracefs. The filp->private_data must point to a
-> + * trace_ull_config structure that defines where to write the value, the
-> + * min and the max acceptable values, and a lock to protect the write.
+ Documentation/admin-guide/cgroup-v2.rst       |  19 ++-
+ kernel/cgroup/cpuset.c                        | 124 +++++++++++----
+ tools/testing/selftests/cgroup/Makefile       |   2 +-
+ .../selftests/cgroup/test_cpuset_prs.sh       | 141 ++++++++++++++++++
+ 4 files changed, 247 insertions(+), 39 deletions(-)
+ create mode 100755 tools/testing/selftests/cgroup/test_cpuset_prs.sh
 
-This doesn't seem to be a generic way to save 64 bit values (which I still
-don't understand, because unsigned long long should work too). But it looks
-like the rational is for having some kind of generic way to read 64 bit
-values giving them a min and a max.
-
-I see this is used later, but this patch needs to be rewritten. It makes no
-sense.
-
--- Steve
-
-
-> + */
-> +static ssize_t
-> +trace_ull_config_write(struct file *filp, const char __user *ubuf, size_t cnt,
-> +		       loff_t *ppos)
-> +{
-> +	struct trace_ull_config *config = filp->private_data;
-> +	u64 val;
-> +	int err;
-> +
-> +	if (!config)
-> +		return -EFAULT;
-> +
-> +	err = kstrtoull_from_user(ubuf, cnt, 10, &val);
-> +	if (err)
-> +		return err;
-> +
-> +	if (config->lock)
-> +		mutex_lock(config->lock);
-> +
-> +	if (config->min && val < *config->min)
-> +		err = -EINVAL;
-> +
-> +	if (config->max && val > *config->max)
-> +		err = -EINVAL;
-> +
-> +	if (!err)
-> +		*config->val = val;
-> +
-> +	if (config->lock)
-> +		mutex_unlock(config->lock);
-> +
-> +	if (err)
-> +		return err;
-> +
-> +	return cnt;
-> +}
-> +
-> +/*
-> + * trace_ull_config_read - Generic write function to read u64 value via tracefs
-> + * @filp: The active open file structure
-> + * @ubuf: The userspace provided buffer to read value into
-> + * @cnt: The maximum number of bytes to read
-> + * @ppos: The current "file" position
-> + *
-> + * This function provides a generic read implementation to read a u64 value
-> + * from a file on tracefs. The filp->private_data must point to a
-> + * trace_ull_config structure with valid data.
-> + */
-> +static ssize_t
-> +trace_ull_config_read(struct file *filp, char __user *ubuf, size_t cnt,
-> +		      loff_t *ppos)
-> +{
-> +	struct trace_ull_config *config = filp->private_data;
-> +	char buf[ULL_STR_SIZE];
-> +	u64 val;
-> +        int len;
-> +
-> +        if (!config)
-> +                return -EFAULT;
-> +
-> +	val = *config->val;
-> +
-> +        if (cnt > sizeof(buf))
-> +                cnt = sizeof(buf);
-> +
-> +        len = snprintf(buf, sizeof(buf), "%llu\n", val);
-> +
-> +        return simple_read_from_buffer(ubuf, cnt, ppos, buf, len);
-> +}
-> +
-> +const struct file_operations trace_ull_config_fops = {
-> +	.open		= tracing_open_generic,
-> +	.read		= trace_ull_config_read,
-> +	.write		= trace_ull_config_write,
-> +};
-> +
->  #define TRACING_LOG_ERRS_MAX	8
->  #define TRACING_LOG_LOC_MAX	128
->  
-> diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-> index cd80d046c7a5..44fa25c1264a 100644
-> --- a/kernel/trace/trace.h
-> +++ b/kernel/trace/trace.h
-> @@ -1952,4 +1952,23 @@ static inline bool is_good_name(const char *name)
->  	return true;
->  }
->  
-> +/*
-> + * This is a generic way to read and write a u64 config value from a file
-> + * in tracefs.
-> + *
-> + * The value is stored on the variable pointed by *val. The value needs
-> + * to be at least *min and at most *max. The write is protected by an
-> + * existing *lock.
-> + */
-> +struct trace_ull_config {
-> +	struct mutex *lock;
-> +	u64 *val;
-> +	u64 *min;
-> +	u64 *max;
-> +};
-> +
-> +#define ULL_STR_SIZE		22	/* 20 digits max */
-> +
-> +extern const struct file_operations trace_ull_config_fops;
-> +
->  #endif /* _LINUX_KERNEL_TRACE_H */
+-- 
+2.18.1
 
