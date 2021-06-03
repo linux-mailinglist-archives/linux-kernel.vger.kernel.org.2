@@ -2,203 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C3F39A1CD
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E34A239A1D0
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231225AbhFCNHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 09:07:39 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:57956 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231208AbhFCNHi (ORCPT
+        id S231244AbhFCNJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 09:09:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30005 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229958AbhFCNJu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 09:07:38 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 153D5oFI157982;
-        Thu, 3 Jun 2021 13:05:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : subject : to :
- cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=G8xPxbKxZCNiDrkaN4F7yieu1lvx7sl5dhCWSaNWPqk=;
- b=i8Ph+58yNv3HaGBi9R+dFgeKyYgUBqrqNhjpZGR+zFApk0vrXHQqH0O4uWRTQ5i9BEHh
- 4owhCuPY8bGiVlP6gN0XotwXM5JdcrVWfx3ZByoFuN2DCKcZ+tVHArwadMw3JnepX1jJ
- 4sZO/2SGkzZjG7XTA/N+/GdV2x1mPHB46M4htoY1QhjCrFagN+nvyGWSonqXj8MaM1r1
- lxHalzLne4BloJwJp7trMynW+oyNiKXyif+oNC5m9jSmIFvA+1FAZxbJFC7G7nN7NxHn
- 0zOvRB18aEpBQLU6Wy9MMumdye18LhK8eaXZ7LI+jGe/1ws2y1WkAFGodyQyF2l78UIP ZA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 38udjmu9xh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 03 Jun 2021 13:05:50 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 153D0585122614;
-        Thu, 3 Jun 2021 13:05:49 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 38uaqy96cn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 03 Jun 2021 13:05:49 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 153D5mOH021933;
-        Thu, 3 Jun 2021 13:05:48 GMT
-Received: from [10.175.187.218] (/10.175.187.218)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 03 Jun 2021 06:05:48 -0700
-From:   "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
-Subject: Re: [PATCH] selftests: kvm: fix overlapping addresses in
- memslot_perf_test
-To:     "Duan, Zhenzhong" <zhenzhong.duan@intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <20210528191134.3740950-1-pbonzini@redhat.com>
- <285623f6-52e4-7f8d-fab6-0476a00af68b@oracle.com>
- <fc41bfc4-949f-03c5-3b20-2c1563ad7f62@redhat.com>
- <73511f2e-7b5d-0d29-b8dc-9cb16675afb3@oracle.com>
- <68bda0ef-b58f-c335-a0c7-96186cbad535@oracle.com>
- <DM8PR11MB5670B1AA392BF7502501D43B923C9@DM8PR11MB5670.namprd11.prod.outlook.com>
-Message-ID: <de413189-b0c8-df1a-a0f5-e3fea1a329f8@oracle.com>
-Date:   Thu, 3 Jun 2021 15:05:50 +0200
+        Thu, 3 Jun 2021 09:09:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622725685;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=phWDTBiOPyAG0wKIKRe1O/Soj0OfowGQS7YwZbib9wQ=;
+        b=WjH997Bkg1ZIxn3sKC3enASz2wgWX8DQWQCilvljviOroX4/0kEpdb1wZMvSWcZnyrtMEp
+        09Etx9ScBrSSLLEhQr0wmxuMM7QYddvSW84EHFw5csc5rpBAK9PKfyPyUKx8ToXduWIL9p
+        3yiiEIgXXJL6REKDBxw7STD8Fp4vDH0=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-476-c17O9-bJNiCNd9YyIouPFA-1; Thu, 03 Jun 2021 09:08:04 -0400
+X-MC-Unique: c17O9-bJNiCNd9YyIouPFA-1
+Received: by mail-qk1-f197.google.com with SMTP id s4-20020a3790040000b02902fa7aa987e8so4267828qkd.14
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 06:08:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=phWDTBiOPyAG0wKIKRe1O/Soj0OfowGQS7YwZbib9wQ=;
+        b=HEsiDN0EKFQj/UWak6a4lkyUn5FvdG1L0tp+xviGEQvg5ht94A+SmX7gfeXYZ3ur5I
+         P7OFNM2PV9zNbjje5+PBOSzBcTuAU3/g1cNOSFL48ZZ1amidMkl39SOx273AUUm8r+F5
+         e0cQGukvWmh+9sErV+dXo3y+wUo3VZUcqUzojCe9CH4SIbwCcFWB8Szq898ewhSbAeXb
+         qaKs9U5m0rCunmgPjQ8YuhwiVIGZbIMLeOAgCJ0zZDljcI4sE1uWZ2aQmTz6tu6cCEuc
+         EVXk72qNtEpZRvBx/dMeWv4+WGfu0CFnuIobe0WDXlVEgLQgpRD7DYWstGtKwJlp3V3W
+         xSjA==
+X-Gm-Message-State: AOAM530SL5ouru1MQJF80TrZ1SN504vS/PDzY43N7tL304qXFMTOx2fB
+        QUEFTb3VyAWl9VRdOiSnSNZiioPSekPg57SnM86UVzUNWS1VN9+2InXsxxzHJI/JfExP4z52JsD
+        hX6BJbuciAgsdRo+Rq7QW+npN
+X-Received: by 2002:ac8:5fc1:: with SMTP id k1mr28653282qta.275.1622725683452;
+        Thu, 03 Jun 2021 06:08:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxZjxAZ016NuyN/W44nOTWDXC5wz52b3xuVvNZCq0Lcw66NuNZkMabgGskv6A7NYazam2qOOw==
+X-Received: by 2002:ac8:5fc1:: with SMTP id k1mr28653262qta.275.1622725683203;
+        Thu, 03 Jun 2021 06:08:03 -0700 (PDT)
+Received: from [192.168.0.106] ([24.225.235.43])
+        by smtp.gmail.com with ESMTPSA id z186sm1889159qkb.116.2021.06.03.06.08.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Jun 2021 06:08:02 -0700 (PDT)
+Subject: Re: The value of FB_MTU eats two pages
+To:     Menglong Dong <menglong8.dong@gmail.com>
+Cc:     ying.xue@windriver.com, David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        tipc-discussion@lists.sourceforge.net,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
+References: <CADxym3baupJJ7Q9otxtoQ-DH5e-J2isg-LZj2CsOqRPo70AL4A@mail.gmail.com>
+ <e91baaba-e00a-4b16-0787-e9460dacfbb9@redhat.com>
+ <CADxym3ZdyqJ7b_PqdcjbNhKWP7_nsPRQ9Q0TtFC6Qzr75ekK+g@mail.gmail.com>
+From:   Jon Maloy <jmaloy@redhat.com>
+Message-ID: <85310a8b-35ab-376d-ca87-7487b97232c8@redhat.com>
+Date:   Thu, 3 Jun 2021 09:08:01 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <DM8PR11MB5670B1AA392BF7502501D43B923C9@DM8PR11MB5670.namprd11.prod.outlook.com>
+In-Reply-To: <CADxym3ZdyqJ7b_PqdcjbNhKWP7_nsPRQ9Q0TtFC6Qzr75ekK+g@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10004 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
- suspectscore=0 spamscore=0 adultscore=0 mlxscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106030089
-X-Proofpoint-GUID: JE3KpXmeBbgsMa66XmWzpsT1H_UJLWYM
-X-Proofpoint-ORIG-GUID: JE3KpXmeBbgsMa66XmWzpsT1H_UJLWYM
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10004 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 impostorscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 adultscore=0 spamscore=0
- suspectscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106030090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.06.2021 07:26, Duan, Zhenzhong wrote:
->> -----Original Message-----
->> From: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
->> Sent: Thursday, June 3, 2021 7:07 AM
->> To: Paolo Bonzini <pbonzini@redhat.com>; Duan, Zhenzhong
->> <zhenzhong.duan@intel.com>
->> Cc: linux-kernel@vger.kernel.org; kvm@vger.kernel.org; Andrew Jones
->> <drjones@redhat.com>
->> Subject: Re: [PATCH] selftests: kvm: fix overlapping addresses in
->> memslot_perf_test
->>
->> On 30.05.2021 01:13, Maciej S. Szmigiero wrote:
->>> On 29.05.2021 12:20, Paolo Bonzini wrote:
->>>> On 28/05/21 21:51, Maciej S. Szmigiero wrote:
->>>>> On 28.05.2021 21:11, Paolo Bonzini wrote:
->>>>>> The memory that is allocated in vm_create is already mapped close
->>>>>> to GPA 0, because test_execute passes the requested memory to
->>>>>> prepare_vm.  This causes overlapping memory regions and the test
->>>>>> crashes.  For simplicity just move MEM_GPA higher.
->>>>>>
->>>>>> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
->>>>>
->>>>> I am not sure that I understand the issue correctly, is
->>>>> vm_create_default() already reserving low GPAs (around 0x10000000)
->>>>> on some arches or run environments?
->>>>
->>>> It maps the number of pages you pass in the second argument, see
->>>> vm_create.
->>>>
->>>>     if (phy_pages != 0)
->>>>       vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS,
->>>>                                   0, 0, phy_pages, 0);
->>>>
->>>> In this case:
->>>>
->>>>     data->vm = vm_create_default(VCPU_ID, mempages, guest_code);
->>>>
->>>> called here:
->>>>
->>>>     if (!prepare_vm(data, nslots, maxslots, tdata->guest_code,
->>>>                     mem_size, slot_runtime)) {
->>>>
->>>> where mempages is mem_size, which is declared as:
->>>>
->>>>           uint64_t mem_size = tdata->mem_size ? : MEM_SIZE_PAGES;
->>>>
->>>> but actually a better fix is just to pass a small fixed value (e.g.
->>>> 1024) to vm_create_default, since all other regions are added by hand
->>>
->>> Yes, but the argument that is passed to vm_create_default() (mem_size
->>> in the case of the test) is not passed as phy_pages to vm_create().
->>> Rather, vm_create_with_vcpus() calculates some upper bound of extra
->>> memory that is needed to cover that much guest memory (including for
->>> its page tables).
->>>
->>> The biggest possible mem_size from memslot_perf_test is 512 MiB + 1
->>> page, according to my calculations this results in phy_pages of 1029
->>> (~4 MiB) in the x86-64 case and around 1540 (~6 MiB) in the s390x case
->>> (here I am not sure about the exact number, since s390x has some
->>> additional alignment requirements).
->>>
->>> Both values are well below 256 MiB (0x10000000UL), so I was wondering
->>> what kind of circumstances can make these allocations collide (maybe I
->>> am missing something in my analysis).
->>
->> I see now that there has been a patch merged last week called
->> "selftests: kvm: make allocation of extra memory take effect" by Zhenzhong
->> that now allocates also the whole memory size passed to
->> vm_create_default() (instead of just page tables for that much memory).
->>
->> The commit message of this patch says that "perf_test_util and
->> kvm_page_table_test use it to alloc extra memory currently", however both
->> kvm_page_table_test and lib/perf_test_util framework explicitly add the
->> required memory allocation by doing a vm_userspace_mem_region_add()
->> call for the same memory size that they pass to vm_create_default().
->>
->> So now they allocate this memory twice.
->>
->> @Zhenzhong: did you notice improper operation of either
->> kvm_page_table_test or perf_test_util-based tests (demand_paging_test,
->> dirty_log_perf_test,
->> memslot_modification_stress_test) before your patch?
-> No
-> 
->>
->> They seem to work fine for me without the patch (and I guess other people
->> would have noticed earlier, too, if they were broken).
->>
->> After this patch not only these tests allocate their memory twice but it is
->> harder to make vm_create_default() allocate the right amount of memory for
->> the page tables in cases where the test needs to explicitly use
->> vm_userspace_mem_region_add() for its allocations (because it wants the
->> allocation placed at a specific GPA or in a specific memslot).
->>
->> One has to basically open-code the page table size calculations from
->> vm_create_with_vcpus() in the particular test then, taking also into account
->> that vm_create_with_vcpus() will not only allocate the passed memory size
->> (calculated page tables size) but also behave like it was allocating space for
->> page tables for these page tables (even though the passed memory size itself
->> is supposed to cover them).
-> Looks we have different understanding to the parameter extra_mem_pages of vm_create_default().
-> 
-> In your usage, extra_mem_pages is only used for page table calculations, real extra memory allocation
-> happens in the extra call of vm_userspace_mem_region_add().
-> 
-> In my understanding, extra_mem_pages is used for a VM who wants a custom memory size in slot0,
-> rather than the default DEFAULT_GUEST_PHY_PAGES size.
-> 
-> I understood your comments and do agree that my patch bring some trouble to your code, sorry for that.
-> I'm fine to revert that patch and I think it's better to let the maintainers to decide what extra_mem_pages
-> Is used for.
 
-No problem, I just noticed the inconsistent behavior.
-I've coded memslot_perf_test to the old one (like other tests are) and
-was surprised there were guest memory allocation collisions.
 
+On 6/2/21 10:26 PM, Menglong Dong wrote:
+> Hello Maloy,
+>
+> On Thu, Jun 3, 2021 at 3:50 AM Jon Maloy <jmaloy@redhat.com> wrote:
+>
+> [...]
+>> Hi Dong,
+>> The value is based on empiric knowledge.
+>> When I determined it I made a small loop in a kernel driver where I
+>> allocated skbs (using tipc_buf_acquire) with an increasing size
+>> (incremented with 1 each iteration), and then printed out the
+>> corresponding truesize.
+>>
+>> That gave the value we are using now.
+>>
+>> Now, when re-running the test I get a different value, so something has
+>> obviously changed since then.
+>>
+>> [ 1622.158586] skb(513) =>> truesize 2304, prev skb(512) => prev
+>> truesize 1280
+>> [ 1622.162074] skb(1537) =>> truesize 4352, prev skb(1536) => prev
+>> truesize 2304
+>> [ 1622.165984] skb(3585) =>> truesize 8448, prev skb(3584) => prev
+>> truesize 4352
+>>
+>> As you can see, the optimal value now, for an x86_64 machine compiled
+>> with gcc, is 3584 bytes, not 3744.
+> I'm not sure if this is a perfect way to determine the value of FB_MTU.
+> If 'struct skb_shared_info' changes, this value seems should change,
+> too.
+>
+> How about we make it this:
+>
+> #define FB_MTU (PAGE_SIZE - \
+>           SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) - \
+>           SKB_DATA_ALIGN(BUF_HEADROOM + BUF_TAILROOM + 3 + \
+>                   MAX_H_SIZ))
+>
+> The value 'BUF_HEADROOM + BUF_TAILROOM + 3' come from 'tipc_buf_acquire()':
+>
+> #ifdef CONFIG_TIPC_CRYPTO
+>      unsigned int buf_size = (BUF_HEADROOM + size + BUF_TAILROOM + 3) & ~3u;
+> #else
+>      unsigned int buf_size = (BUF_HEADROOM + size + 3) & ~3u;
+> #endif
+>
+> Is it a good idea?
+Yes, I think that makes sense. I was always aware of the "fragility" of 
+my approach, -this one looks more future safe.
+
+///jon
+
+>
 > Thanks
-> Zhenzhong
+> Menglong Dong
+>
 
-Thanks,
-Maciej
