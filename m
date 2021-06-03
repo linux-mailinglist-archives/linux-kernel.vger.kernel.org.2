@@ -2,78 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ABC939A2CD
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8C939A2D6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231578AbhFCOIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 10:08:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:42282 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230114AbhFCOIs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 10:08:48 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6896011FB;
-        Thu,  3 Jun 2021 07:07:03 -0700 (PDT)
-Received: from e120325.arm.com (unknown [10.57.85.170])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 57A473F73D;
-        Thu,  3 Jun 2021 07:07:01 -0700 (PDT)
-From:   Beata Michalska <beata.michalska@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, valentin.schneider@arm.com,
-        dietmar.eggemann@arm.com, corbet@lwn.net, rdunlap@infradead.org,
-        linux-doc@vger.kernel.org
-Subject: [PATCH v7 3/3] sched/doc: Update the CPU capacity asymmetry bits
-Date:   Thu,  3 Jun 2021 15:06:27 +0100
-Message-Id: <20210603140627.8409-4-beata.michalska@arm.com>
-In-Reply-To: <20210603140627.8409-1-beata.michalska@arm.com>
-References: <20210603140627.8409-1-beata.michalska@arm.com>
+        id S231366AbhFCOMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 10:12:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230044AbhFCOL6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 10:11:58 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 065D9C06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 07:10:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=DzJLzbuBdtLjC4lVWi0u5S27k9XDbTBq5eWguU0jgHE=; b=cjG7lTpuKtu9+we2S2BPSq8oj
+        A4flU8iOuWDn8BYcrxd7V8EIByXULphhcLRDdx1iZqXomjc09jdgDEuAN3Nm6DY8vTaeaQERXUhQM
+        az8S4JLqpD4dxyDpChkBmxxiIZw7oBLiyVbr4yQ7YPATOTDJ6jLOQTfU9INf5t0e84WVC7n5+7inR
+        C9gkSznX7Q9jzut3N7+2xfIGlPGnTRf4dRORBm/5LFXNUOW2u2HJGJU83EqH8xcfAHf+URAef3+tb
+        74G0I+B3oqY+7iyC8V5UyBMR3D5ZPX0i/GKjjp2T7BaKB7IFqLWvQZ0QBtsofCTBBFFRe8qQ7tPX4
+        ekOExT5og==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44678)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1loo2w-0002v7-6d; Thu, 03 Jun 2021 15:10:06 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1loo2v-0002Ba-8e; Thu, 03 Jun 2021 15:10:05 +0100
+Date:   Thu, 3 Jun 2021 15:10:05 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Thierry Reding <thierry.reding@gmail.com>, arm@kernel.org,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Stefan Agner <stefan@agner.ch>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Stefano Stabellini <sstabellini@kernel.org>
+Subject: Re: [PATCH 2/6] ARM: xen: Register with kernel restart handler
+Message-ID: <20210603141005.GV30436@shell.armlinux.org.uk>
+References: <20191015145147.1106247-1-thierry.reding@gmail.com>
+ <20191015145147.1106247-3-thierry.reding@gmail.com>
+ <CAF2Aj3hbW7+pNp+_jnMVL8zeSxAvSbV1ZFZ_4PAUj6J0TxMk7g@mail.gmail.com>
+ <20210603131124.GA1040254@roeck-us.net>
+ <20210603133840.GB2435141@dell>
+ <7a1cf301-ba99-1e01-c43e-53b53f4d3e04@oracle.com>
+ <20210603135608.GU30436@shell.armlinux.org.uk>
+ <20210603140301.GC2435141@dell>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210603140301.GC2435141@dell>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the documentation bits referring to capacity aware scheduling
-with regards to newly introduced SD_ASYM_CPUCAPACITY_FULL sched_domain
-flag.
+On Thu, Jun 03, 2021 at 03:03:01PM +0100, Lee Jones wrote:
+> On Thu, 03 Jun 2021, Russell King (Oracle) wrote:
+> 
+> > On Thu, Jun 03, 2021 at 09:48:59AM -0400, Boris Ostrovsky wrote:
+> > > On 6/3/21 9:38 AM, Lee Jones wrote:
+> > > > On Thu, 03 Jun 2021, Guenter Roeck wrote:
+> > > >
+> > > >> On Thu, Jun 03, 2021 at 01:43:36PM +0100, Lee Jones wrote:
+> > > >>> On Tue, 15 Oct 2019 at 15:52, Thierry Reding <thierry.reding@gmail.com>
+> > > >>> wrote:
+> > > >>>
+> > > >>>> From: Guenter Roeck <linux@roeck-us.net>
+> > > >>>>
+> > > >>>> Register with kernel restart handler instead of setting arm_pm_restart
+> > > >>>> directly.
+> > > >>>>
+> > > >>>> Select a high priority of 192 to ensure that default restart handlers
+> > > >>>> are replaced if Xen is running.
+> > > >>>>
+> > > >>>> Acked-by: Arnd Bergmann <arnd@arndb.de>
+> > > >>>> Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> > > >>>> Reviewed-by: Stefano Stabellini <stefano.stabellini@eu.citrix.com>
+> > > >>>> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> > > >>>> Signed-off-by: Thierry Reding <treding@nvidia.com>
+> > > >>>> ---
+> > > >>>>  arch/arm/xen/enlighten.c | 12 ++++++++++--
+> > > >>>>  1 file changed, 10 insertions(+), 2 deletions(-)
+> > > >>>>
+> > > >>> This patch does appear to be useful.
+> > > >>>
+> > > >>> Is this just being solved in downstream trees at the moment?
+> > > >>>
+> > > >>> It would be nice if we could relinquish people of this burden and get it
+> > > >>> into Mainline finally.
+> > > >>>
+> > > >> There must have been half a dozen attempts to send this patch series
+> > > >> upstream. I have tried, and others have tried. Each attempt failed with
+> > > >> someone else objecting for non-technical reasons (such as "we need more
+> > > >> reviews") or no reaction at all, and maintainers just don't pick it up.
+> > > > Looking at the *-by tag list above, I think we have enough quality
+> > > > reviews to take this forward.
+> > > >
+> > > >> So, yes, this patch series can only be found in downstream trees,
+> > > >> and it seems pointless to submit it yet again.
+> > > > IMHO, it's unfair to burden multiple downstream trees with this purely
+> > > > due to poor or nervy maintainership.  Functionality as broadly useful
+> > > > as this should be merged and maintained in Mainline.
+> > > >
+> > > > OOI, who is blocking?  As I see it, we have 2 of the key maintainers
+> > > > in the *-by list.  With those on-board, it's difficult to envisage
+> > > > what the problem is.
+> > > 
+> > > 
+> > > Stefano (who is ARM Xen maintainer) left Citrix a while ago. He is at sstabellini@kernel.org (which I added to the CC line).
+> > 
+> > Stefano already reviewed this patch, which is part of a larger series
+> > that primarily touches 32-bit ARM code, but also touches 64-bit ARM
+> > code as well.
+> > 
+> > As I said in my previous reply, I don't see that there's any problem
+> > with getting these patches merged had the usual processes been
+> > followed - either ending up in the patch system, or the pull request
+> > being sent to me directly.
+> > 
+> > Sadly, the pull request was sent to the arm-soc people excluding me,
+> > I happened to notice it and requested to see the patches that were
+> > being asked to be pulled (since I probably couldn't find them)...
+> > and it then took two further weeks before the patches were posted,
+> > which I then missed amongst all the other email.
+> > 
+> > It's a process failure and unfortunate timing rather than anything
+> > malicious.
+> 
+> Understood.
+> 
+> Is there anything I can do to help this forward?
+> 
+> I can either collect and re-submit the patches to the MLs if that
+> makes people's lives any easier.  Or if one of the original submitters
+> wish to retain responsibility, I have no qualms with that either.
 
-Signed-off-by: Beata Michalska <beata.michalska@arm.com>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
----
- Documentation/scheduler/sched-capacity.rst | 6 ++++--
- Documentation/scheduler/sched-energy.rst   | 2 +-
- 2 files changed, 5 insertions(+), 3 deletions(-)
+I think at this point the usual applies - to make sure that they still
+apply to current kernels and don't cause any regressions. I would hope
+there won't be anything significant to invalidate the reviews already
+given. If that's the case, it should just be a matter of someone
+putting them in the patch system or send me a pull request.
 
-diff --git a/Documentation/scheduler/sched-capacity.rst b/Documentation/scheduler/sched-capacity.rst
-index 9b7cbe43b2d1..805f85f330b5 100644
---- a/Documentation/scheduler/sched-capacity.rst
-+++ b/Documentation/scheduler/sched-capacity.rst
-@@ -284,8 +284,10 @@ whether the system exhibits asymmetric CPU capacities. Should that be the
- case:
- 
- - The sched_asym_cpucapacity static key will be enabled.
--- The SD_ASYM_CPUCAPACITY flag will be set at the lowest sched_domain level that
--  spans all unique CPU capacity values.
-+- The SD_ASYM_CPUCAPACITY_FULL flag will be set at the lowest sched_domain
-+  level that spans all unique CPU capacity values.
-+- The SD_ASYM_CPUCAPACITY flag will be set for any sched_domain that spans
-+  CPUs with any range of asymmetry.
- 
- The sched_asym_cpucapacity static key is intended to guard sections of code that
- cater to asymmetric CPU capacity systems. Do note however that said key is
-diff --git a/Documentation/scheduler/sched-energy.rst b/Documentation/scheduler/sched-energy.rst
-index afe02d394402..8fbce5e767d9 100644
---- a/Documentation/scheduler/sched-energy.rst
-+++ b/Documentation/scheduler/sched-energy.rst
-@@ -328,7 +328,7 @@ section lists these dependencies and provides hints as to how they can be met.
- 
- As mentioned in the introduction, EAS is only supported on platforms with
- asymmetric CPU topologies for now. This requirement is checked at run-time by
--looking for the presence of the SD_ASYM_CPUCAPACITY flag when the scheduling
-+looking for the presence of the SD_ASYM_CPUCAPACITY_FULL flag when the scheduling
- domains are built.
- 
- See Documentation/scheduler/sched-capacity.rst for requirements to be met for this
 -- 
-2.17.1
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
