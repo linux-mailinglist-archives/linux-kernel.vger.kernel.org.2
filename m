@@ -2,273 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D85BD39AEAC
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 01:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E022139AEAF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 01:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbhFCXaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 19:30:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFCXaU (ORCPT
+        id S230002AbhFCXaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 19:30:55 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:44895 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229629AbhFCXay (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 19:30:20 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE78C061756;
-        Thu,  3 Jun 2021 16:28:20 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id s6so8999157edu.10;
-        Thu, 03 Jun 2021 16:28:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=xfUY0TX7tuXJEEdu4nINq9m/FRxe8qkPqXyMt/FVDPo=;
-        b=S/xTZKg3ARoLNKJrpj4PAaD/NKSurt9tsbgEjJSPtWkk60cEM1KYxnKGAlhygJz3Lk
-         qdPbl6Z0UTO7UoSlkdhAjx4bFqJ3BPagC2U+u+RFp5VcGaG56pK1lWsxnPZzJKm8PG9e
-         KZ0f4OQBNZGmjh8/1AHRSld8Sm0+pgIMvZS/foKu9J9G3QuscalAoj3a8EoFVzGqZHM+
-         kPl0wHgnT1wn4KNLrRlEdH83OGodCrZXL482W+cQK65sJeByqMpYq/oqBw3i1eQcsE6M
-         1cz545UZiIrQVI+oVKXw4bv5sp2tpqCHH7748g0Du7vFq59NFh1mJbX/MV2a3dlKVBIa
-         N+ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=xfUY0TX7tuXJEEdu4nINq9m/FRxe8qkPqXyMt/FVDPo=;
-        b=Fsy3Vzv8V0I+5aElFODPtpjbLXDq3cT5bFUL4x3TPYJMQ2gD2pwrsT/x5oIuGueQfF
-         7I/zrweb3T3rr1wl7gfUaGWM88wiYr2CVw4bzHgDEJBt9DJYVqqj/RgbK+6LFhl7Rn6I
-         eTK/7xU5L9SDVNG9kA+uvCf6JTX1IrH7aVI+m51rS2jw9fD3B8BzAPJEUTnc44LKJJ3L
-         0+exxuZLQlSZoLK5bI7bEMvbIfR+ELMB9evyG92571B1SkaykkoGFqc7KBwjUjYaFohI
-         1pH6pcf1n5NCdM3ydLYQK7MmvPaGGyAG9DmJeBL8D1D31wkaZVDSp1rDOjOq2MhVFQ2Q
-         S+zg==
-X-Gm-Message-State: AOAM533/ftTl4ubssI3oQY7tQxWNxwayBJVKak7FCM29nOeDZ36A5onD
-        PSY89s0xt8F3F71idD5xb6U=
-X-Google-Smtp-Source: ABdhPJzgBMMxuetZGn38RWYmHESgf/uKRAWdE3OsttNAtX5gpr0WTvIPnk4EWrerNZypqNyTCveMLA==
-X-Received: by 2002:a05:6402:4316:: with SMTP id m22mr1742860edc.316.1622762899369;
-        Thu, 03 Jun 2021 16:28:19 -0700 (PDT)
-Received: from [192.168.1.15] ([151.29.179.73])
-        by smtp.gmail.com with ESMTPSA id j22sm2131542ejt.11.2021.06.03.16.28.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 16:28:18 -0700 (PDT)
-Message-ID: <c3f5c4ecfc86ec1de29f6db681b2e5fce7ef23a3.camel@gmail.com>
-Subject: Re: [PATCH v6 20/20] perf session: Load data directory files for
- analysis
-From:   Riccardo Mancini <rickyman7@gmail.com>
-To:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        linux-perf-users@vger.kernel.org, Ian Rogers <irogers@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Date:   Fri, 04 Jun 2021 01:28:17 +0200
-In-Reply-To: <be40346cdb384e0721f79d918067ff9026743845.1622025774.git.alexey.v.bayduraev@linux.intel.com>
-References: <cover.1622025774.git.alexey.v.bayduraev@linux.intel.com>
-         <be40346cdb384e0721f79d918067ff9026743845.1622025774.git.alexey.v.bayduraev@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 3 Jun 2021 19:30:54 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id EE75458094B;
+        Thu,  3 Jun 2021 19:29:08 -0400 (EDT)
+Received: from imap43 ([10.202.2.93])
+  by compute2.internal (MEProxy); Thu, 03 Jun 2021 19:29:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=SS47D6i5AoLtCZF7DyB9f7Neb7i88hC
+        t48l4KG4kK0E=; b=twZFJbyJLreY2lNfy+IHtzRd3XvHjVAZ1I+Aeg3ydGw/t/+
+        cYCFNQqD2LYZY5fjMKFDSFF4+U3nOs5bjfTO3UGw1ejVv3h8VaJHcL6M/Nl5TSvz
+        25wClq4IjNonW+3OHket4nn4zAmMzQF0x0NL6Ryd9jZx7HPUz9PBApgM+U+c3txo
+        477VothgPkoFmNkyM81x2NxetYsOzCmGrYEEIM1NC32sf4CiN7QmaM87M3DAbFnJ
+        3kEh/vOMk+vPEqF/kuzjBImdN7rHBiGhn3AjzxvablMvXbTxtevPwNzkRg7DjFoV
+        4DaJN8EZMrXDoJWyVDw4gUOpnW2JWfQFd36VeKw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=SS47D6
+        i5AoLtCZF7DyB9f7Neb7i88hCt48l4KG4kK0E=; b=Xv4LXDx1AlvdBsuhlk8nXw
+        c4LenjKvbfYOrKA0PUbYnrn8+mPSrU3ey0GMmBeXavSuCSf5ntE/Qp6qlza+ganl
+        i711JMjno9nY5lft2NUskGJGfoGLwiEUWrSWa2g4AW83u4KmomS3Q0aPPVYza4Gt
+        LmiHimMAQ0mOxrDv7zALM18XRmiS9E0iby+Wj71e4p9VNld1YaESj6SXYArZgIX+
+        wDu0Y6gobOv1gxBeu6FEarEpnyve6TC8eorLL/Iqhhb/aaJ7SQ74EP0XtLYM7m5b
+        scRRzv3XF9QGGoN1/XTjNBN2HRifajIoMhLa3xPtkX1wk1gHPz+oNEzfazGhJ9eA
+        ==
+X-ME-Sender: <xms:w2W5YOVg0C7244BiyOUjaqfQWIZICqXs9osL7ldMAtXj7Xcyxddk6g>
+    <xme:w2W5YKkb2VbWpKaPe869BECM_oDpEPB9Ch6NnHDb0UCO8IBKvAIbP20RyWK0EedtG
+    JNuM0JkfbvanAjxrw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedttddgudeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
+    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:w2W5YCb1dg5rauJpS1ybtOZgq7ZNo0ySK3xcE3LPVIj8BfpkB6ARvQ>
+    <xmx:w2W5YFXx0UCXVzXJCQju74_KnIqMZxB3tlBgDrXux-Or1jMjEXuUWw>
+    <xmx:w2W5YInj1aSwn5GkQRP53Pm4x1Lnh9yK9SpiqWahPv_mZWiGTKpgvA>
+    <xmx:xGW5YBdqkJDP525feyKgAH4_HJ9LjEKVeRRFlevv1rhJpum3qIWC4g>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id A4F85AC0062; Thu,  3 Jun 2021 19:29:07 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
+Mime-Version: 1.0
+Message-Id: <c93cd6b7-229d-4f82-acc5-f85a9c66587f@www.fastmail.com>
+In-Reply-To: <20210603101822.9645-6-steven_lee@aspeedtech.com>
+References: <20210603101822.9645-1-steven_lee@aspeedtech.com>
+ <20210603101822.9645-6-steven_lee@aspeedtech.com>
+Date:   Fri, 04 Jun 2021 08:58:46 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Steven Lee" <steven_lee@aspeedtech.com>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        "open list" <linux-kernel@vger.kernel.org>
+Cc:     "Hongwei Zhang" <Hongweiz@ami.com>,
+        "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        "Billy Tsai" <billy_tsai@aspeedtech.com>
+Subject: =?UTF-8?Q?Re:_[PATCH_v3_5/5]_gpio:_gpio-aspeed-sgpio:_Move_irq=5Fchip_to?=
+ =?UTF-8?Q?_aspeed-sgpio_struct?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Wed, 2021-05-26 at 13:53 +0300, Alexey Bayduraev wrote:
-> Load data directory files and provide basic raw dump and aggregated
-> analysis support of data directories in report mode, still with no
-> memory consumption optimizations.
+
+On Thu, 3 Jun 2021, at 19:48, Steven Lee wrote:
+> The current design initializes irq->chip from a global irqchip struct,
+> which causes multiple sgpio devices use the same irq_chip.
+> The patch moves irq_chip to aspeed_sgpio struct for initializing
+> irq_chip from their private gpio struct.
 > 
-> Design and implementation are based on the prototype [1], [2].
-> 
-> [1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -
-> b perf/record_threads
-> [2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
-> 
-> Suggested-by: Jiri Olsa <jolsa@kernel.org>
-> Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-> ---
->  tools/perf/util/session.c | 129 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 129 insertions(+)
-> 
-> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> index 041601810b85..dd4ef9749cd0 100644
-> --- a/tools/perf/util/session.c
-> +++ b/tools/perf/util/session.c
-> @@ -65,6 +65,7 @@ struct reader_state {
->         u64      data_size;
->         u64      head;
->         bool     eof;
-> +       u64      size;
->  };
->  
->  enum {
-> @@ -2319,6 +2320,7 @@ reader__read_event(struct reader *rd, struct
-> perf_session *session,
->         if (skip)
->                 size += skip;
->  
-> +       st->size += size;
->         st->head += size;
->         st->file_pos += size;
->  
-> @@ -2418,6 +2420,130 @@ static int __perf_session__process_events(struct
-> perf_session *session)
->         return err;
->  }
->  
-> +/*
-> + * This function reads, merge and process directory data.
-> + * It assumens the version 1 of directory data, where each
-> + * data file holds per-cpu data, already sorted by kernel.
-> + */
-> +static int __perf_session__process_dir_events(struct perf_session *session)
-> +{
-> +       struct perf_data *data = session->data;
-> +       struct perf_tool *tool = session->tool;
-> +       int i, ret = 0, readers = 1;
-> +       struct ui_progress prog;
-> +       u64 total_size = perf_data__size(session->data);
-> +       struct reader *rd;
-> +
-> +       perf_tool__fill_defaults(tool);
-> +
-> +       ui_progress__init_size(&prog, total_size, "Sorting events...");
-> +
-> +       for (i = 0; i < data->dir.nr; i++) {
-> +               if (data->dir.files[i].size)
-> +                       readers++;
-> +       }
-> +
-> +       rd = session->readers = zalloc(readers * sizeof(struct reader));
-> +       if (!rd)
-> +               return -ENOMEM;
-> +       session->nr_readers = readers;
-> +       readers = 0;
-> +
-> +       rd[readers] = (struct reader) {
-> +               .fd              = perf_data__fd(session->data),
-> +               .path            = session->data->file.path,
-> +               .data_size       = session->header.data_size,
-> +               .data_offset     = session->header.data_offset,
-> +               .in_place_update = session->data->in_place_update,
-> +       };
-> +       ret = reader__init(&rd[readers], NULL);
-> +       if (ret)
-> +               goto out_err;
-> +       ret = reader__mmap(&rd[readers], session);
-> +       if (ret != READER_OK) {
-> +               if (ret == READER_EOF)
-> +                       ret = -EINVAL;
-> +               goto out_err;
-> +       }
-> +       readers++;
-> +
-> +       for (i = 0; i < data->dir.nr; i++) {
-> +               if (data->dir.files[i].size) {
-> +                       rd[readers] = (struct reader) {
-> +                               .fd              = data->dir.files[i].fd,
-> +                               .path            = data->dir.files[i].path,
-> +                               .data_size       = data->dir.files[i].size,
-> +                               .data_offset     = 0,
-> +                               .in_place_update = session->data-
-> >in_place_update,
-> +                       };
-> +                       ret = reader__init(&rd[readers], NULL);
+> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
 
-zstd_fini is never called on rd[readers].zstd_data
-Maybe it can be done in perf_session__delete. For example, we could add a new
-reader__fini function to do the cleanup of zstd data and
-perf_decomp__release_events.
-
-Thanks,
-Riccardo
-
-> +                       if (ret)
-> +                               goto out_err;
-> +                       ret = reader__mmap(&rd[readers], session);
-> +                       if (ret != READER_OK) {
-> +                               if (ret == READER_EOF)
-> +                                       ret = -EINVAL;
-> +                               goto out_err;
-> +                       }
-> +                       readers++;
-> +               }
-> +       }
-> +
-> +       i = 0;
-> +
-> +       while ((ret >= 0) && readers) {
-> +               if (session_done())
-> +                       return 0;
-> +
-> +               if (rd[i].state.eof) {
-> +                       i = (i + 1) % session->nr_readers;
-> +                       continue;
-> +               }
-> +
-> +               ret = reader__read_event(&rd[i], session, &prog);
-> +               if (ret < 0)
-> +                       break;
-> +               if (ret == READER_EOF) {
-> +                       ret = reader__mmap(&rd[i], session);
-> +                       if (ret < 0)
-> +                               goto out_err;
-> +                       if (ret == READER_EOF)
-> +                               readers--;
-> +               }
-> +
-> +               /*
-> +                * Processing 10MBs of data from each reader in sequence,
-> +                * because that's the way the ordered events sorting works
-> +                * most efficiently.
-> +                */
-> +               if (rd[i].state.size >= 10*1024*1024) {
-> +                       rd[i].state.size = 0;
-> +                       i = (i + 1) % session->nr_readers;
-> +               }
-> +       }
-> +
-> +       ret = ordered_events__flush(&session->ordered_events,
-> OE_FLUSH__FINAL);
-> +       if (ret)
-> +               goto out_err;
-> +
-> +       ret = perf_session__flush_thread_stacks(session);
-> +out_err:
-> +       ui_progress__finish();
-> +
-> +       if (!tool->no_warn)
-> +               perf_session__warn_about_errors(session);
-> +
-> +       /*
-> +        * We may switching perf.data output, make ordered_events
-> +        * reusable.
-> +        */
-> +       ordered_events__reinit(&session->ordered_events);
-> +
-> +       session->one_mmap = false;
-> +
-> +       return ret;
-> +}
-> +
->  int perf_session__process_events(struct perf_session *session)
->  {
->         if (perf_session__register_idle_thread(session) < 0)
-> @@ -2426,6 +2552,9 @@ int perf_session__process_events(struct perf_session
-> *session)
->         if (perf_data__is_pipe(session->data))
->                 return __perf_session__process_pipe_events(session);
->  
-> +       if (perf_data__is_dir(session->data))
-> +               return __perf_session__process_dir_events(session);
-> +
->         return __perf_session__process_events(session);
->  }
->  
-
-
+Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
