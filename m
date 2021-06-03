@@ -2,289 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 158E739ABDA
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 22:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D3D139ABDC
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 22:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbhFCUdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 16:33:32 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:25436 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229656AbhFCUdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 16:33:31 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622752306; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=qEOJ1Dkrl8rKKJ4dZ1YIlGvbuvhI7jtNxhe+8/BFZ84=;
- b=icT+iSYlRZdCxYbtTxXYFALKkZqMAXesg1hqoRMX/ZUQXK0ko4W7stHi3lFAYbKBWnzf/nLl
- D87AurN2aBTb6VkJ5CrfX8EvLLhKXl2+2xAIn1588SGVAJKDU/j0c9XXfmJpTR08zGQhOjaR
- NMSS3SCIVIkpOzPH9bl+wa1GH70=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60b93c28e27c0cc77fbd6b1e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Jun 2021 20:31:36
- GMT
-Sender: nitirawa=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 21E8AC43148; Thu,  3 Jun 2021 20:31:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: nitirawa)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6A077C433D3;
-        Thu,  3 Jun 2021 20:31:33 +0000 (UTC)
+        id S229926AbhFCUfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 16:35:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhFCUfH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 16:35:07 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 639F1C06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 13:33:22 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id g12so3863835qvx.12
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 13:33:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CWdL8xo0vHpWIgIBdECu+RNiDuRV629s7OGWjc46l1Q=;
+        b=n6a/oJMr+5W2Mhz4wGcI8n6C0FC8XTzSB7bxg187Zmsnm//6MWq6vCPwEl+T/+TZHT
+         EyA1fF4K1YQ73atxpYKYtS8RIeL0WKUB7CLjXPNYYz0AqHQAyCAysYSfzoXWit/v9R04
+         td8OfK6skei2EiDN76u0iJqFG+XzJGVsUNvvY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CWdL8xo0vHpWIgIBdECu+RNiDuRV629s7OGWjc46l1Q=;
+        b=PaWlFfAvtPdWhImGImVbTSl6t1XP2l8wrPcvyt5xYKEnkGD/ERGUElRSA7nWDEmTgl
+         b3QakleAZjdgcEPE2ki3bCZ41v7tY4JgYcTUMxFbxmGeq7Zcf+uJphfWHu7TculYs+Bm
+         ToBjpKNsgXGZCzKMOcs8MRZWoXL9uNl3CyiWU3OQokh/WGEI2DtmLpjzANt8E43GjlWN
+         FrhZMIsmTYq56MOetrARBqvoof4x7tLNAbK3N5lVK3UVESkePDLIl2pQ1qxu9Z5++HQQ
+         MJvN7CHrFv0nuoRhtoZGne9/lmxdx90GdfIVqcznt3Dyr1Ui4yV406WmDQdskh57+6gd
+         zRug==
+X-Gm-Message-State: AOAM531Pg1iNQaE7oBT46gMQyIdfnz4yz6UcMTMpEqDdWh31qHgA+NtB
+        ZbrGFRmNO8XCqKBei/qIxj/Im+aFlNXEZw==
+X-Google-Smtp-Source: ABdhPJxCUe/MD839rTL6h86yyaJOO+OBLmfoFYg93FBhLYVrxRzTGuOtwSCpNuqpzoBPcYyPKVjWWw==
+X-Received: by 2002:ad4:5bc7:: with SMTP id t7mr1161180qvt.30.1622752401412;
+        Thu, 03 Jun 2021 13:33:21 -0700 (PDT)
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
+        by smtp.gmail.com with ESMTPSA id d18sm2166661qty.67.2021.06.03.13.33.20
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Jun 2021 13:33:20 -0700 (PDT)
+Received: by mail-yb1-f181.google.com with SMTP id x6so10594944ybl.9
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 13:33:20 -0700 (PDT)
+X-Received: by 2002:a25:80d4:: with SMTP id c20mr424281ybm.345.1622752399765;
+ Thu, 03 Jun 2021 13:33:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 04 Jun 2021 02:01:33 +0530
-From:   nitirawa@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     asutoshd@codeaurora.org, cang@codeaurora.org,
-        stummala@codeaurora.org, vbadigan@codeaurora.org,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, adrian.hunter@intel.com, bvanassche@acm.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nitirawa=codeaurora.org@codeaurora.org
-Subject: Re: [PATCH V2 3/3] scsi: ufs-qcom: configure VCC voltage level in
- vendor file
-In-Reply-To: <7fb8b7a30c1e24e5102772e7c5acf55a@codeaurora.org>
-References: <1616363857-26760-1-git-send-email-nitirawa@codeaurora.org>
- <1616363857-26760-4-git-send-email-nitirawa@codeaurora.org>
- <20210323152834.GH5254@yoga>
- <f27b4fde8092088ec5dc6232cc4b2318@codeaurora.org>
- <20210331181959.GL904837@yoga>
- <d9d7d6fb9241bbe48b3f8df5d2c0bc4e@codeaurora.org>
- <20210401151234.GO904837@yoga>
- <7fb8b7a30c1e24e5102772e7c5acf55a@codeaurora.org>
-Message-ID: <333c4ef6135726a6d116fef1f68d64f9@codeaurora.org>
-X-Sender: nitirawa@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210602191338.1995827-1-sujitka@chromium.org> <20210602121313.v3.2.I52f30ddfe62041b7e6c3c362f0ad8f695ac28224@changeid>
+In-Reply-To: <20210602121313.v3.2.I52f30ddfe62041b7e6c3c362f0ad8f695ac28224@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 3 Jun 2021 13:33:07 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WzgvkT-F-LoDHJXsRamHH2g0GVUzoU4Qe8wAc4Y_L2Dg@mail.gmail.com>
+Message-ID: <CAD=FV=WzgvkT-F-LoDHJXsRamHH2g0GVUzoU4Qe8wAc4Y_L2Dg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] arm64: dts: qcom: sc7180: SD-card GPIO pin set
+ bias-pull up
+To:     Sujit Kautkar <sujitka@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-26 12:53, nitirawa@codeaurora.org wrote:
-> On 2021-04-01 20:42, Bjorn Andersson wrote:
->> On Thu 01 Apr 09:58 CDT 2021, nitirawa@codeaurora.org wrote:
->> 
->>> On 2021-03-31 23:49, Bjorn Andersson wrote:
->>> > On Wed 24 Mar 16:55 CDT 2021, nitirawa@codeaurora.org wrote:
->>> >
->>> > > On 2021-03-23 20:58, Bjorn Andersson wrote:
->>> > > > On Sun 21 Mar 16:57 CDT 2021, Nitin Rawat wrote:
->>> > > >
->>> > > > > As a part of vops handler, VCC voltage is updated
->>> > > > > as per the ufs device probed after reading the device
->>> > > > > descriptor. We follow below steps to configure voltage
->>> > > > > level.
->>> > > > >
->>> > > > > 1. Set the device to SLEEP state.
->>> > > > > 2. Disable the Vcc Regulator.
->>> > > > > 3. Set the vcc voltage according to the device type and reenable
->>> > > > >    the regulator.
->>> > > > > 4. Set the device mode back to ACTIVE.
->>> > > > >
->>> > > >
->>> > > > When we discussed this a while back this was described as a requirement
->>> > > > from the device specification, you only operate on objects "owned" by
->>> > > > ufshcd and you invoke ufshcd operations to perform the actions.
->>> > > >
->>> > > > So why is this a ufs-qcom patch and not something in ufshcd?
->>> > > >
->>> > > > Regards,
->>> > > > Bjorn
->>> > > >
->>> > > > > Signed-off-by: Nitin Rawat <nitirawa@codeaurora.org>
->>> > > > > Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
->>> > > > > ---
->>> > > > >  drivers/scsi/ufs/ufs-qcom.c | 51
->>> > > > > +++++++++++++++++++++++++++++++++++++++++++++
->>> > > > >  1 file changed, 51 insertions(+)
->>> > > > >
->>> > > > > diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
->>> > > > > index f97d7b0..ca35f5c 100644
->>> > > > > --- a/drivers/scsi/ufs/ufs-qcom.c
->>> > > > > +++ b/drivers/scsi/ufs/ufs-qcom.c
->>> > > > > @@ -21,6 +21,17 @@
->>> > > > >  #define UFS_QCOM_DEFAULT_DBG_PRINT_EN	\
->>> > > > >  	(UFS_QCOM_DBG_PRINT_REGS_EN | UFS_QCOM_DBG_PRINT_TEST_BUS_EN)
->>> > > > >
->>> > > > > +#define	ANDROID_BOOT_DEV_MAX	30
->>> > > > > +static char android_boot_dev[ANDROID_BOOT_DEV_MAX];
->>> > > > > +
->>> > > > > +/* Min and Max VCC voltage values for ufs 2.x and
->>> > > > > + * ufs 3.x devices
->>> > > > > + */
->>> > > > > +#define UFS_3X_VREG_VCC_MIN_UV	2540000 /* uV */
->>> > > > > +#define UFS_3X_VREG_VCC_MAX_UV	2700000 /* uV */
->>> > > > > +#define UFS_2X_VREG_VCC_MIN_UV	2950000 /* uV */
->>> > > > > +#define UFS_2X_VREG_VCC_MAX_UV	2960000 /* uV */
->>> > > > > +
->>> > > > >  enum {
->>> > > > >  	TSTBUS_UAWM,
->>> > > > >  	TSTBUS_UARM,
->>> > > > > @@ -1293,6 +1304,45 @@ static void
->>> > > > > ufs_qcom_print_hw_debug_reg_all(struct ufs_hba *hba,
->>> > > > >  	print_fn(hba, reg, 9, "UFS_DBG_RD_REG_TMRLUT ", priv);
->>> > > > >  }
->>> > > > >
->>> > > > > +  /**
->>> > > > > +   * ufs_qcom_setup_vcc_regulators - Update VCC voltage
->>> > > > > +   * @hba: host controller instance
->>> > > > > +   * Update VCC voltage based on UFS device(ufs 2.x or
->>> > > > > +   * ufs 3.x probed)
->>> > > > > +   */
->>> > > > > +static int ufs_qcom_setup_vcc_regulators(struct ufs_hba *hba)
->>> > > > > +{
->>> > > > > +	struct ufs_dev_info *dev_info = &hba->dev_info;
->>> > > > > +	struct ufs_vreg *vreg = hba->vreg_info.vcc;
->>> > > > > +	int ret;
->>> > > > > +
->>> > > > > +	/* Put the device in sleep before lowering VCC level */
->>> > > > > +	ret = ufshcd_set_dev_pwr_mode(hba, UFS_SLEEP_PWR_MODE);
->>> > > > > +
->>> > > > > +	/* Switch off VCC before switching it ON at 2.5v or 2.96v */
->>> > > > > +	ret = ufshcd_disable_vreg(hba->dev, vreg);
->>> > > > > +
->>> > > > > +	/* add ~2ms delay before renabling VCC at lower voltage */
->>> > > > > +	usleep_range(2000, 2100);
->>> > > > > +
->>> > > > > +	/* set VCC min and max voltage according to ufs device type */
->>> > > > > +	if (dev_info->wspecversion >= 0x300) {
->>> > > > > +		vreg->min_uV = UFS_3X_VREG_VCC_MIN_UV;
->>> > > > > +		vreg->max_uV = UFS_3X_VREG_VCC_MAX_UV;
->>> > > > > +	}
->>> > > > > +
->>> > > > > +	else {
->>> > > > > +		vreg->min_uV = UFS_2X_VREG_VCC_MIN_UV;
->>> > > > > +		vreg->max_uV = UFS_2X_VREG_VCC_MAX_UV;
->>> > > > > +	}
->>> > > > > +
->>> > > > > +	ret = ufshcd_enable_vreg(hba->dev, vreg);
->>> > > > > +
->>> > > > > +	/* Bring the device in active now */
->>> > > > > +	ret = ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE);
->>> > > > > +	return ret;
->>> > > > > +}
->>> > > > > +
->>> > > > >  static void ufs_qcom_enable_test_bus(struct ufs_qcom_host *host)
->>> > > > >  {
->>> > > > >  	if (host->dbg_print_en & UFS_QCOM_DBG_PRINT_TEST_BUS_EN) {
->>> > > > > @@ -1490,6 +1540,7 @@ static const struct ufs_hba_variant_ops
->>> > > > > ufs_hba_qcom_vops = {
->>> > > > >  	.device_reset		= ufs_qcom_device_reset,
->>> > > > >  	.config_scaling_param = ufs_qcom_config_scaling_param,
->>> > > > >  	.program_key		= ufs_qcom_ice_program_key,
->>> > > > > +	.setup_vcc_regulators	= ufs_qcom_setup_vcc_regulators,
->>> > > > >  };
->>> > > > >
->>> > > > >  /**
->>> > > > > --
->>> > > > > 2.7.4
->>> > > > >
->>> > >
->>> > > Hi Bjorn,
->>> > > Thanks for your review.
->>> > > But As per the earlier discussion regarding handling of vcc voltage
->>> > > for platform supporting both ufs 2.x and ufs 3.x , it was finally
->>> > > concluded
->>> > > to
->>> > > use "vops and let vendors handle it, until specs or someone
->>> > > has a better suggestion". Please correct me in case i am wrong.
->>> > >
->>> >
->>> > I was under the impression that this would result in something custom
->>> > per platform, but what I'm objecting to now that I see the code is that
->>> > this is completely generic.
->>> >
->>> > And the concerns we discussed regarding these regulators being shared
->>> > with other devices is not considered in this implementation. But in
->>> > practice I don't see how you could support 2.x, 3.x and rail sharing at
->>> > the same time.
->>> >
->>> > Regards,
->>> > Bjorn
->>> >
->>> > > https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2399116.html
->>> > >
->>> > > Regards,
->>> > > Nitin
->>> 
->>> Hi Bjorn,
->>> Thanks for your feedback.
->>> Regarding your query for regulator being shared with other device,
->>> Imho, the soc/pmic designer should share only those device
->>> with ufs regulator which has the same voltage range (2.4-3.6v).
->>> If that is not considered by the pmic designer,
->>> wouldn't that would be a board design issue ???
->>> 
->> 
->> It's not only that the rail needs to stay within 2.4-3.6V, depending 
->> on
->> operating mode of this device it either need to be at 2.54-2.7V or
->> 2.95-2.96V depending on wspecversion for this instance.
->> 
->> So either that other device need to be completely flexible in that 
->> range
->> and support the voltage jumping between them without notice, or such
->> design isn't possible.
->> 
->> And as you say, that would be something that the hardware designers
->> would need to handle for us.
->> 
->>> And I agree with you that - the code looks generic but
->>> since the below steps is not part of the specs,
->>> I had to keep it in vendor specific file for which I
->>> had to export few api from ufshcd.c to use in vendor
->>> specific files.
->>> 
->>> 1. Set the device to SLEEP state.
->>> 2. Disable the Vcc Regulator.
->>> 3. Set the vcc voltage according to the device type and reenable
->>>    the regulator.
->>> 4. Set the device mode back to ACTIVE.
->>> 
->>> Please correct me if my understanding is not correct.
->>> 
->> 
->> Are you saying that steps 1 to 4 here are not defined in the
->> specification and therefor Qualcomm specific? Do we expect other 
->> vendors
->> to not follow this sequence, or do they simply not have these voltage
->> constraints?
->> 
->> And again, isn't this the voltage for the attached UFS device? (Rather
->> than a Qualcomm thing)
->> 
->> Regards,
->> Bjorn
-> 
-> 
-> Hi Bjorn,
-> Sorry for quite late reply.
-> Yes Bjorn above steps(1-4) are not mentioned in the specs. But 
-> definitely other
-> vendor can follow the same steps . If no vendor have any concerns,
-> I can put these steps as generic in ufshcd.c file.
-> Let me know what's you opinion on this ??
-> 
-> Thanks,
-> Nitin
+Hi,
+
+On Wed, Jun 2, 2021 at 12:14 PM Sujit Kautkar <sujitka@chromium.org> wrote:
+>
+> Some SC7180 based board do not have external pull-up for cd-gpio.
+
+nit: s/board/boards
+
+Presumably Bjorn could fix this when he applies the patch. I wouldn't
+re-post just for this fix unless Bjorn asks you to.
 
 
-Hi Bjorn/Stanley,
-Please could you let me know your views/suggestion on my last comment.
+> Set this pin to internal pull-up for sleep config to avoid frequent
+> regulator toggle events.
+>
+> Signed-off-by: Sujit Kautkar <sujitka@chromium.org>
+> ---
+>
+> Changes in v3:
+> - remove 'trogdor' from commit message
+> - move reference patch from commit message
+>
+> Changes in v2:
+> - added pull-up for IDP
+>
+> This change is with reference to Qualcomm's DT change posted at:
+> https://patchwork.kernel.org/patch/11675347/
+>
+>  arch/arm64/boot/dts/qcom/sc7180-idp.dts      | 2 +-
+>  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 
-Regards,
-Nitin
+FYI: I had my Reviewed-by tag on v2. While you did make changes
+between v2 and v3, in this case I don't think the changes were
+significant enough to warrant removing my Reviewed-by tag and I would
+have been happy if you'd kept it.
 
+In general, if you ever have questions about whether you should keep
+someone's reviewed tag, it never hurts to mention your logic "after
+the cut" (I think you use patman so this would be "Commit-notes:").
+For instance, you could say this if you removed Reviewed-by tags:
 
+I totally recombobulated the frobnication logic in v3 and removed
+previous Reviewed-by tags. Hopefully reviewers can re-add if they
+still think the patch is good.
+
+...or, you could say this if you kept them but you weren't totally
+sure it was OK:
+
+Even though every single line in the v3 patch changed from v2, it's
+only because I fixed a stoopid spelling Mistake. Thus, I kept previous
+Reviewed-by tags. Please yell if you object. Who knew that the only
+acceptable spelling of the English word "stupid" in kerneldoc comments
+was written as "stoopid". Live and learn.
+
+:-)
+
+In any case, here's my Reviewed-by tag again. I also agree that
+Bjorn's comments made sense and were good to fix...
+
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
