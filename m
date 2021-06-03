@@ -2,71 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0567039A3A6
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78C1039A3AA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 16:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231667AbhFCOuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 10:50:00 -0400
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:16010 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbhFCOt7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 10:49:59 -0400
-Date:   Thu, 03 Jun 2021 14:48:11 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
-        s=protonmail3; t=1622731693;
-        bh=SoE1BjkhHMmw5ZLkSwNONJBeXYAJkMmLHBte1ttyC3k=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=QSt9SIK6hEM/+73dJMTc6lhBe/YxU0lLQEKaOC/XC5zCeij0l4WXnVBH6fXB5cgD9
-         f9Eb7hUIjqK6S8FB78+wotYa7WdNLDRKghn5xo1PYbaIEPVQrvsls8xZrV9vCTokOF
-         hAS5pP6wIbA34pQEU/usJJ86ddKFyUiXco5m2IVYpmJdobwU4RcpZH7zowc7xZjzlK
-         AYfOv2s5KCCxlOhkoBGUUIy/PkAEgz51n0rpR8s2FNFpBgpx7tc2WA9U9CqnJOWlAd
-         DpSapI05/TeWMDesi3LsLvlx6KMfd/NJmA9VwvXfV0tfkdkHe2hR92GjXCRRT/I/HH
-         /e441Z2V6SePw==
-To:     Matthew Wilcox <willy@infradead.org>
-From:   Simon Ser <contact@emersion.fr>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Lin, Ming" <minggr@gmail.com>, Peter Xu <peterx@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Herrmann <dh.herrmann@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        "tytso@mit.edu" <tytso@mit.edu>
-Reply-To: Simon Ser <contact@emersion.fr>
-Subject: Re: Sealed memfd & no-fault mmap
-Message-ID: <yK5pBcI8tfOfgvVkLrLRMaAdSrt7uL8Ppc05GLMMl8JEfBVsY7f-ksJME4RsNJUvOif2u_r_dBh_PwXyPwYl4Ug2tiMiMxVJb7ESHKNS6w4=@emersion.fr>
-In-Reply-To: <YLjf1Hmrkfwc5xUW@casper.infradead.org>
-References: <vs1Us2sm4qmfvLOqNat0-r16GyfmWzqUzQ4KHbXJwEcjhzeoQ4sBTxx7QXDG9B6zk5AeT7FsNb3CSr94LaKy6Novh1fbbw8D_BBxYsbPLms=@emersion.fr> <CAHk-=wiY1BL-UHPMEAbd7nY3vu6w41A1hhvjg1DoBXWuRt9_qw@mail.gmail.com> <7718ec5b-0a9e-ffa6-16f2-bc0b6afbd9ab@gmail.com> <CAHk-=wjv3-eP7mSDJbuvaB+CbyyKc4g_nEzhQLcueOd0_YuiBg@mail.gmail.com> <80c87e6b-6050-bf23-2185-ded408df4d0f@gmail.com> <CAHk-=whSGS=R8PtrfNcDTkCKOengEqygqeWjOZa2b8QkuOueDg@mail.gmail.com> <alpine.LSU.2.11.2105291315330.25425@eggly.anvils> <d9rpd_hm_ereswX76EqjEGkqfjFFSi-N_yj8b1pj4MZMFy-fpiicN_XrHl13sXqkkgzAJqZEy1roQsVklWEhY38-olslcbO34GB0YcjHks8=@emersion.fr> <YLjf1Hmrkfwc5xUW@casper.infradead.org>
+        id S230503AbhFCOvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 10:51:10 -0400
+Received: from mx01.ayax.eu ([188.137.98.110]:41138 "EHLO mx01.ayax.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230138AbhFCOvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 10:51:09 -0400
+Received: from [192.168.192.146] (port=48238 helo=nx64de-df6d00)
+        by mx01.ayax.eu with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <gszymaszek@short.pl>)
+        id 1looeo-0005Ut-DI; Thu, 03 Jun 2021 16:49:14 +0200
+Date:   Thu, 3 Jun 2021 16:49:13 +0200
+From:   Grzegorz Szymaszek <gszymaszek@short.pl>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Grzegorz Szymaszek <gszymaszek@short.pl>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Marcin Sloniewski <marcin.sloniewski@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH] ARM: dts: stm32: set stm32mp157c-odyssey DCMI pins
+Message-ID: <YLjr6XaK7q3r8dmi@nx64de-df6d00>
+Mail-Followup-To: Grzegorz Szymaszek <gszymaszek@short.pl>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Marcin Sloniewski <marcin.sloniewski@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+References: <YLjl6lE+uZ5ZCdiS@nx64de-df6d00>
+ <fcee4f30-446e-f4da-6d95-c9223cf82981@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fcee4f30-446e-f4da-6d95-c9223cf82981@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, June 3rd, 2021 at 3:57 PM, Matthew Wilcox <willy@infradead.org=
-> wrote:
+Hello Ahmad,
 
-> How about this:
->
->  - The client sets up a 1KiB shm file and sends it to the compositor.
->  - The client expands the file to 5KiB
->  - The compositor sees the new data up to 4KiB but zeroes past the 4KiB
->    mark.
->
-> Does that still make userspace happy?
+On Thu, Jun 03, 2021 at 04:26:59PM +0200, Ahmad Fatoum wrote:
+> On 03.06.21 16:23, Grzegorz Szymaszek wrote:
+> > The Seeed Odyssey-STM32MP157C board has a 20-pin DVP camera output.
+> > stm32mp15-pinctrl.dtsi contains one pin state definition for the DCMI
+> > interface, dcmi-0, AKA phandle dcmi_pins_a. This definition is
+> > incompatible with the pins used on the Odyssey board, where:
+> > - there are 8 data pins instead of 12,
+> > - […]
+> > 
+> > Override the dcmi_pins_a definition (as well as dcmi_sleep_pins_a) in
+> > the Odyssey device tree.
+> 
+> Rather define a new pinctrl group (e.g. &dcmi_pins_b) and use that
+> instead of overriding an existing one.
 
-As long as the new data in the expanded region is visible after a remapping=
- the
-file with the new size, it should be fine. It doesn't matter that it's not
-visible without a munmap+mmap cycle.
+Can I simply use dcmi_pins_b (as the first unused identifier) or is
+there some way to match specific pin groups to an identifier (b, c, d,
+and so on)?
+
+> Current convention is also to place all STM32MP1 pinctrl nodes into
+> a central file, not in the individual board device trees.
+
+Sure, I will update the patch.
+
+Thanks for your comments!
+
+-- 
+Grzegorz
