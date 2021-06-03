@@ -2,146 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E99FD39AC25
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 22:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38EBD39AC29
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 22:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbhFCU5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 16:57:31 -0400
-Received: from mga17.intel.com ([192.55.52.151]:49788 "EHLO mga17.intel.com"
+        id S229975AbhFCVA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 17:00:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229702AbhFCU5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 16:57:31 -0400
-IronPort-SDR: a8UHUQzXeCCct5iRLQjh54zfo0Di1P+RaEo4T/+yggl/05A3ylQnmc1LAeI5Sbfe+LZG77xtqe
- MbFJNNLr7tmw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="184521561"
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="184521561"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 13:55:32 -0700
-IronPort-SDR: MjfM7yT9NG79x395JzZW/keo/oszVCbdecgt/yty7PosWCm9vajnPWokqPWAK11mHE//JujYHK
- b3hP56vtGhcA==
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="550306458"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 13:55:30 -0700
-Date:   Thu, 3 Jun 2021 13:58:07 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Parav Pandit <parav@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>, Jason Wang <jasowang@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-Message-ID: <20210603135807.40684468@jacob-builder>
-In-Reply-To: <PH0PR12MB54811863B392C644E5365446DC3E9@PH0PR12MB5481.namprd12.prod.outlook.com>
-References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <PH0PR12MB54811863B392C644E5365446DC3E9@PH0PR12MB5481.namprd12.prod.outlook.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S229881AbhFCVA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 17:00:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FC4D6121D;
+        Thu,  3 Jun 2021 20:58:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622753922;
+        bh=ZgUmVsDe/y2JJgsw/jVz/sgrfKejv8VUjfp3+iSfR4U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=HKjMpAIrJAUBto2R9uu3vI7wBwsvSe1z73kIePLZq7GjGn21ladp6L9ustGjlDtNV
+         33Xrdy04OSBcZMBcVTCL3cs8BHm7ObfyXlJ1uE7byEBNHpSUM5Hb0buLxlzUsOvZHr
+         hWEDPxbDMd6Ik3/eprIYIxWY7UfLm7BZrDDjjExcETb5I/R6lmKiqS7KfISY38pV6k
+         e0y+SpPBuV96iuMYCJmpnvkKZjjSDploQx9ULlp9wP/0RoGkcfZ5gEVxciKDwqRJuS
+         nvkzjdiYXNrK31chC2RgnOV8uaH1HTBAvCfgDhISJOXNCq7DHxB3dJQdVNp1VEJ5OQ
+         QxsUpXuAKh7dg==
+Date:   Thu, 3 Jun 2021 15:58:41 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Jim Quinlan <jim2101024@gmail.com>, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 4/4] PCI: brcmstb: add shutdown call to driver
+Message-ID: <20210603205841.GA2139914@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dbd96bb2-4873-a37c-567d-ffd731beb927@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Parav,
-
-On Tue, 1 Jun 2021 17:30:51 +0000, Parav Pandit <parav@nvidia.com> wrote:
-
-> > From: Tian, Kevin <kevin.tian@intel.com>
-> > Sent: Thursday, May 27, 2021 1:28 PM  
+On Thu, Jun 03, 2021 at 10:30:37AM -0700, Florian Fainelli wrote:
+> On 6/3/21 10:23 AM, Bjorn Helgaas wrote:
+> > On Wed, May 26, 2021 at 10:03:47AM -0700, Florian Fainelli wrote:
+> >> On 5/25/21 2:18 PM, Bjorn Helgaas wrote:
+> >>> On Tue, Apr 27, 2021 at 01:51:39PM -0400, Jim Quinlan wrote:
+> >>>> The shutdown() call is similar to the remove() call except the former does
+> >>>> not need to invoke pci_{stop,remove}_root_bus(), and besides, errors occur
+> >>>> if it does.
+> >>>
+> >>> This doesn't explain why shutdown() is necessary.  "errors occur"
+> >>> might be a hint, except that AFAICT, many similar drivers do invoke
+> >>> pci_stop_root_bus() and pci_remove_root_bus() (several of them while
+> >>> holding pci_lock_rescan_remove()), without implementing .shutdown().
+> >>
+> >> We have to implement .shutdown() in order to meet a certain power budget
+> >> while the chip is being put into S5 (soft off) state and still support
+> >> Wake-on-WLAN, for our latest chips this translates into roughly 200mW of
+> >> power savings at the wall. We could probably add a word or two in a v2
+> >> that indicates this is done for power savings.
+> > 
+> > "Saving power" is a great reason to do this.  But we still need to
+> > connect this to the driver model and the system-level behavior
+> > somehow.
+> > 
+> > The pci_driver comment says @shutdown is to "stop idling DMA
+> > operations" and it hooks into reboot_notifier_list in kernel/sys.c.
+> > That's incorrect or at least incomplete because reboot_notifier_list
+> > isn't mentioned at all in kernel/sys.c, and I don't see the connection
+> > between @shutdown and reboot_notifier_list.
+> > 
+> > AFAICT, @shutdown is currently used in this path:
+> > 
+> >   kernel_restart_prepare or kernel_shutdown_prepare
+> >     device_shutdown
+> >       dev->bus->shutdown
+> >         pci_device_shutdown                     # pci_bus_type.shutdown
+> >           drv->shutdown
+> > 
+> > so we're going to either reboot or halt/power-off the entire system,
+> > and we're not going to use this device again until we're in a
+> > brand-new kernel and we re-enumerate the device and re-register the
+> > driver.
+> > 
+> > I'm not quite sure how either of those fits into the power-saving
+> > reason.  I guess going to S5 is probably via the kernel_power_off()
+> > path and that by itself doesn't turn off as much power to the PCIe
+> > controller as it could?  And this new .shutdown() method will get
+> > called in that path and will turn off more power, but will still leave
+> > enough for wake-on-LAN to work?  And when we *do* wake from S5,
+> > obviously that means a complete boot with a new kernel.
 > 
-> > 5.6. I/O page fault
-> > +++++++++++++++
-> > 
-> > (uAPI is TBD. Here is just about the high-level flow from host IOMMU
-> > driver to guest IOMMU driver and backwards).
-> > 
-> > -   Host IOMMU driver receives a page request with raw fault_data {rid,
-> >     pasid, addr};
-> > 
-> > -   Host IOMMU driver identifies the faulting I/O page table according
-> > to information registered by IOASID fault handler;
-> > 
-> > -   IOASID fault handler is called with raw fault_data (rid, pasid,
-> > addr), which is saved in ioasid_data->fault_data (used for response);
-> > 
-> > -   IOASID fault handler generates an user fault_data (ioasid, addr),
-> > links it to the shared ring buffer and triggers eventfd to userspace;
-> > 
-> > -   Upon received event, Qemu needs to find the virtual routing
-> > information (v_rid + v_pasid) of the device attached to the faulting
-> > ioasid. If there are multiple, pick a random one. This should be fine
-> > since the purpose is to fix the I/O page table on the guest;
-> > 
-> > -   Qemu generates a virtual I/O page fault through vIOMMU into guest,
-> >     carrying the virtual fault data (v_rid, v_pasid, addr);
-> >   
-> Why does it have to be through vIOMMU?
-I think this flow is for fully emulated IOMMU, the same IOMMU and device
-drivers run in the host and guest. Page request interrupt is reported by
-the IOMMU, thus reporting to vIOMMU in the guest.
+> Correct, the S5 shutdown is via kernel_power_off() and will turn off all
+> that we can in the PCIe root complex and its PHY, drop the PCIe link to
+> the end-point which signals that the end-point can enter its own suspend
+> logic, too. And yes, when we do wake-up from S5 it means booting a
+> completely new kernel. S5 is typically implemented in our chips by
+> keeping just a little bit of logic active to service wake-up events
+> (infrared remotes, GPIOs, RTC, etc.).
 
-> For a VFIO PCI device, have you considered to reuse the same PRI
-> interface to inject page fault in the guest? This eliminates any new
-> v_rid. It will also route the page fault request and response through the
-> right vfio device.
-> 
-I am curious how would PCI PRI can be used to inject fault. Are you talking
-about PCI config PRI extended capability structure? The control is very
-limited, only enable and reset. Can you explain how would page fault
-handled in generic PCI cap?
-Some devices may have device specific way to handle page faults, but I
-guess this is not the PCI PRI method you are referring to?
+Which part of that does this patch change?  Is it that the new
+.shutdown() turns off more power than machine_power_off() does by
+itself?
 
-> > -   Guest IOMMU driver fixes up the fault, updates the I/O page table,
-> > and then sends a page response with virtual completion data (v_rid,
-> > v_pasid, response_code) to vIOMMU;
-> >   
-> What about fixing up the fault for mmu page table as well in guest?
-> Or you meant both when above you said "updates the I/O page table"?
-> 
-> It is unclear to me that if there is single nested page table maintained
-> or two (one for cr3 references and other for iommu). Can you please
-> clarify?
-> 
-I think it is just one, at least for VT-d, guest cr3 in GPA is stored
-in the host iommu. Guest iommu driver calls handle_mm_fault to fix the mmu
-page tables which is shared by the iommu.
-
-> > -   Qemu finds the pending fault event, converts virtual completion data
-> >     into (ioasid, response_code), and then calls a /dev/ioasid ioctl to
-> >     complete the pending fault;
-> >   
-> For VFIO PCI device a virtual PRI request response interface is done, it
-> can be generic interface among multiple vIOMMUs.
-> 
-same question above, not sure how this works in terms of interrupts and
-response queuing etc.
-
-> > -   /dev/ioasid finds out the pending fault data {rid, pasid, addr}
-> > saved in ioasid_data->fault_data, and then calls iommu api to complete
-> > it with {rid, pasid, response_code};
-> >  
-
-
-Thanks,
-
-Jacob
+Bjorn
