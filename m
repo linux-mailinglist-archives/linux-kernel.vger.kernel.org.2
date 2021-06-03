@@ -2,49 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D935E3998D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 06:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D733998DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 06:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbhFCEGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 00:06:30 -0400
-Received: from mail2.directv.syn-alias.com ([69.168.106.50]:32075 "EHLO
-        mail.directv.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbhFCEG3 (ORCPT
+        id S229625AbhFCEOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 00:14:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229441AbhFCEOn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 00:06:29 -0400
-DKIM-Signature: v=1; a=rsa-sha1; d=wildblue.net; s=20170921; c=relaxed/simple;
-        q=dns/txt; i=@wildblue.net; t=1622693084;
-        h=From:Subject:Date:To:MIME-Version:Content-Type;
-        bh=gZ/tdZFo6QJ/d0A1WUlyqMVYJEk=;
-        b=tD/dSfYlk3uQL/44AF7GpzNCj7jYb1M1nE2+p7SBko3r/enkglV+MkuPRzYzGsio
-        2ORrxPKHYbguv7IsMgZJS7izQ82MfshAEzMMZVTmWlFlAzUdzMYxrOQ478F7ns/O
-        puO/p0ycfw+NbpOho4aZkzM7shSHhjbT76TlVqDwEcCiTkR+uywGXy0YiFT14LO2
-        an0uQCWbX7K7axBAjP/jnshRZHIm9ah1fzXQ2WHoQVWuOaIXE//6fqls5oReaBA8
-        JKkhdxQK0vl7t8ZeN1Ptfrl0LmUY03XIZtY6GpnpLuQAggxLtRiKMXpms54nvfGs
-        Z3+x77DdTgbXw/TbPEHpYQ==;
-X-Authed-Username: c29yb21uZXlAd2lsZGJsdWUubmV0
-Received: from [10.80.118.0] ([10.80.118.0:56400] helo=md04.jasper.bos.sync.lan)
-        by mail2.directv.syn-alias.com (envelope-from <soromney@wildblue.net>)
-        (ecelerity 3.6.25.56547 r(Core:3.6.25.0)) with ESMTP
-        id AF/0B-26161-BD458B06; Thu, 03 Jun 2021 00:04:43 -0400
-Date:   Thu, 3 Jun 2021 00:04:43 -0400 (EDT)
-From:   Rowell Hambrick <soromney@wildblue.net>
-Reply-To: rowellhbm1@gmail.com
-To:     huang_yingni@mfa.gov.cn
-Message-ID: <381476663.107781519.1622693083033.JavaMail.zimbra@wildblue.net>
-Subject: 
+        Thu, 3 Jun 2021 00:14:43 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C55C06174A;
+        Wed,  2 Jun 2021 21:12:46 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id j184so4748253qkd.6;
+        Wed, 02 Jun 2021 21:12:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WSBVtEwjNJceUSW+ED54by5q0ntVhKU4EZfInF4XBmQ=;
+        b=ALSkX+TZCWadbcLs53Y6oEcOcUob861l+3sMaf3bsrc7RQda1oexFXL8fGmiav0Xpi
+         /ChK3KS/oFMr3CjNybg5mytdl91qRxUGZgvSeLuBQeM6IBSJhAUWrEGRlzNH5SnYxw1r
+         0LdsgZUDyGu6tfUQcjHf8Su5QHoDTMOdCLx/I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WSBVtEwjNJceUSW+ED54by5q0ntVhKU4EZfInF4XBmQ=;
+        b=dHnH/JXqT13yoDam0FmA/tsdyNtrwymop5R27iVrdvvJKn0mWUC0pJzYprj0iqbd/d
+         8eCOt2felqopz+fPjuA8vfd9ekp8UHCUjGTk5oyK2tliYc4JO4UkH4SRDa82asqdqnRN
+         h7zu+z3Zdbavq7KZI2QWZXenDNtzepSUzr//5YioFo5lTIAo0Q9HOWX8otdnNosbLoC3
+         rRSv0J7u2HU68WhfwEp9moBWXS6vuDbM7x/fCVtY/bQ82xVT1LHPLYMjxEGPElV5+tJC
+         bQvm94Ig6atPzur+eH5ajctreGXQf3gpHyT8IjlYzqalhCjfLtsG19M9fCActOcoTU6c
+         OI9A==
+X-Gm-Message-State: AOAM530l0UnVT/OJ5x5jxOwOsDnD8CC3xA+J1Wb5H1AVryfKltRyuZ77
+        RNHbt8kuPi/Uae9pQNJQE2H5UcmwWmLTWkEsBwU0ayV5
+X-Google-Smtp-Source: ABdhPJwTjlMS+8+L8BrVHX4Xf5NgGJL3RRe8WHEXPcfnogTmYIgrBQEd9Bnnz7jEgKwCaeeqz/0xBZ7xr0UxwDga/Og=
+X-Received: by 2002:a37:e0f:: with SMTP id 15mr10333070qko.273.1622693565759;
+ Wed, 02 Jun 2021 21:12:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [45.152.183.12]
-X-Mailer: Zimbra 8.7.6_GA_1776 (zclient/8.7.6_GA_1776)
-Thread-Index: QQD6wUBUdSF98KmnxZK8snDTgKFpiQ==
-Thread-Topic: 
-X-Vade-Verditct: clean
-X-Vade-Analysis: gggruggvucftvghtrhhoucdtuddrgeduledrvdelkedgjeeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuufgjpfetvefqtfdpggfktefutefvpdfqfgfvnecuuegrihhlohhuthemuceftddunecugfhmphhthicushhusghjvggtthculddutddmnecujfgurhepfffhrhfvkffugggtgfhiofhtsehtjegttdertdejnecuhfhrohhmpeftohifvghllhcujfgrmhgsrhhitghkuceoshhorhhomhhnvgihseifihhluggslhhuvgdrnhgvtheqnecuggftrfgrthhtvghrnhepfefhgefghfeihfdvleevhfelffdtgfeuudeihfevveelieeuvdegtdfhieffjeeunecukfhppedutddrkedtrdduudekrddtpdeghedrudehvddrudekfedruddvnecuvehluhhsthgvrhfuihiivgepleenucfrrghrrghmpehinhgvthepuddtrdektddruddukedrtddphhgvlhhopehmugdtgedrjhgrshhpvghrrdgsohhsrdhshihntgdrlhgrnhdpmhgrihhlfhhrohhmpehsohhrohhmnhgvhiesfihilhgusghluhgvrdhnvghtpdhrtghpthhtoheplhhiqhhirghnjhgrnhgvseduieefrdgtohhmpdhhohhsthepshhmthhprdhjrghsphgvrhdrsghoshdrshihnhgtrdhlrghnpdhsphhfpehsohhfthhfrghilhdpughkihhmpe
-X-Vade-Client: VIASAT
+References: <20210525055308.31069-1-steven_lee@aspeedtech.com>
+ <20210525055308.31069-3-steven_lee@aspeedtech.com> <CACRpkdZy0UwaJcYTiM9asVwNh4wuEYdMSrmqAPAiikbrvjtKpw@mail.gmail.com>
+In-Reply-To: <CACRpkdZy0UwaJcYTiM9asVwNh4wuEYdMSrmqAPAiikbrvjtKpw@mail.gmail.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Thu, 3 Jun 2021 04:12:33 +0000
+Message-ID: <CACPK8XfbpCWx_ZOPuUy0QCT2N9kj9_+WGZv4wEPXgUUoVDf+fQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] ARM: dts: aspeed-g6: Add pinctrl settings
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Steven Lee <steven_lee@aspeedtech.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        "moderated list:ASPEED PINCTRL DRIVERS" 
+        <linux-aspeed@lists.ozlabs.org>,
+        "moderated list:ASPEED PINCTRL DRIVERS" <openbmc@lists.ozlabs.org>,
+        "open list:ASPEED PINCTRL DRIVERS" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Hongwei Zhang <Hongweiz@ami.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        Billy Tsai <billy_tsai@aspeedtech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Did you get my message
+On Thu, 27 May 2021 at 23:47, Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Tue, May 25, 2021 at 7:53 AM Steven Lee <steven_lee@aspeedtech.com> wrote:
+>
+> > AST2600 supports 2 SGPIO master interfaces and 2 SGPIO slave interfaces.
+> > Currently, only SGPIO master 1 and SGPIO slve 1 in the pinctrl dtsi.
+> > SGPIO master 2 and slave 2 should be added in pinctrl dtsi as well.
+> >
+> > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+> > Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>
+> Please funnel this patch through the Aspeed/ARM SoC tree.
+
+Applied, thanks.
