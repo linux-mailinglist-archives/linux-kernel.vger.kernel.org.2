@@ -2,86 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6BEA39A970
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A2339A96F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230428AbhFCRpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 13:45:22 -0400
-Received: from mail-wr1-f44.google.com ([209.85.221.44]:45758 "EHLO
-        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbhFCRpV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 13:45:21 -0400
-Received: by mail-wr1-f44.google.com with SMTP id z8so6663737wrp.12
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 10:43:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=okckV04a+Y2elinebUcRRfGaPp6ssJZ3DbsuQ4OOgZ4=;
-        b=tsS3eP6hQWuKt4hjonfExiQ1dz5OpJGYMw24ZEG6/qCpMjO5JmP5xZvJqB1CnoIrDI
-         UQS3hXYmN+3IZkQ/i8I+HuoChVvN7J1GAzO5PMTNUxdMcGzns9zQyWGIK+o60zKYStCo
-         b4EoI/hWhgb8aEpjB8vflkLJpD9PZM90pTOznyAFCJRQAapHsqNHXTjj3Zwrkf/hxMcE
-         6dJtjU0om9hKLSSXOJqQe0LrXF8zgyumf71Iw2suD1GeQp5GAZEeQjmrti160pOT1qzg
-         j2bEvg7UHevy05w/c1aSDP4FAgf8k6mV1+vcD3Q1xe5BO9yQHwojWuOaHXdkvZ4wkFA+
-         j8ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=okckV04a+Y2elinebUcRRfGaPp6ssJZ3DbsuQ4OOgZ4=;
-        b=bXgIY5bLqr/WiO2WpbDvWsq/O08Qw9aBwjA5ZOHs97a/JGH4zQOPjxKJLCSo1bNUjr
-         fk+EOJAfS6RynuDYpWTVPcNF2ZVuMtjcMG8HSVnNkHekgxajEkkKpuk/7DuX/g1NwPT1
-         qnj6EcCunzlj13X//ipmEQl2WwELdbYY95/rx5waCSXpjIBfkuStQhr7lAXFFxxeolWm
-         nyNtlhGEMHdBKmPM0TJE2HWpKDiz04ydhzCrXeVZR5isLKblZLDndz6EUHB5GZb/T+gK
-         1w1fpj831RGOj2wEkEmNfQXgJRrKvef8x0u373u2QRR8PAL/sifDghmwe8EfaWtzUCsn
-         shsA==
-X-Gm-Message-State: AOAM532hGI9D8s1Xyr2k/aWycWcXgJQtludR9YPPQwjOGuDr+i4yUNol
-        0rDtA8CT0QHyW/xZu6PzQNtbrP6S8a4zCQ==
-X-Google-Smtp-Source: ABdhPJxc8GBv5MWHwNdKUo9Ass5iXG8Y4dR3LXh2wRU11oE/YZ060aGOdU14D3PwAAWiNpY6YH+IFA==
-X-Received: by 2002:adf:ec43:: with SMTP id w3mr148203wrn.270.1622742143250;
-        Thu, 03 Jun 2021 10:42:23 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id h46sm4728578wrh.44.2021.06.03.10.42.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Jun 2021 10:42:22 -0700 (PDT)
-Subject: Re: Add PMIC wrapper support for Mediatek MT8195 SoC IC
-To:     James Lo <james.lo@mediatek.com>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210602112050.12338-1-james.lo@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <2b569103-4c35-8096-a0ce-1b7e5939cf7f@gmail.com>
-Date:   Thu, 3 Jun 2021 19:42:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S230173AbhFCRpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 13:45:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43166 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229719AbhFCRpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 13:45:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0C3D610A2;
+        Thu,  3 Jun 2021 17:43:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622742202;
+        bh=rvR94S1Oz6oGe4J/URF8eCTPPc5ItykZNzgtCEMw5Ow=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NkPOeYGrEaZmM2yT58PLAototna2HNPnXoU2tvPfyTCuiyFqiK9sbSEvQOycyf/VD
+         8w+DIoaa8+pIQo5/RH12xAgRyUnzgvVsCUjYZOMNTWSKAE/QGXvZRSJdn981F3pvQf
+         AD0/OJeszy/io8Nn+Fq/2l6pgHTebhlyVbJh70IDd7VhlRtiM2YwIzx8nv1yYz9oJ2
+         3qI5WmzKyUZoMmD8HJ1/ATJ8COvnv8vPyepNDXZEH4PhgWfEmGx7qzQTxuZAnXuIuu
+         d2pmYk/QReN1es4DpzResxf+b+1U2BoTDC5eIync0AdWsyZkmMC9c+6XHRIKgLCzGy
+         unEW+/AvdxzqQ==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH] btrfs: Remove total_data_size variable in btrfs_batch_insert_items()
+Date:   Thu,  3 Jun 2021 10:43:11 -0700
+Message-Id: <20210603174311.1008645-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.32.0.rc3
 MIME-Version: 1.0
-In-Reply-To: <20210602112050.12338-1-james.lo@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+clang warns:
 
+fs/btrfs/delayed-inode.c:684:6: warning: variable 'total_data_size' set
+but not used [-Wunused-but-set-variable]
+        int total_data_size = 0, total_size = 0;
+            ^
+1 warning generated.
 
-On 02/06/2021 13:20, James Lo wrote:
-> This series adds support for new SoC MT8195 to the pmic-wrap driver.
-> 
-> Henry Chen (2):
->   dt-bindings: mediatek: add compatible for MT8195 pwrap
->   soc: mediatek: pwrap: add pwrap driver for MT8195 SoC
+This variable's value has been unused since commit fc0d82e103c7 ("btrfs:
+sink total_data parameter in setup_items_for_insert"). Eliminate it.
 
-Whole series pushed to v5.13-next/soc
+Fixes: fc0d82e103c7 ("btrfs: sink total_data parameter in setup_items_for_insert")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1391
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ fs/btrfs/delayed-inode.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Thanks!
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index 2c18ed23aa27..257c1e18abd4 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -681,7 +681,7 @@ static int btrfs_batch_insert_items(struct btrfs_root *root,
+ {
+ 	struct btrfs_delayed_item *curr, *next;
+ 	int free_space;
+-	int total_data_size = 0, total_size = 0;
++	int total_size = 0;
+ 	struct extent_buffer *leaf;
+ 	char *data_ptr;
+ 	struct btrfs_key *keys;
+@@ -706,7 +706,6 @@ static int btrfs_batch_insert_items(struct btrfs_root *root,
+ 	 */
+ 	while (total_size + next->data_len + sizeof(struct btrfs_item) <=
+ 	       free_space) {
+-		total_data_size += next->data_len;
+ 		total_size += next->data_len + sizeof(struct btrfs_item);
+ 		list_add_tail(&next->tree_list, &head);
+ 		nitems++;
 
-> 
->  .../bindings/soc/mediatek/pwrap.txt           |  1 +
->  drivers/soc/mediatek/mtk-pmic-wrap.c          | 35 +++++++++++++++++++
->  2 files changed, 36 insertions(+)
-> 
-> 
+base-commit: e1bde17d15921cc866d4ad10a16ce77487516bf7
+-- 
+2.32.0.rc3
+
