@@ -2,116 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D6439AAF7
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D701839AAFB
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 21:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229820AbhFCTeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 15:34:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34094 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229656AbhFCTeT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 15:34:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C0FD611CC;
-        Thu,  3 Jun 2021 19:32:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622748754;
-        bh=rvC32MA8E3QrSBWjTg6LF33SlYkWLco0I2yCu23n7Ok=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=jhQeYpzgE6vlWf6TMVMtA+XVEhF3g/+sc+mtqLnWt9Jxq6VW05vCdwGdpHLzufuYS
-         UwGtMjrFLjvxTtrXwJuljVurczSzpAyvwhISyhtF9mlHrjE5HfQoaQl5Edk52qoEvO
-         fIAR9d5gHQbaop5gruCM9Lb2jdZgO0Vki7OQd9lPddn94/3XqQQhfbFgTNLMzDuhWZ
-         qfQDXIjh/bpK09jMqCFV81DG209YazmpQjI81ykvp5KDwDs8VWUNxwQkPY0OgkctQR
-         pcqnAZK3Wrh9q7duTaMgSjY9Ojm0reQwUN8R3uZYRnguJ2XWcuU7B5qmCg7FnR504O
-         BMQUYhKYK2fxg==
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 6FF6127C005B;
-        Thu,  3 Jun 2021 15:32:32 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute2.internal (MEProxy); Thu, 03 Jun 2021 15:32:32 -0400
-X-ME-Sender: <xms:Ti65YARuXTjJ3BHnKxxPhwSkEN4alc6eBsVdVZX7VFM1tHzIOxyOgw>
-    <xme:Ti65YNyLRRxKCVBDmIPZpIaCS6oWxEjczPCeT15pkFl57T-PKotNNxIK4jcFo19NO
-    s3Vs4kuPInKe7TqDrI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdelledgudefiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    nhguhicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenuc
-    ggtffrrghtthgvrhhnpedvleehjeejvefhuddtgeegffdtjedtffegveethedvgfejieev
-    ieeufeevuedvteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedu
-    keehieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinh
-    hugidrlhhuthhordhush
-X-ME-Proxy: <xmx:Ti65YN2MdDOPGi9cterhA_MhwaeugS0qPfadYs_WiFpFbzqTVeVAiQ>
-    <xmx:Ti65YED0zWXWevXVsCLnReGi2B61zP8LIx-LINBak-ESTbCZ0sdehQ>
-    <xmx:Ti65YJhDZklB1wypCK3j_CL1JFPBrH3kprv63MgfcNLqQZuCN3eyiA>
-    <xmx:UC65YAOlSD8pvDt4Vuj2PT11Fvc3F8j5ymkDv3XWdRtZblxt_ngBaZaSAMHEjR9C>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 66F9C51C0060; Thu,  3 Jun 2021 15:32:30 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
-Mime-Version: 1.0
-Message-Id: <2b2dec75-a0c1-4013-ac49-a49f30d5ac3c@www.fastmail.com>
-In-Reply-To: <a0e66b4c-cec5-2a26-9431-d5a21e22c8f2@linux.intel.com>
-References: <20210603004133.4079390-1-ak@linux.intel.com>
- <20210603004133.4079390-2-ak@linux.intel.com>
- <cc5c8265-83f7-aeb1-bc30-3367fe68bc97@kernel.org>
- <a0e66b4c-cec5-2a26-9431-d5a21e22c8f2@linux.intel.com>
-Date:   Thu, 03 Jun 2021 12:31:59 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Andi Kleen" <ak@linux.intel.com>, mst@redhat.com
-Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
-        hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
-        iommu@lists.linux-foundation.org,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        sathyanarayanan.kuppuswamy@linux.intel.com,
-        "Josh Poimboeuf" <jpoimboe@redhat.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 1/8] virtio: Force only split mode with protected guest
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S229823AbhFCTgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 15:36:18 -0400
+Received: from smtprelay0050.hostedemail.com ([216.40.44.50]:38438 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229617AbhFCTgR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 15:36:17 -0400
+Received: from omf15.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 5FFD6100E7B45;
+        Thu,  3 Jun 2021 19:34:31 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf15.hostedemail.com (Postfix) with ESMTPA id 23E44C417C;
+        Thu,  3 Jun 2021 19:34:30 +0000 (UTC)
+Message-ID: <7a7e5cf61177b168f465f2502fde7a1e04293063.camel@perches.com>
+Subject: Re: General kernel misuse of vsnprintf SPECIAL %#<foo> (was: Re:
+ [PATCH v2 0/4] iio: Drop use of %hhx and %hx format strings)
+From:   Joe Perches <joe@perches.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-iio@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Thu, 03 Jun 2021 12:34:28 -0700
+In-Reply-To: <20210603202546.0d12e7ad@jic23-huawei>
+References: <20210603180612.3635250-1-jic23@kernel.org>
+         <9499203f1e993872b384aabdec59ac223a8ab931.camel@perches.com>
+         <20210603202546.0d12e7ad@jic23-huawei>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.40
+X-Stat-Signature: xfx481amwwrkh5cxkk8dbt4ascae8j68
+X-Rspamd-Server: rspamout02
+X-Rspamd-Queue-Id: 23E44C417C
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18R1oAoqYfHFawgc7TCtPiuf41w4Q+rl74=
+X-HE-Tag: 1622748870-966212
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 2021-06-03 at 20:25 +0100, Jonathan Cameron wrote:
+> On Thu, 03 Jun 2021 11:58:15 -0700 Joe Perches <joe@perches.com> wrote:
+> > It looks to me as though %#<foo> is relatively commonly misused in the kernel.
+> > 
+> > Pehaps for the decimal portion of the format, checkpatch could have some
+> > test for use of non-standard lengths.
+> > 
+> > Given the use is generally meant for a u8, u16, u32, or u64, perhaps
+> > checkpatch should emit a warning whenever the length is not 4, 6, 10, or 18.
+> 
+> Would have saved me some trouble, so I'm definitely in favour of checkpatch
+> catching this.
+> 
+> I wonder if a better option is to match on 1, 2, 4, 8, 16 as likely to be
+> caused by people getting the usage wrong rather than a deliberate attempt
+> to pretty print something a little unusual?
+
+Dunno.  %#0x and %x[123] seems pretty silly as it'll always emit the number
+of digits in the value.
+
+There aren't too many other odd uses other than those.
+
+> > $ git grep -P -h -o '%#\d+\w+' | sort | uniq -c | sort -rn
+
+8 and 16 are perhaps commonly misused.
+> >     392 %#08x
+> >      17 %#08lx
+> >       9 %#08zx
+> >       6 %#8x
+> >       4 %#08llx
+> >       1 %#8lx
+> >       1 %#08
+
+> >       7 %#16llx
+> >       5 %#16
+> >       4 %#016Lx
+> >       1 %#16x
+> >       1 %#16lx
+
+These are the odd ones:
+
+> >     144 %#02x
+> >      27 %#0x
+> >      23 %#2x
+> >      17 %#3lx
+> >      15 %#3x
+> >      14 %#03x
+> >       6 %#012llx
+> >       4 %#05x
+> >       4 %#02X
+> >       3 %#01x
+> >       2 %#09x
+> >       2 %#05lx
+> >       1 %#5x
+> >       1 %#5lx
+> >       1 %#2Lx
+> >       1 %#2llx
+> >       1 %#12x
+> >       1 %#0lx
+> >       1 %#05llx
+> >       1 %#03X
 
 
-On Thu, Jun 3, 2021, at 11:00 AM, Andi Kleen wrote:
->=20
-> On 6/3/2021 10:33 AM, Andy Lutomirski wrote:
-> > On 6/2/21 5:41 PM, Andi Kleen wrote:
-> >> Only allow split mode when in a protected guest. Followon
-> >> patches harden the split mode code paths, and we don't want
-> >> an malicious host to force anything else. Also disallow
-> >> indirect mode for similar reasons.
-> > I read this as "the virtio driver is buggy.  Let's disable most of t=
-he
-> > buggy code in one special case in which we need a driver without bug=
-s.
-> > In all the other cases (e.g. hardware virtio device connected over
-> > USB-C), driver bugs are still allowed."
->=20
-> My understanding is most of the other modes (except for split with=20
-> separate descriptors) are obsolete and just there for compatibility. A=
-s=20
-> long as they're deprecated they won't harm anyone.
->=20
->
-
-Tell that to every crypto downgrade attack ever.
-
-I see two credible solutions:
-
-1. Actually harden the virtio driver.
-
-2. Have a new virtio-modern driver and use it for modern use cases. Mayb=
-e rename the old driver virtio-legacy or virtio-insecure.  They can shar=
-e code.
-
-Another snag you may hit: virtio=E2=80=99s heuristic for whether to use =
-proper DMA ops or to bypass them is a giant kludge. I=E2=80=99m very sli=
-ghtly optimistic that getting the heuristic wrong will make the driver f=
-ail to operate but won=E2=80=99t allow the host to take over the guest, =
-but I=E2=80=99m not really convinced. And I wrote that code!  A virtio-m=
-odern mode probably should not have a heuristic, and the various iommu-b=
-ypassing modes should be fixed to work at the bus level, not the device =
-level.
