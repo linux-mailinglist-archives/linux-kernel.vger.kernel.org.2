@@ -2,95 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6CEC39A62E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9EC39A631
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 18:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229966AbhFCQtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 12:49:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbhFCQtD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 12:49:03 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67ECAC06174A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 09:47:18 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id s12so4855789qta.3
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 09:47:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=xQjta4jpsa+tdSPRbuKq4O0HtOEqRV2pvAJnXKHm31w=;
-        b=j2JrcHPedzpMQkAnKIVlPzbvOWM/W5FnHnFp4kDWh34RmSG8/2EkLXQSULO9mfoQsU
-         iE2KfGmY7iYRuEZUe3pYMKht4/kTLEslolp6YaI6Y8tedigkECj131wac/wuY91P1vHw
-         b+ErRrpPY5FypievdDFVUU1IYa3ckiCphQDKwx0RWS3D1Jl+qwYUrO2oN2GTANeu6aFf
-         TsuCBT8b5sJKYD0EzD8ZfSPwpILj7NlfuYvf2uxhBwgnyPzvC07bQBAFQseOpQA6Pxrt
-         U8vtsnS+un58iymLjbB9+Zdh+qAVoB7opXUqQ5aNKsJ98Wv5xt3L9DsEO8yp2GqzdILB
-         Ed7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=xQjta4jpsa+tdSPRbuKq4O0HtOEqRV2pvAJnXKHm31w=;
-        b=BxeHazG85dEtzjYmgKl8jze+GnhAt6XOy54LEPUkLOfDaceESNSfaLJSqXy8Oc+kMO
-         NeC8izphj9Z1B0/5iGMdp/58Lyvnz12fWKugoEMYFduvT/v59jpplTlbDRg/CsSbW/tH
-         Uj+ZeQgAVQ3PaD8IYDKiNk26dcIEMwdZpMdJwcKVD8JHWu9xg0ctwkBGFrgEose3IaUv
-         vf/drrmbFo+j8UFeyyhck6TexcklQYAyUwqC5G1pciRbkFFNRa9A+ejoWvoP1HLExBoJ
-         8jZOCIkj8aEaCLkLTh2EEzXLEqR7+fGQe23qS+QXoAv0riZJbkEgZ06nNI0esP+yMuIN
-         ZqaA==
-X-Gm-Message-State: AOAM533EZ96qzfwgfpV9bEEznUiVpQ5FhCMp2XBtq0vwIYDquO80NwOg
-        y0BJhI1jz2H64yKSr111T9bXoOi6uCBABhALu5o=
-X-Google-Smtp-Source: ABdhPJxbtmNCwrwh2eBj3p+DOP+yjaDolbJFsw0DZDUylTZdBG1us3vRV6+JNvqoy2PO58JO4luKGMfhJixZ2pq2ts4=
-X-Received: by 2002:ac8:684:: with SMTP id f4mr376761qth.79.1622738837429;
- Thu, 03 Jun 2021 09:47:17 -0700 (PDT)
+        id S230062AbhFCQt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 12:49:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229885AbhFCQt4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 12:49:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B2D161026;
+        Thu,  3 Jun 2021 16:48:08 +0000 (UTC)
+Date:   Thu, 3 Jun 2021 17:48:06 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v13 5/8] KVM: arm64: Save/restore MTE registers
+Message-ID: <20210603164805.GF20338@arm.com>
+References: <20210524104513.13258-1-steven.price@arm.com>
+ <20210524104513.13258-6-steven.price@arm.com>
 MIME-Version: 1.0
-Sender: mrselisabethpeter999@gmail.com
-Received: by 2002:a05:6214:1e9:0:0:0:0 with HTTP; Thu, 3 Jun 2021 09:47:17
- -0700 (PDT)
-From:   Mrs Lila Haber <mrslilahabe2016@gmail.com>
-Date:   Thu, 3 Jun 2021 16:47:17 +0000
-X-Google-Sender-Auth: hUHTl4p-GjNRC-xJ_LS0S-6b8jE
-Message-ID: <CAERax39f=ho2ZPV8TmLpvfi5MD7r+XznXN-BTbLZSy-UG=aPSA@mail.gmail.com>
-Subject: Greetings dear friend
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210524104513.13258-6-steven.price@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings dear friend,
+On Mon, May 24, 2021 at 11:45:10AM +0100, Steven Price wrote:
+> diff --git a/arch/arm64/include/asm/kvm_mte.h b/arch/arm64/include/asm/kvm_mte.h
+> new file mode 100644
+> index 000000000000..eae4bce9e269
+> --- /dev/null
+> +++ b/arch/arm64/include/asm/kvm_mte.h
+> @@ -0,0 +1,68 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2020 ARM Ltd.
 
-Calvary Greetings in the name of the LORD Almighty and Our LORD JESUS
-CHRIST the giver of every good thing. Good day and compliments of the
-seasons, i know this letter will definitely come to you as a huge
-surprise, but I implore you to take the time to go through it
-carefully as the decision you make will go off a long way to determine
-my future and continued existence. I am Mrs Lila Haber aging widow of
-57 years old suffering from long time illness.I have some funds I
-inherited from my late husband, the sum of (19.1Million Dollars) and I
-needed a very honest and God fearing who can withdraw this money then
-use the funds for Charity works. I WISH TO GIVE THIS FUNDS TO YOU FOR
-CHARITY WORKS. I found your email address from the internet after
-honest prayers to the LORD to bring me a helper and i decided to
-contact you if you may be willing and interested to handle these trust
-funds in good faith before anything happens to me.
+You may want to update some of the years.
 
-I accept this decision because I do not have any child who will
-inherit this money after I die. I want your urgent reply to me so that
-I will give you the deposit receipt which the SECURITY COMPANY issued
-to me as next of kin for immediate transfer of the money to your
-account in your country, to start the good work of God, I want you to
-use the 25/percent of the total amount to help yourself in doing the
-project. I am desperately in keen need of assistance and I have
-summoned up courage to contact you for this task, you must not fail me
-and the millions of the poor people in our todays WORLD. This is no
-stolen money and there are no dangers involved,100% RISK FREE with
-full legal proof. Please if you would be able to use the funds for the
-Charity works kindly let me know immediately.I will appreciate your
-utmost confidentiality and trust in this matter to accomplish my heart
-desire, as I don't want anything that will jeopardize my last wish.
-Please
-kindly respond quickly for further details.
+> + */
+> +#ifndef __ASM_KVM_MTE_H
+> +#define __ASM_KVM_MTE_H
+> +
+> +#ifdef __ASSEMBLY__
+> +
+> +#include <asm/sysreg.h>
+> +
+> +#ifdef CONFIG_ARM64_MTE
+> +
+> +.macro mte_switch_to_guest g_ctxt, h_ctxt, reg1
+> +alternative_if_not ARM64_MTE
+> +	b	.L__skip_switch\@
+> +alternative_else_nop_endif
+> +	mrs	\reg1, hcr_el2
+> +	and	\reg1, \reg1, #(HCR_ATA)
+> +	cbz	\reg1, .L__skip_switch\@
 
-Warmest Regards,
-Mrs Lila Haber
+Nitpick: TBZ would be shorter, though you need the bit number.
+
+The patch looks fine (as per my understanding of the KVM context
+switching code):
+
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
