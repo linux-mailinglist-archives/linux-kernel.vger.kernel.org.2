@@ -2,93 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE10399CF1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F7E399CF2
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 10:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhFCIqo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Jun 2021 04:46:44 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:34400 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229486AbhFCIqn (ORCPT
+        id S229809AbhFCIq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 04:46:56 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:49492 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229486AbhFCIqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 04:46:43 -0400
-Received: from [77.244.183.192] (port=63380 helo=[192.168.178.41])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1loiyH-000Csm-Ra; Thu, 03 Jun 2021 10:44:57 +0200
-Subject: Re: [PATCH RESEND] clk: vc5: fix output disabling when enabling a FOD
-To:     Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, Adam Ford <aford173@gmail.com>
-References: <20210527211647.1520720-1-luca@lucaceresoli.net>
- <162262084596.4130789.198191855440093780@swboyd.mtv.corp.google.com>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <8b763492-b2b3-93d3-9801-2f2f0ec90241@lucaceresoli.net>
-Date:   Thu, 3 Jun 2021 10:44:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 3 Jun 2021 04:46:55 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-260-MQ8aAEL3PzOkY4PEGJSglQ-1; Thu, 03 Jun 2021 09:45:08 +0100
+X-MC-Unique: MQ8aAEL3PzOkY4PEGJSglQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.18; Thu, 3 Jun 2021 09:45:07 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Thu, 3 Jun 2021 09:45:07 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Robin Murphy' <robin.murphy@arm.com>,
+        Sunil Kovvuri <sunil.kovvuri@gmail.com>,
+        Oliver Swede <oli.swede@arm.com>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "linux-arm-kernel@lists.indradead.org" 
+        <linux-arm-kernel@lists.indradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        George Cherian <gcherian@marvell.com>
+Subject: RE: [PATCH v5 08/14] arm64: Import latest optimization of memcpy
+Thread-Topic: [PATCH v5 08/14] arm64: Import latest optimization of memcpy
+Thread-Index: AQHXVt6Y/3nhMCoZXEKKkfk/tVUx26sB944A
+Date:   Thu, 3 Jun 2021 08:45:07 +0000
+Message-ID: <d6b241979664402e907064245ebe5578@AcuMS.aculab.com>
+References: <20200914150958.2200-1-oli.swede@arm.com>
+ <20200914150958.2200-9-oli.swede@arm.com>
+ <CA+sq2CfGu+JPJ9h3Q-nCdmM2erqWbe=p-v_eip-J-R6F2EoXbw@mail.gmail.com>
+ <5156db7f-09a7-b0fa-d246-b024e40775fc@arm.com>
+In-Reply-To: <5156db7f-09a7-b0fa-d246-b024e40775fc@arm.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <162262084596.4130789.198191855440093780@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 8BIT
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
-
-On 02/06/21 10:00, Stephen Boyd wrote:
-> Quoting Luca Ceresoli (2021-05-27 14:16:47)
->> On 5P49V6965, when an output is enabled we enable the corresponding
->> FOD. When this happens for the first time, and specifically when writing
->> register VC5_OUT_DIV_CONTROL in vc5_clk_out_prepare(), all other outputs
->> are stopped for a short time and then restarted.
->>
->> According to Renesas support this is intended: "The reason for that is VC6E
->> has synced up all output function".
->>
->> This behaviour can be disabled at least on VersaClock 6E devices, of which
->> only the 5P49V6965 is currently implemented by this driver. This requires
->> writing bit 7 (bypass_sync{1..4}) in register 0x20..0x50.  Those registers
->> are named "Unused Factory Reserved Register", and the bits are documented
->> as "Skip VDDO<N> verification", which does not clearly explain the relation
->> to FOD sync. However according to Renesas support as well as my testing
->> setting this bit does prevent disabling of all clock outputs when enabling
->> a FOD.
->>
->> See "VersaClock ® 6E Family Register Descriptions and Programming Guide"
->> (August 30, 2018), Table 116 "Power Up VDD check", page 58:
->> https://www.renesas.com/us/en/document/mau/versaclock-6e-family-register-descriptions-and-programming-guide
->>
->> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
->> Reviewed-by: Adam Ford <aford173@gmail.com>
->>
->> ---
-> 
-> Any Fixes tag for this patch?
-
-I didn't add any as there is no commit that is clearly introducing the
-problem. This patch fixes a behavior of the chip, which is there by
-design by causes problems in some use cases.
-
-If a Fixes tag is required than I guess it should be the commit adding
-support for the 5P49V6965, which is the only supported variant of VC[56]
-having having the problematic behavior _and_ the reserved register bits
-to prevent it. However I hardly could blame the author of that code for
-such a "peculiar" chip behaviour. Do you still want me to add such a tag?
-
--- 
-Luca
+RnJvbTogUm9iaW4gTXVycGh5DQo+IFNlbnQ6IDAxIEp1bmUgMjAyMSAxMzowNw0KPiANCj4gT24g
+MjAyMS0wNi0wMSAxMTowMywgU3VuaWwgS292dnVyaSB3cm90ZToNCj4gPiBPbiBNb24sIFNlcCAx
+NCwgMjAyMCBhdCA4OjQ0IFBNIE9saXZlciBTd2VkZSA8b2xpLnN3ZWRlQGFybS5jb20+IHdyb3Rl
+Og0KPiA+Pg0KPiA+PiBGcm9tOiBTYW0gVGViYnMgPHNhbS50ZWJic0Bhcm0uY29tPg0KPiA+Pg0K
+PiA+PiBJbXBvcnQgdGhlIGxhdGVzdCBtZW1jcHkgaW1wbGVtZW50YXRpb24gaW50byBtZW1jcHks
+DQo+ID4+IGNvcHlfe2Zyb20sIHRvIGFuZCBpbn1fdXNlci4NCj4gPj4gVGhlIGltcGxlbWVudGF0
+aW9uIG9mIHRoZSB1c2VyIHJvdXRpbmVzIGlzIHNlcGFyYXRlZCBpbnRvIHR3byBmb3JtczoNCj4g
+Pj4gb25lIGZvciB3aGVuIFVBTyBpcyBlbmFibGVkIGFuZCBvbmUgZm9yIHdoZW4gVUFPIGlzIGRp
+c2FibGVkLCB3aXRoDQo+ID4+IHRoZSB0d28gYmVpbmcgY2hvc2VuIGJldHdlZW4gd2l0aCBhIHJ1
+bnRpbWUgcGF0Y2guDQo+ID4+IFRoaXMgYXZvaWRzIGV4ZWN1dGluZyB0aGUgbWFueSBOT1BzIGVt
+aXR0ZWQgd2hlbiBVQU8gaXMgZGlzYWJsZWQuDQo+ID4+DQo+ID4+IFRoZSBwcm9qZWN0IGNvbnRh
+aW5pbmcgb3B0aW1pemVkIGltcGxlbWVudGF0aW9ucyBmb3IgdmFyaW91cyBsaWJyYXJ5DQo+ID4+
+IGZ1bmN0aW9ucyBoYXMgbm93IGJlZW4gcmVuYW1lZCBmcm9tICdjb3J0ZXgtc3RyaW5ncycgdG8N
+Cj4gPj4gJ29wdGltaXplZC1yb3V0aW5lcycsIGFuZCB0aGUgbmV3IHVwc3RyZWFtIHNvdXJjZSBp
+cw0KPiA+PiBzdHJpbmcvYWFyY2g2NC9tZW1jcHkuUyBhcyBvZiBjb21taXQgNGMxNzVjOGJlMTIg
+aW4NCj4gPj4gaHR0cHM6Ly9naXRodWIuY29tL0FSTS1zb2Z0d2FyZS9vcHRpbWl6ZWQtcm91dGlu
+ZXMuDQo+ID4+DQouLi4NCj4gPg0KPiA+IERvIHlvdSBoYXZlIGFueSBwZXJmb3JtYW5jZSBkYXRh
+IHdpdGggdGhpcyBwYXRjaCA/DQo+ID4gSSBzZWUgdGhlc2UgcGF0Y2hlcyBhcmUgc3RpbGwgbm90
+IHB1c2hlZCB0byBtYWlubGluZSwgYW55IHJlYXNvbnMgPw0KPiANCj4gRnVubnkgeW91IHNob3Vs
+ZCBwaWNrIHVwIG9uIHRoZSA2LW1vbnRoLW9sZCB0aHJlYWQgZGF5cyBhZnRlciBJJ3ZlIGJlZW4N
+Cj4gcG9zdGluZyBuZXcgdmVyc2lvbnMgb2YgdGhlIHJlbGV2YW50IHBhcnRzWzFdIDopDQo+IA0K
+PiBJIHRoaW5rIHRoaXMgc2VyaWVzIG1vc3RseSBzdGFsbGVkIG9uIHRoZSBjb21wbGV4aXR5IG9m
+IHRoZSB1c2VyY29weQ0KPiBwYXJ0cywgd2hpY2ggdGhlbiB0dXJuZWQgaW50byBldmVuIG1vcmUg
+b2YgYSBtb3ZpbmcgdGFyZ2V0IGFueXdheSwgaGVuY2UNCj4gd2h5IEkgZGVjaWRlZCB0byBzcGxp
+dCBpdCB1cC4NCg0KSXQgaXMgYWxzbyB3b3J0aCBjaGVja2luZyB3aGF0IGtpbmQgb2YgY29weSBs
+ZW5ndGhzIHRoZSAnb3B0aW1pemVkJw0Kcm91dGluZXMgYXJlIGFjdHVhbGx5IG9wdGltaXNlZCBm
+b3IuDQpGb3IgaW5zdGFuY2UgYSBzZW5kbXNnKCkgc3lzdGVtIGNhbGwgaXMgbGlrZWx5IHRvIGRv
+IGF0IGxlYXN0IDMgc2hvcnQNCmNvcHlfZnJvbV91c2VyKCkgcmVxdWVzdHMgYmVmb3JlIGV2ZW4g
+dGhpbmtpbmcgYWJvdXQgcmVhZGluZyB0aGUgZGF0YSBidWZmZXIuDQpFdmVuIHRoZSBjb3N0cyBv
+ZiB0aGUgY29tcGFyaXNvbnMgdG8gc2VsZWN0IGJldHdlZW4gc2hvcnQvbG9uZyBjb3B5DQpyZXF1
+ZXN0cyBiZWNvbWUgc2lnbmlmaWNhbnQgb24gc2hvcnQgY29waWVzLg0KDQpJJ20gbm90IHN1cmUg
+eW91IHdhbnQgdG8gYmUgY2FsbGluZw0KaHR0cHM6Ly9naXRodWIuY29tL0FSTS1zb2Z0d2FyZS9v
+cHRpbWl6ZWQtcm91dGluZXMvYmxvYi9tYXN0ZXIvc3RyaW5nL2FhcmNoNjQvbWVtY3B5LlMNCmZv
+ciAzIGJ5dGVzIQ0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBC
+cmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdp
+c3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
