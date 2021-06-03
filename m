@@ -2,106 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 060C839A280
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 489DD39A27B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 15:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhFCNvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 09:51:45 -0400
-Received: from mail-ua1-f46.google.com ([209.85.222.46]:35432 "EHLO
-        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230129AbhFCNvo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 09:51:44 -0400
-Received: by mail-ua1-f46.google.com with SMTP id n61so3338789uan.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 06:49:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2UjUIW9zbfUZ4RwOyiLkvVO/eF05W329MyzzFPGAFB4=;
-        b=c44tayuwS2u8SQTEybCZAoA5xeWfvrXFKtD564C4jJwGB3LaCJpSsEtBNEMceN0G4x
-         jW5niwBZvJjlupvPzD8zRa7VTqtAk4psSC0Iu/YBoZqCi42lxExp+oxniv/hRb+xOv6z
-         76JcqI57DEpdlB7LFMgJxEL7ybPXqISHaBGY+O26Skt2Xl+JwpmpK+qS+lV1uGP4RiZg
-         u5jdnki9BSJ/j5U/4yfaL/rHRzDRgubs68Simzrh2pytp5kDf4iGMfnT4R7rW3oSdDJJ
-         dBWUIiZLJVJ+JX1Ea5OTd4EBt8on4u3QjLovQmzeroAkGOMKD7+yHceXHBN6cEgc8kzl
-         Tx3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2UjUIW9zbfUZ4RwOyiLkvVO/eF05W329MyzzFPGAFB4=;
-        b=cpkg5MTZrxq5CFUgZzevcS/Tf6Rfu2Xu02E3wdsoB2EH1nKQC9ujKgyRcLzcXwSRej
-         Wk3CxDvyafxIpJ+MrkZ6yPfEbrdXsbPFn0E+blGFzIB14Iqsi8EDyBk+IFIiSdkZtTD+
-         pmAMCwQmQ7wzG5i6VtAC+oirUfxYExO3YCW1BK8/2EwIM2rA5S8NDaRem+NGKvbE/BPH
-         VEknV03JHyy1dYkbRUz6RUNVYuItdXn8J07A1Tzmcr9IxwWe/0QO28kvtNh59PUlsuOx
-         Je+iR9bwvcsi44hcLxXKoS0ILlKaMj0GFrhm8J7KXxsbnd8P4wGUSrdqxm0BT/VyzLsq
-         rxYw==
-X-Gm-Message-State: AOAM530Cw0a91l4mFVxM4hh8VquQWfyCleLu4mfcbtROMmUifI+22dzW
-        nziXlH24y+Rj9QfBZ82Fh8FkbVdwoeSggrHpkjvipQ==
-X-Google-Smtp-Source: ABdhPJwXOmWBpw9TxY14OndWy9w9S1xWe5445oPP85ttLd+bbAgHrOOP7FzQCKwlHmMSuw2tXjl+JGJ8Kk8oe8fUYoc=
-X-Received: by 2002:ab0:d8f:: with SMTP id i15mr24663046uak.104.1622728126477;
- Thu, 03 Jun 2021 06:48:46 -0700 (PDT)
+        id S230412AbhFCNu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 09:50:26 -0400
+Received: from foss.arm.com ([217.140.110.172]:41876 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229738AbhFCNuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 09:50:25 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 571F912FC;
+        Thu,  3 Jun 2021 06:48:40 -0700 (PDT)
+Received: from e110467-lin.cambridge.arm.com (e110467-lin.cambridge.arm.com [10.1.196.41])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A2FC03F73D;
+        Thu,  3 Jun 2021 06:48:39 -0700 (PDT)
+From:   Robin Murphy <robin.murphy@arm.com>
+To:     joro@8bytes.org
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Jussi Maki <joamaki@gmail.com>
+Subject: [PATCH] iommu/amd: Tidy up DMA ops init
+Date:   Thu,  3 Jun 2021 14:48:21 +0100
+Message-Id: <665db61e23ff8d54ac5eb391bef520b3a803fcb9.1622727974.git.robin.murphy@arm.com>
+X-Mailer: git-send-email 2.21.0.dirty
 MIME-Version: 1.0
-References: <20210603093438.138705-1-ulf.hansson@linaro.org>
- <20210603093438.138705-5-ulf.hansson@linaro.org> <CAPDyKFp2dKFQpLMgazXumCxf=FHQ9bdadXUkGsjiAwniF8p2dw@mail.gmail.com>
- <20210603111529.GB4257@sirena.org.uk>
-In-Reply-To: <20210603111529.GB4257@sirena.org.uk>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 3 Jun 2021 15:48:10 +0200
-Message-ID: <CAPDyKFouMZeQ96XSV=-dfNKNtgxhMG=xGqPCNBV9bvzuXYJQtw@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] PM: domains: Drop/restore performance state votes
- for devices at system PM
-To:     Mark Brown <broonie@kernel.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Jun 2021 at 13:15, Mark Brown <broonie@kernel.org> wrote:
->
-> On Thu, Jun 03, 2021 at 12:20:57PM +0200, Ulf Hansson wrote:
-> > On Thu, 3 Jun 2021 at 11:34, Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> > > Recent changes in genpd drops and restore performance state votes for
-> > > devices during runtime PM.
->
-> > After a second thought, it looks like we maybe should defer to apply
-> > this final patch of the series. At least until we figured out how to
-> > address the below issue:
->
-> > So, I noticed that we have things like "regulator-fixed-domain", that
-> > uses "required-opps" to enable/disable a regulator through the
-> > dev_pm_set_performance_state() interface. We likely don't want to drop
-> > the performance state internally in genpd when genpd_suspend_noirq()
-> > gets called, for the corresponding struct device for the regulator.
->
-> > I guess if genpd should drop performance states like $subject patch
-> > suggest, we need some kind of additional coordination, that allows a
-> > subsystem/driver to inform genpd when it should avoid it. Or something
-> > along those lines.
->
-> I'm not sure what you're looking for from me here - was there a concrete
-> question or somehing?
+Now that DMA ops are part of the core API via iommu-dma, fold the
+vestigial remains of the IOMMU_DMA_OPS init state into the IOMMU API
+phase, and clean up a few other leftovers. This should also close the
+race window wherein bus_set_iommu() effectively makes the DMA ops state
+visible before its nominal initialisation - it seems this was previously
+fairly benign, but since commit a250c23f15c2 ("iommu: remove
+DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE") it can now lead to the strict flush
+queue policy inadvertently being picked for default domains allocated
+during that window, with a corresponding unexpected perfomance impact.
 
-Nope, not really, sorry if that was not clear.
+Reported-by: Jussi Maki <joamaki@gmail.com>
+Tested-by: Jussi Maki <joamaki@gmail.com>
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 
-I just wanted to loop you in, as to make sure that we don't change
-something at the PM domain level, which may not fit well with the
-regulator implementation.
+---
 
-Kind regards
-Uffe
+As discussed on the report thread, I think it makes most sense to merge
+this as a fix for 5.13 and not worry about any backporting.
+
+ drivers/iommu/amd/amd_iommu.h |  2 --
+ drivers/iommu/amd/init.c      |  5 -----
+ drivers/iommu/amd/iommu.c     | 31 +++++++++++++------------------
+ 3 files changed, 13 insertions(+), 25 deletions(-)
+
+diff --git a/drivers/iommu/amd/amd_iommu.h b/drivers/iommu/amd/amd_iommu.h
+index 55dd38d814d9..416815a525d6 100644
+--- a/drivers/iommu/amd/amd_iommu.h
++++ b/drivers/iommu/amd/amd_iommu.h
+@@ -11,8 +11,6 @@
+ 
+ #include "amd_iommu_types.h"
+ 
+-extern int amd_iommu_init_dma_ops(void);
+-extern int amd_iommu_init_passthrough(void);
+ extern irqreturn_t amd_iommu_int_thread(int irq, void *data);
+ extern irqreturn_t amd_iommu_int_handler(int irq, void *data);
+ extern void amd_iommu_apply_erratum_63(u16 devid);
+diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+index d006724f4dc2..a418bf560a4b 100644
+--- a/drivers/iommu/amd/init.c
++++ b/drivers/iommu/amd/init.c
+@@ -231,7 +231,6 @@ enum iommu_init_state {
+ 	IOMMU_ENABLED,
+ 	IOMMU_PCI_INIT,
+ 	IOMMU_INTERRUPTS_EN,
+-	IOMMU_DMA_OPS,
+ 	IOMMU_INITIALIZED,
+ 	IOMMU_NOT_FOUND,
+ 	IOMMU_INIT_ERROR,
+@@ -2895,10 +2894,6 @@ static int __init state_next(void)
+ 		init_state = ret ? IOMMU_INIT_ERROR : IOMMU_INTERRUPTS_EN;
+ 		break;
+ 	case IOMMU_INTERRUPTS_EN:
+-		ret = amd_iommu_init_dma_ops();
+-		init_state = ret ? IOMMU_INIT_ERROR : IOMMU_DMA_OPS;
+-		break;
+-	case IOMMU_DMA_OPS:
+ 		init_state = IOMMU_INITIALIZED;
+ 		break;
+ 	case IOMMU_INITIALIZED:
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index 80e8e1916dd1..2efe6d17783c 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -30,7 +30,6 @@
+ #include <linux/msi.h>
+ #include <linux/irqdomain.h>
+ #include <linux/percpu.h>
+-#include <linux/iova.h>
+ #include <linux/io-pgtable.h>
+ #include <asm/irq_remapping.h>
+ #include <asm/io_apic.h>
+@@ -1771,13 +1770,22 @@ void amd_iommu_domain_update(struct protection_domain *domain)
+ 	amd_iommu_domain_flush_complete(domain);
+ }
+ 
++static void __init amd_iommu_init_dma_ops(void)
++{
++	swiotlb = (iommu_default_passthrough() || sme_me_mask) ? 1 : 0;
++
++	if (amd_iommu_unmap_flush)
++		pr_info("IO/TLB flush on unmap enabled\n");
++	else
++		pr_info("Lazy IO/TLB flushing enabled\n");
++	iommu_set_dma_strict(amd_iommu_unmap_flush);
++}
++
+ int __init amd_iommu_init_api(void)
+ {
+-	int ret, err = 0;
++	int err = 0;
+ 
+-	ret = iova_cache_get();
+-	if (ret)
+-		return ret;
++	amd_iommu_init_dma_ops();
+ 
+ 	err = bus_set_iommu(&pci_bus_type, &amd_iommu_ops);
+ 	if (err)
+@@ -1794,19 +1802,6 @@ int __init amd_iommu_init_api(void)
+ 	return 0;
+ }
+ 
+-int __init amd_iommu_init_dma_ops(void)
+-{
+-	swiotlb        = (iommu_default_passthrough() || sme_me_mask) ? 1 : 0;
+-
+-	if (amd_iommu_unmap_flush)
+-		pr_info("IO/TLB flush on unmap enabled\n");
+-	else
+-		pr_info("Lazy IO/TLB flushing enabled\n");
+-	iommu_set_dma_strict(amd_iommu_unmap_flush);
+-	return 0;
+-
+-}
+-
+ /*****************************************************************************
+  *
+  * The following functions belong to the exported interface of AMD IOMMU
+-- 
+2.21.0.dirty
+
