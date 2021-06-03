@@ -2,162 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF45D399FBA
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8D6399FC0
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 13:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbhFCLZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 07:25:36 -0400
-Received: from mail-dm6nam12on2062.outbound.protection.outlook.com ([40.107.243.62]:63457
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229697AbhFCLZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 07:25:34 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZDl4BySQlp57TX/KcIBLcml5Fe3AUAcrGBJxYF2pGWpnFigw0w4gC9woCIqWDK2NVND0nWBTb5H1bjCPqCPa7rZyE6dsc7n8RQpFkPfLvxlOmEenTKuNqfymPEA/1v7TAMHtJC/1qRdMDEBk67+drt+Qx8eFGkvWHyV/Qd32YYdnmlvZuUfcGOO459JWVeN2n9y4xXxJwBJusfYE7ws7TwM4XBPE/XnlV3EIcqejobKaDWcE3sIZiPP4BzhAuaX0tjfrxOCR3sMaFNJhC+RIVkDqY+lMnGZYQ702t0g3FiqiNYpIe7685QPpT1lggLr37N8YeTGsjYDYxQtFXHPQvQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R14Ky4yTI2rDE9TXH8iXM89SEfc+vS5j1q158/vVTT8=;
- b=fxrXkSr87ODcvmK1MR1uznFcrWjFRDEUTodD/9jx+YQxKvqxexX11gGBdLq1DCz3witXIGg4pj5Ab86Keid6/p+JX4XUBD/XkICXMbrLQYgT+pATc6AKLSk1OKX8StXrgb1fUsDiIY8ofq60qIsajMPPrGx89uaafSd2DpMafMyuKAzRKHg2gF2hcr0SgCiWibPpqJluJe1udsNHBAanRoIPNNSDfg1NZOtiwASYzO4JMnaTyAP9sAkdZ51kk1LzL7XfrXxWN84s1+o03vmvaMIXoGsqtZH9G/vbjtWCTVzyOtvoMZM6aDdiCQMgWaRJhw9u0lzFIu1yjFjmKFvcDg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R14Ky4yTI2rDE9TXH8iXM89SEfc+vS5j1q158/vVTT8=;
- b=RWHkQJKZB9zbSYkJL3NRJb0LqpsY+VXBdAfjwuIKA9lfa2XeddfpeTehC9R493VOEbQutFAb+cT0LfEio22DChxdN83S/5x+rT9SlHAdEx+gQOk4vwbVZjp7C0vCNT7ZGWXH0RtChs0SOgQKZeF+uqj/Gk/I5WjaBHxcrjkUpjjVwFl6/kEgZWpJKArn3gByZwivVqqlKmrB3TmHa6pIe6Yp+MDVYnbS3LAsgAPEX1Y2H8vPSWy22CBokPtlacQ7g1OrTGXMz39ok2SabclKwwt59oCIl2uqAimV8LNx2jnl3BwTT+s79F2BMqJ6B0uA3+lMT4HsSObEZ4SBe8vLNA==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL0PR12MB5521.namprd12.prod.outlook.com (2603:10b6:208:1c7::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.23; Thu, 3 Jun
- 2021 11:23:48 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%6]) with mapi id 15.20.4195.024; Thu, 3 Jun 2021
- 11:23:48 +0000
-Date:   Thu, 3 Jun 2021 08:23:47 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>, Cornelia Huck <cohuck@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Dey, Megha" <megha.dey@intel.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: Re: [PATCH v6 00/20] Add VFIO mediated device support and DEV-MSI
- support for the idxd driver
-Message-ID: <20210603112347.GO1002214@nvidia.com>
-References: <162164243591.261970.3439987543338120797.stgit@djiang5-desk3.ch.intel.com>
- <20210523232219.GG1002214@nvidia.com>
- <86cde154-37c7-c00d-b0c6-06b15b50dbf7@intel.com>
- <20210602231747.GK1002214@nvidia.com>
- <MWHPR11MB188664D9E7CA60782B75AC718C3C9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210603014932.GN1002214@nvidia.com>
- <MWHPR11MB1886D613948986530E9B61CB8C3C9@MWHPR11MB1886.namprd11.prod.outlook.com>
+        id S229786AbhFCL25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 07:28:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229629AbhFCL24 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 07:28:56 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79562C06174A;
+        Thu,  3 Jun 2021 04:27:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Op/kpj4knPq6gIMNdA9CHiokJxzXHNsUDkaxqMZWO1k=; b=WXD2kkSaWpVGOtayn5KMERvh2b
+        9HIOTPSZfW7uZv3ilrmYZRipMgKjdlwTOpIoTvc9EPfcgfStCjOOl5KOhrLykJ0O4tzBvGeH7wjQ0
+        jTMleLs1zf9prqJU10k5KRgURHItp83mBVd+EBstqgtOW8iFDW9aoWXUJ5ulrGWoIRJRLZMObr7xA
+        oVEVXibxDcUMl2mXvoN5HxLyFS1urZsMOPk+tYmGeZDYJVTX0AbiWl3xtfTEoPfKl8fE2iHumvuTQ
+        As4TrPCXnx/vNf8JmyEp8d2z3A11jXgQsnq6wqiFYQzpMWnhqla9fcgr9LQFof6r17wgkxgW0f8g2
+        /2uKAkrA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lolUF-00C5qD-Od; Thu, 03 Jun 2021 11:26:17 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3F66C300091;
+        Thu,  3 Jun 2021 13:26:06 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2B619201A8933; Thu,  3 Jun 2021 13:26:06 +0200 (CEST)
+Date:   Thu, 3 Jun 2021 13:26:06 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        kernel-team@android.com, Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [RFC][PATCH] freezer,sched: Rewrite core freezer logic
+Message-ID: <YLi8Ttw3Xb3ynUW2@hirez.programming.kicks-ass.net>
+References: <20210525151432.16875-1-will@kernel.org>
+ <20210525151432.16875-17-will@kernel.org>
+ <YLXt+/Wr5/KWymPC@hirez.programming.kicks-ass.net>
+ <YLYZv4v68OnAlx+3@hirez.programming.kicks-ass.net>
+ <20210602125452.GG30593@willie-the-truck>
+ <YLiwahWvnnkeL+vc@hirez.programming.kicks-ass.net>
+ <20210603105856.GB32641@willie-the-truck>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <MWHPR11MB1886D613948986530E9B61CB8C3C9@MWHPR11MB1886.namprd11.prod.outlook.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL0PR02CA0021.namprd02.prod.outlook.com
- (2603:10b6:207:3c::34) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL0PR02CA0021.namprd02.prod.outlook.com (2603:10b6:207:3c::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.15 via Frontend Transport; Thu, 3 Jun 2021 11:23:48 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lolRz-0013KO-1o; Thu, 03 Jun 2021 08:23:47 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 901146f4-752d-4511-de4d-08d926820e83
-X-MS-TrafficTypeDiagnostic: BL0PR12MB5521:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR12MB5521BEC3420349428C8D4DC6C23C9@BL0PR12MB5521.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zvck4F93WK6xlP0McqWMiCWiY2uBm4gSzOV62VjBDluYbcTGN6p8z41COAkES+1n2AWJeBwlLKeozNpaEtNpW0/GKXf/WqlitnmO+9dLx0EP8jqHz/oyq7U9HDm2VXOQnPrqlDMqDXptMebgkOX48FSON21mO8zsPHs2j7gvcWyoqt2o0XJvCjzOZ9+r759Lk84bi7RWaDJqaQkcupEokRwlUcSRF7raqZn7TJwOqK5Ljq061W/8aDW2vimhfUftpds8EMYqU6IXy283g03bM4GxQWShcdBA8PIKqxWksHvb+Jp6zTcBlkhaf5LEuwFzGdY6bwFUAZ2VvebcWv79KtpNvDxBkYrBe5L9+qWhq1sQ0us80mD39Iff74/3hkiIC76KkJeZD4Rzm04VaKBA+s05edcMFR79Q0WAQVYXpdj7MO1iWkit33P/+prdB6CpM5AYt9evhhtknHeanuq6PnSouDwzu0Soqmlj70ESoJDGVD/waJ+HUeZ9sC+lX0To+Q490nOQ5hAmbSnv652+6WA09F1bQTlNucbSFZdFjnc8doV1Zbl/orjrsz+QhdENghSg+riZUW6UvanvFXC+hPm3jtiT5zVPCXfegDgox80=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(39860400002)(366004)(346002)(2616005)(426003)(26005)(5660300002)(478600001)(4326008)(66556008)(186003)(38100700002)(33656002)(66946007)(66476007)(7416002)(9746002)(9786002)(316002)(54906003)(1076003)(8676002)(8936002)(2906002)(86362001)(36756003)(6916009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?NTIb/0QrMVs+lw6PBBRrq7LJsrfKyojK1+RLXvnCNmy1EXW1U0rwbtR5Ml7D?=
- =?us-ascii?Q?2nO4i9ekkFG04pAKAxrqOZTncjeFMrek0OwizWojqSI9OQGu1jXfTb1/RXQA?=
- =?us-ascii?Q?2bXbEedrPEzTPMViTgzcYjW7LrgATORMGLJPeizgjZNPpuzSgmABsIxKSW0D?=
- =?us-ascii?Q?arB/IIWTYFrrad10WCGBv3gCTqX30bX+RF0gdVw71s5xwTrKB7YwucikF0es?=
- =?us-ascii?Q?aY/wpwIV1/xLlLF5ys6dRDjmmZkkFhyCw6oN7mPMD+kLr39qzr7WKLAkMHsC?=
- =?us-ascii?Q?n5Lym/u4rcjnrj5w4f/4kKkI9Lew0MuUlvYBZOw0iJkqcj1lxYnAtIBqw1TZ?=
- =?us-ascii?Q?C/9fhxRQnmRO58gkSIdWU+0TqyBiiGFB9NB2HkWyDjkEnOuIPjMAsMDOJXi3?=
- =?us-ascii?Q?c+B86EgM2vaCvrlzdtz/47C9IDQ0g/YaC4PLEkHAwK3MjeL59GxHjzYQSyor?=
- =?us-ascii?Q?9MGhlws+BHXgzauRUD9OV/0ZoZKgNlrtqsdz12xSKaf+m3wwHb2wVnumLoa0?=
- =?us-ascii?Q?0SVZREj1UG6O5Se65p7PUZWdTm1YvpEMpsH+0YsznDq6sNu/XJfrAER9BHXw?=
- =?us-ascii?Q?t8EWVrf+BZdA69BOOAePn9GCBLyQCA2fF0YHBbKMlLsd75WdpMbntAEK5JqX?=
- =?us-ascii?Q?CPviWGp8LI7xXhx4mn8mYIZZhvipA0ZgYXFyQWj/KExOxjnbLfBBrHuGyure?=
- =?us-ascii?Q?cOoudlQvuhHzaNkW0a9rk4NCEbku2qGKkYTMv6qKWy1mh7Z9kSrpbN/x4t0x?=
- =?us-ascii?Q?oeLuAt8D4gLZHFVsQd9ATadyLe5yxcN5+5uG09TjZGY0BeLca8DB2flDs5oE?=
- =?us-ascii?Q?+rMlmKUCsNtE2VKIl4wfCUeNBHNPFMu/smS8dlHF7Ty2OtpXQ4bsDw4lO1W9?=
- =?us-ascii?Q?bbRhtFviwv3PTiAhphoBVRQJ8k3bR/0XweVP7i4OZ2nB03YOgZZiSn+yqYi4?=
- =?us-ascii?Q?wxQ9a6U3Xu0IjpB2sy8G/tVhpk3E/0mwpyIcl80OgrCpX7OEb8CaBNgKAZIA?=
- =?us-ascii?Q?SrOP6dRu+340xQrl/b72p9s/xYxOT8ANBDqeAa5W241rKHRg/M6Br6+kDioF?=
- =?us-ascii?Q?1uzWnQzzZIqDrIU83XyWyf8w9FR7ksXhS32fOJq185JqVqM/+Wocs11p/LnP?=
- =?us-ascii?Q?5oLZgul55HNB33F107ucNW2NON93fqOy7ikPXYe2+qhtirRX0x3bYeJatXgf?=
- =?us-ascii?Q?ogAZ1Hzlpke4Gunv+FhjDOs2AZyfFsdku50m0kC1AzX7KMF4uN3loDXSCoP/?=
- =?us-ascii?Q?L28Tg5GCY0BOf//f9mLujI4PMxr3/tQWdV0qi0O+kR+FGRMY3QIa9NpU2zAw?=
- =?us-ascii?Q?2yVZMFJprhZYDldG2bykxaiK?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 901146f4-752d-4511-de4d-08d926820e83
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jun 2021 11:23:48.2873
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oVdcMoJipNBdN8gLZ5Efo0xO64dFrqPCS5H1iUG8tgyIdRgVx1zJcIhMwzp5lj6L
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5521
+In-Reply-To: <20210603105856.GB32641@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 05:52:58AM +0000, Tian, Kevin wrote:
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Thursday, June 3, 2021 9:50 AM
+On Thu, Jun 03, 2021 at 11:58:56AM +0100, Will Deacon wrote:
+> On Thu, Jun 03, 2021 at 12:35:22PM +0200, Peter Zijlstra wrote:
+> > On Wed, Jun 02, 2021 at 01:54:53PM +0100, Will Deacon wrote:
+
+> > > > @@ -116,20 +173,8 @@ bool freeze_task(struct task_struct *p)
+> > > >  {
+> > > >  	unsigned long flags;
+> > > >  
+> > > >  	spin_lock_irqsave(&freezer_lock, flags);
+> > > > +	if (!freezing(p) || frozen(p) || __freeze_task(p)) {
+> > > >  		spin_unlock_irqrestore(&freezer_lock, flags);
+> > > >  		return false;
+> > > >  	}
+> > > 
+> > > I've been trying to figure out how this serialises with ttwu(), given that
+> > > frozen(p) will go and read p->state. I suppose it works out because only the
+> > > freezer can wake up tasks from the FROZEN state, but it feels a bit brittle.
 > > 
-> > On Thu, Jun 03, 2021 at 01:11:37AM +0000, Tian, Kevin wrote:
-> > 
-> > > Jason, can you clarify your attitude on mdev guid stuff? Are you
-> > > completely against it or case-by-case? If the former, this is a big
-> > > decision thus it's better to have consensus with Alex/Kirti. If the
-> > > latter, would like to hear your criteria for when it can be used
-> > > and when not...
-> > 
-> > I dislike it generally, but it exists so <shrug>. I know others feel
-> > more strongly about it being un-kernely and the wrong way to use sysfs.
-> > 
-> > Here I was remarking how the example in the cover letter made the mdev
-> > part seem totally pointless. If it is pointless then don't do it.
+> > p->pi_lock; both ttwu() and __freeze_task() (which is essentially a
+> > variant of set_special_state()) take ->pi_lock. I'll put in a comment.
 > 
-> Is your point about that as long as a mdev requires pre-config
-> through driver specific sysfs then it doesn't make sense to use
-> mdev guid interface anymore?
+> The part I struggled with was freeze_task(), which doesn't take ->pi_lock
+> yet calls frozen(p).
 
-Yes
+Ah, I can't read... I assumed you were asking about __freeze_task().
 
-> The value of mdev guid interface is providing a vendor-agnostic
-> interface for mdev life-cycle management which allows one-
-> enable-fit-all in upper management stack. Requiring vendor
-> specific pre-config does blur the boundary here.
+So frozen(p) checks for p->state == TASK_FROZEN (and complicated), which
+is a stable state. Once you're frozen you stay frozen until thaw, which
+is after freezing per construction.
 
-It isn't even vendor-agnostic - understanding the mdev_type
-configuration stuff is still vendor specific.
+The tricky bit is __freeze_task(), that does take pi_lock. It checks for
+FREEZABLE and if set, changes to FROZEN. And this does in fact race with
+ttwu() and relies on pi_lock to serialize.
 
-Jason
+A concurrent wakeup (from a non-frozen task) can try and wake the task
+we're trying to freeze. If we win, ttwu will see FROZEN and ignore, if
+ttwu() wins, we don't see FREEZABLE and do another round of freezing.
+
+> > > > @@ -137,7 +182,7 @@ bool freeze_task(struct task_struct *p)
+> > > >  	if (!(p->flags & PF_KTHREAD))
+> > > >  		fake_signal_wake_up(p);
+> > > >  	else
+> > > > -		wake_up_state(p, TASK_INTERRUPTIBLE);
+> > > > +		wake_up_state(p, TASK_INTERRUPTIBLE); // TASK_NORMAL ?!?
+> > > >  
+> > > >  	spin_unlock_irqrestore(&freezer_lock, flags);
+> > > >  	return true;
+> > > > @@ -148,8 +193,8 @@ void __thaw_task(struct task_struct *p)
+> > > >  	unsigned long flags;
+> > > >  
+> > > >  	spin_lock_irqsave(&freezer_lock, flags);
+> > > > -	if (frozen(p))
+> > > > -		wake_up_process(p);
+> > > > +	WARN_ON_ONCE(freezing(p));
+> > > > +	wake_up_state(p, TASK_FROZEN | TASK_NORMAL);
+> > > 
+> > > Why do we need TASK_NORMAL here?
+> > 
+> > It's a left-over from hacking, but I left it in because anything
+> > TASK_NORMAL should be able to deal with spuriuos wakeups, something
+> > try_to_freeze() now also relies on.
+> 
+> I just worry that it might hide bugs if TASK_FROZEN is supposed to be
+> sufficient, as it would imply that we have some unfrozen tasks kicking
+> around. I dunno, maybe just a comment saying that everything _should_ be
+> FROZEN at this point?
+
+I'll take it out. It really shouldn't matter.
