@@ -2,87 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D733998DF
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 06:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FBC43998E1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 06:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229625AbhFCEOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 00:14:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50232 "EHLO
+        id S229667AbhFCEPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 00:15:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbhFCEOn (ORCPT
+        with ESMTP id S229441AbhFCEP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 00:14:43 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C55C06174A;
-        Wed,  2 Jun 2021 21:12:46 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id j184so4748253qkd.6;
-        Wed, 02 Jun 2021 21:12:46 -0700 (PDT)
+        Thu, 3 Jun 2021 00:15:29 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89D06C06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Jun 2021 21:13:29 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id h16so2892191pjv.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Jun 2021 21:13:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WSBVtEwjNJceUSW+ED54by5q0ntVhKU4EZfInF4XBmQ=;
-        b=ALSkX+TZCWadbcLs53Y6oEcOcUob861l+3sMaf3bsrc7RQda1oexFXL8fGmiav0Xpi
-         /ChK3KS/oFMr3CjNybg5mytdl91qRxUGZgvSeLuBQeM6IBSJhAUWrEGRlzNH5SnYxw1r
-         0LdsgZUDyGu6tfUQcjHf8Su5QHoDTMOdCLx/I=
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id;
+        bh=mdQe7rcfBv/z++/4DywE65Kjg4R/h0ApRxAanaCZhPk=;
+        b=fd+ibb1AZny+F8WluQ/jIE1zbUfUvf9P+Lnr32S0iD+PghCPDh2X2uqJSxvmZ8/1IL
+         n8ROE/oO/fe7kZsF+WyG14vqVqE3FZjp2VMnXhWXkiwq53p5wObdEI9f2GQHH61kr7Ie
+         ax3ZmpAh6zdQhXyVC6/Niw8nCnJowg9RJKGvsXnhE9tpbJpPLwtKHopnBaA5fVrLzRcg
+         WDkUDJclcaCJG2p+mMuvw9hYxL+RpnNlSbJXa0vyEwAiSDyX+tsHniubp2yoQHhv60+F
+         6xY345bBCAf9+NDh9wSJBGz2MulrXgBdpGs6hkhoO+jKkNw968xbek1hakK9GopdyEsb
+         OCGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WSBVtEwjNJceUSW+ED54by5q0ntVhKU4EZfInF4XBmQ=;
-        b=dHnH/JXqT13yoDam0FmA/tsdyNtrwymop5R27iVrdvvJKn0mWUC0pJzYprj0iqbd/d
-         8eCOt2felqopz+fPjuA8vfd9ekp8UHCUjGTk5oyK2tliYc4JO4UkH4SRDa82asqdqnRN
-         h7zu+z3Zdbavq7KZI2QWZXenDNtzepSUzr//5YioFo5lTIAo0Q9HOWX8otdnNosbLoC3
-         rRSv0J7u2HU68WhfwEp9moBWXS6vuDbM7x/fCVtY/bQ82xVT1LHPLYMjxEGPElV5+tJC
-         bQvm94Ig6atPzur+eH5ajctreGXQf3gpHyT8IjlYzqalhCjfLtsG19M9fCActOcoTU6c
-         OI9A==
-X-Gm-Message-State: AOAM530l0UnVT/OJ5x5jxOwOsDnD8CC3xA+J1Wb5H1AVryfKltRyuZ77
-        RNHbt8kuPi/Uae9pQNJQE2H5UcmwWmLTWkEsBwU0ayV5
-X-Google-Smtp-Source: ABdhPJwTjlMS+8+L8BrVHX4Xf5NgGJL3RRe8WHEXPcfnogTmYIgrBQEd9Bnnz7jEgKwCaeeqz/0xBZ7xr0UxwDga/Og=
-X-Received: by 2002:a37:e0f:: with SMTP id 15mr10333070qko.273.1622693565759;
- Wed, 02 Jun 2021 21:12:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210525055308.31069-1-steven_lee@aspeedtech.com>
- <20210525055308.31069-3-steven_lee@aspeedtech.com> <CACRpkdZy0UwaJcYTiM9asVwNh4wuEYdMSrmqAPAiikbrvjtKpw@mail.gmail.com>
-In-Reply-To: <CACRpkdZy0UwaJcYTiM9asVwNh4wuEYdMSrmqAPAiikbrvjtKpw@mail.gmail.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Thu, 3 Jun 2021 04:12:33 +0000
-Message-ID: <CACPK8XfbpCWx_ZOPuUy0QCT2N9kj9_+WGZv4wEPXgUUoVDf+fQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] ARM: dts: aspeed-g6: Add pinctrl settings
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Steven Lee <steven_lee@aspeedtech.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:ASPEED PINCTRL DRIVERS" 
-        <linux-aspeed@lists.ozlabs.org>,
-        "moderated list:ASPEED PINCTRL DRIVERS" <openbmc@lists.ozlabs.org>,
-        "open list:ASPEED PINCTRL DRIVERS" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Hongwei Zhang <Hongweiz@ami.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Billy Tsai <billy_tsai@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id;
+        bh=mdQe7rcfBv/z++/4DywE65Kjg4R/h0ApRxAanaCZhPk=;
+        b=nsTjdaWL3I5QxLY2dOFZmT/FHD43VUSdkgd4YZoHpFK7LOkdJdr3E6MD8bboOA1zmi
+         Kqnb9INCA0cv9XANEuS9Mn3VOdCmhgVqqYhjGg0N2nbxaHrGJvllTfVfT/X1Hv/ZHzsJ
+         nLY0sH54CQQtGmcpu2uANLMiVxGJZsmf7YjbmIOpe0PosA6renw3FwTIoBlTmieBarK/
+         qg2Gng9l1LGuf7gt8W0UsSb/MdvgncaKzHvuTbbihqME4I6l/BqSpxHrwWZp72W2+qBl
+         qv1s/dUc+Ts4nhDeYxveso1F576oT9NaW3rrDd8W5f4Ie4rVkrmc6XSe0m8HHJapz3hC
+         VE3A==
+X-Gm-Message-State: AOAM533kWWwraLgYsRanMmzaPb/IAnoOg7ogTA1Fqp7QFlefglVIy+nR
+        dCMs7FX2SXi//Gze43P/nCy0eg==
+X-Google-Smtp-Source: ABdhPJyhCDbdVRbt5r/8ORm86+o6k/4hlsjsYyPQRuc0fTEcbN0So+HCQlNKs9itq7iVgl7kUmYVmg==
+X-Received: by 2002:a17:902:eac1:b029:108:4a7c:ff2d with SMTP id p1-20020a170902eac1b02901084a7cff2dmr11472514pld.62.1622693608838;
+        Wed, 02 Jun 2021 21:13:28 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id q21sm934029pfn.81.2021.06.02.21.13.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 21:13:28 -0700 (PDT)
+Date:   Wed, 02 Jun 2021 21:13:28 -0700 (PDT)
+X-Google-Original-Date: Wed, 02 Jun 2021 21:11:20 PDT (-0700)
+Subject:     Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
+In-Reply-To: <mhng-a5f8374f-350b-4c13-86e8-c6aa5e697454@palmerdabbelt-glaptop>
+CC:     anup@brainfault.org, drew@beagleboard.org,
+        Christoph Hellwig <hch@lst.de>,
+        Anup Patel <Anup.Patel@wdc.com>, wefu@redhat.com,
+        lazyparser@gmail.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, guoren@linux.alibaba.com,
+        Paul Walmsley <paul.walmsley@sifive.com>
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     guoren@kernel.org
+Message-ID: <mhng-c0406cea-776b-49d2-a223-13a83d3a7433@palmerdabbelt-glaptop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 May 2021 at 23:47, Linus Walleij <linus.walleij@linaro.org> wrote:
+On Sat, 29 May 2021 17:30:18 PDT (-0700), Palmer Dabbelt wrote:
+> On Fri, 21 May 2021 17:36:08 PDT (-0700), guoren@kernel.org wrote:
+>> On Wed, May 19, 2021 at 3:15 PM Anup Patel <anup@brainfault.org> wrote:
+>>>
+>>> On Wed, May 19, 2021 at 12:24 PM Drew Fustini <drew@beagleboard.org> wrote:
+>>> >
+>>> > On Wed, May 19, 2021 at 08:06:17AM +0200, Christoph Hellwig wrote:
+>>> > > On Wed, May 19, 2021 at 02:05:00PM +0800, Guo Ren wrote:
+>>> > > > Since the existing RISC-V ISA cannot solve this problem, it is better
+>>> > > > to provide some configuration for the SOC vendor to customize.
+>>> > >
+>>> > > We've been talking about this problem for close to five years.  So no,
+>>> > > if you don't manage to get the feature into the ISA it can't be
+>>> > > supported.
+>>> >
+>>> > Isn't it a good goal for Linux to support the capabilities present in
+>>> > the SoC that a currently being fab'd?
+>>> >
+>>> > I believe the CMO group only started last year [1] so the RV64GC SoCs
+>>> > that are going into mass production this year would not have had the
+>>> > opporuntiy of utilizing any RISC-V ISA extension for handling cache
+>>> > management.
+>>>
+>>> The current Linux RISC-V policy is to only accept patches for frozen or
+>>> ratified ISA specs.
+>>> (Refer, Documentation/riscv/patch-acceptance.rst)
+>>>
+>>> This means even if emulate CMO instructions in OpenSBI, the Linux
+>>> patches won't be taken by Palmer because CMO specification is
+>>> still in draft stage.
+>> Before CMO specification release, could we use a sbi_ecall to solve
+>> the current problem? This is not against the specification, when CMO
+>> is ready we could let users choose to use the new CMO in Linux.
+>>
+>> From a tech view, CMO trap emulation is the same as sbi_ecall.
+>>
+>>>
+>>> Also, we all know how much time it takes for RISCV international
+>>> to freeze some spec. Judging by that we are looking at another
+>>> 3-4 years at minimum.
 >
-> On Tue, May 25, 2021 at 7:53 AM Steven Lee <steven_lee@aspeedtech.com> wrote:
+> Sorry for being slow here, this thread got buried.
 >
-> > AST2600 supports 2 SGPIO master interfaces and 2 SGPIO slave interfaces.
-> > Currently, only SGPIO master 1 and SGPIO slve 1 in the pinctrl dtsi.
-> > SGPIO master 2 and slave 2 should be added in pinctrl dtsi as well.
-> >
-> > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> > Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+> I've been trying to work with a handful of folks at the RISC-V
+> foundation to try and get a subset of the various in-development
+> specifications (some simple CMOs, something about non-caching in the
+> page tables, and some way to prevent speculative accesse from generating
+> coherence traffic that will break non-coherent systems).  I'm not sure
+> we can get this together quickly, but I'd prefer to at least try before
+> we jump to taking vendor-specificed behavior here.  It's obviously an
+> up-hill battle to try and get specifications through the process and I'm
+> certainly not going to promise it will work, but I'm hoping that the
+> impending need to avoid forking the ISA will be sufficient to get people
+> behind producing some specifications in a timely fashion.
 >
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> I wasn't aware than this chip had non-coherent devices until I saw this
+> thread, so we'd been mostly focused on the Beagle V chip.  That was in a
+> sense an easier problem because the SiFive IP in it was never designed
+> to have non-coherent devices so we'd have to make anything work via a
+> series of slow workarounds, which would make emulating the eventually
+> standardized behavior reasonable in terms of performance (ie, everything
+> would be super slow so who really cares).
 >
-> Please funnel this patch through the Aspeed/ARM SoC tree.
+> I don't think relying on some sort of SBI call for the CMOs whould be
+> such a performance hit that it would prevent these systems from being
+> viable, but assuming you have reasonable performance on your non-cached
+> accesses then that's probably not going to be viable to trap and
+> emulate.  At that point it really just becomes silly to pretend that
+> we're still making things work by emulating the eventually ratified
+> behavior, as anyone who actually tries to use this thing to do IO would
+> need out of tree patches.  I'm not sure exactly what the plan is for the
+> page table bits in the specification right now, but if you can give me a
+> pointer to some documentation then I'm happy to try and push for
+> something compatible.
+>
+> If we can't make the process work at the foundation then I'd be strongly
+> in favor of just biting the bullet and starting to take vendor-specific
+> code that's been implemented in hardware and is necessarry to make
+> things work acceptably.  That's obviously a sub-optimal solution as
+> it'll lead to a bunch of ISA fragmentation, but at least we'll be able
+> to keep the software stack together.
+>
+> Can you tell us when these will be in the hands of users?  That's pretty
+> important here, as I don't want to be blocking real users from having
+> their hardware work.  IIRC there were some plans to distribute early
+> boards, but it looks like the foundation got involved and I guess I lost
+> the thread at that point.
+>
+> Sorry this is all such a headache, but hopefully we can get things
+> sorted out.
 
-Applied, thanks.
+I talked with some of the RISC-V foundation folks, we're not going to 
+have an ISA specification for the non-coherent stuff any time soon.  I 
+took a look at this code and I definately don't want to take it as is, 
+but I'm not opposed to taking something that makes the hardware work as 
+long as it's a lot cleaner.  We've already got two of these non-coherent 
+chips, I'm sure more will come, and I'd rather have the extra headaches 
+than make everyone fork the software stack.
+
+After talking to Atish it looks like there's likely to be an SBI 
+extension to handle the CMOs, which should let us avoid the bulk of the 
+vendor-specific behavior in the kernel.  I know some people are worried 
+about adding to the SBI surface.  I'm worried about that too, but that's 
+way better than sticking a bunch of vendor-specific instructions into 
+the kernel.  The SBI extension should make for a straight-forward cache 
+flush implementation in Linux, so let's just plan on that getting 
+through quickly (as has been done before).
+
+Unfortunately we've yet to come up with a way to handle the 
+non-cacheable mappings without introducing a degree of vendor-specific 
+behavior or seriously impacting performance (mark them as not valid and 
+deal with them in the trap handler).  I'm not really sure it counts as 
+supporting the hardware if it's massively slow, so that really leaves us 
+with vendor-specific mappings as the only option to make these chips 
+work.
+
+This implementation, which adds some Kconfig entries that control page 
+table bits, definately isn't suitable for upstream.  Allowing users to 
+set arbitrary page table bits will eventually conflict with the 
+standard, and is just going to be a mess.  It'll also lead to kernels 
+that are only compatible with specific designs, which we're trying very 
+hard to avoid.  At a bare minimum we'll need some way to detect systems 
+with these page table bits before setting them, and some description of 
+what the bits actually do so we can reason about them.
