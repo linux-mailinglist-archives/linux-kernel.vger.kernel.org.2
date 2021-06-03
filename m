@@ -2,62 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C992B39A697
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D76C839A699
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Jun 2021 19:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhFCREL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 13:04:11 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:43652 "EHLO vps0.lunn.ch"
+        id S230343AbhFCREl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 13:04:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229753AbhFCREJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 13:04:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=dlLfA1/Ys0ZiRcO0YwSlr9cVr+Zsn1kL6tFU0WA6UDc=; b=blXnLtEUqpvWYpc+fj0I7crPKH
-        HyY8uT4NWljWjMKlNhGEafboYZARaNzWfjhJWfJJcISwvJUDzNBBUrZP6HCaYDZxCjEVLUNgIm+FI
-        pwxJvhUgDup4f9FVW0yFyR28xKLHB1Rd8GrsvnFYA9moA1vI98G9xXhvLHEkEiQjUupY=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1loqja-007f4R-P5; Thu, 03 Jun 2021 19:02:18 +0200
-Date:   Thu, 3 Jun 2021 19:02:18 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH net-next] net: ks8851: Make ks8851_read_selftest() return
- void
-Message-ID: <YLkLGoJvt7EfG6PO@lunn.ch>
-References: <20210603165612.2088040-1-nathan@kernel.org>
+        id S229826AbhFCREk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 13:04:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AF74613C9;
+        Thu,  3 Jun 2021 17:02:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622739775;
+        bh=O6NOUaKgzbYFsX5Lzl4BmVAchR/zLTywxKBCZMccuWo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PkLn7TRVk8848CsbgwxHgS+YDVLBpP0hT0YssguUgEi/tmAJ4J0allFYEjaVaNlKf
+         uMeHQFQgke+ORea3E/2xWshTAp08+ei1TecprNMJC+6kdlMIWHY2OsVyI1ey0Eh/YW
+         rEwn6yqfTChiP284/YvGKhucasYz8RsQHYOzxOiUyPV2i1B//V+seYWFd2c8HN3Zv+
+         +BVKrY/7vGCctpc2fCtWkqU6yFVB6s3hiu5MmAHGmoOpCUfruzzuz8gsXQeCqh8fmW
+         XL5Caly0WGDej+Stz8urXFVhU42I9mv44jbHZI4hYoCvzwMS+JWo5KZtHLSjyoxoR1
+         06WnkkQmcHRBw==
+Received: by pali.im (Postfix)
+        id 068341229; Thu,  3 Jun 2021 19:02:52 +0200 (CEST)
+Date:   Thu, 3 Jun 2021 19:02:52 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/42] PCI: aardvark: Various driver fixes
+Message-ID: <20210603170252.vxeqyvnoepgumyu4@pali>
+References: <20210506153153.30454-1-pali@kernel.org>
+ <20210603151605.GA18917@lpieralisi>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210603165612.2088040-1-nathan@kernel.org>
+In-Reply-To: <20210603151605.GA18917@lpieralisi>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 09:56:13AM -0700, Nathan Chancellor wrote:
-> clang points out that ret in ks8851_read_selftest() is set but unused:
-> 
-> drivers/net/ethernet/micrel/ks8851_common.c:1028:6: warning: variable
-> 'ret' set but not used [-Wunused-but-set-variable]
->         int ret = 0;
->             ^
-> 1 warning generated.
-> 
-> The return code of this function has never been checked so just remove
-> ret and make the function return void.
-> 
-> Fixes: 3ba81f3ece3c ("net: Micrel KS8851 SPI network driver")
-> Suggested-by: Andrew Lunn <andrew@lunn.ch>
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+On Thursday 03 June 2021 16:16:05 Lorenzo Pieralisi wrote:
+> May I ask you please to split this series in smaller sets so that
+> it is easier to merge ?
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+No problem!
 
-    Andrew
+> Let's start with the more urgent fixes that don't involve rework (or
+> you have not received change requests for since they are simple).
+
+Ok, I will do it.
+
+> Thanks,
+> Lorenzo
