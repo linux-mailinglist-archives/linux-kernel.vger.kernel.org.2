@@ -2,69 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5891739B074
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 04:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F6E39B07C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 04:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhFDCgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 22:36:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229576AbhFDCgG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 22:36:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1575F6140A;
-        Fri,  4 Jun 2021 02:34:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622774060;
-        bh=CTwdnVeRv3LZ9cDRRph64ebpUyTxPlHR4nhm8m1iUqA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=HCGLVAT+lX0dKye5fFNli0CkXdx9hzeI1f4tlBjtHoho7HjPQIWzBvAl+XpxT/NV6
-         0htrQmOXw1godBVqUOVSa1Mn+9XfzETf/YCR1rvlFKzuuGcLmisvJ9O5s/uOK6n1Mg
-         8m0THhk+UJ9KKRbKhpeS/mU/wnFRH1LxRPW7UB9ql7DcLv4Dz+xbsbrv4I7Jtv19oS
-         BNX4456Xrr4l8l1B0oA7CHJeItxdFnvdYk2am7yotFjPnbSR3zWjngRx+IfnFi/GCk
-         KfyvutlUfKw/Sop+1cFqcDDmc5X9atwQlFa3+6+1SbPl0z2YtAOn/ITd+gcspj3Blw
-         mCNbTmG4zorNg==
-Date:   Thu, 3 Jun 2021 21:35:30 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Subject: [PATCH][next] scsi: mpi3mr: Fix fall-through warning for Clang
-Message-ID: <20210604023530.GA180997@embeddedor>
+        id S230048AbhFDChw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 22:37:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38347 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229758AbhFDChw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 22:37:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622774166;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=n6UjoDdlJiC6Yn9pHe8qyqTWIaVoNYoyg0T0P15ZZCk=;
+        b=B9T7QQaEEZu6ag51U2Y7ycqtRGhNTef8hvw9r6FOo5O7aPtrTVG8w25pH2W26RSv84ec2L
+        VnX03UePi823h0JAxA8jUR2A7XHIBGkDYdemdUoua7TPmFWxqB2LL4R+eWjFWEWHiG6CKF
+        6Aw9K/QrA5XwBI9e5222fGbGpqY0tzk=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-573-CmoVyd63M6SNrmCe9VeZPQ-1; Thu, 03 Jun 2021 22:36:04 -0400
+X-MC-Unique: CmoVyd63M6SNrmCe9VeZPQ-1
+Received: by mail-pl1-f197.google.com with SMTP id t2-20020a170902b202b02900ec9b8c34b6so3458753plr.15
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 19:36:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=n6UjoDdlJiC6Yn9pHe8qyqTWIaVoNYoyg0T0P15ZZCk=;
+        b=TeskFIFMj0Hu8DOIUxrvvC4a3fQ9IzNfz0xYiFVb1af3FpdG11+WOFxnJc46Av5giF
+         L7rUMlAJywe+wtTvnv6YB4pexGsalA5WTx3EsdNCmyD/bLaYz34y24t43jl+a3q2xjmG
+         rbrmgAFOyYQGELejfBLDCZGencxqgb/TwpdVyx5ithTBdTj4rqCnMXB/ote2MKEDFnV6
+         +k+ZkXbRECgrVHtcDtug8v9F2AdPrzamvLj3NDr8tdpWfZl9no2Jn5/HpZo0Cg/Ukzr5
+         1BNh6PDPvekzIJ3zXJqGLLV0tCYlejOrUh3V2lSatrw7DkvX8qlTrqDU/obJU1OYUtO3
+         2BLw==
+X-Gm-Message-State: AOAM531FQ/QCdNmIvRroqyPE+pCnTrNQrNwKxfmQkrRqsZWx0/oAJf9g
+        akq1fizFyghtS6BhUAQyAg8as7cbRKl/qVnQV+fAjZgDJvhuDULrpoyeAxRCRSrdCg8/G5SRene
+        ZkBJns9N+mNDsCmCoCLL0mixukPQSI8bSnFX/qkhEZev+t0FijJYDyIToJDmIbIgl1u9h0RTTrx
+        XE
+X-Received: by 2002:a17:90b:4d86:: with SMTP id oj6mr14439104pjb.41.1622774163621;
+        Thu, 03 Jun 2021 19:36:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwOvO94kC9a5yxmAdnPqn6EgGnSeSnL9Vn9YzNj8RL5DzWTWWDt9P02tNGSg/9icFWwvCQ9fA==
+X-Received: by 2002:a17:90b:4d86:: with SMTP id oj6mr14439081pjb.41.1622774163299;
+        Thu, 03 Jun 2021 19:36:03 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id y205sm322100pfb.53.2021.06.03.19.36.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Jun 2021 19:36:02 -0700 (PDT)
+Subject: Re: [PATCH] vdp/mlx5: Fix setting the correct dma_device
+To:     Eli Cohen <elic@nvidia.com>, mst@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20210603112215.69259-1-elic@nvidia.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <864e8d21-22d4-7735-817b-f88ec0126f87@redhat.com>
+Date:   Fri, 4 Jun 2021 10:35:59 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20210603112215.69259-1-elic@nvidia.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation to enable -Wimplicit-fallthrough for Clang, fix a
-fall-through warning by explicitly adding a break statement instead
-of just letting the code fall through to the next case.
 
-Link: https://github.com/KSPP/linux/issues/115
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
-JFYI: We had thousands of these sorts of warnings and now we are down
-      to just 22 in linux-next. This is one of those last remaining
-      warnings.
+ÔÚ 2021/6/3 ÏÂÎç7:22, Eli Cohen Ð´µÀ:
+> Before SF support was introduced, the DMA device was equal to
+> mdev->device which was in essence equal to pdev->dev;
+> With SF introduction this is no longer true. It has already been
+> handled for vhost_vdpa since the reference to the dma device can from
+> within mlx5_vdpa. With virtio_vdpa this broke. To fix this we set the
+> real dma device when initializing the device.
+>
+> Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
 
- drivers/scsi/mpi3mr/mpi3mr_os.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/scsi/mpi3mr/mpi3mr_os.c b/drivers/scsi/mpi3mr/mpi3mr_os.c
-index a54aa009ec5a..4ab0609a1b94 100644
---- a/drivers/scsi/mpi3mr/mpi3mr_os.c
-+++ b/drivers/scsi/mpi3mr/mpi3mr_os.c
-@@ -1732,6 +1732,7 @@ static void mpi3mr_sastopochg_evt_th(struct mpi3mr_ioc *mrioc,
- 				atomic_dec_if_positive
- 				    (&scsi_tgt_priv_data->block_io);
- 			}
-+			break;
- 		case MPI3_EVENT_SAS_TOPO_PHY_RC_PHY_CHANGED:
- 		default:
- 			break;
--- 
-2.27.0
+Note sure this is correct, according to the commit log it should be the 
+patch that introduces the SF or aux bus support for vDPA.
+
+
+> Signed-off-by: Eli Cohen <elic@nvidia.com>
+
+
+Patch looks correct.
+
+Thanks
+
+
+> ---
+>   drivers/vdpa/mlx5/net/mlx5_vnet.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> index bc33f2c523d3..a4ff158181e0 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -2046,7 +2046,7 @@ static int mlx5_vdpa_dev_add(struct vdpa_mgmt_dev *v_mdev, const char *name)
+>   	if (err)
+>   		goto err_mtu;
+>   
+> -	mvdev->vdev.dma_dev = mdev->device;
+> +	mvdev->vdev.dma_dev = &mdev->pdev->dev;
+>   	err = mlx5_vdpa_alloc_resources(&ndev->mvdev);
+>   	if (err)
+>   		goto err_mtu;
 
