@@ -2,135 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 156F139B51A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:45:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7BB39B522
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbhFDIrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 04:47:17 -0400
-Received: from mail-lj1-f170.google.com ([209.85.208.170]:41801 "EHLO
-        mail-lj1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhFDIrQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 04:47:16 -0400
-Received: by mail-lj1-f170.google.com with SMTP id p20so10552635ljj.8;
-        Fri, 04 Jun 2021 01:45:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8qje2jMT9k/yWcqfBZuQl0YlsfGCuFmFF0ZAae2cfIA=;
-        b=KOXWEob0hERH0Y0+StGplaqUt60wSGg+aqansgO/OyDXDzsC0XFHoEXfxKfj7uzmpc
-         7u4l5kDjjfVj0NIoW/TM64rCid5hMr4EzA4QMQ+hjlgwXaamzzl+iQnB284hethUcyJz
-         KxHKDrI7yJxJjd9VklowlZMky6JUjwimfB8kxKt/kuHPZ8uZfTj9JxReDkrLxWAxqWld
-         y0M7rZqfg/ftFfPkoRFHOSa/LdTFyYzBxPhCeTIuBE+rkqQDoyDs/weXTkeyVh92u9s0
-         1TqqvckhMoFwe3/2H0vWUjJSZpoANH8NhpGs+lPizHTVjfQXpNPTckbuXNdZFv3J26Ft
-         sRsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8qje2jMT9k/yWcqfBZuQl0YlsfGCuFmFF0ZAae2cfIA=;
-        b=A8x9njMFDWTuTn1nqFqCfCCrYWQ3Fe9xQWmEKUTP2OZTl5lyjUnrscUQJNNsESAx36
-         sHURH3BHK31JQVDvZBdGuFh93JpVxwNdc7m4SuKsDPgvV077pWVFZ1EKpZIPznLRf0k+
-         yeW7QqWYkvb32d+UQczW9S4LdbZp6LRhtebYpl2HFsOWyvRDxlcQ2m6jeb9/Sp21wpKm
-         xESOm9BLurqtciOulymDAK7iYQUifJCbgvUpw1PY19Oi4T++5xK5VFwrBZXFP7dYCFg+
-         gvLOJRdsAcVApZcGxq5g2Dv/H9xmdDQTy8TYPSFQXuVG9NtCi6x3nkqpgEF8My9PEFV4
-         DpmQ==
-X-Gm-Message-State: AOAM5339WB50Rh46+eLDdUvGiNzk5KbuoZSGZDxAUuRup1TVG94tjPYi
-        mIabWzsNaexImgQlqqu2ZkyD1Eyy8uvsow==
-X-Google-Smtp-Source: ABdhPJy+1611WuPZMiE8gnObgiAWxRMGON1e8gtOn+PqjM9SDqSc3QyxqFiQ9cR4G4V4w3QmvAEGOA==
-X-Received: by 2002:a2e:9f4c:: with SMTP id v12mr2596710ljk.176.1622796260789;
-        Fri, 04 Jun 2021 01:44:20 -0700 (PDT)
-Received: from [10.0.0.40] (91-155-111-71.elisa-laajakaista.fi. [91.155.111.71])
-        by smtp.gmail.com with ESMTPSA id 26sm550657lfr.184.2021.06.04.01.44.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Jun 2021 01:44:20 -0700 (PDT)
-Subject: Re: [PATCH v2][next] ASoC: ti: davinci-mcasp: Fix fall-through
- warning for Clang
-To:     Joe Perches <joe@perches.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <20210604072714.GA244640@embeddedor>
- <a0452dc7da2c46e3e764bdd5fd9b94dc96d96912.camel@perches.com>
-From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-Message-ID: <4c217782-21e5-b408-0fb9-f0a2c5b31591@gmail.com>
-Date:   Fri, 4 Jun 2021 11:44:19 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
-MIME-Version: 1.0
-In-Reply-To: <a0452dc7da2c46e3e764bdd5fd9b94dc96d96912.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S230106AbhFDIsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 04:48:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41020 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229930AbhFDIsp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 04:48:45 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BE38F61208;
+        Fri,  4 Jun 2021 08:46:59 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lp5Tl-005RCV-NT; Fri, 04 Jun 2021 09:46:57 +0100
+Date:   Fri, 04 Jun 2021 09:46:48 +0100
+Message-ID: <87v96uyq2v.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Suleiman Souhlal <suleiman@google.com>, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        kvm@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        linux-s390@vger.kernel.org
+Subject: Re: [RFC][PATCH] kvm: add suspend pm-notifier
+In-Reply-To: <20210603164315.682994-1-senozhatsky@chromium.org>
+References: <20210603164315.682994-1-senozhatsky@chromium.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: senozhatsky@chromium.org, pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com, jmattson@google.com, chenhuacai@kernel.org, paulus@ozlabs.org, borntraeger@de.ibm.com, suleiman@google.com, x86@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, kvm@vger.kernel.org, kvm-ppc@vger.kernel.org, linux-s390@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 04/06/2021 10:53, Joe Perches wrote:
-> On Fri, 2021-06-04 at 02:27 -0500, Gustavo A. R. Silva wrote:
->> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
->> by explicitly adding a fallthrough; statement.
->>
->> Link: https://github.com/KSPP/linux/issues/115
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->> ---
->> Changes in v2:
->>  - Use fallthrough; instead of break;
->>  - Update changelog text.
->>  Link: https://lore.kernel.org/linux-hardening/25941c37-6e38-88ae-3afe-4f5af44380d3@gmail.com/
-> []
->> diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-> []
->> @@ -2317,6 +2317,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
->>  		break;
->>  	default:
->>  		dev_err(&pdev->dev, "No DMA controller found (%d)\n", ret);
->> +		fallthrough;
->>  	case -EPROBE_DEFER:
->>  		goto err;
->>  	}
+On Thu, 03 Jun 2021 17:43:15 +0100,
+Sergey Senozhatsky <senozhatsky@chromium.org> wrote:
 > 
-> While this is OK, perhaps the below would be clearer and a more common style
-> as it doesn't intermix default: with logging output and a case label.
-
-True, this looks even better.
-
-Acked-by: Peter Ujfalusi <peter.ujflausi@gmail.com>
-
+> Add KVM suspend/hibernate PM-notifier which lets architectures
+> to implement arch-specific VM suspend code. For instance, on x86
+> this sets PVCLOCK_GUEST_STOPPED on all the VCPUs.
+> 
+> Our case is that user puts the host system into sleep multiple
+> times a day (e.g. closes the laptop's lid) so we need a reliable
+> way to suspend VMs properly.
+> 
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 > ---
->  sound/soc/ti/davinci-mcasp.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  arch/arm64/kvm/arm.c       |  4 ++++
+>  arch/mips/kvm/mips.c       |  4 ++++
+>  arch/powerpc/kvm/powerpc.c |  4 ++++
+>  arch/s390/kvm/kvm-s390.c   |  4 ++++
+>  arch/x86/kvm/x86.c         | 21 ++++++++++++++++++++
+>  include/linux/kvm_host.h   |  8 ++++++++
+>  virt/kvm/kvm_main.c        | 40 ++++++++++++++++++++++++++++++++++++++
+>  7 files changed, 85 insertions(+)
 > 
-> diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-> index b94220306d1a8..1059a696ff90e 100644
-> --- a/sound/soc/ti/davinci-mcasp.c
-> +++ b/sound/soc/ti/davinci-mcasp.c
-> @@ -2305,6 +2305,9 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
->  		goto err;
->  
->  	ret = davinci_mcasp_get_dma_type(mcasp);
-> +	if (ret == -EPROBE_DEFER)
-> +		goto err;
-> +
->  	switch (ret) {
->  	case PCM_EDMA:
->  		ret = edma_pcm_platform_register(&pdev->dev);
-> @@ -2317,7 +2320,6 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
->  		break;
->  	default:
->  		dev_err(&pdev->dev, "No DMA controller found (%d)\n", ret);
-> -	case -EPROBE_DEFER:
->  		goto err;
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index 1126eae27400..547dbe44d039 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -1311,6 +1311,10 @@ static int kvm_vm_ioctl_set_device_addr(struct kvm *kvm,
 >  	}
+>  }
 >  
-> 
+> +void kvm_arch_pm_notifier(struct kvm *kvm)
+> +{
+> +}
+> +
+>  long kvm_arch_vm_ioctl(struct file *filp,
+>  		       unsigned int ioctl, unsigned long arg)
+>  {
+> diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
+> index 4d4af97dcc88..d4408acd2be6 100644
+> --- a/arch/mips/kvm/mips.c
+> +++ b/arch/mips/kvm/mips.c
+> @@ -980,6 +980,10 @@ void kvm_arch_flush_remote_tlbs_memslot(struct kvm *kvm,
+>  	kvm_flush_remote_tlbs(kvm);
+>  }
+>  
+> +void kvm_arch_pm_notifier(struct kvm *kvm)
+> +{
+> +}
+> +
+>  long kvm_arch_vm_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
+>  {
+>  	long r;
+> diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
+> index a2a68a958fa0..96e8a7b6fcf0 100644
+> --- a/arch/powerpc/kvm/powerpc.c
+> +++ b/arch/powerpc/kvm/powerpc.c
+> @@ -2334,6 +2334,10 @@ static int kvmppc_get_cpu_char(struct kvm_ppc_cpu_char *cp)
+>  }
+>  #endif
+>  
+> +void kvm_arch_pm_notifier(struct kvm *kvm)
+> +{
+> +}
+> +
+>  long kvm_arch_vm_ioctl(struct file *filp,
+>                         unsigned int ioctl, unsigned long arg)
+>  {
+> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+> index 1296fc10f80c..c5f86fc1e497 100644
+> --- a/arch/s390/kvm/kvm-s390.c
+> +++ b/arch/s390/kvm/kvm-s390.c
+> @@ -2367,6 +2367,10 @@ static int kvm_s390_handle_pv(struct kvm *kvm, struct kvm_pv_cmd *cmd)
+>  	return r;
+>  }
+>  
+> +void kvm_arch_pm_notifier(struct kvm *kvm)
+> +{
+> +}
+> +
+>  long kvm_arch_vm_ioctl(struct file *filp,
+>  		       unsigned int ioctl, unsigned long arg)
+>  {
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index bbc4e04e67ad..3f3d6497593f 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -5613,6 +5613,27 @@ static int kvm_vm_ioctl_set_msr_filter(struct kvm *kvm, void __user *argp)
+>  	return 0;
+>  }
+>  
+> +void kvm_arch_pm_notifier(struct kvm *kvm)
+> +{
+> +#ifdef CONFIG_PM
+> +	int c;
+> +
+> +	mutex_lock(&kvm->lock);
+> +	for (c = 0; c < kvm->created_vcpus; c++) {
+> +		struct kvm_vcpu *vcpu = kvm->vcpus[c];
+> +		int r;
+> +
+> +		if (!vcpu)
+> +			continue;
+
+Wouldn't kvm_for_each_vcpu() avoid this kind of checks?
+
+> +		r = kvm_set_guest_paused(vcpu);
+> +		if (!r)
+> +			continue;
+> +		pr_err("Failed to suspend VCPU-%d: %d\n", vcpu->vcpu_id,  r);
+> +	}
+> +	mutex_unlock(&kvm->lock);
+> +#endif
+> +}
+> +
+>  long kvm_arch_vm_ioctl(struct file *filp,
+>  		       unsigned int ioctl, unsigned long arg)
+>  {
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index 2f34487e21f2..86695320a6b7 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -37,6 +37,8 @@
+>  #include <asm/kvm_host.h>
+>  #include <linux/kvm_dirty_ring.h>
+>  
+> +#include <linux/notifier.h>
+> +
+>  #ifndef KVM_MAX_VCPU_ID
+>  #define KVM_MAX_VCPU_ID KVM_MAX_VCPUS
+>  #endif
+> @@ -579,6 +581,10 @@ struct kvm {
+>  	pid_t userspace_pid;
+>  	unsigned int max_halt_poll_ns;
+>  	u32 dirty_ring_size;
+> +
+> +#ifdef CONFIG_PM
+> +	struct notifier_block pm_notifier;
+> +#endif
+
+I'd certainly like to be able to opt out from this on architectures
+that do not implement anything useful in the PM callbacks. Please
+consider making this an independent config option that individual
+archs can buy into.
+
+>  };
+>  
+>  #define kvm_err(fmt, ...) \
+> @@ -992,6 +998,8 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu);
+>  void kvm_arch_vcpu_postcreate(struct kvm_vcpu *vcpu);
+>  void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu);
+>  
+> +void kvm_arch_pm_notifier(struct kvm *kvm);
+> +
+>  #ifdef __KVM_HAVE_ARCH_VCPU_DEBUGFS
+>  void kvm_arch_create_vcpu_debugfs(struct kvm_vcpu *vcpu, struct dentry *debugfs_dentry);
+>  #endif
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 6b4feb92dc79..86925ab7d162 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -51,6 +51,7 @@
+>  #include <linux/io.h>
+>  #include <linux/lockdep.h>
+>  #include <linux/kthread.h>
+> +#include <linux/suspend.h>
+>  
+>  #include <asm/processor.h>
+>  #include <asm/ioctl.h>
+> @@ -779,6 +780,43 @@ static int kvm_init_mmu_notifier(struct kvm *kvm)
+>  
+>  #endif /* CONFIG_MMU_NOTIFIER && KVM_ARCH_WANT_MMU_NOTIFIER */
+>  
+> +#ifdef CONFIG_PM
+> +static int kvm_pm_notifier_call(struct notifier_block *bl,
+> +				unsigned long state,
+> +				void *unused)
+> +{
+> +	struct kvm *kvm = container_of(bl, struct kvm, pm_notifier);
+> +
+> +	switch (state) {
+> +	case PM_HIBERNATION_PREPARE:
+> +	case PM_SUSPEND_PREPARE:
+> +		kvm_arch_pm_notifier(kvm);
+
+How about passing the state to the notifier callback? I'd expect it to
+be useful to do something on resume too.
+
+> +		break;
+> +	}
+> +	return NOTIFY_DONE;
+> +}
+> +
+> +static void kvm_init_pm_notifier(struct kvm *kvm)
+> +{
+> +	kvm->pm_notifier.notifier_call = kvm_pm_notifier_call;
+> +	kvm->pm_notifier.priority = INT_MAX;
+
+How is this priority determined?
+
+> +	register_pm_notifier(&kvm->pm_notifier);
+> +}
+> +
+> +static void kvm_destroy_pm_notifier(struct kvm *kvm)
+> +{
+> +	unregister_pm_notifier(&kvm->pm_notifier);
+> +}
+> +#else
+> +static void kvm_init_pm_notifier(struct kvm *kvm)
+> +{
+> +}
+> +
+> +static void kvm_destroy_pm_notifier(struct kvm *kvm)
+> +{
+> +}
+> +#endif /* CONFIG_PM */
+> +
+>  static struct kvm_memslots *kvm_alloc_memslots(void)
+>  {
+>  	int i;
+> @@ -962,6 +1000,7 @@ static struct kvm *kvm_create_vm(unsigned long type)
+>  	mutex_unlock(&kvm_lock);
+>  
+>  	preempt_notifier_inc();
+> +	kvm_init_pm_notifier(kvm);
+>  
+>  	return kvm;
+>  
+> @@ -1009,6 +1048,7 @@ static void kvm_destroy_vm(struct kvm *kvm)
+>  	int i;
+>  	struct mm_struct *mm = kvm->mm;
+>  
+> +	kvm_destroy_pm_notifier(kvm);
+>  	kvm_uevent_notify_change(KVM_EVENT_DESTROY_VM, kvm);
+>  	kvm_destroy_vm_debugfs(kvm);
+>  	kvm_arch_sync_events(kvm);
+
+Thanks,
+
+	M.
 
 -- 
-Péter
+Without deviation from the norm, progress is not possible.
