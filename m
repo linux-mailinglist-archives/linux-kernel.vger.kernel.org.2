@@ -2,172 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A607139BAD1
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D7C39BADD
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231164AbhFDOUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 10:20:52 -0400
-Received: from foss.arm.com ([217.140.110.172]:40180 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230124AbhFDOUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 10:20:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D3372B;
-        Fri,  4 Jun 2021 07:19:05 -0700 (PDT)
-Received: from [192.168.0.14] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 20A173F774;
-        Fri,  4 Jun 2021 07:19:02 -0700 (PDT)
-Subject: Re: [PATCH v5] ACPI / APEI: fix the regression of synchronous
- external aborts occur in user-mode
-To:     Xiaofei Tan <tanxiaofei@huawei.com>, rafael@kernel.org,
-        rjw@rjwysocki.net, lenb@kernel.org, tony.luck@intel.com,
-        bp@alien8.de, akpm@linux-foundation.org, jroedel@suse.de,
-        peterz@infradead.org
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com
-References: <1607602177-1507-1-git-send-email-tanxiaofei@huawei.com>
-From:   James Morse <james.morse@arm.com>
-Message-ID: <d57d786c-f9cb-46ba-78d0-3675666272f2@arm.com>
-Date:   Fri, 4 Jun 2021 15:19:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S230425AbhFDO1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 10:27:36 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:37213 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S229620AbhFDO1f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 10:27:35 -0400
+Received: (qmail 1679280 invoked by uid 1000); 4 Jun 2021 10:25:48 -0400
+Date:   Fri, 4 Jun 2021 10:25:48 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>, will@kernel.org,
+        paulmck@kernel.org, parri.andrea@gmail.com, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com,
+        linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <20210604142548.GD1676809@rowland.harvard.edu>
+References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <1607602177-1507-1-git-send-email-tanxiaofei@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xiaofei Tan,
+On Fri, Jun 04, 2021 at 12:12:07PM +0200, Peter Zijlstra wrote:
+> Hi!
+> 
+> With optimizing compilers becoming more and more agressive and C so far
+> refusing to acknowledge the concept of control-dependencies even while
+> we keep growing the amount of reliance on them, things will eventually
+> come apart.
+> 
+> There have been talks with toolchain people on how to resolve this; one
+> suggestion was allowing the volatile qualifier on branch statements like
+> 'if', but so far no actual compiler has made any progress on this.
+> 
+> Rather than waiting any longer, provide our own construct based on that
+> suggestion. The idea is by Alan Stern and refined by Paul and myself.
+> 
+> Code generation is sub-optimal (for the weak architectures) since we're
+> forced to convert the condition into another and use a fixed conditional
+> branch instruction, but shouldn't be too bad.
+> 
+> Usage of volatile_if requires the @cond to be headed by a volatile load
+> (READ_ONCE() / atomic_read() etc..) such that the compiler is forced to
+> emit the load and the branch emitted will have the required
+> data-dependency. Furthermore, volatile_if() is a compiler barrier, which
+> should prohibit the compiler from lifting anything out of the selection
+> statement.
+> 
+> This construct should place control dependencies on a stronger footing
+> until such time that the compiler folks get around to accepting them :-)
+> 
+> I've converted most architectures we care about, and the rest will get
+> an extra smp_mb() by means of the 'generic' fallback implementation (for
+> now).
+> 
+> I've converted the control dependencies I remembered and those found
+> with a search for smp_acquire__after_ctrl_dep(), there might be more.
+> 
+> Compile tested only (alpha, arm, arm64, x86_64, powerpc, powerpc64, s390
+> and sparc64).
+> 
+> Suggested-by: Alan Stern <stern@rowland.harvard.edu>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-Sorry for the delayed response,
-this still applies and builds to v5.13-rc4.
+Is there any interest in doing the same sort of thing for switch
+statements?  A similar approach would probably work, but maybe people
+don't care about it.
 
-On 10/12/2020 12:09, Xiaofei Tan wrote:
-> After the commit 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea()
-> synchronise with APEI's irq work") applied, do_sea() return directly
-> for user-mode if apei_claim_sea() handled any error record. Therefore,
-> each error record reported by the user-mode SEA must be effectively
-> processed in APEI GHES driver.
-
-If you describe it the other way round, it would be clearer what the problem here is.
-Something like:
-| Before commit 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea() synchronise
-| with APEI's irq work"), do_sea() would unconditionally signal the affected task
-| from the arch code. Since that change, the GHES driver sends the signals,.
-| This exposes a problem as errors the GHES driver doesn't understand are silently
-| ignored.
-
-
-> Currently, GHES driver only processes Memory Error Section.(Ignore PCIe
-> Error Section, as it has nothing to do with SEA).
-
-(you're starting to confuse me! - I went and checked before I realised you were talking to
-me, not describing the code...)
-
-> It is not enough. > Because ARM Processor Error could also be used for SEA in some hardware
-> platforms, such as Kunpeng9xx series. We can't ask them to switch to
-> use Memory Error Section for two reasons:
-> 1)The server was delivered to customers, and it will introduce
-> compatibility issue.
-> 2)It make sense to use ARM Processor Error Section. Because either
-> cache or memory errors could generate SEA when consumed by a processor.
-
-I think you just need to say:
-| Existing firmware on Kunpeng9xx systems reports cache errors with the 'ARM Processor
-| Error' CPER records.
-
-
-Could you add something about why the silent-ignore is a problem? Do the errors get taken
-again? Does user-space get stuck in this loop?
-
-
-> Do memory failure handling for ARM Processor Error Section just like
-> for Memory Error Section.
-
-> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-> index fce7ade..0893968 100644
-> --- a/drivers/acpi/apei/ghes.c
-> +++ b/drivers/acpi/apei/ghes.c
-
-> +static bool ghes_handle_arm_hw_error(struct acpi_hest_generic_data *gdata, int sev)
-> +{
-> +	struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
-> +	struct cper_arm_err_info *err_info;
-> +	bool queued = false;
-> +	int sec_sev, i;
-> +
-> +	log_arm_hw_error(err);
-> +
-> +	sec_sev = ghes_severity(gdata->error_severity);
-> +	if (sev != GHES_SEV_RECOVERABLE || sec_sev != GHES_SEV_RECOVERABLE)
-> +		return false;
-> +
-> +	err_info = (struct cper_arm_err_info *) (err + 1);
-> +	for (i = 0; i < err->err_info_num; i++, err_info++) {
-
-err_info has a version and a length, so its expected to be made bigger at some point.
-It would be better to use the length instead of 'err_info++', or at least to break out of
-the loop if a length > sizeof(*err_info) is seen.
-
-With that:
-Reviewed-by: James Morse <james.morse@arm.com>
-
-
-The following nits would make this easier to read:
-
-> +		bool is_cache = (err_info->type == CPER_ARM_CACHE_ERROR);
-> +		bool has_pa = (err_info->validation_bits & CPER_ARM_INFO_VALID_PHYSICAL_ADDR);
-
-> +		/*
-> +		 * The field (err_info->error_info & BIT(26)) is fixed to set to
-> +		 * 1 in some old firmware of HiSilicon Kunpeng920. We assume that
-> +		 * firmware won't mix corrected errors in an uncorrected section,
-> +		 * and don't filter out 'corrected' error here.
-> +		 */
-(Nothing reads err_info->error_info, I guess this is a warning to the next person to touch
-this)
-
-
-> +		if (!is_cache || !has_pa) {
-> +			pr_warn_ratelimited(FW_WARN GHES_PFX
-> +			"Unhandled processor error type %s\n",
-> +			err_info->type < ARRAY_SIZE(cper_proc_error_type_strs) ?
-> +			cper_proc_error_type_strs[err_info->type] : "unknown error");
-> +			continue;
-
-This is hard to read. The convention is to indent the extra lines to the relevant '('.
-e.g.:
-|			pr_warn_ratelimited(FW_WARN GHES_PFX
-|					    "Unhandled processor error type %s\n",
-
-You could make it shorter by working out the error_type string earlier
-e.g.:
-|		char *error_type = "unknown_error";
-|			
-|		if  (err_info->type < ARRAY_SIZE(cper_proc_error_type_strs)
-|			error_type = cper_proc_error_type_strs[err_info->type];
-
-
-> +		}
-
-> +		if (ghes_do_memory_failure(err_info->physical_fault_addr, 0))
-> +			queued = true;
-
-| if (it_returned_true())
-| 	queued = true;
-
-Looks funny, and if you moved this earlier, your pr_warn_ratelimted() would have an extra
-level of indentation to play with.
-i.e.:
-|		if (is_cache && has_pa) {
-|			queued = ghes_do_memory_failure(err_info->physical_fault_addr, 0);
-|			continue;
-|		}
-
-
-Thanks,
-
-James
+Alan
