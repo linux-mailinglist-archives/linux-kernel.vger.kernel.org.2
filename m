@@ -2,92 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D84D39B11F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 05:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D89D339B11A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 05:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbhFDDuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 23:50:15 -0400
-Received: from mail-pg1-f180.google.com ([209.85.215.180]:36790 "EHLO
-        mail-pg1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbhFDDuP (ORCPT
+        id S229833AbhFDDtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 23:49:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22785 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229775AbhFDDtV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 23:50:15 -0400
-Received: by mail-pg1-f180.google.com with SMTP id 27so6792210pgy.3
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 20:48:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=pIq+JVIVR9DjAt6LSJSdRSoXJZoMpMbdkGfBUXWctS8=;
-        b=MLa6uHvz/HBRNKFlje+iv6q7NwcrPZZLfLn72Auow2MiBy9pXci6zDSsVtz093uJAQ
-         tI2l7rOo5uSkQTM3OLvDb71ZAStKA4kYtUGedUNpqGfacmpPpQbBtiDOfjyVKaEdlDG9
-         05yUJ5lAHQVrD94AKI0UneZBLVGoIcr+bX5to7eO7yq0PYK7EhlL1b6Ye5MaO/ENje7Q
-         UFfa0CXyEclTLRcfL6hvzL3FFLN9XPQ+5DNPc/lkeEJnZnXZFIWoj/1hnTpM4Jle0jJw
-         q/NxexA90JJcPCe+2pIQ2U1mqW1wKQZQkofCHOuIJDTZTwfHlZRSIdWWi9PdWMfgdrWu
-         MBvA==
+        Thu, 3 Jun 2021 23:49:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622778456;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qYVKZDuvt5Qic5U7hRSglNEDW7YcTuvFUNtFxiNT7O8=;
+        b=AZ/Y54HvkpKqAG3KwZEZoyWKVhYffiS+2s8wSYi48rDrWlS9ZH2W11E0vXkZfQ3XoNPesD
+        3G5jXFszrhz5lwTHMcFxUGdOuzswtqtAH17BKm/NqK5fDDXmqaoq2gMgk/JR7G1bBJEgY2
+        RMOKDCo5+iFnfCQLTTw8KAjOKqzOYAc=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-159-DoPgn5hRNHiUoJ-7G1PNQg-1; Thu, 03 Jun 2021 23:47:34 -0400
+X-MC-Unique: DoPgn5hRNHiUoJ-7G1PNQg-1
+Received: by mail-ot1-f71.google.com with SMTP id 19-20020a9d04130000b02903cb28b38d0aso2953824otc.19
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 20:47:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=pIq+JVIVR9DjAt6LSJSdRSoXJZoMpMbdkGfBUXWctS8=;
-        b=ak1TfYpVJaE1hf50PuqYvlQqfCkUVDI44pIdnI+eU3i0iBKDEdkCo/0woRj5Cw2A6D
-         GaMa3N3I0UvEGVxN3K0Kxzi51VBDJFKPPwVzaDA1FtJVKAWZfdGnLPbpoqVFvSt6Hblh
-         fR4HDguKHgpS9RNR06JV4YxR1m3VpMZo5O8JkkQVn6xzzfis0yZwv88KnV/qcdKjyGTn
-         nqSvpb687qQ4DcVjaTCsT8Szvzx33Au4Bh0UPEwUMeuBuwOCku6TzfaTG1SKduNnMOjw
-         sCSIZ1RS/3YMb1uWBTkyig0FhXOsgqM5f3/0qIQEHFNRkx6jY25ZaSQjLuCOgMWKRYvh
-         zB2g==
-X-Gm-Message-State: AOAM533kwdZDQwr2d4k/+5Awv8j4rbU/rQQXYpZfX8z9B/Lvr66fJ8AP
-        Rl/RlHMjGBy+s2l0jUCcAVtVfQ==
-X-Google-Smtp-Source: ABdhPJxPYL3u14YlbpACeDySBpftc5/sS7Ra4HGar7+d8+9245hYpnWmvs5a96W4jbVQ38b28AS5mg==
-X-Received: by 2002:a63:af46:: with SMTP id s6mr2802591pgo.446.1622778434301;
-        Thu, 03 Jun 2021 20:47:14 -0700 (PDT)
-Received: from localhost ([136.185.154.93])
-        by smtp.gmail.com with ESMTPSA id t1sm488715pgl.40.2021.06.03.20.47.13
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=qYVKZDuvt5Qic5U7hRSglNEDW7YcTuvFUNtFxiNT7O8=;
+        b=cPhmBGrDJyfazD6vtmyyq4VPceellMyfZplFwPSo4bqRLMqF1AuCtw7IGO0B1Hl0Q4
+         ZJVwNtrYt2l+18BiPK+o+RgpjtyOOqqpZ2yJRdxfmy9wCH9Ur+4IJKLKihuZWtWSmm43
+         05CGlRPmcodSyV796a6o6mkRUg7V8jyHIi0NtVIeKGcsnDVVTNGZE61jbWUpdwgtjKzt
+         GTbIyqf/fkZsaA7zHByKBJF1NyF2FOROUi/8SMO1muAVMSd1K/qhoq2lOeBGJvyzDCaT
+         0ACHi1sKKs+PnhBw+6nYi+uI5FZ3ejVXAm8VrufpBcBtxal0XmrD+RrSbgjcycNUj85W
+         1unw==
+X-Gm-Message-State: AOAM530+KU8YkzlXQJ/Ot40sYOtQFjI2Tqv899lO4m3v4XpqPhez2u2A
+        eOjwYmq+gQ7fTMI5s62o9GLTpQDt45lSuaQSgcinHdbNaV9pRR+R/Y0Vro8oTc6uRoYbPdyrLli
+        B4AxlT5okDgS9BFX2bcBFW0OA
+X-Received: by 2002:aca:42c6:: with SMTP id p189mr9377788oia.36.1622778454090;
+        Thu, 03 Jun 2021 20:47:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzPpaWKooEIC1jgqP5XfvYz7fSFRzk4H+W3/+1Ves6P7f1pdUp+76S8SrIRLTsgQayfXww8vg==
+X-Received: by 2002:aca:42c6:: with SMTP id p189mr9377780oia.36.1622778453943;
+        Thu, 03 Jun 2021 20:47:33 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id n11sm214881oom.1.2021.06.03.20.47.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 20:47:13 -0700 (PDT)
-Date:   Fri, 4 Jun 2021 09:17:09 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Hailong Liu <liuhailongg6@163.com>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        linux-mips@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hailong Liu <liu.hailong6@zte.com.cn>
-Subject: Re: [PATCH] CPUFREQ: loongson2: Remove unused linux/sched.h headers
-Message-ID: <20210604034709.kxqy6vcfvtxf5rje@vireshk-i7>
-References: <20210603135752.30162-1-liuhailongg6@163.com>
+        Thu, 03 Jun 2021 20:47:33 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 21:47:31 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Dave Jiang <dave.jiang@intel.com>
+Cc:     kwankhede@nvidia.com, tglx@linutronix.de, vkoul@kernel.org,
+        jgg@mellanox.com, megha.dey@intel.com, jacob.jun.pan@intel.com,
+        ashok.raj@intel.com, yi.l.liu@intel.com, baolu.lu@intel.com,
+        kevin.tian@intel.com, sanjay.k.kumar@intel.com,
+        tony.luck@intel.com, dan.j.williams@intel.com,
+        eric.auger@redhat.com, pbonzini@redhat.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH v6 12/20] vfio: move VFIO PCI macros to common header
+Message-ID: <20210603214731.1631a480.alex.williamson@redhat.com>
+In-Reply-To: <162164281969.261970.17759783730654052269.stgit@djiang5-desk3.ch.intel.com>
+References: <162164243591.261970.3439987543338120797.stgit@djiang5-desk3.ch.intel.com>
+        <162164281969.261970.17759783730654052269.stgit@djiang5-desk3.ch.intel.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210603135752.30162-1-liuhailongg6@163.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03-06-21, 21:57, Hailong Liu wrote:
-> From: Hailong Liu <liu.hailong6@zte.com.cn>
-> 
-> Since commit 759f534e93ac(CPUFREQ: Loongson2: drop set_cpus_allowed_ptr()),
-> the header <linux/sched.h> is useless in oongson2_cpufreq.c, so remove it.
-> 
-> Signed-off-by: Hailong Liu <liu.hailong6@zte.com.cn>
+On Fri, 21 May 2021 17:20:19 -0700
+Dave Jiang <dave.jiang@intel.com> wrote:
+
+> Move some VFIO_PCI macros to a common header as they will be shared between
+> mdev and vfio_pci.
+
+No, this is the current implementation of vfio-pci, it's specifically
+not meant to be a standard.  Each vfio device driver is free to expose
+regions on the device file descriptor as they wish.  If you want to use
+a 40-bit implementation as well, great, but it should not be imposed as
+a standard.  Thanks,
+
+Alex
+
+> Signed-off-by: Dave Jiang <dave.jiang@intel.com>
 > ---
->  drivers/cpufreq/loongson2_cpufreq.c | 1 -
->  1 file changed, 1 deletion(-)
+>  drivers/vfio/pci/vfio_pci_private.h |    6 ------
+>  include/linux/vfio.h                |    6 ++++++
+>  2 files changed, 6 insertions(+), 6 deletions(-)
 > 
-> diff --git a/drivers/cpufreq/loongson2_cpufreq.c b/drivers/cpufreq/loongson2_cpufreq.c
-> index d05e761d9572..afc59b292153 100644
-> --- a/drivers/cpufreq/loongson2_cpufreq.c
-> +++ b/drivers/cpufreq/loongson2_cpufreq.c
-> @@ -16,7 +16,6 @@
->  #include <linux/cpufreq.h>
->  #include <linux/module.h>
->  #include <linux/err.h>
-> -#include <linux/sched.h>	/* set_cpus_allowed() */
->  #include <linux/delay.h>
->  #include <linux/platform_device.h>
+> diff --git a/drivers/vfio/pci/vfio_pci_private.h b/drivers/vfio/pci/vfio_pci_private.h
+> index a17943911fcb..e644f981509c 100644
+> --- a/drivers/vfio/pci/vfio_pci_private.h
+> +++ b/drivers/vfio/pci/vfio_pci_private.h
+> @@ -18,12 +18,6 @@
+>  #ifndef VFIO_PCI_PRIVATE_H
+>  #define VFIO_PCI_PRIVATE_H
+>  
+> -#define VFIO_PCI_OFFSET_SHIFT   40
+> -
+> -#define VFIO_PCI_OFFSET_TO_INDEX(off)	(off >> VFIO_PCI_OFFSET_SHIFT)
+> -#define VFIO_PCI_INDEX_TO_OFFSET(index)	((u64)(index) << VFIO_PCI_OFFSET_SHIFT)
+> -#define VFIO_PCI_OFFSET_MASK	(((u64)(1) << VFIO_PCI_OFFSET_SHIFT) - 1)
+> -
+>  /* Special capability IDs predefined access */
+>  #define PCI_CAP_ID_INVALID		0xFF	/* default raw access */
+>  #define PCI_CAP_ID_INVALID_VIRT		0xFE	/* default virt access */
+> diff --git a/include/linux/vfio.h b/include/linux/vfio.h
+> index 3b372fa57ef4..ed5ca027eb49 100644
+> --- a/include/linux/vfio.h
+> +++ b/include/linux/vfio.h
+> @@ -15,6 +15,12 @@
+>  #include <linux/poll.h>
+>  #include <uapi/linux/vfio.h>
+>  
+> +#define VFIO_PCI_OFFSET_SHIFT   40
+> +
+> +#define VFIO_PCI_OFFSET_TO_INDEX(off)	((off) >> VFIO_PCI_OFFSET_SHIFT)
+> +#define VFIO_PCI_INDEX_TO_OFFSET(index)	((u64)(index) << VFIO_PCI_OFFSET_SHIFT)
+> +#define VFIO_PCI_OFFSET_MASK	(((u64)(1) << VFIO_PCI_OFFSET_SHIFT) - 1)
+> +
+>  struct vfio_device {
+>  	struct device *dev;
+>  	const struct vfio_device_ops *ops;
+> 
+> 
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-
--- 
-viresh
