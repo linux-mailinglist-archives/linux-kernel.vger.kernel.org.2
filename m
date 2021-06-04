@@ -2,107 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A236F39B785
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB8639B778
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbhFDLGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 07:06:10 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:25829 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230214AbhFDLGH (ORCPT
+        id S230060AbhFDLGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 07:06:00 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:33739 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229682AbhFDLF7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 07:06:07 -0400
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 04 Jun 2021 04:04:21 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 04 Jun 2021 04:04:19 -0700
-X-QCInternal: smtphost
-Received: from c-sanm-linux.qualcomm.com ([10.206.25.31])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 04 Jun 2021 16:33:44 +0530
-Received: by c-sanm-linux.qualcomm.com (Postfix, from userid 2343233)
-        id 4F77A393F; Fri,  4 Jun 2021 16:33:43 +0530 (IST)
-From:   Sandeep Maheswaram <sanm@codeaurora.org>
-To:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>
-Subject: [PATCH v4 2/2] arm64: dts: qcom: sc7280: Add USB nodes for IDP board
-Date:   Fri,  4 Jun 2021 16:33:38 +0530
-Message-Id: <1622804618-18480-3-git-send-email-sanm@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1622804618-18480-1-git-send-email-sanm@codeaurora.org>
-References: <1622804618-18480-1-git-send-email-sanm@codeaurora.org>
+        Fri, 4 Jun 2021 07:05:59 -0400
+Received: from mwalle01.fritz.box (ip4d17858c.dynamic.kabel-deutschland.de [77.23.133.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 17FAA22236;
+        Fri,  4 Jun 2021 13:04:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1622804652;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=5fw8Jf40Gc/YuYU1WK16FbnwfZPGSnpE7hlni55+Ha0=;
+        b=d+8jCeZ9AwzGcxK23g/UXjvhJSCYFuBvqkzA7UvjyjwboxqckGWyLbpUYsgVU+w5Z8wOEC
+        zhIYxGcpHR4ClJNlxBNKfwlJkQ8vW/exHgl5PsOEofAvCmeDuae3oR9yYRSK4mVFPqte3X
+        kgh7JdVrL3voI7RBuXI/5CtdvQO0LP8=
+From:   Michael Walle <michael@walle.cc>
+To:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Michael Walle <michael@walle.cc>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Subject: [PATCH] gpio: regmap: move drvdata to config data
+Date:   Fri,  4 Jun 2021 13:04:06 +0200
+Message-Id: <20210604110406.11006-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add USB nodes for sc7280 IDP board.
+Drop gpio_regmap_set_drvdata() and instead add it to the configuration
+data passed to gpio_regmap_register().
 
-Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+gpio_regmap_set_drvdata() can't really be used in a race free way. This
+is because the gpio_regmap object which is needed by _set_drvdata() is
+returned by gpio_regmap_register(). On the other hand, the callbacks
+which use the drvdata might already be called right after the
+gpiochip_add() call in gpio_regmap_register(). Therefore, we have to
+provide the drvdata early before we call gpiochip_add().
+
+Reported-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Signed-off-by: Michael Walle <michael@walle.cc>
 ---
- arch/arm64/boot/dts/qcom/sc7280-idp.dts | 39 +++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+Btw, I'm not sure how to handle this "was part of another patch by another
+author" thing. Should I leave the Sob and just add mine? I certainly don't
+want to take credit for work Matti had done. This patch isn't huge, but
+still ;)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-index 3900cfc..44326d8 100644
---- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-@@ -276,6 +276,45 @@
- 	status = "okay";
+ drivers/gpio/gpio-regmap.c  | 7 +------
+ include/linux/gpio/regmap.h | 6 +++++-
+ 2 files changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/gpio/gpio-regmap.c b/drivers/gpio/gpio-regmap.c
+index 134cedf151a7..583cd1cdead8 100644
+--- a/drivers/gpio/gpio-regmap.c
++++ b/drivers/gpio/gpio-regmap.c
+@@ -178,12 +178,6 @@ static int gpio_regmap_direction_output(struct gpio_chip *chip,
+ 	return gpio_regmap_set_direction(chip, offset, true);
+ }
+ 
+-void gpio_regmap_set_drvdata(struct gpio_regmap *gpio, void *data)
+-{
+-	gpio->driver_data = data;
+-}
+-EXPORT_SYMBOL_GPL(gpio_regmap_set_drvdata);
+-
+ void *gpio_regmap_get_drvdata(struct gpio_regmap *gpio)
+ {
+ 	return gpio->driver_data;
+@@ -226,6 +220,7 @@ struct gpio_regmap *gpio_regmap_register(const struct gpio_regmap_config *config
+ 		return ERR_PTR(-ENOMEM);
+ 
+ 	gpio->parent = config->parent;
++	gpio->driver_data = config->drvdata;
+ 	gpio->regmap = config->regmap;
+ 	gpio->ngpio_per_reg = config->ngpio_per_reg;
+ 	gpio->reg_stride = config->reg_stride;
+diff --git a/include/linux/gpio/regmap.h b/include/linux/gpio/regmap.h
+index 334dd928042b..a9f7b7faf57b 100644
+--- a/include/linux/gpio/regmap.h
++++ b/include/linux/gpio/regmap.h
+@@ -37,6 +37,9 @@ struct regmap;
+  *			offset to a register/bitmask pair. If not
+  *			given the default gpio_regmap_simple_xlate()
+  *			is used.
++ * @drvdata:		(Optional) Pointer to driver specific data which is
++ *			not used by gpio-remap but is provided "as is" to the
++ *			driver callback(s).
+  *
+  * The ->reg_mask_xlate translates a given base address and GPIO offset to
+  * register and mask pair. The base address is one of the given register
+@@ -78,13 +81,14 @@ struct gpio_regmap_config {
+ 	int (*reg_mask_xlate)(struct gpio_regmap *gpio, unsigned int base,
+ 			      unsigned int offset, unsigned int *reg,
+ 			      unsigned int *mask);
++
++	void *drvdata;
  };
  
-+&usb_1 {
-+	status = "okay";
-+};
-+
-+&usb_1_dwc3 {
-+	dr_mode = "host";
-+};
-+
-+&usb_1_hsphy {
-+	status = "okay";
-+
-+	vdda-pll-supply = <&vreg_l10c_0p8>;
-+	vdda33-supply = <&vreg_l2b_3p0>;
-+	vdda18-supply = <&vreg_l1c_1p8>;
-+};
-+
-+&usb_1_qmpphy {
-+	status = "okay";
-+
-+	vdda-phy-supply = <&vreg_l6b_1p2>;
-+	vdda-pll-supply = <&vreg_l1b_0p8>;
-+};
-+
-+&usb_2 {
-+	status = "okay";
-+};
-+
-+&usb_2_dwc3 {
-+	dr_mode = "peripheral";
-+};
-+
-+&usb_2_hsphy {
-+	status = "okay";
-+
-+	vdda-pll-supply = <&vreg_l10c_0p8>;
-+	vdda33-supply = <&vreg_l2b_3p0>;
-+	vdda18-supply = <&vreg_l1c_1p8>;
-+};
-+
- /* PINCTRL - additions to nodes defined in sc7280.dtsi */
+ struct gpio_regmap *gpio_regmap_register(const struct gpio_regmap_config *config);
+ void gpio_regmap_unregister(struct gpio_regmap *gpio);
+ struct gpio_regmap *devm_gpio_regmap_register(struct device *dev,
+ 					      const struct gpio_regmap_config *config);
+-void gpio_regmap_set_drvdata(struct gpio_regmap *gpio, void *data);
+ void *gpio_regmap_get_drvdata(struct gpio_regmap *gpio);
  
- &qup_uart5_default {
+ #endif /* _LINUX_GPIO_REGMAP_H */
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.20.1
 
