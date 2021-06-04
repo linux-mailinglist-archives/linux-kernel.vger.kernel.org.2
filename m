@@ -2,98 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F87539BD0A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93E1939BD0D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbhFDQ0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 12:26:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44090 "EHLO mail.kernel.org"
+        id S231183AbhFDQ0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 12:26:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229809AbhFDQ0N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 12:26:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0163F613BF;
-        Fri,  4 Jun 2021 16:24:26 +0000 (UTC)
+        id S230046AbhFDQ0k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 12:26:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BBD461009;
+        Fri,  4 Jun 2021 16:24:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622823867;
-        bh=NGB8rXa0uoRMdYpVi/8d63o1MFZR+oN9qStawJ0e010=;
+        s=k20201202; t=1622823893;
+        bh=tGEhtfMeMa1I2VdnXeJu3t/MFpJB5vTP0886/BmM/04=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fdNnWhVEHUWkbXMDsrbZKBP9HPVkKy2jN3QLnKraKlfcmOT8gH7pxn9q1NghQq/wO
-         R3vTjzgzfSoQBLevy2fkykoWSJTwvAxNgFtu6gEgczmyWQNjAL5Go1Bn5sagATwS4W
-         lEYomuIEB/2udqHoeJPnhIkBSgFCGdXqs1hqMKgEOnYpi3M1u/SPAqb/IZVgh2dTZF
-         s5r/qxd6K7skcnm++kIMMElqJ6klHFsw+cJDttbpz/PP27o6KFTCiYudpZuu1Wujrk
-         gGMiH9N1hteua4tiifUldJymGZo9duSvxdNhld1kK41GvFCv8PJGNmft0mD5oOzQXP
-         Ih9chHBZ7K8QA==
-Date:   Fri, 4 Jun 2021 17:24:15 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     madvenka@linux.microsoft.com
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
-        nobuta.keiya@fujitsu.com, catalin.marinas@arm.com, will@kernel.org,
-        jmorris@namei.org, pasha.tatashin@soleen.com, jthierry@redhat.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v5 2/2] arm64: Create a list of SYM_CODE functions,
- check return PC against list
-Message-ID: <20210604162415.GF4045@sirena.org.uk>
-References: <20210526214917.20099-3-madvenka@linux.microsoft.com>
+        b=u/C3vsg1oweCRt+elPVzxhp2DgSa2/3jYJ9+mcooqQhbTHLs6F+T0swU150kiPlNY
+         6qZQNLrg2ZwA5Ph6LLSR2doDH2oEpt4CKpMpRL3O31Tudj88EztoRN0Fe+T92S2Grx
+         DhZSJaogoJURs3QYSxaOJj4+TG72VEqJyHG3cIzBCngzPtYWL6LmV3DLSLzJkjvB1F
+         pMGStlcsYnW8XRXVzzgDooK0j3thLobM08fHupcW1xF4McWqwZiSU6zJWOv2bpPTfC
+         Wj554+kX2eFKhdxj8dclc/HxW6ibXE4/qe9Dqtff6KvMS8g0yyt0mALAy6RWZvuVgR
+         BNFqD9TORL8gw==
+Received: by pali.im (Postfix)
+        id 512D9990; Fri,  4 Jun 2021 18:24:51 +0200 (CEST)
+Date:   Fri, 4 Jun 2021 18:24:51 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 12/42] PCI: aardvark: Check for virq mapping when
+ processing INTx IRQ
+Message-ID: <20210604162451.lzumwctjj6yoigey@pali>
+References: <20210506153153.30454-1-pali@kernel.org>
+ <20210506153153.30454-13-pali@kernel.org>
+ <87h7jeq4zo.wl-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ULyIDA2m8JTe+TiX"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210526214917.20099-3-madvenka@linux.microsoft.com>
-X-Cookie: There is a fly on your nose.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87h7jeq4zo.wl-maz@kernel.org>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Friday 07 May 2021 10:15:39 Marc Zyngier wrote:
+> On Thu, 06 May 2021 16:31:23 +0100,
+> Pali Rohár <pali@kernel.org> wrote:
+> > 
+> > It is possible that we receive spurious INTx interrupt. So add needed check
+> > before calling generic_handle_irq() function.
+> > 
+> > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > Reviewed-by: Marek Behún <kabel@kernel.org>
+> > Cc: stable@vger.kernel.org
+> > ---
+> >  drivers/pci/controller/pci-aardvark.c | 5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
+> > index 362faddae935..e7089db11f79 100644
+> > --- a/drivers/pci/controller/pci-aardvark.c
+> > +++ b/drivers/pci/controller/pci-aardvark.c
+> > @@ -1106,7 +1106,10 @@ static void advk_pcie_handle_int(struct advk_pcie *pcie)
+> >  			    PCIE_ISR1_REG);
+> >  
+> >  		virq = irq_find_mapping(pcie->irq_domain, i);
+> > -		generic_handle_irq(virq);
+> > +		if (virq)
+> > +			generic_handle_irq(virq);
+> > +		else
+> > +			dev_err(&pcie->pdev->dev, "unexpected INT%c IRQ\n", (char)i+'A');
+> 
+> Please don't scream like this. This is the best way to get into a DoS
+> situation if you interrupt rate is high enough. At least rate-limit
+> it.
 
---ULyIDA2m8JTe+TiX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Ok, I will fix it!
 
-On Wed, May 26, 2021 at 04:49:17PM -0500, madvenka@linux.microsoft.com wrote:
-
-> The unwinder should check if the return PC falls in any function that
-> is considered unreliable from an unwinding perspective. If it does,
-> mark the stack trace unreliable.
-
-Reviwed-by: Mark Brown <broonie@kernel.org>
-
-However it'd be good for someone else to double check this as it's
-entirely possible that I've missed some case here.
-
-> + * Some special cases covered by sym_code_functions[] deserve a mention here:
-
-> + *	- All EL1 interrupt and exception stack traces will be considered
-> + *	  unreliable. This is the correct behavior as interrupts and exceptions
-> + *	  can happen on any instruction including ones in the frame pointer
-> + *	  prolog and epilog. Unless stack metadata is available so the unwinder
-> + *	  can unwind through these special cases, such stack traces will be
-> + *	  considered unreliable.
-> + *
-
-If you're respinning this it's probably also worth noting that we only
-ever perform reliable stack trace on either blocked tasks or the current
-task which should if my reasoning is correct mean that the fact that
-the exclusions here mean that we avoid having to worry about so many
-race conditions when entering and leaving functions.  If we got
-preempted at the wrong moment for one of them then we should observe the
-preemption and mark the trace as unreliable due to that which means that
-any confusion the race causes is a non-issue.
-
---ULyIDA2m8JTe+TiX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmC6U64ACgkQJNaLcl1U
-h9C4QAf9HRBqFG+nZ5GixqyUqGGU9sr9f1Ymjd4s3kINKBCnuQtCpH5uA1qARlcT
-xfpdyOCAroWlxaYytUlLNv26CkFEodFiu1+NI/fj4BIC56ACc8vB89tizCY2ZD3j
-xN1PfXXFMD7xpH7O69RqgUlptgrGbCHeWijC9xIy88cnoviEri49h8q6MQvZnoOu
-AYx1OQ+pCTOnno8YVfHghv5pHWHEFcyClHZ2HGXElWZx7/6uF+BhMFsfmm+dj+K0
-8TffheBtjKX3qkRj4hFqr5L2FSS4+9EhBXXJEFsdTO8juhNkkPRYHdLfrwQCINss
-/7O/GpYwALWDvyUiEka7PR7ybxMgqQ==
-=eQAz
------END PGP SIGNATURE-----
-
---ULyIDA2m8JTe+TiX--
+Just to note that this code pattern is used also in other drivers.
+So other drivers should fixed too...
