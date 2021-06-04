@@ -2,97 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 359FC39B990
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E9639B994
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbhFDNKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 09:10:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47730 "EHLO mail.kernel.org"
+        id S230375AbhFDNLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 09:11:43 -0400
+Received: from foss.arm.com ([217.140.110.172]:38716 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230110AbhFDNKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 09:10:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1C0161242;
-        Fri,  4 Jun 2021 13:09:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622812144;
-        bh=KHO+U0aZOMLH2SG9CS45ops/zg0OYk/Q1F2Jdo4MHDs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OoAsBZNFMBALH8HjHbOqLEVqWSkhW363ubgORcFWrczTo1D17qKyVFPUFlMX+BRfE
-         G2U1ePuqGfqDS0DAktsvLrCWMqGsumbw5DHWN82OaUSyI1GYzliQyVed49QQoEwqq4
-         qWsaiIVd1fE9w7a1XZMOO7zjlArX1xvB9YKjH9mPUDlqvnZzCT4Yu5g49JlUELkD/B
-         qGSAKYO72+ypnbhepuhBMD1G4pYY8tdlCwVWECDEqs9FzEq+SEc7FpHjYlLnQ7mbXd
-         10GXeQmyqREwFI7OjooZ0fHpK7feEbNp47PG2HWJCkyQOmS1hRsgDB2X+JJdx+AIBB
-         RsnSG8uVErupg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 5E10940EFC; Fri,  4 Jun 2021 10:09:01 -0300 (-03)
-Date:   Fri, 4 Jun 2021 10:09:01 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Riccardo Mancini <rickyman7@gmail.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
+        id S230041AbhFDNLl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 09:11:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 72B462B;
+        Fri,  4 Jun 2021 06:09:55 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BA0CD3F774;
+        Fri,  4 Jun 2021 06:09:52 -0700 (PDT)
+Subject: Re: [PATCH v13 7/8] KVM: arm64: ioctl to fetch/store tags in a guest
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH] perf env: fix memory leak: free bpf_prog_info_linear
-Message-ID: <YLol7QC7xFSEsw8x@kernel.org>
-References: <20210602224024.300485-1-rickyman7@gmail.com>
- <CAP-5=fW5btkb9izxcUy+XgAQPCTRZAUMa4uQMUR_+N_d=17Mfg@mail.gmail.com>
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+References: <20210524104513.13258-1-steven.price@arm.com>
+ <20210524104513.13258-8-steven.price@arm.com>
+ <20210603171336.GH20338@arm.com>
+ <02c7682e-5fb6-29eb-9105-02e3521756a2@arm.com>
+ <20210604114233.GE31173@arm.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <b3c869e3-b693-5e3f-3748-1c62b01e9b22@arm.com>
+Date:   Fri, 4 Jun 2021 14:09:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fW5btkb9izxcUy+XgAQPCTRZAUMa4uQMUR_+N_d=17Mfg@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210604114233.GE31173@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jun 03, 2021 at 09:15:32PM -0700, Ian Rogers escreveu:
-> On Wed, Jun 2, 2021 at 3:41 PM Riccardo Mancini <rickyman7@gmail.com> wrote:
-> >
-> > ASan reported a memory leak caused by info_linear not being
-> > deallocated. The info_linear was allocated during
-> > perf_event__synthesize_one_bpf_prog.
-> > This patch adds the corresponding free() when bpf_prog_info_node
-> > is freed in perf_env__purge_bpf.
-> >
-> > $ sudo ./perf record -- sleep 5
-> > [ perf record: Woken up 1 times to write data ]
-> > [ perf record: Captured and wrote 0.025 MB perf.data (8 samples) ]
-> >
-> > =================================================================
-> > ==297735==ERROR: LeakSanitizer: detected memory leaks
-> >
-> > Direct leak of 7688 byte(s) in 19 object(s) allocated from:
-> >     #0 0x4f420f in malloc (/home/user/linux/tools/perf/perf+0x4f420f)
-> >     #1 0xc06a74 in bpf_program__get_prog_info_linear /home/user/linux/tools/lib/bpf/libbpf.c:11113:16
-> >     #2 0xb426fe in perf_event__synthesize_one_bpf_prog /home/user/linux/tools/perf/util/bpf-event.c:191:16
-> >     #3 0xb42008 in perf_event__synthesize_bpf_events /home/user/linux/tools/perf/util/bpf-event.c:410:9
-> >     #4 0x594596 in record__synthesize /home/user/linux/tools/perf/builtin-record.c:1490:8
-> >     #5 0x58c9ac in __cmd_record /home/user/linux/tools/perf/builtin-record.c:1798:8
-> >     #6 0x58990b in cmd_record /home/user/linux/tools/perf/builtin-record.c:2901:8
-> >     #7 0x7b2a20 in run_builtin /home/user/linux/tools/perf/perf.c:313:11
-> >     #8 0x7b12ff in handle_internal_command /home/user/linux/tools/perf/perf.c:365:8
-> >     #9 0x7b2583 in run_argv /home/user/linux/tools/perf/perf.c:409:2
-> >     #10 0x7b0d79 in main /home/user/linux/tools/perf/perf.c:539:3
-> >     #11 0x7fa357ef6b74 in __libc_start_main /usr/src/debug/glibc-2.33-8.fc34.x86_64/csu/../csu/libc-start.c:332:16
-> >
-> > Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+On 04/06/2021 12:42, Catalin Marinas wrote:
+> On Fri, Jun 04, 2021 at 12:15:56PM +0100, Steven Price wrote:
+>> On 03/06/2021 18:13, Catalin Marinas wrote:
+>>> On Mon, May 24, 2021 at 11:45:12AM +0100, Steven Price wrote:
+>>>> diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
+>>>> index 24223adae150..b3edde68bc3e 100644
+>>>> --- a/arch/arm64/include/uapi/asm/kvm.h
+>>>> +++ b/arch/arm64/include/uapi/asm/kvm.h
+>>>> @@ -184,6 +184,17 @@ struct kvm_vcpu_events {
+>>>>  	__u32 reserved[12];
+>>>>  };
+>>>>  
+>>>> +struct kvm_arm_copy_mte_tags {
+>>>> +	__u64 guest_ipa;
+>>>> +	__u64 length;
+>>>> +	void __user *addr;
+>>>> +	__u64 flags;
+>>>> +	__u64 reserved[2];
+>>>> +};
+>>>> +
+>>>> +#define KVM_ARM_TAGS_TO_GUEST		0
+>>>> +#define KVM_ARM_TAGS_FROM_GUEST		1
+>>>> +
+>>>>  /* If you need to interpret the index values, here is the key: */
+>>>>  #define KVM_REG_ARM_COPROC_MASK		0x000000000FFF0000
+>>>>  #define KVM_REG_ARM_COPROC_SHIFT	16
+>>>> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+>>>> index e89a5e275e25..baa33359e477 100644
+>>>> --- a/arch/arm64/kvm/arm.c
+>>>> +++ b/arch/arm64/kvm/arm.c
+>>>> @@ -1345,6 +1345,13 @@ long kvm_arch_vm_ioctl(struct file *filp,
+>>>>  
+>>>>  		return 0;
+>>>>  	}
+>>>> +	case KVM_ARM_MTE_COPY_TAGS: {
+>>>> +		struct kvm_arm_copy_mte_tags copy_tags;
+>>>> +
+>>>> +		if (copy_from_user(&copy_tags, argp, sizeof(copy_tags)))
+>>>> +			return -EFAULT;
+>>>> +		return kvm_vm_ioctl_mte_copy_tags(kvm, &copy_tags);
+>>>> +	}
+>>>
+>>> I wonder whether we need an update of the user structure following a
+>>> fault, like how much was copied etc. In case of an error, some tags were
+>>> copied and the VMM may want to skip the page before continuing. But here
+>>> there's no such information provided.
+>>>
+>>> On the ptrace interface, we return 0 on the syscall if any bytes were
+>>> copied and update iov_len to such number. Maybe you want to still return
+>>> an error here but updating copy_tags.length would be nice (and, of
+>>> course, a copy_to_user() back).
+>>
+>> Good idea - as you suggest I'll make it update length with the number of
+>> bytes not processed. Although in general I think we're expecting the VMM
+>> to know where the memory is so this is more of a programming error - but
+>> could still be useful for debugging.
 > 
-> Acked-by: Ian Rogers <irogers@google.com>
+> Or update it to the number of bytes copied to be consistent with
+> ptrace()'s iov.len. On success, the structure is effectively left
+> unchanged.
 
-Thanks, applied.
+I was avoiding that because it confuses the error code when the initial
+copy_from_user() fails. In that case the structure is clearly unchanged,
+so you can only tell from a -EFAULT return that nothing happened. By
+returning the number of bytes left you can return an error code along
+with the information that the copy only half completed.
 
-- Arnaldo
+It also seems cleaner to leave the structure unchanged if e.g. the flags
+or reserved fields are invalid rather than having to set length=0 to
+signal that nothing was done.
 
+Although I do feel like arguing whether to use a ptrace() interface or a
+copy_{to,from}_user() interface is somewhat ridiculous considering
+neither are exactly considered good.
+
+Rather than changing the structure we could return either an error code
+(if nothing was copied) or the number of bytes left. That way ioctl()==0
+means complete success, >0 means partial success and <0 means complete
+failure and provides a detailed error code. The ioctl() can be repeated
+(with adjusted pointers) if it returns >0 and a detailed error is needed.
+
+Steve
