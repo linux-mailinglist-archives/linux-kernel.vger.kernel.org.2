@@ -2,116 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 977B239BEF0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 498CD39BEF7
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231260AbhFDRjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 13:39:04 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:38096 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbhFDRjD (ORCPT
+        id S229913AbhFDRlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 13:41:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229675AbhFDRlE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 13:39:03 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 65E551F439E4
-Message-ID: <943276000b13f51e0e746b4f29f2a28d7e435622.camel@collabora.com>
-Subject: Re: [PATCH v9 03/13] media: hantro: Use syscon instead of 'ctrl'
- register
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Lucas Stach <l.stach@pengutronix.de>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
-        lee.jones@linaro.org, gregkh@linuxfoundation.org,
-        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
-        emil.l.velikov@gmail.com, "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>
-Cc:     devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-imx@nxp.com, kernel@pengutronix.de, kernel@collabora.com,
-        cphealy@gmail.com, linux-arm-kernel@lists.infradead.org,
-        linux-media@vger.kernel.org
-Date:   Fri, 04 Jun 2021 14:37:02 -0300
-In-Reply-To: <72fef3d9f79194876f2035e996bb83f9f8b12902.camel@pengutronix.de>
-References: <20210407073534.376722-1-benjamin.gaignard@collabora.com>
-         <20210407073534.376722-4-benjamin.gaignard@collabora.com>
-         <7bcbb787d82f21d42563d8fb7e3c2e7d40123932.camel@pengutronix.de>
-         <831a59b052df02e9860b9766e631a7ab6a37c46a.camel@collabora.com>
-         <72fef3d9f79194876f2035e996bb83f9f8b12902.camel@pengutronix.de>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2-1 
+        Fri, 4 Jun 2021 13:41:04 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D314CC061767
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 10:39:02 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id v22so13913080lfa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 10:39:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=n9fPMUfjUiK0FrRER6EH6PeTXMziUWqxljccly8zx7c=;
+        b=MJ0NfISVyYy/x/kclYN0s9fJRn5RliOT0U+w0BfCWBnLtWRtfPyvQRs2IIykEPgYRA
+         iPmdQbb2zzRdZQzIE2X5p3HF4kbmJgxzs1DJCeD2N6RMTL7zDRAxmbT8zPfNnpdiIRZD
+         KX2qRRFcTYEo6EAz4KL2o5iAZ1t2awg7AqCwY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n9fPMUfjUiK0FrRER6EH6PeTXMziUWqxljccly8zx7c=;
+        b=PYfkuBQadeZHd/+Zx3W0VgJqXPRAHgEy1Zp/3+SkwL+YygdgNtk+nbeXdsi9i3sh7O
+         pmkIcGTMoBux0BwMvGlAnYClPVPBnX0y7wHYl8j0FEE9kCkSyp1iNpQHxaag/heM8g8g
+         t7geqk62lS0qe9/WQA7zmGGwbKs+0iDlszM1J+smr1xzSqP85OgXqyP/nqc5R/+LMbKU
+         toTr7y0UOLweyU1e7pgb/VJvfurzmAH539hkpFCrAKXnVZvgC/l5g8JvRAPv8UOPlEr1
+         lhSONPEMF+O23pgJLWmU+IdckZqZxCBH7+Dyh6s2GsNZrlzDpV+F6+RCL69Ke2p+7XGt
+         MC5Q==
+X-Gm-Message-State: AOAM533UBmx6/Q9LquLmZWWT3RFtNQXs6YtMh+7dVH7A9V0GVAQw2WKO
+        yorMIicy3+s0CeHuQmkzWabNYIO4k8lyNxEh
+X-Google-Smtp-Source: ABdhPJxc6JRH/IrIsThKaYTdPrvWlAvvoAkL5ZrzgC+rCr3bIHTBRPecIhLgiUATCVkqmfdHYxWogw==
+X-Received: by 2002:a05:6512:1027:: with SMTP id r7mr3474622lfr.153.1622828340922;
+        Fri, 04 Jun 2021 10:39:00 -0700 (PDT)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id n5sm671760lfq.107.2021.06.04.10.38.59
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Jun 2021 10:39:00 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id i9so15200321lfe.13
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 10:38:59 -0700 (PDT)
+X-Received: by 2002:a05:6512:baa:: with SMTP id b42mr3435945lfv.487.1622828339731;
+ Fri, 04 Jun 2021 10:38:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
+ <CAHk-=wievFk29DZgFLEFpH9yuZ0jfJqppLTJnOMvhe=+tDqgrw@mail.gmail.com>
+ <YLpWwm1lDwBaUven@hirez.programming.kicks-ass.net> <CAHk-=wjf-VJZd3Uxv3T3pSJYYVzyfK2--znG0VEOnNRchMGgdQ@mail.gmail.com>
+ <20210604172407.GJ18427@gate.crashing.org>
+In-Reply-To: <20210604172407.GJ18427@gate.crashing.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 4 Jun 2021 10:38:43 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj0Qvpn0pOOhJMGOim=psP3bhS2dEX1bAvQpmXs__vqiQ@mail.gmail.com>
+Message-ID: <CAHk-=wj0Qvpn0pOOhJMGOim=psP3bhS2dEX1bAvQpmXs__vqiQ@mail.gmail.com>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lucas,
+On Fri, Jun 4, 2021 at 10:27 AM Segher Boessenkool
+<segher@kernel.crashing.org> wrote:
+>
+> > Of course, we might want to make sure that the compiler doesn't go
+> > "oh, empty asm, I can ignore it",
+>
+> It isn't allowed to do that.  GCC has this arguable misfeature where it
+> doesn't show empty asm in the assembler output, but that has no bearing
+> on anything but how human-readable the output is.
 
-On Mon, 2021-05-17 at 12:52 +0200, Lucas Stach wrote:
-> Hi Ezequiel,
-> 
-> Am Sonntag, dem 16.05.2021 um 19:40 -0300 schrieb Ezequiel Garcia:
-> > Hi Lucas,
-> > 
-> > On Fri, 2021-04-16 at 12:54 +0200, Lucas Stach wrote:
-> > > Am Mittwoch, dem 07.04.2021 um 09:35 +0200 schrieb Benjamin Gaignard:
-> > > > In order to be able to share the control hardware block between
-> > > > VPUs use a syscon instead a ioremap it in the driver.
-> > > > To keep the compatibility with older DT if 'nxp,imx8mq-vpu-ctrl'
-> > > > phandle is not found look at 'ctrl' reg-name.
-> > > > With the method it becomes useless to provide a list of register
-> > > > names so remove it.
-> > > 
-> > > Sorry for putting a spoke in the wheel after many iterations of the
-> > > series.
-> > > 
-> > > We just discussed a way forward on how to handle the clocks and resets
-> > > provided by the blkctl block on i.MX8MM and later and it seems there is
-> > > a consensus on trying to provide virtual power domains from a blkctl
-> > > driver, controlling clocks and resets for the devices in the power
-> > > domain. I would like to avoid introducing yet another way of handling
-> > > the blkctl and thus would like to align the i.MX8MQ VPU blkctl with
-> > > what we are planning to do on the later chip generations.
-> > > 
-> > > CC'ing Jacky Bai and Peng Fan from NXP, as they were going to give this
-> > > virtual power domain thing a shot.
-> > > 
-> > 
-> > It seems the i.MX8MM BLK-CTL series are moving forward:
-> > 
-> > https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=479175
-> > 
-> > ... but I'm unable to wrap my head around how this affects the
-> > devicetree VPU modelling for i.MX8MQ (and also i.MX8MM, i.MX8MP, ...).
-> > 
-> > 
-> For the i.MX8MQ we want to have the same virtual power-domains provided
-> by a BLK-CTRL driver for the VPUs, as on i.MX8MM. This way we should be
-> able to use the same DT bindings for the VPUs on i.MX8MQ and i.MX8MM,
-> even though the SoC integration with the blk-ctrl is a little
-> different.
-> 
-> > Can you clarify that?
-> > 
-> I'm planning on sending some patches adding i.MX8MQ VPU support to the
-> BLK-CTRL driver in the next few days. I guess that should clarify
-> things. :)
-> 
+That sounds about right, but we have had people talking about the
+compiler looking inside the asm string before.
 
-As a gentle reminder, Hans sent the i.MX8MQ G2 HEVC support pull request
-and Benjamin just posted a series adding support for more features.
+So it worries me that some compiler person might at some point go all
+breathy-voice on us and say "I am altering the deal. Pray I don't
+alter it any further".
 
-Do you think we could have the blk-ctrl support landing in v5.14?
+Side note: when grepping for what "barrier()" does on different
+architectures and different compilers, I note that yes, it really is
+just an empty asm volatile with a "memory" barrier. That should in all
+way sbe sufficient.
 
-If you work on the patches, and you happen to test the G1 and G2 on
-i.MX8MM it would be great to add that too.
+BUT.
 
-Meanwhile, our next steps would be to improve the HEVC V4L2 uAPI itself.
+There's this really odd comment in <linux/compiler-intel.h> that talks
+about some "ECC" compiler:
 
-Thanks a lot!
-Ezequiel 
+  /* Intel ECC compiler doesn't support gcc specific asm stmts.
+   * It uses intrinsics to do the equivalent things.
+   */
 
+and it defines it as "__memory_barrier()". This seems to be an ia64 thing, but:
+
+ - I cannot get google to find me any documentation on such an intrinsic
+
+ - it seems to be bogus anyway, since we have "asm volatile" usage in
+at least arch/ia64/mm/tlb.c
+
+So I do note that "barrier()" has an odd definition in one odd ia64
+case, and I can't find the semantics for it.
+
+Admittedly I also cannot find it in myself to care. I don't think that
+"Intel ECC" compiler case actually exists, and even if it does I don't
+think itanium is relevant any more. But it was an odd detail on what
+"barrier()" actually might mean to the compiler.
+
+              Linus
