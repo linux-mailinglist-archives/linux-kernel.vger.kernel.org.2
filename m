@@ -2,109 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF53039B3A5
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C57E39B3AD
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbhFDHR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 03:17:59 -0400
-Received: from mail-lf1-f47.google.com ([209.85.167.47]:42848 "EHLO
-        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhFDHR6 (ORCPT
+        id S229962AbhFDHTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 03:19:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29014 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229826AbhFDHTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 03:17:58 -0400
-Received: by mail-lf1-f47.google.com with SMTP id a2so12570232lfc.9;
-        Fri, 04 Jun 2021 00:15:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hFVfJJ6Ejdu+Nc6pP4+2Kj/FAk9+HqPn9yXfhDOY5Ro=;
-        b=QgkeChCIXwPltaFv0/iPA3nqsD6PxNhw++qgors9r/uV+iU/4fXeTH91YkFwM+fna7
-         Voj7VYZEGnJMYqo8Q4pCU7cDDdkvw1GEjFi0ItnLj9pgve+ATxPWSuYU/r0q08XPd3As
-         j/9Y1uZiR5rGOrQK4My9s3B7zSOXAa9lGgrb2L5i/vKrL/qzqlJD1jDarMC8E4zKbYLJ
-         +Vo/E9UKfDoBevWuyp+sqlxBkJ7mCwiaQlBjNTqqM7AhWpe0zWprPxlAj2jaNb+SaDTa
-         T78uQ0gO26GD8eKzOic9Y7Uj/sXuq00Rf7j336ebHOX838ZgTuFayaMfKXGjXuFkhZEK
-         XaAA==
+        Fri, 4 Jun 2021 03:19:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622791072;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oYiGBrwOVwQzTkg4cxNvQnAUyjlM8dxbSVyQ8B6K+H0=;
+        b=WKYjw6DZGss2e7ZfYX7/9cRExmJoSMrz340iRvQ4rWTeS8aMde8sFIDe5U8vxmtlB+LjK9
+        nqxo17YV3+Vi1lTQHBO9BLyKSV9aQ6f5hic5ddfyGZbSvDDFn60vq8Ut1hVfGRoJ3whaJk
+        +CnEmJ/yI+kZIe0W3Ot6DY6HAT8RMBs=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-324-0ToqHxf7Nm6mRCFnZeoWRQ-1; Fri, 04 Jun 2021 03:17:50 -0400
+X-MC-Unique: 0ToqHxf7Nm6mRCFnZeoWRQ-1
+Received: by mail-ej1-f71.google.com with SMTP id gv42-20020a1709072beab02903eab8e33118so3019469ejc.19
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 00:17:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=hFVfJJ6Ejdu+Nc6pP4+2Kj/FAk9+HqPn9yXfhDOY5Ro=;
-        b=YIwhk34asfBDCTCkH4MBKYGBD3gYOtHcoQoC3TtnGGUewVrsuOYYXH9Il085dk5a0E
-         GuNebxe3DOrOzFYo+ahithF/n4RB6QU2/AIwoPQ9rkItT/xefxmKghIbf1m9xkcE2Ew+
-         MX2Hf6V9XR4wUIAMfnHv2VCcekMyvI+qigCGq2XfYAEdQr1bDmPEFDvI5vRiSeWj4H5k
-         OAVEjSdTuY4qjkfADJDq5jL3ujCfjEA2YWJoq7/8CBbjmr3B+UVfjGJ31AS8YtiJq+mU
-         NzHiQ5rjlH89j9iTWao+MDF30WWmITtMt12uggHhEkTcFkxcjtJwmakfJwUt+ycW5jU+
-         +VkQ==
-X-Gm-Message-State: AOAM531LGCXlpiUMpoZG0uxUnBgEodWBHA6fy6HoJMhC/3laew29/z60
-        hObKYrpwDq874UxdK5qUjex0xgt4z/A=
-X-Google-Smtp-Source: ABdhPJyvLqfzFB8dyRAycRpMLE+vWsX/t92KFUNJOpadhY9cIhKj7mXAnjMuGDP62SM+NjdRU/gutg==
-X-Received: by 2002:a05:6512:38a4:: with SMTP id o4mr1831752lft.288.1622790894175;
-        Fri, 04 Jun 2021 00:14:54 -0700 (PDT)
-Received: from [10.0.0.40] (91-155-111-71.elisa-laajakaista.fi. [91.155.111.71])
-        by smtp.gmail.com with ESMTPSA id s16sm529885lfp.106.2021.06.04.00.14.53
+        bh=oYiGBrwOVwQzTkg4cxNvQnAUyjlM8dxbSVyQ8B6K+H0=;
+        b=EKvDSWen6iZ2hKcDS/zkXiTY7sGWlyncGitkVSog/WaUZwzc1OCKVBdJAJ00LBivjy
+         n9IbD4oSc2e3LvDl8Uw0NyB/QBJpP6bYCaTixGeeiMo6nGUD4HDkEsURhPeEs4Z7iQea
+         +uHgDuHcpSVfowrapEiskFj5NuZzxHaYuNhjynKg1sZjJbXicQ0KbPtiCClcUiwmtdZP
+         2MOgLpJWKQyMQLLjJ4owNnJyrOpk23axsXkLskv3wACkpK4OtF9CANsCQfsJNb14fWqu
+         GOo5k2xS75UuYqU37Fp4Bh4BNvN+GlRP5yqBXN9yO3XjLWjeyFYjajBpm6wXjTu3HxXv
+         ZeFQ==
+X-Gm-Message-State: AOAM532fkuRMyPMBJNV7t1dnGeTjxjD3U+XYT06GELsD7oPr27Nwrftg
+        JTG0rAjpH10v9cKVqTGr1YkI8NmFuN66gTC4NJAjcnU8+PfkJrSekZiQcxpXjkAlGM3VRzD0/Ea
+        q9L6chPplENZQTdU7XSXoRKnw
+X-Received: by 2002:a17:906:1982:: with SMTP id g2mr2940208ejd.184.1622791069074;
+        Fri, 04 Jun 2021 00:17:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzNA+cR803OKErcII3/XiBGdUlseY07tlmT5T9SKrsahaFVgc/V2SdsxWbxXtho/hDOs9RuiA==
+X-Received: by 2002:a17:906:1982:: with SMTP id g2mr2940199ejd.184.1622791068902;
+        Fri, 04 Jun 2021 00:17:48 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id um5sm2430354ejb.109.2021.06.04.00.17.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Jun 2021 00:14:53 -0700 (PDT)
-Subject: Re: [PATCH][next] ASoC: ti: davinci-mcasp: Fix fall-through warning
- for Clang
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <20210528202047.GA39602@embeddedor>
-From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-Message-ID: <25941c37-6e38-88ae-3afe-4f5af44380d3@gmail.com>
-Date:   Fri, 4 Jun 2021 10:14:52 +0300
+        Fri, 04 Jun 2021 00:17:48 -0700 (PDT)
+Subject: Re: [RFC][PATCH] kvm: add suspend pm-notifier
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Suleiman Souhlal <suleiman@google.com>, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        kvm@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        linux-s390@vger.kernel.org
+References: <20210603164315.682994-1-senozhatsky@chromium.org>
+ <YLkRB3qxjrXB99He@hirez.programming.kicks-ass.net>
+ <YLl2QeoziEVHvRAO@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <1a460c63-89d6-b7ae-657b-2c4b841c9562@redhat.com>
+Date:   Fri, 4 Jun 2021 09:17:46 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210528202047.GA39602@embeddedor>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YLl2QeoziEVHvRAO@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 28/05/2021 23:20, Gustavo A. R. Silva wrote:
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-> by explicitly adding a goto statement instead of letting the code fall
-> through to the next case.
+On 04/06/21 02:39, Sergey Senozhatsky wrote:
+>>>   
+>>> +void kvm_arch_pm_notifier(struct kvm *kvm)
+>>> +{
+>>> +}
+>>> +
+>>>   long kvm_arch_vm_ioctl(struct file *filp,
+>>>   		       unsigned int ioctl, unsigned long arg)
+>>>   {
+>> What looks like you wants a __weak function.
+> True. Thanks for the suggestion.
 > 
-> Link: https://github.com/KSPP/linux/issues/115
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
-> JFYI: We had thousands of these sorts of warnings and now we are down
->       to just 25 in linux-next. This is one of those last remaining
->       warnings.
-> 
->  sound/soc/ti/davinci-mcasp.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-> index b94220306d1a..587967720135 100644
-> --- a/sound/soc/ti/davinci-mcasp.c
-> +++ b/sound/soc/ti/davinci-mcasp.c
-> @@ -2317,6 +2317,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
->  		break;
->  	default:
->  		dev_err(&pdev->dev, "No DMA controller found (%d)\n", ret);
-> +		goto err;
-
-Would:
-	fallthrough;
-
-be enough to silence the warning? If so, then I would prefer this version.
-
->  	case -EPROBE_DEFER:
->  		goto err;
->  	}
+> I thought about it, but I recalled that tglx had  __strong opinions
+> on __weak functions.
 > 
 
--- 
-Péter
+Alternatively, you can add a Kconfig symbol to virt/kvm/Kconfig and 
+select it from arch/x86/kvm.
+
+Paolo
+
