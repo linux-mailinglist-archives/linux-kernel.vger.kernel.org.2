@@ -2,51 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2630439C15C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1815239C15E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231200AbhFDUdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 16:33:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35774 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229854AbhFDUdQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 16:33:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CCCE613AE;
-        Fri,  4 Jun 2021 20:31:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1622838680;
-        bh=Pu+BgslkvbmVRKZaeA88N293hw51E0+I3f9Br6nrJBQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ef+xKa/8joaIKJ60FEP+JhtA/CFn1Im5NXqyzboBrT3jrDWDY2QqnRwmKELbHSvv4
-         AOkGeZ8KjZt2uENeocI9WYGRUlUvwIkJRIAObt8yFu+rnUahvbfPkSrVrhnraJHZsn
-         sGdKJZu5Xv1j8kaxgfd77QNQdduw4sIkXoBGUSRQ=
-Date:   Fri, 4 Jun 2021 13:31:19 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Dennis Zhou <dennis@kernel.org>
-Cc:     Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] percpu: memcg memory accounting rework
-Message-Id: <20210604133119.7e291efe6aa1305a6dcb38db@linux-foundation.org>
-In-Reply-To: <YLpQhuZwuf32avkf@google.com>
-References: <20210603010931.1472512-1-guro@fb.com>
-        <YLpQhuZwuf32avkf@google.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+        id S231263AbhFDUfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 16:35:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229854AbhFDUfT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 16:35:19 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EFE8C061766
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 13:33:32 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id q10so10640908qkc.5
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 13:33:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vt-edu.20150623.gappssmtp.com; s=20150623;
+        h=sender:from:to:cc:subject:mime-version:date:message-id;
+        bh=MlTBKidQyHo/iudNRHQBYNyS5NXewQpCbPeNYyMvaMg=;
+        b=DW6ijiYHDNyQLpF0t6/qCOumEQ16A0epv6YQ77X8CzKQ7yMANg3RdZoYSbWgzNBFeC
+         cnO9Ye5O+9SFKxxx+BjZMS43UwHrmdmZ9IUb22rV3zFmVaFtvQ6RDrYZ6H+J1vfWJx5k
+         nXDsjaRkYLdT50Mpq5H/iJtTGy72Dl8GYUXUMgcV2jmRJsVyuWYWi6uwwXmIRRh+moiJ
+         NMng52iEQpz7ATjURC0jP7pMlkszHz6Q7JMPKaZKsG6Hi4eZP68QHCC2uy2jhj7pXewV
+         7pjbvoALbklLcyrwWAgFmh/x5knS17J3d25LYp+ClhBmJhZtI/XDvZedFEwn1CTYoWlb
+         84Lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:mime-version:date
+         :message-id;
+        bh=MlTBKidQyHo/iudNRHQBYNyS5NXewQpCbPeNYyMvaMg=;
+        b=qYZf+mKoluNNUP/WYc3atPnSTWRzn5jiGrj3yT0LAwfN8x/gPIetOb659a1W+ziirt
+         Wsu0YyHheROB9iBcgZQoN66vd7abWMTZvxzjYfOygSoxXM7mo0gCJInuiBNMPqvdkxP1
+         n0XAyhMM7u9OKmtdhjOf5UI+u4pkEP3kG4//z0fHSuHPe6Z1bjclG0qDAGdbaYNc87ST
+         t+b3Wgb5m/6dUHOIPU1u91KFotNHZFgbe2ZQsh/MUvV25TX7H423G1UfKWrF8odZGfuu
+         obeh1CmRChK4vHX7QL+a0s0T1/ZHD3pFqXvGB8jx2xpXUFJ/M5Fy2m0OFs2avjc10ULf
+         ge2w==
+X-Gm-Message-State: AOAM532eTkIoiMXrRj23uZvPcyOX/0tcTezR9vW7/aD/bUUqVqj8nNnM
+        +Vh2rjP3JX2jXHw3LPmNNEzvkg==
+X-Google-Smtp-Source: ABdhPJzTFU/XiVvGZk+dyAt2khreqsQd3BqydaIl20gYpk2Z23bK6lpBl5FC/vgYDJM5tYwQH79MRA==
+X-Received: by 2002:a05:620a:1442:: with SMTP id i2mr5995516qkl.45.1622838811230;
+        Fri, 04 Jun 2021 13:33:31 -0700 (PDT)
+Received: from turing-police ([2601:5c0:c380:d61::359])
+        by smtp.gmail.com with ESMTPSA id p19sm4541856qki.119.2021.06.04.13.33.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 13:33:30 -0700 (PDT)
+Sender: Valdis Kletnieks <valdis@vt.edu>
+From:   "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <valdis.kletnieks@vt.edu>
+X-Google-Original-From: "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <Valdis.Kletnieks@vt.edu>
+X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>
+cc:     linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: x86 - weird cross-compile build problem with try-run next-20210602
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Date:   Fri, 04 Jun 2021 16:33:30 -0400
+Message-ID: <454425.1622838810@turing-police>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Jun 2021 16:10:46 +0000 Dennis Zhou <dennis@kernel.org> wrote:
+I built a gcc 11.1 cross-compiler targeting x86_64, and builds
+were throwing an error message:
 
-> I think I'm pretty happy with this approach. If there is any issue with
-> the delta of memcg on but kmem accounting off, we can tackle that
-> separately. I'll need another day or so to review the last patch a
-> little more carefully though.
-> 
-> Andrew do you mind if I route the first two in my tree too?
+Makefile:149: CONFIG_X86_X32 enabled but no binutils support
 
-Please do.
+so I added some debugging to arch/x86/Makefile:
+
+ifdef CONFIG_X86_X32
+        x32_ld_ok := $(call try-run,\
+                        /bin/echo -e '1: .quad 1b' | \ 
+                        $(CC) $(KBUILD_AFLAGS) -c -x assembler -o "$$TMP" - && \
+                        $(OBJCOPY) -O elf32-x86-64 "$$TMP" "$$TMP.o" && \
+                        $(LD) -m elf32_x86_64 "$$TMP.o" -o "$$TMP",y,n)
+ $(warning x32_ld_ok is +$(x32_ld_ok)+ with CC=$(CC) $(KBUILD_AFLAGS) OBJ=$(OBJCOPY) LD=$(LD) )
+        ifeq ($(x32_ld_ok),y)
+                CONFIG_X86_X32_ABI := y
+
+and that throws:
+
+arch/x86/Makefile:143: x32_ld_ok is ++ with CC=x86_64-unknown-linux-gnu-gcc -D__ASSEMBLY__ -fno-PIE -m64 OBJ=x86_64-unknown-linux-gnu-objcopy LD=x86_64-unknown-linux-gnu-ld 
+
+Anybody have a clue why $(x32_ld_ok)  is null rather than 'y' or 'n'?
+
+(It's totally possible that my cross-compiler is broken, but I still don't see how
+try-run would return null rather than 'n' in that case...  I built a shell script that did the
+test and that ended with $? == 0, but had a warning msg:
+
++ /bin/echo -e '1: .quad 1b'
++ x86_64-unknown-linux-gnu-gcc -D__ASSEMBLY__ -fno-PIE -m64 -c -x assembler -o /tmp/z97 -
++ x86_64-unknown-linux-gnu-objcopy -O elf32-x86-64 /tmp/z97 /tmp/z99.o
++ x86_64-unknown-linux-gnu-ld -m elf32_x86_64 /tmp/z99.o -o /tmp/z98
+x86_64-unknown-linux-gnu-ld: warning: cannot find entry symbol _start; defaulting to 0000000000401000
+echo $?
++ echo 0
+0
+
+
+
