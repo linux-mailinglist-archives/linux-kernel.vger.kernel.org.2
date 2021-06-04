@@ -2,121 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F3F39C0E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 21:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0698839C0E4
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 21:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231197AbhFDUAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 16:00:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58685 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231177AbhFDUAb (ORCPT
+        id S231229AbhFDUA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 16:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229913AbhFDUA4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 16:00:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622836724;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0fVhjAHeVRgfpGwbjD+B87pacxHTlTdVbrkucRo5wXo=;
-        b=UlgnXzPCOFY+DauC5pcfJoB1a4WqOxI0EDzT0B7hhSIkq/d4XhMmxu9UWfFWSHploMsWF/
-        0S4dI+iOSKTT1umJXU8h0r32jgPS+RqFFTeZbaDUruzZOB4iwI33nNyMfhbjeR2vpv0x9A
-        8i8cr9Jz4T9mSSKRF0gcFW+2MKmvrh0=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-187-gG4PwNVXM4u2YAoP8ApJBg-1; Fri, 04 Jun 2021 15:58:43 -0400
-X-MC-Unique: gG4PwNVXM4u2YAoP8ApJBg-1
-Received: by mail-ej1-f71.google.com with SMTP id p5-20020a17090653c5b02903db1cfa514dso3912246ejo.13
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 12:58:43 -0700 (PDT)
+        Fri, 4 Jun 2021 16:00:56 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9379C061766
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 12:59:09 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id j19-20020a62b6130000b02902e93e6ca980so5912032pff.10
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 12:59:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=/04tQF1Bnfn2Yc8uCL4+PnvsgVsKHdmSFWQrGNAAQTo=;
+        b=OdotDs3ViB0pZgE6DEc+6edU7n+2pew1IMH9sobDI7oCvsmNkS1U0u0qDa1WS3UOdn
+         ohrkEo/LbInEpIwhhc1Mpick65/30Z2BUvRuBFslZC9l/zKchwqxzfjLTY+xsqqi7UY7
+         +6PgMCJuB5M3eulB08ixhiIZaumXfwcinlZyLzSz4bp8VKYT9G7UjuH8B6ztKs47M3BE
+         JssOkek6pXCCqezZE7Sd8HoNcTp23P1BtwyQBujSi4/EOqZC90Zc13jrq3FelamPVUPb
+         NWUD7sMK+zOfrpuR0BYOBz5hXcEz0LOa+usGqdMqOXFaQlQLhwvuOQj2zyyTn0F5OZbg
+         FsSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0fVhjAHeVRgfpGwbjD+B87pacxHTlTdVbrkucRo5wXo=;
-        b=NZ9zJ+2wmpFAROwj2B0NDT1qKYaFHgicRPJiu9VdAlSzai9e1uA8xhhlzuVI/dIj5p
-         IQlxIQ0ikd5vtorC9jGVD0ddqsRLFGMD4muniEKZjYGACsw2HVOtNoBKQ8odk84G6Lpw
-         EdQz2yQbV95gEfwsO7B8fZeWKnw5WBupvSxxYtFrYFT6fTiAn9aGJ90xSJaV9zmFKt1h
-         2I9OVIR6zJJ0BQRB/jTLpWTQHQvZEAYkTt2AwzkMAV4H7B5JZEJ9MR5hYXdhL7zvnjPW
-         zIuZ8vsR7fMMIxryEsXNIgMruWQ8fRTA+kUrLWZE2fON/2yO4qUEdseoGjdPk0JvCGf5
-         +w3w==
-X-Gm-Message-State: AOAM531ScF+6I8CebWcLx2HiLy0f0sPv2Mfkd4q4FpZKzRRItUEiO9do
-        lkhDroijxsXEZTex821cD4ErtkLmFEn/kf/4Bs1DC375zSgmaBRCTjktT2prB7bvH470mtabNmz
-        /bvGEt4FvH3sQSaN0ARscfsmJru4SuZCxvVN11yeMqYDgCfTPgf8dUc6Ir8KsjEYhYDGjg0nN3m
-        Bj
-X-Received: by 2002:a17:906:b754:: with SMTP id fx20mr5476944ejb.201.1622836722344;
-        Fri, 04 Jun 2021 12:58:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxeCbTbe6DUYucYVbhatoqJpQOqnbWTeTzTFKFcrz7PYXhjYAZidL0BezyF9QtAI0xjmGAW5A==
-X-Received: by 2002:a17:906:b754:: with SMTP id fx20mr5476926ejb.201.1622836722103;
-        Fri, 04 Jun 2021 12:58:42 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id o4sm3561290edc.94.2021.06.04.12.58.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Jun 2021 12:58:41 -0700 (PDT)
-Subject: Re: [PATCH] platform/surface: dtx: Add missing mutex_destroy() call
- in failure path
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210604132540.533036-1-luzmaximilian@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <8a317463-5c5f-fd64-f319-1df513e6956a@redhat.com>
-Date:   Fri, 4 Jun 2021 21:58:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <20210604132540.533036-1-luzmaximilian@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=/04tQF1Bnfn2Yc8uCL4+PnvsgVsKHdmSFWQrGNAAQTo=;
+        b=MaouDCJAtXgkpwPirpC1VduZZuILmRxnTYIQK7/TjDkKwNPyVtHlLTfJF6VDMGkfUA
+         um70FwjTELgoYjxPnmrbokcVt4K+xNIgeieN9MjuB/Gm3x4tGDa66jO3dkxPdsWwzcNV
+         AYYhdmi3uuFZ7NfNlQGGjovXlPJbh3xjzyQClmUbkgGN+rcJeELTkf6TtnsbfOyOzTe9
+         s5F+UB5QXLTCdnKXsY6eQXMM7ggpCBCcjeAP9QwSygD+WGE/KET1lvqJHU5Aco0T+fyT
+         aEQJh4v5WEqEbyNI+IKwNTuwygT950/LQ0KAuZg9DyUtHem7AAH+wgVatwXKX5gbxsOP
+         2Uaw==
+X-Gm-Message-State: AOAM531kxk5dWb22gq+l651dHYTUFYDonanUxN1VGYp60rBiu4KTeeKl
+        K9MWJledmIRGIU3NzZc6Ed+RnpynuIo=
+X-Google-Smtp-Source: ABdhPJxnrz3xZhzV6FeOMd1wzAG31DcRHzsGjcwsuZKTpzCJkEIRznGRbNoCzAYyAxLCtGWco/g1FiuJrOk=
+X-Received: from satyaprateek.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:1092])
+ (user=satyat job=sendgmr) by 2002:a17:902:6546:b029:101:abf0:d882 with SMTP
+ id d6-20020a1709026546b0290101abf0d882mr6045293pln.73.1622836749269; Fri, 04
+ Jun 2021 12:59:09 -0700 (PDT)
+Date:   Fri,  4 Jun 2021 19:58:50 +0000
+Message-Id: <20210604195900.2096121-1-satyat@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
+Subject: [PATCH v3 00/10] ensure bios aren't split in middle of crypto data unit
+From:   Satya Tangirala <satyat@google.com>
+To:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jens Axboe <axboe@kernel.dk>, Eric Biggers <ebiggers@google.com>,
+        Satya Tangirala <satyat@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+When a bio has an encryption context, its size must be aligned to its
+crypto data unit size. A bio must not be split in the middle of a data
+unit. Currently, bios are split at logical block boundaries, but a crypto
+data unit size might be larger than the logical block size - e.g. a machine
+could be using fscrypt (which uses 4K crypto data units) with an eMMC block
+device with inline encryption hardware that has a logical block size of 512
+bytes. So we need to support cases where the data unit size is larger than
+the logical block size.
 
-On 6/4/21 3:25 PM, Maximilian Luz wrote:
-> When we fail to open the device file due to DTX being shut down, the
-> mutex is initialized but never destroyed. We are destroying it when
-> releasing the file, so add the missing call in the failure path as well.
-> 
-> Fixes: 1d609992832e ("platform/surface: Add DTX driver")
-> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+Patch 1 introduces blk_ksm_is_empty() that checks whether a keyslot manager
+advertises a non-zero number of crypto capabilities. This function helps
+clean up code a little.
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+Patch 2 and 3 introduce blk_crypto_bio_sectors_alignment() and
+bio_required_sector_alignment() respectively. The former returns the
+required sector alignment due to any crypto requirements the bio has.  The
+latter returns the required sector alignment due to any reason.  The number
+of sectors in any bio (and in particular, the number of sectors passed to
+bio_split) *must* be aligned to the value returned by the latter function
+(which, of course, calls the former function to decide what to return).
 
-I'll also add this to the fixes branch, so that it gets included
-in my next pull-req to Linus for 5.13.
+Patch 4 updates blk-crypto-fallback.c to respect
+bio_required_sector_alignment() when calling bio_split(), so that any split
+bio's size has the required alignment.
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
+Patch 5 introduces restrictions on the data unit sizes advertised by a
+keyslot manager. These restrictions come about due to the request_queue's
+queue_limits, and are required to ensure that blk_bio_segment_split() can
+always split a bio so that it has a limited number of sectors and segments,
+and that the number of sectors it has is non-zero and aligned to
+bio_required_sector_alignment().
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
+Patch 6, 7 and 8 handle the error code from blk_ksm_register() in all
+callers.  This return code was previously ignored by all callers because
+the function could only fail if the request_queue had integrity support,
+which the callers ensured would not be the case. But the patches in this
+series add more cases where this function might fail, so it's better to
+just handle the return code properly in all the callers.
 
-Regards,
+Patch 9 updates get_max_io_size() and blk_bio_segment_split() to respect
+bio_required_sector_alignment(). get_max_io_size() always returns a
+value that is aligned to bio_required_sector_alignment(), and together
+with Patch 5, this is enough to ensure that if the bio is split, it is
+split at a crypto data unit size boundary.
 
-Hans
+Since all callers to bio_split() should have been updated by the previous
+patches, Patch 10 adds a WARN_ON() to bio_split() when sectors isn't aligned
+to bio_required_sector_alignment() (the one exception is bounce.c which is
+legacy code and won't interact with inline encryption).
 
-> ---
->  drivers/platform/surface/surface_dtx.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/platform/surface/surface_dtx.c b/drivers/platform/surface/surface_dtx.c
-> index 5d9b758a99bb..1203b9a82993 100644
-> --- a/drivers/platform/surface/surface_dtx.c
-> +++ b/drivers/platform/surface/surface_dtx.c
-> @@ -427,6 +427,7 @@ static int surface_dtx_open(struct inode *inode, struct file *file)
->  	 */
->  	if (test_bit(SDTX_DEVICE_SHUTDOWN_BIT, &ddev->flags)) {
->  		up_write(&ddev->client_lock);
-> +		mutex_destroy(&client->read_lock);
->  		sdtx_device_put(client->ddev);
->  		kfree(client);
->  		return -ENODEV;
-> 
+This patch series was tested by running android xfstests on the SDM630
+chipset (which has eMMC inline encryption hardware with logical block size
+512 bytes) with test_dummy_encryption with and without the 'inlinecrypt'
+mount option.
+
+Satya Tangirala (10):
+  block: introduce blk_ksm_is_empty()
+  block: blk-crypto: introduce blk_crypto_bio_sectors_alignment()
+  block: introduce bio_required_sector_alignment()
+  block: respect bio_required_sector_alignment() in blk-crypto-fallback
+  block: keyslot-manager: introduce
+    blk_ksm_restrict_dus_to_queue_limits()
+  ufshcd: handle error from blk_ksm_register()
+  mmc: handle error from blk_ksm_register()
+  dm: handle error from blk_ksm_register()
+  blk-merge: Ensure bios aren't split in middle of a crypto data unit
+  block: add WARN_ON_ONCE() to bio_split() for sector alignment
+
+ block/bio.c                      |   1 +
+ block/blk-crypto-fallback.c      |   3 +
+ block/blk-crypto-internal.h      |  20 ++++++
+ block/blk-merge.c                |  49 +++++++++-----
+ block/blk.h                      |  14 ++++
+ block/keyslot-manager.c          | 112 +++++++++++++++++++++++++++++++
+ drivers/md/dm-table.c            |  27 +++++---
+ drivers/mmc/core/crypto.c        |  13 +++-
+ drivers/scsi/ufs/ufshcd-crypto.c |  13 +++-
+ include/linux/keyslot-manager.h  |   2 +
+ 10 files changed, 221 insertions(+), 33 deletions(-)
+
+-- 
+2.32.0.rc1.229.g3e70b5a671-goog
 
