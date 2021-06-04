@@ -2,78 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8DA39BF62
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 20:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8484639BF67
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 20:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229878AbhFDSNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 14:13:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40422 "EHLO
+        id S229961AbhFDSQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 14:16:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbhFDSNv (ORCPT
+        with ESMTP id S229726AbhFDSQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 14:13:51 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C560BC061766
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 11:11:49 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id c9so1487479wrt.5
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 11:11:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=IOyYRAGDITWixF8dgbGyZJ+e4eAxhCKpNjOI6XxY/8s=;
-        b=lzjpkHef/qddk4Cw+zFSOkglBiBP17Sb6hNwh9ZHfNqpWp5kT9oJ58ez11POKSn5y0
-         0TYXk7NiRxoAsqGVHhAJdmOOcG7FFgmeyRTOSpRx9u2+Ri/y/DSs6BdSvxcxYC+hO1yY
-         B1qMFxvAjLZ8g+kch4u8fFxhOxZRCXNMy42UPmkGq98XHHrX1C97ydMolM3b8rf0r7vl
-         ZKD2hj9FuF8lOeji6ovRpcHI9OPwZj8Z1w0LbQdXaygymk+n76A16Fd18FE/PHqXAAbA
-         MVBjBvjZEhYGRO2KZSYC6v85LMgwxI0WZm/gmkaCqm6hVVNh+wfSGo0VwwJ2+ZUz8RhL
-         AlqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=IOyYRAGDITWixF8dgbGyZJ+e4eAxhCKpNjOI6XxY/8s=;
-        b=d8q7Ls5eBSZdmK0ZNtUBfT5nof68GdNyuK65oVG7QTaODSGLYtylTJfrLoJsuf03CJ
-         yB9OudVulcgUUBfhro4xaBAfzYO0sjU1uqD9ji5JFIZIJE3Yr8K6zAqO7b3NmK2mm+3u
-         lUdRRbGXJFCEHvvv0lQ9b1Uv7I+YRHJeYHdZZRnRCfIgI4xVuvU23/+PdU48jMt92QqK
-         8z6hZm3TY+6oz9+rVa3Np0urW8PO8gIErLZKyIDiOCFu/MgkRos4V3g9KUqwWDnhUCLg
-         iYtVox14YDSnSsaGm6ydZ3iX3uDERHwfskooV01OHJjzIaeXCDyQ9qYkJfNg0cjfu2bg
-         +hqg==
-X-Gm-Message-State: AOAM532Mc/JQwBoEWahQ0tvY3Av4RQGSYzui2jzWbgG+mHy0g0m85SpM
-        0PTaByxukt9U3ox+tBkoN3pOk4zFe7VOPkYq2vQ=
-X-Google-Smtp-Source: ABdhPJxlJUe38iNCUId6nbIQ4Xfc001fMZUEBSk9LdsyTXPgpmL4+zvn44hV/aJcCxDNYQp+zh/zT7+NEwNTTaAK8gQ=
-X-Received: by 2002:a5d:4984:: with SMTP id r4mr5116439wrq.152.1622830308309;
- Fri, 04 Jun 2021 11:11:48 -0700 (PDT)
+        Fri, 4 Jun 2021 14:16:13 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9DA7C061766
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 11:14:26 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622830464;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Drple3vblKhjJjN2PXQm8uBxk46WkNL+qLdK3onwHjs=;
+        b=Gb+28IIlRpZftlLmUqSe2BoC9yQvta1x9ZE5YOjKxk/5INEfTOaTK72klUpzhIs+nAK28N
+        ntR9tnxlQvb23gNj6DCdYFjpa0g7n296IJDxaorFdYXX8PEkwg9b7aTwSvS9HRINc06fa1
+        qzs1E3c6aJip3wGBzAaHuc10IgnbuntDH3uYfxvz8Z+pcxuhh/AM4mwvTVOAC1XVXDiYzA
+        gR3aVbIHODAQWDUaz9uV2CM+55n7jdIThfQ3WTuuQBd/qq+HkEbPqZWNfLAzwaRHos37bb
+        7j68ylyG3+1x6jPTsPpgEtTiy8fd9y7Dxgg6MKk58VUOnHnYCfq7VCnnPf/eJw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622830464;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Drple3vblKhjJjN2PXQm8uBxk46WkNL+qLdK3onwHjs=;
+        b=kqbngnGnCrwXtdTOA/yQz/igNWW68d0w04wEQu1JhIpLkY8UNLVWgjVOapJQbzlsQWr1X1
+        R9TZlyyU8D0TyUBg==
+To:     Dave Hansen <dave.hansen@intel.com>,
+        "Yu\, Yu-cheng" <yu-cheng.yu@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+Subject: Re: [patch 0/8] x86/fpu: Mop up XSAVES and related damage
+In-Reply-To: <6a93334d-d771-666f-7fd0-8d152799fb02@intel.com>
+References: <20210602095543.149814064@linutronix.de> <9c5c90bf-fbf6-7e45-4668-2f40f11e8b36@intel.com> <87h7idzpwh.ffs@nanos.tec.linutronix.de> <6a93334d-d771-666f-7fd0-8d152799fb02@intel.com>
+Date:   Fri, 04 Jun 2021 20:14:24 +0200
+Message-ID: <87y2bpzedb.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Received: by 2002:a1c:7305:0:0:0:0:0 with HTTP; Fri, 4 Jun 2021 11:11:47 -0700 (PDT)
-Reply-To: mrjoshuakunte@gmail.com
-From:   Mr Joshua Kunte <legalri168@gmail.com>
-Date:   Fri, 4 Jun 2021 19:11:47 +0100
-Message-ID: <CAEWy=dVngNK5+RDoOn4eHBKPdhGPLoAWHF3vX20DV4ZemvyoeA@mail.gmail.com>
-Subject: Greetings
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Dear friend
+On Fri, Jun 04 2021 at 10:46, Dave Hansen wrote:
+> On 6/4/21 7:05 AM, Thomas Gleixner wrote:
+>> But looking at the above, it's not clear to me why that PKRU stuff works
+>> at all (upstream), but I'll figure it out eventually. I'm quite sure
+>> that it does work by pure chance not by design.
+>
+> The upstream flush_thread() code appears correct and even intentionally
+> so.  Just how we must eagerly load PKRU on a context switch, the
+> fpu__clear*() code eagerly "clears" PKRU.  It doesn't actually zero it,
+> of course, but reverts the register and the fpstate back to the
+> 'init_pkru_value':
+>
+> flush_thread()->fpu__clear_all()->fpu__clear(user_only=false)
+> 	copy_init_fpstate_to_fpregs()
+> 		copy_kernel_to_xregs(init_fpu) // fpstate
+> 		copy_init_pkru_to_fpregs()
+> 			 write_pkru(init_pkru_value_snapshot) // fpregs
+>
+> Andy said you have a fix for this, but I think the new fpu__clear_all()
+> is failing to do the eager write_pkru().
 
-I am Mr Joshua Kunte from Zimbabwe and permanent personal assistance
-to our late president Mugabe.
+Yes, that's the reason and it took some time until I realized that
+fpu__initialize() is inconsistent vs. PKRU.
 
-The truth is that on a trip I took with my boss to the United Kingdom,
-my boss used my name to deposit $100,000,000.00 USD. Bank name
-withheld at the moment for security reasons.
+We can't use copy_init_pkru_to_fregs() either because that's not
+updating the xsaves area because XFEATURE_PKRU has been cleared.
+Yay for consistency!
 
-I and my late boss are the only one aware of this deposit. Therefore, i have
-decided that instead the fund will be lying in the bank is good enough
-i look for foreign partners whom i will sign investment contract with
-and i will release the fund to him or her for investment purposes in his or her
-country.
+I'll post a fix soonish after testing it.
 
-I took this decision because as a civil servant i can not be able to
-invest this fund in my country and if i do so the present government
-will question me for the source of the fund hence i am looking for a
-trust worthy partner abroad. Thank you for your co operation.
-Mr Joshua Kunte.
+Thanks,
+
+        tglx
