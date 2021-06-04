@@ -2,100 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6745739BF27
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F041639BF29
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230314AbhFDR5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 13:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbhFDR5J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 13:57:09 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6703C061766
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 10:55:16 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id u13so5371114qvt.7
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 10:55:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sqTDYULOdmRO9QMOi5MUNNSuuP+YM4KULlFjGRM4XO0=;
-        b=k66xbR2Ts+amfEA9q0i1ECkO/Z69P8wiBWeObBl33PS/v0JtAcV6tI8rSOg56r2Scl
-         7LfvKYcKcsbkxsXL6n4+ljKo+QOhfajWKdY6PcQdYSkOW3bLR+RvL3JJIXPHl7zLuwtW
-         qPDr4XZfSNMCcJiExClWXWNJaa8EdQKOUr3WpbyZ/r/BumVVoNfEuhZeDhV38k5grkYC
-         L0lkGIJbCF63915JdQBLYXy7HSWmWeQWiQSOtw4RKOyPP4AmnjMrLCFP2SklRyiGn6wZ
-         5h1M8OopM6Qad5aMIk73CcNKPfWoxd9NYDyTvosKgz5NP4rmVNgIlNdZgKDkoXeiH6FI
-         UCfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sqTDYULOdmRO9QMOi5MUNNSuuP+YM4KULlFjGRM4XO0=;
-        b=SHxAGSee6E6UE/0Cnz6qErxt226IlFj1+d48AYHAKJU9UISz/R/yu8OzjzBU8zHA1c
-         MwbBTfZ8XN6hvDeSNN3MpmytJ4RkZKA6mos8oZlZz8sKRXnmlsOe6IQPMNc8nVs5hH0U
-         LfpowZagRZANXEKkcxBkSoKmq2c3FJ3zEN2E1f0BaR2h7153h9KvkYigN8TlP2E1Si0V
-         o6KhiIjiIsylTMB1j19OcIbvLU6hIJWn8QN1XoZespbeb9KjnbsYdJ6ZZf/TZU74J8jl
-         iIXRhm5smiXLmpYJGQTADVXhXnpbrIIceRQISbsvvelwgMI/J7OjW/TkWGCZf1K1bIR+
-         fPQQ==
-X-Gm-Message-State: AOAM533viMegVd1h/h26UHZV1iRVbohtq36bIeNn2ui1YU8NPmDlhW3v
-        Pb80INH9LqlrGYMRodUSbpo=
-X-Google-Smtp-Source: ABdhPJxTw8Q2g4gJqdQ5VjeVcUsumg5m4xlJCqLwsEiMFIRljGLUCf9uZk2to7cRVIUw+zBccv3Zcg==
-X-Received: by 2002:a0c:ec10:: with SMTP id y16mr5743627qvo.49.1622829316048;
-        Fri, 04 Jun 2021 10:55:16 -0700 (PDT)
-Received: from hemlock.fiveisland.rocks ([2001:470:1d:225:af22:9bab:b26c:cac1])
-        by smtp.gmail.com with ESMTPSA id u2sm4301525qkk.75.2021.06.04.10.55.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 10:55:15 -0700 (PDT)
-From:   Marc Dionne <marc.c.dionne@gmail.com>
-To:     Marc Dionne <marc.dionne@auristor.com>,
-        David Howells <dhowells@redhat.com>
-Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] afs: Fix partial writeback of large files on fsync and close
-Date:   Fri,  4 Jun 2021 14:55:04 -0300
-Message-Id: <20210604175504.4055-1-marc.c.dionne@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        id S230112AbhFDR7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 13:59:18 -0400
+Received: from mga17.intel.com ([192.55.52.151]:13009 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229791AbhFDR7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 13:59:17 -0400
+IronPort-SDR: +U5ak7K3DdtkSO9y2KlU+nPHBm7QDeKmsRbeQYzpVg0LNQCq+K2p3ZSKteaeZSPSogLBDpux3K
+ P6SZSMxPXbZA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10005"; a="184710741"
+X-IronPort-AV: E=Sophos;i="5.83,248,1616482800"; 
+   d="scan'208";a="184710741"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2021 10:57:28 -0700
+IronPort-SDR: XU47CUriQYZV0esEBvDLL8HQu3Efr9oytM+bbRPgNp4+97MNh/KfCGC3a0sXaw54x2VnbkOCm5
+ tp5TIRXA8tPw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,248,1616482800"; 
+   d="scan'208";a="446773312"
+Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 04 Jun 2021 10:57:25 -0700
+Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lpE4S-00072z-QK; Fri, 04 Jun 2021 17:57:24 +0000
+Date:   Sat, 05 Jun 2021 01:56:29 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:for-next/kspp] BUILD SUCCESS
+ 0850bf2e5ce411f7c1e2879d72d80253cd8db261
+Message-ID: <60ba694d.hNaHwVgqv1w6E8n0%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Dionne <marc.dionne@auristor.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/kspp
+branch HEAD: 0850bf2e5ce411f7c1e2879d72d80253cd8db261  drm/nouveau/clk: Fix fall-through warnings for Clang
 
-In commit e87b03f5830e ("afs: Prepare for use of THPs"), the return
-value for afs_write_back_from_locked_page was changed from a number
-of pages to a length in bytes.  The loop in afs_writepages_region uses
-the return value to compute the index that will be used to find dirty
-pages in the next iteration, but treats it as a number of pages and
-wrongly multiplies it by PAGE_SIZE.  This gives a very large index value,
-potentially skipping any dirty data that was not covered in the first
-pass, which is limited to 256M.
+elapsed time: 721m
 
-This causes fsync(), and indirectly close(), to only do a partial
-writeback of a large file's dirty data.  The rest is eventually written
-back by background threads after dirty_expire_centisecs.
+configs tested: 204
+configs skipped: 2
 
-Fixes: e87b03f5830e ("afs: Prepare for use of THPs")
-Signed-off-by: Marc Dionne <marc.dionne@auristor.com>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+nios2                         3c120_defconfig
+mips                         tb0219_defconfig
+arm                          moxart_defconfig
+mips                           xway_defconfig
+powerpc                       holly_defconfig
+sh                   rts7751r2dplus_defconfig
+mips                         rt305x_defconfig
+mips                           mtx1_defconfig
+arm                          ep93xx_defconfig
+powerpc                     kilauea_defconfig
+sh                           se7780_defconfig
+sh                         ap325rxa_defconfig
+sh                         apsh4a3a_defconfig
+arc                         haps_hs_defconfig
+arm                         mv78xx0_defconfig
+sh                         ecovec24_defconfig
+powerpc                 xes_mpc85xx_defconfig
+powerpc                         ps3_defconfig
+mips                         tb0287_defconfig
+sh                          landisk_defconfig
+mips                        maltaup_defconfig
+m68k                            q40_defconfig
+powerpc                          g5_defconfig
+alpha                            allyesconfig
+powerpc                     tqm8540_defconfig
+xtensa                           allyesconfig
+powerpc                       maple_defconfig
+powerpc                   lite5200b_defconfig
+arm                      pxa255-idp_defconfig
+powerpc                        cell_defconfig
+sh                        sh7757lcr_defconfig
+powerpc                 mpc836x_rdk_defconfig
+powerpc                    sam440ep_defconfig
+sh                            titan_defconfig
+riscv             nommu_k210_sdcard_defconfig
+powerpc                      ep88xc_defconfig
+sh                               alldefconfig
+powerpc64                           defconfig
+powerpc                 mpc8313_rdb_defconfig
+openrisc                            defconfig
+mips                  decstation_64_defconfig
+riscv                    nommu_virt_defconfig
+powerpc                        warp_defconfig
+arm                           tegra_defconfig
+um                               alldefconfig
+sh                           sh2007_defconfig
+powerpc                      pcm030_defconfig
+arm                           u8500_defconfig
+um                                  defconfig
+m68k                          hp300_defconfig
+m68k                          amiga_defconfig
+powerpc                    gamecube_defconfig
+ia64                             allyesconfig
+sh                        sh7785lcr_defconfig
+powerpc                     tqm8541_defconfig
+m68k                       m5208evb_defconfig
+arm                           stm32_defconfig
+arm                         cm_x300_defconfig
+powerpc                    adder875_defconfig
+powerpc                mpc7448_hpc2_defconfig
+xtensa                              defconfig
+microblaze                          defconfig
+powerpc                 mpc837x_rdb_defconfig
+powerpc                      ppc40x_defconfig
+h8300                    h8300h-sim_defconfig
+powerpc                 canyonlands_defconfig
+arm                          pxa168_defconfig
+sh                           se7712_defconfig
+powerpc                     rainier_defconfig
+arm                         orion5x_defconfig
+xtensa                    xip_kc705_defconfig
+nios2                         10m50_defconfig
+mips                         db1xxx_defconfig
+openrisc                 simple_smp_defconfig
+arm                              alldefconfig
+arm                         nhk8815_defconfig
+mips                      pic32mzda_defconfig
+arm                            mmp2_defconfig
+sh                            hp6xx_defconfig
+sh                      rts7751r2d1_defconfig
+sh                             sh03_defconfig
+ia64                             alldefconfig
+arc                     nsimosci_hs_defconfig
+mips                      maltaaprp_defconfig
+arm                       omap2plus_defconfig
+sh                 kfr2r09-romimage_defconfig
+powerpc                     sequoia_defconfig
+sparc64                          alldefconfig
+m68k                        mvme147_defconfig
+arm                       spear13xx_defconfig
+powerpc                 mpc834x_itx_defconfig
+ia64                          tiger_defconfig
+arm                         lubbock_defconfig
+powerpc                     mpc512x_defconfig
+mips                       lemote2f_defconfig
+powerpc                           allnoconfig
+mips                           ip28_defconfig
+sh                          sdk7786_defconfig
+arm                       cns3420vb_defconfig
+arm                        trizeps4_defconfig
+sh                          lboxre2_defconfig
+arm                         at91_dt_defconfig
+powerpc                 mpc837x_mds_defconfig
+mips                      loongson3_defconfig
+powerpc                     sbc8548_defconfig
+powerpc                     mpc83xx_defconfig
+arc                    vdk_hs38_smp_defconfig
+mips                        jmr3927_defconfig
+sh                   sh7770_generic_defconfig
+mips                         mpc30x_defconfig
+arm                           corgi_defconfig
+arm                           omap1_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+x86_64               randconfig-a002-20210604
+x86_64               randconfig-a004-20210604
+x86_64               randconfig-a003-20210604
+x86_64               randconfig-a006-20210604
+x86_64               randconfig-a005-20210604
+x86_64               randconfig-a001-20210604
+i386                 randconfig-a003-20210604
+i386                 randconfig-a006-20210604
+i386                 randconfig-a004-20210604
+i386                 randconfig-a001-20210604
+i386                 randconfig-a005-20210604
+i386                 randconfig-a002-20210604
+i386                 randconfig-a003-20210603
+i386                 randconfig-a006-20210603
+i386                 randconfig-a004-20210603
+i386                 randconfig-a001-20210603
+i386                 randconfig-a002-20210603
+i386                 randconfig-a005-20210603
+x86_64               randconfig-a015-20210603
+x86_64               randconfig-a011-20210603
+x86_64               randconfig-a012-20210603
+x86_64               randconfig-a014-20210603
+x86_64               randconfig-a016-20210603
+x86_64               randconfig-a013-20210603
+i386                 randconfig-a015-20210604
+i386                 randconfig-a013-20210604
+i386                 randconfig-a016-20210604
+i386                 randconfig-a011-20210604
+i386                 randconfig-a014-20210604
+i386                 randconfig-a012-20210604
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-b001-20210604
+x86_64               randconfig-a002-20210603
+x86_64               randconfig-a004-20210603
+x86_64               randconfig-a003-20210603
+x86_64               randconfig-a006-20210603
+x86_64               randconfig-a005-20210603
+x86_64               randconfig-a001-20210603
+x86_64               randconfig-a015-20210604
+x86_64               randconfig-a011-20210604
+x86_64               randconfig-a014-20210604
+x86_64               randconfig-a012-20210604
+x86_64               randconfig-a016-20210604
+x86_64               randconfig-a013-20210604
+
 ---
- fs/afs/write.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index 3edb6204b937..a523bb86915d 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -730,7 +730,7 @@ static int afs_writepages_region(struct address_space *mapping,
- 			return ret;
- 		}
- 
--		start += ret * PAGE_SIZE;
-+		start += ret;
- 
- 		cond_resched();
- 	} while (wbc->nr_to_write > 0);
--- 
-2.31.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
