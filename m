@@ -2,144 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B9B39AF73
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E7139AF7E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhFDBTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 21:19:55 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:4294 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFDBTx (ORCPT
+        id S230022AbhFDBUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 21:20:50 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:12799 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229973AbhFDBUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 21:19:53 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Fx4X13qdWz1BHn7;
-        Fri,  4 Jun 2021 09:13:21 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 4 Jun 2021 09:18:06 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 4 Jun 2021
- 09:18:05 +0800
-Subject: Re: [RFC net-next 0/8] Introducing subdev bus and devlink extension
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     moyufeng <moyufeng@huawei.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Parav Pandit <parav@mellanox.com>,
-        Or Gerlitz <gerlitz.or@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "michal.lkml@markovi.net" <michal.lkml@markovi.net>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "lipeng (Y)" <lipeng321@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        <shenjian15@huawei.com>, "chenhao (DY)" <chenhao288@hisilicon.com>,
-        Jiaran Zhang <zhangjiaran@huawei.com>
-References: <1551418672-12822-1-git-send-email-parav@mellanox.com>
- <20190301120358.7970f0ad@cakuba.netronome.com>
- <VI1PR0501MB227107F2EB29C7462DEE3637D1710@VI1PR0501MB2271.eurprd05.prod.outlook.com>
- <20190304174551.2300b7bc@cakuba.netronome.com>
- <VI1PR0501MB22718228FC8198C068EFC455D1720@VI1PR0501MB2271.eurprd05.prod.outlook.com>
- <76785913-b1bf-f126-a41e-14cd0f922100@huawei.com>
- <20210531223711.19359b9a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <7c591bad-75ed-75bc-5dac-e26bdde6e615@huawei.com>
- <20210601143451.4b042a94@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <cf961f69-c559-eaf0-e168-b014779a1519@huawei.com>
- <20210602093440.15dc5713@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <857e7a19-1559-b929-fd15-05e8f38e9d45@huawei.com>
- <20210603105311.27bb0c4d@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <c9afecb5-3c0e-6421-ea58-b041d8173636@huawei.com>
-Date:   Fri, 4 Jun 2021 09:18:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Thu, 3 Jun 2021 21:20:43 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AA3bLW6jvnopU4Bnx6L9YoZtz3nBQXuYji2hC?=
+ =?us-ascii?q?6mlwRA09TyX4rbHLoB1/73LJYVkqNk3I5urrBEDtexLhHP1OkOws1NWZLWrbUQ?=
+ =?us-ascii?q?KTRekM0WKI+UyDJ8SRzI5g/JYlW61/Jfm1NlJikPv9iTPSL/8QhPWB74Ck7N2z?=
+ =?us-ascii?q?80tQ?=
+X-IronPort-AV: E=Sophos;i="5.83,246,1616428800"; 
+   d="scan'208";a="109209787"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 04 Jun 2021 09:18:54 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id 31BEC4C369FE;
+        Fri,  4 Jun 2021 09:18:49 +0800 (CST)
+Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Fri, 4 Jun 2021 09:18:49 +0800
+Received: from irides.mr.mr.mr (10.167.225.141) by
+ G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.2 via Frontend Transport; Fri, 4 Jun 2021 09:18:48 +0800
+From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
+        <linux-nvdimm@lists.01.org>, <linux-mm@kvack.org>,
+        <linux-fsdevel@vger.kernel.org>, <dm-devel@redhat.com>
+CC:     <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
+        <david@fromorbit.com>, <hch@lst.de>, <agk@redhat.com>,
+        <snitzer@redhat.com>, <rgoldwyn@suse.de>
+Subject: [PATCH v4 00/10] fsdax: introduce fs query to support reflink
+Date:   Fri, 4 Jun 2021 09:18:34 +0800
+Message-ID: <20210604011844.1756145-1-ruansy.fnst@fujitsu.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210603105311.27bb0c4d@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme714-chm.china.huawei.com (10.1.199.110) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: 31BEC4C369FE.A3141
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/4 1:53, Jakub Kicinski wrote:
-> On Thu, 3 Jun 2021 11:46:43 +0800 Yunsheng Lin wrote:
->>>> can devlink port be used to indicate different PF in the same ASIC,
->>>> which already has the bus identifiers in it? It seems we need a
->>>> extra identifier to indicate the ASIC?
->>>>
->>>> $ devlink port show
->>>> ...
->>>> pci/0000:03:00.0/61: type eth netdev sw1p1s0 split_group 0  
->>>
->>> Ports can obviously be used, but which PCI device will you use to
->>> register the devlink instance? Perhaps using just one doesn't matter 
->>> if there is only one NIC in the system, but may be confusing with
->>> multiple NICs, no?  
->>
->> Yes, it is confusing, how about using the controler_id to indicate
->> different NIC? we can make sure controler_id is unqiue in the same
->> host, a controler_id corresponds to a devlink instance, vendor info
->> or serial num for the devlink instance can further indicate more info
->> to the system user?
->>
->> pci/controler_id/0000:03:00.0/61
-> 
-> What is a "controller id" in concrete terms? Another abstract ID which
-> may change on every boot?
+This patchset is aimed to support shared pages tracking for fsdax.
 
-My initial thinking is a id from a global IDA pool, which indeed may
-change on every boot.
+Change from V3:
+  - Introduce dax_device->holder to split dax specific issues from
+    block device, instead of the ->corrupted_range() in
+    block_device_operations
+  - Other mistakes and problems fix
+  - Rebased to v5.13-rc4
 
-I am not really thinking much deeper about the controller id, just
-mirroring the bus identifiers for pcie device and ifindex for netdev,
-which may change too if the device is pluged into different pci slot
-on every boot?
+This patchset moves owner tracking from dax_assocaite_entry() to pmem
+device driver, by introducing an interface ->memory_failure() of struct
+pagemap.  This interface is called by memory_failure() in mm, and
+implemented by pmem device.
 
-> 
->>>> Does it make sense if the PF first probed creates a auxiliary device,
->>>> and the auxiliary device driver creates the devlink instance? And
->>>> the PF probed later can connect/register to that devlink instance?  
->>>
->>> I would say no, that just adds another layer of complication and
->>> doesn't link the functions in any way.  
->>
->> How about:
->> The PF first probed creates the devlink instance? PF probed later can
->> connect/register to that devlink instance created by the PF first probed.
->> It seems some locking need to ensure the above happens as intended too.
->>
->> About linking, the PF provide vendor info/serial number(or whatever is
->> unqiue between different vendor) of a controller it belong to, if the
->> controller does not exist yet, create one and connect/register to that
->> devlink instance, otherwise just do the connecting/registering.
-> 
-> Sounds about right, but I don't understand why another ID is
-> necessary. Why not allow devlink instances to have multiple names, 
-> like we allow aliases for netdevs these days?
+Then call holder operations to find the filesystem which the corrupted
+data located in, and call filesystem handler to track files or metadata
+associated with this page.
 
-We could still allow devlink instances to have multiple names,
-which seems to be more like devlink tool problem?
+Finally we are able to try to fix the corrupted data in filesystem and
+do other necessary processing, such as killing processes who are using
+the files affected.
 
-For example, devlink tool could use the id or the vendor_info/
-serial_number to indicate a devlink instance according to user's
-request.
+The call trace is like this:
+memory_failure()
+ pgmap->ops->memory_failure()      => pmem_pgmap_memory_failure()
+  dax_device->holder_ops->corrupted_range() =>
+                                      - fs_dax_corrupted_range()
+                                      - md_dax_corrupted_range()
+   sb->s_ops->currupted_range()    => xfs_fs_corrupted_range()
+    xfs_rmap_query_range()
+     xfs_currupt_helper()
+      * corrupted on metadata
+          try to recover data, call xfs_force_shutdown()
+      * corrupted on file data
+          try to recover data, call mf_dax_kill_procs()
 
-Aliase could be allowed too as long as devlink core provide a
-field and ops to set/get the field mirroring the ifalias for
-netdevice?
+The fsdax & reflink support for XFS is not contained in this patchset.
 
-> 
-> .
-> 
+(Rebased on v5.13-rc4)
+==
+
+
+Shiyang Ruan (10):
+  pagemap: Introduce ->memory_failure()
+  dax: Introduce holder for dax_device
+  fs: Introduce ->corrupted_range() for superblock
+  mm, fsdax: Refactor memory-failure handler for dax mapping
+  mm, pmem: Implement ->memory_failure() in pmem driver
+  fs/dax: Implement dax_holder_operations
+  dm: Introduce ->rmap() to find bdev offset
+  md: Implement dax_holder_operations
+  xfs: Implement ->corrupted_range() for XFS
+  fs/dax: Remove useless functions
+
+ block/genhd.c                 |  30 ++++++
+ drivers/dax/super.c           |  38 ++++++++
+ drivers/md/dm-linear.c        |  20 ++++
+ drivers/md/dm.c               | 119 ++++++++++++++++++++++-
+ drivers/nvdimm/pmem.c         |  14 +++
+ fs/dax.c                      |  79 +++++++---------
+ fs/xfs/xfs_fsops.c            |   5 +
+ fs/xfs/xfs_mount.h            |   1 +
+ fs/xfs/xfs_super.c            | 108 +++++++++++++++++++++
+ include/linux/dax.h           |  13 +++
+ include/linux/device-mapper.h |   5 +
+ include/linux/fs.h            |   2 +
+ include/linux/genhd.h         |   1 +
+ include/linux/memremap.h      |   8 ++
+ include/linux/mm.h            |   9 ++
+ mm/memory-failure.c           | 173 ++++++++++++++++++++++------------
+ 16 files changed, 520 insertions(+), 105 deletions(-)
+
+-- 
+2.31.1
+
+
 
