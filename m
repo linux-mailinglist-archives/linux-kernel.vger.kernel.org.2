@@ -2,78 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9421A39BF7D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 20:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84FDD39BF81
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 20:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbhFDSYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 14:24:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbhFDSYE (ORCPT
+        id S230104AbhFDSZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 14:25:45 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:45547 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S229995AbhFDSZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 14:24:04 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DAE7C061766
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 11:22:18 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id t9so8543204pgn.4
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 11:22:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UX1G2MyuSMoI9qtV/IxvY2Ox2XX3g0K693XM4XnGuQs=;
-        b=brEmXwIeWk511PUJq83cxnT/omO9wa73pzK4DBRRfyw6IWWvIhLLWGnHkQu0cTXiId
-         osUMl3zdzBrUmpwlIil/zSWrkJ02MAiC0TmLGGOkxs0YiRQNoKaQ23SXe129ISop5J0w
-         psq9IuXjXRSwfDxo+lWbs78DFv2LT0K2q7H8s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UX1G2MyuSMoI9qtV/IxvY2Ox2XX3g0K693XM4XnGuQs=;
-        b=MvEIE+7rjuJwMDKK02h602AIHXqaAcPrTrjmD5vcYGEvG2PfwFRr89kXCsdQfiEJXM
-         y0MMz5q8iv3XSOjjbgyBKE7/jYzjk9FQRj0cQeyZBt5qc96jiHMSMw0sPx304RYfo8Wt
-         2A03J5l4tNz1nZ25KeOP3Il4srDuRYeYZOn4Ls2HSbLEDWGKxzqQYeL7nxVmQLvP8Dhw
-         bGGpLvWOx6vLMOlPpbglb1EP7s6MUschyOmEq0SNjidvV9huVuG3BAygDqjmJSSlSFm3
-         bSQ1lwJ/9hZc0E+eYddhlRBudXtp0zOW8RJb3rwl7/tHSChvT6NDcEqzkXPdlNVCIzG+
-         HMaA==
-X-Gm-Message-State: AOAM530bdd89McMxuaSEPzzt1/FYucu5oU9dCoxeDHEvwp3fFOnkc5FY
-        d51qd69OyA9QTk1UM6RUsCpoCA==
-X-Google-Smtp-Source: ABdhPJx/yQn8DS3AzA7xRJxe/WtzLqKi+h8G2XgHEWQGo8dMvTira3vRnBtv6+zBFbCRjJOcdsXa1w==
-X-Received: by 2002:a62:148e:0:b029:2e4:e5a5:7e33 with SMTP id 136-20020a62148e0000b02902e4e5a57e33mr5846985pfu.9.1622830937626;
-        Fri, 04 Jun 2021 11:22:17 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t13sm2352888pfh.97.2021.06.04.11.22.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 11:22:17 -0700 (PDT)
-Date:   Fri, 4 Jun 2021 11:22:15 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] scsi: mpi3mr: Fix fall-through warning for Clang
-Message-ID: <202106041121.41CF254@keescook>
-References: <20210604023530.GA180997@embeddedor>
+        Fri, 4 Jun 2021 14:25:44 -0400
+Received: (qmail 1689062 invoked by uid 1000); 4 Jun 2021 14:23:57 -0400
+Date:   Fri, 4 Jun 2021 14:23:57 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <20210604182357.GA1688170@rowland.harvard.edu>
+References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
+ <CAHk-=wievFk29DZgFLEFpH9yuZ0jfJqppLTJnOMvhe=+tDqgrw@mail.gmail.com>
+ <YLpWwm1lDwBaUven@hirez.programming.kicks-ass.net>
+ <CAHk-=wjf-VJZd3Uxv3T3pSJYYVzyfK2--znG0VEOnNRchMGgdQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210604023530.GA180997@embeddedor>
+In-Reply-To: <CAHk-=wjf-VJZd3Uxv3T3pSJYYVzyfK2--znG0VEOnNRchMGgdQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 09:35:30PM -0500, Gustavo A. R. Silva wrote:
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix a
-> fall-through warning by explicitly adding a break statement instead
-> of just letting the code fall through to the next case.
+On Fri, Jun 04, 2021 at 10:10:29AM -0700, Linus Torvalds wrote:
+> On Fri, Jun 4, 2021 at 9:37 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > >
+> > > Why is "volatile_if()" not just
+> > >
+> > >        #define barier_true() ({ barrier(); 1; })
+> > >
+> > >        #define volatile_if(x) if ((x) && barrier_true())
+> >
+> > Because we weren't sure compilers weren't still allowed to optimize the
+> > branch away.
 > 
-> Link: https://github.com/KSPP/linux/issues/115
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> This isn't about some "compiler folks think".
+> 
+> The above CANNOT be compiled any other way than with a branch.
+> 
+> A compiler that optimizes a branch away is simply broken.
+> 
+> Of course, the actual condition (ie "x" above) has to be something
+> that the compiler cannot statically determine is a constant, but since
+> the whole - and only - point is that there will be a READ_ONCE() or
+> similar there, that's not an issue.
 
-Looks right.
+In fact there is one weird case where it is an issue (mentioned in 
+memory-barriers.txt):
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+If some obscure arch-specific header file does:
 
--- 
-Kees Cook
+	#define FOO	1
+
+and an unwitting programmer writes:
+
+	volatile_if (READ_ONCE(*y) % FOO == 0)
+		WRITE_ONCE(*z, 5);
+
+then the compiler _can_ statically determine that the condition is a 
+constant, in spite of the READ_ONCE, but this fact isn't apparent to the 
+programmer.  The generated object code will include both the read and 
+the write, but there won't necessarily be any ordering between them.
+
+I don't know if cases like this exist in the kernel.  It wouldn't be 
+surprising if they did though, particularly in situations where a 
+feature (like multi-level page tables) may be compiled away.
+
+Alan
