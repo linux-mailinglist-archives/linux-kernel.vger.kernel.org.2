@@ -2,513 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABFF439B75A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 12:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1384F39B763
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 12:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhFDKwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 06:52:46 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:4358 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbhFDKwp (ORCPT
+        id S230026AbhFDLBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 07:01:23 -0400
+Received: from mail-ua1-f53.google.com ([209.85.222.53]:35647 "EHLO
+        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229667AbhFDLBW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 06:52:45 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FxKG64jYDz63cJ;
-        Fri,  4 Jun 2021 18:47:10 +0800 (CST)
-Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 4 Jun 2021 18:50:57 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggema757-chm.china.huawei.com (10.1.198.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 4 Jun 2021 18:50:56 +0800
-From:   Qi Liu <liuqi115@huawei.com>
-To:     <catalin.marinas@arm.com>, <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <song.bao.hua@hisilicon.com>, <prime.zeng@hisilicon.com>,
-        <robin.murphy@arm.com>, <liuqi115@huawei.com>,
-        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH] arm64: kprobes: Enable OPTPROBE for arm64
-Date:   Fri, 4 Jun 2021 18:50:39 +0800
-Message-ID: <1622803839-27354-1-git-send-email-liuqi115@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        Fri, 4 Jun 2021 07:01:22 -0400
+Received: by mail-ua1-f53.google.com with SMTP id n61so5038183uan.2
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 03:59:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j4Bnxcztr/Z2l0QnP3ZcryrS+HQHmbGidA9Jx0n1Vxs=;
+        b=Ai5C1JCPZZ75LG50Zxt7M0rUuIMYWFOC2aCjMkIO0zcK7ZvHKZU+LS0FqMnhN4V/Lw
+         b6mDFiRhlcpzn4uGt+RJ4jFv0GVaSs81Z4tRMR327F3Dpw5NDSYRU/vcrvnM24ZdfSQf
+         1DHz3Md9jYrIigOeYuHFMqJWW826MTL08FWLXNyMTCBfFMJ3wy3CSJ1rG6/i+xT5r1uW
+         08cfzm+PjhworC4lPZ6DbeePRjJcv6xZO+GoSVqPVFQHVwbWTU8ROMfMZBZ9i0X9KkCi
+         P/zrG8/Nj+WvsYImoBp7LmXWKH5xuQYPtB7G8TtkE7D9t0aq2xQaXd+c3/2nEgCeoF/W
+         BBfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j4Bnxcztr/Z2l0QnP3ZcryrS+HQHmbGidA9Jx0n1Vxs=;
+        b=ggNOfy+JYXDzP0DCLaOwATIvobnCieAzJxa4jDE6kmWq3+KSy1dtnf7uGT9Tpd3/8I
+         tLbWjTtRrXQal7ITF4sqcH87xxK5MYSHn6lqABrHBneZSmXyVpcLA11TshYvmxHxSOgd
+         hYFh4qwqarOGdp2Y06RE07BN2UabtP61Pyo6PH9whaOyve3YUxS5yU5e+cVnZqjAvWlK
+         qAF0Re7N9No4apRB1X2QB6evF7ZTJoxekmkUNJnhNitYdTS5LsL2vshZkQL9o6PgIUCo
+         HaBuPtCm6igl0GjUZgE/GGyChv3FMo3Hov6qilWDahHkk9LjQG5Nh2cBNdkCkMImGEp3
+         DHrg==
+X-Gm-Message-State: AOAM532WRhTjPz5zJj21bjUP9t3YwwOuv3Xy+q9nNBDdK8WK4EIOZdSj
+        QoS4LWXRtmYV/NscefHq8Ze04CuLR7ogH/rxJXNfOw==
+X-Google-Smtp-Source: ABdhPJw/iEJNXHnMZLMWHaMDYBDuRCRgkGAcG6MmcbbIIpvdDWQ4Lq4CYbL+i2S5DM/0UJugwNi3LG4vdjI3zNGS0rI=
+X-Received: by 2002:ab0:d8f:: with SMTP id i15mr2525376uak.104.1622804315738;
+ Fri, 04 Jun 2021 03:58:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema757-chm.china.huawei.com (10.1.198.199)
-X-CFilter-Loop: Reflected
+References: <20210603093438.138705-1-ulf.hansson@linaro.org>
+ <YLi5N06Qs+gYHgYg@gerhold.net> <CAPDyKFqQ==zPwXjBxKAX9m38YfxFViqLTz8autnZc1suT5cayg@mail.gmail.com>
+ <YLkOAyydZMnxkEy+@gerhold.net> <CAPDyKFpaKkeyOpP7iW8-WG7DLs6Gd1eD2KO3pDYrVQ3z88zFJQ@mail.gmail.com>
+ <YLni830rOJWy1NRU@gerhold.net>
+In-Reply-To: <YLni830rOJWy1NRU@gerhold.net>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 4 Jun 2021 12:57:59 +0200
+Message-ID: <CAPDyKFr7iRA+FmrJuDJVPVLcC7j=3LU7VdBwqZqxWEc25SssMw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] PM: domains: Avoid boilerplate code for DVFS in subsystem/drivers
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch introduce optprobe for ARM64. In optprobe, probed
-instruction is replaced by a branch instruction to detour
-buffer. Detour buffer contains trampoline code and a call to
-optimized_callback(). optimized_callback() calls opt_pre_handler()
-to execute kprobe handler.
+On Fri, 4 Jun 2021 at 10:23, Stephan Gerhold <stephan@gerhold.net> wrote:
+>
+> On Fri, Jun 04, 2021 at 09:18:45AM +0200, Ulf Hansson wrote:
+> > On Thu, 3 Jun 2021 at 19:16, Stephan Gerhold <stephan@gerhold.net> wrote:
+> > >
+> > > On Thu, Jun 03, 2021 at 05:27:30PM +0200, Ulf Hansson wrote:
+> > > > On Thu, 3 Jun 2021 at 13:13, Stephan Gerhold <stephan@gerhold.net> wrote:
+> > > > > I think this might also go into the direction of my problem with the OPP
+> > > > > core for CPU DVFS [1] since the OPP core currently does not "power-on"
+> > > > > the power domains, it just sets a performance state. I got kind of stuck
+> > > > > with all the complexity of power domains in Linux so I think we never
+> > > > > solved that.
+> > > >
+> > > > Hmm, that issue is in a way related.
+> > > >
+> > > > Although, if I understand correctly, that was rather about at what
+> > > > layer it makes best sense to activate the device (from runtime PM
+> > > > point of view). And this was needed due to the fact that the
+> > > > corresponding genpd provider, requires the PM domain to be power on to
+> > > > allow changing a performance state for it. Did I get that correct?
+> > > >
+> > >
+> > > Yes, mostly. But I guess I keep coming back to the same question:
+> > >
+> > > When/why does it make sense to vote for a "performance state" of
+> > > a power domain that is or might be powered off?
+> > >
+> > > "Powered off" sounds like the absolutely lowest possible performance
+> > > state to me, it's just not on at all. And if suddenly a device comes and
+> > > says "I want performance state X", nothing can change until the power
+> > > domain is also "powered on".
+> > >
+> > > I think my "CPU DVFS" problem only exists because in many other
+> > > situations it's possible to rely on one of the following side effects:
+> > >
+> > >   1. The genpd provider does not care if it's powered on or not.
+> > >      (i.e. it's always-on or implicitly powers on if state > 0).
+> > >   2. There is some other device that votes to keep the power domain on.
+> > >
+> > > And that's how the problem relates to my comment for this patch series ...
+> > >
+> > > >
+> > > > >
+> > > > > Do I understand your patch set correctly that you basically make the
+> > > > > performance state votes conditional to the "power-on" vote of the device
+> > > > > (which is automatically toggled during runtime/system PM)?
+> > > >
+> > > > The series can be considered as a step in that direction, but no, this
+> > > > series doesn't change that behaviour.
+> > > >
+> > > > Users of dev_pm_genpd_set_performance_state() are still free to set a
+> > > > performance state, orthogonally to whether the PM domain is powered on
+> > > > or off.
+> > > >
+> > > > >
+> > > > > If yes, I think that's a good thing. It was always really confusing to me
+> > > > > that a device can make performance state votes if it doesn't actually
+> > > > > want the power domain to be powered on.
+> > > >
+> > > > I share your view, it's a bit confusing.
+> > > >
+> > > > Just adding the condition internally to genpd to prevent the caller of
+> > > > dev_pm_genpd_set_performance() from succeeding to set a new state,
+> > > > unless the genpd is powered on, should be a rather simple thing to
+> > > > add.
+> > > >
+> > > > However, to change this, we first need to double check that all the
+> > > > callers are making sure they have turned on the PM domain (typically
+> > > > via runtime PM).
+> > > >
+> > >
+> > > ... because if performance state votes would be conditional to the
+> > > "power-on" vote of the device, it would no longer be possible
+> > > to rely on the side effects mentioned above. So this would most
+> > > certainly break some code that (incorrectly?) relies on these side
+> > > effects, but would also prevent such code.
+> >
+> > Right. I understand your point and I am open to discuss an
+> > implementation. Although, I suggest we continue that separately from
+> > the $subject series.
+> >
+> > >
+> > > My (personal) feeling so far is that just dropping performance votes
+> > > during runtime/system suspend just makes the entire situation even more
+> > > confusing.
+> >
+> > Well, that's what most subsystems/drivers need to do.
+> >
+> > Moreover, we have specific devices that only use one default OPP [1].
+> >
+> > >
+> > > > >
+> > > > > What happens if a driver calls dev_pm_genpd_set_performance_state(...)
+> > > > > while the device is suspended? Will that mess up the performance state
+> > > > > when the device resumes?
+> > > >
+> > > > Good question. The idea is:
+> > > >
+> > > > If genpd in genpd_runtime_suspend() are able to drop an existing vote
+> > > > for a performance state, it should restore the vote in
+> > > > genpd_runtime_resume(). This also means, if there is no vote to drop
+> > > > in genpd_runtime_suspend(), genpd should just leave the vote as is in
+> > > > genpd_runtime_resume().
+> > > >
+> > >
+> > > But the next time the device enters runtime suspend that vote would be
+> > > dropped, wouldn't it? That feels kind of strange to me.
+> >
+> > What do you mean by "next time"?
+> >
+>
+> Basically just like:
+>
+>   <device runtime-suspended>
+>   driver does dev_pm_genpd_set_performance_state(...)
+>     - performance state is applied immediately, even though device does
+>       apparently not actually want the power domain to be powered on
+>   <device runtime resumes>
+>     - performance state is kept
+>   <device runtime suspends>
+>     - performance state is dropped
 
-Limitations:
-- We only support !CONFIG_RANDOMIZE_MODULE_REGION_FULL case to
-guarantee the offset between probe point and kprobe pre_handler
-is not larger than 128MiB.
+Yep, this is what would happen.
 
-Performance of optprobe on Hip08 platform is test using kprobe
-example module[1] to analyze the latency of a kernel function,
-and here is the result:
+>   ...
+>
+> I'm not saying this example makes sense (it doesn't for me). It doesn't
+> make sense to vote for a performance state while runtime suspended.
+>
+> But with this patch series we still allow that, and it will kind of
+> produce inconsistent behavior that the performance state is applied
+> immediately, even though the device is currently runtime-suspended.
+> But once it runtime suspends again, suddenly it is dropped.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/samples/kprobes/kretprobe_example.c
+Yes.
 
-kprobe before optimized:
-[280709.846380] do_empty returned 0 and took 1530 ns to execute
-[280709.852057] do_empty returned 0 and took 550 ns to execute
-[280709.857631] do_empty returned 0 and took 440 ns to execute
-[280709.863215] do_empty returned 0 and took 380 ns to execute
-[280709.868787] do_empty returned 0 and took 360 ns to execute
-[280709.874362] do_empty returned 0 and took 340 ns to execute
-[280709.879936] do_empty returned 0 and took 320 ns to execute
-[280709.885505] do_empty returned 0 and took 300 ns to execute
-[280709.891075] do_empty returned 0 and took 280 ns to execute
-[280709.896646] do_empty returned 0 and took 290 ns to execute
-[280709.902220] do_empty returned 0 and took 290 ns to execute
-[280709.907807] do_empty returned 0 and took 290 ns to execute
+Note that, I have been looking at the existing callers of
+dev_pm_genpd_set_performance_state() in the kernel as of today. It
+should not be an issue, at least as far as I can tell.
 
-optprobe:
-[ 2965.964572] do_empty returned 0 and took 90 ns to execute
-[ 2965.969952] do_empty returned 0 and took 80 ns to execute
-[ 2965.975332] do_empty returned 0 and took 70 ns to execute
-[ 2965.980714] do_empty returned 0 and took 60 ns to execute
-[ 2965.986128] do_empty returned 0 and took 80 ns to execute
-[ 2965.991507] do_empty returned 0 and took 70 ns to execute
-[ 2965.996884] do_empty returned 0 and took 70 ns to execute
-[ 2966.002262] do_empty returned 0 and took 80 ns to execute
-[ 2966.007642] do_empty returned 0 and took 70 ns to execute
-[ 2966.013020] do_empty returned 0 and took 70 ns to execute
-[ 2966.018400] do_empty returned 0 and took 70 ns to execute
-[ 2966.023779] do_empty returned 0 and took 70 ns to execute
-[ 2966.029158] do_empty returned 0 and took 70 ns to execute
+>
+> And when you say:
+>
+> > My main point is, if the device enters runtime suspend state, why
+> > should we keep the vote for an OPP for the device? I mean, the device
+> > isn't going to be used anyway.
+> >
+>
+> A very similar point would be: "If the device *is* in runtime suspend
+> state, why should we take a vote for an OPP for the device?"
+>
+> But I understand that this might be something we should address
+> separately in a follow-up patch/discussion. Don't get me wrong, I agree
+> this patch set is good, I just think we should go one step further and
+> finally make this consistent and less prone to side effects.
 
-Signed-off-by: Qi Liu <liuqi115@huawei.com>
----
-TODO:
-- Veneer will be used latter to extend the range of branch and
-support long jump.
+I agree. We should look into how to change the behaviour. I intend to
+have a look at it in a while.
 
- arch/arm64/Kconfig                             |   1 +
- arch/arm64/include/asm/kprobes.h               |  23 +++
- arch/arm64/kernel/probes/Makefile              |   2 +
- arch/arm64/kernel/probes/kprobes.c             |  19 ++-
- arch/arm64/kernel/probes/opt-arm64.c           | 218 +++++++++++++++++++++++++
- arch/arm64/kernel/probes/optprobe_trampoline.S |  81 +++++++++
- 6 files changed, 341 insertions(+), 3 deletions(-)
- create mode 100644 arch/arm64/kernel/probes/opt-arm64.c
- create mode 100644 arch/arm64/kernel/probes/optprobe_trampoline.S
+>
+> A good first step might be something like a WARN_ON_ONCE(...) if a
+> device tries to vote for a performance state while runtime suspended.
+> Then we might get a clearer picture which drivers do that currently.
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 2e242dbb..ab1a795 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -189,6 +189,7 @@ config ARM64
- 	select HAVE_STACKPROTECTOR
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select HAVE_KPROBES
-+	select HAVE_OPTPROBES if !RANDOMIZE_MODULE_REGION_FULL
- 	select HAVE_KRETPROBES
- 	select HAVE_GENERIC_VDSO
- 	select IOMMU_DMA if IOMMU_SUPPORT
-diff --git a/arch/arm64/include/asm/kprobes.h b/arch/arm64/include/asm/kprobes.h
-index 5d38ff4..9e1c492 100644
---- a/arch/arm64/include/asm/kprobes.h
-+++ b/arch/arm64/include/asm/kprobes.h
-@@ -39,6 +39,29 @@ void arch_remove_kprobe(struct kprobe *);
- int kprobe_fault_handler(struct pt_regs *regs, unsigned int fsr);
- int kprobe_exceptions_notify(struct notifier_block *self,
- 			     unsigned long val, void *data);
-+
-+#define RELATIVEJUMP_SIZE (4)
-+#define MAX_COPIED_INSN	DIV_ROUND_UP(RELATIVEJUMP_SIZE, sizeof(kprobe_opcode_t))
-+struct arch_optimized_insn {
-+	kprobe_opcode_t copied_insn[MAX_COPIED_INSN];
-+	/* detour code buffer */
-+	kprobe_opcode_t *insn;
-+};
-+
-+/* optinsn template addresses */
-+extern __visible kprobe_opcode_t optprobe_template_entry[];
-+extern __visible kprobe_opcode_t optprobe_template_val[];
-+extern __visible kprobe_opcode_t optprobe_template_call[];
-+extern __visible kprobe_opcode_t optprobe_template_end[];
-+extern __visible kprobe_opcode_t optprobe_template_restore_begin[];
-+extern __visible kprobe_opcode_t optprobe_template_restore_orig_insn[];
-+extern __visible kprobe_opcode_t optprobe_template_restore_end[];
-+
-+#define MAX_OPTIMIZED_LENGTH	4
-+#define MAX_OPTINSN_SIZE				\
-+	((unsigned long)optprobe_template_end -	\
-+	 (unsigned long)optprobe_template_entry)
-+
- void kretprobe_trampoline(void);
- void __kprobes *trampoline_probe_handler(struct pt_regs *regs);
- 
-diff --git a/arch/arm64/kernel/probes/Makefile b/arch/arm64/kernel/probes/Makefile
-index 8e4be92..52cf5d4 100644
---- a/arch/arm64/kernel/probes/Makefile
-+++ b/arch/arm64/kernel/probes/Makefile
-@@ -4,3 +4,5 @@ obj-$(CONFIG_KPROBES)		+= kprobes.o decode-insn.o	\
- 				   simulate-insn.o
- obj-$(CONFIG_UPROBES)		+= uprobes.o decode-insn.o	\
- 				   simulate-insn.o
-+obj-$(CONFIG_OPTPROBES)		+= opt-arm64.o			\
-+				   optprobe_trampoline.o
-diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
-index 66aac28..baaceed 100644
---- a/arch/arm64/kernel/probes/kprobes.c
-+++ b/arch/arm64/kernel/probes/kprobes.c
-@@ -11,6 +11,7 @@
- #include <linux/kernel.h>
- #include <linux/kprobes.h>
- #include <linux/extable.h>
-+#include <linux/moduleloader.h>
- #include <linux/slab.h>
- #include <linux/stop_machine.h>
- #include <linux/sched/debug.h>
-@@ -111,9 +112,21 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
- 
- void *alloc_insn_page(void)
- {
--	return __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START, VMALLOC_END,
--			GFP_KERNEL, PAGE_KERNEL_ROX, VM_FLUSH_RESET_PERMS,
--			NUMA_NO_NODE, __builtin_return_address(0));
-+	void *page;
-+
-+	page = module_alloc(PAGE_SIZE);
-+	if (!page)
-+		return NULL;
-+
-+	set_vm_flush_reset_perms(page);
-+	/*
-+	 * First make the page read-only, and only then make it executable to
-+	 * prevent it from being W+X in between.
-+	 */
-+	set_memory_ro((unsigned long)page, 1);
-+	set_memory_x((unsigned long)page, 1);
-+
-+	return page;
- }
- 
- /* arm kprobe: install breakpoint in text */
-diff --git a/arch/arm64/kernel/probes/opt-arm64.c b/arch/arm64/kernel/probes/opt-arm64.c
-new file mode 100644
-index 0000000..09ffa75
---- /dev/null
-+++ b/arch/arm64/kernel/probes/opt-arm64.c
-@@ -0,0 +1,218 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Code for Kernel probes Jump optimization.
-+ *
-+ * Copyright (C) 2021 Hisilicon Limited
-+ */
-+
-+#include <linux/jump_label.h>
-+#include <linux/kprobes.h>
-+
-+#include <asm/cacheflush.h>
-+#include <asm/kprobes.h>
-+/* for aarch64_insn_gen_branch_imm */
-+#include <asm/insn.h>
-+
-+#define TMPL_VAL_IDX \
-+	(optprobe_template_val - optprobe_template_entry)
-+#define TMPL_CALL_BACK \
-+	(optprobe_template_call - optprobe_template_entry)
-+#define TMPL_END_IDX \
-+	(optprobe_template_end - optprobe_template_entry)
-+#define TMPL_RESTORE_ORIGN_INSN \
-+	(optprobe_template_restore_orig_insn - optprobe_template_entry)
-+#define TMPL_RESTORE_END \
-+	(optprobe_template_restore_end - optprobe_template_entry)
-+
-+int arch_check_optimized_kprobe(struct optimized_kprobe *op)
-+{
-+	return 0;
-+}
-+
-+int arch_prepared_optinsn(struct arch_optimized_insn *optinsn)
-+{
-+	return optinsn->insn != NULL;
-+}
-+
-+int arch_within_optimized_kprobe(struct optimized_kprobe *op,
-+				unsigned long addr)
-+{
-+	return ((unsigned long)op->kp.addr <= addr &&
-+		(unsigned long)op->kp.addr + RELATIVEJUMP_SIZE > addr);
-+}
-+
-+static void
-+optimized_callback(struct optimized_kprobe *op, struct pt_regs *regs)
-+{
-+	/* This is possible if op is under delayed unoptimizing */
-+	if (kprobe_disabled(&op->kp))
-+		return;
-+
-+	preempt_disable();
-+
-+	if (kprobe_running()) {
-+		kprobes_inc_nmissed_count(&op->kp);
-+	} else {
-+		__this_cpu_write(current_kprobe, &op->kp);
-+		regs->pc = (unsigned long)op->kp.addr;
-+		get_kprobe_ctlblk()->kprobe_status = KPROBE_HIT_ACTIVE;
-+		opt_pre_handler(&op->kp, regs);
-+		__this_cpu_write(current_kprobe, NULL);
-+	}
-+
-+	preempt_enable_no_resched();
-+}
-+NOKPROBE_SYMBOL(optimized_callback)
-+
-+bool is_offset_in_branch_range(long offset)
-+{
-+	return (offset >= -0x08000000 && offset <= 0x07fffffc && !(offset & 0x3));
-+}
-+
-+int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *orig)
-+{
-+	kprobe_opcode_t *code;
-+	long rel_chk;
-+	u32 insn, size;
-+	int ret, i;
-+	void *addr;
-+
-+	code = get_optinsn_slot();
-+	if (!code)
-+		return -ENOMEM;
-+
-+	/*
-+	 * Verify if the address gap is in 128MiB range, because this uses
-+	 * a relative jump.
-+	 *
-+	 * kprobe opt use a 'b' instruction to branch to optinsn.insn.
-+	 * According to ARM manual, branch instruction is:
-+	 *
-+	 *   31  30                  25              0
-+	 *  +----+---+---+---+---+---+---------------+
-+	 *  |cond| 0 | 0 | 1 | 0 | 1 |     imm26     |
-+	 *  +----+---+---+---+---+---+---------------+
-+	 *
-+	 * imm26 is a signed 26 bits integer. The real branch offset is computed
-+	 * by: imm64 = SignExtend(imm26:'00', 64);
-+	 *
-+	 * So the maximum forward branch should be:
-+	 *   (0x01ffffff << 2) = 1720x07fffffc =  0x07fffffc
-+	 * The maximum backward branch should be:
-+	 *   (0xfe000000 << 2) = 0xFFFFFFFFF8000000 = -0x08000000
-+	 *
-+	 * We can simply check (rel & 0xf8000003):
-+	 *  if rel is positive, (rel & 0xf8000003) should be 0
-+	 *  if rel is negitive, (rel & 0xf8000003) should be 0xf8000000
-+	 *  the last '3' is used for alignment checking.
-+	 */
-+	rel_chk = (unsigned long)code -
-+			(unsigned long)orig->addr + 8;
-+	if (!is_offset_in_branch_range(rel_chk)) {
-+		pr_err("%s is out of branch range.\n", orig->symbol_name);
-+		free_optinsn_slot(code, 0);
-+		return -ERANGE;
-+	}
-+
-+	/* Setup template */
-+	size = (TMPL_END_IDX * sizeof(kprobe_opcode_t)) / sizeof(int);
-+	for (i = 0; i < size; i++) {
-+		addr = code + i;
-+		insn = *(optprobe_template_entry + i);
-+		ret = aarch64_insn_patch_text(&addr, &insn, 1);
-+		if (ret < 0) {
-+			free_optinsn_slot(code, 0);
-+			return -ERANGE;
-+		}
-+	}
-+
-+	/* Set probe information */
-+	addr = code + TMPL_VAL_IDX;
-+	insn =  (unsigned long long)op & 0xffffffff;
-+	aarch64_insn_patch_text(&addr, &insn, 1);
-+
-+	addr = addr + 4;
-+	insn = ((unsigned long long)op & GENMASK_ULL(63, 32)) >> 32;
-+	aarch64_insn_patch_text(&addr, &insn, 1);
-+
-+	addr = code + TMPL_CALL_BACK;
-+	insn =  aarch64_insn_gen_branch_imm((unsigned long)addr,
-+				(unsigned long)optimized_callback,
-+				AARCH64_INSN_BRANCH_LINK);
-+	aarch64_insn_patch_text(&addr, &insn, 1);
-+
-+	/* The original probed instruction */
-+	addr = code + TMPL_RESTORE_ORIGN_INSN;
-+	insn =  orig->opcode;
-+	aarch64_insn_patch_text(&addr, &insn, 1);
-+
-+	/* Jump back to next instruction */
-+	addr = code + TMPL_RESTORE_END;
-+	insn = aarch64_insn_gen_branch_imm(
-+				(unsigned long)(&code[TMPL_RESTORE_END]),
-+				(unsigned long)(op->kp.addr) + 4,
-+				AARCH64_INSN_BRANCH_NOLINK);
-+	aarch64_insn_patch_text(&addr, &insn, 1);
-+
-+	flush_icache_range((unsigned long)code,
-+			   (unsigned long)(&code[TMPL_END_IDX]));
-+	/* Set op->optinsn.insn means prepared. */
-+	op->optinsn.insn = code;
-+	return 0;
-+}
-+
-+void arch_optimize_kprobes(struct list_head *oplist)
-+{
-+	struct optimized_kprobe *op, *tmp;
-+
-+	list_for_each_entry_safe(op, tmp, oplist, list) {
-+		u32 insn;
-+
-+		WARN_ON(kprobe_disabled(&op->kp));
-+
-+		/*
-+		 * Backup instructions which will be replaced
-+		 * by jump address
-+		 */
-+		memcpy(op->optinsn.copied_insn, op->kp.addr,
-+			RELATIVEJUMP_SIZE);
-+		insn = aarch64_insn_gen_branch_imm((unsigned long)op->kp.addr,
-+				(unsigned long)op->optinsn.insn,
-+				AARCH64_INSN_BRANCH_NOLINK);
-+
-+		WARN_ON(insn == 0);
-+
-+		aarch64_insn_patch_text((void *)&(op->kp.addr), &insn, 1);
-+
-+		list_del_init(&op->list);
-+	}
-+}
-+
-+void arch_unoptimize_kprobe(struct optimized_kprobe *op)
-+{
-+	arch_arm_kprobe(&op->kp);
-+}
-+
-+/*
-+ * Recover original instructions and breakpoints from relative jumps.
-+ * Caller must call with locking kprobe_mutex.
-+ */
-+void arch_unoptimize_kprobes(struct list_head *oplist,
-+			    struct list_head *done_list)
-+{
-+	struct optimized_kprobe *op, *tmp;
-+
-+	list_for_each_entry_safe(op, tmp, oplist, list) {
-+		arch_unoptimize_kprobe(op);
-+		list_move(&op->list, done_list);
-+	}
-+}
-+
-+void arch_remove_optimized_kprobe(struct optimized_kprobe *op)
-+{
-+	if (op->optinsn.insn) {
-+		free_optinsn_slot(op->optinsn.insn, 1);
-+		op->optinsn.insn = NULL;
-+	}
-+}
-+
-diff --git a/arch/arm64/kernel/probes/optprobe_trampoline.S b/arch/arm64/kernel/probes/optprobe_trampoline.S
-new file mode 100644
-index 0000000..95d1529
---- /dev/null
-+++ b/arch/arm64/kernel/probes/optprobe_trampoline.S
-@@ -0,0 +1,81 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * trampoline entry and return code for optprobes.
-+ */
-+
-+#include <linux/linkage.h>
-+#include <asm/asm-offsets.h>
-+#include <asm/assembler.h>
-+
-+	.global optprobe_template_entry
-+optprobe_template_entry:
-+	sub sp, sp, #PT_REGS_SIZE
-+	stp x0, x1, [sp, #S_X0]
-+	stp x2, x3, [sp, #S_X2]
-+	stp x4, x5, [sp, #S_X4]
-+	stp x6, x7, [sp, #S_X6]
-+	stp x8, x9, [sp, #S_X8]
-+	stp x10, x11, [sp, #S_X10]
-+	stp x12, x13, [sp, #S_X12]
-+	stp x14, x15, [sp, #S_X14]
-+	stp x16, x17, [sp, #S_X16]
-+	stp x18, x19, [sp, #S_X18]
-+	stp x20, x21, [sp, #S_X20]
-+	stp x22, x23, [sp, #S_X22]
-+	stp x24, x25, [sp, #S_X24]
-+	stp x26, x27, [sp, #S_X26]
-+	stp x28, x29, [sp, #S_X28]
-+	add x0, sp, #PT_REGS_SIZE
-+	stp lr, x0, [sp, #S_LR]
-+	/*
-+	 * Construct a useful saved PSTATE
-+	 */
-+	mrs x0, nzcv
-+	mrs x1, daif
-+	orr x0, x0, x1
-+	mrs x1, CurrentEL
-+	orr x0, x0, x1
-+	mrs x1, SPSel
-+	orr x0, x0, x1
-+	stp xzr, x0, [sp, #S_PC]
-+	/* Get parameters to optimized_callback() */
-+	ldr	x0, 1f
-+	mov	x1, sp
-+	/* Branch to optimized_callback() */
-+	.global optprobe_template_call
-+optprobe_template_call:
-+	nop
-+        /* Restore registers */
-+	ldr x0, [sp, #S_PSTATE]
-+	and x0, x0, #(PSR_N_BIT | PSR_Z_BIT | PSR_C_BIT | PSR_V_BIT)
-+	msr nzcv, x0
-+	ldp x0, x1, [sp, #S_X0]
-+	ldp x2, x3, [sp, #S_X2]
-+	ldp x4, x5, [sp, #S_X4]
-+	ldp x6, x7, [sp, #S_X6]
-+	ldp x8, x9, [sp, #S_X8]
-+	ldp x10, x11, [sp, #S_X10]
-+	ldp x12, x13, [sp, #S_X12]
-+	ldp x14, x15, [sp, #S_X14]
-+	ldp x16, x17, [sp, #S_X16]
-+	ldp x18, x19, [sp, #S_X18]
-+	ldp x20, x21, [sp, #S_X20]
-+	ldp x22, x23, [sp, #S_X22]
-+	ldp x24, x25, [sp, #S_X24]
-+	ldp x26, x27, [sp, #S_X26]
-+	ldp x28, x29, [sp, #S_X28]
-+	ldr lr, [sp, #S_LR]
-+        add sp, sp, #PT_REGS_SIZE
-+	.global optprobe_template_restore_orig_insn
-+optprobe_template_restore_orig_insn:
-+	nop
-+	.global optprobe_template_restore_end
-+optprobe_template_restore_end:
-+	nop
-+	.global optprobe_template_end
-+optprobe_template_end:
-+	.global optprobe_template_val
-+optprobe_template_val:
-+	1:	.long 0
-+		.long 0
-+
--- 
-2.7.4
+That's an idea we could try, even if the number of users are quite
+limited today. I can try the "git grep" analyze-method, I will
+probably find most of them.
 
+>
+> Stephan
+
+That said, are you okay that we move forward with the $subject series
+(except patch4)?
+
+Kind regards
+Uffe
