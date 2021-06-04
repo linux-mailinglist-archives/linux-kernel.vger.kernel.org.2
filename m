@@ -2,127 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F21DB39B145
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 06:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 132D039B17D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 06:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229786AbhFDESm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 00:18:42 -0400
-Received: from mail-wm1-f50.google.com ([209.85.128.50]:43778 "EHLO
-        mail-wm1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhFDESm (ORCPT
+        id S229820AbhFDE1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 00:27:22 -0400
+Received: from mailout-l3b-97.contactoffice.com ([212.3.242.97]:42276 "EHLO
+        mailout-l3b-97.contactoffice.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229452AbhFDE1W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 00:18:42 -0400
-Received: by mail-wm1-f50.google.com with SMTP id 3-20020a05600c0243b029019f2f9b2b8aso4828650wmj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 21:16:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gt5r+lBwCuoOA7rfQIlaZBhTcz5xyY6ZuYMcbufKUos=;
-        b=pXfVS0SZxq556lEc4rP04GJ+qgvT/OfgZ6GWjum1lWJGmFlLn0UIhfcmvLozoTMPl6
-         dFTZer+0saAoVGELO7+tFHPmONEOIFsP/2B24YoqJOSbVT1Qbp8MhvrOythK2lI8ZcSK
-         lfYFhogf0BkpuuMQ2vgzYsV8SBe/Z3umeGLXeDHcPOzyosYXZtapt4idJ2Vgt79tiV9A
-         AcbR/UUZJt4JO0HYV6GSl49RUNE1HAZ2Z0kxIct7cR2hyhnysXQ8LN/yGMV/3gz1E023
-         MEqggsPvjm0V4piYAYa5Td9JqYxf4aWJnqMAdcuRpsoKH9W/EmMQmuiHJ3kT+W4xV1Va
-         zFFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gt5r+lBwCuoOA7rfQIlaZBhTcz5xyY6ZuYMcbufKUos=;
-        b=kajmKYWCHinZ0XFN8KNqIZ4zIghRu/9KfaMl8vzatfpP2lUZZtWO8efSvAU6YR1zQi
-         UAiqPonSqiHut64/FMEqmWESq9ZCXd4V4KbiKtgySZoVfXYk0CBfQDC2VD8At1x61OXv
-         OZdmfZNcYDOQypZwj42v5lwWzNlCwmPzohgynEzL9AaSx5jUnG/IyXmpdo1wrifHcBqF
-         cDc8iPT2JMKEvmdVoMyCPrIFhw3zXyh51VCDog8SSTfU/Gs3mrZKgJB3+8oaTo7vT9GQ
-         +xZn015BIwfZwZbfiH1RgYyKx09k5CtXZNj43aLcSWsVTRd/C/tz458OFFx7VLcFCJg8
-         kl2g==
-X-Gm-Message-State: AOAM533glh12AXMlF0xlh5i0l/7IZ2nsPfMPuPpSlHMYO2tNIXTNZf6J
-        7gZTvd62uwIlbJ0S+suRQOZfOia3ww7KYtsg+kTtiQ==
-X-Google-Smtp-Source: ABdhPJx2vWndMsU19H1kNaO6+JL/13qRYUi8/RATBdr+TJtyTLGIJgpuoWpiH5i1lF4ag++WCkz/IclGw42XD007YWQ=
-X-Received: by 2002:a1c:b603:: with SMTP id g3mr1451928wmf.58.1622780145144;
- Thu, 03 Jun 2021 21:15:45 -0700 (PDT)
+        Fri, 4 Jun 2021 00:27:22 -0400
+X-Greylist: delayed 382 seconds by postgrey-1.27 at vger.kernel.org; Fri, 04 Jun 2021 00:27:21 EDT
+Received: from ichabod.co-bxl (ichabod.co-bxl [10.2.0.36])
+        by mailout-l3b-97.contactoffice.com (Postfix) with ESMTP id 52793A46;
+        Fri,  4 Jun 2021 06:19:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1622780353;
+        s=20210208-e7xh; d=mailfence.com; i=broake@mailfence.com;
+        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        l=2612; bh=w2nEVGuGdnczyTILlBwY6TwUcHmF3Bc7DpAA05kNbHo=;
+        b=iIqRpOU6RY5cQRiKIWXgf4p1szQsoDAMn0GzrkbtaOwA1eF005MnYbli2c1UMIEO
+        bjCnW/6RkGkGzk+1A65dKuRjI2UB7FdxTCJvoTOLn2CHJwQ2QjeE+Rc53oajfavydnx
+        oaN14H6z8+ojI0whfDK24OTS+NwtRtfRW7c3EtAAIKmFQYljwiGtKeQwjSJ+Us8BuBe
+        fQgHmKbNnMF4oW80qw7pCbQobTN++uS6sG2V9q7/gG/cuxRTooNX/2F5bU0lRmeowZ+
+        DRjDLT8ibdCrQfcnNXAxi5vogD0ZGa+vLMaF8uhP0KBAeQtDaGJdtrjwopw/gStSi9h
+        wRKzUcnU7g==
+Date:   Fri, 4 Jun 2021 06:19:09 +0200 (CEST)
+From:   "B.R. Oake" <broake@mailfence.com>
+Reply-To: "B.R. Oake" <broake@mailfence.com>
+To:     =?utf-8?Q?Jernej_=C5=A0krabec?= <jernej.skrabec@siol.net>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@googlegroups.com, devicetree@vger.kernel.org
+Message-ID: <206881200.203318.1622780349817@ichabod.co-bxl>
+In-Reply-To: <6612268.HtAl026vyE@jernej-laptop>
+References: <1243888060.510560.1612783497400@ichabod.co-bxl> <20210210150118.ly252i37eykayrcb@gilmour> <1719200956.433094.1613199092092@ichabod.co-bxl> <6612268.HtAl026vyE@jernej-laptop>
+Subject: Re: [PATCH] ARM: dts: sun8i: h3: orangepi-plus: Fix Ethernet PHY
+ mode
 MIME-Version: 1.0
-References: <20210602224024.300485-1-rickyman7@gmail.com>
-In-Reply-To: <20210602224024.300485-1-rickyman7@gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 3 Jun 2021 21:15:32 -0700
-Message-ID: <CAP-5=fW5btkb9izxcUy+XgAQPCTRZAUMa4uQMUR_+N_d=17Mfg@mail.gmail.com>
-Subject: Re: [PATCH] perf env: fix memory leak: free bpf_prog_info_linear
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Priority: 3
+X-Mailer: ContactOffice Mail
+X-ContactOffice-Account: com:276068926
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 2, 2021 at 3:41 PM Riccardo Mancini <rickyman7@gmail.com> wrote:
->
-> ASan reported a memory leak caused by info_linear not being
-> deallocated. The info_linear was allocated during
-> perf_event__synthesize_one_bpf_prog.
-> This patch adds the corresponding free() when bpf_prog_info_node
-> is freed in perf_env__purge_bpf.
->
-> $ sudo ./perf record -- sleep 5
-> [ perf record: Woken up 1 times to write data ]
-> [ perf record: Captured and wrote 0.025 MB perf.data (8 samples) ]
->
-> =================================================================
-> ==297735==ERROR: LeakSanitizer: detected memory leaks
->
-> Direct leak of 7688 byte(s) in 19 object(s) allocated from:
->     #0 0x4f420f in malloc (/home/user/linux/tools/perf/perf+0x4f420f)
->     #1 0xc06a74 in bpf_program__get_prog_info_linear /home/user/linux/tools/lib/bpf/libbpf.c:11113:16
->     #2 0xb426fe in perf_event__synthesize_one_bpf_prog /home/user/linux/tools/perf/util/bpf-event.c:191:16
->     #3 0xb42008 in perf_event__synthesize_bpf_events /home/user/linux/tools/perf/util/bpf-event.c:410:9
->     #4 0x594596 in record__synthesize /home/user/linux/tools/perf/builtin-record.c:1490:8
->     #5 0x58c9ac in __cmd_record /home/user/linux/tools/perf/builtin-record.c:1798:8
->     #6 0x58990b in cmd_record /home/user/linux/tools/perf/builtin-record.c:2901:8
->     #7 0x7b2a20 in run_builtin /home/user/linux/tools/perf/perf.c:313:11
->     #8 0x7b12ff in handle_internal_command /home/user/linux/tools/perf/perf.c:365:8
->     #9 0x7b2583 in run_argv /home/user/linux/tools/perf/perf.c:409:2
->     #10 0x7b0d79 in main /home/user/linux/tools/perf/perf.c:539:3
->     #11 0x7fa357ef6b74 in __libc_start_main /usr/src/debug/glibc-2.33-8.fc34.x86_64/csu/../csu/libc-start.c:332:16
->
-> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+On Sat Feb 13 09:51:17 CET 2021, Jernej =C5=A0krabec wrote:
+> Let me first explain that it was oversight on my side not noticing initia=
+ls in=20
+> your SoB tag. But since the issue was raised by Maxime, I didn't follow u=
+p.
+> [...]
 
-Acked-by: Ian Rogers <irogers@google.com>
+Dear Jernej,
 
-Thanks,
-Ian
+First of all, thank you very much for all your linux-sunxi work: I=20
+especially appreciate the video support you've provided.
 
-> ---
->  tools/perf/util/env.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
-> index 9130f6fad8d54..bc5e4f294e9e9 100644
-> --- a/tools/perf/util/env.c
-> +++ b/tools/perf/util/env.c
-> @@ -144,6 +144,7 @@ static void perf_env__purge_bpf(struct perf_env *env)
->                 node = rb_entry(next, struct bpf_prog_info_node, rb_node);
->                 next = rb_next(&node->rb_node);
->                 rb_erase(&node->rb_node, root);
-> +               free(node->info_linear);
->                 free(node);
->         }
->
-> --
-> 2.31.1
->
+Thank you for initially approving my patch. Although I first posted a=20
+patch to the linux-sunxi list about seven years ago, this patch was my=20
+first formal submission to LKML, so it meant a lot to me to see it=20
+accepted by a kernel developer, even if only briefly.
+
+I'm sorry for taking a long time to reply. I wanted to wait for the=20
+maintainers to respond to my last mail because I thought it would be=20
+best for them to speak for themselves on this issue. Sadly I haven't=20
+yet received a response from them.
+
+
+> I believe that real name means no initials, no matter what people are=20
+> accustomed to. From my point of view, CJ is pseudonym derived from real n=
+ame.
+
+I don't think that's a widely held belief though. For example, I think=20
+most people consider "J.R.R. Tolkien" to be a real name, even though it=20
+contains initials. Also, a first name like CJ isn't necessarily derived=20
+from some longer name like Cathy Jane, it can simply be the person's=20
+given name. I'm grateful to Vagrant Cascadian for drawing our attention=20
+to Patrick McKenzie's essay "Falsehoods Programmers Believe About Names".=
+=20
+I believe we harm Linux development when we exclude people whose names=20
+don't fit our assumptions.
+
+Another reason for signing with initials is to ensure that other people=20
+cannot infer anything about the author's gender. Women especially might=20
+choose to do this to avoid the harassment that a female name can attract,=
+=20
+as shown in these studies for example:
+
+https://ece.umd.edu/news/story/study-finds-femalename-chat-users-get-25-tim=
+es-more-malicious-messages
+https://www.reach3insights.com/women-gaming-study
+
+If we forbid people from contributing in a gender-neutral way, many may=20
+feel they cannot contribute at all. Again, I think that when we exclude=20
+these people we are all worse off as a result.
+
+
+> Speaking generally, not only for this case, prior art arguments rarely ho=
+ld,=20
+> [...]
+> This is not the first time that fix of SoB tag was requested, you can fin=
+d such=20
+> requests in ML archives.
+
+Isn't that a prior art argument? ;-)
+
+Best wishes,
+B.R.
+
+
+--=20
+Mailfence.com
+Private and secure email
