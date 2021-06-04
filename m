@@ -2,178 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D199439B2B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 08:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F5A39B2BC
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 08:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230030AbhFDGjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 02:39:23 -0400
-Received: from mga17.intel.com ([192.55.52.151]:4030 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229844AbhFDGjW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 02:39:22 -0400
-IronPort-SDR: 9O6HvdjxmBIdJoz6NYWT800Wvfj1iEfa7yjQPU97liBaRdUqENM/2Y4KgVFLHYHFr0f0CbJjZ3
- iYxLfJKFOn3w==
-X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="184604729"
-X-IronPort-AV: E=Sophos;i="5.83,247,1616482800"; 
-   d="scan'208";a="184604729"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 23:37:36 -0700
-IronPort-SDR: K4K7ffd8ru6cXSAck/Qq+3xBfZwhSpQP+7Q9j6nZBTEBvzBoVEPZUpvjpzIWVPfN3c1EzRpDmr
- YiiAf9zgOsDA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,247,1616482800"; 
-   d="scan'208";a="412267853"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by fmsmga007.fm.intel.com with ESMTP; 03 Jun 2021 23:37:36 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Thu, 3 Jun 2021 23:37:35 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
- via Frontend Transport; Thu, 3 Jun 2021 23:37:35 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.170)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.4; Thu, 3 Jun 2021 23:37:31 -0700
+        id S230049AbhFDGkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 02:40:33 -0400
+Received: from mail-dm6nam12on2124.outbound.protection.outlook.com ([40.107.243.124]:62593
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229826AbhFDGkc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 02:40:32 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WPFRYOk4dWwil5CI9eZq73XVZoZmlYXHOtND72V6krjhbdSGsNhzh2Hp9sPTNcOx14ClSi/7Nll7DaZd3i/4kUVYEX20UyhKzSaqJWdi3iiQyqPkUNn+1csUS+3Gszfkfnk3YsdXMwIbzYno7HQrq6XGnSCA7GVApIz1BLMJrRFCP7CbZcD/YfgPKzqXPq1dM4okdmusWA/14wXF/wQ43B+pY4SHVJf/6L/BC9nQZzQwfNb/E5swgYuqN4dEV3EKcePjhYByvvddMgBS5bJ2xhgF0r2eUMwJ5IO98soULkTqXUGGwXQgxpZd5ZXlZ526ej+tAVoMv19Euzduf8+kPw==
+ b=Uyp9buw9GPI0YkPNnpIN+fjoFqfZDY5yPHgu00wSB7reDNhUga6SR+zcHb8aETlxNscwFVaRyHb0CvVjvecRJmC1KnL5QwncLiItb4U2lsHBSpDWoVxrahMU6WNifRz4E52zQT+YRqM7jDvss9yD+icwm+kWmMDz58DHzoQPlwcNIO0n/XR/nrTLrmnvqaHN6/gWuABcNeWGIsb1yQ1nez9WwP9HaH+gftH5/PNkancDlaSsNJL/SNMAnuLLXPHNkZR+fDmqkaQWrJ/5TBrFXKapYmnWtJNfnycFe2GIYDtvOIcmLjy23z6X+1RxTPPuhc68kKM/2EcJg/Jg6ZvDFw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3LUnFiLYRjI2l98AohK80DGsyE8QwDshQKuw2EDOnAQ=;
- b=i5ilk0XEdfOjROyq2S8+ULVXz6OlORis5rtHJ/2IizjIs8e1kySTd/9xImV6G/zjuNpwM+AKmCnIWq0Mv4HLnlAzq4e36ZtV6g1dqunRLdFJUwySLMldQ8pMyQiluQud+cezRHrxgYSMSpkf3v4W/vQtygU3MmBo7MtxwRj/waVz6hSCfEMeA1DLJLyEd3bYaV2wi3lIZbCZ1ghDTF/sSbq//SNHf6H4651CsblDihQROMNwGxpe+cjAvK9NpPelwgnO1/uSBrn3rEwFbCC/PT8BsU+eUbDHE+OTUH6DG7f7Qyv5QiCboM5SBeFmuBoSLBv3eMQtj9YnLJ23y2PoUA==
+ bh=oaS9br27HCBOWqFo8+cbIOAEunHmDH5YGQpQY3Ur0FQ=;
+ b=aUkkp4l9jhz80ZjuNJpHKUegyEXk4qidOpbSV/IhKytQM42Sj3CIPuSRpIef01L/NLUGwF0jICTW2+DNWduwhhi7gma14knOK2o6hOMKbN6AEVMb8C4loTlFU2gV/TOczVZ9OMS5erwu/XWPQQBp75uCbuYNsT0ha52qEs/7q/Ijz6qZISwacFEu8cwDDbCRXQ06eSp1cRD5tawq/rdBboqiwsY+0Y9engFaXgZT4SQ51jgEOauxFiaiPJzCEb6lzhyX4QHxt9UCiBilFgjPB4M5JBzcqIZ93snQuqDMdsiqmLlmw97IJ7kvfM1+Gh+x6GZkh0Vqbadt0uqhKufNAQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3LUnFiLYRjI2l98AohK80DGsyE8QwDshQKuw2EDOnAQ=;
- b=Xgf3gMDgPK5pnbsUfw8j9Ye+qYxzcEGHcbPvtIqr74nmD0XV1Y/E7Jm18SRzik+pmG2jTnEWyldBJgA/EEddS9IFElK0AErTfml7M1cSH0yk6dfqMou4ahyLeNQD4QZULfGMCWgjvmb1Hzp3hYkVQ7r9C/EJ085ufbhJsomuKGI=
-Received: from MWHPR11MB1886.namprd11.prod.outlook.com (2603:10b6:300:110::9)
- by MW3PR11MB4588.namprd11.prod.outlook.com (2603:10b6:303:54::19) with
+ bh=oaS9br27HCBOWqFo8+cbIOAEunHmDH5YGQpQY3Ur0FQ=;
+ b=by0VB5bAF3pOoBOhK9/DPReu9W9NYjS2IKoD4WjlLBBsYQJ9T5HFcLbmp5bJkbShMjgnVGHJyeoXE4ZlkBktMXktRsP8yWqezPvniEr0H7OqJUtYPqS3wF98nYYY/a2zi188MZf9jyE6vHZEh5h2kZO/lWdC3N28VH71sN6eE/c=
+Received: from DM6PR21MB1513.namprd21.prod.outlook.com (2603:10b6:5:25c::19)
+ by DM5PR2101MB0726.namprd21.prod.outlook.com (2603:10b6:4:7b::39) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Fri, 4 Jun
- 2021 06:37:26 +0000
-Received: from MWHPR11MB1886.namprd11.prod.outlook.com
- ([fe80::6597:eb05:c507:c6c1]) by MWHPR11MB1886.namprd11.prod.outlook.com
- ([fe80::6597:eb05:c507:c6c1%12]) with mapi id 15.20.4195.023; Fri, 4 Jun 2021
- 06:37:26 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>, "Raj, Ashok" <ashok.raj@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "David Gibson" <david@gibson.dropbear.id.au>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jason Wang <jasowang@redhat.com>
-Subject: RE: [RFC] /dev/ioasid uAPI proposal
-Thread-Topic: [RFC] /dev/ioasid uAPI proposal
-Thread-Index: AddSzQ970oLnVHLeQca/ysPD8zMJZwBTUTCAAQiuDaAADwOFgAAkifcg
-Date:   Fri, 4 Jun 2021 06:37:26 +0000
-Message-ID: <MWHPR11MB1886B04D5A3D212B5623EB978C3B9@MWHPR11MB1886.namprd11.prod.outlook.com>
-References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210528233649.GB3816344@nvidia.com>
- <MWHPR11MB188621A9D1181A414D5491198C3C9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210603130519.GY1002214@nvidia.com>
-In-Reply-To: <20210603130519.GY1002214@nvidia.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.3; Fri, 4 Jun
+ 2021 06:38:45 +0000
+Received: from DM6PR21MB1513.namprd21.prod.outlook.com
+ ([fe80::c1bb:3431:eedf:cd08]) by DM6PR21MB1513.namprd21.prod.outlook.com
+ ([fe80::c1bb:3431:eedf:cd08%9]) with mapi id 15.20.4219.012; Fri, 4 Jun 2021
+ 06:38:45 +0000
+From:   Long Li <longli@microsoft.com>
+To:     Ming Lei <ming.lei@redhat.com>,
+        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>
+CC:     "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Tejun Heo <tj@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH] block: return the correct bvec when checking for gaps
+Thread-Topic: [PATCH] block: return the correct bvec when checking for gaps
+Thread-Index: AQHXWMilfqxountagkCztc+hnNyp6KsDFzKAgABFe+A=
+Date:   Fri, 4 Jun 2021 06:38:45 +0000
+Message-ID: <DM6PR21MB1513F1E0E0DDD017A4ED3B73CE3B9@DM6PR21MB1513.namprd21.prod.outlook.com>
+References: <1622759671-14059-1-git-send-email-longli@linuxonhyperv.com>
+ <YLmHi27PT5LAwJji@T590>
+In-Reply-To: <YLmHi27PT5LAwJji@T590>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.198.142.24]
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=a4ce6acc-3402-49db-92e8-e47b30359e32;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-06-04T06:01:56Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [76.22.9.184]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 103b58db-29c8-4687-31e5-08d9272337f8
-x-ms-traffictypediagnostic: MW3PR11MB4588:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW3PR11MB4588EC98E99F006687639F748C3B9@MW3PR11MB4588.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-office365-filtering-correlation-id: d32adf8d-bc57-406d-5696-08d9272366cd
+x-ms-traffictypediagnostic: DM5PR2101MB0726:
+x-microsoft-antispam-prvs: <DM5PR2101MB0726E6C8B106C72426C7C1AACE3B9@DM5PR2101MB0726.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jjIZcZ/yj1EDobFKpcMY83Fiv8N6MCF5yG7dnvuu5xdYixFWrPy1VwqkTL3uFB9AqcS0loRSJuSYMD1ppSma+0jN/Hi12fgNQ/Kkooj4/BCja3c09Aony/XKbvBYK0OCkdopRhUih/KAbvtJjsUPQDFBpG+RoJsvHwIDZeDuf3yl0S3NzbZ69CjEuYNcLmYMzEDewH0L78UaLQcbZBZyjuKqLolWBQqCTKZ/hnbb2dUxRdNsZoa9rconu5c+hCRRObtIR19Vy2rTd65f/mvPj2wFOv6JsocYEM3CkV022+oNafRw++2QqMSu2DjYD3XXrXgosdpUrS9RAJZgmuNcRHj46oMT4hBDSuKQuspF+kuubFTvBSLP7ySPtDd1UW75l9C34IOvozm7dcQQCXIj0I5SwuKA9UZxMvsHnT9IGN3rTO1Z8RBXH5Iyri1YQBTp6TMQZiMpHMSjZmrhQ+kGA+StVs3Oqa6nEIPeW38KJI1peSpUjcIFAIg4LvHBAU+cnrSAhYvWkpgHmtLC64zom9Vbq06P1S/V2TDCy4U2OubQwavbl9B58Vb3bYm+izeZzMwZmXmeHrP2JX2oX0NxEHHhJo7mfQdTF2LV1lbFYP0=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1886.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(136003)(346002)(39860400002)(376002)(2906002)(478600001)(8676002)(6506007)(8936002)(26005)(186003)(76116006)(66946007)(66446008)(6916009)(55016002)(71200400001)(64756008)(9686003)(4326008)(5660300002)(66476007)(7416002)(52536014)(7696005)(66556008)(86362001)(54906003)(316002)(83380400001)(33656002)(38100700002)(122000001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?F5G3CL5shEPIj0plnU/4BJULjyoJEWDMo6IKLsWvN+BKxv3jnoU4hLs3Dp2m?=
- =?us-ascii?Q?aUR+XUopWYohh3+R49MQ1MyMxklCRu91FLPcbwGqBcz8gEQrqY8R1qPlDJiE?=
- =?us-ascii?Q?CtWujEB1wC9UbIsTGuzj9kyKWxM5J14b9yndXTUiTS9GJNKqPlseCwpwcee6?=
- =?us-ascii?Q?BILxGKurPOyxQ48I8ZJRDzcRsdIYqR6Chh46q8+t1NCh2A/WnWa6znI2D56v?=
- =?us-ascii?Q?+HlWZxyMKC3ubdOrQZ1WQaBNZJoFoFsECthN4s7bdUp5dcMFz3BuoHbCZzuD?=
- =?us-ascii?Q?ISEN4jcnkSul1/E8JsypX/U6NR/DdZ6oKRY4gjE40kqaGIWM7hdP0DkzeFwp?=
- =?us-ascii?Q?ctOReaRevw+3UCUGZRylLZ/ut7U3KtPD415JjRky056pXHJu/gqmpA0Pua0i?=
- =?us-ascii?Q?a1TrJWW08C1ZqtcnqfQu0vLxcvPOb2wZJXClGoPP2SVFhkJU43K57Z0OT2Wt?=
- =?us-ascii?Q?KH0MukyAuXmaoFet1HY+P5T4lKYR/nSar9TnQ6AsDTta4bFZbU9py/P1achO?=
- =?us-ascii?Q?zW9sBAkIMK3690LbiRhiWsutPjWut+0uOsyLgiiKjCDYzeV0jIYGFW+2pmtk?=
- =?us-ascii?Q?m40S9CXx+Py5gmholzaDyFlAua3PXub0fBB7HZlGu7P2LfrvGW3g2wJDDPr9?=
- =?us-ascii?Q?38nQtm/5HWWVN7Vz7hSHJMsA0JMKdEW3WpuryvgQiU64o7avFAZLLpiXYQIb?=
- =?us-ascii?Q?XmrsY+W1vkLvkNwoPW7FgvtYj9MvsKMrBj1ALSSd3uU1lIfbCKXXhjmas6tH?=
- =?us-ascii?Q?M/UQMi/yh7i9rCa9B7VAeFhWRnKzcoWD4V3EKMWMSJPWOQ/CF2Bm3SuzSa+a?=
- =?us-ascii?Q?OFDhzlCuN6QfPBu5GDQ9y87axL/hNQmVIJtuldcmav/5gfnP3QUwaYTfe/IT?=
- =?us-ascii?Q?MVVaWjW8Wyrh0dyhcu3hF7wiOOFIcW5RbrzpruZtlrBW3qjTKc7yxIkfVADv?=
- =?us-ascii?Q?le8g+wcDw/LqRsSNinOSbWykIwACD+6JlUBKJhzds7FnMwEVghIV+cAcB4kH?=
- =?us-ascii?Q?QNzmI0UK3MyyvY7qnltiPiK66mjBq5nvoFmPQyJTOzKwFf1YZLOnikSqY4mt?=
- =?us-ascii?Q?P4GKx01/mBtpqgg6JK0R+gLg8tckb5YAH5d92y5Q9DRZtXDxyZFZUCz2rUeP?=
- =?us-ascii?Q?ALKaFHqAlMKQloRd8AE51v8bRN2DzBLn5c6bFo0ZS/SUccdBkhECA3nrVet5?=
- =?us-ascii?Q?AhKG+lOCd2OWIPjqg4HF+404S+w9wjf1+UBV+YFqWeZicrAQaKbu7vcY/XfU?=
- =?us-ascii?Q?qOLSn6B7aNrdJ7lKHUVU6ZwCwjuc1ccM+ttlSQKSxGEO91i9MyNh1jAnXPrl?=
- =?us-ascii?Q?huQJT0iAEnyDgEhWA65WWTY+?=
+x-microsoft-antispam-message-info: se/RnQx6BKWzISD3vC3ja/aui37+Pxg/rwWIrkvKXYBbcrWUrvIl4IDRIlLf2KJ/duHb/R1O3ROyy2ux6fGhr8NEjvZotkN1g4he6W0j8dyuQZjnEQzURRNTmBxEqnfia+HHqULc/EPbUZMAt0Q7Wxc/vSzjBGLSqpHxKMl0zzHLlb2QBhL07Bnq/IkrFB3B9LYddJk9/Dr+ROG3rYPX7lceYcyYOEvncCQtPPs3jzg42ElUfNNRG9yL9dxAbt20wmz7RwDUyp1VZEkXUAMdMlNIDagRF+jED4YnrC27sZpzTyzxoKinHDbXhSAAXHyrIkPMvzBhW3bKk0KnYugiIiWeuiJxJo88vmOq/7+F/tfIq8S4lPsLGe98Ms0coKogBruuNuceTKkOi2/znctIKk0M8oqkqMkxjSLnvAU9o086adNqyxK2GD3cM4aT6JPpTJ6tlPGisGZ2K+9mKnMaRyVNWOp/MkbMbtO6Ai2RJMgL9DohYybD+mfPQgfXaCmeFzw/2bavfncK5O2pMgfNiJZucyMqDwzB9Ra3gnW1kBgLgC20YCryEc+m9hjND0wq1V4oG0KvoMiJmrg45VUqG3fF1mGDqcWsMHlESlw7NWH8h1rG5qmy5OtSFHOvF+HelLZGZZOMEJXaw+VBR+SCvw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR21MB1513.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66556008)(54906003)(64756008)(26005)(8990500004)(52536014)(66446008)(82960400001)(82950400001)(316002)(66476007)(110136005)(76116006)(38100700002)(66946007)(2906002)(86362001)(5660300002)(122000001)(4326008)(186003)(33656002)(10290500003)(7696005)(478600001)(71200400001)(8936002)(83380400001)(8676002)(9686003)(6506007)(55016002)(7416002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?E7LYOqFhTyIbfIsblWwQJk+j+rDeS0XytwSNh8fQ4Los7Wkc2TT0mtwnSqPW?=
+ =?us-ascii?Q?OsdlaCwHMqdugEiMmIeahmv9dtDBGnXNNF8u/RjaNNPkf8h4UlTut8tY1GHo?=
+ =?us-ascii?Q?fhSCJCVHDFjDKJNeQjMxTNf6BU8EyjC8VmDgqI1wMDaEJO+bF08JG3bsKuLG?=
+ =?us-ascii?Q?xoK7Qmdf6rawXLKN4TAqm/ZIYDz4d2Ha1oJTuwj27Quiv4pckheHV+mJV/rG?=
+ =?us-ascii?Q?O1eR/AswINnqxWAC3Wx65sg8aEs+dEpXI/1ICKtjfhj37sTl6i+unBp7X71U?=
+ =?us-ascii?Q?GgzWF7H0ubRQ1Ks2fugiVDztTHIJ6ao58h87sYkP+aPXSlk2poFmtLHsbAh3?=
+ =?us-ascii?Q?krZARnQx9yliz6mLaPe3a4+fNnphHiVQKvQB8bAWc0oWS/x1GrrgBqnImO3U?=
+ =?us-ascii?Q?ipekKCc83PMu55Jyt+/Yh9vIyvCKQyY8QyERZD9IH7hH4AQxoEQo4VtrP0UD?=
+ =?us-ascii?Q?eiO4OWGnirTQF4bKHurj6n2uJe9kN/kEZ5c98rFG6ZTsHyq5W/7ZZXw1ERNY?=
+ =?us-ascii?Q?+YzAEWnyzq/cvGchdY8zTenbowMipYgKiooVkuTicxotmf3Kb+cSBR0vksc3?=
+ =?us-ascii?Q?wCxkhcn6reauhlD6o35Ff1A25kGsA/XPrYy0rAajWm2P+xihqgMPgSY17NE5?=
+ =?us-ascii?Q?LvViqDPDuGn+eWOKaIIRzXuQM3cBAQrANYOwvoaeX2W6q8mSHCuaxwHSCZxS?=
+ =?us-ascii?Q?zhf1tipT/Wep8ZaFzozqfWJVATYvIscarpY6YnSUrhUq1zFBzx9A4CRt7cZ5?=
+ =?us-ascii?Q?iR3DUpnMFruzgTI8/quoLVXkrlE7cVY7mcK1E88QTK9IOLrlykLcW0BZDK98?=
+ =?us-ascii?Q?DRBhMCig1N0FcZJxk2yVheNUq+XAEaUi6RViSo+rpWsu6ckyrpjZVeOK6JWR?=
+ =?us-ascii?Q?6MfEltYUE30qDCgzPKKpp96NnAQsJ1aSteMo913bCuCa69z3i7jGrderekUI?=
+ =?us-ascii?Q?g5F7n10z5ABico5UKoCJb04nQn6Z8j9DfGCVymcZ7Ah+4wDrZzEoB0LsB1iK?=
+ =?us-ascii?Q?Vdd5OmH9tMcrzjvb+tE07dITWkG+HO9JR3iFilHY/V8+zMYJcmN1UgNqbMA+?=
+ =?us-ascii?Q?8aOcBmxEqPITjTErP/Fdt4pA/ZBgs8pluh/XvHp5GUQeqiTjix61//o3V08H?=
+ =?us-ascii?Q?ViPqYTzorZQj5ApFrVK2VHEVUoRNwfspQbKNTvhGVNIJBumNLfHCwvnz1KKl?=
+ =?us-ascii?Q?Ry994jVvryyke69frsiyK8jSqxcb/Ouyp4R9f7bWpQPErnPguNm1qDcBxJPD?=
+ =?us-ascii?Q?aFEDotAdskOTUbpKNsw4fyTKPirBOTPqhqm4NRX4YlZg8DAqXnwpBpKplNqX?=
+ =?us-ascii?Q?qfY=3D?=
+x-ms-exchange-transport-forked: True
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1886.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 103b58db-29c8-4687-31e5-08d9272337f8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jun 2021 06:37:26.4617
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR21MB1513.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d32adf8d-bc57-406d-5696-08d9272366cd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jun 2021 06:38:45.0960
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: XM68XrJ11yzrowLnJ/KwzocbWAf/eDbfx8eygonzjmrzQ6pvd8mS/0ZTDfL7b79YS9s5Q/aO2cVSeksn/3dCbA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4588
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-userprincipalname: cKIWWt7w5g208+aFtw4+KgsaFS55i4Txezi3QpUZIwk0DqtxSXY2Wl/umlWhReglb8Wi+urmFXGyo1rNv9eMsA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR2101MB0726
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Jason Gunthorpe
-> Sent: Thursday, June 3, 2021 9:05 PM
+> Subject: Re: [PATCH] block: return the correct bvec when checking for gap=
+s
 >=20
-> > >
-> > > 3) Device accepts any PASIDs from the guest. No
-> > >    vPASID/pPASID translation is possible. (classic vfio_pci)
-> > > 4) Device accepts any PASID from the guest and has an
-> > >    internal vPASID/pPASID translation (enhanced vfio_pci)
+> Hello Long,
+>=20
+> On Thu, Jun 03, 2021 at 03:34:31PM -0700, longli@linuxonhyperv.com wrote:
+> > From: Long Li <longli@microsoft.com>
 > >
-> > what is enhanced vfio_pci? In my writing this is for mdev
-> > which doesn't support ENQCMD
+> > After commit 07173c3ec276 ("block: enable multipage bvecs"), a bvec
+> > can have multiple pages. But bio_will_gap() still assumes one page
+> > bvec while checking for merging. This causes data corruption on
+> > drivers relying on the correct merging on virt_boundary_mask.
 >=20
-> This is a vfio_pci that mediates some element of the device interface
-> to communicate the vPASID/pPASID table to the device, using Max's
-> series for vfio_pci drivers to inject itself into VFIO.
+> Can you explain the data corruption a bit?
 >=20
-> For instance a device might send a message through the PF that the VF
-> has a certain vPASID/pPASID translation table. This would be useful
-> for devices that cannot use ENQCMD but still want to support migration
-> and thus need vPASID.
+> IMO, either single page bvec or multipage bvec should be fine, because
+> bio_will_gap() just checks if the last bvec of prev bio and the 1st bvec =
+of next
+> bio can be merged.
 
-I still don't quite get. If it's a PCI device why is PASID translation requ=
-ired?
-Just delegate the per-RID PASID space to user as type-3 then migrating the=
-=20
-vPASID space is just straightforward.=20
+Hi Ming,
 
-Thanks
-Kevin
+When bio_will_gap() calls into biovec_phys_mergeable (), seg_boundary_mask =
+(queue_segment_boundary()) is used to test if the two bio_vecs can be merge=
+d. This test can succeed if only the 1st page in bvec is used, but at the s=
+ame time it can fail if all the pages in bvec are used. In other words, if =
+the pages in bvec go across the seg_boundary_mask, the test can potentially=
+ succeed if only the 1st page is tested, but can fail if all the pages are =
+tested.
+
+Later, when SCSI builds the SG list from BIOs (that calls into __blk_bios_m=
+ap_sg), __blk_segment_map_sg_merge() calls biovec_phys_mergeable() doing th=
+e same test . This time it may fail if the pages in bvec go across the seg_=
+boundary_mask (but tested okay in bio_will_gap() earlier, so those two BIOs=
+ were merged). If __blk_segment_map_sg_merge() fails, we end up with a brok=
+en SG list for drivers assuming the SG list not having offsets in intermedi=
+ate pages.
+
+In practice, usually a duplicate page (because merging fails) is put to the=
+ SG list. This page and all the pages afterwards in the SG list end up writ=
+ing to the wrong sectors on disk.
+
+Thanks,
+Long
+
+>=20
+> >
+> > Fix this by returning the multi-page bvec for testing gaps for merging.
+> >
+> > Cc: Jens Axboe <axboe@kernel.dk>
+> > Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> > Cc: Pavel Begunkov <asml.silence@gmail.com>
+> > Cc: Ming Lei <ming.lei@redhat.com>
+> > Cc: Tejun Heo <tj@kernel.org>
+> > Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> > Cc: Jeffle Xu <jefflexu@linux.alibaba.com>
+> > Cc: linux-kernel@vger.kernel.org
+> > Cc: stable@vger.kernel.org
+> > Fixes: 07173c3ec276 ("block: enable multipage bvecs")
+> > Signed-off-by: Long Li <longli@microsoft.com>
+> > ---
+> >  include/linux/bio.h | 11 ++++-------
+> >  1 file changed, 4 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/include/linux/bio.h b/include/linux/bio.h index
+> > a0b4cfdf62a4..6b2f609ccfbf 100644
+> > --- a/include/linux/bio.h
+> > +++ b/include/linux/bio.h
+> > @@ -44,9 +44,6 @@ static inline unsigned int bio_max_segs(unsigned int
+> nr_segs)
+> >  #define bio_offset(bio)		bio_iter_offset((bio), (bio)->bi_iter)
+> >  #define bio_iovec(bio)		bio_iter_iovec((bio), (bio)->bi_iter)
+> >
+> > -#define bio_multiple_segments(bio)				\
+> > -	((bio)->bi_iter.bi_size !=3D bio_iovec(bio).bv_len)
+> > -
+> >  #define bvec_iter_sectors(iter)	((iter).bi_size >> 9)
+> >  #define bvec_iter_end_sector(iter) ((iter).bi_sector +
+> > bvec_iter_sectors((iter)))
+> >
+> > @@ -271,7 +268,7 @@ static inline void bio_clear_flag(struct bio *bio,
+> > unsigned int bit)
+> >
+> >  static inline void bio_get_first_bvec(struct bio *bio, struct bio_vec
+> > *bv)  {
+> > -	*bv =3D bio_iovec(bio);
+> > +	*bv =3D mp_bvec_iter_bvec(bio->bi_io_vec, bio->bi_iter);
+> >  }
+> >
+> >  static inline void bio_get_last_bvec(struct bio *bio, struct bio_vec
+> > *bv) @@ -279,10 +276,10 @@ static inline void bio_get_last_bvec(struct
+> bio *bio, struct bio_vec *bv)
+> >  	struct bvec_iter iter =3D bio->bi_iter;
+> >  	int idx;
+> >
+> > -	if (unlikely(!bio_multiple_segments(bio))) {
+> > -		*bv =3D bio_iovec(bio);
+> > +	/* this bio has only one bvec */
+> > +	*bv =3D mp_bvec_iter_bvec(bio->bi_io_vec, bio->bi_iter);
+> > +	if (bv->bv_len =3D=3D bio->bi_iter.bi_size)
+> >  		return;
+> > -	}
+> >
+> >  	bio_advance_iter(bio, &iter, iter.bi_size);
+>=20
+> The patch itself looks fine, given both bio_get_first_bvec() and
+> bio_get_last_bvec() are used in bio_will_gap() only.
+>=20
+>=20
+> Thanks,
+> Ming
+
