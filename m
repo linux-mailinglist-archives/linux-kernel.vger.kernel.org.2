@@ -2,120 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D3F39BF89
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 20:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E625D39BF9E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 20:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbhFDS04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 14:26:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbhFDS0y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 14:26:54 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D815C061766
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 11:24:53 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id i13so12208027edb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 11:24:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8NkZLuODRGewH4zgC3asg1j+OkGGx+7ZEADeUCWN74M=;
-        b=AZOMP7RwTJv+l9AGvBTpG43OcDsnnTvgcZRvwckXkRIPNds68iR+iR6l1vRACYm0eF
-         znXZdiMm+96xHm4rcPmcza3bIy6sTFZiupGZPbw6MbkkSJD+vmsDjjq1KkdrTno4J/F8
-         gSlQ7cA7SyyHwaiBKj2t60vTm4puwPSkfWgGZAeCa0Ew95TCCj7jcwCpe5vyTPKJUhoT
-         +QOHqzem+HNdUt2Ywtwp07U0tswsfMNeZWdtQlYHWxIsk+PTFYmKxZ3H21a5UD6udAxL
-         gnnDD7SOfX5MWhpqkFMK/QonB3sZCo5E1AaUyCUlAG2pF4TqPXYZY7p9m86yy0+IAgSO
-         mYDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8NkZLuODRGewH4zgC3asg1j+OkGGx+7ZEADeUCWN74M=;
-        b=gJTcPZ+CkSXCD0Pr4sLUE33dBTEykHn01PhE7teJSwu2nMUGMPGtVZogoYeuHYk2TP
-         Hpe8I6wvJR93wyFjfpUcy1efEpSi6QtKiPsdHUIz94+qZq/soFGNK1ESJatlPPIuJRT/
-         UjtCL1MFSURNip8GRaUN/Ij48kYQSK/3S7MWme4tKvRODfiMxc2PQs0RextHkXhEySEu
-         Q+RqjQFyemA11JbUstVFGLk867ddfwm8DF/sH7jwMPjBrqODtkYHiVjvnUSmVvcJnOiQ
-         B/b8Q6uu/L2nRYM6xb8XsgXSk5DvdK08QGnZtDxaAGJL8nJDkcpjZwR0k9EuC/SvEIHC
-         zAgw==
-X-Gm-Message-State: AOAM530DnDNgDfb3HGWvlPHH6jwp2BbbufZo6lkbmm68kgF9FdUCgQJH
-        W2Oa/BXHHSdgV2TlTcSm4iaj0Qz2JPV7Pvfbclw=
-X-Google-Smtp-Source: ABdhPJxzh0Zb0Nux3f2gz0cdh0pFdmncuMubQc2aD60/G5zIhcfwbELlmAPGN453ktwZC25dCFYcajmc0cRx9LSnuEA=
-X-Received: by 2002:aa7:d5c6:: with SMTP id d6mr6020346eds.290.1622831091631;
- Fri, 04 Jun 2021 11:24:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <alpine.LSU.2.11.2106011353270.2148@eggly.anvils>
- <alpine.LSU.2.11.2106011405510.2148@eggly.anvils> <CAHbLzkrUcNhGDmPstSNHhwbdoo3z2B=v-zb7__M3RqHL-Ct-EA@mail.gmail.com>
- <alpine.LSU.2.11.2106031923410.12760@eggly.anvils>
-In-Reply-To: <alpine.LSU.2.11.2106031923410.12760@eggly.anvils>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Fri, 4 Jun 2021 11:24:38 -0700
-Message-ID: <CAHbLzkoLnzyXra9MXmVVAkB5wdhSe-6j7TVunHXqHt6Bpzz7NA@mail.gmail.com>
-Subject: Re: [PATCH 2/7] mm/thp: try_to_unmap() use TTU_SYNC for safe DEBUG_VM splitting
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
-        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S230127AbhFDSby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 14:31:54 -0400
+Received: from gate.crashing.org ([63.228.1.57]:39809 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229769AbhFDSby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 14:31:54 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 154IPkRL003330;
+        Fri, 4 Jun 2021 13:25:46 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 154IPjK0003329;
+        Fri, 4 Jun 2021 13:25:45 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Fri, 4 Jun 2021 13:25:44 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <20210604182544.GK18427@gate.crashing.org>
+References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net> <CAHk-=wievFk29DZgFLEFpH9yuZ0jfJqppLTJnOMvhe=+tDqgrw@mail.gmail.com> <YLpWwm1lDwBaUven@hirez.programming.kicks-ass.net> <CAHk-=wjf-VJZd3Uxv3T3pSJYYVzyfK2--znG0VEOnNRchMGgdQ@mail.gmail.com> <20210604172407.GJ18427@gate.crashing.org> <CAHk-=wj0Qvpn0pOOhJMGOim=psP3bhS2dEX1bAvQpmXs__vqiQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wj0Qvpn0pOOhJMGOim=psP3bhS2dEX1bAvQpmXs__vqiQ@mail.gmail.com>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 7:45 PM Hugh Dickins <hughd@google.com> wrote:
->
-> On Thu, 3 Jun 2021, Yang Shi wrote:
-> > On Tue, Jun 1, 2021 at 2:07 PM Hugh Dickins <hughd@google.com> wrote:
-> > >
-> > > Instead of abandoning the unsafe VM_BUG_ON_PAGE(), and the ones that
-> > > follow, use PVMW_SYNC in try_to_unmap_one() in this case: adding TTU_SYNC
-> > > to the options, and passing that from unmap_page() when CONFIG_DEBUG_VM=y.
-> > > It could be passed in the non-debug case too, but that would sometimes add
-> > > a little overhead, whereas it's rare for this race to result in failure.
+Hi!
+
+On Fri, Jun 04, 2021 at 10:38:43AM -0700, Linus Torvalds wrote:
+> On Fri, Jun 4, 2021 at 10:27 AM Segher Boessenkool
+> <segher@kernel.crashing.org> wrote:
+> > > Of course, we might want to make sure that the compiler doesn't go
+> > > "oh, empty asm, I can ignore it",
 > >
-> > The above statement makes me feel this patch is just to relieve the
-> > VM_BUG_ON, but my patch already changed it to VM_WARN, the race sounds
-> > acceptable (at least not fatal) and the splitting code can handle the
-> > failure case as well. So I'm wondering if we still need this patch or
-> > not if it is just used to close the race when CONFIG_DEBUG_VM=y.
->
-> I do agree that your 1/2 (what I'm calling 6.1/7) BUG->WARN patch
-> is the most important of them; but it didn't get marked for stable,
-> and has got placed behind conflicting mods never intended for stable.
+> > It isn't allowed to do that.  GCC has this arguable misfeature where it
+> > doesn't show empty asm in the assembler output, but that has no bearing
+> > on anything but how human-readable the output is.
+> 
+> That sounds about right, but we have had people talking about the
+> compiler looking inside the asm string before.
+> 
+> So it worries me that some compiler person might at some point go all
+> breathy-voice on us and say "I am altering the deal. Pray I don't
+> alter it any further".
 
-Sorry for not marking it for stable. I do have no any objection to
-having it in stable, just forgot to cc stable. :-(
+GCC will never do that.  And neither will any other compiler that claims
+to implement the GCC asm extensions, if they are true to their word.
 
->
-> And a lot of the descriptions had been written in terms of the prior
-> situation, with VM BUG there: it was easier to keep describing that way.
+GCC *does* look inside the assembler template to estimate what code size
+this asm will generate, and it tries to be pessimistic about its
+estimate so that this will always work, but it always is possible to
+mislead the compiler here, precisely because it does not actually
+pretend it understands assembler code (think .irp or anything with
+assembler macros for example).  In very rare cases this leads to
+(assembler) errors ("jump target out of range", that kind of thing).
+The most effective workaround is to write less silly code ;-)  And of
+course this is documented, see
+<https://gcc.gnu.org/onlinedocs/gcc/Size-of-an-asm.html>
 
-Understood.
+> Side note: when grepping for what "barrier()" does on different
+> architectures and different compilers, I note that yes, it really is
+> just an empty asm volatile with a "memory" barrier. That should in all
+> way sbe sufficient.
+> 
+> BUT.
+> 
+> There's this really odd comment in <linux/compiler-intel.h> that talks
+> about some "ECC" compiler:
+> 
+>   /* Intel ECC compiler doesn't support gcc specific asm stmts.
+>    * It uses intrinsics to do the equivalent things.
+>    */
+> 
+> and it defines it as "__memory_barrier()". This seems to be an ia64 thing, but:
 
->
-> Whether your fix makes mine redundant is arguable (Wang Yugui thinks
-> not).  It's easier to argue that it makes the racy ones (like this)
-> redundant, than the persistent ones (like vma_address or pvm_walk).
+"ecc" apparently was "icc" but for Itanium.  It ceased to exist some
+time in the 2.4 era apparently.  It was still used in 2003.  Searching
+for "ecpc" (the C++ compiler driver) will find a bit more.
 
-The point is if we just close the race for DEBUG_VM case, it doesn't
-sound worth it to me IMHO. How's about making it for !DEBUG_VM anyway?
-How big the overhead could be? It looks like the heavy lifting (tlb
-shootdown and page free) is done after pmd lock is released so it
-should not block pvmw for a long time.
+>  - I cannot get google to find me any documentation on such an intrinsic
+> 
+>  - it seems to be bogus anyway, since we have "asm volatile" usage in
+> at least arch/ia64/mm/tlb.c
+> 
+> So I do note that "barrier()" has an odd definition in one odd ia64
+> case, and I can't find the semantics for it.
+> 
+> Admittedly I also cannot find it in myself to care.
 
->
-> Since I know of at least one customer who wants all these fixes in 5.10
-> longterm, I'm fighting to get them that far at least.  But the further
-> back they go, the less effort I'll make to backport them - will fall
-> back to porting your BUG->WARN only.
->
-> Hugh
+Yeah, I love code archaeology, but I have work to do as well :-)
+
+> I don't think that
+> "Intel ECC" compiler case actually exists, and even if it does I don't
+> think itanium is relevant any more. But it was an odd detail on what
+> "barrier()" actually might mean to the compiler.
+
+:-)
+
+
+Segher
