@@ -2,66 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3075239BE1A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB6E39BDFB
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhFDRK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 13:10:56 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:49555 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbhFDRKz (ORCPT
+        id S230351AbhFDRGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 13:06:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229690AbhFDRGT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 13:10:55 -0400
-X-Greylist: delayed 372 seconds by postgrey-1.27 at vger.kernel.org; Fri, 04 Jun 2021 13:10:55 EDT
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4FxTbd6RyRz1qtQJ;
-        Fri,  4 Jun 2021 19:02:53 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4FxTbd5P6jz1qr4Q;
-        Fri,  4 Jun 2021 19:02:53 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id z5k1day5XkLL; Fri,  4 Jun 2021 19:02:53 +0200 (CEST)
-X-Auth-Info: aPveupBFrQC4TAiwyGiMQU+yY7PQfBpu7J/bpb4noQCrgLVLfIi6p90pzAqFn3vx
-Received: from igel.home (ppp-46-244-187-150.dynamic.mnet-online.de [46.244.187.150])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Fri,  4 Jun 2021 19:02:52 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-        id 807A12C3629; Fri,  4 Jun 2021 19:02:52 +0200 (CEST)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 4/4] powerpc/32: Avoid #ifdef nested with FTR_SECTION on
- booke syscall entry
-References: <5ab3a517bc883a2fc905fb2cb5ee9344f37b2cfa.1622818435.git.christophe.leroy@csgroup.eu>
-        <33db61d5f85146262dbe26648f8f87eca3cae393.1622818435.git.christophe.leroy@csgroup.eu>
-X-Yow:  I want to kill everyone here with a cute colorful Hydrogen Bomb!!
-Date:   Fri, 04 Jun 2021 19:02:52 +0200
-In-Reply-To: <33db61d5f85146262dbe26648f8f87eca3cae393.1622818435.git.christophe.leroy@csgroup.eu>
-        (Christophe Leroy's message of "Fri, 4 Jun 2021 14:54:15 +0000 (UTC)")
-Message-ID: <8735tx4l6r.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        Fri, 4 Jun 2021 13:06:19 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5CB8C061766;
+        Fri,  4 Jun 2021 10:04:32 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id 200A01F43A0D
+Subject: Re: [PATCH v4 00/15] Add futex2 syscalls
+To:     Zebediah Figura <z.figura12@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     kernel@collabora.com, krisman@collabora.com,
+        pgriffais@valvesoftware.com, joel@joelfernandes.org,
+        malteskarupke@fastmail.fm, linux-api@vger.kernel.org,
+        fweimer@redhat.com, libc-alpha@sourceware.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org, acme@kernel.org,
+        corbet@lwn.net, Peter Oskolkov <posk@posk.io>,
+        Andrey Semashev <andrey.semashev@gmail.com>,
+        Davidlohr Bueso <dave@stgolabs.net>
+References: <20210603195924.361327-1-andrealmeid@collabora.com>
+ <dab34fd2-b494-8686-bcd7-68beeba4f386@gmail.com>
+From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
+Message-ID: <d3d2a8f9-4a5e-fff5-c0f3-2563366b4c11@collabora.com>
+Date:   Fri, 4 Jun 2021 14:04:21 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <dab34fd2-b494-8686-bcd7-68beeba4f386@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Jun 04 2021, Christophe Leroy wrote:
+Às 01:51 de 04/06/21, Zebediah Figura escreveu:
+> On 6/3/21 2:59 PM, André Almeida wrote:
+>>   ** The wait on multiple problem
+>>
+>>   The use case lies in the Wine implementation of the Windows NT
+>> interface
+>>   WaitMultipleObjects. This Windows API function allows a thread to sleep
+>>   waiting on the first of a set of event sources (mutexes, timers,
+>> signal,
+>>   console input, etc) to signal.  Considering this is a primitive
+>>   synchronization operation for Windows applications, being able to
+>> quickly
+>>   signal events on the producer side, and quickly go to sleep on the
+>>   consumer side is essential for good performance of those running
+>> over Wine.
+>>
+> 
+> I know this is part of the cover letter, but I really do want to clarify
+> that this isn't really accurate. The use case that this is referring to
+> is not "the Wine implementation of WaitForMultipleObjects", it is an
+> out-of-tree implementation of WaitForMultipleObjects that provides
+> improved performance compared to the in-tree implementation.
+> 
+> This is especially salient because:
+> 
+> (1) this out-of-tree implementation is only in a small handful of cases
+> any more performant than a different out-of-tree implementation which
+> uses eventfd and poll() instead;
+> 
+> (2) these implementations will remain out-of-tree due to compatibility
+> and robustness problems;
+> 
+> (3) I believe there is potential for an upstreamable implementation
+> which does not rely on futex or futex2.
 
-> On booke, SYSCALL_ENTRY macro nests an FTR_SECTION with a
+I'll let it more clear next time that this applies to Proton's Wine, and
+not Wine.
 
-That sentence lacks an
-
-Andreas.
-
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+Along with that, wait on multiple will be useful for other workloads,
+such as the ones that uses Boost's mass locking algorithms and native
+game engines for instance.
