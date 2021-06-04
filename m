@@ -2,266 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F041639BF29
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E80D39BF2A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbhFDR7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 13:59:18 -0400
-Received: from mga17.intel.com ([192.55.52.151]:13009 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229791AbhFDR7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 13:59:17 -0400
-IronPort-SDR: +U5ak7K3DdtkSO9y2KlU+nPHBm7QDeKmsRbeQYzpVg0LNQCq+K2p3ZSKteaeZSPSogLBDpux3K
- P6SZSMxPXbZA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10005"; a="184710741"
-X-IronPort-AV: E=Sophos;i="5.83,248,1616482800"; 
-   d="scan'208";a="184710741"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2021 10:57:28 -0700
-IronPort-SDR: XU47CUriQYZV0esEBvDLL8HQu3Efr9oytM+bbRPgNp4+97MNh/KfCGC3a0sXaw54x2VnbkOCm5
- tp5TIRXA8tPw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,248,1616482800"; 
-   d="scan'208";a="446773312"
-Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 04 Jun 2021 10:57:25 -0700
-Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lpE4S-00072z-QK; Fri, 04 Jun 2021 17:57:24 +0000
-Date:   Sat, 05 Jun 2021 01:56:29 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:for-next/kspp] BUILD SUCCESS
- 0850bf2e5ce411f7c1e2879d72d80253cd8db261
-Message-ID: <60ba694d.hNaHwVgqv1w6E8n0%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230340AbhFDR7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 13:59:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229791AbhFDR7u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 13:59:50 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23688C061766
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 10:58:04 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id m3so12601687lji.12
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 10:58:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=32oaR0c8kPrg68WaYMsIVFX1pFixmYc8jBXuPce7aqw=;
+        b=Arq+6pHAhA+6mDmLufvN71tK/S4tPFoZ7Uq/geleo6of264AXrSe1tM+jluIf6B3zD
+         AZs04X7ognuE3D2i6F0z9Mn1WqV2++xQDUMwY+aX2S+LMCtP/R376LwUOogcVxNXEcYc
+         GOz9C5WIEQi6729yXjMf3BW/0QywFdq2zH07k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=32oaR0c8kPrg68WaYMsIVFX1pFixmYc8jBXuPce7aqw=;
+        b=ecHVQ5VOymBj8mt/tFZq8puOt+TGs+VljBX39/3an675XAfThjPwFmftzVGMJwotJ3
+         CSFol3zWOv/7Osws8UVjGCtxpDWpUvhydOB07jVy82Y7jtqBxED7DBnPTbaNTTIv6hUF
+         3H4hEcUR8Qs66005RCDkE28a726Nt8VrUs6AlCdES4R1RaBbpqSz5L5YpG9SLoI5UqnP
+         oLpXsIY1jQTf5NEJXBDDKdQHrb5spu2BNtQjFdpR0zR9rtIh2vLT40G9vtaBX1WfxNS5
+         g/xJsKddANyhRYN9xz6TlpYq5uM45fZ2tZES+d+s0g7X3U5LlXGkd5CYPWWS5upXp5vu
+         G+YA==
+X-Gm-Message-State: AOAM532QWShgOTdQxrnvyFV5YJOzXVDb632w40G5Xogq/BBrAvyQqXQy
+        hy1ZXtuBByruVil/TI7AFR2dHY+i7EZ5a+SMBfE=
+X-Google-Smtp-Source: ABdhPJyn3XpvUap6w8rrn75SZTTUxodevEVXHaYT/ZC3mBuNTBJSbiGZfNQ+qvS6JBgp6Ny7quLCVA==
+X-Received: by 2002:a2e:b0f5:: with SMTP id h21mr3707408ljl.325.1622829482305;
+        Fri, 04 Jun 2021 10:58:02 -0700 (PDT)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id z13sm774894lji.115.2021.06.04.10.58.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Jun 2021 10:58:00 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id a4so12661129ljd.5
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 10:58:00 -0700 (PDT)
+X-Received: by 2002:a2e:9644:: with SMTP id z4mr4336857ljh.507.1622829479784;
+ Fri, 04 Jun 2021 10:57:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210525031636.GB7744@xsang-OptiPlex-9020> <CAHk-=whTEC_GVYu=WfvUagNvHdoTALEDg8uqK3V6aMDwg2KMRA@mail.gmail.com>
+ <20210604070411.GA8221@shbuild999.sh.intel.com> <20210604075220.GA40621@shbuild999.sh.intel.com>
+In-Reply-To: <20210604075220.GA40621@shbuild999.sh.intel.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 4 Jun 2021 10:57:44 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg=LX1WKioiA_Cn-5hp6Hce_kTZg23uksSjNWgV_Ofj1Q@mail.gmail.com>
+Message-ID: <CAHk-=wg=LX1WKioiA_Cn-5hp6Hce_kTZg23uksSjNWgV_Ofj1Q@mail.gmail.com>
+Subject: Re: [mm/gup] 57efa1fe59: will-it-scale.per_thread_ops -9.2% regression
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
+        Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Hugh Dickins <hughd@google.com>, Jann Horn <jannh@google.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>, zhengjun.xing@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/kspp
-branch HEAD: 0850bf2e5ce411f7c1e2879d72d80253cd8db261  drm/nouveau/clk: Fix fall-through warnings for Clang
+On Fri, Jun 4, 2021 at 12:52 AM Feng Tang <feng.tang@intel.com> wrote:
+>
+> On Fri, Jun 04, 2021 at 03:04:11PM +0800, Feng Tang wrote:
+> > >
+> > > The perf data doesn't even mention any of the GUP paths, and on the
+> > > pure fork path the biggest impact would be:
+> > >
+> > >  (a) maybe "struct mm_struct" changed in size or had a different cache layout
+> >
+> > Yes, this seems to be the cause of the regression.
+> >
+> > The test case is many thread are doing map/unmap at the same time,
+> > so the process's rw_semaphore 'mmap_lock' is highly contended.
+> >
+> > Before the patch (with 0day's kconfig), the mmap_lock is separated
+> > into 2 cachelines, the 'count' is in one line, and the other members
+> > sit in the next line, so it luckily avoid some cache bouncing. After
+> > the patch, the 'mmap_lock' is pushed into one cacheline, which may
+> > cause the regression.
 
-elapsed time: 721m
+Ok, thanks for following up on this.
 
-configs tested: 204
-configs skipped: 2
+> We've tried some patch, which can restore the regerssion. As the
+> newly added member 'write_protect_seq' is 4 bytes long, and putting
+> it into an existing 4 bytes long hole can restore the regeression,
+> while not affecting most of other member's alignment. Please review
+> the following patch, thanks!
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The patch looks fine to me.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-nios2                         3c120_defconfig
-mips                         tb0219_defconfig
-arm                          moxart_defconfig
-mips                           xway_defconfig
-powerpc                       holly_defconfig
-sh                   rts7751r2dplus_defconfig
-mips                         rt305x_defconfig
-mips                           mtx1_defconfig
-arm                          ep93xx_defconfig
-powerpc                     kilauea_defconfig
-sh                           se7780_defconfig
-sh                         ap325rxa_defconfig
-sh                         apsh4a3a_defconfig
-arc                         haps_hs_defconfig
-arm                         mv78xx0_defconfig
-sh                         ecovec24_defconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                         ps3_defconfig
-mips                         tb0287_defconfig
-sh                          landisk_defconfig
-mips                        maltaup_defconfig
-m68k                            q40_defconfig
-powerpc                          g5_defconfig
-alpha                            allyesconfig
-powerpc                     tqm8540_defconfig
-xtensa                           allyesconfig
-powerpc                       maple_defconfig
-powerpc                   lite5200b_defconfig
-arm                      pxa255-idp_defconfig
-powerpc                        cell_defconfig
-sh                        sh7757lcr_defconfig
-powerpc                 mpc836x_rdk_defconfig
-powerpc                    sam440ep_defconfig
-sh                            titan_defconfig
-riscv             nommu_k210_sdcard_defconfig
-powerpc                      ep88xc_defconfig
-sh                               alldefconfig
-powerpc64                           defconfig
-powerpc                 mpc8313_rdb_defconfig
-openrisc                            defconfig
-mips                  decstation_64_defconfig
-riscv                    nommu_virt_defconfig
-powerpc                        warp_defconfig
-arm                           tegra_defconfig
-um                               alldefconfig
-sh                           sh2007_defconfig
-powerpc                      pcm030_defconfig
-arm                           u8500_defconfig
-um                                  defconfig
-m68k                          hp300_defconfig
-m68k                          amiga_defconfig
-powerpc                    gamecube_defconfig
-ia64                             allyesconfig
-sh                        sh7785lcr_defconfig
-powerpc                     tqm8541_defconfig
-m68k                       m5208evb_defconfig
-arm                           stm32_defconfig
-arm                         cm_x300_defconfig
-powerpc                    adder875_defconfig
-powerpc                mpc7448_hpc2_defconfig
-xtensa                              defconfig
-microblaze                          defconfig
-powerpc                 mpc837x_rdb_defconfig
-powerpc                      ppc40x_defconfig
-h8300                    h8300h-sim_defconfig
-powerpc                 canyonlands_defconfig
-arm                          pxa168_defconfig
-sh                           se7712_defconfig
-powerpc                     rainier_defconfig
-arm                         orion5x_defconfig
-xtensa                    xip_kc705_defconfig
-nios2                         10m50_defconfig
-mips                         db1xxx_defconfig
-openrisc                 simple_smp_defconfig
-arm                              alldefconfig
-arm                         nhk8815_defconfig
-mips                      pic32mzda_defconfig
-arm                            mmp2_defconfig
-sh                            hp6xx_defconfig
-sh                      rts7751r2d1_defconfig
-sh                             sh03_defconfig
-ia64                             alldefconfig
-arc                     nsimosci_hs_defconfig
-mips                      maltaaprp_defconfig
-arm                       omap2plus_defconfig
-sh                 kfr2r09-romimage_defconfig
-powerpc                     sequoia_defconfig
-sparc64                          alldefconfig
-m68k                        mvme147_defconfig
-arm                       spear13xx_defconfig
-powerpc                 mpc834x_itx_defconfig
-ia64                          tiger_defconfig
-arm                         lubbock_defconfig
-powerpc                     mpc512x_defconfig
-mips                       lemote2f_defconfig
-powerpc                           allnoconfig
-mips                           ip28_defconfig
-sh                          sdk7786_defconfig
-arm                       cns3420vb_defconfig
-arm                        trizeps4_defconfig
-sh                          lboxre2_defconfig
-arm                         at91_dt_defconfig
-powerpc                 mpc837x_mds_defconfig
-mips                      loongson3_defconfig
-powerpc                     sbc8548_defconfig
-powerpc                     mpc83xx_defconfig
-arc                    vdk_hs38_smp_defconfig
-mips                        jmr3927_defconfig
-sh                   sh7770_generic_defconfig
-mips                         mpc30x_defconfig
-arm                           corgi_defconfig
-arm                           omap1_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a002-20210604
-x86_64               randconfig-a004-20210604
-x86_64               randconfig-a003-20210604
-x86_64               randconfig-a006-20210604
-x86_64               randconfig-a005-20210604
-x86_64               randconfig-a001-20210604
-i386                 randconfig-a003-20210604
-i386                 randconfig-a006-20210604
-i386                 randconfig-a004-20210604
-i386                 randconfig-a001-20210604
-i386                 randconfig-a005-20210604
-i386                 randconfig-a002-20210604
-i386                 randconfig-a003-20210603
-i386                 randconfig-a006-20210603
-i386                 randconfig-a004-20210603
-i386                 randconfig-a001-20210603
-i386                 randconfig-a002-20210603
-i386                 randconfig-a005-20210603
-x86_64               randconfig-a015-20210603
-x86_64               randconfig-a011-20210603
-x86_64               randconfig-a012-20210603
-x86_64               randconfig-a014-20210603
-x86_64               randconfig-a016-20210603
-x86_64               randconfig-a013-20210603
-i386                 randconfig-a015-20210604
-i386                 randconfig-a013-20210604
-i386                 randconfig-a016-20210604
-i386                 randconfig-a011-20210604
-i386                 randconfig-a014-20210604
-i386                 randconfig-a012-20210604
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+At the same time, I do wonder if maybe it would be worth exploring if
+it's a good idea to perhaps move the 'mmap_sem' thing instead.
 
-clang tested configs:
-x86_64               randconfig-b001-20210604
-x86_64               randconfig-a002-20210603
-x86_64               randconfig-a004-20210603
-x86_64               randconfig-a003-20210603
-x86_64               randconfig-a006-20210603
-x86_64               randconfig-a005-20210603
-x86_64               randconfig-a001-20210603
-x86_64               randconfig-a015-20210604
-x86_64               randconfig-a011-20210604
-x86_64               randconfig-a014-20210604
-x86_64               randconfig-a012-20210604
-x86_64               randconfig-a016-20210604
-x86_64               randconfig-a013-20210604
+Or at least add a big comment. It's not clear to me exactly _which_
+other fields are the ones that are so hot that the contention on
+mmap_sem then causes even more cacheline bouncing.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+For example, is it either
+
+ (a) we *want* the mmap_sem to be in the first 128-byte region,
+because then when we get the mmap_sem, the other fields in that same
+cacheline are hot
+
+OR
+
+ (b) we do *not* want mmap_sem to be in the *second* 128-byte region,
+because there is something *else* in that region that is touched
+independently of mmap_sem that is very very hot and now you get even
+more bouncing?
+
+but I can't tell which one it is.
+
+It would be great to have a comment in the code - and in the commit
+message - about exactly which fields are the criticial ones. Because I
+doubt it is 'write_protect_seq' itself that matters at all.
+
+If it's "mmap_sem should be close to other commonly used fields",
+maybe we should just move mmap_sem upwards in the structure?
+
+              Linus
