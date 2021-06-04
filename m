@@ -2,304 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F23F39B3BE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE53539B3C2
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbhFDHXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 03:23:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35454 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229826AbhFDHXs (ORCPT
+        id S229954AbhFDHYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 03:24:42 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:38557 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229886AbhFDHYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 03:23:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622791321;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=orYq01Q31Yc39qB3ORg0nxtfa/WHWL4qWvUfOGPRsP0=;
-        b=FscTRvutLmqIb4tExeElWRjCxqJT2rWevW9sxO/CAdKti7qO5pA3ruVW+4tRmG1NAzlblV
-        FfNgo++atiKqUW+lmPpAgrcNi/rWCG2YE0+wz5bVrTRfbk/AopJc01vqd0itD0L34KsONv
-        /XXIQ8tXONQQHz7LiMhluqIK+zIiU3c=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-569-s6sr-G2rPrq5YypMDrNRVg-1; Fri, 04 Jun 2021 03:22:00 -0400
-X-MC-Unique: s6sr-G2rPrq5YypMDrNRVg-1
-Received: by mail-ed1-f72.google.com with SMTP id a16-20020aa7cf100000b0290391819a774aso2509367edy.8
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 00:22:00 -0700 (PDT)
+        Fri, 4 Jun 2021 03:24:41 -0400
+Received: from mail-oo1-f71.google.com ([209.85.161.71])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <koba.ko@canonical.com>)
+        id 1lp4AQ-0007st-83
+        for linux-kernel@vger.kernel.org; Fri, 04 Jun 2021 07:22:54 +0000
+Received: by mail-oo1-f71.google.com with SMTP id e10-20020a4ab14a0000b029020e1573bdb7so4973370ooo.9
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 00:22:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=orYq01Q31Yc39qB3ORg0nxtfa/WHWL4qWvUfOGPRsP0=;
-        b=DgWRPaSwWz5n7XWzJRRHBupU/7UDijpuoZYyomMeDHTgoIKAv3EpfBNduOabEkgH/Q
-         1VabTj0qwaGVDcQtFFx/k8M66mFmFM0/vdkefEk/wJSz+5AM5YZb9+qPzFKEJhDR/WbD
-         g+89BEHWYbzvoM73Y5Cp0X5MsGyWqnhowziQYobtgSbvHBnZTRF5U/qJUJw+/y5CwPK6
-         1O7Gejm73cqHheCZhfdZ6TTCYzck6Tv4/IxOiY1yivcW3pSvNyNy7FxqLX/+gN0JLgGV
-         P6w4iRMMa73fhZTr/CX334PZBj0V++SEorSgdKdTKiz67jMMZjR9aQ47zLYu9cUFoQ25
-         n9QA==
-X-Gm-Message-State: AOAM5326+3BKfePGvYCSMB0m1CgCzozoHUxjCaajye6mTajL013Fkqjn
-        wyljNLvFRq0YS8eW8dGeQz+6h+VPB593j/3lpJeyvPID8wEAV0O3jMoKMY9QhNxfyFKKhdr5BaV
-        +C9sOOc2pFY1n1zOlqLHkzJSb
-X-Received: by 2002:a17:906:3042:: with SMTP id d2mr2962231ejd.234.1622791319625;
-        Fri, 04 Jun 2021 00:21:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJye48vq4jhWt3rfSGy/IZIfVkJe+CPcNZKJdo8nz+4VSYXPjlnXO0JZDmfdCwTwFNTDbvESog==
-X-Received: by 2002:a17:906:3042:: with SMTP id d2mr2962196ejd.234.1622791319297;
-        Fri, 04 Jun 2021 00:21:59 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id gx23sm2456681ejb.125.2021.06.04.00.21.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 00:21:58 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Suleiman Souhlal <suleiman@google.com>, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        kvm@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Jim Mattson <jmattson@google.com>
-Subject: Re: [RFC][PATCH] kvm: add suspend pm-notifier
-In-Reply-To: <20210603164315.682994-1-senozhatsky@chromium.org>
-References: <20210603164315.682994-1-senozhatsky@chromium.org>
-Date:   Fri, 04 Jun 2021 09:21:56 +0200
-Message-ID: <87a6o614dn.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q04LbnKPu+/6G+YpEaHfIACjyCXncUzaze9YgvNZXnI=;
+        b=lodS0Wg2Sg95TPuW7BfBmKoZJC+EA5o67nhwCeSCwUgzm6tgK7QCFCpB2ZWbCJ7Pn7
+         LNUz8FbXythJJhJO9nnM+xWYxex7jU9WM18T0XyTPvOh20FbtWtOglWTntN4OyEgAOOj
+         LAd4yhXa3xoHT+RQrnL2nZ+yHMSM8052axu9DgYCCLiMudi0lu2qDWxTrcvZv4ebAivK
+         5p8LX5g16PJ0q1hWP6pJqVlhLwG6YEFbuY69FjUl4PS2sjUTeLvH52Eu1Rcboj2oXJeR
+         6Qw1A5lCpbikXrYhGPM2zn35jn9wgdR61IljglMGzWcUGv1tGDmvEb1cj3e5xHnIdxYy
+         KrFw==
+X-Gm-Message-State: AOAM532JIdI2LF9USMy9Osqp5ARja1S1bWSeFe+nZpyPU27cva3ZQlC1
+        AiODepkgZ4tk3w580Pjo4q+La5MlZR3yyGU1KHitB4bb4p7ZkxewdUJkcVt+YaQgPJWeDK5XCBg
+        BwN9E7DoekX8ZleuDa7W6X1IGiJyPL1+pUE9u95tEq97z4FOBTb5mZdL/dg==
+X-Received: by 2002:a9d:6186:: with SMTP id g6mr2593189otk.246.1622791373044;
+        Fri, 04 Jun 2021 00:22:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzBIKgTsWmyONnFUHxZxHyWQijKKEwWJmfW3SX2qtLXkfUS4KayHfpuOqdGwoRZ/xqHa0UDB7SYOkQh1wFBRYs=
+X-Received: by 2002:a9d:6186:: with SMTP id g6mr2593168otk.246.1622791372692;
+ Fri, 04 Jun 2021 00:22:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210603025414.226526-1-koba.ko@canonical.com> <3d2e7a11-92ad-db06-177b-c6602ef1acd4@gmail.com>
+In-Reply-To: <3d2e7a11-92ad-db06-177b-c6602ef1acd4@gmail.com>
+From:   Koba Ko <koba.ko@canonical.com>
+Date:   Fri, 4 Jun 2021 15:22:41 +0800
+Message-ID: <CAJB-X+V4vpLoNt2C_i=3mS4UtFnDdro5+hgaFXHWxcvobO=pzg@mail.gmail.com>
+Subject: Re: [PATCH] r8169: introduce polling method for link change
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sergey Senozhatsky <senozhatsky@chromium.org> writes:
-
-> Add KVM suspend/hibernate PM-notifier which lets architectures
-> to implement arch-specific VM suspend code. For instance, on x86
-> this sets PVCLOCK_GUEST_STOPPED on all the VCPUs.
+On Thu, Jun 3, 2021 at 6:00 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
 >
-> Our case is that user puts the host system into sleep multiple
-> times a day (e.g. closes the laptop's lid) so we need a reliable
-> way to suspend VMs properly.
+> On 03.06.2021 04:54, Koba Ko wrote:
+> > For RTL8106E, it's a Fast-ethernet chip.
+> > If ASPM is enabled, the link chang interrupt wouldn't be triggered
+> > immediately and must wait a very long time to get link change interrupt.
+> > Even the link change interrupt isn't triggered, the phy link is already
+> > established.
+> >
+> At first please provide a full dmesg log and output of lspci -vv.
+> Do you have the firmware for the NIC loaded? Please provide "ethtool -i <if>"
+> output.
+
+please get the logs from here,
+https://bugzilla.kernel.org/show_bug.cgi?id=213165
+
+> Does the issue affect link-down and/or link-up detection?
+> Do you have runtime pm enabled? Then, after 10s of link-down NIC goes to
+> D3hot and link-up detection triggers a PME.
+
+Issue affect link-up.
+yes, pm runtime is enabled, but rtl8106e always stays D0 even if the
+cable isn't present.
+
 >
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> ---
->  arch/arm64/kvm/arm.c       |  4 ++++
->  arch/mips/kvm/mips.c       |  4 ++++
->  arch/powerpc/kvm/powerpc.c |  4 ++++
->  arch/s390/kvm/kvm-s390.c   |  4 ++++
->  arch/x86/kvm/x86.c         | 21 ++++++++++++++++++++
->  include/linux/kvm_host.h   |  8 ++++++++
->  virt/kvm/kvm_main.c        | 40 ++++++++++++++++++++++++++++++++++++++
->  7 files changed, 85 insertions(+)
+> > Introduce a polling method to watch the status of phy link and disable
+> > the link change interrupt.
+> > Also add a quirk for those realtek devices have the same issue.
+> >
+> Which are the affected chip versions? Did you check with Realtek?
+> Your patch switches to polling for all Fast Ethernet versions,
+> and that's not what we want.
+
+I don't know the exact version, only the chip name 806e(pci device id 0x8165).
+ok, Im asking Realtek to help how to identify the chip issue is observed.
+
 >
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index 1126eae27400..547dbe44d039 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -1311,6 +1311,10 @@ static int kvm_vm_ioctl_set_device_addr(struct kvm *kvm,
->  	}
->  }
->  
-> +void kvm_arch_pm_notifier(struct kvm *kvm)
-> +{
-> +}
-> +
->  long kvm_arch_vm_ioctl(struct file *filp,
->  		       unsigned int ioctl, unsigned long arg)
->  {
-> diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
-> index 4d4af97dcc88..d4408acd2be6 100644
-> --- a/arch/mips/kvm/mips.c
-> +++ b/arch/mips/kvm/mips.c
-> @@ -980,6 +980,10 @@ void kvm_arch_flush_remote_tlbs_memslot(struct kvm *kvm,
->  	kvm_flush_remote_tlbs(kvm);
->  }
->  
-> +void kvm_arch_pm_notifier(struct kvm *kvm)
-> +{
-> +}
-> +
->  long kvm_arch_vm_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
->  {
->  	long r;
-> diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
-> index a2a68a958fa0..96e8a7b6fcf0 100644
-> --- a/arch/powerpc/kvm/powerpc.c
-> +++ b/arch/powerpc/kvm/powerpc.c
-> @@ -2334,6 +2334,10 @@ static int kvmppc_get_cpu_char(struct kvm_ppc_cpu_char *cp)
->  }
->  #endif
->  
-> +void kvm_arch_pm_notifier(struct kvm *kvm)
-> +{
-> +}
-> +
->  long kvm_arch_vm_ioctl(struct file *filp,
->                         unsigned int ioctl, unsigned long arg)
->  {
-> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-> index 1296fc10f80c..c5f86fc1e497 100644
-> --- a/arch/s390/kvm/kvm-s390.c
-> +++ b/arch/s390/kvm/kvm-s390.c
-> @@ -2367,6 +2367,10 @@ static int kvm_s390_handle_pv(struct kvm *kvm, struct kvm_pv_cmd *cmd)
->  	return r;
->  }
->  
-> +void kvm_arch_pm_notifier(struct kvm *kvm)
-> +{
-> +}
-> +
->  long kvm_arch_vm_ioctl(struct file *filp,
->  		       unsigned int ioctl, unsigned long arg)
->  {
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index bbc4e04e67ad..3f3d6497593f 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -5613,6 +5613,27 @@ static int kvm_vm_ioctl_set_msr_filter(struct kvm *kvm, void __user *argp)
->  	return 0;
->  }
->  
-> +void kvm_arch_pm_notifier(struct kvm *kvm)
-> +{
-> +#ifdef CONFIG_PM
-> +	int c;
-> +
-> +	mutex_lock(&kvm->lock);
-> +	for (c = 0; c < kvm->created_vcpus; c++) {
-> +		struct kvm_vcpu *vcpu = kvm->vcpus[c];
-> +		int r;
-> +
-> +		if (!vcpu)
-> +			continue;
-> +		r = kvm_set_guest_paused(vcpu);
-> +		if (!r)
-> +			continue;
-> +		pr_err("Failed to suspend VCPU-%d: %d\n", vcpu->vcpu_id,  r);
-> +	}
-> +	mutex_unlock(&kvm->lock);
-> +#endif
-> +}
-> +
->  long kvm_arch_vm_ioctl(struct file *filp,
->  		       unsigned int ioctl, unsigned long arg)
->  {
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 2f34487e21f2..86695320a6b7 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -37,6 +37,8 @@
->  #include <asm/kvm_host.h>
->  #include <linux/kvm_dirty_ring.h>
->  
-> +#include <linux/notifier.h>
-> +
->  #ifndef KVM_MAX_VCPU_ID
->  #define KVM_MAX_VCPU_ID KVM_MAX_VCPUS
->  #endif
-> @@ -579,6 +581,10 @@ struct kvm {
->  	pid_t userspace_pid;
->  	unsigned int max_halt_poll_ns;
->  	u32 dirty_ring_size;
-> +
-> +#ifdef CONFIG_PM
-> +	struct notifier_block pm_notifier;
-> +#endif
->  };
->  
->  #define kvm_err(fmt, ...) \
-> @@ -992,6 +998,8 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu);
->  void kvm_arch_vcpu_postcreate(struct kvm_vcpu *vcpu);
->  void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu);
->  
-> +void kvm_arch_pm_notifier(struct kvm *kvm);
-> +
->  #ifdef __KVM_HAVE_ARCH_VCPU_DEBUGFS
->  void kvm_arch_create_vcpu_debugfs(struct kvm_vcpu *vcpu, struct dentry *debugfs_dentry);
->  #endif
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 6b4feb92dc79..86925ab7d162 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -51,6 +51,7 @@
->  #include <linux/io.h>
->  #include <linux/lockdep.h>
->  #include <linux/kthread.h>
-> +#include <linux/suspend.h>
->  
->  #include <asm/processor.h>
->  #include <asm/ioctl.h>
-> @@ -779,6 +780,43 @@ static int kvm_init_mmu_notifier(struct kvm *kvm)
->  
->  #endif /* CONFIG_MMU_NOTIFIER && KVM_ARCH_WANT_MMU_NOTIFIER */
->  
-> +#ifdef CONFIG_PM
-> +static int kvm_pm_notifier_call(struct notifier_block *bl,
-> +				unsigned long state,
-> +				void *unused)
-> +{
-> +	struct kvm *kvm = container_of(bl, struct kvm, pm_notifier);
-> +
-> +	switch (state) {
-> +	case PM_HIBERNATION_PREPARE:
-> +	case PM_SUSPEND_PREPARE:
-> +		kvm_arch_pm_notifier(kvm);
-> +		break;
-> +	}
-> +	return NOTIFY_DONE;
-> +}
-> +
-> +static void kvm_init_pm_notifier(struct kvm *kvm)
-> +{
-> +	kvm->pm_notifier.notifier_call = kvm_pm_notifier_call;
-> +	kvm->pm_notifier.priority = INT_MAX;
-> +	register_pm_notifier(&kvm->pm_notifier);
-> +}
-> +
-> +static void kvm_destroy_pm_notifier(struct kvm *kvm)
-> +{
-> +	unregister_pm_notifier(&kvm->pm_notifier);
-> +}
-> +#else
-> +static void kvm_init_pm_notifier(struct kvm *kvm)
-> +{
-> +}
-> +
-> +static void kvm_destroy_pm_notifier(struct kvm *kvm)
-> +{
-> +}
-> +#endif /* CONFIG_PM */
-> +
->  static struct kvm_memslots *kvm_alloc_memslots(void)
->  {
->  	int i;
-> @@ -962,6 +1000,7 @@ static struct kvm *kvm_create_vm(unsigned long type)
->  	mutex_unlock(&kvm_lock);
->  
->  	preempt_notifier_inc();
-> +	kvm_init_pm_notifier(kvm);
->  
+> My suspicion would be that something is system-dependent. Else I think
+> we would have seen such a report before.
+On the mainline, the aspm is disable, so you may not observe this.
+If you enable ASPM and must wait CHIP go to power-saving mode, then
+you can observe the issue.
+>
+> > Signed-off-by: Koba Ko <koba.ko@canonical.com>
+> > ---
+> >  drivers/net/ethernet/realtek/r8169.h      |   2 +
+> >  drivers/net/ethernet/realtek/r8169_main.c | 112 ++++++++++++++++++----
+> >  2 files changed, 98 insertions(+), 16 deletions(-)
+> >
+> > diff --git a/drivers/net/ethernet/realtek/r8169.h b/drivers/net/ethernet/realtek/r8169.h
+> > index 2728df46ec41..a8c71adb1b57 100644
+> > --- a/drivers/net/ethernet/realtek/r8169.h
+> > +++ b/drivers/net/ethernet/realtek/r8169.h
+> > @@ -11,6 +11,8 @@
+> >  #include <linux/types.h>
+> >  #include <linux/phy.h>
+> >
+> > +#define RTL8169_LINK_TIMEOUT (1 * HZ)
+> > +
+> >  enum mac_version {
+> >       /* support for ancient RTL_GIGA_MAC_VER_01 has been removed */
+> >       RTL_GIGA_MAC_VER_02,
+> > diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+> > index 2c89cde7da1e..70aacc83d641 100644
+> > --- a/drivers/net/ethernet/realtek/r8169_main.c
+> > +++ b/drivers/net/ethernet/realtek/r8169_main.c
+> > @@ -178,6 +178,11 @@ static const struct pci_device_id rtl8169_pci_tbl[] = {
+> >
+> >  MODULE_DEVICE_TABLE(pci, rtl8169_pci_tbl);
+> >
+> > +static const struct pci_device_id rtl8169_linkChg_polling_enabled[] = {
+> > +     { PCI_VDEVICE(REALTEK, 0x8136), RTL_CFG_NO_GBIT },
+> > +     { 0 }
+> > +};
+> > +
+>
+> This doesn't seem to be used.
+>
+> >  enum rtl_registers {
+> >       MAC0            = 0,    /* Ethernet hardware address. */
+> >       MAC4            = 4,
+> > @@ -618,6 +623,7 @@ struct rtl8169_private {
+> >       u16 cp_cmd;
+> >       u32 irq_mask;
+> >       struct clk *clk;
+> > +     struct timer_list link_timer;
+> >
+> >       struct {
+> >               DECLARE_BITMAP(flags, RTL_FLAG_MAX);
+> > @@ -1179,6 +1185,16 @@ static void rtl8168ep_stop_cmac(struct rtl8169_private *tp)
+> >       RTL_W8(tp, IBCR0, RTL_R8(tp, IBCR0) & ~0x01);
+> >  }
+> >
+> > +static int rtl_link_chng_polling_quirk(struct rtl8169_private *tp)
+> > +{
+> > +     struct pci_dev *pdev = tp->pci_dev;
+> > +
+> > +     if (pdev->vendor == 0x10ec && pdev->device == 0x8136 && !tp->supports_gmii)
+> > +             return 1;
+> > +
+> > +     return 0;
+> > +}
+> > +
+> >  static void rtl8168dp_driver_start(struct rtl8169_private *tp)
+> >  {
+> >       r8168dp_oob_notify(tp, OOB_CMD_DRIVER_START);
+> > @@ -4608,6 +4624,75 @@ static void rtl_task(struct work_struct *work)
+> >       rtnl_unlock();
+> >  }
+> >
+> > +static void r8169_phylink_handler(struct net_device *ndev)
+> > +{
+> > +     struct rtl8169_private *tp = netdev_priv(ndev);
+> > +
+> > +     if (netif_carrier_ok(ndev)) {
+> > +             rtl_link_chg_patch(tp);
+> > +             pm_request_resume(&tp->pci_dev->dev);
+> > +     } else {
+> > +             pm_runtime_idle(&tp->pci_dev->dev);
+> > +     }
+> > +
+> > +     if (net_ratelimit())
+> > +             phy_print_status(tp->phydev);
+> > +}
+> > +
+> > +static unsigned int
+> > +rtl8169_xmii_link_ok(struct net_device *dev)
+> > +{
+> > +     struct rtl8169_private *tp = netdev_priv(dev);
+> > +     unsigned int retval;
+> > +
+> > +     retval = (RTL_R8(tp, PHYstatus) & LinkStatus) ? 1 : 0;
+> > +
+> > +     return retval;
+> > +}
+> > +
+> > +static void
+> > +rtl8169_check_link_status(struct net_device *dev)
+> > +{
+> > +     struct rtl8169_private *tp = netdev_priv(dev);
+> > +     int link_status_on;
+> > +
+> > +     link_status_on = rtl8169_xmii_link_ok(dev);
+> > +
+> > +     if (netif_carrier_ok(dev) == link_status_on)
+> > +             return;
+> > +
+> > +     phy_mac_interrupt(tp->phydev);
+> > +
+> > +     r8169_phylink_handler (dev);
+> > +}
+> > +
+> > +static void rtl8169_link_timer(struct timer_list *t)
+> > +{
+> > +     struct rtl8169_private *tp = from_timer(tp, t, link_timer);
+> > +     struct net_device *dev = tp->dev;
+> > +     struct timer_list *timer = t;
+> > +     unsigned long flags;
+>
+> flags isn't used and triggers a compiler warning. Did you even
+> compile-test your patch?
+>
+> > +
+> > +     rtl8169_check_link_status(dev);
+> > +
+> > +     if (timer_pending(&tp->link_timer))
+> > +             return;
+> > +
+> > +     mod_timer(timer, jiffies + RTL8169_LINK_TIMEOUT);
+> > +}
+> > +
+> > +static inline void rtl8169_delete_link_timer(struct net_device *dev, struct timer_list *timer)
+> > +{
+> > +     del_timer_sync(timer);
+> > +}
+> > +
+> > +static inline void rtl8169_request_link_timer(struct net_device *dev)
+> > +{
+> > +     struct rtl8169_private *tp = netdev_priv(dev);
+> > +
+> > +     timer_setup(&tp->link_timer, rtl8169_link_timer, TIMER_INIT_FLAGS);
+> > +}
+> > +
+> >  static int rtl8169_poll(struct napi_struct *napi, int budget)
+> >  {
+> >       struct rtl8169_private *tp = container_of(napi, struct rtl8169_private, napi);
+> > @@ -4624,21 +4709,6 @@ static int rtl8169_poll(struct napi_struct *napi, int budget)
+> >       return work_done;
+> >  }
+> >
+> > -static void r8169_phylink_handler(struct net_device *ndev)
+> > -{
+> > -     struct rtl8169_private *tp = netdev_priv(ndev);
+> > -
+> > -     if (netif_carrier_ok(ndev)) {
+> > -             rtl_link_chg_patch(tp);
+> > -             pm_request_resume(&tp->pci_dev->dev);
+> > -     } else {
+> > -             pm_runtime_idle(&tp->pci_dev->dev);
+> > -     }
+> > -
+> > -     if (net_ratelimit())
+> > -             phy_print_status(tp->phydev);
+> > -}
+> > -
+> >  static int r8169_phy_connect(struct rtl8169_private *tp)
+> >  {
+> >       struct phy_device *phydev = tp->phydev;
+> > @@ -4769,6 +4839,10 @@ static int rtl_open(struct net_device *dev)
+> >               goto err_free_irq;
+> >
+> >       rtl8169_up(tp);
+> > +
+> > +     if (rtl_link_chng_polling_quirk(tp))
+> > +             mod_timer(&tp->link_timer, jiffies + RTL8169_LINK_TIMEOUT);
+> > +
+> >       rtl8169_init_counter_offsets(tp);
+> >       netif_start_queue(dev);
+> >  out:
+> > @@ -4991,7 +5065,10 @@ static const struct net_device_ops rtl_netdev_ops = {
+> >
+> >  static void rtl_set_irq_mask(struct rtl8169_private *tp)
+> >  {
+> > -     tp->irq_mask = RxOK | RxErr | TxOK | TxErr | LinkChg;
+> > +     tp->irq_mask = RxOK | RxErr | TxOK | TxErr;
+> > +
+> > +     if (!rtl_link_chng_polling_quirk(tp))
+> > +             tp->irq_mask |= LinkChg;
+> >
+> >       if (tp->mac_version <= RTL_GIGA_MAC_VER_06)
+> >               tp->irq_mask |= SYSErr | RxOverflow | RxFIFOOver;
+> > @@ -5436,6 +5513,9 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+> >       if (pci_dev_run_wake(pdev))
+> >               pm_runtime_put_sync(&pdev->dev);
+> >
+> > +     if (rtl_link_chng_polling_quirk(tp))
+> > +             rtl8169_request_link_timer(dev);
+> > +
+> >       return 0;
+> >  }
+> >
+> >
+>
+> All this isn't needed. If you want to switch to link status polling,
+> why don't you simply let phylib do it? PHY_MAC_INTERRUPT -> PHY_POLL
 
-You've probably thought it through and I didn't but wouldn't it be
-easier to have one global pm_notifier call for KVM which would go
-through the list of VMs instead of registering/deregistering a
-pm_notifier call for every created/destroyed VM?
+Thanks for suggestions, I tried to use PHY_POLL, it could do the same
+thing that I did.
 
->  	return kvm;
->  
-> @@ -1009,6 +1048,7 @@ static void kvm_destroy_vm(struct kvm *kvm)
->  	int i;
->  	struct mm_struct *mm = kvm->mm;
->  
-> +	kvm_destroy_pm_notifier(kvm);
->  	kvm_uevent_notify_change(KVM_EVENT_DESTROY_VM, kvm);
->  	kvm_destroy_vm_debugfs(kvm);
->  	kvm_arch_sync_events(kvm);
-
--- 
-Vitaly
-
+> Your timer-based code most likely would have problems if runtime pm
+> is enabled. Then you try to read the link status whilst NIC is in
+> D3hot.
