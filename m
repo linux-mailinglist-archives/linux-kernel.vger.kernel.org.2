@@ -2,99 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4CB39BACB
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC0A39BACF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbhFDOTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 10:19:10 -0400
-Received: from mail-ej1-f41.google.com ([209.85.218.41]:42889 "EHLO
-        mail-ej1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbhFDOTJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 10:19:09 -0400
-Received: by mail-ej1-f41.google.com with SMTP id k25so9258945eja.9;
-        Fri, 04 Jun 2021 07:17:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BxgumMgzhDjL0lr/zHcx8CCLu0Hsz3srHrbkQdXC+6I=;
-        b=NAv/5WhdpFGP4ZJKd43WO/ifv2dibJLXgz5PRhZYn2UUQqAlDCwtFLNrXpgtLjorHv
-         EH3cQrvWWte34yAdoroXGbxoHWv0737cY90bA9Lu8HZB9+WQ8Tw9ezElSc8kOd6XPCbV
-         irA7V1kESizVdiZn2lONPgXgOa3lXcBFiDVl2OddaMt2ZuonFu2hF9zKqqo8cckI8KDG
-         6HZjHr3EuNaqGBzulYV87xq0gdKr1Vd9Fm1j4AbQ1WtXlLPMS2e+O/44SaZ3YnIuu2oL
-         LIZdWxPLOJLQw2PO/jmNDxRbHnKhibhzBnqQ2/RrizwbOOOQ0XAd3iQtE95AXktpw69b
-         vBkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BxgumMgzhDjL0lr/zHcx8CCLu0Hsz3srHrbkQdXC+6I=;
-        b=ZjlmPhBh2GzFakV5ADqOs155EdP+E0Q9Vk3LoELwLRvPP64ahJWmvdUQDN4pGd7qLR
-         pP3QaIjARUVgxthaL+FunBaF1jpql2zmMRDueYuBckKdQatNJXFnYWAjpkCNa4MsoLUl
-         4xDXMmlk2yZVJUSFaAnPF/tkhqvQlKC8p95gy+yqg6fVI3uQhooGJrI8p+rSOadgQCH7
-         2VrJLYLLKWN0As/qOKeRtgmnkJI0VdeInl66IymgzOy5mTa9/QNtFxAVZ0XZDvQuGRdn
-         am26b+kUHcC4tDL/ytO+edlY6shZxtCTcmy4mT4agTbki8o2lidLcNdBJhWMyvWJS/zK
-         ZijQ==
-X-Gm-Message-State: AOAM533FSxIST0yy54pfXcUOxgWrOBhMQOyMry3YytaPuqlSgVvrB1Wx
-        j5B3xNdJb/D/pfyGgRsqoJmEmXPmDS42SwD/
-X-Google-Smtp-Source: ABdhPJzzXXd13cbkvg/19J8P9IENnt57vEjvQSmDx8Wp+JUBknE+hONtbS65kbKgwgLjP9GTy0j4/Q==
-X-Received: by 2002:a17:906:4089:: with SMTP id u9mr4373948ejj.478.1622816182529;
-        Fri, 04 Jun 2021 07:16:22 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c096:310::2410? ([2620:10d:c093:600::2:b808])
-        by smtp.gmail.com with ESMTPSA id e22sm3354036edv.57.2021.06.04.07.16.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Jun 2021 07:16:22 -0700 (PDT)
-Subject: Re: Memory uninitialized after "io_uring: keep table of pointers to
- ubufs"
-To:     Andres Freund <andres@anarazel.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210529003350.m3bqhb3rnug7yby7@alap3.anarazel.de>
- <d2c5b250-5a0f-5de5-061f-38257216389d@gmail.com>
- <20210603180612.uchkn5qqa3j7rpgd@alap3.anarazel.de>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <9fa5c0f2-ff28-3775-9f4e-6a1cec06f151@gmail.com>
-Date:   Fri, 4 Jun 2021 15:16:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230514AbhFDOUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 10:20:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40892 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230122AbhFDOUM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 10:20:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BAEC8611C1;
+        Fri,  4 Jun 2021 14:18:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622816306;
+        bh=IIapIA1KWkd10LMiSluOWzb9ezVWcMq76P0df/51EJI=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=C83Lt6aPoYYFS1mWk1VGn/wrc+OfTmgIEPAqnh2qfT2oVa2PrUcahpcwjJ8uPLysj
+         ASoPcp1raYr4Uwhgn+thxgAcYlqbM8ayc8wKFeG40snPKaEwYVde37SV+nHGgogSH5
+         vEHfSwCPV6uvHyUh99yuEjEzLyGs6kOofoc5IAfZLsHX5RybR1jlYaw8i7Rv9snLlx
+         t+MH1Ko4LrQgW907BwAO8sVDuJPWaRF8YMfxHBNnu9mfeYWbn+HpWuWSir+Laep29x
+         3m9u2xL6PkZovdLxbXeSnBOxziyHwX9XUti6sBNRkiPin1K3JTbSp5lrgxbmqNvBu8
+         fq1gb4ZEEt5Bg==
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Wesley Cheng <wcheng@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        jackp@codeaurora.org, Thinh.Nguyen@synopsys.com
+Subject: Re: [PATCH v9 0/5] Re-introduce TX FIFO resize for larger EP bursting
+In-Reply-To: <YLoUiO8tpRpmvcyU@kroah.com>
+References: <1621410561-32762-1-git-send-email-wcheng@codeaurora.org>
+ <YLoUiO8tpRpmvcyU@kroah.com>
+Date:   Fri, 04 Jun 2021 17:18:16 +0300
+Message-ID: <87k0n9btnb.fsf@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210603180612.uchkn5qqa3j7rpgd@alap3.anarazel.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/3/21 7:06 PM, Andres Freund wrote:
-> Hi,
-> 
-> On 2021-05-29 12:03:12 +0100, Pavel Begunkov wrote:
->> On 5/29/21 1:33 AM, Andres Freund wrote:
->>> Hi,
->>>
->>> I started to see buffer registration randomly failing with ENOMEM on
->>> 5.13. Registering buffer or two often succeeds, but more than that
->>> rarely. Running the same program as root succeeds - but the user has a high
->>> rlimit.
->>>
->>> The issue is that io_sqe_buffer_register() doesn't initialize
->>> imu. io_buffer_account_pin() does imu->acct_pages++, before calling
->>> io_account_mem(ctx, imu->acct_pages);
->>>
->>> Which means that a random amount of memory is being accounted for. On the first
->>> few allocations this sometimes fails to fail because the memory is zero, but
->>> after a bit of reuse...
->>
->> Makes sense, thanks for digging in. I've just sent a patch, would
->> be great if you can test it or send your own.
-> 
-> Sorry for the slow response, I'm off this week. I did just get around to
-> test and unsurprisingly: The patch does fix the issue.
+--=-=-=
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Yep, since you already narrowed it down. Thanks for testing
 
--- 
-Pavel Begunkov
+Hi,
+
+Greg KH <gregkh@linuxfoundation.org> writes:
+> On Wed, May 19, 2021 at 12:49:16AM -0700, Wesley Cheng wrote:
+>> Changes in V9:
+>>  - Fixed incorrect patch in series.  Removed changes in DTSI, as dwc3-qc=
+om will
+>>    add the property by default from the kernel.
+>
+> This patch series has one build failure and one warning added:
+>
+> drivers/usb/dwc3/gadget.c: In function =E2=80=98dwc3_gadget_calc_tx_fifo_=
+size=E2=80=99:
+> drivers/usb/dwc3/gadget.c:653:45: warning: passing argument 1 of =E2=80=
+=98dwc3_mdwidth=E2=80=99 makes pointer from integer without a cast [-Wint-c=
+onversion]
+>   653 |         mdwidth =3D dwc3_mdwidth(dwc->hwparams.hwparams0);
+>       |                                ~~~~~~~~~~~~~^~~~~~~~~~
+>       |                                             |
+>       |                                             u32 {aka unsigned int}
+> In file included from drivers/usb/dwc3/debug.h:14,
+>                  from drivers/usb/dwc3/gadget.c:25:
+> drivers/usb/dwc3/core.h:1493:45: note: expected =E2=80=98struct dwc3 *=E2=
+=80=99 but argument is of type =E2=80=98u32=E2=80=99 {aka =E2=80=98unsigned=
+ int=E2=80=99}
+>  1493 | static inline u32 dwc3_mdwidth(struct dwc3 *dwc)
+>       |                                ~~~~~~~~~~~~~^~~
+>
+>
+> drivers/usb/dwc3/dwc3-qcom.c: In function =E2=80=98dwc3_qcom_of_register_=
+core=E2=80=99:
+> drivers/usb/dwc3/dwc3-qcom.c:660:23: error: implicit declaration of funct=
+ion =E2=80=98of_add_property=E2=80=99; did you mean =E2=80=98of_get_propert=
+y=E2=80=99? [-Werror=3Dimplicit-function-declaration]
+>   660 |                 ret =3D of_add_property(dwc3_np, prop);
+>       |                       ^~~~~~~~~~~~~~~
+>       |                       of_get_property
+>
+>
+> How did you test these?
+
+to be honest, I don't think these should go in (apart from the build
+failure) because it's likely to break instantiations of the core with
+differing FIFO sizes. Some instantiations even have some endpoints with
+dedicated functionality that requires the default FIFO size configured
+during coreConsultant instantiation. I know of at OMAP5 and some Intel
+implementations which have dedicated endpoints for processor tracing.
+
+With OMAP5, these endpoints are configured at the top of the available
+endpoints, which means that if a gadget driver gets loaded and takes
+over most of the FIFO space because of this resizing, processor tracing
+will have a hard time running. That being said, processor tracing isn't
+supported in upstream at this moment.
+
+I still think this may cause other places to break down. The promise the
+databook makes is that increasing the FIFO size over 2x wMaxPacketSize
+should bring little to no benefit, if we're not maintaining that, I
+wonder if the problem is with some of the BUSCFG registers instead,
+where we configure interconnect bursting and the like.
+
+=2D-=20
+balbi
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmC6NigRHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzlfNM9wDzUhNqQf/UCW+L+1PHl0Ok7a8lYNNq1k7hu8Du6Ag
+qMT+Szz1a4oERmjWyUJr7xNc1dnv78QlCb9SuDx+c6guInJTCEEV0NjwEZbjlv+q
+YQzg6S0kSz2Yrm6u0SylqAwGRyi3VmEmjX9aKUjxJCgblY+bGXHLrfXxFz67UGcv
+c1jQGYVfP2iMMHrWthNfqFnDYA7btpGw/e1wQVn4l3JkldIzkCdtJqPzTpNoVjB4
+Ze89LWaFodsy6PbMFsay3bpHQq9cjzeA7o/kSOuY4bIiLwgao2+Ob0PW3JSdl7oH
+CVkXk3faTTz6QgBnO8sb77xHv282SqIbeaKdTPwtbyGUaqU/R3lWPg==
+=KUe1
+-----END PGP SIGNATURE-----
+--=-=-=--
