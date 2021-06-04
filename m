@@ -2,75 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 304DA39BC03
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D04B439BC19
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231192AbhFDPiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 11:38:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36444 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230508AbhFDPiT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 11:38:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A59061400;
-        Fri,  4 Jun 2021 15:36:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622820993;
-        bh=h5YsqU5msETH1MjX4Ecj6RuxMXmL0jinT2QLbtaP5Ek=;
-        h=From:To:Cc:Subject:Date:From;
-        b=R4Qc2+fyT6JsK7val+J7fxeXjOaAEzRWDWf19j7FTWJ6ed61revDQXd37dNUvkcbi
-         M+X/LlFU5lmno8yJ+aaHw0IDI8lO2r6cO5xoJ3TcDOqucn7FjU5H4iXVXXYquKcmMz
-         rebMJlTWRK7+dm1HGnW3I8qhV0XIIqTju8XWo86IXC+Y+RxUZC/4y7uryLAXfHY6vq
-         SXRglf9bZ0/OR5TOwlVWr0hpgRCu/v7U3M0wntES526vkbwHc6ZW1py3FqXqufIU7X
-         I1//j4EO+jxcrihFo850cih1l3SFukzeFaPLbCOAeJGH+QkJob+fBbN5eFWewUKIkh
-         47ZazqxxlGHpQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH] kbuild: modpost: Explicitly warn about unprototyped symbols
-Date:   Fri,  4 Jun 2021 16:36:11 +0100
-Message-Id: <20210604153611.52209-1-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S231277AbhFDPjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 11:39:10 -0400
+Received: from mail-ej1-f44.google.com ([209.85.218.44]:46054 "EHLO
+        mail-ej1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229809AbhFDPjJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 11:39:09 -0400
+Received: by mail-ej1-f44.google.com with SMTP id k7so15099527ejv.12
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 08:37:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=18khHUA2AJ3ib5wXxPFFaQIfHWGb1QOUw5+Na90fAf4=;
+        b=rdqeHmjXUcQIOHQ/to3kGr2aZHwHzLmp4uZnM7Mq3J89WlI6CCkq0M0UbJrNaS61lD
+         p4HwIp1+5cDCIJm6mP0kMoBYg+eQUH+rHUUzJO3RwR5kLtEKiKoBnd3GamDGK1EIe4FT
+         TyWJb5f8qBengCA3jkb2xc5HPsA4rm4XgZ3Ytm0Kz6sJOEqAAztIlkmv8/WFlIji7/lt
+         qyNp5WGkmM49RpoBMIIZB2Bqf/Rlm/oHL2GX3E5GqnrrBxTmb3JccFneCUs/NKc7O3Hu
+         8MraCGqto5hET+0twyYCBnGZ8Z9eZUNyoobQc78pvSF/qkwZigKqJ1dJTC76tYit1Hqe
+         aTLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=18khHUA2AJ3ib5wXxPFFaQIfHWGb1QOUw5+Na90fAf4=;
+        b=PjpJJnWcway2WoM2r8OiSDzsNpg4q/+F5QiAq0ZAYQ3tIsIettrTcMxVG4JCckZbyE
+         iVaXTkQH6sEbfMgCUuCG/EmxehDSw+mJFcenNW/YtbOTK7VyajCsLru7FngFkd97pb9t
+         n/zMTxklc3z1BrJvL+BZF+8egv6GFrhcemV6bZhnBtNwynbNytToGyWzg2WjapCkMksb
+         +JEtslfTn+cb/mdb2unT1nmxj+hV49s+lBd42Ah3SGsg6i3dnf0wlt66M39TQ01rmqE8
+         g12Ruge8t7UtT2xUwyLPE+Gr3smdBS1wkd8t3k/SCflF71reSAm7oT4ABCyr4xCXQx/s
+         Hsbg==
+X-Gm-Message-State: AOAM532tSSTFhu+1KtCpQbrvxYi8ScHo6x+46H77Heag7lwhKYKR+pbb
+        kcrH7+0fLvRMCTp1zul7wBzUbA==
+X-Google-Smtp-Source: ABdhPJzJk5hJcow9IP1RWbN4rBSMsfSX0vDK2NKcesVXQxSYC3clPLa/eYKG6MLuMUviPoyoU5l5VQ==
+X-Received: by 2002:a17:906:7e4d:: with SMTP id z13mr4687520ejr.50.1622820982029;
+        Fri, 04 Jun 2021 08:36:22 -0700 (PDT)
+Received: from localhost.localdomain (dh207-96-250.xnet.hr. [88.207.96.250])
+        by smtp.googlemail.com with ESMTPSA id d25sm2909038ejd.59.2021.06.04.08.36.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 08:36:21 -0700 (PDT)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     robh+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
+        corbet@lwn.net, trivial@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Cc:     luka.perkov@sartura.hr, jmp@epiphyte.org, pmenzel@molgen.mpg.de,
+        buczek@molgen.mpg.de, Robert Marko <robert.marko@sartura.hr>
+Subject: [PATCH v3 3/3] MAINTAINERS: Add Delta DPS920AB PSU driver
+Date:   Fri,  4 Jun 2021 17:36:12 +0200
+Message-Id: <20210604153612.2903839-3-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210604153612.2903839-1-robert.marko@sartura.hr>
+References: <20210604153612.2903839-1-robert.marko@sartura.hr>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1365; h=from:subject; bh=h5YsqU5msETH1MjX4Ecj6RuxMXmL0jinT2QLbtaP5Ek=; b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBgukhokjS0QmFM54TzUVRqP9Y8kBHyt8PtBDdF2fjN rKnQ8BCJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYLpIaAAKCRAk1otyXVSH0JuFB/ 9jaq778WxU7dBoNxAfkJxIf/wvIis5DDdPavyn214YbBsQvbW3BTNM83L9vcFC7zOo0rP6krVYmTd+ tt1BO/XsXFsyDDrDPpVBHdrv9B+PM+iQfFP+DxR5obEfB36cw5FJj3Y/VcBjL8v++u3Eb0GWHKqv1F LxiIGh1WfPcG7GAdAZlEXWUzXxW5qTEuPTymHuJUmr+3gL9niaeoG3v8Y0U7Vx8Z98sa+9KNvlMtXs skP1usaNuJ828UEdC5nv/FyqqCzdAq7Nfa4APY93J5xlVewMqfoo/sz53ZXZS0we6USSrO64WGUIKe 2j26xGHayvsHSczvYn9ssnt2L/5T8u
-X-Developer-Key: i=broonie@kernel.org; a=openpgp; fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One common cause of modpost version generation failures is is a failure to
-prototype exported assembly functions - the tooling requires this for
-exported functions even if they are not and should not be called from C
-code in order to do the version mangling for symbols. Unfortunately the
-error message is currently rather abstruse, simply saying that "version
-generation failed" and even diving into the code doesn't directly show
-what's going on since there's several steps between the problem and it
-being observed.
+Add maintainers entry for the Delta DPS920AB PSU driver.
 
-Provide an explicit hint as to the likely cause of a version generation
-failure to help anyone who runs into this in future more readily diagnose
-and fix the problem.
-
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
 ---
- scripts/mod/modpost.c | 2 ++
- 1 file changed, 2 insertions(+)
+Changes in v2:
+* Drop YAML bindings
 
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index 3e623ccc020b..78553f95c250 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -662,6 +662,8 @@ static void handle_modversion(const struct module *mod,
- 	if (sym->st_shndx == SHN_UNDEF) {
- 		warn("EXPORT symbol \"%s\" [%s%s] version generation failed, symbol will not be versioned.\n",
- 		     symname, mod->name, mod->is_vmlinux ? "" : ".ko");
-+		warn("Is \"%s\" prototyped in asm/asm-prototypes.h?\n",
-+		     symname);
- 		return;
- 	}
+ MAINTAINERS | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 82d9c2943c34..0707986e9bb1 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5105,6 +5105,13 @@ F:	Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml
+ F:	drivers/gpio/gpio-tn48m.c
+ F:	include/dt-bindings/reset/delta,tn48m-reset.h
  
++DELTA DPS920AB PSU DRIVER
++M:	Robert Marko <robert.marko@sartura.hr>
++L:	linux-hwmon@vger.kernel.org
++S:	Maintained
++F:	Documentation/hwmon/dps920ab.rst
++F:	drivers/hwmon/pmbus/dps920ab.c
++
+ DENALI NAND DRIVER
+ L:	linux-mtd@lists.infradead.org
+ S:	Orphan
 -- 
-2.20.1
+2.31.1
 
