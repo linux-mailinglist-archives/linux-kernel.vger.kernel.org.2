@@ -2,163 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A71639C282
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D8039C28A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbhFDVfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 17:35:17 -0400
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:38624 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229964AbhFDVfP (ORCPT
+        id S231325AbhFDVhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 17:37:07 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:46755 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229916AbhFDVhF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 17:35:15 -0400
-Received: by mail-oi1-f169.google.com with SMTP id z3so11122344oib.5;
-        Fri, 04 Jun 2021 14:33:28 -0700 (PDT)
+        Fri, 4 Jun 2021 17:37:05 -0400
+Received: by mail-ot1-f45.google.com with SMTP id 66-20020a9d02c80000b02903615edf7c1aso10405368otl.13
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 14:35:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=janzFmwZwQn6MiazfcV23K2Rys/KSeJAT5SN2x0frTo=;
+        b=bcQtEHquS30yyvQ1kaHKFd0tJs1enDS2ZJKgq5iUoQtEm6r0yiMZiw/9nmFtMJNiNZ
+         stEiJqpVzujWqqEYCXu2byslnfJgFdzX7Xj6qMO1hXyOHrZDMV2BljucQcgOtDjpIJmv
+         AFcNQ8o7aPfAkwgc/F3Db8ElR57G6hwgPtRWo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Yl1E+/xnYu7Cfj8L3sXh+2OycadFjPBoqVGF2DbUphQ=;
-        b=uYRZfVZ11AA+PGf9/9Rgwk6bCPmHa0fObUNFU8CAwbLvr2OGDMZkdthQEYfucuOxar
-         ITy1A1TqZYFqiGQp+Cx8vXbX0oPtQgt/owO8MwW2s4S2THMvUaf7Fta8oF2EIHMsahge
-         g1wgMrPsYrRZu3IexhgJhSxyOyHXBsHk0rBBXh8ib0DbdzOqQjkcfUunAtbC0g9qQs1Q
-         3iNkaXTrsRaqupNpJRIHbylwQJGHzJlHVYS2d5yg2osrcrngo2SqgPIcBXK/uh4bV0UC
-         H8y1YchVOlzr6s3KekMbb0BI2WZuOH3Ip/PkQ2B9qfJSLGyE/4Y82pq8jT48A/sK54+r
-         tJzg==
-X-Gm-Message-State: AOAM531USpZbJqrxIftYW6625oo6JOIy3KT7QBuFzt9m/TnL2paa6E+L
-        yvGLgqCOgKLYPt48JNCGSA==
-X-Google-Smtp-Source: ABdhPJzT4hhLaDtnWMfnUW/Sd3qDYSN5G+BsQqA2RfpT8A8PmgMlxP5SXEXFQoRxBNK0horm5fdLUg==
-X-Received: by 2002:a05:6808:1492:: with SMTP id e18mr4465809oiw.114.1622842408297;
-        Fri, 04 Jun 2021 14:33:28 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id y17sm717993oih.54.2021.06.04.14.33.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 14:33:27 -0700 (PDT)
-Received: (nullmailer pid 3959202 invoked by uid 1000);
-        Fri, 04 Jun 2021 21:33:26 -0000
-Date:   Fri, 4 Jun 2021 16:33:26 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-Cc:     Michal Simek <michal.simek@xilinx.com>,
-        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: spi: xilinx: convert to yaml
-Message-ID: <20210604213326.GA3957165@robh.at.kernel.org>
-References: <20210531052142.695430-1-iwamatsu@nigauri.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=janzFmwZwQn6MiazfcV23K2Rys/KSeJAT5SN2x0frTo=;
+        b=IPxeFNnG6UFwoyS4Q5CMvJ125wdIH+nqMWqW4uGoKu1nZfAONAb+C56YF9vyu3zQmY
+         WEhYS7fWNpT7vN8qpDn90FyA8pgFZuUNUdPbhgVz8u3/1Mw7sm4nUCLqO1LWpxC4qEQ2
+         IZPhrQ0sbu86YmiHy3XmVI7olH70A/UhhzgcV18ab95p5b/5Kj7PSfYeVmJBu56dwbG/
+         neXZt/Q1+dAzGBYGTsCkyCQw+sMQ0YgBBI9YQrMqnPmNWQMgGmF6hkmn/q7cBFXuf82i
+         lAjeqhHal9FPEgK0jSeSWFF4zBTizQSv7+lB0fk0ZylJuI4K3jVp991aJEK8F4hILswB
+         oJnw==
+X-Gm-Message-State: AOAM530yJRRS+ho9ZRVzTjEZ7VrKPAIVpKCMOkKDcy+eGHw21EuWvzJg
+        YS+WxIZHaqh+WSbc97MEtzrWPw==
+X-Google-Smtp-Source: ABdhPJx8D1/TaC5pTiA1cnV7ygPBTV4NHHVAq024vEq925p4hG2T8oj2kwVnvQNCBXNvuAcH13uL8g==
+X-Received: by 2002:a9d:4f18:: with SMTP id d24mr5147979otl.16.1622842442990;
+        Fri, 04 Jun 2021 14:34:02 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id l7sm714950otu.76.2021.06.04.14.34.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Jun 2021 14:34:02 -0700 (PDT)
+Subject: Re: [PATCH] selftests/tls: Add {} to avoid static checker warning
+To:     Kees Cook <keescook@chromium.org>, Shuah Khan <shuah@kernel.org>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210527032718.3730773-1-keescook@chromium.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <1c391e24-15d1-9be4-c32f-4677912359f9@linuxfoundation.org>
+Date:   Fri, 4 Jun 2021 15:34:01 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210531052142.695430-1-iwamatsu@nigauri.org>
+In-Reply-To: <20210527032718.3730773-1-keescook@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 02:21:42PM +0900, Nobuhiro Iwamatsu wrote:
-> Convert SPI for Xilinx bindings documentation to YAML schemas.
+On 5/26/21 9:27 PM, Kees Cook wrote:
+> This silences a static checker warning due to the unusual macro
+> construction of EXPECT_*() by adding explicit {}s around the enclosing
+> while loop.
 > 
-> Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Fixes: 7f657d5bf507 ("selftests: tls: add selftests for TLS sockets")
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 > ---
->  .../devicetree/bindings/spi/spi-xilinx.txt    | 23 ---------
->  .../devicetree/bindings/spi/spi-xilinx.yaml   | 51 +++++++++++++++++++
->  2 files changed, 51 insertions(+), 23 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/spi/spi-xilinx.txt
->  create mode 100644 Documentation/devicetree/bindings/spi/spi-xilinx.yaml
+>   tools/testing/selftests/net/tls.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/spi/spi-xilinx.txt b/Documentation/devicetree/bindings/spi/spi-xilinx.txt
-> deleted file mode 100644
-> index 5f4ed3e5c9942c..00000000000000
-> --- a/Documentation/devicetree/bindings/spi/spi-xilinx.txt
-> +++ /dev/null
-> @@ -1,23 +0,0 @@
-> -Xilinx SPI controller Device Tree Bindings
-> --------------------------------------------------
-> -
-> -Required properties:
-> -- compatible		: Should be "xlnx,xps-spi-2.00.a", "xlnx,xps-spi-2.00.b" or "xlnx,axi-quad-spi-1.00.a"
-> -- reg			: Physical base address and size of SPI registers map.
-> -- interrupts		: Property with a value describing the interrupt
-> -			  number.
-> -
-> -Optional properties:
-> -- xlnx,num-ss-bits	 : Number of chip selects used.
-> -- xlnx,num-transfer-bits : Number of bits per transfer. This will be 8 if not specified
-> -
-> -Example:
-> -	axi_quad_spi@41e00000 {
-> -			compatible = "xlnx,xps-spi-2.00.a";
-> -			interrupt-parent = <&intc>;
-> -			interrupts = <0 31 1>;
-> -			reg = <0x41e00000 0x10000>;
-> -			xlnx,num-ss-bits = <0x1>;
-> -			xlnx,num-transfer-bits = <32>;
-> -	};
-> -
-> diff --git a/Documentation/devicetree/bindings/spi/spi-xilinx.yaml b/Documentation/devicetree/bindings/spi/spi-xilinx.yaml
-> new file mode 100644
-> index 00000000000000..17463151b36a02
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/spi-xilinx.yaml
-> @@ -0,0 +1,51 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/spi/spi-xilinx.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Xilinx SPI controller Device Tree Bindings
-> +
-> +maintainers:
-> +  - Michal Simek <michal.simek@xilinx.com>
-> +
-> +allOf:
-> +  - $ref: "spi-controller.yaml#"
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - const: xlnx,xps-spi-2.00.a
-> +      - const: xlnx,xps-spi-2.00.b
-> +      - const: xlnx,axi-quad-spi-1.00.a
+> diff --git a/tools/testing/selftests/net/tls.c b/tools/testing/selftests/net/tls.c
+> index 426d07875a48..7119f8eb823b 100644
+> --- a/tools/testing/selftests/net/tls.c
+> +++ b/tools/testing/selftests/net/tls.c
+> @@ -418,8 +418,9 @@ TEST_F(tls, sendmsg_large)
+>   		EXPECT_EQ(sendmsg(self->cfd, &msg, 0), send_len);
+>   	}
+>   
+> -	while (recvs++ < sends)
+> +	while (recvs++ < sends) {
+>   		EXPECT_NE(recv(self->fd, mem, send_len, 0), -1);
+> +	}
+>   
+>   	free(mem);
+>   }
+> 
 
-Use enum instead of oneOf+const.
+Will pick this up for 5.14
 
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  xlnx,num-ss-bits:
-> +    description: Number of chip selects used.
-
-Constraints? 0-2^32 is good?
-
-> +
-> +  xlnx,num-transfer-bits:
-> +    description: Number of bits per transfer. This will be 8 if not specified.
-
-Constraints?
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    spi0: spi@41e00000 {
-> +      compatible = "xlnx,xps-spi-2.00.a";
-> +      interrupt-parent = <&intc>;
-> +      interrupts = <0 31 1>;
-> +      reg = <0x41e00000 0x10000>;
-> +      xlnx,num-ss-bits = <0x1>;
-> +      xlnx,num-transfer-bits = <32>;
-> +    };
-> +...
-> -- 
-> 2.30.0
+thanks,
+-- Shuah
