@@ -2,115 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A617B39C3FC
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 01:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 957FC39C3FF
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 01:41:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231751AbhFDXjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 19:39:32 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:37320 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbhFDXjb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 19:39:31 -0400
-Received: by linux.microsoft.com (Postfix, from userid 1004)
-        id 7715B20B7178; Fri,  4 Jun 2021 16:37:44 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7715B20B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-        s=default; t=1622849864;
-        bh=9AgMOut9eOMhw1jnVJ9dx1pxSUqfCv81iOy00nD3qiU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=a6n3KyhhijQKNwk7KtIjkSBgGG9V6N95QOk9Bcq61/RdnhQWwWny9O+GJS4nRsEGG
-         sQfMO8g5CQ4AOWmBNrJl+v1eaMOGcEH1FJVbiOlhN4NYOBWj6CTUcdqkL3VnUDLnlE
-         x5Wq+rxTXepMbxS03BTMLOwP8DomK4a3NVgJhKaw=
-From:   longli@linuxonhyperv.com
-To:     linux-block@vger.kernel.org
-Cc:     Long Li <longli@microsoft.com>, Jens Axboe <axboe@kernel.dk>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Ming Lei <ming.lei@redhat.com>, Tejun Heo <tj@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: [Patch v2] block: return the correct bvec when checking for gaps
-Date:   Fri,  4 Jun 2021 16:37:19 -0700
-Message-Id: <1622849839-5407-1-git-send-email-longli@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S230409AbhFDXnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 19:43:09 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:46442 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229847AbhFDXnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 19:43:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=teq76F1L+vznO9dqAxiuiuGN4JsSwry7FJ5qogca0Mc=; b=lYBFk45noY7CbcsbIsOxD1/iPw
+        elbOkYUn/juRIzIbjNoRQ9MrvIVpfoemozWdO3SLgVGGVxLpM6jdZsA576iMy/+yiCx/NW7zKm8wx
+        enMcB3LfbmwCjIFxTmuY/j8zqrZAnOHEs5gQP7AIRQhR5ySfJSFKOaW6m0hoX2XSs1Ao=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lpJRD-007sRw-D7; Sat, 05 Jun 2021 01:41:15 +0200
+Date:   Sat, 5 Jun 2021 01:41:15 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v1 7/7] usbnet: run unbind() before
+ unregister_netdev()
+Message-ID: <YLq6G9luZrXW5vry@lunn.ch>
+References: <20210604134244.2467-1-o.rempel@pengutronix.de>
+ <20210604134244.2467-8-o.rempel@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604134244.2467-8-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Long Li <longli@microsoft.com>
+On Fri, Jun 04, 2021 at 03:42:44PM +0200, Oleksij Rempel wrote:
+> unbind() is the proper place to disconnect PHY, but it will fail if
+> netdev is already unregistered.
 
-After commit 07173c3ec276 ("block: enable multipage bvecs"), a bvec can
-have multiple pages. But bio_will_gap() still assumes one page bvec while
-checking for merging. If the pages in the bvec go across the
-seg_boundary_mask, this check for merging can potentially succeed if only
-the 1st page is tested, and can fail if all the pages are tested.
+O.K, this partially answers the question i was about to ask for the
+previous patch.
 
-Later, when SCSI builds the SG list the same check for merging is done in
-__blk_segment_map_sg_merge() with all the pages in the bvec tested. This
-time the check may fail if the pages in bvec go across the
-seg_boundary_mask (but tested okay in bio_will_gap() earlier, so those
-BIOs were merged). If this check fails, we end up with a broken SG list
-for drivers assuming the SG list not having offsets in intermediate pages.
-This results in incorrect pages written to the disk.
+void phy_start(struct phy_device *phydev)
+{
+	mutex_lock(&phydev->lock);
 
-Fix this by returning the multi-page bvec when testing gaps for merging.
+	if (phydev->state != PHY_READY && phydev->state != PHY_HALTED) {
+		WARN(1, "called from state %s\n",
+		     phy_state_to_str(phydev->state));
+		goto out;
+	}
 
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Ming Lei <ming.lei@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc: Jeffle Xu <jefflexu@linux.alibaba.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org
-Fixes: 07173c3ec276 ("block: enable multipage bvecs")
-Signed-off-by: Long Li <longli@microsoft.com>
----
-Change from v1: add commit details on how data corruption happens
+By skipping phy_error(), phydev->state is not set to PHY_HALTED. So if
+you try to start the phy again, without disconnecting it, it looks
+like there could be a problem.
 
- include/linux/bio.h | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+But with this patch, i assume the PHY will always be disconnected and
+later reconnected when the device is replugged.
 
-diff --git a/include/linux/bio.h b/include/linux/bio.h
-index a0b4cfdf62a4..6b2f609ccfbf 100644
---- a/include/linux/bio.h
-+++ b/include/linux/bio.h
-@@ -44,9 +44,6 @@ static inline unsigned int bio_max_segs(unsigned int nr_segs)
- #define bio_offset(bio)		bio_iter_offset((bio), (bio)->bi_iter)
- #define bio_iovec(bio)		bio_iter_iovec((bio), (bio)->bi_iter)
- 
--#define bio_multiple_segments(bio)				\
--	((bio)->bi_iter.bi_size != bio_iovec(bio).bv_len)
--
- #define bvec_iter_sectors(iter)	((iter).bi_size >> 9)
- #define bvec_iter_end_sector(iter) ((iter).bi_sector + bvec_iter_sectors((iter)))
- 
-@@ -271,7 +268,7 @@ static inline void bio_clear_flag(struct bio *bio, unsigned int bit)
- 
- static inline void bio_get_first_bvec(struct bio *bio, struct bio_vec *bv)
- {
--	*bv = bio_iovec(bio);
-+	*bv = mp_bvec_iter_bvec(bio->bi_io_vec, bio->bi_iter);
- }
- 
- static inline void bio_get_last_bvec(struct bio *bio, struct bio_vec *bv)
-@@ -279,10 +276,10 @@ static inline void bio_get_last_bvec(struct bio *bio, struct bio_vec *bv)
- 	struct bvec_iter iter = bio->bi_iter;
- 	int idx;
- 
--	if (unlikely(!bio_multiple_segments(bio))) {
--		*bv = bio_iovec(bio);
-+	/* this bio has only one bvec */
-+	*bv = mp_bvec_iter_bvec(bio->bi_io_vec, bio->bi_iter);
-+	if (bv->bv_len == bio->bi_iter.bi_size)
- 		return;
--	}
- 
- 	bio_advance_iter(bio, &iter, iter.bi_size);
- 
--- 
-2.17.1
-
+      Andrew
