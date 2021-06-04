@@ -2,123 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526F539BB35
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72ACA39BB36
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhFDOy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 10:54:27 -0400
-Received: from mail-pg1-f179.google.com ([209.85.215.179]:38824 "EHLO
-        mail-pg1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229739AbhFDOy0 (ORCPT
+        id S230073AbhFDOzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 10:55:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229739AbhFDOzq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 10:54:26 -0400
-Received: by mail-pg1-f179.google.com with SMTP id 6so8070674pgk.5;
-        Fri, 04 Jun 2021 07:52:40 -0700 (PDT)
+        Fri, 4 Jun 2021 10:55:46 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B3DC061766
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 07:53:50 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id i68so6007392qke.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 07:53:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mv5xRZvwxzLpkyFYX04NoAaniMme18OSg+lyvmirIn8=;
+        b=nI3sMZAHYKKamUkEAD6j+UguzKc3c5ye1tKyXZu7S4SaFqCCgX/8FOUoc0CclcVsV9
+         m2pYA6OyKlEhHENvDWkjYmI9JmhaWPmCObUV3PblujHXaO/aJQpYMSTlP/wu/YyG1S1t
+         BHFPlWIUHDmCOwAQ58+Q4wSQhRK+2QhQ/YVCjIZqJWySgW39yqzaRUB/gMWyp/tz7aA/
+         zaPzVEY9UY5YPV4PPkmqk3xWyY0tNkXoiwOmk5530oT1wqQdJeDe7T/4VUcIxkh8Qx5W
+         OyWIwxsUglOfqujGfFc0nOIoo97Oru1TYcV0nRC2RvrMSpXINUPry3dIWLOE4Z8xnS8Q
+         USKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LKSlHuFmSmd73FlqKOE/HzlbPQjKNdJGN1kLkWuNHd4=;
-        b=BmFHzztiNTj4RANtUhnaVIYzadac626i15pDCPUoiXwx+BFM6Cs/vtTueEqf2BWqQ6
-         WlmspeIvjqVJUMSqBTJi+5BTonS9Qxh4jyTjfdgLcgWUuW4AxLrxSajXV+Ff5P6lV6b6
-         D3FeV5PKEWD69dexF2ECpDE+QFRjOv+YVI6XvUpLNEjEqP761Vg7UmzUGjMV1BX+5W2J
-         6GCx7tHlImEgTnCF+t9NQJhrXpiCoF5eDQqun32aBy7e24ulIepvMEG9Gj8BnYecqK1d
-         ninKf4ZV9ewinDQRBoSMith2tNCuWZx0K+WyBXjkumTfu4zk3FV3U5YvzeXcLHlP8UUq
-         tiUw==
-X-Gm-Message-State: AOAM533MXeyV9Y9P0nCiGoUWqQbivWDxztvuhGiriTjG1YqMZ6ZR65F0
-        dAHkL0b0X/GoKyKZNOrt4KQ=
-X-Google-Smtp-Source: ABdhPJz6SFb9mkl7CsLadsG32YMBrSBzrrGoY/7akC6W5wX8KqHDw+fMCGn8wF7nvNGwLJ8KAXVYxA==
-X-Received: by 2002:a63:f154:: with SMTP id o20mr5404254pgk.53.1622818359676;
-        Fri, 04 Jun 2021 07:52:39 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id j5sm153477pgl.70.2021.06.04.07.52.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Jun 2021 07:52:38 -0700 (PDT)
-Subject: Re: [PATCH v12 1/3] bio: control bio max size
-To:     Changheun Lee <nanich.lee@samsung.com>, damien.lemoal@wdc.com
-Cc:     Avri.Altman@wdc.com, Johannes.Thumshirn@wdc.com,
-        alex_y_xu@yahoo.ca, alim.akhtar@samsung.com,
-        asml.silence@gmail.com, axboe@kernel.dk, bgoncalv@redhat.com,
-        cang@codeaurora.org, gregkh@linuxfoundation.org, hch@infradead.org,
-        jaegeuk@kernel.org, jejb@linux.ibm.com, jisoo2146.oh@samsung.com,
-        junho89.kim@samsung.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, ming.lei@redhat.com,
-        mj0123.lee@samsung.com, osandov@fb.com, patchwork-bot@kernel.org,
-        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
-        tj@kernel.org, tom.leiming@gmail.com, woosung2.lee@samsung.com,
-        yi.zhang@redhat.com, yt0928.kim@samsung.com
-References: <DM6PR04MB70812AF342F46F453696A447E73B9@DM6PR04MB7081.namprd04.prod.outlook.com>
- <CGME20210604075331epcas1p13bb57f9ddfc7b112dec1ba8cf40fdc74@epcas1p1.samsung.com>
- <20210604073459.29235-1-nanich.lee@samsung.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <63afd2d3-9fa3-9f90-a2b3-37235739f5e2@acm.org>
-Date:   Fri, 4 Jun 2021 07:52:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=mv5xRZvwxzLpkyFYX04NoAaniMme18OSg+lyvmirIn8=;
+        b=UT6IM3tudgF94K9IpA6SzA8yqCzRawhimvOWUMFT2FeI139/RDU9CiTmrSJrKcN7Tj
+         hc37qJbk+auX+DzNzhOil45xVSYFE5J/bdp5bTytiA4J97I6NkBaqUi6OlPZb4hSjgoj
+         l88GKiClkP4BfXIbLoJp908GbRe0XEOogJ81soyEND6u0sJzf8O9P8OKYv36Fur/SkAd
+         q/ZrQRSalpiUP31D6YFWo3kMHI2hRFaHYYps4VeRRIzy8lu3sj6qW8EpeoWd+2FqH77F
+         8VysRjZc21k+xtBahDMpLJEmUkYLNc3OEgV8yhqqEHUTTa1w+fuekb2XB8WfFRuuExCa
+         ioHg==
+X-Gm-Message-State: AOAM533ENaEZm+nDRg/uua+KXsyBT7fH8HpcWg+T/0yzEWTUYr3nb8lJ
+        z/pg/5v542g3q+DQTYuEuo4=
+X-Google-Smtp-Source: ABdhPJwrRr6TfIRmXx6W6D7AJftoWLZMzl78+VxW+VFUIWY8JyW3pitcwJeZL3+91xXn3+anM2wKrA==
+X-Received: by 2002:a05:620a:15b4:: with SMTP id f20mr1671473qkk.334.1622818426727;
+        Fri, 04 Jun 2021 07:53:46 -0700 (PDT)
+Received: from localhost ([199.192.137.73])
+        by smtp.gmail.com with ESMTPSA id j127sm4193552qke.90.2021.06.04.07.53.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 07:53:46 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 4 Jun 2021 10:53:45 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Julian Wiedmann <jwi@linux.ibm.com>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH wq/for-next 1/2] workqueue: replace open-coded
+ work_pending()
+Message-ID: <YLo+eaMt/le6QlKA@slm.duckdns.org>
+References: <20210602111655.3808580-1-jwi@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210604073459.29235-1-nanich.lee@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210602111655.3808580-1-jwi@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/4/21 12:34 AM, Changheun Lee wrote:
->> On 2021/06/04 14:22, Changheun Lee wrote:
->>> +unsigned int bio_max_bytes(struct bio *bio)
->>> +{
->>> +	struct block_device *bdev = bio->bi_bdev;
->>> +
->>> +	return bdev ? bdev->bd_disk->queue->limits.max_bio_bytes : UINT_MAX;
->>> +}
->>
->> unsigned int bio_max_bytes(struct bio *bio)
->> {
->> 	struct block_device *bdev = bio->bi_bdev;
->>
->> 	if (!bdev)
->> 		return UINT_MAX;
->> 	return bdev->bd_disk->queue->limits.max_bio_bytes;
->> }
->>
->> is a lot more readable...
->> Also, I remember there was some problems with bd_disk possibly being null. Was
->> that fixed ?
+On Wed, Jun 02, 2021 at 01:16:54PM +0200, Julian Wiedmann wrote:
+> Use the right helper to check whether a work item is currently pending.
 > 
-> Thank you for review. But I'd like current style, and it's readable enough
-> now I think. Null of bd_disk was just suspicion. bd_disk is not null if bdev
-> is not null.
- Damien is right. bd_disk can be NULL. From
-https://lore.kernel.org/linux-block/20210425043020.30065-1-bvanassche@acm.org/:
-"bio_max_size() may get called before device_add_disk() and hence needs to
-check whether or not the block device pointer is NULL. [ ... ]
-This patch prevents that bio_max_size() triggers the following kernel
-crash during a SCSI LUN scan:\
-BUG: KASAN: null-ptr-deref in bio_add_hw_page+0xa6/0x310
-Read of size 8 at addr 00000000000005a8 by task kworker/u16:0/7
-Workqueue: events_unbound async_run_entry_fn
-Call Trace:
- show_stack+0x52/0x58
- dump_stack+0x9d/0xcf
- kasan_report.cold+0x4b/0x50
- __asan_load8+0x69/0x90
- bio_add_hw_page+0xa6/0x310
- bio_add_pc_page+0xaa/0xe0
- bio_map_kern+0xdc/0x1a0
- blk_rq_map_kern+0xcd/0x2d0
- __scsi_execute+0x9a/0x290 [scsi_mod]
- scsi_probe_lun.constprop.0+0x17c/0x660 [scsi_mod]
- scsi_probe_and_add_lun+0x178/0x750 [scsi_mod]
- __scsi_add_device+0x18c/0x1a0 [scsi_mod]
- ata_scsi_scan_host+0xe5/0x260 [libata]
- async_port_probe+0x94/0xb0 [libata]
- async_run_entry_fn+0x7d/0x2d0
- process_one_work+0x582/0xac0
- worker_thread+0x8f/0x5a0
- kthread+0x222/0x250
- ret_from_fork+0x1f/0x30"
+> Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
 
-Bart.
+Applied to wq/for-5.14.
+
+Thanks.
+
+-- 
+tejun
