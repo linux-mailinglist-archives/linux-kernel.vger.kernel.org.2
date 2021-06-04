@@ -2,192 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9180B39B96A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F2D39B97E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbhFDNII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 09:08:08 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:49239 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbhFDNIH (ORCPT
+        id S230428AbhFDNI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 09:08:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230350AbhFDNIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 09:08:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1622811981; x=1654347981;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=JJK7Zx89/AKtbtaumja5fyEXBdiRA4G6sqGOywwXhFU=;
-  b=QOGRq4VZTIr5hghtF4UxZV6p2GrckDtw+I7n4u1wkfsVyv5F9uTt5Yr3
-   8xg/K6riDjgIS2KyKRvUFIJSP6F9DabUO/XB30L1aMPIGwWPIAdt28itp
-   BcHASxUXW972hyQlJvcuHslfbamocowOMO5YTZfvBj4oJTdfv1ZFd9XTn
-   PqZupfKgkh/XaJNdDnWrESn1+XpX45m7k0QxnrleNcmupN012ZsvyPskE
-   Yj4B0Ojj0bcX/fKsKfBKL2eV0Wkjw9YVsNY3PPOgIQJUS0bk9fV+kA+42
-   MQPzQlkEfeo26Ha5orLp8DnkSaPQeL03ASWpdMEoC73jU7QCxwS+czbir
-   A==;
-IronPort-SDR: l1PMwliyXmLNHnLZ4Ugw6nx6zxQhjw4tmvSIJ+3Lp3Tj/hLpXZDljw3gJxyoyWnS6jLwZRwxFo
- 1g58fcXV3Xe5OfAhkmBOz3LeQeGVa4pXujgqfkxQCurTZ5pWQXVfdV6gA5MUNlZ4j9M1KAHIqM
- nTl+XAN0yEQR1FP7nBVzoDvS/YVdPSWKFGxRPgu9++XlmJdXLTcke8L9lHGIxA5yso040HuKHZ
- V656UPve75zGybgSrdjoJDHqRLnhsIgRAEauw67SUb7FN8RRt0pkV52Wx5oU1cUn9Seozp9w+6
- W20=
-X-IronPort-AV: E=Sophos;i="5.83,248,1616482800"; 
-   d="scan'208";a="124093819"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Jun 2021 06:06:21 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 4 Jun 2021 06:06:20 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2
- via Frontend Transport; Fri, 4 Jun 2021 06:06:20 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JfgRmZ9utLqhnsiLR8wkmkZihdB40OjEDG8WJ/R1Cdjqgdo6K3yvaw1gGuihOYTZ3OF782qJNnES7WkzjyFP0g7G1yTPKuMaFCVlFikR0bl/cMa6l+1XUcH8vfIqAV9xV0SOerGpoTAwJgzvGDWkbqGo63T/KGs7miCJKRi/A1KahSuEeTJizoujYqEUwxH7syII8CN3s03gC8RtbZ8L0qCQSRklEtreGRPFA585T3UtVlrac/mhEXO8jiOE8zlSeoOkjaeV8eWsaly2cFVWiRtHywNS50Zw5usFIKzxKsRr7qqNB5t9J86W/ZFm5dNoAnaaYTJYs7X5EHTAUP/Ovw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JJK7Zx89/AKtbtaumja5fyEXBdiRA4G6sqGOywwXhFU=;
- b=OeZnON6ogMaa0gofk1SYrronS6/aB4lyo4F4WOM9IVVYXI/drvw4ED8O0ZzR8TEaNaRZiTSBOGloyBseL6yto8+nm3IMsT54PO03a7zvAgCTcTplRoT3DGzsJyq6I1l1KowGDDpuUPxFO1Q/EKMzqmzCL5QySKTjQTUTSbH4e2aoYnMWqN+zReAl0UenlUcemwSNWpvGt/nNUqnILlRRLyF3q0hHgrX1eLyd4k+tFsrEKJod60bWACRMnG3dTH6g/tKIzReiUPEEJbwLzBzFxj5MLdV8pT9Mt7vT3b7TME227/KPmhFD5lR1A517eok5ZcLmD6pwy5WX+7CgJe3R+A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JJK7Zx89/AKtbtaumja5fyEXBdiRA4G6sqGOywwXhFU=;
- b=iKcMDACIZS3JWBoyYpazqYoHENAy6tFSnIZHr4SRJnjjKNnOdoYdmvAq8SqMnfcBKkElExRD1ojdHdiUv3ZZm0nE8u9opjPgESyGjK4uPHmB+h9rrqomfSNMGefrOpGxS9EC1Yip9GqtIdiz9SwK+oi8JR+pm9ukQJ/7FW+BaZw=
-Received: from CO1PR11MB4865.namprd11.prod.outlook.com (2603:10b6:303:9c::9)
- by MW3PR11MB4635.namprd11.prod.outlook.com (2603:10b6:303:2c::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22; Fri, 4 Jun
- 2021 13:06:18 +0000
-Received: from CO1PR11MB4865.namprd11.prod.outlook.com
- ([fe80::1c4:1014:a541:e370]) by CO1PR11MB4865.namprd11.prod.outlook.com
- ([fe80::1c4:1014:a541:e370%4]) with mapi id 15.20.4195.024; Fri, 4 Jun 2021
- 13:06:18 +0000
-From:   <Tudor.Ambarus@microchip.com>
-To:     <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <p.yadav@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <vigneshr@ti.com>
-Subject: Re: [PATCH v5 4/5] mtd: spi-nor: otp: simplify length check
-Thread-Topic: [PATCH v5 4/5] mtd: spi-nor: otp: simplify length check
-Thread-Index: AQHXWUJnwVs2gjeHfkq+jT0cxpWjhw==
-Date:   Fri, 4 Jun 2021 13:06:18 +0000
-Message-ID: <e613133f-87c8-6374-66ff-1b674990cc90@microchip.com>
-References: <20210604100252.9975-1-michael@walle.cc>
- <20210604100252.9975-5-michael@walle.cc>
-In-Reply-To: <20210604100252.9975-5-michael@walle.cc>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-authentication-results: walle.cc; dkim=none (message not signed)
- header.d=none;walle.cc; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [94.177.32.157]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 205f6bd5-3411-4d9b-6fbe-08d927598ad2
-x-ms-traffictypediagnostic: MW3PR11MB4635:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW3PR11MB46358BF2B915050D47108D19F03B9@MW3PR11MB4635.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: S2VkyhpoiO27MQARna6N4wXV3GBmwY5u4J4fbRShGCppoISG0Vvr0dajbijC+uftAqGbHf25APYzxlw/PMcrU6uCuyT8wBGQ+6HeKmX6giPEEj1JmsYZit46syi3xv9J0yr0MlTcH44ZIHpD1AH+7hoI/hAQ6GvFksf9bjznNUKCh2vlRziUEcrWV61AiL6ZozGq/pePUUKeVKT5Z6yugpz5cSuSsYk4naLpWXxBzlkhPA6XHp/IjQr+2+5/DACI6YmLLfPDxc0Ej6NP4OI+jWkMDKfIWa8kjNpcSmXDVhGh9RR6bX+tfWCYUlit9XAPKqg9ZShjsCsHurCXb7bPWlGcmTBXV71/T0vjDydQ7Fmp/jb1Ea6dnLucb0/k7BkNAfk9gXEOQU1ylcZR2n17gzyNIxCQp6HFsOfxdhKvvhoYSJg7BGMESVCGUDSWI92qnN3BqSklSTFzlP4sad9gg6ak0K05pEb0G6hya+a4rcBhvcM+FUppn1HC0tLEndzD0TbYYYFvHwH645d3jP3TzZ83t1dGaM8fqmhVMYxZfU53XR8EOtSJzd1aof1CJVVtrs3TCtxo/fEX5SsVc6z8kPToV706jpKw6MEMwsZRpc07rZQ+8+DZR4icqbKS5bDkyJ273H7ByZsyHPzC5PJMgHXxUMSi1GttvWLCqM7Mror1n7/EqtL0v63eXlNaJ9j9
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4865.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(396003)(366004)(346002)(39850400004)(4326008)(38100700002)(478600001)(6486002)(31696002)(122000001)(71200400001)(2906002)(6512007)(8936002)(83380400001)(8676002)(31686004)(66556008)(6506007)(36756003)(5660300002)(66446008)(64756008)(76116006)(26005)(186003)(91956017)(66476007)(53546011)(66946007)(2616005)(86362001)(316002)(110136005)(54906003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?WFAxcXlaUVJnMzV3Q0VoUUtWb2VHanA3aEpHNFhuTndQbkdjdzIrenhiV1JD?=
- =?utf-8?B?eUR5TjJPMFRpd1dCd3dYeWZoTFg0VzJhaXU1a0lxWFZmOE5ReGNrbERoa0o3?=
- =?utf-8?B?ZmtKSXhqVnVQcUtQN1FIbHJmZjRSTnBuUnlaT3lnRlRzc0FBbW9WQUVIR0t0?=
- =?utf-8?B?WCtwa2VRcnErUEdsQ3hYK2d0NnZEYUdXcmg3VkU1WTZvNDRSbVRHQUhVN3VM?=
- =?utf-8?B?TjN2UGpsSzQzbVhnYThML2hzUENub2FtVHEyM0xRbnR1R2wvdldQUU1GbWNN?=
- =?utf-8?B?WlNuV0tEbCtUVXlGTG5PNXNNN2x2ZkN3WWlGUHdMZGRFQ0tBVFBxT3VvUVgv?=
- =?utf-8?B?SkFURkJUekJ1MzdCZEtCV0t3WUdHVWdrc2hTYWVsZFB0NU1Gd1Q1QjZXR0ZZ?=
- =?utf-8?B?azlucUZvdWl0VC9vaEh3NklVQXBHVTNmNnRhK1FDczNjOWZDOU8va2R4OUF4?=
- =?utf-8?B?TDBaL2NkS2RiMmpRSzY0QXAvOWluRENVdzcvWnNyNG83MWFIeDdtTTNRM0NS?=
- =?utf-8?B?a1lMN2o0V2N6djUwV0dheTlvRnpFMFVEcnZzNDlxM0l1K01SOVFGNjZuU1dQ?=
- =?utf-8?B?Um5kTXUycVhGcDFjS0FDZldURXJJL2drVHlWRENER3NMSG1BMmVYM0JjK1hI?=
- =?utf-8?B?dnZIRWduUm9MVjlLV2hiR3Qrd1gxS2h1Q25JVXIvVkFVRHNkU1Bnc0R6cFVq?=
- =?utf-8?B?aFNPZk8xUVl2d2hzUFJ1bEtxZCt5UmhtbUJRcEtmRWV6NTUwVXJucC9RTFZZ?=
- =?utf-8?B?S2MwZFN3MnYydHBDZFRSVHlyV3lrRXRIVDR3YmNEWEprSWtBK2s1WHphS2hE?=
- =?utf-8?B?aXltVUQ5emU5Qkh4WThDaWYyUk9ERWFtZVkvTWNsMjBHajJCc1NDbEM0Y1Q1?=
- =?utf-8?B?RWtWaVE5R211eDVMYmtBMEIvcWswUy91Wmg3S3ViR0UxM2JPVTZBSkY0RmdE?=
- =?utf-8?B?SDZnY1o0MnFxVzVZY1pNM1F6MFNrMnhGbWhwUk11cTZaL0psZlFVak5VMXZY?=
- =?utf-8?B?RDNZdGM0TXY3dWk4WjJYZWJlNG1RYU1zbHVRdTZBNzVPMmJtdEpUaUdDd2oy?=
- =?utf-8?B?UHRTWXlNVUJHOWphaGJsZHAxTDFEazNieU05M29kdk1mRWhNc0ZxWk1idHVE?=
- =?utf-8?B?ZlpKb0FBdWZLY0NYMTYycElZYS9wNWZDV0k2SC8xdmdTaW8zbjREZVUzNWFr?=
- =?utf-8?B?WXhlZXdRRXY4YjhuV252NkVNa1p2c0JZRHlTUVZrY0lJZ0xZWjZibU4wQmli?=
- =?utf-8?B?MnhHMmw5OFhVRC9SN2ZXNjk1OG5Va29qVWxKUktzaHRuTnZ5bmFMcFFKRkN5?=
- =?utf-8?B?aGN1K2RpSUNSQzBBN21wamM1OEVFejZQVnBRTE11TDFtRS9lWjZBc2c2b09m?=
- =?utf-8?B?dkNYUkx0MndFMXBWblU2WmxSV0wrQ0ptWldUK24xRmRzN3ZMb2N3OEhTSmxz?=
- =?utf-8?B?MDBya3pKK2tYbDN6U1hOaDlmUytYUHdBUmdPclFIOGZQZkkvajZZVW00NUxZ?=
- =?utf-8?B?ajV3S3dXNzloZjNDcmVlRjQ2T09UYzRXeE0vSDBBRHoydm90OWdUT1Z0b0Yx?=
- =?utf-8?B?ZkQ0VHlueDQyUUZZdVUvQXV2amhQamRoeFVaeXJ0NWYxdlRUUVVLWlNOMEVE?=
- =?utf-8?B?M3hYVDdSSHNrSE5PYnpmY2pBSE1VUnRrZzlMTVNBbGtBdXBoSWMzRS91VjRl?=
- =?utf-8?B?NW5JczJ1L2dNY1FWL3NSbjZNTlBvZ2FNRFU0bHFFaGlTczFRVEN4T21Zbkxm?=
- =?utf-8?Q?02i7yjkr+JU00EyRSI=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <CB54E8BCD44EB241B6F6350557A58A98@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Fri, 4 Jun 2021 09:08:46 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62AECC06174A;
+        Fri,  4 Jun 2021 06:07:00 -0700 (PDT)
+Received: from localhost.localdomain (unknown [IPv6:2a01:e0a:4cb:a870:389:b21e:a7e4:8cad])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 1C9541F439D1;
+        Fri,  4 Jun 2021 14:06:58 +0100 (BST)
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+To:     hverkuil@xs4all.nl, ezequiel@collabora.com, p.zabel@pengutronix.de,
+        mchehab@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        festevam@gmail.com, gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
+        andrzej.p@collabora.com, jc@kynesim.co.uk
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH 8/8] media: hantro: Add scaling lists feature
+Date:   Fri,  4 Jun 2021 15:06:19 +0200
+Message-Id: <20210604130619.491200-9-benjamin.gaignard@collabora.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210604130619.491200-1-benjamin.gaignard@collabora.com>
+References: <20210604130619.491200-1-benjamin.gaignard@collabora.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4865.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 205f6bd5-3411-4d9b-6fbe-08d927598ad2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jun 2021 13:06:18.2921
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: EooCB0Cayx3f0bFnnT4qS7ZIAa7cYTm8vNzBfggkI9/mKbc5ApvkS1DG+iBHNZilqn6P7BVVB7L2cn05FXvKaYj+ULRRsgd3wzZ2xouGRHA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4635
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gNi80LzIxIDE6MDIgUE0sIE1pY2hhZWwgV2FsbGUgd3JvdGU6DQo+IEVYVEVSTkFMIEVNQUlM
-OiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3MgeW91IGtub3cg
-dGhlIGNvbnRlbnQgaXMgc2FmZQ0KPiANCj4gQnkgbW92aW5nIHRoZSBjb2RlIGFyb3VuZCBhIGJp
-dCwgd2UgY2FuIGp1c3QgY2hlY2sgdGhlIGxlbmd0aCBiZWZvcmUNCj4gY2FsbGluZyBzcGlfbm9y
-X210ZF9vdHBfcmFuZ2VfaXNfbG9ja2VkKCkgYW5kIGRyb3AgdGhlIGxlbmd0aCBjaGVjaw0KPiB0
-aGVyZS4gVGhpcyB3YXkgd2UgZG9uJ3QgbmVlZCB0byB0YWtlIHRoZSBsb2NrLiBUaGlzIHdpbGwg
-YWxzbyBza2lwIHRoZQ0KPiAiKnJldGxlbiA9IDAiIGFzc2lnbm1lbnQgaWYgdGhlIGxlbmd0aCBp
-cyB6ZXJvLiBCdXQgbXRkY29yZSBhbHJlYWR5IGRvZXMNCj4gdGhhdCBmb3IgdXMuIFRodXMgd2Ug
-Y2FuIGRyb3AgdGhhdCwgdG9vLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogTWljaGFlbCBXYWxsZSA8
-bWljaGFlbEB3YWxsZS5jYz4NCj4gLS0tDQo+ICBkcml2ZXJzL210ZC9zcGktbm9yL290cC5jIHwg
-MTMgKysrKysrLS0tLS0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKSwgNyBk
-ZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL290cC5j
-IGIvZHJpdmVycy9tdGQvc3BpLW5vci9vdHAuYw0KPiBpbmRleCAwNjNmOGZiNjg2NDkuLjg5ZmU1
-MmUzODUxYSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9vdHAuYw0KPiArKysg
-Yi9kcml2ZXJzL210ZC9zcGktbm9yL290cC5jDQo+IEBAIC0yNTYsOSArMjU2LDYgQEAgc3RhdGlj
-IGludCBzcGlfbm9yX210ZF9vdHBfcmFuZ2VfaXNfbG9ja2VkKHN0cnVjdCBzcGlfbm9yICpub3Is
-IGxvZmZfdCBvZnMsDQo+ICAgICAgICAgdW5zaWduZWQgaW50IHJlZ2lvbjsNCj4gICAgICAgICBp
-bnQgbG9ja2VkOw0KPiANCj4gLSAgICAgICBpZiAoIWxlbikNCj4gLSAgICAgICAgICAgICAgIHJl
-dHVybiAwOw0KDQp0aGVzZSBsaW5lcyB3ZXJlIGp1c3QgaW50cm9kdWNlZCBpbiB0aGUgcHJldmlv
-dXMgcGF0Y2guIENhbiB5b3UgcGxlYXNlIHJlb3JkZXIgNCB3aXRoIDMsDQpzbyB0aGF0IHdlIGRv
-bid0IHRvdWNoIHRoaXMgdHdpY2U/IFdpdGggdGhhdDoNCg0KUmV2aWV3ZWQtYnk6IFR1ZG9yIEFt
-YmFydXMgPHR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNvbT4NCg0KPiAtDQo+ICAgICAgICAgLyoN
-Cj4gICAgICAgICAgKiBJZiBhbnkgb2YgdGhlIGFmZmVjdGVkIE9UUCByZWdpb25zIGFyZSBsb2Nr
-ZWQgdGhlIGVudGlyZSByYW5nZSBpcw0KPiAgICAgICAgICAqIGNvbnNpZGVyZWQgbG9ja2VkLg0K
-PiBAQCAtMjkwLDEzICsyODcsMTYgQEAgc3RhdGljIGludCBzcGlfbm9yX210ZF9vdHBfcmVhZF93
-cml0ZShzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgbG9mZl90IG9mcywNCj4gICAgICAgICBpZiAob2Zz
-IDwgMCB8fCBvZnMgPj0gc3BpX25vcl9vdHBfc2l6ZShub3IpKQ0KPiAgICAgICAgICAgICAgICAg
-cmV0dXJuIDA7DQo+IA0KPiArICAgICAgIC8qIGRvbid0IGFjY2VzcyBiZXlvbmQgdGhlIGVuZCAq
-Lw0KPiArICAgICAgIHRvdGFsX2xlbiA9IG1pbl90KHNpemVfdCwgdG90YWxfbGVuLCBzcGlfbm9y
-X290cF9zaXplKG5vcikgLSBvZnMpOw0KPiArDQo+ICsgICAgICAgaWYgKCF0b3RhbF9sZW4pDQo+
-ICsgICAgICAgICAgICAgICByZXR1cm4gMDsNCj4gKw0KPiAgICAgICAgIHJldCA9IHNwaV9ub3Jf
-bG9ja19hbmRfcHJlcChub3IpOw0KPiAgICAgICAgIGlmIChyZXQpDQo+ICAgICAgICAgICAgICAg
-ICByZXR1cm4gcmV0Ow0KPiANCj4gLSAgICAgICAvKiBkb24ndCBhY2Nlc3MgYmV5b25kIHRoZSBl
-bmQgKi8NCj4gLSAgICAgICB0b3RhbF9sZW4gPSBtaW5fdChzaXplX3QsIHRvdGFsX2xlbiwgc3Bp
-X25vcl9vdHBfc2l6ZShub3IpIC0gb2ZzKTsNCj4gLQ0KPiAgICAgICAgIGlmIChpc193cml0ZSkg
-ew0KPiAgICAgICAgICAgICAgICAgcmV0ID0gc3BpX25vcl9tdGRfb3RwX3JhbmdlX2lzX2xvY2tl
-ZChub3IsIG9mcywgdG90YWxfbGVuKTsNCj4gICAgICAgICAgICAgICAgIGlmIChyZXQgPCAwKSB7
-DQo+IEBAIC0zMDcsNyArMzA3LDYgQEAgc3RhdGljIGludCBzcGlfbm9yX210ZF9vdHBfcmVhZF93
-cml0ZShzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgbG9mZl90IG9mcywNCj4gICAgICAgICAgICAgICAg
-IH0NCj4gICAgICAgICB9DQo+IA0KPiAtICAgICAgICpyZXRsZW4gPSAwOw0KPiAgICAgICAgIHdo
-aWxlICh0b3RhbF9sZW4pIHsNCj4gICAgICAgICAgICAgICAgIC8qDQo+ICAgICAgICAgICAgICAg
-ICAgKiBUaGUgT1RQIHJlZ2lvbnMgYXJlIG1hcHBlZCBpbnRvIGEgY29udGlndW91cyBhcmVhIHN0
-YXJ0aW5nDQo+IC0tDQo+IDIuMjAuMQ0KPiANCg0K
+If the bitstream embedded scaling lists allow the driver to use
+them for decode the frames.
+The scaling lists are expected to be in raster scan order (i.e. not up
+right diagonal scan order)
+Allocate the memory needed to store lists.
+
+Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+---
+ drivers/staging/media/hantro/hantro_drv.c     |  8 +--
+ .../staging/media/hantro/hantro_g2_hevc_dec.c | 52 +++++++++++++++++++
+ drivers/staging/media/hantro/hantro_hevc.c    | 21 ++++++++
+ drivers/staging/media/hantro/hantro_hw.h      |  3 ++
+ 4 files changed, 81 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
+index 5e6609fa4143..324619c78ada 100644
+--- a/drivers/staging/media/hantro/hantro_drv.c
++++ b/drivers/staging/media/hantro/hantro_drv.c
+@@ -281,9 +281,6 @@ static int hantro_try_ctrl(struct v4l2_ctrl *ctrl)
+ 		    sps->bit_depth_luma_minus8 != 2)
+ 			/* Only 8-bit or 10-bit is supported */
+ 			return -EINVAL;
+-		if (sps->flags & V4L2_HEVC_SPS_FLAG_SCALING_LIST_ENABLED)
+-			/* No scaling support */
+-			return -EINVAL;
+ 		if (sps->bit_depth_luma_minus8 == 0 &&
+ 		    hantro_is_10bit_dst_format(ctx)) {
+ 			return -EINVAL;
+@@ -469,6 +466,11 @@ static const struct hantro_ctrl controls[] = {
+ 		.cfg = {
+ 			.id = V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS,
+ 		},
++	}, {
++		.codec = HANTRO_HEVC_DECODER,
++		.cfg = {
++			.id = V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX,
++		},
+ 	}, {
+ 		.codec = HANTRO_HEVC_DECODER,
+ 		.cfg = {
+diff --git a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
+index 741b029aef9e..f7be8629c3cc 100644
+--- a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
++++ b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
+@@ -597,6 +597,56 @@ static void set_buffers(struct hantro_ctx *ctx)
+ 	hantro_write_addr(vpu, G2_TILE_BSD, ctx->hevc_dec.tile_bsd.dma);
+ }
+ 
++static void prepare_scaling_list_buffer(struct hantro_ctx *ctx)
++{
++	struct hantro_dev *vpu = ctx->dev;
++	const struct hantro_hevc_dec_ctrls *ctrls = &ctx->hevc_dec.ctrls;
++	const struct v4l2_ctrl_hevc_scaling_matrix *sc = ctrls->scaling;
++	const struct v4l2_ctrl_hevc_sps *sps = ctrls->sps;
++	u8 *p = ((u8 *)ctx->hevc_dec.scaling_lists.cpu);
++	unsigned int scaling_list_enabled;
++	unsigned int i, j, k;
++
++	scaling_list_enabled = !!(sps->flags & V4L2_HEVC_SPS_FLAG_SCALING_LIST_ENABLED);
++	hantro_reg_write(vpu, &g2_scaling_list_e, scaling_list_enabled);
++
++	if (!scaling_list_enabled)
++		return;
++
++	for (i = 0; i < ARRAY_SIZE(sc->scaling_list_dc_coef_16x16); i++)
++		*p++ = sc->scaling_list_dc_coef_16x16[i];
++
++	for (i = 0; i < ARRAY_SIZE(sc->scaling_list_dc_coef_32x32); i++)
++		*p++ = sc->scaling_list_dc_coef_32x32[i];
++
++	/* 128-bit boundary */
++	p += 8;
++
++	/* write scaling lists column by column */
++
++	for (i = 0; i < 6; i++)
++		for (j = 0; j < 4; j++)
++			for (k = 0; k < 4; k++)
++				*p++ = sc->scaling_list_4x4[i][4 * k + j];
++
++	for (i = 0; i < 6; i++)
++		for (j = 0; j < 8; j++)
++			for (k = 0; k < 8; k++)
++				*p++ = sc->scaling_list_8x8[i][8 * k + j];
++
++	for (i = 0; i < 6; i++)
++		for (j = 0; j < 8; j++)
++			for (k = 0; k < 8; k++)
++				*p++ = sc->scaling_list_16x16[i][8 * k + j];
++
++	for (i = 0; i < 2; i++)
++		for (j = 0; j < 8; j++)
++			for (k = 0; k < 8; k++)
++				*p++ = sc->scaling_list_32x32[i][8 * k + j];
++
++	hantro_write_addr(vpu, HEVC_SCALING_LIST, ctx->hevc_dec.scaling_lists.dma);
++}
++
+ static void hantro_g2_check_idle(struct hantro_dev *vpu)
+ {
+ 	int i;
+@@ -657,6 +707,8 @@ int hantro_g2_hevc_dec_run(struct hantro_ctx *ctx)
+ 	set_buffers(ctx);
+ 	prepare_tile_info_buffer(ctx);
+ 
++	prepare_scaling_list_buffer(ctx);
++
+ 	hantro_end_prepare_run(ctx);
+ 
+ 	hantro_reg_write(vpu, &g2_mode, HEVC_DEC_MODE);
+diff --git a/drivers/staging/media/hantro/hantro_hevc.c b/drivers/staging/media/hantro/hantro_hevc.c
+index ae9827dd7086..57c1ddeaf2db 100644
+--- a/drivers/staging/media/hantro/hantro_hevc.c
++++ b/drivers/staging/media/hantro/hantro_hevc.c
+@@ -20,6 +20,8 @@
+ /* tile border coefficients of filter */
+ #define VERT_SAO_RAM_SIZE 48 /* bytes per pixel */
+ 
++#define SCALING_LIST_SIZE (16 * 64)
++
+ #define MAX_TILE_COLS 20
+ #define MAX_TILE_ROWS 22
+ 
+@@ -287,6 +289,11 @@ int hantro_hevc_dec_prepare_run(struct hantro_ctx *ctx)
+ 	if (WARN_ON(!ctrls->decode_params))
+ 		return -EINVAL;
+ 
++	ctrls->scaling =
++		hantro_get_ctrl(ctx, V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX);
++	if (WARN_ON(!ctrls->scaling))
++		return -EINVAL;
++
+ 	ctrls->sps =
+ 		hantro_get_ctrl(ctx, V4L2_CID_MPEG_VIDEO_HEVC_SPS);
+ 	if (WARN_ON(!ctrls->sps))
+@@ -315,6 +322,12 @@ void hantro_hevc_dec_exit(struct hantro_ctx *ctx)
+ 				  hevc_dec->tile_sizes.dma);
+ 	hevc_dec->tile_sizes.cpu = NULL;
+ 
++	if (hevc_dec->scaling_lists.cpu)
++		dma_free_coherent(vpu->dev, hevc_dec->scaling_lists.size,
++				  hevc_dec->scaling_lists.cpu,
++				  hevc_dec->scaling_lists.dma);
++	hevc_dec->scaling_lists.cpu = NULL;
++
+ 	if (hevc_dec->tile_filter.cpu)
+ 		dma_free_coherent(vpu->dev, hevc_dec->tile_filter.size,
+ 				  hevc_dec->tile_filter.cpu,
+@@ -358,6 +371,14 @@ int hantro_hevc_dec_init(struct hantro_ctx *ctx)
+ 
+ 	hevc_dec->tile_sizes.size = size;
+ 
++	hevc_dec->scaling_lists.cpu = dma_alloc_coherent(vpu->dev, SCALING_LIST_SIZE,
++							 &hevc_dec->scaling_lists.dma,
++							 GFP_KERNEL);
++	if (!hevc_dec->scaling_lists.cpu)
++		return -ENOMEM;
++
++	hevc_dec->scaling_lists.size = SCALING_LIST_SIZE;
++
+ 	hantro_hevc_ref_init(ctx);
+ 
+ 	return 0;
+diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
+index 2edb890f10af..88add18b1bad 100644
+--- a/drivers/staging/media/hantro/hantro_hw.h
++++ b/drivers/staging/media/hantro/hantro_hw.h
+@@ -108,6 +108,7 @@ struct hantro_h264_dec_hw_ctx {
+  */
+ struct hantro_hevc_dec_ctrls {
+ 	const struct v4l2_ctrl_hevc_decode_params *decode_params;
++	const struct v4l2_ctrl_hevc_scaling_matrix *scaling;
+ 	const struct v4l2_ctrl_hevc_sps *sps;
+ 	const struct v4l2_ctrl_hevc_pps *pps;
+ 	u32 hevc_hdr_skip_length;
+@@ -120,6 +121,7 @@ struct hantro_hevc_dec_ctrls {
+  * @tile_sao:		Tile SAO buffer
+  * @tile_bsd:		Tile BSD control buffer
+  * @ref_bufs:		Internal reference buffers
++ * @scaling_lists:	Scaling lists buffer
+  * @ref_bufs_poc:	Internal reference buffers picture order count
+  * @ref_bufs_used:	Bitfield of used reference buffers
+  * @ctrls:		V4L2 controls attached to a run
+@@ -131,6 +133,7 @@ struct hantro_hevc_dec_hw_ctx {
+ 	struct hantro_aux_buf tile_sao;
+ 	struct hantro_aux_buf tile_bsd;
+ 	struct hantro_aux_buf ref_bufs[NUM_REF_PICTURES];
++	struct hantro_aux_buf scaling_lists;
+ 	int ref_bufs_poc[NUM_REF_PICTURES];
+ 	u32 ref_bufs_used;
+ 	struct hantro_hevc_dec_ctrls ctrls;
+-- 
+2.25.1
+
