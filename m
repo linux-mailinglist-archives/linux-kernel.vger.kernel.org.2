@@ -2,138 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17C0E39B3EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C8B39B3F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbhFDHeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 03:34:03 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:36506 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230085AbhFDHeB (ORCPT
+        id S230147AbhFDHfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 03:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229936AbhFDHfB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 03:34:01 -0400
-Received: by mail-io1-f70.google.com with SMTP id i15-20020a6bee0f0000b029043af67da217so5593691ioh.3
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 00:32:15 -0700 (PDT)
+        Fri, 4 Jun 2021 03:35:01 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40AEEC061760
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 00:33:06 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id w15so10325714ljo.10
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 00:33:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7YEaYtGaODGYMRIOcxS82MgtLU/f7MT+ye6QOtsBBwM=;
+        b=k0mfwg8RuZBC4VJUPvNHCgyWwdddHYCNtROCMCMUBKNkg9GnTz1wsdRCtp3u+JpX8s
+         Bd8xiqdEg1/0d9t6/72HrB9QHSHJg4NgvzI4oxxKIKxoqWRAxXXiT8rID6nOgqDgpb77
+         nI4Nkk6iHy0UP7tmIK+o2aZRaOG9YLUCBNyiW2cc56DLMg4dV+LX68pnjHRxNQjv/j+Q
+         MC1EW8XWXWCjv3ZxH+FecZEPtv+Uzy/ZOboD0dj8cxd1PpzSD9LTpGKGdPkvKG3rcMSr
+         QV2nuWASQJLxcQUXCNBvDyZuQT8200MzPiFcR1nVDOCEIXGK5DM7CGTYxqw4zW6zRs62
+         eStQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=2tz0X9F41gyVCNtIQhviwlFR2aUQZipHVATshl7l/Ec=;
-        b=WoQXBPqUabtGMhHzSxMjSv7o+XWitXspRZcNTI66fIIgLHNGuk0NhKKr3/kU49M0+M
-         7h+2zsjGvsS7adEm/En+8gJdzR8mCN0Mxhkc5y/H/Vr8s+B6pGRpgCFO78av/Wn1Ut5H
-         5P1IOPFhegHag/2aDctb+3UbZGKlZtmlqta5IWoKhWUT70JPlqlCl0/wUYFhNv+eTW35
-         LuH09drKXliRldW+d++abMYnk240GJrRV2duAhzrvl6onzhvE20GAeWqbFrmX0jWdCs0
-         BPzJ1TqozFuXbiSweiJ+6pRA1tHLqSvihbfshuV3H3qTqJEoYT9PBuRAOraQ2oj+fZ8M
-         /UZg==
-X-Gm-Message-State: AOAM530BAVWeRszh3n9ep0kOnYMMerJYTIc4xbiqG6IB1k6WMfLqQSpC
-        jmbgRo8Wa371J64dO4nCVOyKOIuRMQWCmU7EEtqShYHDlCSM
-X-Google-Smtp-Source: ABdhPJy2WOKJwjYNauYY3nNUk1lkuFKLsJ45T0Zcc4wdDK6FTSWUMhuOMjEe2Nrl5GHKQUmPxYbnbFDfvrsYRUD7JJn+kkRXJNcy
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7YEaYtGaODGYMRIOcxS82MgtLU/f7MT+ye6QOtsBBwM=;
+        b=KxJQVudYZEyvLA6SZeEE5+C4OqFRFRe3Y50U2ijo4Kr8n5Crb6aSY/sBkiDy2tfzyg
+         pZA49q4rnRXxEs64zm/DKh2bwsrGJOuvi7UGCq20fU3xq9sLWF+f2q/syLe27wiK5NYP
+         nITEJ0NioitOhBrs4nwz9ZMJtp4BbzHevO8kFEHXAlq996YkRWumfhJzVz0w3mx482NL
+         sb03QbDcVMJVvLVjodFQmldtrPcjlLDQV3Z3XT3yPYxeAfqYw0uQ9eBxzwlxv7LVhNz0
+         jhf4ZkGm59x76UI2XyKqI4h7Nmq+hBF4A8QLVj4C+Q6kJPTXugGdhgECXl2tmTAN9usw
+         tw6w==
+X-Gm-Message-State: AOAM530aN2Xh4DpcepXkwgFq5bwuDHJsDiFkgn5JxMuN2wBpGv7PKOjD
+        +U3WMSWyGU2I8hNVEbKBjlix6qTFi5zVcGAWUHFJPg==
+X-Google-Smtp-Source: ABdhPJzgQx04zTlqpg/w82uH4e5VzZHYhg4xdsMgMS13UjBF/oq1+Otkde9ea6/c7c/a5OlXYTJg5cz4/ByP7q5md3E=
+X-Received: by 2002:a2e:90c7:: with SMTP id o7mr2515456ljg.368.1622791984619;
+ Fri, 04 Jun 2021 00:33:04 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:211:: with SMTP id e17mr2966879jaq.72.1622791935096;
- Fri, 04 Jun 2021 00:32:15 -0700 (PDT)
-Date:   Fri, 04 Jun 2021 00:32:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d6019e05c3ebb005@google.com>
-Subject: [syzbot] KMSAN: uninit-value in translate_table (2)
-From:   syzbot <syzbot+761644ed2ba863e99b41@syzkaller.appspotmail.com>
-To:     coreteam@netfilter.org, davem@davemloft.net, dsahern@kernel.org,
-        fw@strlen.de, glider@google.com, kadlec@netfilter.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
-        yoshfuji@linux-ipv6.org
+References: <20210603043726.3793876-1-dmitry.torokhov@gmail.com> <20210603043726.3793876-4-dmitry.torokhov@gmail.com>
+In-Reply-To: <20210603043726.3793876-4-dmitry.torokhov@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 4 Jun 2021 09:32:53 +0200
+Message-ID: <CACRpkdZWkV6Uq98VjGMFp+EaoM8gZ_FYWF88PoRbwTjnGFcJfg@mail.gmail.com>
+Subject: Re: [PATCH 4/7] Input: cy8ctmg110_ts - let I2C core configure wake interrupt
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Linux Input <linux-input@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Jun 3, 2021 at 6:37 AM Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
 
-syzbot found the following issue on:
+> I2C core already configures interrupt as wakeup source when device is
+> registered using I2C_CLIENT_WAKE flag, so let's rely on it instead of
+> configuring it ourselves.
+>
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-HEAD commit:    6099c9da x86: entry: speculatively unpoison pt_regs in do_..
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=1609edefd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4e6842a91012889c
-dashboard link: https://syzkaller.appspot.com/bug?extid=761644ed2ba863e99b41
-compiler:       Debian clang version 11.0.1-2
-userspace arch: i386
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Unfortunately, I don't have any reproducer for this issue yet.
+I wonder how many bugs of this deep semantic type we have in the kernel :/
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+761644ed2ba863e99b41@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in check_entry_size_and_hooks net/ipv4/netfilter/ip_tables.c:599 [inline]
-BUG: KMSAN: uninit-value in translate_table+0xdbf/0x3c40 net/ipv4/netfilter/ip_tables.c:685
-CPU: 0 PID: 12412 Comm: syz-executor.0 Not tainted 5.12.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
- kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
- __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
- check_entry_size_and_hooks net/ipv4/netfilter/ip_tables.c:599 [inline]
- translate_table+0xdbf/0x3c40 net/ipv4/netfilter/ip_tables.c:685
- translate_compat_table net/ipv4/netfilter/ip_tables.c:1463 [inline]
- compat_do_replace net/ipv4/netfilter/ip_tables.c:1517 [inline]
- do_ipt_set_ctl+0x446a/0x56a0 net/ipv4/netfilter/ip_tables.c:1624
- nf_setsockopt+0x59e/0x600 net/netfilter/nf_sockopt.c:101
- ip_setsockopt+0x651f/0x8ab0 net/ipv4/ip_sockglue.c:1435
- tcp_setsockopt+0x239/0x270 net/ipv4/tcp.c:3643
- sock_common_setsockopt+0x16c/0x1b0 net/core/sock.c:3263
- __sys_setsockopt+0x94c/0xd80 net/socket.c:2117
- __do_sys_setsockopt net/socket.c:2128 [inline]
- __se_sys_setsockopt+0xdd/0x100 net/socket.c:2125
- __ia32_sys_setsockopt+0x62/0x80 net/socket.c:2125
- do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
- __do_fast_syscall_32+0x127/0x180 arch/x86/entry/common.c:142
- do_fast_syscall_32+0x77/0xd0 arch/x86/entry/common.c:168
- do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:211
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-RIP: 0023:0xf7ff0549
-Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000f55ea5fc EFLAGS: 00000296 ORIG_RAX: 000000000000016e
-RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000000000000
-RDX: 0000000000000040 RSI: 00000000200008c0 RDI: 000000000000027c
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-
-Uninit was created at:
- kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
- kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
- kmsan_slab_alloc+0x8e/0xe0 mm/kmsan/kmsan_hooks.c:76
- slab_alloc_node mm/slub.c:2922 [inline]
- __kmalloc_node+0xa3c/0x1440 mm/slub.c:4116
- kmalloc_node include/linux/slab.h:577 [inline]
- kvmalloc_node+0x201/0x3d0 mm/util.c:587
- kvmalloc include/linux/mm.h:785 [inline]
- xt_alloc_table_info+0xce/0x1c0 net/netfilter/x_tables.c:1178
- translate_compat_table net/ipv4/netfilter/ip_tables.c:1427 [inline]
- compat_do_replace net/ipv4/netfilter/ip_tables.c:1517 [inline]
- do_ipt_set_ctl+0x2978/0x56a0 net/ipv4/netfilter/ip_tables.c:1624
- nf_setsockopt+0x59e/0x600 net/netfilter/nf_sockopt.c:101
- ip_setsockopt+0x651f/0x8ab0 net/ipv4/ip_sockglue.c:1435
- tcp_setsockopt+0x239/0x270 net/ipv4/tcp.c:3643
- sock_common_setsockopt+0x16c/0x1b0 net/core/sock.c:3263
- __sys_setsockopt+0x94c/0xd80 net/socket.c:2117
- __do_sys_setsockopt net/socket.c:2128 [inline]
- __se_sys_setsockopt+0xdd/0x100 net/socket.c:2125
- __ia32_sys_setsockopt+0x62/0x80 net/socket.c:2125
- do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
- __do_fast_syscall_32+0x127/0x180 arch/x86/entry/common.c:142
- do_fast_syscall_32+0x77/0xd0 arch/x86/entry/common.c:168
- do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:211
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Yours,
+Linus Walleij
