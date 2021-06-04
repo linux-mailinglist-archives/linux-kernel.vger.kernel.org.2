@@ -2,149 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF2C39B735
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 12:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BF0839B731
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 12:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230008AbhFDKho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 06:37:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbhFDKhn (ORCPT
+        id S229980AbhFDKgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 06:36:48 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:33610 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229682AbhFDKgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 06:37:43 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D807BC06174A
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 03:35:56 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:f130:bbcb:eb08:8a92])
-        by laurent.telenet-ops.be with bizsmtp
-        id Cybt250012NEgeT01ybtHG; Fri, 04 Jun 2021 12:35:53 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lp7BA-00Cc2O-MU; Fri, 04 Jun 2021 12:35:52 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lp5id-001cIZ-N9; Fri, 04 Jun 2021 11:02:19 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Steve French <sfrench@samba.org>,
-        Shyam Prasad N <sprasad@microsoft.com>
-Cc:     linux-cifs@vger.kernel.org, linux-next@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] cifs: Change cifs_ses.chans_need_reconnect and chan_index to "unsigned long"
-Date:   Fri,  4 Jun 2021 11:02:19 +0200
-Message-Id: <20210604090219.385504-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Fri, 4 Jun 2021 06:36:47 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 1A6D51F43871
+Received: by earth.universe (Postfix, from userid 1000)
+        id 6CE733C0C95; Fri,  4 Jun 2021 12:34:58 +0200 (CEST)
+Date:   Fri, 4 Jun 2021 12:34:58 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Beomho Seo <beomho.seo@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v2 0/3] Fix RT5033 battery device tree probing
+Message-ID: <20210604103458.bb6niqmuflgh6vkq@earth.universe>
+References: <20210517105113.240379-1-stephan@gerhold.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7qpaey6c4rosasac"
+Content-Disposition: inline
+In-Reply-To: <20210517105113.240379-1-stephan@gerhold.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 32-bit (e.g. m68k):
 
-    fs/cifs/cifssmb.c: In function ‘cifs_reconnect_tcon’:
-    ./include/linux/kern_levels.h:5:18: warning: format ‘%lx’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘size_t’ {aka ‘unsigned int’} [-Wformat=]
-    fs/cifs/cifssmb.c:201:42: note: format string is defined here
-      201 |  cifs_dbg(FYI, "sess reconnect mask: 0x%lx, tcon reconnect: %d",
-	  |                                        ~~^
-	  |                                          |
-	  |                                          long unsigned int
-	  |                                        %x
+--7qpaey6c4rosasac
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-    fs/cifs/transport.c: In function ‘cifs_pick_channel’:
-    fs/cifs/cifsglob.h:955:20: error: passing argument 2 of ‘test_bit’ from incompatible pointer type [-Werror=incompatible-pointer-types]
-      955 |  test_bit((index), &(ses)->chans_need_reconnect)
-	  |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	  |                    |
-	  |                    size_t * {aka unsigned int *}
-    ./arch/m68k/include/asm/bitops.h:151:66: note: expected ‘const volatile long unsigned int *’ but argument is of type ‘size_t *’ {aka ‘unsigned int *’}
-      151 | static inline int test_bit(int nr, const volatile unsigned long *vaddr)
-	  |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+Hi,
 
-    fs/cifs/sess.c: In function ‘cifs_chan_set_need_reconnect’:
-    fs/cifs/sess.c:98:22: error: passing argument 2 of ‘bset_mem_set_bit’ from incompatible pointer type [-Werror=incompatible-pointer-types]
-       98 |  set_bit(chan_index, &ses->chans_need_reconnect);
-	  |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~
-	  |                      |
-	  |                      size_t * {aka unsigned int *}
-    ./arch/m68k/include/asm/bitops.h:41:69: note: expected ‘volatile long unsigned int *’ but argument is of type ‘size_t *’ {aka ‘unsigned int *’}
-       41 | static inline void bset_mem_set_bit(int nr, volatile unsigned long *vaddr)
-	  |                                             ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
-    fs/cifs/sess.c:98:22: error: passing argument 2 of ‘bfset_mem_set_bit’ from incompatible pointer type [-Werror=incompatible-pointer-types]
-       98 |  set_bit(chan_index, &ses->chans_need_reconnect);
-	  |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~
-	  |                      |
-	  |                      size_t * {aka unsigned int *}
-    ./arch/m68k/include/asm/bitops.h:50:70: note: expected ‘volatile long unsigned int *’ but argument is of type ‘size_t *’ {aka ‘unsigned int *’}
-       50 | static inline void bfset_mem_set_bit(int nr, volatile unsigned long *vaddr)
-	  |                                              ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+On Mon, May 17, 2021 at 12:51:10PM +0200, Stephan Gerhold wrote:
+> At the moment, the RT5033 MFD and battery driver suggest that the
+> battery driver should probe as a sub-device of the MFD driver. However,
+> this does not make any sense since the fuel gauge part of RT5033 has its
+> own I2C device and interrupt line.
+>=20
+> It was also documented as separate I2C device in the original device
+> tree bindings [1] (that were never finished up and merged) but for some
+> reason the code does not match the documentation (and reality). :/
+>=20
+> Given other fairly critical mistakes like setting the wrong bits
+> in the regulator driver (see [2]), unfortunately I get the feeling
+> that none of the RT5033 drivers were ever tested properly. :(
+>=20
+> This patch sets adds a proper of_match_table to rt5033-battery
+> and removes the rt5033-battery sub-device from the MFD driver.
+> There is no compile/runtime dependency of the power supply / MFD patch
+> so they can just be applied separately through the power supply / MFD tre=
+e.
 
-   [...]
+Thanks, I queued patches 1&2 to power-supply's for-next branch
+and ignored patch 3.
 
-As bitops can only operate on long objects, and
-cifs_ses_get_chan_index() already returns "unsigned long", fix this by
-changing cifs_ses.chans_need_reconnect and chan_index from "size_t" to
-"unsigned long".
+-- Sebastian
 
-Fixes: 374c6c7bba3cbaa1 ("cifs: changes to support multichannel during channel reconnect")
-Reported-by: noreply@ellerman.id.au
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-Can you please add Link: headers when committing patches?
-I could not find this patch in the lore archives of linux-cifs or
-linux-fsdevel, presumably it was posted elsewhere?
-Thanks!
----
- fs/cifs/cifsglob.h | 2 +-
- fs/cifs/sess.c     | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+> With these changes, rt5033-battery seems to work fine on the
+> Samsung Galaxy A5 (2015) at least (it reports a reasonable
+> battery percentage).
+>=20
+> [1]: https://lore.kernel.org/linux-pm/1425864191-4121-3-git-send-email-be=
+omho.seo@samsung.com/
+> [2]: https://lore.kernel.org/lkml/20201110130047.8097-1-michael.srba@sezn=
+am.cz/
+>=20
+> Changes in v2: Fix stupid typo in second patch :(
+> v1: Honestly, not worth looking at :)
+>=20
+> Stephan Gerhold (3):
+>   dt-bindings: power: supply: Add DT schema for richtek,rt5033-battery
+>   power: supply: rt5033_battery: Fix device tree enumeration
+>   mfd: rt5033: Drop rt5033-battery sub-device
+>=20
+>  .../power/supply/richtek,rt5033-battery.yaml  | 54 +++++++++++++++++++
+>  drivers/mfd/rt5033.c                          |  3 --
+>  drivers/power/supply/Kconfig                  |  3 +-
+>  drivers/power/supply/rt5033_battery.c         |  7 +++
+>  4 files changed, 63 insertions(+), 4 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/power/supply/richte=
+k,rt5033-battery.yaml
+>=20
+> --=20
+> 2.31.1
+>=20
 
-diff --git a/fs/cifs/cifsglob.h b/fs/cifs/cifsglob.h
-index 8fea2ddd2bd7af26..a9c026af21e1e9d1 100644
---- a/fs/cifs/cifsglob.h
-+++ b/fs/cifs/cifsglob.h
-@@ -968,7 +968,7 @@ struct cifs_ses {
- 	 * enable the sessions on top to continue to live till any
- 	 * of the channels below are active.
- 	 */
--	size_t chans_need_reconnect;
-+	unsigned long chans_need_reconnect;
- };
- 
- static inline bool
-diff --git a/fs/cifs/sess.c b/fs/cifs/sess.c
-index 1721a3b246942266..1a17ddd6abbe5778 100644
---- a/fs/cifs/sess.c
-+++ b/fs/cifs/sess.c
-@@ -94,7 +94,7 @@ void
- cifs_chan_set_need_reconnect(struct cifs_ses *ses,
- 			     struct TCP_Server_Info *server)
- {
--	size_t chan_index = cifs_ses_get_chan_index(ses, server);
-+	unsigned long chan_index = cifs_ses_get_chan_index(ses, server);
- 	set_bit(chan_index, &ses->chans_need_reconnect);
- 	cifs_dbg(FYI, "Set reconnect bitmask for chan %lu; now 0x%lx\n",
- 		 chan_index, ses->chans_need_reconnect);
-@@ -104,7 +104,7 @@ void
- cifs_chan_clear_need_reconnect(struct cifs_ses *ses,
- 			       struct TCP_Server_Info *server)
- {
--	size_t chan_index = cifs_ses_get_chan_index(ses, server);
-+	unsigned long chan_index = cifs_ses_get_chan_index(ses, server);
- 	clear_bit(chan_index, &ses->chans_need_reconnect);
- 	cifs_dbg(FYI, "Cleared reconnect bitmask for chan %lu; now 0x%lx\n",
- 		 chan_index, ses->chans_need_reconnect);
-@@ -114,7 +114,7 @@ bool
- cifs_chan_needs_reconnect(struct cifs_ses *ses,
- 			    struct TCP_Server_Info *server)
- {
--	size_t chan_index = cifs_ses_get_chan_index(ses, server);
-+	unsigned long chan_index = cifs_ses_get_chan_index(ses, server);
- 	return CIFS_CHAN_NEEDS_RECONNECT(ses, chan_index);
- }
- 
--- 
-2.25.1
+--7qpaey6c4rosasac
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmC6AckACgkQ2O7X88g7
++prOSg//QRnXNFYXcAz50rTV4DV/Q6evnwV92ekn8gUnkCO4WkgM8oyW4ijP2CUo
+9J3Lpu9jrabPyP6wT1xDV0GurQoAsuB5WEYwuGbByLkur3yZyB+gXMCsaN9OpTwm
+eIQ5+LheWY4gQEIzO4ry3eCqe6VU2hQN+vdrz3KEp2wnZ34D+KYBENIY3lejDkkx
+Vr7hhSj/N6+bgjn/KJFmEASUoIuFWphYfG4dBPAlRyslhFsLxTiIiKKAdvvfIlpN
+RVH5SU19oPtcagQWpKvkLKg16u/U5lIBpbh9r7RML0armDsYxeGiOAs59njEnx5+
+G7NRg916LJIV/MyVrJvnx9PAzxtO7sW2iIEtLdxdxHrqHuzSyGnwuBcaWyqLraxd
+3L6wVS94HnKNl4zphLiTkF8cvdGphEL1BMKaCBnBEEcqESC7sLNZD+EUnYmsSBob
+/muKm5fWU16yixrS3wDHgR8VxkVqa9istOEIf5gioKxaV5H+rWik98pjpHAXG9Lv
+zIpmWB09ufkHNq3Y7law4qPrqfnf/Oo4dOrQFJmAno+PgCxMChUZ0tytwfWvx3Pr
+JU2+nl7ff1Br17eLkjyMVZx9zhUMo1RI3SrsVQK/KZ91sZqCSfx3IGjMKHfBgPpd
+evona00fQ4Hnq5wxajKMoeAjWenQ/17CdwLCo+XJunzW6PILS1Q=
+=Bv8O
+-----END PGP SIGNATURE-----
+
+--7qpaey6c4rosasac--
