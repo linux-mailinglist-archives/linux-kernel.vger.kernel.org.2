@@ -2,136 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6459A39BB7F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6445B39BB81
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:14:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhFDPPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 11:15:42 -0400
-Received: from mail-wr1-f47.google.com ([209.85.221.47]:41584 "EHLO
-        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbhFDPPl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 11:15:41 -0400
-Received: by mail-wr1-f47.google.com with SMTP id h8so9647834wrz.8
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 08:13:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:content-transfer-encoding:date:message-id:cc:subject
-         :from:to:references:in-reply-to;
-        bh=MDeGfSOld04qEQUDmCqC+elxeKhTaZfQS1sxhyZdy0Y=;
-        b=d5MDz4Zcs9bzXxzzD6J6cD5EERCnWZkQiBtJR5sSos112Wxg0vjLR/3rJhzlGG3Yax
-         XEjP2GMX2gXwgxvVbWkfdSD3cmrnencbp5mtxnYQpq+8c7yyG7Hpx3UWr0RKFdjGTXe/
-         FnlW4x86W1l/I5Eb7Hmx74h9Gr/fs+zhuDxwkV4rQlWdko8pt+d6l5gtzogqaNv8txZ6
-         /9HRqo7iImdMUDw+2K6y+hsM6smVmOOqEQaVkwKJpgEj57jJgLD+PzjRGJoiT+IYfVxr
-         zu+avRfVJKF8JATHMUwXQzDCTMtorPLPrXjo8hBpOsUhggsjgNskOPyQyt0YIGw3LZeV
-         /gdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:date
-         :message-id:cc:subject:from:to:references:in-reply-to;
-        bh=MDeGfSOld04qEQUDmCqC+elxeKhTaZfQS1sxhyZdy0Y=;
-        b=pPUrloMBwww03MWQetXN14AMay8ojQVV5Ex4Xo27ItwKYtIO+s5lgzwPOw53JMlD9r
-         TrqS7I4BxmjNTHEdj3Dmgm2DmqQxcCs5kZKbx90DjwjaA+9QipjyXcUK7QFKYqLFPziC
-         DN+uM7TMt373GOlz23Ws7aLWG1h55TNY2xvhpcTrzfW1dh8KhjyvgUVpskoRQgcLjFsD
-         zsv12SPMt92OkgruOkrYd2cAz9IoQk7TcEfDIdMiIBCTH3am2NvA37ZGVZyuMIj/mjj/
-         b8m95D41ZoyWk2O0gNiYJIioWhEVc1PLnPkzLqcl4rAudQtqNH3Lp8f7gLvNCAOawqsv
-         j+Nw==
-X-Gm-Message-State: AOAM531clOGCHNR0KReUUPYC8zOTewIrqeqSAKD38LuhMqast3CdSzY8
-        Aptgwrvy96zcLcEEmvoOH+vMkQ==
-X-Google-Smtp-Source: ABdhPJxOOBkqtmSGRq5uBC35IeEVOExCMPn+wThxkwQOhppV58DDG+bt3IdDk6y9AOOuq35kRbLKrQ==
-X-Received: by 2002:a5d:504d:: with SMTP id h13mr4420402wrt.133.1622819574228;
-        Fri, 04 Jun 2021 08:12:54 -0700 (PDT)
-Received: from localhost (a109-49-46-234.cpe.netcabo.pt. [109.49.46.234])
-        by smtp.gmail.com with ESMTPSA id z19sm8247865wmf.31.2021.06.04.08.12.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 08:12:53 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Fri, 04 Jun 2021 16:12:52 +0100
-Message-Id: <CBUXIZOCOIXC.3V1ERV326ST89@arch-thunder>
-Cc:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] usb: isp1760: Fix meaningless check in
- isp1763_run()
-From:   "Rui Miguel Silva" <rui.silva@linaro.org>
-To:     "tongtiangen" <tongtiangen@huawei.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-References: <20210601100311.70200-1-tongtiangen@huawei.com>
- <YLjAweuyJXzDn9pe@kroah.com>
- <bb426fd3-ec56-ec95-0c6a-092627d547b6@huawei.com>
-In-Reply-To: <bb426fd3-ec56-ec95-0c6a-092627d547b6@huawei.com>
+        id S230208AbhFDPPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 11:15:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56188 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230105AbhFDPPt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 11:15:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFBBA613EA;
+        Fri,  4 Jun 2021 15:14:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622819643;
+        bh=BgofpLR6wCrzrMq7LSYJxxe3HeZuUiWYK7Ao7WgOsRs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GeXqTrVh/VR0EcTiJ+tZAhP54EskZmDWTB61rY+hNkBRM9gkZdM0GLv9hIp6AF90M
+         0B/iY7c7YPVCj5DvujbGHveQAEwrl91mIsmiru083cycGHx0w3ruzXL1/+y9/cLr2f
+         xTuXSdvZ4MYE1ZD3VJrnh37e3y9M/mTPOIaOJVfbsE8Fu7U5rm9yqFbdtAlHhqyzM4
+         kO+jqB+bvbfM41T1MyIWSMQWz79d+WIvSdyRo2syrBLA0JJqeltUBfYSDRKf6vELAW
+         srabbFsxzRZb0TXNo6TkNjAOOO4iwVpCLu7tXxZ3DrNsx1JEKKRr8SstRkzR5K2I8x
+         OHJqwkXSi3sYA==
+Date:   Fri, 4 Jun 2021 16:13:57 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>, paulmck@kernel.org,
+        stern@rowland.harvard.edu, parri.andrea@gmail.com,
+        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
+        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
+        linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <20210604151356.GC2793@willie-the-truck>
+References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
+ <20210604104359.GE2318@willie-the-truck>
+ <YLoPJDzlTsvpjFWt@hirez.programming.kicks-ass.net>
+ <20210604134422.GA2793@willie-the-truck>
+ <YLoxAOua/qsZXNmY@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLoxAOua/qsZXNmY@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-Managed to test this and looks good. Everything is working as
-expected.
+On Fri, Jun 04, 2021 at 03:56:16PM +0200, Peter Zijlstra wrote:
+> On Fri, Jun 04, 2021 at 02:44:22PM +0100, Will Deacon wrote:
+> > On Fri, Jun 04, 2021 at 01:31:48PM +0200, Peter Zijlstra wrote:
+> > > On Fri, Jun 04, 2021 at 11:44:00AM +0100, Will Deacon wrote:
+> > > > On Fri, Jun 04, 2021 at 12:12:07PM +0200, Peter Zijlstra wrote:
+> > > 
+> > > > > Usage of volatile_if requires the @cond to be headed by a volatile load
+> > > > > (READ_ONCE() / atomic_read() etc..) such that the compiler is forced to
+> > > > > emit the load and the branch emitted will have the required
+> > > > > data-dependency. Furthermore, volatile_if() is a compiler barrier, which
+> > > > > should prohibit the compiler from lifting anything out of the selection
+> > > > > statement.
+> > > > 
+> > > > When building with LTO on arm64, we already upgrade READ_ONCE() to an RCpc
+> > > > acquire. In this case, it would be really good to avoid having the dummy
+> > > > conditional branch somehow, but I can't see a good way to achieve that.
+> > > 
+> > > #ifdef CONFIG_LTO
+> > > /* Because __READ_ONCE() is load-acquire */
+> > > #define volatile_cond(cond)	(cond)
+> > > #else
+> > > ....
+> > > #endif
+> > > 
+> > > Doesn't work? Bit naf, but I'm thinking it ought to do.
+> > 
+> > The problem is with relaxed atomic RMWs; we don't upgrade those to acquire
+> > atm as they're written in asm, but we'd need volatile_cond() to work with
+> > them. It's a shame, because we only have RCsc RMWs on arm64, so it would
+> > be a bit more expensive.
+> 
+> Urgh, I see. Compiler can't really help in that case either I'm afraid.
+> They'll never want to modify loads that originate in an asm(). They'll
+> say to use the C11 _Atomic crud.
 
-On Fri Jun 4, 2021 at 3:09 AM WEST, tongtiangen wrote:
-> On 2021/6/3 19:45, Greg Kroah-Hartman wrote:
-> > On Tue, Jun 01, 2021 at 06:03:11PM +0800, Tong Tiangen wrote:
-> >> There's a meaningless check in isp1763_run. According to the
-> >> similar implement in isp1760_run, the proper check should remove
-> >> retval =3D 0;
+Indeed. That's partly what led me down the route of thinking about "control
+ordering" to sit between relaxed and acquire. So you have READ_ONCE_CTRL()
+instead of this, but then we can't play your asm goto trick.
 
-however I think a more descriptive changelog instead of comparing to
-similar function would be better, maybe something around:
+If we could push the memory access _and_ the branch down into the new
+volatile_if helper, a bit like we do for smp_cond_load_*(), that would
+help but it makes the thing a lot harder to use.
 
-"Remove attribution to retval before check, which make it completely
-meaningless, and does't check what it was supposed: the return
-value of the timed function to set up configuration flag."
+In fact, maybe it's actually necessary to bundle the load and branch
+together. I looked at some of the examples of compilers breaking control
+dependencies from memory-barriers.txt and the "boolean short-circuit"
+example seems to defeat volatile_if:
 
-> >>
-> >> Fixes: 60d789f3bfbb ("usb: isp1760: add support for isp1763")
-> >> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+void foo(int *x, int *y)
+{
+        volatile_if (READ_ONCE(*x) || 1 > 0)
+                WRITE_ONCE(*y, 42);
+}  
 
-With changelog changed you can add:
-Tested-by: Rui Miguel Silva <rui.silva@linaro.org>
-Reviewed-by: Rui Miguel Silva <rui.silva@linaro.org>
+Although we get a conditional branch emitted, it's headed by an immediate
+move instruction and the result of the load is discarded:
 
-------
-Cheers,
-     Rui
+  38:   d503233f        paciasp
+  3c:   b940001f        ldr     wzr, [x0]
+  40:   52800028        mov     w8, #0x1                        // #1
+  44:   b5000068        cbnz    x8, 50 <foo+0x18>
+  48:   d50323bf        autiasp
+  4c:   d65f03c0        ret
+  50:   d503249f        bti     j
+  54:   52800548        mov     w8, #0x2a                       // #42
+  58:   b9000028        str     w8, [x1]
+  5c:   d50323bf        autiasp
+  60:   d65f03c0        ret
 
-> >> ---
-> >>   drivers/usb/isp1760/isp1760-hcd.c | 1 -
-> >>   1 file changed, 1 deletion(-)
-> >>
-> >> diff --git a/drivers/usb/isp1760/isp1760-hcd.c b/drivers/usb/isp1760/i=
-sp1760-hcd.c
-> >> index 016a54ea76f4..27168b4a4ef2 100644
-> >> --- a/drivers/usb/isp1760/isp1760-hcd.c
-> >> +++ b/drivers/usb/isp1760/isp1760-hcd.c
-> >> @@ -1648,7 +1648,6 @@ static int isp1763_run(struct usb_hcd *hcd)
-> >>   	down_write(&ehci_cf_port_reset_rwsem);
-> >>   	retval =3D isp1760_hcd_set_and_wait(hcd, FLAG_CF, 250 * 1000);
-> >>   	up_write(&ehci_cf_port_reset_rwsem);
-> >> -	retval =3D 0;
-> >>   	if (retval)
-> >>   		return retval;
-> >>  =20
-> >> --=20
-> >> 2.18.0.huawei.25
-> >>
-> > Did you test this change to verify that the driver still works properly=
-?
-> > You are now checking something that never was checked before...
-> >
-> > thanks,
-> >
-> > greg k-h
-> > .
-> Sorry,  this fix was not send to Rui.
->  From the point of view of code logic, there should be a problem here. I=
-=20
-> don't have the actual hardware to verify whether it works properly. Rui=
-=20
-> may know if the patch affects the original workflow.
->
-> thanks
-> .
-> >
-
-
-
+Will
