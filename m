@@ -2,103 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2274F39C305
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4039F39C30A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231580AbhFDVzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 17:55:17 -0400
-Received: from mail-qk1-f176.google.com ([209.85.222.176]:46804 "EHLO
-        mail-qk1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhFDVzQ (ORCPT
+        id S230264AbhFDV45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 17:56:57 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:34533 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229930AbhFDV44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 17:55:16 -0400
-Received: by mail-qk1-f176.google.com with SMTP id 76so10796171qkn.13
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 14:53:13 -0700 (PDT)
+        Fri, 4 Jun 2021 17:56:56 -0400
+Received: by mail-ot1-f47.google.com with SMTP id v27-20020a056830091bb02903cd67d40070so7412960ott.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 14:54:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=5ALgaqHb4Ps4FEwMFfNaWGSDMjcH3JF+dL8YdWEXIPU=;
-        b=hwbq82k9vMgWFKloVlJ2XlYpNE6rWAmJsCAvCH1RcWEFw1WWNXtuikZXcPE4SzmqXw
-         RqkKYab5vj6MNgQoLiUWDhJLjnj1C3ZcWIPXDdBytN+3zTtFjp7JRK1+RgQX7+hRXz9O
-         RThWudmiBRFZUvFzZqZfSCsE9Gs06Z9EOqRfahuqGxCEqF7KuWt6slPLsvIga7KxRdMW
-         JPOk37kTve0uV88/+36KtMnNHoGqRfddzQBEGUTSnjQvU6/M8BFUdX+jIzWJbKeppH+7
-         grmIJJu3TQDh0hQmrTpomqz4mgdGr7LWktmw5X6GkhXEdikSuoZ3jFi34e0A6NZ2z8ET
-         C7EA==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=3DYU5t9nuzfAYYmhd6HSphs3gWfN50+sEv5DeMPpACI=;
+        b=D5ZewtXrnc2df+El9ZmfGqxur9CwKbv7QtTt11dEm496Zbj/vpTj51UtzaxzEAXBr6
+         L/eHi2e9aQCgj07t/dd+/GotaJPivYRZhFgcCJu2sGoi+af6wI6H/qjcliSmLtHLr3MF
+         rkfGTjIHp7q8uBfn3aCI/FAuKpt6Yx53rawIc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=5ALgaqHb4Ps4FEwMFfNaWGSDMjcH3JF+dL8YdWEXIPU=;
-        b=o500axQlnw/7lAkHmEL+94npuxUR4vJvB1N2K5Xm2dBBsPSiVbc/JF492yySyBQ6YS
-         kIpaZX7aylxHLHslUDtS0FMyXbNPCY6KTs1HXI3pakX0l8Yre5StlkaB/b+naGc4tFPG
-         Aok5lza3hjee0D340+NDVXFGFhsoMJEta8xrNLvxCmfGN8EyL7gS0n6QDj5CHQvE9soi
-         g1yY6cqRgTIZxTgSBH9Y4DqKdbaoUUE4LpL1O5IBHXcOvmtXoMQZYQz730XLK5yXaWXm
-         Wyki4TTGeeWhzNCRbkVW2Lh5nb3sZa5Ehu7YbkfUiFNzVwKdHzgejpWZJCm1VeiGyFjD
-         kJuQ==
-X-Gm-Message-State: AOAM532J8UzTTRYR0ogVGclldHBSmM3HHfyW+OoIlPXyJt6d0g8JaMfi
-        sOXrIEL0DxUXg4L6+gGs35Hiew==
-X-Google-Smtp-Source: ABdhPJzcLao8TwXtuyU+4+xr5mTTOURG8is2Ws5i5yjPMOn2BcNK9veCKI7sf81F5xj4tjiIM9T+jQ==
-X-Received: by 2002:a37:8507:: with SMTP id h7mr6224742qkd.277.1622843532434;
-        Fri, 04 Jun 2021 14:52:12 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id f13sm4728423qkk.107.2021.06.04.14.52.10
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Fri, 04 Jun 2021 14:52:12 -0700 (PDT)
-Date:   Fri, 4 Jun 2021 14:52:09 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Yang Shi <shy828301@gmail.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
-        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/7] mm/thp: fix __split_huge_pmd_locked() on shmem
- migration entry
-In-Reply-To: <CAHbLzkqYyoXm1sAq7yBi3s8PbY127VbbgNGZ-5e-zqZMzFOzWA@mail.gmail.com>
-Message-ID: <alpine.LSU.2.11.2106041429250.14037@eggly.anvils>
-References: <alpine.LSU.2.11.2106011353270.2148@eggly.anvils> <alpine.LSU.2.11.2106011403540.2148@eggly.anvils> <CAHbLzkobMaW15iN6y8Zot3kmpA1c4z2r6rSR7B9Pqwg5YY+hcA@mail.gmail.com> <alpine.LSU.2.11.2106031918400.12760@eggly.anvils>
- <CAHbLzkqYyoXm1sAq7yBi3s8PbY127VbbgNGZ-5e-zqZMzFOzWA@mail.gmail.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=3DYU5t9nuzfAYYmhd6HSphs3gWfN50+sEv5DeMPpACI=;
+        b=VK/Xr6VTgutf6twZD/G9PLOtKgg2/nudvwQDp5AVWmHNfE8P7dvRH+QYGY3ll8OMbt
+         1yEfUb5arEsPeUoTIGKhVFMp47j388b29/tDjpy2Gf63Mb3YfIrMOUYMU+nkE/bfn9/P
+         11t0gDFH3lmiOf2cCyBs9Y9Yql7/g/gnCAmqWOMGHXJYFnaVzJVHoxfhPrPSgt0YV58X
+         t6mQvpEqPJOQTZrsi68D7LCm7excbMYUqCLy9Ny/3o5g9vyGaiYaAmS6nw0EOSo5tdi0
+         bCp+UEbafx1ueJXilOkTkWDfQUi589uMK68sf+qn7DNEqZiXFftMuUYQWRBsY36numFj
+         e0uw==
+X-Gm-Message-State: AOAM532QVaXboVqpKlyhEDybHuO9knDE+VqJiiHiWf1M5kD+PebKC7By
+        zWz/obPvvva9iMDlzjJDMIUV6QZxW+sWIwgJyP+oLQ==
+X-Google-Smtp-Source: ABdhPJzIN2HfxqmojBCJq27yYqlMih2sw4bfo6I3KvfxVP/kroq1o9U9zXFAQ7Q5SdEXUbDSz1CAhW5dVGm8SShsQzY=
+X-Received: by 2002:a05:6830:3154:: with SMTP id c20mr5439195ots.233.1622843635345;
+ Fri, 04 Jun 2021 14:53:55 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 4 Jun 2021 21:53:54 +0000
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <YLhCGC/qgP6ESNl7@yoga>
+References: <1621596371-26482-1-git-send-email-mkshah@codeaurora.org>
+ <1621596371-26482-4-git-send-email-mkshah@codeaurora.org> <CAE-0n53ySKwDwzRYFYjnQnqVAujVrkik2U-PeCuS61xQU-hbWA@mail.gmail.com>
+ <YLUjbwFSJOSWS0IV@builder.lan> <CAE-0n53hdd1tEmYwTL0CNi=S6CUxRhWnkJz-KoTj2UnedNKXmg@mail.gmail.com>
+ <YLhCGC/qgP6ESNl7@yoga>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Fri, 4 Jun 2021 21:53:54 +0000
+Message-ID: <CAE-0n511_GHcyPDSeDaf5QSqVQqyHOqxJCGaSWNr=x9uotegLg@mail.gmail.com>
+Subject: Re: [PATCH v8 3/5] arm64: dts: qcom: sc7180: Enable SoC sleep stats
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Maulik Shah <mkshah@codeaurora.org>, evgreen@chromium.org,
+        mka@chromium.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, agross@kernel.org,
+        dianders@chromium.org, linux@roeck-us.net, rnayak@codeaurora.org,
+        lsrao@codeaurora.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Jun 2021, Yang Shi wrote:
-> On Thu, Jun 3, 2021 at 7:23 PM Hugh Dickins <hughd@google.com> wrote:
-> > On Thu, 3 Jun 2021, Yang Shi wrote:
-> > > On Tue, Jun 1, 2021 at 2:05 PM Hugh Dickins <hughd@google.com> wrote:
+Quoting Bjorn Andersson (2021-06-02 19:44:40)
+> On Wed 02 Jun 19:26 CDT 2021, Stephen Boyd wrote:
+>
+> > Quoting Bjorn Andersson (2021-05-31 10:57:03)
+> > > On Wed 26 May 18:30 CDT 2021, Stephen Boyd wrote:
+> > >
+> > > > Quoting Maulik Shah (2021-05-21 04:26:09)
+> > > > > @@ -3223,6 +3223,11 @@
+> > > > >                         #power-domain-cells = <1>;
+> > > > >                 };
+> > > > >
+> > > > > +               rpmh-sleep-stats@c3f0000 {
+> > > > > +                       compatible = "qcom,rpmh-sleep-stats";
+> > > > > +                       reg = <0 0x0c3f0000 0 0x400>;
+> > > > > +               };
+> > > > > +
+> > > >
+> > > > Does this need to be in DT? Can the sc7180-aoss-qmp driver use the
+> > > > aux-bus and stick the sleep stats device on there?
+> > > >
+> > >
+> > > The AOSS memory space has N chunks of "message ram", one is used for the
+> > > QMP protocol (presumably the APSS specific one), a different one is used
+> > > for the sleep stats.
+> > >
+> > > I presume we could have come up with a binding for the entire AOSS/AOP
+> > > and then describe (either implicit or explicitly) the QMP and
+> > > debug-stats under that.
+> > >
+> > > But we'd also have to come up with the same container-device for the RPM
+> > > case.
 > >
-> > The point here (see commit message above) is that some unrelated pmd
-> > migration entry could pass the is_huge_zero_pmd() test, which rushes
-> > off to use pmd_page() without even checking pmd_present() first.  And
-> > most of its users have, one way or another, checked pmd_present() first;
-> > but this place and a couple of others had not.
-> 
-> Thanks for the elaboration. Wondering whether we'd better add some
-> comments in the code? Someone may submit a fix patch by visual
-> inspection in the future due to missing these points.
+> > Because the rpm node doesn't include this region of memory today? I
+> > still fail to see why we're changing the existing binding and adding a
+> > DT node for this new region that is basically a debug feature.
+>
+> We're not changing the binding, the memory region for the "AOSS QMP"
+> thing was never larger than 0x400.
+>
+> 0x100000 is the size of all the AOSS "msg_ram" regions. We don't have
+> this whole thing described in a binding and we don't have an
+> implementation for the whole thing.
+>
+> If we're going for that we'd need to extend the binding to indicate
+> which of the msg_ram regions are used for APSS QMP and for debug stats
+> on particular platform (either by compatible, explicit properties or as
+> some subnodes).
 
-I don't really want to add a comment on this, there in zap_huge_pmd():
-I think it would be too much of a distraction from that dense code
-sequence.  And the comment will be more obvious in the commit message,
-once I split these is_huge_zero_pmd() fixes off from
-__split_huge_pmd_locked() as Kirill asked.
+Fair enough. At the least, can we change the name of the node then to
+'sram' or 'ram'? The 'rpmh-sleep-stats' node name is nonsense.
 
-But... now I think I'll scrap these parts of the patch, and instead
-just add a pmd_present() check into is_huge_zero_pmd() itself.
-pmd_present() is quick, but pmd_page() may not be: I may convert it
-to use a __read_only huge_pmd_pfn, or may not: I'll see how that goes.
+>
+>
+> That said, as I looked into my other objection, for the RPM
+> (non-hardened) case it seems that we're actually describing the RPM
+> region. So there it would make sense to describe it as such in DT - but
+> we don't have any other code (that I'm aware of) that would implement
+> the "qcom,<platform>-rpm".
+>
 
-Hugh
+I only half parsed this part. Are you saying that because we don't have
+a driver for qcom,<platform>-rpm we shouldn't keep it all within the rpm
+node?
