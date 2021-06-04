@@ -2,68 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D7BA39B0B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 05:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7013739B0BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 05:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbhFDDJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 23:09:34 -0400
-Received: from m12-13.163.com ([220.181.12.13]:42951 "EHLO m12-13.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229695AbhFDDJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 23:09:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=u8CRh
-        j9NpaNynNgg7yQQS2uC6hLXKsf/LnEpS7op8Ps=; b=CB6+FNRz1ov9FW7tYjI2D
-        Ujq9hLCfPez8RuLsPH8wFoFu6URp7nYrGsQAXaqEYOzDYGtjqYhrZ2u0CiREpkMk
-        zzOOfZLsO5vrlp8mHDBbN/3EYdWwEjk8UXVL1LC8eZUNBTLhacVBsOsFLz8yIas9
-        CXqXeMqe2uKzQf9JsV5fE4=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp9 (Coremail) with SMTP id DcCowAAnK7fqmLlglFyrEQ--.1587S2;
-        Fri, 04 Jun 2021 11:07:23 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     tzimmermann@suse.de, sam@ravnborg.org, gustavoars@kernel.org,
-        rppt@kernel.org, saeed.mirzamohammadi@oracle.com
-Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, lijian <lijian@yulong.com>
-Subject: [PATCH] video: fbdev: cirrusfb: Removed unnecessary 'return'
-Date:   Fri,  4 Jun 2021 11:06:24 +0800
-Message-Id: <20210604030624.122085-1-lijian_8010a29@163.com>
+        id S229828AbhFDDLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 23:11:51 -0400
+Received: from mailgw.kylinos.cn ([123.150.8.42]:47092 "EHLO nksmu.kylinos.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229718AbhFDDLu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 23:11:50 -0400
+X-UUID: da0bcbaed8fc4653ab6935434e2e54ea-20210604
+X-UUID: da0bcbaed8fc4653ab6935434e2e54ea-20210604
+X-User: luriwen@kylinos.cn
+Received: from localhost.localdomain [(116.128.244.169)] by nksmu.kylinos.cn
+        (envelope-from <luriwen@kylinos.cn>)
+        (Generic MTA)
+        with ESMTP id 5188936; Fri, 04 Jun 2021 11:09:45 +0800
+From:   Riwen Lu <luriwen@kylinos.cn>
+To:     jdelvare@suse.com, linux@roeck-us.net
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Riwen Lu <luriwen@kylinos.cn>, Xin Chen <chenxin@kylinos.cn>
+Subject: [PATCH v3] hwmon: (scpi-hwmon) shows the negative temperature properly
+Date:   Fri,  4 Jun 2021 11:09:59 +0800
+Message-Id: <20210604030959.736379-1-luriwen@kylinos.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DcCowAAnK7fqmLlglFyrEQ--.1587S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtFWxGrW3CF45Cw1fZry7KFg_yoWxAFX_Cr
-        12vr93WrWqkr1vkr10gFyayryvyFn8Zasav3ZFg34Syry7W34rZr18uw12qryagr92vFnr
-        WFyqgr4vywn5CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5rWrtUUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/xtbBEROnUFaEEmK0EAABsy
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
+The scpi hwmon shows the sub-zero temperature in an unsigned integer,
+which would confuse the users when the machine works in low temperature
+environment. This shows the sub-zero temperature in an signed value and
+users can get it properly from sensors.
 
-Removed unnecessary 'return' in void function init_vgachip().
+Signed-off-by: Riwen Lu <luriwen@kylinos.cn>
+Tested-by: Xin Chen <chenxin@kylinos.cn>
 
-Signed-off-by: lijian <lijian@yulong.com>
 ---
- drivers/video/fbdev/cirrusfb.c | 1 -
- 1 file changed, 1 deletion(-)
+Changes since v1:
+- Add judgment for sensor->info.class. If it is TEMPERATURE situation,
+  return the sensor value as a signed value, otherwise return it as a
+  unsigned value.
 
-diff --git a/drivers/video/fbdev/cirrusfb.c b/drivers/video/fbdev/cirrusfb.c
-index 93802abbbc72..e726e7ac3eeb 100644
---- a/drivers/video/fbdev/cirrusfb.c
-+++ b/drivers/video/fbdev/cirrusfb.c
-@@ -1662,7 +1662,6 @@ static void init_vgachip(struct fb_info *info)
+Changes since v2:
+- Add a typecast u64 to s64 when it is a temperature value.
+- Add a comment ahead of the if statement.
+- Remove the unnecessary 'else' statement.
+---
+ drivers/hwmon/scpi-hwmon.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/drivers/hwmon/scpi-hwmon.c b/drivers/hwmon/scpi-hwmon.c
+index 25aac40f2764..919877970ae3 100644
+--- a/drivers/hwmon/scpi-hwmon.c
++++ b/drivers/hwmon/scpi-hwmon.c
+@@ -99,6 +99,15 @@ scpi_show_sensor(struct device *dev, struct device_attribute *attr, char *buf)
  
- 	/* misc... */
- 	WHDR(cinfo, 0);	/* Hidden DAC register: - */
--	return;
+ 	scpi_scale_reading(&value, sensor);
+ 
++	/*
++	 * Temperature sensor values are treated as signed values based on
++	 * observation even though that is not explicitly specified, and
++	 * because an unsigned u64 temperature does not really make practical
++	 * sense especially when the temperature is below zero degrees Celsius.
++	 */
++	if (sensor->info.class == TEMPERATURE)
++		return sprintf(buf, "%lld\n", (s64)value);
++
+ 	return sprintf(buf, "%llu\n", value);
  }
  
- static void switch_monitor(struct cirrusfb_info *cinfo, int on)
 -- 
 2.25.1
 
 
+No virus found
+		Checked by Hillstone Network AntiVirus
