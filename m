@@ -2,139 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 740AA39B4F1
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D99EB39B4FB
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230158AbhFDIg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 04:36:59 -0400
-Received: from mail-wm1-f52.google.com ([209.85.128.52]:41827 "EHLO
-        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbhFDIg6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 04:36:58 -0400
-Received: by mail-wm1-f52.google.com with SMTP id l11-20020a05600c4f0bb029017a7cd488f5so5167940wmq.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 01:35:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2b0T1Sxej99eruw62S3x3NVpggwE8s3zSnQ/kAj+v5M=;
-        b=F+l7vS9mspnDxjzmugKkd+3cOYdAiz3Erk7D6qZf8mtnEAKcwuw6kazm9hz1EFahOj
-         clkHrBRMDV7JNniUyj7E+Zr1Ez+gjqJKcoK1Ave4pgwXrt8T8o2EJDE91zH03roHH8Zv
-         GhJRXKGqnxbpkB1EgHfVeKjfvqpBj/sfNGGiKpNwIhkJmdTZhU44hFtAM25UZZHt9SUn
-         APUdeCcuIYV9CIFCwJuEONuTVbfnzapTNoKmDciegRy20F9QOfncCDn7LidyyFw5/TKQ
-         17DK50ke10Gjx/am5SiU375gKdMyyz5cG8oeAkca1xK0ghQIMNGAiwYk+b+WJsaovIEd
-         GZYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2b0T1Sxej99eruw62S3x3NVpggwE8s3zSnQ/kAj+v5M=;
-        b=gC7Xhq0tOMbHUKNRbY5iHE+1gW3ahTVVel6BFpP4b8Xu4SJ2sr0tB9ycmzUUCiJ0vY
-         NGO2OGk1iCOjiGf6Ti1kBLmeOQ8rEFrJG4MuFGkn2B4K4hAG+xYgCVacq4DHQ/j4sw5X
-         rWYe29nInf/jvq5ldGoaluLCZX1n7lA+cqw5nhxxOqR513Rcm1EMOcxSK4BVv0FWR7Bx
-         2J2WHst2V/Wyhp4SsqlNduZezgDnHKXLSiP73KFYD02jTVm5pj9PDg1Gnyrj0TfpE7sO
-         kEGFZMNVazZqjje8I5xMfEdJiqEip3hfZpRa1T3lq9mvuf8HPYYaTBv53ThKiffTj85r
-         unqw==
-X-Gm-Message-State: AOAM531MQQky22Ohxn8Yc3qHgdfE5+vJZmp5rSqDSoQ+Irhzr82NeH1u
-        3t2u/npKdKpm+m8Yz+/qofMFhV62fiQCu6hjA37eZg==
-X-Google-Smtp-Source: ABdhPJygKvNG3LnT5cEwEmnb0WBAB/6YQwR5YDckdTcqzHT/4lbxHM22LC33BAEinQLOVn3vZenUVC6Vj3Ua9cAVSmQ=
-X-Received: by 2002:a7b:c44f:: with SMTP id l15mr2466292wmi.151.1622795651753;
- Fri, 04 Jun 2021 01:34:11 -0700 (PDT)
+        id S230055AbhFDIjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 04:39:46 -0400
+Received: from mga06.intel.com ([134.134.136.31]:50572 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229956AbhFDIjq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 04:39:46 -0400
+IronPort-SDR: uLbcEjWgX2ZijfDg376+/Dz70qKitHflCob+7PWMmxr4d8efxQNISGGG5zjZ2YfgpNaAPKbf8g
+ WjChheiKfjDw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="265415523"
+X-IronPort-AV: E=Sophos;i="5.83,247,1616482800"; 
+   d="scan'208";a="265415523"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2021 01:37:59 -0700
+IronPort-SDR: AclLJia9BD0aIRsL+zozbyKJTa3DCdxowysJiikvTY/1MDyAvZt7qqiiQje0PVoYbvgDjdSGId
+ X96xh0/Sr7KA==
+X-IronPort-AV: E=Sophos;i="5.83,247,1616482800"; 
+   d="scan'208";a="480561157"
+Received: from xingzhen-mobl.ccr.corp.intel.com (HELO [10.238.5.220]) ([10.238.5.220])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2021 01:37:55 -0700
+Subject: Re: [LKP] Re: [mm/gup] 57efa1fe59: will-it-scale.per_thread_ops -9.2%
+ regression
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        kernel test robot <oliver.sang@intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
+        Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Hugh Dickins <hughd@google.com>, Jann Horn <jannh@google.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>
+References: <20210525031636.GB7744@xsang-OptiPlex-9020>
+ <CAHk-=whTEC_GVYu=WfvUagNvHdoTALEDg8uqK3V6aMDwg2KMRA@mail.gmail.com>
+From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Message-ID: <2a1977e1-4fd1-065a-214f-51c6b40cc3d2@linux.intel.com>
+Date:   Fri, 4 Jun 2021 16:37:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210604052548.1889909-1-davidgow@google.com> <CANpmjNP3kK=YWEacvPr5RRen4YkSKL9akLn06Eq6H+azqSGimA@mail.gmail.com>
-In-Reply-To: <CANpmjNP3kK=YWEacvPr5RRen4YkSKL9akLn06Eq6H+azqSGimA@mail.gmail.com>
-From:   David Gow <davidgow@google.com>
-Date:   Fri, 4 Jun 2021 16:34:00 +0800
-Message-ID: <CABVgOSkEGWZx=Cojx4d9+VdjFHNN4=HVmvcO7k6tZ_w5gcA0yg@mail.gmail.com>
-Subject: Re: [PATCH] kasan: test: Improve failure message in KUNIT_EXPECT_KASAN_FAIL()
-To:     Marco Elver <elver@google.com>
-Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Daniel Axtens <dja@axtens.net>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHk-=whTEC_GVYu=WfvUagNvHdoTALEDg8uqK3V6aMDwg2KMRA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 4, 2021 at 3:55 PM Marco Elver <elver@google.com> wrote:
->
-> On Fri, 4 Jun 2021 at 07:26, 'David Gow' via kasan-dev
-> <kasan-dev@googlegroups.com> wrote:
-> > The KUNIT_EXPECT_KASAN_FAIL() macro currently uses KUNIT_EXPECT_EQ() to
-> > compare fail_data.report_expected and fail_data.report_found. This
-> > always gave a somewhat useless error message on failure, but the
-> > addition of extra compile-time checking with READ_ONCE() has caused it
-> > to get much longer, and be truncated before anything useful is displayed.
-> >
-> > Instead, just check fail_data.report_found by hand (we've just test
-> > report_expected to 'true'), and print a better failure message with
-> > KUNIT_FAIL()
-> >
-> > Beforehand, a failure in:
-> > KUNIT_EXPECT_KASAN_FAIL(test, ((volatile char *)area)[3100]);
-> > would looked like:
-> > [22:00:34] [FAILED] vmalloc_oob
-> > [22:00:34]     # vmalloc_oob: EXPECTATION FAILED at lib/test_kasan.c:991
-> > [22:00:34]     Expected ({ do { extern void __compiletime_assert_705(void) __attribute__((__error__("Unsupported access size for {READ,WRITE}_ONCE()."))); if (!((sizeof(fail_data.report_expected) == sizeof(char) || sizeof(fail_data.repp
-> > [22:00:34]     not ok 45 - vmalloc_oob
-> >
-> > With this change, it instead looks like:
-> > [22:04:04] [FAILED] vmalloc_oob
-> > [22:04:04]     # vmalloc_oob: EXPECTATION FAILED at lib/test_kasan.c:993
-> > [22:04:04]     KASAN failure expected in "((volatile char *)area)[3100]", but none occurred
-> > [22:04:04]     not ok 45 - vmalloc_oob
-> >
-> > Signed-off-by: David Gow <davidgow@google.com>
-> > ---
-> >
-> > Stumbled across this because the vmalloc_oob test is failing (i.e.,
-> > KASAN isn't picking up an error) under qemu on my system, and the
-> > message above was horrifying. (I'll file a Bugzilla bug for the test
-> > failure today.)
-> >
-> > Cheers,
-> > -- David
-> >
-> >  lib/test_kasan.c | 8 +++++---
-> >  1 file changed, 5 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-> > index cacbbbdef768..deda13c9d9ff 100644
-> > --- a/lib/test_kasan.c
-> > +++ b/lib/test_kasan.c
-> > @@ -98,9 +98,11 @@ static void kasan_test_exit(struct kunit *test)
-> >         barrier();                                                      \
-> >         expression;                                                     \
-> >         barrier();                                                      \
-> > -       KUNIT_EXPECT_EQ(test,                                           \
-> > -                       READ_ONCE(fail_data.report_expected),           \
->
-> What do we have fail_data.report_expected for? Could we remove it now?
-> I think it's unused now.
->
+Hi Linus,
 
-I thought this was being used in kasan_update_kunit_status() (in
-mm/kasan/report.c), but it looks like I was mistaken. We should be
-able to get rid of it, then/
-
-> > -                       READ_ONCE(fail_data.report_found));             \
-> > +       if (READ_ONCE(fail_data.report_found) == false) {               \
+On 5/25/2021 11:11 AM, Linus Torvalds wrote:
+> On Mon, May 24, 2021 at 5:00 PM kernel test robot <oliver.sang@intel.com> wrote:
+>> FYI, we noticed a -9.2% regression of will-it-scale.per_thread_ops due to commit:
+>> commit: 57efa1fe5957694fa541c9062de0a127f0b9acb0 ("mm/gup: prevent gup_fast from racing with COW during fork")
+> Hmm. This looks like one of those "random fluctuations" things.
 >
-> if (!READ_ONCE(fail_data.report_found)) {
-> ?
+> It would be good to hear if other test-cases also bisect to the same
+> thing, but this report already says:
 >
-
-I'll change this for v2.
-
-> > +               KUNIT_FAIL(test, KUNIT_SUBTEST_INDENT "KASAN failure "  \
-> > +                               "expected in \"" #expression            \
-> > +                                "\", but none occurred");              \
-> > +       }                                                               \
+>> In addition to that, the commit also has significant impact on the following tests:
+>>
+>> +------------------+---------------------------------------------------------------------------------+
+>> | testcase: change | will-it-scale: will-it-scale.per_thread_ops 3.7% improvement                    |
+> which does kind of reinforce that "this benchmark gives unstable numbers".
 >
-> Thanks,
-> -- Marco
+> The perf data doesn't even mention any of the GUP paths, and on the
+> pure fork path the biggest impact would be:
+>
+>   (a) maybe "struct mm_struct" changed in size or had a different cache layout
+I move "write_protect_seq" to the tail of the "struct mm_struct", the 
+regression reduced to -3.6%. The regression should relate to the cache 
+layout.
+=========================================================================================
+tbox_group/testcase/rootfs/kconfig/compiler/nr_task/mode/test/cpufreq_governor/ucode:
+lkp-icl-2sp1/will-it-scale/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/50%/thread/mmap1/performance/0xb000280
+
+commit:
+   c28b1fc70390df32e29991eedd52bd86e7aba080
+   57efa1fe5957694fa541c9062de0a127f0b9acb0
+   f6a9c27882d51ff551e15522992d3725c342372d  (the test patch)
+
+c28b1fc70390df32 57efa1fe5957694fa541c9062de f6a9c27882d51ff551e15522992
+---------------- --------------------------- ---------------------------
+          %stddev     %change         %stddev     %change %stddev
+              \          |                \          | \
+     341938            -9.0%     311218 ±  2%      -3.6% 329513        
+will-it-scale.48.threads
+       7123            -9.0%       6483 ±  2%      -3.6% 6864        
+will-it-scale.per_thread_ops
+     341938            -9.0%     311218 ±  2%      -3.6% 329513        
+will-it-scale.workload
+
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 915f4f100383..34bb2a01806c 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -447,13 +447,6 @@ struct mm_struct {
+                  */
+                 atomic_t has_pinned;
+
+-               /**
+-                * @write_protect_seq: Locked when any thread is write
+-                * protecting pages mapped by this mm to enforce a later 
+COW,
+-                * for instance during page table copying for fork().
+-                */
+-               seqcount_t write_protect_seq;
+-
+  #ifdef CONFIG_MMU
+                 atomic_long_t pgtables_bytes;   /* PTE page table pages */
+  #endif
+@@ -564,6 +557,12 @@ struct mm_struct {
+  #ifdef CONFIG_IOMMU_SUPPORT
+                 u32 pasid;
+  #endif
++                /**
++                 * @write_protect_seq: Locked when any thread is write
++                 * protecting pages mapped by this mm to enforce a 
+later COW,
++                 * for instance during page table copying for fork().
++                 */
++                seqcount_t write_protect_seq;
+         } __randomize_layout;
+
+         /*
+
+>
+>   (b) two added (nonatomic) increment operations in the fork path due
+> to the seqcount
+>
+> and I'm not seeing what would cause that 9% change. Obviously cache
+> placement has done it before.
+>
+> If somebody else sees something that I'm missing, please holler. But
+> I'll ignore this as "noise" otherwise.
+>
+>              Linus
+> _______________________________________________
+> LKP mailing list -- lkp@lists.01.org
+> To unsubscribe send an email to lkp-leave@lists.01.org
+
+-- 
+Zhengjun Xing
+
