@@ -2,96 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D4539C166
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 551A039C167
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231462AbhFDUf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 16:35:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36994 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231419AbhFDUfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 16:35:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FF6E613F9;
-        Fri,  4 Jun 2021 20:34:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622838849;
-        bh=2AiZEPHkUnZx2ewkkf5d1xYs/yUhMVNOUw0fcFqyBmI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f32hTvOgobE4apMcy5lO1Y43r0LVxS+7/L+pe4MxaMsGb8UH0AAx3ZYdjEGoHj0+L
-         noFn6MAYVL3l/T6/oOAld1oub/UVxcKdsWg+QBDlS73ajX/zsNhOg9CBnueVoB8A2F
-         bxv44Dh3rDq9Hsgq7hXLNNINI4fukVOo6FO4m1NifjPLzQ9uoMD6oeK8vF9Mi/06qA
-         nyPNgEVawoNiurnoQZ4DZlEmlI3cq+D/Uzvowat2Uq3ovUPgwZBW1d4QmkASxnXgGJ
-         1MI3OLkhuc9FcubFDtz7MXIvjunwbzdy8iG1+nPqQpnAUM9MOL2KifNhgttUkQk2Et
-         57EhVPv9nkQcw==
-Date:   Fri, 4 Jun 2021 22:34:06 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Roja Rani Yarubandi <rojay@codeaurora.org>
-Cc:     swboyd@chromium.org, dianders@chromium.org,
-        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
-        mka@chromium.org, skananth@codeaurora.org,
-        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
-        rnayak@codeaurora.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sumit.semwal@linaro.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH V11 2/2] i2c: i2c-qcom-geni: Suspend and resume the bus
- during SYSTEM_SLEEP_PM ops
-Message-ID: <YLqOPhjhRzWU2hCZ@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>, swboyd@chromium.org,
-        dianders@chromium.org, saiprakash.ranjan@codeaurora.org,
-        gregkh@linuxfoundation.org, mka@chromium.org,
-        skananth@codeaurora.org, msavaliy@qti.qualcomm.com,
-        skakit@codeaurora.org, rnayak@codeaurora.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sumit.semwal@linaro.org, linux-media@vger.kernel.org
-References: <20210525131051.31250-1-rojay@codeaurora.org>
- <20210525131051.31250-3-rojay@codeaurora.org>
+        id S231239AbhFDUh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 16:37:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229913AbhFDUhW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 16:37:22 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935BEC061766
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 13:35:19 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso5712440pjx.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 13:35:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/LF0w3ZuuV4uKZVE77K5/SgS+KwM0fDxpNt19bsUYJM=;
+        b=T58CnhvoMWwCn0bbPqNWxSRKvP434+uc9yZ6b5QXY2l5JE2w8dRFBZN33lp9oJZUKf
+         yEMIYQAt+W1Kpcx8BDudGkLnVhrTMBT7Tk+KOM98HdMveCvWwpyjORZCXa/nqxrVgrR3
+         lqyY8j3gctlmBuGkbb7d0iQfnqi/Kww1ZaT9H/jJH969/rdOn/CQ7wTsRAMMPPvq+z65
+         XuxpBLFTGIZAx+P/ejpwjS1LhGDsGjK+RqYvDSXlRvuf3hHOwJ0ZJ+4WqhALr+4WVOsI
+         FELFflq7pYpnb7M8W+hqBrWzAn0bukTY4Ht4vU2tg5JV1kH5qR4XtHRGqxItaM8ibOiv
+         b+bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/LF0w3ZuuV4uKZVE77K5/SgS+KwM0fDxpNt19bsUYJM=;
+        b=NtbkQIdSaL1Yt7ZF8KrVIhobWZiW/FAmkPPLzhh2ITpTQkvH0B/gzKO2d66ysgQIFo
+         +ttpFEIe5xwsGFXX91/Zz2iGog7uNIkXvyluwMMjp5Su01nJ1latwS0MrJNT/zXf0g2W
+         PMpmWTs79cSfJ2j6pbyUvCOVHDKEPyqXTamcRy2IfVr6xNjbJYd0bEUATdQ5SlbRUE4i
+         hhDsUPcjT4cLtmxjmScX6bOT0NLcV8NSmGK2v+Rz+gRgDMBfvWt7Fr/kIuOTmH8Kahno
+         mn7AEPwHKu61iMOtMrl1tFydJUZsA9Q8KoyMIIHFU2R/jO21rUJZjLv308hBY15gLo13
+         ZctQ==
+X-Gm-Message-State: AOAM531Boaw+gt2RqO/5f5W46F25lhxcTnPvj0M5Nd7DqtikdAHHyBJI
+        pOt5Hai7dPgnavNfneic7Qs=
+X-Google-Smtp-Source: ABdhPJypjvGssCA5hHYSUIGwDK2ejRTX84JJX9jwU6SOoC1y+dS2NZ0w9LXvF/FTi3diMKY3kEu91A==
+X-Received: by 2002:a17:902:eac1:b029:108:4a7c:ff2d with SMTP id p1-20020a170902eac1b02901084a7cff2dmr6181973pld.62.1622838916660;
+        Fri, 04 Jun 2021 13:35:16 -0700 (PDT)
+Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
+        by smtp.gmail.com with ESMTPSA id z23sm5262455pjh.44.2021.06.04.13.35.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 13:35:15 -0700 (PDT)
+From:   Yang Shi <shy828301@gmail.com>
+To:     ziy@nvidia.com, nao.horiguchi@gmail.com, mhocko@suse.com,
+        kirill.shutemov@linux.intel.com, hughd@google.com,
+        akpm@linux-foundation.org
+Cc:     shy828301@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: mempolicy: don't have to split pmd for huge zero page
+Date:   Fri,  4 Jun 2021 13:35:13 -0700
+Message-Id: <20210604203513.240709-1-shy828301@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Rpn7vwPFno/zgp/I"
-Content-Disposition: inline
-In-Reply-To: <20210525131051.31250-3-rojay@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When trying to migrate pages to obey mempolicy, the huge zero page is
+split then the page table walk at PTE level just skips zero page.  So it
+seems pointless to split huge zero page, it could be just skipped like
+base zero page.
 
---Rpn7vwPFno/zgp/I
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Set ACTION_CONTINUE to prevent the walk_page_range() split the pmd for
+this case.
 
-On Tue, May 25, 2021 at 06:40:51PM +0530, Roja Rani Yarubandi wrote:
-> Mark bus as suspended during system suspend to block the future
-> transfers. Implement geni_i2c_resume_noirq() to resume the bus.
->=20
-> Fixes: 37692de5d523 ("i2c: i2c-qcom-geni: Add bus driver for the Qualcomm=
- GENI I2C controller")
-> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+Signed-off-by: Yang Shi <shy828301@gmail.com>
+---
+ mm/mempolicy.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-Applied to for-current, thanks!
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index b5f4f584009b..205c1a768775 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -436,7 +436,8 @@ static inline bool queue_pages_required(struct page *page,
+ 
+ /*
+  * queue_pages_pmd() has four possible return values:
+- * 0 - pages are placed on the right node or queued successfully.
++ * 0 - pages are placed on the right node or queued successfully, or
++ *     special page is met, i.e. huge zero page.
+  * 1 - there is unmovable page, and MPOL_MF_MOVE* & MPOL_MF_STRICT were
+  *     specified.
+  * 2 - THP was split.
+@@ -460,8 +461,7 @@ static int queue_pages_pmd(pmd_t *pmd, spinlock_t *ptl, unsigned long addr,
+ 	page = pmd_page(*pmd);
+ 	if (is_huge_zero_page(page)) {
+ 		spin_unlock(ptl);
+-		__split_huge_pmd(walk->vma, pmd, addr, false, NULL);
+-		ret = 2;
++		walk->action = ACTION_CONTINUE;
+ 		goto out;
+ 	}
+ 	if (!queue_pages_required(page, qp))
+@@ -488,7 +488,8 @@ static int queue_pages_pmd(pmd_t *pmd, spinlock_t *ptl, unsigned long addr,
+  * and move them to the pagelist if they do.
+  *
+  * queue_pages_pte_range() has three possible return values:
+- * 0 - pages are placed on the right node or queued successfully.
++ * 0 - pages are placed on the right node or queued successfully, or
++ *     special page is met, i.e. zero page.
+  * 1 - there is unmovable page, and MPOL_MF_MOVE* & MPOL_MF_STRICT were
+  *     specified.
+  * -EIO - only MPOL_MF_STRICT was specified and an existing page was already
+-- 
+2.26.2
 
-
---Rpn7vwPFno/zgp/I
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmC6jj4ACgkQFA3kzBSg
-KbZnWw/9FlN8NE9hRxiqe8/TEjzZVm94y1qmu5YlSmu2P8EGmTaj8UDyRDelICZI
-6w/L1OwJTf6tBquWwTnvyDLNO7SVr8Hj3LjJ/8VKD48O1uTw+YSheh43GgODZkkB
-Ms6MaX71/i7p2gbDIJtQedNJXPuZnsZyOpJSSvmqhJ0/XS4sYvbIdAN4ntNds8Bt
-sUJQppRSn7BKuTS+5a1bAkH+9teKX/WLm2fXHAK69DlzVoVrN+ZxUtPIuPD/1B+R
-BO0KDugrMB2pkI0D5sOzRMzHICxf2uzrS4w4hjRwysbGiRuoEUppUaomjTsy/U1A
-AhwUSX3oNXA0uIqMOkTwa+cQ40QXZgNwQAl79WauNXHeULIr3raowCX/+SnC4Bbj
-S0gexBd2YKC3OxIgeOFG3JQX7QB+a0z/Qx7olYJaxe3Q9ol00pNqNR56+I/TFe4c
-LGg6Zg+TjRGcoAmRZjQn5zlGHxtlBUUWzVe+9+DUjRYJe0Th/zIrohxOCENjSGvO
-6tW1uQPF9UM663LgAtJxd3L6Vo2t0D0XNWscIhbczifRxhD9QcElkN6UqKD7nBVq
-g2ne5Rifjbw5lZxxek3VpqXzQOGjnwbOVDroBlQ0LHWjQO6ll0l9XWPTWf1ViheQ
-Q3HUCOQCkp5Wxcp4Pr7wQQbMIC21v+FKetIsUTc8BVb5bEorazo=
-=ZbW5
------END PGP SIGNATURE-----
-
---Rpn7vwPFno/zgp/I--
