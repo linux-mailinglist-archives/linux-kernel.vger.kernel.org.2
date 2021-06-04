@@ -2,99 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4494439C3B4
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 01:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2524139C3B8
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 01:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231773AbhFDXJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 19:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbhFDXJq (ORCPT
+        id S231618AbhFDXMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 19:12:22 -0400
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:45842 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229853AbhFDXMU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 19:09:46 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19709C061766
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 16:07:50 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id d21so11315411oic.11
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 16:07:50 -0700 (PDT)
+        Fri, 4 Jun 2021 19:12:20 -0400
+Received: by mail-oi1-f181.google.com with SMTP id w127so11301590oig.12
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 16:10:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=OB03ucavBIv1Fu1kgEzILIrohfiYiezA2Xid0FDJmDk=;
-        b=HeKtaLiCGa6paPflJcTEDWoHzS6FrNqO1m/tyMIG/il/3UkirSRcdhIdMBKROLQAJr
-         iyh2vXp58k6pThN6ZLrKPK7a8aioKhFv+3Q6R+iBd2S/rUI/9bg1ozNi682XrtPAmtjQ
-         pK4InDy+1uObK5Oea/nx8znyGenF7ttf/X0qCtBDhsduxhbvZEFPIwJ9UOsatiB0KcGB
-         azLOCYZijyxhH7VwlE0SwgG4M1Y9ZbZyFrOt/pP+6rJAyFcaON7yo4he7Akbbf/nuq2S
-         tulPGYOzHd73IPXGeR1yxRoITA5oRyKTOYLx7Y129QHcfCFBHdOE2wMPDVMUgjn04NO2
-         cV6Q==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=du6aRGfX4SI86kYShqUWR1TDu1w5UdQuTWF6MyIxIRY=;
+        b=NbrraKsJQeXPFVM7Eorm2jhGhe/xf/js0Fuy/gLvHQA/P57w7ccteCjE4aGRLEnr2Z
+         dlI0ptIoyfAJutgfWZj13qCquhp/o/It7Ky8uQ7O3DJLqdIOrDHVDKXEn5BBxLwtz76j
+         pRYW3LQAEXydTU36si0M/QHWzem//g1AG6lmU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=OB03ucavBIv1Fu1kgEzILIrohfiYiezA2Xid0FDJmDk=;
-        b=od3y45izbmLazRWbLkVeWAI3WBhXNo+E/mgl/Ux6BtfIipnAs524fkWWzdLwsi0//Y
-         aYN1BIZQWesG0NXn2ObgCShy3+bL8B5MUcc8RoRPp7CaAxTupgm/25XDfpJ5uK8ba5qg
-         e1AvOXmkk3WTWGt0HFJiqnVNkSLLhaSS8T0l8wJhaWanmS276cqS629wX13ZWmcLg5Sk
-         N+LJfzMhGTs8pyPmIQPg1Cl7XbcjFOHEIfsy3bZvtMeA5OrDT1hqBh99DCSQ1BNU0aFh
-         LACZ13BRwDceZQ4q6fXluR8vrsgItG2ukSeyJdPuR2vKXF6qqURnFAa9y+LHciLMvDWr
-         aNzQ==
-X-Gm-Message-State: AOAM530bEo8XzDNFGxwFVv1TkYL6sI9Vgz7hk/FabVdrFj9JW6vAju+s
-        lklJ4sbblVsa6eUvlmrNCX4AUA==
-X-Google-Smtp-Source: ABdhPJwycqr3uyfkRirLbiJnEhGc0fdxusGBrAkbhpvq6AIbRai4YVZslFrHUpaMXjKSGuSSvuPQsA==
-X-Received: by 2002:aca:1e0b:: with SMTP id m11mr12204212oic.45.1622848069276;
-        Fri, 04 Jun 2021 16:07:49 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id l9sm715795oou.43.2021.06.04.16.07.47
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Fri, 04 Jun 2021 16:07:48 -0700 (PDT)
-Date:   Fri, 4 Jun 2021 16:07:46 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
-        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/7] mm/thp: unmap_mapping_page() to fix THP
- truncate_cleanup_page()
-In-Reply-To: <20210604163933.h6dj6cgr6tudpprd@box.shutemov.name>
-Message-ID: <alpine.LSU.2.11.2106041601050.14037@eggly.anvils>
-References: <alpine.LSU.2.11.2106011353270.2148@eggly.anvils> <alpine.LSU.2.11.2106011413280.2148@eggly.anvils> <20210604163933.h6dj6cgr6tudpprd@box.shutemov.name>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=du6aRGfX4SI86kYShqUWR1TDu1w5UdQuTWF6MyIxIRY=;
+        b=PMlKh/l/X2iNsxPQsqt1E/m3rkj7u2O2BjSyNsS+JH3C6mRZh0LG9g6pWJxBtiS1Sz
+         z3SuRrz8Be0fQQM0NIgOJmFmmWIp0g4dwAT+87dKnCZ6TlFHifzHfyMBH6lSwbudk29G
+         rxWKe7DHY1PIWZHIKA24HWeC0YIAfqhHoqpr8UnvaTs2fhYwSqN/zE2JEmL1bbrGdEi3
+         Emgcfg0Ry/c04RZvnl5w5Lz6gEdXp4WjrXumEHLvN4w4BRVswt5a0snzOTmLhiRmOfzt
+         2qNjcEavVR2nHP9g8G4HUOoU1Xo5jPkKyLEiwSDiegLy9nve0x8m3Q/KUUb+AjpSbtvv
+         Oneg==
+X-Gm-Message-State: AOAM533LkOoGJ/TCkn4K+Md3vK3gVtlp3ZOxurkT+UV/TYSWxb/NplhM
+        CMirxn9vGGiEZtaX4E/GS9vbUGfx/0Ew19To6oYbdg==
+X-Google-Smtp-Source: ABdhPJzshQRhetJ7fG/nA9zbn3qMtWPZUUgQnF9azZgf7YfHohZsKcLRZN75T8UorNN3FrOy5Y8IGzU4bgnYkfqaWUg=
+X-Received: by 2002:aca:654d:: with SMTP id j13mr12631266oiw.125.1622848161433;
+ Fri, 04 Jun 2021 16:09:21 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 4 Jun 2021 23:09:21 +0000
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <202106050612.FyaqyhTf-lkp@intel.com>
+References: <20210604212752.3547301-1-swboyd@chromium.org> <202106050612.FyaqyhTf-lkp@intel.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Fri, 4 Jun 2021 23:09:21 +0000
+Message-ID: <CAE-0n50aeyb4g8f4aGhFWB4JFNue__CL8OPM0m3bUdEhMV1UCw@mail.gmail.com>
+Subject: Re: [PATCH] i2c: core: Disable client irq on reboot/shutdown
+To:     Wolfram Sang <wsa-dev@sang-engineering.com>,
+        kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Jun 2021, Kirill A. Shutemov wrote:
-> 
-> I think adding support for THP in try_to_unmap_one() is the most
-> future-proof way. We would need it there eventually.
+Quoting kernel test robot (2021-06-04 16:01:32)
+> Hi Stephen,
+>
+> I love your patch! Yet something to improve:
+>
+> [auto build test ERROR on 8124c8a6b35386f73523d27eacb71b5364a68c4c]
+>
+> url:    https://github.com/0day-ci/linux/commits/Stephen-Boyd/i2c-core-Disable-client-irq-on-reboot-shutdown/20210605-052848
+> base:   8124c8a6b35386f73523d27eacb71b5364a68c4c
+> config: nios2-randconfig-s031-20210604 (attached as .config)
+> compiler: nios2-linux-gcc (GCC) 9.3.0
+> reproduce:
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # apt-get install sparse
+>         # sparse version: v0.6.3-341-g8af24329-dirty
+>         # https://github.com/0day-ci/linux/commit/2fb1417bc9d82a335db5ed8a1446be74bffae440
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Stephen-Boyd/i2c-core-Disable-client-irq-on-reboot-shutdown/20210605-052848
+>         git checkout 2fb1417bc9d82a335db5ed8a1446be74bffae440
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' W=1 ARCH=nios2
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>    drivers/i2c/i2c-core-base.c: In function 'i2c_device_shutdown':
+> >> drivers/i2c/i2c-core-base.c:631:3: error: implicit declaration of function 'disable_irq'; did you mean 'disable_srat'? [-Werror=implicit-function-declaration]
 
-Yes, I'd love to delete unmap_mapping_page() and use try_to_unmap(),
-but couldn't easily do it.  I did cut out one paragraph which said:
+Must need interrupt.h, which I must have got implicitly somehow.
 
-"Next iteration, I would probably refactor zap_huge_pmd() so that the
-same code could be used from zap_pmd_range() or try_to_unmap_one();
-but that seems riskier and more trouble than this current iteration."
-
-And I've certainly not found time to go back and try that since.
-
-> 
-> But this works too:
-> 
-> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-
-Thanks,
-Hugh
+>      631 |   disable_irq(client->irq);
+>          |   ^~~~~~~~~~~
+>          |   disable_srat
