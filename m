@@ -2,107 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F0A39B1AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 06:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB9E39B1B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 06:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbhFDEyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 00:54:40 -0400
-Received: from mail-il1-f178.google.com ([209.85.166.178]:45693 "EHLO
-        mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbhFDEyj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 00:54:39 -0400
-Received: by mail-il1-f178.google.com with SMTP id b5so7679603ilc.12;
-        Thu, 03 Jun 2021 21:52:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1PgbPrY10zYsjifCFzWyh2BDHPVeu66kYt4xk+1XagA=;
-        b=BRFT0PFacapa79dgWyqVB1rrB4rCX8Hl4Jvwfuiik4wOdTQbuswOyQd3lyhUtIHA95
-         Jx7VbXc53nQfSF789Dj3KP3ekfgafPiF3LXWSR3RHbcAFkouBQ90k57rqEjvpjHNTAml
-         exhRmhEabKFIeAi/c0uebCRS9mqbDZgM1m1TG7dSOWQiJKgvTm23JzveZzHLvl8a6Iyy
-         GvJ/MtGTO+hTUTlDnvrLkzA9litdS5Nftaz25U1GIB8UCvepDI5ufPYCZcHoKkJjFCSw
-         g6t1zdEheCO/Xm7sICGnaUKQhil+VUxwPJpytk3FdvoN+Skb6Vxtu0Q9GN3SBsbh33+G
-         QVuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1PgbPrY10zYsjifCFzWyh2BDHPVeu66kYt4xk+1XagA=;
-        b=WPKG39T1KtPCX8tSiYQ/BupkbvQ1mGkgLr5DPxESgWiCCI41eqKOvo8FNs8HLmuDsp
-         lUS+1VK91MaY3afWYqg/m0V1Fv54fqjb9xNPtFgOdbMjkOfSMA/qxVr1H7pTuOeBikxp
-         W/R8ELd46e2KPReC/Q/NS1lzeVWmby9FT/KV2g3GGfTVyJw+4giYQgNgu1gcUALZkivg
-         +A82fMgWPbjv12w5gVz6a+/e43R5rv74LlsKxwLImnUk/85jDERx6ZEphLs0DZC1Jv1E
-         5fu9Jux7aEWPSy5BKQmzga/dqIvqkmI3TF75C7yxWDLvRanRqtT7NNLCp3aUXd0V4KHK
-         k6/Q==
-X-Gm-Message-State: AOAM533ULToNXVvXw4wqqkopw19caf+RdUebEV+8cLQ2qiWuaS9Kn+v8
-        FvmDPknWCrDrp5SWGVxg5vQ=
-X-Google-Smtp-Source: ABdhPJy3sgFV/xsccZqhNRUor2dII2d6E1DIQNG12H/xDoszibp8FHPgZBX0ThCCy6cLblI5uHY9AA==
-X-Received: by 2002:a05:6e02:10d4:: with SMTP id s20mr2397773ilj.37.1622782303991;
-        Thu, 03 Jun 2021 21:51:43 -0700 (PDT)
-Received: from ?IPv6:2606:3280:8:e29:2093:3298:f887:8ed6? ([2606:3280:8:e29:2093:3298:f887:8ed6])
-        by smtp.googlemail.com with ESMTPSA id s23sm2762345iol.49.2021.06.03.21.51.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Jun 2021 21:51:43 -0700 (PDT)
-Subject: Re: [PATCH v4 00/15] Add futex2 syscalls
-To:     =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     kernel@collabora.com, krisman@collabora.com,
-        pgriffais@valvesoftware.com, joel@joelfernandes.org,
-        malteskarupke@fastmail.fm, linux-api@vger.kernel.org,
-        fweimer@redhat.com, libc-alpha@sourceware.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org, acme@kernel.org,
-        corbet@lwn.net, Peter Oskolkov <posk@posk.io>,
-        Andrey Semashev <andrey.semashev@gmail.com>,
-        Davidlohr Bueso <dave@stgolabs.net>
-References: <20210603195924.361327-1-andrealmeid@collabora.com>
-From:   Zebediah Figura <z.figura12@gmail.com>
-Message-ID: <dab34fd2-b494-8686-bcd7-68beeba4f386@gmail.com>
-Date:   Thu, 3 Jun 2021 23:51:41 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S229852AbhFDE5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 00:57:35 -0400
+Received: from mout02.posteo.de ([185.67.36.66]:59371 "EHLO mout02.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229761AbhFDE5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 00:57:34 -0400
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 47B902400E5
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 06:55:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1622782547; bh=TTyTROyQXjsSXo74wJBHn6lqKWQ3+EbGHja6XTO7Rds=;
+        h=Date:From:To:Cc:Subject:From;
+        b=b4kfkQdftGPZQAMXH5LvwkFcZ3zhObfnY0zCw1HWa3vz1OjKz0xIDlQZfAUqaYm8n
+         LEzDIeuIPtgW+cna1vw2q7i1wnM3oFCyxkSEA+W10Mt7I3CRYrP+A9ukIObzFVybPW
+         pMClWvFX+BOQV2lPrTodITHK5rXrTxjmGbUTwKcFW1rUQUb1/w0DWPByV2HRJQMX/A
+         2icvC+zVgqIzhPQSq2W2c6YEOu0PV+VnOzM+DGMS+tgOEnXNRHlASnZ7hzPZRlQDME
+         9LASZa1tebUvbv6Ie5EVrYQPsgmQlntWn/Ef8HlLZU61ngXarVx6ERq9Tfp56/pUbZ
+         gKf2dD0fGmqfg==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4Fx9Sc48Wdz6tm9;
+        Fri,  4 Jun 2021 06:55:44 +0200 (CEST)
+Date:   Fri,  4 Jun 2021 04:55:43 +0000
+From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
+To:     Suman Anna <s-anna@ti.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, <devicetree@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-sunxi@lists.linux.dev>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] dt-bindings: hwlock: sun6i: Fix various warnings in
+ binding
+Message-ID: <20210604065543.3d71ca53@monster.powergraphx.local>
+In-Reply-To: <20210603144216.10327-1-s-anna@ti.com>
+References: <20210603144216.10327-1-s-anna@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20210603195924.361327-1-andrealmeid@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/3/21 2:59 PM, André Almeida wrote:
->   ** The wait on multiple problem
+On Thu, 3 Jun 2021 09:42:16 -0500
+Suman Anna <s-anna@ti.com> wrote:
+
+> The allwinner,sun6i-a31-hwspinlock.yaml binding has a mismatched
+> $id and fails to compile the example due to undefined args specifier
+> values for clocks and resets. Fix both of these issues.
 > 
->   The use case lies in the Wine implementation of the Windows NT interface
->   WaitMultipleObjects. This Windows API function allows a thread to sleep
->   waiting on the first of a set of event sources (mutexes, timers, signal,
->   console input, etc) to signal.  Considering this is a primitive
->   synchronization operation for Windows applications, being able to quickly
->   signal events on the producer side, and quickly go to sleep on the
->   consumer side is essential for good performance of those running over Wine.
+> Fixes: f9e784dcb63f ("dt-bindings: hwlock: add sun6i_hwspinlock")
+> Signed-off-by: Suman Anna <s-anna@ti.com>
+> ---
+> Hi Wilken,
 > 
+> This fixes the warnings for now on linux-next, but I think the example
+> should be including sun6i-a31-ccu.h files instead to be accurate, and
+> those files are missing the definitions for CLK_BUS_SPINLOCK and
+> RST_BUS_SPINLOCK. Feel free to send a newer version or do an incremental
+> patch on top.
+> 
+> regards
+> Suman
 
-I know this is part of the cover letter, but I really do want to clarify 
-that this isn't really accurate. The use case that this is referring to 
-is not "the Wine implementation of WaitForMultipleObjects", it is an 
-out-of-tree implementation of WaitForMultipleObjects that provides 
-improved performance compared to the in-tree implementation.
+Hi Suman,
 
-This is especially salient because:
+thank you for fixing this. I would have fix it the same way for now, so it is
+fine for me. But I will keep an eye on it.
 
-(1) this out-of-tree implementation is only in a small handful of cases 
-any more performant than a different out-of-tree implementation which 
-uses eventfd and poll() instead;
+greetings,
+Will
 
-(2) these implementations will remain out-of-tree due to compatibility 
-and robustness problems;
+>  .../bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml      | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml
+> b/Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml index
+> 733c3d01e56c..10e5a53e447b 100644 ---
+> a/Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml +++
+> b/Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml @@ -1,7 +1,7 @@
+>  # SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
+>  %YAML 1.2
+>  ---
+> -$id: http://devicetree.org/schemas/hwlock/allwinner,sun6i-hwspinlock.yaml#
+> +$id: http://devicetree.org/schemas/hwlock/allwinner,sun6i-a31-hwspinlock.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+>  title: SUN6I hardware spinlock driver for Allwinner sun6i compatible SoCs
+> @@ -36,6 +36,9 @@ additionalProperties: false
+>  
+>  examples:
+>    - |
+> +    #include <dt-bindings/clock/sun8i-a23-a33-ccu.h>
+> +    #include <dt-bindings/reset/sun8i-a23-a33-ccu.h>
+> +
+>      hwlock@1c18000 {
+>          compatible = "allwinner,sun6i-a31-hwspinlock";
+>          reg = <0x01c18000 0x1000>;
 
-(3) I believe there is potential for an upstreamable implementation 
-which does not rely on futex or futex2.
