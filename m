@@ -2,88 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE0F39BD39
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B00639BD3E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231527AbhFDQeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 12:34:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52124 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230037AbhFDQeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 12:34:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2802D6140C;
-        Fri,  4 Jun 2021 16:32:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622824377;
-        bh=4qXiY0ciKLP8LPX9zwj+/O79WshKW6bFYbB9k+rr5Gk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HwtV6jPRg1YTWDq0sK7oOGwUqxTv8oLwHuJlg5wQrm6crM7l3QpmBhdzNszQzh2K1
-         plxPgahDzBrwghBY4SkFclKkT5Kq+InJzrj5ytX7GYP3GD489FA73u9Z4QO32/ZTv+
-         K5pgKN8zeR+HDvy8k6BnvFOdxoa4+axXETKSlHPFDLYAEEYiEgPgW6LaQYwyF627Zb
-         YGtV/l7XVKjctgPDhu2Uvav96JjSZPK2u1TgLB2Uc6OWseKeo7RylZVQKSH7UAH7y8
-         y3BNLWoc5YcPLeGwkvUE6GXnbcUih2dvotNcoHUKUy0mp1s2q2iv/j8c0RC0E17aVY
-         tv/mhxIp9hp8A==
-From:   Mark Brown <broonie@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Mark Brown <broonie@kernel.org>, robh@kernel.org,
-        lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH v3 0/4] ASoC: codecs: wcd934x: add Headset and button detection support
-Date:   Fri,  4 Jun 2021 17:32:30 +0100
-Message-Id: <162282419357.38836.12886872942740552175.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210604115230.23259-1-srinivas.kandagatla@linaro.org>
-References: <20210604115230.23259-1-srinivas.kandagatla@linaro.org>
+        id S231460AbhFDQfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 12:35:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229755AbhFDQfs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 12:35:48 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E999C061766;
+        Fri,  4 Jun 2021 09:34:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=N0LVJfeUK2IdvmsqBLNwzogFfs34S53qc1DZrppgaU4=; b=F8L7uCnO5EUTwc2U3xhWIM18n5
+        MqFThaLx/mSiSAIcZhiI8pfFpDI2US2iFzGX4p3YqPCprDpHXO6iNsOLDDx6Q4MV50K28820aUkem
+        TwftTZiRZirrmyljj143occwLCChEGCX6g4Ed+PXIU/5526DB9Z8Mj2+Jsbu0rpCPwbNmYvxyTBnz
+        SxKLPIp8h22zQ6iHcRnB9amCzfGvNPuv/15cC+pyEoOi1UCdwkMxoOCm7mkstC+R/ppXr3GGlz4if
+        GjyG+zpdnJ/8LaJ+CZ9/sJCLHwY5l8tRc+XEvAm5xZov581jPEFcZsW0jF3NgZyV/wwtjYN1LDkVn
+        3P96FQig==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lpClV-003TzH-7M; Fri, 04 Jun 2021 16:33:52 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7AF9E3001DB;
+        Fri,  4 Jun 2021 18:33:50 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 69893207AA26C; Fri,  4 Jun 2021 18:33:50 +0200 (CEST)
+Date:   Fri, 4 Jun 2021 18:33:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>, will@kernel.org,
+        paulmck@kernel.org, stern@rowland.harvard.edu,
+        parri.andrea@gmail.com, boqun.feng@gmail.com, npiggin@gmail.com,
+        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
+        akiyks@gmail.com, linux-kernel@vger.kernel.org,
+        linux-toolchains@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <YLpV7qilaHkMc01f@hirez.programming.kicks-ass.net>
+References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
+ <20210604160955.GG18427@gate.crashing.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604160955.GG18427@gate.crashing.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Jun 2021 12:52:26 +0100, Srinivas Kandagatla wrote:
-> This patchset adds support to MBHC(Multi Button Headset Control) block found in
-> Qualcomm WCD codecs. MBHC support headset type detection, both Mechanical and
-> electrical insert/removal detection along with 8 buttons detection,
-> Over current interrupts on HPHL/R, Impedance Measurements on HPHL/R.
-> 
-> Eventhough MBHC block supports things like OverCurrent detection, Currently its
-> reported as a kernel debug message. Should this be reported as an uevent to
-> userspace? like the way USB reports?
-> Any suggestions?
-> 
-> [...]
+On Fri, Jun 04, 2021 at 11:09:55AM -0500, Segher Boessenkool wrote:
+> I didn't find a description of the expected precise semantics anywhere
+> in this patch.  This however is the most important thing required here!
 
-Applied to
+Fair enough; so a control-dependency is a LOAD->STORE memory ordering
+provided by conditional branches.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+The conditional branch instruction itself must have a data dependency on
+a previous LOAD, while the branch itself guards a STORE. Then because
+speculative STOREs result in out-of-thin-air values, the STORE must not
+become visible until the branch is decided, which can only be done if
+the LOAD is complete.
 
-Thanks!
+We make use of this, and would like the compiler to not ruin this code
+pattern for us.
 
-[1/4] ASoC: dt-bindings: wcd934x: add bindings for Headset Button detection
-      commit: c6d25d5786090edc7299b32160644bb2e468c25d
-[2/4] ASoC: codecs: wcd: add multi button Headset detection support
-      commit: 0e5c9e7ff899808afa4e2b08c2e6ccc469bed681
-[3/4] ASoC: codecs: wcd934x: add mbhc support
-      commit: 9fb9b1690f0ba6b2c9ced91facc1fc44f5a0d5c1
-[4/4] ASoC: qcom: sdm845: add jack support for WCD934x
-      commit: c15d4b72098ca3055d98ce0d66127fe37a6a6361
+So we need the STORE to say inside the selection statement, we need the
+LOAD not be optimized away, and we need the conditional branch to be
+emitted.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Alternatively, we need the LOAD to be upgraded to a LOAD-ACQUIRE (an
+option on platforms where this is sufficiently cheap). Which will also
+ensure the STORE happens after.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+So we can force the LOAD using READ_ONCE() (a volatile cast).
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+We can prohibit hoisting by adding a compiler barrier to the expression.
+And then we use asm goto() to force emit a conditional branch. Combined
+this leaves the compiler very little room to mess things up, but it does
+produce sub-optimal code, and doesn't allow the LOAD-ACQUIRE upgrade
+Will would like (but he can't always have that anyway due to our other
+use of asm()).
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
 
-Thanks,
-Mark
+We also have a 'CONTROL DEPENDENCIES' section in
+Documentation/memory-barriers.txt for further reading.
