@@ -2,91 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 388D339BB9E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A3D39BBA9
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231161AbhFDPUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 11:20:10 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:40074 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231147AbhFDPUJ (ORCPT
+        id S230173AbhFDPWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 11:22:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36965 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230034AbhFDPWj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 11:20:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=PJRwd6y2fGkVlRreR6Ar4luPs0i6HG0cPOvCC6J0yjQ=; b=lJzGdFWUTCZEigQ+DbDW1nF0WD
-        zzCV9LHIvVPfMXLFiYADlNXkJdVqLf0+mQ6cIoo2Nbu7zZKHLBqc5Xud5LGqLRoYXsOIgnVh7r4/w
-        hWlBiBPifO8ePzSsn4OnZxM3VID52TwH0Lh1fFk0KMby61opSFMnbhOMsUFnLJCj036ZPwhEduVap
-        7gXquvjyG24IAdAi6tlIHSmDKEdgoOLKRN3bWhaUtXad/xCn2UnddfQy5mp/PsYvq0dXCOe0LKmaE
-        42vEcSSOFFERjY0BvcHjKZV/1R9JDlH+Qn1tnHlP3vIrp6/iLWQGQtGPWjx/AirgUAha96ndYfV+S
-        kn638Ycw==;
-Received: from s0106a84e3fe8c3f3.cg.shawcable.net ([24.64.144.200] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1lpBaX-0002Uu-Ny; Fri, 04 Jun 2021 09:18:22 -0600
-To:     Yang Li <yang.lee@linux.alibaba.com>, jdmason@kudzu.us
-Cc:     dave.jiang@intel.com, allenbh@gmail.com,
-        linux-ntb@googlegroups.com, linux-kernel@vger.kernel.org
-References: <1622802051-43464-1-git-send-email-yang.lee@linux.alibaba.com>
- <1622802051-43464-2-git-send-email-yang.lee@linux.alibaba.com>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <490f9031-7a12-6031-7262-f38cd96cb502@deltatee.com>
-Date:   Fri, 4 Jun 2021 09:18:17 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Fri, 4 Jun 2021 11:22:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622820053;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4AbIlLedm5Mu+ovdpvNjPfOsXH7m99kQNtIejaRsUUU=;
+        b=eBAIu4T1v2QMvm5Oc0+dXshQ8vnZHsUuw4qfpirqoXOCAVcHRay+mAON9Tyh2/tQGk2AmK
+        vZD4Iu75ZF6sNhXHpjdcDtglxmoMkdfdBnpbldxw8vtW+W0Yks+oPrXU9MaAww+3bcxjK0
+        dZ/xXzz7P1EQxXY80VUkbq53xX8kq9E=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-309-rI4OJIZNMMWZySINOyA0UQ-1; Fri, 04 Jun 2021 11:20:51 -0400
+X-MC-Unique: rI4OJIZNMMWZySINOyA0UQ-1
+Received: by mail-qk1-f198.google.com with SMTP id e8-20020a05620a2088b02903a5edeec4d6so6801971qka.11
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 08:20:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4AbIlLedm5Mu+ovdpvNjPfOsXH7m99kQNtIejaRsUUU=;
+        b=qDKeyaz0BygRmMdjLNbW6B3m8kqo34huSxo0iRVOE7SfHTB3NjPSveHOiAyQiwRPjk
+         IsSUMAccKt+wiY+bezUOZKChK8euntbKcMw+eazBqpc/onwUiegWY7kQkn0UNb/5bQ4G
+         O1dOux7gPjcXkCRGfVKO9CP/7b3l+G6SwhzG+nZCPFdXINGedXkhPrOgZOUIfuqoaLTv
+         i7xNQsHZ3I6dKs2DcyLzQjwWK8CjENa2gXMf4fMGr5D81/VidjCl9ixpAxdhpdHui7ID
+         JZVq77dcHJRm1s2bv8q76HLLrDWLI/ZSFrIAni2THeBRHb3+QgJDodKGja2gW1HUCdGm
+         dYIQ==
+X-Gm-Message-State: AOAM533AnQS2dgFf8P9MZw3/r8ugwOT5mmoEhPvDsXkEyBtffswuSVQb
+        s6e508wE/NvnQhtW5lTSQxtzrEnxSI0gXwrLQOYAPsqXX5BapOes4dq38klSKkbqhL0oou/sr8g
+        Bj5Ui0CDbEZbftXFYzgTP16mo
+X-Received: by 2002:a37:911:: with SMTP id 17mr2506621qkj.436.1622820051403;
+        Fri, 04 Jun 2021 08:20:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwSkb15icJCjCC2a0yzUkFB8Tk/1b3Gxyat2dgZri3GuoK2EOI4ZaPq1ePBkTLwQGSCPYLtvg==
+X-Received: by 2002:a37:911:: with SMTP id 17mr2506604qkj.436.1622820051225;
+        Fri, 04 Jun 2021 08:20:51 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-61-184-147-118-108.dsl.bell.ca. [184.147.118.108])
+        by smtp.gmail.com with ESMTPSA id x9sm3701082qtf.76.2021.06.04.08.20.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 08:20:50 -0700 (PDT)
+Date:   Fri, 4 Jun 2021 11:20:49 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     Balbir Singh <bsingharora@gmail.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        nouveau@lists.freedesktop.org, bskeggs@redhat.com,
+        rcampbell@nvidia.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        hch@infradead.org, jglisse@redhat.com, willy@infradead.org,
+        jgg@nvidia.com, hughd@google.com, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v9 07/10] mm: Device exclusive memory access
+Message-ID: <YLpE0U789jvD2zxN@t490s>
+References: <20210524132725.12697-1-apopple@nvidia.com>
+ <3853054.AI2YdRgKcH@nvdebian>
+ <YLjrjJXMP9Y3bvej@t490s>
+ <10231977.pWpf7cJbZl@nvdebian>
 MIME-Version: 1.0
-In-Reply-To: <1622802051-43464-2-git-send-email-yang.lee@linux.alibaba.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 24.64.144.200
-X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-ntb@googlegroups.com, allenbh@gmail.com, dave.jiang@intel.com, jdmason@kudzu.us, yang.lee@linux.alibaba.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-7.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A autolearn=ham autolearn_force=no version=3.4.2
-Subject: Re: [PATCH 2/2] NTB: Fix an error code in ntb_msit_probe()
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Disposition: inline
+In-Reply-To: <10231977.pWpf7cJbZl@nvdebian>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-
-On 2021-06-04 4:20 a.m., Yang Li wrote:
-> When the value of nm->isr_ctx is false, the value of ret is 0.
-> So, we set ret to -ENOMEM to indicate this error.
+On Fri, Jun 04, 2021 at 11:07:42AM +1000, Alistair Popple wrote:
+> On Friday, 4 June 2021 12:47:40 AM AEST Peter Xu wrote:
+> > External email: Use caution opening links or attachments
+> > 
+> > On Thu, Jun 03, 2021 at 09:39:32PM +1000, Alistair Popple wrote:
+> > > Reclaim won't run on the page due to the extra references from the special
+> > > swap entries.
+> > 
+> > That sounds reasonable, but I didn't find the point that stops it, probably
+> > due to my limited knowledge on the reclaim code.  Could you elaborate?
 > 
-> Clean up smatch warning:
-> drivers/ntb/test/ntb_msi_test.c:373 ntb_msit_probe() warn: missing error
-> code 'ret'.
+> Sure, it isn't immediately obvious but it ends up being detected at the start 
+> of is_page_cache_freeable() in the pageout code:
 > 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  drivers/ntb/test/ntb_msi_test.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/ntb/test/ntb_msi_test.c b/drivers/ntb/test/ntb_msi_test.c
-> index 7095ecd..5f9e0be 100644
-> --- a/drivers/ntb/test/ntb_msi_test.c
-> +++ b/drivers/ntb/test/ntb_msi_test.c
-> @@ -369,8 +369,10 @@ static int ntb_msit_probe(struct ntb_client *client, struct ntb_dev *ntb)
->  	if (ret)
->  		goto remove_dbgfs;
->  
-> -	if (!nm->isr_ctx)
-> +	if (!nm->isr_ctx) {
-> +		return -ENOMEM;
->  		goto remove_dbgfs;
+> static pageout_t pageout(struct page *page, struct address_space *mapping)
+> {
+> 
+> [...]
+> 
+> 	if (!is_page_cache_freeable(page))
+> 		return PAGE_KEEP;
 
-I think you made a typo here. You probably meant ret = -ENOMEM.
+I did look at pageout() but still missed this small helper indeed (while it's
+so important to know..), thanks!
 
-Thanks,
+-- 
+Peter Xu
 
-Logan
