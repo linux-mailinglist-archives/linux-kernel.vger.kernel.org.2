@@ -2,112 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80F7039AFDE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 473FD39AFE7
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230330AbhFDBeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 21:34:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229973AbhFDBet (ORCPT
+        id S230271AbhFDBgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 21:36:21 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3418 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229772AbhFDBgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 21:34:49 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF56C06174A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 18:32:56 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id x73so6285252pfc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 18:32:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UiAxhnimbmXnxAuRj/8TCD8fSvPmZD3AhoE3rfTP8PM=;
-        b=D2KZ3evI4gHDjz1em6dcmAuOicfefbtBAH177EkHOnfqibkq26bZn4+fHwr02f6avk
-         OLBhrQtdWRppWr2xPg3yJTInAgm29b0++w7RICeZsf82Z/wICMH2YiM9cqyBDJv5Z7/J
-         shVnpyjKNf/IODiDeQVKD4rvk5pl9M0KL1SS0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UiAxhnimbmXnxAuRj/8TCD8fSvPmZD3AhoE3rfTP8PM=;
-        b=CTGnVs/BlMYT/ZBzepjgJgX6py6zAKkZedoA2OeslWR4YlDYFFewkbgpTjsPjvgn5o
-         lQssjBrhpl//KtlvtKA20+YpLQPzVmHQxaG4GKPYl5kl4oDhy5/rLPrym+nXvTIGrz/q
-         VQZyp3xxBQg/FyY05wMAM9K0WmWr0cgUvvm2p9G7DQjc9s+ZtU0C62inJIo2oqFd9oii
-         epGHvNtWz6Pnf1l1zQjkUZPLrfx5OeheGtezq871V4TLLsL3GtjwJaQDkLheGom5WuR3
-         wli5l8X+Fi4AxMcj1SHMzm1NT8cFxaW0+1U0p4xxlMCFsIen1cGUxxDNST0+4L4QYqQP
-         TqJA==
-X-Gm-Message-State: AOAM530lCD3bBbUCRLSIcvtJC1/XoJuSHv99iRywuc6ua3XKDnMIgDtB
-        Qrb4CwJE8ZcCFN5VS0mDAzxp6OuK+L3baQ==
-X-Google-Smtp-Source: ABdhPJwzKItwTs5aNFact08HbH8Xrrtq5lTEOKEIPhbLiqcwnb646XtOtDqHY+HE/Kqw/ijoFehkZw==
-X-Received: by 2002:a63:1a49:: with SMTP id a9mr2301475pgm.63.1622770376209;
-        Thu, 03 Jun 2021 18:32:56 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z6sm266653pfr.99.2021.06.03.18.32.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 18:32:55 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 18:32:54 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Emma Anholt <emma@anholt.net>, David Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Herring <robh@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drm/pl111: Actually fix CONFIG_VEXPRESS_CONFIG depends
-Message-ID: <202106031832.1868B1C@keescook>
-References: <20210603215819.3904733-1-keescook@chromium.org>
- <CAKMK7uG7tDVUV3cVmtYMFdwVx1SuEWh6i+VsQ3nLP0Rb=-f0aw@mail.gmail.com>
+        Thu, 3 Jun 2021 21:36:20 -0400
+Received: from dggeme759-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fx4x16B8Wz6tpL;
+        Fri,  4 Jun 2021 09:31:33 +0800 (CST)
+Received: from dggeme760-chm.china.huawei.com (10.3.19.106) by
+ dggeme759-chm.china.huawei.com (10.3.19.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 4 Jun 2021 09:34:33 +0800
+Received: from dggeme760-chm.china.huawei.com ([10.6.80.70]) by
+ dggeme760-chm.china.huawei.com ([10.6.80.70]) with mapi id 15.01.2176.012;
+ Fri, 4 Jun 2021 09:34:33 +0800
+From:   zhengyongjun <zhengyongjun3@huawei.com>
+To:     "jmaloy@redhat.com" <jmaloy@redhat.com>,
+        "ying.xue@windriver.com" <ying.xue@windriver.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "tipc-discussion@lists.sourceforge.net" 
+        <tipc-discussion@lists.sourceforge.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?gb2312?B?tPC4tDogW1BBVENIIG5ldC1uZXh0XSB0aXBjOiBSZXR1cm4gdGhlIGNvcnJl?=
+ =?gb2312?Q?ct_errno_code?=
+Thread-Topic: [PATCH net-next] tipc: Return the correct errno code
+Thread-Index: AQHXWOGc9Q9RY5DeKECVhQca9yM8QKsDEZ6A
+Date:   Fri, 4 Jun 2021 01:34:32 +0000
+Message-ID: <7b100c7c3a7c4c658374164cb848d8e6@huawei.com>
+References: <20210604014702.2087584-1-zhengyongjun3@huawei.com>
+In-Reply-To: <20210604014702.2087584-1-zhengyongjun3@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.64]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uG7tDVUV3cVmtYMFdwVx1SuEWh6i+VsQ3nLP0Rb=-f0aw@mail.gmail.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 12:30:00AM +0200, Daniel Vetter wrote:
-> [gmail is funny]
-> 
-> On Thu, Jun 3, 2021 at 11:58 PM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > VEXPRESS_CONFIG needs to either be missing, built-in, or modular when
-> > pl111 is modular. Update the Kconfig to reflect the need.
-> >
-> > Cc: Emma Anholt <emma@anholt.net>
-> > Cc: David Airlie <airlied@linux.ie>
-> > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > Cc: dri-devel@lists.freedesktop.org
-> > Fixes: 4dc7c97d04dc ("drm/pl111: depend on CONFIG_VEXPRESS_CONFIG")
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  drivers/gpu/drm/pl111/Kconfig | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/pl111/Kconfig b/drivers/gpu/drm/pl111/Kconfig
-> > index c5210a5bef1b..b84879ca430d 100644
-> > --- a/drivers/gpu/drm/pl111/Kconfig
-> > +++ b/drivers/gpu/drm/pl111/Kconfig
-> > @@ -2,7 +2,8 @@
-> >  config DRM_PL111
-> >         tristate "DRM Support for PL111 CLCD Controller"
-> >         depends on DRM
-> > -       depends on VEXPRESS_CONFIG
-> > +       depends on ARM || ARM64 || COMPILE_TEST
-> > +       depends on !VEXPRESS_CONFIG || VEXPRESS_CONFIG=DRM
-> 
-> I thought the canonical way to represent optional dependencies was
-> depends on FOO || FOO=n
-
-Ah-ha! So it is:
-
-drm/Kconfig:    depends on (AGP || AGP=n) && !EMULATED_CMPXCHG && HAS_DMA
-drm/Kconfig:    depends on FB_SIS || FB_SIS=n
-drm/msm/Kconfig:        depends on QCOM_OCMEM || QCOM_OCMEM=n
-drm/msm/Kconfig:        depends on QCOM_LLCC || QCOM_LLCC=n
-drm/msm/Kconfig:        depends on QCOM_COMMAND_DB || QCOM_COMMAND_DB=n
-
-I'll resping and retest. Thanks for the pointer!
-
--Kees
-
--- 
-Kees Cook
+U29ycnksIHRoaXMgcGF0Y2ggaXMgd3JvbmcsIHBsZWFzZSBpZ25vcmUgaXQsIHRoYW5rcyA6KQ0K
+DQotLS0tLdPKvP7Urbz+LS0tLS0NCreivP7Iyzogemhlbmd5b25nanVuIA0Kt6LLzcqxvOQ6IDIw
+MjHE6jbUwjTI1SA5OjQ3DQrK1bz+yMs6IGptYWxveUByZWRoYXQuY29tOyB5aW5nLnh1ZUB3aW5k
+cml2ZXIuY29tOyBkYXZlbUBkYXZlbWxvZnQubmV0OyBrdWJhQGtlcm5lbC5vcmc7IG5ldGRldkB2
+Z2VyLmtlcm5lbC5vcmc7IHRpcGMtZGlzY3Vzc2lvbkBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQ7IGxp
+bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCrOty806IHpoZW5neW9uZ2p1biA8emhlbmd5b25n
+anVuM0BodWF3ZWkuY29tPg0K1vfM4jogW1BBVENIIG5ldC1uZXh0XSB0aXBjOiBSZXR1cm4gdGhl
+IGNvcnJlY3QgZXJybm8gY29kZQ0KDQpXaGVuIGthbGxvYyBvciBrbWVtZHVwIGZhaWxlZCwgc2hv
+dWxkIHJldHVybiBFTk9NRU0gcmF0aGVyIHRoYW4gRU5PQlVGLg0KDQpTaWduZWQtb2ZmLWJ5OiBa
+aGVuZyBZb25nanVuIDx6aGVuZ3lvbmdqdW4zQGh1YXdlaS5jb20+DQotLS0NCiBuZXQvdGlwYy9s
+aW5rLmMgfCA2ICsrKy0tLQ0KIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKyksIDMgZGVs
+ZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9uZXQvdGlwYy9saW5rLmMgYi9uZXQvdGlwYy9saW5r
+LmMgaW5kZXggYzQ0YjRiZmFhZWU2Li41YjYxODEyNzdjYzUgMTAwNjQ0DQotLS0gYS9uZXQvdGlw
+Yy9saW5rLmMNCisrKyBiL25ldC90aXBjL2xpbmsuYw0KQEAgLTkxMiw3ICs5MTIsNyBAQCBzdGF0
+aWMgaW50IGxpbmtfc2NoZWR1bGVfdXNlcihzdHJ1Y3QgdGlwY19saW5rICpsLCBzdHJ1Y3QgdGlw
+Y19tc2cgKmhkcikNCiAJc2tiID0gdGlwY19tc2dfY3JlYXRlKFNPQ0tfV0FLRVVQLCAwLCBJTlRf
+SF9TSVpFLCAwLA0KIAkJCSAgICAgIGRub2RlLCBsLT5hZGRyLCBkcG9ydCwgMCwgMCk7DQogCWlm
+ICghc2tiKQ0KLQkJcmV0dXJuIC1FTk9CVUZTOw0KKwkJcmV0dXJuIC1FTk9NRU07DQogCW1zZ19z
+ZXRfZGVzdF9kcm9wcGFibGUoYnVmX21zZyhza2IpLCB0cnVlKTsNCiAJVElQQ19TS0JfQ0Ioc2ti
+KS0+Y2hhaW5faW1wID0gbXNnX2ltcG9ydGFuY2UoaGRyKTsNCiAJc2tiX3F1ZXVlX3RhaWwoJmwt
+Pndha2V1cHEsIHNrYik7DQpAQCAtMTAzMCw3ICsxMDMwLDcgQEAgdm9pZCB0aXBjX2xpbmtfcmVz
+ZXQoc3RydWN0IHRpcGNfbGluayAqbCkNCiAgKg0KICAqIENvbnN1bWVzIHRoZSBidWZmZXIgY2hh
+aW4uDQogICogTWVzc2FnZXMgYXQgVElQQ19TWVNURU1fSU1QT1JUQU5DRSBhcmUgYWx3YXlzIGFj
+Y2VwdGVkDQotICogUmV0dXJuOiAwIGlmIHN1Y2Nlc3MsIG9yIGVycm5vOiAtRUxJTktDT05HLCAt
+RU1TR1NJWkUgb3IgLUVOT0JVRlMNCisgKiBSZXR1cm46IDAgaWYgc3VjY2Vzcywgb3IgZXJybm86
+IC1FTElOS0NPTkcsIC1FTVNHU0laRSBvciAtRU5PQlVGUyBvciANCisgLUVOT01FTQ0KICAqLw0K
+IGludCB0aXBjX2xpbmtfeG1pdChzdHJ1Y3QgdGlwY19saW5rICpsLCBzdHJ1Y3Qgc2tfYnVmZl9o
+ZWFkICpsaXN0LA0KIAkJICAgc3RydWN0IHNrX2J1ZmZfaGVhZCAqeG1pdHEpDQpAQCAtMTA4OCw3
+ICsxMDg4LDcgQEAgaW50IHRpcGNfbGlua194bWl0KHN0cnVjdCB0aXBjX2xpbmsgKmwsIHN0cnVj
+dCBza19idWZmX2hlYWQgKmxpc3QsDQogCQkJaWYgKCFfc2tiKSB7DQogCQkJCWtmcmVlX3NrYihz
+a2IpOw0KIAkJCQlfX3NrYl9xdWV1ZV9wdXJnZShsaXN0KTsNCi0JCQkJcmV0dXJuIC1FTk9CVUZT
+Ow0KKwkJCQlyZXR1cm4gLUVOT01FTTsNCiAJCQl9DQogCQkJX19za2JfcXVldWVfdGFpbCh0cmFu
+c21xLCBza2IpOw0KIAkJCXRpcGNfbGlua19zZXRfc2tiX3JldHJhbnNtaXRfdGltZShza2IsIGwp
+Ow0KLS0NCjIuMjUuMQ0KDQo=
