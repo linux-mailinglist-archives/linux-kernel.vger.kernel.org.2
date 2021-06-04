@@ -2,115 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6534639B79F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB3B39B7A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230172AbhFDLLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 07:11:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229740AbhFDLLM (ORCPT
+        id S230208AbhFDLL2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Jun 2021 07:11:28 -0400
+Received: from mail-ua1-f52.google.com ([209.85.222.52]:45839 "EHLO
+        mail-ua1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229740AbhFDLL1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 07:11:12 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45304C06174A;
-        Fri,  4 Jun 2021 04:09:14 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id x2so4058642qvo.8;
-        Fri, 04 Jun 2021 04:09:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Q0r+GRAph5bUpYFzQZXDQRLPLpUfbf4qIs/RQtBMij8=;
-        b=e8NJuAqElhWfOEuoNNRyav2xf1xrJtYq686taPh1fhF9kJj4Dk04la6vG6vzdarkoE
-         HbmwtftAXFR8hEyCbRK06CfnZb3T8+9cJxD9xwBf8kEWeYjg1zyPd9f0e+lIZfJs4pId
-         qKa9X1N5fh9Rch8TQrsULVUEvqGwy1yuCHnj6PUXEcpCAsYLD0VZ7enmnGiDNASQu3sK
-         2+ZVWQvm0jE9rHRsgp+SGSLU0ekDgxZCynWbHXqBx05Z4XbKKg973Vk7fcXvDwmw4F3Z
-         bEpBf6H+aRmtpMmR8dAkSAEi7ByMlBH8HdNROml30ZvrmYlTKC5Qdk6MTkPOMoAH/OSc
-         nCRw==
+        Fri, 4 Jun 2021 07:11:27 -0400
+Received: by mail-ua1-f52.google.com with SMTP id z13so78235uai.12;
+        Fri, 04 Jun 2021 04:09:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Q0r+GRAph5bUpYFzQZXDQRLPLpUfbf4qIs/RQtBMij8=;
-        b=KIVT2/9M7y/K22lAiN11ya13AXZRBaBgScmqOoCxIfbiQv0yLcgR2X5zR5ceNx2iWx
-         ezoF0JGeqsrSSns3WLJs5UqmlDhJIkHx66mllSIMNC7JmPVjnMr5OgLuQBfqugFpRnF+
-         tQYZmmfEL1o28ucQ/lnXh03zdq+alRD35eL5I3hdutu5ojp5CAC+qsoBXGMMPJypc5Iu
-         qC3vYintCLoQpVs9k2wFV8/79OvSezBwlLQftz7AtDrpq6b2O19zUy6Izo6HxB+cedh0
-         zkLsDgcKZs4gfsdV1aLBEek3NZRZfPpwWxMCT/tgGyRt9bP2D2lZ4XYa/ZtJvVv1OOjw
-         8wjQ==
-X-Gm-Message-State: AOAM530LO8qxZXPOCZ9UusNCofPi18pGRiQ4dgj8z8nRTP9wP2YBYx6F
-        TdAcedOn0n/1tt8X/WsEFwg73H3yfW0=
-X-Google-Smtp-Source: ABdhPJzmJO3LNJ969qbIz1eL5wExY27FreZIAZMfzw8RNzkD6sFyLhigqw9twR3/ra2xgevX+IZf4Q==
-X-Received: by 2002:a0c:9c0f:: with SMTP id v15mr4231435qve.24.1622804952598;
-        Fri, 04 Jun 2021 04:09:12 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m10sm3390312qtq.62.2021.06.04.04.09.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 04:09:12 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 4 Jun 2021 04:09:10 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Riwen Lu <luriwen@kylinos.cn>
-Cc:     jdelvare@suse.com, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xin Chen <chenxin@kylinos.cn>
-Subject: Re: [PATCH v3] hwmon: (scpi-hwmon) shows the negative temperature
- properly
-Message-ID: <20210604110910.GA1446504@roeck-us.net>
-References: <20210604030959.736379-1-luriwen@kylinos.cn>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=yg1cyMLtFpU6qgef10zjsDeHfF/JPKqUg0hmm8OFcD0=;
+        b=j+x5EDx+K0gxRP+qs+ShqEoYwtfv0O/88CsqxzuuqR/v69VGwtocaf4NRALbdjhXyu
+         9MZ8pRo0YYrCajWhVyd6rZCZHW06l1WLCvcycptMXpu23pwJtZduOZ+whlpZ47q2OpQk
+         SxXcigqyLZ82QiqLaMj5cWgmtPFNVcAJUbt/EvdkbLZ5rXcr36YL4zJC4kLeiSa6iVB/
+         7BqNbyuUMOsL0wWwL7E6Va2VTmi91r2ZhTcy5tKyVdfLL4vVSK63ArIoL10Gh+PinsAa
+         51p2h8DhQtngXhmFJUp+TVSuoJUD+y/NWwOuv//aJ1Gs++WNwMzLxnfSnJH+yFZk4XWy
+         NUlw==
+X-Gm-Message-State: AOAM530FI7/FBnNwa1YrGRp4m/ObP8Wb1i3wN8tm/jCy70U5vpIn/c4P
+        opMlUlO4EUhakwdyAnqI9kalP/JiSQmcKGidGaI=
+X-Google-Smtp-Source: ABdhPJz5v5QywnQWXTr38dyiMhJyEAz1F3gpXBAga4NK52+bsfJW6ksrQV4LARG5mlopl5cIHZCGgQI7isBV2H8ygNY=
+X-Received: by 2002:ab0:708c:: with SMTP id m12mr2824270ual.4.1622804966645;
+ Fri, 04 Jun 2021 04:09:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604030959.736379-1-luriwen@kylinos.cn>
+References: <20210604090219.385504-1-geert@linux-m68k.org> <KL1P15301MB0343B4F6AF86864149DFB231943B9@KL1P15301MB0343.APCP153.PROD.OUTLOOK.COM>
+In-Reply-To: <KL1P15301MB0343B4F6AF86864149DFB231943B9@KL1P15301MB0343.APCP153.PROD.OUTLOOK.COM>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 4 Jun 2021 13:09:15 +0200
+Message-ID: <CAMuHMdUyNuqOTHKLkO8=mWsbFJer7C0sOmswAiANSJnoDWbRTw@mail.gmail.com>
+Subject: Re: [EXTERNAL] [PATCH] cifs: Change cifs_ses.chans_need_reconnect and
+ chan_index to "unsigned long"
+To:     Shyam Prasad <Shyam.Prasad@microsoft.com>
+Cc:     Steve French <sfrench@samba.org>,
+        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+        "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 11:09:59AM +0800, Riwen Lu wrote:
-> The scpi hwmon shows the sub-zero temperature in an unsigned integer,
-> which would confuse the users when the machine works in low temperature
-> environment. This shows the sub-zero temperature in an signed value and
-> users can get it properly from sensors.
-> 
-> Signed-off-by: Riwen Lu <luriwen@kylinos.cn>
-> Tested-by: Xin Chen <chenxin@kylinos.cn>
+Hi Shyam,
 
-Applied.
+On Fri, Jun 4, 2021 at 12:41 PM Shyam Prasad <Shyam.Prasad@microsoft.com> wrote:
+> Thanks for the email.
+> I've already submitted the fix for this. You should see this fixed tomorrow.
 
-Thanks,
-Guenter
+Where can I find these submitted fixes?
 
+As per linux-next policy[1], commits in linux-next should be posted
+to the relevant mailing list first, which is linux-cifs, AFAIK.
+
+Thanks!
+
+[1] https://lore.kernel.org/linux-next/20210430174733.5a31d0c6@canb.auug.org.au/
+
+> -----Original Message-----
+> From: Geert Uytterhoeven <geert@linux-m68k.org>
+> Sent: Friday, June 4, 2021 2:32 PM
+> To: Steve French <sfrench@samba.org>; Shyam Prasad <Shyam.Prasad@microsoft.com>
+> Cc: linux-cifs@vger.kernel.org; linux-next@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: [EXTERNAL] [PATCH] cifs: Change cifs_ses.chans_need_reconnect and chan_index to "unsigned long"
+>
+> On 32-bit (e.g. m68k):
+>
+>     fs/cifs/cifssmb.c: In function ‘cifs_reconnect_tcon’:
+>     ./include/linux/kern_levels.h:5:18: warning: format ‘%lx’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘size_t’ {aka ‘unsigned int’} [-Wformat=]
+>     fs/cifs/cifssmb.c:201:42: note: format string is defined here
+>       201 |  cifs_dbg(FYI, "sess reconnect mask: 0x%lx, tcon reconnect: %d",
+>           |                                        ~~^
+>           |                                          |
+>           |                                          long unsigned int
+>           |                                        %x
+>
+>     fs/cifs/transport.c: In function ‘cifs_pick_channel’:
+>     fs/cifs/cifsglob.h:955:20: error: passing argument 2 of ‘test_bit’ from incompatible pointer type [-Werror=incompatible-pointer-types]
+>       955 |  test_bit((index), &(ses)->chans_need_reconnect)
+>           |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>           |                    |
+>           |                    size_t * {aka unsigned int *}
+>     ./arch/m68k/include/asm/bitops.h:151:66: note: expected ‘const volatile long unsigned int *’ but argument is of type ‘size_t *’ {aka ‘unsigned int *’}
+>       151 | static inline int test_bit(int nr, const volatile unsigned long *vaddr)
+>           |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+>
+>     fs/cifs/sess.c: In function ‘cifs_chan_set_need_reconnect’:
+>     fs/cifs/sess.c:98:22: error: passing argument 2 of ‘bset_mem_set_bit’ from incompatible pointer type [-Werror=incompatible-pointer-types]
+>        98 |  set_bit(chan_index, &ses->chans_need_reconnect);
+>           |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>           |                      |
+>           |                      size_t * {aka unsigned int *}
+>     ./arch/m68k/include/asm/bitops.h:41:69: note: expected ‘volatile long unsigned int *’ but argument is of type ‘size_t *’ {aka ‘unsigned int *’}
+>        41 | static inline void bset_mem_set_bit(int nr, volatile unsigned long *vaddr)
+>           |                                             ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+>     fs/cifs/sess.c:98:22: error: passing argument 2 of ‘bfset_mem_set_bit’ from incompatible pointer type [-Werror=incompatible-pointer-types]
+>        98 |  set_bit(chan_index, &ses->chans_need_reconnect);
+>           |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>           |                      |
+>           |                      size_t * {aka unsigned int *}
+>     ./arch/m68k/include/asm/bitops.h:50:70: note: expected ‘volatile long unsigned int *’ but argument is of type ‘size_t *’ {aka ‘unsigned int *’}
+>        50 | static inline void bfset_mem_set_bit(int nr, volatile unsigned long *vaddr)
+>           |                                              ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+>
+>    [...]
+>
+> As bitops can only operate on long objects, and
+> cifs_ses_get_chan_index() already returns "unsigned long", fix this by changing cifs_ses.chans_need_reconnect and chan_index from "size_t" to "unsigned long".
+>
+> Fixes: 374c6c7bba3cbaa1 ("cifs: changes to support multichannel during channel reconnect")
+> Reported-by: noreply@ellerman.id.au
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 > ---
-> Changes since v1:
-> - Add judgment for sensor->info.class. If it is TEMPERATURE situation,
->   return the sensor value as a signed value, otherwise return it as a
->   unsigned value.
-> 
-> Changes since v2:
-> - Add a typecast u64 to s64 when it is a temperature value.
-> - Add a comment ahead of the if statement.
-> - Remove the unnecessary 'else' statement.
+> Can you please add Link: headers when committing patches?
+> I could not find this patch in the lore archives of linux-cifs or linux-fsdevel, presumably it was posted elsewhere?
+> Thanks!
 > ---
->  drivers/hwmon/scpi-hwmon.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/hwmon/scpi-hwmon.c b/drivers/hwmon/scpi-hwmon.c
-> index 25aac40f2764..919877970ae3 100644
-> --- a/drivers/hwmon/scpi-hwmon.c
-> +++ b/drivers/hwmon/scpi-hwmon.c
-> @@ -99,6 +99,15 @@ scpi_show_sensor(struct device *dev, struct device_attribute *attr, char *buf)
->  
->  	scpi_scale_reading(&value, sensor);
->  
-> +	/*
-> +	 * Temperature sensor values are treated as signed values based on
-> +	 * observation even though that is not explicitly specified, and
-> +	 * because an unsigned u64 temperature does not really make practical
-> +	 * sense especially when the temperature is below zero degrees Celsius.
-> +	 */
-> +	if (sensor->info.class == TEMPERATURE)
-> +		return sprintf(buf, "%lld\n", (s64)value);
-> +
->  	return sprintf(buf, "%llu\n", value);
->  }
->  
+>  fs/cifs/cifsglob.h | 2 +-
+>  fs/cifs/sess.c     | 6 +++---
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/fs/cifs/cifsglob.h b/fs/cifs/cifsglob.h index 8fea2ddd2bd7af26..a9c026af21e1e9d1 100644
+> --- a/fs/cifs/cifsglob.h
+> +++ b/fs/cifs/cifsglob.h
+> @@ -968,7 +968,7 @@ struct cifs_ses {
+>          * enable the sessions on top to continue to live till any
+>          * of the channels below are active.
+>          */
+> -       size_t chans_need_reconnect;
+> +       unsigned long chans_need_reconnect;
+>  };
+>
+>  static inline bool
+> diff --git a/fs/cifs/sess.c b/fs/cifs/sess.c index 1721a3b246942266..1a17ddd6abbe5778 100644
+> --- a/fs/cifs/sess.c
+> +++ b/fs/cifs/sess.c
+> @@ -94,7 +94,7 @@ void
+>  cifs_chan_set_need_reconnect(struct cifs_ses *ses,
+>                              struct TCP_Server_Info *server)  {
+> -       size_t chan_index = cifs_ses_get_chan_index(ses, server);
+> +       unsigned long chan_index = cifs_ses_get_chan_index(ses, server);
+>         set_bit(chan_index, &ses->chans_need_reconnect);
+>         cifs_dbg(FYI, "Set reconnect bitmask for chan %lu; now 0x%lx\n",
+>                  chan_index, ses->chans_need_reconnect); @@ -104,7 +104,7 @@ void  cifs_chan_clear_need_reconnect(struct cifs_ses *ses,
+>                                struct TCP_Server_Info *server)  {
+> -       size_t chan_index = cifs_ses_get_chan_index(ses, server);
+> +       unsigned long chan_index = cifs_ses_get_chan_index(ses, server);
+>         clear_bit(chan_index, &ses->chans_need_reconnect);
+>         cifs_dbg(FYI, "Cleared reconnect bitmask for chan %lu; now 0x%lx\n",
+>                  chan_index, ses->chans_need_reconnect); @@ -114,7 +114,7 @@ bool  cifs_chan_needs_reconnect(struct cifs_ses *ses,
+>                             struct TCP_Server_Info *server)
+>  {
+> -       size_t chan_index = cifs_ses_get_chan_index(ses, server);
+> +       unsigned long chan_index = cifs_ses_get_chan_index(ses, server);
+>         return CIFS_CHAN_NEEDS_RECONNECT(ses, chan_index);  }
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
