@@ -2,235 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E8839B2D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 08:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6FA539B2E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 08:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbhFDGul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 02:50:41 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:4346 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229799AbhFDGul (ORCPT
+        id S229976AbhFDGvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 02:51:22 -0400
+Received: from mail-pf1-f171.google.com ([209.85.210.171]:42721 "EHLO
+        mail-pf1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229948AbhFDGvU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 02:50:41 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FxCtp2bjyz68ZN;
-        Fri,  4 Jun 2021 14:45:06 +0800 (CST)
-Received: from dggpemm500022.china.huawei.com (7.185.36.162) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 4 Jun 2021 14:48:49 +0800
-Received: from DESKTOP-7FEPK9S.china.huawei.com (10.174.185.220) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 4 Jun 2021 14:48:48 +0800
-From:   Shenming Lu <lushenming@huawei.com>
-To:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>
-CC:     <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>,
-        <lushenming@huawei.com>
-Subject: [PATCH] KVM: arm64: vgic: Communicate a change of the IRQ state via vgic_queue_irq_unlock
-Date:   Fri, 4 Jun 2021 14:48:28 +0800
-Message-ID: <20210604064828.1497-1-lushenming@huawei.com>
-X-Mailer: git-send-email 2.27.0.windows.1
+        Fri, 4 Jun 2021 02:51:20 -0400
+Received: by mail-pf1-f171.google.com with SMTP id s14so5872070pfd.9
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 23:49:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fossix-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=BQWvJC5s5eM3wv6CMNUuU7NegMGtDLO5XucsEYO9Poc=;
+        b=wUjAz0Q7vy0RdQQLDhtuh4NJFgjqB8kcFTgPBUeN6naahgiK8ldHsJxJEXNF/gIiLQ
+         rJKa15pQLHfKHYwiPtW0BbpQefZ9Vm5fJRp4eMQ1mInOpN1ErBJ6orJv9iPKukDqGatn
+         X/wvgvCBmmqxXh5hPM57uka+4yWDv7UMyn36k4Kjx2b5OwCIJGxbFvMTNGMqIpSKq7JZ
+         xZF52mjhKEfmNoTTiNlS8nJJ82gxw0lFNMTUtObXCJOa4dm2I1323IkRGMmDEVsqSJyL
+         YFfSlTG8/mm7Miy36u/2wTqL0zuHqhTbK+5zzD6Llw61d3FqKLjME2bVVB+b4TUy/X0Z
+         BoZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=BQWvJC5s5eM3wv6CMNUuU7NegMGtDLO5XucsEYO9Poc=;
+        b=dmCLRpLAqW37EZnVWLZaK4Pq2gxVOxNvYl1193J2WSYsRcddp/TJ/y+K5ALJS3fu84
+         CPZUCOzeO0/x92sMkXxuF/MgLy/QubVCNOre5EbDVMFzoJiQC0YWbn402hn17tvmKOKY
+         MeSHKoEb3EhavJAKt9K7s00kNZDP/kXc3Gidoc8R0Y1CpKay6AryKxLF4qhJIU6kz3tU
+         ve2nFzfOkkjplEy+rkwz/tpGSeUM8p7z1Qk9lonciRJpNY99YCWg73n38kYH2/BjfdER
+         MLDRagibSpgrXe4jxdvVZE+Mb6PYAH4hert5uC8XnqeVTb/uTEipDRWigInZ1o8ruZ7M
+         I5Lw==
+X-Gm-Message-State: AOAM531EE+5I2s/fDEGeeG6mFRHDbEMdYn53J6vEFGaMYSdOP7T+s/J6
+        xAJ9vnLo5/phF9JWNUbpgjbIVg==
+X-Google-Smtp-Source: ABdhPJx2UDloTP4aiPcPj38DSXAFTgLGFtShKK7vZ5nAtthJEC3mYqSS/8DwRVJOSkvzLdJ0gOJrqg==
+X-Received: by 2002:a65:6884:: with SMTP id e4mr3422366pgt.71.1622789314969;
+        Thu, 03 Jun 2021 23:48:34 -0700 (PDT)
+Received: from localhost ([103.21.79.4])
+        by smtp.gmail.com with ESMTPSA id m14sm947785pff.17.2021.06.03.23.48.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 23:48:34 -0700 (PDT)
+From:   Santosh Sivaraj <santosh@fossix.org>
+To:     Wu Bo <wubo40@huawei.com>, dan.j.williams@intel.com,
+        vishal.l.verma@intel.com, dave.jiang@intel.com,
+        ira.weiny@intel.com, bp@suse.de, rafael.j.wysocki@intel.com,
+        mpe@ellerman.id.au, nvdimm@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     linfeilong@huawei.com, wubo40@huawei.com
+Subject: Re: [PATCH] tools/testing/nvdimm: use vzalloc() instead of
+ vmalloc()/memset(0)
+In-Reply-To: <1622425715-146012-1-git-send-email-wubo40@huawei.com>
+References: <1622425715-146012-1-git-send-email-wubo40@huawei.com>
+Date:   Fri, 04 Jun 2021 12:18:32 +0530
+Message-ID: <87tumem8fz.fsf@desktop.fossix.local.i-did-not-set--mail-host-address--so-tickle-me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.185.220]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500022.china.huawei.com (7.185.36.162)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+Wu Bo <wubo40@huawei.com> writes:
 
-Some time ago, you suggested that we should communicate a change
-of the IRQ state via vgic_queue_irq_unlock [1], which needs to
-include dropping the IRQ from the VCPU's ap_list if the IRQ is
-not pending or enabled but on the ap_list. And I additionally
-add a case where the IRQ has to be migrated to another ap_list.
+> Use vzalloc() instead of vmalloc() and memset(0) to simpify
+> the code.
+>
+> Signed-off-by: Wu Bo <wubo40@huawei.com>
+> ---
+>  tools/testing/nvdimm/test/nfit.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 
-(maybe you forget this...)
-Does this patch match your thought at the time?
+LGTM,
 
-[1] https://lore.kernel.org/patchwork/patch/1371884/
+Reviewed-by: Santosh S <santosh@fossix.org>
 
-Signed-off-by: Shenming Lu <lushenming@huawei.com>
----
- arch/arm64/kvm/vgic/vgic.c | 116 ++++++++++++++++++++++++-------------
- 1 file changed, 75 insertions(+), 41 deletions(-)
-
-diff --git a/arch/arm64/kvm/vgic/vgic.c b/arch/arm64/kvm/vgic/vgic.c
-index 15b666200f0b..9b88d49aa439 100644
---- a/arch/arm64/kvm/vgic/vgic.c
-+++ b/arch/arm64/kvm/vgic/vgic.c
-@@ -326,8 +326,9 @@ static bool vgic_validate_injection(struct vgic_irq *irq, bool level, void *owne
- 
- /*
-  * Check whether an IRQ needs to (and can) be queued to a VCPU's ap list.
-- * Do the queuing if necessary, taking the right locks in the right order.
-- * Returns true when the IRQ was queued, false otherwise.
-+ * Do the queuing, dropping or migrating if necessary, taking the right
-+ * locks in the right order. Returns true when the IRQ was queued, false
-+ * otherwise.
-  *
-  * Needs to be entered with the IRQ lock already held, but will return
-  * with all locks dropped.
-@@ -335,49 +336,38 @@ static bool vgic_validate_injection(struct vgic_irq *irq, bool level, void *owne
- bool vgic_queue_irq_unlock(struct kvm *kvm, struct vgic_irq *irq,
- 			   unsigned long flags)
- {
-+	struct kvm_vcpu *target_vcpu;
- 	struct kvm_vcpu *vcpu;
-+	bool ret = false;
- 
- 	lockdep_assert_held(&irq->irq_lock);
- 
- retry:
--	vcpu = vgic_target_oracle(irq);
--	if (irq->vcpu || !vcpu) {
-+	target_vcpu = vgic_target_oracle(irq);
-+	vcpu = irq->vcpu;
-+	if (target_vcpu == vcpu) {
- 		/*
--		 * If this IRQ is already on a VCPU's ap_list, then it
--		 * cannot be moved or modified and there is no more work for
-+		 * If this IRQ's state is consistent with whether on
-+		 * the right ap_lsit or not, there is no more work for
- 		 * us to do.
--		 *
--		 * Otherwise, if the irq is not pending and enabled, it does
--		 * not need to be inserted into an ap_list and there is also
--		 * no more work for us to do.
- 		 */
- 		raw_spin_unlock_irqrestore(&irq->irq_lock, flags);
--
--		/*
--		 * We have to kick the VCPU here, because we could be
--		 * queueing an edge-triggered interrupt for which we
--		 * get no EOI maintenance interrupt. In that case,
--		 * while the IRQ is already on the VCPU's AP list, the
--		 * VCPU could have EOI'ed the original interrupt and
--		 * won't see this one until it exits for some other
--		 * reason.
--		 */
--		if (vcpu) {
--			kvm_make_request(KVM_REQ_IRQ_PENDING, vcpu);
--			kvm_vcpu_kick(vcpu);
--		}
--		return false;
-+		goto out;
- 	}
- 
- 	/*
- 	 * We must unlock the irq lock to take the ap_list_lock where
--	 * we are going to insert this new pending interrupt.
-+	 * we are going to insert/drop this IRQ.
- 	 */
- 	raw_spin_unlock_irqrestore(&irq->irq_lock, flags);
- 
- 	/* someone can do stuff here, which we re-check below */
- 
--	raw_spin_lock_irqsave(&vcpu->arch.vgic_cpu.ap_list_lock, flags);
-+	if (target_vcpu)
-+		raw_spin_lock_irqsave(&target_vcpu->arch.vgic_cpu.ap_list_lock,
-+				      flags);
-+	if (vcpu)
-+		raw_spin_lock_irqsave(&vcpu->arch.vgic_cpu.ap_list_lock, flags);
- 	raw_spin_lock(&irq->irq_lock);
- 
- 	/*
-@@ -392,30 +382,74 @@ bool vgic_queue_irq_unlock(struct kvm *kvm, struct vgic_irq *irq,
- 	 * In both cases, drop the locks and retry.
- 	 */
- 
--	if (unlikely(irq->vcpu || vcpu != vgic_target_oracle(irq))) {
-+	if (unlikely(target_vcpu != vgic_target_oracle(irq) ||
-+		     vcpu != irq->vcpu)) {
- 		raw_spin_unlock(&irq->irq_lock);
--		raw_spin_unlock_irqrestore(&vcpu->arch.vgic_cpu.ap_list_lock,
--					   flags);
-+		if (target_vcpu)
-+			raw_spin_unlock_irqrestore(&target_vcpu->arch.vgic_cpu.ap_list_lock,
-+						   flags);
-+		if (vcpu)
-+			raw_spin_unlock_irqrestore(&vcpu->arch.vgic_cpu.ap_list_lock,
-+						   flags);
- 
- 		raw_spin_lock_irqsave(&irq->irq_lock, flags);
- 		goto retry;
- 	}
- 
--	/*
--	 * Grab a reference to the irq to reflect the fact that it is
--	 * now in the ap_list.
--	 */
--	vgic_get_irq_kref(irq);
--	list_add_tail(&irq->ap_list, &vcpu->arch.vgic_cpu.ap_list_head);
--	irq->vcpu = vcpu;
-+	if (!vcpu && target_vcpu) {
-+		/*
-+		 * Insert this new pending interrupt.
-+		 * Grab a reference to the irq to reflect the fact that
-+		 * it is now in the ap_list.
-+		 */
-+		vgic_get_irq_kref(irq);
-+		list_add_tail(&irq->ap_list,
-+			      &target_vcpu->arch.vgic_cpu.ap_list_head);
-+		irq->vcpu = target_vcpu;
-+		ret = true;
-+	} else if (vcpu && !target_vcpu) {
-+		/*
-+		 * This IRQ is not pending or enabled but on the ap_list,
-+		 * drop it from the ap_list.
-+		 */
-+		list_del(&irq->ap_list);
-+		irq->vcpu = NULL;
-+		raw_spin_unlock(&irq->irq_lock);
-+		vgic_put_irq(vcpu->kvm, irq);
-+		raw_spin_unlock_irqrestore(&vcpu->arch.vgic_cpu.ap_list_lock,
-+					   flags);
-+		goto out;
-+	} else {
-+		/* This IRQ looks like it has to be migrated. */
-+		list_del(&irq->ap_list);
-+		list_add_tail(&irq->ap_list,
-+			      &target_vcpu->arch.vgic_cpu.ap_list_head);
-+		irq->vcpu = target_vcpu;
-+	}
- 
- 	raw_spin_unlock(&irq->irq_lock);
--	raw_spin_unlock_irqrestore(&vcpu->arch.vgic_cpu.ap_list_lock, flags);
-+	if (target_vcpu)
-+		raw_spin_unlock_irqrestore(&target_vcpu->arch.vgic_cpu.ap_list_lock,
-+					   flags);
-+	if (vcpu)
-+		raw_spin_unlock_irqrestore(&vcpu->arch.vgic_cpu.ap_list_lock, flags);
- 
--	kvm_make_request(KVM_REQ_IRQ_PENDING, vcpu);
--	kvm_vcpu_kick(vcpu);
-+out:
-+	/*
-+	 * Even for the already queuing rightly case we have
-+	 * to kick the VCPU, because we could be queueing an
-+	 * edge-triggered interrupt for which we get no EOI
-+	 * maintenance interrupt. In that case, while the IRQ
-+	 * is already on the VCPU's AP list, the VCPU could
-+	 * have EOI'ed the original interrupt and won't see
-+	 * this one until it exits for some other reason.
-+	 */
-+	if (target_vcpu) {
-+		kvm_make_request(KVM_REQ_IRQ_PENDING, target_vcpu);
-+		kvm_vcpu_kick(target_vcpu);
-+	}
- 
--	return true;
-+	return ret;
- }
- 
- /**
--- 
-2.19.1
-
+>
+> diff --git a/tools/testing/nvdimm/test/nfit.c b/tools/testing/nvdimm/test/nfit.c
+> index 54f367cbadae..258bba22780b 100644
+> --- a/tools/testing/nvdimm/test/nfit.c
+> +++ b/tools/testing/nvdimm/test/nfit.c
+> @@ -1625,7 +1625,6 @@ static void *__test_alloc(struct nfit_test *t, size_t size, dma_addr_t *dma,
+>  	if (rc)
+>  		goto err;
+>  	INIT_LIST_HEAD(&nfit_res->list);
+> -	memset(buf, 0, size);
+>  	nfit_res->dev = dev;
+>  	nfit_res->buf = buf;
+>  	nfit_res->res.start = *dma;
+> @@ -1652,7 +1651,7 @@ static void *test_alloc(struct nfit_test *t, size_t size, dma_addr_t *dma)
+>  	struct genpool_data_align data = {
+>  		.align = SZ_128M,
+>  	};
+> -	void *buf = vmalloc(size);
+> +	void *buf = vzalloc(size);
+>  
+>  	if (size >= DIMM_SIZE)
+>  		*dma = gen_pool_alloc_algo(nfit_pool, size,
+> -- 
+> 2.30.0
