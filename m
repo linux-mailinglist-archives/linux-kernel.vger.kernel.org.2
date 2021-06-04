@@ -2,106 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5950839B9D8
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C711439B9E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230428AbhFDN3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 09:29:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34174 "EHLO
+        id S230203AbhFDNdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 09:33:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbhFDN3i (ORCPT
+        with ESMTP id S230004AbhFDNds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 09:29:38 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4173C061740;
-        Fri,  4 Jun 2021 06:27:51 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id A2C2222236;
-        Fri,  4 Jun 2021 15:27:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1622813268;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9ZjZ/byVkXGSw+O6l13Rn+fjw8dkV3sOkTd2A/W0i54=;
-        b=MLmf/xp7b4YHnZoE2WvlCSHDfXoQV3VvD9B2yj4v7Z4vEwD3tdrFxcUJtz9mknmLVIO9cG
-        6vrFLUToHmU+uEr11SJy3BRprSvKLCpBfNcL1WjDCyynavAGU0VpLnk9GcC7LfYAFfJuCm
-        DcHAyebEU+OOYWGeByJiNyyMqh5R9E0=
+        Fri, 4 Jun 2021 09:33:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE65C0613DA;
+        Fri,  4 Jun 2021 06:32:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MavlaHcrXTsmTGjPtJGrWFVh4N2RPwLd0U0sgZUv9NQ=; b=KUeV773P7iwXExqW/c26s06Ek8
+        26hm/T8cUdtDD3W1aKekCy61rT98aZ3LRe9dDcFV5bHZUPydNUGwwA8MXWCMwdBurq/vt06n+FJME
+        feuZL6fz5haQmLawDIeCflpcuMwbEx8ZkeJoEp5ltBGr3FGCTtvqXgU/J0PHjkP15TYnj2z+qddeU
+        2MK/9NLqGh6bcbrB+YJRZBB4I1Iy7ay5Nmkj8+tntWoOr16GTwnzOg5pqlKETVeVBAZzvAu57EmEF
+        Kl80ntw4SySpF/RhPLCkydEV+fxj5batZqw3urPePQV/kSymibGmEUgV7akUSXYrnLctdfkgW42oF
+        tHALoQCg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lp9vP-00DCTA-FW; Fri, 04 Jun 2021 13:31:52 +0000
+Date:   Fri, 4 Jun 2021 14:31:47 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-hyperv@vger.kernel.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Michael Kelley <mikelley@microsoft.com>, wei.liu@kernel.org,
+        Dexuan Cui <decui@microsoft.com>
+Subject: Re: [bug report] Commit ccf953d8f3d6 ("fb_defio: Remove custom
+ address_space_operations") breaks Hyper-V FB driver
+Message-ID: <YLorQ3r4EH7aEvIV@casper.infradead.org>
+References: <87v96tzujm.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 04 Jun 2021 15:27:48 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: Re: [PATCH net-next] net: enetc: use get/put_unaligned() for mac
- address handling
-In-Reply-To: <db1964cd-df60-08a2-1a66-8a8df7f14fef@gmail.com>
-References: <20210604123018.24940-1-michael@walle.cc>
- <db1964cd-df60-08a2-1a66-8a8df7f14fef@gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <a1f426e85e24a910944fc712e5c08f01@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87v96tzujm.fsf@vitty.brq.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-06-04 14:44, schrieb Heiner Kallweit:
-> On 04.06.2021 14:30, Michael Walle wrote:
->> The supplied buffer for the MAC address might not be aligned. Thus
->> doing a 32bit (or 16bit) access could be on an unaligned address. For
->> now, enetc is only used on aarch64 which can do unaligned accesses, 
->> thus
->> there is no error. In any case, be correct and use the 
->> get/put_unaligned()
->> helpers.
->> 
->> Signed-off-by: Michael Walle <michael@walle.cc>
->> ---
->>  drivers/net/ethernet/freescale/enetc/enetc_pf.c | 9 +++++----
->>  1 file changed, 5 insertions(+), 4 deletions(-)
->> 
->> diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c 
->> b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
->> index 31274325159a..a96d2acb5e11 100644
->> --- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
->> +++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
->> @@ -1,6 +1,7 @@
->>  // SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
->>  /* Copyright 2017-2019 NXP */
->> 
->> +#include <asm/unaligned.h>
->>  #include <linux/mdio.h>
->>  #include <linux/module.h>
->>  #include <linux/fsl/enetc_mdio.h>
->> @@ -17,15 +18,15 @@ static void enetc_pf_get_primary_mac_addr(struct 
->> enetc_hw *hw, int si, u8 *addr)
->>  	u32 upper = __raw_readl(hw->port + ENETC_PSIPMAR0(si));
->>  	u16 lower = __raw_readw(hw->port + ENETC_PSIPMAR1(si));
->> 
->> -	*(u32 *)addr = upper;
->> -	*(u16 *)(addr + 4) = lower;
->> +	put_unaligned(upper, (u32 *)addr);
->> +	put_unaligned(lower, (u16 *)(addr + 4));
-> 
-> I think you want to write little endian, therefore on a BE platform
-> this code may be wrong. Better use put_unaligned_le32?
-> By using these versions of the unaligned helpers you could also
-> remove the pointer cast.
+On Fri, Jun 04, 2021 at 02:25:01PM +0200, Vitaly Kuznetsov wrote:
+> Commit ccf953d8f3d6 ("fb_defio: Remove custom address_space_operations")
+> seems to be breaking Hyper-V framebuffer
 
-I wasn't sure about the endianness. Might be the case, that on BE
-platforms, the endianess of the register will swap too. (OTOH I
-could use aarch64 with BE..)
-
-But I'm fine with changing it. I'd presume this being the only
-platform for now it doesn't really matter.
-
--michael
+https://lore.kernel.org/linux-mm/YLZUrEjVJWBGGMxf@phenom.ffwll.local/
