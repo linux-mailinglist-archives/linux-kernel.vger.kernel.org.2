@@ -2,69 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD18439B3F1
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8339239B3E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhFDHeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 03:34:07 -0400
-Received: from mail-lf1-f47.google.com ([209.85.167.47]:47018 "EHLO
-        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229950AbhFDHeD (ORCPT
+        id S230033AbhFDHd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 03:33:28 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:55444 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229886AbhFDHd0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 03:34:03 -0400
-Received: by mail-lf1-f47.google.com with SMTP id i9so12581120lfe.13
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 00:32:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AmvzwN2PhN4D6doozCLoTCSRtV8PNmRSUf70knyKygY=;
-        b=VKgonetGhwkdh3p5GzyHz3fb2C2eHBZpW8vXddarJjps4MoO4NYl/ZaW2aGXwsKhl2
-         RwHQG2OhGJl26h/UkO36x5csPdcUn3lzQXGWTfWm9To/J/9WLnADo3laZGOsrup0s9mo
-         PLlIEaSb1N2gfIw73iu8mkBgdTmXK6LxRbSdLhHf06NhizoyCP9QK7+N4NXQ1RPBoBE1
-         2bG4fK/zSKDmWehB9q67v9DPEtqpXa5lpqS0t0k2docp3/xjIHm0fZMDxgJduvvfv751
-         HeM4q7rRAh2dyL3WZ2gb6fz/G34Q/36lSMzl1oMlRIyfnYWp7alGIQQ0VkELhive9AdR
-         EHQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AmvzwN2PhN4D6doozCLoTCSRtV8PNmRSUf70knyKygY=;
-        b=hN3GLHrzKCgJwTdDG/8AI0nAx0fTjjOWmaKUUrJCCv+7mbg+39+jAafDpJFk8DFOuZ
-         F3Z5jZs5Kjb2lp1Oe3pGXLwdCM5nGlI2pdczqELuCV86UtPCjYYoPUKqtTPeQiEZ67Dj
-         2s1Cs8Xh7oaNRjXIThRRYpgnT5/AjJ59Vf40aLQzNHsOBHbZbJlzTG6cQu9wp+VXiba3
-         HI4los4zIFjbjywjhOGLvVdgP+M4bJjCsEj45cv0JZlkS4wJDc1wcmDfMLBgHjAzas18
-         b4Z8O5nzgLVK4Hwtmgm+9oqpzyrII+o8PR3AvPUJ24G1GHqgR3pQflvdhqPisNh2nKSc
-         TgAg==
-X-Gm-Message-State: AOAM530++HBtxQMD0RIbabgQrAolKdz8s8cPlG65yB3SO4RYSvk8TZ34
-        6pcZDg/OGNTRVb20U+6Im5j8hGGMhBRWNQrfoONTCw==
-X-Google-Smtp-Source: ABdhPJw/g7Ppk/QNRZ6RrxFDv9My3nGxs8YayvDdjsIPhq6PB228bvlEC8Xzphi5oB3P7V9LawXhGQiPjxxch6U+B+c=
-X-Received: by 2002:ac2:4c8f:: with SMTP id d15mr1829213lfl.157.1622791876843;
- Fri, 04 Jun 2021 00:31:16 -0700 (PDT)
+        Fri, 4 Jun 2021 03:33:26 -0400
+X-UUID: 5d978f05493742eca5d48465c808324c-20210604
+X-UUID: 5d978f05493742eca5d48465c808324c-20210604
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1052900667; Fri, 04 Jun 2021 15:31:38 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 4 Jun 2021 15:31:37 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 4 Jun 2021 15:31:36 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
+CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Eddie Hung <eddie.hung@mediatek.com>
+Subject: [PATCH 1/3] dt-bindings: phy: mediatek: tphy: add support hardware version 3
+Date:   Fri, 4 Jun 2021 15:31:18 +0800
+Message-ID: <1622791880-20262-1-git-send-email-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-References: <20210603043726.3793876-1-dmitry.torokhov@gmail.com> <20210603043726.3793876-2-dmitry.torokhov@gmail.com>
-In-Reply-To: <20210603043726.3793876-2-dmitry.torokhov@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 4 Jun 2021 09:31:05 +0200
-Message-ID: <CACRpkdbyu9tYwwN=yhx_5RWxKngBy10U5rqD=VAd+YhoEWo-rA@mail.gmail.com>
-Subject: Re: [PATCH 2/7] Input: cy8ctmg110_ts - do not hard code interrupt trigger
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Linux Input <linux-input@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 6:37 AM Dmitry Torokhov
-<dmitry.torokhov@gmail.com> wrote:
+The PHYA architecture is updated, and doesn't support slew rate
+calibration anymore on 7nm or advanced process, add a new version
+number to support it.
+Note: the FreqMeter bank is not used but reserved.
 
-> Rely on the platform to set up interrupt polarity/type properly instead
-> of hard-coding falling edge.
->
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+---
+ .../devicetree/bindings/phy/mediatek,tphy.yaml     | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+diff --git a/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml b/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
+index b8a7651a3d9a..939c09296b5f 100644
+--- a/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
++++ b/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
+@@ -15,7 +15,7 @@ description: |
+   controllers on MediaTek SoCs, includes USB2.0, USB3.0, PCIe and SATA.
+ 
+   Layout differences of banks between T-PHY V1 (mt8173/mt2701) and
+-  T-PHY V2 (mt2712) when works on USB mode:
++  T-PHY V2 (mt2712) / V3 (mt8195) when works on USB mode:
+   -----------------------------------
+   Version 1:
+   port        offset    bank
+@@ -34,7 +34,7 @@ description: |
+   u2 port2    0x1800    U2PHY_COM
+               ...
+ 
+-  Version 2:
++  Version 2/3:
+   port        offset    bank
+   u2 port0    0x0000    MISC
+               0x0100    FMREG
+@@ -59,7 +59,8 @@ description: |
+ 
+   SPLLC shared by u3 ports and FMREG shared by u2 ports on V1 are put back
+   into each port; a new bank MISC for u2 ports and CHIP for u3 ports are
+-  added on V2.
++  added on V2; the FMREG bank for slew rate calibration is not used anymore
++  and reserved on V3;
+ 
+ properties:
+   $nodename:
+@@ -79,8 +80,11 @@ properties:
+               - mediatek,mt2712-tphy
+               - mediatek,mt7629-tphy
+               - mediatek,mt8183-tphy
+-              - mediatek,mt8195-tphy
+           - const: mediatek,generic-tphy-v2
++      - items:
++          - enum:
++              - mediatek,mt8195-tphy
++          - const: mediatek,generic-tphy-v3
+       - const: mediatek,mt2701-u3phy
+         deprecated: true
+       - const: mediatek,mt2712-u3phy
+@@ -91,7 +95,7 @@ properties:
+     description:
+       Register shared by multiple ports, exclude port's private register.
+       It is needed for T-PHY V1, such as mt2701 and mt8173, but not for
+-      T-PHY V2, such as mt2712.
++      T-PHY V2/V3, such as mt2712.
+     maxItems: 1
+ 
+   "#address-cells":
+-- 
+2.18.0
 
-Yours,
-Linus Walleij
