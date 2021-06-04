@@ -2,146 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E41DA39B09E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 04:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E823D39B0A5
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 04:58:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229820AbhFDC42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 22:56:28 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:4344 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFDC41 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 22:56:27 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Fx6hY2SGcz68Tn;
-        Fri,  4 Jun 2021 10:50:53 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 4 Jun 2021 10:54:32 +0800
-Received: from [127.0.0.1] (10.174.177.72) by dggpemm500006.china.huawei.com
- (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 4 Jun 2021
- 10:54:32 +0800
-Subject: Re: [PATCH v10 1/3] iommu: Enhance IOMMU default DMA mode build
- options
-To:     John Garry <john.garry@huawei.com>, <joro@8bytes.org>,
-        <will@kernel.org>, <dwmw2@infradead.org>,
-        <baolu.lu@linux.intel.com>, <robin.murphy@arm.com>
-CC:     <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
-        <linuxarm@huawei.com>, <chenxiang66@hisilicon.com>
-References: <1622728715-209296-1-git-send-email-john.garry@huawei.com>
- <1622728715-209296-2-git-send-email-john.garry@huawei.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <0e54ff0f-c668-354e-1ec8-7536c701d3a8@huawei.com>
-Date:   Fri, 4 Jun 2021 10:54:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S229810AbhFDDAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 23:00:33 -0400
+Received: from mga12.intel.com ([192.55.52.136]:29331 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229576AbhFDDAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 23:00:33 -0400
+IronPort-SDR: cQV4o5Jde9hJl3+fs5hBCVHFZu97o8l9w6W0jHMYN8xDEJerRZ3+XV1MuhR54yPffJHepW3sTB
+ 5P4Zi7WCpsGQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="183893672"
+X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
+   d="scan'208";a="183893672"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 19:58:45 -0700
+IronPort-SDR: 5PrpMRZipDBoizABoITIVEawClZ6vcC7IyDsE4MfChQhtyKIT0xwon4n66HHO58WDqb5ILDnGz
+ NEHulzgT7CLQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
+   d="scan'208";a="446527851"
+Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 03 Jun 2021 19:58:43 -0700
+Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lp02l-0006cY-2Q; Fri, 04 Jun 2021 02:58:43 +0000
+Date:   Fri, 04 Jun 2021 10:58:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:rcu/next] BUILD SUCCESS
+ c44a4c3859136d0ff7e3b60ab77209eae1de53dc
+Message-ID: <60b996c7.EpdIETK0Ykj63OHp%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <1622728715-209296-2-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
+branch HEAD: c44a4c3859136d0ff7e3b60ab77209eae1de53dc  docs: Fix a typo in Documentation/RCU/stallwarn.rst
 
+elapsed time: 10790m
 
-On 2021/6/3 21:58, John Garry wrote:
-> From: Zhen Lei <thunder.leizhen@huawei.com>
-> 
-> First, add build options IOMMU_DEFAULT_{LAZY|STRICT}, so that we have the
-> opportunity to set {lazy|strict} mode as default at build time. Then put
-> the two config options in an choice, as they are mutually-exclusive.
-> 
-> [jpg: Make choice between strict and lazy only (and not passthrough)]
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> ---
->  drivers/iommu/Kconfig | 34 ++++++++++++++++++++++++++++++++++
->  drivers/iommu/iommu.c |  3 ++-
->  2 files changed, 36 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-> index 1f111b399bca..12ef90256df8 100644
-> --- a/drivers/iommu/Kconfig
-> +++ b/drivers/iommu/Kconfig
-> @@ -90,6 +90,40 @@ config IOMMU_DEFAULT_PASSTHROUGH
->  
->  	  If unsure, say N here.
->  
-> +choice
-> +	prompt "IOMMU default DMA mode"
-> +	depends on IOMMU_API
+configs tested: 177
+configs skipped: 2
 
-config INTEL_IOMMU
-        depends on PCI_MSI && ACPI && (X86 || IA64)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-config AMD_IOMMU
-        depends on X86_64 && PCI && ACPI && HAVE_CMPXCHG_DOUBLE
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arc                          axs101_defconfig
+xtensa                generic_kc705_defconfig
+arm                         s3c6400_defconfig
+m68k                       m5249evb_defconfig
+sh                  sh7785lcr_32bit_defconfig
+arm                              alldefconfig
+arm                     davinci_all_defconfig
+mips                         bigsur_defconfig
+mips                            ar7_defconfig
+arm                         s5pv210_defconfig
+m68k                            mac_defconfig
+powerpc                     ppa8548_defconfig
+powerpc                    sam440ep_defconfig
+sh                        edosk7760_defconfig
+arm                          iop32x_defconfig
+arm                         lpc32xx_defconfig
+arm                          ixp4xx_defconfig
+sh                          lboxre2_defconfig
+mips                        workpad_defconfig
+powerpc                   bluestone_defconfig
+sh                         apsh4a3a_defconfig
+arc                    vdk_hs38_smp_defconfig
+arm                        mvebu_v5_defconfig
+nds32                            alldefconfig
+arm                            hisi_defconfig
+mips                         mpc30x_defconfig
+powerpc                      ppc40x_defconfig
+sh                          rsk7201_defconfig
+s390                          debug_defconfig
+mips                     loongson1b_defconfig
+mips                      pistachio_defconfig
+sh                   rts7751r2dplus_defconfig
+arm                         axm55xx_defconfig
+powerpc                 mpc834x_itx_defconfig
+nios2                            allyesconfig
+arm                           spitz_defconfig
+arm                     am200epdkit_defconfig
+sh                            shmin_defconfig
+arm                          collie_defconfig
+ia64                             allmodconfig
+um                           x86_64_defconfig
+mips                      malta_kvm_defconfig
+um                             i386_defconfig
+xtensa                       common_defconfig
+arm                         lpc18xx_defconfig
+arm64                            alldefconfig
+arc                            hsdk_defconfig
+arm                             ezx_defconfig
+openrisc                  or1klitex_defconfig
+arm                        spear6xx_defconfig
+powerpc                      arches_defconfig
+arm                         orion5x_defconfig
+arm                         shannon_defconfig
+arc                     haps_hs_smp_defconfig
+mips                        maltaup_defconfig
+powerpc64                        alldefconfig
+sh                          rsk7269_defconfig
+powerpc64                           defconfig
+sh                          r7785rp_defconfig
+mips                          ath25_defconfig
+powerpc                     stx_gp3_defconfig
+mips                        nlm_xlp_defconfig
+powerpc                    ge_imp3a_defconfig
+sh                          polaris_defconfig
+powerpc                      obs600_defconfig
+powerpc                        fsp2_defconfig
+arm                        multi_v7_defconfig
+m68k                       m5208evb_defconfig
+mips                     decstation_defconfig
+powerpc                    klondike_defconfig
+mips                           jazz_defconfig
+powerpc                  mpc885_ads_defconfig
+arm                            mmp2_defconfig
+powerpc                   currituck_defconfig
+sh                     magicpanelr2_defconfig
+powerpc                   motionpro_defconfig
+powerpc                      bamboo_defconfig
+arm                          exynos_defconfig
+m68k                        stmark2_defconfig
+mips                           xway_defconfig
+m68k                          sun3x_defconfig
+sparc                       sparc32_defconfig
+m68k                        mvme147_defconfig
+m68k                       m5475evb_defconfig
+sh                          r7780mp_defconfig
+powerpc               mpc834x_itxgp_defconfig
+arm                         cm_x300_defconfig
+powerpc                    mvme5100_defconfig
+mips                       capcella_defconfig
+powerpc                     mpc83xx_defconfig
+x86_64                            allnoconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a005-20210526
+x86_64               randconfig-a001-20210526
+x86_64               randconfig-a006-20210526
+x86_64               randconfig-a003-20210526
+x86_64               randconfig-a004-20210526
+x86_64               randconfig-a002-20210526
+i386                 randconfig-a001-20210526
+i386                 randconfig-a002-20210526
+i386                 randconfig-a005-20210526
+i386                 randconfig-a004-20210526
+i386                 randconfig-a003-20210526
+i386                 randconfig-a006-20210526
+i386                 randconfig-a001-20210527
+i386                 randconfig-a002-20210527
+i386                 randconfig-a005-20210527
+i386                 randconfig-a003-20210527
+i386                 randconfig-a004-20210527
+i386                 randconfig-a006-20210527
+x86_64               randconfig-a013-20210527
+x86_64               randconfig-a012-20210527
+x86_64               randconfig-a014-20210527
+x86_64               randconfig-a016-20210527
+x86_64               randconfig-a015-20210527
+x86_64               randconfig-a011-20210527
+i386                 randconfig-a011-20210526
+i386                 randconfig-a016-20210526
+i386                 randconfig-a015-20210526
+i386                 randconfig-a012-20210526
+i386                 randconfig-a014-20210526
+i386                 randconfig-a013-20210526
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-config ARM_SMMU_V3
-        depends on ARM64
+clang tested configs:
+x86_64               randconfig-b001-20210527
+x86_64               randconfig-a013-20210526
+x86_64               randconfig-a012-20210526
+x86_64               randconfig-a014-20210526
+x86_64               randconfig-a016-20210526
+x86_64               randconfig-a015-20210526
+x86_64               randconfig-a011-20210526
 
-"depends on ARM_SMMU_V3 || INTEL_IOMMU || AMD_IOMMU" may need to be added, because it doesn't work on other platforms.
-
-or "depends on X86 || IA64 || X86_64 || ARM64"
-
-> +
-> +	default IOMMU_DEFAULT_STRICT
-> +	help
-> +	  This option allows an IOMMU DMA mode to be chosen at build time, to
-> +	  override the default DMA mode of each ARCH, removing the need to
-> +	  pass in kernel parameters through command line. It is still possible
-> +	  to provide ARCH-specific or common boot options to override this
-> +	  option.
-> +
-> +	  If unsure, keep the default.
-> +
-> +config IOMMU_DEFAULT_LAZY
-> +	bool "lazy"
-> +	help
-> +	  Support lazy mode, where for every IOMMU DMA unmap operation, the
-> +	  flush operation of IOTLB and the free operation of IOVA are deferred.
-> +	  They are only guaranteed to be done before the related IOVA will be
-> +	  reused.
-> +
-> +config IOMMU_DEFAULT_STRICT
-> +	bool "strict"
-> +	help
-> +	  For every IOMMU DMA unmap operation, the flush operation of IOTLB and
-> +	  the free operation of IOVA are guaranteed to be done in the unmap
-> +	  function.
-> +
-> +	  This mode is safer than the two above, but it maybe slower in some
-> +	  high performace scenarios.
-> +
-> +endchoice
-> +
->  config OF_IOMMU
->  	def_bool y
->  	depends on OF && IOMMU_API
-> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> index 966426a96520..177b0dafc535 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -29,7 +29,8 @@ static struct kset *iommu_group_kset;
->  static DEFINE_IDA(iommu_group_ida);
->  
->  static unsigned int iommu_def_domain_type __read_mostly;
-> -static bool iommu_dma_strict __read_mostly = true;
-> +static bool iommu_dma_strict __read_mostly =
-> +			IS_ENABLED(CONFIG_IOMMU_DEFAULT_STRICT);
-
-Currently, a maximum of 100 columns are allowed in a row.
-
->  static u32 iommu_cmd_line __read_mostly;
->  
->  struct iommu_group {
-> 
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
