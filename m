@@ -2,76 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A095239B962
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA2D39B968
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbhFDNDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 09:03:39 -0400
-Received: from mga06.intel.com ([134.134.136.31]:16771 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230019AbhFDNDh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 09:03:37 -0400
-IronPort-SDR: pEXOvpOtTvrxJAeHNwXUzM87VYl/SxPN4rai7Gfkkx4eMQ7UAxQCPHOVaBUMZS/C7zhPJDCzVp
- 01hzPRr+5LSA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="265447303"
-X-IronPort-AV: E=Sophos;i="5.83,248,1616482800"; 
-   d="scan'208";a="265447303"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2021 06:01:51 -0700
-IronPort-SDR: YXattzU+nD0Pt4rfrx5zmfQeaWPVg2k6kE9A+mYBGNQ3kbckhw8SDqemjUyWPeOmzTYB/iDguh
- Gz2fgiP7EW7g==
-X-IronPort-AV: E=Sophos;i="5.83,248,1616482800"; 
-   d="scan'208";a="551154548"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2021 06:01:44 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lp9SH-00HE4p-S9; Fri, 04 Jun 2021 16:01:41 +0300
-Date:   Fri, 4 Jun 2021 16:01:41 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, devel@acpica.org,
-        Len Brown <lenb@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        laurent.pinchart@ideasonboard.com, kieran.bingham@ideasonboard.com
-Subject: Re: [PATCH v5 4/6] gpiolib: acpi: Add acpi_gpio_get_io_resource()
-Message-ID: <YLokNQCJ7WXKZepR@smile.fi.intel.com>
-References: <20210603224007.120560-1-djrscally@gmail.com>
- <20210603224007.120560-5-djrscally@gmail.com>
+        id S230132AbhFDNGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 09:06:09 -0400
+Received: from mail-lj1-f181.google.com ([209.85.208.181]:45731 "EHLO
+        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229718AbhFDNGI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 09:06:08 -0400
+Received: by mail-lj1-f181.google.com with SMTP id m3so11418207lji.12
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 06:04:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZBoXHXlgUsuLAEckHBS0L48gubREP9VZ3onJ5kB1vB4=;
+        b=gM7CTqo8OaGtZE1nYdHLb7e2i3N7jW52LV8SVoowu/2uSz7/U5PUrUq9XyWpUY5htZ
+         z4MG4fEO4/cZY2UOLCRMFh/doNOdULsHW6lV3oz3HYUYPq1zOmkiI2Nb40//P6myypWB
+         vNoTYWsgb4pGV2Q/AdPcyQdftglZaILNSdpFFxbdFBZRPVwym3S0sdOulUhAbNPBlIVM
+         m8HfTBtTACDT+BHTRzvzhf1z/uxMHWP5hHpqJWPKhV1WdzNomrv1qgq8P76jw8iILWDQ
+         T7SFkzIGCtk3NES9Yn3+m/gL1BowrX9gd3xbNE47TPKDF3NQ7Ai169F0jMnB67lZ5MO7
+         gdIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZBoXHXlgUsuLAEckHBS0L48gubREP9VZ3onJ5kB1vB4=;
+        b=q9W33VaB2TCybDTu/gVPXTGUU4bTi6iFPj2a6nHYzWxRJ3dHpJ7r9GibxnGbpUEwNV
+         EH4CZEPQqLAhzTe5OzxDwwS1DuoGXyRuWBHPHyNsvlZnQ9Em8DF6aSi5GDvscRspTTvz
+         MxtQlJk3bd2EZOEnki0XKAYdPbiiX7QhGaszCHnlCvsy/rhtsT2uVUQJ6CuOW3nCZn+w
+         fKFLxKdz9SqVvFPmHFFWDxLksps8KADVA6AS2poO0S/6NeKDpLm9/BRpTXo7Wo5rSKaO
+         0omUYAR+DqNtHfPk/meKNmnJgFk1OU6yYRf+kO5pr201XCeIaC47Q0cCA7WJJ8/tNDfO
+         lKGg==
+X-Gm-Message-State: AOAM533Sf5f7vlwcSKpdD64v1TI39efpPZ+G8lEaf2Gzjpn/paeN3aTt
+        Cs/WFcTzmc0fopbaNcinIHeFgxUzKlrJcd5gQa8lyw==
+X-Google-Smtp-Source: ABdhPJydDrZaxizEYRElh40CcGeQ+zo5lpzn5pUrB4oNjTon44D3Dbs99hirdh/8q/w+xhKKUM5pguaI39rwH/DFhEY=
+X-Received: by 2002:a05:651c:4c6:: with SMTP id e6mr3404073lji.326.1622811801312;
+ Fri, 04 Jun 2021 06:03:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210603224007.120560-5-djrscally@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210604014055.4060521-1-keescook@chromium.org>
+ <CACRpkdZEQ+C7tSppcJ83Go70CaBLe4XYKBqYqJfZWAYq-H2+wA@mail.gmail.com> <YLnvIYKduzv56YAA@phenom.ffwll.local>
+In-Reply-To: <YLnvIYKduzv56YAA@phenom.ffwll.local>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 4 Jun 2021 15:03:09 +0200
+Message-ID: <CACRpkda=5h+NE1xus-ZgT_F2KgUEDPNbhZ4yQd4MyuZ1p+=PDw@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/pl111: Actually fix CONFIG_VEXPRESS_CONFIG depends
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Kees Cook <keescook@chromium.org>,
+        Emma Anholt <emma@anholt.net>, David Airlie <airlied@linux.ie>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 11:40:05PM +0100, Daniel Scally wrote:
-> Add a function to verify that a given acpi_resource represents an IO
-> type GPIO resource, and return it if so.
+On Fri, Jun 4, 2021 at 11:15 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> On Fri, Jun 04, 2021 at 09:44:59AM +0200, Linus Walleij wrote:
+> > On Fri, Jun 4, 2021 at 3:41 AM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > > VEXPRESS_CONFIG needs to either be missing, built-in, or modular when
+> > > pl111 is modular. Update the Kconfig to reflect the need.
+> > >
+> > > Fixes: 4dc7c97d04dc ("drm/pl111: depend on CONFIG_VEXPRESS_CONFIG")
+> >
+> > Yeah that doesn't work, thanks for fixing this!
+> >
+> > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> >
+> > > -       depends on VEXPRESS_CONFIG
+> > > +       depends on ARM || ARM64 || COMPILE_TEST
+> > > +       depends on VEXPRESS_CONFIG || VEXPRESS_CONFIG=n
+> >
+> > That's the right solution,
+> > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>
+> Since I screwed up already, care to also push this to drm-misc-next?
 
-I would rephrase this to something like:
+OK I applied and pushed it!
 
-"Add a function to verify that a given ACPI resource represents a GpioIo() type
-of resource, and return it if so."
-
-I can amend when applying to my branch.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Yours,
+Linus Walleij
