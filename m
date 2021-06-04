@@ -2,97 +2,371 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5086139B014
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4DF539B018
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230092AbhFDB4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 21:56:53 -0400
-Received: from mga03.intel.com ([134.134.136.65]:1994 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229576AbhFDB4w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 21:56:52 -0400
-IronPort-SDR: 3XnTYcmaQXOXeoxoe61ium6nHmJkVUFErW3Q4kNd4smIa/MZgi5XvM7jVEFDyFY/aO0tV0n6WL
- k4O9YqEpmUvA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="204229355"
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="204229355"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 18:54:58 -0700
-IronPort-SDR: GIuUhVXRQGGXpdsR8TZ9byLZ0RpOG9Jow67XS70dt0XTNpfjTOwpdL3cfgXqwC33OJXkMLPV2G
- TVxuxMDYq99g==
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="550918837"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.7.237]) ([10.209.7.237])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 18:54:56 -0700
-Subject: Re: [PATCH v1 1/8] virtio: Force only split mode with protected guest
-To:     Andy Lutomirski <luto@kernel.org>, mst@redhat.com
-Cc:     Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        iommu@lists.linux-foundation.org,
-        the arch/x86 maintainers <x86@kernel.org>,
-        sathyanarayanan.kuppuswamy@linux.intel.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210603004133.4079390-1-ak@linux.intel.com>
- <20210603004133.4079390-2-ak@linux.intel.com>
- <cc5c8265-83f7-aeb1-bc30-3367fe68bc97@kernel.org>
- <a0e66b4c-cec5-2a26-9431-d5a21e22c8f2@linux.intel.com>
- <2b2dec75-a0c1-4013-ac49-a49f30d5ac3c@www.fastmail.com>
- <3159e1f4-77cd-e071-b6f2-a2bb83cfc69a@linux.intel.com>
- <b8b39b76-8d07-4e4a-804a-746269787b61@www.fastmail.com>
- <884f34e0-fcd2-bb82-9e9e-4269823fa9b2@linux.intel.com>
- <308e7187-1ea7-49a7-1083-84cf8654f52a@kernel.org>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <d3bf637e-556a-be48-39f9-dc7defd19092@linux.intel.com>
-Date:   Thu, 3 Jun 2021 18:54:54 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
-MIME-Version: 1.0
-In-Reply-To: <308e7187-1ea7-49a7-1083-84cf8654f52a@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S230002AbhFDB6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 21:58:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230039AbhFDB6o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 21:58:44 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1148C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 18:56:58 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id 197-20020a6218ce0000b02902e9c6393facso4459647pfy.18
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 18:56:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=bv2HXAmGAwf1OCVRda73ecPrrSIpyQRMd6cgUbsrMv0=;
+        b=eFloSTVUQU9IkUU1DSNboTys4VUnQayFEX47/s3Gd1NDNoewr73Ghhjd88xCDQjiC+
+         gPpsMGcRGrou7m/vgdY1MfO4evGSmw3olKrXEHTk3VNKnRWl7TSHV5Rabkd+dCP8YMTv
+         tyVd8NSX7jyVd4u+djCYOI3b3RVWe5YY6mnxCrpwmw3X+liuwb5CqtZTl2u3fvYpY+iV
+         lXw2umisbk4ZxK4QNPOm8aekEaXQdY597VziUYvsKW2W1/QazgYxLWMM+YuMRsa3fjSl
+         M5oVkOo0R9pperVTplkLvY+K/h9OMaHttfvG+oW1XiW+J2IIVbZ0Xrclq2HymEgOl7y8
+         7J0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=bv2HXAmGAwf1OCVRda73ecPrrSIpyQRMd6cgUbsrMv0=;
+        b=N/OHDk2VntCN25uJaKezCNWCHtavrvWAwegyJa27HToIQCUBiU9w05FkBSlKIKTrhj
+         UXBxeaVagcb5RtwOSn13ple1KROimm0LXKHa1/k9KrWtUZEXS5vu80sfjbZi4y2pDhtV
+         8ls3TNb6x799+vMXDC7rLgunzehs8S7yNOTRgAZeZOy9TrBqeL+yyk49ZJV3j6IwOQA2
+         S223qPOySiddxSWX2i1lA/8JYM+hMVXBw6qv2Iw5G1tjej+miKtfVQCZJtgDV79iKf/F
+         9d4y3igcS4qRpY2rv1N39PEyhtlzb0bbnyUauO1KDRdFyNooycHGT+0/c4bgk+sTpq2j
+         0z6g==
+X-Gm-Message-State: AOAM532otERJrZl603Vju2Bcn7yANKqgJtU9WaR54orqI4G0NAkI6wti
+        isxnqc/g+l4VqDTXEgh+vQ8gvWsB3cqhpw==
+X-Google-Smtp-Source: ABdhPJw87L3hPfWHiAVUQbhQVpGz0rUbJiIjQSnWEoq4bNXhysfDZhBKtC/yTn3SWVaN10/7zQzMcdMQzx33cA==
+X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:1d16:daf:7a47:a348])
+ (user=shakeelb job=sendgmr) by 2002:a17:90a:5b0c:: with SMTP id
+ o12mr14449879pji.108.1622771818195; Thu, 03 Jun 2021 18:56:58 -0700 (PDT)
+Date:   Thu,  3 Jun 2021 18:56:39 -0700
+Message-Id: <20210604015640.2586269-1-shakeelb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
+Subject: [PATCH 1/2] memcg: switch lruvec stats to rstat
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Muchun Song <songmuchun@bytedance.com>
+Cc:     Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
+        "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The commit 2d146aa3aa84 ("mm: memcontrol: switch to rstat") but skipped
+the conversion of the lruvec stats as such stats are read in the
+performance critical code paths and flushing stats may have impacted the
+performances of the applications. This patch converts the lruvec stats
+to rstat and later patch adds the periodic flushing of the stats and
+thus remove the need to synchronously flushing the stats in the
+performance critical code paths.
 
-> For most Linux drivers, a report that a misbehaving device can corrupt
-> host memory is a bug, not a feature.  If a USB device can corrupt kernel
-> memory, that's a serious bug.  If a USB-C device can corrupt kernel
-> memory, that's also a serious bug, although, sadly, we probably have
-> lots of these bugs.  If a Firewire device can corrupt kernel memory,
-> news at 11.  If a Bluetooth or WiFi peer can corrupt kernel memory,
-> people write sonnets about it and give it clever names.  Why is virtio
-> special?
+The rstat conversion comes with the price i.e. memory cost. Effectively
+this patch reverts the savings done by the commit f3344adf38bd ("mm:
+memcontrol: optimize per-lruvec stats counter memory usage"). However
+this cost is justified due to negative impact of the inaccurate lruvec
+stats on many heuristics. One such case is reported in [1].
 
-Well for most cases it's pointless because they don't have any memory 
-protection anyways.
+The memory reclaim code is filled with plethora of heuristics and many
+of those heuristics reads the lruvec stats. So, inaccurate stats can
+make such heuristics ineffective. [1] reports the impact of inaccurate
+lruvec stats on the "cache trim mode" heuristic. Inaccurate lruvec stats
+can impact the deactivation and aging anon heuristics as well.
 
-Why break compatibility if it does not buy you anything?
+[1] https://lore.kernel.org/linux-mm/20210311004449.1170308-1-ying.huang@intel.com/
 
-Anyways if you want to enable the restricted mode for something else, 
-it's easy to do. The cases where it matters seem to already work on it, 
-like the user space virtio ring.
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+---
+ include/linux/memcontrol.h |  42 +++++++------
+ mm/memcontrol.c            | 118 +++++++++++++------------------------
+ 2 files changed, 60 insertions(+), 100 deletions(-)
 
-My changes for boundary checking are enabled unconditionally anyways, as 
-well as the other patchkits.
-
-
->
-> This one:
->
-> int arch_has_restricted_virtio_memory_access(void)
-> +{
-> +	return is_tdx_guest();
-> +}
->
-> I'm looking at a fairly recent kernel, and I don't see anything for s390
-> wired up in vring_use_dma_api.
-
-It's not using vring_use_dma_api, but enforces the DMA API at virtio 
-ring setup time, same as SEV/TDX.
-
--Andi
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 3cc18c2176e7..81d65d32ec2a 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -105,14 +105,6 @@ struct mem_cgroup_reclaim_iter {
+ 	unsigned int generation;
+ };
+ 
+-struct lruvec_stat {
+-	long count[NR_VM_NODE_STAT_ITEMS];
+-};
+-
+-struct batched_lruvec_stat {
+-	s32 count[NR_VM_NODE_STAT_ITEMS];
+-};
+-
+ /*
+  * Bitmap and deferred work of shrinker::id corresponding to memcg-aware
+  * shrinkers, which have elements charged to this memcg.
+@@ -123,24 +115,30 @@ struct shrinker_info {
+ 	unsigned long *map;
+ };
+ 
++struct lruvec_stats_percpu {
++	/* Local (CPU and cgroup) state */
++	long state[NR_VM_NODE_STAT_ITEMS];
++
++	/* Delta calculation for lockless upward propagation */
++	long state_prev[NR_VM_NODE_STAT_ITEMS];
++};
++
++struct lruvec_stats {
++	/* Aggregated (CPU and subtree) state */
++	long state[NR_VM_NODE_STAT_ITEMS];
++
++	/* Pending child counts during tree propagation */
++	long state_pending[NR_VM_NODE_STAT_ITEMS];
++};
++
+ /*
+  * per-node information in memory controller.
+  */
+ struct mem_cgroup_per_node {
+ 	struct lruvec		lruvec;
+ 
+-	/*
+-	 * Legacy local VM stats. This should be struct lruvec_stat and
+-	 * cannot be optimized to struct batched_lruvec_stat. Because
+-	 * the threshold of the lruvec_stat_cpu can be as big as
+-	 * MEMCG_CHARGE_BATCH * PAGE_SIZE. It can fit into s32. But this
+-	 * filed has no upper limit.
+-	 */
+-	struct lruvec_stat __percpu *lruvec_stat_local;
+-
+-	/* Subtree VM stats (batched updates) */
+-	struct batched_lruvec_stat __percpu *lruvec_stat_cpu;
+-	atomic_long_t		lruvec_stat[NR_VM_NODE_STAT_ITEMS];
++	struct lruvec_stats_percpu __percpu	*lruvec_stats_percpu;
++	struct lruvec_stats			lruvec_stats;
+ 
+ 	unsigned long		lru_zone_size[MAX_NR_ZONES][NR_LRU_LISTS];
+ 
+@@ -965,7 +963,7 @@ static inline unsigned long lruvec_page_state(struct lruvec *lruvec,
+ 		return node_page_state(lruvec_pgdat(lruvec), idx);
+ 
+ 	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+-	x = atomic_long_read(&pn->lruvec_stat[idx]);
++	x = READ_ONCE(pn->lruvec_stats.state[idx]);
+ #ifdef CONFIG_SMP
+ 	if (x < 0)
+ 		x = 0;
+@@ -985,7 +983,7 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+ 
+ 	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+ 	for_each_possible_cpu(cpu)
+-		x += per_cpu(pn->lruvec_stat_local->count[idx], cpu);
++		x += per_cpu(pn->lruvec_stats_percpu->state[idx], cpu);
+ #ifdef CONFIG_SMP
+ 	if (x < 0)
+ 		x = 0;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index b9a6db6a7d4f..d48f727bec05 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -665,46 +665,20 @@ static unsigned long memcg_page_state_local(struct mem_cgroup *memcg, int idx)
+ 	return x;
+ }
+ 
+-static struct mem_cgroup_per_node *
+-parent_nodeinfo(struct mem_cgroup_per_node *pn, int nid)
+-{
+-	struct mem_cgroup *parent;
+-
+-	parent = parent_mem_cgroup(pn->memcg);
+-	if (!parent)
+-		return NULL;
+-	return parent->nodeinfo[nid];
+-}
+-
+ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+ 			      int val)
+ {
+ 	struct mem_cgroup_per_node *pn;
+ 	struct mem_cgroup *memcg;
+-	long x, threshold = MEMCG_CHARGE_BATCH;
+ 
+ 	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+ 	memcg = pn->memcg;
+ 
+-	/* Update memcg */
+-	__mod_memcg_state(memcg, idx, val);
+-
+ 	/* Update lruvec */
+-	__this_cpu_add(pn->lruvec_stat_local->count[idx], val);
++	__this_cpu_add(pn->lruvec_stats_percpu->state[idx], val);
+ 
+-	if (vmstat_item_in_bytes(idx))
+-		threshold <<= PAGE_SHIFT;
+-
+-	x = val + __this_cpu_read(pn->lruvec_stat_cpu->count[idx]);
+-	if (unlikely(abs(x) > threshold)) {
+-		pg_data_t *pgdat = lruvec_pgdat(lruvec);
+-		struct mem_cgroup_per_node *pi;
+-
+-		for (pi = pn; pi; pi = parent_nodeinfo(pi, pgdat->node_id))
+-			atomic_long_add(x, &pi->lruvec_stat[idx]);
+-		x = 0;
+-	}
+-	__this_cpu_write(pn->lruvec_stat_cpu->count[idx], x);
++	/* Update memcg */
++	__mod_memcg_state(memcg, idx, val);
+ }
+ 
+ /**
+@@ -2271,40 +2245,13 @@ static void drain_all_stock(struct mem_cgroup *root_memcg)
+ 	mutex_unlock(&percpu_charge_mutex);
+ }
+ 
+-static void memcg_flush_lruvec_page_state(struct mem_cgroup *memcg, int cpu)
+-{
+-	int nid;
+-
+-	for_each_node(nid) {
+-		struct mem_cgroup_per_node *pn = memcg->nodeinfo[nid];
+-		unsigned long stat[NR_VM_NODE_STAT_ITEMS];
+-		struct batched_lruvec_stat *lstatc;
+-		int i;
+-
+-		lstatc = per_cpu_ptr(pn->lruvec_stat_cpu, cpu);
+-		for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++) {
+-			stat[i] = lstatc->count[i];
+-			lstatc->count[i] = 0;
+-		}
+-
+-		do {
+-			for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
+-				atomic_long_add(stat[i], &pn->lruvec_stat[i]);
+-		} while ((pn = parent_nodeinfo(pn, nid)));
+-	}
+-}
+-
+ static int memcg_hotplug_cpu_dead(unsigned int cpu)
+ {
+ 	struct memcg_stock_pcp *stock;
+-	struct mem_cgroup *memcg;
+ 
+ 	stock = &per_cpu(memcg_stock, cpu);
+ 	drain_stock(stock);
+ 
+-	for_each_mem_cgroup(memcg)
+-		memcg_flush_lruvec_page_state(memcg, cpu);
+-
+ 	return 0;
+ }
+ 
+@@ -5108,17 +5055,9 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
+ 	if (!pn)
+ 		return 1;
+ 
+-	pn->lruvec_stat_local = alloc_percpu_gfp(struct lruvec_stat,
+-						 GFP_KERNEL_ACCOUNT);
+-	if (!pn->lruvec_stat_local) {
+-		kfree(pn);
+-		return 1;
+-	}
+-
+-	pn->lruvec_stat_cpu = alloc_percpu_gfp(struct batched_lruvec_stat,
+-					       GFP_KERNEL_ACCOUNT);
+-	if (!pn->lruvec_stat_cpu) {
+-		free_percpu(pn->lruvec_stat_local);
++	pn->lruvec_stats_percpu = alloc_percpu_gfp(struct lruvec_stats_percpu,
++						   GFP_KERNEL_ACCOUNT);
++	if (!pn->lruvec_stats_percpu) {
+ 		kfree(pn);
+ 		return 1;
+ 	}
+@@ -5139,8 +5078,7 @@ static void free_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
+ 	if (!pn)
+ 		return;
+ 
+-	free_percpu(pn->lruvec_stat_cpu);
+-	free_percpu(pn->lruvec_stat_local);
++	free_percpu(pn->lruvec_stats_percpu);
+ 	kfree(pn);
+ }
+ 
+@@ -5156,15 +5094,7 @@ static void __mem_cgroup_free(struct mem_cgroup *memcg)
+ 
+ static void mem_cgroup_free(struct mem_cgroup *memcg)
+ {
+-	int cpu;
+-
+ 	memcg_wb_domain_exit(memcg);
+-	/*
+-	 * Flush percpu lruvec stats to guarantee the value
+-	 * correctness on parent's and all ancestor levels.
+-	 */
+-	for_each_online_cpu(cpu)
+-		memcg_flush_lruvec_page_state(memcg, cpu);
+ 	__mem_cgroup_free(memcg);
+ }
+ 
+@@ -5397,7 +5327,7 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 	struct mem_cgroup *parent = parent_mem_cgroup(memcg);
+ 	struct memcg_vmstats_percpu *statc;
+ 	long delta, v;
+-	int i;
++	int i, nid;
+ 
+ 	statc = per_cpu_ptr(memcg->vmstats_percpu, cpu);
+ 
+@@ -5445,6 +5375,36 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 		if (parent)
+ 			parent->vmstats.events_pending[i] += delta;
+ 	}
++
++	for_each_node_state(nid, N_MEMORY) {
++		struct mem_cgroup_per_node *pn = memcg->nodeinfo[nid];
++		struct mem_cgroup_per_node *ppn = NULL;
++		struct lruvec_stats_percpu *lstatc;
++
++		if (parent)
++			ppn = parent->nodeinfo[nid];
++
++		lstatc = per_cpu_ptr(pn->lruvec_stats_percpu, cpu);
++
++		for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++) {
++			delta = pn->lruvec_stats.state_pending[i];
++			if (delta)
++				pn->lruvec_stats.state_pending[i] = 0;
++
++			v = READ_ONCE(lstatc->state[i]);
++			if (v != lstatc->state_prev[i]) {
++				delta += v - lstatc->state_prev[i];
++				lstatc->state_prev[i] = v;
++			}
++
++			if (!delta)
++				continue;
++
++			pn->lruvec_stats.state[i] += delta;
++			if (ppn)
++				ppn->lruvec_stats.state_pending[i] += delta;
++		}
++	}
+ }
+ 
+ #ifdef CONFIG_MMU
+@@ -6378,6 +6338,8 @@ static int memory_numa_stat_show(struct seq_file *m, void *v)
+ 	int i;
+ 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
+ 
++	cgroup_rstat_flush(memcg->css.cgroup);
++
+ 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
+ 		int nid;
+ 
+-- 
+2.32.0.rc1.229.g3e70b5a671-goog
 
