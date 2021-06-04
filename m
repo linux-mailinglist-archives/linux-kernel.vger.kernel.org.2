@@ -2,292 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C711439BF4B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 20:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1675539BF4D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 20:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231213AbhFDSFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 14:05:19 -0400
-Received: from mx13.kaspersky-labs.com ([91.103.66.164]:20617 "EHLO
-        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbhFDSFR (ORCPT
+        id S229962AbhFDSG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 14:06:57 -0400
+Received: from mail-ed1-f41.google.com ([209.85.208.41]:46635 "EHLO
+        mail-ed1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229778AbhFDSG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 14:05:17 -0400
-Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay13.kaspersky-labs.com (Postfix) with ESMTP id 7EA20520D20;
-        Fri,  4 Jun 2021 21:03:28 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail202102; t=1622829808;
-        bh=LS3nmf5kkonilBHXcYQKchvFm7Dwc3WtjhdxFzsooQM=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
-        b=ZNwmAehaTFmXwFCxQ7Md5UBcLH6M+PfHZh1Ba0b6/w463tdZiJmqk4+qO1dxKWfAS
-         ysTlzc3gjAtlSw8VdifeY6y+Qlznq0dX/PYBuJdUGB1MNkcQr+jdNGWxK2021urLo0
-         dINC1eSMd5fkI7PZYCbIhwCXHmwSc7xmfIcmGaJOQSFYZk/kDqbAUNigQ60jGZEaCY
-         gb/+mn7WT50V5+pZ03ap0DqOx9EBkA3dLchM/2zgZ/q/97MUTQe+u71FE3duFIzu+R
-         DsVwsaqKVu+z4P5Zg712a1ZCL7pPt02t7pOQRXR8EGY/kZs3O/3B5HHOUMH0b8U8Nk
-         iAc4L6VBW39Hw==
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id B53CD520D1E;
-        Fri,  4 Jun 2021 21:03:27 +0300 (MSK)
-Received: from [10.16.171.77] (10.64.68.129) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Fri, 4
- Jun 2021 21:03:27 +0300
-Subject: Re: [PATCH v10 11/18] virtio/vsock: dequeue callback for
- SOCK_SEQPACKET
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
-References: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
- <20210520191801.1272027-1-arseny.krasnov@kaspersky.com>
- <20210603144513.ryjzauq7abnjogu3@steredhat>
- <6b833ccf-ea93-db6a-4743-463ac1cfe817@kaspersky.com>
- <20210604150324.winiikx5h3p6gsyy@steredhat>
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Message-ID: <a81ae3cb-439f-7621-4ae6-bccd2c25b7e4@kaspersky.com>
-Date:   Fri, 4 Jun 2021 21:03:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 4 Jun 2021 14:06:57 -0400
+Received: by mail-ed1-f41.google.com with SMTP id r11so12096491edt.13
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 11:05:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6u9C0rQYVqsqXWtKWXaZKVuAhwcfVIDbCc3WqpmlEfI=;
+        b=bh+P6SnyBZhy0DEY5x4DSE64ESRBzAhai4VcVhkTO6HeqqvIGGJYdqQ+fvs0wH7oHw
+         mEbNEWYmaXRaho8uWkVTlTTUGPDgjRKgxDqMXO80dSFa1i/aaMKXHWiq6JV6ilPFNIyt
+         3mGpEgzuehIcqqJ8cE3kVbPnoNRSt6fh2QUEMYcGI1amHyTu3eEnyYcEwEUubEntPx7I
+         lrb+Itjkm8OkqZuEZTBqkLnqqEhXtMEh56rJWFHcgzBKn0GKkFCjv8uyZBZuEHdx1fZS
+         Xv5kmFpaYLig1h+PqYwH8mXlcZMoRmfnqFbOdBvooV/QZpKAcoQF5dd8WuirlRAnbynf
+         Zzqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6u9C0rQYVqsqXWtKWXaZKVuAhwcfVIDbCc3WqpmlEfI=;
+        b=Yby8z0ggoWJ6n4Wb7Dmbcvt30b37McTOV3+r6GdYzeoAm6qjjTxhztES+lRm/+6T36
+         CLVug4QswKnYuZEmEcA2h9rsObbmHK2W0Ie/Y/9/Ql6rwadZQSiptWuF5MVodCflYvCn
+         UiPcADMtUtGIU5AoqP4mKvf6I7GzQx6ADDnGtGrjW041Kb9Mwn0fdtzM7qcr76VP/M7e
+         JhypDdUgRvHQnAdAwjtMCtfyQ3ovUBbEMBF1zoG6lZhZ0Nb0QIzc4jigtfbuqA3R7XUY
+         O14l1dhBE563pLLOzoh3FbFPPtffzoOX/SXkP1stPGoVGukTrFJODTLyE6gl4S4z2HLt
+         5C7w==
+X-Gm-Message-State: AOAM531kBGLBhISL6k6J2t/cFcaGoPbxx4z8lPnzMt1je8pnHLSmigCc
+        9Y/SuGK60KU88i6NgDnXctMlRJOC99nneE5N0t8=
+X-Google-Smtp-Source: ABdhPJzd2i7kOilHUilrYn48mb+/d5wsI1lPzkORiARU4thKOVGUUOGv9XEKCnHISX/VNj4NIvYizYKQu8FTbG2FX5Q=
+X-Received: by 2002:a05:6402:1d0f:: with SMTP id dg15mr3375544edb.137.1622829849830;
+ Fri, 04 Jun 2021 11:04:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210604150324.winiikx5h3p6gsyy@steredhat>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.64.68.129]
-X-ClientProxiedBy: hqmailmbx3.avp.ru (10.64.67.243) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 06/04/2021 17:51:02
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 164135 [Jun 04 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: kaspersky.com:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 06/04/2021 17:53:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 04.06.2021 14:19:00
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/06/04 17:28:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/06/04 14:19:00 #16700241
-X-KLMS-AntiVirus-Status: Clean, skipped
+References: <alpine.LSU.2.11.2106011353270.2148@eggly.anvils>
+ <alpine.LSU.2.11.2106011403540.2148@eggly.anvils> <CAHbLzkobMaW15iN6y8Zot3kmpA1c4z2r6rSR7B9Pqwg5YY+hcA@mail.gmail.com>
+ <alpine.LSU.2.11.2106031918400.12760@eggly.anvils>
+In-Reply-To: <alpine.LSU.2.11.2106031918400.12760@eggly.anvils>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 4 Jun 2021 11:03:57 -0700
+Message-ID: <CAHbLzkqYyoXm1sAq7yBi3s8PbY127VbbgNGZ-5e-zqZMzFOzWA@mail.gmail.com>
+Subject: Re: [PATCH 1/7] mm/thp: fix __split_huge_pmd_locked() on shmem
+ migration entry
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
+        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 04.06.2021 18:03, Stefano Garzarella wrote:
-> On Fri, Jun 04, 2021 at 04:12:23PM +0300, Arseny Krasnov wrote:
->> On 03.06.2021 17:45, Stefano Garzarella wrote:
->>> On Thu, May 20, 2021 at 10:17:58PM +0300, Arseny Krasnov wrote:
->>>> Callback fetches RW packets from rx queue of socket until whole record
->>>> is copied(if user's buffer is full, user is not woken up). This is done
->>>> to not stall sender, because if we wake up user and it leaves syscall,
->>>> nobody will send credit update for rest of record, and sender will wait
->>>> for next enter of read syscall at receiver's side. So if user buffer is
->>>> full, we just send credit update and drop data.
->>>>
->>>> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->>>> ---
->>>> v9 -> v10:
->>>> 1) Number of dequeued bytes incremented even in case when
->>>>    user's buffer is full.
->>>> 2) Use 'msg_data_left()' instead of direct access to 'msg_hdr'.
->>>> 3) Rename variable 'err' to 'dequeued_len', in case of error
->>>>    it has negative value.
->>>>
->>>> include/linux/virtio_vsock.h            |  5 ++
->>>> net/vmw_vsock/virtio_transport_common.c | 65 +++++++++++++++++++++++++
->>>> 2 files changed, 70 insertions(+)
->>>>
->>>> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
->>>> index dc636b727179..02acf6e9ae04 100644
->>>> --- a/include/linux/virtio_vsock.h
->>>> +++ b/include/linux/virtio_vsock.h
->>>> @@ -80,6 +80,11 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
->>>> 			       struct msghdr *msg,
->>>> 			       size_t len, int flags);
->>>>
->>>> +ssize_t
->>>> +virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
->>>> +				   struct msghdr *msg,
->>>> +				   int flags,
->>>> +				   bool *msg_ready);
->>>> s64 virtio_transport_stream_has_data(struct vsock_sock *vsk);
->>>> s64 virtio_transport_stream_has_space(struct vsock_sock *vsk);
->>>>
->>>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->>>> index ad0d34d41444..61349b2ea7fe 100644
->>>> --- a/net/vmw_vsock/virtio_transport_common.c
->>>> +++ b/net/vmw_vsock/virtio_transport_common.c
->>>> @@ -393,6 +393,59 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
->>>> 	return err;
->>>> }
->>>>
->>>> +static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
->>>> +						 struct msghdr *msg,
->>>> +						 int flags,
->>>> +						 bool *msg_ready)
->>>> +{
->>>> +	struct virtio_vsock_sock *vvs = vsk->trans;
->>>> +	struct virtio_vsock_pkt *pkt;
->>>> +	int dequeued_len = 0;
->>>> +	size_t user_buf_len = msg_data_left(msg);
->>>> +
->>>> +	*msg_ready = false;
->>>> +	spin_lock_bh(&vvs->rx_lock);
->>>> +
->>>> +	while (!*msg_ready && !list_empty(&vvs->rx_queue) && dequeued_len >= 0) {
->>> I'
->>>
->>>> +		size_t bytes_to_copy;
->>>> +		size_t pkt_len;
->>>> +
->>>> +		pkt = list_first_entry(&vvs->rx_queue, struct virtio_vsock_pkt, list);
->>>> +		pkt_len = (size_t)le32_to_cpu(pkt->hdr.len);
->>>> +		bytes_to_copy = min(user_buf_len, pkt_len);
->>>> +
->>>> +		if (bytes_to_copy) {
->>>> +			/* sk_lock is held by caller so no one else can dequeue.
->>>> +			 * Unlock rx_lock since memcpy_to_msg() may sleep.
->>>> +			 */
->>>> +			spin_unlock_bh(&vvs->rx_lock);
->>>> +
->>>> +			if (memcpy_to_msg(msg, pkt->buf, bytes_to_copy))
->>>> +				dequeued_len = -EINVAL;
->>> I think here is better to return the error returned by memcpy_to_msg(),
->>> as we do in the other place where we use memcpy_to_msg().
->>>
->>> I mean something like this:
->>> 			err = memcpy_to_msgmsg, pkt->buf, bytes_to_copy);
->>> 			if (err)
->>> 				dequeued_len = err;
->> Ack
->>>> +			else
->>>> +				user_buf_len -= bytes_to_copy;
->>>> +
->>>> +			spin_lock_bh(&vvs->rx_lock);
->>>> +		}
->>>> +
->>> Maybe here we can simply break the cycle if we have an error:
->>> 		if (dequeued_len < 0)
->>> 			break;
->>>
->>> Or we can refactor a bit, simplifying the while() condition and also the
->>> code in this way (not tested):
->>>
->>> 	while (!*msg_ready && !list_empty(&vvs->rx_queue)) {
->>> 		...
->>>
->>> 		if (bytes_to_copy) {
->>> 			int err;
->>>
->>> 			/* ...
->>> 			*/
->>> 			spin_unlock_bh(&vvs->rx_lock);
->>> 			err = memcpy_to_msgmsg, pkt->buf, bytes_to_copy);
->>> 			if (err) {
->>> 				dequeued_len = err;
->>> 				goto out;
->>> 			}
->>> 			spin_lock_bh(&vvs->rx_lock);
->>>
->>> 			user_buf_len -= bytes_to_copy;
->>> 		}
->>>
->>> 		dequeued_len += pkt_len;
->>>
->>> 		if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOR)
->>> 			*msg_ready = true;
->>>
->>> 		virtio_transport_dec_rx_pkt(vvs, pkt);
->>> 		list_del(&pkt->list);
->>> 		virtio_transport_free_pkt(pkt);
->>> 	}
->>>
->>> out:
->>> 	spin_unlock_bh(&vvs->rx_lock);
->>>
->>> 	virtio_transport_send_credit_update(vsk);
->>>
->>> 	return dequeued_len;
->>> }
->> I think we can't do 'goto out' or break, because in case of error, we still need
->> to free packet.
-> Didn't we have code that remove packets from a previous message?
-> I don't see it anymore.
+On Thu, Jun 3, 2021 at 7:23 PM Hugh Dickins <hughd@google.com> wrote:
 >
-> For example if we have 10 packets queued for a message (the 10th packet 
-> has the EOR flag) and the memcpy_to_msg() fails on the 2nd packet, with 
-> you proposal we are freeing only the first 2 packets, the rest is there 
-> and should be freed when reading the next message, but I don't see that 
-> code.
+> On Thu, 3 Jun 2021, Yang Shi wrote:
+> > On Tue, Jun 1, 2021 at 2:05 PM Hugh Dickins <hughd@google.com> wrote:
+> > >
+> > > Are there more places that need to be careful about pmd migration entries?
+> > > None hit in practice, but several of those is_huge_zero_pmd() tests were
+> > > done without checking pmd_present() first: I believe a pmd migration entry
+> > > could end up satisfying that test.  Ah, the inversion of swap offset, to
+> > > protect against L1TF, makes that impossible on x86; but other arches need
+> > > the pmd_present() check, and even x86 ought not to apply pmd_page() to a
+> > > swap-like pmd.  Fix those instances; __split_huge_pmd_locked() was not
+> > > wrong to be checking with pmd_trans_huge() instead, but I think it's
+> > > clearer to use pmd_present() in each instance.
+> ...
+> > > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> > > index 63ed6b25deaa..9fb7b47da87e 100644
+> > > --- a/mm/huge_memory.c
+> > > +++ b/mm/huge_memory.c
+> > > @@ -1676,7 +1676,7 @@ int zap_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
+> > >                 spin_unlock(ptl);
+> > >                 if (is_huge_zero_pmd(orig_pmd))
+> > >                         tlb_remove_page_size(tlb, pmd_page(orig_pmd), HPAGE_PMD_SIZE);
+> > > -       } else if (is_huge_zero_pmd(orig_pmd)) {
+> > > +       } else if (pmd_present(orig_pmd) && is_huge_zero_pmd(orig_pmd)) {
+> >
+> > If it is a huge zero migration entry, the code would fallback to the
+> > "else". But IIUC the "else" case doesn't handle the huge zero page
+> > correctly. It may mess up the rss counter.
 >
-> The same can happen if the recvmsg syscall is interrupted. In that case 
-> we report that nothing was copied, but we freed the first N packets, so 
-> they are lost but the other packets are still in the queue.
+> A huge zero migration entry?  I hope that's not something special
+> that I've missed.
 >
-> Please check also the patch where we implemented 
-> __vsock_seqpacket_recvmsg().
->
-> I thinks we should free packets only when we are sure we copied them to 
-> the user space.
+> Do we ever migrate a huge zero page - and how do we find where it's
+> mapped, to insert the migration entries?  But if we do, I thought it
+> would use the usual kind of pmd migration entry; and the first check
+> in is_pmd_migration_entry() is !pmd_present(pmd).
 
-Hm, yes, this is problem. To solve it i can restore previous approach
+I overlooked if the huge zero page is migratable or not when I was
+writing the comment, just focused on the if/else if/else conditions.
 
-with seqbegin/seqend. In that case i can detect unfinished record and
-
-drop it's packets. Seems seqbegin will be a bit like VIRTIO_VSOCK_SEQ_EOR in flags
-
-field of header(e.g. VIRTIO_VSOCK_SEQ_BEGIN). Message id and length are unneeded,
-
-as channel considedered lossless. What do You think?
-
-
-Thank You
+I don't think huge zero page is migratable by a quick look since:
+* mempolicy and numa hinting skip huge zero pmd
+* other migration callsites just try to migrate LRU pages
 
 >
->> It is possible to do something like this:
->>
->> 		virtio_transport_dec_rx_pkt(vvs, pkt);
->> 		list_del(&pkt->list);
->> 		virtio_transport_free_pkt(pkt);
->>
->> 		if (dequeued_len < 0)
->> 			break;
->>
->>>
+> (I have to be rather careful to check such details, after getting
+> burnt once by pmd_present(): which includes the "huge" bit even when
+> not otherwise present, to permit races with pmdp_invalidate().
+> I mentioned in private mail that I'd dropped one of my "fixes" because
+> it was harmless but mistaken: I had misunderstood pmd_present().)
 >
+> The point here (see commit message above) is that some unrelated pmd
+> migration entry could pass the is_huge_zero_pmd() test, which rushes
+> off to use pmd_page() without even checking pmd_present() first.  And
+> most of its users have, one way or another, checked pmd_present() first;
+> but this place and a couple of others had not.
+
+Thanks for the elaboration. Wondering whether we'd better add some
+comments in the code? Someone may submit a fix patch by visual
+inspection in the future due to missing these points.
+
+>
+> I'm just verifying that it's really a a huge zero pmd before handling
+> its case; the "else" still does not need to handle the huge zero page.
+>
+> Hugh
