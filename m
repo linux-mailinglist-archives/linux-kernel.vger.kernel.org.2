@@ -2,85 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB6039BEB7
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B674339BEA8
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbhFDR3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 13:29:24 -0400
-Received: from mail-ed1-f53.google.com ([209.85.208.53]:33689 "EHLO
-        mail-ed1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229778AbhFDR3X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 13:29:23 -0400
-Received: by mail-ed1-f53.google.com with SMTP id f5so7014724eds.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 10:27:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=yQu4ZlSzEBr4vf2dWTW2YpYlkQS0idkpyI2C1hfoXug=;
-        b=BFraaEIaKvQvAhBn08S1/i0KIziEiLFL1qJCYfHnBAaNRdGUyv3PPHBhk076NgNi0L
-         HLwuqaBi3XdSp+YyjijaIqKGK2uegTOBlfU6GlE8TpiDgAIh4OzAe6SZbrki3HLf9Lv6
-         fFPggfTWEL++TBHlhZyAU+6D3mcTUnAefNyEejNa71MP2JSXRrdOmPpG++0/LjfWjpqD
-         rjXKsIo7nRzoRyToyrPYuW0/izoqFcAE8KMINv1iFY6ibeF9vA+1sn7fgdohxCML+Wtw
-         0a/Yp/Y5gwCmw6DueEvSLbLsAvG70TGPSzREDuIPbHnACi6/DjG3pDS3023bt/HQkWQ0
-         zcDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=yQu4ZlSzEBr4vf2dWTW2YpYlkQS0idkpyI2C1hfoXug=;
-        b=mvfTMSMF9ITRJ3jXItveZUvrpgVJuLcQHhtqhchRGSpQi9kDY+/O5bmf7BD2Xs9s8A
-         TNxjDmcnw3s0f9CNicrhk8ZA02HZcYL+8bFnC4w8FrgfWITZKn2IVBRf07q4+ggLUg2a
-         qXI+xJRjDlv8dFNwWbuB6TOaV4lcxmvkjZueXvXlbDguvT5EBYUdjilVDsesxocbSbon
-         hfS3BP44eSIO37ZENnXhu5gFN7d19GbsAQ9lGPf0mS1+yEkqMlO7eUmjNV2lFRrzdL/y
-         jXdC6TqVifMVAp87q9xsYcGHDcdRxIKzUpov7dkeB9yxGRfKLPYi2eorkyD+M+A73wEV
-         NfoA==
-X-Gm-Message-State: AOAM533VQs33p/CBvjPcxLBCaXTXg/+DGnckWEGOJAEtknSXEEGqmPHx
-        IVm03dp5nSvxkAEYu7kFDFw=
-X-Google-Smtp-Source: ABdhPJxqm28tqKIRf3lvRa9hVIxcJ7lg+F4G1xZlfJG40omB+OUIg1fx6AHvl/B6vp64bs+C3rSh7Q==
-X-Received: by 2002:aa7:da94:: with SMTP id q20mr5905874eds.310.1622827596449;
-        Fri, 04 Jun 2021 10:26:36 -0700 (PDT)
-Received: from agape.jhs ([5.171.80.153])
-        by smtp.gmail.com with ESMTPSA id u17sm3478663edx.16.2021.06.04.10.26.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 10:26:36 -0700 (PDT)
-Date:   Fri, 4 Jun 2021 19:26:33 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     gregkh@linuxfoundation.org, hdegoede@redhat.com,
-        Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8723bs: Use list iterators and helpers
-Message-ID: <20210604172632.GA1526@agape.jhs>
-References: <20210428173301.149619-1-linux@roeck-us.net>
+        id S231244AbhFDR2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 13:28:38 -0400
+Received: from mga06.intel.com ([134.134.136.31]:39630 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230411AbhFDR2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 13:28:37 -0400
+IronPort-SDR: vC89Zk9JdxPzo8LPD8psxPGGPjSNSm3r/1lKntrqKK6FIKeW0eooD04wtyCc5+k4GYckbmW60F
+ 87G3O7OK8m4Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,10005"; a="265496854"
+X-IronPort-AV: E=Sophos;i="5.83,248,1616482800"; 
+   d="scan'208";a="265496854"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2021 10:26:49 -0700
+IronPort-SDR: hHxfs9zcgC2O6PZrXBqdGq+eSyydodxVXZvXVI2bKozhgASgx9bBU8+ndopyiwkqxP9Y2HmPs8
+ GPnpR/h35PpQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,248,1616482800"; 
+   d="scan'208";a="439257354"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by orsmga007.jf.intel.com with SMTP; 04 Jun 2021 10:26:44 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Fri, 04 Jun 2021 20:26:44 +0300
+Date:   Fri, 4 Jun 2021 20:26:44 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Werner Sembach <wse@tuxedocomputers.com>
+Cc:     harry.wentland@amd.com, sunpeng.li@amd.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, jani.nikula@linux.intel.com,
+        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org
+Subject: Re: [PATCH 2/4] drm/uAPI: Add "active bpc" as feedback channel for
+ "max bpc" drm property
+Message-ID: <YLpiVFiBrgH29rki@intel.com>
+References: <20210604171723.10276-1-wse@tuxedocomputers.com>
+ <20210604171723.10276-3-wse@tuxedocomputers.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210428173301.149619-1-linux@roeck-us.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210604171723.10276-3-wse@tuxedocomputers.com>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Guenter,
+On Fri, Jun 04, 2021 at 07:17:21PM +0200, Werner Sembach wrote:
+> Add a new general drm property "active bpc" which can be used by graphic drivers
+> to report the applied bit depth per pixel back to userspace.
+> 
+> While "max bpc" can be used to change the color depth, there was no way to check
+> which one actually got used. While in theory the driver chooses the best/highest
+> color depth within the max bpc setting a user might not be fully aware what his
+> hardware is or isn't capable off. This is meant as a quick way to double check
+> the setup.
+> 
+> In the future, automatic color calibration for screens might also depend on this
+> information available.
+> 
+> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> ---
+>  drivers/gpu/drm/drm_atomic_uapi.c |  2 ++
+>  drivers/gpu/drm/drm_connector.c   | 40 +++++++++++++++++++++++++++++++
+>  include/drm/drm_connector.h       | 15 ++++++++++++
+>  3 files changed, 57 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atomic_uapi.c
+> index 268bb69c2e2f..7ae4e40936b5 100644
+> --- a/drivers/gpu/drm/drm_atomic_uapi.c
+> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
+> @@ -873,6 +873,8 @@ drm_atomic_connector_get_property(struct drm_connector *connector,
+>  		*val = 0;
+>  	} else if (property == connector->max_bpc_property) {
+>  		*val = state->max_requested_bpc;
+> +	} else if (property == connector->active_bpc_property) {
+> +		*val = state->active_bpc;
+>  	} else if (connector->funcs->atomic_get_property) {
+>  		return connector->funcs->atomic_get_property(connector,
+>  				state, property, val);
+> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+> index 7631f76e7f34..5f42a5be5822 100644
+> --- a/drivers/gpu/drm/drm_connector.c
+> +++ b/drivers/gpu/drm/drm_connector.c
+> @@ -1195,6 +1195,13 @@ static const struct drm_prop_enum_list dp_colorspaces[] = {
+>   *	drm_connector_attach_max_bpc_property() to create and attach the
+>   *	property to the connector during initialization.
+>   *
+> + * active bpc:
+> + *	This read-only range property is used by userspace check the bit depth
+> + *	actually applied by the GPU driver after evaluation all hardware
+> + *	capabilities and max bpc. Drivers to use the function
+> + *	drm_connector_attach_active_bpc_property() to create and attach the
+> + *	property to the connector during initialization.
+> + *
+>   * Connectors also have one standardized atomic property:
+>   *
+>   * CRTC_ID:
+> @@ -2150,6 +2157,39 @@ int drm_connector_attach_max_bpc_property(struct drm_connector *connector,
+>  }
+>  EXPORT_SYMBOL(drm_connector_attach_max_bpc_property);
+>  
+> +/**
+> + * drm_connector_attach_active_bpc_property - attach "active bpc" property
+> + * @connector: connector to attach active bpc property on.
+> + * @min: The minimum bit depth supported by the connector.
+> + * @max: The maximum bit depth supported by the connector.
+> + *
+> + * This is used to check the applied bit depth on a connector.
+> + *
+> + * Returns:
+> + * Zero on success, negative errno on failure.
+> + */
+> +int drm_connector_attach_active_bpc_property(struct drm_connector *connector,
+> +					  int min, int max)
+> +{
+> +	struct drm_device *dev = connector->dev;
+> +	struct drm_property *prop;
+> +
+> +	prop = connector->active_bpc_property;
+> +	if (!prop) {
+> +		prop = drm_property_create_range(dev, 0, "active bpc", min, max);
 
-On Wed, Apr 28, 2021 at 10:33:01AM -0700, Guenter Roeck wrote:
-> The rtl8723bs driver manually re-implements list helper functions
-> and macros in various ways. Replace with existing list helpers.
+Should be immutable.
 
-I'm testing rtl8723bs on a baytrail tablet (Lenovo Ideapad MIIX 300-10IBY)
-and applying the tag staging-5.13-rc4, loading r8723bs makes the whole
-system freezing while trying to connect to local AP.
+Also wondering what the semantics of this should be when eg. DSC
+is active?
 
-Only a power off is allowed.
+> +		if (!prop)
+> +			return -ENOMEM;
+> +
+> +		connector->active_bpc_property = prop;
+> +	}
+> +
+> +	drm_object_attach_property(&connector->base, prop, 0);
+> +	connector->state->active_bpc = 0;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(drm_connector_attach_active_bpc_property);
+> +
+>  /**
+>   * drm_connector_set_vrr_capable_property - sets the variable refresh rate
+>   * capable property for a connector
+> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+> index 1922b278ffad..c58cba2b6afe 100644
+> --- a/include/drm/drm_connector.h
+> +++ b/include/drm/drm_connector.h
+> @@ -781,6 +781,13 @@ struct drm_connector_state {
+>  	 */
+>  	u8 max_bpc;
+>  
+> +	/**
+> +	 * @active_bpc: Read only property set by the GPU driver to the actually
+> +	 * applied bit depth of the pixels after evaluating all hardware
+> +	 * limitations.
+> +	 */
+> +	u8 active_bpc;
+> +
+>  	/**
+>  	 * @hdr_output_metadata:
+>  	 * DRM blob property for HDR output metadata
+> @@ -1380,6 +1387,12 @@ struct drm_connector {
+>  	 */
+>  	struct drm_property *max_bpc_property;
+>  
+> +	/**
+> +	 * @active_bpc_property: Default connector property for the active bpc
+> +	 * to be driven out of the connector.
+> +	 */
+> +	struct drm_property *active_bpc_property;
+> +
+>  #define DRM_CONNECTOR_POLL_HPD (1 << 0)
+>  #define DRM_CONNECTOR_POLL_CONNECT (1 << 1)
+>  #define DRM_CONNECTOR_POLL_DISCONNECT (1 << 2)
+> @@ -1698,6 +1711,8 @@ int drm_connector_set_panel_orientation_with_quirk(
+>  	int width, int height);
+>  int drm_connector_attach_max_bpc_property(struct drm_connector *connector,
+>  					  int min, int max);
+> +int drm_connector_attach_active_bpc_property(struct drm_connector *connector,
+> +					  int min, int max);
+>  
+>  /**
+>   * struct drm_tile_group - Tile group metadata
+> -- 
+> 2.25.1
 
-I found that commit b3cd518c5abd42fbc747ef55a5fdc40bf7bf01c0
-(staging: rtl8723bs: Use list iterators and helpers)
-introduced the bug.
-
-I'm trying to find out what's wrong with this patch, have you any suggestions?
-
-thank you,
-
-fabio
+-- 
+Ville Syrjälä
+Intel
