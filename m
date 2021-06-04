@@ -2,161 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68CDD39BECD
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67EF039BEDF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbhFDRc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 13:32:59 -0400
-Received: from mga04.intel.com ([192.55.52.120]:23716 "EHLO mga04.intel.com"
+        id S231320AbhFDRee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 13:34:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229878AbhFDRc6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 13:32:58 -0400
-IronPort-SDR: 4wgV+ITYdVda5LkbSNsCZPB7A6U7LIgRq3T94y+AQqphsZew3w/pn4DBf+sM09m8oLvLsM5+0l
- DvVI7y1q+GFg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10005"; a="202476723"
-X-IronPort-AV: E=Sophos;i="5.83,248,1616482800"; 
-   d="scan'208";a="202476723"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2021 10:30:59 -0700
-IronPort-SDR: E6f8vel3p5Bo3KoNnpIKKX3N7n331JqiLdiBnwP8qXAgkaOWsthLpEHPipQE1fQ/cLpudqh2py
- spnGTxfVCyjA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,248,1616482800"; 
-   d="scan'208";a="412432857"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
-  by fmsmga007.fm.intel.com with SMTP; 04 Jun 2021 10:30:53 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Fri, 04 Jun 2021 20:30:52 +0300
-Date:   Fri, 4 Jun 2021 20:30:52 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Werner Sembach <wse@tuxedocomputers.com>
-Cc:     harry.wentland@amd.com, sunpeng.li@amd.com,
-        alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org
-Subject: Re: [PATCH 4/4] drm/i915/display: Add handling for new "active bpc"
- property
-Message-ID: <YLpjTMegcjT22vQE@intel.com>
-References: <20210604171723.10276-1-wse@tuxedocomputers.com>
- <20210604171723.10276-5-wse@tuxedocomputers.com>
+        id S230185AbhFDRee (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 13:34:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 743ED61400;
+        Fri,  4 Jun 2021 17:32:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622827967;
+        bh=a5isDehEudac8CyR2HZE1gI9Wve6E9W6CiVt055MqQI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oxwiF4nZxQ/b7p8BNP/PiIQXi+nFKiMXwGXug/6MEsZ6c41FePwwtM7mqcB7KViyq
+         rFTdSJGYKWUDkg4CL+tWbpAb8pYvbDdnBJ4mckYht5plojekusly9vfUpWIgdBJ7KC
+         FRb01Oi09iHmr1pe4hVKD4Ye3DNlKFLYDWxPbU66N/skaboEQkSHf+xUEpqNA313Xc
+         Il6Ywgnr/Ftta+jZ+n+FwxYPtLjDlJ+ENr0Te4dSIU5tSgxpmeJ9+fSBw9Fvw8CvwP
+         kCHZ1HGCchNOvnukeKkSeZGc/Wla+hQnzNolCjGWuXAO5egR08CKUMCUzm+wRXvQU1
+         ohJmjn0VGkZKw==
+Received: by pali.im (Postfix)
+        id 1ED85990; Fri,  4 Jun 2021 19:32:45 +0200 (CEST)
+Date:   Fri, 4 Jun 2021 19:32:44 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Madalin Bucur <madalin.bucur@nxp.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Igal Liberman <Igal.Liberman@freescale.com>,
+        Shruti Kanetkar <Shruti@freescale.com>,
+        Emil Medve <Emilian.Medve@freescale.com>,
+        Scott Wood <oss@buserror.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Camelia Alexandra Groza (OSS)" <camelia.groza@oss.nxp.com>
+Subject: Re: Unsupported phy-connection-type sgmii-2500 in
+ arch/powerpc/boot/dts/fsl/t1023rdb.dts
+Message-ID: <20210604173244.qonw5wsn3pq6gyjf@pali>
+References: <20210603143453.if7hgifupx5k433b@pali>
+ <YLjxX/XPDoRRIvYf@lunn.ch>
+ <20210603194853.ngz4jdso3kfncnj4@pali>
+ <AM6PR04MB3976B62084EC462BA02F0C4CEC3B9@AM6PR04MB3976.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210604171723.10276-5-wse@tuxedocomputers.com>
-X-Patchwork-Hint: comment
+In-Reply-To: <AM6PR04MB3976B62084EC462BA02F0C4CEC3B9@AM6PR04MB3976.eurprd04.prod.outlook.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 07:17:23PM +0200, Werner Sembach wrote:
-> This commits implements the "active bpc" drm property for the Intel GPU driver.
+Hello!
+
+On Friday 04 June 2021 07:35:33 Madalin Bucur wrote:
+> > -----Original Message-----
+> > From: Pali Roh√°r <pali@kernel.org>
+> > Sent: 03 June 2021 22:49
+> > To: Andrew Lunn <andrew@lunn.ch>
+> > Cc: Igal Liberman <Igal.Liberman@freescale.com>; Shruti Kanetkar
+> > <Shruti@freescale.com>; Emil Medve <Emilian.Medve@freescale.com>; Scott
+> > Wood <oss@buserror.net>; Rob Herring <robh+dt@kernel.org>; Michael
+> > Ellerman <mpe@ellerman.id.au>; Benjamin Herrenschmidt
+> > <benh@kernel.crashing.org>; Madalin Bucur <madalin.bucur@nxp.com>; Russell
+> > King <rmk+kernel@armlinux.org.uk>; netdev@vger.kernel.org;
+> > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org
+> > Subject: Re: Unsupported phy-connection-type sgmii-2500 in
+> > arch/powerpc/boot/dts/fsl/t1023rdb.dts
+> > 
+> > On Thursday 03 June 2021 17:12:31 Andrew Lunn wrote:
+> > > On Thu, Jun 03, 2021 at 04:34:53PM +0200, Pali Roh√°r wrote:
+> > > > Hello!
+> > > >
+> > > > In commit 84e0f1c13806 ("powerpc/mpc85xx: Add MDIO bus muxing support
+> > to
+> > > > the board device tree(s)") was added following DT property into DT
+> > node:
+> > > > arch/powerpc/boot/dts/fsl/t1023rdb.dts fm1mac3: ethernet@e4000
+> > > >
+> > > >     phy-connection-type = "sgmii-2500";
+> > > >
+> > > > But currently kernel does not recognize this "sgmii-2500" phy mode.
+> > See
+> > > > file include/linux/phy.h. In my opinion it should be "2500base-x" as
+> > > > this is mode which operates at 2.5 Gbps.
+> > > >
+> > > > I do not think that sgmii-2500 mode exist at all (correct me if I'm
+> > > > wrong).
+> > >
+> > > Kind of exist, unofficially. Some vendors run SGMII over clocked at
+> > > 2500. But there is no standard for it, and it is unclear how inband
+> > > signalling should work. Whenever i see code saying 2.5G SGMII, i
+> > > always ask, are you sure, is it really 2500BaseX? Mostly it gets
+> > > changed to 2500BaseX after review.
+> > 
+> > So this is question for authors of that commit 84e0f1c13806. But it
+> > looks like I cannot send them emails because of following error:
+> > 
+> > <Minghuan.Lian@freescale.com>: connect to freescale.com[192.88.156.33]:25:
+> > Connection timed out
+> > 
+> > Do you have other way how to contact maintainers of that DTS file?
+> > arch/powerpc/boot/dts/fsl/t1023rdb.dts
+> > 
+> > > PHY mode sgmii-2500 does not exist in mainline.
+> > 
+> > Yes, this is reason why I sent this email. In DTS is specified this mode
+> > which does not exist.
+> > 
+> > > 	Andrew
 > 
-> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-> ---
->  drivers/gpu/drm/i915/display/intel_display.c | 13 +++++++++++++
->  drivers/gpu/drm/i915/display/intel_dp.c      |  8 ++++++--
->  drivers/gpu/drm/i915/display/intel_dp_mst.c  |  4 +++-
->  drivers/gpu/drm/i915/display/intel_hdmi.c    |  4 +++-
->  4 files changed, 25 insertions(+), 4 deletions(-)
+> Hi, the Freescale emails no longer work, years after Freescale joined NXP.
+> Also, the first four recipients no longer work for NXP.
 > 
-> diff --git a/drivers/gpu/drm/i915/display/intel_display.c b/drivers/gpu/drm/i915/display/intel_display.c
-> index 64e9107d70f7..f7898d9d7438 100644
-> --- a/drivers/gpu/drm/i915/display/intel_display.c
-> +++ b/drivers/gpu/drm/i915/display/intel_display.c
-> @@ -10164,6 +10164,8 @@ static void intel_atomic_commit_tail(struct intel_atomic_state *state)
->  	struct drm_i915_private *dev_priv = to_i915(dev);
->  	struct intel_crtc_state *new_crtc_state, *old_crtc_state;
->  	struct intel_crtc *crtc;
-> +	struct drm_connector *connector;
-> +	struct drm_connector_state *new_conn_state;
->  	u64 put_domains[I915_MAX_PIPES] = {};
->  	intel_wakeref_t wakeref = 0;
->  	int i;
-> @@ -10324,6 +10326,17 @@ static void intel_atomic_commit_tail(struct intel_atomic_state *state)
->  	}
->  	intel_runtime_pm_put(&dev_priv->runtime_pm, state->wakeref);
->  
-> +	/* Extract information from crtc to communicate it to userspace as connector properties */
-> +	for_each_new_connector_in_state(&state->base, connector, new_conn_state, i) {
-> +		struct drm_crtc *crtc = new_conn_state->crtc;
-> +		if (crtc) {
-> +			new_crtc_state = to_intel_crtc_state(drm_atomic_get_new_crtc_state(&state->base, crtc));
+> In regards to the sgmii-2500 you see in the device tree, it describes SGMII
+> overclocked to 2.5Gbps, with autonegotiation disabled. 
+> 
+> A quote from a long time ago, from someone from the HW team on this:
+> 
+> 	The industry consensus is that 2.5G SGMII is overclocked 1G SGMII
+> 	using XAUI electricals. For the PCS and MAC layers, it looks exactly
+> 	like 1G SGMII, just with a faster clock.
 
-intel_atomic_get_new_crtc_state()
+SGMII supports 1 Gbps speed and also 100 / 10 Mbps by repeating frame 10
+or 100 times.
 
-> +			new_conn_state->active_bpc = new_crtc_state->pipe_bpp / 3;
-> +		}
-> +		else
-> +			new_conn_state->active_bpc = 0;
-> +	}
+So... if this HW has 2.5G SGMII (sgmii-2500) as 2.5x overclocked SGMII,
+does it mean that 2.5G SGMII supports 25 Mbps and 250 Mbps speeds by
+repeating frame 10 and 100 times (like for 1G SGMII)?
 
-This also seems too late. I think the whole thing should be
-done somewhere around the normal swap_state() stuff.
+> The statement that it does not exist is not accurate, it exists in HW, and
+> it is described as such in the device tree. Whether or not it is properly
+> treated in SW it's another discussion. In 2015, when this was submitted,
+> there were no other 2.5G compatibles in use, if I'm not mistaken.
 
-> +
->  	/*
->  	 * Defer the cleanup of the old state to a separate worker to not
->  	 * impede the current task (userspace for blocking modesets) that
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
-> index 642c60f3d9b1..67826ba976ed 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
-> @@ -4671,10 +4671,14 @@ intel_dp_add_properties(struct intel_dp *intel_dp, struct drm_connector *connect
->  		intel_attach_force_audio_property(connector);
->  
->  	intel_attach_broadcast_rgb_property(connector);
-> -	if (HAS_GMCH(dev_priv))
-> +	if (HAS_GMCH(dev_priv)) {
->  		drm_connector_attach_max_bpc_property(connector, 6, 10);
-> -	else if (DISPLAY_VER(dev_priv) >= 5)
-> +		drm_connector_attach_active_bpc_property(connector, 6, 10);
-> +	}
-> +	else if (DISPLAY_VER(dev_priv) >= 5) {
->  		drm_connector_attach_max_bpc_property(connector, 6, 12);
-> +		drm_connector_attach_active_bpc_property(connector, 6, 12);
-> +	}
->  
->  	/* Register HDMI colorspace for case of lspcon */
->  	if (intel_bios_is_lspcon_present(dev_priv, port)) {
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp_mst.c b/drivers/gpu/drm/i915/display/intel_dp_mst.c
-> index 2daa3f67791e..5a1869dc2210 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp_mst.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp_mst.c
-> @@ -844,8 +844,10 @@ static struct drm_connector *intel_dp_add_mst_connector(struct drm_dp_mst_topolo
->  	 */
->  	connector->max_bpc_property =
->  		intel_dp->attached_connector->base.max_bpc_property;
-> -	if (connector->max_bpc_property)
-> +	if (connector->max_bpc_property) {
->  		drm_connector_attach_max_bpc_property(connector, 6, 12);
-> +		drm_connector_attach_active_bpc_property(connector, 6, 12);
-> +	}
->  
->  	return connector;
->  
-> diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
-> index d69f0a6dc26d..8af78b27b6ce 100644
-> --- a/drivers/gpu/drm/i915/display/intel_hdmi.c
-> +++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
-> @@ -2463,8 +2463,10 @@ intel_hdmi_add_properties(struct intel_hdmi *intel_hdmi, struct drm_connector *c
->  		drm_object_attach_property(&connector->base,
->  			connector->dev->mode_config.hdr_output_metadata_property, 0);
->  
-> -	if (!HAS_GMCH(dev_priv))
-> +	if (!HAS_GMCH(dev_priv)) {
->  		drm_connector_attach_max_bpc_property(connector, 8, 12);
-> +		drm_connector_attach_active_bpc_property(connector, 8, 12);
-> +	}
->  }
->  
->  /*
-> -- 
-> 2.25.1
+Yea, I understand. If at that time there was no sw support, "something"
+was chosen.
 
--- 
-Ville Syrj‰l‰
-Intel
+> 2500Base-X started to be added to device trees four years later, it should
+> be compatible/interworking but it is less specific on the actual implementation
+> details (denotes 2.5G speed, 8b/10b coding, which is true for this overclocked
+> SGMII). If they are compatible, SW should probably treat them in the same manner.
+
+1000base-x and SGMII are not same modes. E.g. SGMII support 10 Mbps
+while 1000base-x not. So in my opinion 1000base-x and SGMII should not
+be treated as the same mode (in SW).
+
+I'm not sure how what exactly SGMII-2500 supports, but as 2500base-x
+does not support 25 Mbps speed I do not think that SGMII-2500 is same as
+2500base-x.
+
+But now I'm totally confused by all these modes, so I hope that somebody
+else tries to explain what kernel expects and how kernel treats these
+modes.
+
+> There were some discussions a while ago about the mix or even confusion between
+> the actual HW description (that's what the dts is supposed to do) and the settings
+> one wants to represent in SW (i.e. speed) denoted loosely by denominations like
+> 10G Base-R. 
+> 
+> Regards,
+> Madalin
