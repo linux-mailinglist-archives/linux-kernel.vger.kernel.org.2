@@ -2,102 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1057439B38B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63DF339B38A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbhFDHGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 03:06:14 -0400
-Received: from mail-ej1-f42.google.com ([209.85.218.42]:37778 "EHLO
-        mail-ej1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbhFDHGO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 03:06:14 -0400
-Received: by mail-ej1-f42.google.com with SMTP id ce15so12920701ejb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 00:04:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-transfer-encoding:content-language;
-        bh=JxPiXyyxmrcft44toq/bGBBHxD6goLW29hTUFEaks9I=;
-        b=DqZfNfrcD/kZVU60HoE1MhYt+t5wnXPhiB29YDLOjzGIkia1orIae3vA6RUd/SMjAh
-         NIlW5e5QcJFUbZYMkW98wKUkjfJpAEqr9cC4NdJsVBUokvj5gl7BG+J2hoKVfACcvZnh
-         dCESB2q1vobP96x3gTtRM3E05+XcBF6UyxL2GLoed7BAligajoeLzr2vlR9/f7ze0uw3
-         6NpdlsCQn/NIX3XI7TPZ26e4QZd1D83DoHqB/Ia8PtozdJxRlMtlKjEK+Pr46QawXYgd
-         sJQ17QV7NUdaiZpOelFF63E/2Tp2L/R+K9lwZdaxjjIyOz1h5kwFc70DHR2Vajstg8UL
-         0fbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=JxPiXyyxmrcft44toq/bGBBHxD6goLW29hTUFEaks9I=;
-        b=rmVUQ1KyYNVSEB3qefPauz7uoc5vVh7gRI8+F/X0OWjTtgdiB/FOgPMBwXBmGOSMBD
-         DSAH6yMtDyAopLq8J9LllkIljkEybpCVvz2laHjzV0HPI4duwa+T6UNlKML1NSPuG5XK
-         bbRTVOO1BEgJK69iGqW7hiDTi7dj7nVMe3lpHGC12J/kdxwty0T8iJgWtKGAs9YMROC1
-         1YK9pk/BpWd8pppzaWUgFr5aBoNop9i1dZ/ECMzyV0t1/HztNgEun9UloPx+8X4L4fzT
-         /Nt+9/Oeh/J98ZSNBavzX7IgR1l+H/u07ylw2OLNsTQyjXww0KAlqDOYcSPyKLqjdQNN
-         suIg==
-X-Gm-Message-State: AOAM533DCMPgP+DrT3OfrLMGXhlBo9meK+yv0WYGTRT0C8gTqDPlPK5j
-        31ucUaC6XmTNSVgXuEevWLCRmYEEshE=
-X-Google-Smtp-Source: ABdhPJx2vnZVx5FWV0r9/ik2kgxEsnp35h53vw1wSJF3RN31o1NnkMZDceURVJhlfhN1mSkfN+w/iQ==
-X-Received: by 2002:a17:906:4341:: with SMTP id z1mr2909890ejm.422.1622790192787;
-        Fri, 04 Jun 2021 00:03:12 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:7b4b:873a:17b5:b581? ([2a02:908:1252:fb60:7b4b:873a:17b5:b581])
-        by smtp.gmail.com with ESMTPSA id t2sm2355698ejx.72.2021.06.04.00.03.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Jun 2021 00:03:12 -0700 (PDT)
-Subject: Re: [PATCH] drm: amdgpu: Remove unneeded semicolon in amdgpu_vm.c
-To:     Wan Jiabing <wanjiabing@vivo.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Nirmoy Das <nirmoy.das@amd.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Philip Yang <Philip.Yang@amd.com>,
-        Mihir Bhogilal Patel <Mihir.Patel@amd.com>,
-        Roy Sun <Roy.Sun@amd.com>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <1622690940-10972-1-git-send-email-wanjiabing@vivo.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <3d7fcdb9-990b-270b-f87b-d7fe157c6b2f@gmail.com>
-Date:   Fri, 4 Jun 2021 09:03:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229922AbhFDHGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 03:06:05 -0400
+Received: from mga05.intel.com ([192.55.52.43]:50770 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229882AbhFDHGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 03:06:04 -0400
+IronPort-SDR: c3DT8wuETQzVAG/NKvET1lfd3CGY6cVkAtNF/S5hbmwjM+TVySbIldXp66pP7ppmcXMkGAIfD/
+ TtNbUuNaAYEA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="289867577"
+X-IronPort-AV: E=Sophos;i="5.83,247,1616482800"; 
+   d="scan'208";a="289867577"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2021 00:04:18 -0700
+IronPort-SDR: NN3ljDLW+9P4TngMZqG5jDTOvHKsY/r7PmXj3JW2/9j2L51QvzslxHEd9QnBS+JY8FrIGX9BHO
+ RmprNRyVenew==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,247,1616482800"; 
+   d="scan'208";a="448162484"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by fmsmga008.fm.intel.com with ESMTP; 04 Jun 2021 00:04:12 -0700
+Date:   Fri, 4 Jun 2021 15:04:11 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
+        Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Hugh Dickins <hughd@google.com>, Jann Horn <jannh@google.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>, zhengjun.xing@intel.com
+Subject: Re: [mm/gup] 57efa1fe59: will-it-scale.per_thread_ops -9.2%
+ regression
+Message-ID: <20210604070411.GA8221@shbuild999.sh.intel.com>
+References: <20210525031636.GB7744@xsang-OptiPlex-9020>
+ <CAHk-=whTEC_GVYu=WfvUagNvHdoTALEDg8uqK3V6aMDwg2KMRA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1622690940-10972-1-git-send-email-wanjiabing@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whTEC_GVYu=WfvUagNvHdoTALEDg8uqK3V6aMDwg2KMRA@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 03.06.21 um 05:28 schrieb Wan Jiabing:
-> Fix following coccicheck warning:
-> ./drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:1726:2-3: Unneeded semicolon
->
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+Hi Linus,
 
-Reviewed-by: Christian König <christian.koenig@amd.com>
+Sorry for the late response.
 
-> ---
->   drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-> index 2460371..231745b 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-> @@ -1723,7 +1723,7 @@ int amdgpu_vm_bo_update_mapping(struct amdgpu_device *adev,
->   
->   		amdgpu_res_next(&cursor, num_entries * AMDGPU_GPU_PAGE_SIZE);
->   		start = tmp;
-> -	};
-> +	}
->   
->   	r = vm->update_funcs->commit(&params, fence);
->   
+On Mon, May 24, 2021 at 05:11:37PM -1000, Linus Torvalds wrote:
+> On Mon, May 24, 2021 at 5:00 PM kernel test robot <oliver.sang@intel.com> wrote:
+> >
+> > FYI, we noticed a -9.2% regression of will-it-scale.per_thread_ops due to commit:
+> > commit: 57efa1fe5957694fa541c9062de0a127f0b9acb0 ("mm/gup: prevent gup_fast from racing with COW during fork")
+> 
+> Hmm. This looks like one of those "random fluctuations" things.
+> 
+> It would be good to hear if other test-cases also bisect to the same
+> thing, but this report already says:
+> 
+> > In addition to that, the commit also has significant impact on the following tests:
+> >
+> > +------------------+---------------------------------------------------------------------------------+
+> > | testcase: change | will-it-scale: will-it-scale.per_thread_ops 3.7% improvement                    |
+> 
+> which does kind of reinforce that "this benchmark gives unstable numbers".
+> 
+> The perf data doesn't even mention any of the GUP paths, and on the
+> pure fork path the biggest impact would be:
+> 
+>  (a) maybe "struct mm_struct" changed in size or had a different cache layout
 
+Yes, this seems to be the cause of the regression.
+
+The test case is many thread are doing map/unmap at the same time,
+so the process's rw_semaphore 'mmap_lock' is highly contended.
+
+Before the patch (with 0day's kconfig), the mmap_lock is separated
+into 2 cachelines, the 'count' is in one line, and the other members
+sit in the next line, so it luckily avoid some cache bouncing. After
+the patch, the 'mmap_lock' is pushed into one cacheline, which may
+cause the regression.
+
+Below is the pahole info:
+
+- before the patch
+
+	spinlock_t         page_table_lock;      /*   116     4 */
+	struct rw_semaphore mmap_lock;           /*   120    40 */
+	/* --- cacheline 2 boundary (128 bytes) was 32 bytes ago --- */
+	struct list_head   mmlist;               /*   160    16 */
+	long unsigned int  hiwater_rss;          /*   176     8 */
+
+- after the patch
+
+	spinlock_t         page_table_lock;      /*   124     4 */
+	/* --- cacheline 2 boundary (128 bytes) --- */
+	struct rw_semaphore mmap_lock;           /*   128    40 */
+	struct list_head   mmlist;               /*   168    16 */
+	long unsigned int  hiwater_rss;          /*   184     8 */
+
+perf c2c log can also confirm this.
+
+Thanks,
+Feng
+
+>  (b) two added (nonatomic) increment operations in the fork path due
+> to the seqcount
+> 
+> and I'm not seeing what would cause that 9% change. Obviously cache
+> placement has done it before.
+> 
+> If somebody else sees something that I'm missing, please holler. But
+> I'll ignore this as "noise" otherwise.
+> 
+>             Linus
