@@ -2,93 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF7C39C276
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4775139C279
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230420AbhFDVde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 17:33:34 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:35721 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229982AbhFDVdc (ORCPT
+        id S231239AbhFDVdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 17:33:40 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:41730 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230435AbhFDVdj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 17:33:32 -0400
-Received: by mail-ot1-f48.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so10472330otg.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 14:31:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vbZgSAN+iPQara7nvEit4oB9ifITGuuSWNRzPMg2j/k=;
-        b=Gn1VmhwpMuiy8ERQ5bEET4OO9FUpsRyio6QBNHFwno6ZrDu4T3ZLBcnhOw8KVGu9i3
-         Gy2t8fSl792Qrx4+8uB0DEvEyIQ7yLP9zenzGl5cGEalFoZZQa8toLCLzwhIWOi0xibX
-         0bRgWeWFApcFGQfisS5ao6vFCPh5OFU0FZaKs=
+        Fri, 4 Jun 2021 17:33:39 -0400
+Received: by mail-ot1-f42.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so10449633oth.8;
+        Fri, 04 Jun 2021 14:31:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vbZgSAN+iPQara7nvEit4oB9ifITGuuSWNRzPMg2j/k=;
-        b=sDwNk/j6qjVQXWuEz1+8IaKruW3NSiyiEnz0ju74ck59MON3q/srUITOftc3L2izry
-         U3d9LXCWvtcpGv2fm68SuEdbbZH97EiV034VpHGN49zAQ5F7SxtfXeuCxJLwl99PyoqF
-         2S9qBV90i/2g+XitDVxZgZRfFWopD8wS2qCEXy2Te9Lwo4Mm84k8SFlE85KEAZ6grK7F
-         qLcWUd+XcdJ4e6xcCyx8KbORsLkm0UjTUXLWT50YG9k0ncP23G9P84N3ROn9CW2i/ZXX
-         bjkItxuXTcojJ7b4D1x/Kze3TPtqil9hdvVgy/RKGAraofwfGmAko39vLff80ehITsFL
-         udDQ==
-X-Gm-Message-State: AOAM53279FNMhzV7xZYh3WRrVeRfNCGppkVWzAXqwsjpMXy1d9GDQ1PL
-        yP9wlYCmtC6ujGIx6JbthRtfKw==
-X-Google-Smtp-Source: ABdhPJxrU9jcGqepUNIzkGr6FohSOZgv5x2HsJMLz0ZRmBGzAetpiAKJO8RmHepnCeW0WcH/PJ/Kfw==
-X-Received: by 2002:a05:6830:3115:: with SMTP id b21mr5182451ots.291.1622842230022;
-        Fri, 04 Jun 2021 14:30:30 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id x7sm705549ooc.23.2021.06.04.14.30.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Jun 2021 14:30:29 -0700 (PDT)
-Subject: Re: [PATCH] selftests: lib.mk: Also install "config" and "settings"
-To:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        Shuah Khan <shuah@kernel.org>
-Cc:     linux-kselftest@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210527031753.3729663-1-keescook@chromium.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <edfcc51d-af42-5034-0ba2-f6a419c58a7f@linuxfoundation.org>
-Date:   Fri, 4 Jun 2021 15:30:28 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=29KDNg6bdct+jVvkaUIPY5tx3C00HziQYhBFF6LbCFI=;
+        b=iuHb5SnU2IbBzCqJMAkewfFfzngWSnNbqdujou4Cd6Ypjd7PIHn8Pg8fZRDzxcjSse
+         e0G/m0piOIY8Ak5Gh+80N/7j0JKDkxbErdwldIAuFTsWuf/xgwolmsFPB5eQsstE7c5Y
+         1qgiwvs0Zl1S9KyAoEkvyEzLj121QYnDAE3tm4GJVnlmav6qNN38HMTHc/YCIv1qif6p
+         gQsEur6s4hgLrtwcHzs8EvzqpApXJe18hChLikYxUvwyDmNrUtpgXW8/0Ea37qxBJtR2
+         JoU6rx8KOBDOx/4JBFamJvqRtUKtOC9FoJZrtVUbQUn4YxdSRhEljrMYT3plrAbTtFip
+         fZsg==
+X-Gm-Message-State: AOAM533BYxBYN3ys0eA+6F3wyUT19wpraIs2iPOv7mAp/3D/eJcY2lGY
+        zpr+lRQh7B7+V0IBelWTr/EkQaM85Q==
+X-Google-Smtp-Source: ABdhPJyyNUCIVUo3gBokt/OZHYOrLcTLLfjGQzTRvp1YwQ6PI4fEpZOWaUh3mbD0idVXZ+0Ac3yFxQ==
+X-Received: by 2002:a9d:684d:: with SMTP id c13mr5179122oto.201.1622842296306;
+        Fri, 04 Jun 2021 14:31:36 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id m12sm726092oim.9.2021.06.04.14.31.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 14:31:35 -0700 (PDT)
+Received: (nullmailer pid 3956200 invoked by uid 1000);
+        Fri, 04 Jun 2021 21:31:34 -0000
+Date:   Fri, 4 Jun 2021 16:31:34 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Bartosz Dudziak <bartosz.dudziak@snejp.pl>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Kumar Gala <galak@codeaurora.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, Jens Axboe <axboe@kernel.dk>,
+        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: arm: msm: Add SAW2 for MSM8226
+Message-ID: <20210604213134.GA3956146@robh.at.kernel.org>
+References: <20210530121803.13102-1-bartosz.dudziak@snejp.pl>
+ <20210530121803.13102-2-bartosz.dudziak@snejp.pl>
 MIME-Version: 1.0
-In-Reply-To: <20210527031753.3729663-1-keescook@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210530121803.13102-2-bartosz.dudziak@snejp.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/26/21 9:17 PM, Kees Cook wrote:
-> Installed seccomp tests would time out because the "settings" file was
-> missing. Install both "settings" (needed for proper test execution) and
-> "config" (needed for informational purposes) with the other test
-> targets.
+On Sun, 30 May 2021 14:18:02 +0200, Bartosz Dudziak wrote:
+> Add the dt-binding compatible in the SPM AVS Wrapper 2 (SAW2) for the
+> MSM8226 SoC platform.
 > 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Bartosz Dudziak <bartosz.dudziak@snejp.pl>
 > ---
->   tools/testing/selftests/lib.mk | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
-> index 0af84ad48aa7..fa2ac0e56b43 100644
-> --- a/tools/testing/selftests/lib.mk
-> +++ b/tools/testing/selftests/lib.mk
-> @@ -100,6 +100,7 @@ define INSTALL_RULE
->   	$(eval INSTALL_LIST = $(TEST_CUSTOM_PROGS)) $(INSTALL_SINGLE_RULE)
->   	$(eval INSTALL_LIST = $(TEST_GEN_PROGS_EXTENDED)) $(INSTALL_SINGLE_RULE)
->   	$(eval INSTALL_LIST = $(TEST_GEN_FILES)) $(INSTALL_SINGLE_RULE)
-> +	$(eval INSTALL_LIST = $(wildcard config settings)) $(INSTALL_SINGLE_RULE)
->   endef
->   
->   install: all
+>  Documentation/devicetree/bindings/arm/msm/qcom,saw2.txt | 1 +
+>  1 file changed, 1 insertion(+)
 > 
 
-I will pick this up for 5.14
-
-thanks,
--- Shuah
+Acked-by: Rob Herring <robh@kernel.org>
