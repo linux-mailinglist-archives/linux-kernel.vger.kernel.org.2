@@ -2,169 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C20BF39B629
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33FF639B5FE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbhFDJoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 05:44:02 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:61352 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229964AbhFDJoA (ORCPT
+        id S229983AbhFDJdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 05:33:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229936AbhFDJdG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 05:44:00 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210604094213epoutp042082bab74bbad476cdadb4bff47b5789~FV8JkfSii1886818868epoutp04Q
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 09:42:13 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210604094213epoutp042082bab74bbad476cdadb4bff47b5789~FV8JkfSii1886818868epoutp04Q
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1622799733;
-        bh=+LAP7teJNDknqS6ftC22tN7MZDtvBE0k4gNVcrZZTk4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FdrIZMea1AOYgneHuv8+cLNkvrbWZHtzt8Q4cCwJNOKe3mAP6fBzfxEPy/AgGttCA
-         wxqyRWulPaoJ54+tH7umHCt207V2yPS2FGJN4oditmYqdlXRtqx03L8PFoppbgldEs
-         BeZBXmPgNOwEHUP+RckDBVPTpA4nwaW97g9tkWd8=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210604094211epcas1p1155241a9c3c2e7ce9e15a4ea2827faaf~FV8IX-qDq2988429884epcas1p1H;
-        Fri,  4 Jun 2021 09:42:11 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.165]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4FxHq62dNbz4x9Pv; Fri,  4 Jun
-        2021 09:42:10 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        15.C3.09578.275F9B06; Fri,  4 Jun 2021 18:42:10 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210604094209epcas1p26368dd18011bb2761529432cf2656a9f~FV8FwZDaD1204012040epcas1p2U;
-        Fri,  4 Jun 2021 09:42:09 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210604094209epsmtrp16485696be5628c8be84393c87511a674~FV8FvD_U12961329613epsmtrp13;
-        Fri,  4 Jun 2021 09:42:09 +0000 (GMT)
-X-AuditID: b6c32a35-fb9ff7000000256a-37-60b9f572e55a
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        E5.90.08637.075F9B06; Fri,  4 Jun 2021 18:42:08 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.99.105]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210604094208epsmtip2126455b09c5325e991f11f0db571c258~FV8FZ0v3W0959909599epsmtip2B;
-        Fri,  4 Jun 2021 09:42:08 +0000 (GMT)
-From:   Changheun Lee <nanich.lee@samsung.com>
-To:     damien.lemoal@wdc.com
-Cc:     Avri.Altman@wdc.com, Johannes.Thumshirn@wdc.com,
-        alex_y_xu@yahoo.ca, alim.akhtar@samsung.com,
-        asml.silence@gmail.com, axboe@kernel.dk, bgoncalv@redhat.com,
-        bvanassche@acm.org, cang@codeaurora.org,
-        gregkh@linuxfoundation.org, hch@infradead.org, jaegeuk@kernel.org,
-        jejb@linux.ibm.com, jisoo2146.oh@samsung.com,
-        junho89.kim@samsung.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, ming.lei@redhat.com,
-        mj0123.lee@samsung.com, nanich.lee@samsung.com, osandov@fb.com,
-        patchwork-bot@kernel.org, seunghwan.hyun@samsung.com,
-        sookwan7.kim@samsung.com, tj@kernel.org, tom.leiming@gmail.com,
-        woosung2.lee@samsung.com, yi.zhang@redhat.com,
-        yt0928.kim@samsung.com
-Subject: Re: [PATCH v12 1/3] bio: control bio max size
-Date:   Fri,  4 Jun 2021 18:23:35 +0900
-Message-Id: <20210604092335.29705-1-nanich.lee@samsung.com>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <DM6PR04MB70811B0A9F77D8F774ED11BEE73B9@DM6PR04MB7081.namprd04.prod.outlook.com>
+        Fri, 4 Jun 2021 05:33:06 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EFF8C061763
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 02:31:20 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id a1so3440570lfr.12
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 02:31:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=WqJtAEUyp1Bxzc5hAO9Tv+8VBm2svR4HUjAof0o85e0=;
+        b=qkwDxkW1kfmJwJ7ndr3HTnaDKSWLTjA6xKL8JMiX1eMOCXTTZGQ2m2TgMArQ4L4aXx
+         uHsCtRSZH0GDtdg9QSVua6H+8pssQAPi1mIXM5IdlJQIbbp+X2PtZ/0NJw/GKmUKJUnn
+         AgTD1opvfRSRWW7crbgeuj+mZEvYOP1GlPBNudcy8ToaiQIIjg3X+AIYg8FiMnqa1ClK
+         SlYcnbfJnns9hZuETArk9zBRx98aTc1TVlv4iSS70t/HuBQrZ115S+5m6U7nQVauO00X
+         U3+ZzTu/8Zlu0wgE1HWNZT0iqO1CrUcWA3ZCpG7qhK0xMEP4l1CnYrigYuNIil6dEGde
+         NejA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WqJtAEUyp1Bxzc5hAO9Tv+8VBm2svR4HUjAof0o85e0=;
+        b=HQ/WoedCwRkfuJNvXcdJzEEXBDMuJD36vWmOd5Si/eyj5pgeTOD7aZj+0WMJADuaBU
+         VTXgsdXNFbpAmIF9kMRDWHmIDkv5YHPIB2UT//J3+PtyMB80la/b/K8t5ls02cYGWR2V
+         5nqxu/zeCju7C6sZRQdJpayfO4sBRAhuGOa+cMj49JEOUCsTtTXQ7zeY6IGowTih6Ib1
+         CW+tU3iq545r/3a/7rbcL/V2CfzBcwfGNQ2R+VlEhhJhmBKWuPERhyPbS3JrA/e2th3J
+         JF53Z/UYnSzd4eJbk+vuWIipb2kfSkcxg09gXWmEhqCVhM+8DWzCe2OOgZ1xqe3pMFPR
+         O+oQ==
+X-Gm-Message-State: AOAM530q+aBVSav6X5dG73K990FQp/M+MBNMUF6MUn/kP3P57lOT/i8y
+        vY60w39mXYD9wDxl856f2/IIfLaGeZVvbF5GypVMRQ==
+X-Google-Smtp-Source: ABdhPJwjZUEUDLRMcFr5fmvHzeRRlf27zfb0dhKyXB4D2fLxv43UZy+tITmNzSY/BfIouz9XXQhzAbVXMbqMYiWx1qI=
+X-Received: by 2002:a05:6512:2105:: with SMTP id q5mr2110635lfr.649.1622799078510;
+ Fri, 04 Jun 2021 02:31:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Te0xTZxTP19vetrCOO177RDZqRQxvSi1820CNMLgLLmNixoYZ0MENEEqp
-        vYU5jYuhDMZjPIYBgfIYAm4MhwGFQiwydDN2zDERizheAySAgsJAUXGjXMj47/c73++c3znn
-        y+Fhlpe4drwEhZpSKWRyEW7Gbr3q7OmuWmqP9mqaskA//dXIRaOVrTjSNrQCNL3Sj6Mfh/Jx
-        1PFnFUDFj1YwtNBUz0FfZS6zkOZsE45+K6hhoYmmMgzVDLSyUO5EGgetZg+z0NIYjfSDrqiv
-        Q4ujHKMOR+euv2Sh7iINC5W0aDF0Z6SHi64O97PRWG0hhm7eWOCgyvH96Nm5XwCaf2rkIoOu
-        CEPGm8U4atKv4PuFZN/tELIv7xsWWaiZ45LtZUNcsuV7F7Lv9xSyuSELJwtqugB5paKRSz6e
-        HGST8539OJl3sQGQi81vkpldOSyyu7seC7WIkPvFU7JYSiWkFDHJsQmKOH9RSFhUQJTUx0vs
-        Ln4L+YqEClkS5S8KPBjqHpQgX9uXSJgqk6eshUJlNC3y3OunSk5RU8L4ZFrtL6KUsXKl2Evp
-        QcuS6BRFnEdMctLbYi8vb+maMloer9HJlDOCY0t/1HFPgXTzbMDnQWIPNMzWYdnAjGdJ6AD8
-        oejeBlkAcLpfu0GWATR0pnM3U1pXBrjMgx7A099p2QxZBHBkpQ03qXDCDeY9HFzH1sQ2aJj+
-        Zx1jxAwHdhrsTNiK8IGnhyrWknk8NrELDp4PNkEB8Q4syXJgvBzgi5FczIT5xKewoLyIY8IC
-        4jV4o3SCzVR0gJpL5Rijv8+HmcP7GBwIRwcKOQy2gjPXL270bwen8zPW+4dEDoCajCrAkAIA
-        a6fqWYxKAhcWF4GpIYxwhk0dnkx4B2x/XgEY41fh3FIuxySBhAB+nWHJSBxhT/oItuk1db59
-        oyIJz1wo5zCrugBg8/MhbgEQlm2Zp2zLPGX/O1cDrAHYUko6KY6ixUrx1g9uBuv34yLVgcKH
-        jzy6AYsHugHkYSJrwWUnXbSlIFb2xXFKlRylSpFTdDeQru26ELOziUleO0CFOkos9ZZIJGiP
-        j6+PVCJ6XRAXcCLakoiTqalEilJSqs08Fo9vd4qFSUIfZH3wa6LZ7N/6FPWOPPq998c5heF4
-        fvzEEfNo8WJw8b7J4G8zjuRkyk4aDBr3A4c/ks9FnuA3fmYx1lZbF/F5YrG93tZoGyS/H9Fu
-        d2hnV6+jqOva5dIPJVMhqdaLbm0HnQaevQi3tzfq/nWtcrsX8eX20dsFVom9Vccmd+t5t9oy
-        nrasvty5y7+yVfOJ9/6qVFKSqugkMKlTvFlCtaNHs4qc3G5euXtZerfsltl4WlhAeHVwnGJe
-        63v4jNe7AXeOcg8NP3bOOPpGaU/kwCtBKpufaz7uLSmhw6pdI1ejBy3qJp6kGXMwvPFKGv+s
-        n7Hv7vFtNvrAFf7eB9dmT/o+OSBi0/EysQumomX/Ad2jsMzIBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrLIsWRmVeSWpSXmKPExsWy7bCSvG7B150JBhc3mlqsu7OG3eLBvG1s
-        FnNWbWO0ePnzKpvF6rv9bBa7Ls5ntJj24Sezxaf1y1gtWtu/MVk0L17PZnF6wiImiyfrZzFb
-        LLqxjcmi50kTq8XfrntMFl8fFlvsvaVtcXnXHDaL7us72CyWH//HZHFocjOTxfTNc5gtrt0/
-        w25x+N5VFouHSyYyW5w7+YnVYt5jB4tfy48yWrz/cZ3d4tSOycwW189NY7NYv/cnm4OCx+Ur
-        3h6X+3qZPCY2v2P32DnrLrvH5hVaHpfPlnpsWtXJ5jFh0QFGj/1z17B7fHx6i8Xj/b6rbB59
-        W1YxenzeJOfRfqCbyePQoWXMAfxRXDYpqTmZZalF+nYJXBnNOxILXvFWfD2/lL2BsYW7i5GT
-        Q0LARGLbzxvsXYxcHEICuxkljj19yAaRkJI4fuItaxcjB5AtLHH4cDFEzUdGia5XH9lBatgE
-        dCT63t4CqxcRkJQ49fILG0gRs8AkNokDPVNYQBLCAmYSU+7OZQEZxCKgKnFrrTuIyStgLTG9
-        Ux5ilbzEn/s9zCA2p0CsxITZk1lBbCGBGImT29aA2bwCghInZz4Bm8gMVN+8dTbzBEaBWUhS
-        s5CkFjAyrWKUTC0ozk3PLTYsMMxLLdcrTswtLs1L10vOz93ECE4RWpo7GLev+qB3iJGJg/EQ
-        owQHs5II7x61HQlCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeS90nYwXEkhPLEnNTk0tSC2CyTJx
-        cEo1MFmbrnhwQDSp3LXf9OAXvwVt6/a9cs+prs2uChEL6XUt4a8TFjnEXLfyzctJHOsbdhT/
-        ybvn82DxIncj3+xPc4MnTbCq1D13R/xb6cLwNJM9Z34mvS38yP7v7i4bf4838yf+d97waUsK
-        2+sz7exqtecWShxMnnL74fILO58vFYuV37NEQqKZbcHRbqdpSnfNzn5Zvyp4tdmZuFXub5pN
-        31Tlbpt7U+ODuvGNHwJHAsTWqb4SX9XNqute53qmK5FRXTD7a+eVYMZfkyum/pVT/mYV/0ek
-        5MKK278kuLOiF9UcXRa9Y3/WcrssUYYte6xrGPJYY1TW61eWnVUIyzbPUaxPMz6XbC9e8rH9
-        YrG2uxJLcUaioRZzUXEiAIEORgqAAwAA
-X-CMS-MailID: 20210604094209epcas1p26368dd18011bb2761529432cf2656a9f
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210604094209epcas1p26368dd18011bb2761529432cf2656a9f
-References: <DM6PR04MB70811B0A9F77D8F774ED11BEE73B9@DM6PR04MB7081.namprd04.prod.outlook.com>
-        <CGME20210604094209epcas1p26368dd18011bb2761529432cf2656a9f@epcas1p2.samsung.com>
+References: <20210602120329.2444672-1-j.neuschaefer@gmx.net> <20210602120329.2444672-6-j.neuschaefer@gmx.net>
+In-Reply-To: <20210602120329.2444672-6-j.neuschaefer@gmx.net>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 4 Jun 2021 11:31:07 +0200
+Message-ID: <CACRpkdb=8e=D9JdwxA+oPGj80WnsV86apuECBp1m-Edd+hKPFQ@mail.gmail.com>
+Subject: Re: [PATCH 5/8] pinctrl: nuvoton: Add driver for WPCM450
+To:     =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Joel Stanley <joel@jms.id.au>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On 2021/06/04 16:53, Changheun Lee wrote:
-> >> On 2021/06/04 14:22, Changheun Lee wrote:
-> >>> + * @q: the request queue for the device
-> >>> + * @bytes : bio max bytes to be set
-> >>> + *
-> >>> + * Description:
-> >>> + *    Set proper bio max size to optimize queue operating.
-> >>> + **/
-> >>> +void blk_queue_max_bio_bytes(struct request_queue *q, unsigned int bytes)
-> >>> +{
-> >>> +	struct queue_limits *limits = &q->limits;
-> >>> +	unsigned int max_bio_bytes = round_up(bytes, PAGE_SIZE);
-> >>> +
-> >>> +	limits->max_bio_bytes = max_t(unsigned int, max_bio_bytes,
-> >>> +				      BIO_MAX_VECS * PAGE_SIZE);
-> >>> +}
-> >>> +EXPORT_SYMBOL(blk_queue_max_bio_bytes);
-> >>
-> >> Setting of the stacked limits is still missing.
-> > 
-> > max_bio_bytes for stacked device is just default(UINT_MAX) in this patch.
-> > Because blk_set_stacking_limits() call blk_set_default_limits().
-> > I'll work continue for stacked device after this patchowork.
-> 
-> Why ? Without that added now, anybody using this performance fix will see no
-> benefits if a device mapper is used. The stacking limit should be super simple.
-> In blk_stack_limits(), just add:
-> 
-> t->max_bio_bytes = min(t->max_bio_bytes, b->max_bio_bytes);
-> 
-> 
-> -- 
-> Damien Le Moal
-> Western Digital Research
+Hi Jonathan!
 
-I had tried like as your comment at first. But I got many feedbacks that
-applying for all device is not good idea. So I'll try to control bio size
-in each stacked driver like as setting max_bio_bytes in LLD as you
-recommended. I'm trying to find some target stacked devices to contorl
-bio size like as dm-crypt, dm-liner, ... etc. And I'll try to find some
-method to control bio max size include using of blk_queue_max_bio_bytes().
+thanks for your patch!
 
-Thank you,
-Changheun Lee
+On Wed, Jun 2, 2021 at 2:04 PM Jonathan Neusch=C3=A4fer
+<j.neuschaefer@gmx.net> wrote:
+>
+> This driver is heavily based on the one for NPCM7xx, because the WPCM450
+> is a predecessor of those SoCs.
+>
+> The biggest difference is in how the GPIO controller works. In the
+> WPCM450, the GPIO registers are not organized in multiple banks, but
+> rather placed continually into the same register block, and the driver
+> reflects this.
+
+This is unfortunate because now you can't use GPIO_GENERIC anymore.
+
+> Some functionality implemented in the hardware was (for now) left unused
+> in the driver, specifically blinking and pull-up/down.
+>
+> Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+
+(...)
+
+> +config PINCTRL_WPCM450
+> +       bool "Pinctrl and GPIO driver for Nuvoton WPCM450"
+> +       depends on (ARCH_WPCM450 || COMPILE_TEST) && OF
+> +       select PINMUX
+> +       select PINCONF
+> +       select GENERIC_PINCONF
+> +       select GPIOLIB
+> +       select GPIO_GENERIC
+
+You are not using GPIO_GENERIC
+
+> +struct wpcm450_port {
+> +       /* Range of GPIOs in this port */
+> +       u8 base;
+> +       u8 length;
+> +
+> +       /* Register offsets (0 =3D register doesn't exist in this port) *=
+/
+> +       u8 cfg0, cfg1, cfg2;
+> +       u8 blink;
+> +       u8 dataout, datain;
+> +};
+
+If you used to have "GPIO banks" and you now have
+"GPIO ports" what is the difference? Why can't these ports
+just be individula gpio_chip:s with their own device tree
+nodes inside the pin controller node?
+
+If you split it up then you can go back to using
+GPIO_GENERIC with bgpio_init() again which is a
+big win.
+
+All you seem to be doing is setting consecutive
+bits in a register by offset, which is what GPIO_GENERIC
+is for, just that it assumes offset is always from zero.
+If you split it into individual gpio_chips per register
+then you get this nice separation and code reuse.
+
+> +static const struct wpcm450_port *to_port(int offset)
+> +{
+> +       int i;
+> +
+> +       for (i =3D 0; i < ARRAY_SIZE(wpcm450_ports); i++)
+> +               if (offset >=3D wpcm450_ports[i].base &&
+> +                   offset - wpcm450_ports[i].base < wpcm450_ports[i].len=
+gth)
+> +                       return &wpcm450_ports[i];
+> +       return NULL;
+> +}
+
+Then you would also get away from this awkward thing.
+
+> +static u32 port_mask(const struct wpcm450_port *port, int offset)
+> +{
+> +       return BIT(offset - port->base);
+> +}
+
+And awkwardness like this.
+
+Generally splitting up gpio_chips is a very good idea.
+
+> +static int event_bitmask(int gpio)
+> +{
+> +       if (gpio >=3D 0 && gpio < 16)
+> +               return BIT(gpio);
+> +       if (gpio =3D=3D 24 || gpio =3D=3D 25)
+> +               return BIT(gpio - 8);
+> +       return -EINVAL;
+> +}
+> +
+> +static int event_bitnum_to_gpio(int num)
+> +{
+> +       if (num >=3D 0 && num < 16)
+> +               return num;
+> +       if (num =3D=3D 16 || num =3D=3D 17)
+> +               return num + 8;
+> +       return -EINVAL;
+> +}
+
+This is also a sign that you have several gpio_chips in practice
+and now you need all this awkwardness to get back to which
+GPIO is which instead of handling it in a per-chip manner.
+
+This can be done in different ways, the most radical is to have
+the pin control driver spawn child devices for each GPIO
+block/bank/port with its own driver, but it can also just register
+the individual gpio_chips.
+
+Yours,
+Linus Walleij
