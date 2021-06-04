@@ -2,241 +2,370 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B62F439AF40
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 02:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6972C39AF44
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 02:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229794AbhFDA5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 20:57:19 -0400
-Received: from mail-bn1nam07on2061.outbound.protection.outlook.com ([40.107.212.61]:21573
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229656AbhFDA5S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 20:57:18 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jlP5KvEtTK8X2lR93jpJB5TfqjXDMljGtJN0zCERaJzX2x/N//CxvT8xhcbQcSp71vUFCmM/FP2U0EM8qjdLWlWUbwrHraG6gnkyYnVRM85nwXpdZtjZxz9QPOk06VxH7dB1eJwlZEb9MNbKlN3OmhGvHotizWvQEavH1lOjIzbqzaJV6hDrQa5t4a0E87Bfqzp1TNU75ZbhPzK0ioFE5lq/dHCp0SPQ9JW19BUPXs4T6aDcVSgjgvfLU9R5R8kJFU17LFH11khK+ZyGipcFA3N5gF1SD3VjkG+jTplh6IGX5U9s2tI3LAfBA6CaFc9c0uevSckMmyeolGXzwDz7xQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Xt/T/JRlO2zBoJ0DK01j2X0QbMrY46XhSsJndnVd4tY=;
- b=AMcGy4FVLNaUw3+wCw2drahQihuD4tMIFZmzAKT0tNwXpjkCnGLzf1Qf+Amm1SPWM4bVQsLQSjZ9gD35raubHkF+kzazV9P+XxCybRiZQBbioECsO/I6hqnR3Hj9LPwgnj6XQNOm4cnuhPWd69mZl1gK2+gEwRFrOMXCr7yFLDb1xiYgLuX3Ip1mVXfcQWvi9vIua4ANsGN7/3Rf4rlzfc2gkM9ffVADAN2d9xmOUPFHfmWI65arJs+1r+tivB3LUVY2317K9xTILkaOJkYKmyZ0xO3DwG9Ax7DIjnaAi9AUrZhz5gq3W5c7HILmqsNU+mGVlzUoCBwv+JN1Jw+aHw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Xt/T/JRlO2zBoJ0DK01j2X0QbMrY46XhSsJndnVd4tY=;
- b=CwNKBzc9uYOcwb9RpPHgHiM8aqVHMDPegZriRvfr/GPTbxW/+wH+of0K56UiJj7ftHJcCLMekuswiNeWZqQVs/NhP0X9Vymlyscb6FXGB1Ur3baIJcJh3h57rMgzh5yKZHpQKoQ+G3Ce61N4XbvR5NIf5J2ZsgE7/EVBv5T/cf3rwUGgpnYlAVSgvfieb2BH4PJCi/GijEwm+E6ZZN0dft8PunH9zJOq8BxjA9bgXNeguwVtsoKxQ1q5KfdOieBszAgDW26GUVeJctaGpBGcmSZlpXLkh42/RvAmvCrm7m7adPrFyJKbTOIkFJSwWwCXFlwBytCeYlpTykTNSyeXnA==
-Received: from DM5PR16CA0045.namprd16.prod.outlook.com (2603:10b6:4:15::31) by
- BY5PR12MB4242.namprd12.prod.outlook.com (2603:10b6:a03:203::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4173.24; Fri, 4 Jun 2021 00:55:30 +0000
-Received: from DM6NAM11FT056.eop-nam11.prod.protection.outlook.com
- (2603:10b6:4:15:cafe::3a) by DM5PR16CA0045.outlook.office365.com
- (2603:10b6:4:15::31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.21 via Frontend
- Transport; Fri, 4 Jun 2021 00:55:30 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT056.mail.protection.outlook.com (10.13.173.99) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4195.22 via Frontend Transport; Fri, 4 Jun 2021 00:55:30 +0000
-Received: from nvdebian.localnet (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 4 Jun
- 2021 00:55:26 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Peter Xu <peterx@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v3 04/27] mm/userfaultfd: Introduce special pte for unmapped file-backed mem
-Date:   Fri, 4 Jun 2021 10:55:24 +1000
-Message-ID: <1780227.rxkhHXaqZV@nvdebian>
-In-Reply-To: <YLjsZ4PVQcx0/vb8@t490s>
-References: <20210527201927.29586-1-peterx@redhat.com> <4688876.HeLTNyGTSD@nvdebian> <YLjsZ4PVQcx0/vb8@t490s>
+        id S229826AbhFDBAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 21:00:20 -0400
+Received: from mga04.intel.com ([192.55.52.120]:28631 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229656AbhFDBAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 21:00:19 -0400
+IronPort-SDR: +2EzRnjKR/hDXHots6zofPmuYGmIIAZWDATnwcJd7D7ClR+4LheuifLIp0/lASev1r2LUFTS9f
+ jC1s4QfVnrlA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="202337066"
+X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
+   d="scan'208";a="202337066"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 17:58:33 -0700
+IronPort-SDR: a2NpY/wbraz8SZS66kQjPM4/MDpn/2dc9pc6S+kCv0Cc9w3gzNQjxsVENZVK2VK9C99XraFPjp
+ U5lfFhS1trVQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
+   d="scan'208";a="636423734"
+Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 03 Jun 2021 17:58:32 -0700
+Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1loyAR-0006Wj-B1; Fri, 04 Jun 2021 00:58:31 +0000
+Date:   Fri, 04 Jun 2021 08:57:55 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:perf/core] BUILD SUCCESS
+ 00afe83098f59d3091a800d0db188ca495b2bc02
+Message-ID: <60b97a93./stefZFZ6O27QCuH%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b01bf9c4-9ada-4e85-6a4a-08d926f37366
-X-MS-TrafficTypeDiagnostic: BY5PR12MB4242:
-X-Microsoft-Antispam-PRVS: <BY5PR12MB424201C8F3D8D7B0AACBA3E4DF3B9@BY5PR12MB4242.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EwoOghN//OYVUT8XxT8OP6+Ayqgr5HRkURT0jCh+/aYQ1DYJjE51tBH+jJhIUfFoIP3N5qplYCl96r4ZC7Tm5CD2Gti7tv7Ltb5gdIVxjkdupEAeN9UYQKm6Xe2S+iczhn/fP+mhACboraVAjcAxfvka8ucWEqL3X68mvj+urNJNinx29+EamkNAVv/+A2f2UWDDbK00w3AfoI+PGdVD9R7G8MwbRXKhMyOb/pET93JkLzI5cYUiqX+sWLucDGHeO+evsMxFMgNXpDC5lV1JzSh+C7Pq6i8cz10FzXcI096KyzVX21T/b1ZZ4T68Gw9/JkKQFc1ItQA5wOSvkMPNQxALwIOb3lG/qEHd3nm/zmT0wEEEgoEOYkqTg6ScLHDfIIJYxfgH0+IVpXyGD08VD3tSFtKwyWZH5zl9HrxbwYuE1glU1QstCjMjoHnK/TEJNekZDu/scDB0dYqHMpFO8+YT6rzk0xn6WlRuZWgSYNN5T2EBS/700YVc79ccSfIQkUKUp7qLUfcCglwgJPf53yf3eS8Yk9Ar19BFffb6KhxxRX4+WJ/h3ooLyIS2oAgI8QU6QZRVPWedAx5mRDjSXCtWjkkiSdk7fsNBn3YLE8mGmMusTYpa+93m/dQNqiXsThGMewS5z0b6bMqgN+Lr+2Yk9oeDrAVV6eWWISIrcyY=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(396003)(39860400002)(136003)(376002)(46966006)(36840700001)(16526019)(9576002)(26005)(186003)(5660300002)(70206006)(82740400003)(83380400001)(7636003)(356005)(47076005)(9686003)(7416002)(8936002)(36860700001)(478600001)(2906002)(4326008)(426003)(6916009)(8676002)(54906003)(86362001)(336012)(316002)(82310400003)(36906005)(33716001)(70586007);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2021 00:55:30.3468
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b01bf9c4-9ada-4e85-6a4a-08d926f37366
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT056.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4242
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, 4 June 2021 12:51:19 AM AEST Peter Xu wrote:
-> External email: Use caution opening links or attachments
-> 
-> On Thu, Jun 03, 2021 at 09:53:45PM +1000, Alistair Popple wrote:
-> > On Friday, 28 May 2021 10:56:02 PM AEST Peter Xu wrote:
-> > > On Fri, May 28, 2021 at 06:32:52PM +1000, Alistair Popple wrote:
-> > > > On Friday, 28 May 2021 6:19:04 AM AEST Peter Xu wrote:
-> > > > > This patch introduces a very special swap-like pte for file-backed
-> > > > > memories.
-> > > > > 
-> > > > > Currently it's only defined for x86_64 only, but as long as any arch
-> > > > > that
-> > > > > can properly define the UFFD_WP_SWP_PTE_SPECIAL value as requested,
-> > > > > it
-> > > > > should conceptually work too.
-> > > > > 
-> > > > > We will use this special pte to arm the ptes that got either
-> > > > > unmapped or
-> > > > > swapped out for a file-backed region that was previously
-> > > > > wr-protected.
-> > > > > This special pte could trigger a page fault just like swap entries,
-> > > > > and
-> > > > > as long as the page fault will satisfy pte_none()==false &&
-> > > > > pte_present()==false.
-> > > > > 
-> > > > > Then we can revive the special pte into a normal pte backed by the
-> > > > > page
-> > > > > cache.
-> > > > > 
-> > > > > This idea is greatly inspired by Hugh and Andrea in the discussion,
-> > > > > which is referenced in the links below.
-> > > > > 
-> > > > > The other idea (from Hugh) is that we use swp_type==1 and
-> > > > > swp_offset=0
-> > > > > as
-> > > > > the special pte.  The current solution (as pointed out by Andrea) is
-> > > > > slightly preferred in that we don't even need swp_entry_t knowledge
-> > > > > at
-> > > > > all
-> > > > > in trapping these accesses.  Meanwhile, we also reuse
-> > > > > _PAGE_SWP_UFFD_WP
-> > > > > from the anonymous swp entries.
-> > > > 
-> > > > So to confirm my understanding the reason you use this special swap
-> > > > pte
-> > > > instead of a new swp_type is that you only need the fault and have no
-> > > > extra
-> > > > information that needs storing in the pte?
-> > > 
-> > > Yes.
-> > > 
-> > > > Personally I think it might be better to define a new swp_type for
-> > > > this
-> > > > rather than introducing a new arch-specific concept.
-> > > 
-> > > The concept should not be arch-specific, it's the pte that's
-> > > arch-specific.
-> > 
-> > Right, agree this is a minor detail.
-> 
-> I can't say it's a minor detail, as that's still indeed one of the major
-> ideas that I'd like to get comment for within the whole series.  It's
-> currently an outcome from previous discussion with Andrea and Hugh, but of
-> course if there's better idea with reasoning I can always consider to
-> rework the series.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/core
+branch HEAD: 00afe83098f59d3091a800d0db188ca495b2bc02  x86,kprobes: WARN if kprobes tries to handle a fault
 
-Sorry, I wasn't very clear there. What I meant is the high level arch-
-independent concept of using a special swap pte for this is the most important 
-aspect of the design and looks good to me.
+elapsed time: 3492m
 
-The detail which is perhaps less important is whether to implement this using 
-a new swap entry type or arch-specific swap bit. The argument for using a swap 
-type is it will work across architectures due to the use of pte_to_swp_entry() 
-and swp_entry_to_pte() to convert to and from the arch-dependent and 
-independent representations.
+configs tested: 308
+configs skipped: 3
 
-The argument against seems to have been that it is wasting a swap type. 
-However if I'm understanding correctly that's not true for all architectures, 
-and needing to reserve a bit is more wasteful than using a swap type. For 
-example ARM encodes swap entries like so:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
- * Encode and decode a swap entry.  Swap entries are stored in the Linux
- * page tables as follows:
- *
- *   3 3 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1
- *   1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
- *   <--------------- offset ------------------------> < type -> 0 0
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                       omap2plus_defconfig
+m68k                          amiga_defconfig
+arm                           sunxi_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+arm                         socfpga_defconfig
+arm                            qcom_defconfig
+sh                          sdk7786_defconfig
+mips                       rbtx49xx_defconfig
+parisc                           allyesconfig
+mips                        vocore2_defconfig
+arm                            zeus_defconfig
+mips                           ip27_defconfig
+powerpc                       ebony_defconfig
+arm                            xcep_defconfig
+h8300                               defconfig
+powerpc                 mpc834x_mds_defconfig
+mips                     cu1830-neo_defconfig
+powerpc                     pq2fads_defconfig
+powerpc                      mgcoge_defconfig
+arm                           spitz_defconfig
+xtensa                              defconfig
+powerpc                 mpc85xx_cds_defconfig
+h8300                     edosk2674_defconfig
+sparc64                          alldefconfig
+arm                     am200epdkit_defconfig
+arm                        multi_v5_defconfig
+powerpc                    mvme5100_defconfig
+arm                      pxa255-idp_defconfig
+arm                         s3c2410_defconfig
+microblaze                          defconfig
+arc                     nsimosci_hs_defconfig
+arm                             mxs_defconfig
+parisc                generic-64bit_defconfig
+arm                           h5000_defconfig
+ia64                      gensparse_defconfig
+arm                          pxa168_defconfig
+mips                          rm200_defconfig
+sh                            titan_defconfig
+powerpc                     tqm8548_defconfig
+sh                         ap325rxa_defconfig
+powerpc                 xes_mpc85xx_defconfig
+sh                         apsh4a3a_defconfig
+arc                         haps_hs_defconfig
+arm                         mv78xx0_defconfig
+sh                         ecovec24_defconfig
+mips                        workpad_defconfig
+arc                     haps_hs_smp_defconfig
+arm                           sama5_defconfig
+sh                            migor_defconfig
+powerpc                     tqm8560_defconfig
+sh                           se7722_defconfig
+m68k                         amcore_defconfig
+mips                    maltaup_xpa_defconfig
+arm                        mini2440_defconfig
+parisc                              defconfig
+sh                               j2_defconfig
+mips                  decstation_64_defconfig
+powerpc                 mpc837x_mds_defconfig
+mips                       lemote2f_defconfig
+arm                              alldefconfig
+arc                        vdk_hs38_defconfig
+powerpc                     powernv_defconfig
+arm                       cns3420vb_defconfig
+mips                        jmr3927_defconfig
+sh                           sh2007_defconfig
+sh                          polaris_defconfig
+sh                          landisk_defconfig
+um                           x86_64_defconfig
+powerpc                 mpc832x_mds_defconfig
+mips                        bcm47xx_defconfig
+xtensa                           allyesconfig
+xtensa                generic_kc705_defconfig
+sh                          rsk7203_defconfig
+powerpc                     ep8248e_defconfig
+powerpc                     sequoia_defconfig
+arm                         orion5x_defconfig
+arm                         s3c6400_defconfig
+sparc                       sparc32_defconfig
+powerpc                     tqm8540_defconfig
+mips                           rs90_defconfig
+arm                        cerfcube_defconfig
+powerpc                 canyonlands_defconfig
+powerpc64                        alldefconfig
+powerpc64                           defconfig
+arc                           tb10x_defconfig
+arm                             ezx_defconfig
+sh                           se7343_defconfig
+sh                  sh7785lcr_32bit_defconfig
+mips                   sb1250_swarm_defconfig
+arm                    vt8500_v6_v7_defconfig
+mips                            gpr_defconfig
+nios2                         3c120_defconfig
+powerpc                      pcm030_defconfig
+nds32                             allnoconfig
+powerpc                   lite5200b_defconfig
+arm                           u8500_defconfig
+um                                  defconfig
+powerpc                  storcenter_defconfig
+alpha                               defconfig
+x86_64                            allnoconfig
+arc                              alldefconfig
+arm                        neponset_defconfig
+sh                          lboxre2_defconfig
+powerpc                      pasemi_defconfig
+m68k                       m5475evb_defconfig
+arm                          pcm027_defconfig
+arm                         lubbock_defconfig
+sh                        sh7785lcr_defconfig
+sh                          kfr2r09_defconfig
+arm                  colibri_pxa270_defconfig
+mips                            e55_defconfig
+h8300                            allyesconfig
+h8300                    h8300h-sim_defconfig
+sh                   secureedge5410_defconfig
+um                             i386_defconfig
+arm                         s5pv210_defconfig
+powerpc                      makalu_defconfig
+mips                        maltaup_defconfig
+powerpc                      ppc64e_defconfig
+s390                             alldefconfig
+powerpc                      tqm8xx_defconfig
+sh                          urquell_defconfig
+powerpc                      cm5200_defconfig
+sh                            hp6xx_defconfig
+um                            kunit_defconfig
+arm                       imx_v4_v5_defconfig
+i386                             alldefconfig
+m68k                                defconfig
+arm                     davinci_all_defconfig
+sh                      rts7751r2d1_defconfig
+arc                            hsdk_defconfig
+powerpc                   currituck_defconfig
+arm                      footbridge_defconfig
+parisc                generic-32bit_defconfig
+openrisc                 simple_smp_defconfig
+arc                        nsimosci_defconfig
+xtensa                    xip_kc705_defconfig
+arm                      tct_hammer_defconfig
+powerpc                 mpc8560_ads_defconfig
+powerpc                 mpc836x_rdk_defconfig
+sh                   sh7724_generic_defconfig
+xtensa                    smp_lx200_defconfig
+powerpc                        icon_defconfig
+mips                           mtx1_defconfig
+sh                           se7712_defconfig
+powerpc                     rainier_defconfig
+powerpc                        warp_defconfig
+powerpc                     stx_gp3_defconfig
+mips                         cobalt_defconfig
+mips                  cavium_octeon_defconfig
+arm                         lpc18xx_defconfig
+arm                         palmz72_defconfig
+mips                          rb532_defconfig
+powerpc                         ps3_defconfig
+sh                           se7206_defconfig
+powerpc                 linkstation_defconfig
+arm                         vf610m4_defconfig
+riscv             nommu_k210_sdcard_defconfig
+sh                        sh7763rdp_defconfig
+sh                     sh7710voipgw_defconfig
+mips                         tb0219_defconfig
+m68k                        m5307c3_defconfig
+arm                       multi_v4t_defconfig
+arm                       spear13xx_defconfig
+powerpc                    ge_imp3a_defconfig
+openrisc                  or1klitex_defconfig
+h8300                       h8s-sim_defconfig
+arc                          axs101_defconfig
+powerpc                       maple_defconfig
+sparc64                             defconfig
+mips                     loongson2k_defconfig
+mips                      pistachio_defconfig
+sh                        sh7757lcr_defconfig
+arm                       aspeed_g4_defconfig
+xtensa                  cadence_csp_defconfig
+mips                      malta_kvm_defconfig
+arm                       versatile_defconfig
+mips                          ath25_defconfig
+powerpc                      bamboo_defconfig
+powerpc                       ppc64_defconfig
+ia64                                defconfig
+powerpc                     skiroot_defconfig
+mips                 decstation_r4k_defconfig
+powerpc                 mpc836x_mds_defconfig
+arm                         at91_dt_defconfig
+openrisc                            defconfig
+arm                            mmp2_defconfig
+arm                        magician_defconfig
+arm                       mainstone_defconfig
+arm                       netwinder_defconfig
+powerpc                 mpc8315_rdb_defconfig
+sh                           se7721_defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                             allyesconfig
+s390                             allmodconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20210601
+i386                 randconfig-a006-20210601
+i386                 randconfig-a004-20210601
+i386                 randconfig-a001-20210601
+i386                 randconfig-a002-20210601
+i386                 randconfig-a005-20210601
+i386                 randconfig-a003-20210602
+i386                 randconfig-a006-20210602
+i386                 randconfig-a004-20210602
+i386                 randconfig-a001-20210602
+i386                 randconfig-a005-20210602
+i386                 randconfig-a002-20210602
+i386                 randconfig-a003-20210603
+i386                 randconfig-a006-20210603
+i386                 randconfig-a004-20210603
+i386                 randconfig-a001-20210603
+i386                 randconfig-a005-20210603
+i386                 randconfig-a002-20210603
+x86_64               randconfig-a015-20210601
+x86_64               randconfig-a011-20210601
+x86_64               randconfig-a012-20210601
+x86_64               randconfig-a014-20210601
+x86_64               randconfig-a016-20210601
+x86_64               randconfig-a013-20210601
+x86_64               randconfig-a015-20210603
+x86_64               randconfig-a011-20210603
+x86_64               randconfig-a012-20210603
+x86_64               randconfig-a014-20210603
+x86_64               randconfig-a016-20210603
+x86_64               randconfig-a013-20210603
+i386                 randconfig-a015-20210603
+i386                 randconfig-a011-20210603
+i386                 randconfig-a014-20210603
+i386                 randconfig-a012-20210603
+i386                 randconfig-a015-20210601
+i386                 randconfig-a013-20210601
+i386                 randconfig-a011-20210601
+i386                 randconfig-a016-20210601
+i386                 randconfig-a014-20210601
+i386                 randconfig-a012-20210601
+i386                 randconfig-a015-20210602
+i386                 randconfig-a013-20210602
+i386                 randconfig-a016-20210602
+i386                 randconfig-a011-20210602
+i386                 randconfig-a014-20210602
+i386                 randconfig-a012-20210602
+i386                 randconfig-a013-20210603
+i386                 randconfig-a016-20210603
+x86_64               randconfig-a002-20210602
+x86_64               randconfig-a004-20210602
+x86_64               randconfig-a003-20210602
+x86_64               randconfig-a006-20210602
+x86_64               randconfig-a005-20210602
+x86_64               randconfig-a001-20210602
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-So the only way to get a spare bit is to reduce the width of type (or offset) 
-which would halve the number of swap types. And if I understand correctly the 
-same argument might apply to x86 - the spare bit being used here could instead 
-be used to expand the width of type if a lack of available swap types is a 
-concern.
+clang tested configs:
+x86_64               randconfig-b001-20210601
+x86_64               randconfig-b001-20210603
+x86_64               randconfig-b001-20210602
+x86_64               randconfig-a002-20210601
+x86_64               randconfig-a004-20210601
+x86_64               randconfig-a003-20210601
+x86_64               randconfig-a006-20210601
+x86_64               randconfig-a005-20210601
+x86_64               randconfig-a001-20210601
+x86_64               randconfig-a002-20210603
+x86_64               randconfig-a004-20210603
+x86_64               randconfig-a003-20210603
+x86_64               randconfig-a006-20210603
+x86_64               randconfig-a005-20210603
+x86_64               randconfig-a001-20210603
+x86_64               randconfig-a015-20210602
+x86_64               randconfig-a011-20210602
+x86_64               randconfig-a012-20210602
+x86_64               randconfig-a014-20210602
+x86_64               randconfig-a016-20210602
+x86_64               randconfig-a013-20210602
 
-> > > > swp_type entries are portable so wouldn't need extra arch-specific
-> > > > bits
-> > > > defined. And as I understand things not all architectures (eg. ARM)
-> > > > have
-> > > > spare bits in their swap entry encoding anyway so would have to
-> > > > reserve a
-> > > > bit specifically for this which would be less efficient than using a
-> > > > swp_type.
-> > > 
-> > > It looks a trade-off to me: I think it's fine to use swap type in my
-> > > series, as you said it's portable, but it will also waste the swap
-> > > address space for the arch when the arch enables it.
-> > > 
-> > > The format of the special pte to trigger the fault in this series should
-> > > be
-> > > only a small portion of the code change.  The main logic should still be
-> > > the same - we just replace this pte with that one.  IMHO it also means
-> > > the format can be changed in the future, it's just that I don't know
-> > > whether it's wise to take over a new swap type from start.
-> > > 
-> > > > Anyway it seems I missed the initial discussion so don't have a strong
-> > > > opinion here, mainly just wanted to check my understanding of what's
-> > > > required and how these special entries work.
-> > > 
-> > > Thanks for mentioning this and join the discussion. I don't know ARM
-> > > enough
-> > > so good to know we may have issue on finding the bits.  Actually before
-> > > finding this bit for file-backed uffd-wp specifically, we need to
-> > > firstly
-> > > find a bit in the normal pte for ARM too anyways (see _PAGE_UFFD_WP). 
-> > > If
-> > > there's no strong reason to switch to a new swap type, I'd tend to leave
-> > > all these to the future when we enable them on ARM.
-> > 
-> > Yeah, makes sense to me. As you say it should be easy to change and other
-> > architectures need to find another bit anyway. Not sure how useful it will
-> > be but I'll try and take a look over the rest of the series as well.
-> 
-> I'll highly appreciate that.  Thanks Alistair!
-> 
-> --
-> Peter Xu
-
-
-
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
