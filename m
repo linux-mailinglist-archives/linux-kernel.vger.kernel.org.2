@@ -2,92 +2,426 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4C1339BE1B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 423DA39BE4B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbhFDRLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 13:11:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54688 "EHLO
+        id S230063AbhFDRRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 13:17:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbhFDRK7 (ORCPT
+        with ESMTP id S229675AbhFDRRM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 13:10:59 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A99F7C061766
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 10:08:58 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id jt22so15578881ejb.7
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 10:08:58 -0700 (PDT)
+        Fri, 4 Jun 2021 13:17:12 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3AE59C061766
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 10:15:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OoQ9gA8dbbWK1PtB4dCFVLRMGfxxHdj7P0i/xhgg55I=;
-        b=vTUoh8iFX3WkURlZGhaLT4GCmDnGg2CBfohcDURDFZ8JOOKfDNWxGtN+siZlEUUCg8
-         eOC+yekb2HorPEMH374VVAe8ep18bRtQUp/CNQxyifMSoI6iWViNQqwdCdGx7Jg8AQK6
-         wtPbe3nXeWZBlZ8QJcEaZJZ3gX2A+DmTCODTu441hfpIs+uExsJGdZU82cZAd5W5/Kdl
-         oBIP0W9Ww7QN9kvGEArtmMI9iCfEwZ10cC4OrR3NOj5cD0ZakkJvuvOF24nqWrGE5bZZ
-         cvkdYzTGfYfACjRNkw5FixPCHtUTg2GeRMUkcmjHOlCXWHDb1Wj3aJG3MCq8s5SUbgep
-         Ukfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OoQ9gA8dbbWK1PtB4dCFVLRMGfxxHdj7P0i/xhgg55I=;
-        b=mgPOKLokDZDrNcTgRkiOP6yQHy/0Xz6ByofApj+uPMggRjbpaKLNPxgx5SEPttX30O
-         gGabQbk431xgnmdNCV1iDKCFynPLtE/sF+kubu53ws58ZdZYzpehBjUs5nGtbnrmIXEg
-         7J+21tM63ghp26PefsyvbNO/n6x2mfIvYvEyaad0wYTHlTRRmkQqXTEEL0nSpsjC5SAY
-         sSAE7CD23XphOZc40RkW1Loglt/yg7u+yvAIny9U4gPG7D9nAah79nYQphSXGY7T6IwM
-         5kVSbHmeB221BXLPolqnoI+hwO/TSaRjKOp4roOp1WugCyfD7hKiUKghLRIwVmuKPsCH
-         YVZA==
-X-Gm-Message-State: AOAM530JZk7A8BhKGOhp/VoGEqaDvNSbRUQ78y+kE/eg925YLLpiWxWg
-        kTW65oEQL9YZwAjP2DYKnMw=
-X-Google-Smtp-Source: ABdhPJw7lDvO1MHuloAiRRHK/9CSD4zYB4NRxtgEq0HCbXnurenuq1Ztwl46ypeON4Bk3azBqhh8vQ==
-X-Received: by 2002:a17:906:6981:: with SMTP id i1mr5123333ejr.289.1622826537290;
-        Fri, 04 Jun 2021 10:08:57 -0700 (PDT)
-Received: from localhost.localdomain (p200300f137127c00f22f74fffe210725.dip0.t-ipconnect.de. [2003:f1:3712:7c00:f22f:74ff:fe21:725])
-        by smtp.googlemail.com with ESMTPSA id q26sm3010663ejc.3.2021.06.04.10.08.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 10:08:56 -0700 (PDT)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     linux-amlogic@lists.infradead.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jbrunet@baylibre.com, khilman@baylibre.com,
-        narmstrong@baylibre.com,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH] ARM: dts: meson: Set the fifo-size of uart_A to 128 bytes
-Date:   Fri,  4 Jun 2021 19:08:44 +0200
-Message-Id: <20210604170844.2201229-1-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.31.1
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=pfIs/O+s9kkjXNua/mjAUPRt5mkws1phDl
+        I33ICARFc=; b=rsx12ESRn1Qy7hzth7yBCQf96fpMV4YmKyyv6xP6NX5Spp9wfl
+        XOEvNAH5iusdMDndnkG5I4Ogs8JvbLd90wrWUlvnjbJDq0pnDhz5JxXusx8IuIyy
+        bFmVCUnSN5v+TOHACEVaJXFwV1FQ7bM5pKHZsCCb/fFk59vArX8qbzccA=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBnXSyEX7pgLqWRAA--.14153S2;
+        Sat, 05 Jun 2021 01:14:45 +0800 (CST)
+Date:   Sat, 5 Jun 2021 01:09:18 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Alexandre Ghiti <alex@ghiti.fr>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] riscv: mm: init: Consolidate vars, functions
+Message-ID: <20210605010918.7424a0aa@xhacker>
+In-Reply-To: <20210603195418.21fded50@xhacker>
+References: <20210516211556.43c00055@xhacker>
+        <YLaWseLdg5JYElVx@Ryzen-9-3900X.localdomain>
+        <20210602231226.0e45524b@xhacker>
+        <20210602235851.001a0d41@xhacker>
+        <YLfiADFHMyXst55Y@Ryzen-9-3900X.localdomain>
+        <20210603082714.6e524f4c@xhacker>
+        <20210603195418.21fded50@xhacker>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygBnXSyEX7pgLqWRAA--.14153S2
+X-Coremail-Antispam: 1UD129KBjvAXoW3ZF47Cw1UZr1xZFy3GrykKrg_yoW8WFykto
+        W5Jr17Jw4xGw1UJr1xA345XFyUJw1DJFsxJryUAr1DXr17tayDJryUGr1rAay3tr15GFWx
+        Cr15twn5A3WUJr1kn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+        AaLaJ3UjIYCTnIWjp_UUU5u7k0a2IF6w4kM7kC6x804xWl14x267AKxVW8JVW5JwAFc2x0
+        x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj4
+        1l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0
+        I7IYx2IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjc
+        xK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
+        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCF
+        x2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14
+        v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY
+        67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2
+        IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AK
+        xVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUqEoXUUUUU
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The first UART controller in the "Everything-Else" power domain is
-called uart_A. Unlike all other UARTs (which use a 64 byte fifo-size in
-hardware) uart_A has a fifo-size of 128 bytes. This UART controller is
-typically used for Bluetooth HCI.
-The fifo-size of 128 bytes is valid from all SoCs from Meson6 (or
-possibly even earlier) all the way up to the latest 64-bit ones.
+On Thu, 3 Jun 2021 19:54:18 +0800
+Jisheng Zhang <jszhang3@mail.ustc.edu.cn> wrote:
 
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- arch/arm/boot/dts/meson.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+> On Thu, 3 Jun 2021 08:27:14 +0800
+> Jisheng Zhang <jszhang3@mail.ustc.edu.cn> wrote:
+> 
+> > On Wed, 2 Jun 2021 12:54:40 -0700
+> > Nathan Chancellor <nathan@kernel.org> wrote:
+> >   
+> > > On Wed, Jun 02, 2021 at 11:58:51PM +0800, Jisheng Zhang wrote:    
+> > > > On Wed, 2 Jun 2021 23:12:26 +0800
+> > > > Jisheng Zhang <jszhang3@mail.ustc.edu.cn> wrote:
+> > > >       
+> > > > > On Tue, 1 Jun 2021 13:21:05 -0700
+> > > > > Nathan Chancellor <nathan@kernel.org> wrote:
+> > > > >       
+> > > > > > Hi Jisheng,        
+> > > > > 
+> > > > > Hi Nathan,
+> > > > >       
+> > > > > > 
+> > > > > > On Sun, May 16, 2021 at 09:15:56PM +0800, Jisheng Zhang wrote:        
+> > > > > > > From: Jisheng Zhang <jszhang@kernel.org>
+> > > > > > > 
+> > > > > > > Consolidate the following items in init.c
+> > > > > > > 
+> > > > > > > Staticize global vars as much as possible;
+> > > > > > > Add __initdata mark if the global var isn't needed after init
+> > > > > > > Add __init mark if the func isn't needed after init
+> > > > > > > Add __ro_after_init if the global var is read only after init
+> > > > > > > 
+> > > > > > > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> > > > > > > ---
+> > > > > > >  arch/riscv/include/asm/set_memory.h |  2 +-
+> > > > > > >  arch/riscv/mm/init.c                | 36 +++++++++++++++--------------
+> > > > > > >  2 files changed, 20 insertions(+), 18 deletions(-)
+> > > > > > > 
+> > > > > > > diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm/set_memory.h
+> > > > > > > index 086f757e8ba3..9d4d455726d4 100644
+> > > > > > > --- a/arch/riscv/include/asm/set_memory.h
+> > > > > > > +++ b/arch/riscv/include/asm/set_memory.h
+> > > > > > > @@ -27,7 +27,7 @@ static inline int set_memory_rw_nx(unsigned long addr, int numpages) { return 0;
+> > > > > > >  #endif
+> > > > > > >  
+> > > > > > >  #if defined(CONFIG_64BIT) && defined(CONFIG_STRICT_KERNEL_RWX)
+> > > > > > > -void protect_kernel_linear_mapping_text_rodata(void);
+> > > > > > > +void __init protect_kernel_linear_mapping_text_rodata(void);
+> > > > > > >  #else
+> > > > > > >  static inline void protect_kernel_linear_mapping_text_rodata(void) {}
+> > > > > > >  #endif
+> > > > > > > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> > > > > > > index 4c4c92ce0bb8..eac2d5c27b3e 100644
+> > > > > > > --- a/arch/riscv/mm/init.c
+> > > > > > > +++ b/arch/riscv/mm/init.c
+> > > > > > > @@ -53,7 +53,7 @@ struct pt_alloc_ops {
+> > > > > > >  #endif
+> > > > > > >  };
+> > > > > > >  
+> > > > > > > -static phys_addr_t dma32_phys_limit __ro_after_init;
+> > > > > > > +static phys_addr_t dma32_phys_limit __initdata;
+> > > > > > >  
+> > > > > > >  static void __init zone_sizes_init(void)
+> > > > > > >  {
+> > > > > > > @@ -184,7 +184,7 @@ extern char _sdata[], _edata[];
+> > > > > > >  #endif /* CONFIG_XIP_KERNEL */
+> > > > > > >  
+> > > > > > >  #ifdef CONFIG_MMU
+> > > > > > > -static struct pt_alloc_ops _pt_ops __ro_after_init;
+> > > > > > > +static struct pt_alloc_ops _pt_ops __initdata;
+> > > > > > >  
+> > > > > > >  #ifdef CONFIG_XIP_KERNEL
+> > > > > > >  #define pt_ops (*(struct pt_alloc_ops *)XIP_FIXUP(&_pt_ops))
+> > > > > > > @@ -200,13 +200,13 @@ EXPORT_SYMBOL(va_pa_offset);
+> > > > > > >  #endif
+> > > > > > >  /* Offset between kernel mapping virtual address and kernel load address */
+> > > > > > >  #ifdef CONFIG_64BIT
+> > > > > > > -unsigned long va_kernel_pa_offset;
+> > > > > > > +unsigned long va_kernel_pa_offset __ro_after_init;
+> > > > > > >  EXPORT_SYMBOL(va_kernel_pa_offset);
+> > > > > > >  #endif
+> > > > > > >  #ifdef CONFIG_XIP_KERNEL
+> > > > > > >  #define va_kernel_pa_offset    (*((unsigned long *)XIP_FIXUP(&va_kernel_pa_offset)))
+> > > > > > >  #endif
+> > > > > > > -unsigned long va_kernel_xip_pa_offset;
+> > > > > > > +unsigned long va_kernel_xip_pa_offset __ro_after_init;
+> > > > > > >  EXPORT_SYMBOL(va_kernel_xip_pa_offset);
+> > > > > > >  #ifdef CONFIG_XIP_KERNEL
+> > > > > > >  #define va_kernel_xip_pa_offset        (*((unsigned long *)XIP_FIXUP(&va_kernel_xip_pa_offset)))
+> > > > > > > @@ -216,7 +216,7 @@ EXPORT_SYMBOL(pfn_base);
+> > > > > > >  
+> > > > > > >  pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+> > > > > > >  pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+> > > > > > > -pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
+> > > > > > > +static pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
+> > > > > > >  
+> > > > > > >  pgd_t early_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
+> > > > > > >  
+> > > > > > > @@ -253,7 +253,7 @@ static inline pte_t *__init get_pte_virt_fixmap(phys_addr_t pa)
+> > > > > > >  	return (pte_t *)set_fixmap_offset(FIX_PTE, pa);
+> > > > > > >  }
+> > > > > > >  
+> > > > > > > -static inline pte_t *get_pte_virt_late(phys_addr_t pa)
+> > > > > > > +static inline pte_t *__init get_pte_virt_late(phys_addr_t pa)
+> > > > > > >  {
+> > > > > > >  	return (pte_t *) __va(pa);
+> > > > > > >  }
+> > > > > > > @@ -272,7 +272,7 @@ static inline phys_addr_t __init alloc_pte_fixmap(uintptr_t va)
+> > > > > > >  	return memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
+> > > > > > >  }
+> > > > > > >  
+> > > > > > > -static phys_addr_t alloc_pte_late(uintptr_t va)
+> > > > > > > +static phys_addr_t __init alloc_pte_late(uintptr_t va)
+> > > > > > >  {
+> > > > > > >  	unsigned long vaddr;
+> > > > > > >  
+> > > > > > > @@ -296,10 +296,10 @@ static void __init create_pte_mapping(pte_t *ptep,
+> > > > > > >  
+> > > > > > >  #ifndef __PAGETABLE_PMD_FOLDED
+> > > > > > >  
+> > > > > > > -pmd_t trampoline_pmd[PTRS_PER_PMD] __page_aligned_bss;
+> > > > > > > -pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
+> > > > > > > -pmd_t early_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+> > > > > > > -pmd_t early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+> > > > > > > +static pmd_t trampoline_pmd[PTRS_PER_PMD] __page_aligned_bss;
+> > > > > > > +static pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
+> > > > > > > +static pmd_t early_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+> > > > > > > +static pmd_t early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+> > > > > > >  
+> > > > > > >  #ifdef CONFIG_XIP_KERNEL
+> > > > > > >  #define trampoline_pmd ((pmd_t *)XIP_FIXUP(trampoline_pmd))
+> > > > > > > @@ -319,7 +319,7 @@ static pmd_t *__init get_pmd_virt_fixmap(phys_addr_t pa)
+> > > > > > >  	return (pmd_t *)set_fixmap_offset(FIX_PMD, pa);
+> > > > > > >  }
+> > > > > > >  
+> > > > > > > -static pmd_t *get_pmd_virt_late(phys_addr_t pa)
+> > > > > > > +static pmd_t *__init get_pmd_virt_late(phys_addr_t pa)
+> > > > > > >  {
+> > > > > > >  	return (pmd_t *) __va(pa);
+> > > > > > >  }
+> > > > > > > @@ -336,7 +336,7 @@ static phys_addr_t __init alloc_pmd_fixmap(uintptr_t va)
+> > > > > > >  	return memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
+> > > > > > >  }
+> > > > > > >  
+> > > > > > > -static phys_addr_t alloc_pmd_late(uintptr_t va)
+> > > > > > > +static phys_addr_t __init alloc_pmd_late(uintptr_t va)
+> > > > > > >  {
+> > > > > > >  	unsigned long vaddr;
+> > > > > > >  
+> > > > > > > @@ -454,14 +454,16 @@ asmlinkage void __init __copy_data(void)
+> > > > > > >  #error "setup_vm() is called from head.S before relocate so it should not use absolute addressing."
+> > > > > > >  #endif
+> > > > > > >  
+> > > > > > > -uintptr_t load_pa, load_sz;
+> > > > > > > +static uintptr_t load_pa __initdata;          
+> > > > > > 
+> > > > > > Making load_pa static causing clang built kernels to no longer boot,
+> > > > > > hanging after just a few lines of output in the console:
+> > > > > > 
+> > > > > > https://github.com/ClangBuiltLinux/continuous-integration2/runs/2717606254?check_suite_focus=true
+> > > > > > 
+> > > > > > I am not sure why that would make a difference nor why GCC is okay with
+> > > > > > it. If it is a clang bug, it appears to be there for a while, given that
+> > > > > > it reproduces back to clang-11.        
+> > > > > 
+> > > > > I can reproduce the issue. Here are my findindings:
+> > > > > 
+> > > > > * gcc + binutils can't reproduce it
+> > > > > * clang + llvm-utils + ias can reproduce it
+> > > > > * clang + binutils can reproduce it      
+> > > 
+> > > Yes, this seems like something strictly related to clang so that is what
+> > > I have been testing with.
+> > >     
+> > > > > All below tests are done with clang + binutils.
+> > > > > 
+> > > > > Then I applied below modification:
+> > > > > 
+> > > > > -static uintptr_t load_pa __initdata;
+> > > > > +uintptr_t load_pa __initdata;
+> > > > > 
+> > > > > I got below panic log:
+> > > > > [    0.015418] Unable to handle kernel paging request at virtual address fffffffffffffff9
+> > > > > [    0.016432] Oops [#1]
+> > > > > [    0.016679] Modules linked in:
+> > > > > [    0.017103] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.13.0-rc1+ #5
+> > > > > [    0.017711] Hardware name: riscv-virtio,qemu (DT)
+> > > > > [    0.018201] epc : trace_hardirqs_on+0x60/0xb2
+> > > > > [    0.018582]  ra : restore_all+0xe/0x66
+> > > > > [    0.018879] epc : ffffffff800cb09a ra : ffffffff800027b8 sp : ffffffff80c03dd0
+> > > > > [    0.019376]  gp : ffffffff80d001c8 tp : ffffffff80c0c180 t0 : 0000000000000020
+> > > > > [    0.019870]  t1 : ffffffff80006e40 t2 : ffffffff800d2e0a s0 : ffffffff80c03e00
+> > > > > [    0.020346]  s1 : 0000000000000001 a0 : 0000000000000001 a1 : 0000000000000001
+> > > > > [    0.020800]  a2 : 0000000000000001 a3 : 0000000000000000 a4 : 0000000000000000
+> > > > > [    0.021243]  a5 : 0000000000000000 a6 : 0000000000000000 a7 : 0000000054494d45
+> > > > > [    0.021717]  s2 : ffffffff800027b8 s3 : ffffffff80d35968 s4 : ffffffff8061e1d8
+> > > > > [    0.022179]  s5 : ffffffff80c0c180 s6 : ffffffe000e34b50 s7 : 00000000800130f0
+> > > > > [    0.022674]  s8 : 000000000000007f s9 : 0000000080012010 s10: 0000000000000000
+> > > > > [    0.023176]  s11: 0000000000000000 t3 : ffffffff80d00108 t4 : ffffffff80006e40
+> > > > > [    0.023693]  t5 : ffffffff80006e40 t6 : ffffffff800d2e0a
+> > > > > [    0.024153] status: 0000000000000100 badaddr: fffffffffffffff9 cause: 000000000000000d
+> > > > > [    0.025367] Call Trace:
+> > > > > [    0.025749] [<ffffffff800cb09a>] trace_hardirqs_on+0x60/0xb2
+> > > > > [    0.026402] [<ffffffff800027b8>] restore_all+0xe/0x66
+> > > > > [    0.027261] Unable to handle kernel paging request at virtual address fffffffffffffffa
+> > > > > [    0.027827] Oops [#2]
+> > > > > [    0.028013] Modules linked in:
+> > > > > [    0.028321] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G      D           5.13.0-rc1+ #5
+> > > > > [    0.028839] Hardware name: riscv-virtio,qemu (DT)
+> > > > > [    0.029166] epc : trace_hardirqs_on+0x60/0xb2
+> > > > > [    0.029505]  ra : restore_all+0xe/0x66
+> > > > > [    0.029785] epc : ffffffff800cb09a ra : ffffffff800027b8 sp : ffffffff80c03a80
+> > > > > [    0.030266]  gp : ffffffff80d001c8 tp : ffffffff80c0c180 t0 : 0000000000000020
+> > > > > [    0.030748]  t1 : ffffffff80006e40 t2 : ffffffff800d2e0a s0 : ffffffff80c03ab0
+> > > > > [    0.031227]  s1 : 0000000000000001 a0 : 0000000000000002 a1 : 0000000000000002
+> > > > > [    0.031717]  a2 : 0000000000000001 a3 : 0000000000000000 a4 : 0000000000000000
+> > > > > [    0.032199]  a5 : 0000000000000000 a6 : 0000000000000000 a7 : 0000000054494d45
+> > > > > [    0.032680]  s2 : ffffffff800027b8 s3 : ffffffff80d35968 s4 : ffffffff8061e1d8
+> > > > > [    0.033160]  s5 : ffffffff80c0c180 s6 : ffffffe000e34b50 s7 : 00000000800130f0
+> > > > > [    0.033642]  s8 : 000000000000007f s9 : 0000000080012010 s10: 0000000000000000
+> > > > > [    0.034123]  s11: 0000000000000000 t3 : ffffffff80d00108 t4 : ffffffff80006e40
+> > > > > [    0.034601]  t5 : ffffffff80006e40 t6 : ffffffff800d2e0a
+> > > > > [    0.034965] status: 0000000000000100 badaddr: fffffffffffffffa cause: 000000000000000d
+> > > > > [    0.035492] Call Trace:
+> > > > > [    0.035682] [<ffffffff800cb09a>] trace_hardirqs_on+0x60/0xb2
+> > > > > [    0.036077] [<ffffffff800027b8>] restore_all+0xe/0x66
+> > > > > [    0.036545] ---[ end trace 7f4fbff09d927668 ]---
+> > > > > [    0.037188] Kernel panic - not syncing: Attempted to kill the idle task!
+> > > > > [    0.038107] ---[ end Kernel panic - not syncing: Attempted to kill the idle task! ]---
+> > > > > 
+> > > > > Then I checked 5.13-rc1, above panic log can be reproduced too. So the issue
+> > > > > should exist there for a while. I never tried clang with riscv, did you remember
+> > > > > which last commit or version clang works, I may try to bisect.
+> > > V> >       
+> > > > 
+> > > > More findings:
+> > > > 
+> > > > *The above panic issue can also be seen from 5.12-rc2. If disable FTRACE, then
+> > > > the panic disappears, kernel can boot
+> > > > 
+> > > > *so I retested riscv next tree w/ FTRACE disabled, kernel can boot w/ below
+> > > > modification:      
+> > > 
+> > > Yeah, I do not enable CONFIG_FTRACE because it is not enabled in
+> > > ARCH=riscv defconfig by default.
+> > >     
+> > > > -static uintptr_t load_pa __initdata;
+> > > > +uintptr_t load_pa __initdata;
+> > > > 
+> > > > This is a weird issue. Any clue is appreciated.      
+> > > 
+> > > Unfortunately, this is outside of my realm of expertise, as I am
+> > > unfamiliar with RISC-V at this level. Maybe Palmer has some ideas. I
+> > > would think that changing this variable to static would be fine given
+> > > that the symbol is only used in this translation unit but clearly not. I
+> > > have attempted to debug this in gdb but that does not really get me
+> > > anywhere: I cannot break on start_kernel() for whatever reason and the
+> > > kernel never gets to my breakpoint in setup_vm().
+> > > 
+> > > I did decide to through a BUG() around arch/riscv/mm/init.c to see
+> > > exactly which statement causes everything to hang. I landed on:
+> > > 
+> > > csr_write(CSR_SATP, PFN_DOWN(__pa_symbol(swapper_pg_dir)) | SATP_MODE);
+> > > 
+> > > in setup_vm_final(). No idea how that is relevant to this.
+> > > 
+> > > Some people in the ClangBuiltLinux bi-weekly meeting today pointed out
+> > > that since load_pa is assigned to the linker defined symbol _start,
+> > > there could be some optimization that goes awry here. I have keyed that    
+> > 
+> > Thanks for the inspiration. Below patch fixes the hang issue, but I didn't
+> > go through all necessary WRITE_ONCE convertions.
+> > 
+> > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> > index ae32f78207f0..fa9336a2583f 100644
+> > --- a/arch/riscv/mm/init.c
+> > +++ b/arch/riscv/mm/init.c
+> > @@ -504,7 +504,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+> >  
+> >         va_kernel_xip_pa_offset = kernel_virt_addr - xiprom;
+> >  #else
+> > -       load_pa = (uintptr_t)(&_start);
+> > +       WRITE_ONCE(load_pa, (uintptr_t)(&_start));
+> >         load_sz = (uintptr_t)(&_end) - load_pa;
+> >  #endif
+> >   
+> 
+> I think I found the root cause, but I dunno whether this is clang bug or
+> we need WRITE_ONCE patch.
+> W/O WRITE_ONCE, the setup_vm() is compiled to
+> 
+> ffffffff8040472a <setup_vm>:
+> ffffffff8040472a:       1101                    addi    sp,sp,-32
+> ffffffff8040472c:       ec06                    sd      ra,24(sp)
+> ffffffff8040472e:       e822                    sd      s0,16(sp)
+> ffffffff80404730:       e426                    sd      s1,8(sp)
+> ffffffff80404732:       e04a                    sd      s2,0(sp)
+> ffffffff80404734:       1000                    addi    s0,sp,32
+> ffffffff80404736:       892a                    mv      s2,a0
+> ffffffff80404738:       001fd517                auipc   a0,0x1fd
+> ffffffff8040473c:       8c850513                addi    a0,a0,-1848 # ffffffff80601000 <load_pa>
+> ffffffff80404740:       4585                    li      a1,1
+> ffffffff80404742:       00b50023                sb      a1,0(a0)     // BUG!
+> ffffffff80404746:       001fd517                auipc   a0,0x1fd
+> ffffffff8040474a:       8c250513                addi    a0,a0,-1854 # ffffffff80601008 <load_sz>
+> ffffffff8040474e:       00b50023                sb      a1,0(a0)     // BUG!
+> ffffffff80404752:       ffbfc517                auipc   a0,0xffbfc
+> ffffffff80404756:       8ae50513                addi    a0,a0,-1874 # ffffffff80000000 <_start>
+> ffffffff8040475a:       55fd                    li      a1,-1
+> ffffffff8040475c:       02559613                slli    a2,a1,0x25
+> ffffffff80404760:       83018593                addi    a1,gp,-2000 # ffffffff80ca6428 <kernel_virt_addr>
+> ffffffff80404764:       618c                    ld      a1,0(a1)
+> ffffffff80404766:       8e09                    sub     a2,a2,a0
+> ...
+> 
+> It seems load_pa and load_sz are stored with 1, this is obviously not what the
+> code expected. 
+> 
+> 
+> W/ WRITE_ONCE, the setup_vm() is compiled to:
+> 
+> ffffffff8040472a <setup_vm>:
+> ffffffff8040472a:       1101                    addi    sp,sp,-32
+> ffffffff8040472c:       ec06                    sd      ra,24(sp)
+> ffffffff8040472e:       e822                    sd      s0,16(sp)
+> ffffffff80404730:       e426                    sd      s1,8(sp)
+> ffffffff80404732:       e04a                    sd      s2,0(sp)
+> ffffffff80404734:       1000                    addi    s0,sp,32
+> ffffffff80404736:       892a                    mv      s2,a0
+> ffffffff80404738:       001fd597                auipc   a1,0x1fd
+> ffffffff8040473c:       8c858593                addi    a1,a1,-1848 # ffffffff80601000 <load_pa>
+> ffffffff80404740:       ffbfc517                auipc   a0,0xffbfc
+> ffffffff80404744:       8c050513                addi    a0,a0,-1856 # ffffffff80000000 <_start>
+> ffffffff80404748:       e188                    sd      a0,0(a1)
+> ffffffff8040474a:       001fd597                auipc   a1,0x1fd
+> ffffffff8040474e:       8be58593                addi    a1,a1,-1858 # ffffffff80601008 <load_sz>
+> ffffffff80404752:       4605                    li      a2,1
+> ffffffff80404754:       00c58023                sb      a2,0(a1)
+> ffffffff80404758:       55fd                    li      a1,-1
+> ffffffff8040475a:       02559613                slli    a2,a1,0x25
+> ffffffff8040475e:       83018593                addi    a1,gp,-2000 # ffffffff80ca6428 <kernel_virt_addr>
+> ffffffff80404762:       618c                    ld      a1,0(a1)
+> ffffffff80404764:       8e09                    sub     a2,a2,a0
+> ...
+> 
+> This is what the code expected.
 
-diff --git a/arch/arm/boot/dts/meson.dtsi b/arch/arm/boot/dts/meson.dtsi
-index 8bae6ed0abb2..bd0e864964e9 100644
---- a/arch/arm/boot/dts/meson.dtsi
-+++ b/arch/arm/boot/dts/meson.dtsi
-@@ -50,6 +50,7 @@ uart_A: serial@84c0 {
- 				compatible = "amlogic,meson6-uart", "amlogic,meson-uart";
- 				reg = <0x84c0 0x18>;
- 				interrupts = <GIC_SPI 26 IRQ_TYPE_EDGE_RISING>;
-+				fifo-size = <128>;
- 				status = "disabled";
- 			};
- 
--- 
-2.31.1
+This issue can also be solved by avoiding global vars: load_pa and load_sz.
+
+Hi Alexandre,
+
+IMHO, the load_pa and load_sz can be removed, I have one patch to remove
+them, it works. I'm not sure whether will the two vars be used in your
+future patches?
+
+Thanks in advance,
+Jisheng
 
