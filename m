@@ -2,153 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B46DE39BCE3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63F3639BCDE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:17:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229976AbhFDQT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 12:19:56 -0400
-Received: from mail-qk1-f176.google.com ([209.85.222.176]:42579 "EHLO
-        mail-qk1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230475AbhFDQTw (ORCPT
+        id S230389AbhFDQTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 12:19:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230029AbhFDQTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 12:19:52 -0400
-Received: by mail-qk1-f176.google.com with SMTP id o27so9834723qkj.9
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 09:18:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=qN/2EXSzrNrSJ2eI4wRjb2nY4GWCrDNun+VmRgfF6d4=;
-        b=jqImbONOeFQVmJP/JYb0n0GulrzmxpM9bbRfKggC/R72mc5wMzVuN78Wwp5WlEpthJ
-         h/b6JCBoLptruNAlOocWrYQxO3bh+7cPIVWwplkMXQ+TdZr9Pq2zHIBof4G2WnywvhG8
-         EVu8ZjZEUQqOeMDdPG6hwnPi5On34cQBNFoBYUKyRFJG+PxmdzSe7n3XukWYSSm8XTJK
-         G/OBy1Djv4PlgvfrxRX4g5tcNuGDug8/GfA3YuAHwnEgRTHtv4MHBC5vEoGA5ZGvrd4F
-         l6jXbUJ4FSsvAvNgkpDACGSKGn63vfsXhXNNwzZkaLzVYzIatGBmL3q4VR7h6rLZKYu+
-         0/xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=qN/2EXSzrNrSJ2eI4wRjb2nY4GWCrDNun+VmRgfF6d4=;
-        b=C8xN7Ybg6OOewuguZUPKGtx8ShlfBoeyfXRtZLqT/CHDu/92iKWmvqKtiocVnZfbpN
-         +pgDGioD1g3o7lQn/qijfh+Rj4cIs8/Qmkn6d9Y0appvYU77bFt2XoJwU/lcUIwDllrV
-         vEoZx+WM7V+7J/RLFBSF07SP9/S7QCqisqbpwzDxBanum60eUadgmF98vEpxavXhU/KC
-         19C8wwraNgYYtw9KTbGDhtmjATzIJ8ZaaPzySt3YySu+fUmyVhRl55GlDb4g8X92czFQ
-         DQK18XK3xoAoHpDaFkzuWg+beS46xYsE9XoNIaZvvio59DaJ6zF/ST/gbBcMkQnCT/D9
-         o54Q==
-X-Gm-Message-State: AOAM532XJuX8KCbXDmBO9UcG2vpBaj0MQgTqmrcbjoWiap9ZOFO/Tz0A
-        pCHvzHjEpt6eYUghzKcjH2tAqg==
-X-Google-Smtp-Source: ABdhPJy7xCqOxafQpNrZp+802ZsPDOdPMTghQNsAmOxmIH1a7H0XHFHP28C7LJKqAPO5/AZ/xma1Bw==
-X-Received: by 2002:a37:9701:: with SMTP id z1mr5063823qkd.253.1622823426136;
-        Fri, 04 Jun 2021 09:17:06 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
-        by smtp.gmail.com with ESMTPSA id x66sm2824568qkc.100.2021.06.04.09.17.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 09:17:05 -0700 (PDT)
-Message-ID: <f9fccfc4325e32022fac5f2c7b11c5e6b42e6fc8.camel@ndufresne.ca>
-Subject: Re: [PATCH 4/8] media: Add P010 video format
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        hverkuil@xs4all.nl, ezequiel@collabora.com, p.zabel@pengutronix.de,
-        mchehab@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        festevam@gmail.com, gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
-        andrzej.p@collabora.com, jc@kynesim.co.uk
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Fri, 04 Jun 2021 12:17:03 -0400
-In-Reply-To: <20210604130619.491200-5-benjamin.gaignard@collabora.com>
-References: <20210604130619.491200-1-benjamin.gaignard@collabora.com>
-         <20210604130619.491200-5-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
+        Fri, 4 Jun 2021 12:19:30 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D1BC061766;
+        Fri,  4 Jun 2021 09:17:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4TIqxuAtjmYbU2OSV74pXFrJBXrS1Qz+P5gtj2DTtNc=; b=SGA/apo1OYgipms8RsEEofalK7
+        wfBmIfnzC2FPQwKF/lmRGA3cLcicoit+A1GfJjyrvke8HNLxq+ZlcarIPcpXYF4nEMjZR5Qfsxz63
+        fflFA9xF+roMwaMInlzptkd1Iqzroj7nkPdoIksdOaxji0z1slgmRPudOp+7Qza3wTsRc3hwoVN4m
+        V0I157ljSP6Irfo9cBWq7hV0FiYAPH38A0rwiILHXbCCgmmrjU7FEZc9yUSSyY4eZfYSyfkvBJSJu
+        EG9jvefnb0f69Znz/M8pvux20vn06+jVgv0V+PWO8EvVzK+GVLg5lJjY+t6l4yGyH/dkDDm+3grR3
+        qzAEZSIA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lpCVd-00DKM0-C6; Fri, 04 Jun 2021 16:17:27 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D48993001DB;
+        Fri,  4 Jun 2021 18:17:20 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B3132207AA26E; Fri,  4 Jun 2021 18:17:20 +0200 (CEST)
+Date:   Fri, 4 Jun 2021 18:17:20 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Will Deacon <will@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        paulmck@kernel.org, parri.andrea@gmail.com, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com,
+        linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <YLpSEM7sxSmsuc5t@hirez.programming.kicks-ass.net>
+References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
+ <20210604104359.GE2318@willie-the-truck>
+ <YLoPJDzlTsvpjFWt@hirez.programming.kicks-ass.net>
+ <20210604134422.GA2793@willie-the-truck>
+ <YLoxAOua/qsZXNmY@hirez.programming.kicks-ass.net>
+ <20210604151356.GC2793@willie-the-truck>
+ <YLpFHE5Cr45rWTUV@hirez.programming.kicks-ass.net>
+ <YLpJ5K6O52o1cAVT@hirez.programming.kicks-ass.net>
+ <20210604155154.GG1676809@rowland.harvard.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604155154.GG1676809@rowland.harvard.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le vendredi 04 juin 2021 à 15:06 +0200, Benjamin Gaignard a écrit :
-> P010 is a YUV format with 10-bits per pixel with interleaved UV.
+On Fri, Jun 04, 2021 at 11:51:54AM -0400, Alan Stern wrote:
+> On Fri, Jun 04, 2021 at 05:42:28PM +0200, Peter Zijlstra wrote:
+
+> > #define volatile_if(cond) if (({ bool __t = (cond); BUILD_BUG_ON(__builtin_constant_p(__t)); volatile_cond(__t); }))
 > 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> ---
->  .../userspace-api/media/v4l/pixfmt-yuv-planar.rst         | 8 ++++++++
->  drivers/media/v4l2-core/v4l2-common.c                     | 1 +
->  drivers/media/v4l2-core/v4l2-ioctl.c                      | 1 +
->  include/uapi/linux/videodev2.h                            | 1 +
->  4 files changed, 11 insertions(+)
+> That won't help with more complicated examples, such as:
 > 
-> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> index 090c091affd2..71fed70c03ec 100644
-> --- a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> +++ b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> @@ -100,6 +100,13 @@ All components are stored with the same number of bits per component.
->        - Cb, Cr
->        - No
->        - 64x32 macroblocks
-> +    * - V4L2_PIX_FMT_P010
-> +      - 'P010'
-> +      - 10
-> +      - 4:2:0
-> +      - Cb, Cr
-> +      - No
-> +      - Linear
->  
->          Horizontal Z order
->      * - V4L2_PIX_FMT_NV12MT_16X16
-> @@ -171,6 +178,7 @@ horizontally.
->  .. _V4L2-PIX-FMT-NV21:
->  .. _V4L2-PIX-FMT-NV12M:
->  .. _V4L2-PIX-FMT-NV21M:
-> +.. _V4L2-PIX-FMT-P010:
+> 	volatile_if (READ_ONCE(*x) * 0 + READ_ONCE(*y))
 
-The NV12/21 documentation is not sufficient to describe this format. While it
-shares the layout (two planes Y and interleaved UV), it does not share the
-packing. In this case, assuming this is P010 (and not the P010 the Rockchip
-tried to upstreamed previously), each 10bit worth of pixel data would be pakced
-into 16 bits with the least significant 6 bit being padding bits.
+That's effectively:
 
->  
->  NV12, NV21, NV12M and NV21M
->  ---------------------------
-> diff --git a/drivers/media/v4l2-core/v4l2-common.c b/drivers/media/v4l2-core/v4l2-common.c
-> index 04af03285a20..37b5d82359dd 100644
-> --- a/drivers/media/v4l2-core/v4l2-common.c
-> +++ b/drivers/media/v4l2-core/v4l2-common.c
-> @@ -266,6 +266,7 @@ const struct v4l2_format_info *v4l2_format_info(u32 format)
->  		{ .format = V4L2_PIX_FMT_NV61,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 2, .bpp = { 1, 2, 0, 0 }, .hdiv = 2, .vdiv = 1 },
->  		{ .format = V4L2_PIX_FMT_NV24,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 2, .bpp = { 1, 2, 0, 0 }, .hdiv = 1, .vdiv = 1 },
->  		{ .format = V4L2_PIX_FMT_NV42,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 2, .bpp = { 1, 2, 0, 0 }, .hdiv = 1, .vdiv = 1 },
-> +		{ .format = V4L2_PIX_FMT_P010,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 2, .bpp = { 2, 2, 0, 0 }, .hdiv = 2, .vdiv = 1 },
->  
->  		{ .format = V4L2_PIX_FMT_YUV410,  .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 4, .vdiv = 4 },
->  		{ .format = V4L2_PIX_FMT_YVU410,  .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 4, .vdiv = 4 },
-> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-> index 2673f51aafa4..6404d5b6e350 100644
-> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
-> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-> @@ -1282,6 +1282,7 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
->  	case V4L2_PIX_FMT_NV61:		descr = "Y/CrCb 4:2:2"; break;
->  	case V4L2_PIX_FMT_NV24:		descr = "Y/CbCr 4:4:4"; break;
->  	case V4L2_PIX_FMT_NV42:		descr = "Y/CrCb 4:4:4"; break;
-> +	case V4L2_PIX_FMT_P010:		descr = "10-bit Y/CrCb 4:2:0"; break;
->  	case V4L2_PIX_FMT_NV12M:	descr = "Y/CbCr 4:2:0 (N-C)"; break;
->  	case V4L2_PIX_FMT_NV21M:	descr = "Y/CrCb 4:2:0 (N-C)"; break;
->  	case V4L2_PIX_FMT_NV16M:	descr = "Y/CbCr 4:2:2 (N-C)"; break;
-> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-> index 9260791b8438..e5f7acde0730 100644
-> --- a/include/uapi/linux/videodev2.h
-> +++ b/include/uapi/linux/videodev2.h
-> @@ -602,6 +602,7 @@ struct v4l2_pix_format {
->  #define V4L2_PIX_FMT_NV24    v4l2_fourcc('N', 'V', '2', '4') /* 24  Y/CbCr 4:4:4  */
->  #define V4L2_PIX_FMT_NV42    v4l2_fourcc('N', 'V', '4', '2') /* 24  Y/CrCb 4:4:4  */
->  #define V4L2_PIX_FMT_HM12    v4l2_fourcc('H', 'M', '1', '2') /*  8  YUV 4:2:0 16x16 macroblocks */
-> +#define V4L2_PIX_FMT_P010    v4l2_fourcc('P', '0', '1', '0') /* 15  Y/CbCr 4:2:0 10-bit per pixel*/
->  
->  /* two non contiguous planes - one Y, one Cr + Cb interleaved  */
->  #define V4L2_PIX_FMT_NV12M   v4l2_fourcc('N', 'M', '1', '2') /* 12  Y/CbCr 4:2:0  */
+	volatile_if (READ_ONCE(*y))
+		WRITE_ONCE(*y, 42);
 
-
+which is a valid, but daft, LOAD->STORE order, no? A compiler might
+maybe be able to WARN on that, but that's definitely beyond what we can
+do with macros.
