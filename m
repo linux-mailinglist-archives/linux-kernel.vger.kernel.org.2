@@ -2,213 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1807E39BD18
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E6139BD22
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbhFDQaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 12:30:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229963AbhFDQae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 12:30:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B59B5613FF;
-        Fri,  4 Jun 2021 16:28:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622824128;
-        bh=fnZ+NYTlprc2KY9TUqg3zrv52FF4xQoS2VuwFUzeVs8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nBk0dP+Zsf4KbEqrDsy3MUlgXjNDWgd9vKuXGeOQ0W7xKchLgYvkcbyDDxIgbwyKZ
-         a8F12YboMrb8tsQs5PoVMJpR+IQqxSt2Kz64+0bm5zwmgtVX5OtSCzJOw0QBZEiCym
-         4cJfLLJOK2/lk+MNtLI0uOluK06BKuVrgXFChw6hwPJ6Q+eGmCVMyDyfzcirRK3+7w
-         /2AetKrLncfJdHbnjxEdnjNTHc5zAxFagCyP5h53cXsaNgO2aOvfN+J6geoBeOELsl
-         JkjZ/GWSGV1ZogVhyYPlqAY4KQdMUsAnHNRl9AP9+oy47ekapz0ViJIMGKQ1roikq5
-         noChVe7RjYB9g==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org
-Subject: [PATCH 3/3] perf/probe: Add --bootconfig to output definition in bootconfig format
-Date:   Sat,  5 Jun 2021 01:28:43 +0900
-Message-Id: <162282412351.452340.14871995440005640114.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <162282409255.452340.4645118932261585719.stgit@devnote2>
-References: <162282409255.452340.4645118932261585719.stgit@devnote2>
-User-Agent: StGit/0.19
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        id S229746AbhFDQcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 12:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229675AbhFDQb6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 12:31:58 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73DDFC061766;
+        Fri,  4 Jun 2021 09:29:59 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id t10-20020a05683022eab0290304ed8bc759so9588155otc.12;
+        Fri, 04 Jun 2021 09:29:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=n5M/DfERH8t5HzVCATPHHQq5YkPCR7JWwjW1C7938Ek=;
+        b=r8e7AHkhVs3q6ptTJraSRSvdlEymC1H8STjBRCNlJtQbn1Ff2OzVFbXNqTElXLYQla
+         f4nSAvkwOjmchzUlBwGB9rcFtIxXaG4JCqjPjF3FvG8THsRwqiYOwYuCFxsauaQUn4oe
+         u7RDYW5anR0QICQFMvt+E/WgHaaNlHeUniMSpCbtfHJ+HRcXY5uUTCOGVI1ROxG0Y7/9
+         SzxrejSBTmOjQM59847KqgeTydrRKiOlKPArwNB3WV+mqs7omaswayIM9HY/cmAYGPlX
+         hdddw4KYDOksNcJ6d/ux9cHpLB84dlJRvvLmLH7a6Em79SCq6Xn/Ceayng3Z6Ni5edD8
+         F9Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=n5M/DfERH8t5HzVCATPHHQq5YkPCR7JWwjW1C7938Ek=;
+        b=UnHxrxqivGMEHXPNH7JshqfHLXhfDN2862IxHi5LK3XAuTHP7GYq+WfSt2TmQtePmD
+         bNlsKsCiUdBppt2xNqXUOKKlirKCdy0yVmiXzbYx2+aq4GCUNjx5bvmKzEitL7f1mNmB
+         f6qgJJA7Jq6Px5/+SVExW+tH5lJXPAPPF3Loij7dtHMGYIb9aqqYQw/2Y/M/aBb0Lomo
+         +PAUC8+Yyboow0fjcREhl/mArnjpXqWOR6uA5ttpbp0UotYaPWJv/40+IOT41tIh4bR+
+         tPOPSDsGQRj664NWprcJiMCI14lszymDu/Em4V5xTkILaEn9zfGLEqAcpU58CGa27acM
+         jaAw==
+X-Gm-Message-State: AOAM530NPCptAYSNDCOv9rPNwxBo25kmpmFi1YawE/rf5KL3xwPyNYiu
+        RiyEgY7mZE4jQkMsPvl6mdTCP7RVXh1q
+X-Google-Smtp-Source: ABdhPJxDTNEVN56MzFznX3IiUYsBWct3H6zWwxBdShh9QHEeKypiQ+y/mJB+qADhmba3jaJ+l7qryg==
+X-Received: by 2002:a9d:2287:: with SMTP id y7mr4238435ota.22.1622824198164;
+        Fri, 04 Jun 2021 09:29:58 -0700 (PDT)
+Received: from threadripper.novatech-llc.local ([216.21.169.52])
+        by smtp.gmail.com with ESMTPSA id x10sm568913otp.39.2021.06.04.09.29.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 04 Jun 2021 09:29:57 -0700 (PDT)
+From:   George McCollister <george.mccollister@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     George McCollister <george.mccollister@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] net: dsa: xrs700x: allow HSR/PRP supervision dupes for node_table
+Date:   Fri,  4 Jun 2021 11:29:22 -0500
+Message-Id: <20210604162922.76954-1-george.mccollister@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now the boot-time tracing supports the kprobes events and that
-must be written in bootconfig file as following format.
+Add an inbound policy filter which matches the HSR/PRP supervision
+MAC range and forwards to the CPU port without discarding duplicates.
+This is required to correctly populate time_in[A] and time_in[B] in the
+HSR/PRP node_table. Leave the policy disabled by default and
+enable/disable it when joining/leaving hsr.
 
-ftrace.event.kprobes.<EVENT_NAME>.probes = <PROBE-DEF>
-
-The perf probe already supports --definition (-D) action to
-show the probe definitions, but the format is for the tracefs.
-
-[p|r][:EVENT_NAME] <PROBE-DEF>
-
-This adds --bootconfig option for -D action so that it output
-the probe definitions in bootconfig fromat. E.g.
-
- $ perf probe --bootconfig -D "path_lookupat:7 err:s32 s:string"
- ftrace.event.kprobes.path_lookupat_L7.probe = 'path_lookupat.isra.0+309 err_s32=%ax:s32 s_string=+0(%r13):string'
-
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: George McCollister <george.mccollister@gmail.com>
 ---
- tools/perf/builtin-probe.c    |   12 ++++++-
- tools/perf/util/probe-event.c |   72 +++++++++++++++++++++++++++++++++++++++++
- tools/perf/util/probe-event.h |    2 +
- 3 files changed, 85 insertions(+), 1 deletion(-)
+ drivers/net/dsa/xrs700x/xrs700x.c | 67 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 67 insertions(+)
 
-diff --git a/tools/perf/builtin-probe.c b/tools/perf/builtin-probe.c
-index 6b1507566770..2bfd41df621c 100644
---- a/tools/perf/builtin-probe.c
-+++ b/tools/perf/builtin-probe.c
-@@ -347,7 +347,10 @@ static int perf_add_probe_events(struct perf_probe_event *pevs, int npevs)
- 		goto out_cleanup;
+diff --git a/drivers/net/dsa/xrs700x/xrs700x.c b/drivers/net/dsa/xrs700x/xrs700x.c
+index fde6e99274b6..a79066174a77 100644
+--- a/drivers/net/dsa/xrs700x/xrs700x.c
++++ b/drivers/net/dsa/xrs700x/xrs700x.c
+@@ -79,6 +79,9 @@ static const struct xrs700x_mib xrs700x_mibs[] = {
+ 	XRS700X_MIB(XRS_EARLY_DROP_L, "early_drop", tx_dropped),
+ };
  
- 	if (params.command == 'D') {	/* it shows definition */
--		ret = show_probe_trace_events(pevs, npevs);
-+		if (probe_conf.bootconfig)
-+			ret = show_bootconfig_events(pevs, npevs);
-+		else
-+			ret = show_probe_trace_events(pevs, npevs);
- 		goto out_cleanup;
- 	}
- 
-@@ -581,6 +584,8 @@ __cmd_probe(int argc, const char **argv)
- 		   "Look for files with symbols relative to this directory"),
- 	OPT_CALLBACK(0, "target-ns", NULL, "pid",
- 		     "target pid for namespace contexts", opt_set_target_ns),
-+	OPT_BOOLEAN(0, "bootconfig", &probe_conf.bootconfig,
-+		    "Output probe definition with bootconfig format"),
- 	OPT_END()
- 	};
- 	int ret;
-@@ -692,6 +697,11 @@ __cmd_probe(int argc, const char **argv)
- 		}
- 		break;
- 	case 'D':
-+		if (probe_conf.bootconfig && params.uprobes) {
-+			pr_err("  Error: --bootconfig doesn't support uprobes.\n");
-+			return -EINVAL;
-+		}
-+		__fallthrough;
- 	case 'a':
- 
- 		/* Ensure the last given target is used */
-diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-index 505c0702dbe2..f1348fa3dd1b 100644
---- a/tools/perf/util/probe-event.c
-+++ b/tools/perf/util/probe-event.c
-@@ -3564,6 +3564,78 @@ int show_probe_trace_events(struct perf_probe_event *pevs, int npevs)
- 	return ret;
++static const u8 eth_hsrsup_addr[ETH_ALEN] = {
++	0x01, 0x15, 0x4e, 0x00, 0x01, 0x00};
++
+ static void xrs700x_get_strings(struct dsa_switch *ds, int port,
+ 				u32 stringset, u8 *data)
+ {
+@@ -329,6 +332,50 @@ static int xrs700x_port_add_bpdu_ipf(struct dsa_switch *ds, int port)
+ 	return 0;
  }
  
-+static int show_bootconfig_event(struct probe_trace_event *tev)
++/* Add an inbound policy filter which matches the HSR/PRP supervision MAC
++ * range and forwards to the CPU port without discarding duplicates.
++ * This is required to correctly populate the HSR/PRP node_table.
++ * Leave the policy disabled, it will be enabled as needed.
++ */
++static int xrs700x_port_add_hsrsup_ipf(struct dsa_switch *ds, int port)
 +{
-+	struct probe_trace_point *tp = &tev->point;
-+	struct strbuf buf;
-+	char *ret = NULL;
-+	int err;
++	struct xrs700x *priv = ds->priv;
++	unsigned int val = 0;
++	int i = 0;
++	int ret;
 +
-+	if (strbuf_init(&buf, 32) < 0)
-+		return -ENOMEM;
++	/* Compare 40 bits of the destination MAC address. */
++	ret = regmap_write(priv->regmap, XRS_ETH_ADDR_CFG(port, 1), 40 << 2);
++	if (ret)
++		return ret;
 +
-+	err = synthesize_kprobe_trace_def(tp, &buf);
-+	if (err >= 0)
-+		err = synthesize_probe_trace_args(tev, &buf);
-+	if (err >= 0)
-+		ret = strbuf_detach(&buf, NULL);
-+	strbuf_release(&buf);
-+
-+	if (ret) {
-+		printf("'%s'", ret);
-+		free(ret);
++	/* match HSR/PRP supervision destination 01:15:4e:00:01:XX */
++	for (i = 0; i < sizeof(eth_hsrsup_addr); i += 2) {
++		ret = regmap_write(priv->regmap, XRS_ETH_ADDR_0(port, 1) + i,
++				   eth_hsrsup_addr[i] |
++				   (eth_hsrsup_addr[i + 1] << 8));
++		if (ret)
++			return ret;
 +	}
 +
-+	return err;
-+}
-+
-+int show_bootconfig_events(struct perf_probe_event *pevs, int npevs)
-+{
-+	struct strlist *namelist = strlist__new(NULL, NULL);
-+	struct probe_trace_event *tev;
-+	struct perf_probe_event *pev;
-+	char *cur_name = NULL;
-+	int i, j, ret = 0;
-+
-+	if (!namelist)
-+		return -ENOMEM;
-+
-+	for (j = 0; j < npevs && !ret; j++) {
-+		pev = &pevs[j];
-+		if (pev->group && strcmp(pev->group, "probe"))
-+			pr_warning("WARN: Group name %s is ignored\n", pev->group);
-+		if (pev->uprobes) {
-+			pr_warning("ERROR: Bootconfig doesn't support uprobes\n");
-+			ret = -EINVAL;
-+			break;
-+		}
-+		for (i = 0; i < pev->ntevs && !ret; i++) {
-+			tev = &pev->tevs[i];
-+			/* Skip if the symbol is out of .text or blacklisted */
-+			if (!tev->point.symbol && !pev->uprobes)
-+				continue;
-+
-+			/* Set new name for tev (and update namelist) */
-+			ret = probe_trace_event__set_name(tev, pev,
-+							  namelist, true);
-+			if (ret)
-+				break;
-+
-+			if (!cur_name || strcmp(cur_name, tev->event)) {
-+				printf("%sftrace.event.kprobes.%s.probe = ",
-+					cur_name ? "\n" : "", tev->event);
-+				cur_name = tev->event;
-+			} else
-+				printf(", ");
-+			ret = show_bootconfig_event(tev);
-+		}
++	/* Mirror HSR/PRP supervision to CPU port */
++	for (i = 0; i < ds->num_ports; i++) {
++		if (dsa_is_cpu_port(ds, i))
++			val |= BIT(i);
 +	}
-+	printf("\n");
-+	strlist__delete(namelist);
 +
-+	return ret;
++	ret = regmap_write(priv->regmap, XRS_ETH_ADDR_FWD_MIRROR(port, 1), val);
++	if (ret)
++		return ret;
++
++	/* Allow must be set prevent duplicate discard */
++	ret = regmap_write(priv->regmap, XRS_ETH_ADDR_FWD_ALLOW(port, 1), val);
++	if (ret)
++		return ret;
++
++	return 0;
 +}
 +
- int apply_perf_probe_events(struct perf_probe_event *pevs, int npevs)
+ static int xrs700x_port_setup(struct dsa_switch *ds, int port)
  {
- 	int i, ret = 0;
-diff --git a/tools/perf/util/probe-event.h b/tools/perf/util/probe-event.h
-index 4f0eb3a20c36..65769d7949a3 100644
---- a/tools/perf/util/probe-event.h
-+++ b/tools/perf/util/probe-event.h
-@@ -15,6 +15,7 @@ struct probe_conf {
- 	bool	force_add;
- 	bool	no_inlines;
- 	bool	cache;
-+	bool	bootconfig;
- 	int	max_probes;
- 	unsigned long	magic_num;
- };
-@@ -163,6 +164,7 @@ int add_perf_probe_events(struct perf_probe_event *pevs, int npevs);
- int convert_perf_probe_events(struct perf_probe_event *pevs, int npevs);
- int apply_perf_probe_events(struct perf_probe_event *pevs, int npevs);
- int show_probe_trace_events(struct perf_probe_event *pevs, int npevs);
-+int show_bootconfig_events(struct perf_probe_event *pevs, int npevs);
- void cleanup_perf_probe_events(struct perf_probe_event *pevs, int npevs);
+ 	bool cpu_port = dsa_is_cpu_port(ds, port);
+@@ -358,6 +405,10 @@ static int xrs700x_port_setup(struct dsa_switch *ds, int port)
+ 		ret = xrs700x_port_add_bpdu_ipf(ds, port);
+ 		if (ret)
+ 			return ret;
++
++		ret = xrs700x_port_add_hsrsup_ipf(ds, port);
++		if (ret)
++			return ret;
+ 	}
  
- struct strfilter;
+ 	return 0;
+@@ -565,6 +616,14 @@ static int xrs700x_hsr_join(struct dsa_switch *ds, int port,
+ 			    XRS_PORT_FORWARDING);
+ 	regmap_fields_write(priv->ps_forward, port, XRS_PORT_FORWARDING);
+ 
++	/* Enable inbound policy added by xrs700x_port_add_hsrsup_ipf()
++	 * which allows HSR/PRP supervision forwarding to the CPU port without
++	 * discarding duplicates.
++	 */
++	regmap_update_bits(priv->regmap,
++			   XRS_ETH_ADDR_CFG(partner->index, 1), 1, 1);
++	regmap_update_bits(priv->regmap, XRS_ETH_ADDR_CFG(port, 1), 1, 1);
++
+ 	hsr_pair[0] = port;
+ 	hsr_pair[1] = partner->index;
+ 	for (i = 0; i < ARRAY_SIZE(hsr_pair); i++) {
+@@ -611,6 +670,14 @@ static int xrs700x_hsr_leave(struct dsa_switch *ds, int port,
+ 			    XRS_PORT_FORWARDING);
+ 	regmap_fields_write(priv->ps_forward, port, XRS_PORT_FORWARDING);
+ 
++	/* Disable inbound policy added by xrs700x_port_add_hsrsup_ipf()
++	 * which allows HSR/PRP supervision forwarding to the CPU port without
++	 * discarding duplicates.
++	 */
++	regmap_update_bits(priv->regmap,
++			   XRS_ETH_ADDR_CFG(partner->index, 1), 1, 0);
++	regmap_update_bits(priv->regmap, XRS_ETH_ADDR_CFG(port, 1), 1, 0);
++
+ 	hsr_pair[0] = port;
+ 	hsr_pair[1] = partner->index;
+ 	for (i = 0; i < ARRAY_SIZE(hsr_pair); i++) {
+-- 
+2.11.0
 
