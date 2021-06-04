@@ -2,83 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D4AA39BA14
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB9739BA1E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231225AbhFDNo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 09:44:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbhFDNom (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 09:44:42 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 388A7C06178B
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 06:42:54 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lpA63-00072r-H4; Fri, 04 Jun 2021 15:42:47 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lpA61-0000g4-MU; Fri, 04 Jun 2021 15:42:45 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH net-next v1 7/7] usbnet: run unbind() before unregister_netdev()
-Date:   Fri,  4 Jun 2021 15:42:44 +0200
-Message-Id: <20210604134244.2467-8-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210604134244.2467-1-o.rempel@pengutronix.de>
-References: <20210604134244.2467-1-o.rempel@pengutronix.de>
+        id S230487AbhFDNqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 09:46:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59982 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230281AbhFDNqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 09:46:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD209613FA;
+        Fri,  4 Jun 2021 13:44:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622814268;
+        bh=Gk6qNsvg6fwttfoHR12fN0bBTyiEuNabgU3OOgIVeUI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jkGBGVr8y0oUbAJarTCBCAiqB+t2wubxe4yuw1MACCD2jkT+SKm0ZS1ZDxRElnNEY
+         Mwxqn78c/9uMSzN6zRJzpQUAFDzAjB3WDIrNTRGcCl786bWhgzBk9sqLNZuGyvZefI
+         1a1GrlEDj1mv0DhA2Lz3E3p2Hqs2kGuV4VpwkvC47E3IO7kKB6Mbj/koNpFCUgNG4l
+         txXs2OpK2l7BjmqqXkoDV0vdbpCNg2bHVakj1b2EfOZvABAPJaQ/BC1ASVYXhjzZXs
+         kuhKz204Ph5SdSMMfVVAi7snBA62V59lQP7H0PIGEuw41fK743z3qVSWEUx60u+LVP
+         M4vB3yn7k2yHA==
+Date:   Fri, 4 Jun 2021 14:44:22 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>, paulmck@kernel.org,
+        stern@rowland.harvard.edu, parri.andrea@gmail.com,
+        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
+        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
+        linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <20210604134422.GA2793@willie-the-truck>
+References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
+ <20210604104359.GE2318@willie-the-truck>
+ <YLoPJDzlTsvpjFWt@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLoPJDzlTsvpjFWt@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-unbind() is the proper place to disconnect PHY, but it will fail if
-netdev is already unregistered.
+On Fri, Jun 04, 2021 at 01:31:48PM +0200, Peter Zijlstra wrote:
+> On Fri, Jun 04, 2021 at 11:44:00AM +0100, Will Deacon wrote:
+> > On Fri, Jun 04, 2021 at 12:12:07PM +0200, Peter Zijlstra wrote:
+> 
+> > > Usage of volatile_if requires the @cond to be headed by a volatile load
+> > > (READ_ONCE() / atomic_read() etc..) such that the compiler is forced to
+> > > emit the load and the branch emitted will have the required
+> > > data-dependency. Furthermore, volatile_if() is a compiler barrier, which
+> > > should prohibit the compiler from lifting anything out of the selection
+> > > statement.
+> > 
+> > When building with LTO on arm64, we already upgrade READ_ONCE() to an RCpc
+> > acquire. In this case, it would be really good to avoid having the dummy
+> > conditional branch somehow, but I can't see a good way to achieve that.
+> 
+> #ifdef CONFIG_LTO
+> /* Because __READ_ONCE() is load-acquire */
+> #define volatile_cond(cond)	(cond)
+> #else
+> ....
+> #endif
+> 
+> Doesn't work? Bit naf, but I'm thinking it ought to do.
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- drivers/net/usb/usbnet.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+The problem is with relaxed atomic RMWs; we don't upgrade those to acquire
+atm as they're written in asm, but we'd need volatile_cond() to work with
+them. It's a shame, because we only have RCsc RMWs on arm64, so it would
+be a bit more expensive.
 
-diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
-index ecf62849f4c1..57a5a025255c 100644
---- a/drivers/net/usb/usbnet.c
-+++ b/drivers/net/usb/usbnet.c
-@@ -1597,6 +1597,9 @@ void usbnet_disconnect (struct usb_interface *intf)
- 		   xdev->bus->bus_name, xdev->devpath,
- 		   dev->driver_info->description);
- 
-+	if (dev->driver_info->unbind)
-+		dev->driver_info->unbind(dev, intf);
-+
- 	net = dev->net;
- 	unregister_netdev (net);
- 
-@@ -1604,9 +1607,6 @@ void usbnet_disconnect (struct usb_interface *intf)
- 
- 	usb_scuttle_anchored_urbs(&dev->deferred);
- 
--	if (dev->driver_info->unbind)
--		dev->driver_info->unbind (dev, intf);
--
- 	usb_kill_urb(dev->interrupt);
- 	usb_free_urb(dev->interrupt);
- 	kfree(dev->padding_pkt);
--- 
-2.29.2
+> > > +/**
+> > > + * volatile_if() - Provide a control-dependency
+> > > + *
+> > > + * volatile_if(READ_ONCE(A))
+> > > + *	WRITE_ONCE(B, 1);
+> > > + *
+> > > + * will ensure that the STORE to B happens after the LOAD of A. Normally a
+> > > + * control dependency relies on a conditional branch having a data dependency
+> > > + * on the LOAD and an architecture's inability to speculate STOREs. IOW, this
+> > > + * provides a LOAD->STORE order.
+> > > + *
+> > > + * Due to optimizing compilers extra care is needed; as per the example above
+> > > + * the LOAD must be 'volatile' qualified in order to ensure the compiler
+> > > + * actually emits the load, such that the data-dependency to the conditional
+> > > + * branch can be formed.
+> > > + *
+> > > + * Secondly, the compiler must be prohibited from lifting anything out of the
+> > > + * selection statement, as this would obviously also break the ordering.
+> > > + *
+> > > + * Thirdly, and this is the tricky bit, architectures that allow the
+> > > + * LOAD->STORE reorder must ensure the compiler actually emits the conditional
+> > > + * branch instruction, this isn't possible in generic.
+> > > + *
+> > > + * See the volatile_cond() wrapper.
+> > > + */
+> > > +#define volatile_if(cond) if (volatile_cond(cond))
+> > 
+> > The thing I really dislike about this is that, if the compiler _does_
+> > emit a conditional branch for the C 'if', then we get a pair of branch
+> > instructions in close proximity to each other which the predictor is likely
+> > to hate. I wouldn't be surprised if an RCpc acquire heading the dependency
+> > actually performs better on modern arm64 cores in the general case.
+> 
+> jump_label / static_branch relies on asm goto inside if to get optimized
+> away, so I'm fairly confident this will not result in a double branch,
+> because yes, that would blow.
 
+I gave it a spin and you're right. Neat!
+
+Will
