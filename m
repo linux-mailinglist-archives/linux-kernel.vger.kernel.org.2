@@ -2,82 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0480A39B452
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AFDE39B454
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbhFDHxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 03:53:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230093AbhFDHxm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 03:53:42 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A8AC061763
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 00:51:56 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id n12so5714062lft.10
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 00:51:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wfXB+k1Q6ViirA4mjN9LR3VrU6+naTbeMgwzCtnLr2k=;
-        b=AguLxJhuHlFMuh3TBZdV3QCEAhJz9dFzY737XfMw8IyQROFK6Z5NuNIg/8+/nkBkdL
-         laUu8/wPdaPOoyRM0B1gc2RIOhLuVVKxbS2xyZyTyukYHsytKPQB4fnNdSNZmbL4UNkG
-         pD/FZTPUL4rsXyPx9dtYsKDsYZ7WPckY8GiBCGRK5SAItP9OifEQNxnWl3CFjBvsSVRZ
-         ftaAs0jtv0lQ7SlmV+1VudEWxgYrsVl/18bnAT1BOib0jzTbpPa7NLIzy6OsGKSLAPCs
-         GG4lVAF8jO27xoJwUFx7d88KcGGCStQwEReYgocAGPTBNhr0w9AHm1vzmAsiTlMdJJZ0
-         z84Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wfXB+k1Q6ViirA4mjN9LR3VrU6+naTbeMgwzCtnLr2k=;
-        b=qe4vKxZcWK0+mPiG2RyT0D4wtu6XxN1mZlj8d00yAcHuuKpH7x8DkM6byVcAV1oiFK
-         LADYO6/DPERbEyseI/XWQj8RxefIiW6QFkawLAJIRrb/Og6RKXVa58RE8BNCHUEffz+u
-         dend0VDb3HRd0+j5e3G5zmGsc1v3yD6TKQxHPrt13ZHlih5OEPRYNKp5UHWvK2ZMYCoq
-         BrN8GoKKfbJzYnkn+O8TpT/L5SJ9k1Cv4wKwOCWh3WQ1faH+FKny6ILRMerJ4D4bB2SU
-         y8xTnNicF8H7TmqqxgTKWPi/BEn6C+He04ghCP1Xm3w4TiAKtEAo3dtxgzUqUfaauZ2F
-         HIgw==
-X-Gm-Message-State: AOAM532gr01ymWf2Wz8rEfujsTz0hRRYx7xkpzTSP28C5XRDue+3knRU
-        D42phbvWssLaZRpmKoge457i+1yZXCI4QQFeODLSbA==
-X-Google-Smtp-Source: ABdhPJzQltZYgxaeOPJE8k/LI6pPjnl6/V6Be99faZv5x4czlDJ0bbi7/XH/BqXzBUazEcWqDL4hgpV0tirmKbYh+j4=
-X-Received: by 2002:a19:8157:: with SMTP id c84mr1961729lfd.529.1622793115058;
- Fri, 04 Jun 2021 00:51:55 -0700 (PDT)
+        id S230114AbhFDHyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 03:54:17 -0400
+Received: from mga17.intel.com ([192.55.52.151]:9996 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229975AbhFDHyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 03:54:15 -0400
+IronPort-SDR: 3kzK81DPjCGkBMYuPZWiSpxNzA8g3Wz8k+a7w3P6tH4R5u8o+WZ4iVyuyULewca8Spzntl5zhc
+ OKOFfkSwrUwA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="184615520"
+X-IronPort-AV: E=Sophos;i="5.83,247,1616482800"; 
+   d="scan'208";a="184615520"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2021 00:52:29 -0700
+IronPort-SDR: +xq2UExmjPPYDSb6/oppewP6p2DJeRgXrIYyyUaAxFB1oBFxU7z2tgUwBa3pAKc5a76i/VuhLm
+ GbU+3B26Rihg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,247,1616482800"; 
+   d="scan'208";a="480550651"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by orsmga001.jf.intel.com with ESMTP; 04 Jun 2021 00:52:21 -0700
+Date:   Fri, 4 Jun 2021 15:52:20 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
+        Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Hugh Dickins <hughd@google.com>, Jann Horn <jannh@google.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>, zhengjun.xing@intel.com
+Subject: Re: [mm/gup] 57efa1fe59: will-it-scale.per_thread_ops -9.2%
+ regression
+Message-ID: <20210604075220.GA40621@shbuild999.sh.intel.com>
+References: <20210525031636.GB7744@xsang-OptiPlex-9020>
+ <CAHk-=whTEC_GVYu=WfvUagNvHdoTALEDg8uqK3V6aMDwg2KMRA@mail.gmail.com>
+ <20210604070411.GA8221@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-References: <20210325122832.119147-1-sandberg@mailfence.com>
- <20210530161333.3996-1-maukka@ext.kapsi.fi> <20210530161333.3996-2-maukka@ext.kapsi.fi>
- <CACRpkdZfdd=ogHoNGuLzGGZYkvw7xtNO2VJm-t-2vMibGNy=dA@mail.gmail.com>
- <866ff376-6d74-49c9-9e4c-2bf36bbd5981@ext.kapsi.fi> <CACRpkda9LD00=mUjLbb+wG3mnEVHbyqj-3L98=c-k-bV54gmTg@mail.gmail.com>
- <3548155a-e634-c433-7173-77b56180ed98@ext.kapsi.fi>
-In-Reply-To: <3548155a-e634-c433-7173-77b56180ed98@ext.kapsi.fi>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 4 Jun 2021 09:51:44 +0200
-Message-ID: <CACRpkdaqbKSKy1cDAiCHLf5MyB7sTVYCZtoeHJsbB40+dPRpUQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: gpio-mux-input: add documentation
-To:     Mauri Sandberg <maukka@ext.kapsi.fi>
-Cc:     Mauri Sandberg <sandberg@mailfence.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Drew Fustini <drew@beagleboard.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604070411.GA8221@shbuild999.sh.intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 2, 2021 at 1:21 PM Mauri Sandberg <maukka@ext.kapsi.fi> wrote:
+On Fri, Jun 04, 2021 at 03:04:11PM +0800, Feng Tang wrote:
+> Hi Linus,
+> 
+> Sorry for the late response.
+> 
+> On Mon, May 24, 2021 at 05:11:37PM -1000, Linus Torvalds wrote:
+> > On Mon, May 24, 2021 at 5:00 PM kernel test robot <oliver.sang@intel.com> wrote:
+> > >
+> > > FYI, we noticed a -9.2% regression of will-it-scale.per_thread_ops due to commit:
+> > > commit: 57efa1fe5957694fa541c9062de0a127f0b9acb0 ("mm/gup: prevent gup_fast from racing with COW during fork")
+> > 
+> > Hmm. This looks like one of those "random fluctuations" things.
+> > 
+> > It would be good to hear if other test-cases also bisect to the same
+> > thing, but this report already says:
+> > 
+> > > In addition to that, the commit also has significant impact on the following tests:
+> > >
+> > > +------------------+---------------------------------------------------------------------------------+
+> > > | testcase: change | will-it-scale: will-it-scale.per_thread_ops 3.7% improvement                    |
+> > 
+> > which does kind of reinforce that "this benchmark gives unstable numbers".
+> > 
+> > The perf data doesn't even mention any of the GUP paths, and on the
+> > pure fork path the biggest impact would be:
+> > 
+> >  (a) maybe "struct mm_struct" changed in size or had a different cache layout
+> 
+> Yes, this seems to be the cause of the regression.
+> 
+> The test case is many thread are doing map/unmap at the same time,
+> so the process's rw_semaphore 'mmap_lock' is highly contended.
+> 
+> Before the patch (with 0day's kconfig), the mmap_lock is separated
+> into 2 cachelines, the 'count' is in one line, and the other members
+> sit in the next line, so it luckily avoid some cache bouncing. After
+> the patch, the 'mmap_lock' is pushed into one cacheline, which may
+> cause the regression.
+> 
+> Below is the pahole info:
+> 
+> - before the patch
+> 
+> 	spinlock_t         page_table_lock;      /*   116     4 */
+> 	struct rw_semaphore mmap_lock;           /*   120    40 */
+> 	/* --- cacheline 2 boundary (128 bytes) was 32 bytes ago --- */
+> 	struct list_head   mmlist;               /*   160    16 */
+> 	long unsigned int  hiwater_rss;          /*   176     8 */
+> 
+> - after the patch
+> 
+> 	spinlock_t         page_table_lock;      /*   124     4 */
+> 	/* --- cacheline 2 boundary (128 bytes) --- */
+> 	struct rw_semaphore mmap_lock;           /*   128    40 */
+> 	struct list_head   mmlist;               /*   168    16 */
+> 	long unsigned int  hiwater_rss;          /*   184     8 */
+> 
+> perf c2c log can also confirm this.
+ 
+We've tried some patch, which can restore the regerssion. As the
+newly added member 'write_protect_seq' is 4 bytes long, and putting
+it into an existing 4 bytes long hole can restore the regeression,
+while not affecting most of other member's alignment. Please review
+the following patch, thanks!
 
-> Can we just call it 'gpio-cascade'
-> without referral to the underlying mux? Maybe at somepoint in future
-> something else could be used in its place too.
+- Feng
 
-That has a nice ring to it, go with that!
+From 85ddc2c3d0f2bdcbad4edc5c392c7bc90bb1667e Mon Sep 17 00:00:00 2001
+From: Feng Tang <feng.tang@intel.com>
+Date: Fri, 4 Jun 2021 15:20:57 +0800
+Subject: [PATCH RFC] mm: relocate 'write_protect_seq' in struct mm_struct
 
-Yours,
-Linus Walleij
+Before commit 57efa1fe5957 ("mm/gup: prevent gup_fast from
+racing with COW during fork), on 64bits system, the hot member
+rw_semaphore 'mmap_lock' of 'mm_struct' could be separated into
+2 cachelines, that its member 'count' sits in one cacheline while
+all other members in next cacheline, this naturally reduces some
+cache bouncing, and with the commit, the 'mmap_lock' is pushed
+into one cacheline, as shown in the pahole info:
+
+ - before the commit
+
+	spinlock_t         page_table_lock;      /*   116     4 */
+	struct rw_semaphore mmap_lock;           /*   120    40 */
+	/* --- cacheline 2 boundary (128 bytes) was 32 bytes ago --- */
+	struct list_head   mmlist;               /*   160    16 */
+	long unsigned int  hiwater_rss;          /*   176     8 */
+
+ - after the commit
+
+	spinlock_t         page_table_lock;      /*   124     4 */
+	/* --- cacheline 2 boundary (128 bytes) --- */
+	struct rw_semaphore mmap_lock;           /*   128    40 */
+	struct list_head   mmlist;               /*   168    16 */
+	long unsigned int  hiwater_rss;          /*   184     8 */
+
+and it causes one 9.2% regression for 'mmap1' case of will-it-scale
+benchmark[1], as in the case 'mmap_lock' is highly contented (occupies
+90%+ cpu cycles).
+
+Though relayouting a structure could be a double-edged sword, as it
+helps some case, but may hurt other cases. So one solution is the
+newly added 'seqcount_t' is 4 bytes long (when CONFIG_DEBUG_LOCK_ALLOC=n),
+placing it into an existing 4 bytes hole in 'mm_struct' will not
+affect most of other members's alignment, while restoring the
+regression.
+
+[1]. https://lore.kernel.org/lkml/20210525031636.GB7744@xsang-OptiPlex-9020/
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Signed-off-by: Feng Tang <feng.tang@intel.com>
+---
+ include/linux/mm_types.h | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
+
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 5aacc1c..5b55f88 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -445,13 +445,6 @@ struct mm_struct {
+ 		 */
+ 		atomic_t has_pinned;
+ 
+-		/**
+-		 * @write_protect_seq: Locked when any thread is write
+-		 * protecting pages mapped by this mm to enforce a later COW,
+-		 * for instance during page table copying for fork().
+-		 */
+-		seqcount_t write_protect_seq;
+-
+ #ifdef CONFIG_MMU
+ 		atomic_long_t pgtables_bytes;	/* PTE page table pages */
+ #endif
+@@ -480,7 +473,15 @@ struct mm_struct {
+ 		unsigned long stack_vm;	   /* VM_STACK */
+ 		unsigned long def_flags;
+ 
++		/**
++		 * @write_protect_seq: Locked when any thread is write
++		 * protecting pages mapped by this mm to enforce a later COW,
++		 * for instance during page table copying for fork().
++		 */
++		seqcount_t write_protect_seq;
++
+ 		spinlock_t arg_lock; /* protect the below fields */
++
+ 		unsigned long start_code, end_code, start_data, end_data;
+ 		unsigned long start_brk, brk, start_stack;
+ 		unsigned long arg_start, arg_end, env_start, env_end;
+-- 
+2.7.4
+
+
+
