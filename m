@@ -2,271 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 475C839C017
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 21:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE8A39C01A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 21:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbhFDTFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 15:05:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbhFDTFq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 15:05:46 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35DD5C061766;
-        Fri,  4 Jun 2021 12:03:59 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso4724193wmc.1;
-        Fri, 04 Jun 2021 12:03:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Twf9jLAwNkQLT/Ujy3oKloWts7LR/OdCMpxXY26zthg=;
-        b=MP1bQU74xRmIPbbCW5IfT+gtc1NZbEbx9s8o/Qh6TED2ofeYU181cNMzQJKG7vAr2D
-         CkfCrALUhSJuXNr2NpeMOCYqOu7yQzZ3FV3mVNu+smsnfyt9mUlkxhxmNA30estAfJur
-         wOU6Z6m5uvF71GLaV9tm9FbPwDFAuOQ7NuMxrImxqpg+KL4C4z1J0aiwHg1EEFCQBPs+
-         oIul4zenm0OZlgRuf98T5OCFRNi9Puy1qbMfd0A9DPbpoD7YKnE3x+kKVWS04FW07BG7
-         zRNtwzSFrvQTQjfhIQNK2ifJv+Jbu0ueqJyhY6GckpNU5C47tvJTiSFemdkIV9mR7msf
-         oD6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Twf9jLAwNkQLT/Ujy3oKloWts7LR/OdCMpxXY26zthg=;
-        b=jJOF2X42Af6AUBXYZWmpojcKWYTCG0dFjf8jB5gWGCEVDrVd+ghzYLkCfZwMv6iM3M
-         uFvZrau4T1Sj90YvS13I+94tiAqnDXXD8J7X1Qblv6nJ5fEz9FhMshBVw49QJTwjAjZw
-         nQbkyFQW5KnMIljvwsV3f4Q9SLIrqwpL5RnSBs3/5do5k9wroiNuZqrwzTpUWcCj1Y/2
-         SgrVuD8IaRADeuKxcYc3J6o7I4ne1mRWgXhURvSBRaTzGxHYEBx/d9fRsqyEjkDvomho
-         3nobK4qVWBerJrmMS2y0H2+AvpEckC3gvFGazEFW47qd8AfFMK8c3/dRVEnNpToCGu62
-         IBXw==
-X-Gm-Message-State: AOAM533xBptTACX05fITAEiI3ZmnvLVeY16C6BlToL1TKwYgDbScccdY
-        AbThCT8q75X0OzhAtIfRS8s=
-X-Google-Smtp-Source: ABdhPJytzExsCF3VUCig9c0sedFUkKAZMizhqxJiYlsmCY4WJCwJJhIj+2PCmu37/Tn7SInLTg5y3Q==
-X-Received: by 2002:a7b:c4d2:: with SMTP id g18mr4973716wmk.25.1622833437623;
-        Fri, 04 Jun 2021 12:03:57 -0700 (PDT)
-Received: from localhost.localdomain (p200300f137127c00f22f74fffe210725.dip0.t-ipconnect.de. [2003:f1:3712:7c00:f22f:74ff:fe21:725])
-        by smtp.googlemail.com with ESMTPSA id x10sm7576200wrt.65.2021.06.04.12.03.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 12:03:57 -0700 (PDT)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     robh+dt@kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-amlogic@lists.infradead.org
-Cc:     kishon@ti.com, vkoul@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH 2/2] phy: amlogic: Add a new driver for the HDMI TX PHY on Meson8/8b/8m2
-Date:   Fri,  4 Jun 2021 21:03:38 +0200
-Message-Id: <20210604190338.2248295-3-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210604190338.2248295-1-martin.blumenstingl@googlemail.com>
-References: <20210604190338.2248295-1-martin.blumenstingl@googlemail.com>
+        id S230253AbhFDTGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 15:06:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49450 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229810AbhFDTGT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 15:06:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AE5B601FA;
+        Fri,  4 Jun 2021 19:04:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622833472;
+        bh=cer+Bvra6ed4Y1JhppV0+conxTw5XnnGzF6r3B03UOU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Pgs6fH6TcnnUw8hfgWKlTOSTVfaEuwrfVRR8ujvSBTO324x6uWtuGOckoBCpzJ7Cb
+         /wzC0Ws51l1cn/h0+mHDypRuLpORZWRkK2rN6n7inGVpTy0sIOtSEXE6TY7iUrtQNv
+         IUbVAs85WZLnsAkjma8Xxz5Bl0Qjb/iTQTSAYHDUWXSfU/U6tDwXaZcC/SWh9T9F8y
+         BZyhgWZxGfSS21qyebdNulqatlFqmMZx9cyuQjVNQpkXXgzIsy+i4lV/jxM98CNFYp
+         40mrZty5gLW8tBI/pwa+/em5NIcUR1AWXQh8Yny2fywHYDvi1pGqGlh36R+RCqF3Qx
+         RsgLqKfpASVOA==
+Date:   Fri, 4 Jun 2021 14:04:30 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Wang Xingang <wangxingang5@huawei.com>
+Cc:     robh@kernel.org, will@kernel.org, joro@8bytes.org,
+        robh+dt@kernel.org, gregkh@linuxfoundation.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, xieyingtai@huawei.com,
+        John Garry <john.garry@huawei.com>
+Subject: Re: [PATCH v4] iommu/of: Fix pci_request_acs() before enumerating
+ PCI devices
+Message-ID: <20210604190430.GA2220179@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1621566204-37456-1-git-send-email-wangxingang5@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Amlogic Meson8/8b/8m2 have a built-in HDMI PHY in the HHI register
-region. Unfortunately only few register bits are documented. For
-HHI_HDMI_PHY_CNTL0 the magic numbers are taken from the 3.10 vendor
-kernel.
+[+cc John, who tested 6bf6c24720d3]
 
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- drivers/phy/amlogic/Kconfig              |  11 ++
- drivers/phy/amlogic/Makefile             |   1 +
- drivers/phy/amlogic/phy-meson8-hdmi-tx.c | 150 +++++++++++++++++++++++
- 3 files changed, 162 insertions(+)
- create mode 100644 drivers/phy/amlogic/phy-meson8-hdmi-tx.c
+On Fri, May 21, 2021 at 03:03:24AM +0000, Wang Xingang wrote:
+> From: Xingang Wang <wangxingang5@huawei.com>
+> 
+> When booting with devicetree, the pci_request_acs() is called after the
+> enumeration and initialization of PCI devices, thus the ACS is not
+> enabled. And ACS should be enabled when IOMMU is detected for the
+> PCI host bridge, so add check for IOMMU before probe of PCI host and call
+> pci_request_acs() to make sure ACS will be enabled when enumerating PCI
+> devices.
 
-diff --git a/drivers/phy/amlogic/Kconfig b/drivers/phy/amlogic/Kconfig
-index db5d0cd757e3..e6c3a2a8b769 100644
---- a/drivers/phy/amlogic/Kconfig
-+++ b/drivers/phy/amlogic/Kconfig
-@@ -2,6 +2,17 @@
- #
- # Phy drivers for Amlogic platforms
- #
-+config PHY_MESON8_HDMI_TX
-+	tristate "Meson8, Meson8b and Meson8m2 HDMI TX PHY driver"
-+	default ARCH_MESON
-+	depends on (ARCH_MESON && ARM) || COMPILE_TEST
-+	depends on OF
-+	select MFD_SYSCON
-+	help
-+	  Enable this to support the HDMI TX PHYs found in Meson8,
-+	  Meson8b and Meson8m2 SoCs.
-+	  If unsure, say N.
-+
- config PHY_MESON8B_USB2
- 	tristate "Meson8, Meson8b, Meson8m2 and GXBB USB2 PHY driver"
- 	default ARCH_MESON
-diff --git a/drivers/phy/amlogic/Makefile b/drivers/phy/amlogic/Makefile
-index 8fa07fbd0d92..c0886c850bb0 100644
---- a/drivers/phy/amlogic/Makefile
-+++ b/drivers/phy/amlogic/Makefile
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
-+obj-$(CONFIG_PHY_MESON8_HDMI_TX)		+= phy-meson8-hdmi-tx.o
- obj-$(CONFIG_PHY_MESON8B_USB2)			+= phy-meson8b-usb2.o
- obj-$(CONFIG_PHY_MESON_GXL_USB2)		+= phy-meson-gxl-usb2.o
- obj-$(CONFIG_PHY_MESON_G12A_USB2)		+= phy-meson-g12a-usb2.o
-diff --git a/drivers/phy/amlogic/phy-meson8-hdmi-tx.c b/drivers/phy/amlogic/phy-meson8-hdmi-tx.c
-new file mode 100644
-index 000000000000..8f13960a4492
---- /dev/null
-+++ b/drivers/phy/amlogic/phy-meson8-hdmi-tx.c
-@@ -0,0 +1,150 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Meson8, Meson8b and Meson8m2 HDMI TX PHY.
-+ *
-+ * Copyright (C) 2020 Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/bits.h>
-+#include <linux/clk.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/phy/phy.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+
-+#define HHI_HDMI_PHY_CNTL0				0x3a0
-+	#define HHI_HDMI_PHY_CNTL0_HDMI_CTL1		GENMASK(31, 16)
-+	#define HHI_HDMI_PHY_CNTL0_HDMI_CTL0		GENMASK(15, 0)
-+
-+#define HHI_HDMI_PHY_CNTL1				0x3a4
-+	#define HHI_HDMI_PHY_CNTL1_CLOCK_ENABLE		BIT(1)
-+	#define HHI_HDMI_PHY_CNTL1_SOFT_RESET		BIT(0)
-+
-+#define HHI_HDMI_PHY_CNTL2				0x3a8
-+
-+struct phy_meson8_hdmi_tx_priv {
-+	struct regmap		*hhi;
-+	struct clk		*tmds_clk;
-+};
-+
-+static int phy_meson8_hdmi_tx_init(struct phy *phy)
-+{
-+	struct phy_meson8_hdmi_tx_priv *priv = phy_get_drvdata(phy);
-+
-+	return clk_prepare_enable(priv->tmds_clk);
-+}
-+
-+static int phy_meson8_hdmi_tx_exit(struct phy *phy)
-+{
-+	struct phy_meson8_hdmi_tx_priv *priv = phy_get_drvdata(phy);
-+
-+	clk_disable_unprepare(priv->tmds_clk);
-+
-+	return 0;
-+}
-+
-+static int phy_meson8_hdmi_tx_power_on(struct phy *phy)
-+{
-+	struct phy_meson8_hdmi_tx_priv *priv = phy_get_drvdata(phy);
-+	unsigned int i;
-+	u16 hdmi_ctl0;
-+
-+	if (clk_get_rate(priv->tmds_clk) >= 2970UL * 1000 * 1000)
-+		hdmi_ctl0 = 0x1e8b;
-+	else
-+		hdmi_ctl0 = 0x4d0b;
-+
-+	regmap_write(priv->hhi, HHI_HDMI_PHY_CNTL0,
-+		     FIELD_PREP(HHI_HDMI_PHY_CNTL0_HDMI_CTL1, 0x08c3) |
-+		     FIELD_PREP(HHI_HDMI_PHY_CNTL0_HDMI_CTL0, hdmi_ctl0));
-+
-+	regmap_write(priv->hhi, HHI_HDMI_PHY_CNTL1, 0x00000000);
-+
-+	/* Reset three times, just like the vendor driver does */
-+	for (i = 0; i < 3; i++) {
-+		regmap_write(priv->hhi, HHI_HDMI_PHY_CNTL1,
-+			     HHI_HDMI_PHY_CNTL1_CLOCK_ENABLE |
-+			     HHI_HDMI_PHY_CNTL1_SOFT_RESET);
-+		usleep_range(1000, 2000);
-+
-+		regmap_write(priv->hhi, HHI_HDMI_PHY_CNTL1,
-+			     HHI_HDMI_PHY_CNTL1_CLOCK_ENABLE);
-+		usleep_range(1000, 2000);
-+	}
-+
-+	return 0;
-+}
-+
-+static int phy_meson8_hdmi_tx_power_off(struct phy *phy)
-+{
-+	struct phy_meson8_hdmi_tx_priv *priv = phy_get_drvdata(phy);
-+
-+	regmap_write(priv->hhi, HHI_HDMI_PHY_CNTL0,
-+		     FIELD_PREP(HHI_HDMI_PHY_CNTL0_HDMI_CTL1, 0x0841) |
-+		     FIELD_PREP(HHI_HDMI_PHY_CNTL0_HDMI_CTL0, 0x8d00));
-+
-+	return 0;
-+}
-+
-+static const struct phy_ops phy_meson8_hdmi_tx_ops = {
-+	.init		= phy_meson8_hdmi_tx_init,
-+	.exit		= phy_meson8_hdmi_tx_exit,
-+	.power_on	= phy_meson8_hdmi_tx_power_on,
-+	.power_off	= phy_meson8_hdmi_tx_power_off,
-+	.owner		= THIS_MODULE,
-+};
-+
-+static int phy_meson8_hdmi_tx_probe(struct platform_device *pdev)
-+{
-+	struct device_node *np = pdev->dev.of_node;
-+	struct phy_meson8_hdmi_tx_priv *priv;
-+	struct phy_provider *phy_provider;
-+	struct phy *phy;
-+
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->hhi = syscon_node_to_regmap(np->parent);
-+	if (IS_ERR(priv->hhi))
-+		return PTR_ERR(priv->hhi);
-+
-+	priv->tmds_clk = devm_clk_get(&pdev->dev, NULL);
-+	if (IS_ERR(priv->tmds_clk))
-+		return PTR_ERR(priv->tmds_clk);
-+
-+	phy = devm_phy_create(&pdev->dev, np, &phy_meson8_hdmi_tx_ops);
-+	if (IS_ERR(phy))
-+		return PTR_ERR(phy);
-+
-+	phy_set_drvdata(phy, priv);
-+
-+	phy_provider = devm_of_phy_provider_register(&pdev->dev,
-+						     of_phy_simple_xlate);
-+
-+	return PTR_ERR_OR_ZERO(phy_provider);
-+}
-+
-+static const struct of_device_id phy_meson8_hdmi_tx_of_match[] = {
-+	{ .compatible = "amlogic,meson8-hdmi-tx-phy" },
-+	{ .compatible = "amlogic,meson8b-hdmi-tx-phy" },
-+	{ .compatible = "amlogic,meson8m2-hdmi-tx-phy" },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, phy_meson8_hdmi_tx_of_match);
-+
-+static struct platform_driver phy_meson8_hdmi_tx_driver = {
-+	.probe	= phy_meson8_hdmi_tx_probe,
-+	.driver	= {
-+		.name		= "phy-meson8-hdmi-tx",
-+		.of_match_table	= phy_meson8_hdmi_tx_of_match,
-+	},
-+};
-+module_platform_driver(phy_meson8_hdmi_tx_driver);
-+
-+MODULE_AUTHOR("Martin Blumenstingl <martin.blumenstingl@googlemail.com>");
-+MODULE_DESCRIPTION("Meson8, Meson8b and Meson8m2 HDMI TX PHY driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.31.1
+I'm happy to apply this, but I'm a little puzzled about 6bf6c24720d3
+("iommu/of: Request ACS from the PCI core when configuring IOMMU
+linkage").  It was tested and fixed a problem, but I don't understand
+how.
 
+6bf6c24720d3 added the call to pci_request_acs() in
+of_iommu_configure() so it currently looks like this:
+
+  of_iommu_configure(dev, ...)
+  {
+    if (dev_is_pci(dev))
+      pci_request_acs();
+
+pci_request_acs() sets pci_acs_enable, which tells us to enable ACS
+when enumerating PCI devices in the future.  But we only call
+pci_request_acs() if we already *have* a PCI device.
+
+So maybe 6bf6c24720d3 fixed a problem for *some* PCI devices, but not
+all?  E.g., did we call of_iommu_configure() for one PCI device before
+enumerating the rest?
+
+> Fixes: 6bf6c24720d33 ("iommu/of: Request ACS from the PCI core when
+> configuring IOMMU linkage")
+> Signed-off-by: Xingang Wang <wangxingang5@huawei.com>
+> ---
+>  drivers/iommu/of_iommu.c | 1 -
+>  drivers/pci/of.c         | 8 +++++++-
+>  2 files changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
+> index a9d2df001149..54a14da242cc 100644
+> --- a/drivers/iommu/of_iommu.c
+> +++ b/drivers/iommu/of_iommu.c
+> @@ -205,7 +205,6 @@ const struct iommu_ops *of_iommu_configure(struct device *dev,
+>  			.np = master_np,
+>  		};
+>  
+> -		pci_request_acs();
+>  		err = pci_for_each_dma_alias(to_pci_dev(dev),
+>  					     of_pci_iommu_init, &info);
+>  	} else {
+> diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+> index da5b414d585a..2313c3f848b0 100644
+> --- a/drivers/pci/of.c
+> +++ b/drivers/pci/of.c
+> @@ -581,9 +581,15 @@ static int pci_parse_request_of_pci_ranges(struct device *dev,
+>  
+>  int devm_of_pci_bridge_init(struct device *dev, struct pci_host_bridge *bridge)
+>  {
+> -	if (!dev->of_node)
+> +	struct device_node *node = dev->of_node;
+> +
+> +	if (!node)
+>  		return 0;
+>  
+> +	/* Detect IOMMU and make sure ACS will be enabled */
+> +	if (of_property_read_bool(node, "iommu-map"))
+> +		pci_request_acs();
+> +
+>  	bridge->swizzle_irq = pci_common_swizzle;
+>  	bridge->map_irq = of_irq_parse_and_map_pci;
+>  
+> -- 
+> 2.19.1
+> 
