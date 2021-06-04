@@ -2,121 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD2639C1F5
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F2C039C21C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbhFDVLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 17:11:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230403AbhFDVLO (ORCPT
+        id S231593AbhFDVNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 17:13:09 -0400
+Received: from mail-oi1-f179.google.com ([209.85.167.179]:45644 "EHLO
+        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231548AbhFDVNI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 17:11:14 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C65C061768
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 14:09:27 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id b20-20020ac87fd40000b02901e1370c5e12so5931761qtk.17
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 14:09:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=8v+WJhPg9I/xdgL6B4MiQX3CWBXyQYuM5MOB3Jc9dDY=;
-        b=QRP2TwQixPWYnCinwP+Ayc/NX9oESif3zXsMESiFr/fPmLerJLAJJI31ktNvQoUUi/
-         270xuMczduXDEX0vo2WK/GiF+vYlLeW1mKOFuNGgyPlQ58ZhE1qMy99pqSLvPW1zdSpI
-         7WHShNVJE/9VUm/dGSwEosOgNVoiQe1PPfDMFzezYnam9YjQYccnGi34ygSa7XEX7oyb
-         0LCE4C40aaOhyoeVm54LpIKdrTmC5JktSYenjEnkgNCDh1qyuQ5tx8nGQ9HAf956iCrx
-         BD3SroZd7ttHA4w1l8C5fBKwL3tag/vAJxI3kmg5oNF7aOlMV5WLKwZoVqv3hv8mcYMc
-         gRcw==
+        Fri, 4 Jun 2021 17:13:08 -0400
+Received: by mail-oi1-f179.google.com with SMTP id w127so11039167oig.12;
+        Fri, 04 Jun 2021 14:11:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=8v+WJhPg9I/xdgL6B4MiQX3CWBXyQYuM5MOB3Jc9dDY=;
-        b=DYNqV9bnmo19mYKUqchTa2w9CE258F4SRyyCd2VPKuSBXU9zfRYtb1hLTLi4H+3Mg5
-         scbYCWFKMQzoV/NRmwfe7eww5NdkJw4st4za7OHhl+nCaYF0PsqO5i1uEuA6D0WBvJzJ
-         gkmxPo9KpbSI0KeSJtUhSUruvrK/d0KE0GVZTB5/Qp7hqRNdcsD+v9slSJpaHotHFc7q
-         J6yc7EGBSQymQTwJUQMnGyS7rD0Tj2isvdHimqyG8HXcfqFd6PRF52z7Tg0MaRj9254I
-         hdaEtqjueq7iKrHBruumazWarcsoabfLWj/J5vWw9wfjotCY8AOTZ0aLWt0UQEl9zKJx
-         KKQQ==
-X-Gm-Message-State: AOAM533kOsg33SwJgxPr/a2eI9FvLx6q5YWauT6iCBT28dDYpzN4eDyx
-        omyxZ5cWGZlNIRMY4L7vclwq7a3yrIw=
-X-Google-Smtp-Source: ABdhPJyjv+YInqbg6KaJ0jOYrxG2sn5YDWcEehU2DlFwYYyA8k2F0TGVXbcKcmz67/7RnRJ6djeyEnwJoGQ=
-X-Received: from satyaprateek.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:1092])
- (user=satyat job=sendgmr) by 2002:ad4:4e68:: with SMTP id ec8mr6758723qvb.62.1622840966813;
- Fri, 04 Jun 2021 14:09:26 -0700 (PDT)
-Date:   Fri,  4 Jun 2021 21:09:08 +0000
-In-Reply-To: <20210604210908.2105870-1-satyat@google.com>
-Message-Id: <20210604210908.2105870-10-satyat@google.com>
-Mime-Version: 1.0
-References: <20210604210908.2105870-1-satyat@google.com>
-X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
-Subject: [PATCH v9 9/9] fscrypt: update documentation for direct I/O support
-From:   Satya Tangirala <satyat@google.com>
-To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Satya Tangirala <satyat@google.com>,
-        Eric Biggers <ebiggers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=12fDzFlHcR7MgS/6SJcEZmnZQ01o5QA2CzWvQ7tWGj0=;
+        b=gWVdEFZPTx0aixwskpn61TNsnEt1r0O/+xkMcejcWfreF6M+348mJUqADY6Q/k7AUR
+         3qijmwGAHltDZrsUpfvlGyRU2PVvSEr+ktFyyRgBwbzoCHnM4UWihl01KgRyFCYjYBUF
+         a1gcCbcT5EeTJPLV0vRkDBUfTyArzlwR1vcYwyfKTn/oh1lPKvN+2uXV6Z/XFTr8ox/B
+         KsX1lpP6u5dLbWwHJCZKPHFEunfrfBfv6KPVVh9DE00mhhgoiEYPvuaclX41nqCHePT/
+         kFR9yqQn15jrJ4yTAVSTztLn1x8JgTZsH2pjea++s4uxHYGIedKZrbFqI2fl5SvzlfuM
+         DhXg==
+X-Gm-Message-State: AOAM531XFR248udGwX2uZReNI3rkwbWtJQPYhiwLwei3bMIICSLmsPZB
+        +0ivu8HfuYdMfxS87GBixg==
+X-Google-Smtp-Source: ABdhPJy5T24Ii55AMNbKFTrKwW9HSnMSHcwbCExf322LMZLqHTXAROZfbB15SujQjbREZ4k4ZwkpJw==
+X-Received: by 2002:a54:4794:: with SMTP id o20mr4218812oic.99.1622841080893;
+        Fri, 04 Jun 2021 14:11:20 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id z25sm715060oic.30.2021.06.04.14.11.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 14:11:20 -0700 (PDT)
+Received: (nullmailer pid 3924767 invoked by uid 1000);
+        Fri, 04 Jun 2021 21:11:19 -0000
+Date:   Fri, 4 Jun 2021 16:11:19 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Corentin Labbe <clabbe@baylibre.com>
+Cc:     daniel.lezcano@linaro.org, tglx@linutronix.de,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: timer: Convert faraday,fttmr010 to yaml
+Message-ID: <20210604211119.GA3916166@robh.at.kernel.org>
+References: <20210528185329.1969688-1-clabbe@baylibre.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210528185329.1969688-1-clabbe@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update fscrypt documentation to reflect the addition of direct I/O support
-and document the necessary conditions for direct I/O on encrypted files.
+On Fri, May 28, 2021 at 06:53:29PM +0000, Corentin Labbe wrote:
+> Converts timer/faraday,fttmr010.txt to yaml.
+> 
+> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+> ---
+>  .../bindings/timer/faraday,fttmr010.txt       | 38 --------
+>  .../bindings/timer/faraday,fttmr010.yaml      | 86 +++++++++++++++++++
+>  2 files changed, 86 insertions(+), 38 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/timer/faraday,fttmr010.txt
+>  create mode 100644 Documentation/devicetree/bindings/timer/faraday,fttmr010.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/timer/faraday,fttmr010.txt b/Documentation/devicetree/bindings/timer/faraday,fttmr010.txt
+> deleted file mode 100644
+> index 3cb2f4c98d64..000000000000
+> --- a/Documentation/devicetree/bindings/timer/faraday,fttmr010.txt
+> +++ /dev/null
+> @@ -1,38 +0,0 @@
+> -Faraday Technology timer
+> -
+> -This timer is a generic IP block from Faraday Technology, embedded in the
+> -Cortina Systems Gemini SoCs and other designs.
+> -
+> -Required properties:
+> -
+> -- compatible : Must be one of
+> -  "faraday,fttmr010"
+> -  "cortina,gemini-timer", "faraday,fttmr010"
+> -  "moxa,moxart-timer", "faraday,fttmr010"
+> -  "aspeed,ast2400-timer"
+> -  "aspeed,ast2500-timer"
+> -  "aspeed,ast2600-timer"
+> -
+> -- reg : Should contain registers location and length
+> -- interrupts : Should contain the three timer interrupts usually with
+> -  flags for falling edge
+> -
+> -Optionally required properties:
+> -
+> -- clocks : a clock to provide the tick rate for "faraday,fttmr010"
+> -- clock-names : should be "EXTCLK" and "PCLK" for the external tick timer
+> -  and peripheral clock respectively, for "faraday,fttmr010"
+> -- syscon : a phandle to the global Gemini system controller if the compatible
+> -  type is "cortina,gemini-timer"
+> -
+> -Example:
+> -
+> -timer@43000000 {
+> -	compatible = "faraday,fttmr010";
+> -	reg = <0x43000000 0x1000>;
+> -	interrupts = <14 IRQ_TYPE_EDGE_FALLING>, /* Timer 1 */
+> -		   <15 IRQ_TYPE_EDGE_FALLING>, /* Timer 2 */
+> -		   <16 IRQ_TYPE_EDGE_FALLING>; /* Timer 3 */
+> -	clocks = <&extclk>, <&pclk>;
+> -	clock-names = "EXTCLK", "PCLK";
+> -};
+> diff --git a/Documentation/devicetree/bindings/timer/faraday,fttmr010.yaml b/Documentation/devicetree/bindings/timer/faraday,fttmr010.yaml
+> new file mode 100644
+> index 000000000000..a495ea80c0fc
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/timer/faraday,fttmr010.yaml
+> @@ -0,0 +1,86 @@
+> +# SPDX-License-Identifier: (GPL-2.0+)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/timer/faraday,fttmr010.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Faraday Technology timer
+> +
+> +maintainers:
+> +  - Linus Walleij <linus.walleij@linaro.org>
+> +
+> +description: |
+> +  This timer is a generic IP block from Faraday Technology, embedded in the
+> +  Cortina Systems Gemini SoCs and other designs.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: faraday,fttmr010
+> +      - items:
+> +          - const: cortina,gemini-timer
+> +          - const: faraday,fttmr010
+> +      - items:
+> +          - const: moxa,moxart-timer
+> +          - const: faraday,fttmr010
+> +      - const: aspeed,ast2400-timer
+> +      - const: aspeed,ast2500-timer
+> +      - const: aspeed,ast2600-timer
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 3
+> +    description: Should contain the three timer interrupts usually with flags for falling edge
+> +
+> +  clocks:
+> +    minItems: 2
+> +
+> +  clock-names:
+> +    items:
+> +      - const: "PCLK"
+> +      - const: "EXTCLK"
+> +
+> +  syscon:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    maxItems: 1
+> +
+> +if:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        items:
 
-Signed-off-by: Satya Tangirala <satyat@google.com>
-Reviewed-by: Eric Biggers <ebiggers@google.com>
-Reviewed-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
- Documentation/filesystems/fscrypt.rst | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
+This is wrong because 'contains' should be a schema applying to a single 
+item whereas 'items' applies to the whole array.
 
-diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-index 44b67ebd6e40..c0c1747fa2fb 100644
---- a/Documentation/filesystems/fscrypt.rst
-+++ b/Documentation/filesystems/fscrypt.rst
-@@ -1047,8 +1047,10 @@ astute users may notice some differences in behavior:
-   may be used to overwrite the source files but isn't guaranteed to be
-   effective on all filesystems and storage devices.
- 
--- Direct I/O is not supported on encrypted files.  Attempts to use
--  direct I/O on such files will fall back to buffered I/O.
-+- Direct I/O is supported on encrypted files only under some
-+  circumstances (see `Direct I/O support`_ for details). When these
-+  circumstances are not met, attempts to use direct I/O on encrypted
-+  files will fall back to buffered I/O.
- 
- - The fallocate operations FALLOC_FL_COLLAPSE_RANGE and
-   FALLOC_FL_INSERT_RANGE are not supported on encrypted files and will
-@@ -1121,6 +1123,21 @@ It is not currently possible to backup and restore encrypted files
- without the encryption key.  This would require special APIs which
- have not yet been implemented.
- 
-+Direct I/O support
-+==================
-+
-+Direct I/O on encrypted files is supported through blk-crypto. In
-+particular, this means the kernel must have CONFIG_BLK_INLINE_ENCRYPTION
-+enabled, the filesystem must have had the 'inlinecrypt' mount option
-+specified, and either hardware inline encryption must be present, or
-+CONFIG_BLK_INLINE_ENCRYPTION_FALLBACK must have been enabled. Further,
-+the starting position in the file and the length of any I/O must be aligned
-+to the filesystem block size (*not* necessarily the same as the block
-+device's block size). If any of these conditions isn't met, attempts to do
-+direct I/O on an encrypted file will fall back to buffered I/O. However,
-+there aren't any additional requirements on user buffer alignment (apart
-+from those already present when using direct I/O on unencrypted files).
-+
- Encryption policy enforcement
- =============================
- 
--- 
-2.32.0.rc1.229.g3e70b5a671-goog
+> +          - const: cortina,gemini-timer
 
+Just this is enough.
+
+> +          - const: faraday,fttmr010
+> +then:
+> +  required:
+> +    - syscon
+> +else:
+> +  properties:
+> +    syscon: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    timer@43000000 {
+> +      compatible = "faraday,fttmr010";
+> +      reg = <0x43000000 0x1000>;
+> +      interrupts = <14 IRQ_TYPE_EDGE_FALLING>, /* Timer 1 */
+> +                   <15 IRQ_TYPE_EDGE_FALLING>, /* Timer 2 */
+> +                   <16 IRQ_TYPE_EDGE_FALLING>; /* Timer 3 */
+> +      clocks = <&extclk>, <&pclk>;
+> +      clock-names = "PCLK", "EXTCLK";
+> +      syscon = <&syscon>;
+
+This should fail based on my read of the .txt binding.
+
+> +    };
+> +...
+> -- 
+> 2.31.1
