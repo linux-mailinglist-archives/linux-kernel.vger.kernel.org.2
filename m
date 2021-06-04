@@ -2,86 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4AD39B5E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2CEF39B5DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbhFDJZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 05:25:10 -0400
-Received: from mail-pg1-f181.google.com ([209.85.215.181]:35627 "EHLO
-        mail-pg1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbhFDJZI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 05:25:08 -0400
-Received: by mail-pg1-f181.google.com with SMTP id o9so4553055pgd.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 02:23:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pcVIrrrWEUuSA+N6NdZCH+jzIyXyj1HQeo01ZwpdXxY=;
-        b=T6vUk/4jMaY1sFB+ktO56Tu+hSYK1wiZBd79Qpkt7cR3wdk6RgqpEA+MqmoApExn4u
-         Ki+XTdzY1lKdvlx+de9gaG+wdCW5+FLPTTH3w22d8er65zizi+PUDGgUHvaCEEPTouoT
-         LUIBuV5Az0wlga/c+czm/LVkend9CKDw/kZwQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pcVIrrrWEUuSA+N6NdZCH+jzIyXyj1HQeo01ZwpdXxY=;
-        b=R8RHgDPyofNMFT6ZI+ELOomlB/G7dSMXlLyTAA96YZ6TJrtWxkniwUkyH+UMBgOSWw
-         YtQTDt+9DKwhGpat4eXnpYdKQtaGqVoSU2COvvjeBTT3WnFb5hc1gFk5w8G6qUzJhgrr
-         mjreedonHZBGDElG+vSJE61S/baKsPxChg9ou3Xy+dDVrmcjT9EGSgZDMj7BU7yXZl0s
-         L6TFjL9P3tRKTLdHn8LUKxUDnlSwhiomvN2F8G/XBenBMSQIXGPAcJ+fSn3OVu07T+lS
-         FGlyj7c6+/4ZF0187BLCcS7OVD7qKIhlMDL1yy9oDMVxLHMDzgEbpaPoIUY6TsdbCYe2
-         JsNg==
-X-Gm-Message-State: AOAM531vxfDL7vSAttkQTJ8/191xRc+9D6/Nkv51u4KV39lQCn5MZkrw
-        MiHsy0c6cT8NnT0427t7IToCzA==
-X-Google-Smtp-Source: ABdhPJyN+y7mCRzpjZlapAyCgZr6LbpUALEaLKem6t6vFwqQAQV8qZmVYl6DOYQnER784of3HxKE+Q==
-X-Received: by 2002:aa7:82cb:0:b029:2e6:f397:d248 with SMTP id f11-20020aa782cb0000b02902e6f397d248mr3647517pfn.52.1622798529641;
-        Fri, 04 Jun 2021 02:22:09 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:36b:f5b6:c380:9ccf])
-        by smtp.gmail.com with ESMTPSA id d15sm4208168pjr.47.2021.06.04.02.22.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 02:22:09 -0700 (PDT)
-Date:   Fri, 4 Jun 2021 18:22:02 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Suleiman Souhlal <suleiman@google.com>, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        kvm@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>,
-        Jim Mattson <jmattson@google.com>
-Subject: Re: [RFC][PATCH] kvm: add suspend pm-notifier
-Message-ID: <YLnwum6AtcURNlRL@google.com>
-References: <20210603164315.682994-1-senozhatsky@chromium.org>
- <87a6o614dn.fsf@vitty.brq.redhat.com>
- <e4b4e872-4b22-82b7-57fc-65a7d10482c0@redhat.com>
+        id S230212AbhFDJX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 05:23:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:33702 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230103AbhFDJXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 05:23:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 194F21063;
+        Fri,  4 Jun 2021 02:22:09 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 830EA3F774;
+        Fri,  4 Jun 2021 02:22:07 -0700 (PDT)
+Date:   Fri, 4 Jun 2021 10:22:02 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     Jim Quinlan <jim2101024@gmail.com>,
+        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
+        <linux-pci@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jim Quinlan <jquinlan@broadcom.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v1 0/4] PCI: brcmstb: Add panic handler and shutdown func
+Message-ID: <20210604092202.GA598@lpieralisi>
+References: <20210427175140.17800-1-jim2101024@gmail.com>
+ <20210603163213.GB19835@lpieralisi>
+ <CA+-6iNyf7K7pQ1un8KJVuxr-h=_QN97MrKHS+5WA_fSm7yh85Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e4b4e872-4b22-82b7-57fc-65a7d10482c0@redhat.com>
+In-Reply-To: <CA+-6iNyf7K7pQ1un8KJVuxr-h=_QN97MrKHS+5WA_fSm7yh85Q@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/06/04 09:24), Paolo Bonzini wrote:
-> On 04/06/21 09:21, Vitaly Kuznetsov wrote:
-> > >   	preempt_notifier_inc();
-> > > +	kvm_init_pm_notifier(kvm);
-> > You've probably thought it through and I didn't but wouldn't it be
-> > easier to have one global pm_notifier call for KVM which would go
-> > through the list of VMs instead of registering/deregistering a
-> > pm_notifier call for every created/destroyed VM?
+On Thu, Jun 03, 2021 at 01:31:01PM -0400, Jim Quinlan wrote:
+> On Thu, Jun 3, 2021 at 12:32 PM Lorenzo Pieralisi
+> <lorenzo.pieralisi@arm.com> wrote:
+> >
+> > On Tue, Apr 27, 2021 at 01:51:35PM -0400, Jim Quinlan wrote:
+> > > v1 -- These commits were part of a previous pullreq but have
+> > >       been split off because they are unrelated to said pullreq's
+> > >       other more complex commits.
+> >
+> > Can I drop this series ?
+> >
+> > https://patchwork.kernel.org/user/todo/linux-pci/?series=459871
 > 
-> That raises questions on the locking, i.e. if we can we take the kvm_lock
-> safely from the notifier.
+> 
+> I will be submitting the voltage regulator commits -- but not the
+> panic handler -- from the series above -- I just haven't had time to
+> get around it (sorry).
 
-Right, I wanted to take the VM lock, rather than subsystem lock
-(kvm_lock).
+So the series above can be marked as superseded, that's what I
+was asking.
+
+Thanks,
+Lorenzo
+
+> Regards,
+> Jim Quinlan
+> Broadcom STB
+> >
+> >
+> >
+> > Thanks,
+> > Lorenzo
+> >
+> > > Jim Quinlan (4):
+> > >   PCI: brcmstb: Check return value of clk_prepare_enable()
+> > >   PCI: brcmstb: Give 7216 SOCs their own config type
+> > >   PCI: brcmstb: Add panic/die handler to RC driver
+> > >   PCI: brcmstb: add shutdown call to driver
+> > >
+> > >  drivers/pci/controller/pcie-brcmstb.c | 145 +++++++++++++++++++++++++-
+> > >  1 file changed, 143 insertions(+), 2 deletions(-)
+> > >
+> > > --
+> > > 2.17.1
+> > >
+
+
