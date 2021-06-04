@@ -2,222 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BFE39B26A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 08:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A15939B26D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 08:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229981AbhFDGPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 02:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229833AbhFDGPQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 02:15:16 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63025C06174A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 23:13:30 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lp358-0007K5-2y; Fri, 04 Jun 2021 08:13:22 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lp355-00042H-Oe; Fri, 04 Jun 2021 08:13:19 +0200
-Date:   Fri, 4 Jun 2021 08:13:19 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     "Li, Meng" <Meng.Li@windriver.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "Michael.Hennerich@analog.com" <Michael.Hennerich@analog.com>,
-        "pmeerw@pmeerw.net" <pmeerw@pmeerw.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>
-Subject: Re: [PATCH] driver: adc: ltc2497: return directly after reading the
- adc conversion value
-Message-ID: <20210604061319.pbj5ptnhxfsz4cec@pengutronix.de>
-References: <20210601092805.18385-1-Meng.Li@windriver.com>
- <20210603172025.314b5ced@jic23-huawei>
- <PH0PR11MB5191C26AA8B6D2B855E19D67F13B9@PH0PR11MB5191.namprd11.prod.outlook.com>
+        id S230080AbhFDGPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 02:15:30 -0400
+Received: from mail-mw2nam12on2065.outbound.protection.outlook.com ([40.107.244.65]:31009
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230050AbhFDGP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 02:15:29 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I/FCkb6sf+Yt4+JU/6cMe7yoWcLxudJ6a+nHKrdHFiMcGhNKWUBKjfvcRThWqxyvES6BDx9Hd8l/epSp8EFY/5JF+M/IzQo5NzVgi1ODmjDyDF/ntwQD2t+KHn+3aqFNinZ4jTr6AZ9gs0JcWf0dOZPuT5X0OU5yyBCOmt7JArPpNpiL15/BAaqsAn1NRw1+8F6Gmxx6d1eF8ai7OERUoV82yuZsPKeVRdwneM9uP1IoduJeKOEsNassvT0LiY6/9TOU4cREd/PHRAGYxZkLbdAN/4vUT3hsMCM/zjDxacZdLxqJuH9Nh2CPZAHSWKCseTgKGIhPMts5XULbE1xsEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VKRHne2sfaVfqlD94/AK3t8rDKC4i5VvytKYUfoRaw8=;
+ b=NQIm69/DicPsGfO2mYJgoGOxmugUgzo3Yc5cY0K5gviuYdA2sZvg6P/roQqt4nmGoolUEUDLAJTPBYkmmgZuV2xm6G2qSuGe3N2JP47ZYp3ymSjjSUq+YSEn13U1dibiCwWDTP5wOilqSmHWAyoojhSOe9Y41QNuWEMKuupQnToq9XLXQx/ZZC4LFNX7kTT6Y59iPdnXgUNQhj6cH28NrqOsc7YjgjYBQV/IKBhkVXys8O9ddVrEuqnB19bxHodoNrhvDnknFHa+bzhRmXMutA5/adL29pUkXDAao647c7OIJAWqndDg7kUvrjrN6qNwEWasqsHtGPIhTlGZ1vb8ow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=intel.com smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VKRHne2sfaVfqlD94/AK3t8rDKC4i5VvytKYUfoRaw8=;
+ b=ZznZ+HdlLWg5HXhDS1ZfVQ0AqaB/xI1wjMmcUItHNhai6u9rMulZCj2KA93BOlh+vhfZPUN1VjrrLWvQ7xlzg7s1284uI8b28o1UziG2avon74lenVqRO/kxm2YVTbWPFsap8cHOArUs797uaB4TemxWpLVllq81EfEmhHb5pE8=
+Received: from BN0PR04CA0041.namprd04.prod.outlook.com (2603:10b6:408:e8::16)
+ by CH2PR02MB6328.namprd02.prod.outlook.com (2603:10b6:610:5::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20; Fri, 4 Jun
+ 2021 06:13:41 +0000
+Received: from BN1NAM02FT011.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:408:e8:cafe::d) by BN0PR04CA0041.outlook.office365.com
+ (2603:10b6:408:e8::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20 via Frontend
+ Transport; Fri, 4 Jun 2021 06:13:40 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ BN1NAM02FT011.mail.protection.outlook.com (10.13.2.129) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4195.18 via Frontend Transport; Fri, 4 Jun 2021 06:13:40 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 3 Jun 2021 23:13:40 -0700
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Thu, 3 Jun 2021 23:13:40 -0700
+Envelope-to: lakshmi.bai.raja.subramanian@intel.com,
+ nandhini.srikandan@intel.com,
+ mahesh.r.vaidya@intel.com,
+ adrian.hunter@intel.com,
+ mallikarjunappa.sangannavar@intel.com,
+ furong.zhou@intel.com,
+ kris.pan@linux.intel.com,
+ mgross@linux.intel.com,
+ linux-phy@lists.infradead.org,
+ andriy.shevchenko@linux.intel.com,
+ vkoul@kernel.org,
+ kishon@ti.com,
+ linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-mmc@vger.kernel.org,
+ ulf.hansson@linaro.org,
+ linux-drivers-review-request@eclists.intel.com,
+ rashmi.a@intel.com
+Received: from [172.30.17.109] (port=36838)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1lp35P-0003um-OE; Thu, 03 Jun 2021 23:13:39 -0700
+Subject: =?UTF-8?B?UmU6IFvigJxQQVRDSOKAnSAxLzJdIG1tYzogc2RoY2ktb2YtYXJhc2Fu?=
+ =?UTF-8?Q?=3a_Use_clock-frequency_property_to_update_clk=5fxin?=
+To:     <rashmi.a@intel.com>,
+        <linux-drivers-review-request@eclists.intel.com>,
+        <michal.simek@xilinx.com>, <ulf.hansson@linaro.org>,
+        <linux-mmc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kishon@ti.com>,
+        <vkoul@kernel.org>, <andriy.shevchenko@linux.intel.com>,
+        <linux-phy@lists.infradead.org>,
+        Manish Narani <manish.narani@xilinx.com>,
+        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+CC:     <mgross@linux.intel.com>, <kris.pan@linux.intel.com>,
+        <furong.zhou@intel.com>, <mallikarjunappa.sangannavar@intel.com>,
+        <adrian.hunter@intel.com>, <mahesh.r.vaidya@intel.com>,
+        <nandhini.srikandan@intel.com>,
+        <lakshmi.bai.raja.subramanian@intel.com>
+References: <20210603182242.25733-1-rashmi.a@intel.com>
+ <20210603182242.25733-2-rashmi.a@intel.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Message-ID: <397dc803-f4ea-e8d3-9956-de8b3f537e2f@xilinx.com>
+Date:   Fri, 4 Jun 2021 08:13:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rusuoff57rpu4cdk"
-Content-Disposition: inline
-In-Reply-To: <PH0PR11MB5191C26AA8B6D2B855E19D67F13B9@PH0PR11MB5191.namprd11.prod.outlook.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210603182242.25733-2-rashmi.a@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 559f8f7a-822a-4f89-a301-08d9271fe610
+X-MS-TrafficTypeDiagnostic: CH2PR02MB6328:
+X-Microsoft-Antispam-PRVS: <CH2PR02MB6328C767470E450BD8D2FAE6C63B9@CH2PR02MB6328.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: HNClYKPjOg1ub2cAQGwIZn434lqY+C4rkC6MTr8wuDdQY98wJzBIZ0rR59MGNJJ2HeABr0wPPN91s9GznDPes8PiprGeu9somz7mFyI8e7yW9XzRs8EFqK+SD5YZ86BA93oFmK1MoH+CcqeBNllP+8cytkAAqKDMF3TPXw2rl8JZB0kqBrLIPHFmSCh7F293Kl0oNZfedS3lZFb+JnjM5QY5T89Z7t3nhAruYrI5i7Uz7uT0ChPI1ktIEedGf3/ZcbMJOOaDuVpsaavGoLdiryuPfqs608IyGjFlozd6v7tQVKn7Syq9OlppnvKLv1g2+Ssw9GPr9HJo4Q0BihMgsQOYEXMSSMd4/y7HiH6h2MUQb3Uyjh5Xei2BwLDdIvkbWP+Yic2VrwNoy+irLsuX6bzVeJmwxB+Nbmp2h5u5Mf94lbLewqsZhCTUtyQkhUqY7YgDrfrzu+OnfDYfXVHi/4a1szcsRf4PRCbl+rBCBp0RgNpRvnMPYNfy8Kaltp7Y5hcLWTEi9bBI0HiAzEkiqBZLQQwnt7Qtgw/+RLSNvcM3Kmwsf0yofDB04J+scugD3xP408lC6oRjCxCOv1e7kh0nTcMs6Kazwg95cj02D/ZIS8ykR7guQLaUo97a2TXVMVzCZSbJ7DjTFSaNHn4MK24SBvO7jITB+AxyM6B6z1jnGDOR06ZJicW7YzAkO9b0HwpglG8k5FLGs2ASACmWbmcztsRv/xQ0q1N/r5NweHSCehUnC8eEIOCq77WLjDuVKdnfZLyuvkh6izb4O3AUag==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(39850400004)(346002)(396003)(136003)(46966006)(36840700001)(47076005)(7636003)(316002)(36860700001)(31696002)(44832011)(2616005)(82740400003)(4326008)(426003)(36906005)(336012)(921005)(83380400001)(26005)(70206006)(186003)(82310400003)(53546011)(70586007)(54906003)(8936002)(31686004)(356005)(5660300002)(36756003)(110136005)(9786002)(7416002)(478600001)(6636002)(6666004)(2906002)(50156003)(83996005)(2101003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2021 06:13:40.5535
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 559f8f7a-822a-4f89-a301-08d9271fe610
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN1NAM02FT011.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR02MB6328
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---rusuoff57rpu4cdk
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On 6/3/21 8:22 PM, rashmi.a@intel.com wrote:
+> From: Rashmi A <rashmi.a@intel.com>
+> 
+> If clock-frequency property is set and it is not the same as the current
+> clock rate of clk_xin(base clock frequency), set clk_xin to use the
+> provided clock rate.
+> 
+> Signed-off-by: Rashmi A <rashmi.a@intel.com>
+> Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
+> ---
+>  drivers/mmc/host/sdhci-of-arasan.c | 14 ++++++++++++--
+>  1 file changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
+> index 839965f7c717..0e7c07ed9690 100644
+> --- a/drivers/mmc/host/sdhci-of-arasan.c
+> +++ b/drivers/mmc/host/sdhci-of-arasan.c
+> @@ -1542,6 +1542,8 @@ static int sdhci_arasan_probe(struct platform_device *pdev)
+>  		}
+>  	}
+>  
+> +	sdhci_get_of_property(pdev);
+> +
+>  	sdhci_arasan->clk_ahb = devm_clk_get(dev, "clk_ahb");
+>  	if (IS_ERR(sdhci_arasan->clk_ahb)) {
+>  		ret = dev_err_probe(dev, PTR_ERR(sdhci_arasan->clk_ahb),
+> @@ -1561,14 +1563,22 @@ static int sdhci_arasan_probe(struct platform_device *pdev)
+>  		goto err_pltfm_free;
+>  	}
+>  
+> +	/* If clock-frequency property is set, use the provided value */
+> +	if (pltfm_host->clock &&
+> +	    pltfm_host->clock != clk_get_rate(clk_xin)) {
+> +		ret = clk_set_rate(clk_xin, pltfm_host->clock);
+> +		if (ret) {
+> +			dev_err(&pdev->dev, "Failed to set SD clock rate\n");
+> +			goto clk_dis_ahb;
+> +		}
+> +	}
+> +
+>  	ret = clk_prepare_enable(clk_xin);
+>  	if (ret) {
+>  		dev_err(dev, "Unable to enable SD clock.\n");
+>  		goto clk_dis_ahb;
+>  	}
+>  
+> -	sdhci_get_of_property(pdev);
+> -
+>  	if (of_property_read_bool(np, "xlnx,fails-without-test-cd"))
+>  		sdhci_arasan->quirks |= SDHCI_ARASAN_QUIRK_FORCE_CDTEST;
+>  
+> 
 
-On Fri, Jun 04, 2021 at 02:16:39AM +0000, Li, Meng wrote:
->=20
->=20
-> > -----Original Message-----
-> > From: Jonathan Cameron <jic23@kernel.org>
-> > Sent: Friday, June 4, 2021 12:20 AM
-> > To: Li, Meng <Meng.Li@windriver.com>
-> > Cc: lars@metafoo.de; Michael.Hennerich@analog.com;
-> > pmeerw@pmeerw.net; u.kleine-koenig@pengutronix.de; linux-
-> > kernel@vger.kernel.org; linux-iio@vger.kernel.org
-> > Subject: Re: [PATCH] driver: adc: ltc2497: return directly after readin=
-g the adc
-> > conversion value
-> >=20
-> > [Please note: This e-mail is from an EXTERNAL e-mail address]
-> >=20
-> > On Tue,  1 Jun 2021 17:28:05 +0800
-> > Meng.Li@windriver.com wrote:
-> >=20
-> > > From: Meng Li <Meng.Li@windriver.com>
-> > >
-> > > When read adc conversion value with below command:
-> > > cat /sys/.../iio:device0/in_voltage0-voltage1_raw
-> > > There is an error reported as below:
-> > > ltc2497 0-0014: i2c transfer failed: -EREMOTEIO This i2c transfer
-> > > issue is introduced by commit 69548b7c2c4f ("iio:
-> > > adc: ltc2497: split protocol independent part in a separate module").
-> > > When extract the common code into ltc2497-core.c, it change the code
-> > > logic of function ltc2497core_read(). With wrong reading sequence, the
-> > > action of enable adc channel is sent to chip again during adc channel
-> > > is in conversion status. In this way, there is no ack from chip, and
-> > > then cause i2c transfer failed.
-> > > In order to keep the code logic is the same with original ideal, it is
-> > > need to return direct after reading the adc conversion value.
+Manish/Sai: Please retest this on Xilinx SOC.
 
-As background about the choice of the .result_and_measure callback:
-A difference between the ltc2497 (i2c) and ltc2496 (spi) is that for the
-latter reading the result of the last conversion and starting a new is a
-single bus operation and the one cannot be done without the other.
-
-> > > v2:
-> > > According to ltc2497 datasheet, the max value of conversion time is
-> > > 149.9 ms. So, add 20% to the 150msecs so that there is enough time for
-> > > data conversion.
-> >=20
-> > Version change logs go below the --- as we don't want to preserve them
-> > forever in the git history.
-> >=20
-> > I may have lost track of the discussion, but I thought the idea was that
-> > perhaps the longer time period would remove the need for the early retu=
-rn?
-> >=20
->=20
-> No!
-> I think the ret is essential.
-
-I'd like to understand why. Currently ltc2497core_read() looks as
-follows (simplified by dropping error handling, and unrolling the
-result_and_measure callback for the i2c case):
-
-	ltc2497core_wait_conv()
-
-	// result_and_measure(address, NULL)
-	i2c_smbus_write_byte(client, LTC2497_ENABLE | address);
-
-	msleep_interruptible(LTC2497_CONVERSION_TIME_MS)
-
-	// result_and_measure(address, val);
-	i2c_master_recv(client, &buf, 3);
-	i2c_smbus_write_byte(client, LTC2497_ENABLE | address);
-
-
-With the early return you suggest to introduce with your patch you save
-the last i2c_smbus_write_byte call. The data sheet indeed claims to
-start a new conversion at the stop condition.
-
-So either the reading of the conversion result and programming of the
-(maybe) new address has to be done in a single i2c transfer, or we
-have to do something like your patch.
-
-What I don't like about your approach is that it changes the semantic of
-the callback to result_*or*_measure which is something the spi variant
-cannot implement. With the current use of the function this is fine,
-however if at some time in the future we implement a bulk conversion
-shortcut this hurts.
-
-So I suggest to do:
-
----->8----
-=46rom: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-Date: Fri, 4 Jun 2021 08:02:44 +0200
-Subject: [PATCH] iio: ltc2497: Fix reading conversion results
-
-After the result of the previous conversion is read the chip
-automatically starts a new conversion and doesn't accept new i2c
-transfers until this conversion is completed which makes the function
-return failure.
-
-So add an early return iff the programming of the new address isn't
-needed. Note this will not fix the problem in general, but all cases
-that are currently used. Once this changes we get the failure back, but
-this can be addressed when the need arises.
-
-Fixes: 69548b7c2c4f ("iio: adc: ltc2497: split protocol independent part in=
- a separate module ")
-Reported-by: Meng Li <Meng.Li@windriver.com>
-Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
----
- drivers/iio/adc/ltc2497.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/drivers/iio/adc/ltc2497.c b/drivers/iio/adc/ltc2497.c
---- a/drivers/iio/adc/ltc2497.c
-+++ b/drivers/iio/adc/ltc2497.c
-@@ -41,6 +41,19 @@ static int ltc2497_result_and_measure(struct ltc2497core=
-_driverdata *ddata,
- 		}
-=20
- 		*val =3D (be32_to_cpu(st->buf) >> 14) - (1 << 17);
-+
-+		/*
-+		 * The part started a new conversion at the end of the above i2c
-+		 * transfer, so if the address didn't change since the last call
-+		 * everything is fine and we can return early.
-+		 * If not (which should only happen when some sort of bulk
-+		 * conversion is implemented) we have to program the new
-+		 * address. Note that this probably fails as the conversion that
-+		 * was triggered above is like not complete yet and the two
-+		 * operations have to be done in a single transfer.
-+		 */
-+		if (ddata->addr_prev =3D=3D address)
-+			return 0;
- 	}
-=20
- 	ret =3D i2c_smbus_write_byte(st->client,
-
-Compared to Meng Li's patch this doesn't introduce reporting of bogus
-conversion results once we implement bulk conversion.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---rusuoff57rpu4cdk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmC5xHwACgkQwfwUeK3K
-7AksVwf8C7Bc3dTHFDtYZyiOnMLTb9kvTP19tXLuBfkOQK0gX+qcHx5Ye1fpStC3
-rFrSdjOuevpxNg+10ANxPnIcxKZscMUxsbYKKLjxP7OfuMGYPh8SQQSneq6jqyzw
-YgQL+BD6watbUOavm8/vMHIJ3pU7r1GmuxJiV6ojB1L0t/C7Xfb7nOnM7Zk7RAsI
-gcSeej44mqNDmIXIYdKLIGca6qYTks3lb31tl3qZzsiwxJ4WSd3cjoo9+suV34yA
-3WmIvSASxuZSjsR1C7AU0/znDsvwEuSiaf23z+kGDcs/SrEc5vlll4e6OMurcUZ4
-HoGD0/Ss9yIH2CYbBZof69mWsUrAjQ==
-=Uurf
------END PGP SIGNATURE-----
-
---rusuoff57rpu4cdk--
+Thanks,
+Michal
