@@ -2,87 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8484639BF67
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 20:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A4A739BF6F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 20:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhFDSQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 14:16:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbhFDSQN (ORCPT
+        id S230019AbhFDSSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 14:18:44 -0400
+Received: from polaris.svanheule.net ([84.16.241.116]:40456 "EHLO
+        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229726AbhFDSSo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 14:16:13 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9DA7C061766
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 11:14:26 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622830464;
+        Fri, 4 Jun 2021 14:18:44 -0400
+Received: from [IPv6:2a02:a03f:eafb:ee01:47d6:9866:c9b9:c953] (unknown [IPv6:2a02:a03f:eafb:ee01:47d6:9866:c9b9:c953])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sander@svanheule.net)
+        by polaris.svanheule.net (Postfix) with ESMTPSA id 0CD7B208ABC;
+        Fri,  4 Jun 2021 20:16:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
+        s=mail1707; t=1622830616;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Drple3vblKhjJjN2PXQm8uBxk46WkNL+qLdK3onwHjs=;
-        b=Gb+28IIlRpZftlLmUqSe2BoC9yQvta1x9ZE5YOjKxk/5INEfTOaTK72klUpzhIs+nAK28N
-        ntR9tnxlQvb23gNj6DCdYFjpa0g7n296IJDxaorFdYXX8PEkwg9b7aTwSvS9HRINc06fa1
-        qzs1E3c6aJip3wGBzAaHuc10IgnbuntDH3uYfxvz8Z+pcxuhh/AM4mwvTVOAC1XVXDiYzA
-        gR3aVbIHODAQWDUaz9uV2CM+55n7jdIThfQ3WTuuQBd/qq+HkEbPqZWNfLAzwaRHos37bb
-        7j68ylyG3+1x6jPTsPpgEtTiy8fd9y7Dxgg6MKk58VUOnHnYCfq7VCnnPf/eJw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622830464;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Drple3vblKhjJjN2PXQm8uBxk46WkNL+qLdK3onwHjs=;
-        b=kqbngnGnCrwXtdTOA/yQz/igNWW68d0w04wEQu1JhIpLkY8UNLVWgjVOapJQbzlsQWr1X1
-        R9TZlyyU8D0TyUBg==
-To:     Dave Hansen <dave.hansen@intel.com>,
-        "Yu\, Yu-cheng" <yu-cheng.yu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: Re: [patch 0/8] x86/fpu: Mop up XSAVES and related damage
-In-Reply-To: <6a93334d-d771-666f-7fd0-8d152799fb02@intel.com>
-References: <20210602095543.149814064@linutronix.de> <9c5c90bf-fbf6-7e45-4668-2f40f11e8b36@intel.com> <87h7idzpwh.ffs@nanos.tec.linutronix.de> <6a93334d-d771-666f-7fd0-8d152799fb02@intel.com>
-Date:   Fri, 04 Jun 2021 20:14:24 +0200
-Message-ID: <87y2bpzedb.ffs@nanos.tec.linutronix.de>
+        bh=1B3gpGcjjMlyC7hzTnIAubrSPnRW7x5Aifrp6c2HkPs=;
+        b=fGCxM0RwHo8oP0mHriHaEW4ovr79Kjf4bw6hLcrv8W9Xx7W0rBJY+k674TphdExIyFNeFU
+        b87lvnRP0nVMK13hQgLCXjkGKOni8OuSsPXsLCkf7aVYk8/vHZViwf7d/kQOrGIYFD8sf9
+        u/kSRW7Jwh/fW2r0plD4PPsbcOMrItPye06d8b3d5VD/vf5hVYU2gzB7w2qjxMrpchi8a4
+        Bo2lpl+j9LEW76EP7W19Ny4UA4VFa2oAdVQiSVyCeQeIf2Z7Wi9y61y+mVYeEFMifvL7J1
+        umeKuSL4A0e3jhdM8f399vR+thL5mbOSJZ+2SmWMStrw2I6JsHB5xMvPr6rOWg==
+Message-ID: <8899fbf306051fa3cdd8bde92634de8134bce0fb.camel@svanheule.net>
+Subject: Re: [RFC PATCH 0/2] Clause-22/Clause-45 MDIO regmap support
+From:   Sander Vanheule <sander@svanheule.net>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 04 Jun 2021 20:16:53 +0200
+In-Reply-To: <20210604172515.GG4045@sirena.org.uk>
+References: <cover.1622743333.git.sander@svanheule.net>
+         <20210604172515.GG4045@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04 2021 at 10:46, Dave Hansen wrote:
-> On 6/4/21 7:05 AM, Thomas Gleixner wrote:
->> But looking at the above, it's not clear to me why that PKRU stuff works
->> at all (upstream), but I'll figure it out eventually. I'm quite sure
->> that it does work by pure chance not by design.
->
-> The upstream flush_thread() code appears correct and even intentionally
-> so.  Just how we must eagerly load PKRU on a context switch, the
-> fpu__clear*() code eagerly "clears" PKRU.  It doesn't actually zero it,
-> of course, but reverts the register and the fpstate back to the
-> 'init_pkru_value':
->
-> flush_thread()->fpu__clear_all()->fpu__clear(user_only=false)
-> 	copy_init_fpstate_to_fpregs()
-> 		copy_kernel_to_xregs(init_fpu) // fpstate
-> 		copy_init_pkru_to_fpregs()
-> 			 write_pkru(init_pkru_value_snapshot) // fpregs
->
-> Andy said you have a fix for this, but I think the new fpu__clear_all()
-> is failing to do the eager write_pkru().
+Hi Mark,
 
-Yes, that's the reason and it took some time until I realized that
-fpu__initialize() is inconsistent vs. PKRU.
+On Fri, 2021-06-04 at 18:25 +0100, Mark Brown wrote:
+> On Thu, Jun 03, 2021 at 08:25:08PM +0200, Sander Vanheule wrote:
+> 
+> > 1. I've opted to just ignore any bits that lie beyond the allowed address
+> >    width. Would it be cleaner to raise an error instead?
+> 
+> It doesn't *really* matter, enforcement is probably a bit better as it
+> might catch bugs.
 
-We can't use copy_init_pkru_to_fregs() either because that's not
-updating the xsaves area because XFEATURE_PKRU has been cleared.
-Yay for consistency!
+Agreed.
 
-I'll post a fix soonish after testing it.
+> > 2. Packing of the clause-45 register addresses (16 bit) and adressed device
+> >    type (5 bit) is the same as in the mdio subsystem, resulting in a 21 bit
+> >    address. Is this an appropriate way to pack this information into one
+> >    address for the regmap interface?
+> 
+> Either that or pass the type in when instantiating the regmap (it sounds
+> like it should be the same for all registers on the device?).
 
-Thanks,
+I think the 'device type' field should be viewed more as a paging index. A phy
+will have PMA/PMD ("generic phy") features, but will likely also have status and
+settings in the AN (auto-negotiation) page. I'm sure Andrew knows a lot more
+about this than I do.
 
-        tglx
+> 
+> > The reasoning behind (1) is to allow the regmap user to use extra bits
+> > as a way to virtually extend the address space. Note that this actually
+> > results in aliasing. This can be useful if the data read from to a
+> > register doesn't have the same meaning as the data written to it
+> > (e.g. GPIO pin input and output data). An alternative solution to this
+> > would be some concept of "aliased registers" in regmap -- like volatile or
+> > precious registers.
+> 
+> I think these registers are in practice going to either need to be
+> volatile (how most of them work at the minute) or otherwise handled in
+> regmap (eg, the page support we've got).  Having two different names for
+> the same register feels like it's asking for bugs if any of the higher
+> level functions of regmap get used.
+
+This is actually an issue with a GPIO chip that I'm trying to implement [1]. To
+set an output, data is written to the register. To get an input value, data is
+read from the register. Since a register contains data for 16 GPIO lines, a
+regular read-modify-write could erroneously overwrite output values. A pin
+outside of the RMW mask could've changed to an input, and may now be reading a
+different value. The issue I was running into, had to do with a RMW not being
+written because the pin value apparently hadn't changed.
+
+To work around the issue, I created a "virtual page" by adding an extra bit [2].
+On reads and writes, they are aliased to the same actual register. However, by
+having two different addresses, one can be marked as "volatile and read-only",
+while the other is "non-volatile and write-only". The latter allows for caching,
+ensuring that a RMW will use the (correct) cached value to calculate the updated
+register value.
+
+I didn't use the existing paging mechanism for this, since (I think) then I
+would need to specify a register that contains the page index. But as I don't
+have an actual page register, I would have to specify another existing register
+with an empty mask. This could lead to useless bus activity if I accidentally
+chose a volatile register.
+
+[1] https://lore.kernel.org/lkml/84352c93f27d7c8b7afea54f3932020e9cd97d02.camel@svanheule.net/
+[2] https://lore.kernel.org/lkml/56fb027587fa067a249237ecaf40828cd508cdcc.1622713678.git.sander@svanheule.net/
+
+
+Best,
+Sander
+
