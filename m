@@ -2,83 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 768CF39BBEA
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6852F39BBEC
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231185AbhFDPdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 11:33:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34250 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231172AbhFDPc7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 11:32:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4D9F61402;
-        Fri,  4 Jun 2021 15:31:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622820673;
-        bh=tGBLXDuAuIKJSPpoa4UYobRcjJZf0tk1Rc1UX7cyfQs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RUFwg4bDVGM758V234vXpMbuYRiFp7Ag4YMuKjDPXrM57sVsReu9Fuzg1xYN3x+np
-         e4jBA9HbDvGjMZQJ/9mTkIkNCESh0BcBJzcKcqMZ6SXYDJ82TGBC6AFAxH1hiGOzQf
-         97Zh83ga+BPE+0M17eZOOhHBTkyXoTUU9cwvbHfsW6Wk3b6nR3WiMOMjdhaFEBhmD5
-         lpoNCGTh5Aj9zoQ4nlwDDzfl1FsdhTQU5JIOQ84UjZNnH491NS7NJXLq6OFXwd3FUm
-         x+Rsi4fxNi/AHNS06dkoUYbrHYpuqNGA1M4+OkLLyLZUs9h5jsTerwEWhZ4MRE55KY
-         3YRF3ylRub5Sg==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org,
-        aneesh.kumar@linux.ibm.com, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>
-Subject: [PATCH 2/2] perf/probe: Report permission error for tracefs error
-Date:   Sat,  5 Jun 2021 00:31:08 +0900
-Message-Id: <162282066829.448336.16156999655071988915.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <162282064848.448336.15589262399731095367.stgit@devnote2>
-References: <162282064848.448336.15589262399731095367.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S231258AbhFDPdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 11:33:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21514 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231172AbhFDPdB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 11:33:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622820674;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cERM4CxU1fdGbZ5xfVcA/YHB8xA9mukjpKUoelz7d8o=;
+        b=N2wSK1Yr7FG26M1iw7o7gOAEqjx748MmEAKBXOeic6oHbzNPL/y2D0Owmwiygbnj3wbbGR
+        thDriFkfDPtEHg5YWcAYUJgB3VPB2gkDGd2IT+j3ODY1uAqROG1vOjOsW3o8TaEJ2teitL
+        6iWjh88vTt+KVq2iusKBV9UQFawP80U=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-105-Vcn3blUbMYW7RLG-IbHmRQ-1; Fri, 04 Jun 2021 11:31:13 -0400
+X-MC-Unique: Vcn3blUbMYW7RLG-IbHmRQ-1
+Received: by mail-ed1-f70.google.com with SMTP id a16-20020aa7cf100000b0290391819a774aso3134245edy.8
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 08:31:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cERM4CxU1fdGbZ5xfVcA/YHB8xA9mukjpKUoelz7d8o=;
+        b=MGAB3gplHn2HykJsyEXinbyC8tmVovs1Yljt+35qTvKqOzl7tk9XBVVKt3R8jCUTsL
+         UJ3xsbYe05SCT/3gWT08dBCnZ1tbEM4oJWxep9KNa+G/X5H3MEJgmGdh6ZR+NT+JMxJ8
+         3FLEx9QqsR/68KWVkO8ZLTi7JoBrpyOoxpS0CNMYfuT8msW4SfowBxyYuRdfnX4wb9SS
+         cAZPvTs+uwP7kjWCks0TeTwk29Ymiet1xkfeZkncREUPnB/gzcN+FikevWvnGNwCbYss
+         PuQ4TZ4gRJ34RAXyC300sQhaLyDqTV3pGasKxNBYCdAPnAB6Xcma3xSeNpZEEBn4t9k8
+         ZROA==
+X-Gm-Message-State: AOAM533u7ybinoiboJJZrhX09qi/ukaNIKwMtc7WT/QxYzZGjsf2iHYo
+        uyFecOJFCWHzLYErngU2vNVvsWDMBtvRq1yNg3ulCpWrOJF5mpXAUTMHbNaWnPKcszhi1jVYNe5
+        Eu5YUPyJFM7JEnoWMj9s9qyau
+X-Received: by 2002:a17:906:b104:: with SMTP id u4mr4653153ejy.211.1622820672392;
+        Fri, 04 Jun 2021 08:31:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxQ+Ke3xg9iSoQmojM8y2OzfT8e/p8H7UhQ0ox6RA46fDc22q9iY4O5Dpu45VVlxBSH+DlszQ==
+X-Received: by 2002:a17:906:b104:: with SMTP id u4mr4653142ejy.211.1622820672235;
+        Fri, 04 Jun 2021 08:31:12 -0700 (PDT)
+Received: from x1.bristot.me (host-79-24-6-4.retail.telecomitalia.it. [79.24.6.4])
+        by smtp.gmail.com with ESMTPSA id fn3sm2880606ejc.96.2021.06.04.08.31.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Jun 2021 08:31:11 -0700 (PDT)
+Subject: Re: [PATCH V3 4/9] tracing/hwlat: Implement the per-cpu mode
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Kate Carcia <kcarcia@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Clark Willaims <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>, linux-doc@vger.kernel.org
+References: <cover.1621024265.git.bristot@redhat.com>
+ <187db3f9eed1603c858a1f7669d0140dfb753bfd.1621024265.git.bristot@redhat.com>
+ <20210603171758.48da3357@gandalf.local.home>
+From:   Daniel Bristot de Oliveira <bristot@redhat.com>
+Message-ID: <f53a8dba-784b-7f1a-a3ea-a572b9f017bb@redhat.com>
+Date:   Fri, 4 Jun 2021 17:31:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210603171758.48da3357@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Report permission error for the tracefs access error.
-This can happen when non-superuser runs perf probe.
-With this patch, perf probe shows the following message.
+On 6/3/21 11:17 PM, Steven Rostedt wrote:
+> On Fri, 14 May 2021 22:51:13 +0200
+> Daniel Bristot de Oliveira <bristot@redhat.com> wrote:
+> 
+>>  void trace_hwlat_callback(bool enter)
+>>  {
+>> -	if (smp_processor_id() != nmi_cpu)
+>> +	struct hwlat_kthread_data *kdata = get_cpu_data();
+>> +
+>> +	if (kdata->kthread)
+> 
+> Shouldn't that be:
+> 
+> 	if (!kdata->kthread)
 
-  $ perf probe -l
-  No permission to access tracefs. Please run this command again with sudo.
-    Error: Failed to show event list.
+oops! Fixing in v4.
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- tools/perf/util/probe-file.c |    4 ++++
- 1 file changed, 4 insertions(+)
+-- Daniel
 
-diff --git a/tools/perf/util/probe-file.c b/tools/perf/util/probe-file.c
-index 52273542e6ef..52d878f5a44d 100644
---- a/tools/perf/util/probe-file.c
-+++ b/tools/perf/util/probe-file.c
-@@ -48,6 +48,8 @@ static void print_open_warning(int err, bool uprobe)
- 			   uprobe ? 'u' : 'k', config);
- 	} else if (err == -ENOTSUP)
- 		pr_warning("Tracefs or debugfs is not mounted.\n");
-+	else if (err == -EACCES)
-+		pr_warning("No permission to access tracefs. Please run this command again with sudo.\n");
- 	else
- 		pr_warning("Failed to open %cprobe_events: %s\n",
- 			   uprobe ? 'u' : 'k',
-@@ -62,6 +64,8 @@ static void print_both_open_warning(int kerr, int uerr)
- 	else if (kerr == -ENOENT && uerr == -ENOENT)
- 		pr_warning("Please rebuild kernel with CONFIG_KPROBE_EVENTS "
- 			   "or/and CONFIG_UPROBE_EVENTS.\n");
-+	else if (kerr == -EACCES && uerr == -EACCES)
-+		pr_warning("No permission to access tracefs. Please run this command again with sudo.\n");
- 	else {
- 		char sbuf[STRERR_BUFSIZE];
- 		pr_warning("Failed to open kprobe events: %s.\n",
+
+> ?
+> 
+> -- Steve
+> 
+>>  		return;
+>>  
+>>  	/*
+>> @@ -158,13 +173,13 @@ void trace_hwlat_callback(bool enter)
+>>  	 */
+>>  	if (!IS_ENABLED(CONFIG_GENERIC_SCHED_CLOCK)) {
+>>  		if (enter)
+>> -			nmi_ts_start = time_get();
+>> +			kdata->nmi_ts_start = time_get();
+>>  		else
+>> -			nmi_total_ts += time_get() - nmi_ts_start;
+>> +			kdata->nmi_total_ts += time_get() - kdata->nmi_ts_start;
+>>  	}
+>>  
+>>  	if (enter)
+>> -		nmi_count++;
+>> +		kdata->nmi_count++;
+>>  }
+>>
+> 
 
