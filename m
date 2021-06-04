@@ -2,158 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 720A239C1CF
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:05:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 422FA39C1D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhFDVGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 17:06:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229906AbhFDVGo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 17:06:44 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11119C061766
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 14:04:58 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id u126so4348807pfu.13
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 14:04:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rDhLv97E2DQUPuoqpwMPEvyKe4QzBUBFor31yGtCwjM=;
-        b=Q9GyhGWTAKnh7t7JfYv/78Exr1BZPtx2xBqGF06ejPcRb6rXhZfUPhNV4+D9MPybNV
-         KJ4Nx9EGiZDPPBZSAr9LylkvVYgISv3qERJEZCjO+CddZ22oeaLf6IndtiEVSyCD1WG8
-         42iZbgT8eqxmEEV2v2HyWU92T21ClG04PB3O14Fl1Gu0xDGDOH2Nj2BNRhEpFXK1Pg8b
-         1ufNXXMADY0mNfxeK9j2/jIIlZH7O24Fti4VW84oIqLHvTFuk4o3NcaRERM/NNIKuzNh
-         kpmJwMrufjJ67c+k5IzOfTY6nqosTZ8ff8IxBU4fagP8IMEtlSTB04Smnkh7OsLgCpbE
-         yi2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rDhLv97E2DQUPuoqpwMPEvyKe4QzBUBFor31yGtCwjM=;
-        b=Tr0DY4X4Y8P+HFNmQ1CgiscmwvyGClBAnBHhH6QM4hYzWNfh+Sz2V2CtbcCqfat+Jj
-         TPu2ZOjz3Yc3ZaBK2pDOTq4WtjUXEL0MVen7LTacASrABgjlCu2XOqfk6kJ17HRWhSdw
-         Rqbfll82Hfn8cRnRlk1NzuD+9jmhmBDdGb6BZ+qFlvtHtEQb4tdZtmQk2/b+tDl/72zs
-         ZHmay++wTdShDOOxyZEoNqgN1w9GRT1PrEDa/yDDdhPiKcRdeJAjXNQKGM4eekA8INiC
-         XFcs55BYH5ebd5uDAoVH/hRgHH+5ep7iEHFo5lr7Wk9I83TMiVnxpxYTeabP9RHF7id5
-         kNGw==
-X-Gm-Message-State: AOAM530XD8RlH7aRu4Em96LWrzvgvNWzQXrsJbKAoYWxH/KVjp0wMHe7
-        JLtz6NZEMnOFAx3rkgCFIUQ9G/l0zatKuSafFUdVXg==
-X-Google-Smtp-Source: ABdhPJxwFoi2DmuVD0IrszNbc/IHftwdGlvHNKO+HOCuthlFORJMu/oEI1eSS53JcAWiRRb5eE8v2dZ4GbFN7TBiWuw=
-X-Received: by 2002:a63:1559:: with SMTP id 25mr7006094pgv.384.1622840697130;
- Fri, 04 Jun 2021 14:04:57 -0700 (PDT)
+        id S230075AbhFDVKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 17:10:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52840 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229668AbhFDVKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 17:10:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25F81613EA;
+        Fri,  4 Jun 2021 21:08:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622840914;
+        bh=Xye3NEgxGGlW+L7h1jlnfY5apTXpxQ80ISWiwLJL5g0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=TaM//SWb/KIsUNGkxKDWGLtb5Sev3OUCRqvvGSWzSx9tdz7rNOT0dEgfA6QUVLadm
+         lcSEAyOZePbSq+JBbNucDkEvQrhLWUqHiIbkAvfttf7cDveTYmp+5lb3oDLbh1hQlV
+         py1Sp3P2Z2A1IN277joEPD8Zv1n+lPz1jSVHURZFATuftUpnPIcQzLqULie7PTTOv8
+         Jlh/FTCg5JVQKmLeLTFeujWdm2B91poSc6cmnzKNX99UL9eeJVkhouNFIdsBvKPlOj
+         FzFvtM4CqJG3qlEut8U6GL+Ysloe8TzHh8sQmEqqqXC+tJ/c0y8GvmNjlCZP4JG/DR
+         Z6pTG/V5xHnCA==
+Date:   Fri, 4 Jun 2021 16:08:32 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jonas =?iso-8859-1?Q?Dre=DFler?= <verdre@v0yd.nl>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Subject: Re: [RFC PATCH 2/3] mwifiex: pcie: add reset_d3cold quirk for
+ Surface gen4+ devices
+Message-ID: <20210604210832.GA2239805@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20210528075932.347154-1-davidgow@google.com>
-In-Reply-To: <20210528075932.347154-1-davidgow@google.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Fri, 4 Jun 2021 14:04:45 -0700
-Message-ID: <CAFd5g44iCQtQ0XqDsKgQaVu=c2hq0NXbsqquEaQpRFEqnAMyFA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] kunit: Support skipped tests
-To:     David Gow <davidgow@google.com>
-Cc:     Alan Maguire <alan.maguire@oracle.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Marco Elver <elver@google.com>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210522131827.67551-3-verdre@v0yd.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 12:59 AM David Gow <davidgow@google.com> wrote:
->
-> The kunit_mark_skipped() macro marks the current test as "skipped", with
-> the provided reason. The kunit_skip() macro will mark the test as
-> skipped, and abort the test.
->
-> The TAP specification supports this "SKIP directive" as a comment after
-> the "ok" / "not ok" for a test. See the "Directives" section of the TAP
-> spec for details:
-> https://testanything.org/tap-specification.html#directives
->
-> The 'success' field for KUnit tests is replaced with a kunit_status
-> enum, which can be SUCCESS, FAILURE, or SKIPPED, combined with a
-> 'status_comment' containing information on why a test was skipped.
->
-> A new 'kunit_status' test suite is added to test this.
->
-> Signed-off-by: David Gow <davidgow@google.com>
-> Tested-by: Marco Elver <elver@google.com>
-> Reviewed-by: Daniel Latypov <dlatypov@google.com>
-
-One fairly minor nit below. Other than that, looks great!
-
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-
+On Sat, May 22, 2021 at 03:18:26PM +0200, Jonas Dreﬂler wrote:
+> From: Tsuchiya Yuto <kitakar@gmail.com>
+> 
+> To reset mwifiex on Surface gen4+ (Pro 4 or later gen) devices, it
+> seems that putting the wifi device into D3cold is required according
+> to errata.inf file on Windows installation (Windows/INF/errata.inf).
+> 
+> This patch adds a function that performs power-cycle (put into D3cold
+> then D0) and call the function at the end of reset_prepare().
+> 
+> Note: Need to also reset the parent device (bridge) of wifi on SB1;
+> it might be because the bridge of wifi always reports it's in D3hot.
+> When I tried to reset only the wifi device (not touching parent), it gave
+> the following error and the reset failed:
+> 
+>     acpi device:4b: Cannot transition to power state D0 for parent in D3hot
+>     mwifiex_pcie 0000:03:00.0: can't change power state from D3cold to D0 (config space inaccessible)
+> 
+> Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
+> Signed-off-by: Jonas Dreﬂler <verdre@v0yd.nl>
 > ---
-
-[...]
-
-> diff --git a/include/kunit/test.h b/include/kunit/test.h
-> index b68c61348121..1401c620ac5e 100644
-> --- a/include/kunit/test.h
-> +++ b/include/kunit/test.h
-> @@ -105,6 +105,18 @@ struct kunit;
->  #define KUNIT_SUBTEST_INDENT           "    "
->  #define KUNIT_SUBSUBTEST_INDENT                "        "
->
-> +/**
-> + * enum kunit_status - Type of result for a test or test suite
-> + * @KUNIT_SUCCESS: Denotes the test suite has not failed nor been skipped
-> + * @KUNIT_FAILURE: Denotes the test has failed.
-> + * @KUNIT_SKIPPED: Denotes the test has been skipped.
-> + */
-> +enum kunit_status {
-> +       KUNIT_SUCCESS,
-> +       KUNIT_FAILURE,
-> +       KUNIT_SKIPPED,
-> +};
+>  drivers/net/wireless/marvell/mwifiex/pcie.c   |   7 +
+>  .../wireless/marvell/mwifiex/pcie_quirks.c    | 123 ++++++++++++++++++
+>  .../wireless/marvell/mwifiex/pcie_quirks.h    |   3 +
+>  3 files changed, 133 insertions(+)
+> 
+> diff --git a/drivers/net/wireless/marvell/mwifiex/pcie.c b/drivers/net/wireless/marvell/mwifiex/pcie.c
+> index 02fdce926de5..d9acfea395ad 100644
+> --- a/drivers/net/wireless/marvell/mwifiex/pcie.c
+> +++ b/drivers/net/wireless/marvell/mwifiex/pcie.c
+> @@ -528,6 +528,13 @@ static void mwifiex_pcie_reset_prepare(struct pci_dev *pdev)
+>  	mwifiex_shutdown_sw(adapter);
+>  	clear_bit(MWIFIEX_IFACE_WORK_DEVICE_DUMP, &card->work_flags);
+>  	clear_bit(MWIFIEX_IFACE_WORK_CARD_RESET, &card->work_flags);
 > +
->  /**
->   * struct kunit_case - represents an individual test case.
->   *
-> @@ -148,13 +160,20 @@ struct kunit_case {
->         const void* (*generate_params)(const void *prev, char *desc);
->
->         /* private: internal use only. */
-> -       bool success;
-> +       enum kunit_status status;
->         char *log;
->  };
->
-> -static inline char *kunit_status_to_string(bool status)
-> +static inline char *kunit_status_to_ok_not_ok(enum kunit_status status)
->  {
-> -       return status ? "ok" : "not ok";
-> +       switch (status) {
-> +       case KUNIT_SKIPPED:
-> +       case KUNIT_SUCCESS:
-> +               return "ok";
-> +       case KUNIT_FAILURE:
-> +               return "not ok";
-> +       }
-> +       return "invalid";
->  }
->
->  /**
-> @@ -212,6 +231,7 @@ struct kunit_suite {
->         struct kunit_case *test_cases;
->
->         /* private: internal use only */
-> +       char status_comment[256];
+> +	/* For Surface gen4+ devices, we need to put wifi into D3cold right
+> +	 * before performing FLR
 
-nit: How about we make the 256 a constant since you use it in a number
-of places?
+This comment seems incorrect or at least incomplete.  When the device
+is in D3cold, it isn't powered at all, so you can't do anything with
+it, including FLR.  But maybe you meant that you need to put it in
+D3cold and back to D0 before doing an FLR.  That would work.  But in
+that case, there's no point in an FLR because the power cycle has
+already reset more than the FLR will.
 
-If not, at least when you reference the struct, you might want to use
-ARRAY_SIZE(...).
-
->         struct dentry *debugfs;
->         char *log;
->  };
-[...]
+Bjorn
