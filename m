@@ -2,89 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7117139BCB0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D1E39BCAE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbhFDQNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 12:13:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbhFDQNj (ORCPT
+        id S230440AbhFDQNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 12:13:01 -0400
+Received: from mail-pj1-f44.google.com ([209.85.216.44]:33669 "EHLO
+        mail-pj1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230037AbhFDQM7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 12:13:39 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86592C061766;
-        Fri,  4 Jun 2021 09:11:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=zzQ2fHwLh0TtSCysjc6mlkkpZVERXn709psQKrnHUpY=; b=b6IdoBuSF3TmKqoaYe47i8MUTf
-        WjhlUtRFx0mcVfQlYt5VnohfkmJ5Dn7WE9uNkJO9dS3t02wzMZVHZ1Cyz7sdgnETLzpS13ZOjROgo
-        SW4j+zGkRTaNDKy3bLHYMEFmdDbftU9ezi5jKKPdeiKpevcEqDmnrWFRV2wWvb5QVo65kPyIXe+sA
-        mzxw4uu3xyw+D9GiwN6PfDTct2/u0IDDxoIZQPenvl8g313z6RrCxKgfhNutpDZplONQetGEWAxq6
-        LoDSBFJaE2JkdQnSV5MpOfYB0kTjF5AD9dCzbQjIlnkPBIXRxRxEl8/AZAstmHcSB6NSueXurEIn8
-        7j0pldrg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lpCPQ-00DJuH-Qi; Fri, 04 Jun 2021 16:11:01 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 798CB300299;
-        Fri,  4 Jun 2021 18:10:55 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 62FD02CCC7B70; Fri,  4 Jun 2021 18:10:55 +0200 (CEST)
-Date:   Fri, 4 Jun 2021 18:10:55 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>, will@kernel.org,
-        paulmck@kernel.org, stern@rowland.harvard.edu,
-        parri.andrea@gmail.com, boqun.feng@gmail.com, npiggin@gmail.com,
-        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        akiyks@gmail.com, linux-kernel@vger.kernel.org,
-        linux-toolchains@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <YLpQj+S3vpTLX7cc@hirez.programming.kicks-ass.net>
-References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
- <YLoSJaOVbzKXU4/7@hirez.programming.kicks-ass.net>
- <20210604153518.GD18427@gate.crashing.org>
+        Fri, 4 Jun 2021 12:12:59 -0400
+Received: by mail-pj1-f44.google.com with SMTP id k22-20020a17090aef16b0290163512accedso5393451pjz.0;
+        Fri, 04 Jun 2021 09:11:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=w2ysyGxGgmyHl3kc4LuUtneRW6FPU4AZDsaSZQi6jlQ=;
+        b=QPZwQXLYK0k2/yHIicZPCqTWo8LulDmtH4ND7pn11Ztjg/5O9NPRuvhHQzL9+yGAYB
+         7vzyPe82csubxLiq/L9vgxC8s9vfwHzmvUbimMjobnjL+8MrmQRi0HghzkOwpLE9oSfN
+         f4FXY8X7tlAIL/E7fgs33OiDwfPkajDrsHELOy/RpiEor4DradsoT12zqVe54vqex35e
+         5n/vraVIJAp4j+dOAP5lyGxBlcyBObyeQ3t1ayQ9H8rcykdoHmO9s4B2r2MbE+uEX64x
+         +/YrGE1SGXcHt0i1UORGxfIRw3Nyaaxwt4l94XXe1fNERxLJKhKHQzZ/iq7zNOWBoyQs
+         Xx6A==
+X-Gm-Message-State: AOAM532xXwOpjfU5ZjZ/SpMGxdZ5iSvI4FSrN/Zix3+H6wUvPswFWV2n
+        kMb3C/NL4xyqLAMyTfnOjDE=
+X-Google-Smtp-Source: ABdhPJxQjJqbe6fhOk/03WVDmjed3rm0PWwcWk5xSlDJmHpKF3/+iJR/96cZko0Jmr6DZBGKJVYxIA==
+X-Received: by 2002:a17:90a:a10a:: with SMTP id s10mr5577907pjp.59.1622823072698;
+        Fri, 04 Jun 2021 09:11:12 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id c11sm5009246pjr.32.2021.06.04.09.11.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Jun 2021 09:11:11 -0700 (PDT)
+Subject: Re: [PATCH v12 3/3] ufs: set max_bio_bytes with queue max sectors
+To:     Changheun Lee <nanich.lee@samsung.com>, Johannes.Thumshirn@wdc.com,
+        alex_y_xu@yahoo.ca, asml.silence@gmail.com, axboe@kernel.dk,
+        bgoncalv@redhat.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, cang@codeaurora.org,
+        avri.altman@wdc.com, alim.akhtar@samsung.com,
+        damien.lemoal@wdc.com, gregkh@linuxfoundation.org,
+        hch@infradead.org, jaegeuk@kernel.org, linux-block@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ming.lei@redhat.com, osandov@fb.com, patchwork-bot@kernel.org,
+        tj@kernel.org, tom.leiming@gmail.com, yi.zhang@redhat.com
+Cc:     jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
+        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
+        sookwan7.kim@samsung.com, woosung2.lee@samsung.com,
+        yt0928.kim@samsung.com
+References: <20210604050324.28670-1-nanich.lee@samsung.com>
+ <CGME20210604052201epcas1p41a27660b20d70b7fc4295c8f131d33ce@epcas1p4.samsung.com>
+ <20210604050324.28670-4-nanich.lee@samsung.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <004bef40-1667-3b60-adaf-bea2b15f2514@acm.org>
+Date:   Fri, 4 Jun 2021 09:11:09 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604153518.GD18427@gate.crashing.org>
+In-Reply-To: <20210604050324.28670-4-nanich.lee@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 10:35:18AM -0500, Segher Boessenkool wrote:
-> On Fri, Jun 04, 2021 at 01:44:37PM +0200, Peter Zijlstra wrote:
-> > On naming (sorry Paul for forgetting that in the initial mail); while I
-> > think using the volatile qualifier for the language feature (can we haz
-> > plz, kthxbai) makes perfect sense, Paul felt that we might use a
-> > 'better' name for the kernel use, ctrl_dep_if() was proposed.
+On 6/3/21 10:03 PM, Changheun Lee wrote:
+> Set max_bio_bytes same with queue max sectors. It will lead to fast bio
+> submit when bio size is over than queue max sectors. And it might be helpful
+> to align submit bio size in some case.
 > 
-> In standard C statements do not have qualifiers.  Unless you can
-> convince the ISO C committee to have them on "if", you will have a very
-> hard time convincing any serious compiler to do this.
+> Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 3eb54937f1d8..37365a726517 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -4858,6 +4858,7 @@ static int ufshcd_slave_configure(struct scsi_device *sdev)
+>  {
+>  	struct ufs_hba *hba = shost_priv(sdev->host);
+>  	struct request_queue *q = sdev->request_queue;
+> +	unsigned int max_bio_bytes;
+>  
+>  	blk_queue_update_dma_pad(q, PRDT_DATA_BYTE_COUNT_PAD - 1);
+>  	if (hba->quirks & UFSHCD_QUIRK_ALIGN_SG_WITH_PAGE_SIZE)
+> @@ -4868,6 +4869,10 @@ static int ufshcd_slave_configure(struct scsi_device *sdev)
+>  
+>  	ufshcd_crypto_setup_rq_keyslot_manager(hba, q);
+>  
+> +	if (!check_shl_overflow(queue_max_sectors(q),
+> +				SECTOR_SHIFT, &max_bio_bytes))
+> +		blk_queue_max_bio_bytes(q, max_bio_bytes);
+> +
+>  	return 0;
+>  }
 
-While some people like talking to the Committee, I would much rather
-explore language extensions with the compiler communities. Such
-extensions can then make their way into the Committee once they show
-their usefulness.
+Just like previous versions of this patch series, this approach will
+trigger data corruption if dm-crypt is stacked on top of the UFS driver
+since ufs_max_sectors << SECTOR_SHIFT = 1024 * 512 is less than the size
+of the dm-crypt buffer (BIO_MAX_VECS << PAGE_SHIFT = 256 * 4096).
 
-The whole statement qualifier thing was something that was proposed by a
-tools person, although I can't really remember who. I'm not much married
-to it, but since it's been the only actual suggestion from a tools
-person, it's stuck.
+I am not recommending to increase max_sectors for the UFS driver. We
+need a solution that is independent of the dm-crypt internals.
 
-If you have another proposal on how to express this; one you'd rather
-see implemented, I'm all ears.
+Bart.
 
-But the fact is that we really do depend on this. And we seem to be
-growing more of them, not less.
-
-Data dependencies, control dependencies and address dependencies, C
-doesn't really like them, we rely on them. It would be awesome if we can
-fix this.
