@@ -2,85 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4353739BC8B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E86E39BC8F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231231AbhFDQIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 12:08:01 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:20606 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229809AbhFDQIB (ORCPT
+        id S229983AbhFDQIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 12:08:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229809AbhFDQIu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 12:08:01 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 154G1ust029477;
-        Fri, 4 Jun 2021 18:06:11 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=selector1;
- bh=fxFpnfIYi2rU8ay6+UqLYPW5crSnDErw0UJVcTcwF0Y=;
- b=l99Y4TjavQiAod+H0PqeZZ0W7dBmxLpoMEDw6YPHbZDJvA/ODPYVTIWVpVQavMMyXvqc
- zu3KiAuHik1Gzhr3BeWEyfyqqu25O4V5ollnt5CAYDRoJ6LPrSzise+M98RavFIuZBuH
- SBkxU4fxIiD2yaBrJjovWmMkWltFHjYtxUl616HzriSL3+UN3mZah53vBSJOovroYDZg
- Qnhcem3PNj8eIlY+Qp/hHgi51He/1t7w+BzD/PsN5ogAMTayavMo74EdKTqaei23Jnq7
- SVReqOmyJo7U83+/Mno9EJcoDNqw9kD0DAKYd1Bv9fEIK6pH4l5/ll6obokiyeWjkrXV zg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 38y4ye5ugf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Jun 2021 18:06:11 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EFEFD10002A;
-        Fri,  4 Jun 2021 18:06:10 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E34C622179B;
-        Fri,  4 Jun 2021 18:06:10 +0200 (CEST)
-Received: from localhost (10.75.127.50) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 4 Jun 2021 18:06:10
- +0200
-From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <arnaud.pouliquen@foss.st.com>
-Subject: [PATCH] rpmsg: Fix rpmsg_create_ept return when RPMSG config is not defined
-Date:   Fri, 4 Jun 2021 18:05:49 +0200
-Message-ID: <20210604160549.2122-1-arnaud.pouliquen@foss.st.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 4 Jun 2021 12:08:50 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 985C0C061766
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 09:07:03 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: aratiu)
+        with ESMTPSA id 35E591F43C2D
+From:   Adrian Ratiu <adrian.ratiu@collabora.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kernel@collabora.com, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/1] Initialize debugfs/ksysfs earlier?
+In-Reply-To: <YLojEy3wjq2R8Zsa@kroah.com>
+References: <20210603125534.638672-1-adrian.ratiu@collabora.com>
+ <YLjVYaVfNGEkqPAQ@kroah.com> <87y2bqwwfz.fsf@collabora.com>
+ <YLojEy3wjq2R8Zsa@kroah.com>
+Date:   Fri, 04 Jun 2021 19:06:58 +0300
+Message-ID: <87tumdwr4t.fsf@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-04_11:2021-06-04,2021-06-04 signatures=0
+Content-Type: text/plain; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a minor fix.
+On Fri, 04 Jun 2021, Greg Kroah-Hartman 
+<gregkh@linuxfoundation.org> wrote:
+> On Thu, Jun 03, 2021 at 11:00:00PM +0300, Adrian Ratiu wrote: 
+>> Hi and thank you for the quick response!   On Thu, 03 Jun 2021, 
+>> Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote: 
+>> > On Thu, Jun 03, 2021 at 03:55:33PM +0300, Adrian Ratiu wrote: 
+>> > > Hi Greg & all,  I would like to add a new debugfs file like 
+>> > > in the next patch but I'm having a problem with commit 
+>> > > 56348560d495 ("debugfs: do not attempt to create a new file 
+>> > > before the filesystem is initalized"). 
+>> >  You should have had a problem before that commit happened as 
+>> > well, right?  
+>>  Actually no, it works without problems before commit 
+>> 56348560d495 and also works if I revert that commit or move the 
+>> debugfs_init() and its dependency ksysfs_init() before the 
+>> driver core init. 
+> 
+> And the file shows up properly?  How can that be?  Is it ok to 
+> create a file before the superblock is created in the system? 
+> For some reason I thought these were just silently failing and 
+> no one noticed.  Maybe we should revisit that commit... 
 
-According to the description of the rpmsg_create_ept in rpmsg_core.c
-the function should return NULL on error.
+Yes the file shows up and works properly, but I do not know 
+why. My tests run after the system boots to an interactive shell 
+and by that time everything is initialized and working.
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
----
- include/linux/rpmsg.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I thought maybe there were some specific corner-cases you wanted 
+to guard against by adding that initialization -ENOENT check, but 
+honestly since we're not adding a file earlier in the driver core 
+anymore, I'd just leave it as is because the check makes sense in 
+general.
 
-diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
-index d97dcd049f18..a8dcf8a9ae88 100644
---- a/include/linux/rpmsg.h
-+++ b/include/linux/rpmsg.h
-@@ -231,7 +231,7 @@ static inline struct rpmsg_endpoint *rpmsg_create_ept(struct rpmsg_device *rpdev
- 	/* This shouldn't be possible */
- 	WARN_ON(1);
- 
--	return ERR_PTR(-ENXIO);
-+	return NULL;
- }
- 
- static inline int rpmsg_send(struct rpmsg_endpoint *ept, void *data, int len)
--- 
-2.17.1
+Thanks again,
+Adrian
 
+>
+> thanks,
+>
+> greg k-h
