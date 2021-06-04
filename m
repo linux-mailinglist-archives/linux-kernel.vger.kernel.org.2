@@ -2,89 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B2039C2D8
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A296A39C2D4
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbhFDVsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 17:48:50 -0400
-Received: from mail-lj1-f180.google.com ([209.85.208.180]:40523 "EHLO
-        mail-lj1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229929AbhFDVss (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 17:48:48 -0400
-Received: by mail-lj1-f180.google.com with SMTP id u22so13343408ljh.7
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 14:46:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EUuG4qFZB8LBUFaeW8Kg5aOV0bTfac73qMPrMVkcgpU=;
-        b=caeXpJBNR6ZlKosaU8pGnnDu87/vKtCbp99dJTlsr4lHu2HlNOE3y54vZyYGK96yxw
-         c1KGToZhy5tFa0a3QsAa3s/hNze8We8TN0GZi3jwcXKK/Yfbc6HOaaalej3mgXTMa1Rf
-         wT90fznzlFDA5x74vLXYLEXR4N8wsxT/XMx3WFLf5ytOMhIt2u3OtWqxR1VAMdtU0Z63
-         lBIxxNfBX6axYCD3LBgEMbAre3o/BrHTvvpfd5yWt2k1lEjaBMEO+n57le+xHzYk1Ovg
-         OcNAhjRuExi2mCeS6ISDUTu03Ykb3JGI7r5MBN1qqoZNWdsClrMRqf42CukV4WkFZwEL
-         HrMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EUuG4qFZB8LBUFaeW8Kg5aOV0bTfac73qMPrMVkcgpU=;
-        b=ep3e1abyfQrWcT+1fRxyLerxnlifjZDECUj0ivF0csNDLNhwv9j7X6gxQoqPFLGsNK
-         Nk77dAB+2rpj78T7OQ0HhO7pRb4TiCd3LCnnghPePrDqGxjoOHH9GBNV7wshE9NStmhN
-         1BvofohZRTfR9H7a8DVzXS5e4vKtUDioOQZ07LFhzIfU06dflco09lRRsoRRWoLv7wsB
-         lkVMSh39Uk6RrCnd/dL41IzNFbudG3lbXr3A8dBsHRT88xayj5MuaUBQpibGBGAdlR+3
-         djZx7jk0LaoRH7uPwok9aPsrbsNgVJfk45dua5Oy6wbxQqwlH+uYFxNITYDeAV1wxW9E
-         647Q==
-X-Gm-Message-State: AOAM532blYYd+TrTl+49PTELuu7cq3bvZiYR5iMJzf35DwvBvdqpTXGE
-        k8EyAViXDIdd3zBlUJlCjlJ2L99ygZZ93vILK/HHOw==
-X-Google-Smtp-Source: ABdhPJwUPz4c/n9oWvqrjymDxZa08iBnsLgzrcdTMrlUa6W57fT8Zivu3nIHfACQzTWee9KTNEkbGOEV9cVLTrwIt6Q=
-X-Received: by 2002:a05:651c:1501:: with SMTP id e1mr5199986ljf.74.1622843147180;
- Fri, 04 Jun 2021 14:45:47 -0700 (PDT)
+        id S231496AbhFDVrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 17:47:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229930AbhFDVro (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 17:47:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D325B61403;
+        Fri,  4 Jun 2021 21:45:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622843157;
+        bh=/SeCtTg7XVH3TrVFpbsNU4uw/aknBvRf/HKh5NI2bA0=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=pCXGlYnNTnEBGa0tw0/6tK+OYJdENvh+QIqW4BzNnTsovjXENYOa4AWd8zF04nezW
+         ntS4jXTs3KUalCawi/ZTxXXVt9hgxGqPY60/RxHHY8b/bBt8LCdqOo81vfOZRTtpcc
+         uu0d4B4EW8aRpQFB4c4cslNMFC0lvYOmrCU4MYRss/fo2JWYrtzzmH/qBKsQElZxub
+         plIFs1SGGgJcqADYHUm92Ny5BnOq2xWQWPE1xJPp4r+WB3dsj3YasEhFJumIRYPBU4
+         NF3EOmEqxbz4aGGRzwJ2pC80f66QCY0Kzu4nfihEdyP5GltJUIO4Sv5Rf731NofQ4w
+         4qVQLTRWdbFpA==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210524131852.263883-1-maxime@cerno.tech> <20210524131852.263883-2-maxime@cerno.tech>
- <CACRpkdbVyMBEAr0n1+d3KSwV5J3spgfW6US9vwz1=2f34Ep3dQ@mail.gmail.com> <20210604080139.sccm3fggd3jvkkpa@gilmour>
-In-Reply-To: <20210604080139.sccm3fggd3jvkkpa@gilmour>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 4 Jun 2021 23:45:36 +0200
-Message-ID: <CACRpkdb0Wg8MoOrJxvjkTkncpyOHE1E7oYWWMOzJoxTxWN2R=Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] drm/vc4: hdmi: Convert to gpiod
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Eric Anholt <eric@anholt.net>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hans Verkuil <hans.verkuil@cisco.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210604135439.19119-2-rojay@codeaurora.org>
+References: <20210604135439.19119-1-rojay@codeaurora.org> <20210604135439.19119-2-rojay@codeaurora.org>
+Subject: Re: [PATCH V3 1/3] arm64: dts: sc7280: Add QSPI node
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
+        Roja Rani Yarubandi <rojay@codeaurora.org>
+To:     Roja Rani Yarubandi <rojay@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh+dt@kernel.org
+Date:   Fri, 04 Jun 2021 14:45:56 -0700
+Message-ID: <162284315655.1835121.6817703229350764867@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 4, 2021 at 10:01 AM Maxime Ripard <maxime@cerno.tech> wrote:
-> On Fri, May 28, 2021 at 01:57:56AM +0200, Linus Walleij wrote:
-> > On Mon, May 24, 2021 at 3:19 PM Maxime Ripard <maxime@cerno.tech> wrote:
-> >
-> > > The new gpiod interface takes care of parsing the GPIO flags and to
-> > > return the logical value when accessing an active-low GPIO, so switching
-> > > to it simplifies a lot the driver.
-> > >
-> > > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> >
-> > Thanks for fixing this!
-> > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
->
-> Is it for both patches or just this one?
+Quoting Roja Rani Yarubandi (2021-06-04 06:54:37)
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dt=
+s/qcom/sc7280-idp.dts
+> index 3900cfc09562..d0edffc15736 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> @@ -268,6 +268,22 @@ pmr735b_die_temp {
+>                 };
+>  };
+> =20
+> +&qspi {
+> +       status =3D "okay";
+> +       pinctrl-names =3D "default";
+> +       pinctrl-0 =3D <&qspi_clk>, <&qspi_cs0>, <&qspi_data01>;
+> +
+> +       flash@0 {
+> +               compatible =3D "jedec,spi-nor";
+> +               reg =3D <0>;
+> +
+> +               /* TODO: Increase frequency after testing */
 
-I went and added Reviewed-by: to 1/2 as well so you can merge the
-patches. Was simple enough even though I'm not a VC4 expert.
+Is this going to change? Please set it to 37.5MHz if that's the max
+supported.
 
-Yours,
-Linus Walleij
+> +               spi-max-frequency =3D <25000000>;
+> +               spi-tx-bus-width =3D <2>;
+> +               spi-rx-bus-width =3D <2>;
+> +       };
+> +};
+> +
+>  &qupv3_id_0 {
+>         status =3D "okay";
+>  };
