@@ -2,91 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA30339B0DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 05:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E2139B0AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 05:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbhFDD05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 23:26:57 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:30907 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbhFDD0z (ORCPT
+        id S229826AbhFDDFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 23:05:04 -0400
+Received: from gateway36.websitewelcome.com ([192.185.186.5]:13770 "EHLO
+        gateway36.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229758AbhFDDFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 23:26:55 -0400
-Received: from epcas3p2.samsung.com (unknown [182.195.41.20])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210604032502epoutp02b9da6699f3ca74d69828566472776c3b~FQy1W02fF1718417184epoutp02y
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 03:25:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210604032502epoutp02b9da6699f3ca74d69828566472776c3b~FQy1W02fF1718417184epoutp02y
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1622777102;
-        bh=Yt1Sj2XXi3KmtfJpqVNJUKrRMWphSHZV63OZL/+hits=;
-        h=Subject:Reply-To:From:To:Date:References:From;
-        b=Zs9xH+k+RKv2QWOV3EJO9x0peo0Pli91v5kv3IbMVyNnRlvavMOdLanPDDxzDwGVW
-         C1Xn4p8FKXUZnBA+EDduUIhhUfR3uu7u1pF37163c3jwLGdDz6rdNGFCOWmVTR/wnV
-         w36QBYUuIJ4A5I//S1UVl+QttqohNeYjpxhAH3dk=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas3p1.samsung.com (KnoxPortal) with ESMTP id
-        20210604032501epcas3p13d54e44d42cd297259df00cc67b1ca77~FQy0mG8YT2751327513epcas3p13;
-        Fri,  4 Jun 2021 03:25:01 +0000 (GMT)
-Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp1.localdomain
-        (Postfix) with ESMTP id 4Fx7Rx5lxwz4x9Q1; Fri,  4 Jun 2021 03:25:01 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: [PATCH] scsi: ufs: Remove repeated word
-Reply-To: keosung.park@samsung.com
-Sender: Keoseong Park <keosung.park@samsung.com>
-From:   Keoseong Park <keosung.park@samsung.com>
-To:     ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
-        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <1891546521.01622777101796.JavaMail.epsvc@epcpadp3>
-Date:   Fri, 04 Jun 2021 11:40:38 +0900
-X-CMS-MailID: 20210604024038epcms2p2801b5b2e10e93ba4ecf5f6069bf862f1
+        Thu, 3 Jun 2021 23:05:03 -0400
+Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
+        by gateway36.websitewelcome.com (Postfix) with ESMTP id 3B224400C2F04
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 21:40:58 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id ozlalEdKNnrr4ozlal2phO; Thu, 03 Jun 2021 21:40:58 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=qMM0cCD/sS3bgXzvDEFA6YM7lCN465P/MHPHDxJbKus=; b=ARZ4xLXo1tOVFZDeo4AzSMeP52
+        0mLTPCiJym4n3xXY/KH8vvfvunSUUXtQ2tHBBgBzNMJ4q2frjjKa4CJK/KfJky1Q4iIVkt+u+Np5j
+        RvvL30zTgNE8weSa1cVfNzKS5WOOGxCEpKEW+dhLA+dnhDbuQq9PwZPi3qac2+5NyO5lbF+xUAbIC
+        NesBQBo16pf0btS89UItxKzDgSvxxu3717peKLLiDZNYkygt4+NW3YAekCxweATgVLbxZLsso8Qlu
+        WQpNNJDjqX3fv7Go02a9IojZB81qDOzQV2ycC2Kd5g0JsFoxLyJ2AGHP01B+RZUg7xxPWwwPQJ6n+
+        Yx+d6cCg==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:33686 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lozlX-003UeG-RN; Thu, 03 Jun 2021 21:40:55 -0500
+Subject: Re: [PATCH v2][next] floppy: Fix fall-through warning for Clang
+To:     Denis Efremov <efremov@linux.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20210528200335.GA39252@embeddedor>
+ <07887f9c-c33d-9398-4939-2f23ebb1d094@linux.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <6d120554-3c51-59f1-80d9-e4be0a0ace3e@embeddedor.com>
+Date:   Thu, 3 Jun 2021 21:42:04 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <07887f9c-c33d-9398-4939-2f23ebb1d094@linux.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20210604024038epcms2p2801b5b2e10e93ba4ecf5f6069bf862f1
-References: <CGME20210604024038epcms2p2801b5b2e10e93ba4ecf5f6069bf862f1@epcms2p2>
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lozlX-003UeG-RN
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:33686
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 5
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove repeated word "for" in comments.
 
-Signed-off-by: Keoseong Park <keosung.park@samsung.com>
----
- drivers/scsi/ufs/ufshcd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index af527e77fe66..aca475b5e27a 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -2809,7 +2809,7 @@ ufshcd_clear_cmd(struct ufs_hba *hba, int tag)
- 	spin_unlock_irqrestore(hba->host->host_lock, flags);
- 
- 	/*
--	 * wait for for h/w to clear corresponding bit in door-bell.
-+	 * wait for h/w to clear corresponding bit in door-bell.
- 	 * max. wait is 1 sec.
- 	 */
- 	err = ufshcd_wait_for_register(hba,
--- 
-2.17.1
+On 5/29/21 01:37, Denis Efremov wrote:
+> Hi,
+> 
+> On 5/28/21 11:03 PM, Gustavo A. R. Silva wrote:
+>> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+>> by explicitly adding a break statement instead of letting the code fall
+>> through to the next case.
+>>
+>> Link: https://github.com/KSPP/linux/issues/115
+>> Link: https://lore.kernel.org/linux-hardening/47bcd36a-6524-348b-e802-0691d1b3c429@kernel.dk/
+>> Suggested-by: Jens Axboe <axboe@kernel.dk>
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> 
+> Applied, thanks!
+> https://github.com/evdenis/linux-floppy/commit/6eaddb2a2aa3acd0660537f9f6a12785be0ae830
+> 
+> I will send it to Jens with other floppy patches.
+> It will be in 5.14
+
+Awesome. :)
+
+Thanks, Denis.
+--
+Gustavo
