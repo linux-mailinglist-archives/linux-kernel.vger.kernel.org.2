@@ -2,82 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D7C39BADD
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C20439BADE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbhFDO1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 10:27:36 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:37213 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S229620AbhFDO1f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 10:27:35 -0400
-Received: (qmail 1679280 invoked by uid 1000); 4 Jun 2021 10:25:48 -0400
-Date:   Fri, 4 Jun 2021 10:25:48 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>, will@kernel.org,
-        paulmck@kernel.org, parri.andrea@gmail.com, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        luc.maranget@inria.fr, akiyks@gmail.com,
-        linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <20210604142548.GD1676809@rowland.harvard.edu>
-References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
+        id S229938AbhFDO1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 10:27:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42690 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229620AbhFDO1w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 10:27:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 111E6613FF;
+        Fri,  4 Jun 2021 14:26:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622816766;
+        bh=6qcDrWQa4+6z+ZkRiDCUGgmZILuI30SH1Dvb5rIUE4I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K41Bhwd0MOusWyBzUd4UFF+NmX33eK33EeXt4X5BT4/V60KJ4oGtNjF/k0FXmXwmN
+         zV2O40ms+G8QPax7JsusAeriGbq+ltfYVMbo4TVsWx8HvlMB9LiSTiBoDSfUFyR65v
+         8O7z1jatuH37f5DFL4OE+gs4C3369x+rFtXkQz3tiz2srNQ3P9USfQb57V/SxiKUGY
+         tgCOmv7zcPr4pFmOmc7Nu6Osoi1ql1aXpgeYOGedX+Y6+drTwo/HN4s4kBpKfU4tg2
+         DnNZxQVodxCEq+94EVn2qysKSgs/bHsg9yDZPYcOqipto+95GnjLbAXIO4rU6foeLT
+         8wwya6uRfNBzA==
+Date:   Fri, 4 Jun 2021 15:25:54 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     lgirdwood@gmail.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, tiwai@suse.com
+Subject: Re: [PATCH] ASoC: rk817: Remove unneeded semicolon
+Message-ID: <20210604142554.GA582@sirena.org.uk>
+References: <1622802209-45031-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="lrZ03NoBR/3+SXJZ"
 Content-Disposition: inline
-In-Reply-To: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
+In-Reply-To: <1622802209-45031-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Cookie: Truth is free, but information costs.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 12:12:07PM +0200, Peter Zijlstra wrote:
-> Hi!
-> 
-> With optimizing compilers becoming more and more agressive and C so far
-> refusing to acknowledge the concept of control-dependencies even while
-> we keep growing the amount of reliance on them, things will eventually
-> come apart.
-> 
-> There have been talks with toolchain people on how to resolve this; one
-> suggestion was allowing the volatile qualifier on branch statements like
-> 'if', but so far no actual compiler has made any progress on this.
-> 
-> Rather than waiting any longer, provide our own construct based on that
-> suggestion. The idea is by Alan Stern and refined by Paul and myself.
-> 
-> Code generation is sub-optimal (for the weak architectures) since we're
-> forced to convert the condition into another and use a fixed conditional
-> branch instruction, but shouldn't be too bad.
-> 
-> Usage of volatile_if requires the @cond to be headed by a volatile load
-> (READ_ONCE() / atomic_read() etc..) such that the compiler is forced to
-> emit the load and the branch emitted will have the required
-> data-dependency. Furthermore, volatile_if() is a compiler barrier, which
-> should prohibit the compiler from lifting anything out of the selection
-> statement.
-> 
-> This construct should place control dependencies on a stronger footing
-> until such time that the compiler folks get around to accepting them :-)
-> 
-> I've converted most architectures we care about, and the rest will get
-> an extra smp_mb() by means of the 'generic' fallback implementation (for
-> now).
-> 
-> I've converted the control dependencies I remembered and those found
-> with a search for smp_acquire__after_ctrl_dep(), there might be more.
-> 
-> Compile tested only (alpha, arm, arm64, x86_64, powerpc, powerpc64, s390
-> and sparc64).
-> 
-> Suggested-by: Alan Stern <stern@rowland.harvard.edu>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-Is there any interest in doing the same sort of thing for switch
-statements?  A similar approach would probably work, but maybe people
-don't care about it.
+--lrZ03NoBR/3+SXJZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Alan
+On Fri, Jun 04, 2021 at 06:23:29PM +0800, Jiapeng Chong wrote:
+> Fix the following coccicheck warnings:
+>=20
+> ./sound/soc/codecs/rk817_codec.c:49:2-3: Unneeded semicolon.
+
+This doesn't apply against current code, please check and resend.
+
+--lrZ03NoBR/3+SXJZ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmC6N/IACgkQJNaLcl1U
+h9Aw2Af/ZhDgCHIjE+l4J8Du0e1i6r7rFyERFiVVkaAsCDw21i/pdRYBS1c00kgn
+DPRCorTuIUidRsYWnC6VkB6yLFC0O0kZrSuKro+jGMXeCR5OBDn8gzOyPdgmaxGa
+YZ2ILiWlcWZR0cSIsFwVJ2UZcrDN7lIffjyV7o8JCoq3LKF/JHC9oYvDzqmZzWUX
+bj3KxrwErBys9al5zzALFtfUNCat2bjsCxB111qTg6fiFZq4k1Crzeb56GhCnQRn
+IQ+8yXOsmx9vp238kLIoB4n6ZneK7AY16AxlpcKFgbf0WzlzOOIiO1gdLVgHyr5m
+4jkQfukW/B56BN0OoGWcPPvkumrKiA==
+=gP8F
+-----END PGP SIGNATURE-----
+
+--lrZ03NoBR/3+SXJZ--
