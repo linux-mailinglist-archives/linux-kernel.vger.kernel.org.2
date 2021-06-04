@@ -2,119 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D9BF39B48F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9343B39B492
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhFDIGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 04:06:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbhFDIGS (ORCPT
+        id S230072AbhFDIHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 04:07:06 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:49892 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229900AbhFDIHF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 04:06:18 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C20FFC06174A;
-        Fri,  4 Jun 2021 01:04:32 -0700 (PDT)
-Received: from [192.168.1.111] (91-157-208-71.elisa-laajakaista.fi [91.157.208.71])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 20039A52;
-        Fri,  4 Jun 2021 10:04:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1622793871;
-        bh=j1SXMbUoe/8w0rZ6UdZfNhuo9qc6ocoxoJrTdQSBoU0=;
-        h=To:Cc:References:From:Subject:Date:In-Reply-To:From;
-        b=NNsF2Qc6TuwHZ1QwuxlAt3dWSJMADIbpLyeKjMAaTOQxq2XiyGUBVurqN218ePdZK
-         2YJwDUslifIOVMLazpGhUZn5VwmWXmkrVmS8vgqO88+NV3Y11jWrC+k1i37UV8oBif
-         2DlZlXlr9W6tCyT5C30McrP1EHCXS0awnpACQbEQ=
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Benoit Parrot <bparrot@ti.com>, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org, dmaengine@vger.kernel.org,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-References: <20210526152308.16525-1-p.yadav@ti.com>
- <20210526152308.16525-14-p.yadav@ti.com>
- <5e00444a-683f-b4fa-9156-4450ca4edaf6@ideasonboard.com>
- <20210603124920.5o34klhlhjg5phlj@ti.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Subject: Re: [PATCH v2 13/18] media: ti: Add CSI2RX support for J721E
-Message-ID: <b930c6e5-1210-5b13-2e29-25ffaa99519d@ideasonboard.com>
-Date:   Fri, 4 Jun 2021 11:04:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 4 Jun 2021 04:07:05 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 154859fU194812;
+        Fri, 4 Jun 2021 08:05:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=jJWOOXSkYAkpt+g7vqJxwxRiAokBtYawViAkg0r5HqI=;
+ b=n/BAzFw9fyHDxD6HPVZz/BaXjAfGynLNBHWiSyq4IrvuWhzCQ9UCaZwF0l3K3vLr366H
+ Is5GRZFy0Bfvj0Qm2RfSIc3z0e0IiUxRFZpSoZE2LtJyr38MMZKLlBTC6pLC1s+5yf9K
+ q4Pk1NZf5AMmEifo6vFGcy7wFAytdLpmYbxUyCmcuKRRZfU+m7WXw7+KhSF5UB+duHYl
+ mcqvwDuiTnT/ho4/+Ea5N+ty8V+Pt0PGH/FZa4+dX2TXkowkA+04ErcgpiGH0oYykl+Y
+ hd2HnBvzFLt8zdnXKi3m/dMPDVC1C8GcNbJG/er4Yv/aohNWmBqYEhfPwZdQ3e5UnFBR bQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 38ub4cwa26-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 04 Jun 2021 08:05:14 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15481bXu177927;
+        Fri, 4 Jun 2021 08:05:14 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 38xyn2vufn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 04 Jun 2021 08:05:14 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15484kT2008787;
+        Fri, 4 Jun 2021 08:05:13 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 38xyn2vuer-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 04 Jun 2021 08:05:13 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 15485B1Y010883;
+        Fri, 4 Jun 2021 08:05:11 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 04 Jun 2021 01:05:10 -0700
+Date:   Fri, 4 Jun 2021 11:05:03 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Oded Gabbay <ogabbay@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] habanalabs/gaudi: remove redundant assignment to
+ variable err
+Message-ID: <20210604080503.GJ1955@kadam>
+References: <20210603131210.84763-1-colin.king@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20210603124920.5o34klhlhjg5phlj@ti.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210603131210.84763-1-colin.king@canonical.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: WviqR1NcVCWnZldX1R1r5L7NXmfRlcp-
+X-Proofpoint-ORIG-GUID: WviqR1NcVCWnZldX1R1r5L7NXmfRlcp-
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10004 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 phishscore=0 lowpriorityscore=0
+ clxscore=1015 impostorscore=0 adultscore=0 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106040064
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/06/2021 15:49, Pratyush Yadav wrote:
-> On 27/05/21 04:29PM, Tomi Valkeinen wrote:
->> Hi Pratyush,
->>
->> On 26/05/2021 18:23, Pratyush Yadav wrote:
->>> TI's J721E uses the Cadence CSI2RX and DPHY peripherals to facilitate
->>> capture over a CSI-2 bus.
->>>
->>> The Cadence CSI2RX IP acts as a bridge between the TI specific parts and
->>> the CSI-2 protocol parts. TI then has a wrapper on top of this bridge
->>> called the SHIM layer. It takes in data from stream 0, repacks it, and
->>> sends it to memory over PSI-L DMA.
->>>
->>> This driver acts as the "front end" to V4L2 client applications. It
->>> implements the required ioctls and buffer operations, passes the
->>> necessary calls on to the bridge, programs the SHIM layer, and performs
->>> DMA via the dmaengine API to finally return the data to a buffer
->>> supplied by the application.
->>>
->>> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
->>
->> I noticed that my test app didn't work at all with this, and I also wasn't
->> able to use v4l2-ctl to set the format.
+On Thu, Jun 03, 2021 at 02:12:10PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> I have not used v4l2-ctl, but I can see yavta works fine. What command
-> did you use for setting format via v4l2-ctl?
+> The variable err is being assigned a value that is never read, the
+> assignment is redundant and can be removed. Also remove some empty
+> lines.
 > 
->>
->> At least for my test app the problem was that this driver doesn't initialize
->> the format at all. My app first calls VIDIOC_G_FMT with v4l2_format.type ==
->> V4L2_BUF_TYPE_VIDEO_CAPTURE, then after the call modifies the fields it
->> wants to change and calls VIDIOC_S_FMT. This failed, as G_FMT returned
->> uninitialized fmt, i.e. type was 0, which my app didn't set again.
->>
->> I believe the driver should have an initial format, something that it will
->> accept if an app calls G_FMT and then S_FMT.
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/misc/habanalabs/gaudi/gaudi.c | 3 ---
+>  1 file changed, 3 deletions(-)
 > 
-> Right. This is a bug. The question is what should the initial format be?
-> It is more or less arbitrary since there is no configuration made yet
-> and we don't know what the camera can or will send. So for example, what
-> if I use UYVY 640x480? The camera might not support it at all. Is it
-> still OK to have it as the default?
+> diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+> index 9e4a6bb3acd1..22f220859b46 100644
+> --- a/drivers/misc/habanalabs/gaudi/gaudi.c
+> +++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+> @@ -7379,9 +7379,6 @@ static int gaudi_hbm_read_interrupts(struct hl_device *hdev, int device,
+>  			device, ch, hbm_ecc_data->first_addr, type,
+>  			hbm_ecc_data->sec_cont_cnt, hbm_ecc_data->sec_cnt,
+>  			hbm_ecc_data->dec_cnt);
+> -
+> -		err = 1;
+> -
+>  		return 0;
+>  	}
 
-I think it doesn't really matter what the initial format is, as long as 
-it's valid for the subdev itself. There are two separate things:
+Not related to your patch (which seems fine), but I always feel like
+there should be a rule that function which return a mix of negative
+error codes and either zero or one on success should have to have
+documentation explaining why.
 
-1) Subdev config, where the subdev is considered independently from the 
-other subdevs. E.g. the formats in the input pads and output pads should 
-be valid, taking into account the capabilities of the subdev. The subdev 
-driver has to take care of these, i.e. if the user sets a format on a 
-pad, the driver must adjust the other pads (if needed) to keep the 
-subdev config valid.
+It's impossible to tell from the context here and neither of the callers
+check the return.  :P
 
-2) pipeline validation, where all the subdevs in the pipeline are looked 
-at and validated that the settings are compatible.
+regards,
+dan carpenter
 
-We're talking about 1) here, and it doesn't matter if the camera 
-supports the csirx initial format or not.
-
-  Tomi
