@@ -2,75 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBBDF39C299
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC7939C2A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbhFDVkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 17:40:00 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:33694 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhFDVj5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 17:39:57 -0400
-Received: by mail-ot1-f49.google.com with SMTP id q9-20020a9d66490000b02903c741e5b703so9343018otm.0;
-        Fri, 04 Jun 2021 14:38:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MYkrTN2lYjPsA/rQ0nxEvi+evdlSuxVIs1zFHc5pQLs=;
-        b=fV/Q0juaKKMLfqmwFq5zbG3zeqK0u1To9xUFDttgf2c3onk5LTpBb6CJEmX5qZLEP8
-         GIp/GlbstGRcMehduodG4JQDFYGL2qF6nBq1IQoh1A8Uzemk8rXC0XZE97l5t1F3LstV
-         J4u45rmirNglOYXR6Fyd6pLYcQ4G+sPAlr+G8OpfQV5a/f7JzFRVcHQYol5hMLXd+B14
-         WLsmHSFkKhs6NuA/8AnMMQY3jEieCMvt5ptBBhGlUXIbuiYUQkaaQY71/LN7uO9LMOfX
-         GvOacCALD8Y/EO0ylVYHCN9toJyELXJtT3eohrXhFv5eIFUO0WXX4Nk+ZWTPlhIQWpSD
-         +syw==
-X-Gm-Message-State: AOAM533TATozVS64r8BAv8Uusr7QnXdCetHA27a25iV0+dGPNMOkHCVe
-        HgcFDi38x3gVzBNf3v+4fg==
-X-Google-Smtp-Source: ABdhPJwlepvxLG20UTpYmKhHreiKXllWJ4McJRb1z2XG3RhOlYaLaQuO2SgcXbO9H+D87ayjfnN8vg==
-X-Received: by 2002:a9d:5f85:: with SMTP id g5mr5201348oti.86.1622842690750;
-        Fri, 04 Jun 2021 14:38:10 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id p1sm741953otk.58.2021.06.04.14.38.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 14:38:09 -0700 (PDT)
-Received: (nullmailer pid 3966749 invoked by uid 1000);
-        Fri, 04 Jun 2021 21:38:08 -0000
-Date:   Fri, 4 Jun 2021 16:38:08 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-Cc:     linux-gpio@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Soren Brinkmann <soren.brinkmann@xilinx.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Harini Katakam <harinik@xilinx.com>,
-        Anurag Kumar Vulisha <anuragku@xilinx.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH] dt-bindings: gpio: zynq: convert bindings to YAML
-Message-ID: <20210604213808.GA3966696@robh.at.kernel.org>
-References: <20210531120753.719381-1-iwamatsu@nigauri.org>
+        id S231346AbhFDVmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 17:42:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40464 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229987AbhFDVlw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 17:41:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1D5FE61408;
+        Fri,  4 Jun 2021 21:40:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622842806;
+        bh=fgHG7v+Kgih3XhZMXVzrOzR56W61hin3PMhbLfOJkgE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=sCU7HQ8+/dKu95I0y/QuJWMHs2Eb06MOmUR3YhTvGOovHRjrHy3gu3VE6oDgaitqm
+         zd8FbXYRjWv+hsVdrNzpKfNZ2zBoTqF/fuwTxePEOev54XAeSel38TKGTkT4gah/zX
+         IU/NQeU7DMt4x1XHQ45sBRML5hrh9jnTyBsEZNjLCBwmtBFlI6IkmSug9eu3Fr0U1/
+         8UQRcM/C25EtiiXjbLzz1nDMJx94sSzbvByN+moHfyFSlJl6PyfZFY0/s/uLCU9yJJ
+         WPygf107H+2azpcREi8dcI2Lu4ngTdFXY8XDDvNOtvtsSMF5S6ZmXah8JeWB1YYbMN
+         nzSbcPYhg18ng==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0F08F60CD2;
+        Fri,  4 Jun 2021 21:40:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210531120753.719381-1-iwamatsu@nigauri.org>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 0/6] net: hdlc_x25: clean up some code style issues
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162284280605.31903.2813051469495224858.git-patchwork-notify@kernel.org>
+Date:   Fri, 04 Jun 2021 21:40:06 +0000
+References: <1622791932-49876-1-git-send-email-huangguangbin2@huawei.com>
+In-Reply-To: <1622791932-49876-1-git-send-email-huangguangbin2@huawei.com>
+To:     Guangbin Huang <huangguangbin2@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, xie.he.0141@gmail.com,
+        ms@dev.tdt.de, willemb@google.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lipeng321@huawei.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 May 2021 21:07:53 +0900, Nobuhiro Iwamatsu wrote:
-> Convert gpio for Xilinx Zynq SoC bindings documentation to YAML.
-> 
-> Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-> ---
->  .../devicetree/bindings/gpio/gpio-zynq.txt    | 36 -----------
->  .../devicetree/bindings/gpio/gpio-zynq.yaml   | 59 +++++++++++++++++++
->  2 files changed, 59 insertions(+), 36 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-zynq.txt
->  create mode 100644 Documentation/devicetree/bindings/gpio/gpio-zynq.yaml
-> 
+Hello:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+This series was applied to netdev/net-next.git (refs/heads/master):
+
+On Fri, 4 Jun 2021 15:32:06 +0800 you wrote:
+> From: Peng Li <lipeng321@huawei.com>
+> 
+> This patchset clean up some code style issues.
+> 
+> Peng Li (6):
+>   net: hdlc_x25: remove redundant blank lines
+>   net: hdlc_x25: remove unnecessary out of memory message
+>   net: hdlc_x25: move out assignment in if condition
+>   net: hdlc_x25: add some required spaces
+>   net: hdlc_x25: fix the code issue about "if..else.."
+>   net: hdlc_x25: fix the alignment issue
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,1/6] net: hdlc_x25: remove redundant blank lines
+    https://git.kernel.org/netdev/net-next/c/1c906e369815
+  - [net-next,2/6] net: hdlc_x25: remove unnecessary out of memory message
+    https://git.kernel.org/netdev/net-next/c/579ebffe7973
+  - [net-next,3/6] net: hdlc_x25: move out assignment in if condition
+    https://git.kernel.org/netdev/net-next/c/ec1f37741244
+  - [net-next,4/6] net: hdlc_x25: add some required spaces
+    https://git.kernel.org/netdev/net-next/c/5de446075c8e
+  - [net-next,5/6] net: hdlc_x25: fix the code issue about "if..else.."
+    https://git.kernel.org/netdev/net-next/c/792b070fca8f
+  - [net-next,6/6] net: hdlc_x25: fix the alignment issue
+    https://git.kernel.org/netdev/net-next/c/316fe3cc7de3
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
