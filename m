@@ -2,110 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FAEA39BC92
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D77A939BCD1
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbhFDQKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 12:10:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:42216 "EHLO foss.arm.com"
+        id S230320AbhFDQQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 12:16:12 -0400
+Received: from gate.crashing.org ([63.228.1.57]:40701 "EHLO gate.crashing.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229675AbhFDQKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 12:10:30 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 978B51063;
-        Fri,  4 Jun 2021 09:08:43 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 974DC3F73D;
-        Fri,  4 Jun 2021 09:08:41 -0700 (PDT)
-Date:   Fri, 4 Jun 2021 17:08:39 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Xuewen Yan <xuewen.yan94@gmail.com>
-Cc:     Quentin Perret <qperret@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Ryan Y <xuewyan@foxmail.com>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>, tj@kernel.org
-Subject: Re: [PATCH] sched/uclamp: Avoid setting cpu.uclamp.min bigger than
- cpu.uclamp.max
-Message-ID: <20210604160839.2op4ak75vle3gmt3@e107158-lin.cambridge.arm.com>
-References: <20210602123803.15738-1-xuewen.yan94@gmail.com>
- <YLeF/556Wbvx1Ssc@google.com>
- <CAB8ipk9BqzEQ4Ta5s+vJeep=v1pmaXS-WsF2tq0u9G8Q2PGmsA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S229746AbhFDQQL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 12:16:11 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 154G9uPx023147;
+        Fri, 4 Jun 2021 11:09:57 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 154G9uR9023146;
+        Fri, 4 Jun 2021 11:09:56 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Fri, 4 Jun 2021 11:09:55 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>, will@kernel.org,
+        paulmck@kernel.org, stern@rowland.harvard.edu,
+        parri.andrea@gmail.com, boqun.feng@gmail.com, npiggin@gmail.com,
+        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
+        akiyks@gmail.com, linux-kernel@vger.kernel.org,
+        linux-toolchains@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <20210604160955.GG18427@gate.crashing.org>
+References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAB8ipk9BqzEQ4Ta5s+vJeep=v1pmaXS-WsF2tq0u9G8Q2PGmsA@mail.gmail.com>
+In-Reply-To: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/03/21 10:24, Xuewen Yan wrote:
-> +CC Qais
+Hi!
 
-Thanks for the CC :)
+On Fri, Jun 04, 2021 at 12:12:07PM +0200, Peter Zijlstra wrote:
+> With optimizing compilers becoming more and more agressive and C so far
+> refusing to acknowledge the concept of control-dependencies even while
+> we keep growing the amount of reliance on them, things will eventually
+> come apart.
 
-> 
-> 
-> Hi Quentin
-> 
-> On Wed, Jun 2, 2021 at 9:22 PM Quentin Perret <qperret@google.com> wrote:
-> >
-> > +CC Patrick and Tejun
-> >
-> > On Wednesday 02 Jun 2021 at 20:38:03 (+0800), Xuewen Yan wrote:
-> > > From: Xuewen Yan <xuewen.yan@unisoc.com>
-> > >
-> > > When setting cpu.uclamp.min/max in cgroup, there is no validating
-> > > like uclamp_validate() in __sched_setscheduler(). It may cause the
-> > > cpu.uclamp.min is bigger than cpu.uclamp.max.
-> >
-> > ISTR this was intentional. We also allow child groups to ask for
-> > whatever clamps they want, but that is always limited by the parent, and
-> > reflected in the 'effective' values, as per the cgroup delegation model.
+Yes, C is still not a portable assembler.
 
-As Quentin said. This intentional to comply with cgroup model.
+> There have been talks with toolchain people on how to resolve this; one
+> suggestion was allowing the volatile qualifier on branch statements like
+> 'if', but so far no actual compiler has made any progress on this.
 
-See Limits and Protections sections in Documentation/admin-guide/cgroup-v2.rst
+"if" is not a "branch statement".
 
-Specifically
+> --- a/arch/powerpc/include/asm/barrier.h
+> +++ b/arch/powerpc/include/asm/barrier.h
+> @@ -80,6 +80,19 @@ do {									\
+>  	___p1;								\
+>  })
+>  
+> +#ifndef __ASSEMBLY__
+> +/* Guarantee a conditional branch that depends on @cond. */
+> +static __always_inline bool volatile_cond(bool cond)
+> +{
+> +	asm_volatile_goto("and. %0,%0,%0; bne %l[l_yes]"
+> +			  : : "r" (cond) : "cc", "memory" : l_yes);
+> +	return false;
+> +l_yes:
+> +	return true;
+> +}
+> +#define volatile_cond volatile_cond
+> +#endif
 
-	"all configuration combinations are valid"
+"cmpwi" is ever so slightly better than "and.".  And you can write "cr0"
+instead of "cc" more explicitely (it means the same thing though).
 
-So user can set cpu.uclamp.min higher than cpu.uclamp.max. But when we apply
-the setting, cpu.uclamp.min will be capped by cpu.uclamp.max. I can see you
-found the cpu_util_update_eff() logic.
 
-> 
-> It does not affect the 'effective' value. That because there is
-> protection in cpu_util_update_eff():
-> /* Ensure protection is always capped by limit */
-> eff[UCLAMP_MIN] = min(eff[UCLAMP_MIN], eff[UCLAMP_MAX]);
-> 
-> When users set the cpu.uclamp.min > cpu.uclamp.max:
-> cpu.uclamp.max = 50;
-> to set : cpu.uclamp.min = 60;
-> That would make the uclamp_req[UCLAMP_MIN].value = 1024* 60% = 614,
-> uclamp_req[UCLAMP_MAX].value = 1024* 50% = 512;
-> But finally, the  uclamp[UCLAMP_MIN].value = uclamp[UCLAMP_MAX].value
-> = 1024* 50% = 512;
-> 
-> Is it deliberately set not to validate because of the above?
+I didn't find a description of the expected precise semantics anywhere
+in this patch.  This however is the most important thing required here!
 
-Sorry I'm not following you here. What code paths were you trying to explain
-here?
 
-Did you actually hit any problem here?
-
-Thanks
-
---
-Qais Yousef
+Segher
