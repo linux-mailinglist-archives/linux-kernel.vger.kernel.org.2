@@ -2,120 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6412739B9C2
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1B739B9C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhFDNYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 09:24:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53166 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230004AbhFDNYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 09:24:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAAF0613F8;
-        Fri,  4 Jun 2021 13:23:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622812980;
-        bh=CacgOeszuf1puG/c/mHimSF4x/m/bEXJkxl9WmnMoB0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sj3BnbI4EHX+6bgxdlb42T5rgwP/tLppFWYMMS7hj/18OxdcgT18WYPpeMYY9n5Fo
-         wC7Y1soIZ7c/HbuCQqqc5xKErAaBCMMHbxnySKrUN9LMOMB+pN85PGVDTZFLTyxqFt
-         v7W8TKWrpw5gnFa9hZw/wVlODMSihA2Xq8THa1OG5ENq3wGqEUy6nB+Gf7NZouenjQ
-         CQI2ci9FC2at/9hf5HO0Bwb8b/RuiRYYqMiblwqpkxrqGTuSyqxzmmvrS2olyhV6OG
-         FfpHaTh3y5H4OZcYJxqZsoWVtc1DI3kFyhzQfMZimnbGR13ppG+oAhdqU1+/x/oh/l
-         U3oGmKhATzvTQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 8D4A840EFC; Fri,  4 Jun 2021 10:22:56 -0300 (-03)
-Date:   Fri, 4 Jun 2021 10:22:56 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Riccardo Mancini <rickyman7@gmail.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Tommi Rantala <tommi.t.rantala@nokia.com>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] perf ksymbol: fix memory leak: decrease refcount of map
- and dso
-Message-ID: <YLopMBgLWysdJbkm@kernel.org>
-References: <20210602231052.317048-1-rickyman7@gmail.com>
- <CAP-5=fVxHUnwGoRypMjCsPSh_yo5PB8Hzbkx5ArA5b0=7S-67g@mail.gmail.com>
+        id S230450AbhFDNZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 09:25:26 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:35563 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230435AbhFDNZZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 09:25:25 -0400
+Received: by mail-il1-f199.google.com with SMTP id n7-20020a056e021487b02901d29983f028so6475939ilk.2
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 06:23:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Fh24XHn46QTE70Fu59zKbxgTcJCyyRl/2Zjm/XtlHpE=;
+        b=c17CsGaYdb5RcwezcIMzU2rge3vd1uG5TrRMYq07xPcZPnsIeeop5t6XqVvhS8mPjf
+         1cginlK1koWgmtVgThwg/pbsTOogzIPuEriZpXkXG+M35Wdj6uWmVBhkpy3xhumlOzyH
+         jrrCS9ddujS870woqZR1Ox5KHwIYdqLXafa+JziS2mzWtGh2oQ/RF7mA4U998v9JmyhH
+         vkNzGald7w0fFOgkA2peBHhxiiJRNxb3gnRqEkiTT4OB9yH1ZwzBj81KrDrhNkuscLbz
+         RTwpdKI9DITQbdyGXzeDC98B9FKNeAxfHdA0pyQIITMEAywWmf4/Dv+ElPEV75pf8J24
+         QN2w==
+X-Gm-Message-State: AOAM532uW+PK2ztJ2Cz/IPn6p6AbeVIGXHP616sXhq98O8ieDDZENT1m
+        UllIsRwc8tkRBFGZO6i1JmAKrtztTwc9zfPtWG9/Osr8Yae7
+X-Google-Smtp-Source: ABdhPJxWXuAhWz8YN5zGxhVMy7R/J0EnN7+wawXQeUd+tZuHM5Xi61MX38v2juDYAsq9D4/IFOzNvIe4IXdEfR/XlXIxAxF8jD2b
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fVxHUnwGoRypMjCsPSh_yo5PB8Hzbkx5ArA5b0=7S-67g@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+X-Received: by 2002:a5e:c708:: with SMTP id f8mr3818934iop.198.1622813010489;
+ Fri, 04 Jun 2021 06:23:30 -0700 (PDT)
+Date:   Fri, 04 Jun 2021 06:23:30 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000006f82905c3f099be@google.com>
+Subject: [syzbot] WARNING in ieee80211_vif_release_channel
+From:   syzbot <syzbot+c299bc8bf2c766623e9c@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jun 03, 2021 at 09:26:40PM -0700, Ian Rogers escreveu:
-> On Wed, Jun 2, 2021 at 4:15 PM Riccardo Mancini <rickyman7@gmail.com> wrote:
-> > +++ b/tools/perf/util/machine.c
-> > @@ -776,6 +776,7 @@ static int machine__process_ksymbol_register(struct machine *machine,
-> >                 if (dso) {
-> >                         dso->kernel = DSO_SPACE__KERNEL;
-> >                         map = map__new2(0, dso);
-> > +                       dso__put(dso);
+Hello,
 
-> Will this cause 2 puts if the map allocation fails? Perhaps this
-> should be "if (map) dso__put(dso);".
+syzbot found the following issue on:
 
-I think its just a matter of removing the put in the error path, i.e.
-the patch becomes what is at the end of this message.
+HEAD commit:    a729b8e6 Merge branch 'fixes-for-yt8511-phy-driver'
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=17bbd313d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=52fb5f4163b9aa88
+dashboard link: https://syzkaller.appspot.com/bug?extid=c299bc8bf2c766623e9c
 
-I.e. if map__new2() fails, we want to drop the dso reference, and if it
-works, we already have a reference to it, obtained in map__new2().
+Unfortunately, I don't have any reproducer for this issue yet.
 
-But looking at this code now I realize that maps__find() should grab a
-refcount for the map it returns, because in this
-machine__process_ksymbol_register() function we use reference that 'map'
-after the if block, i.e. we use it if it came from maps__find() or if we
-created it machine__process_ksymbol_register, so there is a possible
-race where other thread removes it from the list and map__put()s it
-ending up in map__delete() while we still use it in
-machine__process_ksymbol_register(), right?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c299bc8bf2c766623e9c@syzkaller.appspotmail.com
 
-- Arnaldo
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 22187 at net/mac80211/chan.c:1830 ieee80211_vif_release_channel+0x1ad/0x220 net/mac80211/chan.c:1830
+Modules linked in:
+CPU: 1 PID: 22187 Comm: syz-executor.4 Not tainted 5.13.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:ieee80211_vif_release_channel+0x1ad/0x220 net/mac80211/chan.c:1830
+Code: c1 ea 03 80 3c 02 00 0f 85 82 00 00 00 48 8b ab 48 06 00 00 e9 60 ff ff ff e8 6f b1 fa f8 0f 0b e9 e2 fe ff ff e8 63 b1 fa f8 <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 e2 48 c1 ea 03 80 3c 02
+RSP: 0018:ffffc9000a837050 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: ffff88802739cc00 RCX: ffffc90012325000
+RDX: 0000000000040000 RSI: ffffffff887a2b1d RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000001
+R10: ffffffff887a2adc R11: 0000000000000000 R12: ffff88802739d248
+R13: 0000000000000001 R14: 00000000fffffff4 R15: 0000000000000000
+FS:  00007fe9d16b1700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f6c71cee000 CR3: 0000000077555000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ ieee80211_start_ap+0x18ed/0x24e0 net/mac80211/cfg.c:1200
+ rdev_start_ap net/wireless/rdev-ops.h:158 [inline]
+ nl80211_start_ap+0x1c17/0x2920 net/wireless/nl80211.c:5515
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1929
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665d9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fe9d16b1188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 000000000056c038 RCX: 00000000004665d9
+RDX: 0000000000000000 RSI: 00000000200001c0 RDI: 0000000000000003
+RBP: 00007fe9d16b11d0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffe90e7d1bf R14: 00007fe9d16b1300 R15: 0000000000022000
 
-> >                 }
 
-> >                 if (!dso || !map) {
-> > @@ -792,6 +793,7 @@ static int machine__process_ksymbol_register(struct machine *machine,
-> >                 map->start = event->ksymbol.addr;
-> >                 map->end = map->start + event->ksymbol.len;
-> >                 maps__insert(&machine->kmaps, map);
-> > +               map__put(map);
-> >                 dso__set_loaded(dso);
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> >                 if (is_bpf_image(event->ksymbol.name)) {
-
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index 3ff4936a15a42f74..da19be7da284c250 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -776,10 +776,10 @@ static int machine__process_ksymbol_register(struct machine *machine,
- 		if (dso) {
- 			dso->kernel = DSO_SPACE__KERNEL;
- 			map = map__new2(0, dso);
-+			dso__put(dso);
- 		}
- 
- 		if (!dso || !map) {
--			dso__put(dso);
- 			return -ENOMEM;
- 		}
- 
-@@ -792,6 +792,7 @@ static int machine__process_ksymbol_register(struct machine *machine,
- 		map->start = event->ksymbol.addr;
- 		map->end = map->start + event->ksymbol.len;
- 		maps__insert(&machine->kmaps, map);
-+		map__put(map);
- 		dso__set_loaded(dso);
- 
- 		if (is_bpf_image(event->ksymbol.name)) {
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
