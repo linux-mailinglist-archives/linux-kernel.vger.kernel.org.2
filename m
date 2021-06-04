@@ -2,780 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E24ED39B7F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4307039B800
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbhFDLek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 07:34:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42491 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230060AbhFDLej (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 07:34:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622806372;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/pH7mFlZI8gQzi2WHhpITmkIZed6blsjCz+L8Mff8zw=;
-        b=Jbcf/IHDv7maXtmf29p39VlRRAEmIJKRLC0Iiu+QWQxVN0a2Z70Cr9pjhZGoW82Xqslyy2
-        H/qozhah/WoKWiQOlp+0G6DiugiKpJhjAGvYjg1Hgf4tYSUpWrjkc4p2OJf59MK/jnlZcX
-        HVhwjM5qFFiNDS0SGKw/SdQB/JZsZrQ=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-329-bgRUcvpEMVW7KBM2y1_qhg-1; Fri, 04 Jun 2021 07:32:51 -0400
-X-MC-Unique: bgRUcvpEMVW7KBM2y1_qhg-1
-Received: by mail-ed1-f70.google.com with SMTP id c21-20020a0564021015b029038c3f08ce5aso4854337edu.18
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 04:32:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/pH7mFlZI8gQzi2WHhpITmkIZed6blsjCz+L8Mff8zw=;
-        b=UHZba7yAa8m0c3ayybszAXoOEtduoDxPRmXY9yu5cJi/QOj/O8SJi0xuFhp5CkUkyb
-         po2OjRFl0wXIqdOm4SNKWJycokHKYCSMEPi78suwcvsN+XjIF2QSWMVfD/0vZiHQCpQ5
-         ZzwT09jgPLuUF3YnvlBP7mq8th9UKTl/39n7k5b/ZaC6g1yhv+PFd1avdF1qKuGGBsQc
-         nu6gA7Z3+JVyjDF6DBSUHL/U8km51AwIfOqTLX+Z/EHrUOdbJPXy+ZnU54g6R5xywztu
-         e1h1D9al7QL2O86KW0YuF+Ytd5SID3qEwImHnpudmNhhHHIH9Sj1SyxPZ7gseqa2XEgK
-         aaow==
-X-Gm-Message-State: AOAM531gxceHTu2DxLoWczXrBBDIaQcdCKfUUmF94ix++lXyewUGRCRI
-        vma0bnnZYWMLP29f19yTk/zFa9+pgb+jiSEHT5c5pTNLKD+FmzXYuFYOp2/QNXc/VZUenekrPEB
-        aQFBrp34pVszr6ACKFzxHeY7regMt827iQLJgw9ZSR8t0cZEgDUlCUbmHLqqnDeA89TT7IxbR2F
-        I8
-X-Received: by 2002:aa7:cfd4:: with SMTP id r20mr4224358edy.237.1622806370008;
-        Fri, 04 Jun 2021 04:32:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwZCGowlSMqimNLxeBUgvbfCwyRqfx/JH/dKacO6cJVCNGJ+loD59dA0oEPczcy2Qbf4fk+0g==
-X-Received: by 2002:aa7:cfd4:: with SMTP id r20mr4224329edy.237.1622806369606;
-        Fri, 04 Jun 2021 04:32:49 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id x4sm3067949edq.23.2021.06.04.04.32.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Jun 2021 04:32:49 -0700 (PDT)
-Subject: Re: [PATCH 4/7] platform/surface: aggregator_cdev: Add support for
- forwarding events to user-space
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     Mark Gross <mgross@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        platform-driver-x86@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210603234526.2503590-1-luzmaximilian@gmail.com>
- <20210603234526.2503590-5-luzmaximilian@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <a1a43f55-378f-d5e7-c439-d5397abdf838@redhat.com>
-Date:   Fri, 4 Jun 2021 13:32:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230213AbhFDLfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 07:35:31 -0400
+Received: from mail-dm6nam12on2082.outbound.protection.outlook.com ([40.107.243.82]:19872
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229916AbhFDLfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 07:35:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Tqxx15X7J6KxgPgmORhLJYqcxoAyYynwdwbhB5sWhlEG9cL0dDE6wpqkjont4UCaZSeSJ9m8YGiB6Wb3hZSx9NHDv3EePwMBFU21fbg2BqxFOjoJU5gW1g2Gbiz6SpDGvDYC0sZKRCJ7t4YHdMWhke3HShPBLqD4f5c94KstIQ66g+oknVg3YRSmVCdMHitK87zK8356HM3yBfRUDW+gOcPNM8T3Oie98BlYMLVJgyGGKn2pzYg82qVXUsKQqnwzgZbg4mXRF4U9LlMrCj5yQor4AvUbWa9RiNkh2bUw+82Oys+qQk6PbVhcEbRt2NYamogWMbcZUiZjkeqTXO+YxA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ltuleEGy0Pg9v5UFjXEHzqxOAH1wsaCkSbVoDnzB2SM=;
+ b=BPLTUzDgxH2L0tdbJaXjutOTgJJj5FrD0fwqMLAe+cDQ+GmrLHEtTERkOzPQrvTWHxuoNZUVMdnNRUwT1y/f2aq3h5DNOm0sQuDAWk0yybixw95gLMaUmraPk1fl11821UMarz1Ad0si+P44V2moDiJxzuJzonHBxvmQhXqsN8lD0VfJYPYht2AOHeN4bv9i8yz2ljYxe61PIVNGzicG1WQMQb4xuTrQjUxGpWAncONwfJDR829IwqllYQTM6+8BRFsm2yA1ffyYmmqXyAmYIE0s1a5Xax1VQXmUYmtWRQmD6ZiPPYIMin8BSF20AMY54yP4gWKjLecC+79WDTuTmw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ltuleEGy0Pg9v5UFjXEHzqxOAH1wsaCkSbVoDnzB2SM=;
+ b=i/PWSslZU6MbOzkXixKFx8M8FlIpKMIp6sZ3DU3HuSKcO8qUaMHBuaQwBgE5vrD4GPcXDiNW6giZQetFN1HJdNz2SlwaKhMpRvYmYAFO4/annlChG5RCTej9L5C/Y4UGoe4EW7rX2/WR3aneBcGI7ceIhG6eP7w6grtei+ABU+I=
+Received: from SN4PR0501CA0065.namprd05.prod.outlook.com
+ (2603:10b6:803:41::42) by PH0PR02MB7637.namprd02.prod.outlook.com
+ (2603:10b6:510:55::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.22; Fri, 4 Jun
+ 2021 11:33:42 +0000
+Received: from SN1NAM02FT0042.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:803:41:cafe::8b) by SN4PR0501CA0065.outlook.office365.com
+ (2603:10b6:803:41::42) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.10 via Frontend
+ Transport; Fri, 4 Jun 2021 11:33:42 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT0042.mail.protection.outlook.com (10.97.4.129) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4195.18 via Frontend Transport; Fri, 4 Jun 2021 11:33:42 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 4 Jun 2021 04:33:41 -0700
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Fri, 4 Jun 2021 04:33:41 -0700
+Envelope-to: git@xilinx.com,
+ robh+dt@kernel.org,
+ mdf@kernel.org,
+ trix@redhat.com,
+ arnd@arndb.de,
+ gregkh@linuxfoundation.org,
+ zou_wei@huawei.com,
+ iwamatsu@nigauri.org,
+ devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ linux-fpga@vger.kernel.org,
+ chinnikishore369@gmail.com
+Received: from [10.140.6.60] (port=49944 helo=xhdnavam40.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <nava.manne@xilinx.com>)
+        id 1lp856-0005PI-G6; Fri, 04 Jun 2021 04:33:40 -0700
+From:   Nava kishore Manne <nava.manne@xilinx.com>
+To:     <robh+dt@kernel.org>, <michal.simek@xilinx.com>, <mdf@kernel.org>,
+        <trix@redhat.com>, <nava.manne@xilinx.com>, <arnd@arndb.de>,
+        <rajan.vaja@xilinx.com>, <gregkh@linuxfoundation.org>,
+        <amit.sunil.dhamne@xilinx.com>, <tejas.patel@xilinx.com>,
+        <zou_wei@huawei.com>, <lakshmi.sai.krishna.potthuri@xilinx.com>,
+        <ravi.patel@xilinx.com>, <iwamatsu@nigauri.org>,
+        <wendy.liang@xilinx.com>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-fpga@vger.kernel.org>,
+        <git@xilinx.com>, <chinnikishore369@gmail.com>
+Subject: [PATCH v7 0/4]Add Bitstream configuration support for Versal
+Date:   Fri, 4 Jun 2021 17:03:28 +0530
+Message-ID: <20210604113332.1394-1-nava.manne@xilinx.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20210603234526.2503590-5-luzmaximilian@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a570d703-98e8-4cdf-d71b-08d9274c9b1f
+X-MS-TrafficTypeDiagnostic: PH0PR02MB7637:
+X-Microsoft-Antispam-PRVS: <PH0PR02MB763755D79041D6E16DBF556EC23B9@PH0PR02MB7637.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OAJkWH5/OFIYZOpRkhIB8tPjG5TdvRHsk0KrXJCi2tP5kYyfYRoPru3fP6zs80O8dYtPeZSR2Rry6qmRZVcpeT+xuIr8cRXEtJFSoQCbhW7uLbsu3KghljPWLMvTG0mdGyxjRJ5nX2CHTm1hW+zJsAatuGFEjvZyEWclgpfxdxMBQzSY8OQf6PCZE1ZmZDn1Rq4IN1mZPBc8wy+OIRVdzl4xJxlY1Hat7H0up+u+kM6n0wsG3U+wj+wTiz8j8gUXKrjCQdDsHSx7lYJeV60VyYO6bTzlbO5c2iD28sGx6yMW1oD+o3SAjZOkuVdEC2TJ1o7WzEztCo33xYx1SEMuYpmXkfPF0d3ATFkmcBm4lV6c6qeh/kQlBePNi1Uv6DbTobYopMH+CvUV+b3OkNl70FaTRUaTq0k7QsVZWEydKOrwI5Mzxb9EhXHhseZNGBCQEsdnVaRAf3wuP4FltQBaca248kPo19EO9w43MmVE7woeFPFmQrIUvU9rNm9P6SGNIupw40N5QKV3oYigo1z6kLhahY9eGQ08DN2RN2CgpgsqaPf1Y7wZ2xv8dwzySy9cTaeKa9EjrWmKLSrzNyni0vf9ML54bzyzAVZvg12qr4LvMOYh7su4wtdCGWTK8LFkw647uw1/elvVkrAGMzVsg7ko9xzn49DLCTpBbFJYvwtb0//VEwSAVy2htXJlG31BcqA7YIlxR2Vp5R5Y1ghOrsUOXHyuDtxj+D/xHMGRKEOTz0d1rqPwkTCi5eh77ZbC8SL0CBMss2SBHSFaSmn3C006AgXge7Xp4usqvMzqazQLVOmoFPC8iEHAtuimTLGM27lCfZjvH6iJDzIPwvmIyO18ybC7br7DYwfOXX2eHp8=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(346002)(39860400002)(36840700001)(46966006)(26005)(36756003)(8936002)(83380400001)(82310400003)(921005)(7696005)(1076003)(186003)(8676002)(82740400003)(7636003)(70206006)(9786002)(426003)(966005)(36906005)(6666004)(2906002)(110136005)(356005)(70586007)(316002)(5660300002)(36860700001)(7416002)(47076005)(336012)(2616005)(478600001)(102446001)(2101003)(83996005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2021 11:33:42.2389
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a570d703-98e8-4cdf-d71b-08d9274c9b1f
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT0042.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR02MB7637
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This series Adds FPGA manager driver support for Xilinx Versal SoC.
+it uses the firmware interface to configure the programmable logic.
 
-I've one review remark inline below.
+Changes for v4:
+                -Rebase the patch series on linux-next.
+                https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
 
-On 6/4/21 1:45 AM, Maximilian Luz wrote:
-> Currently, debugging unknown events requires writing a custom driver.
-> This is somewhat difficult, slow to adapt, and not entirely
-> user-friendly for quickly trying to figure out things on devices of some
-> third-party user. We can do better. We already have a user-space
-> interface intended for debugging SAM EC requests, so let's add support
-> for receiving events to that.
-> 
-> This commit provides support for receiving events by reading from the
-> controller file. It additionally introduces two new IOCTLs to control
-> which event categories will be forwarded. Specifically, a user-space
-> client can specify which target categories it wants to receive events
-> from by registering the corresponding notifier(s) via the IOCTLs and
-> after that, read the received events by reading from the controller
-> device.
-> 
-> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
-> ---
->  .../userspace-api/ioctl/ioctl-number.rst      |   2 +-
->  .../surface/surface_aggregator_cdev.c         | 457 +++++++++++++++++-
->  include/uapi/linux/surface_aggregator/cdev.h  |  41 +-
->  3 files changed, 474 insertions(+), 26 deletions(-)
-> 
-> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> index 9bfc2b510c64..1409e40e6345 100644
-> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
-> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> @@ -325,7 +325,7 @@ Code  Seq#    Include File                                           Comments
->  0xA3  90-9F  linux/dtlk.h
->  0xA4  00-1F  uapi/linux/tee.h                                        Generic TEE subsystem
->  0xA4  00-1F  uapi/asm/sgx.h                                          <mailto:linux-sgx@vger.kernel.org>
-> -0xA5  01     linux/surface_aggregator/cdev.h                         Microsoft Surface Platform System Aggregator
-> +0xA5  01-05  linux/surface_aggregator/cdev.h                         Microsoft Surface Platform System Aggregator
->                                                                       <mailto:luzmaximilian@gmail.com>
->  0xA5  20-2F  linux/surface_aggregator/dtx.h                          Microsoft Surface DTX driver
->                                                                       <mailto:luzmaximilian@gmail.com>
-> diff --git a/drivers/platform/surface/surface_aggregator_cdev.c b/drivers/platform/surface/surface_aggregator_cdev.c
-> index 79e28fab7e40..807930144039 100644
-> --- a/drivers/platform/surface/surface_aggregator_cdev.c
-> +++ b/drivers/platform/surface/surface_aggregator_cdev.c
-> @@ -3,29 +3,69 @@
->   * Provides user-space access to the SSAM EC via the /dev/surface/aggregator
->   * misc device. Intended for debugging and development.
->   *
-> - * Copyright (C) 2020 Maximilian Luz <luzmaximilian@gmail.com>
-> + * Copyright (C) 2020-2021 Maximilian Luz <luzmaximilian@gmail.com>
->   */
->  
->  #include <linux/fs.h>
-> +#include <linux/ioctl.h>
->  #include <linux/kernel.h>
-> +#include <linux/kfifo.h>
->  #include <linux/kref.h>
->  #include <linux/miscdevice.h>
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
-> +#include <linux/poll.h>
->  #include <linux/rwsem.h>
->  #include <linux/slab.h>
->  #include <linux/uaccess.h>
-> +#include <linux/vmalloc.h>
->  
->  #include <linux/surface_aggregator/cdev.h>
->  #include <linux/surface_aggregator/controller.h>
-> +#include <linux/surface_aggregator/serial_hub.h>
->  
->  #define SSAM_CDEV_DEVICE_NAME	"surface_aggregator_cdev"
->  
-> +
-> +/* -- Main structures. ------------------------------------------------------ */
-> +
-> +enum ssam_cdev_device_state {
-> +	SSAM_CDEV_DEVICE_SHUTDOWN_BIT = BIT(0),
-> +};
-> +
->  struct ssam_cdev {
->  	struct kref kref;
->  	struct rw_semaphore lock;
-> +
-> +	struct device *dev;
->  	struct ssam_controller *ctrl;
->  	struct miscdevice mdev;
-> +	unsigned long flags;
-> +
-> +	struct rw_semaphore client_lock;  /* Guards client list. */
-> +	struct list_head client_list;
-> +};
-> +
-> +struct ssam_cdev_client;
-> +
-> +struct ssam_cdev_notifier {
-> +	struct ssam_cdev_client *client;
-> +	struct ssam_event_notifier nf;
-> +};
-> +
-> +struct ssam_cdev_client {
-> +	struct ssam_cdev *cdev;
-> +	struct list_head node;
-> +
-> +	struct mutex notifier_lock;	/* Guards notifier access for registration */
-> +	struct ssam_cdev_notifier *notifier[SSH_NUM_EVENTS];
-> +
-> +	struct mutex read_lock;		/* Guards FIFO buffer read access */
-> +	struct mutex write_lock;	/* Guards FIFO buffer write access */
-> +	DECLARE_KFIFO(buffer, u8, 4096);
-> +
-> +	wait_queue_head_t waitq;
-> +	struct fasync_struct *fasync;
->  };
->  
->  static void __ssam_cdev_release(struct kref *kref)
-> @@ -47,24 +87,169 @@ static void ssam_cdev_put(struct ssam_cdev *cdev)
->  		kref_put(&cdev->kref, __ssam_cdev_release);
->  }
->  
-> -static int ssam_cdev_device_open(struct inode *inode, struct file *filp)
-> +
-> +/* -- Notifier handling. ---------------------------------------------------- */
-> +
-> +static u32 ssam_cdev_notifier(struct ssam_event_notifier *nf, const struct ssam_event *in)
->  {
-> -	struct miscdevice *mdev = filp->private_data;
-> -	struct ssam_cdev *cdev = container_of(mdev, struct ssam_cdev, mdev);
-> +	struct ssam_cdev_notifier *cdev_nf = container_of(nf, struct ssam_cdev_notifier, nf);
-> +	struct ssam_cdev_client *client = cdev_nf->client;
-> +	struct ssam_cdev_event event;
-> +	size_t n = struct_size(&event, data, in->length);
-> +
-> +	/* Translate event. */
-> +	event.target_category = in->target_category;
-> +	event.target_id = in->target_id;
-> +	event.command_id = in->command_id;
-> +	event.instance_id = in->instance_id;
-> +	event.length = in->length;
-> +
-> +	mutex_lock(&client->write_lock);
-> +
-> +	/* Make sure we have enough space. */
-> +	if (kfifo_avail(&client->buffer) < n) {
-> +		dev_warn(client->cdev->dev,
-> +			 "buffer full, dropping event (tc: %#04x, tid: %#04x, cid: %#04x, iid: %#04x)\n",
-> +			 in->target_category, in->target_id, in->command_id, in->instance_id);
-> +		mutex_unlock(&client->write_lock);
-> +		return 0;
-> +	}
->  
-> -	filp->private_data = ssam_cdev_get(cdev);
-> -	return stream_open(inode, filp);
-> +	/* Copy event header and payload. */
-> +	kfifo_in(&client->buffer, (const u8 *)&event, struct_size(&event, data, 0));
-> +	kfifo_in(&client->buffer, &in->data[0], in->length);
-> +
-> +	mutex_unlock(&client->write_lock);
-> +
-> +	/* Notify waiting readers. */
-> +	kill_fasync(&client->fasync, SIGIO, POLL_IN);
-> +	wake_up_interruptible(&client->waitq);
-> +
-> +	/*
-> +	 * Don't mark events as handled, this is the job of a proper driver and
-> +	 * not the debugging interface.
-> +	 */
-> +	return 0;
->  }
->  
-> -static int ssam_cdev_device_release(struct inode *inode, struct file *filp)
-> +static int ssam_cdev_notifier_register(struct ssam_cdev_client *client, u8 tc, int priority)
->  {
-> -	ssam_cdev_put(filp->private_data);
-> -	return 0;
-> +	const u16 rqid = ssh_tc_to_rqid(tc);
-> +	const u16 event = ssh_rqid_to_event(rqid);
-> +	struct ssam_cdev_notifier *nf;
-> +	int status;
-> +
-> +	/* Validate notifier target category. */
-> +	if (!ssh_rqid_is_event(rqid))
-> +		return -EINVAL;
-> +
-> +	mutex_lock(&client->notifier_lock);
-> +
-> +	/* Check if the notifier has already been registered. */
-> +	if (client->notifier[event]) {
-> +		mutex_unlock(&client->notifier_lock);
-> +		return -EEXIST;
-> +	}
-> +
-> +	/* Allocate new notifier. */
-> +	nf = kzalloc(sizeof(*nf), GFP_KERNEL);
-> +	if (!nf) {
-> +		mutex_unlock(&client->notifier_lock);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	/*
-> +	 * Create a dummy notifier with the minimal required fields for
-> +	 * observer registration. Note that we can skip fully specifying event
-> +	 * and registry here as we do not need any matching and use silent
-> +	 * registration, which does not enable the corresponding event.
-> +	 */
-> +	nf->client = client;
-> +	nf->nf.base.fn = ssam_cdev_notifier;
-> +	nf->nf.base.priority = priority;
-> +	nf->nf.event.id.target_category = tc;
-> +	nf->nf.event.mask = 0;	/* Do not do any matching. */
-> +	nf->nf.flags = SSAM_EVENT_NOTIFIER_OBSERVER;
-> +
-> +	/* Register notifier. */
-> +	status = ssam_notifier_register(client->cdev->ctrl, &nf->nf);
-> +	if (status)
-> +		kfree(nf);
-> +	else
-> +		client->notifier[event] = nf;
-> +
-> +	mutex_unlock(&client->notifier_lock);
-> +	return status;
->  }
->  
-> -static long ssam_cdev_request(struct ssam_cdev *cdev, unsigned long arg)
-> +static int ssam_cdev_notifier_unregister(struct ssam_cdev_client *client, u8 tc)
-> +{
-> +	const u16 rqid = ssh_tc_to_rqid(tc);
-> +	const u16 event = ssh_rqid_to_event(rqid);
-> +	int status;
-> +
-> +	/* Validate notifier target category. */
-> +	if (!ssh_rqid_is_event(rqid))
-> +		return -EINVAL;
-> +
-> +	mutex_lock(&client->notifier_lock);
-> +
-> +	/* Check if the notifier is currently registered. */
-> +	if (!client->notifier[event]) {
-> +		mutex_unlock(&client->notifier_lock);
-> +		return -ENOENT;
-> +	}
-> +
-> +	/* Unregister and free notifier. */
-> +	status = ssam_notifier_unregister(client->cdev->ctrl, &client->notifier[event]->nf);
-> +	kfree(client->notifier[event]);
-> +	client->notifier[event] = NULL;
-> +
-> +	mutex_unlock(&client->notifier_lock);
-> +	return status;
-> +}
-> +
-> +static void ssam_cdev_notifier_unregister_all(struct ssam_cdev_client *client)
-> +{
-> +	int i;
-> +
-> +	down_read(&client->cdev->lock);
-> +
-> +	/*
-> +	 * This function may be used during shutdown, thus we need to test for
-> +	 * cdev->ctrl instead of the SSAM_CDEV_DEVICE_SHUTDOWN_BIT bit.
-> +	 */
-> +	if (client->cdev->ctrl) {
-> +		for (i = 0; i < SSH_NUM_EVENTS; i++)
-> +			ssam_cdev_notifier_unregister(client, i + 1);
-> +
-> +	} else {
-> +		int count = 0;
-> +
-> +		/*
-> +		 * Device has been shut down. Any notifier remaining is a bug,
-> +		 * so warn about that as this would otherwise hardly be
-> +		 * noticeable. Nevertheless, free them as well.
-> +		 */
-> +		mutex_lock(&client->notifier_lock);
-> +		for (i = 0; i < SSH_NUM_EVENTS; i++) {
-> +			count += !!(client->notifier[i]);
-> +			kfree(client->notifier[i]);
-> +			client->notifier[i] = NULL;
-> +		}
-> +		mutex_unlock(&client->notifier_lock);
-> +
-> +		WARN_ON(count > 0);
-> +	}
-> +
-> +	up_read(&client->cdev->lock);
-> +}
-> +
-> +
-> +/* -- IOCTL functions. ------------------------------------------------------ */
-> +
-> +static long ssam_cdev_request(struct ssam_cdev_client *client, struct ssam_cdev_request __user *r)
->  {
-> -	struct ssam_cdev_request __user *r;
->  	struct ssam_cdev_request rqst;
->  	struct ssam_request spec = {};
->  	struct ssam_response rsp = {};
-> @@ -72,7 +257,6 @@ static long ssam_cdev_request(struct ssam_cdev *cdev, unsigned long arg)
->  	void __user *rspdata;
->  	int status = 0, ret = 0, tmp;
->  
-> -	r = (struct ssam_cdev_request __user *)arg;
->  	ret = copy_struct_from_user(&rqst, sizeof(rqst), r, sizeof(*r));
->  	if (ret)
->  		goto out;
-> @@ -152,7 +336,7 @@ static long ssam_cdev_request(struct ssam_cdev *cdev, unsigned long arg)
->  	}
->  
->  	/* Perform request. */
-> -	status = ssam_request_sync(cdev->ctrl, &spec, &rsp);
-> +	status = ssam_request_sync(client->cdev->ctrl, &spec, &rsp);
->  	if (status)
->  		goto out;
->  
-> @@ -177,48 +361,244 @@ static long ssam_cdev_request(struct ssam_cdev *cdev, unsigned long arg)
->  	return ret;
->  }
->  
-> -static long __ssam_cdev_device_ioctl(struct ssam_cdev *cdev, unsigned int cmd,
-> +static long ssam_cdev_notif_register(struct ssam_cdev_client *client,
-> +				     const struct ssam_cdev_notifier_desc __user *d)
-> +{
-> +	struct ssam_cdev_notifier_desc desc;
-> +	long ret;
-> +
-> +	ret = copy_struct_from_user(&desc, sizeof(desc), d, sizeof(*d));
-> +	if (ret)
-> +		return ret;
-> +
-> +	return ssam_cdev_notifier_register(client, desc.target_category, desc.priority);
-> +}
-> +
-> +static long ssam_cdev_notif_unregister(struct ssam_cdev_client *client,
-> +				       const struct ssam_cdev_notifier_desc __user *d)
-> +{
-> +	struct ssam_cdev_notifier_desc desc;
-> +	long ret;
-> +
-> +	ret = copy_struct_from_user(&desc, sizeof(desc), d, sizeof(*d));
-> +	if (ret)
-> +		return ret;
-> +
-> +	return ssam_cdev_notifier_unregister(client, desc.target_category);
-> +}
-> +
-> +
-> +/* -- File operations. ------------------------------------------------------ */
-> +
-> +static int ssam_cdev_device_open(struct inode *inode, struct file *filp)
-> +{
-> +	struct miscdevice *mdev = filp->private_data;
-> +	struct ssam_cdev_client *client;
-> +	struct ssam_cdev *cdev = container_of(mdev, struct ssam_cdev, mdev);
-> +
-> +	/* Initialize client */
-> +	client = vzalloc(sizeof(*client));
-> +	if (!client)
-> +		return -ENOMEM;
-> +
-> +	client->cdev = ssam_cdev_get(cdev);
-> +
-> +	INIT_LIST_HEAD(&client->node);
-> +
-> +	mutex_init(&client->notifier_lock);
-> +
-> +	mutex_init(&client->read_lock);
-> +	mutex_init(&client->write_lock);
-> +	INIT_KFIFO(client->buffer);
-> +	init_waitqueue_head(&client->waitq);
-> +
-> +	filp->private_data = client;
-> +
-> +	/* Attach client. */
-> +	down_write(&cdev->client_lock);
-> +
-> +	if (test_bit(SSAM_CDEV_DEVICE_SHUTDOWN_BIT, &cdev->flags)) {
-> +		up_write(&cdev->client_lock);
-> +		ssam_cdev_put(client->cdev);
+Changes for v5:
+                -Updated binding doc's.
 
-You are missing the mutex_destroy() calls here which you are
-doing in ssam_cdev_device_release().
+Changes for v6:
+                -Updated firmware binding doc.
 
-Or maybe move the mutex_init calls below this check
-(before the up_write()) since I don't think the client can
-be accessed by any code until the up_write is done?
+Changes for v7:
+               -Updated versal-fpga.c driver to remove unwated priv
+                struct dependency.
 
-Regards,
+Appana Durga Kedareswara rao (1):
+  dt-bindings: fpga: Add binding doc for versal fpga manager
 
-Hans
+Nava kishore Manne (3):
+  drivers: firmware: Add PDI load API support
+  dt-bindings: firmware: Add bindings for xilinx firmware
+  fpga: versal-fpga: Add versal fpga manager driver
 
+ .../firmware/xilinx/xlnx,zynqmp-firmware.yaml | 94 ++++++++++++++++++
+ .../bindings/fpga/xlnx,versal-fpga.yaml       | 33 +++++++
+ drivers/firmware/xilinx/zynqmp.c              | 17 ++++
+ drivers/fpga/Kconfig                          |  9 ++
+ drivers/fpga/Makefile                         |  1 +
+ drivers/fpga/versal-fpga.c                    | 96 +++++++++++++++++++
+ include/linux/firmware/xlnx-zynqmp.h          | 10 ++
+ 7 files changed, 260 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
+ create mode 100644 Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml
+ create mode 100644 drivers/fpga/versal-fpga.c
 
-> +		vfree(client);
-> +		return -ENODEV;
-> +	}
-> +	list_add_tail(&client->node, &cdev->client_list);
-> +
-> +	up_write(&cdev->client_lock);
-> +
-> +	stream_open(inode, filp);
-> +	return 0;
-> +}
-> +
-> +static int ssam_cdev_device_release(struct inode *inode, struct file *filp)
-> +{
-> +	struct ssam_cdev_client *client = filp->private_data;
-> +
-> +	/* Force-unregister all remaining notifiers of this client. */
-> +	ssam_cdev_notifier_unregister_all(client);
-> +
-> +	/* Detach client. */
-> +	down_write(&client->cdev->client_lock);
-> +	list_del(&client->node);
-> +	up_write(&client->cdev->client_lock);
-> +
-> +	/* Free client. */
-> +	mutex_destroy(&client->write_lock);
-> +	mutex_destroy(&client->read_lock);
-> +
-> +	mutex_destroy(&client->notifier_lock);
-> +
-> +	ssam_cdev_put(client->cdev);
-> +	vfree(client);
-> +
-> +	return 0;
-> +}
-> +
-> +static long __ssam_cdev_device_ioctl(struct ssam_cdev_client *client, unsigned int cmd,
->  				     unsigned long arg)
->  {
->  	switch (cmd) {
->  	case SSAM_CDEV_REQUEST:
-> -		return ssam_cdev_request(cdev, arg);
-> +		return ssam_cdev_request(client, (struct ssam_cdev_request __user *)arg);
-> +
-> +	case SSAM_CDEV_NOTIF_REGISTER:
-> +		return ssam_cdev_notif_register(client,
-> +						(struct ssam_cdev_notifier_desc __user *)arg);
-> +
-> +	case SSAM_CDEV_NOTIF_UNREGISTER:
-> +		return ssam_cdev_notif_unregister(client,
-> +						  (struct ssam_cdev_notifier_desc __user *)arg);
->  
->  	default:
->  		return -ENOTTY;
->  	}
->  }
->  
-> -static long ssam_cdev_device_ioctl(struct file *file, unsigned int cmd,
-> -				   unsigned long arg)
-> +static long ssam_cdev_device_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
->  {
-> -	struct ssam_cdev *cdev = file->private_data;
-> +	struct ssam_cdev_client *client = file->private_data;
->  	long status;
->  
->  	/* Ensure that controller is valid for as long as we need it. */
-> +	if (down_read_killable(&client->cdev->lock))
-> +		return -ERESTARTSYS;
-> +
-> +	if (test_bit(SSAM_CDEV_DEVICE_SHUTDOWN_BIT, &client->cdev->flags)) {
-> +		up_read(&client->cdev->lock);
-> +		return -ENODEV;
-> +	}
-> +
-> +	status = __ssam_cdev_device_ioctl(client, cmd, arg);
-> +
-> +	up_read(&client->cdev->lock);
-> +	return status;
-> +}
-> +
-> +static ssize_t ssam_cdev_read(struct file *file, char __user *buf, size_t count, loff_t *offs)
-> +{
-> +	struct ssam_cdev_client *client = file->private_data;
-> +	struct ssam_cdev *cdev = client->cdev;
-> +	unsigned int copied;
-> +	int status = 0;
-> +
->  	if (down_read_killable(&cdev->lock))
->  		return -ERESTARTSYS;
->  
-> -	if (!cdev->ctrl) {
-> +	/* Make sure we're not shut down. */
-> +	if (test_bit(SSAM_CDEV_DEVICE_SHUTDOWN_BIT, &cdev->flags)) {
->  		up_read(&cdev->lock);
->  		return -ENODEV;
->  	}
->  
-> -	status = __ssam_cdev_device_ioctl(cdev, cmd, arg);
-> +	do {
-> +		/* Check availability, wait if necessary. */
-> +		if (kfifo_is_empty(&client->buffer)) {
-> +			up_read(&cdev->lock);
-> +
-> +			if (file->f_flags & O_NONBLOCK)
-> +				return -EAGAIN;
-> +
-> +			status = wait_event_interruptible(client->waitq,
-> +							  !kfifo_is_empty(&client->buffer) ||
-> +							  test_bit(SSAM_CDEV_DEVICE_SHUTDOWN_BIT,
-> +								   &cdev->flags));
-> +			if (status < 0)
-> +				return status;
-> +
-> +			if (down_read_killable(&cdev->lock))
-> +				return -ERESTARTSYS;
-> +
-> +			/* Need to check that we're not shut down again. */
-> +			if (test_bit(SSAM_CDEV_DEVICE_SHUTDOWN_BIT, &cdev->flags)) {
-> +				up_read(&cdev->lock);
-> +				return -ENODEV;
-> +			}
-> +		}
-> +
-> +		/* Try to read from FIFO. */
-> +		if (mutex_lock_interruptible(&client->read_lock)) {
-> +			up_read(&cdev->lock);
-> +			return -ERESTARTSYS;
-> +		}
-> +
-> +		status = kfifo_to_user(&client->buffer, buf, count, &copied);
-> +		mutex_unlock(&client->read_lock);
-> +
-> +		if (status < 0) {
-> +			up_read(&cdev->lock);
-> +			return status;
-> +		}
-> +
-> +		/* We might not have gotten anything, check this here. */
-> +		if (copied == 0 && (file->f_flags & O_NONBLOCK)) {
-> +			up_read(&cdev->lock);
-> +			return -EAGAIN;
-> +		}
-> +	} while (copied == 0);
->  
->  	up_read(&cdev->lock);
-> -	return status;
-> +	return copied;
-> +}
-> +
-> +static __poll_t ssam_cdev_poll(struct file *file, struct poll_table_struct *pt)
-> +{
-> +	struct ssam_cdev_client *client = file->private_data;
-> +	__poll_t events = 0;
-> +
-> +	if (test_bit(SSAM_CDEV_DEVICE_SHUTDOWN_BIT, &client->cdev->flags))
-> +		return EPOLLHUP | EPOLLERR;
-> +
-> +	poll_wait(file, &client->waitq, pt);
-> +
-> +	if (!kfifo_is_empty(&client->buffer))
-> +		events |= EPOLLIN | EPOLLRDNORM;
-> +
-> +	return events;
-> +}
-> +
-> +static int ssam_cdev_fasync(int fd, struct file *file, int on)
-> +{
-> +	struct ssam_cdev_client *client = file->private_data;
-> +
-> +	return fasync_helper(fd, file, on, &client->fasync);
->  }
->  
->  static const struct file_operations ssam_controller_fops = {
->  	.owner          = THIS_MODULE,
->  	.open           = ssam_cdev_device_open,
->  	.release        = ssam_cdev_device_release,
-> +	.read           = ssam_cdev_read,
-> +	.poll           = ssam_cdev_poll,
-> +	.fasync         = ssam_cdev_fasync,
->  	.unlocked_ioctl = ssam_cdev_device_ioctl,
->  	.compat_ioctl   = ssam_cdev_device_ioctl,
-> -	.llseek         = noop_llseek,
-> +	.llseek         = no_llseek,
->  };
->  
-> +
-> +/* -- Device and driver setup ----------------------------------------------- */
-> +
->  static int ssam_dbg_device_probe(struct platform_device *pdev)
->  {
->  	struct ssam_controller *ctrl;
-> @@ -236,6 +616,7 @@ static int ssam_dbg_device_probe(struct platform_device *pdev)
->  	kref_init(&cdev->kref);
->  	init_rwsem(&cdev->lock);
->  	cdev->ctrl = ctrl;
-> +	cdev->dev = &pdev->dev;
->  
->  	cdev->mdev.parent   = &pdev->dev;
->  	cdev->mdev.minor    = MISC_DYNAMIC_MINOR;
-> @@ -243,6 +624,9 @@ static int ssam_dbg_device_probe(struct platform_device *pdev)
->  	cdev->mdev.nodename = "surface/aggregator";
->  	cdev->mdev.fops     = &ssam_controller_fops;
->  
-> +	init_rwsem(&cdev->client_lock);
-> +	INIT_LIST_HEAD(&cdev->client_list);
-> +
->  	status = misc_register(&cdev->mdev);
->  	if (status) {
->  		kfree(cdev);
-> @@ -256,8 +640,32 @@ static int ssam_dbg_device_probe(struct platform_device *pdev)
->  static int ssam_dbg_device_remove(struct platform_device *pdev)
->  {
->  	struct ssam_cdev *cdev = platform_get_drvdata(pdev);
-> +	struct ssam_cdev_client *client;
->  
-> -	misc_deregister(&cdev->mdev);
-> +	/*
-> +	 * Mark device as shut-down. Prevent new clients from being added and
-> +	 * new operations from being executed.
-> +	 */
-> +	set_bit(SSAM_CDEV_DEVICE_SHUTDOWN_BIT, &cdev->flags);
-> +
-> +	down_write(&cdev->client_lock);
-> +
-> +	/* Remove all notifiers registered by us. */
-> +	list_for_each_entry(client, &cdev->client_list, node) {
-> +		ssam_cdev_notifier_unregister_all(client);
-> +	}
-> +
-> +	/* Wake up async clients. */
-> +	list_for_each_entry(client, &cdev->client_list, node) {
-> +		kill_fasync(&client->fasync, SIGIO, POLL_HUP);
-> +	}
-> +
-> +	/* Wake up blocking clients. */
-> +	list_for_each_entry(client, &cdev->client_list, node) {
-> +		wake_up_interruptible(&client->waitq);
-> +	}
-> +
-> +	up_write(&cdev->client_lock);
->  
->  	/*
->  	 * The controller is only guaranteed to be valid for as long as the
-> @@ -266,8 +674,11 @@ static int ssam_dbg_device_remove(struct platform_device *pdev)
->  	 */
->  	down_write(&cdev->lock);
->  	cdev->ctrl = NULL;
-> +	cdev->dev = NULL;
->  	up_write(&cdev->lock);
->  
-> +	misc_deregister(&cdev->mdev);
-> +
->  	ssam_cdev_put(cdev);
->  	return 0;
->  }
-> diff --git a/include/uapi/linux/surface_aggregator/cdev.h b/include/uapi/linux/surface_aggregator/cdev.h
-> index fbcce04abfe9..4f393fafc235 100644
-> --- a/include/uapi/linux/surface_aggregator/cdev.h
-> +++ b/include/uapi/linux/surface_aggregator/cdev.h
-> @@ -6,7 +6,7 @@
->   * device. This device provides direct user-space access to the SSAM EC.
->   * Intended for debugging and development.
->   *
-> - * Copyright (C) 2020 Maximilian Luz <luzmaximilian@gmail.com>
-> + * Copyright (C) 2020-2021 Maximilian Luz <luzmaximilian@gmail.com>
->   */
->  
->  #ifndef _UAPI_LINUX_SURFACE_AGGREGATOR_CDEV_H
-> @@ -73,6 +73,43 @@ struct ssam_cdev_request {
->  	} response;
->  } __attribute__((__packed__));
->  
-> -#define SSAM_CDEV_REQUEST	_IOWR(0xA5, 1, struct ssam_cdev_request)
-> +/**
-> + * struct ssam_cdev_notifier_desc - Notifier descriptor.
-> + * @priority:        Priority value determining the order in which notifier
-> + *                   callbacks will be called. A higher value means higher
-> + *                   priority, i.e. the associated callback will be executed
-> + *                   earlier than other (lower priority) callbacks.
-> + * @target_category: The event target category for which this notifier should
-> + *                   receive events.
-> + *
-> + * Specifies the notifier that should be registered or unregistered,
-> + * specifically with which priority and for which target category of events.
-> + */
-> +struct ssam_cdev_notifier_desc {
-> +	__s32 priority;
-> +	__u8 target_category;
-> +} __attribute__((__packed__));
-> +
-> +/**
-> + * struct ssam_cdev_event - SSAM event sent by the EC.
-> + * @target_category: Target category of the event source. See &enum ssam_ssh_tc.
-> + * @target_id:       Target ID of the event source.
-> + * @command_id:      Command ID of the event.
-> + * @instance_id:     Instance ID of the event source.
-> + * @length:          Length of the event payload in bytes.
-> + * @data:            Event payload data.
-> + */
-> +struct ssam_cdev_event {
-> +	__u8 target_category;
-> +	__u8 target_id;
-> +	__u8 command_id;
-> +	__u8 instance_id;
-> +	__u16 length;
-> +	__u8 data[];
-> +} __attribute__((__packed__));
-> +
-> +#define SSAM_CDEV_REQUEST		_IOWR(0xA5, 1, struct ssam_cdev_request)
-> +#define SSAM_CDEV_NOTIF_REGISTER	_IOW(0xA5, 2, struct ssam_cdev_notifier_desc)
-> +#define SSAM_CDEV_NOTIF_UNREGISTER	_IOW(0xA5, 3, struct ssam_cdev_notifier_desc)
->  
->  #endif /* _UAPI_LINUX_SURFACE_AGGREGATOR_CDEV_H */
-> 
+-- 
+2.17.1
 
