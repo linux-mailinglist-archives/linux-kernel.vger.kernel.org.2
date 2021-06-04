@@ -2,125 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01F3939BC5D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC8D39BC61
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231184AbhFDP7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 11:59:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20292 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231285AbhFDP7L (ORCPT
+        id S231347AbhFDP7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 11:59:21 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:51712 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229809AbhFDP7V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 11:59:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622822244;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4VeXpVaVm3Sgm4ExODkCf4+TTdsJEk4SxRvRR3xCWPQ=;
-        b=UYQ9C9jupD4UXP/KA1trOe4ynHhNVxkTynCMl+wIZmtmhKGG1N8jWSdPU5cJY/EYWaf/IY
-        lAvL4kv0922yMaKRo9PeIjiK5EkCTdvFbCcazo3sPgS7lXKbsfFsOxC3LKJhRC+Qz12F/T
-        xsESKvHOR21vSu7LshFh9csRDCv+tU8=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-585-qAffpp37NlCntqb5QNxiEw-1; Fri, 04 Jun 2021 11:57:23 -0400
-X-MC-Unique: qAffpp37NlCntqb5QNxiEw-1
-Received: by mail-ed1-f70.google.com with SMTP id df3-20020a05640230a3b029039179c0f290so3509805edb.13
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 08:57:22 -0700 (PDT)
+        Fri, 4 Jun 2021 11:59:21 -0400
+Received: from mail-lf1-f69.google.com ([209.85.167.69])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1lpCCT-0003gk-LB
+        for linux-kernel@vger.kernel.org; Fri, 04 Jun 2021 15:57:33 +0000
+Received: by mail-lf1-f69.google.com with SMTP id k10-20020a05651239cab02902cf19c03142so3878769lfu.8
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 08:57:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4VeXpVaVm3Sgm4ExODkCf4+TTdsJEk4SxRvRR3xCWPQ=;
-        b=RQtr2vMl3XeA3F7E0Vv/var0APUwCs5ZZo0fEVmBGPjeBuEkj2P0mvRWOYjYkLhbIM
-         mvtTct8jRCi+bpOJiQyPu3uHJvoMheOoDWBAjiJ2EopFa3i0+79qK+qvtfa2z1DNkcsr
-         YiHh3qVWR0tVdMwtZfB2YdpvJG8w8jH70fDH74FoREuYZ9TW/onvGGoHFMWDddhMM/XI
-         Yvd564pc0ykDpWbBdXN6zbFadVKPr4JhqrDInQcnfa+sDe6d0bcieWV+53z1ADEwRYR7
-         HIzlMMyN8Fn0mwVGbLS1lEAU1wKIitRCNDB3lDREIFlx7EcJjP56sifSgaVpk0i7hQUj
-         8aiw==
-X-Gm-Message-State: AOAM5317paoGQEgGgHiKtPvGeA57JUFnY7W798ivSgaCFKfNGVUuWbOB
-        D3hiz3ehjAj9MZFJ+i13RU8H7BAn/1tPsf3BK86bVSVjz9LHlK/jQXVfM33bHVGDQhSMwWAc2en
-        NWXNldNf/ddFM0wP0l2Szjbm/
-X-Received: by 2002:a17:907:1b11:: with SMTP id mp17mr4825430ejc.1.1622822242027;
-        Fri, 04 Jun 2021 08:57:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxPRjcRc6XoOVz7KqxGJ8Jr4Ru7H/KBEWYfYYsX/zRmiAg3G+v0VaBWdVmTVXEoxLZyb0lcDw==
-X-Received: by 2002:a17:907:1b11:: with SMTP id mp17mr4825416ejc.1.1622822241873;
-        Fri, 04 Jun 2021 08:57:21 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id p13sm2917846ejr.87.2021.06.04.08.57.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Jun 2021 08:57:21 -0700 (PDT)
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jason Wang <jasowang@redhat.com>
-References: <20210602224536.GJ1002214@nvidia.com>
- <20210602205054.3505c9c3.alex.williamson@redhat.com>
- <20210603123401.GT1002214@nvidia.com>
- <20210603140146.5ce4f08a.alex.williamson@redhat.com>
- <20210603201018.GF1002214@nvidia.com>
- <20210603154407.6fe33880.alex.williamson@redhat.com>
- <MWHPR11MB1886469C0136C6523AB158B68C3B9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210604122830.GK1002214@nvidia.com>
- <20210604092620.16aaf5db.alex.williamson@redhat.com>
- <815fd392-0870-f410-cbac-859070df1b83@redhat.com>
- <20210604155016.GR1002214@nvidia.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <30e5c597-b31c-56de-c75e-950c91947d8f@redhat.com>
-Date:   Fri, 4 Jun 2021 17:57:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iGq4avvIVWegafatbNa6UBi514qHC/jm/FZxbji4fuY=;
+        b=HqRu7ykbT9XkQbiSgoMwZv90k36U38vHvYVtl4ARMlvYv1yBalfvgEjaw+fmFnpGD+
+         dauT/cmZRvS4m5dB8y97xKZLQhljAulDa8Ev67vZYbNa/g7mX4+Lret/pL0gP2YRjq4v
+         ygKmXUZ+pA7VSRFQEJC8lj2T8NKjcxTTY4rjFvuAOQRBupCRzIftbLSfh7hq09R/15LG
+         4+hArZ6dr3j5C1gSqv60T7u8dKmY2K/JsvZdhEXR3xDDn+oSiG0SQQd3mf1RlRBqxaOj
+         maAy8vAdsx4ltq/ZOhKkvLJKmN0Et96Qq+UXvIhRAPYVTQ2M+RDyt1H49vJmyyx0EjFu
+         lVaA==
+X-Gm-Message-State: AOAM530EaXllxQr1EZTXtpyRerkIwCbkh1pa1teksJUgPYLYarrTmfFL
+        4F72lZSEDc61JXmz8rv/8V75EGFt4jhZiofSGReI2SImPZQFFwFgBzbSYDbG3DPjFTtFl3numRp
+        +Tv8yV55OabAgGK9+wAUUBKUQ+xluBc0q9jAEfvytRcPFGMx6R+uPgqDmfQ==
+X-Received: by 2002:a05:6512:783:: with SMTP id x3mr3249720lfr.194.1622822253095;
+        Fri, 04 Jun 2021 08:57:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxf0pbNJN8s9JVcukdsXoJlzXZmyZwtjQMbAKvrUvXdWu38bAzXJdYOwhloCK39lZ2Fv1wTcmDi+ZQOT9keKpQ=
+X-Received: by 2002:a05:6512:783:: with SMTP id x3mr3249703lfr.194.1622822252817;
+ Fri, 04 Jun 2021 08:57:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210604155016.GR1002214@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210520065832.614245-1-kai.heng.feng@canonical.com>
+In-Reply-To: <20210520065832.614245-1-kai.heng.feng@canonical.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Fri, 4 Jun 2021 23:57:20 +0800
+Message-ID: <CAAd53p4mYybfBsSpd497jOTKwE+aiCvTD9OEvMtROkgjdRHp=g@mail.gmail.com>
+Subject: Re: [PATCH v4] drm/i915: Invoke another _DSM to enable MUX on HP
+ Workstation laptops
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Takashi Iwai <tiwai@suse.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/06/21 17:50, Jason Gunthorpe wrote:
->> Extending the scenarios where WBINVD is not a nop is not a problem for me.
->> If possible I wouldn't mind keeping the existing kvm-vfio connection via the
->> device, if only because then the decision remains in the VFIO camp (whose
->> judgment I trust more than mine on this kind of issue).
-> Really the question to answer is what "security proof" do you want
-> before the wbinvd can be enabled
+On Thu, May 20, 2021 at 2:58 PM Kai-Heng Feng
+<kai.heng.feng@canonical.com> wrote:
+>
+> On HP Fury G7 Workstations, graphics output is re-routed from Intel GFX
+> to discrete GFX after S3. This is not desirable, because userspace will
+> treat connected display as a new one, losing display settings.
+>
+> The expected behavior is to let discrete GFX drives all external
+> displays.
+>
+> The platform in question uses ACPI method \_SB.PCI0.HGME to enable MUX.
+> The method is inside the another _DSM, so add the _DSM and call it
+> accordingly.
+>
+> I also tested some MUX-less and iGPU only laptops with that _DSM, no
+> regression was found.
+>
+> v4:
+>  - Rebase.
+>  - Change the DSM name to avoid confusion.
+>  - Move the function call to intel_opregion.
+>
+> v3:
+>  - Remove BXT from names.
+>  - Change the parameter type.
+>  - Fold the function into intel_modeset_init_hw().
+>
+> v2:
+>  - Forward declare struct pci_dev.
+>
+> Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3113
+> References: https://lore.kernel.org/intel-gfx/1460040732-31417-4-git-send-email-animesh.manna@intel.com/
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-I don't want a security proof myself; I want to trust VFIO to make the 
-right judgment and I'm happy to defer to it (via the KVM-VFIO device).
+A gentle ping...
 
-Given how KVM is just a device driver inside Linux, VMs should be a 
-slightly more roundabout way to do stuff that is accessible to bare 
-metal; not a way to gain extra privilege.
-
-Paolo
-
->   1) User has access to a device that can issue no-snoop TLPS
->   2) User has access to an IOMMU that can not block no-snoop (today)
->   3) Require CAP_SYS_RAW_IO
->   4) Anyone
-> 
-> #1 is an improvement because it allows userspace to enable wbinvd and
-> no-snoop optimizations based on user choice
-> 
-> #2 is where we are today and wbinvd effectively becomes a fixed
-> platform choice. Userspace has no say
-> 
-> #3 is "there is a problem, but not so serious, root is powerful
->     enough to override"
-
+> ---
+>  drivers/gpu/drm/i915/display/intel_acpi.c     | 19 +++++++++++++++++++
+>  drivers/gpu/drm/i915/display/intel_acpi.h     |  3 +++
+>  drivers/gpu/drm/i915/display/intel_opregion.c |  3 +++
+>  3 files changed, 25 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/i915/display/intel_acpi.c b/drivers/gpu/drm/i915/display/intel_acpi.c
+> index 833d0c1be4f1..7cfe91fc05f2 100644
+> --- a/drivers/gpu/drm/i915/display/intel_acpi.c
+> +++ b/drivers/gpu/drm/i915/display/intel_acpi.c
+> @@ -19,6 +19,12 @@ static const guid_t intel_dsm_guid =
+>         GUID_INIT(0x7ed873d3, 0xc2d0, 0x4e4f,
+>                   0xa8, 0x54, 0x0f, 0x13, 0x17, 0xb0, 0x1c, 0x2c);
+>
+> +#define INTEL_DSM_FN_GET_BIOS_DATA_FUNCS_SUPPORTED 0 /* No args */
+> +
+> +static const guid_t intel_dsm_guid2 =
+> +       GUID_INIT(0x3e5b41c6, 0xeb1d, 0x4260,
+> +                 0x9d, 0x15, 0xc7, 0x1f, 0xba, 0xda, 0xe4, 0x14);
+> +
+>  static char *intel_dsm_port_name(u8 id)
+>  {
+>         switch (id) {
+> @@ -176,6 +182,19 @@ void intel_unregister_dsm_handler(void)
+>  {
+>  }
+>
+> +void intel_dsm_get_bios_data_funcs_supported(struct drm_i915_private *i915)
+> +{
+> +       struct pci_dev *pdev = to_pci_dev(i915->drm.dev);
+> +       acpi_handle dhandle;
+> +
+> +       dhandle = ACPI_HANDLE(&pdev->dev);
+> +       if (!dhandle)
+> +               return;
+> +
+> +       acpi_evaluate_dsm(dhandle, &intel_dsm_guid2, INTEL_DSM_REVISION_ID,
+> +                         INTEL_DSM_FN_GET_BIOS_DATA_FUNCS_SUPPORTED, NULL);
+> +}
+> +
+>  /*
+>   * ACPI Specification, Revision 5.0, Appendix B.3.2 _DOD (Enumerate All Devices
+>   * Attached to the Display Adapter).
+> diff --git a/drivers/gpu/drm/i915/display/intel_acpi.h b/drivers/gpu/drm/i915/display/intel_acpi.h
+> index e8b068661d22..9f197401c313 100644
+> --- a/drivers/gpu/drm/i915/display/intel_acpi.h
+> +++ b/drivers/gpu/drm/i915/display/intel_acpi.h
+> @@ -11,11 +11,14 @@ struct drm_i915_private;
+>  #ifdef CONFIG_ACPI
+>  void intel_register_dsm_handler(void);
+>  void intel_unregister_dsm_handler(void);
+> +void intel_dsm_get_bios_data_funcs_supported(struct drm_i915_private *i915);
+>  void intel_acpi_device_id_update(struct drm_i915_private *i915);
+>  #else
+>  static inline void intel_register_dsm_handler(void) { return; }
+>  static inline void intel_unregister_dsm_handler(void) { return; }
+>  static inline
+> +void intel_dsm_get_bios_data_funcs_supported(struct drm_i915_private *i915) { return; }
+> +static inline
+>  void intel_acpi_device_id_update(struct drm_i915_private *i915) { return; }
+>  #endif /* CONFIG_ACPI */
+>
+> diff --git a/drivers/gpu/drm/i915/display/intel_opregion.c b/drivers/gpu/drm/i915/display/intel_opregion.c
+> index dfd724e506b5..3855fba70980 100644
+> --- a/drivers/gpu/drm/i915/display/intel_opregion.c
+> +++ b/drivers/gpu/drm/i915/display/intel_opregion.c
+> @@ -1078,6 +1078,9 @@ void intel_opregion_resume(struct drm_i915_private *i915)
+>                 opregion->asle->ardy = ASLE_ARDY_READY;
+>         }
+>
+> +       /* Some platforms abuse the _DSM to enable MUX */
+> +       intel_dsm_get_bios_data_funcs_supported(i915);
+> +
+>         intel_opregion_notify_adapter(i915, PCI_D0);
+>  }
+>
+> --
+> 2.31.1
+>
