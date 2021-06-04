@@ -2,494 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F017039B3B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F23F39B3BE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbhFDHW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 03:22:58 -0400
-Received: from mga09.intel.com ([134.134.136.24]:15717 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229934AbhFDHW4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 03:22:56 -0400
-IronPort-SDR: r+olRxtjMYWZasF95XRN83ecEZmhK8vRAuigxx2L0wwLZPTKYd4x3kLIAbca7H4Vm0+ErMGbbL
- BAPPrix/eO9A==
-X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="204218675"
-X-IronPort-AV: E=Sophos;i="5.83,247,1616482800"; 
-   d="scan'208";a="204218675"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2021 00:21:10 -0700
-IronPort-SDR: 0ezZbjLde5/InJEbugBwP9aMrphX1XlwkI8ryNtI4/NRoVJg95Fum6I3mkPhw6saEiOKJ/nbTr
- emWUfZctkBGw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,247,1616482800"; 
-   d="scan'208";a="618175706"
-Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 04 Jun 2021 00:21:08 -0700
-Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lp48i-0006lr-4j; Fri, 04 Jun 2021 07:21:08 +0000
-Date:   Fri, 04 Jun 2021 15:20:59 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:timers/core] BUILD SUCCESS
- 245a057fee18be08d6ac12357463579d06bea077
-Message-ID: <60b9d45b.oxu/zMVvgNG1dmd5%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229999AbhFDHXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 03:23:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35454 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229826AbhFDHXs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 03:23:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622791321;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=orYq01Q31Yc39qB3ORg0nxtfa/WHWL4qWvUfOGPRsP0=;
+        b=FscTRvutLmqIb4tExeElWRjCxqJT2rWevW9sxO/CAdKti7qO5pA3ruVW+4tRmG1NAzlblV
+        FfNgo++atiKqUW+lmPpAgrcNi/rWCG2YE0+wz5bVrTRfbk/AopJc01vqd0itD0L34KsONv
+        /XXIQ8tXONQQHz7LiMhluqIK+zIiU3c=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-569-s6sr-G2rPrq5YypMDrNRVg-1; Fri, 04 Jun 2021 03:22:00 -0400
+X-MC-Unique: s6sr-G2rPrq5YypMDrNRVg-1
+Received: by mail-ed1-f72.google.com with SMTP id a16-20020aa7cf100000b0290391819a774aso2509367edy.8
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 00:22:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=orYq01Q31Yc39qB3ORg0nxtfa/WHWL4qWvUfOGPRsP0=;
+        b=DgWRPaSwWz5n7XWzJRRHBupU/7UDijpuoZYyomMeDHTgoIKAv3EpfBNduOabEkgH/Q
+         1VabTj0qwaGVDcQtFFx/k8M66mFmFM0/vdkefEk/wJSz+5AM5YZb9+qPzFKEJhDR/WbD
+         g+89BEHWYbzvoM73Y5Cp0X5MsGyWqnhowziQYobtgSbvHBnZTRF5U/qJUJw+/y5CwPK6
+         1O7Gejm73cqHheCZhfdZ6TTCYzck6Tv4/IxOiY1yivcW3pSvNyNy7FxqLX/+gN0JLgGV
+         P6w4iRMMa73fhZTr/CX334PZBj0V++SEorSgdKdTKiz67jMMZjR9aQ47zLYu9cUFoQ25
+         n9QA==
+X-Gm-Message-State: AOAM5326+3BKfePGvYCSMB0m1CgCzozoHUxjCaajye6mTajL013Fkqjn
+        wyljNLvFRq0YS8eW8dGeQz+6h+VPB593j/3lpJeyvPID8wEAV0O3jMoKMY9QhNxfyFKKhdr5BaV
+        +C9sOOc2pFY1n1zOlqLHkzJSb
+X-Received: by 2002:a17:906:3042:: with SMTP id d2mr2962231ejd.234.1622791319625;
+        Fri, 04 Jun 2021 00:21:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJye48vq4jhWt3rfSGy/IZIfVkJe+CPcNZKJdo8nz+4VSYXPjlnXO0JZDmfdCwTwFNTDbvESog==
+X-Received: by 2002:a17:906:3042:: with SMTP id d2mr2962196ejd.234.1622791319297;
+        Fri, 04 Jun 2021 00:21:59 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id gx23sm2456681ejb.125.2021.06.04.00.21.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 00:21:58 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Suleiman Souhlal <suleiman@google.com>, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        kvm@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        linux-s390@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Jim Mattson <jmattson@google.com>
+Subject: Re: [RFC][PATCH] kvm: add suspend pm-notifier
+In-Reply-To: <20210603164315.682994-1-senozhatsky@chromium.org>
+References: <20210603164315.682994-1-senozhatsky@chromium.org>
+Date:   Fri, 04 Jun 2021 09:21:56 +0200
+Message-ID: <87a6o614dn.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git timers/core
-branch HEAD: 245a057fee18be08d6ac12357463579d06bea077  timer_list: Print name of per-cpu wakeup device
+Sergey Senozhatsky <senozhatsky@chromium.org> writes:
 
-elapsed time: 5288m
+> Add KVM suspend/hibernate PM-notifier which lets architectures
+> to implement arch-specific VM suspend code. For instance, on x86
+> this sets PVCLOCK_GUEST_STOPPED on all the VCPUs.
+>
+> Our case is that user puts the host system into sleep multiple
+> times a day (e.g. closes the laptop's lid) so we need a reliable
+> way to suspend VMs properly.
+>
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> ---
+>  arch/arm64/kvm/arm.c       |  4 ++++
+>  arch/mips/kvm/mips.c       |  4 ++++
+>  arch/powerpc/kvm/powerpc.c |  4 ++++
+>  arch/s390/kvm/kvm-s390.c   |  4 ++++
+>  arch/x86/kvm/x86.c         | 21 ++++++++++++++++++++
+>  include/linux/kvm_host.h   |  8 ++++++++
+>  virt/kvm/kvm_main.c        | 40 ++++++++++++++++++++++++++++++++++++++
+>  7 files changed, 85 insertions(+)
+>
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index 1126eae27400..547dbe44d039 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -1311,6 +1311,10 @@ static int kvm_vm_ioctl_set_device_addr(struct kvm *kvm,
+>  	}
+>  }
+>  
+> +void kvm_arch_pm_notifier(struct kvm *kvm)
+> +{
+> +}
+> +
+>  long kvm_arch_vm_ioctl(struct file *filp,
+>  		       unsigned int ioctl, unsigned long arg)
+>  {
+> diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
+> index 4d4af97dcc88..d4408acd2be6 100644
+> --- a/arch/mips/kvm/mips.c
+> +++ b/arch/mips/kvm/mips.c
+> @@ -980,6 +980,10 @@ void kvm_arch_flush_remote_tlbs_memslot(struct kvm *kvm,
+>  	kvm_flush_remote_tlbs(kvm);
+>  }
+>  
+> +void kvm_arch_pm_notifier(struct kvm *kvm)
+> +{
+> +}
+> +
+>  long kvm_arch_vm_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
+>  {
+>  	long r;
+> diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
+> index a2a68a958fa0..96e8a7b6fcf0 100644
+> --- a/arch/powerpc/kvm/powerpc.c
+> +++ b/arch/powerpc/kvm/powerpc.c
+> @@ -2334,6 +2334,10 @@ static int kvmppc_get_cpu_char(struct kvm_ppc_cpu_char *cp)
+>  }
+>  #endif
+>  
+> +void kvm_arch_pm_notifier(struct kvm *kvm)
+> +{
+> +}
+> +
+>  long kvm_arch_vm_ioctl(struct file *filp,
+>                         unsigned int ioctl, unsigned long arg)
+>  {
+> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+> index 1296fc10f80c..c5f86fc1e497 100644
+> --- a/arch/s390/kvm/kvm-s390.c
+> +++ b/arch/s390/kvm/kvm-s390.c
+> @@ -2367,6 +2367,10 @@ static int kvm_s390_handle_pv(struct kvm *kvm, struct kvm_pv_cmd *cmd)
+>  	return r;
+>  }
+>  
+> +void kvm_arch_pm_notifier(struct kvm *kvm)
+> +{
+> +}
+> +
+>  long kvm_arch_vm_ioctl(struct file *filp,
+>  		       unsigned int ioctl, unsigned long arg)
+>  {
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index bbc4e04e67ad..3f3d6497593f 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -5613,6 +5613,27 @@ static int kvm_vm_ioctl_set_msr_filter(struct kvm *kvm, void __user *argp)
+>  	return 0;
+>  }
+>  
+> +void kvm_arch_pm_notifier(struct kvm *kvm)
+> +{
+> +#ifdef CONFIG_PM
+> +	int c;
+> +
+> +	mutex_lock(&kvm->lock);
+> +	for (c = 0; c < kvm->created_vcpus; c++) {
+> +		struct kvm_vcpu *vcpu = kvm->vcpus[c];
+> +		int r;
+> +
+> +		if (!vcpu)
+> +			continue;
+> +		r = kvm_set_guest_paused(vcpu);
+> +		if (!r)
+> +			continue;
+> +		pr_err("Failed to suspend VCPU-%d: %d\n", vcpu->vcpu_id,  r);
+> +	}
+> +	mutex_unlock(&kvm->lock);
+> +#endif
+> +}
+> +
+>  long kvm_arch_vm_ioctl(struct file *filp,
+>  		       unsigned int ioctl, unsigned long arg)
+>  {
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index 2f34487e21f2..86695320a6b7 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -37,6 +37,8 @@
+>  #include <asm/kvm_host.h>
+>  #include <linux/kvm_dirty_ring.h>
+>  
+> +#include <linux/notifier.h>
+> +
+>  #ifndef KVM_MAX_VCPU_ID
+>  #define KVM_MAX_VCPU_ID KVM_MAX_VCPUS
+>  #endif
+> @@ -579,6 +581,10 @@ struct kvm {
+>  	pid_t userspace_pid;
+>  	unsigned int max_halt_poll_ns;
+>  	u32 dirty_ring_size;
+> +
+> +#ifdef CONFIG_PM
+> +	struct notifier_block pm_notifier;
+> +#endif
+>  };
+>  
+>  #define kvm_err(fmt, ...) \
+> @@ -992,6 +998,8 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu);
+>  void kvm_arch_vcpu_postcreate(struct kvm_vcpu *vcpu);
+>  void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu);
+>  
+> +void kvm_arch_pm_notifier(struct kvm *kvm);
+> +
+>  #ifdef __KVM_HAVE_ARCH_VCPU_DEBUGFS
+>  void kvm_arch_create_vcpu_debugfs(struct kvm_vcpu *vcpu, struct dentry *debugfs_dentry);
+>  #endif
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 6b4feb92dc79..86925ab7d162 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -51,6 +51,7 @@
+>  #include <linux/io.h>
+>  #include <linux/lockdep.h>
+>  #include <linux/kthread.h>
+> +#include <linux/suspend.h>
+>  
+>  #include <asm/processor.h>
+>  #include <asm/ioctl.h>
+> @@ -779,6 +780,43 @@ static int kvm_init_mmu_notifier(struct kvm *kvm)
+>  
+>  #endif /* CONFIG_MMU_NOTIFIER && KVM_ARCH_WANT_MMU_NOTIFIER */
+>  
+> +#ifdef CONFIG_PM
+> +static int kvm_pm_notifier_call(struct notifier_block *bl,
+> +				unsigned long state,
+> +				void *unused)
+> +{
+> +	struct kvm *kvm = container_of(bl, struct kvm, pm_notifier);
+> +
+> +	switch (state) {
+> +	case PM_HIBERNATION_PREPARE:
+> +	case PM_SUSPEND_PREPARE:
+> +		kvm_arch_pm_notifier(kvm);
+> +		break;
+> +	}
+> +	return NOTIFY_DONE;
+> +}
+> +
+> +static void kvm_init_pm_notifier(struct kvm *kvm)
+> +{
+> +	kvm->pm_notifier.notifier_call = kvm_pm_notifier_call;
+> +	kvm->pm_notifier.priority = INT_MAX;
+> +	register_pm_notifier(&kvm->pm_notifier);
+> +}
+> +
+> +static void kvm_destroy_pm_notifier(struct kvm *kvm)
+> +{
+> +	unregister_pm_notifier(&kvm->pm_notifier);
+> +}
+> +#else
+> +static void kvm_init_pm_notifier(struct kvm *kvm)
+> +{
+> +}
+> +
+> +static void kvm_destroy_pm_notifier(struct kvm *kvm)
+> +{
+> +}
+> +#endif /* CONFIG_PM */
+> +
+>  static struct kvm_memslots *kvm_alloc_memslots(void)
+>  {
+>  	int i;
+> @@ -962,6 +1000,7 @@ static struct kvm *kvm_create_vm(unsigned long type)
+>  	mutex_unlock(&kvm_lock);
+>  
+>  	preempt_notifier_inc();
+> +	kvm_init_pm_notifier(kvm);
+>  
 
-configs tested: 432
-configs skipped: 3
+You've probably thought it through and I didn't but wouldn't it be
+easier to have one global pm_notifier call for KVM which would go
+through the list of VMs instead of registering/deregistering a
+pm_notifier call for every created/destroyed VM?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+>  	return kvm;
+>  
+> @@ -1009,6 +1048,7 @@ static void kvm_destroy_vm(struct kvm *kvm)
+>  	int i;
+>  	struct mm_struct *mm = kvm->mm;
+>  
+> +	kvm_destroy_pm_notifier(kvm);
+>  	kvm_uevent_notify_change(KVM_EVENT_DESTROY_VM, kvm);
+>  	kvm_destroy_vm_debugfs(kvm);
+>  	kvm_arch_sync_events(kvm);
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                      tct_hammer_defconfig
-sh                          sdk7780_defconfig
-riscv                    nommu_virt_defconfig
-arm                           tegra_defconfig
-powerpc                     ppa8548_defconfig
-arm                       omap2plus_defconfig
-m68k                          amiga_defconfig
-arm                           sunxi_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-arm                         socfpga_defconfig
-arm                            qcom_defconfig
-sh                          sdk7786_defconfig
-mips                       rbtx49xx_defconfig
-parisc                           allyesconfig
-mips                        vocore2_defconfig
-mips                           ip27_defconfig
-powerpc                      pasemi_defconfig
-m68k                       m5249evb_defconfig
-arm                         lpc32xx_defconfig
-arm                            zeus_defconfig
-powerpc                       ebony_defconfig
-arm                            xcep_defconfig
-h8300                               defconfig
-powerpc                 mpc834x_mds_defconfig
-mips                        qi_lb60_defconfig
-arm                      footbridge_defconfig
-mips                  decstation_64_defconfig
-mips                           ip22_defconfig
-mips                      maltaaprp_defconfig
-mips                        nlm_xlr_defconfig
-nios2                            alldefconfig
-powerpc                      cm5200_defconfig
-mips                       capcella_defconfig
-ia64                      gensparse_defconfig
-sh                            hp6xx_defconfig
-ia64                             allmodconfig
-sh                          rsk7203_defconfig
-powerpc                    adder875_defconfig
-arm                          collie_defconfig
-m68k                        m5307c3_defconfig
-mips                     cu1830-neo_defconfig
-powerpc                     pq2fads_defconfig
-powerpc                      mgcoge_defconfig
-arm                           spitz_defconfig
-xtensa                              defconfig
-powerpc                 mpc85xx_cds_defconfig
-m68k                         apollo_defconfig
-powerpc               mpc834x_itxgp_defconfig
-powerpc                      arches_defconfig
-arm                         cm_x300_defconfig
-sh                          urquell_defconfig
-mips                malta_qemu_32r6_defconfig
-arm                       netwinder_defconfig
-arm                        mvebu_v7_defconfig
-powerpc                    gamecube_defconfig
-powerpc                    mvme5100_defconfig
-arm                      pxa255-idp_defconfig
-arm                         s3c2410_defconfig
-microblaze                          defconfig
-arc                     nsimosci_hs_defconfig
-h8300                     edosk2674_defconfig
-arm                             mxs_defconfig
-parisc                generic-64bit_defconfig
-arm                           h5000_defconfig
-arm                          pxa168_defconfig
-powerpc                 xes_mpc85xx_defconfig
-sh                         apsh4a3a_defconfig
-arc                         haps_hs_defconfig
-arm                         mv78xx0_defconfig
-sh                         ecovec24_defconfig
-nds32                            alldefconfig
-arc                      axs103_smp_defconfig
-sparc                       sparc64_defconfig
-arm                         assabet_defconfig
-powerpc                        cell_defconfig
-mips                        workpad_defconfig
-arc                     haps_hs_smp_defconfig
-arm                           sama5_defconfig
-sh                            migor_defconfig
-powerpc                     tqm8560_defconfig
-sh                           se7722_defconfig
-m68k                         amcore_defconfig
-mips                    maltaup_xpa_defconfig
-powerpc                         ps3_defconfig
-mips                         tb0287_defconfig
-sh                          landisk_defconfig
-mips                        maltaup_defconfig
-powerpc                     tqm8541_defconfig
-mips                            ar7_defconfig
-m68k                             allmodconfig
-powerpc                     taishan_defconfig
-nds32                               defconfig
-arm                        mini2440_defconfig
-parisc                              defconfig
-sh                               j2_defconfig
-powerpc                 mpc837x_mds_defconfig
-mips                       lemote2f_defconfig
-arm                              alldefconfig
-m68k                            q40_defconfig
-m68k                          atari_defconfig
-powerpc                   currituck_defconfig
-arc                        vdk_hs38_defconfig
-powerpc                     powernv_defconfig
-arm                       cns3420vb_defconfig
-mips                        jmr3927_defconfig
-sh                           sh2007_defconfig
-m68k                        m5407c3_defconfig
-x86_64                           alldefconfig
-powerpc                      pmac32_defconfig
-sh                          lboxre2_defconfig
-sh                          polaris_defconfig
-um                           x86_64_defconfig
-powerpc                 mpc832x_mds_defconfig
-mips                        bcm47xx_defconfig
-s390                       zfcpdump_defconfig
-arm                         bcm2835_defconfig
-powerpc                  storcenter_defconfig
-powerpc                     rainier_defconfig
-m68k                       bvme6000_defconfig
-powerpc                     tqm8548_defconfig
-sh                        sh7757lcr_defconfig
-xtensa                           allyesconfig
-xtensa                generic_kc705_defconfig
-powerpc                     ep8248e_defconfig
-powerpc                     sequoia_defconfig
-arm                         orion5x_defconfig
-arm                         s3c6400_defconfig
-sparc                       sparc32_defconfig
-powerpc                     tqm8540_defconfig
-powerpc                 mpc836x_rdk_defconfig
-powerpc                    sam440ep_defconfig
-sh                            titan_defconfig
-riscv             nommu_k210_sdcard_defconfig
-sh                               alldefconfig
-powerpc                     sbc8548_defconfig
-powerpc                 mpc836x_mds_defconfig
-powerpc64                           defconfig
-arc                           tb10x_defconfig
-arm                             ezx_defconfig
-sh                           se7343_defconfig
-sh                  sh7785lcr_32bit_defconfig
-mips                   sb1250_swarm_defconfig
-arm                    vt8500_v6_v7_defconfig
-mips                            gpr_defconfig
-mips                     loongson1c_defconfig
-parisc                generic-32bit_defconfig
-sh                          rsk7201_defconfig
-sh                     magicpanelr2_defconfig
-arm                        spear3xx_defconfig
-h8300                       h8s-sim_defconfig
-sh                         microdev_defconfig
-powerpc                 mpc8315_rdb_defconfig
-powerpc                     redwood_defconfig
-powerpc                 canyonlands_defconfig
-mips                      loongson3_defconfig
-openrisc                            defconfig
-mips                           ip32_defconfig
-sh                           se7619_defconfig
-mips                        nlm_xlp_defconfig
-arm                          imote2_defconfig
-alpha                               defconfig
-x86_64                            allnoconfig
-arc                              alldefconfig
-arm                        neponset_defconfig
-m68k                       m5475evb_defconfig
-arm                          pcm027_defconfig
-arm                         lubbock_defconfig
-sh                        sh7785lcr_defconfig
-m68k                          hp300_defconfig
-ia64                             allyesconfig
-powerpc                 mpc8272_ads_defconfig
-mips                        bcm63xx_defconfig
-arm                         s5pv210_defconfig
-powerpc                      ppc64e_defconfig
-s390                             alldefconfig
-arm                       imx_v4_v5_defconfig
-nios2                         3c120_defconfig
-sparc                            allyesconfig
-powerpc                      katmai_defconfig
-nios2                               defconfig
-mips                         db1xxx_defconfig
-powerpc                     pseries_defconfig
-powerpc                      tqm8xx_defconfig
-arm                  colibri_pxa270_defconfig
-um                            kunit_defconfig
-powerpc                mpc7448_hpc2_defconfig
-powerpc                 mpc837x_rdb_defconfig
-sh                          r7780mp_defconfig
-arm                         nhk8815_defconfig
-i386                             alldefconfig
-m68k                                defconfig
-arm                     davinci_all_defconfig
-sh                      rts7751r2d1_defconfig
-arc                            hsdk_defconfig
-mips                       bmips_be_defconfig
-powerpc                     mpc83xx_defconfig
-xtensa                    xip_kc705_defconfig
-mips                      maltasmvp_defconfig
-openrisc                 simple_smp_defconfig
-arc                        nsimosci_defconfig
-powerpc                 mpc8560_ads_defconfig
-arm                        cerfcube_defconfig
-sh                        dreamcast_defconfig
-sh                   sh7724_generic_defconfig
-xtensa                    smp_lx200_defconfig
-powerpc                        icon_defconfig
-mips                           mtx1_defconfig
-sh                           se7712_defconfig
-nios2                         10m50_defconfig
-m68k                       m5208evb_defconfig
-arm                            lart_defconfig
-mips                  cavium_octeon_defconfig
-arm                         lpc18xx_defconfig
-arm                         palmz72_defconfig
-mips                          rb532_defconfig
-mips                      pic32mzda_defconfig
-arm                            mmp2_defconfig
-arm                           stm32_defconfig
-m68k                        mvme16x_defconfig
-sparc                               defconfig
-powerpc                         wii_defconfig
-sh                           se7206_defconfig
-powerpc                 linkstation_defconfig
-arm                         vf610m4_defconfig
-sh                     sh7710voipgw_defconfig
-sh                        sh7763rdp_defconfig
-mips                         tb0219_defconfig
-arm                       multi_v4t_defconfig
-arm                       spear13xx_defconfig
-mips                      bmips_stb_defconfig
-arm                           u8500_defconfig
-arc                          axs101_defconfig
-powerpc                       maple_defconfig
-powerpc                   lite5200b_defconfig
-sparc64                             defconfig
-h8300                            alldefconfig
-mips                           ci20_defconfig
-powerpc                          allmodconfig
-sh                              ul2_defconfig
-mips                     loongson2k_defconfig
-mips                      pistachio_defconfig
-powerpc                 mpc8313_rdb_defconfig
-arm                          moxart_defconfig
-mips                         tb0226_defconfig
-arm                  colibri_pxa300_defconfig
-sh                         ap325rxa_defconfig
-arm                          simpad_defconfig
-s390                          debug_defconfig
-sh                          rsk7269_defconfig
-nios2                            allyesconfig
-powerpc                       ppc64_defconfig
-mips                      malta_kvm_defconfig
-arm                       versatile_defconfig
-mips                          ath25_defconfig
-powerpc                      walnut_defconfig
-arm                        spear6xx_defconfig
-powerpc                     tqm8555_defconfig
-mips                         mpc30x_defconfig
-arm                          gemini_defconfig
-arm                          badge4_defconfig
-mips                         cobalt_defconfig
-mips                         rt305x_defconfig
-m68k                            mac_defconfig
-m68k                        mvme147_defconfig
-powerpc                      bamboo_defconfig
-mips                          malta_defconfig
-mips                           rs90_defconfig
-ia64                            zx1_defconfig
-powerpc                      chrp32_defconfig
-powerpc                     asp8347_defconfig
-powerpc                        warp_defconfig
-ia64                         bigsur_defconfig
-ia64                                defconfig
-powerpc                     skiroot_defconfig
-mips                 decstation_r4k_defconfig
-xtensa                         virt_defconfig
-powerpc                          g5_defconfig
-i386                                defconfig
-arm                         at91_dt_defconfig
-arm                        magician_defconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-csky                                defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allyesconfig
-s390                             allmodconfig
-s390                                defconfig
-i386                             allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20210602
-x86_64               randconfig-a004-20210602
-x86_64               randconfig-a003-20210602
-x86_64               randconfig-a006-20210602
-x86_64               randconfig-a005-20210602
-x86_64               randconfig-a001-20210602
-x86_64               randconfig-a002-20210604
-x86_64               randconfig-a004-20210604
-x86_64               randconfig-a003-20210604
-x86_64               randconfig-a006-20210604
-x86_64               randconfig-a005-20210604
-x86_64               randconfig-a001-20210604
-x86_64               randconfig-a006-20210531
-x86_64               randconfig-a003-20210531
-x86_64               randconfig-a005-20210531
-x86_64               randconfig-a004-20210531
-x86_64               randconfig-a002-20210531
-x86_64               randconfig-a001-20210531
-i386                 randconfig-a002-20210531
-i386                 randconfig-a001-20210531
-i386                 randconfig-a005-20210531
-i386                 randconfig-a006-20210531
-i386                 randconfig-a004-20210531
-i386                 randconfig-a003-20210531
-i386                 randconfig-a003-20210601
-i386                 randconfig-a006-20210601
-i386                 randconfig-a004-20210601
-i386                 randconfig-a001-20210601
-i386                 randconfig-a002-20210601
-i386                 randconfig-a005-20210601
-i386                 randconfig-a003-20210602
-i386                 randconfig-a006-20210602
-i386                 randconfig-a004-20210602
-i386                 randconfig-a001-20210602
-i386                 randconfig-a005-20210602
-i386                 randconfig-a002-20210602
-i386                 randconfig-a003-20210603
-i386                 randconfig-a006-20210603
-i386                 randconfig-a004-20210603
-i386                 randconfig-a001-20210603
-i386                 randconfig-a005-20210603
-i386                 randconfig-a003-20210604
-i386                 randconfig-a006-20210604
-i386                 randconfig-a004-20210604
-i386                 randconfig-a001-20210604
-i386                 randconfig-a005-20210604
-i386                 randconfig-a002-20210604
-i386                 randconfig-a002-20210603
-x86_64               randconfig-a015-20210601
-x86_64               randconfig-a011-20210601
-x86_64               randconfig-a012-20210601
-x86_64               randconfig-a014-20210601
-x86_64               randconfig-a016-20210601
-x86_64               randconfig-a013-20210601
-x86_64               randconfig-a015-20210603
-x86_64               randconfig-a011-20210603
-x86_64               randconfig-a012-20210603
-x86_64               randconfig-a014-20210603
-x86_64               randconfig-a016-20210603
-x86_64               randconfig-a013-20210603
-i386                 randconfig-a015-20210603
-i386                 randconfig-a011-20210603
-i386                 randconfig-a014-20210603
-i386                 randconfig-a012-20210603
-i386                 randconfig-a016-20210531
-i386                 randconfig-a015-20210531
-i386                 randconfig-a013-20210531
-i386                 randconfig-a012-20210531
-i386                 randconfig-a014-20210531
-i386                 randconfig-a011-20210531
-i386                 randconfig-a015-20210601
-i386                 randconfig-a013-20210601
-i386                 randconfig-a011-20210601
-i386                 randconfig-a016-20210601
-i386                 randconfig-a014-20210601
-i386                 randconfig-a012-20210601
-i386                 randconfig-a015-20210602
-i386                 randconfig-a013-20210602
-i386                 randconfig-a016-20210602
-i386                 randconfig-a011-20210602
-i386                 randconfig-a014-20210602
-i386                 randconfig-a012-20210602
-i386                 randconfig-a013-20210603
-i386                 randconfig-a016-20210603
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+-- 
+Vitaly
 
-clang tested configs:
-x86_64               randconfig-b001-20210531
-x86_64               randconfig-b001-20210601
-x86_64               randconfig-b001-20210603
-x86_64               randconfig-b001-20210604
-x86_64               randconfig-b001-20210602
-x86_64               randconfig-a002-20210601
-x86_64               randconfig-a004-20210601
-x86_64               randconfig-a003-20210601
-x86_64               randconfig-a006-20210601
-x86_64               randconfig-a005-20210601
-x86_64               randconfig-a001-20210601
-x86_64               randconfig-a002-20210603
-x86_64               randconfig-a004-20210603
-x86_64               randconfig-a003-20210603
-x86_64               randconfig-a006-20210603
-x86_64               randconfig-a005-20210603
-x86_64               randconfig-a001-20210603
-x86_64               randconfig-a015-20210602
-x86_64               randconfig-a011-20210602
-x86_64               randconfig-a012-20210602
-x86_64               randconfig-a014-20210602
-x86_64               randconfig-a016-20210602
-x86_64               randconfig-a013-20210602
-x86_64               randconfig-a014-20210531
-x86_64               randconfig-a012-20210531
-x86_64               randconfig-a013-20210531
-x86_64               randconfig-a016-20210531
-x86_64               randconfig-a015-20210531
-x86_64               randconfig-a011-20210531
-x86_64               randconfig-a015-20210604
-x86_64               randconfig-a011-20210604
-x86_64               randconfig-a014-20210604
-x86_64               randconfig-a012-20210604
-x86_64               randconfig-a016-20210604
-x86_64               randconfig-a013-20210604
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
