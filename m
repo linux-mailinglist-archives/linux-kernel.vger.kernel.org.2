@@ -2,256 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 821BB39BB60
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D810139BB63
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbhFDPFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 11:05:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36719 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230083AbhFDPFT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 11:05:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622819012;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=N8yh602NOt1FboICUCF579RgmHMOnP9aRS2NkQT/Xt8=;
-        b=aawnn6M1B+HmNMtSau7Bk4JnMA6uS14EhwX6GcRmMzm/3pNkm3/BG5j7UWd1f4jpBUY8dQ
-        oXCW+i0+AOOFmETGlwmISt+aFXIrQuz6p/Y/TKmkRfEynliN6XANAki8AAycXCM3XmRddr
-        ySl46HBh0DxJMnCOC741ZPrJ/hrAN50=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-133-NJIYth20PnKquE6GLbPsWw-1; Fri, 04 Jun 2021 11:03:30 -0400
-X-MC-Unique: NJIYth20PnKquE6GLbPsWw-1
-Received: by mail-ej1-f71.google.com with SMTP id am5-20020a1709065685b02903eef334e563so3552779ejc.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 08:03:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=N8yh602NOt1FboICUCF579RgmHMOnP9aRS2NkQT/Xt8=;
-        b=uhW7CY44zmjlayDwUoXrjBsaM4l5tDpSpGc0V6ZSGqpIBKGC1yQ4Ws4fyL/xTM5bq1
-         l38R4jmFzz5lrmYMYYGCtgzrrVUx7FGMB/WCQbslZZ9YhS+nNwHUvmqwxLfxdDZJcNvr
-         rmMQ2VbkvrrOVcQlLPJZx5shofKRXNTIeaenvz2SyFs+mT8c8SwgvWCTcJOGaZGytosU
-         msIX9R7hfS9CZ4prsKx4erCEIZ31982PFgXU2DcANaz1WskmVp9U+UPsUhdfx98Ozb/g
-         T9ATKPh1NxSM+DDDRzVVGhgNYh8sJMPJUROl3kbpXYFVS4JOQ5MkKpJIQikJyNBHz4bV
-         y87w==
-X-Gm-Message-State: AOAM532aV5Fxim/9L1y5fXqlJ/W2ZMX03TXm8p8ckfsjwBJ92P/BQr0R
-        oETukoYX27fxGFQR8HTEIQkq8LUd+CPbXwPypobTPt7WGIuijyvoo9h7knSNmkwD0dM25THxql2
-        AZgdIBjeGDNjQey48R2BT9w1Q
-X-Received: by 2002:a17:906:33c8:: with SMTP id w8mr4691008eja.46.1622819009562;
-        Fri, 04 Jun 2021 08:03:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwjb/RE98uava1ct94kKaUaYfBzH7VQ7rmLgnwo11bRlUBdrfcaLuOG3pu0IuBN8h+k7vCmHA==
-X-Received: by 2002:a17:906:33c8:: with SMTP id w8mr4690982eja.46.1622819009287;
-        Fri, 04 Jun 2021 08:03:29 -0700 (PDT)
-Received: from steredhat ([5.170.129.161])
-        by smtp.gmail.com with ESMTPSA id a97sm3488933edf.72.2021.06.04.08.03.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 08:03:28 -0700 (PDT)
-Date:   Fri, 4 Jun 2021 17:03:24 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
-Subject: Re: [PATCH v10 11/18] virtio/vsock: dequeue callback for
- SOCK_SEQPACKET
-Message-ID: <20210604150324.winiikx5h3p6gsyy@steredhat>
-References: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
- <20210520191801.1272027-1-arseny.krasnov@kaspersky.com>
- <20210603144513.ryjzauq7abnjogu3@steredhat>
- <6b833ccf-ea93-db6a-4743-463ac1cfe817@kaspersky.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+        id S230264AbhFDPFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 11:05:46 -0400
+Received: from mail-dm6nam08on2067.outbound.protection.outlook.com ([40.107.102.67]:60897
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229692AbhFDPFo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 11:05:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QqeQZQldpPbwR5yrS97kGbH7SbLipPEiY0KQN1JzNmbJY6kbGn1i+dYUuLwk+Cu9uUah7SHMuOFpWkDsPV84odBizvm03KuicTg28BioOUwzO4ttYIXlAkEfVZGNmx5wE0sy7cGe3/eSE5CBbmSqzXv9uIK58RJf7DWP6kAeZArLQOxm0wJvSI5rwO0oksRC1WJgkmvhUqYLeGfHV/O/L6/me9cYHBDydrv8QRJuK7myIySfyneDE1wi+pSPL5fAVp+2slh9aQlBE6fA6ND1zDrzoFaigtU6a9iRDbPZF4QtEPwxfrsIctCoopQLDnUhn6sSDJKdOCW+jm306RTyRg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XBmRd1qnUKYgzq2S8PRIdZxOXp2lhxhPdTx7aaK65cs=;
+ b=VM5z8+Mdpl4V+KTQutNYQhw2l9ZMhwI8XZ664YerhKRxooXVgRhLGJunDNMiGVRuQzQdrbEQCcDh1oXILJ58pjc9S7E0fq8iL4mtpGnDvgrRWJLuUqeZTZ5OPo/dMY7ypI0TdPQmvhj9jFDFIHe1AR2USiBTca7/tbv5jirU3VxmN9zhwNqtStffwieVA7qDl5WUfbw+UtdeY3mT2gNyauNI4C8tRj/4oFFNzfEnZQXmzQ838SjgAbwU6cNpRrEpyFV/SBhiLZKnqK8dai4Itb5Kc6Mtd7IzMZn6TOZvNI0bbzHqMqW70Z3TOYTxp/1DMm3DRYma4XTGXKSjezG6ww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XBmRd1qnUKYgzq2S8PRIdZxOXp2lhxhPdTx7aaK65cs=;
+ b=FeR3hrmrXCzcpkZ2ReLWHly8x3RtFM5mwO1AXJlAGEZurP3CO8fPn6M5IpcDO9AsPQsjIlu7NUSmoD6Depk38YFDuXJFN35WZ6Y3S0AAEevEwZv2qlxlxMaxmsl+pPZHQBP9+Ca5q3B0U6Ovv6TXfoQ58oKKYJhxCpTEp5QgpWdjbL8Vyg6z+bLExJ+zhd+iXde5auZ/DEBVqRI4el03ABuu6rce0rUk45Ncc7C4cIS1gR8QgVyyEq5I4DKJJQEb9KQNydQNtzTPhxJkbp4CmBlfqF5uHPWKJbACpOyL6ZFukBKo5b0Dv1J97Ld8Njt+S4wToE3tqGlmeF2cIec16g==
+Authentication-Results: linux.alibaba.com; dkim=none (message not signed)
+ header.d=none;linux.alibaba.com; dmarc=none action=none
+ header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5048.namprd12.prod.outlook.com (2603:10b6:208:30a::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.23; Fri, 4 Jun
+ 2021 15:03:57 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%6]) with mapi id 15.20.4195.024; Fri, 4 Jun 2021
+ 15:03:56 +0000
+Date:   Fri, 4 Jun 2021 12:03:55 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     bharat@chelsio.com, dledford@redhat.com,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RDMA/cxgb4: Fix missing error code in create_qp()
+Message-ID: <20210604150355.GA409628@nvidia.com>
+References: <1622545669-20625-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6b833ccf-ea93-db6a-4743-463ac1cfe817@kaspersky.com>
+In-Reply-To: <1622545669-20625-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: MN2PR08CA0020.namprd08.prod.outlook.com
+ (2603:10b6:208:239::25) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR08CA0020.namprd08.prod.outlook.com (2603:10b6:208:239::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20 via Frontend Transport; Fri, 4 Jun 2021 15:03:56 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lpBMZ-001iZg-O0; Fri, 04 Jun 2021 12:03:55 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0e45497e-25f8-4d26-5c5a-08d92769f9c7
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5048:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB50486E9AF11EC8ACD931032DC23B9@BL1PR12MB5048.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hIbrmMjK8fRB3Dh5i4paY8mB8QKN22jwsfCebmYp0hb2hs3ddrzL0jlfZT4tSlTMFnuHj2cxOAjl1UQoj79f6kdfY9qC8Twur91NgUAR19iu8B640lofE/JUh4hHxYO9fJvwUKqEtIrH2ObrPiwYqo4Id6Z+qUsBO8u+ehiyU/omwjhR+0hubzIl2rYGbfbebQx2r8yb3yKJr9lGokyqkO/Wf2PyEH+o5dx/QDmgZA7NEGKpCdUPLtshMymL2MYyqY9BKG44dxvbF8/NFie0PvQohHXtWsgkKIP8PVriulhLzN5e9kCiRKPuMgQNfOvzkQ2xCc99XEu89pqMeDjapcSHbcWl5vBPWfYsroby4Hns7GWydaeD16zmDJ+jDKb2Zdmfeqjgrtv1hOKsRT6eRITlAegcYtehI7Qu8oLV9I2Tqyez1nrb2I6+nbP1uwBGhxoChyYhDBLR8txpdsqs91Os9qGQkNsmtkB7O/IKGopLO9TZApApIBWPbBNyi7XkLWPrqGRHqDJTvRFPZF5MDL1jPd8JzIW6M73nClL2ekYW8C2Tkw4iZ47Uf//OKk4NA2r7bnHA5A8qPUZ3XWz/lXwMcjDx25kN9jpHrQ72LzZu0zlr16qXB7P6qIIcJns++NoFnOgEG9jojgpIGw+WNg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(136003)(346002)(39860400002)(366004)(2616005)(426003)(26005)(5660300002)(4744005)(478600001)(66556008)(4326008)(33656002)(186003)(83380400001)(38100700002)(66946007)(66476007)(1076003)(9746002)(9786002)(316002)(2906002)(8676002)(8936002)(86362001)(36756003)(6916009)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?6KhD9FdJdMi+GX8iMcwu9vLts7eStYeCePM3/KtaVCL0tKIk9mdzzJzyC9ez?=
+ =?us-ascii?Q?vhzhhc7DRCiShFdavlbiciRIG0rh7Cw6h7rJ/R5YkOcZLFhqMRz9hy3VOuWk?=
+ =?us-ascii?Q?6nOtEuQT1qnOnkzifwvKnTQsd0p9Fs48YiItmTZTZwelwGfTXLjgkTyWMALo?=
+ =?us-ascii?Q?mSLXXFreY52rmRHX3VeFc9fZ2BOGnNp+/bU+nlc3yIRUqmCpjZ2zw0Sxi8gL?=
+ =?us-ascii?Q?CRojF2mcDscrhIygU9f13nI2L/z2I8I3KKzQeHJNybogDYdKGJAF795eCmzc?=
+ =?us-ascii?Q?DhquN1IFBlhV/zxaLOg7jzzJY8h1LBYf77R1eicBHQCaf+gtRnvfWGrluKaJ?=
+ =?us-ascii?Q?BilorP13lVUvER0vXT7mo1iyz5xBPmvNKqbrBFMZOpi+F4l4wp89ZbK0O027?=
+ =?us-ascii?Q?6Fes4uRNR+j0CbBfx/MMbkeiVJNSf94qCgXweSlL93HwBGBzX2MpAvSfdfl/?=
+ =?us-ascii?Q?QtnDr2krWaSvQWGSLbz5WU+Z7FKvA1PkurPadm1bGAHE9myOf5wL5DB9kk7R?=
+ =?us-ascii?Q?J2/UHq6HTjy5lipe5/ZFWKkUAUkh+jbjQeZmns5GcRaIR/dPJw/shDQ/mWZh?=
+ =?us-ascii?Q?0XCClh4lYHnnRlBXJyNRvKtWJ1ujhxKJcOTMm4gFg2lN2S80ErPsfy7BwHME?=
+ =?us-ascii?Q?YoJlLIgly5S6NUVdX9LKiK0bm7i92jqBlC9C/MrGIXTz+an6n+jDmf24Xrhq?=
+ =?us-ascii?Q?8ybZV4oxtObdQ4rlel02Te6VO0bgUE2XDYhn+Xerydp7y3MQL64cxBhM+z2K?=
+ =?us-ascii?Q?qnbOLb7m/tsk0m+/l6TM6hPswwc1xYNiDfHId2kMupYrdWIqfvNGPCxHvlLX?=
+ =?us-ascii?Q?7WEPLHMqQtdRvdM1M3Q8RtP6QwtZdPih0satiaB5KgkS1Z6URtcKi/u7KT50?=
+ =?us-ascii?Q?xzDJTGucflWbdw2PgPXjWaelXG7JVrK4eAQ9MfD0MV0KUTYoloB6xYziACQZ?=
+ =?us-ascii?Q?qUcInfCXuGyUS19B1BO0LFwSeEAednEFKK0pzqf1FJZ3vg69xTHVZpq5s2Gd?=
+ =?us-ascii?Q?SgILQNYglFo9TspAeEAHjV069+C09M0ta/bdtlV94AwwGrjiycbwYm7rBxyR?=
+ =?us-ascii?Q?gNDVi7TMtkKjCnMwZWxVpljdho+lxMXUKjhSmzBuvCuqZBg90xKRh7AWDw/m?=
+ =?us-ascii?Q?+3E2eU2KSn5p6H2MZCiSez0Lr0ad1jxITXf0wr+2kQ4Xf0fbo12ghR/7YLo5?=
+ =?us-ascii?Q?gyg06DETXgLdp1UnqB7uFLOpDnze9X302bDMT4FpDn3DGzSgv9lY2GMbyPWl?=
+ =?us-ascii?Q?a9SUyYYPk552y3TW/mujyQojps6uslijrksSV8OaReuyNdTJZXm5KkYfKV1d?=
+ =?us-ascii?Q?TJcX8pNJ9Ul+JIaJgx5EecNy?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0e45497e-25f8-4d26-5c5a-08d92769f9c7
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2021 15:03:56.8254
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: E8g0zlA0sWkSCgaPugkRZ53pkIPi7dvAWXKOeNGw42//k0G0LrW3jUTMZZ9Um9VB
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5048
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 04:12:23PM +0300, Arseny Krasnov wrote:
->
->On 03.06.2021 17:45, Stefano Garzarella wrote:
->> On Thu, May 20, 2021 at 10:17:58PM +0300, Arseny Krasnov wrote:
->>> Callback fetches RW packets from rx queue of socket until whole record
->>> is copied(if user's buffer is full, user is not woken up). This is done
->>> to not stall sender, because if we wake up user and it leaves syscall,
->>> nobody will send credit update for rest of record, and sender will wait
->>> for next enter of read syscall at receiver's side. So if user buffer is
->>> full, we just send credit update and drop data.
->>>
->>> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->>> ---
->>> v9 -> v10:
->>> 1) Number of dequeued bytes incremented even in case when
->>>    user's buffer is full.
->>> 2) Use 'msg_data_left()' instead of direct access to 'msg_hdr'.
->>> 3) Rename variable 'err' to 'dequeued_len', in case of error
->>>    it has negative value.
->>>
->>> include/linux/virtio_vsock.h            |  5 ++
->>> net/vmw_vsock/virtio_transport_common.c | 65 +++++++++++++++++++++++++
->>> 2 files changed, 70 insertions(+)
->>>
->>> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
->>> index dc636b727179..02acf6e9ae04 100644
->>> --- a/include/linux/virtio_vsock.h
->>> +++ b/include/linux/virtio_vsock.h
->>> @@ -80,6 +80,11 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
->>> 			       struct msghdr *msg,
->>> 			       size_t len, int flags);
->>>
->>> +ssize_t
->>> +virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
->>> +				   struct msghdr *msg,
->>> +				   int flags,
->>> +				   bool *msg_ready);
->>> s64 virtio_transport_stream_has_data(struct vsock_sock *vsk);
->>> s64 virtio_transport_stream_has_space(struct vsock_sock *vsk);
->>>
->>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->>> index ad0d34d41444..61349b2ea7fe 100644
->>> --- a/net/vmw_vsock/virtio_transport_common.c
->>> +++ b/net/vmw_vsock/virtio_transport_common.c
->>> @@ -393,6 +393,59 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
->>> 	return err;
->>> }
->>>
->>> +static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
->>> +						 struct msghdr *msg,
->>> +						 int flags,
->>> +						 bool *msg_ready)
->>> +{
->>> +	struct virtio_vsock_sock *vvs = vsk->trans;
->>> +	struct virtio_vsock_pkt *pkt;
->>> +	int dequeued_len = 0;
->>> +	size_t user_buf_len = msg_data_left(msg);
->>> +
->>> +	*msg_ready = false;
->>> +	spin_lock_bh(&vvs->rx_lock);
->>> +
->>> +	while (!*msg_ready && !list_empty(&vvs->rx_queue) && dequeued_len >= 0) {
->> I'
->>
->>> +		size_t bytes_to_copy;
->>> +		size_t pkt_len;
->>> +
->>> +		pkt = list_first_entry(&vvs->rx_queue, struct virtio_vsock_pkt, list);
->>> +		pkt_len = (size_t)le32_to_cpu(pkt->hdr.len);
->>> +		bytes_to_copy = min(user_buf_len, pkt_len);
->>> +
->>> +		if (bytes_to_copy) {
->>> +			/* sk_lock is held by caller so no one else can dequeue.
->>> +			 * Unlock rx_lock since memcpy_to_msg() may sleep.
->>> +			 */
->>> +			spin_unlock_bh(&vvs->rx_lock);
->>> +
->>> +			if (memcpy_to_msg(msg, pkt->buf, bytes_to_copy))
->>> +				dequeued_len = -EINVAL;
->> I think here is better to return the error returned by memcpy_to_msg(),
->> as we do in the other place where we use memcpy_to_msg().
->>
->> I mean something like this:
->> 			err = memcpy_to_msgmsg, pkt->buf, bytes_to_copy);
->> 			if (err)
->> 				dequeued_len = err;
->Ack
->>> +			else
->>> +				user_buf_len -= bytes_to_copy;
->>> +
->>> +			spin_lock_bh(&vvs->rx_lock);
->>> +		}
->>> +
->> Maybe here we can simply break the cycle if we have an error:
->> 		if (dequeued_len < 0)
->> 			break;
->>
->> Or we can refactor a bit, simplifying the while() condition and also the
->> code in this way (not tested):
->>
->> 	while (!*msg_ready && !list_empty(&vvs->rx_queue)) {
->> 		...
->>
->> 		if (bytes_to_copy) {
->> 			int err;
->>
->> 			/* ...
->> 			*/
->> 			spin_unlock_bh(&vvs->rx_lock);
->> 			err = memcpy_to_msgmsg, pkt->buf, bytes_to_copy);
->> 			if (err) {
->> 				dequeued_len = err;
->> 				goto out;
->> 			}
->> 			spin_lock_bh(&vvs->rx_lock);
->>
->> 			user_buf_len -= bytes_to_copy;
->> 		}
->>
->> 		dequeued_len += pkt_len;
->>
->> 		if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOR)
->> 			*msg_ready = true;
->>
->> 		virtio_transport_dec_rx_pkt(vvs, pkt);
->> 		list_del(&pkt->list);
->> 		virtio_transport_free_pkt(pkt);
->> 	}
->>
->> out:
->> 	spin_unlock_bh(&vvs->rx_lock);
->>
->> 	virtio_transport_send_credit_update(vsk);
->>
->> 	return dequeued_len;
->> }
->
->I think we can't do 'goto out' or break, because in case of error, we still need
->to free packet.
+On Tue, Jun 01, 2021 at 07:07:49PM +0800, Jiapeng Chong wrote:
+> The error code is missing in this code scenario, add the error code
+> '-EINVAL' to the return value 'ret'.
+> 
+> Eliminate the follow smatch warning:
+> 
+> drivers/infiniband/hw/cxgb4/qp.c:298 create_qp() warn: missing error
+> code 'ret'.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  drivers/infiniband/hw/cxgb4/qp.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-Didn't we have code that remove packets from a previous message?
-I don't see it anymore.
+Applied to for-next, thanks
 
-For example if we have 10 packets queued for a message (the 10th packet 
-has the EOR flag) and the memcpy_to_msg() fails on the 2nd packet, with 
-you proposal we are freeing only the first 2 packets, the rest is there 
-and should be freed when reading the next message, but I don't see that 
-code.
-
-The same can happen if the recvmsg syscall is interrupted. In that case 
-we report that nothing was copied, but we freed the first N packets, so 
-they are lost but the other packets are still in the queue.
-
-Please check also the patch where we implemented 
-__vsock_seqpacket_recvmsg().
-
-I thinks we should free packets only when we are sure we copied them to 
-the user space.
-
-> It is possible to do something like this:
->
->		virtio_transport_dec_rx_pkt(vvs, pkt);
->		list_del(&pkt->list);
->		virtio_transport_free_pkt(pkt);
->
->		if (dequeued_len < 0)
->			break;
->
->>
->>
->
-
+Jason
