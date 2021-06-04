@@ -2,128 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0559C39AF5C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6AF639AF5F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbhFDBJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 21:09:36 -0400
-Received: from mail-mw2nam12on2079.outbound.protection.outlook.com ([40.107.244.79]:32864
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229917AbhFDBJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 21:09:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XiO6EXZ86qJDSlqWmTmnnNBxuvYM45Johx4+Mi9in2Kc4FiT9i8h6qFcUp1YWKVYObJsYdUJSLYngBYoy0b6NC74KVOm7NC9gr1UplN3rL2Mw28xu/qu9lAYEGO0b1VQwtXtNUtTIXBUguLBx5C3fqn487b3av9hPg6tYpuJBEEc1cJIMn4gcqa2gESX1CTNALZVSZc2jy+PZgJDbWk0xzqzq/fIZKG7/lWPjYCvwgjATXzp9GRHQm3bvL1iFH59vWZiAOt2gcXRnFD3Y94HRIAdWbr4ciC1DhAIUo+UQEyjIwAbvCD5KJMl0JH+A1KYejsSSZTqZe3QO9vqjGVVZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G4n1jDCxVL72eQjpw+W1NgqvAgmUYPFpjvnmCkUdv2c=;
- b=V10QRWSbV+IWlzAqBGRKzw2foZbjcVZmayDF+81418UXjxiGUpN2wQfd4REh+DWWx84m7pobPL06jaMGTuVfGT52BylI7OAHYtkYoHA5XQIxyr591/cayxIcymy7IBv5SzlnXCRnDmJCSY24v3OYLUwOOwTDgiSd9Rud4nH3X/pHwQvBrp0TvNFjgasgVXJ8TFoiTrZUtc7Q0aYFBet1iY3/JqaggEi1Q69DbEGO3IEBZP5sb3kgPcFny8jZe2ndvvoAmf44Hz/gUzC3QNtjRKSaN4hEX7zrdvKca2DT/UF3+3x5bHi6qI2VOKJXF8Yby0DdMvD+owvGHgMiJtFmaQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=infradead.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G4n1jDCxVL72eQjpw+W1NgqvAgmUYPFpjvnmCkUdv2c=;
- b=W9R5JWJQd/kRQidBNjuPoyfEiBN+YsefjwsZjyeVqejdOZRRWluTRlgH9WszVVczbdFlqtmHRx7jRikuM2CuwBdRwBiQLqCRVETwUXoIk50UPQTtj0inTFoejgBdVX6yi5B/x3Vd7pK6RDKA+DdOQp5FRab25iXGglPbW6WJCFBxNlAaqyB5c2wHUsTCp6h9UuIlDI9y2O4wRCs4NxgPahSZkO6LSGDhwLisoaFaPHIAY46j+pK/Vo/rpq/8S2QR9QrIKDfk8DvSMDoZtQ0mqXug4/uzZoLFObNpBEn2LUTnMspZwVtF/bKVXqwsZ7k/0eR/TaZGilxwpkSjP4mtnQ==
-Received: from BN9PR03CA0042.namprd03.prod.outlook.com (2603:10b6:408:fb::17)
- by MN2PR12MB3838.namprd12.prod.outlook.com (2603:10b6:208:16c::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.22; Fri, 4 Jun
- 2021 01:07:48 +0000
-Received: from BN8NAM11FT057.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:fb:cafe::a7) by BN9PR03CA0042.outlook.office365.com
- (2603:10b6:408:fb::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.15 via Frontend
- Transport; Fri, 4 Jun 2021 01:07:48 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT057.mail.protection.outlook.com (10.13.177.49) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4195.22 via Frontend Transport; Fri, 4 Jun 2021 01:07:48 +0000
-Received: from nvdebian.localnet (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 4 Jun
- 2021 01:07:44 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Peter Xu <peterx@redhat.com>
-CC:     Balbir Singh <bsingharora@gmail.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
-        <bskeggs@redhat.com>, <rcampbell@nvidia.com>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <hch@infradead.org>,
-        <jglisse@redhat.com>, <willy@infradead.org>, <jgg@nvidia.com>,
-        <hughd@google.com>, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v9 07/10] mm: Device exclusive memory access
-Date:   Fri, 4 Jun 2021 11:07:42 +1000
-Message-ID: <10231977.pWpf7cJbZl@nvdebian>
-In-Reply-To: <YLjrjJXMP9Y3bvej@t490s>
-References: <20210524132725.12697-1-apopple@nvidia.com> <3853054.AI2YdRgKcH@nvdebian> <YLjrjJXMP9Y3bvej@t490s>
+        id S229962AbhFDBJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 21:09:41 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:42241 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229835AbhFDBJk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 21:09:40 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.west.internal (Postfix) with ESMTP id 8283DE0E;
+        Thu,  3 Jun 2021 21:07:53 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Thu, 03 Jun 2021 21:07:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
+        message-id:subject:from:to:cc:date:in-reply-to:references
+        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
+        RnP+G0MOC4BWQShW/S2PpVCbkxxTo6DAXcKcg8vNLGY=; b=QsFXzOjoHSCGnBWl
+        WAgc5dJIicU/sjq1+RqZzaTTfY01RFW7/eOfjCFF44PRIReW4tr1MJDdXla4YtbH
+        My+4ZHZGXZYhTzxupavTzm1sbPfe1lCoK2svFyD1pFWxgTGvJ9ZJDr1JEEDVddaY
+        dt8Qe84Z09JVlrTR8RQPM1UNcaSqHx0KzOz3A4yDvPEbuOgW6u1lrH+Gtuygx0ue
+        lzLnYiqw1vaPzQ8+nu6iCag33tcR2uc6UL0ZkXC7toNVOAEtrJKZnF344MTkCsZN
+        0tjK7aJkywnHnqptNpcvVqPU4KjrbRLGPK6Tg9Hr1ucztjdVu6KC0Z7xXP5S+Bk0
+        O3Sk8A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=RnP+G0MOC4BWQShW/S2PpVCbkxxTo6DAXcKcg8vNL
+        GY=; b=UN9WmFV1EaW1T+i8+Dx49590PsXiCISPMCU6mQklL3mNP853q0ztJeTVv
+        g3hu3vCErLFSOrgO61soeIIlKVeYgscRdGgn1rpwbzSzTlEe3JGMkxnwJtU1E21M
+        vYarmb1zg2J/GkORol+eYmVAH7/IgcgOQ0eElWf+L6zuhCqEC/Ix+fjpgm4Xcd5j
+        ImJrjUQRyASx/7XrYCtwDTJctC7cg6tMnklyxxZduxv+1rig0Ca92SMlxARxLgDI
+        mojRvWEeqFiFaIandgB9wUk3auMb1GpC4xGpl8PUZkpnwBPgwdMLMCRaYs5RXW3n
+        Zi1UHcINXXvXT964Meno2aKCuf1vw==
+X-ME-Sender: <xms:6Hy5YEIgAUh0R9b8qoz0CwScG_XNezhv5nZHwU3FMXJ7Xpny_7FCog>
+    <xme:6Hy5YEIkROzbZCKaZIN6l5LZs0O6jW0IzJAlp3ULYfu_yfmJdGf6CFoT3vYk1QtHD
+    dgUKJOpJiQZ>
+X-ME-Received: <xmr:6Hy5YEsUz3EgobeaDv2P1waUA7nvJP-doKPT6R8bDqtn9oeCYxp5Towaw2OdJHk8rD-6LkG0GQ-b08U4dXoOdoHsxX0siJF3LHqXws-HW80QNvpVxZZ9DBoV8xc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedttddgfeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkffuhffvffgjfhgtfggggfesthekredttderjeenucfhrhhomhepkfgrnhcu
+    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
+    fgleelkeetheelgeehueejueduhfeufffgleehgfevtdehhffhhffhtddugfefheenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
+    hthhgvmhgrfidrnhgvth
+X-ME-Proxy: <xmx:6Hy5YBZyboUQEHXV8r1fFqa3MziuyKnebb7t66pMXWasSfHnCJMnfw>
+    <xmx:6Hy5YLYbEoc0g-nOR0Tl4_WbQBMH1TUug3cAGpGxLAD21holtTik7g>
+    <xmx:6Hy5YNDsSaiG4DFbfIkerRp_FBpqNNaBfmEj9x76dh-bm-jxYcP4Gg>
+    <xmx:6Xy5YFlE_Mxwoni4coqQN_8FJN0LOIF7LUUncic0gof3_OqzLg8Il0sZlDs>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 3 Jun 2021 21:07:47 -0400 (EDT)
+Message-ID: <922c747c22b05a80a8350ac87b839eed0c79581f.camel@themaw.net>
+Subject: Re: [REPOST PATCH v4 2/5] kernfs: use VFS negative dentry caching
+From:   Ian Kent <raven@themaw.net>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Fri, 04 Jun 2021 09:07:43 +0800
+In-Reply-To: <d4554297b41148c7cc5eba1c9c16c5aa4a93d7e3.camel@themaw.net>
+References: <162218354775.34379.5629941272050849549.stgit@web.messagingengine.com>
+         <162218364554.34379.636306635794792903.stgit@web.messagingengine.com>
+         <CAJfpeguUj5WKtKZsn_tZZNpiL17ggAPcPBXdpA03aAnjaexWug@mail.gmail.com>
+         <972701826ebb1b3b3e00b12cde821b85eebc9749.camel@themaw.net>
+         <CAJfpegsLqowjMPCAgsFe6eQK_CeixrevUPyA04V2hdYvc0HpLQ@mail.gmail.com>
+         <08388e183b17e70a3383eb38af469125f8643a07.camel@themaw.net>
+         <32069e28a520c29773ebc24e248823d45ebb50b3.camel@themaw.net>
+         <d4554297b41148c7cc5eba1c9c16c5aa4a93d7e3.camel@themaw.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dbea646e-71aa-4fd6-3c5b-08d926f52b37
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3838:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB383874D0ADA1DDA5BA1C1BBFDF3B9@MN2PR12MB3838.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TDJ8yK6JVpkitw5sSEcy/BG6FUCOfJPe9++DTE5pJV8DLqxwbI2Z390RpAK5Ugt4aY6Egg0AYwCk6LU+hTQhBAFzMVrqf55ok78aTI1ZRnCOpJ8woDtPoTbonuBSwuG/Ux6Nq0S4GiByRE43vHcMOyuhvUo+lnXMnxXDxHNeR8qdGv3hP0Du6nfYgoiZWDzmioIMwfgEpd9l0hFljDiFcSH5qmi4TBU37v9Pjm/xIfxOCDDORZEXgz8cOQs2H0HTv9wP4n+MpNpLzlU9H1tBGpifnNp3IZJ4PkvQLE8DDGlLUiGQhvveYrAYT5A0qF8lZRMH1LYtbPJPCWnVDV3Ur9PL8c+q9UEI9l/Ce0XoUb1kuZ0s343SG8RDkb9CT2DZefxQ8twv7cNvjqnEfaSd6O/mj2V4Oaw82o8NWOvBGw01f0Os3R0D0DMdRky9oyd3oxD5/7RraqOoLyD9CJH94yJ5cNSsW5gRUTOQvexr5kz486Q32m6eMnURQw51LmSOI71Egx1cjRzQc66d8XmkbAim2qUX3/1VSz+QCl8xNXlW+8afVzQSg0rQ3XjqBvYU3a79/KtXZPU4g40CEyvohhGQT9qLpbq1C88NoQrrrkWuCOCb3LoHJ9+1YAm8GRLz/D7eVQd8wdsA+NEWC1Y8y9HtWw3Nq0lgwDMoa3FQZsnZgPpkhcxDYaTrgGS8Ui4H
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(39860400002)(136003)(376002)(346002)(46966006)(36840700001)(478600001)(47076005)(82310400003)(9576002)(83380400001)(7416002)(6916009)(36860700001)(7636003)(33716001)(4326008)(70206006)(9686003)(186003)(16526019)(26005)(5660300002)(2906002)(8676002)(36906005)(54906003)(426003)(86362001)(336012)(70586007)(356005)(8936002)(82740400003)(316002)(4744005)(39026012);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2021 01:07:48.1837
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: dbea646e-71aa-4fd6-3c5b-08d926f52b37
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT057.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3838
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, 4 June 2021 12:47:40 AM AEST Peter Xu wrote:
-> External email: Use caution opening links or attachments
+On Fri, 2021-06-04 at 07:57 +0800, Ian Kent wrote:
+> On Thu, 2021-06-03 at 10:15 +0800, Ian Kent wrote:
+> > On Wed, 2021-06-02 at 18:57 +0800, Ian Kent wrote:
+> > > On Wed, 2021-06-02 at 10:58 +0200, Miklos Szeredi wrote:
+> > > > On Wed, 2 Jun 2021 at 05:44, Ian Kent <raven@themaw.net> wrote:
+> > > > > 
+> > > > > On Tue, 2021-06-01 at 14:41 +0200, Miklos Szeredi wrote:
+> > > > > > On Fri, 28 May 2021 at 08:34, Ian Kent <raven@themaw.net>
+> > > > > > wrote:
+> > > > > > > 
+> > > > > > > If there are many lookups for non-existent paths these
+> > > > > > > negative
+> > > > > > > lookups
+> > > > > > > can lead to a lot of overhead during path walks.
+> > > > > > > 
+> > > > > > > The VFS allows dentries to be created as negative and
+> > > > > > > hashed,
+> > > > > > > and
+> > > > > > > caches
+> > > > > > > them so they can be used to reduce the fairly high
+> > > > > > > overhead
+> > > > > > > alloc/free
+> > > > > > > cycle that occurs during these lookups.
+> > > > > > 
+> > > > > > Obviously there's a cost associated with negative caching
+> > > > > > too. 
+> > > > > > For
+> > > > > > normal filesystems it's trivially worth that cost, but in
+> > > > > > case
+> > > > > > of
+> > > > > > kernfs, not sure...
+> > > > > > 
+> > > > > > Can "fairly high" be somewhat substantiated with a
+> > > > > > microbenchmark
+> > > > > > for
+> > > > > > negative lookups?
+> > > > > 
+> > > > > Well, maybe, but anything we do for a benchmark would be
+> > > > > totally
+> > > > > artificial.
+> > > > > 
+> > > > > The reason I added this is because I saw appreciable
+> > > > > contention
+> > > > > on the dentry alloc path in one case I saw.
+> > > > 
+> > > > If multiple tasks are trying to look up the same negative
+> > > > dentry
+> > > > in
+> > > > parallel, then there will be contention on the parent inode
+> > > > lock.
+> > > > Was this the issue?   This could easily be reproduced with an
+> > > > artificial benchmark.
+> > > 
+> > > Not that I remember, I'll need to dig up the sysrq dumps to have
+> > > a
+> > > look and get back to you.
+> > 
+> > After doing that though I could grab Fox Chen's reproducer and give
+> > it varying sysfs paths as well as some percentage of non-existent
+> > sysfs paths and see what I get ...
+> > 
+> > That should give it a more realistic usage profile and, if I can
+> > get the percentage of non-existent paths right, demonstrate that
+> > case as well ... but nothing is easy, so we'll have to wait and
+> > see, ;)
 > 
-> On Thu, Jun 03, 2021 at 09:39:32PM +1000, Alistair Popple wrote:
-> > Reclaim won't run on the page due to the extra references from the special
-> > swap entries.
+> Ok, so I grabbed Fox's benckmark repo. and used a non-existent path
+> to check the negative dentry contention.
 > 
-> That sounds reasonable, but I didn't find the point that stops it, probably
-> due to my limited knowledge on the reclaim code.  Could you elaborate?
+> I've taken the baseline readings and the contention is see is the
+> same as I originally saw. It's with d_alloc_parallel() on lockref.
+> 
+> While I haven't run the patched check I'm pretty sure that using
+> dget_parent() and taking a snapshot will move the contention to
+> that. So if I do retain the negative dentry caching change I would
+> need to use the dentry seq lock for it to be useful.
+> 
+> Thoughts Miklos, anyone?
 
-Sure, it isn't immediately obvious but it ends up being detected at the start 
-of is_page_cache_freeable() in the pageout code:
+Mmm ... never mind, I'd still need to take a snapshot anyway and
+dget_parent() looks lightweight if there's no conflict. I will
+need to test it.
 
-
-static pageout_t pageout(struct page *page, struct address_space *mapping)
-{
-
-[...]
-
-	if (!is_page_cache_freeable(page))
-		return PAGE_KEEP;
-
- - Alistair
-
-> --
-> Peter Xu
-
-
+> 
+> > 
+> > > 
+> > > > 
+> > > > > > > diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+> > > > > > > index 4c69e2af82dac..5151c712f06f5 100644
+> > > > > > > --- a/fs/kernfs/dir.c
+> > > > > > > +++ b/fs/kernfs/dir.c
+> > > > > > > @@ -1037,12 +1037,33 @@ static int
+> > > > > > > kernfs_dop_revalidate(struct
+> > > > > > > dentry *dentry, unsigned int flags)
+> > > > > > >         if (flags & LOOKUP_RCU)
+> > > > > > >                 return -ECHILD;
+> > > > > > > 
+> > > > > > > -       /* Always perform fresh lookup for negatives */
+> > > > > > > -       if (d_really_is_negative(dentry))
+> > > > > > > -               goto out_bad_unlocked;
+> > > > > > > +       mutex_lock(&kernfs_mutex);
+> > > > > > > 
+> > > > > > >         kn = kernfs_dentry_node(dentry);
+> > > > > > > -       mutex_lock(&kernfs_mutex);
+> > > > > > > +
+> > > > > > > +       /* Negative hashed dentry? */
+> > > > > > > +       if (!kn) {
+> > > > > > > +               struct kernfs_node *parent;
+> > > > > > > +
+> > > > > > > +               /* If the kernfs node can be found this
+> > > > > > > is
+> > > > > > > a
+> > > > > > > stale
+> > > > > > > negative
+> > > > > > > +                * hashed dentry so it must be discarded
+> > > > > > > and
+> > > > > > > the
+> > > > > > > lookup redone.
+> > > > > > > +                */
+> > > > > > > +               parent = kernfs_dentry_node(dentry-
+> > > > > > > > d_parent);
+> > > > > > 
+> > > > > > This doesn't look safe WRT a racing sys_rename().  In this
+> > > > > > case
+> > > > > > d_move() is called only with parent inode locked, but not
+> > > > > > with
+> > > > > > kernfs_mutex while ->d_revalidate() may not have parent
+> > > > > > inode
+> > > > > > locked.
+> > > > > > After d_move() the old parent dentry can be freed,
+> > > > > > resulting
+> > > > > > in
+> > > > > > use
+> > > > > > after free.  Easily fixed by dget_parent().
+> > > > > 
+> > > > > Umm ... I'll need some more explanation here ...
+> > > > > 
+> > > > > We are in ref-walk mode so the parent dentry isn't going
+> > > > > away.
+> > > > 
+> > > > The parent that was used to lookup the dentry in __d_lookup()
+> > > > isn't
+> > > > going away.  But it's not necessarily equal to dentry->d_parent
+> > > > anymore.
+> > > > 
+> > > > > And this is a negative dentry so rename is going to bail out
+> > > > > with ENOENT way early.
+> > > > 
+> > > > You are right.  But note that negative dentry in question could
+> > > > be
+> > > > the
+> > > > target of a rename.  Current implementation doesn't switch the
+> > > > target's parent or name, but this wasn't always the case
+> > > > (commit
+> > > > 076515fc9267 ("make non-exchanging __d_move() copy ->d_parent
+> > > > rather
+> > > > than swap them")), so a backport of this patch could become
+> > > > incorrect
+> > > > on old enough kernels.
+> > > 
+> > > Right, that __lookup_hash() will find the negative target.
+> > > 
+> > > > 
+> > > > So I still think using dget_parent() is the correct way to do
+> > > > this.
+> > > 
+> > > The rename code does my head in, ;)
+> > > 
+> > > The dget_parent() would ensure we had an up to date parent so
+> > > yes, that would be the right thing to do regardless.
+> > > 
+> > > But now I'm not sure that will be sufficient for kernfs. I'm
+> > > still
+> > > thinking about it.
+> > > 
+> > > I'm wondering if there's a missing check in there to account for
+> > > what happens with revalidate after ->rename() but before move.
+> > > There's already a kernfs node check in there so it's probably ok
+> > > ...
+> > >  
+> > > > 
+> > > > > > 
+> > > > > > > +               if (parent) {
+> > > > > > > +                       const void *ns = NULL;
+> > > > > > > +
+> > > > > > > +                       if (kernfs_ns_enabled(parent))
+> > > > > > > +                               ns = kernfs_info(dentry-
+> > > > > > > > d_sb)-
+> > > > > > > > ns;
+> > > > > > > +                       kn = kernfs_find_ns(parent,
+> > > > > > > dentry-
+> > > > > > > > d_name.name, ns);
+> > > > > > 
+> > > > > > Same thing with d_name.  There's
+> > > > > > take_dentry_name_snapshot()/release_dentry_name_snapshot()
+> > > > > > to
+> > > > > > properly
+> > > > > > take care of that.
+> > > > > 
+> > > > > I don't see that problem either, due to the dentry being
+> > > > > negative,
+> > > > > but please explain what your seeing here.
+> > > > 
+> > > > Yeah.  Negative dentries' names weren't always stable, but that
+> > > > was
+> > > > a
+> > > > long time ago (commit 8d85b4845a66 ("Allow sharing external
+> > > > names
+> > > > after __d_move()")).
+> > > 
+> > > Right, I'll make that change too.
+> > > 
+> > > > 
+> > > > Thanks,
+> > > > Miklos
+> > > 
+> > 
+> 
 
 
