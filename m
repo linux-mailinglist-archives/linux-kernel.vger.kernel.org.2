@@ -2,134 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B2D39C3E3
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 01:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 590CE39C3E2
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 01:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231858AbhFDXa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 19:30:28 -0400
-Received: from mail-lf1-f47.google.com ([209.85.167.47]:41815 "EHLO
-        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231626AbhFDXa0 (ORCPT
+        id S231844AbhFDX3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 19:29:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231643AbhFDX3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 19:30:26 -0400
-Received: by mail-lf1-f47.google.com with SMTP id v8so16417986lft.8
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 16:28:39 -0700 (PDT)
+        Fri, 4 Jun 2021 19:29:49 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE7FC061766
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 16:27:46 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id k7so6356301pjf.5
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 16:27:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7anXLdFX+ZgbpqbGjfcU0VDRvEPB4cOmvxPC9Qde3gE=;
-        b=dg5Sc1Fgf6UKGlFgha4QJpSOVLUwcpm0SuYUIoFeBNUr40YIUsrCYlLfrq3CXSeQsz
-         rD+PJqCu2j6Huv/sftQaU4j9AfEEopEGQQOG6dooBYwe9Sg9z32bbH8NZVR9qpQwPWMX
-         vsBbL3ztFYzzImuZOgHqF/vNdo9zz8fxUdoQKeNgC56uFXRWdmogwc1EC1SzWkGNYC/s
-         DYiYRdnDLY5MNmGdtVb8WUx4kx9tBmb8NsZIV52cbe2bf8CsYHjI/OQubE+FZU9qc62Z
-         T0OGMUNP3/x3cz7AUWWUnfsnkoeU/2AtbyTaDREPOjaLBtW2454sl4pnOqCEtnCVHUTg
-         2mXQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6Yso64/11K/NVoM1kuoUluh2W7Yq6bZwBUsc8+1WoqA=;
+        b=Ia3/eX/3L13jjBWzDZuwOM3NO8zMtT+5VxJV8tyWEyA8n0xYAsylEpt5kKg+nCFdSl
+         b0G4bvWjyxNwTzu6+T0YMcc22fyNxhd8Cj3oIi5+AplIabkpWDw+CTrC/99SnGp6nqxs
+         b9bdwn1ANly7ZiJ2W8206qbgn3rwQ4YKY1Iog=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7anXLdFX+ZgbpqbGjfcU0VDRvEPB4cOmvxPC9Qde3gE=;
-        b=guSgfURNPYETF3KzbiZfeT2UoW851LHyD4PiaRY8SNXMj5U08k42lY1XTf3MrCFUtT
-         apXU+DiLI4/p/PbEOM8dEFrx6DaLoDKwBYA4921lTrcXoHExkO+btasOC/P4KM8UuJ3+
-         AaJV8DsP8TPwpAUpE4YsCYwevYUPpLQlTtjDOI6+Dvx2QU3nFXwERShI5iGtREZEmbcy
-         9+Mb+kJeBN/+dIz0hnCyD5iYKkwI3I8QkZq+8PsoRwZIYvmzQvHXW7+8yhkzuMXqRwP5
-         GVm8gXrFHWRgAkIUrYBsjdiGI9/jMs+ExoU2qdj+RTaUbRw6PemWQd+jdqkaRdAQdcNj
-         xzzg==
-X-Gm-Message-State: AOAM531u6kBODUD8Wm4hu1w1IK71xZJpUU0gu5R4Gp9BDSsbRVe8H8Df
-        RTYrL1q3KRAtJ6NgLmajY2GS0aAu1p8vqWlspPjPG7mEMBvPzA==
-X-Google-Smtp-Source: ABdhPJw3yQaZ7dKyZwmDS53ELm0vG7Glph1hP/DO/n9yzyGDTHVYAiSpgqO03vCHNRJxz+gGO3G+WcQxpM1mGRuSiCc=
-X-Received: by 2002:a19:f706:: with SMTP id z6mr4188361lfe.122.1622849258457;
- Fri, 04 Jun 2021 16:27:38 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6Yso64/11K/NVoM1kuoUluh2W7Yq6bZwBUsc8+1WoqA=;
+        b=OPXpeBzmlRB7mXQVrpd/10QN6Rk3CeoEB/6fWJMWcxwBxPUiCK7vC2rMi7CB5bVzyZ
+         /jXsN8NKeJtauls3Kz5gxszQnL94eTOCM7GNgvQUp6RRV9tQ2jQb4JgXWNWOSHWNtKh8
+         N4/gAzSxQutE2csQ2jRF7AGjWAbrhJWhSUX7LuN9Bs26nJxIrUfswl/53mzivT3F3Ufc
+         enM2AvW9cw1neALZikXuZFkJtabQuJZAloFJy91khErRbQPty5NtIwL8bWobodzBN05d
+         S4wlEKI3L2aWHWkOvVQpLBxXaVM3IqruNAqoK/1zL5sKUDGkwW/oWVszAYgeng3fdmvN
+         cYfQ==
+X-Gm-Message-State: AOAM5312F6ku4aitPdCsEVIMcK0LCbCYcjmh+eChJm5C2caNap/Jv2DN
+        Tke7ie0HpxXSgTU2IN2tYnXCsQ==
+X-Google-Smtp-Source: ABdhPJw8D+6MHYgsOiDgLITaObaSsvLTQ7xCT0gLqec7W77m9834sj0d2tmYuttbPEuUKEWT5OoSjg==
+X-Received: by 2002:a17:902:8b8a:b029:108:7849:dae0 with SMTP id ay10-20020a1709028b8ab02901087849dae0mr6614283plb.36.1622849266212;
+        Fri, 04 Jun 2021 16:27:46 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:201:fb56:4f6a:ea47:556b])
+        by smtp.gmail.com with ESMTPSA id t24sm5411155pji.56.2021.06.04.16.27.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 16:27:45 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Wolfram Sang <wsa@kernel.org>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v2] i2c: core: Disable client irq on reboot/shutdown
+Date:   Fri,  4 Jun 2021 16:27:44 -0700
+Message-Id: <20210604232744.1259150-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
 MIME-Version: 1.0
-References: <CAFJ_xbq06nfaEWtVNLtg7XCJrQeQ9wCs4Zsoi5Y_HP3Dx0iTRA@mail.gmail.com>
- <20210604205018.2238778-1-ndesaulniers@google.com>
-In-Reply-To: <20210604205018.2238778-1-ndesaulniers@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 4 Jun 2021 16:27:26 -0700
-Message-ID: <CAKwvOdmhg2tj8cKe-XitoZXGKaoOhgTsCEdVXubt+LiY9+46rw@mail.gmail.com>
-Subject: Re: [PATCH v3 16/16] objtool,x86: Rewrite retpoline thunk calls
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, lma@semihalf.com,
-        Guenter Roeck <groeck@google.com>,
-        Juergen Gross <jgross@suse.com>, lb@semihalf.com,
-        LKML <linux-kernel@vger.kernel.org>, mbenes@suse.com,
-        rad@semihalf.com, upstream@semihalf.com,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 4, 2021 at 1:50 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
->
-> (Manually replying to https://lore.kernel.org/lkml/CAFJ_xbq06nfaEWtVNLtg7XCJrQeQ9wCs4Zsoi5Y_HP3Dx0iTRA@mail.gmail.com/)
->
-> Hi Peter,
-> We're also tracking 2 recent regressions that look like they've come from this
-> patch.
->
-> https://github.com/ClangBuiltLinux/linux/issues/1384
-> https://github.com/ClangBuiltLinux/linux/issues/1388
->
-> (Both in linux-next at the moment).
->
-> The first, it looks like a boot failure. The second is a warning from the
-> linker on a kernel module; even readelf seems unhappy with the results of the
-> output from objtool.
->
-> I can more easily reproduce the latter, so I'm working on getting a smaller
-> reproducer. I'll let you know when I have it, but wanted to report it ASAP.
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-Sent a pretty big attachment, privately.  I was able to capture the
-before/after with:
+If an i2c client receives an interrupt during reboot or shutdown it may
+be too late to service it by making an i2c transaction on the bus
+because the i2c controller has already been shutdown. This can lead to
+system hangs if the i2c controller tries to make a transfer that is
+doomed to fail because the access to the i2c pins is already shut down,
+or an iommu translation has been torn down so i2c controller register
+access doesn't work.
 
-$ $ echo 'CONFIG_GCOV_KERNEL=n
-CONFIG_KASAN=n
-CONFIG_LTO_CLANG_THIN=y' >allmod.config
-$ OBJTOOL_ARGS="--backup" make -kj"$(nproc)" KCONFIG_ALLCONFIG=1
-LLVM=1 LLVM_IAS=1 all
+Let's simply disable the irq if there isn't a shutdown callback for an
+i2c client when there is an irq associated with the device. This will
+make sure that irqs don't come in later than the time that we can handle
+it. We don't do this if the i2c client device already has a shutdown
+callback because presumably they're doing the right thing and quieting
+the device so irqs don't come in after the shutdown callback returns.
 
-It looks like
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Reported-by: kernel test robot <lkp@intel.com>
+[swboyd@chromium.org: Dropped newline, added commit text, added
+interrupt.h for robot build error]
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
 
-$ ./tools/objtool/objtool orc generate  --module  --no-fp
---no-unreachable  --retpoline  --uaccess  --mcount
-drivers/gpu/drm/amd/amdgpu/amdgpu.lto.o; ld.lld -r -m elf_x86_64
--plugin-opt=-code-model=kernel -plugin-opt=-stack-alignment=8
---thinlto-cache-dir=.thinlto-cache -mllvm -import-instr-limit=5
--plugin-opt=-warn-stack-size=2048 --build-id=sha1  -T
-scripts/module.lds -o drivers/gpu/drm/amd/amdgpu/amdgpu.ko
-drivers/gpu/drm/amd/amdgpu/amdgpu.lto.o
-drivers/gpu/drm/amd/amdgpu/amdgpu.mod.o
+Dmitry, please add Signed-off-by so this can be merged through i2c
 
-is producing the linker error:
+This supersedes https://lore.kernel.org/r/20210510220012.2003285-1-swboyd@chromium.org
 
-ld.lld: error: drivers/gpu/drm/amd/amdgpu/amdgpu.lto.o:
-SHT_SYMTAB_SHNDX has 79581 entries, but the symbol table associated
-has 79582
+Changes from v1 (https://lore.kernel.org/r/20210604212752.3547301-1-swboyd@chromium.org)
+ * Add interrupt.h include for robot
 
-Readelf having issues with the output:
-$ readelf -s amdgpu.lto.o.orig
-<works fine>
-$ readelf -s amdgpu.lto.o
-readelf: Error: Reading 73014451695 bytes extends past end of file for
-string table
-$ llvm-readelf -s amdgpu.lto.o
-llvm-readelf: error: 'amdgpu.lto.o': unable to continue dumping, the
-file is corrupt: section table goes past the end of file
+ drivers/i2c/i2c-core-base.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-`file` having issues:
-$ file drivers/gpu/drm/amd/amdgpu/amdgpu.lto.o
-drivers/gpu/drm/amd/amdgpu/amdgpu.lto.o: ELF 64-bit LSB relocatable,
-x86-64, version 1 (SYSV), no section header
+diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+index 5a97e4a02fa2..e314ccaf114a 100644
+--- a/drivers/i2c/i2c-core-base.c
++++ b/drivers/i2c/i2c-core-base.c
+@@ -24,6 +24,7 @@
+ #include <linux/i2c-smbus.h>
+ #include <linux/idr.h>
+ #include <linux/init.h>
++#include <linux/interrupt.h>
+ #include <linux/irqflags.h>
+ #include <linux/jump_label.h>
+ #include <linux/kernel.h>
+@@ -627,6 +628,8 @@ static void i2c_device_shutdown(struct device *dev)
+ 	driver = to_i2c_driver(dev->driver);
+ 	if (driver->shutdown)
+ 		driver->shutdown(client);
++	else if (client->irq > 0)
++		disable_irq(client->irq);
+ }
+ 
+ static void i2c_client_dev_release(struct device *dev)
 
-for comparison:
-$ file ./drivers/spi/spi-ath79.lto.o
-./drivers/spi/spi-ath79.lto.o: ELF 64-bit LSB relocatable, x86-64,
-version 1 (SYSV), not stripped
+base-commit: 8124c8a6b35386f73523d27eacb71b5364a68c4c
 -- 
-Thanks,
-~Nick Desaulniers
+https://chromeos.dev
+
