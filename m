@@ -2,254 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D25AF39AF21
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 02:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E033939AF26
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 02:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbhFDAmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 20:42:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229723AbhFDAmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 20:42:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 282F6613C9;
-        Fri,  4 Jun 2021 00:40:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622767250;
-        bh=7zGnQkdnuomU21twSfFFKbf7UAFAxDh23BBeCxtbF+0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eNt+4eOEILT965TqXZJ/HrthjCqCtQ7VM1mVaxXTmcA4jjCgHwSLw/WHMyRxDbrYl
-         4zXnoSWOpyoYXBePeoOkNRTiUvVvadizfgqyaHWKoT/jg69G4FWSD3tFNrJXrn9ee4
-         wSI1FVrvgrYEAYTa+sjw6WG4vKGJBM9FRodbqGCMBNQ2E4IYpz0xW59Gx7qXrrdb4G
-         MIN84ODLRwRRKKZn3nHpY5O7B3gCt0TlXoSmh8DjWT9cuhkPnfRKqEqD4uARY0oQAm
-         t6nLV9RWOR04YkFQFIyYzPWCWNWAAni7gj/5CMMCf7m6GxPYsSGTyto172OZk/oWf2
-         YudomP/aixl2w==
-Date:   Thu, 3 Jun 2021 17:40:48 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH] f2fs: clean up /sys/fs/f2fs/<disk>/features
-Message-ID: <YLl2kEZEDuIjrlfO@sol.localdomain>
-References: <20210603220834.1949988-1-jaegeuk@kernel.org>
+        id S229867AbhFDAoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 20:44:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFDAoE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 20:44:04 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE8FC06174A;
+        Thu,  3 Jun 2021 17:42:18 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fx3r76hVPz9s24;
+        Fri,  4 Jun 2021 10:42:15 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1622767336;
+        bh=DQpYo9q9ZGmy3/Mz9ZsYTiA+IvTCwyCbRWUrvMTeOWg=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=XCSoOX7+qd0hTsKT5E44LzCwxhYBrifdK2aZAP+aS3g3Jkr2lirTl4yXlsasbfpV1
+         0NIqKavfSaGn/V+8EA0FmH3rpG5eBR/UWn8HJbjnpvWY/crHolu/n65SJNszrhRk/+
+         9oJBMq6EJweWntk3gTnGz6NKGowoEF6BTLyFOvshwr+/a6sIqEhABPUf9OMcEQ8S2i
+         2nN5ebs9M1/7a8fUFX/ceCS9JoCRZostRS311xpHia8fHEwiagVGDzFUtNTTX0BZVm
+         3B09zc7XiTN3lI4OUQBhZGBiDzvcF6LIjC7fbXiQgdcoSqlLaiD8WW69Sx6NzYQLuR
+         v2gUjE0842asw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH AUTOSEL 5.12 42/43] powerpc/fsl: set
+ fsl,i2c-erratum-a004447 flag for P2041 i2c controllers
+In-Reply-To: <20210603170734.3168284-42-sashal@kernel.org>
+References: <20210603170734.3168284-1-sashal@kernel.org>
+ <20210603170734.3168284-42-sashal@kernel.org>
+Date:   Fri, 04 Jun 2021 10:42:15 +1000
+Message-ID: <87y2bqfok8.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210603220834.1949988-1-jaegeuk@kernel.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 03:08:34PM -0700, Jaegeuk Kim wrote:
-> Let's create /sys/fs/f2fs/<disk>/feature_list/ to meet sysfs rule.
-> 
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Sasha Levin <sashal@kernel.org> writes:
+> From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+>
+> [ Upstream commit 7adc7b225cddcfd0f346d10144fd7a3d3d9f9ea7 ]
+>
+> The i2c controllers on the P2040/P2041 have an erratum where the
+> documented scheme for i2c bus recovery will not work (A-004447). A
+> different mechanism is needed which is documented in the P2040 Chip
+> Errata Rev Q (latest available at the time of writing).
+>
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+> Signed-off-by: Wolfram Sang <wsa@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 > ---
->  Documentation/ABI/testing/sysfs-fs-f2fs |  18 ++-
->  fs/f2fs/f2fs.h                          |   3 +
->  fs/f2fs/sysfs.c                         | 152 +++++++++++++++++++++++-
->  3 files changed, 168 insertions(+), 5 deletions(-)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
-> index 5088281e312e..43b2cde80b70 100644
-> --- a/Documentation/ABI/testing/sysfs-fs-f2fs
-> +++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-> @@ -203,7 +203,23 @@ Description:	Shows total written kbytes issued to disk.
->  What:		/sys/fs/f2fs/<disk>/features
->  Date:		July 2017
->  Contact:	"Jaegeuk Kim" <jaegeuk@kernel.org>
-> -Description:	Shows all enabled features in current device.
-> +Description:	<deprecated: should use /sys/fs/f2fs/<disk>/feature_list/
-> +		Shows all enabled features in current device.
-> +		Supported features:
-> +		encryption, blkzoned, extra_attr, projquota, inode_checksum,
-> +		flexible_inline_xattr, quota_ino, inode_crtime, lost_found,
-> +		verity, sb_checksum, casefold, readonly, compression,
-> +		encrypted_casefold, pin_file.
+>  arch/powerpc/boot/dts/fsl/p2041si-post.dtsi | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
 
-Isn't pin_file a feature of the implementation, not of a particular filesystem
-instance?  I.e. something that should go in /sys/fs/f2fs/features/, not here.
+This patch (and the subsequent one), just set a flag in the device tree.
 
-Likewise for encrypted_casefold, as it is implied by encryption && casefold.
+They have no effect unless you also backport the code change that looks
+for that flag, which was upstream commit:
 
-> +
-> +What:		/sys/fs/f2fs/<disk>/feature_list/
-> +Date:		June 2021
-> +Contact:	"Jaegeuk Kim" <jaegeuk@kernel.org>
-> +Description:	Expand /sys/fs/f2fs/<disk>/features to meet sysfs rule.
-> +		Supported features:
-> +		encryption, block_zoned, extra_attr, projquota, inode_checksum,
-> +		flexible_inline_xattr, quota_ino, inode_crtime, lost_found,
-> +		verity, sb_checksum, casefold, readonly, compression,
-> +		encrypted_casefold, pin_file.
+  8f0cdec8b5fd ("i2c: mpc: implement erratum A-004447 workaround")
 
-Is it intentional that the file has "blkzoned" but the directory has
-"blk_zoned"?
+AFAICS you haven't picked that one up for any of the stable trees.
 
-Also, your code has another difference -- "project_quota" is used instead of
-"projquota".  But that's not mentioned above.
+I'll defer to Chris & Wolfram on whether it's a good idea to take the
+code change for stable.
 
-And encrypted_casefold and pin_file don't seem appropriate to include here, as
-mentioned above.
+I guess it's harmless to pick these two patches, but it's also
+pointless. So I think you either want to take all three, or drop these
+two.
 
-> @@ -1665,6 +1665,9 @@ struct f2fs_sb_info {
->  	struct kobject s_stat_kobj;		/* /sys/fs/f2fs/<devname>/stat */
->  	struct completion s_stat_kobj_unregister;
+cheers
+
+> diff --git a/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi b/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi
+> index 872e4485dc3f..ddc018d42252 100644
+> --- a/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi
+> +++ b/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi
+> @@ -371,7 +371,23 @@ sdhc@114000 {
+>  	};
 >  
-> +	struct kobject s_disk_feat_kobj;		/* /sys/fs/f2fs/<devname>/feature_list */
-> +	struct completion s_disk_feat_kobj_unregister;
-
-This is for a particular filesystem instance, not a disk per se.  (A f2fs
-filesystem can use multiple disks.)  So having "disk" in the name doesn't make
-sense.
-
-Please use more logical names like s_feature_list_kobj,
-f2fs_sb_feature_list_ktype, f2fs_sb_feat_attrs, etc.
-
->  static ssize_t f2fs_feature_show(struct f2fs_attr *a,
->  		struct f2fs_sb_info *sbi, char *buf)
->  {
-> +	unsigned long feat_supp = 0;
+>  /include/ "qoriq-i2c-0.dtsi"
+> +	i2c@118000 {
+> +		fsl,i2c-erratum-a004447;
+> +	};
 > +
->  	switch (a->id) {
->  	case FEAT_CRYPTO:
-> +		feat_supp |= f2fs_sb_has_encrypt(sbi) ?
-> +					(1 << FEAT_CRYPTO) : 0;
-> +		fallthrough;
->  	case FEAT_BLKZONED:
-> -	case FEAT_ATOMIC_WRITE:
-> +		feat_supp |= f2fs_sb_has_blkzoned(sbi) ?
-> +					(1 << FEAT_BLKZONED) : 0;
-> +		fallthrough;
->  	case FEAT_EXTRA_ATTR:
-> +		feat_supp |= f2fs_sb_has_extra_attr(sbi) ?
-> +					(1 << FEAT_EXTRA_ATTR) : 0;
-> +		fallthrough;
->  	case FEAT_PROJECT_QUOTA:
-> +		feat_supp |= f2fs_sb_has_project_quota(sbi) ?
-> +					(1 << FEAT_PROJECT_QUOTA) : 0;
-> +		fallthrough;
->  	case FEAT_INODE_CHECKSUM:
-> +		feat_supp |= f2fs_sb_has_inode_chksum(sbi) ?
-> +					(1 << FEAT_INODE_CHECKSUM) : 0;
-> +		fallthrough;
->  	case FEAT_FLEXIBLE_INLINE_XATTR:
-> +		feat_supp |= f2fs_sb_has_flexible_inline_xattr(sbi) ?
-> +					(1 << FEAT_FLEXIBLE_INLINE_XATTR) : 0;
-> +		fallthrough;
->  	case FEAT_QUOTA_INO:
-> +		feat_supp |= f2fs_sb_has_quota_ino(sbi) ?
-> +					(1 << FEAT_QUOTA_INO) : 0;
-> +		fallthrough;
->  	case FEAT_INODE_CRTIME:
-> +		feat_supp |= f2fs_sb_has_inode_crtime(sbi) ?
-> +					(1 << FEAT_INODE_CRTIME) : 0;
-> +		fallthrough;
->  	case FEAT_LOST_FOUND:
-> +		feat_supp |= f2fs_sb_has_lost_found(sbi) ?
-> +					(1 << FEAT_LOST_FOUND) : 0;
-> +		fallthrough;
->  	case FEAT_VERITY:
-> +		feat_supp |= f2fs_sb_has_verity(sbi) ?
-> +					(1 << FEAT_VERITY) : 0;
-> +		fallthrough;
->  	case FEAT_SB_CHECKSUM:
-> +		feat_supp |= f2fs_sb_has_sb_chksum(sbi) ?
-> +					(1 << FEAT_SB_CHECKSUM) : 0;
-> +		fallthrough;
->  	case FEAT_CASEFOLD:
-> +		feat_supp |= f2fs_sb_has_casefold(sbi) ?
-> +					(1 << FEAT_CASEFOLD) : 0;
-> +		fallthrough;
->  	case FEAT_COMPRESSION:
-> +		feat_supp |= f2fs_sb_has_compression(sbi) ?
-> +					(1 << FEAT_COMPRESSION) : 0;
-> +		fallthrough;
->  	case FEAT_RO:
-> -	case FEAT_TEST_DUMMY_ENCRYPTION_V2:
-> +		feat_supp |= f2fs_sb_has_readonly(sbi) ?
-> +					(1 << FEAT_RO) : 0;
-> +		fallthrough;
->  	case FEAT_ENCRYPTED_CASEFOLD:
-> -		return sprintf(buf, "supported\n");
-> +		feat_supp |= (f2fs_sb_has_casefold(sbi) &&
-> +				f2fs_sb_has_encrypt(sbi)) ?
-> +					(1 << FEAT_ENCRYPTED_CASEFOLD) : 0;
-> +		fallthrough;
-> +	case FEAT_PIN_FILE:
-> +		feat_supp |= (1 << FEAT_PIN_FILE);
-> +		fallthrough;
-> +	case FEAT_TEST_DUMMY_ENCRYPTION_V2:
-> +	case FEAT_ATOMIC_WRITE:
-> +		if (!a->offset || feat_supp & (1 << a->id))
-> +			return sprintf(buf, "supported\n");
->  	}
-> -	return 0;
-> +	return sprintf(buf, "not supported\n");
->  }
-
-This function doesn't make much sense.
-
-Part of the problem is that the same function is handling both
-/sys/fs/f2fs/features/ and /sys/fs/f2fs/$s_id/feature_list/.
-
-All the former needs is to print "supported", since unsupported is indicated by
-the file not being there at all.  So it should simply have its own ->show
-function separate from the one for feature_list/.
-
-And the feature_list/ ones could just store the F2FS_FEATURE_* bit in
-f2fs_attr::id and check for it using F2FS_HAS_FEATURE().  That would be much
-simpler -- no need for the feat_id enum or the long switch statement.
-
-Also for feature_list/ it might be better to use "unsupported" than
-"not supported", so that \<supported\> doesn't match...
-
->  static struct f2fs_attr f2fs_attr_##_name = {			\
->  	.attr = {.name = __stringify(_name), .mode = 0444 },	\
->  	.show	= f2fs_feature_show,				\
-> +	.offset	= 0,						\
->  	.id	= _id,						\
->  }
-
-There's no need to use the .offset argument if features/ and $s_id/feature_list/
-just used different ->show functions.
-
-> +#define F2FS_DISK_FEATURE_RO_ATTR(_name, _id)			\
-
-F2FS_SB_FEATURE_ATTR would be a much better name, since these pertain to a
-filesystem instance (not necessarily a disk), and all the feature attributes are
-read-only.
-
->  static int __maybe_unused segment_info_seq_show(struct seq_file *seq,
->  						void *offset)
->  {
-> @@ -1149,6 +1279,15 @@ int f2fs_register_sysfs(struct f2fs_sb_info *sbi)
->  	if (err)
->  		goto put_stat_kobj;
->  
-> +	sbi->s_disk_feat_kobj.kset = &f2fs_kset;
-> +	init_completion(&sbi->s_disk_feat_kobj_unregister);
-> +	err = kobject_init_and_add(&sbi->s_disk_feat_kobj,
-> +						&f2fs_disk_feat_ktype,
-> +						&sbi->s_kobj, "feature_list");
-> +	if (err)
-> +		goto put_stat_kobj;
+> +	i2c@118100 {
+> +		fsl,i2c-erratum-a004447;
+> +	};
 > +
+>  /include/ "qoriq-i2c-1.dtsi"
+> +	i2c@119000 {
+> +		fsl,i2c-erratum-a004447;
+> +	};
 > +
->  	if (f2fs_proc_root)
->  		sbi->s_proc = proc_mkdir(sb->s_id, f2fs_proc_root);
->  
-> @@ -1166,6 +1305,8 @@ int f2fs_register_sysfs(struct f2fs_sb_info *sbi)
->  put_stat_kobj:
->  	kobject_put(&sbi->s_stat_kobj);
->  	wait_for_completion(&sbi->s_stat_kobj_unregister);
-> +	kobject_put(&sbi->s_disk_feat_kobj);
-> +	wait_for_completion(&sbi->s_disk_feat_kobj_unregister);
-
-It seems this should go to its own label.
-
-Also, please note that it's very easy to get confused between
-/sys/fs/f2fs/features/, /sys/fs/f2fs/$s_id/features, and
-/sys/fs/f2fs/$s_id/feature_list/.  Adding some comments could clarify things a
-lot.
-
-- Eric
+> +	i2c@119100 {
+> +		fsl,i2c-erratum-a004447;
+> +	};
+> +
+>  /include/ "qoriq-duart-0.dtsi"
+>  /include/ "qoriq-duart-1.dtsi"
+>  /include/ "qoriq-gpio-0.dtsi"
+> -- 
+> 2.30.2
