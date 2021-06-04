@@ -2,91 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5EC239B950
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6160139B955
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbhFDNBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 09:01:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbhFDNBr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 09:01:47 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F21AC06174A
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 06:00:00 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:f130:bbcb:eb08:8a92])
-        by michel.telenet-ops.be with bizsmtp
-        id D0zr2500K2NEgeT060zrLR; Fri, 04 Jun 2021 14:59:58 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lp9QV-00Cebz-6V; Fri, 04 Jun 2021 14:59:51 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lp9QU-001tMr-Ga; Fri, 04 Jun 2021 14:59:50 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Takeshi Saito <takeshi.saito.xv@renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] mmc: renesas_sdhi: Fix HS400 on R-Car M3-W+
-Date:   Fri,  4 Jun 2021 14:59:43 +0200
-Message-Id: <ee8af5d631f5331139ffea714539030d97352e93.1622811525.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        id S230260AbhFDNBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 09:01:51 -0400
+Received: from mga09.intel.com ([134.134.136.24]:2251 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230004AbhFDNBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 09:01:49 -0400
+IronPort-SDR: dxEaBNlq/GraAQ0w88gtMxbv0XmJeHKq/OScZamIV3AGQZ8KmdaMHHr5S43lcWcKOpi2m4cO4e
+ 0xpupnv3FKnQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="204262151"
+X-IronPort-AV: E=Sophos;i="5.83,248,1616482800"; 
+   d="scan'208";a="204262151"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2021 06:00:01 -0700
+IronPort-SDR: PepRvi61ClRrtWbdje6TMu8DIx4w/IYZ2HzVULGz6JGViajMkEJ8nFDoDeG6SQ3oRFBUjnif/K
+ 1Nfn43rfnjHg==
+X-IronPort-AV: E=Sophos;i="5.83,248,1616482800"; 
+   d="scan'208";a="551153872"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2021 05:59:57 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lp9QY-00HE3g-Ej; Fri, 04 Jun 2021 15:59:54 +0300
+Date:   Fri, 4 Jun 2021 15:59:54 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, devel@acpica.org,
+        Len Brown <lenb@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        laurent.pinchart@ideasonboard.com, kieran.bingham@ideasonboard.com
+Subject: Re: [PATCH v5 3/6] gpiolib: acpi: Export acpi_get_gpiod()
+Message-ID: <YLojymirRB5HpFQY@smile.fi.intel.com>
+References: <20210603224007.120560-1-djrscally@gmail.com>
+ <20210603224007.120560-4-djrscally@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210603224007.120560-4-djrscally@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-R-Car M3-W ES3.0 is marketed as R-Car M3-W+ (R8A77961), and has its own
-compatible value "renesas,r8a77961".
+On Thu, Jun 03, 2021 at 11:40:04PM +0100, Daniel Scally wrote:
+> We need to be able to translate GPIO resources in an ACPI device's _CRS
+> into GPIO descriptor array. Those are represented in _CRS as a pathname
+> to a GPIO device plus the pin's index number: the acpi_get_gpiod()
+> function is perfect for that purpose.
+> 
+> As it's currently only used internally within the GPIO layer, provide and
+> export a wrapper function that additionally holds a reference to the GPIO
+> device.
 
-Hence using soc_device_match() with soc_id = "r8a7796" and revision =
-"ES3.*" does not actually match running on an R-Car M3-W+ SoC.
+The subject is wrong, it should be "Introduce acpi_get_and_request_gpiod()
+helper" or so. I can fix when applying.
 
-Fix this by matching with soc_id = "r8a77961" instead.
+Btw, do I understand correctly that I may push GPIO ACPI patches independently
+(of the ACPI changes)?
 
-Fixes: a38c078fea0b1393 ("mmc: renesas_sdhi: Avoid bad TAP in HS400")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-Boot-tested on Salvator-XS with R-Car M3-W+ ES3.0.
-No difference seen in eMMC/SHHC detection:
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+> ---
+> Changes since v4:
+> 	- None
+> 
+>  drivers/gpio/gpiolib-acpi.c   | 28 ++++++++++++++++++++++++++++
+>  include/linux/gpio/consumer.h |  2 ++
+>  2 files changed, 30 insertions(+)
+> 
+> diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
+> index 5b4111e4be3f..684ddb35d83b 100644
+> --- a/drivers/gpio/gpiolib-acpi.c
+> +++ b/drivers/gpio/gpiolib-acpi.c
+> @@ -128,6 +128,34 @@ static struct gpio_desc *acpi_get_gpiod(char *path, int pin)
+>  	return gpiochip_get_desc(chip, pin);
+>  }
+>  
+> +/**
+> + * acpi_get_and_request_gpiod() - Translate ACPI GPIO pin to GPIO descriptor
+> + *                               and hold a refcount to the GPIO device.
+> + * @path:      ACPI GPIO controller full path name, (e.g. "\\_SB.GPO1")
+> + * @pin:       ACPI GPIO pin number (0-based, controller-relative)
+> + * @label:     Label to pass to gpiod_request()
+> + *
+> + * This function is a simple pass-through to acpi_get_gpiod(), except that
+> + * as it is intended for use outside of the GPIO layer (in a similar fashion to
+> + * gpiod_get_index() for example) it also holds a reference to the GPIO device.
+> + */
+> +struct gpio_desc *acpi_get_and_request_gpiod(char *path, int pin, char *label)
+> +{
+> +	struct gpio_desc *gpio;
+> +	int ret;
+> +
+> +	gpio = acpi_get_gpiod(path, pin);
+> +	if (IS_ERR(gpio))
+> +		return gpio;
+> +
+> +	ret = gpiod_request(gpio, label);
+> +	if (ret)
+> +		return ERR_PTR(ret);
+> +
+> +	return gpio;
+> +}
+> +EXPORT_SYMBOL_GPL(acpi_get_and_request_gpiod);
+> +
+>  static irqreturn_t acpi_gpio_irq_handler(int irq, void *data)
+>  {
+>  	struct acpi_gpio_event *event = data;
+> diff --git a/include/linux/gpio/consumer.h b/include/linux/gpio/consumer.h
+> index c73b25bc9213..566feb56601f 100644
+> --- a/include/linux/gpio/consumer.h
+> +++ b/include/linux/gpio/consumer.h
+> @@ -692,6 +692,8 @@ int devm_acpi_dev_add_driver_gpios(struct device *dev,
+>  				   const struct acpi_gpio_mapping *gpios);
+>  void devm_acpi_dev_remove_driver_gpios(struct device *dev);
+>  
+> +struct gpio_desc *acpi_get_and_request_gpiod(char *path, int pin, char *label);
+> +
+>  #else  /* CONFIG_GPIOLIB && CONFIG_ACPI */
+>  
+>  struct acpi_device;
+> -- 
+> 2.25.1
+> 
 
-    mmc0: new HS400 MMC card at address 0001
-    mmcblk0: mmc0:0001 BGSD4R 29.1 GiB
-    mmcblk0boot0: mmc0:0001 BGSD4R 31.9 MiB
-    mmcblk0boot1: mmc0:0001 BGSD4R 31.9 MiB
-    mmcblk0rpmb: mmc0:0001 BGSD4R 4.00 MiB, chardev (247:0)
-     mmcblk0: p1
-    mmc1: new ultra high speed SDR104 SDHC card at address aaaa
-    mmcblk1: mmc1:aaaa SL16G 14.8 GiB
-     mmcblk1: p1
-    mmc2: new ultra high speed SDR104 SDHC card at address aaaa
-    mmcblk2: mmc2:aaaa SL32G 29.7 GiB
-     mmcblk2: p1
----
- drivers/mmc/host/renesas_sdhi_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mmc/host/renesas_sdhi_core.c b/drivers/mmc/host/renesas_sdhi_core.c
-index 635bf31a67359f10..b719eda6b8619453 100644
---- a/drivers/mmc/host/renesas_sdhi_core.c
-+++ b/drivers/mmc/host/renesas_sdhi_core.c
-@@ -939,7 +939,7 @@ static const struct soc_device_attribute sdhi_quirks_match[]  = {
- 	{ .soc_id = "r8a7795", .revision = "ES3.*", .data = &sdhi_quirks_bad_taps2367 },
- 	{ .soc_id = "r8a7796", .revision = "ES1.[012]", .data = &sdhi_quirks_4tap_nohs400 },
- 	{ .soc_id = "r8a7796", .revision = "ES1.*", .data = &sdhi_quirks_r8a7796_es13 },
--	{ .soc_id = "r8a7796", .revision = "ES3.*", .data = &sdhi_quirks_bad_taps1357 },
-+	{ .soc_id = "r8a77961", .data = &sdhi_quirks_bad_taps1357 },
- 	{ .soc_id = "r8a77965", .data = &sdhi_quirks_r8a77965 },
- 	{ .soc_id = "r8a77980", .data = &sdhi_quirks_nohs400 },
- 	{ .soc_id = "r8a77990", .data = &sdhi_quirks_r8a77990 },
 -- 
-2.25.1
+With Best Regards,
+Andy Shevchenko
+
 
