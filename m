@@ -2,184 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E6139BD22
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C58AC39BD1F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbhFDQcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 12:32:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbhFDQb6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 12:31:58 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73DDFC061766;
-        Fri,  4 Jun 2021 09:29:59 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id t10-20020a05683022eab0290304ed8bc759so9588155otc.12;
-        Fri, 04 Jun 2021 09:29:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=n5M/DfERH8t5HzVCATPHHQq5YkPCR7JWwjW1C7938Ek=;
-        b=r8e7AHkhVs3q6ptTJraSRSvdlEymC1H8STjBRCNlJtQbn1Ff2OzVFbXNqTElXLYQla
-         f4nSAvkwOjmchzUlBwGB9rcFtIxXaG4JCqjPjF3FvG8THsRwqiYOwYuCFxsauaQUn4oe
-         u7RDYW5anR0QICQFMvt+E/WgHaaNlHeUniMSpCbtfHJ+HRcXY5uUTCOGVI1ROxG0Y7/9
-         SzxrejSBTmOjQM59847KqgeTydrRKiOlKPArwNB3WV+mqs7omaswayIM9HY/cmAYGPlX
-         hdddw4KYDOksNcJ6d/ux9cHpLB84dlJRvvLmLH7a6Em79SCq6Xn/Ceayng3Z6Ni5edD8
-         F9Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=n5M/DfERH8t5HzVCATPHHQq5YkPCR7JWwjW1C7938Ek=;
-        b=UnHxrxqivGMEHXPNH7JshqfHLXhfDN2862IxHi5LK3XAuTHP7GYq+WfSt2TmQtePmD
-         bNlsKsCiUdBppt2xNqXUOKKlirKCdy0yVmiXzbYx2+aq4GCUNjx5bvmKzEitL7f1mNmB
-         f6qgJJA7Jq6Px5/+SVExW+tH5lJXPAPPF3Loij7dtHMGYIb9aqqYQw/2Y/M/aBb0Lomo
-         +PAUC8+Yyboow0fjcREhl/mArnjpXqWOR6uA5ttpbp0UotYaPWJv/40+IOT41tIh4bR+
-         tPOPSDsGQRj664NWprcJiMCI14lszymDu/Em4V5xTkILaEn9zfGLEqAcpU58CGa27acM
-         jaAw==
-X-Gm-Message-State: AOAM530NPCptAYSNDCOv9rPNwxBo25kmpmFi1YawE/rf5KL3xwPyNYiu
-        RiyEgY7mZE4jQkMsPvl6mdTCP7RVXh1q
-X-Google-Smtp-Source: ABdhPJxDTNEVN56MzFznX3IiUYsBWct3H6zWwxBdShh9QHEeKypiQ+y/mJB+qADhmba3jaJ+l7qryg==
-X-Received: by 2002:a9d:2287:: with SMTP id y7mr4238435ota.22.1622824198164;
-        Fri, 04 Jun 2021 09:29:58 -0700 (PDT)
-Received: from threadripper.novatech-llc.local ([216.21.169.52])
-        by smtp.gmail.com with ESMTPSA id x10sm568913otp.39.2021.06.04.09.29.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 04 Jun 2021 09:29:57 -0700 (PDT)
-From:   George McCollister <george.mccollister@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     George McCollister <george.mccollister@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next] net: dsa: xrs700x: allow HSR/PRP supervision dupes for node_table
-Date:   Fri,  4 Jun 2021 11:29:22 -0500
-Message-Id: <20210604162922.76954-1-george.mccollister@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        id S230128AbhFDQb2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Jun 2021 12:31:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48574 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229675AbhFDQb1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 12:31:27 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C0348610A8;
+        Fri,  4 Jun 2021 16:29:40 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lpChW-005WHH-Ru; Fri, 04 Jun 2021 17:29:39 +0100
+Date:   Fri, 04 Jun 2021 17:29:36 +0100
+Message-ID: <87o8clzj7z.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>,
+        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 12/42] PCI: aardvark: Check for virq mapping when processing INTx IRQ
+In-Reply-To: <20210604162451.lzumwctjj6yoigey@pali>
+References: <20210506153153.30454-1-pali@kernel.org>
+        <20210506153153.30454-13-pali@kernel.org>
+        <87h7jeq4zo.wl-maz@kernel.org>
+        <20210604162451.lzumwctjj6yoigey@pali>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: pali@kernel.org, lorenzo.pieralisi@arm.com, thomas.petazzoni@bootlin.com, robh@kernel.org, bhelgaas@google.com, rmk+kernel@armlinux.org.uk, kabel@kernel.org, repk@triplefau.lt, contact@xogium.me, tmn505@gmail.com, linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an inbound policy filter which matches the HSR/PRP supervision
-MAC range and forwards to the CPU port without discarding duplicates.
-This is required to correctly populate time_in[A] and time_in[B] in the
-HSR/PRP node_table. Leave the policy disabled by default and
-enable/disable it when joining/leaving hsr.
+On Fri, 04 Jun 2021 17:24:51 +0100,
+Pali Rohár <pali@kernel.org> wrote:
+> 
+> On Friday 07 May 2021 10:15:39 Marc Zyngier wrote:
+> > On Thu, 06 May 2021 16:31:23 +0100,
+> > Pali Rohár <pali@kernel.org> wrote:
+> > > 
+> > > It is possible that we receive spurious INTx interrupt. So add needed check
+> > > before calling generic_handle_irq() function.
+> > > 
+> > > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > > Reviewed-by: Marek Behún <kabel@kernel.org>
+> > > Cc: stable@vger.kernel.org
+> > > ---
+> > >  drivers/pci/controller/pci-aardvark.c | 5 ++++-
+> > >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
+> > > index 362faddae935..e7089db11f79 100644
+> > > --- a/drivers/pci/controller/pci-aardvark.c
+> > > +++ b/drivers/pci/controller/pci-aardvark.c
+> > > @@ -1106,7 +1106,10 @@ static void advk_pcie_handle_int(struct advk_pcie *pcie)
+> > >  			    PCIE_ISR1_REG);
+> > >  
+> > >  		virq = irq_find_mapping(pcie->irq_domain, i);
+> > > -		generic_handle_irq(virq);
+> > > +		if (virq)
+> > > +			generic_handle_irq(virq);
+> > > +		else
+> > > +			dev_err(&pcie->pdev->dev, "unexpected INT%c IRQ\n", (char)i+'A');
+> > 
+> > Please don't scream like this. This is the best way to get into a DoS
+> > situation if you interrupt rate is high enough. At least rate-limit
+> > it.
+> 
+> Ok, I will fix it!
+> 
+> Just to note that this code pattern is used also in other drivers.
+> So other drivers should fixed too...
 
-Signed-off-by: George McCollister <george.mccollister@gmail.com>
----
- drivers/net/dsa/xrs700x/xrs700x.c | 67 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 67 insertions(+)
+"We should fix the kernel" is a common theme. Please go ahead.
 
-diff --git a/drivers/net/dsa/xrs700x/xrs700x.c b/drivers/net/dsa/xrs700x/xrs700x.c
-index fde6e99274b6..a79066174a77 100644
---- a/drivers/net/dsa/xrs700x/xrs700x.c
-+++ b/drivers/net/dsa/xrs700x/xrs700x.c
-@@ -79,6 +79,9 @@ static const struct xrs700x_mib xrs700x_mibs[] = {
- 	XRS700X_MIB(XRS_EARLY_DROP_L, "early_drop", tx_dropped),
- };
- 
-+static const u8 eth_hsrsup_addr[ETH_ALEN] = {
-+	0x01, 0x15, 0x4e, 0x00, 0x01, 0x00};
-+
- static void xrs700x_get_strings(struct dsa_switch *ds, int port,
- 				u32 stringset, u8 *data)
- {
-@@ -329,6 +332,50 @@ static int xrs700x_port_add_bpdu_ipf(struct dsa_switch *ds, int port)
- 	return 0;
- }
- 
-+/* Add an inbound policy filter which matches the HSR/PRP supervision MAC
-+ * range and forwards to the CPU port without discarding duplicates.
-+ * This is required to correctly populate the HSR/PRP node_table.
-+ * Leave the policy disabled, it will be enabled as needed.
-+ */
-+static int xrs700x_port_add_hsrsup_ipf(struct dsa_switch *ds, int port)
-+{
-+	struct xrs700x *priv = ds->priv;
-+	unsigned int val = 0;
-+	int i = 0;
-+	int ret;
-+
-+	/* Compare 40 bits of the destination MAC address. */
-+	ret = regmap_write(priv->regmap, XRS_ETH_ADDR_CFG(port, 1), 40 << 2);
-+	if (ret)
-+		return ret;
-+
-+	/* match HSR/PRP supervision destination 01:15:4e:00:01:XX */
-+	for (i = 0; i < sizeof(eth_hsrsup_addr); i += 2) {
-+		ret = regmap_write(priv->regmap, XRS_ETH_ADDR_0(port, 1) + i,
-+				   eth_hsrsup_addr[i] |
-+				   (eth_hsrsup_addr[i + 1] << 8));
-+		if (ret)
-+			return ret;
-+	}
-+
-+	/* Mirror HSR/PRP supervision to CPU port */
-+	for (i = 0; i < ds->num_ports; i++) {
-+		if (dsa_is_cpu_port(ds, i))
-+			val |= BIT(i);
-+	}
-+
-+	ret = regmap_write(priv->regmap, XRS_ETH_ADDR_FWD_MIRROR(port, 1), val);
-+	if (ret)
-+		return ret;
-+
-+	/* Allow must be set prevent duplicate discard */
-+	ret = regmap_write(priv->regmap, XRS_ETH_ADDR_FWD_ALLOW(port, 1), val);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
- static int xrs700x_port_setup(struct dsa_switch *ds, int port)
- {
- 	bool cpu_port = dsa_is_cpu_port(ds, port);
-@@ -358,6 +405,10 @@ static int xrs700x_port_setup(struct dsa_switch *ds, int port)
- 		ret = xrs700x_port_add_bpdu_ipf(ds, port);
- 		if (ret)
- 			return ret;
-+
-+		ret = xrs700x_port_add_hsrsup_ipf(ds, port);
-+		if (ret)
-+			return ret;
- 	}
- 
- 	return 0;
-@@ -565,6 +616,14 @@ static int xrs700x_hsr_join(struct dsa_switch *ds, int port,
- 			    XRS_PORT_FORWARDING);
- 	regmap_fields_write(priv->ps_forward, port, XRS_PORT_FORWARDING);
- 
-+	/* Enable inbound policy added by xrs700x_port_add_hsrsup_ipf()
-+	 * which allows HSR/PRP supervision forwarding to the CPU port without
-+	 * discarding duplicates.
-+	 */
-+	regmap_update_bits(priv->regmap,
-+			   XRS_ETH_ADDR_CFG(partner->index, 1), 1, 1);
-+	regmap_update_bits(priv->regmap, XRS_ETH_ADDR_CFG(port, 1), 1, 1);
-+
- 	hsr_pair[0] = port;
- 	hsr_pair[1] = partner->index;
- 	for (i = 0; i < ARRAY_SIZE(hsr_pair); i++) {
-@@ -611,6 +670,14 @@ static int xrs700x_hsr_leave(struct dsa_switch *ds, int port,
- 			    XRS_PORT_FORWARDING);
- 	regmap_fields_write(priv->ps_forward, port, XRS_PORT_FORWARDING);
- 
-+	/* Disable inbound policy added by xrs700x_port_add_hsrsup_ipf()
-+	 * which allows HSR/PRP supervision forwarding to the CPU port without
-+	 * discarding duplicates.
-+	 */
-+	regmap_update_bits(priv->regmap,
-+			   XRS_ETH_ADDR_CFG(partner->index, 1), 1, 0);
-+	regmap_update_bits(priv->regmap, XRS_ETH_ADDR_CFG(port, 1), 1, 0);
-+
- 	hsr_pair[0] = port;
- 	hsr_pair[1] = partner->index;
- 	for (i = 0; i < ARRAY_SIZE(hsr_pair); i++) {
+	M.
+
 -- 
-2.11.0
-
+Without deviation from the norm, progress is not possible.
