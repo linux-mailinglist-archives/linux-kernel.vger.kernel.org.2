@@ -2,96 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1C139BD74
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A33939BD86
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbhFDQpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 12:45:18 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:34988 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbhFDQpQ (ORCPT
+        id S230475AbhFDQrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 12:47:21 -0400
+Received: from mail-pg1-f178.google.com ([209.85.215.178]:45958 "EHLO
+        mail-pg1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229963AbhFDQrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 12:45:16 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 154GhMPJ093166;
-        Fri, 4 Jun 2021 11:43:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1622825002;
-        bh=Q4fwlcTV+UfFIP59ocRNpSmIcNZ5COysLR/B5UGpX4k=;
-        h=From:To:CC:Subject:Date;
-        b=ngl/+cP/qNlvOAw0foSGXmWi6kElTKqi0nwhpVdinw48DAvEz2UjOZuV7cnD6gFq0
-         +8Wg8H3IzUDFnBdxj8XGe4rGjlO2VfiIE5sODtPJkmx56ONJ05R8AxCwHcdPbIahr3
-         AIdFDOR1Vn695VgtMJARn6+pkt1CimKySFqSFvxc=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 154GhMcB047238
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 4 Jun 2021 11:43:22 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 4 Jun
- 2021 11:43:21 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 4 Jun 2021 11:43:21 -0500
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 154GhCtf063841;
-        Fri, 4 Jun 2021 11:43:14 -0500
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     Lokesh Vutla <lokeshvutla@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Suman Anna <s-anna@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] arm64: dts: ti: k3-am64-main: Update the location of ATF in SRAM and increase its max size
-Date:   Fri, 4 Jun 2021 22:13:08 +0530
-Message-ID: <20210604164308.16693-1-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 4 Jun 2021 12:47:21 -0400
+Received: by mail-pg1-f178.google.com with SMTP id q15so8306734pgg.12
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 09:45:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kZ1ty6Q2/qYPYXmHUvpObsq2hl1IWLrGEYr/5Ax9090=;
+        b=H9epVpfIO4mAVOzRFo/F/i35XhuYbNYKogMwm+dYceP3QBbYTKvotZ5mcX0W7MSkKy
+         w8NbNL+/J4C18pZc4mmRGu4C/cBV1rYLPk0kFOpjgQMTsnlSjT87wYf3w7MsGl9EenUd
+         LE1jrd9Vxg7c57AJxmqCW7+XK8wrs3AvN+hNw3NjFbGHUAxf5kVojQgoWscjJm7UbHvH
+         5pk8486fVe23rC010kSKHWXevxIb1NHM7ixmnLXRpUaU7SDJqMRvzVCo6Gfc4bIwlMgt
+         GVp05eMCBdwDYdOgtrSefYNlMlmbcXl6mSkeatC+6sK4kyhLhXK7minxOwPOk+hvKMkp
+         Doxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kZ1ty6Q2/qYPYXmHUvpObsq2hl1IWLrGEYr/5Ax9090=;
+        b=p24SfhFFY/D+DSUr5uMYRApV9EcCoLd10BtogV5mQIgZXcm65Zcj7HYbvYtLR4DtcF
+         GQRX/jZ67T67QXBMHE/8qM7bSH5kxB3g/Gyasn6mbvgHS7K0tRYZfOm54dCnIysgoWrA
+         ROJdzAydkfE9Q7uJS/SXZ4vZOPmUGmtb35OdQneovB38FvqmXeAOJTtw/XhpLMQ6lKYO
+         x3wuILiWX+Cq1Kz0uNFqB/xvWem+QKlH5JfTuU7GWmgCh1foGZYeLlUPJT3Q9OWhCyde
+         7PyHqSgd9R2FXHu15wSGxU5Ac2/BsMk/XCl/3ez9mqdNZ8dcBLV8jWgEifmMgsywsAP1
+         TPVw==
+X-Gm-Message-State: AOAM532EG0O3wDwuvvoFpWrIxG/n6nrH19Rg+uXry11ReDY+KmU6wmTj
+        yA3EmyoKoJR0m98T+2jImKtAfw==
+X-Google-Smtp-Source: ABdhPJw9eyQ64MLHnCVxzeffHwskk+7VoqbzRZQBPYcFx5Qlj/+TdAdcrZETsLJ/v8RgpInOiBqPgA==
+X-Received: by 2002:a05:6a00:88a:b029:261:6d37:dac6 with SMTP id q10-20020a056a00088ab02902616d37dac6mr5514227pfj.18.1622825074441;
+        Fri, 04 Jun 2021 09:44:34 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id i2sm5034086pjj.25.2021.06.04.09.44.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 09:44:33 -0700 (PDT)
+Date:   Fri, 4 Jun 2021 16:44:29 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -v2] notifier: Return non-null when callback is already
+ registered
+Message-ID: <YLpYbQnswxZUB5sW@google.com>
+References: <20210604144102.13849-1-bp@alien8.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604144102.13849-1-bp@alien8.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Due to a limitation for USB DFU boot mode, SPL load address has to be less
-than  or equal to 0x70001000. So, load address of SPL and ATF have been
-moved to 0x70000000 and 0x701a0000 respectively.
+On Fri, Jun 04, 2021, Borislav Petkov wrote:
+> From: Borislav Petkov <bp@suse.de>
+>
+> The notifier registration routine doesn't return a proper error value
+> when a callback has already been registered, leading people to track
+> whether that regisration has happened at the call site:
+               ^^^^^^^^^^^
+               registration
+>
+>   https://lore.kernel.org/amd-gfx/20210512013058.6827-1-mukul.joshi@amd.com/
+>
+> Which is unnecessary.
 
-Also, the maximum size of ATF has been increased to 0x1c000 [1].
+The WARN is still going to make that "necessary", and the vast number of callers
+and variations that don't check the return value means that WARN isn't going
+anywhere for quite some time.  Returning an error code still makes sense, but
+the changelog is misleading in that it implies callers can blindly register
+without any repercussions.
 
-Therefore, update ATF's location and maximum size accordingly in the device
-tree file.
+> Return -EEXIST to signal that case so that callers can act accordingly.
+>
+> Signed-off-by: Borislav Petkov <bp@suse.de>
+> ---
+>  kernel/notifier.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/kernel/notifier.c b/kernel/notifier.c
+> index 1b019cbca594..5a31bc9b24b4 100644
+> --- a/kernel/notifier.c
+> +++ b/kernel/notifier.c
+> @@ -25,7 +25,7 @@ static int notifier_chain_register(struct notifier_block **nl,
+>       while ((*nl) != NULL) {
+>               if (unlikely((*nl) == n)) {
+>                       WARN(1, "double register detected");
+> -                     return 0;
+> +                     return -EEXIST;
 
-[1] - https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git/commit/?id=2fb5312f61a7de8b7a70e1639199c4f14a10b6f9
+Opportunistically squish the WARN into the if?
 
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
----
+                if (WARN((*nl) == n, "double register detected"))
+                        return -EEXIST;
 
-Link to corresponding U-Boot series that makes the ATF load address update,
-- https://patchwork.ozlabs.org/project/uboot/list/?series=247265
+>               }
+>               if (n->priority > (*nl)->priority)
+>                       break;
+> @@ -134,7 +134,7 @@ static int notifier_call_chain_robust(struct notifier_block **nl,
+>   *
+>   *	Adds a notifier to an atomic notifier chain.
+>   *
+> - *	Currently always returns zero.
+> + *	Returns 0 on success, !0 on error.
 
- arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Maybe explicitly call out %-EEXIST to be consistent with the unregister wrappers?
+Those are tightly coupled to the notifier_chain_unregister() behavior.
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-index ca59d1f711f8..7ae28992097f 100644
---- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-@@ -14,7 +14,7 @@
- 		ranges = <0x0 0x00 0x70000000 0x200000>;
- 
- 		atf-sram@0 {
--			reg = <0x0 0x1a000>;
-+			reg = <0x1a0000 0x1c000>;
- 		};
- 	};
- 
--- 
-2.17.1
+  Returns zero on success or %-ENOENT on failure.
 
+If that's unpalatable, it's probably a good idea to at least clarify that it
+returns a -errno, there's at least one call site that explicitly checks for a
+negative return value.
+
+  static int __init gic_clocksource_of_init(struct device_node *node)
+  {
+	...
+
+	ret = gic_clockevent_init();
+	if (!ret && !IS_ERR(clk)) {
+		if (clk_notifier_register(clk, &gic_clk_nb) < 0)  <-------
+			pr_warn("Unable to register clock notifier\n");
+	}
+
+>   */
+>  int atomic_notifier_chain_register(struct atomic_notifier_head *nh,
+>  		struct notifier_block *n)
