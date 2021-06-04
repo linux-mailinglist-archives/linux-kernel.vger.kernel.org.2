@@ -2,266 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901BC39B772
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A3239B775
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230162AbhFDLD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 07:03:59 -0400
-Received: from mga18.intel.com ([134.134.136.126]:48730 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230131AbhFDLD6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 07:03:58 -0400
-IronPort-SDR: IPvlmGRZT+0tUJe0W14kcfEKdKLcvg2w7Gm2zqeNXWeyNSUP3wWHOfEj7PEhBWd/xffkEOqkz/
- tP1xPW3UagBA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="191607395"
-X-IronPort-AV: E=Sophos;i="5.83,248,1616482800"; 
-   d="scan'208";a="191607395"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2021 04:02:11 -0700
-IronPort-SDR: u2Q4gU5El8EbkouVyxrjCbR/ZqRsaeMM2ZHfkIQnPzRYmW3/Q3/ytXdEfcXv+j6q8WmRY3GM0R
- gtqA5JwfobKA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,248,1616482800"; 
-   d="scan'208";a="448220401"
-Received: from mike-ilbpg1.png.intel.com ([10.88.227.76])
-  by fmsmga008.fm.intel.com with ESMTP; 04 Jun 2021 04:02:07 -0700
-From:   Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-To:     Jose.Abreu@synopsys.com, andrew@lunn.ch, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, kuba@kernel.org, netdev@vger.kernel.org,
-        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        davem@davemloft.net, mcoquelin.stm32@gmail.com,
-        weifeng.voon@intel.com, boon.leong.ong@intel.com,
-        tee.min.tan@intel.com, vee.khee.wong@linux.intel.com,
-        vee.khee.wong@intel.com, michael.wei.hong.sit@intel.com,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        vladimir.oltean@nxp.com
-Subject: [RESEND PATCH net-next v5 3/3] net: stmmac: enable Intel mGbE 2.5Gbps link speed
-Date:   Fri,  4 Jun 2021 18:57:33 +0800
-Message-Id: <20210604105733.31092-4-michael.wei.hong.sit@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210604105733.31092-1-michael.wei.hong.sit@intel.com>
-References: <20210604105733.31092-1-michael.wei.hong.sit@intel.com>
+        id S230193AbhFDLEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 07:04:11 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:33904 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230172AbhFDLEK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 07:04:10 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 9289B1F437F6
+Received: by earth.universe (Postfix, from userid 1000)
+        id 5E02B3C0C95; Fri,  4 Jun 2021 13:02:21 +0200 (CEST)
+Date:   Fri, 4 Jun 2021 13:02:21 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] power: reset/supply: add missing
+ MODULE_DEVICE_TABLE
+Message-ID: <20210604110221.ykclr6yxlw3nflug@earth.universe>
+References: <1620896701-53542-1-git-send-email-zou_wei@huawei.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kzwyopa6voscrg7y"
+Content-Disposition: inline
+In-Reply-To: <1620896701-53542-1-git-send-email-zou_wei@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Voon Weifeng <weifeng.voon@intel.com>
 
-The Intel mGbE supports 2.5Gbps link speed by increasing the clock rate by
-2.5 times of the original rate. In this mode, the serdes/PHY operates at a
-serial baud rate of 3.125 Gbps and the PCS data path and GMII interface of
-the MAC operate at 312.5 MHz instead of 125 MHz.
+--kzwyopa6voscrg7y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-For Intel mGbE, the overclocking of 2.5 times clock rate to support 2.5G is
-only able to be configured in the BIOS during boot time. Kernel driver has
-no access to modify the clock rate for 1Gbps/2.5G mode. The way to
-determined the current 1G/2.5G mode is by reading a dedicated adhoc
-register through mdio bus. In short, after the system boot up, it is either
-in 1G mode or 2.5G mode which not able to be changed on the fly.
+Hi,
 
-Compared to 1G mode, the 2.5G mode selects the 2500BASEX as PHY interface and
-disables the xpcs_an_inband. This is to cater for some PHYs that only
-supports 2500BASEX PHY interface with no autonegotiation.
+On Thu, May 13, 2021 at 05:05:01PM +0800, Zou Wei wrote:
+> This patch adds missing MODULE_DEVICE_TABLE definition which generates
+> correct modalias for automatic loading of this driver when it is built
+> as an external module.
+>=20
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> ---
 
-v2: remove MAC supported link speed masking
-v3: Restructure  to introduce intel_speed_mode_2500() to read serdes registers
-    for max speed supported and select the appropritate configuration.
-    Use max_speed to determine the supported link speed mask.
+Does not apply anymore. Also please split this into three patches,
+one for regulator-poweroff, one for ab8500 and one for
+charger-manager.
 
-Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
-Signed-off-by: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
----
- .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 48 ++++++++++++++++++-
- .../net/ethernet/stmicro/stmmac/dwmac-intel.h | 13 +++++
- .../net/ethernet/stmicro/stmmac/dwmac4_core.c |  1 +
- .../net/ethernet/stmicro/stmmac/stmmac_main.c |  7 +++
- include/linux/stmmac.h                        |  1 +
- 5 files changed, 69 insertions(+), 1 deletion(-)
+Thanks,
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-index 2ecf93c84b9d..6a9a19b0844c 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-@@ -102,6 +102,22 @@ static int intel_serdes_powerup(struct net_device *ndev, void *priv_data)
- 
- 	serdes_phy_addr = intel_priv->mdio_adhoc_addr;
- 
-+	/* Set the serdes rate and the PCLK rate */
-+	data = mdiobus_read(priv->mii, serdes_phy_addr,
-+			    SERDES_GCR0);
-+
-+	data &= ~SERDES_RATE_MASK;
-+	data &= ~SERDES_PCLK_MASK;
-+
-+	if (priv->plat->max_speed == 2500)
-+		data |= SERDES_RATE_PCIE_GEN2 << SERDES_RATE_PCIE_SHIFT |
-+			SERDES_PCLK_37p5MHZ << SERDES_PCLK_SHIFT;
-+	else
-+		data |= SERDES_RATE_PCIE_GEN1 << SERDES_RATE_PCIE_SHIFT |
-+			SERDES_PCLK_70MHZ << SERDES_PCLK_SHIFT;
-+
-+	mdiobus_write(priv->mii, serdes_phy_addr, SERDES_GCR0, data);
-+
- 	/* assert clk_req */
- 	data = mdiobus_read(priv->mii, serdes_phy_addr, SERDES_GCR0);
- 	data |= SERDES_PLL_CLK;
-@@ -230,6 +246,32 @@ static void intel_serdes_powerdown(struct net_device *ndev, void *intel_data)
- 	}
- }
- 
-+static void intel_speed_mode_2500(struct net_device *ndev, void *intel_data)
-+{
-+	struct intel_priv_data *intel_priv = intel_data;
-+	struct stmmac_priv *priv = netdev_priv(ndev);
-+	int serdes_phy_addr = 0;
-+	u32 data = 0;
-+
-+	serdes_phy_addr = intel_priv->mdio_adhoc_addr;
-+
-+	/* Determine the link speed mode: 2.5Gbps/1Gbps */
-+	data = mdiobus_read(priv->mii, serdes_phy_addr,
-+			    SERDES_GCR);
-+
-+	if (((data & SERDES_LINK_MODE_MASK) >> SERDES_LINK_MODE_SHIFT) ==
-+	    SERDES_LINK_MODE_2G5) {
-+		dev_info(priv->device, "Link Speed Mode: 2.5Gbps\n");
-+		priv->plat->max_speed = 2500;
-+		priv->plat->phy_interface = PHY_INTERFACE_MODE_2500BASEX;
-+		priv->plat->mdio_bus_data->xpcs_an_inband = false;
-+	} else {
-+		priv->plat->max_speed = 1000;
-+		priv->plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
-+		priv->plat->mdio_bus_data->xpcs_an_inband = true;
-+	}
-+}
-+
- /* Program PTP Clock Frequency for different variant of
-  * Intel mGBE that has slightly different GPO mapping
-  */
-@@ -586,7 +628,7 @@ static int ehl_sgmii_data(struct pci_dev *pdev,
- {
- 	plat->bus_id = 1;
- 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
--
-+	plat->speed_mode_2500 = intel_speed_mode_2500;
- 	plat->serdes_powerup = intel_serdes_powerup;
- 	plat->serdes_powerdown = intel_serdes_powerdown;
- 
-@@ -639,6 +681,7 @@ static int ehl_pse0_sgmii1g_data(struct pci_dev *pdev,
- 				 struct plat_stmmacenet_data *plat)
- {
- 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
-+	plat->speed_mode_2500 = intel_speed_mode_2500;
- 	plat->serdes_powerup = intel_serdes_powerup;
- 	plat->serdes_powerdown = intel_serdes_powerdown;
- 	return ehl_pse0_common_data(pdev, plat);
-@@ -677,6 +720,7 @@ static int ehl_pse1_sgmii1g_data(struct pci_dev *pdev,
- 				 struct plat_stmmacenet_data *plat)
- {
- 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
-+	plat->speed_mode_2500 = intel_speed_mode_2500;
- 	plat->serdes_powerup = intel_serdes_powerup;
- 	plat->serdes_powerdown = intel_serdes_powerdown;
- 	return ehl_pse1_common_data(pdev, plat);
-@@ -711,6 +755,7 @@ static int tgl_sgmii_phy0_data(struct pci_dev *pdev,
- {
- 	plat->bus_id = 1;
- 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
-+	plat->speed_mode_2500 = intel_speed_mode_2500;
- 	plat->serdes_powerup = intel_serdes_powerup;
- 	plat->serdes_powerdown = intel_serdes_powerdown;
- 	return tgl_common_data(pdev, plat);
-@@ -725,6 +770,7 @@ static int tgl_sgmii_phy1_data(struct pci_dev *pdev,
- {
- 	plat->bus_id = 2;
- 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
-+	plat->speed_mode_2500 = intel_speed_mode_2500;
- 	plat->serdes_powerup = intel_serdes_powerup;
- 	plat->serdes_powerdown = intel_serdes_powerdown;
- 	return tgl_common_data(pdev, plat);
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-index 542acb8ce467..20d14e588044 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-@@ -9,6 +9,7 @@
- #define POLL_DELAY_US 8
- 
- /* SERDES Register */
-+#define SERDES_GCR	0x0	/* Global Conguration */
- #define SERDES_GSR0	0x5	/* Global Status Reg0 */
- #define SERDES_GCR0	0xb	/* Global Configuration Reg0 */
- 
-@@ -17,8 +18,20 @@
- #define SERDES_PHY_RX_CLK	BIT(1)		/* PSE SGMII PHY rx clk */
- #define SERDES_RST		BIT(2)		/* Serdes Reset */
- #define SERDES_PWR_ST_MASK	GENMASK(6, 4)	/* Serdes Power state*/
-+#define SERDES_RATE_MASK	GENMASK(9, 8)
-+#define SERDES_PCLK_MASK	GENMASK(14, 12)	/* PCLK rate to PHY */
-+#define SERDES_LINK_MODE_MASK	GENMASK(2, 1)
-+#define SERDES_LINK_MODE_SHIFT	1
- #define SERDES_PWR_ST_SHIFT	4
- #define SERDES_PWR_ST_P0	0x0
- #define SERDES_PWR_ST_P3	0x3
-+#define SERDES_LINK_MODE_2G5	0x3
-+#define SERSED_LINK_MODE_1G	0x2
-+#define SERDES_PCLK_37p5MHZ	0x0
-+#define SERDES_PCLK_70MHZ	0x1
-+#define SERDES_RATE_PCIE_GEN1	0x0
-+#define SERDES_RATE_PCIE_GEN2	0x1
-+#define SERDES_RATE_PCIE_SHIFT	8
-+#define SERDES_PCLK_SHIFT	12
- 
- #endif /* __DWMAC_INTEL_H__ */
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-index f35c03c9f91e..67ba083eb90c 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-@@ -1358,6 +1358,7 @@ int dwmac4_setup(struct stmmac_priv *priv)
- 	mac->link.speed10 = GMAC_CONFIG_PS;
- 	mac->link.speed100 = GMAC_CONFIG_FES | GMAC_CONFIG_PS;
- 	mac->link.speed1000 = 0;
-+	mac->link.speed2500 = GMAC_CONFIG_FES;
- 	mac->link.speed_mask = GMAC_CONFIG_FES | GMAC_CONFIG_PS;
- 	mac->mii.addr = GMAC_MDIO_ADDR;
- 	mac->mii.data = GMAC_MDIO_DATA;
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index c1331c07623d..8d5ac268ad65 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -931,6 +931,10 @@ static void stmmac_validate(struct phylink_config *config,
- 	if ((max_speed > 0) && (max_speed < 1000)) {
- 		phylink_set(mask, 1000baseT_Full);
- 		phylink_set(mask, 1000baseX_Full);
-+	} else if (priv->plat->has_gmac4) {
-+		if (!max_speed || max_speed >= 2500)
-+			phylink_set(mac_supported, 2500baseT_Full);
-+			phylink_set(mac_supported, 2500baseX_Full);
- 	} else if (priv->plat->has_xgmac) {
- 		if (!max_speed || (max_speed >= 2500)) {
- 			phylink_set(mac_supported, 2500baseT_Full);
-@@ -6991,6 +6995,9 @@ int stmmac_dvr_probe(struct device *device,
- 		}
- 	}
- 
-+	if (priv->plat->speed_mode_2500)
-+		priv->plat->speed_mode_2500(ndev, priv->plat->bsp_priv);
-+
- 	if (priv->plat->mdio_bus_data->has_xpcs) {
- 		ret = stmmac_xpcs_setup(priv->mii);
- 		if (ret)
-diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-index e55a4807e3ea..b10be3385a30 100644
---- a/include/linux/stmmac.h
-+++ b/include/linux/stmmac.h
-@@ -223,6 +223,7 @@ struct plat_stmmacenet_data {
- 	void (*fix_mac_speed)(void *priv, unsigned int speed);
- 	int (*serdes_powerup)(struct net_device *ndev, void *priv);
- 	void (*serdes_powerdown)(struct net_device *ndev, void *priv);
-+	void (*speed_mode_2500)(struct net_device *ndev, void *priv);
- 	void (*ptp_clk_freq_config)(void *priv);
- 	int (*init)(struct platform_device *pdev, void *priv);
- 	void (*exit)(struct platform_device *pdev, void *priv);
--- 
-2.17.1
+-- Sebastian
 
+>  drivers/power/reset/regulator-poweroff.c | 1 +
+>  drivers/power/supply/ab8500_btemp.c      | 1 +
+>  drivers/power/supply/ab8500_charger.c    | 1 +
+>  drivers/power/supply/ab8500_fg.c         | 1 +
+>  drivers/power/supply/charger-manager.c   | 1 +
+>  5 files changed, 5 insertions(+)
+>=20
+> diff --git a/drivers/power/reset/regulator-poweroff.c b/drivers/power/res=
+et/regulator-poweroff.c
+> index f697088..2070120 100644
+> --- a/drivers/power/reset/regulator-poweroff.c
+> +++ b/drivers/power/reset/regulator-poweroff.c
+> @@ -64,6 +64,7 @@ static const struct of_device_id of_regulator_poweroff_=
+match[] =3D {
+>  	{ .compatible =3D "regulator-poweroff", },
+>  	{},
+>  };
+> +MODULE_DEVICE_TABLE(of, of_regulator_poweroff_match);
+> =20
+>  static struct platform_driver regulator_poweroff_driver =3D {
+>  	.probe =3D regulator_poweroff_probe,
+> diff --git a/drivers/power/supply/ab8500_btemp.c b/drivers/power/supply/a=
+b8500_btemp.c
+> index fdfcd59..db1adc1 100644
+> --- a/drivers/power/supply/ab8500_btemp.c
+> +++ b/drivers/power/supply/ab8500_btemp.c
+> @@ -1106,6 +1106,7 @@ static const struct of_device_id ab8500_btemp_match=
+[] =3D {
+>  	{ .compatible =3D "stericsson,ab8500-btemp", },
+>  	{ },
+>  };
+> +MODULE_DEVICE_TABLE(of, ab8500_btemp_match);
+> =20
+>  static struct platform_driver ab8500_btemp_driver =3D {
+>  	.probe =3D ab8500_btemp_probe,
+> diff --git a/drivers/power/supply/ab8500_charger.c b/drivers/power/supply=
+/ab8500_charger.c
+> index a9be10e..94da73e 100644
+> --- a/drivers/power/supply/ab8500_charger.c
+> +++ b/drivers/power/supply/ab8500_charger.c
+> @@ -3644,6 +3644,7 @@ static const struct of_device_id ab8500_charger_mat=
+ch[] =3D {
+>  	{ .compatible =3D "stericsson,ab8500-charger", },
+>  	{ },
+>  };
+> +MODULE_DEVICE_TABLE(of, ab8500_charger_match);
+> =20
+>  static struct platform_driver ab8500_charger_driver =3D {
+>  	.probe =3D ab8500_charger_probe,
+> diff --git a/drivers/power/supply/ab8500_fg.c b/drivers/power/supply/ab85=
+00_fg.c
+> index 0c7c01a..5a86afd 100644
+> --- a/drivers/power/supply/ab8500_fg.c
+> +++ b/drivers/power/supply/ab8500_fg.c
+> @@ -3212,6 +3212,7 @@ static const struct of_device_id ab8500_fg_match[] =
+=3D {
+>  	{ .compatible =3D "stericsson,ab8500-fg", },
+>  	{ },
+>  };
+> +MODULE_DEVICE_TABLE(of, ab8500_fg_match);
+> =20
+>  static struct platform_driver ab8500_fg_driver =3D {
+>  	.probe =3D ab8500_fg_probe,
+> diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/suppl=
+y/charger-manager.c
+> index 45da870..d67edb7 100644
+> --- a/drivers/power/supply/charger-manager.c
+> +++ b/drivers/power/supply/charger-manager.c
+> @@ -1279,6 +1279,7 @@ static const struct of_device_id charger_manager_ma=
+tch[] =3D {
+>  	},
+>  	{},
+>  };
+> +MODULE_DEVICE_TABLE(of, charger_manager_match);
+> =20
+>  static struct charger_desc *of_cm_parse_desc(struct device *dev)
+>  {
+> --=20
+> 2.6.2
+>=20
+
+--kzwyopa6voscrg7y
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmC6CD0ACgkQ2O7X88g7
++pod4xAAkIpz2bUPTtLApmiYEziQwZf5Z5meSAdR521hxMC9A5Kdx6qk5FcCRZbK
+Y3561Mye0/TwQSFMI360DX5RWDbeGEo1hjqYPZiQpdQjXWnTC2/HEWFGPknZBkY7
+N9EB2E/H1TxMvYoEGQYNLCX+MsmQvOzLiQucmXwdUAssOltjZqXANouXzflBfoh9
+lW+QmHLVv7nn0HnlzgDCnsytjouqc9cP0My5ekhhMQNrxwzsi0WnW1NC5RDZf1u9
+ukRWvXlqHkHCb3q3GLj+tH0BtT33ohHJPQeEGVmj6XD7ibXgU4w1ECiw7pyct6F0
+NjFjzry+RNA6As9PuZOcrvBXEnNRYqQfx6fkDhazyvylsiibDT7qtyGlDIT5E9vc
+tJAbJEEBROMpOxjl77UX688eDYCBIWc6OWdUidvZ91Ndz2B3vJofEECtvw7QIGyx
+eQEW9tdfoSTwYOyB4JWI8OC4IdYWp/xYik8YVr5cDHGSR29SVN1DnwX3apqjOE0K
+ogVbqqwUoFxsti3WgXZNQ2fPS2M+/VDId0s5NZjrWUErdcRAX60S/a9MwMdlKxVY
+XW7LKgP8SB+zx8n//mK0sUJhRJvx9h2U7JPto7zPT5okFdH9yyEVcaOADU8LGyux
+pdQ+/AV32b2gekmovFezhPtLZawPe7o7QHK6TBdY0hapvqJRY2o=
+=qOaK
+-----END PGP SIGNATURE-----
+
+--kzwyopa6voscrg7y--
