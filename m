@@ -2,154 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E18C139B63D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1893B39B63B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230150AbhFDJvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 05:51:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:34468 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229930AbhFDJvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 05:51:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A71AC1063;
-        Fri,  4 Jun 2021 02:49:35 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.6.137])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 556D03F73D;
-        Fri,  4 Jun 2021 02:49:31 -0700 (PDT)
-Date:   Fri, 4 Jun 2021 10:49:26 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v8 15/19] arm64: Prevent offlining first CPU with 32-bit
- EL0 on mismatched system
-Message-ID: <20210604094926.GB64162@C02TD0UTHF1T.local>
-References: <20210602164719.31777-1-will@kernel.org>
- <20210602164719.31777-16-will@kernel.org>
- <20210603125856.GC48596@C02TD0UTHF1T.local>
- <20210603174056.GB1170@willie-the-truck>
+        id S230145AbhFDJut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 05:50:49 -0400
+Received: from mail-ed1-f44.google.com ([209.85.208.44]:41756 "EHLO
+        mail-ed1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229930AbhFDJur (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 05:50:47 -0400
+Received: by mail-ed1-f44.google.com with SMTP id g18so8411715edq.8;
+        Fri, 04 Jun 2021 02:49:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Elbap0HGzMIcO+Zuj29OM5Suci0Pol92u8bIy/bu0tM=;
+        b=XYI4pRqO7CxjXXGW2ynVvcxHxaJutB6ESSmUvgiuaPvAkJUSW58lb9Vsvl9lE2BtFg
+         5mMPuymcd7yJ9duHGjL9U9Hho8sCMfeWJXldR/CiRpSPlZJhSvvP8OX1SiLgXb27WVvE
+         ueGVe+gEphFiy8ZDDNSdzoIqQ+1GJiCkFiLfbSGwhEn7s5uPvDxUv/pdjffW4mLsvF5D
+         W33f00lLkoXuCNzUOtRinGwxVXXC6x85O0jH1+RbjG5T37iMH4taTygasCwa8itPeFp/
+         2KKCZ4RZcaU0J5wtmnt4o9I5MWD1a4PK1ET0hvYvrEzr8vgal/q56J0K9A3KDpLpx5QU
+         eAMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Elbap0HGzMIcO+Zuj29OM5Suci0Pol92u8bIy/bu0tM=;
+        b=CtEj5kH/d0AMl4VPVMWKYTmLXYnpuwfiOGRNszqZv06+fsW7nN5eSo0a8nbFYgwrRZ
+         cir0hgONtEX0nChmNAeUrHO7DA0yU9KaJ95pKnjBhhRd9AOYXH721IuYZy+3pxzmX6TQ
+         ougYUFOiAPamuhmDaX1J+YCH7mlzV+Fj9C2LuHm8nbARpRFYLU9Yf+J4PUTp7qXgYqBI
+         je1t5CQNs+v9UMNvHhjN5k0Y6tso5Q+cUI8N4NquaeF//UsHz3WVC9+HyC/9xjoRI2O2
+         78wz7o0b7SoS7JfPEHVnDjfWiBTS+71DgxKfa44CXnPRGk1U1rgMddRPRJfZ8C1nmZLv
+         XGKw==
+X-Gm-Message-State: AOAM531a/GhaXP43qg2B+M9LJVBQynVOePmIuLTRBQimyTeD36JWj4HO
+        Cse1JAc7jPJZVD7sjhyHC90=
+X-Google-Smtp-Source: ABdhPJz2n4dgcQWLoFAJCGgc5IF8rJLCa/X7kOF7dDP30KaiVHQM6datVigWtfL44xAgqGo7LAeXmA==
+X-Received: by 2002:aa7:dc12:: with SMTP id b18mr3809077edu.52.1622800080667;
+        Fri, 04 Jun 2021 02:48:00 -0700 (PDT)
+Received: from localhost (pd9e51d70.dip0.t-ipconnect.de. [217.229.29.112])
+        by smtp.gmail.com with ESMTPSA id bh3sm2584694ejb.19.2021.06.04.02.47.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 02:47:59 -0700 (PDT)
+Date:   Fri, 4 Jun 2021 11:49:37 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, Sven Van Asbroeck <TheSven73@gmail.com>
+Subject: Re: [PATCH 1/4] pwm: core: Support new usage_power setting in PWM
+ state
+Message-ID: <YLn3MZ+6HJM/UrRT@orome.fritz.box>
+References: <20210507131845.37605-1-clemens.gruber@pqgruber.com>
+ <20210507150317.bnluhqrqepde4xjm@pengutronix.de>
+ <YJVhLrkeNXBp6M1p@workstation.tuxnet>
+ <20210507231831.zmvyspcq7xhm25y4@pengutronix.de>
+ <YLUK8GXHaBYyVe1R@workstation.tuxnet>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="rtonuN3GLetRQitm"
 Content-Disposition: inline
-In-Reply-To: <20210603174056.GB1170@willie-the-truck>
+In-Reply-To: <YLUK8GXHaBYyVe1R@workstation.tuxnet>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 06:40:57PM +0100, Will Deacon wrote:
-> On Thu, Jun 03, 2021 at 01:58:56PM +0100, Mark Rutland wrote:
-> > On Wed, Jun 02, 2021 at 05:47:15PM +0100, Will Deacon wrote:
-> > > If we want to support 32-bit applications, then when we identify a CPU
-> > > with mismatched 32-bit EL0 support we must ensure that we will always
-> > > have an active 32-bit CPU available to us from then on. This is important
-> > > for the scheduler, because is_cpu_allowed() will be constrained to 32-bit
-> > > CPUs for compat tasks and forced migration due to a hotplug event will
-> > > hang if no 32-bit CPUs are available.
-> > > 
-> > > On detecting a mismatch, prevent offlining of either the mismatching CPU
-> > > if it is 32-bit capable, or find the first active 32-bit capable CPU
-> > > otherwise.
-> > > 
-> > > Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> > > Signed-off-by: Will Deacon <will@kernel.org>
-> > > ---
-> > >  arch/arm64/kernel/cpufeature.c | 20 +++++++++++++++++++-
-> > >  1 file changed, 19 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> > > index 4194a47de62d..b31d7a1eaed6 100644
-> > > --- a/arch/arm64/kernel/cpufeature.c
-> > > +++ b/arch/arm64/kernel/cpufeature.c
-> > > @@ -2877,15 +2877,33 @@ void __init setup_cpu_features(void)
-> > >  
-> > >  static int enable_mismatched_32bit_el0(unsigned int cpu)
-> > >  {
-> > > +	static int lucky_winner = -1;
-> > 
-> > This is cute, but could we please give it a meaningful name, e.g.
-> > `pinned_cpu` ?
-> 
-> I really don't see the problem, nor why it's "cute".
-> 
-> Tell you what, I'll add a comment instead:
-> 
-> 	/*
-> 	 * The first 32-bit-capable CPU we detected and so can no longer
-> 	 * be offlined by userspace. -1 indicates we haven't yet onlined
-> 	 * a 32-bit-capable CPU.
-> 	 */
 
-Thanks for the comment; that's helpful.
+--rtonuN3GLetRQitm
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-However, my concern here is that when we inevitably have to discuss this
-with others in future, "lucky winner" is jarring (and also unclear to
-those where English is not their native language). For clarity, it would
-be really nice to use a term like "cpu", "chosen_cpu", "pinned_cpu",
-etc.
+On Mon, May 31, 2021 at 06:12:32PM +0200, Clemens Gruber wrote:
+> On Sat, May 08, 2021 at 01:18:31AM +0200, Uwe Kleine-K=C3=B6nig wrote:
+> > Hello Clemens,
+> >=20
+> > On Fri, May 07, 2021 at 05:47:58PM +0200, Clemens Gruber wrote:
+> > > On Fri, May 07, 2021 at 05:03:17PM +0200, Uwe Kleine-K=C3=B6nig wrote:
+> > > > On Fri, May 07, 2021 at 03:18:42PM +0200, Clemens Gruber wrote:
+> > > > > diff --git a/include/linux/pwm.h b/include/linux/pwm.h
+> > > > > index 5bb90af4997e..5a73251d28e3 100644
+> > > > > --- a/include/linux/pwm.h
+> > > > > +++ b/include/linux/pwm.h
+> > > > > @@ -54,12 +54,17 @@ enum {
+> > > > >   * @duty_cycle: PWM duty cycle (in nanoseconds)
+> > > > >   * @polarity: PWM polarity
+> > > > >   * @enabled: PWM enabled status
+> > > > > + * @usage_power: If set, the PWM driver is only required to main=
+tain the power
+> > > > > + *               output but has more freedom regarding signal fo=
+rm.
+> > > > > + *               If supported, the signal can be optimized, for =
+example to
+> > > > > + *               improve EMI by phase shifting individual channe=
+ls.
+> > > > >   */
+> > > > >  struct pwm_state {
+> > > > >  	u64 period;
+> > > > >  	u64 duty_cycle;
+> > > > >  	enum pwm_polarity polarity;
+> > > > >  	bool enabled;
+> > > > > +	bool usage_power;
+> > > > >  };
+> > > > > =20
+> > > > >  /**
+> > > >=20
+> > > > If we really want to support this usecase, I would prefer to not ha=
+ve it
+> > > > in pwm_state because this concept is not a property of the wave for=
+m. So
+> > > > for a driver it doesn't really make sense to set this flag in
+> > > > .get_state().
+> > >=20
+> > > It is related to the wave form in so far as it allows the driver to
+> > > change the wave form as long as the power output remains the same.
+> >=20
+> > Yes, the thing I wanted to express is: usage_power is a software thing.
+> > Just from reading the hardware registers you can never know if
+> > usage_power is set or not. So it is conceptually slightly different than
+> > the other members of pwm_state which all are represented 1:1 in
+> > hardware.
+> >=20
+> > > > Maybe it makes more sense to put this in a separate argument for a
+> > > > variant of pwm_apply_state? something like:
+> > > >=20
+> > > > 	int pwm_apply_state_transition(struct pwm_device *pwm, const struc=
+t pwm_state *state, const struct pwm_state_transition *transition);
+> > > >=20
+> > > > and pwm_state_transition can then contain something like this usage
+> > > > power concept and maybe also a sync flag that requests that the call
+> > > > should only return when the new setting is active and maybe also a
+> > > > complete_period flag that requests that the currently running period
+> > > > must be completed before the requested setting is implemented.
+> > > >=20
+> > > > OTOH the information "I only care about the relative duty cycle" is
+> > > > relevant longer than during the transition to a new setting. (So if
+> > > > there are two consumers and one specified to be only interested in =
+the
+> > > > relative duty cycle, the other might be allowed to change the common
+> > > > period.)
+> > >=20
+> > > As you said, usage_power does not only apply to one state transition.
+> > >=20
+> > > > Having said that, I don't like the proposed names. Neither "usage_p=
+ower"
+> > > > nor "pwm_apply_state_transition".
+> > > >=20
+> > > > In a non-representative survey among two hardware engineers and one
+> > > > software engineer who already contributed to PWM (!=3D me) I found =
+out
+> > > > that these three have an intuitive right understanding of
+> > > > "allow-phase-shift" but have no idea what "usage-power" could mean.
+> > >=20
+> > > One advantage of usage_power is that it is not limited to phase
+> > > shifting. Drivers could do other optimizations as long as the power
+> > > output remains the same.
+> >=20
+> > Freedom you give to the lowlevel driver might be a burden to the
+> > consumer. I think it makes sense to split the concept into:
+> >=20
+> > 	PWM_ALLOW_PHASE_SHIFT		1
+> > 	PWM_SET_RELATIVE_DUTY		2
+> > 	PWM_SET_POWER			(PWM_ALLOW_PHASE_SHIFT | PWM_SET_RELATIVE_DUTY)
+> >=20
+> > This way a consumer (e.g. a clock driver) who doesn't care about the
+> > phase shift but wants a fixed period can specify that, and if a consumer
+> > really only cares about the emitted power that's possible, too.
+> >=20
+> > And given that your driver actually only implements a phase shift I
+> > suggest not to generalize more than necessary here; also because the
+> > semantic of usage-power isn't well defined. So this is something where I
+> > agree to Thierry: Let's not solve a problem we don't have. (Though he
+> > comes to a different conclusion here.)
+> >=20
+> > > > On a side note: The hardware guys noted that it might make sense to
+> > > > align the shifted phases. i.e. instead of shifting channel i by i *
+> > > > period/16, it might be better to let the 2nd channel get active whe=
+n the
+> > > > first gets inactive. (i.e. try to keep the count of active channels
+> > > > constant).
+> > >=20
+> > > I am not sure what you mean exactly, because the duty cycles of the
+> > > 16 outputs are not necessarily the same and can all be active at the
+> > > same time. The idea is to spread the edges out as evenly as possible.
+> > > Shifting them by period/16 is the best way to smoothen the current
+> > > spikes in my opinion and the implementation is also very simple.
+> >=20
+> > Yes, the algorithm needed to satisfy this wish is more complicated. And
+> > maybe it even isn't possible to implement it in a sane way, I didn't
+> > think about it much. I just believed them that if you have two channels
+> > that run at 50% it's better to have a phase shift of 50% between them
+> > than 6.25%. Maybe it makes sense to align the start of channel #i+1 (if
+> > allowed) to the end of channel #i to already get a better behaviour on
+> > average than the fixed offset depending on the channel number.
+> >=20
+> > > > And as already mentioned earlier I still think we should define the
+> > > > concept of "usage power" better. It should be clearly defined for a
+> > > > driver author which setting they should pick for a given request. T=
+his
+> > > > removes surprises for consumers and guessing for lowlevel driver
+> > > > authors. Also a uniform policy brings conflicts better to light.
+> > > > (Something like driver A does the right thing for consumer C and dr=
+iver
+> > > > B makes it right for D. But once D tries to use A things break. (And
+> > > > then maybe A is changed to fit D, and C doesn't object because they
+> > > > don't read the pwm list resulting in a breakage for C later.))
+> > >=20
+> > > I added documentation and comments to the header file as a first step
+> > > but we can always improve them.
+> >=20
+> > In my book the documentation is inadequate because it doesn't define how
+> > a driver should behave and so doesn't define what the consumer can
+> > expect. With your description all settings I suggested in
+> > https://lore.kernel.org/r/20210413175631.pwbynvwmnn7oog4m@pengutronix.de
+> > are allowed. I don't think this is a good idea.
+> >=20
+> > And given that all people I talked to about "usage-power" were unable to
+> > correctly guess its semantic, I'm convinced that we need a better name.
+> > This is something you cannot outweigh with documentation -- most people
+> > won't read it anyway.
+>=20
+> Thierry: Would be great to get your input on this.
 
-However, you're the maintainer; choose what you think is appropriate.
+In the interest of making forward progress, I've applied this series.
+The good thing is that with the current proposal none of this leaks into
+ABI, so nothing is set in stone. If ever somebody comes up with better
+names we can change them.
 
-> > >  	struct cpuinfo_arm64 *info = &per_cpu(cpu_data, cpu);
-> > >  	bool cpu_32bit = id_aa64pfr0_32bit_el0(info->reg_id_aa64pfr0);
-> > >  
-> > >  	if (cpu_32bit) {
-> > >  		cpumask_set_cpu(cpu, cpu_32bit_el0_mask);
-> > >  		static_branch_enable_cpuslocked(&arm64_mismatched_32bit_el0);
-> > > -		setup_elf_hwcaps(compat_elf_hwcaps);
-> > >  	}
-> > >  
-> > > +	if (cpumask_test_cpu(0, cpu_32bit_el0_mask) == cpu_32bit)
-> > > +		return 0;
-> > > +
-> > > +	if (lucky_winner >= 0)
-> > > +		return 0;
-> > > +
-> > > +	/*
-> > > +	 * We've detected a mismatch. We need to keep one of our CPUs with
-> > > +	 * 32-bit EL0 online so that is_cpu_allowed() doesn't end up rejecting
-> > > +	 * every CPU in the system for a 32-bit task.
-> > > +	 */
-> > > +	lucky_winner = cpu_32bit ? cpu : cpumask_any_and(cpu_32bit_el0_mask,
-> > > +							 cpu_active_mask);
-> > > +	get_cpu_device(lucky_winner)->offline_disabled = true;
-> > > +	setup_elf_hwcaps(compat_elf_hwcaps);
-> > > +	pr_info("Asymmetric 32-bit EL0 support detected on CPU %u; CPU hot-unplug disabled on CPU %u\n",
-> > > +		cpu, lucky_winner);
-> > >  	return 0;
-> > >  }
-> > 
-> > I guess this is going to play havoc with kexec and hibernate. :/
-> 
-> The kernel can still offline the CPUs (see the whole freezer mess that I
-> linked to in the cover letter). What specific havoc are you thinking of?
+Thierry
 
-Ah. If this is just inhibiting userspace-driven offlining, that sounds
-fine.
+--rtonuN3GLetRQitm
+Content-Type: application/pgp-signature; name="signature.asc"
 
-For kexec, I was concerned that either this would inhibit kexec, or
-smp_shutdown_nonboot_cpus() would fail to offline the pinned CPU, and
-that'd trigger a BUG(), which would be unfortunate.
+-----BEGIN PGP SIGNATURE-----
 
-For hibernate, the equivalent is freeze_secondary_cpus(), which I guess
-is dealt with by the freezer bits you mention.
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmC59zEACgkQ3SOs138+
+s6GN1g//W5JlZn/O4F4mtez/mSBQBQVhIYB9DUTL0qho4JRTUxCLzjC3DjzkD5EB
+fgSPVVSBColLotKeBgnjSIsTBRr5G6OaJPfEWflzjIwUPKMbmyzJoACVDRYUIXMI
+iLqbywJ4fz/gC9S3Eq+l9+XX4Aq2EgR79MNyZLs97WzJQHCiPyqOJSAJO8OBBfEs
+PsR4IkAT5Mm3vKQO6K8AD3p1mURBluh3kr3p07irSTH3EGZhxK9BoEfKZYDUwbS6
+SCT3eNxYUu6lzngXjLRRdtRJr+E/EpPhpiXFHieUjQPNXIIysZwQ5b1V+qTim2Ml
+rKkNjsOJlzhciicR52jyrIdewGFDDQyBLjEavSLkO4zH4FpKkXOqxg8ZrbiGmwCV
+rvYG2KCd3sTlvkCJgzTTrBT5ctxNRKbzIHHT3KrbvKSr+SMG/sojT2JlsUHuhHGp
+NM5S+iE0YSk0pY0pGV+kSvweUeUjQsu1CT85m82num2uuhqoZRGldbE34SoUyUTm
+rse18b8DRgiTylDwDDfcOTivu5Zuisr0FHYm96rMnfvN9sXKo1NJZvB/9yKmwSgH
+8p3tE3H0qow7HRP+ala3BlK0VJv4YWjhGH92JFYM6O2A6QgtUrhHAinQQxkaKNo+
+V5JmUQjZ0pmP9XWYSHfPCe2Gv6A0xKU7zUjcM9wmvLj5c9XIMfU=
+=HzXL
+-----END PGP SIGNATURE-----
 
-Thanks,
-Mark.
+--rtonuN3GLetRQitm--
