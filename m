@@ -2,87 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C550339B62C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26E4B39B638
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbhFDJpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 05:45:38 -0400
-Received: from mail-ej1-f47.google.com ([209.85.218.47]:43720 "EHLO
-        mail-ej1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhFDJph (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 05:45:37 -0400
-Received: by mail-ej1-f47.google.com with SMTP id ci15so13501531ejc.10;
-        Fri, 04 Jun 2021 02:43:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Zik2ZOIHX9hVqZtBO1LNgsXDv6nOzHlOWXzcimwDP5U=;
-        b=RDG5IKpVv6wDkvB0fJRqpPScvHke4gmzkoEh2vzKxmaKu/v9PAQsdRZwGWfhWfU/Ae
-         TYMZmMduSHGhoXlqAeRf8BdsXtJmYVCkczSSUcxjd0JZbAMtndntscM+Q6w6BkfHiKAW
-         sog7WvcDk5Ua2wbny43Mz+M3WJW1LK6et1mBeVpew0atAmZ7bpXhFxYy+xhQ6ppoJ0xh
-         L8TN+qoYv9vXplizPibk949tbIXx4IrpYyT/X96UqdOfhXsqoK52sB2i+cxdK+Yc/3Sf
-         5Xra48I7D5k1YUMTNMKvL0K6D+BW4ArsxWFb6zNiXToQ5vgGYNTiqCVaZ5NGLnVRxg46
-         iBkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Zik2ZOIHX9hVqZtBO1LNgsXDv6nOzHlOWXzcimwDP5U=;
-        b=MEJ7GVc/qCb/kNbB5D1A9l/5gQh8ejEsUdgeoRHnyyLiS84qWby1OqEASUBFdXb+Cv
-         gkei+kodVn8rDVIfzAZJXuLunr5HlclesCO+eghnYq1uBxdnawK88nHC6vKW/1aRzBac
-         J8gv6Xhu7pfElSktqi1WmXSfoHcOgk9THIFD8kRaxlBuGpXG8s4yOMl8LAAjVD9u9lVX
-         uMrZnCoShCBRRvqzMSC9bk47yQ5diHTiWDeN8E1wk48s8Lng0uwA4aaLXvl3Ob3hVBbL
-         SJrmeE7axKYIn+3eet7Fm7qStmLQ748+ogehXxmthbdOp6cwbCmnVkxvcEIQzTZMo9bC
-         abeA==
-X-Gm-Message-State: AOAM530SxBNPV/rLliAmxscq5IX3RAzYRscbWGYjKHlWbyXv+tnU0oy3
-        jS2Q+xV4NvqkijCkkZD/6vTvXrhDjSQ=
-X-Google-Smtp-Source: ABdhPJzPdM2aeP0hZSui987vcV8+Ix0Afrw4KOe5InV5KfJGNnubw2yDCSUIlXZYEseuq9VADKKxcw==
-X-Received: by 2002:a17:907:16a5:: with SMTP id hc37mr3511453ejc.166.1622799770472;
-        Fri, 04 Jun 2021 02:42:50 -0700 (PDT)
-Received: from localhost (pd9e51d70.dip0.t-ipconnect.de. [217.229.29.112])
-        by smtp.gmail.com with ESMTPSA id kx3sm2483748ejc.44.2021.06.04.02.42.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 02:42:49 -0700 (PDT)
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>,
-        linux-pwm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH 1/4] pwm: core: Support new usage_power setting in PWM state
-Date:   Fri,  4 Jun 2021 11:44:25 +0200
-Message-Id: <162279984978.1091692.17557126430283544901.b4-ty@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210507131845.37605-1-clemens.gruber@pqgruber.com>
-References: <20210507131845.37605-1-clemens.gruber@pqgruber.com>
+        id S230129AbhFDJuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 05:50:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43738 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229930AbhFDJuH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 05:50:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE6326023E;
+        Fri,  4 Jun 2021 09:48:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622800101;
+        bh=K/Vyl1hSa3J6uLFGe/60MlgbY2CmEQ5E1ho03Zn5iZU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UP7J6m5qQDDBxUTV35zuTvUbNtiT02kANk8rWwRVpBO4Os5PQw7I1j7sXrK5a9B5M
+         B3sL3x74ADZwlASjKwXBfzV801R3p3VNDCZjWMR6vbSUN4gmkO6Irx9hFWN7sUsk8O
+         MCACtfSU+mIllQGxbP+8OZ5tVSVIpJpUBz7scXLc=
+Date:   Fri, 4 Jun 2021 11:48:18 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     ETenal <etenalcxz@gmail.com>
+Cc:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: KASAN: use-after-free Read in hci_chan_del
+Message-ID: <YLn24sFxJqGDNBii@kroah.com>
+References: <000000000000adea7f05abeb19cf@google.com>
+ <c2004663-e54a-7fbc-ee19-b2749549e2dd@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c2004663-e54a-7fbc-ee19-b2749549e2dd@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 7 May 2021 15:18:42 +0200, Clemens Gruber wrote:
-> If usage_power is set, the PWM driver is only required to maintain
-> the power output but has more freedom regarding signal form.
+On Tue, May 04, 2021 at 02:50:03PM -0700, ETenal wrote:
+> Hi,
 > 
-> If supported, the signal can be optimized, for example to
-> improve EMI by phase shifting individual channels.
+> This is SyzScope, a research project that aims to reveal high-risk
+> primitives from a seemingly low-risk bug (UAF/OOB read, WARNING, BUG, etc.).
 
-Applied, thanks!
+Who is working on and doing this "reseach project"?  And what is it
+doing to actually fix the issues that syzbot finds?  Seems like that
+would be a better solution instead of just trying to send emails saying,
+in short "why isn't this reported issue fixed yet?"
 
-[1/4] pwm: core: Support new usage_power setting in PWM state
-      commit: 9e40ee18a1dc1623a5368d6232aaed52fd29dada
-[2/4] pwm: pca9685: Support new usage_power setting in PWM state
-      commit: ae16db1fd3a1b8d1713ba6af5cf27be32918d2b8
-[3/4] pwm: pca9685: Restrict period change for enabled PWMs
-      commit: 6d6e7050276d40b5de97aa950d5d71057f2e2a25
-[4/4] pwm: pca9685: Add error messages for failed regmap calls
-      commit: 79dd354fe1769ebec695dacfee007eafb1538d0c
+thanks,
 
-Best regards,
--- 
-Thierry Reding <thierry.reding@gmail.com>
+greg k-h
