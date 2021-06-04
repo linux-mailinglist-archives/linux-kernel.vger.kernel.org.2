@@ -2,138 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CDF939C3F2
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 01:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A617B39C3FC
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 01:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231732AbhFDXgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 19:36:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50574 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229853AbhFDXgp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 19:36:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6811613E4;
-        Fri,  4 Jun 2021 23:34:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622849699;
-        bh=jM7rZDdzkxe5DiHvBKflOK29UC9MYAjpGh0KBIWYRWM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nFuRTot1LUNfkVqIDdei20X/6pmgsRnGZi+fRleW5D9Ly5qxmXMiIXrPeiA+DVUwP
-         PIiiTEF6fVDJ8G+fM9lbDLSxuk7hYHPPXyudtFYAA8kfBTAAVqQuvJ953POVZXB4gl
-         qN2+i79ffBvclN8tW+9AoWT4gWPHcBP2nbNEs1I9RmXyfa3Fe+IKq+wvVBYnvX2/Rg
-         nb9kibRlGtbChRBKOc+iyCAPamkYDdTOANC34ZjuZbK/tl49KkcVHuj7E9h1nPzFP3
-         dXQnOaZoN9aVPD4+0bi5l2ncqxD64yghLq3D00tPtdF1uNmAndNujOAUCOHTTYHBs+
-         +ZYpL3Fg6asGA==
-Received: by pali.im (Postfix)
-        id 86D84990; Sat,  5 Jun 2021 01:34:55 +0200 (CEST)
-Date:   Sat, 5 Jun 2021 01:34:55 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Madalin Bucur <madalin.bucur@nxp.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Russell King <linux@armlinux.org.uk>,
-        Igal Liberman <Igal.Liberman@freescale.com>,
-        Shruti Kanetkar <Shruti@freescale.com>,
-        Emil Medve <Emilian.Medve@freescale.com>,
-        Scott Wood <oss@buserror.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Camelia Alexandra Groza (OSS)" <camelia.groza@oss.nxp.com>
-Subject: Re: Unsupported phy-connection-type sgmii-2500 in
- arch/powerpc/boot/dts/fsl/t1023rdb.dts
-Message-ID: <20210604233455.fwcu2chlsed2gwmu@pali>
-References: <20210603143453.if7hgifupx5k433b@pali>
- <YLjxX/XPDoRRIvYf@lunn.ch>
- <20210603194853.ngz4jdso3kfncnj4@pali>
- <AM6PR04MB3976B62084EC462BA02F0C4CEC3B9@AM6PR04MB3976.eurprd04.prod.outlook.com>
- <20210604192732.GW30436@shell.armlinux.org.uk>
- <AM6PR04MB39768A569CE3CC4EC61A8769EC3B9@AM6PR04MB3976.eurprd04.prod.outlook.com>
- <YLqLzOltcb6jan+B@lunn.ch>
- <AM6PR04MB39760B986E86BA9169DEECC5EC3B9@AM6PR04MB3976.eurprd04.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <AM6PR04MB39760B986E86BA9169DEECC5EC3B9@AM6PR04MB3976.eurprd04.prod.outlook.com>
-User-Agent: NeoMutt/20180716
+        id S231751AbhFDXjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 19:39:32 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:37320 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229853AbhFDXjb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 19:39:31 -0400
+Received: by linux.microsoft.com (Postfix, from userid 1004)
+        id 7715B20B7178; Fri,  4 Jun 2021 16:37:44 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7715B20B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
+        s=default; t=1622849864;
+        bh=9AgMOut9eOMhw1jnVJ9dx1pxSUqfCv81iOy00nD3qiU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=a6n3KyhhijQKNwk7KtIjkSBgGG9V6N95QOk9Bcq61/RdnhQWwWny9O+GJS4nRsEGG
+         sQfMO8g5CQ4AOWmBNrJl+v1eaMOGcEH1FJVbiOlhN4NYOBWj6CTUcdqkL3VnUDLnlE
+         x5Wq+rxTXepMbxS03BTMLOwP8DomK4a3NVgJhKaw=
+From:   longli@linuxonhyperv.com
+To:     linux-block@vger.kernel.org
+Cc:     Long Li <longli@microsoft.com>, Jens Axboe <axboe@kernel.dk>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Ming Lei <ming.lei@redhat.com>, Tejun Heo <tj@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: [Patch v2] block: return the correct bvec when checking for gaps
+Date:   Fri,  4 Jun 2021 16:37:19 -0700
+Message-Id: <1622849839-5407-1-git-send-email-longli@linuxonhyperv.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 04 June 2021 21:47:26 Madalin Bucur wrote:
-> > -----Original Message-----
-> > From: Andrew Lunn <andrew@lunn.ch>
-> > Sent: 04 June 2021 23:24
-> > To: Madalin Bucur <madalin.bucur@nxp.com>
-> > Cc: Russell King <linux@armlinux.org.uk>; Pali Rohár <pali@kernel.org>;
-> > Igal Liberman <Igal.Liberman@freescale.com>; Shruti Kanetkar
-> > <Shruti@freescale.com>; Emil Medve <Emilian.Medve@freescale.com>; Scott
-> > Wood <oss@buserror.net>; Rob Herring <robh+dt@kernel.org>; Michael
-> > Ellerman <mpe@ellerman.id.au>; Benjamin Herrenschmidt
-> > <benh@kernel.crashing.org>; netdev@vger.kernel.org;
-> > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Camelia
-> > Alexandra Groza (OSS) <camelia.groza@oss.nxp.com>
-> > Subject: Re: Unsupported phy-connection-type sgmii-2500 in
-> > arch/powerpc/boot/dts/fsl/t1023rdb.dts
-> > 
-> > > The "sgmii-2500" compatible in that device tree describes an SGMII HW
-> > > block, overclocked at 2.5G. Without that overclocking, it's a plain
-> > > Cisco (like) SGMII HW block. That's the reason you need to disable it's
-> > > AN setting when overclocked. With the proper Reset Configuration Word,
-> > > you could remove the overclocking and transform that into a plain
-> > "sgmii".
-> > > Thus, the dts compatible describes the HW, as it is.
-> > 
-> > It sounds like the hardware is capable of swapping between SGMII and
-> > 2500BaseX.
-> > 
-> > What we have in DT in this case is not describing the hardware, but
-> > how we configure the hardware. It is one of the few places we abuse DT
-> > for configuration.
-> > 
-> >     Andrew
-> 
-> The actual selection of this mode of operation is performed by the so called
-> Reset Configuration Word from the boot media, that aligned with the HW and
-> board design. The need to name it something other than plain "sgmii" comes
-> from the HW special need for AN to be disabled to operate.
-> 
-> Actually, the weird/non-standard hardware is described by the device tree
-> with a value that puts it in a class of its own. Instead of the overclocked
-> SGMII denomination "sgmii-2500" it could have been named just as well
-> "overclocked-nonstandard-2.5G-ethernet-no-autoneg-SGMII-hw-ip".
-> 
-> One could try to change device trees to slip configuration details, but the
-> backwards compatibility aspect renders this futile. Is there any option to
-> say "sgmii" then "autoneg disabled"?
-> 
-> Madalin
+From: Long Li <longli@microsoft.com>
 
-Madalin, my understanding is that "sgmii-2500" mode is unknown and
-unsupported by kernel.
+After commit 07173c3ec276 ("block: enable multipage bvecs"), a bvec can
+have multiple pages. But bio_will_gap() still assumes one page bvec while
+checking for merging. If the pages in the bvec go across the
+seg_boundary_mask, this check for merging can potentially succeed if only
+the 1st page is tested, and can fail if all the pages are tested.
 
-List of known modes which can be specified in DTS file are defined in
-YAML schema for 'phy-connection-type' in file:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/net/ethernet-controller.yaml?h=v5.12#n55
+Later, when SCSI builds the SG list the same check for merging is done in
+__blk_segment_map_sg_merge() with all the pages in the bvec tested. This
+time the check may fail if the pages in bvec go across the
+seg_boundary_mask (but tested okay in bio_will_gap() earlier, so those
+BIOs were merged). If this check fails, we end up with a broken SG list
+for drivers assuming the SG list not having offsets in intermediate pages.
+This results in incorrect pages written to the disk.
 
-And there is none "sgmii-2500", so some DTS schema validator could throw
-validation error for that DTS file. I'm not sure if somebody has written
-DTS schema validator with all those things (like there are JSON schema
-or OpenAPI validators in JavaScript / HTTP world).
+Fix this by returning the multi-page bvec when testing gaps for merging.
 
-Plus also in linux/phy.h header file contains list of known Linux modes:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/phy.h?h=v5.12#n169
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc: Pavel Begunkov <asml.silence@gmail.com>
+Cc: Ming Lei <ming.lei@redhat.com>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Jeffle Xu <jefflexu@linux.alibaba.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+Fixes: 07173c3ec276 ("block: enable multipage bvecs")
+Signed-off-by: Long Li <longli@microsoft.com>
+---
+Change from v1: add commit details on how data corruption happens
 
-And based on all information in this email discussion, in my opinion the
-mode which HW supports matches Linux meaning of "2500base-x" key/string.
-So I would suggest to rename "sgmii-2500" in that DTS file to
-"2500base-x". Does it make sense?
+ include/linux/bio.h | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
+diff --git a/include/linux/bio.h b/include/linux/bio.h
+index a0b4cfdf62a4..6b2f609ccfbf 100644
+--- a/include/linux/bio.h
++++ b/include/linux/bio.h
+@@ -44,9 +44,6 @@ static inline unsigned int bio_max_segs(unsigned int nr_segs)
+ #define bio_offset(bio)		bio_iter_offset((bio), (bio)->bi_iter)
+ #define bio_iovec(bio)		bio_iter_iovec((bio), (bio)->bi_iter)
+ 
+-#define bio_multiple_segments(bio)				\
+-	((bio)->bi_iter.bi_size != bio_iovec(bio).bv_len)
+-
+ #define bvec_iter_sectors(iter)	((iter).bi_size >> 9)
+ #define bvec_iter_end_sector(iter) ((iter).bi_sector + bvec_iter_sectors((iter)))
+ 
+@@ -271,7 +268,7 @@ static inline void bio_clear_flag(struct bio *bio, unsigned int bit)
+ 
+ static inline void bio_get_first_bvec(struct bio *bio, struct bio_vec *bv)
+ {
+-	*bv = bio_iovec(bio);
++	*bv = mp_bvec_iter_bvec(bio->bi_io_vec, bio->bi_iter);
+ }
+ 
+ static inline void bio_get_last_bvec(struct bio *bio, struct bio_vec *bv)
+@@ -279,10 +276,10 @@ static inline void bio_get_last_bvec(struct bio *bio, struct bio_vec *bv)
+ 	struct bvec_iter iter = bio->bi_iter;
+ 	int idx;
+ 
+-	if (unlikely(!bio_multiple_segments(bio))) {
+-		*bv = bio_iovec(bio);
++	/* this bio has only one bvec */
++	*bv = mp_bvec_iter_bvec(bio->bi_io_vec, bio->bi_iter);
++	if (bv->bv_len == bio->bi_iter.bi_size)
+ 		return;
+-	}
+ 
+ 	bio_advance_iter(bio, &iter, iter.bi_size);
+ 
+-- 
+2.17.1
 
-
-But as this is really confusing what each mode means for Linux, I would
-suggest that documentation for these modes in ethernet-controller.yaml
-file (or in any other location) could be extended. I see that it is
-really hard to find exact information what these modes mean and what is
-their meaning in DTS / kernel.
