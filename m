@@ -2,93 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6048739B5B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB3639B5B6
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230150AbhFDJQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 05:16:14 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:23694 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230039AbhFDJQJ (ORCPT
+        id S229978AbhFDJSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 05:18:02 -0400
+Received: from mail-wm1-f50.google.com ([209.85.128.50]:53059 "EHLO
+        mail-wm1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229930AbhFDJSC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 05:16:09 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1549Dbml001360;
-        Fri, 4 Jun 2021 11:14:20 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=yssBq0EmKbFHeQm/onBMqLy6p1bJtTHOnfCM+X0qBGE=;
- b=LVI3NZz81lwaNCUrYiiDgPy+m9IxXEnvcKBr9P+OZ20FrcCru6iSOAttGWFLUdsKS9z/
- 8bN1XFvtWs3V7+2MwYCpJBRYs8a7dW15C+b9e2Yd2ozXaL7VakP5NY5jG6WjpAkEgyy2
- rQo/oNWfkuT2/TYhfOzXD6Iizfhq5utKyAnfeBqQmLi3VqJmTsrlyWe/pZ7K5zU3fjXO
- TVqe5vAG/7COuz6a9PPuCi7Gkb+aVrojhgZg9YIx0sNVqetbTrtFfgynuufpgTLa8fag
- kM6h4iYC3aVX4zKJyUAS6qfT41is4p2biHRrccxGGNT1mRTX/+KCChZyzXQ/nunCKsxl Vw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 38y4ye3pdu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Jun 2021 11:14:20 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6DBD510002A;
-        Fri,  4 Jun 2021 11:14:20 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 62251216EEF;
-        Fri,  4 Jun 2021 11:14:20 +0200 (CEST)
-Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 4 Jun 2021 11:14:19
- +0200
-From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <arnaud.pouliquen@foss.st.com>
-Subject: [PATCH 4/4] rpmsg: Add a removable attribute to the rpmsg device
-Date:   Fri, 4 Jun 2021 11:14:06 +0200
-Message-ID: <20210604091406.15901-5-arnaud.pouliquen@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210604091406.15901-1-arnaud.pouliquen@foss.st.com>
-References: <20210604091406.15901-1-arnaud.pouliquen@foss.st.com>
+        Fri, 4 Jun 2021 05:18:02 -0400
+Received: by mail-wm1-f50.google.com with SMTP id f17so4944914wmf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 02:16:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0iAE1eXsi7Ags0kCh2NQ+Xw4BO7hibZ8156NIUiiC9Y=;
+        b=jXU7UgrylnRUSGeCbfj1NxKE31gatksb608K/jN+nlg9LYwbeaeTZoAwcju45NWPNL
+         Dll+M8tntKovKq1yobA2cANrzCfOGfHj9DvwCTVs43XpI723jBuZkYsrqBolUZlPSvA4
+         1LH0u8TTFb6ZSwQUY/IReeDHz11/L/zgeWokY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=0iAE1eXsi7Ags0kCh2NQ+Xw4BO7hibZ8156NIUiiC9Y=;
+        b=rv0ZDPQQ2HoLFKuzcwGvXY1J3DIkuav3UzyubW6807c3dD2LacB7fLJ+7X2vqdmPKu
+         2HKjYkxt0o5/CqCURBMjXQEIwVo/O7nJNSjd6BCxZDqJcdktgQph1bl22wMSOq+odxgX
+         Rtp50ANQVAxFLc86tVFew1OOjYJPu2cyvkfgqs8b/zhNGmw5Jam8vel5hQQ/Ers1tbt6
+         1eHDHApZxxhW9rTmq0EYw95nAmerobILtJFqhUZ3/vRgLFQYr4lKDgGW0vZwWioaP1Sa
+         69WqNV91ZgDmTRy3RJCJDSFjmIZAyOMBLBvOcg3lLbU/iNCfJ9BtBCmCYhCnC1JRpNmz
+         todg==
+X-Gm-Message-State: AOAM532VnQ+tql2/uCE/wzm/5OxB3ao/g5c+Q6AXSXemnqiaqwu234s8
+        hIz/LlJtVL4gmf7dqf3kPQnJymUHL4d8DA==
+X-Google-Smtp-Source: ABdhPJyTtG/bEVOcLkvg2qjVHIyuSghlJN1mBim4VUqjG8axFLCZdSqoqLk9+jMvv7gN3CG7HSk3Bg==
+X-Received: by 2002:a7b:c450:: with SMTP id l16mr2640565wmi.117.1622798115481;
+        Fri, 04 Jun 2021 02:15:15 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id o17sm5681880wrp.47.2021.06.04.02.15.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 02:15:15 -0700 (PDT)
+Date:   Fri, 4 Jun 2021 11:15:13 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Kees Cook <keescook@chromium.org>, Daniel Vetter <daniel@ffwll.ch>,
+        Emma Anholt <emma@anholt.net>, David Airlie <airlied@linux.ie>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>
+Subject: Re: [PATCH v2] drm/pl111: Actually fix CONFIG_VEXPRESS_CONFIG depends
+Message-ID: <YLnvIYKduzv56YAA@phenom.ffwll.local>
+Mail-Followup-To: Linus Walleij <linus.walleij@linaro.org>,
+        Kees Cook <keescook@chromium.org>, Emma Anholt <emma@anholt.net>,
+        David Airlie <airlied@linux.ie>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>
+References: <20210604014055.4060521-1-keescook@chromium.org>
+ <CACRpkdZEQ+C7tSppcJ83Go70CaBLe4XYKBqYqJfZWAYq-H2+wA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-04_05:2021-06-04,2021-06-04 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdZEQ+C7tSppcJ83Go70CaBLe4XYKBqYqJfZWAYq-H2+wA@mail.gmail.com>
+X-Operating-System: Linux phenom 5.10.32scarlett+ 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds a new attribute to the rpmsg device to expose in sysfs the
-the removability of an rpmsg device.
+On Fri, Jun 04, 2021 at 09:44:59AM +0200, Linus Walleij wrote:
+> On Fri, Jun 4, 2021 at 3:41 AM Kees Cook <keescook@chromium.org> wrote:
+> 
+> > VEXPRESS_CONFIG needs to either be missing, built-in, or modular when
+> > pl111 is modular. Update the Kconfig to reflect the need.
+> >
+> > Fixes: 4dc7c97d04dc ("drm/pl111: depend on CONFIG_VEXPRESS_CONFIG")
+> 
+> Yeah that doesn't work, thanks for fixing this!
+> 
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> 
+> > -       depends on VEXPRESS_CONFIG
+> > +       depends on ARM || ARM64 || COMPILE_TEST
+> > +       depends on VEXPRESS_CONFIG || VEXPRESS_CONFIG=n
+> 
+> That's the right solution,
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
----
- drivers/rpmsg/rpmsg_core.c | 2 ++
- 1 file changed, 2 insertions(+)
+Since I screwed up already, care to also push this to drm-misc-next?
 
-diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
-index e5daee4f9373..b2543ef4a92f 100644
---- a/drivers/rpmsg/rpmsg_core.c
-+++ b/drivers/rpmsg/rpmsg_core.c
-@@ -413,6 +413,7 @@ rpmsg_show_attr(src, src, "0x%x\n");
- rpmsg_show_attr(dst, dst, "0x%x\n");
- rpmsg_show_attr(announce, announce ? "true" : "false", "%s\n");
- rpmsg_string_attr(driver_override, driver_override);
-+rpmsg_show_attr(removable, us_removable ? "true" : "false", "%s\n");
- 
- static ssize_t modalias_show(struct device *dev,
- 			     struct device_attribute *attr, char *buf)
-@@ -435,6 +436,7 @@ static struct attribute *rpmsg_dev_attrs[] = {
- 	&dev_attr_src.attr,
- 	&dev_attr_announce.attr,
- 	&dev_attr_driver_override.attr,
-+	&dev_attr_removable.attr,
- 	NULL,
- };
- ATTRIBUTE_GROUPS(rpmsg_dev);
+Thanks, Daniel
 -- 
-2.17.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
