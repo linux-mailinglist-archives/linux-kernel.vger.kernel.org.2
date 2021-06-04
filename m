@@ -2,188 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF8D39B3B5
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A09F639B3B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbhFDHWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 03:22:25 -0400
-Received: from mail-vs1-f45.google.com ([209.85.217.45]:42559 "EHLO
-        mail-vs1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhFDHWY (ORCPT
+        id S229955AbhFDHW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 03:22:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229555AbhFDHWz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 03:22:24 -0400
-Received: by mail-vs1-f45.google.com with SMTP id l25so4329712vsb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 00:20:22 -0700 (PDT)
+        Fri, 4 Jun 2021 03:22:55 -0400
+Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BFBC06174A
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 00:21:10 -0700 (PDT)
+Received: by mail-vs1-xe30.google.com with SMTP id j15so4355593vsf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 00:21:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lUGXtmm3YaaYQA8A3NSHgtbe8akKxyp8jdu/y6noB0U=;
-        b=tLf7J5afBpLfm20TZzOAxqfviSxldh3sN/UTbxzKhDB7y6aQzVak4rBUkyRPQG33o5
-         2CCbgayd3+BjiKKd5vYS9P4mr/8WP7y1mPRuXbMH1MMrEiQ7+2p+YjxydG2JH86SEyYN
-         5mhPP6/36sXocZwLqcrDYsisq574ul0/ay5GK5RcojQkKOPruiLidFG6LM3lmyKNsY9E
-         V3yrLc6qi1Hpt7XOBIPQ3NFeDQOqp1pj+6cVUCMwIkk4KZz/c2860T1Ck1kgbux7GkDj
-         rD52hiI1+4vwuXEkSEyYaw6y9CxMlUlz4qmn+HY11dg+UlPXZyO7WUQQNjr8kxGJN04Q
-         jNnQ==
+         :cc:content-transfer-encoding;
+        bh=nCIk2b978NRaiPpxcs7JKBmxKvucKceuB6IoMZqIS40=;
+        b=ZIGAtPQqaZj90ijBOhbtEN6UbSW6JDVTb3skQKkXyT7Sn8IvLOfzgadfZRY+oDP2ID
+         ZMeBsOwwcqZcFugcOcHXtY5NNpDK+2mU546LBKww5h4NYDSyrNNNsPOhiKTevnFXHH7s
+         0U2yhPk1/rJWZJPYZfaMSj6RpkI4MmEGE0LNF+9212qjK96rXls7smV///j/yT19szGZ
+         zV/+K4IkUhuy6teg8RCFhVj+4B8zaNhuuigYYBAHNSpRrklQVsDvjM18XvIWkDp3T7fB
+         AWzPc5qfW0mv0KB9xl74Mu1d++YeHgt9Zxn09avq9zUdP4iqQWompMQewBjWqHT095AE
+         87+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lUGXtmm3YaaYQA8A3NSHgtbe8akKxyp8jdu/y6noB0U=;
-        b=rbhYcpl9OCOxfrzSIgz+QVuePvPegEpiA2grWaqz8bVpIFTAXNMCvpggSH/KCfwZb7
-         IJUL1VtMAZ2GJkxedM7gM7LoxVwOAOMWCF5zysuWNJ3ti64CEPG4UBJZT39yVaXJliUS
-         JPDHfHOI5BB0Ee0xUaEx0MymoVgAO3NfaUWy6qifslPgyGkZ7BelTi/dmCiulTRteGEK
-         zvzGWogJl5agkEgjaQeZ/CEv1TSK2cNJULQ17HA1Sg9ACmCsgh4aR8YJPSvwJkle83HD
-         /rZvTxlqT9WhbTrOObix7Kny2waT6pv8ak/dP0arYbN/FAqUhN4QlT8C+yHPMQKKrYlv
-         KidQ==
-X-Gm-Message-State: AOAM5318/4F7V8zb7UiUPD42sLhPOJjFXq2m28oQgyW27fqBslI1qA8m
-        ydyGsthcSJ8BTcy4vuKOvQ6y+e+dCDNitQno05bRyLSA5Qi7xjkU
-X-Google-Smtp-Source: ABdhPJzo9GqS9h3POv3Xet9DMdIVcWmPvwBW6Tvbshz7HOCBv0w+Vh2vMe8mdSvwCusNyTHZIeSQ00a4wBjuDFLF6xM=
-X-Received: by 2002:a67:e359:: with SMTP id s25mr1333199vsm.55.1622791162238;
- Fri, 04 Jun 2021 00:19:22 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=nCIk2b978NRaiPpxcs7JKBmxKvucKceuB6IoMZqIS40=;
+        b=VFsYVoq65u29JWApPy7NHTc/NyQUOAjOAhfu4fdnuxr3UE2jyV1e0910LB6jt7CTwq
+         wJiRRTHd0z3+bQBt3x0ju+gMx81/22Jb3IoJO62/y6fpiqP1/nfDOCgmJOqrOlDuIuHN
+         JdwykSPWAEaqOpZapN5qLM4HkdXaEb5py/PIPu3k6vNsI0HsnLYWVcTQAOxmsUilTGo2
+         62BnkP5lRTlyAgvEnpP2T3frvrDE2FsU3Q1vhtHPiPS4lsUYpSvdvjMJIBlKaON2zdAG
+         jyWxdr86UwkqjZbcZ9ao7qlkXVOWThJLC09XAs4uhD2gJHlnxqNWsJPYs4THmlz/0hpq
+         cRMA==
+X-Gm-Message-State: AOAM533cpxXNKW/dtYDUiIYygpjUcMcsjxbaBc5qU8W3KEGlsOJCliY9
+        NIRRKxdJ5kmXOACf8TZ380jmOBcKqI/wETZD3aKxKw==
+X-Google-Smtp-Source: ABdhPJx5LVF77+hXRLP6Iocuj5CeDKlWwwZ7lwd/nIiXox/AjZbXcYFteL6sHSFjp+AhUFPXr1xPKRfuCImE/idcoWc=
+X-Received: by 2002:a67:1087:: with SMTP id 129mr1490364vsq.42.1622791269253;
+ Fri, 04 Jun 2021 00:21:09 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210603093438.138705-1-ulf.hansson@linaro.org>
- <YLi5N06Qs+gYHgYg@gerhold.net> <CAPDyKFqQ==zPwXjBxKAX9m38YfxFViqLTz8autnZc1suT5cayg@mail.gmail.com>
- <YLkOAyydZMnxkEy+@gerhold.net>
-In-Reply-To: <YLkOAyydZMnxkEy+@gerhold.net>
+ <20210603093438.138705-4-ulf.hansson@linaro.org> <a7f55fce-dd4a-22ab-f7e2-4821e765a634@gmail.com>
+ <1f71868c-7274-b4f8-e66d-dfb47cf44731@gmail.com>
+In-Reply-To: <1f71868c-7274-b4f8-e66d-dfb47cf44731@gmail.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 4 Jun 2021 09:18:45 +0200
-Message-ID: <CAPDyKFpaKkeyOpP7iW8-WG7DLs6Gd1eD2KO3pDYrVQ3z88zFJQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] PM: domains: Avoid boilerplate code for DVFS in subsystem/drivers
-To:     Stephan Gerhold <stephan@gerhold.net>
+Date:   Fri, 4 Jun 2021 09:20:33 +0200
+Message-ID: <CAPDyKFrLcVQQ4pH3wyjCu8Ysjr6=Bjjd=WDwTiOagAZe2ohWMQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] PM: domains: Drop/restore performance state votes
+ for devices at runtime PM
+To:     Dmitry Osipenko <digetx@gmail.com>
 Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
         Viresh Kumar <viresh.kumar@linaro.org>,
         Linux PM <linux-pm@vger.kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
         Thierry Reding <thierry.reding@gmail.com>,
         Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
         Roja Rani Yarubandi <rojay@codeaurora.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Stephen Boyd <sboyd@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Jun 2021 at 19:16, Stephan Gerhold <stephan@gerhold.net> wrote:
+On Thu, 3 Jun 2021 at 21:08, Dmitry Osipenko <digetx@gmail.com> wrote:
 >
-> On Thu, Jun 03, 2021 at 05:27:30PM +0200, Ulf Hansson wrote:
-> > On Thu, 3 Jun 2021 at 13:13, Stephan Gerhold <stephan@gerhold.net> wrote:
-> > > I think this might also go into the direction of my problem with the OPP
-> > > core for CPU DVFS [1] since the OPP core currently does not "power-on"
-> > > the power domains, it just sets a performance state. I got kind of stuck
-> > > with all the complexity of power domains in Linux so I think we never
-> > > solved that.
+> 03.06.2021 22:02, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > 03.06.2021 12:34, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >> A subsystem/driver that need to manage OPPs for its device, should
+> >> typically drop its vote for the OPP when the device becomes runtime
+> >> suspended. In this way, the corresponding aggregation of the performan=
+ce
+> >> state votes that is managed in genpd for the attached PM domain, may f=
+ind
+> >> that the aggregated vote can be decreased. Hence, it may allow genpd t=
+o set
+> >> the lower performance state for the PM domain, thus avoiding to waste
+> >> energy.
+> >>
+> >> To accomplish this, typically a subsystem/driver would need to call
+> >> dev_pm_opp_set_rate|opp() for its device from its ->runtime_suspend()
+> >> callback, to drop the vote for the OPP. Accordingly, it needs another =
+call
+> >> to dev_pm_opp_set_rate|opp() to restore the vote for the OPP from its
+> >> ->runtime_resume() callback.
+> >>
+> >> To avoid boilerplate code in subsystems/driver to deal with these thin=
+gs,
+> >> let's instead manage this internally in genpd.
+> >>
+> >> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> >> ---
+> >>
+> >> Changes in v2:
+> >>      - Rebased.
+> >>      - A few minor cosmetic changes.
+> >>      - Deal with the error path in genpd_runtime_resume().
 > >
-> > Hmm, that issue is in a way related.
-> >
-> > Although, if I understand correctly, that was rather about at what
-> > layer it makes best sense to activate the device (from runtime PM
-> > point of view). And this was needed due to the fact that the
-> > corresponding genpd provider, requires the PM domain to be power on to
-> > allow changing a performance state for it. Did I get that correct?
-> >
->
-> Yes, mostly. But I guess I keep coming back to the same question:
->
-> When/why does it make sense to vote for a "performance state" of
-> a power domain that is or might be powered off?
->
-> "Powered off" sounds like the absolutely lowest possible performance
-> state to me, it's just not on at all. And if suddenly a device comes and
-> says "I want performance state X", nothing can change until the power
-> domain is also "powered on".
->
-> I think my "CPU DVFS" problem only exists because in many other
-> situations it's possible to rely on one of the following side effects:
->
->   1. The genpd provider does not care if it's powered on or not.
->      (i.e. it's always-on or implicitly powers on if state > 0).
->   2. There is some other device that votes to keep the power domain on.
->
-> And that's how the problem relates to my comment for this patch series ...
->
-> >
-> > >
-> > > Do I understand your patch set correctly that you basically make the
-> > > performance state votes conditional to the "power-on" vote of the device
-> > > (which is automatically toggled during runtime/system PM)?
-> >
-> > The series can be considered as a step in that direction, but no, this
-> > series doesn't change that behaviour.
-> >
-> > Users of dev_pm_genpd_set_performance_state() are still free to set a
-> > performance state, orthogonally to whether the PM domain is powered on
-> > or off.
-> >
-> > >
-> > > If yes, I think that's a good thing. It was always really confusing to me
-> > > that a device can make performance state votes if it doesn't actually
-> > > want the power domain to be powered on.
-> >
-> > I share your view, it's a bit confusing.
-> >
-> > Just adding the condition internally to genpd to prevent the caller of
-> > dev_pm_genpd_set_performance() from succeeding to set a new state,
-> > unless the genpd is powered on, should be a rather simple thing to
-> > add.
-> >
-> > However, to change this, we first need to double check that all the
-> > callers are making sure they have turned on the PM domain (typically
-> > via runtime PM).
+> > I tested this on NVIDIA Tegra by removing the boilerplate code from
+> > drivers' RPM and haven't noticed any problems, the performance state is
+> > dropped/restored as expected. Thank you.
 > >
 >
-> ... because if performance state votes would be conditional to the
-> "power-on" vote of the device, it would no longer be possible
-> to rely on the side effects mentioned above. So this would most
-> certainly break some code that (incorrectly?) relies on these side
-> effects, but would also prevent such code.
+> Tested-by: Dmitry Osipenko <digetx@gmail.com>
 
-Right. I understand your point and I am open to discuss an
-implementation. Although, I suggest we continue that separately from
-the $subject series.
-
->
-> My (personal) feeling so far is that just dropping performance votes
-> during runtime/system suspend just makes the entire situation even more
-> confusing.
-
-Well, that's what most subsystems/drivers need to do.
-
-Moreover, we have specific devices that only use one default OPP [1].
-
->
-> > >
-> > > What happens if a driver calls dev_pm_genpd_set_performance_state(...)
-> > > while the device is suspended? Will that mess up the performance state
-> > > when the device resumes?
-> >
-> > Good question. The idea is:
-> >
-> > If genpd in genpd_runtime_suspend() are able to drop an existing vote
-> > for a performance state, it should restore the vote in
-> > genpd_runtime_resume(). This also means, if there is no vote to drop
-> > in genpd_runtime_suspend(), genpd should just leave the vote as is in
-> > genpd_runtime_resume().
-> >
->
-> But the next time the device enters runtime suspend that vote would be
-> dropped, wouldn't it? That feels kind of strange to me.
-
-What do you mean by "next time"?
-
-My main point is, if the device enters runtime suspend state, why
-should we keep the vote for an OPP for the device? I mean, the device
-isn't going to be used anyway.
-
->
-> Stephan
+Thanks a lot, much appreciated!
 
 Kind regards
 Uffe
-
-[1]
-https://patchwork.kernel.org/project/linux-pm/list/?series=489309
