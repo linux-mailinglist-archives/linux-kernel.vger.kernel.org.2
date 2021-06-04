@@ -2,89 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5989B39C2CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10EE139C2CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbhFDVqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 17:46:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230041AbhFDVqj (ORCPT
+        id S231286AbhFDVrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 17:47:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34987 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229929AbhFDVrC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 17:46:39 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 763D5C061766
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 14:44:52 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id f12so13388105ljp.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 14:44:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GjsAN50ddWQm0VC6qlRfoB/dT6P+8ZqVwoy/BYE0lSw=;
-        b=ZHc08C+7Ibj69IVBB82goPegus+bAv9YuQoOVi9q9e+hDWENTWGrYTASzVNJNr28ii
-         Y7E/XifFGi5YsoiMtuln3nFJzi2+VJCSGQifDJJetuD0tsRwjsUij7KR3i4O/1s7/3zi
-         NClVAgpjP25K3UUqeUWYveb0ihfXIfOH8FXpzYyYITm9evxiETFUQQyyz1+dWm+nDBF9
-         UGnPUZMzC41fMqye9lXdyLOk94SDBWRCYO2+bTTfW/RSjLuVtL3W3yZXtW3bi4ayGkTn
-         oATemphAWOJ1r8/n4NB/XtZY3Udzt9Me9nva7gNm8ZzkEcvIV122BSG5Zrs89Wj4tWxA
-         hrdA==
+        Fri, 4 Jun 2021 17:47:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622843115;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zSr4NtU9kRyTYI9vJXKuouCcXbXTwJvBiHy5x/6JVcU=;
+        b=Nwrd4W3xDTc/nPFGTpxk/vPg4Q+MP8NuisNDlBcju6oqKLf1sNAWalmlsZy3+h4+UvUssK
+        VZdN7dG0Vae5uYS/PFO9kuaiLyW1j9fdVluXui+D1j1lWEfYgs8TQrWaQk372YJB26uY+e
+        hkPNBAyHxBLg6BSHnOoeB2x6BCRG3Ic=
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
+ [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-600-hyNLE5jKMHSBwI_n5BXQqQ-1; Fri, 04 Jun 2021 17:45:13 -0400
+X-MC-Unique: hyNLE5jKMHSBwI_n5BXQqQ-1
+Received: by mail-ot1-f72.google.com with SMTP id 59-20020a9d0dc10000b02902a57e382ca1so6071905ots.7
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 14:45:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GjsAN50ddWQm0VC6qlRfoB/dT6P+8ZqVwoy/BYE0lSw=;
-        b=PpdZGNGaAoDk1VriNdQAfFKe0D/6DmvRSrDiCssO3dAG8D1+SwDbMXsqP6H03ibUjW
-         5fwGxDx41+iyYHm2Lrn5OjRiOVwpxv7EuI4eEXQ1b/NiWqbV825FUx0OFiaKWvYY4a6H
-         DnOpdxZ7fsNVImYOxKUGPMK4CZbCtGVwHI4aZIs/b5RX0WyqDxBL18t5aOaMmqebxlu9
-         PgsbdUp9aRMDABjqhH0KYLct63rirK4Rrd1J9VvG0i4cAZ5e+w0TlvkGvCKYye+lQMPe
-         wu8ve+FcYBTAQTCbhR+74LHbcXPR5P0Ksh3vLN+ktSdO4ibxSnFy9kjvS4HmioqIwmEJ
-         CI+A==
-X-Gm-Message-State: AOAM530sJxZHEmFwEdx166pNJThfD1aPZf6foMBJRUzudY46r8/nrO1T
-        uo7oZTtHrUsqzMhv5GoI4KK4WycoNFwllDKvlUuRXA==
-X-Google-Smtp-Source: ABdhPJyTRsaaVHVr9ofHVNMandAQLLoQSDxGJmUjBgJVRYEe9VRABdJWRzIKKzECxAYGWrgvTi3XmPiP37aKMIkjmIU=
-X-Received: by 2002:a2e:889a:: with SMTP id k26mr4923550lji.438.1622843090808;
- Fri, 04 Jun 2021 14:44:50 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=zSr4NtU9kRyTYI9vJXKuouCcXbXTwJvBiHy5x/6JVcU=;
+        b=JNevwz3xfHtWGjACHaUTqp5CIagQ4/DFDwEV7PkpVMGMOYz9cgD4CslN8/spN+KGNb
+         spR833pk12LjDegfGNyiDlG8m2mR89qpjfdKmY549s+E+Kea67CihKGJjfqkZgHLvMEy
+         cENGO/krG/0LniX6gVK8LLRHt19K7yk83ONTc7W9/4EQK3E1m8GxOLsSJZ7kp9QrEDcU
+         dDRfKRl7E3ImDMzR8in9Id7O6An4b71TiIhiXlN+gQoMlwo+j1ZvddBPmVYC/HajC9fk
+         0CWRh1AiO30xK5PDN3wtpHijt0ouLnBryv8VsQHEyx/U62qPAjrywAQaDXi2eGRTNpgF
+         Qekw==
+X-Gm-Message-State: AOAM533pUe8gjOXHPSfF4gCptkMxZkpSWuytLuroJ47ewPZZmcUNd1l/
+        DGYNxxSqy/6nRDMEqRy4Oa7DsuCS0vDFWdVBs1UJZjBf5fdI+d73xCNo+p5I92I+uu+6a6+aMDm
+        xwhG5hcpSYc+q058nt4og+WlL
+X-Received: by 2002:a4a:b544:: with SMTP id s4mr5214633ooo.62.1622843113070;
+        Fri, 04 Jun 2021 14:45:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyXMJF5jgtVADecJNiiiu5bWXOc0GxXvl+uaj344NIz3ZPmM3VepTqHL8yFOEd8Ck092h+X+Q==
+X-Received: by 2002:a4a:b544:: with SMTP id s4mr5214626ooo.62.1622843112930;
+        Fri, 04 Jun 2021 14:45:12 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id l10sm752196ots.32.2021.06.04.14.45.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 14:45:12 -0700 (PDT)
+Date:   Fri, 4 Jun 2021 15:45:11 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jason Wang <jasowang@redhat.com>
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+Message-ID: <20210604154511.2bcb48dc.alex.williamson@redhat.com>
+In-Reply-To: <20210604121337.GJ1002214@nvidia.com>
+References: <20210602120111.5e5bcf93.alex.williamson@redhat.com>
+        <20210602180925.GH1002214@nvidia.com>
+        <20210602130053.615db578.alex.williamson@redhat.com>
+        <20210602195404.GI1002214@nvidia.com>
+        <20210602143734.72fb4fa4.alex.williamson@redhat.com>
+        <20210602224536.GJ1002214@nvidia.com>
+        <20210602205054.3505c9c3.alex.williamson@redhat.com>
+        <MWHPR11MB1886DC8ECF5D56FE485D13D58C3C9@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210603124036.GU1002214@nvidia.com>
+        <20210603144136.2b68c5c5.alex.williamson@redhat.com>
+        <20210604121337.GJ1002214@nvidia.com>
+Organization: Red Hat
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20210524131852.263883-1-maxime@cerno.tech>
-In-Reply-To: <20210524131852.263883-1-maxime@cerno.tech>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 4 Jun 2021 23:44:39 +0200
-Message-ID: <CACRpkdbpfJ6Kc-W3jQNKZqwqy+utSV02NC26KEEA14eXtk9vMw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] drm/vc4: hdmi: Fix error path of hpd-gpios
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Eric Anholt <eric@anholt.net>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Maxime Ripard <mripard@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 3:19 PM Maxime Ripard <maxime@cerno.tech> wrote:
+On Fri, 4 Jun 2021 09:13:37 -0300
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-> If the of_get_named_gpio_flags call fails in vc4_hdmi_bind, we jump to
-> the err_unprepare_hsm label. That label will then call
-> pm_runtime_disable and put_device on the DDC device.
->
-> We just retrieved the DDC device, so the latter is definitely justified.
-> However at that point we still haven't called pm_runtime_enable, so the
-> call to pm_runtime_disable is not supposed to be there.
->
-> Fixes: 10ee275cb12f ("drm/vc4: prepare for CEC support")
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> On Thu, Jun 03, 2021 at 02:41:36PM -0600, Alex Williamson wrote:
+> 
+> > Could you clarify "vfio_driver"?    
+> 
+> This is the thing providing the vfio_device_ops function pointers.
+> 
+> So vfio-pci can't know anything about this (although your no-snoop
+> control probing idea makes sense to me)
+> 
+> But vfio_mlx5_pci can know
+> 
+> So can mdev_idxd
+> 
+> And kvmgt
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+A capability on VFIO_DEVICE_GET_INFO could provide a hint to userspace.
+Stock vfio-pci could fill it out to the extent advertising if the
+device is capable of non-coherent DMA based on the Enable No-snoop
+probing, the device specific vfio_drivers could set it based on
+knowledge of the device behavior.  Another bit might indicate a
+preference to not suppress non-coherent DMA at the IOMMU.  Thanks,
 
-Yours,
-Linus Walleij
+Alex
+
