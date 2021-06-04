@@ -2,111 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D1E39BCAE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4490939BCB4
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbhFDQNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 12:13:01 -0400
-Received: from mail-pj1-f44.google.com ([209.85.216.44]:33669 "EHLO
-        mail-pj1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230037AbhFDQM7 (ORCPT
+        id S231224AbhFDQOD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Jun 2021 12:14:03 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:37709 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229924AbhFDQOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 12:12:59 -0400
-Received: by mail-pj1-f44.google.com with SMTP id k22-20020a17090aef16b0290163512accedso5393451pjz.0;
-        Fri, 04 Jun 2021 09:11:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=w2ysyGxGgmyHl3kc4LuUtneRW6FPU4AZDsaSZQi6jlQ=;
-        b=QPZwQXLYK0k2/yHIicZPCqTWo8LulDmtH4ND7pn11Ztjg/5O9NPRuvhHQzL9+yGAYB
-         7vzyPe82csubxLiq/L9vgxC8s9vfwHzmvUbimMjobnjL+8MrmQRi0HghzkOwpLE9oSfN
-         f4FXY8X7tlAIL/E7fgs33OiDwfPkajDrsHELOy/RpiEor4DradsoT12zqVe54vqex35e
-         5n/vraVIJAp4j+dOAP5lyGxBlcyBObyeQ3t1ayQ9H8rcykdoHmO9s4B2r2MbE+uEX64x
-         +/YrGE1SGXcHt0i1UORGxfIRw3Nyaaxwt4l94XXe1fNERxLJKhKHQzZ/iq7zNOWBoyQs
-         Xx6A==
-X-Gm-Message-State: AOAM532xXwOpjfU5ZjZ/SpMGxdZ5iSvI4FSrN/Zix3+H6wUvPswFWV2n
-        kMb3C/NL4xyqLAMyTfnOjDE=
-X-Google-Smtp-Source: ABdhPJxQjJqbe6fhOk/03WVDmjed3rm0PWwcWk5xSlDJmHpKF3/+iJR/96cZko0Jmr6DZBGKJVYxIA==
-X-Received: by 2002:a17:90a:a10a:: with SMTP id s10mr5577907pjp.59.1622823072698;
-        Fri, 04 Jun 2021 09:11:12 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id c11sm5009246pjr.32.2021.06.04.09.11.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Jun 2021 09:11:11 -0700 (PDT)
-Subject: Re: [PATCH v12 3/3] ufs: set max_bio_bytes with queue max sectors
-To:     Changheun Lee <nanich.lee@samsung.com>, Johannes.Thumshirn@wdc.com,
-        alex_y_xu@yahoo.ca, asml.silence@gmail.com, axboe@kernel.dk,
-        bgoncalv@redhat.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, cang@codeaurora.org,
-        avri.altman@wdc.com, alim.akhtar@samsung.com,
-        damien.lemoal@wdc.com, gregkh@linuxfoundation.org,
-        hch@infradead.org, jaegeuk@kernel.org, linux-block@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ming.lei@redhat.com, osandov@fb.com, patchwork-bot@kernel.org,
-        tj@kernel.org, tom.leiming@gmail.com, yi.zhang@redhat.com
-Cc:     jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
-        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
-        sookwan7.kim@samsung.com, woosung2.lee@samsung.com,
-        yt0928.kim@samsung.com
-References: <20210604050324.28670-1-nanich.lee@samsung.com>
- <CGME20210604052201epcas1p41a27660b20d70b7fc4295c8f131d33ce@epcas1p4.samsung.com>
- <20210604050324.28670-4-nanich.lee@samsung.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <004bef40-1667-3b60-adaf-bea2b15f2514@acm.org>
-Date:   Fri, 4 Jun 2021 09:11:09 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Fri, 4 Jun 2021 12:14:01 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-352-CmAo95vYMZKnalAqwwVMqA-1; Fri, 04 Jun 2021 12:12:11 -0400
+X-MC-Unique: CmAo95vYMZKnalAqwwVMqA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2DD5D180FD6F;
+        Fri,  4 Jun 2021 16:12:09 +0000 (UTC)
+Received: from bahia.lan (ovpn-112-232.ams2.redhat.com [10.36.112.232])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E038F60CEC;
+        Fri,  4 Jun 2021 16:11:57 +0000 (UTC)
+From:   Greg Kurz <groug@kaod.org>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     linux-kernel@vger.kernel.org, Max Reitz <mreitz@redhat.com>,
+        linux-fsdevel@vger.kernel.org, virtio-fs@redhat.com,
+        Vivek Goyal <vgoyal@redhat.com>, Greg Kurz <groug@kaod.org>
+Subject: [PATCH v2 0/7] fuse: Some fixes for submounts
+Date:   Fri,  4 Jun 2021 18:11:49 +0200
+Message-Id: <20210604161156.408496-1-groug@kaod.org>
 MIME-Version: 1.0
-In-Reply-To: <20210604050324.28670-4-nanich.lee@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=groug@kaod.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kaod.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/3/21 10:03 PM, Changheun Lee wrote:
-> Set max_bio_bytes same with queue max sectors. It will lead to fast bio
-> submit when bio size is over than queue max sectors. And it might be helpful
-> to align submit bio size in some case.
-> 
-> Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 3eb54937f1d8..37365a726517 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -4858,6 +4858,7 @@ static int ufshcd_slave_configure(struct scsi_device *sdev)
->  {
->  	struct ufs_hba *hba = shost_priv(sdev->host);
->  	struct request_queue *q = sdev->request_queue;
-> +	unsigned int max_bio_bytes;
->  
->  	blk_queue_update_dma_pad(q, PRDT_DATA_BYTE_COUNT_PAD - 1);
->  	if (hba->quirks & UFSHCD_QUIRK_ALIGN_SG_WITH_PAGE_SIZE)
-> @@ -4868,6 +4869,10 @@ static int ufshcd_slave_configure(struct scsi_device *sdev)
->  
->  	ufshcd_crypto_setup_rq_keyslot_manager(hba, q);
->  
-> +	if (!check_shl_overflow(queue_max_sectors(q),
-> +				SECTOR_SHIFT, &max_bio_bytes))
-> +		blk_queue_max_bio_bytes(q, max_bio_bytes);
-> +
->  	return 0;
->  }
+v2:
 
-Just like previous versions of this patch series, this approach will
-trigger data corruption if dm-crypt is stacked on top of the UFS driver
-since ufs_max_sectors << SECTOR_SHIFT = 1024 * 512 is less than the size
-of the dm-crypt buffer (BIO_MAX_VECS << PAGE_SHIFT = 256 * 4096).
+- add an extra fix (patch 2) : mount is now added to the list before
+  unlocking sb->s_umount
+- set SB_BORN just before unlocking sb->s_umount, just like it would
+  happen when using fc_mount() (Max)
+- don't allocate a FUSE context for the submounts (Max)
+- introduce a dedicated context ops for submounts
+- add a extra cleanup : simplify the code even more with fc_mount()
 
-I am not recommending to increase max_sectors for the UFS driver. We
-need a solution that is independent of the dm-crypt internals.
+v1:
 
-Bart.
+While working on adding syncfs() support in FUSE, I've hit some severe
+bugs with submounts (a crash and an infinite loop). The fix for the
+crash is straightforward (patch 1), but the fix for the infinite loop
+is more invasive : as suggested by Miklos, a simple bug fix is applied
+first (patch 2) and the final fix (patch 3) is applied on top.
+
+Greg Kurz (7):
+  fuse: Fix crash in fuse_dentry_automount() error path
+  fuse: Fix crash if superblock of submount gets killed early
+  fuse: Fix infinite loop in sget_fc()
+  fuse: Add dedicated filesystem context ops for submounts
+  fuse: Call vfs_get_tree() for submounts
+  fuse: Switch to fc_mount() for submounts
+  fuse: Make fuse_fill_super_submount() static
+
+ fs/fuse/dir.c       | 58 ++++++---------------------------------------
+ fs/fuse/fuse_i.h    | 14 ++++-------
+ fs/fuse/inode.c     | 56 +++++++++++++++++++++++++++++++++++++++++--
+ fs/fuse/virtio_fs.c |  3 +++
+ 4 files changed, 69 insertions(+), 62 deletions(-)
+
+-- 
+2.31.1
+
 
