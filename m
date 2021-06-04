@@ -2,90 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BFAA39BFBE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 20:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43DF039BFA8
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 20:34:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230407AbhFDShL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 14:37:11 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:56167 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230161AbhFDShK (ORCPT
+        id S230139AbhFDSft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 14:35:49 -0400
+Received: from mail-ej1-f43.google.com ([209.85.218.43]:38842 "EHLO
+        mail-ej1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229726AbhFDSfp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 14:37:10 -0400
-Received: from mail-wr1-f43.google.com ([209.85.221.43]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MXXdn-1ls9S808UR-00Yyey; Fri, 04 Jun 2021 20:35:23 +0200
-Received: by mail-wr1-f43.google.com with SMTP id m18so10231375wrv.2;
-        Fri, 04 Jun 2021 11:35:22 -0700 (PDT)
-X-Gm-Message-State: AOAM530Wc5/DTeSSfFQ3l3HthMkHBH1oWk8zFYw0A0Pl5jKssSLRcDst
-        TYlikTDubz1/NlyW0xeUeXppIT3C2FUFVi8F2uo=
-X-Google-Smtp-Source: ABdhPJxERBDztGap2tMeeCVda43Ious9cLlsWPwTXGV01hDgX+xRbkwxcD2X8jt1oNQSa3O2nrllQDYOEr19Z8vD4+o=
-X-Received: by 2002:adf:fe4f:: with SMTP id m15mr5424092wrs.361.1622831722675;
- Fri, 04 Jun 2021 11:35:22 -0700 (PDT)
+        Fri, 4 Jun 2021 14:35:45 -0400
+Received: by mail-ej1-f43.google.com with SMTP id og14so10615933ejc.5;
+        Fri, 04 Jun 2021 11:33:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tg06CwoioL2IXkOzwaIni0fjWWraDQZke8DSnvYGbVE=;
+        b=cODeUmLZyDhVPcaNHl+/7zHTeYQ3alQ+upnymRyZs6No9dqcKW+kky1tPS/zwKw/P1
+         AlQNjWVxbP2EiCuLiEGoutn7NM3qSBsrDQdcdoouOboPC7cE9uRtZHopesXfiIsLQ1Gd
+         w5WwBMikUA3XtNHH+xb3vw2sZy+FxjudEZFzwuBMUrlUyAnQNlWDTw4BY8rTGgDNJ2YQ
+         i7qsZylsdZhzaT9UMrOsZErH+tEHBkotj4yLKEvxUBNOjzIK2Dl6Fbom4Q5eckruHlLH
+         m3YgbOiGNx/8xnZ2LolZzRaYhGcX/kFSNbpE8xHsCUce+LjR065f9xRO62MkbvMO4oGM
+         HI+g==
+X-Gm-Message-State: AOAM531+GAfOsItmNR3CAhdAAm9ZjFAMfQO09FQiNAGTG7KnjQgD+fH4
+        VXWlMoaMjXF8Ve23c4/wcurpCNYFRVTuiA==
+X-Google-Smtp-Source: ABdhPJzEcKp5P1+5WBctql3q4YPUpHSmM2JDVHBDSdy70vk5Xgfje7Xx4fpRIWJpjJC4WRq0E4DJhg==
+X-Received: by 2002:a17:907:9801:: with SMTP id ji1mr5701196ejc.523.1622831637122;
+        Fri, 04 Jun 2021 11:33:57 -0700 (PDT)
+Received: from msft-t490s.teknoraver.net (net-37-119-128-179.cust.vodafonedsl.it. [37.119.128.179])
+        by smtp.gmail.com with ESMTPSA id k12sm3732039edi.87.2021.06.04.11.33.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 11:33:56 -0700 (PDT)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     netdev@vger.kernel.org, linux-mm@kvack.org
+Cc:     Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Subject: [PATCH net-next v7 0/5] page_pool: recycle buffers
+Date:   Fri,  4 Jun 2021 20:33:44 +0200
+Message-Id: <20210604183349.30040-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210604120639.1447869-1-alex@ghiti.fr> <CAK8P3a1TiSNoqUEjTaqPyqnU8d0-p-yZkrsvmXt5fo4Rkfue_w@mail.gmail.com>
- <CAM4kBBK467AZ-qhmtREe9mr_bp3QcCEptQcFAApnbrvPc6bkuA@mail.gmail.com>
-In-Reply-To: <CAM4kBBK467AZ-qhmtREe9mr_bp3QcCEptQcFAApnbrvPc6bkuA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 4 Jun 2021 20:33:39 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1dSaYbQi1Csbp2LDcruj3+Ae6VVgNDXatSjTU77G7d0Q@mail.gmail.com>
-Message-ID: <CAK8P3a1dSaYbQi1Csbp2LDcruj3+Ae6VVgNDXatSjTU77G7d0Q@mail.gmail.com>
-Subject: Re: [PATCH -fixes] riscv: Fix BUILTIN_DTB for sifive and microchip soc
-To:     Vitaly Wool <vitaly.wool@konsulko.com>
-Cc:     Alexandre Ghiti <alex@ghiti.fr>, Rob Herring <robh+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:nzBUb3DvPak7cPgBEfmp9lK3RkmQRCOTLLKjSnngLBEGJbEDTqj
- mS8OBBXtWOuYe+Y/3kVZmr5DPWnhNzhoMwFfG3ZtGfIhLpZsAXvPHQzFeKZHcd7jJaaeR5A
- qfDJctD2kcKT+mXe0WT0Q9xCKF0gMghfWC6rBUZQGdgRJU2ppx1V/gSsTBDUJqcrCHTyEGN
- bctsJ/tRSypStbCIit26g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:FKTAksBkgMg=:SAGeGdeq4rtaf6wJAqdo4g
- wAx5rig+hBIBf1edn7baUhS0h008fG6yTeuzwlqh/0c3pS2rVEM0bee1Yi9IVcfKf/BHqsncI
- 5tEOiBIdjMEBRbCx0FlqCIxwuCRiIDF6O3EBC98oRA5dkgz8IvKESTxTixrLj6IeOT9o6atZs
- g2wowtP5Z9LxWpK14wfIFwvZmfH6x7gyg0xyFIWpFd/F+hdRkQcsxLJQr+ipOW93Z/ei/J4iQ
- anaTfNrWyKVPzx0asTxwvDeeqCLtIgXcctsmpuWSJFZtr1vcOXro9kDm1FrpeUO2a6pMYGuQL
- TQd05xvsnDelI1vf1kBXRqSAGpiWAr6lEE7O6zIz/yLTJwlIeIt+MMKYwWBcHS08D/oW1ANrj
- u4EmThvz6/l7uaASXu2ImY6OXzhdnL7+/7zuZgBCUz2VmpYZ5WHnaq0WG0SXVKO5EVWYv5N8w
- tYhFi5XWF4/cvDxfWxXq6VNhZiBRZDxm6JHdh9uBj2caqOOcmvtG0Dpwjb42Qe5NqyOymqEfi
- kqfK97ly6QwAHBwWazHSxM=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 4, 2021 at 7:45 PM Vitaly Wool <vitaly.wool@konsulko.com> wrote:
-> On Fri, Jun 4, 2021 at 3:18 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > On Fri, Jun 4, 2021 at 2:06 PM Alexandre Ghiti <alex@ghiti.fr> wrote:
-> > >
-> > > Fix BUILTIN_DTB config which resulted in a dtb that was actually not built
-> > > into the Linux image: in the same manner as Canaan soc does, create an object
-> > > file from the dtb file that will get linked into the Linux image.
-> > >
-> > > Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
-> >
-> > Along the same lines as the comment that Jisheng Zhang made on the fixed
-> > address, building a dtb into the kernel itself fundamentally breaks generic
-> > kernel images.
-> >
-> > I can understand using it on K210, which is extremely limited and wouldn't
-> > run a generic kernel anyway, but for normal platforms like microchip and
-> > sifive, it would be better to disallow CONFIG_BUILTIN_DTB in Kconfig
-> > and require a non-broken boot loader.
->
-> can't quite agree here. If we take XIP, it does make sense to have
-> BUILTIN_DTB, since 1) this will not be a generic kernel anyway 2) we
-> may want to skip the bootloader altogether or at least make it as thin
-> as possible and 3) copying device tree binaries from bootloader to RAM
-> as opposed to having it handy compiled in the kernel will be just a
-> waste of RAM.
+From: Matteo Croce <mcroce@microsoft.com>
 
-Indeed, it does make sense in combination with XIP. Maybe there could
-be a Kconfig option that depends on CONFIG_EXPERT and that can
-be used to guard non-generic options like this?
+This is a respin of [1]
 
-       Arnd
+This patchset shows the plans for allowing page_pool to handle and
+maintain DMA map/unmap of the pages it serves to the driver. For this
+to work a return hook in the network core is introduced.
+
+The overall purpose is to simplify drivers, by providing a page
+allocation API that does recycling, such that each driver doesn't have
+to reinvent its own recycling scheme. Using page_pool in a driver
+does not require implementing XDP support, but it makes it trivially
+easy to do so. Instead of allocating buffers specifically for SKBs
+we now allocate a generic buffer and either wrap it on an SKB
+(via build_skb) or create an XDP frame.
+The recycling code leverages the XDP recycle APIs.
+
+The Marvell mvpp2 and mvneta drivers are used in this patchset to
+demonstrate how to use the API, and tested on a MacchiatoBIN
+and EspressoBIN boards respectively.
+
+Please let this going in on a future -rc1 so to allow enough time
+to have wider tests.
+
+Note that this series depends on the change "mm: fix struct page layout
+on 32-bit systems"[2] which is not yet in master.
+
+v6 -> v7:
+- refresh patches against net-next
+- remove a redundant call to virt_to_head_page()
+- update mvneta benchmarks
+
+v5 -> v6
+- preserve pfmemalloc bit when setting signature
+- fix typo in mvneta
+- rebase on next-next with the new cache
+- don't clear the skb->pp_recycle in pskb_expand_head()
+
+v4 -> v5:
+- move the signature so it doesn't alias with page->mapping
+- use an invalid pointer as magic
+- incorporate Matthew Wilcox's changes for pfmemalloc pages
+- move the __skb_frag_unref() changes to a preliminary patch
+- refactor some cpp directives
+- only attempt recycling if skb->head_frag
+- clear skb->pp_recycle in pskb_expand_head()
+
+v3 -> v4:
+- store a pointer to page_pool instead of xdp_mem_info
+- drop a patch which reduces xdp_mem_info size
+- do the recycling in the page_pool code instead of xdp_return
+- remove some unused headers include
+- remove some useless forward declaration
+
+v2 -> v3:
+- added missing SOBs
+- CCed the MM people
+
+v1 -> v2:
+- fix a commit message
+- avoid setting pp_recycle multiple times on mvneta
+- squash two patches to avoid breaking bisect
+
+[1] https://lore.kernel.org/netdev/154413868810.21735.572808840657728172.stgit@firesoul/
+[2] https://lore.kernel.org/linux-mm/20210510153211.1504886-1-willy@infradead.org/
+
+Ilias Apalodimas (1):
+  page_pool: Allow drivers to hint on SKB recycling
+
+Matteo Croce (4):
+  mm: add a signature in struct page
+  skbuff: add a parameter to __skb_frag_unref
+  mvpp2: recycle buffers
+  mvneta: recycle buffers
+
+ drivers/net/ethernet/marvell/mvneta.c         | 11 +++---
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   |  2 +-
+ drivers/net/ethernet/marvell/sky2.c           |  2 +-
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  2 +-
+ include/linux/mm.h                            | 12 ++++---
+ include/linux/mm_types.h                      | 12 ++++++-
+ include/linux/poison.h                        |  3 ++
+ include/linux/skbuff.h                        | 34 ++++++++++++++++---
+ include/net/page_pool.h                       |  9 +++++
+ net/core/page_pool.c                          | 29 ++++++++++++++++
+ net/core/skbuff.c                             | 24 ++++++++++---
+ net/tls/tls_device.c                          |  2 +-
+ 12 files changed, 119 insertions(+), 23 deletions(-)
+
+-- 
+2.31.1
+
