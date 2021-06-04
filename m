@@ -2,251 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47DAD39BB08
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C7C39BB0D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbhFDOnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 10:43:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34235 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229778AbhFDOnM (ORCPT
+        id S230052AbhFDOoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 10:44:38 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:41784 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229656AbhFDOog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 10:43:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622817685;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GT7Yzgt8GtEl514NLLVf2OF8ucixCZe8MHpPE+Hu6sc=;
-        b=MOwU/00toPc0vQt8McPOr/ojZ6LaYWaXyY3a0khBQvGULtN+HeMpyXclqsJ9ynU2XuGCqY
-        +ZsgeIqTtjHrgh0HGtwkmU4adIUBWO9YP0Y/HKyB4MVv42ymT4JC1u277Lw+cy8ia4qiqu
-        17ABu3MzwPBnMg3++q4U4SgWAnnfiFQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-517-XBEaa6fxMoCQ2KkCwVz77g-1; Fri, 04 Jun 2021 10:41:24 -0400
-X-MC-Unique: XBEaa6fxMoCQ2KkCwVz77g-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 02C478042AE;
-        Fri,  4 Jun 2021 14:41:23 +0000 (UTC)
-Received: from localhost (ovpn-113-138.ams2.redhat.com [10.36.113.138])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 20D935D705;
-        Fri,  4 Jun 2021 14:41:21 +0000 (UTC)
-From:   Giuseppe Scrivano <gscrivan@redhat.com>
-To:     ebiederm@xmission.com, christian.brauner@ubuntu.com
-Cc:     "Serge E. Hallyn" <serge@hallyn.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] userns: automatically split user namespace extent
-References: <20201203150252.1229077-1-gscrivan@redhat.com>
-        <20210510172351.GA19918@mail.hallyn.com>
-        <20210510185715.GA20897@mail.hallyn.com>
-Date:   Fri, 04 Jun 2021 16:41:19 +0200
-In-Reply-To: <20210510185715.GA20897@mail.hallyn.com> (Serge E. Hallyn's
-        message of "Mon, 10 May 2021 13:57:15 -0500")
-Message-ID: <87h7idbskw.fsf@redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        Fri, 4 Jun 2021 10:44:36 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 154EgOG21019151, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 154EgOG21019151
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 4 Jun 2021 22:42:24 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 4 Jun 2021 22:42:23 +0800
+Received: from localhost (172.22.88.222) by RTEXMBS01.realtek.com.tw
+ (172.21.6.94) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 4 Jun 2021
+ 22:42:23 +0800
+From:   <ricky_wu@realtek.com>
+To:     <arnd@arndb.de>, <gregkh@linuxfoundation.org>,
+        <bhelgaas@google.com>, <rui_feng@realsil.com.cn>,
+        <ulf.hansson@linaro.org>, <vaibhavgupta40@gmail.com>,
+        <yang.lee@linux.alibaba.com>,
+        <keitasuzuki.park@sslab.ics.keio.ac.jp>,
+        <chris.chiu@canonical.com>, <linux-kernel@vger.kernel.org>
+CC:     Ricky Wu <ricky_wu@realtek.com>
+Subject: [PATCH] misc: rtsx: separate aspm mode into MODE_REG and MODE_CFG
+Date:   Fri, 4 Jun 2021 22:42:11 +0800
+Message-ID: <20210604144211.6470-1-ricky_wu@realtek.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Originating-IP: [172.22.88.222]
+X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
+ RTEXMBS01.realtek.com.tw (172.21.6.94)
+X-KSE-ServerInfo: RTEXMBS01.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: trusted connection
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 06/04/2021 14:25:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzYvNCCkVaTIIDAyOjAwOjAw?=
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 06/04/2021 14:23:27
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 164130 [Jun 04 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: ricky_wu@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: realtek.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 06/04/2021 14:25:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christian, Eric,
+From: Ricky Wu <ricky_wu@realtek.com>
 
-are you fine with this patch or is there anything more you'd like me to
-change?
+Divide Realtek Card Reader Group into two different modes
+ASPM_MODE_CFG: 8411 5209 5227 5229 5249 5250
+Change back to use original way to control aspm
+ASPM_MODE_REG: 5227A 524A 5250A 5260 5261 5228
+Keep the new way to control aspm
 
-Thanks,
-Giuseppe
+Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
+---
+ drivers/misc/cardreader/rtl8411.c  |  1 +
+ drivers/misc/cardreader/rts5209.c  |  1 +
+ drivers/misc/cardreader/rts5227.c  |  2 ++
+ drivers/misc/cardreader/rts5228.c  |  1 +
+ drivers/misc/cardreader/rts5229.c  |  1 +
+ drivers/misc/cardreader/rts5249.c  |  3 ++
+ drivers/misc/cardreader/rts5260.c  |  1 +
+ drivers/misc/cardreader/rts5261.c  |  1 +
+ drivers/misc/cardreader/rtsx_pcr.c | 44 +++++++++++++++++++++---------
+ include/linux/rtsx_pci.h           |  3 ++
+ 10 files changed, 45 insertions(+), 13 deletions(-)
 
-
-
-"Serge E. Hallyn" <serge@hallyn.com> writes:
-
-> On Mon, May 10, 2021 at 12:23:51PM -0500, Serge E. Hallyn wrote:
->> On Thu, Dec 03, 2020 at 04:02:52PM +0100, Giuseppe Scrivano wrote:
->> > writing to the id map fails when an extent overlaps multiple mappings
->> > in the parent user namespace, e.g.:
->> > 
->> > $ cat /proc/self/uid_map
->> >          0       1000          1
->> >          1     100000      65536
->> > $ unshare -U sleep 100 &
->> > [1] 1029703
->> > $ printf "0 0 100\n" | tee /proc/$!/uid_map
->> > 0 0 100
->> > tee: /proc/1029703/uid_map: Operation not permitted
->> > 
->> > To prevent it from happening, automatically split an extent so that
->> > each portion fits in one extent in the parent user namespace.
->> > 
->> > $ cat /proc/self/uid_map
->> >          0       1000          1
->> >          1     110000      65536
->> > $ unshare -U sleep 100 &
->> > [1] 1552
->> > $ printf "0 0 100\n" | tee /proc/$!/uid_map
->> > 0 0 100
->> > $ cat /proc/$!/uid_map
->> >          0          0          1
->> >          1          1         99
->> > 
->> > Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
->> 
->> The patch on the whole looks great, easy to reason about.  But I have
->> one question below:
->
-> As you pointed out, I was misreading the variable name, thank you :)
->
-> Reviewed-by: Serge Hallyn <serge@hallyn.com>
->
->> 
->> > ---
->> > v2:
->> > - move the split logic when the extent are mapped to the parent map to
->> >   reduce lookup complexity.
->> > 
->> > v1: https://lkml.kernel.org/lkml/20201126100839.381415-1-gscrivan@redhat.com
->> > 
->> >  kernel/user_namespace.c | 79 +++++++++++++++++++++++++++++++++++------
->> >  1 file changed, 68 insertions(+), 11 deletions(-)
->> > 
->> > diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
->> > index 87804e0371fe..550612c6e794 100644
->> > --- a/kernel/user_namespace.c
->> > +++ b/kernel/user_namespace.c
->> > @@ -312,6 +312,55 @@ static u32 map_id_down(struct uid_gid_map *map, u32 id)
->> >  	return map_id_range_down(map, id, 1);
->> >  }
->> >  
->> > +/**
->> > + * find_and_split_extent_down - Find lower_first for the target extent
->> > + * using the specified map.
->> > + * If the extent doesn't fit in a single lower extent, split target and
->> > + * write the remaining IDs (first and count) to the overflow extent.
->> > + * If no overflow happens, overflow->count is set to 0.
->> > + */
->> > +static int find_and_split_extent_down(struct uid_gid_map *map,
->> > +				       struct uid_gid_extent *target,
->> > +				       struct uid_gid_extent *overflow)
->> > +{
->> > +	unsigned int extents = map->nr_extents;
->> > +	u32 lower_first = target->lower_first;
->> > +	struct uid_gid_extent *extent;
->> > +	u32 off, available;
->> > +
->> > +	overflow->count = 0;
->> > +
->> > +	/* Find the lower extent that includes the first ID.  */
->> > +	if (extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
->> > +		extent = map_id_range_down_base(extents, map, lower_first, 1);
->> > +	else
->> > +		extent = map_id_range_down_max(extents, map, lower_first, 1);
->> > +
->> > +	/* Could not map the first ID in the extent.  */
->> > +	if (extent == NULL)
->> > +		return -EPERM;
->> > +
->> > +	/* Offset of lower_first in the lower extent.  */
->> > +	off = target->lower_first - extent->first;
->> > +
->> > +	/* How many IDs are available in the lower extent?  */
->> > +	available = extent->count - off;
->> > +
->> > +	/* Requesting more IDs than available in the lower extent.  */
->> > +	if (target->count > available) {
->> > +		/* Move the remaining IDs to the overflow extent.  */
->> > +		overflow->first = target->first + available;
->> > +		overflow->lower_first = target->lower_first + available;
->> > +		overflow->count = target->count - available;
->> > +
->> > +		/* Shrink the initial extent to what is available.  */
->> > +		target->count = available;
->> > +	}
->> > +
->> > +	target->lower_first = extent->lower_first + off;
->> > +	return 0;
->> > +}
->> > +
->> >  /**
->> >   * map_id_up_base - Find idmap via binary search in static extent array.
->> >   * Can only be called if number of mappings is equal or less than
->> > @@ -749,6 +798,7 @@ static bool mappings_overlap(struct uid_gid_map *new_map,
->> >   * insert_extent - Safely insert a new idmap extent into struct uid_gid_map.
->> >   * Takes care to allocate a 4K block of memory if the number of mappings exceeds
->> >   * UID_GID_MAP_MAX_BASE_EXTENTS.
->> > + * The extent is appended at the position map->nr_extents.
->> >   */
->> >  static int insert_extent(struct uid_gid_map *map, struct uid_gid_extent *extent)
->> >  {
->> > @@ -968,30 +1018,37 @@ static ssize_t map_write(struct file *file, const char __user *buf,
->> >  	if (!new_idmap_permitted(file, ns, cap_setid, &new_map))
->> >  		goto out;
->> >  
->> > -	ret = -EPERM;
->> >  	/* Map the lower ids from the parent user namespace to the
->> >  	 * kernel global id space.
->> >  	 */
->> >  	for (idx = 0; idx < new_map.nr_extents; idx++) {
->> > +		struct uid_gid_extent overflow;
->> >  		struct uid_gid_extent *e;
->> > -		u32 lower_first;
->> >  
->> >  		if (new_map.nr_extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
->> >  			e = &new_map.extent[idx];
->> >  		else
->> >  			e = &new_map.forward[idx];
->> >  
->> > -		lower_first = map_id_range_down(parent_map,
->> > -						e->lower_first,
->> > -						e->count);
->> > -
->> > -		/* Fail if we can not map the specified extent to
->> > -		 * the kernel global id space.
->> > -		 */
->> > -		if (lower_first == (u32) -1)
->> > +		ret = find_and_split_extent_down(parent_map, e, &overflow);
->> > +		if (ret < 0)
->> >  			goto out;
->> >  
->> > -		e->lower_first = lower_first;
->> > +		/* If the extent doesn't fit in a single lower extent,
->> > +		 * move what could not be mapped to a new extent.
->> > +		 * The new extent is appended to the existing ones in
->> > +		 * new_map, it will be checked again and if necessary it
->> > +		 * is split further.
->> > +		 */
->> > +		if (overflow.count > 0) {
->> > +			if (new_map.nr_extents == UID_GID_MAP_MAX_EXTENTS) {
->> 
->> Why are you doing this?  The insert_extent() will automatically extend it
->> if needed, right?  So this condition should be fine?
->> 
->> > +				ret = -EINVAL;
->> > +				goto out;
->> > +			}
->> > +			ret = insert_extent(&new_map, &overflow);
->> > +			if (ret < 0)
->> > +				goto out;
->> > +		}
->> >  	}
->> >  
->> >  	/*
->> > -- 
->> > 2.28.0
->> 
->> Cheers,
->> Balint
->> 
->> >
->> > -serge
->> 
->> 
->> 
->> -- 
->> Balint Reczey
->> Ubuntu & Debian Developer
->> > 
->
+diff --git a/drivers/misc/cardreader/rtl8411.c b/drivers/misc/cardreader/rtl8411.c
+index a07674ed0596..4c5621b17a6f 100644
+--- a/drivers/misc/cardreader/rtl8411.c
++++ b/drivers/misc/cardreader/rtl8411.c
+@@ -468,6 +468,7 @@ static void rtl8411_init_common_params(struct rtsx_pcr *pcr)
+ 	pcr->sd30_drive_sel_1v8 = DRIVER_TYPE_B;
+ 	pcr->sd30_drive_sel_3v3 = DRIVER_TYPE_D;
+ 	pcr->aspm_en = ASPM_L1_EN;
++	pcr->aspm_mode = ASPM_MODE_CFG;
+ 	pcr->tx_initial_phase = SET_CLOCK_PHASE(23, 7, 14);
+ 	pcr->rx_initial_phase = SET_CLOCK_PHASE(4, 3, 10);
+ 	pcr->ic_version = rtl8411_get_ic_version(pcr);
+diff --git a/drivers/misc/cardreader/rts5209.c b/drivers/misc/cardreader/rts5209.c
+index 39a6a7ecc32e..29f5414072bf 100644
+--- a/drivers/misc/cardreader/rts5209.c
++++ b/drivers/misc/cardreader/rts5209.c
+@@ -255,6 +255,7 @@ void rts5209_init_params(struct rtsx_pcr *pcr)
+ 	pcr->sd30_drive_sel_1v8 = DRIVER_TYPE_B;
+ 	pcr->sd30_drive_sel_3v3 = DRIVER_TYPE_D;
+ 	pcr->aspm_en = ASPM_L1_EN;
++	pcr->aspm_mode = ASPM_MODE_CFG;
+ 	pcr->tx_initial_phase = SET_CLOCK_PHASE(27, 27, 16);
+ 	pcr->rx_initial_phase = SET_CLOCK_PHASE(24, 6, 5);
+ 
+diff --git a/drivers/misc/cardreader/rts5227.c b/drivers/misc/cardreader/rts5227.c
+index 8200af22b529..4bcfbc9afbac 100644
+--- a/drivers/misc/cardreader/rts5227.c
++++ b/drivers/misc/cardreader/rts5227.c
+@@ -358,6 +358,7 @@ void rts5227_init_params(struct rtsx_pcr *pcr)
+ 	pcr->sd30_drive_sel_1v8 = CFG_DRIVER_TYPE_B;
+ 	pcr->sd30_drive_sel_3v3 = CFG_DRIVER_TYPE_B;
+ 	pcr->aspm_en = ASPM_L1_EN;
++	pcr->aspm_mode = ASPM_MODE_CFG;
+ 	pcr->tx_initial_phase = SET_CLOCK_PHASE(27, 27, 15);
+ 	pcr->rx_initial_phase = SET_CLOCK_PHASE(30, 7, 7);
+ 
+@@ -483,6 +484,7 @@ void rts522a_init_params(struct rtsx_pcr *pcr)
+ 
+ 	rts5227_init_params(pcr);
+ 	pcr->ops = &rts522a_pcr_ops;
++	pcr->aspm_mode = ASPM_MODE_REG;
+ 	pcr->tx_initial_phase = SET_CLOCK_PHASE(20, 20, 11);
+ 	pcr->reg_pm_ctrl3 = RTS522A_PM_CTRL3;
+ 
+diff --git a/drivers/misc/cardreader/rts5228.c b/drivers/misc/cardreader/rts5228.c
+index 781a86def59a..ffc128278613 100644
+--- a/drivers/misc/cardreader/rts5228.c
++++ b/drivers/misc/cardreader/rts5228.c
+@@ -718,6 +718,7 @@ void rts5228_init_params(struct rtsx_pcr *pcr)
+ 	pcr->sd30_drive_sel_1v8 = CFG_DRIVER_TYPE_B;
+ 	pcr->sd30_drive_sel_3v3 = CFG_DRIVER_TYPE_B;
+ 	pcr->aspm_en = ASPM_L1_EN;
++	pcr->aspm_mode = ASPM_MODE_REG;
+ 	pcr->tx_initial_phase = SET_CLOCK_PHASE(28, 27, 11);
+ 	pcr->rx_initial_phase = SET_CLOCK_PHASE(24, 6, 5);
+ 
+diff --git a/drivers/misc/cardreader/rts5229.c b/drivers/misc/cardreader/rts5229.c
+index 89e6f124ca5c..c748eaf1ec1f 100644
+--- a/drivers/misc/cardreader/rts5229.c
++++ b/drivers/misc/cardreader/rts5229.c
+@@ -246,6 +246,7 @@ void rts5229_init_params(struct rtsx_pcr *pcr)
+ 	pcr->sd30_drive_sel_1v8 = DRIVER_TYPE_B;
+ 	pcr->sd30_drive_sel_3v3 = DRIVER_TYPE_D;
+ 	pcr->aspm_en = ASPM_L1_EN;
++	pcr->aspm_mode = ASPM_MODE_CFG;
+ 	pcr->tx_initial_phase = SET_CLOCK_PHASE(27, 27, 15);
+ 	pcr->rx_initial_phase = SET_CLOCK_PHASE(30, 6, 6);
+ 
+diff --git a/drivers/misc/cardreader/rts5249.c b/drivers/misc/cardreader/rts5249.c
+index b2676e7f5027..53f3a1f45c4a 100644
+--- a/drivers/misc/cardreader/rts5249.c
++++ b/drivers/misc/cardreader/rts5249.c
+@@ -566,6 +566,7 @@ void rts5249_init_params(struct rtsx_pcr *pcr)
+ 	pcr->sd30_drive_sel_1v8 = CFG_DRIVER_TYPE_B;
+ 	pcr->sd30_drive_sel_3v3 = CFG_DRIVER_TYPE_B;
+ 	pcr->aspm_en = ASPM_L1_EN;
++	pcr->aspm_mode = ASPM_MODE_CFG;
+ 	pcr->tx_initial_phase = SET_CLOCK_PHASE(1, 29, 16);
+ 	pcr->rx_initial_phase = SET_CLOCK_PHASE(24, 6, 5);
+ 
+@@ -729,6 +730,7 @@ static const struct pcr_ops rts524a_pcr_ops = {
+ void rts524a_init_params(struct rtsx_pcr *pcr)
+ {
+ 	rts5249_init_params(pcr);
++	pcr->aspm_mode = ASPM_MODE_REG;
+ 	pcr->tx_initial_phase = SET_CLOCK_PHASE(27, 29, 11);
+ 	pcr->option.ltr_l1off_sspwrgate = LTR_L1OFF_SSPWRGATE_5250_DEF;
+ 	pcr->option.ltr_l1off_snooze_sspwrgate =
+@@ -845,6 +847,7 @@ static const struct pcr_ops rts525a_pcr_ops = {
+ void rts525a_init_params(struct rtsx_pcr *pcr)
+ {
+ 	rts5249_init_params(pcr);
++	pcr->aspm_mode = ASPM_MODE_REG;
+ 	pcr->tx_initial_phase = SET_CLOCK_PHASE(25, 29, 11);
+ 	pcr->option.ltr_l1off_sspwrgate = LTR_L1OFF_SSPWRGATE_5250_DEF;
+ 	pcr->option.ltr_l1off_snooze_sspwrgate =
+diff --git a/drivers/misc/cardreader/rts5260.c b/drivers/misc/cardreader/rts5260.c
+index 080a7d67a8e1..9b42b20a3e5a 100644
+--- a/drivers/misc/cardreader/rts5260.c
++++ b/drivers/misc/cardreader/rts5260.c
+@@ -628,6 +628,7 @@ void rts5260_init_params(struct rtsx_pcr *pcr)
+ 	pcr->sd30_drive_sel_1v8 = CFG_DRIVER_TYPE_B;
+ 	pcr->sd30_drive_sel_3v3 = CFG_DRIVER_TYPE_B;
+ 	pcr->aspm_en = ASPM_L1_EN;
++	pcr->aspm_mode = ASPM_MODE_REG;
+ 	pcr->tx_initial_phase = SET_CLOCK_PHASE(27, 29, 11);
+ 	pcr->rx_initial_phase = SET_CLOCK_PHASE(24, 6, 5);
+ 
+diff --git a/drivers/misc/cardreader/rts5261.c b/drivers/misc/cardreader/rts5261.c
+index 6c64dade8e1a..1fd4e0e50730 100644
+--- a/drivers/misc/cardreader/rts5261.c
++++ b/drivers/misc/cardreader/rts5261.c
+@@ -783,6 +783,7 @@ void rts5261_init_params(struct rtsx_pcr *pcr)
+ 	pcr->sd30_drive_sel_1v8 = 0x00;
+ 	pcr->sd30_drive_sel_3v3 = 0x00;
+ 	pcr->aspm_en = ASPM_L1_EN;
++	pcr->aspm_mode = ASPM_MODE_REG;
+ 	pcr->tx_initial_phase = SET_CLOCK_PHASE(27, 27, 11);
+ 	pcr->rx_initial_phase = SET_CLOCK_PHASE(24, 6, 5);
+ 
+diff --git a/drivers/misc/cardreader/rtsx_pcr.c b/drivers/misc/cardreader/rtsx_pcr.c
+index 273311184669..baf83594a01d 100644
+--- a/drivers/misc/cardreader/rtsx_pcr.c
++++ b/drivers/misc/cardreader/rtsx_pcr.c
+@@ -85,12 +85,18 @@ static void rtsx_comm_set_aspm(struct rtsx_pcr *pcr, bool enable)
+ 	if (pcr->aspm_enabled == enable)
+ 		return;
+ 
+-	if (pcr->aspm_en & 0x02)
+-		rtsx_pci_write_register(pcr, ASPM_FORCE_CTL, FORCE_ASPM_CTL0 |
+-			FORCE_ASPM_CTL1, enable ? 0 : FORCE_ASPM_CTL0 | FORCE_ASPM_CTL1);
+-	else
+-		rtsx_pci_write_register(pcr, ASPM_FORCE_CTL, FORCE_ASPM_CTL0 |
+-			FORCE_ASPM_CTL1, FORCE_ASPM_CTL0 | FORCE_ASPM_CTL1);
++	if (pcr->aspm_mode == ASPM_MODE_CFG) {
++		pcie_capability_clear_and_set_word(pcr->pci, PCI_EXP_LNKCTL,
++						PCI_EXP_LNKCTL_ASPMC,
++						enable ? pcr->aspm_en : 0);
++	} else if (pcr->aspm_mode == ASPM_MODE_REG) {
++		if (pcr->aspm_en & 0x02)
++			rtsx_pci_write_register(pcr, ASPM_FORCE_CTL, FORCE_ASPM_CTL0 |
++				FORCE_ASPM_CTL1, enable ? 0 : FORCE_ASPM_CTL0 | FORCE_ASPM_CTL1);
++		else
++			rtsx_pci_write_register(pcr, ASPM_FORCE_CTL, FORCE_ASPM_CTL0 |
++				FORCE_ASPM_CTL1, FORCE_ASPM_CTL0 | FORCE_ASPM_CTL1);
++	}
+ 
+ 	if (!enable && (pcr->aspm_en & 0x02))
+ 		mdelay(10);
+@@ -1394,7 +1400,8 @@ static int rtsx_pci_init_hw(struct rtsx_pcr *pcr)
+ 			return err;
+ 	}
+ 
+-	rtsx_pci_write_register(pcr, ASPM_FORCE_CTL, 0x30, 0x30);
++	if (pcr->aspm_mode == ASPM_MODE_REG)
++		rtsx_pci_write_register(pcr, ASPM_FORCE_CTL, 0x30, 0x30);
+ 
+ 	/* No CD interrupt if probing driver with card inserted.
+ 	 * So we need to initialize pcr->card_exist here.
+@@ -1410,6 +1417,8 @@ static int rtsx_pci_init_hw(struct rtsx_pcr *pcr)
+ static int rtsx_pci_init_chip(struct rtsx_pcr *pcr)
+ {
+ 	int err;
++	u16 cfg_val;
++	u8 val;
+ 
+ 	spin_lock_init(&pcr->lock);
+ 	mutex_init(&pcr->pcr_mutex);
+@@ -1477,6 +1486,21 @@ static int rtsx_pci_init_chip(struct rtsx_pcr *pcr)
+ 	if (!pcr->slots)
+ 		return -ENOMEM;
+ 
++	if (pcr->aspm_mode == ASPM_MODE_CFG) {
++		pcie_capability_read_word(pcr->pci, PCI_EXP_LNKCTL, &cfg_val);
++		if (cfg_val & PCI_EXP_LNKCTL_ASPM_L1)
++			pcr->aspm_enabled = true;
++		else
++			pcr->aspm_enabled = false;
++
++	} else if (pcr->aspm_mode == ASPM_MODE_REG) {
++		rtsx_pci_read_register(pcr, ASPM_FORCE_CTL, &val);
++		if (val & FORCE_ASPM_CTL0 && val & FORCE_ASPM_CTL1)
++			pcr->aspm_enabled = false;
++		else
++			pcr->aspm_enabled = true;
++	}
++
+ 	if (pcr->ops->fetch_vendor_settings)
+ 		pcr->ops->fetch_vendor_settings(pcr);
+ 
+@@ -1506,7 +1530,6 @@ static int rtsx_pci_probe(struct pci_dev *pcidev,
+ 	struct pcr_handle *handle;
+ 	u32 base, len;
+ 	int ret, i, bar = 0;
+-	u8 val;
+ 
+ 	dev_dbg(&(pcidev->dev),
+ 		": Realtek PCI-E Card Reader found at %s [%04x:%04x] (rev %x)\n",
+@@ -1572,11 +1595,6 @@ static int rtsx_pci_probe(struct pci_dev *pcidev,
+ 	pcr->host_cmds_addr = pcr->rtsx_resv_buf_addr;
+ 	pcr->host_sg_tbl_ptr = pcr->rtsx_resv_buf + HOST_CMDS_BUF_LEN;
+ 	pcr->host_sg_tbl_addr = pcr->rtsx_resv_buf_addr + HOST_CMDS_BUF_LEN;
+-	rtsx_pci_read_register(pcr, ASPM_FORCE_CTL, &val);
+-	if (val & FORCE_ASPM_CTL0 && val & FORCE_ASPM_CTL1)
+-		pcr->aspm_enabled = false;
+-	else
+-		pcr->aspm_enabled = true;
+ 	pcr->card_inserted = 0;
+ 	pcr->card_removed = 0;
+ 	INIT_DELAYED_WORK(&pcr->carddet_work, rtsx_pci_card_detect);
+diff --git a/include/linux/rtsx_pci.h b/include/linux/rtsx_pci.h
+index 6f155f99aa16..6c16837ee235 100644
+--- a/include/linux/rtsx_pci.h
++++ b/include/linux/rtsx_pci.h
+@@ -1234,6 +1234,9 @@ struct rtsx_pcr {
+ 	u8				card_drive_sel;
+ #define ASPM_L1_EN			0x02
+ 	u8				aspm_en;
++#define ASPM_MODE_CFG		0x01
++#define ASPM_MODE_REG		0x02
++	u8				aspm_mode;
+ 	bool				aspm_enabled;
+ 
+ #define PCR_MS_PMOS			(1 << 0)
+-- 
+2.17.1
 
