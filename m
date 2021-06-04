@@ -2,110 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F02439B831
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:42:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F76A39B837
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:44:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbhFDLof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 07:44:35 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:32289 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230123AbhFDLoe (ORCPT
+        id S230122AbhFDLqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 07:46:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229682AbhFDLqa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 07:44:34 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622806969; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=g60AUJDLJKyoCbCBq/aIaSOBKVwhjXshTM5a1t1FHAo=;
- b=bTYS6XH12/QChkBaHcJ1bdOHHu9BY8g2HfEUbyur35NlR4Dirxq496c0zbijnfuITbvoDkw6
- /SBrvJ/ThNiwuaCa72WuheSOrXLibVDDN9C/FAhnaDNDsJ5qssisI25v4LeBDH9rvHCvSBwm
- 8sBMuDjR7xtDBOezo/AtgHb4DIE=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 60ba11b6abfd22a3dc71935d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 04 Jun 2021 11:42:46
- GMT
-Sender: skakit=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DAE75C4323A; Fri,  4 Jun 2021 11:42:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: skakit)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0B527C433F1;
-        Fri,  4 Jun 2021 11:42:44 +0000 (UTC)
+        Fri, 4 Jun 2021 07:46:30 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89727C061761;
+        Fri,  4 Jun 2021 04:44:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=639Vdy1X754oCgt0uLxPjt9dKAAacPG5P66VaaXaEgs=; b=HIqZHROBdzKVIUmAgmUduxDQs/
+        K2WJt2cHsgp4jIIUOsq1m8mHquBTjH4z/6oRXmuzOqSVf63zxSzTszR82Dp1Nl/p7nmqtIhwthVqB
+        9zEyKR4N+WeahZzzBPCPQGEucC5Dhcf6jC1LaRdg36v6RrmUNxjzNLKB0NYVgcbJX/lqPJtGVkMnH
+        wGWOxFWaQJ78YJ+atbSkUkyD4sfAGBwNL7PxdLQ1Tq9uNa059WQt1mJuCZS3e8V8WuiPVBq4S4RcL
+        pIAAxf4cWQ/1DjYWRaONPD2gK3j4n8vs02huqigpSZkDeHgMNpYyOYeTyCKSLhMxkbN50XgbWX0ej
+        iAqzXDYw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lp8Fa-003QQD-V8; Fri, 04 Jun 2021 11:44:37 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4186830018A;
+        Fri,  4 Jun 2021 13:44:37 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 263D82C8F28F2; Fri,  4 Jun 2021 13:44:37 +0200 (CEST)
+Date:   Fri, 4 Jun 2021 13:44:37 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>, will@kernel.org,
+        paulmck@kernel.org, stern@rowland.harvard.edu,
+        parri.andrea@gmail.com, boqun.feng@gmail.com, npiggin@gmail.com,
+        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
+        akiyks@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <YLoSJaOVbzKXU4/7@hirez.programming.kicks-ass.net>
+References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 04 Jun 2021 17:12:44 +0530
-From:   skakit@codeaurora.org
-To:     Sebastian Reichel <sre@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        David Collins <collinsd@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        kgunda@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-input@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org, Andy Yan <andy.yan@rock-chips.com>,
-        Courtney Cavin <courtney.cavin@sonymobile.com>,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH V3 5/5] dt-bindings: power: reset: qcom-pon: Convert qcom
- PON binding to yaml
-In-Reply-To: <20210604110917.zbrjzpl23ujqclyf@earth.universe>
-References: <1620630064-16354-1-git-send-email-skakit@codeaurora.org>
- <1620630064-16354-6-git-send-email-skakit@codeaurora.org>
- <20210510162506.GA234174@robh.at.kernel.org>
- <20210604110917.zbrjzpl23ujqclyf@earth.universe>
-Message-ID: <0e1471d4522d1356e354c4653e8e0b42@codeaurora.org>
-X-Sender: skakit@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Jun 04, 2021 at 12:12:07PM +0200, Peter Zijlstra wrote:
+> +/**
+> + * volatile_if() - Provide a control-dependency
+> + *
+> + * volatile_if(READ_ONCE(A))
+> + *	WRITE_ONCE(B, 1);
+> + *
+> + * will ensure that the STORE to B happens after the LOAD of A. Normally a
+> + * control dependency relies on a conditional branch having a data dependency
+> + * on the LOAD and an architecture's inability to speculate STOREs. IOW, this
+> + * provides a LOAD->STORE order.
+> + *
+> + * Due to optimizing compilers extra care is needed; as per the example above
+> + * the LOAD must be 'volatile' qualified in order to ensure the compiler
+> + * actually emits the load, such that the data-dependency to the conditional
+> + * branch can be formed.
+> + *
+> + * Secondly, the compiler must be prohibited from lifting anything out of the
+> + * selection statement, as this would obviously also break the ordering.
+> + *
+> + * Thirdly, and this is the tricky bit, architectures that allow the
+> + * LOAD->STORE reorder must ensure the compiler actually emits the conditional
+> + * branch instruction, this isn't possible in generic.
+> + *
+> + * See the volatile_cond() wrapper.
+> + */
+> +#define volatile_if(cond) if (volatile_cond(cond))
 
-On 2021-06-04 16:39, Sebastian Reichel wrote:
-> Hi,
-> 
-> On Mon, May 10, 2021 at 11:25:06AM -0500, Rob Herring wrote:
->> On Mon, 10 May 2021 12:31:04 +0530, satya priya wrote:
->> > Convert qcom PON binding from .txt to .yaml format.
->> >
->> > The example has been removed in favour of full example being
->> > available in the qcom,pm8941-pwrkey binding.
->> >
->> > Signed-off-by: satya priya <skakit@codeaurora.org>
->> > ---
->> > Changes in V2:
->> >  - As per Rob's comments, converted the main PON binding and added in V2.
->> >
->> > Changes in V3:
->> >  - As per Sebastian's comments, added allOf to refer reboot-mode.yaml and
->> >    used unevaluatedProperties = false. Added maxItems for reg.
->> >
->> >  .../devicetree/bindings/power/reset/qcom,pon.txt   | 49 ----------------------
->> >  .../devicetree/bindings/power/reset/qcom,pon.yaml  | 44 +++++++++++++++++++
->> >  2 files changed, 44 insertions(+), 49 deletions(-)
->> >  delete mode 100644 Documentation/devicetree/bindings/power/reset/qcom,pon.txt
->> >  create mode 100644 Documentation/devicetree/bindings/power/reset/qcom,pon.yaml
->> >
->> 
->> Reviewed-by: Rob Herring <robh@kernel.org>
-> 
-> Acked-by: Sebastian Reichel <sre@kernel.org>
-> 
+On naming (sorry Paul for forgetting that in the initial mail); while I
+think using the volatile qualifier for the language feature (can we haz
+plz, kthxbai) makes perfect sense, Paul felt that we might use a
+'better' name for the kernel use, ctrl_dep_if() was proposed.
 
-There is a V4 for this.
-https://lore.kernel.org/patchwork/patch/1425638/
-
-> -- Sebastian
+Let us pain bike sheds :-)
