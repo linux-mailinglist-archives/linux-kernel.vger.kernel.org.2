@@ -2,262 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A241B39B4E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8350E39B4EA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:33:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbhFDIeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 04:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbhFDIeT (ORCPT
+        id S230090AbhFDIe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 04:34:57 -0400
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:34537 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229900AbhFDIez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 04:34:19 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7988C06174A
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 01:32:33 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id v8so12863999lft.8
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 01:32:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zP2dna87z6RKrxkkJWo2LQdu7tVCeYap9nb/k2QVk5I=;
-        b=BI1l2w090NvUuzjJirHDmxRkq5GWasjScNptw7r1C+4lSVHeu39FVyxAFCG19UwVsb
-         QxNh+Il5+n5v+KRUCdKpM4b0uCO0sut+buOkmxGTq1IGt4oTCexVpen6XunnkT3+A6sb
-         sJ5F3VD+VPhD66FtwJMqy7xgI4zXHyFKw9qbY+eymmVAtJEukFRIHGN4iZZ/+N9Ln3/T
-         L2QlfItJLRowUqeTs7AE9ktEuVgQ7Yw/hNIz9CdbORDFFHYL8svVvvPJAK4kS5justFA
-         io1E8bvEjd+eMlzxU2MoTjoqrZe3vFU9sleiCEEc1tVzGj9y6QmUkWq/w3WkeAl2+wcu
-         HhdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zP2dna87z6RKrxkkJWo2LQdu7tVCeYap9nb/k2QVk5I=;
-        b=uYoumF6lATdSJB2K2X+fNew0G8HaTtUgcaYzrhM3mVsFdtPmTBSey4R1zJ2SaOJwni
-         YhE6lzlqWZdS9Aeh/jGsD52TWqAno78qLYCI4XL0RVj6jNca8/cVbpZhzezRIlqRgNsC
-         MgFXVN5A6PVc3FTL6gnZlmynM7b8VuuQ3dG6ntO4vus2vQEhpCDJu7kww0e7lKQu0cWA
-         J6QM1Ey8mLR0pbhgkzojgRoKPG2jTM2wN7+8ZG7wM/4CBCRpSWh9JiXOGBL64FsccIxT
-         EloSBwqdiLN7RRTq/y7dO6bpkJVrrZA49ToRVqkGa6cSk26X+3ODCAd2wtfiVNDk2AGZ
-         RGbA==
-X-Gm-Message-State: AOAM530aJyfqPlIoZzmbp8ptM1g0+sKPrMs2LIq1lM+O18SqnL/8pzcq
-        BxuB+RG/nJ80eB9w0h0+FNwE9g==
-X-Google-Smtp-Source: ABdhPJykew9bOeZhphWWjOUQEebLS58YJSEt6mkLnOTlh99S+hukQhlFyBqTV9fKQ9UndvHQGxvMFA==
-X-Received: by 2002:a05:6512:33cb:: with SMTP id d11mr2097111lfg.180.1622795551966;
-        Fri, 04 Jun 2021 01:32:31 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id i127sm544870lfd.216.2021.06.04.01.32.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Jun 2021 01:32:31 -0700 (PDT)
-Subject: Re: [RESEND 10/26] drm/msm/disp/dpu1/dpu_hw_interrupts: Demote a
- bunch of kernel-doc abuses
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-References: <20210602143300.2330146-1-lee.jones@linaro.org>
- <20210602143300.2330146-11-lee.jones@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <85bd6c24-0e4e-6f18-ccf0-6acf62d0f0ff@linaro.org>
-Date:   Fri, 4 Jun 2021 11:32:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Fri, 4 Jun 2021 04:34:55 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.west.internal (Postfix) with ESMTP id 2FB4B10FD;
+        Fri,  4 Jun 2021 04:33:08 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Fri, 04 Jun 2021 04:33:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=0QaX15AhSJWfHsnr5gihB3yVDuh
+        8b9trAJVDVBkiUD4=; b=CnkrDlNGkGa4MOf2Cy06uaBzfIbQe7fGKLCuRMAGOi1
+        n/iQBiw/FoYn/spSiV5q01C4jk+qfBhD8KvHHfvAlczcbcOgnddxWwrJTf02tbBf
+        F1o+LC7edEtdOAjDfxL2sbObcArkCRl4O67uYtFkwmNULRCKbbV7VX9q3zyzqU4N
+        oHzG14bnUgMPMJJ7acQqP70B4y/hHDZs80UvKbB2e4K2AXdZJF0qBW55A4VLyZjT
+        oH7/8XZwc8FSXKU3CdxFt+J3yLWfi23B1XdWTPPXhXdGTinu+gJakGFiF53uBLLi
+        02OlyFztYOsWt7G6aZdzBDoOf3oGft5z9nkp+KZl2HQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=0QaX15
+        AhSJWfHsnr5gihB3yVDuh8b9trAJVDVBkiUD4=; b=G2rVdkeh8vMSGKkpyvbRJt
+        5g3hydXtZI85c0lsB9xcDuc1M1HPQQ6F1EmAww/hE8x0nDodsLDrYl5bR+KIp2Ht
+        h3TOTJdqCEuz3A2lR711pWzw10nEcRSvEh0D7nOKZz0sSaqb8f3qObGU/Gyx/g9k
+        eJpcIIALi9p4nMm/AnoNP8pAfj+1fhJ9JrpM0iQn+zCvKxTCKInURsDhCDxkkscK
+        vRue5NBD5qkOFVBD+1FBlqUBhTHAWjhJZD1M1Y2LiuMFPkLrQVQ6gsYgK1BpPDCI
+        3aDTPQ1KYQD/pCaAwZYl2JYhTC+xRXPjiieHEDoB94dOqxZWPCJqQYkgXNMllnfQ
+        ==
+X-ME-Sender: <xms:QuW5YBMFfkAZpEeNW-Y9EAviOKSYjtxM7_J6HQ5i4fss82b3Ls66hA>
+    <xme:QuW5YD9XsR3aV32Vx29taDVe7KJYazGG_SkEoEfs4wVkVl12NDfxCD_cBB6ehIsQb
+    LG0trTl7Ah3oQ>
+X-ME-Received: <xmr:QuW5YAQYWQBZ3fwBNvuGrVaWi_F6OVh6sa0-zGGObjPK7KQH_7MynB_gcbvtn9xgp8DbkLW1sXXEQiAm-pwdy5NCNztoop7r>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtuddgtdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
+    drtghomh
+X-ME-Proxy: <xmx:QuW5YNs9FhIFWoLNTZAMkssAER8XpFd1neOO87s5ONtSB60jIjgZeA>
+    <xmx:QuW5YJfcMtvh1Jk2wNEsocJBuzr4bKgz1SNVnL7f94yzqLLPd5Le1w>
+    <xmx:QuW5YJ0y8tRQTawilnv76UEWNBGYXis9TxNUUi4X19VxDTAlNbZAqw>
+    <xmx:Q-W5YP-HI2XWXwWtpg-fcB6Mde4_azUEyCWDEeRLhhGZtERNLbWFJLxgBoY>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 4 Jun 2021 04:33:06 -0400 (EDT)
+Date:   Fri, 4 Jun 2021 10:33:03 +0200
+From:   Greg KH <greg@kroah.com>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     'Jaegeuk Kim' <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Daniel Rosenberg <drosen@google.com>,
+        Chao Yu <chao@kernel.org>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        "kernel-team@android.com" <kernel-team@android.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] f2fs: Advertise encrypted casefolding in sysfs
+Message-ID: <YLnlPxfCVJD+p6/a@kroah.com>
+References: <20210603095038.314949-1-drosen@google.com>
+ <20210603095038.314949-3-drosen@google.com>
+ <YLlj+h4RiT6FvyK6@sol.localdomain>
+ <YLmv5Ykb3QUzDOlL@google.com>
+ <4f56f2781fac4b8bac1a78b0fecc318d@AcuMS.aculab.com>
 MIME-Version: 1.0
-In-Reply-To: <20210602143300.2330146-11-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4f56f2781fac4b8bac1a78b0fecc318d@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/06/2021 17:32, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
+On Fri, Jun 04, 2021 at 08:27:32AM +0000, David Laight wrote:
+> From: Jaegeuk Kim
+> > Sent: 04 June 2021 05:45
+> ...
+> > > > @@ -161,6 +161,9 @@ static ssize_t features_show(struct f2fs_attr *a,
+> > > >  	if (f2fs_sb_has_compression(sbi))
+> > > >  		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
+> > > >  				len ? ", " : "", "compression");
+> > > > +	if (f2fs_sb_has_casefold(sbi) && f2fs_sb_has_encrypt(sbi))
+> > > > +		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
+> > > > +				len ? ", " : "", "encrypted_casefold");
+> > > >  	len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
+> > > >  				len ? ", " : "", "pin_file");
+> > > >  	len += scnprintf(buf + len, PAGE_SIZE - len, "\n");
 > 
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c:17: warning: expecting prototype for Register offsets in MDSS register file for the interrupt registers(). Prototype was for MDP_SSPP_TOP0_OFF() instead
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c:35: warning: expecting prototype for WB interrupt status bit definitions(). Prototype was for DPU_INTR_WB_0_DONE() instead
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c:42: warning: expecting prototype for WDOG timer interrupt status bit definitions(). Prototype was for DPU_INTR_WD_TIMER_0_DONE() instead
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c:51: warning: expecting prototype for Pingpong interrupt status bit definitions(). Prototype was for DPU_INTR_PING_PONG_0_DONE() instead
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c:71: warning: expecting prototype for Interface interrupt status bit definitions(). Prototype was for DPU_INTR_INTF_0_UNDERRUN() instead
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c:85: warning: expecting prototype for Pingpong Secondary interrupt status bit definitions(). Prototype was for DPU_INTR_PING_PONG_S0_AUTOREFRESH_DONE() instead
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c:94: warning: expecting prototype for Pingpong TEAR detection interrupt status bit definitions(). Prototype was for DPU_INTR_PING_PONG_0_TEAR_DETECTED() instead
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c:102: warning: expecting prototype for Pingpong TE detection interrupt status bit definitions(). Prototype was for DPU_INTR_PING_PONG_0_TE_DETECTED() instead
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c:110: warning: expecting prototype for Ctl start interrupt status bit definitions(). Prototype was for DPU_INTR_CTL_0_START() instead
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c:119: warning: expecting prototype for Concurrent WB overflow interrupt status bit definitions(). Prototype was for DPU_INTR_CWB_2_OVERFLOW() instead
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c:125: warning: expecting prototype for Histogram VIG done interrupt status bit definitions(). Prototype was for DPU_INTR_HIST_VIG_0_DONE() instead
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c:133: warning: expecting prototype for Histogram VIG reset Sequence done interrupt status bit definitions(). Prototype was for DPU_INTR_HIST_VIG_0_RSTSEQ_DONE() instead
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c:141: warning: expecting prototype for Histogram DSPP done interrupt status bit definitions(). Prototype was for DPU_INTR_HIST_DSPP_0_DONE() instead
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c:149: warning: expecting prototype for Histogram DSPP reset Sequence done interrupt status bit definitions(). Prototype was for DPU_INTR_HIST_DSPP_0_RSTSEQ_DONE() instead
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c:157: warning: expecting prototype for INTF interrupt status bit definitions(). Prototype was for DPU_INTR_VIDEO_INTO_STATIC() instead
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c:170: warning: expecting prototype for AD4 interrupt status bit definitions(). Prototype was for DPU_INTR_BACKLIGHT_UPDATED() instead
+> Looking at that pattern, why don't you just append "tag, "
+> each time and then replace the final ", " with "\n" at the end.
 
-Most of these defines are gone in msm/msm-next. Could you please rebase 
-and repost just this patch? Other patches apply clearly.
+Again PLEASE NO!
 
-> Cc: Rob Clark <robdclark@gmail.com>
-> Cc: Sean Paul <sean@poorly.run>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Krishna Manikandan <mkrishn@codeaurora.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: freedreno@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->   .../gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c | 32 +++++++++----------
->   1 file changed, 16 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
-> index 48c96b8121268..aaf251741dc27 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
-> @@ -10,7 +10,7 @@
->   #include "dpu_hw_util.h"
->   #include "dpu_hw_mdss.h"
->   
-> -/**
-> +/*
->    * Register offsets in MDSS register file for the interrupt registers
->    * w.r.t. to the MDP base
->    */
-> @@ -29,14 +29,14 @@
->   #define MDP_INTF_1_OFF_REV_7xxx             0x35000
->   #define MDP_INTF_5_OFF_REV_7xxx             0x39000
->   
-> -/**
-> +/*
->    * WB interrupt status bit definitions
->    */
->   #define DPU_INTR_WB_0_DONE BIT(0)
->   #define DPU_INTR_WB_1_DONE BIT(1)
->   #define DPU_INTR_WB_2_DONE BIT(4)
->   
-> -/**
-> +/*
->    * WDOG timer interrupt status bit definitions
->    */
->   #define DPU_INTR_WD_TIMER_0_DONE BIT(2)
-> @@ -45,7 +45,7 @@
->   #define DPU_INTR_WD_TIMER_3_DONE BIT(6)
->   #define DPU_INTR_WD_TIMER_4_DONE BIT(7)
->   
-> -/**
-> +/*
->    * Pingpong interrupt status bit definitions
->    */
->   #define DPU_INTR_PING_PONG_0_DONE BIT(8)
-> @@ -65,7 +65,7 @@
->   #define DPU_INTR_PING_PONG_2_AUTOREFRESH_DONE BIT(22)
->   #define DPU_INTR_PING_PONG_3_AUTOREFRESH_DONE BIT(23)
->   
-> -/**
-> +/*
->    * Interface interrupt status bit definitions
->    */
->   #define DPU_INTR_INTF_0_UNDERRUN BIT(24)
-> @@ -79,7 +79,7 @@
->   #define DPU_INTR_INTF_3_VSYNC BIT(31)
->   #define DPU_INTR_INTF_5_VSYNC BIT(23)
->   
-> -/**
-> +/*
->    * Pingpong Secondary interrupt status bit definitions
->    */
->   #define DPU_INTR_PING_PONG_S0_AUTOREFRESH_DONE BIT(0)
-> @@ -88,7 +88,7 @@
->   #define DPU_INTR_PING_PONG_S0_TEAR_DETECTED BIT(22)
->   #define DPU_INTR_PING_PONG_S0_TE_DETECTED BIT(28)
->   
-> -/**
-> +/*
->    * Pingpong TEAR detection interrupt status bit definitions
->    */
->   #define DPU_INTR_PING_PONG_0_TEAR_DETECTED BIT(16)
-> @@ -96,7 +96,7 @@
->   #define DPU_INTR_PING_PONG_2_TEAR_DETECTED BIT(18)
->   #define DPU_INTR_PING_PONG_3_TEAR_DETECTED BIT(19)
->   
-> -/**
-> +/*
->    * Pingpong TE detection interrupt status bit definitions
->    */
->   #define DPU_INTR_PING_PONG_0_TE_DETECTED BIT(24)
-> @@ -104,7 +104,7 @@
->   #define DPU_INTR_PING_PONG_2_TE_DETECTED BIT(26)
->   #define DPU_INTR_PING_PONG_3_TE_DETECTED BIT(27)
->   
-> -/**
-> +/*
->    * Ctl start interrupt status bit definitions
->    */
->   #define DPU_INTR_CTL_0_START BIT(9)
-> @@ -113,13 +113,13 @@
->   #define DPU_INTR_CTL_3_START BIT(12)
->   #define DPU_INTR_CTL_4_START BIT(13)
->   
-> -/**
-> +/*
->    * Concurrent WB overflow interrupt status bit definitions
->    */
->   #define DPU_INTR_CWB_2_OVERFLOW BIT(14)
->   #define DPU_INTR_CWB_3_OVERFLOW BIT(15)
->   
-> -/**
-> +/*
->    * Histogram VIG done interrupt status bit definitions
->    */
->   #define DPU_INTR_HIST_VIG_0_DONE BIT(0)
-> @@ -127,7 +127,7 @@
->   #define DPU_INTR_HIST_VIG_2_DONE BIT(8)
->   #define DPU_INTR_HIST_VIG_3_DONE BIT(10)
->   
-> -/**
-> +/*
->    * Histogram VIG reset Sequence done interrupt status bit definitions
->    */
->   #define DPU_INTR_HIST_VIG_0_RSTSEQ_DONE BIT(1)
-> @@ -135,7 +135,7 @@
->   #define DPU_INTR_HIST_VIG_2_RSTSEQ_DONE BIT(9)
->   #define DPU_INTR_HIST_VIG_3_RSTSEQ_DONE BIT(11)
->   
-> -/**
-> +/*
->    * Histogram DSPP done interrupt status bit definitions
->    */
->   #define DPU_INTR_HIST_DSPP_0_DONE BIT(12)
-> @@ -143,7 +143,7 @@
->   #define DPU_INTR_HIST_DSPP_2_DONE BIT(20)
->   #define DPU_INTR_HIST_DSPP_3_DONE BIT(22)
->   
-> -/**
-> +/*
->    * Histogram DSPP reset Sequence done interrupt status bit definitions
->    */
->   #define DPU_INTR_HIST_DSPP_0_RSTSEQ_DONE BIT(13)
-> @@ -151,7 +151,7 @@
->   #define DPU_INTR_HIST_DSPP_2_RSTSEQ_DONE BIT(21)
->   #define DPU_INTR_HIST_DSPP_3_RSTSEQ_DONE BIT(23)
->   
-> -/**
-> +/*
->    * INTF interrupt status bit definitions
->    */
->   #define DPU_INTR_VIDEO_INTO_STATIC BIT(0)
-> @@ -164,7 +164,7 @@
->   #define DPU_INTR_DSICMD_2_OUTOF_STATIC BIT(7)
->   #define DPU_INTR_PROG_LINE BIT(8)
->   
-> -/**
-> +/*
->    * AD4 interrupt status bit definitions
->    */
->   #define DPU_INTR_BACKLIGHT_UPDATED BIT(0)
-> 
+This is not how sysfs is supposed to work and do not perpetuate this
+mess in any way.
 
-
--- 
-With best wishes
-Dmitry
+greg k-h
