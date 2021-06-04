@@ -2,84 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6AF639AF5F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6067839AF65
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbhFDBJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 21:09:41 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:42241 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229835AbhFDBJk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 21:09:40 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.west.internal (Postfix) with ESMTP id 8283DE0E;
-        Thu,  3 Jun 2021 21:07:53 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Thu, 03 Jun 2021 21:07:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
-        message-id:subject:from:to:cc:date:in-reply-to:references
-        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
-        RnP+G0MOC4BWQShW/S2PpVCbkxxTo6DAXcKcg8vNLGY=; b=QsFXzOjoHSCGnBWl
-        WAgc5dJIicU/sjq1+RqZzaTTfY01RFW7/eOfjCFF44PRIReW4tr1MJDdXla4YtbH
-        My+4ZHZGXZYhTzxupavTzm1sbPfe1lCoK2svFyD1pFWxgTGvJ9ZJDr1JEEDVddaY
-        dt8Qe84Z09JVlrTR8RQPM1UNcaSqHx0KzOz3A4yDvPEbuOgW6u1lrH+Gtuygx0ue
-        lzLnYiqw1vaPzQ8+nu6iCag33tcR2uc6UL0ZkXC7toNVOAEtrJKZnF344MTkCsZN
-        0tjK7aJkywnHnqptNpcvVqPU4KjrbRLGPK6Tg9Hr1ucztjdVu6KC0Z7xXP5S+Bk0
-        O3Sk8A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=RnP+G0MOC4BWQShW/S2PpVCbkxxTo6DAXcKcg8vNL
-        GY=; b=UN9WmFV1EaW1T+i8+Dx49590PsXiCISPMCU6mQklL3mNP853q0ztJeTVv
-        g3hu3vCErLFSOrgO61soeIIlKVeYgscRdGgn1rpwbzSzTlEe3JGMkxnwJtU1E21M
-        vYarmb1zg2J/GkORol+eYmVAH7/IgcgOQ0eElWf+L6zuhCqEC/Ix+fjpgm4Xcd5j
-        ImJrjUQRyASx/7XrYCtwDTJctC7cg6tMnklyxxZduxv+1rig0Ca92SMlxARxLgDI
-        mojRvWEeqFiFaIandgB9wUk3auMb1GpC4xGpl8PUZkpnwBPgwdMLMCRaYs5RXW3n
-        Zi1UHcINXXvXT964Meno2aKCuf1vw==
-X-ME-Sender: <xms:6Hy5YEIgAUh0R9b8qoz0CwScG_XNezhv5nZHwU3FMXJ7Xpny_7FCog>
-    <xme:6Hy5YEIkROzbZCKaZIN6l5LZs0O6jW0IzJAlp3ULYfu_yfmJdGf6CFoT3vYk1QtHD
-    dgUKJOpJiQZ>
-X-ME-Received: <xmr:6Hy5YEsUz3EgobeaDv2P1waUA7nvJP-doKPT6R8bDqtn9oeCYxp5Towaw2OdJHk8rD-6LkG0GQ-b08U4dXoOdoHsxX0siJF3LHqXws-HW80QNvpVxZZ9DBoV8xc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedttddgfeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkffuhffvffgjfhgtfggggfesthekredttderjeenucfhrhhomhepkfgrnhcu
-    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
-    fgleelkeetheelgeehueejueduhfeufffgleehgfevtdehhffhhffhtddugfefheenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
-    hthhgvmhgrfidrnhgvth
-X-ME-Proxy: <xmx:6Hy5YBZyboUQEHXV8r1fFqa3MziuyKnebb7t66pMXWasSfHnCJMnfw>
-    <xmx:6Hy5YLYbEoc0g-nOR0Tl4_WbQBMH1TUug3cAGpGxLAD21holtTik7g>
-    <xmx:6Hy5YNDsSaiG4DFbfIkerRp_FBpqNNaBfmEj9x76dh-bm-jxYcP4Gg>
-    <xmx:6Xy5YFlE_Mxwoni4coqQN_8FJN0LOIF7LUUncic0gof3_OqzLg8Il0sZlDs>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 3 Jun 2021 21:07:47 -0400 (EDT)
-Message-ID: <922c747c22b05a80a8350ac87b839eed0c79581f.camel@themaw.net>
-Subject: Re: [REPOST PATCH v4 2/5] kernfs: use VFS negative dentry caching
-From:   Ian Kent <raven@themaw.net>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
-        Fox Chen <foxhlchen@gmail.com>,
-        Brice Goglin <brice.goglin@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Fri, 04 Jun 2021 09:07:43 +0800
-In-Reply-To: <d4554297b41148c7cc5eba1c9c16c5aa4a93d7e3.camel@themaw.net>
-References: <162218354775.34379.5629941272050849549.stgit@web.messagingengine.com>
-         <162218364554.34379.636306635794792903.stgit@web.messagingengine.com>
-         <CAJfpeguUj5WKtKZsn_tZZNpiL17ggAPcPBXdpA03aAnjaexWug@mail.gmail.com>
-         <972701826ebb1b3b3e00b12cde821b85eebc9749.camel@themaw.net>
-         <CAJfpegsLqowjMPCAgsFe6eQK_CeixrevUPyA04V2hdYvc0HpLQ@mail.gmail.com>
-         <08388e183b17e70a3383eb38af469125f8643a07.camel@themaw.net>
-         <32069e28a520c29773ebc24e248823d45ebb50b3.camel@themaw.net>
-         <d4554297b41148c7cc5eba1c9c16c5aa4a93d7e3.camel@themaw.net>
+        id S229957AbhFDBNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 21:13:06 -0400
+Received: from mga01.intel.com ([192.55.52.88]:3644 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229754AbhFDBNE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 21:13:04 -0400
+IronPort-SDR: nGqHLVMynEF7YLDpFBsURfvTVlQTjD6SYfVHLB6OUIT5h3N8VvmUzl3jfX51WJNrhhlaBRmEin
+ WXaQXLk2BjYw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="225508186"
+X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
+   d="scan'208";a="225508186"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 18:11:08 -0700
+IronPort-SDR: iEZg2eOfgQQdO6an+RlQX8obiRikjN4S0sB4FOL6YSBHoIce+h3SMGYSf6yX4PuOCz8Ud5yr3H
+ e9R/XIQ2PkvQ==
+X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
+   d="scan'208";a="475281916"
+Received: from kmillard-mobl.amr.corp.intel.com ([10.212.170.118])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 18:11:06 -0700
+Message-ID: <d4c6e9321d151744e2a0f3df6fa5d54297373b68.camel@linux.intel.com>
+Subject: Re: [PATCH v1 1/1] iio: hid-sensors: lighten the exported symbols
+ by introducing IIO_HID namespace
+From:   srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Ye Xiang <xiang.ye@intel.com>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>
+Date:   Thu, 03 Jun 2021 18:10:56 -0700
+In-Reply-To: <CAHp75Vc6Q7QrQE3k3DoLkkzkztBh_q5+Sf461+BduAKohU+b8w@mail.gmail.com>
+References: <20210525132119.21800-1-andriy.shevchenko@linux.intel.com>
+         <20210603180700.3206eda0@jic23-huawei>
+         <dd13ee6019987ff23b34bfb10e2c2fbe13f999dd.camel@linux.intel.com>
+         <CAHp75Vc6Q7QrQE3k3DoLkkzkztBh_q5+Sf461+BduAKohU+b8w@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
@@ -88,223 +52,440 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-06-04 at 07:57 +0800, Ian Kent wrote:
-> On Thu, 2021-06-03 at 10:15 +0800, Ian Kent wrote:
-> > On Wed, 2021-06-02 at 18:57 +0800, Ian Kent wrote:
-> > > On Wed, 2021-06-02 at 10:58 +0200, Miklos Szeredi wrote:
-> > > > On Wed, 2 Jun 2021 at 05:44, Ian Kent <raven@themaw.net> wrote:
-> > > > > 
-> > > > > On Tue, 2021-06-01 at 14:41 +0200, Miklos Szeredi wrote:
-> > > > > > On Fri, 28 May 2021 at 08:34, Ian Kent <raven@themaw.net>
-> > > > > > wrote:
-> > > > > > > 
-> > > > > > > If there are many lookups for non-existent paths these
-> > > > > > > negative
-> > > > > > > lookups
-> > > > > > > can lead to a lot of overhead during path walks.
-> > > > > > > 
-> > > > > > > The VFS allows dentries to be created as negative and
-> > > > > > > hashed,
-> > > > > > > and
-> > > > > > > caches
-> > > > > > > them so they can be used to reduce the fairly high
-> > > > > > > overhead
-> > > > > > > alloc/free
-> > > > > > > cycle that occurs during these lookups.
-> > > > > > 
-> > > > > > Obviously there's a cost associated with negative caching
-> > > > > > too. 
-> > > > > > For
-> > > > > > normal filesystems it's trivially worth that cost, but in
-> > > > > > case
-> > > > > > of
-> > > > > > kernfs, not sure...
-> > > > > > 
-> > > > > > Can "fairly high" be somewhat substantiated with a
-> > > > > > microbenchmark
-> > > > > > for
-> > > > > > negative lookups?
-> > > > > 
-> > > > > Well, maybe, but anything we do for a benchmark would be
-> > > > > totally
-> > > > > artificial.
-> > > > > 
-> > > > > The reason I added this is because I saw appreciable
-> > > > > contention
-> > > > > on the dentry alloc path in one case I saw.
-> > > > 
-> > > > If multiple tasks are trying to look up the same negative
-> > > > dentry
-> > > > in
-> > > > parallel, then there will be contention on the parent inode
-> > > > lock.
-> > > > Was this the issue?   This could easily be reproduced with an
-> > > > artificial benchmark.
+On Fri, 2021-06-04 at 01:50 +0300, Andy Shevchenko wrote:
+> 
+> 
+> On Thursday, June 3, 2021, Srinivas Pandruvada
+> <srinivas.pandruvada@linux.intel.com> wrote:
+> > On Thu, 2021-06-03 at 18:07 +0100, Jonathan Cameron wrote:
+> > > On Tue, 25 May 2021 16:21:19 +0300
+> > > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 > > > 
-> > > Not that I remember, I'll need to dig up the sysrq dumps to have
-> > > a
-> > > look and get back to you.
+> > > > A namespace for exported symbols makes clear who is a provider
+> > > > and
+> > > > who is
+> > > > a consumer of the certain resources. Besides that, it doesn't
+> > > > pollute
+> > > > the common namespace.
+> > > > 
+> > > > Signed-off-by: Andy Shevchenko
+> > > > <andriy.shevchenko@linux.intel.com>
+> > > 
+> > > I'm fine with this, but looking for input from Srinivas and Jiri
+> > > before
+> > > I apply it.
 > > 
-> > After doing that though I could grab Fox Chen's reproducer and give
-> > it varying sysfs paths as well as some percentage of non-existent
-> > sysfs paths and see what I get ...
+> > I see these names are using "IIO_HID" and "IIO_HID_ATTRIBUTES".
+> > Since they are only used in hid-sensors, may be explicitly define
 > > 
-> > That should give it a more realistic usage profile and, if I can
-> > get the percentage of non-existent paths right, demonstrate that
-> > case as well ... but nothing is easy, so we'll have to wait and
-> > see, ;)
 > 
-> Ok, so I grabbed Fox's benckmark repo. and used a non-existent path
-> to check the negative dentry contention.
-> 
-> I've taken the baseline readings and the contention is see is the
-> same as I originally saw. It's with d_alloc_parallel() on lockref.
-> 
-> While I haven't run the patched check I'm pretty sure that using
-> dget_parent() and taking a snapshot will move the contention to
-> that. So if I do retain the negative dentry caching change I would
-> need to use the dentry seq lock for it to be useful.
-> 
-> Thoughts Miklos, anyone?
+> I think we need to stick with a provider name which is IIO subsystem,
+> HID driver. That’s my logic behind.
+>  
+OK
 
-Mmm ... never mind, I'd still need to take a snapshot anyway and
-dget_parent() looks lightweight if there's no conflict. I will
-need to test it.
-
+> > "HID_SENSOR_IIO". Also prefer only one name space.
+> > 
+> > 
 > 
+> It may not be one namespace IIUC, because same module has to request
+> and provide it at the same time, moreover, two C modules are exporting
+> something, I dunno how it’s supposed to work.
+> 
+
+I am fine with the changes.
+
+Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+
+
+Thanks,
+Srinivas
+
+>  
+> > Thanks,
+> > Srinivas
 > > 
 > > > 
+> > > > ---
 > > > > 
-> > > > > > > diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-> > > > > > > index 4c69e2af82dac..5151c712f06f5 100644
-> > > > > > > --- a/fs/kernfs/dir.c
-> > > > > > > +++ b/fs/kernfs/dir.c
-> > > > > > > @@ -1037,12 +1037,33 @@ static int
-> > > > > > > kernfs_dop_revalidate(struct
-> > > > > > > dentry *dentry, unsigned int flags)
-> > > > > > >         if (flags & LOOKUP_RCU)
-> > > > > > >                 return -ECHILD;
-> > > > > > > 
-> > > > > > > -       /* Always perform fresh lookup for negatives */
-> > > > > > > -       if (d_really_is_negative(dentry))
-> > > > > > > -               goto out_bad_unlocked;
-> > > > > > > +       mutex_lock(&kernfs_mutex);
-> > > > > > > 
-> > > > > > >         kn = kernfs_dentry_node(dentry);
-> > > > > > > -       mutex_lock(&kernfs_mutex);
-> > > > > > > +
-> > > > > > > +       /* Negative hashed dentry? */
-> > > > > > > +       if (!kn) {
-> > > > > > > +               struct kernfs_node *parent;
-> > > > > > > +
-> > > > > > > +               /* If the kernfs node can be found this
-> > > > > > > is
-> > > > > > > a
-> > > > > > > stale
-> > > > > > > negative
-> > > > > > > +                * hashed dentry so it must be discarded
-> > > > > > > and
-> > > > > > > the
-> > > > > > > lookup redone.
-> > > > > > > +                */
-> > > > > > > +               parent = kernfs_dentry_node(dentry-
-> > > > > > > > d_parent);
-> > > > > > 
-> > > > > > This doesn't look safe WRT a racing sys_rename().  In this
-> > > > > > case
-> > > > > > d_move() is called only with parent inode locked, but not
-> > > > > > with
-> > > > > > kernfs_mutex while ->d_revalidate() may not have parent
-> > > > > > inode
-> > > > > > locked.
-> > > > > > After d_move() the old parent dentry can be freed,
-> > > > > > resulting
-> > > > > > in
-> > > > > > use
-> > > > > > after free.  Easily fixed by dget_parent().
-> > > > > 
-> > > > > Umm ... I'll need some more explanation here ...
-> > > > > 
-> > > > > We are in ref-walk mode so the parent dentry isn't going
-> > > > > away.
+> > > > Jonothan et al. This is just a work against HID IIO sensor
+> > > > drivers,
+> > > > I think
+> > > > that entire IIO can gain from namespaces. But I leave it for you
+> > > > to
+> > > > decide and
+> > > > how to proceed / convert.
+> > > 
+> > > It's been on the todo list since Jon Corbetts recent LWN article
+> > > pointing out
+> > > how underused this feature is which reminded me of it's existence.
+> > > 
+> > > I agree in principle with doing it, but that is going to be a
+> > > rather
+> > > big
+> > > single shot patch.  One for early in a cycle I think.
+> > > 
+> > > We have a lot of multi-module drivers as well where this might have
+> > > benefits
+> > > and would be a rather more contained change.
+> > > 
+> > > Jonathan
+> > > 
+> > > > Yes, due to nature of this (kind of) change it may not be split.
 > > > > 
-> > > > The parent that was used to lookup the dentry in __d_lookup()
-> > > > isn't
-> > > > going away.  But it's not necessarily equal to dentry->d_parent
-> > > > anymore.
+> > > >   drivers/iio/accel/hid-sensor-accel-3d.c       |  1 +
+> > > >   .../hid-sensors/hid-sensor-attributes.c       | 26 +++++++++---
+> > > > -
+> > > > ------
+> > > >   .../common/hid-sensors/hid-sensor-trigger.c   |  9 ++++---
+> > > >   drivers/iio/gyro/hid-sensor-gyro-3d.c         |  1 +
+> > > >   drivers/iio/humidity/hid-sensor-humidity.c    |  1 +
+> > > >   drivers/iio/light/hid-sensor-als.c            |  1 +
+> > > >   drivers/iio/light/hid-sensor-prox.c           |  1 +
+> > > >   drivers/iio/magnetometer/hid-sensor-magn-3d.c |  1 +
+> > > >   drivers/iio/orientation/hid-sensor-incl-3d.c  |  1 +
+> > > >   drivers/iio/orientation/hid-sensor-rotation.c |  1 +
+> > > >   .../position/hid-sensor-custom-intel-hinge.c  |  1 +
+> > > >   drivers/iio/pressure/hid-sensor-press.c       |  1 +
+> > > >   .../iio/temperature/hid-sensor-temperature.c  |  1 +
+> > > >   13 files changed, 29 insertions(+), 17 deletions(-)
 > > > > 
-> > > > > And this is a negative dentry so rename is going to bail out
-> > > > > with ENOENT way early.
-> > > > 
-> > > > You are right.  But note that negative dentry in question could
-> > > > be
-> > > > the
-> > > > target of a rename.  Current implementation doesn't switch the
-> > > > target's parent or name, but this wasn't always the case
-> > > > (commit
-> > > > 076515fc9267 ("make non-exchanging __d_move() copy ->d_parent
-> > > > rather
-> > > > than swap them")), so a backport of this patch could become
-> > > > incorrect
-> > > > on old enough kernels.
-> > > 
-> > > Right, that __lookup_hash() will find the negative target.
-> > > 
-> > > > 
-> > > > So I still think using dget_parent() is the correct way to do
-> > > > this.
-> > > 
-> > > The rename code does my head in, ;)
-> > > 
-> > > The dget_parent() would ensure we had an up to date parent so
-> > > yes, that would be the right thing to do regardless.
-> > > 
-> > > But now I'm not sure that will be sufficient for kernfs. I'm
-> > > still
-> > > thinking about it.
-> > > 
-> > > I'm wondering if there's a missing check in there to account for
-> > > what happens with revalidate after ->rename() but before move.
-> > > There's already a kernfs node check in there so it's probably ok
-> > > ...
-> > >  
-> > > > 
-> > > > > > 
-> > > > > > > +               if (parent) {
-> > > > > > > +                       const void *ns = NULL;
-> > > > > > > +
-> > > > > > > +                       if (kernfs_ns_enabled(parent))
-> > > > > > > +                               ns = kernfs_info(dentry-
-> > > > > > > > d_sb)-
-> > > > > > > > ns;
-> > > > > > > +                       kn = kernfs_find_ns(parent,
-> > > > > > > dentry-
-> > > > > > > > d_name.name, ns);
-> > > > > > 
-> > > > > > Same thing with d_name.  There's
-> > > > > > take_dentry_name_snapshot()/release_dentry_name_snapshot()
-> > > > > > to
-> > > > > > properly
-> > > > > > take care of that.
-> > > > > 
-> > > > > I don't see that problem either, due to the dentry being
-> > > > > negative,
-> > > > > but please explain what your seeing here.
-> > > > 
-> > > > Yeah.  Negative dentries' names weren't always stable, but that
-> > > > was
-> > > > a
-> > > > long time ago (commit 8d85b4845a66 ("Allow sharing external
-> > > > names
-> > > > after __d_move()")).
-> > > 
-> > > Right, I'll make that change too.
-> > > 
-> > > > 
-> > > > Thanks,
-> > > > Miklos
-> > > 
+> > > > diff --git a/drivers/iio/accel/hid-sensor-accel-3d.c
+> > > > b/drivers/iio/accel/hid-sensor-accel-3d.c
+> > > > index 27f47e1c251e..bcafca7b2eac 100644
+> > > > --- a/drivers/iio/accel/hid-sensor-accel-3d.c
+> > > > +++ b/drivers/iio/accel/hid-sensor-accel-3d.c
+> > > > @@ -465,3 +465,4 @@
+> > > > module_platform_driver(hid_accel_3d_platform_driver);
+> > > >   MODULE_DESCRIPTION("HID Sensor Accel 3D");
+> > > >   MODULE_AUTHOR("Srinivas Pandruvada
+> > > > <srinivas.pandruvada@intel.com>
+> > > > ");
+> > > >   MODULE_LICENSE("GPL");
+> > > > +MODULE_IMPORT_NS(IIO_HID);
+> > > > diff --git a/drivers/iio/common/hid-sensors/hid-sensor-
+> > > > attributes.c 
+> > > > b/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
+> > > > index cb52b4fd6bf7..a81a0b206af6 100644
+> > > > --- a/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
+> > > > +++ b/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
+> > > > @@ -176,7 +176,7 @@ s32 hid_sensor_read_poll_value(struct
+> > > > hid_sensor_common *st)
+> > > >   
+> > > >      return value;
+> > > >   }
+> > > > -EXPORT_SYMBOL(hid_sensor_read_poll_value);
+> > > > +EXPORT_SYMBOL_NS(hid_sensor_read_poll_value,
+> > > > IIO_HID_ATTRIBUTES);
+> > > >   
+> > > >   int hid_sensor_read_samp_freq_value(struct hid_sensor_common
+> > > > *st,
+> > > >                              int *val1, int *val2)
+> > > > @@ -203,7 +203,7 @@ int hid_sensor_read_samp_freq_value(struct
+> > > > hid_sensor_common *st,
+> > > >   
+> > > >      return IIO_VAL_INT_PLUS_MICRO;
+> > > >   }
+> > > > -EXPORT_SYMBOL(hid_sensor_read_samp_freq_value);
+> > > > +EXPORT_SYMBOL_NS(hid_sensor_read_samp_freq_value, IIO_HID);
+> > > >   
+> > > >   int hid_sensor_write_samp_freq_value(struct hid_sensor_common
+> > > > *st,
+> > > >                              int val1, int val2)
+> > > > @@ -238,7 +238,7 @@ int hid_sensor_write_samp_freq_value(struct
+> > > > hid_sensor_common *st,
+> > > >   
+> > > >      return 0;
+> > > >   }
+> > > > -EXPORT_SYMBOL(hid_sensor_write_samp_freq_value);
+> > > > +EXPORT_SYMBOL_NS(hid_sensor_write_samp_freq_value, IIO_HID);
+> > > >   
+> > > >   int hid_sensor_read_raw_hyst_value(struct hid_sensor_common
+> > > > *st,
+> > > >                              int *val1, int *val2)
+> > > > @@ -261,7 +261,7 @@ int hid_sensor_read_raw_hyst_value(struct
+> > > > hid_sensor_common *st,
+> > > >   
+> > > >      return IIO_VAL_INT_PLUS_MICRO;
+> > > >   }
+> > > > -EXPORT_SYMBOL(hid_sensor_read_raw_hyst_value);
+> > > > +EXPORT_SYMBOL_NS(hid_sensor_read_raw_hyst_value, IIO_HID);
+> > > >   
+> > > >   int hid_sensor_read_raw_hyst_rel_value(struct hid_sensor_common
+> > > > *st, int *val1,
+> > > >                                     int *val2)
+> > > > @@ -283,7 +283,7 @@ int hid_sensor_read_raw_hyst_rel_value(struct
+> > > > hid_sensor_common *st, int *val1,
+> > > >   
+> > > >      return IIO_VAL_INT_PLUS_MICRO;
+> > > >   }
+> > > > -EXPORT_SYMBOL(hid_sensor_read_raw_hyst_rel_value);
+> > > > +EXPORT_SYMBOL_NS(hid_sensor_read_raw_hyst_rel_value, IIO_HID);
+> > > >   
+> > > >   
+> > > >   int hid_sensor_write_raw_hyst_value(struct hid_sensor_common
+> > > > *st,
+> > > > @@ -315,7 +315,7 @@ int hid_sensor_write_raw_hyst_value(struct
+> > > > hid_sensor_common *st,
+> > > >   
+> > > >      return 0;
+> > > >   }
+> > > > -EXPORT_SYMBOL(hid_sensor_write_raw_hyst_value);
+> > > > +EXPORT_SYMBOL_NS(hid_sensor_write_raw_hyst_value, IIO_HID);
+> > > >   
+> > > >   int hid_sensor_write_raw_hyst_rel_value(struct
+> > > > hid_sensor_common
+> > > > *st,
+> > > >                                      int val1, int val2)
+> > > > @@ -346,7 +346,7 @@ int
+> > > > hid_sensor_write_raw_hyst_rel_value(struct
+> > > > hid_sensor_common *st,
+> > > >   
+> > > >      return 0;
+> > > >   }
+> > > > -EXPORT_SYMBOL(hid_sensor_write_raw_hyst_rel_value);
+> > > > +EXPORT_SYMBOL_NS(hid_sensor_write_raw_hyst_rel_value, IIO_HID);
+> > > >   
+> > > >   /*
+> > > >    * This fuction applies the unit exponent to the scale.
+> > > > @@ -430,14 +430,14 @@ int hid_sensor_format_scale(u32 usage_id,
+> > > >   
+> > > >      return IIO_VAL_INT_PLUS_NANO;
+> > > >   }
+> > > > -EXPORT_SYMBOL(hid_sensor_format_scale);
+> > > > +EXPORT_SYMBOL_NS(hid_sensor_format_scale, IIO_HID);
+> > > >   
+> > > >   int64_t hid_sensor_convert_timestamp(struct hid_sensor_common
+> > > > *st,
+> > > >                                   int64_t raw_value)
+> > > >   {
+> > > >      return st->timestamp_ns_scale * raw_value;
+> > > >   }
+> > > > -EXPORT_SYMBOL(hid_sensor_convert_timestamp);
+> > > > +EXPORT_SYMBOL_NS(hid_sensor_convert_timestamp, IIO_HID);
+> > > >   
+> > > >   static
+> > > >   int hid_sensor_get_reporting_interval(struct
+> > > > hid_sensor_hub_device
+> > > > *hsdev,
+> > > > @@ -484,7 +484,7 @@ int hid_sensor_get_report_latency(struct
+> > > > hid_sensor_common *st)
+> > > >   
+> > > >      return value;
+> > > >   }
+> > > > -EXPORT_SYMBOL(hid_sensor_get_report_latency);
+> > > > +EXPORT_SYMBOL_NS(hid_sensor_get_report_latency,
+> > > > IIO_HID_ATTRIBUTES);
+> > > >   
+> > > >   int hid_sensor_set_report_latency(struct hid_sensor_common *st,
+> > > > int latency_ms)
+> > > >   {
+> > > > @@ -492,13 +492,13 @@ int hid_sensor_set_report_latency(struct
+> > > > hid_sensor_common *st, int latency_ms)
+> > > >                                    st->report_latency.index,
+> > > >                                    sizeof(latency_ms),
+> > > > &latency_ms);
+> > > >   }
+> > > > -EXPORT_SYMBOL(hid_sensor_set_report_latency);
+> > > > +EXPORT_SYMBOL_NS(hid_sensor_set_report_latency,
+> > > > IIO_HID_ATTRIBUTES);
+> > > >   
+> > > >   bool hid_sensor_batch_mode_supported(struct hid_sensor_common
+> > > > *st)
+> > > >   {
+> > > >      return st->report_latency.index > 0 && st-
+> > > > > report_latency.report_id > 0;
+> > > >   }
+> > > > -EXPORT_SYMBOL(hid_sensor_batch_mode_supported);
+> > > > +EXPORT_SYMBOL_NS(hid_sensor_batch_mode_supported,
+> > > > IIO_HID_ATTRIBUTES);
+> > > >   
+> > > >   int hid_sensor_parse_common_attributes(struct
+> > > > hid_sensor_hub_device *hsdev,
+> > > >                                      u32 usage_id,
+> > > > @@ -590,7 +590,7 @@ int hid_sensor_parse_common_attributes(struct
+> > > > hid_sensor_hub_device *hsdev,
+> > > >   
+> > > >      return 0;
+> > > >   }
+> > > > -EXPORT_SYMBOL(hid_sensor_parse_common_attributes);
+> > > > +EXPORT_SYMBOL_NS(hid_sensor_parse_common_attributes, IIO_HID);
+> > > >   
+> > > >   MODULE_AUTHOR("Srinivas Pandruvada
+> > > > <srinivas.pandruvada@intel.com>
+> > > > ");
+> > > >   MODULE_DESCRIPTION("HID Sensor common attribute processing");
+> > > > diff --git a/drivers/iio/common/hid-sensors/hid-sensor-trigger.c
+> > > > b/drivers/iio/common/hid-sensors/hid-sensor-trigger.c
+> > > > index c06537e106e9..60e85d675387 100644
+> > > > --- a/drivers/iio/common/hid-sensors/hid-sensor-trigger.c
+> > > > +++ b/drivers/iio/common/hid-sensors/hid-sensor-trigger.c
+> > > > @@ -150,7 +150,7 @@ static int _hid_sensor_power_state(struct
+> > > > hid_sensor_common *st, bool state)
+> > > >   
+> > > >      return 0;
+> > > >   }
+> > > > -EXPORT_SYMBOL(hid_sensor_power_state);
+> > > > +EXPORT_SYMBOL_NS(hid_sensor_power_state, IIO_HID);
+> > > >   
+> > > >   int hid_sensor_power_state(struct hid_sensor_common *st, bool
+> > > > state)
+> > > >   {
+> > > > @@ -225,7 +225,7 @@ void hid_sensor_remove_trigger(struct iio_dev
+> > > > *indio_dev,
+> > > >      iio_trigger_free(attrb->trigger);
+> > > >      iio_triggered_buffer_cleanup(indio_dev);
+> > > >   }
+> > > > -EXPORT_SYMBOL(hid_sensor_remove_trigger);
+> > > > +EXPORT_SYMBOL_NS(hid_sensor_remove_trigger, IIO_HID);
+> > > >   
+> > > >   static const struct iio_trigger_ops hid_sensor_trigger_ops = {
+> > > >      .set_trigger_state = &hid_sensor_data_rdy_trigger_set_state,
+> > > > @@ -291,7 +291,7 @@ int hid_sensor_setup_trigger(struct iio_dev
+> > > > *indio_dev, const char *name,
+> > > >      iio_triggered_buffer_cleanup(indio_dev);
+> > > >      return ret;
+> > > >   }
+> > > > -EXPORT_SYMBOL(hid_sensor_setup_trigger);
+> > > > +EXPORT_SYMBOL_NS(hid_sensor_setup_trigger, IIO_HID);
+> > > >   
+> > > >   static int __maybe_unused hid_sensor_suspend(struct device
+> > > > *dev)
+> > > >   {
+> > > > @@ -321,8 +321,9 @@ const struct dev_pm_ops hid_sensor_pm_ops = {
+> > > >      SET_RUNTIME_PM_OPS(hid_sensor_suspend,
+> > > >                         hid_sensor_runtime_resume, NULL)
+> > > >   };
+> > > > -EXPORT_SYMBOL(hid_sensor_pm_ops);
+> > > > +EXPORT_SYMBOL_NS(hid_sensor_pm_ops, IIO_HID);
+> > > >   
+> > > >   MODULE_AUTHOR("Srinivas Pandruvada
+> > > > <srinivas.pandruvada@intel.com>
+> > > > ");
+> > > >   MODULE_DESCRIPTION("HID Sensor trigger processing");
+> > > >   MODULE_LICENSE("GPL");
+> > > > +MODULE_IMPORT_NS(IIO_HID_ATTRIBUTES);
+> > > > diff --git a/drivers/iio/gyro/hid-sensor-gyro-3d.c
+> > > > b/drivers/iio/gyro/hid-sensor-gyro-3d.c
+> > > > index dad26ee4fd1f..2ed2a8effb86 100644
+> > > > --- a/drivers/iio/gyro/hid-sensor-gyro-3d.c
+> > > > +++ b/drivers/iio/gyro/hid-sensor-gyro-3d.c
+> > > > @@ -400,3 +400,4 @@
+> > > > module_platform_driver(hid_gyro_3d_platform_driver);
+> > > >   MODULE_DESCRIPTION("HID Sensor Gyroscope 3D");
+> > > >   MODULE_AUTHOR("Srinivas Pandruvada
+> > > > <srinivas.pandruvada@intel.com>
+> > > > ");
+> > > >   MODULE_LICENSE("GPL");
+> > > > +MODULE_IMPORT_NS(IIO_HID);
+> > > > diff --git a/drivers/iio/humidity/hid-sensor-humidity.c
+> > > > b/drivers/iio/humidity/hid-sensor-humidity.c
+> > > > index 74383abc0d44..8a9091d71d2a 100644
+> > > > --- a/drivers/iio/humidity/hid-sensor-humidity.c
+> > > > +++ b/drivers/iio/humidity/hid-sensor-humidity.c
+> > > > @@ -295,3 +295,4 @@
+> > > > module_platform_driver(hid_humidity_platform_driver);
+> > > >   MODULE_DESCRIPTION("HID Environmental humidity sensor");
+> > > >   MODULE_AUTHOR("Song Hongyan <hongyan.song@intel.com>");
+> > > >   MODULE_LICENSE("GPL v2");
+> > > > +MODULE_IMPORT_NS(IIO_HID);
+> > > > diff --git a/drivers/iio/light/hid-sensor-als.c
+> > > > b/drivers/iio/light/hid-sensor-als.c
+> > > > index 85c8a05b73cb..a63d577493e2 100644
+> > > > --- a/drivers/iio/light/hid-sensor-als.c
+> > > > +++ b/drivers/iio/light/hid-sensor-als.c
+> > > > @@ -392,3 +392,4 @@
+> > > > module_platform_driver(hid_als_platform_driver);
+> > > >   MODULE_DESCRIPTION("HID Sensor ALS");
+> > > >   MODULE_AUTHOR("Srinivas Pandruvada
+> > > > <srinivas.pandruvada@intel.com>
+> > > > ");
+> > > >   MODULE_LICENSE("GPL");
+> > > > +MODULE_IMPORT_NS(IIO_HID);
+> > > > diff --git a/drivers/iio/light/hid-sensor-prox.c
+> > > > b/drivers/iio/light/hid-sensor-prox.c
+> > > > index 17d167c3d595..99de268563d6 100644
+> > > > --- a/drivers/iio/light/hid-sensor-prox.c
+> > > > +++ b/drivers/iio/light/hid-sensor-prox.c
+> > > > @@ -350,3 +350,4 @@
+> > > > module_platform_driver(hid_prox_platform_driver);
+> > > >   MODULE_DESCRIPTION("HID Sensor Proximity");
+> > > >   MODULE_AUTHOR("Archana Patni <archana.patni@intel.com>");
+> > > >   MODULE_LICENSE("GPL");
+> > > > +MODULE_IMPORT_NS(IIO_HID);
+> > > > diff --git a/drivers/iio/magnetometer/hid-sensor-magn-3d.c
+> > > > b/drivers/iio/magnetometer/hid-sensor-magn-3d.c
+> > > > index b78691523dd4..a66f9e933628 100644
+> > > > --- a/drivers/iio/magnetometer/hid-sensor-magn-3d.c
+> > > > +++ b/drivers/iio/magnetometer/hid-sensor-magn-3d.c
+> > > > @@ -587,3 +587,4 @@
+> > > > module_platform_driver(hid_magn_3d_platform_driver);
+> > > >   MODULE_DESCRIPTION("HID Sensor Magnetometer 3D");
+> > > >   MODULE_AUTHOR("Srinivas Pandruvada
+> > > > <srinivas.pandruvada@intel.com>
+> > > > ");
+> > > >   MODULE_LICENSE("GPL");
+> > > > +MODULE_IMPORT_NS(IIO_HID);
+> > > > diff --git a/drivers/iio/orientation/hid-sensor-incl-3d.c
+> > > > b/drivers/iio/orientation/hid-sensor-incl-3d.c
+> > > > index 7af48d336285..cc905b0fa835 100644
+> > > > --- a/drivers/iio/orientation/hid-sensor-incl-3d.c
+> > > > +++ b/drivers/iio/orientation/hid-sensor-incl-3d.c
+> > > > @@ -425,3 +425,4 @@
+> > > > module_platform_driver(hid_incl_3d_platform_driver);
+> > > >   MODULE_DESCRIPTION("HID Sensor Inclinometer 3D");
+> > > >   MODULE_AUTHOR("Srinivas Pandruvada <
+> > > > srinivas.pandruvada@linux.intel.com>");
+> > > >   MODULE_LICENSE("GPL");
+> > > > +MODULE_IMPORT_NS(IIO_HID);
+> > > > diff --git a/drivers/iio/orientation/hid-sensor-rotation.c
+> > > > b/drivers/iio/orientation/hid-sensor-rotation.c
+> > > > index cf7f57a47681..6570bfd22035 100644
+> > > > --- a/drivers/iio/orientation/hid-sensor-rotation.c
+> > > > +++ b/drivers/iio/orientation/hid-sensor-rotation.c
+> > > > @@ -373,3 +373,4 @@
+> > > > module_platform_driver(hid_dev_rot_platform_driver);
+> > > >   MODULE_DESCRIPTION("HID Sensor Device Rotation");
+> > > >   MODULE_AUTHOR("Srinivas Pandruvada <
+> > > > srinivas.pandruvada@linux.intel.com>");
+> > > >   MODULE_LICENSE("GPL");
+> > > > +MODULE_IMPORT_NS(IIO_HID);
+> > > > diff --git a/drivers/iio/position/hid-sensor-custom-intel-hinge.c
+> > > > b/drivers/iio/position/hid-sensor-custom-intel-hinge.c
+> > > > index 738b5f4626ce..4478ad9387c5 100644
+> > > > --- a/drivers/iio/position/hid-sensor-custom-intel-hinge.c
+> > > > +++ b/drivers/iio/position/hid-sensor-custom-intel-hinge.c
+> > > > @@ -376,3 +376,4 @@
+> > > > module_platform_driver(hid_hinge_platform_driver);
+> > > >   MODULE_DESCRIPTION("HID Sensor INTEL Hinge");
+> > > >   MODULE_AUTHOR("Ye Xiang <xiang.ye@intel.com>");
+> > > >   MODULE_LICENSE("GPL");
+> > > > +MODULE_IMPORT_NS(IIO_HID);
+> > > > diff --git a/drivers/iio/pressure/hid-sensor-press.c
+> > > > b/drivers/iio/pressure/hid-sensor-press.c
+> > > > index c416d261e3e3..79b3399e4095 100644
+> > > > --- a/drivers/iio/pressure/hid-sensor-press.c
+> > > > +++ b/drivers/iio/pressure/hid-sensor-press.c
+> > > > @@ -357,3 +357,4 @@
+> > > > module_platform_driver(hid_press_platform_driver);
+> > > >   MODULE_DESCRIPTION("HID Sensor Pressure");
+> > > >   MODULE_AUTHOR("Archana Patni <archana.patni@intel.com>");
+> > > >   MODULE_LICENSE("GPL");
+> > > > +MODULE_IMPORT_NS(IIO_HID);
+> > > > diff --git a/drivers/iio/temperature/hid-sensor-temperature.c
+> > > > b/drivers/iio/temperature/hid-sensor-temperature.c
+> > > > index dc534ed784c3..21aa952b9f6d 100644
+> > > > --- a/drivers/iio/temperature/hid-sensor-temperature.c
+> > > > +++ b/drivers/iio/temperature/hid-sensor-temperature.c
+> > > > @@ -291,3 +291,4 @@
+> > > > module_platform_driver(hid_temperature_platform_driver);
+> > > >   MODULE_DESCRIPTION("HID Environmental temperature sensor");
+> > > >   MODULE_AUTHOR("Song Hongyan <hongyan.song@intel.com>");
+> > > >   MODULE_LICENSE("GPL v2");
+> > > > +MODULE_IMPORT_NS(IIO_HID);
 > > 
+> > 
+> 
 > 
 
 
