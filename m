@@ -2,165 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C2D39C08A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 21:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C6639C091
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 21:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbhFDTmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 15:42:23 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:36380 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbhFDTmV (ORCPT
+        id S231161AbhFDToS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 15:44:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230414AbhFDToQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 15:42:21 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 154JeCRm116407;
-        Fri, 4 Jun 2021 19:40:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : content-type : content-transfer-encoding :
- mime-version; s=corp-2020-01-29;
- bh=EikyZZFc7oVASGhZOIDYITWVlhHG6BoML2KIfhHugFs=;
- b=eAhVdmG03U8dovi+w3ZuTtFGWc1iQfYt34syAAnyRfYSwwCFchc2uc+cehpSwP68r2mY
- 7SSWHI0gNBr+LPyA4W3W7b7urklntBQovg9X+KpaAGFc5bW0hE5/1fofIMTWwl0iepSW
- OElnS4LB+izbvWOHxavbOAnEbLjU9XfLGFeaRgzUa8jjY2LEfNS22yK7ATcIrLnudsAG
- oXi+IurhrNUSvB73KFqcJs7DXk4p863ytUiyv8jRLCtuuKgK+CwltxkpZPhmwwmSG+bS
- eGL9eC2Fq8ZhAMY9Q2gkcI8dUz3AMobDSdrUZXT3/KDNvOtn7XHCU9jfQ1kka3GAW+wh 9Q== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 38ub4cxsrf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 04 Jun 2021 19:40:20 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 154Je8XM075026;
-        Fri, 4 Jun 2021 19:40:19 GMT
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2047.outbound.protection.outlook.com [104.47.73.47])
-        by userp3030.oracle.com with ESMTP id 38uar0gv88-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 04 Jun 2021 19:40:19 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LuhP6yGckKH4m4iUhbz64Pnov24Hsp4jA3+d1Dw1S46lSt+Y2x9ZzaC6asiXLNhx9UMr2SNi8SX47/WioygTbUjIC3QIkp2pOdRbKdEQG9JDGkMqBOHPmixvVqU/6nnDvQfb5kVYX7Chepx/gWOvMpvjp7iTM/UGNElS1Faev94lejnepxyYCLqiyYokysx3+X0hmc2c/IpiT5Qc5XxEgYz0Mc/usGQ0tCfu5ox08IMMDzOEXV6sOOBaTbSMzhEypCMAANBMWrcWGA9SQ+6UvKr8h4c65SzdELzLh8N2zD9AqqaseaNAQUDhB5M3JCCHj0Xj2FN/o94avuHdUNiJ7w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EikyZZFc7oVASGhZOIDYITWVlhHG6BoML2KIfhHugFs=;
- b=WYKViSkeyz/Zgl0QTBCWu2gCIHqXZfiHFSvcbuhRc3DiJs3+OS2KwgWhai9cCSVdcIUXAIWvOdbz5uUnC8a/V39t/dgQiOFMhowK+UrMTSiSpDNnAW79nAJDQXzGwjTRyvNupahevPJXKGaQ8Sr2DpMnIFX/PSDBNDg6vxstpNlwDZkCbRzgp4S+ce+Kx3Eq2BiZUQObFtc1D+nXx3RIW0APF6p4qnR0P2NgZpWbgQHeMBCbRBsTGC+/6XXR5LTTXGSlkZSBrZxc9BgtwNEBsYxAvDRfaw4CrytfR6hdxUXMWUk4DdzVWSEczR1Qyr0OfUs8h1ZaRz8bXD0+gA2Oqw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EikyZZFc7oVASGhZOIDYITWVlhHG6BoML2KIfhHugFs=;
- b=vnLd7jDUapd0FVq1eMamjzU+/ZDx2yhSzXb7XPy0ArgeFgFtLwjrBLr5B4bgXW38Ia3l2ZJcRbo7sTcJdU0ooprvVdBAqjGx0UQD3QqXCkq1PvK5r0owogVhfLpSAXmxHqlbBJdX5wO3tioj5hK7Nb1i96kKdaiFjtiK5aR9JmI=
-Received: from DM6PR10MB4380.namprd10.prod.outlook.com (2603:10b6:5:223::19)
- by DM5PR10MB2009.namprd10.prod.outlook.com (2603:10b6:3:10f::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22; Fri, 4 Jun
- 2021 19:40:17 +0000
-Received: from DM6PR10MB4380.namprd10.prod.outlook.com
- ([fe80::b8b4:5900:668b:c9c2]) by DM6PR10MB4380.namprd10.prod.outlook.com
- ([fe80::b8b4:5900:668b:c9c2%5]) with mapi id 15.20.4195.025; Fri, 4 Jun 2021
- 19:40:16 +0000
-From:   Liam Howlett <liam.howlett@oracle.com>
-To:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH] mm/nommu: unexport do_munmap()
-Thread-Topic: [PATCH] mm/nommu: unexport do_munmap()
-Thread-Index: AQHXWXlxNKpqM94mJkGUHZBaSOpXaw==
-Date:   Fri, 4 Jun 2021 19:40:16 +0000
-Message-ID: <20210604194002.648037-1-Liam.Howlett@Oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: git-send-email 2.30.2
-authentication-results: kvack.org; dkim=none (message not signed)
- header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
-x-originating-ip: [23.233.25.87]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cf31199a-3e20-4f48-a555-08d927909416
-x-ms-traffictypediagnostic: DM5PR10MB2009:
-x-microsoft-antispam-prvs: <DM5PR10MB2009AA9A4F69A9487A957454FD3B9@DM5PR10MB2009.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:935;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1qtZ/dDOcnjECZ3HxVKLkHIFFQof4TTpA6+TsotIQmm7dtVGcSQnU1LUViE9dM9e9ZjjJ16e/Ndd6oOqD9Ta7bd70dXrPUP/QO5OYK8tZnAtq3KEMGq7n/xsQsfV7BuQR1ahVmQ+8qd6KEPy9t+fzzw23VJbG8gSqSFCnKLBAMGEknMaJwuGO/VT6UbEL/x6w2c2ndGZ6K7UhH3KGB1d+SmzL9DIJ5kY3G166BDMj5yWoMyrBs520vSix3pIJZnYGHHHqh/t4Jqjuwb5e2rkepgHFX3xyQap4edhA3XKn3pvJQf9ZMyPz3m8YVn0qRZCiPUyPBU2PcaWGtTlMcHyhtA+SpB2GCFunY5Cum92ZCeabod/sQPN6Wg2lajYcJtgojT2ELnEx2JcBumQGWtDlypb97OGvrXH7W+WnDCkJi7OqERQnh2utszAcnyYp0AQ1mf/IWRwIY3OZoa7fYW/pxx9Ip6lf/JmRCNvHFWyhj47LTfSJDBPjBFBTILbMgHczKxYInmjKIAVjR4+H7U0nxTQvGi7sZV4gGqYD0X/HbCKSiWKJhQ0dn+AVBpNZk2hng6HkyHwXZCvlIafNBkFa1MquDusRXTpZSuwo3OwNWM=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4380.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(346002)(136003)(376002)(396003)(66446008)(316002)(6506007)(66556008)(91956017)(64756008)(66946007)(66476007)(44832011)(2616005)(76116006)(26005)(186003)(5660300002)(4744005)(1076003)(478600001)(110136005)(8676002)(122000001)(2906002)(6486002)(8936002)(86362001)(38100700002)(71200400001)(6512007)(36756003)(83380400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?s/tz1iogt12KG90qFwm5r5pIuHgCxpv2P9T0XPwKmXSK/+3aeHqxkNqf0v?=
- =?iso-8859-1?Q?l+k7nhHhNm5vxylXZDwckGo2veuYRbwNb+QIo6Zix8I9UW8iqdFiMxCYxQ?=
- =?iso-8859-1?Q?DWw/4TJrmBCwO0dwZglT+4Cd6HveqbkhnNkklw0c4qWwcqxD5pEVN+1ISn?=
- =?iso-8859-1?Q?hbqlfvpKLeST8NVYBAz3plCYoTB0TFhvQ1hZO3CzBwg9PSN97qsIoHudlp?=
- =?iso-8859-1?Q?POQiTAWXd1i5kW9H8gtIf30H6ApzVu9Ybv3/0+xK+vvD9/qZBEdmimfhK4?=
- =?iso-8859-1?Q?5TCkIYxRjAnCDjmkJVRv2bydkhfR2CMZk+IlMHlbZSkdzfG9frZm1HPiyI?=
- =?iso-8859-1?Q?5987rJ5PMWx3Mz1IOu07/ywtwehnb1K3GJMR0zPz/sssZGEzqimEQqeeKk?=
- =?iso-8859-1?Q?3+GKLLVWBHxihKowQYDkahuwL/OcJdXoxSsUYtds9aGJH//jDQ6KZhYkCe?=
- =?iso-8859-1?Q?0ZMOkEy5puKcRp9DGwRLhyc5cSkukQFJ3B0bqyAwZNubfEEFn+f/k1sWNK?=
- =?iso-8859-1?Q?tgr6GEWzLOskYFuFGpxTMIVT8i1XW+IsFoAXFBUvtDFLCGtLQNW8Q+5vSs?=
- =?iso-8859-1?Q?BQfm4oKJB5BGXjXSuC7bBH4OrUuWOpo+7ftFbSU9TxELwCEzIA2GIWuI6q?=
- =?iso-8859-1?Q?onI2wKkwK9VrZY8Vqn74Vh7sSEVmrlQujYlOBx20O9XV9AZ6p+OYq0nUtx?=
- =?iso-8859-1?Q?KEWzRygHVjvsznfvEQLvIcYcSZViWUeQvt0DQ1dmS9Blse/XYb+wFELOVf?=
- =?iso-8859-1?Q?tNaEJhu4HPSgwQbJXbfhWmkWoEK3YiD9PR7NdnrPqr316OdzXn9is2/rGv?=
- =?iso-8859-1?Q?71npTb4SfjJlPGNbw+mTHw2RuTxp7kyUNMhKuYbJS0qlH1vZMHEJBjoZR6?=
- =?iso-8859-1?Q?IbWTDVXwzYbIsvmP0GqPALB74Pp7KUF/tXa20QgpsozLfFXdFGs/0lL9zX?=
- =?iso-8859-1?Q?TnBGaitM9LSAL3N0vAZQIprgqHTGdKNhPL5ijj422uAf1yIQ/a1LNHjRMx?=
- =?iso-8859-1?Q?vEi1VTyJr/BxWbD22WovowA3WmO9k53HTn3QOyM3aoC5+oSuV5ATUO6GAh?=
- =?iso-8859-1?Q?sr3abwcGbupGBPLAtOZ5FxNW3Z3qNe35VAnhPWclejdpPEJyaFyEnD3IU5?=
- =?iso-8859-1?Q?35p3pUjeavMh+H+CDmEaqARn3KHQJDCyqdLYgFP+qn0Rg11QZSC0ARgYvA?=
- =?iso-8859-1?Q?+Z9co6IW0j6bjaNyUfZ5n1MPJG2FrUafebke/xFpxIhV4SNViL2MMJ4wei?=
- =?iso-8859-1?Q?f4T/llIBwm7hNF8mscFZNBuA/J4ObDbWwc91VIgrtpxx4FxBP35gq21e9d?=
- =?iso-8859-1?Q?M+Mn8D3M5J6QhK94WpPUKATO2Zp78+cH5Eeb2DITOKQpblm0HwYYQWImpT?=
- =?iso-8859-1?Q?MGSDoSbIhX?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 4 Jun 2021 15:44:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D2EC061766;
+        Fri,  4 Jun 2021 12:42:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bb1jA4KJJMvI5FjBqhzon96/oQku4pcdDpeVipG1x4o=; b=BowMt2rxf6wlCAcaDzFLvRL9vk
+        lu/SlDa8a1E1AUMg39AIg/J6ubklu/VeSWYyra362BJmNu884vvuCzBXgUYLrv6641nMHd9vp/ZuB
+        VgBnT5f4fO9e/LAeEd56w3Os8gbADQ/cJTfPYMXQKTchbkAkOhcDhkykbz99W+EixtD4KR1F5tYW6
+        3pt6yFc7hZRKPaho4ImmTq6eUTYbAgVr8oJJ6kwfQgkjMtSPhmKf/OWIV3oYdEAmvMVeV3zladMIB
+        V4fka3/qThGS3JCHKyhezmeapa2+QMq52cUIP2WIvCBXZTCInAsqQJ5z2h4HkuPMVolnOyyUCH+CY
+        H7vFInew==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lpFhY-00DWac-2k; Fri, 04 Jun 2021 19:42:02 +0000
+Date:   Fri, 4 Jun 2021 20:41:52 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Subject: Re: [PATCH net-next v7 3/5] page_pool: Allow drivers to hint on SKB
+ recycling
+Message-ID: <YLqCAEVG+aLNGlIi@casper.infradead.org>
+References: <20210604183349.30040-1-mcroce@linux.microsoft.com>
+ <20210604183349.30040-4-mcroce@linux.microsoft.com>
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4380.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cf31199a-3e20-4f48-a555-08d927909416
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jun 2021 19:40:16.2578
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: b8xW1PfkpkFlUmgLtLVM8xoXkmu0qqtgjm/s1PSjza7qZYhiNrVWK20iUSk17/R48DAHVDnuPP1UzHCkvQE1qg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR10MB2009
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10005 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
- suspectscore=0 spamscore=0 adultscore=0 mlxscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106040138
-X-Proofpoint-GUID: jCcvM22d7KX9004JgrOMu6r4QOAXddKT
-X-Proofpoint-ORIG-GUID: jCcvM22d7KX9004JgrOMu6r4QOAXddKT
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10005 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
- mlxlogscore=999 malwarescore=0 bulkscore=0 phishscore=0 lowpriorityscore=0
- clxscore=1015 impostorscore=0 adultscore=0 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106040138
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604183349.30040-4-mcroce@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-do_munmap() does not take the mmap_write_lock().  vm_munmap() should be
-used instead.
+On Fri, Jun 04, 2021 at 08:33:47PM +0200, Matteo Croce wrote:
+> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> index 7fcfea7e7b21..057b40ad29bd 100644
+> --- a/include/linux/skbuff.h
+> +++ b/include/linux/skbuff.h
+> @@ -40,6 +40,9 @@
+>  #if IS_ENABLED(CONFIG_NF_CONNTRACK)
+>  #include <linux/netfilter/nf_conntrack_common.h>
+>  #endif
+> +#ifdef CONFIG_PAGE_POOL
+> +#include <net/page_pool.h>
+> +#endif
 
-Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
----
- mm/nommu.c | 1 -
- 1 file changed, 1 deletion(-)
+I'm not a huge fan of conditional includes ... any reason to not include
+it always?
 
-diff --git a/mm/nommu.c b/mm/nommu.c
-index 0997ca38c2bd..3a93d4054810 100644
---- a/mm/nommu.c
-+++ b/mm/nommu.c
-@@ -1501,7 +1501,6 @@ int do_munmap(struct mm_struct *mm, unsigned long sta=
-rt, size_t len, struct list
- 	delete_vma(mm, vma);
- 	return 0;
- }
--EXPORT_SYMBOL(do_munmap);
-=20
- int vm_munmap(unsigned long addr, size_t len)
- {
---=20
-2.30.2
+> @@ -3088,7 +3095,13 @@ static inline void skb_frag_ref(struct sk_buff *skb, int f)
+>   */
+>  static inline void __skb_frag_unref(skb_frag_t *frag, bool recycle)
+>  {
+> -	put_page(skb_frag_page(frag));
+> +	struct page *page = skb_frag_page(frag);
+> +
+> +#ifdef CONFIG_PAGE_POOL
+> +	if (recycle && page_pool_return_skb_page(page_address(page)))
+> +		return;
+
+It feels weird to have a page here, convert it back to an address,
+then convert it back to a head page in page_pool_return_skb_page().
+How about passing 'page' here, calling compound_head() in
+page_pool_return_skb_page() and calling virt_to_page() in skb_free_head()?
+
+> @@ -251,4 +253,11 @@ static inline void page_pool_ring_unlock(struct page_pool *pool)
+>  		spin_unlock_bh(&pool->ring.producer_lock);
+>  }
+>  
+> +/* Store mem_info on struct page and use it while recycling skb frags */
+> +static inline
+> +void page_pool_store_mem_info(struct page *page, struct page_pool *pp)
+> +{
+> +	page->pp = pp;
+
+I'm not sure this wrapper needs to exist.
+
+> +}
+> +
+>  #endif /* _NET_PAGE_POOL_H */
+> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> index e1321bc9d316..a03f48f45696 100644
+> --- a/net/core/page_pool.c
+> +++ b/net/core/page_pool.c
+> @@ -628,3 +628,26 @@ void page_pool_update_nid(struct page_pool *pool, int new_nid)
+>  	}
+>  }
+>  EXPORT_SYMBOL(page_pool_update_nid);
+> +
+> +bool page_pool_return_skb_page(void *data)
+> +{
+> +	struct page_pool *pp;
+> +	struct page *page;
+> +
+> +	page = virt_to_head_page(data);
+> +	if (unlikely(page->pp_magic != PP_SIGNATURE))
+> +		return false;
+> +
+> +	pp = (struct page_pool *)page->pp;
+
+You don't need the cast any more.
+
+> +	/* Driver set this to memory recycling info. Reset it on recycle.
+> +	 * This will *not* work for NIC using a split-page memory model.
+> +	 * The page will be returned to the pool here regardless of the
+> +	 * 'flipped' fragment being in use or not.
+> +	 */
+> +	page->pp = NULL;
+> +	page_pool_put_full_page(pp, page, false);
+> +
+> +	return true;
+> +}
+> +EXPORT_SYMBOL(page_pool_return_skb_page);
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index 12b7e90dd2b5..f769f08e7b32 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -70,6 +70,9 @@
+>  #include <net/xfrm.h>
+>  #include <net/mpls.h>
+>  #include <net/mptcp.h>
+> +#ifdef CONFIG_PAGE_POOL
+> +#include <net/page_pool.h>
+> +#endif
+>  
+>  #include <linux/uaccess.h>
+>  #include <trace/events/skb.h>
+> @@ -645,10 +648,15 @@ static void skb_free_head(struct sk_buff *skb)
+>  {
+>  	unsigned char *head = skb->head;
+>  
+> -	if (skb->head_frag)
+> +	if (skb->head_frag) {
+> +#ifdef CONFIG_PAGE_POOL
+> +		if (skb->pp_recycle && page_pool_return_skb_page(head))
+> +			return;
+> +#endif
+
+put this in a header file:
+
+static inline bool skb_pp_recycle(struct sk_buff *skb, void *data)
+{
+	if (!IS_ENABLED(CONFIG_PAGE_POOL) || !skb->pp_recycle)
+		return false;
+	return page_pool_return_skb_page(virt_to_page(data));
+}
+
+then this becomes:
+
+	if (skb->head_frag) {
+		if (skb_pp_recycle(skb, head))
+			return;
+>  		skb_free_frag(head);
+> -	else
+> +	} else {
+>  		kfree(head);
+> +	}
+>  }
+>  
+>  static void skb_release_data(struct sk_buff *skb)
