@@ -2,370 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9280F39C0D8
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 21:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 146FD39C0DF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 21:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbhFDT6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 15:58:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbhFDT6U (ORCPT
+        id S231140AbhFDUA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 16:00:26 -0400
+Received: from mail-pf1-f174.google.com ([209.85.210.174]:34764 "EHLO
+        mail-pf1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229854AbhFDUAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 15:58:20 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC74C061766
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 12:56:34 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id g9-20020a25ae490000b029052f9e5b7d3fso13133916ybe.4
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 12:56:34 -0700 (PDT)
+        Fri, 4 Jun 2021 16:00:24 -0400
+Received: by mail-pf1-f174.google.com with SMTP id g6so8227513pfq.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 12:58:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=WnPagf26OWdwQb5LXQhta12h+qhGjx2PcreReVGXCeo=;
-        b=hpz+AqKJE8ngJhA5Wm8aOueDvuhKlrf5ud0y7nE8MAbai96Y1SI/WTH6Vx97AQnfew
-         0oe34wyic4uKfD0tFs8z+dmuj0dzVSM6AGsx+15baZbD1pmISnEgBTS3h7vUn2v3J3yp
-         W6kOQEP0Kw/do7UwSGxvVEJRqVijGOMegAIFSb9/UF2g1ZqLG6hKyljzY27/6pjfHclB
-         icqDIauyBqUttVv/7jHjvtCFi1bJLhGq4Tj51LGQTXKO0PiQTEFtYIB3r3Levu6dGRRo
-         ozf4rsoTTV5OXgAk2Ra763oX79oDvo5XKOB4/q3OsTspSerALoP3yA8QrM4NbSjpb4FS
-         r9gQ==
+        d=gmail.com; s=20161025;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=XcPLPL/fr76RmVJu1kdzwNFB7f+nFqpQT28G0wE3jrA=;
+        b=Z03eeqXllCov4ZbKKSvZJwzywxOvBtX0KkmeJm/UnFw4w9M/faXHfJnRt/hQCu/Vtz
+         uG10D8Lh2CqaoSknLHkqyHHZ3iR8ldMRf9MUbgEnEXgsPDoXpyY+hNzgL1zpstNi3uqN
+         HxPIva+GVP5z17q6yGB8qmBFSqIu9HvT5J3kKkYcnU8XPhkodQuv190nZfxBPXg6UT3w
+         iOIhHuJIfW4Njs0jAtMG9mlyiC380SpiITeHQVhLH+MuFV91eDHeJ7Y3oKul+SlBcqZX
+         azZsS+6PRXbMVitb5GO8NUGa9RgaZXNA4IBAaxFLEyEVlP+lTrbTfOKWHKqtMrR1RsG7
+         RTcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=WnPagf26OWdwQb5LXQhta12h+qhGjx2PcreReVGXCeo=;
-        b=ZMyZDboogpCbN3B3KX5lhTXd3Pl/HOuhMy4ar5faiyMs+t/tu6sPBizc0VFuaaek9j
-         3v0V/FaWa05QoGfIeA+DdpvtggkVKCSch3cgFE44HM7d0wiC/M3u5GyjuzPiVpJDy2E+
-         LGGN30eiB0dzplBhqBLc22GdnzL3m+r/W1s1u6kh9izq5kpn5FpdpTxlydHDXDcGnt53
-         ZF8JEpdUODP0QQ5GYiIsZwTZ+JmmDNMP+5jqsIgKdAhYbdM1Al48u6t2zPC0RS9IaV+t
-         xNwkVJFhX9H3PdcSUUxO61NNpZjmBAN/4i4+ZVLPMTOB72BTyNrHlQ+zXHYMqjrjCKD3
-         is9g==
-X-Gm-Message-State: AOAM5327H5RNMgskjfcD2ECoo8mTm0NOU8ldSI4wZ8Aoe2v05qIFgmGI
-        74HvEmVUME8e8nm700Qjv1ZdAvNQtbjQmosY6xfY
-X-Google-Smtp-Source: ABdhPJykffaXJ4ldrV/N8M8LAhc59pRdH3WwGqKEERTe/NFie2IyyTRlFsySPXtOh7OLV1lWyzUGDQcI7cIarMg49/eY
-X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:a513:d22b:d6ad:e903])
- (user=axelrasmussen job=sendgmr) by 2002:a5b:c83:: with SMTP id
- i3mr7780659ybq.453.1622836593174; Fri, 04 Jun 2021 12:56:33 -0700 (PDT)
-Date:   Fri,  4 Jun 2021 12:56:22 -0700
-Message-Id: <20210604195622.1249588-1-axelrasmussen@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
-Subject: [PATCH v2] ioctl_userfaultfd.2, userfaultfd.2: add minor fault mode
-From:   Axel Rasmussen <axelrasmussen@google.com>
-To:     Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-mm@kvack.org, Axel Rasmussen <axelrasmussen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=XcPLPL/fr76RmVJu1kdzwNFB7f+nFqpQT28G0wE3jrA=;
+        b=qKcPCaO+Lroqi1WB+ldfZUN8xJzalbgtUPhAqNjmSV5C3elDfafdhi9GUWlU5SqTzK
+         nCzBVWui7sUqJjh8lG28EkmuQNMvsJh/3WRjUd647+zaTgo+xmxqEZYWDaWABV3ObJPH
+         O9fQbUtPXhEByd0f6P+ljjVYHQ2N2BuXevGsOspTPynrA6xcAKqSpILSNHB5dX11dkEN
+         Yv1uFU15fvaMIGInF35nn+xV/fe/NKpEaFO0zmBpAY+hfPt931STA2corTEFQM8SI2ZM
+         4Rk9fv00DrYQFCZep7Gcw9kA3Hy3YsBpUl6AG59lYEsYsq1+kHMaBlZOOFy/LCrM7XJt
+         iXpA==
+X-Gm-Message-State: AOAM532a6Fgr/ju6Rc/t7aJNmWjQKal+WmaR88pCCwlWVP/reJ0s8kb4
+        r0N99YIjZbPhkCcyXYjc9ss=
+X-Google-Smtp-Source: ABdhPJzu5pmokS497sg/y+deevWmNaTczaDzxfy/K5+lu6yComISI7hRajEbrBsj6OLcZ4/xqm76QQ==
+X-Received: by 2002:a05:6a00:be6:b029:2ec:967c:137b with SMTP id x38-20020a056a000be6b02902ec967c137bmr3634678pfu.44.1622836657812;
+        Fri, 04 Jun 2021 12:57:37 -0700 (PDT)
+Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
+        by smtp.gmail.com with ESMTPSA id 30sm2609478pgo.7.2021.06.04.12.57.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 04 Jun 2021 12:57:37 -0700 (PDT)
+From:   Nadav Amit <nadav.amit@gmail.com>
+Message-Id: <45D949A1-F5F5-4230-A6BC-066CA3030579@gmail.com>
+Content-Type: multipart/signed;
+        boundary="Apple-Mail=_AD487E4E-BF48-4051-85A3-FCCEB3DC3ED4";
+        protocol="application/pgp-signature";
+        micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [PATCH v2 0/4] iommu/amd: Enable page-selective flushes
+Date:   Fri, 4 Jun 2021 12:57:35 -0700
+In-Reply-To: <2ea809ef-beb5-a2c9-0739-cb236cab196b@arm.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Jiajun Cao <caojiajun@vmware.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+To:     Robin Murphy <robin.murphy@arm.com>
+References: <20210524224159.32807-1-namit@vmware.com>
+ <YLpI7tKtsf4l5MlN@8bytes.org>
+ <05098022-1ED6-44BE-931D-D16C2D0B2D09@gmail.com>
+ <2ea809ef-beb5-a2c9-0739-cb236cab196b@arm.com>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Userfaultfd minor fault mode is supported starting from Linux 5.13.
 
-This commit adds a description of the new mode, as well as the new ioctl
-used to resolve such faults. The two go hand-in-hand: one can't resolve
-a minor fault without continue, and continue can't be used to resolve
-any other kind of fault.
+--Apple-Mail=_AD487E4E-BF48-4051-85A3-FCCEB3DC3ED4
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
 
-This patch covers just the hugetlbfs implementation (in 5.13). Support
-for shmem is forthcoming, but as it has not yet made it into a kernel
-release candidate, it will be added in a future commit.
 
-Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
----
- man2/ioctl_userfaultfd.2 | 125 ++++++++++++++++++++++++++++++++++++---
- man2/userfaultfd.2       |  79 ++++++++++++++++++++-----
- 2 files changed, 182 insertions(+), 22 deletions(-)
 
-diff --git a/man2/ioctl_userfaultfd.2 b/man2/ioctl_userfaultfd.2
-index 504f61d4b..7b990c24a 100644
---- a/man2/ioctl_userfaultfd.2
-+++ b/man2/ioctl_userfaultfd.2
-@@ -214,6 +214,10 @@ memory accesses to the regions registered with userfaultfd.
- If this feature bit is set,
- .I uffd_msg.pagefault.feat.ptid
- will be set to the faulted thread ID for each page-fault message.
-+.TP
-+.BR UFFD_FEATURE_MINOR_HUGETLBFS " (since Linux 5.13)"
-+If this feature bit is set, the kernel supports registering userfaultfd ranges
-+in minor mode on hugetlbfs-backed memory areas.
- .PP
- The returned
- .I ioctls
-@@ -240,6 +244,11 @@ operation is supported.
- The
- .B UFFDIO_WRITEPROTECT
- operation is supported.
-+.TP
-+.B 1 << _UFFDIO_CONTINUE
-+The
-+.B UFFDIO_CONTINUE
-+operation is supported.
- .PP
- This
- .BR ioctl (2)
-@@ -278,14 +287,8 @@ by the current kernel version.
- (Since Linux 4.3.)
- Register a memory address range with the userfaultfd object.
- The pages in the range must be "compatible".
--.PP
--Up to Linux kernel 4.11,
--only private anonymous ranges are compatible for registering with
--.BR UFFDIO_REGISTER .
--.PP
--Since Linux 4.11,
--hugetlbfs and shared memory ranges are also compatible with
--.BR UFFDIO_REGISTER .
-+Please refer to the list of register modes below for the compatible memory
-+backends for each mode.
- .PP
- The
- .I argp
-@@ -324,9 +327,16 @@ the specified range:
- .TP
- .B UFFDIO_REGISTER_MODE_MISSING
- Track page faults on missing pages.
-+Since Linux 4.3, only private anonymous ranges are compatible.
-+Since Linux 4.11, hugetlbfs and shared memory ranges are also compatible.
- .TP
- .B UFFDIO_REGISTER_MODE_WP
- Track page faults on write-protected pages.
-+Since Linux 5.7, only private anonymous ranges are compatible.
-+.TP
-+.B UFFDIO_REGISTER_MODE_MINOR
-+Track minor page faults.
-+Since Linux 5.13, only hugetlbfs ranges are compatible.
- .PP
- If the operation is successful, the kernel modifies the
- .I ioctls
-@@ -735,6 +745,105 @@ or not registered with userfaultfd write-protect mode.
- .TP
- .B EFAULT
- Encountered a generic fault during processing.
-+.\"
-+.SS UFFDIO_CONTINUE
-+(Since Linux 5.13.)
-+Resolve a minor page fault by installing page table entries for existing pages
-+in the page cache.
-+.PP
-+The
-+.I argp
-+argument is a pointer to a
-+.I uffdio_continue
-+structure as shown below:
-+.PP
-+.in +4n
-+.EX
-+struct uffdio_continue {
-+    struct uffdio_range range; /* Range to install PTEs for and continue */
-+    __u64 mode;                /* Flags controlling the behavior of continue */
-+    __s64 mapped;              /* Number of bytes mapped, or negated error */
-+};
-+.EE
-+.in
-+.PP
-+The following value may be bitwise ORed in
-+.IR mode
-+to change the behavior of the
-+.B UFFDIO_CONTINUE
-+operation:
-+.TP
-+.B UFFDIO_CONTINUE_MODE_DONTWAKE
-+Do not wake up the thread that waits for page-fault resolution.
-+.PP
-+The
-+.I mapped
-+field is used by the kernel to return the number of bytes
-+that were actually mapped, or an error in the same manner as
-+.BR UFFDIO_COPY .
-+If the value returned in the
-+.I mapped
-+field doesn't match the value that was specified in
-+.IR range.len ,
-+the operation fails with the error
-+.BR EAGAIN .
-+The
-+.I mapped
-+field is output-only;
-+it is not read by the
-+.B UFFDIO_CONTINUE
-+operation.
-+.PP
-+This
-+.BR ioctl (2)
-+operation returns 0 on success.
-+In this case, the entire area was mapped.
-+On error, \-1 is returned and
-+.I errno
-+is set to indicate the error.
-+Possible errors include:
-+.TP
-+.B EAGAIN
-+The number of bytes mapped (i.e., the value returned in the
-+.I mapped
-+field) does not equal the value that was specified in the
-+.I range.len
-+field.
-+.TP
-+.B EINVAL
-+Either
-+.I range.start
-+or
-+.I range.len
-+was not a multiple of the system page size; or
-+.I range.len
-+was zero; or the range specified was invalid.
-+.TP
-+.B EINVAL
-+An invalid bit was specified in the
-+.IR mode
-+field.
-+.TP
-+.B EEXIST
-+One or more pages were already mapped in the given range.
-+.TP
-+.B ENOENT
-+The faulting process has changed its virtual memory layout simultaneously with
-+an outstanding
-+.B UFFDIO_CONTINUE
-+operation.
-+.TP
-+.B ENOMEM
-+Allocating memory needed to setup the page table mappings failed.
-+.TP
-+.B EFAULT
-+No existing page could be found in the page cache for the given range.
-+.TP
-+.BR ESRCH
-+The faulting process has exited at the time of a
-+.B UFFDIO_CONTINUE
-+operation.
-+.\"
- .SH RETURN VALUE
- See descriptions of the individual operations, above.
- .SH ERRORS
-diff --git a/man2/userfaultfd.2 b/man2/userfaultfd.2
-index 593c189d8..07f53c6ff 100644
---- a/man2/userfaultfd.2
-+++ b/man2/userfaultfd.2
-@@ -78,7 +78,7 @@ all memory ranges that were registered with the object are unregistered
- and unread events are flushed.
- .\"
- .PP
--Userfaultfd supports two modes of registration:
-+Userfaultfd supports three modes of registration:
- .TP
- .BR UFFDIO_REGISTER_MODE_MISSING " (since 4.10)"
- When registered with
-@@ -92,6 +92,18 @@ or an
- .B UFFDIO_ZEROPAGE
- ioctl.
- .TP
-+.BR UFFDIO_REGISTER_MODE_MINOR " (since 5.13)"
-+When registered with
-+.B UFFDIO_REGISTER_MODE_MINOR
-+mode, user-space will receive a page-fault notification
-+when a minor page fault occurs.
-+That is, when a backing page is in the page cache, but
-+page table entries don't yet exist.
-+The faulted thread will be stopped from execution until the page fault is
-+resolved from user-space by an
-+.B UFFDIO_CONTINUE
-+ioctl.
-+.TP
- .BR UFFDIO_REGISTER_MODE_WP " (since 5.7)"
- When registered with
- .B UFFDIO_REGISTER_MODE_WP
-@@ -212,9 +224,10 @@ a page fault occurring in the requested memory range, and satisfying
- the mode defined at the registration time, will be forwarded by the kernel to
- the user-space application.
- The application can then use the
--.B UFFDIO_COPY
-+.B UFFDIO_COPY ,
-+.B UFFDIO_ZEROPAGE ,
- or
--.B UFFDIO_ZEROPAGE
-+.B UFFDIO_CONTINUE
- .BR ioctl (2)
- operations to resolve the page fault.
- .PP
-@@ -318,6 +331,43 @@ should have the flag
- cleared upon the faulted page or range.
- .PP
- Write-protect mode supports only private anonymous memory.
-+.\"
-+.SS Userfaultfd minor fault mode (since 5.13)
-+Since Linux 5.13, userfaultfd supports minor fault mode.
-+In this mode, fault messages are produced not for major faults (where the
-+page was missing), but rather for minor faults, where a page exists in the page
-+cache, but the page table entries are not yet present.
-+The user needs to first check availability of this feature using
-+.B UFFDIO_API
-+ioctl against the feature bit
-+.B UFFD_FEATURE_MINOR_HUGETLBFS
-+before using this feature.
-+.PP
-+To register with userfaultfd minor fault mode, the user needs to initiate the
-+.B UFFDIO_REGISTER
-+ioctl with mode
-+.B UFFD_REGISTER_MODE_MINOR
-+set.
-+.PP
-+When a minor fault occurs, user-space will receive a page-fault notification
-+whose
-+.I uffd_msg.pagefault.flags
-+will have the
-+.B UFFD_PAGEFAULT_FLAG_MINOR
-+flag set.
-+.PP
-+To resolve a minor page fault, the handler should decide whether or not the
-+existing page contents need to be modified first.
-+If so, this should be done in-place via a second, non-userfaultfd-registered
-+mapping to the same backing page (e.g., by mapping the hugetlbfs file twice).
-+Once the page is considered "up to date", the fault can be resolved by
-+initiating an
-+.B UFFDIO_CONTINUE
-+ioctl, which installs the page table entries and (by default) wakes up the
-+faulting thread(s).
-+.PP
-+Minor fault mode supports only hugetlbfs-backed memory.
-+.\"
- .SS Reading from the userfaultfd structure
- Each
- .BR read (2)
-@@ -456,19 +506,20 @@ For
- the following flag may appear:
- .RS
- .TP
--.B UFFD_PAGEFAULT_FLAG_WRITE
--If the address is in a range that was registered with the
--.B UFFDIO_REGISTER_MODE_MISSING
--flag (see
--.BR ioctl_userfaultfd (2))
--and this flag is set, this a write fault;
--otherwise it is a read fault.
-+.B UFFD_PAGEFAULT_FLAG_WP
-+If this flag is set, then the fault was a write-protect fault.
- .TP
-+.B UFFD_PAGEFAULT_FLAG_MINOR
-+If this flag is set, then the fault was a minor fault.
-+.TP
-+.B UFFD_PAGEFAULT_FLAG_WRITE
-+If this flag is set, then the fault was a write fault.
-+.HP
-+If neither
- .B UFFD_PAGEFAULT_FLAG_WP
--If the address is in a range that was registered with the
--.B UFFDIO_REGISTER_MODE_WP
--flag, when this bit is set, it means it is a write-protect fault.
--Otherwise it is a page-missing fault.
-+nor
-+.B UFFD_PAGEFAULT_FLAG_MINOR
-+are set, then the fault was a missing fault.
- .RE
- .TP
- .I pagefault.feat.pid
--- 
-2.32.0.rc1.229.g3e70b5a671-goog
+> On Jun 4, 2021, at 11:53 AM, Robin Murphy <robin.murphy@arm.com> =
+wrote:
+>=20
+> On 2021-06-04 18:10, Nadav Amit wrote:
+>>> On Jun 4, 2021, at 8:38 AM, Joerg Roedel <joro@8bytes.org> wrote:
+>>>=20
+>>> Hi Nadav,
+>>>=20
+>>> [Adding Robin]
+>>>=20
+>>> On Mon, May 24, 2021 at 03:41:55PM -0700, Nadav Amit wrote:
+>>>> Nadav Amit (4):
+>>>>  iommu/amd: Fix wrong parentheses on page-specific invalidations
+>>>=20
+>>> This patch is already upstream in v5.13-rc4. Please rebase to that
+>>> version.
+>> I guess it would be rc5 by the time I send it.
+>>>=20
+>>>>  iommu/amd: Selective flush on unmap
+>>>>  iommu/amd: Do not sync on page size changes
+>>>>  iommu/amd: Do not use flush-queue when NpCache is on
+>>>=20
+>>> And I think there have been objections from Robin Murphy on Patch 3,
+>>> have those been worked out?
+>> I am still waiting for Robin=E2=80=99s feedback on my proposed =
+changes. If he does not respond soon, I will drop this patch for now.
+>=20
+> Apologies, it feels like I've spent most of this week fighting fires,
+> and a great deal of email got skimmed and mentally filed under =
+"nothing
+> so wrong that I need to respond immediately"...
+>=20
+> FWIW I would have written the simpler patch below, but beyond that I
+> think it might start descending into bikeshedding - if you still =
+prefer
+> your more comprehensive refactoring, or something in between, then =
+don't
+> let my personal preference in style/complexity trade-offs stand in the
+> way of getting a useful functional change into the AMD driver. =
+Whichever
+> way, though, I *am* now sold on the idea of having some kerneldoc to
+> clarify these things.
 
+Thanks, I appreciate your feedback.
+
+I will add kerneldoc as you indicated.
+
+I see you took some parts of the patch I did for MediaTek, but I think =
+this is not good enough for AMD, since AMD behavior should be different =
+than MediaTek - they have different needs:
+
+MediaTek wants as few IOTLB flushes as possible, even if it results in =
+flushing of many irrelevant (unmodified) entries between start and end. =
+That=E2=80=99s the reason it can just use =
+iommu_iotlb_gather_update_range().
+
+In contrast, for AMD we do not want to flush too many irrelevant =
+entries, specifically if the the IOMMU is virtualized. When an IOTLB =
+flush is initiated by the VM, the hypervisor needs to scan the IOMMU =
+page-tables for changes and synchronize it with the physical IOMMU. You =
+don=E2=80=99t want this range to be too big, and that is the reason I =
+needed iommu_iotlb_gather_is_disjoint().
+
+I will add documentation, since clearly this information was not =
+conveyed well enough.
+
+Thanks again,
+Nadav
+
+--Apple-Mail=_AD487E4E-BF48-4051-85A3-FCCEB3DC3ED4
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEESJL3osl5Ymx/w9I1HaAqSabaD1oFAmC6ha8ACgkQHaAqSaba
+D1oUdw//Zw9j2taQ/67+TP9CPtxNUz9ALG90MIoxNVs1xI2G/va/uaEHnIjN6C7v
+aWhIDNKU8+MKizMwe7T0rfU82MOaPNgrVQwt22tbb+uyQlM59lVRoEvfnRaqz9YU
+E12mPrtN8eB/wTvCIL33dIDptdebpExzYD5I7WI3XSH1KsoCVF73MjLqfe+gHRnq
+hSr3Jpjpmg1/4W0f16bQkUgybuchtylSPZwloF3QCeRiLG2bRJb7VVgceESFrqmH
+PZH3gubZx97PCUOSxFg6halUnEtMiWBKm7sJUhUikqUU1oOYrfxOjAxLF+fJ+2a+
+sVB4qNs0KWyGjuT2C4nvbPGB6Ne4Axq96bVbV9PALJbmECEryAQoqwUANOxouvEk
+liwIBe14BmDlw0zin19ueG4EO6/B/ehX5acLvBy19c4k74h03w1hk+RXyHcw5Qz9
+R/c5Q5o1dLjUQstNvRcSs2Tx98SBaFwz9NoZI/UwIA/meEjK3xiotrKAwoWJnrLb
+BoC0YN1jBJAmejVXhSJPcR/ZSlOmpAiFpOy6ADH0Q+DUmsLmnUDmtffl8eNi7X+Z
+gsWSUyF+btaP7rRKrZyuLAlXLA+xTddE57rMyPP6DLc4kvBaRsHawTOauCJbOKGH
+HEH11jorUMe+TUSjW0YVcpqKL1kubTaImjLf0s53gb0RtVvCZtQ=
+=48Cc
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_AD487E4E-BF48-4051-85A3-FCCEB3DC3ED4--
