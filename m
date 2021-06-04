@@ -2,94 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B00639BD3E
+	by mail.lfdr.de (Postfix) with ESMTP id E11C039BD40
 	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbhFDQfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 12:35:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbhFDQfs (ORCPT
+        id S229755AbhFDQf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 12:35:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33827 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230271AbhFDQfz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 12:35:48 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E999C061766;
-        Fri,  4 Jun 2021 09:34:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=N0LVJfeUK2IdvmsqBLNwzogFfs34S53qc1DZrppgaU4=; b=F8L7uCnO5EUTwc2U3xhWIM18n5
-        MqFThaLx/mSiSAIcZhiI8pfFpDI2US2iFzGX4p3YqPCprDpHXO6iNsOLDDx6Q4MV50K28820aUkem
-        TwftTZiRZirrmyljj143occwLCChEGCX6g4Ed+PXIU/5526DB9Z8Mj2+Jsbu0rpCPwbNmYvxyTBnz
-        SxKLPIp8h22zQ6iHcRnB9amCzfGvNPuv/15cC+pyEoOi1UCdwkMxoOCm7mkstC+R/ppXr3GGlz4if
-        GjyG+zpdnJ/8LaJ+CZ9/sJCLHwY5l8tRc+XEvAm5xZov581jPEFcZsW0jF3NgZyV/wwtjYN1LDkVn
-        3P96FQig==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lpClV-003TzH-7M; Fri, 04 Jun 2021 16:33:52 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7AF9E3001DB;
-        Fri,  4 Jun 2021 18:33:50 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 69893207AA26C; Fri,  4 Jun 2021 18:33:50 +0200 (CEST)
-Date:   Fri, 4 Jun 2021 18:33:50 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>, will@kernel.org,
-        paulmck@kernel.org, stern@rowland.harvard.edu,
-        parri.andrea@gmail.com, boqun.feng@gmail.com, npiggin@gmail.com,
-        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        akiyks@gmail.com, linux-kernel@vger.kernel.org,
-        linux-toolchains@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <YLpV7qilaHkMc01f@hirez.programming.kicks-ass.net>
-References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
- <20210604160955.GG18427@gate.crashing.org>
+        Fri, 4 Jun 2021 12:35:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622824448;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8kIUlKsEkB8hDD6ar4W2K+QutlaqaTEGtyyTDuNX2ow=;
+        b=fCF3NkxwYjEnpf6EzX1G2DLOE4smtm8+mrS93dnZ33W0fuE83LoA8pgREFKUDpZaeMyu61
+        KYHcjK63YrMHfuwXJDX2sWUGEveYPwMJw1xTPMDkwRtAHivnMlPbx6px0A8QFEiQ4gDYsS
+        bhfhAfUTRi2NvYG3dcdHGHn38xujGRo=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-603-f9DS73XoMEGuIiThkU1jcQ-1; Fri, 04 Jun 2021 12:34:05 -0400
+X-MC-Unique: f9DS73XoMEGuIiThkU1jcQ-1
+Received: by mail-ed1-f72.google.com with SMTP id h18-20020a05640250d2b029038cc3938914so5249212edb.17
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 09:34:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8kIUlKsEkB8hDD6ar4W2K+QutlaqaTEGtyyTDuNX2ow=;
+        b=cShbrU4lwoFV/b6/w4jytKwX4roBrZnn4L9HIRr6FGsauABoNlfrhHYU03AHNPGlFN
+         jZSGsBmWhkMo8lJZKqMuoHT+sQwmzjP96CqmJQLZIs210NcEPpdFKJeRkx+GsdtOyeL9
+         nMjbe4tSIYb7K+Uh0vtkPzOX70NxwXDZvV2+xbQ54aosu/TTUGGG2em1nuWII5N6EOLe
+         jwgcaSQ7snqQGYWUAClKoVpCggVoCz8hq21nV+fad99RRKMBV5+XTihm0vAWED5GXoK+
+         gZBNactYlLuE+gNO8v8bHgNukkujWfPe0L+P9x5+sgRrc8h5GtU5WdtjSuFd6LZjN3IQ
+         dotQ==
+X-Gm-Message-State: AOAM531NKHIgZFusm3XUbc6CIQovUusPgaK+eJPJsmW1/82aUSRW6JmF
+        WfytDYdhxcqor2DImzAzOEafkGLXhsPmoj4ZaZU4cdhxk/l48fxR9iEM0kXTmv8zFh1TxrFaaHK
+        KUawhnsTYPiP9OYNMl69vI1MI
+X-Received: by 2002:aa7:cdc5:: with SMTP id h5mr5493878edw.217.1622824444186;
+        Fri, 04 Jun 2021 09:34:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxEqFu5jZGNEyz4FJgde/k5Dn5+5CvsIniJDV73KDBS0u5RA0kL/8Cfa6je0uzzQFZkqwIOeA==
+X-Received: by 2002:aa7:cdc5:: with SMTP id h5mr5493863edw.217.1622824444052;
+        Fri, 04 Jun 2021 09:34:04 -0700 (PDT)
+Received: from x1.bristot.me (host-79-24-6-4.retail.telecomitalia.it. [79.24.6.4])
+        by smtp.gmail.com with ESMTPSA id n4sm2929890eja.121.2021.06.04.09.34.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Jun 2021 09:34:03 -0700 (PDT)
+Subject: Re: [PATCH V3 5/9] tracing/trace: Add a generic function to
+ read/write u64 values from tracefs
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Kate Carcia <kcarcia@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Clark Willaims <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>, linux-doc@vger.kernel.org
+References: <cover.1621024265.git.bristot@redhat.com>
+ <c585e3316f49c9e33acc79452588fc26ce11dfa4.1621024265.git.bristot@redhat.com>
+ <20210603172244.6d2a6059@gandalf.local.home>
+ <a5e96ac9-f188-a9df-3eac-624002031e21@redhat.com>
+ <20210604121802.192caa07@oasis.local.home>
+From:   Daniel Bristot de Oliveira <bristot@redhat.com>
+Message-ID: <59726959-bc86-8760-580d-3d4ceee45dad@redhat.com>
+Date:   Fri, 4 Jun 2021 18:34:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604160955.GG18427@gate.crashing.org>
+In-Reply-To: <20210604121802.192caa07@oasis.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 11:09:55AM -0500, Segher Boessenkool wrote:
-> I didn't find a description of the expected precise semantics anywhere
-> in this patch.  This however is the most important thing required here!
+On 6/4/21 6:18 PM, Steven Rostedt wrote:
+> On Fri, 4 Jun 2021 18:05:06 +0200
+> Daniel Bristot de Oliveira <bristot@redhat.com> wrote:
+> 
+>>
+>> The reason for this patch is that hwlat, osnoise, and timerlat have "u64 config"
+>> options that are read/write via tracefs "files." In the previous version, I had
+>> multiple functions doing basically the same thing:
+>>
+>> A write function that:
+>> 	read a u64 from user-space
+>> 	get a lock,
+>> 	check for min/max acceptable values
+>> 		save the value
+>> 	release the lock.
+>>
+>> and a read function that:
+>> 	write the config value to the "read" buffer.
+>>
+>> And so, I tried to come up with a way to avoid code duplication.
+>>
+>> question: are only the names that are bad? (I agree that they are bad) or do you
+>> think that the overall idea is bad? :-)
+>>
+>> Suggestions?
+> 
+> I don't think the overall idea is bad, if it is what I think you are
+> doing. I just don't believe you articulated what you are doing.
 
-Fair enough; so a control-dependency is a LOAD->STORE memory ordering
-provided by conditional branches.
+I see!
 
-The conditional branch instruction itself must have a data dependency on
-a previous LOAD, while the branch itself guards a STORE. Then because
-speculative STOREs result in out-of-thin-air values, the STORE must not
-become visible until the branch is decided, which can only be done if
-the LOAD is complete.
+> It has nothing to do with 64 bit reads and writes, but instead has to
+> do with reading and writing values that depend on each other for what
+> is acceptable.
 
-We make use of this, and would like the compiler to not ruin this code
-pattern for us.
+yeah, that is a better (starting point for an) explanation.
 
-So we need the STORE to say inside the selection statement, we need the
-LOAD not be optimized away, and we need the conditional branch to be
-emitted.
+> Perhaps have it called trace_min_max_write() and trace_min_max_read(),
+> and document what it is used for.
 
-Alternatively, we need the LOAD to be upgraded to a LOAD-ACQUIRE (an
-option on platforms where this is sufficiently cheap). Which will also
-ensure the STORE happens after.
+I will do that!
 
-So we can force the LOAD using READ_ONCE() (a volatile cast).
+-- Daniel
 
-We can prohibit hoisting by adding a compiler barrier to the expression.
-And then we use asm goto() to force emit a conditional branch. Combined
-this leaves the compiler very little room to mess things up, but it does
-produce sub-optimal code, and doesn't allow the LOAD-ACQUIRE upgrade
-Will would like (but he can't always have that anyway due to our other
-use of asm()).
+> -- Steve
+> 
 
-
-We also have a 'CONTROL DEPENDENCIES' section in
-Documentation/memory-barriers.txt for further reading.
