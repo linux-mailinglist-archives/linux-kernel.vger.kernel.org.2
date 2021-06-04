@@ -2,203 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA4339B74A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 12:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B0939B750
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 12:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbhFDKpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 06:45:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41770 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229625AbhFDKpw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 06:45:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8F546141B;
-        Fri,  4 Jun 2021 10:44:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622803446;
-        bh=kmLcjElNf8/glHDMFalVj0RYS3e6e9GqQWiMhVHRSCM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XYsfXNCv/6U3yuS4wbHctDnUkMoq8ufOr8zFX1ltCshzq/Ww9eRSbxM0K98wG4PGB
-         VtpZrq7lKfu2t0+pPx2fAuerh5DD7VRuKrmkep/Z7pavXhf1ytV/o9JjaSjxRLbysq
-         bL3FOPJlbm64ofLBboosy/yFaTRI7UIVh18glxBwcjG6kyC3JreAKhQMd/YDgUyOYM
-         z2Vwbp3N9KJqS350XHdX2PeczC3QAZMQqP64ORb6OOj9+YWhPpHrh5bY1gmgbShCS5
-         hzY7hoA1QJ7rs1sbOGZM9zY5GJI/k3Jqw6RCW/fAVMdmJa195i+EpP5r2PSIjexmb/
-         dxDXB6LqHIUFQ==
-Date:   Fri, 4 Jun 2021 11:44:00 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>, paulmck@kernel.org,
-        stern@rowland.harvard.edu, parri.andrea@gmail.com,
-        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
-        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
-        linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <20210604104359.GE2318@willie-the-truck>
-References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
+        id S230108AbhFDKqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 06:46:49 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:37741 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229625AbhFDKqr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 06:46:47 -0400
+Received: from [192.168.1.155] ([77.9.34.20]) by mrelayeu.kundenserver.de
+ (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MXH3e-1lrzgc1R4Y-00YmfZ; Fri, 04 Jun 2021 12:44:32 +0200
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Alex Williamson (alex.williamson@redhat.com)" 
+        <alex.williamson@redhat.com>, Jason Wang <jasowang@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>
+References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <bb6846bf-bd3c-3802-e0d7-226ec9b33384@metux.net>
+ <20210602172424.GD1002214@nvidia.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <bd0f485c-5f70-b087-2a5a-d2fe6e16817d@metux.net>
+Date:   Fri, 4 Jun 2021 12:44:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210602172424.GD1002214@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:EoukDPcc2J/QT1D3boJAqDV3J9p3cqCtFNu4BEvhSOo+pu9OZsX
+ DwBwLSc9+AiWMjMqEkc8DgpMYjdaXZ3udFjKV/t35j93kOSrcJS2O5rSy8bS4O9YWqrwJah
+ eQ3aEeFMxZainqV/DPiuIeWIiAAeeoQNexILCOmEFhLNHZ/NUZBkuwfo46oactlC0K7Fada
+ vDtxNQu+o6eAn++Bv+/eQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:QKgPDva5+wg=:eeMux13sB16S9C4PhjuoZD
+ CtwoD8dWEh81W5fy1QPhYLQUS15Eyu4lv3ZTs3TJ1ftGLpHB2oin7q+5F1zibM1WVSzfdeScd
+ uU0679MJoje4xsogtaueiuTQtRcF9QzF0/XvHjQzfWg0g+KGNEw58XxmgZulfIvcirFRfd0JS
+ bDRA6Bz3nIU+Vhb20syeejdhTusBXSk3fj0k0p07MLmf3Aw9Su2r8ncxiz9zoFX04+i2yPQ4O
+ 9xQpYJA09Bamh3J5+sDfaH3BuXCmI5Uj1YN1YFPi1/3l9FGCN95CEX+PvIhQAQ3/MmkdZIvJG
+ AGR70wW8AgrmjraQNoKhqd0CX0w1JHDhv1rd0feIIp/1VWd0xxSHnqyle4T2JlOBmNHY5PuWH
+ /mT93AOHNqxmXXtc2D3+VCmGUYySMWbv1MyW00of6y0T07yKv3XmCL948iDJae4WYI826EjvO
+ sSSSZUyu1ujzfih9pcDYtclYWtmKmNXkn3y9dqmlywTwqoL7hphFkBhxYGsE9vU/fGfUNaH3H
+ PElzz4R4ACzW4c8fgPPEko=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 12:12:07PM +0200, Peter Zijlstra wrote:
-> With optimizing compilers becoming more and more agressive and C so far
-> refusing to acknowledge the concept of control-dependencies even while
-> we keep growing the amount of reliance on them, things will eventually
-> come apart.
-> 
-> There have been talks with toolchain people on how to resolve this; one
-> suggestion was allowing the volatile qualifier on branch statements like
-> 'if', but so far no actual compiler has made any progress on this.
-> 
-> Rather than waiting any longer, provide our own construct based on that
-> suggestion. The idea is by Alan Stern and refined by Paul and myself.
-> 
-> Code generation is sub-optimal (for the weak architectures) since we're
-> forced to convert the condition into another and use a fixed conditional
-> branch instruction, but shouldn't be too bad.
-> 
-> Usage of volatile_if requires the @cond to be headed by a volatile load
-> (READ_ONCE() / atomic_read() etc..) such that the compiler is forced to
-> emit the load and the branch emitted will have the required
-> data-dependency. Furthermore, volatile_if() is a compiler barrier, which
-> should prohibit the compiler from lifting anything out of the selection
-> statement.
+On 02.06.21 19:24, Jason Gunthorpe wrote:
 
-When building with LTO on arm64, we already upgrade READ_ONCE() to an RCpc
-acquire. In this case, it would be really good to avoid having the dummy
-conditional branch somehow, but I can't see a good way to achieve that.
+Hi,
 
-> This construct should place control dependencies on a stronger footing
-> until such time that the compiler folks get around to accepting them :-)
-> 
-> I've converted most architectures we care about, and the rest will get
-> an extra smp_mb() by means of the 'generic' fallback implementation (for
-> now).
-> 
-> I've converted the control dependencies I remembered and those found
-> with a search for smp_acquire__after_ctrl_dep(), there might be more.
-> 
-> Compile tested only (alpha, arm, arm64, x86_64, powerpc, powerpc64, s390
-> and sparc64).
-> 
-> Suggested-by: Alan Stern <stern@rowland.harvard.edu>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  arch/arm/include/asm/barrier.h      | 11 +++++++++++
->  arch/arm64/include/asm/barrier.h    | 11 +++++++++++
->  arch/powerpc/include/asm/barrier.h  | 13 +++++++++++++
->  arch/s390/include/asm/barrier.h     |  3 +++
->  arch/sparc/include/asm/barrier_64.h |  3 +++
->  arch/x86/include/asm/barrier.h      | 16 ++++++++++++++++
->  include/asm-generic/barrier.h       | 38 ++++++++++++++++++++++++++++++++++++-
->  include/linux/refcount.h            |  2 +-
->  ipc/mqueue.c                        |  2 +-
->  ipc/msg.c                           |  2 +-
->  kernel/events/ring_buffer.c         |  8 ++++----
->  kernel/locking/rwsem.c              |  4 ++--
->  kernel/sched/core.c                 |  2 +-
->  kernel/smp.c                        |  2 +-
->  14 files changed, 105 insertions(+), 12 deletions(-)
-> 
-> diff --git a/arch/arm/include/asm/barrier.h b/arch/arm/include/asm/barrier.h
-> index 83ae97c049d9..de8a61479268 100644
-> --- a/arch/arm/include/asm/barrier.h
-> +++ b/arch/arm/include/asm/barrier.h
-> @@ -97,6 +97,17 @@ static inline unsigned long array_index_mask_nospec(unsigned long idx,
->  #define array_index_mask_nospec array_index_mask_nospec
->  #endif
->  
-> +/* Guarantee a conditional branch that depends on @cond. */
-> +static __always_inline _Bool volatile_cond(_Bool cond)
-> +{
-> +	asm_volatile_goto("teq %0, #0; bne %l[l_yes]"
-> +			  : : "r" (cond) : "cc", "memory" : l_yes);
-> +	return 0;
-> +l_yes:
-> +	return 1;
-> +}
-> +#define volatile_cond volatile_cond
-> +
->  #include <asm-generic/barrier.h>
->  
->  #endif /* !__ASSEMBLY__ */
-> diff --git a/arch/arm64/include/asm/barrier.h b/arch/arm64/include/asm/barrier.h
-> index 451e11e5fd23..2782a7013615 100644
-> --- a/arch/arm64/include/asm/barrier.h
-> +++ b/arch/arm64/include/asm/barrier.h
-> @@ -156,6 +156,17 @@ do {									\
->  	(typeof(*p))__u.__val;						\
->  })
->  
-> +/* Guarantee a conditional branch that depends on @cond. */
-> +static __always_inline _Bool volatile_cond(_Bool cond)
+ >> If I understand this correctly, /dev/ioasid is a kind of "common 
+supplier"
+ >> to other APIs / devices. Why can't the fd be acquired by the
+ >> consumer APIs (eg. kvm, vfio, etc) ?
+ >
+ > /dev/ioasid would be similar to /dev/vfio, and everything already
+ > deals with exposing /dev/vfio and /dev/vfio/N together
+ >
+ > I don't see it as a problem, just more work.
 
-Is _Bool to fix some awful header mess?
+One of the problems I'm seeing is in container environments: when
+passing in an vfio device, we now also need to pass in /dev/ioasid,
+thus increasing the complexity in container setup (or orchestration).
 
-> +{
-> +	asm_volatile_goto("cbnz %0, %l[l_yes]"
-> +			  : : "r" (cond) : "cc", "memory" : l_yes);
-> +	return 0;
-> +l_yes:
-> +	return 1;
-> +}
+And in such scenarios you usually want to pass in one specific device,
+not all of the same class, and usually orchestration shall pick the
+next free one.
 
-nit: you don't need the "cc" clobber here.
+Can we make sure that a process having full access to /dev/ioasid
+while only supposed to have to specific consumer devices, can't do
+any harm (eg. influencing other containers that might use a different
+consumer device) ?
 
-> diff --git a/include/asm-generic/barrier.h b/include/asm-generic/barrier.h
-> index 640f09479bdf..a84833f1397b 100644
-> --- a/include/asm-generic/barrier.h
-> +++ b/include/asm-generic/barrier.h
-> @@ -187,6 +187,42 @@ do {									\
->  #define virt_store_release(p, v) __smp_store_release(p, v)
->  #define virt_load_acquire(p) __smp_load_acquire(p)
->  
-> +/*
-> + * 'Generic' wrapper to make volatile_if() below 'work'. Architectures are
-> + * encouraged to provide their own implementation. See x86 for TSO and arm64
-> + * for a weak example.
-> + */
-> +#ifndef volatile_cond
-> +#define volatile_cond(cond)	({ bool __t = (cond); smp_mb(); __t; })
-> +#endif
-> +
-> +/**
-> + * volatile_if() - Provide a control-dependency
-> + *
-> + * volatile_if(READ_ONCE(A))
-> + *	WRITE_ONCE(B, 1);
-> + *
-> + * will ensure that the STORE to B happens after the LOAD of A. Normally a
-> + * control dependency relies on a conditional branch having a data dependency
-> + * on the LOAD and an architecture's inability to speculate STOREs. IOW, this
-> + * provides a LOAD->STORE order.
-> + *
-> + * Due to optimizing compilers extra care is needed; as per the example above
-> + * the LOAD must be 'volatile' qualified in order to ensure the compiler
-> + * actually emits the load, such that the data-dependency to the conditional
-> + * branch can be formed.
-> + *
-> + * Secondly, the compiler must be prohibited from lifting anything out of the
-> + * selection statement, as this would obviously also break the ordering.
-> + *
-> + * Thirdly, and this is the tricky bit, architectures that allow the
-> + * LOAD->STORE reorder must ensure the compiler actually emits the conditional
-> + * branch instruction, this isn't possible in generic.
-> + *
-> + * See the volatile_cond() wrapper.
-> + */
-> +#define volatile_if(cond) if (volatile_cond(cond))
+Note that we don't have device namespaces yet (device isolation still
+has to be done w/ complicated bpf magic). I'm already working on that,
+but even "simple" things like loopdev allocation turns out to be not
+entirely easy.
 
-The thing I really dislike about this is that, if the compiler _does_
-emit a conditional branch for the C 'if', then we get a pair of branch
-instructions in close proximity to each other which the predictor is likely
-to hate. I wouldn't be surprised if an RCpc acquire heading the dependency
-actually performs better on modern arm64 cores in the general case.
+ > Having FDs spawn other FDs is pretty ugly, it defeats the "everything
+ > is a file" model of UNIX.
 
-So I think that's an argument for doing this in the compiler...
+Unfortunately, this is already defeated in many other places :(
+(I'd even claim that ioctls already break it :p)
 
-Will
+It seems your approach also breaks this, since we now need to open two
+files in order to talk to one device.
+
+By the way: my idea does keep the "everything's a file" concept - we
+just have a file that allows opening "sub-files". Well, it would be
+better if devices could also have directory semantics.
+
+
+--mtx
+
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
