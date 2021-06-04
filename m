@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 296A539AF13
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 02:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8685239AF18
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 02:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbhFDAfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 20:35:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFDAfA (ORCPT
+        id S229840AbhFDAgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 20:36:08 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:43540 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFDAgH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 20:35:00 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59EEAC06174A;
-        Thu,  3 Jun 2021 17:33:15 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id w23-20020a9d5a970000b02903d0ef989477so3115228oth.9;
-        Thu, 03 Jun 2021 17:33:15 -0700 (PDT)
+        Thu, 3 Jun 2021 20:36:07 -0400
+Received: by mail-ot1-f53.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso7512167otu.10;
+        Thu, 03 Jun 2021 17:34:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Ywr3SjYl3WKKmwQ3Fg20fZRDwIirSCojptSroPciZd4=;
-        b=XGRjNWMoOkGK17VtP81644bfJNu7hkMOymZctfCMM4mdg+Wz86bVmLTe+4/0Z3nIPI
-         LHdbigQdMyb5MDZEq9Xfp4ebLPneJ3ULa0FU/0bFA8WsfC3AU3k5Ye0CvHFpvLcAgK6s
-         TygBz4brMK7WwGZEXHRwkcm1C/or8qNw8D7ZDwUQxOXRha4zaJsyVjCA14i72jbPCIMP
-         P9Wc7yqYekqg1h7ZlELhr3UZ3OviPb8r/6Jg/jyX7WolJBDXNqLfKi0DEiv2SF7/lISf
-         WHCl6yktOW3kIar9Dxc4imQIFHGHH1IA9pCxmrgC0rr2Cndxh1sCOp6sBxF2YK4o+X65
-         ksgQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dM61mylJ53YidPBEu1MqfzVtHPvSltpQP4lAmiQnPxc=;
+        b=Tlltf3pkZ2IWrWaATPbV6DEJsQBCoEP7CfKwGY8DnRl7EyaKdnzUUCArywEnpW6ZKk
+         SeDhT6w1BGJQM3VLqWXInbqM9GIDCeturhx06Z8Zl70YF4aEUJYZp/GM7OzVPcbzb40i
+         1TYeU4bNsVo5LeG77wcvJItrTPvYtyYTxqMw4V7fUdpTgVjFhnwbY4AlP6t7QUTaA7WO
+         ++lWDevRC1UQIGd2azKxnkG6aopQDCPDflbUIt5YTaCyyjzUffIJtu2s2TTTIqYHtX32
+         9d/YLBxfaOnvKenpXlo8kIlAhsZQtLrU5fvj60VptVjlTaifxSCecwcQbSfqaK9/Sh3W
+         3lQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Ywr3SjYl3WKKmwQ3Fg20fZRDwIirSCojptSroPciZd4=;
-        b=UlwwerBQ/4kw0h5/QuhSJbYH4HWthXnJJRT11rCd0cMK4aIiN9eNAG9QygIj3RY7gn
-         mAgodRBTEkbHcSkl106kTQxc33BzWhdqjT2dJobPdm4Oox7GDCAL56J7TjrXKTYrjuZg
-         xnlBEC2UiwRq5BeyuOgmsnpUbZxwfpE9JiMK871PFvZ1Zn08940kLXGWwki7wYDNhBGy
-         sbHiC2r8fx/ZONiTza83VJBdHoFVoclAwbnPNcWYBRF/z8Ea16JkHkPXBZHqoRrpEGjm
-         FaW4OnltWLf8dOCIoWdFBGzgG0WQ04DHDW9qQ0XRvuBby8LdsciwZLhVa9oXlbBQeilC
-         ql3g==
-X-Gm-Message-State: AOAM5303sPte3IUMMRsAW/tCCG2GGikKEXUrHjbKlJpDqSz/sIQ7ysUu
-        kadtA2grKZu2lmg6vsFUyykX/wAiaw==
-X-Google-Smtp-Source: ABdhPJxkg3xbg690B9PctcHtfb2vb5cxI7uXx24D9p0nl8yj4DZiqyhwWEpXvc/iVNgYO/1DDqZEmA==
-X-Received: by 2002:a05:6830:1594:: with SMTP id i20mr1551496otr.279.1622766793880;
-        Thu, 03 Jun 2021 17:33:13 -0700 (PDT)
-Received: from threadripper.novatech-llc.local ([216.21.169.52])
-        by smtp.gmail.com with ESMTPSA id r26sm127174ots.8.2021.06.03.17.33.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 03 Jun 2021 17:33:12 -0700 (PDT)
-From:   George McCollister <george.mccollister@gmail.com>
-To:     linux-usb@vger.kernel.org
-Cc:     Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        George McCollister <george.mccollister@gmail.com>
-Subject: [PATCH] USB: serial: ftdi_sio: add NovaTech OrionMX product ID
-Date:   Thu,  3 Jun 2021 19:32:08 -0500
-Message-Id: <20210604003208.31799-1-george.mccollister@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dM61mylJ53YidPBEu1MqfzVtHPvSltpQP4lAmiQnPxc=;
+        b=HztWZqxw6Pktk0jq68i22uV8Qqu+zKF/pVu3UKIDEEaEsa1YLmorQjiv+4/94HNE6a
+         72yNnLe+FOyRaLzwjg5R2kAeYtFjRxrZSjlohkiRG5iVVfAP7sjTmfTHsK15Q//ovxY7
+         Thl8T7KEchfaRXUtx3zY8WiPhJeuVDlVpRR1aLfkRc9VgTuJ8j7nE88LCSFJWUMDAvWT
+         9WwHZ+smQyic9Lv3bJzdC88ScUPFwVbQNqcv8q+9QXxubkxFVaCHdOfo/S6bxAqA8TE3
+         1IEjUQZTiJaSM379EfG5JTd2K3kcxr6F1fsdxzmFdeSICW7rPZM69V3Oc5iZGulbosTx
+         6yUg==
+X-Gm-Message-State: AOAM531zkKp7hRB/eU+LropOZyM2GVjRGOnZYDX8TB7byqtcB909J1Jm
+        N8fBJWcwXjBmdgMDAzDlvru2LZ1M0QnNIqS+Oew=
+X-Google-Smtp-Source: ABdhPJzU2K1KK/iATaI/U+jAbe57W3R238nnzo1oIJRV+qlSVzUWqfRJ+XvgotjZUta3gF1uUmqZg5gk4lFVR2W+gFA=
+X-Received: by 2002:a9d:4b0e:: with SMTP id q14mr1577750otf.254.1622766789119;
+ Thu, 03 Jun 2021 17:33:09 -0700 (PDT)
+MIME-Version: 1.0
+References: <1622710841-76604-1-git-send-email-wanpengli@tencent.com> <CALzav=e9pbkk0=Yz9s1b+53MEy7yuo_otoFM75fNeoJGCQjqCg@mail.gmail.com>
+In-Reply-To: <CALzav=e9pbkk0=Yz9s1b+53MEy7yuo_otoFM75fNeoJGCQjqCg@mail.gmail.com>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Fri, 4 Jun 2021 08:32:57 +0800
+Message-ID: <CANRm+CzNeGzJyisK659h1kdgcQQ+Y7OwW+tiXPnZ9gmiGB1qUA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] KVM: LAPIC: write 0 to TMICT should also cancel
+ vmx-preemption timer
+To:     David Matlack <dmatlack@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add PID for the NovaTech OrionMX so it can be automatically detected.
+On Fri, 4 Jun 2021 at 07:02, David Matlack <dmatlack@google.com> wrote:
+>
+> On Thu, Jun 3, 2021 at 2:04 AM Wanpeng Li <kernellwp@gmail.com> wrote:
+> >
+> > From: Wanpeng Li <wanpengli@tencent.com>
+> >
+> > According to the SDM 10.5.4.1:
+> >
+> >   A write of 0 to the initial-count register effectively stops the local
+> >   APIC timer, in both one-shot and periodic mode.
+>
+> If KVM is not correctly emulating this behavior then could you also
+> add a kvm-unit-test to test for the correct behavior?
 
-Signed-off-by: George McCollister <george.mccollister@gmail.com>
----
- drivers/usb/serial/ftdi_sio.c     | 1 +
- drivers/usb/serial/ftdi_sio_ids.h | 1 +
- 2 files changed, 2 insertions(+)
+A simple test here, the test will hang after the patch since it will
+not receive the spurious interrupt any more.
 
-diff --git a/drivers/usb/serial/ftdi_sio.c b/drivers/usb/serial/ftdi_sio.c
-index 369ef140df78..4a1f3a95d017 100644
---- a/drivers/usb/serial/ftdi_sio.c
-+++ b/drivers/usb/serial/ftdi_sio.c
-@@ -611,6 +611,7 @@ static const struct usb_device_id id_table_combined[] = {
- 		.driver_info = (kernel_ulong_t)&ftdi_jtag_quirk },
- 	{ USB_DEVICE(FTDI_VID, FTDI_NT_ORIONLX_PLUS_PID) },
- 	{ USB_DEVICE(FTDI_VID, FTDI_NT_ORION_IO_PID) },
-+	{ USB_DEVICE(FTDI_VID, FTDI_NT_ORIONMX_PID) },
- 	{ USB_DEVICE(FTDI_VID, FTDI_SYNAPSE_SS200_PID) },
- 	{ USB_DEVICE(FTDI_VID, FTDI_CUSTOMWARE_MINIPLEX_PID) },
- 	{ USB_DEVICE(FTDI_VID, FTDI_CUSTOMWARE_MINIPLEX2_PID) },
-diff --git a/drivers/usb/serial/ftdi_sio_ids.h b/drivers/usb/serial/ftdi_sio_ids.h
-index d854e04a4286..add602bebd82 100644
---- a/drivers/usb/serial/ftdi_sio_ids.h
-+++ b/drivers/usb/serial/ftdi_sio_ids.h
-@@ -581,6 +581,7 @@
- #define FTDI_NT_ORIONLXM_PID		0x7c90	/* OrionLXm Substation Automation Platform */
- #define FTDI_NT_ORIONLX_PLUS_PID	0x7c91	/* OrionLX+ Substation Automation Platform */
- #define FTDI_NT_ORION_IO_PID		0x7c92	/* Orion I/O */
-+#define FTDI_NT_ORIONMX_PID		0x7c93	/* OrionMX */
- 
- /*
-  * Synapse Wireless product ids (FTDI_VID)
--- 
-2.11.0
-
+diff --git a/x86/apic.c b/x86/apic.c
+index a7681fe..947d018 100644
+--- a/x86/apic.c
++++ b/x86/apic.c
+@@ -488,6 +488,14 @@ static void test_apic_timer_one_shot(void)
+      */
+     report((lvtt_counter == 1) && (tsc2 - tsc1 >= interval),
+            "APIC LVT timer one shot");
++
++    lvtt_counter = 0;
++    apic_write(APIC_TMICT, interval);
++    apic_write(APIC_TMICT, 0);
++    while (!lvtt_counter);
++
++    report((lvtt_counter == 1),
++          "APIC LVT timer one shot spurious interrupt");
+ }
