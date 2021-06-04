@@ -2,160 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 271C639BC79
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F7639BC7C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231355AbhFDQDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 12:03:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50279 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231213AbhFDQDt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 12:03:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622822523;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RDgsuICsJTACzPoWFbnkh7BYX0jKRdVUUGWOxYyPhY0=;
-        b=JQl02C0V15iHZ12D8yTXwLhD3lhekMdkSnsAs7K7R1mVe7v24fLyktIlB+WQdSn3DTgT+n
-        i6XFJCWrjwvnrz3MaUMWPhFxC20qaQlggWTzPUm5xhiDp76OOlJ7v5PhcCyl4jLpLIE48T
-        RZYL/9TVG+BmFPw2wa6YQg6GJA0Wupk=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-588-MWGPt1pmMEy2m-DzCjC8iQ-1; Fri, 04 Jun 2021 12:02:01 -0400
-X-MC-Unique: MWGPt1pmMEy2m-DzCjC8iQ-1
-Received: by mail-qv1-f70.google.com with SMTP id f18-20020a0cbed20000b029021ef79a8921so4765046qvj.17
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 09:02:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RDgsuICsJTACzPoWFbnkh7BYX0jKRdVUUGWOxYyPhY0=;
-        b=Xgt8nLYK/QDHXaFXxd8TUbGa8ukPezho6D4lgL77raMhWR8/9lAVyvPLDvQsVvfELR
-         mnbXTJ5DGOzEKqOvC1pRN1S41uzHrrKir1pc6FPGEmYKOgSt7LAUdD8wBenCnXuqtUnx
-         3zjj+DFdGn6VKlhzIytuxnGe782y8Fu6VUiT5dQ8DG0e3A/nPrLemlDt4xnkY6AaGgAr
-         WF9YLP7HhlClyBZcAfDNqhQP4HBWSoCNKbX31JoPSJr68b2zTUvcO920isV+Nyb1r7Jl
-         L0h3suh4K1Y7BeRho4YzFxUj6c9p/M7K5Jk1XvPbJ8mS9XGuuZRQO4QpAIom93qh1HtJ
-         YFNA==
-X-Gm-Message-State: AOAM533Wcp1O7nzE8mVDYkFjMfYycuK2/WChDY8wX+5PhfXS4c+1I62+
-        K+lJMlLRHd6froq7gVpFRaMuZQUdMfPZBlWENBCzBzh1/rC2q/2BmpqwNbgoSEsVSZadyQkn5Um
-        DmSG/w3ugnOMzS/AKXAdNWAPR
-X-Received: by 2002:a37:e205:: with SMTP id g5mr5154751qki.449.1622822521436;
-        Fri, 04 Jun 2021 09:02:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw1ecEgBicg8WczI1723MlWffMHmL+hd5u67XDnxq1zyBxl/dNa+udOMKx+w1p+T/+kjodlyA==
-X-Received: by 2002:a37:e205:: with SMTP id g5mr5154724qki.449.1622822521195;
-        Fri, 04 Jun 2021 09:02:01 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-61-184-147-118-108.dsl.bell.ca. [184.147.118.108])
-        by smtp.gmail.com with ESMTPSA id d1sm3892682qti.72.2021.06.04.09.01.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 09:02:00 -0700 (PDT)
-Date:   Fri, 4 Jun 2021 12:01:59 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     Hugh Dickins <hughd@google.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Axel Rasmussen <axelrasmussen@google.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v3 04/27] mm/userfaultfd: Introduce special pte for
- unmapped file-backed mem
-Message-ID: <YLpOdxWnRbWx9CL+@t490s>
-References: <20210527201927.29586-1-peterx@redhat.com>
- <1780227.rxkhHXaqZV@nvdebian>
- <alpine.LSU.2.11.2106031954570.12760@eggly.anvils>
- <2408831.NcqaVN92ti@nvdebian>
+        id S231419AbhFDQEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 12:04:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53644 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230410AbhFDQEf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 12:04:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00F7E613F3;
+        Fri,  4 Jun 2021 16:02:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622822569;
+        bh=6dzasOgEWu9CjupxUlAg8mGO8y6qtfmZ/ZEkjf7yUxc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jpWXY0H221k4DW06WHX+qPJL3iG0J2EFMFoK4Up8y9yMY3cMBTZeAbsG4ND+jD9UR
+         +qnNU7sPE78/47UIOWlqJEN+WyzTtQn588eH8coio31PoR2VeEjFphMPZokO1alaM0
+         GuQX1lvWY0yyJ9Dz/OxifycNmA3pWJcOU5jwLEzIUaPUxJOzfRg1QghVZuAOODHklb
+         f8FkA/mT1VK3m6xd2UEaNJsGKQZla6C4m7NudShV5kz+0xjMbslhbvuvwK6uEA3LVs
+         zyBQsQTSF69we56w4S5FKHvp1GRcmParv2BcW5Ise2xPBNdDWkRhRVT4jNxK4NULND
+         KNhO1tf1HsKUQ==
+Received: by pali.im (Postfix)
+        id 53168990; Fri,  4 Jun 2021 18:02:46 +0200 (CEST)
+Date:   Fri, 4 Jun 2021 18:02:46 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 17/42] PCI: aardvark: Fix support for MSI interrupts
+Message-ID: <20210604160246.vrix6fngictqpmbg@pali>
+References: <20210506153153.30454-1-pali@kernel.org>
+ <20210506153153.30454-18-pali@kernel.org>
+ <87czu2q25h.wl-maz@kernel.org>
+ <20210507144420.24aess56cc7ie2x2@pali>
+ <875yzupl52.wl-maz@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2408831.NcqaVN92ti@nvdebian>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <875yzupl52.wl-maz@kernel.org>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 04:16:30PM +1000, Alistair Popple wrote:
-> > My understanding is that it does *not* use an additional arch-dependent
-> > bit, but puts the _PAGE_UFFD_WP bit (already set aside by any architecture
-> > implementing UFFD WP) to an additional use.  That's why I called this
-> > design (from Andrea) more elegant than mine (swap type business).
+On Friday 07 May 2021 17:24:25 Marc Zyngier wrote:
+> On Fri, 07 May 2021 15:44:20 +0100,
+> Pali Rohár <pali@kernel.org> wrote:
+> > 
+> > On Friday 07 May 2021 11:16:58 Marc Zyngier wrote:
+> > > On Thu, 06 May 2021 16:31:28 +0100,
+> > > Pali Rohár <pali@kernel.org> wrote:
+> > > > 
+> > > > MSI domain callback .alloc (implemented by advk_msi_irq_domain_alloc()
+> > > > function) should return zero on success. Returning non-zero value indicates
+> > > > failure. Fix return value of this function as in many cases it now returns
+> > > > failure while allocating IRQs.
+> > > > 
+> > > > Aardvark hardware supports Multi-MSI and MSI_FLAG_MULTI_PCI_MSI is already
+> > > > set. But when allocating MSI interrupt numbers for Multi-MSI, they need to
+> > > > be properly aligned, otherwise endpoint devices send MSI interrupt with
+> > > > incorrect numbers. Fix this issue by using function bitmap_find_free_region()
+> > > > instead of bitmap_find_next_zero_area().
+> > > > 
+> > > > To ensure that aligned MSI interrupt numbers are used by endpoint devices,
+> > > > we cannot use Linux virtual irq numbers (as they are random and not
+> > > > properly aligned). So use hwirq numbers allocated by the function
+> > > > bitmap_find_free_region(), which are aligned. This needs an update in
+> > > > advk_msi_irq_compose_msi_msg() and advk_pcie_handle_msi() functions to do
+> > > > proper mapping between Linux virtual irq numbers and hwirq MSI inner domain
+> > > > numbers.
+> > > > 
+> > > > Also the whole 16-bit MSI number is stored in the PCIE_MSI_PAYLOAD_REG
+> > > > register, not only lower 8 bits. Fix reading content of this register.
+> > > > 
+> > > > This change fixes receiving MSI interrupts on Armada 3720 boards and allows
+> > > > using NVMe disks which use Multi-MSI feature with 3 interrupts.
+> > > > 
+> > > > Without this change, NVMe disks just freeze booting Linux on Armada 3720
+> > > > boards as linux nvme-core.c driver is waiting 60s for an interrupt.
+> > > > 
+> > > > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > > > Reviewed-by: Marek Behún <kabel@kernel.org>
+> > > > Cc: stable@vger.kernel.org # f21a8b1b6837 ("PCI: aardvark: Move to MSI handling using generic MSI support")
+> > > > ---
+> > > >  drivers/pci/controller/pci-aardvark.c | 32 ++++++++++++++++-----------
+> > > >  1 file changed, 19 insertions(+), 13 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
+> > > > index 366d7480bc1b..498810c00b6d 100644
+> > > > --- a/drivers/pci/controller/pci-aardvark.c
+> > > > +++ b/drivers/pci/controller/pci-aardvark.c
+> > > > @@ -118,6 +118,7 @@
+> > > >  #define PCIE_MSI_STATUS_REG			(CONTROL_BASE_ADDR + 0x58)
+> > > >  #define PCIE_MSI_MASK_REG			(CONTROL_BASE_ADDR + 0x5C)
+> > > >  #define PCIE_MSI_PAYLOAD_REG			(CONTROL_BASE_ADDR + 0x9C)
+> > > > +#define     PCIE_MSI_DATA_MASK			GENMASK(15, 0)
+> > > 
+> > > See my comment below about this addition.
+> > > 
+> > > >  /* LMI registers base address and register offsets */
+> > > >  #define LMI_BASE_ADDR				0x6000
+> > > > @@ -861,7 +862,7 @@ static void advk_msi_irq_compose_msi_msg(struct irq_data *data,
+> > > >  
+> > > >  	msg->address_lo = lower_32_bits(msi_msg);
+> > > >  	msg->address_hi = upper_32_bits(msi_msg);
+> > > > -	msg->data = data->irq;
+> > > > +	msg->data = data->hwirq;
+> > > >  }
+> > > >  
+> > > >  static int advk_msi_set_affinity(struct irq_data *irq_data,
+> > > > @@ -878,15 +879,11 @@ static int advk_msi_irq_domain_alloc(struct irq_domain *domain,
+> > > >  	int hwirq, i;
+> > > >  
+> > > >  	mutex_lock(&pcie->msi_used_lock);
+> > > > -	hwirq = bitmap_find_next_zero_area(pcie->msi_used, MSI_IRQ_NUM,
+> > > > -					   0, nr_irqs, 0);
+> > > > -	if (hwirq >= MSI_IRQ_NUM) {
+> > > > -		mutex_unlock(&pcie->msi_used_lock);
+> > > > -		return -ENOSPC;
+> > > > -	}
+> > > > -
+> > > > -	bitmap_set(pcie->msi_used, hwirq, nr_irqs);
+> > > > +	hwirq = bitmap_find_free_region(pcie->msi_used, MSI_IRQ_NUM,
+> > > > +					order_base_2(nr_irqs));
+> > > >  	mutex_unlock(&pcie->msi_used_lock);
+> > > > +	if (hwirq < 0)
+> > > > +		return -ENOSPC;
+> > > >  
+> > > >  	for (i = 0; i < nr_irqs; i++)
+> > > >  		irq_domain_set_info(domain, virq + i, hwirq + i,
+> > > > @@ -894,7 +891,7 @@ static int advk_msi_irq_domain_alloc(struct irq_domain *domain,
+> > > >  				    domain->host_data, handle_simple_irq,
+> > > >  				    NULL, NULL);
+> > > >  
+> > > > -	return hwirq;
+> > > > +	return 0;
+> > > >  }
+> > > >  
+> > > >  static void advk_msi_irq_domain_free(struct irq_domain *domain,
+> > > > @@ -904,7 +901,7 @@ static void advk_msi_irq_domain_free(struct irq_domain *domain,
+> > > >  	struct advk_pcie *pcie = domain->host_data;
+> > > >  
+> > > >  	mutex_lock(&pcie->msi_used_lock);
+> > > > -	bitmap_clear(pcie->msi_used, d->hwirq, nr_irqs);
+> > > > +	bitmap_release_region(pcie->msi_used, d->hwirq, order_base_2(nr_irqs));
+> > > >  	mutex_unlock(&pcie->msi_used_lock);
+> > > >  }
+> > > >  
+> > > > @@ -1048,6 +1045,7 @@ static void advk_pcie_handle_msi(struct advk_pcie *pcie)
+> > > >  {
+> > > >  	u32 msi_val, msi_mask, msi_status, msi_idx;
+> > > >  	u16 msi_data;
+> > > > +	int virq;
+> > > >  
+> > > >  	msi_mask = advk_readl(pcie, PCIE_MSI_MASK_REG);
+> > > >  	msi_val = advk_readl(pcie, PCIE_MSI_STATUS_REG);
+> > > > @@ -1057,9 +1055,17 @@ static void advk_pcie_handle_msi(struct advk_pcie *pcie)
+> > > >  		if (!(BIT(msi_idx) & msi_status))
+> > > >  			continue;
+> > > >  
+> > > > +		/*
+> > > > +		 * msi_idx contains bits [4:0] of the msi_data and msi_data
+> > > > +		 * contains 16bit MSI interrupt number from MSI inner domain
+> > > > +		 */
+> > > >  		advk_writel(pcie, BIT(msi_idx), PCIE_MSI_STATUS_REG);
+> > > > -		msi_data = advk_readl(pcie, PCIE_MSI_PAYLOAD_REG) & 0xFF;
+> > > > -		generic_handle_irq(msi_data);
+> > > > +		msi_data = advk_readl(pcie, PCIE_MSI_PAYLOAD_REG) & PCIE_MSI_DATA_MASK;
+> > > 
+> > > Can this be moved to a separate patch? It seems like this patch should
+> > > only focus on correctly dealing with the irq/hwirq issues.
+> > 
+> > Well, hwirq is read from PCIE_MSI_PAYLOAD_REG register and it is 16-bit.
+> > That is why I included this change in this patch, to fix also reading
+> > IRQ number, not only setting IRQ number.
 > 
-> Oh my bad, I had somehow missed this was reusing an *existing* arch-dependent 
-> swap bit (_PAGE_SWP_UFFD_WP, although the same argument could apply) even 
-> though it's in the commit message. Obviously I should have read that more 
-> carefully, apologies for the noise but thanks for the clarification.
+> But this irq number still is a 5 bit quantity at this stage, and the
 
-Right, as Hugh mentioned what this series wanted to use is one explicit pte
-that no one should ever be using, so ideally that should be the most saving way
-per address-space pov.
+Yes, it should be 5 bit number. And in case wrongly programmed PCIe card
+sends interrupt with "incorrect number" then A3720 PCIe controller
+"should not try" to map this 16-bit unknown MSI interrupt number to
+something in 5-bit domain (by setting upper bits to zero) and trying to
+deliver this invalid interrupt via some existing virq.
 
-Meanwhile I think that pte can actually be not related to _PAGE_UFFD_WP at all,
-as long as it's a specific pte value then it will service the same goal (even
-if to reuse a new swp type, I'll probably only use one pte for it and leave the
-rest for other use; but who knows who will start to use the rest!).
+Interrupt number of received MSI is stored in low 16 bits in
+PCIE_MSI_PAYLOAD_REG register and you should use / validate whole
+number, not just few bits from it.
 
-I kept using it because that's suggested by Andrea (it actually has
-type==off==0 as Hugh suggested too - so it keeps a suggestion of both!) and
-it's a good idea to use it since (1) it's never used by anyone before, and (2)
-it is _somehow_ related to uffd-wp itself already by having that specific bit
-set in the special pte, while that's also the only bit set for the u64 field.
-
-It looks very nice too when debug, because when I dump the ptes it reads 0x4 on
-x86.. so the pte value is even easy to read as a number. :)
-
-However I can see that it is less easy to follow than the swap type solution.
-In all cases it's still something worth thinking about before using up the swap
-types - it's not so rich there, and we keep shrinking MAX_SWAPFILES.. so let's
-see whether uffd-wp could be the 1st one to open a new field for unused
-"invalid/swap pte" address space.
-
-Meanwhile, I did have a look at ARM on supporting uffd-wp in general, starting
-from anonymous pages.  I doubt whether it can be done for old arms (uffd-wp not
-even supported on 32bit x86 after all), but for ARM64 I see it has:
-
-For normal ptes:
-
-/*
- * Level 3 descriptor (PTE).
- */
-#define PTE_VALID		(_AT(pteval_t, 1) << 0)
-#define PTE_TYPE_MASK		(_AT(pteval_t, 3) << 0)
-#define PTE_TYPE_PAGE		(_AT(pteval_t, 3) << 0)
-#define PTE_TABLE_BIT		(_AT(pteval_t, 1) << 1)
-#define PTE_USER		(_AT(pteval_t, 1) << 6)		/* AP[1] */
-#define PTE_RDONLY		(_AT(pteval_t, 1) << 7)		/* AP[2] */
-#define PTE_SHARED		(_AT(pteval_t, 3) << 8)		/* SH[1:0], inner shareable */
-#define PTE_AF			(_AT(pteval_t, 1) << 10)	/* Access Flag */
-#define PTE_NG			(_AT(pteval_t, 1) << 11)	/* nG */
-#define PTE_GP			(_AT(pteval_t, 1) << 50)	/* BTI guarded */
-#define PTE_DBM			(_AT(pteval_t, 1) << 51)	/* Dirty Bit Management */
-#define PTE_CONT		(_AT(pteval_t, 1) << 52)	/* Contiguous range */
-#define PTE_PXN			(_AT(pteval_t, 1) << 53)	/* Privileged XN */
-#define PTE_UXN			(_AT(pteval_t, 1) << 54)	/* User XN */
-
-For swap ptes:
-
-/*
- * Encode and decode a swap entry:
- *	bits 0-1:	present (must be zero)
- *	bits 2-7:	swap type
- *	bits 8-57:	swap offset
- *	bit  58:	PTE_PROT_NONE (must be zero)
- */
-
-So I feel like we still have chance there at least for 64bit ARM? As both
-normal/swap ptes have some bits free (bits 2-5,9 for normal ptes; bits 59-63
-for swap ptes).  But as I know little on ARM64, I hope I looked at the right
-things..
-
-Thanks,
-
--- 
-Peter Xu
-
+> support for more than 32 MSIs only come in 3 patches later.
+> 
+> So this doesn't fix anything in this patch, and should be moved to
+> patch 20.
+> 
+> Thanks,
+> 
+> 	M.
+> 
+> -- 
+> Without deviation from the norm, progress is not possible.
