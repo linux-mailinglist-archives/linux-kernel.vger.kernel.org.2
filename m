@@ -2,100 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7415539B94A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 14:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD51639B94B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 14:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbhFDNA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 09:00:26 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:35190 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229980AbhFDNAY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 09:00:24 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 0585B1F439C8
-Received: by earth.universe (Postfix, from userid 1000)
-        id 408F63C0C95; Fri,  4 Jun 2021 14:58:36 +0200 (CEST)
-Date:   Fri, 4 Jun 2021 14:58:36 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] power: supply: surface-charger: Fix type of integer
- variable
-Message-ID: <20210604125836.ew4y27ofa4bwi6uk@earth.universe>
-References: <20210511092421.1928586-1-luzmaximilian@gmail.com>
- <55aafbea-96d4-29f2-8d8b-68f8ac970c6b@gmail.com>
+        id S230254AbhFDNAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 09:00:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42830 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229980AbhFDNAm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 09:00:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29475610C9;
+        Fri,  4 Jun 2021 12:58:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622811523;
+        bh=ZvTLHNXYZniZZaf3Un9n0CPoWAaEuLLC3AE7tVW2980=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h3lh0F5MhNCVVLpDNdpARd7TauOdvNPyIFk9taXMUtqlpQHGLFPheTTNT2IhXcony
+         0l/00Vw7zGqT5bC44ak4xQnxM44pJWwmRTzmpq68akqGsj94b5H2cOmF+sXP4VV81o
+         O4fpCqkmsgx0U1gXYg3sBMyLK3KmLDVFSY8PAUwk=
+Date:   Fri, 4 Jun 2021 14:58:40 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Adrian Ratiu <adrian.ratiu@collabora.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kernel@collabora.com, linux-kernel@vger.kernel.org,
+        Guillaume Tucker <gtucker.collabora@gmail.com>,
+        Enric =?iso-8859-1?Q?Balletb=F2?= <enric.balletbo@collabora.com>
+Subject: Re: [RFC PATCH 1/1] drivers: base: Expose probe failures via debugfs
+Message-ID: <YLojgGvjAO0v/4l2@kroah.com>
+References: <20210603125534.638672-1-adrian.ratiu@collabora.com>
+ <20210603125534.638672-2-adrian.ratiu@collabora.com>
+ <YLjWKwhp7akqyR1S@kroah.com>
+ <87wnrawwfl.fsf@collabora.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ckokow4kmkwkjq7n"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <55aafbea-96d4-29f2-8d8b-68f8ac970c6b@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87wnrawwfl.fsf@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jun 03, 2021 at 11:00:14PM +0300, Adrian Ratiu wrote:
+> On Thu, 03 Jun 2021, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> > On Thu, Jun 03, 2021 at 03:55:34PM +0300, Adrian Ratiu wrote:
+> > > This adds a new devices_failed debugfs attribute to list driver
+> > > probe failures excepting -EPROBE_DEFER which are still handled as
+> > > before via their own devices_deferred attribute.
+> > 
+> > Who is going to use this?
+> > 
+> 
+> It's for KernelCI testing, I explained the background in my other reply.
+> 
+> > > This is useful on automated test systems like KernelCI to avoid
+> > > filtering dmesg dev_err() messages to extract potential probe
+> > > failures.
+> > 
+> > I thought we listed these already some other way today?
+> > 
+> 
+> The only other place is the printk buffer via dev_err() and only the result
+> subset of -EPROBE_DEFER info is exported via debugfs.
+> 
+> An additional problem with this new interface implementation is that it is
+> based on the new-ish driver core "dev_err_probe" helper to which not all
+> drivers have been converted (yet...), so there will be a mismatch between
+> printk and this new interface.
 
---ckokow4kmkwkjq7n
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Then why not move to use the new interface :)
 
-Hi,
+> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org> Cc: "Rafael J.
+> > > Wysocki" <rafael@kernel.org> Cc: Guillaume Tucker
+> > > <gtucker.collabora@gmail.com> Suggested-by: Enric Balletbò
+> > > <enric.balletbo@collabora.com> Signed-off-by: Adrian Ratiu
+> > > <adrian.ratiu@collabora.com> ---  drivers/base/core.c | 76
+> > > +++++++++++++++++++++++++++++++++++++++++++--  lib/Kconfig.debug   |
+> > > 23 ++++++++++++++ 2 files changed, 96  insertions(+), 3 deletions(-)
+> > > diff --git a/drivers/base/core.c b/drivers/base/core.c index
+> > > b8a8c96dca58..74bf057234b8 100644 --- a/drivers/base/core.c +++
+> > > b/drivers/base/core.c @@ -9,7 +9,9 @@   */   #include <linux/acpi.h>
+> > > +#include <linux/circ_buf.h>  #include <linux/cpufreq.h> +#include
+> > > <linux/debugfs.h>  #include <linux/device.h> #include <linux/err.h>
+> > > #include  <linux/fwnode.h> @@ -53,6 +55,15 @@ static
+> > > DEFINE_MUTEX(fwnode_link_lock);  static bool
+> > > fw_devlink_is_permissive(void); static bool
+> > > fw_devlink_drv_reg_done;  +#ifdef CONFIG_DEBUG_FS_PROBE_ERR +#define
+> > > PROBE_ERR_BUF_ELEM_SIZE	64 +#define PROBE_ERR_BUF_SIZE	(1 <<
+> > > CONFIG_DEBUG_FS_PROBE_ERR_BUF_SHIFT) +static struct circ_buf
+> > > probe_err_crbuf; +static char
+> > > failed_probe_buffer[PROBE_ERR_BUF_SIZE]; +static
+> > > DEFINE_MUTEX(failed_probe_mutex); +static struct dentry
+> > > *devices_failed_probe; +#endif
+> > 
+> > All of this just for a log buffer?  The kernel provides a great one,
+> > printk, let's not create yet-another-log-buffer if at all possible
+> > please.
+> 
+> Yes, that is correct, this is esentially duplicating information already
+> exposed via the printk buffer.
 
-On Thu, Jun 03, 2021 at 08:37:13PM +0200, Maximilian Luz wrote:
-> On 5/11/21 11:24 AM, Maximilian Luz wrote:
-> > The ac->state field is __le32, not u32. So change the variable we're
-> > temporarily storing it in to __le32 as well.
-> >=20
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Fixes: e61ffb344591 ("power: supply: Add AC driver for Surface Aggregat=
-or Module")
-> > Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
->=20
-> Friendly ping :)
+Not good, I will not take this for that reason alone.  Also I don't want
+to maintain something like this for the next 10+ years for no good
+reason.
 
-Thanks, this has now been queued to my fixes branch.
+> > If the existing messages are "hard to parse", what can we do to make
+> > them "easier" that would allow systems to do something with them?
+> > 
+> > What _do_ systems want to do with this information anyway?  What does it
+> > help with exactly?
+> > 
+> 
+> I know driver core probe error message formats are unlikely to change over
+> time and debugfs in theory is as "stable" as printk, but I think the main
+> concern is to find a a more reliable way than parsing printk to extract
+> probe erros, like for the existing devices_deferred in debugfs.
 
--- Sebastian
+But what exactly are you trying to detect?  And what are you going to do
+if you detect it?
 
-> > ---
-> >   drivers/power/supply/surface_charger.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >=20
-> > diff --git a/drivers/power/supply/surface_charger.c b/drivers/power/sup=
-ply/surface_charger.c
-> > index 81a5b79822c9..a060c36c7766 100644
-> > --- a/drivers/power/supply/surface_charger.c
-> > +++ b/drivers/power/supply/surface_charger.c
-> > @@ -66,7 +66,7 @@ struct spwr_ac_device {
-> >   static int spwr_ac_update_unlocked(struct spwr_ac_device *ac)
-> >   {
-> > -	u32 old =3D ac->state;
-> > +	__le32 old =3D ac->state;
-> >   	int status;
-> >   	lockdep_assert_held(&ac->lock);
-> >=20
+> The idea in my specific case is to be able to reliably run driver tests in
+> KernelCI for expected or unexpected probe errors like -EINVAL.
 
---ckokow4kmkwkjq7n
-Content-Type: application/pgp-signature; name="signature.asc"
+How about making a "real" test for this type of thing and we add that to
+the kernel itself?  Wouldn't that be a better thing to have?
 
------BEGIN PGP SIGNATURE-----
+thanks,
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmC6I3wACgkQ2O7X88g7
-+prCqg/+Jkw7uZPPHwkCon2Kk6TYJ9v/9HR1NZ20D9VFpB7WtKZ3oHyv8/Zav2RK
-FWfqVNkagbabyKjOx3WZHwCgCYG45/dPY2OOLCgJ3ml3/x9omHH+6BEtT1nNPIrH
-/4azgeufGGqXbu4zTTESOQ1iT8T5pzEC/nuKT0L7ZEUDrDXavGc+3U+xNGKC1SX+
-LZ0Od8VOP8F4izdCLXar/NUIQFCb9tVW5auvjL2lffnXyu1kYqAawknXPB91uikZ
-FOoLWC5j5rcDlcBZiRquH5ig+ftofnPNmA8EJsRI4YjMcSiiG09q344mBRLsi61H
-ZyJe756aTjpi1cHeCAyY+IjqtapperZ0YEbw5yTzjJD2OpwJ4zSsQtdGR9+rEmpv
-ga8zYnaeRCYiAeHsYYGP0GTBEngIDVNVlZ+RDSDrgspIJt+0xy92v2TlzJ5fiFdQ
-gV5FeNPg+w12zv61h2EDwWzUb34vo7WuBG7bSg4osDcPdkDTBd+RmkYNs1i1x/Wm
-S8fHFgPcWvDcWByyzAFLD5Ertj01L6CJicbHqJXwDmUC7cd5nZQWzaQ2iTGBXBoc
-hCfBAYg1I9l4YNBT/d32g8cPQDCH+8n2pXP/JC+1N93nTlXNrIt+MreamVlAy+2U
-ztc6HMTezOSiTwrRbsSHlALbJVZx/cssM8DJl+g8iyLTzBYmI3c=
-=na9I
------END PGP SIGNATURE-----
-
---ckokow4kmkwkjq7n--
+greg k-h
