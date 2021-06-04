@@ -2,149 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8274F39C152
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE0139C155
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231260AbhFDUal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 16:30:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27000 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230022AbhFDUak (ORCPT
+        id S231329AbhFDUa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 16:30:56 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:59753 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229982AbhFDUaz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 16:30:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622838532;
+        Fri, 4 Jun 2021 16:30:55 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 7DCFF2224D;
+        Fri,  4 Jun 2021 22:29:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1622838546;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=SsGVYeypydc8u4iFNETa0oN1HSK19Tp01M5QFxHPCz0=;
-        b=WqEB+W70jbxBI80V7IbiwsiAJy7KM+mg6m6MEH7NduECxBc3OntGhnRCNn3IxFVpupSgW/
-        zoofNcIS0BBzxn6Ekim3fAnGNWJZXG8tiyI6u8fsEEvhLRma6p5D7Z15f8X/TmpyBkDYAb
-        CG94RznpI8exk1CSS3FGza6joOyL97A=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-403-lJ5AIcZ-OzCwRs81gKvAFw-1; Fri, 04 Jun 2021 16:28:51 -0400
-X-MC-Unique: lJ5AIcZ-OzCwRs81gKvAFw-1
-Received: by mail-ej1-f72.google.com with SMTP id eb10-20020a170907280ab02903d65bd14481so3929737ejc.21
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 13:28:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SsGVYeypydc8u4iFNETa0oN1HSK19Tp01M5QFxHPCz0=;
-        b=lvksNmGqO6gJ+3SFfBqvMURVGK+R/1winLkD2SGKNJh3OEOxkDggPS3nKb1R62oPJ+
-         +LknZhEa1jMvHbfGa2ocOLLDbtW3g/ySBRazxl8pNbVM2CcHcH6IPCJkmUsZqh7CsklF
-         vj9TdOywbaiGsFnFkX2/XP9fXXl5o9q7jZp0qhP5wNH0GNFvSTH+1+0x07diPac9JPKD
-         TDcGdzvEpwOJSXf8uqNUFY53dRaYzV2h6g4nNCUdgtVbe/jJPRbnfq7FRuX8vCnv3t3s
-         53sjEJVAruC669lc4yiq7oIsKxrvU92hl2gEiXdb6owl6Bh2hwPawCof14CYD+m/P6pb
-         WOpA==
-X-Gm-Message-State: AOAM533GNnedVPuJMhYvxmCeyvb6/Dcm6ocxqBkRPUfUI9CyE4E1z8ed
-        Bp2Kh24yuQp2BxqslMlyiFESdEIlmBtBqEeNVDa2hZ5zmP2bxvMgOfJJ+ln37WskqCwPQog6Nyb
-        jFkpUr9vm9Pz/4pdQpZhdi/xb
-X-Received: by 2002:a17:906:5488:: with SMTP id r8mr6023687ejo.374.1622838530043;
-        Fri, 04 Jun 2021 13:28:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwZr8tMoGUk+6iPIIG2J7wot9p8hXipDIx7G9ak5GRpv0eUFYlrSWsOLmLZliliWaPh8ZtNYQ==
-X-Received: by 2002:a17:906:5488:: with SMTP id r8mr6023671ejo.374.1622838529811;
-        Fri, 04 Jun 2021 13:28:49 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id m9sm3310162ejj.53.2021.06.04.13.28.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Jun 2021 13:28:49 -0700 (PDT)
-Subject: Re: LEDs with hardware-accelerated patterns, suspend indication
-To:     Pavel Machek <pavel@ucw.cz>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        andy.shevchenko@gmail.com, mchehab+huawei@kernel.org,
-        mauro.chehab@huawei.com, linux-leds@vger.kernel.org,
-        Jafar Akhondali <jafar.akhoondali@gmail.com>
-References: <20210526153040.GA4537@amd>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <5fbbab4f-3e22-5a4a-eea8-2531ee165cc4@redhat.com>
-Date:   Fri, 4 Jun 2021 22:28:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        bh=G77K+vxEcexOlrNxgaLbjHCcwIRayXoTYp3Ij729bNU=;
+        b=gBrGrzikvVFins/jmzbxRlNgDbTAM097FPe6i49VN7MBY2D0isgJ1jlKdqKM2LqHzq/982
+        8j8rTMOXSLIkVYMqae+KkZZHTzEkVxq2rfOprePwlS3qpvZAvn+dAHt7waMimzzFPq2wgT
+        5K/oIuuEy4rVIZHRHM9ZBu1porGUrng=
 MIME-Version: 1.0
-In-Reply-To: <20210526153040.GA4537@amd>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Fri, 04 Jun 2021 22:29:06 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH net v2 2/2] MAINTAINERS: move Murali Karicheri to credits
+In-Reply-To: <20210604191141.GA2228033@bjorn-Precision-5520>
+References: <20210604191141.GA2228033@bjorn-Precision-5520>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <0dfdcc21c82179773de5a83e04d4247a@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+Hi Bjorn,
 
-On 5/26/21 5:30 PM, Pavel Machek wrote:
-> Hi!
+Am 2021-06-04 21:11, schrieb Bjorn Helgaas:
+> On Thu, Apr 29, 2021 at 11:05:21AM +0200, Michael Walle wrote:
+>> His email bounces with permanent error "550 Invalid recipient". His 
+>> last
+>> email was from 2020-09-09 on the LKML and he seems to have left TI.
+>> 
+>> Signed-off-by: Michael Walle <michael@walle.cc>
 > 
-> We have hardware trigger for arbitrary patterns... but then we have
-> common hardware that can do few simple patterns but not arbitrary
-> ones.
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>	# TI KeyStone PCI driver
 > 
-> Proposal:
-> 
-> Have a new hardware trigger "lpattern" that will allow selection of
-> patterns hardware can commonly provide. I guess that is "off", "on",
-> "blinking", "breathing". Maybe with variations like "slow" and "fast".
+> I could take both, given a networking ack for [1/2].  Or both could go
+> via the networking tree.
 
-Adding Jafar, who has been working on adding support for the hardware
-patterns on the Acer Helios 300 RGB keyboard.
+This patch was already picked up via the network queue (quite some time
+ago).
 
-Quoting from his patch for this:
-
-Backlight modes:
-1: Breath
-2: Neon
-3: Wave
-4: Shifting
-5: Zoom
-
-So it looks like we need some more patterns for this to also be
-usable for his case, although patterns like wave, shifting and zoom
-sound like they are multi-LED patterns.
-
-Jafar can you explain how this works in a bit more detail. I get
-the feeling that from a hardware-API pov there are no individual
-addressable LEDs, yet some effects do program individual LEDs
-differently then their neighbors ?  Or am I just misunderstanding
-what some of the effects do ?
-
-> It should provide software fallbacks, so we have reference how the
-> patterns should look like and behave.
-
-I think that we should probably define a couple of standard
-patterns with sw-fallbacks but also allow drivers to add
-driver specific pattern names, which won't have a sw fallback,
-this could then be combined with a lpatterns_available sysfs
-file or some such which lists the standard patterns + the
-driver specific patterns.
-
-This could then e.g. be used by the Acer Helios 300 RGB keyboard
-case.
-
-> It is quite common to provide LED with charging activity.
-> 
-> Proposal:
-> 
-> Have a trigger called "charging" which would provide three
-> subdirectories "charged", "charging" and "discharging" with interface
-> similar to the new "lpattern" trigger.
-
-When you say similar, you mean that each dir will have a lpattern
-file which can have one of the (standard) lpattern values ?
-
-This sounds good to me (this should work well for the whiskey-cove
-PMIC case which we discussed a while ago.
-
-> It is very common to have combined LED for power and suspend.
-> 
-> Proposal:
-> 
-> Have a trigger called "sysstate" with three subdirectories "off", "on"
-> and "suspended", with interfaces similar to the "lpattern" trigger.
-
-Regards,
-
-Hans
-
+-michael
