@@ -2,302 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B5239B420
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E8739B429
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbhFDHk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 03:40:59 -0400
-Received: from mga17.intel.com ([192.55.52.151]:9034 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229957AbhFDHk6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 03:40:58 -0400
-IronPort-SDR: h45fQ10YQLxOKgkK4cNzrvepzGlay0pkeuBYpG/AvkKVBVjIWZKdhuixZMBJSCcPs+nGtiA2FJ
- kfVIFq9WdRjA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="184613899"
-X-IronPort-AV: E=Sophos;i="5.83,247,1616482800"; 
-   d="scan'208";a="184613899"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2021 00:39:12 -0700
-IronPort-SDR: ZfMSRNiKJQOZYLo84rAgki5OuBny3EEnxJawsZHpOP4duDJ7fY7ml/bj7EKfTbdbMS+5DsBUq0
- auoA3rk3hvVw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,247,1616482800"; 
-   d="scan'208";a="400870034"
-Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 04 Jun 2021 00:39:11 -0700
-Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lp4QA-0006mg-DD; Fri, 04 Jun 2021 07:39:10 +0000
-Date:   Fri, 04 Jun 2021 15:38:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS WITH WARNING
- f1d4d47c5851b348b7713007e152bc68b94d728b
-Message-ID: <60b9d863.ABYwp5u4YiP1fWKL%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229955AbhFDHne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 03:43:34 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:37290 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229907AbhFDHne (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 03:43:34 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9850B219E9;
+        Fri,  4 Jun 2021 07:41:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622792507; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OCJHiaHES5BuDs/gVUVDCwQLKeuhbXghDp90XR0ftTs=;
+        b=T+/p15KxhWJpfWTtIvkPdqUYlCbUQfjJ06irGFuIk8wQHYJDxL+G7n2QLzzoSJyUkd0x2s
+        IsW+8qyxY/VMAGjU5JaCH+vFvcAa16VNBuSTgbaPcVBgK1O+wh4ja0O9R1+vCU9hscDEkl
+        8CCShoNSx4rG7Ze1lBUOETvhO+hzU6Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622792507;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OCJHiaHES5BuDs/gVUVDCwQLKeuhbXghDp90XR0ftTs=;
+        b=tPhbeY/dIw5Z9aXDsHMpJeJhLtwRDml85xhO1FXgmzOC/LdAJSXxyk39lhOFHfr+snCCf+
+        VjcQleX4W9ySE8Ag==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 16B72118DD;
+        Fri,  4 Jun 2021 07:41:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622792507; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OCJHiaHES5BuDs/gVUVDCwQLKeuhbXghDp90XR0ftTs=;
+        b=T+/p15KxhWJpfWTtIvkPdqUYlCbUQfjJ06irGFuIk8wQHYJDxL+G7n2QLzzoSJyUkd0x2s
+        IsW+8qyxY/VMAGjU5JaCH+vFvcAa16VNBuSTgbaPcVBgK1O+wh4ja0O9R1+vCU9hscDEkl
+        8CCShoNSx4rG7Ze1lBUOETvhO+hzU6Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622792507;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OCJHiaHES5BuDs/gVUVDCwQLKeuhbXghDp90XR0ftTs=;
+        b=tPhbeY/dIw5Z9aXDsHMpJeJhLtwRDml85xhO1FXgmzOC/LdAJSXxyk39lhOFHfr+snCCf+
+        VjcQleX4W9ySE8Ag==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id gZpPAjvZuWDdQAAALh3uQQ
+        (envelope-from <osalvador@suse.de>); Fri, 04 Jun 2021 07:41:47 +0000
+Date:   Fri, 4 Jun 2021 09:41:45 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] mm,page_alloc: Use {get,put}_online_mems() to get
+ stable zone's values
+Message-ID: <20210604074140.GA25063@linux>
+References: <20210602091457.17772-1-osalvador@suse.de>
+ <20210602091457.17772-2-osalvador@suse.de>
+ <39473305-6e91-262d-bcc2-76b745a5b14a@redhat.com>
+ <ed17a39ad61edeb19b04c0f4308d5d36@suse.de>
+ <YLiVAAsCTR7B6Db9@localhost.localdomain>
+ <YLjO2YU2G5fTVB3x@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <YLjO2YU2G5fTVB3x@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
-branch HEAD: f1d4d47c5851b348b7713007e152bc68b94d728b  x86/setup: Always reserve the first 1M of RAM
+On Thu, Jun 03, 2021 at 02:45:13PM +0200, Michal Hocko wrote:
+> I believe we need to define the purpose of the locking first. The
 
-possible Warning in current branch:
+If you ask me, this locking would be meant to make sure zone's zone_start_pfn
+or spanned_pages do not change under us, in case we __need__ the value to be
+stable.
 
-Warning: Kernel ABI header at 'tools/arch/x86/include/asm/disabled-features.h' differs from latest version at 'arch/x86/include/asm/disabled-features.h':   59< #ifdef CONFIG_IOMMU_SUPPORT
-Warning: Kernel ABI header at 'tools/arch/x86/include/asm/disabled-features.h' differs from latest version at 'arch/x86/include/asm/disabled-features.h':   59> /* Force disable because it's broken beyond repair */
-Warning: Kernel ABI header at 'tools/arch/x86/include/asm/disabled-features.h' differs from latest version at 'arch/x86/include/asm/disabled-features.h':   60< # define DISABLE_ENQCMD	0
-Warning: Kernel ABI header at 'tools/arch/x86/include/asm/disabled-features.h' differs from latest version at 'arch/x86/include/asm/disabled-features.h':   62< # define DISABLE_ENQCMD (1 << (X86_FEATURE_ENQCMD & 31))
+> existing locking doesn't serve much purpose, does it? The state might
 
-Warning ids grouped by kconfigs:
+Well, half-way. Currently, the locking is taken in write mode whenever
+the zone is expanded or shrinked, and in read mode when called from
+bad_range()->page_outside_zone_boundaries() (only on VM_DEBUG).
 
-gcc_recent_errors
-`-- x86_64-allnoconfig
-    |-- Warning:Kernel-ABI-header-at-tools-arch-x86-include-asm-disabled-features.h-differs-from-latest-version-at-arch-x86-include-asm-disabled-features.h:Force-disable-because-it-s-broken-beyond-repair
-    |-- Warning:Kernel-ABI-header-at-tools-arch-x86-include-asm-disabled-features.h-differs-from-latest-version-at-arch-x86-include-asm-disabled-features.h:define-DISABLE_ENQCMD
-    |-- Warning:Kernel-ABI-header-at-tools-arch-x86-include-asm-disabled-features.h-differs-from-latest-version-at-arch-x86-include-asm-disabled-features.h:define-DISABLE_ENQCMD-(-(X86_FEATURE_ENQCMD-))
-    `-- Warning:Kernel-ABI-header-at-tools-arch-x86-include-asm-disabled-features.h-differs-from-latest-version-at-arch-x86-include-asm-disabled-features.h:ifdef-CONFIG_IOMMU_SUPPORT
+But as you pointed out, such state might change right after the locking is
+released and all the work would be for nothing.
+So indeed, the __whole__ operation should be envolved by the lock in the caller
+The way that stands right now is not optimal.
 
-elapsed time: 723m
+> change right after the lock is released and the caller cannot really
+> rely on the result. So aside of the current implementation, I would
+> argue that any locking has to be be done on the caller layer.
+> 
+> But the primary question is whether anybody actually cares about
+> potential races in the first place.
 
-configs tested: 227
-configs skipped: 3
+I have been checking move_freepages_block() and alloc_contig_pages(), which
+are two of the functions that call zone_spans_pfn().
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                           ip27_defconfig
-powerpc                      pasemi_defconfig
-m68k                       m5249evb_defconfig
-arm                         lpc32xx_defconfig
-nios2                         3c120_defconfig
-mips                         tb0219_defconfig
-arm                          moxart_defconfig
-mips                           xway_defconfig
-powerpc                       holly_defconfig
-sh                   rts7751r2dplus_defconfig
-mips                     cu1830-neo_defconfig
-arm                        clps711x_defconfig
-arc                         haps_hs_defconfig
-mips                          rb532_defconfig
-arm                          collie_defconfig
-h8300                     edosk2674_defconfig
-sparc64                          alldefconfig
-arm                     am200epdkit_defconfig
-arm                        multi_v5_defconfig
-um                            kunit_defconfig
-powerpc                    amigaone_defconfig
-arc                 nsimosci_hs_smp_defconfig
-sh                   sh7770_generic_defconfig
-m68k                       m5275evb_defconfig
-powerpc                 mpc836x_mds_defconfig
-powerpc                         ps3_defconfig
-mips                         tb0287_defconfig
-sh                          landisk_defconfig
-mips                        maltaup_defconfig
-m68k                        m5407c3_defconfig
-m68k                        mvme16x_defconfig
-arc                    vdk_hs38_smp_defconfig
-um                                  defconfig
-powerpc                      katmai_defconfig
-mips                         mpc30x_defconfig
-powerpc                      acadia_defconfig
-powerpc64                        alldefconfig
-arc                     nsimosci_hs_defconfig
-m68k                             alldefconfig
-arm                         lpc18xx_defconfig
-arc                      axs103_smp_defconfig
-sh                        dreamcast_defconfig
-powerpc                 mpc836x_rdk_defconfig
-powerpc                    sam440ep_defconfig
-sh                            titan_defconfig
-riscv             nommu_k210_sdcard_defconfig
-mips                           rs90_defconfig
-m68k                         amcore_defconfig
-arm                        cerfcube_defconfig
-powerpc                 canyonlands_defconfig
-powerpc                      ep88xc_defconfig
-sh                               alldefconfig
-powerpc64                           defconfig
-powerpc                 mpc8313_rdb_defconfig
-openrisc                            defconfig
-mips                  decstation_64_defconfig
-arm                    vt8500_v6_v7_defconfig
-arm                            zeus_defconfig
-xtensa                generic_kc705_defconfig
-m68k                          amiga_defconfig
-mips                            gpr_defconfig
-powerpc                     mpc5200_defconfig
-arm                     davinci_all_defconfig
-powerpc                      makalu_defconfig
-mips                   sb1250_swarm_defconfig
-powerpc                      pcm030_defconfig
-powerpc                   lite5200b_defconfig
-arm                           u8500_defconfig
-m68k                          hp300_defconfig
-powerpc                    gamecube_defconfig
-ia64                             allyesconfig
-sh                        sh7785lcr_defconfig
-powerpc                     tqm8541_defconfig
-m68k                       m5208evb_defconfig
-arm                           stm32_defconfig
-arm                          ep93xx_defconfig
-powerpc                      tqm8xx_defconfig
-sh                          urquell_defconfig
-powerpc                      cm5200_defconfig
-arm                  colibri_pxa270_defconfig
-sh                            hp6xx_defconfig
-arm                         cm_x300_defconfig
-powerpc                    adder875_defconfig
-powerpc                mpc7448_hpc2_defconfig
-xtensa                              defconfig
-microblaze                          defconfig
-powerpc                 mpc837x_rdb_defconfig
-mips                           jazz_defconfig
-mips                            ar7_defconfig
-powerpc                   currituck_defconfig
-arm                          ixp4xx_defconfig
-mips                         cobalt_defconfig
-arm                        trizeps4_defconfig
-xtensa                    xip_kc705_defconfig
-arm                      tct_hammer_defconfig
-powerpc                 mpc8560_ads_defconfig
-arm                           sunxi_defconfig
-powerpc                 mpc834x_itx_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-powerpc                 mpc85xx_cds_defconfig
-nios2                         10m50_defconfig
-mips                         db1xxx_defconfig
-openrisc                 simple_smp_defconfig
-arm                              alldefconfig
-arm                         nhk8815_defconfig
-mips                      pic32mzda_defconfig
-arm                            mmp2_defconfig
-mips                     loongson2k_defconfig
-arc                              alldefconfig
-mips                      pistachio_defconfig
-sh                        sh7757lcr_defconfig
-ia64                          tiger_defconfig
-arm                         lubbock_defconfig
-powerpc                     mpc512x_defconfig
-mips                       lemote2f_defconfig
-mips                  cavium_octeon_defconfig
-sh                         ap325rxa_defconfig
-powerpc                 xes_mpc85xx_defconfig
-mips                       bmips_be_defconfig
-arm                          simpad_defconfig
-arm                  colibri_pxa300_defconfig
-powerpc                       eiger_defconfig
-powerpc                      pmac32_defconfig
-powerpc                 mpc8315_rdb_defconfig
-mips                         rt305x_defconfig
-powerpc                     sbc8548_defconfig
-powerpc                     mpc83xx_defconfig
-nds32                             allnoconfig
-parisc                              defconfig
-powerpc                      bamboo_defconfig
-powerpc                       ppc64_defconfig
-arc                        nsimosci_defconfig
-ia64                                defconfig
-powerpc                     skiroot_defconfig
-mips                 decstation_r4k_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20210604
-x86_64               randconfig-a004-20210604
-x86_64               randconfig-a003-20210604
-x86_64               randconfig-a006-20210604
-x86_64               randconfig-a005-20210604
-x86_64               randconfig-a001-20210604
-i386                 randconfig-a003-20210603
-i386                 randconfig-a006-20210603
-i386                 randconfig-a004-20210603
-i386                 randconfig-a001-20210603
-i386                 randconfig-a005-20210603
-i386                 randconfig-a002-20210603
-i386                 randconfig-a003-20210604
-i386                 randconfig-a006-20210604
-i386                 randconfig-a004-20210604
-i386                 randconfig-a001-20210604
-i386                 randconfig-a005-20210604
-i386                 randconfig-a002-20210604
-x86_64               randconfig-a015-20210603
-x86_64               randconfig-a011-20210603
-x86_64               randconfig-a012-20210603
-x86_64               randconfig-a014-20210603
-x86_64               randconfig-a016-20210603
-x86_64               randconfig-a013-20210603
-i386                 randconfig-a015-20210603
-i386                 randconfig-a011-20210603
-i386                 randconfig-a014-20210603
-i386                 randconfig-a012-20210603
-i386                 randconfig-a013-20210603
-i386                 randconfig-a016-20210603
-riscv                    nommu_k210_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+move_freepages_block() uses it in a way to align the given pfn to pageblock
+top and bottom, and then check that aligned pfns are still within the same zone.
+From a memory-hotplug perspective that's ok as we know that we are offlining
+PAGES_PER_SECTION (which implies whole pageblocks).
 
-clang tested configs:
-x86_64               randconfig-b001-20210603
-x86_64               randconfig-b001-20210604
-x86_64               randconfig-a002-20210603
-x86_64               randconfig-a004-20210603
-x86_64               randconfig-a003-20210603
-x86_64               randconfig-a006-20210603
-x86_64               randconfig-a005-20210603
-x86_64               randconfig-a001-20210603
-x86_64               randconfig-a015-20210604
-x86_64               randconfig-a011-20210604
-x86_64               randconfig-a014-20210604
-x86_64               randconfig-a012-20210604
-x86_64               randconfig-a016-20210604
-x86_64               randconfig-a013-20210604
+alloc_contig_pages() (used by the hugetlb gigantic allocator) runs through a
+node's zonelist and checks whether zone->zone_start_pfn + nr_pages stays within
+the same zone.
+IMHO, the race with zone_spans_last_pfn() vs mem-hotplug would not be that bad,
+as it will be caught afters by e.g: __alloc_contig_pages when pages cannot be
+isolated because they are offline etc.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+So, I would say we do not really need the lock, but I might be missing something.
+But if we chose to care about this, then the locking should be done right, not
+half-way as it is right now.
+
+
+-- 
+Oscar Salvador
+SUSE L3
