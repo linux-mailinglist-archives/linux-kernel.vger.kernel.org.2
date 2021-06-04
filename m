@@ -2,105 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA3D339B926
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 14:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9351739B928
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 14:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230150AbhFDMlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 08:41:37 -0400
-Received: from mail-qt1-f173.google.com ([209.85.160.173]:45885 "EHLO
-        mail-qt1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbhFDMle (ORCPT
+        id S230106AbhFDMqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 08:46:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229980AbhFDMqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 08:41:34 -0400
-Received: by mail-qt1-f173.google.com with SMTP id l17so2689077qtq.12;
-        Fri, 04 Jun 2021 05:39:33 -0700 (PDT)
+        Fri, 4 Jun 2021 08:46:31 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FDE3C06174A;
+        Fri,  4 Jun 2021 05:44:31 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id a20so9241304wrc.0;
+        Fri, 04 Jun 2021 05:44:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8tFXQQshqxSB1HMy8vDC7vDQu3YTSPaP6sR63Gdou1c=;
-        b=rAX+pnpB7Dvclp28To6NqrG6G4zEE6aJ2nCrSNJM6cssUc3AgNkffeQtKWekimrVtV
-         L0eYjB5ZjA+K3IJk1WWXf9vHqbS1/VHdOIE26Zs4CaCgfm3+AtzgCi2kEzT/IrXsOS5s
-         CYs3RKtn7Cygw7UxH7+C0FbOn8ujhsEL0UNKMZg3FL8ERgTAHva9tF2CqGHhdKUjOXq2
-         BiXiipzsM/lSubN2iLC3R9dcoSaXAeseYoXBY45EpKXNCEYfe1IiAWFK9CCvpgix+5HR
-         ubzIodtw/ASDfpr0I6MZSObuIXGEf/+6h0PNwKzkJgpRWR1Y8iml3LwhrcTOHks9QkC3
-         HJjA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/12nwO3ie3OTdib3qXezH/jT1RQGJcozWN5BM57J+po=;
+        b=UviSW5rNe92MuYqyqt/LtS4wMTRnXl3d1a1nre3vInz5T//KV31NfRoRxV5iQVQV5J
+         JvLr2W1cMCFd0s6NA9A/QXcVCUmI1hUeF3ZBYz4p97fcF90vvz1Y5zZ1u//Xpyoar3V6
+         zlP791VCdV4fEFowLUjoFkLmOiEp2C1wyYcO99jn7t6EoF8ZdG0x22K5zdXpgTjB1Fe6
+         8AG/WDB6wjbAjNMoHQt5GDBx1H/2dkUTZLu3kUvOIW7ee2BL8XJ07mPene3KQ/u3KG1c
+         TMr1muH25P4Q/Jg45gLD+sqKsopD5O5NFZNSVzmhZ9wf6nYN6vtfpjVrk9rZEx3oMfw7
+         JUUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=8tFXQQshqxSB1HMy8vDC7vDQu3YTSPaP6sR63Gdou1c=;
-        b=um+LuWgjQdb860ct1h86kmlnd82FCV3LlCyfX55qooBjdL6PDvpkvzNtZGSAPkCI5u
-         AoAMEEWoplx2znEKjEXFhMnOUiHNgLQyz/XdkUb602LT8H9d/wzBhpDiGgLYJk5SKP2u
-         3NBtCmxFaAgkrGDQRWEkMxvIFg/k7EfiHSOBnVGY79w8sCp0Li4FfoG1Gx7C/yGjZJTI
-         n3Rn0IuWKt74Z0CQBgZFqfcrXBlFnpY1vvv4iXllWVylxWKXJJLgZdn8PiCXlF/fXd5C
-         arAC2Y/CFJ5UwFuRyxdI+nSxzixgI0mEHded9dX7tH/vF6HosVXiFu9x3cZryxo5MjaG
-         MY6Q==
-X-Gm-Message-State: AOAM532lj6bFLZ/KhoGAIULb1EDU07RoLGD0R7OT301Md7gJxM8GzR2b
-        pVCi9nPXvcEa4ZqdFoLI2pA=
-X-Google-Smtp-Source: ABdhPJxlotMgspuEyAtTyWXww/4NIkeRSjCQ1vlG6K+hRbbVDXks6kAI7g42AK7Htj8jNFiXE0jLjA==
-X-Received: by 2002:ac8:578d:: with SMTP id v13mr4394401qta.9.1622810312918;
-        Fri, 04 Jun 2021 05:38:32 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p12sm1652589qtw.61.2021.06.04.05.38.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 05:38:31 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 4 Jun 2021 05:38:29 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     robh+dt@kernel.org, jdelvare@suse.com, corbet@lwn.net,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trivial@kernel.org,
-        Jonathan.Cameron@huawei.com, alexandre.belloni@bootlin.com,
-        sst@poczta.fm, krzk@kernel.org, alexandru.ardelean@analog.com,
-        devicetree@vger.kernel.org, Luka Perkov <luka.perkov@sartura.hr>,
-        jmp@epiphyte.org, Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Subject: Re: [PATCH v2 1/3] hwmon: (pmbus) Add driver for Delta DPS-920AB PSU
-Message-ID: <20210604123829.GA3939356@roeck-us.net>
-References: <20210528103828.53320-1-robert.marko@sartura.hr>
- <479725a2-7d85-1489-4228-ddff16b52287@roeck-us.net>
- <CA+HBbNGu6kkp23wHrnVeM7vry6nT0-P66U0V8KXCQ=kCcs+n8g@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/12nwO3ie3OTdib3qXezH/jT1RQGJcozWN5BM57J+po=;
+        b=ocPw/akbuG4C2Pbzq9X+8urMad6LGY4JPmHWEnODOGhtLnuOsDg1YzF+sLxvH82UuM
+         jNzcTgM4LRUXryUeZNgfMZz9IfkklM4v/H+6sDD3XC61soywIYxZ7bS0GAQF4susmp4G
+         bidISLiT+4Y1bb2KhLOow3pjVqbgN+L7m9KzsdWPQYYB+4A6qTBaRKzGmU22zf8XOU68
+         lZBpncLdTknJe3OhNVRCrdU2FrgVXpHJnNu3DlQUHpbiQQS75c8NtsVVle5hpKteayJz
+         ucsEIb56CWkf1sblOfycuSkxYCj/o3RetKVXy6Wuod9JPRrO5fPa/BNbJK7HLi5hSVbs
+         7jjQ==
+X-Gm-Message-State: AOAM532r1lUQfAf72wXumACdChMBzIgbUjQdzFn5RIZMKVfyuIUcSx0L
+        EYMBCkLl7J0SY7S0yvecGgDKeZbMq8w=
+X-Google-Smtp-Source: ABdhPJzUp08w/6NppKYok6VvXHCjdh5tbR2/6BA/0t3kWPf28/q++aL2zXcPbZnp4FqiRBV2SIGXgw==
+X-Received: by 2002:adf:de84:: with SMTP id w4mr3741299wrl.167.1622810669814;
+        Fri, 04 Jun 2021 05:44:29 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f2f:c00:e88b:5ff5:6dda:b362? (p200300ea8f2f0c00e88b5ff56ddab362.dip0.t-ipconnect.de. [2003:ea:8f2f:c00:e88b:5ff5:6dda:b362])
+        by smtp.googlemail.com with ESMTPSA id q3sm6543358wrr.43.2021.06.04.05.44.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Jun 2021 05:44:29 -0700 (PDT)
+Subject: Re: [PATCH net-next] net: enetc: use get/put_unaligned() for mac
+ address handling
+To:     Michael Walle <michael@walle.cc>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+References: <20210604123018.24940-1-michael@walle.cc>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <db1964cd-df60-08a2-1a66-8a8df7f14fef@gmail.com>
+Date:   Fri, 4 Jun 2021 14:44:25 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+HBbNGu6kkp23wHrnVeM7vry6nT0-P66U0V8KXCQ=kCcs+n8g@mail.gmail.com>
+In-Reply-To: <20210604123018.24940-1-michael@walle.cc>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 02:16:02PM +0200, Robert Marko wrote:
-[ ... ]
-> >
-> > > +}
-> > > +
-> > > +static int dps920ab_write_word_data(struct i2c_client *client, int page, int reg,
-> > > +                                 u16 word)
-> > > +{
-> > > +     int ret;
-> > > +
-> > > +     /*
-> > > +      * This masks commands which are not supported.
-> > > +      * PSU only has one R/W register and that is
-> > > +      * for the fan.
-> > > +      */
-> > > +     switch (reg) {
-> > > +     case PMBUS_FAN_COMMAND_1:
-> > > +             break;
-> > > +     default:
-> > > +             ret = -ENODATA;
-> > > +     }
-> > > +
-> >
-> > Does this work ? It is the wrong error message for a failed write;
-> > it should probably return -EACCES.
+On 04.06.2021 14:30, Michael Walle wrote:
+> The supplied buffer for the MAC address might not be aligned. Thus
+> doing a 32bit (or 16bit) access could be on an unaligned address. For
+> now, enetc is only used on aarch64 which can do unaligned accesses, thus
+> there is no error. In any case, be correct and use the get/put_unaligned()
+> helpers.
 > 
-> It appears to work fine, I was looking at other drivers, and all of them
-> use -ENODATA for unsupported word registers.
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> ---
+>  drivers/net/ethernet/freescale/enetc/enetc_pf.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+> index 31274325159a..a96d2acb5e11 100644
+> --- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+> +++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+> @@ -1,6 +1,7 @@
+>  // SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+>  /* Copyright 2017-2019 NXP */
+>  
+> +#include <asm/unaligned.h>
+>  #include <linux/mdio.h>
+>  #include <linux/module.h>
+>  #include <linux/fsl/enetc_mdio.h>
+> @@ -17,15 +18,15 @@ static void enetc_pf_get_primary_mac_addr(struct enetc_hw *hw, int si, u8 *addr)
+>  	u32 upper = __raw_readl(hw->port + ENETC_PSIPMAR0(si));
+>  	u16 lower = __raw_readw(hw->port + ENETC_PSIPMAR1(si));
+>  
+> -	*(u32 *)addr = upper;
+> -	*(u16 *)(addr + 4) = lower;
+> +	put_unaligned(upper, (u32 *)addr);
+> +	put_unaligned(lower, (u16 *)(addr + 4));
 
-No. They return -ENODATA to tell the PMBus core to use standard PMBus
-access functions, ie to handle the access in the core. Please see
-_pmbus_write_word_data().
+I think you want to write little endian, therefore on a BE platform
+this code may be wrong. Better use put_unaligned_le32?
+By using these versions of the unaligned helpers you could also
+remove the pointer cast.
 
-Guenter
+>  }
+>  
+>  static void enetc_pf_set_primary_mac_addr(struct enetc_hw *hw, int si,
+>  					  const u8 *addr)
+>  {
+> -	u32 upper = *(const u32 *)addr;
+> -	u16 lower = *(const u16 *)(addr + 4);
+> +	u32 upper = get_unaligned((const u32 *)addr);
+> +	u16 lower = get_unaligned((const u16 *)(addr + 4));
+>  
+>  	__raw_writel(upper, hw->port + ENETC_PSIPMAR0(si));
+>  	__raw_writew(lower, hw->port + ENETC_PSIPMAR1(si));
+> 
+
