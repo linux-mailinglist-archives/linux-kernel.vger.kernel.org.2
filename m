@@ -2,132 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B4239B4BC
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 621D939B4C2
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230143AbhFDIVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 04:21:49 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3153 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbhFDIVs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 04:21:48 -0400
-Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FxFrl428tz6G7N6;
-        Fri,  4 Jun 2021 16:13:27 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 4 Jun 2021 10:20:00 +0200
-Received: from [10.47.80.115] (10.47.80.115) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 4 Jun 2021
- 09:20:00 +0100
-Subject: Re: [PATCH v10 1/3] iommu: Enhance IOMMU default DMA mode build
- options
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
-        <joro@8bytes.org>, <will@kernel.org>, <dwmw2@infradead.org>,
-        <baolu.lu@linux.intel.com>, <robin.murphy@arm.com>
-CC:     <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
-        <linuxarm@huawei.com>, <chenxiang66@hisilicon.com>
-References: <1622728715-209296-1-git-send-email-john.garry@huawei.com>
- <1622728715-209296-2-git-send-email-john.garry@huawei.com>
- <0e54ff0f-c668-354e-1ec8-7536c701d3a8@huawei.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <285ba65e-4c65-4320-13d9-60c4d72d82cb@huawei.com>
-Date:   Fri, 4 Jun 2021 09:19:57 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S230193AbhFDIWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 04:22:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57324 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229978AbhFDIWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 04:22:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4092B6141D;
+        Fri,  4 Jun 2021 08:20:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622794822;
+        bh=qzL3gJgk++uop6YMb8k5mB6TFfkccBb5kNrgfs2hy7s=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=ft3AZJdPh8mR3nxZ1afy50Wx030rJm33OIaoz/kigwkkPdjBkamrqA/ISnUgqgoad
+         bosO7e2f9jOFOn3DkO29tw/BEKTyDUOMeIgXNBn3iXrg+FLqZMiNEVeHG2hgAwGuuT
+         DgQRgViBwtafpwU3R0GMLqxYGn1TPNq7LeKBTxDOKyhnaIwO/WmbagnTG2Gji3q+I9
+         ucIhxgPG3rQb2e5u7HhiYBWhZ9BkDBShxcVlr9DYXdb2amFSz4tvLHGYuiL9ufKCm7
+         tnrtOZ8Wd6aUso+ZX5Tsv/UgcIzX+1Klgj0hrjhABF5t7IbK3uEJnSU8RXYQBQLxDz
+         bcDBzydZOHakw==
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Jack Pham <jackp@codeaurora.org>
+Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        p.zabel@pengutronix.de, linux-usb@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        sanm@codeaurora.org
+Subject: Re: [BUG] usb: dwc3: Kernel NULL pointer dereference in dwc3_remove()
+In-Reply-To: <20210603173632.GA25299@jackp-linux.qualcomm.com>
+References: <c3c75895-313a-5be7-6421-b32bac741a88@arm.com>
+ <87r1hjcvf6.fsf@kernel.org> <70be179c-d36b-de6f-6efc-2888055b1312@arm.com>
+ <YLi/u9J5f+nQO4Cm@kroah.com>
+ <8272121c-ac8a-1565-a047-e3a16dcf13b0@arm.com> <877djbc8xq.fsf@kernel.org>
+ <20210603173632.GA25299@jackp-linux.qualcomm.com>
+Date:   Fri, 04 Jun 2021 11:20:12 +0300
+Message-ID: <87mts6avnn.fsf@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <0e54ff0f-c668-354e-1ec8-7536c701d3a8@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.80.115]
-X-ClientProxiedBy: lhreml751-chm.china.huawei.com (10.201.108.201) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--=-=-=
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
 
->>   
->>   	  If unsure, say N here.
->>   
->> +choice
->> +	prompt "IOMMU default DMA mode"
->> +	depends on IOMMU_API
-> 
-> config INTEL_IOMMU
->          depends on PCI_MSI && ACPI && (X86 || IA64)
-> 
-> config AMD_IOMMU
->          depends on X86_64 && PCI && ACPI && HAVE_CMPXCHG_DOUBLE
-> 
-> config ARM_SMMU_V3
->          depends on ARM64
-> 
-> "depends on ARM_SMMU_V3 || INTEL_IOMMU || AMD_IOMMU" may need to be added, because it doesn't work on other platforms.
-> 
-> or "depends on X86 || IA64 || X86_64 || ARM64"
+DQpIaSwNCg0KSmFjayBQaGFtIDxqYWNrcEBjb2RlYXVyb3JhLm9yZz4gd3JpdGVzOg0KPj4gPj4+
+PiBBbGV4YW5kcnUgRWxpc2VpIDxhbGV4YW5kcnUuZWxpc2VpQGFybS5jb20+IHdyaXRlczoNCj4+
+ID4+Pj4+IEkndmUgYmVlbiBzZWVpbmcgdGhlIGZvbGxvd2luZyBwYW5pYyB3aGVuIHNodXR0aW5n
+IGRvd24gbXkgcm9ja3BybzY0Og0KPj4gPj4+Pj4NCj4+ID4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEu
+NDU5MDY0XSB4aGNpLWhjZCB4aGNpLWhjZC4wLmF1dG86IFVTQiBidXMgNSBkZXJlZ2lzdGVyZWQN
+Cj4+ID4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjgzMDc3XSBVbmFibGUgdG8gaGFuZGxlIGtlcm5l
+bCBOVUxMIHBvaW50ZXIgZGVyZWZlcmVuY2UgYXQgdmlydHVhbCBhZGRyZXNzDQo+PiA+Pj4+PiAw
+MDAwMDAwMDAwMDAwMGEwDQo+PiA+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY4Mzg1OF0gTWVtIGFi
+b3J0IGluZm86DQo+PiA+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY4NDEwNF3Dr8K/wr3Dr8K/wr0g
+RVNSID0gMHg5NjAwMDAwNA0KPj4gPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS42ODQzNzVdw6/Cv8K9
+w6/Cv8K9IEVDID0gMHgyNTogREFCVCAoY3VycmVudCBFTCksIElMID0gMzIgYml0cw0KPj4gPj4+
+Pj4gW8Ovwr/CvcOvwr/CvSAyMS42ODQ4NDFdw6/Cv8K9w6/Cv8K9IFNFVCA9IDAsIEZuViA9IDAN
+Cj4+ID4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjg1MTExXcOvwr/CvcOvwr/CvSBFQSA9IDAsIFMx
+UFRXID0gMA0KPj4gPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS42ODUzODldIERhdGEgYWJvcnQgaW5m
+bzoNCj4+ID4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjg1NjQ0XcOvwr/CvcOvwr/CvSBJU1YgPSAw
+LCBJU1MgPSAweDAwMDAwMDA0DQo+PiA+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY4NjAyNF3Dr8K/
+wr3Dr8K/wr0gQ00gPSAwLCBXblIgPSAwDQo+PiA+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY4NjI4
+OF0gdXNlciBwZ3RhYmxlOiA0ayBwYWdlcywgNDgtYml0IFZBcywgcGdkcD0wMDAwMDAwMDA3NTdh
+MDAwDQo+PiA+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY4Njg1M10gWzAwMDAwMDAwMDAwMDAwYTBd
+IHBnZD0wMDAwMDAwMDAwMDAwMDAwLCBwNGQ9MDAwMDAwMDAwMDAwMDAwMA0KPj4gPj4+Pj4gW8Ov
+wr/CvcOvwr/CvSAyMS42ODc0NTJdIEludGVybmFsIGVycm9yOiBPb3BzOiA5NjAwMDAwNEVFTVBU
+IFNNUA0KPj4gPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS42ODc5NDFdIE1vZHVsZXMgbGlua2VkIGlu
+Og0KPj4gPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS42ODgyMTRdIENQVTogNCBQSUQ6IDEgQ29tbTog
+c2h1dGRvd24gTm90IHRhaW50ZWQNCj4+ID4+Pj4+IDUuMTIuMC1yYzctMDAyNjItZzU2ODI2MmJm
+NTQ5MiAjMzMNCj4+ID4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjg4OTE1XSBIYXJkd2FyZSBuYW1l
+OiBQaW5lNjQgUm9ja1BybzY0IHYyLjAgKERUKQ0KPj4gPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS42
+ODkzNTddIHBzdGF0ZTogNjAwMDAwMDUgKG5aQ3YgZGFpZiAtUEFOIC1VQU8gLVRDTyBCVFlQRT0t
+LSkNCj4+ID4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjg5ODg0XSBwYyA6IGRvd25fcmVhZF9pbnRl
+cnJ1cHRpYmxlKzB4ZWMvMHgyMDANCj4+ID4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjkwMzIxXSBs
+ciA6IHNpbXBsZV9yZWN1cnNpdmVfcmVtb3ZhbCsweDQ4LzB4MjgwDQo+PiA+Pj4+PiBbw6/Cv8K9
+w6/Cv8K9IDIxLjY5MDc2MV0gc3AgOiBmZmZmODAwMDExZjRiOTQwDQo+PiA+Pj4+PiBbw6/Cv8K9
+w6/Cv8K9IDIxLjY5MTA1M10geDI5OiBmZmZmODAwMDExZjRiOTQwIHgyODogZmZmZjAwMDAwMDgw
+OWI0MA0KPj4gPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS42OTE1MjJdIHgyNzogZmZmZjAwMDAwMDgw
+OWI5OCB4MjY6IGZmZmY4MDAwMTE0ZjUxNzANCj4+ID4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjkx
+OTkwXSB4MjU6IDAwMDAwMDAwMDAwMDAwYTAgeDI0OiBmZmZmODAwMDExZTg0MDMwDQo+PiA+Pj4+
+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY5MjQ1OV0geDIzOiAwMDAwMDAwMDAwMDAwMDgwIHgyMjogMDAw
+MDAwMDAwMDAwMDAwMA0KPj4gPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS42OTI5MjddIHgyMTogZmZm
+ZjgwMDAxMWVjYWE1YyB4MjA6IGZmZmY4MDAwMTFlY2FhNjANCj4+ID4+Pj4+IFvDr8K/wr3Dr8K/
+wr0gMjEuNjkzMzk1XSB4MTk6IGZmZmYwMDAwMDA4MDliNDAgeDE4OiBmZmZmZmZmZmZmZmZmZmZm
+DQo+PiA+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY5Mzg2M10geDE3OiAwMDAwMDAwMDAwMDAwMDAw
+IHgxNjogMDAwMDAwMDAwMDAwMDAwMA0KPj4gPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS42OTQzMzFd
+IHgxNTogZmZmZjgwMDA5MWY0YmE2ZCB4MTQ6IDAwMDAwMDAwMDAwMDAwMDQNCj4+ID4+Pj4+IFvD
+r8K/wr3Dr8K/wr0gMjEuNjk0Nzk5XSB4MTM6IDAwMDAwMDAwMDAwMDAwMDAgeDEyOiAwMDAwMDAw
+MDAwMDAwMDIwDQo+PiA+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY5NTI2N10geDExOiAwMTAxMDEw
+MTAxMDEwMTAxIHgxMDogN2Y3ZjdmN2Y3ZjdmN2Y3Zg0KPj4gPj4+Pj4gW8Ovwr/CvcOvwr/CvSAy
+MS42OTU3MzVdIHg5IDogNmY2Yzc0NjM2NDcxNmU2MiB4OCA6IDdmN2Y3ZjdmN2Y3ZjdmN2YNCj4+
+ID4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjk2MjAzXSB4NyA6IGZlZmVmZWZmNjM2NDYyNmQgeDYg
+OiAwMDAwMDAwMDAwMDAxYmQ4DQo+PiA+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY5NjY3MV0geDUg
+OiAwMDAwMDAwMDAwMDAwMDAwIHg0IDogMDAwMDAwMDAwMDAwMDAwMA0KPj4gPj4+Pj4gW8Ovwr/C
+vcOvwr/CvSAyMS42OTcxMzhdIHgzIDogMDAwMDAwMDAwMDAwMDBhMCB4MiA6IDAwMDAwMDAwMDAw
+MDAwMDENCj4+ID4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjk3NjA2XSB4MSA6IDAwMDAwMDAwMDAw
+MDAwMDAgeDAgOiAwMDAwMDAwMDAwMDAwMGEwDQo+PiA+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY5
+ODA3NV0gQ2FsbCB0cmFjZToNCj4+ID4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNjk4MjkxXcOvwr/C
+vSBkb3duX3JlYWRfaW50ZXJydXB0aWJsZSsweGVjLzB4MjAwDQo+PiA+Pj4+PiBbw6/Cv8K9w6/C
+v8K9IDIxLjY5ODY5MF3Dr8K/wr0gZGVidWdmc19yZW1vdmUrMHg2MC8weDg0DQo+PiA+Pj4+PiBb
+w6/Cv8K9w6/Cv8K9IDIxLjY5OTAxNl3Dr8K/wr0gZHdjM19kZWJ1Z2ZzX2V4aXQrMHgxYy8weDZj
+DQo+PiA+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjY5OTM2M13Dr8K/wr0gZHdjM19yZW1vdmUrMHgz
+NC8weDFhMA0KPj4gPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS42OTk2NzJdw6/Cv8K9IHBsYXRmb3Jt
+X3JlbW92ZSsweDI4LzB4NjANCj4+ID4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzAwMDA1XcOvwr/C
+vSBfX2RldmljZV9yZWxlYXNlX2RyaXZlcisweDE4OC8weDIzMA0KPj4gPj4+Pj4gW8Ovwr/CvcOv
+wr/CvSAyMS43MDA0MTRdw6/Cv8K9IGRldmljZV9yZWxlYXNlX2RyaXZlcisweDJjLzB4NDQNCj4+
+ID4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzAwNzkxXcOvwr/CvSBidXNfcmVtb3ZlX2RldmljZSsw
+eDEyNC8weDEzMA0KPj4gPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS43MDExNTRdw6/Cv8K9IGRldmlj
+ZV9kZWwrMHgxNjgvMHg0MjANCj4+ID4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzAxNDYyXcOvwr/C
+vSBwbGF0Zm9ybV9kZXZpY2VfZGVsLnBhcnQuMCsweDFjLzB4OTANCj4+ID4+Pj4+IFvDr8K/wr3D
+r8K/wr0gMjEuNzAxODc3XcOvwr/CvSBwbGF0Zm9ybV9kZXZpY2VfdW5yZWdpc3RlcisweDI4LzB4
+NDQNCj4+ID4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzAyMjkxXcOvwr/CvSBvZl9wbGF0Zm9ybV9k
+ZXZpY2VfZGVzdHJveSsweGU4LzB4MTAwDQo+PiA+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjcwMjcx
+Nl3Dr8K/wr0gZGV2aWNlX2Zvcl9lYWNoX2NoaWxkX3JldmVyc2UrMHg2NC8weGI0DQo+PiA+Pj4+
+PiBbw6/Cv8K9w6/Cv8K9IDIxLjcwMzE1M13Dr8K/wr0gb2ZfcGxhdGZvcm1fZGVwb3B1bGF0ZSsw
+eDQwLzB4ODQNCj4+ID4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzAzNTM4XcOvwr/CvSBfX2R3YzNf
+b2Zfc2ltcGxlX3RlYXJkb3duKzB4MjAvMHhkNA0KPj4gPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS43
+MDM5NDVdw6/Cv8K9IGR3YzNfb2Zfc2ltcGxlX3NodXRkb3duKzB4MTQvMHgyMA0KPj4gPj4+Pj4g
+W8Ovwr/CvcOvwr/CvSAyMS43MDQzMzddw6/Cv8K9IHBsYXRmb3JtX3NodXRkb3duKzB4MjgvMHg0
+MA0KPj4gPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS43MDQ2ODNdw6/Cv8K9IGRldmljZV9zaHV0ZG93
+bisweDE1OC8weDMzMA0KPj4gPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS43MDUwMjldw6/Cv8K9IGtl
+cm5lbF9wb3dlcl9vZmYrMHgzOC8weDdjDQo+PiA+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjcwNTM3
+Ml3Dr8K/wr0gX19kb19zeXNfcmVib290KzB4MTZjLzB4MmEwDQo+PiA+Pj4+PiBbw6/Cv8K9w6/C
+v8K9IDIxLjcwNTcxOV3Dr8K/wr0gX19hcm02NF9zeXNfcmVib290KzB4MjgvMHgzNA0KPj4gPj4+
+Pj4gW8Ovwr/CvcOvwr/CvSAyMS43MDYwNzRdw6/Cv8K9IGVsMF9zdmNfY29tbW9uLmNvbnN0cHJv
+cC4wKzB4NjAvMHgxMjANCj4+ID4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzA2NDk5XcOvwr/CvSBk
+b19lbDBfc3ZjKzB4MjgvMHg5NA0KPj4gPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS43MDY3OTRdw6/C
+v8K9IGVsMF9zdmMrMHgyYy8weDU0DQo+PiA+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjcwNzA2N13D
+r8K/wr0gZWwwX3N5bmNfaGFuZGxlcisweGE0LzB4MTMwDQo+PiA+Pj4+PiBbw6/Cv8K9w6/Cv8K9
+IDIxLjcwNzQxNF3Dr8K/wr0gZWwwX3N5bmMrMHgxNzAvMHgxODANCj4+ID4+Pj4+IFvDr8K/wr3D
+r8K/wr0gMjEuNzA3NzExXSBDb2RlOiBjODA0N2M2MiAzNWZmZmY4NCAxN2ZmZmU1ZiBmOTgwMDA3
+MSAoYzg1ZmZjNjApDQo+PiA+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjcwODI1MF0gLS0tWyBlbmQg
+dHJhY2UgNWFlMDgxNDc1NDJlYjQ2OCBdLS0tDQo+PiA+Pj4+PiBbw6/Cv8K9w6/Cv8K9IDIxLjcw
+ODY2N10gS2VybmVsIHBhbmljIC0gbm90IHN5bmNpbmc6IEF0dGVtcHRlZCB0byBraWxsIGluaXQh
+IGV4aXRjb2RlPTB4MDAwMDAwMGINCj4+ID4+Pj4+IFvDr8K/wr3Dr8K/wr0gMjEuNzA5NDU2XSBL
+ZXJuZWwgT2Zmc2V0OiBkaXNhYmxlZA0KPj4gPj4+Pj4gW8Ovwr/CvcOvwr/CvSAyMS43MDk3NjJd
+IENQVSBmZWF0dXJlczogMHgwMDI0MDAyMiwyMTAwNjAwYw0KPj4gPj4+Pj4gW8Ovwr/CvcOvwr/C
+vSAyMS43MTAxNDZdIE1lbW9yeSBMaW1pdDogMjA0OCBNQg0KPj4gPj4+Pj4gW8Ovwr/CvcOvwr/C
+vSAyMS43MTA0NDNdIC0tLVsgZW5kIEtlcm5lbCBwYW5pYyAtIG5vdCBzeW5jaW5nOiBBdHRlbXB0
+ZWQgdG8ga2lsbCBpbml0IQ0KPj4gPj4+Pj4gZXhpdGNvZGU9MHgwMDAwMDAwYiBdLS0tDQo+PiA+
+Pj4+Pg0KPj4gPj4+Pj4gSSd2ZSBiZWVuIGFibGUgdG8gYmlzZWN0IHRoZSBwYW5pYyBhbmQgdGhl
+IG9mZmVuZGluZyBjb21taXQgaXMgNTY4MjYyYmY1NDkyICgidXNiOg0KPj4gPj4+Pj4gZHdjMzog
+Y29yZTogQWRkIHNodXRkb3duIGNhbGxiYWNrIGZvciBkd2MzIikuIEkgY2FuIHByb3ZpZGUgbW9y
+ZSBkaWFnbm9zdGljDQo+PiA+Pj4+PiBpbmZvcm1hdGlvbiBpZiBuZWVkZWQgYW5kIEkgY2FuIGhl
+bHAgdGVzdCB0aGUgZml4Lg0KPj4gPj4+PiBpZiB5b3Ugc2ltcGx5IHJldmVydCB0aGF0IGNvbW1p
+dCBpbiBIRUFELCBkb2VzIHRoZSBwcm9ibGVtIHJlYWxseSBnbw0KPj4gPj4+PiBhd2F5Pw0KPj4g
+Pj4+IEtlcm5lbCBidWlsdCBmcm9tIGNvbW1pdCAzMjRjOTJlNWUwZWUsIHdoaWNoIGlzIHRoZSBr
+ZXJuZWwgdGlwIHRvZGF5LCB0aGUgcGFuaWMgaXMNCj4+ID4+PiB0aGVyZS4gUmV2ZXJ0aW5nIHRo
+ZSBvZmZlbmRpbmcgY29tbWl0LCA1NjgyNjJiZjU0OTIsIG1ha2VzIHRoZSBwYW5pYyBkaXNhcHBl
+YXIuDQo+PiA+PiBXYW50IHRvIHNlbmQgYSByZXZlcnQgc28gSSBjYW4gdGFrZSBpdCBub3c/DQo+
+PiA+DQo+PiA+IEkgY2FuIHNlbmQgYSByZXZlcnQsIGJ1dCBGZWxpcGUgd2FzIGFza2luZyBTYW5k
+ZWVwICh0aGUgY29tbWl0IGF1dGhvcikgZm9yIGEgZml4LA0KPj4gPiBzbyBJJ2xsIGxlYXZlIGl0
+IHVwIHRvIEZlbGlwZSB0byBkZWNpZGUgaG93IHRvIHByb2NlZWQuDQo+PiANCj4+IEknbSBva2F5
+IHdpdGggYSByZXZlcnQuIEZlZWwgZnJlZSB0byBhZGQgbXkgQWNrZWQtYnk6IEZlbGlwZSBCYWxi
+aQ0KPj4gPGJhbGJpQGtlcm5lbC5vcmc+IG9yIGl0Lg0KPj4gDQo+PiBTYW5kZWVwLCBwbGVhc2Ug
+c2VuZCBhIG5ldyB2ZXJzaW9uIHRoYXQgZG9lc24ndCBlbmNvdW50ZXIgdGhlIHNhbWUNCj4+IGlz
+c3VlLiBNYWtlIHN1cmUgdG8gdGVzdCBieSByZWxvYWRpbmcgdGhlIGRyaXZlciBpbiBhIHRpZ2h0
+IGxvb3AgZm9yDQo+PiBzZXZlcmFsIGl0ZXJhdGlvbnMuDQo+DQo+IFRoaXMgd291bGQgcHJvYmFi
+bHkgYmUgdHJpY2t5IHRvIHRlc3Qgb24gb3RoZXIgImdsdWUiIGRyaXZlcnMgYXMgdGhlDQo+IHBy
+b2JsZW0gYXBwZWFycyB0byBiZSBzcGVjaWZpYyBvbmx5IHRvIGR3YzNfb2Zfc2ltcGxlLiAgSXQg
+bG9va3MgbGlrZQ0KPiBib3RoIGR3YzNfb2Zfc2ltcGxlIGFuZCB0aGUgZHdjMyBjb3JlIG5vdyAo
+ZHVlIHRvIDU2ODI2MmJmNTQ5MikgZWFjaA0KPiBpbXBsZW1lbnQgcmVzcGVjdGl2ZSAuc2h1dGRv
+d24gY2FsbGJhY2tzLiBUaGUgbGF0dGVyIGlzIHNpbXBseSBhIHdyYXBwZXINCj4gYXJvdW5kIGR3
+YzNfcmVtb3ZlKCkuIEFuZCBmcm9tIHRoZSBwYW5pYyBjYWxsIHN0YWNrIGFib3ZlIHdlIHNlZSB0
+aGF0DQo+IGR3YzNfb2Zfc2ltcGxlX3NodXRkb3duKCkgY2FsbHMgb2ZfcGxhdGZvcm1fZGVwb3B1
+bGF0ZSgpIHdoaWNoIHdpbGwgDQo+IGFnYWluIGNhbGwgZHdjM19yZW1vdmUoKSByZXN1bHRpbmcg
+aW4gdGhlIGRvdWJsZSByZW1vdmUuDQo+DQo+IFNvIHdvdWxkIGFuIGFsdGVybmF0aXZlIGFwcHJv
+YWNoIGJlIHRvIHByb3RlY3QgYWdhaW5zdCBkd2MzX3JlbW92ZSgpDQo+IGdldHRpbmcgY2FsbGVk
+IG11bHRpcGxlIHRpbWVzPyBJTU8gaXQnZCBiZSBhIGJpdCBtZXNzeSB0byBoYXZlIHRvIGFkZA0K
+DQpubywgSSAgZG9uJ3QgdGhpbmsgc28uIFRoYXQgc291bmRzIGxpa2UgYSB3b3JrYXJvdW5kLiBX
+ZSBzaG91bGQgYmUgYWJsZQ0KdG8gZ3VhcmFudGVlIHRoYXQgLT5yZW1vdmUoKSBkb2Vzbid0IGdl
+dCBjYWxsZWQgdHdpY2UgdXNpbmcgdGhlIGRyaXZlcg0KbW9kZWwgcHJvcGVybHkuDQoNCj4gYWRk
+aXRpb25hbCBjaGVja3MgdGhlcmUgdG8ga25vdyBpZiBpdCBoYWQgYWxyZWFkeSBiZWVuIGNhbGxl
+ZC4gU28gbWF5YmUNCj4gYXZvaWQgaXQgYWx0b2dldGhlci0tc2hvdWxkIGR3YzNfb2Zfc2ltcGxl
+X3NodXRkb3duKCkganVzdCBza2lwIGNhbGxpbmcNCj4gb2ZfcGxhdGZvcm1fZGVwb3B1bGF0ZSgp
+Pw0KDQpJIGRvbid0IGtub3cgd2hhdCB0aGUgaWRpb21hdGljIGlzIG5vd2FkYXlzLCBidXQgYXQg
+bGVhc3QgZWFybHkgb24sIHdlDQpoYWQgdG8gY2FsbCBkZXBvcHVsYXRlLg0KDQotLSANCmJhbGJp
+DQoNCg==
 
-I suppose so. But I don't think that any other archs use the value from 
-iommu_dma_strict anyway.
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> 
->> +
->> +	default IOMMU_DEFAULT_STRICT
->> +	help
->> +	  This option allows an IOMMU DMA mode to be chosen at build time, to
->> +	  override the default DMA mode of each ARCH, removing the need to
->> +	  pass in kernel parameters through command line. It is still possible
->> +	  to provide ARCH-specific or common boot options to override this
->> +	  option.
->> +
->> +	  If unsure, keep the default.
->> +
->> +config IOMMU_DEFAULT_LAZY
->> +	bool "lazy"
->> +	help
->> +	  Support lazy mode, where for every IOMMU DMA unmap operation, the
->> +	  flush operation of IOTLB and the free operation of IOVA are deferred.
->> +	  They are only guaranteed to be done before the related IOVA will be
->> +	  reused.
->> +
->> +config IOMMU_DEFAULT_STRICT
->> +	bool "strict"
->> +	help
->> +	  For every IOMMU DMA unmap operation, the flush operation of IOTLB and
->> +	  the free operation of IOVA are guaranteed to be done in the unmap
->> +	  function.
->> +
->> +	  This mode is safer than the two above, but it maybe slower in some
->> +	  high performace scenarios.
->> +
->> +endchoice
->> +
->>   config OF_IOMMU
->>   	def_bool y
->>   	depends on OF && IOMMU_API
->> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->> index 966426a96520..177b0dafc535 100644
->> --- a/drivers/iommu/iommu.c
->> +++ b/drivers/iommu/iommu.c
->> @@ -29,7 +29,8 @@ static struct kset *iommu_group_kset;
->>   static DEFINE_IDA(iommu_group_ida);
->>   
->>   static unsigned int iommu_def_domain_type __read_mostly;
->> -static bool iommu_dma_strict __read_mostly = true;
->> +static bool iommu_dma_strict __read_mostly =
->> +			IS_ENABLED(CONFIG_IOMMU_DEFAULT_STRICT);
-> 
-> Currently, a maximum of 100 columns are allowed in a row.
+-----BEGIN PGP SIGNATURE-----
 
-Sure, but some people still prefer limiting to 80, and codingstyle
-doc mentions a preference for 80.
-
-But if you really think I should change, then that's ok.
-
-Thanks,
-John
+iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmC54jwRHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzlfNM9wDzUhbogf9FcQV1UOIkItCQTsDR+negzyaPM7ZEeIm
+QJ1VgDsro7wFCTqvJOx95ut58mmTXosSclf5DaJxV7nLZ3FOsEXixfbzkc6Ftuv5
+q4fQVBcf7DBaXDJMpNPmzafhpCswJAjWT4it7Udow/A8xexSeh/d6AoIf9/YQxdx
+76YU27UPIDjiE2hhF0drbNtY7oF1yESGIAJN/UDVkqL49e1A+FjgS26YDJZ/0Ahe
+td2IJq7rCQnnDCCu2p6AtQ8wQR0If2wTQqacoYZofnnoGnxDjcEUuLV3XN5Gc23F
+REmI6l0THCQCvVhgZT0pSQkhQhY8nFRXHUdEu0f3dn6W6q8LmaO2Zw==
+=KWng
+-----END PGP SIGNATURE-----
+--=-=-=--
