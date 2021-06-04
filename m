@@ -2,94 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A2A39B128
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 05:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3FB639B133
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 06:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229852AbhFDD6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 23:58:23 -0400
-Received: from mail-pj1-f45.google.com ([209.85.216.45]:47055 "EHLO
-        mail-pj1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbhFDD6W (ORCPT
+        id S229752AbhFDEI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 00:08:28 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:17208 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229445AbhFDEI1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 23:58:22 -0400
-Received: by mail-pj1-f45.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso5086290pjb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 20:56:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=eMMwY8qQNkTVoHZiZIl5tn9ghZC2j5sUCYWs3fjlNkc=;
-        b=WQYEOJQWgXV4Z7RlPLlCH0GI+8Mhykds+lFNzn0YEf1jC3NHqQDlnuj1KwVBv/ZBQX
-         pZNuy4boZd2b5p9mFrU+nNwNa8pExofWPH8fWCT2NkP+ZEEdC26KFyH0eXB1nm+bz/2Z
-         HSFTbe3cq9V7LGWs2wNjTxwxjbSAjqCKZw8zKzq3/mJe4N/JoD6Kqcb0lislhEzPbWAF
-         dQcDE12nrPhNyxzg6hjcYpp7wXdFO59UM1Dd0LuPnJ7XZFdv01gp1F1pRwEZLc8t/Xe4
-         xMi+71z90CBtnKV8nH+H+8qVxwYvONklR91BD3XYmLThGLSZMOFLzuA4QefdfVyrqcH+
-         TNuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=eMMwY8qQNkTVoHZiZIl5tn9ghZC2j5sUCYWs3fjlNkc=;
-        b=WpSAnkfqYawiw5kdCUxkzXD8pKWX1rfi5c7+EgWUq1+SoHkW3WPWX+9hA11CV3OC1M
-         rzyU9zpi4NdwVwk5mKKvW2ngKFtfj9zq+XI5bpcOI5CAcYSvMx/90AyPyZw6AiZztXv8
-         A2AHag9WpVWljP6oR8NLznIPlcRFod2W31AoZPSSUzyZRk49O34bPKv4aclCjLGmsLhr
-         t7YhuS1EEdBkToUIeSq2Ss5BxFerF4c87cNGitPE5yXjF4ZjD0NNqTOG8xFI35w7+kLB
-         KvDPjtqXC9uXxk5Vc/Kw2+bRyxixMhEjqLmpJhw7ubxhJfdhFzWdXDIo7ByvahxbfmKT
-         5O4A==
-X-Gm-Message-State: AOAM531PcKR5NRrF0XJCEvzAksPQWOV96dJvw5QsixXycW5tYLX2Th0q
-        eG2npNfi5c86a8HtaT6O7ydK7g==
-X-Google-Smtp-Source: ABdhPJw31ObwYL3vjh7VCbQTqwewCpEgPzasyY0q9PhumD4gKAiT8PNeki4nnCaX5rvxG2YlnrciEQ==
-X-Received: by 2002:a17:902:548:b029:10f:30af:7d5f with SMTP id 66-20020a1709020548b029010f30af7d5fmr1584319plf.22.1622778925580;
-        Thu, 03 Jun 2021 20:55:25 -0700 (PDT)
-Received: from localhost ([136.185.154.93])
-        by smtp.gmail.com with ESMTPSA id s22sm475766pfd.94.2021.06.03.20.55.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 20:55:25 -0700 (PDT)
-Date:   Fri, 4 Jun 2021 09:25:21 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Seiya Wang <seiya.wang@mediatek.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com
-Subject: Re: [RESEND 1/2] clk: mediatek: remove deprecated CLK_INFRA_CA57SEL
- for MT8173 SoC
-Message-ID: <20210604035521.ly6unoj5537xy27h@vireshk-i7>
-References: <20210601071042.31349-1-seiya.wang@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210601071042.31349-1-seiya.wang@mediatek.com>
-User-Agent: NeoMutt/20180716-391-311a52
+        Fri, 4 Jun 2021 00:08:27 -0400
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210604040640epoutp02aeff659bc06b3e9c801b9a01b46b294b~FRXLfsn9Z1983819838epoutp02T
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 04:06:40 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210604040640epoutp02aeff659bc06b3e9c801b9a01b46b294b~FRXLfsn9Z1983819838epoutp02T
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1622779600;
+        bh=uGYoBs1H20g7voD4bG564WPjR6hSkS1XhBtI4UMg76w=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=cUNovKDk+1+JLHTYuzMCBseWTeNlwStcf2qudIHeRnjfv1urEysGzx2kwTGIR1IBC
+         3FUZVly/fTvBRGNC++j+ORxcH951bM4N8ADE3hSt8zg3haiPXRg6AvTg9KVhc/7+Zc
+         e1RFUDv4iMdGuAZe6C0w7uZQIvVJuVY3EXfkRveg=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20210604040639epcas2p42b15f2f9de2bb703478c991d9aefcfab~FRXKxrX0w0482404824epcas2p49;
+        Fri,  4 Jun 2021 04:06:39 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.40.191]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4Fx8Mw6JPXz4x9Q7; Fri,  4 Jun
+        2021 04:06:36 +0000 (GMT)
+X-AuditID: b6c32a48-4fbff700000025f5-44-60b9a6ccc11e
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        43.ED.09717.CC6A9B06; Fri,  4 Jun 2021 13:06:36 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: Re: [PATCH v35 3/4] scsi: ufs: Prepare HPB read for cached
+ sub-region
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Daejun Park <daejun7.park@samsung.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        Jaemyung Lee <jaemyung.lee@samsung.com>,
+        Jieon Seol <jieon.seol@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <4bf317c8-4c74-2207-95e2-34c59b14c454@acm.org>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210604040636epcms2p7bcf940a2cd060336f79250de0060e08c@epcms2p7>
+Date:   Fri, 04 Jun 2021 13:06:36 +0900
+X-CMS-MailID: 20210604040636epcms2p7bcf940a2cd060336f79250de0060e08c
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA12Te0xbVRzHc3ovtxdMzaU8PGLcWNEFxqMPuewMYW4OzMWpIRnRZMbRG3ql
+        zNLWPnzhlMjGUx6SbLCOx0RkWyUytrW0PBy0kzEz2Hgpq7wmEsWECfLP6mSTPnCL/33yPd9z
+        ft/f75xDYsIlIoLMUxs4nZpViYgg3OqMoeOvt9nlkqVlCZpvshKor3iIj5bckwQ6seLG0F8d
+        bQFoyRGDugcGCGSefwMVfdVBoIbhQh6qrLYQ6OLAeQwtTK/xUcuUlYeq75fgyLoWjK5euwPQ
+        eHcDgSp+shHozNX7PPS15RZAZXXt+J5wZnxiPzNeVclj7KYZPlPT0g+Yy43tfObotcs4s7ro
+        wpmqS2bArF3YwpT0V/Aygw6qUpQcq+B0kZw6R6PIU+emivYfyN6XTSdJpPHSXWinKFLN5nOp
+        orRXMuNfylNttCmKfI9VGTekTFavF4l3p+g0RgMXqdToDakiTqtQaaVSbYKezdcb1bkJOZr8
+        ZKlEIqM3nHKV8qSzFtdO8D+4WbuKF4ITRDkIJCGVCL+/PomXgyBSSNkAPFtYBMoBSQqoYLhu
+        C/F4QqgseG9u2usXUiLYMWri+/QE6LrdDjxMUHGwbmiO7zknlPoMh3bnsvdQjLqBwd6pEuCr
+        JoD1JYu4j5+CXWcsXj2Qeh6Wmef8nmh4t60S83EYvPXNMn+T/xxs9ntC4bHZYb8nGM67e/z6
+        k3CwZ4Xn40+hZfpv4AkBqc8BdNpdAb4FMfyxtNMbQkC9Cq21Di/j1LNworXRHy4NNlvKvIxR
+        W2HXcgPmmQpGxcCObrEHIRUFr7jwzbYKO+/x/88Y9Tgsda7/p9uafvVH2w6/dXfwakCU6eGo
+        TY/UMj2sdRpgZhDOafX5uZxepk189HYvAO+b38HYwKnllQQH4JHAASCJiUIFvdttcqFAwX74
+        EafTZOuMKk7vAPRGl19gEWE5mo1PozZkS2lZUpJkF43oJBkSPSFwc5/IhVQua+De4Tgtp9vc
+        xyMDIwp5Awtszz/RucdmhKbxB6d+SAmradHJwgUPwo9s6x3PWh1uVPa/uwgmE8RBamWP/Jm+
+        WeOe+JGst75rXriSPhyWc2D9NDsnLhi50zrGkfWlU8at9X/07G5X9P1c+vri/C+ZT5u37b3E
+        hIgLzPRvFfNjOw9l1GUfkVaZpuDZ5LLzc/myqb0lC50ZBPXm8cCiyC8dbzP9KfbXXKNxeZMW
+        zaorlgiI7TLQg31jz8XSs4fDjzuPmlsOxrwoOBn9cvQL+L6l3wceKyv+eIFx3062KqoE5+QX
+        tTlRW26k3y06fE76flWgcrCh+JCzWmuJ61cOybXRZPpIaOtoBlVAp9lvNs0kEiJcr2SlOzCd
+        nv0XHi4c/3wEAAA=
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210524084345epcms2p63dde85f3fdc127c29d25ada7d7f539cb
+References: <4bf317c8-4c74-2207-95e2-34c59b14c454@acm.org>
+        <12392bef-e018-8260-5279-16b7b43f5a8f@acm.org>
+        <20210524084345epcms2p63dde85f3fdc127c29d25ada7d7f539cb@epcms2p6>
+        <20210524084546epcms2p2c91dc1df482fd593307892825532c6dd@epcms2p2>
+        <20210604011124epcms2p39a466db169ebbfd2c889e25fba9aa0b4@epcms2p3>
+        <CGME20210524084345epcms2p63dde85f3fdc127c29d25ada7d7f539cb@epcms2p7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01-06-21, 15:10, Seiya Wang wrote:
-> Remove CLK_INFRA_CA57SEL for MT8173 since it's no longer used.
+>>> +/*
+>>>> + * This function will set up HPB read command using host-side L2P map data.
+>>>> + * In HPB v1.0, maximum size of HPB read command is 4KB.
+>>>> + */
+>>>> +void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
+>>>> +{
+>>> [ ... ]
+>>>> +
+>>>> +        ufshpb_set_hpb_read_to_upiu(hpb, lrbp, lpn, ppn, transfer_len);
+>>>
+>>> 'transfer_len' has type int and is truncated to type 'u8' when passed as
+>>> an argument to ufshpb_set_hpb_read_to_upiu(). Please handle transfer_len
+>>> values >= 256 properly.
+>> 
+>> Before entering the function, ufshpb_is_supported_chunk() checks whether
+>> transfer_len <= hpb->pre_req_max_tr_len which is set to
+>> HPB_MULTI_CHUNK_HIGH (128) on initalization.
 > 
-> Acked-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-> Signed-off-by: Seiya Wang <seiya.wang@mediatek.com>
-> ---
->  include/dt-bindings/clock/mt8173-clk.h | 1 -
->  1 file changed, 1 deletion(-)
+>How about adding a WARN_ON_ONCE() in ufshpb_prep() that verifies that
+>transfer_len is <= HPB_MULTI_CHUNK_HIGH?
+
+Sure, I will add WARN_ON_ONCE() just after calling ufshpb_is_supported_chunk().
+
+Thanks
+
 > 
-> diff --git a/include/dt-bindings/clock/mt8173-clk.h b/include/dt-bindings/clock/mt8173-clk.h
-> index 3acebe937bfc..3d00c98b9654 100644
-> --- a/include/dt-bindings/clock/mt8173-clk.h
-> +++ b/include/dt-bindings/clock/mt8173-clk.h
-> @@ -186,7 +186,6 @@
->  #define CLK_INFRA_PMICWRAP		11
->  #define CLK_INFRA_CLK_13M		12
->  #define CLK_INFRA_CA53SEL               13
-> -#define CLK_INFRA_CA57SEL               14 /* Deprecated. Don't use it. */
->  #define CLK_INFRA_CA72SEL               14
->  #define CLK_INFRA_NR_CLK                15
-
-Applied both. Thanks.
-
--- 
-viresh
+>Thanks,
+> 
+>Bart.
+> 
+> 
+>  
