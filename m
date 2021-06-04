@@ -2,121 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6B339C176
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0630339C178
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbhFDUmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 16:42:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39732 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229854AbhFDUm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 16:42:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27598613F9;
-        Fri,  4 Jun 2021 20:40:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622839243;
-        bh=KxYYmfZHvreYfegSJ6Yvy7eFkAGPX45eOume+9GyXWQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=S2frtJgwPxsoQMaengHFztep8buKaFEnvjnfyyZhpMsd7HstGhutbivJbGnbDsLLF
-         vI0L4Z1ovfRuhrTF487QmKmHxYRQ8vvyVYxz2BVUtmZXCUr4MRLH9xAIP84gQa4fi/
-         /62QrBDGZrJg9ovBTjaMdz67kKUHxdoC5utbwRV+okMDpeb6xXUGh+8yaS3R87z4zd
-         nf+31XSlN7rDNaciCQRouITPzH0hjKqA5RpqbGSrjDVMJsMskFHApqCCZlob2H3yZW
-         f3soUidC0FzWGI3/jqwB2GXNobE/zDdq3GtGDeRM9deZgAFxtXwgxNo+XlfiIRPFSk
-         jUnp0e0o34lmg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E21225C02AB; Fri,  4 Jun 2021 13:40:42 -0700 (PDT)
-Date:   Fri, 4 Jun 2021 13:40:42 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        will@kernel.org, stern@rowland.harvard.edu, parri.andrea@gmail.com,
-        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
-        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
-        linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <20210604204042.GZ4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
- <YLoSJaOVbzKXU4/7@hirez.programming.kicks-ass.net>
- <20210604153518.GD18427@gate.crashing.org>
- <YLpQj+S3vpTLX7cc@hirez.programming.kicks-ass.net>
- <20210604164047.GH18427@gate.crashing.org>
- <20210604185526.GW4397@paulmck-ThinkPad-P17-Gen-1>
- <20210604195301.GM18427@gate.crashing.org>
+        id S231515AbhFDUmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 16:42:35 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:43380 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231497AbhFDUme (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 16:42:34 -0400
+Received: from [192.168.254.32] (unknown [47.187.214.213])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 8ECA920B7188;
+        Fri,  4 Jun 2021 13:40:46 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8ECA920B7188
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1622839247;
+        bh=UQyAxgPBVDlrjRRR30V2twGCDYKAC5fbsNqtB1zrWOc=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=OOxTQYXouew83Kos/4G5y3PfoVPLC5YX/FeE6mOPw6znDtPEnxCPGwse2T89nZq61
+         2iot+grdfC4QSU4jmWjIyozMGHk3v5oOvxGlAX1ef0QVuP57c/B/CtY0z+iUGNtnbD
+         OT0CCjH0WEP7j7iUbiscoDSC75e7yarYXwNYq6sE=
+Subject: Re: [RFC PATCH v5 2/2] arm64: Create a list of SYM_CODE functions,
+ check return PC against list
+To:     Mark Brown <broonie@kernel.org>
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
+        nobuta.keiya@fujitsu.com, catalin.marinas@arm.com, will@kernel.org,
+        jmorris@namei.org, pasha.tatashin@soleen.com, jthierry@redhat.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210526214917.20099-3-madvenka@linux.microsoft.com>
+ <20210604165945.GA39381@sirena.org.uk>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <39a46b62-7890-e952-3d77-756a53783176@linux.microsoft.com>
+Date:   Fri, 4 Jun 2021 15:40:45 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604195301.GM18427@gate.crashing.org>
+In-Reply-To: <20210604165945.GA39381@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 02:53:01PM -0500, Segher Boessenkool wrote:
-> On Fri, Jun 04, 2021 at 11:55:26AM -0700, Paul E. McKenney wrote:
-> > On Fri, Jun 04, 2021 at 11:40:47AM -0500, Segher Boessenkool wrote:
-> > > My point is that you ask compiler developers to paint themselves into a
-> > > corner if you ask them to change such fundamental C syntax.
-> > 
-> > Once we have some experience with a language extension, the official
-> > syntax for a standardized version of that extension can be bikeshedded.
-> > Committees being what they are, what we use in the meantime will
-> > definitely not be what is chosen, so there is not a whole lot of point
-> > in worrying about the exact syntax in the meantime.  ;-)
+
+
+On 6/4/21 11:59 AM, Mark Brown wrote:
+> On Wed, May 26, 2021 at 04:49:17PM -0500, madvenka@linux.microsoft.com wrote:
 > 
-> I am only saying that it is unlikely any compiler that is used in
-> production will want to experiment with "volatile if".
-
-That unfortunately matches my experience over quite a few years.  But if
-something can be implemented using existing extensions, the conversations
-often get easier.  Especially given many more people are now familiar
-with concurrency.
-
-> > > I would love to see something that meshes well with the rest of C.  But
-> > > there is no 1-1 translation from C code to machine code (not in either
-> > > direction), so anything that more or less depends on that will always
-> > > be awkward.  If you can actually express the dependency in your source
-> > > code that will get us 95% to where we want to be.
+>> + *	- return_to_handler() is handled by the unwinder by attempting to
+>> + *	  retrieve the original return address from the per-task return
+>> + *	  address stack.
+>> + *
+>> + *	- kretprobe_trampoline() can be handled in a similar fashion by
+>> + *	  attempting to retrieve the original return address from the per-task
+>> + *	  kretprobe instance list.
+>> + *
+>> + *	- I reckon optprobes can be handled in a similar fashion in the future?
 > 
-> ^^^
+> Note that there's a patch for optprobes on the list now:
 > 
-> > > > Data dependencies, control dependencies and address dependencies, C
-> > > > doesn't really like them, we rely on them. It would be awesome if we can
-> > > > fix this.
-> > > 
-> > > Yes.  The problem is that C is a high-level language.  All C semantics
-> > > are expressed on a an "as-if" level, never as "do this, then that" --
-> > > well, of course that *is* what it says, it's an imperative language just
-> > > like most, but that is just how you *think* about things on a conceptual
-> > > level, there is nothing that says the machine code has to do the same
-> > > thing in the same order as you wrote!
-> > 
-> > Which is exactly why these conversations are often difficult.  There is
-> > a tension between pushing the as-if rule as far as possible within the
-> > compiler on the one hand and allowing developers to write code that does
-> > what is needed on the other.  ;-)
-> 
-> There is a tension between what users expect from the compiler and what
-> actually is promised.  The compiler is not pushing the as-if rule any
-> further than it always has: it just becomes better at optimising over
-> time.  The as-if rule is and always has been absolute.
+>    https://lore.kernel.org/r/1622803839-27354-1-git-send-email-liuqi115@huawei.com
 
-Heh!  The fact that the compiler has become better at optimizing
-over time is exactly what has been pushing the as-if rule further.
+Yes. I saw that.
 
-The underlying problem is that it is often impossible to write large
-applications (such as the Linux kernel) completely within the confines of
-the standard.  Thus, most large applications, and especially concurrent
-applications, are vulnerable to either the compiler becoming better
-at optimizing or compilers pushing the as-if rule, however you want to
-say it.
-
-> What is needed to get any progress is for user expectations to be
-> feasible and not contradict existing requirements.  See "^^^" above.
-
-Or additional requirements need to be accepted by the various compilation
-powers that be.  Failing to acknowledge valid new user expectations is
-after all an excellent path to obsolescence.
-
-							Thanx, Paul
+Madhavan
