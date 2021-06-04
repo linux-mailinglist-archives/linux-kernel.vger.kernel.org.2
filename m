@@ -2,162 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2692A39B4A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B98139B4A8
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbhFDIMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 04:12:10 -0400
-Received: from foss.arm.com ([217.140.110.172]:60494 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230138AbhFDIMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 04:12:09 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ADDC71396;
-        Fri,  4 Jun 2021 01:10:23 -0700 (PDT)
-Received: from e123648.arm.com (unknown [10.57.3.252])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DC3CB3F719;
-        Fri,  4 Jun 2021 01:10:18 -0700 (PDT)
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-pm@vger.kernel.org, peterz@infradead.org, rjw@rjwysocki.net,
-        viresh.kumar@linaro.org, vincent.guittot@linaro.org,
-        qperret@google.com, dietmar.eggemann@arm.com,
-        vincent.donnefort@arm.com, lukasz.luba@arm.com,
-        Beata.Michalska@arm.com, mingo@redhat.com, juri.lelli@redhat.com,
-        rostedt@goodmis.org, segall@google.com, mgorman@suse.de,
-        bristot@redhat.com
-Subject: [PATCH v2 2/2] sched/cpufreq: Consider reduced CPU capacity in energy calculation
-Date:   Fri,  4 Jun 2021 09:09:54 +0100
-Message-Id: <20210604080954.13915-3-lukasz.luba@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210604080954.13915-1-lukasz.luba@arm.com>
-References: <20210604080954.13915-1-lukasz.luba@arm.com>
+        id S230034AbhFDIPD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Jun 2021 04:15:03 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3059 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229953AbhFDIPC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 04:15:02 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FxFl0079FzWrcJ;
+        Fri,  4 Jun 2021 16:08:28 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (7.185.36.66) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 4 Jun 2021 16:13:13 +0800
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 4 Jun 2021 16:13:12 +0800
+Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
+ lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
+ 15.01.2176.012; Fri, 4 Jun 2021 09:13:10 +0100
+From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+To:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "maz@kernel.org" <maz@kernel.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "julien.thierry.kdev@gmail.com" <julien.thierry.kdev@gmail.com>,
+        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: RE: [RFC PATCH 0/3] kvm/arm: New VMID allocator based on asid(2nd
+ approach) 
+Thread-Topic: [RFC PATCH 0/3] kvm/arm: New VMID allocator based on asid(2nd
+ approach) 
+Thread-Index: AQHXQph5pwodb0a/4kShAMz7Pnc+rqsDq0rQ
+Date:   Fri, 4 Jun 2021 08:13:10 +0000
+Message-ID: <e62829990c50479292af94c4152011fc@huawei.com>
+References: <20210506165232.1969-1-shameerali.kolothum.thodi@huawei.com>
+In-Reply-To: <20210506165232.1969-1-shameerali.kolothum.thodi@huawei.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.47.88.52]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Energy Aware Scheduling (EAS) needs to predict the decisions made by
-SchedUtil. The map_util_freq() exists to do that.
+Hi,
 
-There are corner cases where the max allowed frequency might be reduced
-(due to thermal). SchedUtil as a CPUFreq governor, is aware of that
-but EAS is not. This patch aims to address it.
+> -----Original Message-----
+> From: Shameerali Kolothum Thodi
+> Sent: 06 May 2021 17:52
+> To: linux-arm-kernel@lists.infradead.org; kvmarm@lists.cs.columbia.edu;
+> linux-kernel@vger.kernel.org
+> Cc: maz@kernel.org; will@kernel.org; catalin.marinas@arm.com;
+> james.morse@arm.com; julien.thierry.kdev@gmail.com;
+> suzuki.poulose@arm.com; jean-philippe@linaro.org; Linuxarm
+> <linuxarm@huawei.com>
+> Subject: [RFC PATCH 0/3] kvm/arm: New VMID allocator based on asid(2nd
+> approach)
+> 
+> This is based on a suggestion from Will [0] to try out the asid
+> based kvm vmid solution as a separate VMID allocator instead of
+> the shared lib approach attempted in v4[1].
+> 
+> The idea is to compare both the approaches and see whether the
+> shared lib solution with callbacks make sense or not.
 
-SchedUtil stores the maximum allowed frequency in
-'sugov_policy::next_freq' field. EAS has to predict that value, which is
-the real used frequency. That value is made after a call to
-cpufreq_driver_resolve_freq() which clamps to the CPUFreq policy limits.
-In the existing code EAS is not able to predict that real frequency.
-This leads to energy estimation errors.
+A gentle ping on this. Please take a look and let me know.
 
-To avoid wrong energy estimation in EAS (due to frequency miss prediction)
-make sure that the step which calculates Performance Domain frequency,
-is also aware of the allowed CPU capacity.
+Thanks,
+Shameer
 
-Furthermore, modify map_util_freq() to not extend the frequency value.
-Instead, use map_util_perf() to extend the util value in both places:
-SchedUtil and EAS, but for EAS clamp it to max allowed CPU capacity.
-In the end, we achieve the same desirable behavior for both subsystems
-and alignment in regards to the real CPU frequency.
-
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
----
- include/linux/energy_model.h     | 16 +++++++++++++---
- include/linux/sched/cpufreq.h    |  2 +-
- kernel/sched/cpufreq_schedutil.c |  1 +
- kernel/sched/fair.c              |  2 +-
- 4 files changed, 16 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
-index 757fc60658fa..3f221dbf5f95 100644
---- a/include/linux/energy_model.h
-+++ b/include/linux/energy_model.h
-@@ -91,6 +91,8 @@ void em_dev_unregister_perf_domain(struct device *dev);
-  * @pd		: performance domain for which energy has to be estimated
-  * @max_util	: highest utilization among CPUs of the domain
-  * @sum_util	: sum of the utilization of all CPUs in the domain
-+ * @allowed_cpu_cap	: maximum allowed CPU capacity for the @pd, which
-+			  might reflect reduced frequency (due to thermal)
-  *
-  * This function must be used only for CPU devices. There is no validation,
-  * i.e. if the EM is a CPU type and has cpumask allocated. It is called from
-@@ -100,7 +102,8 @@ void em_dev_unregister_perf_domain(struct device *dev);
-  * a capacity state satisfying the max utilization of the domain.
-  */
- static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
--				unsigned long max_util, unsigned long sum_util)
-+				unsigned long max_util, unsigned long sum_util,
-+				unsigned long allowed_cpu_cap)
- {
- 	unsigned long freq, scale_cpu;
- 	struct em_perf_state *ps;
-@@ -112,11 +115,17 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
- 	/*
- 	 * In order to predict the performance state, map the utilization of
- 	 * the most utilized CPU of the performance domain to a requested
--	 * frequency, like schedutil.
-+	 * frequency, like schedutil. Take also into account that the real
-+	 * frequency might be set lower (due to thermal capping). Thus, clamp
-+	 * max utilization to the allowed CPU capacity before calculating
-+	 * effective frequency.
- 	 */
- 	cpu = cpumask_first(to_cpumask(pd->cpus));
- 	scale_cpu = arch_scale_cpu_capacity(cpu);
- 	ps = &pd->table[pd->nr_perf_states - 1];
-+
-+	max_util = map_util_perf(max_util);
-+	max_util = min(max_util, allowed_cpu_cap);
- 	freq = map_util_freq(max_util, ps->frequency, scale_cpu);
- 
- 	/*
-@@ -209,7 +218,8 @@ static inline struct em_perf_domain *em_pd_get(struct device *dev)
- 	return NULL;
- }
- static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
--			unsigned long max_util, unsigned long sum_util)
-+			unsigned long max_util, unsigned long sum_util,
-+			unsigned long allowed_cpu_cap)
- {
- 	return 0;
- }
-diff --git a/include/linux/sched/cpufreq.h b/include/linux/sched/cpufreq.h
-index 6205578ab6ee..bdd31ab93bc5 100644
---- a/include/linux/sched/cpufreq.h
-+++ b/include/linux/sched/cpufreq.h
-@@ -26,7 +26,7 @@ bool cpufreq_this_cpu_can_update(struct cpufreq_policy *policy);
- static inline unsigned long map_util_freq(unsigned long util,
- 					unsigned long freq, unsigned long cap)
- {
--	return (freq + (freq >> 2)) * util / cap;
-+	return freq * util / cap;
- }
- 
- static inline unsigned long map_util_perf(unsigned long util)
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index 4f09afd2f321..57124614363d 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -151,6 +151,7 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
- 	unsigned int freq = arch_scale_freq_invariant() ?
- 				policy->cpuinfo.max_freq : policy->cur;
- 
-+	util = map_util_perf(util);
- 	freq = map_util_freq(util, freq, max);
- 
- 	if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 1aeddecabc20..9a79bbd9425b 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6590,7 +6590,7 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
- 		max_util = max(max_util, min(cpu_util, _cpu_cap));
- 	}
- 
--	return em_cpu_energy(pd->em_pd, max_util, sum_util);
-+	return em_cpu_energy(pd->em_pd, max_util, sum_util, _cpu_cap);
- }
- 
- /*
--- 
-2.17.1
+> Though we are not yet using the pinned vmids yet, patch #2 has
+> code for pinned vmid support. This is just to help the comparison.
+> 
+> Test Setup/Results
+> ----------------
+> The measurement was made with maxcpus set to 8 and with the
+> number of VMID limited to 4-bit. The test involves running
+> concurrently 40 guests with 2 vCPUs. Each guest will then
+> execute hackbench 5 times before exiting.
+> 
+> The performance difference between the current algo and the
+> new one are(avg. of 10 runs):
+>     - 1.9% less entry/exit from the guest
+>     - 0.5% faster
+> This is more or less comparable to v4 numbers.
+> 
+> For the complete series, please see,
+> https://github.com/hisilicon/kernel-dev/tree/private-v5.12-rc7-vmid-2nd-rfc
+> 
+> and for the shared asid lib v4 solution,
+> https://github.com/hisilicon/kernel-dev/tree/private-v5.12-rc7-asid-v4
+> 
+> As you can see there are of course code duplication with this
+> approach but may be this one is more easy to maintain considering
+> the complexity involved.
+> 
+> Please take a look and let me know your feedback.
+> 
+> Thanks,
+> Shameer
+> 
+> 
+> [0] https://lore.kernel.org/lkml/20210422160846.GB2214@willie-the-truck/
+> [1]
+> https://lore.kernel.org/lkml/20210414112312.13704-1-shameerali.kolothum.t
+> hodi@huawei.com/
+> 
+> Julien Grall (2):
+>   arch/arm64: Introduce a capability to tell whether 16-bit VMID is
+>     available
+>   kvm/arm: Align the VMID allocation with the arm64 ASID one
+> 
+> Shameer Kolothum (1):
+>   kvm/arm: Introduce a new vmid allocator for KVM
+> 
+>  arch/arm64/include/asm/cpucaps.h   |   3 +-
+>  arch/arm64/include/asm/kvm_asm.h   |   4 +-
+>  arch/arm64/include/asm/kvm_host.h  |  11 +-
+>  arch/arm64/include/asm/kvm_mmu.h   |   7 +-
+>  arch/arm64/kernel/cpufeature.c     |   9 +
+>  arch/arm64/kvm/Makefile            |   2 +-
+>  arch/arm64/kvm/arm.c               | 115 ++++--------
+>  arch/arm64/kvm/hyp/nvhe/hyp-main.c |   6 +-
+>  arch/arm64/kvm/hyp/nvhe/tlb.c      |  10 +-
+>  arch/arm64/kvm/hyp/vhe/tlb.c       |  10 +-
+>  arch/arm64/kvm/mmu.c               |   1 -
+>  arch/arm64/kvm/vmid.c              | 285
+> +++++++++++++++++++++++++++++
+>  12 files changed, 354 insertions(+), 109 deletions(-)
+>  create mode 100644 arch/arm64/kvm/vmid.c
+> 
+> --
+> 2.17.1
 
