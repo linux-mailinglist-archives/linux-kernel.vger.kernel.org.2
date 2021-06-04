@@ -2,117 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E033939AF26
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 02:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2DC39AF2A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 02:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbhFDAoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 20:44:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFDAoE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 20:44:04 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE8FC06174A;
-        Thu,  3 Jun 2021 17:42:18 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fx3r76hVPz9s24;
-        Fri,  4 Jun 2021 10:42:15 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1622767336;
-        bh=DQpYo9q9ZGmy3/Mz9ZsYTiA+IvTCwyCbRWUrvMTeOWg=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=XCSoOX7+qd0hTsKT5E44LzCwxhYBrifdK2aZAP+aS3g3Jkr2lirTl4yXlsasbfpV1
-         0NIqKavfSaGn/V+8EA0FmH3rpG5eBR/UWn8HJbjnpvWY/crHolu/n65SJNszrhRk/+
-         9oJBMq6EJweWntk3gTnGz6NKGowoEF6BTLyFOvshwr+/a6sIqEhABPUf9OMcEQ8S2i
-         2nN5ebs9M1/7a8fUFX/ceCS9JoCRZostRS311xpHia8fHEwiagVGDzFUtNTTX0BZVm
-         3B09zc7XiTN3lI4OUQBhZGBiDzvcF6LIjC7fbXiQgdcoSqlLaiD8WW69Sx6NzYQLuR
-         v2gUjE0842asw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH AUTOSEL 5.12 42/43] powerpc/fsl: set
- fsl,i2c-erratum-a004447 flag for P2041 i2c controllers
-In-Reply-To: <20210603170734.3168284-42-sashal@kernel.org>
-References: <20210603170734.3168284-1-sashal@kernel.org>
- <20210603170734.3168284-42-sashal@kernel.org>
-Date:   Fri, 04 Jun 2021 10:42:15 +1000
-Message-ID: <87y2bqfok8.fsf@mpe.ellerman.id.au>
+        id S229900AbhFDAoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 20:44:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33292 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229576AbhFDAoO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 20:44:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1379E613F3;
+        Fri,  4 Jun 2021 00:42:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622767348;
+        bh=s1rtVTHyXwvAr6F8HGorT4iDlSpFIZ24kdWlERtgjew=;
+        h=Date:From:To:Cc:Subject:From;
+        b=P6dgPKsj2sREfUBkwGL5hIpSpbV+cTTeM7z2OUANyGkTsRq/tiikTfjL9kHnxldPX
+         Sjzy6xLe7pEh5r+ldlyva77/vsglEjerFJ7zhborgKr1kj8EfXF5UtEFkZ95dfiwOP
+         YQXjSrDmBrtFTmPeSBJjrAJTEoT0tY3Nuf50NqxNd0svVPTrnE1eCGqH2Vkxg62j1K
+         ecKckWqLGVcjuSniDyEPe7aScGQeha44vNxyfxG356zfcNqJibA99o7+9IGlcEd3Ak
+         vWCzACZ/ZCc2zk60XJwC2OPQFavkvxn6YxdI/cf4Y7AQ4WPHuKBc767me4zSDTbeji
+         nxNCJcC85n48Q==
+Date:   Thu, 3 Jun 2021 19:43:38 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Subject: [PATCH v2][next] media: venus: hfi_msgs.h: Replace one-element
+ arrays with flexible-array members
+Message-ID: <20210604004338.GA140710@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sasha Levin <sashal@kernel.org> writes:
-> From: Chris Packham <chris.packham@alliedtelesis.co.nz>
->
-> [ Upstream commit 7adc7b225cddcfd0f346d10144fd7a3d3d9f9ea7 ]
->
-> The i2c controllers on the P2040/P2041 have an erratum where the
-> documented scheme for i2c bus recovery will not work (A-004447). A
-> different mechanism is needed which is documented in the P2040 Chip
-> Errata Rev Q (latest available at the time of writing).
->
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> Acked-by: Michael Ellerman <mpe@ellerman.id.au>
-> Signed-off-by: Wolfram Sang <wsa@kernel.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  arch/powerpc/boot/dts/fsl/p2041si-post.dtsi | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
+There is a regular need in the kernel to provide a way to declare having
+a dynamically sized set of trailing elements in a structure. Kernel code
+should always use “flexible array members”[1] for these cases. The older
+style of one-element or zero-length arrays should no longer be used[2].
 
-This patch (and the subsequent one), just set a flag in the device tree.
+Use flexible-array members in struct hfi_msg_sys_property_info_pkt and
+hfi_msg_session_property_info_pkt instead of one-element arrays, and
+refactor the code accordingly.
 
-They have no effect unless you also backport the code change that looks
-for that flag, which was upstream commit:
+Also, this helps with the ongoing efforts to enable -Warray-bounds by
+fixing the following warnings:
 
-  8f0cdec8b5fd ("i2c: mpc: implement erratum A-004447 workaround")
+  CC [M]  drivers/media/platform/qcom/venus/hfi_msgs.o
+drivers/media/platform/qcom/venus/hfi_msgs.c: In function ‘hfi_sys_property_info’:
+drivers/media/platform/qcom/venus/hfi_msgs.c:246:35: warning: array subscript 1 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+  246 |  if (req_bytes < 128 || !pkt->data[1] || pkt->num_properties > 1)
+      |                          ~~~~~~~~~^~~
+drivers/media/platform/qcom/venus/hfi_msgs.c: In function ‘hfi_session_prop_info’:
+drivers/media/platform/qcom/venus/hfi_msgs.c:342:62: warning: array subscript 1 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+  342 |  if (!req_bytes || req_bytes % sizeof(*buf_req) || !pkt->data[1])
+      |                                                     ~~~~~~~~~^~~
 
-AFAICS you haven't picked that one up for any of the stable trees.
+[1] https://en.wikipedia.org/wiki/Flexible_array_member
+[2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
 
-I'll defer to Chris & Wolfram on whether it's a good idea to take the
-code change for stable.
+Link: https://github.com/KSPP/linux/issues/79
+Link: https://github.com/KSPP/linux/issues/109
+Co-developed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+Changes in v2:
+ - Fix packet size calculation by adding member _property_ to
+   both structutures hfi_msg_sys_property_info_pkt and
+   hfi_msg_session_property_info_pkt, and refactor the code
+   accordingly.
 
-I guess it's harmless to pick these two patches, but it's also
-pointless. So I think you either want to take all three, or drop these
-two.
+JFYI: We are about to be able to globally enable -Warray-bounds and,
+these are pretty much the last out-of-bounds warnings in linux-next. :)
 
-cheers
+ drivers/media/platform/qcom/venus/hfi_msgs.c | 16 ++++++++--------
+ drivers/media/platform/qcom/venus/hfi_msgs.h |  6 ++++--
+ 2 files changed, 12 insertions(+), 10 deletions(-)
 
-> diff --git a/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi b/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi
-> index 872e4485dc3f..ddc018d42252 100644
-> --- a/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi
-> +++ b/arch/powerpc/boot/dts/fsl/p2041si-post.dtsi
-> @@ -371,7 +371,23 @@ sdhc@114000 {
->  	};
->  
->  /include/ "qoriq-i2c-0.dtsi"
-> +	i2c@118000 {
-> +		fsl,i2c-erratum-a004447;
-> +	};
-> +
-> +	i2c@118100 {
-> +		fsl,i2c-erratum-a004447;
-> +	};
-> +
->  /include/ "qoriq-i2c-1.dtsi"
-> +	i2c@119000 {
-> +		fsl,i2c-erratum-a004447;
-> +	};
-> +
-> +	i2c@119100 {
-> +		fsl,i2c-erratum-a004447;
-> +	};
-> +
->  /include/ "qoriq-duart-0.dtsi"
->  /include/ "qoriq-duart-1.dtsi"
->  /include/ "qoriq-gpio-0.dtsi"
-> -- 
-> 2.30.2
+diff --git a/drivers/media/platform/qcom/venus/hfi_msgs.c b/drivers/media/platform/qcom/venus/hfi_msgs.c
+index a2d436d407b2..d9fde66f6fa8 100644
+--- a/drivers/media/platform/qcom/venus/hfi_msgs.c
++++ b/drivers/media/platform/qcom/venus/hfi_msgs.c
+@@ -251,11 +251,11 @@ sys_get_prop_image_version(struct device *dev,
+ 
+ 	req_bytes = pkt->hdr.size - sizeof(*pkt);
+ 
+-	if (req_bytes < VER_STR_SZ || !pkt->data[1] || pkt->num_properties > 1)
++	if (req_bytes < VER_STR_SZ || !pkt->data[0] || pkt->num_properties > 1)
+ 		/* bad packet */
+ 		return;
+ 
+-	img_ver = (u8 *)&pkt->data[1];
++	img_ver = pkt->data;
+ 
+ 	dev_dbg(dev, VDBGL "F/W version: %s\n", img_ver);
+ 
+@@ -277,7 +277,7 @@ static void hfi_sys_property_info(struct venus_core *core,
+ 		return;
+ 	}
+ 
+-	switch (pkt->data[0]) {
++	switch (pkt->property) {
+ 	case HFI_PROPERTY_SYS_IMAGE_VERSION:
+ 		sys_get_prop_image_version(dev, pkt);
+ 		break;
+@@ -338,7 +338,7 @@ session_get_prop_profile_level(struct hfi_msg_session_property_info_pkt *pkt,
+ 		/* bad packet */
+ 		return HFI_ERR_SESSION_INVALID_PARAMETER;
+ 
+-	hfi = (struct hfi_profile_level *)&pkt->data[1];
++	hfi = (struct hfi_profile_level *)&pkt->data[0];
+ 	profile_level->profile = hfi->profile;
+ 	profile_level->level = hfi->level;
+ 
+@@ -355,11 +355,11 @@ session_get_prop_buf_req(struct hfi_msg_session_property_info_pkt *pkt,
+ 
+ 	req_bytes = pkt->shdr.hdr.size - sizeof(*pkt);
+ 
+-	if (!req_bytes || req_bytes % sizeof(*buf_req) || !pkt->data[1])
++	if (!req_bytes || req_bytes % sizeof(*buf_req) || !pkt->data[0])
+ 		/* bad packet */
+ 		return HFI_ERR_SESSION_INVALID_PARAMETER;
+ 
+-	buf_req = (struct hfi_buffer_requirements *)&pkt->data[1];
++	buf_req = (struct hfi_buffer_requirements *)&pkt->data[0];
+ 	if (!buf_req)
+ 		return HFI_ERR_SESSION_INVALID_PARAMETER;
+ 
+@@ -391,7 +391,7 @@ static void hfi_session_prop_info(struct venus_core *core,
+ 		goto done;
+ 	}
+ 
+-	switch (pkt->data[0]) {
++	switch (pkt->property) {
+ 	case HFI_PROPERTY_CONFIG_BUFFER_REQUIREMENTS:
+ 		memset(hprop->bufreq, 0, sizeof(hprop->bufreq));
+ 		error = session_get_prop_buf_req(pkt, hprop->bufreq);
+@@ -404,7 +404,7 @@ static void hfi_session_prop_info(struct venus_core *core,
+ 	case HFI_PROPERTY_CONFIG_VDEC_ENTROPY:
+ 		break;
+ 	default:
+-		dev_dbg(dev, VDBGM "unknown property id:%x\n", pkt->data[0]);
++		dev_dbg(dev, VDBGM "unknown property id:%x\n", pkt->property);
+ 		return;
+ 	}
+ 
+diff --git a/drivers/media/platform/qcom/venus/hfi_msgs.h b/drivers/media/platform/qcom/venus/hfi_msgs.h
+index 526d9f5b487b..510513697335 100644
+--- a/drivers/media/platform/qcom/venus/hfi_msgs.h
++++ b/drivers/media/platform/qcom/venus/hfi_msgs.h
+@@ -113,7 +113,8 @@ struct hfi_msg_sys_ping_ack_pkt {
+ struct hfi_msg_sys_property_info_pkt {
+ 	struct hfi_pkt_hdr hdr;
+ 	u32 num_properties;
+-	u32 data[1];
++	u32 property;
++	u8 data[];
+ };
+ 
+ struct hfi_msg_session_load_resources_done_pkt {
+@@ -233,7 +234,8 @@ struct hfi_msg_session_parse_sequence_header_done_pkt {
+ struct hfi_msg_session_property_info_pkt {
+ 	struct hfi_session_hdr_pkt shdr;
+ 	u32 num_properties;
+-	u32 data[1];
++	u32 property;
++	u8 data[];
+ };
+ 
+ struct hfi_msg_session_release_resources_done_pkt {
+-- 
+2.27.0
+
