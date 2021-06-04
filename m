@@ -2,221 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A948039B744
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 12:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B2139B745
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 12:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhFDKnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 06:43:40 -0400
-Received: from mail-eopbgr1310103.outbound.protection.outlook.com ([40.107.131.103]:6558
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229625AbhFDKnj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 06:43:39 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LW19fBagvBwYEDYKIm1x7/rhsF3KFLATVMSzDqv8NUvIMD7Sny1BbuflD2aG316WcG0j29ecUhX5t9KQN8IBJADBxjEpJTHvKfKNMDZ3FKWuWX5L0j8QqO7TeU0aeKV2LfP1V1dKUwi02Kgas7Hv+i+NdFUZpBWmLsPm23qr6dLsrPwQtSHU18KNYVYeAMVFAs9uIqRbzg9ip9/df1i2A2K6FtIpUnfzOddI7O2t/UWG8BZ3X4eTEXaBIEOMI3B/V6xsQwi/9JTedFOGVDow0mvg1jnY8RhqDhdNjf60QOgfFcPostUDCFhfO+hUj5kq3+mLlAHHpb2ZD4k6vp2Cjw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7bKS/6ZE6QaAkNYbamDcgj/Z0OmbMR8wUb/8z1fV4FM=;
- b=GAeOqwblOSKd2WWdDWY7+H2kQh/Fs2LPxLDFaZE36xc2fsWMsnYYiVx5AOMlFksEYVAeh11pDti3I643FZc/luhlQnzQc8qLnVBW6spWOJc3auXk+4/0v58jTurjJNxANQoM+WTmHXoayuZ0kfrAdUbMXijgHyWHSa4/8pZ9jGfj8gMc6tYj7FM1Xzq0dvFErMFDqynIZA6BxVQhJpqcfTN6vN6ZY1/6iL0FhHiKZiRDrS2KYr8oGQtC9Shhuj8La2m/6uqUYAG3m9tip+sAq/ViCPfET6nZbywbhWXYAWHw+VvKTSRjrY4h+8y8EwrFF+UQNuFbwITKZ8OqSmIXVw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7bKS/6ZE6QaAkNYbamDcgj/Z0OmbMR8wUb/8z1fV4FM=;
- b=XFdZUWECe9eLajbAFmkMUd9Y09C7eas2/OZISo9qP0sB0ys9Vg63Q/+o6yFRC8gmxv8E93PFOb6mBqbvAgJbG5C7T/AiBlYQi9yLXRNnWAAPQ5P82Vy2psEyyl2rLPMJgEvxGFb5EXI8DnLLjmC3EEbxh16e6SpbQFjBW06VTNk=
-Received: from KL1P15301MB0343.APCP153.PROD.OUTLOOK.COM (2603:1096:820:17::13)
- by KL1P15301MB0450.APCP153.PROD.OUTLOOK.COM (2603:1096:820:56::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.4; Fri, 4 Jun
- 2021 10:41:49 +0000
-Received: from KL1P15301MB0343.APCP153.PROD.OUTLOOK.COM
- ([fe80::dce2:ae54:47c7:ab19]) by KL1P15301MB0343.APCP153.PROD.OUTLOOK.COM
- ([fe80::dce2:ae54:47c7:ab19%8]) with mapi id 15.20.4219.013; Fri, 4 Jun 2021
- 10:41:49 +0000
-From:   Shyam Prasad <Shyam.Prasad@microsoft.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Steve French <sfrench@samba.org>
-CC:     "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
-        "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [EXTERNAL] [PATCH] cifs: Change cifs_ses.chans_need_reconnect and
- chan_index to "unsigned long"
-Thread-Topic: [EXTERNAL] [PATCH] cifs: Change cifs_ses.chans_need_reconnect
- and chan_index to "unsigned long"
-Thread-Index: AQHXWS1tP+VZPWMXi0u3vseeftCydqsDqcIQ
-Date:   Fri, 4 Jun 2021 10:41:49 +0000
-Message-ID: <KL1P15301MB0343B4F6AF86864149DFB231943B9@KL1P15301MB0343.APCP153.PROD.OUTLOOK.COM>
-References: <20210604090219.385504-1-geert@linux-m68k.org>
-In-Reply-To: <20210604090219.385504-1-geert@linux-m68k.org>
-Accept-Language: en-IN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=dda0d5a7-a7e5-40dc-b74f-e75b93e3d4a2;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-06-04T10:40:37Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: linux-m68k.org; dkim=none (message not signed)
- header.d=none;linux-m68k.org; dmarc=none action=none
- header.from=microsoft.com;
-x-originating-ip: [2404:f801:8028:3:60f4:ca47:5dfc:b1d0]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b7cff983-4b56-4a99-a1f2-08d927455bc7
-x-ms-traffictypediagnostic: KL1P15301MB0450:
-x-microsoft-antispam-prvs: <KL1P15301MB04509444A13D3C617951FD94943B9@KL1P15301MB0450.APCP153.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: yvm6XF5ZMgc9Q+a9OhkNlVmOFVel25oPbEznVoNw3tZbpIn7SQ3AMIESM9SP8iTrr4hvNEQZq1uj/uFoBtZH4YWKH32uyOWuHApF64yKv8tlh+G67jNyfc0Ooh3qQwWnZYmQsRRcQ9iNQaqfgB12Z6BCV3MUOrHv06PIBcF2cexPmycSUlsZH5PpdjWvuHoM1AFmdDo6i0X0XCAjzK8v5LGYgzU3bH5NEz7rjFxAzbNTE9x2qYsrs1LNF73BzErxPsDHQw0llZERaYjeABBEnuMzbKXgrXPW/aDCd25XgyvW0gVOSDo/EiHeUYnmfh5lKxDqR61fYuWIJ4w1olVktRE1lmqI0Dt2BHm+p2r5CXWm76xL/AWXX3Q4lLyyiz+UOiecVZNhUie4eJWRKIIk+7S+bh9OEraODlLI7OPz2A2rmKHKSVjdxExNp4Wchd9Xk8dnUSOeVwtbQpvsHyEPIh8eHFPyeEswf8QMgQN83KJefA8uYDCq6S5gQiOLvTNU8P3s6NwuXeFCTcmNyAGipMfQxqEUOagj0HmgO1FRNy5lgtKm9SZiKEpfjytbBF1IIjvcwLTEKyxLiD7/iTNe+UtotDEl9jFNg4ZJTkFKI2Kycvg88MmLk2QEI99SvLx2h4oIrpCC1Heiktkdr02v4A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KL1P15301MB0343.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(82960400001)(66446008)(64756008)(186003)(82950400001)(316002)(8676002)(9686003)(66476007)(66556008)(76116006)(5660300002)(4326008)(66946007)(86362001)(6506007)(110136005)(10290500003)(53546011)(7696005)(478600001)(55016002)(2906002)(54906003)(33656002)(52536014)(122000001)(38100700002)(8990500004)(8936002)(71200400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?c0JLYUZtZnpCSnAveGJDeGpmbGRsRStlaFdSNUhBcTZrd05lSXJ0WGxSV0Rx?=
- =?utf-8?B?ekxHc1Ixcm1zdk92d1lQQnlpOFlta09BT0FoNjZBSzNnR2l2blRNYU56eE1F?=
- =?utf-8?B?bWN2Q3pPY1hIMlpGNUFDWGJiT1hUeTV6MHFhdmxibjB2ZEJOWmxaTWpaUDBZ?=
- =?utf-8?B?eGV3RzRTZW1VbnFpcnpOVWxETHREenBpbHlQeDVYVXRzQU5WVElIc090OWMy?=
- =?utf-8?B?SWdMYUNJRnM0T0p0THBkQWpzYzBmZmtoelJ0N3owWEpTMVNmQ2RuV0lVV0d1?=
- =?utf-8?B?byt3YXJGN3BkMnpwVzU5bVdjdmJZR0QvY0FxUEUxRk1Mei9YZVpIdTF6dERl?=
- =?utf-8?B?cWxjQWFmZEROdFh5VkdvVE94K3hEWXdRWTE1c1lXeUZ2WTNDT0I4ZndpMTBR?=
- =?utf-8?B?MVBPeGowclFYRGYxRnk5RGdVQ2d2RkVQM3VjWGt4Y1Yrbmx1YldOcXhzTDlO?=
- =?utf-8?B?SEdZOGtabEh4OWxkL0ZVSTk0UGQyZXlWc3JUdGZMRFFaVXZtQUppOUdwVHF1?=
- =?utf-8?B?aVNMMzRqOXY0alExQVcxcjQ3ZmxSS1c5d2dnbHBNaXVkOTB4YjJWU0VON0FO?=
- =?utf-8?B?dWI4dDJ1c3FLU2ZHWHdQS2RVVHZ4UURseEE5R0lvRW1yamlYd1ozZ1lOV2Mx?=
- =?utf-8?B?aDhWQUhtRUhZelp0Z2dSNkZXMk9FUCtMRXJNR1B2VmthWWxYeE0zSDR6Q1dh?=
- =?utf-8?B?eGh2YW5qRXhFS3JGM0wyV2hyV3c5LzRQYTZDRUM5SGdYemNJcEhuTVBNbWlQ?=
- =?utf-8?B?T0JYOC9zRDM3SEUvUWNJK1RDYjFXRTI3ODVKYm1ialNtblJ5Z3pteTBFTkpL?=
- =?utf-8?B?MDhwc2hqenM1U3RObmM1N2xOR2x3bTJQUGJOV1Y2ZERkVUZ5cmNubmhXNDdF?=
- =?utf-8?B?UWZ5S1JFaE91T3F4ZVNoNnc4VVd6RXVDbURrNXB0a3IvUXR3dEZDUkZjTjEr?=
- =?utf-8?B?TUZpN29KUml0b3ljWWN4aTFjRXdLTVFXTGY1R3dacnF3ZW1MTll3OEo5c3RU?=
- =?utf-8?B?UTFjL212VUtkSTBudFFsd0dUVWZWWm5QTXI5MVUxOFZQSFVKUUxzbUUwa3FF?=
- =?utf-8?B?OVJwSlpjcG9BVWthYlJtZjZ0Vnc0UTZRcU8vYXo1K2VaVHhhMDJFSGNGNVVO?=
- =?utf-8?B?ZGx2MmRVUzJ6RnlIUU0yWVZaOUgwTllrMXU2Z2N3ZVBxVE10dVp6THJoVzZI?=
- =?utf-8?B?bTJCY2Y1djBMWERNUXZESDJqMHdTTU5sM054SE1HVzlwdzJoUktLNm93R1Zn?=
- =?utf-8?B?WCtPMmg3VkFVcWtGVTYwd0tEUmZSWTdvUHRtenVzM1I2L0s3WFpEZSt0SmVN?=
- =?utf-8?B?OUh5L25ZdVN2aW0xRG4wcmw5WXVQcGVRTGVvTTlPankzclZzcDZnb3hHMDgy?=
- =?utf-8?B?Nm0wTTI2djBDd2NINyt1UnRHcE1PeUdiMlp6UXQ2My9oSnZtMkpJeGNaNWw3?=
- =?utf-8?B?WG13MDRjMEhXZDc2elhJZkNWUlZWcDRXalIzaldWYTRIanY1WU92ZG90TnFp?=
- =?utf-8?B?ZHVtOWpGM0lCUzRvZzduLzFhUEdIUUw0MTgvNGhDYnpHZEE1MGM3a1paS00v?=
- =?utf-8?B?Mk5SNUVpblYrTEZDMGNlSWlZRjhycDZEN1VsK01weHFjSFVYRHVXbC82ajhm?=
- =?utf-8?B?dHN4QjZLYVcrWUN5Mkx5dDVvMXFDY3F5NCsyRWozb2NDVHFwdWttT0RzSGQz?=
- =?utf-8?B?aGoyVmwxYjhVR3ZDNVA4NGN6VXo0TXhMRkRIUXpBSUwyWGNhcTZoL2FWZWRJ?=
- =?utf-8?B?eTlHdnhNajdoanZlZ1ZkT0dIa2EvUEd0NTVLYnozVEdhQ2ozVmYxU3VkWHA2?=
- =?utf-8?Q?lXc1tjO1Q5pV1Mli2cADWCTv5wwpeWzeDmViQ=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S230049AbhFDKoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 06:44:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:35674 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229625AbhFDKoF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 06:44:05 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EF7C312FC;
+        Fri,  4 Jun 2021 03:42:18 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4917C3F73D;
+        Fri,  4 Jun 2021 03:42:16 -0700 (PDT)
+Subject: Re: [PATCH v13 4/8] KVM: arm64: Introduce MTE VM feature
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+References: <20210524104513.13258-1-steven.price@arm.com>
+ <20210524104513.13258-5-steven.price@arm.com>
+ <20210603160031.GE20338@arm.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <a0810f3b-4f13-e8b5-7057-a9de1201887a@arm.com>
+Date:   Fri, 4 Jun 2021 11:42:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: KL1P15301MB0343.APCP153.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: b7cff983-4b56-4a99-a1f2-08d927455bc7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jun 2021 10:41:49.2384
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RjJyy/lCRYMbwzmnZJe9uDg/InVV4LPcZip/YLjx1J2VMZW2szNepWabHpD10d11PViI4+/RTBM75SFx5GHZfg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1P15301MB0450
+In-Reply-To: <20210603160031.GE20338@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksDQoNClRoYW5rcyBmb3IgdGhlIGVtYWlsLiANCkkndmUgYWxyZWFkeSBzdWJtaXR0ZWQgdGhl
-IGZpeCBmb3IgdGhpcy4gWW91IHNob3VsZCBzZWUgdGhpcyBmaXhlZCB0b21vcnJvdy4NCg0KUmVn
-YXJkcywNClNoeWFtDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBHZWVydCBV
-eXR0ZXJob2V2ZW4gPGdlZXJ0QGxpbnV4LW02OGsub3JnPiANClNlbnQ6IEZyaWRheSwgSnVuZSA0
-LCAyMDIxIDI6MzIgUE0NClRvOiBTdGV2ZSBGcmVuY2ggPHNmcmVuY2hAc2FtYmEub3JnPjsgU2h5
-YW0gUHJhc2FkIDxTaHlhbS5QcmFzYWRAbWljcm9zb2Z0LmNvbT4NCkNjOiBsaW51eC1jaWZzQHZn
-ZXIua2VybmVsLm9yZzsgbGludXgtbmV4dEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2
-Z2VyLmtlcm5lbC5vcmcNClN1YmplY3Q6IFtFWFRFUk5BTF0gW1BBVENIXSBjaWZzOiBDaGFuZ2Ug
-Y2lmc19zZXMuY2hhbnNfbmVlZF9yZWNvbm5lY3QgYW5kIGNoYW5faW5kZXggdG8gInVuc2lnbmVk
-IGxvbmciDQoNCk9uIDMyLWJpdCAoZS5nLiBtNjhrKToNCg0KICAgIGZzL2NpZnMvY2lmc3NtYi5j
-OiBJbiBmdW5jdGlvbiDigJhjaWZzX3JlY29ubmVjdF90Y29u4oCZOg0KICAgIC4vaW5jbHVkZS9s
-aW51eC9rZXJuX2xldmVscy5oOjU6MTg6IHdhcm5pbmc6IGZvcm1hdCDigJglbHjigJkgZXhwZWN0
-cyBhcmd1bWVudCBvZiB0eXBlIOKAmGxvbmcgdW5zaWduZWQgaW504oCZLCBidXQgYXJndW1lbnQg
-MiBoYXMgdHlwZSDigJhzaXplX3TigJkge2FrYSDigJh1bnNpZ25lZCBpbnTigJl9IFstV2Zvcm1h
-dD1dDQogICAgZnMvY2lmcy9jaWZzc21iLmM6MjAxOjQyOiBub3RlOiBmb3JtYXQgc3RyaW5nIGlz
-IGRlZmluZWQgaGVyZQ0KICAgICAgMjAxIHwgIGNpZnNfZGJnKEZZSSwgInNlc3MgcmVjb25uZWN0
-IG1hc2s6IDB4JWx4LCB0Y29uIHJlY29ubmVjdDogJWQiLA0KCSAgfCAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICB+fl4NCgkgIHwgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICB8DQoJICB8ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgbG9uZyB1bnNpZ25lZCBpbnQNCgkgIHwgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgJXgNCg0KICAgIGZzL2NpZnMvdHJhbnNwb3J0LmM6IEluIGZ1bmN0aW9u
-IOKAmGNpZnNfcGlja19jaGFubmVs4oCZOg0KICAgIGZzL2NpZnMvY2lmc2dsb2IuaDo5NTU6MjA6
-IGVycm9yOiBwYXNzaW5nIGFyZ3VtZW50IDIgb2Yg4oCYdGVzdF9iaXTigJkgZnJvbSBpbmNvbXBh
-dGlibGUgcG9pbnRlciB0eXBlIFstV2Vycm9yPWluY29tcGF0aWJsZS1wb2ludGVyLXR5cGVzXQ0K
-ICAgICAgOTU1IHwgIHRlc3RfYml0KChpbmRleCksICYoc2VzKS0+Y2hhbnNfbmVlZF9yZWNvbm5l
-Y3QpDQoJICB8ICAgICAgICAgICAgICAgICAgICBefn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
-DQoJICB8ICAgICAgICAgICAgICAgICAgICB8DQoJICB8ICAgICAgICAgICAgICAgICAgICBzaXpl
-X3QgKiB7YWthIHVuc2lnbmVkIGludCAqfQ0KICAgIC4vYXJjaC9tNjhrL2luY2x1ZGUvYXNtL2Jp
-dG9wcy5oOjE1MTo2Njogbm90ZTogZXhwZWN0ZWQg4oCYY29uc3Qgdm9sYXRpbGUgbG9uZyB1bnNp
-Z25lZCBpbnQgKuKAmSBidXQgYXJndW1lbnQgaXMgb2YgdHlwZSDigJhzaXplX3QgKuKAmSB7YWth
-IOKAmHVuc2lnbmVkIGludCAq4oCZfQ0KICAgICAgMTUxIHwgc3RhdGljIGlubGluZSBpbnQgdGVz
-dF9iaXQoaW50IG5yLCBjb25zdCB2b2xhdGlsZSB1bnNpZ25lZCBsb25nICp2YWRkcikNCgkgIHwg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
-fn5+fn5+fn5efn5+fg0KDQogICAgZnMvY2lmcy9zZXNzLmM6IEluIGZ1bmN0aW9uIOKAmGNpZnNf
-Y2hhbl9zZXRfbmVlZF9yZWNvbm5lY3TigJk6DQogICAgZnMvY2lmcy9zZXNzLmM6OTg6MjI6IGVy
-cm9yOiBwYXNzaW5nIGFyZ3VtZW50IDIgb2Yg4oCYYnNldF9tZW1fc2V0X2JpdOKAmSBmcm9tIGlu
-Y29tcGF0aWJsZSBwb2ludGVyIHR5cGUgWy1XZXJyb3I9aW5jb21wYXRpYmxlLXBvaW50ZXItdHlw
-ZXNdDQogICAgICAgOTggfCAgc2V0X2JpdChjaGFuX2luZGV4LCAmc2VzLT5jaGFuc19uZWVkX3Jl
-Y29ubmVjdCk7DQoJICB8ICAgICAgICAgICAgICAgICAgICAgIF5+fn5+fn5+fn5+fn5+fn5+fn5+
-fn5+fn5+DQoJICB8ICAgICAgICAgICAgICAgICAgICAgIHwNCgkgIHwgICAgICAgICAgICAgICAg
-ICAgICAgc2l6ZV90ICoge2FrYSB1bnNpZ25lZCBpbnQgKn0NCiAgICAuL2FyY2gvbTY4ay9pbmNs
-dWRlL2FzbS9iaXRvcHMuaDo0MTo2OTogbm90ZTogZXhwZWN0ZWQg4oCYdm9sYXRpbGUgbG9uZyB1
-bnNpZ25lZCBpbnQgKuKAmSBidXQgYXJndW1lbnQgaXMgb2YgdHlwZSDigJhzaXplX3QgKuKAmSB7
-YWthIOKAmHVuc2lnbmVkIGludCAq4oCZfQ0KICAgICAgIDQxIHwgc3RhdGljIGlubGluZSB2b2lk
-IGJzZXRfbWVtX3NldF9iaXQoaW50IG5yLCB2b2xhdGlsZSB1bnNpZ25lZCBsb25nICp2YWRkcikN
-CgkgIHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB+fn5+fn5+
-fn5+fn5+fn5+fn5+fn5+fn5efn5+fg0KICAgIGZzL2NpZnMvc2Vzcy5jOjk4OjIyOiBlcnJvcjog
-cGFzc2luZyBhcmd1bWVudCAyIG9mIOKAmGJmc2V0X21lbV9zZXRfYml04oCZIGZyb20gaW5jb21w
-YXRpYmxlIHBvaW50ZXIgdHlwZSBbLVdlcnJvcj1pbmNvbXBhdGlibGUtcG9pbnRlci10eXBlc10N
-CiAgICAgICA5OCB8ICBzZXRfYml0KGNoYW5faW5kZXgsICZzZXMtPmNoYW5zX25lZWRfcmVjb25u
-ZWN0KTsNCgkgIHwgICAgICAgICAgICAgICAgICAgICAgXn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
-fn4NCgkgIHwgICAgICAgICAgICAgICAgICAgICAgfA0KCSAgfCAgICAgICAgICAgICAgICAgICAg
-ICBzaXplX3QgKiB7YWthIHVuc2lnbmVkIGludCAqfQ0KICAgIC4vYXJjaC9tNjhrL2luY2x1ZGUv
-YXNtL2JpdG9wcy5oOjUwOjcwOiBub3RlOiBleHBlY3RlZCDigJh2b2xhdGlsZSBsb25nIHVuc2ln
-bmVkIGludCAq4oCZIGJ1dCBhcmd1bWVudCBpcyBvZiB0eXBlIOKAmHNpemVfdCAq4oCZIHtha2Eg
-4oCYdW5zaWduZWQgaW50ICrigJl9DQogICAgICAgNTAgfCBzdGF0aWMgaW5saW5lIHZvaWQgYmZz
-ZXRfbWVtX3NldF9iaXQoaW50IG5yLCB2b2xhdGlsZSB1bnNpZ25lZCBsb25nICp2YWRkcikNCgkg
-IHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfn5+fn5+fn5+
-fn5+fn5+fn5+fn5+fn5+Xn5+fn4NCg0KICAgWy4uLl0NCg0KQXMgYml0b3BzIGNhbiBvbmx5IG9w
-ZXJhdGUgb24gbG9uZyBvYmplY3RzLCBhbmQNCmNpZnNfc2VzX2dldF9jaGFuX2luZGV4KCkgYWxy
-ZWFkeSByZXR1cm5zICJ1bnNpZ25lZCBsb25nIiwgZml4IHRoaXMgYnkgY2hhbmdpbmcgY2lmc19z
-ZXMuY2hhbnNfbmVlZF9yZWNvbm5lY3QgYW5kIGNoYW5faW5kZXggZnJvbSAic2l6ZV90IiB0byAi
-dW5zaWduZWQgbG9uZyIuDQoNCkZpeGVzOiAzNzRjNmM3YmJhM2NiYWExICgiY2lmczogY2hhbmdl
-cyB0byBzdXBwb3J0IG11bHRpY2hhbm5lbCBkdXJpbmcgY2hhbm5lbCByZWNvbm5lY3QiKQ0KUmVw
-b3J0ZWQtYnk6IG5vcmVwbHlAZWxsZXJtYW4uaWQuYXUNClNpZ25lZC1vZmYtYnk6IEdlZXJ0IFV5
-dHRlcmhvZXZlbiA8Z2VlcnRAbGludXgtbTY4ay5vcmc+DQotLS0NCkNhbiB5b3UgcGxlYXNlIGFk
-ZCBMaW5rOiBoZWFkZXJzIHdoZW4gY29tbWl0dGluZyBwYXRjaGVzPw0KSSBjb3VsZCBub3QgZmlu
-ZCB0aGlzIHBhdGNoIGluIHRoZSBsb3JlIGFyY2hpdmVzIG9mIGxpbnV4LWNpZnMgb3IgbGludXgt
-ZnNkZXZlbCwgcHJlc3VtYWJseSBpdCB3YXMgcG9zdGVkIGVsc2V3aGVyZT8NClRoYW5rcyENCi0t
-LQ0KIGZzL2NpZnMvY2lmc2dsb2IuaCB8IDIgKy0NCiBmcy9jaWZzL3Nlc3MuYyAgICAgfCA2ICsr
-Ky0tLQ0KIDIgZmlsZXMgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQ0K
-DQpkaWZmIC0tZ2l0IGEvZnMvY2lmcy9jaWZzZ2xvYi5oIGIvZnMvY2lmcy9jaWZzZ2xvYi5oIGlu
-ZGV4IDhmZWEyZGRkMmJkN2FmMjYuLmE5YzAyNmFmMjFlMWU5ZDEgMTAwNjQ0DQotLS0gYS9mcy9j
-aWZzL2NpZnNnbG9iLmgNCisrKyBiL2ZzL2NpZnMvY2lmc2dsb2IuaA0KQEAgLTk2OCw3ICs5Njgs
-NyBAQCBzdHJ1Y3QgY2lmc19zZXMgew0KIAkgKiBlbmFibGUgdGhlIHNlc3Npb25zIG9uIHRvcCB0
-byBjb250aW51ZSB0byBsaXZlIHRpbGwgYW55DQogCSAqIG9mIHRoZSBjaGFubmVscyBiZWxvdyBh
-cmUgYWN0aXZlLg0KIAkgKi8NCi0Jc2l6ZV90IGNoYW5zX25lZWRfcmVjb25uZWN0Ow0KKwl1bnNp
-Z25lZCBsb25nIGNoYW5zX25lZWRfcmVjb25uZWN0Ow0KIH07DQogDQogc3RhdGljIGlubGluZSBi
-b29sDQpkaWZmIC0tZ2l0IGEvZnMvY2lmcy9zZXNzLmMgYi9mcy9jaWZzL3Nlc3MuYyBpbmRleCAx
-NzIxYTNiMjQ2OTQyMjY2Li4xYTE3ZGRkNmFiYmU1Nzc4IDEwMDY0NA0KLS0tIGEvZnMvY2lmcy9z
-ZXNzLmMNCisrKyBiL2ZzL2NpZnMvc2Vzcy5jDQpAQCAtOTQsNyArOTQsNyBAQCB2b2lkDQogY2lm
-c19jaGFuX3NldF9uZWVkX3JlY29ubmVjdChzdHJ1Y3QgY2lmc19zZXMgKnNlcywNCiAJCQkgICAg
-IHN0cnVjdCBUQ1BfU2VydmVyX0luZm8gKnNlcnZlcikgIHsNCi0Jc2l6ZV90IGNoYW5faW5kZXgg
-PSBjaWZzX3Nlc19nZXRfY2hhbl9pbmRleChzZXMsIHNlcnZlcik7DQorCXVuc2lnbmVkIGxvbmcg
-Y2hhbl9pbmRleCA9IGNpZnNfc2VzX2dldF9jaGFuX2luZGV4KHNlcywgc2VydmVyKTsNCiAJc2V0
-X2JpdChjaGFuX2luZGV4LCAmc2VzLT5jaGFuc19uZWVkX3JlY29ubmVjdCk7DQogCWNpZnNfZGJn
-KEZZSSwgIlNldCByZWNvbm5lY3QgYml0bWFzayBmb3IgY2hhbiAlbHU7IG5vdyAweCVseFxuIiwN
-CiAJCSBjaGFuX2luZGV4LCBzZXMtPmNoYW5zX25lZWRfcmVjb25uZWN0KTsgQEAgLTEwNCw3ICsx
-MDQsNyBAQCB2b2lkICBjaWZzX2NoYW5fY2xlYXJfbmVlZF9yZWNvbm5lY3Qoc3RydWN0IGNpZnNf
-c2VzICpzZXMsDQogCQkJICAgICAgIHN0cnVjdCBUQ1BfU2VydmVyX0luZm8gKnNlcnZlcikgIHsN
-Ci0Jc2l6ZV90IGNoYW5faW5kZXggPSBjaWZzX3Nlc19nZXRfY2hhbl9pbmRleChzZXMsIHNlcnZl
-cik7DQorCXVuc2lnbmVkIGxvbmcgY2hhbl9pbmRleCA9IGNpZnNfc2VzX2dldF9jaGFuX2luZGV4
-KHNlcywgc2VydmVyKTsNCiAJY2xlYXJfYml0KGNoYW5faW5kZXgsICZzZXMtPmNoYW5zX25lZWRf
-cmVjb25uZWN0KTsNCiAJY2lmc19kYmcoRllJLCAiQ2xlYXJlZCByZWNvbm5lY3QgYml0bWFzayBm
-b3IgY2hhbiAlbHU7IG5vdyAweCVseFxuIiwNCiAJCSBjaGFuX2luZGV4LCBzZXMtPmNoYW5zX25l
-ZWRfcmVjb25uZWN0KTsgQEAgLTExNCw3ICsxMTQsNyBAQCBib29sICBjaWZzX2NoYW5fbmVlZHNf
-cmVjb25uZWN0KHN0cnVjdCBjaWZzX3NlcyAqc2VzLA0KIAkJCSAgICBzdHJ1Y3QgVENQX1NlcnZl
-cl9JbmZvICpzZXJ2ZXIpDQogew0KLQlzaXplX3QgY2hhbl9pbmRleCA9IGNpZnNfc2VzX2dldF9j
-aGFuX2luZGV4KHNlcywgc2VydmVyKTsNCisJdW5zaWduZWQgbG9uZyBjaGFuX2luZGV4ID0gY2lm
-c19zZXNfZ2V0X2NoYW5faW5kZXgoc2VzLCBzZXJ2ZXIpOw0KIAlyZXR1cm4gQ0lGU19DSEFOX05F
-RURTX1JFQ09OTkVDVChzZXMsIGNoYW5faW5kZXgpOyAgfQ0KIA0KLS0NCjIuMjUuMQ0KDQo=
+On 03/06/2021 17:00, Catalin Marinas wrote:
+> On Mon, May 24, 2021 at 11:45:09AM +0100, Steven Price wrote:
+>> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+>> index c5d1f3c87dbd..226035cf7d6c 100644
+>> --- a/arch/arm64/kvm/mmu.c
+>> +++ b/arch/arm64/kvm/mmu.c
+>> @@ -822,6 +822,42 @@ transparent_hugepage_adjust(struct kvm_memory_slot *memslot,
+>>  	return PAGE_SIZE;
+>>  }
+>>  
+>> +static int sanitise_mte_tags(struct kvm *kvm, kvm_pfn_t pfn,
+>> +			     unsigned long size)
+>> +{
+>> +	if (kvm_has_mte(kvm)) {
+> 
+> Nitpick (less indentation):
+> 
+> 	if (!kvm_has_mte(kvm))
+> 		return 0;
+
+Thanks, will change.
+
+>> +		/*
+>> +		 * The page will be mapped in stage 2 as Normal Cacheable, so
+>> +		 * the VM will be able to see the page's tags and therefore
+>> +		 * they must be initialised first. If PG_mte_tagged is set,
+>> +		 * tags have already been initialised.
+>> +		 * pfn_to_online_page() is used to reject ZONE_DEVICE pages
+>> +		 * that may not support tags.
+>> +		 */
+>> +		unsigned long i, nr_pages = size >> PAGE_SHIFT;
+>> +		struct page *page = pfn_to_online_page(pfn);
+>> +
+>> +		if (!page)
+>> +			return -EFAULT;
+>> +
+>> +		for (i = 0; i < nr_pages; i++, page++) {
+>> +			/*
+>> +			 * There is a potential (but very unlikely) race
+>> +			 * between two VMs which are sharing a physical page
+>> +			 * entering this at the same time. However by splitting
+>> +			 * the test/set the only risk is tags being overwritten
+>> +			 * by the mte_clear_page_tags() call.
+>> +			 */
+> 
+> And I think the real risk here is when the page is writable by at least
+> one of the VMs sharing the page. This excludes KSM, so it only leaves
+> the MAP_SHARED mappings.
+> 
+>> +			if (!test_bit(PG_mte_tagged, &page->flags)) {
+>> +				mte_clear_page_tags(page_address(page));
+>> +				set_bit(PG_mte_tagged, &page->flags);
+>> +			}
+>> +		}
+> 
+> If we want to cover this race (I'd say in a separate patch), we can call
+> mte_sync_page_tags(page, __pte(0), false, true) directly (hopefully I
+> got the arguments right). We can avoid the big lock in most cases if
+> kvm_arch_prepare_memory_region() sets a VM_MTE_RESET (tag clear etc.)
+> and __alloc_zeroed_user_highpage() clears the tags on allocation (as we
+> do for VM_MTE but the new flag would not affect the stage 1 VMM page
+> attributes).
+
+To be honest I'm coming round to just exporting a
+mte_prepare_page_tags() function which does the clear/set with the lock
+held. I doubt it's such a performance critical path that it will cause
+any noticeable issues. Then if we run into performance problems in the
+future we can start experimenting with extra VM flags etc as necessary.
+
+And from your later email:
+> Another idea: if VM_SHARED is found for any vma within a region in
+> kvm_arch_prepare_memory_region(), we either prevent the enabling of MTE
+> for the guest or reject the memory slot if MTE was already enabled.
+> 
+> An alternative here would be to clear VM_MTE_ALLOWED so that any
+> subsequent mprotect(PROT_MTE) in the VMM would fail in
+> arch_validate_flags(). MTE would still be allowed in the guest but in
+> the VMM for the guest memory regions. We can probably do this
+> irrespective of VM_SHARED. Of course, the VMM can still mmap() the
+> memory initially with PROT_MTE but that's not an issue IIRC, only the
+> concurrent mprotect().
+
+This could work, but I worry that it's potential fragile. Also the rules
+for what user space can do are not obvious and may be surprising. I'd
+also want to look into the likes of mremap() to see how easy it would be
+to ensure that we couldn't end up with VM_SHARED (or VM_MTE_ALLOWED)
+memory sneaking into a memslot.
+
+Unless you think it's worth complicating the ABI in the hope of avoiding
+the big lock overhead I think it's probably best to stick with the big
+lock at least until we have more data on the overhead.
+
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>  static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>>  			  struct kvm_memory_slot *memslot, unsigned long hva,
+>>  			  unsigned long fault_status)
+>> @@ -971,8 +1007,13 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>>  	if (writable)
+>>  		prot |= KVM_PGTABLE_PROT_W;
+>>  
+>> -	if (fault_status != FSC_PERM && !device)
+>> +	if (fault_status != FSC_PERM && !device) {
+>> +		ret = sanitise_mte_tags(kvm, pfn, vma_pagesize);
+>> +		if (ret)
+>> +			goto out_unlock;
+> 
+> Maybe it was discussed in a previous version, why do we need this in
+> addition to kvm_set_spte_gfn()?
+
+kvm_set_spte_gfn() is only used for the MMU notifier path (e.g. if a
+memslot is changed by the VMM). For the initial access we will normally
+fault the page into stage 2 with user_mem_abort().
+
+>> +
+>>  		clean_dcache_guest_page(pfn, vma_pagesize);
+>> +	}
+>>  
+>>  	if (exec_fault) {
+>>  		prot |= KVM_PGTABLE_PROT_X;
+>> @@ -1168,12 +1209,17 @@ bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
+>>  bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+>>  {
+>>  	kvm_pfn_t pfn = pte_pfn(range->pte);
+>> +	int ret;
+>>  
+>>  	if (!kvm->arch.mmu.pgt)
+>>  		return 0;
+>>  
+>>  	WARN_ON(range->end - range->start != 1);
+>>  
+>> +	ret = sanitise_mte_tags(kvm, pfn, PAGE_SIZE);
+>> +	if (ret)
+>> +		return false;
+>> +
+>>  	/*
+>>  	 * We've moved a page around, probably through CoW, so let's treat it
+>>  	 * just like a translation fault and clean the cache to the PoC.
+> 
+> Otherwise the patch looks fine.
+> 
+
+Thanks for the review.
+
+Steve
