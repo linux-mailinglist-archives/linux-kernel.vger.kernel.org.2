@@ -2,99 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F04CE39AF53
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F20C39AF58
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229878AbhFDBF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 21:05:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35460 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229764AbhFDBFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 21:05:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83F046140F;
-        Fri,  4 Jun 2021 01:04:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622768650;
-        bh=l5yYOLt53DtZ7JqLyg7mT/GGJahw6tz3rKT8zzg2gQ8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=anSV0Ox8mgv2AQd6aPZovUXvAyDJWN7zwYddRLCE5/2nulr5oqBkdD5ZsfvlXYkmi
-         VHI2U2kdwKD77tGNxO7hjvIQErCdQ6WyxZWp8tG5d6Or5nhgGOIsMAWCvx8aj/r1qF
-         97a+Ur72XCvsPmyN/7zrpEvIKZA71ecXAcMlRrza/uiUOIUWQQux11fjLJdXkRKYMg
-         8emu3l/sIXwayKy5NAZFwr+n8m0+9MKj53XTkLH3ZIGztK0dbDvNNWIXq5o3EN1Rp+
-         YO82Mny3wu9Jvz5MSMiAIs4LzN60ADFRna9Rtv88zZtEsMRgOQ7YYCKAHCvWFeKKk5
-         F2OEs5qf58P6g==
-Received: by mail-ej1-f42.google.com with SMTP id jt22so11930409ejb.7;
-        Thu, 03 Jun 2021 18:04:10 -0700 (PDT)
-X-Gm-Message-State: AOAM533OLRXNT6kIBxmTWsGPd/H/U9VGLkRb/XYENleZHzqCQTRSgnOH
-        GDUfiF1FHabkUK8umEoeEUajNPPSLKhC1LcHBA==
-X-Google-Smtp-Source: ABdhPJxer8gjIEGn3TOCrAdEk57FxI38GSPQm8Wp2vKQJjgd6J8CtpXQyqAafZh7oMz3+6B59LNg4FnKxVIxXoDbH1w=
-X-Received: by 2002:a17:906:3d9:: with SMTP id c25mr1792745eja.63.1622768649092;
- Thu, 03 Jun 2021 18:04:09 -0700 (PDT)
+        id S229886AbhFDBJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 21:09:18 -0400
+Received: from mail-ej1-f43.google.com ([209.85.218.43]:41506 "EHLO
+        mail-ej1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229769AbhFDBJP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 21:09:15 -0400
+Received: by mail-ej1-f43.google.com with SMTP id ho18so968930ejc.8;
+        Thu, 03 Jun 2021 18:07:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=un5fUz8IxWJJnYpdIXhHBw4mM8q8tHdga8I9S0ipQL8=;
+        b=E3f/hAVzrG9FD5BpY4KQ1SaFu74wRY5rovX5mgc8Cpiun+FwAmkihTrMWdCbugsx3h
+         sZzpC8ZyB4BsDXF4NEy/ypPXe1HrnzixUQAHIlQ/NF27PZ06sn5ETRdZ5ythffjotqkN
+         KRrXYU3MoNtBbfcX2sCAxtytCRPILE5B2SMOVJipg+sOZ0bTYWLy38u1pE8pCA8l/Afu
+         tIh3sFDReAMPdWRKbvTFC9Gw4Z5L527SrLHIJVANKiAGBZ/Eegrfe8FCNqlGgiwu5quj
+         I7ZTDMjVBwi73sD6j9D0XpA7MpbeitZ7dRTd62Giw+NE2AXEte047iP5sQKLIvR2yj8b
+         qU5w==
+X-Gm-Message-State: AOAM531z18U8fV0u2EfFQpsv3GbItV0rsS8rDciH4sLe4MlS+4l9fBe9
+        kEbp120nQXwj23gCQyS4B3bPMmvnDXo0Hw==
+X-Google-Smtp-Source: ABdhPJyNboBrhnP6+iXknOKJT4T3Wt2/pjB9F0EslZMIu2yefv5lph6V+/K0lOvBWxqfyFb4AJ1F6A==
+X-Received: by 2002:a17:906:388b:: with SMTP id q11mr1796769ejd.43.1622768838417;
+        Thu, 03 Jun 2021 18:07:18 -0700 (PDT)
+Received: from localhost (net-37-119-128-179.cust.vodafonedsl.it. [37.119.128.179])
+        by smtp.gmail.com with ESMTPSA id o64sm2501652eda.83.2021.06.03.18.07.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 18:07:17 -0700 (PDT)
+Date:   Fri, 4 Jun 2021 03:07:12 +0200
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v10 00/33] Memory folios
+Message-ID: <20210604030712.11b31259@linux.microsoft.com>
+In-Reply-To: <20210511214735.1836149-1-willy@infradead.org>
+References: <20210511214735.1836149-1-willy@infradead.org>
+Organization: Microsoft
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20210526085219.7582-1-rex-bc.chen@mediatek.com>
-In-Reply-To: <20210526085219.7582-1-rex-bc.chen@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Fri, 4 Jun 2021 09:03:57 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-huV+QqUsLF5PwXA_7OMfJn3X9=9kUM-aY-_thn54kSg@mail.gmail.com>
-Message-ID: <CAAOTY_-huV+QqUsLF5PwXA_7OMfJn3X9=9kUM-aY-_thn54kSg@mail.gmail.com>
-Subject: Re: [v5,PATCH 0/3] mt8183 dpi supports dual edge
-To:     Rex-BC Chen <rex-bc.chen@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Rex:
+On Tue, 11 May 2021 22:47:02 +0100
+"Matthew Wilcox (Oracle)" <willy@infradead.org> wrote:
 
-For this series, applied to mediatek-drm-next [1], thanks.
+> We also waste a lot of instructions ensuring that we're not looking at
+> a tail page.  Almost every call to PageFoo() contains one or more
+> hidden calls to compound_head().  This also happens for get_page(),
+> put_page() and many more functions.  There does not appear to be a
+> way to tell gcc that it can cache the result of compound_head(), nor
+> is there a way to tell it that compound_head() is idempotent.
+> 
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
-log/?h=3Dmediatek-drm-next
+Maybe it's not effective in all situations but the following hint to
+the compiler seems to have an effect, at least according to bloat-o-meter:
 
-Regards,
-Chun-Kuang.
 
-Rex-BC Chen <rex-bc.chen@mediatek.com> =E6=96=BC 2021=E5=B9=B45=E6=9C=8826=
-=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=884:52=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> v5:
-> Remove ddr_edge_sel and use output_fmts to determine
-> which edge to be set.
->
-> v4:
-> Use output_fmts to determine whether it is dual edge.
-> Rebase to v5.13-rc1
->
-> v3:
-> Modify clock rate for dual edge setting.
-> Add more bridge function.
->
-> v2:
-> Modify unused code
->
-> v1:
-> DPI can sample on falling, rising or both edge.
-> When DPI sample the data both rising and falling edge.
-> It can reduce half data io pins.
->
-> Rex-BC Chen (3):
->   [v5] drm/mediatek: dpi dual edge sample mode support
->   [v5] drm/mediatek: config driver data to support dual edge sample
->   [v5] drm/mediatek: dpi: add bus format negotiation
->
->  drivers/gpu/drm/mediatek/mtk_dpi.c | 130 +++++++++++++++++++++++++++--
->  1 file changed, 124 insertions(+), 6 deletions(-)
->
-> --
-> 2.18.0
->
+--- a/include/linux/page-flags.h
++++ b/include/linux/page-flags.h
+@@ -179,7 +179,7 @@ enum pageflags {
+ 
+ struct page;   /* forward declaration */
+ 
+-static inline struct page *compound_head(struct page *page)
++static inline __attribute_const__ struct page *compound_head(struct page *page)
+ {
+        unsigned long head = READ_ONCE(page->compound_head);
+ 
+
+$ scripts/bloat-o-meter vmlinux.o.orig vmlinux.o
+add/remove: 3/13 grow/shrink: 65/689 up/down: 21080/-198089 (-177009)
+Function                                     old     new   delta
+ntfs_mft_record_alloc                      14414   16627   +2213
+migrate_pages                               8891   10819   +1928
+ext2_get_page.isra                          1029    2343   +1314
+kfence_init                                  180    1331   +1151
+page_remove_rmap                             754    1893   +1139
+f2fs_fsync_node_pages                       4378    5406   +1028
+deferred_split_huge_page                    1279    2286   +1007
+relock_page_lruvec_irqsave                     -     975    +975
+f2fs_file_write_iter                        3508    4408    +900
+__pagevec_lru_add                            704    1311    +607
+[...]
+pagevec_move_tail_fn                        5333    3215   -2118
+__activate_page                             6183    4021   -2162
+__unmap_and_move                            2190       -   -2190
+__page_cache_release                        4738    2547   -2191
+migrate_page_states                         7088    4842   -2246
+lru_deactivate_fn                           5925    3652   -2273
+move_pages_to_lru                           7259    4980   -2279
+check_move_unevictable_pages                7131    4594   -2537
+release_pages                               6940    4386   -2554
+lru_lazyfree_fn                             6798    4198   -2600
+ntfs_mft_record_format                      2940       -   -2940
+lru_deactivate_file_fn                      9220    5631   -3589
+shrink_page_list                           20653   15749   -4904
+page_memcg                                  5149     193   -4956
+Total: Before=388863526, After=388686517, chg -0.05%
+
+I don't know if it breaks something though, nor if it gives some real
+improvement.
+
+-- 
+per aspera ad upstream
