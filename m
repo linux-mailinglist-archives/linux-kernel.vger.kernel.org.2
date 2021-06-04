@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB60839B093
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 04:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 275F239B0A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 04:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbhFDCsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 22:48:24 -0400
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:40711 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFDCsX (ORCPT
+        id S229840AbhFDC5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 22:57:02 -0400
+Received: from mail-qv1-f44.google.com ([209.85.219.44]:37415 "EHLO
+        mail-qv1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFDC47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 22:48:23 -0400
-Received: by mail-oi1-f181.google.com with SMTP id f30so7082813oij.7
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 19:46:25 -0700 (PDT)
+        Thu, 3 Jun 2021 22:56:59 -0400
+Received: by mail-qv1-f44.google.com with SMTP id z1so4293345qvo.4
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 19:55:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:in-reply-to:message-id:references
          :user-agent:mime-version;
-        bh=855vlSEYhsLOGNdJcugYbdlOBheupCBIdY8o4dmTr/0=;
-        b=aymqnrJmRWg5jXI6iKWsmz4jrob/orNsUCAC8p8/H1z8/H1qH0Ap4GOSkiuU0OhZwC
-         NSysJZDc8NqFnY1EWohSavsL1H6CP9VB/d4GZ9X3syjDiyGFBbrcOgXTlR6ZY5V+6xrp
-         1qtT5Drf272NI5zkkGK6CMFyaDN689nWJ/WDOqUpKRdPS6tsLzghBhm/D08LtGsgOAha
-         JAL6/4VEZWRXeumpuGv1+k6y2/btUDHnVZrRfc/NFo7fe834/BpS8hLik41C+d+23Rj5
-         TI6MHqhzMW84NjjH+h+HCnceTHSZaDq5vNQiL6oF20cgEMqDFZz6p+K+QSbUZJauHD2l
-         bGww==
+        bh=tzIVv+lKCCHH2FflktthX9wxyuJutky8QPa/YVxWuE8=;
+        b=Ti9OjQCNoW3/TjQWP9o9zmOfFPCPJeIKzDZ0oWm4SfHRiekMW0qWopTYgy5cvt5CRb
+         I2he0vPPCj/OssW9bMaLKi6txZuMaGO3JgH0unSpauH7iCNI62j+UsBAdWvxAnxcaA9Z
+         mZycVBh110e+zgGQ8KbpoYpdp1/XUpLT7+mO6zc7F6Z0nIU30OlrdhzDEyI+WgejoOIM
+         BO4DNd8qxMjBkU3x+tJfAir4gBxhvouo1BEmddnjzz5qW84fYypyRLhGQXdD7B4jXgL/
+         VkWvTqxW2hlq1T9BH850dmsW7SRszqaOJLwnqZjb29oUxkSCNeHwaXH08HBxV4Xhvh19
+         d9XQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
          :references:user-agent:mime-version;
-        bh=855vlSEYhsLOGNdJcugYbdlOBheupCBIdY8o4dmTr/0=;
-        b=BcaU2YuTcAeWYXtnPEce1D2r4c1XmPv1PRtg3RNtkOz8uqvWhXysUUsVTOtUwFvG/D
-         dtvV5BX9sOv/7aR5sv0sy7cQ632NtvLd7JN3e+qPqKnL6Qt2uq9j0xcGpYyaoBuIf9Xa
-         OL/zKtg9a0XXAxpGS398eZepfTu7+jzU8uXqd3M0pZOEO6TuG+QLh6iiX4QQvIgV/Tni
-         ykzj59OfEtKXMHBPbXPjQZ1xjFOGzUh2O4VLMkznHLIKLzhhTUhpVk5NGsBHG95guqek
-         GBFe32WfzE5DEsfTlJrcjIE1FvKmDLGTRsSTa69LhS1pDaPksdIDCg/JnaOgyK8BUWJz
-         AePg==
-X-Gm-Message-State: AOAM531C+nDzky0QK6VeoZfPSriB0TqV8Q4Mv7kjufw3IEfbVUTuFx/9
-        kDdAAhDLguzv2deeVnFygtbppg==
-X-Google-Smtp-Source: ABdhPJzRyhZp5CykGMFTeTYXTpk0uIoK9A9IkhdVQ1PT2z8ehR0eKm4KQe1UC3BvFixUimvRrO9kKQ==
-X-Received: by 2002:a05:6808:8a:: with SMTP id s10mr6703449oic.33.1622774724484;
-        Thu, 03 Jun 2021 19:45:24 -0700 (PDT)
+        bh=tzIVv+lKCCHH2FflktthX9wxyuJutky8QPa/YVxWuE8=;
+        b=sFB22//lENjdnq5dCC31IL5WbK8PXAllXmL8ix+UuHPMfl4EOMAGSrC95g5+ftYOdf
+         7LN4sxBJgfK+C0/3FM2ejVoRYxdUfNdRDtphW9yikFtJNKFeUefaX/L+xsCKqsXcZOGT
+         1O9Akw9pdxKnda1zH1KQ/0K9U4paTgXVRFwrYobwXxQACsYk8B/vJdgxJwnMlRiHSFAa
+         fURL/z4K7Qpy2B4JFGHxFzx0dJvPX/Rfzi2eCoj9Ld5nBQyHY50cBNKOcPN4xC9eiTuB
+         5gFjrQ4KOac3BHQjyEQ1fPO/K/c1rbYy7PM6uPfwfcE8Ta1iJs3Wxt62JnkaRlqFUU0m
+         1q7A==
+X-Gm-Message-State: AOAM53324GYYk9PoZJDCGUhqtiXcNCkn6tE+gMbjWMR+47QTf/EHX++6
+        l0ieLZDZSJdxphOOaIR8CVWjRg==
+X-Google-Smtp-Source: ABdhPJzF6d8NhQAvBLeQNS13us0aYVeeZuG4N5vWNDnNrhSxzZ+/vFl9aKx7az720abBxGTw484eUg==
+X-Received: by 2002:a05:6214:485:: with SMTP id ay5mr2811633qvb.6.1622775253981;
+        Thu, 03 Jun 2021 19:54:13 -0700 (PDT)
 Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id b81sm198114oia.19.2021.06.03.19.45.22
+        by smtp.gmail.com with ESMTPSA id x18sm3110686qkx.118.2021.06.03.19.54.12
         (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 03 Jun 2021 19:45:24 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 19:45:21 -0700 (PDT)
+        Thu, 03 Jun 2021 19:54:13 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 19:54:11 -0700 (PDT)
 From:   Hugh Dickins <hughd@google.com>
 X-X-Sender: hugh@eggly.anvils
-To:     Yang Shi <shy828301@gmail.com>
+To:     Peter Xu <peterx@redhat.com>
 cc:     Hugh Dickins <hughd@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
         Wang Yugui <wangyugui@e16-tech.com>,
         Matthew Wilcox <willy@infradead.org>,
         Naoya Horiguchi <naoya.horiguchi@nec.com>,
@@ -59,14 +60,13 @@ cc:     Hugh Dickins <hughd@google.com>,
         Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
         Miaohe Lin <linmiaohe@huawei.com>,
         Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
-        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Jan Kara <jack@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
 Subject: Re: [PATCH 2/7] mm/thp: try_to_unmap() use TTU_SYNC for safe DEBUG_VM
  splitting
-In-Reply-To: <CAHbLzkrUcNhGDmPstSNHhwbdoo3z2B=v-zb7__M3RqHL-Ct-EA@mail.gmail.com>
-Message-ID: <alpine.LSU.2.11.2106031923410.12760@eggly.anvils>
-References: <alpine.LSU.2.11.2106011353270.2148@eggly.anvils> <alpine.LSU.2.11.2106011405510.2148@eggly.anvils> <CAHbLzkrUcNhGDmPstSNHhwbdoo3z2B=v-zb7__M3RqHL-Ct-EA@mail.gmail.com>
+In-Reply-To: <YLlOPoP/rIRMm2U5@t490s>
+Message-ID: <alpine.LSU.2.11.2106031945280.12760@eggly.anvils>
+References: <alpine.LSU.2.11.2106011353270.2148@eggly.anvils> <alpine.LSU.2.11.2106011405510.2148@eggly.anvils> <YLlOPoP/rIRMm2U5@t490s>
 User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
@@ -74,35 +74,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Jun 2021, Yang Shi wrote:
-> On Tue, Jun 1, 2021 at 2:07 PM Hugh Dickins <hughd@google.com> wrote:
-> >
-> > Instead of abandoning the unsafe VM_BUG_ON_PAGE(), and the ones that
-> > follow, use PVMW_SYNC in try_to_unmap_one() in this case: adding TTU_SYNC
-> > to the options, and passing that from unmap_page() when CONFIG_DEBUG_VM=y.
-> > It could be passed in the non-debug case too, but that would sometimes add
-> > a little overhead, whereas it's rare for this race to result in failure.
+On Thu, 3 Jun 2021, Peter Xu wrote:
+> On Tue, Jun 01, 2021 at 02:07:53PM -0700, Hugh Dickins wrote:
+> > diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
+> > index 2cf01d933f13..b45d22738b45 100644
+> > --- a/mm/page_vma_mapped.c
+> > +++ b/mm/page_vma_mapped.c
+> > @@ -212,6 +212,14 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
+> >  			pvmw->ptl = NULL;
+> >  		}
+> >  	} else if (!pmd_present(pmde)) {
+> > +		/*
+> > +		 * If PVMW_SYNC, take and drop THP pmd lock so that we
+> > +		 * cannot return prematurely, while zap_huge_pmd() has
+> > +		 * cleared *pmd but not decremented compound_mapcount().
+> > +		 */
+> > +		if ((pvmw->flags & PVMW_SYNC) &&
+> > +		    PageTransCompound(pvmw->page))
+> > +			spin_unlock(pmd_lock(mm, pvmw->pmd));
+> >  		return false;
+> >  	}
+> >  	if (!map_pte(pvmw))
 > 
-> The above statement makes me feel this patch is just to relieve the
-> VM_BUG_ON, but my patch already changed it to VM_WARN, the race sounds
-> acceptable (at least not fatal) and the splitting code can handle the
-> failure case as well. So I'm wondering if we still need this patch or
-> not if it is just used to close the race when CONFIG_DEBUG_VM=y.
+> Sorry if I missed something important, but I'm totally confused on how this
+> unlock is pairing with another lock()..
 
-I do agree that your 1/2 (what I'm calling 6.1/7) BUG->WARN patch
-is the most important of them; but it didn't get marked for stable,
-and has got placed behind conflicting mods never intended for stable.
+I imagine you're reading that as spin_unlock(pmd_lockptr(blah));
+no, the lock is right there, inside spin_unlock(pmd_lock(blah)).
 
-And a lot of the descriptions had been written in terms of the prior
-situation, with VM BUG there: it was easier to keep describing that way.
+> 
+> And.. isn't PVMW_SYNC only meaningful for pte-level only (as I didn't see a
+> reference of it outside map_pte)?
 
-Whether your fix makes mine redundant is arguable (Wang Yugui thinks
-not).  It's easier to argue that it makes the racy ones (like this)
-redundant, than the persistent ones (like vma_address or pvm_walk).
-
-Since I know of at least one customer who wants all these fixes in 5.10
-longterm, I'm fighting to get them that far at least.  But the further
-back they go, the less effort I'll make to backport them - will fall
-back to porting your BUG->WARN only.
+But you are pointing directly to its reference outside map_pte()!
 
 Hugh
