@@ -2,871 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 702DF39B88A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C5B39B88F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:58:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230111AbhFDL6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 07:58:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:37420 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229740AbhFDL6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 07:58:15 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B85382B;
-        Fri,  4 Jun 2021 04:56:28 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3FBCC3F73D;
-        Fri,  4 Jun 2021 04:56:25 -0700 (PDT)
-Date:   Fri, 4 Jun 2021 12:56:22 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Peter Hilber <peter.hilber@opensynergy.com>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        virtio-dev@lists.oasis-open.org,
-        Igor Skalkin <igor.skalkin@opensynergy.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        sudeep.holla@arm.com, souvik.chakravarty@arm.com,
-        alex.bennee@linaro.org, jean-philippe@linaro.org,
-        mikhail.golubev@opensynergy.com, anton.yakovlev@opensynergy.com,
-        Vasyl Vavrychuk <Vasyl.Vavrychuk@opensynergy.com>,
-        Andriy Tryshnivskyy <Andriy.Tryshnivskyy@opensynergy.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Subject: Re: [RFC PATCH v3 11/12] firmware: arm_scmi: Add virtio transport
-Message-ID: <20210604115622.GD28060@e120937-lin>
-References: <20210511002040.802226-1-peter.hilber@opensynergy.com>
- <20210511002040.802226-12-peter.hilber@opensynergy.com>
- <20210526144035.GN28060@e120937-lin>
- <af23ce35-4c58-678b-eb20-c4072c358db3@opensynergy.com>
+        id S230188AbhFDL77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 07:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230142AbhFDL76 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 07:59:58 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62734C06174A
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 04:58:12 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id l1so7710211pgm.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 04:58:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ingics-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K3tnnsTYL2fMn05CikOvb7zxEykYQg4m0Hbaz0LMYTI=;
+        b=jE49HBBvu3acO6dFHc4AhE4D8Ec3P/uiwzI2EtrH3k1OiiKpZtkGvQJMZ6Ak2Az+lJ
+         PDu2JrwA5C3IzYcxDGzAHF5KaZZoKHbW8QXZC6BEfv9WLjUsGAm9XEKEX1xu0m3rPYI9
+         5AhzDluiRFvBH5qbUQBQeO6PK7WxvTkUQfAjXjNxYS3x9NsCddtg+DuSMCeZWuLwRnKC
+         q39r6RnYRspM1b+GM5YqsegZOYZXmV3XacnzGsgCXEqgmY1pYWEz4FWI4ON3OqhMHHA3
+         CcMHYhpBR2BoXBF6Wr78YfyYxO6W8zklPOv3kYH7DPgZZ0ch27BtoTVZsldqLde9HJcm
+         nWIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K3tnnsTYL2fMn05CikOvb7zxEykYQg4m0Hbaz0LMYTI=;
+        b=Fnz0AapW+lgN/5Ore0SWGa8alRzr9CEzm1M41ECnl/GdvtcZsmlbABCd9vzty1zpD6
+         lLgou22JiRxXsvCnKAj6l53miRubYV/DA2MpWR3ohPRwQoA3hCadVQWgBJBhXHEgRFmv
+         EejvRcncQs5hs1g7wGCS41KMcWEpo/QPh1Siu2lMAqLbliqwqRuFJUbExtVBdTZ1uH6k
+         4/BSVZCQMq6rmTMs1b07O97rSS0TGGpBzYpZQOtjKGTtF405uq2hgdh7EUF0Q1RZUUy9
+         kSItRKRn+3Ke2DOQSv6hdSyTtw6Kvqlm6F3S083trF5RbtWTLSrg1P3gJEj87scsc4zP
+         z08w==
+X-Gm-Message-State: AOAM530dbZqy7tmV0vliMJUpeBwkydnSMw7uXlmgafcUfAoKddn3luxL
+        QnnbbOIJCoAWwKYmZlGLas/wcg==
+X-Google-Smtp-Source: ABdhPJzn5f6Ff9D+X6ZkBlqpRmokS5a/o38xoKLhJ4c1fpMmrr5+eyobC/fV5gp+MUE5GwcLfVOIvg==
+X-Received: by 2002:a05:6a00:ac9:b029:2de:a06d:a52f with SMTP id c9-20020a056a000ac9b02902dea06da52fmr4486744pfl.4.1622807891730;
+        Fri, 04 Jun 2021 04:58:11 -0700 (PDT)
+Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
+        by smtp.gmail.com with ESMTPSA id h6sm4534516pjs.15.2021.06.04.04.58.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 04:58:11 -0700 (PDT)
+From:   Axel Lin <axel.lin@ingics.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Bernhard Walle <bernhard@bwalle.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] regulator: ltc3589: Convert to use regulator_set_ramp_delay_regmap
+Date:   Fri,  4 Jun 2021 19:58:03 +0800
+Message-Id: <20210604115803.1260976-1-axel.lin@ingics.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <af23ce35-4c58-678b-eb20-c4072c358db3@opensynergy.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+Use regulator_set_ramp_delay_regmap instead of open-coded
 
-first of all thanks a lot for having a look at this draft work.
+LTC3589_LINEAR_REG() no longer call LTC3589_REG() now.
+Only LTC3589_LINEAR_REG() needs to set go_bit, thus remove go_bit
+parameter from LTC3589_REG() macro.
 
-On Fri, Jun 04, 2021 at 11:19:02AM +0200, Peter Hilber wrote:
-> On 26.05.21 16:40, Cristian Marussi wrote:
-> > Hi Peter,
-> > 
-> > as anticipated I'm adding some new SCMI core mechanisms that should help
-> > simplyfying virtio-scmi series.
-> > 
-> > Such core work is still in progress (and to be properly reviewed) and it
-> > is at:
-> > 
-> > https://lore.kernel.org/linux-arm-kernel/20210524231503.34924-1-cristian.marussi@arm.com/
-> > 
-> > but in the meantime I have an initial but working (for me at least :D)
-> > rework of your V3 virtio-scmi series; rework is still in progress and to be
-> > cleaned up (nor I have addressed probing sequence or polling mode), and I am
-> > anyway holding it for now since Rob asked about DT txt-to-yaml conversion
-> > too, BUT if you can or want to have a look in the meantime, you can find the
-> > whole V4 transitional series rebased on top of my core changes with some
-> > changes on top at:
-> > 
-> > https://gitlab.arm.com/linux-arm/linux-cm/-/commits/scmi_virtio_trans_V4_rework/
-> > 
-> > where:
-> > 
-> >  - I dropped V3 patches 7,8,12
-> >  - the virtio changes I applied to make use of my core changes are all
-> >    embedded in the last patch (just for now):
-> >    
-> >  	[RFC] firmware: arm_scmi: make virtio-scmi use delegated xfers
-> > 
-> > Definitely not the final version, so you may want to just wait for a
-> > real V4, but just to give an idea of the direction I'm trying to follow
-> > if you want.
-> > 
-> > Thanks,
-> > Cristian
-> > 
-> 
-> Hi Cristian,
-> 
-> I had a look at the concepts in the linked branch. The following race
-> condition seems to not be addressed ATM:
-> 
-> - concurrent not delayed and delayed response (or inverted order)
-> 
-> The virtio device will send the not delayed and delayed response through
-> different virtqueues. Sending in a particular order will in my
-> understanding not entail that the receiver is able to restore this
-> order. I think the virtio transport cannot handle this race condition in
-> general without interpreting message headers (which it shouldn't).
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ drivers/regulator/ltc3589.c | 73 +++++++++++++++++++------------------
+ 1 file changed, 38 insertions(+), 35 deletions(-)
 
-The only valid assumption in SCMI comms should be that the platform is
-constrained to send a delayed_resposne ONLY after the corresponding
-sync-response is sent, but you are indeed right that, even when the
-platform obeys such constraint, with this specific transport it could
-happen, even though as a limit condition, that such messages, being
-delivered through different vqueues, could be processed indeed concurrently
-or inverted, so we should take care somehow of this situation.
+diff --git a/drivers/regulator/ltc3589.c b/drivers/regulator/ltc3589.c
+index 38f7ccb63b52..5e0b669c3a01 100644
+--- a/drivers/regulator/ltc3589.c
++++ b/drivers/regulator/ltc3589.c
+@@ -54,6 +54,11 @@
+ #define LTC3589_VCCR_SW3_GO		BIT(4)
+ #define LTC3589_VCCR_LDO2_GO		BIT(6)
+ 
++#define LTC3589_VRRCR_SW1_RAMP_MASK	GENMASK(1, 0)
++#define LTC3589_VRRCR_SW2_RAMP_MASK	GENMASK(3, 2)
++#define LTC3589_VRRCR_SW3_RAMP_MASK	GENMASK(5, 4)
++#define LTC3589_VRRCR_LDO2_RAMP_MASK	GENMASK(7, 6)
++
+ enum ltc3589_variant {
+ 	LTC3589,
+ 	LTC3589_1,
+@@ -88,27 +93,9 @@ static const int ltc3589_12_ldo4[] = {
+ 	1200000, 1800000, 2500000, 3200000,
+ };
+ 
+-static int ltc3589_set_ramp_delay(struct regulator_dev *rdev, int ramp_delay)
+-{
+-	struct ltc3589 *ltc3589 = rdev_get_drvdata(rdev);
+-	int sel, shift;
+-
+-	if (unlikely(ramp_delay <= 0))
+-		return -EINVAL;
+-
+-	/* VRRCR slew rate offsets are the same as VCCR go bit offsets */
+-	shift = ffs(rdev->desc->apply_bit) - 1;
+-
+-	/* The slew rate can be set to 0.88, 1.75, 3.5, or 7 mV/uS */
+-	for (sel = 0; sel < 4; sel++) {
+-		if ((880 << sel) >= ramp_delay) {
+-			return regmap_update_bits(ltc3589->regmap,
+-						  LTC3589_VRRCR,
+-						  0x3 << shift, sel << shift);
+-		}
+-	}
+-	return -EINVAL;
+-}
++static const unsigned int ltc3589_ramp_table[] = {
++	880, 1750, 3500, 7000
++};
+ 
+ static int ltc3589_set_suspend_voltage(struct regulator_dev *rdev, int uV)
+ {
+@@ -149,7 +136,7 @@ static const struct regulator_ops ltc3589_linear_regulator_ops = {
+ 	.list_voltage = regulator_list_voltage_linear,
+ 	.set_voltage_sel = regulator_set_voltage_sel_regmap,
+ 	.get_voltage_sel = regulator_get_voltage_sel_regmap,
+-	.set_ramp_delay = ltc3589_set_ramp_delay,
++	.set_ramp_delay = regulator_set_ramp_delay_regmap,
+ 	.set_voltage_time_sel = regulator_set_voltage_time_sel,
+ 	.set_suspend_voltage = ltc3589_set_suspend_voltage,
+ 	.set_suspend_mode = ltc3589_set_suspend_mode,
+@@ -218,16 +205,13 @@ static int ltc3589_of_parse_cb(struct device_node *np,
+ 	return 0;
+ }
+ 
+-#define LTC3589_REG(_name, _of_name, _ops, en_bit, dtv1_reg, dtv_mask, go_bit)\
++#define LTC3589_REG(_name, _of_name, _ops, en_bit, dtv1_reg, dtv_mask)	\
+ 	[LTC3589_ ## _name] = {						\
+ 		.name = #_name,						\
+ 		.of_match = of_match_ptr(#_of_name),			\
+ 		.regulators_node = of_match_ptr("regulators"),		\
+ 		.of_parse_cb = ltc3589_of_parse_cb,			\
+ 		.n_voltages = (dtv_mask) + 1,				\
+-		.min_uV = (go_bit) ? 362500 : 0,			\
+-		.uV_step = (go_bit) ? 12500 : 0,			\
+-		.ramp_delay = (go_bit) ? 1750 : 0,			\
+ 		.fixed_uV = (dtv_mask) ? 0 : 800000,			\
+ 		.ops = &ltc3589_ ## _ops ## _regulator_ops,		\
+ 		.type = REGULATOR_VOLTAGE,				\
+@@ -235,30 +219,49 @@ static int ltc3589_of_parse_cb(struct device_node *np,
+ 		.owner = THIS_MODULE,					\
+ 		.vsel_reg = (dtv1_reg),					\
+ 		.vsel_mask = (dtv_mask),				\
+-		.apply_reg = (go_bit) ? LTC3589_VCCR : 0,		\
+-		.apply_bit = (go_bit),					\
+ 		.enable_reg = (en_bit) ? LTC3589_OVEN : 0,		\
+ 		.enable_mask = (en_bit),				\
+ 	}
+ 
+ #define LTC3589_LINEAR_REG(_name, _of_name, _dtv1)			\
+-	LTC3589_REG(_name, _of_name, linear, LTC3589_OVEN_ ## _name,	\
+-		    LTC3589_ ## _dtv1, 0x1f,				\
+-		    LTC3589_VCCR_ ## _name ## _GO)
++	[LTC3589_ ## _name] = {						\
++		.name = #_name,						\
++		.of_match = of_match_ptr(#_of_name),			\
++		.regulators_node = of_match_ptr("regulators"),		\
++		.of_parse_cb = ltc3589_of_parse_cb,			\
++		.n_voltages = 32,					\
++		.min_uV = 362500,					\
++		.uV_step = 12500,					\
++		.ramp_delay = 1750,					\
++		.ops = &ltc3589_linear_regulator_ops,			\
++		.type = REGULATOR_VOLTAGE,				\
++		.id = LTC3589_ ## _name,				\
++		.owner = THIS_MODULE,					\
++		.vsel_reg = LTC3589_ ## _dtv1,				\
++		.vsel_mask = 0x1f,					\
++		.apply_reg = LTC3589_VCCR,				\
++		.apply_bit = LTC3589_VCCR_ ## _name ## _GO,		\
++		.enable_reg = LTC3589_OVEN,				\
++		.enable_mask = (LTC3589_OVEN_ ## _name),		\
++		.ramp_reg = LTC3589_VRRCR,				\
++		.ramp_mask = LTC3589_VRRCR_ ## _name ## _RAMP_MASK,	\
++		.ramp_delay_table = ltc3589_ramp_table,			\
++		.n_ramp_values = ARRAY_SIZE(ltc3589_ramp_table),	\
++	}
++
+ 
+ #define LTC3589_FIXED_REG(_name, _of_name)				\
+-	LTC3589_REG(_name, _of_name, fixed, LTC3589_OVEN_ ## _name, 0, 0, 0)
++	LTC3589_REG(_name, _of_name, fixed, LTC3589_OVEN_ ## _name, 0, 0)
+ 
+ static const struct regulator_desc ltc3589_regulators[] = {
+ 	LTC3589_LINEAR_REG(SW1, sw1, B1DTV1),
+ 	LTC3589_LINEAR_REG(SW2, sw2, B2DTV1),
+ 	LTC3589_LINEAR_REG(SW3, sw3, B3DTV1),
+ 	LTC3589_FIXED_REG(BB_OUT, bb-out),
+-	LTC3589_REG(LDO1, ldo1, fixed_standby, 0, 0, 0, 0),
++	LTC3589_REG(LDO1, ldo1, fixed_standby, 0, 0, 0),
+ 	LTC3589_LINEAR_REG(LDO2, ldo2, L2DTV1),
+ 	LTC3589_FIXED_REG(LDO3, ldo3),
+-	LTC3589_REG(LDO4, ldo4, table, LTC3589_OVEN_LDO4, LTC3589_L2DTV2,
+-		    0x60, 0),
++	LTC3589_REG(LDO4, ldo4, table, LTC3589_OVEN_LDO4, LTC3589_L2DTV2, 0x60),
+ };
+ 
+ static bool ltc3589_writeable_reg(struct device *dev, unsigned int reg)
+-- 
+2.25.1
 
-I agree that virtio transport should not peek inside the message headers
-and interpret them, but the core can do it when virtio::complete_cb()
-looks for matching xfers, so I could detect this out-of-order condition
-(in the core...adding some state info) and take 2 alternative actions:
-
- 1. identify and discard such (rare ?) out-of-order (least desirable
-    solution I think)
-
- 2. assume that an expected dresp received ahead of a resp implies
-    the related resp was OK (missing/lost ?), so maybe warn, BUT proceeed
-    processing normally the dresp while forcibly completing the waiters for
-    the missing sync-resp (with any future late arrival for that missing
-    sync-resp seq_num discarded by the core...assuming seqs are now uniques
-    and monotonically increasing..more on this below). This would
-    require also better serializiation to avoid the concurrent case.
-
-This is just off the top of my head, I have not think it througly, I'll
-investigate 2. and see if can be kept reasonably simple and include in
-V4 properly.
-
-> 
-> Also, it might be documented that after a response timeout, do_xfer
-> should not be called on the xfer any more (since a belated response to
-> the timed out message might corrupt the new message).
-> 
-
-So this is an interesting point because it is something that sort of I
-wanted to get feedbaclk about; indeed the new monotonic sequence
-numbers are assigned when an xfer is get, so that, in fact, if core
-protocols then reuse the same xfer in a loop to send multiple similar
-requests there is still a possibility of a late response being associated
-with a new message (having the same seq), even though presumably the first
-timeout would lead to such set of commands-in-loop to be aborted.
-
-I knew that (:D) and I had indeed some (non-posted) patches where the
-monotonically increasing token/seq is instead assigned brand new for each
-do_xfer instead than when get ... I reverted to the current solution because
-it was a bit simpler and I was not sure if it was worth trying to protect
-also from the above 'loop' scenario. I'll rethink about this.
-
-Thanks for the feedback,
-Cristian
-
-> Best regards,
-> 
-> Peter
-> 
-> > On Tue, May 11, 2021 at 02:20:39AM +0200, Peter Hilber wrote:
-> >> From: Igor Skalkin <igor.skalkin@opensynergy.com>
-> >>
-> >> This transport enables accessing an SCMI platform as a virtio device.
-> >>
-> >> Implement an SCMI virtio driver according to the virtio SCMI device spec
-> >> [1]. Virtio device id 32 has been reserved for the SCMI device [2].
-> >>
-> >> The virtio transport has one Tx channel (virtio cmdq, A2P channel) and
-> >> at most one Rx channel (virtio eventq, P2A channel).
-> >>
-> >> The following feature bit defined in [1] is not implemented:
-> >> VIRTIO_SCMI_F_SHARED_MEMORY.
-> >>
-> >> After the preparatory patches, this implements the virtio transport as
-> >> paraphrased:
-> >>
-> >> Only support a single arm-scmi device (which is consistent with the SCMI
-> >> spec). scmi-virtio init is called from arm-scmi module init. During the
-> >> arm-scmi probing, link to the first probed scmi-virtio device. Defer
-> >> arm-scmi probing if no scmi-virtio device is bound yet.
-> >>
-> >> For simplicity, restrict the number of messages which can be pending
-> >> simultaneously according to the virtqueue capacity. (The virtqueue sizes
-> >> are negotiated with the virtio device.)
-> >>
-> >> As soon as Rx channel message buffers are allocated or have been read
-> >> out by the arm-scmi driver, feed them to the virtio device.
-> >>
-> >> Since some virtio devices may not have the short response time exhibited
-> >> by SCMI platforms using other transports, set a generous response
-> >> timeout.
-> >>
-> >> Limitations:
-> >>
-> >> - Polling is not supported.
-> >>
-> >> - The timeout for delayed responses has not been adjusted.
-> >>
-> >> [1] https://github.com/oasis-tcs/virtio-spec/blob/master/virtio-scmi.tex
-> >> [2] https://www.oasis-open.org/committees/ballot.php?id=3496
-> >>
-> >> Signed-off-by: Igor Skalkin <igor.skalkin@opensynergy.com>
-> >> [ Peter: Adapted patch for submission to upstream. ]
-> >> Co-developed-by: Peter Hilber <peter.hilber@opensynergy.com>
-> >> Signed-off-by: Peter Hilber <peter.hilber@opensynergy.com>
-> >> ---
-> >>  MAINTAINERS                        |   1 +
-> >>  drivers/firmware/Kconfig           |  12 +
-> >>  drivers/firmware/arm_scmi/Makefile |   1 +
-> >>  drivers/firmware/arm_scmi/common.h |   3 +
-> >>  drivers/firmware/arm_scmi/driver.c |   3 +
-> >>  drivers/firmware/arm_scmi/virtio.c | 523 +++++++++++++++++++++++++++++
-> >>  include/uapi/linux/virtio_ids.h    |   1 +
-> >>  include/uapi/linux/virtio_scmi.h   |  25 ++
-> >>  8 files changed, 569 insertions(+)
-> >>  create mode 100644 drivers/firmware/arm_scmi/virtio.c
-> >>  create mode 100644 include/uapi/linux/virtio_scmi.h
-> >>
-> >> diff --git a/MAINTAINERS b/MAINTAINERS
-> >> index bd7aff0c120f..449c336872f3 100644
-> >> --- a/MAINTAINERS
-> >> +++ b/MAINTAINERS
-> >> @@ -17705,6 +17705,7 @@ F:	drivers/regulator/scmi-regulator.c
-> >>  F:	drivers/reset/reset-scmi.c
-> >>  F:	include/linux/sc[mp]i_protocol.h
-> >>  F:	include/trace/events/scmi.h
-> >> +F:	include/uapi/linux/virtio_scmi.h
-> >>  
-> >>  SYSTEM RESET/SHUTDOWN DRIVERS
-> >>  M:	Sebastian Reichel <sre@kernel.org>
-> >> diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-> >> index e8377b12e4d0..7e9eafdd9b63 100644
-> >> --- a/drivers/firmware/Kconfig
-> >> +++ b/drivers/firmware/Kconfig
-> >> @@ -39,6 +39,18 @@ config ARM_SCMI_HAVE_MSG
-> >>  	  This declares whether a message passing based transport for SCMI is
-> >>  	  available.
-> >>  
-> >> +# This config option includes the dependencies of ARM_SCMI_PROTOCOL so that
-> >> +# this config doesn't show up when SCMI wouldn't be available.
-> >> +config VIRTIO_SCMI
-> >> +	bool "Virtio transport for SCMI"
-> >> +	select ARM_SCMI_HAVE_MSG
-> >> +	depends on VIRTIO && (ARM || ARM64 || COMPILE_TEST)
-> >> +	help
-> >> +	  This enables the virtio based transport for SCMI.
-> >> +
-> >> +	  If you want to use the ARM SCMI protocol between the virtio guest and
-> >> +	  a host providing a virtio SCMI device, answer Y.
-> >> +
-> >>  config ARM_SCMI_POWER_DOMAIN
-> >>  	tristate "SCMI power domain driver"
-> >>  	depends on ARM_SCMI_PROTOCOL || (COMPILE_TEST && OF)
-> >> diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
-> >> index f6b4acb8abdb..db1787606fb2 100644
-> >> --- a/drivers/firmware/arm_scmi/Makefile
-> >> +++ b/drivers/firmware/arm_scmi/Makefile
-> >> @@ -5,6 +5,7 @@ scmi-transport-$(CONFIG_ARM_SCMI_HAVE_SHMEM) = shmem.o
-> >>  scmi-transport-$(CONFIG_MAILBOX) += mailbox.o
-> >>  scmi-transport-$(CONFIG_HAVE_ARM_SMCCC_DISCOVERY) += smc.o
-> >>  scmi-transport-$(CONFIG_ARM_SCMI_HAVE_MSG) += msg.o
-> >> +scmi-transport-$(CONFIG_VIRTIO_SCMI) += virtio.o
-> >>  scmi-protocols-y = base.o clock.o perf.o power.o reset.o sensors.o system.o voltage.o
-> >>  scmi-module-objs := $(scmi-bus-y) $(scmi-driver-y) $(scmi-protocols-y) \
-> >>  		    $(scmi-transport-y)
-> >> diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-> >> index 4cb6571c7aaf..bada06cfd33d 100644
-> >> --- a/drivers/firmware/arm_scmi/common.h
-> >> +++ b/drivers/firmware/arm_scmi/common.h
-> >> @@ -349,6 +349,9 @@ extern const struct scmi_desc scmi_mailbox_desc;
-> >>  #ifdef CONFIG_HAVE_ARM_SMCCC
-> >>  extern const struct scmi_desc scmi_smc_desc;
-> >>  #endif
-> >> +#ifdef CONFIG_VIRTIO_SCMI
-> >> +extern const struct scmi_desc scmi_virtio_desc;
-> >> +#endif
-> >>  
-> >>  int scmi_set_transport_info(struct device *dev, void *transport_info);
-> >>  void *scmi_get_transport_info(struct device *dev);
-> >> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-> >> index e04e7c8e6928..a31187385470 100644
-> >> --- a/drivers/firmware/arm_scmi/driver.c
-> >> +++ b/drivers/firmware/arm_scmi/driver.c
-> >> @@ -1637,6 +1637,9 @@ static const struct of_device_id scmi_of_match[] = {
-> >>  #endif
-> >>  #ifdef CONFIG_HAVE_ARM_SMCCC_DISCOVERY
-> >>  	{ .compatible = "arm,scmi-smc", .data = &scmi_smc_desc},
-> >> +#endif
-> >> +#ifdef CONFIG_VIRTIO_SCMI
-> >> +	{ .compatible = "arm,scmi-virtio", .data = &scmi_virtio_desc},
-> >>  #endif
-> >>  	{ /* Sentinel */ },
-> >>  };
-> >> diff --git a/drivers/firmware/arm_scmi/virtio.c b/drivers/firmware/arm_scmi/virtio.c
-> >> new file mode 100644
-> >> index 000000000000..20972adf6dc7
-> >> --- /dev/null
-> >> +++ b/drivers/firmware/arm_scmi/virtio.c
-> >> @@ -0,0 +1,523 @@
-> >> +// SPDX-License-Identifier: GPL-2.0
-> >> +/*
-> >> + * Virtio Transport driver for Arm System Control and Management Interface
-> >> + * (SCMI).
-> >> + *
-> >> + * Copyright (C) 2020 OpenSynergy.
-> >> + */
-> >> +
-> >> +/**
-> >> + * DOC: Theory of Operation
-> >> + *
-> >> + * The scmi-virtio transport implements a driver for the virtio SCMI device.
-> >> + *
-> >> + * There is one Tx channel (virtio cmdq, A2P channel) and at most one Rx
-> >> + * channel (virtio eventq, P2A channel). Each channel is implemented through a
-> >> + * virtqueue. Access to each virtqueue is protected by spinlocks.
-> >> + */
-> >> +
-> >> +#include <linux/errno.h>
-> >> +#include <linux/of.h>
-> >> +#include <linux/of_platform.h>
-> >> +#include <linux/platform_device.h>
-> >> +#include <linux/module.h>
-> >> +#include <linux/slab.h>
-> >> +#include <linux/virtio.h>
-> >> +#include <linux/virtio_config.h>
-> >> +#include <uapi/linux/virtio_ids.h>
-> >> +#include <uapi/linux/virtio_scmi.h>
-> >> +
-> >> +#include "common.h"
-> >> +
-> >> +#define VIRTIO_SCMI_MAX_MSG_SIZE 128 /* Value may be increased. */
-> >> +#define VIRTIO_SCMI_MAX_PDU_SIZE \
-> >> +	(VIRTIO_SCMI_MAX_MSG_SIZE + SCMI_MSG_MAX_PROT_OVERHEAD)
-> >> +#define DESCRIPTORS_PER_TX_MSG 2
-> >> +
-> >> +/**
-> >> + * struct scmi_vio_channel - Transport channel information
-> >> + *
-> >> + * @lock: Protects access to all members except ready.
-> >> + * @ready_lock: Protects access to ready. If required, it must be taken before
-> >> + *              lock.
-> >> + * @vqueue: Associated virtqueue
-> >> + * @cinfo: SCMI Tx or Rx channel
-> >> + * @free_list: List of unused scmi_vio_msg, maintained for Tx channels only
-> >> + * @is_rx: Whether channel is an Rx channel
-> >> + * @ready: Whether transport user is ready to hear about channel
-> >> + */
-> >> +struct scmi_vio_channel {
-> >> +	spinlock_t lock;
-> >> +	spinlock_t ready_lock;
-> >> +	struct virtqueue *vqueue;
-> >> +	struct scmi_chan_info *cinfo;
-> >> +	struct list_head free_list;
-> >> +	u8 is_rx;
-> >> +	u8 ready;
-> >> +};
-> >> +
-> >> +/**
-> >> + * struct scmi_vio_msg - Transport PDU information
-> >> + *
-> >> + * @request: SDU used for commands
-> >> + * @input: SDU used for (delayed) responses and notifications
-> >> + * @list: List which scmi_vio_msg may be part of
-> >> + * @rx_len: Input SDU size in bytes, once input has been received
-> >> + */
-> >> +struct scmi_vio_msg {
-> >> +	struct scmi_msg_payld *request;
-> >> +	struct scmi_msg_payld *input;
-> >> +	struct list_head list;
-> >> +	unsigned int rx_len;
-> >> +};
-> >> +
-> >> +static bool scmi_vio_have_vq_rx(struct virtio_device *vdev)
-> >> +{
-> >> +	return virtio_has_feature(vdev, VIRTIO_SCMI_F_P2A_CHANNELS);
-> >> +}
-> >> +
-> >> +static int scmi_vio_feed_vq_rx(struct scmi_vio_channel *vioch,
-> >> +			       struct scmi_vio_msg *msg)
-> >> +{
-> >> +	struct scatterlist sg_in;
-> >> +	int rc;
-> >> +	unsigned long flags;
-> >> +
-> >> +	sg_init_one(&sg_in, msg->input, VIRTIO_SCMI_MAX_PDU_SIZE);
-> >> +
-> >> +	spin_lock_irqsave(&vioch->lock, flags);
-> >> +
-> >> +	rc = virtqueue_add_inbuf(vioch->vqueue, &sg_in, 1, msg, GFP_ATOMIC);
-> >> +	if (rc)
-> >> +		dev_err_once(vioch->cinfo->dev,
-> >> +			     "%s() failed to add to virtqueue (%d)\n", __func__,
-> >> +			     rc);
-> >> +	else
-> >> +		virtqueue_kick(vioch->vqueue);
-> >> +
-> >> +	spin_unlock_irqrestore(&vioch->lock, flags);
-> >> +
-> >> +	return rc;
-> >> +}
-> >> +
-> >> +static void scmi_vio_complete_cb(struct virtqueue *vqueue)
-> >> +{
-> >> +	unsigned long ready_flags;
-> >> +	unsigned long flags;
-> >> +	unsigned int length;
-> >> +	struct scmi_vio_channel *vioch;
-> >> +	struct scmi_vio_msg *msg;
-> >> +	bool cb_enabled = true;
-> >> +
-> >> +	if (WARN_ON_ONCE(!vqueue->vdev->priv))
-> >> +		return;
-> >> +	vioch = &((struct scmi_vio_channel *)vqueue->vdev->priv)[vqueue->index];
-> >> +
-> >> +	for (;;) {
-> >> +		spin_lock_irqsave(&vioch->ready_lock, ready_flags);
-> >> +
-> >> +		if (!vioch->ready) {
-> >> +			if (!cb_enabled)
-> >> +				(void)virtqueue_enable_cb(vqueue);
-> >> +			goto unlock_ready_out;
-> >> +		}
-> >> +
-> >> +		spin_lock_irqsave(&vioch->lock, flags);
-> >> +		if (cb_enabled) {
-> >> +			virtqueue_disable_cb(vqueue);
-> >> +			cb_enabled = false;
-> >> +		}
-> >> +		msg = virtqueue_get_buf(vqueue, &length);
-> >> +		if (!msg) {
-> >> +			if (virtqueue_enable_cb(vqueue))
-> >> +				goto unlock_out;
-> >> +			else
-> >> +				cb_enabled = true;
-> >> +		}
-> >> +		spin_unlock_irqrestore(&vioch->lock, flags);
-> >> +
-> >> +		if (msg) {
-> >> +			msg->rx_len = length;
-> >> +
-> >> +			/*
-> >> +			 * Hold the ready_lock during the callback to avoid
-> >> +			 * races when the arm-scmi driver is unbinding while
-> >> +			 * the virtio device is not quiesced yet.
-> >> +			 */
-> >> +			scmi_rx_callback(vioch->cinfo,
-> >> +					 msg_read_header(msg->input), msg);
-> >> +		}
-> >> +		spin_unlock_irqrestore(&vioch->ready_lock, ready_flags);
-> >> +	}
-> >> +
-> >> +unlock_out:
-> >> +	spin_unlock_irqrestore(&vioch->lock, flags);
-> >> +unlock_ready_out:
-> >> +	spin_unlock_irqrestore(&vioch->ready_lock, ready_flags);
-> >> +}
-> >> +
-> >> +static const char *const scmi_vio_vqueue_names[] = { "tx", "rx" };
-> >> +
-> >> +static vq_callback_t *scmi_vio_complete_callbacks[] = {
-> >> +	scmi_vio_complete_cb,
-> >> +	scmi_vio_complete_cb
-> >> +};
-> >> +
-> >> +static unsigned int virtio_get_max_msg(bool tx,
-> >> +				       struct scmi_chan_info *base_cinfo)
-> >> +{
-> >> +	struct scmi_vio_channel *vioch = base_cinfo->transport_info;
-> >> +	unsigned int ret;
-> >> +
-> >> +	ret = virtqueue_get_vring_size(vioch->vqueue);
-> >> +
-> >> +	/* Tx messages need multiple descriptors. */
-> >> +	if (tx)
-> >> +		ret /= DESCRIPTORS_PER_TX_MSG;
-> >> +
-> >> +	if (ret > MSG_TOKEN_MAX) {
-> >> +		dev_info_once(
-> >> +			base_cinfo->dev,
-> >> +			"Only %ld messages can be pending simultaneously, while the %s virtqueue could hold %d\n",
-> >> +			MSG_TOKEN_MAX, tx ? "tx" : "rx", ret);
-> >> +		ret = MSG_TOKEN_MAX;
-> >> +	}
-> >> +
-> >> +	return ret;
-> >> +}
-> >> +
-> >> +static int scmi_vio_match_any_dev(struct device *dev, const void *data)
-> >> +{
-> >> +	return 1;
-> >> +}
-> >> +
-> >> +static struct virtio_driver virtio_scmi_driver; /* Forward declaration */
-> >> +
-> >> +static int virtio_link_supplier(struct device *dev)
-> >> +{
-> >> +	struct device *vdev = driver_find_device(
-> >> +		&virtio_scmi_driver.driver, NULL, NULL, scmi_vio_match_any_dev);
-> >> +
-> >> +	if (!vdev) {
-> >> +		dev_notice_once(
-> >> +			dev,
-> >> +			"Deferring probe after not finding a bound scmi-virtio device\n");
-> >> +		return -EPROBE_DEFER;
-> >> +	}
-> >> +
-> >> +	/* Add device link for remove order and sysfs link. */
-> >> +	if (!device_link_add(dev, vdev, DL_FLAG_AUTOREMOVE_CONSUMER)) {
-> >> +		put_device(vdev);
-> >> +		dev_err(dev, "Adding link to supplier virtio device failed\n");
-> >> +		return -ECANCELED;
-> >> +	}
-> >> +
-> >> +	put_device(vdev);
-> >> +	return scmi_set_transport_info(dev, dev_to_virtio(vdev));
-> >> +}
-> >> +
-> >> +static bool virtio_chan_available(struct device *dev, int idx)
-> >> +{
-> >> +	struct virtio_device *vdev;
-> >> +
-> >> +	/* scmi-virtio doesn't support per-protocol channels */
-> >> +	if (is_scmi_protocol_device(dev))
-> >> +		return false;
-> >> +
-> >> +	vdev = scmi_get_transport_info(dev);
-> >> +	if (!vdev)
-> >> +		return false;
-> >> +
-> >> +	switch (idx) {
-> >> +	case VIRTIO_SCMI_VQ_TX:
-> >> +		return true;
-> >> +	case VIRTIO_SCMI_VQ_RX:
-> >> +		return scmi_vio_have_vq_rx(vdev);
-> >> +	default:
-> >> +		return false;
-> >> +	}
-> >> +}
-> >> +
-> >> +static int virtio_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
-> >> +			     bool tx)
-> >> +{
-> >> +	unsigned long flags;
-> >> +	struct virtio_device *vdev;
-> >> +	struct scmi_vio_channel *vioch;
-> >> +	int index = tx ? VIRTIO_SCMI_VQ_TX : VIRTIO_SCMI_VQ_RX;
-> >> +	int max_msg;
-> >> +	int i;
-> >> +
-> >> +	if (!virtio_chan_available(dev, index))
-> >> +		return -ENODEV;
-> >> +
-> >> +	vdev = scmi_get_transport_info(dev);
-> >> +	vioch = &((struct scmi_vio_channel *)vdev->priv)[index];
-> >> +
-> >> +	spin_lock_irqsave(&vioch->lock, flags);
-> >> +	cinfo->transport_info = vioch;
-> >> +	vioch->cinfo = cinfo;
-> >> +	spin_unlock_irqrestore(&vioch->lock, flags);
-> >> +
-> >> +	max_msg = virtio_get_max_msg(tx, cinfo);
-> >> +
-> >> +	for (i = 0; i < max_msg; i++) {
-> >> +		struct scmi_vio_msg *msg;
-> >> +
-> >> +		msg = devm_kzalloc(cinfo->dev, sizeof(*msg), GFP_KERNEL);
-> >> +		if (!msg)
-> >> +			return -ENOMEM;
-> >> +
-> >> +		if (tx) {
-> >> +			msg->request = devm_kzalloc(cinfo->dev,
-> >> +						    VIRTIO_SCMI_MAX_PDU_SIZE,
-> >> +						    GFP_KERNEL);
-> >> +			if (!msg->request)
-> >> +				return -ENOMEM;
-> >> +		}
-> >> +
-> >> +		msg->input = devm_kzalloc(cinfo->dev, VIRTIO_SCMI_MAX_PDU_SIZE,
-> >> +					  GFP_KERNEL);
-> >> +		if (!msg->input)
-> >> +			return -ENOMEM;
-> >> +
-> >> +		if (tx) {
-> >> +			spin_lock_irqsave(&vioch->lock, flags);
-> >> +			list_add_tail(&msg->list, &vioch->free_list);
-> >> +			spin_unlock_irqrestore(&vioch->lock, flags);
-> >> +		} else {
-> >> +			scmi_vio_feed_vq_rx(vioch, msg);
-> >> +		}
-> >> +	}
-> >> +
-> >> +	spin_lock_irqsave(&vioch->ready_lock, flags);
-> >> +	vioch->ready = true;
-> >> +	spin_unlock_irqrestore(&vioch->ready_lock, flags);
-> >> +
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +static int virtio_chan_free(int id, void *p, void *data)
-> >> +{
-> >> +	unsigned long flags;
-> >> +	struct scmi_chan_info *cinfo = p;
-> >> +	struct scmi_vio_channel *vioch = cinfo->transport_info;
-> >> +
-> >> +	spin_lock_irqsave(&vioch->ready_lock, flags);
-> >> +	vioch->ready = false;
-> >> +	spin_unlock_irqrestore(&vioch->ready_lock, flags);
-> >> +
-> >> +	scmi_free_channel(cinfo, data, id);
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +static int virtio_send_message(struct scmi_chan_info *cinfo,
-> >> +			       struct scmi_xfer *xfer)
-> >> +{
-> >> +	struct scmi_vio_channel *vioch = cinfo->transport_info;
-> >> +	struct scatterlist sg_out;
-> >> +	struct scatterlist sg_in;
-> >> +	struct scatterlist *sgs[DESCRIPTORS_PER_TX_MSG] = { &sg_out, &sg_in };
-> >> +	unsigned long flags;
-> >> +	int rc;
-> >> +	struct scmi_vio_msg *msg;
-> >> +
-> >> +	/*
-> >> +	 * TODO: For now, we don't support polling. But it should not be
-> >> +	 * difficult to add support.
-> >> +	 */
-> >> +	if (xfer->hdr.poll_completion)
-> >> +		return -EINVAL;
-> >> +
-> >> +	spin_lock_irqsave(&vioch->lock, flags);
-> >> +
-> >> +	if (list_empty(&vioch->free_list)) {
-> >> +		spin_unlock_irqrestore(&vioch->lock, flags);
-> >> +		return -EBUSY;
-> >> +	}
-> >> +
-> >> +	msg = list_first_entry(&vioch->free_list, typeof(*msg), list);
-> >> +	list_del(&msg->list);
-> >> +
-> >> +	msg_tx_prepare(msg->request, xfer);
-> >> +
-> >> +	sg_init_one(&sg_out, msg->request, msg_command_size(xfer));
-> >> +	sg_init_one(&sg_in, msg->input, msg_response_size(xfer));
-> >> +
-> >> +	rc = virtqueue_add_sgs(vioch->vqueue, sgs, 1, 1, msg, GFP_ATOMIC);
-> >> +	if (rc) {
-> >> +		list_add(&msg->list, &vioch->free_list);
-> >> +		dev_err_once(vioch->cinfo->dev,
-> >> +			     "%s() failed to add to virtqueue (%d)\n", __func__,
-> >> +			     rc);
-> >> +	} else {
-> >> +		virtqueue_kick(vioch->vqueue);
-> >> +	}
-> >> +
-> >> +	spin_unlock_irqrestore(&vioch->lock, flags);
-> >> +
-> >> +	return rc;
-> >> +}
-> >> +
-> >> +static void virtio_fetch_response(struct scmi_chan_info *cinfo,
-> >> +				  struct scmi_xfer *xfer, void *msg_handle)
-> >> +{
-> >> +	struct scmi_vio_msg *msg = msg_handle;
-> >> +	struct scmi_vio_channel *vioch = cinfo->transport_info;
-> >> +
-> >> +	if (!msg) {
-> >> +		dev_dbg_once(&vioch->vqueue->vdev->dev,
-> >> +			     "Ignoring %s() call with NULL msg_handle\n",
-> >> +			     __func__);
-> >> +		return;
-> >> +	}
-> >> +
-> >> +	msg_fetch_response(msg->input, msg->rx_len, xfer);
-> >> +}
-> >> +
-> >> +static void virtio_fetch_notification(struct scmi_chan_info *cinfo,
-> >> +				      size_t max_len, struct scmi_xfer *xfer,
-> >> +				      void *msg_handle)
-> >> +{
-> >> +	struct scmi_vio_msg *msg = msg_handle;
-> >> +	struct scmi_vio_channel *vioch = cinfo->transport_info;
-> >> +
-> >> +	if (!msg) {
-> >> +		dev_dbg_once(&vioch->vqueue->vdev->dev,
-> >> +			     "Ignoring %s() call with NULL msg_handle\n",
-> >> +			     __func__);
-> >> +		return;
-> >> +	}
-> >> +
-> >> +	msg_fetch_notification(msg->input, msg->rx_len, max_len, xfer);
-> >> +}
-> >> +
-> >> +static void dummy_clear_channel(struct scmi_chan_info *cinfo)
-> >> +{
-> >> +}
-> >> +
-> >> +static bool dummy_poll_done(struct scmi_chan_info *cinfo,
-> >> +			    struct scmi_xfer *xfer)
-> >> +{
-> >> +	return false;
-> >> +}
-> >> +
-> >> +static void virtio_drop_message(struct scmi_chan_info *cinfo, void *msg_handle)
-> >> +{
-> >> +	unsigned long flags;
-> >> +	struct scmi_vio_channel *vioch = cinfo->transport_info;
-> >> +	struct scmi_vio_msg *msg = msg_handle;
-> >> +
-> >> +	if (!msg) {
-> >> +		dev_dbg_once(&vioch->vqueue->vdev->dev,
-> >> +			     "Ignoring %s() call with NULL msg_handle\n",
-> >> +			     __func__);
-> >> +		return;
-> >> +	}
-> >> +
-> >> +	if (vioch->is_rx) {
-> >> +		scmi_vio_feed_vq_rx(vioch, msg);
-> >> +	} else {
-> >> +		spin_lock_irqsave(&vioch->lock, flags);
-> >> +		list_add(&msg->list, &vioch->free_list);
-> >> +		spin_unlock_irqrestore(&vioch->lock, flags);
-> >> +	}
-> >> +}
-> >> +
-> >> +static const struct scmi_transport_ops scmi_virtio_ops = {
-> >> +	.link_supplier = virtio_link_supplier,
-> >> +	.chan_available = virtio_chan_available,
-> >> +	.chan_setup = virtio_chan_setup,
-> >> +	.chan_free = virtio_chan_free,
-> >> +	.get_max_msg = virtio_get_max_msg,
-> >> +	.send_message = virtio_send_message,
-> >> +	.fetch_response = virtio_fetch_response,
-> >> +	.fetch_notification = virtio_fetch_notification,
-> >> +	.clear_channel = dummy_clear_channel,
-> >> +	.poll_done = dummy_poll_done,
-> >> +	.drop_message = virtio_drop_message,
-> >> +};
-> >> +
-> >> +static int scmi_vio_probe(struct virtio_device *vdev)
-> >> +{
-> >> +	struct device *dev = &vdev->dev;
-> >> +	struct scmi_vio_channel *channels;
-> >> +	bool have_vq_rx;
-> >> +	int vq_cnt;
-> >> +	int i;
-> >> +	int ret;
-> >> +	struct virtqueue *vqs[VIRTIO_SCMI_VQ_MAX_CNT];
-> >> +
-> >> +	have_vq_rx = scmi_vio_have_vq_rx(vdev);
-> >> +	vq_cnt = have_vq_rx ? VIRTIO_SCMI_VQ_MAX_CNT : 1;
-> >> +
-> >> +	channels = devm_kcalloc(dev, vq_cnt, sizeof(*channels), GFP_KERNEL);
-> >> +	if (!channels)
-> >> +		return -ENOMEM;
-> >> +
-> >> +	if (have_vq_rx)
-> >> +		channels[VIRTIO_SCMI_VQ_RX].is_rx = true;
-> >> +
-> >> +	ret = virtio_find_vqs(vdev, vq_cnt, vqs, scmi_vio_complete_callbacks,
-> >> +			      scmi_vio_vqueue_names, NULL);
-> >> +	if (ret) {
-> >> +		dev_err(dev, "Failed to get %d virtqueue(s)\n", vq_cnt);
-> >> +		return ret;
-> >> +	}
-> >> +	dev_info(dev, "Found %d virtqueue(s)\n", vq_cnt);
-> >> +
-> >> +	for (i = 0; i < vq_cnt; i++) {
-> >> +		spin_lock_init(&channels[i].lock);
-> >> +		spin_lock_init(&channels[i].ready_lock);
-> >> +		INIT_LIST_HEAD(&channels[i].free_list);
-> >> +		channels[i].vqueue = vqs[i];
-> >> +	}
-> >> +
-> >> +	vdev->priv = channels;
-> >> +
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +static void scmi_vio_remove(struct virtio_device *vdev)
-> >> +{
-> >> +	vdev->config->reset(vdev);
-> >> +	vdev->config->del_vqs(vdev);
-> >> +}
-> >> +
-> >> +static unsigned int features[] = {
-> >> +	VIRTIO_SCMI_F_P2A_CHANNELS,
-> >> +};
-> >> +
-> >> +static const struct virtio_device_id id_table[] = {
-> >> +	{ VIRTIO_ID_SCMI, VIRTIO_DEV_ANY_ID },
-> >> +	{ 0 }
-> >> +};
-> >> +
-> >> +static struct virtio_driver virtio_scmi_driver = {
-> >> +	.driver.name = "scmi-virtio",
-> >> +	.driver.owner = THIS_MODULE,
-> >> +	.feature_table = features,
-> >> +	.feature_table_size = ARRAY_SIZE(features),
-> >> +	.id_table = id_table,
-> >> +	.probe = scmi_vio_probe,
-> >> +	.remove = scmi_vio_remove,
-> >> +};
-> >> +
-> >> +static int __init virtio_scmi_init(void)
-> >> +{
-> >> +	return register_virtio_driver(&virtio_scmi_driver);
-> >> +}
-> >> +
-> >> +static void __exit virtio_scmi_exit(void)
-> >> +{
-> >> +	unregister_virtio_driver(&virtio_scmi_driver);
-> >> +}
-> >> +
-> >> +const struct scmi_desc scmi_virtio_desc = {
-> >> +	.init = virtio_scmi_init,
-> >> +	.exit = virtio_scmi_exit,
-> >> +	.ops = &scmi_virtio_ops,
-> >> +	.max_rx_timeout_ms = 60000, /* for non-realtime virtio devices */
-> >> +	.max_msg = 0, /* overridden by virtio_get_max_msg() */
-> >> +	.max_msg_size = VIRTIO_SCMI_MAX_MSG_SIZE,
-> >> +};
-> >> diff --git a/include/uapi/linux/virtio_ids.h b/include/uapi/linux/virtio_ids.h
-> >> index f0c35ce8628c..c146fe30e589 100644
-> >> --- a/include/uapi/linux/virtio_ids.h
-> >> +++ b/include/uapi/linux/virtio_ids.h
-> >> @@ -56,5 +56,6 @@
-> >>  #define VIRTIO_ID_PMEM			27 /* virtio pmem */
-> >>  #define VIRTIO_ID_BT			28 /* virtio bluetooth */
-> >>  #define VIRTIO_ID_MAC80211_HWSIM	29 /* virtio mac80211-hwsim */
-> >> +#define VIRTIO_ID_SCMI			32 /* virtio SCMI */
-> >>  
-> >>  #endif /* _LINUX_VIRTIO_IDS_H */
-> >> diff --git a/include/uapi/linux/virtio_scmi.h b/include/uapi/linux/virtio_scmi.h
-> >> new file mode 100644
-> >> index 000000000000..732b01504c35
-> >> --- /dev/null
-> >> +++ b/include/uapi/linux/virtio_scmi.h
-> >> @@ -0,0 +1,25 @@
-> >> +/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
-> >> +/*
-> >> + * Copyright (C) 2020 OpenSynergy GmbH
-> >> + */
-> >> +
-> >> +#ifndef _UAPI_LINUX_VIRTIO_SCMI_H
-> >> +#define _UAPI_LINUX_VIRTIO_SCMI_H
-> >> +
-> >> +#include <linux/virtio_types.h>
-> >> +
-> >> +/* Feature bits */
-> >> +
-> >> +/* Device implements some SCMI notifications, or delayed responses. */
-> >> +#define VIRTIO_SCMI_F_P2A_CHANNELS 0
-> >> +
-> >> +/* Device implements any SCMI statistics shared memory region */
-> >> +#define VIRTIO_SCMI_F_SHARED_MEMORY 1
-> >> +
-> >> +/* Virtqueues */
-> >> +
-> >> +#define VIRTIO_SCMI_VQ_TX 0 /* cmdq */
-> >> +#define VIRTIO_SCMI_VQ_RX 1 /* eventq */
-> >> +#define VIRTIO_SCMI_VQ_MAX_CNT 2
-> >> +
-> >> +#endif /* _UAPI_LINUX_VIRTIO_SCMI_H */
-> >> -- 
-> >> 2.25.1
-> >>
-> >>
-> > 
-> 
-> 
