@@ -2,84 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1877B39AF32
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 02:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E7939AF38
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 02:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229825AbhFDAui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 20:50:38 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7097 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbhFDAuh (ORCPT
+        id S229803AbhFDAwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 20:52:53 -0400
+Received: from mail-lf1-f43.google.com ([209.85.167.43]:40683 "EHLO
+        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFDAww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 20:50:37 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fx3wX3DT0zYqc8;
-        Fri,  4 Jun 2021 08:46:04 +0800 (CST)
-Received: from dggpeml500019.china.huawei.com (7.185.36.137) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 4 Jun 2021 08:48:38 +0800
-Received: from [10.174.179.189] (10.174.179.189) by
- dggpeml500019.china.huawei.com (7.185.36.137) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 4 Jun 2021 08:48:38 +0800
-Subject: Re: [PATCH] tools/testing/nvdimm: use vzalloc() instead of
- vmalloc()/memset(0)
-To:     <dan.j.williams@intel.com>, <vishal.l.verma@intel.com>,
-        <dave.jiang@intel.com>, <ira.weiny@intel.com>, <bp@suse.de>,
-        <rafael.j.wysocki@intel.com>, <mpe@ellerman.id.au>,
-        <nvdimm@lists.linux.dev>, <linux-kernel@vger.kernel.org>
-CC:     <linfeilong@huawei.com>
-References: <1622425715-146012-1-git-send-email-wubo40@huawei.com>
-From:   Wu Bo <wubo40@huawei.com>
-Message-ID: <590552c1-5032-5243-20b5-e5701972812e@huawei.com>
-Date:   Fri, 4 Jun 2021 08:48:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Thu, 3 Jun 2021 20:52:52 -0400
+Received: by mail-lf1-f43.google.com with SMTP id w33so11522261lfu.7
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 17:50:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Iwimm5kt1cPOS3WktKznx8Tm3YSJawu3yuys6bu5NIU=;
+        b=Gs5lp5tfCZGV7HaOOLREF2vdGYMqTNw3RNRfVR02KWcpUPpLyAkDZxU7KzZFEpILnW
+         TS0t5Tw3jHP2Ob59G1pCQ6LYWQnMUKiuyHK3lTTIefXm7iqwG9uq0eGTtxJAGrSis2Ek
+         NgYpfpSBSpngnF6vNhFkr+azyg64Nbj9wU4YUX7k4Dz0Mu3a5c83ByA1JJIQ++3PzJA6
+         vDwZiKtp6AAOuGW+JBWR48V9np7igTsW2Fn7/DOOm8HTKOkQD5ZzGiEpusGlmlULy59v
+         kW8Wrs3I4DQqP6mQqK141gPFmWUyx5cOt7ntAA6X/nilYQsGyV/6fTzlwq5TQsgRvMrV
+         133A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Iwimm5kt1cPOS3WktKznx8Tm3YSJawu3yuys6bu5NIU=;
+        b=MQCDh3VUOCFwmza8SaBxkcqZWvvSCh8y46uHVMDmmqXkI4f0lwxGgAkhh7WjzCDpPK
+         vtQGE5bFyJIGQeSBuIsixxrjvgwQipL5T9poyRTZrlUPLQu5Fcxpd/3zJkEBtPnyDOCY
+         gvLHgTZLKd2oS9gzbL1CePgiOZ2YSq1pO3TBekCFU729FoxSdOGUFky9xqgNqnkxs72q
+         +rpXDK4WWuKL096utZUm37PmB0aRIix7r29HQ5O9Bzm0qOMO3TexrDO4QJPvHEJid+dp
+         kJp0BcFCnbW2P7r7zGLENFmzTDvb3CHfPYQ6q4MCEH8j01NH9iLI44J+LUhCbFN4e2Nl
+         MJIA==
+X-Gm-Message-State: AOAM532pMY8ghhs1y91AU6ko5g5JW7hfkzFfpb9PDD6ehVvjPF8DfNgw
+        43zFZRBp0hTjVOcOqUyd1meRcg==
+X-Google-Smtp-Source: ABdhPJweJXWYYmQjui7kNiJ8H+bSQ43RmGPF8suRIMZscFcJCMH54wVPsAk3g0wsQCdvPIOhcg2PRA==
+X-Received: by 2002:a05:6512:32ab:: with SMTP id q11mr961056lfe.21.1622767793930;
+        Thu, 03 Jun 2021 17:49:53 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id p26sm448515ljn.33.2021.06.03.17.49.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Jun 2021 17:49:53 -0700 (PDT)
+Subject: Re: [RESEND 12/26] drm/msm/msm_gem: Demote kernel-doc abuses
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org
+References: <20210602143300.2330146-1-lee.jones@linaro.org>
+ <20210602143300.2330146-13-lee.jones@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <b506aea4-0612-0ac4-1ef2-45b0cc80e7f1@linaro.org>
+Date:   Fri, 4 Jun 2021 03:49:52 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <1622425715-146012-1-git-send-email-wubo40@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.189]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500019.china.huawei.com (7.185.36.137)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210602143300.2330146-13-lee.jones@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Friendly ping ...
-
-On 2021/5/31 9:48, Wu Bo wrote:
-> Use vzalloc() instead of vmalloc() and memset(0) to simpify
-> the code.
+On 02/06/2021 17:32, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
 > 
-> Signed-off-by: Wu Bo <wubo40@huawei.com>
+>   drivers/gpu/drm/msm/msm_gem.c:364: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>   drivers/gpu/drm/msm/msm_gem.c:763: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+> 
+> Cc: Rob Clark <robdclark@gmail.com>
+> Cc: Sean Paul <sean@poorly.run>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: "Christian König" <christian.koenig@amd.com>
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: freedreno@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
 > ---
->   tools/testing/nvdimm/test/nfit.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
+>   drivers/gpu/drm/msm/msm_gem.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/tools/testing/nvdimm/test/nfit.c b/tools/testing/nvdimm/test/nfit.c
-> index 54f367cbadae..258bba22780b 100644
-> --- a/tools/testing/nvdimm/test/nfit.c
-> +++ b/tools/testing/nvdimm/test/nfit.c
-> @@ -1625,7 +1625,6 @@ static void *__test_alloc(struct nfit_test *t, size_t size, dma_addr_t *dma,
->   	if (rc)
->   		goto err;
->   	INIT_LIST_HEAD(&nfit_res->list);
-> -	memset(buf, 0, size);
->   	nfit_res->dev = dev;
->   	nfit_res->buf = buf;
->   	nfit_res->res.start = *dma;
-> @@ -1652,7 +1651,7 @@ static void *test_alloc(struct nfit_test *t, size_t size, dma_addr_t *dma)
->   	struct genpool_data_align data = {
->   		.align = SZ_128M,
->   	};
-> -	void *buf = vmalloc(size);
-> +	void *buf = vzalloc(size);
+> diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
+> index 56df86e5f7400..15434deb19334 100644
+> --- a/drivers/gpu/drm/msm/msm_gem.c
+> +++ b/drivers/gpu/drm/msm/msm_gem.c
+> @@ -372,7 +372,7 @@ static void del_vma(struct msm_gem_vma *vma)
+>   	kfree(vma);
+>   }
 >   
->   	if (size >= DIMM_SIZE)
->   		*dma = gen_pool_alloc_algo(nfit_pool, size,
+> -/**
+> +/*
+>    * If close is true, this also closes the VMA (releasing the allocated
+>    * iova range) in addition to removing the iommu mapping.  In the eviction
+>    * case (!close), we keep the iova allocated, but only remove the iommu
+> @@ -773,7 +773,7 @@ void msm_gem_purge(struct drm_gem_object *obj)
+>   			0, (loff_t)-1);
+>   }
+>   
+> -/**
+> +/*
+>    * Unpin the backing pages and make them available to be swapped out.
+>    */
+>   void msm_gem_evict(struct drm_gem_object *obj)
 > 
 
+
+-- 
+With best wishes
+Dmitry
