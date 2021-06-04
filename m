@@ -2,133 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9EE839AF3D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 02:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7403539AF3F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 02:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbhFDAye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 20:54:34 -0400
-Received: from mail-lj1-f173.google.com ([209.85.208.173]:42578 "EHLO
-        mail-lj1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbhFDAye (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 20:54:34 -0400
-Received: by mail-lj1-f173.google.com with SMTP id a4so9390208ljq.9
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 17:52:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CT2K/qS5lVIs3YEMDQdZKAD8IbCCmQONZ9+FgWAvX24=;
-        b=JOmB2bGuNQSVZesELXq7kgWG5GtOYXhL8kI/x3kQrNHvB7/M6fmmDaKhhsnlOeywzR
-         pUWUYbqF8f/aZ27tG2QiZSg793i3bBd89UkP2aCQMm5cKEQE5LRgha9N8azIYpZ8EnMA
-         Q932dDMGQt4UMgB1aq/XdlGEPRXTXr6HdmazmGBQ0P5LYdc8lP9NKZngQMYq51XpNB9r
-         O6uX2Tb3t4YL84IRQYvvC6SaUJMr9PDp5zC6rZ9dMfVRGi2UfwghPuN7hZRGsndI0ST+
-         PFhY2vqVwNrjH6h+YtALzUeOMjHf94TJ72x3BWZxTFWYyzd7pyDDb6VcXkVM3HXJ48SV
-         RKhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CT2K/qS5lVIs3YEMDQdZKAD8IbCCmQONZ9+FgWAvX24=;
-        b=JDvAhhIL9d+7OL01zxk/xUrapp52PA51I82kLv4VUS9bCKM1Yk6DLPbn1CyYNnZQYk
-         HSIgj4N7YMhrkosTe0NS2TqCN0pjCK69tfj4B/6r7jTWHFem1Jm2+2wBPrrZek1ir9gl
-         jCt+DmCDeFztsgLlTA+msSSvNlVR+krBXXnHozYrZ5XNhQDnGqMElpB0SDPe0LUlxMhq
-         xdIe5u4RSHKqcBZVCc8TeKkFffUMeX9RluRd0VYOkm/+kQu71+BwmJ0dTqpwbEj4J0d6
-         MLJAx/r+7nwlph9Exy8W5W/397W9jRuFFKSLECdovwLCnqZ+V/ymf/uzjroYcu2gKYQn
-         ptAg==
-X-Gm-Message-State: AOAM533tbfPdRTb2nfk4/vQ7kHpYduly0DLFf7jtytOfOA89J/S0VFQ+
-        IrIvjBZi7gFVdgczahRvOIY1KA==
-X-Google-Smtp-Source: ABdhPJwqxUWLj44z5pV1IxYjRC/4BbSsQYK/woXmzbgMRsur3QtiLC9JK1TbDTSqoIVXvRm2UjIBew==
-X-Received: by 2002:a2e:350f:: with SMTP id z15mr1394722ljz.303.1622767893346;
-        Thu, 03 Jun 2021 17:51:33 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id d24sm459811lfn.213.2021.06.03.17.51.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Jun 2021 17:51:33 -0700 (PDT)
-Subject: Re: [RESEND 14/26] drm/msm/dp/dp_link: Fix some potential doc-rot
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-References: <20210602143300.2330146-1-lee.jones@linaro.org>
- <20210602143300.2330146-15-lee.jones@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <c6f630b6-715a-2dec-0b91-f918adcbdbd3@linaro.org>
-Date:   Fri, 4 Jun 2021 03:51:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S229894AbhFDAzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 20:55:08 -0400
+Received: from mga02.intel.com ([134.134.136.20]:36109 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229685AbhFDAzH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 20:55:07 -0400
+IronPort-SDR: LAyw6PEjh3JepxGL3BDae/1ACGkFmiuz3ganwjiJDNIwKLolQG8WCTyouM7nW8XyQbMfyH58Ee
+ /0LoowOCc2cA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="191303467"
+X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
+   d="scan'208";a="191303467"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 17:53:22 -0700
+IronPort-SDR: Dt1yBIisBS7E7pnaPdDTaFMg8qtJ6qUEqvIhE4EYH32cYKF2/BohVcWZQQSBWnHSU1ycL3krxA
+ 3eRDbsvjvLUw==
+X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
+   d="scan'208";a="448072590"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 17:53:19 -0700
+From:   ira.weiny@intel.com
+To:     Ben Widawsky <ben.widawsky@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V3.1] cxl/mem: Reserve individual register block regions
+Date:   Thu,  3 Jun 2021 17:53:16 -0700
+Message-Id: <20210604005316.4187340-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
+In-Reply-To: <20210528004922.3980613-5-ira.weiny@intel.com>
+References: <20210528004922.3980613-5-ira.weiny@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210602143300.2330146-15-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/06/2021 17:32, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
->   drivers/gpu/drm/msm/dp/dp_link.c:374: warning: expecting prototype for dp_parse_video_pattern_params(). Prototype was for dp_link_parse_video_pattern_params() instead
->   drivers/gpu/drm/msm/dp/dp_link.c:573: warning: expecting prototype for dp_parse_phy_test_params(). Prototype was for dp_link_parse_phy_test_params() instead
->   drivers/gpu/drm/msm/dp/dp_link.c:975: warning: expecting prototype for dp_link_process_downstream_port_status_change(). Prototype was for dp_link_process_ds_port_status_change() instead
-> 
-> Cc: Rob Clark <robdclark@gmail.com>
-> Cc: Sean Paul <sean@poorly.run>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Chandan Uddaraju <chandanu@codeaurora.org>
-> Cc: Kuogee Hsieh <khsieh@codeaurora.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: freedreno@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+From: Ira Weiny <ira.weiny@intel.com>
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Some hardware implementations mix component and device registers into
+the same BAR and the driver stack is going to need independent mapping
+implementations for those 2 cases.  Furthermore, it will be nice to have
+finer grained mappings should user space want to map some register
+blocks.
 
-> ---
->   drivers/gpu/drm/msm/dp/dp_link.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_link.c b/drivers/gpu/drm/msm/dp/dp_link.c
-> index be986da78c4a5..1099604bd1c86 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_link.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_link.c
-> @@ -364,7 +364,7 @@ static int dp_link_parse_timing_params3(struct dp_link_private *link,
->   }
->   
->   /**
-> - * dp_parse_video_pattern_params() - parses video pattern parameters from DPCD
-> + * dp_link_parse_video_pattern_params() - parses video pattern parameters from DPCD
->    * @link: Display Port Driver data
->    *
->    * Returns 0 if it successfully parses the video link pattern and the link
-> @@ -563,7 +563,7 @@ static int dp_link_parse_link_training_params(struct dp_link_private *link)
->   }
->   
->   /**
-> - * dp_parse_phy_test_params() - parses the phy link parameters
-> + * dp_link_parse_phy_test_params() - parses the phy link parameters
->    * @link: Display Port Driver data
->    *
->    * Parses the DPCD (Byte 0x248) for the DP PHY link pattern that is being
-> @@ -961,7 +961,7 @@ static int dp_link_process_link_status_update(struct dp_link_private *link)
->   }
->   
->   /**
-> - * dp_link_process_downstream_port_status_change() - process port status changes
-> + * dp_link_process_ds_port_status_change() - process port status changes
->    * @link: Display Port Driver data
->    *
->    * This function will handle downstream port updates that are initiated by
-> 
+Now that individual register blocks are mapped; those blocks regions
+should be reserved individually to fully separate the register blocks.
 
+Release the 'global' memory reservation and create individual register
+block region reservations through devm.
 
+NOTE: pci_release_mem_regions() is still compatible with
+pcim_enable_device() because it removes the automatic region release
+when called.  So preserve the pcim_enable_device() so that the pcim
+interface can be called if needed.
+
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Link: https://lore.kernel.org/r/20210528004922.3980613-5-ira.weiny@intel.com
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+
+---
+Changes for v3.1
+
+	Fix 0-day warnings:
+
+>> drivers/cxl/core.c:96:4: warning: format specifies type 'unsigned long long' but the argument has type 'resource_size_t' (aka 'unsigned int') [-Wformat]
+                           addr, addr+length);
+---
+ drivers/cxl/core.c | 36 ++++++++++++++++++++++++++++++++----
+ drivers/cxl/pci.c  |  2 ++
+ 2 files changed, 34 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/cxl/core.c b/drivers/cxl/core.c
+index f836aaab03e0..c1efa11207b5 100644
+--- a/drivers/cxl/core.c
++++ b/drivers/cxl/core.c
+@@ -79,11 +79,33 @@ void cxl_probe_device_regs(struct device *dev, void __iomem *base,
+ }
+ EXPORT_SYMBOL_GPL(cxl_probe_device_regs);
+ 
++static void __iomem *devm_cxl_iomap_block(struct pci_dev *pdev,
++					  resource_size_t addr,
++					  resource_size_t length)
++{
++	struct device *dev = &pdev->dev;
++	void __iomem *ret_val;
++	struct resource *res;
++
++	res = devm_request_mem_region(dev, addr, length, pci_name(pdev));
++	if (!res) {
++		resource_size_t end = addr + length - 1;
++
++		dev_err(dev, "Failed to request region %pa-%pa\n", &addr, &end);
++		return NULL;
++	}
++
++	ret_val = devm_ioremap(dev, addr, length);
++	if (!ret_val)
++		dev_err(dev, "Failed to map region %pr\n", res);
++
++	return ret_val;
++}
++
+ int cxl_map_device_regs(struct pci_dev *pdev,
+ 			struct cxl_device_regs *regs,
+ 			struct cxl_register_map *map)
+ {
+-	struct device *dev = &pdev->dev;
+ 	resource_size_t phys_addr;
+ 
+ 	phys_addr = pci_resource_start(pdev, map->barno);
+@@ -95,7 +117,9 @@ int cxl_map_device_regs(struct pci_dev *pdev,
+ 
+ 		addr = phys_addr + map->device_map.status.offset;
+ 		length = map->device_map.status.size;
+-		regs->status = devm_ioremap(dev, addr, length);
++		regs->status = devm_cxl_iomap_block(pdev, addr, length);
++		if (!regs->status)
++			return -ENOMEM;
+ 	}
+ 
+ 	if (map->device_map.mbox.valid) {
+@@ -104,7 +128,9 @@ int cxl_map_device_regs(struct pci_dev *pdev,
+ 
+ 		addr = phys_addr + map->device_map.mbox.offset;
+ 		length = map->device_map.mbox.size;
+-		regs->mbox = devm_ioremap(dev, addr, length);
++		regs->mbox = devm_cxl_iomap_block(pdev, addr, length);
++		if (!regs->mbox)
++			return -ENOMEM;
+ 	}
+ 
+ 	if (map->device_map.memdev.valid) {
+@@ -113,7 +139,9 @@ int cxl_map_device_regs(struct pci_dev *pdev,
+ 
+ 		addr = phys_addr + map->device_map.memdev.offset;
+ 		length = map->device_map.memdev.size;
+-		regs->memdev = devm_ioremap(dev, addr, length);
++		regs->memdev = devm_cxl_iomap_block(pdev, addr, length);
++		if (!regs->memdev)
++			return -ENOMEM;
+ 	}
+ 
+ 	return 0;
+diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
+index 3ffd5fad74b4..e1a2dbc2886b 100644
+--- a/drivers/cxl/pci.c
++++ b/drivers/cxl/pci.c
+@@ -1110,6 +1110,8 @@ static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
+ 			goto free_maps;
+ 	}
+ 
++	pci_release_mem_regions(pdev);
++
+ 	list_for_each_entry(map, &register_maps, list) {
+ 		ret = cxl_map_regs(cxlm, map);
+ 		if (ret)
 -- 
-With best wishes
-Dmitry
+2.28.0.rc0.12.gb6a658bd00c9
+
