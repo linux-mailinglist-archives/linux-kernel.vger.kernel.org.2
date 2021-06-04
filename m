@@ -2,124 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A81939B0D4
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 05:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A4739B0DF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 05:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhFDDZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 23:25:27 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:42730 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229752AbhFDDZ0 (ORCPT
+        id S229921AbhFDD2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 23:28:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229718AbhFDD2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 23:25:26 -0400
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 1543NAX0031704
-        for <linux-kernel@vger.kernel.org>; Fri, 4 Jun 2021 12:23:11 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 1543NAX0031704
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1622776991;
-        bh=4ZgwLrSdL0ckNfaVKbFIuxYSiOqIzn7/uA3PaNeKOHs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oAqnyCjfxeEVNk8weaq7LPQmzv++IXw4cCCGEDQGHyzhCTOkgk8miy4DYws+Boy6q
-         /FoAduPGNonLt+JnBjAu4suQiZ+lzJjTI3TwcpTRkF9yvMq2eOCTyQxFp2O+ViytxX
-         TEQDZDGSpnomYLFSGIteAgmzdg1c5YLn6o1xjTmgIr0FO5dAuGMvbwtbD26x7xZwj+
-         qsDX6z2eRiBKk0tvRGMhC02WtZ7/DGAyQ4U/vF+lNbGVz8VdtryDB8hJsuRizHZZuG
-         swz8DolPgHyYFsMnAqprDb0LN6aI9Zxq3ZNRej/8F7RjnqVWE3xErsNKKNqb3EN3Ry
-         72Udmi3k1bEGQ==
-X-Nifty-SrcIP: [209.85.210.180]
-Received: by mail-pf1-f180.google.com with SMTP id t28so6443646pfg.10
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 20:23:11 -0700 (PDT)
-X-Gm-Message-State: AOAM533IScNKEfYmZEZbg7Yk9m1i5tyjBUgFcjjFfXhTF7YUqlOTJEKR
-        ER4+34aI7W4plfXfejE0Wc7zpwemlQT6HKY8JFU=
-X-Google-Smtp-Source: ABdhPJwzG6dSHDkc7BVXMtqRxyF+S5t5Z8JUeSsMbtmb2WyZtG7KGiugsfIlPZuGdXqAnpehOOn12LZfcI8pmop1wdE=
-X-Received: by 2002:aa7:99c9:0:b029:2e9:e084:e1de with SMTP id
- v9-20020aa799c90000b02902e9e084e1demr2482878pfi.80.1622776990547; Thu, 03 Jun
- 2021 20:23:10 -0700 (PDT)
+        Thu, 3 Jun 2021 23:28:02 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F70EC06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 20:26:05 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id r17so8069292qkp.10
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 20:26:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=dnq8bi4WgTB+aCPH1lNk5tI4fbv6Xg2se78kMTkHbnk=;
+        b=lSeSyo3iR3W+v7+Yz/7O/rtrgHddcmai7nJlBU3XmXwCvD5dZ5c0Xcy5YjoINAsUQX
+         A2gpNl6V6SvvkXsXT1QOF6yt8BTFGd9x6Dd06jt47pRrndNy7VCu0NwtFTIUM9AEsVSp
+         z4NYxvuFU8xHg8WvEr/U6vjxx+mclUNK47sEbYgS09ZEozrhzqMG7dP89vEDIEDwW2CI
+         h1z5L4dpPNrRgUNlKbxzyjiraJPkRhK9WJ+75mKz99agwViHC4Xsr38eVhD649GAkuun
+         voLxcQB/1gNUtNUOjf2iPZBcA6VHrowoLaY3A4VjuzXAWGb5oYUxP20GJX3jGNx9N68Q
+         nshQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=dnq8bi4WgTB+aCPH1lNk5tI4fbv6Xg2se78kMTkHbnk=;
+        b=gZJuDOvmwfiPfYzuDt5yMCh5z+l29/P1SdXLp7RbaMQ6TPTowBu9ajeCi/mzoL1vKR
+         63kxmSjpDYWR7ud9vwHY3NEDOhcwcRzR8ZdZdy1MvTBxjnxCBAK17CiyqnrBmnJBQplB
+         IwLqrmxZUw9R4lgueOx5kXTOlBz/7Qdusz/cGdKnqsq0/lwbSvxSlhN3oPdk031SR3jD
+         QcDkMM7W9TM09+aBAVGt4qlIlRGEOUeMccCHtBvOpzg4A5e0RRxoSRSmDVINOMG80vNO
+         RdkkJQERH8VBZd1Rjk2uvyTNJrQBfSRqhmVdTLWA1wfbjH69NmKdWKNywCXsg0aPivUb
+         an1w==
+X-Gm-Message-State: AOAM532ODz4I089oXoGiUK/ZZrI/vbXhY90xubc5n7/k6Ks1y3T8BaHM
+        nKEMlpjaA/uNT9q72JrT7znzOg==
+X-Google-Smtp-Source: ABdhPJwtC0zZZRQ+4Ojx/S//wpEjvhfB81RWQnckCOpv7r+YDSI8/bCcD23AnKjYlEIPZrENQe+1Gw==
+X-Received: by 2002:a05:620a:cd6:: with SMTP id b22mr840611qkj.471.1622777164282;
+        Thu, 03 Jun 2021 20:26:04 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id e24sm171621qtp.97.2021.06.03.20.26.03
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 03 Jun 2021 20:26:03 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 20:26:02 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Peter Xu <peterx@redhat.com>
+cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [PATCH] mm/swap: Fix pte_same_as_swp() not removing uffd-wp bit
+ when compare
+In-Reply-To: <20210603180546.9083-1-peterx@redhat.com>
+Message-ID: <alpine.LSU.2.11.2106032015250.12760@eggly.anvils>
+References: <20210603180546.9083-1-peterx@redhat.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-References: <YLeot94yAaM4xbMY@gmail.com> <CAK7LNAR54mOqEcUTUmEUfVAwA6XrGLr2J_3+v6fdys9tBLe28w@mail.gmail.com>
- <YLjNa7vaYOfVhBFm@gmail.com> <YLjOjZVetM4UbUPn@gmail.com>
-In-Reply-To: <YLjOjZVetM4UbUPn@gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 4 Jun 2021 12:22:33 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ73zG69F4hMJhgrHp8yT9tUmb-0tN=kFtWA98-YV3eNA@mail.gmail.com>
-Message-ID: <CAK7LNAQ73zG69F4hMJhgrHp8yT9tUmb-0tN=kFtWA98-YV3eNA@mail.gmail.com>
-Subject: Re: kbuild: Ctrl-C of parallel kernel build sometimes corrupts .o.cmd
- files permanently
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 9:44 PM Ingo Molnar <mingo@kernel.org> wrote:
->
->
-> * Ingo Molnar <mingo@kernel.org> wrote:
->
-> > >   CC      security/keys/keyctl_pkey.o
-> > >   CC      kernel/sys.o
-> > >   CC      arch/x86/power/hibernate_64.o
-> > > ^Cmake[5]: *** Deleting file 'drivers/video/fbdev/core/fbcmap.o'  <---- Deleting
-> > > make[5]: *** [scripts/Makefile.build:272:
-> > > drivers/video/fbdev/core/fbmon.o] Interrupt
-> > > make[3]: *** [scripts/Makefile.build:272: security/selinux/nlmsgtab.o] Interrupt
-> > > make[2]: *** [scripts/Makefile.build:272: arch/x86/power/cpu.o] Interrupt
-> > > make[2]: *** [scripts/Makefile.build:272:
-> >
-> > Interestingly I don't get *any* interruption messages at all:
-> >
-> >   CC      drivers/dma/dw/acpi.o
-> >   CC      sound/pci/ice1712/ice1712.o
-> >   CC      drivers/char/ipmi/ipmi_watchdog.o
-> >   CC      fs/overlayfs/export.o
-> >   CC      fs/nls/nls_cp936.o
-> >   CC      drivers/char/ipmi/ipmi_poweroff.o
-> >  ^Ckepler:~/tip>
-> >
-> > The '^C' there - it just stops, make never prints anything for me.
->
-> Found something - seems to be related whether the build is going into a
-> pipe or not.
->
->
-> I usually build this way (directly or via a script):
->
->    make -j96 bzImage ARCH=x86 2>&1 | tee e
->
-> Ctrl-C interruption is not handled by kbuild in this case:
->
->   CC      fs/jffs2/xattr_trusted.o
->   CC      sound/firewire/motu/motu-transaction.o
->   CC      sound/usb/clock.o
->   ^Ckepler:~/tip>
->
-> Immediate prompt - no cleanup sequence.
->
-> But if I do it without 'tee', I get the expected cleanup sequence by make:
->
->   kepler:~/tip> make -j96 bzImage ARCH=x86 2>&1
->
->   CC      fs/jffs2/acl.o
->   CC      sound/pci/echoaudio/mona.o
->   CC      fs/nls/nls_iso8859-9.o
->   ^Cmake[2]: *** Deleting file 'drivers/reset/core.o'
->     make[3]: *** Deleting file 'sound/pci/mixart/mixart.o'
->     make[3]: *** Deleting file 'sound/pci/emu10k1/voice.o'
->     make[2]: *** Deleting file 'fs/gfs2/aops.o'
->
-> Thanks,
->
->         Ingo
+On Thu, 3 Jun 2021, Peter Xu wrote:
 
+> I found it by pure code review, that pte_same_as_swp() of unuse_vma() didn't
 
+Yes, that is an odd corner, easily missed.
 
-Hmm, I do not know why GNU Make behaves like this...
+> take uffd-wp bit into account when comparing ptes.  pte_same_as_swp() returning
+> false negative could cause failure to swapoff swap ptes that was wr-protected
+> by userfaultfd.
+> 
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: Andrea Arcangeli <aarcange@redhat.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: Peter Xu <peterx@redhat.com>
 
-I will ask about this in GNU Make ML.
+I expect you're right: swapoff used to hang forever (but interruptibly)
+when this went wrong on powerpc originally.  I don't know the uffd_wp
+(nor the soft_dirty) end of it, but treating uffd_wp and soft_dirty
+together looks a very good approach, so I'll venture an
 
+Acked-by: Hugh Dickins <hughd@google.com>
 
--- 
-Best Regards
-Masahiro Yamada
+But I think it should have a uffd_wp Fixes tag and be Cc stable.
+
+> ---
+>  include/linux/swapops.h | 15 +++++++++++----
+>  mm/swapfile.c           |  2 +-
+>  2 files changed, 12 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/swapops.h b/include/linux/swapops.h
+> index af3d2661e41e..d356ab4047f7 100644
+> --- a/include/linux/swapops.h
+> +++ b/include/linux/swapops.h
+> @@ -23,6 +23,16 @@
+>  #define SWP_TYPE_SHIFT	(BITS_PER_XA_VALUE - MAX_SWAPFILES_SHIFT)
+>  #define SWP_OFFSET_MASK	((1UL << SWP_TYPE_SHIFT) - 1)
+>  
+> +/* Clear all flags but only keep swp_entry_t related information */
+> +static inline pte_t pte_swp_clear_flags(pte_t pte)
+> +{
+> +	if (pte_swp_soft_dirty(pte))
+> +		pte = pte_swp_clear_soft_dirty(pte);
+> +	if (pte_swp_uffd_wp(pte))
+> +		pte = pte_swp_clear_uffd_wp(pte);
+> +	return pte;
+> +}
+> +
+>  /*
+>   * Store a type+offset into a swp_entry_t in an arch-independent format
+>   */
+> @@ -66,10 +76,7 @@ static inline swp_entry_t pte_to_swp_entry(pte_t pte)
+>  {
+>  	swp_entry_t arch_entry;
+>  
+> -	if (pte_swp_soft_dirty(pte))
+> -		pte = pte_swp_clear_soft_dirty(pte);
+> -	if (pte_swp_uffd_wp(pte))
+> -		pte = pte_swp_clear_uffd_wp(pte);
+> +	pte = pte_swp_clear_flags(pte);
+>  	arch_entry = __pte_to_swp_entry(pte);
+>  	return swp_entry(__swp_type(arch_entry), __swp_offset(arch_entry));
+>  }
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 6212bc033602..1e07d1c776f2 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -1887,7 +1887,7 @@ unsigned int count_swap_pages(int type, int free)
+>  
+>  static inline int pte_same_as_swp(pte_t pte, pte_t swp_pte)
+>  {
+> -	return pte_same(pte_swp_clear_soft_dirty(pte), swp_pte);
+> +	return pte_same(pte_swp_clear_flags(pte), swp_pte);
+>  }
+>  
+>  /*
+> -- 
+> 2.31.1
