@@ -2,147 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3CCF39B46B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8E339B458
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbhFDH6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 03:58:43 -0400
-Received: from mail-bn7nam10on2081.outbound.protection.outlook.com ([40.107.92.81]:43840
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229958AbhFDH6m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 03:58:42 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S5tlwnbjHPL22haVzjpeS8KV715f92Q7uTU0wgqN1dUfre1BGOOEFEu1x3dRcYtjg21ZNx9bxD+6IAuRZym0EVj0BIq5Rdzx2KCOkK5m2lOtfcpLOEAwOEq8Nl7PHPny0NABlzreC6B5+idUPLl4G7vOPne+WmJ08LwSZZkFI2pBH+9N8om68pol4UlPpIVNd6tl4oPMyeQraioDG8TTrlzc4pEM8iHD7hqJFyzdCY/tHLdNBWxEiW89HSt7WXvNaqXe27w+Dt95eGBagfUsnDeZYiv7FXMRk4P2fmIcNPx8uIbxnUl2QUWNxObH9O0M5CzMAFRO9oilNYq/98rcZw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nouoCAuuwI3hgNGSq06x7QeaswJ9IEE3Vz4a3w+AOjo=;
- b=NStV2SgKni7eTtGTuyJmvPkl1M+bZACtHZeGAjS2DuSo82PCeid1L+RfThRHWAMRHVURKV23qYXy/O69CQADvNgyWJIvAvRkl+BeB0IG0XBf7DpJCNoSHLranz/7+EIiEVTJR9kPEDadDaPDii5AJVYyD8VMjUCEf0gesgPwHX0IDDz8XV8f0tnZB1uTF8WrwzI5thsKYlKzUXsLyNoVNDqMiABfO6jJy4DyxHHX5SCb69y6UCmxuptTISusjuaqzWtOv5XYoDEttAicDISKq+L+mHu7r0nooS4UqMHsRjPL57hUUnjwjA03q+91Zf2ZLUXj3EHS871R5N7vNAwLtQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nouoCAuuwI3hgNGSq06x7QeaswJ9IEE3Vz4a3w+AOjo=;
- b=5lpDdJBgNK19ExcEFNeGRvMNV9d6zat8Byy9ZTM0DAGYBpo3RZWdHFelrmHFsdPIlhH1xHxm06Kwq70kvKW59VBEUCzRHnHBWF4A3dhMZGuqF5nsKhnUktixjkoRTd1TlAFIowGBl9wouNbolRtHiedoKeiHKVFtbgzCuULe+J0=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4142.namprd12.prod.outlook.com (2603:10b6:208:1dd::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Fri, 4 Jun
- 2021 07:56:55 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6d4d:4674:1cf6:8d34]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6d4d:4674:1cf6:8d34%6]) with mapi id 15.20.4195.024; Fri, 4 Jun 2021
- 07:56:55 +0000
-Subject: Re: [PATCH] drm/amdgpu: remove redundant assignment of variable k
-To:     Colin King <colin.king@canonical.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>, Xinhui.Pan@amd.com,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210603123440.83936-1-colin.king@canonical.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <58be2108-ff6e-19c9-a10e-7ced547e2bb3@amd.com>
-Date:   Fri, 4 Jun 2021 09:52:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-In-Reply-To: <20210603123440.83936-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [178.202.40.45]
-X-ClientProxiedBy: PR2P264CA0031.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:101:1::19) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S230143AbhFDHyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 03:54:50 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3427 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229955AbhFDHyt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 03:54:49 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FxFKj22d1z6tsM;
+        Fri,  4 Jun 2021 15:50:01 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 4 Jun 2021 15:53:00 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 4 Jun 2021
+ 15:53:00 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Subject: Re: [PATCH net-next v6 3/5] page_pool: Allow drivers to hint on SKB
+ recycling
+To:     Matteo Croce <mcroce@linux.microsoft.com>,
+        <netdev@vger.kernel.org>, <linux-mm@kvack.org>
+CC:     Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        "Ilias Apalodimas" <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+References: <20210521161527.34607-1-mcroce@linux.microsoft.com>
+ <20210521161527.34607-4-mcroce@linux.microsoft.com>
+Message-ID: <badedf51-ce74-061d-732c-61d0678180b3@huawei.com>
+Date:   Fri, 4 Jun 2021 15:52:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.137.54] (178.202.40.45) by PR2P264CA0031.FRAP264.PROD.OUTLOOK.COM (2603:10a6:101:1::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.15 via Frontend Transport; Fri, 4 Jun 2021 07:56:53 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5afc996a-e828-4826-e759-08d9272e51de
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4142:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4142B172793B67B1BE0AF386833B9@MN2PR12MB4142.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UHSMDBkveqVthBRXs9IrzokwZtD7yH/8y09+W49wo+EudXwE64kD02Bldmf95vCESqGLRi/aKmULjS7scEISrmU5XH1twqW2Mv/xT0LrXfByur3GyHnyIdAC9kJopYStJ4aiF1wJAwkY7voKWCIRgoHQuTVWUVvshmV3jtBNslG1VRsEPRk+zav+prA9270ftWItBzYE5jQNBTQSetQb5W0InGqhMxLudQp/TvulC9C9o9g5wPMyJghnUOT1x3ffCFdPVU/FzY2Ob41REsFaAjY43rO+vD2LA3V5RjkZ6Wtx0bpGhw4gUXN2V/+ng8+HaJR9MX0Cu+hJH2kmwvDxtI47mUgmnXumuyAUCTgPTCVDbWZX1Zq+ew0DZ76YcOEs2qHQBsCtfGLF097d5hdxv1b15MZjROw8VIUf2zTqMZFhC1zsnPDsyxfAf6owjOzRtE2RHVPlXMTqjn8r1DUNS880iYAAoKaFA7czC3jacXevZwFZX+SeoCn+7xnFd6bM0r923FUtB98FRKkhM1mk+IHI7sopO1vg8DR3WIDm/AzO1z4nviGp+Hc2kGgZaTHR6SOdUm5qQe6F+yWAkBKThvJPzSj74TXMqzhTCn6z/g9GbkBPrTUEHYE3MDrTJp2msY+oLs8I1ans0N4iN1Z8iyI/ilrMQwJfdGRAhFIhhaIjUuxHnZfcqYxhn7gfw2BWiGUG07qwz9fAOi9Gb19v0g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(136003)(396003)(346002)(39860400002)(8676002)(4326008)(2906002)(6666004)(16576012)(31696002)(16526019)(66574015)(5660300002)(186003)(316002)(2616005)(110136005)(956004)(38100700002)(6486002)(86362001)(66476007)(66556008)(8936002)(31686004)(83380400001)(36756003)(66946007)(26005)(478600001)(129723003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cEF4ZDhxU1JERnFKUURuZWFFU2pNK0xhYnRQRDhFVVhjMkg1amJqVlhNby9B?=
- =?utf-8?B?bjhmcnpxUHd2Y2dncXhENktySG9ob0pxbDQ4N1ZRU0FQZy8xZkZmdkp1OHBo?=
- =?utf-8?B?dVhjZWF1MG9XU2FHN3VRRTNhcXdUbjRTSTFBanNoakllVWw1LzlBZ1VCQlVj?=
- =?utf-8?B?Z1ZVMUtqV3gxNDJiaWplQnc3QlVNUGt6OHVMVUJ1eHBHTkd5Y3o0blpWWTNt?=
- =?utf-8?B?L0szcDNUQWo2M2NVY3N5ZCtVVlBpcWxTU0pBU3YrUk1HUVhnV1d6cUF0bjlQ?=
- =?utf-8?B?MnUzUFczeDNidHFMUlpaQVRseXJvYzBVVC84ZTNDdExpUm1wZk5ZRFV3cXQ1?=
- =?utf-8?B?MXFwVVhmTzI0YTY3SnU1MmpROCtaQ09CeWdpbjlWYmJGOUFQdk9tL240Y0Qw?=
- =?utf-8?B?S2VyOTdpMHNyQWNhakpHcW04TGNXM05EbDdtSFEvMlZ2Z3lnYk14cEY5NXRS?=
- =?utf-8?B?S1N0VXcxQXhkUXMvWEtRT1VQa3BJaGxRbWUwLzZWclRoL2pPN3UwTGxjWUxU?=
- =?utf-8?B?SWhCbXMwM2UwRi9sNXk4WUxoU0VmS1Ywcjdyck02ZkFteXhaMlJHeHhIN0RD?=
- =?utf-8?B?anM1dG1qMzVHZFJGNEN0c0FtUjBLTHBxTDVMaGVkOWRDbi8wcVhrYzJhZ0sy?=
- =?utf-8?B?bDIvMGVPc0pqenZmd3ROUFFxNU13NEJNR0hMWHA3dktqVThTS0lVUEIvZ1Bj?=
- =?utf-8?B?UHVTejJ3c3Vrd3BBc3dKWi9RaUdIQmpTUUFTREU3VGtFdk1SUXBEbGRiUHc1?=
- =?utf-8?B?Zkt4ZU5JV0dHV2ZjUDUzazRJRitWY1RSRVVCcEt6ckt3Z0grRFhoOVJBZnVj?=
- =?utf-8?B?Q0hmWWE4Sm1LMFp1UzlNODNic21WWGh4QTFqZEd3Z1MwZDg0QXBDNWd3bmtK?=
- =?utf-8?B?c3ZNTmF6SmVsazlJc0VVcCtUMU1yaVdOeXgyOEZvQ3c5NXEwMHpScXRGQTRM?=
- =?utf-8?B?LzhjMmJQRVZIejkwMEpEQTZ1TDZCOEcrT01MUzd1Q012WVhWaUpRc2RVcnNp?=
- =?utf-8?B?U3MrYktMVE1ESWFNbzhsZHpQcnI5VmFHTGNnNVNjNGVFb3Q5ei84MUNyaUNL?=
- =?utf-8?B?MTluT2llZXdZQUpDRlNZVklIWWp1OWx5NjJvQUJJTXlOSlBnam1uYnpPRVRt?=
- =?utf-8?B?d3c5ZjlqSG0wdzV1Tm5lZ2RMam90STFVeVB6bGdUTTQzYWNPODRmVjRaY0JB?=
- =?utf-8?B?amdEYmdXMnFJK05jaGFhbnNGQzJWWWhtMis3TkovR05mRDd0MzdkNlFFeUx0?=
- =?utf-8?B?bk9QQjRJekJ0Ti8yZ1MvaThVY1F1V3hkVVlRdnVJNmRSeGd3Y2tkYm5wbk9G?=
- =?utf-8?B?em5kWFdUNkJ5dEdmN2lWTHBNb0dKbXFLTVBmaTB6L1VpakhjdktWMTJEZlM1?=
- =?utf-8?B?MkQ2bVNYYUFNMW93RGowNmx1dTVtVE5YVnVxbk5vaGVLamxia2RRM1dZejIr?=
- =?utf-8?B?dUZIVjRBV0svNENZZ0FTY0daMXJiMG9Ubjd5WUV5dVh2WUp5a25jMzF3VXc3?=
- =?utf-8?B?dW9EbzNZajYyVG0zNWZremdOVm5lWUxFS1VqT0JUTElrTXI1L1F5dmQwaWFn?=
- =?utf-8?B?Qzd5bFBNa3NBbFcrSE5PKzhiTENHQlp3aXVCRzJieXdpZ2dMZGxIL1BBbVVV?=
- =?utf-8?B?aS9pczJRM0pkTkFUYWw1TjFOSXkzaHErSzVibUMyRGhSMHFTL0hmUGo0cUVl?=
- =?utf-8?B?ZE10c3pUdCtZTVk3d0c1UktZZEloYUNINE5sd2l5bnNkVkZtU0h6UWxGRTN4?=
- =?utf-8?Q?ndxYf6S4aI6evqrwzNf1Wc8bBlSoPr651/fnX6Y?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5afc996a-e828-4826-e759-08d9272e51de
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2021 07:56:54.7296
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IdL79ywZMXRX+4QRLkw/hsd/LPP64O2q6KH171lnpfzywZvJHrkgYM0mRvOfpP3C
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4142
+In-Reply-To: <20210521161527.34607-4-mcroce@linux.microsoft.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme717-chm.china.huawei.com (10.1.199.113) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 03.06.21 um 14:34 schrieb Colin King:
-> From: Colin Ian King <colin.king@canonical.com>
->
-> The variable k is being assigned a value that is never read, the
-> assignment is redundant and can be removed.
->
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+On 2021/5/22 0:15, Matteo Croce wrote:
+> From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> 
+> Up to now several high speed NICs have custom mechanisms of recycling
+> the allocated memory they use for their payloads.
+> Our page_pool API already has recycling capabilities that are always
+> used when we are running in 'XDP mode'. So let's tweak the API and the
+> kernel network stack slightly and allow the recycling to happen even
+> during the standard operation.
+> The API doesn't take into account 'split page' policies used by those
+> drivers currently, but can be extended once we have users for that.
+> 
+> The idea is to be able to intercept the packet on skb_release_data().
+> If it's a buffer coming from our page_pool API recycle it back to the
+> pool for further usage or just release the packet entirely.
+> 
+> To achieve that we introduce a bit in struct sk_buff (pp_recycle:1) and
+> a field in struct page (page->pp) to store the page_pool pointer.
+> Storing the information in page->pp allows us to recycle both SKBs and
+> their fragments.
+> We could have skipped the skb bit entirely, since identical information
+> can bederived from struct page. However, in an effort to affect the free path
+> as less as possible, reading a single bit in the skb which is already
+> in cache, is better that trying to derive identical information for the
+> page stored data.
+> 
+> The driver or page_pool has to take care of the sync operations on it's own
+> during the buffer recycling since the buffer is, after opting-in to the
+> recycling, never unmapped.
+> 
+> Since the gain on the drivers depends on the architecture, we are not
+> enabling recycling by default if the page_pool API is used on a driver.
+> In order to enable recycling the driver must call skb_mark_for_recycle()
+> to store the information we need for recycling in page->pp and
+> enabling the recycling bit, or page_pool_store_mem_info() for a fragment.
 
-Reviewed-by: Christian König <christian.koenig@amd.com>
+The state of this patch in patchwork is "Not Applicable", so
+you may need to respin it again.
 
+Some minor comment below:
+
+> 
+> Co-developed-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Co-developed-by: Matteo Croce <mcroce@microsoft.com>
+> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+> Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
 > ---
->   drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-> index 2a7bed66d50b..f545dc1248b8 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-> @@ -278,7 +278,7 @@ static int amdgpu_amdkfd_remove_eviction_fence(struct amdgpu_bo *bo,
->   	write_seqcount_end(&resv->seq);
->   
->   	/* Drop the references to the removed fences or move them to ef_list */
-> -	for (i = j, k = 0; i < old->shared_count; ++i) {
-> +	for (i = j; i < old->shared_count; ++i) {
->   		struct dma_fence *f;
->   
->   		f = rcu_dereference_protected(new->shared[i],
+>  include/linux/skbuff.h  | 28 +++++++++++++++++++++++++---
+>  include/net/page_pool.h |  9 +++++++++
+>  net/core/page_pool.c    | 23 +++++++++++++++++++++++
+>  net/core/skbuff.c       | 24 ++++++++++++++++++++----
+>  4 files changed, 77 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> index 7fcfea7e7b21..057b40ad29bd 100644
+> --- a/include/linux/skbuff.h
+> +++ b/include/linux/skbuff.h
+> @@ -40,6 +40,9 @@
+>  #if IS_ENABLED(CONFIG_NF_CONNTRACK)
+>  #include <linux/netfilter/nf_conntrack_common.h>
+>  #endif
+> +#ifdef CONFIG_PAGE_POOL
+> +#include <net/page_pool.h>
+> +#endif
+>  
+>  /* The interface for checksum offload between the stack and networking drivers
+>   * is as follows...
+> @@ -667,6 +670,8 @@ typedef unsigned char *sk_buff_data_t;
+>   *	@head_frag: skb was allocated from page fragments,
+>   *		not allocated by kmalloc() or vmalloc().
+>   *	@pfmemalloc: skbuff was allocated from PFMEMALLOC reserves
+> + *	@pp_recycle: mark the packet for recycling instead of freeing (implies
+> + *		page_pool support on driver)
+>   *	@active_extensions: active extensions (skb_ext_id types)
+>   *	@ndisc_nodetype: router type (from link layer)
+>   *	@ooo_okay: allow the mapping of a socket to a queue to be changed
+> @@ -791,10 +796,12 @@ struct sk_buff {
+>  				fclone:2,
+>  				peeked:1,
+>  				head_frag:1,
+> -				pfmemalloc:1;
+> +				pfmemalloc:1,
+> +				pp_recycle:1; /* page_pool recycle indicator */
+
+The about comment seems unnecessary, for there is comment
+added above in this patch to explain that.
+
+>  #ifdef CONFIG_SKB_EXTENSIONS
+>  	__u8			active_extensions;
+>  #endif
+> +
+
+Unnecessary change?
+
+>  	/* fields enclosed in headers_start/headers_end are copied
+>  	 * using a single memcpy() in __copy_skb_header()
+>  	 */
+> @@ -3088,7 +3095,13 @@ static inline void skb_frag_ref(struct sk_buff *skb, int f)
+>   */
+>  static inline void __skb_frag_unref(skb_frag_t *frag, bool recycle)
+>  {
+> -	put_page(skb_frag_page(frag));
+> +	struct page *page = skb_frag_page(frag);
+> +
+> +#ifdef CONFIG_PAGE_POOL
+> +	if (recycle && page_pool_return_skb_page(page_address(page)))
+> +		return;
+> +#endif
+> +	put_page(page);
+>  }
+>  
+>  /**
+> @@ -3100,7 +3113,7 @@ static inline void __skb_frag_unref(skb_frag_t *frag, bool recycle)
+>   */
+>  static inline void skb_frag_unref(struct sk_buff *skb, int f)
+>  {
+> -	__skb_frag_unref(&skb_shinfo(skb)->frags[f], false);
+> +	__skb_frag_unref(&skb_shinfo(skb)->frags[f], skb->pp_recycle);
+>  }
+>  
+>  /**
+> @@ -4699,5 +4712,14 @@ static inline u64 skb_get_kcov_handle(struct sk_buff *skb)
+>  #endif
+>  }
+>  
+> +#ifdef CONFIG_PAGE_POOL
+> +static inline void skb_mark_for_recycle(struct sk_buff *skb, struct page *page,
+> +					struct page_pool *pp)
+> +{
+> +	skb->pp_recycle = 1;
+> +	page_pool_store_mem_info(page, pp);
+> +}
+> +#endif
+> +
+>  #endif	/* __KERNEL__ */
+>  #endif	/* _LINUX_SKBUFF_H */
+> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+> index b4b6de909c93..7b9b6a1c61f5 100644
+> --- a/include/net/page_pool.h
+> +++ b/include/net/page_pool.h
+> @@ -146,6 +146,8 @@ inline enum dma_data_direction page_pool_get_dma_dir(struct page_pool *pool)
+>  	return pool->p.dma_dir;
+>  }
+>  
+> +bool page_pool_return_skb_page(void *data);
+> +
+>  struct page_pool *page_pool_create(const struct page_pool_params *params);
+>  
+>  #ifdef CONFIG_PAGE_POOL
+> @@ -251,4 +253,11 @@ static inline void page_pool_ring_unlock(struct page_pool *pool)
+>  		spin_unlock_bh(&pool->ring.producer_lock);
+>  }
+>  
+> +/* Store mem_info on struct page and use it while recycling skb frags */
+> +static inline
+> +void page_pool_store_mem_info(struct page *page, struct page_pool *pp)
+
+The conventional practice seems to put "struct page_pool" before other
+parameter in page_pool.h.
+
+> +{
+> +	page->pp = pp;
+> +}
+> +
+>  #endif /* _NET_PAGE_POOL_H */
+> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> index e1321bc9d316..2a020cca489f 100644
+> --- a/net/core/page_pool.c
+> +++ b/net/core/page_pool.c
+> @@ -628,3 +628,26 @@ void page_pool_update_nid(struct page_pool *pool, int new_nid)
+>  	}
+>  }
+>  EXPORT_SYMBOL(page_pool_update_nid);
+> +
+> +bool page_pool_return_skb_page(void *data)
+> +{
+> +	struct page_pool *pp;
+> +	struct page *page;
+> +
+> +	page = virt_to_head_page(data);
+> +	if (unlikely(page->pp_magic != PP_SIGNATURE))
+> +		return false;
+> +
+> +	pp = (struct page_pool *)page->pp;
+> +
+> +	/* Driver set this to memory recycling info. Reset it on recycle.
+> +	 * This will *not* work for NIC using a split-page memory model.
+> +	 * The page will be returned to the pool here regardless of the
+> +	 * 'flipped' fragment being in use or not.
+> +	 */
+
+I am not sure I understand how does the last part of comment related
+to the code below, as there is no driver using split-page memory model
+will reach here because those driver will not call skb_mark_for_recycle(),
+right?
+
+> +	page->pp = NULL;
+> +	page_pool_put_full_page(pp, virt_to_head_page(data), false);
+> +
+> +	return true;
+> +}
+> +EXPORT_SYMBOL(page_pool_return_skb_page);
 
