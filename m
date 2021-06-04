@@ -2,92 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB6E39BDFB
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 947B039BDFD
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbhFDRGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 13:06:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbhFDRGT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 13:06:19 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5CB8C061766;
-        Fri,  4 Jun 2021 10:04:32 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id 200A01F43A0D
-Subject: Re: [PATCH v4 00/15] Add futex2 syscalls
-To:     Zebediah Figura <z.figura12@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     kernel@collabora.com, krisman@collabora.com,
-        pgriffais@valvesoftware.com, joel@joelfernandes.org,
-        malteskarupke@fastmail.fm, linux-api@vger.kernel.org,
-        fweimer@redhat.com, libc-alpha@sourceware.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org, acme@kernel.org,
-        corbet@lwn.net, Peter Oskolkov <posk@posk.io>,
-        Andrey Semashev <andrey.semashev@gmail.com>,
-        Davidlohr Bueso <dave@stgolabs.net>
-References: <20210603195924.361327-1-andrealmeid@collabora.com>
- <dab34fd2-b494-8686-bcd7-68beeba4f386@gmail.com>
-From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
-Message-ID: <d3d2a8f9-4a5e-fff5-c0f3-2563366b4c11@collabora.com>
-Date:   Fri, 4 Jun 2021 14:04:21 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S230425AbhFDRG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 13:06:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40854 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230370AbhFDRG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 13:06:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35E31613F9;
+        Fri,  4 Jun 2021 17:04:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622826281;
+        bh=fZj+CPZxWhDStdJaFlv4f+84Dx/Uuufl3Qk9TqS2KzY=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=W0ZC6bs1DluChxI7cTtGp5v4G94sW1V6HClXLoQP9nqrYHsrwNFIBAbEe52mWlddj
+         80DfOqJkCw1X2BnowZKpA6/biq05zRb2ZXyQMUaMmoQk4EZv+TE/U3lWH9PsmOZiiY
+         G46NIGYfGKnnH4AJ2LWCYgIawlRqqkl0eVVUXDbwt4Aehvos4P//5W32z60bQ9Sr2p
+         rKfl7ouN17JdHSql2QTgtEwc0CoL2Z/LU7ojUH7lxulhgYTOs4As4L2hbitLCsDLr0
+         OpoUGaJF6+kUngxmtuJqcZ7Z682ncJb+6kTFDZN1rV5Kx1f8s6x27jeoJRXQy7RumI
+         RFhWBL7Q+Z92w==
+Subject: Re: [PATCH v3 1/1] pgo: Fix allocate_node() v2
+To:     Jarmo Tiitto <jarmo.tiitto@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Bill Wendling <wcw@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+Cc:     morbo@google.com
+References: <20210604165819.7947-1-jarmo.tiitto@gmail.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <b04bafeb-541b-b1e7-9fbc-66bd1a04916f@kernel.org>
+Date:   Fri, 4 Jun 2021 10:04:40 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <dab34fd2-b494-8686-bcd7-68beeba4f386@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210604165819.7947-1-jarmo.tiitto@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Às 01:51 de 04/06/21, Zebediah Figura escreveu:
-> On 6/3/21 2:59 PM, André Almeida wrote:
->>   ** The wait on multiple problem
->>
->>   The use case lies in the Wine implementation of the Windows NT
->> interface
->>   WaitMultipleObjects. This Windows API function allows a thread to sleep
->>   waiting on the first of a set of event sources (mutexes, timers,
->> signal,
->>   console input, etc) to signal.  Considering this is a primitive
->>   synchronization operation for Windows applications, being able to
->> quickly
->>   signal events on the producer side, and quickly go to sleep on the
->>   consumer side is essential for good performance of those running
->> over Wine.
->>
+On 6/4/2021 9:58 AM, Jarmo Tiitto wrote:
+> When clang instrumentation eventually calls allocate_node()
+> the struct llvm_prf_data *p argument tells us from what section
+> we should reserve the vnode: It either points into vmlinux's
+> core __llvm_prf_data section or some loaded module's
+> __llvm_prf_data section.
 > 
-> I know this is part of the cover letter, but I really do want to clarify
-> that this isn't really accurate. The use case that this is referring to
-> is not "the Wine implementation of WaitForMultipleObjects", it is an
-> out-of-tree implementation of WaitForMultipleObjects that provides
-> improved performance compared to the in-tree implementation.
+> But since we don't have access to corresponding
+> __llvm_prf_vnds section(s) for any module, the function
+> should return just NULL and ignore any profiling attempts
+> from modules for now.
 > 
-> This is especially salient because:
-> 
-> (1) this out-of-tree implementation is only in a small handful of cases
-> any more performant than a different out-of-tree implementation which
-> uses eventfd and poll() instead;
-> 
-> (2) these implementations will remain out-of-tree due to compatibility
-> and robustness problems;
-> 
-> (3) I believe there is potential for an upstreamable implementation
-> which does not rely on futex or futex2.
+> Signed-off-by: Jarmo Tiitto <jarmo.tiitto@gmail.com>
 
-I'll let it more clear next time that this applies to Proton's Wine, and
-not Wine.
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-Along with that, wait on multiple will be useful for other workloads,
-such as the ones that uses Boost's mass locking algorithms and native
-game engines for instance.
+> ---
+> Based on Kees and others feedback here is v3 patch
+> that clarifies why the current checks in allocate_node()
+> are flawed. I did fair amount of KGDB time on it.
+> 
+> The commit is based on kees/for-next/clang/features tree,
+> hopefully this is ok. Should I have based it on linux-next
+> instead?
+> 
+> I grep -R'd where the memory_contains() can be found and it is only
+> found in #include <asm-generic/sections.h>
+> 
+> I cross my fingers and await if this is my first accepted patch. :-)
+> ---
+>   kernel/pgo/instrument.c | 23 ++++++++++++++---------
+>   1 file changed, 14 insertions(+), 9 deletions(-)
+> 
+> diff --git a/kernel/pgo/instrument.c b/kernel/pgo/instrument.c
+> index 0e07ee1b17d9..c69b4f7ebaad 100644
+> --- a/kernel/pgo/instrument.c
+> +++ b/kernel/pgo/instrument.c
+> @@ -18,6 +18,7 @@
+>   
+>   #define pr_fmt(fmt)	"pgo: " fmt
+>   
+> +#include <asm-generic/sections.h>
+>   #include <linux/bitops.h>
+>   #include <linux/kernel.h>
+>   #include <linux/export.h>
+> @@ -55,17 +56,21 @@ void prf_unlock(unsigned long flags)
+>   static struct llvm_prf_value_node *allocate_node(struct llvm_prf_data *p,
+>   						 u32 index, u64 value)
+>   {
+> -	if (&__llvm_prf_vnds_start[current_node + 1] >= __llvm_prf_vnds_end)
+> -		return NULL; /* Out of nodes */
+> -
+> -	current_node++;
+> -
+> -	/* Make sure the node is entirely within the section */
+> -	if (&__llvm_prf_vnds_start[current_node] >= __llvm_prf_vnds_end ||
+> -	    &__llvm_prf_vnds_start[current_node + 1] > __llvm_prf_vnds_end)
+> +	const int max_vnds = prf_vnds_count();
+> +
+> +	/*
+> +	 * Check that p is within vmlinux __llvm_prf_data section.
+> +	 * If not, don't allocate since we can't handle modules yet.
+> +	 */
+> +	if (!memory_contains(__llvm_prf_data_start,
+> +		__llvm_prf_data_end, p, sizeof(*p)))
+>   		return NULL;
+>   
+> -	return &__llvm_prf_vnds_start[current_node];
+> +	if (WARN_ON_ONCE(current_node >= max_vnds))
+> +		return NULL; /* Out of nodes */
+> +
+> +	/* reserve vnode for vmlinux */
+> +	return &__llvm_prf_vnds_start[current_node++];
+>   }
+>   
+>   /*
+> 
+> base-commit: 5d0cda65918279ada060417c5fecb7e86ccb3def
+> 
+
