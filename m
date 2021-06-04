@@ -2,83 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60D6139B442
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC07039B444
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbhFDHsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 03:48:15 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:4355 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230098AbhFDHsL (ORCPT
+        id S230213AbhFDHsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 03:48:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229962AbhFDHsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 03:48:11 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FxF990qr5z68CZ;
-        Fri,  4 Jun 2021 15:42:37 +0800 (CST)
-Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 4 Jun 2021 15:46:22 +0800
-Received: from huawei.com (10.69.192.56) by dggpeml500012.china.huawei.com
- (7.185.36.15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 4 Jun 2021
- 15:46:22 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <gregkh@linuxfoundation.org>,
-        <linux-accelerators@lists.ozlabs.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <zhangfei.gao@linaro.org>, <wangzhou1@hisilicon.com>,
-        <yekai13@huawei.com>
-Subject: [PATCH] uacce: add print information if not enable sva
-Date:   Fri, 4 Jun 2021 15:46:09 +0800
-Message-ID: <1622792769-28017-1-git-send-email-yekai13@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        Fri, 4 Jun 2021 03:48:40 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306EDC06174A
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 00:46:54 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id p17so11923633lfc.6
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 00:46:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GGN1e1fZoVLsGZaUqzYtHHdtjrUyCytvAb6o6aP63HM=;
+        b=msrHTL2y69s+2YhUz62/tGOY+yuNUCSTYg7AhCClV9WNnzICXVziI/JAguQAmC1wqt
+         JzQYum0jXmtr+9iCgwqdBn5lLZOmJlhDXHV3wIfxkqDaA1mo3QqC5GRcYjkUpzzRYgqy
+         lgo1BqhA3m4EaTUOsOwC0a99cWgorgIMboTGVgXxSCm4RcwlKx5mew8lm89LZE3E4piW
+         WMJgrr2t0UVMV2Zq089Dm8Cj4hs/Uf2km5Z2XzhXJNphTurkF9AhNdmGy2WT3iN7dRrZ
+         wv0LDRZbQfcfcTTvFKgoHyKAkP6iX8yEomauy5oEvl2ltflW0GY5IwrbbGMd1KUeqz3U
+         cIUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GGN1e1fZoVLsGZaUqzYtHHdtjrUyCytvAb6o6aP63HM=;
+        b=SWpkvCBIUt6ccZvROI0eCaeVrl3pFDLrdc0i3zKK04XHAcAiboO+bJ5BZedifg0frz
+         DYIT7PhROkvURUOeNxfP4LOiNOygLadmPm9SK19rnbPCQ/RcJHGDRlDbYQDJekOfScg3
+         W0pQg/PtApwE22JS2fKvD2ZCeIrOX3SFIYi3PzXosDyaYJlH6n4011JC4ivTCF+tF6um
+         onh5JQ1jlfuZyXZYUqeirDzKfvtDgH/z0YuFb7O4cRKD95fVxqTNgz/+OvTHmt3U4NRB
+         OVRf+zrClokI0WGC5D+h7g4U7pUqeBVJsA+travKlQ3YeLXEH4XF8VdMfVG+GWA70DHr
+         7mpw==
+X-Gm-Message-State: AOAM530x2DygWP7ds/m9uDowtj96SnuujbikCop9QSJkCav5HNkwh31p
+        LeIiCFUFsGIHNIlD1hRKCjtx5uj3TVahhIE/o/krzg==
+X-Google-Smtp-Source: ABdhPJzzCT+RNeP+IY7pbsrAJ1fgWD4dRQI+FAzSlryTiYVtiWkwluM+NFAnLXRjMkG5dfHS0DGoYhOnadRzVoqCYg0=
+X-Received: by 2002:a05:6512:3241:: with SMTP id c1mr2003330lfr.29.1622792812519;
+ Fri, 04 Jun 2021 00:46:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
+References: <20210602073820.11011-1-thunder.leizhen@huawei.com> <20210602073820.11011-9-thunder.leizhen@huawei.com>
+In-Reply-To: <20210602073820.11011-9-thunder.leizhen@huawei.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 4 Jun 2021 09:46:41 +0200
+Message-ID: <CACRpkdZ07GnpfYM0+9XN_Gx0-boQiNSc5ZarB=3fH2w3EuOp1g@mail.gmail.com>
+Subject: Re: [PATCH 8/8] rtc: ab8500: use DEVICE_ATTR_RW macro
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Joshua Kinard <kumba@gentoo.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-rtc <linux-rtc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add print information necessary if user not enable sva.
+On Wed, Jun 2, 2021 at 9:38 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
----
- drivers/misc/uacce/uacce.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+> Use DEVICE_ATTR_RW macro helper instead of plain DEVICE_ATTR, which makes
+> the code a bit shorter and easier to read.
+>
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
-diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
-index bae18ef0..fe38af8 100644
---- a/drivers/misc/uacce/uacce.c
-+++ b/drivers/misc/uacce/uacce.c
-@@ -387,15 +387,22 @@ static void uacce_release(struct device *dev)
- 
- static unsigned int uacce_enable_sva(struct device *parent, unsigned int flags)
- {
-+	int ret;
-+
- 	if (!(flags & UACCE_DEV_SVA))
- 		return flags;
- 
- 	flags &= ~UACCE_DEV_SVA;
- 
--	if (iommu_dev_enable_feature(parent, IOMMU_DEV_FEAT_IOPF))
-+	ret = iommu_dev_enable_feature(parent, IOMMU_DEV_FEAT_IOPF);
-+	if (ret) {
-+		dev_err(parent, "failed to enable IOPF feature! ret = %d\n", ret);
- 		return flags;
-+	}
- 
--	if (iommu_dev_enable_feature(parent, IOMMU_DEV_FEAT_SVA)) {
-+	ret = iommu_dev_enable_feature(parent, IOMMU_DEV_FEAT_SVA);
-+	if (ret) {
-+		dev_err(parent, "failed to enable SVA feature! ret = %d\n", ret);
- 		iommu_dev_disable_feature(parent, IOMMU_DEV_FEAT_IOPF);
- 		return flags;
- 	}
--- 
-2.7.4
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
+Yours,
+Linus Walleij
