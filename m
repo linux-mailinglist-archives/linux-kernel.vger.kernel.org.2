@@ -2,86 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48BE039C184
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA46839C187
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbhFDUpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 16:45:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41094 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229913AbhFDUpD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 16:45:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7435C61287;
-        Fri,  4 Jun 2021 20:43:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622839396;
-        bh=Cxwuw6Sa1Plkd7To8z114JW5us72uxFhRTVu60Ncmgk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=STs4VvQav7n0qg/gh/cXEx1jFMFOEOvltkWvi/J8D/Tc7emKxUM7v2AcljwSDmDbA
-         o06MbZ2dF3OBzVI0tnB7iCSz1WEA5zgTZKjF5pliEzij/iOh+0p65lTdQO3K7abNrN
-         s5uMYjfPMHKnK8m6jissocERMuz0/MU9V9V7MbHK/qQMqAfBXtq/dtizjk0XZAx4+0
-         iHdgUtsyPw/UDiFWaLyrvu7kMhMA1/Aq2frI+MzTlN9d/TBOQWywRwmuwndaMHySTF
-         +SMBuLBWbhkpM8Aky4rpfL9R83BcSJYba0hIb98PoFqJLzajbogZO2GJoPgNoxl4fR
-         7RL4cBZD10neg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4C4B05C02AB; Fri,  4 Jun 2021 13:43:16 -0700 (PDT)
-Date:   Fri, 4 Jun 2021 13:43:16 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Segher Boessenkool <segher@kernel.crashing.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <20210604204316.GA4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
- <CAHk-=wievFk29DZgFLEFpH9yuZ0jfJqppLTJnOMvhe=+tDqgrw@mail.gmail.com>
- <YLpWwm1lDwBaUven@hirez.programming.kicks-ass.net>
- <CAHk-=wjf-VJZd3Uxv3T3pSJYYVzyfK2--znG0VEOnNRchMGgdQ@mail.gmail.com>
- <20210604172407.GJ18427@gate.crashing.org>
- <20210604191756.GE68208@worktop.programming.kicks-ass.net>
+        id S231326AbhFDUqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 16:46:30 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:43882 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229913AbhFDUq2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 16:46:28 -0400
+Received: from [192.168.254.32] (unknown [47.187.214.213])
+        by linux.microsoft.com (Postfix) with ESMTPSA id B81E420B7178;
+        Fri,  4 Jun 2021 13:44:40 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B81E420B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1622839481;
+        bh=TEj7EM3o5+98uJz07bRAjergvchDlGPCV6FJpuSvx4o=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=HouYNKoOc/HyfaQL1LCJbvsjnCx3jzuuAqk6uTacGwD253S95a3gu4rFYA4RAurVy
+         7ZicmjTFGm48ks6edRn8/E2mK4FrqUfA2BmC8/oGFKkyk+8VZ6M3alaa9PvjEQcxyg
+         vqo9nXtlvpetxo72bR+nFtDAIA1Xgm5aYcKeBA4c=
+Subject: Re: [RFC PATCH v5 0/2] arm64: Implement stack trace reliability
+ checks
+To:     Mark Brown <broonie@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     jpoimboe@redhat.com, ardb@kernel.org, nobuta.keiya@fujitsu.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        pasha.tatashin@soleen.com, jthierry@redhat.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <ea0ef9ed6eb34618bcf468fbbf8bdba99e15df7d>
+ <20210526214917.20099-1-madvenka@linux.microsoft.com>
+ <20210604152908.GD4045@sirena.org.uk>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <3e3fdff0-26ed-e786-e570-3f569bda1609@linux.microsoft.com>
+Date:   Fri, 4 Jun 2021 15:44:39 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604191756.GE68208@worktop.programming.kicks-ass.net>
+In-Reply-To: <20210604152908.GD4045@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 09:17:56PM +0200, Peter Zijlstra wrote:
-> On Fri, Jun 04, 2021 at 12:24:07PM -0500, Segher Boessenkool wrote:
-> > On Fri, Jun 04, 2021 at 10:10:29AM -0700, Linus Torvalds wrote:
-> > > The compiler *cannot* just say "oh, I'll do that 'volatile asm
-> > > barrier' whether the condition is true or not". That would be a
-> > > fundamental compiler bug.
-> > 
-> > Yes.
+Hi Mark Rutland,
+
+Could you please review this patch series when you get a chance?
+I would really like to get a confirmation from you that there
+are no gaps in this.
+
+Thanks in advance!
+
+Madhavan
+
+On 6/4/21 10:29 AM, Mark Brown wrote:
+> On Wed, May 26, 2021 at 04:49:15PM -0500, madvenka@linux.microsoft.com wrote:
+>> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+>>
+>> There are a number of places in kernel code where the stack trace is not
+>> reliable. Enhance the unwinder to check for those cases and mark the
+>> stack trace as unreliable. Once all of the checks are in place, the unwinder
 > 
-> So we can all agree on something like this?
+> Reviewed-by: Mark Brown <broonie@kernel.org>
 > 
-> #define volatile_if(x) \
-> 	if (({ _Bool __x = (x); BUILD_BUG_ON(__builtin_constant_p(__x)); __x; }) && \
-> 	    ({ barrier(); 1; }))
-
-As long as this prevents compilers from causing trouble with things like
-conditional-move instructions, I am good.  I don't know that this trouble
-actually exists, but I never have been able to get official confirmation
-one way or the other.  :-/
-
-> Do we keep volatile_if() or do we like ctrl_dep_if() better?
-
-I like ctrl_dep_if() because that is what it does, but I don't feel all
-that strongly about it.
-
-							Thanx, Paul
