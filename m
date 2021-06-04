@@ -2,126 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F56A39B850
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E678639B846
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbhFDLxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 07:53:54 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:36185 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230241AbhFDLxx (ORCPT
+        id S230192AbhFDLvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 07:51:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229682AbhFDLvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 07:53:53 -0400
-Received: (Authenticated sender: alex@ghiti.fr)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id A0A78240007;
-        Fri,  4 Jun 2021 11:52:03 +0000 (UTC)
-From:   Alexandre Ghiti <alex@ghiti.fr>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Zong Li <zong.li@sifive.com>, Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Alexandre Ghiti <alex@ghiti.fr>
-Subject: [PATCH v4 2/4] riscv: Simplify xip and !xip kernel address conversion macros
-Date:   Fri,  4 Jun 2021 13:49:48 +0200
-Message-Id: <20210604114950.1446390-3-alex@ghiti.fr>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210604114950.1446390-1-alex@ghiti.fr>
-References: <20210604114950.1446390-1-alex@ghiti.fr>
+        Fri, 4 Jun 2021 07:51:50 -0400
+Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C51D7C06174A
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 04:49:50 -0700 (PDT)
+Received: by mail-vs1-xe31.google.com with SMTP id s22so4643846vsl.10
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 04:49:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=untar.ac.id; s=google;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=KoVXD4hXjAwcRHpgyIgGvnbN47gdGdfpD2E5P919h+M=;
+        b=mVVF17Yc4hF8UypCLLhmHs1wbNdjysSptca9Eb73abru2nsl55luorb7EAxpqik9ii
+         pIH8N6zwCyxu9r/ADnxV7q/XbXmBejnzHFyRz9ppmSmU5uEH8Tb6mrAa83qj31rDPGu2
+         vQv5DMxI5o/+VYKgP0EnQ0OzGrQgrwoMJ9xps=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=KoVXD4hXjAwcRHpgyIgGvnbN47gdGdfpD2E5P919h+M=;
+        b=masPmUdlZTaQrJ9mbqVQBBK81QdR+lH0VbZgPOycFIIozvvts+W15CYgPrhbx6RRtZ
+         ydpShVUEpTUpjBZzTBlxVpHP6r17K9+TIFnVPhvnDD2zkoqqgWFqjbWu2z4SruSYi2Wa
+         lcvoUXm3DfaOfoP5Up3ZQ6smmxiI6DXW6Avr4c/Vn/c7kVK8pGKt9W/UaEyV1Ah8dY7J
+         IPuYsEXrNOZN2Lp2NhDAP3k3/vqhwgzTAQHzVFoaBjg4C0S0ZEc0cJWrKW/C4qVDx2L9
+         02U3qH3OvtqU/xdNeDUK//YlEloVXlT/Q8At78ic6Iw2oXcxZjrFmWJEqUfUUPhUYdKE
+         9HSA==
+X-Gm-Message-State: AOAM533/cU4/A0C9cQGSBrrgSbQTpV8J1GrRElzLF26TT+z3TrmxLpVE
+        BDDQE8ChmeqPc3Hb1LxoLLi0BMjrqIQk4HHPjBE2ng==
+X-Google-Smtp-Source: ABdhPJxLKI+d2VAr5D5DFgbvkDFdfNGyQojn7JxbgPY5sAYDZOsCVKAQ+A+rVI+kyIwAO0k/cb+VUrBuVmvVz3N0fW0=
+X-Received: by 2002:a67:e9cc:: with SMTP id q12mr1766650vso.53.1622807389856;
+ Fri, 04 Jun 2021 04:49:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:ab0:6cb3:0:0:0:0:0 with HTTP; Fri, 4 Jun 2021 04:49:49 -0700 (PDT)
+Reply-To: mesquitamario121@gmail.com
+From:   fast track agent <prijatmadit@pps.untar.ac.id>
+Date:   Fri, 4 Jun 2021 04:49:49 -0700
+Message-ID: <CAGc53AoUJSQsFBhoKf5BezzOuuD=DrgKphqHEZj2x-CWzpd_Lg@mail.gmail.com>
+Subject: urgent attention
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To simplify the kernel address conversion code, make the same definition of
-kernel_mapping_pa_to_va and kernel_mapping_va_to_pa compatible for both xip
-and !xip kernel by defining XIP_OFFSET to 0 in !xip kernel.
+OWNER OF ATM CARD !!
 
-Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
-Reviewed-by: Anup Patel <anup@brainfault.org>
----
- arch/riscv/include/asm/page.h    | 14 +++-----------
- arch/riscv/include/asm/pgtable.h |  2 ++
- 2 files changed, 5 insertions(+), 11 deletions(-)
-
-diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
-index 6a7761c86ec2..6e004d8fda4d 100644
---- a/arch/riscv/include/asm/page.h
-+++ b/arch/riscv/include/asm/page.h
-@@ -93,9 +93,7 @@ extern unsigned long va_pa_offset;
- #ifdef CONFIG_64BIT
- extern unsigned long va_kernel_pa_offset;
- #endif
--#ifdef CONFIG_XIP_KERNEL
- extern unsigned long va_kernel_xip_pa_offset;
--#endif
- extern unsigned long pfn_base;
- #define ARCH_PFN_OFFSET		(pfn_base)
- #else
-@@ -103,6 +101,7 @@ extern unsigned long pfn_base;
- #ifdef CONFIG_64BIT
- #define va_kernel_pa_offset	0
- #endif
-+#define va_kernel_xip_pa_offset 0
- #define ARCH_PFN_OFFSET		(PAGE_OFFSET >> PAGE_SHIFT)
- #endif /* CONFIG_MMU */
- 
-@@ -110,29 +109,22 @@ extern unsigned long kernel_virt_addr;
- 
- #ifdef CONFIG_64BIT
- #define linear_mapping_pa_to_va(x)	((void *)((unsigned long)(x) + va_pa_offset))
--#ifdef CONFIG_XIP_KERNEL
- #define kernel_mapping_pa_to_va(y)	({						\
- 	unsigned long _y = y;								\
- 	(_y >= CONFIG_PHYS_RAM_BASE) ?							\
- 		(void *)((unsigned long)(_y) + va_kernel_pa_offset + XIP_OFFSET) :	\
- 		(void *)((unsigned long)(_y) + va_kernel_xip_pa_offset);		\
- 	})
--#else
--#define kernel_mapping_pa_to_va(x)	((void *)((unsigned long)(x) + va_kernel_pa_offset))
--#endif
- #define __pa_to_va_nodebug(x)		linear_mapping_pa_to_va(x)
- 
- #define linear_mapping_va_to_pa(x)	((unsigned long)(x) - va_pa_offset)
--#ifdef CONFIG_XIP_KERNEL
- #define kernel_mapping_va_to_pa(y) ({						\
- 	unsigned long _y = y;							\
- 	(_y < kernel_virt_addr + XIP_OFFSET) ?					\
- 		((unsigned long)(_y) - va_kernel_xip_pa_offset) :		\
- 		((unsigned long)(_y) - va_kernel_pa_offset - XIP_OFFSET);	\
- 	})
--#else
--#define kernel_mapping_va_to_pa(x)	((unsigned long)(x) - va_kernel_pa_offset)
--#endif
-+
- #define __va_to_pa_nodebug(x)	({						\
- 	unsigned long _x = x;							\
- 	(_x < kernel_virt_addr) ?						\
-@@ -141,7 +133,7 @@ extern unsigned long kernel_virt_addr;
- #else
- #define __pa_to_va_nodebug(x)  ((void *)((unsigned long) (x) + va_pa_offset))
- #define __va_to_pa_nodebug(x)  ((unsigned long)(x) - va_pa_offset)
--#endif
-+#endif /* CONFIG_64BIT */
- 
- #ifdef CONFIG_DEBUG_VIRTUAL
- extern phys_addr_t __virt_to_phys(unsigned long x);
-diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-index bde8ce3bfe7c..d98e931a31e5 100644
---- a/arch/riscv/include/asm/pgtable.h
-+++ b/arch/riscv/include/asm/pgtable.h
-@@ -77,6 +77,8 @@
- 
- #ifdef CONFIG_XIP_KERNEL
- #define XIP_OFFSET		SZ_8M
-+#else
-+#define XIP_OFFSET		0
- #endif
- 
- #ifndef __ASSEMBLY__
--- 
-2.30.2
-
+We have Finally agreed to deliver your consignment box containing Cloth,
+Laptop and Iphone 8plus with an ATM CARD worth $ 2,500,000.00 fund
+through the national Fast Track company. The agent is already at
+International Airport with your package, the help of I.M.F director
+John An
