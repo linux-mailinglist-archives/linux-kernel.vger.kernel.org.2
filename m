@@ -2,139 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7896E39BB1A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1299239BB26
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbhFDOug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 10:50:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31004 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229656AbhFDOud (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 10:50:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622818126;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jp1+wVSB+7vvWzgBMXFHA8qcBIuZi+O0ew+V7NeqdBE=;
-        b=Kv8VkCjzf0fqi2PR7/UwtesqbWeIHMwljPqPBIxj6cW7YjxKuUJfQl4wkYtUrAVGTnp2Ie
-        pOFruiA57L+r8+dOHtX7oxFJSWUYAXeS55iC1hbquxyHQ2kWqLlTkYmSwZd+LifMMkL9zu
-        XREJFUWIHnuE9dkiTT+80UfS4lvN0mU=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-108-TFw1viItPCSwN4VC1TE5iw-1; Fri, 04 Jun 2021 10:48:40 -0400
-X-MC-Unique: TFw1viItPCSwN4VC1TE5iw-1
-Received: by mail-qt1-f200.google.com with SMTP id q3-20020a05622a0303b02902390ac8c906so5306261qtw.11
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 07:48:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jp1+wVSB+7vvWzgBMXFHA8qcBIuZi+O0ew+V7NeqdBE=;
-        b=q24MAud7MiP0cZHZuYTTfPUope2wT/Ufeu+heNN0AaQxMz7ZZpAMHdm/6ZEwzdi6GC
-         fusoEoIsqY2x9X/0apPotohWQd24oTjf8oYc2HLewZ5vHggH/eSCDiybHolcCiQGhzzy
-         QMfJVmX68PxvxN2qgDmyEUfPKx+xIIBjWI1GWjPu2rDD3hSaJkl741a/3KDhj3OIZqbs
-         HKhmlZSooDRZc7Y8XKI+hpwRqqdmAdmCp66qpbBeeLVVMOAS0+ApN2OCafDtVE43/gyu
-         oTDt9oN5w86mSi2l0lpwwQckx0MLopgnLdChF1QZFRC7DN+rluldB/5qcjDZ/wKL5AK9
-         OUmA==
-X-Gm-Message-State: AOAM530W7lSMvLvqM6boEgeePBHUYvOGDvUYxyFvhzOp4zofpPozA3L3
-        u1ucxWB8I69710BHJHFRM1R8F5VqVQWnAA2LJVpoUX0P9Ar0G2mZXzkx55VfA5bJnUfjLetbq1C
-        /zXEnRj6NgfTT9qg2caGWTQ9Q
-X-Received: by 2002:ac8:5a44:: with SMTP id o4mr4892958qta.189.1622818119988;
-        Fri, 04 Jun 2021 07:48:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwsTsGcW0ow0eBZ3bFuOemTwfuhys1mG+/ypvjMRj/HwVPu8NxHqgNg+Df85d1TH9IvofYboQ==
-X-Received: by 2002:ac8:5a44:: with SMTP id o4mr4892931qta.189.1622818119759;
-        Fri, 04 Jun 2021 07:48:39 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-61-184-147-118-108.dsl.bell.ca. [184.147.118.108])
-        by smtp.gmail.com with ESMTPSA id 85sm4038779qko.14.2021.06.04.07.48.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 07:48:38 -0700 (PDT)
-Date:   Fri, 4 Jun 2021 10:48:37 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Hugh Dickins <hughd@google.com>
+        id S229880AbhFDOvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 10:51:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229656AbhFDOvj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 10:51:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F7C46140B;
+        Fri,  4 Jun 2021 14:49:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622818193;
+        bh=rnFSlNaPq8u6wC/6QmquuOa136Onpb4MOEGa2hLgk9I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LwwJaCK2IwLxB9kyXGjYKVF9yzkzn7XRMKeQ8X72ltVfnmPF5p41UBu+e+05a9DAy
+         tZKeaBQHBAcKLB2Qe5TMvMpTImanf/IJol37sjCQauBE3/upu93O1L0ehCiz24v3Eo
+         sgkxYEhJA2jhJ1hXN8nOKaMM///ktUE3ni2XrsbrjomrPUTFManqUNJ/xUZvLqqjSH
+         FSVnaCBtBJhMvzfd0MKLff525QxHTp7w4mkKBDT0KOaGgN/fy/0yJ+Z0e/so6SnMiQ
+         P2u25M6Qqug84oEiWVQUttGG0bIXa2/7x8ISySiIyeKQCCUonmeBlNLWKV2nP78fa3
+         67XpLaAb4EoHQ==
+Date:   Fri, 4 Jun 2021 17:49:41 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Vineet Gupta <Vineet.Gupta1@synopsys.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
-        Jan Kara <jack@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/7] mm/thp: try_to_unmap() use TTU_SYNC for safe
- DEBUG_VM splitting
-Message-ID: <YLo9RZOrCrp/1f4D@t490s>
-References: <alpine.LSU.2.11.2106011353270.2148@eggly.anvils>
- <alpine.LSU.2.11.2106011405510.2148@eggly.anvils>
- <YLlOPoP/rIRMm2U5@t490s>
- <alpine.LSU.2.11.2106031945280.12760@eggly.anvils>
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matt Turner <mattst88@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
+        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
+        "linux-snps-arc@lists.infradead.org" 
+        <linux-snps-arc@lists.infradead.org>,
+        "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>
+Subject: Re: [PATCH v2 3/9] arc: remove support for DISCONTIGMEM
+Message-ID: <YLo9hb3yTeh3LBMg@kernel.org>
+References: <20210604064916.26580-1-rppt@kernel.org>
+ <20210604064916.26580-4-rppt@kernel.org>
+ <f1616f95-f99c-c387-4ed4-88961457a7c6@synopsys.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2106031945280.12760@eggly.anvils>
+In-Reply-To: <f1616f95-f99c-c387-4ed4-88961457a7c6@synopsys.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 07:54:11PM -0700, Hugh Dickins wrote:
-> On Thu, 3 Jun 2021, Peter Xu wrote:
-> > On Tue, Jun 01, 2021 at 02:07:53PM -0700, Hugh Dickins wrote:
-> > > diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
-> > > index 2cf01d933f13..b45d22738b45 100644
-> > > --- a/mm/page_vma_mapped.c
-> > > +++ b/mm/page_vma_mapped.c
-> > > @@ -212,6 +212,14 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
-> > >  			pvmw->ptl = NULL;
-> > >  		}
-> > >  	} else if (!pmd_present(pmde)) {
-> > > +		/*
-> > > +		 * If PVMW_SYNC, take and drop THP pmd lock so that we
-> > > +		 * cannot return prematurely, while zap_huge_pmd() has
-> > > +		 * cleared *pmd but not decremented compound_mapcount().
-> > > +		 */
-> > > +		if ((pvmw->flags & PVMW_SYNC) &&
-> > > +		    PageTransCompound(pvmw->page))
-> > > +			spin_unlock(pmd_lock(mm, pvmw->pmd));
-> > >  		return false;
-> > >  	}
-> > >  	if (!map_pte(pvmw))
-> > 
-> > Sorry if I missed something important, but I'm totally confused on how this
-> > unlock is pairing with another lock()..
+On Fri, Jun 04, 2021 at 02:07:39PM +0000, Vineet Gupta wrote:
+> On 6/3/21 11:49 PM, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> >
+> > DISCONTIGMEM was replaced by FLATMEM with freeing of the unused memory map
+> > in v5.11.
+> >
+> > Remove the support for DISCONTIGMEM entirely.
+> >
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> I imagine you're reading that as spin_unlock(pmd_lockptr(blah));
-> no, the lock is right there, inside spin_unlock(pmd_lock(blah)).
+> Looks non intrusive, but I'd still like to give this a spin on hardware 
+> - considering highmem on ARC has tendency to go sideways ;-)
+> Can you please share a branch !
 
-Heh, yeah... Sorry about that.
+Sure:
 
+https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/log/?h=memory-models/rm-discontig/v2
+ 
+> Acked-by: Vineet Gupta <vgupta@synopsys.com>
+
+Thanks!
+ 
+> Thx,
+> -Vineet
 > 
-> > 
-> > And.. isn't PVMW_SYNC only meaningful for pte-level only (as I didn't see a
-> > reference of it outside map_pte)?
+> > ---
+> >   arch/arc/Kconfig              | 13 ------------
+> >   arch/arc/include/asm/mmzone.h | 40 -----------------------------------
+> >   arch/arc/mm/init.c            |  8 -------
+> >   3 files changed, 61 deletions(-)
+> >   delete mode 100644 arch/arc/include/asm/mmzone.h
+> >
+> > diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
+> > index 2d98501c0897..d8f51eb8963b 100644
+> > --- a/arch/arc/Kconfig
+> > +++ b/arch/arc/Kconfig
+> > @@ -62,10 +62,6 @@ config SCHED_OMIT_FRAME_POINTER
+> >   config GENERIC_CSUM
+> >   	def_bool y
+> >   
+> > -config ARCH_DISCONTIGMEM_ENABLE
+> > -	def_bool n
+> > -	depends on BROKEN
+> > -
+> >   config ARCH_FLATMEM_ENABLE
+> >   	def_bool y
+> >   
+> > @@ -344,15 +340,6 @@ config ARC_HUGEPAGE_16M
+> >   
+> >   endchoice
+> >   
+> > -config NODES_SHIFT
+> > -	int "Maximum NUMA Nodes (as a power of 2)"
+> > -	default "0" if !DISCONTIGMEM
+> > -	default "1" if DISCONTIGMEM
+> > -	depends on NEED_MULTIPLE_NODES
+> > -	help
+> > -	  Accessing memory beyond 1GB (with or w/o PAE) requires 2 memory
+> > -	  zones.
+> > -
+> >   config ARC_COMPACT_IRQ_LEVELS
+> >   	depends on ISA_ARCOMPACT
+> >   	bool "Setup Timer IRQ as high Priority"
+> > diff --git a/arch/arc/include/asm/mmzone.h b/arch/arc/include/asm/mmzone.h
+> > deleted file mode 100644
+> > index b86b9d1e54dc..000000000000
+> > --- a/arch/arc/include/asm/mmzone.h
+> > +++ /dev/null
+> > @@ -1,40 +0,0 @@
+> > -/* SPDX-License-Identifier: GPL-2.0-only */
+> > -/*
+> > - * Copyright (C) 2016 Synopsys, Inc. (www.synopsys.com)
+> > - */
+> > -
+> > -#ifndef _ASM_ARC_MMZONE_H
+> > -#define _ASM_ARC_MMZONE_H
+> > -
+> > -#ifdef CONFIG_DISCONTIGMEM
+> > -
+> > -extern struct pglist_data node_data[];
+> > -#define NODE_DATA(nid) (&node_data[nid])
+> > -
+> > -static inline int pfn_to_nid(unsigned long pfn)
+> > -{
+> > -	int is_end_low = 1;
+> > -
+> > -	if (IS_ENABLED(CONFIG_ARC_HAS_PAE40))
+> > -		is_end_low = pfn <= virt_to_pfn(0xFFFFFFFFUL);
+> > -
+> > -	/*
+> > -	 * node 0: lowmem:             0x8000_0000   to 0xFFFF_FFFF
+> > -	 * node 1: HIGHMEM w/o  PAE40: 0x0           to 0x7FFF_FFFF
+> > -	 *         HIGHMEM with PAE40: 0x1_0000_0000 to ...
+> > -	 */
+> > -	if (pfn >= ARCH_PFN_OFFSET && is_end_low)
+> > -		return 0;
+> > -
+> > -	return 1;
+> > -}
+> > -
+> > -static inline int pfn_valid(unsigned long pfn)
+> > -{
+> > -	int nid = pfn_to_nid(pfn);
+> > -
+> > -	return (pfn <= node_end_pfn(nid));
+> > -}
+> > -#endif /* CONFIG_DISCONTIGMEM  */
+> > -
+> > -#endif
+> > diff --git a/arch/arc/mm/init.c b/arch/arc/mm/init.c
+> > index 397a201adfe3..abfeef7bf6f8 100644
+> > --- a/arch/arc/mm/init.c
+> > +++ b/arch/arc/mm/init.c
+> > @@ -32,11 +32,6 @@ unsigned long arch_pfn_offset;
+> >   EXPORT_SYMBOL(arch_pfn_offset);
+> >   #endif
+> >   
+> > -#ifdef CONFIG_DISCONTIGMEM
+> > -struct pglist_data node_data[MAX_NUMNODES] __read_mostly;
+> > -EXPORT_SYMBOL(node_data);
+> > -#endif
+> > -
+> >   long __init arc_get_mem_sz(void)
+> >   {
+> >   	return low_mem_sz;
+> > @@ -147,9 +142,6 @@ void __init setup_arch_memory(void)
+> >   	 * to the hole is freed and ARC specific version of pfn_valid()
+> >   	 * handles the hole in the memory map.
+> >   	 */
+> > -#ifdef CONFIG_DISCONTIGMEM
+> > -	node_set_online(1);
+> > -#endif
+> >   
+> >   	min_high_pfn = PFN_DOWN(high_mem_start);
+> >   	max_high_pfn = PFN_DOWN(high_mem_start + high_mem_sz);
 > 
-> But you are pointing directly to its reference outside map_pte()!
-
-Right, I was trying to look for the lock() so I needed to look at all the rest
-besides this one. :)
-
-I didn't follow Yang's patch, but if Yang's patch can make kernel not crashing
-and fault handling done all well, then I'm kind of agree with him: having
-workaround code (like taking lock and quickly releasing..) only for debug code
-seems an overkill to me, not to mention that the debug code will be even more
-strict after this patch, as it means it's even less likely that one can
-reproduce one production host race with DEBUG_VM..  Normally debugging code
-would affect code execution already, and for this one we're enlarging that gap
-"explicitly" - not sure whether it's good.
-
-This also makes me curious what if we make !DEBUG_VM strict too - how much perf
-we'll lose?  Haven't even tried to think about it with details, but just raise
-it up. Say, is there any chance we make the debug/non-debug paths run the same
-logic (e.g. of SYNC version)?
 
 -- 
-Peter Xu
-
+Sincerely yours,
+Mike.
