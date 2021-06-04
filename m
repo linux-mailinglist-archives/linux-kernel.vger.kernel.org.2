@@ -2,161 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0EE139BB2E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 526F539BB35
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbhFDOxX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Jun 2021 10:53:23 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:4308 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229656AbhFDOxX (ORCPT
+        id S230145AbhFDOy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 10:54:27 -0400
+Received: from mail-pg1-f179.google.com ([209.85.215.179]:38824 "EHLO
+        mail-pg1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229739AbhFDOy0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 10:53:23 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FxQZZ31Y7z1BHbD;
-        Fri,  4 Jun 2021 22:46:46 +0800 (CST)
-Received: from dggpeml500024.china.huawei.com (7.185.36.10) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 4 Jun 2021 22:51:32 +0800
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 4 Jun 2021 22:51:31 +0800
-Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
- lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
- 15.01.2176.012; Fri, 4 Jun 2021 15:51:29 +0100
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     Marc Zyngier <maz@kernel.org>
-CC:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "julien.thierry.kdev@gmail.com" <julien.thierry.kdev@gmail.com>,
-        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        Alexandru Elisei <Alexandru.Elisei@arm.com>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: RE: [RFC PATCH 0/3] kvm/arm: New VMID allocator based on asid(2nd
- approach) 
-Thread-Topic: [RFC PATCH 0/3] kvm/arm: New VMID allocator based on asid(2nd
- approach) 
-Thread-Index: AQHXQph5pwodb0a/4kShAMz7Pnc+rqsDq0rQgABREYCAABlY4A==
-Date:   Fri, 4 Jun 2021 14:51:29 +0000
-Message-ID: <95bb84ffdb0f4db3b64b38cc3b651f90@huawei.com>
-References: <20210506165232.1969-1-shameerali.kolothum.thodi@huawei.com>
-        <e62829990c50479292af94c4152011fc@huawei.com> <87sg1xzqea.wl-maz@kernel.org>
-In-Reply-To: <87sg1xzqea.wl-maz@kernel.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.88.52]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Fri, 4 Jun 2021 10:54:26 -0400
+Received: by mail-pg1-f179.google.com with SMTP id 6so8070674pgk.5;
+        Fri, 04 Jun 2021 07:52:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LKSlHuFmSmd73FlqKOE/HzlbPQjKNdJGN1kLkWuNHd4=;
+        b=BmFHzztiNTj4RANtUhnaVIYzadac626i15pDCPUoiXwx+BFM6Cs/vtTueEqf2BWqQ6
+         WlmspeIvjqVJUMSqBTJi+5BTonS9Qxh4jyTjfdgLcgWUuW4AxLrxSajXV+Ff5P6lV6b6
+         D3FeV5PKEWD69dexF2ECpDE+QFRjOv+YVI6XvUpLNEjEqP761Vg7UmzUGjMV1BX+5W2J
+         6GCx7tHlImEgTnCF+t9NQJhrXpiCoF5eDQqun32aBy7e24ulIepvMEG9Gj8BnYecqK1d
+         ninKf4ZV9ewinDQRBoSMith2tNCuWZx0K+WyBXjkumTfu4zk3FV3U5YvzeXcLHlP8UUq
+         tiUw==
+X-Gm-Message-State: AOAM533MXeyV9Y9P0nCiGoUWqQbivWDxztvuhGiriTjG1YqMZ6ZR65F0
+        dAHkL0b0X/GoKyKZNOrt4KQ=
+X-Google-Smtp-Source: ABdhPJz6SFb9mkl7CsLadsG32YMBrSBzrrGoY/7akC6W5wX8KqHDw+fMCGn8wF7nvNGwLJ8KAXVYxA==
+X-Received: by 2002:a63:f154:: with SMTP id o20mr5404254pgk.53.1622818359676;
+        Fri, 04 Jun 2021 07:52:39 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id j5sm153477pgl.70.2021.06.04.07.52.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Jun 2021 07:52:38 -0700 (PDT)
+Subject: Re: [PATCH v12 1/3] bio: control bio max size
+To:     Changheun Lee <nanich.lee@samsung.com>, damien.lemoal@wdc.com
+Cc:     Avri.Altman@wdc.com, Johannes.Thumshirn@wdc.com,
+        alex_y_xu@yahoo.ca, alim.akhtar@samsung.com,
+        asml.silence@gmail.com, axboe@kernel.dk, bgoncalv@redhat.com,
+        cang@codeaurora.org, gregkh@linuxfoundation.org, hch@infradead.org,
+        jaegeuk@kernel.org, jejb@linux.ibm.com, jisoo2146.oh@samsung.com,
+        junho89.kim@samsung.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, ming.lei@redhat.com,
+        mj0123.lee@samsung.com, osandov@fb.com, patchwork-bot@kernel.org,
+        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
+        tj@kernel.org, tom.leiming@gmail.com, woosung2.lee@samsung.com,
+        yi.zhang@redhat.com, yt0928.kim@samsung.com
+References: <DM6PR04MB70812AF342F46F453696A447E73B9@DM6PR04MB7081.namprd04.prod.outlook.com>
+ <CGME20210604075331epcas1p13bb57f9ddfc7b112dec1ba8cf40fdc74@epcas1p1.samsung.com>
+ <20210604073459.29235-1-nanich.lee@samsung.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <63afd2d3-9fa3-9f90-a2b3-37235739f5e2@acm.org>
+Date:   Fri, 4 Jun 2021 07:52:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210604073459.29235-1-nanich.lee@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
-
-> -----Original Message-----
-> From: Marc Zyngier [mailto:maz@kernel.org]
-> Sent: 04 June 2021 14:55
-> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-> Cc: linux-arm-kernel@lists.infradead.org; kvmarm@lists.cs.columbia.edu;
-> linux-kernel@vger.kernel.org; will@kernel.org; catalin.marinas@arm.com;
-> james.morse@arm.com; julien.thierry.kdev@gmail.com;
-> suzuki.poulose@arm.com; jean-philippe@linaro.org; Alexandru Elisei
-> <Alexandru.Elisei@arm.com>; Linuxarm <linuxarm@huawei.com>
-> Subject: Re: [RFC PATCH 0/3] kvm/arm: New VMID allocator based on asid(2nd
-> approach)
+On 6/4/21 12:34 AM, Changheun Lee wrote:
+>> On 2021/06/04 14:22, Changheun Lee wrote:
+>>> +unsigned int bio_max_bytes(struct bio *bio)
+>>> +{
+>>> +	struct block_device *bdev = bio->bi_bdev;
+>>> +
+>>> +	return bdev ? bdev->bd_disk->queue->limits.max_bio_bytes : UINT_MAX;
+>>> +}
+>>
+>> unsigned int bio_max_bytes(struct bio *bio)
+>> {
+>> 	struct block_device *bdev = bio->bi_bdev;
+>>
+>> 	if (!bdev)
+>> 		return UINT_MAX;
+>> 	return bdev->bd_disk->queue->limits.max_bio_bytes;
+>> }
+>>
+>> is a lot more readable...
+>> Also, I remember there was some problems with bd_disk possibly being null. Was
+>> that fixed ?
 > 
-> On Fri, 04 Jun 2021 09:13:10 +0100,
-> Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-> wrote:
-> >
-> > Hi,
-> >
-> > > -----Original Message-----
-> > > From: Shameerali Kolothum Thodi
-> > > Sent: 06 May 2021 17:52
-> > > To: linux-arm-kernel@lists.infradead.org; kvmarm@lists.cs.columbia.edu;
-> > > linux-kernel@vger.kernel.org
-> > > Cc: maz@kernel.org; will@kernel.org; catalin.marinas@arm.com;
-> > > james.morse@arm.com; julien.thierry.kdev@gmail.com;
-> > > suzuki.poulose@arm.com; jean-philippe@linaro.org; Linuxarm
-> > > <linuxarm@huawei.com>
-> > > Subject: [RFC PATCH 0/3] kvm/arm: New VMID allocator based on asid(2nd
-> > > approach)
-> > >
-> > > This is based on a suggestion from Will [0] to try out the asid
-> > > based kvm vmid solution as a separate VMID allocator instead of
-> > > the shared lib approach attempted in v4[1].
-> > >
-> > > The idea is to compare both the approaches and see whether the
-> > > shared lib solution with callbacks make sense or not.
-> >
-> > A gentle ping on this. Please take a look and let me know.
-> 
-> I had a look and I don't overly dislike it. I'd like to see the code
-> without the pinned stuff though, at least to ease the reviewing. I
-> haven't tested it in anger, but I have pushed the rebased code at [1]
-> as it really didn't apply to 5.13-rc4.
+> Thank you for review. But I'd like current style, and it's readable enough
+> now I think. Null of bd_disk was just suspicion. bd_disk is not null if bdev
+> is not null.
+ Damien is right. bd_disk can be NULL. From
+https://lore.kernel.org/linux-block/20210425043020.30065-1-bvanassche@acm.org/:
+"bio_max_size() may get called before device_add_disk() and hence needs to
+check whether or not the block device pointer is NULL. [ ... ]
+This patch prevents that bio_max_size() triggers the following kernel
+crash during a SCSI LUN scan:\
+BUG: KASAN: null-ptr-deref in bio_add_hw_page+0xa6/0x310
+Read of size 8 at addr 00000000000005a8 by task kworker/u16:0/7
+Workqueue: events_unbound async_run_entry_fn
+Call Trace:
+ show_stack+0x52/0x58
+ dump_stack+0x9d/0xcf
+ kasan_report.cold+0x4b/0x50
+ __asan_load8+0x69/0x90
+ bio_add_hw_page+0xa6/0x310
+ bio_add_pc_page+0xaa/0xe0
+ bio_map_kern+0xdc/0x1a0
+ blk_rq_map_kern+0xcd/0x2d0
+ __scsi_execute+0x9a/0x290 [scsi_mod]
+ scsi_probe_lun.constprop.0+0x17c/0x660 [scsi_mod]
+ scsi_probe_and_add_lun+0x178/0x750 [scsi_mod]
+ __scsi_add_device+0x18c/0x1a0 [scsi_mod]
+ ata_scsi_scan_host+0xe5/0x260 [libata]
+ async_port_probe+0x94/0xb0 [libata]
+ async_run_entry_fn+0x7d/0x2d0
+ process_one_work+0x582/0xac0
+ worker_thread+0x8f/0x5a0
+ kthread+0x222/0x250
+ ret_from_fork+0x1f/0x30"
 
-Thanks for taking a look and the rebase. I will remove the pinned stuff
-in the next revision as that was added just to compare against the previous
-version.
-
-> 
-> One thing I'm a bit worried about is that we so far relied on VMID 0
-> never being allocated to a guest, which is now crucial for protected
-> KVM. I can't really convince myself that this can never happen with
-> this.
-
-Hmm..not sure I quite follow that. As per the current logic vmid 0 is
-reserved and is not allocated to Guest. 
-
-> Plus, I've found this nugget:
-> 
-> <quote
-> 	max_pinned_vmids = NUM_USER_VMIDS - num_possible_cpus() - 2;
-> </quote>
-> 
-> What is this "- 2"? My hunch is that it should really be "- 1" as VMID
-> 0 is reserved, and we have no equivalent of KPTI for S2.
-
-I think this is more related to the "pinned vmid" stuff and was borrowed from
-the asid_update_limit() fn in arch/arm64/mm/context.c. But I missed the
-comment that explains the reason behind it. It says,
-
----x---
-	/*
-	 * There must always be an ASID available after rollover. Ensure that,
-	 * even if all CPUs have a reserved ASID and the maximum number of ASIDs
-	 * are pinned, there still is at least one empty slot in the ASID map.
-	 */
-	max_pinned_asids = num_available_asids - num_possible_cpus() - 2;
----x---
-
-So this is to make sure we will have at least one VMID available after rollover
-in case we have pinned the max number of VMIDs. I will include that comment
-to make it clear.
-
-Thanks,
-Shameer
-
-> 
-> 	M.
-> 
-> [1]
-> https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h
-> =kvm-arm64/mmu/vmid
-> 
-> --
-> Without deviation from the norm, progress is not possible.
+Bart.
