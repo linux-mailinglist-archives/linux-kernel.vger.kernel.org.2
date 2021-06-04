@@ -2,129 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3EB39B003
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F29739B012
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbhFDBv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 21:51:29 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:63969 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFDBv2 (ORCPT
+        id S230132AbhFDBzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 21:55:51 -0400
+Received: from mail-pf1-f180.google.com ([209.85.210.180]:36353 "EHLO
+        mail-pf1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFDBzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 21:51:28 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622771383; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=a5B8Kb7pLfzcL8SCLP3yBfwhEg8TvVlZ4RwgFTeIKWU=;
- b=IoDnDnFBMZpIVd0FaIgqxBcqNxfB3jlMYGwINoDZop2HYRRLqy0KrsUXB47JU7TFbtI/X1oA
- tlGmU0SrJ2Z8HYiDY746DqXUl9EnVu6pN/81BuUYkjmt3q/SgjyInbVzPf9HgywD1vskec6I
- DBslMzX71Yl4ZosYJtqM3bggSjI=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 60b986ab8491191eb3ef88fb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 04 Jun 2021 01:49:31
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B01F6C43217; Fri,  4 Jun 2021 01:49:30 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C2E7BC433F1;
-        Fri,  4 Jun 2021 01:49:28 +0000 (UTC)
+        Thu, 3 Jun 2021 21:55:50 -0400
+Received: by mail-pf1-f180.google.com with SMTP id c12so6340500pfl.3;
+        Thu, 03 Jun 2021 18:53:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wBg06JBpiPCzgvoJ4HY+DQglchFViQwPvQYbexv1VvI=;
+        b=J7CZDMGflxAkoaz4zNQRN/MDQCXtr/sHow7cgB8Jr2WGgwjl7Tu6ycwSbc0rQGZ8+9
+         nh2AI1LIeI/KM6bQifGDyjVaQD3SAU9Dfs/nAU1cybc8ntJrKFQ12qlJ2Zu9Sql10ETA
+         chUwj0v15TsD6QEp8QvRawmAAE+IviEQ4zMRkmcUhDd3/Egbcc5KEWOT6bT8mYR8GQn+
+         DliO/Xc5Xcg0Grg/evOo/AoUEZomnithpuEO3ZeaalyPyd5UT3j0HAiFgg4epXkZgUAk
+         xh+xy5aWWY6X63hFVRukALs7t8vaCJIv/n5mWSjFnGIRtzzGfJAmm6g7HBz23B60Uqe9
+         rBtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wBg06JBpiPCzgvoJ4HY+DQglchFViQwPvQYbexv1VvI=;
+        b=tn15DPw9Rmu0NLiKK6UifBMn4zVHjyTmWuRmp/VRdl3gD7sxbf4zI5AoOFWhGQSZKk
+         772o9+APyf4PRA2U27Eiy6IIVff5HLYOsdQpBE9fkxoN8IScFNOxHWHTC8Od1XdLx3af
+         U8oyXpqvYlX6qv9+FFvUxTWifWtxWucTeEnhW1sQCBr4ZKYIfg4NfpxaXaRzIAXiGX8/
+         X7zMWUm48aNXGlPtBCF8H7KpZVTDaCao7G1PKmSeT/1FHnaV4jWLyNf2GKYovlegdYOQ
+         bpEExwtW5Ct0oR90FXCNj6Z22CPQGBzMp4/UJIyIYvG33EKYSrzbanUTQdV4V2aGRzdK
+         8hKw==
+X-Gm-Message-State: AOAM531HorAYiN0h8y14qZMzoaRTVvl7yWweeeQgOsVLdmDA/wnTD0bc
+        8N+DPFnoARZ9e+qx9/EHRtc=
+X-Google-Smtp-Source: ABdhPJyLezzkJaJdoYuq76C9UPYY5C26bq1ehr7BHzIkk1tSJGa9IAH93tWSh1xjdPcekd79SMsnlw==
+X-Received: by 2002:a63:581c:: with SMTP id m28mr2353577pgb.353.1622771570513;
+        Thu, 03 Jun 2021 18:52:50 -0700 (PDT)
+Received: from athina.mtv.corp.google.com ([2620:15c:211:0:c45:b07d:e001:d01])
+        by smtp.gmail.com with ESMTPSA id c130sm274502pfc.51.2021.06.03.18.52.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 18:52:49 -0700 (PDT)
+From:   =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <zenczykowski@gmail.com>
+To:     =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Dongseok Yi <dseok.yi@samsung.com>,
+        Willem de Bruijn <willemb@google.com>
+Subject: [PATCH bpf-next 1/2] Revert "bpf: Check for BPF_F_ADJ_ROOM_FIXED_GSO when bpf_skb_change_proto"
+Date:   Thu,  3 Jun 2021 18:52:37 -0700
+Message-Id: <20210604015238.2422145-1-zenczykowski@gmail.com>
+X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 04 Jun 2021 09:49:28 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Stanley Chu <stanley.chu@mediatek.com>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH v1 2/3] scsi: ufs: Optimize host lock on transfer requests
- send/compl paths
-In-Reply-To: <1622688865.7096.6.camel@mtkswgap22>
-References: <1621845419-14194-1-git-send-email-cang@codeaurora.org>
- <1621845419-14194-3-git-send-email-cang@codeaurora.org>
- <1622688865.7096.6.camel@mtkswgap22>
-Message-ID: <b8c838a2213184b4f8c2f482f9a9ab08@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stanley,
+From: Maciej Żenczykowski <maze@google.com>
 
-On 2021-06-03 10:54, Stanley Chu wrote:
-> Hi Can,
-> 
-> On Mon, 2021-05-24 at 01:36 -0700, Can Guo wrote:
->> Current UFS IRQ handler is completely wrapped by host lock, and 
->> because
->> ufshcd_send_command() is also protected by host lock, when IRQ handler
->> fires, not only the CPU running the IRQ handler cannot send new 
->> requests,
->> the rest CPUs can neither. Move the host lock wrapping the IRQ handler 
->> into
->> specific branches, i.e., ufshcd_uic_cmd_compl(), 
->> ufshcd_check_errors(),
->> ufshcd_tmc_handler() and ufshcd_transfer_req_compl(). Meanwhile, to 
->> further
->> reduce occpuation of host lock in ufshcd_transfer_req_compl(), host 
->> lock is
->> no longer required to call __ufshcd_transfer_req_compl(). As per test, 
->> the
->> optimization can bring considerable gain to random read/write 
->> performance.
->> 
->> Cc: Stanley Chu <stanley.chu@mediatek.com>
->> Co-developed-by: Asutosh Das <asutoshd@codeaurora.org>
->> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
->> Signed-off-by: Can Guo <cang@codeaurora.org>
-> 
-> According to my test, the performance indeed has impressive improvement
-> with this series!
-> 
+This reverts commit fa7b83bf3b156c767f3e4a25bbf3817b08f3ff8e.
 
-Thanks a lot for your time and review. :)
+See the followup commit for the reasoning why I believe the appropriate
+approach is to simply make this change without a flag, but it can basically
+be summarized as using this helper without the flag is bug-prone or outright
+buggy, and thus the default should be this new behaviour.
 
-Regards,
-Can Guo.
+As this commit has only made it into net-next/master, but not into
+any real release, such a backwards incompatible change is still ok.
 
-> Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
-> 
-> 
-> 
-> 
->>  #endif
->> 
->>  	bool req_abort_skip;
->> -	bool in_use;
->>  };
->> 
->>  /**
+Cc: Dongseok Yi <dseok.yi@samsung.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Willem de Bruijn <willemb@google.com>
+Signed-off-by: Maciej Żenczykowski <maze@google.com>
+---
+ net/core/filter.c | 22 +++++++++-------------
+ 1 file changed, 9 insertions(+), 13 deletions(-)
+
+diff --git a/net/core/filter.c b/net/core/filter.c
+index caa88955562e..04848de3e058 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -3235,7 +3235,7 @@ static int bpf_skb_net_hdr_pop(struct sk_buff *skb, u32 off, u32 len)
+ 	return ret;
+ }
+ 
+-static int bpf_skb_proto_4_to_6(struct sk_buff *skb, u64 flags)
++static int bpf_skb_proto_4_to_6(struct sk_buff *skb)
+ {
+ 	const u32 len_diff = sizeof(struct ipv6hdr) - sizeof(struct iphdr);
+ 	u32 off = skb_mac_header_len(skb);
+@@ -3264,9 +3264,7 @@ static int bpf_skb_proto_4_to_6(struct sk_buff *skb, u64 flags)
+ 		}
+ 
+ 		/* Due to IPv6 header, MSS needs to be downgraded. */
+-		if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
+-			skb_decrease_gso_size(shinfo, len_diff);
+-
++		skb_decrease_gso_size(shinfo, len_diff);
+ 		/* Header must be checked, and gso_segs recomputed. */
+ 		shinfo->gso_type |= SKB_GSO_DODGY;
+ 		shinfo->gso_segs = 0;
+@@ -3278,7 +3276,7 @@ static int bpf_skb_proto_4_to_6(struct sk_buff *skb, u64 flags)
+ 	return 0;
+ }
+ 
+-static int bpf_skb_proto_6_to_4(struct sk_buff *skb, u64 flags)
++static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
+ {
+ 	const u32 len_diff = sizeof(struct ipv6hdr) - sizeof(struct iphdr);
+ 	u32 off = skb_mac_header_len(skb);
+@@ -3307,9 +3305,7 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb, u64 flags)
+ 		}
+ 
+ 		/* Due to IPv4 header, MSS can be upgraded. */
+-		if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
+-			skb_increase_gso_size(shinfo, len_diff);
+-
++		skb_increase_gso_size(shinfo, len_diff);
+ 		/* Header must be checked, and gso_segs recomputed. */
+ 		shinfo->gso_type |= SKB_GSO_DODGY;
+ 		shinfo->gso_segs = 0;
+@@ -3321,17 +3317,17 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb, u64 flags)
+ 	return 0;
+ }
+ 
+-static int bpf_skb_proto_xlat(struct sk_buff *skb, __be16 to_proto, u64 flags)
++static int bpf_skb_proto_xlat(struct sk_buff *skb, __be16 to_proto)
+ {
+ 	__be16 from_proto = skb->protocol;
+ 
+ 	if (from_proto == htons(ETH_P_IP) &&
+ 	      to_proto == htons(ETH_P_IPV6))
+-		return bpf_skb_proto_4_to_6(skb, flags);
++		return bpf_skb_proto_4_to_6(skb);
+ 
+ 	if (from_proto == htons(ETH_P_IPV6) &&
+ 	      to_proto == htons(ETH_P_IP))
+-		return bpf_skb_proto_6_to_4(skb, flags);
++		return bpf_skb_proto_6_to_4(skb);
+ 
+ 	return -ENOTSUPP;
+ }
+@@ -3341,7 +3337,7 @@ BPF_CALL_3(bpf_skb_change_proto, struct sk_buff *, skb, __be16, proto,
+ {
+ 	int ret;
+ 
+-	if (unlikely(flags & ~(BPF_F_ADJ_ROOM_FIXED_GSO)))
++	if (unlikely(flags))
+ 		return -EINVAL;
+ 
+ 	/* General idea is that this helper does the basic groundwork
+@@ -3361,7 +3357,7 @@ BPF_CALL_3(bpf_skb_change_proto, struct sk_buff *, skb, __be16, proto,
+ 	 * that. For offloads, we mark packet as dodgy, so that headers
+ 	 * need to be verified first.
+ 	 */
+-	ret = bpf_skb_proto_xlat(skb, proto, flags);
++	ret = bpf_skb_proto_xlat(skb, proto);
+ 	bpf_compute_data_pointers(skb);
+ 	return ret;
+ }
+-- 
+2.32.0.rc1.229.g3e70b5a671-goog
+
