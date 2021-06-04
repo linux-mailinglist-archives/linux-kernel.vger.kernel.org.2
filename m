@@ -2,139 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4732639B0BC
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 05:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 509F539B0BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 05:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbhFDDNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 23:13:50 -0400
-Received: from m12-18.163.com ([220.181.12.18]:44072 "EHLO m12-18.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229704AbhFDDNt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 23:13:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=dlryy
-        WVlvsjGjPmlZr4wasN+rfckYtap12Y9GmU8CGs=; b=PTR8z67k94NKz21p3dS3S
-        N5FMo4TMqQ6ixiPpM7ZOpGDEFtfsFTjhniJXSRp1HCpNS3ULF4jQTTB3Gqb6iNVT
-        Oy5ML1+TCauoMvUDAWhd3zkG12nW+QZPUucytlv67+ty2fNdzyz9X20tXYN2ev6b
-        uRv8Hyc/zAfSnofc4sUV0A=
-Received: from ubuntu.localdomain (unknown [218.17.89.92])
-        by smtp14 (Coremail) with SMTP id EsCowABHSOABmrlgy+V3nQ--.55924S2;
-        Fri, 04 Jun 2021 11:12:02 +0800 (CST)
-From:   13145886936@163.com
-To:     linux-kernel@vger.kernel.org
-Cc:     gushengxian <gushengxian@yulong.com>
-Subject: [PATCH] gen_init_cpio: Revised the use of space and tabs
-Date:   Thu,  3 Jun 2021 20:11:59 -0700
-Message-Id: <20210604031159.11234-1-13145886936@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S229833AbhFDDRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 23:17:33 -0400
+Received: from mail-qk1-f170.google.com ([209.85.222.170]:34581 "EHLO
+        mail-qk1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229704AbhFDDRd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 23:17:33 -0400
+Received: by mail-qk1-f170.google.com with SMTP id k11so6443644qkk.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 20:15:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=FLTijI0qtWn0Gr6xLjK6ZMfCKnwIuGsHja/fIL/u8Nk=;
+        b=GYyyLvoDRE7Yb4Jcrj7W2St5vOQJhmelZYfcmVWFRN5a01CXXukjthcvsdvUonxBCJ
+         1UD87DLXnmpCFBhEEg0dZmwzPCw1kGspz1gU6rChfHshaSAdUqJngD2dWsl9s7Y1ssHi
+         iDNHZap+6opPvskaTmXVOoD/sfvi3WdhXYYtGHR5z7UYVMQwR3XL6+0E4qx37mh+ciAd
+         FoEa76z5ZI6aDZfCQFqjJDUm0aefNAr8qElZuvkzKFpLR5poLjvcL2b4lsvT96Bn9nzU
+         GeD29FkgA3NvCkzLaDGPVjCKPxyaxhPKGiDzPc/kGyBCBRyMWLOGNi2GsmgBbitshv8V
+         xGig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=FLTijI0qtWn0Gr6xLjK6ZMfCKnwIuGsHja/fIL/u8Nk=;
+        b=s4D25odicrMCrefIVFLO6PQnl3HI1SyNxqdgszQAW7vp+DdefuGbLOr8uNxtTliYkO
+         9SoIZIlCstpO/Zz6KW8Me77jG6I6bscMaLp2m9NsOMKBzW/UzCOMcRLngcPrC5YzS/Jg
+         oeG9hd5EVWDLBrEWYKCG6WqeDox3i9x/fJkLEkTkLVBkjpc7NdBEryCUGwHlJgkYALaC
+         Lc6I9f5XAhsO6kgba4ztU2gfa2bFU6eCFyC1zT43k5sT2DxNS4UjghXOaa5Hb1rKczIX
+         gcY57USUPbOTVCGWekWbuYzUq4jrc78TwZ2L2O+p16eKhaK9Rth7L1dI3DRz7YuY3Jka
+         ogTg==
+X-Gm-Message-State: AOAM530DOXttF1aUAkYt4MENkQFnPak6ywIa91godtU0HDLUjcxPMHdq
+        gWWIvPCtnJTsG/ddteckCjhIOg==
+X-Google-Smtp-Source: ABdhPJwtG7KBNA+9nOH+6w+vKhjcwj4i2cwWs0sxMbftMbUoDFHoU5MkEf0SX53FKoOB6xmDupdl8g==
+X-Received: by 2002:a05:620a:e09:: with SMTP id y9mr2356795qkm.359.1622776474736;
+        Thu, 03 Jun 2021 20:14:34 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id v25sm2942592qtf.68.2021.06.03.20.14.32
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 03 Jun 2021 20:14:34 -0700 (PDT)
+Date:   Thu, 3 Jun 2021 20:14:31 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Alistair Popple <apopple@nvidia.com>
+cc:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Axel Rasmussen <axelrasmussen@google.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v3 04/27] mm/userfaultfd: Introduce special pte for
+ unmapped file-backed mem
+In-Reply-To: <1780227.rxkhHXaqZV@nvdebian>
+Message-ID: <alpine.LSU.2.11.2106031954570.12760@eggly.anvils>
+References: <20210527201927.29586-1-peterx@redhat.com> <4688876.HeLTNyGTSD@nvdebian> <YLjsZ4PVQcx0/vb8@t490s> <1780227.rxkhHXaqZV@nvdebian>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EsCowABHSOABmrlgy+V3nQ--.55924S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxurWkurWfXF15GF1rAry3CFg_yoW5Gw4xpF
-        Z0qr1jvr43Xay3CanxWr18Zrn8XryDKw13uFWvq348ZFsxX34rKw4UJw17Ka4Fkr13Za45
-        Zay3KF4DKw4UJaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07b1CJQUUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/xtbBzgWng1QHMxhcugABsw
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: gushengxian <gushengxian@yulong.com>
+On Fri, 4 Jun 2021, Alistair Popple wrote:
+> 
+> The detail which is perhaps less important is whether to implement this using 
+> a new swap entry type or arch-specific swap bit. The argument for using a swap 
+> type is it will work across architectures due to the use of pte_to_swp_entry() 
+> and swp_entry_to_pte() to convert to and from the arch-dependent and 
+> independent representations.
+> 
+> The argument against seems to have been that it is wasting a swap type. 
+> However if I'm understanding correctly that's not true for all architectures, 
+> and needing to reserve a bit is more wasteful than using a swap type.
 
-Revised the use of space and tabs.
+I'm on the outside, not paying much attention here,
+but thought Peter would have cleared this up already.
 
-Signed-off-by: gushengxian <gushengxian@yulong.com>
----
- usr/gen_init_cpio.c | 26 +++++++++++++++-----------
- 1 file changed, 15 insertions(+), 11 deletions(-)
+My understanding is that it does *not* use an additional arch-dependent
+bit, but puts the _PAGE_UFFD_WP bit (already set aside by any architecture
+implementing UFFD WP) to an additional use.  That's why I called this
+design (from Andrea) more elegant than mine (swap type business).
 
-diff --git a/usr/gen_init_cpio.c b/usr/gen_init_cpio.c
-index 03b21189d58b..6c28a0938a5e 100644
---- a/usr/gen_init_cpio.c
-+++ b/usr/gen_init_cpio.c
-@@ -107,7 +107,7 @@ static int cpio_mkslink(const char *name, const char *target,
- 
- 	if (name[0] == '/')
- 		name++;
--	sprintf(s,"%s%08X%08X%08lX%08lX%08X%08lX"
-+	sprintf(s, "%s%08X%08X%08lX%08lX%08X%08lX"
- 	       "%08X%08X%08X%08X%08X%08X%08X",
- 		"070701",		/* magic */
- 		ino++,			/* ino */
-@@ -156,7 +156,7 @@ static int cpio_mkgeneric(const char *name, unsigned int mode,
- 
- 	if (name[0] == '/')
- 		name++;
--	sprintf(s,"%s%08X%08X%08lX%08lX%08X%08lX"
-+	sprintf(s, "%s%08X%08X%08lX%08lX%08X%08lX"
- 	       "%08X%08X%08X%08X%08X%08X%08X",
- 		"070701",		/* magic */
- 		ino++,			/* ino */
-@@ -250,7 +250,7 @@ static int cpio_mknod(const char *name, unsigned int mode,
- 
- 	if (name[0] == '/')
- 		name++;
--	sprintf(s,"%s%08X%08X%08lX%08lX%08X%08lX"
-+	sprintf(s, "%s%08X%08X%08lX%08lX%08X%08lX"
- 	       "%08X%08X%08X%08X%08X%08X%08X",
- 		"070701",		/* magic */
- 		ino++,			/* ino */
-@@ -335,12 +335,13 @@ static int cpio_mkfile(const char *name, const char *location,
- 	size = 0;
- 	for (i = 1; i <= nlinks; i++) {
- 		/* data goes on last link */
--		if (i == nlinks) size = buf.st_size;
-+		if (i == nlinks)
-+			size = buf.st_size;
- 
- 		if (name[0] == '/')
- 			name++;
- 		namesize = strlen(name) + 1;
--		sprintf(s,"%s%08X%08X%08lX%08lX%08X%08lX"
-+		sprintf(s, "%s%08X%08X%08lX%08lX%08X%08lX"
- 		       "%08lX%08X%08X%08X%08X%08X%08X",
- 			"070701",		/* magic */
- 			ino,			/* ino */
-@@ -373,10 +374,12 @@ static int cpio_mkfile(const char *name, const char *location,
- 	}
- 	ino++;
- 	rc = 0;
--	
-+
- error:
--	if (filebuf) free(filebuf);
--	if (file >= 0) close(file);
-+	if (filebuf)
-+		free(filebuf);
-+	if (file >= 0)
-+		close(file);
- 	return rc;
- }
- 
-@@ -443,9 +446,10 @@ static int cpio_mkfile_line(const char *line)
- 		dname = name;
- 	}
- 	rc = cpio_mkfile(dname, cpio_replace_env(location),
--	                 mode, uid, gid, nlinks);
-+			mode, uid, gid, nlinks);
-  fail:
--	if (dname_len) free(dname);
-+	if (dname_len)
-+		free(dname);
- 	return rc;
- }
- 
-@@ -603,7 +607,7 @@ int main (int argc, char *argv[])
- 
- 		for (type_idx = 0; file_handler_table[type_idx].type; type_idx++) {
- 			int rc;
--			if (! strcmp(line, file_handler_table[type_idx].type)) {
-+			if (!strcmp(line, file_handler_table[type_idx].type)) {
- 				if ((rc = file_handler_table[type_idx].handler(args))) {
- 					ec = rc;
- 					fprintf(stderr, " line %d\n", line_nr);
--- 
-2.25.1
+If I've got that wrong, and yet another arch-dependent bit is needed,
+then I very much agree with you: finding arch-dependent pte bits is a
+much tougher job than another play with swap type.
 
+(And "more elegant" might not be "easier to understand": you decide.)
 
+Hugh
