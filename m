@@ -2,91 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5015539BEED
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 977B239BEF0
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbhFDRiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 13:38:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbhFDRix (ORCPT
+        id S231260AbhFDRjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 13:39:04 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:38096 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229690AbhFDRjD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 13:38:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 225EAC061766
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 10:37:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ScPrT6dq7UFJNtAcHi3Kbb1lZ9AVwXDNeiWLjZz5Hno=; b=IFknYVnj7BNmGV8UkYrFPHR9go
-        /U25Wt3qA+aBjWwinMkr5ZcaL1blgrRaaHgmmrJyaI9Mq3Hw49qyfEmiX4BsHyjMiAf9sHDi/UoiM
-        1IYGGWy+hKDlGkUOAKIZQbSaMtX0jPuT9EIfvlVsMZ/qi/Z4owJpy4ssubuG8GC+36l07hoqB4wRD
-        QSgHGtOGMwJ8pcdWyABdGQW4aostYqvZdGiDPnWrk/KVAq3SBiJF/myIXMevkQJjhmHx1w+5z/ReN
-        lnbtmUQsWFoBe4dNhvF6D5PL3/vdFk/RojcdILzRK8qP9t05CwrAfOWO/+Cmpf/ebqVnPLWhuCMIU
-        6iZBFu6w==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lpDju-00DQyc-GU; Fri, 04 Jun 2021 17:36:13 +0000
-Date:   Fri, 4 Jun 2021 18:36:10 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
-        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/7] mm/thp: fix vma_address() if virtual address
- below file offset
-Message-ID: <YLpkirfozSeH4F8N@casper.infradead.org>
-References: <alpine.LSU.2.11.2106011353270.2148@eggly.anvils>
- <alpine.LSU.2.11.2106011408020.2148@eggly.anvils>
- <YLanDVVbKwwPmW/0@casper.infradead.org>
- <alpine.LSU.2.11.2106031427200.11704@eggly.anvils>
- <alpine.LSU.2.11.2106031436390.11704@eggly.anvils>
+        Fri, 4 Jun 2021 13:39:03 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 65E551F439E4
+Message-ID: <943276000b13f51e0e746b4f29f2a28d7e435622.camel@collabora.com>
+Subject: Re: [PATCH v9 03/13] media: hantro: Use syscon instead of 'ctrl'
+ register
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Lucas Stach <l.stach@pengutronix.de>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        lee.jones@linaro.org, gregkh@linuxfoundation.org,
+        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
+        emil.l.velikov@gmail.com, "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        Jacky Bai <ping.bai@nxp.com>
+Cc:     devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-imx@nxp.com, kernel@pengutronix.de, kernel@collabora.com,
+        cphealy@gmail.com, linux-arm-kernel@lists.infradead.org,
+        linux-media@vger.kernel.org
+Date:   Fri, 04 Jun 2021 14:37:02 -0300
+In-Reply-To: <72fef3d9f79194876f2035e996bb83f9f8b12902.camel@pengutronix.de>
+References: <20210407073534.376722-1-benjamin.gaignard@collabora.com>
+         <20210407073534.376722-4-benjamin.gaignard@collabora.com>
+         <7bcbb787d82f21d42563d8fb7e3c2e7d40123932.camel@pengutronix.de>
+         <831a59b052df02e9860b9766e631a7ab6a37c46a.camel@collabora.com>
+         <72fef3d9f79194876f2035e996bb83f9f8b12902.camel@pengutronix.de>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2106031436390.11704@eggly.anvils>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 02:40:30PM -0700, Hugh Dickins wrote:
->  static inline unsigned long
-> -__vma_address(struct page *page, struct vm_area_struct *vma)
-> +vma_address(struct page *page, struct vm_area_struct *vma)
->  {
-> -	pgoff_t pgoff = page_to_pgoff(page);
-> -	return vma->vm_start + ((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
-> +	pgoff_t pgoff;
-> +	unsigned long address;
-> +
-> +	VM_BUG_ON_PAGE(PageKsm(page), page);	/* KSM page->index unusable */
-> +	pgoff = page_to_pgoff(page);
-> +	if (pgoff >= vma->vm_pgoff) {
-> +		address = vma->vm_start +
-> +			((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
-> +		/* Check for address beyond vma (or wrapped through 0?) */
-> +		if (address < vma->vm_start || address >= vma->vm_end)
-> +			address = -EFAULT;
-> +	} else if (PageHead(page) &&
-> +		   pgoff + compound_nr(page) > vma->vm_pgoff) {
+Hi Lucas,
 
-I think on 32-bit, you need ...
+On Mon, 2021-05-17 at 12:52 +0200, Lucas Stach wrote:
+> Hi Ezequiel,
+> 
+> Am Sonntag, dem 16.05.2021 um 19:40 -0300 schrieb Ezequiel Garcia:
+> > Hi Lucas,
+> > 
+> > On Fri, 2021-04-16 at 12:54 +0200, Lucas Stach wrote:
+> > > Am Mittwoch, dem 07.04.2021 um 09:35 +0200 schrieb Benjamin Gaignard:
+> > > > In order to be able to share the control hardware block between
+> > > > VPUs use a syscon instead a ioremap it in the driver.
+> > > > To keep the compatibility with older DT if 'nxp,imx8mq-vpu-ctrl'
+> > > > phandle is not found look at 'ctrl' reg-name.
+> > > > With the method it becomes useless to provide a list of register
+> > > > names so remove it.
+> > > 
+> > > Sorry for putting a spoke in the wheel after many iterations of the
+> > > series.
+> > > 
+> > > We just discussed a way forward on how to handle the clocks and resets
+> > > provided by the blkctl block on i.MX8MM and later and it seems there is
+> > > a consensus on trying to provide virtual power domains from a blkctl
+> > > driver, controlling clocks and resets for the devices in the power
+> > > domain. I would like to avoid introducing yet another way of handling
+> > > the blkctl and thus would like to align the i.MX8MQ VPU blkctl with
+> > > what we are planning to do on the later chip generations.
+> > > 
+> > > CC'ing Jacky Bai and Peng Fan from NXP, as they were going to give this
+> > > virtual power domain thing a shot.
+> > > 
+> > 
+> > It seems the i.MX8MM BLK-CTL series are moving forward:
+> > 
+> > https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=479175
+> > 
+> > ... but I'm unable to wrap my head around how this affects the
+> > devicetree VPU modelling for i.MX8MQ (and also i.MX8MM, i.MX8MP, ...).
+> > 
+> > 
+> For the i.MX8MQ we want to have the same virtual power-domains provided
+> by a BLK-CTRL driver for the VPUs, as on i.MX8MM. This way we should be
+> able to use the same DT bindings for the VPUs on i.MX8MQ and i.MX8MM,
+> even though the SoC integration with the blk-ctrl is a little
+> different.
+> 
+> > Can you clarify that?
+> > 
+> I'm planning on sending some patches adding i.MX8MQ VPU support to the
+> BLK-CTRL driver in the next few days. I guess that should clarify
+> things. :)
+> 
 
-		   pgoff + compound_nr(page) - 1 >= vma->vm_pgoff
+As a gentle reminder, Hans sent the i.MX8MQ G2 HEVC support pull request
+and Benjamin just posted a series adding support for more features.
 
-... right?
+Do you think we could have the blk-ctrl support landing in v5.14?
 
-> +		address = vma->vm_start;
-> +	} else {
-> +		address = -EFAULT;
-> +	}
-> +	return address;
->  }
+If you work on the patches, and you happen to test the G1 and G2 on
+i.MX8MM it would be great to add that too.
+
+Meanwhile, our next steps would be to improve the HEVC V4L2 uAPI itself.
+
+Thanks a lot!
+Ezequiel 
+
