@@ -2,119 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F94739B4CF
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2406B39B4D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbhFDI1Y convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Jun 2021 04:27:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60020 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230044AbhFDI1W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 04:27:22 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AFBB96140F;
-        Fri,  4 Jun 2021 08:25:34 +0000 (UTC)
-Date:   Fri, 4 Jun 2021 09:27:20 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-iio@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: General kernel misuse of vsnprintf SPECIAL %#<foo> (was: Re:
- [PATCH v2 0/4] iio: Drop use of %hhx and %hx format strings)
-Message-ID: <20210604092720.5b59319b@jic23-huawei>
-In-Reply-To: <7a7e5cf61177b168f465f2502fde7a1e04293063.camel@perches.com>
-References: <20210603180612.3635250-1-jic23@kernel.org>
-        <9499203f1e993872b384aabdec59ac223a8ab931.camel@perches.com>
-        <20210603202546.0d12e7ad@jic23-huawei>
-        <7a7e5cf61177b168f465f2502fde7a1e04293063.camel@perches.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230267AbhFDI3W convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Jun 2021 04:29:22 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:30916 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229996AbhFDI3V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 04:29:21 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-230-Ui8ma5gYO-inG2DxsBorfg-1; Fri, 04 Jun 2021 09:27:33 +0100
+X-MC-Unique: Ui8ma5gYO-inG2DxsBorfg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.18; Fri, 4 Jun 2021 09:27:32 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Fri, 4 Jun 2021 09:27:32 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Jaegeuk Kim' <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>
+CC:     Daniel Rosenberg <drosen@google.com>, Chao Yu <chao@kernel.org>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        "kernel-team@android.com" <kernel-team@android.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH v2 2/2] f2fs: Advertise encrypted casefolding in sysfs
+Thread-Topic: [PATCH v2 2/2] f2fs: Advertise encrypted casefolding in sysfs
+Thread-Index: AQHXWPxv6htlFlDG3kih+WsZuRk5JqsDg75Q
+Date:   Fri, 4 Jun 2021 08:27:32 +0000
+Message-ID: <4f56f2781fac4b8bac1a78b0fecc318d@AcuMS.aculab.com>
+References: <20210603095038.314949-1-drosen@google.com>
+ <20210603095038.314949-3-drosen@google.com>
+ <YLlj+h4RiT6FvyK6@sol.localdomain> <YLmv5Ykb3QUzDOlL@google.com>
+In-Reply-To: <YLmv5Ykb3QUzDOlL@google.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 03 Jun 2021 12:34:28 -0700
-Joe Perches <joe@perches.com> wrote:
+From: Jaegeuk Kim
+> Sent: 04 June 2021 05:45
+...
+> > > @@ -161,6 +161,9 @@ static ssize_t features_show(struct f2fs_attr *a,
+> > >  	if (f2fs_sb_has_compression(sbi))
+> > >  		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
+> > >  				len ? ", " : "", "compression");
+> > > +	if (f2fs_sb_has_casefold(sbi) && f2fs_sb_has_encrypt(sbi))
+> > > +		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
+> > > +				len ? ", " : "", "encrypted_casefold");
+> > >  	len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
+> > >  				len ? ", " : "", "pin_file");
+> > >  	len += scnprintf(buf + len, PAGE_SIZE - len, "\n");
 
-> On Thu, 2021-06-03 at 20:25 +0100, Jonathan Cameron wrote:
-> > On Thu, 03 Jun 2021 11:58:15 -0700 Joe Perches <joe@perches.com> wrote:  
-> > > It looks to me as though %#<foo> is relatively commonly misused in the kernel.
-> > > 
-> > > Pehaps for the decimal portion of the format, checkpatch could have some
-> > > test for use of non-standard lengths.
-> > > 
-> > > Given the use is generally meant for a u8, u16, u32, or u64, perhaps
-> > > checkpatch should emit a warning whenever the length is not 4, 6, 10, or 18.  
-> > 
-> > Would have saved me some trouble, so I'm definitely in favour of checkpatch
-> > catching this.
-> > 
-> > I wonder if a better option is to match on 1, 2, 4, 8, 16 as likely to be
-> > caused by people getting the usage wrong rather than a deliberate attempt
-> > to pretty print something a little unusual?  
-> 
-> Dunno.  %#0x and %x[123] seems pretty silly as it'll always emit the number
-> of digits in the value.
+Looking at that pattern, why don't you just append "tag, "
+each time and then replace the final ", " with "\n" at the end.
 
-Good point for those two cases - definitely want to catch them.
+Although if I wanted to quickly parse that in (say) a shell
+script I wouldn't really want the ",".
+OTOH it is too late to change that.
 
-> 
-> There aren't too many other odd uses other than those.
+	David
 
-Perhaps you are right - after all anyone who is deliberately doing something
-unusual will know they are doing it and can ignore the checkpatch warning.
-Not as though it's going to happen very often from your stats below - looks
-like maybe 17 of those cases 'might' be deliberate.
-
-Jonathan
-> 
-> > > $ git grep -P -h -o '%#\d+\w+' | sort | uniq -c | sort -rn  
-> 
-> 8 and 16 are perhaps commonly misused.
-> > >     392 %#08x
-> > >      17 %#08lx
-> > >       9 %#08zx
-> > >       6 %#8x
-> > >       4 %#08llx
-> > >       1 %#8lx
-> > >       1 %#08  
-> 
-> > >       7 %#16llx
-> > >       5 %#16
-> > >       4 %#016Lx
-> > >       1 %#16x
-> > >       1 %#16lx  
-> 
-> These are the odd ones:
-> 
-> > >     144 %#02x
-> > >      27 %#0x
-> > >      23 %#2x
-> > >      17 %#3lx
-> > >      15 %#3x
-> > >      14 %#03x
-> > >       6 %#012llx
-> > >       4 %#05x
-> > >       4 %#02X
-> > >       3 %#01x
-> > >       2 %#09x
-> > >       2 %#05lx
-> > >       1 %#5x
-> > >       1 %#5lx
-> > >       1 %#2Lx
-> > >       1 %#2llx
-> > >       1 %#12x
-> > >       1 %#0lx
-> > >       1 %#05llx
-> > >       1 %#03X  
-> 
-> 
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
