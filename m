@@ -2,106 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C57E39B3AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF8D39B3B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbhFDHTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 03:19:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29014 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229826AbhFDHTi (ORCPT
+        id S229917AbhFDHWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 03:22:25 -0400
+Received: from mail-vs1-f45.google.com ([209.85.217.45]:42559 "EHLO
+        mail-vs1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229555AbhFDHWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 03:19:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622791072;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oYiGBrwOVwQzTkg4cxNvQnAUyjlM8dxbSVyQ8B6K+H0=;
-        b=WKYjw6DZGss2e7ZfYX7/9cRExmJoSMrz340iRvQ4rWTeS8aMde8sFIDe5U8vxmtlB+LjK9
-        nqxo17YV3+Vi1lTQHBO9BLyKSV9aQ6f5hic5ddfyGZbSvDDFn60vq8Ut1hVfGRoJ3whaJk
-        +CnEmJ/yI+kZIe0W3Ot6DY6HAT8RMBs=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-324-0ToqHxf7Nm6mRCFnZeoWRQ-1; Fri, 04 Jun 2021 03:17:50 -0400
-X-MC-Unique: 0ToqHxf7Nm6mRCFnZeoWRQ-1
-Received: by mail-ej1-f71.google.com with SMTP id gv42-20020a1709072beab02903eab8e33118so3019469ejc.19
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 00:17:50 -0700 (PDT)
+        Fri, 4 Jun 2021 03:22:24 -0400
+Received: by mail-vs1-f45.google.com with SMTP id l25so4329712vsb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 00:20:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lUGXtmm3YaaYQA8A3NSHgtbe8akKxyp8jdu/y6noB0U=;
+        b=tLf7J5afBpLfm20TZzOAxqfviSxldh3sN/UTbxzKhDB7y6aQzVak4rBUkyRPQG33o5
+         2CCbgayd3+BjiKKd5vYS9P4mr/8WP7y1mPRuXbMH1MMrEiQ7+2p+YjxydG2JH86SEyYN
+         5mhPP6/36sXocZwLqcrDYsisq574ul0/ay5GK5RcojQkKOPruiLidFG6LM3lmyKNsY9E
+         V3yrLc6qi1Hpt7XOBIPQ3NFeDQOqp1pj+6cVUCMwIkk4KZz/c2860T1Ck1kgbux7GkDj
+         rD52hiI1+4vwuXEkSEyYaw6y9CxMlUlz4qmn+HY11dg+UlPXZyO7WUQQNjr8kxGJN04Q
+         jNnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oYiGBrwOVwQzTkg4cxNvQnAUyjlM8dxbSVyQ8B6K+H0=;
-        b=EKvDSWen6iZ2hKcDS/zkXiTY7sGWlyncGitkVSog/WaUZwzc1OCKVBdJAJ00LBivjy
-         n9IbD4oSc2e3LvDl8Uw0NyB/QBJpP6bYCaTixGeeiMo6nGUD4HDkEsURhPeEs4Z7iQea
-         +uHgDuHcpSVfowrapEiskFj5NuZzxHaYuNhjynKg1sZjJbXicQ0KbPtiCClcUiwmtdZP
-         2MOgLpJWKQyMQLLjJ4owNnJyrOpk23axsXkLskv3wACkpK4OtF9CANsCQfsJNb14fWqu
-         GOo5k2xS75UuYqU37Fp4Bh4BNvN+GlRP5yqBXN9yO3XjLWjeyFYjajBpm6wXjTu3HxXv
-         ZeFQ==
-X-Gm-Message-State: AOAM532fkuRMyPMBJNV7t1dnGeTjxjD3U+XYT06GELsD7oPr27Nwrftg
-        JTG0rAjpH10v9cKVqTGr1YkI8NmFuN66gTC4NJAjcnU8+PfkJrSekZiQcxpXjkAlGM3VRzD0/Ea
-        q9L6chPplENZQTdU7XSXoRKnw
-X-Received: by 2002:a17:906:1982:: with SMTP id g2mr2940208ejd.184.1622791069074;
-        Fri, 04 Jun 2021 00:17:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzNA+cR803OKErcII3/XiBGdUlseY07tlmT5T9SKrsahaFVgc/V2SdsxWbxXtho/hDOs9RuiA==
-X-Received: by 2002:a17:906:1982:: with SMTP id g2mr2940199ejd.184.1622791068902;
-        Fri, 04 Jun 2021 00:17:48 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id um5sm2430354ejb.109.2021.06.04.00.17.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Jun 2021 00:17:48 -0700 (PDT)
-Subject: Re: [RFC][PATCH] kvm: add suspend pm-notifier
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Suleiman Souhlal <suleiman@google.com>, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        kvm@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linux-s390@vger.kernel.org
-References: <20210603164315.682994-1-senozhatsky@chromium.org>
- <YLkRB3qxjrXB99He@hirez.programming.kicks-ass.net>
- <YLl2QeoziEVHvRAO@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <1a460c63-89d6-b7ae-657b-2c4b841c9562@redhat.com>
-Date:   Fri, 4 Jun 2021 09:17:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lUGXtmm3YaaYQA8A3NSHgtbe8akKxyp8jdu/y6noB0U=;
+        b=rbhYcpl9OCOxfrzSIgz+QVuePvPegEpiA2grWaqz8bVpIFTAXNMCvpggSH/KCfwZb7
+         IJUL1VtMAZ2GJkxedM7gM7LoxVwOAOMWCF5zysuWNJ3ti64CEPG4UBJZT39yVaXJliUS
+         JPDHfHOI5BB0Ee0xUaEx0MymoVgAO3NfaUWy6qifslPgyGkZ7BelTi/dmCiulTRteGEK
+         zvzGWogJl5agkEgjaQeZ/CEv1TSK2cNJULQ17HA1Sg9ACmCsgh4aR8YJPSvwJkle83HD
+         /rZvTxlqT9WhbTrOObix7Kny2waT6pv8ak/dP0arYbN/FAqUhN4QlT8C+yHPMQKKrYlv
+         KidQ==
+X-Gm-Message-State: AOAM5318/4F7V8zb7UiUPD42sLhPOJjFXq2m28oQgyW27fqBslI1qA8m
+        ydyGsthcSJ8BTcy4vuKOvQ6y+e+dCDNitQno05bRyLSA5Qi7xjkU
+X-Google-Smtp-Source: ABdhPJzo9GqS9h3POv3Xet9DMdIVcWmPvwBW6Tvbshz7HOCBv0w+Vh2vMe8mdSvwCusNyTHZIeSQ00a4wBjuDFLF6xM=
+X-Received: by 2002:a67:e359:: with SMTP id s25mr1333199vsm.55.1622791162238;
+ Fri, 04 Jun 2021 00:19:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YLl2QeoziEVHvRAO@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210603093438.138705-1-ulf.hansson@linaro.org>
+ <YLi5N06Qs+gYHgYg@gerhold.net> <CAPDyKFqQ==zPwXjBxKAX9m38YfxFViqLTz8autnZc1suT5cayg@mail.gmail.com>
+ <YLkOAyydZMnxkEy+@gerhold.net>
+In-Reply-To: <YLkOAyydZMnxkEy+@gerhold.net>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 4 Jun 2021 09:18:45 +0200
+Message-ID: <CAPDyKFpaKkeyOpP7iW8-WG7DLs6Gd1eD2KO3pDYrVQ3z88zFJQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] PM: domains: Avoid boilerplate code for DVFS in subsystem/drivers
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/06/21 02:39, Sergey Senozhatsky wrote:
->>>   
->>> +void kvm_arch_pm_notifier(struct kvm *kvm)
->>> +{
->>> +}
->>> +
->>>   long kvm_arch_vm_ioctl(struct file *filp,
->>>   		       unsigned int ioctl, unsigned long arg)
->>>   {
->> What looks like you wants a __weak function.
-> True. Thanks for the suggestion.
-> 
-> I thought about it, but I recalled that tglx had  __strong opinions
-> on __weak functions.
-> 
+On Thu, 3 Jun 2021 at 19:16, Stephan Gerhold <stephan@gerhold.net> wrote:
+>
+> On Thu, Jun 03, 2021 at 05:27:30PM +0200, Ulf Hansson wrote:
+> > On Thu, 3 Jun 2021 at 13:13, Stephan Gerhold <stephan@gerhold.net> wrote:
+> > > I think this might also go into the direction of my problem with the OPP
+> > > core for CPU DVFS [1] since the OPP core currently does not "power-on"
+> > > the power domains, it just sets a performance state. I got kind of stuck
+> > > with all the complexity of power domains in Linux so I think we never
+> > > solved that.
+> >
+> > Hmm, that issue is in a way related.
+> >
+> > Although, if I understand correctly, that was rather about at what
+> > layer it makes best sense to activate the device (from runtime PM
+> > point of view). And this was needed due to the fact that the
+> > corresponding genpd provider, requires the PM domain to be power on to
+> > allow changing a performance state for it. Did I get that correct?
+> >
+>
+> Yes, mostly. But I guess I keep coming back to the same question:
+>
+> When/why does it make sense to vote for a "performance state" of
+> a power domain that is or might be powered off?
+>
+> "Powered off" sounds like the absolutely lowest possible performance
+> state to me, it's just not on at all. And if suddenly a device comes and
+> says "I want performance state X", nothing can change until the power
+> domain is also "powered on".
+>
+> I think my "CPU DVFS" problem only exists because in many other
+> situations it's possible to rely on one of the following side effects:
+>
+>   1. The genpd provider does not care if it's powered on or not.
+>      (i.e. it's always-on or implicitly powers on if state > 0).
+>   2. There is some other device that votes to keep the power domain on.
+>
+> And that's how the problem relates to my comment for this patch series ...
+>
+> >
+> > >
+> > > Do I understand your patch set correctly that you basically make the
+> > > performance state votes conditional to the "power-on" vote of the device
+> > > (which is automatically toggled during runtime/system PM)?
+> >
+> > The series can be considered as a step in that direction, but no, this
+> > series doesn't change that behaviour.
+> >
+> > Users of dev_pm_genpd_set_performance_state() are still free to set a
+> > performance state, orthogonally to whether the PM domain is powered on
+> > or off.
+> >
+> > >
+> > > If yes, I think that's a good thing. It was always really confusing to me
+> > > that a device can make performance state votes if it doesn't actually
+> > > want the power domain to be powered on.
+> >
+> > I share your view, it's a bit confusing.
+> >
+> > Just adding the condition internally to genpd to prevent the caller of
+> > dev_pm_genpd_set_performance() from succeeding to set a new state,
+> > unless the genpd is powered on, should be a rather simple thing to
+> > add.
+> >
+> > However, to change this, we first need to double check that all the
+> > callers are making sure they have turned on the PM domain (typically
+> > via runtime PM).
+> >
+>
+> ... because if performance state votes would be conditional to the
+> "power-on" vote of the device, it would no longer be possible
+> to rely on the side effects mentioned above. So this would most
+> certainly break some code that (incorrectly?) relies on these side
+> effects, but would also prevent such code.
 
-Alternatively, you can add a Kconfig symbol to virt/kvm/Kconfig and 
-select it from arch/x86/kvm.
+Right. I understand your point and I am open to discuss an
+implementation. Although, I suggest we continue that separately from
+the $subject series.
 
-Paolo
+>
+> My (personal) feeling so far is that just dropping performance votes
+> during runtime/system suspend just makes the entire situation even more
+> confusing.
 
+Well, that's what most subsystems/drivers need to do.
+
+Moreover, we have specific devices that only use one default OPP [1].
+
+>
+> > >
+> > > What happens if a driver calls dev_pm_genpd_set_performance_state(...)
+> > > while the device is suspended? Will that mess up the performance state
+> > > when the device resumes?
+> >
+> > Good question. The idea is:
+> >
+> > If genpd in genpd_runtime_suspend() are able to drop an existing vote
+> > for a performance state, it should restore the vote in
+> > genpd_runtime_resume(). This also means, if there is no vote to drop
+> > in genpd_runtime_suspend(), genpd should just leave the vote as is in
+> > genpd_runtime_resume().
+> >
+>
+> But the next time the device enters runtime suspend that vote would be
+> dropped, wouldn't it? That feels kind of strange to me.
+
+What do you mean by "next time"?
+
+My main point is, if the device enters runtime suspend state, why
+should we keep the vote for an OPP for the device? I mean, the device
+isn't going to be used anyway.
+
+>
+> Stephan
+
+Kind regards
+Uffe
+
+[1]
+https://patchwork.kernel.org/project/linux-pm/list/?series=489309
