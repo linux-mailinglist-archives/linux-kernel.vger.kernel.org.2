@@ -2,103 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB3E39B1C2
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 07:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD0FA39B1C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 07:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhFDFC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 01:02:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36322 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229452AbhFDFCz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 01:02:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47F976138C;
-        Fri,  4 Jun 2021 05:01:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622782869;
-        bh=FX6o7aB6iS8uy89W3MSrtVuCO1EpSj36V4h5Npoe450=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OgBIwOAY1BynVNx0Ow7+EJcnJ8OeXkGp9rKCjhykWbfHAKuCTHi+Bl2yD/YjbU5Me
-         LKuaAUS6fFA0s2gD0UcnaXo9xcyh2FiNaOVmSYWkvNVIoTc50ArtJcDX1xTeOWryAu
-         6kabYQIquTtaM3Q7LDdPL6348hPP0bnFMnqcVxqNunmwNvsWVjXbyLzE+XVTI6+U82
-         H02fB0o7GKn2A5tKM3O5sBBEigLANr1z7vtO8+qyaXH5gyvYMQjMOpKS3VPjDx61kF
-         c5dNoonMRp8zCbCagSPantf2ijeJddzQcUNfGMRQ9ypW6Ny0d/nwLld5DBNZ69NhC4
-         2VRDwHX/nsPxw==
-Date:   Thu, 3 Jun 2021 22:01:07 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     Daniel Rosenberg <drosen@google.com>, Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com, stable@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] f2fs: Advertise encrypted casefolding in sysfs
-Message-ID: <YLmzkzPZwBVYf5LO@sol.localdomain>
-References: <20210603095038.314949-1-drosen@google.com>
- <20210603095038.314949-3-drosen@google.com>
- <YLlj+h4RiT6FvyK6@sol.localdomain>
- <YLmv5Ykb3QUzDOlL@google.com>
-MIME-Version: 1.0
+        id S229973AbhFDFEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 01:04:01 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:4720 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229452AbhFDFEA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 01:04:00 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1544q1Y7189594;
+        Fri, 4 Jun 2021 01:01:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : content-type : in-reply-to
+ : mime-version; s=pp1; bh=RY9HHRMtm3r4/6fcd4vCA6IZ3fBnma5IDrwpb+zYcow=;
+ b=dHYpVnq/RWkxu4431l7Pp3NhpiFhqkrurUsW09BdZZqaow+3kjzKLIY/7Gni0LwEU8Uq
+ ORwr1HMG253R1GfeJY02N8Zr4BjcmB5hIb4fErvTYa78Y2TCYJXg/eCPuMCb0zyc35cm
+ dxRs1teyWFo9jRKkAB7b/NIW3Ft826IfCfFf1PdMsH+N8fFd/JEZDi5XnICgnLZi3NT+
+ EjMKjCDeMWJvNqWAAMSByMWJEQBD7qV0sd/dE5O2j2kWqxEUOoWNB7upGiGwOEU8ejxR
+ lUoZsUzaZ/vDooM5KFItx2SMc2uiZ2DQfizD7GfqL2J2yWb85ZWDWW3lmdr5WsGN53k+ gg== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38ydhc06sw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Jun 2021 01:01:58 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1544rQGn027587;
+        Fri, 4 Jun 2021 05:01:56 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 38ud88bavm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Jun 2021 05:01:56 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15451ETg30540044
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 4 Jun 2021 05:01:14 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D15E54C05A;
+        Fri,  4 Jun 2021 05:01:52 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9BC8C4C046;
+        Fri,  4 Jun 2021 05:01:50 +0000 (GMT)
+Received: from in.ibm.com (unknown [9.199.35.195])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Fri,  4 Jun 2021 05:01:50 +0000 (GMT)
+Date:   Fri, 4 Jun 2021 10:31:44 +0530
+From:   Bharata B Rao <bharata@linux.ibm.com>
+To:     Dennis Zhou <dennis@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        aneesh.kumar@linux.ibm.com, tj@kernel.org, cl@linux.com,
+        akpm@linux-foundation.org, amakhalov@vmware.com, guro@fb.com,
+        vbabka@suse.cz, srikar@linux.vnet.ibm.com, psampat@linux.ibm.com,
+        ego@linux.vnet.ibm.com
+Subject: Re: [RFC PATCH v0 0/3] CPU hotplug awareness in percpu allocator
+Message-ID: <YLmzuB5N3wFD56zg@in.ibm.com>
+Reply-To: bharata@linux.ibm.com
+References: <20210601065147.53735-1-bharata@linux.ibm.com>
+ <YLedMLpU0W1DjWko@google.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YLmv5Ykb3QUzDOlL@google.com>
+In-Reply-To: <YLedMLpU0W1DjWko@google.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: S-J-8eJpoWauA6Iizu0z2xOZaxtzGWsN
+X-Proofpoint-GUID: S-J-8eJpoWauA6Iizu0z2xOZaxtzGWsN
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-04_01:2021-06-04,2021-06-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ lowpriorityscore=0 malwarescore=0 priorityscore=1501 mlxscore=0
+ adultscore=0 mlxlogscore=999 suspectscore=0 clxscore=1015 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106040035
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 09:45:25PM -0700, Jaegeuk Kim wrote:
-> On 06/03, Eric Biggers wrote:
-> > On Thu, Jun 03, 2021 at 09:50:38AM +0000, Daniel Rosenberg wrote:
-> > > Older kernels don't support encryption with casefolding. This adds
-> > > the sysfs entry encrypted_casefold to show support for those combined
-> > > features. Support for this feature was originally added by
-> > > commit 7ad08a58bf67 ("f2fs: Handle casefolding with Encryption")
-> > > 
-> > > Fixes: 7ad08a58bf67 ("f2fs: Handle casefolding with Encryption")
-> > > Cc: stable@vger.kernel.org # v5.11+
-> > > Signed-off-by: Daniel Rosenberg <drosen@google.com>
-> > > ---
-> > >  fs/f2fs/sysfs.c | 15 +++++++++++++--
-> > >  1 file changed, 13 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-> > > index 09e3f258eb52..6604291a3cdf 100644
-> > > --- a/fs/f2fs/sysfs.c
-> > > +++ b/fs/f2fs/sysfs.c
-> > > @@ -161,6 +161,9 @@ static ssize_t features_show(struct f2fs_attr *a,
-> > >  	if (f2fs_sb_has_compression(sbi))
-> > >  		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
-> > >  				len ? ", " : "", "compression");
-> > > +	if (f2fs_sb_has_casefold(sbi) && f2fs_sb_has_encrypt(sbi))
-> > > +		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
-> > > +				len ? ", " : "", "encrypted_casefold");
-> > >  	len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
-> > >  				len ? ", " : "", "pin_file");
-> > >  	len += scnprintf(buf + len, PAGE_SIZE - len, "\n");
-> > > @@ -579,6 +582,7 @@ enum feat_id {
-> > >  	FEAT_CASEFOLD,
-> > >  	FEAT_COMPRESSION,
-> > >  	FEAT_TEST_DUMMY_ENCRYPTION_V2,
-> > > +	FEAT_ENCRYPTED_CASEFOLD,
-> > >  };
-> > 
-> > Actually looking at it more closely, this patch is wrong.
-> > 
-> > It only makes sense to declare "encrypted_casefold" as a feature of the
-> > filesystem implementation, i.e. /sys/fs/f2fs/features/encrypted_casefold.
-> > 
-> > It does *not* make sense to declare it as a feature of a particular filesystem
-> > instance, i.e. /sys/fs/f2fs/$disk/features, as it is already implied by the
-> > filesystem instance having both the encryption and casefold features enabled.
-> > 
-> > Can we add /sys/fs/f2fs/features/encrypted_casefold only?
+On Wed, Jun 02, 2021 at 03:01:04PM +0000, Dennis Zhou wrote:
+> Hello,
 > 
-> wait.. /sys/fs/f2fs/features/encrypted_casefold is on by
-> CONFIG_FS_ENCRYPTION && CONFIG_UNICODE.
-> OTOH, /sys/fs/f2fs/$dis/feature_list/encrypted_casefold is on by
-> on-disk features: F2FS_FEATURE_ENCRYPT and F2FS_FEATURE_CASEFOLD.
+> On Tue, Jun 01, 2021 at 12:21:44PM +0530, Bharata B Rao wrote:
+> > Hi,
+> > 
+> > This is an attempt to make the percpu allocator CPU hotplug aware.
+> > Currently the percpu allocator allocates memory for all the possible
+> > CPUs. This can lead to wastage of memory when possible number of CPUs
+> > is significantly higher than the number of online CPUs. This can be
+> > avoided if the percpu allocator were to allocate only for the online
+> > CPUs and extend the allocation for other CPUs as and when they become
+> > online. 
+> > 
+> > This early RFC work shows some good memory savings for a powerpc
+> > KVM guest that is booted with 16 online and 1024 possible CPUs.
+> > Here is the comparision of Percpu memory consumption from
+> > /proc/meminfo before and after creating 1000 memcgs.
+> > 
+> > 			W/o patch		W/ patch
+> > Before			1441792 kB		22528 kB
+> > After 1000 memcgs	4390912 kB		68608 kB
+> > 
 > 
+> I have thought about this for a day now and to be honest my thoughts
+> haven't really changed since the last discussion in [1].
+> 
+> I struggle here for a few reasons:
+> 1. We're intertwining cpu and memory for hotplug.
+>   - What does it mean if we don't have enough memory?
 
-Yes, but in the on-disk case, encrypted_casefold is redundant because it simply
-means encrypt && casefold.  There is no encrypted_casefold flag on-disk.
+That means CPU hotplug will fail, but...
 
-- Eric
+>   - How hard do we try to reclaim memory?
+>   - Partially allocated cpus? Do we free it all and try again?
+
+
+... yes these are some difficult questions. We should check if
+roll back can be done cleanly and efficiently. You can see that
+I am registering separate hotplug callbacks for the hotplug core
+and for init routines of alloc_percpu() callers. Rolling back the
+former should be fairly straight forward, but have to see how
+desirable and feasible it is to undo the entire CPU hotplug when
+one of the alloc_percpu callbacks fails, especially if there are
+hundreds of registered alloc_percpu callbacks.
+
+> 2. We're now blocking the whole system on the percpu mutex which can
+>    cause terrible side effects. If there is a large amount of percpu
+>    memory already in use, this means we've accumulated a substantial
+>    number of callbacks.
+
+I am yet to look at each caller in detail and see which of them
+really need init/free callbacks and which can do without it. After
+this we will have to measure the overhead all this is putting on the
+hotplug path. Given that hotplug is a slow path, I wonder if some
+overhead is tolerable here.
+
+CPU hotplug already happens with cpu_hotplug_lock held, so when you
+mention that this callback holding percpu mutex can have terrible
+effects, are you specifically worried about blocking all the
+percpu allocation requests during hotplug? Or is it something else?
+
+> 3. While I did mention a callback approach would work. I'm not thrilled
+>    by the additional complexity of it as it can be error prone.
+
+Fair enough, the callback for the percpu allocator core seems fine
+to me but since I haven't yet looked at all callers in detail, I
+don't know if we would run into some issues/dependencies in any
+specific callback handlers that increases the overall complexity.
+
+Other than the callbacks, I am also bit worried about the complexity
+and the overhead involved in memcg charging and uncharging at CPU
+hotplug time. In my environment (powerpc kvm guest), I see that each
+chunk can have a maximum of 180224 obj_cgroups. Now checking for the
+valid/used one out of that, determining the allocation size and
+charging/uncharging to the right memcg could be an expensive task.
+
+> 
+> Beyond the above. I still don't believe it's the most well motivated
+> problem. I struggle to see a world where it makes sense to let someone
+> scale from 16 cpus to 1024. As in my mind you would also need to scale
+> memory to some degree too (not necessarily linearly but a 1024 core
+> machine with say like 16 gigs of ram would be pretty funny).
+
+Well the platform here provides the capability of scaling and until
+that scaling happens, why consume memory for not-present CPUs is
+the motivation here. But as you note, it definetely is a question of
+whether any real application is making use of this scaling now
+and the associated complexity.
+
+Even if we consider the scaling from 16 to 1024 CPUs as unrealistic
+for now, the usecase and the numbers from the production scenario that
+Alexey mentioned in [1] (2 to 128 CPUs) is certainly a good motivator?
+
+Alexey - You did mention about creating a huge number of memcgs and
+observing VMs consuming 16-20 GB percpu memory in production. So
+how any memcgs are we talking about here?
+
+> 
+> Would it be that bad to use cold migration points and eat a little bit
+> of overhead for what I understand to be a relatively uncommon use case?
+
+[1] https://lore.kernel.org/linux-mm/8E7F3D98-CB68-4418-8E0E-7287E8273DA9@vmware.com/
+
+Regards,
+Bharata.
