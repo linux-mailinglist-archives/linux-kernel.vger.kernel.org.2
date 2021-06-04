@@ -2,214 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C6639C091
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 21:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F77C39C08D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 21:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231161AbhFDToS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 15:44:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230414AbhFDToQ (ORCPT
+        id S230353AbhFDToG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 15:44:06 -0400
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:44860 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229810AbhFDToE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 15:44:16 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D2EC061766;
-        Fri,  4 Jun 2021 12:42:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bb1jA4KJJMvI5FjBqhzon96/oQku4pcdDpeVipG1x4o=; b=BowMt2rxf6wlCAcaDzFLvRL9vk
-        lu/SlDa8a1E1AUMg39AIg/J6ubklu/VeSWYyra362BJmNu884vvuCzBXgUYLrv6641nMHd9vp/ZuB
-        VgBnT5f4fO9e/LAeEd56w3Os8gbADQ/cJTfPYMXQKTchbkAkOhcDhkykbz99W+EixtD4KR1F5tYW6
-        3pt6yFc7hZRKPaho4ImmTq6eUTYbAgVr8oJJ6kwfQgkjMtSPhmKf/OWIV3oYdEAmvMVeV3zladMIB
-        V4fka3/qThGS3JCHKyhezmeapa2+QMq52cUIP2WIvCBXZTCInAsqQJ5z2h4HkuPMVolnOyyUCH+CY
-        H7vFInew==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lpFhY-00DWac-2k; Fri, 04 Jun 2021 19:42:02 +0000
-Date:   Fri, 4 Jun 2021 20:41:52 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: Re: [PATCH net-next v7 3/5] page_pool: Allow drivers to hint on SKB
- recycling
-Message-ID: <YLqCAEVG+aLNGlIi@casper.infradead.org>
-References: <20210604183349.30040-1-mcroce@linux.microsoft.com>
- <20210604183349.30040-4-mcroce@linux.microsoft.com>
+        Fri, 4 Jun 2021 15:44:04 -0400
+Received: by mail-oi1-f177.google.com with SMTP id d21so10823570oic.11;
+        Fri, 04 Jun 2021 12:42:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Iwpzyxd5CbOxhvxW+jNhnkZOEathw49CJTutBIFswjg=;
+        b=mgXRBtlEPgEos2UPa8Xos7/pfws1yHgC8GnHsakpstT4VfUGVC0A8k1EgGmAyU9YIf
+         xVthvEwSfpnzZxGV3nhziXHSErd8le9txs0fNW+HfNEh4aBm/21rKDwnFQb+vNZCflAo
+         /YEP2NLPu9EA19L778VvYYBaCVtwhMa+2Lw2EOAzbZNhZYALcyI3hZWWom2RsPMtWYIe
+         B31kulzH9RWZcfgJ0VyBAi4ZACyCqQ5+CbOtzFICSiqGIs0+zLLJVdSI02+yIc4aq9Pq
+         rY9zsabS7BmUIGbRPCd/XSAY2ETJTHgEyH6B0Wxn1S7WHUTAzB5ThNuTWaGUcAQKISIC
+         D00g==
+X-Gm-Message-State: AOAM532XS/G0TOzTbbPt1A1bg7EhuBEQJqwOVMR/aEb9XfjcSm7Zz3hX
+        zOYKhBkQ4m2J5gIaJppXxA==
+X-Google-Smtp-Source: ABdhPJxk36X+Us47SDRHve7A3Vu/JYp33N4YfM8CDgQaSY5bZK2wPJxk6oKzTRt618XcHomnaEhQRQ==
+X-Received: by 2002:a05:6808:3a7:: with SMTP id n7mr11938789oie.140.1622835721393;
+        Fri, 04 Jun 2021 12:42:01 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id t15sm661221oie.14.2021.06.04.12.42.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 12:42:00 -0700 (PDT)
+Received: (nullmailer pid 3786315 invoked by uid 1000);
+        Fri, 04 Jun 2021 19:41:59 -0000
+Date:   Fri, 4 Jun 2021 14:41:59 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Yanan Wang <wangyanan55@huawei.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        wanghaibin.wang@huawei.com
+Subject: Re: [PATCH] Documentation: dt-bindings: Fix incorrect statement
+Message-ID: <20210604194159.GA3781429@robh.at.kernel.org>
+References: <20210521095720.5592-1-wangyanan55@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210604183349.30040-4-mcroce@linux.microsoft.com>
+In-Reply-To: <20210521095720.5592-1-wangyanan55@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 08:33:47PM +0200, Matteo Croce wrote:
-> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> index 7fcfea7e7b21..057b40ad29bd 100644
-> --- a/include/linux/skbuff.h
-> +++ b/include/linux/skbuff.h
-> @@ -40,6 +40,9 @@
->  #if IS_ENABLED(CONFIG_NF_CONNTRACK)
->  #include <linux/netfilter/nf_conntrack_common.h>
->  #endif
-> +#ifdef CONFIG_PAGE_POOL
-> +#include <net/page_pool.h>
-> +#endif
+On Fri, May 21, 2021 at 05:57:20PM +0800, Yanan Wang wrote:
+> It's found when reading the Doc.
 
-I'm not a huge fan of conditional includes ... any reason to not include
-it always?
+Please improve the subject so we have some clue as to what the change is 
+and what it applies to.
+ 
+> In a SMP system, the hierarchy of CPUs now can be defined through
+> four not three entities (socket/cluster/core/thread), so correct
+> the statement to avoid possible confusion.
+> 
+> Since we are already there, also drop an extra space and tweak
+> the title alignment. No real context change at all.
 
-> @@ -3088,7 +3095,13 @@ static inline void skb_frag_ref(struct sk_buff *skb, int f)
->   */
->  static inline void __skb_frag_unref(skb_frag_t *frag, bool recycle)
->  {
-> -	put_page(skb_frag_page(frag));
-> +	struct page *page = skb_frag_page(frag);
-> +
-> +#ifdef CONFIG_PAGE_POOL
-> +	if (recycle && page_pool_return_skb_page(page_address(page)))
-> +		return;
+Since already here, converting to schema would be preferred over trivial 
+fixes.
 
-It feels weird to have a page here, convert it back to an address,
-then convert it back to a head page in page_pool_return_skb_page().
-How about passing 'page' here, calling compound_head() in
-page_pool_return_skb_page() and calling virt_to_page() in skb_free_head()?
-
-> @@ -251,4 +253,11 @@ static inline void page_pool_ring_unlock(struct page_pool *pool)
->  		spin_unlock_bh(&pool->ring.producer_lock);
->  }
+> 
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Albert Ou <aou@eecs.berkeley.edu>
+> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+> ---
+>  Documentation/devicetree/bindings/cpu/cpu-topology.txt | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/cpu/cpu-topology.txt b/Documentation/devicetree/bindings/cpu/cpu-topology.txt
+> index 9bd530a35d14..8b23a98c283c 100644
+> --- a/Documentation/devicetree/bindings/cpu/cpu-topology.txt
+> +++ b/Documentation/devicetree/bindings/cpu/cpu-topology.txt
+> @@ -6,7 +6,7 @@ CPU topology binding description
+>  1 - Introduction
+>  ===========================================
 >  
-> +/* Store mem_info on struct page and use it while recycling skb frags */
-> +static inline
-> +void page_pool_store_mem_info(struct page *page, struct page_pool *pp)
-> +{
-> +	page->pp = pp;
-
-I'm not sure this wrapper needs to exist.
-
-> +}
-> +
->  #endif /* _NET_PAGE_POOL_H */
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index e1321bc9d316..a03f48f45696 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -628,3 +628,26 @@ void page_pool_update_nid(struct page_pool *pool, int new_nid)
->  	}
->  }
->  EXPORT_SYMBOL(page_pool_update_nid);
-> +
-> +bool page_pool_return_skb_page(void *data)
-> +{
-> +	struct page_pool *pp;
-> +	struct page *page;
-> +
-> +	page = virt_to_head_page(data);
-> +	if (unlikely(page->pp_magic != PP_SIGNATURE))
-> +		return false;
-> +
-> +	pp = (struct page_pool *)page->pp;
-
-You don't need the cast any more.
-
-> +	/* Driver set this to memory recycling info. Reset it on recycle.
-> +	 * This will *not* work for NIC using a split-page memory model.
-> +	 * The page will be returned to the pool here regardless of the
-> +	 * 'flipped' fragment being in use or not.
-> +	 */
-> +	page->pp = NULL;
-> +	page_pool_put_full_page(pp, page, false);
-> +
-> +	return true;
-> +}
-> +EXPORT_SYMBOL(page_pool_return_skb_page);
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index 12b7e90dd2b5..f769f08e7b32 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -70,6 +70,9 @@
->  #include <net/xfrm.h>
->  #include <net/mpls.h>
->  #include <net/mptcp.h>
-> +#ifdef CONFIG_PAGE_POOL
-> +#include <net/page_pool.h>
-> +#endif
+> -In a SMP system, the hierarchy of CPUs is defined through three entities that
+> +In a SMP system, the hierarchy of CPUs is defined through four entities that
+>  are used to describe the layout of physical CPUs in the system:
 >  
->  #include <linux/uaccess.h>
->  #include <trace/events/skb.h>
-> @@ -645,10 +648,15 @@ static void skb_free_head(struct sk_buff *skb)
->  {
->  	unsigned char *head = skb->head;
+>  - socket
+> @@ -75,7 +75,7 @@ whose bindings are described in paragraph 3.
 >  
-> -	if (skb->head_frag)
-> +	if (skb->head_frag) {
-> +#ifdef CONFIG_PAGE_POOL
-> +		if (skb->pp_recycle && page_pool_return_skb_page(head))
-> +			return;
-> +#endif
-
-put this in a header file:
-
-static inline bool skb_pp_recycle(struct sk_buff *skb, void *data)
-{
-	if (!IS_ENABLED(CONFIG_PAGE_POOL) || !skb->pp_recycle)
-		return false;
-	return page_pool_return_skb_page(virt_to_page(data));
-}
-
-then this becomes:
-
-	if (skb->head_frag) {
-		if (skb_pp_recycle(skb, head))
-			return;
->  		skb_free_frag(head);
-> -	else
-> +	} else {
->  		kfree(head);
-> +	}
->  }
+>  The nodes describing the CPU topology (socket/cluster/core/thread) can
+>  only be defined within the cpu-map node and every core/thread in the
+> -system must be defined within the topology.  Any other configuration is
+> +system must be defined within the topology. Any other configuration is
+>  invalid and therefore must be ignored.
 >  
->  static void skb_release_data(struct sk_buff *skb)
+>  ===========================================
+> @@ -91,9 +91,9 @@ cpu-map child nodes which do not share a common parent node can have the same
+>  name (ie same number N as other cpu-map child nodes at different device tree
+>  levels) since name uniqueness will be guaranteed by the device tree hierarchy.
+>  
+> -===========================================
+> +============================================
+>  3 - socket/cluster/core/thread node bindings
+> -===========================================
+> +============================================
+>  
+>  Bindings for socket/cluster/cpu/thread nodes are defined as follows:
+>  
+> -- 
+> 2.19.1
