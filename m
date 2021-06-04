@@ -2,96 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5DBE39B916
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 14:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6C839B920
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 14:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbhFDMfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 08:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbhFDMfy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 08:35:54 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199A0C06174A
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 05:34:08 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id 5-20020a9d01050000b02903c700c45721so7839765otu.6
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 05:34:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tCu/tKeYJwFaB3OgK7bagOEU6jq2x5jscMl3fnvsW4U=;
-        b=qnFJVP/DW5Te8bJnZoC2h1qT0G1R0vO9fkYS5f86+H4eEFZNB4QZQXAvpUr7Pn5Owv
-         SaHLAHFjSrMFdaVxjlgur5uvyZPRHgotUV+2TjuI9BM47xZX+uLq2WuJvmRj/vOom6AV
-         mjPUniSxHJ1Apdu9EamFo9v8LPDBNovSP0C7QlhoXh8ZE+qRNi3ygF0axGGMgwycg4QX
-         dONIz8rOqEGNz1hNS5/uBmWmMgAyD5bGfTbmGL3wUwYhz5/L/46bEu6K/b8hVe4NmHfR
-         45Cnc3QfFb13qx2VeqkTK/jobUDS32F2IN4mA793UFCxIhQLaLPEKnbCm/OdEJ+C/H58
-         TR1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tCu/tKeYJwFaB3OgK7bagOEU6jq2x5jscMl3fnvsW4U=;
-        b=Abl7eolI+A/gB5Tftn/WUcdvCh8PGv4mVylRVQuGSkgf42sXDyuVmzB15+smLkYyi+
-         OfTBW57+SAyW6Ni4+wP7E7SBvvdCHNu49NXaxWNisEKKnfPsON4qEu5dZtA7XiOUvp31
-         U65+Uyj69M3Lk6TiGLJ31y0sGymXq9l+dRAFRmagzb7+ULs4S8UAWAEdwJG44iQJf8Jp
-         qQIazKGf/QLom87E90gPwbNFAhHqk+1mJr335BU8RL0GvtTrzN8X9GWLBFE7pQ+3gk85
-         DlxgyWx6OZweQI/RWwwsjq5y1Sx/EdeZuLFSNE1oDdAWMYP5J5nZ5OAdnvRqWGBA4sey
-         56Fw==
-X-Gm-Message-State: AOAM533IMiM1peXIEYuJc3707z8t53U+eaLAQn/nL3rgaX2ealZxpjku
-        +IMvMnW31YoldUaT8tS94kFpGsVSQwsWLqfo
-X-Google-Smtp-Source: ABdhPJx/leSy51Y3cV58L2zpY1aK2i6EasrduwOlR++peaXucg2t2uW8ciCzlwcdAECGF6C5CeU/lA==
-X-Received: by 2002:a9d:29:: with SMTP id 38mr3622473ota.30.1622810047206;
-        Fri, 04 Jun 2021 05:34:07 -0700 (PDT)
-Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id a7sm403852ooo.9.2021.06.04.05.34.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Jun 2021 05:34:06 -0700 (PDT)
-Subject: Re: [greybus-dev] [PATCH] staging: greybus: fixed the coding style,
- labels should not be indented.
-To:     David Laight <David.Laight@ACULAB.COM>,
-        'Manikishan Ghantasala' <manikishanghantasala@gmail.com>,
-        Alex Elder <elder@ieee.org>
-Cc:     Alex Elder <elder@kernel.org>,
-        "greybus-dev@lists.linaro.org" <greybus-dev@lists.linaro.org>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        Johan Hovold <johan@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210602133659.46158-1-manikishanghantasala@gmail.com>
- <9a3878fd-3b59-76f5-ddc7-625c66f9fee8@ieee.org>
- <CAKzJ-FNW8EPX2oQd1qr5NagnvjtWwvSeuAh8DNLetj11+BJ6RA@mail.gmail.com>
- <792dd57c0ef8454497e5ae4c4534dea2@AcuMS.aculab.com>
- <e1c36fb4-ab72-0cce-f6fe-3f04125dae28@linaro.org>
- <e23879ae78404be2b707b550b3029e43@AcuMS.aculab.com>
- <10ad30e2-c906-b210-bf0e-5e20b6de1993@linaro.org>
- <c29b5c97f97b48c894917647915bf510@AcuMS.aculab.com>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <613239d4-c4a6-8585-5f9e-0241f0caa5ec@linaro.org>
-Date:   Fri, 4 Jun 2021 07:34:05 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230142AbhFDMkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 08:40:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34854 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229718AbhFDMkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 08:40:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE8866141B
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 12:38:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622810303;
+        bh=Em96/u7mdtZXTQJe4ybQ2hBcfP5hVycbrPqpSQCpAN8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=m1AyZc6WME3Q3MW8C/l1auFla7T4C+Pz6mM62jtjMWzwB+Wc3orf7uwQOOCtNWffj
+         EGyAShY0oY9Ft9gohkSJfcZAOgAKxpgbzfcmuvsfcNhlU84gOnjJr4M4/8k0Jfodxc
+         8D49831/HjbL2fl01cziS9MwTtmKZMp1eHNrYu7E9CBp5hLVcEkfZFMJ/SBW9b9uUa
+         hWOc4EwDYxC4dknle77qJBLfLB1J9qY5dJJkUhCTWtgld3RmUGOwq4dub/vTIpkEWL
+         BbbbjL4WpN3V6lk4YEVtHrM3Ph8Vq/PMLK23aYW4H3e/5GOsCaCvXaeJxzNvdchCQj
+         7ucUA6yvYlULQ==
+Received: by mail-ed1-f51.google.com with SMTP id f5so5953994eds.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 05:38:23 -0700 (PDT)
+X-Gm-Message-State: AOAM533VmS6zIyQL7LJ+8GE2thgU+lHxJOE+zlgNrjXGxl9mD2nTtVdb
+        3GjzTd7VTnDJCfhrHaicjAKxCwAuvdDizaCOSg==
+X-Google-Smtp-Source: ABdhPJwHF1vFPz5c5WbQjZ5qaLJn1k8D8U9yi9o5lqrdzTiJ+OWwf5P12sT5T1JLhU0YteYfeDq9VI3GWW6A8GjMQ+c=
+X-Received: by 2002:aa7:cad3:: with SMTP id l19mr4519290edt.289.1622810302334;
+ Fri, 04 Jun 2021 05:38:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <c29b5c97f97b48c894917647915bf510@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210604014055.4060521-1-keescook@chromium.org>
+In-Reply-To: <20210604014055.4060521-1-keescook@chromium.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 4 Jun 2021 07:38:10 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqK-G76vqWqfYarj4r5u_QW0dRd8UMuwprVKNmzVjY81=A@mail.gmail.com>
+Message-ID: <CAL_JsqK-G76vqWqfYarj4r5u_QW0dRd8UMuwprVKNmzVjY81=A@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/pl111: Actually fix CONFIG_VEXPRESS_CONFIG depends
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/4/21 3:13 AM, David Laight wrote:
-> Yes, and it isn't at all clear what it actually means.
-> If the value of a bool memory location isn't 0 or 1
-> what does 'bool_a & bool_b' mean.
+On Thu, Jun 3, 2021 at 8:40 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> VEXPRESS_CONFIG needs to either be missing, built-in, or modular when
+> pl111 is modular. Update the Kconfig to reflect the need.
+>
+> Fixes: 4dc7c97d04dc ("drm/pl111: depend on CONFIG_VEXPRESS_CONFIG")
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+> v2: use expected Kconfig style to express this. :)
+> v1: https://lore.kernel.org/lkml/20210603215819.3904733-1-keescook@chromium.org
+> ---
+>  drivers/gpu/drm/pl111/Kconfig | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
-I think this discussion is done, but I wanted to point out
-that the above expression is incorrect.  It might be valid,
-but it would be bad code.  A Boolean, when properly used,
-should only be compared with true and false (or the result
-of another Boolean expression).  Therefore "&" is not the
-right operator, "&&" is.  The reason is similar to why you
-would never use ~bool_a, you use !bool_a to invert its value.
-
-					-Alex
+Acked-by: Rob Herring <robh@kernel.org>
