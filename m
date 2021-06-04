@@ -2,249 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0199839C0FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451E139C101
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231356AbhFDUDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 16:03:03 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:39208 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhFDUDB (ORCPT
+        id S231208AbhFDUEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 16:04:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229930AbhFDUEM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 16:03:01 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id 7D2901F43C76
-Subject: Re: [PATCH v4 00/15] Add futex2 syscalls
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     acme@kernel.org, Andrey Semashev <andrey.semashev@gmail.com>,
-        corbet@lwn.net, Darren Hart <dvhart@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Davidlohr Bueso <dave@stgolabs.net>, fweimer@redhat.com,
-        joel@joelfernandes.org, kernel@collabora.com,
-        krisman@collabora.com, libc-alpha@sourceware.org,
-        linux-api@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        malteskarupke@fastmail.fm, pgriffais@valvesoftware.com,
-        Peter Oskolkov <posk@posk.io>, shuah@kernel.org,
-        z.figura12@gmail.com, Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-References: <20210603195924.361327-1-andrealmeid@collabora.com>
- <1622799088.hsuspipe84.astroid@bobo.none>
-From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
-Message-ID: <fb85fb20-5421-b095-e68b-955afa105467@collabora.com>
-Date:   Fri, 4 Jun 2021 17:01:01 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Fri, 4 Jun 2021 16:04:12 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA7CC061766;
+        Fri,  4 Jun 2021 13:02:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=5V0K76SC7xFgi4wfm94mthQafI0pCvyrVvpHGrwYWAg=; b=outXc+MeLTFU29y5bTflmViDE
+        W0rCMayfjz+1GlO6/IXLpCxjAEIfKk4M7wXr0odesEbAK+5jzbjwZiiVvROklg7Y2bZNhRV5d/Cb2
+        P9SaSHAchKQDPY2CHGsFcbqkndPTMuJFRxEZXNJx5ZFS3BON+l0Z+/43/UXB4HxdC7h3SNM2iXPz7
+        /yA3Z/LrfHghQwmwUFcEl/iEsALLPlc/8n7yY6Q5a6tC7oC7c5gSHad+Db79iMQz3l13ynBI7eFRH
+        +WmDHYAEU4AQjWIfataVu6SvVqRWKyiJOT+muvxKIPTjWzSR4i7TI5mj2ObDaMxCRC6tgQq4tjFuc
+        MQDFDgqZQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44716)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lpFzF-0004s2-Aa; Fri, 04 Jun 2021 21:00:09 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lpFzE-0003Kq-12; Fri, 04 Jun 2021 21:00:08 +0100
+Date:   Fri, 4 Jun 2021 21:00:07 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Madalin Bucur <madalin.bucur@nxp.com>
+Cc:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Igal Liberman <Igal.Liberman@freescale.com>,
+        Shruti Kanetkar <Shruti@freescale.com>,
+        Emil Medve <Emilian.Medve@freescale.com>,
+        Scott Wood <oss@buserror.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Camelia Alexandra Groza (OSS)" <camelia.groza@oss.nxp.com>
+Subject: Re: Unsupported phy-connection-type sgmii-2500 in
+ arch/powerpc/boot/dts/fsl/t1023rdb.dts
+Message-ID: <20210604200007.GX30436@shell.armlinux.org.uk>
+References: <20210603143453.if7hgifupx5k433b@pali>
+ <YLjxX/XPDoRRIvYf@lunn.ch>
+ <20210603194853.ngz4jdso3kfncnj4@pali>
+ <AM6PR04MB3976B62084EC462BA02F0C4CEC3B9@AM6PR04MB3976.eurprd04.prod.outlook.com>
+ <20210604192732.GW30436@shell.armlinux.org.uk>
+ <AM6PR04MB39768A569CE3CC4EC61A8769EC3B9@AM6PR04MB3976.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <1622799088.hsuspipe84.astroid@bobo.none>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <AM6PR04MB39768A569CE3CC4EC61A8769EC3B9@AM6PR04MB3976.eurprd04.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Às 08:36 de 04/06/21, Nicholas Piggin escreveu:
-> Excerpts from André Almeida's message of June 4, 2021 5:59 am:
->> Hi,
->>
->> This patch series introduces the futex2 syscalls.
->>
->> * What happened to the current futex()?
->>
->> For some years now, developers have been trying to add new features to
->> futex, but maintainers have been reluctant to accept then, given the
->> multiplexed interface full of legacy features and tricky to do big
->> changes. Some problems that people tried to address with patchsets are:
->> NUMA-awareness[0], smaller sized futexes[1], wait on multiple futexes[2].
->> NUMA, for instance, just doesn't fit the current API in a reasonable
->> way. Considering that, it's not possible to merge new features into the
->> current futex.
->>
->>  ** The NUMA problem
->>
->>  At the current implementation, all futex kernel side infrastructure is
->>  stored on a single node. Given that, all futex() calls issued by
->>  processors that aren't located on that node will have a memory access
->>  penalty when doing it.
->>
->>  ** The 32bit sized futex problem
->>
->>  Futexes are used to implement atomic operations in userspace.
->>  Supporting 8, 16, 32 and 64 bit sized futexes allows user libraries to
->>  implement all those sizes in a performant way. Thanks Boost devs for
->>  feedback: https://lists.boost.org/Archives/boost/2021/05/251508.php
->>
->>  Embedded systems or anything with memory constrains could benefit of
->>  using smaller sizes for the futex userspace integer.
->>
->>  ** The wait on multiple problem
->>
->>  The use case lies in the Wine implementation of the Windows NT interface
->>  WaitMultipleObjects. This Windows API function allows a thread to sleep
->>  waiting on the first of a set of event sources (mutexes, timers, signal,
->>  console input, etc) to signal.  Considering this is a primitive
->>  synchronization operation for Windows applications, being able to quickly
->>  signal events on the producer side, and quickly go to sleep on the
->>  consumer side is essential for good performance of those running over Wine.
->>
->> [0] https://lore.kernel.org/lkml/20160505204230.932454245@linutronix.de/
->> [1] https://lore.kernel.org/lkml/20191221155659.3159-2-malteskarupke@web.de/
->> [2] https://lore.kernel.org/lkml/20200213214525.183689-1-andrealmeid@collabora.com/
->>
->> * The solution
->>
->> As proposed by Peter Zijlstra and Florian Weimer[3], a new interface
->> is required to solve this, which must be designed with those features in
->> mind. futex2() is that interface. As opposed to the current multiplexed
->> interface, the new one should have one syscall per operation. This will
->> allow the maintainability of the API if it gets extended, and will help
->> users with type checking of arguments.
->>
->> In particular, the new interface is extended to support the ability to
->> wait on any of a list of futexes at a time, which could be seen as a
->> vectored extension of the FUTEX_WAIT semantics.
->>
->> [3] https://lore.kernel.org/lkml/20200303120050.GC2596@hirez.programming.kicks-ass.net/
->>
->> * The interface
->>
->> The new interface can be seen in details in the following patches, but
->> this is a high level summary of what the interface can do:
->>
->>  - Supports wake/wait semantics, as in futex()
->>  - Supports requeue operations, similarly as FUTEX_CMP_REQUEUE, but with
->>    individual flags for each address
->>  - Supports waiting for a vector of futexes, using a new syscall named
->>    futex_waitv()
->>  - Supports variable sized futexes (8bits, 16bits, 32bits and 64bits)
->>  - Supports NUMA-awareness operations, where the user can specify on
->>    which memory node would like to operate
+On Fri, Jun 04, 2021 at 07:39:10PM +0000, Madalin Bucur wrote:
+> > -----Original Message-----
+> > From: Russell King <linux@armlinux.org.uk>
+> > Sent: 04 June 2021 22:28
+> > To: Madalin Bucur <madalin.bucur@nxp.com>
+> > Cc: Pali Roh�r <pali@kernel.org>; Andrew Lunn <andrew@lunn.ch>; Igal
+> > Liberman <Igal.Liberman@freescale.com>; Shruti Kanetkar
+> > <Shruti@freescale.com>; Emil Medve <Emilian.Medve@freescale.com>; Scott
+> > Wood <oss@buserror.net>; Rob Herring <robh+dt@kernel.org>; Michael
+> > Ellerman <mpe@ellerman.id.au>; Benjamin Herrenschmidt
+> > <benh@kernel.crashing.org>; netdev@vger.kernel.org;
+> > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Camelia
+> > Alexandra Groza (OSS) <camelia.groza@oss.nxp.com>
+> > Subject: Re: Unsupported phy-connection-type sgmii-2500 in
+> > arch/powerpc/boot/dts/fsl/t1023rdb.dts
+> > 
+> > On Fri, Jun 04, 2021 at 07:35:33AM +0000, Madalin Bucur wrote:
+> > > Hi, the Freescale emails no longer work, years after Freescale joined
+> > NXP.
+> > > Also, the first four recipients no longer work for NXP.
+> > >
+> > > In regards to the sgmii-2500 you see in the device tree, it describes
+> > SGMII
+> > > overclocked to 2.5Gbps, with autonegotiation disabled.
+> > >
+> > > A quote from a long time ago, from someone from the HW team on this:
+> > >
+> > > 	The industry consensus is that 2.5G SGMII is overclocked 1G SGMII
+> > > 	using XAUI electricals. For the PCS and MAC layers, it looks exactly
+> > > 	like 1G SGMII, just with a faster clock.
+> > >
+> > > The statement that it does not exist is not accurate, it exists in HW,
+> > and
+> > > it is described as such in the device tree. Whether or not it is
+> > properly
+> > > treated in SW it's another discussion.
+> > 
+> > Here's the issue though:
+> > 
+> > 802.3 defined 1000base-X which is a fixed 1G speed interface using a
+> > 16-bit control word. Implementations of this exist where the control
+> > word can be disabled.
+> > 
+> > Cisco came along, took 1000base-X and augmented it to allow speeds of
+> > 10M and 100M by symbol repetition, and changing the format of the
+> > 16-bit control word. Otherwise, it is functionally compatible - indeed
+> > SGMII with the control word disabled will connect with 1000base-X with
+> > the control word disabled. I've done it several times.
+> > 
+> > There exists 2500base-X, which is 1000base-X clocked faster, and it
+> > seems the concensus is that it has the AN disabled - in other words,
+> > no control word.
+> > 
+> > Now you're saying that SGMII at 2.5G speed exists, which is 1G SGMII
+> > fixed at 1G speed, without a control word, upclocked by 2.5x.
+> > 
+> > My question to you is how is how is this SGMII 2.5G different from
+> > 2500base-X?
+> > 
+> > > In 2015, when this was submitted,
+> > > there were no other 2.5G compatibles in use, if I'm not mistaken.
+> > > 2500Base-X started to be added to device trees four years later, it
+> > should
+> > > be compatible/interworking but it is less specific on the actual
+> > implementation
+> > > details (denotes 2.5G speed, 8b/10b coding, which is true for this
+> > overclocked
+> > > SGMII). If they are compatible, SW should probably treat them in the
+> > same manner.
+> > 
+> > My argument has been (since I've had experience of SGMII talking to
+> > 1000base-X, and have also accidentally clocked such a scenario at
+> > 2.5G speeds) that there is in fact no functional difference between
+> > SGMII and base-X when they are running at identical speeds with the
+> > control word disabled.
+> > 
+> > Given that we well know that industry likes to use the term "SGMII"
+> > very loosely to mean <whatever>base-X as well as SGMII, it becomes
+> > a very bad term to use when we wish to differentiate between a
+> > base-X and a real Cisco SGMII link with their different control word
+> > formats.
+> > 
+> > And this has always been my point - industry has created confusion
+> > over these terms, but as software programmers, we need to know the
+> > difference. So, SGMII should _only_ be used to identify the Cisco
+> > SGMII modified version of 802.3 base-X _with_ the modified control
+> > word or with the capability of symbol repetition. In other words,
+> > the very features that make it SGMII as opposed to 802.3 base-X.
+> > Everything else should not use the term SGMII.
+> > 
+> > > There were some discussions a while ago about the mix or even confusion
+> > between
+> > > the actual HW description (that's what the dts is supposed to do) and
+> > the settings
+> > > one wants to represent in SW (i.e. speed) denoted loosely by
+> > denominations like
+> > > 10G Base-R.
+> > 
+> > The "confusion" comes from an abuse of terms. Abused terms really
+> > can't adequately be used to describe hardware properties.
+> > 
+> > As I say above, we _know_ that some manufacturers state that their
+> > single lane serdes is "SGMII" when it is in fact 1000base-X. That
+> > doesn't mean we stuff "sgmii" into device tree because that's what
+> > the vendor decided to call it.
+> > 
+> > "sgmii" in the device tree means Cisco's well defined SGMII and
+> > does not mean 1000base-X.
 > 
-> A few comments.
-> 
-> - Do you need a syscall for wait and for waitv, or can wait just be a
-> degenerate case of waitv (which could use the stack variable)?  I guess
-> it does save the user access unlock.
-> 
+> The "sgmii-2500" compatible in that device tree describes an SGMII HW
+> block, overclocked at 2.5G. Without that overclocking, it's a plain
+> Cisco (like) SGMII HW block. That's the reason you need to disable it's
+> AN setting when overclocked. With the proper Reset Configuration Word,
+> you could remove the overclocking and transform that into a plain "sgmii".
+> Thus, the dts compatible describes the HW, as it is.
 
-Yes. waitv with one element has a overhead compared to wait, given the
-extra user_copy(). Given that waiting on a single futex is the common
-case, I think it's worth to have it.
+I have given you a detailed explanation of my view on this, which is
+based on reading the 802.3 and Cisco SGMII specifications and various
+device datasheets from multiple different manufacturers.
 
-> - Did you consider a wakev interface? An example is a read-write mutex 
-> which has read-blocking futexes split (e.g., per-node) for scalability 
-> then the writer may unlock and wake all readers with one call. We 
-> actually have some scalability challenges of this nature with certain 
-> large database programs.
-> 
+I find your argument which seems to be based on what your hardware
+in front of you "does" and the actual explanation of it to be an
+extremely weak response.
 
-Not really, I haven't heard any use case for that until now. It should
-be easy to implement it, though, and I think you have an interesting use
-case here. Could you point me some of those database programs?
+Please provide a robust argument for your position. Thanks.
 
-> - Great to see 64-bit support in, it is helpful to do some interesting 
-> things with locks without hacks (e.g., putting an address in the lock 
-> word).
-> 
-> - Are we really keen on squashing node ID into flags in this day and age?
-> I guess okay but seems like it would be nice to allow a bit more space
-> in general for the operations. I don't want to turn it into a whole big
-> multiplexing nightmare again with lots of such flags, or propose
-> complexity with no code behind it, but I think we need a bit of leeway
-> for unforeseen locking innovations to be added carefully. The pthread
-> locking today is still fairly primitive really, I don't think we know
-> what will work best for the next 10 years.
-
-In the interface that I'd proposed, the node ID isn't part of the flags.
-You have a flag FUTEX_FLAG_NUMA, and when that is used, you pass in
-`void *uaddr` a pointer to a `struct futex_numa { int value, int hint
-}`, where hint should be the node ID you would like to work on, and
-value is just the userspace futex. This is documented in more details in
-patch 7 "docs: locking: futex2: Add documentation".
-
-If you have any feedback about how this NUMA interface looks like, I
-would like to hear.
-
-Also, did something in my writing indicated that the node ID would be
-part of the flags? I'll improve this it if so.
-
-> 
-> One scalability issue we are starting to hit and will only get worse is 
-> futex queue spinlock contention. Perhaps this is better addressed in 
-> userspace but the kernel could play a part so I like to leave some doors
-> open. One example is that the wait (or wake) side may like to depend not
-> just on the memory value, but on the success of a cmpxchg to avoid 
-> unqueueing and queueing spuriously, which increases lock contention but
-> also ends up putting the poor task on the back of the list -- yes RT
-> priorities can help the realtime case, but non-RT cases can get bad
-> outlier latencies if lock stealing is allowed (which can be very good
-> for performance).
-> 
-
-Sorry, I'm not sure what do you mean here. Are you proposing to have a
-cmpxchg in kernel side, so the lock would be taken by the kernel, and
-not by the userspace like it's now?
-
-> - The private global futex hash table sucks for various reasons, and
-> having 128 waiters per thread makes it orders of magnitude easier for
-> userspace to DoS stuff with hash collisions. NUMA doesn't fix that, the
-> per process hashing that Thomas suggested does fix the DoS but the
-> non-deterministic hash collisions still seem to be a problem for real
-> time response, and at the other end of the scale some apps (certain 
-> databases, etc) can have ten thousand futex waiters at once so birthday
-> paradox can also lead to guaranteed (low level) variable beahviour 
-> within a single process.
-> 
-> I know the kernel in general is not very robust against this kind of 
-> DoS/nondeterminism, but it's a bit sad to introduce new APIs with the 
-> problem still there. Yes we could address it later, but I think it's 
-> better done first because the solution might influence what the best 
-> syscall API is.
-> 
-> For example the idea of using the address as the handle for the wait 
-> queue _and_ the value is very convenient but hashing is annoying for
-> all the above reasons and the shared wait queue case is pretty clunky. 
-> It's also constraining in some corner cases to have the wait queue 
-> associated with the address 1:1. For example a type of NUMA mutex might 
-> want to have per-node waitqueues associated with a lock word, and wake
-> local node waiters 99% of the time. Not trivial to do with futexes and
-> seems to at least require bouncing of more cache lines, possibly more
-> atomics, etc.
-> 
-> Could anything else be done?
-
-I wasn't aware that userspace doing DoS is something to be concerned
-from the kernel point of view. Is this scenario considering a malicious
-actor? If so, there are plenty of resources to be denied, so not sure
-how futex could be protected of this. Or is this just a program that
-uses tons of futexes?
-
-> 
-> I'll be burned at the stake for suggesting it but it would be great if 
-> we could use file descriptors. At least for the shared futex, maybe 
-> private could use a per-process futex allocator. It solves all of the
-> above, although I'm sure has many of its own problem. It may not play
-> so nicely with the pthread mutex API because of the whole static
-> initialiser problem, but the first futex proposal did use fds. But it's
-> an example of an alternate API.
-> 
-
-FDs and futex doesn't play well, because for futex_wait() you need to
-tell the kernel the expected value in the futex address to avoid
-sleeping in a free lock. FD operations (poll, select) don't have this
-`value` argument, so they could sleep forever, but I'm not sure if you
-had taken this in consideration.
-
-> And.. thanks for the great work, apologies if I missed some discussion
-> related to the above comments, I did some reading but I know there has
-> been a lot of discussions going on.
-> 
-
-:) and thank you for the valuable feedback and detailed ideas!
-
-> Thanks,
-> Nick
-> 
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
