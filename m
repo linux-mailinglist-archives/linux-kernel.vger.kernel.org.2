@@ -2,94 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A552F39B5F0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D38339B5F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbhFDJ33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 05:29:29 -0400
-Received: from mail-ed1-f54.google.com ([209.85.208.54]:38759 "EHLO
-        mail-ed1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbhFDJ31 (ORCPT
+        id S230084AbhFDJaN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Jun 2021 05:30:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230049AbhFDJaM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 05:29:27 -0400
-Received: by mail-ed1-f54.google.com with SMTP id o5so10377147edc.5
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 02:27:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=v4s7Wdp9P+q1iZfuGGxYhUoU58bq9Dm8LlurM2nZ904=;
-        b=IbVRCbVi0TMLMZSOQCIoI6xN2Rk8hy4/iQ7Vg+2pMSUrilCtVQDK6uK6OyCqxzGLKW
-         WdR5yT9nqflcvKcaHipGwqPpuU6t9iVvTPHF6HnQGtfAE3h5SBxQFZlmqcRkMB+DN+sk
-         0G9TVefGF74xLo8BqBWJxN48XMpcg8fjfMJv8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=v4s7Wdp9P+q1iZfuGGxYhUoU58bq9Dm8LlurM2nZ904=;
-        b=uFOZCDoBRqRSxsqhNd8YR2rF21cFK7WTT/21hMyN+Bf1RPTPp8bDAqwY97HUiDc3N0
-         mrD79z3pTEUOLrNHBvNu1VSm6RIyzVXze03fO2i2w7Q3Zs5O67e+Z0ih5700mCBztzyq
-         YQUqrhZ/B2VzV4QOq1hKYS7o5W3QMqWzzVXGrGVF8nmVX+/tqaLVg/q5UQ+8A5puFxpz
-         Jy9mJLOu+LDa/RDQQYbs9EcNP0wewmwLlePvdSVKDmrD3WQfI0qsTbjI/KG90jPfXLO2
-         idbhRDY3L+WqrZBfME0XKwYNagdJNboK/fXR/+UMtcslq6O0RD8EBAfWmm2vsr/omUIx
-         sp6w==
-X-Gm-Message-State: AOAM533N8l6IGIILXiaQTiQ0vytpYdixsvmq+K5NK3gvpMPMFmhwl80j
-        pSndfBRxvb/pxEWkbUfW42SUbCm/5z7Oc0iG
-X-Google-Smtp-Source: ABdhPJyjZP8jlD/L9dViQFhwyi+cx1pz4rYhELSDTRpINtaExQYPqWEEcFK54K4RKtSCzFSQLh2rxQ==
-X-Received: by 2002:aa7:db90:: with SMTP id u16mr3695449edt.106.1622798800833;
-        Fri, 04 Jun 2021 02:26:40 -0700 (PDT)
-Received: from alco.lan ([80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id z22sm2095405ejm.71.2021.06.04.02.26.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 02:26:40 -0700 (PDT)
-From:   Ricardo Ribalda <ribalda@chromium.org>
-To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH] tools/perf: Do not set a variable unless it will be used
-Date:   Fri,  4 Jun 2021 11:26:38 +0200
-Message-Id: <20210604092638.985694-1-ribalda@chromium.org>
-X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
+        Fri, 4 Jun 2021 05:30:12 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8E3C06174A
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 02:28:26 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lp67c-0000gP-SO; Fri, 04 Jun 2021 11:28:08 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lp67a-0004yy-3y; Fri, 04 Jun 2021 11:28:06 +0200
+Message-ID: <6a1500fb623e6513e39a468ac53d1caf6a2cf7c5.camel@pengutronix.de>
+Subject: Re: [PATCH net-next v3 02/10] net: sparx5: add the basic sparx5
+ driver
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Steen Hegelund <steen.hegelund@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Russell King <linux@armlinux.org.uk>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Mark Einon <mark.einon@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Simon Horman <simon.horman@netronome.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>
+Date:   Fri, 04 Jun 2021 11:28:06 +0200
+In-Reply-To: <20210604085600.3014532-3-steen.hegelund@microchip.com>
+References: <20210604085600.3014532-1-steen.hegelund@microchip.com>
+         <20210604085600.3014532-3-steen.hegelund@microchip.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-clang-13 triggers the following warning:
+Hi Steen,
 
-bench/inject-buildid.c:351:6: error: variable 'len' set but not used [-Werror,-Wunused-but-set-variable]
-        u64 len = 0;
+On Fri, 2021-06-04 at 10:55 +0200, Steen Hegelund wrote:
+> This adds the Sparx5 basic SwitchDev driver framework with IO range
+> mapping, switch device detection and core clock configuration.
+> 
+> Support for ports, phylink, netdev, mactable etc. are in the following
+> patches.
+> 
+> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
+> Signed-off-by: Bjarni Jonasson <bjarni.jonasson@microchip.com>
+> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+> ---
+>  drivers/net/ethernet/microchip/Kconfig        |    2 +
+>  drivers/net/ethernet/microchip/Makefile       |    2 +
+>  drivers/net/ethernet/microchip/sparx5/Kconfig |    9 +
+>  .../net/ethernet/microchip/sparx5/Makefile    |    8 +
+>  .../ethernet/microchip/sparx5/sparx5_main.c   |  746 +++
+>  .../ethernet/microchip/sparx5/sparx5_main.h   |  273 +
+>  .../microchip/sparx5/sparx5_main_regs.h       | 4642 +++++++++++++++++
+>  7 files changed, 5682 insertions(+)
+>  create mode 100644 drivers/net/ethernet/microchip/sparx5/Kconfig
+>  create mode 100644 drivers/net/ethernet/microchip/sparx5/Makefile
+>  create mode 100644 drivers/net/ethernet/microchip/sparx5/sparx5_main.c
+>  create mode 100644 drivers/net/ethernet/microchip/sparx5/sparx5_main.h
+>  create mode 100644 drivers/net/ethernet/microchip/sparx5/sparx5_main_regs.h
+> 
+[...]
+> diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_main.c b/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
+> new file mode 100644
+> index 000000000000..73beb85bc52d
+> --- /dev/null
+> +++ b/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
+> @@ -0,0 +1,746 @@
+[...]
+> +static int mchp_sparx5_probe(struct platform_device *pdev)
+> +{
+[...]
+> +
+> +	sparx5->reset = devm_reset_control_get_shared(&pdev->dev, "switch");
+> +	if (IS_ERR(sparx5->reset)) {
 
-This patch sets the value to len only if it will be used afterwards.
+Could you use devm_reset_control_get_optional_shared() instead of
+ignoring this error? That would just return NULL if there's no "switch"
+reset specified in the device tree.
 
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
- tools/perf/bench/inject-buildid.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> +		dev_warn(sparx5->dev, "Could not obtain reset control: %ld\n",
+> +			 PTR_ERR(sparx5->reset));
+> +		sparx5->reset = NULL;
+> +	} else {
+> +		reset_control_reset(sparx5->reset);
+> +	}
 
-diff --git a/tools/perf/bench/inject-buildid.c b/tools/perf/bench/inject-buildid.c
-index 55d373b75791..fee69ac787b2 100644
---- a/tools/perf/bench/inject-buildid.c
-+++ b/tools/perf/bench/inject-buildid.c
-@@ -348,13 +348,13 @@ static int inject_build_id(struct bench_data *data, u64 *max_rss)
- 	int status;
- 	unsigned int i, k;
- 	struct rusage rusage;
--	u64 len = 0;
-+	u64 len;
- 
- 	/* this makes the child to run */
- 	if (perf_header__write_pipe(data->input_pipe[1]) < 0)
- 		return -1;
- 
--	len += synthesize_attr(data);
-+	len = synthesize_attr(data);
- 	len += synthesize_fork(data);
- 
- 	for (i = 0; i < nr_mmaps; i++) {
--- 
-2.32.0.rc1.229.g3e70b5a671-goog
+If this is the only place the reset is used, I'd remove it from struct
+sparx5 and use a local variable instead.
 
+regards
+Philipp
