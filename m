@@ -2,123 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E7D39B488
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9BF39B48F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbhFDIDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 04:03:31 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:60099 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230153AbhFDIDa (ORCPT
+        id S230039AbhFDIGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 04:06:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229900AbhFDIGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 04:03:30 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 865F5580754;
-        Fri,  4 Jun 2021 04:01:44 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Fri, 04 Jun 2021 04:01:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=d6Op0QNDoeWd4gbKTHgliin4s0e
-        PEYJfFD48xSnda+M=; b=5BmzMujvnzu7vqEXN0tttnu4QAdLVr1yXj3+d0ldS5O
-        GY7v3bhzPDMFM7olBLBe+7tiEqL2WOOPTUggkS0G75dnoOf9aQpy1rZY96Mx+uRv
-        Kwr5XpvZOTJLIYwgFf2CkhOjSOKZ5i+IuskH/G9vMm77stviuC1Cu7Xth+7sVkgr
-        KqUZiQzQVR8SaIR19HBRhLDRol6EFfNvVuKXdkuVAytzQdyGqyPkBGmnHiPil/hJ
-        QjgmD/Bl9cwv2kDgvHjJbyJ3srx9gMF3CVEAoB+mWCG5ugZAiOdLt4xss0rQfDMx
-        bhJRONsKdxgmV7t9a6LQlaRmpFfqwrDEdAlquy2GLrQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=d6Op0Q
-        NDoeWd4gbKTHgliin4s0ePEYJfFD48xSnda+M=; b=i1NC1qJ3KvZPozfdKTxlRH
-        7yaYqDGjZ27YwCBXiO6cZf7pga9SG32k2NqviIWcShHPWcCWXuMgYBUh05kXM63F
-        IdRMmJyzrTrbq8Y3zAsrCTwQU2dgpYsxFIdXgBd4BjaGkP2WeBMWE9miOIOJHuHY
-        XCS8uoO0UCOO6WmExtqMtY083/Gz5BteMv7vFLKfC1H4FxnbJVutGyfGZMZguDIy
-        EqBOQxCJ9vg+yCkm87Co/GDAJyLTTgxNpKxAjUA/5Jiww0ZciRfmx7/LoociB03j
-        AwZa7Kf7fL2/x2gYw8AZG46qcxS0mydseGqapLd6ekb7uccAR5d2l0n4ytLxADfg
-        ==
-X-ME-Sender: <xms:5d25YKYFIqYFe6OvYHoK7BA873Aui0742GrWd3XHA9hTamomzyn2_A>
-    <xme:5d25YNanjb4IK_Wx2jQ7pz-InDS2HdFxM4Bi1svnG0mnhYW7Awl4QMLBo-hFC1yaD
-    O1cWZaFR5iPiPlN5Hw>
-X-ME-Received: <xmr:5d25YE8Sw6twg4s2EbZo5xvBbpBxk0XoUIjfWfKcC285Q-tisBe1Y-yvommtX-OiHIz8DVHqBnGtKtouAac5ARaA4A0TuY5v1E4X>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedttddguddvvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
-    heegudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:5d25YMoxOQzHAB4JtTBWbFdeA18qrxbGXnwAGrk0bR9Q3CLPBkv15A>
-    <xmx:5d25YFpzkeV6HcgtcyZ6CR_anY-jA_C6VNLTURY-RkkPuYuE1ogKWQ>
-    <xmx:5d25YKSVb1CTJsec1KVzhYg3hbHrXtL9gm0M8PnOemO7NdCgPzH7Gg>
-    <xmx:6N25YDhr3iBmRCemf5SU8tmj2H_4Cd-W1btgdOnxqPtPY53gJtbWlQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 4 Jun 2021 04:01:41 -0400 (EDT)
-Date:   Fri, 4 Jun 2021 10:01:39 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Eric Anholt <eric@anholt.net>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hans Verkuil <hans.verkuil@cisco.com>
-Subject: Re: [PATCH 2/2] drm/vc4: hdmi: Convert to gpiod
-Message-ID: <20210604080139.sccm3fggd3jvkkpa@gilmour>
-References: <20210524131852.263883-1-maxime@cerno.tech>
- <20210524131852.263883-2-maxime@cerno.tech>
- <CACRpkdbVyMBEAr0n1+d3KSwV5J3spgfW6US9vwz1=2f34Ep3dQ@mail.gmail.com>
+        Fri, 4 Jun 2021 04:06:18 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C20FFC06174A;
+        Fri,  4 Jun 2021 01:04:32 -0700 (PDT)
+Received: from [192.168.1.111] (91-157-208-71.elisa-laajakaista.fi [91.157.208.71])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 20039A52;
+        Fri,  4 Jun 2021 10:04:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1622793871;
+        bh=j1SXMbUoe/8w0rZ6UdZfNhuo9qc6ocoxoJrTdQSBoU0=;
+        h=To:Cc:References:From:Subject:Date:In-Reply-To:From;
+        b=NNsF2Qc6TuwHZ1QwuxlAt3dWSJMADIbpLyeKjMAaTOQxq2XiyGUBVurqN218ePdZK
+         2YJwDUslifIOVMLazpGhUZn5VwmWXmkrVmS8vgqO88+NV3Y11jWrC+k1i37UV8oBif
+         2DlZlXlr9W6tCyT5C30McrP1EHCXS0awnpACQbEQ=
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Benoit Parrot <bparrot@ti.com>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org, dmaengine@vger.kernel.org,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+References: <20210526152308.16525-1-p.yadav@ti.com>
+ <20210526152308.16525-14-p.yadav@ti.com>
+ <5e00444a-683f-b4fa-9156-4450ca4edaf6@ideasonboard.com>
+ <20210603124920.5o34klhlhjg5phlj@ti.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: Re: [PATCH v2 13/18] media: ti: Add CSI2RX support for J721E
+Message-ID: <b930c6e5-1210-5b13-2e29-25ffaa99519d@ideasonboard.com>
+Date:   Fri, 4 Jun 2021 11:04:29 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="2zwov2bq536bd3vs"
-Content-Disposition: inline
-In-Reply-To: <CACRpkdbVyMBEAr0n1+d3KSwV5J3spgfW6US9vwz1=2f34Ep3dQ@mail.gmail.com>
+In-Reply-To: <20210603124920.5o34klhlhjg5phlj@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 03/06/2021 15:49, Pratyush Yadav wrote:
+> On 27/05/21 04:29PM, Tomi Valkeinen wrote:
+>> Hi Pratyush,
+>>
+>> On 26/05/2021 18:23, Pratyush Yadav wrote:
+>>> TI's J721E uses the Cadence CSI2RX and DPHY peripherals to facilitate
+>>> capture over a CSI-2 bus.
+>>>
+>>> The Cadence CSI2RX IP acts as a bridge between the TI specific parts and
+>>> the CSI-2 protocol parts. TI then has a wrapper on top of this bridge
+>>> called the SHIM layer. It takes in data from stream 0, repacks it, and
+>>> sends it to memory over PSI-L DMA.
+>>>
+>>> This driver acts as the "front end" to V4L2 client applications. It
+>>> implements the required ioctls and buffer operations, passes the
+>>> necessary calls on to the bridge, programs the SHIM layer, and performs
+>>> DMA via the dmaengine API to finally return the data to a buffer
+>>> supplied by the application.
+>>>
+>>> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+>>
+>> I noticed that my test app didn't work at all with this, and I also wasn't
+>> able to use v4l2-ctl to set the format.
+> 
+> I have not used v4l2-ctl, but I can see yavta works fine. What command
+> did you use for setting format via v4l2-ctl?
+> 
+>>
+>> At least for my test app the problem was that this driver doesn't initialize
+>> the format at all. My app first calls VIDIOC_G_FMT with v4l2_format.type ==
+>> V4L2_BUF_TYPE_VIDEO_CAPTURE, then after the call modifies the fields it
+>> wants to change and calls VIDIOC_S_FMT. This failed, as G_FMT returned
+>> uninitialized fmt, i.e. type was 0, which my app didn't set again.
+>>
+>> I believe the driver should have an initial format, something that it will
+>> accept if an app calls G_FMT and then S_FMT.
+> 
+> Right. This is a bug. The question is what should the initial format be?
+> It is more or less arbitrary since there is no configuration made yet
+> and we don't know what the camera can or will send. So for example, what
+> if I use UYVY 640x480? The camera might not support it at all. Is it
+> still OK to have it as the default?
 
---2zwov2bq536bd3vs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I think it doesn't really matter what the initial format is, as long as 
+it's valid for the subdev itself. There are two separate things:
 
-Hi Linus
+1) Subdev config, where the subdev is considered independently from the 
+other subdevs. E.g. the formats in the input pads and output pads should 
+be valid, taking into account the capabilities of the subdev. The subdev 
+driver has to take care of these, i.e. if the user sets a format on a 
+pad, the driver must adjust the other pads (if needed) to keep the 
+subdev config valid.
 
-On Fri, May 28, 2021 at 01:57:56AM +0200, Linus Walleij wrote:
-> On Mon, May 24, 2021 at 3:19 PM Maxime Ripard <maxime@cerno.tech> wrote:
->=20
-> > The new gpiod interface takes care of parsing the GPIO flags and to
-> > return the logical value when accessing an active-low GPIO, so switching
-> > to it simplifies a lot the driver.
-> >
-> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
->=20
-> Thanks for fixing this!
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+2) pipeline validation, where all the subdevs in the pipeline are looked 
+at and validated that the settings are compatible.
 
-Is it for both patches or just this one?
+We're talking about 1) here, and it doesn't matter if the camera 
+supports the csirx initial format or not.
 
-Thanks!
-Maxime
-
---2zwov2bq536bd3vs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYLnd4wAKCRDj7w1vZxhR
-xRGKAQCcy4GAjw4pSmbaho00DbxjemLaezjlyXEdRNf5h+1nOAD+ISGuPfebZZT4
-AAkIR+R/nZaYXe8Lk5BXBW0b1lzLdQU=
-=Zlwr
------END PGP SIGNATURE-----
-
---2zwov2bq536bd3vs--
+  Tomi
