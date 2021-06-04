@@ -2,233 +2,513 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F7239BAE9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:29:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78C3E39BAE7
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229987AbhFDObN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Jun 2021 10:31:13 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:58066 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbhFDObM (ORCPT
+        id S229925AbhFDOat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 10:30:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229850AbhFDOas (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 10:31:12 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lpAp9-00AYAG-CB; Fri, 04 Jun 2021 08:29:23 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lpAot-003o0X-OR; Fri, 04 Jun 2021 08:29:22 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Ian Kent <raven@themaw.net>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
-        Fox Chen <foxhlchen@gmail.com>,
-        Brice Goglin <brice.goglin@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <162218354775.34379.5629941272050849549.stgit@web.messagingengine.com>
-        <162218364554.34379.636306635794792903.stgit@web.messagingengine.com>
-        <87czt2q2pl.fsf@disp2133>
-        <CAJfpegsVxoL8WgQa7hFXAg4RBbA-suaeo5pZ5EE7HDpL0rT03A@mail.gmail.com>
-        <87y2bqli8b.fsf@disp2133>
-        <6ae8e5f843855c2c14b58227340e2a0070ef1b6c.camel@themaw.net>
-Date:   Fri, 04 Jun 2021 09:28:41 -0500
-In-Reply-To: <6ae8e5f843855c2c14b58227340e2a0070ef1b6c.camel@themaw.net> (Ian
-        Kent's message of "Fri, 04 Jun 2021 11:14:47 +0800")
-Message-ID: <87k0n9ln52.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 4 Jun 2021 10:30:48 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C22F7C061766
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 07:29:01 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id bn21so11846286ljb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 07:29:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pCVIi+nZZxe8ZlGb7I4OC8njN4h/VVm5Y+yB3/IfyTY=;
+        b=mECmWYzqpTySZQH2wkJqMIcmn7LfTexE4j7Pnh/TsKf9bK7kqLD8Nygupkg9vC1PRD
+         f7cGVXK8JOAhOJ5PVXkkzN9KnNUYAjNjAY1Fu7L7AmTzD0SkF6clA1gzmTQ0LXn49gkx
+         ZGBETftbNT0BteVgRar5B1jjLfGUrR9+knrQNRpM/mqrCtfOcbcxJArFwo228YFYPfWC
+         M3IItISx9mUuG+kIgTlR3kO8oJdnUjsDHBTuMQk9IdQYSMmZYtm/nj2ly7BtbocFRfwk
+         nj3PvHU9nQeai5n+2PgyZEnVhcNdF+peC9sQ7qsEaWp2PYR4omyFa0RcBh+tlyr8RsXa
+         HlDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pCVIi+nZZxe8ZlGb7I4OC8njN4h/VVm5Y+yB3/IfyTY=;
+        b=kTvq3Owxr7xCYzfAc1o19BKhwgeHYrVfQHxPi9U+ANbwgu0UGUtkxwBQegUNqjy+7g
+         R1e5bXRGihe5/KRAxVpbkqsBrLXdbbjYlVf56mHEiWMReIJ+DDXykb5RvmuHecu8BE0Y
+         ChOxy0A3tcu6Hy6QsL+oPKKEZI/OqNU/DwrsmUL1VYBFCpdwiXVOWfTAlHqh7rPClY43
+         BAT+hafdvJ870L89qrjLTre8UKWNXn7o6LgA+1oQDuIIfhfggupyTcjOdtH6ZC+sLPVP
+         zYCvaW/6uALNOGKNODGJycwgWLyJlI4TRt8oc3EB2QS3MhemGo1UV1gJncqvHjv1v/S3
+         jnMg==
+X-Gm-Message-State: AOAM532/zQ/Tq/dpUZPWhXzwlOXC8KquvYSlOY7qd7M0SaOtiDYu5dnx
+        kLSVnzPvQHn96FfbRUQAJBbzjQ==
+X-Google-Smtp-Source: ABdhPJze2U6fVG84J+l655keZISi8YYSxYUcal139okOmnVe75lfp7wt2w4m44eMDXc5ufSKvksw1g==
+X-Received: by 2002:a2e:8715:: with SMTP id m21mr3765506lji.170.1622816940038;
+        Fri, 04 Jun 2021 07:29:00 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id l7sm239126ljc.28.2021.06.04.07.28.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 07:28:59 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 20BF81027A9; Fri,  4 Jun 2021 17:29:11 +0300 (+03)
+Date:   Fri, 4 Jun 2021 17:29:11 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jim Mattson <jmattson@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Steve Rutherford <srutherford@google.com>,
+        Peter Gonda <pgonda@google.com>,
+        David Hildenbrand <david@redhat.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFCv2 13/13] KVM: unmap guest memory using poisoned pages
+Message-ID: <20210604142911.vbbucf4ten7e5khf@box>
+References: <20210419185354.v3rgandtrel7bzjj@box>
+ <YH3jaf5ThzLZdY4K@google.com>
+ <20210419225755.nsrtjfvfcqscyb6m@box.shutemov.name>
+ <YH8L0ihIzL6UB6qD@google.com>
+ <20210521123148.a3t4uh4iezm6ax47@box>
+ <YK6lrHeaeUZvHMJC@google.com>
+ <20210531200712.qjxghakcaj4s6ara@box.shutemov.name>
+ <YLfFBgPeWZ91TfH7@google.com>
+ <20210602233353.gxq35yxluhas5knp@box>
+ <YLkxrMQ2a5aWD5zt@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-XM-SPF: eid=1lpAot-003o0X-OR;;;mid=<87k0n9ln52.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18Pyowby/nmzJD54e7CsoQAwDn71q5lz9M=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong,XM_B_Unicode
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 XM_B_Unicode BODY: Testing for specific types of unicode
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Ian Kent <raven@themaw.net>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 15051 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 12 (0.1%), b_tie_ro: 10 (0.1%), parse: 1.57
-        (0.0%), extract_message_metadata: 23 (0.2%), get_uri_detail_list: 4.4
-        (0.0%), tests_pri_-1000: 3.1 (0.0%), tests_pri_-950: 1.22 (0.0%),
-        tests_pri_-900: 1.04 (0.0%), tests_pri_-90: 72 (0.5%), check_bayes: 71
-        (0.5%), b_tokenize: 13 (0.1%), b_tok_get_all: 14 (0.1%), b_comp_prob:
-        4.9 (0.0%), b_tok_touch_all: 36 (0.2%), b_finish: 0.99 (0.0%),
-        tests_pri_0: 6659 (44.2%), check_dkim_signature: 0.87 (0.0%),
-        check_dkim_adsp: 6008 (39.9%), poll_dns_idle: 14263 (94.8%),
-        tests_pri_10: 2.3 (0.0%), tests_pri_500: 8272 (55.0%), rewrite_mail:
-        0.00 (0.0%)
-Subject: Re: [REPOST PATCH v4 2/5] kernfs: use VFS negative dentry caching
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLkxrMQ2a5aWD5zt@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ian Kent <raven@themaw.net> writes:
+On Thu, Jun 03, 2021 at 07:46:52PM +0000, Sean Christopherson wrote:
+> In other words, I would expect the code to look something ike:
+> 
+> 	if (PageGuest()) {
+> 		if (!(flags & FOLL_GUEST)) {
+> 			pte_unmap_unlock(ptep, ptl);
+> 			return NULL;
+> 		}
+> 	} else if ((flags & FOLL_NUMA) && pte_protnone(pte)) {
+> 		goto no_page;
+> 	}
 
-> On Thu, 2021-06-03 at 17:02 -0500, Eric W. Biederman wrote:
->> Miklos Szeredi <miklos@szeredi.hu> writes:
->> 
->> > On Thu, 3 Jun 2021 at 19:26, Eric W. Biederman < 
->> > ebiederm@xmission.com> wrote:
->> > > 
->> > > Ian Kent <raven@themaw.net> writes:
->> > > 
->> > > > If there are many lookups for non-existent paths these negative
->> > > > lookups
->> > > > can lead to a lot of overhead during path walks.
->> > > > 
->> > > > The VFS allows dentries to be created as negative and hashed,
->> > > > and caches
->> > > > them so they can be used to reduce the fairly high overhead
->> > > > alloc/free
->> > > > cycle that occurs during these lookups.
->> > > > 
->> > > > Signed-off-by: Ian Kent <raven@themaw.net>
->> > > > ---
->> > > >  fs/kernfs/dir.c |   55 +++++++++++++++++++++++++++++++++------
->> > > > ----------------
->> > > >  1 file changed, 33 insertions(+), 22 deletions(-)
->> > > > 
->> > > > diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
->> > > > index 4c69e2af82dac..5151c712f06f5 100644
->> > > > --- a/fs/kernfs/dir.c
->> > > > +++ b/fs/kernfs/dir.c
->> > > > @@ -1037,12 +1037,33 @@ static int kernfs_dop_revalidate(struct
->> > > > dentry *dentry, unsigned int flags)
->> > > >       if (flags & LOOKUP_RCU)
->> > > >               return -ECHILD;
->> > > > 
->> > > > -     /* Always perform fresh lookup for negatives */
->> > > > -     if (d_really_is_negative(dentry))
->> > > > -             goto out_bad_unlocked;
->> > > > +     mutex_lock(&kernfs_mutex);
->> > > > 
->> > > >       kn = kernfs_dentry_node(dentry);
->> > > > -     mutex_lock(&kernfs_mutex);
->> > > 
->> > > Why bring kernfs_dentry_node inside the mutex?
->> > > 
->> > > The inode lock of the parent should protect negative to positive
->> > > transitions not the kernfs_mutex.  So moving the code inside
->> > > the mutex looks unnecessary and confusing.
->> > 
->> > Except that d_revalidate() may or may not be called with parent
->> > lock
->> > held.
->
-> Bringing the kernfs_dentry_node() inside taking the mutex is probably
-> wasteful, as you say, oddly the reason I did it that conceptually it
-> makes sense to me since the kernfs node is being grabbed. But it
-> probably isn't possible for a concurrent unlink so is not necessary.
->
-> Since you feel strongly about I can change it.
->
->> 
->> I grant that this works because kernfs_io_lookup today holds
->> kernfs_mutex over d_splice_alias.
->
-> Changing that will require some thought but your points about
-> maintainability are well taken.
->
->> 
->> The problem is that the kernfs_mutex only should be protecting the
->> kernfs data structures not the vfs data structures.
->> 
->> Reading through the code history that looks like a hold over from
->> when
->> sysfs lived in the dcache before it was reimplemented as a
->> distributed
->> file system.  So it was probably a complete over sight and something
->> that did not matter.
->> 
->> The big problem is that if the code starts depending upon the
->> kernfs_mutex (or the kernfs_rwsem) to provide semantics the rest of
->> the
->> filesystems does not the code will diverge from the rest of the
->> filesystems and maintenance will become much more difficult.
->> 
->> Diverging from other filesystems and becoming a maintenance pain has
->> already been seen once in the life of sysfs and I don't think we want
->> to
->> go back there.
->> 
->> Further extending the scope of lock, when the problem is that the
->> locking is causing problems seems like the opposite of the direction
->> we
->> want the code to grow.
->> 
->> I really suspect all we want kernfs_dop_revalidate doing for negative
->> dentries is something as simple as comparing the timestamp of the
->> negative dentry to the timestamp of the parent dentry, and if the
->> timestamp has changed perform the lookup.  That is roughly what
->> nfs does today with negative dentries.
->> 
->> The dentry cache will always lag the kernfs_node data structures, and
->> that is fundamental.  We should take advantage of that to make the
->> code
->> as simple and as fast as we can not to perform lots of work that
->> creates
->> overhead.
->> 
->> Plus the kernfs data structures should not change much so I expect
->> there will be effectively 0 penalty in always performing the lookup
->> of a
->> negative dentry when the directory itself has changed.
->
-> This sounds good to me.
->
-> In fact this approach should be able to be used to resolve the
-> potential race Miklos pointed out in a much simpler way, not to
-> mention the revalidate simplification itself.
->
-> But isn't knowing whether the directory has changed harder to
-> do than checking a time stamp?
->
-> Look at kernfs_refresh_inode() and it's callers for example.
->
-> I suspect that would require bringing back the series patch to use
-> a generation number to identify directory changes (and also getting
-> rid of the search in revalidate).
+Okay, looks good. Updated patch is below. I fixed few more bugs.
 
-In essence it is a simple as looking at a sequence number or a timestamp
-to detect the directory has changed.
+The branch is also updated and rebased to v5.12.
 
-In practice there are always details that make things more complicated.
+> Yeah, and I'm saying we should explicitly disallow mapping PageGuest() into
+> shared memory, and then the KVM code that manually kmaps() PageGuest() memory
+> to avoid copy_{to,from}_user() failure goes aways.
 
-I was actually wondering if the approach should be to have an seqlock
-around an individual directories rbtree.  I think that would give a lot
-of potential for rcu style optimization during lookups.
+Manual kmap thing is not needed for TDX: it only required for pure KVM
+where we handle instruction emulation in the host.
 
+------------------------------8<------------------------------------------
 
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Date: Fri, 16 Apr 2021 01:30:48 +0300
+Subject: [PATCH] mm: Introduce guest-only pages
 
-All of the little details and choices on how to optimize this is why I
-was suggesting splitting the patch in two.  Starting first with
-something that allows negative dentries.  Then adds the tests so that
-the negative dentries are not always invalidated.  That should allow
-focusing on the tricky bits.
+PageGuest() pages are only allowed to be used as guest memory. Userspace
+is not allowed read from or write to such pages.
 
-Eric
+On page fault, PageGuest() pages produce PROT_NONE page table entries.
+Read or write there will trigger SIGBUS. Access to such pages via
+syscall leads to -EIO.
+
+The new mprotect(2) flag PROT_GUEST translates to VM_GUEST. Any page
+fault to VM_GUEST VMA produces PageGuest() page.
+
+Only shared tmpfs/shmem mappings are supported.
+
+GUP normally fails on such pages. KVM will use the new FOLL_GUEST flag
+to access them.
+
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+---
+ include/linux/mm.h                     |  5 ++-
+ include/linux/mman.h                   |  7 +++-
+ include/linux/page-flags.h             |  8 ++++
+ include/uapi/asm-generic/mman-common.h |  1 +
+ mm/gup.c                               | 36 ++++++++++++++----
+ mm/huge_memory.c                       | 51 +++++++++++++++++++-------
+ mm/memory.c                            | 28 ++++++++++----
+ mm/mprotect.c                          | 18 ++++++++-
+ mm/shmem.c                             | 12 ++++++
+ 9 files changed, 133 insertions(+), 33 deletions(-)
+
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 8ba434287387..8e679f4d0f21 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -362,6 +362,8 @@ extern unsigned int kobjsize(const void *objp);
+ # define VM_GROWSUP	VM_NONE
+ #endif
+ 
++#define VM_GUEST	VM_HIGH_ARCH_4
++
+ /* Bits set in the VMA until the stack is in its final location */
+ #define VM_STACK_INCOMPLETE_SETUP	(VM_RAND_READ | VM_SEQ_READ)
+ 
+@@ -413,7 +415,7 @@ extern unsigned int kobjsize(const void *objp);
+ #ifndef VM_ARCH_CLEAR
+ # define VM_ARCH_CLEAR	VM_NONE
+ #endif
+-#define VM_FLAGS_CLEAR	(ARCH_VM_PKEY_FLAGS | VM_ARCH_CLEAR)
++#define VM_FLAGS_CLEAR	(ARCH_VM_PKEY_FLAGS | VM_GUEST | VM_ARCH_CLEAR)
+ 
+ /*
+  * mapping from the currently active vm_flags protection bits (the
+@@ -2793,6 +2795,7 @@ struct page *follow_page(struct vm_area_struct *vma, unsigned long address,
+ #define FOLL_SPLIT_PMD	0x20000	/* split huge pmd before returning */
+ #define FOLL_PIN	0x40000	/* pages must be released via unpin_user_page */
+ #define FOLL_FAST_ONLY	0x80000	/* gup_fast: prevent fall-back to slow gup */
++#define FOLL_GUEST	0x100000 /* allow access to guest-only pages */
+ 
+ /*
+  * FOLL_PIN and FOLL_LONGTERM may be used in various combinations with each
+diff --git a/include/linux/mman.h b/include/linux/mman.h
+index 629cefc4ecba..204e03d7787c 100644
+--- a/include/linux/mman.h
++++ b/include/linux/mman.h
+@@ -103,7 +103,9 @@ static inline void vm_unacct_memory(long pages)
+  */
+ static inline bool arch_validate_prot(unsigned long prot, unsigned long addr)
+ {
+-	return (prot & ~(PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM)) == 0;
++	int allowed;
++	allowed = PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM | PROT_GUEST;
++	return (prot & ~allowed) == 0;
+ }
+ #define arch_validate_prot arch_validate_prot
+ #endif
+@@ -140,7 +142,8 @@ calc_vm_prot_bits(unsigned long prot, unsigned long pkey)
+ {
+ 	return _calc_vm_trans(prot, PROT_READ,  VM_READ ) |
+ 	       _calc_vm_trans(prot, PROT_WRITE, VM_WRITE) |
+-	       _calc_vm_trans(prot, PROT_EXEC,  VM_EXEC) |
++	       _calc_vm_trans(prot, PROT_EXEC,  VM_EXEC ) |
++	       _calc_vm_trans(prot, PROT_GUEST, VM_GUEST) |
+ 	       arch_calc_vm_prot_bits(prot, pkey);
+ }
+ 
+diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+index 04a34c08e0a6..4bac0371f5c9 100644
+--- a/include/linux/page-flags.h
++++ b/include/linux/page-flags.h
+@@ -436,6 +436,14 @@ PAGEFLAG_FALSE(HWPoison)
+ #define __PG_HWPOISON 0
+ #endif
+ 
++#if defined(CONFIG_64BIT) && defined(CONFIG_HAVE_KVM_PROTECTED_MEMORY)
++PAGEFLAG(Guest, arch_2, PF_HEAD)
++TESTSCFLAG(Guest, arch_2, PF_HEAD)
++#else
++PAGEFLAG_FALSE(Guest)
++TESTSCFLAG_FALSE(Guest)
++#endif
++
+ #if defined(CONFIG_IDLE_PAGE_TRACKING) && defined(CONFIG_64BIT)
+ TESTPAGEFLAG(Young, young, PF_ANY)
+ SETPAGEFLAG(Young, young, PF_ANY)
+diff --git a/include/uapi/asm-generic/mman-common.h b/include/uapi/asm-generic/mman-common.h
+index f94f65d429be..c4d985d22b49 100644
+--- a/include/uapi/asm-generic/mman-common.h
++++ b/include/uapi/asm-generic/mman-common.h
+@@ -16,6 +16,7 @@
+ #define PROT_NONE	0x0		/* page can not be accessed */
+ #define PROT_GROWSDOWN	0x01000000	/* mprotect flag: extend change to start of growsdown vma */
+ #define PROT_GROWSUP	0x02000000	/* mprotect flag: extend change to end of growsup vma */
++#define PROT_GUEST	0x04000000	/* KVM guest memory */
+ 
+ /* 0x01 - 0x03 are defined in linux/mman.h */
+ #define MAP_TYPE	0x0f		/* Mask for type of mapping */
+diff --git a/mm/gup.c b/mm/gup.c
+index ef7d2da9f03f..2d2d57f70e1f 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -356,10 +356,22 @@ static int follow_pfn_pte(struct vm_area_struct *vma, unsigned long address,
+  * FOLL_FORCE can write to even unwritable pte's, but only
+  * after we've gone through a COW cycle and they are dirty.
+  */
+-static inline bool can_follow_write_pte(pte_t pte, unsigned int flags)
++static inline bool can_follow_write_pte(struct vm_area_struct *vma,
++					pte_t pte, unsigned int flags)
+ {
+-	return pte_write(pte) ||
+-		((flags & FOLL_FORCE) && (flags & FOLL_COW) && pte_dirty(pte));
++	if (pte_write(pte))
++		return true;
++
++	if ((flags & FOLL_FORCE) && (flags & FOLL_COW) && pte_dirty(pte))
++		return true;
++
++	if (!(flags & FOLL_GUEST))
++		return false;
++
++	if ((vma->vm_flags & (VM_WRITE | VM_SHARED)) != (VM_WRITE | VM_SHARED))
++		return false;
++
++	return PageGuest(pte_page(pte));
+ }
+ 
+ static struct page *follow_page_pte(struct vm_area_struct *vma,
+@@ -400,14 +412,20 @@ static struct page *follow_page_pte(struct vm_area_struct *vma,
+ 		migration_entry_wait(mm, pmd, address);
+ 		goto retry;
+ 	}
+-	if ((flags & FOLL_NUMA) && pte_protnone(pte))
++
++	page = vm_normal_page(vma, address, pte);
++	if (page && PageGuest(page)) {
++		if (!(flags & FOLL_GUEST))
++			goto no_page;
++	} else if ((flags & FOLL_NUMA) && pte_protnone(pte)) {
+ 		goto no_page;
+-	if ((flags & FOLL_WRITE) && !can_follow_write_pte(pte, flags)) {
++	}
++
++	if ((flags & FOLL_WRITE) && !can_follow_write_pte(vma, pte, flags)) {
+ 		pte_unmap_unlock(ptep, ptl);
+ 		return NULL;
+ 	}
+ 
+-	page = vm_normal_page(vma, address, pte);
+ 	if (!page && pte_devmap(pte) && (flags & (FOLL_GET | FOLL_PIN))) {
+ 		/*
+ 		 * Only return device mapping pages in the FOLL_GET or FOLL_PIN
+@@ -571,8 +589,12 @@ static struct page *follow_pmd_mask(struct vm_area_struct *vma,
+ 	if (likely(!pmd_trans_huge(pmdval)))
+ 		return follow_page_pte(vma, address, pmd, flags, &ctx->pgmap);
+ 
+-	if ((flags & FOLL_NUMA) && pmd_protnone(pmdval))
++	if (PageGuest(pmd_page(pmdval))) {
++	    if (!(flags & FOLL_GUEST))
++		    return no_page_table(vma, flags);
++	}  else if ((flags & FOLL_NUMA) && pmd_protnone(pmdval)) {
+ 		return no_page_table(vma, flags);
++	}
+ 
+ retry_locked:
+ 	ptl = pmd_lock(mm, pmd);
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index ae907a9c2050..c430a52a3b7f 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -1336,10 +1336,22 @@ vm_fault_t do_huge_pmd_wp_page(struct vm_fault *vmf, pmd_t orig_pmd)
+  * FOLL_FORCE can write to even unwritable pmd's, but only
+  * after we've gone through a COW cycle and they are dirty.
+  */
+-static inline bool can_follow_write_pmd(pmd_t pmd, unsigned int flags)
++static inline bool can_follow_write_pmd(struct vm_area_struct *vma,
++					pmd_t pmd, unsigned int flags)
+ {
+-	return pmd_write(pmd) ||
+-	       ((flags & FOLL_FORCE) && (flags & FOLL_COW) && pmd_dirty(pmd));
++	if (pmd_write(pmd))
++		return true;
++
++	if ((flags & FOLL_FORCE) && (flags & FOLL_COW) && pmd_dirty(pmd))
++		return true;
++
++	if (!(flags & FOLL_GUEST))
++		return false;
++
++	if ((vma->vm_flags & (VM_WRITE | VM_SHARED)) != (VM_WRITE | VM_SHARED))
++		return false;
++
++	return PageGuest(pmd_page(pmd));
+ }
+ 
+ struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
+@@ -1352,20 +1364,30 @@ struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
+ 
+ 	assert_spin_locked(pmd_lockptr(mm, pmd));
+ 
+-	if (flags & FOLL_WRITE && !can_follow_write_pmd(*pmd, flags))
+-		goto out;
++	if (!pmd_present(*pmd))
++		return NULL;
++
++	page = pmd_page(*pmd);
++	VM_BUG_ON_PAGE(!PageHead(page) && !is_zone_device_page(page), page);
++
++	if (PageGuest(page)) {
++		if (!(flags & FOLL_GUEST))
++			return NULL;
++	} else if ((flags & FOLL_NUMA) && pmd_protnone(*pmd)) {
++		/*
++		 * Full NUMA hinting faults to serialise migration in fault
++		 * paths
++		 */
++		return NULL;
++	}
++
++	if (flags & FOLL_WRITE && !can_follow_write_pmd(vma, *pmd, flags))
++		return NULL;
+ 
+ 	/* Avoid dumping huge zero page */
+ 	if ((flags & FOLL_DUMP) && is_huge_zero_pmd(*pmd))
+ 		return ERR_PTR(-EFAULT);
+ 
+-	/* Full NUMA hinting faults to serialise migration in fault paths */
+-	if ((flags & FOLL_NUMA) && pmd_protnone(*pmd))
+-		goto out;
+-
+-	page = pmd_page(*pmd);
+-	VM_BUG_ON_PAGE(!PageHead(page) && !is_zone_device_page(page), page);
+-
+ 	if (!try_grab_page(page, flags))
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -1408,7 +1430,6 @@ struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
+ 	page += (addr & ~HPAGE_PMD_MASK) >> PAGE_SHIFT;
+ 	VM_BUG_ON_PAGE(!PageCompound(page) && !is_zone_device_page(page), page);
+ 
+-out:
+ 	return page;
+ }
+ 
+@@ -1426,6 +1447,10 @@ vm_fault_t do_huge_pmd_numa_page(struct vm_fault *vmf, pmd_t pmd)
+ 	bool was_writable;
+ 	int flags = 0;
+ 
++	page = pmd_page(pmd);
++	if (PageGuest(page))
++		return VM_FAULT_SIGBUS;
++
+ 	vmf->ptl = pmd_lock(vma->vm_mm, vmf->pmd);
+ 	if (unlikely(!pmd_same(pmd, *vmf->pmd)))
+ 		goto out_unlock;
+diff --git a/mm/memory.c b/mm/memory.c
+index 550405fc3b5e..d588220feabf 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3703,9 +3703,13 @@ vm_fault_t do_set_pmd(struct vm_fault *vmf, struct page *page)
+ 	for (i = 0; i < HPAGE_PMD_NR; i++)
+ 		flush_icache_page(vma, page + i);
+ 
+-	entry = mk_huge_pmd(page, vma->vm_page_prot);
+-	if (write)
+-		entry = maybe_pmd_mkwrite(pmd_mkdirty(entry), vma);
++	if (PageGuest(page)) {
++		entry = mk_huge_pmd(page, PAGE_NONE);
++	} else {
++		entry = mk_huge_pmd(page, vma->vm_page_prot);
++		if (write)
++			entry = maybe_pmd_mkwrite(pmd_mkdirty(entry), vma);
++	}
+ 
+ 	add_mm_counter(vma->vm_mm, mm_counter_file(page), HPAGE_PMD_NR);
+ 	page_add_file_rmap(page, true);
+@@ -3741,13 +3745,17 @@ void do_set_pte(struct vm_fault *vmf, struct page *page, unsigned long addr)
+ 	pte_t entry;
+ 
+ 	flush_icache_page(vma, page);
+-	entry = mk_pte(page, vma->vm_page_prot);
++	if (PageGuest(page)) {
++		entry = mk_pte(page, PAGE_NONE);
++	} else {
++		entry = mk_pte(page, vma->vm_page_prot);
+ 
+-	if (prefault && arch_wants_old_prefaulted_pte())
+-		entry = pte_mkold(entry);
++		if (prefault && arch_wants_old_prefaulted_pte())
++			entry = pte_mkold(entry);
+ 
+-	if (write)
+-		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
++		if (write)
++			entry = maybe_mkwrite(pte_mkdirty(entry), vma);
++	}
+ 	/* copy-on-write page */
+ 	if (write && !(vma->vm_flags & VM_SHARED)) {
+ 		inc_mm_counter_fast(vma->vm_mm, MM_ANONPAGES);
+@@ -4105,6 +4113,10 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
+ 	bool was_writable = pte_savedwrite(vmf->orig_pte);
+ 	int flags = 0;
+ 
++	page = pte_page(vmf->orig_pte);
++	if (PageGuest(page))
++		return VM_FAULT_SIGBUS;
++
+ 	/*
+ 	 * The "pte" at this point cannot be used safely without
+ 	 * validation through pte_unmap_same(). It's of NUMA type but
+diff --git a/mm/mprotect.c b/mm/mprotect.c
+index 94188df1ee55..aecba46af544 100644
+--- a/mm/mprotect.c
++++ b/mm/mprotect.c
+@@ -484,8 +484,12 @@ mprotect_fixup(struct vm_area_struct *vma, struct vm_area_struct **pprev,
+ 	dirty_accountable = vma_wants_writenotify(vma, vma->vm_page_prot);
+ 	vma_set_page_prot(vma);
+ 
+-	change_protection(vma, start, end, vma->vm_page_prot,
+-			  dirty_accountable ? MM_CP_DIRTY_ACCT : 0);
++	if (vma->vm_flags & VM_GUEST) {
++		zap_page_range(vma, vma->vm_start, vma->vm_end - vma->vm_start);
++	} else {
++		change_protection(vma, start, end, vma->vm_page_prot,
++				  dirty_accountable ? MM_CP_DIRTY_ACCT : 0);
++	}
+ 
+ 	/*
+ 	 * Private VM_LOCKED VMA becoming writable: trigger COW to avoid major
+@@ -603,6 +607,16 @@ static int do_mprotect_pkey(unsigned long start, size_t len,
+ 			goto out;
+ 		}
+ 
++		if ((newflags & (VM_GUEST|VM_SHARED)) == VM_GUEST) {
++			error = -EINVAL;
++			goto out;
++		}
++
++		if ((newflags & VM_GUEST) && !vma_is_shmem(vma)) {
++			error = -EINVAL;
++			goto out;
++		}
++
+ 		/* Allow architectures to sanity-check the new flags */
+ 		if (!arch_validate_flags(newflags)) {
+ 			error = -EINVAL;
+diff --git a/mm/shmem.c b/mm/shmem.c
+index b2db4ed0fbc7..0f44f2fac06c 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -1835,6 +1835,11 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+ 	if (page && sgp == SGP_WRITE)
+ 		mark_page_accessed(page);
+ 
++	if (page && PageGuest(page) && sgp != SGP_CACHE) {
++		error = -EIO;
++		goto unlock;
++	}
++
+ 	/* fallocated page? */
+ 	if (page && !PageUptodate(page)) {
+ 		if (sgp != SGP_READ)
+@@ -2117,6 +2122,13 @@ static vm_fault_t shmem_fault(struct vm_fault *vmf)
+ 				  gfp, vma, vmf, &ret);
+ 	if (err)
+ 		return vmf_error(err);
++
++	if ((vmf->vma->vm_flags & VM_GUEST) && !TestSetPageGuest(vmf->page)) {
++		struct page *head = compound_head(vmf->page);
++		try_to_unmap(head, TTU_IGNORE_MLOCK);
++		set_page_dirty(head);
++	}
++
+ 	return ret;
+ }
+ 
+-- 
+ Kirill A. Shutemov
