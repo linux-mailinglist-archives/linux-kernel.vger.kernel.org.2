@@ -2,78 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98CA539BA67
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE5639BA71
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230514AbhFDN7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 09:59:24 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:45049 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230124AbhFDN7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 09:59:24 -0400
-Received: from localhost.localdomain (ip5f5ae886.dynamic.kabel-deutschland.de [95.90.232.134])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id A615361E64762;
-        Fri,  4 Jun 2021 15:57:35 +0200 (CEST)
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>
-Cc:     Madhava Reddy Siddareddygari <msiddare@cisco.com>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] hwmon: (pmbus_core) Check adapter PEC support
-Date:   Fri,  4 Jun 2021 15:57:14 +0200
-Message-Id: <20210604135714.529042-1-pmenzel@molgen.mpg.de>
-X-Mailer: git-send-email 2.32.0.rc2
+        id S230372AbhFDOD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 10:03:57 -0400
+Received: from srv6.fidu.org ([159.69.62.71]:37516 "EHLO srv6.fidu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230122AbhFDOD4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 10:03:56 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id A9832C800BF;
+        Fri,  4 Jun 2021 16:02:09 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id now7DJH372gl; Fri,  4 Jun 2021 16:02:09 +0200 (CEST)
+Received: from wsembach-tuxedo.fritz.box (p200300E37F2e2A0038b625C68b541A92.dip0.t-ipconnect.de [IPv6:2003:e3:7f2e:2a00:38b6:25c6:8b54:1a92])
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPA id 5D798C800BE;
+        Fri,  4 Jun 2021 16:02:09 +0200 (CEST)
+From:   Werner Sembach <wse@tuxedocomputers.com>
+To:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Cc:     Werner Sembach <wse@tuxedocomputers.com>
+Subject: [PATCH] ALSA: hda/realtek: Change device names for quirks to barebone names
+Date:   Fri,  4 Jun 2021 16:02:07 +0200
+Message-Id: <20210604140207.8023-1-wse@tuxedocomputers.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Madhava Reddy Siddareddygari <msiddare@cisco.com>
+Change the name string of several devices needing quirks to the Clevo-barebone
+ones. Also make the names follow the same pattern for multiple Clevo names
+referring to the same mainboard.
 
-Currently, for Packet Error Checking (PEC) only the controller
-is checked for support. This causes problems on the cisco-8000
-platform where a SMBUS transaction errors are observed. This is
-because PEC has to be enabled only if both controller and
-adapter support it.
-
-Added code to check PEC capability for adapter and enable it
-only if both controller and adapter supports PEC.
-
-Signed-off-by: Madhava Reddy Siddareddygari <msiddare@cisco.com>
-[Upstream from SONiC https://github.com/Azure/sonic-linux-kernel/pull/215]
-Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
 ---
- drivers/hwmon/pmbus/pmbus_core.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/pci/hda/patch_realtek.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
-index bbd745178147..7fbd82b7560d 100644
---- a/drivers/hwmon/pmbus/pmbus_core.c
-+++ b/drivers/hwmon/pmbus/pmbus_core.c
-@@ -2214,11 +2214,13 @@ static int pmbus_init_common(struct i2c_client *client, struct pmbus_data *data,
- 		data->has_status_word = true;
- 	}
- 
--	/* Enable PEC if the controller supports it */
--	if (!(data->flags & PMBUS_NO_CAPABILITY)) {
--		ret = i2c_smbus_read_byte_data(client, PMBUS_CAPABILITY);
--		if (ret >= 0 && (ret & PB_CAPABILITY_ERROR_CHECK))
-+	/* Enable PEC if the controller and bus supports it */
-+	ret = i2c_smbus_read_byte_data(client, PMBUS_CAPABILITY);
-+	if (ret >= 0 && (ret & PB_CAPABILITY_ERROR_CHECK)) {
-+		if (i2c_check_functionality(client->adapter,
-+			I2C_FUNC_SMBUS_PEC)) {
- 			client->flags |= I2C_CLIENT_PEC;
-+		}
- 	}
- 
- 	/*
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 552e2cb73291..39cf3667118c 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8368,7 +8368,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1462, 0xb171, "Cubi N 8GL (MS-B171)", ALC283_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x152d, 0x1082, "Quanta NL3", ALC269_FIXUP_LIFEBOOK),
+ 	SND_PCI_QUIRK(0x1558, 0x1323, "Clevo N130ZU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+-	SND_PCI_QUIRK(0x1558, 0x1325, "System76 Darter Pro (darp5)", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1558, 0x1325, "Clevo N15[01][CW]U", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x1401, "Clevo L140[CZ]U", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x1403, "Clevo N140CU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x1404, "Clevo N150CU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+@@ -8403,11 +8403,11 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1558, 0x8521, "Clevo NH77D[CD]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x8535, "Clevo NH50D[BE]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x8536, "Clevo NH79D[BE]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+-	SND_PCI_QUIRK(0x1558, 0x8550, "System76 Gazelle (gaze14)", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+-	SND_PCI_QUIRK(0x1558, 0x8551, "System76 Gazelle (gaze14)", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+-	SND_PCI_QUIRK(0x1558, 0x8560, "System76 Gazelle (gaze14)", ALC269_FIXUP_HEADSET_MIC),
+-	SND_PCI_QUIRK(0x1558, 0x8561, "System76 Gazelle (gaze14)", ALC269_FIXUP_HEADSET_MIC),
+-	SND_PCI_QUIRK(0x1558, 0x8562, "Clevo NH[5|7][0-9]RZ[Q]", ALC269_FIXUP_DMIC),
++	SND_PCI_QUIRK(0x1558, 0x8550, "Clevo NH[57][0-9][ER][ACDH]Q", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1558, 0x8551, "Clevo NH[57][0-9][ER][ACDH]Q", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1558, 0x8560, "Clevo NH[57][0-9][ER][ACDH]Q", ALC269_FIXUP_HEADSET_MIC),
++	SND_PCI_QUIRK(0x1558, 0x8561, "Clevo NH[57][0-9][ER][ACDH]Q", ALC269_FIXUP_HEADSET_MIC),
++	SND_PCI_QUIRK(0x1558, 0x8562, "Clevo NH[57][0-9]RZ[Q]", ALC269_FIXUP_DMIC),
+ 	SND_PCI_QUIRK(0x1558, 0x8668, "Clevo NP50B[BE]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x8680, "Clevo NJ50LU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x8686, "Clevo NH50[CZ]U", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+@@ -8418,8 +8418,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1558, 0x9600, "Clevo N960K[PR]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x961d, "Clevo N960S[CDF]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x971d, "Clevo N970T[CDF]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+-	SND_PCI_QUIRK(0x1558, 0xa500, "Clevo NL53RU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+-	SND_PCI_QUIRK(0x1558, 0xa600, "Clevo NL5XNU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1558, 0xa500, "Clevo NL5[03]RU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1558, 0xa600, "Clevo NL50NU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0xb018, "Clevo NP50D[BE]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0xb019, "Clevo NH77D[BE]Q", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0xb022, "Clevo NH77D[DC][QW]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
 -- 
-2.32.0.rc2
+2.25.1
 
