@@ -2,120 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE7939B4CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91CA639B4D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbhFDI0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 04:26:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52500 "EHLO
+        id S230220AbhFDI2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 04:28:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229950AbhFDI0x (ORCPT
+        with ESMTP id S230010AbhFDI2U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 04:26:53 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B27C06174A
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 01:24:58 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id o127so4856407wmo.4
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 01:24:58 -0700 (PDT)
+        Fri, 4 Jun 2021 04:28:20 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C655C06174A
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 01:26:34 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id d7-20020ac811870000b02901e65f85117bso4728328qtj.18
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 01:26:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9B11phrLUGX5wIVrRA8NHtveBN9OW2EGh60dz1Otdhs=;
-        b=FZoqlOXCsRfpBuaLPbPOsQ5vFsPSKGEJg6ezShtIvyOVEvvnBe+nejWMntFwXGkuCr
-         aN4YfLjlDEalKbG30jN9VSOu1uGXJIA5vLgPGSW3oBVx0rhWzhUR67YZNg+VrO9PPoYF
-         WEy5rrCWDCrkhVcdN9dIwKYANnCx1uWfhdo3z6+PZnR5f/W1N4UbUdbtxysPAJe2na+P
-         ElmSBwzSd55+d50n+Qgy2dJ0YaKDGQH2jq8amICQJrtBp3Lh+x08573sUozXVMU2ztRq
-         8XGnCMOevhlyNOcffDVw6XBNQtEx1s8eTO5qBWynfqJRZZZKj8oHcFKina3e990OC1u+
-         HRFg==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=rkwFW1rTtpipvPo2i45vrrpv7tHxndFtqZdOdDuII3A=;
+        b=TqrRKVn7by4f57Ty0NBYM9ZQi0Yel60OrNYMMrjdSVWyfN/pZriGeyU44PbO89UH+P
+         KcXpb6FIgJGL4eZm6mJ2RjgoXhiQCswQJfQwdDai4ATO9xluo0Rry/txCJsBUnpF+h4y
+         NPHqWomi88TH4sHmoUCSGUoPfgt2GJgFv7fYazgcXz4lL+ApLzKomWX6tKnyQ1D/8vG7
+         LTYS8oIpLAl5ZA0AYkSW6gCY8u26jL9khDnOPV6B/ZamX9UXq0PpyOw/bVlVYCHlJfl/
+         pG/Bbo+7XPbMbjumsX6r9K6hc4QSAobk1RJviQ2TkGIJ0rUs8OtvzupajxV4OdlfiUOM
+         DPeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9B11phrLUGX5wIVrRA8NHtveBN9OW2EGh60dz1Otdhs=;
-        b=s397S3bzWMjBiDdB5AO3KnidXUKF5vOUUTR9XtP1bxkF5qNGm4vTmL7Tyc1X5EE1De
-         Blv4ftDCghE3+M8OyI/TNfzlSZZUCzww6+d/XNeHa1NVX2/qMrsG1Lck7siNB8bcjBMR
-         wJ6tTr4yapB7pXq/X6X1HYnOcwGIor5/ntFMTNcHPac9Chws3x3rZRsAp7DJIiKVzUnn
-         /Z/vBt2JInX6lEb8LKEilUoP7koXqkkfKtts4wuGZzYqC5HVfJ+dk1ru9NN+yBbSmLbd
-         POSKGknmaQ1RhVp8/m7uXRJNm6FnzQ3Mf5ccaKx8xTVP5HCWAJgdE5Z+zM+ot38Qt2mz
-         qnqQ==
-X-Gm-Message-State: AOAM531OsbQ1jZdWvrrU+nVIRd1HfGai626Y8C8dwCGUI4q0sNy189zA
-        ksY28XyGesTYbsqzC1XHZMBjZ+1iPoH4pyUX
-X-Google-Smtp-Source: ABdhPJwV/PQZLT2XuSMOzmoRFOi9oNgOsBloqY2EquPgUV9s3LfP/3hG1TZp76wvSPWEIWf0bC0QJA==
-X-Received: by 2002:a05:600c:d0:: with SMTP id u16mr2375599wmm.155.1622795096064;
-        Fri, 04 Jun 2021 01:24:56 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:70d3:6c26:978:999d? ([2a01:e34:ed2f:f020:70d3:6c26:978:999d])
-        by smtp.googlemail.com with ESMTPSA id f18sm4958389wmj.13.2021.06.04.01.24.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Jun 2021 01:24:55 -0700 (PDT)
-Subject: Re: [PATCH] clocksource/drivers/sprd: Remove the dependency between
- sprd timer and SPRD arch
-To:     Nianfu Bai <bnf20061983@gmail.com>, tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, nianfu.bai@unisoc.com,
-        ruifeng.zhang1@unisoc.com
-References: <1620716925-4329-1-git-send-email-bnf20061983@gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <aac6c6a3-6666-075a-6901-7e3c3b2ae01d@linaro.org>
-Date:   Fri, 4 Jun 2021 10:24:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <1620716925-4329-1-git-send-email-bnf20061983@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=rkwFW1rTtpipvPo2i45vrrpv7tHxndFtqZdOdDuII3A=;
+        b=JuiYoEItu13Ncsi3qG4OSrUtdKwraSVMT6VYBlw6EUrrurKhx+5XEaDDGhIFLtFoQX
+         XiFtSvt9aLiBaiiDdtnWd9gFs77Ni/lzrjfN5bKsb9tYkIpxrAhowZiLVwqL4G+cDFNP
+         ssC87NHfEcU6e9pJHD7CcShVUK0fJoi1FyGJ+AXrnSENNVKHAcovuiBwyS6KoTo0JYhO
+         Wa7Fo/SrRtsnfGWPeOt0fnw5iDJcKBweYGaZH1NLo6NmeXjllZKstw3cORLdrCWQcRyA
+         4q7N0lFAdAUINgqbM1i1yPOpBObgiGQi7Dal6SGY705FDKJ+Ox5M60aDlKw+udIuASp1
+         JZGA==
+X-Gm-Message-State: AOAM530UWtn3JCyPOk+mucnJxw7BcvOyFJMkMoVveFerBN8nKgl3k/UV
+        RFP9uutY8iqpLFo0OVDt1K/tdtxlprvn
+X-Google-Smtp-Source: ABdhPJy79J6o/QLMeaKcj/RXYOyZshshwOG8QXnezqwQnLqPs+Ls7Rbq+Jrw45UofuZH6InyGCdACZ3fMjbT
+X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:b:c6ff:1ed3:74cf:2ae3])
+ (user=apusaka job=sendgmr) by 2002:a0c:d80f:: with SMTP id
+ h15mr3586315qvj.17.1622795193532; Fri, 04 Jun 2021 01:26:33 -0700 (PDT)
+Date:   Fri,  4 Jun 2021 16:26:25 +0800
+Message-Id: <20210604162616.v3.1.I444f42473f263fed77f2586eb4b01d6752df0de4@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
+Subject: [PATCH v3 1/3] Bluetooth: use inclusive language in HCI role comments
+From:   Archie Pusaka <apusaka@google.com>
+To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>
+Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/05/2021 09:08, Nianfu Bai wrote:
-> From: Nianfu Bai <nianfu.bai@unisoc.com>
-> 
-> Tick broadcast installed by insmod cannot switch to oneshot mode correctly
-> caused by linux timer framework, need to build in kernel image.
+From: Archie Pusaka <apusaka@chromium.org>
 
-What timer is compiled as a module? Why the timer framework does not
-allow to switch to it ?
+This patch replaces some non-inclusive terms based on the appropriate
+language mapping table compiled by the Bluetooth SIG:
+https://specificationrefs.bluetooth.com/language-mapping/Appropriate_Language_Mapping_Table.pdf
 
-> SPRD_TIMER
-> has been selected by SPRD arch, we have to enable SPRD arch when we build
-> sprd timer in kernel image, this action conflicts with general kernel image,
+Specifically, these terms are replaced:
+master -> initiator (for smp) or central (everything else)
+slave  -> responder (for smp) or peripheral (everything else)
 
-Why this is conflicting with general kernel image?
+The #define preprocessor terms are unchanged for now to not disturb
+dependent APIs.
 
-> so we need to remove the dependency between sprd timer and SPRD arch.
+Signed-off-by: Archie Pusaka <apusaka@chromium.org>
 
-Can you rephrase the changelog, I'm not getting the point.
+---
 
-> Signed-off-by: Nianfu Bai <nianfu.bai@unisoc.com>
-> Signed-off-by: Ruifeng Zhang <ruifeng.zhang1@unisoc.com>
-> ---
->  drivers/clocksource/Kconfig | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-> index 39aa21d..04b333c 100644
-> --- a/drivers/clocksource/Kconfig
-> +++ b/drivers/clocksource/Kconfig
-> @@ -447,10 +447,8 @@ config MTK_TIMER
->  	  Support for Mediatek timer driver.
->  
->  config SPRD_TIMER
-> -	bool "Spreadtrum timer driver" if EXPERT
-> +	bool "Spreadtrum timer driver" if COMPILE_TEST
->  	depends on HAS_IOMEM
-> -	depends on (ARCH_SPRD || COMPILE_TEST)
-> -	default ARCH_SPRD
->  	select TIMER_OF
->  	help
->  	  Enables support for the Spreadtrum timer driver.
-> 
+Changes in v3:
+* Remove the #define terms from change
 
+ net/bluetooth/hci_conn.c   | 8 ++++----
+ net/bluetooth/hci_event.c  | 6 +++---
+ net/bluetooth/l2cap_core.c | 2 +-
+ net/bluetooth/smp.c        | 6 +++---
+ 4 files changed, 11 insertions(+), 11 deletions(-)
 
+diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
+index ea0f9cdaa6b1..2b5059a56cda 100644
+--- a/net/bluetooth/hci_conn.c
++++ b/net/bluetooth/hci_conn.c
+@@ -257,7 +257,7 @@ int hci_disconnect(struct hci_conn *conn, __u8 reason)
+ {
+ 	BT_DBG("hcon %p", conn);
+ 
+-	/* When we are master of an established connection and it enters
++	/* When we are central of an established connection and it enters
+ 	 * the disconnect timeout, then go ahead and try to read the
+ 	 * current clock offset.  Processing of the result is done
+ 	 * within the event handling and hci_clock_offset_evt function.
+@@ -1109,9 +1109,9 @@ struct hci_conn *hci_connect_le(struct hci_dev *hdev, bdaddr_t *dst,
+ 
+ 	hci_req_init(&req, hdev);
+ 
+-	/* Disable advertising if we're active. For master role
++	/* Disable advertising if we're active. For central role
+ 	 * connections most controllers will refuse to connect if
+-	 * advertising is enabled, and for slave role connections we
++	 * advertising is enabled, and for peripheral role connections we
+ 	 * anyway have to disable it in order to start directed
+ 	 * advertising. Any registered advertisements will be
+ 	 * re-enabled after the connection attempt is finished.
+@@ -1119,7 +1119,7 @@ struct hci_conn *hci_connect_le(struct hci_dev *hdev, bdaddr_t *dst,
+ 	if (hci_dev_test_flag(hdev, HCI_LE_ADV))
+ 		__hci_req_pause_adv_instances(&req);
+ 
+-	/* If requested to connect as slave use directed advertising */
++	/* If requested to connect as peripheral use directed advertising */
+ 	if (conn->role == HCI_ROLE_SLAVE) {
+ 		/* If we're active scanning most controllers are unable
+ 		 * to initiate advertising. Simply reject the attempt.
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 43c324c46c0b..da013d485f14 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -2795,9 +2795,9 @@ static void hci_conn_request_evt(struct hci_dev *hdev, struct sk_buff *skb)
+ 		bacpy(&cp.bdaddr, &ev->bdaddr);
+ 
+ 		if (lmp_rswitch_capable(hdev) && (mask & HCI_LM_MASTER))
+-			cp.role = 0x00; /* Become master */
++			cp.role = 0x00; /* Become central */
+ 		else
+-			cp.role = 0x01; /* Remain slave */
++			cp.role = 0x01; /* Remain peripheral */
+ 
+ 		hci_send_cmd(hdev, HCI_OP_ACCEPT_CONN_REQ, sizeof(cp), &cp);
+ 	} else if (!(flags & HCI_PROTO_DEFER)) {
+@@ -5131,7 +5131,7 @@ static void le_conn_complete_evt(struct hci_dev *hdev, u8 status,
+ 		conn->dst_type = bdaddr_type;
+ 
+ 		/* If we didn't have a hci_conn object previously
+-		 * but we're in master role this must be something
++		 * but we're in central role this must be something
+ 		 * initiated using a white list. Since white list based
+ 		 * connections are not "first class citizens" we don't
+ 		 * have full tracking of them. Therefore, we go ahead
+diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+index 9ebb85df4db4..b76c5d00b082 100644
+--- a/net/bluetooth/l2cap_core.c
++++ b/net/bluetooth/l2cap_core.c
+@@ -1691,7 +1691,7 @@ static void l2cap_le_conn_ready(struct l2cap_conn *conn)
+ 	if (hcon->out)
+ 		smp_conn_security(hcon, hcon->pending_sec_level);
+ 
+-	/* For LE slave connections, make sure the connection interval
++	/* For LE peripheral connections, make sure the connection interval
+ 	 * is in the range of the minimum and maximum interval that has
+ 	 * been configured for this connection. If not, then trigger
+ 	 * the connection update procedure.
+diff --git a/net/bluetooth/smp.c b/net/bluetooth/smp.c
+index 6777f5313838..53f984d11bc1 100644
+--- a/net/bluetooth/smp.c
++++ b/net/bluetooth/smp.c
+@@ -909,8 +909,8 @@ static int tk_request(struct l2cap_conn *conn, u8 remote_oob, u8 auth,
+ 			hcon->pending_sec_level = BT_SECURITY_HIGH;
+ 	}
+ 
+-	/* If both devices have Keyoard-Display I/O, the master
+-	 * Confirms and the slave Enters the passkey.
++	/* If both devices have Keyboard-Display I/O, the initiator
++	 * Confirms and the responder Enters the passkey.
+ 	 */
+ 	if (smp->method == OVERLAP) {
+ 		if (hcon->role == HCI_ROLE_MASTER)
+@@ -3083,7 +3083,7 @@ static void bredr_pairing(struct l2cap_chan *chan)
+ 	if (!test_bit(HCI_CONN_ENCRYPT, &hcon->flags))
+ 		return;
+ 
+-	/* Only master may initiate SMP over BR/EDR */
++	/* Only initiator may initiate SMP over BR/EDR */
+ 	if (hcon->role != HCI_ROLE_MASTER)
+ 		return;
+ 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.32.0.rc1.229.g3e70b5a671-goog
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
