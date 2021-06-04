@@ -2,70 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2A339B654
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 12:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59C8139B67D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 12:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230025AbhFDKBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 06:01:43 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:4306 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbhFDKBl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 06:01:41 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FxJ646CBDz1BHrv;
-        Fri,  4 Jun 2021 17:55:08 +0800 (CST)
-Received: from dggemi758-chm.china.huawei.com (10.1.198.144) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 4 Jun 2021 17:59:48 +0800
-Received: from huawei.com (10.175.101.6) by dggemi758-chm.china.huawei.com
- (10.1.198.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 4 Jun
- 2021 17:59:48 +0800
-From:   ChenXiaoSong <chenxiaosong2@huawei.com>
-To:     <mripard@kernel.org>, <wens@csie.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-sunxi@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <yukuai3@huawei.com>, <yi.zhang@huawei.com>,
-        <chenxiaosong2@huawei.com>
-Subject: [PATCH -next] mailbox: sun6i-msgbox: Remove redundant dev_err call in sun6i_msgbox_probe()
-Date:   Fri, 4 Jun 2021 18:06:11 +0800
-Message-ID: <20210604100611.3653738-1-chenxiaosong2@huawei.com>
-X-Mailer: git-send-email 2.25.4
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggemi758-chm.china.huawei.com (10.1.198.144)
-X-CFilter-Loop: Reflected
+        id S230255AbhFDKEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 06:04:20 -0400
+Received: from mga04.intel.com ([192.55.52.120]:53397 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229667AbhFDKET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 06:04:19 -0400
+IronPort-SDR: bC235VD8TuEaVAbj7+3nnzEf0/m388pXyXlsGjPCTIsL3+gC4RGaK78IXiIb4bF+go54NlASwc
+ QoFZzGKslD0w==
+X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="202404506"
+X-IronPort-AV: E=Sophos;i="5.83,248,1616482800"; 
+   d="scan'208";a="202404506"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2021 03:02:33 -0700
+IronPort-SDR: X0aMog2PWyHWhbjr4gc8mFIdrOJKxQ/isHwExhyVIvi7WXt5O/DQxoIUzUAR6Rb+Guh+wyLbs6
+ jzQuuNjUJozg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,248,1616482800"; 
+   d="scan'208";a="633994095"
+Received: from mike-ilbpg1.png.intel.com ([10.88.227.76])
+  by fmsmga006.fm.intel.com with ESMTP; 04 Jun 2021 03:02:28 -0700
+From:   Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
+To:     Jose.Abreu@synopsys.com, andrew@lunn.ch, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, kuba@kernel.org, netdev@vger.kernel.org,
+        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        davem@davemloft.net, mcoquelin.stm32@gmail.com,
+        weifeng.voon@intel.com, boon.leong.ong@intel.com,
+        tee.min.tan@intel.com, vee.khee.wong@linux.intel.com,
+        vee.khee.wong@intel.com, michael.wei.hong.sit@intel.com,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        vladimir.oltean@nxp.com
+Subject: [PATCH net-next v5 0/3] Enable 2.5Gbps speed for stmmac
+Date:   Fri,  4 Jun 2021 17:57:58 +0800
+Message-Id: <20210604095801.1033-1-michael.wei.hong.sit@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a error message within devm_ioremap_resource
-already, so remove the dev_err call to avoid redundant
-error message.
+Intel mGbE supports 2.5Gbps link speed by overclocking the clock rate
+by 2.5 times to support 2.5Gbps link speed. In this mode, the serdes/PHY
+operates at a serial baud rate of 3.125 Gbps and the PCS data path and
+GMII interface of the MAC operate at 312.5 MHz instead of 125 MHz.
+This is configured in the BIOS during boot up. The kernel driver is not able
+access to modify the clock rate for 1Gbps/2.5G mode on the fly. The way to
+determine the current 1G/2.5G mode is by reading a dedicated adhoc
+register through mdio bus.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
----
- drivers/mailbox/sun6i-msgbox.c | 1 -
- 1 file changed, 1 deletion(-)
+Changes:
+v4 -> v5
+ patch 1/3
+ - Rebase to latest code changes after Vladimir's code is merged
 
-diff --git a/drivers/mailbox/sun6i-msgbox.c b/drivers/mailbox/sun6i-msgbox.c
-index ccecf2e5941d..e357236c7dd1 100644
---- a/drivers/mailbox/sun6i-msgbox.c
-+++ b/drivers/mailbox/sun6i-msgbox.c
-@@ -255,7 +255,6 @@ static int sun6i_msgbox_probe(struct platform_device *pdev)
- 	mbox->regs = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(mbox->regs)) {
- 		ret = PTR_ERR(mbox->regs);
--		dev_err(dev, "Failed to map MMIO resource: %d\n", ret);
- 		goto err_disable_unprepare;
- 	}
- 
+v3 -> v4
+ patch 1/3
+ - Rebase to latest code and Initialize 'found' to 0 to avoid build warning
+
+ patch 2/3
+ - Fix indentation issue from v3
+
+v2 -> v3
+ patch 1/3
+ -New patch added to restructure the code. enabling reading the dedicated
+  adhoc register to determine link speed mode.
+
+ patch 2/3
+ -Restructure for 2.5G speed to use 2500BaseX configuration as the
+  PHY interface.
+
+ patch 3/3
+ -Restructure to read serdes registers to set max_speed and configure to
+  use 2500BaseX in 2.5G speeds.
+
+v1 -> v2
+ patch 1/2
+ -Remove MAC supported link speed masking
+
+ patch 2/2
+ -Add supported link speed masking in the PCS
+
+iperf3 and ping for 2.5Gbps and regression test on 10M/100M/1000Mbps
+is done to prevent regresson issues.
+
+2500Mbps
+PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=0.526 ms
+64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.509 ms
+64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=0.507 ms
+64 bytes from 192.168.1.1: icmp_seq=4 ttl=64 time=0.508 ms
+64 bytes from 192.168.1.1: icmp_seq=5 ttl=64 time=0.539 ms
+64 bytes from 192.168.1.1: icmp_seq=6 ttl=64 time=0.516 ms
+64 bytes from 192.168.1.1: icmp_seq=7 ttl=64 time=0.548 ms
+64 bytes from 192.168.1.1: icmp_seq=8 ttl=64 time=0.513 ms
+64 bytes from 192.168.1.1: icmp_seq=9 ttl=64 time=0.509 ms
+64 bytes from 192.168.1.1: icmp_seq=10 ttl=64 time=0.508 ms
+
+--- 192.168.1.1 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 9222ms
+rtt min/avg/max/mdev = 0.507/0.518/0.548/0.013 ms
+
+Connecting to host 192.168.1.1, port 5201
+[  5] local 192.168.1.2 port 40092 connected to 192.168.1.1 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec   205 MBytes  1.72 Gbits/sec    0    604 KBytes       
+[  5]   1.00-2.00   sec   205 MBytes  1.72 Gbits/sec    0    632 KBytes       
+[  5]   2.00-3.00   sec   205 MBytes  1.72 Gbits/sec    0    632 KBytes       
+[  5]   3.00-4.00   sec   206 MBytes  1.73 Gbits/sec    0    632 KBytes       
+[  5]   4.00-5.00   sec   205 MBytes  1.72 Gbits/sec    0    632 KBytes       
+[  5]   5.00-6.00   sec   206 MBytes  1.73 Gbits/sec    0    632 KBytes       
+[  5]   6.00-7.00   sec   204 MBytes  1.71 Gbits/sec    0    632 KBytes       
+[  5]   7.00-8.00   sec   206 MBytes  1.73 Gbits/sec    0    632 KBytes       
+[  5]   8.00-9.00   sec   205 MBytes  1.72 Gbits/sec    0    632 KBytes       
+[  5]   9.00-10.00  sec   206 MBytes  1.73 Gbits/sec    0    632 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  2.00 GBytes  1.72 Gbits/sec    0             sender
+[  5]   0.00-10.00  sec  2.00 GBytes  1.72 Gbits/sec                  receiver
+
+iperf Done.
+
+10Mbps
+host@EHL$ ethtool -s enp0s30f4 duplex full speed 10
+PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=1.46 ms
+64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.761 ms
+64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=0.744 ms
+64 bytes from 192.168.1.1: icmp_seq=4 ttl=64 time=0.753 ms
+64 bytes from 192.168.1.1: icmp_seq=5 ttl=64 time=0.746 ms
+64 bytes from 192.168.1.1: icmp_seq=6 ttl=64 time=0.786 ms
+64 bytes from 192.168.1.1: icmp_seq=7 ttl=64 time=0.740 ms
+64 bytes from 192.168.1.1: icmp_seq=8 ttl=64 time=0.757 ms
+64 bytes from 192.168.1.1: icmp_seq=9 ttl=64 time=0.742 ms
+64 bytes from 192.168.1.1: icmp_seq=10 ttl=64 time=0.772 ms
+
+--- 192.168.1.1 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 9208ms
+rtt min/avg/max/mdev = 0.740/0.826/1.461/0.212 ms
+
+Connecting to host 192.168.1.1, port 5201
+[  5] local 192.168.1.2 port 35304 connected to 192.168.1.1 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec  1.26 MBytes  10.6 Mbits/sec    0   29.7 KBytes       
+[  5]   1.00-2.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes       
+[  5]   2.00-3.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes       
+[  5]   3.00-4.00   sec  1.15 MBytes  9.68 Mbits/sec    0   29.7 KBytes       
+[  5]   4.00-5.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes       
+[  5]   5.00-6.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes       
+[  5]   6.00-7.00   sec  1.15 MBytes  9.68 Mbits/sec    0   29.7 KBytes       
+[  5]   7.00-8.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes       
+[  5]   8.00-9.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes       
+[  5]   9.00-10.00  sec  1.15 MBytes  9.68 Mbits/sec    0   29.7 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  11.3 MBytes  9.47 Mbits/sec    0             sender
+[  5]   0.00-10.01  sec  11.1 MBytes  9.33 Mbits/sec                  receiver
+
+iperf Done.
+
+100Mbps
+host@EHL$ ethtool -s enp0s30f4 duplex full speed 100
+PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=1.05 ms
+64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.535 ms
+64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=0.522 ms
+64 bytes from 192.168.1.1: icmp_seq=4 ttl=64 time=0.529 ms
+64 bytes from 192.168.1.1: icmp_seq=5 ttl=64 time=0.523 ms
+64 bytes from 192.168.1.1: icmp_seq=6 ttl=64 time=0.543 ms
+64 bytes from 192.168.1.1: icmp_seq=7 ttl=64 time=0.553 ms
+64 bytes from 192.168.1.1: icmp_seq=8 ttl=64 time=0.542 ms
+64 bytes from 192.168.1.1: icmp_seq=9 ttl=64 time=0.517 ms
+64 bytes from 192.168.1.1: icmp_seq=10 ttl=64 time=0.515 ms
+
+--- 192.168.1.1 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 9233ms
+rtt min/avg/max/mdev = 0.515/0.582/1.048/0.155 ms
+
+Connecting to host 192.168.1.1, port 5201
+[  5] local 192.168.1.2 port 35308 connected to 192.168.1.1 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec  11.8 MBytes  99.1 Mbits/sec    0    147 KBytes       
+[  5]   1.00-2.00   sec  10.9 MBytes  91.2 Mbits/sec    0    187 KBytes       
+[  5]   2.00-3.00   sec  11.4 MBytes  95.4 Mbits/sec    0    230 KBytes       
+[  5]   3.00-4.00   sec  10.9 MBytes  91.7 Mbits/sec    0    230 KBytes       
+[  5]   4.00-5.00   sec  10.4 MBytes  87.6 Mbits/sec    0    230 KBytes       
+[  5]   5.00-6.00   sec  10.9 MBytes  91.7 Mbits/sec    0    230 KBytes       
+[  5]   6.00-7.00   sec  10.9 MBytes  91.7 Mbits/sec    0    230 KBytes       
+[  5]   7.00-8.00   sec  10.9 MBytes  91.7 Mbits/sec    0    230 KBytes       
+[  5]   8.00-9.00   sec  10.9 MBytes  91.7 Mbits/sec    0    230 KBytes       
+[  5]   9.00-10.00  sec  10.9 MBytes  91.7 Mbits/sec    0    230 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec   110 MBytes  92.4 Mbits/sec    0             sender
+[  5]   0.00-10.01  sec   109 MBytes  91.5 Mbits/sec                  receiver
+
+iperf Done.
+
+1000Mbps
+host@EHL$ ethtool -s enp0s30f4 duplex full speed 1000
+PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=1.02 ms
+64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.507 ms
+64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=0.539 ms
+64 bytes from 192.168.1.1: icmp_seq=4 ttl=64 time=0.506 ms
+64 bytes from 192.168.1.1: icmp_seq=5 ttl=64 time=0.504 ms
+64 bytes from 192.168.1.1: icmp_seq=6 ttl=64 time=0.489 ms
+64 bytes from 192.168.1.1: icmp_seq=7 ttl=64 time=0.499 ms
+64 bytes from 192.168.1.1: icmp_seq=8 ttl=64 time=0.483 ms
+64 bytes from 192.168.1.1: icmp_seq=9 ttl=64 time=0.480 ms
+64 bytes from 192.168.1.1: icmp_seq=10 ttl=64 time=0.493 ms
+
+--- 192.168.1.1 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 9213ms
+rtt min/avg/max/mdev = 0.480/0.551/1.015/0.155 ms
+
+Connecting to host 192.168.1.1, port 5201
+[  5] local 192.168.1.2 port 35312 connected to 192.168.1.1 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec   114 MBytes   960 Mbits/sec    0    437 KBytes       
+[  5]   1.00-2.00   sec   112 MBytes   940 Mbits/sec    0    437 KBytes       
+[  5]   2.00-3.00   sec   112 MBytes   937 Mbits/sec    0    437 KBytes       
+[  5]   3.00-4.00   sec   112 MBytes   941 Mbits/sec    0    437 KBytes       
+[  5]   4.00-5.00   sec   112 MBytes   939 Mbits/sec    0    457 KBytes       
+[  5]   5.00-6.00   sec   112 MBytes   941 Mbits/sec    0    457 KBytes       
+[  5]   6.00-7.00   sec   112 MBytes   944 Mbits/sec    0    457 KBytes       
+[  5]   7.00-8.00   sec   112 MBytes   937 Mbits/sec    0    457 KBytes       
+[  5]   8.00-9.00   sec   113 MBytes   946 Mbits/sec    0    457 KBytes       
+[  5]   9.00-10.00  sec   112 MBytes   937 Mbits/sec    0    457 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  1.10 GBytes   942 Mbits/sec    0             sender
+[  5]   0.00-10.00  sec  1.10 GBytes   941 Mbits/sec                  receiver
+
+iperf Done.
+
+Voon Weifeng (3):
+  net: stmmac: split xPCS setup from mdio register
+  net: pcs: add 2500BASEX support for Intel mGbE controller
+  net: stmmac: enable Intel mGbE 2.5Gbps link speed
+
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 48 +++++++++++++-
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.h | 13 ++++
+ .../net/ethernet/stmicro/stmmac/dwmac4_core.c |  1 +
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  1 +
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 14 ++++
+ .../net/ethernet/stmicro/stmmac/stmmac_mdio.c | 65 ++++++++++---------
+ drivers/net/pcs/pcs-xpcs.c                    | 56 ++++++++++++++++
+ include/linux/pcs/pcs-xpcs.h                  |  1 +
+ include/linux/stmmac.h                        |  1 +
+ 9 files changed, 170 insertions(+), 30 deletions(-)
+
 -- 
-2.25.4
+2.17.1
 
