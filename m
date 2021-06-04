@@ -2,147 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB2539C365
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 00:20:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D32639C368
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 00:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbhFDWWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 18:22:33 -0400
-Received: from mail-lj1-f170.google.com ([209.85.208.170]:38829 "EHLO
-        mail-lj1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbhFDWWb (ORCPT
+        id S231586AbhFDWXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 18:23:10 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:39630 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229668AbhFDWXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 18:22:31 -0400
-Received: by mail-lj1-f170.google.com with SMTP id a4so13465201ljd.5
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 15:20:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+9zFBMvnldr+a2Bn098Bq6btluKTz9/gtI3L8L3G704=;
-        b=ON4ziKiRp5LVq4JfVNVftECbm0Jxb1CFgpD63zSOqLcI1y/jw+2eSrTArKHg8kOxFi
-         GJfAJLgbireiKAUxlonVH76df7ajATcwEE9AfwbclT3V9zSZ/V5X7fjdpTaZk9/8XbmN
-         dZdg+6BU30M/38YSvOFl4iwDOiyXpBw10D2dc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+9zFBMvnldr+a2Bn098Bq6btluKTz9/gtI3L8L3G704=;
-        b=CZU1VgL3goajdBg4FHBbVvnq3Ol2HHdlsNLFXLpe99Br0AwMeGbg1XT1bLMBXNW/xy
-         4+8WiRFP809Id8AZF48DttZo7yp75Xs357bDrPl40e9CpYWm6Um/WLzzl6UGAfX0mRxv
-         qYBg+YMkiQw4jWRN9g+Jo8QjsTlGG/GHRkKIGq3CF5wOn7SIY1mg7u4I8fsT6INQ5tKq
-         h24yFfmeZZ8LN8Y3eCLeSuL2eoZvYgZM6SFgHySAXsidHTXRwhg0H7C5cAVzV9Yp5HLW
-         TqKWR15S7u7P8v1tKL4K3Y5K6fU32fXV2dv7UbjpultMKQV3TVx62GgPTg6MogzMm1bj
-         j9hw==
-X-Gm-Message-State: AOAM530WfFJX4KgmAGP13vVUUsD13tA9sEfYUfdjcS1a+IMokMvAVEDj
-        NEly14nEjsCrCo7lhh1m98yfbbjpWHAXLKTawXk=
-X-Google-Smtp-Source: ABdhPJyOsUz+18w+njDVesf5qUwFCx5F5SMYO24lLObuE5y9b5wfJCr37O1eta2IwJWRlQZO+Mys1A==
-X-Received: by 2002:a2e:2f09:: with SMTP id v9mr4918367ljv.152.1622845168599;
-        Fri, 04 Jun 2021 15:19:28 -0700 (PDT)
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
-        by smtp.gmail.com with ESMTPSA id q19sm718172lff.281.2021.06.04.15.19.27
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Jun 2021 15:19:27 -0700 (PDT)
-Received: by mail-lj1-f177.google.com with SMTP id u22so13433558ljh.7
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 15:19:27 -0700 (PDT)
-X-Received: by 2002:a2e:b60d:: with SMTP id r13mr5244550ljn.220.1622845167131;
- Fri, 04 Jun 2021 15:19:27 -0700 (PDT)
+        Fri, 4 Jun 2021 18:23:08 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 736871381;
+        Sat,  5 Jun 2021 00:21:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1622845280;
+        bh=KTGDErXKYLMFUkXIVCZ8y9KmW4+UXtwE0aqBycvHBF4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=niWQOZEgKdB9e3O9JGeDUYc2PDedXa5r9VRev7pLoOgJq1eOmcVTED07nZHgPmoxf
+         Kmn8I5ObDGEkOI2bvSaAUgcov94aisb4ZiKwVLUX2Kc6eeIrwWfClUsXnqAJp2CecR
+         HOxUhDyI/moEJNH1j3r0ANYg1EBF8yZUmIQ0XaJo=
+Date:   Sat, 5 Jun 2021 01:21:07 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Benjamin Drung <bdrung@posteo.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Adam Goode <agoode@google.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2] media: uvcvideo: Fix pixel format change for Elgato
+ Cam Link 4K
+Message-ID: <YLqnU+FYSAcWwaAZ@pendragon.ideasonboard.com>
+References: <CAOf41NnKMks8UgM+4Z5ymNtBnioPzsTE-1fh1ERMEcFfX=UoMg@mail.gmail.com>
+ <20210604171941.66136-1-bdrung@posteo.de>
 MIME-Version: 1.0
-References: <20210604151356.GC2793@willie-the-truck> <YLpFHE5Cr45rWTUV@hirez.programming.kicks-ass.net>
- <YLpJ5K6O52o1cAVT@hirez.programming.kicks-ass.net> <20210604155154.GG1676809@rowland.harvard.edu>
- <YLpSEM7sxSmsuc5t@hirez.programming.kicks-ass.net> <20210604182708.GB1688170@rowland.harvard.edu>
- <CAHk-=wiuLpmOGJyB385UyQioWMVKT6wN9UtyVXzt48AZittCKg@mail.gmail.com>
- <CAHk-=wik7T+FoDAfqFPuMGVp6HxKYOf8UeKt3+EmovfivSgQ2Q@mail.gmail.com>
- <20210604205600.GB4397@paulmck-ThinkPad-P17-Gen-1> <CAHk-=wgmUbU6XPHz=4NFoLMxH7j_SR-ky4sKzOBrckmvk5AJow@mail.gmail.com>
- <20210604214010.GD4397@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20210604214010.GD4397@paulmck-ThinkPad-P17-Gen-1>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 4 Jun 2021 15:19:11 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg0w5L7-iJU_kvEh9stXZoh2srRF4jKToKmSKyHv-njvA@mail.gmail.com>
-Message-ID: <CAHk-=wg0w5L7-iJU_kvEh9stXZoh2srRF4jKToKmSKyHv-njvA@mail.gmail.com>
-Subject: Re: [RFC] LKMM: Add volatile_if()
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210604171941.66136-1-bdrung@posteo.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 4, 2021 at 2:40 PM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> Here is one use case:
->
->         volatile_if(READ_ONCE(A)) {
->                 WRITE_ONCE(B, 1);
->                 do_something();
->         } else {
->                 WRITE_ONCE(B, 1);
->                 do_something_else();
->         }
->
-> With plain "if", the compiler is within its rights to do this:
->
->         tmp = READ_ONCE(A);
->         WRITE_ONCE(B, 1);
->         if (tmp)
->                 do_something();
->         else
->                 do_something_else();
->
-> On x86, still no problem.  But weaker hardware could now reorder the
-> store to B before the load from A.  With volatile_if(), this reordering
-> would be prevented.
+Hi Benjamin,
 
-But *should* it be prevented? For code like the above?
+Thank you for the patch.
 
-I'm not really seeing that the above is a valid code sequence.
+On Fri, Jun 04, 2021 at 05:19:42PM +0000, Benjamin Drung wrote:
+> The Elgato Cam Link 4K HDMI video capture card reports to support three
+> different pixel formats, where the first format depends on the connected
+> HDMI device.
+> 
+> ```
+> $ v4l2-ctl -d /dev/video0 --list-formats-ext
+> ioctl: VIDIOC_ENUM_FMT
+> 	Type: Video Capture
+> 
+> 	[0]: 'NV12' (Y/CbCr 4:2:0)
+> 		Size: Discrete 3840x2160
+> 			Interval: Discrete 0.033s (29.970 fps)
+> 	[1]: 'NV12' (Y/CbCr 4:2:0)
+> 		Size: Discrete 3840x2160
+> 			Interval: Discrete 0.033s (29.970 fps)
+> 	[2]: 'YU12' (Planar YUV 4:2:0)
+> 		Size: Discrete 3840x2160
+> 			Interval: Discrete 0.033s (29.970 fps)
+> ```
+> 
+> Changing the pixel format to anything besides the first pixel format
+> does not work:
+> 
+> ```
+> $ v4l2-ctl -d /dev/video0 --try-fmt-video pixelformat=YU12
+> Format Video Capture:
+> 	Width/Height      : 3840/2160
+> 	Pixel Format      : 'NV12' (Y/CbCr 4:2:0)
+> 	Field             : None
+> 	Bytes per Line    : 3840
+> 	Size Image        : 12441600
+> 	Colorspace        : sRGB
+> 	Transfer Function : Rec. 709
+> 	YCbCr/HSV Encoding: Rec. 709
+> 	Quantization      : Default (maps to Limited Range)
+> 	Flags             :
+> ```
+> 
+> User space applications like VLC might show an error message on the
+> terminal in that case:
+> 
+> ```
+> libv4l2: error set_fmt gave us a different result than try_fmt!
+> ```
+> 
+> Depending on the error handling of the user space applications, they
+> might display a distorted video, because they use the wrong pixel format
+> for decoding the stream.
+> 
+> The Elgato Cam Link 4K responds to the USB video probe
+> VS_PROBE_CONTROL/VS_COMMIT_CONTROL with a malformed data structure: The
+> second byte contains bFormatIndex (instead of being the second byte of
+> bmHint). The first byte is always zero. The third byte is always 1.
+> 
+> The firmware bug was reported to Elgato on 2020-12-01 and it was
+> forwarded by the support team to the developers as feature request.
+> There is no firmware update available since then. The latest firmware
+> for Elgato Cam Link 4K as of 2021-03-23 has MCU 20.02.19 and FPGA 67.
 
-Sure, that "WRITE_ONCE(B, 1)" could be seen as a lock release, and
-then it would be wrong to have the read of 'A' happen after the lock
-has actually been released. But if that's the case, then it should
-have used a smp_store_release() in the first place, not a
-WRITE_ONCE().
+*sigh* :-( Same vendors are depressingly unable to perform even the most
+basic conformance testing.
 
-So I don't see the above as much of a valid example of actual
-READ/WRITE_ONCE() use.
+Thanks for all this analysis and bug reports.
 
-If people use READ/WRITE_ONCE() like the above, and they actually
-depend on that kind of ordering, I think that code is likely wrong to
-begin with. Using "volatile_if()" doesn't make it more valid.
+> Therefore add a quirk to correct the malformed data structure.
+> 
+> The quirk was successfully tested with VLC, OBS, and Chromium using
+> different pixel formats (YUYV, NV12, YU12), resolutions (3840x2160,
+> 1920x1080), and frame rates (29.970 and 59.940 fps).
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Benjamin Drung <bdrung@posteo.de>
+> ---
+> 
+> I am sending this patch a fourth time since I got no response and the
+> last resend is over a month ago. This time I am including Linus Torvalds
+> in the hope to get it reviewed.
 
-Now, part of this is that I do think that in *general* we should never
-use this very suble load-cond-store pattern to begin with. We should
-strive to use more smp_load_acquire() and smp_store_release() if we
-care about ordering of accesses. They are typically cheap enough, and
-if there's much of an ordering issue, they are the right things to do.
+The resend got to the top of my mailbox and I had time to review it
+before it got burried again. Thanks for not giving up.
 
-I think the whole "load-to-store ordering" subtle non-ordered case is
-for very very special cases, when you literally don't have a general
-memory ordering, you just have an ordering for *one* very particular
-access. Like some of the very magical code in the rw-semaphore case,
-or that smp_cond_load_acquire().
+>  drivers/media/usb/uvc/uvc_driver.c | 13 +++++++++++++
+>  drivers/media/usb/uvc/uvc_video.c  | 21 +++++++++++++++++++++
+>  drivers/media/usb/uvc/uvcvideo.h   |  1 +
+>  3 files changed, 35 insertions(+)
+> 
+> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+> index 9a791d8ef200..6ce58950d78b 100644
+> --- a/drivers/media/usb/uvc/uvc_driver.c
+> +++ b/drivers/media/usb/uvc/uvc_driver.c
+> @@ -3164,6 +3164,19 @@ static const struct usb_device_id uvc_ids[] = {
+>  	  .bInterfaceSubClass	= 1,
+>  	  .bInterfaceProtocol	= 0,
+>  	  .driver_info		= UVC_INFO_META(V4L2_META_FMT_D4XX) },
+> +	/*
+> +	 * Elgato Cam Link 4K
+> +	 * Latest firmware as of 2021-03-23 needs this quirk.
+> +	 * MCU: 20.02.19, FPGA: 67
+> +	 */
+> +	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
+> +				| USB_DEVICE_ID_MATCH_INT_INFO,
+> +	  .idVendor		= 0x0fd9,
+> +	  .idProduct		= 0x0066,
+> +	  .bInterfaceClass	= USB_CLASS_VIDEO,
+> +	  .bInterfaceSubClass	= 1,
+> +	  .bInterfaceProtocol	= 0,
+> +	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_FIX_FORMAT_INDEX) },
+>  	/* Generic USB Video Class */
+>  	{ USB_INTERFACE_INFO(USB_CLASS_VIDEO, 1, UVC_PC_PROTOCOL_UNDEFINED) },
+>  	{ USB_INTERFACE_INFO(USB_CLASS_VIDEO, 1, UVC_PC_PROTOCOL_15) },
+> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+> index a777b389a66e..910d22233d74 100644
+> --- a/drivers/media/usb/uvc/uvc_video.c
+> +++ b/drivers/media/usb/uvc/uvc_video.c
+> @@ -131,6 +131,27 @@ static void uvc_fixup_video_ctrl(struct uvc_streaming *stream,
+>  	struct uvc_frame *frame = NULL;
+>  	unsigned int i;
+>  
+> +	/*
+> +	 * The response of the Elgato Cam Link 4K is incorrect: The second byte
+> +	 * contains bFormatIndex (instead of being the second byte of bmHint).
+> +	 * The first byte is always zero. The third byte is always 1.
+> +	 *
+> +	 * The UVC 1.5 class specification defines the first five bits in the
+> +	 * bmHint bitfield. The remaining bits are reserved and should be zero.
+> +	 * Therefore a valid bmHint will be less than 32.
+> +	 */
+> +	if (stream->dev->quirks & UVC_QUIRK_FIX_FORMAT_INDEX && ctrl->bmHint > 255) {
 
-IOW, I would expect that we have a handful of uses of this thing. And
-none of them have that "the conditional store is the same on both
-sides" pattern, afaik.
+Given that this is likely not going to affect other devices (at least in
+the same way), I'd rather test the USB VID:PID that add a quirk.
+Something along the lines of
 
-And immediately when the conditional store is different, you end up
-having a dependency on it that orders it.
+	if (usb_match_one_id(stream->dev->intf, USB_DEVICE(0x0fd9, 0x0066)) {
 
-But I guess I can accept the above made-up example as an "argument",
-even though I feel it is entirely irrelevant to the actual issues and
-uses we have.
+> +		__u8 corrected_format_index;
+> +
+> +		corrected_format_index = ctrl->bmHint >> 8;
+> +		uvc_dbg(stream->dev, CONTROL,
+> +			"Correct USB video probe response from {bmHint: 0x%04x, bFormatIndex: 0x%02x} to {bmHint: 0x%04x, bFormatIndex: 0x%02x}.\n",
+> +			ctrl->bmHint, ctrl->bFormatIndex,
+> +			ctrl->bFormatIndex, corrected_format_index);
+> +		ctrl->bmHint = ctrl->bFormatIndex;
 
-               Linus
+According to your description above, this will always be 1. Is the third
+byte always 1 because the driver always sets bmHint to 1, or would it
+have a different value if we set bmHint to something else ? In the first
+case I'd hardcode ctrl->bmHint to 1 here.
+
+> +		ctrl->bFormatIndex = corrected_format_index;
+> +	}
+> +
+>  	for (i = 0; i < stream->nformats; ++i) {
+>  		if (stream->format[i].index == ctrl->bFormatIndex) {
+>  			format = &stream->format[i];
+> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> index cce5e38133cd..cbb4ef61a64d 100644
+> --- a/drivers/media/usb/uvc/uvcvideo.h
+> +++ b/drivers/media/usb/uvc/uvcvideo.h
+> @@ -209,6 +209,7 @@
+>  #define UVC_QUIRK_RESTORE_CTRLS_ON_INIT	0x00000400
+>  #define UVC_QUIRK_FORCE_Y8		0x00000800
+>  #define UVC_QUIRK_FORCE_BPP		0x00001000
+> +#define UVC_QUIRK_FIX_FORMAT_INDEX	0x00002000
+>  
+>  /* Format flags */
+>  #define UVC_FMT_FLAG_COMPRESSED		0x00000001
+
+-- 
+Regards,
+
+Laurent Pinchart
