@@ -2,127 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F259339BC11
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81AA539BC17
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231280AbhFDPjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 11:39:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29535 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230108AbhFDPjp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 11:39:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622821078;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pHiBAl8+vXrofNAjjOJ84eNcT7KcR0jKQ6aIcGHntvY=;
-        b=C5Ko4dYu8z8LJKyyBGKChosP5gsdkhbehNnMIUD8EIobIwfLn1MkzvIEy9VgWkDRB8XU+D
-        KtzBLQY9e2qpzuTS/WA5Tvli2/57w07i6za8xhBpFM5bEoZCGTn61yDybvWIDlGzwSi+Pv
-        Klxzx1+5VR7t9nQyLLxhKalNtznZxdI=
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
- [209.85.166.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-482-UN_7vhqpOGShKM3SwjjJcg-1; Fri, 04 Jun 2021 11:37:57 -0400
-X-MC-Unique: UN_7vhqpOGShKM3SwjjJcg-1
-Received: by mail-il1-f200.google.com with SMTP id d17-20020a9236110000b02901cf25fcfdcdso6731800ila.9
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 08:37:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=pHiBAl8+vXrofNAjjOJ84eNcT7KcR0jKQ6aIcGHntvY=;
-        b=NnmaLj/bDxLJiBVpp8QzA1qR3OXPyX5Zt13g9GrVrnVNrWOVMyVWnpc0ZYL1fY+WSF
-         6vBSUgbKzCbx1DCaONDdZ/des3kjO3l7JPYMh+3/1ISd4l4PybRcG5I0iPafMaAjjVIG
-         lDHH6mQJqCqdWNvfrvnECpQPpnaCzW9L6S+HAd0XCl2R3m/ct9LKZlbdxXWw4f00MVsN
-         y8EhTur7zWvvBfBpp2MbNamAFiEnXd6MOYEx/PAcIqOuKJC03tCNiL29/15U5sOgC/J3
-         c/V4d6YW14byEXg7hkUBwA0HjciY6l7zm97djr1lcUweognJPnaDjtCPquX4Z2mbqfzi
-         5xSw==
-X-Gm-Message-State: AOAM532mbON6idnHwM0p91vFRdBajjpUwUGgyA5588q/rD660KYi9+He
-        lr8VSxyUwceliP0q8DemboXkqavEeYapjuwUz3x4KOPlGbnGktq8EyoXYdO62MHqb9LiAoPjx3R
-        qCqBQRdDZCdquYdnX6eQSRifH
-X-Received: by 2002:a05:6638:183:: with SMTP id a3mr4732199jaq.47.1622821076881;
-        Fri, 04 Jun 2021 08:37:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwQxo+zfw3yLheApkfMNT19Kxv+RF4mWzeBkwzbgyKeWykIJlgSP3F1B+dw6s35/Bocj5BfPQ==
-X-Received: by 2002:a05:6638:183:: with SMTP id a3mr4732182jaq.47.1622821076638;
-        Fri, 04 Jun 2021 08:37:56 -0700 (PDT)
-Received: from redhat.com (c-73-14-100-188.hsd1.co.comcast.net. [73.14.100.188])
-        by smtp.gmail.com with ESMTPSA id d2sm3775869ilu.60.2021.06.04.08.37.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 08:37:56 -0700 (PDT)
-Date:   Fri, 4 Jun 2021 09:37:55 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        "David Woodhouse" <dwmw2@infradead.org>,
-        Jason Wang <jasowang@redhat.com>
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-Message-ID: <20210604093755.1d660a47.alex.williamson@redhat.com>
-In-Reply-To: <MWHPR11MB1886C4BC352DDE03B44070C08C3B9@MWHPR11MB1886.namprd11.prod.outlook.com>
-References: <20210602111117.026d4a26.alex.williamson@redhat.com>
-        <20210602173510.GE1002214@nvidia.com>
-        <20210602120111.5e5bcf93.alex.williamson@redhat.com>
-        <20210602180925.GH1002214@nvidia.com>
-        <20210602130053.615db578.alex.williamson@redhat.com>
-        <20210602195404.GI1002214@nvidia.com>
-        <20210602143734.72fb4fa4.alex.williamson@redhat.com>
-        <20210602224536.GJ1002214@nvidia.com>
-        <20210602205054.3505c9c3.alex.williamson@redhat.com>
-        <MWHPR11MB1886DC8ECF5D56FE485D13D58C3C9@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <20210603124036.GU1002214@nvidia.com>
-        <20210603144136.2b68c5c5.alex.williamson@redhat.com>
-        <MWHPR11MB1886C4BC352DDE03B44070C08C3B9@MWHPR11MB1886.namprd11.prod.outlook.com>
-Organization: Red Hat
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S231321AbhFDPkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 11:40:11 -0400
+Received: from 8bytes.org ([81.169.241.247]:42382 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230108AbhFDPkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 11:40:11 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 1CCB73A9; Fri,  4 Jun 2021 17:38:24 +0200 (CEST)
+Date:   Fri, 4 Jun 2021 17:38:22 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Nadav Amit <namit@vmware.com>, Will Deacon <will@kernel.org>,
+        Jiajun Cao <caojiajun@vmware.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH v2 0/4] iommu/amd: Enable page-selective flushes
+Message-ID: <YLpI7tKtsf4l5MlN@8bytes.org>
+References: <20210524224159.32807-1-namit@vmware.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210524224159.32807-1-namit@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Jun 2021 09:19:50 +0000
-"Tian, Kevin" <kevin.tian@intel.com> wrote:
+Hi Nadav,
 
-> > From: Alex Williamson <alex.williamson@redhat.com>
-> > Sent: Friday, June 4, 2021 4:42 AM
-> >   
-> > > 'qemu --allow-no-snoop' makes more sense to me  
-> > 
-> > I'd be tempted to attach it to the -device vfio-pci option, it's
-> > specific drivers for specific devices that are going to want this and
-> > those devices may not be permanently attached to the VM.  But I see in
-> > the other thread you're trying to optimize IOMMU page table sharing.
-> > 
-> > There's a usability question in either case though and I'm not sure how
-> > to get around it other than QEMU or the kernel knowing a list of
-> > devices (explicit IDs or vendor+class) to select per device defaults.
-> >   
-> 
-> "-device vfio-pci" is a per-device option, which implies that the
-> no-snoop choice is given to the admin then no need to maintain 
-> a fixed device list in Qemu?
+[Adding Robin]
 
-I think we want to look at where we put it to have the best default
-user experience.  For example the QEMU vfio-pci device option could use
-on/off/auto semantics where auto is the default and QEMU maintains a
-list of IDs or vendor/class configurations where we've determined the
-"optimal" auto configuration.  Management tools could provide an
-override, but we're imposing some pretty technical requirements for a
-management tool to be able to come up with good per device defaults.
-Seems like we should consolidate that technical decision in one place.
-Thanks,
+On Mon, May 24, 2021 at 03:41:55PM -0700, Nadav Amit wrote:
+> Nadav Amit (4):
+>   iommu/amd: Fix wrong parentheses on page-specific invalidations
 
-Alex
+This patch is already upstream in v5.13-rc4. Please rebase to that
+version.
 
+>   iommu/amd: Selective flush on unmap
+>   iommu/amd: Do not sync on page size changes
+>   iommu/amd: Do not use flush-queue when NpCache is on
+
+And I think there have been objections from Robin Murphy on Patch 3,
+have those been worked out?
+
+Regards,
+
+	Joerg
