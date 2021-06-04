@@ -2,91 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E202239B03C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 04:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB56439B044
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 04:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhFDCPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 22:15:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbhFDCPd (ORCPT
+        id S230046AbhFDCQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 22:16:49 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:53395 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFDCQs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 22:15:33 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 783DCC06174A;
-        Thu,  3 Jun 2021 19:13:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ZJLS4mJyjnY+bHzbPHD0JnHSTH2Mf2XBgDyq2VaF36A=; b=ZK+l8zcISQfWND9zUMSVphN4v6
-        JIZZgcd/s1pPJpkvkPrf+9sVSWNgiWuj4JAOnv3typNwCuF2jti9P3zEH9R4IojVWDKTqz2qZ0UiT
-        Uf/7kVTz2CTWCmY+RaTYEfSf+3lYLM1cIS/9BOzhg/CajJiaGLRuOgAd4PvQM58sp43SWGJ6QjHm+
-        RKBoOL5MU+kOCHsvKy26sei6iXxomRN888kWI1LiM8bQSI13MHVBjU0bcG++IaXYxywhzNz1J5aXL
-        wrUpCun5Ltworv8btMQh1n/Y3OPtXbA/SvYzoGF2joG14L5C5uEqsO1zvxG7Zopiq1G74ZPD9ypce
-        O2ygDQLw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lozKq-00ClDW-LM; Fri, 04 Jun 2021 02:13:26 +0000
-Date:   Fri, 4 Jun 2021 03:13:20 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 00/33] Memory folios
-Message-ID: <YLmMQJgld6ndNzqI@casper.infradead.org>
-References: <20210511214735.1836149-1-willy@infradead.org>
- <20210604030712.11b31259@linux.microsoft.com>
+        Thu, 3 Jun 2021 22:16:48 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 15420tHr031948;
+        Fri, 4 Jun 2021 10:00:55 +0800 (GMT-8)
+        (envelope-from steven_lee@aspeedtech.com)
+Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 4 Jun
+ 2021 10:14:26 +0800
+Date:   Fri, 4 Jun 2021 10:14:23 +0800
+From:   Steven Lee <steven_lee@aspeedtech.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "Hongweiz@ami.com" <Hongweiz@ami.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        Billy Tsai <billy_tsai@aspeedtech.com>
+Subject: Re: [PATCH v3 3/5] gpio: gpio-aspeed-sgpio: Add AST2600 sgpio support
+Message-ID: <20210604021422.GA25112@aspeedtech.com>
+References: <20210603101822.9645-1-steven_lee@aspeedtech.com>
+ <20210603101822.9645-4-steven_lee@aspeedtech.com>
+ <CAHp75Vef0HDXAHzSNL-LtA0Sra6Zpivt513_+aFR_um0JeFkog@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <20210604030712.11b31259@linux.microsoft.com>
+In-Reply-To: <CAHp75Vef0HDXAHzSNL-LtA0Sra6Zpivt513_+aFR_um0JeFkog@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 15420tHr031948
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 03:07:12AM +0200, Matteo Croce wrote:
-> On Tue, 11 May 2021 22:47:02 +0100
-> "Matthew Wilcox (Oracle)" <willy@infradead.org> wrote:
+The 06/03/2021 19:05, Andy Shevchenko wrote:
+> On Thu, Jun 3, 2021 at 1:19 PM Steven Lee <steven_lee@aspeedtech.com> wrote:
+> >
+> > AST2600 SoC has 2 SGPIO master interfaces one with 128 pins another one
+> > with 80 pins.
+> > In the current driver, the maximum number of gpio pins of SoC is hardcoded
+> > as 80 and the gpio pin count mask for GPIO Configuration register is
+> > hardcode as GENMASK(9,6). In addition, some functions uses the hardcoded
 > 
-> > We also waste a lot of instructions ensuring that we're not looking at
-> > a tail page.  Almost every call to PageFoo() contains one or more
-> > hidden calls to compound_head().  This also happens for get_page(),
-> > put_page() and many more functions.  There does not appear to be a
-> > way to tell gcc that it can cache the result of compound_head(), nor
-> > is there a way to tell it that compound_head() is idempotent.
-> > 
+> use
 > 
-> Maybe it's not effective in all situations but the following hint to
-> the compiler seems to have an effect, at least according to bloat-o-meter:
+> > value to calculate the gpio offset.
+> > The patch adds ast2600 compatibles and platform data that includes the
+> > max number of gpio pins supported by ast2600 and gpio pin count mask for
+> > GPIO Configuration register.
+> > The patch also modifies some functions to pass aspeed_sgpio struct for
+> > calculating gpio offset wihtout using the hardcoded value.
+> 
+> without
+> 
+> ...
+> 
+> > +#include <linux/of_device.h>
+> 
+> Why?
+> 
+> ...
+> 
 
-It definitely has an effect ;-)
+I will remove it as of_device_get_match_data() will be replaced
+to device_get_match_data()
 
-     Note that a function that has pointer arguments and examines the
-     data pointed to must _not_ be declared 'const' if the pointed-to
-     data might change between successive invocations of the function.
-     In general, since a function cannot distinguish data that might
-     change from data that cannot, const functions should never take
-     pointer or, in C++, reference arguments.  Likewise, a function that
-     calls a non-const function usually must not be const itself.
+> > +#define GPIO_OFFSET(x)        ((x) & 0x1f)
+> 
+> GENMASK()
+> 
+> ...
+> 
 
-So that's not going to work because a call to split_huge_page() won't
-tell the compiler that it's changed.
+Do you mean the macro should be modified as follows?
+#define GPIO_OFFSET(x)        ((x) & GENMASK(4, 0))
 
-Reading the documentation, we might be able to get away with marking the
-function as pure:
+> > +       pdata = of_device_get_match_data(&pdev->dev);
+> 
+> device_get_match_data()
+> 
+> I guess you may replace all those of_*() to the corresponding
+> device_*() or fwnode_*() calls.
+> 
 
-     The 'pure' attribute imposes similar but looser restrictions on a
-     function's definition than the 'const' attribute: 'pure' allows the
-     function to read any non-volatile memory, even if it changes in
-     between successive invocations of the function.
+Thanks for the reviews, I will add a new patch for replacing all
+of_*() to device_*().
 
-although that's going to miss opportunities, since taking a lock will
-modify the contents of struct page, meaning the compiler won't cache
-the results of compound_head().
-
-> $ scripts/bloat-o-meter vmlinux.o.orig vmlinux.o
-> add/remove: 3/13 grow/shrink: 65/689 up/down: 21080/-198089 (-177009)
-
-I assume this is an allyesconfig kernel?    I think it's a good
-indication of how much opportunity there is.
-
+> -- 
+> With Best Regards,
+> Andy Shevchenko
