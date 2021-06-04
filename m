@@ -2,127 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC0A39BACF
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A607139BAD1
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230514AbhFDOUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 10:20:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40892 "EHLO mail.kernel.org"
+        id S231164AbhFDOUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 10:20:52 -0400
+Received: from foss.arm.com ([217.140.110.172]:40180 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230122AbhFDOUM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 10:20:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BAEC8611C1;
-        Fri,  4 Jun 2021 14:18:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622816306;
-        bh=IIapIA1KWkd10LMiSluOWzb9ezVWcMq76P0df/51EJI=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=C83Lt6aPoYYFS1mWk1VGn/wrc+OfTmgIEPAqnh2qfT2oVa2PrUcahpcwjJ8uPLysj
-         ASoPcp1raYr4Uwhgn+thxgAcYlqbM8ayc8wKFeG40snPKaEwYVde37SV+nHGgogSH5
-         vEHfSwCPV6uvHyUh99yuEjEzLyGs6kOofoc5IAfZLsHX5RybR1jlYaw8i7Rv9snLlx
-         t+MH1Ko4LrQgW907BwAO8sVDuJPWaRF8YMfxHBNnu9mfeYWbn+HpWuWSir+Laep29x
-         3m9u2xL6PkZovdLxbXeSnBOxziyHwX9XUti6sBNRkiPin1K3JTbSp5lrgxbmqNvBu8
-         fq1gb4ZEEt5Bg==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Wesley Cheng <wcheng@codeaurora.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        jackp@codeaurora.org, Thinh.Nguyen@synopsys.com
-Subject: Re: [PATCH v9 0/5] Re-introduce TX FIFO resize for larger EP bursting
-In-Reply-To: <YLoUiO8tpRpmvcyU@kroah.com>
-References: <1621410561-32762-1-git-send-email-wcheng@codeaurora.org>
- <YLoUiO8tpRpmvcyU@kroah.com>
-Date:   Fri, 04 Jun 2021 17:18:16 +0300
-Message-ID: <87k0n9btnb.fsf@kernel.org>
+        id S230124AbhFDOUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 10:20:51 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D3372B;
+        Fri,  4 Jun 2021 07:19:05 -0700 (PDT)
+Received: from [192.168.0.14] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 20A173F774;
+        Fri,  4 Jun 2021 07:19:02 -0700 (PDT)
+Subject: Re: [PATCH v5] ACPI / APEI: fix the regression of synchronous
+ external aborts occur in user-mode
+To:     Xiaofei Tan <tanxiaofei@huawei.com>, rafael@kernel.org,
+        rjw@rjwysocki.net, lenb@kernel.org, tony.luck@intel.com,
+        bp@alien8.de, akpm@linux-foundation.org, jroedel@suse.de,
+        peterz@infradead.org
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com
+References: <1607602177-1507-1-git-send-email-tanxiaofei@huawei.com>
+From:   James Morse <james.morse@arm.com>
+Message-ID: <d57d786c-f9cb-46ba-78d0-3675666272f2@arm.com>
+Date:   Fri, 4 Jun 2021 15:19:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+In-Reply-To: <1607602177-1507-1-git-send-email-tanxiaofei@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Hi Xiaofei Tan,
+
+Sorry for the delayed response,
+this still applies and builds to v5.13-rc4.
+
+On 10/12/2020 12:09, Xiaofei Tan wrote:
+> After the commit 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea()
+> synchronise with APEI's irq work") applied, do_sea() return directly
+> for user-mode if apei_claim_sea() handled any error record. Therefore,
+> each error record reported by the user-mode SEA must be effectively
+> processed in APEI GHES driver.
+
+If you describe it the other way round, it would be clearer what the problem here is.
+Something like:
+| Before commit 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea() synchronise
+| with APEI's irq work"), do_sea() would unconditionally signal the affected task
+| from the arch code. Since that change, the GHES driver sends the signals,.
+| This exposes a problem as errors the GHES driver doesn't understand are silently
+| ignored.
 
 
-Hi,
+> Currently, GHES driver only processes Memory Error Section.(Ignore PCIe
+> Error Section, as it has nothing to do with SEA).
 
-Greg KH <gregkh@linuxfoundation.org> writes:
-> On Wed, May 19, 2021 at 12:49:16AM -0700, Wesley Cheng wrote:
->> Changes in V9:
->>  - Fixed incorrect patch in series.  Removed changes in DTSI, as dwc3-qc=
-om will
->>    add the property by default from the kernel.
->
-> This patch series has one build failure and one warning added:
->
-> drivers/usb/dwc3/gadget.c: In function =E2=80=98dwc3_gadget_calc_tx_fifo_=
-size=E2=80=99:
-> drivers/usb/dwc3/gadget.c:653:45: warning: passing argument 1 of =E2=80=
-=98dwc3_mdwidth=E2=80=99 makes pointer from integer without a cast [-Wint-c=
-onversion]
->   653 |         mdwidth =3D dwc3_mdwidth(dwc->hwparams.hwparams0);
->       |                                ~~~~~~~~~~~~~^~~~~~~~~~
->       |                                             |
->       |                                             u32 {aka unsigned int}
-> In file included from drivers/usb/dwc3/debug.h:14,
->                  from drivers/usb/dwc3/gadget.c:25:
-> drivers/usb/dwc3/core.h:1493:45: note: expected =E2=80=98struct dwc3 *=E2=
-=80=99 but argument is of type =E2=80=98u32=E2=80=99 {aka =E2=80=98unsigned=
- int=E2=80=99}
->  1493 | static inline u32 dwc3_mdwidth(struct dwc3 *dwc)
->       |                                ~~~~~~~~~~~~~^~~
->
->
-> drivers/usb/dwc3/dwc3-qcom.c: In function =E2=80=98dwc3_qcom_of_register_=
-core=E2=80=99:
-> drivers/usb/dwc3/dwc3-qcom.c:660:23: error: implicit declaration of funct=
-ion =E2=80=98of_add_property=E2=80=99; did you mean =E2=80=98of_get_propert=
-y=E2=80=99? [-Werror=3Dimplicit-function-declaration]
->   660 |                 ret =3D of_add_property(dwc3_np, prop);
->       |                       ^~~~~~~~~~~~~~~
->       |                       of_get_property
->
->
-> How did you test these?
+(you're starting to confuse me! - I went and checked before I realised you were talking to
+me, not describing the code...)
 
-to be honest, I don't think these should go in (apart from the build
-failure) because it's likely to break instantiations of the core with
-differing FIFO sizes. Some instantiations even have some endpoints with
-dedicated functionality that requires the default FIFO size configured
-during coreConsultant instantiation. I know of at OMAP5 and some Intel
-implementations which have dedicated endpoints for processor tracing.
+> It is not enough. > Because ARM Processor Error could also be used for SEA in some hardware
+> platforms, such as Kunpeng9xx series. We can't ask them to switch to
+> use Memory Error Section for two reasons:
+> 1)The server was delivered to customers, and it will introduce
+> compatibility issue.
+> 2)It make sense to use ARM Processor Error Section. Because either
+> cache or memory errors could generate SEA when consumed by a processor.
 
-With OMAP5, these endpoints are configured at the top of the available
-endpoints, which means that if a gadget driver gets loaded and takes
-over most of the FIFO space because of this resizing, processor tracing
-will have a hard time running. That being said, processor tracing isn't
-supported in upstream at this moment.
+I think you just need to say:
+| Existing firmware on Kunpeng9xx systems reports cache errors with the 'ARM Processor
+| Error' CPER records.
 
-I still think this may cause other places to break down. The promise the
-databook makes is that increasing the FIFO size over 2x wMaxPacketSize
-should bring little to no benefit, if we're not maintaining that, I
-wonder if the problem is with some of the BUSCFG registers instead,
-where we configure interconnect bursting and the like.
 
-=2D-=20
-balbi
+Could you add something about why the silent-ignore is a problem? Do the errors get taken
+again? Does user-space get stuck in this loop?
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+> Do memory failure handling for ARM Processor Error Section just like
+> for Memory Error Section.
 
-iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmC6NigRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzlfNM9wDzUhNqQf/UCW+L+1PHl0Ok7a8lYNNq1k7hu8Du6Ag
-qMT+Szz1a4oERmjWyUJr7xNc1dnv78QlCb9SuDx+c6guInJTCEEV0NjwEZbjlv+q
-YQzg6S0kSz2Yrm6u0SylqAwGRyi3VmEmjX9aKUjxJCgblY+bGXHLrfXxFz67UGcv
-c1jQGYVfP2iMMHrWthNfqFnDYA7btpGw/e1wQVn4l3JkldIzkCdtJqPzTpNoVjB4
-Ze89LWaFodsy6PbMFsay3bpHQq9cjzeA7o/kSOuY4bIiLwgao2+Ob0PW3JSdl7oH
-CVkXk3faTTz6QgBnO8sb77xHv282SqIbeaKdTPwtbyGUaqU/R3lWPg==
-=KUe1
------END PGP SIGNATURE-----
---=-=-=--
+> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+> index fce7ade..0893968 100644
+> --- a/drivers/acpi/apei/ghes.c
+> +++ b/drivers/acpi/apei/ghes.c
+
+> +static bool ghes_handle_arm_hw_error(struct acpi_hest_generic_data *gdata, int sev)
+> +{
+> +	struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
+> +	struct cper_arm_err_info *err_info;
+> +	bool queued = false;
+> +	int sec_sev, i;
+> +
+> +	log_arm_hw_error(err);
+> +
+> +	sec_sev = ghes_severity(gdata->error_severity);
+> +	if (sev != GHES_SEV_RECOVERABLE || sec_sev != GHES_SEV_RECOVERABLE)
+> +		return false;
+> +
+> +	err_info = (struct cper_arm_err_info *) (err + 1);
+> +	for (i = 0; i < err->err_info_num; i++, err_info++) {
+
+err_info has a version and a length, so its expected to be made bigger at some point.
+It would be better to use the length instead of 'err_info++', or at least to break out of
+the loop if a length > sizeof(*err_info) is seen.
+
+With that:
+Reviewed-by: James Morse <james.morse@arm.com>
+
+
+The following nits would make this easier to read:
+
+> +		bool is_cache = (err_info->type == CPER_ARM_CACHE_ERROR);
+> +		bool has_pa = (err_info->validation_bits & CPER_ARM_INFO_VALID_PHYSICAL_ADDR);
+
+> +		/*
+> +		 * The field (err_info->error_info & BIT(26)) is fixed to set to
+> +		 * 1 in some old firmware of HiSilicon Kunpeng920. We assume that
+> +		 * firmware won't mix corrected errors in an uncorrected section,
+> +		 * and don't filter out 'corrected' error here.
+> +		 */
+(Nothing reads err_info->error_info, I guess this is a warning to the next person to touch
+this)
+
+
+> +		if (!is_cache || !has_pa) {
+> +			pr_warn_ratelimited(FW_WARN GHES_PFX
+> +			"Unhandled processor error type %s\n",
+> +			err_info->type < ARRAY_SIZE(cper_proc_error_type_strs) ?
+> +			cper_proc_error_type_strs[err_info->type] : "unknown error");
+> +			continue;
+
+This is hard to read. The convention is to indent the extra lines to the relevant '('.
+e.g.:
+|			pr_warn_ratelimited(FW_WARN GHES_PFX
+|					    "Unhandled processor error type %s\n",
+
+You could make it shorter by working out the error_type string earlier
+e.g.:
+|		char *error_type = "unknown_error";
+|			
+|		if  (err_info->type < ARRAY_SIZE(cper_proc_error_type_strs)
+|			error_type = cper_proc_error_type_strs[err_info->type];
+
+
+> +		}
+
+> +		if (ghes_do_memory_failure(err_info->physical_fault_addr, 0))
+> +			queued = true;
+
+| if (it_returned_true())
+| 	queued = true;
+
+Looks funny, and if you moved this earlier, your pr_warn_ratelimted() would have an extra
+level of indentation to play with.
+i.e.:
+|		if (is_cache && has_pa) {
+|			queued = ghes_do_memory_failure(err_info->physical_fault_addr, 0);
+|			continue;
+|		}
+
+
+Thanks,
+
+James
