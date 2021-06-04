@@ -2,86 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CFC639BE48
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5B639BE51
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbhFDRQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 13:16:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47684 "EHLO mail.kernel.org"
+        id S230111AbhFDRSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 13:18:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229690AbhFDRQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 13:16:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83DB261359;
-        Fri,  4 Jun 2021 17:14:50 +0000 (UTC)
+        id S229675AbhFDRSg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 13:18:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7D0F613F9;
+        Fri,  4 Jun 2021 17:16:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622826891;
-        bh=7nmz1raQFUKAtzJAzWxRYkCXBl994MaAmMtLTvmwAO0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sHSbVNo3kyn5LCW9dS1oK+6B0SEvvjF5/l5WIgrZ85u6WwfAVJlJR/xYTyDIBX6dD
-         gg1zU/5WSAZoFVONBO+2toI2vMa3CrlNNewDlfQJmN48JfIPmqBNG5NWEikICH6tyk
-         /pgSMf91JTLOgjNxQtbBJ5sWfdAIP64FSbAvpS10JUPinMsU8bcdcuXAZwuDPdQZei
-         iCC05K5KV22uVnTyw1qe6uD2cEjjH9XiKt64YECFDYh3gMhc8RZSZvg6L+o9ruTCQk
-         ELCqTXp2JVE/T2DKYiqFeCm+j0ddsP7XX8NRTqxZ3Wb6teq0KjJQxiZYow/vuZS3Si
-         zaSl/gwVoOG9w==
-Date:   Fri, 4 Jun 2021 18:14:39 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Will Deacon <will@kernel.org>, Ali Saidi <alisaidi@amazon.com>
-Subject: Re: [PATCH] hwrng: Add Arm SMCCC TRNG based driver
-Message-ID: <20210604171439.GA39696@sirena.org.uk>
-References: <20210604170216.4705-1-andre.przywara@arm.com>
+        s=k20201202; t=1622827010;
+        bh=xwMM+2G/mmCpLqX14QgttleAlbZ6mPunUvzw1rIgCFY=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=bARl4IhZVIFB42SHv69WoBjsmdnDpkVNDrAOuTC72KTseADE8m0I8viIsrFpkJqFH
+         eu55Lww2tBSmnjWAwa8ZQ+qj981URrrG6A1NrLW4mIPRtFeDOP2tiIKNTH4WkU4/iR
+         6FerihuNYfudlF66fz/QJDI8jezs1roZ1gHPyi69QZFfikyFYIyVGwFnZvnbJSwXrX
+         zzpbL6b644Dl7gtMAeFSSL7Xl7Z5dO8Q5YHlM7V/n9El8e+ckckVqELGhB2HX2/KLY
+         I8TBeX0VEaq/hy5ZTfnNlP1Bcl2Z9bhaYhTN+5RYdszw2qaWRPvB++gDDksbb8d6X7
+         4NYltEWJ7mvcQ==
+Subject: Re: [RFCv2 13/13] KVM: unmap guest memory using poisoned pages
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jim Mattson <jmattson@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Steve Rutherford <srutherford@google.com>,
+        Peter Gonda <pgonda@google.com>,
+        David Hildenbrand <david@redhat.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210416154106.23721-14-kirill.shutemov@linux.intel.com>
+ <YHnJtvXdrZE+AfM3@google.com>
+ <20210419142602.khjbzktk5tk5l6lk@box.shutemov.name>
+ <YH2pam5b837wFM3z@google.com>
+ <20210419164027.dqiptkebhdt5cfmy@box.shutemov.name>
+ <YH3HWeOXFiCTZN4y@google.com> <20210419185354.v3rgandtrel7bzjj@box>
+ <YH3jaf5ThzLZdY4K@google.com>
+ <20210419225755.nsrtjfvfcqscyb6m@box.shutemov.name>
+ <YH8L0ihIzL6UB6qD@google.com> <20210521123148.a3t4uh4iezm6ax47@box>
+From:   Andy Lutomirski <luto@kernel.org>
+Message-ID: <b367e721-d613-c171-20e7-fe9ea096e411@kernel.org>
+Date:   Fri, 4 Jun 2021 10:16:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="FCuugMFkClbJLl1L"
-Content-Disposition: inline
-In-Reply-To: <20210604170216.4705-1-andre.przywara@arm.com>
-X-Cookie: optimist, n:
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210521123148.a3t4uh4iezm6ax47@box>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 5/21/21 5:31 AM, Kirill A. Shutemov wrote:
+> Hi Sean,
+> 
+> The core patch of the approach we've discussed before is below. It
+> introduce a new page type with the required semantics.
+> 
+> The full patchset can be found here:
+> 
+>  git://git.kernel.org/pub/scm/linux/kernel/git/kas/linux.git kvm-unmapped-guest-only
+> 
+> but only the patch below is relevant for TDX. QEMU patch is attached.
+> 
+> CONFIG_HAVE_KVM_PROTECTED_MEMORY has to be changed to what is appropriate
+> for TDX and FOLL_GUEST has to be used in hva_to_pfn_slow() when running
+> TDX guest.
+> 
+> When page get inserted into private sept we must make sure it is
+> PageGuest() or SIGBUS otherwise. Inserting PageGuest() into shared is
+> fine, but the page will not be accessible from userspace.
 
---FCuugMFkClbJLl1L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I may have missed a detail, and I think Sean almost said this, but:
 
-On Fri, Jun 04, 2021 at 06:02:16PM +0100, Andre Przywara wrote:
+I don't think that a single bit like this is sufficient.  A KVM host can
+contain more than one TDX guest, and, to reliably avoid machine checks,
+I think we need to make sure that secure pages are only ever mapped into
+the guest to which they belong, as well as to the right GPA.  If a KVM
+user host process creates a PageGuest page, what stops it from being
+mapped into two different guests?  The refcount?
 
-> +static int __init smccc_trng_dev_init(void)
-> +{
-> +	platform_device_register_simple("smccc_trng", -1, NULL, 0);
-> +
-> +	return 0;
-> +}
-> +
-> +device_initcall(smccc_trng_dev_init);
+After contemplating this a bit, I have a somewhat different suggestion,
+at least for TDX.  In TDX, a guest logically has two entirely separate
+physical address spaces: the secure address space and the shared address
+space.  They are managed separately, they have different contents, etc.
+Normally one would expect a given numerical address (with the secure
+selector bit masked off) to only exist in one of the two spaces, but
+nothing in the architecture fundamentally requires this.  And switching
+a page between the secure and shared states is a heavyweight operation.
 
-This will leave the device registered if the driver is removed and cause
-the attempt to register the device again to fail if the module is
-reloaded.  We don't check the error here but I'm not sure the driver
-core won't complain about that and it's generally icky, better to clean
-up the device on module removal.
+So what if KVM actually treated them completely separately?  The secure
+address space doesn't have any of the complex properties that the shared
+address space has.  There are no paravirt pages there, no KSM pages
+there, no forked pages there, no MAP_ANONYMOUS pages there, no MMIO
+pages there, etc.  There could be a KVM API to allocate and deallocate a
+secure page, and that would be it.
 
---FCuugMFkClbJLl1L
-Content-Type: application/pgp-signature; name="signature.asc"
+This could be inefficient if a guest does a bunch of MapGPA calls and
+makes the shared address space highly sparse.  That could potentially be
+mitigated by allowing a (shared) user memory region to come with a
+bitmap of which pages are actually mapped.  Pages in the unmapped areas
+are holes, and KVM won't look through to the QEMU page tables.
 
------BEGIN PGP SIGNATURE-----
+Does this make any sense?  It would completely eliminate all this
+PageGuest stuff -- a secure page would be backed by a *kernel*
+allocation (potentially a pageable allocation a la tmpfs if TDX ever
+learns how to swap, but that's no currently possible nor would it be
+user visible), so the kernel can straightforwardly guarantee that user
+pagetables will not contain references to secure pages and that GUP will
+not be called on them.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmC6X34ACgkQJNaLcl1U
-h9BBVQf/XQdxBvCAtkGB0q2r1SwBLIFxttR/4U1G2b30Z2V0EeHjbDa3guGVMoe6
-u/py83JO8RdTaFIDUgpJVTSn4YEQ49Jmw+zTng51oDEu/Jdkp390mYZ2+jnPzt6R
-PezUOOaD5P5mSPlEhZLSb9cSBlU60aFHIFcpjK11F5jechFsGz0H2g9mNN7AU7rH
-GR2CjCliZpkJsTG9ZTmd2tJMJqTRcU+KT/D/yw1+ynpMTXBaV6hrUduiD4E2VSs4
-2+rstDlKGZcwl8Rnz8DMum8c1uP0W/21yQYK2jmC72H+yDsyMlBJ291bqh//pQPn
-Qszkn3otjj3IL+Zg4JhoLzRxHenW3w==
-=LpY4
------END PGP SIGNATURE-----
-
---FCuugMFkClbJLl1L--
+I'm not sure how this would map to SEV.  Certainly, with some degree of
+host vs guest cooperation, SEV could work the same way, and the
+migration support is pushing SEV in that direction.
