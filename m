@@ -2,133 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1095F39B43C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BDAD39B43F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230004AbhFDHre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 03:47:34 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7105 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhFDHrd (ORCPT
+        id S230131AbhFDHrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 03:47:46 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:39862 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229775AbhFDHrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 03:47:33 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FxF9b4nNPzYqm8;
-        Fri,  4 Jun 2021 15:42:59 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 4 Jun 2021 15:45:43 +0800
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 4 Jun 2021 15:45:43 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] lib/mpi: Fix spelling mistakes
-Date:   Fri, 4 Jun 2021 15:44:01 +0800
-Message-ID: <20210604074401.12198-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        Fri, 4 Jun 2021 03:47:45 -0400
+Received: by mail-pf1-f194.google.com with SMTP id k15so6852317pfp.6;
+        Fri, 04 Jun 2021 00:45:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0P3clYHJ8xPqDi3WVcB6xT6PzzERN4OuPznkW2CQFF8=;
+        b=g4fXBITkPbYHA9gjCozwnxx42egWBrMd3l9/mls5oXHBxa7ca7H34JEUB+axqOrCUX
+         Kad2rD0PBr+acM048D45qEAO12mhTghECOsZfJsNRLlXeXVQRCQ6DDrWTXepWkU614fO
+         a6gfh29sdwtIdn0w/wLqSmI52XfvYL+Uk9OL5B33vnPo4Ft3x9fnDoSJ1wxKThCFVTcL
+         ujjtEILJI3GCo1gUI0Wga5fR8B80076KqwATZhuUxTgLdMOFqH/DKafcNJXo04J8HW54
+         2N2KrlN8NbraNESounoqpi2L8GOr3js17s7r3NpsZOAp02JrKpsVwZLCJreOvs+r/Hh/
+         SjEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0P3clYHJ8xPqDi3WVcB6xT6PzzERN4OuPznkW2CQFF8=;
+        b=JLrSc6NPg/q847vV93dHI3zqvsfNcrL1HiCqG1PKIPGPqYGF6Y9u9rX/0sXBbV/M3A
+         0z9uy3zRUC8ZnBp/iOlNvfRZSaTNigB3mOKCO2RPg8QhLNm7udlbgPTRB5+Nc/bGgc2k
+         FZUnoNHGix2acim6gp/aQNCs803ZZdrFQoUYVHalrYegaNZpcJZpQsZEIXWwhYkQ8ZHJ
+         5REjVH5iHUWTc/AKsYrLhqT1QAUr9JDBREM5swNALTKvmz5H6Xo9SsEG5EOLLTYrR8lE
+         Ag64rVKZYL9zT7+fPzkD4G2fL8sXu+R/jvuPpS5zVDtWe+Ox2qgLRn4ExRkxZcESkMIf
+         i+mg==
+X-Gm-Message-State: AOAM5326Izkv5wqk6+nwpqbiGXIDdS8/ny3Wlf3KOPxWBvDIcq4JTJno
+        sw6CKaxNkLuKng2CAH8dN94=
+X-Google-Smtp-Source: ABdhPJx9rpwqq9P3pg8/JRb4+1WFPIDGLD/c4qtEmgvQOqTcqbwNu4rAKw7CfhXFF1zdvgH4uSPr9w==
+X-Received: by 2002:a62:87c9:0:b029:2ea:572c:e4b1 with SMTP id i192-20020a6287c90000b02902ea572ce4b1mr3468411pfe.34.1622792694604;
+        Fri, 04 Jun 2021 00:44:54 -0700 (PDT)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id b23sm1051946pfi.34.2021.06.04.00.44.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 00:44:54 -0700 (PDT)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: dong.menglong@zte.com.cn
+To:     jmaloy@redhat.com
+Cc:     ying.xue@windriver.com, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        Menglong Dong <dong.menglong@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH net-next] net: tipc: fix FB_MTU eat two pages
+Date:   Fri,  4 Jun 2021 00:44:19 -0700
+Message-Id: <20210604074419.53956-1-dong.menglong@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix some spelling mistakes in comments:
-flaged ==> flagged
-bufer ==> buffer
-multipler ==> multiplier
-MULTIPLER ==> MULTIPLIER
-leaset ==> least
-chnage ==> change
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+FB_MTU is used in 'tipc_msg_build()' to alloc smaller skb when memory
+allocation fails, which can avoid unnecessary sending failures.
+
+The value of FB_MTU now is 3744, and the data size will be:
+
+  (3744 + SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) + \
+    SKB_DATA_ALIGN(BUF_HEADROOM + BUF_TAILROOM + 3))
+
+which is larger than one page(4096), and two pages will be allocated.
+
+To avoid it, replace '3744' with a calculation:
+
+FB_MTU = (PAGE_SIZE - SKB_DATA_ALIGN(sizeof(struct skb_shared_info))
+          - SKB_DATA_ALIGN(BUF_HEADROOM + BUF_TAILROOM + 3))
+
+Fixes: 4c94cc2d3d57 ("tipc: fall back to smaller MTU if allocation of local send skb fails")
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
 ---
- include/linux/mpi.h | 4 ++--
- lib/mpi/longlong.h  | 4 ++--
- lib/mpi/mpicoder.c  | 6 +++---
- lib/mpi/mpiutil.c   | 2 +-
- 4 files changed, 8 insertions(+), 8 deletions(-)
+ net/tipc/bcast.c |  1 +
+ net/tipc/msg.c   |  8 +------
+ net/tipc/msg.h   |  1 -
+ net/tipc/mtu.h   | 55 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 57 insertions(+), 8 deletions(-)
+ create mode 100644 net/tipc/mtu.h
 
-diff --git a/include/linux/mpi.h b/include/linux/mpi.h
-index 3e5358f4de2f..eb0d1c1db208 100644
---- a/include/linux/mpi.h
-+++ b/include/linux/mpi.h
-@@ -200,7 +200,7 @@ struct mpi_ec_ctx {
- 	unsigned int nbits;            /* Number of bits.  */
+diff --git a/net/tipc/bcast.c b/net/tipc/bcast.c
+index d4beca895992..c641b68e0812 100644
+--- a/net/tipc/bcast.c
++++ b/net/tipc/bcast.c
+@@ -41,6 +41,7 @@
+ #include "bcast.h"
+ #include "link.h"
+ #include "name_table.h"
++#include "mtu.h"
  
- 	/* Domain parameters.  Note that they may not all be set and if set
--	 * the MPIs may be flaged as constant.
-+	 * the MPIs may be flagged as constant.
- 	 */
- 	MPI p;         /* Prime specifying the field GF(p).  */
- 	MPI a;         /* First coefficient of the Weierstrass equation.  */
-@@ -267,7 +267,7 @@ int mpi_ec_curve_point(MPI_POINT point, struct mpi_ec_ctx *ctx);
- /**
-  * mpi_get_size() - returns max size required to store the number
-  *
-- * @a:	A multi precision integer for which we want to allocate a bufer
-+ * @a:	A multi precision integer for which we want to allocate a buffer
-  *
-  * Return: size required to store the number
-  */
-diff --git a/lib/mpi/longlong.h b/lib/mpi/longlong.h
-index afbd99987cf8..b6fa1d08fb55 100644
---- a/lib/mpi/longlong.h
-+++ b/lib/mpi/longlong.h
-@@ -48,8 +48,8 @@
+ #define BCLINK_WIN_DEFAULT  50	/* bcast link window size (default) */
+ #define BCLINK_WIN_MIN      32	/* bcast minimum link window size */
+diff --git a/net/tipc/msg.c b/net/tipc/msg.c
+index ce6ab54822d8..ec70d271c2da 100644
+--- a/net/tipc/msg.c
++++ b/net/tipc/msg.c
+@@ -40,15 +40,9 @@
+ #include "addr.h"
+ #include "name_table.h"
+ #include "crypto.h"
++#include "mtu.h"
  
- /* Define auxiliary asm macros.
-  *
-- * 1) umul_ppmm(high_prod, low_prod, multipler, multiplicand) multiplies two
-- * UWtype integers MULTIPLER and MULTIPLICAND, and generates a two UWtype
-+ * 1) umul_ppmm(high_prod, low_prod, multiplier, multiplicand) multiplies two
-+ * UWtype integers MULTIPLIER and MULTIPLICAND, and generates a two UWtype
-  * word product in HIGH_PROD and LOW_PROD.
-  *
-  * 2) __umulsidi3(a,b) multiplies two UWtype integers A and B, and returns a
-diff --git a/lib/mpi/mpicoder.c b/lib/mpi/mpicoder.c
-index 7ea225b2204f..39c4c6731094 100644
---- a/lib/mpi/mpicoder.c
-+++ b/lib/mpi/mpicoder.c
-@@ -234,11 +234,11 @@ static int count_lzeros(MPI a)
- }
+ #define MAX_FORWARD_SIZE 1024
+-#ifdef CONFIG_TIPC_CRYPTO
+-#define BUF_HEADROOM ALIGN(((LL_MAX_HEADER + 48) + EHDR_MAX_SIZE), 16)
+-#define BUF_TAILROOM (TIPC_AES_GCM_TAG_SIZE)
+-#else
+-#define BUF_HEADROOM (LL_MAX_HEADER + 48)
+-#define BUF_TAILROOM 16
+-#endif
  
- /**
-- * mpi_read_buffer() - read MPI to a bufer provided by user (msb first)
-+ * mpi_read_buffer() - read MPI to a buffer provided by user (msb first)
-  *
-  * @a:		a multi precision integer
-- * @buf:	bufer to which the output will be written to. Needs to be at
-- *		leaset mpi_get_size(a) long.
-+ * @buf:	buffer to which the output will be written to. Needs to be at
-+ *		least mpi_get_size(a) long.
-  * @buf_len:	size of the buf.
-  * @nbytes:	receives the actual length of the data written on success and
-  *		the data to-be-written on -EOVERFLOW in case buf_len was too
-diff --git a/lib/mpi/mpiutil.c b/lib/mpi/mpiutil.c
-index 3c63710c20c6..9a75ca3f7edf 100644
---- a/lib/mpi/mpiutil.c
-+++ b/lib/mpi/mpiutil.c
-@@ -80,7 +80,7 @@ EXPORT_SYMBOL_GPL(mpi_const);
- /****************
-  * Note:  It was a bad idea to use the number of limbs to allocate
-  *	  because on a alpha the limbs are large but we normally need
-- *	  integers of n bits - So we should chnage this to bits (or bytes).
-+ *	  integers of n bits - So we should change this to bits (or bytes).
-  *
-  *	  But mpi_alloc is used in a lot of places :-)
-  */
+ static unsigned int align(unsigned int i)
+ {
+diff --git a/net/tipc/msg.h b/net/tipc/msg.h
+index 5d64596ba987..e83689d0f0f6 100644
+--- a/net/tipc/msg.h
++++ b/net/tipc/msg.h
+@@ -99,7 +99,6 @@ struct plist;
+ #define MAX_H_SIZE                60	/* Largest possible TIPC header size */
+ 
+ #define MAX_MSG_SIZE (MAX_H_SIZE + TIPC_MAX_USER_MSG_SIZE)
+-#define FB_MTU                  3744
+ #define TIPC_MEDIA_INFO_OFFSET	5
+ 
+ struct tipc_skb_cb {
+diff --git a/net/tipc/mtu.h b/net/tipc/mtu.h
+new file mode 100644
+index 000000000000..033f0b178f9d
+--- /dev/null
++++ b/net/tipc/mtu.h
+@@ -0,0 +1,55 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright 2021 ZTE Corporation.
++ * All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions are met:
++ *
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ * 3. Neither the names of the copyright holders nor the names of its
++ *    contributors may be used to endorse or promote products derived from
++ *    this software without specific prior written permission.
++ *
++ * Alternatively, this software may be distributed under the terms of the
++ * GNU General Public License ("GPL") version 2 as published by the Free
++ * Software Foundation.
++ *
++ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
++ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
++ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
++ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
++ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
++ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ */
++
++#ifndef _TIPC_MTU_H
++#define _TIPC_MTU_H
++
++#include <linux/tipc.h>
++#include "crypto.h"
++
++#ifdef CONFIG_TIPC_CRYPTO
++#define BUF_HEADROOM ALIGN(((LL_MAX_HEADER + 48) + EHDR_MAX_SIZE), 16)
++#define BUF_TAILROOM (TIPC_AES_GCM_TAG_SIZE)
++#define FB_MTU	(PAGE_SIZE - \
++		 SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) - \
++		 SKB_DATA_ALIGN(BUF_HEADROOM + BUF_TAILROOM + 3))
++#else
++#define BUF_HEADROOM (LL_MAX_HEADER + 48)
++#define BUF_TAILROOM 16
++#define FB_MTU	(PAGE_SIZE - \
++		 SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) - \
++		 SKB_DATA_ALIGN(BUF_HEADROOM + 3))
++#endif
++
++#endif
 -- 
 2.25.1
-
 
