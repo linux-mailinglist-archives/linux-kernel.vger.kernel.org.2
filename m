@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E0D39B845
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF4639B847
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230162AbhFDLvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 07:51:43 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:53753 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229682AbhFDLvm (ORCPT
+        id S230198AbhFDLwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 07:52:51 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:42567 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229740AbhFDLwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 07:51:42 -0400
+        Fri, 4 Jun 2021 07:52:49 -0400
 Received: (Authenticated sender: alex@ghiti.fr)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 393C2200007;
-        Fri,  4 Jun 2021 11:49:51 +0000 (UTC)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 5547A20007;
+        Fri,  4 Jun 2021 11:50:58 +0000 (UTC)
 From:   Alexandre Ghiti <alex@ghiti.fr>
 To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
@@ -24,66 +24,52 @@ To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Zong Li <zong.li@sifive.com>, Anup Patel <anup@brainfault.org>,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Alexandre Ghiti <alex@ghiti.fr>
-Subject: [PATCH v4 0/4] riscv: Map the kernel with correct permissions the first time
-Date:   Fri,  4 Jun 2021 13:49:46 +0200
-Message-Id: <20210604114950.1446390-1-alex@ghiti.fr>
+Subject: [PATCH v4 1/4] riscv: Remove CONFIG_PHYS_RAM_BASE_FIXED
+Date:   Fri,  4 Jun 2021 13:49:47 +0200
+Message-Id: <20210604114950.1446390-2-alex@ghiti.fr>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210604114950.1446390-1-alex@ghiti.fr>
+References: <20210604114950.1446390-1-alex@ghiti.fr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel permissions are fixed after the kernel page table is created:         
-avoid that by mapping the kernel 'correctly' the first time.                       
-     
-Patch 2 is a cleanup patch on which the next patches are based on, not           
-necessary for this patchset though and relies on patch 1.                                             
-                                                                                 
-Patch 3 introduces a new helper to set kernel mapping permissions while          
-avoiding all the casts when using set_memory_* API.                              
-                                                                                 
-Patch 4  is the bulk of this work and deals with mapping the kernel with          
-the right permissions.                                                           
+Make the physical RAM base address available for all kernels, not only
+XIP kernels as it will allow to simplify address conversions macros.
 
-Changes in v4:
-* Add patch 1 as noted by Jisheng
-* Changes patch 2 title as suggested by Anup
-* Add Reviewed-by from Anup
-                                                                                 
-Changes in v3:                                                                   
-* Add a patch that factorizes kernel address conversions                         
-* Add a helper called set_kernel_memory in its own patch, as suggested by        
-  Christoph                                                                      
-* Prefer IS_ENABLED over #ifdef, as suggested by Christoph                       
-* Split overly long lines, as suggested by Christoph                             
-* Simplify kernel mapping by mapping ALL text as readonly and taking advantage   
-  of already present code that enables write for init text before                
-  free_initmem_default.                                                          
-                                                                                 
-Changes in v2:                                                                   
-* Rebased on top of for-next (and "riscv: mm: fix build errors caused by         
-  mk_pmd()")                                                                     
-* Get rid of protect_kernel_linear_mapping_text_rodata as suggested by           
-  Jisheng                                                                        
-* Improve code in general compared to previous RFC
+Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+---
+ arch/riscv/Kconfig | 6 ------
+ 1 file changed, 6 deletions(-)
 
-Alexandre Ghiti (4):
-  riscv: Remove CONFIG_PHYS_RAM_BASE_FIXED
-  riscv: Simplify xip and !xip kernel address conversion macros
-  riscv: Introduce set_kernel_memory helper
-  riscv: Map the kernel with correct permissions the first time
-
- arch/riscv/Kconfig                  |   6 --
- arch/riscv/include/asm/page.h       |  27 ++++----
- arch/riscv/include/asm/pgtable.h    |   2 +
- arch/riscv/include/asm/sections.h   |  17 +++++
- arch/riscv/include/asm/set_memory.h |  13 ++--
- arch/riscv/kernel/setup.c           |  11 +--
- arch/riscv/mm/init.c                | 102 ++++++++++++----------------
- arch/riscv/mm/pageattr.c            |  10 +++
- 8 files changed, 95 insertions(+), 93 deletions(-)
-
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index b58596b141fc..3d8e7e4bb45c 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -493,13 +493,8 @@ config STACKPROTECTOR_PER_TASK
+ 	def_bool y
+ 	depends on STACKPROTECTOR && CC_HAVE_STACKPROTECTOR_TLS
+ 
+-config PHYS_RAM_BASE_FIXED
+-	bool "Explicitly specified physical RAM address"
+-	default n
+-
+ config PHYS_RAM_BASE
+ 	hex "Platform Physical RAM address"
+-	depends on PHYS_RAM_BASE_FIXED
+ 	default "0x80000000"
+ 	help
+ 	  This is the physical address of RAM in the system. It has to be
+@@ -512,7 +507,6 @@ config XIP_KERNEL
+ 	# This prevents XIP from being enabled by all{yes,mod}config, which
+ 	# fail to build since XIP doesn't support large kernels.
+ 	depends on !COMPILE_TEST
+-	select PHYS_RAM_BASE_FIXED
+ 	help
+ 	  Execute-In-Place allows the kernel to run from non-volatile storage
+ 	  directly addressable by the CPU, such as NOR flash. This saves RAM
 -- 
 2.30.2
 
