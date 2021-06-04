@@ -2,138 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B389B39B8D5
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 14:13:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0AE39B8DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 14:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbhFDMPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 08:15:13 -0400
-Received: from gateway32.websitewelcome.com ([192.185.145.102]:18403 "EHLO
-        gateway32.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230030AbhFDMPM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 08:15:12 -0400
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway32.websitewelcome.com (Postfix) with ESMTP id E892E14443C
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 07:13:25 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id p8hZljqV8MGeEp8hZlcfnN; Fri, 04 Jun 2021 07:13:25 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=eqKhXZsa1Dsfpezqh/4ReBH1SK5a/dlNfmODaKhMUVg=; b=RWKEzlcv4womW/oDY1tsgTCu7e
-        moWq0Gdva6L/qTmMYSJAkkfAiBzDDne1pFuFvJhhOB1+waAY9H9MjIdwpbj1DrlwS9xH9TAVnt+/U
-        DHgPv6/emXqeVxyzecDLVZ8DMSgTGBNXd56cRwOb/MM7F2HVYE72cHgzXGhPvk5okwnIrSkukI1q+
-        RafHk+QewETN/ntSNKis9c1kcjby4MQ6dGvnMWb7R83vU2die7gXx/NY+bOA3dDug0F5yr+T+LSp4
-        7O0VYP14FKZGEnHHTqiMOP4vh2iHvyQoztxsvnObYEyxgFFL4JSocqN3WMnWhurVan5bH4gjS2cQk
-        Q+RyX5WA==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:38194 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lp8hX-001vay-IM; Fri, 04 Jun 2021 07:13:23 -0500
-Subject: Re: [PATCH] power: supply: oplc_battery: Use fallthrough
- pseudo-keyword
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Wei Ming Chen <jj251510319013@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>
-References: <20210507124724.10825-1-jj251510319013@gmail.com>
- <20210604115424.3jjkrdd4ysbuamka@earth.universe>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <a1593ef1-3a5b-b036-7744-b724be5a9629@embeddedor.com>
-Date:   Fri, 4 Jun 2021 07:14:28 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230316AbhFDMQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 08:16:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:37798 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230030AbhFDMQV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 08:16:21 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9A4292B;
+        Fri,  4 Jun 2021 05:14:34 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (unknown [10.1.195.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F17803F73D;
+        Fri,  4 Jun 2021 05:14:31 -0700 (PDT)
+Date:   Fri, 4 Jun 2021 13:14:29 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v8 15/19] arm64: Prevent offlining first CPU with 32-bit
+ EL0 on mismatched system
+Message-ID: <20210604121429.uzzutlkrnpgdzybs@e107158-lin.cambridge.arm.com>
+References: <20210602164719.31777-1-will@kernel.org>
+ <20210602164719.31777-16-will@kernel.org>
+ <20210603125856.GC48596@C02TD0UTHF1T.local>
+ <20210603174056.GB1170@willie-the-truck>
+ <20210604094926.GB64162@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-In-Reply-To: <20210604115424.3jjkrdd4ysbuamka@earth.universe>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lp8hX-001vay-IM
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:38194
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 3
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210604094926.GB64162@C02TD0UTHF1T.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/4/21 06:54, Sebastian Reichel wrote:
-> [+cc Kees and Gustavo]
+On 06/04/21 10:49, Mark Rutland wrote:
+> On Thu, Jun 03, 2021 at 06:40:57PM +0100, Will Deacon wrote:
+> > On Thu, Jun 03, 2021 at 01:58:56PM +0100, Mark Rutland wrote:
+> > > On Wed, Jun 02, 2021 at 05:47:15PM +0100, Will Deacon wrote:
+> > > > If we want to support 32-bit applications, then when we identify a CPU
+> > > > with mismatched 32-bit EL0 support we must ensure that we will always
+> > > > have an active 32-bit CPU available to us from then on. This is important
+> > > > for the scheduler, because is_cpu_allowed() will be constrained to 32-bit
+> > > > CPUs for compat tasks and forced migration due to a hotplug event will
+> > > > hang if no 32-bit CPUs are available.
+> > > > 
+> > > > On detecting a mismatch, prevent offlining of either the mismatching CPU
+> > > > if it is 32-bit capable, or find the first active 32-bit capable CPU
+> > > > otherwise.
+> > > > 
+> > > > Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> > > > Signed-off-by: Will Deacon <will@kernel.org>
+> > > > ---
+> > > >  arch/arm64/kernel/cpufeature.c | 20 +++++++++++++++++++-
+> > > >  1 file changed, 19 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> > > > index 4194a47de62d..b31d7a1eaed6 100644
+> > > > --- a/arch/arm64/kernel/cpufeature.c
+> > > > +++ b/arch/arm64/kernel/cpufeature.c
+> > > > @@ -2877,15 +2877,33 @@ void __init setup_cpu_features(void)
+> > > >  
+> > > >  static int enable_mismatched_32bit_el0(unsigned int cpu)
+> > > >  {
+> > > > +	static int lucky_winner = -1;
+> > > 
+> > > This is cute, but could we please give it a meaningful name, e.g.
+> > > `pinned_cpu` ?
+> > 
+> > I really don't see the problem, nor why it's "cute".
+> > 
+> > Tell you what, I'll add a comment instead:
+> > 
+> > 	/*
+> > 	 * The first 32-bit-capable CPU we detected and so can no longer
+> > 	 * be offlined by userspace. -1 indicates we haven't yet onlined
+> > 	 * a 32-bit-capable CPU.
+> > 	 */
 > 
-> Hi,
+> Thanks for the comment; that's helpful.
 > 
-> On Fri, May 07, 2021 at 08:47:24PM +0800, Wei Ming Chen wrote:
->> Add pseudo-keyword macro fallthrough[1]
->>
->> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
->>
->> Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
->> ---
+> However, my concern here is that when we inevitably have to discuss this
+> with others in future, "lucky winner" is jarring (and also unclear to
+> those where English is not their native language). For clarity, it would
+> be really nice to use a term like "cpu", "chosen_cpu", "pinned_cpu",
+> etc.
 > 
-> I suppose completely empty case branch is also ok and just not
-> documented? I mean it does not hurt much in this case, but quite
+> However, you're the maintainer; choose what you think is appropriate.
+> 
+> > > >  	struct cpuinfo_arm64 *info = &per_cpu(cpu_data, cpu);
+> > > >  	bool cpu_32bit = id_aa64pfr0_32bit_el0(info->reg_id_aa64pfr0);
+> > > >  
+> > > >  	if (cpu_32bit) {
+> > > >  		cpumask_set_cpu(cpu, cpu_32bit_el0_mask);
+> > > >  		static_branch_enable_cpuslocked(&arm64_mismatched_32bit_el0);
+> > > > -		setup_elf_hwcaps(compat_elf_hwcaps);
+> > > >  	}
+> > > >  
+> > > > +	if (cpumask_test_cpu(0, cpu_32bit_el0_mask) == cpu_32bit)
+> > > > +		return 0;
+> > > > +
+> > > > +	if (lucky_winner >= 0)
+> > > > +		return 0;
+> > > > +
+> > > > +	/*
+> > > > +	 * We've detected a mismatch. We need to keep one of our CPUs with
+> > > > +	 * 32-bit EL0 online so that is_cpu_allowed() doesn't end up rejecting
+> > > > +	 * every CPU in the system for a 32-bit task.
+> > > > +	 */
+> > > > +	lucky_winner = cpu_32bit ? cpu : cpumask_any_and(cpu_32bit_el0_mask,
+> > > > +							 cpu_active_mask);
+> > > > +	get_cpu_device(lucky_winner)->offline_disabled = true;
+> > > > +	setup_elf_hwcaps(compat_elf_hwcaps);
+> > > > +	pr_info("Asymmetric 32-bit EL0 support detected on CPU %u; CPU hot-unplug disabled on CPU %u\n",
+> > > > +		cpu, lucky_winner);
+> > > >  	return 0;
+> > > >  }
+> > > 
+> > > I guess this is going to play havoc with kexec and hibernate. :/
+> > 
+> > The kernel can still offline the CPUs (see the whole freezer mess that I
+> > linked to in the cover letter). What specific havoc are you thinking of?
+> 
+> Ah. If this is just inhibiting userspace-driven offlining, that sounds
+> fine.
+> 
+> For kexec, I was concerned that either this would inhibit kexec, or
+> smp_shutdown_nonboot_cpus() would fail to offline the pinned CPU, and
+> that'd trigger a BUG(), which would be unfortunate.
+> 
+> For hibernate, the equivalent is freeze_secondary_cpus(), which I guess
+> is dealt with by the freezer bits you mention.
 
-Exactly; it's not documented because it doesn't need to be marked
-with fallthrough; :)
+()->offline_disabled will only block offline requests performed by
+device_offline(). kexec, hibernate, suspend/resume use cpu_online/offline()
+directly so won't be impacted by that. I have sent patches that make
+cpu_online/offline() 'private' and not used or exported outside of cpu
+subsystem and the odd support function for arch code. All other users use
+device_offline() or add/remove_cpu() now.
 
-Not sure what was the motivation for this patch.
+I have made sure to test kexec, suspend to disk and ram in my older similar
+implementation in the past. So we should be good.
+
+Cheers
 
 --
-Gustavo
-
-> a few power-supply drivers have something like this and it would
-> IMHO reduce readability to add fallthrough; to all of them.
-> 
-> property_is_writable(dev, prop) {
->     switch (prop) {
->         case A:
->         case C:
->         case E:
->             return true;
->         default:
->             return false;
->     }
-> }
-> 
-> Thanks,
-> 
-> -- Sebastian
-> 
->>  drivers/power/supply/olpc_battery.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/power/supply/olpc_battery.c b/drivers/power/supply/olpc_battery.c
->> index e0476ec06601..743b7f1cf9ea 100644
->> --- a/drivers/power/supply/olpc_battery.c
->> +++ b/drivers/power/supply/olpc_battery.c
->> @@ -238,6 +238,7 @@ static int olpc_bat_get_charge_full_design(union power_supply_propval *val)
->>  	case POWER_SUPPLY_TECHNOLOGY_LiFe:
->>  		switch (mfr) {
->>  		case 1: /* Gold Peak, fall through */
->> +			fallthrough;
->>  		case 2: /* BYD */
->>  			val->intval = 2800000;
->>  			break;
->> -- 
->> 2.25.1
->>
+Qais Yousef
