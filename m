@@ -2,126 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF95C39B646
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 659BA39B644
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbhFDJ5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 05:57:19 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:54809 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbhFDJ5S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 05:57:18 -0400
-Received: from mail-wr1-f46.google.com ([209.85.221.46]) by
- mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MStT6-1lxFW92Wvm-00UIut; Fri, 04 Jun 2021 11:55:31 +0200
-Received: by mail-wr1-f46.google.com with SMTP id n4so8693614wrw.3;
-        Fri, 04 Jun 2021 02:55:31 -0700 (PDT)
-X-Gm-Message-State: AOAM530G01n//Al712oHcoMIMzVLTZxFDqgmFw0SjcZgKvc0CmI1nopl
-        uB5yQNLOdSO8sS8frGfs7BOsGpO7ZuloHmNwS5s=
-X-Google-Smtp-Source: ABdhPJxshE3+Uw6+fWuekuuwJhK8oE6TcJIBm0QrwrkRRuWDjLhV71VM+ZrxsXwvq+Gqd5ead+heu/mutRyeZaqbM2U=
-X-Received: by 2002:a5d:5084:: with SMTP id a4mr3045824wrt.286.1622800531222;
- Fri, 04 Jun 2021 02:55:31 -0700 (PDT)
+        id S230097AbhFDJ4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 05:56:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46586 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229930AbhFDJ4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 05:56:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96D516140C;
+        Fri,  4 Jun 2021 09:54:54 +0000 (UTC)
+Date:   Fri, 4 Jun 2021 11:54:51 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Changbin Du <changbin.du@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        David Laight <David.Laight@aculab.com>
+Subject: Re: [PATCH] nsfs: fix oops when ns->ops is not provided
+Message-ID: <20210604095451.nkfgpsibm5nrqt3f@wittgenstein>
+References: <20210531153410.93150-1-changbin.du@gmail.com>
+ <20210531220128.26c0cb36@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <CAM_iQpUEjBDK44=mD5shkmmoDYhmHQaSZtR34rLRkgd9wSWiQQ@mail.gmail.com>
+ <20210602091451.kbdul6nhobilwqvi@wittgenstein>
+ <CAM_iQpUqgeoY_mA6cazUPCWwMK6yw9SaD6DRg-Ja4r6r_zOmLg@mail.gmail.com>
 MIME-Version: 1.0
-References: <CO6PR04MB7812D8905C6EEBDE8513866F8D3C9@CO6PR04MB7812.namprd04.prod.outlook.com>
- <mhng-3875d1bc-74dd-4dc8-b71d-18a8f004039a@palmerdabbelt-glaptop>
-In-Reply-To: <mhng-3875d1bc-74dd-4dc8-b71d-18a8f004039a@palmerdabbelt-glaptop>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 4 Jun 2021 11:53:48 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a03sxxnzpZPxNnXLtCFOFBZ6espEj4V5y=K+59dOLJc6A@mail.gmail.com>
-Message-ID: <CAK8P3a03sxxnzpZPxNnXLtCFOFBZ6espEj4V5y=K+59dOLJc6A@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Anup Patel <Anup.Patel@wdc.com>, Guo Ren <guoren@kernel.org>,
-        Anup Patel <anup@brainfault.org>,
-        Drew Fustini <drew@beagleboard.org>,
-        Christoph Hellwig <hch@lst.de>, wefu@redhat.com,
-        lazyparser@gmail.com,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:ujRpXPvNy6Jxro+egqdLKAw5vJR180w7QwlpXdBCHfIrGqxinQz
- nQR6+KvWR5sJYROEuH+FIIRH7X5P5IFQfZluaWm0Xb5kyNaV0B7BaOLps8CU3h3XVMBAM7P
- sKR34naXwcGgeXlVXbcuOEoJERzv7eIIjYr6lcDFIOI20I1iBL0sUaGb9LCmNr3+vYkq44f
- BZ6xm+eanWz4z78eCRBMQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:jAKJ4I7p/2A=:QHvYiqwgjPgKFMmyiSeKYu
- S5rKt7mk11ggGKf8g/VCPt+F29wFssyG7Zhp5YYohJ9JI/2fJTZQvxvzw+zZ/wgqSQF4Z52tY
- U9yVnOv1UtRm0q0rxlVM9MOxjhgdAcaue1a1fBafAnvE689xK3+uhaFUzQ7xZIgK5KxtYc+aI
- 2iSmArr6eOAYc2TNeB1usZ+tfqiLsaBEsC2EIhePp3JyzHTjE7fDQzNasEKXjc4dSasMs6ldR
- OISdpDtE3rsZZfMH+XAB6G7FnwehxwB/e+ZIFULx6bGZRxD+DQxdTzWRKYXvkGOQJon6ypsZw
- t84J0z8nlYGp6LQjIKZuxoxxA35HN04Lhj7/h1K1vCL7HpbRFC546GBkTjohKw7b0JS4SgKRd
- feDXme/jATzM2I+OcM5vpnizamXT23ETgrBG5L+DDGZ3pjlWwPdYEm4FzhBDda23/l2stzWpG
- 4d9+KVUP2VXyhjO8yItd5SJ67bXmCPRr0EtVgi6y2qzTHUd9R5YvnlgTO4+dM2IvoaOhBmVUK
- pBmTQ/bOhEapuxjWmOINIdLUSH58z+cckD/Ouj653zmPU0SB24TxIL0OkE5nYFD68kZPuJBuK
- iIChdF/JDVn2DCBObSi1NyQYbHAhNNT7+F83RYVjmwOcHYs0diCe8WSd0QbigeNUbjhzo/yJP
- wkGM=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAM_iQpUqgeoY_mA6cazUPCWwMK6yw9SaD6DRg-Ja4r6r_zOmLg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 5:39 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> On Wed, 02 Jun 2021 23:00:29 PDT (-0700), Anup Patel wrote:
-> >> This implementation, which adds some Kconfig entries that control page table
-> >> bits, definately isn't suitable for upstream.  Allowing users to set arbitrary
-> >> page table bits will eventually conflict with the standard, and is just going to
-> >> be a mess.  It'll also lead to kernels that are only compatible with specific
-> >> designs, which we're trying very hard to avoid.  At a bare minimum we'll need
-> >> some way to detect systems with these page table bits before setting them,
-> >> and some description of what the bits actually do so we can reason about
-> >> them.
+On Thu, Jun 03, 2021 at 03:52:29PM -0700, Cong Wang wrote:
+> On Wed, Jun 2, 2021 at 2:14 AM Christian Brauner
+> <christian.brauner@ubuntu.com> wrote:
+> > But the point is that ns->ops should never be accessed when that
+> > namespace type is disabled. Or in other words, the bug is that something
+> > in netns makes use of namespace features when they are disabled. If we
+> > handle ->ops being NULL we might be tapering over a real bug somewhere.
+> 
+> It is merely a protocol between fs/nsfs.c and other namespace users,
+> so there is certainly no right or wrong here, the only question is which
+> one is better.
+> 
 > >
-> > Yes, vendor specific Kconfig options are strict NO NO. We can't give-up the
-> > goal of unified kernel image for all platforms.
->
-> I think this is just a phrasing issue, but just to be sure:
->
-> IMO it's not that they're vendor-specific Kconfig options, it's that
-> turning them on will conflict with standard systems (and other vendors).
-> We've already got the ability to select sets of Kconfig settings that
-> will only boot on one vendor's system, which is fine, as long as there
-> remains a set of Kconfig settings that will boot on all systems.
->
-> An example here would be the errata: every system has errata of some
-> sort, so if we start flipping off various vendor's errata Kconfigs
-> you'll end up with kernels that only function properly on some systems.
-> That's fine with me, as long as it's possible to turn on all vendor's
-> errata Kconfigs at the same time and the resulting kernel functions
-> correctly on all systems.
+> > Jakub's proposal in the other mail makes sense and falls in line with
+> > how the rest of the netns getters are implemented. For example
+> > get_net_ns_fd_fd():
+> 
+> It does not make any sense to me. get_net_ns() merely increases
+> the netns refcount, which is certainly fine for init_net too, no matter
+> CONFIG_NET_NS is enabled or disabled. Returning EOPNOTSUPP
+> there is literally saying we do not support increasing init_net refcount,
+> which is of course false.
+> 
+> > struct net *get_net_ns_by_fd(int fd)
+> > {
+> >         return ERR_PTR(-EINVAL);
+> > }
+> 
+> There is a huge difference between just increasing netns refcount
+> and retrieving it by fd, right? I have no idea why you bring this up,
+> calling them getters is missing their difference.
 
-Yes, this is generally the goal, and it would be great to have that
-working in a way where a 'defconfig' build just turns on all the options
-that are needed to use any SoC specific features and drivers while
-still working on all hardware. There are however limits you may run
-into at some point, and other architectures usually only manage to span
-some 10 to 15 years of hardware implementations with a single
-kernel before it get really hard.
+This argument doesn't hold up. All netns helpers ultimately increase the
+reference count of the net namespace they find. And if any of them
+perform operations where they are called in environments wherey they
+need CONFIG_NET_NS they handle this case at compile time.
 
-To give some common examples that make it break down:
+(Pluse they are defined in a central place in net/net_namespace.{c,h}.
+That includes the low-level get_net() function and all the others.
+get_net_ns() is the only one that's defined out of band. So get_net_ns()
+currently is arguably also misplaced.)
 
-- 32-bit vs 64-bit already violates that rule on risc-v (as it does on
-  most other architectures)
+The problem I have with fixing this in nsfs is that it gives the
+impression that this is a bug in nsfs whereas it isn't and it
+potentially helps tapering over other bugs.
 
-- architectures that support both big-endian and little-endian kernels
-  tend to have platforms that require one or the other (e.g. mips,
-  though not arm). Not an issue for you.
+get_net_ns() is only called for codepaths that call into nsfs via
+open_related_ns() and it's the only namespace that does this. But
+open_related_ns() is only well defined if CONFIG_<NAMESPACE_TYPE> is
+set. For example, none of the procfs namespace f_ops will be set for
+!CONFIG_NET_NS. So clearly the socket specific getter here is buggy as
+it doesn't account for !CONFIG_NET_NS and it should be fixed.
 
-- page table formats are the main cause of incompatibility: arm32
-  and x86-32 require three-level tables for certain features, but those
-  are incompatible with older cores, arm64 supports three different
-  page sizes, but none of them works on all cores (4KB almost works
-  everywhere).
+Plus your fix leaks references to init netns without fixing get_net_ns()
+too.
+You succeed to increase the refcount of init netns in get_net_ns() but
+then you return in __ns_get_path() because ns->ops aren't set before
+ns->ops->put() can be called.  But you also _can't_ call it since it's
+not set because !CONFIG_NET_NS. So everytime you call any of those
+ioctls you increas the refcount of init net ns without decrementing it
+on failure. So the fix is buggy as it is too and would suggest you to
+fixup get_net_ns() too.
 
-- SMP-enabled ARMv7 kernels can be configured to run on either
-  ARMv6 or ARMv8, but not both, in this case because of incompatible
-  barrier instructions.
+Cc: <stable@vger.kernel.org>
+Cc: Cong Wang <xiyou.wangcong@gmail.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: David Laight <David.Laight@ACULAB.COM>
+Signed-off-by: Changbin Du <changbin.du@gmail.com>
+---
+ fs/nsfs.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-- 32-bit Arm has a couple more remaining features that require building
-  a machine specific kernel if enabled because they hardcode physical
-  addresses: early printk (debug_ll, not the normal earlycon), NOMMU,
-  and XIP.
+diff --git a/fs/nsfs.c b/fs/nsfs.c
+index 800c1d0eb0d0..6c055eb7757b 100644
+--- a/fs/nsfs.c
++++ b/fs/nsfs.c
+@@ -62,6 +62,10 @@ static int __ns_get_path(struct path *path, struct ns_common *ns)
+ 	struct inode *inode;
+ 	unsigned long d;
+ 
++	/* In case the namespace is not actually enabled. */
++	if (!ns->ops)
++		return -EOPNOTSUPP;
++
+ 	rcu_read_lock();
+ 	d = atomic_long_read(&ns->stashed);
+ 	if (!d)
+-- 
+2.30.2
 
-       Arnd
+
