@@ -2,133 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89D339B11A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 05:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F0239B125
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 05:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbhFDDtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 23:49:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22785 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229775AbhFDDtV (ORCPT
+        id S229818AbhFDD4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 23:56:06 -0400
+Received: from mail-pl1-f177.google.com ([209.85.214.177]:33498 "EHLO
+        mail-pl1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229704AbhFDD4F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 23:49:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622778456;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qYVKZDuvt5Qic5U7hRSglNEDW7YcTuvFUNtFxiNT7O8=;
-        b=AZ/Y54HvkpKqAG3KwZEZoyWKVhYffiS+2s8wSYi48rDrWlS9ZH2W11E0vXkZfQ3XoNPesD
-        3G5jXFszrhz5lwTHMcFxUGdOuzswtqtAH17BKm/NqK5fDDXmqaoq2gMgk/JR7G1bBJEgY2
-        RMOKDCo5+iFnfCQLTTw8KAjOKqzOYAc=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-159-DoPgn5hRNHiUoJ-7G1PNQg-1; Thu, 03 Jun 2021 23:47:34 -0400
-X-MC-Unique: DoPgn5hRNHiUoJ-7G1PNQg-1
-Received: by mail-ot1-f71.google.com with SMTP id 19-20020a9d04130000b02903cb28b38d0aso2953824otc.19
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 20:47:34 -0700 (PDT)
+        Thu, 3 Jun 2021 23:56:05 -0400
+Received: by mail-pl1-f177.google.com with SMTP id c13so3998801plz.0;
+        Thu, 03 Jun 2021 20:54:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=L9+tmTJNGcF6M3mRljGVDt2TMOsVdljImLS1LclZiyw=;
+        b=ANR8PHWq0N+nc0guvinvEI8ptKu9z+tJp2xC9jV5srhvU3pe5TRYF9BmCMiLRdLDin
+         vryG9BcLerQp/vlkhM48rQgl2xKmCoL/Su2thihNSIoKh9rd7FUWr9Cn2IMVxW+TXjW5
+         jto0knyoBsfa1G0s14pjirUv2crSVDhvMpuqDohqj/t6Jyu2pDTdB6Hc3/5GTCNRixGN
+         QR7D60eAWhfUDYtxwhDZmpgw++HxH4IaXWfLXzT+NZIIRZImKZTOOUkFEqHheKkETAlG
+         vpleR+F9DevjBfqP24Ir/f4KveCuy/nT5HOkqtnw7PWt3f6vowPP8TdBJ2KXTToyDpNs
+         63mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qYVKZDuvt5Qic5U7hRSglNEDW7YcTuvFUNtFxiNT7O8=;
-        b=cPhmBGrDJyfazD6vtmyyq4VPceellMyfZplFwPSo4bqRLMqF1AuCtw7IGO0B1Hl0Q4
-         ZJVwNtrYt2l+18BiPK+o+RgpjtyOOqqpZ2yJRdxfmy9wCH9Ur+4IJKLKihuZWtWSmm43
-         05CGlRPmcodSyV796a6o6mkRUg7V8jyHIi0NtVIeKGcsnDVVTNGZE61jbWUpdwgtjKzt
-         GTbIyqf/fkZsaA7zHByKBJF1NyF2FOROUi/8SMO1muAVMSd1K/qhoq2lOeBGJvyzDCaT
-         0ACHi1sKKs+PnhBw+6nYi+uI5FZ3ejVXAm8VrufpBcBtxal0XmrD+RrSbgjcycNUj85W
-         1unw==
-X-Gm-Message-State: AOAM530+KU8YkzlXQJ/Ot40sYOtQFjI2Tqv899lO4m3v4XpqPhez2u2A
-        eOjwYmq+gQ7fTMI5s62o9GLTpQDt45lSuaQSgcinHdbNaV9pRR+R/Y0Vro8oTc6uRoYbPdyrLli
-        B4AxlT5okDgS9BFX2bcBFW0OA
-X-Received: by 2002:aca:42c6:: with SMTP id p189mr9377788oia.36.1622778454090;
-        Thu, 03 Jun 2021 20:47:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzPpaWKooEIC1jgqP5XfvYz7fSFRzk4H+W3/+1Ves6P7f1pdUp+76S8SrIRLTsgQayfXww8vg==
-X-Received: by 2002:aca:42c6:: with SMTP id p189mr9377780oia.36.1622778453943;
-        Thu, 03 Jun 2021 20:47:33 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id n11sm214881oom.1.2021.06.03.20.47.32
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=L9+tmTJNGcF6M3mRljGVDt2TMOsVdljImLS1LclZiyw=;
+        b=ZnXHmrTt1fknM2NDlgiqmYS9X/3ZH3kdKxBF7TYzjd/2DZzRNT7s9Dctzd+lhuYDYv
+         ylhLKj90SaNld2B2XeH2haseV5KqUwizS5C2uT5Z4yrtLipuzwHSVDME0JGBnn+mo+CR
+         297LnqoWmcJ6zpJi2Y5pwfxiSP3WhkYpz8CIaPr0sXhE+Kexolv2WjZmPuyHcGQwkX0w
+         n6soc/cqjqx0W6zOMdUQK3UA71vcnECRpDzCpBYCt9eDbm6iMT6t+12M0tWfr6V4kXQl
+         0qYZDOjHvsDK3SLq1hE2wwtV1Ee/GBue5qlig/3HtCDYyYOpOMj62z4ILGUOdODWpuW2
+         WSWg==
+X-Gm-Message-State: AOAM530MrpVfPFKN/9mRpalpA6bUMSsSENwvFiMTk8ap0QoSb+ovW/Ku
+        aHgV2uzyKgdSWXjWte+An0BObVm908VhOg==
+X-Google-Smtp-Source: ABdhPJwXjA7hR2ZrZqsOStmJ7blveJarZ0g0Zrxd8d96F7jdMZgXTTN4XUz1et9o7Qu17i8mNUaupg==
+X-Received: by 2002:a17:90a:a794:: with SMTP id f20mr14625618pjq.195.1622778787102;
+        Thu, 03 Jun 2021 20:53:07 -0700 (PDT)
+Received: from localhost.localdomain ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id n129sm442859pfn.167.2021.06.03.20.53.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 20:47:33 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 21:47:31 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Dave Jiang <dave.jiang@intel.com>
-Cc:     kwankhede@nvidia.com, tglx@linutronix.de, vkoul@kernel.org,
-        jgg@mellanox.com, megha.dey@intel.com, jacob.jun.pan@intel.com,
-        ashok.raj@intel.com, yi.l.liu@intel.com, baolu.lu@intel.com,
-        kevin.tian@intel.com, sanjay.k.kumar@intel.com,
-        tony.luck@intel.com, dan.j.williams@intel.com,
-        eric.auger@redhat.com, pbonzini@redhat.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH v6 12/20] vfio: move VFIO PCI macros to common header
-Message-ID: <20210603214731.1631a480.alex.williamson@redhat.com>
-In-Reply-To: <162164281969.261970.17759783730654052269.stgit@djiang5-desk3.ch.intel.com>
-References: <162164243591.261970.3439987543338120797.stgit@djiang5-desk3.ch.intel.com>
-        <162164281969.261970.17759783730654052269.stgit@djiang5-desk3.ch.intel.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Thu, 03 Jun 2021 20:53:06 -0700 (PDT)
+From:   Herman <herman.yim88@gmail.com>
+X-Google-Original-From: Herman <yanshuaijun@yulong.com>
+To:     mchehab@kernel.org
+Cc:     anton@corp.bluecherry.net, andrey.utkin@corp.bluecherry.net,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        maintainers@bluecherrydvr.com, Herman <yanshuaijun@yulong.com>
+Subject: [PATCH] Signed-off-by: Herman <yanshuaijun@yulong.com>
+Date:   Fri,  4 Jun 2021 11:52:46 +0800
+Message-Id: <20210604035246.1260-1-yanshuaijun@yulong.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021 17:20:19 -0700
-Dave Jiang <dave.jiang@intel.com> wrote:
+drivers/media/pci/tw5864/Tw5864-reg.h: fix typo issues
 
-> Move some VFIO_PCI macros to a common header as they will be shared between
-> mdev and vfio_pci.
+change 'syncrous ' into 'synchrous '
 
-No, this is the current implementation of vfio-pci, it's specifically
-not meant to be a standard.  Each vfio device driver is free to expose
-regions on the device file descriptor as they wish.  If you want to use
-a 40-bit implementation as well, great, but it should not be imposed as
-a standard.  Thanks,
+Signed-off-by: Herman <yanshuaijun@yulong.com>
+---
+ drivers/media/pci/tw5864/tw5864-reg.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Alex
-
-> Signed-off-by: Dave Jiang <dave.jiang@intel.com>
-> ---
->  drivers/vfio/pci/vfio_pci_private.h |    6 ------
->  include/linux/vfio.h                |    6 ++++++
->  2 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/vfio/pci/vfio_pci_private.h b/drivers/vfio/pci/vfio_pci_private.h
-> index a17943911fcb..e644f981509c 100644
-> --- a/drivers/vfio/pci/vfio_pci_private.h
-> +++ b/drivers/vfio/pci/vfio_pci_private.h
-> @@ -18,12 +18,6 @@
->  #ifndef VFIO_PCI_PRIVATE_H
->  #define VFIO_PCI_PRIVATE_H
->  
-> -#define VFIO_PCI_OFFSET_SHIFT   40
-> -
-> -#define VFIO_PCI_OFFSET_TO_INDEX(off)	(off >> VFIO_PCI_OFFSET_SHIFT)
-> -#define VFIO_PCI_INDEX_TO_OFFSET(index)	((u64)(index) << VFIO_PCI_OFFSET_SHIFT)
-> -#define VFIO_PCI_OFFSET_MASK	(((u64)(1) << VFIO_PCI_OFFSET_SHIFT) - 1)
-> -
->  /* Special capability IDs predefined access */
->  #define PCI_CAP_ID_INVALID		0xFF	/* default raw access */
->  #define PCI_CAP_ID_INVALID_VIRT		0xFE	/* default virt access */
-> diff --git a/include/linux/vfio.h b/include/linux/vfio.h
-> index 3b372fa57ef4..ed5ca027eb49 100644
-> --- a/include/linux/vfio.h
-> +++ b/include/linux/vfio.h
-> @@ -15,6 +15,12 @@
->  #include <linux/poll.h>
->  #include <uapi/linux/vfio.h>
->  
-> +#define VFIO_PCI_OFFSET_SHIFT   40
-> +
-> +#define VFIO_PCI_OFFSET_TO_INDEX(off)	((off) >> VFIO_PCI_OFFSET_SHIFT)
-> +#define VFIO_PCI_INDEX_TO_OFFSET(index)	((u64)(index) << VFIO_PCI_OFFSET_SHIFT)
-> +#define VFIO_PCI_OFFSET_MASK	(((u64)(1) << VFIO_PCI_OFFSET_SHIFT) - 1)
-> +
->  struct vfio_device {
->  	struct device *dev;
->  	const struct vfio_device_ops *ops;
-> 
-> 
+diff --git a/drivers/media/pci/tw5864/tw5864-reg.h b/drivers/media/pci/tw5864/tw5864-reg.h
+index a74f30f2f78e..2dd4413359df 100644
+--- a/drivers/media/pci/tw5864/tw5864-reg.h
++++ b/drivers/media/pci/tw5864/tw5864-reg.h
+@@ -663,7 +663,7 @@
+ #define TW5864_SYNC 0x8008
+ /* Define controls in register TW5864_SYNC */
+ /*
+- * 0 vlc stream to syncrous port
++ * 0 vlc stream to synchrous port
+  * 1 vlc stream to ddr buffers
+  */
+ #define TW5864_SYNC_CFG BIT(7)
+-- 
+2.25.1
 
