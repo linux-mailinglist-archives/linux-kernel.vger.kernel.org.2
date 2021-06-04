@@ -2,99 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC0C39BE26
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 401A539BE22
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbhFDRMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 13:12:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55068 "EHLO
+        id S230060AbhFDRMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 13:12:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230172AbhFDRMq (ORCPT
+        with ESMTP id S229690AbhFDRMd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 13:12:46 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE6EC061766
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 10:10:43 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id x73so7914679pfc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 10:10:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=6UWs4F/LiNKwGVZ1bzmUFbFeuYWDKRTT9nUEK353f64=;
-        b=X8aW3XwzqxJ3VlB5j4+rIqIOqPzkjRCkdnbxjki+d+a5Cq0x9jxF1gUJsBQLUE0gEy
-         2cfWOEMhcPK5xpu1iDuAUj1OftbYmKAjKv0OwQ1EcwCl3eyg/QhbpsVPdcl3mljdS3qC
-         vemheUs8g88K40H8D1gZFIxoW3dXLaor0Lfctiv/50YltLgL7nH1+ns/VPHvQUtdsM1I
-         ns6OQI3Csf1STnkSU4E5L+XUJtiTTCh6ZpTsORPGNxWFVwrnhdMfHqCMHRMEDo3nEF3a
-         CIIYIZ1wjpombqkNe8z0ZYcVxNyBLqkyfkqo/kz2CX0bTLFByPL49RijZ2Ls9T7jbwqk
-         uTGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=6UWs4F/LiNKwGVZ1bzmUFbFeuYWDKRTT9nUEK353f64=;
-        b=dWc5oK3erFjtAzwKchjFQR6Rj39XU2A6clBnWQBcsazI192Aka1JqLmKoDkhXSwCiX
-         68dBhvFeytK0MzUIaBbPwazdU/s3m7TkW3+fB6rg8Dlk5lNaEo0Tho8huQnrsqJ3Cx6v
-         gOfbm/w0M0S8iEgXUCkYpE2XeI7wlD1qfcqb3NGFtztadeOy4B/kqxge5fnDtlJPtXZ5
-         KsofAW9oSngYqSLRJAkQNKmh/XmCd8AJdGnfggg0CKlAcKAo8NtH0rmfhJn3jTIrKsAJ
-         U8J8i4vTQIHDlyBAmvNE35uPcQfp4HFCOcou7ZxIJ/RBRYAnJn1B7ZbtCh0BDYLNyeGh
-         51lw==
-X-Gm-Message-State: AOAM533h+nUY+4PGWUXvC90rqgy9hgDTh2ap8QUuqRuzZb2qRxBp6IT/
-        tvNqhF6BPA749quOzhoT8a0=
-X-Google-Smtp-Source: ABdhPJwFk/+y0P5mH5oIK9Y8IdN1mPk5DlvowjHPiKeaobmrXB50aIxPGmTdHbHwskDpwsH/DIWAXA==
-X-Received: by 2002:a65:6644:: with SMTP id z4mr6048915pgv.101.1622826642633;
-        Fri, 04 Jun 2021 10:10:42 -0700 (PDT)
-Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
-        by smtp.gmail.com with ESMTPSA id j7sm800001pjf.0.2021.06.04.10.10.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 04 Jun 2021 10:10:42 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [PATCH v2 0/4] iommu/amd: Enable page-selective flushes
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <YLpI7tKtsf4l5MlN@8bytes.org>
-Date:   Fri, 4 Jun 2021 10:10:40 -0700
-Cc:     Will Deacon <will@kernel.org>, Jiajun Cao <caojiajun@vmware.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Robin Murphy <robin.murphy@arm.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <05098022-1ED6-44BE-931D-D16C2D0B2D09@gmail.com>
-References: <20210524224159.32807-1-namit@vmware.com>
- <YLpI7tKtsf4l5MlN@8bytes.org>
-To:     Joerg Roedel <joro@8bytes.org>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
+        Fri, 4 Jun 2021 13:12:33 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F099CC061767;
+        Fri,  4 Jun 2021 10:10:46 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id EB5AF738;
+        Fri,  4 Jun 2021 17:10:45 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net EB5AF738
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1622826646; bh=vJNivl7SR9ek+8wa31F0Nt6UYvCOVHJpOIdhOSpcrmg=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=DI071yGlwfBt7RqJzRl+/ANE4fCQr+1dOq0zsQD5aILsicCv+PM4rngoLB4LcIUI9
+         HZdzVLxhEqaOCJnRfjT9WX0aiM8zDRCX9kfI7UFHV55Es/gma0UhvPnx4geX1vMfBI
+         KwK6CDInhSOhRKwri+WmbH95N814VyzXbm6LPpPa4tbjopM8FkfOP9g6Da2xNKJE5h
+         yRofaV606/Eqr5JoPZ9p2qEC3hFkMmyeHCzYIyghMU2a4pxbk+7VNRa+cXi3J2zVZ+
+         ZUEIH4LfVXQfkrfD5pQb1K4QtAKqhGJm4zarqO6bMWYDPA4bmdhuSvGUIwUnnAE3XG
+         ho81IVm6E4L1Q==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        samuel.thibault@ens-lyon.org, jani.nikula@linux.intel.com,
+        gene@collinsnet.net, w.d.hubbs@gmail.com, steve.holmes88@gmail.com
+Cc:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        speakup@linux-speakup.org, gregkh@linuxfoundation.org,
+        rdunlap@infradead.org, grandmaster@al2klimov.de,
+        chris@the-brannons.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] docs: Convert the Speakup guide to rst
+In-Reply-To: <20210603145953.10982-1-igormtorrente@gmail.com>
+References: <20210603145953.10982-1-igormtorrente@gmail.com>
+Date:   Fri, 04 Jun 2021 11:10:45 -0600
+Message-ID: <87zgw5zhbe.fsf@meer.lwn.net>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Igor Matheus Andrade Torrente <igormtorrente@gmail.com> writes:
 
+> Modify some parts of the text and add the necessary formatting to leverage
+> the rst features. Including links, code-blocks, bullet lists, etc.
+>
+> Also, add a table of contents at the beginning and changes the license.
+>
+> This change helps integrate this documentation to the rest of the rst
+> documentation.
+>
+>
+> Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+> ---
+>
+> v2: Rebase the patch to cover the commit cae2181b498fe
+>
+> v3: Adds some Jani and Samuel's suggestion, and changes the licensing.
+>
+>     And, therefore, this patch should only be accepted when we have
+>     all acks from the copyright owners.
+>
+>     Current status:
+>
+>     Gene Collins <gene@collinsnet.net> - Pending
+>     Samuel Thibault <samuel.thibault@ens-lyon.org> - ACK[1][2]
+>     Christopher Brannon <chris@the-brannons.com> - ACK[3]
+>     William Hubbs <w.d.hubbs@gmail.com> - Pending
+>     Steve Holmes <steve.holmes88@gmail.com> - Pending
 
-> On Jun 4, 2021, at 8:38 AM, Joerg Roedel <joro@8bytes.org> wrote:
->=20
-> Hi Nadav,
->=20
-> [Adding Robin]
->=20
-> On Mon, May 24, 2021 at 03:41:55PM -0700, Nadav Amit wrote:
->> Nadav Amit (4):
->>  iommu/amd: Fix wrong parentheses on page-specific invalidations
->=20
-> This patch is already upstream in v5.13-rc4. Please rebase to that
-> version.
+This looks good to me, thanks.  Please send me a new patch when the acks
+are in and I'll gladly apply this.
 
-I guess it would be rc5 by the time I send it.
+One final note on the licensing: it's fine to keep the document
+dual-licensed with the FDL if you want to retain it - that's entirely up
+to you.
 
->=20
->>  iommu/amd: Selective flush on unmap
->>  iommu/amd: Do not sync on page size changes
->>  iommu/amd: Do not use flush-queue when NpCache is on
->=20
-> And I think there have been objections from Robin Murphy on Patch 3,
-> have those been worked out?
-
-I am still waiting for Robin=E2=80=99s feedback on my proposed changes. =
-If he does not respond soon, I will drop this patch for now.
+Many thanks for indulging us on this - I know this led to a whole effort
+that you weren't counting on when you started this project, and I do
+appreciate it.
 
 Thanks,
-Nadav=
+
+jon
