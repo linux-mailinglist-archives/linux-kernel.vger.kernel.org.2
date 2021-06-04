@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B685239B7F0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F7439B7F1
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:32:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbhFDLdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 07:33:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34258 "EHLO mail.kernel.org"
+        id S230185AbhFDLdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 07:33:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229740AbhFDLdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 07:33:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 324B7613FE;
-        Fri,  4 Jun 2021 11:32:05 +0000 (UTC)
+        id S230150AbhFDLdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 07:33:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19E5061432;
+        Fri,  4 Jun 2021 11:32:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622806326;
-        bh=UWTB2JFFGx0hcRAEvHxRwyTX7+TIbdrCudgu0abih/g=;
+        s=k20201202; t=1622806328;
+        bh=Dz27t/9kX5xl2Q7UkS0YP0Ly+RNmkd2lVoIIiDuarCM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cq9TMtMHx0mYceKQb9ptwNprxG0ZFt5uFO26KIYexU9b5z4f0wu0f2viwiEMXjUiV
-         4iU4gogV+Y5kZE7beYbv60i3Aotp2VGzICptpE1FRRfU2M2CZj+LzjKcMLOddartIV
-         8jnz+1fHahJQVrxolHNdoui7E5232hYJz/ha+DsNkNUYrbti4Y4ST5OefKIRkoxLCl
-         IRCjS27wL0uyFEU1P/Z+o6NrZ72Bsm1JZhmRmG3HIL/6aRYYatMB17J3ADUfpnbeR7
-         gWpclEjsw2x9lZx10gODV7iLxEwgfLreHP8Qtqi+cNB9BXNu0c5VFVGcluVdn2HEoF
-         cVzqycb+py4mQ==
+        b=i1gqa7PAQqM/GeB8oOJGQS3I5j+4KM9VqjguMj+6TGXV8+J9WlpKOqYhPtv11pcno
+         JLUwz24nBVQQnJMjEU0ZtAsEgJvU0rx87OavbXao/EWoIXDE3ORExzGaFYE7KXAYRL
+         dkdzZrDGO2M1CumkQETc9TJ8lrHcZz9g+96TCyvwKIznuNOBpGqMrpsEzL1rDf1UVD
+         LvYxJ3ig+A2KBgaXRgFKPFBzaUw0qrFldUi+ArTlO+7mHSjw6wO3jt9K30/JcrQ08Y
+         wmw4m/ebYVYhlY43vac5sLypc95NJ1ri0z1iPY7GplfCiWL4Y6yFMPRlJE3WrRfryu
+         X17SN9dOYg6sQ==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -30,9 +30,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         "Eric W . Biederman" <ebiederm@xmission.com>,
         Oleg Nesterov <oleg@redhat.com>, Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH 1/6] posix-cpu-timers: Fix rearm racing against process tick
-Date:   Fri,  4 Jun 2021 13:31:54 +0200
-Message-Id: <20210604113159.26177-2-frederic@kernel.org>
+Subject: [PATCH 2/6] posix-cpu-timers: Don't start process wide cputime counter if timer is disabled
+Date:   Fri,  4 Jun 2021 13:31:55 +0200
+Message-Id: <20210604113159.26177-3-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210604113159.26177-1-frederic@kernel.org>
 References: <20210604113159.26177-1-frederic@kernel.org>
@@ -42,30 +42,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the process wide cputime counter is started locklessly from
-posix_cpu_timer_rearm(), it can be concurrently stopped by operations
-on other timers from the same thread group, such as in the following
-unlucky scenario:
+If timer_settime() is called with a 0 expiration on a timer that is
+already disabled, the process wide cputime counter will be started
+and won't ever get a chance to be stopped by stop_process_timer() since
+no timer is actually armed to be processed.
 
-         CPU 0                                CPU 1
-         -----                                -----
-                                           timer_settime(TIMER B)
-   posix_cpu_timer_rearm(TIMER A)
-       cpu_clock_sample_group()
-           (pct->timers_active already true)
+This process wide counter might bring some performance hit due to the
+concurrent atomic additions at the thread group scope.
 
-                                           handle_posix_cpu_timers()
-                                               check_process_timers()
-                                                   stop_process_timers()
-                                                       pct->timers_active = false
-       arm_timer(TIMER A)
+The following snippet is enough to trigger the issue.
 
-   tick -> run_posix_cpu_timers()
-       // sees !pct->timers_active, ignore
-       // our TIMER A
+	void trigger_process_counter(void)
+	{
+		timer_t id;
+		struct itimerspec val = { };
 
-Fix this with simply locking process wide cputime counting start and
-timer arm in the same block.
+		timer_create(CLOCK_PROCESS_CPUTIME_ID, NULL, &id);
+		timer_settime(id, TIMER_ABSTIME, &val, NULL);
+		timer_delete(id);
+	}
+
+So make sure we don't needlessly start it.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Cc: Oleg Nesterov <oleg@redhat.com>
@@ -74,37 +71,32 @@ Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
 Cc: Ingo Molnar <mingo@kernel.org>
 Cc: Eric W. Biederman <ebiederm@xmission.com>
 ---
- kernel/time/posix-cpu-timers.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ kernel/time/posix-cpu-timers.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/time/posix-cpu-timers.c b/kernel/time/posix-cpu-timers.c
-index 3bb96a8b49c9..aa52fc85dbcb 100644
+index aa52fc85dbcb..132fd56fb1cd 100644
 --- a/kernel/time/posix-cpu-timers.c
 +++ b/kernel/time/posix-cpu-timers.c
-@@ -991,6 +991,11 @@ static void posix_cpu_timer_rearm(struct k_itimer *timer)
- 	if (!p)
- 		goto out;
- 
-+	/* Protect timer list r/w in arm_timer() */
-+	sighand = lock_task_sighand(p, &flags);
-+	if (unlikely(sighand == NULL))
-+		goto out;
-+
- 	/*
- 	 * Fetch the current sample and update the timer's expiry time.
+@@ -632,10 +632,15 @@ static int posix_cpu_timer_set(struct k_itimer *timer, int timer_flags,
+ 	 * times (in arm_timer).  With an absolute time, we must
+ 	 * check if it's already passed.  In short, we need a sample.
  	 */
-@@ -1001,11 +1006,6 @@ static void posix_cpu_timer_rearm(struct k_itimer *timer)
+-	if (CPUCLOCK_PERTHREAD(timer->it_clock))
++	if (CPUCLOCK_PERTHREAD(timer->it_clock)) {
+ 		val = cpu_clock_sample(clkid, p);
+-	else
+-		val = cpu_clock_sample_group(clkid, p, true);
++	} else {
++		/*
++		 * Sample group but only start the process wide cputime counter
++		 * if the timer is to be enabled.
++		 */
++		val = cpu_clock_sample_group(clkid, p, !!new_expires);
++	}
  
- 	bump_cpu_timer(timer, now);
- 
--	/* Protect timer list r/w in arm_timer() */
--	sighand = lock_task_sighand(p, &flags);
--	if (unlikely(sighand == NULL))
--		goto out;
--
- 	/*
- 	 * Now re-arm for the new expiry time.
- 	 */
+ 	if (old) {
+ 		if (old_expires == 0) {
 -- 
 2.25.1
 
