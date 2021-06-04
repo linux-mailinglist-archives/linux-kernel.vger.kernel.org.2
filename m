@@ -2,79 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DA839B1D6
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 07:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C2839B1DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 07:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbhFDFIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 01:08:40 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7104 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbhFDFIj (ORCPT
+        id S229948AbhFDFQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 01:16:59 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:21152 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229628AbhFDFQ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 01:08:39 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fx9fF3NpczYqf3;
-        Fri,  4 Jun 2021 13:04:05 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 4 Jun 2021 13:06:49 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 4 Jun 2021
- 13:06:48 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>
-CC:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
-Subject: [PATCH -next] scsi: mpi3mr: Make some symbols static
-Date:   Fri, 4 Jun 2021 13:11:05 +0800
-Message-ID: <20210604051105.1122667-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 4 Jun 2021 01:16:57 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622783712; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=uRQ5+HAqjf1zI3L21gFTmAKCk0wOVTgllZo9/C7+/WA=;
+ b=jm4R3CEAcqRQc7NrCpHj9LoegFEPxR7t1boC5O0TjRb1VtadSyXuygirPHDrbGYuza769nt5
+ N5ejA0vCrx+43DXSEgDOFbErIIvGFDLxHfy0BuDDeMlItgbydy3g1/YIM/ayzcpNipPdODdK
+ B9x3GpC9jwj51IoUDoxwpvKqnUo=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60b9b6dfe570c05619fab9e1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 04 Jun 2021 05:15:11
+ GMT
+Sender: subashab=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1B22AC4323A; Fri,  4 Jun 2021 05:15:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: subashab)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7237CC433F1;
+        Fri,  4 Jun 2021 05:15:10 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 03 Jun 2021 23:15:10 -0600
+From:   subashab@codeaurora.org
+To:     patchwork-bot+netdevbpf@kernel.org
+Cc:     Nathan Chancellor <nathan@kernel.org>, stranche@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org, ndesaulniers@google.com,
+        sharathv@codeaurora.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH net-next] net: ethernet: rmnet: Restructure if checks to
+ avoid uninitialized warning
+In-Reply-To: <162276000605.13062.14467575723320615318.git-patchwork-notify@kernel.org>
+References: <20210603173410.310362-1-nathan@kernel.org>
+ <162276000605.13062.14467575723320615318.git-patchwork-notify@kernel.org>
+Message-ID: <1f6f8246f0cd477c0b1e2b88b4ec825a@codeaurora.org>
+X-Sender: subashab@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following warnings:
+On 2021-06-03 16:40, patchwork-bot+netdevbpf@kernel.org wrote:
+> Hello:
+> 
+> This patch was applied to netdev/net-next.git (refs/heads/master):
+> 
+> On Thu,  3 Jun 2021 10:34:10 -0700 you wrote:
+>> Clang warns that proto in rmnet_map_v5_checksum_uplink_packet() might 
+>> be
+>> used uninitialized:
+>> 
+>> drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c:283:14: warning:
+>> variable 'proto' is used uninitialized whenever 'if' condition is 
+>> false
+>> [-Wsometimes-uninitialized]
+>>                 } else if (skb->protocol == htons(ETH_P_IPV6)) {
+>>                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c:295:36: note:
+>> uninitialized use occurs here
+>>                 check = rmnet_map_get_csum_field(proto, trans);
+>>                                                  ^~~~~
+>> drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c:283:10: note:
+>> remove the 'if' if its condition is always true
+>>                 } else if (skb->protocol == htons(ETH_P_IPV6)) {
+>>                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c:270:11: note:
+>> initialize the variable 'proto' to silence this warning
+>>                 u8 proto;
+>>                         ^
+>>                          = '\0'
+>> 1 warning generated.
+>> 
+>> [...]
+> 
+> Here is the summary with links:
+>   - [net-next] net: ethernet: rmnet: Restructure if checks to avoid
+> uninitialized warning
+>     https://git.kernel.org/netdev/net-next/c/118de6106735
+> 
+> You are awesome, thank you!
+> --
+> Deet-doot-dot, I am a bot.
+> https://korg.docs.kernel.org/patchwork/pwbot.html
 
-  drivers/scsi/mpi3mr/mpi3mr_os.c:24:5: warning: symbol 'prot_mask' was not declared. Should it be static?
-  drivers/scsi/mpi3mr/mpi3mr_os.c:28:5: warning: symbol 'prot_guard_mask' was not declared. Should it be static?
-  drivers/scsi/mpi3mr/mpi3mr_os.c:31:5: warning: symbol 'logging_level' was not declared. Should it be static?
+Hi Nathan
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/scsi/mpi3mr/mpi3mr_os.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/scsi/mpi3mr/mpi3mr_os.c b/drivers/scsi/mpi3mr/mpi3mr_os.c
-index a54aa009ec5a..52f844fb8175 100644
---- a/drivers/scsi/mpi3mr/mpi3mr_os.c
-+++ b/drivers/scsi/mpi3mr/mpi3mr_os.c
-@@ -21,14 +21,14 @@ MODULE_LICENSE(MPI3MR_DRIVER_LICENSE);
- MODULE_VERSION(MPI3MR_DRIVER_VERSION);
- 
- /* Module parameters*/
--int prot_mask = -1;
-+static int prot_mask = -1;
- module_param(prot_mask, int, 0);
- MODULE_PARM_DESC(prot_mask, "Host protection capabilities mask, def=0x07");
- 
--int prot_guard_mask = 3;
-+static int prot_guard_mask = 3;
- module_param(prot_guard_mask, int, 0);
- MODULE_PARM_DESC(prot_guard_mask, " Host protection guard mask, def=3");
--int logging_level;
-+static int logging_level;
- module_param(logging_level, int, 0);
- MODULE_PARM_DESC(logging_level,
- 	" bits for enabling additional logging info (default=0)");
--- 
-2.25.1
-
+Can you tell why CLANG detected this error.
+Does it require a bug fix.
