@@ -2,64 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C527E39B6E9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 12:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA2639B6F3
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 12:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbhFDKX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 06:23:27 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:50796 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229625AbhFDKXZ (ORCPT
+        id S230101AbhFDKYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 06:24:47 -0400
+Received: from mail-pj1-f53.google.com ([209.85.216.53]:52844 "EHLO
+        mail-pj1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229625AbhFDKYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 06:23:25 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R661e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UbFb0BY_1622802077;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UbFb0BY_1622802077)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 04 Jun 2021 18:21:23 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     jdmason@kudzu.us
-Cc:     dave.jiang@intel.com, allenbh@gmail.com,
-        linux-ntb@googlegroups.com, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH 2/2] NTB: Fix an error code in ntb_msit_probe()
-Date:   Fri,  4 Jun 2021 18:20:51 +0800
-Message-Id: <1622802051-43464-2-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1622802051-43464-1-git-send-email-yang.lee@linux.alibaba.com>
-References: <1622802051-43464-1-git-send-email-yang.lee@linux.alibaba.com>
+        Fri, 4 Jun 2021 06:24:46 -0400
+Received: by mail-pj1-f53.google.com with SMTP id h16so5309372pjv.2;
+        Fri, 04 Jun 2021 03:23:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aUTAR6wf3YjHvE8+6bjBL3/E962RYRKJQK58myGqUmo=;
+        b=L30wT9Gqzu4Awu7kONktI1IDMc9NsZdNoJ8lA7zfngTzBLSGNIdxGF27OrmMGpOes2
+         NCHhHQqIIvIuIrghRnAUcYJFwQkPv+bVNz28ZyWSkQnxBV/ySlmFlc/tNXEu1keHQKcU
+         tOyJTfyocsBvW4COyd7jQyNEmqdxJ2TYsyEeLkmo+goJIEdTDkGRIiV06oxzN+mgSV0A
+         cvBKAmYQ9iZ5h35JJmLAWsEVklfeTKWclOgJ9qnXC5fQmPut7pKgGjirxe6IZc9DDy53
+         lHsTUWh0L5vLGSj4IrUPGXAIvsbPpAKCf49KClLz+aSsX3snEKv6pBEdp40bkof5BySK
+         nOrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aUTAR6wf3YjHvE8+6bjBL3/E962RYRKJQK58myGqUmo=;
+        b=e5jMALYzshO2ciXGPEB0sI9UfhsbuaWMOF6U45+vqF98btd1r6jXUqixjXN/H7zySo
+         WRUXZXT9A4ZeXcuLsT5D4pg4mvc+8vVyr97O5Uh9QQph1WkNtD0wAFXN4+424JqHJn3E
+         mazOG15vm7AMSAMixNGhZqzY3G4UBiiXR9OXPO/S9L6wKra09EFtW0+awV2jkDp3rRpg
+         ToCTYwXecoPt21w5D8vIwAJ2GTSugff1BABkbB6mwoCYvalnbEcnYpWKkhczSBhOETfw
+         rhJNfbI6OawcB9k36v8CZKmC3Mg4wwdAtLvsbKyNQRZkgw0rTyXmWBzKmU/Q/hBZkn4h
+         l5Cg==
+X-Gm-Message-State: AOAM5301LA/XkRPvgtzyxXuUBpU26rojzUqPlG9NCstpAKcWNSCNZ83h
+        AVltw8/rJAh8qQTMyjRaVFWZtKo6+LJAulGJrrk=
+X-Google-Smtp-Source: ABdhPJz0oU98a0IEMUBvGYHgVWiHvtHkWNGD3vRTHMitz6twCDnTyAUyXMyaiL9RpUbfVkqVHjdEnWAwNttkcCue/po=
+X-Received: by 2002:a17:90a:17ad:: with SMTP id q42mr16339993pja.181.1622802120096;
+ Fri, 04 Jun 2021 03:22:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210603101822.9645-1-steven_lee@aspeedtech.com>
+ <20210603101822.9645-4-steven_lee@aspeedtech.com> <CAHp75Vef0HDXAHzSNL-LtA0Sra6Zpivt513_+aFR_um0JeFkog@mail.gmail.com>
+ <20210604021422.GA25112@aspeedtech.com>
+In-Reply-To: <20210604021422.GA25112@aspeedtech.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 4 Jun 2021 13:21:43 +0300
+Message-ID: <CAHp75VfmCJEP+N-U5nhg-R1bhG5iSfqAsPf3022u8T2mmTFRAA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] gpio: gpio-aspeed-sgpio: Add AST2600 sgpio support
+To:     Steven Lee <steven_lee@aspeedtech.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "Hongweiz@ami.com" <Hongweiz@ami.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        Billy Tsai <billy_tsai@aspeedtech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the value of nm->isr_ctx is false, the value of ret is 0.
-So, we set ret to -ENOMEM to indicate this error.
+On Fri, Jun 4, 2021 at 5:14 AM Steven Lee <steven_lee@aspeedtech.com> wrote:
+> The 06/03/2021 19:05, Andy Shevchenko wrote:
+> > On Thu, Jun 3, 2021 at 1:19 PM Steven Lee <steven_lee@aspeedtech.com> wrote:
 
-Clean up smatch warning:
-drivers/ntb/test/ntb_msi_test.c:373 ntb_msit_probe() warn: missing error
-code 'ret'.
+> > > +#define GPIO_OFFSET(x)        ((x) & 0x1f)
+> >
+> > GENMASK()
+> >
+> > ...
+> >
+>
+> Do you mean the macro should be modified as follows?
+> #define GPIO_OFFSET(x)        ((x) & GENMASK(4, 0))
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/ntb/test/ntb_msi_test.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Yes.
 
-diff --git a/drivers/ntb/test/ntb_msi_test.c b/drivers/ntb/test/ntb_msi_test.c
-index 7095ecd..5f9e0be 100644
---- a/drivers/ntb/test/ntb_msi_test.c
-+++ b/drivers/ntb/test/ntb_msi_test.c
-@@ -369,8 +369,10 @@ static int ntb_msit_probe(struct ntb_client *client, struct ntb_dev *ntb)
- 	if (ret)
- 		goto remove_dbgfs;
- 
--	if (!nm->isr_ctx)
-+	if (!nm->isr_ctx) {
-+		return -ENOMEM;
- 		goto remove_dbgfs;
-+	}
- 
- 	ntb_link_enable(ntb, NTB_SPEED_AUTO, NTB_WIDTH_AUTO);
- 
 -- 
-1.8.3.1
-
+With Best Regards,
+Andy Shevchenko
