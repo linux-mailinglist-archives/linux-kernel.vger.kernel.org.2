@@ -2,347 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0CDF39B4C8
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9273439B4CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbhFDIZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 04:25:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbhFDIZM (ORCPT
+        id S230231AbhFDIZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 04:25:19 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:9885 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230162AbhFDIZR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 04:25:12 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F5CCC06174A;
-        Fri,  4 Jun 2021 01:23:11 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id y7so3767723wrh.7;
-        Fri, 04 Jun 2021 01:23:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KIHajBAnwUKRjaJ0HvM8wHxvknqcuhqZlO00SVhU+Co=;
-        b=U/SBPIcbI+qc9Yfhc6UhkFIImeCKezPwowHHZWATcvew5e86GeUUzrvwtHIsxGudcy
-         aVLHx3khkc17vaYTw+qxU6uBg9pPw41TGWxvTcl599Kd8SDG8xJhsbo7o3cyc7aYUG/l
-         qIRr/twHruzPN+2k7KY8P0yJ53ZudF0GPcg+3BwXr2FUikgLnhRIEZ0aAT5O7Pi1z8Re
-         iic16mqVdR4Jr2NZoeVbQIE1kgy5V14833onGSDFxKw3N5DvDdTox0aK5h9ueB2q2VYO
-         kJcj/WBq4tsZ+pYICEP2EIY6WuFQuXWQnGwEThXW/XOmg2sp51m1ln569o2hAJ5qnGju
-         nvfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KIHajBAnwUKRjaJ0HvM8wHxvknqcuhqZlO00SVhU+Co=;
-        b=FvtYkFGfi5v3f+X8IGD3LSscTYCY0VEJJZoOB9JLtlfzu6MdCxtVwNt/bKBbOCx1zr
-         4+jTknP9W6hEdKudsX3nlXKvOQvZiNgat7J/kVS5p12BlcQRtQ5rryJnjh2G/Bkke3M1
-         OBY45Zl/fmaFJbqizOaqrg2IX4DHlOZcFX/VMLTNGkxz+cb2R+uQZ9eF8WxQG1/e0sSa
-         FWQ441cN4gHmmznl/mpZkhqUoHzjTJdzuu77LKw6viFH56dHCX4zHQ1d6pfuJurZrSaR
-         sSEhxXBfjsgnWBMwSPw2JZSZ3FldRTB3NDe9u9GP4501Xp9NPdia7L4F3SBcBb8ADgQz
-         C2TA==
-X-Gm-Message-State: AOAM530wkbiHY541qvlpajjnWofaN3AkgDckudqzchbAMetrsFzZ62sB
-        BXbwJGhmtNHiZJYeidvZkCZe5ajBmdg=
-X-Google-Smtp-Source: ABdhPJycFPkO5y6ucZGuVaTyraNGDJmu+7lSann7PZLFR1VhNu3woeHoWt+is4ZEzfOStYtHVY1djg==
-X-Received: by 2002:adf:e485:: with SMTP id i5mr2574246wrm.214.1622794989624;
-        Fri, 04 Jun 2021 01:23:09 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f2f:c00:bdf8:e0de:4417:41e3? (p200300ea8f2f0c00bdf8e0de441741e3.dip0.t-ipconnect.de. [2003:ea:8f2f:c00:bdf8:e0de:4417:41e3])
-        by smtp.googlemail.com with ESMTPSA id f18sm6207325wrg.34.2021.06.04.01.23.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Jun 2021 01:23:09 -0700 (PDT)
-To:     Koba Ko <koba.ko@canonical.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Fri, 4 Jun 2021 04:25:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1622795001; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=ADeUyWs8WOGYe1X9/HtJWUNUNCnv1+DvXWzcPpPhBC4R0QiQvs1UvmWESeUwfXNZNL
+    i8IhiGwmr87K99Lt5K0Yz9QKBkbJyxPmoPDij0kbxsGp80btGFXUOYqsku/eDwVJEGvD
+    wJX3FqWBJXCCNrrY1tYImxhAZPtzjPX/5MZIAiUe4GLLcW/meuNSXVePjtG0AuGSkZvm
+    dic7/R9wvIx9yPkmkOtLHcSIkmZU12jL4JENXAHXHfS6iGBsXhAFvP5A/kAUg0qu83tg
+    wIqwri/xmBTcMEzx43Axf7OtxAGKO50AWJACpI87e2yPXd6Zus0qrPDIHBik9UO/2Z+9
+    FXRQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1622795001;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=Dn4eYzR4UPtYmZ5oCXeq8dW6Q5won2xS92hhUS3C5qY=;
+    b=DfVJgxWAdP4NQEIeF2YPzr3pjCREN+nipuST24vWt1++OCpD7m8b+C1y+Xlc8WuLBO
+    rKPJNA+wANKchRM93gJEBUcUWY8Ngi3Aule8IDEBdIQe91f+BnseRhxQy0CGfPOoxWd5
+    JOB1f/rQ9dyeiiRxZCzXC+nXOICIT6PWBTfM4dMuDw7Jo7rns3jh28MScF1Vcutyw93d
+    JqXqf5j+c3HtYqGE4kLM6c9pjPv/O8iNaMeVurSVhTKVt53jsVg5pgaUOtQx8GU+9Emv
+    mOla3nd0IUurWfodLgMxcixnVBrdMTwQV+iF7G9CS3gUk0ye5stE9B2g8TWU+S3BcVLM
+    YMrw==
+ARC-Authentication-Results: i=1; strato.com;
+    dkim=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1622795001;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=Dn4eYzR4UPtYmZ5oCXeq8dW6Q5won2xS92hhUS3C5qY=;
+    b=eJ65tmHcVAWu18TP/QVwK5YGRJDbqaqNpXo0qPjYOi3CkNtrekCnK8Iq1CNiFGAZ4r
+    Try0Q2mGl/VzQc5y77W7GF5fxrGr3PRbHiLgrrPZSI7tOJqhVWRsIR7ltOY/NJVcERrO
+    EatabyIXsmeo/qxwm3hfuZBWTyjSbhjM40TMCHKTeKvElI9lUbRqTDgR6rqzsuPZZQEw
+    qncUU3QalEP6PDQ62iOjfwCf06a1undaytPSXSnb15CfAlk0anpXnNT7lntI7CDVo1Rn
+    E2EDFtP1vglGZ2pfAV1X5SqFJS0PQSQUbdPkUa2+8thO0Hw2B0+z6OugdNHIQ3Y7otpL
+    ybyw==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j8Ic3NBg=="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 47.27.2 DYNA|AUTH)
+    with ESMTPSA id y01375x548NLD10
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Fri, 4 Jun 2021 10:23:21 +0200 (CEST)
+Date:   Fri, 4 Jun 2021 10:23:15 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210603025414.226526-1-koba.ko@canonical.com>
- <3d2e7a11-92ad-db06-177b-c6602ef1acd4@gmail.com>
- <CAJB-X+V4vpLoNt2C_i=3mS4UtFnDdro5+hgaFXHWxcvobO=pzg@mail.gmail.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [PATCH] r8169: introduce polling method for link change
-Message-ID: <f969a075-25a1-84ba-daad-b4ed0e7f75f5@gmail.com>
-Date:   Fri, 4 Jun 2021 10:23:02 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+Subject: Re: [PATCH v2 0/4] PM: domains: Avoid boilerplate code for DVFS in
+ subsystem/drivers
+Message-ID: <YLni830rOJWy1NRU@gerhold.net>
+References: <20210603093438.138705-1-ulf.hansson@linaro.org>
+ <YLi5N06Qs+gYHgYg@gerhold.net>
+ <CAPDyKFqQ==zPwXjBxKAX9m38YfxFViqLTz8autnZc1suT5cayg@mail.gmail.com>
+ <YLkOAyydZMnxkEy+@gerhold.net>
+ <CAPDyKFpaKkeyOpP7iW8-WG7DLs6Gd1eD2KO3pDYrVQ3z88zFJQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJB-X+V4vpLoNt2C_i=3mS4UtFnDdro5+hgaFXHWxcvobO=pzg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFpaKkeyOpP7iW8-WG7DLs6Gd1eD2KO3pDYrVQ3z88zFJQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.06.2021 09:22, Koba Ko wrote:
-> On Thu, Jun 3, 2021 at 6:00 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
->>
->> On 03.06.2021 04:54, Koba Ko wrote:
->>> For RTL8106E, it's a Fast-ethernet chip.
->>> If ASPM is enabled, the link chang interrupt wouldn't be triggered
->>> immediately and must wait a very long time to get link change interrupt.
->>> Even the link change interrupt isn't triggered, the phy link is already
->>> established.
->>>
->> At first please provide a full dmesg log and output of lspci -vv.
->> Do you have the firmware for the NIC loaded? Please provide "ethtool -i <if>"
->> output.
+On Fri, Jun 04, 2021 at 09:18:45AM +0200, Ulf Hansson wrote:
+> On Thu, 3 Jun 2021 at 19:16, Stephan Gerhold <stephan@gerhold.net> wrote:
+> >
+> > On Thu, Jun 03, 2021 at 05:27:30PM +0200, Ulf Hansson wrote:
+> > > On Thu, 3 Jun 2021 at 13:13, Stephan Gerhold <stephan@gerhold.net> wrote:
+> > > > I think this might also go into the direction of my problem with the OPP
+> > > > core for CPU DVFS [1] since the OPP core currently does not "power-on"
+> > > > the power domains, it just sets a performance state. I got kind of stuck
+> > > > with all the complexity of power domains in Linux so I think we never
+> > > > solved that.
+> > >
+> > > Hmm, that issue is in a way related.
+> > >
+> > > Although, if I understand correctly, that was rather about at what
+> > > layer it makes best sense to activate the device (from runtime PM
+> > > point of view). And this was needed due to the fact that the
+> > > corresponding genpd provider, requires the PM domain to be power on to
+> > > allow changing a performance state for it. Did I get that correct?
+> > >
+> >
+> > Yes, mostly. But I guess I keep coming back to the same question:
+> >
+> > When/why does it make sense to vote for a "performance state" of
+> > a power domain that is or might be powered off?
+> >
+> > "Powered off" sounds like the absolutely lowest possible performance
+> > state to me, it's just not on at all. And if suddenly a device comes and
+> > says "I want performance state X", nothing can change until the power
+> > domain is also "powered on".
+> >
+> > I think my "CPU DVFS" problem only exists because in many other
+> > situations it's possible to rely on one of the following side effects:
+> >
+> >   1. The genpd provider does not care if it's powered on or not.
+> >      (i.e. it's always-on or implicitly powers on if state > 0).
+> >   2. There is some other device that votes to keep the power domain on.
+> >
+> > And that's how the problem relates to my comment for this patch series ...
+> >
+> > >
+> > > >
+> > > > Do I understand your patch set correctly that you basically make the
+> > > > performance state votes conditional to the "power-on" vote of the device
+> > > > (which is automatically toggled during runtime/system PM)?
+> > >
+> > > The series can be considered as a step in that direction, but no, this
+> > > series doesn't change that behaviour.
+> > >
+> > > Users of dev_pm_genpd_set_performance_state() are still free to set a
+> > > performance state, orthogonally to whether the PM domain is powered on
+> > > or off.
+> > >
+> > > >
+> > > > If yes, I think that's a good thing. It was always really confusing to me
+> > > > that a device can make performance state votes if it doesn't actually
+> > > > want the power domain to be powered on.
+> > >
+> > > I share your view, it's a bit confusing.
+> > >
+> > > Just adding the condition internally to genpd to prevent the caller of
+> > > dev_pm_genpd_set_performance() from succeeding to set a new state,
+> > > unless the genpd is powered on, should be a rather simple thing to
+> > > add.
+> > >
+> > > However, to change this, we first need to double check that all the
+> > > callers are making sure they have turned on the PM domain (typically
+> > > via runtime PM).
+> > >
+> >
+> > ... because if performance state votes would be conditional to the
+> > "power-on" vote of the device, it would no longer be possible
+> > to rely on the side effects mentioned above. So this would most
+> > certainly break some code that (incorrectly?) relies on these side
+> > effects, but would also prevent such code.
 > 
-> please get the logs from here,
-> https://bugzilla.kernel.org/show_bug.cgi?id=213165
+> Right. I understand your point and I am open to discuss an
+> implementation. Although, I suggest we continue that separately from
+> the $subject series.
 > 
->> Does the issue affect link-down and/or link-up detection?
->> Do you have runtime pm enabled? Then, after 10s of link-down NIC goes to
->> D3hot and link-up detection triggers a PME.
+> >
+> > My (personal) feeling so far is that just dropping performance votes
+> > during runtime/system suspend just makes the entire situation even more
+> > confusing.
 > 
-> Issue affect link-up.
-> yes, pm runtime is enabled, but rtl8106e always stays D0 even if the
-> cable isn't present.
+> Well, that's what most subsystems/drivers need to do.
 > 
-Then runtime pm doesn't seem to be set to "auto". Else 10s after link loss
-the chip runtime-suspends and is set to D3hot.
+> Moreover, we have specific devices that only use one default OPP [1].
+> 
+> >
+> > > >
+> > > > What happens if a driver calls dev_pm_genpd_set_performance_state(...)
+> > > > while the device is suspended? Will that mess up the performance state
+> > > > when the device resumes?
+> > >
+> > > Good question. The idea is:
+> > >
+> > > If genpd in genpd_runtime_suspend() are able to drop an existing vote
+> > > for a performance state, it should restore the vote in
+> > > genpd_runtime_resume(). This also means, if there is no vote to drop
+> > > in genpd_runtime_suspend(), genpd should just leave the vote as is in
+> > > genpd_runtime_resume().
+> > >
+> >
+> > But the next time the device enters runtime suspend that vote would be
+> > dropped, wouldn't it? That feels kind of strange to me.
+> 
+> What do you mean by "next time"?
+> 
 
->>
->>> Introduce a polling method to watch the status of phy link and disable
->>> the link change interrupt.
->>> Also add a quirk for those realtek devices have the same issue.
->>>
->> Which are the affected chip versions? Did you check with Realtek?
->> Your patch switches to polling for all Fast Ethernet versions,
->> and that's not what we want.
+Basically just like:
+
+  <device runtime-suspended>
+  driver does dev_pm_genpd_set_performance_state(...)
+    - performance state is applied immediately, even though device does
+      apparently not actually want the power domain to be powered on
+  <device runtime resumes>
+    - performance state is kept
+  <device runtime suspends>
+    - performance state is dropped
+  ...
+
+I'm not saying this example makes sense (it doesn't for me). It doesn't
+make sense to vote for a performance state while runtime suspended.
+
+But with this patch series we still allow that, and it will kind of
+produce inconsistent behavior that the performance state is applied
+immediately, even though the device is currently runtime-suspended.
+But once it runtime suspends again, suddenly it is dropped.
+
+And when you say:
+
+> My main point is, if the device enters runtime suspend state, why
+> should we keep the vote for an OPP for the device? I mean, the device
+> isn't going to be used anyway.
 > 
-> I don't know the exact version, only the chip name 806e(pci device id 0x8165).
-> ok, Im asking Realtek to help how to identify the chip issue is observed.
-> 
-At least your Bugzilla report refers to VER_39. PCI device id 0x8136 is shared
-by all fast ethernet chip versions.
-Do you know other affected chip versions apart from VER_39 ?
 
-In the Bugzilla report you also write the issue occurs with GBit-capable
-link partners. This sounds more like an aneg problem.
-The issue doesn't occur with fast ethernet link partners?
+A very similar point would be: "If the device *is* in runtime suspend
+state, why should we take a vote for an OPP for the device?"
 
-Your bug report also includes a patch that disables L1_1 only.
-Not sure how this is related because the chip version we speak about
-here doesn't support L1 sub-states.
+But I understand that this might be something we should address
+separately in a follow-up patch/discussion. Don't get me wrong, I agree
+this patch set is good, I just think we should go one step further and
+finally make this consistent and less prone to side effects.
 
->>
->> My suspicion would be that something is system-dependent. Else I think
->> we would have seen such a report before.
-> On the mainline, the aspm is disable, so you may not observe this.
-> If you enable ASPM and must wait CHIP go to power-saving mode, then
-> you can observe the issue.
->>
+A good first step might be something like a WARN_ON_ONCE(...) if a
+device tries to vote for a performance state while runtime suspended.
+Then we might get a clearer picture which drivers do that currently.
 
-So what you're saying is that mainline is fine and your problem is with
-a downstream kernel with re-enabled ASPM? So there's nothing broken in
-mainline? In mainline you have the option to re-enable ASPM states
-individually via sysfs (link subdir at pci device).
-
->>> Signed-off-by: Koba Ko <koba.ko@canonical.com>
->>> ---
->>>  drivers/net/ethernet/realtek/r8169.h      |   2 +
->>>  drivers/net/ethernet/realtek/r8169_main.c | 112 ++++++++++++++++++----
->>>  2 files changed, 98 insertions(+), 16 deletions(-)
->>>
->>> diff --git a/drivers/net/ethernet/realtek/r8169.h b/drivers/net/ethernet/realtek/r8169.h
->>> index 2728df46ec41..a8c71adb1b57 100644
->>> --- a/drivers/net/ethernet/realtek/r8169.h
->>> +++ b/drivers/net/ethernet/realtek/r8169.h
->>> @@ -11,6 +11,8 @@
->>>  #include <linux/types.h>
->>>  #include <linux/phy.h>
->>>
->>> +#define RTL8169_LINK_TIMEOUT (1 * HZ)
->>> +
->>>  enum mac_version {
->>>       /* support for ancient RTL_GIGA_MAC_VER_01 has been removed */
->>>       RTL_GIGA_MAC_VER_02,
->>> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
->>> index 2c89cde7da1e..70aacc83d641 100644
->>> --- a/drivers/net/ethernet/realtek/r8169_main.c
->>> +++ b/drivers/net/ethernet/realtek/r8169_main.c
->>> @@ -178,6 +178,11 @@ static const struct pci_device_id rtl8169_pci_tbl[] = {
->>>
->>>  MODULE_DEVICE_TABLE(pci, rtl8169_pci_tbl);
->>>
->>> +static const struct pci_device_id rtl8169_linkChg_polling_enabled[] = {
->>> +     { PCI_VDEVICE(REALTEK, 0x8136), RTL_CFG_NO_GBIT },
->>> +     { 0 }
->>> +};
->>> +
->>
->> This doesn't seem to be used.
->>
->>>  enum rtl_registers {
->>>       MAC0            = 0,    /* Ethernet hardware address. */
->>>       MAC4            = 4,
->>> @@ -618,6 +623,7 @@ struct rtl8169_private {
->>>       u16 cp_cmd;
->>>       u32 irq_mask;
->>>       struct clk *clk;
->>> +     struct timer_list link_timer;
->>>
->>>       struct {
->>>               DECLARE_BITMAP(flags, RTL_FLAG_MAX);
->>> @@ -1179,6 +1185,16 @@ static void rtl8168ep_stop_cmac(struct rtl8169_private *tp)
->>>       RTL_W8(tp, IBCR0, RTL_R8(tp, IBCR0) & ~0x01);
->>>  }
->>>
->>> +static int rtl_link_chng_polling_quirk(struct rtl8169_private *tp)
->>> +{
->>> +     struct pci_dev *pdev = tp->pci_dev;
->>> +
->>> +     if (pdev->vendor == 0x10ec && pdev->device == 0x8136 && !tp->supports_gmii)
->>> +             return 1;
->>> +
->>> +     return 0;
->>> +}
->>> +
->>>  static void rtl8168dp_driver_start(struct rtl8169_private *tp)
->>>  {
->>>       r8168dp_oob_notify(tp, OOB_CMD_DRIVER_START);
->>> @@ -4608,6 +4624,75 @@ static void rtl_task(struct work_struct *work)
->>>       rtnl_unlock();
->>>  }
->>>
->>> +static void r8169_phylink_handler(struct net_device *ndev)
->>> +{
->>> +     struct rtl8169_private *tp = netdev_priv(ndev);
->>> +
->>> +     if (netif_carrier_ok(ndev)) {
->>> +             rtl_link_chg_patch(tp);
->>> +             pm_request_resume(&tp->pci_dev->dev);
->>> +     } else {
->>> +             pm_runtime_idle(&tp->pci_dev->dev);
->>> +     }
->>> +
->>> +     if (net_ratelimit())
->>> +             phy_print_status(tp->phydev);
->>> +}
->>> +
->>> +static unsigned int
->>> +rtl8169_xmii_link_ok(struct net_device *dev)
->>> +{
->>> +     struct rtl8169_private *tp = netdev_priv(dev);
->>> +     unsigned int retval;
->>> +
->>> +     retval = (RTL_R8(tp, PHYstatus) & LinkStatus) ? 1 : 0;
->>> +
->>> +     return retval;
->>> +}
->>> +
->>> +static void
->>> +rtl8169_check_link_status(struct net_device *dev)
->>> +{
->>> +     struct rtl8169_private *tp = netdev_priv(dev);
->>> +     int link_status_on;
->>> +
->>> +     link_status_on = rtl8169_xmii_link_ok(dev);
->>> +
->>> +     if (netif_carrier_ok(dev) == link_status_on)
->>> +             return;
->>> +
->>> +     phy_mac_interrupt(tp->phydev);
->>> +
->>> +     r8169_phylink_handler (dev);
->>> +}
->>> +
->>> +static void rtl8169_link_timer(struct timer_list *t)
->>> +{
->>> +     struct rtl8169_private *tp = from_timer(tp, t, link_timer);
->>> +     struct net_device *dev = tp->dev;
->>> +     struct timer_list *timer = t;
->>> +     unsigned long flags;
->>
->> flags isn't used and triggers a compiler warning. Did you even
->> compile-test your patch?
->>
->>> +
->>> +     rtl8169_check_link_status(dev);
->>> +
->>> +     if (timer_pending(&tp->link_timer))
->>> +             return;
->>> +
->>> +     mod_timer(timer, jiffies + RTL8169_LINK_TIMEOUT);
->>> +}
->>> +
->>> +static inline void rtl8169_delete_link_timer(struct net_device *dev, struct timer_list *timer)
->>> +{
->>> +     del_timer_sync(timer);
->>> +}
->>> +
->>> +static inline void rtl8169_request_link_timer(struct net_device *dev)
->>> +{
->>> +     struct rtl8169_private *tp = netdev_priv(dev);
->>> +
->>> +     timer_setup(&tp->link_timer, rtl8169_link_timer, TIMER_INIT_FLAGS);
->>> +}
->>> +
->>>  static int rtl8169_poll(struct napi_struct *napi, int budget)
->>>  {
->>>       struct rtl8169_private *tp = container_of(napi, struct rtl8169_private, napi);
->>> @@ -4624,21 +4709,6 @@ static int rtl8169_poll(struct napi_struct *napi, int budget)
->>>       return work_done;
->>>  }
->>>
->>> -static void r8169_phylink_handler(struct net_device *ndev)
->>> -{
->>> -     struct rtl8169_private *tp = netdev_priv(ndev);
->>> -
->>> -     if (netif_carrier_ok(ndev)) {
->>> -             rtl_link_chg_patch(tp);
->>> -             pm_request_resume(&tp->pci_dev->dev);
->>> -     } else {
->>> -             pm_runtime_idle(&tp->pci_dev->dev);
->>> -     }
->>> -
->>> -     if (net_ratelimit())
->>> -             phy_print_status(tp->phydev);
->>> -}
->>> -
->>>  static int r8169_phy_connect(struct rtl8169_private *tp)
->>>  {
->>>       struct phy_device *phydev = tp->phydev;
->>> @@ -4769,6 +4839,10 @@ static int rtl_open(struct net_device *dev)
->>>               goto err_free_irq;
->>>
->>>       rtl8169_up(tp);
->>> +
->>> +     if (rtl_link_chng_polling_quirk(tp))
->>> +             mod_timer(&tp->link_timer, jiffies + RTL8169_LINK_TIMEOUT);
->>> +
->>>       rtl8169_init_counter_offsets(tp);
->>>       netif_start_queue(dev);
->>>  out:
->>> @@ -4991,7 +5065,10 @@ static const struct net_device_ops rtl_netdev_ops = {
->>>
->>>  static void rtl_set_irq_mask(struct rtl8169_private *tp)
->>>  {
->>> -     tp->irq_mask = RxOK | RxErr | TxOK | TxErr | LinkChg;
->>> +     tp->irq_mask = RxOK | RxErr | TxOK | TxErr;
->>> +
->>> +     if (!rtl_link_chng_polling_quirk(tp))
->>> +             tp->irq_mask |= LinkChg;
->>>
->>>       if (tp->mac_version <= RTL_GIGA_MAC_VER_06)
->>>               tp->irq_mask |= SYSErr | RxOverflow | RxFIFOOver;
->>> @@ -5436,6 +5513,9 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
->>>       if (pci_dev_run_wake(pdev))
->>>               pm_runtime_put_sync(&pdev->dev);
->>>
->>> +     if (rtl_link_chng_polling_quirk(tp))
->>> +             rtl8169_request_link_timer(dev);
->>> +
->>>       return 0;
->>>  }
->>>
->>>
->>
->> All this isn't needed. If you want to switch to link status polling,
->> why don't you simply let phylib do it? PHY_MAC_INTERRUPT -> PHY_POLL
-> 
-> Thanks for suggestions, I tried to use PHY_POLL, it could do the same
-> thing that I did.
-> 
->> Your timer-based code most likely would have problems if runtime pm
->> is enabled. Then you try to read the link status whilst NIC is in
->> D3hot.
-
+Stephan
