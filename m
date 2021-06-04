@@ -2,129 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58AC39B9F1
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 408D739B9F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbhFDNhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 09:37:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbhFDNhE (ORCPT
+        id S230250AbhFDNje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 09:39:34 -0400
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:34121 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230004AbhFDNjd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 09:37:04 -0400
-Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59731C0619F6
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 06:35:18 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id 18070C800BF;
-        Fri,  4 Jun 2021 15:35:17 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
-        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
-        with LMTP id D_sbqGfmdHEP; Fri,  4 Jun 2021 15:35:16 +0200 (CEST)
-Received: from wsembach-tuxedo.fritz.box (p200300e37f2E2A0038B625c68b541A92.dip0.t-ipconnect.de [IPv6:2003:e3:7f2e:2a00:38b6:25c6:8b54:1a92])
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPA id D3747C800BE;
-        Fri,  4 Jun 2021 15:35:16 +0200 (CEST)
-From:   Werner Sembach <wse@tuxedocomputers.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Werner Sembach <wse@tuxedocomputers.com>
-Subject: [PATCH] typo: Fix typo "softare" in documentation and several comments
-Date:   Fri,  4 Jun 2021 15:35:12 +0200
-Message-Id: <20210604133512.7402-1-wse@tuxedocomputers.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 4 Jun 2021 09:39:33 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id A8547608;
+        Fri,  4 Jun 2021 09:37:39 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Fri, 04 Jun 2021 09:37:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=kjgxFx1fo1R8qyIlNGdp4770Vek
+        MTC7Q2NlgooVURxE=; b=izeA5jC0DBpfRx7jKFqwJDK2I9aSnQlxG9m/zFg8M6c
+        GuTYykAIOBK5ZesSfvTKx5QmiSsW9PDFrJFJ+wgusmR/6gRsQZ6idSxFFBCr6mNG
+        SS6GC9tL/d/BwWR512hOrRUPqMTyyLxZfTuYP9HNSFxMcrFxYxRdeXw98qgxAzjd
+        /YnFS8WKwfVmnaSfg1o+sJGPsYlnMjtpG8N1/XkMvCn/t6Uo/1VxAbSgZ4/4Kh+M
+        P9Wq04gT6rOVVVDhUnxtwFZMpUtbDHkw+/91yH2SRtc55EkYwnm9u+6BRHvpmNTk
+        q7kz9xaLmMaZFvh6m0ympkZ0+kK3A9treIkVkIF+nZg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=kjgxFx
+        1fo1R8qyIlNGdp4770VekMTC7Q2NlgooVURxE=; b=VJfSeAlbDcJr4z8IzoEsTC
+        6nqA/2LcPNd71yPe+ZkgNyumVBpnnt2j6GRo53a9vjEKac4aaydvRXgGWj42DY/T
+        S4AXZXljdPB4JlqEhP8jJ7paNPUeNE/i84n87odof7Dq3nfshZY4mqUCaokN0rvw
+        CTPaSG1TM4kt0NL10ffxb+a7YjOfWBe+GWp4CKsHhurhVKTX9mwrBAiXKh45BztE
+        ymUnE4rc03aq0JLMx/sInsx/rkrxA2rrxA+LDfG0LkJNx1Yk5djMzjxDuT6Z77Sh
+        x3W3/+muGXNJ++PJYX5Y7P/00c1Mifm7LsKPZv+r+JDVcD0X7J1tr0XJ5ZGYmeDA
+        ==
+X-ME-Sender: <xms:oSy6YG2pnG6lggXlmimFhz246SYPpvjXHO_9_c_DYFOs86tmNrhoKg>
+    <xme:oSy6YJEtXtf3S3dR15F6ekTJqPOZF65IRbFIyzBaLVm57GheagjUC9F9mlknvwjPF
+    QdVurFcNTtTSg>
+X-ME-Received: <xmr:oSy6YO4EFgfjDwSGPF0v_bxiw6qxAnOqzUQ4Gz8EgVYnBOtpsKVUF1AU9PoyIpU-yrDUWyHjl1Ra-WiU3A_i7dUs8Bj7KgYE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtuddgieejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
+    drtghomh
+X-ME-Proxy: <xmx:oSy6YH1ZGQHQJqNCvNG8PhTzO3ucPI-glfvH2IuggZne2PmpAIhO9A>
+    <xmx:oSy6YJEssV-NkNmVRgC0NizqB5YIdNwL_oqp4He-hW6tIsVcRQ5cNA>
+    <xmx:oSy6YA_cDEEV4AE6746JOQkIpDYeojGwQnsM9vJk0A6Pp4-KHbMsXw>
+    <xmx:oyy6YO5D65-ZyZw-cqOMSlPBrSUQqqmnPsgVv0XauzTCPgYXOXPPnA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 4 Jun 2021 09:37:36 -0400 (EDT)
+Date:   Fri, 4 Jun 2021 15:37:35 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Rajat Jain <rajatja@google.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the usb tree
+Message-ID: <YLosn8r6pg4AUC14@kroah.com>
+References: <20210601183002.26176586@canb.auug.org.au>
+ <CACK8Z6Fp-_oRkC-dQ4U5y6ZUrr7Q3U084PiP+Q9daYstpps+aA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACK8Z6Fp-_oRkC-dQ4U5y6ZUrr7Q3U084PiP+Q9daYstpps+aA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I stumbled above the "softare" instead of "software" typo in the kernel docs
-about the drm subsystem and fixed it everywhere.
+On Tue, Jun 01, 2021 at 10:39:42AM -0700, Rajat Jain wrote:
+> Hello,
+> 
+> 
+> On Tue, Jun 1, 2021 at 1:30 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > Hi all,
+> >
+> > After merging the usb tree, today's linux-next build (htmldocs) produced
+> > this warning:
+> >
+> > Documentation/ABI/testing/sysfs-devices-removable:2: WARNING: Unexpected indentation.
+> > Documentation/ABI/testing/sysfs-devices-removable:2: WARNING: Block quote ends without a blank line; unexpected unindent.
+> 
+> I'd be happy to send a patch to fix this, but I didn't really
+> understand what needs to be done.
+> 
+> Here is the relevant documentation update in the patch:
+> 
+> +What:          /sys/devices/.../removable
+> +Date:          May 2021
+> +Contact:       Rajat Jain <rajatxjain@gmail.com>
+> +Description:
+> +               Information about whether a given device can be removed from the
+> +               platform by the user. This is determined by its subsystem in a
+> +               bus / platform-specific way. This attribute is only present for
+> +               devices that can support determining such information:
+> +
+> +               "removable": device can be removed from the platform by the user
+> +               "fixed":     device is fixed to the platform / cannot be removed
+> +                            by the user.
+> +               "unknown":   The information is unavailable / cannot be deduced.
+> +
+> +               Currently this is only supported by USB (which infers the
+> +               information from a combination of hub descriptor bits and
+> +               platform-specific data such as ACPI).
+> 
+> I'd be happy to send a patch if you can point me what needs to be done
+> (or let Stephen / Greg / some one else do it if it is easier to just
+> do it instead of guiding me).
 
-Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
----
- arch/alpha/kernel/osf_sys.c                   | 4 ++--
- arch/arc/include/asm/pgtable.h                | 2 +-
- drivers/gpu/drm/drm_mode_object.c             | 2 +-
- drivers/mtd/nand/raw/arasan-nand-controller.c | 2 +-
- drivers/net/ethernet/micrel/ks8842.c          | 2 +-
- 5 files changed, 6 insertions(+), 6 deletions(-)
+I do not know what the "right" thing to do here is, sorry.  Maybe one of
+the kerneldoc people know?
 
-diff --git a/arch/alpha/kernel/osf_sys.c b/arch/alpha/kernel/osf_sys.c
-index d5367a1c6300..d31167e3269c 100644
---- a/arch/alpha/kernel/osf_sys.c
-+++ b/arch/alpha/kernel/osf_sys.c
-@@ -834,7 +834,7 @@ SYSCALL_DEFINE5(osf_setsysinfo, unsigned long, op, void __user *, buffer,
- 			return -EFAULT;
- 		state = &current_thread_info()->ieee_state;
- 
--		/* Update softare trap enable bits.  */
-+		/* Update software trap enable bits.  */
- 		*state = (*state & ~IEEE_SW_MASK) | (swcr & IEEE_SW_MASK);
- 
- 		/* Update the real fpcr.  */
-@@ -854,7 +854,7 @@ SYSCALL_DEFINE5(osf_setsysinfo, unsigned long, op, void __user *, buffer,
- 		state = &current_thread_info()->ieee_state;
- 		exc &= IEEE_STATUS_MASK;
- 
--		/* Update softare trap enable bits.  */
-+		/* Update software trap enable bits.  */
-  		swcr = (*state & IEEE_SW_MASK) | exc;
- 		*state |= exc;
- 
-diff --git a/arch/arc/include/asm/pgtable.h b/arch/arc/include/asm/pgtable.h
-index 5878846f00cf..1e2b890dcea5 100644
---- a/arch/arc/include/asm/pgtable.h
-+++ b/arch/arc/include/asm/pgtable.h
-@@ -40,7 +40,7 @@
- /**************************************************************************
-  * Page Table Flags
-  *
-- * ARC700 MMU only deals with softare managed TLB entries.
-+ * ARC700 MMU only deals with software managed TLB entries.
-  * Page Tables are purely for Linux VM's consumption and the bits below are
-  * suited to that (uniqueness). Hence some are not implemented in the TLB and
-  * some have different value in TLB.
-diff --git a/drivers/gpu/drm/drm_mode_object.c b/drivers/gpu/drm/drm_mode_object.c
-index b26588b52795..e2fd95914d49 100644
---- a/drivers/gpu/drm/drm_mode_object.c
-+++ b/drivers/gpu/drm/drm_mode_object.c
-@@ -328,7 +328,7 @@ static int __drm_object_property_get_value(struct drm_mode_object *obj,
-  * @property: property to retrieve
-  * @val: storage for the property value
-  *
-- * This function retrieves the softare state of the given property for the given
-+ * This function retrieves the software state of the given property for the given
-  * property. Since there is no driver callback to retrieve the current property
-  * value this might be out of sync with the hardware, depending upon the driver
-  * and property.
-diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
-index 549aac00228e..4e7b65e93559 100644
---- a/drivers/mtd/nand/raw/arasan-nand-controller.c
-+++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
-@@ -351,7 +351,7 @@ static int anfc_read_page_hw_ecc(struct nand_chip *chip, u8 *buf,
- 		return ret;
- 
- 	/*
--	 * For each step, compute by softare the BCH syndrome over the raw data.
-+	 * For each step, compute by software the BCH syndrome over the raw data.
- 	 * Compare the theoretical amount of errors and compare with the
- 	 * hardware engine feedback.
- 	 */
-diff --git a/drivers/net/ethernet/micrel/ks8842.c b/drivers/net/ethernet/micrel/ks8842.c
-index caa251d0e381..6c5f6a4763fe 100644
---- a/drivers/net/ethernet/micrel/ks8842.c
-+++ b/drivers/net/ethernet/micrel/ks8842.c
-@@ -242,7 +242,7 @@ static void ks8842_reset(struct ks8842_adapter *adapter)
- 		msleep(10);
- 		iowrite16(0, adapter->hw_addr + REG_GRR);
- 	} else {
--		/* The KS8842 goes haywire when doing softare reset
-+		/* The KS8842 goes haywire when doing software reset
- 		* a work around in the timberdale IP is implemented to
- 		* do a hardware reset instead
- 		ks8842_write16(adapter, 3, 1, REG_GRR);
--- 
-2.25.1
-
+greg k-h
