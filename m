@@ -2,86 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D50BA39B8FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 14:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB4A39B8F8
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 14:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbhFDM2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 08:28:12 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:38258 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhFDM2L (ORCPT
+        id S230162AbhFDM0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 08:26:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51501 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230039AbhFDM0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 08:28:11 -0400
-Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 211A221A28;
-        Fri,  4 Jun 2021 12:26:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1622809584;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=68aSFdxQrCcgu3e4kaM9HdB6LJTQPLk85xJqiAjeVBA=;
-        b=MWGFWkeSccJO1/1UxpgHKkC/7uOz+MnNxZOE+SbnMuWTCNDmNPZqtNrUA4txUZTg2fUSzP
-        hvIUQy9kD60XHGmQKHq+1hbcJIvZrDC0jWkQMmc1bHIh9qdbrDS/ciTjDuS/JENnDIgD+o
-        IaYnJPn8m2DOkUvrVOER77e8hw9VYy8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1622809584;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=68aSFdxQrCcgu3e4kaM9HdB6LJTQPLk85xJqiAjeVBA=;
-        b=mMXZlvJTmrtOPACH4cc3gBjd1fUchWiCNxLHhu67egXaTrOBVVsVOCc/9U5XEvPknbjPvg
-        p3ilbM6K/xzufXAw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id EBE66A3B81;
-        Fri,  4 Jun 2021 12:26:23 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 85E78DB225; Fri,  4 Jun 2021 14:23:42 +0200 (CEST)
-Date:   Fri, 4 Jun 2021 14:23:42 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] btrfs: Remove total_data_size variable in
- btrfs_batch_insert_items()
-Message-ID: <20210604122342.GB31483@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nathan Chancellor <nathan@kernel.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-References: <20210603174311.1008645-1-nathan@kernel.org>
+        Fri, 4 Jun 2021 08:26:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622809505;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=T1WL3P0Jah1FRVj8EdxTUun4/hVMeybsNLS0++AfbT0=;
+        b=D3VABfUUepIQpkGzBNNtoCxgF9w6jX5wGmxab+XTFwco2KchhvHzsahZF8QO3ftCaLI210
+        QBdEkDLsga3+h++dWYiUsvkkKjCeZtgvrQyZU2gcHcN3pF7UzNLkxs28FIpi3L/CoUFvrx
+        Dtk65n0cEte+dTj7rDwAMH+tWzoebJQ=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-197-5y0vgUK4MBuKE3KqTXzXzw-1; Fri, 04 Jun 2021 08:25:04 -0400
+X-MC-Unique: 5y0vgUK4MBuKE3KqTXzXzw-1
+Received: by mail-ed1-f71.google.com with SMTP id s18-20020a0564020372b029038febc2d475so4906187edw.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 05:25:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version;
+        bh=T1WL3P0Jah1FRVj8EdxTUun4/hVMeybsNLS0++AfbT0=;
+        b=fEVXNJdkhUDgM20URNsHvz0iJbXWVKMXWY4hBR74BPmya7rBJSYIKErcemrOqctqOd
+         6g7HtbDy3stTFySTRpcAagmbh3ObTW5PEKRntXv12m8Axpt1XCRbIsB4JLtEPd2n2P7S
+         jL5KDA/v0DNrgMltC5/09zqlu91xqQFkjid1urkFNKKpZxJiRT/QQGrj7gg/Csx/PBZM
+         KaaVYlowNwkQT5m9Uo9RKHO+WWDVG+pkulJNS8wOnHTzndmbRbY5LCT3m/VS7rquZB8t
+         sCViYerEpABia9J7VebJthI5zQVPdqz2zjTaXpnQQgfqvuPFD2FWiQYWsw2VoxsdtUJy
+         3Etw==
+X-Gm-Message-State: AOAM5333r5sWzRBZatwrDYfxc4W2+4qpwXgY5O/6/ci9Ug14mo48x+ax
+        RuMhxmDsNRx6Mh1WYvVyliManqGV/6t73NjCpwj0s/zrS6QOswJtzA4sEINMvQNoMyumhvGoZfz
+        TjntKRsDVynDQshDJBzl0EV2j
+X-Received: by 2002:a17:906:a294:: with SMTP id i20mr3970586ejz.330.1622809503414;
+        Fri, 04 Jun 2021 05:25:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzfBZrM0jIbqGlvYiCojcZlu9rkqXCZiG0w6fufb5vpo1LYyrvNtiveJmLUv90tBUtvyXi0ew==
+X-Received: by 2002:a17:906:a294:: with SMTP id i20mr3970577ejz.330.1622809503266;
+        Fri, 04 Jun 2021 05:25:03 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id e22sm3207492edv.57.2021.06.04.05.25.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 05:25:02 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Matthew Wilcox (Oracle) <willy@infradead.org>,
+        dri-devel@lists.freedesktop.org, linux-hyperv@vger.kernel.org,
+        linux-fbdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Michael Kelley <mikelley@microsoft.com>, wei.liu@kernel.org,
+        Dexuan Cui <decui@microsoft.com>
+Subject: [bug report] Commit ccf953d8f3d6 ("fb_defio: Remove custom
+ address_space_operations") breaks Hyper-V FB driver
+Date:   Fri, 04 Jun 2021 14:25:01 +0200
+Message-ID: <87v96tzujm.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210603174311.1008645-1-nathan@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 10:43:11AM -0700, Nathan Chancellor wrote:
-> clang warns:
-> 
-> fs/btrfs/delayed-inode.c:684:6: warning: variable 'total_data_size' set
-> but not used [-Wunused-but-set-variable]
->         int total_data_size = 0, total_size = 0;
->             ^
-> 1 warning generated.
-> 
-> This variable's value has been unused since commit fc0d82e103c7 ("btrfs:
-> sink total_data parameter in setup_items_for_insert"). Eliminate it.
-> 
-> Fixes: fc0d82e103c7 ("btrfs: sink total_data parameter in setup_items_for_insert")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1391
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Hi,
 
-Added to misc-next, thanks. I've removed the Fixes: tag, we've been
-using this is for patches that should be backported or otherwise point
-to a patch that causes a real bug.
+Commit ccf953d8f3d6 ("fb_defio: Remove custom address_space_operations")
+seems to be breaking Hyper-V framebuffer
+(drivers/video/fbdev/hyperv_fb.c) driver for me: Hyper-V guest boots
+well and plymouth even works but when I try starting Gnome, virtual
+screen just goes black. Reverting the above mentioned commit on top of
+5.13-rc4 saves the day. The behavior is 100% reproducible. I'm using
+Gen2 guest runing on Hyper-V 2019. It was also reported that Gen1 guests
+are equally broken.
+
+Is this something known?
+
+-- 
+Vitaly
+
