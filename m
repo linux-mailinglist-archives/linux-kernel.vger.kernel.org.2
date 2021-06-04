@@ -2,104 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D315D39C337
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 00:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7CEC39C335
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 00:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231598AbhFDWHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 18:07:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230041AbhFDWHs (ORCPT
+        id S231574AbhFDWHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 18:07:41 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:39528 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230041AbhFDWHf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 18:07:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F16C061766;
-        Fri,  4 Jun 2021 15:06:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=C6vKHA3xVyPVc71h+aqVjU0kS8fj+tvFZ8wJ00ZjTjU=; b=uinDlZpqBviYk1MDGUnitgDfDo
-        irMekxr8ru5A1xDgBy6cZ28d41IvJbf75SoG3uHEiY1W1kwq3IUpadmjAF5Wd+Woaoh/GDsPvEBi/
-        J9l6yt0dJ+XKKkfM+irkF/a2ZsCpO7tlOroxXdw8S50HKPCTDml76jCCAV1lYRIBNKpc6FYbfne3t
-        pgxWOY/Fmve7TM3kTp4fcL84JcEPJAMr8MOjdF074/bIp3rWBbaboMaUf5FNyJH/1kXac3LyKX4pH
-        1SEfQsMWQHGyVIFdp6Hj/fWYMiElPYB8cGQeEJNoRouOpfwu1fLQasDASeGEgCRrhIqQmlQRimtBX
-        hfTK58Sg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lpHwM-00DdL3-6H; Fri, 04 Jun 2021 22:05:25 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id ACD64300223;
-        Sat,  5 Jun 2021 00:05:16 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 918412BC0001B; Sat,  5 Jun 2021 00:05:16 +0200 (CEST)
-Date:   Sat, 5 Jun 2021 00:05:16 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Will Deacon <will@kernel.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <YLqjnNBGhd320Ix9@hirez.programming.kicks-ass.net>
-References: <20210604151356.GC2793@willie-the-truck>
- <YLpFHE5Cr45rWTUV@hirez.programming.kicks-ass.net>
- <YLpJ5K6O52o1cAVT@hirez.programming.kicks-ass.net>
- <20210604155154.GG1676809@rowland.harvard.edu>
- <YLpSEM7sxSmsuc5t@hirez.programming.kicks-ass.net>
- <20210604182708.GB1688170@rowland.harvard.edu>
- <CAHk-=wiuLpmOGJyB385UyQioWMVKT6wN9UtyVXzt48AZittCKg@mail.gmail.com>
- <CAHk-=wik7T+FoDAfqFPuMGVp6HxKYOf8UeKt3+EmovfivSgQ2Q@mail.gmail.com>
- <20210604205600.GB4397@paulmck-ThinkPad-P17-Gen-1>
- <CAHk-=wgmUbU6XPHz=4NFoLMxH7j_SR-ky4sKzOBrckmvk5AJow@mail.gmail.com>
+        Fri, 4 Jun 2021 18:07:35 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id DEECC1381;
+        Sat,  5 Jun 2021 00:05:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1622844347;
+        bh=CFpOwLj9UfAfQeRfyb7g/C11/HUKmWejDfdVp0O45Sg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S6gdDnH9+o9FkItHt0G36h3njarxqw08H9MOCr7bZQ8uLM8/Is9o2nTZaoylQ3toP
+         NZAKKZAY1qan+E8fZ3Q3iEjxffGATreMyVI/z4Y5skinBr6L3j1VT7ow64r/UcTrWI
+         MgNgK/WIY0w+O2g+fnYLRUPPQlzxgHFKS1XgeEQk=
+Date:   Sat, 5 Jun 2021 01:05:33 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Ramesh Shanmugasundaram <rashanmu@gmail.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:MEDIA DRIVERS FOR RENESAS - FCP" 
+        <linux-renesas-soc@vger.kernel.org>, devicetree@vger.kernel.org,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: Re: [PATCH] media: dt-bindings: media: renesas,drif: Fix fck
+ definition
+Message-ID: <YLqjrdsJ8TKaiB1v@pendragon.ideasonboard.com>
+References: <20210408202436.3706-1-fabrizio.castro.jz@renesas.com>
+ <20210409185420.GA3955417@robh.at.kernel.org>
+ <CAL_JsqL5tzJhMzTyyTDnVh=doDknepkk8R0McKsj4U2aqSMFAw@mail.gmail.com>
+ <YIhvPCzWOah2kFk7@pendragon.ideasonboard.com>
+ <CAL_JsqJU6NGGtHUqfNrRqg5Km5n35LviUrazoU2dL82vB-+BvQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wgmUbU6XPHz=4NFoLMxH7j_SR-ky4sKzOBrckmvk5AJow@mail.gmail.com>
+In-Reply-To: <CAL_JsqJU6NGGtHUqfNrRqg5Km5n35LviUrazoU2dL82vB-+BvQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 02:27:49PM -0700, Linus Torvalds wrote:
-> On Fri, Jun 4, 2021 at 1:56 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+Hi Rob,
+
+On Fri, Jun 04, 2021 at 02:38:36PM -0500, Rob Herring wrote:
+> On Tue, Apr 27, 2021 at 3:08 PM Laurent Pinchart wrote:
+> > On Tue, Apr 27, 2021 at 01:02:57PM -0500, Rob Herring wrote:
+> > > On Fri, Apr 9, 2021 at 1:54 PM Rob Herring wrote:
+> > > > On Thu, 08 Apr 2021 21:24:36 +0100, Fabrizio Castro wrote:
+> > > > > dt_binding_check reports the below error with the latest schema:
+> > > > >
+> > > > > Documentation/devicetree/bindings/media/renesas,drif.yaml:
+> > > > >   properties:clock-names:maxItems: False schema does not allow 1
+> > > > > Documentation/devicetree/bindings/media/renesas,drif.yaml:
+> > > > >   ignoring, error in schema: properties: clock-names: maxItems
+> > > > >
+> > > > > This patch fixes the problem.
+> > > > >
+> > > > > Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+> > > > > ---
+> > > > >  Documentation/devicetree/bindings/media/renesas,drif.yaml | 4 +---
+> > > > >  1 file changed, 1 insertion(+), 3 deletions(-)
+> > > > >
+> > > >
+> > > > Reviewed-by: Rob Herring <robh@kernel.org>
+> > >
+> > > Still failing in linux-next...
 > >
-> > The usual way to prevent it is to use WRITE_ONCE().
+> > Sorry, as a standalone fix, I incorrectly thought you'd merge it.
+> >
+> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> >
+> > and applied to my tree. I'll send a pull request to linux-media when the
+> > merge window closes.
 > 
-> The very *documentation example* for "volatile_if()" uses that WRITE_ONCE().
-> 
-> IOW, the patch that started this discussion has this comment in it:
-> 
-> +/**
-> + * volatile_if() - Provide a control-dependency
-> + *
-> + * volatile_if(READ_ONCE(A))
-> + *     WRITE_ONCE(B, 1);
-> + *
-> + * will ensure that the STORE to B happens after the LOAD of A.
+> Still failing in linux-next. It's also a failure in Linus' tree, so it
+> needs to go in as a fix.
 
-We do actually have uses what use a 'regular' store, and not a
-WRITE_ONCE(). And I think for those the added barrier() might make a
-difference.
+Sorry, been overwhelmed. Feel free to take the patch through your tree
+as a fix.
 
-At the very least the perf ring-buffer case uses memcpy().
+-- 
+Regards,
 
-On my part I'm deeply distrusting some of the C language committee
-proposals I've seen regarding this stuff, and I'm maybe worrying too
-much, but I'd rather not have to debug anything like this when they do
-manage to make it go bad.
-
-On top of that, I think having the construct is good for documenting
-intent and possibly some of the concurrency analyzers can make use of
-it.
+Laurent Pinchart
