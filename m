@@ -2,160 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B7F39B60C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7561E39B614
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbhFDJhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 05:37:08 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:60677 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbhFDJhH (ORCPT
+        id S230122AbhFDJit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 05:38:49 -0400
+Received: from mail-lf1-f44.google.com ([209.85.167.44]:44689 "EHLO
+        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229958AbhFDJir (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 05:37:07 -0400
-Received: (Authenticated sender: alex@ghiti.fr)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 811AF1BF215;
-        Fri,  4 Jun 2021 09:35:19 +0000 (UTC)
-Subject: Re: [PATCH] riscv: xip: support runtime trap patching
-From:   Alex Ghiti <alex@ghiti.fr>
-To:     Vitaly Wool <vitaly.wool@konsulko.com>,
-        linux-riscv@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Nicolas Pitre <nico@fluxnic.net>
-References: <20210531085342.17494-1-vitaly.wool@konsulko.com>
- <62961217-1733-eaa3-b072-cbb252620c9a@ghiti.fr>
-Message-ID: <2fb64dce-779a-c6f2-53b7-088cd38813a4@ghiti.fr>
-Date:   Fri, 4 Jun 2021 11:35:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Fri, 4 Jun 2021 05:38:47 -0400
+Received: by mail-lf1-f44.google.com with SMTP id r198so9772664lff.11
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 02:37:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=aYp1Adr5CMzSylwvBButnic0kZJJSgzI/e/jfoc5XXY=;
+        b=zInM2KVNPb/0QPFcMUuLjrX59X+MSPyOsPXAiH3/QeJdWAGWbbnaRTPHS24RvPGmhr
+         1c/s7uWCp98bhXSvtHnmma4hxMKj2wkELcRP+NW8x4BhYVcl7Wb9OOmOAoZonNLEktjv
+         f2GNReyAgIRUBqQ8e7dj4F0fjf2WoHlRjuhmhoG/EVs4gN3buzRA5qQ5eVJpspTvDXS7
+         4kXp7Z6GCmiEQiovkQ6T+dw7y2+dMgjt9+vbFYwK6JWAMY0KocQsTXw4Cm6oKlnnJb0j
+         KuJ5dOhdjhcfWgh6ghhZpWAQeFdQTklOzHk9JKZfwIMnCavpwhvEG5mnqRGyRTrrfBBV
+         Go7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=aYp1Adr5CMzSylwvBButnic0kZJJSgzI/e/jfoc5XXY=;
+        b=AaSFdJanBfF7lo2lR7eGrg7m1v6Iade4hs0bm/c32QFUecnUKrK+sccXfgQse17wMK
+         bL+vA6pxq55ghJ1OEzq50/4KBJAZH7byVfRa1S2PdI4te8mIxh9KlbeV8FeP8iDvkFOq
+         6HZyPZb4SXfMaEX/YyKh3GNPKEAFtPkIB+38EYomECaPNPvLTAZAzrORPi8Xau+y29ko
+         SM5WEw9K2Sp0AxCfDiaOn3hrvu2b9LmoQQTZrsz6p1hwK26gxZOxTQ1FSA+yoqX9I0S4
+         BEB0GxKODRMOWY2sMn6aQC1bk/FL6IjIJvRKLCXK+6el0AvBfYzLehoQI7csrgVBCGfX
+         K8NQ==
+X-Gm-Message-State: AOAM531UlnsF2pDexMyaky6yKQxgnvYvqk6Q/xIJ0We1NoaReVR+3wjO
+        JuMpoM76gBFnE/ZmnRF2G80elhYyjACHpvX+KY9ZsQ==
+X-Google-Smtp-Source: ABdhPJwRz2Ggev+bmlNahkOO4PO7MbTDQi1yWOTrON9QwGEWdv0Ln2lES8Z8v6XjQDOxumVe/uHb7ZSWxPmgPct3veg=
+X-Received: by 2002:a19:c753:: with SMTP id x80mr2236380lff.586.1622799359520;
+ Fri, 04 Jun 2021 02:35:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <62961217-1733-eaa3-b072-cbb252620c9a@ghiti.fr>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <20210602120329.2444672-1-j.neuschaefer@gmx.net> <20210602120329.2444672-5-j.neuschaefer@gmx.net>
+In-Reply-To: <20210602120329.2444672-5-j.neuschaefer@gmx.net>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 4 Jun 2021 11:35:48 +0200
+Message-ID: <CACRpkdY6c750Dnh2H_6uEhOHJv-kLd_OpHqnuDKu4DQezZ2C_w@mail.gmail.com>
+Subject: Re: [PATCH 4/8] dt-bindings: pinctrl: Add Nuvoton WPCM450
+To:     =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Joel Stanley <joel@jms.id.au>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 31/05/2021 à 17:17, Alex Ghiti a écrit :
-> Hi Vitaly,
-> 
-> Le 31/05/2021 à 10:53, Vitaly Wool a écrit :
->> RISCV_ERRATA_ALTERNATIVE patches text at runtime which is currently
->> not possible when the kernel is executed from the flash in XIP mode.
->> Since runtime patching concerns only traps at the moment, let's just
->> have all the traps reside in RAM anyway if RISCV_ERRATA_ALTERNATIVE
->> is set. Thus, these functions will be patch-able even when the .text
->> section is in flash.
->>
-> 
-> This sounds like a good fix for sifive platforms to work with XIP kernel 
-> in 5.13: did you test that it actually works on HW?
-> 
->> Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
->> ---
->>   arch/riscv/kernel/traps.c           | 13 +++++++++----
->>   arch/riscv/kernel/vmlinux-xip.lds.S | 15 ++++++++++++++-
->>   2 files changed, 23 insertions(+), 5 deletions(-)
->>
->> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
->> index 0721b9798595..7bc88d8aab97 100644
->> --- a/arch/riscv/kernel/traps.c
->> +++ b/arch/riscv/kernel/traps.c
->> @@ -86,8 +86,13 @@ static void do_trap_error(struct pt_regs *regs, int 
->> signo, int code,
->>       }
->>   }
->> +#if defined (CONFIG_XIP_KERNEL) && defined 
->> (CONFIG_RISCV_ERRATA_ALTERNATIVE)
->> +#define __trap_section        __section(".xip.traps")
->> +#else
->> +#define __trap_section
->> +#endif
-> 
-> Maybe we could do something more generic. At the moment, only traps are 
-> subject to alternatives but that will likely expand: what about rather 
-> defining a section called __alternative_section?
+Hi Jonathan!
 
-Any thoughts about that?
+thanks for your patch!
 
-Thanks,
+On Wed, Jun 2, 2021 at 2:04 PM Jonathan Neusch=C3=A4fer
+<j.neuschaefer@gmx.net> wrote:
 
-Alex
+> +  interrupts: true
 
-> 
->>   #define DO_ERROR_INFO(name, signo, code, str)                \
->> -asmlinkage __visible void name(struct pt_regs *regs)            \
->> +asmlinkage __visible __trap_section void name(struct pt_regs *regs)    \
->>   {                                    \
->>       do_trap_error(regs, signo, code, regs->epc, "Oops - " str);    \
->>   }
->> @@ -111,7 +116,7 @@ DO_ERROR_INFO(do_trap_store_misaligned,
->>   int handle_misaligned_load(struct pt_regs *regs);
->>   int handle_misaligned_store(struct pt_regs *regs);
->> -asmlinkage void do_trap_load_misaligned(struct pt_regs *regs)
->> +asmlinkage void __trap_section do_trap_load_misaligned(struct pt_regs 
->> *regs)
->>   {
->>       if (!handle_misaligned_load(regs))
->>           return;
->> @@ -119,7 +124,7 @@ asmlinkage void do_trap_load_misaligned(struct 
->> pt_regs *regs)
->>                 "Oops - load address misaligned");
->>   }
->> -asmlinkage void do_trap_store_misaligned(struct pt_regs *regs)
->> +asmlinkage void __trap_section do_trap_store_misaligned(struct 
->> pt_regs *regs)
->>   {
->>       if (!handle_misaligned_store(regs))
->>           return;
->> @@ -146,7 +151,7 @@ static inline unsigned long 
->> get_break_insn_length(unsigned long pc)
->>       return GET_INSN_LENGTH(insn);
->>   }
->> -asmlinkage __visible void do_trap_break(struct pt_regs *regs)
->> +asmlinkage __visible __trap_section void do_trap_break(struct pt_regs 
->> *regs)
->>   {
->>   #ifdef CONFIG_KPROBES
->>       if (kprobe_single_step_handler(regs))
->> diff --git a/arch/riscv/kernel/vmlinux-xip.lds.S 
->> b/arch/riscv/kernel/vmlinux-xip.lds.S
->> index 4b29b9917f99..a3ff09c4c3f9 100644
->> --- a/arch/riscv/kernel/vmlinux-xip.lds.S
->> +++ b/arch/riscv/kernel/vmlinux-xip.lds.S
->> @@ -99,9 +99,22 @@ SECTIONS
->>       }
->>       PERCPU_SECTION(L1_CACHE_BYTES)
->> -    . = ALIGN(PAGE_SIZE);
->> +    . = ALIGN(8);
->> +    .alternative : {
->> +        __alt_start = .;
->> +        *(.alternative)
->> +        __alt_end = .;
->> +    }
->>       __init_end = .;
->> +    . = ALIGN(16);
-> 
-> Why 16 here?
-> 
->> +    .xip.traps : {
->> +        __xip_traps_start = .;
->> +        *(.xip.traps)
->> +        __xip_traps_end = .;
->> +    }
->> +
->> +    . = ALIGN(PAGE_SIZE);
->>       .sdata : {
->>           __global_pointer$ = . + 0x800;
->>           *(.sdata*)
->>
-> 
-> Thanks,
-> 
-> Alex
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+maxitems 4 right?
+
+Make an enum:
+
+interrupts:
+  - description: what IRQ0 is for
+  - description: what IRQ1 is for
+  - description: what IRQ2 is for
+  - description: what IRQ3 is for
+
+And describe how these interrupts are used. Because I am suspicious that th=
+ey
+actually correspond to 4 different GPIO blocks, which should then be their =
+own
+nodes.
+
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    pinctrl: pinctrl@b8003000 {
+> +      compatible =3D "nuvoton,wpcm450-pinctrl";
+> +      reg =3D <0xb8003000 0x1000>;
+> +      gpio-controller;
+> +      #gpio-cells =3D <2>;
+> +      interrupts =3D <2 IRQ_TYPE_LEVEL_HIGH
+> +                    3 IRQ_TYPE_LEVEL_HIGH
+> +                    4 IRQ_TYPE_LEVEL_HIGH
+> +                    5 IRQ_TYPE_LEVEL_HIGH>;
+
+So these.
+
+> +      rmii2 {
+> +        groups =3D "rmii2";
+> +        function =3D "rmii2";
+> +      };
+> +
+> +      pinctrl_uid: uid {
+> +        pins =3D "gpio14";
+> +        input-debounce =3D <1>;
+> +      };
+
+I challenge you here and encourage you to put a node for each
+GPIO "port":
+
+  port0: gpio@0 {
+ ....
+  };
+  port1: gpio@1 {
+ ....
+  };
+
+
+> +    gpio-keys {
+> +      compatible =3D "gpio-keys";
+> +      pinctrl-names =3D "default";
+> +      pinctrl-0 =3D <&pinctrl_uid>;
+> +
+> +      uid {
+> +        label =3D "UID";
+> +        linux,code =3D <102>;
+> +        gpios =3D <&pinctrl 14 GPIO_ACTIVE_HIGH>;
+
+Would be gpios <&port0 14...>
+
+Yours,
+Linus Walleij
