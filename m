@@ -2,93 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53D2B39BA40
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8E739BA48
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbhFDNwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 09:52:36 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:53556 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230372AbhFDNwb (ORCPT
+        id S230414AbhFDNzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 09:55:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22565 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230281AbhFDNy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 09:52:31 -0400
-Date:   Fri, 04 Jun 2021 13:50:43 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622814644;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Fri, 4 Jun 2021 09:54:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622814793;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8PaP2rIdOEekIJ9b/kNZAsaRsupNN0g6L7nIiW85A5U=;
-        b=yYXb9VrIUwkcVHm9a+V8Cz+4hKESBHOkp/Vx3wugQooV8wyAWV5en0NIUZnqVmRFfzMi5O
-        6zTmYikr90ljR5ZNRUn4fLwuZvJawVYSRu4W4um9iyIcEiVlrT/n8fAQIv9hxXAdx6xk+7
-        VMU9A7tCLoI+0GCp109eESiSlXPl9MFBbOOOjsdm1ECdCJwyR9xV333jdQm+uVCSPLtjf8
-        GtYHw5K/EI4x9Rx9LnhDOtY6dvK2bte7Udywh3HhYslSHp2Yx983SNYa0d3IzwjYz5t3kx
-        8mXl1RqrWMqxi1T9Xd7MImeGtKk3KGIF3o86K/rx+y2QpoA4EjlvzqonFz0PRA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622814644;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8PaP2rIdOEekIJ9b/kNZAsaRsupNN0g6L7nIiW85A5U=;
-        b=LO+fO/RVkcLidWQGgFcmLrS7EX6qUcoHr2iHA6LjUqdQlTHE1RZInPYO11xZupY0aBQh+T
-        UDzmOogA8iExTkDw==
-From:   "tip-bot2 for Colin Ian King" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: ras/core] EDAC/mce_amd: Fix typo "FIfo" -> "Fifo"
-Cc:     Colin Ian King <colin.king@canonical.com>,
-        Borislav Petkov <bp@suse.de>,
-        Yazen Ghannam <yazen.ghannam@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210603103349.79117-1-colin.king@canonical.com>
-References: <20210603103349.79117-1-colin.king@canonical.com>
+        bh=IckDAZssfgYJ1H8/AEiqV54BB8ADMJ8AwPtrrhs2CSM=;
+        b=Oo/KqgIO+K3c8M3FVoG7e0lHqqY4qu0lQFNcx7aSstYXPyMcl90Jfrx2pCirFyDcOlZBMM
+        lo1cQYPJoytKtbzjEGDFrGE0KM0OxicLLOjfgUU+hHn8I/cYoQy2WcpL9pmRRDJXdZshAR
+        TSXFoybZiZIQecl/m9CUStoSiUjek/M=
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
+ [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-401-O6qwFAAFNc6Z63qeL3KGEQ-1; Fri, 04 Jun 2021 09:53:12 -0400
+X-MC-Unique: O6qwFAAFNc6Z63qeL3KGEQ-1
+Received: by mail-oi1-f199.google.com with SMTP id h133-20020aca538b0000b02901f1a06a6705so4608512oib.7
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 06:53:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=IckDAZssfgYJ1H8/AEiqV54BB8ADMJ8AwPtrrhs2CSM=;
+        b=HTI3I6mg7TZmxzYIOnui4i2WnvEK5Ehk+FklDPIV55YqwQUW8H5dJ+3Cs7/31V2Vky
+         tmamkrYgcVWqbf6UX/47HRG7Wf9KqPOa+lrvRjuGP58+qmBdnkljIb0Zal2vHf40ZgH6
+         0+g7jgg+5HpAVmewuyk+dciVprrTx6tSbt1f4DdmRWzm82pk1S1OdT1rw0+DYTnOa8DW
+         TDSRfacExEnc2M4RNydVyaeKr7Lwd533fskaAUsamjwRYTJFa6aWavRa6s3M1F32x0hh
+         we3n9gSPluMQphjS1US97XwYRQYKTg7SWZEMNFcUIJ2uTrGzRveJ6GnHNNxaFe1YRR+9
+         J8ig==
+X-Gm-Message-State: AOAM530ZUz80HcGq1JyTzFeka7fLnGHuVq50Snbqol/y+WW3BEPNKCOg
+        f8RuxSUEarbB6wdnScB/hBgTtQ5VGv7x6hNU+ex4e3/fWheiDwXUDjB1BA0A3ng2frvDqKWGTnm
+        1XIOjwkZDJVuvVpRskucXxkl1
+X-Received: by 2002:a05:6808:f0a:: with SMTP id m10mr3139139oiw.126.1622814790481;
+        Fri, 04 Jun 2021 06:53:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJywgBCM7YWiZh2wwBr1dHOt/kyTBo3x4i95PGHFeGFhnA762HqpyiztB2ST4zIW8mmcs10GHQ==
+X-Received: by 2002:a05:6808:f0a:: with SMTP id m10mr3139120oiw.126.1622814790243;
+        Fri, 04 Jun 2021 06:53:10 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id b6sm474329oic.12.2021.06.04.06.53.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Jun 2021 06:53:09 -0700 (PDT)
+Subject: Re: [PATCH v7 4/4] fpga: versal-fpga: Add versal fpga manager driver
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Nava kishore Manne <nava.manne@xilinx.com>
+Cc:     robh+dt@kernel.org, michal.simek@xilinx.com, mdf@kernel.org,
+        arnd@arndb.de, rajan.vaja@xilinx.com, amit.sunil.dhamne@xilinx.com,
+        tejas.patel@xilinx.com, zou_wei@huawei.com,
+        lakshmi.sai.krishna.potthuri@xilinx.com, ravi.patel@xilinx.com,
+        iwamatsu@nigauri.org, wendy.liang@xilinx.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org,
+        git@xilinx.com, chinnikishore369@gmail.com,
+        Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+References: <20210604113332.1394-1-nava.manne@xilinx.com>
+ <20210604113332.1394-5-nava.manne@xilinx.com> <YLoTK02aUs2vNt+4@kroah.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <06301910-10a1-0e62-45a0-d28ab5a787ed@redhat.com>
+Date:   Fri, 4 Jun 2021 06:53:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Message-ID: <162281464318.29796.6032991160827413746.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <YLoTK02aUs2vNt+4@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the ras/core branch of tip:
 
-Commit-ID:     429b2ba70812fc8ce7c591e787ec0f2b48d13319
-Gitweb:        https://git.kernel.org/tip/429b2ba70812fc8ce7c591e787ec0f2b48d13319
-Author:        Colin Ian King <colin.king@canonical.com>
-AuthorDate:    Thu, 03 Jun 2021 11:33:49 +01:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 04 Jun 2021 15:44:25 +02:00
+On 6/4/21 4:48 AM, Greg KH wrote:
+> On Fri, Jun 04, 2021 at 05:03:32PM +0530, Nava kishore Manne wrote:
+>> Add support for Xilinx Versal FPGA manager.
+>>
+>> PDI source type can be DDR, OCM, QSPI flash etc..
+>> But driver allocates memory always from DDR, Since driver supports only
+>> DDR source type.
+>>
+>> Signed-off-by: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+>> Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
+>> Reviewed-by: Moritz Fischer <mdf@kernel.org>
+>> ---
+>> Changes for v2:
+>>                -Updated the Fpga Mgr registrations call's
+>>                 to 5.11
+>>                -Fixed some minor coding issues as suggested by
+>>                 Moritz.
+>>
+>> Changes for v3:
+>>                -Rewritten the Versal fpga Kconfig contents.
+>>
+>> Changes for v4:
+>>                -Rebased the changes on linux-next.
+>>                 No functional changes.
+>>
+>> Changes for v5:
+>>                -None.
+>>
+>> Changes for v6:
+>>                -None.
+>>
+>> Changes for v7:
+>>                -Updated driver to remove unwated priv struct dependency.
+>>
+>>   drivers/fpga/Kconfig       |  9 ++++
+>>   drivers/fpga/Makefile      |  1 +
+>>   drivers/fpga/versal-fpga.c | 96 ++++++++++++++++++++++++++++++++++++++
+>>   3 files changed, 106 insertions(+)
+>>   create mode 100644 drivers/fpga/versal-fpga.c
+>>
+>> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
+>> index 33e15058d0dc..92c20b92357a 100644
+>> --- a/drivers/fpga/Kconfig
+>> +++ b/drivers/fpga/Kconfig
+>> @@ -234,4 +234,13 @@ config FPGA_MGR_ZYNQMP_FPGA
+>>   	  to configure the programmable logic(PL) through PS
+>>   	  on ZynqMP SoC.
+>>   
+>> +config FPGA_MGR_VERSAL_FPGA
+>> +	tristate "Xilinx Versal FPGA"
+>> +	depends on ARCH_ZYNQMP || COMPILE_TEST
+>> +	help
+>> +	  Select this option to enable FPGA manager driver support for
+>> +	  Xilinx Versal SoC. This driver uses the firmware interface to
+>> +	  configure the programmable logic(PL).
+>> +
+>> +	  To compile this as a module, choose M here.
+>>   endif # FPGA
+>> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
+>> index 18dc9885883a..0bff783d1b61 100644
+>> --- a/drivers/fpga/Makefile
+>> +++ b/drivers/fpga/Makefile
+>> @@ -18,6 +18,7 @@ obj-$(CONFIG_FPGA_MGR_TS73XX)		+= ts73xx-fpga.o
+>>   obj-$(CONFIG_FPGA_MGR_XILINX_SPI)	+= xilinx-spi.o
+>>   obj-$(CONFIG_FPGA_MGR_ZYNQ_FPGA)	+= zynq-fpga.o
+>>   obj-$(CONFIG_FPGA_MGR_ZYNQMP_FPGA)	+= zynqmp-fpga.o
+>> +obj-$(CONFIG_FPGA_MGR_VERSAL_FPGA)      += versal-fpga.o
+>>   obj-$(CONFIG_ALTERA_PR_IP_CORE)         += altera-pr-ip-core.o
+>>   obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT)    += altera-pr-ip-core-plat.o
+>>   
+>> diff --git a/drivers/fpga/versal-fpga.c b/drivers/fpga/versal-fpga.c
+>> new file mode 100644
+>> index 000000000000..1bd312a31b23
+>> --- /dev/null
+>> +++ b/drivers/fpga/versal-fpga.c
+>> @@ -0,0 +1,96 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Copyright (C) 2019-2021 Xilinx, Inc.
+>> + */
+>> +
+>> +#include <linux/dma-mapping.h>
+>> +#include <linux/fpga/fpga-mgr.h>
+>> +#include <linux/io.h>
+>> +#include <linux/kernel.h>
+>> +#include <linux/module.h>
+>> +#include <linux/of_address.h>
+>> +#include <linux/string.h>
+>> +#include <linux/firmware/xlnx-zynqmp.h>
+>> +
+>> +static int versal_fpga_ops_write_init(struct fpga_manager *mgr,
+>> +				      struct fpga_image_info *info,
+>> +				      const char *buf, size_t size)
+>> +{
+>> +	return 0;
+> Why have this if it does nothing?
+>
+>> +}
+>> +
+>> +static int versal_fpga_ops_write(struct fpga_manager *mgr,
+>> +				 const char *buf, size_t size)
+>> +{
+>> +	dma_addr_t dma_addr = 0;
+>> +	char *kbuf;
+>> +	int ret;
+>> +
+>> +	kbuf = dma_alloc_coherent(mgr->dev.parent, size, &dma_addr, GFP_KERNEL);
+>> +	if (!kbuf)
+>> +		return -ENOMEM;
+>> +
+>> +	memcpy(kbuf, buf, size);
+>> +	ret = zynqmp_pm_load_pdi(PDI_SRC_DDR, dma_addr);
+>> +	dma_free_coherent(mgr->dev.parent, size, kbuf, dma_addr);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static int versal_fpga_ops_write_complete(struct fpga_manager *mgr,
+>> +					  struct fpga_image_info *info)
+>> +{
+>> +	return 0;
+> Same here, why have this at all?
+>
+>> +}
+>> +
+>> +static enum fpga_mgr_states versal_fpga_ops_state(struct fpga_manager *mgr)
+>> +{
+>> +	return FPGA_MGR_STATE_UNKNOWN;
+> Shouln't that be the default state of the fpga manager if there is no
+> state function callback?
+>
+> This driver should just need a write and probe function, and that's it,
+> why make it more complex?
 
-EDAC/mce_amd: Fix typo "FIfo" -> "Fifo"
+These empty functions are needed by each board because of an aggressive 
+check of ops early in the bringup of the fpga mgr.
 
-There is an uppercase letter I in one of the MCE error descriptions
-instead of a lowercase one. Fix it.
+I did some deck chair shuffling here recently
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
-Link: https://lkml.kernel.org/r/20210603103349.79117-1-colin.king@canonical.com
----
- drivers/edac/mce_amd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+https://lore.kernel.org/linux-fpga/20210524162820.2221474-1-trix@redhat.com/
 
-diff --git a/drivers/edac/mce_amd.c b/drivers/edac/mce_amd.c
-index 43ba0f9..27d5692 100644
---- a/drivers/edac/mce_amd.c
-+++ b/drivers/edac/mce_amd.c
-@@ -431,7 +431,7 @@ static const char * const smca_xgmipcs_mce_desc[] = {
- 	"Replay Buffer Parity Error",
- 	"Data Parity Error",
- 	"Replay Fifo Overflow Error",
--	"Replay FIfo Underflow Error",
-+	"Replay Fifo Underflow Error",
- 	"Elastic Fifo Overflow Error",
- 	"Deskew Error",
- 	"Flow Control CRC Error",
+that shows location of check.
+
+A finer grained handling of the ops would be better.
+
+I'll add that to the next spin.
+
+Tom
+
+> thanks,
+>
+> greg k-h
+>
+
