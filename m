@@ -2,82 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3D9139BCCA
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8571139BCCF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231493AbhFDQPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 12:15:10 -0400
-Received: from mail-pj1-f50.google.com ([209.85.216.50]:35476 "EHLO
-        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229961AbhFDQPJ (ORCPT
+        id S230217AbhFDQQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 12:16:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229746AbhFDQQF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 12:15:09 -0400
-Received: by mail-pj1-f50.google.com with SMTP id fy24-20020a17090b0218b029016c5a59021fso1184061pjb.0;
-        Fri, 04 Jun 2021 09:13:06 -0700 (PDT)
+        Fri, 4 Jun 2021 12:16:05 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8748C061766
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 09:14:03 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id r198so11542450lff.11
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 09:14:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=LvA0Er8AskDavuezV8RiKUwzdr6yicLLRj9IkJ+LjuY=;
+        b=t09snEHxZfS0dvM4kwlDaIMrXgVcoYhGT6KvyuPjHpYlwB4OzhqbQOwOdsNVtz1IbB
+         468+uOAoZZqCg3QOBf2krkDM+09v5DFNx9jc9m7c5cTBkvdQ1y8Ww51wC75jyhQMbNjy
+         eLSbpREsKT4UhVnDbZkItDZNZObwFsPE/ec4LAMt9ivkV+odqMoLn18Y8P1FxYzQK5m+
+         U1Nfag5qLBYVmMQhPWfKGCgsUrWtN8dUf1AZqzKMftTOVWse0nh9bIxvNEFOkOUjFOBq
+         7M3npJumkxNrHQDrwu3wD00MofxHFOULsiy5dcitYonncL5wW6Qgejly5BoxOQDDSxsv
+         muiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gmm8KlnIo/nuK5ud9oSk0ktzCTOuNeA4tmOo0gRaut8=;
-        b=mYocplnxAY6qMT6hyyPnGbI98DszmDXfL4MHG+HRgkaLE0OXUyu7SS5/wqeW7SF5yt
-         6ZhuFax6RdyOITzuWrKAVyJpKaXVIi9UA3fNnk091r6hQfbFmNIIGsXYYO8SD5WvYHcI
-         9yD3pFoZheJlRBH7fFdeSe9BEIJVhPk3mT+6ssmWt40s2fQ9vNTYOkEMZyioNvNaRMBA
-         ZDVu+CGU3yn27w474c8yI8++7eAqZFGU8poAJJ729iPu+CE3wOAewEVx04yMhaw0Stli
-         Py3jaI0VrVYc4dgdjaqB+5N4Co76nWCD5ZRDsMd5J1+cQhUqwn99yUJvY//DFPqRj3PA
-         eZ8g==
-X-Gm-Message-State: AOAM533DtWirHB4kPlCAbizd67m6805Ou3c7m1IbjLsrAcjbwURpLQFB
-        5+3yJxR/V5glFh02HOnyqRI=
-X-Google-Smtp-Source: ABdhPJz0VSZ0d2HnuXgK560zrDLOhqWYxGflmdVC+KLAhx45ksnzqoY/KuwnAaBbTgE0CRmghEiYHA==
-X-Received: by 2002:a17:90a:520f:: with SMTP id v15mr5558604pjh.23.1622823186456;
-        Fri, 04 Jun 2021 09:13:06 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id 190sm2439582pgd.1.2021.06.04.09.13.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Jun 2021 09:13:05 -0700 (PDT)
-Subject: Re: [PATCH v12 0/3] bio: control bio max size
-To:     Changheun Lee <nanich.lee@samsung.com>, Johannes.Thumshirn@wdc.com,
-        alex_y_xu@yahoo.ca, asml.silence@gmail.com, axboe@kernel.dk,
-        bgoncalv@redhat.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, cang@codeaurora.org,
-        avri.altman@wdc.com, alim.akhtar@samsung.com,
-        damien.lemoal@wdc.com, gregkh@linuxfoundation.org,
-        hch@infradead.org, jaegeuk@kernel.org, linux-block@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ming.lei@redhat.com, osandov@fb.com, patchwork-bot@kernel.org,
-        tj@kernel.org, tom.leiming@gmail.com, yi.zhang@redhat.com
-Cc:     jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
-        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
-        sookwan7.kim@samsung.com, woosung2.lee@samsung.com,
-        yt0928.kim@samsung.com
-References: <CGME20210604052157epcas1p2e5eebb52d08b06174696290e11fdd5a4@epcas1p2.samsung.com>
- <20210604050324.28670-1-nanich.lee@samsung.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <9e1c43a8-1c6d-95c6-ce4c-34ac194b9022@acm.org>
-Date:   Fri, 4 Jun 2021 09:13:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=LvA0Er8AskDavuezV8RiKUwzdr6yicLLRj9IkJ+LjuY=;
+        b=Qb0f1dIKeFQ1RaZMx9SRJ9g5mwCWQlE4pRGuXgpJ97SA3kqUgU6DNsWrfWQymY1l/S
+         Nj08VOVB86A9J5BGgUc9UwbG6RHUboSP9/T+HjFawV+5iAK6vOuIVX+XAKazK58KMzHK
+         ZJ4JIus10xOfybDvyrboPL7ctoASuhDg2+Z1/UkXc6ErCYxqTMxDodqwx0n3EfF6811b
+         FPhKR0742kvDhEDGVx+sygcn86UKGI1LTd6ghtaWkYbFSECVij6BFskZ1Tyt15u0YJEv
+         ooZlKsthEpI+sn7uBGLYsv3A6pQsX4pLWl+XWauUWhC2qSpowDLdMG7Ll40DX2GxHKTx
+         I3Ag==
+X-Gm-Message-State: AOAM533AZwzEQ4ylgNAmgSL5qzu0aHgEGTkJgknN+cFcK4ihurLICImt
+        SO/o9Mz1CU94yTLiOafwTlrnhg==
+X-Google-Smtp-Source: ABdhPJwylHQ8+iVbW/SeT4vHq++HTlmIOEXyZLUdhZb+SKK07ZvBq9l9qfeVUU2bkJ8LNmhOI91HEQ==
+X-Received: by 2002:ac2:515d:: with SMTP id q29mr3338076lfd.535.1622823241964;
+        Fri, 04 Jun 2021 09:14:01 -0700 (PDT)
+Received: from localhost (h-62-63-236-217.A463.priv.bahnhof.se. [62.63.236.217])
+        by smtp.gmail.com with ESMTPSA id l22sm519659ljh.64.2021.06.04.09.14.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 09:14:00 -0700 (PDT)
+Date:   Fri, 4 Jun 2021 18:13:59 +0200
+From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund@ragnatech.se>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Takeshi Saito <takeshi.saito.xv@renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mmc: renesas_sdhi: Fix HS400 on R-Car M3-W+
+Message-ID: <YLpRR7f/T88G8VRv@oden.dyn.berto.se>
+References: <ee8af5d631f5331139ffea714539030d97352e93.1622811525.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-In-Reply-To: <20210604050324.28670-1-nanich.lee@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ee8af5d631f5331139ffea714539030d97352e93.1622811525.git.geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/3/21 10:03 PM, Changheun Lee wrote:
-> bio size can grow up to 4GB after muli-page bvec has been enabled.
-> But sometimes large size of bio would lead to inefficient behaviors.
-> Control of bio max size will be helpful to improve inefficiency.
+Hi Geert,
+
+Thanks for your work.
+
+On 2021-06-04 14:59:43 +0200, Geert Uytterhoeven wrote:
+> R-Car M3-W ES3.0 is marketed as R-Car M3-W+ (R8A77961), and has its own
+> compatible value "renesas,r8a77961".
 > 
-> blk_queue_max_bio_bytes() is added to enable be set the max_bio_bytes in
-> each driver layer. And max_bio_bytes sysfs is added to show current
-> max_bio_bytes for each request queue.
-> bio size can be controlled via max_bio_bytes.
+> Hence using soc_device_match() with soc_id = "r8a7796" and revision =
+> "ES3.*" does not actually match running on an R-Car M3-W+ SoC.
+> 
+> Fix this by matching with soc_id = "r8a77961" instead.
+> 
+> Fixes: a38c078fea0b1393 ("mmc: renesas_sdhi: Avoid bad TAP in HS400")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Where is the version history for this patch series?
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
 
-Has this patch series been tested in combination with dm-crypt?
+> ---
+> Boot-tested on Salvator-XS with R-Car M3-W+ ES3.0.
+> No difference seen in eMMC/SHHC detection:
+> 
+>     mmc0: new HS400 MMC card at address 0001
+>     mmcblk0: mmc0:0001 BGSD4R 29.1 GiB
+>     mmcblk0boot0: mmc0:0001 BGSD4R 31.9 MiB
+>     mmcblk0boot1: mmc0:0001 BGSD4R 31.9 MiB
+>     mmcblk0rpmb: mmc0:0001 BGSD4R 4.00 MiB, chardev (247:0)
+>      mmcblk0: p1
+>     mmc1: new ultra high speed SDR104 SDHC card at address aaaa
+>     mmcblk1: mmc1:aaaa SL16G 14.8 GiB
+>      mmcblk1: p1
+>     mmc2: new ultra high speed SDR104 SDHC card at address aaaa
+>     mmcblk2: mmc2:aaaa SL32G 29.7 GiB
+>      mmcblk2: p1
+> ---
+>  drivers/mmc/host/renesas_sdhi_core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mmc/host/renesas_sdhi_core.c b/drivers/mmc/host/renesas_sdhi_core.c
+> index 635bf31a67359f10..b719eda6b8619453 100644
+> --- a/drivers/mmc/host/renesas_sdhi_core.c
+> +++ b/drivers/mmc/host/renesas_sdhi_core.c
+> @@ -939,7 +939,7 @@ static const struct soc_device_attribute sdhi_quirks_match[]  = {
+>  	{ .soc_id = "r8a7795", .revision = "ES3.*", .data = &sdhi_quirks_bad_taps2367 },
+>  	{ .soc_id = "r8a7796", .revision = "ES1.[012]", .data = &sdhi_quirks_4tap_nohs400 },
+>  	{ .soc_id = "r8a7796", .revision = "ES1.*", .data = &sdhi_quirks_r8a7796_es13 },
+> -	{ .soc_id = "r8a7796", .revision = "ES3.*", .data = &sdhi_quirks_bad_taps1357 },
+> +	{ .soc_id = "r8a77961", .data = &sdhi_quirks_bad_taps1357 },
+>  	{ .soc_id = "r8a77965", .data = &sdhi_quirks_r8a77965 },
+>  	{ .soc_id = "r8a77980", .data = &sdhi_quirks_nohs400 },
+>  	{ .soc_id = "r8a77990", .data = &sdhi_quirks_r8a77990 },
+> -- 
+> 2.25.1
+> 
 
-Bart.
+-- 
+Regards,
+Niklas Söderlund
