@@ -2,84 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33CBA39B450
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0480A39B452
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbhFDHxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 03:53:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229775AbhFDHxe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 03:53:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAB6361411;
-        Fri,  4 Jun 2021 07:51:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622793092;
-        bh=XknpTdRALjODEseoLFd/CWgE9dln8BAlCe9q8toibx8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iGNPli79xTBcjBpN+HQKAiJcX8iDJdUFIiXvz6A6V4+dxqM7HTT1DuQzR92r6w05o
-         A5FckZ2eBTA+jnfjBER5xkXqhdX6JqzVhw8m/JS7hVkAmWiarE45A30PTEwou5mBJx
-         82uOFgKaNC+K78yLy8crJTjg5W9lPvEbI2dmgqqU=
-Date:   Fri, 4 Jun 2021 09:51:29 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Kai Ye <yekai13@huawei.com>
-Cc:     linux-accelerators@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com, zhangfei.gao@linaro.org,
-        wangzhou1@hisilicon.com
-Subject: Re: [PATCH] uacce: add print information if not enable sva
-Message-ID: <YLnbgcJmQZChx1WV@kroah.com>
-References: <1622792769-28017-1-git-send-email-yekai13@huawei.com>
+        id S230139AbhFDHxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 03:53:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230093AbhFDHxm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 03:53:42 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A8AC061763
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 00:51:56 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id n12so5714062lft.10
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 00:51:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wfXB+k1Q6ViirA4mjN9LR3VrU6+naTbeMgwzCtnLr2k=;
+        b=AguLxJhuHlFMuh3TBZdV3QCEAhJz9dFzY737XfMw8IyQROFK6Z5NuNIg/8+/nkBkdL
+         laUu8/wPdaPOoyRM0B1gc2RIOhLuVVKxbS2xyZyTyukYHsytKPQB4fnNdSNZmbL4UNkG
+         pD/FZTPUL4rsXyPx9dtYsKDsYZ7WPckY8GiBCGRK5SAItP9OifEQNxnWl3CFjBvsSVRZ
+         ftaAs0jtv0lQ7SlmV+1VudEWxgYrsVl/18bnAT1BOib0jzTbpPa7NLIzy6OsGKSLAPCs
+         GG4lVAF8jO27xoJwUFx7d88KcGGCStQwEReYgocAGPTBNhr0w9AHm1vzmAsiTlMdJJZ0
+         z84Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wfXB+k1Q6ViirA4mjN9LR3VrU6+naTbeMgwzCtnLr2k=;
+        b=qe4vKxZcWK0+mPiG2RyT0D4wtu6XxN1mZlj8d00yAcHuuKpH7x8DkM6byVcAV1oiFK
+         LADYO6/DPERbEyseI/XWQj8RxefIiW6QFkawLAJIRrb/Og6RKXVa58RE8BNCHUEffz+u
+         dend0VDb3HRd0+j5e3G5zmGsc1v3yD6TKQxHPrt13ZHlih5OEPRYNKp5UHWvK2ZMYCoq
+         BrN8GoKKfbJzYnkn+O8TpT/L5SJ9k1Cv4wKwOCWh3WQ1faH+FKny6ILRMerJ4D4bB2SU
+         y8xTnNicF8H7TmqqxgTKWPi/BEn6C+He04ghCP1Xm3w4TiAKtEAo3dtxgzUqUfaauZ2F
+         HIgw==
+X-Gm-Message-State: AOAM532gr01ymWf2Wz8rEfujsTz0hRRYx7xkpzTSP28C5XRDue+3knRU
+        D42phbvWssLaZRpmKoge457i+1yZXCI4QQFeODLSbA==
+X-Google-Smtp-Source: ABdhPJzQltZYgxaeOPJE8k/LI6pPjnl6/V6Be99faZv5x4czlDJ0bbi7/XH/BqXzBUazEcWqDL4hgpV0tirmKbYh+j4=
+X-Received: by 2002:a19:8157:: with SMTP id c84mr1961729lfd.529.1622793115058;
+ Fri, 04 Jun 2021 00:51:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1622792769-28017-1-git-send-email-yekai13@huawei.com>
+References: <20210325122832.119147-1-sandberg@mailfence.com>
+ <20210530161333.3996-1-maukka@ext.kapsi.fi> <20210530161333.3996-2-maukka@ext.kapsi.fi>
+ <CACRpkdZfdd=ogHoNGuLzGGZYkvw7xtNO2VJm-t-2vMibGNy=dA@mail.gmail.com>
+ <866ff376-6d74-49c9-9e4c-2bf36bbd5981@ext.kapsi.fi> <CACRpkda9LD00=mUjLbb+wG3mnEVHbyqj-3L98=c-k-bV54gmTg@mail.gmail.com>
+ <3548155a-e634-c433-7173-77b56180ed98@ext.kapsi.fi>
+In-Reply-To: <3548155a-e634-c433-7173-77b56180ed98@ext.kapsi.fi>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 4 Jun 2021 09:51:44 +0200
+Message-ID: <CACRpkdaqbKSKy1cDAiCHLf5MyB7sTVYCZtoeHJsbB40+dPRpUQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: gpio-mux-input: add documentation
+To:     Mauri Sandberg <maukka@ext.kapsi.fi>
+Cc:     Mauri Sandberg <sandberg@mailfence.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Drew Fustini <drew@beagleboard.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 03:46:09PM +0800, Kai Ye wrote:
-> Add print information necessary if user not enable sva.
-> 
-> Signed-off-by: Kai Ye <yekai13@huawei.com>
-> ---
->  drivers/misc/uacce/uacce.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
-> index bae18ef0..fe38af8 100644
-> --- a/drivers/misc/uacce/uacce.c
-> +++ b/drivers/misc/uacce/uacce.c
-> @@ -387,15 +387,22 @@ static void uacce_release(struct device *dev)
->  
->  static unsigned int uacce_enable_sva(struct device *parent, unsigned int flags)
->  {
-> +	int ret;
-> +
->  	if (!(flags & UACCE_DEV_SVA))
->  		return flags;
->  
->  	flags &= ~UACCE_DEV_SVA;
->  
-> -	if (iommu_dev_enable_feature(parent, IOMMU_DEV_FEAT_IOPF))
-> +	ret = iommu_dev_enable_feature(parent, IOMMU_DEV_FEAT_IOPF);
-> +	if (ret) {
-> +		dev_err(parent, "failed to enable IOPF feature! ret = %d\n", ret);
+On Wed, Jun 2, 2021 at 1:21 PM Mauri Sandberg <maukka@ext.kapsi.fi> wrote:
 
-Why is this needed?  Has this ever happened in real life such that the
-log message is now required?
+> Can we just call it 'gpio-cascade'
+> without referral to the underlying mux? Maybe at somepoint in future
+> something else could be used in its place too.
 
+That has a nice ring to it, go with that!
 
-
->  		return flags;
-> +	}
->  
-> -	if (iommu_dev_enable_feature(parent, IOMMU_DEV_FEAT_SVA)) {
-> +	ret = iommu_dev_enable_feature(parent, IOMMU_DEV_FEAT_SVA);
-> +	if (ret) {
-> +		dev_err(parent, "failed to enable SVA feature! ret = %d\n", ret);
-
-Same here, does this happen in real systems?
-
-thanks,
-
-greg k-h
+Yours,
+Linus Walleij
