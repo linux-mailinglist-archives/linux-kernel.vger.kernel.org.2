@@ -2,103 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2FB39B798
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6534639B79F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhFDLKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 07:10:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52038 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229740AbhFDLKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 07:10:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2FFD61412;
-        Fri,  4 Jun 2021 11:08:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622804936;
-        bh=iwBwbt7wIWhIr085qcXizQ5aues5uWdHTOBFESM33kE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fIqXQlp74u1ZPfFJtxNGqcLSKBsMV3w03xctfdujEY3FRhyErjEkraAi80re7BmyF
-         5vCx0CaDi2hTo43P9nx1aY+1h8dkhVsMVKWE7pQsd+8CbFzDe7ApHgc1rkvX7RPivV
-         ZgZSCYUxcUz7Th+MRRtAgvRbfegGlNTnqe0nDQEiuznYklRqzJ1I0C6lzHMXy5yFLd
-         J72mZkiWr8WLXxwDNGsy8OjYnNCny5+qdMhhAAKMWQ3zONxveacWHU/0untCOLREba
-         egxlkoSMz7HgL94OOOKFcJZSbP28n2r3gMnxo1t906NS8AFwvIh1jZjc0/6eLMIFel
-         dhVEPCm0+bWAA==
-Received: by earth.universe (Postfix, from userid 1000)
-        id 2DA053C0C95; Fri,  4 Jun 2021 13:08:54 +0200 (CEST)
-Date:   Fri, 4 Jun 2021 13:08:54 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     satya priya <skakit@codeaurora.org>, linux-input@vger.kernel.org,
-        Courtney Cavin <courtney.cavin@sonymobile.com>,
-        kgunda@codeaurora.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        David Collins <collinsd@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Yan <andy.yan@rock-chips.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Andy Gross <agross@kernel.org>
-Subject: Re: [PATCH V3 3/5] dt-bindings: power: reset: Change
- 'additionalProperties' to true
-Message-ID: <20210604110854.6zgxe2rbqnigdtid@earth.universe>
-References: <1620630064-16354-1-git-send-email-skakit@codeaurora.org>
- <1620630064-16354-4-git-send-email-skakit@codeaurora.org>
- <20210510162047.GA228385@robh.at.kernel.org>
+        id S230172AbhFDLLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 07:11:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229740AbhFDLLM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 07:11:12 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45304C06174A;
+        Fri,  4 Jun 2021 04:09:14 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id x2so4058642qvo.8;
+        Fri, 04 Jun 2021 04:09:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Q0r+GRAph5bUpYFzQZXDQRLPLpUfbf4qIs/RQtBMij8=;
+        b=e8NJuAqElhWfOEuoNNRyav2xf1xrJtYq686taPh1fhF9kJj4Dk04la6vG6vzdarkoE
+         HbmwtftAXFR8hEyCbRK06CfnZb3T8+9cJxD9xwBf8kEWeYjg1zyPd9f0e+lIZfJs4pId
+         qKa9X1N5fh9Rch8TQrsULVUEvqGwy1yuCHnj6PUXEcpCAsYLD0VZ7enmnGiDNASQu3sK
+         2+ZVWQvm0jE9rHRsgp+SGSLU0ekDgxZCynWbHXqBx05Z4XbKKg973Vk7fcXvDwmw4F3Z
+         bEpBf6H+aRmtpMmR8dAkSAEi7ByMlBH8HdNROml30ZvrmYlTKC5Qdk6MTkPOMoAH/OSc
+         nCRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=Q0r+GRAph5bUpYFzQZXDQRLPLpUfbf4qIs/RQtBMij8=;
+        b=KIVT2/9M7y/K22lAiN11ya13AXZRBaBgScmqOoCxIfbiQv0yLcgR2X5zR5ceNx2iWx
+         ezoF0JGeqsrSSns3WLJs5UqmlDhJIkHx66mllSIMNC7JmPVjnMr5OgLuQBfqugFpRnF+
+         tQYZmmfEL1o28ucQ/lnXh03zdq+alRD35eL5I3hdutu5ojp5CAC+qsoBXGMMPJypc5Iu
+         qC3vYintCLoQpVs9k2wFV8/79OvSezBwlLQftz7AtDrpq6b2O19zUy6Izo6HxB+cedh0
+         zkLsDgcKZs4gfsdV1aLBEek3NZRZfPpwWxMCT/tgGyRt9bP2D2lZ4XYa/ZtJvVv1OOjw
+         8wjQ==
+X-Gm-Message-State: AOAM530LO8qxZXPOCZ9UusNCofPi18pGRiQ4dgj8z8nRTP9wP2YBYx6F
+        TdAcedOn0n/1tt8X/WsEFwg73H3yfW0=
+X-Google-Smtp-Source: ABdhPJzmJO3LNJ969qbIz1eL5wExY27FreZIAZMfzw8RNzkD6sFyLhigqw9twR3/ra2xgevX+IZf4Q==
+X-Received: by 2002:a0c:9c0f:: with SMTP id v15mr4231435qve.24.1622804952598;
+        Fri, 04 Jun 2021 04:09:12 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id m10sm3390312qtq.62.2021.06.04.04.09.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 04:09:12 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 4 Jun 2021 04:09:10 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Riwen Lu <luriwen@kylinos.cn>
+Cc:     jdelvare@suse.com, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xin Chen <chenxin@kylinos.cn>
+Subject: Re: [PATCH v3] hwmon: (scpi-hwmon) shows the negative temperature
+ properly
+Message-ID: <20210604110910.GA1446504@roeck-us.net>
+References: <20210604030959.736379-1-luriwen@kylinos.cn>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zeta74hijobubqw2"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210510162047.GA228385@robh.at.kernel.org>
+In-Reply-To: <20210604030959.736379-1-luriwen@kylinos.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 04, 2021 at 11:09:59AM +0800, Riwen Lu wrote:
+> The scpi hwmon shows the sub-zero temperature in an unsigned integer,
+> which would confuse the users when the machine works in low temperature
+> environment. This shows the sub-zero temperature in an signed value and
+> users can get it properly from sensors.
+> 
+> Signed-off-by: Riwen Lu <luriwen@kylinos.cn>
+> Tested-by: Xin Chen <chenxin@kylinos.cn>
 
---zeta74hijobubqw2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied.
 
-Hi,
+Thanks,
+Guenter
 
-On Mon, May 10, 2021 at 11:20:47AM -0500, Rob Herring wrote:
-> On Mon, 10 May 2021 12:31:02 +0530, satya priya wrote:
-> > Change 'additionalProperties' to true as this is a generic binding.
-> >=20
-> > Signed-off-by: satya priya <skakit@codeaurora.org>
-> > ---
-> > Changes in V3:
-> >  - This is newly added in V3.
-> >=20
-> >  Documentation/devicetree/bindings/power/reset/reboot-mode.yaml | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >=20
->=20
-> Acked-by: Rob Herring <robh@kernel.org>
-
-Acked-by: Sebastian Reichel <sre@kernel.org>
-
--- Sebastian
-
---zeta74hijobubqw2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmC6CcUACgkQ2O7X88g7
-+pql0RAAjGMGXrdsvasJs6QxGP5afvhDfYSgt9UrzZwC7SRvhDORoWc4o6YoucZY
-xjr/brpzKRwZYxFlioigY5KP220UZIbP4S05N8kB2GjTe2rqxz7nT9x81ahr8d36
-QSNUFkhCBLvQWFQeaRfBwoKWydW10GKax2PdPqwaIwlhIZdRijnQVpsWkmAZfjYW
-Yf0HIbP3meRQ38LlzGV0nHeZPCQarfImi2ZQ7CORoWaa4lTRlrujKkWqTNT1bZZ3
-Ma8HJRBJyK053m+awuvg36GQRjuHt3wDF3RFM9yL2oavkOh/rnZ14CV4IRM3v4Lw
-TJ+ygl/x/oTMpbKPzeBuL+Q+2yBY5AhMCO96KwlERk+MAZ/VWuFWlGVGlLTIbqrx
-82yjdS4b7XN10K51eKaTeogEYr0YIYz8Esy98JH3DHwZanVOmvGOVIfligN6/iWZ
-9zqZ/L8TBQ1OweadQSCMYwpiI7sxNC3v2bi0hPcNQKyTLPiqEZJRg9nIDP91luxY
-7BP7rriPdSXcSZe2+P5Rto495FMQKsuOqmIgD7Gsxn2YrCymylQ7mBaK4l/DKygw
-MFW1S7bSXqmoGqfqxVkE3PswUVFOykPn5/qlRF/GwcHLY+snx//W2sVI3HFQlwNA
-1w1hDaHzZHa213qdXdgnAJ4rreEZhKoch+zziWMvGnaIATaCyRk=
-=V2SN
------END PGP SIGNATURE-----
-
---zeta74hijobubqw2--
+> ---
+> Changes since v1:
+> - Add judgment for sensor->info.class. If it is TEMPERATURE situation,
+>   return the sensor value as a signed value, otherwise return it as a
+>   unsigned value.
+> 
+> Changes since v2:
+> - Add a typecast u64 to s64 when it is a temperature value.
+> - Add a comment ahead of the if statement.
+> - Remove the unnecessary 'else' statement.
+> ---
+>  drivers/hwmon/scpi-hwmon.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/drivers/hwmon/scpi-hwmon.c b/drivers/hwmon/scpi-hwmon.c
+> index 25aac40f2764..919877970ae3 100644
+> --- a/drivers/hwmon/scpi-hwmon.c
+> +++ b/drivers/hwmon/scpi-hwmon.c
+> @@ -99,6 +99,15 @@ scpi_show_sensor(struct device *dev, struct device_attribute *attr, char *buf)
+>  
+>  	scpi_scale_reading(&value, sensor);
+>  
+> +	/*
+> +	 * Temperature sensor values are treated as signed values based on
+> +	 * observation even though that is not explicitly specified, and
+> +	 * because an unsigned u64 temperature does not really make practical
+> +	 * sense especially when the temperature is below zero degrees Celsius.
+> +	 */
+> +	if (sensor->info.class == TEMPERATURE)
+> +		return sprintf(buf, "%lld\n", (s64)value);
+> +
+>  	return sprintf(buf, "%llu\n", value);
+>  }
+>  
