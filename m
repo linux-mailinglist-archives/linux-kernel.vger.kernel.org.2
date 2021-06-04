@@ -2,110 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA23B39BE1E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B69F839BE34
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbhFDRL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 13:11:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43670 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229690AbhFDRL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 13:11:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 31FED61400;
-        Fri,  4 Jun 2021 17:09:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622826580;
-        bh=ekYNNM0J7LDGUfjPAWcrV85LQws7eJp6g7nHhYT6wEU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=HY3URPuumDVSZrrelO8gsO5Co+IGLwxBPdMyGiAvw94C2fsdaJXUYXVhpx+Iicpbt
-         +wzmkyFGpE0oUm+srrDRIvIo+Ou5Ksm9c+lyU5hKOdOzL9OreFqlda6cViOt4Zs/Df
-         A9Ujf1WkqORYf3utoPQUsvD3aiCmwMHtv5TYn5u0brbkYXaLojpwoW6ltqeeuNkNkH
-         Il2IXRvIygybw4jObaIww49F9K6NYpdPPcfcfebN3VfBgzMIGY9lOxMQZv7mepdABO
-         G4GBQ8hHXTH09DUNe0+8ZEFeSGgrBH3WfmtosSdctZDShwjn/mwu0YTzi3kVrbgyJT
-         Qo9PawL16RkKg==
-Date:   Fri, 4 Jun 2021 12:09:38 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, rjw@rjwysocki.net,
-        Len Brown <lenb@kernel.org>, linux-pci@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jroedel@suse.de
-Subject: Re: [PATCH] PCI/APCI: Move acpi_pci_osc_support() check to
- negotiation phase
-Message-ID: <20210604170938.GA2218177@bjorn-Precision-5520>
+        id S230503AbhFDRNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 13:13:47 -0400
+Received: from mail-lf1-f51.google.com ([209.85.167.51]:44682 "EHLO
+        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230169AbhFDRNq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 13:13:46 -0400
+Received: by mail-lf1-f51.google.com with SMTP id r198so11788157lff.11
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 10:11:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zetK+W/bHVw7XwdBevEYPYV360JBbDIWAi5v9HH+5Ds=;
+        b=USDxZZGjVEj4Wb7i/ZRsFz5JtQRbDOnr2QyyE0iZ3zBXnjTge18snA9ewptL6QC41y
+         MN48LNtNkLXYStjRT0tMHo7geGbVSu7/fna5H5O2cPPqvlxYMg2Aa5UhNk3jWKr6FKwG
+         k2O7oCKHoalMvnZ6FPpaxbCWmcjgFuxd6O41E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zetK+W/bHVw7XwdBevEYPYV360JBbDIWAi5v9HH+5Ds=;
+        b=gpAEI72LxnljFf7c43PcLPFzh4V+x1r/6/1q8U/tCTk7PZWGGn47Mx9k8QbZdpLS+t
+         FtWUM8uekLBicnxWaakjj8MQKYhWgIxRGkhITtzN8icPJz8kZko+0pl+G4MvpCKUlzN2
+         VbayOa2fAMXCMpmuC/Eyc/M0g8vgrFgk/H2egTWzTx2uyO230X3zbgFDCT/4EJckO/JP
+         wVlSTzdfzke9BXnM9MQFGEsXTjcctHv6RVkJRGaO0Av0x9vs3taLXU8LXD/lugrPVNT0
+         16IlwRjPeUgnpvo3aY0RK3uKtUQHTCXZjPLiwGfHI1XnVhtaAlSmqSVVP6O8SSkmm6d2
+         eI2g==
+X-Gm-Message-State: AOAM532+8mfCRHc4G3auLR2wd9a8V6JPZusSTaYckPs99yZBshK/jR72
+        UJ9+OOcszADgxc+4ibKxVhT9SYlHYXJTd9JP
+X-Google-Smtp-Source: ABdhPJwDOgRJMHNXKeiKXJiW+TY8tNCLMzsxarHcmsqkzL6ris1t5ZEaaU1PfvYjGVK+i8otxeLQwQ==
+X-Received: by 2002:ac2:4c2c:: with SMTP id u12mr3293101lfq.209.1622826647464;
+        Fri, 04 Jun 2021 10:10:47 -0700 (PDT)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id r202sm659214lff.251.2021.06.04.10.10.45
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Jun 2021 10:10:46 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id i9so15083013lfe.13
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 10:10:45 -0700 (PDT)
+X-Received: by 2002:a05:6512:374b:: with SMTP id a11mr3293378lfs.377.1622826645571;
+ Fri, 04 Jun 2021 10:10:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210603205047.GA2135380@bjorn-Precision-5520>
+References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
+ <CAHk-=wievFk29DZgFLEFpH9yuZ0jfJqppLTJnOMvhe=+tDqgrw@mail.gmail.com> <YLpWwm1lDwBaUven@hirez.programming.kicks-ass.net>
+In-Reply-To: <YLpWwm1lDwBaUven@hirez.programming.kicks-ass.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 4 Jun 2021 10:10:29 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjf-VJZd3Uxv3T3pSJYYVzyfK2--znG0VEOnNRchMGgdQ@mail.gmail.com>
+Message-ID: <CAHk-=wjf-VJZd3Uxv3T3pSJYYVzyfK2--znG0VEOnNRchMGgdQ@mail.gmail.com>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 03:50:47PM -0500, Bjorn Helgaas wrote:
-> On Thu, Jun 03, 2021 at 02:48:14PM +0200, Joerg Roedel wrote:
-> > From: Joerg Roedel <jroedel@suse.de>
-> > ...
+On Fri, Jun 4, 2021 at 9:37 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> >
+> > Why is "volatile_if()" not just
+> >
+> >        #define barier_true() ({ barrier(); 1; })
+> >
+> >        #define volatile_if(x) if ((x) && barrier_true())
+>
+> Because we weren't sure compilers weren't still allowed to optimize the
+> branch away.
 
-> > -static acpi_status acpi_pci_osc_control_set(acpi_handle handle, u32 *mask, u32 req)
-> > +static acpi_status acpi_pci_osc_control_set(acpi_handle handle, u32
-> > +					    *mask, u32 req, u32 support)
-> >  {
-> >  	struct acpi_pci_root *root;
-> >  	acpi_status status;
-> > @@ -370,7 +361,7 @@ static acpi_status acpi_pci_osc_control_set(acpi_handle handle, u32 *mask, u32 r
-> >  
-> >  	/* Need to check the available controls bits before requesting them. */
-> >  	while (*mask) {
-> > -		status = acpi_pci_query_osc(root, root->osc_support_set, mask);
-> > +		status = acpi_pci_query_osc(root, support, mask);
-> >  		if (ACPI_FAILURE(status))
-> >  			return status;
-> >  		if (ctrl == *mask)
-> > @@ -433,18 +424,6 @@ static void negotiate_os_control(struct acpi_pci_root *root, int *no_aspm,
-> >  		support |= OSC_PCI_EDR_SUPPORT;
-> >  
-> >  	decode_osc_support(root, "OS supports", support);
-> > -	status = acpi_pci_osc_support(root, support);
-> > -	if (ACPI_FAILURE(status)) {
-> > -		*no_aspm = 1;
-> > -
-> > -		/* _OSC is optional for PCI host bridges */
-> > -		if ((status == AE_NOT_FOUND) && !is_pcie)
-> > -			return;
-> > -
-> > -		dev_info(&device->dev, "_OSC: platform retains control of PCIe features (%s)\n",
-> > -			 acpi_format_exception(status));
-> > -		return;
-> > -	}
-> >  
-> >  	if (pcie_ports_disabled) {
-> >  		dev_info(&device->dev, "PCIe port services disabled; not requesting _OSC control\n");
-> 
-> Also not related to this patch, but it seems pointless to compute and
-> decode "support" above when we're not going to use _OSC at all.  I
-> think the "pcie_ports_disabled" test should be the very first thing in
-> this function (I'm assuming the "pcie_ports=compat" command line
-> argument *should* apply even on x86_apple_machine, which it doesn't
-> today).
+This isn't about some "compiler folks think".
 
-I think I was wrong about this.  Even when "pcie_ports_disabled", the
-current code *does* evaluate "_OSC(Query, SUPPORT=x, CONTROL=0)",
-i.e., it tells the platform what Linux supports, but doesn't request
-control of anything.
+The above CANNOT be compiled any other way than with a branch.
 
-I think the platform may rely on this knowledge of what the OS
-supports.  For example, if we tell the platform that Linux has
-OSC_PCI_EXT_CONFIG_SUPPORT, that may change the behavior of ASL that
-accesses config space.
+A compiler that optimizes a branch away is simply broken.
 
-So I don't think it's safe to move this test to the beginning of the
-function as I proposed.
+Of course, the actual condition (ie "x" above) has to be something
+that the compiler cannot statically determine is a constant, but since
+the whole - and only - point is that there will be a READ_ONCE() or
+similar there, that's not an issue.
 
-For the same reason, I'm not sure that it's safe to remove
-acpi_pci_osc_support() as in this patch.  If either
-"pcie_ports_disabled" or Linux doesn't support everything in
-ACPI_PCIE_REQ_SUPPORT, we will never evaluate _OSC at all, so
-the platform won't know that Linux has OSC_PCI_SEGMENT_GROUPS_SUPPORT,
-OSC_PCI_HPX_TYPE_3_SUPPORT, OSC_PCI_EXT_CONFIG_SUPPORT, etc.
+The compiler *cannot* just say "oh, I'll do that 'volatile asm
+barrier' whether the condition is true or not". That would be a
+fundamental compiler bug.
 
-Bjorn
+It's as if we wrote
+
+    if (x) y++;
+
+and the compiler went "Oh, I'll just increment 'y' unconditionally by
+one, I'm sure the programmer doesn't mind, the conditional on 'x' is
+immaterial".
+
+No. That's not a C compiler. That's a stinking piece of buggy shit.
+The compiler has to honor the conditional.
+
+In that "y++" case, a compiler can decide to do it without a branch,
+and basically rewrite the above as
+
+   y += !!x;
+
+but with a "volatile asm", that would be a bug.
+
+Of course, we might want to make sure that the compiler doesn't go
+"oh, empty asm, I can ignore it", but if that's the case then it's not
+about "volatile_if()" any more, at that point it's "oh, the compiler
+broke our 'barrier()' implementation", and we have bigger issues.
+
+              Linus
