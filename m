@@ -2,106 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0781B39BB72
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6459A39BB7F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhFDPM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 11:12:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55749 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229778AbhFDPMZ (ORCPT
+        id S230087AbhFDPPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 11:15:42 -0400
+Received: from mail-wr1-f47.google.com ([209.85.221.47]:41584 "EHLO
+        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229675AbhFDPPl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 11:12:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622819438;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rY04b6/ZRmaZK8r9pldsFNxxxfCAPomp4y4kXbJNY2s=;
-        b=G46XFy8SLgZQm3OnIDfb8npzmhcgfqn5J8VmAyt/RMZYEN/CyvmUpHks+MxrbFdFMFUkK5
-        k2fkHCQadjpr7Zla/YaFERYz5S2eGSSPolj37uqU0OFAuttjc5vDXfirtNIZL+ruc2X++R
-        pMPLQcPJa+tA5OGpt8B++eWJnjvr37Q=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-550-C2UGg3LDMxGByiTwhmPJBw-1; Fri, 04 Jun 2021 11:10:34 -0400
-X-MC-Unique: C2UGg3LDMxGByiTwhmPJBw-1
-Received: by mail-qv1-f72.google.com with SMTP id bl11-20020ad4564b0000b029021d1fdffd5aso6932747qvb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 08:10:33 -0700 (PDT)
+        Fri, 4 Jun 2021 11:15:41 -0400
+Received: by mail-wr1-f47.google.com with SMTP id h8so9647834wrz.8
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 08:13:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:content-transfer-encoding:date:message-id:cc:subject
+         :from:to:references:in-reply-to;
+        bh=MDeGfSOld04qEQUDmCqC+elxeKhTaZfQS1sxhyZdy0Y=;
+        b=d5MDz4Zcs9bzXxzzD6J6cD5EERCnWZkQiBtJR5sSos112Wxg0vjLR/3rJhzlGG3Yax
+         XEjP2GMX2gXwgxvVbWkfdSD3cmrnencbp5mtxnYQpq+8c7yyG7Hpx3UWr0RKFdjGTXe/
+         FnlW4x86W1l/I5Eb7Hmx74h9Gr/fs+zhuDxwkV4rQlWdko8pt+d6l5gtzogqaNv8txZ6
+         /9HRqo7iImdMUDw+2K6y+hsM6smVmOOqEQaVkwKJpgEj57jJgLD+PzjRGJoiT+IYfVxr
+         zu+avRfVJKF8JATHMUwXQzDCTMtorPLPrXjo8hBpOsUhggsjgNskOPyQyt0YIGw3LZeV
+         /gdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rY04b6/ZRmaZK8r9pldsFNxxxfCAPomp4y4kXbJNY2s=;
-        b=Eme8K9nipVtfVSYNESMWKPSKTUj/zUDsKSGibJG+7YZoIsdZmAy+wZVoUzk9HtLuBE
-         SFP1uiWXiXngFq72Sc7ZZEX94UhdytqUsfE/LuhqPsvEilVIG/SdBsagYI6Edcfi/CAJ
-         VJpzBOc/IAY9V0EF53FuRUmGH7Y+ZzYRIDWBzaCXytqEAoGltT/UInDcsHCtSzaTxkDr
-         c1F6kVFd6kawBbTgZYfi8s8920bJmBx6Wq7iGZQS7nHrYaNK9ktEqOqeMhEpIjt/1/U5
-         AH0HMfyewc044aT46mP/N4/1Bk3oyABAYY4dbW/z2nDwfJwf12sN4IqEGIZ8NA1Li8ti
-         S3Kg==
-X-Gm-Message-State: AOAM532i+Ch6zZIyaRZNhaQ/hDKdmbTn7JYBbaDX3ZPDHo7Fsjo1eVkS
-        TEknW4XmFRjqRbqVMilRS1BEHVyWxu1+NIQutxk/EUvLUwjyZ/pC9MVJJeH14RCcsWfwoKXpXnG
-        Y061M426ij1h1psbmvJ5TYh0q
-X-Received: by 2002:a05:620a:4410:: with SMTP id v16mr4841404qkp.387.1622819433549;
-        Fri, 04 Jun 2021 08:10:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz6+UagA80qzlImEErke2pvQrrl+/pEnQY+1T+0ccLCf3Gk/r95MsHbFPJ5TR5FuCtMgSGDLg==
-X-Received: by 2002:a05:620a:4410:: with SMTP id v16mr4841381qkp.387.1622819433348;
-        Fri, 04 Jun 2021 08:10:33 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-61-184-147-118-108.dsl.bell.ca. [184.147.118.108])
-        by smtp.gmail.com with ESMTPSA id y1sm4320510qkp.21.2021.06.04.08.10.32
+        h=x-gm-message-state:mime-version:content-transfer-encoding:date
+         :message-id:cc:subject:from:to:references:in-reply-to;
+        bh=MDeGfSOld04qEQUDmCqC+elxeKhTaZfQS1sxhyZdy0Y=;
+        b=pPUrloMBwww03MWQetXN14AMay8ojQVV5Ex4Xo27ItwKYtIO+s5lgzwPOw53JMlD9r
+         TrqS7I4BxmjNTHEdj3Dmgm2DmqQxcCs5kZKbx90DjwjaA+9QipjyXcUK7QFKYqLFPziC
+         DN+uM7TMt373GOlz23Ws7aLWG1h55TNY2xvhpcTrzfW1dh8KhjyvgUVpskoRQgcLjFsD
+         zsv12SPMt92OkgruOkrYd2cAz9IoQk7TcEfDIdMiIBCTH3am2NvA37ZGVZyuMIj/mjj/
+         b8m95D41ZoyWk2O0gNiYJIioWhEVc1PLnPkzLqcl4rAudQtqNH3Lp8f7gLvNCAOawqsv
+         j+Nw==
+X-Gm-Message-State: AOAM531clOGCHNR0KReUUPYC8zOTewIrqeqSAKD38LuhMqast3CdSzY8
+        Aptgwrvy96zcLcEEmvoOH+vMkQ==
+X-Google-Smtp-Source: ABdhPJxOOBkqtmSGRq5uBC35IeEVOExCMPn+wThxkwQOhppV58DDG+bt3IdDk6y9AOOuq35kRbLKrQ==
+X-Received: by 2002:a5d:504d:: with SMTP id h13mr4420402wrt.133.1622819574228;
+        Fri, 04 Jun 2021 08:12:54 -0700 (PDT)
+Received: from localhost (a109-49-46-234.cpe.netcabo.pt. [109.49.46.234])
+        by smtp.gmail.com with ESMTPSA id z19sm8247865wmf.31.2021.06.04.08.12.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 08:10:32 -0700 (PDT)
-Date:   Fri, 4 Jun 2021 11:10:31 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH] mm/swap: Fix pte_same_as_swp() not removing uffd-wp bit
- when compare
-Message-ID: <YLpCZ6PGxDGt06gQ@t490s>
-References: <20210603180546.9083-1-peterx@redhat.com>
- <alpine.LSU.2.11.2106032015250.12760@eggly.anvils>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2106032015250.12760@eggly.anvils>
+        Fri, 04 Jun 2021 08:12:53 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Fri, 04 Jun 2021 16:12:52 +0100
+Message-Id: <CBUXIZOCOIXC.3V1ERV326ST89@arch-thunder>
+Cc:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] usb: isp1760: Fix meaningless check in
+ isp1763_run()
+From:   "Rui Miguel Silva" <rui.silva@linaro.org>
+To:     "tongtiangen" <tongtiangen@huawei.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+References: <20210601100311.70200-1-tongtiangen@huawei.com>
+ <YLjAweuyJXzDn9pe@kroah.com>
+ <bb426fd3-ec56-ec95-0c6a-092627d547b6@huawei.com>
+In-Reply-To: <bb426fd3-ec56-ec95-0c6a-092627d547b6@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 08:26:02PM -0700, Hugh Dickins wrote:
-> On Thu, 3 Jun 2021, Peter Xu wrote:
-> 
-> > I found it by pure code review, that pte_same_as_swp() of unuse_vma() didn't
-> 
-> Yes, that is an odd corner, easily missed.
-> 
-> > take uffd-wp bit into account when comparing ptes.  pte_same_as_swp() returning
-> > false negative could cause failure to swapoff swap ptes that was wr-protected
-> > by userfaultfd.
-> > 
-> > Cc: Hugh Dickins <hughd@google.com>
-> > Cc: Andrea Arcangeli <aarcange@redhat.com>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Signed-off-by: Peter Xu <peterx@redhat.com>
-> 
-> I expect you're right: swapoff used to hang forever (but interruptibly)
-> when this went wrong on powerpc originally.  I don't know the uffd_wp
-> (nor the soft_dirty) end of it, but treating uffd_wp and soft_dirty
-> together looks a very good approach, so I'll venture an
-> 
-> Acked-by: Hugh Dickins <hughd@google.com>
+Hi,
+Managed to test this and looks good. Everything is working as
+expected.
 
-Thanks!
+On Fri Jun 4, 2021 at 3:09 AM WEST, tongtiangen wrote:
+> On 2021/6/3 19:45, Greg Kroah-Hartman wrote:
+> > On Tue, Jun 01, 2021 at 06:03:11PM +0800, Tong Tiangen wrote:
+> >> There's a meaningless check in isp1763_run. According to the
+> >> similar implement in isp1760_run, the proper check should remove
+> >> retval =3D 0;
 
-> 
-> But I think it should have a uffd_wp Fixes tag and be Cc stable.
+however I think a more descriptive changelog instead of comparing to
+similar function would be better, maybe something around:
 
-Yes, should be:
+"Remove attribution to retval before check, which make it completely
+meaningless, and does't check what it was supposed: the return
+value of the timed function to set up configuration flag."
 
-Cc: stable@vger.kernel.org # v5.7+
-Fixes: f45ec5ff16a7 ("userfaultfd: wp: support swap and page migration")
+> >>
+> >> Fixes: 60d789f3bfbb ("usb: isp1760: add support for isp1763")
+> >> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
 
--- 
-Peter Xu
+With changelog changed you can add:
+Tested-by: Rui Miguel Silva <rui.silva@linaro.org>
+Reviewed-by: Rui Miguel Silva <rui.silva@linaro.org>
+
+------
+Cheers,
+     Rui
+
+> >> ---
+> >>   drivers/usb/isp1760/isp1760-hcd.c | 1 -
+> >>   1 file changed, 1 deletion(-)
+> >>
+> >> diff --git a/drivers/usb/isp1760/isp1760-hcd.c b/drivers/usb/isp1760/i=
+sp1760-hcd.c
+> >> index 016a54ea76f4..27168b4a4ef2 100644
+> >> --- a/drivers/usb/isp1760/isp1760-hcd.c
+> >> +++ b/drivers/usb/isp1760/isp1760-hcd.c
+> >> @@ -1648,7 +1648,6 @@ static int isp1763_run(struct usb_hcd *hcd)
+> >>   	down_write(&ehci_cf_port_reset_rwsem);
+> >>   	retval =3D isp1760_hcd_set_and_wait(hcd, FLAG_CF, 250 * 1000);
+> >>   	up_write(&ehci_cf_port_reset_rwsem);
+> >> -	retval =3D 0;
+> >>   	if (retval)
+> >>   		return retval;
+> >>  =20
+> >> --=20
+> >> 2.18.0.huawei.25
+> >>
+> > Did you test this change to verify that the driver still works properly=
+?
+> > You are now checking something that never was checked before...
+> >
+> > thanks,
+> >
+> > greg k-h
+> > .
+> Sorry,  this fix was not send to Rui.
+>  From the point of view of code logic, there should be a problem here. I=
+=20
+> don't have the actual hardware to verify whether it works properly. Rui=
+=20
+> may know if the patch affects the original workflow.
+>
+> thanks
+> .
+> >
+
+
 
