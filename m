@@ -2,98 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24A539BAB4
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B25EC39BAC1
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbhFDOLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 10:11:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbhFDOLm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 10:11:42 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CAD7C061767;
-        Fri,  4 Jun 2021 07:09:46 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id o2-20020a05600c4fc2b029019a0a8f959dso5711326wmq.1;
-        Fri, 04 Jun 2021 07:09:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Cv3AoU/Qne3R+pDAUBp+7K/h07fGByZilOe5eXOw1P8=;
-        b=SjlE5dKFCHdrYfDLCyo5GweaLxQ5ZhXX0GvAB058F8V17qk2/JTS5NfNoKNo5BmPsI
-         +6/f04LMM6TXon0ciy/7tAXOJlFdZpl5FoysGW4Y/Bad3p7N/da4rWoiu+4/x4UG8JlW
-         Du8/WLdOADAhX0+0xeJ0STiqohpk9gsEB3vCxB4aTsGKyXvBrWUjjggq4I4b7Maq5nrk
-         gr9EXwPs7aKP0BFbzqrmVK5j7T9leJRkw6ryC+yvCJfnA3r+6/R4t0l0IRBljIFsk19X
-         MpbwQuecHbnwJoGAXybvqZS4Pc8CpvZcsUQR3St4hvYdbAuR9a0SZZQwPUBbY3XKGGA1
-         HCiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Cv3AoU/Qne3R+pDAUBp+7K/h07fGByZilOe5eXOw1P8=;
-        b=Kk9Vy1/lnFroiTAw4VbNZlo9q06GdeCoBZ6JT0eHCnELpAX6MP989sKP3sdVdhSCzw
-         M2Dt5Bx0lRiTbvCRER/zASEgPRFR/5s8LQimkjM6wz8Hhhy2Z1QmsCXrcdsOpFzMGERx
-         OemnxJPzMhvxBkkz5QZ5jnkPquxAg69qjrYFxY0cGelP/3J8OnTNAnUEYseBAzpaBlP6
-         Xt/s83lafpgI0AMZ2H93iENj/XRcOhrh9BbsCWsVhtWW5vPuLFX9Pv5XeAlWbdAmeSdk
-         GLUhOCybd14i3BmDWpEE7/UQ5pxt5dQO8DH01Sve/QWq/65LmzMGAj8CDYrxQOocrbG7
-         AcBw==
-X-Gm-Message-State: AOAM5318zXCO74yGwZNa6Pc8DpHS/TWvnQYcRY4Cuqyt6x2W0CMyunUJ
-        bfMLctNH9Yw7LHKK/Wh+T9U=
-X-Google-Smtp-Source: ABdhPJy+WE4mGUJmQPq33OL/qXM8L3e9qUu+NeOV2Ug4e2SKgw9CLJVJ3YHBc2xmv/1XqnIQ0yJRvA==
-X-Received: by 2002:a7b:c002:: with SMTP id c2mr3898490wmb.118.1622815785194;
-        Fri, 04 Jun 2021 07:09:45 -0700 (PDT)
-Received: from [192.168.1.211] ([2.29.20.84])
-        by smtp.gmail.com with ESMTPSA id v18sm7631514wrb.10.2021.06.04.07.09.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Jun 2021 07:09:44 -0700 (PDT)
-Subject: Re: [PATCH v5 4/6] gpiolib: acpi: Add acpi_gpio_get_io_resource()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, devel@acpica.org,
-        Len Brown <lenb@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        laurent.pinchart@ideasonboard.com, kieran.bingham@ideasonboard.com
-References: <20210603224007.120560-1-djrscally@gmail.com>
- <20210603224007.120560-5-djrscally@gmail.com>
- <YLokNQCJ7WXKZepR@smile.fi.intel.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <ca51ab71-9cdd-0d00-959f-9e1b2df3588c@gmail.com>
-Date:   Fri, 4 Jun 2021 15:09:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230351AbhFDOPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 10:15:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230122AbhFDOO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 10:14:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EAEC560FE7;
+        Fri,  4 Jun 2021 14:13:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622815993;
+        bh=xRpwrH0HJ2KIddrVIvTkRxRVVT2tlbNc3AZvwAnuhSA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ouzYknCwxkrIynnHdWsKXnNEAHUxGgmagRE1vEAl1nDnjmdWUeEsSrp6zL5iCYij+
+         qb/D9heJKhZnerD0KcMZXxBDz5SVKb1SilNVtD/yILmpXkIUkYNslbSf1FkeTYXBUg
+         icblfFBsoXDygLSnO+EuO7WeCtFBfYvgQ+kagG+1MXEn9B0e9nZH9y10TsTJNE0t0P
+         2/vBsPehS6LIicO7T/udDbwgJki+5JeClTfzufCR9qFmKqDR14SoRNdLIfVvC2Eq0S
+         1PxBnLMFWLp1Nl+ETBChuo0WQzCzqbaBjrjhHz6TtQR4sVjSIL87krcoMjxwdnwprM
+         TNvpKp9TVlSjw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 9F5BF5C0154; Fri,  4 Jun 2021 07:13:12 -0700 (PDT)
+Date:   Fri, 4 Jun 2021 07:13:12 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>, will@kernel.org,
+        stern@rowland.harvard.edu, parri.andrea@gmail.com,
+        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
+        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
+        linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <20210604141312.GV4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
+ <YLoSJaOVbzKXU4/7@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <YLokNQCJ7WXKZepR@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLoSJaOVbzKXU4/7@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 04, 2021 at 01:44:37PM +0200, Peter Zijlstra wrote:
+> On Fri, Jun 04, 2021 at 12:12:07PM +0200, Peter Zijlstra wrote:
+> > +/**
+> > + * volatile_if() - Provide a control-dependency
+> > + *
+> > + * volatile_if(READ_ONCE(A))
+> > + *	WRITE_ONCE(B, 1);
+> > + *
+> > + * will ensure that the STORE to B happens after the LOAD of A. Normally a
+> > + * control dependency relies on a conditional branch having a data dependency
+> > + * on the LOAD and an architecture's inability to speculate STOREs. IOW, this
+> > + * provides a LOAD->STORE order.
+> > + *
+> > + * Due to optimizing compilers extra care is needed; as per the example above
+> > + * the LOAD must be 'volatile' qualified in order to ensure the compiler
+> > + * actually emits the load, such that the data-dependency to the conditional
+> > + * branch can be formed.
+> > + *
+> > + * Secondly, the compiler must be prohibited from lifting anything out of the
+> > + * selection statement, as this would obviously also break the ordering.
+> > + *
+> > + * Thirdly, and this is the tricky bit, architectures that allow the
+> > + * LOAD->STORE reorder must ensure the compiler actually emits the conditional
+> > + * branch instruction, this isn't possible in generic.
+> > + *
+> > + * See the volatile_cond() wrapper.
+> > + */
+> > +#define volatile_if(cond) if (volatile_cond(cond))
+> 
+> On naming (sorry Paul for forgetting that in the initial mail); while I
+> think using the volatile qualifier for the language feature (can we haz
+> plz, kthxbai) makes perfect sense, Paul felt that we might use a
+> 'better' name for the kernel use, ctrl_dep_if() was proposed.
+> 
+> Let us pain bike sheds :-)
 
-On 04/06/2021 14:01, Andy Shevchenko wrote:
-> On Thu, Jun 03, 2021 at 11:40:05PM +0100, Daniel Scally wrote:
->> Add a function to verify that a given acpi_resource represents an IO
->> type GPIO resource, and return it if so.
-> I would rephrase this to something like:
->
-> "Add a function to verify that a given ACPI resource represents a GpioIo() type
-> of resource, and return it if so."
->
-> I can amend when applying to my branch.
->
-That wording is perfectly fine by me
+I have felt that pain many times...  ;-)
+
+Here is what I see thus far from these two threads:
+
+1.	volatile_if() as above.  Nice ease of use, but might be suboptimal
+	on architectures where a branch is slower than an acquire load.
+
+2.	#1, but with my preferred name of ctrl_dep_if() instead of
+	volatile_if().
+
+3.	READ_ONCE_CTRL() like back in the old days.  This has the
+	advantage of giving the compiler more information, but has
+	problems with relaxed atomic RMW operations.
+
+4.	A full (fool?) solution based on #3 would also include _ctrl
+	suffixed atomic RMW operations.
+
+5.	Your bikeshed color here!
+
+							Thanx, Paul
