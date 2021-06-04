@@ -2,145 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9438739AFFE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6E839AFD9
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:32:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230016AbhFDBrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 21:47:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41468 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229758AbhFDBry (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 21:47:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EF49613FF;
-        Fri,  4 Jun 2021 01:46:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622771168;
-        bh=Lpi5gmvDUTHrxYBJ0AOqlt011SOYDrHyNVmLe5HdGy8=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=ZuyAvsMb4lFdlwmcPxUZP9zxROGdeedSPDV7yiU+Jdix88lBjlybEKKWTJfDEehta
-         Laah6xJkGs+MM9Kdy93FpC6ZQKRoENJX3yqvv+deRKewPHTiDNpeTowmCsvqGdDBer
-         bLab3XnKzHTMFLhlCXFOZehxjyeutpnEeVbkaGGSXBfQdtsMOYQdqK3PAmHSEauX5k
-         iP31NEOcqDyeXWHpqrHeeRa3t123whXOsexrTWJZ2s83u7vVGdp3ikBbdpgcUXDOj2
-         7CzUK19NjFOAGn65bgG0nIP8udLpMi6hnDBZ8Cc2Lc07rDrLkyaoOitruCGj6gcdhq
-         wd09XZC21d/cw==
-Subject: Re: [PATCH v1 1/8] virtio: Force only split mode with protected guest
-To:     Andi Kleen <ak@linux.intel.com>, mst@redhat.com
-Cc:     Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        iommu@lists.linux-foundation.org,
-        the arch/x86 maintainers <x86@kernel.org>,
-        sathyanarayanan.kuppuswamy@linux.intel.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210603004133.4079390-1-ak@linux.intel.com>
- <20210603004133.4079390-2-ak@linux.intel.com>
- <cc5c8265-83f7-aeb1-bc30-3367fe68bc97@kernel.org>
- <a0e66b4c-cec5-2a26-9431-d5a21e22c8f2@linux.intel.com>
- <2b2dec75-a0c1-4013-ac49-a49f30d5ac3c@www.fastmail.com>
- <3159e1f4-77cd-e071-b6f2-a2bb83cfc69a@linux.intel.com>
- <b8b39b76-8d07-4e4a-804a-746269787b61@www.fastmail.com>
- <884f34e0-fcd2-bb82-9e9e-4269823fa9b2@linux.intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Message-ID: <308e7187-1ea7-49a7-1083-84cf8654f52a@kernel.org>
-Date:   Thu, 3 Jun 2021 18:46:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230269AbhFDBeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 21:34:18 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3417 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230289AbhFDBeR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 21:34:17 -0400
+Received: from dggeme760-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fx4tf6fclz6v2N;
+        Fri,  4 Jun 2021 09:29:30 +0800 (CST)
+Received: from localhost.localdomain (10.175.104.82) by
+ dggeme760-chm.china.huawei.com (10.3.19.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 4 Jun 2021 09:32:29 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <ericvh@gmail.com>, <lucho@ionkov.net>, <asmadeus@codewreck.org>,
+        <v9fs-developer@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] 9p: Fix spelling mistakes
+Date:   Fri, 4 Jun 2021 09:46:08 +0800
+Message-ID: <20210604014608.2086576-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <884f34e0-fcd2-bb82-9e9e-4269823fa9b2@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggeme760-chm.china.huawei.com (10.3.19.106)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/3/21 4:32 PM, Andi Kleen wrote:
-> 
->> We do not need an increasing pile of kludges
-> 
-> Do you mean disabling features is a kludge?
-> 
-> If yes I disagree with that characterization.
-> 
-> 
->> to make TDX and SEV “secure”.  We need the actual loaded driver to be
->> secure.  The virtio architecture is full of legacy nonsense,
->> and there is no good reason for SEV and TDX to be a giant special case.
-> 
-> I don't know where you see a "giant special case". Except for the
-> limited feature negotiation all the changes are common, and the
-> disabling of features (which is not new BTW, but already done e.g. with
-> forcing DMA API in some cases) can be of course used by all these other
-> technologies too. But it just cannot be done by default for everything
-> because it would break compatibility. So every technology with such
-> requirements has to explicitly opt-in.
-> 
-> 
->>
->> As I said before, real PCIe (Thunderbolt/USB-C or anything else) has
->> the exact same problem.  The fact that TDX has encrypted memory is, at
->> best, a poor proxy for the actual condition.  The actual condition is
->> that the host does not trust the device to implement the virtio
->> protocol correctly.
-> 
-> Right they can do similar limitations of feature sets. But again it
-> cannot be default.
+Fix some spelling mistakes in comments:
+functon  ==> function
+parallely  ==> parallelly
+contians  ==> contains
+incase  ==> in case
+trasnport  ==> transport
+creat  ==> create
+assocated  ==> associated
 
-Let me try again.
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ fs/9p/v9fs.c           | 2 +-
+ fs/9p/vfs_addr.c       | 4 ++--
+ fs/9p/vfs_dentry.c     | 2 +-
+ fs/9p/vfs_file.c       | 4 ++--
+ fs/9p/vfs_inode.c      | 4 ++--
+ fs/9p/vfs_inode_dotl.c | 4 ++--
+ fs/9p/vfs_super.c      | 2 +-
+ 7 files changed, 11 insertions(+), 11 deletions(-)
 
-For most Linux drivers, a report that a misbehaving device can corrupt
-host memory is a bug, not a feature.  If a USB device can corrupt kernel
-memory, that's a serious bug.  If a USB-C device can corrupt kernel
-memory, that's also a serious bug, although, sadly, we probably have
-lots of these bugs.  If a Firewire device can corrupt kernel memory,
-news at 11.  If a Bluetooth or WiFi peer can corrupt kernel memory,
-people write sonnets about it and give it clever names.  Why is virtio
-special?
-
-If, for some reason, the virtio driver cannot be fixed so that it is
-secure and compatible [1], then I think that the limited cases that are
-secure should be accessible to anyone, with or without TDX.  Have a
-virtio.secure_mode module option or a udev-controllable parameter or an
-alternative driver name or *something*.  An alternative driver name
-would allow userspace to prevent the insecure mode from auto-binding to
-devices.  And make whatever system configures encrypted guests for
-security use this mode.  (Linux is not going to be magically secure just
-by booting it in TDX.  There's a whole process of unsealing or remote
-attestation, something needs to prevent the hypervisor from connecting a
-virtual keyboard and typing init=/bin/bash, something needs to provision
-an SSH key, etc.)
-
-In my opinion, it is not so great to identify bugs in the driver and
-then say that they're only being fixed for TDX and SEV.
-
-Keep in mind that, as I understand it, there is nothing virt specific
-about virtio.  There are real physical devices that speak virtio.
-
-[1] The DMA quirk is nasty.  Fortunately, it's the only case I'm aware
-of in which the virtio driver genuinely cannot be made secure and
-compatible at the smae time.  Also, fortunately, most real deployments
-except on powerpc work just fine with the DMA quirk unquirked.
-
-> 
-> 
->>
->>>
->>> TDX and SEV use the arch hook to enforce DMA API, so that part is also
->>> solved.
->>>
->> Can you point me to the code you’re referring to?
-> 
-> See 4/8 in this patch kit. It uses an existing hook which is already
-> used in tree by s390.
-
-This one:
-
-int arch_has_restricted_virtio_memory_access(void)
-+{
-+	return is_tdx_guest();
-+}
-
-I'm looking at a fairly recent kernel, and I don't see anything for s390
-wired up in vring_use_dma_api.
+diff --git a/fs/9p/v9fs.c b/fs/9p/v9fs.c
+index cdb99507ef33..c4a7b78adcb5 100644
+--- a/fs/9p/v9fs.c
++++ b/fs/9p/v9fs.c
+@@ -689,7 +689,7 @@ static int __init init_v9fs(void)
+ {
+ 	int err;
+ 	pr_info("Installing v9fs 9p2000 file system support\n");
+-	/* TODO: Setup list of registered trasnport modules */
++	/* TODO: Setup list of registered transport modules */
+ 
+ 	err = v9fs_cache_register();
+ 	if (err < 0) {
+diff --git a/fs/9p/vfs_addr.c b/fs/9p/vfs_addr.c
+index cce9ace651a2..c4dd6e8e3a80 100644
+--- a/fs/9p/vfs_addr.c
++++ b/fs/9p/vfs_addr.c
+@@ -2,7 +2,7 @@
+ /*
+  *  linux/fs/9p/vfs_addr.c
+  *
+- * This file contians vfs address (mmap) ops for 9P2000.
++ * This file contains vfs address (mmap) ops for 9P2000.
+  *
+  *  Copyright (C) 2005 by Eric Van Hensbergen <ericvh@gmail.com>
+  *  Copyright (C) 2002 by Ron Minnich <rminnich@lanl.gov>
+@@ -139,7 +139,7 @@ static void v9fs_invalidate_page(struct page *page, unsigned int offset,
+ {
+ 	/*
+ 	 * If called with zero offset, we should release
+-	 * the private state assocated with the page
++	 * the private state associated with the page
+ 	 */
+ 	if (offset == 0 && length == PAGE_SIZE)
+ 		v9fs_fscache_invalidate_page(page);
+diff --git a/fs/9p/vfs_dentry.c b/fs/9p/vfs_dentry.c
+index 4b4292123b3d..749238381343 100644
+--- a/fs/9p/vfs_dentry.c
++++ b/fs/9p/vfs_dentry.c
+@@ -2,7 +2,7 @@
+ /*
+  *  linux/fs/9p/vfs_dentry.c
+  *
+- * This file contians vfs dentry ops for the 9P2000 protocol.
++ * This file contains vfs dentry ops for the 9P2000 protocol.
+  *
+  *  Copyright (C) 2004 by Eric Van Hensbergen <ericvh@gmail.com>
+  *  Copyright (C) 2002 by Ron Minnich <rminnich@lanl.gov>
+diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
+index 59c32c9b799f..51f22f8c6820 100644
+--- a/fs/9p/vfs_file.c
++++ b/fs/9p/vfs_file.c
+@@ -2,7 +2,7 @@
+ /*
+  *  linux/fs/9p/vfs_file.c
+  *
+- * This file contians vfs file ops for 9P2000.
++ * This file contains vfs file ops for 9P2000.
+  *
+  *  Copyright (C) 2004 by Eric Van Hensbergen <ericvh@gmail.com>
+  *  Copyright (C) 2002 by Ron Minnich <rminnich@lanl.gov>
+@@ -223,7 +223,7 @@ static int v9fs_file_do_lock(struct file *filp, int cmd, struct file_lock *fl)
+ 
+ out_unlock:
+ 	/*
+-	 * incase server returned error for lock request, revert
++	 * in case server returned error for lock request, revert
+ 	 * it locally
+ 	 */
+ 	if (res < 0 && fl->fl_type != F_UNLCK) {
+diff --git a/fs/9p/vfs_inode.c b/fs/9p/vfs_inode.c
+index 795706520b5e..bbf93906c38f 100644
+--- a/fs/9p/vfs_inode.c
++++ b/fs/9p/vfs_inode.c
+@@ -505,7 +505,7 @@ static int v9fs_at_to_dotl_flags(int flags)
+ }
+ 
+ /**
+- * v9fs_dec_count - helper functon to drop i_nlink.
++ * v9fs_dec_count - helper function to drop i_nlink.
+  *
+  * If a directory had nlink <= 2 (including . and ..), then we should not drop
+  * the link count, which indicates the underlying exported fs doesn't maintain
+@@ -778,7 +778,7 @@ struct dentry *v9fs_vfs_lookup(struct inode *dir, struct dentry *dentry,
+ 	 * If we had a rename on the server and a parallel lookup
+ 	 * for the new name, then make sure we instantiate with
+ 	 * the new name. ie look up for a/b, while on server somebody
+-	 * moved b under k and client parallely did a lookup for
++	 * moved b under k and client parallelly did a lookup for
+ 	 * k/b.
+ 	 */
+ 	res = d_splice_alias(inode, dentry);
+diff --git a/fs/9p/vfs_inode_dotl.c b/fs/9p/vfs_inode_dotl.c
+index e1c0240b51c0..58a491b5f877 100644
+--- a/fs/9p/vfs_inode_dotl.c
++++ b/fs/9p/vfs_inode_dotl.c
+@@ -281,14 +281,14 @@ v9fs_vfs_atomic_open_dotl(struct inode *dir, struct dentry *dentry,
+ 	/* Update mode based on ACL value */
+ 	err = v9fs_acl_mode(dir, &mode, &dacl, &pacl);
+ 	if (err) {
+-		p9_debug(P9_DEBUG_VFS, "Failed to get acl values in creat %d\n",
++		p9_debug(P9_DEBUG_VFS, "Failed to get acl values in create %d\n",
+ 			 err);
+ 		goto error;
+ 	}
+ 	err = p9_client_create_dotl(ofid, name, v9fs_open_to_dotl_flags(flags),
+ 				    mode, gid, &qid);
+ 	if (err < 0) {
+-		p9_debug(P9_DEBUG_VFS, "p9_client_open_dotl failed in creat %d\n",
++		p9_debug(P9_DEBUG_VFS, "p9_client_open_dotl failed in create %d\n",
+ 			 err);
+ 		goto error;
+ 	}
+diff --git a/fs/9p/vfs_super.c b/fs/9p/vfs_super.c
+index 5fce6e30bc5a..50816e6fb4e2 100644
+--- a/fs/9p/vfs_super.c
++++ b/fs/9p/vfs_super.c
+@@ -2,7 +2,7 @@
+ /*
+  *  linux/fs/9p/vfs_super.c
+  *
+- * This file contians superblock ops for 9P2000. It is intended that
++ * This file contains superblock ops for 9P2000. It is intended that
+  * you mount this file system on directories.
+  *
+  *  Copyright (C) 2004 by Eric Van Hensbergen <ericvh@gmail.com>
+-- 
+2.25.1
 
