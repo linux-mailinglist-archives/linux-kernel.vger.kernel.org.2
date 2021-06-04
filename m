@@ -2,192 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C481639B34C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 08:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 560C739B350
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 08:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhFDGzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 02:55:32 -0400
-Received: from mga11.intel.com ([192.55.52.93]:52209 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229881AbhFDGzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 02:55:31 -0400
-IronPort-SDR: MEZbheGEAhI0GV4GNNsYQb1LA6vyy1JPkGUi1FCWum6S+fISxGrH1nzKdSbe/5y3EEStGFnM0G
- 8rGeyMJKr5gg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="201216123"
-X-IronPort-AV: E=Sophos;i="5.83,247,1616482800"; 
-   d="scan'208";a="201216123"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 23:53:45 -0700
-IronPort-SDR: V+P0ql+gHJzXPiCjBWgWKilAULWEM/bBQCh3FYLRvSux6W0QduS12IbM4VFpRB7kBoCtEiGokq
- qtd33cL2dtnA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,247,1616482800"; 
-   d="scan'208";a="480535272"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga001.jf.intel.com with ESMTP; 03 Jun 2021 23:53:44 -0700
-Received: from orsmsx604.amr.corp.intel.com (10.22.229.17) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Thu, 3 Jun 2021 23:53:44 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
- via Frontend Transport; Thu, 3 Jun 2021 23:53:44 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.109)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.4; Thu, 3 Jun 2021 23:53:43 -0700
+        id S229962AbhFDG5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 02:57:08 -0400
+Received: from mail-dm6nam11on2050.outbound.protection.outlook.com ([40.107.223.50]:46785
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229831AbhFDG5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 02:57:07 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NhjyAVq8CD3c9xvB4F01idBQwTavJ33Q6RxOp93vlaaf4meP4pDWjTC2c87QZ1zv9kC2URQSsTTGOWw4qDFee8fESvEyne8t5Dwoefwrk9oHLGy/SZBV6Nw8OWyyCpa/zHTdCVkSIgNU0q+mC0Bcri7DLd8rH584eIBODrYcYDnZdWf+SMPHvMmsNeuwooLl1SgooAST7oRXgSzzyXPSjZmJjSCQcVvkE+fyn5/PGDofXjB94IROHaBsXOuiTs6r0iG6jpAr2/6+xKXXiGF+A9xw5w7PcbSM1eccluD+aFitVEmJiGmvu4ifB0a2UntawLO3BDMd/BKKCNAPr69b3Q==
+ b=kT12XbkmMVjRYqAndeJ5oA7/LeUf1utOzTUHKj4Y5DcTl8Ur1JRIFlUw7HBT5L0K19pFrd+yOG5y4pYeRNrma7ORiG555yFevlCvYwJcnQxybeq2lepIc5Ye2F5JcdL4UEs0EfmAUKbxkdQTauvoGSjcjhdiEoaz3yzRgaxAcPNtYhlFKPF/5SKIapGSteWJFXyw0sJh6p6rV9XZBGN1PK8Cqu1OQ+O5D8dOKQ396wnrzeQ8cer3dpM32lcAtOGaFVLiqee7TNOPv43IlOtzXClz1IlSzPGbIM6ttYY2FawhEPJ/74KD6NEnyPoJUyAMDQweHhNxjrKriO4EyTMDsg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lz+qObt79uDwG8IghMprLScwof9ogEEZbXa7+Iu3hQs=;
- b=A1niO6y98fLbFfq/jznUOKORCB/fovraeEgBN+GXHnLGhIvKK692pgEmIUdDaAxV/YJ3yXfqvOnq9RRgROotuQ8IgAA58EPG5oOAYMN2+pL6djtOp8cpaaipiG/4krQQyijpAY7Z2KtRtkE0HgxKyMcrP6KPmtnyH04kW5IyU8cCvDTI8scF/e7Mv85aGAmpBj7qOdrpKri8RsH273GoHak9sELtbrKpWxLPpdmRUGp8VPPEhJ4hpCYCV8B6SSlCGSI1STvAJNZbVHghjp9zfqVlxzQDkJoDpH4EDbKVMR/vLUv3jqWQhDvmCVBTNVBwc9X3Wb+eqf2Bfy/xraOeYQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
+ bh=vltb3jFKtCV+IdXvE+GRu1MtFk1GIT2cvmg1EUCVPJY=;
+ b=Jq0k3tYEOtwb71qkEDauxges/U9JmKBF38OKOc6Djhse8qBALSOFcWqMiXoo33JWQ4Umx+vlfWUwHnsJjSJWm5of5TJ54fiNevkI+4Fba5MJqjm0CcBVlUa1PdaGf0+TaFmYDL6ty9mGvnmn9u5oVAreOXRSQX1aGaq1GhDIFuPorbPHYU1XnRRaLnrHjp81FZMuXg3PGwkzPn52c/pCuIVsexIw/280h3VinZnsytfddOt70hmzj8OfAFHlFDWonlXYc4bEqkE4R/zgSUAeReotOeCQYVbcuet+Q3CIJqB2d44h622SlEex3VhKcuHXfLJUZqhfzF581YIe8Z6nrg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.32) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lz+qObt79uDwG8IghMprLScwof9ogEEZbXa7+Iu3hQs=;
- b=OqEx8GcK6oAQK6OzdmMjKH6zoSzk1jxSNTXqOR41GGjJdqIKk8gdF6YfsZyO6NYkxlPyL3woLz8XZ73gF9+xrAQ9Mes5Z7bQTkASsd0vvn6qZ5WQg1Se/KmUcjj0skGRDUnBXQIAy9RXav5rS1aUZBnm8KVVV5yEMEqBsodMPS8=
-Received: from CH0PR11MB5380.namprd11.prod.outlook.com (2603:10b6:610:bb::5)
- by CH0PR11MB5251.namprd11.prod.outlook.com (2603:10b6:610:e2::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.23; Fri, 4 Jun
- 2021 06:53:42 +0000
-Received: from CH0PR11MB5380.namprd11.prod.outlook.com
- ([fe80::d26:b91e:773:5e22]) by CH0PR11MB5380.namprd11.prod.outlook.com
- ([fe80::d26:b91e:773:5e22%6]) with mapi id 15.20.4195.024; Fri, 4 Jun 2021
- 06:53:42 +0000
-From:   "Voon, Weifeng" <weifeng.voon@intel.com>
-To:     Vladimir Oltean <olteanv@gmail.com>,
-        "Sit, Michael Wei Hong" <michael.wei.hong.sit@intel.com>
-CC:     "Jose.Abreu@synopsys.com" <Jose.Abreu@synopsys.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "peppe.cavallaro@st.com" <peppe.cavallaro@st.com>,
-        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
-        "Tan, Tee Min" <tee.min.tan@intel.com>,
-        "vee.khee.wong@linux.intel.com" <vee.khee.wong@linux.intel.com>,
-        "Wong, Vee Khee" <vee.khee.wong@intel.com>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RESEND PATCH net-next v4 1/3] net: stmmac: split xPCS setup from
- mdio register
-Thread-Topic: [RESEND PATCH net-next v4 1/3] net: stmmac: split xPCS setup
- from mdio register
-Thread-Index: AQHXWG9VZDAInycEtECS03SHnnEzzKsCRbMAgAAH7wCAACh0gIAAybNw
-Date:   Fri, 4 Jun 2021 06:53:42 +0000
-Message-ID: <CH0PR11MB53805074303D0F06738FCD40883B9@CH0PR11MB5380.namprd11.prod.outlook.com>
-References: <20210603115032.2470-1-michael.wei.hong.sit@intel.com>
- <20210603115032.2470-2-michael.wei.hong.sit@intel.com>
- <20210603132056.zklgtbsslbkgqtsn@skbuf>
- <SA2PR11MB50513D751429D3D456A5A9409D3C9@SA2PR11MB5051.namprd11.prod.outlook.com>
- <20210603161407.457olvjmia3zoj6w@skbuf>
-In-Reply-To: <20210603161407.457olvjmia3zoj6w@skbuf>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [161.142.242.146]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7cd682fb-0f0d-4d4d-caaf-08d927257dae
-x-ms-traffictypediagnostic: CH0PR11MB5251:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CH0PR11MB5251B9A7E9204523082620E3883B9@CH0PR11MB5251.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: lDv0p0AMpUVCRIaMg1ikqiZ7M5TNS+vfVJvZgN0MeDven5D0YUTe9/G0qdY20E6SkDCgYbaol5mvds7JUhCjiGW/DAyw/+uu3l/mFaf9CvizoiFH4AcnKLl9xNRWZIBNfvbZ+K2z0lcfl4wxoJZerB0U7/eTnxijPNtuXCWmjRDaVi93ePIY7iIJY0K1MCzlGz6vGKucudzWk6BUN9FS8hDOaNc7+feLFR06K+Qhsp2SmLNbbiIHDi1QOzgolPKGnqPJ9NdUC7fMATl5xum9fCMITIxh54N+0kl07xEmsohSQTsZs5pfEURXWx+mfxtQPVJv9mbUsnRh/mRMKxngOc0Aoa2zt5/O4AInDPwtv6Pzda3xgSYkq+tCEYsF3p9b+QLPbvfY905MmAcjOB+AC6TbSSGxsp9ARIGfOjc7n26U/X7WQzyJgH+ojAxlfwJfPfn8tPc+xihOTv5wSr/298w0JQOkr3nWIpF/GrQ/krvIMLZy8i0PvROuAUhbQ1brRLYqQL9Guw74p7mmJgNG2B/CcPjLD20tAYwVc1kmxbqJeo+3iu7J0FfsnIqxAE2orCaETboyyRwZk1ewdYNCSJmFFNUqNqcybatD9odpmAg=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR11MB5380.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(346002)(39860400002)(376002)(366004)(186003)(66946007)(66446008)(66476007)(64756008)(6636002)(66556008)(8936002)(52536014)(54906003)(4326008)(76116006)(110136005)(6506007)(7416002)(2906002)(316002)(33656002)(55016002)(38100700002)(86362001)(122000001)(9686003)(478600001)(8676002)(5660300002)(71200400001)(26005)(7696005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?sht6MuE2o+zPj6U+fvyOTD2hIAcn/QIqTZ/GfVosGd1w+llIOqxar5xjq/09?=
- =?us-ascii?Q?qCM7aFadlaQjNLJpohJeS8VdN2U0nhV3njr0F/9QEBxUUWq+kEIAY6MuSBqi?=
- =?us-ascii?Q?FkdagtweT2sjchnTVGPM4epYsrEhN/TOfYdoPwqGBpvcvGc2+UIEeGJm7+jx?=
- =?us-ascii?Q?B1karzaJMqpp1S6Hl8+oH+ytcnPlxVvmjUrxIw5AkIzpLlKP2NsQBzFS+o3y?=
- =?us-ascii?Q?ne/Chd5FkzV91LdpXwz4yMFInVtQHScOpaBGEWDuhkW3isQnHF1LzEet9jK0?=
- =?us-ascii?Q?fMJMf/jJ+NlG0tJXaHNQYS6Q9ju8Ptu8krL33SOWd6kLY70bd1ILiYBXU/m3?=
- =?us-ascii?Q?hGubO/c5LjYel0eoWlfYQW2nd4dMwqXjSvRXYbudo0fA6K4sVPsnCgdl2d9s?=
- =?us-ascii?Q?ZCzi98YoGXcBaO9V6TYuj4W6IZyiJuiJrjTsUFZZbxsqeWPeLDHEgeUicyv6?=
- =?us-ascii?Q?fZOjmsJJEVQA/5B+QJWbtpg1TXk2yEh+a4ZjSatloW6Vr7wJVlctzsyvwTtP?=
- =?us-ascii?Q?Gp3UesaViWGbKD3smlvIhqgtJpz6IQLam/6UOUD63wBOnUvZpjD3FjPobGAx?=
- =?us-ascii?Q?QdRqENxpxKarIi+Ylc1FRrrheCoRk4OWCFfuLsDoBuFAPGliP8q6xX5Gu/Rw?=
- =?us-ascii?Q?tmoxa9PAa+uidFziO3ErWhzHpZYGarjZch6icDwZJx6rVHQgJpUOzNU1Pi/2?=
- =?us-ascii?Q?N2er/WavM2NrEdEv9XzcOx3yfQz+rWcxq3uXKQmAKCuPx2aclvXeqkrfTriy?=
- =?us-ascii?Q?1fwgIe572C2PSAdcF3Ew06H4XXfEW40oYUKv66BIrNIU4spZyEzASj4H5YGK?=
- =?us-ascii?Q?K7k0QqbjrWi708mznmHfvEOgAemPzWPJ4NIU2T8XGJSOuXgl86ALO5dQrZGq?=
- =?us-ascii?Q?ZcHI9QOZvohdyVxmymNi+IFlBg2qGpBeTsUwgV+C/3LF4HSTR3F2IF9iBGD9?=
- =?us-ascii?Q?VzaEceZ6BtknMYkZVOf9QFbcFKddN9AvcnI9OeklVukNsWVYssd5I+ucu6fo?=
- =?us-ascii?Q?0wvwMEJ6PJLcN8wmOTr6JKPMX3GM0G1hG7A6pD1BRKP8lixQVJMaiC4pgQDW?=
- =?us-ascii?Q?fplZ21UoTyY2/ouni08YjUqKQk6hJ0Aeul9DuGIj/4cPeBRANz1bguyOlo9L?=
- =?us-ascii?Q?PBRZkPygpHcFMKACUoI2iuYSHd+3ExNq7VJtzDn7xUBAF9wd/I+pSITE3Hl1?=
- =?us-ascii?Q?QCHAW77EscfOSUoGh0XX7WTmqHpH9zgMD3oYMn1ftsEhX6q73Q0u672YBBpP?=
- =?us-ascii?Q?6gfdDi5R6otBqgIWZHljViYwDgSv5h0DkXmh+DF/EDkcIwqQpHIpriULRsUn?=
- =?us-ascii?Q?Zvl6pnEX4HTg8ovt7y7z5FNp?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ bh=vltb3jFKtCV+IdXvE+GRu1MtFk1GIT2cvmg1EUCVPJY=;
+ b=XDZgOFT0RTX86v4wmJ4HxTEsHcD955CcnQi54ugoSSCT80qyhRp/K8fZ6c11951Rm9ngEmUGyXJuVuMeT8IssXIuZczRwwTlFcf4t491DnNzP5CMWsIPebiXVmSLMmx2flFChEeqBuNkpmmdrBUB6D6q3WD1sMJYPHhhoGocXuvuPbKswCbhqoSFHKWfyi6GIpAx23KieOUifGxSDXrhCSKWb1cQZfuQAgsCBF/TuAC9ahwxjssojA/6wUSlA+eNjRKhFqHdFW+dauJ7WAml9vL/8ayH4zFvu9sfQYJf6rxVmqJwhhPzd9SLE9sGOPs4Dnpk/mqNJygLeYugLPgH1w==
+Received: from DM5PR07CA0109.namprd07.prod.outlook.com (2603:10b6:4:ae::38) by
+ DM6PR12MB2938.namprd12.prod.outlook.com (2603:10b6:5:18a::31) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4195.23; Fri, 4 Jun 2021 06:55:20 +0000
+Received: from DM6NAM11FT053.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:4:ae:cafe::5c) by DM5PR07CA0109.outlook.office365.com
+ (2603:10b6:4:ae::38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24 via Frontend
+ Transport; Fri, 4 Jun 2021 06:55:20 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ DM6NAM11FT053.mail.protection.outlook.com (10.13.173.74) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4195.22 via Frontend Transport; Fri, 4 Jun 2021 06:55:20 +0000
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 3 Jun
+ 2021 23:55:19 -0700
+Received: from nmalwade-dt.nvidia.com (172.20.187.5) by mail.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 4 Jun 2021 06:55:17 +0000
+From:   Ninad Malwade <nmalwade@nvidia.com>
+To:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+CC:     Bibek Basu <bbasu@nvidia.com>, Nicolin Chen <nicolinc@nvidia.com>,
+        Rajkumar Kasirajan <rkasirajan@nvidia.com>,
+        <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Ninad Malwade <nmalwade@nvidia.com>
+Subject: [PATCH] ina3221: use CVRF only for single-shot conversion
+Date:   Fri, 4 Jun 2021 14:54:43 +0800
+Message-ID: <1622789683-30931-1-git-send-email-nmalwade@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+X-NVConfidentiality: public
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR11MB5380.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7cd682fb-0f0d-4d4d-caaf-08d927257dae
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jun 2021 06:53:42.4122
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c3a54e29-6364-4779-5c6f-08d92725b804
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2938:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB2938924FE70B2DDC8AE8D84CB13B9@DM6PR12MB2938.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FViDa8M44UayslIVtvV2i9US6ZPPFFqc3HLcDMeDJqYmK3znuLkhg5++OfV8g4KMCH8OZMWHJISMspSrETyOQfG+4gmQcqZ0CdofMnYwjkucTc5XrGWbfrJb0qXmocI9Z9IQasBymnLfI9DQHUs/N8DiV1N7Fr4wk4sG1n09ydpPNos38twW7JDb+zRam3EWb1zEFvVpL/rxLIXHHvqIopAqxLX2tBtmOkH2yhtR5KPo9VIdeJPQzpNpnw0Hfi7hWKrrNXIrhyJO/LaqBxr95/oC5sw9FM8xBVcKASBDR+o36zBYm5fgQaLwpWNZiDJIwiMcuZu1UsZGDwR85/OpMmChX+Dt/4J0m2m7+Dq9J3pehPNO6dgGndQ+cF9T9pRhG9mrROo8S6820MazkfHTgdpDMInnFFW235MPRKGOFWtP5X6SogfDHhj6PSgsJsGNOWfMmShGoYtStQ5xgN28LWvs6ZX1UL09sfLsJVcIUYXHdgRfeVrrzmJDKYUVYU0Felxuw66P0GoFSqSBAQTwdt9cOWqJ4scGEA89nosGmqZTkoqoy7ANkWQZqANfF1leRNtpaa61EEa1YogGSI94aewvXwEmzmfb6PFB+uw45j2viYxQ5S8pKEz7+21XPw6EZAeQSvluzZBTxgKSMb/9e+rjsYKyyb9HKEWzyAwOOxU=
+X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(376002)(39860400002)(346002)(396003)(36840700001)(46966006)(107886003)(316002)(336012)(110136005)(54906003)(426003)(8936002)(5660300002)(356005)(8676002)(82740400003)(7696005)(70586007)(82310400003)(70206006)(83380400001)(2616005)(86362001)(36756003)(478600001)(36860700001)(26005)(2906002)(7636003)(4326008)(186003)(6666004)(47076005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2021 06:55:20.3073
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: d8ZhraB3QlWBhu3C7Ue0S3F1mgYcpFVAL5UEaOnt68H5XLw0U4dyxKOhXP8eB3MIdlHZIFZLVSRFYvLyd76pFg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5251
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c3a54e29-6364-4779-5c6f-08d92725b804
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT053.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2938
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> @@ -7002,6 +7006,9 @@ int stmmac_dvr_probe(struct device *device,
->  		}
->  	}
->=20
-> +	if (priv->plat->speed_mode_2500)
-> +		pri*v->plat->speed_mode_2500(ndev, priv->plat->bsp_priv);
-> +
->  	if (priv->plat->mdio_bus_data->has_xpcs) {
->  		ret =3D stmmac_xpcs_setup(priv->mii);
->  		if (ret)
->=20
-> With the current placement, there seems to be indeed no way for the
-> platform-level code to set plat->phy_interface after the MDIO bus has
-> probed but before the XPCS has probed.
->=20
-> I wonder whether it might be possible to probe the XPCS completely
-> outside of stmmac_dvr_probe(); once that function ends you should have
-> all knowledge necessary to set plat->phy_interface all within the
-> Intel platform code. An additional benefit if you do this is that you
-> no longer need the has_xpcs variable - Intel is the only one setting
-> it right now, as far as I can see. What do you think?
+As per current logic the wait time per conversion is arouns 430ms
+for 512 samples and around 860ms for 1024 samples for 3 channels
+considering 140us as the bus voltage and shunt voltage sampling
+conversion time.
 
-Hi Vladimir, I still think that stmmac_dvr_probe() the suitable place to
-probe the XPCS together with MDIO and PHY setup. In addition, XPCS also
-need to be probed before stmmac_open()as there is an checking of XPCS AN
-mode at the very beginning of the function.=20
+This waiting time is a lot for the continuous mode and even for
+the single shot mode. For continuous mode when moving average is
+considered the waiting for CVRF bit is not required and the data
+from the previous conversion is sufficuent. As mentioned in the
+datasheet the conversion ready bit is provided to help coordinate
+single-shot conversions, we can restrict the use to single-shot
+mode only.
 
-The has_xpcs variable is introduced in the very first commits in the XPCS d=
-esign.
-Although currently Intel is the only one using it, it is beneficial for any
-future system that pair stmmac with xpcs. =20
+Also, the conversion time is for the averaged samples, the wait
+time for the polling can omit the number of samples consideration.
 
-Weifeng
+Signed-off-by: Ninad Malwade <nmalwade@nvidia.com>
+---
+ drivers/hwmon/ina3221.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/hwmon/ina3221.c b/drivers/hwmon/ina3221.c
+index c602583..58d3828 100644
+--- a/drivers/hwmon/ina3221.c
++++ b/drivers/hwmon/ina3221.c
+@@ -196,13 +196,11 @@ static inline u32 ina3221_reg_to_interval_us(u16 config)
+ 	u32 channels = hweight16(config & INA3221_CONFIG_CHs_EN_MASK);
+ 	u32 vbus_ct_idx = INA3221_CONFIG_VBUS_CT(config);
+ 	u32 vsh_ct_idx = INA3221_CONFIG_VSH_CT(config);
+-	u32 samples_idx = INA3221_CONFIG_AVG(config);
+-	u32 samples = ina3221_avg_samples[samples_idx];
+ 	u32 vbus_ct = ina3221_conv_time[vbus_ct_idx];
+ 	u32 vsh_ct = ina3221_conv_time[vsh_ct_idx];
+ 
+ 	/* Calculate total conversion time */
+-	return channels * (vbus_ct + vsh_ct) * samples;
++	return channels * (vbus_ct + vsh_ct);
+ }
+ 
+ static inline int ina3221_wait_for_data(struct ina3221_data *ina)
+@@ -288,13 +286,14 @@ static int ina3221_read_in(struct device *dev, u32 attr, int channel, long *val)
+ 			return -ENODATA;
+ 
+ 		/* Write CONFIG register to trigger a single-shot measurement */
+-		if (ina->single_shot)
++		if (ina->single_shot) {
+ 			regmap_write(ina->regmap, INA3221_CONFIG,
+ 				     ina->reg_config);
+ 
+-		ret = ina3221_wait_for_data(ina);
+-		if (ret)
+-			return ret;
++			ret = ina3221_wait_for_data(ina);
++			if (ret)
++				return ret;
++		}
+ 
+ 		ret = ina3221_read_value(ina, reg, &regval);
+ 		if (ret)
+@@ -344,13 +343,14 @@ static int ina3221_read_curr(struct device *dev, u32 attr,
+ 			return -ENODATA;
+ 
+ 		/* Write CONFIG register to trigger a single-shot measurement */
+-		if (ina->single_shot)
++		if (ina->single_shot) {
+ 			regmap_write(ina->regmap, INA3221_CONFIG,
+ 				     ina->reg_config);
+ 
+-		ret = ina3221_wait_for_data(ina);
+-		if (ret)
+-			return ret;
++			ret = ina3221_wait_for_data(ina);
++			if (ret)
++				return ret;
++		}
+ 
+ 		fallthrough;
+ 	case hwmon_curr_crit:
+-- 
+2.7.4
 
