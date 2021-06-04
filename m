@@ -2,155 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC7939B440
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D6139B442
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230196AbhFDHr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 03:47:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbhFDHr6 (ORCPT
+        id S230225AbhFDHsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 03:48:15 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:4355 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230098AbhFDHsL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 03:47:58 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE9EC06174A
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 00:46:12 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id b1so2636876vsh.7
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 00:46:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TAB/6IiQvwK0vmBrSOZ9AHubgs5wVP5OCQaOTQungHU=;
-        b=r93Hcf2gKDxJxD7sCL4J7UW+y0jeQPhM6p6WHB2EqitRejm7Sie6mSX2PbGLo32str
-         /umn9/KuKqntcE+dHSoTrjxSOcVd8D9wuxgMsFbuGq+Tuzrd4pF3D4QkQfz7vavo+Q51
-         Lp+EQn7l2s7xPJMsdaNZVWBdcdQSZP4LNyLSbseK89q1hqnjXYIkm+893d0ZcZ8WPmBa
-         cG9kfD+wxg5HGm2xYjI2FqmS2hLjKAPGju1OqW70FG7yTwlo2Wv6tWhmsWvyj/RlhmG7
-         wyFLvGJ1+Q9CqbK815zv1uM0NaLEkPeLs+n0/88TUuHByqfUx7sK8bHTsd6YgU0khUx6
-         VelA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TAB/6IiQvwK0vmBrSOZ9AHubgs5wVP5OCQaOTQungHU=;
-        b=CVhwatBUoh9kUFp1AFxmr1sBjvzT2janVFvtPJLliEOXzZqxlAhATPLbOmJi+Zy5tG
-         Y0etK93jl6n/OmXB7jUAot6sgQKdhhk3OycaK4fznPC5JOWCQpYw6nGOBj7K8wC4B8XM
-         QvdavivdwzBSwdON5ykW/7dLp9wPdzpQGZu5Y44/gfrqK0IBe3vhG9drsQlLa/YtLhEW
-         D3HHPfsPftVtrGdQtMYe36x+/t2I4iw9U6zCMOgdRWn6t31ojyNQw6MAkM7Lv4GqVZnr
-         my5gZGNXqfkmDPEPVGjjfpegxecFCvKzB+z3Uia+FBmL3aMUtzWsetlSR/U3MOTKp3+k
-         6pXA==
-X-Gm-Message-State: AOAM533NO63o+Yq2RV2LOZsDavnQKQEdTfKH8bEtKNhbQ01jKmjns4Fk
-        YjSBfW4nNx9CWiYELQRieLE6ii6WTNGwEeh2iRpxsg==
-X-Google-Smtp-Source: ABdhPJxqmRIMNdHoQPDaXbkzRDE9ksj8Rs359ZncrcvP+073drlrxwxQ3qVjrviyosUp/MSSCg6/Hgu2SONimB0b+MU=
-X-Received: by 2002:a05:6102:7c1:: with SMTP id y1mr1562104vsg.34.1622792771894;
- Fri, 04 Jun 2021 00:46:11 -0700 (PDT)
+        Fri, 4 Jun 2021 03:48:11 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FxF990qr5z68CZ;
+        Fri,  4 Jun 2021 15:42:37 +0800 (CST)
+Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 4 Jun 2021 15:46:22 +0800
+Received: from huawei.com (10.69.192.56) by dggpeml500012.china.huawei.com
+ (7.185.36.15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 4 Jun 2021
+ 15:46:22 +0800
+From:   Kai Ye <yekai13@huawei.com>
+To:     <gregkh@linuxfoundation.org>,
+        <linux-accelerators@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <zhangfei.gao@linaro.org>, <wangzhou1@hisilicon.com>,
+        <yekai13@huawei.com>
+Subject: [PATCH] uacce: add print information if not enable sva
+Date:   Fri, 4 Jun 2021 15:46:09 +0800
+Message-ID: <1622792769-28017-1-git-send-email-yekai13@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20210603093438.138705-1-ulf.hansson@linaro.org>
- <20210603093438.138705-4-ulf.hansson@linaro.org> <20210603095538.b2t3cq25tq7v7kih@vireshk-i7>
- <CAPDyKFqNNeeMo6+gKgaPtPvgC_NuMxxYKkr+TzyP3vjYoHoDOw@mail.gmail.com>
- <CAPDyKFofsuY_RAMGsRLtKo=JxJ11DgGqOijZEEf1HEANCvomzg@mail.gmail.com> <20210604035312.jp2gshfigsodwvcg@vireshk-i7>
-In-Reply-To: <20210604035312.jp2gshfigsodwvcg@vireshk-i7>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 4 Jun 2021 09:45:35 +0200
-Message-ID: <CAPDyKFq=mGOqYrX5322JOmJXm6Yg-zNh+g66BdaVVfE5JgciAQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] PM: domains: Drop/restore performance state votes
- for devices at runtime PM
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Jun 2021 at 05:53, Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 03-06-21, 13:17, Ulf Hansson wrote:
-> > On Thu, 3 Jun 2021 at 12:31, Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > > > > +static int genpd_drop_performance_state(struct device *dev)
-> > > > > +{
-> > > > > +     unsigned int prev_state = dev_gpd_data(dev)->performance_state;
-> > > > > +
-> > > > > +     if (!genpd_set_performance_state(dev, 0))
-> > > > > +             return prev_state;
-> > > > > +
-> > > > > +     return 0;
-> > > > > +}
-> > > > > +
-> > > > > +static void genpd_restore_performance_state(struct device *dev,
-> > > > > +                                         unsigned int state)
-> > > > > +{
-> > > > > +     if (state)
-> > > >
-> > > > I will skip this check, as we are checking it in
-> > > > genpd_set_performance_state() anyway ?
-> > >
-> > > I don't want us to override OPP votes made by the subsystem/driver
-> > > level runtime PM callbacks. For example, if the drivers manage this
-> > > thing themselves, that should be preserved.
-> > >
-> > > That said, by the check above I want to avoid setting the state to
-> > > zero internally by genpd, if the driver level ->runtime_resume()
-> > > callback has already restored the state.
-> >
-> > Ehh, forget about what I said about the ->runtime_resume() callback.
-> >
-> > I am mostly trying to avoid restoring a state that is zero, just to be
-> > sure nobody else on some different level outside gendp, have decided
-> > to set a new OPP in-between our calls to
-> > genpd_drop|restore_performance state.
->
-> What stops the core to call genpd_drop_performance_state() in the
-> first place here, if the driver was doing its own thing ? If that gets
-> called, then restore should be without any checks IMO. The state
-> should already be 0 at this point of time, I don't know why this will
-> get called again with state 0, but it will have no effect.
->
-> Can you give some sort of flow sequence where I can see the problem a
-> bit more clearly ?
+Add print information necessary if user not enable sva.
 
-Starting calls from the subsystem/driver:
+Signed-off-by: Kai Ye <yekai13@huawei.com>
+---
+ drivers/misc/uacce/uacce.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-------
-dev_pm_genpd_set_performance_state(dev, 100);
-"run a use case with device runtime resumed"
-...
-"use case ends"
-dev_pm_genpd_set_performance_state(dev, 0);
-pm_runtime_put()
-    ->genpd_runtime_suspend()
-    gpd_data->performance_state == 0, -> gpd_data->rpm_pstate = 0;
-...
-"new use case start"
-dev_pm_genpd_set_performance_state(dev, 100);
-pm_runtime_get_sync()
-    ->genpd_runtime_resume()
-    gpd_data->performance_state == 100, -> gpd_data->rpm_pstate = 0;
-(This is where we need to check for "zero" to not override the value)
-.....
-------
+diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
+index bae18ef0..fe38af8 100644
+--- a/drivers/misc/uacce/uacce.c
++++ b/drivers/misc/uacce/uacce.c
+@@ -387,15 +387,22 @@ static void uacce_release(struct device *dev)
+ 
+ static unsigned int uacce_enable_sva(struct device *parent, unsigned int flags)
+ {
++	int ret;
++
+ 	if (!(flags & UACCE_DEV_SVA))
+ 		return flags;
+ 
+ 	flags &= ~UACCE_DEV_SVA;
+ 
+-	if (iommu_dev_enable_feature(parent, IOMMU_DEV_FEAT_IOPF))
++	ret = iommu_dev_enable_feature(parent, IOMMU_DEV_FEAT_IOPF);
++	if (ret) {
++		dev_err(parent, "failed to enable IOPF feature! ret = %d\n", ret);
+ 		return flags;
++	}
+ 
+-	if (iommu_dev_enable_feature(parent, IOMMU_DEV_FEAT_SVA)) {
++	ret = iommu_dev_enable_feature(parent, IOMMU_DEV_FEAT_SVA);
++	if (ret) {
++		dev_err(parent, "failed to enable SVA feature! ret = %d\n", ret);
+ 		iommu_dev_disable_feature(parent, IOMMU_DEV_FEAT_IOPF);
+ 		return flags;
+ 	}
+-- 
+2.7.4
 
-I wouldn't say that the above is the way how I see the calls to
-dev_pm_genpd_set_performance_state (or actually
-dev_pm_opp_set_rate|opp()) being deployed. The calls should rather be
-done from the subsystem/driver's ->runtime_suspend|resume() callback,
-then the path above would work in the way you suggest.
-
-Although, as we currently treat performance states and power states in
-genpd orthogonally, I wanted to make sure we could cope with both
-situations.
-
-Did this help? :-)
-
-Kind regards
-Uffe
