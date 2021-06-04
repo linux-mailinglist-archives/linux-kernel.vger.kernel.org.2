@@ -2,235 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F61139B39B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A393B39B399
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230030AbhFDHM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 03:12:27 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:47778 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbhFDHM0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 03:12:26 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15479dkh029063;
-        Fri, 4 Jun 2021 07:10:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=136TV4DHmdXkgqHRijxe9UB1ln28YETYypx6otIordE=;
- b=Uvb2/S2a/r3dOCCt+dZ/zrqWhFog1J9hd/MWRVZzF5TXqNr3CJLuO5HIDLKPlYwv148Y
- khbKx79egdDOiPu4KSZ1RUi1tvSI+v8PYPNwTp8H/TZiHVFCihwnAwHIdBkJxGkxztb+
- ZlpEBHK1L/kiSdHbFKLe2gy6ndj8UHaE4YmQY1mK14FX2q6eIGYhi+yiaIoMHx+aK7c6
- oSldwIncoRLeUUdMXKP4jeAAgMUmQz3sOxKcC82G6+hVgU4mm4m0uox/CQTrdxqXK76A
- W38t/1eS/OPkn+zrQqnWfY///11RmYVSA+ZUojqixFt66Z8DjbOLv+gZ6oltdc3DIi29 pg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 38udjmw4uh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 04 Jun 2021 07:10:33 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1547A9OU131584;
-        Fri, 4 Jun 2021 07:10:32 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 38uar01gqg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 04 Jun 2021 07:10:32 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1547AWRu132015;
-        Fri, 4 Jun 2021 07:10:32 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 38uar01gq3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 04 Jun 2021 07:10:32 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1547AT4K004970;
-        Fri, 4 Jun 2021 07:10:30 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 04 Jun 2021 00:10:29 -0700
-Date:   Fri, 4 Jun 2021 10:10:22 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: drivers/thunderbolt/test.c:266 alloc_dev_default() error: we
- previously assumed 'port->dual_link_port' could be null (see line 258)
-Message-ID: <202106041339.3wpPAETC-lkp@intel.com>
+        id S229996AbhFDHMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 03:12:19 -0400
+Received: from mail-mw2nam12on2045.outbound.protection.outlook.com ([40.107.244.45]:61665
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229555AbhFDHMS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 03:12:18 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EIh648sMfxHP2a81Lxtg7/r+U/pI8G6/aL39UyDj6Ckzf38FuWpa8Rw7IfpkrxQOzSIQI1AWPtMZiDYBYP6fV7XIAzcnIm2HuWiJ4GBlmEJOXMx16WuEEz1Gs0ejxHvofZGTDlM/mJyv/GezvsfWybVXLLKdAo9jLWV4Ca5l8gcu7n+ZBSiSvM/setlY8ix+rvRK6DbWDpUKMD5xwzjO91dqjRJ3qbUyIgGRm6lFcQpM8Gk3CRCG4KQkmWD6W+44mzdJ8tQ7oxojxtadaithjgVL51gU0zUdS8J/rKTiXahuJt9jiWUmcGr/26TADVwjPlBTsadD//6UjoL1I94bGg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NbFiU2dq8xzUSA+BLBG11LvqLsKqOdTu9Y888Rn4t3E=;
+ b=l2wFwHA8T6T66wmWZ/6jzea02A7qNGav+oz4+gcpXhc/IdNyUgd4ZLXpjJ8gOWYslURHq8BRfHpoIkx5cjYiN/mR0fGoDDFUx9nLHMcVNjzlt6BAY+lEpeYm1kJeXYBQofYgQVFG4Z4fyuLXyq3KaJ6yZJLNShDpdnG1IDnONRsDRYFzqNCjgHIOnBZxSqNuap9fwjspZmaZZEXFs/gdh9WeuVzZorsPkGNNsbH1Hf5wV4vYJiPhKxvqpl/9f/ZZIfxEqU4Tu+Gg+OrXmkzLNN7bdTLgVuBXIOKILGjQGk1r4BAn8NTdxPtJ38mvYX87eY9/ep1FDTQ0xc+D3xp2Pw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.36) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NbFiU2dq8xzUSA+BLBG11LvqLsKqOdTu9Y888Rn4t3E=;
+ b=TXwK4Du62R3A18VKgQGWI+RmM4tXG9/r3iK0zi0muahWm7OGSEdeirFXEZMNqfiprqzvPGRXFds0SGX8jQaNdgFiqag3nhClpMTz6YJg9OS8ybFukxSqI0Gkt7Gp+zhBRLorASGgTTjHkEnBJdDwxjiicWmRYpww1eiAKPXRMGvbQ5GZKnrotR0JSP8OSpK8S6Xc+HktJvEuZB/qr0NggglGnKAd2EZMSJ684yxr7bJoVRNHLL/AIX78w9hL4fGF79ZaxCeobbS62L3rfFm15UjdElxRjGCszNA5T27X1ImzgjkZNakJjD27Fg2BILTVCxmswddPUr6Nf6x8F9KMUQ==
+Received: from MWHPR04CA0063.namprd04.prod.outlook.com (2603:10b6:300:6c::25)
+ by MWHPR12MB1903.namprd12.prod.outlook.com (2603:10b6:300:108::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.22; Fri, 4 Jun
+ 2021 07:10:32 +0000
+Received: from CO1NAM11FT063.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:6c:cafe::2e) by MWHPR04CA0063.outlook.office365.com
+ (2603:10b6:300:6c::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22 via Frontend
+ Transport; Fri, 4 Jun 2021 07:10:32 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.36)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.36 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.36; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.36) by
+ CO1NAM11FT063.mail.protection.outlook.com (10.13.175.37) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4195.22 via Frontend Transport; Fri, 4 Jun 2021 07:10:31 +0000
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 4 Jun
+ 2021 07:10:31 +0000
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 4 Jun
+ 2021 07:10:30 +0000
+Received: from [10.212.111.1] (172.20.187.6) by mail.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 4 Jun 2021 07:10:28 +0000
+Subject: Re: [PATCH][next] netdevsim: Fix unsigned being compared to less than
+ zero
+To:     Colin King <colin.king@canonical.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Yuval Avnery <yuvalav@nvidia.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210603215657.154776-1-colin.king@canonical.com>
+From:   Dmytro Linkin <dlinkin@nvidia.com>
+Message-ID: <111afba0-1f6f-12b5-4d1c-733172b1b1ea@nvidia.com>
+Date:   Fri, 4 Jun 2021 10:10:27 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: zNcQx8nI8PhPbfBQkEfwE0-g2P2Lr4IL
-X-Proofpoint-ORIG-GUID: zNcQx8nI8PhPbfBQkEfwE0-g2P2Lr4IL
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10004 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 impostorscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 adultscore=0 spamscore=0
- suspectscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106040056
+In-Reply-To: <20210603215657.154776-1-colin.king@canonical.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e1b848ba-0221-4ff1-ccd7-08d92727d750
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1903:
+X-Microsoft-Antispam-PRVS: <MWHPR12MB19030EB4C500E4787767DDF9CB3B9@MWHPR12MB1903.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:110;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 383r1l2bzGLF9px3kYI2xENsvlgovR5uHixRxPqFFZAmloaD+q01ziREk6+bejESYP0gTP892ZSPOOOwjO0S4ToHKWcPcdIdozj5N6RzImfGiu7tp+oGyerct76KDfEWXz+WsI9XW/v6RpgMMrrhud73x0iibeyuuOlouDJTdYYiIanKtjlH/saige61hzAv1hB/6w9pvPFprWEbCcgRNoFwPafJ46b4gADUZonOOvaIuz7WVIVNm+bqkdgFe1RyEjjipSNYJtriX8s6bWU2JWaKqpN9BPOqv1BATHg1ZulJb9nEa1zb8jO5h02OVakZlZFNWZ+5UzA1aYL5GlQs6LzHTG9yA+YhXW0EE9VdAZbV5ewMCYoVsqkcD68g/yNTNVN/CuOcTaHaMcPK2Ags6YhcOm77IDjK40uCixPGJ3EaM7rD4uwEwK+KpoXASB5AkZqmMgLDOTAEZmkXyApJAs994V2P5PYEsO47Xr3x+3hNkYMBKczdmAwnXJIgz7vtyWAEPftSqQcSbsSGHeJVQ7O+lu7VhUfRXSlc6vxnSqEFe+5TStoqvbpMTaOef7ljSSC2W/4VtbwxYXNUeVQkRXFOeRgXwX6lnIYW0KrRTmZpkk7ZTcgso/9c+p2dhcta3MhJtRtor2duUVLazxsnSVv4B1hEQCIqZ88l69OcNoNvwp5g5ROl1uye2QUZQtd4
+X-Forefront-Antispam-Report: CIP:216.228.112.36;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid05.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(136003)(39860400002)(346002)(396003)(36840700001)(46966006)(54906003)(2906002)(4326008)(110136005)(26005)(86362001)(70206006)(82740400003)(70586007)(316002)(2616005)(31696002)(36756003)(16576012)(4744005)(36860700001)(82310400003)(426003)(336012)(53546011)(83380400001)(5660300002)(36906005)(8676002)(356005)(7636003)(8936002)(47076005)(186003)(31686004)(478600001)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2021 07:10:31.8152
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e1b848ba-0221-4ff1-ccd7-08d92727d750
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.36];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT063.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1903
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   f88cd3fb9df228e5ce4e13ec3dbad671ddb2146e
-commit: 54509f5005caccd8459c9084535802feeb27bb2c thunderbolt: Add KUnit tests for path walking
-config: i386-randconfig-m021-20210604 (attached as .config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+On 6/4/21 12:56 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The comparison of len < 0 is always false because len is a size_t. Fix
+> this by making len a ssize_t instead.
+> 
+> Addresses-Coverity: ("Unsigned compared against 0")
+> Fixes: d395381909a3 ("netdevsim: Add max_vfs to bus_dev")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/net/netdevsim/bus.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/netdevsim/bus.c b/drivers/net/netdevsim/bus.c
+> index b56003dfe3cc..ccec29970d5b 100644
+> --- a/drivers/net/netdevsim/bus.c
+> +++ b/drivers/net/netdevsim/bus.c
+> @@ -111,7 +111,7 @@ ssize_t nsim_bus_dev_max_vfs_read(struct file *file,
+>  {
+>  	struct nsim_bus_dev *nsim_bus_dev = file->private_data;
+>  	char buf[11];
+> -	size_t len;
+> +	ssize_t len;
+>  
+>  	len = snprintf(buf, sizeof(buf), "%u\n", nsim_bus_dev->max_vfs);
+>  	if (len < 0)
+> 
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-smatch warnings:
-drivers/thunderbolt/test.c:266 alloc_dev_default() error: we previously assumed 'port->dual_link_port' could be null (see line 258)
-drivers/thunderbolt/test.c:268 alloc_dev_default() error: we previously assumed 'upstream_port->dual_link_port' could be null (see line 258)
-
-vim +266 drivers/thunderbolt/test.c
-
-54509f5005cacc Mika Westerberg 2020-04-29  144  static struct tb_switch *alloc_dev_default(struct kunit *test,
-54509f5005cacc Mika Westerberg 2020-04-29  145  					   struct tb_switch *parent,
-54509f5005cacc Mika Westerberg 2020-04-29  146  					   u64 route, bool bonded)
-54509f5005cacc Mika Westerberg 2020-04-29  147  {
-54509f5005cacc Mika Westerberg 2020-04-29  148  	struct tb_port *port, *upstream_port;
-54509f5005cacc Mika Westerberg 2020-04-29  149  	struct tb_switch *sw;
-54509f5005cacc Mika Westerberg 2020-04-29  150  
-54509f5005cacc Mika Westerberg 2020-04-29  151  	sw = alloc_switch(test, route, 1, 19);
-54509f5005cacc Mika Westerberg 2020-04-29  152  	if (!sw)
-54509f5005cacc Mika Westerberg 2020-04-29  153  		return NULL;
-54509f5005cacc Mika Westerberg 2020-04-29  154  
-54509f5005cacc Mika Westerberg 2020-04-29  155  	sw->config.vendor_id = 0x8086;
-54509f5005cacc Mika Westerberg 2020-04-29  156  	sw->config.device_id = 0x15ef;
-54509f5005cacc Mika Westerberg 2020-04-29  157  
-54509f5005cacc Mika Westerberg 2020-04-29  158  	sw->ports[0].config.type = TB_TYPE_PORT;
-54509f5005cacc Mika Westerberg 2020-04-29  159  	sw->ports[0].config.max_in_hop_id = 8;
-54509f5005cacc Mika Westerberg 2020-04-29  160  	sw->ports[0].config.max_out_hop_id = 8;
-54509f5005cacc Mika Westerberg 2020-04-29  161  
-54509f5005cacc Mika Westerberg 2020-04-29  162  	sw->ports[1].config.type = TB_TYPE_PORT;
-54509f5005cacc Mika Westerberg 2020-04-29  163  	sw->ports[1].config.max_in_hop_id = 19;
-54509f5005cacc Mika Westerberg 2020-04-29  164  	sw->ports[1].config.max_out_hop_id = 19;
-54509f5005cacc Mika Westerberg 2020-04-29  165  	sw->ports[1].dual_link_port = &sw->ports[2];
-54509f5005cacc Mika Westerberg 2020-04-29  166  
-54509f5005cacc Mika Westerberg 2020-04-29  167  	sw->ports[2].config.type = TB_TYPE_PORT;
-54509f5005cacc Mika Westerberg 2020-04-29  168  	sw->ports[2].config.max_in_hop_id = 19;
-54509f5005cacc Mika Westerberg 2020-04-29  169  	sw->ports[2].config.max_out_hop_id = 19;
-54509f5005cacc Mika Westerberg 2020-04-29  170  	sw->ports[2].dual_link_port = &sw->ports[1];
-54509f5005cacc Mika Westerberg 2020-04-29  171  	sw->ports[2].link_nr = 1;
-54509f5005cacc Mika Westerberg 2020-04-29  172  
-54509f5005cacc Mika Westerberg 2020-04-29  173  	sw->ports[3].config.type = TB_TYPE_PORT;
-54509f5005cacc Mika Westerberg 2020-04-29  174  	sw->ports[3].config.max_in_hop_id = 19;
-54509f5005cacc Mika Westerberg 2020-04-29  175  	sw->ports[3].config.max_out_hop_id = 19;
-54509f5005cacc Mika Westerberg 2020-04-29  176  	sw->ports[3].dual_link_port = &sw->ports[4];
-54509f5005cacc Mika Westerberg 2020-04-29  177  
-54509f5005cacc Mika Westerberg 2020-04-29  178  	sw->ports[4].config.type = TB_TYPE_PORT;
-54509f5005cacc Mika Westerberg 2020-04-29  179  	sw->ports[4].config.max_in_hop_id = 19;
-54509f5005cacc Mika Westerberg 2020-04-29  180  	sw->ports[4].config.max_out_hop_id = 19;
-54509f5005cacc Mika Westerberg 2020-04-29  181  	sw->ports[4].dual_link_port = &sw->ports[3];
-54509f5005cacc Mika Westerberg 2020-04-29  182  	sw->ports[4].link_nr = 1;
-54509f5005cacc Mika Westerberg 2020-04-29  183  
-54509f5005cacc Mika Westerberg 2020-04-29  184  	sw->ports[5].config.type = TB_TYPE_PORT;
-54509f5005cacc Mika Westerberg 2020-04-29  185  	sw->ports[5].config.max_in_hop_id = 19;
-54509f5005cacc Mika Westerberg 2020-04-29  186  	sw->ports[5].config.max_out_hop_id = 19;
-54509f5005cacc Mika Westerberg 2020-04-29  187  	sw->ports[5].dual_link_port = &sw->ports[6];
-54509f5005cacc Mika Westerberg 2020-04-29  188  
-54509f5005cacc Mika Westerberg 2020-04-29  189  	sw->ports[6].config.type = TB_TYPE_PORT;
-54509f5005cacc Mika Westerberg 2020-04-29  190  	sw->ports[6].config.max_in_hop_id = 19;
-54509f5005cacc Mika Westerberg 2020-04-29  191  	sw->ports[6].config.max_out_hop_id = 19;
-54509f5005cacc Mika Westerberg 2020-04-29  192  	sw->ports[6].dual_link_port = &sw->ports[5];
-54509f5005cacc Mika Westerberg 2020-04-29  193  	sw->ports[6].link_nr = 1;
-54509f5005cacc Mika Westerberg 2020-04-29  194  
-54509f5005cacc Mika Westerberg 2020-04-29  195  	sw->ports[7].config.type = TB_TYPE_PORT;
-54509f5005cacc Mika Westerberg 2020-04-29  196  	sw->ports[7].config.max_in_hop_id = 19;
-54509f5005cacc Mika Westerberg 2020-04-29  197  	sw->ports[7].config.max_out_hop_id = 19;
-54509f5005cacc Mika Westerberg 2020-04-29  198  	sw->ports[7].dual_link_port = &sw->ports[8];
-54509f5005cacc Mika Westerberg 2020-04-29  199  
-54509f5005cacc Mika Westerberg 2020-04-29  200  	sw->ports[8].config.type = TB_TYPE_PORT;
-54509f5005cacc Mika Westerberg 2020-04-29  201  	sw->ports[8].config.max_in_hop_id = 19;
-54509f5005cacc Mika Westerberg 2020-04-29  202  	sw->ports[8].config.max_out_hop_id = 19;
-54509f5005cacc Mika Westerberg 2020-04-29  203  	sw->ports[8].dual_link_port = &sw->ports[7];
-54509f5005cacc Mika Westerberg 2020-04-29  204  	sw->ports[8].link_nr = 1;
-54509f5005cacc Mika Westerberg 2020-04-29  205  
-54509f5005cacc Mika Westerberg 2020-04-29  206  	sw->ports[9].config.type = TB_TYPE_PCIE_UP;
-54509f5005cacc Mika Westerberg 2020-04-29  207  	sw->ports[9].config.max_in_hop_id = 8;
-54509f5005cacc Mika Westerberg 2020-04-29  208  	sw->ports[9].config.max_out_hop_id = 8;
-54509f5005cacc Mika Westerberg 2020-04-29  209  
-54509f5005cacc Mika Westerberg 2020-04-29  210  	sw->ports[10].config.type = TB_TYPE_PCIE_DOWN;
-54509f5005cacc Mika Westerberg 2020-04-29  211  	sw->ports[10].config.max_in_hop_id = 8;
-54509f5005cacc Mika Westerberg 2020-04-29  212  	sw->ports[10].config.max_out_hop_id = 8;
-54509f5005cacc Mika Westerberg 2020-04-29  213  
-54509f5005cacc Mika Westerberg 2020-04-29  214  	sw->ports[11].config.type = TB_TYPE_PCIE_DOWN;
-54509f5005cacc Mika Westerberg 2020-04-29  215  	sw->ports[11].config.max_in_hop_id = 8;
-54509f5005cacc Mika Westerberg 2020-04-29  216  	sw->ports[11].config.max_out_hop_id = 8;
-54509f5005cacc Mika Westerberg 2020-04-29  217  
-54509f5005cacc Mika Westerberg 2020-04-29  218  	sw->ports[12].config.type = TB_TYPE_PCIE_DOWN;
-54509f5005cacc Mika Westerberg 2020-04-29  219  	sw->ports[12].config.max_in_hop_id = 8;
-54509f5005cacc Mika Westerberg 2020-04-29  220  	sw->ports[12].config.max_out_hop_id = 8;
-54509f5005cacc Mika Westerberg 2020-04-29  221  
-54509f5005cacc Mika Westerberg 2020-04-29  222  	sw->ports[13].config.type = TB_TYPE_DP_HDMI_OUT;
-54509f5005cacc Mika Westerberg 2020-04-29  223  	sw->ports[13].config.max_in_hop_id = 9;
-54509f5005cacc Mika Westerberg 2020-04-29  224  	sw->ports[13].config.max_out_hop_id = 9;
-54509f5005cacc Mika Westerberg 2020-04-29  225  	sw->ports[13].cap_adap = -1;
-54509f5005cacc Mika Westerberg 2020-04-29  226  
-54509f5005cacc Mika Westerberg 2020-04-29  227  	sw->ports[14].config.type = TB_TYPE_DP_HDMI_OUT;
-54509f5005cacc Mika Westerberg 2020-04-29  228  	sw->ports[14].config.max_in_hop_id = 9;
-54509f5005cacc Mika Westerberg 2020-04-29  229  	sw->ports[14].config.max_out_hop_id = 9;
-54509f5005cacc Mika Westerberg 2020-04-29  230  	sw->ports[14].cap_adap = -1;
-54509f5005cacc Mika Westerberg 2020-04-29  231  
-54509f5005cacc Mika Westerberg 2020-04-29  232  	sw->ports[15].disabled = true;
-54509f5005cacc Mika Westerberg 2020-04-29  233  
-54509f5005cacc Mika Westerberg 2020-04-29  234  	sw->ports[16].config.type = TB_TYPE_USB3_UP;
-54509f5005cacc Mika Westerberg 2020-04-29  235  	sw->ports[16].config.max_in_hop_id = 8;
-54509f5005cacc Mika Westerberg 2020-04-29  236  	sw->ports[16].config.max_out_hop_id = 8;
-54509f5005cacc Mika Westerberg 2020-04-29  237  
-54509f5005cacc Mika Westerberg 2020-04-29  238  	sw->ports[17].config.type = TB_TYPE_USB3_DOWN;
-54509f5005cacc Mika Westerberg 2020-04-29  239  	sw->ports[17].config.max_in_hop_id = 8;
-54509f5005cacc Mika Westerberg 2020-04-29  240  	sw->ports[17].config.max_out_hop_id = 8;
-54509f5005cacc Mika Westerberg 2020-04-29  241  
-54509f5005cacc Mika Westerberg 2020-04-29  242  	sw->ports[18].config.type = TB_TYPE_USB3_DOWN;
-54509f5005cacc Mika Westerberg 2020-04-29  243  	sw->ports[18].config.max_in_hop_id = 8;
-54509f5005cacc Mika Westerberg 2020-04-29  244  	sw->ports[18].config.max_out_hop_id = 8;
-54509f5005cacc Mika Westerberg 2020-04-29  245  
-54509f5005cacc Mika Westerberg 2020-04-29  246  	sw->ports[19].config.type = TB_TYPE_USB3_DOWN;
-54509f5005cacc Mika Westerberg 2020-04-29  247  	sw->ports[19].config.max_in_hop_id = 8;
-54509f5005cacc Mika Westerberg 2020-04-29  248  	sw->ports[19].config.max_out_hop_id = 8;
-54509f5005cacc Mika Westerberg 2020-04-29  249  
-54509f5005cacc Mika Westerberg 2020-04-29  250  	if (!parent)
-54509f5005cacc Mika Westerberg 2020-04-29  251  		return sw;
-54509f5005cacc Mika Westerberg 2020-04-29  252  
-54509f5005cacc Mika Westerberg 2020-04-29  253  	/* Link them */
-54509f5005cacc Mika Westerberg 2020-04-29  254  	upstream_port = tb_upstream_port(sw);
-54509f5005cacc Mika Westerberg 2020-04-29  255  	port = tb_port_at(route, parent);
-54509f5005cacc Mika Westerberg 2020-04-29  256  	port->remote = upstream_port;
-54509f5005cacc Mika Westerberg 2020-04-29  257  	upstream_port->remote = port;
-54509f5005cacc Mika Westerberg 2020-04-29 @258  	if (port->dual_link_port && upstream_port->dual_link_port) {
-                                                            ^^^^^^^^^^^^^^^^^^^^    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Checks for NULL
-
-54509f5005cacc Mika Westerberg 2020-04-29  259  		port->dual_link_port->remote = upstream_port->dual_link_port;
-54509f5005cacc Mika Westerberg 2020-04-29  260  		upstream_port->dual_link_port->remote = port->dual_link_port;
-54509f5005cacc Mika Westerberg 2020-04-29  261  	}
-54509f5005cacc Mika Westerberg 2020-04-29  262  
-54509f5005cacc Mika Westerberg 2020-04-29  263  	if (bonded) {
-54509f5005cacc Mika Westerberg 2020-04-29  264  		/* Bonding is used */
-54509f5005cacc Mika Westerberg 2020-04-29  265  		port->bonded = true;
-54509f5005cacc Mika Westerberg 2020-04-29 @266  		port->dual_link_port->bonded = true;
-                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Unchecked dereference
-
-54509f5005cacc Mika Westerberg 2020-04-29  267  		upstream_port->bonded = true;
-54509f5005cacc Mika Westerberg 2020-04-29 @268  		upstream_port->dual_link_port->bonded = true;
-                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-It's possible that these warning would go away if we were running
-Smatch with the cross function database.  (I'm not sure how the zero
-day bot does it).
-
-54509f5005cacc Mika Westerberg 2020-04-29  269  	}
-54509f5005cacc Mika Westerberg 2020-04-29  270  
-54509f5005cacc Mika Westerberg 2020-04-29  271  	return sw;
-54509f5005cacc Mika Westerberg 2020-04-29  272  }
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
+Thanks.
