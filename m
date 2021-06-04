@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 629E139BA8E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6BC39BA8C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbhFDOHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 10:07:06 -0400
-Received: from mail-wm1-f42.google.com ([209.85.128.42]:39834 "EHLO
-        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230351AbhFDOHF (ORCPT
+        id S231326AbhFDOGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 10:06:54 -0400
+Received: from mail-wr1-f54.google.com ([209.85.221.54]:34693 "EHLO
+        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231315AbhFDOGx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 10:07:05 -0400
-Received: by mail-wm1-f42.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso7987849wmh.4
+        Fri, 4 Jun 2021 10:06:53 -0400
+Received: by mail-wr1-f54.google.com with SMTP id q5so9466160wrm.1
         for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 07:05:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=QaJICWaLVjdKyiczP8R7DVAA/JKj3/g1GzNXgU/ERjo=;
-        b=OtKIdFz91o6zSGDVTQZvGzg/E3WbsLPBQt+zn0ndJ5AES765uw0NRLSuW7BmM1XIIb
-         KSmT00ThuHMEyNqcf0APky2O0X+Fz0wCuAj+ufEoElBLQgTbz+i02lN3/Zf1im09zpDW
-         V7M1w+GKAjj8vX7fR+3Ffa8zGHIP9mnEFe/wg7tdUMuHD2MA56Co5BpmNTswwnhnzJZ3
-         9c7ENbHX2CdAaMwDB25ftfd7WDxFryEsXCCExLyCZAO6YcPG/2o+q800T9B4mz1KOZRv
-         aTr3DUL+N94+eGQZxLu/MEdvv+3cWnjJfA40LNQyMNgeg0oJvNtkbZAD86ICk+f88Itg
-         u7eA==
+        bh=D6QyFvCrmM9/eKIfxG4Pm00YDFikRvR7iKb/WRsmrRM=;
+        b=rnXl1mp749C3drgrMS8qg9OrEpVG5gyjtC/beupAd1e0u7I2C0SA+eLYqiAZo4zOf1
+         q05qwrZm55jTi+ifKRg8eXWpkJEyVRxtH/IgUYGbEZ70EVHfHrPyla7TPIzoc3bF3HUY
+         38N+YHqp0zTbzFzoCmx/yOn7e0FImL+E1RzKDH7btVNuv4yY5751UVI1bLnrNl7scCoW
+         LFc1Ih93JSdQok29RWgqRhCojCLYOg62P4bYX/nGU9EOEWtNNXBLPDIFNWoTmUP22sU3
+         JvGp1+ARt/xYZhTOdzb03Rb1/7Tbwwe1vK1CD+EZtoPQYOnPg1dx3h+YFx/bg1nj1AhS
+         +DAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=QaJICWaLVjdKyiczP8R7DVAA/JKj3/g1GzNXgU/ERjo=;
-        b=GAt4A3o68HrqM3XHHT8IxDQLRMVlUZtwBV57N3G07SaoRez9YAW7jYNSXTzT2sngrn
-         GYNRRwOVrgYU+Fpk6wKUpNelfXEU1WE/wT2w21JhPTbXPPZMQq+4lwycwLrz6f5HJKHN
-         57fg19nepmiS7tanEJDSmtOmcFJYxLGnxpPqCQwAEWdIn0Fzr8pZeuFcXhRdUdOJRkn1
-         BIZ3lZNuhuTbi5E6Wm46rILLbqzoDubE7Xy4GhlkrKkN9IeF/EOanMtgEQ5P5CMZw0ER
-         azthRQkIdxEEmqpJ9+OUDjXpP1XpWhgbQ+PCsjJA5yA2dFhlA92Bb8rPhG++ko2C/zYX
-         bq+A==
-X-Gm-Message-State: AOAM533umSlRHpTl4ZZFrB/priy0xksbv2Sds+Kqaqc10AHPUbx3dxQf
-        NI9MdLm675HSwqOipQzccU/g4A==
-X-Google-Smtp-Source: ABdhPJxkeeHzpVP/eH19on7AKsxKyxYqA03gG6EEjmBqwHMSrKqjg6lHl/nEqHDgTjEVI8pTSN1dXw==
-X-Received: by 2002:a7b:c30f:: with SMTP id k15mr3940993wmj.128.1622815445465;
-        Fri, 04 Jun 2021 07:04:05 -0700 (PDT)
+        bh=D6QyFvCrmM9/eKIfxG4Pm00YDFikRvR7iKb/WRsmrRM=;
+        b=YQaAnEONmk6uDUBTSvN6Uop66rebGQcMfM+aY3p7/ZV+mXTH9ebPhTM7+eImXifcZf
+         CNq4HS9evy0MvA2Bg0dLzICw/WPZBMSJGLsuV3f2/UVvxBO+x/GLYhhT/LZ8xyjdX01K
+         2+2WJbJbp7Q4HWhXnUprHwLsWEBR8EBptrvF0zVbi7oeXcP9f2mHYPQaKsyg0z7gFWxa
+         te3mG8/OziJbQHceseNoxqBJ4cs+wBxdBYaAwY7KqwkmE2IYonBoagp6Xvs2TVB1/fIq
+         jeaa7mmn1F0hqs/AelhxWN3/c7M1K2l+XfIKun2TAA6s97xNsezloPwMQvgQr8dZxzXM
+         tO3w==
+X-Gm-Message-State: AOAM531mq6M8WpTqyScrvVqkIzJXstqBYXYUwWkwgXKhpSHqMv4UVmGm
+        roczKoQWZv4sQ5IAFZhwLxWnCw==
+X-Google-Smtp-Source: ABdhPJy6Bn0tgDEaDDg7jaA3vOqPTriXmMlbNfufQjcNecRNKMp6REhDzJ4KHPqHqkOmLTOy8DweYw==
+X-Received: by 2002:adf:f7c3:: with SMTP id a3mr3659762wrq.253.1622815446460;
+        Fri, 04 Jun 2021 07:04:06 -0700 (PDT)
 Received: from dell.default ([91.110.221.214])
-        by smtp.gmail.com with ESMTPSA id m11sm5422559wmq.33.2021.06.04.07.04.04
+        by smtp.gmail.com with ESMTPSA id m11sm5422559wmq.33.2021.06.04.07.04.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 07:04:05 -0700 (PDT)
+        Fri, 04 Jun 2021 07:04:06 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org, linux@armlinux.org.uk,
         catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
@@ -53,9 +53,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         wsa+renesas@sang-engineering.com, linux@roeck-us.net,
         treding@nvidia.com, arnd@arndb.de, xen-devel@lists.xenproject.org,
         patches@armlinux.org.uk
-Subject: [PATCH 4/5] ARM64: Remove arm_pm_restart()
-Date:   Fri,  4 Jun 2021 15:03:56 +0100
-Message-Id: <20210604140357.2602028-5-lee.jones@linaro.org>
+Subject: [PATCH 5/5] ARM: Remove arm_pm_restart()
+Date:   Fri,  4 Jun 2021 15:03:57 +0100
+Message-Id: <20210604140357.2602028-6-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210604140357.2602028-1-lee.jones@linaro.org>
 References: <20210604140357.2602028-1-lee.jones@linaro.org>
@@ -72,54 +72,50 @@ restart handler.
 
 Acked-by: Arnd Bergmann <arnd@arndb.de>
 Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- arch/arm64/include/asm/system_misc.h | 2 --
- arch/arm64/kernel/process.c          | 7 +------
- 2 files changed, 1 insertion(+), 8 deletions(-)
+ arch/arm/include/asm/system_misc.h | 1 -
+ arch/arm/kernel/reboot.c           | 6 +-----
+ 2 files changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/arch/arm64/include/asm/system_misc.h b/arch/arm64/include/asm/system_misc.h
-index 673be2d1263c4..305a7157c6a6a 100644
---- a/arch/arm64/include/asm/system_misc.h
-+++ b/arch/arm64/include/asm/system_misc.h
-@@ -32,8 +32,6 @@ void hook_debug_fault_code(int nr, int (*fn)(unsigned long, unsigned int,
- struct mm_struct;
- extern void __show_regs(struct pt_regs *);
+diff --git a/arch/arm/include/asm/system_misc.h b/arch/arm/include/asm/system_misc.h
+index 66f6a3ae68d27..98b37340376bc 100644
+--- a/arch/arm/include/asm/system_misc.h
++++ b/arch/arm/include/asm/system_misc.h
+@@ -13,7 +13,6 @@
+ extern void cpu_init(void);
  
+ void soft_restart(unsigned long);
 -extern void (*arm_pm_restart)(enum reboot_mode reboot_mode, const char *cmd);
--
- #endif	/* __ASSEMBLY__ */
+ extern void (*arm_pm_idle)(void);
  
- #endif	/* __ASM_SYSTEM_MISC_H */
-diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-index b4bb67f17a2ca..5591725cebccc 100644
---- a/arch/arm64/kernel/process.c
-+++ b/arch/arm64/kernel/process.c
-@@ -72,8 +72,6 @@ EXPORT_SYMBOL(__stack_chk_guard);
- void (*pm_power_off)(void);
- EXPORT_SYMBOL_GPL(pm_power_off);
- 
+ #ifdef CONFIG_HARDEN_BRANCH_PREDICTOR
+diff --git a/arch/arm/kernel/reboot.c b/arch/arm/kernel/reboot.c
+index 0ce388f154226..3044fcb8d0736 100644
+--- a/arch/arm/kernel/reboot.c
++++ b/arch/arm/kernel/reboot.c
+@@ -18,7 +18,6 @@ typedef void (*phys_reset_t)(unsigned long, bool);
+ /*
+  * Function pointers to optional machine specific functions
+  */
 -void (*arm_pm_restart)(enum reboot_mode reboot_mode, const char *cmd);
--
- static void noinstr __cpu_do_idle(void)
- {
- 	dsb(sy);
-@@ -201,10 +199,7 @@ void machine_restart(char *cmd)
- 		efi_reboot(reboot_mode, NULL);
+ void (*pm_power_off)(void);
+ EXPORT_SYMBOL(pm_power_off);
  
- 	/* Now call the architecture specific reboot code. */
+@@ -138,10 +137,7 @@ void machine_restart(char *cmd)
+ 	local_irq_disable();
+ 	smp_send_stop();
+ 
 -	if (arm_pm_restart)
 -		arm_pm_restart(reboot_mode, cmd);
 -	else
 -		do_kernel_restart(cmd);
 +	do_kernel_restart(cmd);
  
- 	/*
- 	 * Whoops - the architecture was unable to reboot.
+ 	/* Give a grace period for failure to restart of 1s */
+ 	mdelay(1000);
 -- 
 2.31.1
 
