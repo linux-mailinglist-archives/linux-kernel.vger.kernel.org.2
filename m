@@ -2,139 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A650B39C25B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE32F39C258
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhFDV3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 17:29:44 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:37389 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbhFDV3n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 17:29:43 -0400
-Received: from mail-wr1-f49.google.com ([209.85.221.49]) by
- mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MwPjf-1lYzUc1Gpp-00sMrk; Fri, 04 Jun 2021 23:27:55 +0200
-Received: by mail-wr1-f49.google.com with SMTP id a20so10647656wrc.0;
-        Fri, 04 Jun 2021 14:27:55 -0700 (PDT)
-X-Gm-Message-State: AOAM532toOOamUc7sqH+fu+yqE26yo4uj+zQxZ5tga8EOyl6SRW/kJKo
-        oHCULsQ7XODXj8pUo06G8q0C6nF1UCz538faP9M=
-X-Google-Smtp-Source: ABdhPJzJDHuyMCqX6WOws3xbJdiVdgcELrwsCfZOh8KOJCGiTnqEKWWc8yDd/bMkdxBixLXUQF+S4GmeCWLLk2+jBEc=
-X-Received: by 2002:adf:a28c:: with SMTP id s12mr5998470wra.105.1622842074948;
- Fri, 04 Jun 2021 14:27:54 -0700 (PDT)
+        id S230344AbhFDV2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 17:28:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33458 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229665AbhFDV2K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 17:28:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99B4261106;
+        Fri,  4 Jun 2021 21:26:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622841984;
+        bh=Gui3O5Hg4UntSL86u71QCTzn6Ff++kMTUZPRfpQKiyM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=QNhcezxfRsjXoDrXp7aaNT5h5/R5Vxvl1wuGbFSFZn5tIOs/iLV52MbwcP8fwOBU3
+         lwD1+Xz66OIqfYdMxUyLj+svXn2fVEdZlbIlaY/VSwcvd8rqD2xpouHN163tWI6fhP
+         zkxkZ8TF9JfuCiT4fELNEQI9MrWt5U//g4i4POlhEiAGLDWXyIxH3S3xXJ3veA/Zv1
+         jYh64lRiEIL/SnMTj/QirbusH7dwRiiJRZxmKCy+wxdUWNvfpjOs1eQlFv4A3LZ1Zy
+         gQySY12V4FF/BROPFvJufoffJrLlXaHLLmDFTd23GnzbN6fJSrNlPRees3vFe0UbCR
+         VngXyuZ1RXr/w==
+Date:   Fri, 4 Jun 2021 16:26:22 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     Haiyang Zhang <haiyangz@microsoft.com>, bhelgaas@google.com,
+        lorenzo.pieralisi@arm.com, linux-hyperv@vger.kernel.org,
+        linux-pci@vger.kernel.org, kys@microsoft.com, olaf@aepfle.de,
+        vkuznets@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pci-hyperv: Add check for hyperv_initialized in
+ init_hv_pci_drv()
+Message-ID: <20210604212622.GA2241239@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <CAJF2gTTpurWpPUcA2JkF0rOFztKQgFBhOF9zQyuyi_-sxszhRQ@mail.gmail.com>
- <mhng-423aeaad-9339-4695-9a85-f947dd6135ac@palmerdabbelt-glaptop>
-In-Reply-To: <mhng-423aeaad-9339-4695-9a85-f947dd6135ac@palmerdabbelt-glaptop>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 4 Jun 2021 23:26:11 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a04C8HObpSHNYqQpe4V96MoSLs7sEpiPvp4OpvyAU1_fQ@mail.gmail.com>
-Message-ID: <CAK8P3a04C8HObpSHNYqQpe4V96MoSLs7sEpiPvp4OpvyAU1_fQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Guo Ren <guoren@kernel.org>, Anup Patel <Anup.Patel@wdc.com>,
-        Anup Patel <anup@brainfault.org>,
-        Drew Fustini <drew@beagleboard.org>,
-        Christoph Hellwig <hch@lst.de>, wefu@redhat.com,
-        lazyparser@gmail.com,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:EpuZWdIFfG7WNr+iQh4pxv0sAjYwuDZ/R7XWGTxUhpl6EagL1JD
- BpfaS8HJ9rKBIy6ELbUxCdb1X4I36M+jWZxHYtBcNWgS/iOVkm+cNLPvKSMm4zojneL2RqG
- +qTFFsjcGleLdyKePOkUaJndmkyfzSeuq9ssdGVbJya5N1QWyps6ud8u4rOPPVzcMz2Wa/H
- NV1ntttd2LWAl81IUDwrA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WAO1nQ8spAk=:84NJh+NAtc6dXYyzGS982W
- HcW4LNX5IAgGaNIUZc5swlmrBsSCEoGi9M83mczR28gczbzEyHZ1cdLGRz+9v5IqtAFCfMPRv
- Y0eh7ha4TfMpG1/6o44r3Iea/sQp9WS8Z1w0m97dbSCSICpSQCakxDmICQuEQRSe/SSVBGJyE
- OHdZP3bz1+O1GdZ89jbwJnZXlbcq4MZfTyigbwi5emixKx016yQycenkVu9mEl3XNSRAKZZQl
- r3Oju05HveY6Ttof23H3bhQeRlUaoxgJ5L/jgpfD1uIfeZHPw5WJYTNil+1FIXmK1yfp4oyCr
- QI3SPkHc+1fpix902FDNKFmejr00FDjFvDGJwNElgq7xD2o3WPX4Fh9wdkTHFqAgFnTRdy7/0
- jgULKBicvqEgCqZgrXmoFnm5fZsR3eG/GFRKg84s110vwUl98AAnlczo3dznutvtU8xmejn4q
- NI2bQsC3mdUSMbzTiIZAy4Itn4FMaYfz//C3WYgRazHw0icoHRccGweHuoa3++ZWH+pi8XVMw
- Xl2hYr20TElfIiJNyp56aKNJqQaM7dLwVSDS4EN7wO5cv8iMXTvMK6aUebL5ePdKtX/4MfUcl
- 0xPHeJi6sHqV9KWqTN5Qrn7r/PWQxvmx8BLmhMUBE7yVkfduYc2Ej+oaRzwqNkOwiPl5TNLc8
- x4yI=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210602103206.4nx55xsl3nxqt6zj@liuwe-devbox-debian-v2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 4, 2021 at 6:14 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+On Wed, Jun 02, 2021 at 10:32:06AM +0000, Wei Liu wrote:
+> On Tue, May 25, 2021 at 04:17:33PM -0700, Haiyang Zhang wrote:
+> > Add check for hv_is_hyperv_initialized() at the top of init_hv_pci_drv(),
+> > so if the pci-hyperv driver is force-loaded on non Hyper-V platforms, the
+> > init_hv_pci_drv() will exit immediately, without any side effects, like
+> > assignments to hvpci_block_ops, etc.
+> > 
+> > Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+> > Reported-and-tested-by: Mohammad Alqayeem <mohammad.alqyeem@nutanix.com>
+> 
+> Hello PCI subsystem maintainers, are you going to take this patch or
+> shall I?
 
-> The hope here has always been that we'd have enough in the standards
-> that we could avoid a proliferation of vendor-specific code.  We've
-> always put a strong "things keep working forever" stake in the ground in
-> RISC-V land, but that's largely been because we were counting on the
-> standards existing that make support easy.  In practice we don't have
-> those standards so we're ending up with a fairly large software base
-> that is required to support everything.  We don't have all that much
-> hardware right now so we'll have to see how it goes, but for now I'm in
-> favor of keeping defconfig as a "boots on everything" sort of setup --
-> both because it makes life easier for users, and because it makes issues
-> like the non-portable Kconfigs that showed up here quite explicit.
+This was mistakenly assigned to me, so I reassigned it back to
+Lorenzo.
 
-It's obviously easy to take the hard line approach as long as there is
-so little hardware available. I expect this to be a constant struggle,
-but it's definitely worth trying as long as you can.
+If you *do* take this, please at least update it to follow the PCI
+commit log conventions, e.g.,
 
-> >> To give some common examples that make it break down:
-> >>
-> >> - 32-bit vs 64-bit already violates that rule on risc-v (as it does on
-> >>   most other architectures)
->
-> Yes, and there's no way around that on RISC-V.  They're different base
-> ISAs therefor re-define the same instructions, so we're essentially at
-> two kernel binaries by that point.  The platform spec says rv64gc, so we
-> can kind of punt on this one for now.  If rv32 hardware shows up
-> we'll probably want a standard system there too, which is why we've
-> avoided coupling kernel portability to XLEN.
+  PCI: hv: Add check ...
 
-I would actually put 32-bit into the same category as NOMMU, XIP
-and the built-in DTB:
-Since it seems unrealistic to expect an rv32 Debian or Fedora build,
-there is very little to gain by enforcing compatibility between machines.
-This is different from 32-bit Arm, which is widely used across multiple
-distros and many SoCs.
+and wrap the text so it fits in 75 columns.
 
-> >> - architectures that support both big-endian and little-endian kernels
-> >>   tend to have platforms that require one or the other (e.g. mips,
-> >>   though not arm). Not an issue for you.
->
-> It is now!  We've added big-endian to RISC-V.  There's no hardware yet
-> and very little software support.  IMO the right answer is to ban that
-> from the platform spec, but again it'll depnd on what vendors want to
-> build (though anyone is listening, please don't make my life miserable
-> ;)).
-
-I don't see any big-endian support in linux-next. This one does seem
-worth enforcing to be kept out, as it would double the number of user
-space ABIs, not just kernel configurations. On arm64, I think the general
-feeling is now that we would have been better off not merging big-endian
-support into the kernel as an option, but it still seemed important at the
-time. Not that there is anything really wrong with big-endian by itself,
-just that there is no use case that is worth the added complexity of
-supporting both.
-
-Let me know if there are patches you want me to Nak in the future ;-)
-
-> >> - SMP-enabled ARMv7 kernels can be configured to run on either
-> >>   ARMv6 or ARMv8, but not both, in this case because of incompatible
-> >>   barrier instructions.
->
-> Our barriers aren't quite split the same way, but we do have two memory
-> models (RVWMO and TSO).  IIUC we should be able to support both in the
-> same kernels with some patching, but the resulting kernels would be
-> biased towards one memory models over the other WRT performance.  Again,
-> we'll have to see what the vendors do and I'm hoping we don't end up
-> with too many headaches.
-
-I wouldn't specifically expect the problem to be barriers in the rv64 case,
-this was just an example of instruction sets slowly changing in incompatible
-ways over a long time. There might be an important reason for version 3.0
-of one of the specifications to drop compatibility with version 1.x.
-
-          Arnd
+> > ---
+> >  drivers/pci/controller/pci-hyperv.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
+> > index 6511648271b2..bebe3eeebc4e 100644
+> > --- a/drivers/pci/controller/pci-hyperv.c
+> > +++ b/drivers/pci/controller/pci-hyperv.c
+> > @@ -3476,6 +3476,9 @@ static void __exit exit_hv_pci_drv(void)
+> >  
+> >  static int __init init_hv_pci_drv(void)
+> >  {
+> > +	if (!hv_is_hyperv_initialized())
+> > +		return -ENODEV;
+> > +
+> >  	/* Set the invalid domain number's bit, so it will not be used */
+> >  	set_bit(HVPCI_DOM_INVALID, hvpci_dom_map);
+> >  
+> > -- 
+> > 2.25.1
+> > 
