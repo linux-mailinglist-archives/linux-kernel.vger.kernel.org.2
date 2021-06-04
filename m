@@ -2,139 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7561E39B614
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8B839B611
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:36:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbhFDJit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 05:38:49 -0400
-Received: from mail-lf1-f44.google.com ([209.85.167.44]:44689 "EHLO
-        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbhFDJir (ORCPT
+        id S230035AbhFDJiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 05:38:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229930AbhFDJiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 05:38:47 -0400
-Received: by mail-lf1-f44.google.com with SMTP id r198so9772664lff.11
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 02:37:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=aYp1Adr5CMzSylwvBButnic0kZJJSgzI/e/jfoc5XXY=;
-        b=zInM2KVNPb/0QPFcMUuLjrX59X+MSPyOsPXAiH3/QeJdWAGWbbnaRTPHS24RvPGmhr
-         1c/s7uWCp98bhXSvtHnmma4hxMKj2wkELcRP+NW8x4BhYVcl7Wb9OOmOAoZonNLEktjv
-         f2GNReyAgIRUBqQ8e7dj4F0fjf2WoHlRjuhmhoG/EVs4gN3buzRA5qQ5eVJpspTvDXS7
-         4kXp7Z6GCmiEQiovkQ6T+dw7y2+dMgjt9+vbFYwK6JWAMY0KocQsTXw4Cm6oKlnnJb0j
-         KuJ5dOhdjhcfWgh6ghhZpWAQeFdQTklOzHk9JKZfwIMnCavpwhvEG5mnqRGyRTrrfBBV
-         Go7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=aYp1Adr5CMzSylwvBButnic0kZJJSgzI/e/jfoc5XXY=;
-        b=AaSFdJanBfF7lo2lR7eGrg7m1v6Iade4hs0bm/c32QFUecnUKrK+sccXfgQse17wMK
-         bL+vA6pxq55ghJ1OEzq50/4KBJAZH7byVfRa1S2PdI4te8mIxh9KlbeV8FeP8iDvkFOq
-         6HZyPZb4SXfMaEX/YyKh3GNPKEAFtPkIB+38EYomECaPNPvLTAZAzrORPi8Xau+y29ko
-         SM5WEw9K2Sp0AxCfDiaOn3hrvu2b9LmoQQTZrsz6p1hwK26gxZOxTQ1FSA+yoqX9I0S4
-         BEB0GxKODRMOWY2sMn6aQC1bk/FL6IjIJvRKLCXK+6el0AvBfYzLehoQI7csrgVBCGfX
-         K8NQ==
-X-Gm-Message-State: AOAM531UlnsF2pDexMyaky6yKQxgnvYvqk6Q/xIJ0We1NoaReVR+3wjO
-        JuMpoM76gBFnE/ZmnRF2G80elhYyjACHpvX+KY9ZsQ==
-X-Google-Smtp-Source: ABdhPJwRz2Ggev+bmlNahkOO4PO7MbTDQi1yWOTrON9QwGEWdv0Ln2lES8Z8v6XjQDOxumVe/uHb7ZSWxPmgPct3veg=
-X-Received: by 2002:a19:c753:: with SMTP id x80mr2236380lff.586.1622799359520;
- Fri, 04 Jun 2021 02:35:59 -0700 (PDT)
+        Fri, 4 Jun 2021 05:38:06 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E08F4C06174A;
+        Fri,  4 Jun 2021 02:36:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fR7+i+YmNawjkoccoFSeAPqd8amJASiNbCSjyQ5VpkM=; b=psUWVn2ryRG0cjFeMXkFKMtfzP
+        3h9+IfLSQvrU0KkRyyk/AWCZKJzSbH0616/cglVhCglIhsrZfZt0vAuvNNLd/1rJ7k7wZaFBgYCTt
+        XlEQ6jZx3b8niAJugSDTppyrQ+DSsh2qvvRpYArh1lc4b6UbBPG/mWX4p31ycqn7QFuo79XB3uvzY
+        8BsmsV1pFaeUiFdzFbyTbFSHlRGuLcA4hgR2URvkafhsfzrp7/f6TohFeES+/7l+wiZpVuQ6HTTuz
+        vQQ0sIzr2yRqbxOXLDZASWArLXooc7ULR1Q8izNY6mQK1iav2wPDOz1SjoU/BGQgbfqvZmuQOQjjg
+        4U5FMYYA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lp6FN-003OtO-LX; Fri, 04 Jun 2021 09:36:16 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C61D6300223;
+        Fri,  4 Jun 2021 11:36:15 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B57F8200DCB64; Fri,  4 Jun 2021 11:36:15 +0200 (CEST)
+Date:   Fri, 4 Jun 2021 11:36:15 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [PATCH] tools/perf: Do not set a variable unless it will be used
+Message-ID: <YLn0D+1R2QHZYRVV@hirez.programming.kicks-ass.net>
+References: <20210604092638.985694-1-ribalda@chromium.org>
 MIME-Version: 1.0
-References: <20210602120329.2444672-1-j.neuschaefer@gmx.net> <20210602120329.2444672-5-j.neuschaefer@gmx.net>
-In-Reply-To: <20210602120329.2444672-5-j.neuschaefer@gmx.net>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 4 Jun 2021 11:35:48 +0200
-Message-ID: <CACRpkdY6c750Dnh2H_6uEhOHJv-kLd_OpHqnuDKu4DQezZ2C_w@mail.gmail.com>
-Subject: Re: [PATCH 4/8] dt-bindings: pinctrl: Add Nuvoton WPCM450
-To:     =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Joel Stanley <joel@jms.id.au>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604092638.985694-1-ribalda@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan!
+On Fri, Jun 04, 2021 at 11:26:38AM +0200, Ricardo Ribalda wrote:
+> clang-13 triggers the following warning:
+> 
+> bench/inject-buildid.c:351:6: error: variable 'len' set but not used [-Werror,-Wunused-but-set-variable]
+>         u64 len = 0;
+> 
+> This patch sets the value to len only if it will be used afterwards.
 
-thanks for your patch!
-
-On Wed, Jun 2, 2021 at 2:04 PM Jonathan Neusch=C3=A4fer
-<j.neuschaefer@gmx.net> wrote:
-
-> +  interrupts: true
-
-maxitems 4 right?
-
-Make an enum:
-
-interrupts:
-  - description: what IRQ0 is for
-  - description: what IRQ1 is for
-  - description: what IRQ2 is for
-  - description: what IRQ3 is for
-
-And describe how these interrupts are used. Because I am suspicious that th=
-ey
-actually correspond to 4 different GPIO blocks, which should then be their =
-own
-nodes.
-
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    #include <dt-bindings/gpio/gpio.h>
-> +    pinctrl: pinctrl@b8003000 {
-> +      compatible =3D "nuvoton,wpcm450-pinctrl";
-> +      reg =3D <0xb8003000 0x1000>;
-> +      gpio-controller;
-> +      #gpio-cells =3D <2>;
-> +      interrupts =3D <2 IRQ_TYPE_LEVEL_HIGH
-> +                    3 IRQ_TYPE_LEVEL_HIGH
-> +                    4 IRQ_TYPE_LEVEL_HIGH
-> +                    5 IRQ_TYPE_LEVEL_HIGH>;
-
-So these.
-
-> +      rmii2 {
-> +        groups =3D "rmii2";
-> +        function =3D "rmii2";
-> +      };
-> +
-> +      pinctrl_uid: uid {
-> +        pins =3D "gpio14";
-> +        input-debounce =3D <1>;
-> +      };
-
-I challenge you here and encourage you to put a node for each
-GPIO "port":
-
-  port0: gpio@0 {
- ....
-  };
-  port1: gpio@1 {
- ....
-  };
-
-
-> +    gpio-keys {
-> +      compatible =3D "gpio-keys";
-> +      pinctrl-names =3D "default";
-> +      pinctrl-0 =3D <&pinctrl_uid>;
-> +
-> +      uid {
-> +        label =3D "UID";
-> +        linux,code =3D <102>;
-> +        gpios =3D <&pinctrl 14 GPIO_ACTIVE_HIGH>;
-
-Would be gpios <&port0 14...>
-
-Yours,
-Linus Walleij
+My vote would be to kill that warning, what absolute shite.
