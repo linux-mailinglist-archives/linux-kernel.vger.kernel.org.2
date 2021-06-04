@@ -2,157 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6138939C248
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 977EF39C24A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbhFDVXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 17:23:11 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:36412 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229916AbhFDVXI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 17:23:08 -0400
-Received: by mail-ot1-f45.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so10443213otl.3;
-        Fri, 04 Jun 2021 14:21:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kYosb/cKVUWSGYlvgmKNCribweRE9u9fE7VTsItEJq8=;
-        b=egbtU/CULIqm7WF2q7Auv6aAP/rXl3qcDNJzs4AkQ0bIc7a/i/QUs5bmsbbB5vsCEh
-         ppNusBjiR4NKkKUpdFgkcxHfkeftZ8HY7Fk/Hg2S/kzJFgx8eGb7e5wjrwlRckPHgXKa
-         rs5x4lOjLbWW0xinvJYnTIOUcGHAD5zoaF1hms93GHYIlqvD878EaL6spPAEULUV9dDn
-         Wy1mx/wo97OVMXjqazItF8iavoUTSpS/W0c7szgZ9Z02wc2n/nILtVuq/s6NJGaSiUQm
-         QPZm6lu5OqfNGaP3TBfzK8uLs7dKzIyLkwjJY9VScP3dz8xXKf13oY2S60BjiazCQs4A
-         PaGA==
-X-Gm-Message-State: AOAM530H15/S6Ze1zYsweLZeqYLNwYfhweRhn96KbUMi2MoCV+rNHb0K
-        ZkvM3Xqz7Q0wAtVDSUfCQFx6DqG17A==
-X-Google-Smtp-Source: ABdhPJzJEcsl68ZtAR0iGgHQuxDOSOPtQhkbVNlb/wOKiOor0QOcpNhV4HL8BPALAi7wTGqZ4qZiSQ==
-X-Received: by 2002:a05:6830:13c4:: with SMTP id e4mr5080999otq.315.1622841667469;
-        Fri, 04 Jun 2021 14:21:07 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m6sm718311ots.74.2021.06.04.14.21.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 14:21:06 -0700 (PDT)
-Received: (nullmailer pid 3939769 invoked by uid 1000);
-        Fri, 04 Jun 2021 21:21:05 -0000
-Date:   Fri, 4 Jun 2021 16:21:05 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Liam Beguin <liambeguin@gmail.com>
-Cc:     peda@axentia.se, jic23@kernel.org, lars@metafoo.de,
-        pmeerw@pmeerw.net, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v1 8/9] dt-bindings: iio: afe: add binding for
- temperature-sense-current
-Message-ID: <20210604212105.GA3933811@robh.at.kernel.org>
-References: <20210530005917.20953-1-liambeguin@gmail.com>
- <20210530005917.20953-9-liambeguin@gmail.com>
+        id S230407AbhFDVX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 17:23:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59842 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229668AbhFDVX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 17:23:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C89FC611AD;
+        Fri,  4 Jun 2021 21:22:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622841731;
+        bh=PUDS1LX1g2/cA5rbPUUtQNVnGSRWVHuo2k/SadWrLaw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=DnkOdjMlJI3lkYnrnqlx67z36V6vLTPI+wHSCGm4gsKhboOqtH/+ZZp93dm9nD0YX
+         eLPZGO66noHP88yeWU603JlwtADoadvOUbQM6nuA0Z2QvshmrIAII7fqg31JU2+HFR
+         pIKv6c1HipBn2y3G52GKaCPrWWol0Z5BVfgNwQW/Z+CFogtsKyeYm10SNJcq4jl6in
+         RQYIo3pfAX16WXrYoRtCFecVHY+8tOCO3yOB9zIRYr41r1Wh5q8L8Vmfguyz9DEgan
+         dSTCygPkiPViIXHBPYQTs6jvnawJsAVk3eTKikAmrAdTWu3T3NFyA86zLMtZJCuFsC
+         91yvAGaWf+NZw==
+Date:   Fri, 4 Jun 2021 16:22:09 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Nadeem Athani <nadeem@cadence.com>
+Cc:     tjoseph@cadence.com, lorenzo.pieralisi@arm.com, robh@kernel.org,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kw@linux.com, kishon@ti.com,
+        mparab@cadence.com, sjakhade@cadence.com, pthombar@cadence.com
+Subject: Re: [PATCH] [v2] PCI: cadence: Set LTSSM Detect Quiet state minimum
+ delay as workaround for training defect.
+Message-ID: <20210604212209.GA2240608@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210530005917.20953-9-liambeguin@gmail.com>
+In-Reply-To: <20210528155626.21793-1-nadeem@cadence.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 29, 2021 at 08:59:16PM -0400, Liam Beguin wrote:
-> From: Liam Beguin <lvb@xiphos.com>
+On Fri, May 28, 2021 at 05:56:26PM +0200, Nadeem Athani wrote:
+> PCIe fails to link up if SERDES lanes not used by PCIe are assigned to
+> another protocol. For example, link training fails if lanes 2 and 3 are
+> assigned to another protocol while lanes 0 and 1 are used for PCIe to
+> form a two lane link. This failure is due to an incorrect tie-off on an
+> internal status signal indicating electrical idle.
 > 
-> An ADC is often used to measure other quantities indirectly. This
-> binding describe one cases, the measurement of a temperature through
-> a current sense amplifier (such as an AD590) and a sense resistor.
+> Status signals going from SERDES to PCIe Controller are tied-off when a
+> lane is not assigned to PCIe. Signal indicating electrical idle is
+> incorrectly tied-off to a state that indicates non-idle. As a result,
+> PCIe sees unused lanes to be out of electrical idle and this causes
+> LTSSM to exit Detect.Quiet state without waiting for 12ms timeout to
+> occur. If a receiver is not detected on the first receiver detection
+> attempt in Detect.Active state, LTSSM goes back to Detect.Quiet and
+> again moves forward to Detect.Active state without waiting for 12ms as
+> required by PCIe base specification. Since wait time in Detect.Quiet is
+> skipped, multiple receiver detect operations are performed back-to-back
+> without allowing time for capacitance on the transmit lines to
+> discharge. This causes subsequent receiver detection to always fail even
+> if a receiver gets connected eventually.
 > 
-> Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> Adding a quirk flag "quirk_detect_quiet_flag" to program the minimum
+> time that LTSSM waits on entering Detect.Quiet state.
+> Setting this to 2ms for specific TI j7200 SOC as a workaround to resolve
+> a link training issue in IP.
+> In future revisions this setting will not be required.
+> 
+> As per PCIe specification, all Receivers must meet the Z-RX-DC
+> specification for 2.5 GT/s within 1ms of entering Detect.Quiet LTSSM
+> substate. The LTSSM must stay in this substate until the ZRXDC
+> specification for 2.5 GT/s is met.
+> 
+> 00 : 0 minimum wait time in Detect.Quiet state.
+> 01 : 100us minimum wait time in Detect.Quiet state.
+> 10 : 1ms minimum wait time in Detect.Quiet state.
+> 11 : 2ms minimum wait time in Detect.Quiet state.
+> 
+> Changes in v2:
+> 1. Adding the function cdns_pcie_detect_quiet_min_delay_set in
+> pcie-cadence.c and invoking it from host and endpoint driver file.
+> 
+> Signed-off-by: Nadeem Athani <nadeem@cadence.com>
 > ---
->  .../iio/afe/temperature-sense-current.yaml    | 61 +++++++++++++++++++
->  MAINTAINERS                                   |  1 +
->  2 files changed, 62 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/afe/temperature-sense-current.yaml
+>  drivers/pci/controller/cadence/pcie-cadence-ep.c   |  4 ++++
+>  drivers/pci/controller/cadence/pcie-cadence-host.c |  3 +++
+>  drivers/pci/controller/cadence/pcie-cadence.c      | 17 +++++++++++++++++
+>  drivers/pci/controller/cadence/pcie-cadence.h      | 15 +++++++++++++++
+>  4 files changed, 39 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/iio/afe/temperature-sense-current.yaml b/Documentation/devicetree/bindings/iio/afe/temperature-sense-current.yaml
-> new file mode 100644
-> index 000000000000..1bac74486102
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/afe/temperature-sense-current.yaml
-> @@ -0,0 +1,61 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/afe/temperature-sense-current.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> diff --git a/drivers/pci/controller/cadence/pcie-cadence-ep.c b/drivers/pci/controller/cadence/pcie-cadence-ep.c
+> index 897cdde02bd8..dd7df1ac7fda 100644
+> --- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
+> +++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
+> @@ -623,6 +623,10 @@ int cdns_pcie_ep_setup(struct cdns_pcie_ep *ep)
+>  	ep->irq_pci_addr = CDNS_PCIE_EP_IRQ_PCI_ADDR_NONE;
+>  	/* Reserve region 0 for IRQs */
+>  	set_bit(0, &ep->ob_region_map);
 > +
-> +title: Temperature Sense Current
+> +	if (ep->quirk_detect_quiet_flag)
+> +		cdns_pcie_detect_quiet_min_delay_set(&ep->pcie);
 > +
-> +maintainers:
-> +  - Liam Beguin <lvb@xiphos.com>
+>  	spin_lock_init(&ep->lock);
+>  
+>  	return 0;
+> diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
+> index ae1c55503513..fb96d37a135c 100644
+> --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
+> +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
+> @@ -498,6 +498,9 @@ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
+>  		return PTR_ERR(rc->cfg_base);
+>  	rc->cfg_res = res;
+>  
+> +	if (rc->quirk_detect_quiet_flag)
+> +		cdns_pcie_detect_quiet_min_delay_set(&rc->pcie);
 > +
-> +description: |
-> +  When an io-channel measures the output voltage for a temperature current
-> +  sense amplifier such as the AD950, the interesting measurement is almost
-> +  always the corresponding temperature, not the voltage output.
-> +  This binding describes such a circuit.
+>  	ret = cdns_pcie_start_link(pcie);
+>  	if (ret) {
+>  		dev_err(dev, "Failed to start link\n");
+> diff --git a/drivers/pci/controller/cadence/pcie-cadence.c b/drivers/pci/controller/cadence/pcie-cadence.c
+> index 3c3646502d05..65b6c8bed0d4 100644
+> --- a/drivers/pci/controller/cadence/pcie-cadence.c
+> +++ b/drivers/pci/controller/cadence/pcie-cadence.c
+> @@ -7,6 +7,23 @@
+>  
+>  #include "pcie-cadence.h"
+>  
+> +void cdns_pcie_detect_quiet_min_delay_set(struct cdns_pcie *pcie)
+> +{
+> +	u32 delay = 0x3;
+> +	u32 ltssm_control_cap;
 > +
-> +properties:
-> +  compatible:
-> +    const: temperature-sense-current
+> +	/*
+> +	 * Set the LTSSM Detect Quiet state min. delay to 2ms.
+> +	 */
 > +
-> +  io-channels:
-> +    maxItems: 1
-> +    description: |
-> +      Channel node of a voltage io-channel.
+> +	ltssm_control_cap = cdns_pcie_readl(pcie, CDNS_PCIE_LTSSM_CONTROL_CAP);
+> +	ltssm_control_cap = ((ltssm_control_cap &
+> +			    ~CDNS_PCIE_DETECT_QUIET_MIN_DELAY_MASK) |
+> +			    CDNS_PCIE_DETECT_QUIET_MIN_DELAY(delay));
 > +
-> +  '#io-channel-cells':
-> +    const: 1
+> +	cdns_pcie_writel(pcie, CDNS_PCIE_LTSSM_CONTROL_CAP, ltssm_control_cap);
+> +}
+> +
+>  void cdns_pcie_set_outbound_region(struct cdns_pcie *pcie, u8 busnr, u8 fn,
+>  				   u32 r, bool is_io,
+>  				   u64 cpu_addr, u64 pci_addr, size_t size)
+> diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
+> index 254d2570f8c9..ccdf9cee9dde 100644
+> --- a/drivers/pci/controller/cadence/pcie-cadence.h
+> +++ b/drivers/pci/controller/cadence/pcie-cadence.h
+> @@ -189,6 +189,14 @@
+>  /* AXI link down register */
+>  #define CDNS_PCIE_AT_LINKDOWN (CDNS_PCIE_AT_BASE + 0x0824)
+>  
+> +/* LTSSM Capabilities register */
+> +#define CDNS_PCIE_LTSSM_CONTROL_CAP             (CDNS_PCIE_LM_BASE + 0x0054)
+> +#define  CDNS_PCIE_DETECT_QUIET_MIN_DELAY_MASK  GENMASK(2, 1)
+> +#define  CDNS_PCIE_DETECT_QUIET_MIN_DELAY_SHIFT 1
+> +#define  CDNS_PCIE_DETECT_QUIET_MIN_DELAY(delay) \
+> +	 (((delay) << CDNS_PCIE_DETECT_QUIET_MIN_DELAY_SHIFT) & \
+> +	 CDNS_PCIE_DETECT_QUIET_MIN_DELAY_MASK)
+> +
+>  enum cdns_pcie_rp_bar {
+>  	RP_BAR_UNDEFINED = -1,
+>  	RP_BAR0,
+> @@ -292,6 +300,7 @@ struct cdns_pcie {
+>   * @avail_ib_bar: Satus of RP_BAR0, RP_BAR1 and	RP_NO_BAR if it's free or
+>   *                available
+>   * @quirk_retrain_flag: Retrain link as quirk for PCIe Gen2
+> + * @quirk_detect_quiet_flag: LTSSM Detect Quiet min delay set as quirk
+>   */
+>  struct cdns_pcie_rc {
+>  	struct cdns_pcie	pcie;
+> @@ -301,6 +310,7 @@ struct cdns_pcie_rc {
+>  	u32			device_id;
+>  	bool			avail_ib_bar[CDNS_PCIE_RP_MAX_IB];
+>  	bool                    quirk_retrain_flag;
+> +	bool                    quirk_detect_quiet_flag;
+>  };
+>  
+>  /**
+> @@ -331,6 +341,7 @@ struct cdns_pcie_epf {
+>   *        registers fields (RMW) accessible by both remote RC and EP to
+>   *        minimize time between read and write
+>   * @epf: Structure to hold info about endpoint function
+> + * @quirk_detect_quiet_flag: LTSSM Detect Quiet min delay set as quirk
+>   */
+>  struct cdns_pcie_ep {
+>  	struct cdns_pcie	pcie;
+> @@ -345,6 +356,7 @@ struct cdns_pcie_ep {
+>  	/* protect writing to PCI_STATUS while raising legacy interrupts */
+>  	spinlock_t		lock;
+>  	struct cdns_pcie_epf	*epf;
+> +	bool                    quirk_detect_quiet_flag;
 
-Belongs in provider unless this is a consumer and provider.
+1) I don't see this being set anywhere.  Are there follow-on patches
+that set it?  We try not to merge things until they are actually used.
 
-> +
-> +  sense-resistor-ohms:
-> +    description: The sense resistance.
-> +
-> +  alpha-micro-amps-per-degree:
-> +    description: |
-> +      Linear output current gain of the temperature IC.
-> +
-> +  use-kelvin-scale:
-> +    type: boolean
-> +    description: |
-> +      Boolean indicating if alpha uses Kelvin degrees instead of Celsius.
-> +
-> +additionalProperties: false
+2) I typically use "unsigned int foo:1" in structures for this ancient
+reason [1].  But it's not always practical, e.g., with the
+avail_ib_bar[] array above, and I do see that this follows the
+existing style in the file, which is good.
 
-blank line
+[1] https://lore.kernel.org/linux-fsdevel/CA+55aFzKQ6Pj18TB8p4Yr0M4t+S+BsiHH=BJNmn=76-NcjTj-g@mail.gmail.com/
 
-> +required:
-> +  - compatible
-> +  - io-channels
-> +  - sense-resistor-ohms
-> +  - alpha-micro-amps-per-degree
+>  };
+>  
+>  
+> @@ -505,6 +517,9 @@ static inline int cdns_pcie_ep_setup(struct cdns_pcie_ep *ep)
+>  	return 0;
+>  }
+>  #endif
 > +
-> +examples:
-> +  - |
-> +    ad590: iio-rescale0 {
-> +        compatible = "temperature-sense-current";
-> +        #io-channel-cells = <1>;
-> +        io-channels = <&temp_adc 2>;
+> +void cdns_pcie_detect_quiet_min_delay_set(struct cdns_pcie *pcie);
 > +
-> +        sense-resistor-ohms = <8060>;
-> +        use-kelvin-scale;
-> +        alpha-micro-amps-per-degree = <1>;
-> +    };
-> +
-> +...
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index a7279af85adb..0eb7fcd94b66 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8721,6 +8721,7 @@ L:	linux-iio@vger.kernel.org
->  S:	Maintained
->  F:	Documentation/devicetree/bindings/iio/afe/current-sense-amplifier.yaml
->  F:	Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml
-> +F:	Documentation/devicetree/bindings/iio/afe/temperature-sense-current.yaml
->  F:	Documentation/devicetree/bindings/iio/afe/temperature-sense-rtd.yaml
->  F:	Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
->  F:	drivers/iio/afe/iio-rescale.c
+>  void cdns_pcie_set_outbound_region(struct cdns_pcie *pcie, u8 busnr, u8 fn,
+>  				   u32 r, bool is_io,
+>  				   u64 cpu_addr, u64 pci_addr, size_t size);
 > -- 
-> 2.30.1.489.g328c10930387
+> 2.15.0
+> 
