@@ -2,99 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1EDF39B459
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CED139B461
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbhFDHyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 03:54:54 -0400
-Received: from smtprelay0210.hostedemail.com ([216.40.44.210]:54800 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230135AbhFDHyx (ORCPT
+        id S230212AbhFDH4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 03:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229775AbhFDHz7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 03:54:53 -0400
-Received: from omf03.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 50185100E7B45;
-        Fri,  4 Jun 2021 07:53:07 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf03.hostedemail.com (Postfix) with ESMTPA id E7B5F13D95;
-        Fri,  4 Jun 2021 07:53:05 +0000 (UTC)
-Message-ID: <a0452dc7da2c46e3e764bdd5fd9b94dc96d96912.camel@perches.com>
-Subject: Re: [PATCH v2][next] ASoC: ti: davinci-mcasp: Fix fall-through
- warning for Clang
-From:   Joe Perches <joe@perches.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Fri, 4 Jun 2021 03:55:59 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8932C06174A;
+        Fri,  4 Jun 2021 00:54:13 -0700 (PDT)
+Received: from [192.168.1.111] (91-157-208-71.elisa-laajakaista.fi [91.157.208.71])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C29CDA52;
+        Fri,  4 Jun 2021 09:54:09 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1622793250;
+        bh=ID6cE11tXic6xVbni7ARCJyiry3HhzMUrxQrto7JjFY=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ZgV/h2AydYDNQILNmqxagvf+go0bZ9gvQFYXka1bTME7wwrFP02SaahMt6qaIBcPT
+         MSaD+4eMtDy4/IBWzNm7hA2tUGTRVO52j19HARsjxG8jy37yNX7fs0IhG+SVW1TikK
+         5t7fyV5TLYUMnzmgNSrelPW1q9dvHcubb1KYxw0w=
+Subject: Re: [PATCH v2 00/18] CSI2RX support on J721E
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
         Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Date:   Fri, 04 Jun 2021 00:53:04 -0700
-In-Reply-To: <20210604072714.GA244640@embeddedor>
-References: <20210604072714.GA244640@embeddedor>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Benoit Parrot <bparrot@ti.com>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org, dmaengine@vger.kernel.org,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+References: <20210526152308.16525-1-p.yadav@ti.com>
+ <83bcd60a-2a45-59b2-8ebe-26ad5d828965@ideasonboard.com>
+ <20210603125251.nmzibyvfzkkxfbtj@ti.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Message-ID: <5f837a2d-69ba-ff43-1a8d-f7b975eeacdb@ideasonboard.com>
+Date:   Fri, 4 Jun 2021 10:54:08 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.29
-X-Stat-Signature: wnokseunpwwmwmz5szxdzhpi4q1ds8kd
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: E7B5F13D95
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19tZSFvwatUPABPDfgJt6R0uDBPN0xZpRo=
-X-HE-Tag: 1622793185-488135
+In-Reply-To: <20210603125251.nmzibyvfzkkxfbtj@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-06-04 at 02:27 -0500, Gustavo A. R. Silva wrote:
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-> by explicitly adding a fallthrough; statement.
+On 03/06/2021 15:52, Pratyush Yadav wrote:
+> On 27/05/21 04:23PM, Tomi Valkeinen wrote:
+>> Hi Pratyush,
+>>
+>> On 26/05/2021 18:22, Pratyush Yadav wrote:
+>>> Hi,
+>>>
+>>> This series adds support for CSI2 capture on J721E. It includes some
+>>> fixes to the Cadence CSI2RX driver, adds Rx support to Cadence DPHY
+>>> driver, and finally adds the TI CSI2RX wrapper driver.
+>>>
+>>> Tested on TI's J721E with OV5640 sensor.
+>>
+>> I also see this after a few captures:
 > 
-> Link: https://github.com/KSPP/linux/issues/115
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
-> Changes in v2:
->  - Use fallthrough; instead of break;
->  - Update changelog text.
->  Link: https://lore.kernel.org/linux-hardening/25941c37-6e38-88ae-3afe-4f5af44380d3@gmail.com/
-[]
-> diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-[]
-> @@ -2317,6 +2317,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
->  		break;
->  	default:
->  		dev_err(&pdev->dev, "No DMA controller found (%d)\n", ret);
-> +		fallthrough;
->  	case -EPROBE_DEFER:
->  		goto err;
->  	}
+> Can you share the application/command you are using to test? I used
+> yavta to test and didn't see any problems after leaving the stream on
+> for around 10 minutes.
 
-While this is OK, perhaps the below would be clearer and a more common style
-as it doesn't intermix default: with logging output and a case label.
----
- sound/soc/ti/davinci-mcasp.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+You need to have CONFIG_DMA_API_DEBUG enabled. I think that's not 
+enabled by default on TI configs.
 
-diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-index b94220306d1a8..1059a696ff90e 100644
---- a/sound/soc/ti/davinci-mcasp.c
-+++ b/sound/soc/ti/davinci-mcasp.c
-@@ -2305,6 +2305,9 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 		goto err;
- 
- 	ret = davinci_mcasp_get_dma_type(mcasp);
-+	if (ret == -EPROBE_DEFER)
-+		goto err;
-+
- 	switch (ret) {
- 	case PCM_EDMA:
- 		ret = edma_pcm_platform_register(&pdev->dev);
-@@ -2317,7 +2320,6 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 		break;
- 	default:
- 		dev_err(&pdev->dev, "No DMA controller found (%d)\n", ret);
--	case -EPROBE_DEFER:
- 		goto err;
- 	}
- 
-
+  Tomi
