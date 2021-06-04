@@ -2,136 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE94A39B63E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF95C39B646
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbhFDJzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 05:55:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhFDJzb (ORCPT
+        id S229718AbhFDJ5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 05:57:19 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:54809 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229612AbhFDJ5S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 05:55:31 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B13E7C06174A
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 02:53:45 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id a15so6590003qta.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 02:53:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=FlfOt5ZHd9jswm+VbsyTDC9ioUME0yS40PkkEczf0Y0=;
-        b=Je2OMatfku272SCys5wuDeevnAQuoLeZkgdAbEr/5K4pXTiED5RWjXXFR6ASBJkcga
-         4RfBcqtAd0IEbQ0zMUoqZrkmh//WGaFOMBQ69RV54tQfjUQ2j7cYRWC2ty4gvYeARXNM
-         zOFzgoQG7/yDFnrzF1kCUkEX42wG+jzUP752BWL+iisTJItJC/DFS5OD8Un3gsKexafi
-         6MFnmuN9Yie17X2YSDJqir774ETG2ESiWC7iDaZa5C/b7KGdcQLhkfjgol4vJQgDSeXw
-         hsiEnsAZihm4EUozsqqAo/CY41FQHSd1FraBTNt8/kTl4L4+alMm2Aci7LVS+YZFPtAA
-         o5pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=FlfOt5ZHd9jswm+VbsyTDC9ioUME0yS40PkkEczf0Y0=;
-        b=by72XsVBSuf74TKkMG7qTadywHpChbgNEA/TC79TWjtrevnBraiSCLcdPLXfR/AoVC
-         M+lleXPIESoS/w7t2723+B9/MB6+Al0sAqdRecIbPyNcfgtaC3xBKhtPCCEHCoB3Ayrn
-         Q/rwDEWN5NRBMvcqh1fLHHA6H2V2uYJlTLeWDskuNZ7/G7T4PKdK6JjK78mu4gDi1zBx
-         YPgSeCrOg/8oYaE7YVlkqFk8khwjLKp8Ccfl9UIkjwl1seOHoaoYBZj1gkWYacSYzaMJ
-         9R81wM54xgmCJ1fVlTAgL2rrlAKbDbdfWzl5tLSxT3gQ12TSVl7C1n4FpO5gmChUmc2Y
-         JOlw==
-X-Gm-Message-State: AOAM5339ePn+CuUOFbYQAnfoVMaQQzZqzXaGDLThDjyyPvOzFdFkQ5F2
-        D34cm5DFx222Ipno9a3FS2DQo3HJPIain+e9j4c=
-X-Google-Smtp-Source: ABdhPJwVwznMNJLi7K3cb0oL7/O0blrCBHqQbUVLtyL8W6808bqa4dS7SJcbZZti9fTrimhgectolbRglfaKv4KR5Ww=
-X-Received: by 2002:ac8:5313:: with SMTP id t19mr3898290qtn.190.1622800424625;
- Fri, 04 Jun 2021 02:53:44 -0700 (PDT)
+        Fri, 4 Jun 2021 05:57:18 -0400
+Received: from mail-wr1-f46.google.com ([209.85.221.46]) by
+ mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MStT6-1lxFW92Wvm-00UIut; Fri, 04 Jun 2021 11:55:31 +0200
+Received: by mail-wr1-f46.google.com with SMTP id n4so8693614wrw.3;
+        Fri, 04 Jun 2021 02:55:31 -0700 (PDT)
+X-Gm-Message-State: AOAM530G01n//Al712oHcoMIMzVLTZxFDqgmFw0SjcZgKvc0CmI1nopl
+        uB5yQNLOdSO8sS8frGfs7BOsGpO7ZuloHmNwS5s=
+X-Google-Smtp-Source: ABdhPJxshE3+Uw6+fWuekuuwJhK8oE6TcJIBm0QrwrkRRuWDjLhV71VM+ZrxsXwvq+Gqd5ead+heu/mutRyeZaqbM2U=
+X-Received: by 2002:a5d:5084:: with SMTP id a4mr3045824wrt.286.1622800531222;
+ Fri, 04 Jun 2021 02:55:31 -0700 (PDT)
 MIME-Version: 1.0
-From:   Akira Tsukamoto <akira.tsukamoto@gmail.com>
-Date:   Fri, 4 Jun 2021 18:53:33 +0900
-Message-ID: <CACuRN0NjftJDUAsF2pkXbx0jnJ=bba9+j-hJA8Mjj0r4RVicLA@mail.gmail.com>
-Subject: [PATCH 0/1] riscv: better network performance with memcpy, uaccess
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Gary Guo <gary@garyguo.net>,
-        Nick Hu <nickhu@andestech.com>,
-        Nylon Chen <nylon7@andestech.com>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        linux-riscv@lists.infradead.org,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>
+References: <CO6PR04MB7812D8905C6EEBDE8513866F8D3C9@CO6PR04MB7812.namprd04.prod.outlook.com>
+ <mhng-3875d1bc-74dd-4dc8-b71d-18a8f004039a@palmerdabbelt-glaptop>
+In-Reply-To: <mhng-3875d1bc-74dd-4dc8-b71d-18a8f004039a@palmerdabbelt-glaptop>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 4 Jun 2021 11:53:48 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a03sxxnzpZPxNnXLtCFOFBZ6espEj4V5y=K+59dOLJc6A@mail.gmail.com>
+Message-ID: <CAK8P3a03sxxnzpZPxNnXLtCFOFBZ6espEj4V5y=K+59dOLJc6A@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Anup Patel <Anup.Patel@wdc.com>, Guo Ren <guoren@kernel.org>,
+        Anup Patel <anup@brainfault.org>,
+        Drew Fustini <drew@beagleboard.org>,
+        Christoph Hellwig <hch@lst.de>, wefu@redhat.com,
+        lazyparser@gmail.com,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:ujRpXPvNy6Jxro+egqdLKAw5vJR180w7QwlpXdBCHfIrGqxinQz
+ nQR6+KvWR5sJYROEuH+FIIRH7X5P5IFQfZluaWm0Xb5kyNaV0B7BaOLps8CU3h3XVMBAM7P
+ sKR34naXwcGgeXlVXbcuOEoJERzv7eIIjYr6lcDFIOI20I1iBL0sUaGb9LCmNr3+vYkq44f
+ BZ6xm+eanWz4z78eCRBMQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:jAKJ4I7p/2A=:QHvYiqwgjPgKFMmyiSeKYu
+ S5rKt7mk11ggGKf8g/VCPt+F29wFssyG7Zhp5YYohJ9JI/2fJTZQvxvzw+zZ/wgqSQF4Z52tY
+ U9yVnOv1UtRm0q0rxlVM9MOxjhgdAcaue1a1fBafAnvE689xK3+uhaFUzQ7xZIgK5KxtYc+aI
+ 2iSmArr6eOAYc2TNeB1usZ+tfqiLsaBEsC2EIhePp3JyzHTjE7fDQzNasEKXjc4dSasMs6ldR
+ OISdpDtE3rsZZfMH+XAB6G7FnwehxwB/e+ZIFULx6bGZRxD+DQxdTzWRKYXvkGOQJon6ypsZw
+ t84J0z8nlYGp6LQjIKZuxoxxA35HN04Lhj7/h1K1vCL7HpbRFC546GBkTjohKw7b0JS4SgKRd
+ feDXme/jATzM2I+OcM5vpnizamXT23ETgrBG5L+DDGZ3pjlWwPdYEm4FzhBDda23/l2stzWpG
+ 4d9+KVUP2VXyhjO8yItd5SJ67bXmCPRr0EtVgi6y2qzTHUd9R5YvnlgTO4+dM2IvoaOhBmVUK
+ pBmTQ/bOhEapuxjWmOINIdLUSH58z+cckD/Ouj653zmPU0SB24TxIL0OkE5nYFD68kZPuJBuK
+ iIChdF/JDVn2DCBObSi1NyQYbHAhNNT7+F83RYVjmwOcHYs0diCe8WSd0QbigeNUbjhzo/yJP
+ wkGM=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am adding a cover letter to explain the history and details since
-improvement is a combination with Gary's memcpy patch [1].
+On Thu, Jun 3, 2021 at 5:39 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+> On Wed, 02 Jun 2021 23:00:29 PDT (-0700), Anup Patel wrote:
+> >> This implementation, which adds some Kconfig entries that control page table
+> >> bits, definately isn't suitable for upstream.  Allowing users to set arbitrary
+> >> page table bits will eventually conflict with the standard, and is just going to
+> >> be a mess.  It'll also lead to kernels that are only compatible with specific
+> >> designs, which we're trying very hard to avoid.  At a bare minimum we'll need
+> >> some way to detect systems with these page table bits before setting them,
+> >> and some description of what the bits actually do so we can reason about
+> >> them.
+> >
+> > Yes, vendor specific Kconfig options are strict NO NO. We can't give-up the
+> > goal of unified kernel image for all platforms.
+>
+> I think this is just a phrasing issue, but just to be sure:
+>
+> IMO it's not that they're vendor-specific Kconfig options, it's that
+> turning them on will conflict with standard systems (and other vendors).
+> We've already got the ability to select sets of Kconfig settings that
+> will only boot on one vendor's system, which is fine, as long as there
+> remains a set of Kconfig settings that will boot on all systems.
+>
+> An example here would be the errata: every system has errata of some
+> sort, so if we start flipping off various vendor's errata Kconfigs
+> you'll end up with kernels that only function properly on some systems.
+> That's fine with me, as long as it's possible to turn on all vendor's
+> errata Kconfigs at the same time and the resulting kernel functions
+> correctly on all systems.
 
-Comparison of iperf3 benchmark results by applying Gary's memcpy patch and
-my uaccess optimization patch. All results are from the same base kernel,
-same rootfs and save BeagleV beta board.
+Yes, this is generally the goal, and it would be great to have that
+working in a way where a 'defconfig' build just turns on all the options
+that are needed to use any SoC specific features and drivers while
+still working on all hardware. There are however limits you may run
+into at some point, and other architectures usually only manage to span
+some 10 to 15 years of hardware implementations with a single
+kernel before it get really hard.
 
-First left column : beaglev 5.13.rc4 kernel [2]
-Second column     : Added Palmer's memcpy in C + my uaccess patch [3]
-Third column      : Added Gary's memcpy + my uaccess patch [4]
+To give some common examples that make it break down:
 
---- TCP recv ---
-686 Mbits/sec  |  700 Mbits/sec  |  904 Mbits/sec
-683 Mbits/sec  |  701 Mbits/sec  |  898 Mbits/sec
-695 Mbits/sec  |  702 Mbits/sec  |  905 Mbits/sec
+- 32-bit vs 64-bit already violates that rule on risc-v (as it does on
+  most other architectures)
 
---- TCP send ---
-383 Mbits/sec  |  390 Mbits/sec  |  393 Mbits/sec
-384 Mbits/sec  |  393 Mbits/sec  |  392 Mbits/sec
+- architectures that support both big-endian and little-endian kernels
+  tend to have platforms that require one or the other (e.g. mips,
+  though not arm). Not an issue for you.
 
---- UDP send ---
-307 Mbits/sec  |  358 Mbits/sec  |  402 Mbits/sec
-307 Mbits/sec  |  359 Mbits/sec  |  402 Mbits/sec
+- page table formats are the main cause of incompatibility: arm32
+  and x86-32 require three-level tables for certain features, but those
+  are incompatible with older cores, arm64 supports three different
+  page sizes, but none of them works on all cores (4KB almost works
+  everywhere).
 
---- UDP recv ---
-630 Mbits/sec  |  799 Mbits/sec  |  875 Mbits/sec
-730 Mbits/sec  |  796 Mbits/sec  |  873 Mbits/sec
+- SMP-enabled ARMv7 kernels can be configured to run on either
+  ARMv6 or ARMv8, but not both, in this case because of incompatible
+  barrier instructions.
 
+- 32-bit Arm has a couple more remaining features that require building
+  a machine specific kernel if enabled because they hardcode physical
+  addresses: early printk (debug_ll, not the normal earlycon), NOMMU,
+  and XIP.
 
-The uaccess patch is reducing pipeline stall of read after write (RAW)
-by unroling load and store.
-The main reason for using assembler inside uaccess.S is because the
-__asm_to/copy_from_user() handling page fault must be done manually inside
-the functions.
-
-The above result is combination from Gary $B!G (Bs memcpy speeding up
-by reducing
-the S-mode and M-mode switching and my uaccess reducing pipeline stall for
-user space uses syscall with large data.
-
-We had a discussion of improving network performance on the BeagleV beta
-board with Palmer.
-
-Palmer suggested to use C-based string routines, which checks the unaligned
-address and use 8 bytes aligned copy if the both src and dest are aligned
-and if not use the current copy function.
-
-The Gary's assembly version of memcpy is improving by not using unaligned
-access in 64 bit boundary, uses shifting it after reading with offset of
-aligned access, because every misaligned access is trapped and switches to
-opensbi in M-mode. The main speed up is coming from avoiding S-mode (kernel)
-and M-mode (opensbi) switching.
-
-Processing network packets require a lot of unaligned access for the packet
-header, which is not able to change the design of the header format to be
-aligned.
-And user applications pass large packet data with send/recf() and sendto/
-recvfrom() to repeat less function calls for reading and writing data for the
-optimization.
-
-Akira
-
-[1] https://lkml.org/lkml/2021/2/16/778
-[2] https://github.com/mcd500/linux-jh7100/tree/starlight-sdimproved
-[3] https://github.com/mcd500/linux-jh7100/tree/starlight-sd-palmer-string
-[4] https://github.com/mcd500/linux-jh7100/tree/starlight-sd-gary
-
-Akira Tsukamoto (1):
-  riscv: prevent pipeline stall in __asm_to/copy_from_user
-
- arch/riscv/lib/uaccess.S | 106 +++++++++++++++++++++++++++------------
- 1 file changed, 73 insertions(+), 33 deletions(-)
-
---
-2.17.1
+       Arnd
