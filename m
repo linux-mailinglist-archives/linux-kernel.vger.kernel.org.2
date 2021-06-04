@@ -2,121 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF0839B731
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 12:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5644C39B73A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 12:38:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbhFDKgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 06:36:48 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:33610 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229682AbhFDKgr (ORCPT
+        id S230072AbhFDKju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 06:39:50 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:12357 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229625AbhFDKjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 06:36:47 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 1A6D51F43871
-Received: by earth.universe (Postfix, from userid 1000)
-        id 6CE733C0C95; Fri,  4 Jun 2021 12:34:58 +0200 (CEST)
-Date:   Fri, 4 Jun 2021 12:34:58 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Beomho Seo <beomho.seo@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH v2 0/3] Fix RT5033 battery device tree probing
-Message-ID: <20210604103458.bb6niqmuflgh6vkq@earth.universe>
-References: <20210517105113.240379-1-stephan@gerhold.net>
+        Fri, 4 Jun 2021 06:39:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1622803083; x=1654339083;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=4sXc9RFUGLKrPBrTE/aA0NwwQbDYVun7rUmFq44v2zA=;
+  b=KZmv+fk030p1ROt1V3Mb0BeYbAb9YOJmx0mZuNGvEFSzTngDIaoW+GKF
+   NixSCOP7VvGa3IpLKpHDVha3ym9Wg/jR0q32rk9Mdp79ihgdDjm7OKvzG
+   S+OX8Oheyl9zFMN2fnUpsMeaVOqqAepXBzEh5rOoZf1hjtiGPLLuetuUu
+   7o9Y+/WbyoYcSkfpLEw3t+6s8tnEeXPDMQWLYhptrpnkeLNhFYTJhFcsq
+   ppHWY/lZ/D6rJLP120jjFhEuvCZ2iz1FnwzvkOEueeFKHp00nLKFqdnj3
+   6rqmQpzN5IuVcEQ4lFaPv+eSWHNkBJgUgFZUFGbHSv6Non0LL4lRH3lKH
+   w==;
+IronPort-SDR: abUF0oX24C7cEcjkxaszfgou2C+JQ+g7Cgg7mlDxB67pz2LZxGWM0gNeJSpYgSr9rxLFWdGOpt
+ cBDo5VV8is6ATpynZlOqOoXMlUelK5Mi9JQaOvHthZ3zdfNituA9qEjAmKxYe96w74WmekP5Kq
+ Icqk19Cmb7tPDmcQlZR74z8V+Szibp1xN/bUkFaNXeruhZ0LWK3JbRo1+YZVC7gHWec0ff8+gU
+ W2IGbjzoPrOauJWvIwfG+UKFsR1vucKXeoSGkuMAheeog84fhQpA7XDSW1zA6CYGPCxbuQvvR4
+ 4yA=
+X-IronPort-AV: E=Sophos;i="5.83,248,1616482800"; 
+   d="scan'208";a="124079584"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Jun 2021 03:38:02 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 4 Jun 2021 03:38:02 -0700
+Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Fri, 4 Jun 2021 03:38:00 -0700
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <roopa@nvidia.com>, <nikolay@nvidia.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <UNGLinuxDriver@microchip.com>
+CC:     <bridge@lists.linux-foundation.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH net-next] net: bridge: mrp: Update ring transitions.
+Date:   Fri, 4 Jun 2021 12:37:47 +0200
+Message-ID: <20210604103747.3824212-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7qpaey6c4rosasac"
-Content-Disposition: inline
-In-Reply-To: <20210517105113.240379-1-stephan@gerhold.net>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+According to the standard IEC 62439-2, the number of transitions needs
+to be counted for each transition 'between' ring state open and ring
+state closed and not from open state to closed state.
 
---7qpaey6c4rosasac
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Therefore fix this for both ring and interconnect ring.
 
-Hi,
+Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+---
+ net/bridge/br_mrp.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-On Mon, May 17, 2021 at 12:51:10PM +0200, Stephan Gerhold wrote:
-> At the moment, the RT5033 MFD and battery driver suggest that the
-> battery driver should probe as a sub-device of the MFD driver. However,
-> this does not make any sense since the fuel gauge part of RT5033 has its
-> own I2C device and interrupt line.
->=20
-> It was also documented as separate I2C device in the original device
-> tree bindings [1] (that were never finished up and merged) but for some
-> reason the code does not match the documentation (and reality). :/
->=20
-> Given other fairly critical mistakes like setting the wrong bits
-> in the regulator driver (see [2]), unfortunately I get the feeling
-> that none of the RT5033 drivers were ever tested properly. :(
->=20
-> This patch sets adds a proper of_match_table to rt5033-battery
-> and removes the rt5033-battery sub-device from the MFD driver.
-> There is no compile/runtime dependency of the power supply / MFD patch
-> so they can just be applied separately through the power supply / MFD tre=
-e.
+diff --git a/net/bridge/br_mrp.c b/net/bridge/br_mrp.c
+index cd2b1e424e54..f7012b7d7ce4 100644
+--- a/net/bridge/br_mrp.c
++++ b/net/bridge/br_mrp.c
+@@ -627,8 +627,7 @@ int br_mrp_set_ring_state(struct net_bridge *br,
+ 	if (!mrp)
+ 		return -EINVAL;
+ 
+-	if (mrp->ring_state == BR_MRP_RING_STATE_CLOSED &&
+-	    state->ring_state != BR_MRP_RING_STATE_CLOSED)
++	if (mrp->ring_state != state->ring_state)
+ 		mrp->ring_transitions++;
+ 
+ 	mrp->ring_state = state->ring_state;
+@@ -715,8 +714,7 @@ int br_mrp_set_in_state(struct net_bridge *br, struct br_mrp_in_state *state)
+ 	if (!mrp)
+ 		return -EINVAL;
+ 
+-	if (mrp->in_state == BR_MRP_IN_STATE_CLOSED &&
+-	    state->in_state != BR_MRP_IN_STATE_CLOSED)
++	if (mrp->in_state != state->in_state)
+ 		mrp->in_transitions++;
+ 
+ 	mrp->in_state = state->in_state;
+-- 
+2.31.1
 
-Thanks, I queued patches 1&2 to power-supply's for-next branch
-and ignored patch 3.
-
--- Sebastian
-
-> With these changes, rt5033-battery seems to work fine on the
-> Samsung Galaxy A5 (2015) at least (it reports a reasonable
-> battery percentage).
->=20
-> [1]: https://lore.kernel.org/linux-pm/1425864191-4121-3-git-send-email-be=
-omho.seo@samsung.com/
-> [2]: https://lore.kernel.org/lkml/20201110130047.8097-1-michael.srba@sezn=
-am.cz/
->=20
-> Changes in v2: Fix stupid typo in second patch :(
-> v1: Honestly, not worth looking at :)
->=20
-> Stephan Gerhold (3):
->   dt-bindings: power: supply: Add DT schema for richtek,rt5033-battery
->   power: supply: rt5033_battery: Fix device tree enumeration
->   mfd: rt5033: Drop rt5033-battery sub-device
->=20
->  .../power/supply/richtek,rt5033-battery.yaml  | 54 +++++++++++++++++++
->  drivers/mfd/rt5033.c                          |  3 --
->  drivers/power/supply/Kconfig                  |  3 +-
->  drivers/power/supply/rt5033_battery.c         |  7 +++
->  4 files changed, 63 insertions(+), 4 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/power/supply/richte=
-k,rt5033-battery.yaml
->=20
-> --=20
-> 2.31.1
->=20
-
---7qpaey6c4rosasac
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmC6AckACgkQ2O7X88g7
-+prOSg//QRnXNFYXcAz50rTV4DV/Q6evnwV92ekn8gUnkCO4WkgM8oyW4ijP2CUo
-9J3Lpu9jrabPyP6wT1xDV0GurQoAsuB5WEYwuGbByLkur3yZyB+gXMCsaN9OpTwm
-eIQ5+LheWY4gQEIzO4ry3eCqe6VU2hQN+vdrz3KEp2wnZ34D+KYBENIY3lejDkkx
-Vr7hhSj/N6+bgjn/KJFmEASUoIuFWphYfG4dBPAlRyslhFsLxTiIiKKAdvvfIlpN
-RVH5SU19oPtcagQWpKvkLKg16u/U5lIBpbh9r7RML0armDsYxeGiOAs59njEnx5+
-G7NRg916LJIV/MyVrJvnx9PAzxtO7sW2iIEtLdxdxHrqHuzSyGnwuBcaWyqLraxd
-3L6wVS94HnKNl4zphLiTkF8cvdGphEL1BMKaCBnBEEcqESC7sLNZD+EUnYmsSBob
-/muKm5fWU16yixrS3wDHgR8VxkVqa9istOEIf5gioKxaV5H+rWik98pjpHAXG9Lv
-zIpmWB09ufkHNq3Y7law4qPrqfnf/Oo4dOrQFJmAno+PgCxMChUZ0tytwfWvx3Pr
-JU2+nl7ff1Br17eLkjyMVZx9zhUMo1RI3SrsVQK/KZ91sZqCSfx3IGjMKHfBgPpd
-evona00fQ4Hnq5wxajKMoeAjWenQ/17CdwLCo+XJunzW6PILS1Q=
-=Bv8O
------END PGP SIGNATURE-----
-
---7qpaey6c4rosasac--
