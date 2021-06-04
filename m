@@ -2,245 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54AB239BA2C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F54039BA27
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:48:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbhFDNuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 09:50:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbhFDNuN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 09:50:13 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA248C061789;
-        Fri,  4 Jun 2021 06:48:26 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id l2so9405289wrw.6;
-        Fri, 04 Jun 2021 06:48:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6krBnFnbTexLeYVxG8AbFbd9NK8E8A28cizYGAD8aHQ=;
-        b=GUZTByC2w73LEV/rF5oe9BKwqj+f0JyGdXjqeHM7uE85mLXvaiEoEHmTi63HrincMB
-         QhbBYcEi6OfIeVExEd1ojfxqhQr0VAeAAOxVUGDM9wEMTi2DMli2Sk4VcGun4oObiOCn
-         p3n9p0Lq4baPRnRXmLZzycUZ92IKc9auEgAzXRlioqaij+u5IUONlCF+6NfFnvgY3TMx
-         whvInVSPvP3YmnpRdfchDjGjkLTTE2n8j4xgAbcietPjZKzcfriNQzZMkAukZ5WNMG5x
-         WH5604xXWR7MRECJ+o9xYYm0m0jjHACeTTRLGXGuOdn/s+EagG630lH7eoFeKJwfmDVi
-         l3tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6krBnFnbTexLeYVxG8AbFbd9NK8E8A28cizYGAD8aHQ=;
-        b=hIF9R1AfgLxgg6iO/PO8YM+zrxcu/yEIvXy18x8c84w9uAoWxlLs7lSjEDt2PtoDBk
-         YLjlGRmRhOKLbGC3R6Y+rtHHakSU6w9LiQkWQBgbcoQsMHKWjK3lwgm1ulGebKFXQj9t
-         pGeqRetuU2h6C14y62PJz2XHTvbj8AozDj+jF0OL26BpBiTTiScYGo2Njg5lYkkuGvna
-         2uD1jS7R9aVOitj6c9Z8aBV8oTlr1YiA1Pn+81cOns/WVijDNd6+1N21zhN6P1EhvMjx
-         8JwuBDwTQ7bzVfbS/SWKD1UK7ix4Mc5J38XOqVK+qobbcdn8EwS65P7FPbTuj8BbK8rP
-         9c6Q==
-X-Gm-Message-State: AOAM532kM26acrx+XFSasBIVAE4SGD+/vJY/JuLXmeaEiagCsmoCdzlk
-        /Ai1wGNgu1wBOo1l4vELFB4=
-X-Google-Smtp-Source: ABdhPJxg2cq/v9q3DMgdXZaHzRqz5QNMu0IoE6u1drW4SL3CFRp6Q3qz5mlvc4w2P8z54UF4O6Gatw==
-X-Received: by 2002:adf:efca:: with SMTP id i10mr4058874wrp.139.1622814505362;
-        Fri, 04 Jun 2021 06:48:25 -0700 (PDT)
-Received: from xws.localdomain (pd9e5aba0.dip0.t-ipconnect.de. [217.229.171.160])
-        by smtp.gmail.com with ESMTPSA id u16sm7403167wru.56.2021.06.04.06.48.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 06:48:25 -0700 (PDT)
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        platform-driver-x86@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 7/7] docs: driver-api: Update Surface Aggregator user-space interface documentation
-Date:   Fri,  4 Jun 2021 15:47:55 +0200
-Message-Id: <20210604134755.535590-8-luzmaximilian@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210604134755.535590-1-luzmaximilian@gmail.com>
-References: <20210604134755.535590-1-luzmaximilian@gmail.com>
+        id S230122AbhFDNtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 09:49:49 -0400
+Received: from mail-eopbgr00076.outbound.protection.outlook.com ([40.107.0.76]:33403
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230142AbhFDNtr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 09:49:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NLUsVokK8ibyDEzPeG6W6oEZfDMS9cQ+dT34z/ZC/Ti2apc3OZOuzQ54qoJCnqgBZLCGeHkWU0Sv48AhG6TYok8VthWPaUZZZdOUyz7bAgLGBesVPcUqxBNTdyCfueeRlvr6Yrw/SVLTjqKPO2kr2rhN6XGE8pdynS2lttLyT5OXjDeU5zliazU2NIobwsz4+UdPAzwY5gPRaLknFiI0FwyhWMSEL8812Q+2o9yd6kw6eHGlf3+zYW98gxMNO+DP40oQb8YhQ/j4UEc+plZoEZWmX1xbQsw+qLFk9Thgot+k0A8cksOtLZjH4mhBUH+nHfkDrNSpy8gZxjaW47xMbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lQOaj30J3JJEajIkxi/W+Wk1zChY42mQEoaSAMl9Y9M=;
+ b=R2lTbLu7OciLexIuxgrXkWtjSBvTklfx5DQRaA8oeJ5LUe1Vnxl0cZFLvH4/t9OwRwsaVKX1KVX2gJ/0e2doRHDWC6vZSjgdeQrkxZJcPYPOtUj0zQKhwGObn4lfmIn5Z8n37WjStXCqPvrXIbAq75Z7U4oQTBKDbgQbbBN2FyJNT8uhauGRcLdrsEkiPgwmgUuM2lZU1VSx5k7GsIdVdKX1c7CPjvnTH8tAbDAZIYsDSZJiklDBtMPCUFlG8uT4JeHhC1TKQiKd6hGRRJ09RsEyLYYNmF2NNiU28/c/SOTa/nUYr6YKkUEptZteguKdEZjyg13mBOtRma64CWcY+w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lQOaj30J3JJEajIkxi/W+Wk1zChY42mQEoaSAMl9Y9M=;
+ b=S4IK2Ju07LxCeNWhHNLuRUzf7LE2U2y6oqfK2+LCaHm37rHB/Xti3EiMcH0IWysTQk7jKTI3uJQAh3Zse/EChEsNkoSxdzPSR4WV7nWjWmvy81jwrCXYPuG9E8QEK4+13DOTylY6LR/rwcf8zd2lBsOQ8vD1yama5DI2uyzvR98=
+Received: from AM9PR04MB8397.eurprd04.prod.outlook.com (2603:10a6:20b:3b5::5)
+ by AM9PR04MB8383.eurprd04.prod.outlook.com (2603:10a6:20b:3ed::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20; Fri, 4 Jun
+ 2021 13:47:59 +0000
+Received: from AM9PR04MB8397.eurprd04.prod.outlook.com
+ ([fe80::31a4:3d80:43de:e2bf]) by AM9PR04MB8397.eurprd04.prod.outlook.com
+ ([fe80::31a4:3d80:43de:e2bf%7]) with mapi id 15.20.4195.024; Fri, 4 Jun 2021
+ 13:47:59 +0000
+From:   Claudiu Manoil <claudiu.manoil@nxp.com>
+To:     Michael Walle <michael@walle.cc>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: RE: [PATCH net-next v2] net: enetc: use get/put_unaligned helpers for
+ MAC address handling
+Thread-Topic: [PATCH net-next v2] net: enetc: use get/put_unaligned helpers
+ for MAC address handling
+Thread-Index: AQHXWUdw9MQT4AMpvEGGFXriJCqitasD3VzA
+Date:   Fri, 4 Jun 2021 13:47:59 +0000
+Message-ID: <AM9PR04MB839795C23F7974DB44CC563F963B9@AM9PR04MB8397.eurprd04.prod.outlook.com>
+References: <20210604134212.6982-1-michael@walle.cc>
+In-Reply-To: <20210604134212.6982-1-michael@walle.cc>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: walle.cc; dkim=none (message not signed)
+ header.d=none;walle.cc; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [188.25.147.66]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5decc801-9f94-4722-a91e-08d9275f5d6e
+x-ms-traffictypediagnostic: AM9PR04MB8383:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM9PR04MB838391EFBB94BFFB59B59966963B9@AM9PR04MB8383.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: VYPZLpl67YbSwrmTh73rDpB20XuqNw2EHwZecGKg2FOSPQ+Zmp8GmHss1Q9rPbcxxmkB1k/20Tn6zsi/T2gYuq+jZTb1OITCTyy6jpD8ODyG4q9mns9KoQmXkQLcGhdQhmWdGfopW3CaGLA9MbwrH7uQV2AqSNIH2qg/xSlkSVm5vv8cwZ2ljHmae7i/SJlaF6WMWyLpNOs5fMqTkiyLKafaiYzXvF1wrlBNXIqHyZS9d5GUnjCk4TfrPuWZ36ZPStupzTUvFu9ea9zBl9Dlr6dEr8MYxOpc0jdAL2EdPBiikG/dx7xZbIe5e+kHQmH96nMWL1FY9E5OD0rMDUaZMoKrXfvXJZsOmXUKU2nRRPcM4/OVglKCa2sgtr/pqH6e/wX+wwjTIrtJSLE17tL0JeQavqhM6JM0yz0/stXV4cL5UA492uCFLWB12DyxqXFbhkLV4zfJG4YX7ANJkAJ11SJBtGzrxHCr5PvisvqQIM7tz+LG4tj3GC0XE0d2Beu3w61ylNdYvm3LhUg+uP15RNnyMQWmCQIS8fqSXGGoVrKUuyBy4iPu2J70qCqm11OeS2pHOfmwUHHA5qKTGYYtOfUxWHhR+K5rbaqrewWtxOA=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB8397.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(39860400002)(346002)(136003)(396003)(316002)(2906002)(76116006)(4744005)(4326008)(64756008)(66556008)(66476007)(66446008)(26005)(33656002)(110136005)(54906003)(66946007)(186003)(83380400001)(71200400001)(55016002)(122000001)(52536014)(44832011)(53546011)(86362001)(5660300002)(38100700002)(7696005)(8676002)(478600001)(8936002)(6506007)(9686003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?47Y5u+IJR1y16LjfhWv7AFZjdvwbRe0XT62kF8QHIFwVbzIBnEaztv6sDqrI?=
+ =?us-ascii?Q?/dMq38+kndmGxZJ7AlJaPwtNSfkGbggx92YibDRlmOW5kGpREW3mxgO5qJFu?=
+ =?us-ascii?Q?h6ud2CVkCWVve3rBqtKyLw2lni/zF/ioVDE84/wHV1Al/tuArI3DyXVmzgoh?=
+ =?us-ascii?Q?uglUGq1HPETlhjLHFPKpZdGvpzP7ChQ3eTUD5eKwhPfyecaGxlvOg52udDWG?=
+ =?us-ascii?Q?eFU+3pA/fWyvSf8cCmlLaGOAl0qJa7twk8HZfbdsrtHduywzxzvK6CfU4VZw?=
+ =?us-ascii?Q?lVi1aZ1jdsLVbAIdA/hYnU4hPO2Mp9Pzvc2k1oB6ztVRH+tKWuqioU+jD4ER?=
+ =?us-ascii?Q?PmDfEF7OFOYkjBqMh1v0olo43zM+2Uew71165adyeL98ZyOCDg6jCIoDp1mc?=
+ =?us-ascii?Q?ljLc7ayb5P8YD99ENy0ot73t8iLdLZytYAcOJs6MiehD/CMB+qTYw9/xtZEQ?=
+ =?us-ascii?Q?koMnrWpgn6vYoTMxWNb6FqLihJBRPDQFKdGQkiUSY8ElJt64EWb9PbPZjIPT?=
+ =?us-ascii?Q?7uPjQCnsTQtE0Xfe6GgX+KoP+ZWWlDqeoOfjQCNCXCgS6i97d7P+q8KvA+uF?=
+ =?us-ascii?Q?DeriLSet8oNwlT+Ln+FWXMtV19Y3eTD3QB1Qw7noIpxn4zI3a6I17L89nQzO?=
+ =?us-ascii?Q?0T62b8FkYA6UpGGcVVg20VXO5+Z8OBa6anOWgIzoUJW9RgYGOWBprWsb56I/?=
+ =?us-ascii?Q?qiAEtMAaTbYRsyqq1iYOw/KiojWVh8nU5/xRqhr2L0+msfeu1zt4YCXgHsUE?=
+ =?us-ascii?Q?sExkIHscdb1ky9ZIPbsvs5mUXsBQlU4HCaw7gGuTcebX385DcomtrsQ9l70a?=
+ =?us-ascii?Q?ZxhXsIaus1WK/DMOs6XYpZLMFkonSx5N443KPBCA0qNjLox9DlvBj0hm+JOb?=
+ =?us-ascii?Q?MgvWA+vf1TfI43v6muyStPJHP68IyNZlWaZJQ8/BXpBsOmi+9THd79nXM3wT?=
+ =?us-ascii?Q?u6iyM/KNE9zE/xSMUdZPSFapw+hmwRpsxu83PQgdOxwKvfIRJ/mV0tFe1dW5?=
+ =?us-ascii?Q?1vfekxD9XIpTuIRIs8pBfZr04YmC4wN30ejrLGgG3LguRQNxrhG+hJ58JCA6?=
+ =?us-ascii?Q?5k4RnFjvI4DG29+3MxBa17cDkFV1dM+vR70SBw6iVgO363CDvYqXPmdos7qm?=
+ =?us-ascii?Q?67hstGWxPKdBEYR2+P+mAOIGvTrvEWw43RT2b3ow+LhnkW4guRI2nnYEBVYw?=
+ =?us-ascii?Q?E9YsA7TvN/1/R+SuFYb7VhC3ONOhfHCGCdOcUR+2Zd2D9J2eeMPdi27TJvz7?=
+ =?us-ascii?Q?1b7u3j4cqocKBWnirXIx4+CNC41xtiFs9NxpozpO5QjZ/FmWpDoSDQQIUisA?=
+ =?us-ascii?Q?rN6Kt17VTLXmXYlfZM2RPmRo?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB8397.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5decc801-9f94-4722-a91e-08d9275f5d6e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jun 2021 13:47:59.1619
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ufFVdYm5jsC58AxT87S6pinjRVzIgIvqjE68LpIPfKMPFNx/Jid6r7Wcr5yZNYnV6jH+YyXarl53lb7wwp7h5Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8383
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the controller-device user-space interface (cdev) documentation
-for the newly introduced IOCTLs and event interface.
+> -----Original Message-----
+> From: Michael Walle <michael@walle.cc>
+> Sent: Friday, June 4, 2021 4:42 PM
+[...]
+> Subject: [PATCH net-next v2] net: enetc: use get/put_unaligned helpers fo=
+r
+> MAC address handling
+>=20
+> The supplied buffer for the MAC address might not be aligned. Thus
+> doing a 32bit (or 16bit) access could be on an unaligned address. For
+> now, enetc is only used on aarch64 which can do unaligned accesses, thus
+> there is no error. In any case, be correct and use the get/put_unaligned
+> helpers.
+>=20
+> Signed-off-by: Michael Walle <michael@walle.cc>
 
-Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
----
-
-Changes in v2:
- - None
-
----
- .../surface_aggregator/clients/cdev.rst       | 127 +++++++++++++++++-
- 1 file changed, 122 insertions(+), 5 deletions(-)
-
-diff --git a/Documentation/driver-api/surface_aggregator/clients/cdev.rst b/Documentation/driver-api/surface_aggregator/clients/cdev.rst
-index 248c1372d879..0134a841a079 100644
---- a/Documentation/driver-api/surface_aggregator/clients/cdev.rst
-+++ b/Documentation/driver-api/surface_aggregator/clients/cdev.rst
-@@ -1,9 +1,8 @@
- .. SPDX-License-Identifier: GPL-2.0+
- 
--.. |u8| replace:: :c:type:`u8 <u8>`
--.. |u16| replace:: :c:type:`u16 <u16>`
- .. |ssam_cdev_request| replace:: :c:type:`struct ssam_cdev_request <ssam_cdev_request>`
- .. |ssam_cdev_request_flags| replace:: :c:type:`enum ssam_cdev_request_flags <ssam_cdev_request_flags>`
-+.. |ssam_cdev_event| replace:: :c:type:`struct ssam_cdev_event <ssam_cdev_event>`
- 
- ==============================
- User-Space EC Interface (cdev)
-@@ -23,6 +22,40 @@ These IOCTLs and their respective input/output parameter structs are defined in
- A small python library and scripts for accessing this interface can be found
- at https://github.com/linux-surface/surface-aggregator-module/tree/master/scripts/ssam.
- 
-+.. contents::
-+
-+
-+Receiving Events
-+================
-+
-+Events can be received by reading from the device-file. The are represented by
-+the |ssam_cdev_event| datatype.
-+
-+Before events are available to be read, however, the desired notifiers must be
-+registered via the ``SSAM_CDEV_NOTIF_REGISTER`` IOCTL. Notifiers are, in
-+essence, callbacks, called when the EC sends an event. They are, in this
-+interface, associated with a specific target category and device-file-instance.
-+They forward any event of this category to the buffer of the corresponding
-+instance, from which it can then be read.
-+
-+Notifiers themselves do not enable events on the EC. Thus, it may additionally
-+be necessary to enable events via the ``SSAM_CDEV_EVENT_ENABLE`` IOCTL. While
-+notifiers work per-client (i.e. per-device-file-instance), events are enabled
-+globally, for the EC and all of its clients (regardless of userspace or
-+non-userspace). The ``SSAM_CDEV_EVENT_ENABLE`` and ``SSAM_CDEV_EVENT_DISABLE``
-+IOCTLs take care of reference counting the events, such that an event is
-+enabled as long as there is a client that has requested it.
-+
-+Note that enabled events are not automatically disabled once the client
-+instance is closed. Therefore any client process (or group of processes) should
-+balance their event enable calls with the corresponding event disable calls. It
-+is, however, perfectly valid to enable and disable events on different client
-+instances. For example, it is valid to set up notifiers and read events on
-+client instance ``A``, enable those events on instance ``B`` (note that these
-+will also be received by A since events are enabled/disabled globally), and
-+after no more events are desired, disable the previously enabled events via
-+instance ``C``.
-+
- 
- Controller IOCTLs
- =================
-@@ -45,9 +78,33 @@ The following IOCTLs are provided:
-      - ``REQUEST``
-      - Perform synchronous SAM request.
- 
-+   * - ``0xA5``
-+     - ``2``
-+     - ``W``
-+     - ``NOTIF_REGISTER``
-+     - Register event notifier.
- 
--``REQUEST``
-------------
-+   * - ``0xA5``
-+     - ``3``
-+     - ``W``
-+     - ``NOTIF_UNREGISTER``
-+     - Unregister event notifier.
-+
-+   * - ``0xA5``
-+     - ``4``
-+     - ``W``
-+     - ``EVENT_ENABLE``
-+     - Enable event source.
-+
-+   * - ``0xA5``
-+     - ``5``
-+     - ``W``
-+     - ``EVENT_DISABLE``
-+     - Disable event source.
-+
-+
-+``SSAM_CDEV_REQUEST``
-+---------------------
- 
- Defined as ``_IOWR(0xA5, 1, struct ssam_cdev_request)``.
- 
-@@ -82,6 +139,66 @@ submitted, and completed (i.e. handed back to user-space) successfully from
- inside the IOCTL, but the request ``status`` member may still be negative in
- case the actual execution of the request failed after it has been submitted.
- 
--A full definition of the argument struct is provided below:
-+A full definition of the argument struct is provided below.
-+
-+``SSAM_CDEV_NOTIF_REGISTER``
-+----------------------------
-+
-+Defined as ``_IOW(0xA5, 2, struct ssam_cdev_notifier_desc)``.
-+
-+Register a notifier for the event target category specified in the given
-+notifier description with the specified priority. Notifiers registration is
-+required to receive events, but does not enable events themselves. After a
-+notifier for a specific target category has been registered, all events of that
-+category will be forwarded to the userspace client and can then be read from
-+the device file instance. Note that events may have to be enabled, e.g. via the
-+``SSAM_CDEV_EVENT_ENABLE`` IOCTL, before the EC will send them.
-+
-+Only one notifier can be registered per target category and client instance. If
-+a notifier has already been registered, this IOCTL will fail with ``-EEXIST``.
-+
-+Notifiers will automatically be removed when the device file instance is
-+closed.
-+
-+``SSAM_CDEV_NOTIF_UNREGISTER``
-+------------------------------
-+
-+Defined as ``_IOW(0xA5, 3, struct ssam_cdev_notifier_desc)``.
-+
-+Unregisters the notifier associated with the specified target category. The
-+priority field will be ignored by this IOCTL. If no notifier has been
-+registered for this client instance and the given category, this IOCTL will
-+fail with ``-ENOENT``.
-+
-+``SSAM_CDEV_EVENT_ENABLE``
-+--------------------------
-+
-+Defined as ``_IOW(0xA5, 4, struct ssam_cdev_event_desc)``.
-+
-+Enable the event associated with the given event descriptor.
-+
-+Note that this call will not register a notifier itself, it will only enable
-+events on the controller. If you want to receive events by reading from the
-+device file, you will need to register the corresponding notifier(s) on that
-+instance.
-+
-+Events are not automatically disabled when the device file is closed. This must
-+be done manually, via a call to the ``SSAM_CDEV_EVENT_DISABLE`` IOCTL.
-+
-+``SSAM_CDEV_EVENT_DISABLE``
-+---------------------------
-+
-+Defined as ``_IOW(0xA5, 5, struct ssam_cdev_event_desc)``.
-+
-+Disable the event associated with the given event descriptor.
-+
-+Note that this will not unregister any notifiers. Events may still be received
-+and forwarded to user-space after this call. The only safe way of stopping
-+events from being received is unregistering all previously registered
-+notifiers.
-+
-+
-+Structures and Enums
-+====================
- 
- .. kernel-doc:: include/uapi/linux/surface_aggregator/cdev.h
--- 
-2.31.1
-
+Reviewed-by: Claudiu Manoil <claudiu.manoil@nxp.com>
