@@ -2,100 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F45D39AF70
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B9B39AF73
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:18:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbhFDBS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 21:18:56 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:13704 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFDBSy (ORCPT
+        id S229961AbhFDBTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 21:19:55 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:4294 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFDBTx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 21:18:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1622769432; x=1654305432;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Vh9/6Wuj12Htn9LEctEUji7R4lUaq5eqsTwYEqPFMeo=;
-  b=EbfRXTEEbIxWO82FsKcXt3cv6U0FT2rLNxrvOG6vRuW0L9xLqqv84N8i
-   8cFZpqIzNxFPwi5qZEB07ZvQ2LtOHYwyklLaBkd/+XqvXvXpVU7twM3XF
-   FaLWxgbBv62CxYwcV/I0PUcTS11YSlg0toUjy7CUT5O/ghxEBXLtaecn9
-   mGqdVqbygFvbyVFVC8EDssTGQ0RlLr3LcaqbhTdHNRuVtbuywc8ruSSq8
-   +BUIS4JdZowrUxR4lLmztlhEMuXJVIEEVlMPZZLu6MmmzfleqLKjUf97k
-   HFYG22M6Kuv5obGyr1N1T2dEPqGTfEuWzHXijkd3jC58Rbf+iCX16BXpp
-   A==;
-IronPort-SDR: NEP1NThL3iALf3iP5fzTgDJCkOYb7IVbjTm6f3IZwitZvKn114S9HJZQrx5Y9tzmUOkt02RTIU
- I6VyAkHi1qHK7WDY7XERPxsrxJty5KqwP2ac/kd1gNtHcq9XmgLQZIRhdJC7H9SB+pyrFTmOkS
- s2khGaodcZ1ZhIf5cWfFAX+vuaW/blegt4AQY0hZsv4KIUsg0cpSfImQ30A2VM4M0/ceJGu/C5
- x7yg8vnBrRECyy/kSJFXngsznSeO/J6r7gCfoQrHRLA7nghqazLKMegSwUyqtKqJDdnCBLNTNB
- BZQ=
-X-IronPort-AV: E=Sophos;i="5.83,246,1616428800"; 
-   d="scan'208";a="274534084"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 04 Jun 2021 09:17:11 +0800
-IronPort-SDR: OXk6qBKF8+H74L/HJcYzMgwavpNlXgaxpBnmB9SQLkFFEWCyF4qPIfCrqCyXIc1GeKnT9vg4Cz
- krvkH1qlxyQ/w/p2IjRYyvpvPCcMEzneYs2XtTYJpj31Udr4KVijC/ax4f5WSJM76DEBQ5OXxE
- MQ+fAXAM3pZtFP1RyznE5WKnYZlsF6wsEdK7qWP/yNIfXyPZLxhnLEOO74wsjxd7zvSPP/sd3y
- 3AJMMTH3Cwf7tWPq4cVUggkv9ezZp2LZVpMPZAthcCF2/pQZe4LO8Z7NmUDqgVTvACZSiTPofa
- 2zZ7iHL1TXIRXgsqE7Sj6Fiw
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 17:56:22 -0700
-IronPort-SDR: NrTxArL7zx/JFVZTTaKwEGHvoGHBh/HTpZkjVQ4W9I1qbXCzqJXrOVZcmaFxL2n0nIgt7wDqwN
- MEAX0ffTCkbeYox93vH5edRHNqa4q5BddruUXOsp/kbA10TbbOX7wbIos8lYTTiPyT1Tl/jZV+
- lBtTcahjtGvgCml8b85DDvp2Fv91ogvKJuEe0Slgbx8Wbn4S0DVA2j2/i9p8kSoAaGBist5dKi
- A1a9oxDbI6mNW9GiZdRtlC2ZmCppvmcHeqfHUbq62FeywwGmjaKp/hhsUUGrGjAk9D59upEme0
- kLI=
-WDCIronportException: Internal
-Received: from 1hfg3x2.ad.shared (HELO naota-xeon) ([10.225.56.215])
-  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 18:17:09 -0700
-Date:   Fri, 4 Jun 2021 10:17:07 +0900
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] Btrfs fixes for 5.13-rc5
-Message-ID: <20210604011707.l6mvqn5z2yvm4j3z@naota-xeon>
-References: <cover.1622728563.git.dsterba@suse.com>
+        Thu, 3 Jun 2021 21:19:53 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Fx4X13qdWz1BHn7;
+        Fri,  4 Jun 2021 09:13:21 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 4 Jun 2021 09:18:06 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 4 Jun 2021
+ 09:18:05 +0800
+Subject: Re: [RFC net-next 0/8] Introducing subdev bus and devlink extension
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     moyufeng <moyufeng@huawei.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Parav Pandit <parav@mellanox.com>,
+        Or Gerlitz <gerlitz.or@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "michal.lkml@markovi.net" <michal.lkml@markovi.net>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "lipeng (Y)" <lipeng321@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        <shenjian15@huawei.com>, "chenhao (DY)" <chenhao288@hisilicon.com>,
+        Jiaran Zhang <zhangjiaran@huawei.com>
+References: <1551418672-12822-1-git-send-email-parav@mellanox.com>
+ <20190301120358.7970f0ad@cakuba.netronome.com>
+ <VI1PR0501MB227107F2EB29C7462DEE3637D1710@VI1PR0501MB2271.eurprd05.prod.outlook.com>
+ <20190304174551.2300b7bc@cakuba.netronome.com>
+ <VI1PR0501MB22718228FC8198C068EFC455D1720@VI1PR0501MB2271.eurprd05.prod.outlook.com>
+ <76785913-b1bf-f126-a41e-14cd0f922100@huawei.com>
+ <20210531223711.19359b9a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <7c591bad-75ed-75bc-5dac-e26bdde6e615@huawei.com>
+ <20210601143451.4b042a94@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <cf961f69-c559-eaf0-e168-b014779a1519@huawei.com>
+ <20210602093440.15dc5713@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <857e7a19-1559-b929-fd15-05e8f38e9d45@huawei.com>
+ <20210603105311.27bb0c4d@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <c9afecb5-3c0e-6421-ea58-b041d8173636@huawei.com>
+Date:   Fri, 4 Jun 2021 09:18:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1622728563.git.dsterba@suse.com>
+In-Reply-To: <20210603105311.27bb0c4d@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme714-chm.china.huawei.com (10.1.199.110) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 04:50:15PM +0200, David Sterba wrote:
-> Hi,
+On 2021/6/4 1:53, Jakub Kicinski wrote:
+> On Thu, 3 Jun 2021 11:46:43 +0800 Yunsheng Lin wrote:
+>>>> can devlink port be used to indicate different PF in the same ASIC,
+>>>> which already has the bus identifiers in it? It seems we need a
+>>>> extra identifier to indicate the ASIC?
+>>>>
+>>>> $ devlink port show
+>>>> ...
+>>>> pci/0000:03:00.0/61: type eth netdev sw1p1s0 split_group 0  
+>>>
+>>> Ports can obviously be used, but which PCI device will you use to
+>>> register the devlink instance? Perhaps using just one doesn't matter 
+>>> if there is only one NIC in the system, but may be confusing with
+>>> multiple NICs, no?  
+>>
+>> Yes, it is confusing, how about using the controler_id to indicate
+>> different NIC? we can make sure controler_id is unqiue in the same
+>> host, a controler_id corresponds to a devlink instance, vendor info
+>> or serial num for the devlink instance can further indicate more info
+>> to the system user?
+>>
+>> pci/controler_id/0000:03:00.0/61
 > 
-> this is a batch from last week, I wanted to give it more testing because
-> last pull request introduced a bug, interacting zoned and subpage
-> features. Otherwise there are error handling improvements and bug
-> fixes. The last commit is from today, adding IRC link to maintainers
-> file.
+> What is a "controller id" in concrete terms? Another abstract ID which
+> may change on every boot?
+
+My initial thinking is a id from a global IDA pool, which indeed may
+change on every boot.
+
+I am not really thinking much deeper about the controller id, just
+mirroring the bus identifiers for pcie device and ifindex for netdev,
+which may change too if the device is pluged into different pci slot
+on every boot?
+
 > 
-> Please pull, thanks.
+>>>> Does it make sense if the PF first probed creates a auxiliary device,
+>>>> and the auxiliary device driver creates the devlink instance? And
+>>>> the PF probed later can connect/register to that devlink instance?  
+>>>
+>>> I would say no, that just adds another layer of complication and
+>>> doesn't link the functions in any way.  
+>>
+>> How about:
+>> The PF first probed creates the devlink instance? PF probed later can
+>> connect/register to that devlink instance created by the PF first probed.
+>> It seems some locking need to ensure the above happens as intended too.
+>>
+>> About linking, the PF provide vendor info/serial number(or whatever is
+>> unqiue between different vendor) of a controller it belong to, if the
+>> controller does not exist yet, create one and connect/register to that
+>> devlink instance, otherwise just do the connecting/registering.
 > 
-> - error handling improvements, caught by error injection
->   - handle errors during checksum deletion
->   - set error on mapping when ordered extent io cannot be finished
->   - inode link count fixup in tree-log
->   - missing return value checks for inode updates in tree-log
->   - abort transaction in rename exchange if adding second reference fails
+> Sounds about right, but I don't understand why another ID is
+> necessary. Why not allow devlink instances to have multiple names, 
+> like we allow aliases for netdevs these days?
+
+We could still allow devlink instances to have multiple names,
+which seems to be more like devlink tool problem?
+
+For example, devlink tool could use the id or the vendor_info/
+serial_number to indicate a devlink instance according to user's
+request.
+
+Aliase could be allowed too as long as devlink core provide a
+field and ops to set/get the field mirroring the ifalias for
+netdevice?
+
 > 
-> - fixes
->   - fix fsync failure after writes to prealloc extents
->   - fix deadlock when cloning inline extents and low on available space
->   - fix compressed writes that cross stripe boundary
->
+> .
+> 
 
-David,
-
-Could you also add commit "btrfs: zoned: fix zone number to
-sector/physical calculation" for pull? Without this commit, on a
-device larger than 4 TB, zoned btrfs will overwrite the primary
-superblock with the 2nd copy and causes a mount failure after the
-first mount/umount.
-
-https://lore.kernel.org/linux-btrfs/20210527062732.2683788-1-naohiro.aota@wdc.com/
-
-Thanks,
