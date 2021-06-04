@@ -2,108 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A98EA39C26D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E36C39C271
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbhFDVcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 17:32:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbhFDVcM (ORCPT
+        id S230185AbhFDVc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 17:32:28 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:34568 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229668AbhFDVc1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 17:32:12 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F835C061767
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 14:30:25 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id h16so6261275pjv.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 14:30:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y82vlUdyWeMAr7e63Dj4j+wcqdc77Hu1B4Tw/o9SLMs=;
-        b=aypJtca7l/KpD4E2paDroJDyKsinPUWC0yUQNyIzZl97PiuWTz2R5MdpTk0hKEJuW7
-         Kcc0UXCRCYopCWV15JnD4HbUEqp7kTbswrmFf2W0oawdCIw03Zg26xdZyQcJnqFeOIW5
-         xE/MogjtklkQa6qgBcTfprYMKyD0QmumUjGb9jl+tMXNas53ZrWRXLbzD3kwOSVlACP1
-         KTq8Qqpzj39s5ARnPtF9BCTkAaQlMKQDh5NJtkSxbvn+bnIxH+hKPMGEf9/GRIcuNzKy
-         oKlL6VKgGfZ3qEMk+Qdu2DVagZIUplPihiJ+cWPcTtvpNfBONJ26yQpDW1teceg451Rn
-         OOsQ==
+        Fri, 4 Jun 2021 17:32:27 -0400
+Received: by mail-ot1-f42.google.com with SMTP id v27-20020a056830091bb02903cd67d40070so7361488ott.1;
+        Fri, 04 Jun 2021 14:30:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y82vlUdyWeMAr7e63Dj4j+wcqdc77Hu1B4Tw/o9SLMs=;
-        b=YWyVnntyZjfm0CBhEhVUHB0ZZJWazJxxqzuaeHR04wwzuD5FDoqI8hZMbK9HGXLKlK
-         aNuyfOSu567AoSLSwmaytCQ6U4PPV4WFcmOJiBfnGCZgZzUyN5iQtTApNrDlpAQMBqJz
-         mzzXVftyByr1ciPh6hX9dcCrD8/31yf9t60DP4SQJ5wOK3Q5UI8w/OsaO2+eCzLLA/VT
-         lt/vclcyiJa0snE2JdF8+Gugv/7FqEL2auEi969aEaI7dYiG580be+xiEP+xmHOpSfTG
-         KSa9BKCIUL1VVceknegrYehkHrJOpnyk6Kp+wdU7Ud8qdusQ+jqyF3glLVvgf7qEmTQ6
-         aICg==
-X-Gm-Message-State: AOAM533fUtJKhhBf4GuShFSSbtcMtj1Eg8Wlzh2fsD578L5AENsw77xc
-        tVg+md2wD9Zxf6CxBOIyS0MB/2/24cx9ObMbr84luA==
-X-Google-Smtp-Source: ABdhPJwU4JpGr4VuZdZYSpiYMTBhSPdpK+DlYYWr/X1ghG8V2iJ/e10YXb/wDDgEdSkIzZhipi0sXH/wWOsoXo+QOxU=
-X-Received: by 2002:a17:903:1c3:b029:f4:9624:2c69 with SMTP id
- e3-20020a17090301c3b02900f496242c69mr6292705plh.51.1622842224869; Fri, 04 Jun
- 2021 14:30:24 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uPmck88W/M4wuf9C9X0fQJ2ET0+qI2iV7KMjK3PkVSw=;
+        b=LVz/POa/sROMTbquH899GLMQuWgCmqpyYa9YVrMab39G+ET8rjQaSj3+faeIKCDsOs
+         XhacPCu9DnWvv5QaEQiuxcgo+ML3o/Lxy1kJOWgmJSXegfIuE8xJsIp50dzLZsAEWOOD
+         SczHwOi8fU8ZcRFusu01m8uip48gN56p+fNA4MweqymnQW5bUxe884Sm1FNIzt40cnFt
+         oKbSa0FdUVRJCwO1JGa08dET/6UUDN26N9Vr8hC3dYTpAo5vyaLpdQ6kCXiID0UoM0kG
+         6fLL8wq2W20FRAJcFJ+t5p4QVNWZAIj3tzh32HNzMvy0L0TzBqYytjiDGbF/hUhkWbyv
+         X0ZA==
+X-Gm-Message-State: AOAM533Wd7R4IEpumyV1WQ4XqwQwpeOuLUqQ/oN3f2ATIpchXAxLPE2w
+        mgcV9evEr4dkEXB8G7+bsQ==
+X-Google-Smtp-Source: ABdhPJzbC82F9wfKCu/p/rdRvJ2GLyRXyue9H82h6ArpHMhtBu3Szmn28MTSI0J3sGmpYx9yfjAhhA==
+X-Received: by 2002:a05:6830:1e37:: with SMTP id t23mr5215835otr.318.1622842230119;
+        Fri, 04 Jun 2021 14:30:30 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id l9sm669637oou.43.2021.06.04.14.30.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 14:30:29 -0700 (PDT)
+Received: (nullmailer pid 3954312 invoked by uid 1000);
+        Fri, 04 Jun 2021 21:30:28 -0000
+Date:   Fri, 4 Jun 2021 16:30:28 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Romain Perier <romain.perier@gmail.com>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Mohammed Billoo <mohammed.billoo@gmail.com>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] Documentation: watchdog: Add Mstar MSC313e WDT
+ devicetree bindings documentation
+Message-ID: <20210604213028.GA3941849@robh.at.kernel.org>
+References: <20210530072645.10379-1-romain.perier@gmail.com>
+ <20210530072645.10379-2-romain.perier@gmail.com>
 MIME-Version: 1.0
-References: <20210528075932.347154-1-davidgow@google.com> <20210528075932.347154-2-davidgow@google.com>
- <CAGS_qxpg7PdGPiP5kmzBthh=eHd+SYmyvUitQV40Weej3wD4QA@mail.gmail.com>
-In-Reply-To: <CAGS_qxpg7PdGPiP5kmzBthh=eHd+SYmyvUitQV40Weej3wD4QA@mail.gmail.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Fri, 4 Jun 2021 14:30:13 -0700
-Message-ID: <CAFd5g44VS==1yULMRS-JMxrArj9GFJRkuDCxoxnZHcj3PVbFHg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] kunit: tool: Support skipped tests in kunit_tool
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     David Gow <davidgow@google.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Marco Elver <elver@google.com>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210530072645.10379-2-romain.perier@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 1, 2021 at 8:46 AM Daniel Latypov <dlatypov@google.com> wrote:
->
-> On Fri, May 28, 2021 at 12:59 AM David Gow <davidgow@google.com> wrote:
-> >
-> > Add support for the SKIP directive to kunit_tool's TAP parser.
-> >
-> > Skipped tests now show up as such in the printed summary. The number of
-> > skipped tests is counted, and if all tests in a suite are skipped, the
-> > suite is also marked as skipped. Otherwise, skipped tests do affect the
-> > suite result.
-> >
-> > Example output:
-> > [00:22:34] ======== [SKIPPED] example_skip ========
-> > [00:22:34] [SKIPPED] example_skip_test # SKIP this test should be skipped
-> > [00:22:34] [SKIPPED] example_mark_skipped_test # SKIP this test should be skipped
-> > [00:22:34] ============================================================
-> > [00:22:34] Testing complete. 2 tests run. 0 failed. 0 crashed. 2 skipped.
-> >
-> > Signed-off-by: David Gow <davidgow@google.com>
->
-> Reviewed-by: Daniel Latypov <dlatypov@google.com>
->
-> Some minor remarks, but this looks good to me.
->
-> Though I'm surprised there has not been any bikeshedding done about
-> the color of the SKIPPED output.
-> So I'll throw an opinion out there.
-> I think yellow is fine, but I did somewhat recently change another
-> similar tool to go from yellow => cyan for SKIPPED. The motivation
-> there was to have a color for "flaky" tests that stood out, and the
-> most appropriate ANSI color seemed to be yellow (between green for
-> PASSED and red for FAILED).
-> And I don't know if KUnit tool will ever get to the point where we
-> automatically rerun tests on failure, as I can see an argument for
-> that logic living a layer above.
+On Sun, May 30, 2021 at 09:26:43AM +0200, Romain Perier wrote:
+> This adds the documentation for the devicetree bindings of the Mstar
+> MSC313e watchdog driver, found from MSC313e SoCs and newer.
 
-I do have some sympathy for using a different color for each type of
-message. I am not arguing against cyan, but I am also OK with yellow.
-However, if we get to the point where we support flaky warnings, what
-if we used orange for flaky?
+'dt-bindings: watchdog: ...' for the subject.
+
+> 
+> Signed-off-by: Romain Perier <romain.perier@gmail.com>
+> ---
+>  .../bindings/watchdog/msc313e-wdt.yaml        | 40 +++++++++++++++++++
+
+mstar,msc313e-wdt.yaml
+
+>  1 file changed, 40 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/watchdog/msc313e-wdt.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/watchdog/msc313e-wdt.yaml b/Documentation/devicetree/bindings/watchdog/msc313e-wdt.yaml
+> new file mode 100644
+> index 000000000000..70b8e1be5e8e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/watchdog/msc313e-wdt.yaml
+> @@ -0,0 +1,40 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/watchdog/msc313e-wdt.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MStar Watchdog Device Tree Bindings
+> +
+> +maintainers:
+> +  - Daniel Palmer <daniel@0x0f.com>
+> +  - Romain Perier <romain.perier@gmail.com>
+> +
+> +allOf:
+> +  - $ref: watchdog.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - mstar,msc313e-wdt
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - clocks
+> +  - reg
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    watchdog: watchdog@6000 {
+
+Drop unused labels.
+
+> +        compatible = "mstar,msc313e-wdt";
+> +        reg = <0x6000 0x1f>;
+> +        clocks = <&xtal_div2>;
+> +    };
+> -- 
+> 2.30.2
