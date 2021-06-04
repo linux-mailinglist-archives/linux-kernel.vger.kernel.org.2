@@ -2,98 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F420B39B7D2
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7BEB39B7DE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhFDL0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 07:26:39 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:50314 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229740AbhFDL0h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 07:26:37 -0400
-Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id D49701FD4A;
-        Fri,  4 Jun 2021 11:24:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622805890; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KvwB2iX6N3U8dsxrAx26cUnRKNUIXsfqg7dJXyh1/xw=;
-        b=Elr/q18VQyxMG3puKM9hQ+T3j1ary++HsU/d7mhZKuxqIFQghvq5v3+F99PdaG4V5A+iZh
-        wV9wiZXLHH1zuNsDghOGMjTGoZADJn3Gf127cr7aYOMmKfjYfgKNaT8rnGaE5nETiKJkso
-        LKS0JB/cF9sQSHvTYbZDtgAPtuuFhqk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622805890;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KvwB2iX6N3U8dsxrAx26cUnRKNUIXsfqg7dJXyh1/xw=;
-        b=hRjuEO3z/fNzEImuCtuiEspWJS/eNAtsrn+T27rb5r1F/u9dmAvmpN/Xhn/2s26CZd/3jv
-        x7lEfGpRASQRRuDA==
-Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
-        by relay2.suse.de (Postfix) with ESMTP id 98516A3B85;
-        Fri,  4 Jun 2021 11:24:50 +0000 (UTC)
-From:   Michal Suchanek <msuchanek@suse.de>
-To:     bpf@vger.kernel.org
-Cc:     Michal Suchanek <msuchanek@suse.de>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: [PATCH bpf-next] libbpf: fix pr_warn type warnings on 32bit
-Date:   Fri,  4 Jun 2021 13:24:48 +0200
-Message-Id: <20210604112448.32297-1-msuchanek@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <CAEf4BzbgJPgVmdS32nnzd8mBj3L=mib7D8JyP09Gq4bGdYpTyg@mail.gmail.com>
-References: <CAEf4BzbgJPgVmdS32nnzd8mBj3L=mib7D8JyP09Gq4bGdYpTyg@mail.gmail.com>
+        id S230101AbhFDL3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 07:29:19 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:45351 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229958AbhFDL3S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 07:29:18 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622806052; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=YXjO1NBk4R6zfzdP/85v2mSrHJpM3+AAhXJfrh/G14w=;
+ b=ER6BkK3JMydGb75rm/wME/A/r8twKZDhJaZges0P7WV1/wnrBTOQwzdHQuFellJD8H6Ewi0+
+ MwJGI0slYLodelAT6nIAPHQfBwSkUMwsIR+tAWHXq3WKZqyk/xc9kE4CqyGl4a/CDxFmFWvA
+ Xqw0a1cgoIHX7SKyqXGTUcPAL28=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 60ba0e05e27c0cc77f096bcf (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 04 Jun 2021 11:27:01
+ GMT
+Sender: pmaliset=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EEB6CC4338A; Fri,  4 Jun 2021 11:27:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmaliset)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7F510C4360C;
+        Fri,  4 Jun 2021 11:26:57 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 04 Jun 2021 16:56:57 +0530
+From:   Prasad Malisetty <pmaliset@codeaurora.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        mgautam@codeaurora.org, dianders@chromium.org, mka@chromium.org
+Subject: Re: [PATCH 1/3] dt-bindings: pci: qcom: Document PCIe bindings for
+ SC720
+In-Reply-To: <CAE-0n53KTeF9NOrb+x7P1AG53FENRBGtCEcSxronBpJoww3jew@mail.gmail.com>
+References: <1620382648-17395-1-git-send-email-pmaliset@codeaurora.org>
+ <1620382648-17395-2-git-send-email-pmaliset@codeaurora.org>
+ <CAE-0n53KTeF9NOrb+x7P1AG53FENRBGtCEcSxronBpJoww3jew@mail.gmail.com>
+Message-ID: <cb2a6cd35df42314c5e5230bcac752be@codeaurora.org>
+X-Sender: pmaliset@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The printed value is ptrdiff_t and is formatted wiht %ld. This works on
-64bit but produces a warning on 32bit. Fix the format specifier to %td.
+On 2021-05-08 01:29, Stephen Boyd wrote:
+> Quoting Prasad Malisetty (2021-05-07 03:17:26)
+>> Document the PCIe DT bindings for SC7280 SoC.The PCIe IP is similar
+>> to the one used on SM8250. Add the compatible for SC7280.
+>> 
+>> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+>> ---
+>>  Documentation/devicetree/bindings/pci/qcom,pcie.txt | 17 
+>> +++++++++++++++++
+>>  1 file changed, 17 insertions(+)
+>> 
+>> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie.txt 
+>> b/Documentation/devicetree/bindings/pci/qcom,pcie.txt
+>> index 0da458a..e5245ed 100644
+>> --- a/Documentation/devicetree/bindings/pci/qcom,pcie.txt
+>> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie.txt
+>> @@ -12,6 +12,7 @@
+>>                         - "qcom,pcie-ipq4019" for ipq4019
+>>                         - "qcom,pcie-ipq8074" for ipq8074
+>>                         - "qcom,pcie-qcs404" for qcs404
+>> +                       - "qcom,pcie-sc7280" for sc7280
+>>                         - "qcom,pcie-sdm845" for sdm845
+>>                         - "qcom,pcie-sm8250" for sm8250
+>> 
+>> @@ -133,6 +134,22 @@
+>>                         - "slave_bus"   AXI Slave clock
+>> 
+>>  - clock-names:
+>> +       Usage: required for sc7280
+>> +       Value type: <stringlist>
+>> +       Definition: Should contain the following entries
+>> +                       - "aux"         Auxiliary clock
+>> +                       - "cfg"         Configuration clock
+>> +                       - "bus_master"  Master AXI clock
+>> +                       - "bus_slave"   Slave AXI clock
+>> +                       - "slave_q2a"   Slave Q2A clock
+>> +                       - "tbu"         PCIe TBU clock
+>> +                       - "ddrss_sf_tbu" PCIe SF TBU clock
+>> +                       - "pipe"        PIPE clock
+>> +                       - "pipe_src"    PIPE MUX
+> 
+> Is pipe_src necessary? Is it the parent of the pipe clk? If so, please
+> remove it and do whatever is necessary on the pipe clk instead of the
+> parent of the clk.
 
-Fixes: 67234743736a ("libbpf: Generate loader program out of BPF ELF file.")
-Signed-off-by: Michal Suchanek <msuchanek@suse.de>
----
- tools/lib/bpf/libbpf.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index ef6600688f10..5e13c9d8d3f5 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4584,7 +4584,7 @@ static int init_map_slots(struct bpf_object *obj, struct bpf_map *map)
- 		targ_map = map->init_slots[i];
- 		fd = bpf_map__fd(targ_map);
- 		if (obj->gen_loader) {
--			pr_warn("// TODO map_update_elem: idx %ld key %d value==map_idx %ld\n",
-+			pr_warn("// TODO map_update_elem: idx %td key %d value==map_idx %td\n",
- 				map - obj->maps, i, targ_map - obj->maps);
- 			return -ENOTSUP;
- 		} else {
-@@ -6208,7 +6208,7 @@ static int bpf_core_apply_relo(struct bpf_program *prog,
- 		return -EINVAL;
- 
- 	if (prog->obj->gen_loader) {
--		pr_warn("// TODO core_relo: prog %ld insn[%d] %s %s kind %d\n",
-+		pr_warn("// TODO core_relo: prog %td insn[%d] %s %s kind %d\n",
- 			prog - prog->obj->programs, relo->insn_off / 8,
- 			local_name, spec_str, relo->kind);
- 		return -ENOTSUP;
--- 
-2.26.2
-
+Here pipe_src is MUX. Newer targets require changing pipe-clk mux to 
+switch between pipe_clk and XO for GDSC enable.
+After PHY init, need to configure MUX.
+> 
+>> +                       - "pipe_ext"    PIPE output clock
+> 
+> Is pipe output different from pipe?
+> 
+Yes, pipe_ext clock will generate after PHY init.
+>> +                       - "ref"         REFERENCE clock
+>> +
+>> 
