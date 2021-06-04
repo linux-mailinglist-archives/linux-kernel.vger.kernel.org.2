@@ -2,235 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9273439B4CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE7939B4CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbhFDIZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 04:25:19 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:9885 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbhFDIZR (ORCPT
+        id S230105AbhFDI0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 04:26:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229950AbhFDI0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 04:25:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1622795001; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=ADeUyWs8WOGYe1X9/HtJWUNUNCnv1+DvXWzcPpPhBC4R0QiQvs1UvmWESeUwfXNZNL
-    i8IhiGwmr87K99Lt5K0Yz9QKBkbJyxPmoPDij0kbxsGp80btGFXUOYqsku/eDwVJEGvD
-    wJX3FqWBJXCCNrrY1tYImxhAZPtzjPX/5MZIAiUe4GLLcW/meuNSXVePjtG0AuGSkZvm
-    dic7/R9wvIx9yPkmkOtLHcSIkmZU12jL4JENXAHXHfS6iGBsXhAFvP5A/kAUg0qu83tg
-    wIqwri/xmBTcMEzx43Axf7OtxAGKO50AWJACpI87e2yPXd6Zus0qrPDIHBik9UO/2Z+9
-    FXRQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1622795001;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=Dn4eYzR4UPtYmZ5oCXeq8dW6Q5won2xS92hhUS3C5qY=;
-    b=DfVJgxWAdP4NQEIeF2YPzr3pjCREN+nipuST24vWt1++OCpD7m8b+C1y+Xlc8WuLBO
-    rKPJNA+wANKchRM93gJEBUcUWY8Ngi3Aule8IDEBdIQe91f+BnseRhxQy0CGfPOoxWd5
-    JOB1f/rQ9dyeiiRxZCzXC+nXOICIT6PWBTfM4dMuDw7Jo7rns3jh28MScF1Vcutyw93d
-    JqXqf5j+c3HtYqGE4kLM6c9pjPv/O8iNaMeVurSVhTKVt53jsVg5pgaUOtQx8GU+9Emv
-    mOla3nd0IUurWfodLgMxcixnVBrdMTwQV+iF7G9CS3gUk0ye5stE9B2g8TWU+S3BcVLM
-    YMrw==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1622795001;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=Dn4eYzR4UPtYmZ5oCXeq8dW6Q5won2xS92hhUS3C5qY=;
-    b=eJ65tmHcVAWu18TP/QVwK5YGRJDbqaqNpXo0qPjYOi3CkNtrekCnK8Iq1CNiFGAZ4r
-    Try0Q2mGl/VzQc5y77W7GF5fxrGr3PRbHiLgrrPZSI7tOJqhVWRsIR7ltOY/NJVcERrO
-    EatabyIXsmeo/qxwm3hfuZBWTyjSbhjM40TMCHKTeKvElI9lUbRqTDgR6rqzsuPZZQEw
-    qncUU3QalEP6PDQ62iOjfwCf06a1undaytPSXSnb15CfAlk0anpXnNT7lntI7CDVo1Rn
-    E2EDFtP1vglGZ2pfAV1X5SqFJS0PQSQUbdPkUa2+8thO0Hw2B0+z6OugdNHIQ3Y7otpL
-    ybyw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j8Ic3NBg=="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 47.27.2 DYNA|AUTH)
-    with ESMTPSA id y01375x548NLD10
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Fri, 4 Jun 2021 10:23:21 +0200 (CEST)
-Date:   Fri, 4 Jun 2021 10:23:15 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 0/4] PM: domains: Avoid boilerplate code for DVFS in
- subsystem/drivers
-Message-ID: <YLni830rOJWy1NRU@gerhold.net>
-References: <20210603093438.138705-1-ulf.hansson@linaro.org>
- <YLi5N06Qs+gYHgYg@gerhold.net>
- <CAPDyKFqQ==zPwXjBxKAX9m38YfxFViqLTz8autnZc1suT5cayg@mail.gmail.com>
- <YLkOAyydZMnxkEy+@gerhold.net>
- <CAPDyKFpaKkeyOpP7iW8-WG7DLs6Gd1eD2KO3pDYrVQ3z88zFJQ@mail.gmail.com>
+        Fri, 4 Jun 2021 04:26:53 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B27C06174A
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 01:24:58 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id o127so4856407wmo.4
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 01:24:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9B11phrLUGX5wIVrRA8NHtveBN9OW2EGh60dz1Otdhs=;
+        b=FZoqlOXCsRfpBuaLPbPOsQ5vFsPSKGEJg6ezShtIvyOVEvvnBe+nejWMntFwXGkuCr
+         aN4YfLjlDEalKbG30jN9VSOu1uGXJIA5vLgPGSW3oBVx0rhWzhUR67YZNg+VrO9PPoYF
+         WEy5rrCWDCrkhVcdN9dIwKYANnCx1uWfhdo3z6+PZnR5f/W1N4UbUdbtxysPAJe2na+P
+         ElmSBwzSd55+d50n+Qgy2dJ0YaKDGQH2jq8amICQJrtBp3Lh+x08573sUozXVMU2ztRq
+         8XGnCMOevhlyNOcffDVw6XBNQtEx1s8eTO5qBWynfqJRZZZKj8oHcFKina3e990OC1u+
+         HRFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9B11phrLUGX5wIVrRA8NHtveBN9OW2EGh60dz1Otdhs=;
+        b=s397S3bzWMjBiDdB5AO3KnidXUKF5vOUUTR9XtP1bxkF5qNGm4vTmL7Tyc1X5EE1De
+         Blv4ftDCghE3+M8OyI/TNfzlSZZUCzww6+d/XNeHa1NVX2/qMrsG1Lck7siNB8bcjBMR
+         wJ6tTr4yapB7pXq/X6X1HYnOcwGIor5/ntFMTNcHPac9Chws3x3rZRsAp7DJIiKVzUnn
+         /Z/vBt2JInX6lEb8LKEilUoP7koXqkkfKtts4wuGZzYqC5HVfJ+dk1ru9NN+yBbSmLbd
+         POSKGknmaQ1RhVp8/m7uXRJNm6FnzQ3Mf5ccaKx8xTVP5HCWAJgdE5Z+zM+ot38Qt2mz
+         qnqQ==
+X-Gm-Message-State: AOAM531OsbQ1jZdWvrrU+nVIRd1HfGai626Y8C8dwCGUI4q0sNy189zA
+        ksY28XyGesTYbsqzC1XHZMBjZ+1iPoH4pyUX
+X-Google-Smtp-Source: ABdhPJwV/PQZLT2XuSMOzmoRFOi9oNgOsBloqY2EquPgUV9s3LfP/3hG1TZp76wvSPWEIWf0bC0QJA==
+X-Received: by 2002:a05:600c:d0:: with SMTP id u16mr2375599wmm.155.1622795096064;
+        Fri, 04 Jun 2021 01:24:56 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:70d3:6c26:978:999d? ([2a01:e34:ed2f:f020:70d3:6c26:978:999d])
+        by smtp.googlemail.com with ESMTPSA id f18sm4958389wmj.13.2021.06.04.01.24.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Jun 2021 01:24:55 -0700 (PDT)
+Subject: Re: [PATCH] clocksource/drivers/sprd: Remove the dependency between
+ sprd timer and SPRD arch
+To:     Nianfu Bai <bnf20061983@gmail.com>, tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, nianfu.bai@unisoc.com,
+        ruifeng.zhang1@unisoc.com
+References: <1620716925-4329-1-git-send-email-bnf20061983@gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <aac6c6a3-6666-075a-6901-7e3c3b2ae01d@linaro.org>
+Date:   Fri, 4 Jun 2021 10:24:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFpaKkeyOpP7iW8-WG7DLs6Gd1eD2KO3pDYrVQ3z88zFJQ@mail.gmail.com>
+In-Reply-To: <1620716925-4329-1-git-send-email-bnf20061983@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 09:18:45AM +0200, Ulf Hansson wrote:
-> On Thu, 3 Jun 2021 at 19:16, Stephan Gerhold <stephan@gerhold.net> wrote:
-> >
-> > On Thu, Jun 03, 2021 at 05:27:30PM +0200, Ulf Hansson wrote:
-> > > On Thu, 3 Jun 2021 at 13:13, Stephan Gerhold <stephan@gerhold.net> wrote:
-> > > > I think this might also go into the direction of my problem with the OPP
-> > > > core for CPU DVFS [1] since the OPP core currently does not "power-on"
-> > > > the power domains, it just sets a performance state. I got kind of stuck
-> > > > with all the complexity of power domains in Linux so I think we never
-> > > > solved that.
-> > >
-> > > Hmm, that issue is in a way related.
-> > >
-> > > Although, if I understand correctly, that was rather about at what
-> > > layer it makes best sense to activate the device (from runtime PM
-> > > point of view). And this was needed due to the fact that the
-> > > corresponding genpd provider, requires the PM domain to be power on to
-> > > allow changing a performance state for it. Did I get that correct?
-> > >
-> >
-> > Yes, mostly. But I guess I keep coming back to the same question:
-> >
-> > When/why does it make sense to vote for a "performance state" of
-> > a power domain that is or might be powered off?
-> >
-> > "Powered off" sounds like the absolutely lowest possible performance
-> > state to me, it's just not on at all. And if suddenly a device comes and
-> > says "I want performance state X", nothing can change until the power
-> > domain is also "powered on".
-> >
-> > I think my "CPU DVFS" problem only exists because in many other
-> > situations it's possible to rely on one of the following side effects:
-> >
-> >   1. The genpd provider does not care if it's powered on or not.
-> >      (i.e. it's always-on or implicitly powers on if state > 0).
-> >   2. There is some other device that votes to keep the power domain on.
-> >
-> > And that's how the problem relates to my comment for this patch series ...
-> >
-> > >
-> > > >
-> > > > Do I understand your patch set correctly that you basically make the
-> > > > performance state votes conditional to the "power-on" vote of the device
-> > > > (which is automatically toggled during runtime/system PM)?
-> > >
-> > > The series can be considered as a step in that direction, but no, this
-> > > series doesn't change that behaviour.
-> > >
-> > > Users of dev_pm_genpd_set_performance_state() are still free to set a
-> > > performance state, orthogonally to whether the PM domain is powered on
-> > > or off.
-> > >
-> > > >
-> > > > If yes, I think that's a good thing. It was always really confusing to me
-> > > > that a device can make performance state votes if it doesn't actually
-> > > > want the power domain to be powered on.
-> > >
-> > > I share your view, it's a bit confusing.
-> > >
-> > > Just adding the condition internally to genpd to prevent the caller of
-> > > dev_pm_genpd_set_performance() from succeeding to set a new state,
-> > > unless the genpd is powered on, should be a rather simple thing to
-> > > add.
-> > >
-> > > However, to change this, we first need to double check that all the
-> > > callers are making sure they have turned on the PM domain (typically
-> > > via runtime PM).
-> > >
-> >
-> > ... because if performance state votes would be conditional to the
-> > "power-on" vote of the device, it would no longer be possible
-> > to rely on the side effects mentioned above. So this would most
-> > certainly break some code that (incorrectly?) relies on these side
-> > effects, but would also prevent such code.
+On 11/05/2021 09:08, Nianfu Bai wrote:
+> From: Nianfu Bai <nianfu.bai@unisoc.com>
 > 
-> Right. I understand your point and I am open to discuss an
-> implementation. Although, I suggest we continue that separately from
-> the $subject series.
+> Tick broadcast installed by insmod cannot switch to oneshot mode correctly
+> caused by linux timer framework, need to build in kernel image.
+
+What timer is compiled as a module? Why the timer framework does not
+allow to switch to it ?
+
+> SPRD_TIMER
+> has been selected by SPRD arch, we have to enable SPRD arch when we build
+> sprd timer in kernel image, this action conflicts with general kernel image,
+
+Why this is conflicting with general kernel image?
+
+> so we need to remove the dependency between sprd timer and SPRD arch.
+
+Can you rephrase the changelog, I'm not getting the point.
+
+> Signed-off-by: Nianfu Bai <nianfu.bai@unisoc.com>
+> Signed-off-by: Ruifeng Zhang <ruifeng.zhang1@unisoc.com>
+> ---
+>  drivers/clocksource/Kconfig | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 > 
-> >
-> > My (personal) feeling so far is that just dropping performance votes
-> > during runtime/system suspend just makes the entire situation even more
-> > confusing.
-> 
-> Well, that's what most subsystems/drivers need to do.
-> 
-> Moreover, we have specific devices that only use one default OPP [1].
-> 
-> >
-> > > >
-> > > > What happens if a driver calls dev_pm_genpd_set_performance_state(...)
-> > > > while the device is suspended? Will that mess up the performance state
-> > > > when the device resumes?
-> > >
-> > > Good question. The idea is:
-> > >
-> > > If genpd in genpd_runtime_suspend() are able to drop an existing vote
-> > > for a performance state, it should restore the vote in
-> > > genpd_runtime_resume(). This also means, if there is no vote to drop
-> > > in genpd_runtime_suspend(), genpd should just leave the vote as is in
-> > > genpd_runtime_resume().
-> > >
-> >
-> > But the next time the device enters runtime suspend that vote would be
-> > dropped, wouldn't it? That feels kind of strange to me.
-> 
-> What do you mean by "next time"?
+> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+> index 39aa21d..04b333c 100644
+> --- a/drivers/clocksource/Kconfig
+> +++ b/drivers/clocksource/Kconfig
+> @@ -447,10 +447,8 @@ config MTK_TIMER
+>  	  Support for Mediatek timer driver.
+>  
+>  config SPRD_TIMER
+> -	bool "Spreadtrum timer driver" if EXPERT
+> +	bool "Spreadtrum timer driver" if COMPILE_TEST
+>  	depends on HAS_IOMEM
+> -	depends on (ARCH_SPRD || COMPILE_TEST)
+> -	default ARCH_SPRD
+>  	select TIMER_OF
+>  	help
+>  	  Enables support for the Spreadtrum timer driver.
 > 
 
-Basically just like:
 
-  <device runtime-suspended>
-  driver does dev_pm_genpd_set_performance_state(...)
-    - performance state is applied immediately, even though device does
-      apparently not actually want the power domain to be powered on
-  <device runtime resumes>
-    - performance state is kept
-  <device runtime suspends>
-    - performance state is dropped
-  ...
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-I'm not saying this example makes sense (it doesn't for me). It doesn't
-make sense to vote for a performance state while runtime suspended.
-
-But with this patch series we still allow that, and it will kind of
-produce inconsistent behavior that the performance state is applied
-immediately, even though the device is currently runtime-suspended.
-But once it runtime suspends again, suddenly it is dropped.
-
-And when you say:
-
-> My main point is, if the device enters runtime suspend state, why
-> should we keep the vote for an OPP for the device? I mean, the device
-> isn't going to be used anyway.
-> 
-
-A very similar point would be: "If the device *is* in runtime suspend
-state, why should we take a vote for an OPP for the device?"
-
-But I understand that this might be something we should address
-separately in a follow-up patch/discussion. Don't get me wrong, I agree
-this patch set is good, I just think we should go one step further and
-finally make this consistent and less prone to side effects.
-
-A good first step might be something like a WARN_ON_ONCE(...) if a
-device tries to vote for a performance state while runtime suspended.
-Then we might get a clearer picture which drivers do that currently.
-
-Stephan
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
