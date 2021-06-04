@@ -2,78 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7300439B95A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7763839B95C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhFDNCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 09:02:05 -0400
-Received: from mail-wm1-f53.google.com ([209.85.128.53]:54850 "EHLO
-        mail-wm1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230262AbhFDNCE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 09:02:04 -0400
-Received: by mail-wm1-f53.google.com with SMTP id o127so5326692wmo.4;
-        Fri, 04 Jun 2021 06:00:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sDvJ/P2CUwJS1UkHCdeZqkrV0wm/XZF87IhduHAN14A=;
-        b=RBZor5KCG8k2VxOdSGGG9oZprsdpa1FM2ESJtcoGlzZ4+5gtOfai2nIJq53rC9fVeu
-         MT8vCFA6UcRwM9GHwH4OMFDn69MkuOMbijBVJQ9Anwno027rhC1r4u4pUdGjwPrNyPPD
-         e2NIEIGJ8N2dT2GuUooHVz4t3GV5joIZJGsuZZFkK3u/Mi0iaXNIWKDn8K5RAr63adQD
-         T/Wryi/9NzI3l/p7L+5cSiVPBW+K5e1CbLGS7kzWiRynnn9/Io/fV2pPqDgxeS80T5bX
-         sc3ZAH6xs7zO4vPc4lVXT0POnhkAVc46KxCN8J7KmCVBcneMKXkrsnKPgXDDX3cVbid/
-         s3Gw==
-X-Gm-Message-State: AOAM531ihE+767OX+yZsFtb5LZMloKDyU8lJzbEtD+jQYJpzGXHokwAN
-        NcooDc4xjqSQYckrEudmBSOdJgvfXIw=
-X-Google-Smtp-Source: ABdhPJyFEW9QabvckxrTXanJXK76Qm2nxTXcxOzdGCgtNeZIbg7MFr6vkW9qMHfgph8dhTL8s9wXuQ==
-X-Received: by 2002:a7b:c7cd:: with SMTP id z13mr3476024wmk.54.1622811617069;
-        Fri, 04 Jun 2021 06:00:17 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id f14sm6499240wry.40.2021.06.04.06.00.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 06:00:16 -0700 (PDT)
-Date:   Fri, 4 Jun 2021 13:00:14 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        dri-devel@lists.freedesktop.org, linux-hyperv@vger.kernel.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Michael Kelley <mikelley@microsoft.com>, wei.liu@kernel.org,
-        Dexuan Cui <decui@microsoft.com>, viremana@linux.microsoft.com
-Subject: Re: [bug report] Commit ccf953d8f3d6 ("fb_defio: Remove custom
- address_space_operations") breaks Hyper-V FB driver
-Message-ID: <20210604130014.tkeozyn4wxdsr6o2@liuwe-devbox-debian-v2>
-References: <87v96tzujm.fsf@vitty.brq.redhat.com>
+        id S230291AbhFDNCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 09:02:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44196 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230004AbhFDNCm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 09:02:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5391D61107;
+        Fri,  4 Jun 2021 13:00:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622811656;
+        bh=BJsetL4SUhorJv06M9mPfb8Edmqe8ztcraguJgIeMRE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nONJ9Ao2Qnhn7thGdWURRYH2mLumcjw0Z0R0G/BxnMmhcJmxASwKknGifiVp/G669
+         AFqa9tz4p5ZfTsvBWpEjyQRatGY/ZtT2P6UmuTi9gsiE3XotB/CczQcxZFWkCVKcyR
+         EsIlOvTDR4Bcaqu+rCZKTZUCFR1iVqbtEN/OK/kIObBAr6TWJKDboi2H+aKuplflt3
+         D9WDnp8QH5HdjEH5e7YSENADifOagK/CKMNlTsdGpLDKuGdxJIkDeU7Mxe5UHcChI6
+         gEGf65cpmb4dWC5QWP7GAFzVqTwVmKf/CiaGCwu8Aj2BDKACnyqenEyl14j8PNyy9u
+         GK0ieD3FBA7Vw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 07D0A40EFC; Fri,  4 Jun 2021 10:00:52 -0300 (-03)
+Date:   Fri, 4 Jun 2021 10:00:52 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Riccardo Mancini <rickyman7@gmail.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Fabian Hemmer <copy@copy.sh>,
+        Remi Bernon <rbernon@codeweavers.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] perf symbol-elf: fix memory leak: free sdt_note.args
+Message-ID: <YLokBBmh2+vd9E9d@kernel.org>
+References: <20210602220833.285226-1-rickyman7@gmail.com>
+ <CAP-5=fVp4xGd8wxLc1eFfTUPn3Urp23RmHBha2kgiJGvfysgZg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87v96tzujm.fsf@vitty.brq.redhat.com>
+In-Reply-To: <CAP-5=fVp4xGd8wxLc1eFfTUPn3Urp23RmHBha2kgiJGvfysgZg@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 02:25:01PM +0200, Vitaly Kuznetsov wrote:
-> Hi,
+Em Thu, Jun 03, 2021 at 09:08:46PM -0700, Ian Rogers escreveu:
+> On Wed, Jun 2, 2021 at 3:12 PM Riccardo Mancini <rickyman7@gmail.com> wrote:
+> >
+> > Reported by ASan.
 > 
-> Commit ccf953d8f3d6 ("fb_defio: Remove custom address_space_operations")
-> seems to be breaking Hyper-V framebuffer
-> (drivers/video/fbdev/hyperv_fb.c) driver for me: Hyper-V guest boots
-> well and plymouth even works but when I try starting Gnome, virtual
-> screen just goes black. Reverting the above mentioned commit on top of
-> 5.13-rc4 saves the day. The behavior is 100% reproducible. I'm using
-> Gen2 guest runing on Hyper-V 2019. It was also reported that Gen1 guests
-> are equally broken.
+> Did you have a reproducer for getting this to fail?
 > 
-> Is this something known?
+> > Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
 > 
+> Acked-by: Ian Rogers <irogers@google.com>
 
-I've heard a similar report from Vineeth but we didn't get to the bottom
-of this.
+Thanks, applied.
 
-Wei.
+- Arnaldo
 
-> -- 
-> Vitaly
+ 
+> Thanks,
+> Ian
 > 
+> > ---
+> >  tools/perf/util/symbol-elf.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
+> > index 4c56aa8374344..a73345730ba90 100644
+> > --- a/tools/perf/util/symbol-elf.c
+> > +++ b/tools/perf/util/symbol-elf.c
+> > @@ -2412,6 +2412,7 @@ int cleanup_sdt_note_list(struct list_head *sdt_notes)
+> >
+> >         list_for_each_entry_safe(pos, tmp, sdt_notes, note_list) {
+> >                 list_del_init(&pos->note_list);
+> > +               zfree(&pos->args);
+> >                 zfree(&pos->name);
+> >                 zfree(&pos->provider);
+> >                 free(pos);
+> > --
+> > 2.31.1
+> >
+
+-- 
+
+- Arnaldo
