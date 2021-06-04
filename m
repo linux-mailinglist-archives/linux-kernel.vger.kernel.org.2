@@ -2,109 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E999139B7C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2AA39B7C5
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230150AbhFDLRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 07:17:47 -0400
-Received: from foss.arm.com ([217.140.110.172]:36474 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229962AbhFDLRq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 07:17:46 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 168702B;
-        Fri,  4 Jun 2021 04:16:00 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 766343F73D;
-        Fri,  4 Jun 2021 04:15:57 -0700 (PDT)
-Subject: Re: [PATCH v13 7/8] KVM: arm64: ioctl to fetch/store tags in a guest
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-References: <20210524104513.13258-1-steven.price@arm.com>
- <20210524104513.13258-8-steven.price@arm.com>
- <20210603171336.GH20338@arm.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <02c7682e-5fb6-29eb-9105-02e3521756a2@arm.com>
-Date:   Fri, 4 Jun 2021 12:15:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230106AbhFDLTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 07:19:54 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:42648 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229962AbhFDLTx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 07:19:53 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 154BEeLu138655;
+        Fri, 4 Jun 2021 11:17:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=MMylIK4zseFUYz5Hll2RNkGfjyxVdtOYHdtIFMXc2nI=;
+ b=lZyywsosM509WEkkRffBwIktLSeSXtERcYoa6LF/eACACUnr6DwV92pYDV8CVXkA3Ypx
+ 00tsUdwCgYE8MhsQ3acljZr7drlDuV6egSTI/D8G5W3sDKyDv4M3Zb2X6ncXMi22Wqrp
+ VDXDC2JmqjmutJSNxcOmWB4iwstS2kHRRN8U6e17vRhpJnEheTks+WkzN2YJS+Su0HzF
+ aYHCkFfFabeEPuEe30Bl55Rz/3Gluyl76EbQMH996zzI47VSw5S2+fiD6Rz0B3E/0Sh5
+ zrzoCv3wvH1yShDhWszuI5ItQ4M51zHpuyhsnq2B6kozzeZkQxn1BhKoluYV1M96QuDW mg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 38ud1snp7m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 04 Jun 2021 11:17:55 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 154BGkqt137024;
+        Fri, 4 Jun 2021 11:17:55 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 38x1beup0j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 04 Jun 2021 11:17:55 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 154BHsH4138103;
+        Fri, 4 Jun 2021 11:17:54 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 38x1beup0c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 04 Jun 2021 11:17:54 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 154BHrqT020566;
+        Fri, 4 Jun 2021 11:17:53 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 04 Jun 2021 04:17:52 -0700
+Date:   Fri, 4 Jun 2021 14:17:41 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Dmytro Linkin <dlinkin@nvidia.com>,
+        Yuval Avnery <yuvalav@nvidia.com>,
+        Jiri Pirko <jiri@nvidia.com>, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] netdevsim: Fix unsigned being compared to less
+ than zero
+Message-ID: <20210604111741.GK1955@kadam>
+References: <20210603215657.154776-1-colin.king@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20210603171336.GH20338@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210603215657.154776-1-colin.king@canonical.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: donZffhOxdxd-RccTzL0OET_5nhH8K7Q
+X-Proofpoint-GUID: donZffhOxdxd-RccTzL0OET_5nhH8K7Q
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10004 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
+ suspectscore=0 phishscore=0 lowpriorityscore=0 mlxlogscore=999
+ malwarescore=0 clxscore=1011 spamscore=0 impostorscore=0 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106040089
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/06/2021 18:13, Catalin Marinas wrote:
-> On Mon, May 24, 2021 at 11:45:12AM +0100, Steven Price wrote:
->> diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
->> index 24223adae150..b3edde68bc3e 100644
->> --- a/arch/arm64/include/uapi/asm/kvm.h
->> +++ b/arch/arm64/include/uapi/asm/kvm.h
->> @@ -184,6 +184,17 @@ struct kvm_vcpu_events {
->>  	__u32 reserved[12];
->>  };
->>  
->> +struct kvm_arm_copy_mte_tags {
->> +	__u64 guest_ipa;
->> +	__u64 length;
->> +	void __user *addr;
->> +	__u64 flags;
->> +	__u64 reserved[2];
->> +};
->> +
->> +#define KVM_ARM_TAGS_TO_GUEST		0
->> +#define KVM_ARM_TAGS_FROM_GUEST		1
->> +
->>  /* If you need to interpret the index values, here is the key: */
->>  #define KVM_REG_ARM_COPROC_MASK		0x000000000FFF0000
->>  #define KVM_REG_ARM_COPROC_SHIFT	16
->> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
->> index e89a5e275e25..baa33359e477 100644
->> --- a/arch/arm64/kvm/arm.c
->> +++ b/arch/arm64/kvm/arm.c
->> @@ -1345,6 +1345,13 @@ long kvm_arch_vm_ioctl(struct file *filp,
->>  
->>  		return 0;
->>  	}
->> +	case KVM_ARM_MTE_COPY_TAGS: {
->> +		struct kvm_arm_copy_mte_tags copy_tags;
->> +
->> +		if (copy_from_user(&copy_tags, argp, sizeof(copy_tags)))
->> +			return -EFAULT;
->> +		return kvm_vm_ioctl_mte_copy_tags(kvm, &copy_tags);
->> +	}
+On Thu, Jun 03, 2021 at 10:56:57PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> I wonder whether we need an update of the user structure following a
-> fault, like how much was copied etc. In case of an error, some tags were
-> copied and the VMM may want to skip the page before continuing. But here
-> there's no such information provided.
+> The comparison of len < 0 is always false because len is a size_t. Fix
+> this by making len a ssize_t instead.
 > 
-> On the ptrace interface, we return 0 on the syscall if any bytes were
-> copied and update iov_len to such number. Maybe you want to still return
-> an error here but updating copy_tags.length would be nice (and, of
-> course, a copy_to_user() back).
+> Addresses-Coverity: ("Unsigned compared against 0")
+> Fixes: d395381909a3 ("netdevsim: Add max_vfs to bus_dev")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/net/netdevsim/bus.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/drivers/net/netdevsim/bus.c b/drivers/net/netdevsim/bus.c
+> index b56003dfe3cc..ccec29970d5b 100644
+> --- a/drivers/net/netdevsim/bus.c
+> +++ b/drivers/net/netdevsim/bus.c
+> @@ -111,7 +111,7 @@ ssize_t nsim_bus_dev_max_vfs_read(struct file *file,
+>  {
+>  	struct nsim_bus_dev *nsim_bus_dev = file->private_data;
+>  	char buf[11];
+> -	size_t len;
+> +	ssize_t len;
+>  
+>  	len = snprintf(buf, sizeof(buf), "%u\n", nsim_bus_dev->max_vfs);
+>  	if (len < 0)
 
-Good idea - as you suggest I'll make it update length with the number of
-bytes not processed. Although in general I think we're expecting the VMM
-to know where the memory is so this is more of a programming error - but
-could still be useful for debugging.
+The snprintf() in the kernel can't return negatives, but if there isn't
+enough space then it returns >= sizeof(buf) so this would lead to an
+information leak.  So the right thing to do is change it to scnprintf()
+and delete the check if (len < 0) check.
 
-Thanks,
+regards,
+dan carpenter
 
-Steve
