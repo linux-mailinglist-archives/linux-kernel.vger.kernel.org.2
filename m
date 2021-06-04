@@ -2,148 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C084739B068
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 04:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8D739B06F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 04:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhFDCds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 22:33:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39689 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229697AbhFDCdr (ORCPT
+        id S230030AbhFDCfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 22:35:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229697AbhFDCfC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 22:33:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622773922;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1ER+R9Jl5XhwxccKJlvpYXmmwxORWURurFR7gOzA5Ic=;
-        b=FMk9ISbfdNLlo+s+4ap9rguVry2j/OWRhI5H0dinQb2NiXua+ah/rGlutE8fuHp0pB61yV
-        bHqmrcu0z/0n92IzDcuSVMpkZVZb3xFdp9vbzea5FOFe8q/A+wAxQSh5DxNTrRy7F1lA7p
-        Mx04U+g9wVqLvHzDvjbq8gwDtaCuaWc=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-21-TbTmMwILMoShXTYjdGk-OQ-1; Thu, 03 Jun 2021 22:32:01 -0400
-X-MC-Unique: TbTmMwILMoShXTYjdGk-OQ-1
-Received: by mail-pg1-f200.google.com with SMTP id 28-20020a63135c0000b029021b78388f01so5065226pgt.23
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 19:32:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=1ER+R9Jl5XhwxccKJlvpYXmmwxORWURurFR7gOzA5Ic=;
-        b=J+jA4G9Cfso/DIvKCwo1qIf9YgPGbS2mv5KfbNGP997xY7PjZT6jzIRslMRBacJxNy
-         ZE3UarzYSeTlQa1eEU60kE/6xg0PrTSud910saelE8ltrtLCIVd0Pk4JbmYpeOvtDBOl
-         kzrGvQ3ao/M/jJJI1X82ztyRZJLIyX9HFKqqIMg59Ya2aBg3bbr91ptNVdEXZrhHrYu0
-         Iahg0A3rsgPIL6djhUTWitPYOePTDoOYyI9s3AEFmTOpDdxsTK6BSZsXBngg6ZOVhN1X
-         VFnqHlaqeYHNH8aZCwjmWrXX5BOAh0g6kFXI2oMcRdMUYMxzvlACWeW1W/0LbvdiciSc
-         BnSA==
-X-Gm-Message-State: AOAM53300dq4MHm0Al9B73Uh7q+9TwFypemSTH526zFSszp824vUnp2S
-        TRP9h0auxaYB4BR1NOwDktt16Usf1Awep7a5ErERsCRx/Ljf1CgcdBFScwb6BvZwhTrD1qOVibR
-        j6oR0eBmPC5eC/nynfxjG/h07EXgNzP8T8l4UOI30iwLBETO0ezUesf8vutq3txqDAnRcie5qRp
-        gH
-X-Received: by 2002:a63:803:: with SMTP id 3mr2524815pgi.344.1622773919697;
-        Thu, 03 Jun 2021 19:31:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzTA1Z9LbyV3J3zEgf7+sU1jjmtq1JtXpQlvGr520SAKpAwmN2o24N1cV3orayvrMF19LfnZA==
-X-Received: by 2002:a63:803:: with SMTP id 3mr2524794pgi.344.1622773919394;
-        Thu, 03 Jun 2021 19:31:59 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id l8sm363994pgq.49.2021.06.03.19.31.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Jun 2021 19:31:58 -0700 (PDT)
-Subject: Re: [PATCH v2] vdpa/mlx5: Add support for doorbell bypassing
-To:     Eli Cohen <elic@nvidia.com>, mst@redhat.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20210603081153.5750-1-elic@nvidia.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <21c3bf84-7caf-cc64-2432-b19f46622fb9@redhat.com>
-Date:   Fri, 4 Jun 2021 10:31:55 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        Thu, 3 Jun 2021 22:35:02 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE86C06174A;
+        Thu,  3 Jun 2021 19:33:16 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fx6J66Q5gz9s24;
+        Fri,  4 Jun 2021 12:33:10 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1622773993;
+        bh=PI/M/29Ock5JHzx2zr66W++GeZ/U0IKD0LbQp0JwrXU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tS0GnyhRUyMX7YkKooRxu4MD0k2C8Yr8GOOdkrrI7lN0UR9zA6HVu5xEI6BZVDhpz
+         kiqH0osXpGTdPRvMW6rSnt6iYlOnteYDzU7r95vLwHb2prnU3RTRkHfx94GotArtH1
+         Po/+4445iECQnlLUdewS2OQrgt/NnwoszzAeTQy5IlZf1ttyPye/UQXJ0uHMUxBPzM
+         V8cObkW5OGbK8AjRLeBl19uhcfwYRafbKTqJawH2Rm1VS/aMUHT3aGeZSfS9jaV9K5
+         SoOIXMpD3WRR51Mtme4a+hJmJVBFTSQda8dsWLwD3/6IYv3Wmn0yVRN6lGIQe9+qrl
+         fvsUb+R6DI8qg==
+Date:   Fri, 4 Jun 2021 12:33:09 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Dave Airlie <airlied@linux.ie>
+Cc:     Alex Deucher <alexdeucher@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Nirmoy Das <nirmoy.das@amd.com>
+Subject: Re: linux-next: manual merge of the amdgpu tree with the drm-misc
+ tree
+Message-ID: <20210604123309.2e5b546a@canb.auug.org.au>
+In-Reply-To: <20210603124847.19a6dacf@canb.auug.org.au>
+References: <20210603124847.19a6dacf@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210603081153.5750-1-elic@nvidia.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: multipart/signed; boundary="Sig_/yECzrtYfgiiWPQ5yqoFW6qz";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/yECzrtYfgiiWPQ5yqoFW6qz
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-ÔÚ 2021/6/3 ÏÂÎç4:11, Eli Cohen Ð´µÀ:
-> Implement mlx5_get_vq_notification() to return the doorbell address.
-> Since the notification area is mapped to userspace, make sure that the
-> BAR size is at least PAGE_SIZE large.
+Hi all,
+
+On Thu, 3 Jun 2021 12:48:47 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
 >
-> Signed-off-by: Eli Cohen <elic@nvidia.com>
-> ---
-> v0 --> v1:
->    Make sure SF bar size is not smaller than PAGE_SIZE
-> v1 --> v2:
->    Remove test on addr alignment since it's alrady done by the caller.
-
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
->
->   drivers/vdpa/mlx5/core/mlx5_vdpa.h |  1 +
->   drivers/vdpa/mlx5/core/resources.c |  1 +
->   drivers/vdpa/mlx5/net/mlx5_vnet.c  | 14 ++++++++++++++
->   3 files changed, 16 insertions(+)
->
-> diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-> index 09a16a3d1b2a..0002b2136b48 100644
-> --- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-> +++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-> @@ -42,6 +42,7 @@ struct mlx5_vdpa_resources {
->   	u32 pdn;
->   	struct mlx5_uars_page *uar;
->   	void __iomem *kick_addr;
-> +	u64 phys_kick_addr;
->   	u16 uid;
->   	u32 null_mkey;
->   	bool valid;
-> diff --git a/drivers/vdpa/mlx5/core/resources.c b/drivers/vdpa/mlx5/core/resources.c
-> index 836ab9ef0fa6..d4606213f88a 100644
-> --- a/drivers/vdpa/mlx5/core/resources.c
-> +++ b/drivers/vdpa/mlx5/core/resources.c
-> @@ -253,6 +253,7 @@ int mlx5_vdpa_alloc_resources(struct mlx5_vdpa_dev *mvdev)
->   		goto err_key;
->   
->   	kick_addr = mdev->bar_addr + offset;
-> +	res->phys_kick_addr = kick_addr;
->   
->   	res->kick_addr = ioremap(kick_addr, PAGE_SIZE);
->   	if (!res->kick_addr) {
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> index 689d3fa61e08..bc33f2c523d3 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -1879,8 +1879,22 @@ static void mlx5_vdpa_free(struct vdpa_device *vdev)
->   
->   static struct vdpa_notification_area mlx5_get_vq_notification(struct vdpa_device *vdev, u16 idx)
+> Today's linux-next merge of the amdgpu tree got conflicts in:
+>=20
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+>=20
+> between commit:
+>=20
+>   d3116756a710 ("drm/ttm: rename bo->mem and make it a pointer")
+>=20
+> from the drm-misc tree and commits:
+>=20
+>   b453e42a6e8b ("drm/amdgpu: Add new placement for preemptible SG BOs")
+>   2a675640bc2d ("drm/amdgpu: move shadow bo validation to VM code")
+>   59276f056fb7 ("drm/amdgpu: switch to amdgpu_bo_vm for vm code")
+>   19a1d9350be6 ("drm/amdgpu: flush gart changes after all BO recovery")
+>=20
+> from the amdgpu tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> --=20
+> Cheers,
+> Stephen Rothwell
+>=20
+> diff --cc drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> index 663aa7d2e2ea,86259435803e..000000000000
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> @@@ -459,10 -479,11 +461,11 @@@ static int amdgpu_bo_move(struct ttm_bu
 >   {
-> +	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
->   	struct vdpa_notification_area ret = {};
-> +	struct mlx5_vdpa_net *ndev;
-> +	phys_addr_t addr;
->   
-> +	/* If SF BAR size is smaller than PAGE_SIZE, do not use direct
-> +	 * notification to avoid the risk of mapping pages that contain BAR of more
-> +	 * than one SF
-> +	 */
-> +	if (MLX5_CAP_GEN(mvdev->mdev, log_min_sf_size) + 12 < PAGE_SHIFT)
-> +		return ret;
-> +
-> +	ndev = to_mlx5_vdpa_ndev(mvdev);
-> +	addr = (phys_addr_t)ndev->mvdev.res.phys_kick_addr;
-> +	ret.addr = addr;
-> +	ret.size = PAGE_SIZE;
->   	return ret;
->   }
->   
+>   	struct amdgpu_device *adev;
+>   	struct amdgpu_bo *abo;
+>  -	struct ttm_resource *old_mem =3D &bo->mem;
+>  +	struct ttm_resource *old_mem =3D bo->resource;
+>   	int r;
+>  =20
+> - 	if (new_mem->mem_type =3D=3D TTM_PL_TT) {
+> + 	if (new_mem->mem_type =3D=3D TTM_PL_TT ||
+> + 	    new_mem->mem_type =3D=3D AMDGPU_PL_PREEMPT) {
+>   		r =3D amdgpu_ttm_backend_bind(bo->bdev, bo->ttm, new_mem);
+>   		if (r)
+>   			return r;
+> @@@ -989,8 -1012,9 +995,9 @@@ int amdgpu_ttm_alloc_gart(struct ttm_bu
+>   			return r;
+>   		}
+>  =20
+> + 		amdgpu_gart_invalidate_tlb(adev);
+>  -		ttm_resource_free(bo, &bo->mem);
+>  -		bo->mem =3D tmp;
+>  +		ttm_resource_free(bo, bo->resource);
+>  +		ttm_bo_assign_mem(bo, &tmp);
+>   	}
+>  =20
+>   	return 0;
+> @@@ -1348,7 -1373,16 +1356,16 @@@ static bool amdgpu_ttm_bo_eviction_valu
+>   		}
+>   	}
+>  =20
+>  -	switch (bo->mem.mem_type) {
+>  +	switch (bo->resource->mem_type) {
+> + 	case AMDGPU_PL_PREEMPT:
+> + 		/* Preemptible BOs don't own system resources managed by the
+> + 		 * driver (pages, VRAM, GART space). They point to resources
+> + 		 * owned by someone else (e.g. pageable memory in user mode
+> + 		 * or a DMABuf). They are used in a preemptible context so we
+> + 		 * can guarantee no deadlocks and good QoS in case of MMU
+> + 		 * notifiers or DMABuf move notifiers from the resource owner.
+> + 		 */
+> + 		return false;
+>   	case TTM_PL_TT:
+>   		if (amdgpu_bo_is_amdgpu_bo(bo) &&
+>   		    amdgpu_bo_encrypted(ttm_to_amdgpu_bo(bo)))
+> @@@ -1767,8 -1809,13 +1791,9 @@@ void amdgpu_ttm_fini(struct amdgpu_devi
+>   	amdgpu_bo_free_kernel(&adev->mman.discovery_memory, NULL, NULL);
+>   	amdgpu_ttm_fw_reserve_vram_fini(adev);
+>  =20
+>  -	if (adev->mman.aper_base_kaddr)
+>  -		iounmap(adev->mman.aper_base_kaddr);
+>  -	adev->mman.aper_base_kaddr =3D NULL;
+>  -
+>   	amdgpu_vram_mgr_fini(adev);
+>   	amdgpu_gtt_mgr_fini(adev);
+> + 	amdgpu_preempt_mgr_fini(adev);
+>   	ttm_range_man_fini(&adev->mman.bdev, AMDGPU_PL_GDS);
+>   	ttm_range_man_fini(&adev->mman.bdev, AMDGPU_PL_GWS);
+>   	ttm_range_man_fini(&adev->mman.bdev, AMDGPU_PL_OA);
+> @@@ -1919,7 -2010,12 +1944,12 @@@ int amdgpu_fill_buffer(struct amdgpu_b
+>   		return -EINVAL;
+>   	}
+>  =20
+>  -	if (bo->tbo.mem.mem_type =3D=3D AMDGPU_PL_PREEMPT) {
+> ++	if (bo->tbo.resource->mem_type =3D=3D AMDGPU_PL_PREEMPT) {
+> + 		DRM_ERROR("Trying to clear preemptible memory.\n");
+> + 		return -EINVAL;
+> + 	}
+> +=20
+>  -	if (bo->tbo.mem.mem_type =3D=3D TTM_PL_TT) {
+>  +	if (bo->tbo.resource->mem_type =3D=3D TTM_PL_TT) {
+>   		r =3D amdgpu_ttm_alloc_gart(&bo->tbo);
+>   		if (r)
+>   			return r;
+> diff --cc drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> index bcfd4a8d0288,1923f035713a..000000000000
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> @@@ -657,11 -657,10 +658,11 @@@ void amdgpu_vm_move_to_lru_tail(struct=20
+>   		if (!bo->parent)
+>   			continue;
+>  =20
+>  -		ttm_bo_move_to_lru_tail(&bo->tbo, &bo->tbo.mem,
+>  +		ttm_bo_move_to_lru_tail(&bo->tbo, bo->tbo.resource,
+>   					&vm->lru_bulk_move);
+> - 		if (bo->shadow)
+> - 			ttm_bo_move_to_lru_tail(&bo->shadow->tbo,
+> + 		if (shadow)
+>  -			ttm_bo_move_to_lru_tail(&shadow->tbo, &shadow->tbo.mem,
+> ++			ttm_bo_move_to_lru_tail(&shadow->tbo,
+>  +						shadow->tbo.resource,
+>   						&vm->lru_bulk_move);
+>   	}
+>   	spin_unlock(&adev->mman.bdev.lru_lock);
+> @@@ -1818,11 -1853,12 +1859,12 @@@ int amdgpu_vm_bo_update(struct amdgpu_d
+>   			struct drm_gem_object *gobj =3D dma_buf->priv;
+>   			struct amdgpu_bo *abo =3D gem_to_amdgpu_bo(gobj);
+>  =20
+>  -			if (abo->tbo.mem.mem_type =3D=3D TTM_PL_VRAM)
+>  +			if (abo->tbo.resource->mem_type =3D=3D TTM_PL_VRAM)
+>   				bo =3D gem_to_amdgpu_bo(gobj);
+>   		}
+>  -		mem =3D &bo->tbo.mem;
+>  +		mem =3D bo->tbo.resource;
+> - 		if (mem->mem_type =3D=3D TTM_PL_TT)
+> + 		if (mem->mem_type =3D=3D TTM_PL_TT ||
+> + 		    mem->mem_type =3D=3D AMDGPU_PL_PREEMPT)
+>   			pages_addr =3D bo->tbo.ttm->dma_address;
+>   	}
+>  =20
 
+This is now a conflict between the drm-misc tree and the drm tree.
+
+(I fixed up the resolution above)
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/yECzrtYfgiiWPQ5yqoFW6qz
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC5kOUACgkQAVBC80lX
+0GwEiAf/VGcAUYUYLioC3aoowvJpGA8nk3tWS96lNH3jMLTFMMSBkypojeycWOSN
+Mo2EWWOMmr2YQFQ1mq7QHBZINzPo65Kji3y5s3dqMAtMSQtZW05c/D78nHJvmjf1
+IBG/JFS/XQRkl33n8eQaekSSRvc0Fz+vLaBQCWcMVE9dTnZ5vGcZC/S2V32cpTj1
+x5WizJeAN9gJyg7v98tPETlYQSTtQ1vioepYpzvGrxSe4g4AxXs1Wv1kuu+kIc1i
+9IVAfKb9n+FBfaW+Obyw1hrLSQ4bpp/ejI76uNNdqGI6EcGCEUm3VphwJ+HE26gu
+5zGWLzlPJWpMoDM1qGc9pIIMnkTEgQ==
+=dudl
+-----END PGP SIGNATURE-----
+
+--Sig_/yECzrtYfgiiWPQ5yqoFW6qz--
