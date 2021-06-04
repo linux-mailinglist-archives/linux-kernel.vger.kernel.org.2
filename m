@@ -2,127 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B69F839BE34
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC0C39BE26
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230503AbhFDRNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 13:13:47 -0400
-Received: from mail-lf1-f51.google.com ([209.85.167.51]:44682 "EHLO
-        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230169AbhFDRNq (ORCPT
+        id S230260AbhFDRMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 13:12:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230172AbhFDRMq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 13:13:46 -0400
-Received: by mail-lf1-f51.google.com with SMTP id r198so11788157lff.11
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 10:11:48 -0700 (PDT)
+        Fri, 4 Jun 2021 13:12:46 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE6EC061766
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 10:10:43 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id x73so7914679pfc.8
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 10:10:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zetK+W/bHVw7XwdBevEYPYV360JBbDIWAi5v9HH+5Ds=;
-        b=USDxZZGjVEj4Wb7i/ZRsFz5JtQRbDOnr2QyyE0iZ3zBXnjTge18snA9ewptL6QC41y
-         MN48LNtNkLXYStjRT0tMHo7geGbVSu7/fna5H5O2cPPqvlxYMg2Aa5UhNk3jWKr6FKwG
-         k2O7oCKHoalMvnZ6FPpaxbCWmcjgFuxd6O41E=
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=6UWs4F/LiNKwGVZ1bzmUFbFeuYWDKRTT9nUEK353f64=;
+        b=X8aW3XwzqxJ3VlB5j4+rIqIOqPzkjRCkdnbxjki+d+a5Cq0x9jxF1gUJsBQLUE0gEy
+         2cfWOEMhcPK5xpu1iDuAUj1OftbYmKAjKv0OwQ1EcwCl3eyg/QhbpsVPdcl3mljdS3qC
+         vemheUs8g88K40H8D1gZFIxoW3dXLaor0Lfctiv/50YltLgL7nH1+ns/VPHvQUtdsM1I
+         ns6OQI3Csf1STnkSU4E5L+XUJtiTTCh6ZpTsORPGNxWFVwrnhdMfHqCMHRMEDo3nEF3a
+         CIIYIZ1wjpombqkNe8z0ZYcVxNyBLqkyfkqo/kz2CX0bTLFByPL49RijZ2Ls9T7jbwqk
+         uTGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zetK+W/bHVw7XwdBevEYPYV360JBbDIWAi5v9HH+5Ds=;
-        b=gpAEI72LxnljFf7c43PcLPFzh4V+x1r/6/1q8U/tCTk7PZWGGn47Mx9k8QbZdpLS+t
-         FtWUM8uekLBicnxWaakjj8MQKYhWgIxRGkhITtzN8icPJz8kZko+0pl+G4MvpCKUlzN2
-         VbayOa2fAMXCMpmuC/Eyc/M0g8vgrFgk/H2egTWzTx2uyO230X3zbgFDCT/4EJckO/JP
-         wVlSTzdfzke9BXnM9MQFGEsXTjcctHv6RVkJRGaO0Av0x9vs3taLXU8LXD/lugrPVNT0
-         16IlwRjPeUgnpvo3aY0RK3uKtUQHTCXZjPLiwGfHI1XnVhtaAlSmqSVVP6O8SSkmm6d2
-         eI2g==
-X-Gm-Message-State: AOAM532+8mfCRHc4G3auLR2wd9a8V6JPZusSTaYckPs99yZBshK/jR72
-        UJ9+OOcszADgxc+4ibKxVhT9SYlHYXJTd9JP
-X-Google-Smtp-Source: ABdhPJwDOgRJMHNXKeiKXJiW+TY8tNCLMzsxarHcmsqkzL6ris1t5ZEaaU1PfvYjGVK+i8otxeLQwQ==
-X-Received: by 2002:ac2:4c2c:: with SMTP id u12mr3293101lfq.209.1622826647464;
-        Fri, 04 Jun 2021 10:10:47 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id r202sm659214lff.251.2021.06.04.10.10.45
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Jun 2021 10:10:46 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id i9so15083013lfe.13
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 10:10:45 -0700 (PDT)
-X-Received: by 2002:a05:6512:374b:: with SMTP id a11mr3293378lfs.377.1622826645571;
- Fri, 04 Jun 2021 10:10:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
- <CAHk-=wievFk29DZgFLEFpH9yuZ0jfJqppLTJnOMvhe=+tDqgrw@mail.gmail.com> <YLpWwm1lDwBaUven@hirez.programming.kicks-ass.net>
-In-Reply-To: <YLpWwm1lDwBaUven@hirez.programming.kicks-ass.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 4 Jun 2021 10:10:29 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjf-VJZd3Uxv3T3pSJYYVzyfK2--znG0VEOnNRchMGgdQ@mail.gmail.com>
-Message-ID: <CAHk-=wjf-VJZd3Uxv3T3pSJYYVzyfK2--znG0VEOnNRchMGgdQ@mail.gmail.com>
-Subject: Re: [RFC] LKMM: Add volatile_if()
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Will Deacon <will@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=6UWs4F/LiNKwGVZ1bzmUFbFeuYWDKRTT9nUEK353f64=;
+        b=dWc5oK3erFjtAzwKchjFQR6Rj39XU2A6clBnWQBcsazI192Aka1JqLmKoDkhXSwCiX
+         68dBhvFeytK0MzUIaBbPwazdU/s3m7TkW3+fB6rg8Dlk5lNaEo0Tho8huQnrsqJ3Cx6v
+         gOfbm/w0M0S8iEgXUCkYpE2XeI7wlD1qfcqb3NGFtztadeOy4B/kqxge5fnDtlJPtXZ5
+         KsofAW9oSngYqSLRJAkQNKmh/XmCd8AJdGnfggg0CKlAcKAo8NtH0rmfhJn3jTIrKsAJ
+         U8J8i4vTQIHDlyBAmvNE35uPcQfp4HFCOcou7ZxIJ/RBRYAnJn1B7ZbtCh0BDYLNyeGh
+         51lw==
+X-Gm-Message-State: AOAM533h+nUY+4PGWUXvC90rqgy9hgDTh2ap8QUuqRuzZb2qRxBp6IT/
+        tvNqhF6BPA749quOzhoT8a0=
+X-Google-Smtp-Source: ABdhPJwFk/+y0P5mH5oIK9Y8IdN1mPk5DlvowjHPiKeaobmrXB50aIxPGmTdHbHwskDpwsH/DIWAXA==
+X-Received: by 2002:a65:6644:: with SMTP id z4mr6048915pgv.101.1622826642633;
+        Fri, 04 Jun 2021 10:10:42 -0700 (PDT)
+Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
+        by smtp.gmail.com with ESMTPSA id j7sm800001pjf.0.2021.06.04.10.10.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 04 Jun 2021 10:10:42 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [PATCH v2 0/4] iommu/amd: Enable page-selective flushes
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <YLpI7tKtsf4l5MlN@8bytes.org>
+Date:   Fri, 4 Jun 2021 10:10:40 -0700
+Cc:     Will Deacon <will@kernel.org>, Jiajun Cao <caojiajun@vmware.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Robin Murphy <robin.murphy@arm.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <05098022-1ED6-44BE-931D-D16C2D0B2D09@gmail.com>
+References: <20210524224159.32807-1-namit@vmware.com>
+ <YLpI7tKtsf4l5MlN@8bytes.org>
+To:     Joerg Roedel <joro@8bytes.org>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 4, 2021 at 9:37 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> >
-> > Why is "volatile_if()" not just
-> >
-> >        #define barier_true() ({ barrier(); 1; })
-> >
-> >        #define volatile_if(x) if ((x) && barrier_true())
->
-> Because we weren't sure compilers weren't still allowed to optimize the
-> branch away.
 
-This isn't about some "compiler folks think".
 
-The above CANNOT be compiled any other way than with a branch.
+> On Jun 4, 2021, at 8:38 AM, Joerg Roedel <joro@8bytes.org> wrote:
+>=20
+> Hi Nadav,
+>=20
+> [Adding Robin]
+>=20
+> On Mon, May 24, 2021 at 03:41:55PM -0700, Nadav Amit wrote:
+>> Nadav Amit (4):
+>>  iommu/amd: Fix wrong parentheses on page-specific invalidations
+>=20
+> This patch is already upstream in v5.13-rc4. Please rebase to that
+> version.
 
-A compiler that optimizes a branch away is simply broken.
+I guess it would be rc5 by the time I send it.
 
-Of course, the actual condition (ie "x" above) has to be something
-that the compiler cannot statically determine is a constant, but since
-the whole - and only - point is that there will be a READ_ONCE() or
-similar there, that's not an issue.
+>=20
+>>  iommu/amd: Selective flush on unmap
+>>  iommu/amd: Do not sync on page size changes
+>>  iommu/amd: Do not use flush-queue when NpCache is on
+>=20
+> And I think there have been objections from Robin Murphy on Patch 3,
+> have those been worked out?
 
-The compiler *cannot* just say "oh, I'll do that 'volatile asm
-barrier' whether the condition is true or not". That would be a
-fundamental compiler bug.
+I am still waiting for Robin=E2=80=99s feedback on my proposed changes. =
+If he does not respond soon, I will drop this patch for now.
 
-It's as if we wrote
-
-    if (x) y++;
-
-and the compiler went "Oh, I'll just increment 'y' unconditionally by
-one, I'm sure the programmer doesn't mind, the conditional on 'x' is
-immaterial".
-
-No. That's not a C compiler. That's a stinking piece of buggy shit.
-The compiler has to honor the conditional.
-
-In that "y++" case, a compiler can decide to do it without a branch,
-and basically rewrite the above as
-
-   y += !!x;
-
-but with a "volatile asm", that would be a bug.
-
-Of course, we might want to make sure that the compiler doesn't go
-"oh, empty asm, I can ignore it", but if that's the case then it's not
-about "volatile_if()" any more, at that point it's "oh, the compiler
-broke our 'barrier()' implementation", and we have bigger issues.
-
-              Linus
+Thanks,
+Nadav=
