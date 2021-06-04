@@ -2,85 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2351E39B6EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 12:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 891F939B6FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 12:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbhFDKXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 06:23:55 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:45315 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229625AbhFDKXx (ORCPT
+        id S230033AbhFDK17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 06:27:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229961AbhFDK14 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 06:23:53 -0400
-X-UUID: 68feef41179049348cf75fc2fabb35d5-20210604
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=ejuq5SlmfT6xWK2lKEuK37+s2rh96rXwkYOgTP8rwM8=;
-        b=reDmGyp7LkkMAbv4ho1Yv6ufmFFxJHZJfHckQF+mrc3CGfDWHvZntMjBnj8Vy5xb1LujBfYIsl3ILBnSlMkYHMh/SwXRlENtTQC34vgIcO6jidIDs88GYerosKR/DQ/gl8AM66qr/IGDd3jdg/hkoCX8Ij/MEDcncjAH8qJ9RnQ=;
-X-UUID: 68feef41179049348cf75fc2fabb35d5-20210604
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <wendell.lin@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 771641668; Fri, 04 Jun 2021 18:22:03 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 4 Jun 2021 18:22:01 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 4 Jun 2021 18:22:01 +0800
-Message-ID: <1622802121.26830.22.camel@mtkswgap22>
-Subject: Re: [PATCH 1/1] clk: Export clk_register_composite
-From:   Wendell Lin <wendell.lin@mediatek.com>
-To:     Lee Jones <lee.jones@linaro.org>
-CC:     Stephen Boyd <sboyd@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        ARM/Mediatek SoC support <linux-mediatek@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>
-Date:   Fri, 4 Jun 2021 18:22:01 +0800
-In-Reply-To: <20210604082524.GF2435141@dell>
-References: <1595493126-21611-1-git-send-email-wendell.lin@mediatek.com>
-         <1597052186.27843.1.camel@mtkswgap22>
-         <CAF2Aj3hZB08d8x6XOqsP4m5fv76fWH48U95j8ugLt-YWFJ-kkA@mail.gmail.com>
-         <162276982204.1835121.10976600065855289763@swboyd.mtv.corp.google.com>
-         <20210604082427.GE2435141@dell> <20210604082524.GF2435141@dell>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Fri, 4 Jun 2021 06:27:56 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B9FC06174A
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 03:26:10 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id bn21so10928589ljb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 03:26:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=uged.al; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3Bs3XH4WZd6E/C1uTgCierdB67bFqe7Y81Sb7TkTn2M=;
+        b=gbFYhwn8pOM/7ph23QfoO3M+4l04YwAWr2awCxogavPFl/D4bhWDJamyo33F0xQSWm
+         xBTJa+57nUaVtoY/P+yk9mIeh9vwa/jzw7/WnoKkkGJCPkehsPBDsrv517LUWVxDvbFl
+         P1Gc0zxDggAg1kbe3iI3a9QV8PxV/AEloCb/s1GD/0rV0JvSCGWfy8yZ6vrCJYI9Kpz5
+         2XcvxSVnHhT9W1CaLhUh5KuzJRWZn5Ua/2Et2hUoxW0zk6tM1W00KE4i0XK+XS6W/3A1
+         q5tjFIGbWzEwloT3XMgFvAXj0aRL49NNSWj3B6ADCVjhzQe6DEfCfCwvUI6gIlJkBomc
+         cV5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3Bs3XH4WZd6E/C1uTgCierdB67bFqe7Y81Sb7TkTn2M=;
+        b=SqDwx1b8eJGAcJ4+gXZSeSgyMNpwu5vBdaBfZQYpj6VKVPS/AiUZ28hknkewUDlq68
+         U2tgqfVOvNrb0AYIqjgDpO5f+mI/ZupYdq5Fk49hsLLOsgHNCAzxUxEGBHTG5I+bfUrO
+         up0JV4nHodmA/baw7ZRfVpToyEfS37/Y2LYn4HjbY2l90xwzpWQ5fc7XYMYTRtEbBJo9
+         aunXdTlI1tV6Q3uySVbldfCSi/cDUBl1ryzlUUgfKlZ8piMrEBHeBy5f1dD40tbp5J3T
+         gpGygZr1vR3l4so86yy5ow7nS0FCd+u8K1/cj+N8EHc5V18lc7oTuwurWM9QpA1JILcR
+         LWZg==
+X-Gm-Message-State: AOAM532rmlMV1Du2WpPhis7ZLd94bgaIW909jtrvqnOvXac/1Se2A2Jn
+        fDEOloEJGYkXUQUkMw3bTZaZqg==
+X-Google-Smtp-Source: ABdhPJzMylnxjSIKf3ULGlogKwNTUlCj5lHRUbaiKtam3Y+kDoD9ibL+SBUryZ7kygxDpLk9aBs+fg==
+X-Received: by 2002:a2e:8e63:: with SMTP id t3mr2910818ljk.71.1622802368510;
+        Fri, 04 Jun 2021 03:26:08 -0700 (PDT)
+Received: from localhost.localdomain (ti0005a400-2351.bb.online.no. [80.212.254.60])
+        by smtp.gmail.com with ESMTPSA id t8sm576262lfr.194.2021.06.04.03.26.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 03:26:07 -0700 (PDT)
+From:   Odin Ugedal <odin@uged.al>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Odin Ugedal <odin@uged.al>
+Subject: [PATCH v4] sched/fair: Correctly insert cfs_rq's to list on unthrottle
+Date:   Fri,  4 Jun 2021 12:23:14 +0200
+Message-Id: <20210604102314.697749-1-odin@uged.al>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIxLTA2LTA0IGF0IDA5OjI1ICswMTAwLCBMZWUgSm9uZXMgd3JvdGU6DQo+IE9u
-IEZyaSwgMDQgSnVuIDIwMjEsIExlZSBKb25lcyB3cm90ZToNCj4gDQo+ID4gT24gVGh1LCAwMyBK
-dW4gMjAyMSwgU3RlcGhlbiBCb3lkIHdyb3RlOg0KPiA+IA0KPiA+ID4gUXVvdGluZyBMZWUgSm9u
-ZXMgKDIwMjEtMDUtMjAgMDk6MDc6NDIpDQo+ID4gPiA+IE9uIE1vbiwgMTAgQXVnIDIwMjAgYXQg
-MTA6MzYsIFdlbmRlbGwgTGluIDx3ZW5kZWxsLmxpbkBtZWRpYXRlay5jb20+IHdyb3RlOg0KPiA+
-ID4gPiANCj4gPiA+ID4gICAgIEhpIE1hdHRoaWFzIGFuZCBhbGwsDQo+ID4gPiA+IA0KPiA+ID4g
-PiAgICAgR2VudGxlIHBpbmcgb24gdGhpcyBwYXRjaC4NCj4gPiA+ID4gDQo+ID4gPiA+IA0KPiA+
-ID4gPiBXaGF0IGFib3V0IGEgbm90LXNvLWdlbnRsZSBwaW5nIG9uIHRoaXMgcGF0Y2g/ICBHcnJy
-ci4uLiA6KQ0KPiA+ID4gPiANCj4gPiA+ID4gRllJLCB0aGlzIGlzIHN0aWxsIHJlcXVpcmVkIGJ5
-IG1vcmUgdGhhbiBvbmUgc291cmNlLg0KPiA+ID4gPiANCj4gPiA+ID4gUGxlYXNlIGhlbHAgZ2V0
-IHRoaXMgb3V0IG9mIGFsbCBvZiB0aGUgdmVuZG9yIHRyZWVzIHBsZWFzZS4NCj4gPiA+ID4gDQo+
-ID4gPiANCj4gPiA+IElzIHRoZXJlIGFuIGluLWtlcm5lbCB1c2VyPw0KPiA+IA0KPiA+IEhvdyBj
-YW4gdGhlcmUgYmU/ICBJdCdzIG5vdCBleHBvcnRlZCB5ZXQuIDopDQo+ID4gDQo+ID4gSG93ZXZl
-ciB0aGVyZSBzaG91bGRuJ3QgYmUgYW55IGJhcnJpZXJzIGZvciB2ZW5kb3JzIHJlcHJlc2VudGVk
-IGluDQo+ID4gTWFpbmxpbmUgdG8gYnVpbGQgdGhlaXIgZHJpdmVycyBhcyBtb2R1bGVzIGlmIHRo
-ZXkgc28gd2lzaC4gIElmL3doZW4NCj4gPiB0aGV5IGRvLCB0aGlzIHdpbGwgbmVlZCB0byBiZSBl
-eHBvcnRlZC4NCj4gDQo+IFdlbmRlbGwgTGluLCBpcyB0aGlzIHdoYXQgeW91IHdpc2ggdG8gZG8g
-d2l0aCB0aGUgaW4ta2VybmVsIE1lZGlhVGVrDQo+IGRyaXZlcj8NCj4gDQpUaGlzIGlzIGJlY2F1
-c2UgTWVkaWF0ZWsgY2xvY2sgZHJpdmVyIHdvdWxkIGJlIGJ1aWx0IGFzIGtlcm5lbCBtb2R1bGUs
-DQpzbyBjbGtfcmVnaXN0ZXJfY29tcG9zaXRlKCkgdXNlZCBzaG91bGQgYmUgZXhwb3J0ZWQsIHRo
-ZW4gd2UgY291bGQgdXNlDQppdC4gDQoNClBsZWFzZSByZWZlcjoNCltQQVRDSCAyLzJdIGNsazog
-bWVkaWF0ZWs6IEFkZCBFWFBPUlRfU1lNQk9MIGZvciBrZXJuZWwgbW9kdWxlIHN1cHBvcnQgDQpo
-dHRwczovL2xrbWwub3JnL2xrbWwvMjAyMC83LzEvMTI0DQorRVhQT1JUX1NZTUJPTChtdGtfY2xr
-X3JlZ2lzdGVyX2NvbXBvc2l0ZXMpOw0KDQpjbGtfcmVnaXN0ZXJfY29tcG9zaXRlKCkgaXMgdXNl
-ZCBieSBNZWRpYXRlayBjbGsga2VybmVsIG1vZHVsZS4NCkZyb20gZXhwb3J0IHN5bWJvbDogbXRr
-X2Nsa19yZWdpc3Rlcl9jb21wb3NpdGVzLiANCg0K
+This fixes an issue where fairness is decreased since cfs_rq's can
+end up not being decayed properly. For two sibling control groups with
+the same priority, this can often lead to a load ratio of 99/1 (!!).
+
+This happen because when a cfs_rq is throttled, all the descendant cfs_rq's
+will be removed from the leaf list. When they initial cfs_rq is
+unthrottled, it will currently only re add descendant cfs_rq's if they
+have one or more entities enqueued. This is not a perfect heuristic.
+
+Instead, we insert all cfs_rq's that contain one or more enqueued
+entities, or it its load is not completely decayed.
+
+Can often lead to situations like this for equally weighted control
+groups:
+
+$ ps u -C stress
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root       10009 88.8  0.0   3676   100 pts/1    R+   11:04   0:13 stress --cpu 1
+root       10023  3.0  0.0   3676   104 pts/1    R+   11:04   0:00 stress --cpu 1
+
+Fixes: 31bc6aeaab1d ("sched/fair: Optimize update_blocked_averages()")
+Signed-off-by: Odin Ugedal <odin@uged.al>
+---
+Changes since v1:
+ - Replaced cfs_rq field with using tg_load_avg_contrib
+ - Went from 3 to 1 patches; one is merged and one is replaced
+   by a new patchset.
+Changes since v2:
+ - Use !cfs_rq_is_decayed() instead of tg_load_avg_contrib
+ - Moved cfs_rq_is_decayed to above its new use
+Changes since v3:
+ - (hopefully) Fix config for !CONFIG_SMP
+ kernel/sched/fair.c | 40 +++++++++++++++++++++-------------------
+ 1 file changed, 21 insertions(+), 19 deletions(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 794c2cb945f8..eec32f214ff8 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -712,6 +712,25 @@ static u64 sched_vslice(struct cfs_rq *cfs_rq, struct sched_entity *se)
+ 	return calc_delta_fair(sched_slice(cfs_rq, se), se);
+ }
+ 
++static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
++{
++	if (cfs_rq->load.weight)
++		return false;
++
++#ifdef CONFIG_SMP
++	if (cfs_rq->avg.load_sum)
++		return false;
++
++	if (cfs_rq->avg.util_sum)
++		return false;
++
++	if (cfs_rq->avg.runnable_sum)
++		return false;
++#endif
++
++	return true;
++}
++
+ #include "pelt.h"
+ #ifdef CONFIG_SMP
+ 
+@@ -4719,8 +4738,8 @@ static int tg_unthrottle_up(struct task_group *tg, void *data)
+ 		cfs_rq->throttled_clock_task_time += rq_clock_task(rq) -
+ 					     cfs_rq->throttled_clock_task;
+ 
+-		/* Add cfs_rq with already running entity in the list */
+-		if (cfs_rq->nr_running >= 1)
++		/* Add cfs_rq with load or one or more already running entities to the list */
++		if (!cfs_rq_is_decayed(cfs_rq) || cfs_rq->nr_running)
+ 			list_add_leaf_cfs_rq(cfs_rq);
+ 	}
+ 
+@@ -7895,23 +7914,6 @@ static bool __update_blocked_others(struct rq *rq, bool *done)
+ 
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+ 
+-static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+-{
+-	if (cfs_rq->load.weight)
+-		return false;
+-
+-	if (cfs_rq->avg.load_sum)
+-		return false;
+-
+-	if (cfs_rq->avg.util_sum)
+-		return false;
+-
+-	if (cfs_rq->avg.runnable_sum)
+-		return false;
+-
+-	return true;
+-}
+-
+ static bool __update_blocked_fair(struct rq *rq, bool *done)
+ {
+ 	struct cfs_rq *cfs_rq, *pos;
+-- 
+2.31.1
 
