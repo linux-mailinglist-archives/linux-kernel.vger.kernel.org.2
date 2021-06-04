@@ -2,127 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 947B039BDFD
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B9339BE15
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbhFDRG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 13:06:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40854 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230370AbhFDRG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 13:06:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35E31613F9;
-        Fri,  4 Jun 2021 17:04:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622826281;
-        bh=fZj+CPZxWhDStdJaFlv4f+84Dx/Uuufl3Qk9TqS2KzY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=W0ZC6bs1DluChxI7cTtGp5v4G94sW1V6HClXLoQP9nqrYHsrwNFIBAbEe52mWlddj
-         80DfOqJkCw1X2BnowZKpA6/biq05zRb2ZXyQMUaMmoQk4EZv+TE/U3lWH9PsmOZiiY
-         G46NIGYfGKnnH4AJ2LWCYgIawlRqqkl0eVVUXDbwt4Aehvos4P//5W32z60bQ9Sr2p
-         rKfl7ouN17JdHSql2QTgtEwc0CoL2Z/LU7ojUH7lxulhgYTOs4As4L2hbitLCsDLr0
-         OpoUGaJF6+kUngxmtuJqcZ7Z682ncJb+6kTFDZN1rV5Kx1f8s6x27jeoJRXQy7RumI
-         RFhWBL7Q+Z92w==
-Subject: Re: [PATCH v3 1/1] pgo: Fix allocate_node() v2
-To:     Jarmo Tiitto <jarmo.tiitto@gmail.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Bill Wendling <wcw@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-Cc:     morbo@google.com
-References: <20210604165819.7947-1-jarmo.tiitto@gmail.com>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <b04bafeb-541b-b1e7-9fbc-66bd1a04916f@kernel.org>
-Date:   Fri, 4 Jun 2021 10:04:40 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S230097AbhFDRIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 13:08:55 -0400
+Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:19242 "EHLO
+        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229913AbhFDRIy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 13:08:54 -0400
+Received: from pps.filterd (m0148664.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 154H3Jrg011940;
+        Fri, 4 Jun 2021 17:07:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pps0720;
+ bh=mnNbrv4LQindqcnO6qrDsMhC8Xmo4j6W8U9Irnc7OVc=;
+ b=NuRh9c2fOv8qOHotoPQUaS01gCDZyhuoOPRAWtSeKE4UgQV+zoqMkGh3Bp27Co3LAHA9
+ eJo+v2PamOicjZVgc4wZ2+Rttc3SCJVnqZVmS5MTKpD9Jncv2tiA6vwBaAqD1Gr1sEW1
+ qPKxZiJakD4SNAQx7ZjU/VnmZgngtI8EGZxWcvHbXfC2f/zMuVsLqeIGOYteA8M9h6I0
+ 4AEmQUuEdBzOSHzdZ/Seys/Sz6L0wrysD3cTPS6+QPfS0gNRacNKPkQ/7CyX1/fMteIy
+ qWduEaeFV5ucPb8AH7rXfH9a+CvJJGHfxE+6O4E9D9hM3fPGvCuJvXR6S8pidamcXG/J 9A== 
+Received: from g4t3427.houston.hpe.com (g4t3427.houston.hpe.com [15.241.140.73])
+        by mx0b-002e3701.pphosted.com with ESMTP id 38y7kx7f6b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Jun 2021 17:07:01 +0000
+Received: from g4t3433.houston.hpecorp.net (g4t3433.houston.hpecorp.net [16.208.49.245])
+        by g4t3427.houston.hpe.com (Postfix) with ESMTP id 8EE025C;
+        Fri,  4 Jun 2021 17:07:00 +0000 (UTC)
+Received: from dog.eag.rdlabs.hpecorp.net (dog.eag.rdlabs.hpecorp.net [128.162.243.181])
+        by g4t3433.houston.hpecorp.net (Postfix) with ESMTP id 57E9D45;
+        Fri,  4 Jun 2021 17:07:00 +0000 (UTC)
+Received: by dog.eag.rdlabs.hpecorp.net (Postfix, from userid 48777)
+        id 0507F302F481D; Fri,  4 Jun 2021 12:07:00 -0500 (CDT)
+From:   kyle.meyer@hpe.com
+To:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        linux-kernel@vger.kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Kyle Meyer <kyle.meyer@hpe.com>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH] acpi-cpufreq: Skip cleanup if initialization didn't occur
+Date:   Fri,  4 Jun 2021 12:05:00 -0500
+Message-Id: <20210604170500.46875-1-kyle.meyer@hpe.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20210604165819.7947-1-jarmo.tiitto@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: UbYehIXeRah83Elgj5o-H-uadL58mjfJ
+X-Proofpoint-ORIG-GUID: UbYehIXeRah83Elgj5o-H-uadL58mjfJ
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-04_11:2021-06-04,2021-06-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 mlxlogscore=999 lowpriorityscore=0 clxscore=1011 mlxscore=0
+ malwarescore=0 suspectscore=0 adultscore=0 impostorscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106040123
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/4/2021 9:58 AM, Jarmo Tiitto wrote:
-> When clang instrumentation eventually calls allocate_node()
-> the struct llvm_prf_data *p argument tells us from what section
-> we should reserve the vnode: It either points into vmlinux's
-> core __llvm_prf_data section or some loaded module's
-> __llvm_prf_data section.
-> 
-> But since we don't have access to corresponding
-> __llvm_prf_vnds section(s) for any module, the function
-> should return just NULL and ignore any profiling attempts
-> from modules for now.
-> 
-> Signed-off-by: Jarmo Tiitto <jarmo.tiitto@gmail.com>
+From: Kyle Meyer <kyle.meyer@hpe.com>
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+acpi-cpufreq is loaded without performing initialization when a cpufreq
+driver exists.
 
-> ---
-> Based on Kees and others feedback here is v3 patch
-> that clarifies why the current checks in allocate_node()
-> are flawed. I did fair amount of KGDB time on it.
-> 
-> The commit is based on kees/for-next/clang/features tree,
-> hopefully this is ok. Should I have based it on linux-next
-> instead?
-> 
-> I grep -R'd where the memory_contains() can be found and it is only
-> found in #include <asm-generic/sections.h>
-> 
-> I cross my fingers and await if this is my first accepted patch. :-)
-> ---
->   kernel/pgo/instrument.c | 23 ++++++++++++++---------
->   1 file changed, 14 insertions(+), 9 deletions(-)
-> 
-> diff --git a/kernel/pgo/instrument.c b/kernel/pgo/instrument.c
-> index 0e07ee1b17d9..c69b4f7ebaad 100644
-> --- a/kernel/pgo/instrument.c
-> +++ b/kernel/pgo/instrument.c
-> @@ -18,6 +18,7 @@
->   
->   #define pr_fmt(fmt)	"pgo: " fmt
->   
-> +#include <asm-generic/sections.h>
->   #include <linux/bitops.h>
->   #include <linux/kernel.h>
->   #include <linux/export.h>
-> @@ -55,17 +56,21 @@ void prf_unlock(unsigned long flags)
->   static struct llvm_prf_value_node *allocate_node(struct llvm_prf_data *p,
->   						 u32 index, u64 value)
->   {
-> -	if (&__llvm_prf_vnds_start[current_node + 1] >= __llvm_prf_vnds_end)
-> -		return NULL; /* Out of nodes */
-> -
-> -	current_node++;
-> -
-> -	/* Make sure the node is entirely within the section */
-> -	if (&__llvm_prf_vnds_start[current_node] >= __llvm_prf_vnds_end ||
-> -	    &__llvm_prf_vnds_start[current_node + 1] > __llvm_prf_vnds_end)
-> +	const int max_vnds = prf_vnds_count();
-> +
-> +	/*
-> +	 * Check that p is within vmlinux __llvm_prf_data section.
-> +	 * If not, don't allocate since we can't handle modules yet.
-> +	 */
-> +	if (!memory_contains(__llvm_prf_data_start,
-> +		__llvm_prf_data_end, p, sizeof(*p)))
->   		return NULL;
->   
-> -	return &__llvm_prf_vnds_start[current_node];
-> +	if (WARN_ON_ONCE(current_node >= max_vnds))
-> +		return NULL; /* Out of nodes */
-> +
-> +	/* reserve vnode for vmlinux */
-> +	return &__llvm_prf_vnds_start[current_node++];
->   }
->   
->   /*
-> 
-> base-commit: 5d0cda65918279ada060417c5fecb7e86ccb3def
-> 
+If initialization didn't occur then skip cleanup in acpi_cpufreq_exit().
+This prevents unnecessary freeing and unregistering when the module is
+unloaded.
+
+Reported-by: Takashi Iwai <tiwai@suse.com>
+Signed-off-by: Kyle Meyer <kyle.meyer@hpe.com>
+---
+ drivers/cpufreq/acpi-cpufreq.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
+index 7e7450453714..8d425f14c267 100644
+--- a/drivers/cpufreq/acpi-cpufreq.c
++++ b/drivers/cpufreq/acpi-cpufreq.c
+@@ -1042,8 +1042,19 @@ static int __init acpi_cpufreq_init(void)
+ 
+ static void __exit acpi_cpufreq_exit(void)
+ {
++	const char *current_driver;
++
+ 	pr_debug("%s\n", __func__);
+ 
++	/*
++	 * If another cpufreq_driver was loaded, preventing acpi-cpufreq from
++	 * registering, there's no need to unregister it.
++	 */
++	current_driver = cpufreq_get_current_driver();
++	if (!current_driver ||
++	    strncmp(current_driver, acpi_cpufreq_driver.name, strlen(acpi_cpufreq_driver.name)))
++		return;
++
+ 	acpi_cpufreq_boost_exit();
+ 
+ 	cpufreq_unregister_driver(&acpi_cpufreq_driver);
+-- 
+2.25.1
 
