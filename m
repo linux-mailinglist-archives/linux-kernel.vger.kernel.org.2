@@ -2,99 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6B239B0EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 05:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA75839B0F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 05:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229852AbhFDDdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 23:33:01 -0400
-Received: from mail-pj1-f48.google.com ([209.85.216.48]:37501 "EHLO
-        mail-pj1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbhFDDdA (ORCPT
+        id S229932AbhFDDdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 23:33:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229704AbhFDDdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 23:33:00 -0400
-Received: by mail-pj1-f48.google.com with SMTP id 22-20020a17090a0c16b0290164a5354ad0so6663565pjs.2;
-        Thu, 03 Jun 2021 20:31:04 -0700 (PDT)
+        Thu, 3 Jun 2021 23:33:18 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C210BC06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Jun 2021 20:31:16 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id g20so12381464ejt.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 20:31:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=icn8mgRDWXOjaY3g7V23n8mNEvlwuJBMtHS+GFwA3/g=;
-        b=qYGonMOwk1vaLYuJYt+gYxeqPX10Cu+7L3mSe8vPIcvK54bSWxmMCnDgKuBDFJ+e/7
-         FuAAr4uBvg9CgZ9iU3HMuDvhxMS0nNcbAHs6KwjZRHa/HvbM4qsAK6aQTjvIw7PLafmb
-         3sieICe03yYs2BZtACMaeul9QYeBBvAmgfW3VIPoSLxN80hsgakyVQrpoM/d0o4Kgosj
-         CH2lH/fD2FdRGLowzhULxWpTg9dnGSm7En4rk2z5j+e4Et3hd8MhzxGAkAH5//3tlueS
-         AR+oTrDPLj4llMuvrcAbwsE4As/TM+5MHOE6Iw1WxR8cI1oy6XY4F1l19y9UErDcwIzm
-         AQOg==
+        d=ingics-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=BJI3mJGMDw+7Io3BxiMW0VYaj3nzR4CPuw/4IRjIJhE=;
+        b=bro8TAo8s9Y4gnHc1ePGf1uMKUtir59WeQIvrJNkMl0BF4VO0dPRd/Jb/49lyGPHHs
+         fBZKQ08CDNo1bjmNvOncGLTZm8FELmFJXhOXXlfPhEhMez6QKM1/4x3cK61x8mA80LzW
+         mC/dDq9B3TY3aWpDuErYGmZng2C355o79yXJI7mvyKgMLIBpfacolX4QI96tiCiQ1Onz
+         9cm6lbzgavztq1kP/k9FhFBl8fFTlE22hbwfCqn0RuZ1kRhOHv4DGHx+NYCNrIAeMGoX
+         +7gKqlDM3ZLkWaHy5NWTtWFxLFApnYHbrGApSE0ue15OTn59nL0duW/OGSnJRt+CXsZQ
+         nXtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=icn8mgRDWXOjaY3g7V23n8mNEvlwuJBMtHS+GFwA3/g=;
-        b=Jkuvww/E7ZS3yC1eKiIEttzz4k899MOU7sVkcS0xvrvzNpgbipbgDXnnBM7xp/ENDT
-         WEzy+KLtLnlj7SjKC3BuBwjMGM3ZbYBVRjy+SJjYu0dCkEEn1tNWMqFNgeJp1vimWKiK
-         9zPR9n3lwv4+UbhhXZWJtOSN1mw2Zu5kjIDbQhr9ep662S3cKnUEcx0eo7A8lghJjUKL
-         6NpSIY/+/5PvWCvz7WtCNBUkCrbzKjpijrwzeDcneO3KXatOre2fnBZJveFQZZJsQrNa
-         GCOMQB0+EQYokz+L6YXR9FeRLJTC9biRhrBoxRMUOUiJ7JzB6+lYSNZpGOFewHKZUcWI
-         h/5g==
-X-Gm-Message-State: AOAM5318QKCTR23q217D2+vUdhN7DoSK4vb6iF4va2Jh7NLW5GVZC/x8
-        WtaY0UWKE+KSmJosce/xFrU=
-X-Google-Smtp-Source: ABdhPJwOYyhjg/Et0l54LKe36aN/nUR4yR0VNdVU2+W2ETi4WUgUEb+bbsfQ3gbIFIBeiBhMjAjqag==
-X-Received: by 2002:a17:902:8ec9:b029:ef:5a88:e7cf with SMTP id x9-20020a1709028ec9b02900ef5a88e7cfmr2252334plo.48.1622777404343;
-        Thu, 03 Jun 2021 20:30:04 -0700 (PDT)
-Received: from localhost.localdomain (199.19.111.227.16clouds.com. [199.19.111.227])
-        by smtp.gmail.com with ESMTPSA id a10sm3208680pjs.39.2021.06.03.20.30.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 20:30:04 -0700 (PDT)
-From:   xieqinick@gmail.com
-To:     narmstrong@baylibre.com, jbrunet@baylibre.com,
-        mturquette@baylibre.com, sboyd@kernel.org, khilman@baylibre.com,
-        martin.blumenstingl@googlemail.com,
-        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     nick@khadas.com, artem@khadas.com
-Subject: [PATCH] clk: meson: g12a: Add missing NNA source clocks for g12b
-Date:   Fri,  4 Jun 2021 11:29:57 +0800
-Message-Id: <20210604032957.224496-1-xieqinick@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=BJI3mJGMDw+7Io3BxiMW0VYaj3nzR4CPuw/4IRjIJhE=;
+        b=NodJvk6poyYF4Lngg7NuP+ndMUguO7vqDngqtThGprqKBtp8OslWST3Pa5AJObqsxd
+         7f4/c9R+ESkJnFBcNv3y5REMgqRlQxSqakXkn2OyW8bvtBtZMhFApa0UYIWsDlkn0i2O
+         s+TGWLPdyAom6vREiV9LNcDc6d1qa1jbpV7yDF/ZKbkN0eADjnqJRFvPZFad1esjAz4A
+         gTLnHbMo/fnUoW7MkkPgTu7BRZey8lsZBzfv8LUHC0WRIjaWcdk5fy31H5LFqGpUCp5W
+         UxrEsdKNhMdyBTUDruiB2hEjZ/XeJx0L4BofGdcWySRUrLpV001AQd+waAxa/NpmQNwt
+         qA+Q==
+X-Gm-Message-State: AOAM531ier52iIZ3LBVhmoNHDG93PSmHByn4wU7h02X9Zi2v52sdeSJ7
+        CWKITQ4n+FcT5cOdV0+sph+98JCsmrqL/eOwGb1IfsNQVIISi3uo
+X-Google-Smtp-Source: ABdhPJyjoC1WQLDZZHL37MTA4vuFYNLMKJiw4G/iZEdAKguOdwg74Mevo2nhiyhsHLRFV7GfakcWDVrU1939hlPqutU=
+X-Received: by 2002:a17:906:3884:: with SMTP id q4mr2266152ejd.66.1622777475334;
+ Thu, 03 Jun 2021 20:31:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210603093809.1108629-1-axel.lin@ingics.com> <1622715641.1034.5.camel@richtek.com>
+ <CAFRkauDs6nyuboPBf9Q-=KDFkSjwQ4z9mDjzm3o95uzdu5bKCw@mail.gmail.com>
+ <1622716902.1034.15.camel@richtek.com> <1622733524.3635.10.camel@richtek.com>
+ <CAFRkauCKoipBe4-QacQbjZgWuFrMPKdAfWB00Q6Lyw7xJ=6sfQ@mail.gmail.com> <1622773474.9011.14.camel@richtek.com>
+In-Reply-To: <1622773474.9011.14.camel@richtek.com>
+From:   Axel Lin <axel.lin@ingics.com>
+Date:   Fri, 4 Jun 2021 11:30:39 +0800
+Message-ID: <CAFRkauCdRoChK-djEi+TzC4As5JzykPF=fb1YmDukEjWJG0K_g@mail.gmail.com>
+Subject: Re: [PATCH] regulator: rt6160: Convert to use regulator_set_ramp_delay_regmap
+To:     =?UTF-8?B?Y3lfaHVhbmco6buD5ZWf5Y6fKQ==?= <cy_huang@richtek.com>
+Cc:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "u0084500@gmail.com" <u0084500@gmail.com>,
+        "broonie@kernel.org" <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Xie <nick@khadas.com>
+cy_huang(=E9=BB=83=E5=95=9F=E5=8E=9F) <cy_huang@richtek.com> =E6=96=BC 2021=
+=E5=B9=B46=E6=9C=884=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=8810:26=E5=
+=AF=AB=E9=81=93=EF=BC=9A
+>
+>
+>
+> cy_huang(=E9=BB=83=E5=95=9F=E5=8E=9F) <cy_huang@richtek.com> =E6=96=BC 20=
+21=E5=B9=B46=E6=9C=883=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=8811:18=
+=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+>
+> Hi,> >
+>
+>
+> cy_huang(=E9=BB=83=E5=95=9F=E5=8E=9F) <cy_huang@richtek.com> =E6=96=BC 20=
+21=E5=B9=B46=E6=9C=883=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=886:20=
+=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+>
+>
+>
+> Hi, Axel:> Use regulator_set_ramp_delay_regmap instead of open-coded.
+>
+>
+>
+>
+>
+> There's some reason.
+> You can refer to https://lkml.org/lkml/2021/6/1/1145.
+>
+> It's because our ramp value order is from small to large, not large to
+> small.
+> It conflicts with find_closest_bigger value chosen logic.
+>
+> I have verified the rt6160_set_ramp_delay() behavior exactly the same as
+> regulator_set_ramp_delay_regmap. (both functions get the same selector
+> for a given delay)
+>
+> Could you check if this patch works?
+>
+> Sure.
+>
+> After my test sample code, below's the result.
+> ascending [1000 2500 5000 10000]
+> target =3D  1000 =3D>sel =3D 0
+> target =3D  2500 =3D>sel =3D 1
+> target =3D  5000 =3D>sel =3D 2
+> target =3D 10000 =3D>sel =3D 3
+> target =3D  1700 =3D>sel =3D 1
+> target =3D  2750 =3D>sel =3D 2
+> target =3D  7500 =3D>sel =3D 3
+> target =3D 15000 =3D>failed to find best select, sel =3D 3
+> target =3D     0 =3D>sel =3D 0
+> descending [10000 5000 2500 1000]
+> target =3D  1000 =3D>sel =3D 3
+> target =3D  2500 =3D>sel =3D 2
+> target =3D  5000 =3D>sel =3D 1
+> target =3D 10000 =3D>sel =3D 0
+> target =3D  1700 =3D>sel =3D 2
+> target =3D  2750 =3D>sel =3D 1
+> target =3D  7500 =3D>sel =3D 0
+> target =3D 15000 =3D>failed to find best select, sel =3D 0
+> target =3D     0 =3D>sel =3D 3
+>
+>
+> It means when target is in range or even over, the result are all correct=
+.
+> But like as the ramp target is equal to 0, the selection will only choose=
+ the minimum one.
+> When the ramp target is equal to 0, it means the user want to disable the=
+ rammpping function.
+>
+> As I know, if target is equal to 0, it must find the fastest rampping val=
+ue as the best selection.
+>
+>
+> If your table is [1000 2500 5000 10000], find_closest_bigger() will
+> choose sel=3D0 when ramp_delay=3D0.
+> If your table is [10000 5000 2500 1000], find_closest_bigger() will
+> choose sel=3D3 when ramp_delay=3D0.
+> i.e. In both cases, find_closest_bigger() chooses the fastest ramping val=
+ue.
+>
+> This meets your exception.
+>
+> Actually, even if your table is [10000, 1000, 5000, 2500],
+> find_closest_bigger() still can choose the correct selector.
+> i.e. sel=3D1 when ramp_delay=3D0 in this case.
+>
+> This selection may be wrong.
+> ramp_delay=3D0 means ramp disabled,
+> If chip not support rampping disable, this selection must be configured a=
+s fastest rampping value, not the minimum one.
 
-This adds the Neural Network Accelerator source clocks for g12b.
-
-Initial support for sm1 already exist in
-commit 2f1efa5340ef
-("clk: meson: g12a: Add support for NNA CLK source clocks")
-
-The sm1 and g12b share the same NNA source clocks.
-This patch add missing NNA clocks for A311D (g12b).
-
-Signed-off-by: Nick Xie <nick@khadas.com>
----
- drivers/clk/meson/g12a.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/drivers/clk/meson/g12a.c b/drivers/clk/meson/g12a.c
-index b080359b4645..6a1db16b126f 100644
---- a/drivers/clk/meson/g12a.c
-+++ b/drivers/clk/meson/g12a.c
-@@ -4723,6 +4723,12 @@ static struct clk_hw_onecell_data g12b_hw_onecell_data = {
- 		[CLKID_SPICC1_SCLK_SEL]		= &g12a_spicc1_sclk_sel.hw,
- 		[CLKID_SPICC1_SCLK_DIV]		= &g12a_spicc1_sclk_div.hw,
- 		[CLKID_SPICC1_SCLK]		= &g12a_spicc1_sclk.hw,
-+		[CLKID_NNA_AXI_CLK_SEL]		= &sm1_nna_axi_clk_sel.hw,
-+		[CLKID_NNA_AXI_CLK_DIV]		= &sm1_nna_axi_clk_div.hw,
-+		[CLKID_NNA_AXI_CLK]		= &sm1_nna_axi_clk.hw,
-+		[CLKID_NNA_CORE_CLK_SEL]	= &sm1_nna_core_clk_sel.hw,
-+		[CLKID_NNA_CORE_CLK_DIV]	= &sm1_nna_core_clk_div.hw,
-+		[CLKID_NNA_CORE_CLK]		= &sm1_nna_core_clk.hw,
- 		[CLKID_MIPI_DSI_PXCLK_SEL]	= &g12a_mipi_dsi_pxclk_sel.hw,
- 		[CLKID_MIPI_DSI_PXCLK_DIV]	= &g12a_mipi_dsi_pxclk_div.hw,
- 		[CLKID_MIPI_DSI_PXCLK]		= &g12a_mipi_dsi_pxclk.hw,
--- 
-2.25.1
-
+0 does not mean ramp disable.
+It could be explicitly set to zero or its unintialized (zero by default).
+see
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/d=
+rivers/regulator/core.c?id=3D1653ccf4c52df6a4abe8ec2f33f2cb2896d129ea
