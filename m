@@ -2,136 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E6E39B895
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C0239B897
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbhFDMAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 08:00:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230142AbhFDMAE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 08:00:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA8A96140C;
-        Fri,  4 Jun 2021 11:58:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622807897;
-        bh=sreDTshW6uS9V/gqE3EfDqr8/k4FapToRpAXZMM2Edg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LfjCVP9fqtEgq9ZDLG6YSJ1c19Lo//4JNbdfkW62EACH6RLypdugWLlBYhKd+WuSm
-         22uF/RnoqWuHi6UcVSi0tceWEIyOK82GTHK1Pzfq6M1ol/PIB3h+fXjJ+o01vyY53B
-         pb0XYCKw0X6/5SAcillKsbxrZEzvVOFUsQsciwjyT6Wk250L4oM/DMZqXkPJB9E5Od
-         dGZJ/ur1qqp9/QBUZNFi2wbdsg++ry9qBHztCrvK7BfJKrUIkJwMXzQycoVsMoEAmU
-         5NphvX+8AizQoMI2Ax6SgfHPNBxvXKzdvHUPtIdiG80YYIshUpSc3hkcMapGYJq3EO
-         fp2o+DgQQqVJQ==
-Received: by earth.universe (Postfix, from userid 1000)
-        id DBF553C0C95; Fri,  4 Jun 2021 13:58:15 +0200 (CEST)
-Date:   Fri, 4 Jun 2021 13:58:15 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     skakit@codeaurora.org
-Cc:     Rob Herring <robh@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        David Collins <collinsd@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        kgunda@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-input@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org, Andy Yan <andy.yan@rock-chips.com>,
-        Courtney Cavin <courtney.cavin@sonymobile.com>,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH V3 5/5] dt-bindings: power: reset: qcom-pon: Convert qcom
- PON binding to yaml
-Message-ID: <20210604115815.q7a6orp4ksbbvmmz@earth.universe>
-References: <1620630064-16354-1-git-send-email-skakit@codeaurora.org>
- <1620630064-16354-6-git-send-email-skakit@codeaurora.org>
- <20210510162506.GA234174@robh.at.kernel.org>
- <20210604110917.zbrjzpl23ujqclyf@earth.universe>
- <0e1471d4522d1356e354c4653e8e0b42@codeaurora.org>
- <f3ea0212f4122099e0e35d1aaf5e9e07@codeaurora.org>
+        id S230272AbhFDMA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 08:00:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230050AbhFDMAZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 08:00:25 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC71C06174A;
+        Fri,  4 Jun 2021 04:58:39 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id ci15so14048460ejc.10;
+        Fri, 04 Jun 2021 04:58:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1Fe/Z05xnT6BVBzZXbmdjpF8j14Qb2X3kcylmlP9s+Q=;
+        b=upH2hIZYKlzGo8WteDWe1N5VTdxdzid7tno4FMRUvgbVLRjueopoHTxo8BnzYHsCkx
+         OWH5FMp2rGp4RP9WLuaDkHCmjGRkkde3hANXa0Tid7DY/Zciq9e2bZ2M/gbpAl1uG4ET
+         y5ikLI8YRbQaPFS/zpqs+e92xmwibq/8mXRK6q9XPQmHOTryc8Fy+AuwjdHwK8dXlbD+
+         ii+zoDgdZdZ+V5Od3MDD/RGizsvkiPKmckq9SUa0rYLtgWdZtf6NI582GanVarodVfgT
+         V2QKjwu3tNOJ9uAZ9NprCAIX0pLpC2zF1cS4j96xkboaN0zhYbL+UT5rIgLhfVdfrtRd
+         tlAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1Fe/Z05xnT6BVBzZXbmdjpF8j14Qb2X3kcylmlP9s+Q=;
+        b=uebx0nARO3WxegwAtthT4yCmCjfvcAkvZxE41/mLjIx3PmZRCfNtTeFqiQ3ZIVFi5x
+         jNzxjaP6fr6nr9rJ9rj7Ki6Ylt4kE0ELP8lMDkHey4FuKIV3TlMnhiqfE6+J4jAgwvsD
+         PStNucvLFyvgaQj1vDDGzqv+nane7kYUa/P+PDbt4oyxtCa7tVvx9uWNyf5PllGdrM91
+         +m8MCtftvZPODGjfWb38P2+ZQl7U8xkyQjqnn37DMsO9zrpGu2T2VdTy0Ooyf8MBviLU
+         XKtdYZ0esJ1HayOrhE6Xk60/pDk55YC2Cyu+95umuVXK4udjIdog+Uvoel8ivgPLKwIo
+         me5g==
+X-Gm-Message-State: AOAM530nTBX1jhtCfb4IpAHJSe5eeViJAWO1/Ug+eXjKjubABDiYZIxl
+        vi/Cbu5b7p02LIUNA33XTEelTTcOlGNhmRUn
+X-Google-Smtp-Source: ABdhPJxlXWybseV7Sq6ZkmQqWIVLAAB+K7aA7L1pVfKSrtl7v6M60jozZe+oAz6kBAvzuq1kGm16Jw==
+X-Received: by 2002:a17:906:4e06:: with SMTP id z6mr3957363eju.34.1622807914396;
+        Fri, 04 Jun 2021 04:58:34 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c096:310::2410? ([2620:10d:c093:600::2:b808])
+        by smtp.gmail.com with ESMTPSA id i5sm3122648edt.11.2021.06.04.04.58.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Jun 2021 04:58:34 -0700 (PDT)
+To:     Thomas Gleixner <tglx@linutronix.de>, Jens Axboe <axboe@kernel.dk>,
+        io-uring@vger.kernel.org
+Cc:     Andres Freund <andres@anarazel.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        linux-kernel@vger.kernel.org
+References: <cover.1622558659.git.asml.silence@gmail.com>
+ <e91af9d8f8d6e376635005fd111e9fe7a1c50fea.1622558659.git.asml.silence@gmail.com>
+ <bd824ec8-48af-b554-67a1-7ce20fcf608c@kernel.dk>
+ <409a624c-de75-0ee5-b65f-ee09fff34809@gmail.com>
+ <bdc55fcd-b172-def4-4788-8bf808ccf6d6@kernel.dk>
+ <5ab4c8bd-3e82-e87b-1ae8-3b32ced72009@gmail.com>
+ <87sg211ccj.ffs@nanos.tec.linutronix.de>
+ <30bdf12c-6287-4c13-920c-bb5cc6ac02bf@gmail.com>
+ <87k0nayojy.ffs@nanos.tec.linutronix.de>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: [RFC 4/4] io_uring: implement futex wait
+Message-ID: <aba00834-2e1c-f8cf-e2ab-f13303eac562@gmail.com>
+Date:   Fri, 4 Jun 2021 12:58:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mzxelsrfu5vobxie"
-Content-Disposition: inline
-In-Reply-To: <f3ea0212f4122099e0e35d1aaf5e9e07@codeaurora.org>
+In-Reply-To: <87k0nayojy.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 6/4/21 10:19 AM, Thomas Gleixner wrote:
+> Pavel,
+> 
+> On Thu, Jun 03 2021 at 11:31, Pavel Begunkov wrote:
+>> On 6/1/21 10:53 PM, Thomas Gleixner wrote:
+>>> 1) The proposed solution: I can't figure out from the changelogs or the
+>>>    cover letter what kind of problems it solves and what the exact
+>>>    semantics are. If you ever consider to submit futex patches, may I
+>>>    recommend to study Documentation/process and get some inspiration
+>>>    from git-log?
+>>
+>> I'm sorry you're incapable of grasping ideas quick, but may we
+>> stop this stupid galling and switch to a more productive way of
+>> speaking?
+> 
+> which you just achieved by telling me I'm too stupid to understand your
+> brilliant idea. Great start for a productive discussion. Try again.
 
---mzxelsrfu5vobxie
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Exactly why there was "we". I have my share of annoyance, which I would
+readily put aside if that saves me time. And that's the suggestion
+made
 
-Hi,
-
-On Fri, Jun 04, 2021 at 05:15:17PM +0530, skakit@codeaurora.org wrote:
-> On 2021-06-04 17:12, skakit@codeaurora.org wrote:
-> > Hi,
-> >=20
-> > On 2021-06-04 16:39, Sebastian Reichel wrote:
-> > > Hi,
-> > >=20
-> > > On Mon, May 10, 2021 at 11:25:06AM -0500, Rob Herring wrote:
-> > > > On Mon, 10 May 2021 12:31:04 +0530, satya priya wrote:
-> > > > > Convert qcom PON binding from .txt to .yaml format.
-> > > > >
-> > > > > The example has been removed in favour of full example being
-> > > > > available in the qcom,pm8941-pwrkey binding.
-> > > > >
-> > > > > Signed-off-by: satya priya <skakit@codeaurora.org>
-> > > > > ---
-> > > > > Changes in V2:
-> > > > >  - As per Rob's comments, converted the main PON binding and adde=
-d in V2.
-> > > > >
-> > > > > Changes in V3:
-> > > > >  - As per Sebastian's comments, added allOf to refer reboot-mode.=
-yaml and
-> > > > >    used unevaluatedProperties =3D false. Added maxItems for reg.
-> > > > >
-> > > > >  .../devicetree/bindings/power/reset/qcom,pon.txt   | 49 --------=
---------------
-> > > > >  .../devicetree/bindings/power/reset/qcom,pon.yaml  | 44 ++++++++=
-+++++++++++
-> > > > >  2 files changed, 44 insertions(+), 49 deletions(-)
-> > > > >  delete mode 100644 Documentation/devicetree/bindings/power/reset=
-/qcom,pon.txt
-> > > > >  create mode 100644 Documentation/devicetree/bindings/power/reset=
-/qcom,pon.yaml
-> > > > >
-> > > >=20
-> > > > Reviewed-by: Rob Herring <robh@kernel.org>
-> > >=20
-> > > Acked-by: Sebastian Reichel <sre@kernel.org>
-> > >=20
-> >=20
-> > There is a V4 for this.
-> > https://lore.kernel.org/patchwork/patch/1425638/
-> >=20
-> Seems like you already reviewed the V4.
-
-Ack, just ignore this :)
-
--- Sebastian
-
---mzxelsrfu5vobxie
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmC6FVcACgkQ2O7X88g7
-+pq+hw//YanRG6Tp4qk+FvYLQnRPkDDtf4b1Y1Xx69mo59laADLznK0e/0XCN7H2
-3g8ZnVt8P3jd3BMIz6X7PKoRj5tN+N8d1i8WOWiFwg0RsSm1p1xSCZ40dKRdAZ8Z
-qRIqIOXRi/cVPS6w6SH191kaxcdKnIzqx6/Ed1QWfkYiiz614YavjkjGx2b7Ad8g
-JpFxzClUw6mw9qUce/FHGloWkztNfcBNJ3ncIsUqk6kheFFlUXBwl5XiDc9coNvS
-UT69JOEcYckft/RalCtLUL7bJZXSh4gAZbjf9Zsgkrb2i7AaqiP4NvFOVMePgCs8
-ppL4Z4xi5gEVc+d+fdNwjv8yLfNRfOX8d5W64BK810DF4MrCaqhZyi2X+7Of8iSo
-9dTvQN/S5uBBSgOXFh/ZhEAUHoHF+ojjDHYmCRlu19Q2+dD+wxv5eduaCTEBdHrm
-QXeHR61zTbB27McJSgfxlVCTOgUgcTR2vl/I8Y8Yb5vOKNLwqiDRJtYlSxoFlINF
-9ZP9nklUNnVPL5PqD8B+olZ2f7G4Wr6Wy5E518KoGg3gq/YimtJm+QRrHSAKuj2H
-pYlEY0E1PG7DuHKd9YTZ7eTCQ0jyhjgwd0bQ3aCSo6jLaTfVHU38jOur9K8emfA0
-Mo7Lntx75liRr9mMbY82ewVQ33OvEyBqfx2XQJLSPfnwHTI2dxs=
-=Zlip
------END PGP SIGNATURE-----
-
---mzxelsrfu5vobxie--
+-- 
+Pavel Begunkov
