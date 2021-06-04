@@ -2,236 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CF1E39BCAB
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 562A739BCA3
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230451AbhFDQM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 12:12:58 -0400
-Received: from mail-qt1-f174.google.com ([209.85.160.174]:44754 "EHLO
-        mail-qt1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230037AbhFDQM5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 12:12:57 -0400
-Received: by mail-qt1-f174.google.com with SMTP id t17so7349043qta.11;
-        Fri, 04 Jun 2021 09:10:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Uw8SvaDBx6CB4Sz2J3BnNziO0DD2dTJgr3kfefUav3s=;
-        b=OUmQoMuVsl2/gdLYLGBIjFOQIlXF/4+bioeib8WUyK8XJc6U+z/IFUAIHg5o2obLEH
-         dwmSW+lt+dU/xTi0UfN4HZjyiZeHUc/tVSj+cQwnapk3+PuvVsu6SpBdFVTlqYC39YA1
-         Xy9uc+j5d3F7xYbobyUa+dLmYM49MvNVi1irMz6l+bvRjp1+/C6mzDn50awTmMjYtSco
-         WKw+pVrPzd201qy/IfqcXnTVU+yxo/UedwWDwD1VNF3zPyibAiBScGVO6e7UC8uioqyS
-         o1RoASylsg+6gn3iYVilVw+A5976dwdANoeADioL9t2wQ0jwucedR4XDOdWKILlUwuDP
-         PdcQ==
-X-Gm-Message-State: AOAM530YOzDW1ggPbVVyRStwNQQKovo8dyodSntx0f5I/U4VWatF+rRo
-        JVO9A8pmlazXGcQUBckaHfA=
-X-Google-Smtp-Source: ABdhPJxObLXPGZwGZJpqoP+Y316Gdp2qDstHl41j6DquUhApzUyMGxqtxK2uMM5oCpN3vKAfKG4Pnw==
-X-Received: by 2002:a05:622a:1185:: with SMTP id m5mr5298924qtk.140.1622823054270;
-        Fri, 04 Jun 2021 09:10:54 -0700 (PDT)
-Received: from localhost.localdomain ([104.221.112.78])
-        by smtp.gmail.com with ESMTPSA id e128sm4213541qkd.127.2021.06.04.09.10.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 09:10:53 -0700 (PDT)
-From:   Pascal Giard <pascal.giard@etsmtl.ca>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Pascal Giard <pascal.giard@etsmtl.ca>,
-        Daniel Nguyen <daniel.nguyen.1@ens.etsmtl.ca>
-Subject: [PATCH] HID: sony: fix freeze when inserting ghlive ps3/wii dongles
-Date:   Fri,  4 Jun 2021 12:10:23 -0400
-Message-Id: <20210604161023.1498582-1-pascal.giard@etsmtl.ca>
-X-Mailer: git-send-email 2.32.0.rc2
+        id S230299AbhFDQMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 12:12:38 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:22412 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230162AbhFDQMg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 12:12:36 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622823050; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=7OrD0eroTm8+Xh/p6MsHyA4aVI8DyLGbpiIhRk9+tQI=;
+ b=mRjZlFs3xIHN3FbjHB2TCzS6RbD+XS2mbnbHg97mvVqC1tVT+zdCmoSV4Z4YklMpa50ZLcY/
+ qL9Olx7FmFQoX8WMP/mrFNNnk5nU/UxgeaMfiwl+YWxVXT0nWD0XW5cVlmzbKqLy2//0Mim1
+ +kQfF386eaW5HcjDgjYNV9XO5uM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 60ba5076abfd22a3dc9e411c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 04 Jun 2021 16:10:30
+ GMT
+Sender: rajeevny=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9B79DC43147; Fri,  4 Jun 2021 16:10:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rajeevny)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AC24EC433F1;
+        Fri,  4 Jun 2021 16:10:28 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 04 Jun 2021 21:40:28 +0530
+From:   rajeevny@codeaurora.org
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Sam Ravnborg <sam@ravnborg.org>, linux-arm-msm@vger.kernel.org,
+        Linus W <linus.walleij@linaro.org>,
+        Lyude Paul <lyude@redhat.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Steev Klimaszewski <steev@kali.org>, robdclark@chromium.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thierry Reding <treding@nvidia.com>,
+        dri-devel@lists.freedesktop.org,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 07/11] drm/panel: panel-simple: Stash DP AUX bus; allow
+ using it for DDC
+In-Reply-To: <20210524165920.v8.7.I18e60221f6d048d14d6c50a770b15f356fa75092@changeid>
+References: <20210525000159.3384921-1-dianders@chromium.org>
+ <20210524165920.v8.7.I18e60221f6d048d14d6c50a770b15f356fa75092@changeid>
+Message-ID: <6e0cd667a8a776e524b42f1535827208@codeaurora.org>
+X-Sender: rajeevny@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit fixes a freeze on insertion of a Guitar Hero Live PS3/WiiU
-USB dongle. Indeed, with the current implementation, inserting one of
-those USB dongles will lead to a hard freeze. I apologize for not
-catching this earlier, it didn't occur on my old laptop.
+Hi Doug,
 
-While the issue was isolated to memory alloc/free, I could not figure
-out why it causes a freeze. So this patch fixes this issue by
-simplifying memory allocation and usage.
+>  	panel->no_hpd = of_property_read_bool(dev->of_node, "no-hpd");
+>  	if (!panel->no_hpd) {
+> @@ -708,6 +712,8 @@ static int panel_simple_probe(struct device *dev,
+> const struct panel_desc *desc)
+> 
+>  		if (!panel->ddc)
+>  			return -EPROBE_DEFER;
+> +	} else if (aux) {
+> +		panel->ddc = &aux->ddc;
+>  	}
 
-We remind that for the dongle to work properly, a control URB needs to
-be sent periodically. We used to alloc/free the URB each time this URB
-needed to be sent.
+In panel_simple_probe(), the put_device(&panel->ddc->dev) call is 
+causing issue when the aux->ddc is used to assign panel->ddc
+It works well when "ddc-i2c-bus" is used to assign panel->ddc
 
-With this patch, the memory for the URB is allocated on the probe, reused
-for as long as the dongle is plugged in, and freed once the dongle is
-unplugged.
+static int panel_simple_probe(...)
+{
+...
 
-Signed-off-by: Pascal Giard <pascal.giard@etsmtl.ca>
----
- drivers/hid/hid-sony.c | 98 +++++++++++++++++++++---------------------
- 1 file changed, 49 insertions(+), 49 deletions(-)
+free_ddc:
+         if (panel->ddc)
+                 put_device(&panel->ddc->dev);
 
-diff --git a/drivers/hid/hid-sony.c b/drivers/hid/hid-sony.c
-index 8319b0ce385a..b3722c51ec78 100644
---- a/drivers/hid/hid-sony.c
-+++ b/drivers/hid/hid-sony.c
-@@ -597,9 +597,8 @@ struct sony_sc {
- 	/* DS4 calibration data */
- 	struct ds4_calibration_data ds4_calib_data[6];
- 	/* GH Live */
-+	struct urb *ghl_urb;
- 	struct timer_list ghl_poke_timer;
--	struct usb_ctrlrequest *ghl_cr;
--	u8 *ghl_databuf;
- };
- 
- static void sony_set_leds(struct sony_sc *sc);
-@@ -625,66 +624,54 @@ static inline void sony_schedule_work(struct sony_sc *sc,
- 
- static void ghl_magic_poke_cb(struct urb *urb)
- {
--	if (urb) {
--		/* Free sc->ghl_cr and sc->ghl_databuf allocated in
--		 * ghl_magic_poke()
--		 */
--		kfree(urb->setup_packet);
--		kfree(urb->transfer_buffer);
--	}
-+	struct sony_sc *sc = urb->context;
-+
-+	if (urb->status < 0)
-+		hid_err(sc->hdev, "URB transfer failed : %d", urb->status);
-+
-+	mod_timer(&sc->ghl_poke_timer, jiffies + GHL_GUITAR_POKE_INTERVAL*HZ);
- }
- 
- static void ghl_magic_poke(struct timer_list *t)
- {
-+	int ret;
- 	struct sony_sc *sc = from_timer(sc, t, ghl_poke_timer);
- 
--	int ret;
-+	ret = usb_submit_urb(sc->ghl_urb, GFP_ATOMIC);
-+	if (ret < 0)
-+		hid_err(sc->hdev, "usb_submit_urb failed: %d", ret);
-+}
-+
-+static int ghl_init_urb(struct sony_sc *sc, struct usb_device *usbdev)
-+{
-+	struct usb_ctrlrequest *cr;
-+	u16 poke_size;
-+	u8 *databuf;
- 	unsigned int pipe;
--	struct urb *urb;
--	struct usb_device *usbdev = to_usb_device(sc->hdev->dev.parent->parent);
--	const u16 poke_size =
--		ARRAY_SIZE(ghl_ps3wiiu_magic_data);
- 
-+	poke_size = ARRAY_SIZE(ghl_ps3wiiu_magic_data);
- 	pipe = usb_sndctrlpipe(usbdev, 0);
- 
--	if (!sc->ghl_cr) {
--		sc->ghl_cr = kzalloc(sizeof(*sc->ghl_cr), GFP_ATOMIC);
--		if (!sc->ghl_cr)
--			goto resched;
--	}
--
--	if (!sc->ghl_databuf) {
--		sc->ghl_databuf = kzalloc(poke_size, GFP_ATOMIC);
--		if (!sc->ghl_databuf)
--			goto resched;
--	}
-+	cr = devm_kzalloc(&sc->hdev->dev, sizeof(*cr), GFP_ATOMIC);
-+	if (cr == NULL)
-+		return -ENOMEM;
- 
--	urb = usb_alloc_urb(0, GFP_ATOMIC);
--	if (!urb)
--		goto resched;
-+	databuf = devm_kzalloc(&sc->hdev->dev, poke_size, GFP_ATOMIC);
-+	if (databuf == NULL)
-+		return -ENOMEM;
- 
--	sc->ghl_cr->bRequestType =
-+	cr->bRequestType =
- 		USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_OUT;
--	sc->ghl_cr->bRequest = USB_REQ_SET_CONFIGURATION;
--	sc->ghl_cr->wValue = cpu_to_le16(ghl_ps3wiiu_magic_value);
--	sc->ghl_cr->wIndex = 0;
--	sc->ghl_cr->wLength = cpu_to_le16(poke_size);
--	memcpy(sc->ghl_databuf, ghl_ps3wiiu_magic_data, poke_size);
--
-+	cr->bRequest = USB_REQ_SET_CONFIGURATION;
-+	cr->wValue = cpu_to_le16(ghl_ps3wiiu_magic_value);
-+	cr->wIndex = 0;
-+	cr->wLength = cpu_to_le16(poke_size);
-+	memcpy(databuf, ghl_ps3wiiu_magic_data, poke_size);
- 	usb_fill_control_urb(
--		urb, usbdev, pipe,
--		(unsigned char *) sc->ghl_cr, sc->ghl_databuf,
--		poke_size, ghl_magic_poke_cb, NULL);
--	ret = usb_submit_urb(urb, GFP_ATOMIC);
--	if (ret < 0) {
--		kfree(sc->ghl_databuf);
--		kfree(sc->ghl_cr);
--	}
--	usb_free_urb(urb);
--
--resched:
--	/* Reschedule for next time */
--	mod_timer(&sc->ghl_poke_timer, jiffies + GHL_GUITAR_POKE_INTERVAL*HZ);
-+		sc->ghl_urb, usbdev, pipe,
-+		(unsigned char *) cr, databuf, poke_size,
-+		ghl_magic_poke_cb, sc);
-+	return 0;
- }
- 
- static int guitar_mapping(struct hid_device *hdev, struct hid_input *hi,
-@@ -2981,6 +2968,7 @@ static int sony_probe(struct hid_device *hdev, const struct hid_device_id *id)
- 	int ret;
- 	unsigned long quirks = id->driver_data;
- 	struct sony_sc *sc;
-+	struct usb_device *usbdev;
- 	unsigned int connect_mask = HID_CONNECT_DEFAULT;
- 
- 	if (!strcmp(hdev->name, "FutureMax Dance Mat"))
-@@ -3000,6 +2988,7 @@ static int sony_probe(struct hid_device *hdev, const struct hid_device_id *id)
- 	sc->quirks = quirks;
- 	hid_set_drvdata(hdev, sc);
- 	sc->hdev = hdev;
-+	usbdev = to_usb_device(sc->hdev->dev.parent->parent);
- 
- 	ret = hid_parse(hdev);
- 	if (ret) {
-@@ -3042,6 +3031,15 @@ static int sony_probe(struct hid_device *hdev, const struct hid_device_id *id)
- 	}
- 
- 	if (sc->quirks & GHL_GUITAR_PS3WIIU) {
-+		sc->ghl_urb = usb_alloc_urb(0, GFP_ATOMIC);
-+		if (!sc->ghl_urb)
-+			return -ENOMEM;
-+		ret = ghl_init_urb(sc, usbdev);
-+		if (ret) {
-+			hid_err(hdev, "error preparing URB\n");
-+			return ret;
-+		}
-+
- 		timer_setup(&sc->ghl_poke_timer, ghl_magic_poke, 0);
- 		mod_timer(&sc->ghl_poke_timer,
- 			  jiffies + GHL_GUITAR_POKE_INTERVAL*HZ);
-@@ -3054,8 +3052,10 @@ static void sony_remove(struct hid_device *hdev)
- {
- 	struct sony_sc *sc = hid_get_drvdata(hdev);
- 
--	if (sc->quirks & GHL_GUITAR_PS3WIIU)
-+	if (sc->quirks & GHL_GUITAR_PS3WIIU) {
- 		del_timer_sync(&sc->ghl_poke_timer);
-+		usb_free_urb(sc->ghl_urb);
-+	}
- 
- 	hid_hw_close(hdev);
- 
--- 
-2.32.0.rc2
+         return err;
+}
 
+== Log start ==
+
+[    2.393970] ------------[ cut here ]------------
+[    2.398747] kobject: '(null)' ((____ptrval____)): is not initialized, 
+yet kobject_put() is being called.
+[    2.408554] WARNING: CPU: 7 PID: 7 at lib/kobject.c:752 
+kobject_put+0x38/0xe0
+...
+...
+[    2.528574] Call trace:
+[    2.531092]  kobject_put+0x38/0xe0
+[    2.534594]  put_device+0x20/0x2c
+[    2.538002]  panel_simple_probe+0x4bc/0x550
+[    2.542300]  panel_simple_dp_aux_ep_probe+0x44/0x5c
+[    2.547305]  dp_aux_ep_probe+0x58/0x80
+
+== Log end ==
+
+
+Sincerely,
+Rajeev
