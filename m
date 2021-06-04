@@ -2,127 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F54039BA27
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7538039BA3E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbhFDNtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 09:49:49 -0400
-Received: from mail-eopbgr00076.outbound.protection.outlook.com ([40.107.0.76]:33403
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230142AbhFDNtr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 09:49:47 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NLUsVokK8ibyDEzPeG6W6oEZfDMS9cQ+dT34z/ZC/Ti2apc3OZOuzQ54qoJCnqgBZLCGeHkWU0Sv48AhG6TYok8VthWPaUZZZdOUyz7bAgLGBesVPcUqxBNTdyCfueeRlvr6Yrw/SVLTjqKPO2kr2rhN6XGE8pdynS2lttLyT5OXjDeU5zliazU2NIobwsz4+UdPAzwY5gPRaLknFiI0FwyhWMSEL8812Q+2o9yd6kw6eHGlf3+zYW98gxMNO+DP40oQb8YhQ/j4UEc+plZoEZWmX1xbQsw+qLFk9Thgot+k0A8cksOtLZjH4mhBUH+nHfkDrNSpy8gZxjaW47xMbQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lQOaj30J3JJEajIkxi/W+Wk1zChY42mQEoaSAMl9Y9M=;
- b=R2lTbLu7OciLexIuxgrXkWtjSBvTklfx5DQRaA8oeJ5LUe1Vnxl0cZFLvH4/t9OwRwsaVKX1KVX2gJ/0e2doRHDWC6vZSjgdeQrkxZJcPYPOtUj0zQKhwGObn4lfmIn5Z8n37WjStXCqPvrXIbAq75Z7U4oQTBKDbgQbbBN2FyJNT8uhauGRcLdrsEkiPgwmgUuM2lZU1VSx5k7GsIdVdKX1c7CPjvnTH8tAbDAZIYsDSZJiklDBtMPCUFlG8uT4JeHhC1TKQiKd6hGRRJ09RsEyLYYNmF2NNiU28/c/SOTa/nUYr6YKkUEptZteguKdEZjyg13mBOtRma64CWcY+w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lQOaj30J3JJEajIkxi/W+Wk1zChY42mQEoaSAMl9Y9M=;
- b=S4IK2Ju07LxCeNWhHNLuRUzf7LE2U2y6oqfK2+LCaHm37rHB/Xti3EiMcH0IWysTQk7jKTI3uJQAh3Zse/EChEsNkoSxdzPSR4WV7nWjWmvy81jwrCXYPuG9E8QEK4+13DOTylY6LR/rwcf8zd2lBsOQ8vD1yama5DI2uyzvR98=
-Received: from AM9PR04MB8397.eurprd04.prod.outlook.com (2603:10a6:20b:3b5::5)
- by AM9PR04MB8383.eurprd04.prod.outlook.com (2603:10a6:20b:3ed::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20; Fri, 4 Jun
- 2021 13:47:59 +0000
-Received: from AM9PR04MB8397.eurprd04.prod.outlook.com
- ([fe80::31a4:3d80:43de:e2bf]) by AM9PR04MB8397.eurprd04.prod.outlook.com
- ([fe80::31a4:3d80:43de:e2bf%7]) with mapi id 15.20.4195.024; Fri, 4 Jun 2021
- 13:47:59 +0000
-From:   Claudiu Manoil <claudiu.manoil@nxp.com>
-To:     Michael Walle <michael@walle.cc>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: RE: [PATCH net-next v2] net: enetc: use get/put_unaligned helpers for
- MAC address handling
-Thread-Topic: [PATCH net-next v2] net: enetc: use get/put_unaligned helpers
- for MAC address handling
-Thread-Index: AQHXWUdw9MQT4AMpvEGGFXriJCqitasD3VzA
-Date:   Fri, 4 Jun 2021 13:47:59 +0000
-Message-ID: <AM9PR04MB839795C23F7974DB44CC563F963B9@AM9PR04MB8397.eurprd04.prod.outlook.com>
-References: <20210604134212.6982-1-michael@walle.cc>
-In-Reply-To: <20210604134212.6982-1-michael@walle.cc>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: walle.cc; dkim=none (message not signed)
- header.d=none;walle.cc; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [188.25.147.66]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5decc801-9f94-4722-a91e-08d9275f5d6e
-x-ms-traffictypediagnostic: AM9PR04MB8383:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM9PR04MB838391EFBB94BFFB59B59966963B9@AM9PR04MB8383.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: VYPZLpl67YbSwrmTh73rDpB20XuqNw2EHwZecGKg2FOSPQ+Zmp8GmHss1Q9rPbcxxmkB1k/20Tn6zsi/T2gYuq+jZTb1OITCTyy6jpD8ODyG4q9mns9KoQmXkQLcGhdQhmWdGfopW3CaGLA9MbwrH7uQV2AqSNIH2qg/xSlkSVm5vv8cwZ2ljHmae7i/SJlaF6WMWyLpNOs5fMqTkiyLKafaiYzXvF1wrlBNXIqHyZS9d5GUnjCk4TfrPuWZ36ZPStupzTUvFu9ea9zBl9Dlr6dEr8MYxOpc0jdAL2EdPBiikG/dx7xZbIe5e+kHQmH96nMWL1FY9E5OD0rMDUaZMoKrXfvXJZsOmXUKU2nRRPcM4/OVglKCa2sgtr/pqH6e/wX+wwjTIrtJSLE17tL0JeQavqhM6JM0yz0/stXV4cL5UA492uCFLWB12DyxqXFbhkLV4zfJG4YX7ANJkAJ11SJBtGzrxHCr5PvisvqQIM7tz+LG4tj3GC0XE0d2Beu3w61ylNdYvm3LhUg+uP15RNnyMQWmCQIS8fqSXGGoVrKUuyBy4iPu2J70qCqm11OeS2pHOfmwUHHA5qKTGYYtOfUxWHhR+K5rbaqrewWtxOA=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB8397.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(39860400002)(346002)(136003)(396003)(316002)(2906002)(76116006)(4744005)(4326008)(64756008)(66556008)(66476007)(66446008)(26005)(33656002)(110136005)(54906003)(66946007)(186003)(83380400001)(71200400001)(55016002)(122000001)(52536014)(44832011)(53546011)(86362001)(5660300002)(38100700002)(7696005)(8676002)(478600001)(8936002)(6506007)(9686003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?47Y5u+IJR1y16LjfhWv7AFZjdvwbRe0XT62kF8QHIFwVbzIBnEaztv6sDqrI?=
- =?us-ascii?Q?/dMq38+kndmGxZJ7AlJaPwtNSfkGbggx92YibDRlmOW5kGpREW3mxgO5qJFu?=
- =?us-ascii?Q?h6ud2CVkCWVve3rBqtKyLw2lni/zF/ioVDE84/wHV1Al/tuArI3DyXVmzgoh?=
- =?us-ascii?Q?uglUGq1HPETlhjLHFPKpZdGvpzP7ChQ3eTUD5eKwhPfyecaGxlvOg52udDWG?=
- =?us-ascii?Q?eFU+3pA/fWyvSf8cCmlLaGOAl0qJa7twk8HZfbdsrtHduywzxzvK6CfU4VZw?=
- =?us-ascii?Q?lVi1aZ1jdsLVbAIdA/hYnU4hPO2Mp9Pzvc2k1oB6ztVRH+tKWuqioU+jD4ER?=
- =?us-ascii?Q?PmDfEF7OFOYkjBqMh1v0olo43zM+2Uew71165adyeL98ZyOCDg6jCIoDp1mc?=
- =?us-ascii?Q?ljLc7ayb5P8YD99ENy0ot73t8iLdLZytYAcOJs6MiehD/CMB+qTYw9/xtZEQ?=
- =?us-ascii?Q?koMnrWpgn6vYoTMxWNb6FqLihJBRPDQFKdGQkiUSY8ElJt64EWb9PbPZjIPT?=
- =?us-ascii?Q?7uPjQCnsTQtE0Xfe6GgX+KoP+ZWWlDqeoOfjQCNCXCgS6i97d7P+q8KvA+uF?=
- =?us-ascii?Q?DeriLSet8oNwlT+Ln+FWXMtV19Y3eTD3QB1Qw7noIpxn4zI3a6I17L89nQzO?=
- =?us-ascii?Q?0T62b8FkYA6UpGGcVVg20VXO5+Z8OBa6anOWgIzoUJW9RgYGOWBprWsb56I/?=
- =?us-ascii?Q?qiAEtMAaTbYRsyqq1iYOw/KiojWVh8nU5/xRqhr2L0+msfeu1zt4YCXgHsUE?=
- =?us-ascii?Q?sExkIHscdb1ky9ZIPbsvs5mUXsBQlU4HCaw7gGuTcebX385DcomtrsQ9l70a?=
- =?us-ascii?Q?ZxhXsIaus1WK/DMOs6XYpZLMFkonSx5N443KPBCA0qNjLox9DlvBj0hm+JOb?=
- =?us-ascii?Q?MgvWA+vf1TfI43v6muyStPJHP68IyNZlWaZJQ8/BXpBsOmi+9THd79nXM3wT?=
- =?us-ascii?Q?u6iyM/KNE9zE/xSMUdZPSFapw+hmwRpsxu83PQgdOxwKvfIRJ/mV0tFe1dW5?=
- =?us-ascii?Q?1vfekxD9XIpTuIRIs8pBfZr04YmC4wN30ejrLGgG3LguRQNxrhG+hJ58JCA6?=
- =?us-ascii?Q?5k4RnFjvI4DG29+3MxBa17cDkFV1dM+vR70SBw6iVgO363CDvYqXPmdos7qm?=
- =?us-ascii?Q?67hstGWxPKdBEYR2+P+mAOIGvTrvEWw43RT2b3ow+LhnkW4guRI2nnYEBVYw?=
- =?us-ascii?Q?E9YsA7TvN/1/R+SuFYb7VhC3ONOhfHCGCdOcUR+2Zd2D9J2eeMPdi27TJvz7?=
- =?us-ascii?Q?1b7u3j4cqocKBWnirXIx4+CNC41xtiFs9NxpozpO5QjZ/FmWpDoSDQQIUisA?=
- =?us-ascii?Q?rN6Kt17VTLXmXYlfZM2RPmRo?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S230351AbhFDNw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 09:52:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33790 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230124AbhFDNw0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 09:52:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32DF9613C9;
+        Fri,  4 Jun 2021 13:50:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622814640;
+        bh=K/GY5g+siZhU8v4b9BjhoSm+Dq5y6/LVafctSr5ng7M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tuGi9PZakCL+fNw4WVIFTAUpGmeNIybdPOKJFFJC5ku5rdXeW5h+ZX58GLu00B9OY
+         i2NrTyCO0YUn2C6PUJ+Td35BwvFrRUm9PjzSK48kXJ29qsVs4fp1JDGeF5r6D1c4WI
+         cbwEWgvAFyHboCzZIyKX08XxYOWRNy6PQN/ZGWVFcSe77GLdBQ5LW29xFevZodXr6L
+         LHsaZ5JJXGqq/n7ygGIRolH2hOF4JjgRd+Vww5zMG0rAM1kngHUZI3RT2RpNpQX3kR
+         T46/bL7CIVZDfkVWxXa3KObEC5CIEaX/6nY+7+VJttaovuoSFQuthSUupnhdppyly6
+         NrIFRbX8xMM8A==
+Date:   Fri, 4 Jun 2021 14:50:33 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v8 02/19] arm64: Allow mismatched 32-bit EL0 support
+Message-ID: <20210604135033.GB2793@willie-the-truck>
+References: <20210602164719.31777-1-will@kernel.org>
+ <20210602164719.31777-3-will@kernel.org>
+ <20210603123715.GA48596@C02TD0UTHF1T.local>
+ <20210603174413.GC1170@willie-the-truck>
+ <20210604093808.GA64162@C02TD0UTHF1T.local>
+ <20210604110526.GF2318@willie-the-truck>
+ <20210604120352.GA67240@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB8397.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5decc801-9f94-4722-a91e-08d9275f5d6e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jun 2021 13:47:59.1619
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ufFVdYm5jsC58AxT87S6pinjRVzIgIvqjE68LpIPfKMPFNx/Jid6r7Wcr5yZNYnV6jH+YyXarl53lb7wwp7h5Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8383
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604120352.GA67240@C02TD0UTHF1T.local>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Michael Walle <michael@walle.cc>
-> Sent: Friday, June 4, 2021 4:42 PM
-[...]
-> Subject: [PATCH net-next v2] net: enetc: use get/put_unaligned helpers fo=
-r
-> MAC address handling
->=20
-> The supplied buffer for the MAC address might not be aligned. Thus
-> doing a 32bit (or 16bit) access could be on an unaligned address. For
-> now, enetc is only used on aarch64 which can do unaligned accesses, thus
-> there is no error. In any case, be correct and use the get/put_unaligned
-> helpers.
->=20
-> Signed-off-by: Michael Walle <michael@walle.cc>
+On Fri, Jun 04, 2021 at 01:04:27PM +0100, Mark Rutland wrote:
+> On Fri, Jun 04, 2021 at 12:05:27PM +0100, Will Deacon wrote:
+> > On Fri, Jun 04, 2021 at 10:38:08AM +0100, Mark Rutland wrote:
+> > > On Thu, Jun 03, 2021 at 06:44:14PM +0100, Will Deacon wrote:
+> > > > On Thu, Jun 03, 2021 at 01:37:15PM +0100, Mark Rutland wrote:
+> > > > > On Wed, Jun 02, 2021 at 05:47:02PM +0100, Will Deacon wrote:
+> > > > > > diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
+> 
+> > > > > That said. I reckon this could be much cleaner if we maintained separate
+> > > > > caps:
+> > > > > 
+> > > > > ARM64_ALL_CPUS_HAVE_32BIT_EL0
+> > > > > ARM64_SOME_CPUS_HAVE_32BIT_EL0
+> > > > > 
+> > > > > ... and allow arm64_mismatched_32bit_el0 to be set dependent on
+> > > > > ARM64_SOME_CPUS_HAVE_32BIT_EL0. With that, this can be simplified to:
+> > > > > 
+> > > > > static inline bool system_supports_32bit_el0(void)
+> > > > > {
+> > > > > 	return (cpus_have_const_cap(ARM64_ALL_CPUS_HAVE_32BIT_EL0)) ||
+> > > > > 		static_branch_unlikely(&arm64_mismatched_32bit_el0))
+> > > > 
+> > > > Something similar was discussed in November last year but this falls
+> > > > apart with late onlining because its not generally possible to tell whether
+> > > > you've seen all the CPUs or not.
+> > > 
+> > > Ah; is that for when your boot CPU set is all AArch32-capable, but a
+> > > late-onlined CPU is not?
+> > > 
+> > > I assume that we require at least one of the set of boot CPUs to be
+> > > AArch32 cpable, and don't settle the compat hwcaps after userspace has
+> > > started.
+> > 
+> > Heh, you assume wrong :)
+> > 
+> > When we allow the mismatch, then we do actually defer initialisation of
+> > the compat hwcaps until we see a 32-bit CPU. That's fine, as they won't
+> > be visible to userspace until then anyway (PER_LINUX32 is unavailable).
+> 
+> That sounds quite scary, to me, though I don't have a concrete problem
+> to hand. :/
+> 
+> Do we really need to support initializing that so late? For all other
+> caps we've settled things when the boot CPUs come up, and it's
+> unfortunate to have to treat this differently.
 
-Reviewed-by: Claudiu Manoil <claudiu.manoil@nxp.com>
+I think it's the nature of the beast, unfortunately. Since we're talking
+about multiple generations of SoCs rather than just one oddball design,
+then placing artificial restrictions on the boot CPUs doesn't feel like
+it will last very long.
+
+> I'll go see if there's anything that's liable to break today.
+
+Please let me know if you find anything.
+
+Will
