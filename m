@@ -2,276 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A5939BDEB
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED9439BDEF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbhFDREO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 13:04:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:43528 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229690AbhFDREN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 13:04:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ACCD61063;
-        Fri,  4 Jun 2021 10:02:26 -0700 (PDT)
-Received: from localhost.localdomain (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0D5503F73D;
-        Fri,  4 Jun 2021 10:02:24 -0700 (PDT)
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Brown <broonie@kernel.org>, Will Deacon <will@kernel.org>,
-        Ali Saidi <alisaidi@amazon.com>
-Subject: [PATCH] hwrng: Add Arm SMCCC TRNG based driver
-Date:   Fri,  4 Jun 2021 18:02:16 +0100
-Message-Id: <20210604170216.4705-1-andre.przywara@arm.com>
-X-Mailer: git-send-email 2.14.1
+        id S230245AbhFDREj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 13:04:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229690AbhFDREh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 13:04:37 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E4D3C061767;
+        Fri,  4 Jun 2021 10:02:51 -0700 (PDT)
+Date:   Fri, 04 Jun 2021 17:02:48 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622826169;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e9M/O8z/gE/UJe1hlJepOyyETr4yp+Qwwjpm8dhZ+Xo=;
+        b=rIQividxvZTtQiiN+YPqTYPffmJfjuyTeTgrf/hkCbQNsHQ5zFI0s4wUsFa9Mg+y/eZ6AB
+        p0R5PTKbU5+qLmmHTvg0eWtM11ThdC3+2Dck/qxKNs72hEymhUVOOcuJon4f9WANCL2Ok7
+        ucQLrbSfWCY+qWbJCt9o/oy3nkGpPeJATHOOb6xvihPiwIQFIz2KdERD7yzm7VEndYrq9f
+        vynjIKiMIsnG1lwT8LLg6FVsmrZxLnlcdEjv/Np4uXIERseHOAw3Llcn5FkmfaxhvyB3LR
+        PTsnNYZ+RkncZcGzFR1WacyQK/bwJOCse2V5Kt208LZO6Ui0j6z/vgKJHTF1Cw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622826169;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e9M/O8z/gE/UJe1hlJepOyyETr4yp+Qwwjpm8dhZ+Xo=;
+        b=xw24C5s8ZCBh5PsUG7RBnOJgT4JTTs+yG7z7xOnTcBFWVe1x3W6dSeX1cvwPYlDQTzKywi
+        tiQ4DCe3+1dXE3Cw==
+From:   "tip-bot2 for Pu Wen" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/sev: Check SME/SEV support in CPUID first
+Cc:     Pu Wen <puwen@hygon.cn>, Borislav Petkov <bp@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        <stable@vger.kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210602070207.2480-1-puwen@hygon.cn>
+References: <20210602070207.2480-1-puwen@hygon.cn>
+MIME-Version: 1.0
+Message-ID: <162282616862.29796.7534384335141540012.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "Arm True Random Number Generator Firmware Interface"[1] provides
-an SMCCC based interface to a true hardware random number generator.
-So far we are using that in arch_get_random_seed(), but it might be
-useful to expose the entropy through the /dev/hwrng device as well. This
-allows to assess the quality of the implementation, by using "rngtest"
-from the rng-tools package, for example.
+The following commit has been merged into the x86/urgent branch of tip:
 
-Add a simple platform driver implementing the hw_random interface.
-We unconditionally instantiate the platform device in the driver file,
-then probe for the existence of the SMCCC TRNG implementation in the
-driver's probe routine.
-Since the firmware takes care about serialisation, this can happily
-coexist with the arch_get_random_seed() bits.
+Commit-ID:     009767dbf42ac0dbe3cf48c1ee224f6b778aa85a
+Gitweb:        https://git.kernel.org/tip/009767dbf42ac0dbe3cf48c1ee224f6b778aa85a
+Author:        Pu Wen <puwen@hygon.cn>
+AuthorDate:    Wed, 02 Jun 2021 15:02:07 +08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 04 Jun 2021 18:39:09 +02:00
 
-Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+x86/sev: Check SME/SEV support in CPUID first
 
-[1] https://developer.arm.com/documentation/den0098/latest/
+The first two bits of the CPUID leaf 0x8000001F EAX indicate whether SEV
+or SME is supported, respectively. It's better to check whether SEV or
+SME is actually supported before accessing the MSR_AMD64_SEV to check
+whether SEV or SME is enabled.
+
+This is both a bare-metal issue and a guest/VM issue. Since the first
+generation Hygon Dhyana CPU doesn't support the MSR_AMD64_SEV, reading that
+MSR results in a #GP - either directly from hardware in the bare-metal
+case or via the hypervisor (because the RDMSR is actually intercepted)
+in the guest/VM case, resulting in a failed boot. And since this is very
+early in the boot phase, rdmsrl_safe()/native_read_msr_safe() can't be
+used.
+
+So check the CPUID bits first, before accessing the MSR.
+
+ [ tlendacky: Expand and improve commit message. ]
+ [ bp: Massage commit message. ]
+
+Fixes: eab696d8e8b9 ("x86/sev: Do not require Hypervisor CPUID bit for SEV guests")
+Signed-off-by: Pu Wen <puwen@hygon.cn>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: <stable@vger.kernel.org> # v5.10+
+Link: https://lkml.kernel.org/r/20210602070207.2480-1-puwen@hygon.cn
 ---
-Hi,
+ arch/x86/mm/mem_encrypt_identity.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-as Ard mentioned in some recent thread, we might consider this driver
-now (which was dismissed when arch_get_random() got SMCCC TRNG support).
-
-The device/driver instantiation is not really great, ideally we let
-some generic SMCCC discovery instantiate the device or trigger the driver
-probe.
-Let me know what you think!
-
-Btw: this can be easily tested in a KVM guest (on a recent host kernel).
-
-Cheers,
-Andre
-
- drivers/char/hw_random/Kconfig          |  11 ++
- drivers/char/hw_random/Makefile         |   1 +
- drivers/char/hw_random/arm_smccc_trng.c | 162 ++++++++++++++++++++++++
- 3 files changed, 174 insertions(+)
- create mode 100644 drivers/char/hw_random/arm_smccc_trng.c
-
-diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-index 1fe006f3f12f..7d65a0da2170 100644
---- a/drivers/char/hw_random/Kconfig
-+++ b/drivers/char/hw_random/Kconfig
-@@ -524,6 +524,17 @@ config HW_RANDOM_XIPHERA
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called xiphera-trng.
+diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
+index a9639f6..470b202 100644
+--- a/arch/x86/mm/mem_encrypt_identity.c
++++ b/arch/x86/mm/mem_encrypt_identity.c
+@@ -504,10 +504,6 @@ void __init sme_enable(struct boot_params *bp)
+ #define AMD_SME_BIT	BIT(0)
+ #define AMD_SEV_BIT	BIT(1)
  
-+config HW_RANDOM_ARM_SMCCC_TRNG
-+	tristate "Arm SMCCC TRNG firmware interface support"
-+	depends on HAVE_ARM_SMCCC_DISCOVERY
-+	default HW_RANDOM
-+	help
-+	  Say 'Y' to enable the True Random Number Generator driver using
-+	  the Arm SMCCC TRNG firmware interface. This reads entropy from
-+	  higher exception levels (firmware, hypervisor). Uses SMCCC for
-+	  communicating with the firmware.
-+	  https://developer.arm.com/documentation/den0098/latest/
-+
- endif # HW_RANDOM
+-	/* Check the SEV MSR whether SEV or SME is enabled */
+-	sev_status   = __rdmsr(MSR_AMD64_SEV);
+-	feature_mask = (sev_status & MSR_AMD64_SEV_ENABLED) ? AMD_SEV_BIT : AMD_SME_BIT;
+-
+ 	/*
+ 	 * Check for the SME/SEV feature:
+ 	 *   CPUID Fn8000_001F[EAX]
+@@ -519,11 +515,16 @@ void __init sme_enable(struct boot_params *bp)
+ 	eax = 0x8000001f;
+ 	ecx = 0;
+ 	native_cpuid(&eax, &ebx, &ecx, &edx);
+-	if (!(eax & feature_mask))
++	/* Check whether SEV or SME is supported */
++	if (!(eax & (AMD_SEV_BIT | AMD_SME_BIT)))
+ 		return;
  
- config UML_RANDOM
-diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
-index 8933fada74f2..a5a1c765a394 100644
---- a/drivers/char/hw_random/Makefile
-+++ b/drivers/char/hw_random/Makefile
-@@ -45,3 +45,4 @@ obj-$(CONFIG_HW_RANDOM_OPTEE) += optee-rng.o
- obj-$(CONFIG_HW_RANDOM_NPCM) += npcm-rng.o
- obj-$(CONFIG_HW_RANDOM_CCTRNG) += cctrng.o
- obj-$(CONFIG_HW_RANDOM_XIPHERA) += xiphera-trng.o
-+obj-$(CONFIG_HW_RANDOM_ARM_SMCCC_TRNG) += arm_smccc_trng.o
-diff --git a/drivers/char/hw_random/arm_smccc_trng.c b/drivers/char/hw_random/arm_smccc_trng.c
-new file mode 100644
-index 000000000000..584ed5ffe1ce
---- /dev/null
-+++ b/drivers/char/hw_random/arm_smccc_trng.c
-@@ -0,0 +1,162 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Randomness driver for the ARM SMCCC TRNG Firmware Interface
-+ * https://developer.arm.com/documentation/den0098/latest/
-+ *
-+ *  Copyright (C) 2020 Arm Ltd.
-+ *
-+ * The ARM TRNG firmware interface specifies a protocol to read entropy
-+ * from a higher exception level, to abstract from any machine specific
-+ * implemenations and allow easier use in hypervisors.
-+ *
-+ * The firmware interface is realised using the SMCCC specification.
-+ */
+ 	me_mask = 1UL << (ebx & 0x3f);
+ 
++	/* Check the SEV MSR whether SEV or SME is enabled */
++	sev_status   = __rdmsr(MSR_AMD64_SEV);
++	feature_mask = (sev_status & MSR_AMD64_SEV_ENABLED) ? AMD_SEV_BIT : AMD_SME_BIT;
 +
-+#include <linux/bits.h>
-+#include <linux/device.h>
-+#include <linux/hw_random.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/arm-smccc.h>
-+
-+#ifdef CONFIG_ARM64
-+#define ARM_SMCCC_TRNG_RND	ARM_SMCCC_TRNG_RND64
-+#define MAX_BITS_PER_CALL	(3 * 64UL)
-+#else
-+#define ARM_SMCCC_TRNG_RND	ARM_SMCCC_TRNG_RND32
-+#define MAX_BITS_PER_CALL	(3 * 32UL)
-+#endif
-+
-+/* We don't want to allow the firmware to stall us forever. */
-+#define SMCCC_TRNG_MAX_TRIES	20
-+
-+#define SMCCC_RET_TRNG_INVALID_PARAMETER	-2
-+#define SMCCC_RET_TRNG_NO_ENTROPY		-3
-+
-+static int smccc_trng_init(struct hwrng *rng)
-+{
-+	return 0;
-+}
-+
-+static int copy_from_registers(char *buf, struct arm_smccc_res *res,
-+			       size_t bytes)
-+{
-+	unsigned int chunk, copied;
-+
-+	if (bytes == 0)
-+		return 0;
-+
-+	chunk = min(bytes, sizeof(long));
-+	memcpy(buf, &res->a3, chunk);
-+	copied = chunk;
-+	if (copied >= bytes)
-+		return copied;
-+
-+	chunk = min((bytes - copied), sizeof(long));
-+	memcpy(&buf[copied], &res->a2, chunk);
-+	copied += chunk;
-+	if (copied >= bytes)
-+		return copied;
-+
-+	chunk = min((bytes - copied), sizeof(long));
-+	memcpy(&buf[copied], &res->a1, chunk);
-+
-+	return copied + chunk;
-+}
-+
-+static int smccc_trng_read(struct hwrng *rng, void *data, size_t max, bool wait)
-+{
-+	struct arm_smccc_res res;
-+	u8 *buf = data;
-+	unsigned int copied = 0;
-+	int tries = 0;
-+
-+	while (copied < max) {
-+		size_t bits = min_t(size_t, (max - copied) * BITS_PER_BYTE,
-+				  MAX_BITS_PER_CALL);
-+
-+		arm_smccc_1_1_invoke(ARM_SMCCC_TRNG_RND, bits, &res);
-+		if ((int)res.a0 < 0)
-+			return (int)res.a0;
-+
-+		switch ((int)res.a0) {
-+		case SMCCC_RET_SUCCESS:
-+			copied += copy_from_registers(buf + copied, &res,
-+						      bits / BITS_PER_BYTE);
-+			tries = 0;
-+			break;
-+		case SMCCC_RET_TRNG_NO_ENTROPY:
-+			if (!wait)
-+				return copied;
-+			tries++;
-+			if (tries >= SMCCC_TRNG_MAX_TRIES)
-+				return copied;
-+			cond_resched();
-+			break;
-+		}
-+	}
-+
-+	return copied;
-+}
-+
-+static int smccc_trng_probe(struct platform_device *pdev)
-+{
-+	struct arm_smccc_res res;
-+	struct hwrng *trng;
-+	u32 version;
-+	int ret;
-+
-+	/* We need ARM SMCCC v1.1, with its autodetection feature. */
-+	if (arm_smccc_get_version() < ARM_SMCCC_VERSION_1_1)
-+		return -ENODEV;
-+
-+	arm_smccc_1_1_invoke(ARM_SMCCC_TRNG_VERSION, &res);
-+	if ((int)res.a0 < 0)
-+		return -ENODEV;
-+	version = res.a0;
-+
-+	arm_smccc_1_1_invoke(ARM_SMCCC_TRNG_FEATURES,
-+			     ARM_SMCCC_TRNG_RND, &res);
-+	if ((int)res.a0 < 0)
-+		return -ENODEV;
-+
-+	trng = devm_kzalloc(&pdev->dev, sizeof(*trng), GFP_KERNEL);
-+	if (!trng)
-+		return -ENOMEM;
-+
-+	trng->name = "smccc_trng";
-+	trng->init = smccc_trng_init;
-+	trng->read = smccc_trng_read;
-+
-+	platform_set_drvdata(pdev, trng);
-+	ret = devm_hwrng_register(&pdev->dev, trng);
-+	if (ret)
-+		return -ENOENT;
-+
-+	dev_info(&pdev->dev,
-+		 "ARM SMCCC TRNG firmware random number generator v%d.%d\n",
-+		 version >> 16, version & 0xffff);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver smccc_trng_driver = {
-+	.driver = {
-+		.name		= "smccc_trng",
-+	},
-+	.probe		= smccc_trng_probe,
-+};
-+
-+module_platform_driver(smccc_trng_driver);
-+
-+static int __init smccc_trng_dev_init(void)
-+{
-+	platform_device_register_simple("smccc_trng", -1, NULL, 0);
-+
-+	return 0;
-+}
-+
-+device_initcall(smccc_trng_dev_init);
-+
-+MODULE_AUTHOR("Andre Przywara");
-+MODULE_LICENSE("GPL");
--- 
-2.17.5
-
+ 	/* Check if memory encryption is enabled */
+ 	if (feature_mask == AMD_SME_BIT) {
+ 		/*
