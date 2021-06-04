@@ -2,89 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3358639BD72
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1C139BD74
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbhFDQoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 12:44:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbhFDQop (ORCPT
+        id S230254AbhFDQpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 12:45:18 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:34988 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229690AbhFDQpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 12:44:45 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC12C061766
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 09:42:58 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id s70-20020a1ca9490000b02901a589651424so1336297wme.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 09:42:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bkBNx6CDCDug1216WbBvCHNO3z3k0uzKIx7Lyd/dMUk=;
-        b=QnWXAwxqftxBN5G3P0eytpuh1koyN5NIuWZD0EjlOmJ8CwoSbrx47fLH9GKk3cYxEJ
-         wnx1zunVoelHxzcD7ooVRa1wReAhoXHUtv6/oaF84ZsFE8Yg4cLCsWVYD5M5KD2hQMi/
-         amLmiCR7G1KfqBFzEbi+dKv0q1bjSBFl9kUtjlvaqLXuyHKSsiuiPql0oL7FNMSG+leh
-         mAhm4hSJ8vgmE/FCKB8w89tSzgRHUWU24BhNeM0iEFKQjIfIMOukFYkY1AkqanGvjGHN
-         u6upIrTttgDK1nO/J/+YSGVMwKydGLoTJmHUg3KMnG5RQMSxKCgJE+GNdEmui6TMNb8C
-         Tcaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bkBNx6CDCDug1216WbBvCHNO3z3k0uzKIx7Lyd/dMUk=;
-        b=RK2z+QaPumP5Vdz9NJGcPvn16tl40BLU97xg+Vsy3Sd2mSErvDXg9gVuQUhsm1LHpU
-         gN00tS7JGr8rlrErnN245IdU69u0Brzq/prEbws/e87j2r9b+/rXTuZ7jWIUn2rEa6fW
-         Oo7zngwnEiE3etUDA+euJURrng2fL33r19emKQF2lEEkuC+Yb6H/Qf7MCqbX8uzr9Ytx
-         i0843DkLfYLN/8gxQS9658z+urwMapnBikWumRobf3AQQvkj9Igg4v1j4EC0PbJ2+S8d
-         EQN2KlxzrZV6Fr7kMLjlK3Ow3gaTDjLheuOhMR8lU6nUzOu2bX3MRSXMSmbh14OgvLYW
-         qNhQ==
-X-Gm-Message-State: AOAM533vNzZBiD/3P9gCR2VwjuU0NQz/TtbseXvpyiOwD+kIG2YVJ4aX
-        27grum5zrxN+6PoatG5M6kuK1NxcydSUIkSR
-X-Google-Smtp-Source: ABdhPJzhUDiMzdE25g7rnhzQyTIyOEOiCrZBu8aUm5OCjgLLlyigN+uz9OY4t/M+Kb8+84P2eqV7qw==
-X-Received: by 2002:a05:600c:2054:: with SMTP id p20mr4217278wmg.175.1622824977481;
-        Fri, 04 Jun 2021 09:42:57 -0700 (PDT)
-Received: from localhost ([91.110.139.87])
-        by smtp.gmail.com with ESMTPSA id k16sm5998458wmr.42.2021.06.04.09.42.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 09:42:57 -0700 (PDT)
-From:   Fam Zheng <fam.zheng@bytedance.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org, fam.zheng@bytedance.com, fam@euphon.net
-Subject: [PATCH] io_uring: Fix comment of io_get_sqe
-Date:   Fri,  4 Jun 2021 17:42:56 +0100
-Message-Id: <20210604164256.12242-1-fam.zheng@bytedance.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 4 Jun 2021 12:45:16 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 154GhMPJ093166;
+        Fri, 4 Jun 2021 11:43:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1622825002;
+        bh=Q4fwlcTV+UfFIP59ocRNpSmIcNZ5COysLR/B5UGpX4k=;
+        h=From:To:CC:Subject:Date;
+        b=ngl/+cP/qNlvOAw0foSGXmWi6kElTKqi0nwhpVdinw48DAvEz2UjOZuV7cnD6gFq0
+         +8Wg8H3IzUDFnBdxj8XGe4rGjlO2VfiIE5sODtPJkmx56ONJ05R8AxCwHcdPbIahr3
+         AIdFDOR1Vn695VgtMJARn6+pkt1CimKySFqSFvxc=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 154GhMcB047238
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 4 Jun 2021 11:43:22 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 4 Jun
+ 2021 11:43:21 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 4 Jun 2021 11:43:21 -0500
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 154GhCtf063841;
+        Fri, 4 Jun 2021 11:43:14 -0500
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Suman Anna <s-anna@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] arm64: dts: ti: k3-am64-main: Update the location of ATF in SRAM and increase its max size
+Date:   Fri, 4 Jun 2021 22:13:08 +0530
+Message-ID: <20210604164308.16693-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sqe_ptr argument has been gone since 709b302faddf (io_uring:
-simplify io_get_sqring, 2020-04-08), made the return value of the
-function. Update the comment accordingly.
+Due to a limitation for USB DFU boot mode, SPL load address has to be less
+than  or equal to 0x70001000. So, load address of SPL and ATF have been
+moved to 0x70000000 and 0x701a0000 respectively.
 
-Signed-off-by: Fam Zheng <fam.zheng@bytedance.com>
+Also, the maximum size of ATF has been increased to 0x1c000 [1].
+
+Therefore, update ATF's location and maximum size accordingly in the device
+tree file.
+
+[1] - https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git/commit/?id=2fb5312f61a7de8b7a70e1639199c4f14a10b6f9
+
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
 ---
- fs/io_uring.c | 2 +-
+
+Link to corresponding U-Boot series that makes the ATF load address update,
+- https://patchwork.ozlabs.org/project/uboot/list/?series=247265
+
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 903458afd56c..bb3685ba335d 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -6670,7 +6670,7 @@ static void io_commit_sqring(struct io_ring_ctx *ctx)
- }
+diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+index ca59d1f711f8..7ae28992097f 100644
+--- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+@@ -14,7 +14,7 @@
+ 		ranges = <0x0 0x00 0x70000000 0x200000>;
  
- /*
-- * Fetch an sqe, if one is available. Note that sqe_ptr will point to memory
-+ * Fetch an sqe, if one is available. Note this returns a pointer to memory
-  * that is mapped by userspace. This means that care needs to be taken to
-  * ensure that reads are stable, as we cannot rely on userspace always
-  * being a good citizen. If members of the sqe are validated and then later
+ 		atf-sram@0 {
+-			reg = <0x0 0x1a000>;
++			reg = <0x1a0000 0x1c000>;
+ 		};
+ 	};
+ 
 -- 
-2.31.1
+2.17.1
 
