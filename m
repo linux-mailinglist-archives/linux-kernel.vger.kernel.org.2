@@ -2,101 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC03039B03A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 04:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E202239B03C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 04:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229936AbhFDCPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 22:15:04 -0400
-Received: from mail-lf1-f47.google.com ([209.85.167.47]:33716 "EHLO
-        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbhFDCPD (ORCPT
+        id S230018AbhFDCPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 22:15:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229772AbhFDCPd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 22:15:03 -0400
-Received: by mail-lf1-f47.google.com with SMTP id t7so4596469lff.0;
-        Thu, 03 Jun 2021 19:13:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=e938uIx3j0ytYF43Gu2UvAvTYhUrU4CqL39m4sXKDLo=;
-        b=jB1o57YFZ/z0UbSQMIix1odWKf3OKj1Vgv/cx+oEn2BynbKVvg9pupzQed/QD90X11
-         lu72W+nmvPDDJe4OzPjww9OIaoAxobSsxWT/KDppr2lZViTBJWNNRF74KBCrvSDE8AWB
-         csSm2g1MuA7/AD9ML5bsrsX8MUOT7hqq2A+oOj8Sicsww+XmeiJuVzPBKGf/F6wzs0W9
-         7G1EMfBsXShX55BN2MAShuDehdhr9Zmhs3nJ57j7/plSPpHJ5s1xuAzK2tAYrA8iueWs
-         RH22q1SxsROzvJUFrgnae0Sbs7qfVptfoE6Xt1AZH/efiOCCfL1MsplNcDDOR37oL8RM
-         LAcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=e938uIx3j0ytYF43Gu2UvAvTYhUrU4CqL39m4sXKDLo=;
-        b=UcZ1vmj32dOQnwaivpAQSdh1a0MlGbonCxtfmd7txy4pAKjl2lBGMf1tOk8EK3Kq55
-         y/VTjrAZs64wTCWQzNVPbzYhRfNeMWUAmd5e5Qgho2dyhrw6T47/M4mbY4OFZOd1ELh/
-         QkZ48ijlS9ruav2hXQ32QnnFyzREApZXR2kBL9XKPbvfmiIxqN42M7oXonJEVD1IrDDC
-         jcRD96pQRu5sBdLWUvGvJnGUBPS2fy/nIEKDusViqMjMDCcvVsIATmuKxfEkZYs61FPj
-         OK599bXZ9HeOZzWmwykbYQBBxh1Ik9pCgTjthY5r5zxHdircOZQyv+/xUHubOnXGopDb
-         b96Q==
-X-Gm-Message-State: AOAM530WlJP767ZoEI3PPdr3WywbG5vQnyvbFyNAblLU3IDtD4goKeHg
-        gla57hbrgfP51rCHtLB5cFxk6Ky4ScRJ4y0G71g=
-X-Google-Smtp-Source: ABdhPJyS7VJbQHWYeAVHWleNzp1SXF1+rmRnM1VyuMhNAt40ga1HjAGJ1WD9vjZKZle7LrPwk2tDKOOYpuiB8Hw9yNE=
-X-Received: by 2002:a05:6512:21ae:: with SMTP id c14mr1162158lft.483.1622772721138;
- Thu, 03 Jun 2021 19:12:01 -0700 (PDT)
+        Thu, 3 Jun 2021 22:15:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 783DCC06174A;
+        Thu,  3 Jun 2021 19:13:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ZJLS4mJyjnY+bHzbPHD0JnHSTH2Mf2XBgDyq2VaF36A=; b=ZK+l8zcISQfWND9zUMSVphN4v6
+        JIZZgcd/s1pPJpkvkPrf+9sVSWNgiWuj4JAOnv3typNwCuF2jti9P3zEH9R4IojVWDKTqz2qZ0UiT
+        Uf/7kVTz2CTWCmY+RaTYEfSf+3lYLM1cIS/9BOzhg/CajJiaGLRuOgAd4PvQM58sp43SWGJ6QjHm+
+        RKBoOL5MU+kOCHsvKy26sei6iXxomRN888kWI1LiM8bQSI13MHVBjU0bcG++IaXYxywhzNz1J5aXL
+        wrUpCun5Ltworv8btMQh1n/Y3OPtXbA/SvYzoGF2joG14L5C5uEqsO1zvxG7Zopiq1G74ZPD9ypce
+        O2ygDQLw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lozKq-00ClDW-LM; Fri, 04 Jun 2021 02:13:26 +0000
+Date:   Fri, 4 Jun 2021 03:13:20 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v10 00/33] Memory folios
+Message-ID: <YLmMQJgld6ndNzqI@casper.infradead.org>
+References: <20210511214735.1836149-1-willy@infradead.org>
+ <20210604030712.11b31259@linux.microsoft.com>
 MIME-Version: 1.0
-References: <1622552752-15501-1-git-send-email-herbert.tencent@gmail.com> <20210603123357.GM6161@gondor.apana.org.au>
-In-Reply-To: <20210603123357.GM6161@gondor.apana.org.au>
-From:   hongbo li <herbert.tencent@gmail.com>
-Date:   Fri, 4 Jun 2021 10:11:51 +0800
-Message-ID: <CABpmuwJepSr3eE9OQoNUV6761agn7+OU1eG766W2B96rVo1S3A@mail.gmail.com>
-Subject: Re: [PATCH] crypto: sm2 - fix a memory leak in sm2
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        linux-crypto@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>,
-        David Howells <dhowells@redhat.com>, jarkko@kernel.org,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        =?UTF-8?B?aGVyYmVydGhibGko5p2O5byY5Y2aKQ==?= 
-        <herberthbli@tencent.com>, open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604030712.11b31259@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you for your review, I will resend this patch.
-Regards,
-Hongbo
+On Fri, Jun 04, 2021 at 03:07:12AM +0200, Matteo Croce wrote:
+> On Tue, 11 May 2021 22:47:02 +0100
+> "Matthew Wilcox (Oracle)" <willy@infradead.org> wrote:
+> 
+> > We also waste a lot of instructions ensuring that we're not looking at
+> > a tail page.  Almost every call to PageFoo() contains one or more
+> > hidden calls to compound_head().  This also happens for get_page(),
+> > put_page() and many more functions.  There does not appear to be a
+> > way to tell gcc that it can cache the result of compound_head(), nor
+> > is there a way to tell it that compound_head() is idempotent.
+> > 
+> 
+> Maybe it's not effective in all situations but the following hint to
+> the compiler seems to have an effect, at least according to bloat-o-meter:
 
-Herbert Xu <herbert@gondor.apana.org.au> =E4=BA=8E2021=E5=B9=B46=E6=9C=883=
-=E6=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=888:34=E5=86=99=E9=81=93=EF=BC=
-=9A
->
-> On Tue, Jun 01, 2021 at 09:05:52PM +0800, Hongbo Li wrote:
-> > From: Hongbo Li <herberthbli@tencent.com>
-> >
-> > SM2 module alloc ec->Q in sm2_set_pub_key(), when doing alg test in
-> > test_akcipher_one(), it will set public key for every test vector,
-> > and don't free ec->Q. This will cause a memory leak.
-> >
-> > This patch alloc ec->Q in sm2_ec_ctx_init().
-> >
-> > Fixes: ea7ecb66440b ("crypto: sm2 - introduce OSCCA SM2 asymmetric ciph=
-er algorithm")
-> > Signed-off-by: Hongbo Li <herberthbli@tencent.com>
-> > Cc: stable@vger.kernel.org # v5.10+
-> > Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> > ---
-> >  crypto/sm2.c | 24 ++++++++++--------------
-> >  1 file changed, 10 insertions(+), 14 deletions(-)
->
-> Your patch has been discarded by patchwork because you didn't
-> update the Subject.  The usual method is to use a version prefix
-> such as v2, v3, etc. so that the Subject remains distinct.
->
-> Please resubmit with a new Subject.
->
-> Oh and don't cc stable@vger.kernel.org.
->
-> Thanks,
-> --
-> Email: Herbert Xu <herbert@gondor.apana.org.au>
-> Home Page: http://gondor.apana.org.au/~herbert/
-> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+It definitely has an effect ;-)
+
+     Note that a function that has pointer arguments and examines the
+     data pointed to must _not_ be declared 'const' if the pointed-to
+     data might change between successive invocations of the function.
+     In general, since a function cannot distinguish data that might
+     change from data that cannot, const functions should never take
+     pointer or, in C++, reference arguments.  Likewise, a function that
+     calls a non-const function usually must not be const itself.
+
+So that's not going to work because a call to split_huge_page() won't
+tell the compiler that it's changed.
+
+Reading the documentation, we might be able to get away with marking the
+function as pure:
+
+     The 'pure' attribute imposes similar but looser restrictions on a
+     function's definition than the 'const' attribute: 'pure' allows the
+     function to read any non-volatile memory, even if it changes in
+     between successive invocations of the function.
+
+although that's going to miss opportunities, since taking a lock will
+modify the contents of struct page, meaning the compiler won't cache
+the results of compound_head().
+
+> $ scripts/bloat-o-meter vmlinux.o.orig vmlinux.o
+> add/remove: 3/13 grow/shrink: 65/689 up/down: 21080/-198089 (-177009)
+
+I assume this is an allyesconfig kernel?    I think it's a good
+indication of how much opportunity there is.
+
