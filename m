@@ -2,79 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8EC439C18F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1DAC39C190
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbhFDUrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 16:47:36 -0400
-Received: from mail-oo1-f43.google.com ([209.85.161.43]:38489 "EHLO
-        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbhFDUrf (ORCPT
+        id S231364AbhFDUtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 16:49:08 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:48957 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229906AbhFDUtG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 16:47:35 -0400
-Received: by mail-oo1-f43.google.com with SMTP id o66-20020a4a44450000b029020d44dea886so2545038ooa.5;
-        Fri, 04 Jun 2021 13:45:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=J9wbO4iepQS7fHLsPG9Sl+dEG0o3lIQGorDKRuT1O+A=;
-        b=AK+ESFzF28FQw1uxdUzyz01mrlbjA4fTaYINfeRizcVVD5M9jGHpobfmp2Uhm4C189
-         qy+XdPeIVJqnP6VdhmxCkkVz7+sTBLgORMtNl1ie4JNGNQWclfR0PWd42798cpSVjb9b
-         V3NBrRA/QIWueEXZH+thyVD/Ejp2v0/tTYDNfOP6DXF/h+ie01C1uAgwRtDPxLqPXeGk
-         XQw6A7U+ukfF7z5fXxqjI0V/I/15Nc3ScgLekpzwpyikE0gx455Si0ZnnJoadHydYWIe
-         zQdPIhly93jfjE2FyEFIVJnzIt57et7JAxpu4MEG7RWVLyzgw273Ht5WKCLrl62Cmi4h
-         7u2A==
-X-Gm-Message-State: AOAM530o8jQLeQIi0/591e3Ytgc4d+R6qpCfHB+mMQ9nXjW+z+LwN4Z0
-        aLQgiO3Y2+7dG0+Ni7ApSw==
-X-Google-Smtp-Source: ABdhPJynR4v6IWpcD8BCd5FuJd4Zwv4puzVbEb52RaGPB7CaRl9pN48d8jqREDRRIQChZUZN/E8DJw==
-X-Received: by 2002:a4a:94ef:: with SMTP id l44mr5043933ooi.84.1622839539471;
-        Fri, 04 Jun 2021 13:45:39 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 21sm79912otd.21.2021.06.04.13.45.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 13:45:38 -0700 (PDT)
-Received: (nullmailer pid 3884907 invoked by uid 1000);
-        Fri, 04 Jun 2021 20:45:37 -0000
-Date:   Fri, 4 Jun 2021 15:45:37 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Alex Bee <knaerzche@gmail.com>
-Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-rockchip@lists.infradead.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Subject: Re: [PATCH v2 03/12] dt-bindings: media: rockchip-vdec: add RK3228
- compatible
-Message-ID: <20210604204537.GA3884845@robh.at.kernel.org>
-References: <20210525152225.154302-1-knaerzche@gmail.com>
- <20210527154455.358869-1-knaerzche@gmail.com>
- <20210527154455.358869-4-knaerzche@gmail.com>
+        Fri, 4 Jun 2021 16:49:06 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622839640; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
+ Subject: Sender; bh=AeE9L/uymuy4P/CGTWAHqfDB7Asj3kbTFMENGCb52lI=; b=vKdvote8KBufZsuVry6nWlXrOxnzAI5a35dIgut6sl68/e4zJ/YQt39WEStJdBKRAKgRsp9R
+ R3wwI97MNuWLC5YYIzwcSMLhkBCZo54oJv1iFmuRO+V4US35CLn5TXa1eS8PmcrDJOPEzwF8
+ Y17/7t7+pC2rP0gExrJ5kHWD2m8=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60ba9145e570c05619fc36ce (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 04 Jun 2021 20:47:01
+ GMT
+Sender: sidgup=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DCD51C433D3; Fri,  4 Jun 2021 20:47:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.10] (cpe-75-83-25-192.socal.res.rr.com [75.83.25.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sidgup)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 88B81C4338A;
+        Fri,  4 Jun 2021 20:46:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 88B81C4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
+Subject: Re: [PATCH 1/1] remoteproc: use freezable workqueue for crash
+ notifications
+From:   Siddharth Gupta <sidgup@codeaurora.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Alex Elder <elder@linaro.org>
+Cc:     ohad@wizery.com, mathieu.poirier@linaro.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210519234418.1196387-1-elder@linaro.org>
+ <20210519234418.1196387-2-elder@linaro.org> <YLBpmdZoGDXNz64y@builder.lan>
+ <be4ea351-7144-8b53-6fd7-6a2204e0040d@codeaurora.org>
+Message-ID: <f708d462-d863-ed3c-159d-acd5bffc6cba@codeaurora.org>
+Date:   Fri, 4 Jun 2021 13:46:58 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210527154455.358869-4-knaerzche@gmail.com>
+In-Reply-To: <be4ea351-7144-8b53-6fd7-6a2204e0040d@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 May 2021 17:44:46 +0200, Alex Bee wrote:
-> Document the RK3228 compatible for rockchip-vdec.
-> Also add the optional assigned-clocks and assigned-clock-rates
-> properties.
-> 
-> Signed-off-by: Alex Bee <knaerzche@gmail.com>
-> ---
-> 
->  Changes in v2:
->  - fix indentation
-> 
->  .../devicetree/bindings/media/rockchip,vdec.yaml       | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+On 5/28/2021 5:12 PM, Siddharth Gupta wrote:
+>
+> On 5/27/2021 8:55 PM, Bjorn Andersson wrote:
+>> On Wed 19 May 18:44 CDT 2021, Alex Elder wrote:
+>>
+>>> When a remoteproc has crashed, rproc_report_crash() is called to
+>>> handle whatever recovery is desired.  This can happen at almost any
+>>> time, often triggered by an interrupt, though it can also be
+>>> initiated by a write to debugfs file remoteproc/remoteproc*/crash.
+>>>
+>>> When a crash is reported, the crash handler worker is scheduled to
+>>> run (rproc_crash_handler_work()).  One thing that worker does is
+>>> call rproc_trigger_recovery(), which calls rproc_stop().  That calls
+>>> the ->stop method for any remoteproc subdevices before making the
+>>> remote processor go offline.
+>>>
+>>> The Q6V5 modem remoteproc driver implements an SSR subdevice that
+>>> notifies registered drivers when the modem changes operational state
+>>> (prepare, started, stop/crash, unprepared).  The IPA driver
+>>> registers to receive these notifications.
+>>>
+>>> With that as context, I'll now describe the problem.
+>>>
+>>> There was a situation in which buggy modem firmware led to a modem
+>>> crash very soon after system (AP) resume had begun.  The crash caused
+>>> a remoteproc SSR crash notification to be sent to the IPA driver.
+>>> The problem was that, although system resume had begun, it had not
+>>> yet completed, and the IPA driver was still in a suspended state.
+>>>
+>>> This scenario could happen to any driver that registers for these
+>>> SSR notifications, because they are delivered without knowledge of
+>>> the (suspend) state of registered recipient drivers.
+>>>
+>>> This patch offers a simple fix for this, by having the crash
+>>> handling worker function run on the system freezable workqueue.
+>>> This workqueue does not operate if user space is frozen (for
+>>> suspend).  As a result, the SSR subdevice only delivers its
+>>> crash notification when the system is fully operational (i.e.,
+>>> neither suspended nor in suspend/resume transition).
+>>>
+>> This makes sense to me; both that it ensures that we spend our resources
+>> on the actual system resume and that it avoids surprises from this
+>> happening while the system still is in a funky state...
+>>
+>> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+>>
+>> But it would be nice to get some input from other users of the
+>> framework.
+> This patch sounds like a good idea for cases where the
+> request_firmware() APIs fallback to userspace firmware loading.
+>
+> Will test out this patch and report back.
+>
+> Thanks,
+> Sid
+I was able to test out this change with one of our usecases, no
+issues to report.
+
+Could you please CC stable as well?
+
+Thanks,
+Sid
+
+Tested-by: Siddharth Gupta <sidgup@codeaurora.org>
+>>
+>> Regards,
+>> Bjorn
+>>
+>>> Signed-off-by: Alex Elder <elder@linaro.org>
+>>> ---
+>>>   drivers/remoteproc/remoteproc_core.c | 4 ++--
+>>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/remoteproc/remoteproc_core.c 
+>>> b/drivers/remoteproc/remoteproc_core.c
+>>> index 39cf44cb08035..6bedf2d2af239 100644
+>>> --- a/drivers/remoteproc/remoteproc_core.c
+>>> +++ b/drivers/remoteproc/remoteproc_core.c
+>>> @@ -2724,8 +2724,8 @@ void rproc_report_crash(struct rproc *rproc, 
+>>> enum rproc_crash_type type)
+>>>       dev_err(&rproc->dev, "crash detected in %s: type %s\n",
+>>>           rproc->name, rproc_crash_to_string(type));
+>>>   -    /* create a new task to handle the error */
+>>> -    schedule_work(&rproc->crash_handler);
+>>> +    /* Have a worker handle the error; ensure system is not 
+>>> suspended */
+>>> +    queue_work(system_freezable_wq, &rproc->crash_handler);
+>>>   }
+>>>   EXPORT_SYMBOL(rproc_report_crash);
+>>>   --
+>>> 2.27.0
+>>>
