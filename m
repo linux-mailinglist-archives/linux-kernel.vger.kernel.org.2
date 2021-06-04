@@ -2,97 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7208D39BEA0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:25:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B84CA39BEC2
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231229AbhFDR1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 13:27:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53936 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230234AbhFDR1N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 13:27:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E9F9613F8;
-        Fri,  4 Jun 2021 17:25:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622827527;
-        bh=Ge2xUBkqY1RmkZ+sBVqn1MFf14FqwyBIugyJ21jW0YY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eNOpONJyOx9rKm+0Fd6iJwylBCekLtIePB+5aKBrUCVRWJlJMg5Wv8x40sTL2U3X8
-         bacplF6WoZS70B9O/Uu6JO7afNQq+wiX0oHYusDaCuRU9wT4ObVXblq47EwkPPV73d
-         XrgLiMLIMadgPla7OMiPolSTZqTq806bRqIjuXm1ZRuCjomNTCXCdIA6unqJ/B3Q+A
-         fNT0LIXSb6eBCX8cW3yRwPG28QJxrvKr8T2wIDqyqW1jITezGO7s0/71DCZSepelSS
-         k9vURd4h3rXUETk7zFtSkjo7IAIVqOtfPb7kk2nVIRNwjn0VjHwnFDK7L7WX2IZ2Jk
-         Qw/ty5qucMz+Q==
-Date:   Fri, 4 Jun 2021 18:25:15 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Sander Vanheule <sander@svanheule.net>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/2] Clause-22/Clause-45 MDIO regmap support
-Message-ID: <20210604172515.GG4045@sirena.org.uk>
-References: <cover.1622743333.git.sander@svanheule.net>
+        id S231376AbhFDRaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 13:30:24 -0400
+Received: from mail-qt1-f176.google.com ([209.85.160.176]:33344 "EHLO
+        mail-qt1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231352AbhFDRaX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 13:30:23 -0400
+Received: by mail-qt1-f176.google.com with SMTP id a15so7607143qta.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 10:28:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=W7q2U9QT7qAxj7hf+II4Z/nhms5EfM2onq31L99Ku2U=;
+        b=knyEhL7QEI32EeLzI2KT4Dljnurd8LSBl3eY1jsnandqQeKWQkPZUAoZo33Ipg4z6i
+         ebwNIk8PHzjI6iPgnKWu11xSJ7F8p2e1g4Ij1mMqWez1t91NnabPspncr395HhfNwHtT
+         XC3F3nkkrdCmEg76mV5KLl7EfwTEHmszTUNvOB7m+zA8CdMGorb7cs0OF0da1HKyrZAc
+         1/DVPkDnzn8KURWaYRlGNmlR8yNW1vy9Z+bnYexUzg5EymMymjArwtCVSzi+ETjbmrLA
+         NTXzipMQwxfXaZ8LqfiQ4TiM1rat14suhnFWwRgBiFbHi7rnenPJD/Q1GOUWkVp8kaei
+         tIBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=W7q2U9QT7qAxj7hf+II4Z/nhms5EfM2onq31L99Ku2U=;
+        b=aTtvVIkG1HcUjrvYydUSYsgi36HZsXhuWYnT2lGtjgGzBs7AohBJelk6HieY17oZhC
+         5cVDB0ppsddA+Umyd3tHmm8RbyQj/yFZ6AL7VXAQNyWffgRvj2+5EoMHbJ6r5uDwC1N7
+         OKEGIsto2/DnQkxwC38+hXO1bOeWgFRVYL40cnLgWezPQYwHyTftlQ6mpHKgFVynSnqZ
+         x25NjnNYNL+niISiSpiZVNdpi4CtFhh9jd2Sn68TgWUdpa6mI3DKKpZhR13qwI4S+gF7
+         omLRE2zg7mp8G6hJszO75GgOte+k/Gdmuv8qd7c91vTRaRlpcv0xxiBatcs3PM4fwuX4
+         BJQw==
+X-Gm-Message-State: AOAM530U11nKrdXjaJY0KJMQAvKSEfdO6bVbGjLSBGNwTRrW0sIVUu8P
+        OCxX27zAP6oZcEGGXqwVV57TdYi6tIg64gC7W6M=
+X-Google-Smtp-Source: ABdhPJxry73nGzw9vaNeSCAnH5NcGdzaokOeVX5S03eBqde14Jqq6PqvuHlpJHmbrHME98hK3aceEw==
+X-Received: by 2002:ac8:570b:: with SMTP id 11mr5643304qtw.287.1622827643909;
+        Fri, 04 Jun 2021 10:27:23 -0700 (PDT)
+Received: from [192.168.0.189] (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
+        by smtp.gmail.com with ESMTPSA id l5sm3411632qkf.55.2021.06.04.10.27.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Jun 2021 10:27:23 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] dt-bindings: clock: add QCOM SM8350 display clock
+ bindings
+To:     Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org
+Cc:     Rob Herring <robh@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210519001802.1863-1-jonathan@marek.ca>
+ <20210519001802.1863-2-jonathan@marek.ca>
+ <162266925581.4130789.10178141366818328902@swboyd.mtv.corp.google.com>
+From:   Jonathan Marek <jonathan@marek.ca>
+Message-ID: <56f3b0bd-5dd7-80d4-041a-0fd2daf4b1f2@marek.ca>
+Date:   Fri, 4 Jun 2021 13:25:41 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="0z5c7mBtSy1wdr4F"
-Content-Disposition: inline
-In-Reply-To: <cover.1622743333.git.sander@svanheule.net>
-X-Cookie: There is a fly on your nose.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <162266925581.4130789.10178141366818328902@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 6/2/21 5:27 PM, Stephen Boyd wrote:
+> Quoting Jonathan Marek (2021-05-18 17:18:02)
+>> Add sm8350 DISPCC bindings, which are simply a symlink to the sm8250
+>> bindings. Update the documentation with the new compatible.
+>>
+>> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+>> Reviewed-by: Rob Herring <robh@kernel.org>
+>> ---
+>>   .../devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml       | 6 ++++--
+>>   include/dt-bindings/clock/qcom,dispcc-sm8350.h              | 1 +
+> 
+>>   2 files changed, 5 insertions(+), 2 deletions(-)
+>>   create mode 120000 include/dt-bindings/clock/qcom,dispcc-sm8350.h
+> 
+> Why the symlink? Can we have the dt authors use the existing header file
+> instead?
+> 
 
---0z5c7mBtSy1wdr4F
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It would be strange to include bindings with the name of a different 
+SoC. I guess it is a matter a preference, is there any good reason to 
+*not* do it like this?
 
-On Thu, Jun 03, 2021 at 08:25:08PM +0200, Sander Vanheule wrote:
+>>
+>> diff --git a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
+>> index 0cdf53f41f84..8f414642445e 100644
+>> --- a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
+>> +++ b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
+>> @@ -4,24 +4,26 @@
+>>   $id: http://devicetree.org/schemas/clock/qcom,dispcc-sm8x50.yaml#
+>>   $schema: http://devicetree.org/meta-schemas/core.yaml#
+>>   
+>> -title: Qualcomm Display Clock & Reset Controller Binding for SM8150/SM8250
+>> +title: Qualcomm Display Clock & Reset Controller Binding for SM8150/SM8250/SM8350
+> 
+> Maybe just "Binding for SM8x50 SoCs"
+> 
 
-> 1. I've opted to just ignore any bits that lie beyond the allowed address
->    width. Would it be cleaner to raise an error instead?
+Its likely these bindings won't be compatible with future "SM8x50" SoCs, 
+listing supported SoCs explicitly will avoid confusion in the future.
 
-It doesn't *really* matter, enforcement is probably a bit better as it
-might catch bugs.
-
-> 2. Packing of the clause-45 register addresses (16 bit) and adressed device
->    type (5 bit) is the same as in the mdio subsystem, resulting in a 21 bit
->    address. Is this an appropriate way to pack this information into one
->    address for the regmap interface?
-
-Either that or pass the type in when instantiating the regmap (it sounds
-like it should be the same for all registers on the device?).
-
-> The reasoning behind (1) is to allow the regmap user to use extra bits
-> as a way to virtually extend the address space. Note that this actually
-> results in aliasing. This can be useful if the data read from to a
-> register doesn't have the same meaning as the data written to it
-> (e.g. GPIO pin input and output data). An alternative solution to this
-> would be some concept of "aliased registers" in regmap -- like volatile or
-> precious registers.
-
-I think these registers are in practice going to either need to be
-volatile (how most of them work at the minute) or otherwise handled in
-regmap (eg, the page support we've got).  Having two different names for
-the same register feels like it's asking for bugs if any of the higher
-level functions of regmap get used.
-
---0z5c7mBtSy1wdr4F
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmC6YfoACgkQJNaLcl1U
-h9BM/gf/TAz/WHlHWY9nNa8nT1K/6WBUU8bmREMGRvZV6m4tNBSs+HJ4v5K7eTxj
-PUtztJvTbZLktgDltlA3tzECyTWG4HAwxtv3LTcTLbgGoK5aHo8oneSQOViXP6Nq
-lrY757bQaqfvLX3LlVRB/Y5Is0I8v6nKcJow027m5FEqIJaH20h1FC92dHpRHbGt
-KbAF8YcAfh1xc1PDNq4dpLs7CtbU0Yqw81e4y31Urmfn7PYCWnSYYMZ8U3Zl194H
-RbZigaAPbs2ZDt9itzxoNIGTpPfFfeMoZdi2Y5zXnQjkJVc6qJqpj2mAn07FUtHa
-Hw17KSw2W+hSF2OGVrRGIpxO/Q0B0A==
-=m3n3
------END PGP SIGNATURE-----
-
---0z5c7mBtSy1wdr4F--
+>>   
+>>   maintainers:
+>>     - Jonathan Marek <jonathan@marek.ca>
+>>   
+>>   description: |
+>>     Qualcomm display clock control module which supports the clocks, resets and
+>> -  power domains on SM8150 and SM8250.
+>> +  power domains on SM8150/SM8250/SM8350.
+> 
+> same 8x50 comment.
+> 
+>>   
+>>     See also:
+>>       dt-bindings/clock/qcom,dispcc-sm8150.h
+>>       dt-bindings/clock/qcom,dispcc-sm8250.h
+>> +    dt-bindings/clock/qcom,dispcc-sm8350.h
+>>   
+>>   properties:
+>>     compatible:
+>>       enum:
+>>         - qcom,sm8150-dispcc
+>>         - qcom,sm8250-dispcc
+>> +      - qcom,sm8350-dispcc
+>>   
+>>     clocks:
+>>       items:
+>> diff --git a/include/dt-bindings/clock/qcom,dispcc-sm8350.h b/include/dt-bindings/clock/qcom,dispcc-sm8350.h
+>> new file mode 120000
+>> index 000000000000..0312b4544acb
+>> --- /dev/null
+>> +++ b/include/dt-bindings/clock/qcom,dispcc-sm8350.h
+>> @@ -0,0 +1 @@
+>> +qcom,dispcc-sm8250.h
+>> \ No newline at end of file
