@@ -2,151 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC0E539C210
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D3B39C21A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:10:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231569AbhFDVMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 17:12:14 -0400
-Received: from mail-pg1-f201.google.com ([209.85.215.201]:45649 "EHLO
-        mail-pg1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231515AbhFDVMK (ORCPT
+        id S231580AbhFDVMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 17:12:31 -0400
+Received: from mail-wm1-f41.google.com ([209.85.128.41]:55893 "EHLO
+        mail-wm1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231538AbhFDVMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 17:12:10 -0400
-Received: by mail-pg1-f201.google.com with SMTP id b17-20020a63eb510000b029021a1da627beso6689380pgk.12
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 14:10:23 -0700 (PDT)
+        Fri, 4 Jun 2021 17:12:30 -0400
+Received: by mail-wm1-f41.google.com with SMTP id g204so6092730wmf.5;
+        Fri, 04 Jun 2021 14:10:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=H6v2kY5YMxOOHLcLSDdX+aEzIdLNYM1I0EjO3txeols=;
-        b=v1jZNkJYmY3AfKMvuvpfH3JJQcdV29JlvKaiWzw7Pj5dPY3hbHoKohjT3M1SqQ5FFz
-         G/tUkYjzmPiXLBY61CpYrnU7ZI7tvTpp2CBXGHl/LyoFPLLKRvPxUy+N+cPRdapDxLeC
-         Z8Eh4SoflqHue1COLbTamqv01t/mA8CE1LJwQOBgEgyAryAOTaY7MJlPrjluNTGeAint
-         /gc5P2jZaZ3YZjQRytNEvbbEzCD+sJ/qkVZK7oysVmpkIMUsp5TFiGLVJL+HI3o0vFAa
-         ewZH43cN3mTTq1bKsTBmIoWlxjxTnjXv2d97I3HYY+lA+lAakvigohnk7CHOmQBQGEy1
-         o3Fw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=0AKFf5l+McLomgCfsF7Q+cMO3Lh52G1WFJZ0xMnObWE=;
+        b=pMrEEt1Cgo8uEWXnwBWDqgTctBJloWFySXH6FDUy01eroy/lLHkhXv6vIjZAciJQwE
+         V0nunEXJXY/ZgD7Jw+8Ty+5HH8LZnmxAQdqQvSMcNzn7BWAJKvq1VvBEeRSkF6Jzu24K
+         CTEjv/fCCdCQRkSL15PsekxaMCWTo83QoqiSXCpf7LfaKIoPA4tGnqRHczb2FzH6DHM9
+         mHqZVWnNWyVKqwrsY1spn9xxM/9byM7O446z6u5i+TJnKPIIlFwtvwtxxVwc6VAKeS2R
+         obeyL8SF5D0wK+LbaSb2z70JloyI70ojrrxXLygfmKqbGFRPnMJAZOL5nV4fFEsFJnaR
+         UqTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=H6v2kY5YMxOOHLcLSDdX+aEzIdLNYM1I0EjO3txeols=;
-        b=iHrXWcEJ+OI3CShsmoRO4iISOAJcD8SH7zXhhsQtQnCAkc0g+J6VZKrXwk5p4nI3IZ
-         4SQp4llJbVU4kM5atImzhe5RqTw5nenzOS6u3A+ULlOrSXP4Ry0DlGBErkWIeyG0n3Rq
-         v/c9n86LZz01D4cNwUAgNjN2b08n7bJSaPy+9h7o9qwiTQzLCEP34bW1/sU1+ja4QrOP
-         ddPEtycAtS6RocZRSKMtxYvv1nl0aBCYFYL882GYtFkDtdjfY0w9gHoJ4WUh6B6uybWJ
-         HUDAaaJwYlalDcHfNPscVyUu0dEliLlx1PyNNiMWT/TCvceTfkWmFb4buq6o7zGxlpjq
-         kM9w==
-X-Gm-Message-State: AOAM533YNr5d1nyP3f00sqpyYJ9SmFuY8NO0uxTmVH2ZSakh5Z/1x5j+
-        1sd2jbIbPOSy3DPDNBbUUzsFj4k/WMg=
-X-Google-Smtp-Source: ABdhPJw2OZI8kOjDJIkhSAHFElaeOr1IGaH93bDYTIxiQQ+b217XZW3IqkglpAxk3/foE4UT4038CtgtNRs=
-X-Received: from satyaprateek.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:1092])
- (user=satyat job=sendgmr) by 2002:a17:902:6acb:b029:fc:4d8c:cfba with SMTP id
- i11-20020a1709026acbb02900fc4d8ccfbamr6249435plt.29.1622840963331; Fri, 04
- Jun 2021 14:09:23 -0700 (PDT)
-Date:   Fri,  4 Jun 2021 21:09:06 +0000
-In-Reply-To: <20210604210908.2105870-1-satyat@google.com>
-Message-Id: <20210604210908.2105870-8-satyat@google.com>
-Mime-Version: 1.0
-References: <20210604210908.2105870-1-satyat@google.com>
-X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
-Subject: [PATCH v9 7/9] ext4: support direct I/O with fscrypt using blk-crypto
-From:   Satya Tangirala <satyat@google.com>
-To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Eric Biggers <ebiggers@google.com>,
-        Satya Tangirala <satyat@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=0AKFf5l+McLomgCfsF7Q+cMO3Lh52G1WFJZ0xMnObWE=;
+        b=fgRRssWUkoC2ox0/h1HAgYIxOUwPTx9jpfCb5EJPrywK19yJrJjQD6D+C0Aodcpu/3
+         l30QIQuXi5ds1suHbj4sqBsvFSfb0OjfP2Kny82ilWowezGNCzqGd6QUcL4pOaHSFb8k
+         hJun1hEHMCdFZdPMz92XaDvHwJbrmWPiaTVW7BUWkleVfVUvMgUQorlZ0mXvaWFXGoBg
+         k0i83O8RKOQX1QkQ/u5GCNd7xvKTfMJO3O3GnMiR9wEK/gVy8q9kPZmNDmwMIFBGfD50
+         wKOZlgNFMy3En+ZfH0l/2kb5RXOXOz+BremClfd8Mk2D1uUOWNT6kivsq0FMqndgelCB
+         fTGg==
+X-Gm-Message-State: AOAM533iAzLPvUwxQvWJWkszpyE9427ou+v6xTgtiIdScl5sTx3ym8qd
+        ddnT6UpDMSMWG32mgg01m34=
+X-Google-Smtp-Source: ABdhPJyjeFsYffroEl2X5KiHP+lUkEVV7B/nJR6CUk8BdvQ1TLAb1szh1YMueb0F7J26wkyjXD7sTA==
+X-Received: by 2002:a1c:193:: with SMTP id 141mr5386613wmb.106.1622840969631;
+        Fri, 04 Jun 2021 14:09:29 -0700 (PDT)
+Received: from xws.localdomain (pd9e5aba0.dip0.t-ipconnect.de. [217.229.171.160])
+        by smtp.gmail.com with ESMTPSA id l5sm9478853wmi.46.2021.06.04.14.09.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 14:09:29 -0700 (PDT)
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH 1/2] platform/surface: aggregator: Do not return uninitialized value
+Date:   Fri,  4 Jun 2021 23:09:06 +0200
+Message-Id: <20210604210907.25738-2-luzmaximilian@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210604210907.25738-1-luzmaximilian@gmail.com>
+References: <20210604210907.25738-1-luzmaximilian@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+The status variable in ssam_nf_refcount_disable_free() is only set when
+the reference count equals zero. Otherwise, it is returned
+uninitialized. Fix this by always initializing status to zero.
 
-Wire up ext4 with fscrypt direct I/O support. Direct I/O with fscrypt is
-only supported through blk-crypto (i.e. CONFIG_BLK_INLINE_ENCRYPTION must
-have been enabled, the 'inlinecrypt' mount option must have been specified,
-and either hardware inline encryption support must be present or
-CONFIG_BLK_INLINE_ENCYRPTION_FALLBACK must have been enabled). Further,
-direct I/O on encrypted files is only supported when the *length* of the
-I/O is aligned to the filesystem block size (which is *not* necessarily the
-same as the block device's block size).
-
-fscrypt_limit_io_blocks() is called before setting up the iomap to ensure
-that the blocks of each bio that iomap will submit will have contiguous
-DUNs. Note that fscrypt_limit_io_blocks() is normally a no-op, as normally
-the DUNs simply increment along with the logical blocks. But it's needed
-to handle an edge case in one of the fscrypt IV generation methods.
-
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Co-developed-by: Satya Tangirala <satyat@google.com>
-Signed-off-by: Satya Tangirala <satyat@google.com>
-Reviewed-by: Jaegeuk Kim <jaegeuk@kernel.org>
-Acked-by: Theodore Ts'o <tytso@mit.edu>
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 640ee17199e4 ("platform/surface: aggregator: Allow enabling of events without notifiers")
+Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
 ---
- fs/ext4/file.c  | 10 ++++++----
- fs/ext4/inode.c |  7 +++++++
- 2 files changed, 13 insertions(+), 4 deletions(-)
+ drivers/platform/surface/aggregator/controller.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 816dedcbd541..a2898a496c4e 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -36,9 +36,11 @@
- #include "acl.h"
- #include "truncate.h"
+diff --git a/drivers/platform/surface/aggregator/controller.c b/drivers/platform/surface/aggregator/controller.c
+index 6646f4d6e10d..634399387d76 100644
+--- a/drivers/platform/surface/aggregator/controller.c
++++ b/drivers/platform/surface/aggregator/controller.c
+@@ -2228,7 +2228,7 @@ static int ssam_nf_refcount_disable_free(struct ssam_controller *ctrl,
+ 	const struct ssam_event_registry reg = entry->key.reg;
+ 	const struct ssam_event_id id = entry->key.id;
+ 	struct ssam_nf *nf = &ctrl->cplt.event.notif;
+-	int status;
++	int status = 0;
  
--static bool ext4_dio_supported(struct inode *inode)
-+static bool ext4_dio_supported(struct kiocb *iocb, struct iov_iter *iter)
- {
--	if (IS_ENABLED(CONFIG_FS_ENCRYPTION) && IS_ENCRYPTED(inode))
-+	struct inode *inode = file_inode(iocb->ki_filp);
-+
-+	if (!fscrypt_dio_supported(iocb, iter))
- 		return false;
- 	if (fsverity_active(inode))
- 		return false;
-@@ -61,7 +63,7 @@ static ssize_t ext4_dio_read_iter(struct kiocb *iocb, struct iov_iter *to)
- 		inode_lock_shared(inode);
- 	}
+ 	lockdep_assert_held(&nf->lock);
  
--	if (!ext4_dio_supported(inode)) {
-+	if (!ext4_dio_supported(iocb, to)) {
- 		inode_unlock_shared(inode);
- 		/*
- 		 * Fallback to buffered I/O if the operation being performed on
-@@ -511,7 +513,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	}
- 
- 	/* Fallback to buffered I/O if the inode does not support direct I/O. */
--	if (!ext4_dio_supported(inode)) {
-+	if (!ext4_dio_supported(iocb, from)) {
- 		if (ilock_shared)
- 			inode_unlock_shared(inode);
- 		else
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index fe6045a46599..fe8006efb5ef 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -3481,6 +3481,13 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
- 	if (ret < 0)
- 		return ret;
- out:
-+	/*
-+	 * When inline encryption is enabled, sometimes I/O to an encrypted file
-+	 * has to be broken up to guarantee DUN contiguity. Handle this by
-+	 * limiting the length of the mapping returned.
-+	 */
-+	map.m_len = fscrypt_limit_io_blocks(inode, map.m_lblk, map.m_len);
-+
- 	ext4_set_iomap(inode, iomap, &map, offset, length);
- 
- 	return 0;
 -- 
-2.32.0.rc1.229.g3e70b5a671-goog
+2.31.1
 
