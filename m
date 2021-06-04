@@ -2,197 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3CE39B1AA
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 06:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90F0A39B1AD
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 06:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229950AbhFDEx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 00:53:59 -0400
-Received: from mail-ed1-f48.google.com ([209.85.208.48]:38869 "EHLO
-        mail-ed1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbhFDEx5 (ORCPT
+        id S229958AbhFDEyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 00:54:40 -0400
+Received: from mail-il1-f178.google.com ([209.85.166.178]:45693 "EHLO
+        mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229704AbhFDEyj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 00:53:57 -0400
-Received: by mail-ed1-f48.google.com with SMTP id o5so9650308edc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 21:51:59 -0700 (PDT)
+        Fri, 4 Jun 2021 00:54:39 -0400
+Received: by mail-il1-f178.google.com with SMTP id b5so7679603ilc.12;
+        Thu, 03 Jun 2021 21:52:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x90Q7KLzxGnQdvlJBnm7rr4DDCt1grcPV3Uowt83bVg=;
-        b=xFkKJy1g/Dq99+LDthlyeOkxVL0vc3sgm7407xja7T/KunaG3jM6iEPHGGEd/seTuT
-         hk5+z84vISRo0CRUrakYh6Eqm8bub7dGlU1MbMHJ/9JpVMF+7TiPvML8pXyUWtwXF7+G
-         6XVruZ0XWO1KBzlMWAOH3F6vu+ZYyEOUIDvJny9CD1tSyHNiTGH3b/srW66LpZWAiv9l
-         AXA5AZPFKznr+B/8A0lLT1wraOWm3b4psmw7tSK+CZQGElAFURuG0V+x6RR4UqKzP0dp
-         ZlOSu05H3mFpWi8uuwiea2soWtThhHqWy/mWoaks8qSxbQRQo+bn+sKsL/QBymZEh2hz
-         JI3A==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1PgbPrY10zYsjifCFzWyh2BDHPVeu66kYt4xk+1XagA=;
+        b=BRFT0PFacapa79dgWyqVB1rrB4rCX8Hl4Jvwfuiik4wOdTQbuswOyQd3lyhUtIHA95
+         Jx7VbXc53nQfSF789Dj3KP3ekfgafPiF3LXWSR3RHbcAFkouBQ90k57rqEjvpjHNTAml
+         exhRmhEabKFIeAi/c0uebCRS9mqbDZgM1m1TG7dSOWQiJKgvTm23JzveZzHLvl8a6Iyy
+         GvJ/MtGTO+hTUTlDnvrLkzA9litdS5Nftaz25U1GIB8UCvepDI5ufPYCZcHoKkJjFCSw
+         g6t1zdEheCO/Xm7sICGnaUKQhil+VUxwPJpytk3FdvoN+Skb6Vxtu0Q9GN3SBsbh33+G
+         QVuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x90Q7KLzxGnQdvlJBnm7rr4DDCt1grcPV3Uowt83bVg=;
-        b=rsJ31cZ1eOyHbEM85WEMs0FbW1ZtuQRg/NTtNptFaWiMKzFyTb1bo6VPGiy2Qz3JoO
-         Jj+xIkgeIMugru4LfAbdKIOyOy9OIOYRtSMLImLXimKok0ZJHQp+b0GCsCSAX2jrkexS
-         szimngNg98KsjouUzJZOAaC0NzGBR9HMFSDmxiGiqwSA0eJEBcZ2qG0G0A7B2SqYSq2w
-         tyYSC/U4Y24Z0gr612L1a3T3xyrDe5UblyH8AYhdoAn3bMNTZ9P7mJUu64ftj+2Lhc2Y
-         iNLeMe+rnVDIxv3qBVABZG0NEoj+NptrXCXupIiiJzCEXPoGDfJDNY+MvlOd9p3Q3KSK
-         qB6Q==
-X-Gm-Message-State: AOAM530Q3yzxdt93FIIfrIxK9eTO61+1TjB5SWnsqfBdzEQyk9XHW3g/
-        EHzp6S9ScG29QhXphNxkjZyfCef7iLxzXw76ByKX
-X-Google-Smtp-Source: ABdhPJxwUDF114o2gy5sFNpwgCfnJzhmnQ0CQLzlaPBqPhlrHJJdrTOWrANK8cv+0mYFczDmrkFW0Ydud/Lrf7jJCok=
-X-Received: by 2002:a05:6402:158e:: with SMTP id c14mr2758605edv.128.1622782259021;
- Thu, 03 Jun 2021 21:50:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210517092006.803332-1-omosnace@redhat.com> <CAHC9VhTasra0tU=bKwVqAwLRYaC+hYakirRz0Mn5jbVMuDkwrA@mail.gmail.com>
- <01135120-8bf7-df2e-cff0-1d73f1f841c3@iogearbox.net> <CAHC9VhR-kYmMA8gsqkiL5=poN9FoL-uCyx1YOLCoG2hRiUBYug@mail.gmail.com>
- <c7c2d7e1-e253-dce0-d35c-392192e4926e@iogearbox.net> <CAHC9VhS1XRZjKcTFgH1+n5uA-CeT+9BeSP5jvT2+RE5ougLpUg@mail.gmail.com>
- <2e541bdc-ae21-9a07-7ac7-6c6a4dda09e8@iogearbox.net> <CAHC9VhT464vr9sWxqY3PRB4DAccz=LvRMLgWBsSViWMR0JJvOQ@mail.gmail.com>
- <3ca181e3-df32-9ae0-12c6-efb899b7ce7a@iogearbox.net> <CAHC9VhTuPnPs1wMTmoGUZ4fvyy-es9QJpE7O_yTs2JKos4fgbw@mail.gmail.com>
- <f4373013-88fb-b839-aaaa-3826548ebd0c@iogearbox.net>
-In-Reply-To: <f4373013-88fb-b839-aaaa-3826548ebd0c@iogearbox.net>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 4 Jun 2021 00:50:47 -0400
-Message-ID: <CAHC9VhS=BeGdaAi8Ae5Fx42Fzy_ybkcXwMNcPwK=uuA6=+SRcg@mail.gmail.com>
-Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
- permission checks
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
-        linux-security-module@vger.kernel.org,
-        James Morris <jmorris@namei.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1PgbPrY10zYsjifCFzWyh2BDHPVeu66kYt4xk+1XagA=;
+        b=WPKG39T1KtPCX8tSiYQ/BupkbvQ1mGkgLr5DPxESgWiCCI41eqKOvo8FNs8HLmuDsp
+         lUS+1VK91MaY3afWYqg/m0V1Fv54fqjb9xNPtFgOdbMjkOfSMA/qxVr1H7pTuOeBikxp
+         W/R8ELd46e2KPReC/Q/NS1lzeVWmby9FT/KV2g3GGfTVyJw+4giYQgNgu1gcUALZkivg
+         +A82fMgWPbjv12w5gVz6a+/e43R5rv74LlsKxwLImnUk/85jDERx6ZEphLs0DZC1Jv1E
+         5fu9Jux7aEWPSy5BKQmzga/dqIvqkmI3TF75C7yxWDLvRanRqtT7NNLCp3aUXd0V4KHK
+         k6/Q==
+X-Gm-Message-State: AOAM533ULToNXVvXw4wqqkopw19caf+RdUebEV+8cLQ2qiWuaS9Kn+v8
+        FvmDPknWCrDrp5SWGVxg5vQ=
+X-Google-Smtp-Source: ABdhPJy3sgFV/xsccZqhNRUor2dII2d6E1DIQNG12H/xDoszibp8FHPgZBX0ThCCy6cLblI5uHY9AA==
+X-Received: by 2002:a05:6e02:10d4:: with SMTP id s20mr2397773ilj.37.1622782303991;
+        Thu, 03 Jun 2021 21:51:43 -0700 (PDT)
+Received: from ?IPv6:2606:3280:8:e29:2093:3298:f887:8ed6? ([2606:3280:8:e29:2093:3298:f887:8ed6])
+        by smtp.googlemail.com with ESMTPSA id s23sm2762345iol.49.2021.06.03.21.51.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Jun 2021 21:51:43 -0700 (PDT)
+Subject: Re: [PATCH v4 00/15] Add futex2 syscalls
+To:     =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>, jolsa@redhat.com,
-        ast@kernel.org, andrii@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     kernel@collabora.com, krisman@collabora.com,
+        pgriffais@valvesoftware.com, joel@joelfernandes.org,
+        malteskarupke@fastmail.fm, linux-api@vger.kernel.org,
+        fweimer@redhat.com, libc-alpha@sourceware.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org, acme@kernel.org,
+        corbet@lwn.net, Peter Oskolkov <posk@posk.io>,
+        Andrey Semashev <andrey.semashev@gmail.com>,
+        Davidlohr Bueso <dave@stgolabs.net>
+References: <20210603195924.361327-1-andrealmeid@collabora.com>
+From:   Zebediah Figura <z.figura12@gmail.com>
+Message-ID: <dab34fd2-b494-8686-bcd7-68beeba4f386@gmail.com>
+Date:   Thu, 3 Jun 2021 23:51:41 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210603195924.361327-1-andrealmeid@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 2:53 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> On 6/2/21 5:13 PM, Paul Moore wrote:
-> [...]
-> > Help me out here, is your answer that the access check can only be
-> > done at BPF program load time?  That isn't really a solution from a
-> > SELinux perspective as far as I'm concerned.
->
-> That is the current answer. The unfortunate irony is that 59438b46471a
-> ("security,lockdown,selinux: implement SELinux lockdown") broke this in
-> the first place. W/o the SELinux hook implementation it would have been
-> working just fine at runtime, but given it's UAPI since quite a while
-> now, that ship has sailed.
+On 6/3/21 2:59 PM, André Almeida wrote:
+>   ** The wait on multiple problem
+> 
+>   The use case lies in the Wine implementation of the Windows NT interface
+>   WaitMultipleObjects. This Windows API function allows a thread to sleep
+>   waiting on the first of a set of event sources (mutexes, timers, signal,
+>   console input, etc) to signal.  Considering this is a primitive
+>   synchronization operation for Windows applications, being able to quickly
+>   signal events on the producer side, and quickly go to sleep on the
+>   consumer side is essential for good performance of those running over Wine.
+> 
 
-Explaining the other side of the "unfortunate irony ..." comment is
-going to take us in a direction that isn't very constructive so I'm
-going to skip past that now and simply say that if there was better
-cooperation across subsystems, especially with the LSM folks, a lot of
-this pain could be mitigated.
+I know this is part of the cover letter, but I really do want to clarify 
+that this isn't really accurate. The use case that this is referring to 
+is not "the Wine implementation of WaitForMultipleObjects", it is an 
+out-of-tree implementation of WaitForMultipleObjects that provides 
+improved performance compared to the in-tree implementation.
 
-... and yes I said "mitigated", I'm not foolish to think the pain
-could be avoided entirely ;)
+This is especially salient because:
 
-> > I understand the ideas I've tossed out aren't practical from a BPF
-> > perspective, but it would be nice if we could find something that does
-> > work.  Surely you BPF folks can think of some way to provide a
-> > runtime, not load time, check?
->
-> I did run this entire discussion by both of the other BPF co-maintainers
-> (Alexei, Andrii, CC'ed) and together we did further brainstorming on the
-> matter on how we could solve this, but couldn't find a sensible & clean
-> solution so far.
+(1) this out-of-tree implementation is only in a small handful of cases 
+any more performant than a different out-of-tree implementation which 
+uses eventfd and poll() instead;
 
-Before I jump into the patch below I just want to say that I
-appreciate you looking into solutions on the BPF side of things.
-However, I voted "no" on this patch previously and since you haven't
-really changed it, my "no"/NACK vote remains, at least until we
-exhaust a few more options.
+(2) these implementations will remain out-of-tree due to compatibility 
+and robustness problems;
 
-> [PATCH] bpf, lockdown, audit: Fix buggy SELinux lockdown permission checks
->
-> Commit 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
-> added an implementation of the locked_down LSM hook to SELinux, with the aim
-> to restrict which domains are allowed to perform operations that would breach
-> lockdown. This is indirectly also getting audit subsystem involved to report
-> events. The latter is problematic, as reported by Ondrej and Serhei, since it
-> can bring down the whole system via audit:
->
->    1) The audit events that are triggered due to calls to security_locked_down()
->       can OOM kill a machine, see below details [0].
->
->    2) It also seems to be causing a deadlock via avc_has_perm()/slow_avc_audit()
->       when trying to wake up kauditd, for example, when using trace_sched_switch()
->       tracepoint, see details in [1]. Triggering this was not via some hypothetical
->       corner case, but with existing tools like runqlat & runqslower from bcc, for
->       example, which make use of this tracepoint. Rough call sequence goes like:
->
->       rq_lock(rq) -> -------------------------+
->         trace_sched_switch() ->               |
->           bpf_prog_xyz() ->                   +-> deadlock
->             selinux_lockdown() ->             |
->               audit_log_end() ->              |
->                 wake_up_interruptible() ->    |
->                   try_to_wake_up() ->         |
->                     rq_lock(rq) --------------+
-
-Since BPF is a bit of chaotic nightmare in the sense that it basically
-out-of-tree kernel code that can be called from anywhere and do pretty
-much anything; it presents quite the challenge for those of us worried
-about LSM access controls.
-
-You and the other BPF folks have investigated ways in which BPF might
-be able to disable helper functions allowing us to do proper runtime
-access checks but haven't been able to make it work, which brings this
-patch up yet again.  I'm not a fan of this patch as it basically
-allows BPF programs to side-step any changes to the security policy
-once the BPF programs have been loaded; this is Not Good.
-
-So let's look at this from a different angle.  Let's look at the two
-problems you mention above.
-
-If we start with the runqueue deadlock we see the main problem is that
-audit_log_end() pokes the kauditd_wait waitqueue to ensure the
-kauditd_thread thread wakes up and processes the audit queue.  The
-audit_log_start() function does something similar, but it is
-conditional on a number of factors and isn't as likely to be hit.  If
-we relocate these kauditd wakeup calls we can remove the deadlock in
-trace_sched_switch().  In the case of CONFIG_AUDITSYSCALL=y we can
-probably just move the wakeup to __audit_syscall_exit() and in the
-case of CONFIG_AUDITSYSCALL=n we can likely just change the
-wait_event_freezable() call in kauditd_thread to a
-wait_event_freezable_timeout() call with a HZ timeout (the audit
-stream will be much less on these systems anyway so a queue overflow
-is much less likely).  I'm building a kernel with these changes now, I
-should have something to test when I wake up tomorrow morning.  It
-might even provide a bit of a performance boost as we would only be
-calling a wakeup function once for each syscall.
-
-The other issue is related to security_locked_down() and using the
-right subject for the access control check.  As has been pointed out
-several times in this thread, the current code uses the current() task
-as the subject, which is arguably incorrect for many of the BPF helper
-functions.  In the case of BPF, we have talked about using the
-credentials of the task which loaded the BPF program instead of
-current(), and that does make a certain amount of sense.  Such an
-approach should make the security policy easier to develop and
-rationalize, leading to a significant decrease in audit records coming
-from LSM access denials.  The question is how to implement such a
-change.  The current SELinux security_bpf_prog_alloc() hook causes the
-newly loaded BPF program to inherit the subject context from the task
-which loads the BPF program; if it is possible to reference the
-bpf_prog struct, or really just the associated bpf_prog_aux->security
-blob, from inside a security_bpf_locked_down() function we use that
-subject information to perform the access check.  BPF folks, is there
-a way to get that information from within a BPF kernel helper
-function?  If it isn't currently possible, could it be made possible
-(or something similar)?
-
-If it turns out we can do both of these things (relocated audit
-wakeup, bpf_prog reference inside kernel helpers) I think we can
-arrive at a fix which both groups can accept.
-
--- 
-paul moore
-www.paul-moore.com
+(3) I believe there is potential for an upstreamable implementation 
+which does not rely on futex or futex2.
