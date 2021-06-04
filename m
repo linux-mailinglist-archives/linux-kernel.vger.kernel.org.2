@@ -2,77 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9FF39C16E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31CB639C170
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230493AbhFDUkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 16:40:12 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:46114 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229982AbhFDUkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 16:40:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=ddxgeeibrSxUcXVfcvxII7HHK8VvoeqvHMOdOUWFBHk=; b=5w2TfyaeKaPAFA8l6zq7etUFUg
-        JuCA+AK8lxijnO6MljdPCveCyNQ7lIFzu0sHLlbomqYKq8rKlb0oz7gfnkt+fo7DRDOWpTGQY72bU
-        W0Jso7FUPxR4dkXsisxsTWtCmQ3CmZeXZsvtu4/t1bo22JQvPzkBz8nhulJoJH6K3WpY=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lpGaB-007quD-RB; Fri, 04 Jun 2021 22:38:19 +0200
-Date:   Fri, 4 Jun 2021 22:38:19 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
+        id S231320AbhFDUkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 16:40:40 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:43114 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229913AbhFDUkj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 16:40:39 -0400
+Received: from [192.168.254.32] (unknown [47.187.214.213])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 804C320B7178;
+        Fri,  4 Jun 2021 13:38:51 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 804C320B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1622839132;
+        bh=/45hWiDZcsHWctcr5hRZBQDWDhCLQeyVYjjw+Z2h/ao=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=SOCXYevWE8GoQHgMS+3odsSucYuupPTeMrZQ3CPj2riFz+5QZ3Kla+sx5bOFcjDvR
+         xQUrOnf+PaeR9D1GheUMoWk0//YkB6TQZAbCBpNS4ghgjHk5IvJDBpt9wuCDUkWGX9
+         M8JNMo4Cg8f/VoC+ib2xNR0kSPLQwvlUcJ/rsp5w=
+Subject: Re: [RFC PATCH v5 2/2] arm64: Create a list of SYM_CODE functions,
+ check return PC against list
 To:     Mark Brown <broonie@kernel.org>
-Cc:     Sander Vanheule <sander@svanheule.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/2] Clause-22/Clause-45 MDIO regmap support
-Message-ID: <YLqPO38YkVZzHfmS@lunn.ch>
-References: <cover.1622743333.git.sander@svanheule.net>
- <20210604172515.GG4045@sirena.org.uk>
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
+        nobuta.keiya@fujitsu.com, catalin.marinas@arm.com, will@kernel.org,
+        jmorris@namei.org, pasha.tatashin@soleen.com, jthierry@redhat.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210526214917.20099-3-madvenka@linux.microsoft.com>
+ <20210604162415.GF4045@sirena.org.uk>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <903c61d7-5717-c9df-29c5-4f162f84e84c@linux.microsoft.com>
+Date:   Fri, 4 Jun 2021 15:38:50 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604172515.GG4045@sirena.org.uk>
+In-Reply-To: <20210604162415.GF4045@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 06:25:15PM +0100, Mark Brown wrote:
-> On Thu, Jun 03, 2021 at 08:25:08PM +0200, Sander Vanheule wrote:
+
+
+On 6/4/21 11:24 AM, Mark Brown wrote:
+> On Wed, May 26, 2021 at 04:49:17PM -0500, madvenka@linux.microsoft.com wrote:
 > 
-> > 1. I've opted to just ignore any bits that lie beyond the allowed address
-> >    width. Would it be cleaner to raise an error instead?
+>> The unwinder should check if the return PC falls in any function that
+>> is considered unreliable from an unwinding perspective. If it does,
+>> mark the stack trace unreliable.
 > 
-> It doesn't *really* matter, enforcement is probably a bit better as it
-> might catch bugs.
-
-I would agree with that. The mostly likely problem is that somebody
-misses the difference between C22 and C45 and instantiates the wrong
-sort of regmap. You can quickly detect a C22 regmap being used for C45
-due to the range difference.
-
-> > 2. Packing of the clause-45 register addresses (16 bit) and adressed device
-> >    type (5 bit) is the same as in the mdio subsystem, resulting in a 21 bit
-> >    address. Is this an appropriate way to pack this information into one
-> >    address for the regmap interface?
+> Reviwed-by: Mark Brown <broonie@kernel.org>
 > 
-> Either that or pass the type in when instantiating the regmap (it sounds
-> like it should be the same for all registers on the device?).
 
-A device can implement both C22 and C45. There is also a standardized
-way to perform C45 access over C22, using two registers in C22 space.
-But this assumes the device is an Ethernet PHY, or is at least making
-use of the Ethernet PHY way of doing this tunnelling. But i doubt any
-Ethernet PHY driver will ever use regmap.
+Thanks.
 
-Where i see regmap-mdio being used it for non-Ethernet PHY
-devices. That mostly means Ethernet Switches and oddball devices like
-this like LED controller. Broadcom also have a generic PHY driver
-talking over MDIO to hardware.
+> However it'd be good for someone else to double check this as it's
+> entirely possible that I've missed some case here.
+> 
 
-     Andrew
+I will request Mark Rutland to review this as well.
+
+>> + * Some special cases covered by sym_code_functions[] deserve a mention here:
+> 
+>> + *	- All EL1 interrupt and exception stack traces will be considered
+>> + *	  unreliable. This is the correct behavior as interrupts and exceptions
+>> + *	  can happen on any instruction including ones in the frame pointer
+>> + *	  prolog and epilog. Unless stack metadata is available so the unwinder
+>> + *	  can unwind through these special cases, such stack traces will be
+>> + *	  considered unreliable.
+>> + *
+> 
+> If you're respinning this it's probably also worth noting that we only
+> ever perform reliable stack trace on either blocked tasks or the current
+> task which should if my reasoning is correct mean that the fact that
+> the exclusions here mean that we avoid having to worry about so many
+> race conditions when entering and leaving functions.  If we got
+> preempted at the wrong moment for one of them then we should observe the
+> preemption and mark the trace as unreliable due to that which means that
+> any confusion the race causes is a non-issue.
+> 
+
+I will add a comment that "livepatch only looks at tasks that are currently
+not on any CPU (except for the current task). Such tasks either blocked
+on something and gave up the CPU voluntarily. Or, they were preempted.
+The above comment applies to the latter case".
+
+Madhavan
