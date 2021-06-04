@@ -2,100 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F7639AFA2
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17FE539AFA4
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhFDB0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 21:26:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbhFDB0A (ORCPT
+        id S229882AbhFDB1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 21:27:52 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3416 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229685AbhFDB1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 21:26:00 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B4E9C06174A;
-        Thu,  3 Jun 2021 18:24:15 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fx4mX1GKbz9sRf;
-        Fri,  4 Jun 2021 11:24:11 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1622769852;
-        bh=Y8Pk2CsU/n3nllqNiul95HyVmnP/XFvbdpZTTymVslw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=HaZJ5rSg+rZWGtXrU6S4+ntP6BGLgCCuLRjN+pSe7+G71+zJOKA+bskoj4fxs2Clc
-         r41uGq9HKXR1cCKwD/m/vUA9P0x3oNIO8EcTadAduia6365ZOXAYhcYhS7kYz9twmJ
-         ZKrpDQmeAcAZzzYNAEzbhZkGHa6eSzZh55/TF2U6alEx1nZlCG6LGZ/oaBFQgefl3Q
-         VbsAs22CNFSbi84KVWt4jTDV168ZjR9JOemML7Lo+GGwTXXj66yHQJt25vxJ5EZfr7
-         MT9LkHCvP4BQTleZiv+NyHh6Em50Ux52HkW4n+91Na/RLnyEyKmoJlYrLFZSu6DtLp
-         H33J9jlhRMHwQ==
-Date:   Fri, 4 Jun 2021 11:24:09 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Andre Guedes <andre.guedes@intel.com>,
-        Jithu Joseph <jithu.joseph@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Vedang Patel <vedang.patel@intel.com>
-Subject: linux-next: manual merge of the net-next tree with the net tree
-Message-ID: <20210604112409.75d2cb91@canb.auug.org.au>
+        Thu, 3 Jun 2021 21:27:52 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fx4lC65C2z6v8r;
+        Fri,  4 Jun 2021 09:23:03 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 4 Jun 2021 09:26:03 +0800
+Received: from [10.174.178.174] (10.174.178.174) by
+ dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 4 Jun 2021 09:26:02 +0800
+Subject: Re: [PATCH -next] mfd: pm8008: Fix return value check in
+ pm8008_probe()
+To:     Guru Das Srinagesh <gurus@codeaurora.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>, Lee Jones <lee.jones@linaro.org>,
+        Andy Gross <agross@kernel.org>
+References: <20210603141357.572347-1-yangyingliang@huawei.com>
+ <20210603171253.GA25742@codeaurora.org>
+ <CAA8EJprf+ipk45c-niM1PAHCwn5huBEyvBpQA=dgQMohN43E5g@mail.gmail.com>
+ <20210603190506.GA24042@codeaurora.org>
+From:   Yang Yingliang <yangyingliang@huawei.com>
+Message-ID: <bb3f9574-0869-0c49-b6fd-86c15b6858c1@huawei.com>
+Date:   Fri, 4 Jun 2021 09:26:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/=0fNk_KV8Im1axbCS.FRT0Q";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20210603190506.GA24042@codeaurora.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.178.174]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/=0fNk_KV8Im1axbCS.FRT0Q
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On 2021/6/4 3:05, Guru Das Srinagesh wrote:
+> On Thu, Jun 03, 2021 at 08:31:28PM +0300, Dmitry Baryshkov wrote:
+>> On Thu, 3 Jun 2021 at 20:18, Guru Das Srinagesh <gurus@codeaurora.org> wrote:
+>>> On Thu, Jun 03, 2021 at 10:13:57PM +0800, Yang Yingliang wrote:
+>>>> In case of error, the function devm_regmap_init_i2c() returns ERR_PTR()
+>>>> and never returns NULL. The NULL test in the return value check
+>>>> should be replaced with IS_ERR().
+>>>>
+>>>> Fixes: 6b149f3310a4 ("mfd: pm8008: Add driver for QCOM PM8008 PMIC")
+>>>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>>>> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+>>> Acked-by: Guru Das Srinagesh <gurus@codeaurora.org>
+>> Interestingly, the change does not correspond to the changelog
+>> message. And the code is correct as devm_kzalloc returns NULL if I
+>> remember correctly.
+My bad, I sent a wong patch, I will send a new one.
 
-Today's linux-next merge of the net-next tree got a conflict in:
-
-  drivers/net/ethernet/intel/igc/igc_main.c
-
-between commit:
-
-  45ce08594ec3 ("igc: add correct exception tracing for XDP")
-
-from the net tree and commit:
-
-  73a6e3721261 ("igc: Refactor __igc_xdp_run_prog()")
-
-from the net-next tree.
-
-I fixed it up (I am not sure, but I just used the latter version) and
-can carry the fix as necessary. This is now fixed as far as linux-next
-is concerned, but any non trivial conflicts should be mentioned to your
-upstream maintainer when your tree is submitted for merging.  You may
-also want to consider cooperating with the maintainer of the conflicting
-tree to minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/=0fNk_KV8Im1axbCS.FRT0Q
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC5gLkACgkQAVBC80lX
-0GzLEAf+I2BlUmezOaUzkHxqsyiJdtrkOuKSYduYfBXCu4IP/6nw7MHy0aA1uwr7
-xzjguGkrpnh8Am5yHeGyzfx8/nzv5FRyqc/vzBXi8ayfh7yyOQsyjEpcyyu2bHZR
-W8zO1SCzvM9SUMOkkhesAh1G+MdnmYLzc2GCmiOl5MPqoaQT9ASpQ7ioCw1Zjk2b
-sKwgc50GcL7M3s7e0xcmNeIqR8VmP/9nhB6jXDHkITyVDhDkIFqESf52cawA49Lb
-00VkXSAOZqnkTXR+43+ZNCFXgbawZjIt/q43ZJvzHIB3pu6/MmVlkiFbxcGc7tH4
-D7hvTZjuWqB/6vZHxDca9p3W36OlSw==
-=NlEW
------END PGP SIGNATURE-----
-
---Sig_/=0fNk_KV8Im1axbCS.FRT0Q--
+Thanks,
+Yang
+> Thanks for pointing that out - I missed that. I would like to retract my
+> Acked-by for this patch.
+>
+>>>> ---
+>>>>   drivers/mfd/qcom-pm8008.c | 2 +-
+>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/mfd/qcom-pm8008.c b/drivers/mfd/qcom-pm8008.c
+>>>> index c472d7f8103c..dfefa60d693b 100644
+>>>> --- a/drivers/mfd/qcom-pm8008.c
+>>>> +++ b/drivers/mfd/qcom-pm8008.c
+>>>> @@ -223,7 +223,7 @@ static int pm8008_probe(struct i2c_client *client)
+>>>>        struct pm8008_data *chip;
+>>>>
+>>>>        chip = devm_kzalloc(&client->dev, sizeof(*chip), GFP_KERNEL);
+>>>> -     if (!chip)
+>>>> +     if (IS_ERR(chip))
+>>>>                return -ENOMEM;
+>>>>
+>>>>        chip->dev = &client->dev;
+>>>> --
+>>>> 2.25.1
+>>>>
+>>
+>>
+>> -- 
+>> With best wishes
+>> Dmitry
+> .
