@@ -2,154 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA1C39AF69
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F45D39AF70
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbhFDBNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 21:13:16 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:30496 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229947AbhFDBNP (ORCPT
+        id S229849AbhFDBS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 21:18:56 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:13704 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFDBSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 21:13:15 -0400
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210604011128epoutp0408f33e772fb9e3b7f82381c9bb3321bc~FO_Nummbl2731827318epoutp04E
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 01:11:28 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210604011128epoutp0408f33e772fb9e3b7f82381c9bb3321bc~FO_Nummbl2731827318epoutp04E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1622769088;
-        bh=LRUiLiX4cSKymfrziHeHmnueGFkCDFslCiYp2VNfNeg=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=pMlAKXBvDh6LLPQiwZU++Jlvot5S/XeVjzswZISqpfLzfqFy3glrNclt7eC9EmXlY
-         JmWoDtEYxhXt5T5LLn4y5bSvjMbP0CnWmZtBEG0O1y2ngx1Q17YUjCXpV9q3aRzdUI
-         JF7KfQDtcPHFz2HuxC9/dknGq64+gyDokaMrh+8U=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20210604011127epcas2p4084ff7c128d4b5c98a4edfa6d94cb26b~FO_Mg4VSv3003830038epcas2p4A;
-        Fri,  4 Jun 2021 01:11:27 +0000 (GMT)
-Received: from epsmges2p4.samsung.com (unknown [182.195.40.181]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4Fx4Tn3Htwz4x9Q3; Fri,  4 Jun
-        2021 01:11:25 +0000 (GMT)
-X-AuditID: b6c32a48-4fbff700000025f5-6b-60b97dbdc9bd
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        5F.EF.09717.DBD79B06; Fri,  4 Jun 2021 10:11:25 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH v35 3/4] scsi: ufs: Prepare HPB read for cached
- sub-region
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        Jaemyung Lee <jaemyung.lee@samsung.com>,
-        Jieon Seol <jieon.seol@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <12392bef-e018-8260-5279-16b7b43f5a8f@acm.org>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210604011124epcms2p39a466db169ebbfd2c889e25fba9aa0b4@epcms2p3>
-Date:   Fri, 04 Jun 2021 10:11:24 +0900
-X-CMS-MailID: 20210604011124epcms2p39a466db169ebbfd2c889e25fba9aa0b4
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrJJsWRmVeSWpSXmKPExsWy7bCmqe7e2p0JBo+msFo8mLeNzWJv2wl2
-        i5c/r7JZTPvwk9ni0/plrBYvD2la7Dp4kM1i1YNwi+bF69ks5pxtYLLo7d/KZrH54AZmi8d3
-        PrNbLLqxjcmi/187i8W2z4IWx0++Y7S4vGsOm0X39R1sFsuP/2OyWLr1JqNF5/Q1LA5iHpev
-        eHtc7utl8tg56y67x4RFBxg99s9dw+7RcnI/i8fHp7dYPPq2rGL0+LxJzqP9QDdTAFdUjk1G
-        amJKapFCal5yfkpmXrqtkndwvHO8qZmBoa6hpYW5kkJeYm6qrZKLT4CuW2YO0JtKCmWJOaVA
-        oYDE4mIlfTubovzSklSFjPziElul1IKUnAJDwwK94sTc4tK8dL3k/FwrQwMDI1OgyoScjN7D
-        J1gKrnFVLL/3mbWBsYeji5GTQ0LARKKxYRJLFyMXh5DADkaJH9cWsXcxcnDwCghK/N0hDFIj
-        LBAi8fv+HTYQW0hASWL9xVnsEHE9iVsP1zCC2GwCOhLTT9xnB5kjItDEIrHz8FuwocwC55kl
-        9txoZ4TYxisxo/0pC4QtLbF9+VawOKeAtcSDO0dYIeIaEj+W9TJD2KISN1e/ZYex3x+bDzVH
-        RKL13lmoGkGJBz93Q8UlJY7t/sAEYddLbL3zixHkCAmBHkaJwztvQS3Ql7jWsRHsCF4BX4ml
-        aw+CDWIRUJWY9GI7VLOLxJ0LE8BsZgF5ie1v5zCDQoVZQFNi/S59EFNCQFniyC0WmLcaNv5m
-        R2czC/BJdBz+CxffMe8J1HQ1iXU/1zNNYFSehQjqWUh2zULYtYCReRWjWGpBcW56arFRgQly
-        7G5iBKd5LY8djLPfftA7xMjEwXiIUYKDWUmEd4/ajgQh3pTEyqrUovz4otKc1OJDjKZAX05k
-        lhJNzgdmmrySeENTIzMzA0tTC1MzIwslcd6fqXUJQgLpiSWp2ampBalFMH1MHJxSDUzs/L3z
-        wtXNBLd1Nn2yTI+RXm9d9/j748c/rJZmNG19Xmue4Zl/WqVm1XHHf2/r/etYOL9yRLdXn+C7
-        9rfArE9qh/Zd7wVrjKRXaP+7/dgxZsO2EtsT+Qd13j+6FD75nb7lxvJNizLKD4q6td3svsL/
-        lHv7rKw0F2OHeRWzyz7xnO7Wk/G48iN9p9ixuYbdF40OvZn7eJfUHLGADY/V/+2/6x/80Wbx
-        fPtD269eEpimnbDe8MS5RW3TvLc/P2OZEhe1e7F0DvvfG+EbfKr5FeoXvq25F/j9Z4hN4s8z
-        14+scdC/tnV9zoUpb+903M4sneIr9fTyt5nHSwLULdSajzge+JsSrBpwzUV84p+VT40nKrEU
-        ZyQaajEXFScCAMPpsY18BAAA
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210524084345epcms2p63dde85f3fdc127c29d25ada7d7f539cb
-References: <12392bef-e018-8260-5279-16b7b43f5a8f@acm.org>
-        <20210524084345epcms2p63dde85f3fdc127c29d25ada7d7f539cb@epcms2p6>
-        <20210524084546epcms2p2c91dc1df482fd593307892825532c6dd@epcms2p2>
-        <CGME20210524084345epcms2p63dde85f3fdc127c29d25ada7d7f539cb@epcms2p3>
+        Thu, 3 Jun 2021 21:18:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1622769432; x=1654305432;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Vh9/6Wuj12Htn9LEctEUji7R4lUaq5eqsTwYEqPFMeo=;
+  b=EbfRXTEEbIxWO82FsKcXt3cv6U0FT2rLNxrvOG6vRuW0L9xLqqv84N8i
+   8cFZpqIzNxFPwi5qZEB07ZvQ2LtOHYwyklLaBkd/+XqvXvXpVU7twM3XF
+   FaLWxgbBv62CxYwcV/I0PUcTS11YSlg0toUjy7CUT5O/ghxEBXLtaecn9
+   mGqdVqbygFvbyVFVC8EDssTGQ0RlLr3LcaqbhTdHNRuVtbuywc8ruSSq8
+   +BUIS4JdZowrUxR4lLmztlhEMuXJVIEEVlMPZZLu6MmmzfleqLKjUf97k
+   HFYG22M6Kuv5obGyr1N1T2dEPqGTfEuWzHXijkd3jC58Rbf+iCX16BXpp
+   A==;
+IronPort-SDR: NEP1NThL3iALf3iP5fzTgDJCkOYb7IVbjTm6f3IZwitZvKn114S9HJZQrx5Y9tzmUOkt02RTIU
+ I6VyAkHi1qHK7WDY7XERPxsrxJty5KqwP2ac/kd1gNtHcq9XmgLQZIRhdJC7H9SB+pyrFTmOkS
+ s2khGaodcZ1ZhIf5cWfFAX+vuaW/blegt4AQY0hZsv4KIUsg0cpSfImQ30A2VM4M0/ceJGu/C5
+ x7yg8vnBrRECyy/kSJFXngsznSeO/J6r7gCfoQrHRLA7nghqazLKMegSwUyqtKqJDdnCBLNTNB
+ BZQ=
+X-IronPort-AV: E=Sophos;i="5.83,246,1616428800"; 
+   d="scan'208";a="274534084"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 04 Jun 2021 09:17:11 +0800
+IronPort-SDR: OXk6qBKF8+H74L/HJcYzMgwavpNlXgaxpBnmB9SQLkFFEWCyF4qPIfCrqCyXIc1GeKnT9vg4Cz
+ krvkH1qlxyQ/w/p2IjRYyvpvPCcMEzneYs2XtTYJpj31Udr4KVijC/ax4f5WSJM76DEBQ5OXxE
+ MQ+fAXAM3pZtFP1RyznE5WKnYZlsF6wsEdK7qWP/yNIfXyPZLxhnLEOO74wsjxd7zvSPP/sd3y
+ 3AJMMTH3Cwf7tWPq4cVUggkv9ezZp2LZVpMPZAthcCF2/pQZe4LO8Z7NmUDqgVTvACZSiTPofa
+ 2zZ7iHL1TXIRXgsqE7Sj6Fiw
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 17:56:22 -0700
+IronPort-SDR: NrTxArL7zx/JFVZTTaKwEGHvoGHBh/HTpZkjVQ4W9I1qbXCzqJXrOVZcmaFxL2n0nIgt7wDqwN
+ MEAX0ffTCkbeYox93vH5edRHNqa4q5BddruUXOsp/kbA10TbbOX7wbIos8lYTTiPyT1Tl/jZV+
+ lBtTcahjtGvgCml8b85DDvp2Fv91ogvKJuEe0Slgbx8Wbn4S0DVA2j2/i9p8kSoAaGBist5dKi
+ A1a9oxDbI6mNW9GiZdRtlC2ZmCppvmcHeqfHUbq62FeywwGmjaKp/hhsUUGrGjAk9D59upEme0
+ kLI=
+WDCIronportException: Internal
+Received: from 1hfg3x2.ad.shared (HELO naota-xeon) ([10.225.56.215])
+  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 18:17:09 -0700
+Date:   Fri, 4 Jun 2021 10:17:07 +0900
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] Btrfs fixes for 5.13-rc5
+Message-ID: <20210604011707.l6mvqn5z2yvm4j3z@naota-xeon>
+References: <cover.1622728563.git.dsterba@suse.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1622728563.git.dsterba@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bart,
-
->> +static void
->> +ufshpb_set_hpb_read_to_upiu(struct ufshpb_lu *hpb, struct ufshcd_lrb *lrbp,
->> +                            u32 lpn, u64 ppn, u8 transfer_len)
->> +{
->> +        unsigned char *cdb = lrbp->cmd->cmnd;
->> +
->> +        cdb[0] = UFSHPB_READ;
->> +
->> +        /* ppn value is stored as big-endian in the host memory */
+On Thu, Jun 03, 2021 at 04:50:15PM +0200, David Sterba wrote:
+> Hi,
 > 
->I think that that comment means that the type of the 'ppn' argument
->should be changed from 'u64' into __be64.
-
-OK, I will change it.
-
+> this is a batch from last week, I wanted to give it more testing because
+> last pull request introduced a bug, interacting zoned and subpage
+> features. Otherwise there are error handling improvements and bug
+> fixes. The last commit is from today, adding IRC link to maintainers
+> file.
 > 
->> +        memcpy(&cdb[6], &ppn, sizeof(__be64));
->> +        cdb[14] = transfer_len;
->> +
->> +        lrbp->cmd->cmd_len = UFS_CDB_SIZE;
->> +}
->> +
->> +/*
->> + * This function will set up HPB read command using host-side L2P map data.
->> + * In HPB v1.0, maximum size of HPB read command is 4KB.
->> + */
->> +void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
->> +{
->[ ... ]
->> +
->> +        ufshpb_set_hpb_read_to_upiu(hpb, lrbp, lpn, ppn, transfer_len);
+> Please pull, thanks.
 > 
->'transfer_len' has type int and is truncated to type 'u8' when passed as
->an argument to ufshpb_set_hpb_read_to_upiu(). Please handle transfer_len
->values >= 256 properly.
+> - error handling improvements, caught by error injection
+>   - handle errors during checksum deletion
+>   - set error on mapping when ordered extent io cannot be finished
+>   - inode link count fixup in tree-log
+>   - missing return value checks for inode updates in tree-log
+>   - abort transaction in rename exchange if adding second reference fails
+> 
+> - fixes
+>   - fix fsync failure after writes to prealloc extents
+>   - fix deadlock when cloning inline extents and low on available space
+>   - fix compressed writes that cross stripe boundary
+>
 
-Before entering the function, ufshpb_is_supported_chunk() checks whether
-transfer_len <= hpb->pre_req_max_tr_len which is set to
-HPB_MULTI_CHUNK_HIGH (128) on initalization.
+David,
+
+Could you also add commit "btrfs: zoned: fix zone number to
+sector/physical calculation" for pull? Without this commit, on a
+device larger than 4 TB, zoned btrfs will overwrite the primary
+superblock with the 2nd copy and causes a mount failure after the
+first mount/umount.
+
+https://lore.kernel.org/linux-btrfs/20210527062732.2683788-1-naohiro.aota@wdc.com/
 
 Thanks,
-Daejun
