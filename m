@@ -2,108 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 193EB39BDD1
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13A2639BDD9
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhFDRAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 13:00:30 -0400
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:39849 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbhFDRA3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 13:00:29 -0400
-Received: by mail-oi1-f172.google.com with SMTP id m137so6506916oig.6
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 09:58:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=IN3SgezFLQfNZ7veTbzUM3bPaQ1v48sm/05DwTa7/PU=;
-        b=tBcoFOsv6b8ruMCJzxqbZ7QxP0UdsQMhL22S84VurvWGPoKPkq0mm2qfBbxR5v5iHR
-         kUqCVUVnxX0ZXiUFFV5PzTNR/SqTFJkZYe7g7OeCa6ODdLxm7Zxc2e4kLHG36z/A5gcL
-         39XoA+F+kyAXsS+gxPws9Hwlswz0/oe0ZJBDWro/VPTilrdWQ2eqr9WT5vcV6UvrVABw
-         VbofKoss8GTut/9QzqOLoPlbK7O8MXGQ+r4Vr6xOqedV461uOlR2Kn357m7PE1gURvKJ
-         vTagEoDcDW0z03oWaiVo35xr6K20QNYslFjo4fvU42TQRr8/cf1aJyh0GVrFHXPVaUUY
-         3FJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=IN3SgezFLQfNZ7veTbzUM3bPaQ1v48sm/05DwTa7/PU=;
-        b=RrA0Cb3qI6VbT08tyaBo376BT4Q8RaANOMbmQGJ1dHWAWWfyTF32zmABvTWTwyGyQy
-         rOMnHN7UkuzZHhf4Ow7wcsJDUVeHhgiL9Qw/wQKYlaf58WvFLs5TdqIgkdQuKKtzlVgk
-         2l/kxXCTB68j8jG/lC12ggn++rTy4YLSIhxH4mzBWik3c/yA7hXGALafu9cht50ZZxZW
-         SOLN0LvuLcjfwkvc7MpqIg8lSxgw1lQhhPd1iMln46n958g3OEInwC/8445O9F8FhYVx
-         CydBpY5CaxgcErPM2qFkrqItb2x7gRgYSCxN3CtTArQoO7xkdjkfAfGnYCZmsIm2Q4D6
-         jHeg==
-X-Gm-Message-State: AOAM531ycN6mVx+9KvkCi1lyTEQXCEmo2Z3TEO86LEcAwcQt3k9P4keN
-        +Hnls1O0SXZ3P2CGiLcRROA0NfXygnyNCBkf4wQ=
-X-Google-Smtp-Source: ABdhPJycUpGDHDmpx2H0gKioVDhBClmCP6ZvzuaN3KQq9J2gvL7XNOsEat8k57/mMr8h9vtahb00hVhbvGi77TBEjXI=
-X-Received: by 2002:a05:6808:206:: with SMTP id l6mr10953538oie.5.1622825848035;
- Fri, 04 Jun 2021 09:57:28 -0700 (PDT)
+        id S230230AbhFDRBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 13:01:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38366 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229778AbhFDRBn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 13:01:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3A78613E3;
+        Fri,  4 Jun 2021 16:59:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622825997;
+        bh=oy91zHyeWFBR/8w6AyBF+OCwrD1WZiRJ8FRdiKTuQqI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ADXZmoNwtLICjuUk8BKk7G7Sn/xPd+xGBvgfPNa1buqZ5s7ymG8fFFBm4XDmHleCp
+         UG2ah5vUf+/9ofJnfONMsZGXqekSRlbXmU7Et+gZ937iTcymPem9/GdYi8u91VZRjS
+         vpJeLmB57RqlpLYUdthc7gZ5ddE0n4vyOe+olNExDzAlRoXc6/Jqlu4WHyAXBegups
+         2uHPcZBqrqv8ffxEd+eCKmXDbtSxS5KKwq8dixYs3SxK9oM7GYGMYPjK5ucTJJWBYv
+         aW9z2c9t8eMl5cPRfSH+AWGb9B+FtuFy04iRwovHyS7UGAvXLu6CXiJFkYbhzDt8aU
+         sDpITrpvWAY+Q==
+Date:   Fri, 4 Jun 2021 17:59:45 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     madvenka@linux.microsoft.com
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
+        nobuta.keiya@fujitsu.com, catalin.marinas@arm.com, will@kernel.org,
+        jmorris@namei.org, pasha.tatashin@soleen.com, jthierry@redhat.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v5 2/2] arm64: Create a list of SYM_CODE functions,
+ check return PC against list
+Message-ID: <20210604165945.GA39381@sirena.org.uk>
+References: <20210526214917.20099-3-madvenka@linux.microsoft.com>
 MIME-Version: 1.0
-References: <1622690940-10972-1-git-send-email-wanjiabing@vivo.com> <3d7fcdb9-990b-270b-f87b-d7fe157c6b2f@gmail.com>
-In-Reply-To: <3d7fcdb9-990b-270b-f87b-d7fe157c6b2f@gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 4 Jun 2021 12:57:17 -0400
-Message-ID: <CADnq5_M5p=id9EtvtNGQyM6QC6QJNNWuraMi1LyoUZir6vUeZQ@mail.gmail.com>
-Subject: Re: [PATCH] drm: amdgpu: Remove unneeded semicolon in amdgpu_vm.c
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
-Cc:     Wan Jiabing <wanjiabing@vivo.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Nirmoy Das <nirmoy.das@amd.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Philip Yang <Philip.Yang@amd.com>,
-        Mihir Bhogilal Patel <Mihir.Patel@amd.com>,
-        Roy Sun <Roy.Sun@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Kj7319i9nmIyA2yE"
+Content-Disposition: inline
+In-Reply-To: <20210526214917.20099-3-madvenka@linux.microsoft.com>
+X-Cookie: Auction:
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
 
-Alex
+--Kj7319i9nmIyA2yE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Fri, Jun 4, 2021 at 3:03 AM Christian K=C3=B6nig
-<ckoenig.leichtzumerken@gmail.com> wrote:
->
-> Am 03.06.21 um 05:28 schrieb Wan Jiabing:
-> > Fix following coccicheck warning:
-> > ./drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:1726:2-3: Unneeded semicolon
-> >
-> > Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
->
-> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
->
-> > ---
-> >   drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/a=
-md/amdgpu/amdgpu_vm.c
-> > index 2460371..231745b 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-> > @@ -1723,7 +1723,7 @@ int amdgpu_vm_bo_update_mapping(struct amdgpu_dev=
-ice *adev,
-> >
-> >               amdgpu_res_next(&cursor, num_entries * AMDGPU_GPU_PAGE_SI=
-ZE);
-> >               start =3D tmp;
-> > -     };
-> > +     }
-> >
-> >       r =3D vm->update_funcs->commit(&params, fence);
-> >
->
+On Wed, May 26, 2021 at 04:49:17PM -0500, madvenka@linux.microsoft.com wrote:
+
+> + *	- return_to_handler() is handled by the unwinder by attempting to
+> + *	  retrieve the original return address from the per-task return
+> + *	  address stack.
+> + *
+> + *	- kretprobe_trampoline() can be handled in a similar fashion by
+> + *	  attempting to retrieve the original return address from the per-task
+> + *	  kretprobe instance list.
+> + *
+> + *	- I reckon optprobes can be handled in a similar fashion in the future?
+
+Note that there's a patch for optprobes on the list now:
+
+   https://lore.kernel.org/r/1622803839-27354-1-git-send-email-liuqi115@huawei.com
+
+--Kj7319i9nmIyA2yE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmC6XAAACgkQJNaLcl1U
+h9AmswgAhOf2VOY3fAiB5KkSryDhSWd3yIPNpRsIYiepRmDE0pyVzzYnyl4DxK/G
+PGvN/Wi7Uzu36mHgAA5qCka1F4gm6RN8yLbtGbvtV6fqvTE+N0LvHYt3zNhyZjix
+KhK2sFjE9bNNg7S/ZM8whyXqhPoDOtfmxgGSiuHNwh5Lbcfsl5HO1AJD02r/nbnz
+RqOCV1VcSnWit9AoMZLSfhkFCf4/G5PlijB6x1PkvWNAtsyM1NE61/a/HFfhwGkt
+ZbeuD0xBZMone+oCqNqFyslfhdj3iHBMUntYtuADIugheBEhf+L6H7yLU/CrLx5w
+CoDOftD29KUJUDdFdBuQ6QndSk4HhA==
+=cks7
+-----END PGP SIGNATURE-----
+
+--Kj7319i9nmIyA2yE--
