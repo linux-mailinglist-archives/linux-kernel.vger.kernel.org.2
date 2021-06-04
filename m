@@ -2,130 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 791FB39B5CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF8739B5D4
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230143AbhFDJWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 05:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229936AbhFDJWc (ORCPT
+        id S230188AbhFDJXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 05:23:22 -0400
+Received: from mail-pl1-f180.google.com ([209.85.214.180]:41807 "EHLO
+        mail-pl1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229962AbhFDJXV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 05:22:32 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1485C06174A
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 02:20:29 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id k7so13397261ejv.12
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 02:20:29 -0700 (PDT)
+        Fri, 4 Jun 2021 05:23:21 -0400
+Received: by mail-pl1-f180.google.com with SMTP id o12so952480plk.8
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 02:21:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=hy/qFdBqxnuvliwIjp97UN0D29BYkAVb7TMvJfgcgs0=;
-        b=QeWMrNbKywBFEOv7REdQjtOA11T9a4l+Go6fuCCYNNrMLtH8qzH3JyR763YM9BXDlV
-         Rkvp9FVhrH4XQ8vmyD7SOv/nwSa8tglOsz4hTkkaoLv3r8WtIU0NbhDO/r0t3dCsizGX
-         NtaO1sLKVSS54+UUv3RyCxhRu2MBloCMHahVb3LqhiZPe8UUGz2MgbWfa6uX6ddvFXjf
-         B3Q2smzYEKAsCMK4Lf1kbFV9fDxOuYmRPsgupPV+x35pu3D/CMwSFmeavi9aFPqSLG3T
-         YY/mlqv53Vy1BVGzffrup+S50mxeGBbQBjtEXpyOm8gP3+XKwhzH40n6i7yErt2np8/E
-         WMJA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mBAEhjZZRv7Jcy7Zua0pi2TsECX3PFBDfNxkyFGsLO0=;
+        b=GFzrB6mDdP8QDUkM5E2D3SpI1YuNW543kJ1Zx1kk0NuEJ9dY60dkreacgqq7B7HMEs
+         uqcy1p2HaKtSeecuRPdMc+ZpGU/OEc3CdNONynbGrv/3vMYyT7bl4zUw0YUQ9/GOQcn/
+         p9MzmRmMsJwpomp+rOKp0w+JG2E9nloY+xf18=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=hy/qFdBqxnuvliwIjp97UN0D29BYkAVb7TMvJfgcgs0=;
-        b=FnsBDaM6WUhA2nFToe15lriKNlQ8488SvEKuLsZMHFTIKQ0dQkEdwQco34f5SfHyeH
-         4cEI29UZRjeybM+kzdLeU3RcJwbNSS6zjk84bluJ3lxQjL/I78gOAGAST1J7gGFh9aAF
-         ZpbMQUdXSMlC3GJHL3g5kSJa5+iLLj1BdTYZEeQf3h9kHTqhWqekX+raa3tynNRFVYP/
-         0TqJidlU+eLsNJuwa7gggC2ek3oQKWQBMGmWjCcZGinLjr6SG+OLnZmb8JAadknNOWn6
-         rBIQNmOAf6kf8giW/1zPaAd5XVY74ohSbJTByLHJtVmfrMCxAgRtBM3eKnCL1CnxEgV6
-         hmFg==
-X-Gm-Message-State: AOAM533iYqOgf5oW7a7unNn/JinkcC261FOhyn0J0pBU427tVcIbNQ4m
-        iAZCE8h/6pc31zfH1UYPK/RrohAmLmchKtscpRM1Gg==
-X-Google-Smtp-Source: ABdhPJwkGJjRjKIcmJirI7Y6tIxR9hgQPaSiTRjT1j1NsCCJNsKTajl1oRrxbpDpDy2+lhQRgv0f9CB3LE9YFl7PsMI=
-X-Received: by 2002:a17:906:9d05:: with SMTP id fn5mr3247466ejc.133.1622798427976;
- Fri, 04 Jun 2021 02:20:27 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mBAEhjZZRv7Jcy7Zua0pi2TsECX3PFBDfNxkyFGsLO0=;
+        b=UPKO4tEfjNmo9KVuaGfUfHOHZd98J12an/ZE4mdl0qRxyvaNN9435zLCXATKJppN/p
+         1Vu+LVjlxGa+eqehpTJk9XFRrlUEi7Ef7piVB5kaRmVwkzfkuUVl5VMN+wSCyEex2+z+
+         QD3SdxwrPgAqT+sYuftXWhZTk6j1844uQHr4Cb39CVa/lGkfrtj4VbOLNkt3ZgzAk1pO
+         PRxcW0nQRTEBI4c5zuJYVkEM794bWXCySF7nw6NScYXk1xPgrRZOECuWEWBh5IQ2z0z7
+         YktNiCDj9EgZ9RJhhpfziyoT8UoXEnIH6Qcbk3h7hkmjAsJgNx2XON9MEgl7X4WBMuXl
+         nYzQ==
+X-Gm-Message-State: AOAM5338tPI4KQkei64LdM6oZEjSSyATQ9YMlyayCW/MoHlv4OB8j3Ed
+        Tn2ijqQ4qVGKDBVIzFGiFb5NHw==
+X-Google-Smtp-Source: ABdhPJxqC/sFmH8NWFwbR+x7mytZyDKEx7TFmgf8/+UGv7fZox1XEZk3IYhTIOf3hSBOmUz/xertuQ==
+X-Received: by 2002:a17:90b:607:: with SMTP id gb7mr3845129pjb.5.1622798435671;
+        Fri, 04 Jun 2021 02:20:35 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:36b:f5b6:c380:9ccf])
+        by smtp.gmail.com with ESMTPSA id p19sm4236799pjv.21.2021.06.04.02.20.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 02:20:34 -0700 (PDT)
+Date:   Fri, 4 Jun 2021 18:20:28 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Suleiman Souhlal <suleiman@google.com>, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        kvm@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        linux-s390@vger.kernel.org
+Subject: Re: [RFC][PATCH] kvm: add suspend pm-notifier
+Message-ID: <YLnwXD5pPplTrmoZ@google.com>
+References: <20210603164315.682994-1-senozhatsky@chromium.org>
+ <87v96uyq2v.wl-maz@kernel.org>
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 4 Jun 2021 14:50:16 +0530
-Message-ID: <CA+G9fYsnWUYuahxv3+vQx3UQ_CvJ5caiQwb7BXEuDGxPjmrM1w@mail.gmail.com>
-Subject: [next] fs: cifsglob.h:955:20: error: passing argument 2 of 'test_bit'
- from incompatible pointer type
-To:     linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-Cc:     Steve French <sfrench@samba.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87v96uyq2v.wl-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following builds failed on Linux next-20210604 due to warnings / errors.
+On (21/06/04 09:46), Marc Zyngier wrote:
+[..]
+> > +void kvm_arch_pm_notifier(struct kvm *kvm)
+> > +{
+> > +#ifdef CONFIG_PM
+> > +	int c;
+> > +
+> > +	mutex_lock(&kvm->lock);
+> > +	for (c = 0; c < kvm->created_vcpus; c++) {
+> > +		struct kvm_vcpu *vcpu = kvm->vcpus[c];
+> > +		int r;
+> > +
+> > +		if (!vcpu)
+> > +			continue;
+> 
+> Wouldn't kvm_for_each_vcpu() avoid this kind of checks?
 
-  - arm (s3c2410_defconfig) with gcc- 8 / 9 / 10
-  - parisc (defconfig) with gcc-8 / 9 / 10
-  - powerpc (ppc6xx_defconfig) with gcc- 8 / 9 /10
+Right, that's what I do in v2, which I haven't posted yet.
 
-In file included from fs/cifs/transport.c:38:
-fs/cifs/transport.c: In function 'cifs_pick_channel':
-fs/cifs/cifsglob.h:955:20: error: passing argument 2 of 'test_bit'
-from incompatible pointer type [-Werror=incompatible-pointer-types]
-  955 |  test_bit((index), &(ses)->chans_need_reconnect)
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-           |
-           size_t * {aka unsigned int *}
-fs/cifs/transport.c:1065:7: note: in expansion of macro
-'CIFS_CHAN_NEEDS_RECONNECT'
- 1065 |   if (CIFS_CHAN_NEEDS_RECONNECT(ses, index))
-      |       ^~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from arch/powerpc/include/asm/bitops.h:193,
-                 from include/linux/bitops.h:32,
-                 from include/linux/kernel.h:12,
-                 from include/linux/list.h:9,
-                 from include/linux/wait.h:7,
-                 from include/linux/wait_bit.h:8,
-                 from include/linux/fs.h:6,
-                 from fs/cifs/transport.c:23:
-include/asm-generic/bitops/non-atomic.h:104:66: note: expected 'const
-volatile long unsigned int *' but argument is of type 'size_t *' {aka
-'unsigned int *'}
-  104 | static inline int test_bit(int nr, const volatile unsigned long *addr)
-                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
-cc1: some warnings being treated as errors
-make[3]: *** [scripts/Makefile.build:272: fs/cifs/transport.o] Error 1
-fs/cifs/sess.c: In function 'cifs_chan_set_need_reconnect':
-fs/cifs/sess.c:98:22: error: passing argument 2 of 'set_bit' from
-incompatible pointer type [-Werror=incompatible-pointer-types]
-   98 |  set_bit(chan_index, &ses->chans_need_reconnect);
-             ^~~~~~~~~~~~~~~~~~~~~~~~~~
-             |
-             size_t * {aka unsigned int *}
+[..]
+> > +#include <linux/notifier.h>
+> > +
+> >  #ifndef KVM_MAX_VCPU_ID
+> >  #define KVM_MAX_VCPU_ID KVM_MAX_VCPUS
+> >  #endif
+> > @@ -579,6 +581,10 @@ struct kvm {
+> >  	pid_t userspace_pid;
+> >  	unsigned int max_halt_poll_ns;
+> >  	u32 dirty_ring_size;
+> > +
+> > +#ifdef CONFIG_PM
+> > +	struct notifier_block pm_notifier;
+> > +#endif
+> 
+> I'd certainly like to be able to opt out from this on architectures
+> that do not implement anything useful in the PM callbacks.
 
+Well on the other hand PM-callbacks are harmless on those archs, they
+won't overload the __weak function.
 
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Please consider making this an independent config option that individual
+> archs can buy into.
 
-Full build log:
-https://gitlab.com/Linaro/lkft/mirrors/next/linux-next/-/jobs/1317929765#L247
+Sure, I can take a look into this, but how is this better than __weak
+function? (that's a real question)
 
-Steps to reproduce:
------------------------------
+[..]
+> > +#ifdef CONFIG_PM
+> > +static int kvm_pm_notifier_call(struct notifier_block *bl,
+> > +				unsigned long state,
+> > +				void *unused)
+> > +{
+> > +	struct kvm *kvm = container_of(bl, struct kvm, pm_notifier);
+> > +
+> > +	switch (state) {
+> > +	case PM_HIBERNATION_PREPARE:
+> > +	case PM_SUSPEND_PREPARE:
+> > +		kvm_arch_pm_notifier(kvm);
+> 
+> How about passing the state to the notifier callback? I'd expect it to
+> be useful to do something on resume too.
 
-# TuxMake is a command line tool and Python library that provides
-# portable and repeatable Linux kernel builds across a variety of
-# architectures, toolchains, kernel configurations, and make targets.
-#
-# TuxMake supports the concept of runtimes.
-# See https://docs.tuxmake.org/runtimes/, for that to work it requires
-# that you install podman or docker on your system.
-#
-# To install tuxmake on your system globally:
-# sudo pip3 install -U tuxmake
-#
-# See https://docs.tuxmake.org/ for complete documentation.
+For different states we can have different kvm_arch functions instead.
+kvm_arch_pm_notifier() can be renamed to kvm_arch_suspend_notifier(),
+so that we don't need to have `switch (state)` in every arch-code. Then
+for resume/post resume states we can have kvm_arch_resume_notifier()
+arch functions.
 
-tuxmake --runtime podman --target-arch arm --toolchain gcc-8 --kconfig
-s3c2410_defconfig
+> > +		break;
+> > +	}
+> > +	return NOTIFY_DONE;
+> > +}
+> > +
+> > +static void kvm_init_pm_notifier(struct kvm *kvm)
+> > +{
+> > +	kvm->pm_notifier.notifier_call = kvm_pm_notifier_call;
+> > +	kvm->pm_notifier.priority = INT_MAX;
+> 
+> How is this priority determined?
 
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Nothing magical here. I want this to be executed first, before we suspend
+ftrace, RCU and the like. Besides KVM is usually the last one to register
+its PM callbacks, so there can be something on the notifier list that
+returns NOTIFY_STOP_MASK in front of KVM PM-notifier list entry.
