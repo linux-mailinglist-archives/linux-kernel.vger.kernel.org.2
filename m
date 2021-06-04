@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 592DB39B72D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 12:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CC739B727
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 12:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbhFDKcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 06:32:33 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:37080 "EHLO
+        id S230266AbhFDKcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 06:32:23 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:36885 "EHLO
         mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230192AbhFDKcY (ORCPT
+        with ESMTP id S230072AbhFDKcG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 06:32:24 -0400
-X-UUID: 9dea689b156a480a995f4127893ba273-20210604
-X-UUID: 9dea689b156a480a995f4127893ba273-20210604
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        Fri, 4 Jun 2021 06:32:06 -0400
+X-UUID: ed25ccfddac247ce92ec34b169a98a0f-20210604
+X-UUID: ed25ccfddac247ce92ec34b169a98a0f-20210604
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
         (envelope-from <dawei.chien@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 462003542; Fri, 04 Jun 2021 18:30:36 +0800
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 632285663; Fri, 04 Jun 2021 18:30:15 +0800
 Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 4 Jun 2021 18:30:13 +0800
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 4 Jun 2021 18:30:14 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
  Transport; Fri, 4 Jun 2021 18:30:13 +0800
@@ -40,9 +40,9 @@ CC:     Mark Rutland <mark.rutland@arm.com>,
         Arvin Wang <arvin.wang@mediatek.com>,
         James Liao <jamesjj.liao@mediatek.com>,
         Henry Chen <henryc.chen@mediatek.com>
-Subject: [PATCH V10 11/12] arm64: dts: mt8183: add dvfsrc regulator nodes
-Date:   Fri, 4 Jun 2021 18:29:58 +0800
-Message-ID: <20210604102959.13807-12-dawei.chien@mediatek.com>
+Subject: [PATCH V10 12/12] arm64: dts: mt8192: add dvfsrc regulator nodes
+Date:   Fri, 4 Jun 2021 18:29:59 +0800
+Message-ID: <20210604102959.13807-13-dawei.chien@mediatek.com>
 X-Mailer: git-send-email 2.14.1
 In-Reply-To: <20210604102959.13807-1-dawei.chien@mediatek.com>
 References: <20210604102959.13807-1-dawei.chien@mediatek.com>
@@ -55,30 +55,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Henry Chen <henryc.chen@mediatek.com>
 
-Add dvfsrc regulator nodes which is for MT8183-based platforms
+Add dvfsrc regulator nodes which is for MT8192-based platforms
 
 Signed-off-by: Henry Chen <henryc.chen@mediatek.com>
 ---
- arch/arm64/boot/dts/mediatek/mt8183.dtsi | 6 ++++++
+ arch/arm64/boot/dts/mediatek/mt8192.dtsi | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-index 062d6dfb89a2..33361f9baa73 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-@@ -503,6 +503,12 @@
- 			compatible = "mediatek,mt8183-dvfsrc";
+diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+index ab3dabcc722e..6aad5ff0646c 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+@@ -288,6 +288,12 @@
+ 				     "mediatek,mt6873-dvfsrc";
  			reg = <0 0x10012000 0 0x1000>;
  			#interconnect-cells = <1>;
 +			dvfsrc_vcore: dvfsrc-vcore {
 +				regulator-name = "dvfsrc-vcore";
-+				regulator-min-microvolt = <725000>;
-+				regulator-max-microvolt = <800000>;
++				regulator-min-microvolt = <575000>;
++				regulator-max-microvolt = <725000>;
 +				regulator-always-on;
 +			};
  		};
  
- 		pwrap: pwrap@1000d000 {
+ 		systimer: timer@10017000 {
 -- 
 2.14.1
 
