@@ -2,96 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD59639B0CF
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 05:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1071A39B0D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 05:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229840AbhFDDV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 23:21:57 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:46593 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbhFDDV5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 23:21:57 -0400
-Received: by mail-oi1-f177.google.com with SMTP id c13so2896424oib.13
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 20:20:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XTLBAwmqsG3vEJ4E4BdrtXVL2NeOeIgl+wmT0+LyvMk=;
-        b=AQvU2E2DBR78Ykvj2qLHtpb2LgMH7EVti1dRcbTmuhm5gNebiFl5ExGpyRLziKTFZp
-         E95YFVmuiqVwABsG3QViv2WD3FMnjyYBrtHRxXBggGg/+egbDA32c0TVIUdm8KCXJVhi
-         x+3T7L/CHVFKHY5dAaLkcx+s+jaxxfvZwWqWfzMapHj6SGcUC6qMRh1IupTyAdWXgdc/
-         oFdikrJpH6WKufIMZMVbt49C2FJopa7z6LcOyqGEEQpUaqFqGT7rG93RUz6DWT/4VaKP
-         DcL5BwQEWI62dNFNrCC/grf3xmcAEXaBySnaTHppUz4gK9Ed4gJ4MMEIxDAozUOt/cQT
-         jADg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XTLBAwmqsG3vEJ4E4BdrtXVL2NeOeIgl+wmT0+LyvMk=;
-        b=TG18Jpg7aML+znA5RI0B98Wdq4XM7bHUJ1kjLRviuo1TnEjaajBG1eT8kEUcuQ6Vsu
-         JZATXQyyig1tMF7zkCIai0GuxFgACnaXeQTEOFUdT8rb8lJgMdll+bYfwiqegwHLF5Mz
-         I9A3UIm+LPlw/iRp6ybBlcS6eXXfcxb2JU3UANU4W8sloLB6FNFrxaB03zjwxnD4oLnM
-         ghoybIcEGpqVNg75gQUTjPnzXhcGQBcuAUJOH8dMUmLHQG/ioHMufFyBKIE6qPCzrwl4
-         /+XesmvbzjVUrEGsN0aa1y+edEjutAmKmeypy7Y46ndvz+apuiv+GMQdUESXgIhZzv7j
-         gZwg==
-X-Gm-Message-State: AOAM530tCArzS7wpTnVdD9DMxTMTuFVMznq15rIrDTbEhCf8mUz0+9sA
-        n8Zw9W4Na5j1OklksuXlG3wIiNzdbe5gsN8ekCWw0A==
-X-Google-Smtp-Source: ABdhPJzcMqINfAPFcCbEC12gkbN5NqzJM1RhTsVmVuiZUMohZbipEZxJMYUD0qnQChKUKe6fRlpUPJq80TheN/gzEcs=
-X-Received: by 2002:a05:6808:f0b:: with SMTP id m11mr9178581oiw.12.1622776740786;
- Thu, 03 Jun 2021 20:19:00 -0700 (PDT)
+        id S229881AbhFDDZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 23:25:28 -0400
+Received: from m12-16.163.com ([220.181.12.16]:51891 "EHLO m12-16.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229751AbhFDDZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Jun 2021 23:25:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=GaloG
+        VRnJ+ciWXgmnofAmTQuwkkw4n+7zb6jnzrgJpM=; b=KsF5SQzdds+W+/+QM2zJ7
+        rtvYXbz3R6IaBapgE+jfoMKY2MFyy7kIGOxTIaOjfIEm+BAojVTa9+tiBTrbIu5k
+        xIjoDyddVTXLECgDFRUY5K0vCHt53JhdULzVUzEP58zuUNOOxLXWErMVe/y3EtlW
+        zxY+CnomgSXhLlKEI03+dg=
+Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
+        by smtp12 (Coremail) with SMTP id EMCowADX39eInLlgrbx2vA--.15368S2;
+        Fri, 04 Jun 2021 11:22:50 +0800 (CST)
+From:   dingsenjie@163.com
+To:     richardcochran@gmail.com, andrew@lunn.ch, hkallweit1@gmail.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dingsenjie <dingsenjie@yulong.com>
+Subject: [PATCH] net: phy: Simplify the return expression of dp83640_ack_interrupt
+Date:   Fri,  4 Jun 2021 11:22:24 +0800
+Message-Id: <20210604032224.136268-1-dingsenjie@163.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-References: <20210519143700.27392-1-bhupesh.sharma@linaro.org> <162261866806.4130789.17734233133141728573@swboyd.mtv.corp.google.com>
-In-Reply-To: <162261866806.4130789.17734233133141728573@swboyd.mtv.corp.google.com>
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Fri, 4 Jun 2021 08:48:49 +0530
-Message-ID: <CAH=2Ntz7=e8w1fvXtpe-aXUFAreOiyb=xxKvU_1pmzBHyVXitA@mail.gmail.com>
-Subject: Re: [PATCH v3 00/17] Enable Qualcomm Crypto Engine on sm8250
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bhupesh.linux@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EMCowADX39eInLlgrbx2vA--.15368S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrKw4UXryDuryrtF13Cry5twb_yoW3AFb_Gr
+        yxZa13WF1jkFyUKr1ktws0vr93KF4vvryIvF18K39xWrW3Xw1F93y09ry7tFWDWr43AF97
+        ur13Cw4aqry5JjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnahF7UUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbipQqnyFUMehejDQAAsa
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+From: dingsenjie <dingsenjie@yulong.com>
 
-On Wed, 2 Jun 2021 at 12:54, Stephen Boyd <sboyd@kernel.org> wrote:
->
-> Quoting Bhupesh Sharma (2021-05-19 07:36:43)
-> >
-> > Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: Andy Gross <agross@kernel.org>
-> > Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> > Cc: David S. Miller <davem@davemloft.net>
-> > Cc: Stephen Boyd <sboyd@kernel.org>
-> > Cc: Michael Turquette <mturquette@baylibre.com>
-> > Cc: Vinod Koul <vkoul@kernel.org>
-> > Cc: dmaengine@vger.kernel.org
-> > Cc: linux-clk@vger.kernel.org
->
-> Can you stop Cc-ing the clk list? It puts it into my review queue when
-> as far as I can tell there isn't anything really clk related to review
-> here. Or do you need an ack on something?
+Simplify the return expression.
 
-Sure, I will drop the clk-list from Cc-list of future patchset versions.
-Since I had a couple of clk driver changes in v1 which were dropped
-starting from v2, I thought it would be good to Cc clk-list for v2
-(and so on..)
+Signed-off-by: dingsenjie <dingsenjie@yulong.com>
+---
+ drivers/net/phy/dp83640.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-Thanks,
-Bhupesh
+diff --git a/drivers/net/phy/dp83640.c b/drivers/net/phy/dp83640.c
+index 0d79f68..bcd14ec 100644
+--- a/drivers/net/phy/dp83640.c
++++ b/drivers/net/phy/dp83640.c
+@@ -1141,12 +1141,7 @@ static int dp83640_config_init(struct phy_device *phydev)
+ 
+ static int dp83640_ack_interrupt(struct phy_device *phydev)
+ {
+-	int err = phy_read(phydev, MII_DP83640_MISR);
+-
+-	if (err < 0)
+-		return err;
+-
+-	return 0;
++	return phy_read(phydev, MII_DP83640_MISR);
+ }
+ 
+ static int dp83640_config_intr(struct phy_device *phydev)
+-- 
+1.9.1
+
+
