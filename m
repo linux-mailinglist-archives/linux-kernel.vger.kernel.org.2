@@ -2,103 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1815239C15E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEDD939C162
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231263AbhFDUfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 16:35:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbhFDUfT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 16:35:19 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EFE8C061766
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 13:33:32 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id q10so10640908qkc.5
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 13:33:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:mime-version:date:message-id;
-        bh=MlTBKidQyHo/iudNRHQBYNyS5NXewQpCbPeNYyMvaMg=;
-        b=DW6ijiYHDNyQLpF0t6/qCOumEQ16A0epv6YQ77X8CzKQ7yMANg3RdZoYSbWgzNBFeC
-         cnO9Ye5O+9SFKxxx+BjZMS43UwHrmdmZ9IUb22rV3zFmVaFtvQ6RDrYZ6H+J1vfWJx5k
-         nXDsjaRkYLdT50Mpq5H/iJtTGy72Dl8GYUXUMgcV2jmRJsVyuWYWi6uwwXmIRRh+moiJ
-         NMng52iEQpz7ATjURC0jP7pMlkszHz6Q7JMPKaZKsG6Hi4eZP68QHCC2uy2jhj7pXewV
-         7pjbvoALbklLcyrwWAgFmh/x5knS17J3d25LYp+ClhBmJhZtI/XDvZedFEwn1CTYoWlb
-         84Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:mime-version:date
-         :message-id;
-        bh=MlTBKidQyHo/iudNRHQBYNyS5NXewQpCbPeNYyMvaMg=;
-        b=qYZf+mKoluNNUP/WYc3atPnSTWRzn5jiGrj3yT0LAwfN8x/gPIetOb659a1W+ziirt
-         Wsu0YyHheROB9iBcgZQoN66vd7abWMTZvxzjYfOygSoxXM7mo0gCJInuiBNMPqvdkxP1
-         n0XAyhMM7u9OKmtdhjOf5UI+u4pkEP3kG4//z0fHSuHPe6Z1bjclG0qDAGdbaYNc87ST
-         t+b3Wgb5m/6dUHOIPU1u91KFotNHZFgbe2ZQsh/MUvV25TX7H423G1UfKWrF8odZGfuu
-         obeh1CmRChK4vHX7QL+a0s0T1/ZHD3pFqXvGB8jx2xpXUFJ/M5Fy2m0OFs2avjc10ULf
-         ge2w==
-X-Gm-Message-State: AOAM532eTkIoiMXrRj23uZvPcyOX/0tcTezR9vW7/aD/bUUqVqj8nNnM
-        +Vh2rjP3JX2jXHw3LPmNNEzvkg==
-X-Google-Smtp-Source: ABdhPJzTFU/XiVvGZk+dyAt2khreqsQd3BqydaIl20gYpk2Z23bK6lpBl5FC/vgYDJM5tYwQH79MRA==
-X-Received: by 2002:a05:620a:1442:: with SMTP id i2mr5995516qkl.45.1622838811230;
-        Fri, 04 Jun 2021 13:33:31 -0700 (PDT)
-Received: from turing-police ([2601:5c0:c380:d61::359])
-        by smtp.gmail.com with ESMTPSA id p19sm4541856qki.119.2021.06.04.13.33.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 13:33:30 -0700 (PDT)
-Sender: Valdis Kletnieks <valdis@vt.edu>
-From:   "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>
-cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: x86 - weird cross-compile build problem with try-run next-20210602
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date:   Fri, 04 Jun 2021 16:33:30 -0400
-Message-ID: <454425.1622838810@turing-police>
+        id S231365AbhFDUft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 16:35:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229854AbhFDUfs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 16:35:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9F6A60FF2;
+        Fri,  4 Jun 2021 20:34:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622838841;
+        bh=prn70jPH40FaWqLyD9hxXxxeHKLoSW33nPc01wxEYoA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SQebSbLxcu/9QPbtm6HRvyQVpZUnDnBQAVJ/dz6dlyGN217CpaUq4Qnr4o5PB7CpZ
+         /Qdz805XJqtiM00YcgMV4ow/T8FaxelqFm8VGy2Mgx6sWO1Km/iyeYwAucdGMgOxBQ
+         wHFeO7wccfldVzQsG4BiZdkYk7ld0eCCmx3xyj4kwU/CB21kLXGVi71SXn7FKdpYcM
+         9ff/fljJCw0MODryiCj7BLnZYYEBFS9qNYmiCV0bHOSASmHMXMUxDCDgipy6hZiSwf
+         nOtvdDJcGIREJf4Js1gy7nL8dFAML5rtwHEJhiOyIyWCUvab7PGhOA/8JQ/ZxnKIeD
+         dCL+8n2VF1csQ==
+Date:   Fri, 4 Jun 2021 22:33:58 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Roja Rani Yarubandi <rojay@codeaurora.org>
+Cc:     swboyd@chromium.org, dianders@chromium.org,
+        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
+        mka@chromium.org, skananth@codeaurora.org,
+        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
+        rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH V11 1/2] i2c: i2c-qcom-geni: Add shutdown callback for i2c
+Message-ID: <YLqONrlcPkOuZM18@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>, swboyd@chromium.org,
+        dianders@chromium.org, saiprakash.ranjan@codeaurora.org,
+        gregkh@linuxfoundation.org, mka@chromium.org,
+        skananth@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org
+References: <20210525131051.31250-1-rojay@codeaurora.org>
+ <20210525131051.31250-2-rojay@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="BValqsbsrpDr7D4r"
+Content-Disposition: inline
+In-Reply-To: <20210525131051.31250-2-rojay@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I built a gcc 11.1 cross-compiler targeting x86_64, and builds
-were throwing an error message:
 
-Makefile:149: CONFIG_X86_X32 enabled but no binutils support
+--BValqsbsrpDr7D4r
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-so I added some debugging to arch/x86/Makefile:
+On Tue, May 25, 2021 at 06:40:50PM +0530, Roja Rani Yarubandi wrote:
+> If the hardware is still accessing memory after SMMU translation
+> is disabled (as part of smmu shutdown callback), then the
+> IOVAs (I/O virtual address) which it was using will go on the bus
+> as the physical addresses which will result in unknown crashes
+> like NoC/interconnect errors.
+>=20
+> So, implement shutdown callback for i2c driver to suspend the bus
+> during system "reboot" or "shutdown".
+>=20
+> Fixes: 37692de5d523 ("i2c: i2c-qcom-geni: Add bus driver for the Qualcomm=
+ GENI I2C controller")
+> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
 
-ifdef CONFIG_X86_X32
-        x32_ld_ok := $(call try-run,\
-                        /bin/echo -e '1: .quad 1b' | \ 
-                        $(CC) $(KBUILD_AFLAGS) -c -x assembler -o "$$TMP" - && \
-                        $(OBJCOPY) -O elf32-x86-64 "$$TMP" "$$TMP.o" && \
-                        $(LD) -m elf32_x86_64 "$$TMP.o" -o "$$TMP",y,n)
- $(warning x32_ld_ok is +$(x32_ld_ok)+ with CC=$(CC) $(KBUILD_AFLAGS) OBJ=$(OBJCOPY) LD=$(LD) )
-        ifeq ($(x32_ld_ok),y)
-                CONFIG_X86_X32_ABI := y
-
-and that throws:
-
-arch/x86/Makefile:143: x32_ld_ok is ++ with CC=x86_64-unknown-linux-gnu-gcc -D__ASSEMBLY__ -fno-PIE -m64 OBJ=x86_64-unknown-linux-gnu-objcopy LD=x86_64-unknown-linux-gnu-ld 
-
-Anybody have a clue why $(x32_ld_ok)  is null rather than 'y' or 'n'?
-
-(It's totally possible that my cross-compiler is broken, but I still don't see how
-try-run would return null rather than 'n' in that case...  I built a shell script that did the
-test and that ended with $? == 0, but had a warning msg:
-
-+ /bin/echo -e '1: .quad 1b'
-+ x86_64-unknown-linux-gnu-gcc -D__ASSEMBLY__ -fno-PIE -m64 -c -x assembler -o /tmp/z97 -
-+ x86_64-unknown-linux-gnu-objcopy -O elf32-x86-64 /tmp/z97 /tmp/z99.o
-+ x86_64-unknown-linux-gnu-ld -m elf32_x86_64 /tmp/z99.o -o /tmp/z98
-x86_64-unknown-linux-gnu-ld: warning: cannot find entry symbol _start; defaulting to 0000000000401000
-echo $?
-+ echo 0
-0
+Applied to for-current, thanks!
 
 
+--BValqsbsrpDr7D4r
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmC6jjYACgkQFA3kzBSg
+KbYZog/+O5j3/Xx4ClIqhhlhEbGhBpe9KGk/evPZr1X0Saw+cCAcQ0pVA9P7ssgm
+b+nY8IJ6Iztv+FZ7sQpFaeKIRlsUDDoxAjCwRJMjDv8AnK6IfrfCyBHd0e5EJcya
+qxpT9RHPdLj1fMP10G6pP5EfQEuqpEhhmF+08LYeX5HWv7bRuIs11L/UI8Ccjp97
+peEsIw6U/2L7vuQH4abPBs2XgBbYoiFP5s0HARg/k1dDY6TWiFnRFE13QGJQouD+
+mebqjSILR//iYxDMTJqNQTXWOMSld4QxWrRuJ1iG0GVmpwvb/Blzq6yIDqamHu7x
+AVaC1FXDEJuO+PxQPL63ttSfH28fIvhE4tDXpznXh5TXJyPMNmIQtUkuIKAdm2pj
+JRQWfDDOTljOCY/v5nl3nAnUWucGnZbaKAcpIIrGfOUKcLP1LQ9fTOlI0XvvcT3B
+a7fQFT/H6yyzOtnNzzaNZQ+V1Mr+Jx2pwnYa0rKNZy9cDBBQiZtdL+9cmsHleRO/
+mAnA+TqYTDZS8uEABL1M5wS17IhiGHWss9LMKgCEoc9B4khjDAPrH2tjzIraaSqT
+SAIoqik7TSSVlKuCeksja5dQ4JP0IcMfhjUvG/u4BbCm6n17lqe3M7+1EQoSLSPZ
+eeYCyc0pvHszrEGRha9sVXgQEZ1dTB/M03iUapMoZN1UfVdTXyc=
+=oyxh
+-----END PGP SIGNATURE-----
+
+--BValqsbsrpDr7D4r--
