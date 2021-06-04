@@ -2,89 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E68C39C352
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 00:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DDBA39C353
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 00:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231622AbhFDWMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 18:12:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36518 "EHLO
+        id S231671AbhFDWMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 18:12:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbhFDWMT (ORCPT
+        with ESMTP id S231169AbhFDWM2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 18:12:19 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BFD5C061766
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 15:10:16 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id w33so16229977lfu.7
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 15:10:16 -0700 (PDT)
+        Fri, 4 Jun 2021 18:12:28 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA68BC061768
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 15:10:26 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 27so8952122pgy.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 15:10:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YMx9d/KwaGXDIgZMt2DPtgDzNG9hC9FHDEasqs2eylw=;
-        b=RnWNqREAbgLaek095trmxYAB2A32y6JnXwwCOEqCb69fAeTbDadtF8FlgfjScSVIAl
-         VeeTs+PRgOCjPxTkkncXbvDpFdnykroIPzWS3ZkrcA5V09EUCUjR2N8eDmWGi1aSTldj
-         sWGtkpZHNt+L8zQ1rec0frnXufrW6BYnmCPrTRRO9+m7pZcPtC+Qyxnn28G7ujhDYXAE
-         byQy4rVnCqQe1KCfjRh86UTCzrbOPPbCEQHJjzcVwYU80D4Pmn7eHSaFdFucq0thDew9
-         mwIt+3FVhKJjw3+1RBYgxxjHifqmUr8neCsMcwOWZH12A84wexGKmonNSgDqwYVy2GKf
-         ERww==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Kl/E6sm1Hy5waa1ESIZ6GAoJ0uFLqC7+4leUJX1UReE=;
+        b=e1C3eBAJo533STH89elp7a4H+e6DnBllnlpNPkSJ37AUtSa9D2fSu0R9qPHRWFpoUB
+         dyKBlwyR2c9ha5qH37lC+zWEtaBtf/3ujqhuCkHBVKkpFXmVRfB052qGmbX6QEROyzD5
+         3piThQCpvPoTNvTgpwAYjppQ7qiFBb3tZhJuG3A4soIr6mSQh9a2WrqXG2sMAvkf4lAr
+         VShOLXtWlvCnxX+kxgqH+shj8nPlrteBjpNkyAbKPqD3c8r53ZkiFSt9/f1WtmOKJCE+
+         lnqhimh/cKxstXt7srO9gYkWhdjTgZ6M61MALsrXBsMcUtD9cVabUQh9b9yd6ovsvTxK
+         9GbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YMx9d/KwaGXDIgZMt2DPtgDzNG9hC9FHDEasqs2eylw=;
-        b=l0NOozIKA5kgSTgFz+78dBUJfFVHSDAlXdFTeDXXHmvumylmprRsZbT6ceiVv2G9BL
-         TOlIzBkbWBSwpcjYeoYKBZBct33opvp1d/xxSDuTpKnOqSmzDBE8ULp4GdLwEToNZN9o
-         Umg/8dZMdArMu4Z3hjyb8bpOq97Y9G0oDYPMUWXpO2plKFxTAOFlsKevZCdLGldjbvGZ
-         elr27xKiNgGtMAKXNjEBJMTYV3DGwvHX4HcZLlKUoUy21dD2Z77jKk9ZPtiV7H3LqFvB
-         bHOuJNnJ/5w9epBb3X63dCGAh5A7oDOqGjOFK8gXH9BuwhVnVtuGk/2n2FfJ8wjE0EBN
-         uNuA==
-X-Gm-Message-State: AOAM532j35NJAjqhDjzyqM9GhvW1OZ3mMZz/9rueXA2pmHJsRrg3jJ7Y
-        rL+TEeYlEPgtuvd/xip3cZ/OcexfDUzFoDHFGxsObQ==
-X-Google-Smtp-Source: ABdhPJx69CXrOaH6IjDUNE/NOqbho2qNWe/t0l5SmoR6GFbzHw8h1llh1Vq5RtbcLkcaqfSzMyNyoSf5YZK3GJZYikI=
-X-Received: by 2002:ac2:544f:: with SMTP id d15mr4065245lfn.465.1622844614933;
- Fri, 04 Jun 2021 15:10:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1622713678.git.sander@svanheule.net> <5d184778a6562e24abfa6e5dd2f7dbde4fede3fe.1622713678.git.sander@svanheule.net>
-In-Reply-To: <5d184778a6562e24abfa6e5dd2f7dbde4fede3fe.1622713678.git.sander@svanheule.net>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 5 Jun 2021 00:10:03 +0200
-Message-ID: <CACRpkdYzhC=Lt5CKpbZNK81z=0CRp2CknMqp=zk8cHVfo0wm0g@mail.gmail.com>
-Subject: Re: [PATCH v4 4/5] pinctrl: Add RTL8231 pin control and GPIO support
-To:     Sander Vanheule <sander@svanheule.net>
-Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Michael Walle <michael@walle.cc>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=Kl/E6sm1Hy5waa1ESIZ6GAoJ0uFLqC7+4leUJX1UReE=;
+        b=IVK1E+6VVsmwoSVxEAJltlPVQNIYoXD48CWUkeky3vKXydqJlbXMnlGiikDk1tkpeD
+         WXq/VRW6BUwZyBnB/pLCPbEsIDLNP5QZ2U6SSwnk9tmz2OXX8A64MSUgX3/hdCyes9X4
+         hkmoxEKW3dBNmUBAKECPJ+KKz4ao3Rp1aZw5Lfj8Avyz6swh8bsVR6U3cDPfeOm8St2b
+         U/xTL8P5AfVLOMMrnWgOjQuUNJ5nx4OfOx13BPcxROFxp6M6bPhUUWR8jRs4LGG04RXq
+         FeZWO/TY5oxhehUy/1LIq9ngplN4ejz1G7yd2mHN/qWOFyjUgOLwzK8IUSv2ZF/7FTSc
+         lG6g==
+X-Gm-Message-State: AOAM532z7gOfJzHAqyr2GjWYnq5flDy1ATfzUfkDcUAfID7kyQt0Jzgz
+        LWTwzEfVoRljRDnTBb9ho8tbVw==
+X-Google-Smtp-Source: ABdhPJx6gnUDtLRP5p/Mj/1tsX2DdzihHec2VB3/gPJAOwx7MOtdoF07gdAgTqrtYn6zBIaIbuTF9w==
+X-Received: by 2002:a05:6a00:139a:b029:2e3:db98:9ae3 with SMTP id t26-20020a056a00139ab02902e3db989ae3mr6785904pfg.81.1622844626154;
+        Fri, 04 Jun 2021 15:10:26 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id 35sm2768481pgq.91.2021.06.04.15.10.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 15:10:25 -0700 (PDT)
+Date:   Fri, 04 Jun 2021 15:10:25 -0700 (PDT)
+X-Google-Original-Date: Fri, 04 Jun 2021 15:10:24 PDT (-0700)
+Subject:     Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
+In-Reply-To: <CAK8P3a04C8HObpSHNYqQpe4V96MoSLs7sEpiPvp4OpvyAU1_fQ@mail.gmail.com>
+CC:     guoren@kernel.org, Anup Patel <Anup.Patel@wdc.com>,
+        anup@brainfault.org, drew@beagleboard.org,
+        Christoph Hellwig <hch@lst.de>, wefu@redhat.com,
+        lazyparser@gmail.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, guoren@linux.alibaba.com,
+        Paul Walmsley <paul.walmsley@sifive.com>
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Message-ID: <mhng-82cca177-11c3-44d0-a0c3-37df6a40bb6b@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 12:01 PM Sander Vanheule <sander@svanheule.net> wrote:
-
-> This driver implements the GPIO and pin muxing features provided by the
-> RTL8231. The device should be instantiated as an MFD child, where the
-> parent device has already configured the regmap used for register
-> access.
+On Fri, 04 Jun 2021 14:26:11 PDT (-0700), Arnd Bergmann wrote:
+> On Fri, Jun 4, 2021 at 6:14 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>> >> To give some common examples that make it break down:
+>> >>
+>> >> - 32-bit vs 64-bit already violates that rule on risc-v (as it does on
+>> >>   most other architectures)
+>>
+>> Yes, and there's no way around that on RISC-V.  They're different base
+>> ISAs therefor re-define the same instructions, so we're essentially at
+>> two kernel binaries by that point.  The platform spec says rv64gc, so we
+>> can kind of punt on this one for now.  If rv32 hardware shows up
+>> we'll probably want a standard system there too, which is why we've
+>> avoided coupling kernel portability to XLEN.
 >
-> Debouncing is only available for the six highest GPIOs, and must be
-> emulated when other pins are used for (button) inputs. Although
-> described in the bindings, drive strength selection is currently not
-> implemented.
+> I would actually put 32-bit into the same category as NOMMU, XIP
+> and the built-in DTB:
+> Since it seems unrealistic to expect an rv32 Debian or Fedora build,
+> there is very little to gain by enforcing compatibility between machines.
+> This is different from 32-bit Arm, which is widely used across multiple
+> distros and many SoCs.
+
+OK, well, that's what the spec says already.  Maybe the right answer is 
+to just add that "be compatible with the platform spec" Kconfig and have 
+it also enforce rv64gc like the spec says.
+
 >
-> Signed-off-by: Sander Vanheule <sander@svanheule.net>
+>> >> - architectures that support both big-endian and little-endian kernels
+>> >>   tend to have platforms that require one or the other (e.g. mips,
+>> >>   though not arm). Not an issue for you.
+>>
+>> It is now!  We've added big-endian to RISC-V.  There's no hardware yet
+>> and very little software support.  IMO the right answer is to ban that
+>> from the platform spec, but again it'll depnd on what vendors want to
+>> build (though anyone is listening, please don't make my life miserable
+>> ;)).
+>
+> I don't see any big-endian support in linux-next. This one does seem
+> worth enforcing to be kept out, as it would double the number of user
+> space ABIs, not just kernel configurations. On arm64, I think the general
+> feeling is now that we would have been better off not merging big-endian
+> support into the kernel as an option, but it still seemed important at the
+> time. Not that there is anything really wrong with big-endian by itself,
+> just that there is no use case that is worth the added complexity of
+> supporting both.
+>
+> Let me know if there are patches you want me to Nak in the future ;-)
 
-Wow this looks really good. Thanks for going the extra mile
-and fix this. Special thanks to Andy for the thorough review.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+Sorry, by "added big-endian to RISC-V" I meant to the ISA, not to Linux.  
+We haven't had any interesting in adding it to Linux.  The interest has 
+all been in the embedded space.
