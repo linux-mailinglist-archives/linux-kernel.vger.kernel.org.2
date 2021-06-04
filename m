@@ -2,70 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 957FC39C3FF
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 01:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A95939C40C
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 01:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbhFDXnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 19:43:09 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:46442 "EHLO vps0.lunn.ch"
+        id S230255AbhFDXsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 19:48:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229847AbhFDXnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 19:43:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=teq76F1L+vznO9dqAxiuiuGN4JsSwry7FJ5qogca0Mc=; b=lYBFk45noY7CbcsbIsOxD1/iPw
-        elbOkYUn/juRIzIbjNoRQ9MrvIVpfoemozWdO3SLgVGGVxLpM6jdZsA576iMy/+yiCx/NW7zKm8wx
-        enMcB3LfbmwCjIFxTmuY/j8zqrZAnOHEs5gQP7AIRQhR5ySfJSFKOaW6m0hoX2XSs1Ao=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lpJRD-007sRw-D7; Sat, 05 Jun 2021 01:41:15 +0200
-Date:   Sat, 5 Jun 2021 01:41:15 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v1 7/7] usbnet: run unbind() before
- unregister_netdev()
-Message-ID: <YLq6G9luZrXW5vry@lunn.ch>
-References: <20210604134244.2467-1-o.rempel@pengutronix.de>
- <20210604134244.2467-8-o.rempel@pengutronix.de>
+        id S229853AbhFDXsG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 19:48:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BDBC613BF;
+        Fri,  4 Jun 2021 23:46:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622850379;
+        bh=dVAsj97VPJExVgGrdFq6Ldjte9Nsu5o7m/Jf4r28Pps=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=IulqhdVahvfo+xr3LJlYa8YVEWi36ultY/bi7bS2Edbl/pDTB3oM4BeWPc/VSl8hd
+         47U4pEY+SLhs8wwGEMdoNyUkzK2Kd6InWHugqRoXsnm5/SzJjhjlgM/bnlfj8mX304
+         QPs8kpvwAw4L+eDaytjzlfEEHq7KbIyQlSpXcuAsDFgAeqtbCBJ5EvK/071ggPgkot
+         7Y7lCH8W7O5cjGeSFYRbg+EU6QaeP6ub5nwdhrda+MnyzUnCRRLbU/rymHfIt3WrdF
+         0zRb6vcAg5S9AD5pjdaFarjKQWTX5bkazMlHqGEb9YousZLTsgyW0m75d4BvRar+Hs
+         z8oZQcfV94EXg==
+Subject: Re: [PATCH v2 1/2] f2fs: Show casefolding support only when supported
+To:     Daniel Rosenberg <drosen@google.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com, stable@vger.kernel.org
+References: <20210603095038.314949-1-drosen@google.com>
+ <20210603095038.314949-2-drosen@google.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <c0df4ead-7bb6-d9e0-db3a-58d4db1fe354@kernel.org>
+Date:   Sat, 5 Jun 2021 07:46:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604134244.2467-8-o.rempel@pengutronix.de>
+In-Reply-To: <20210603095038.314949-2-drosen@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 03:42:44PM +0200, Oleksij Rempel wrote:
-> unbind() is the proper place to disconnect PHY, but it will fail if
-> netdev is already unregistered.
+On 2021/6/3 17:50, Daniel Rosenberg wrote:
+> The casefolding feature is only supported when CONFIG_UNICODE is set.
+> This modifies the feature list f2fs presents under sysfs accordingly.
+> 
+> Fixes: 5aba54302a46 ("f2fs: include charset encoding information in the superblock")
+> Cc: stable@vger.kernel.org # v5.4+
+> Signed-off-by: Daniel Rosenberg <drosen@google.com>
 
-O.K, this partially answers the question i was about to ask for the
-previous patch.
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
 
-void phy_start(struct phy_device *phydev)
-{
-	mutex_lock(&phydev->lock);
-
-	if (phydev->state != PHY_READY && phydev->state != PHY_HALTED) {
-		WARN(1, "called from state %s\n",
-		     phy_state_to_str(phydev->state));
-		goto out;
-	}
-
-By skipping phy_error(), phydev->state is not set to PHY_HALTED. So if
-you try to start the phy again, without disconnecting it, it looks
-like there could be a problem.
-
-But with this patch, i assume the PHY will always be disconnected and
-later reconnected when the device is replugged.
-
-      Andrew
+Thanks,
