@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7143D39B948
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 14:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7415539B94A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 14:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbhFDNAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 09:00:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229980AbhFDNAH (ORCPT
+        id S230234AbhFDNA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 09:00:26 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:35190 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229980AbhFDNAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 09:00:07 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2FC4C06174A;
-        Fri,  4 Jun 2021 05:58:10 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id q5so9251518wrm.1;
-        Fri, 04 Jun 2021 05:58:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SgHpQ4QoLBEs1F+YWq7Dw3mAD1i1XABsToAa1xmK68I=;
-        b=QW+WYPextBD7RVr9x+p52qil2JPfyUNsCMwaa9FMarAgtcd62l77QtUDEVdXcAzy4c
-         IvQ2IGtWUYdDOw4zaTiyF1PT1v15MLl+th2/bezk7YVC/B4WbbQMcpaGTh+IUrX2jlcE
-         xYDQfE19+U6WnPjIsuVsWHGNPAaPFo8Sz6YppWD0JDavmzgjol83zuDUWBpHVvZakdrZ
-         vqOswF1KqzPxhuGEoWG9QCoUEHABbWxsiMHersU3YCDVIXlFYmTByIz4pK62mpaVT4nz
-         iK1nOO5Z5BZi3YQUN1uNNUtz7VvXV58+HJvvHlzCY+DM0CUgz9TiJRjvtaMjJAELf/s4
-         c2gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SgHpQ4QoLBEs1F+YWq7Dw3mAD1i1XABsToAa1xmK68I=;
-        b=giviM/S1OJjkpQWHjjbFh0RZrjrz2Kh3Q5rhIDmYN2Q54dNU0k+tiQM6WpFcLP/XaT
-         qlGgt6LWTZsEnaRoHNmXbQarSisdWTUt+cu29W+YVD1mYZXSeVUTglpl2LEYdDhIESh5
-         z34uR7IGRhAO/K82osNu1FpnLZIGm20CdzSCnENQkRtFL5Sif6nVUQHDgoUMNoizT+43
-         R7IG/om2vWItWdGR6xDTBD/RSuouapm7+hIcA4dz384CQeS0OSIvgQDGUYNoPAhocPqL
-         cdYVHqqQpWE/XFVHe3XdFhBnxNce13UMAc+ltL2L59pf/cIAU+q6zTvs6qCJAT2XXtDk
-         apZQ==
-X-Gm-Message-State: AOAM5306ZUdOw7wq6LirBup1bU8u3CeKuqJZwb6nDRLZn5ywq5VTsy13
-        BaSCv4Uhkmc03B62DEeQFmpY7YEucEQ=
-X-Google-Smtp-Source: ABdhPJwo5Bjwxsjrlbwh0vAAF8goewnbqwQ2QzlG8lx0QwJ7wKtS1W5ixdXkkM5djidOdjgkH4P08g==
-X-Received: by 2002:a5d:47a3:: with SMTP id 3mr3857385wrb.42.1622811489058;
-        Fri, 04 Jun 2021 05:58:09 -0700 (PDT)
-Received: from [192.168.2.202] (pd9e5aba0.dip0.t-ipconnect.de. [217.229.171.160])
-        by smtp.gmail.com with ESMTPSA id g17sm1905073wrp.61.2021.06.04.05.58.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Jun 2021 05:58:08 -0700 (PDT)
-Subject: Re: [PATCH 0/7] platform/surface: aggregator: Extend user-space
- interface for events
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Mark Gross <mgross@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        platform-driver-x86@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210603234526.2503590-1-luzmaximilian@gmail.com>
- <c86a976e-64cb-ea10-486e-fa5d4482ad5b@redhat.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <a29f3acb-6a49-02a5-d9af-07baff8d9307@gmail.com>
-Date:   Fri, 4 Jun 2021 14:58:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Fri, 4 Jun 2021 09:00:24 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 0585B1F439C8
+Received: by earth.universe (Postfix, from userid 1000)
+        id 408F63C0C95; Fri,  4 Jun 2021 14:58:36 +0200 (CEST)
+Date:   Fri, 4 Jun 2021 14:58:36 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] power: supply: surface-charger: Fix type of integer
+ variable
+Message-ID: <20210604125836.ew4y27ofa4bwi6uk@earth.universe>
+References: <20210511092421.1928586-1-luzmaximilian@gmail.com>
+ <55aafbea-96d4-29f2-8d8b-68f8ac970c6b@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <c86a976e-64cb-ea10-486e-fa5d4482ad5b@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ckokow4kmkwkjq7n"
+Content-Disposition: inline
+In-Reply-To: <55aafbea-96d4-29f2-8d8b-68f8ac970c6b@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/4/21 1:40 PM, Hans de Goede wrote:
-> Hi Maxime,
-> 
-> On 6/4/21 1:45 AM, Maximilian Luz wrote:
->> Extend the user-space debug interface so that it can be used to receive
->> SSAM events in user-space.
->>
 
-[...]
+--ckokow4kmkwkjq7n
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> Overall this series looks good to me. I've found one small issue with
-> PATCH 4/7 (see my reply to that patch) and as the kernel test robot
-> pointed out there is an used "struct ssam_nf_head *nf_head;" in
-> PATCH 2/7.
-> 
-> With these 2 small issues fixed you can add my:
-> 
-> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-> 
-> to v2 of the series.
+Hi,
 
-Thank you for your review.
+On Thu, Jun 03, 2021 at 08:37:13PM +0200, Maximilian Luz wrote:
+> On 5/11/21 11:24 AM, Maximilian Luz wrote:
+> > The ac->state field is __le32, not u32. So change the variable we're
+> > temporarily storing it in to __le32 as well.
+> >=20
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Fixes: e61ffb344591 ("power: supply: Add AC driver for Surface Aggregat=
+or Module")
+> > Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+>=20
+> Friendly ping :)
 
-Based on the issue reported by the kernel test robot I've been
-restructuring PATCH 2/7 to remove some code-duplication. I'll add your
-R-b to all except that one.
+Thanks, this has now been queued to my fixes branch.
 
-Thanks,
-Max
+-- Sebastian
+
+> > ---
+> >   drivers/power/supply/surface_charger.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/power/supply/surface_charger.c b/drivers/power/sup=
+ply/surface_charger.c
+> > index 81a5b79822c9..a060c36c7766 100644
+> > --- a/drivers/power/supply/surface_charger.c
+> > +++ b/drivers/power/supply/surface_charger.c
+> > @@ -66,7 +66,7 @@ struct spwr_ac_device {
+> >   static int spwr_ac_update_unlocked(struct spwr_ac_device *ac)
+> >   {
+> > -	u32 old =3D ac->state;
+> > +	__le32 old =3D ac->state;
+> >   	int status;
+> >   	lockdep_assert_held(&ac->lock);
+> >=20
+
+--ckokow4kmkwkjq7n
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmC6I3wACgkQ2O7X88g7
++prCqg/+Jkw7uZPPHwkCon2Kk6TYJ9v/9HR1NZ20D9VFpB7WtKZ3oHyv8/Zav2RK
+FWfqVNkagbabyKjOx3WZHwCgCYG45/dPY2OOLCgJ3ml3/x9omHH+6BEtT1nNPIrH
+/4azgeufGGqXbu4zTTESOQ1iT8T5pzEC/nuKT0L7ZEUDrDXavGc+3U+xNGKC1SX+
+LZ0Od8VOP8F4izdCLXar/NUIQFCb9tVW5auvjL2lffnXyu1kYqAawknXPB91uikZ
+FOoLWC5j5rcDlcBZiRquH5ig+ftofnPNmA8EJsRI4YjMcSiiG09q344mBRLsi61H
+ZyJe756aTjpi1cHeCAyY+IjqtapperZ0YEbw5yTzjJD2OpwJ4zSsQtdGR9+rEmpv
+ga8zYnaeRCYiAeHsYYGP0GTBEngIDVNVlZ+RDSDrgspIJt+0xy92v2TlzJ5fiFdQ
+gV5FeNPg+w12zv61h2EDwWzUb34vo7WuBG7bSg4osDcPdkDTBd+RmkYNs1i1x/Wm
+S8fHFgPcWvDcWByyzAFLD5Ertj01L6CJicbHqJXwDmUC7cd5nZQWzaQ2iTGBXBoc
+hCfBAYg1I9l4YNBT/d32g8cPQDCH+8n2pXP/JC+1N93nTlXNrIt+MreamVlAy+2U
+ztc6HMTezOSiTwrRbsSHlALbJVZx/cssM8DJl+g8iyLTzBYmI3c=
+=na9I
+-----END PGP SIGNATURE-----
+
+--ckokow4kmkwkjq7n--
