@@ -2,83 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD99239BCE1
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:18:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D36839BCE7
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbhFDQTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 12:19:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38296 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230201AbhFDQTw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 12:19:52 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 83190613FF;
-        Fri,  4 Jun 2021 16:18:04 +0000 (UTC)
-Date:   Fri, 4 Jun 2021 12:18:02 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Kate Carcia <kcarcia@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Clark Willaims <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH V3 5/9] tracing/trace: Add a generic function to
- read/write u64 values from tracefs
-Message-ID: <20210604121802.192caa07@oasis.local.home>
-In-Reply-To: <a5e96ac9-f188-a9df-3eac-624002031e21@redhat.com>
-References: <cover.1621024265.git.bristot@redhat.com>
-        <c585e3316f49c9e33acc79452588fc26ce11dfa4.1621024265.git.bristot@redhat.com>
-        <20210603172244.6d2a6059@gandalf.local.home>
-        <a5e96ac9-f188-a9df-3eac-624002031e21@redhat.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230192AbhFDQUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 12:20:51 -0400
+Received: from mail-ed1-f45.google.com ([209.85.208.45]:40947 "EHLO
+        mail-ed1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229667AbhFDQUu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 12:20:50 -0400
+Received: by mail-ed1-f45.google.com with SMTP id t3so11788435edc.7;
+        Fri, 04 Jun 2021 09:18:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nJ5cjXCOgtaH+RVcO+GAu8ygPECeGhi8hgXC8lzc7nA=;
+        b=r5pPVjwJqyKvSU94RbaRUy3SqIVuou806o+AJe48Cs9IMTxGowFjFqAgzO57IfbHKn
+         v6QQfmAH8IAc+cfaKsvlTy8VcXNG7Ln3+JZOKv6FDUEszhfEIpNoamLHwJ4iCG7pCXTg
+         TJpzhqYbizUowz0G+I5BZWAlUwtT4YfoxmMOXEQxbGTiGO8BxjgJg4UWIaq5UNCGHcsp
+         6dsnDRsWZstskwPwmXQJJ0qwVthSnyQtjGkHVgDc9awqSim6QTAufYb2xnrReToqFLGe
+         mDgrfA3t3IjkOMr1DQRn47Ixy+edjv4cRnu45u0bWNHMbgnl/COr+mz0/lhVUd2k1AjN
+         N7ZA==
+X-Gm-Message-State: AOAM5310K+OtWgF4tyjnAcIRN/mhuwdP4zbPFtxhHfEzVU0mI+HcakBr
+        RHyYvShgAE3TLmNeibOO1Ic3JxmUl24slgjdAKsC9cAJ
+X-Google-Smtp-Source: ABdhPJxVhSUk2uKqdHMy8x0HDCUAC85wBWxWuxZsM9lt+YM7FXxwcjY2+VLMytCZfalSQljpUZf2R5hUjN64s+z9iK0=
+X-Received: by 2002:a05:6402:524d:: with SMTP id t13mr5566749edd.209.1622823528589;
+ Fri, 04 Jun 2021 09:18:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210602122137.1161772-1-zgxgoo@gmail.com>
+In-Reply-To: <20210602122137.1161772-1-zgxgoo@gmail.com>
+From:   Anna Schumaker <anna.schumaker@netapp.com>
+Date:   Fri, 4 Jun 2021 12:18:32 -0400
+Message-ID: <CAFX2Jfmg1Xh0yMr_8VL6=u0MRiN3jQ7TJa4Cd7NjM41+vSC-Eg@mail.gmail.com>
+Subject: =?UTF-8?Q?Re=3A_=5BPATCH=5D_fs=2Fnfs=3A_fix_some_=2DWmissing=2Dprototypes_wa?=
+        =?UTF-8?Q?rnings_we_get_a_warning_when_building_kernel_with_W=3D1=3A_fs=2Fnf?=
+        =?UTF-8?Q?s=2Fnfs4file=2Ec=3A318=3A1=3A_warning=3A_no_previous_prototype_for_=E2=80=98nf?=
+        =?UTF-8?Q?s42=5Fssc=5Fopen=E2=80=99_=5B=2DWmissing=2Dprototypes=5D_fs=2Fnfs=2Fnfs4file=2Ec=3A402?=
+        =?UTF-8?Q?=3A6=3A_warning=3A_no_previous_prototype_for_=E2=80=98nfs42=5Fssc=5Fclose=E2=80=99?=
+        =?UTF-8?Q?_=5B=2DWmissing=2Dprototypes=5D?=
+To:     Alex <zgxgoo@gmail.com>
+Cc:     Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Jun 2021 18:05:06 +0200
-Daniel Bristot de Oliveira <bristot@redhat.com> wrote:
+Hi Alex,
 
-> 
-> The reason for this patch is that hwlat, osnoise, and timerlat have "u64 config"
-> options that are read/write via tracefs "files." In the previous version, I had
-> multiple functions doing basically the same thing:
-> 
-> A write function that:
-> 	read a u64 from user-space
-> 	get a lock,
-> 	check for min/max acceptable values
-> 		save the value
-> 	release the lock.
-> 
-> and a read function that:
-> 	write the config value to the "read" buffer.
-> 
-> And so, I tried to come up with a way to avoid code duplication.
-> 
-> question: are only the names that are bad? (I agree that they are bad) or do you
-> think that the overall idea is bad? :-)
-> 
-> Suggestions?
+Thanks for the patch!
 
-I don't think the overall idea is bad, if it is what I think you are
-doing. I just don't believe you articulated what you are doing.
+On Wed, Jun 2, 2021 at 8:26 AM Alex <zgxgoo@gmail.com> wrote:
+>
+> Add the missing declaration in head file fs/nfs/nfs4_fs.h to fix this.
 
-It has nothing to do with 64 bit reads and writes, but instead has to
-do with reading and writing values that depend on each other for what
-is acceptable.
+It looks like the declarations are already in the file
+linux/nfs_ssc.h, which is included by nfs4file.c but they're only
+there if CONFIG_NFSD_V4_2_INTER_SSC=y (I'm guessing you compiled with
+this set to 'n'). A better solution is probably to define a #else
+condition with empty functions for the case when
+CONFIG_NFSD_V4_2_INTER_SSC=n.
 
-Perhaps have it called trace_min_max_write() and trace_min_max_read(),
-and document what it is used for.
+I hope this helps!
+Anna
 
--- Steve
+>
+> Signed-off-by: Alex <zgxgoo@gmail.com>
+> ---
+>  fs/nfs/nfs4_fs.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/fs/nfs/nfs4_fs.h b/fs/nfs/nfs4_fs.h
+> index 0c9505dc852c..0cb79afa0a63 100644
+> --- a/fs/nfs/nfs4_fs.h
+> +++ b/fs/nfs/nfs4_fs.h
+> @@ -656,4 +656,10 @@ static inline void nfs4_xattr_cache_zap(struct inode *inode)
+>
+>
+>  #endif /* CONFIG_NFS_V4 */
+> +
+> +/* nfs4file.c */
+> +#ifdef CONFIG_NFS_V4_2
+> +struct file *nfs42_ssc_open(struct vfsmount *ss_mnt, struct nfs_fh *src_fh, nfs4_stateid *stateid);
+> +void nfs42_ssc_close(struct file *filep);
+> +#endif
+>  #endif /* __LINUX_FS_NFS_NFS4_FS.H */
+> --
+> 2.25.1
+>
