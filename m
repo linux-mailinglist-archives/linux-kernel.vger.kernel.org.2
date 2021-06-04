@@ -2,89 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF5F39B9D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A59AC39B9D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbhFDN1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 09:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230340AbhFDN1s (ORCPT
+        id S230440AbhFDN2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 09:28:49 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53356 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230122AbhFDN2r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 09:27:48 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078ECC06174A;
-        Fri,  4 Jun 2021 06:26:02 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id f2so9286473wri.11;
-        Fri, 04 Jun 2021 06:26:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=owsITsW7WWW5bJWpPZtkVZ9CzzbUl5LHy/XoqtgBc8A=;
-        b=WSMR1+zbalCIGTJjAs+iXa49HTsKGjOdTcRKzi8oeapJNuMzfTpJJAUS2Tb3A59Xt2
-         30VWq5RMWzZiVAUdwg9jMpN6vF60/4PNy7fNrBL45T7jJstCCAKEmOHkLJhjmZa/DG41
-         WJCtoWyC6EYXOShpyscBH3Wqj5O382nL8akhEB1SyfUM7hu6Uvle0Bdf2HRlJkik726M
-         Yt/lwCSys94IzW9MnxxQwe/rQolqLTsbKJLpDfgxgwJtuhT112/sUzpFg+ZNanSl6VJ9
-         QEb4yP6R0mKaCXIgC/ME9gpe91E3YTdnkWo80Eh7TYhkFS4NQ9AZupw+6So/6yfeXz2Q
-         hnsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=owsITsW7WWW5bJWpPZtkVZ9CzzbUl5LHy/XoqtgBc8A=;
-        b=Vd+h86vhf8fKPn/B1CoyP2QpzGZQ2q/4H5mUzDpU8xKfHNpSFV1w3p72TWmc0y4UUX
-         Z2iLx86h1+4dwi2JNJhz/cRpDs53GScY21ZLBAjLkitgIecT/nmjZRsVrXj4ICogEGFG
-         Aq00IRQ5b4bGvDOrT7vUP02gCM2hY9wKHnoCyW5oo+z0kl0arrfRFgsEGgiQX8XWBAFk
-         JWWSjxhBzqRntDg8I6sb86RI8JnTBprYeicro1OYWesy9Tc8wjz4dGvAYA2Hqb1k1XiP
-         ygEmFcNABQblE6P4PmLGc4v5WRLWQaMhD6gWb1c9eHDn1yvPwVEq2KnTcimcioQ8soG8
-         I6bQ==
-X-Gm-Message-State: AOAM530OU6IwLi7qO63ZmQ1GuJ5qorJOD7s6umE3YoH8N6DTQOAW5KM3
-        co5meyz9T6FSJK+NzKw2qYe60SkJ37s=
-X-Google-Smtp-Source: ABdhPJx+YpJKGWgpUNVl87I/p783cOw2ND2z3H7FMkJJr9ErwMVUkjeXZMA9f4dslr+6usrngvOLPw==
-X-Received: by 2002:adf:fd82:: with SMTP id d2mr4030696wrr.218.1622813159837;
-        Fri, 04 Jun 2021 06:25:59 -0700 (PDT)
-Received: from xws.localdomain (pd9e5aba0.dip0.t-ipconnect.de. [217.229.171.160])
-        by smtp.gmail.com with ESMTPSA id l16sm9009034wmj.47.2021.06.04.06.25.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 06:25:59 -0700 (PDT)
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>
-Subject: [PATCH] platform/surface: dtx: Add missing mutex_destroy() call in failure path
-Date:   Fri,  4 Jun 2021 15:25:40 +0200
-Message-Id: <20210604132540.533036-1-luzmaximilian@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 4 Jun 2021 09:28:47 -0400
+Date:   Fri, 04 Jun 2021 13:26:58 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622813219;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lX+bv7+K1Y9RKFj9gTVoQdQoRokKSs6FqRljwLTs9Mk=;
+        b=3hZ0oAC7kf7+hjizU/Cj+R3aRmO8TV6ankVZSW7gs6ppkBVGizR1u2HReEkRpBuDsYktSb
+        ul0aRyInbRF074mGvKTNNm7/ai+/xphMGFiN1w6PO8yF1F/OGMtKyA6qwJ00pthPNDwQ80
+        lC6ei5vourAcR1WKyvrSXXkt+N25MhW1LfunuQRvQQc6vVRs3FUwKfh9Il8YPmXf2fj0ge
+        D1SqwDW0TsKG196H0SvATQBHrxyTfZ5BFAmRlpatfYxX7u3q3VLPoZXBP4G9l9vPNCEhid
+        D/FM3fCZfjBKppvlySqnKDwxCudJC48MYTWtCDtP1FaNFIeLvKKJJdgRa/hJjg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622813219;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lX+bv7+K1Y9RKFj9gTVoQdQoRokKSs6FqRljwLTs9Mk=;
+        b=SrOXbBfF54ZTb0/Idq5aQ9WLYeMSvI2JjvU00CigDtrE+EYYK09s8J4Le3bwmMltdHSpar
+        ed2tHoRr//+fpIDw==
+From:   "tip-bot2 for Jiashuo Liang" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/fault: Don't send SIGSEGV twice on SEGV_PKUERR
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jiashuo Liang <liangjs@pku.edu.cn>,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210601085203.40214-1-liangjs@pku.edu.cn>
+References: <20210601085203.40214-1-liangjs@pku.edu.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <162281321853.29796.18130084021269864131.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we fail to open the device file due to DTX being shut down, the
-mutex is initialized but never destroyed. We are destroying it when
-releasing the file, so add the missing call in the failure path as well.
+The following commit has been merged into the x86/urgent branch of tip:
 
-Fixes: 1d609992832e ("platform/surface: Add DTX driver")
-Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+Commit-ID:     5405b42c2f08efe67b531799ba2fdb35bac93e70
+Gitweb:        https://git.kernel.org/tip/5405b42c2f08efe67b531799ba2fdb35bac93e70
+Author:        Jiashuo Liang <liangjs@pku.edu.cn>
+AuthorDate:    Tue, 01 Jun 2021 16:52:03 +08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 04 Jun 2021 15:23:28 +02:00
+
+x86/fault: Don't send SIGSEGV twice on SEGV_PKUERR
+
+__bad_area_nosemaphore() calls both force_sig_pkuerr() and
+force_sig_fault() when handling SEGV_PKUERR. This does not cause
+problems because the second signal is filtered by the legacy_queue()
+check in __send_signal() because in both cases, the signal is SIGSEGV,
+the second one seeing that the first one is already pending.
+
+This causes the kernel to do unnecessary work so send the signal only
+once for SEGV_PKUERR.
+
+ [ bp: Massage commit message. ]
+
+Fixes: 9db812dbb29d ("signal/x86: Call force_sig_pkuerr from __bad_area_nosemaphore")
+Suggested-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Signed-off-by: Jiashuo Liang <liangjs@pku.edu.cn>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Link: https://lkml.kernel.org/r/20210601085203.40214-1-liangjs@pku.edu.cn
 ---
- drivers/platform/surface/surface_dtx.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/mm/fault.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/platform/surface/surface_dtx.c b/drivers/platform/surface/surface_dtx.c
-index 5d9b758a99bb..1203b9a82993 100644
---- a/drivers/platform/surface/surface_dtx.c
-+++ b/drivers/platform/surface/surface_dtx.c
-@@ -427,6 +427,7 @@ static int surface_dtx_open(struct inode *inode, struct file *file)
- 	 */
- 	if (test_bit(SDTX_DEVICE_SHUTDOWN_BIT, &ddev->flags)) {
- 		up_write(&ddev->client_lock);
-+		mutex_destroy(&client->read_lock);
- 		sdtx_device_put(client->ddev);
- 		kfree(client);
- 		return -ENODEV;
--- 
-2.31.1
-
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index 1c548ad..6bda7f6 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -836,8 +836,8 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
+ 
+ 	if (si_code == SEGV_PKUERR)
+ 		force_sig_pkuerr((void __user *)address, pkey);
+-
+-	force_sig_fault(SIGSEGV, si_code, (void __user *)address);
++	else
++		force_sig_fault(SIGSEGV, si_code, (void __user *)address);
+ 
+ 	local_irq_disable();
+ }
