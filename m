@@ -2,90 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C4B39B7B7
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E999139B7C0
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbhFDLPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 07:15:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54490 "EHLO mail.kernel.org"
+        id S230150AbhFDLRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 07:17:47 -0400
+Received: from foss.arm.com ([217.140.110.172]:36474 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230004AbhFDLPa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 07:15:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA561613FF;
-        Fri,  4 Jun 2021 11:13:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622805224;
-        bh=fpRSxd6X5RuF/EJyTMPUH5MksDB90dR+zrIwskEQgj4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Lxr6FoffyoGymYBmqJAFXIMFiP6BpmY9/SGgSNDsbl+a8WuCSwW/sXIred5oUZ1OO
-         W2q8sk4jFL4MgP5iXW1peivnOs8PkUDzyIbmyDZLCS1SpglmBIoZ3bzignWeYkR/pV
-         tWfvXK7dac5+v8S5pccxKliG+Ssg0ouXWmbQ14AuM+9/nLOxOk7kDm+EGYjKveormR
-         cQ2eeBgcUgRhxs58IuBlHjp1g/1nDLFgrsmPfmfONwmIWi3cKHeSaJzwMEkeJrva2D
-         veYV9wKHkguK/rUBLvZZ7B3XGQBVFOtk7GRdpkeIk4QkebZX7EtCF0n+/La/pji8/+
-         3gjQASTEuavbg==
-Date:   Fri, 4 Jun 2021 12:13:38 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>, paulmck@kernel.org,
-        stern@rowland.harvard.edu, parri.andrea@gmail.com,
-        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
-        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
-        linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <20210604111337.GA2721@willie-the-truck>
-References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net>
- <20210604104359.GE2318@willie-the-truck>
+        id S229962AbhFDLRq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 07:17:46 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 168702B;
+        Fri,  4 Jun 2021 04:16:00 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 766343F73D;
+        Fri,  4 Jun 2021 04:15:57 -0700 (PDT)
+Subject: Re: [PATCH v13 7/8] KVM: arm64: ioctl to fetch/store tags in a guest
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+References: <20210524104513.13258-1-steven.price@arm.com>
+ <20210524104513.13258-8-steven.price@arm.com>
+ <20210603171336.GH20338@arm.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <02c7682e-5fb6-29eb-9105-02e3521756a2@arm.com>
+Date:   Fri, 4 Jun 2021 12:15:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604104359.GE2318@willie-the-truck>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210603171336.GH20338@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 11:43:59AM +0100, Will Deacon wrote:
-> On Fri, Jun 04, 2021 at 12:12:07PM +0200, Peter Zijlstra wrote:
-> > With optimizing compilers becoming more and more agressive and C so far
-> > refusing to acknowledge the concept of control-dependencies even while
-> > we keep growing the amount of reliance on them, things will eventually
-> > come apart.
-> > 
-> > There have been talks with toolchain people on how to resolve this; one
-> > suggestion was allowing the volatile qualifier on branch statements like
-> > 'if', but so far no actual compiler has made any progress on this.
-> > 
-> > Rather than waiting any longer, provide our own construct based on that
-> > suggestion. The idea is by Alan Stern and refined by Paul and myself.
-> > 
-> > Code generation is sub-optimal (for the weak architectures) since we're
-> > forced to convert the condition into another and use a fixed conditional
-> > branch instruction, but shouldn't be too bad.
-> > 
-> > Usage of volatile_if requires the @cond to be headed by a volatile load
-> > (READ_ONCE() / atomic_read() etc..) such that the compiler is forced to
-> > emit the load and the branch emitted will have the required
-> > data-dependency. Furthermore, volatile_if() is a compiler barrier, which
-> > should prohibit the compiler from lifting anything out of the selection
-> > statement.
+On 03/06/2021 18:13, Catalin Marinas wrote:
+> On Mon, May 24, 2021 at 11:45:12AM +0100, Steven Price wrote:
+>> diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
+>> index 24223adae150..b3edde68bc3e 100644
+>> --- a/arch/arm64/include/uapi/asm/kvm.h
+>> +++ b/arch/arm64/include/uapi/asm/kvm.h
+>> @@ -184,6 +184,17 @@ struct kvm_vcpu_events {
+>>  	__u32 reserved[12];
+>>  };
+>>  
+>> +struct kvm_arm_copy_mte_tags {
+>> +	__u64 guest_ipa;
+>> +	__u64 length;
+>> +	void __user *addr;
+>> +	__u64 flags;
+>> +	__u64 reserved[2];
+>> +};
+>> +
+>> +#define KVM_ARM_TAGS_TO_GUEST		0
+>> +#define KVM_ARM_TAGS_FROM_GUEST		1
+>> +
+>>  /* If you need to interpret the index values, here is the key: */
+>>  #define KVM_REG_ARM_COPROC_MASK		0x000000000FFF0000
+>>  #define KVM_REG_ARM_COPROC_SHIFT	16
+>> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+>> index e89a5e275e25..baa33359e477 100644
+>> --- a/arch/arm64/kvm/arm.c
+>> +++ b/arch/arm64/kvm/arm.c
+>> @@ -1345,6 +1345,13 @@ long kvm_arch_vm_ioctl(struct file *filp,
+>>  
+>>  		return 0;
+>>  	}
+>> +	case KVM_ARM_MTE_COPY_TAGS: {
+>> +		struct kvm_arm_copy_mte_tags copy_tags;
+>> +
+>> +		if (copy_from_user(&copy_tags, argp, sizeof(copy_tags)))
+>> +			return -EFAULT;
+>> +		return kvm_vm_ioctl_mte_copy_tags(kvm, &copy_tags);
+>> +	}
 > 
-> When building with LTO on arm64, we already upgrade READ_ONCE() to an RCpc
-> acquire. In this case, it would be really good to avoid having the dummy
-> conditional branch somehow, but I can't see a good way to achieve that.
+> I wonder whether we need an update of the user structure following a
+> fault, like how much was copied etc. In case of an error, some tags were
+> copied and the VMM may want to skip the page before continuing. But here
+> there's no such information provided.
+> 
+> On the ptrace interface, we return 0 on the syscall if any bytes were
+> copied and update iov_len to such number. Maybe you want to still return
+> an error here but updating copy_tags.length would be nice (and, of
+> course, a copy_to_user() back).
+> 
 
-Thinking more on this, an alternative angle would be having READ_ONCE_CTRL()
-instead of volatile_if. That would then expand (on arm64) to either
-something like:
+Good idea - as you suggest I'll make it update length with the number of
+bytes not processed. Although in general I think we're expecting the VMM
+to know where the memory is so this is more of a programming error - but
+could still be useful for debugging.
 
-	LDR	X0, [X1]
-	CBNZ	X0, 1f		// Dummy ctrl
-1:
+Thanks,
 
-or, with LTO:
-
-	LDAPR	X0, [X1]	// RCpc
-
-and we'd avoid the redundancy.
-
-Will
+Steve
