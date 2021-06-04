@@ -2,103 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6FA539B2E7
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 08:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C71239B2DE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 08:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229976AbhFDGvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 02:51:22 -0400
-Received: from mail-pf1-f171.google.com ([209.85.210.171]:42721 "EHLO
-        mail-pf1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229948AbhFDGvU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 02:51:20 -0400
-Received: by mail-pf1-f171.google.com with SMTP id s14so5872070pfd.9
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 23:49:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fossix-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=BQWvJC5s5eM3wv6CMNUuU7NegMGtDLO5XucsEYO9Poc=;
-        b=wUjAz0Q7vy0RdQQLDhtuh4NJFgjqB8kcFTgPBUeN6naahgiK8ldHsJxJEXNF/gIiLQ
-         rJKa15pQLHfKHYwiPtW0BbpQefZ9Vm5fJRp4eMQ1mInOpN1ErBJ6orJv9iPKukDqGatn
-         X/wvgvCBmmqxXh5hPM57uka+4yWDv7UMyn36k4Kjx2b5OwCIJGxbFvMTNGMqIpSKq7JZ
-         xZF52mjhKEfmNoTTiNlS8nJJ82gxw0lFNMTUtObXCJOa4dm2I1323IkRGMmDEVsqSJyL
-         YFfSlTG8/mm7Miy36u/2wTqL0zuHqhTbK+5zzD6Llw61d3FqKLjME2bVVB+b4TUy/X0Z
-         BoZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=BQWvJC5s5eM3wv6CMNUuU7NegMGtDLO5XucsEYO9Poc=;
-        b=dmCLRpLAqW37EZnVWLZaK4Pq2gxVOxNvYl1193J2WSYsRcddp/TJ/y+K5ALJS3fu84
-         CPZUCOzeO0/x92sMkXxuF/MgLy/QubVCNOre5EbDVMFzoJiQC0YWbn402hn17tvmKOKY
-         MeSHKoEb3EhavJAKt9K7s00kNZDP/kXc3Gidoc8R0Y1CpKay6AryKxLF4qhJIU6kz3tU
-         ve2nFzfOkkjplEy+rkwz/tpGSeUM8p7z1Qk9lonciRJpNY99YCWg73n38kYH2/BjfdER
-         MLDRagibSpgrXe4jxdvVZE+Mb6PYAH4hert5uC8XnqeVTb/uTEipDRWigInZ1o8ruZ7M
-         I5Lw==
-X-Gm-Message-State: AOAM531EE+5I2s/fDEGeeG6mFRHDbEMdYn53J6vEFGaMYSdOP7T+s/J6
-        xAJ9vnLo5/phF9JWNUbpgjbIVg==
-X-Google-Smtp-Source: ABdhPJx2UDloTP4aiPcPj38DSXAFTgLGFtShKK7vZ5nAtthJEC3mYqSS/8DwRVJOSkvzLdJ0gOJrqg==
-X-Received: by 2002:a65:6884:: with SMTP id e4mr3422366pgt.71.1622789314969;
-        Thu, 03 Jun 2021 23:48:34 -0700 (PDT)
-Received: from localhost ([103.21.79.4])
-        by smtp.gmail.com with ESMTPSA id m14sm947785pff.17.2021.06.03.23.48.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 23:48:34 -0700 (PDT)
-From:   Santosh Sivaraj <santosh@fossix.org>
-To:     Wu Bo <wubo40@huawei.com>, dan.j.williams@intel.com,
-        vishal.l.verma@intel.com, dave.jiang@intel.com,
-        ira.weiny@intel.com, bp@suse.de, rafael.j.wysocki@intel.com,
-        mpe@ellerman.id.au, nvdimm@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     linfeilong@huawei.com, wubo40@huawei.com
-Subject: Re: [PATCH] tools/testing/nvdimm: use vzalloc() instead of
- vmalloc()/memset(0)
-In-Reply-To: <1622425715-146012-1-git-send-email-wubo40@huawei.com>
-References: <1622425715-146012-1-git-send-email-wubo40@huawei.com>
-Date:   Fri, 04 Jun 2021 12:18:32 +0530
-Message-ID: <87tumem8fz.fsf@desktop.fossix.local.i-did-not-set--mail-host-address--so-tickle-me>
+        id S229961AbhFDGvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 02:51:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35300 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229799AbhFDGvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 02:51:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F86561407;
+        Fri,  4 Jun 2021 06:49:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622789367;
+        bh=KthqUglb+nC6623tWkfvh5H+9BVnVYgnX+fsls7NSQI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FPkh7u7zsbRYGcZJvxXgY/1+e0VcoeE6oUNzwZHn0L7C4hfp+UCz3v3M1G3BVjFo8
+         jRmgV1kFDiQmq8LnAjG0i+ptbq/s7j7syTBnI9+CBM5Xa3U6+OUQd3nn2wC/3jL92h
+         E25RlQI+dfP/ART5SU/K+3T3M7k/KA9qJl9p3bdadA5vN3MTOkLq0gNCkji5zfjuh8
+         z/UaNiomJuD82SDVlpF+BDaKnjo7bLolktLue1MKw7PH+ahqEtTIGruba/wWEXiP0h
+         e1k7JcCxLKK0YalV522yLE+V8eK+kv8aXBjMlNyfNxKOZPHRWjYuvfSszEFVfgGUaV
+         hFwY9CFMbHm4A==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matt Turner <mattst88@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Vineet Gupta <vgupta@synopsys.com>, kexec@lists.infradead.org,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org
+Subject: [PATCH v2 0/9] Remove DISCINTIGMEM memory model
+Date:   Fri,  4 Jun 2021 09:49:07 +0300
+Message-Id: <20210604064916.26580-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wu Bo <wubo40@huawei.com> writes:
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-> Use vzalloc() instead of vmalloc() and memset(0) to simpify
-> the code.
->
-> Signed-off-by: Wu Bo <wubo40@huawei.com>
-> ---
->  tools/testing/nvdimm/test/nfit.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+Hi,
 
-LGTM,
+SPARSEMEM memory model was supposed to entirely replace DISCONTIGMEM a
+(long) while ago. The last architectures that used DISCONTIGMEM were
+updated to use other memory models in v5.11 and it is about the time to
+entirely remove DISCONTIGMEM from the kernel.
 
-Reviewed-by: Santosh S <santosh@fossix.org>
+This set removes DISCONTIGMEM from alpha, arc and m68k, simplifies memory
+model selection in mm/Kconfig and replaces usage of redundant
+CONFIG_NEED_MULTIPLE_NODES and CONFIG_FLAT_NODE_MEM_MAP with CONFIG_NUMA
+and CONFIG_FLATMEM respectively. 
 
->
-> diff --git a/tools/testing/nvdimm/test/nfit.c b/tools/testing/nvdimm/test/nfit.c
-> index 54f367cbadae..258bba22780b 100644
-> --- a/tools/testing/nvdimm/test/nfit.c
-> +++ b/tools/testing/nvdimm/test/nfit.c
-> @@ -1625,7 +1625,6 @@ static void *__test_alloc(struct nfit_test *t, size_t size, dma_addr_t *dma,
->  	if (rc)
->  		goto err;
->  	INIT_LIST_HEAD(&nfit_res->list);
-> -	memset(buf, 0, size);
->  	nfit_res->dev = dev;
->  	nfit_res->buf = buf;
->  	nfit_res->res.start = *dma;
-> @@ -1652,7 +1651,7 @@ static void *test_alloc(struct nfit_test *t, size_t size, dma_addr_t *dma)
->  	struct genpool_data_align data = {
->  		.align = SZ_128M,
->  	};
-> -	void *buf = vmalloc(size);
-> +	void *buf = vzalloc(size);
->  
->  	if (size >= DIMM_SIZE)
->  		*dma = gen_pool_alloc_algo(nfit_pool, size,
-> -- 
-> 2.30.0
+I've also removed NUMA support on alpha that was BROKEN for more than 15
+years.
+
+There were also minor updates all over arch/ to remove mentions of
+DISCONTIGMEM in comments and #ifdefs.
+
+v2:
+* Fix build errors reported by kbuild bot
+* Add additional cleanups in m68k as suggested by Geert
+
+v1: Link: https://lore.kernel.org/lkml/20210602105348.13387-1-rppt@kernel.org
+
+Mike Rapoport (9):
+  alpha: remove DISCONTIGMEM and NUMA
+  arc: update comment about HIGHMEM implementation
+  arc: remove support for DISCONTIGMEM
+  m68k: remove support for DISCONTIGMEM
+  mm: remove CONFIG_DISCONTIGMEM
+  arch, mm: remove stale mentions of DISCONIGMEM
+  docs: remove description of DISCONTIGMEM
+  mm: replace CONFIG_NEED_MULTIPLE_NODES with CONFIG_NUMA
+  mm: replace CONFIG_FLAT_NODE_MEM_MAP with CONFIG_FLATMEM
+
+ Documentation/admin-guide/sysctl/vm.rst |  12 +-
+ Documentation/vm/memory-model.rst       |  45 +----
+ arch/alpha/Kconfig                      |  22 ---
+ arch/alpha/include/asm/machvec.h        |   6 -
+ arch/alpha/include/asm/mmzone.h         | 100 -----------
+ arch/alpha/include/asm/pgtable.h        |   4 -
+ arch/alpha/include/asm/topology.h       |  39 -----
+ arch/alpha/kernel/core_marvel.c         |  53 +-----
+ arch/alpha/kernel/core_wildfire.c       |  29 +--
+ arch/alpha/kernel/pci_iommu.c           |  29 ---
+ arch/alpha/kernel/proto.h               |   8 -
+ arch/alpha/kernel/setup.c               |  16 --
+ arch/alpha/kernel/sys_marvel.c          |   5 -
+ arch/alpha/kernel/sys_wildfire.c        |   5 -
+ arch/alpha/mm/Makefile                  |   2 -
+ arch/alpha/mm/init.c                    |   3 -
+ arch/alpha/mm/numa.c                    | 223 ------------------------
+ arch/arc/Kconfig                        |  13 --
+ arch/arc/include/asm/mmzone.h           |  40 -----
+ arch/arc/mm/init.c                      |  21 +--
+ arch/arm64/Kconfig                      |   2 +-
+ arch/ia64/Kconfig                       |   2 +-
+ arch/ia64/kernel/topology.c             |   5 +-
+ arch/ia64/mm/numa.c                     |   5 +-
+ arch/m68k/Kconfig.cpu                   |  10 --
+ arch/m68k/include/asm/mmzone.h          |  10 --
+ arch/m68k/include/asm/page.h            |   2 +-
+ arch/m68k/include/asm/page_mm.h         |  35 ----
+ arch/m68k/mm/init.c                     |  20 ---
+ arch/mips/Kconfig                       |   2 +-
+ arch/mips/include/asm/mmzone.h          |   8 +-
+ arch/mips/include/asm/page.h            |   2 +-
+ arch/mips/mm/init.c                     |   7 +-
+ arch/nds32/include/asm/memory.h         |   6 -
+ arch/powerpc/Kconfig                    |   2 +-
+ arch/powerpc/include/asm/mmzone.h       |   4 +-
+ arch/powerpc/kernel/setup_64.c          |   2 +-
+ arch/powerpc/kernel/smp.c               |   2 +-
+ arch/powerpc/kexec/core.c               |   4 +-
+ arch/powerpc/mm/Makefile                |   2 +-
+ arch/powerpc/mm/mem.c                   |   4 +-
+ arch/riscv/Kconfig                      |   2 +-
+ arch/s390/Kconfig                       |   2 +-
+ arch/sh/include/asm/mmzone.h            |   4 +-
+ arch/sh/kernel/topology.c               |   2 +-
+ arch/sh/mm/Kconfig                      |   2 +-
+ arch/sh/mm/init.c                       |   2 +-
+ arch/sparc/Kconfig                      |   2 +-
+ arch/sparc/include/asm/mmzone.h         |   4 +-
+ arch/sparc/kernel/smp_64.c              |   2 +-
+ arch/sparc/mm/init_64.c                 |  12 +-
+ arch/x86/Kconfig                        |   2 +-
+ arch/x86/kernel/setup_percpu.c          |   6 +-
+ arch/x86/mm/init_32.c                   |   4 +-
+ arch/xtensa/include/asm/page.h          |   4 -
+ include/asm-generic/memory_model.h      |  37 +---
+ include/asm-generic/topology.h          |   2 +-
+ include/linux/gfp.h                     |   4 +-
+ include/linux/memblock.h                |   6 +-
+ include/linux/mm.h                      |   4 +-
+ include/linux/mmzone.h                  |  20 ++-
+ kernel/crash_core.c                     |   4 +-
+ mm/Kconfig                              |  36 +---
+ mm/memblock.c                           |   8 +-
+ mm/page_alloc.c                         |  25 +--
+ mm/page_ext.c                           |   2 +-
+ 66 files changed, 100 insertions(+), 909 deletions(-)
+ delete mode 100644 arch/alpha/include/asm/mmzone.h
+ delete mode 100644 arch/alpha/mm/numa.c
+ delete mode 100644 arch/arc/include/asm/mmzone.h
+ delete mode 100644 arch/m68k/include/asm/mmzone.h
+
+
+base-commit: c4681547bcce777daf576925a966ffa824edd09d
+-- 
+2.28.0
+
