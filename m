@@ -2,103 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF33939B397
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:10:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF53039B3A5
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 09:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhFDHLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 03:11:47 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:4468 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhFDHLq (ORCPT
+        id S229907AbhFDHR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 03:17:59 -0400
+Received: from mail-lf1-f47.google.com ([209.85.167.47]:42848 "EHLO
+        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229555AbhFDHR6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 03:11:46 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FxDNJ2lh2zZcPQ;
-        Fri,  4 Jun 2021 15:07:12 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 4 Jun 2021 15:09:58 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 4 Jun 2021
- 15:09:58 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>
-CC:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
-Subject: [PATCH -next v2] scsi: mpi3mr: Make some symbols static
-Date:   Fri, 4 Jun 2021 15:14:07 +0800
-Message-ID: <20210604071407.1360742-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 4 Jun 2021 03:17:58 -0400
+Received: by mail-lf1-f47.google.com with SMTP id a2so12570232lfc.9;
+        Fri, 04 Jun 2021 00:15:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hFVfJJ6Ejdu+Nc6pP4+2Kj/FAk9+HqPn9yXfhDOY5Ro=;
+        b=QgkeChCIXwPltaFv0/iPA3nqsD6PxNhw++qgors9r/uV+iU/4fXeTH91YkFwM+fna7
+         Voj7VYZEGnJMYqo8Q4pCU7cDDdkvw1GEjFi0ItnLj9pgve+ATxPWSuYU/r0q08XPd3As
+         j/9Y1uZiR5rGOrQK4My9s3B7zSOXAa9lGgrb2L5i/vKrL/qzqlJD1jDarMC8E4zKbYLJ
+         +Vo/E9UKfDoBevWuyp+sqlxBkJ7mCwiaQlBjNTqqM7AhWpe0zWprPxlAj2jaNb+SaDTa
+         T78uQ0gO26GD8eKzOic9Y7Uj/sXuq00Rf7j336ebHOX838ZgTuFayaMfKXGjXuFkhZEK
+         XaAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hFVfJJ6Ejdu+Nc6pP4+2Kj/FAk9+HqPn9yXfhDOY5Ro=;
+        b=YIwhk34asfBDCTCkH4MBKYGBD3gYOtHcoQoC3TtnGGUewVrsuOYYXH9Il085dk5a0E
+         GuNebxe3DOrOzFYo+ahithF/n4RB6QU2/AIwoPQ9rkItT/xefxmKghIbf1m9xkcE2Ew+
+         MX2Hf6V9XR4wUIAMfnHv2VCcekMyvI+qigCGq2XfYAEdQr1bDmPEFDvI5vRiSeWj4H5k
+         OAVEjSdTuY4qjkfADJDq5jL3ujCfjEA2YWJoq7/8CBbjmr3B+UVfjGJ31AS8YtiJq+mU
+         NzHiQ5rjlH89j9iTWao+MDF30WWmITtMt12uggHhEkTcFkxcjtJwmakfJwUt+ycW5jU+
+         +VkQ==
+X-Gm-Message-State: AOAM531LGCXlpiUMpoZG0uxUnBgEodWBHA6fy6HoJMhC/3laew29/z60
+        hObKYrpwDq874UxdK5qUjex0xgt4z/A=
+X-Google-Smtp-Source: ABdhPJyvLqfzFB8dyRAycRpMLE+vWsX/t92KFUNJOpadhY9cIhKj7mXAnjMuGDP62SM+NjdRU/gutg==
+X-Received: by 2002:a05:6512:38a4:: with SMTP id o4mr1831752lft.288.1622790894175;
+        Fri, 04 Jun 2021 00:14:54 -0700 (PDT)
+Received: from [10.0.0.40] (91-155-111-71.elisa-laajakaista.fi. [91.155.111.71])
+        by smtp.gmail.com with ESMTPSA id s16sm529885lfp.106.2021.06.04.00.14.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Jun 2021 00:14:53 -0700 (PDT)
+Subject: Re: [PATCH][next] ASoC: ti: davinci-mcasp: Fix fall-through warning
+ for Clang
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20210528202047.GA39602@embeddedor>
+From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+Message-ID: <25941c37-6e38-88ae-3afe-4f5af44380d3@gmail.com>
+Date:   Fri, 4 Jun 2021 10:14:52 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210528202047.GA39602@embeddedor>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following warnings:
 
-  drivers/scsi/mpi3mr/mpi3mr_os.c:24:5: warning: symbol 'prot_mask' was not declared. Should it be static?
-  drivers/scsi/mpi3mr/mpi3mr_os.c:28:5: warning: symbol 'prot_guard_mask' was not declared. Should it be static?
-  drivers/scsi/mpi3mr/mpi3mr_os.c:31:5: warning: symbol 'logging_level' was not declared. Should it be static?
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
-v2:
-  move extern int prot_mask to mpi3mr.h
----
- drivers/scsi/mpi3mr/mpi3mr.h    | 1 +
- drivers/scsi/mpi3mr/mpi3mr_fw.c | 1 -
- drivers/scsi/mpi3mr/mpi3mr_os.c | 4 ++--
- 3 files changed, 3 insertions(+), 3 deletions(-)
+On 28/05/2021 23:20, Gustavo A. R. Silva wrote:
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+> by explicitly adding a goto statement instead of letting the code fall
+> through to the next case.
+> 
+> Link: https://github.com/KSPP/linux/issues/115
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+> JFYI: We had thousands of these sorts of warnings and now we are down
+>       to just 25 in linux-next. This is one of those last remaining
+>       warnings.
+> 
+>  sound/soc/ti/davinci-mcasp.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
+> index b94220306d1a..587967720135 100644
+> --- a/sound/soc/ti/davinci-mcasp.c
+> +++ b/sound/soc/ti/davinci-mcasp.c
+> @@ -2317,6 +2317,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+>  		break;
+>  	default:
+>  		dev_err(&pdev->dev, "No DMA controller found (%d)\n", ret);
+> +		goto err;
 
-diff --git a/drivers/scsi/mpi3mr/mpi3mr.h b/drivers/scsi/mpi3mr/mpi3mr.h
-index 5d5529167350..6f5dc9e78553 100644
---- a/drivers/scsi/mpi3mr/mpi3mr.h
-+++ b/drivers/scsi/mpi3mr/mpi3mr.h
-@@ -50,6 +50,7 @@
- /* Global list and lock for storing multiple adapters managed by the driver */
- extern spinlock_t mrioc_list_lock;
- extern struct list_head mrioc_list;
-+extern int prot_mask;
- 
- #define MPI3MR_DRIVER_VERSION	"00.255.45.01"
- #define MPI3MR_DRIVER_RELDATE	"12-December-2020"
-diff --git a/drivers/scsi/mpi3mr/mpi3mr_fw.c b/drivers/scsi/mpi3mr/mpi3mr_fw.c
-index 8aea1c2ae712..4a007cf54ad7 100644
---- a/drivers/scsi/mpi3mr/mpi3mr_fw.c
-+++ b/drivers/scsi/mpi3mr/mpi3mr_fw.c
-@@ -9,7 +9,6 @@
- 
- #include "mpi3mr.h"
- #include <linux/io-64-nonatomic-lo-hi.h>
--extern int prot_mask;
- 
- #if defined(writeq) && defined(CONFIG_64BIT)
- static inline void mpi3mr_writeq(__u64 b, volatile void __iomem *addr)
-diff --git a/drivers/scsi/mpi3mr/mpi3mr_os.c b/drivers/scsi/mpi3mr/mpi3mr_os.c
-index a54aa009ec5a..eec0b269a4db 100644
---- a/drivers/scsi/mpi3mr/mpi3mr_os.c
-+++ b/drivers/scsi/mpi3mr/mpi3mr_os.c
-@@ -25,10 +25,10 @@ int prot_mask = -1;
- module_param(prot_mask, int, 0);
- MODULE_PARM_DESC(prot_mask, "Host protection capabilities mask, def=0x07");
- 
--int prot_guard_mask = 3;
-+static int prot_guard_mask = 3;
- module_param(prot_guard_mask, int, 0);
- MODULE_PARM_DESC(prot_guard_mask, " Host protection guard mask, def=3");
--int logging_level;
-+static int logging_level;
- module_param(logging_level, int, 0);
- MODULE_PARM_DESC(logging_level,
- 	" bits for enabling additional logging info (default=0)");
+Would:
+	fallthrough;
+
+be enough to silence the warning? If so, then I would prefer this version.
+
+>  	case -EPROBE_DEFER:
+>  		goto err;
+>  	}
+> 
+
 -- 
-2.25.1
-
+Péter
