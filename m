@@ -2,52 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 431E939BA81
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50DD239BA89
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231277AbhFDOFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 10:05:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230209AbhFDOFt (ORCPT
+        id S230519AbhFDOGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 10:06:50 -0400
+Received: from mail-wr1-f54.google.com ([209.85.221.54]:34683 "EHLO
+        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230124AbhFDOGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 10:05:49 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C483FC061766
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 07:04:02 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id r13so5470661wmq.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 07:04:02 -0700 (PDT)
+        Fri, 4 Jun 2021 10:06:49 -0400
+Received: by mail-wr1-f54.google.com with SMTP id q5so9465959wrm.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 07:05:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CDPZN9rXn/2sWgCtIlnaMwucM0ZhhnFzjW38voB8XP0=;
-        b=AZ9qPpOgKNZFV/4UmgwQQfpWul55LoMX8bUmhqdDHjMx3cIZPNpJxDzscteLozut+a
-         TRECh9nqt+y+e7BEktoprseEdvjebbZeWlErt/36JD9ar5D2LfVnU3b5cY+eZjqMSxOG
-         h0zTwomuOWWLGcnTSpiid/qRa4syjH2qZkpehTiUCv5S69acA9VcYR/wrD3zlXBYDZ2F
-         uj0cFVBbdzdN/BlhpVzp8NaxNMjCYhruFSR//4y1j0bTd0m+U7y0tdYei2oswMt2M+sZ
-         Ymn22uhPCdeCMGV0LDadFKDUiP5rHwjJ2HGNvlX3OhIEtKfVO+BZlK/1WELTC6YjMGcS
-         Xq9w==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=9vD7NkGDkc+IVLjUtVKL1KzFVVpDAskIEMoj4foPPh0=;
+        b=akY05cjVG2u0Mf/Ur1k9G+ijD85MCVBcTS5cQxoMRHReBqD1UUr5+rTusPSJUjBFcQ
+         xJ5eN+t/caaW7VWfSKfSEp9tAOxtYnT7wP4gt0PBctHI71FMDBhIJElbtcRHq0RZXIqj
+         NxjnAOMorjqeNIdAFe72j34/dxhsIEZWYFc8liIEyolGby0H9wUp9V8daZmdeVX1FZ0B
+         5SeriQykexYzYAk2IbdrrdTOG9zKvdQJXFBJgXPKvzkZZrm/S0Ymv4tV6g+9IRQBLFvQ
+         UPN+cQH55smlaQ153ZgRX0rZF83RKMv1yYNN5C6hN2iKku845JUpznvi7dzmQSIaEGCJ
+         OzBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CDPZN9rXn/2sWgCtIlnaMwucM0ZhhnFzjW38voB8XP0=;
-        b=N+HARxbbzwn+j50P8XVyXdcHVnJ6BM3gQUuHBjEvakTsdjwteQFpEl59bzJcUtq+bA
-         qeAwzpxTBQGhEQfzJy0rzzf6b1TCwwJedo88V+XLcb7oimeOmVeaBNkvWOSOwwtc3qyZ
-         HlYXbUV+ed2NB5pUqHyXUqBFmm9xkYwg1lA+7jlTc9ql9p2YVqFX4Xhh3ypg5OeLU+xt
-         vyKw1d8Mm3uZ8KzcZg4FObfW1v9/0Q0l4z/QPiXm4pLWQQ9oOK/xDkiOW2rIX4RThnxM
-         E3/ZAWZ+OWQx0tKH2fGQLy6cc0SnwAMGLw3DMY/hSAGBYm/G4I/6v6C7yUTYBVDdyKF+
-         wbfg==
-X-Gm-Message-State: AOAM532wKGddT2FjAqHVEtFfbLPsGmYGyGpiiMI7MvgEBvGTRl7ijuXk
-        2DlQupF2oaqbJVc8lYEA+vgPeg==
-X-Google-Smtp-Source: ABdhPJz6XYD0ouvZ2spj1i+HskfJEYeUlvOtKtkkuV4v4hqyWbkwEVFPqErNBxKEqheZXGCDnJTvtQ==
-X-Received: by 2002:a1c:2456:: with SMTP id k83mr3867850wmk.87.1622815441364;
-        Fri, 04 Jun 2021 07:04:01 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9vD7NkGDkc+IVLjUtVKL1KzFVVpDAskIEMoj4foPPh0=;
+        b=E8UiA/j1cur7f5tgf94f/uwSaWcYXHeps7k5PN/Oxkoiw4rgTG5Fl+aFVxwLryhxTq
+         /0HriTFc+0u7q2AutxIpgxgZiWH5kQrvVLkwApkTeOGZZInAi8GJm3YuY8yHuJraLl9u
+         EdNsuHN987UJsU0eJNWRjFPVPk+YIUPcMeTt93uCLIIHkK0XIrV6/Nj3bGe2VQNkPF97
+         QaTk76bWpR6pVTNgdCVRH4YlI7FzAVEuwjgC20sXSNX/jxl3oTFytpDI5DkcZeciDKMI
+         HC8zKn8WOF/LY+jfNWL8yCsDl9qLWv/mk6ji94wP4Cfvhi6HRmm1n2vebznXY28PIrSD
+         HcoQ==
+X-Gm-Message-State: AOAM531WdwpT0ex+v7AwjoOI6Ani6QuqNOP0hBlWkJjKGROrhnZmbAZp
+        OU8/mc5g+wJCYKI1FheQ0kB7rQ==
+X-Google-Smtp-Source: ABdhPJyoc18GiAJJdLah52gbebIhTBv5cg91BFwDaX7X49x4F2VQ9HNUtagdypEOLgxeAr0vit0AsA==
+X-Received: by 2002:a05:6000:6:: with SMTP id h6mr4149822wrx.24.1622815442389;
+        Fri, 04 Jun 2021 07:04:02 -0700 (PDT)
 Received: from dell.default ([91.110.221.214])
-        by smtp.gmail.com with ESMTPSA id m11sm5422559wmq.33.2021.06.04.07.04.00
+        by smtp.gmail.com with ESMTPSA id m11sm5422559wmq.33.2021.06.04.07.04.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 07:04:00 -0700 (PDT)
+        Fri, 04 Jun 2021 07:04:01 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org, linux@armlinux.org.uk,
         catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
@@ -55,53 +52,79 @@ To:     lee.jones@linaro.org, linux@armlinux.org.uk,
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         wsa+renesas@sang-engineering.com, linux@roeck-us.net,
         treding@nvidia.com, arnd@arndb.de, xen-devel@lists.xenproject.org,
-        patches@armlinux.org.uk
-Subject: [RESEND 0/5] ARM/arm64: arm_pm_restart removal
-Date:   Fri,  4 Jun 2021 15:03:52 +0100
-Message-Id: <20210604140357.2602028-1-lee.jones@linaro.org>
+        patches@armlinux.org.uk,
+        Stefano Stabellini <stefano.stabellini@eu.citrix.com>
+Subject: [PATCH 1/5] ARM: xen: Register with kernel restart handler
+Date:   Fri,  4 Jun 2021 15:03:53 +0100
+Message-Id: <20210604140357.2602028-2-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210604140357.2602028-1-lee.jones@linaro.org>
+References: <20210604140357.2602028-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a rebase/refresh of a set sent out, reviewed,
-then forgotten about.  It's still considered useful.
+From: Guenter Roeck <linux@roeck-us.net>
 
-Here is an excerpt from the previous attempt:
+Register with kernel restart handler instead of setting arm_pm_restart
+directly.
 
- "Hi Russell, ARM SoC maintainers,
+Select a high priority of 192 to ensure that default restart handlers
+are replaced if Xen is running.
 
- here's the full set of patches that remove arm_pm_restart as discussed
- earlier. There's some background on the series in this thread:
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Reviewed-by: Stefano Stabellini <stefano.stabellini@eu.citrix.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ arch/arm/xen/enlighten.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-	https://lore.kernel.org/linux-arm-kernel/20170130110512.6943-1-thierry.reding@gmail.com/
-
- I also have a set of patches that build on top of this and try to add
- something slightly more formal by adding a power/reset framework that
- driver can register with. If we can get this series merged, I'll find
- some time to refresh those patches and send out for review again.
-
- Thierry"
-
-Guenter Roeck (5):
-  ARM: xen: Register with kernel restart handler
-  drivers: firmware: psci: Register with kernel restart handler
-  ARM: Register with kernel restart handler
-  ARM64: Remove arm_pm_restart()
-  ARM: Remove arm_pm_restart()
-
- arch/arm/include/asm/system_misc.h   |  1 -
- arch/arm/kernel/reboot.c             |  6 +-----
- arch/arm/kernel/setup.c              | 20 ++++++++++++++++++--
- arch/arm/xen/enlighten.c             | 12 ++++++++++--
- arch/arm64/include/asm/system_misc.h |  2 --
- arch/arm64/kernel/process.c          |  7 +------
- drivers/firmware/psci/psci.c         | 12 ++++++++++--
- 7 files changed, 40 insertions(+), 20 deletions(-)
-
-
+diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
+index 8ad576ecd0f1d..7f1c106b746f8 100644
+--- a/arch/arm/xen/enlighten.c
++++ b/arch/arm/xen/enlighten.c
+@@ -29,6 +29,7 @@
+ #include <linux/cpu.h>
+ #include <linux/console.h>
+ #include <linux/pvclock_gtod.h>
++#include <linux/reboot.h>
+ #include <linux/time64.h>
+ #include <linux/timekeeping.h>
+ #include <linux/timekeeper_internal.h>
+@@ -181,11 +182,18 @@ void xen_reboot(int reason)
+ 	BUG_ON(rc);
+ }
+ 
+-static void xen_restart(enum reboot_mode reboot_mode, const char *cmd)
++static int xen_restart(struct notifier_block *nb, unsigned long action,
++		       void *data)
+ {
+ 	xen_reboot(SHUTDOWN_reboot);
++
++	return NOTIFY_DONE;
+ }
+ 
++static struct notifier_block xen_restart_nb = {
++	.notifier_call = xen_restart,
++	.priority = 192,
++};
+ 
+ static void xen_power_off(void)
+ {
+@@ -404,7 +412,7 @@ static int __init xen_pm_init(void)
+ 		return -ENODEV;
+ 
+ 	pm_power_off = xen_power_off;
+-	arm_pm_restart = xen_restart;
++	register_restart_handler(&xen_restart_nb);
+ 	if (!xen_initial_domain()) {
+ 		struct timespec64 ts;
+ 		xen_read_wallclock(&ts);
 -- 
 2.31.1
 
