@@ -2,215 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B7539BBD5
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 363A839BBD6
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbhFDP3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 11:29:19 -0400
-Received: from mail-dm3nam07on2058.outbound.protection.outlook.com ([40.107.95.58]:61482
-        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230002AbhFDP3S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 11:29:18 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EpvoXCd5eCK+AGfAdV7ca6dQQ0Bc/hcL/EmNuBKND/rGBTVEQ8+vN1w7jlWNF/APk97QZxhci5xy7pdbVqzr+jW7S1o8F8vm9omwEgN+O534FYUEn76DxgWEVr4lYRZ4YitFxfbpX0GqK9sQarqkkgarij+UjPsFOIOXYAlTkZ5n5wY5HkbhFj1oLH6Vxhai1O6dZtXRqmH/OvvFmSIIDXtr1IhypGXvczgTpyZ8wRbjXJA929ptZefhueIya6eISJzHyeJgVOiy2t1NAQKhEJLkO356CFRXgNBFKX/u85cCnI9/ilDVosXU+5DvQ/japxDD+R453bMuKwFvHXZpKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KVoNoLqLTwYfPsf/BZWamuMfq4bCj3F0c2vU01zmmog=;
- b=jjr++LguVbeOHtp1BpsiF/zgPIrxmujUE1H2zqdwa3F3YNvBU7xV4yxyz+r0sjRjxWmcf3K3QFgw77hTNlNGANvHEvL3L64gCbmQNBQYFxo4qYozdX0fG7kka9GOZJsngY2UzeeTuS0qxqxZaGavEGL59hXShrfYGH+uZ4TRJLpo9wRUYo2ecuDRnimc2IxYOAqBc9X1GOF2QD3WQzQyPnuN+qVTQpZAOMDglstyxnbzkbcpYYZ3RiMRsV0xTbOV4Y+ed39h6gzkrdWJcegGBP888JEV4psL9sMVbf7LNpYk64Uhx8duOguJ8Kn0ocElhbBsEJvGfC2zKPXoNDyTvQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KVoNoLqLTwYfPsf/BZWamuMfq4bCj3F0c2vU01zmmog=;
- b=qIcm3d9kwE7DFmX0nqnIeW02+rE9BreDDc/uvGSLUqigzNBsm1fS3W/IWf+Zf12NGiRGmEzyiu80ojw35dnlBh1UQXx6/jFjJPYAcF1qOPVeXSUUK5ObdyS2T0Pn7DBwzrcwlRKDUUelpc+aN55+KRA/E4Q0ZN/bBvGfNXgzVCLUI/xckm4yAN35LyxpNZrcm1Ji/g2sjS6WuGoQE92lIeWe+AQjuDocID3kfpdtecmeNxoF22HPQk+B1CwqGKbBZ0u7daeyTRkd3YLSFhTKeoN/59VI0aHW1Zy79M25C69lxbTmqGtot0eOXcZj0sD4ILx+UXc3k9BFXFh54NaCpQ==
-Received: from BN9PR12MB5129.namprd12.prod.outlook.com (2603:10b6:408:136::12)
- by BN9PR12MB5366.namprd12.prod.outlook.com (2603:10b6:408:103::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20; Fri, 4 Jun
- 2021 15:27:31 +0000
-Received: from BN9PR12MB5129.namprd12.prod.outlook.com
- ([fe80::3c78:e58b:fba7:b8dd]) by BN9PR12MB5129.namprd12.prod.outlook.com
- ([fe80::3c78:e58b:fba7:b8dd%6]) with mapi id 15.20.4195.024; Fri, 4 Jun 2021
- 15:27:31 +0000
-From:   Ninad Malwade <nmalwade@nvidia.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-CC:     Jean Delvare <jdelvare@suse.com>, Bibek Basu <bbasu@nvidia.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Rajkumar Kasirajan <rkasirajan@nvidia.com>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] ina3221: use CVRF only for single-shot conversion
-Thread-Topic: [PATCH] ina3221: use CVRF only for single-shot conversion
-Thread-Index: AQHXWQ6aU62KuN2mR0WLfylQOUXDSasDspMAgABHc3A=
-Date:   Fri, 4 Jun 2021 15:27:30 +0000
-Message-ID: <BN9PR12MB5129C8D9DE7A35BBC3B6C4E3B13B9@BN9PR12MB5129.namprd12.prod.outlook.com>
-References: <1622789683-30931-1-git-send-email-nmalwade@nvidia.com>
- <20210604111120.GA1446736@roeck-us.net>
-In-Reply-To: <20210604111120.GA1446736@roeck-us.net>
-Accept-Language: en-US, zh-TW
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: roeck-us.net; dkim=none (message not signed)
- header.d=none;roeck-us.net; dmarc=none action=none header.from=nvidia.com;
-x-originating-ip: [59.124.78.18]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 68d5858e-ba3f-4939-3c65-08d9276d4502
-x-ms-traffictypediagnostic: BN9PR12MB5366:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BN9PR12MB5366CAD1BB974266795A98DDB13B9@BN9PR12MB5366.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: dGlXSE+BolAxfRZdXLr/Ca/Xj1884jyFBLSnrHyHdfL6OtEQG+0lmvzBBfPWgTVj4HFyQIvH2tu7IrEUIe3V96q9yfwdoXZqp7PGu5P6bYiL5O+pTcGwSW/wv2mUHvifmuqToGLaN7BMfDJP+dSeuw0s4erkXPO8H7+U+0tzcLGGzibIIK8ZGdVyVVphIb5hVnBdK1AxAW6fY7JIyMGqofHclYELVKtE5pL6cSVQxtUgaGwGk6DpsMw7/1kdRGZ+R0ApoNp6aRhabrItlyTgOdpzrXIAVf3t051grsknCD3FNOczwCODbmPn/9JlG8CmECjNqSKe4N1K+xdeMRZKVuKDVCggSYWlnQdQ+d51Tyfo1TJtVoqedvEPT8iZA8A+41EQQ1q0ewT9E5jgWIZObNd6cePcRNt7J42852uqzpo51euQdtnL2Kh1zl00djxqFk/x/pIoJzGEnQtRVqFKVfTH9s7AfYH7We2XFMo17PTzPDzPiLcxHJnea1u+IOVtUfrCGJ4x1YGqg1eXj+mvtOdFoQ1AYus8NoKXfJ3TkbFhb0VGiddfT8ovKD4LqqPMFcYtL1fGKsv2pYqRmx7Rk9487EONHSYSKlsIqvpUDL8=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5129.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(366004)(396003)(39860400002)(376002)(9686003)(478600001)(55016002)(83380400001)(5660300002)(316002)(54906003)(66946007)(66476007)(64756008)(71200400001)(66446008)(76116006)(26005)(6506007)(186003)(66556008)(52536014)(53546011)(122000001)(38100700002)(86362001)(33656002)(4326008)(8676002)(8936002)(2906002)(7696005)(6916009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?p+J27S4kEiGqpm/PEuxQWy75ZwiVztowcwWZ+28dAUeaD+uNzwYB2H46ei7m?=
- =?us-ascii?Q?I/akcvDjMGG1WAEedAbZ+biu0iLDlCLWjf0WBYJYbnMBPNkx/cD+nyNXjcEt?=
- =?us-ascii?Q?kk2dnFMaNoVw5sSBdb9A8NYU+j6W5r7Un2ONJUX6NGr+0XCRcdSORiv//61Y?=
- =?us-ascii?Q?w9WalgQri/MO8kZ/0tOWuznZxHRdHNfxQqvDKXcdEuEVsGQloFFOfMApsQm8?=
- =?us-ascii?Q?LqEVTXesW090Z/DKsJSwwlSOYcpPII3VEOd0Ex5A5JqdA3MIo1qUNirgwjun?=
- =?us-ascii?Q?xpoOQNiHSZdCsJj0+rsUPy/AR3SFTU5JrkAmA86pFmQP66R714GU3gBLO6S7?=
- =?us-ascii?Q?sHFwEvbSh7iqWw3XcvVW+y1tNaHe4U3kXNFmsls6uMEFsACtQ4gCOrldgkTx?=
- =?us-ascii?Q?Nz3oPN13izaPHePSDTWDwOPAK3YYj2STopzeOhTCig1byUViAWwGl5tZqJWg?=
- =?us-ascii?Q?vsE7hjiH6naehL5ygPIGwBeHipCMM46/YndZ05V1OOLqq6PfDD7jwv6dVa3I?=
- =?us-ascii?Q?9X4r5HwycWCrXRA0hh90XLg9u+yhetCdZ5IeYlTrDW2i4NIngJdRgnzSae56?=
- =?us-ascii?Q?KVso0nYqBKtuh6J8eYperPRwp0/GVeAZpjleE/4HZn30f6qa+Xd3SfTmkReA?=
- =?us-ascii?Q?PLoauhy9StjQefOM0N4gpycXVxyfJPPmYwU0cQI4Itw7HyHEdO1Fz7cNEg0H?=
- =?us-ascii?Q?Lk8AEYOPuxZT0p/h8OSnFv9nvjpMctqJFlGk3c8uyHzA4r5AhcFmlRAhNlHK?=
- =?us-ascii?Q?LZjU+cQYQHcMjgsSdtbGLCml5VXapEY6KRMgfOY3jxyrPXrveQRfsUYxR5qR?=
- =?us-ascii?Q?oIIL1dDDk17Tqn9tQuf4k7T5aT/U30x/+roXjZsCRfIU2wRvf8hgtM082s7f?=
- =?us-ascii?Q?7p8mvBEWrUXIiRr3RSuFVvbZxIWMGV6nG4f/1DVsUdy2jM7QmSyTRJXkz8sc?=
- =?us-ascii?Q?U0q4wa7yYyrpzhKFagz7ySESWZGLD0Uc8Oi4mcJABJ1vpPeAexUU3bwCv7Aw?=
- =?us-ascii?Q?hWHK4JUbf9/L2Po+6zzrZ/x7xstPEiUj1WWWnVPVuHRpfDA11nVUdUSY0W0T?=
- =?us-ascii?Q?sF2eqVWyilgQmevhCEt11L+rcae9rJnlPX3vuDWqPzKW8EubVqhmcRZIZdzu?=
- =?us-ascii?Q?f/fjKep/0QpsY+5vf33G5S22CU4o3z8kaf4Uq0SfJVXCBvAxjUJXVa8EyuSW?=
- =?us-ascii?Q?WpIEii3/NR2Xh17QUOJu3+nNuPA2fYZdHgK+RHAG9Rb3RxWyj/v6YhJ6q34a?=
- =?us-ascii?Q?2DBrvyia8AfgLZXJHcF861AuF0MdrLhIBJWmDlrZfPcRWoBoJCTTfjZWHmiN?=
- =?us-ascii?Q?Jes=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5129.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 68d5858e-ba3f-4939-3c65-08d9276d4502
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jun 2021 15:27:31.0606
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: khNVPJ5VdE0I8Q81N620tv/vGmAu7R+exLbpp29nS/W+cE5D80Jyslv8bDVghBTLTfdxb0A1OVEGSOihaCUTYA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5366
+        id S231199AbhFDP33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 11:29:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230366AbhFDP32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 11:29:28 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1852361400;
+        Fri,  4 Jun 2021 15:27:42 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lpBjY-005VVs-2h; Fri, 04 Jun 2021 16:27:40 +0100
+Date:   Fri, 04 Jun 2021 16:27:39 +0100
+Message-ID: <87lf7ptztg.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+Cc:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "julien.thierry.kdev@gmail.com" <julien.thierry.kdev@gmail.com>,
+        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        Alexandru Elisei <Alexandru.Elisei@arm.com>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [RFC PATCH 0/3] kvm/arm: New VMID allocator based on asid(2nd approach) 
+In-Reply-To: <95bb84ffdb0f4db3b64b38cc3b651f90@huawei.com>
+References: <20210506165232.1969-1-shameerali.kolothum.thodi@huawei.com>
+        <e62829990c50479292af94c4152011fc@huawei.com>
+        <87sg1xzqea.wl-maz@kernel.org>
+        <95bb84ffdb0f4db3b64b38cc3b651f90@huawei.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: shameerali.kolothum.thodi@huawei.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, jean-philippe@linaro.org, Alexandru.Elisei@arm.com, linuxarm@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank You Guenter.
+On Fri, 04 Jun 2021 15:51:29 +0100,
+Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com> wrote:
+> 
+> Hi Marc,
+> 
+> > -----Original Message-----
+> > From: Marc Zyngier [mailto:maz@kernel.org]
+> > Sent: 04 June 2021 14:55
+> > To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+> > Cc: linux-arm-kernel@lists.infradead.org; kvmarm@lists.cs.columbia.edu;
+> > linux-kernel@vger.kernel.org; will@kernel.org; catalin.marinas@arm.com;
+> > james.morse@arm.com; julien.thierry.kdev@gmail.com;
+> > suzuki.poulose@arm.com; jean-philippe@linaro.org; Alexandru Elisei
+> > <Alexandru.Elisei@arm.com>; Linuxarm <linuxarm@huawei.com>
+> > Subject: Re: [RFC PATCH 0/3] kvm/arm: New VMID allocator based on asid(2nd
+> > approach)
+> > 
+> > On Fri, 04 Jun 2021 09:13:10 +0100,
+> > Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+> > wrote:
+> > >
+> > > Hi,
+> > >
+> > > > -----Original Message-----
+> > > > From: Shameerali Kolothum Thodi
+> > > > Sent: 06 May 2021 17:52
+> > > > To: linux-arm-kernel@lists.infradead.org; kvmarm@lists.cs.columbia.edu;
+> > > > linux-kernel@vger.kernel.org
+> > > > Cc: maz@kernel.org; will@kernel.org; catalin.marinas@arm.com;
+> > > > james.morse@arm.com; julien.thierry.kdev@gmail.com;
+> > > > suzuki.poulose@arm.com; jean-philippe@linaro.org; Linuxarm
+> > > > <linuxarm@huawei.com>
+> > > > Subject: [RFC PATCH 0/3] kvm/arm: New VMID allocator based on asid(2nd
+> > > > approach)
+> > > >
+> > > > This is based on a suggestion from Will [0] to try out the asid
+> > > > based kvm vmid solution as a separate VMID allocator instead of
+> > > > the shared lib approach attempted in v4[1].
+> > > >
+> > > > The idea is to compare both the approaches and see whether the
+> > > > shared lib solution with callbacks make sense or not.
+> > >
+> > > A gentle ping on this. Please take a look and let me know.
+> > 
+> > I had a look and I don't overly dislike it. I'd like to see the code
+> > without the pinned stuff though, at least to ease the reviewing. I
+> > haven't tested it in anger, but I have pushed the rebased code at [1]
+> > as it really didn't apply to 5.13-rc4.
+> 
+> Thanks for taking a look and the rebase. I will remove the pinned stuff
+> in the next revision as that was added just to compare against the previous
+> version.
+> 
+> > 
+> > One thing I'm a bit worried about is that we so far relied on VMID 0
+> > never being allocated to a guest, which is now crucial for protected
+> > KVM. I can't really convince myself that this can never happen with
+> > this.
+> 
+> Hmm..not sure I quite follow that. As per the current logic vmid 0 is
+> reserved and is not allocated to Guest.
 
-Regards,
--Ninad.
+And that's the bit I'm struggling to validate here. I guess it works
+because cur_idx is set to 1 in new_vmid().
 
------Original Message-----
-From: Guenter Roeck <groeck7@gmail.com> On Behalf Of Guenter Roeck
-Sent: Friday, June 4, 2021 7:11 PM
-To: Ninad Malwade <nmalwade@nvidia.com>
-Cc: Jean Delvare <jdelvare@suse.com>; Bibek Basu <bbasu@nvidia.com>; Nicoli=
-n Chen <nicolinc@nvidia.com>; Rajkumar Kasirajan <rkasirajan@nvidia.com>; l=
-inux-hwmon@vger.kernel.org; linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ina3221: use CVRF only for single-shot conversion
+> 
+> > Plus, I've found this nugget:
+> > 
+> > <quote
+> > 	max_pinned_vmids = NUM_USER_VMIDS - num_possible_cpus() - 2;
+> > </quote>
+> > 
+> > What is this "- 2"? My hunch is that it should really be "- 1" as VMID
+> > 0 is reserved, and we have no equivalent of KPTI for S2.
+> 
+> I think this is more related to the "pinned vmid" stuff and was borrowed from
+> the asid_update_limit() fn in arch/arm64/mm/context.c. But I missed the
+> comment that explains the reason behind it. It says,
+> 
+> ---x---
+> 	/*
+> 	 * There must always be an ASID available after rollover. Ensure that,
+> 	 * even if all CPUs have a reserved ASID and the maximum number of ASIDs
+> 	 * are pinned, there still is at least one empty slot in the ASID map.
+> 	 */
+> 	max_pinned_asids = num_available_asids - num_possible_cpus() - 2;
+> ---x---
+> 
+> So this is to make sure we will have at least one VMID available
+> after rollover in case we have pinned the max number of VMIDs. I
+> will include that comment to make it clear.
 
-External email: Use caution opening links or attachments
+That doesn't really explain the -2. Or is that that we have one for
+the extra empty slot, and one for the reserved?
 
-
-On Fri, Jun 04, 2021 at 02:54:43PM +0800, Ninad Malwade wrote:
-> As per current logic the wait time per conversion is arouns 430ms for=20
-> 512 samples and around 860ms for 1024 samples for 3 channels=20
-> considering 140us as the bus voltage and shunt voltage sampling=20
-> conversion time.
->
-> This waiting time is a lot for the continuous mode and even for the=20
-> single shot mode. For continuous mode when moving average is=20
-> considered the waiting for CVRF bit is not required and the data from=20
-> the previous conversion is sufficuent. As mentioned in the datasheet=20
-> the conversion ready bit is provided to help coordinate single-shot=20
-> conversions, we can restrict the use to single-shot mode only.
->
-> Also, the conversion time is for the averaged samples, the wait time=20
-> for the polling can omit the number of samples consideration.
->
-Makes sense. Applied.
+Jean-Philippe?
 
 Thanks,
-Guenter
 
-> Signed-off-by: Ninad Malwade <nmalwade@nvidia.com>
-> ---
->  drivers/hwmon/ina3221.c | 22 +++++++++++-----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/hwmon/ina3221.c b/drivers/hwmon/ina3221.c index=20
-> c602583..58d3828 100644
-> --- a/drivers/hwmon/ina3221.c
-> +++ b/drivers/hwmon/ina3221.c
-> @@ -196,13 +196,11 @@ static inline u32 ina3221_reg_to_interval_us(u16 co=
-nfig)
->       u32 channels =3D hweight16(config & INA3221_CONFIG_CHs_EN_MASK);
->       u32 vbus_ct_idx =3D INA3221_CONFIG_VBUS_CT(config);
->       u32 vsh_ct_idx =3D INA3221_CONFIG_VSH_CT(config);
-> -     u32 samples_idx =3D INA3221_CONFIG_AVG(config);
-> -     u32 samples =3D ina3221_avg_samples[samples_idx];
->       u32 vbus_ct =3D ina3221_conv_time[vbus_ct_idx];
->       u32 vsh_ct =3D ina3221_conv_time[vsh_ct_idx];
->
->       /* Calculate total conversion time */
-> -     return channels * (vbus_ct + vsh_ct) * samples;
-> +     return channels * (vbus_ct + vsh_ct);
->  }
->
->  static inline int ina3221_wait_for_data(struct ina3221_data *ina) @@=20
-> -288,13 +286,14 @@ static int ina3221_read_in(struct device *dev, u32 att=
-r, int channel, long *val)
->                       return -ENODATA;
->
->               /* Write CONFIG register to trigger a single-shot measureme=
-nt */
-> -             if (ina->single_shot)
-> +             if (ina->single_shot) {
->                       regmap_write(ina->regmap, INA3221_CONFIG,
->                                    ina->reg_config);
->
-> -             ret =3D ina3221_wait_for_data(ina);
-> -             if (ret)
-> -                     return ret;
-> +                     ret =3D ina3221_wait_for_data(ina);
-> +                     if (ret)
-> +                             return ret;
-> +             }
->
->               ret =3D ina3221_read_value(ina, reg, &regval);
->               if (ret)
-> @@ -344,13 +343,14 @@ static int ina3221_read_curr(struct device *dev, u3=
-2 attr,
->                       return -ENODATA;
->
->               /* Write CONFIG register to trigger a single-shot measureme=
-nt */
-> -             if (ina->single_shot)
-> +             if (ina->single_shot) {
->                       regmap_write(ina->regmap, INA3221_CONFIG,
->                                    ina->reg_config);
->
-> -             ret =3D ina3221_wait_for_data(ina);
-> -             if (ret)
-> -                     return ret;
-> +                     ret =3D ina3221_wait_for_data(ina);
-> +                     if (ret)
-> +                             return ret;
-> +             }
->
->               fallthrough;
->       case hwmon_curr_crit:
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
