@@ -2,184 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B4C439AFC0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80FAF39AFC5
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbhFDBde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 21:33:34 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7098 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbhFDBd3 (ORCPT
+        id S230158AbhFDBdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 21:33:53 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:28676 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230029AbhFDBdv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 21:33:29 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fx4t10KXPzYqcf;
-        Fri,  4 Jun 2021 09:28:57 +0800 (CST)
-Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+        Thu, 3 Jun 2021 21:33:51 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1541Ub8b031530
+        for <linux-kernel@vger.kernel.org>; Thu, 3 Jun 2021 18:32:05 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=YHgCz8/Wp4qf1Lp/L94M00O6Hct482XZKKgJPV6casw=;
+ b=fPFV8q1lba2+3rVtOXL/aMOvNuFHsHskeGYSz3Mr1wrHwwqwsdtuJKwXhhMZjBXEUyz3
+ g77KFw3CQJCjpfTxFkr41q3G0uBeC94hh4Lw7fU+2/I9U/2gKqpH1OTp47zsJZNnl02j
+ 4aRc8RgjHt1LB8rWPnMN0lk7iM9ncp+GAIE= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 38xj5kg1tk-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 18:32:05 -0700
+Received: from intmgw003.48.prn1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 4 Jun 2021 09:31:42 +0800
-Received: from huawei.com (10.69.192.56) by dggpeml500012.china.huawei.com
- (7.185.36.15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 4 Jun 2021
- 09:31:42 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
-Subject: [PATCH v2 4/4] crypto: hisilicon/sec - modify the SEC request structure
-Date:   Fri, 4 Jun 2021 09:31:29 +0800
-Message-ID: <1622770289-21588-5-git-send-email-yekai13@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1622770289-21588-1-git-send-email-yekai13@huawei.com>
-References: <1622770289-21588-1-git-send-email-yekai13@huawei.com>
+ 15.1.2176.2; Thu, 3 Jun 2021 18:32:03 -0700
+Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
+        id 705327FA36D0; Thu,  3 Jun 2021 18:32:00 -0700 (PDT)
+From:   Roman Gushchin <guro@fb.com>
+To:     Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Dennis Zhou <dennis@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>, <cgroups@vger.kernel.org>,
+        Roman Gushchin <guro@fb.com>
+Subject: [PATCH v7 0/6] cgroup, blkcg: prevent dirty inodes to pin dying memory cgroups
+Date:   Thu, 3 Jun 2021 18:31:53 -0700
+Message-ID: <20210604013159.3126180-1-guro@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
 Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
+X-Proofpoint-GUID: gyO_kfsDobsPPVzIzqM7kcNruphp73l2
+X-Proofpoint-ORIG-GUID: gyO_kfsDobsPPVzIzqM7kcNruphp73l2
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-04_01:2021-06-04,2021-06-03 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ mlxlogscore=347 priorityscore=1501 lowpriorityscore=0 impostorscore=0
+ bulkscore=0 malwarescore=0 phishscore=0 spamscore=0 adultscore=0
+ mlxscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106040009
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Modify the SEC request structure, combines two common parameters of the
-SEC request into one parameter.
+When an inode is getting dirty for the first time it's associated
+with a wb structure (see __inode_attach_wb()). It can later be
+switched to another wb (if e.g. some other cgroup is writing a lot of
+data to the same inode), but otherwise stays attached to the original
+wb until being reclaimed.
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
----
- drivers/crypto/hisilicon/sec2/sec.h        |  7 ++++--
- drivers/crypto/hisilicon/sec2/sec_crypto.c | 34 +++++++++++++++---------------
- 2 files changed, 22 insertions(+), 19 deletions(-)
+The problem is that the wb structure holds a reference to the original
+memory and blkcg cgroups. So if an inode has been dirty once and later
+is actively used in read-only mode, it has a good chance to pin down
+the original memory and blkcg cgroups forewer. This is often the case wit=
+h
+services bringing data for other services, e.g. updating some rpm
+packages.
 
-diff --git a/drivers/crypto/hisilicon/sec2/sec.h b/drivers/crypto/hisilicon/sec2/sec.h
-index 3fe7875..018415b 100644
---- a/drivers/crypto/hisilicon/sec2/sec.h
-+++ b/drivers/crypto/hisilicon/sec2/sec.h
-@@ -21,8 +21,6 @@ struct sec_alg_res {
- 
- /* Cipher request of SEC private */
- struct sec_cipher_req {
--	struct hisi_acc_hw_sgl *c_in;
--	dma_addr_t c_in_dma;
- 	struct hisi_acc_hw_sgl *c_out;
- 	dma_addr_t c_out_dma;
- 	u8 *c_ivin;
-@@ -49,6 +47,11 @@ struct sec_req {
- 	struct sec_ctx *ctx;
- 	struct sec_qp_ctx *qp_ctx;
- 
-+	/**
-+	 * Common parameter of the SEC request.
-+	 */
-+	struct hisi_acc_hw_sgl *in;
-+	dma_addr_t in_dma;
- 	struct sec_cipher_req c_req;
- 	struct sec_aead_req aead_req;
- 	struct list_head backlog_head;
-diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-index 75122f0..f23af61 100644
---- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-@@ -871,8 +871,8 @@ static int sec_cipher_pbuf_map(struct sec_ctx *ctx, struct sec_req *req,
- 		memcpy(a_req->out_mac, mac_offset, authsize);
- 	}
- 
--	c_req->c_in_dma = qp_ctx->res[req_id].pbuf_dma;
--	c_req->c_out_dma = c_req->c_in_dma;
-+	req->in_dma = qp_ctx->res[req_id].pbuf_dma;
-+	c_req->c_out_dma = req->in_dma;
- 
- 	return 0;
- }
-@@ -950,14 +950,13 @@ static int sec_cipher_map(struct sec_ctx *ctx, struct sec_req *req,
- 		a_req->out_mac_dma = res->out_mac_dma;
- 	}
- 
--	c_req->c_in = hisi_acc_sg_buf_map_to_hw_sgl(dev, src,
--						    qp_ctx->c_in_pool,
--						    req->req_id,
--						    &c_req->c_in_dma);
--
--	if (IS_ERR(c_req->c_in)) {
-+	req->in = hisi_acc_sg_buf_map_to_hw_sgl(dev, src,
-+						qp_ctx->c_in_pool,
-+						req->req_id,
-+						&req->in_dma);
-+	if (IS_ERR(req->in)) {
- 		dev_err(dev, "fail to dma map input sgl buffers!\n");
--		return PTR_ERR(c_req->c_in);
-+		return PTR_ERR(req->in);
- 	}
- 
- 	if (!c_req->encrypt && ctx->alg_type == SEC_AEAD) {
-@@ -967,9 +966,10 @@ static int sec_cipher_map(struct sec_ctx *ctx, struct sec_req *req,
- 			return ret;
- 		}
- 	}
-+
- 	if (dst == src) {
--		c_req->c_out = c_req->c_in;
--		c_req->c_out_dma = c_req->c_in_dma;
-+		c_req->c_out = req->in;
-+		c_req->c_out_dma = req->in_dma;
- 	} else {
- 		c_req->c_out = hisi_acc_sg_buf_map_to_hw_sgl(dev, dst,
- 							     qp_ctx->c_out_pool,
-@@ -978,7 +978,7 @@ static int sec_cipher_map(struct sec_ctx *ctx, struct sec_req *req,
- 
- 		if (IS_ERR(c_req->c_out)) {
- 			dev_err(dev, "fail to dma map output sgl buffers!\n");
--			hisi_acc_sg_buf_unmap(dev, src, c_req->c_in);
-+			hisi_acc_sg_buf_unmap(dev, src, req->in);
- 			return PTR_ERR(c_req->c_out);
- 		}
- 	}
-@@ -996,7 +996,7 @@ static void sec_cipher_unmap(struct sec_ctx *ctx, struct sec_req *req,
- 		sec_cipher_pbuf_unmap(ctx, req, dst);
- 	} else {
- 		if (dst != src)
--			hisi_acc_sg_buf_unmap(dev, src, c_req->c_in);
-+			hisi_acc_sg_buf_unmap(dev, src, req->in);
- 
- 		hisi_acc_sg_buf_unmap(dev, dst, c_req->c_out);
- 	}
-@@ -1236,7 +1236,7 @@ static int sec_skcipher_bd_fill(struct sec_ctx *ctx, struct sec_req *req)
- 
- 	sec_sqe->type2.c_key_addr = cpu_to_le64(c_ctx->c_key_dma);
- 	sec_sqe->type2.c_ivin_addr = cpu_to_le64(c_req->c_ivin_dma);
--	sec_sqe->type2.data_src_addr = cpu_to_le64(c_req->c_in_dma);
-+	sec_sqe->type2.data_src_addr = cpu_to_le64(req->in_dma);
- 	sec_sqe->type2.data_dst_addr = cpu_to_le64(c_req->c_out_dma);
- 
- 	sec_sqe->type2.icvw_kmode |= cpu_to_le16(((u16)c_ctx->c_mode) <<
-@@ -1263,7 +1263,7 @@ static int sec_skcipher_bd_fill(struct sec_ctx *ctx, struct sec_req *req)
- 
- 	sec_sqe->sdm_addr_type |= da_type;
- 	scene = SEC_COMM_SCENE << SEC_SCENE_OFFSET;
--	if (c_req->c_in_dma != c_req->c_out_dma)
-+	if (req->in_dma != c_req->c_out_dma)
- 		de = 0x1 << SEC_DE_OFFSET;
- 
- 	sec_sqe->sds_sa_type = (de | scene | sa_type);
-@@ -1286,7 +1286,7 @@ static int sec_skcipher_bd_fill_v3(struct sec_ctx *ctx, struct sec_req *req)
- 
- 	sec_sqe3->c_key_addr = cpu_to_le64(c_ctx->c_key_dma);
- 	sec_sqe3->no_scene.c_ivin_addr = cpu_to_le64(c_req->c_ivin_dma);
--	sec_sqe3->data_src_addr = cpu_to_le64(c_req->c_in_dma);
-+	sec_sqe3->data_src_addr = cpu_to_le64(req->in_dma);
- 	sec_sqe3->data_dst_addr = cpu_to_le64(c_req->c_out_dma);
- 
- 	sec_sqe3->c_mode_alg = ((u8)c_ctx->c_alg << SEC_CALG_OFFSET_V3) |
-@@ -1309,7 +1309,7 @@ static int sec_skcipher_bd_fill_v3(struct sec_ctx *ctx, struct sec_req *req)
- 	}
- 
- 	bd_param |= SEC_COMM_SCENE << SEC_SCENE_OFFSET_V3;
--	if (c_req->c_in_dma != c_req->c_out_dma)
-+	if (req->in_dma != c_req->c_out_dma)
- 		bd_param |= 0x1 << SEC_DE_OFFSET_V3;
- 
- 	bd_param |= SEC_BD_TYPE3;
--- 
-2.8.1
+In the real life it becomes a problem due to a large size of the memcg
+structure, which can easily be 1000x larger than an inode. Also a
+really large number of dying cgroups can raise different scalability
+issues, e.g. making the memory reclaim costly and less effective.
+
+To solve the problem inodes should be eventually detached from the
+corresponding writeback structure. It's inefficient to do it after
+every writeback completion. Instead it can be done whenever the
+original memory cgroup is offlined and writeback structure is getting
+killed. Scanning over a (potentially long) list of inodes and detach
+them from the writeback structure can take quite some time. To avoid
+scanning all inodes, attached inodes are kept on a new list (b_attached).
+To make it less noticeable to a user, the scanning and switching is perfo=
+rmed
+from a work context.
+
+Big thanks to Jan Kara, Dennis Zhou and Hillf Danton for their ideas and
+contribution to this patchset.
+
+v7:
+  - shared locking for multiple inode switching
+  - introduced inode_prepare_wbs_switch() helper
+  - extended the pre-switch inode check for I_WILL_FREE
+  - added comments here and there
+
+v6:
+  - extended and reused wbs switching functionality to switch inodes
+    on cgwb cleanup
+  - fixed offline_list handling
+  - switched to the unbound_wq
+  - other minor fixes
+
+v5:
+  - switch inodes to bdi->wb instead of zeroing inode->i_wb
+  - split the single patch into two
+  - only cgwbs maintain lists of attached inodes
+  - added cond_resched()
+  - fixed !CONFIG_CGROUP_WRITEBACK handling
+  - extended list of prohibited inodes flag
+  - other small fixes
+
+
+Roman Gushchin (6):
+  writeback, cgroup: do not switch inodes with I_WILL_FREE flag
+  writeback, cgroup: switch to rcu_work API in inode_switch_wbs()
+  writeback, cgroup: keep list of inodes attached to bdi_writeback
+  writeback, cgroup: split out the functional part of
+    inode_switch_wbs_work_fn()
+  writeback, cgroup: support switching multiple inodes at once
+  writeback, cgroup: release dying cgwbs by switching attached inodes
+
+ fs/fs-writeback.c                | 302 +++++++++++++++++++++----------
+ include/linux/backing-dev-defs.h |  20 +-
+ include/linux/writeback.h        |   1 +
+ mm/backing-dev.c                 |  69 ++++++-
+ 4 files changed, 293 insertions(+), 99 deletions(-)
+
+--=20
+2.31.1
 
