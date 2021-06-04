@@ -2,197 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF9039B63F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE94A39B63E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 11:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbhFDJzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 05:55:38 -0400
-Received: from mail-yb1-f171.google.com ([209.85.219.171]:42956 "EHLO
-        mail-yb1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhFDJzh (ORCPT
+        id S229982AbhFDJzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 05:55:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229930AbhFDJzb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 05:55:37 -0400
-Received: by mail-yb1-f171.google.com with SMTP id x6so12846263ybl.9
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 02:53:52 -0700 (PDT)
+        Fri, 4 Jun 2021 05:55:31 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B13E7C06174A
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 02:53:45 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id a15so6590003qta.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 02:53:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=dHxjx5YL69TG257xYMSlRK9DeSKTQjJUGuYuF182ZkA=;
-        b=ZjNrkxUTZGVEOoJt3tb3BRIbJS+FLoZFrMhc6MX/H92/nvb6aCc3J/4G1fgy3QycmF
-         wI/D/zKJ5ReMigNMp1Yruu+AfWR9GYZFfjznAioLnLSJQieXrGVOO6VX0V7ya22FKgQi
-         l4R+FvRvFa0eHm/hoSZ3YM1MqKW1pwFIOSlqg=
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=FlfOt5ZHd9jswm+VbsyTDC9ioUME0yS40PkkEczf0Y0=;
+        b=Je2OMatfku272SCys5wuDeevnAQuoLeZkgdAbEr/5K4pXTiED5RWjXXFR6ASBJkcga
+         4RfBcqtAd0IEbQ0zMUoqZrkmh//WGaFOMBQ69RV54tQfjUQ2j7cYRWC2ty4gvYeARXNM
+         zOFzgoQG7/yDFnrzF1kCUkEX42wG+jzUP752BWL+iisTJItJC/DFS5OD8Un3gsKexafi
+         6MFnmuN9Yie17X2YSDJqir774ETG2ESiWC7iDaZa5C/b7KGdcQLhkfjgol4vJQgDSeXw
+         hsiEnsAZihm4EUozsqqAo/CY41FQHSd1FraBTNt8/kTl4L4+alMm2Aci7LVS+YZFPtAA
+         o5pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=dHxjx5YL69TG257xYMSlRK9DeSKTQjJUGuYuF182ZkA=;
-        b=tRSN+kjvBzt4fgYR7P+RcUEFGGDSOVFgoJtAaD+NcKDHQ8tztyN+hn2mj6s36qCohe
-         3MYr8OxFginuqUd02USeL+yzQOFzGJNfqhUdmcYVNotKpiF84mx6npjCzBGpd7A96Mf/
-         b1FbrCjyVLCsuwgnedngVduxGxc6vw3f3C4Ecq8GDHGRs6vtgLfF0emnRz3Cjif2RfHJ
-         VbKdrkyk6XcsY1aun902Okvyppeq8zOI6aJijXkCu4CsB53RWfYh+mMJxf3KBdu/ONeX
-         hUynxTunG8GNbcZA0sJsTbASIAODTxlrQUqMe2POrGNd/vc6ine4dFBD3ExjXq778Ob2
-         F8sw==
-X-Gm-Message-State: AOAM5325HK4Xfu1N2oDNZdM1j72fjgOxEfzQZN4fVCgJ0rk3MK77xVR+
-        /n0ohDHtWbcwLVuqyRMl3SM8C6MLNSfOszoB+4eIyQ==
-X-Google-Smtp-Source: ABdhPJyS9cYbCFKGsztRDfF6yaEQmGAAoAeRCo6x/1tvJKc15N9ceuS5HGdAbrtrzPPK25UBZxg8Mk36jlthwCVCiaE=
-X-Received: by 2002:a05:6902:4b2:: with SMTP id r18mr3959329ybs.446.1622800371649;
- Fri, 04 Jun 2021 02:52:51 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=FlfOt5ZHd9jswm+VbsyTDC9ioUME0yS40PkkEczf0Y0=;
+        b=by72XsVBSuf74TKkMG7qTadywHpChbgNEA/TC79TWjtrevnBraiSCLcdPLXfR/AoVC
+         M+lleXPIESoS/w7t2723+B9/MB6+Al0sAqdRecIbPyNcfgtaC3xBKhtPCCEHCoB3Ayrn
+         Q/rwDEWN5NRBMvcqh1fLHHA6H2V2uYJlTLeWDskuNZ7/G7T4PKdK6JjK78mu4gDi1zBx
+         YPgSeCrOg/8oYaE7YVlkqFk8khwjLKp8Ccfl9UIkjwl1seOHoaoYBZj1gkWYacSYzaMJ
+         9R81wM54xgmCJ1fVlTAgL2rrlAKbDbdfWzl5tLSxT3gQ12TSVl7C1n4FpO5gmChUmc2Y
+         JOlw==
+X-Gm-Message-State: AOAM5339ePn+CuUOFbYQAnfoVMaQQzZqzXaGDLThDjyyPvOzFdFkQ5F2
+        D34cm5DFx222Ipno9a3FS2DQo3HJPIain+e9j4c=
+X-Google-Smtp-Source: ABdhPJwVwznMNJLi7K3cb0oL7/O0blrCBHqQbUVLtyL8W6808bqa4dS7SJcbZZti9fTrimhgectolbRglfaKv4KR5Ww=
+X-Received: by 2002:ac8:5313:: with SMTP id t19mr3898290qtn.190.1622800424625;
+ Fri, 04 Jun 2021 02:53:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210531085342.17494-1-vitaly.wool@konsulko.com>
- <62961217-1733-eaa3-b072-cbb252620c9a@ghiti.fr> <2fb64dce-779a-c6f2-53b7-088cd38813a4@ghiti.fr>
-In-Reply-To: <2fb64dce-779a-c6f2-53b7-088cd38813a4@ghiti.fr>
-From:   Vitaly Wool <vitaly.wool@konsulko.com>
-Date:   Fri, 4 Jun 2021 11:52:40 +0200
-Message-ID: <CAM4kBBKL0D0cvHaNTt2DobbUROp1eGAfmNkakOqzgakEZDLYbA@mail.gmail.com>
-Subject: Re: [PATCH] riscv: xip: support runtime trap patching
-To:     Alex Ghiti <alex@ghiti.fr>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Nicolas Pitre <nico@fluxnic.net>
+From:   Akira Tsukamoto <akira.tsukamoto@gmail.com>
+Date:   Fri, 4 Jun 2021 18:53:33 +0900
+Message-ID: <CACuRN0NjftJDUAsF2pkXbx0jnJ=bba9+j-hJA8Mjj0r4RVicLA@mail.gmail.com>
+Subject: [PATCH 0/1] riscv: better network performance with memcpy, uaccess
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Gary Guo <gary@garyguo.net>,
+        Nick Hu <nickhu@andestech.com>,
+        Nylon Chen <nylon7@andestech.com>,
+        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        linux-riscv@lists.infradead.org,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+I am adding a cover letter to explain the history and details since
+improvement is a combination with Gary's memcpy patch [1].
 
-On Fri, Jun 4, 2021 at 11:35 AM Alex Ghiti <alex@ghiti.fr> wrote:
->
-> Le 31/05/2021 =C3=A0 17:17, Alex Ghiti a =C3=A9crit :
-> > Hi Vitaly,
-> >
-> > Le 31/05/2021 =C3=A0 10:53, Vitaly Wool a =C3=A9crit :
-> >> RISCV_ERRATA_ALTERNATIVE patches text at runtime which is currently
-> >> not possible when the kernel is executed from the flash in XIP mode.
-> >> Since runtime patching concerns only traps at the moment, let's just
-> >> have all the traps reside in RAM anyway if RISCV_ERRATA_ALTERNATIVE
-> >> is set. Thus, these functions will be patch-able even when the .text
-> >> section is in flash.
-> >>
-> >
-> > This sounds like a good fix for sifive platforms to work with XIP kerne=
-l
-> > in 5.13: did you test that it actually works on HW?
-> >
-> >> Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
-> >> ---
-> >>   arch/riscv/kernel/traps.c           | 13 +++++++++----
-> >>   arch/riscv/kernel/vmlinux-xip.lds.S | 15 ++++++++++++++-
-> >>   2 files changed, 23 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-> >> index 0721b9798595..7bc88d8aab97 100644
-> >> --- a/arch/riscv/kernel/traps.c
-> >> +++ b/arch/riscv/kernel/traps.c
-> >> @@ -86,8 +86,13 @@ static void do_trap_error(struct pt_regs *regs, int
-> >> signo, int code,
-> >>       }
-> >>   }
-> >> +#if defined (CONFIG_XIP_KERNEL) && defined
-> >> (CONFIG_RISCV_ERRATA_ALTERNATIVE)
-> >> +#define __trap_section        __section(".xip.traps")
-> >> +#else
-> >> +#define __trap_section
-> >> +#endif
-> >
-> > Maybe we could do something more generic. At the moment, only traps are
-> > subject to alternatives but that will likely expand: what about rather
-> > defining a section called __alternative_section?
->
-> Any thoughts about that?
+Comparison of iperf3 benchmark results by applying Gary's memcpy patch and
+my uaccess optimization patch. All results are from the same base kernel,
+same rootfs and save BeagleV beta board.
 
-Oh sorry, I have overlooked this. I do agree this is the way to go
-long term, I just wanted to do a reasonably good quick fix since the
-default SiFive configuration won't even build with CONFIG_XIP enabled.
-So I would probably just suggest to take the existing solution and
-then think over the details (e. g. should we just use one "alternative
-section" for both the functions and the table or have separate ones?)
-for the generic solution.
+First left column : beaglev 5.13.rc4 kernel [2]
+Second column     : Added Palmer's memcpy in C + my uaccess patch [3]
+Third column      : Added Gary's memcpy + my uaccess patch [4]
 
-Best regards,
-   Vitaly
+--- TCP recv ---
+686 Mbits/sec  |  700 Mbits/sec  |  904 Mbits/sec
+683 Mbits/sec  |  701 Mbits/sec  |  898 Mbits/sec
+695 Mbits/sec  |  702 Mbits/sec  |  905 Mbits/sec
 
-> Thanks,
->
-> Alex
->
-> >
-> >>   #define DO_ERROR_INFO(name, signo, code, str)                \
-> >> -asmlinkage __visible void name(struct pt_regs *regs)            \
-> >> +asmlinkage __visible __trap_section void name(struct pt_regs *regs)  =
-  \
-> >>   {                                    \
-> >>       do_trap_error(regs, signo, code, regs->epc, "Oops - " str);    \
-> >>   }
-> >> @@ -111,7 +116,7 @@ DO_ERROR_INFO(do_trap_store_misaligned,
-> >>   int handle_misaligned_load(struct pt_regs *regs);
-> >>   int handle_misaligned_store(struct pt_regs *regs);
-> >> -asmlinkage void do_trap_load_misaligned(struct pt_regs *regs)
-> >> +asmlinkage void __trap_section do_trap_load_misaligned(struct pt_regs
-> >> *regs)
-> >>   {
-> >>       if (!handle_misaligned_load(regs))
-> >>           return;
-> >> @@ -119,7 +124,7 @@ asmlinkage void do_trap_load_misaligned(struct
-> >> pt_regs *regs)
-> >>                 "Oops - load address misaligned");
-> >>   }
-> >> -asmlinkage void do_trap_store_misaligned(struct pt_regs *regs)
-> >> +asmlinkage void __trap_section do_trap_store_misaligned(struct
-> >> pt_regs *regs)
-> >>   {
-> >>       if (!handle_misaligned_store(regs))
-> >>           return;
-> >> @@ -146,7 +151,7 @@ static inline unsigned long
-> >> get_break_insn_length(unsigned long pc)
-> >>       return GET_INSN_LENGTH(insn);
-> >>   }
-> >> -asmlinkage __visible void do_trap_break(struct pt_regs *regs)
-> >> +asmlinkage __visible __trap_section void do_trap_break(struct pt_regs
-> >> *regs)
-> >>   {
-> >>   #ifdef CONFIG_KPROBES
-> >>       if (kprobe_single_step_handler(regs))
-> >> diff --git a/arch/riscv/kernel/vmlinux-xip.lds.S
-> >> b/arch/riscv/kernel/vmlinux-xip.lds.S
-> >> index 4b29b9917f99..a3ff09c4c3f9 100644
-> >> --- a/arch/riscv/kernel/vmlinux-xip.lds.S
-> >> +++ b/arch/riscv/kernel/vmlinux-xip.lds.S
-> >> @@ -99,9 +99,22 @@ SECTIONS
-> >>       }
-> >>       PERCPU_SECTION(L1_CACHE_BYTES)
-> >> -    . =3D ALIGN(PAGE_SIZE);
-> >> +    . =3D ALIGN(8);
-> >> +    .alternative : {
-> >> +        __alt_start =3D .;
-> >> +        *(.alternative)
-> >> +        __alt_end =3D .;
-> >> +    }
-> >>       __init_end =3D .;
-> >> +    . =3D ALIGN(16);
-> >
-> > Why 16 here?
-> >
-> >> +    .xip.traps : {
-> >> +        __xip_traps_start =3D .;
-> >> +        *(.xip.traps)
-> >> +        __xip_traps_end =3D .;
-> >> +    }
-> >> +
-> >> +    . =3D ALIGN(PAGE_SIZE);
-> >>       .sdata : {
-> >>           __global_pointer$ =3D . + 0x800;
-> >>           *(.sdata*)
-> >>
-> >
-> > Thanks,
-> >
-> > Alex
-> >
-> > _______________________________________________
-> > linux-riscv mailing list
-> > linux-riscv@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-riscv
+--- TCP send ---
+383 Mbits/sec  |  390 Mbits/sec  |  393 Mbits/sec
+384 Mbits/sec  |  393 Mbits/sec  |  392 Mbits/sec
+
+--- UDP send ---
+307 Mbits/sec  |  358 Mbits/sec  |  402 Mbits/sec
+307 Mbits/sec  |  359 Mbits/sec  |  402 Mbits/sec
+
+--- UDP recv ---
+630 Mbits/sec  |  799 Mbits/sec  |  875 Mbits/sec
+730 Mbits/sec  |  796 Mbits/sec  |  873 Mbits/sec
+
+
+The uaccess patch is reducing pipeline stall of read after write (RAW)
+by unroling load and store.
+The main reason for using assembler inside uaccess.S is because the
+__asm_to/copy_from_user() handling page fault must be done manually inside
+the functions.
+
+The above result is combination from Gary $B!G (Bs memcpy speeding up
+by reducing
+the S-mode and M-mode switching and my uaccess reducing pipeline stall for
+user space uses syscall with large data.
+
+We had a discussion of improving network performance on the BeagleV beta
+board with Palmer.
+
+Palmer suggested to use C-based string routines, which checks the unaligned
+address and use 8 bytes aligned copy if the both src and dest are aligned
+and if not use the current copy function.
+
+The Gary's assembly version of memcpy is improving by not using unaligned
+access in 64 bit boundary, uses shifting it after reading with offset of
+aligned access, because every misaligned access is trapped and switches to
+opensbi in M-mode. The main speed up is coming from avoiding S-mode (kernel)
+and M-mode (opensbi) switching.
+
+Processing network packets require a lot of unaligned access for the packet
+header, which is not able to change the design of the header format to be
+aligned.
+And user applications pass large packet data with send/recf() and sendto/
+recvfrom() to repeat less function calls for reading and writing data for the
+optimization.
+
+Akira
+
+[1] https://lkml.org/lkml/2021/2/16/778
+[2] https://github.com/mcd500/linux-jh7100/tree/starlight-sdimproved
+[3] https://github.com/mcd500/linux-jh7100/tree/starlight-sd-palmer-string
+[4] https://github.com/mcd500/linux-jh7100/tree/starlight-sd-gary
+
+Akira Tsukamoto (1):
+  riscv: prevent pipeline stall in __asm_to/copy_from_user
+
+ arch/riscv/lib/uaccess.S | 106 +++++++++++++++++++++++++++------------
+ 1 file changed, 73 insertions(+), 33 deletions(-)
+
+--
+2.17.1
