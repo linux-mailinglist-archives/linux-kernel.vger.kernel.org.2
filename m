@@ -2,94 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3798D39B22A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 07:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A65F739B22C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 07:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhFDFzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 01:55:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229794AbhFDFzm (ORCPT
+        id S229995AbhFDFzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 01:55:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43778 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229794AbhFDFzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 01:55:42 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A012C06174A;
-        Thu,  3 Jun 2021 22:53:41 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id h8so8008860wrz.8;
-        Thu, 03 Jun 2021 22:53:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=y+AffRCdJt0ZMld/96EBnadoeYCVbK0vn/bboy+A7Js=;
-        b=c6XaSbWGw8LavmJHBjdCxG3+ms3wd6szfDkrBnZXnwjCMoDjm24502USpnzS9Tk9Hq
-         nYFd21OF98pXiqN3dkcECVJzLCEJFqHdDjHhQLX77AdBZV0hI+Yt5inTcQU9lzS1S2lm
-         LUAA/v3OD1LTFu8+WUobphsWhOl6/zX0opYkBu/0/Fjm8Imxh7kAjruzGgh3Korbdy9r
-         ReOHRvkBwxZs/1qZSi2xTU9up9cdHZ5Tyh+eWPHyflh0XBfJEyrz/4tNAXAI8a9Q3Eqt
-         0EU0hKCPxqqpcLEb+qB5q+AsyavjF6glgw2W7zqqFs/G8EGqOmbf9+307sx/Z7ub5WfM
-         DhqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=y+AffRCdJt0ZMld/96EBnadoeYCVbK0vn/bboy+A7Js=;
-        b=soQJl+6kaS8uszl6PA0QJ1kwux7UWnJa8781H0cTlF7S2Cb62cTls5wFAKij3peTM/
-         Kowu4mLAz/xM+nfVTW8tKV6sDcP54xh5bCkmlsaiQZV4WZssUo07tzFIhgQs12nBZJfs
-         3EP2rj57/A/8SlzBAWXO41cFOrUUqAn++Q3siCpkmC3LajGfTv2HQcUegFma8DLVDuaC
-         7AUx9aJmBWO9G/kQhnSKWfYByrqSdraufjl65PG669MlHFvLL+USimJ+E8G9PWYsm6sg
-         eaHsupibjadTxp5HT69fjPsAnclTXjoZfMUsnJt7YTGeaxG1iCct029nhveUDk+mBSal
-         S5jQ==
-X-Gm-Message-State: AOAM530M9QS7CaiOEWK3ruJTnedSwO6WQb/PdHGIlzQ8p6qDPcp9OaRI
-        mYYDothP8t7ML1h7EugaNvftYD9TfYawWg==
-X-Google-Smtp-Source: ABdhPJxJMFUXih9UhLuV22oqlaY2Od1zJNF5JCPBKKCy/w1+creSWfBAeal+4PuqUenQFJ0wUhElKA==
-X-Received: by 2002:adf:de91:: with SMTP id w17mr1946843wrl.352.1622786019955;
-        Thu, 03 Jun 2021 22:53:39 -0700 (PDT)
-Received: from localhost.localdomain (113.red-88-4-247.dynamicip.rima-tde.net. [88.4.247.113])
-        by smtp.gmail.com with ESMTPSA id u18sm4618835wmj.15.2021.06.03.22.53.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 03 Jun 2021 22:53:39 -0700 (PDT)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     linus.walleij@linaro.org
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] pinctrl: ralink: pinctrl-rt2880: avoid to error in calls is pin is already enabled
-Date:   Fri,  4 Jun 2021 07:53:37 +0200
-Message-Id: <20210604055337.20407-1-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 4 Jun 2021 01:55:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622786046;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=JcMYDN5e5/VcbzKkSMYluKgdtznxbeNg+SJYhFB6TPM=;
+        b=BiZLy6VOqAVsMJdUyPfJR+Etkb3csZvRebrmd5+6sGEi5bIJliLOMsSGPpYLqlz9JhORO9
+        pizt4IjWK0SYT0DajfMM3rbV/3TMhEjMPF3zafjrD/tnTMut3f80Gum00ZlUvt1qH3VhNQ
+        Gfc6hT68/XgI1ZsGjW7o1FDZnjp/PHg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-320-FfAhthQVOtiRULiLeh5enA-1; Fri, 04 Jun 2021 01:54:05 -0400
+X-MC-Unique: FfAhthQVOtiRULiLeh5enA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F41F107ACE3;
+        Fri,  4 Jun 2021 05:54:03 +0000 (UTC)
+Received: from localhost.localdomain (ovpn-12-212.pek2.redhat.com [10.72.12.212])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A98BE5DEAD;
+        Fri,  4 Jun 2021 05:53:52 +0000 (UTC)
+From:   Jason Wang <jasowang@redhat.com>
+To:     mst@redhat.com
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, xieyongji@bytedance.com,
+        stefanha@redhat.com, file@sect.tu-berlin.de, ashish.kalra@amd.com,
+        konrad.wilk@oracle.com, kvm@vger.kernel.org, hch@infradead.org,
+        ak@linux.intel.com, luto@kernel.org,
+        Jason Wang <jasowang@redhat.com>
+Subject: [PATCH 0/7] Do not read from descriptor ring
+Date:   Fri,  4 Jun 2021 13:53:43 +0800
+Message-Id: <20210604055350.58753-1-jasowang@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In 'rt2880_pmx_group_enable' driver is printing an error and returning
--EBUSY if a pin has been already enabled. This becomes in anoying messages
-in the caller when this happens like the following:
+Hi:
 
-rt2880-pinmux pinctrl: pcie is already enabled
-mt7621-pci 1e140000.pcie: Error applying setting, reverse things back
+The virtio driver should not trust the device. This beame more urgent
+for the case of encrtpyed VM or VDUSE[1]. In both cases, technology
+like swiotlb/IOMMU is used to prevent the poking/mangling of memory
+from the device. But this is not sufficient since current virtio
+driver may trust what is stored in the descriptor table (coherent
+mapping) for performing the DMA operations like unmap and bounce so
+the device may choose to utilize the behaviour of swiotlb to perform
+attacks[2].
 
-To avoid this just print the already enabled message in the pinctrl
-driver and return 0 instead to don't confuse the user with a real
-bad problem.
+To protect from a malicous device, this series store and use the
+descriptor metadata in an auxiliay structure which can not be accessed
+via swiotlb/device instead of the ones in the descriptor table. This
+means the descriptor table is write-only from the view of the driver.
 
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- drivers/pinctrl/ralink/pinctrl-rt2880.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Actually, we've almost achieved that through packed virtqueue and we
+just need to fix a corner case of handling mapping errors. For split
+virtqueue we just follow what's done in the packed.
 
-diff --git a/drivers/pinctrl/ralink/pinctrl-rt2880.c b/drivers/pinctrl/ralink/pinctrl-rt2880.c
-index 1f4bca854add..a9b511c7e850 100644
---- a/drivers/pinctrl/ralink/pinctrl-rt2880.c
-+++ b/drivers/pinctrl/ralink/pinctrl-rt2880.c
-@@ -127,7 +127,7 @@ static int rt2880_pmx_group_enable(struct pinctrl_dev *pctrldev,
- 	if (p->groups[group].enabled) {
- 		dev_err(p->dev, "%s is already enabled\n",
- 			p->groups[group].name);
--		return -EBUSY;
-+		return 0;
- 	}
- 
- 	p->groups[group].enabled = 1;
+Note that we don't duplicate descriptor medata for indirect
+descriptors since it uses stream mapping which is read only so it's
+safe if the metadata of non-indirect descriptors are correct.
+
+For split virtqueue, the change increase the footprint due the the
+auxiliary metadata but it's almost neglectlable in simple test like
+pktgen and netperf TCP stream (slightly noticed in a 40GBE environment
+with more CPU usage).
+
+Slightly tested with packed on/off, iommu on/of, swiotlb force/off in
+the guest.
+
+Note that this series tries to fix the attack via descriptor
+ring. The other cases (used ring and config space) will be fixed by
+other series or patches.
+
+Please review.
+
+Changes from RFC V2:
+- no code change
+- twaeak the commit log a little bit
+
+Changes from RFC V1:
+- Always use auxiliary metadata for split virtqueue
+- Don't read from descripto when detaching indirect descriptor
+
+Jason Wang (7):
+  virtio-ring: maintain next in extra state for packed virtqueue
+  virtio_ring: rename vring_desc_extra_packed
+  virtio-ring: factor out desc_extra allocation
+  virtio_ring: secure handling of mapping errors
+  virtio_ring: introduce virtqueue_desc_add_split()
+  virtio: use err label in __vring_new_virtqueue()
+  virtio-ring: store DMA metadata in desc_extra for split virtqueue
+
+ drivers/virtio/virtio_ring.c | 201 +++++++++++++++++++++++++----------
+ 1 file changed, 144 insertions(+), 57 deletions(-)
+
 -- 
 2.25.1
 
