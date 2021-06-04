@@ -2,91 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E1939BD0D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 422EE39BD1C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231183AbhFDQ0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 12:26:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44484 "EHLO mail.kernel.org"
+        id S229774AbhFDQau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 12:30:50 -0400
+Received: from mga05.intel.com ([192.55.52.43]:60029 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230046AbhFDQ0k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 12:26:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BBD461009;
-        Fri,  4 Jun 2021 16:24:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622823893;
-        bh=tGEhtfMeMa1I2VdnXeJu3t/MFpJB5vTP0886/BmM/04=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u/C3vsg1oweCRt+elPVzxhp2DgSa2/3jYJ9+mcooqQhbTHLs6F+T0swU150kiPlNY
-         6qZQNLrg2ZwA5Ph6LLSR2doDH2oEpt4CKpMpRL3O31Tudj88EztoRN0Fe+T92S2Grx
-         DhZSJaogoJURs3QYSxaOJj4+TG72VEqJyHG3cIzBCngzPtYWL6LmV3DLSLzJkjvB1F
-         pMGStlcsYnW8XRXVzzgDooK0j3thLobM08fHupcW1xF4McWqwZiSU6zJWOv2bpPTfC
-         Wj554+kX2eFKhdxj8dclc/HxW6ibXE4/qe9Dqtff6KvMS8g0yyt0mALAy6RWZvuVgR
-         BNFqD9TORL8gw==
-Received: by pali.im (Postfix)
-        id 512D9990; Fri,  4 Jun 2021 18:24:51 +0200 (CEST)
-Date:   Fri, 4 Jun 2021 18:24:51 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 12/42] PCI: aardvark: Check for virq mapping when
- processing INTx IRQ
-Message-ID: <20210604162451.lzumwctjj6yoigey@pali>
-References: <20210506153153.30454-1-pali@kernel.org>
- <20210506153153.30454-13-pali@kernel.org>
- <87h7jeq4zo.wl-maz@kernel.org>
+        id S230341AbhFDQ3L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 12:29:11 -0400
+IronPort-SDR: HQPSdYY6ielJUybZDujJC1d+lA7A2yAYLuEFDv6YIjsdm+u7VIEbqMY/byWu8hJTAoY2yDPXwI
+ zM0u6b+uQHew==
+X-IronPort-AV: E=McAfee;i="6200,9189,10005"; a="289953185"
+X-IronPort-AV: E=Sophos;i="5.83,248,1616482800"; 
+   d="scan'208";a="289953185"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2021 09:27:23 -0700
+IronPort-SDR: BW2+P8Wo6ULA0iVGdfvzfBsKWrNyo40KZEIBt1Zlns/dvFFGU6O4SnQia6UMshnbKn/UBGOoQ4
+ 4qAXgg+VZgSw==
+X-IronPort-AV: E=Sophos;i="5.83,248,1616482800"; 
+   d="scan'208";a="480698369"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.251.138.169]) ([10.251.138.169])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2021 09:27:22 -0700
+Subject: Re: [patch 0/8] x86/fpu: Mop up XSAVES and related damage
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+References: <20210602095543.149814064@linutronix.de>
+ <9c5c90bf-fbf6-7e45-4668-2f40f11e8b36@intel.com>
+ <87h7idzpwh.ffs@nanos.tec.linutronix.de>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <149a2760-48f5-25ef-30f4-d5d1135b531e@intel.com>
+Date:   Fri, 4 Jun 2021 09:27:22 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87h7jeq4zo.wl-maz@kernel.org>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <87h7idzpwh.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 07 May 2021 10:15:39 Marc Zyngier wrote:
-> On Thu, 06 May 2021 16:31:23 +0100,
-> Pali Rohár <pali@kernel.org> wrote:
-> > 
-> > It is possible that we receive spurious INTx interrupt. So add needed check
-> > before calling generic_handle_irq() function.
-> > 
-> > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > Reviewed-by: Marek Behún <kabel@kernel.org>
-> > Cc: stable@vger.kernel.org
-> > ---
-> >  drivers/pci/controller/pci-aardvark.c | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-> > index 362faddae935..e7089db11f79 100644
-> > --- a/drivers/pci/controller/pci-aardvark.c
-> > +++ b/drivers/pci/controller/pci-aardvark.c
-> > @@ -1106,7 +1106,10 @@ static void advk_pcie_handle_int(struct advk_pcie *pcie)
-> >  			    PCIE_ISR1_REG);
-> >  
-> >  		virq = irq_find_mapping(pcie->irq_domain, i);
-> > -		generic_handle_irq(virq);
-> > +		if (virq)
-> > +			generic_handle_irq(virq);
-> > +		else
-> > +			dev_err(&pcie->pdev->dev, "unexpected INT%c IRQ\n", (char)i+'A');
+On 6/4/2021 7:05 AM, Thomas Gleixner wrote:
+> On Wed, Jun 02 2021 at 14:28, Yu-cheng Yu wrote:
+>> On 6/2/2021 2:55 AM, Thomas Gleixner wrote:
+>>
+>> With the series applied, glibc pkey test fails sometimes.  I will try to
+>> find out the cause.
 > 
-> Please don't scream like this. This is the best way to get into a DoS
-> situation if you interrupt rate is high enough. At least rate-limit
-> it.
+> That fails not sometimes. It fails always due to patch 7/8. The reason
+> is that before that patch fpu__clear_all() reinitialized the hardware
+> which includes writing the initial PKRU value.
+> 
+> But fpu__initialize() does not store the initial PKRU value in the
+> task's xstate which breaks PKRU. As that patch is not urgent we can
+> postpone it for not.
+> 
+> But looking at the above, it's not clear to me why that PKRU stuff works
+> at all (upstream), but I'll figure it out eventually. I'm quite sure
+> that it does work by pure chance not by design.
+>
 
-Ok, I will fix it!
+Thanks for the update.  I will continue looking at it.
 
-Just to note that this code pattern is used also in other drivers.
-So other drivers should fixed too...
+Yu-cheng
