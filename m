@@ -2,137 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD99639B787
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2FB39B798
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbhFDLHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 07:07:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50522 "EHLO mail.kernel.org"
+        id S230063AbhFDLKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 07:10:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229692AbhFDLHU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 07:07:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23FD861159;
-        Fri,  4 Jun 2021 11:05:31 +0000 (UTC)
+        id S229740AbhFDLKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 07:10:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2FFD61412;
+        Fri,  4 Jun 2021 11:08:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622804734;
-        bh=F6qdZyzEiXprcFunaXrWBdEWvmBNTkX5sFnDNIAVD0c=;
+        s=k20201202; t=1622804936;
+        bh=iwBwbt7wIWhIr085qcXizQ5aues5uWdHTOBFESM33kE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xo760dFfoA6jHGH4cw6Kt7dVLtRAxU+GtKkqVqk+C0OnZu3tXlLwUkixPeVaZyi4A
-         K4zM2+iCl8dDTdB+ZDY8PGDD7yE491gP1glhtCdmKtimxTQqWIOoO+E1eUjcy4/PmR
-         QTh8+IufqjF8El+xZJqXV88SkNMLzNeUlJWqWed2Ojj7gYHRx++R3mM5a4LAFdAjuB
-         H7u9QLxkesGz+WGybxUwbQG2v7uGUiP6zVtM2YsnM6j5Py9BboKXP229KNN8fgVeCG
-         FRmZFipqlKpPHutqnc+Wzx9jUDXkb8LK5rPQVggALSfSyoFoBd7mfTvB8fFj0fPxYp
-         97TqtUP4rzn/g==
-Date:   Fri, 4 Jun 2021 12:05:27 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v8 02/19] arm64: Allow mismatched 32-bit EL0 support
-Message-ID: <20210604110526.GF2318@willie-the-truck>
-References: <20210602164719.31777-1-will@kernel.org>
- <20210602164719.31777-3-will@kernel.org>
- <20210603123715.GA48596@C02TD0UTHF1T.local>
- <20210603174413.GC1170@willie-the-truck>
- <20210604093808.GA64162@C02TD0UTHF1T.local>
+        b=fIqXQlp74u1ZPfFJtxNGqcLSKBsMV3w03xctfdujEY3FRhyErjEkraAi80re7BmyF
+         5vCx0CaDi2hTo43P9nx1aY+1h8dkhVsMVKWE7pQsd+8CbFzDe7ApHgc1rkvX7RPivV
+         ZgZSCYUxcUz7Th+MRRtAgvRbfegGlNTnqe0nDQEiuznYklRqzJ1I0C6lzHMXy5yFLd
+         J72mZkiWr8WLXxwDNGsy8OjYnNCny5+qdMhhAAKMWQ3zONxveacWHU/0untCOLREba
+         egxlkoSMz7HgL94OOOKFcJZSbP28n2r3gMnxo1t906NS8AFwvIh1jZjc0/6eLMIFel
+         dhVEPCm0+bWAA==
+Received: by earth.universe (Postfix, from userid 1000)
+        id 2DA053C0C95; Fri,  4 Jun 2021 13:08:54 +0200 (CEST)
+Date:   Fri, 4 Jun 2021 13:08:54 +0200
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     satya priya <skakit@codeaurora.org>, linux-input@vger.kernel.org,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        kgunda@codeaurora.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        David Collins <collinsd@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Yan <andy.yan@rock-chips.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Andy Gross <agross@kernel.org>
+Subject: Re: [PATCH V3 3/5] dt-bindings: power: reset: Change
+ 'additionalProperties' to true
+Message-ID: <20210604110854.6zgxe2rbqnigdtid@earth.universe>
+References: <1620630064-16354-1-git-send-email-skakit@codeaurora.org>
+ <1620630064-16354-4-git-send-email-skakit@codeaurora.org>
+ <20210510162047.GA228385@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zeta74hijobubqw2"
 Content-Disposition: inline
-In-Reply-To: <20210604093808.GA64162@C02TD0UTHF1T.local>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210510162047.GA228385@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 10:38:08AM +0100, Mark Rutland wrote:
-> On Thu, Jun 03, 2021 at 06:44:14PM +0100, Will Deacon wrote:
-> > On Thu, Jun 03, 2021 at 01:37:15PM +0100, Mark Rutland wrote:
-> > > On Wed, Jun 02, 2021 at 05:47:02PM +0100, Will Deacon wrote:
-> > > > diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-> > > > index 338840c00e8e..603bf4160cd6 100644
-> > > > --- a/arch/arm64/include/asm/cpufeature.h
-> > > > +++ b/arch/arm64/include/asm/cpufeature.h
-> > > > @@ -630,9 +630,15 @@ static inline bool cpu_supports_mixed_endian_el0(void)
-> > > >  	return id_aa64mmfr0_mixed_endian_el0(read_cpuid(ID_AA64MMFR0_EL1));
-> > > >  }
-> > > >  
-> > > > +const struct cpumask *system_32bit_el0_cpumask(void);
-> > > > +DECLARE_STATIC_KEY_FALSE(arm64_mismatched_32bit_el0);
-> > > > +
-> > > >  static inline bool system_supports_32bit_el0(void)
-> > > >  {
-> > > > -	return cpus_have_const_cap(ARM64_HAS_32BIT_EL0);
-> > > > +	u64 pfr0 = read_sanitised_ftr_reg(SYS_ID_AA64PFR0_EL1);
-> > > > +
-> > > > +	return static_branch_unlikely(&arm64_mismatched_32bit_el0) ||
-> > > > +	       id_aa64pfr0_32bit_el0(pfr0);
-> > > >  }
-> > > 
-> > > Note that read_sanitised_ftr_reg() has to do a bsearch() to find the
-> > > arm64_ftr_reg, so this will make system_32bit_el0_cpumask() a fair
-> > > amount more expensive than it needs to be.
-> > 
-> > I seriously doubt that it matters, but it did come up before and I proposed
-> > a potential solution if it's actually a concern:
-> > 
-> > https://lore.kernel.org/r/20201202172727.GC29813@willie-the-truck
-> > 
-> > so if you can show that it's a problem, we can resurrect something like
-> > that.
-> 
-> I'm happy to leave that for future. I raised this because elsewhere this
-> is an issue when we need to avoid instrumentation; if that's not a
-> concern here on any path then I am not aware of a functional issue.
 
-I can't think of a reason why instrumentation would be an issue for any of
-the current callers, but that's a good point to bear in mind.
+--zeta74hijobubqw2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > > That said. I reckon this could be much cleaner if we maintained separate
-> > > caps:
-> > > 
-> > > ARM64_ALL_CPUS_HAVE_32BIT_EL0
-> > > ARM64_SOME_CPUS_HAVE_32BIT_EL0
-> > > 
-> > > ... and allow arm64_mismatched_32bit_el0 to be set dependent on
-> > > ARM64_SOME_CPUS_HAVE_32BIT_EL0. With that, this can be simplified to:
-> > > 
-> > > static inline bool system_supports_32bit_el0(void)
-> > > {
-> > > 	return (cpus_have_const_cap(ARM64_ALL_CPUS_HAVE_32BIT_EL0)) ||
-> > > 		static_branch_unlikely(&arm64_mismatched_32bit_el0))
-> > 
-> > Something similar was discussed in November last year but this falls
-> > apart with late onlining because its not generally possible to tell whether
-> > you've seen all the CPUs or not.
-> 
-> Ah; is that for when your boot CPU set is all AArch32-capable, but a
-> late-onlined CPU is not?
-> 
-> I assume that we require at least one of the set of boot CPUs to be
-> AArch32 cpable, and don't settle the compat hwcaps after userspace has
-> started.
+Hi,
 
-Heh, you assume wrong :)
+On Mon, May 10, 2021 at 11:20:47AM -0500, Rob Herring wrote:
+> On Mon, 10 May 2021 12:31:02 +0530, satya priya wrote:
+> > Change 'additionalProperties' to true as this is a generic binding.
+> >=20
+> > Signed-off-by: satya priya <skakit@codeaurora.org>
+> > ---
+> > Changes in V3:
+> >  - This is newly added in V3.
+> >=20
+> >  Documentation/devicetree/bindings/power/reset/reboot-mode.yaml | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >=20
+>=20
+> Acked-by: Rob Herring <robh@kernel.org>
 
-When we allow the mismatch, then we do actually defer initialisation of
-the compat hwcaps until we see a 32-bit CPU. That's fine, as they won't
-be visible to userspace until then anyway (PER_LINUX32 is unavailable).
+Acked-by: Sebastian Reichel <sre@kernel.org>
 
-Will
+-- Sebastian
+
+--zeta74hijobubqw2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmC6CcUACgkQ2O7X88g7
++pql0RAAjGMGXrdsvasJs6QxGP5afvhDfYSgt9UrzZwC7SRvhDORoWc4o6YoucZY
+xjr/brpzKRwZYxFlioigY5KP220UZIbP4S05N8kB2GjTe2rqxz7nT9x81ahr8d36
+QSNUFkhCBLvQWFQeaRfBwoKWydW10GKax2PdPqwaIwlhIZdRijnQVpsWkmAZfjYW
+Yf0HIbP3meRQ38LlzGV0nHeZPCQarfImi2ZQ7CORoWaa4lTRlrujKkWqTNT1bZZ3
+Ma8HJRBJyK053m+awuvg36GQRjuHt3wDF3RFM9yL2oavkOh/rnZ14CV4IRM3v4Lw
+TJ+ygl/x/oTMpbKPzeBuL+Q+2yBY5AhMCO96KwlERk+MAZ/VWuFWlGVGlLTIbqrx
+82yjdS4b7XN10K51eKaTeogEYr0YIYz8Esy98JH3DHwZanVOmvGOVIfligN6/iWZ
+9zqZ/L8TBQ1OweadQSCMYwpiI7sxNC3v2bi0hPcNQKyTLPiqEZJRg9nIDP91luxY
+7BP7rriPdSXcSZe2+P5Rto495FMQKsuOqmIgD7Gsxn2YrCymylQ7mBaK4l/DKygw
+MFW1S7bSXqmoGqfqxVkE3PswUVFOykPn5/qlRF/GwcHLY+snx//W2sVI3HFQlwNA
+1w1hDaHzZHa213qdXdgnAJ4rreEZhKoch+zziWMvGnaIATaCyRk=
+=V2SN
+-----END PGP SIGNATURE-----
+
+--zeta74hijobubqw2--
