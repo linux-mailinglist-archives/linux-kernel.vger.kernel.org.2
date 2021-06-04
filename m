@@ -2,168 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B185A39BBBB
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A12439BBC1
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbhFDPZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 11:25:46 -0400
-Received: from mail-ej1-f45.google.com ([209.85.218.45]:46762 "EHLO
-        mail-ej1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbhFDPZp (ORCPT
+        id S230378AbhFDP0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 11:26:23 -0400
+Received: from mail-ed1-f48.google.com ([209.85.208.48]:46637 "EHLO
+        mail-ed1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230289AbhFDP0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 11:25:45 -0400
-Received: by mail-ej1-f45.google.com with SMTP id b9so15030727ejc.13;
-        Fri, 04 Jun 2021 08:23:46 -0700 (PDT)
+        Fri, 4 Jun 2021 11:26:22 -0400
+Received: by mail-ed1-f48.google.com with SMTP id r11so11562248edt.13;
+        Fri, 04 Jun 2021 08:24:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=mdtQ42ZqV6kSWyMlaYCk3ZTM4zdnZjaKRpszophbqHY=;
-        b=nbqpnL+qOxNeYmEjuRyIAbnmeLIthnPSIYxgV3boyA2+HW4S1Y22Li/wwD7PE39iEP
-         HpAcY/60nqn4Cs+4vP+CCEZJbkJss16wa9dkP8duTEbxndEl9CT0t6bEJyjvAXb40nHJ
-         P/Yy5bmxWU3dP0Uh1W0CsTUV6uWGJyCghsm15oPSKqrpr6L5wrBvQLaaFQKoEo0/ka/y
-         l8/j6byl4xiCeLGb/xBFuommDPxs+bVZzVwhUyaKl4lI8G3Q3oiiGd7qrX0mcJw09teQ
-         8lUjIU1Nd5x4lG44gYn7FsggIkfJxPhkq6MTqTRORRtglqH9n60PRUYb8/pv/vRJsV03
-         STCQ==
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=wGPasXoYywrXGg/ef9droojodHfnwVODBHNGyzr6cPQ=;
+        b=lCxg46amv/7bUXOXqNXkN0JNoN3MlGdXw9kOK8N3ciKtK1i+webFZfGVCYH03zRi+K
+         tRkxETxQjtKlwbrxpx/tNaxdqN+nsPJPiuxJWlOg+6qhrzJqZii69/3s3GcDg0iN3APO
+         q4OPk1G28/AWwBzlvhRMp+wlUe/bJB2fKKkCnqraEvbYeMwAM10Lr5tJwlKoHWTKMx82
+         9WHbSTlrN1nrSq+G5o8suW29A7cr2YDokNBGshZewVqBfqYkBNH/Ga3+UR3t7aybS58w
+         ns+Ul1q/2oP1j76sCupx9XUPfGAQtRJEJ+IBuQJarNNzEywLs/k1U0YEwfbhyB6ts9xr
+         2hcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=mdtQ42ZqV6kSWyMlaYCk3ZTM4zdnZjaKRpszophbqHY=;
-        b=qbvFXGdBrmKryGos7opHdQPyeILDw77hba+BOVDBOgiFr8JM2fA9LwWdkqXvWUW+C+
-         1d/S6DCXy0QeP5GSFImmI9+Dk7Hs3c8KwjgMfWy6vAv35yoAedk3dZjAVpolt1P7hzl2
-         TeoHo+g8lrbpZx2BehiGjGw9giLulr8qrPE3g9nF/T13Hy1Iaa1+r0p3ZQQtxrAgsLYP
-         vAK/C4Jh+miDhs7K6CO4C1Cb/5Xsh7Tleg5oUO75SdB1KNl5nwrhLXlkfUm6CZdl8VMc
-         Lu9HjCq2BX1eoCjJ8Swn/L1d37XBZC/alreEdKqG0cpJXwFffaysLt915aieiGDhr2e9
-         QFPg==
-X-Gm-Message-State: AOAM532h3TLTpl+DvI//SkgeZ47hyNR6GIIoBO8psG4fXcbU3I+ribGb
-        iCH5Fd3yA3mg1gt6p+sC7U32cerN/KY=
-X-Google-Smtp-Source: ABdhPJxajTjGvIJGMYVhBArrnbvaqQsQz2N7FdF/N4NQ9sU+Szxigc0BrNFZyFLexZfpIGk0+eX3lw==
-X-Received: by 2002:a17:907:20da:: with SMTP id qq26mr4529274ejb.42.1622820165389;
-        Fri, 04 Jun 2021 08:22:45 -0700 (PDT)
-Received: from [192.168.178.194] ([171.33.179.232])
-        by smtp.gmail.com with ESMTPSA id w17sm3333128edd.44.2021.06.04.08.22.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Jun 2021 08:22:44 -0700 (PDT)
-To:     stable@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-From:   =?UTF-8?Q?Lauren=c8=9biu_P=c4=83ncescu?= <lpancescu@gmail.com>
-Subject: [PATCH] ACPI: EC: Look for ECDT EC after calling acpi_load_tables()
-Message-ID: <eeb5ebeb-5313-3763-7b5b-8701e582f1fc@gmail.com>
-Date:   Fri, 4 Jun 2021 17:22:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=wGPasXoYywrXGg/ef9droojodHfnwVODBHNGyzr6cPQ=;
+        b=faD5ugX//gRXTQWqQwOuxEnc4u5ks9+xbv5eFGhuqps34WREnc2ZPLWQoqYsRZnysQ
+         pHqPKcjPk8xZGrMr6FezZbHBWloZsDvSVvfTUC07cihAM+WWLvf99Gd/Xr9aAx4tit/l
+         HQkqHM/N/tSUMZWuIEym/cT61VHrTIwAvWmUPJxYrayVVitLEAvjAL8hGTXLGqyOWZOg
+         DUqjJg4owq8zTxksJQFoMMDOgUVBF9xe3KJH6QV8y9seDWZ+qbc2ZwUm8ycNzhJfM1SA
+         lNqvYsJ/pgRBlZ2a01mo/8RYShvhCUfgf2yPuFSawgl9SaYUBICTIC+7gtFiiFxjYwRu
+         SgXQ==
+X-Gm-Message-State: AOAM531VTID2/uaABtSV1WWSLmpwFAqy7yPZJ5ueA8ZkANrwRMjihlnZ
+        75GnMUeoWouQ9nKABDifBBo=
+X-Google-Smtp-Source: ABdhPJzLQFbMoaD99xPELT1NpZp87JjnFZU5iz+fpVDfsQTf0L+qcrUY7HlgqQyS18TkeG91n/oXCg==
+X-Received: by 2002:a05:6402:51ce:: with SMTP id r14mr5461482edd.138.1622820201630;
+        Fri, 04 Jun 2021 08:23:21 -0700 (PDT)
+Received: from [192.168.1.15] ([151.29.179.73])
+        by smtp.gmail.com with ESMTPSA id g22sm1456986edv.74.2021.06.04.08.23.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 08:23:21 -0700 (PDT)
+Message-ID: <3e31a3f86487b31cd5161f57648798a129f13b0a.camel@gmail.com>
+Subject: Re: [PATCH] perf symbol-elf: fix memory leak: free sdt_note.args
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Ian Rogers <irogers@google.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Fabian Hemmer <copy@copy.sh>,
+        Remi Bernon <rbernon@codeweavers.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Fri, 04 Jun 2021 17:23:19 +0200
+In-Reply-To: <YLokBBmh2+vd9E9d@kernel.org>
+References: <20210602220833.285226-1-rickyman7@gmail.com>
+         <CAP-5=fVp4xGd8wxLc1eFfTUPn3Urp23RmHBha2kgiJGvfysgZg@mail.gmail.com>
+         <YLokBBmh2+vd9E9d@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit b1c0330823fe upstream.
+Hi,
 
-Backport of ACPI fix for #199981 for linux-4.9.y, tested on an Asus 
-EeePC 1005PE running Debian Buster.
+On Fri, 2021-06-04 at 10:00 -0300, Arnaldo Carvalho de Melo wrote:
+> Em Thu, Jun 03, 2021 at 09:08:46PM -0700, Ian Rogers escreveu:
+> > On Wed, Jun 2, 2021 at 3:12 PM Riccardo Mancini <rickyman7@gmail.com> wrote:
+> > > 
+> > > Reported by ASan.
+> > 
+> > Did you have a reproducer for getting this to fail?
 
-Some systems have had functional issues since commit 5a8361f7ecce
-(ACPICA: Integrate package handling with module-level code) that,
-among other things, changed the initial values of the
-acpi_gbl_group_module_level_code and acpi_gbl_parse_table_as_term_list
-global flags in ACPICA which implicitly caused acpi_ec_ecdt_probe() to
-be called before acpi_load_tables() on the vast majority of platforms.
+In case you'd like to add it to the commit message.
 
-Namely, before commit 5a8361f7ecce, acpi_load_tables() was called from
-acpi_early_init() if acpi_gbl_parse_table_as_term_list was FALSE and
-acpi_gbl_group_module_level_code was TRUE, which almost always was
-the case as FALSE and TRUE were their initial values, respectively.
-The acpi_gbl_parse_table_as_term_list value would be changed to TRUE
-for a couple of platforms in acpi_quirks_dmi_table[], but it remained
-FALSE in the vast majority of cases.
+$ sudo ./perf record -- sleep 5
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.025 MB perf.data (15 samples) ]
 
-After commit 5a8361f7ecce, the initial values of the two flags have
-been reversed, so in effect acpi_load_tables() has not been called
-from acpi_early_init() any more.  That, in turn, affects
-acpi_ec_ecdt_probe() which is invoked before acpi_load_tables() now
-and it is not possible to evaluate the _REG method for the EC address
-space handler installed by it.  That effectively causes the EC address
-space to be inaccessible to AML on platforms with an ECDT matching the
-EC device definition in the DSDT and functional problems ensue in
-there.
+=================================================================
+==79402==ERROR: LeakSanitizer: detected memory leaks
 
-Because the default behavior before commit 5a8361f7ecce was to call
-acpi_ec_ecdt_probe() after acpi_load_tables(), it should be safe to
-do that again.  Moreover, the EC address space handler installed by
-acpi_ec_ecdt_probe() is only needed for AML to be able to access the
-EC address space and the only AML that can run during acpi_load_tables()
-is module-level code which only is allowed to access address spaces
-with default handlers (memory, I/O and PCI config space).
+[...]
 
-For this reason, move the acpi_ec_ecdt_probe() invocation back to
-acpi_bus_init(), from where it was taken away by commit d737f333b211
-(ACPI: probe ECDT before loading AML tables regardless of module-level
-code flag), and put it after the invocation of acpi_load_tables() to
-restore the original code ordering from before commit 5a8361f7ecce.
+Direct leak of 999 byte(s) in 47 object(s) allocated from:
+    #0 0x4b7cc7 in strdup (/home/user/linux/source/tools/perf/perf+0x4b7cc7)
+    #1 0xac69db in populate_sdt_note /home/user/linux/source/tools/perf/util/symbol-elf.c:2256:15
+    #2 0xac2b57 in construct_sdt_notes_list /home/user/linux/source/tools/perf/util/symbol-elf.c:2359:10
+    #3 0xac2502 in get_sdt_note_list /home/user/linux/source/tools/perf/util/symbol-elf.c:2394:8
+    #4 0xacc6ac in probe_cache__scan_sdt /home/user/linux/source/tools/perf/util/probe-file.c:882:8
+    #5 0x7e2949 in build_id_cache__add_sdt_cache /home/user/linux/source/tools/perf/util/build-id.c:619:8
+    #6 0x7e233c in build_id_cache__add /home/user/linux/source/tools/perf/util/build-id.c:779:6
+    #7 0x7e2b37 in build_id_cache__add_s /home/user/linux/source/tools/perf/util/build-id.c:805:8
+    #8 0x7e3e99 in build_id_cache__add_b /home/user/linux/source/tools/perf/util/build-id.c:821:9
+    #9 0x7e3166 in dso__cache_build_id /home/user/linux/source/tools/perf/util/build-id.c:889:9
+    #10 0x8da7bc in machine__for_each_dso /home/user/linux/source/tools/perf/util/machine.c:3167:7
+    #11 0x7e2ec1 in machines__for_each_dso /home/user/linux/source/tools/perf/util/build-id.c:896:12
+    #12 0x7e2e46 in __perf_session__cache_build_ids /home/user/linux/source/tools/perf/util/build-id.c:917:9
+    #13 0x7e2faa in perf_session__cache_build_ids /home/user/linux/source/tools/perf/util/build-id.c:922:9
+    #14 0x8996c8 in write_build_id /home/user/linux/source/tools/perf/util/header.c:327:2
+    #15 0x8b76e9 in do_write_feat /home/user/linux/source/tools/perf/util/header.c:3216:9
+    #16 0x8ac70d in perf_header__adds_write /home/user/linux/source/tools/perf/util/header.c:3261:7
+    #17 0x8abe52 in perf_session__write_header /home/user/linux/source/tools/perf/util/header.c:3353:9
+    #18 0x5961ed in record__finish_output /home/user/linux/source/tools/perf/builtin-record.c:1241:2
+    #19 0x58e6ca in __cmd_record /home/user/linux/source/tools/perf/builtin-record.c:2060:4
+    #20 0x58990b in cmd_record /home/user/linux/source/tools/perf/builtin-record.c:2901:8
+    #21 0x7b2a20 in run_builtin /home/user/linux/source/tools/perf/perf.c:313:11
+    #22 0x7b12ff in handle_internal_command /home/user/linux/source/tools/perf/perf.c:365:8
+    #23 0x7b2583 in run_argv /home/user/linux/source/tools/perf/perf.c:409:2
+    #24 0x7b0d79 in main /home/user/linux/source/tools/perf/perf.c:539:3
+    #25 0x7effc1a65b74 in __libc_start_main /usr/src/debug/glibc-2.33-8.fc34.x86_64/csu/../csu/libc-start.c:332:16
 
-Fixes: 5a8361f7ecce ("ACPICA: Integrate package handling with 
-module-level code")
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=199981
-Reported-by: step-ali <sunmooon15@gmail.com>
-Reported-by: Charles Stanhope <charles.stanhope@gmail.com>
-Tested-by: Charles Stanhope <charles.stanhope@gmail.com>
-Reported-by: Paulo Nascimento <paulo.ulusu@googlemail.com>
-Reported-by: David Purton <dcpurton@marshwiggle.net>
-Reported-by: Adam Harvey <adam@adamharvey.name>
-Reported-by: Zhang Rui <rui.zhang@intel.com>
-Tested-by: Zhang Rui <rui.zhang@intel.com>
-Tested-by: Jean-Marc Lenoir <archlinux@jihemel.com>
-Tested-by: Laurentiu Pancescu <laurentiu@laurentiupancescu.com>
-Signed-off-by: Laurentiu Pancescu <laurentiu@laurentiupancescu.com>
----
-  drivers/acpi/bus.c | 23 ++++++++++++-----------
-  1 file changed, 12 insertions(+), 11 deletions(-)
+Thanks,
+Riccardo
 
-diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
-index 92a146861086..cc88571c2cac 100644
---- a/drivers/acpi/bus.c
-+++ b/drivers/acpi/bus.c
-@@ -1133,17 +1133,6 @@ static int __init acpi_bus_init(void)
+> > 
+> > > Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> > 
+> > Acked-by: Ian Rogers <irogers@google.com>
+> 
+> Thanks, applied.
+> 
+> - Arnaldo
+> 
+>  
+> > Thanks,
+> > Ian
+> > 
+> > > ---
+> > >  tools/perf/util/symbol-elf.c | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > > 
+> > > diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
+> > > index 4c56aa8374344..a73345730ba90 100644
+> > > --- a/tools/perf/util/symbol-elf.c
+> > > +++ b/tools/perf/util/symbol-elf.c
+> > > @@ -2412,6 +2412,7 @@ int cleanup_sdt_note_list(struct list_head *sdt_notes)
+> > > 
+> > >         list_for_each_entry_safe(pos, tmp, sdt_notes, note_list) {
+> > >                 list_del_init(&pos->note_list);
+> > > +               zfree(&pos->args);
+> > >                 zfree(&pos->name);
+> > >                 zfree(&pos->provider);
+> > >                 free(pos);
+> > > --
+> > > 2.31.1
+> > > 
+> 
 
-  	acpi_os_initialize1();
-
--	/*
--	 * ACPI 2.0 requires the EC driver to be loaded and work before
--	 * the EC device is found in the namespace (i.e. before
--	 * acpi_load_tables() is called).
--	 *
--	 * This is accomplished by looking for the ECDT table, and getting
--	 * the EC parameters out of that.
--	 */
--	status = acpi_ec_ecdt_probe();
--	/* Ignore result. Not having an ECDT is not fatal. */
--
-  	if (acpi_gbl_execute_tables_as_methods ||
-  	    !acpi_gbl_group_module_level_code) {
-  		status = acpi_load_tables();
-@@ -1154,6 +1143,18 @@ static int __init acpi_bus_init(void)
-  		}
-  	}
-
-+	/*
-+	 * ACPI 2.0 requires the EC driver to be loaded and work before the EC
-+	 * device is found in the namespace.
-+	 *
-+	 * This is accomplished by looking for the ECDT table and getting the EC
-+	 * parameters out of that.
-+	 *
-+	 * Do that before calling acpi_initialize_objects() which may trigger EC
-+	 * address space accesses.
-+	 */
-+	acpi_ec_ecdt_probe();
-+
-  	status = acpi_enable_subsystem(ACPI_NO_ACPI_ENABLE);
-  	if (ACPI_FAILURE(status)) {
-  		printk(KERN_ERR PREFIX
--- 
-2.20.1
 
