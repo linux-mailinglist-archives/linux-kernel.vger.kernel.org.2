@@ -2,166 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3030539C24F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A650B39C25B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbhFDVZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 17:25:47 -0400
-Received: from mail-dm6nam11on2051.outbound.protection.outlook.com ([40.107.223.51]:37472
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229665AbhFDVZq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 17:25:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jllgIIANSwypGgfiydVe2vVK75SRzL+kD/YBvDLSUeA3QkjggE5NA9XQ8m6TskAFvZ1UE9GJDNsen7klFn9LuIx9iz23kPXHh/OfvOFzU6usMIwOTYNSLzwcVpbrT88xXsK7eRbUgU0h41X3xOBaDQPjLAq5XfNNth4RIr36W9EiyTADlym8jtsIbMcEKkG1KvYYB4fcmJWqWdbqZd/4fVk+YViLjR36hxD8H4oFR9e8uQ/aLv7gNa9bny/fCkqBR+zqn8UuUIqF2KTrCWFwoiZnFiHCi+MzOxuwR0T6mlfW9ETnHtTOasNSZMU4E2sb3ecNPXp7R9xE+kV8QEYcOw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UiAno8u0vIwj4LK7fmMGt7xf5m9ZMoxZl0huiVpyzdI=;
- b=bDVVV19arEFwnld2NN1jBomQ7ULoIWAFf4MIWBza25P/u6RUIWV8Kzix3yCBlwJkwHi+6IQFW0ctrCY7MgOJB8AZ7waevPDoU2moIZag6WbKjbtyAXy2KiUHnjwJsBEm74LqEHCdP4/iNV1hiQNnLPY2k83PEN4E4Kw1Qcc/l4CZ7xooxQHQfpyLwC+sEJeZPRkMjA8zdgPJV2IfyKC/oIbZoPM8/xAK8DeDCS6AJqKWPQ3146hx/q2IDaltntV9SuViEY1kUbt776A692kAN6HP7TLBZSBJhQs1Ol7UuAGrXyKhHsU2muWYl/YCzwTrNs9D1g5nVZPkdzMWrlz5Sg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UiAno8u0vIwj4LK7fmMGt7xf5m9ZMoxZl0huiVpyzdI=;
- b=fpG3Bx/G8e25yIlUUzLet3RD319iDkjepxPk0yTBAB/zhCfDy6xpOgEmOWTiWShAU9LqiG/Hmlt4OqKgGqTrRUjN5vHZZOkTBaEcHVssQFzqcFGmNdOdQ++Vi+JD+TwQHliNU4aUc2DUOt/Tdw3yYW8Y3hsPvTukwlnYvHpzU9GWnRQ++hsIiE0e2sD1EXhOOsb56bdHTibBTVVY8Wt6Ll6qyyWmFJOJinSHI6DFvm0fh+xFicSq/bTGEF73Xhq/kvtetkmjuFNir0wPusfNtbqKulu0m8e/Yy/xvymocIQl5EyNfObyIaPzYz/W8B3xVVDqqFPWoPWRUTzz/7tSWA==
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB3823.namprd12.prod.outlook.com (2603:10b6:208:168::26)
- by BL0PR12MB4915.namprd12.prod.outlook.com (2603:10b6:208:1c9::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20; Fri, 4 Jun
- 2021 21:23:57 +0000
-Received: from MN2PR12MB3823.namprd12.prod.outlook.com
- ([fe80::ccd7:fb49:6f2d:acf2]) by MN2PR12MB3823.namprd12.prod.outlook.com
- ([fe80::ccd7:fb49:6f2d:acf2%7]) with mapi id 15.20.4195.022; Fri, 4 Jun 2021
- 21:23:56 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     nao.horiguchi@gmail.com, mhocko@suse.com,
-        kirill.shutemov@linux.intel.com, hughd@google.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: mempolicy: don't have to split pmd for huge zero page
-Date:   Fri, 04 Jun 2021 17:23:51 -0400
-X-Mailer: MailMate (1.14r5809)
-Message-ID: <DC3A8596-DC59-4B3B-8BA9-A0C2432552DF@nvidia.com>
-In-Reply-To: <20210604203513.240709-1-shy828301@gmail.com>
-References: <20210604203513.240709-1-shy828301@gmail.com>
-Content-Type: multipart/signed;
- boundary="=_MailMate_6C4579B4-3DC9-41AA-BAEB-B1150B59805F_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-Originating-IP: [216.228.112.22]
-X-ClientProxiedBy: BL1PR13CA0404.namprd13.prod.outlook.com
- (2603:10b6:208:2c2::19) To MN2PR12MB3823.namprd12.prod.outlook.com
- (2603:10b6:208:168::26)
+        id S230500AbhFDV3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 17:29:44 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:37389 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229668AbhFDV3n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 17:29:43 -0400
+Received: from mail-wr1-f49.google.com ([209.85.221.49]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MwPjf-1lYzUc1Gpp-00sMrk; Fri, 04 Jun 2021 23:27:55 +0200
+Received: by mail-wr1-f49.google.com with SMTP id a20so10647656wrc.0;
+        Fri, 04 Jun 2021 14:27:55 -0700 (PDT)
+X-Gm-Message-State: AOAM532toOOamUc7sqH+fu+yqE26yo4uj+zQxZ5tga8EOyl6SRW/kJKo
+        oHCULsQ7XODXj8pUo06G8q0C6nF1UCz538faP9M=
+X-Google-Smtp-Source: ABdhPJzJDHuyMCqX6WOws3xbJdiVdgcELrwsCfZOh8KOJCGiTnqEKWWc8yDd/bMkdxBixLXUQF+S4GmeCWLLk2+jBEc=
+X-Received: by 2002:adf:a28c:: with SMTP id s12mr5998470wra.105.1622842074948;
+ Fri, 04 Jun 2021 14:27:54 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.2.80.67] (216.228.112.22) by BL1PR13CA0404.namprd13.prod.outlook.com (2603:10b6:208:2c2::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.10 via Frontend Transport; Fri, 4 Jun 2021 21:23:54 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1d3b4c48-4f12-4049-0f8a-08d9279f0fa1
-X-MS-TrafficTypeDiagnostic: BL0PR12MB4915:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR12MB4915AE3537B0BDD1480F4A6DC23B9@BL0PR12MB4915.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Rsx8IIoGq2VNJlM63U0bw1CY/DvqKr2kkm3fGR2+Y2AysLe/FUircgbmJcjhtRpntfP7+1Wy78HZwmTCpJEPMQocbbYLOTUUxHexYkFSa4vwCdeqfFgn9IK6IdsMd4wgGfqRwXS+CMlvGxoL3N0wQAYDMM5lMIiWvLWrOFLZWxJWzuOVAhfjea64FvyFGjub9t98WdRVq/iw4fJNfTydYyks/bNn3kNSlSGntUfbHSQm3Ws8RfhTBbMuWe8PcS2yjD2ZyUQ2REeoJE5ydOXfpyUIDCy7+/p60S/maB1IkZx+Cu28sllMRYfYojJu9Ytve45smpfU9tCm0TIryL20qdipEOV4dYjC+IH88xYKZ8a9YcKuij/d5pe4+dwMBNEkyJ02ITEexOxxaX89YG5oooX5y7jIM2P3T0YZH/yJ9RcfIkDnpO3tdlFiuMQqjfD5kZuIXsPLeOPdZIrUHHuBgCOmW3Wc9IOBE/iz8V/mziAuH16jl61OKGxzJMP2Gh3g1ZibSbadK7NQ2CbuNYB1ZQT8gA9JbfC6u/ptPgF8WLQblsP9+oGaXe2zU8gd/bAsAVMmBZfTC1VszwPgBmEP6GieUAKy4+STBCniJ3IyhglQIqbgOBEGc+3vAP1a11vwAc3YShQfiHfNsj2kj7p9J0rx1ai6cFG9SWIOJ8WU5vJqVJgIDxp09ZM9mfvd6wO4q50NwYBMXgUhQUk8UKQ9DA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3823.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(396003)(136003)(376002)(39860400002)(16526019)(21480400003)(53546011)(186003)(478600001)(26005)(8676002)(6666004)(6486002)(36756003)(316002)(6916009)(2616005)(2906002)(956004)(33964004)(66556008)(66476007)(86362001)(5660300002)(235185007)(4326008)(66946007)(8936002)(33656002)(16576012)(38100700002)(14583001)(72826004)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?aHZTeXRyWW40b1JlUTY4Uzh0bkZXV20vU0N1bXFZVjNYc0VuWVNGTjRTQ2pK?=
- =?utf-8?B?dzFNMThLdWEyUURWeHpYaVBKa3ZWUjlWNEhFY3JXSUFxbStFeGkyWEdJTmNj?=
- =?utf-8?B?Z25PWHZJSUx0enkxRDhGYktCWExrcHFJcnFpcUYvTGNXZEJ0SkF1K2krZnpj?=
- =?utf-8?B?ZCtqT09GelZmYUNoTDFFRHZmZm1WUElJamJsbU9JSVpyNHB1UUNva3VHWS8z?=
- =?utf-8?B?L3lOTE9wVHZJbzE2NUZHYldidjRjTVJHU05JejNlV1NYZzZaUVdQK3JISmhK?=
- =?utf-8?B?QXNLanA5eENzVnd5NlJJeEVzdW5saG1leUlkM2tidk5jZXZhUnZINk4yWlFT?=
- =?utf-8?B?aVlNV1QvdFAzT2cvT2tkZ1BxZFRtOFJvZzd4NU00M1pFeDB2a3ZuQW83OVNT?=
- =?utf-8?B?dUxOSzdEYkFkZ055aEs5Tmwvb1UyT1YvUXpRZUZMekFYb2ppRWhFZkpRLytD?=
- =?utf-8?B?MXc2SldJM0pXS21uTmlQVG4ya3NlWjRRMTJyenZnQzhxV3VBb0d0WlJrRXZF?=
- =?utf-8?B?QzR0aFJzUFdtdEZjNGpYVE8xQW1YQXpoeVZ5TWFqYllnZjkvQjQvVFRaTEZ3?=
- =?utf-8?B?VjV2c1VWZ0hxbFBPZHg3ZHJNU3V3Vy8vYzlLbUFVdncwYnZuU2xtSG4vbmtt?=
- =?utf-8?B?Nkt5ZWRZWXFOUTJpQjQ5L1IwVElOaHJpYVRoS1E3UVVPNm9uY2lpZGtEOHRO?=
- =?utf-8?B?RS9VbW9HSjFXUDlKOS9Gdi9seHBFZDhCM0xnQkFaSjJqZWlJRlNOTFZnejA3?=
- =?utf-8?B?blp2N3NqSWtPZ0FEblFXZGxvdGxYQ3FhdFlQaG45UlNEK3BORGpVeDNIc3ZR?=
- =?utf-8?B?dGZLdTJPVVVpTWZVNGx2M3pVZlB3L1BCMXhVMXJiUkVzL2tXMXhsWkhBdUpz?=
- =?utf-8?B?dFF0TStpSEloSnpzR09ndEhCWFVnSTdqZUdsMWVQRFN6VjR0Mm5XR2lqdjdp?=
- =?utf-8?B?NHExUDVySnN4RjhuUzZHZlFzTCtUY3ZpTHJicVlkb2xhSzF0aW5jdnZndUd2?=
- =?utf-8?B?S3dXVnBFVXFuOWxrLzVueENYZXNJWHJQVktBSlpocmpIenBvU3hvancxWG4v?=
- =?utf-8?B?VUpUMVRsMFZHb21CN201YzljbUNCNlkrSFhTVVNtRENaTVc0TzJTTzFHeWg2?=
- =?utf-8?B?eHhSR3pQOEFOL2ZyREdYUkU5Zi9GTGhOOCs0MGQ4NDBsTXhKbnhiUkR0ai9l?=
- =?utf-8?B?OGJmRmZDeEQwbjJ5VklTenRTajg0bnZtN2Q0dEhpSk40WGkxcWNnUGhPNUFk?=
- =?utf-8?B?ZXJEWXBVMWUwMGtNY0p4VHcxbU44QzB4NVlYTG9JWkFUckRwRVJFOXVhS090?=
- =?utf-8?B?ODRKKzVDNzlSTFVSeU55d1NadVRweVpEZDB3dkRnRjRGa3JBNzhqbERCbnBk?=
- =?utf-8?B?eTYvcWI0Ly9Cb1Racnk4VUxFdlJua2kwNDYvczBaNnRqZUZTVlhHYXV4MThC?=
- =?utf-8?B?ZUNubGNLbGg2YlhKMzNxQVJuaGp5Y2l2cWZiUGlhN1Z3RzZFa0tPZWV3VzNm?=
- =?utf-8?B?OU1VNWpuMjRhNlo4NmtGOUFpQTB5ZzU5U2R1TUlWUHErREtwYnh6REFKQklj?=
- =?utf-8?B?UStCeUVXcE9BYnpiWEtmV3phZ3MyVEJhZXNIck1CR0Q1OGEzSDVKV3JUSTVx?=
- =?utf-8?B?WThwQUd1dG1QOHFhaWRqMHNKcG0rSnN4aWowMXdqNEp3M3hUcmN6UmF2WEND?=
- =?utf-8?B?cDU2ak9pemhYYTlMV1BURFFCejBweTJyMlJsWlRGRGVGTGVLam5GWmhycUcz?=
- =?utf-8?Q?2QjDKeKNSsqraxF2KyWHZQPwgtFijarfk2dSPNG?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1d3b4c48-4f12-4049-0f8a-08d9279f0fa1
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3823.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2021 21:23:56.6401
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: deGbLStg1wYkxpyx8LokX+IKGjjLe91bT6hdtmjlj8nCwPhZp+lvqFgKEMLjvck3
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4915
+References: <CAJF2gTTpurWpPUcA2JkF0rOFztKQgFBhOF9zQyuyi_-sxszhRQ@mail.gmail.com>
+ <mhng-423aeaad-9339-4695-9a85-f947dd6135ac@palmerdabbelt-glaptop>
+In-Reply-To: <mhng-423aeaad-9339-4695-9a85-f947dd6135ac@palmerdabbelt-glaptop>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 4 Jun 2021 23:26:11 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a04C8HObpSHNYqQpe4V96MoSLs7sEpiPvp4OpvyAU1_fQ@mail.gmail.com>
+Message-ID: <CAK8P3a04C8HObpSHNYqQpe4V96MoSLs7sEpiPvp4OpvyAU1_fQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Guo Ren <guoren@kernel.org>, Anup Patel <Anup.Patel@wdc.com>,
+        Anup Patel <anup@brainfault.org>,
+        Drew Fustini <drew@beagleboard.org>,
+        Christoph Hellwig <hch@lst.de>, wefu@redhat.com,
+        lazyparser@gmail.com,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:EpuZWdIFfG7WNr+iQh4pxv0sAjYwuDZ/R7XWGTxUhpl6EagL1JD
+ BpfaS8HJ9rKBIy6ELbUxCdb1X4I36M+jWZxHYtBcNWgS/iOVkm+cNLPvKSMm4zojneL2RqG
+ +qTFFsjcGleLdyKePOkUaJndmkyfzSeuq9ssdGVbJya5N1QWyps6ud8u4rOPPVzcMz2Wa/H
+ NV1ntttd2LWAl81IUDwrA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:WAO1nQ8spAk=:84NJh+NAtc6dXYyzGS982W
+ HcW4LNX5IAgGaNIUZc5swlmrBsSCEoGi9M83mczR28gczbzEyHZ1cdLGRz+9v5IqtAFCfMPRv
+ Y0eh7ha4TfMpG1/6o44r3Iea/sQp9WS8Z1w0m97dbSCSICpSQCakxDmICQuEQRSe/SSVBGJyE
+ OHdZP3bz1+O1GdZ89jbwJnZXlbcq4MZfTyigbwi5emixKx016yQycenkVu9mEl3XNSRAKZZQl
+ r3Oju05HveY6Ttof23H3bhQeRlUaoxgJ5L/jgpfD1uIfeZHPw5WJYTNil+1FIXmK1yfp4oyCr
+ QI3SPkHc+1fpix902FDNKFmejr00FDjFvDGJwNElgq7xD2o3WPX4Fh9wdkTHFqAgFnTRdy7/0
+ jgULKBicvqEgCqZgrXmoFnm5fZsR3eG/GFRKg84s110vwUl98AAnlczo3dznutvtU8xmejn4q
+ NI2bQsC3mdUSMbzTiIZAy4Itn4FMaYfz//C3WYgRazHw0icoHRccGweHuoa3++ZWH+pi8XVMw
+ Xl2hYr20TElfIiJNyp56aKNJqQaM7dLwVSDS4EN7wO5cv8iMXTvMK6aUebL5ePdKtX/4MfUcl
+ 0xPHeJi6sHqV9KWqTN5Qrn7r/PWQxvmx8BLmhMUBE7yVkfduYc2Ej+oaRzwqNkOwiPl5TNLc8
+ x4yI=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_6C4579B4-3DC9-41AA-BAEB-B1150B59805F_=
-Content-Type: text/plain; charset=UTF-8; markup=markdown
-Content-Transfer-Encoding: quoted-printable
+On Fri, Jun 4, 2021 at 6:14 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
 
-On 4 Jun 2021, at 16:35, Yang Shi wrote:
+> The hope here has always been that we'd have enough in the standards
+> that we could avoid a proliferation of vendor-specific code.  We've
+> always put a strong "things keep working forever" stake in the ground in
+> RISC-V land, but that's largely been because we were counting on the
+> standards existing that make support easy.  In practice we don't have
+> those standards so we're ending up with a fairly large software base
+> that is required to support everything.  We don't have all that much
+> hardware right now so we'll have to see how it goes, but for now I'm in
+> favor of keeping defconfig as a "boots on everything" sort of setup --
+> both because it makes life easier for users, and because it makes issues
+> like the non-portable Kconfigs that showed up here quite explicit.
 
-> When trying to migrate pages to obey mempolicy, the huge zero page is
-> split then the page table walk at PTE level just skips zero page.  So i=
-t
-> seems pointless to split huge zero page, it could be just skipped like
-> base zero page.
+It's obviously easy to take the hard line approach as long as there is
+so little hardware available. I expect this to be a constant struggle,
+but it's definitely worth trying as long as you can.
+
+> >> To give some common examples that make it break down:
+> >>
+> >> - 32-bit vs 64-bit already violates that rule on risc-v (as it does on
+> >>   most other architectures)
 >
-> Set ACTION_CONTINUE to prevent the walk_page_range() split the pmd for
-> this case.
+> Yes, and there's no way around that on RISC-V.  They're different base
+> ISAs therefor re-define the same instructions, so we're essentially at
+> two kernel binaries by that point.  The platform spec says rv64gc, so we
+> can kind of punt on this one for now.  If rv32 hardware shows up
+> we'll probably want a standard system there too, which is why we've
+> avoided coupling kernel portability to XLEN.
+
+I would actually put 32-bit into the same category as NOMMU, XIP
+and the built-in DTB:
+Since it seems unrealistic to expect an rv32 Debian or Fedora build,
+there is very little to gain by enforcing compatibility between machines.
+This is different from 32-bit Arm, which is widely used across multiple
+distros and many SoCs.
+
+> >> - architectures that support both big-endian and little-endian kernels
+> >>   tend to have platforms that require one or the other (e.g. mips,
+> >>   though not arm). Not an issue for you.
 >
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
+> It is now!  We've added big-endian to RISC-V.  There's no hardware yet
+> and very little software support.  IMO the right answer is to ban that
+> from the platform spec, but again it'll depnd on what vendors want to
+> build (though anyone is listening, please don't make my life miserable
+> ;)).
 
-LGTM. Thanks.
+I don't see any big-endian support in linux-next. This one does seem
+worth enforcing to be kept out, as it would double the number of user
+space ABIs, not just kernel configurations. On arm64, I think the general
+feeling is now that we would have been better off not merging big-endian
+support into the kernel as an option, but it still seemed important at the
+time. Not that there is anything really wrong with big-endian by itself,
+just that there is no use case that is worth the added complexity of
+supporting both.
 
-Reviewed-by: Zi Yan <ziy@nvidia.com>
+Let me know if there are patches you want me to Nak in the future ;-)
 
+> >> - SMP-enabled ARMv7 kernels can be configured to run on either
+> >>   ARMv6 or ARMv8, but not both, in this case because of incompatible
+> >>   barrier instructions.
+>
+> Our barriers aren't quite split the same way, but we do have two memory
+> models (RVWMO and TSO).  IIUC we should be able to support both in the
+> same kernels with some patching, but the resulting kernels would be
+> biased towards one memory models over the other WRT performance.  Again,
+> we'll have to see what the vendors do and I'm hoping we don't end up
+> with too many headaches.
 
-=E2=80=94
-Best Regards,
-Yan, Zi
+I wouldn't specifically expect the problem to be barriers in the rv64 case,
+this was just an example of instruction sets slowly changing in incompatible
+ways over a long time. There might be an important reason for version 3.0
+of one of the specifications to drop compatibility with version 1.x.
 
---=_MailMate_6C4579B4-3DC9-41AA-BAEB-B1150B59805F_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAmC6mecPHHppeUBudmlk
-aWEuY29tAAoJEJ2yUfNrYfqKRbEP/3LwzUGXtUKyviACA9KB6FqBy4dTPpv5TBDd
-0pD3NXi7AkQsh2GC9tRl0i3K5FGLuDRzNL5f1qnAGJ5yLzPvZgSHKaAbk3YRDvZ+
-Vz64lTfIGd2i4mtU2j3yE300ZfyDbuCLPmynw4hA4zaTUD/HkzaoBEnMHhXiBwJz
-Su21uuCjuAZ2CTc4Q6yWeStbYOuqRThs9K/YOP0+o4kIwnBciUOg57lAI2D+JEHT
-Oh6bdB378+Te7vOSnbml1RBLDG3tNwnkR6ETqZIQ73KzY5BaKzrZ3GHqEVVc1RjK
-GEig/y81zutHfpXUtHrFs+6qhsTGZbSPWLMgQEQp6JP5bjo6viZUT9DdIVSDBN9L
-UUOagXYJ2U0MVZqK5mFvq0YoCJihlkJWO3kzWGFEv723MEUormY5tHi/YIT9sDfq
-xK+UHiT6dPdKf4zC/Wn54QtISEi1MPsgJ7SIxOHv+r688vIwukBBU5RQh2SqtXXB
-/Esb5uagkOAxOTteQoJykfEu8m3FH2iLlvYnF4smsITb+6iyNgwFpUBdEWnHV5yE
-WOaaOFTXF+y0Tr/QutWR1j9A9svZaI+gkYkaotCcuIqX6q8mneQVNU7aY83hrbh9
-DuzoKca08v4X2nOsHDfEBNCMc1v9s2vcmP1H+eUr7Kt1hSLCgxpD/c2br6jay1ji
-4v3kQtWV
-=/DFH
------END PGP SIGNATURE-----
-
---=_MailMate_6C4579B4-3DC9-41AA-BAEB-B1150B59805F_=--
+          Arnd
