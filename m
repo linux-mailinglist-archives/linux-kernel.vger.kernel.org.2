@@ -2,70 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9226239C313
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 00:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0FB839C316
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 00:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbhFDWBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 18:01:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52560 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229668AbhFDWBu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 18:01:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id BB9B061404;
-        Fri,  4 Jun 2021 22:00:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622844003;
-        bh=SFFqPJcgVlA4vsF9pOLrJMuNb8C+P28BarhiInV/NyY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Z8oEb+9nmy4+A8/JNWh23RrTIQ1NTGhdU5UjFQde6tAJUao83FJigWIZG2LVsjayw
-         sXrmsEnmy+f+6R77R/oH3Kg2rcQlOLU4dWOP4rVv8FpRINe8m1dfPh0URd9mwM42CY
-         mDgapQG9XDUGvG6sc3P5YzEZt9fOQcwGFTCYxiBT/N65WvhAz6TfBWNo2Xt7a/PMFp
-         OiI8ZMSvfEZ5yG0fFtenW0aWyt6EnLnzfTubJ8636Aryh3yNVX2xb00Df/60SQLQX9
-         8lfhIAScdryr3hHFcE9zCOmB2x62/NdDOZNrTz7M/ZY52tihYAA32IDXUv5oHGT7YP
-         e4sdrSW0ngzbA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AF31E60BFB;
-        Fri,  4 Jun 2021 22:00:03 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S230432AbhFDWCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 18:02:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229668AbhFDWCd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 18:02:33 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52600C061766
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 15:00:46 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id c11so13404209ljd.6
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 15:00:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=J3cUQxofReVfzXAKx9OJNj8MTjPpRu0z60JXwKyp/4U=;
+        b=P4xVpSmnFgkUukbaUkp1IvyEIsFhcnEdT15u+jPLp31nt3RNzK8OXdffCc1qj3xsAZ
+         2qPRTCZluy2EPg/C690Yq92VxbuGhEt3kcAvXtaqeC6Vz1G3eV2Zv8Eff+zL8VFTAXJt
+         Fgy2Z/1CFxs6Y9ZjtAHsyqHNl21O+93bZySEqCeSSFndsiN9bjsnL2yZMMqFBu8Px86F
+         ii2+qcN074Fdxo6lV4FbNTsFS8oZopCN79yxu+oRoecq87DFmaGTdfnUlRB6zVNAWQ0N
+         ruLObxLsXtgTbFojy3tcmhpZtSJMdGreTqLgmn65i2jm86kXPhiAq/9uQfutbyV3OkYB
+         Wp/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=J3cUQxofReVfzXAKx9OJNj8MTjPpRu0z60JXwKyp/4U=;
+        b=p0FiyKITUQb9+62PeQGQDbpdM1h8rIL3UuOaFE8P+2QjEVQ4ax6KYEaF1Ykyoj1hKL
+         ln6lZoBBgEGPYclaztd5+Fy1KzqD/1t7PQQuSESteenIo7fcVIMIYkeiwwyf4vGf08cO
+         mwIKcBU/H7Z5fjB/OxrqxyV29wB52k0p2lRh7e9UhPIHRTvlEt7ApbRbB8zqskO9qr/g
+         wBUpG3//fScTA+iIwB3KQElDSrHW7BJKvkpYXnIkhBXvZvknB7bHHZEu1P5XwzCR653q
+         TX954Q+mT8rJPEef1D+ko2UJsduwsluCarD/+IEMwmJIwiPN1Atn6N4v6AN82Xo8mIpE
+         hYMg==
+X-Gm-Message-State: AOAM5308EVL/GpXIg8wGYp8VXgBOexaqBHJEY3n+cdv23slM6doGYo/X
+        EP+LNJGPs6F3tlZjSPrjm2cyWbsVc9lIfQXzJ4f080Lgkfg=
+X-Google-Smtp-Source: ABdhPJzA+eEseEIOeM7ox8//dtfVJ/jk/IvXotEGWlUh8YepldC1Hn82qb7pfwZITeiMigq7HnI6XHobL6dPCo2i+Y4=
+X-Received: by 2002:a2e:90c7:: with SMTP id o7mr5008239ljg.368.1622844044656;
+ Fri, 04 Jun 2021 15:00:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: dsa: xrs700x: allow HSR/PRP supervision dupes
- for node_table
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162284400371.9401.10316874311102871483.git-patchwork-notify@kernel.org>
-Date:   Fri, 04 Jun 2021 22:00:03 +0000
-References: <20210604162922.76954-1-george.mccollister@gmail.com>
-In-Reply-To: <20210604162922.76954-1-george.mccollister@gmail.com>
-To:     George McCollister <george.mccollister@gmail.com>
-Cc:     netdev@vger.kernel.org, andrew@lunn.ch, vivien.didelot@gmail.com,
-        f.fainelli@gmail.com, olteanv@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, linux-kernel@vger.kernel.org
+References: <20210604110406.11006-1-michael@walle.cc>
+In-Reply-To: <20210604110406.11006-1-michael@walle.cc>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 5 Jun 2021 00:00:33 +0200
+Message-ID: <CACRpkdZEytf1WJa4JNJy6o3CBqOJAZLb-D=_rGQb+naH=TKmZA@mail.gmail.com>
+Subject: Re: [PATCH] gpio: regmap: move drvdata to config data
+To:     Michael Walle <michael@walle.cc>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Fri, Jun 4, 2021 at 1:04 PM Michael Walle <michael@walle.cc> wrote:
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+> Drop gpio_regmap_set_drvdata() and instead add it to the configuration
+> data passed to gpio_regmap_register().
+>
+> gpio_regmap_set_drvdata() can't really be used in a race free way. This
+> is because the gpio_regmap object which is needed by _set_drvdata() is
+> returned by gpio_regmap_register(). On the other hand, the callbacks
+> which use the drvdata might already be called right after the
+> gpiochip_add() call in gpio_regmap_register(). Therefore, we have to
+> provide the drvdata early before we call gpiochip_add().
+>
+> Reported-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> Signed-off-by: Michael Walle <michael@walle.cc>
 
-On Fri,  4 Jun 2021 11:29:22 -0500 you wrote:
-> Add an inbound policy filter which matches the HSR/PRP supervision
-> MAC range and forwards to the CPU port without discarding duplicates.
-> This is required to correctly populate time_in[A] and time_in[B] in the
-> HSR/PRP node_table. Leave the policy disabled by default and
-> enable/disable it when joining/leaving hsr.
-> 
-> Signed-off-by: George McCollister <george.mccollister@gmail.com>
-> 
-> [...]
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Here is the summary with links:
-  - [net-next] net: dsa: xrs700x: allow HSR/PRP supervision dupes for node_table
-    https://git.kernel.org/netdev/net-next/c/1a42624aecba
+> Btw, I'm not sure how to handle this "was part of another patch by another
+> author" thing. Should I leave the Sob and just add mine?
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Ideally just stack Sign-offs it is called the "delivery path".
 
-
+Yours,
+Linus Walleij
