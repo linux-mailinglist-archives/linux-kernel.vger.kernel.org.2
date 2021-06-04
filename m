@@ -2,146 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E364139C123
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:18:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3251439C127
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbhFDUUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 16:20:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46464 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230022AbhFDUUT (ORCPT
+        id S231224AbhFDUUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 16:20:31 -0400
+Received: from mail-oo1-f47.google.com ([209.85.161.47]:37637 "EHLO
+        mail-oo1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229854AbhFDUUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 16:20:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622837912;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5AKmMvs/+u+KfG4w0sgMq72rTrYGw3m3QsVKTiR88GI=;
-        b=ILxnhBpeqErANr7Ed/lNPMXZjUPAkPpvx4R6Pn+0w4025wBQHGdixlP7z0XHKTJ8UJDlQY
-        +3HwwTjgv/6nqiB8FrjwCVnT4Fxq9BWYyZZzMbT+CyRmwupekS2H4FsEIqzZT1slxa99Rv
-        KKJX5zfaAtOIpNVI05DZrF1yf3C0UhQ=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-68-JDFeHUxyNxu7TvqmUxysXw-1; Fri, 04 Jun 2021 16:18:31 -0400
-X-MC-Unique: JDFeHUxyNxu7TvqmUxysXw-1
-Received: by mail-ej1-f71.google.com with SMTP id gv42-20020a1709072beab02903eab8e33118so3933127ejc.19
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 13:18:31 -0700 (PDT)
+        Fri, 4 Jun 2021 16:20:30 -0400
+Received: by mail-oo1-f47.google.com with SMTP id t6-20020a4ae9a60000b0290245a5133898so2529591ood.4;
+        Fri, 04 Jun 2021 13:18:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5AKmMvs/+u+KfG4w0sgMq72rTrYGw3m3QsVKTiR88GI=;
-        b=qOf8QpL91Xcv8BdtvPSCsxc9V6dmxu/eEsEaE37dnEjWpHmH9vwxqWGOWwT2L0LHQ/
-         8qly7MXcGDMA3S6J4DFhz65l9ONCofz969wHDm+QX/j+Q2fKa1iItUTa+GmF/mxQ6vm9
-         NCLhl5UBM/DLgy/zZMntdZEBgcj7qhdRf0k452O+C7VCCql915BiH9ezmNdvTwz6fFfL
-         z+D8ZwrhzkXgBLgwryhWIjWo1N+cM0LTrZzyfcNPSmMYMGryPja2Fwzc2PUAea86ibMP
-         phVmEgC3G7JAIsozw+Tphb7hNEqknv8ntDrD3Fd4+8xSmdnrTtr7mR4EihlBSk/ILv6A
-         +X/w==
-X-Gm-Message-State: AOAM532KlORoVnJQTl1XjcqWPuAwNpXPUeHNzIZ4EG9FrQtJ3bROLrcx
-        9f4fE9GrEdAlQsYNWoQCL6zt+5eb26/5sZKIztl5Z51On8LA1E3Ze63YEh70+5Pil3wg9E/i0+L
-        Drysb4dV5gyrep6c1j3/vcDF+lPZo20fuJeiJiUNU1I0EYHacjvFjw7rLJ6P1k36e0Q7iA6OUoU
-        LF
-X-Received: by 2002:a50:ff16:: with SMTP id a22mr6567836edu.143.1622837910301;
-        Fri, 04 Jun 2021 13:18:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxCx0UwSGeTDQBAxTrW9bb/PWjt5dWgr8p5xE9YiOELsB4eVir6D7JeJmh50FPnZNFBhqg0Gw==
-X-Received: by 2002:a50:ff16:: with SMTP id a22mr6567816edu.143.1622837910074;
-        Fri, 04 Jun 2021 13:18:30 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id q26sm3182397ejc.3.2021.06.04.13.18.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Jun 2021 13:18:29 -0700 (PDT)
-Subject: Re: [PATCH v2 0/7] platform/surface: aggregator: Extend user-space
- interface for events
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     Mark Gross <mgross@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        platform-driver-x86@vger.kernel.org, linux-doc@vger.kernel.org,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MCfv6fQHDee2XjvXSHxeG0uhLM30iPs27L6wPGcgAxs=;
+        b=o0eAe56daEXySaaYE0QewKHE7uCfnN+z55S5paL3Xj6pZidRu4Zr7+WNKR/DJ3tcjW
+         ZnvobxiymSuOyyBmu6EvRZppVUr3Rlc21xfiWX2uwqsz32oNIlCqL9yR3a82BOnyrjV8
+         zInadxuEUuTvAKbiutAZ1GSJ2yChGr9yyy87VGJ610evG+cZONsNEUiPr46PlW8Kmluy
+         DHN3Jk7lRV0bulkd7ZMwbCKDvWmpHCsg4Oh5r66KZASSNEnmFs8UJ1s2ji1eAOtwsrOy
+         O4nOGen1tVzoXEtq6ngOwkdDmxYghwS3JOVypUVdq0Wl5WKX8eQ/8AhQpiUEy5Tc7zKu
+         HFpw==
+X-Gm-Message-State: AOAM53150WEN1SxYUkRD+/JimTSyfCzR6BZgXRfEYrj4JUEsA6+jefKY
+        9Om1I79qJUtN+jj+9UGisrF35vDPLw==
+X-Google-Smtp-Source: ABdhPJzRJDPfmgAea9/YY0WQx51jKCVAWE652ExVRIuOi+o8jdXEwJqKDYUFtdgGhgxX1EY+ifs3dQ==
+X-Received: by 2002:a4a:5246:: with SMTP id d67mr4967125oob.33.1622837923378;
+        Fri, 04 Jun 2021 13:18:43 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id f2sm634713ooj.22.2021.06.04.13.18.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 13:18:42 -0700 (PDT)
+Received: (nullmailer pid 3843001 invoked by uid 1000);
+        Fri, 04 Jun 2021 20:18:41 -0000
+Date:   Fri, 4 Jun 2021 15:18:41 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210604134755.535590-1-luzmaximilian@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <bcbd0067-2df3-998e-0a28-23e599966ec1@redhat.com>
-Date:   Fri, 4 Jun 2021 22:18:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+Subject: Re: [PATCH 1/2] dt-bindings: Add SONY Synaptics JDI panel
+Message-ID: <20210604201841.GA3834184@robh.at.kernel.org>
+References: <20210525113105.52990-1-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
-In-Reply-To: <20210604134755.535590-1-luzmaximilian@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210525113105.52990-1-konrad.dybcio@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 6/4/21 3:47 PM, Maximilian Luz wrote:
-> Extend the user-space debug interface so that it can be used to receive
-> SSAM events in user-space.
+On Tue, May 25, 2021 at 01:31:02PM +0200, Konrad Dybcio wrote:
+> Add bindings for the SONY Synaptics JDI panel used in
+> Xperia X, X Performance, X Compact, XZ and XZs smartphones.
 > 
-> Version 1 and rationale:
->   https://lore.kernel.org/platform-driver-x86/20210603234526.2503590-1-luzmaximilian@gmail.com/
+> Due to the nature of phone manufacturing and lack of any docs
+> whatsoever, replacement names have been used to indicate the
+> devices that this panel is used on.
 > 
-> Changes in version 2:
->  - PATCH 2/7: Avoid code duplication, remove unused variable
->  - PATCH 4/7: Add missing mutex_destroy() calls
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> ---
+>  .../display/panel/sony,synaptics-jdi.yaml     | 100 ++++++++++++++++++
+>  1 file changed, 100 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/panel/sony,synaptics-jdi.yaml
 > 
-> Maximilian Luz (7):
->   platform/surface: aggregator: Allow registering notifiers without
->     enabling events
->   platform/surface: aggregator: Allow enabling of events without
->     notifiers
->   platform/surface: aggregator: Update copyright
->   platform/surface: aggregator_cdev: Add support for forwarding events
->     to user-space
->   platform/surface: aggregator_cdev: Allow enabling of events from
->     user-space
->   platform/surface: aggregator_cdev: Add lockdep support
->   docs: driver-api: Update Surface Aggregator user-space interface
->     documentation
+> diff --git a/Documentation/devicetree/bindings/display/panel/sony,synaptics-jdi.yaml b/Documentation/devicetree/bindings/display/panel/sony,synaptics-jdi.yaml
+> new file mode 100644
+> index 000000000000..81d841c049e8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/panel/sony,synaptics-jdi.yaml
+> @@ -0,0 +1,100 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/panel/sony,synaptics-jdi.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: SONY Synaptics JDI panel
+> +
+> +maintainers:
+> +  - Konrad Dybcio <konrad.dybcio@somainline.org>
+> +
+> +description: |+
 
-Thank you for your patch-series, I've applied the series to my
-review-hans branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+Do you need the formatting? If not, drop '|+'.
 
-I've done one small fixup to patch 2/7, see my reply to that patch.
+> +  This panel seems to only be found in SONY Xperia
+> +  X, X Performance, X Compact, XZ and XZs
+> +  smartphones and we have no straightforward way of
+> +  actually getting the correct model number,
+> +  as no schematics are released publicly.
 
-Once the builders have had some time to test this branch the patches there
-will be added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
+Odd choice of line break length. 80 char please.
 
-Regards,
+> +
+> +allOf:
+> +  - $ref: panel-common.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - sony,synaptics-jdi-dora
+> +          - sony,synaptics-jdi-kagura
+> +          - sony,synaptics-jdi-keyaki
+> +          - sony,synaptics-jdi-kugo
+> +          - sony,synaptics-jdi-suzu
+> +
+> +  reg: true
+> +
+> +  reset-gpios: true
+> +
+> +  avdd-supply:
+> +    description: avdd supply
+> +
+> +  vddio-supply:
+> +    description: vddio supply
+> +
+> +  vsn-supply:
+> +    description: voltage negative supply
+> +
+> +  vsp-supply:
+> +    description: voltage positive supply
+> +
+> +  tvdd-supply:
+> +    description: tvdd supply
+> +
+> +  preset-gpio:
+> +    description: panel reset pin
 
-Hans
+What's reset-gpios then?
 
+> +
+> +  pvddio-gpio:
+> +    description: panel vddio pin
+> +
+> +  treset-gpio:
+> +    description: touch reset pin
 
+Use '-gpios'
 
-> 
->  .../surface_aggregator/clients/cdev.rst       | 127 ++++-
->  .../userspace-api/ioctl/ioctl-number.rst      |   2 +-
->  drivers/platform/surface/aggregator/Kconfig   |   2 +-
->  drivers/platform/surface/aggregator/Makefile  |   2 +-
->  drivers/platform/surface/aggregator/bus.c     |   2 +-
->  drivers/platform/surface/aggregator/bus.h     |   2 +-
->  .../platform/surface/aggregator/controller.c  | 332 +++++++++--
->  .../platform/surface/aggregator/controller.h  |   2 +-
->  drivers/platform/surface/aggregator/core.c    |   2 +-
->  .../platform/surface/aggregator/ssh_msgb.h    |   2 +-
->  .../surface/aggregator/ssh_packet_layer.c     |   2 +-
->  .../surface/aggregator/ssh_packet_layer.h     |   2 +-
->  .../platform/surface/aggregator/ssh_parser.c  |   2 +-
->  .../platform/surface/aggregator/ssh_parser.h  |   2 +-
->  .../surface/aggregator/ssh_request_layer.c    |   2 +-
->  .../surface/aggregator/ssh_request_layer.h    |   2 +-
->  drivers/platform/surface/aggregator/trace.h   |   2 +-
->  .../surface/surface_aggregator_cdev.c         | 534 +++++++++++++++++-
->  include/linux/surface_aggregator/controller.h |  27 +-
->  include/linux/surface_aggregator/device.h     |   2 +-
->  include/linux/surface_aggregator/serial_hub.h |   2 +-
->  include/uapi/linux/surface_aggregator/cdev.h  |  73 ++-
->  22 files changed, 1018 insertions(+), 109 deletions(-)
-> 
+And need to define how many (maxItems: 1).
 
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - preset-gpio
+> +  - pvddio-gpio
+> +  - treset-gpio
+> +  - avdd-supply
+> +  - vddio-supply
+> +  - vsn-supply
+> +  - vsp-supply
+> +  - tvdd-supply
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    dsi {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +            panel: panel@0 {
+> +                    reg = <0>;
+> +
+> +                    pvddio-gpio = <&tlmm 51 GPIO_ACTIVE_HIGH>;
+> +                    preset-gpio = <&tlmm 8 GPIO_ACTIVE_HIGH>;
+> +                    treset-gpio = <&tlmm 89 GPIO_ACTIVE_HIGH>;
+> +
+> +                    vddio-supply = <&pm8994_s4>;
+> +                    avdd-supply = <&pm8994_l2>;
+> +                    tvdd-supply = <&panel_tvdd>;
+> +
+> +                    backlight = <&pmi8994_wled>;
+> +
+> +                    port {
+> +                      panel_in: endpoint {
+> +                        remote-endpoint = <&dsi0_out>;
+> +                      };
+
+Consistent indentation please. 4 spaces is good.
+
+> +                    };
+> +            };
+> +    };
+> -- 
+> 2.31.1
