@@ -2,453 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC8B39BD4F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2567439BD4C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231543AbhFDQhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 12:37:21 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:7822 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229958AbhFDQhT (ORCPT
+        id S231325AbhFDQhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 12:37:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35175 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229809AbhFDQhC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 12:37:19 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 154GXAGS036493;
-        Fri, 4 Jun 2021 12:35:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : subject :
- date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=SoMoZKdx3lAPhbBQ8T1ueZ8fSj+4jtMVAfaUMydvLuE=;
- b=lbpEWyPBSZ93aF7pPvXhZ/P2kpM6PNyP9Z+urLMo42qWbNUtAwHIHXAKd7zniP0awSS3
- sleE3kr6cImXq7w9xVrtGTNZxgaE4flM/smsVyMo8exJFWc0NgRQ157AqsqU3/KMtR/2
- T7TzcbjUueiOsxinexs4pt9Wd+4AZM561HnuPz5yfFgUCoM0Mr5vHBYnhrkthRnsTQCG
- yzNYkY8qkJi46U2xoAV4EAa62kcJHr/dEfqcuyfSkqiTzXA36XdMiLHeGYrGaXCnWIsu
- 8VT2G+wAhj9sdnlWsFXBigT84g6mh424HkR58wIEx6TYO5onkeL2LXpO+jJ9x5jVZLyD sg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38yqburw4q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Jun 2021 12:35:10 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 154GXQhP037148;
-        Fri, 4 Jun 2021 12:35:09 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38yqburw40-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Jun 2021 12:35:09 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 154GTFge005656;
-        Fri, 4 Jun 2021 16:35:07 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma01fra.de.ibm.com with ESMTP id 38ud88a1hh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Jun 2021 16:35:07 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 154GZ42933489252
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 4 Jun 2021 16:35:04 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7A49E11C04C;
-        Fri,  4 Jun 2021 16:35:04 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9ABD311C054;
-        Fri,  4 Jun 2021 16:35:02 +0000 (GMT)
-Received: from pratiks-thinkpad.in.ibm.com (unknown [9.85.115.47])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  4 Jun 2021 16:35:02 +0000 (GMT)
-From:   "Pratik R. Sampat" <psampat@linux.ibm.com>
-To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-ppc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, psampat@linux.ibm.com,
-        pratik.r.sampat@gmail.com
-Subject: [RFC] powerpc/pseries: Interface to represent PAPR firmware attributes
-Date:   Fri,  4 Jun 2021 22:05:01 +0530
-Message-Id: <20210604163501.51511-1-psampat@linux.ibm.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 4 Jun 2021 12:37:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622824515;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ckw2E1Ngpso/ifdgV6VuqK7lcpBewZb6ObJGqL9fiA8=;
+        b=fnOhM7wFyJz8DeirEquOLF6quAkY52t4T/vjNVUsf7DthOnYK2gHNLKMd/wK/R0WNUfe59
+        nvLQQJ33iSmfNy6DfO3fwWBhe2Z7j2hjePjj7vLM4jeSEQFXe1WsRmh618mWMwcxJ0MD6P
+        tE3bua+Q7EJ2UatoGerh4UMm/usT7pw=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-312-qVY0eeT4NFqWEWjbkU2Xow-1; Fri, 04 Jun 2021 12:35:14 -0400
+X-MC-Unique: qVY0eeT4NFqWEWjbkU2Xow-1
+Received: by mail-wm1-f72.google.com with SMTP id j6-20020a05600c1906b029019e9c982271so4655018wmq.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 09:35:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ckw2E1Ngpso/ifdgV6VuqK7lcpBewZb6ObJGqL9fiA8=;
+        b=cAE1UsJJtsZAHTjB42S22pY2gg3ITS0OqwNoY6KfywDNrdwOpwlOUh4y/GwXn/Sqv4
+         BM7NPH6SF6B28YMqLP7QeWjfjuyGWQkt43xu3CSdq+Bq49BtQcCISJoZLlLvor13Ghi0
+         zyrSUkbhZbmllKoxlEr+z1pU7Kh2Eoizw/yEwaOQyyEO293Q1fEISo8+xIKdEXj9n9wI
+         nF4zUyaqh4XTeCTQOa9Idj0SGvhj0nDT7wvF8azf42IbRRF3p9Xig53xadyGiCI/MJ9q
+         zC4P6QfFZBqYX7VVdvGv2MhV84WEWK5k+dcrJtzKtsgdpfbZbCkEWIpbFy/ozFzCN40z
+         7yZQ==
+X-Gm-Message-State: AOAM533ghPfUwB4VJfFqlhPxi3AcNCGmiOo+DN1GgSHJ10RHaxb6LlqD
+        e4jlsm/catyYYm072o7vD1W52GvzLklmeDR5NDv65A2Ydj7hqDa7kRhtcBhWuCELl5WQIRSOly0
+        9VkkguL24c1tABLMjpkoELgYC
+X-Received: by 2002:a05:600c:1910:: with SMTP id j16mr4436900wmq.39.1622824513090;
+        Fri, 04 Jun 2021 09:35:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyRZwBc4V+uUTlWRHsJEOKi/XH2eg3b+TxrQBmiqUV0Q3ylR6scIhTDYo4rBe9omz1fKDi8CQ==
+X-Received: by 2002:a05:600c:1910:: with SMTP id j16mr4436888wmq.39.1622824512926;
+        Fri, 04 Jun 2021 09:35:12 -0700 (PDT)
+Received: from vian.redhat.com ([2a0c:5a80:3d14:2800:933d:abfc:d8e4:637f])
+        by smtp.gmail.com with ESMTPSA id l8sm9375926wrf.0.2021.06.04.09.35.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 09:35:12 -0700 (PDT)
+From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
+To:     axelrasmussen@google.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org
+Cc:     akpm@linux-foundation.org, rostedt@goodmis.org,
+        mtosatti@redhat.com, tglx@linutronix.de, bigeasy@linutronix.de,
+        nsaenzju@redhat.com
+Subject: [PATCH] mm: mmap_lock: Use local locks instead of disabling preemption
+Date:   Fri,  4 Jun 2021 18:35:06 +0200
+Message-Id: <20210604163506.2103900-1-nsaenzju@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: liiIzUH6AEi_Hxgrut6y4z5zLqvVUjEA
-X-Proofpoint-ORIG-GUID: lEFYtpG-AMZ8FHb3C2HfkwXH3NOE1aOW
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-04_11:2021-06-04,2021-06-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 phishscore=0
- impostorscore=0 suspectscore=0 adultscore=0 lowpriorityscore=0 spamscore=0
- malwarescore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106040119
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds a generic interface to represent the energy and frequency related
-PAPR attributes on the system using the new H_CALL
-"H_GET_ENERGY_SCALE_INFO".
+mmap_lock will explicitly disable/enable preemption upon manipulating
+its local CPU variables. This is to be expected, but in this case, it
+doesn't play well with PREEMPT_RT. The preemption disabled code section
+also takes a spin-lock. Spin-locks in RT systems will try to schedule,
+which is exactly what we're trying to avoid.
 
-H_GET_EM_PARMS H_CALL was previously responsible for exporting this
-information in the lparcfg, however the H_GET_EM_PARMS H_CALL
-will be deprecated P10 onwards.
+To mitigate this, convert the explicit preemption handling to
+local_locks. Which are RT aware, and will disable migration instead of
+preemption when PREEMPT_RT=y.
 
-The H_GET_ENERGY_SCALE_INFO H_CALL is of the following call format:
-hcall(
-  uint64 H_GET_ENERGY_SCALE_INFO,  // Get energy scale info
-  uint64 flags,           // Per the flag request
-  uint64 firstAttributeId,// The attribute id
-  uint64 bufferAddress,   // The logical address of the output buffer
-  uint64 bufferSize       // The size in bytes of the output buffer
-);
+The faulty call trace looks like the following:
+    __mmap_lock_do_trace_*()
+      preempt_disable()
+      get_mm_memcg_path()
+        cgroup_path()
+          kernfs_path_from_node()
+            spin_lock_irqsave() /* Scheduling while atomic! */
 
-This H_CALL can query either all the attributes at once with
-firstAttributeId = 0, flags = 0 as well as query only one attribute
-at a time with firstAttributeId = id
-
-The output buffer consists of the following
-1. number of attributes              - 8 bytes
-2. array offset to the data location - 8 bytes
-3. version info                      - 1 byte
-4. A data array of size num attributes, which contains the following:
-  a. attribute ID              - 8 bytes
-  b. attribute value in number - 8 bytes
-  c. attribute name in string  - 64 bytes
-  d. attribute value in string - 64 bytes
-
-The new H_CALL exports information in direct string value format, hence
-a new interface has been introduced in /sys/firmware/papr to export
-this information to userspace in an extensible pass-through format.
-The H_CALL returns the name, numeric value and string value. As string
-values are in human readable format, therefore if the string value
-exists then that is given precedence over the numeric value.
-
-The format of exposing the sysfs information is as follows:
-/sys/firmware/papr/
-  |-- attr_0_name
-  |-- attr_0_val
-  |-- attr_1_name
-  |-- attr_1_val
-...
-
-The energy information that is exported is useful for userspace tools
-such as powerpc-utils. Currently these tools infer the
-"power_mode_data" value in the lparcfg, which in turn is obtained from
-the to be deprecated H_GET_EM_PARMS H_CALL.
-On future platforms, such userspace utilities will have to look at the
-data returned from the new H_CALL being populated in this new sysfs
-interface and report this information directly without the need of
-interpretation.
-
-Signed-off-by: Pratik R. Sampat <psampat@linux.ibm.com>
+Fixes: 2b5067a8143e3 ("mm: mmap_lock: add tracepoints around lock acquisition ")
+Signed-off-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
 ---
- Documentation/ABI/testing/sysfs-firmware-papr |  24 +++
- arch/powerpc/include/asm/hvcall.h             |  21 +-
- arch/powerpc/kvm/trace_hv.h                   |   1 +
- arch/powerpc/platforms/pseries/Makefile       |   3 +-
- .../pseries/papr_platform_attributes.c        | 203 ++++++++++++++++++
- 5 files changed, 250 insertions(+), 2 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-firmware-papr
- create mode 100644 arch/powerpc/platforms/pseries/papr_platform_attributes.c
+ mm/mmap_lock.c | 33 ++++++++++++++++++++++-----------
+ 1 file changed, 22 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-firmware-papr b/Documentation/ABI/testing/sysfs-firmware-papr
-new file mode 100644
-index 000000000000..1c040b44ac3b
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-firmware-papr
-@@ -0,0 +1,24 @@
-+What:		/sys/firmware/papr
-+Date:		June 2021
-+Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-+Description :	Director hosting a set of platform attributes on Linux
-+		running as a PAPR guest.
-+
-+		Each file in a directory contains a platform
-+		attribute pertaining to performance/energy-savings
-+		mode and processor frequency.
-+
-+What:		/sys/firmware/papr/attr_X_name
-+		/sys/firmware/papr/attr_X_val
-+Date:		June 2021
-+Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-+Description:	PAPR attributes directory for POWERVM servers
-+
-+		This directory provides PAPR information. It
-+		contains below sysfs attributes:
-+
-+		- attr_X_name: File contains the name of
-+		attribute X
-+
-+		- attr_X_val: Numeric/string value of
-+		attribute X
-diff --git a/arch/powerpc/include/asm/hvcall.h b/arch/powerpc/include/asm/hvcall.h
-index e3b29eda8074..19a2a8c77a49 100644
---- a/arch/powerpc/include/asm/hvcall.h
-+++ b/arch/powerpc/include/asm/hvcall.h
-@@ -316,7 +316,8 @@
- #define H_SCM_PERFORMANCE_STATS 0x418
- #define H_RPT_INVALIDATE	0x448
- #define H_SCM_FLUSH		0x44C
--#define MAX_HCALL_OPCODE	H_SCM_FLUSH
-+#define H_GET_ENERGY_SCALE_INFO	0x450
-+#define MAX_HCALL_OPCODE	H_GET_ENERGY_SCALE_INFO
+diff --git a/mm/mmap_lock.c b/mm/mmap_lock.c
+index dcdde4f722a4..2ae3f33b85b1 100644
+--- a/mm/mmap_lock.c
++++ b/mm/mmap_lock.c
+@@ -11,6 +11,7 @@
+ #include <linux/rcupdate.h>
+ #include <linux/smp.h>
+ #include <linux/trace_events.h>
++#include <linux/local_lock.h>
  
- /* Scope args for H_SCM_UNBIND_ALL */
- #define H_UNBIND_SCOPE_ALL (0x1)
-@@ -631,6 +632,24 @@ struct hv_gpci_request_buffer {
- 	uint8_t bytes[HGPCI_MAX_DATA_BYTES];
- } __packed;
+ EXPORT_TRACEPOINT_SYMBOL(mmap_lock_start_locking);
+ EXPORT_TRACEPOINT_SYMBOL(mmap_lock_acquire_returned);
+@@ -39,21 +40,30 @@ static int reg_refcount; /* Protected by reg_lock. */
+  */
+ #define CONTEXT_COUNT 4
  
-+#define MAX_EM_ATTRS	10
-+#define MAX_EM_DATA_BYTES \
-+	(sizeof(struct energy_scale_attributes) * MAX_EM_ATTRS)
-+struct energy_scale_attributes {
-+	__be64 attr_id;
-+	__be64 attr_value;
-+	unsigned char attr_desc[64];
-+	unsigned char attr_value_desc[64];
-+} __packed;
-+
-+struct hv_energy_scale_buffer {
-+	__be64 num_attr;
-+	__be64 array_offset;
-+	__u8 data_header_version;
-+	unsigned char data[MAX_EM_DATA_BYTES];
-+} __packed;
-+
-+
- #endif /* __ASSEMBLY__ */
- #endif /* __KERNEL__ */
- #endif /* _ASM_POWERPC_HVCALL_H */
-diff --git a/arch/powerpc/kvm/trace_hv.h b/arch/powerpc/kvm/trace_hv.h
-index 830a126e095d..38cd0ed0a617 100644
---- a/arch/powerpc/kvm/trace_hv.h
-+++ b/arch/powerpc/kvm/trace_hv.h
-@@ -115,6 +115,7 @@
- 	{H_VASI_STATE,			"H_VASI_STATE"}, \
- 	{H_ENABLE_CRQ,			"H_ENABLE_CRQ"}, \
- 	{H_GET_EM_PARMS,		"H_GET_EM_PARMS"}, \
-+	{H_GET_ENERGY_SCALE_INFO,	"H_GET_ENERGY_SCALE_INFO"}, \
- 	{H_SET_MPP,			"H_SET_MPP"}, \
- 	{H_GET_MPP,			"H_GET_MPP"}, \
- 	{H_HOME_NODE_ASSOCIATIVITY,	"H_HOME_NODE_ASSOCIATIVITY"}, \
-diff --git a/arch/powerpc/platforms/pseries/Makefile b/arch/powerpc/platforms/pseries/Makefile
-index c8a2b0b05ac0..d14fca89ac25 100644
---- a/arch/powerpc/platforms/pseries/Makefile
-+++ b/arch/powerpc/platforms/pseries/Makefile
-@@ -6,7 +6,8 @@ obj-y			:= lpar.o hvCall.o nvram.o reconfig.o \
- 			   of_helpers.o \
- 			   setup.o iommu.o event_sources.o ras.o \
- 			   firmware.o power.o dlpar.o mobility.o rng.o \
--			   pci.o pci_dlpar.o eeh_pseries.o msi.o
-+			   pci.o pci_dlpar.o eeh_pseries.o msi.o \
-+			   papr_platform_attributes.o
- obj-$(CONFIG_SMP)	+= smp.o
- obj-$(CONFIG_SCANLOG)	+= scanlog.o
- obj-$(CONFIG_KEXEC_CORE)	+= kexec.o
-diff --git a/arch/powerpc/platforms/pseries/papr_platform_attributes.c b/arch/powerpc/platforms/pseries/papr_platform_attributes.c
-new file mode 100644
-index 000000000000..8818877ff47e
---- /dev/null
-+++ b/arch/powerpc/platforms/pseries/papr_platform_attributes.c
-@@ -0,0 +1,203 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * PowerPC64 LPAR PAPR Information Driver
-+ *
-+ * This driver creates a sys file at /sys/firmware/papr/ which contains
-+ * files keyword - value pairs that specify energy configuration of the system.
-+ *
-+ * Copyright 2021 IBM Corp.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/types.h>
-+#include <linux/errno.h>
-+#include <linux/init.h>
-+#include <linux/seq_file.h>
-+#include <linux/slab.h>
-+#include <linux/uaccess.h>
-+#include <linux/hugetlb.h>
-+#include <asm/lppaca.h>
-+#include <asm/hvcall.h>
-+#include <asm/firmware.h>
-+#include <asm/time.h>
-+#include <asm/prom.h>
-+#include <asm/vdso_datapage.h>
-+#include <asm/vio.h>
-+#include <asm/mmu.h>
-+#include <asm/machdep.h>
-+#include <asm/drmem.h>
-+
-+#include "pseries.h"
-+
-+#define MAX_KOBJ_ATTRS	2
-+
-+struct papr_attr {
-+	u64 id;
-+	struct kobj_attribute attr;
-+} *pgattrs;
-+
-+struct kobject *papr_kobj;
-+struct hv_energy_scale_buffer *em_buf;
-+struct energy_scale_attributes *ea;
-+
-+static ssize_t papr_show_name(struct kobject *kobj,
-+			       struct kobj_attribute *attr,
-+			       char *buf)
-+{
-+	struct papr_attr *pattr = container_of(attr, struct papr_attr, attr);
-+	int idx, ret = 0;
-+
-+	/*
-+	 * We do not expect the name to change, hence use the old value
-+	 * and save a HCALL
-+	 */
-+	for (idx = 0; idx < be64_to_cpu(em_buf->num_attr); idx++) {
-+		if (pattr->id == be64_to_cpu(ea[idx].attr_id)) {
-+			ret = sprintf(buf, "%s\n", ea[idx].attr_desc);
-+			if (ret < 0)
-+				ret = -EIO;
-+			break;
-+		}
-+	}
-+
-+	return ret;
-+}
-+
-+static ssize_t papr_show_val(struct kobject *kobj,
-+			      struct kobj_attribute *attr,
-+			      char *buf)
-+{
-+	struct papr_attr *pattr = container_of(attr, struct papr_attr, attr);
-+	struct hv_energy_scale_buffer *t_buf;
-+	struct energy_scale_attributes *t_ea;
-+	int data_offset, ret = 0;
-+
-+	t_buf = kmalloc(sizeof(*t_buf), GFP_KERNEL);
-+	if (t_buf == NULL)
-+		return -ENOMEM;
-+
-+	ret = plpar_hcall_norets(H_GET_ENERGY_SCALE_INFO, 0,
-+				 pattr->id, virt_to_phys(t_buf),
-+				 sizeof(*t_buf));
-+
-+	if (ret != H_SUCCESS) {
-+		pr_warn("hcall faiiled: H_GET_ENERGY_SCALE_INFO");
-+		goto out;
-+	}
-+
-+	data_offset = be64_to_cpu(t_buf->array_offset) -
-+			(sizeof(t_buf->num_attr) +
-+			sizeof(t_buf->array_offset) +
-+			sizeof(t_buf->data_header_version));
-+
-+	t_ea = (struct energy_scale_attributes *) &t_buf->data[data_offset];
-+
-+	/* Prioritize string values over numerical */
-+	if (strlen(t_ea->attr_value_desc) != 0)
-+		ret = sprintf(buf, "%s\n", t_ea->attr_value_desc);
-+	else
-+		ret = sprintf(buf, "%llu\n", be64_to_cpu(t_ea->attr_value));
-+	if (ret < 0)
-+		ret = -EIO;
-+out:
-+	kfree(t_buf);
-+	return ret;
-+}
-+
-+static struct papr_ops_info {
-+	const char *attr_name;
-+	ssize_t (*show)(struct kobject *kobj, struct kobj_attribute *attr,
-+			char *buf);
-+} ops_info[MAX_KOBJ_ATTRS] = {
-+	{ "name", papr_show_name },
-+	{ "val", papr_show_val },
+-static DEFINE_PER_CPU(char __rcu *, memcg_path_buf);
++struct memcg_path {
++	local_lock_t lock;
++	char __rcu *buf;
++	local_t buf_idx;
++};
++static DEFINE_PER_CPU(struct memcg_path, memcg_paths) = {
++	.lock = INIT_LOCAL_LOCK(lock),
++	.buf_idx = LOCAL_INIT(0),
 +};
 +
-+static int __init papr_init(void)
-+{
-+	uint64_t num_attr;
-+	int ret, idx, i, data_offset;
-+
-+	em_buf = kmalloc(sizeof(*em_buf), GFP_KERNEL);
-+	if (em_buf == NULL)
-+		return -ENOMEM;
-+	/*
-+	 * hcall(
-+	 * uint64 H_GET_ENERGY_SCALE_INFO,  // Get energy scale info
-+	 * uint64 flags,            // Per the flag request
-+	 * uint64 firstAttributeId, // The attribute id
-+	 * uint64 bufferAddress,    // The logical address of the output buffer
-+	 * uint64 bufferSize);	    // The size in bytes of the output buffer
-+	 */
-+	ret = plpar_hcall_norets(H_GET_ENERGY_SCALE_INFO, 0, 0,
-+				 virt_to_phys(em_buf), sizeof(*em_buf));
-+
-+	if (!firmware_has_feature(FW_FEATURE_LPAR) || ret != H_SUCCESS ||
-+	    em_buf->data_header_version != 0x1) {
-+		pr_warn("hcall faiiled: H_GET_ENERGY_SCALE_INFO");
-+		goto out;
-+	}
-+
-+	num_attr = be64_to_cpu(em_buf->num_attr);
-+
-+	/*
-+	 * Typecast the energy buffer to the attribute structure at the offset
-+	 * specified in the buffer
-+	 */
-+	data_offset = be64_to_cpu(em_buf->array_offset) -
-+			(sizeof(em_buf->num_attr) +
-+			sizeof(em_buf->array_offset) +
-+			sizeof(em_buf->data_header_version));
-+
-+	ea = (struct energy_scale_attributes *) &em_buf->data[data_offset];
-+
-+	papr_kobj = kobject_create_and_add("papr", firmware_kobj);
-+	if (!papr_kobj) {
-+		pr_warn("kobject_create_and_add papr failed\n");
-+		goto out_kobj;
-+	}
-+
-+	for (idx = 0; idx < num_attr; idx++) {
-+		pgattrs = kcalloc(MAX_KOBJ_ATTRS,
-+				  sizeof(*pgattrs),
-+				  GFP_KERNEL);
-+		if (!pgattrs)
-+			goto out_kobj;
-+
-+		/*
-+		 * Create the sysfs attribute hierarchy for each PAPR
-+		 * property found
-+		 */
-+		for (i = 0; i < MAX_KOBJ_ATTRS; i++) {
-+			char buf[20];
-+
-+			pgattrs[i].id = be64_to_cpu(ea[idx].attr_id);
-+			sysfs_attr_init(&pgattrs[i].attr.attr);
-+			sprintf(buf, "%s_%d_%s", "attr", idx,
-+				ops_info[i].attr_name);
-+			pgattrs[i].attr.attr.name = buf;
-+			pgattrs[i].attr.attr.mode = 0444;
-+			pgattrs[i].attr.show = ops_info[i].show;
-+
-+			if (sysfs_create_file(papr_kobj, &pgattrs[i].attr.attr)) {
-+				pr_warn("Failed to create papr file %s\n",
-+					 pgattrs[i].attr.attr.name);
-+				goto out_pgattrs;
-+			}
-+		}
-+	}
-+
-+	return 0;
-+
-+out_pgattrs:
-+	for (i = 0; i < MAX_KOBJ_ATTRS; i++)
-+		kfree(pgattrs);
-+out_kobj:
-+	kobject_put(papr_kobj);
-+out:
-+	kfree(em_buf);
-+
-+	return -ENOMEM;
-+}
-+
-+machine_device_initcall(pseries, papr_init);
+ static char **tmp_bufs;
+-static DEFINE_PER_CPU(int, memcg_path_buf_idx);
+ 
+ /* Called with reg_lock held. */
+ static void free_memcg_path_bufs(void)
+ {
++	struct memcg_path *memcg_path;
+ 	int cpu;
+ 	char **old = tmp_bufs;
+ 
+ 	for_each_possible_cpu(cpu) {
+-		*(old++) = rcu_dereference_protected(
+-			per_cpu(memcg_path_buf, cpu),
++		memcg_path = per_cpu_ptr(&memcg_paths, cpu);
++		*(old++) = rcu_dereference_protected(memcg_path->buf,
+ 			lockdep_is_held(&reg_lock));
+-		rcu_assign_pointer(per_cpu(memcg_path_buf, cpu), NULL);
++		rcu_assign_pointer(memcg_path->buf, NULL);
+ 	}
+ 
+ 	/* Wait for inflight memcg_path_buf users to finish. */
+@@ -88,7 +98,7 @@ int trace_mmap_lock_reg(void)
+ 		new = kmalloc(MEMCG_PATH_BUF_SIZE * CONTEXT_COUNT, GFP_KERNEL);
+ 		if (new == NULL)
+ 			goto out_fail_free;
+-		rcu_assign_pointer(per_cpu(memcg_path_buf, cpu), new);
++		rcu_assign_pointer(per_cpu_ptr(&memcg_paths, cpu)->buf, new);
+ 		/* Don't need to wait for inflights, they'd have gotten NULL. */
+ 	}
+ 
+@@ -122,23 +132,24 @@ void trace_mmap_lock_unreg(void)
+ 
+ static inline char *get_memcg_path_buf(void)
+ {
++	struct memcg_path *memcg_path = this_cpu_ptr(&memcg_paths);
+ 	char *buf;
+ 	int idx;
+ 
+ 	rcu_read_lock();
+-	buf = rcu_dereference(*this_cpu_ptr(&memcg_path_buf));
++	buf = rcu_dereference(memcg_path->buf);
+ 	if (buf == NULL) {
+ 		rcu_read_unlock();
+ 		return NULL;
+ 	}
+-	idx = this_cpu_add_return(memcg_path_buf_idx, MEMCG_PATH_BUF_SIZE) -
++	idx = local_add_return(MEMCG_PATH_BUF_SIZE, &memcg_path->buf_idx) -
+ 	      MEMCG_PATH_BUF_SIZE;
+ 	return &buf[idx];
+ }
+ 
+ static inline void put_memcg_path_buf(void)
+ {
+-	this_cpu_sub(memcg_path_buf_idx, MEMCG_PATH_BUF_SIZE);
++	local_sub(MEMCG_PATH_BUF_SIZE, &this_cpu_ptr(&memcg_paths)->buf_idx);
+ 	rcu_read_unlock();
+ }
+ 
+@@ -179,14 +190,14 @@ static const char *get_mm_memcg_path(struct mm_struct *mm)
+ #define TRACE_MMAP_LOCK_EVENT(type, mm, ...)                                   \
+ 	do {                                                                   \
+ 		const char *memcg_path;                                        \
+-		preempt_disable();                                             \
++		local_lock(&memcg_paths.lock);				       \
+ 		memcg_path = get_mm_memcg_path(mm);                            \
+ 		trace_mmap_lock_##type(mm,                                     \
+ 				       memcg_path != NULL ? memcg_path : "",   \
+ 				       ##__VA_ARGS__);                         \
+ 		if (likely(memcg_path != NULL))                                \
+ 			put_memcg_path_buf();                                  \
+-		preempt_enable();                                              \
++		local_unlock(&memcg_paths.lock);			       \
+ 	} while (0)
+ 
+ #else /* !CONFIG_MEMCG */
 -- 
-2.30.2
+2.31.1
 
