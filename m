@@ -2,168 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F67439B340
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 08:50:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB6E39B342
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 08:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230044AbhFDGwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 02:52:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229927AbhFDGwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 02:52:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3515A61415;
-        Fri,  4 Jun 2021 06:50:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622789430;
-        bh=lDEh/GlZ6IHzCVgoifZXFj4eSjBGzRR223ZmBbEbu7M=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FFzVOjIJiCWzdDVdPOERBe+6WCuPkRQX7QoI7Waosxm/3cjzgDaj7FR4VcbvtndpF
-         I7LnDiGmeXg+T//F9l1eT/bfu4LdtRglAhKPnEwGrSICHYLC4d4iqYRIWVGsjPrQsY
-         SQlmy4lnuYwfWGbNxIBov1kbm+UssQAoftJ4Ihv9dOUOh1TNLPmsA6Wada1KVNha4R
-         YBsOMw5ijOD+d9Ylug1CBP0Znxweh4IQwpiLtVrygr6/BGOPGwyD6kk/2+T/pQHvGJ
-         3yA2ewQe15ITdLRhwcIMW7tJYcTEAOpVVnMo+uilV6cGq6XyCS25HnxLbvk3H/+VDA
-         5UTnsjhL588eg==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matt Turner <mattst88@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Vineet Gupta <vgupta@synopsys.com>, kexec@lists.infradead.org,
-        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org
-Subject: [PATCH v2 9/9] mm: replace CONFIG_FLAT_NODE_MEM_MAP with CONFIG_FLATMEM
-Date:   Fri,  4 Jun 2021 09:49:16 +0300
-Message-Id: <20210604064916.26580-10-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210604064916.26580-1-rppt@kernel.org>
-References: <20210604064916.26580-1-rppt@kernel.org>
+        id S230002AbhFDGwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 02:52:41 -0400
+Received: from mail-lf1-f45.google.com ([209.85.167.45]:33365 "EHLO
+        mail-lf1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229948AbhFDGwj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 02:52:39 -0400
+Received: by mail-lf1-f45.google.com with SMTP id t7so5356804lff.0;
+        Thu, 03 Jun 2021 23:50:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=kaQSMao5BG9s/Mo5xQzGz0o3ckk1n5tL2skjZO8oAN4=;
+        b=o2RBE89HEbwJAgw+1+TCT4by4UKkM2fIx3eDfTqZ2hpV+WJXf7sBAW8y/zrlnQcUso
+         CY0xPzMTzkbS+s9gCuJ9rUOJSupkPofz18D7dmRK8vkUXOp00ydnJD35S/FxNDDIK9oY
+         bsCbBBSI+8hFQz6jXHq21CD8QaFL8qBtTLlrTY3UjwnnK0mc5hL3sywWHIOMz65+PI3S
+         3TSHYZJOtgaRT0rbGSQe6SWIySyOLHT6GtAihCIjr4guEEpBgMA4rO+OoYUXV6hfhAcU
+         uS7BBZzDGTBEHsgIWtHQ5cGiD9ahjF+syOTfPZiIXmF4m6ZnR1kpCOCpQaEvymMrxGIs
+         O7gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kaQSMao5BG9s/Mo5xQzGz0o3ckk1n5tL2skjZO8oAN4=;
+        b=CKIsK+rVwYk0jq5pKm+TITOQYvahkx1hpvxe0lBJ6YkEHKOrewRdLfN525ChXX7fH9
+         Xwzey5B51g81zvi1CnenH3HXRqcAvblbqoGbT33ePdpY+atHPINnFaMPcB0biESGF1eI
+         waYDOUQOhcI9O9i6kBcWO02TqhPQuctnQbBRE2Y2xLReEbORdeLr6zNhQ51uyIEXWHDw
+         BbAlwqy3jqNJCEFGld3sAcF3nTrV5frMnO4472VVSs2MhILUlzYgU+1ES9MghDGcoZZV
+         S+N+vF+6IbeOiIXcUQ1cj7CdD1f7VwFYZP5DGwJMUKXhjT7/2DVRmU7vV2Dx+8aZ979R
+         yTxQ==
+X-Gm-Message-State: AOAM53393PoIXh8jLSTcoaHhQUai3akFO/lptEJL0P5QoSM3vaDSTlLf
+        xw7ywAtPmK1VJKzCs8FrciiyggJpAG9xghHmq5M=
+X-Google-Smtp-Source: ABdhPJzpgIdt9qTidz6JILOFe6SgId4AwPgluxUxDYfG8w8Nhgqz3Z5eMejUiYcCBKnp5ESehgaWueQPLTdiD6jOxlg=
+X-Received: by 2002:a05:6512:3e14:: with SMTP id i20mr171986lfv.474.1622789380421;
+ Thu, 03 Jun 2021 23:49:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1243888060.510560.1612783497400@ichabod.co-bxl>
+ <20210210150118.ly252i37eykayrcb@gilmour> <1719200956.433094.1613199092092@ichabod.co-bxl>
+ <6612268.HtAl026vyE@jernej-laptop> <206881200.203318.1622780349817@ichabod.co-bxl>
+In-Reply-To: <206881200.203318.1622780349817@ichabod.co-bxl>
+From:   Julian Calaby <julian.calaby@gmail.com>
+Date:   Fri, 4 Jun 2021 16:49:28 +1000
+Message-ID: <CAGRGNgVSze9yW6KTsC=KGCVOJLzck65J-f9v8y30iBw7k0KXQA@mail.gmail.com>
+Subject: Re: [linux-sunxi] Re: [PATCH] ARM: dts: sun8i: h3: orangepi-plus: Fix
+ Ethernet PHY mode
+To:     broake@mailfence.com
+Cc:     =?UTF-8?Q?Jernej_=C5=A0krabec?= <jernej.skrabec@siol.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Mailing List, Arm" <linux-arm-kernel@lists.infradead.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>,
+        devicetree <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+Hi,
 
-After removal of the DISCONTIGMEM memory model the FLAT_NODE_MEM_MAP
-configuration option is equivalent to FLATMEM.
+On Fri, Jun 4, 2021 at 3:45 PM 'B.R. Oake' via linux-sunxi
+<linux-sunxi@googlegroups.com> wrote:
+>
+> On Sat Feb 13 09:51:17 CET 2021, Jernej =C5=A0krabec wrote:
+> > Let me first explain that it was oversight on my side not noticing init=
+ials in
+> > your SoB tag. But since the issue was raised by Maxime, I didn't follow=
+ up.
+> > [...]
+>
+> Dear Jernej,
+>
+> First of all, thank you very much for all your linux-sunxi work: I
+> especially appreciate the video support you've provided.
+>
+> Thank you for initially approving my patch. Although I first posted a
+> patch to the linux-sunxi list about seven years ago, this patch was my
+> first formal submission to LKML, so it meant a lot to me to see it
+> accepted by a kernel developer, even if only briefly.
+>
+> I'm sorry for taking a long time to reply. I wanted to wait for the
+> maintainers to respond to my last mail because I thought it would be
+> best for them to speak for themselves on this issue. Sadly I haven't
+> yet received a response from them.
+>
+>
+> > I believe that real name means no initials, no matter what people are
+> > accustomed to. From my point of view, CJ is pseudonym derived from real=
+ name.
+>
+> I don't think that's a widely held belief though. For example, I think
+> most people consider "J.R.R. Tolkien" to be a real name, even though it
+> contains initials. Also, a first name like CJ isn't necessarily derived
+> from some longer name like Cathy Jane, it can simply be the person's
+> given name. I'm grateful to Vagrant Cascadian for drawing our attention
+> to Patrick McKenzie's essay "Falsehoods Programmers Believe About Names".
+> I believe we harm Linux development when we exclude people whose names
+> don't fit our assumptions.
+>
+> Another reason for signing with initials is to ensure that other people
+> cannot infer anything about the author's gender. Women especially might
+> choose to do this to avoid the harassment that a female name can attract,
+> as shown in these studies for example:
+>
+> https://ece.umd.edu/news/story/study-finds-femalename-chat-users-get-25-t=
+imes-more-malicious-messages
+> https://www.reach3insights.com/women-gaming-study
+>
+> If we forbid people from contributing in a gender-neutral way, many may
+> feel they cannot contribute at all. Again, I think that when we exclude
+> these people we are all worse off as a result.
 
-Drop CONFIG_FLAT_NODE_MEM_MAP and use CONFIG_FLATMEM instead.
+While I completely sympathise with your points here, the issue isn't a
+technical or social issue, but a legal one.
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- include/linux/mmzone.h | 4 ++--
- kernel/crash_core.c    | 2 +-
- mm/Kconfig             | 4 ----
- mm/page_alloc.c        | 6 +++---
- mm/page_ext.c          | 2 +-
- 5 files changed, 7 insertions(+), 11 deletions(-)
+The DCO was introduced to provide a mechanism to trace the origin of a
+piece of code for legal purposes, so my understanding is that the name
+supplied needs to be your legal name.
 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index acdc51c7b259..1d5cafe5ccc3 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -777,7 +777,7 @@ typedef struct pglist_data {
- 	struct zonelist node_zonelists[MAX_ZONELISTS];
- 
- 	int nr_zones; /* number of populated zones in this node */
--#ifdef CONFIG_FLAT_NODE_MEM_MAP	/* means !SPARSEMEM */
-+#ifdef CONFIG_FLATMEM	/* means !SPARSEMEM */
- 	struct page *node_mem_map;
- #ifdef CONFIG_PAGE_EXTENSION
- 	struct page_ext *node_page_ext;
-@@ -867,7 +867,7 @@ typedef struct pglist_data {
- 
- #define node_present_pages(nid)	(NODE_DATA(nid)->node_present_pages)
- #define node_spanned_pages(nid)	(NODE_DATA(nid)->node_spanned_pages)
--#ifdef CONFIG_FLAT_NODE_MEM_MAP
-+#ifdef CONFIG_FLATMEM
- #define pgdat_page_nr(pgdat, pagenr)	((pgdat)->node_mem_map + (pagenr))
- #else
- #define pgdat_page_nr(pgdat, pagenr)	pfn_to_page((pgdat)->node_start_pfn + (pagenr))
-diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-index 53eb8bc6026d..2b8446ea7105 100644
---- a/kernel/crash_core.c
-+++ b/kernel/crash_core.c
-@@ -483,7 +483,7 @@ static int __init crash_save_vmcoreinfo_init(void)
- 	VMCOREINFO_OFFSET(page, compound_head);
- 	VMCOREINFO_OFFSET(pglist_data, node_zones);
- 	VMCOREINFO_OFFSET(pglist_data, nr_zones);
--#ifdef CONFIG_FLAT_NODE_MEM_MAP
-+#ifdef CONFIG_FLATMEM
- 	VMCOREINFO_OFFSET(pglist_data, node_mem_map);
- #endif
- 	VMCOREINFO_OFFSET(pglist_data, node_start_pfn);
-diff --git a/mm/Kconfig b/mm/Kconfig
-index bffe4bd859f3..ded98fb859ab 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -55,10 +55,6 @@ config FLATMEM
- 	def_bool y
- 	depends on !SPARSEMEM || FLATMEM_MANUAL
- 
--config FLAT_NODE_MEM_MAP
--	def_bool y
--	depends on !SPARSEMEM
--
- #
- # SPARSEMEM_EXTREME (which is the default) does some bootmem
- # allocations when sparse_init() is called.  If this cannot
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 8f08135d3eb4..f039736541eb 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6444,7 +6444,7 @@ static void __meminit zone_init_free_lists(struct zone *zone)
- 	}
- }
- 
--#if !defined(CONFIG_FLAT_NODE_MEM_MAP)
-+#if !defined(CONFIG_FLATMEM)
- /*
-  * Only struct pages that correspond to ranges defined by memblock.memory
-  * are zeroed and initialized by going through __init_single_page() during
-@@ -7241,7 +7241,7 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
- 	}
- }
- 
--#ifdef CONFIG_FLAT_NODE_MEM_MAP
-+#ifdef CONFIG_FLATMEM
- static void __ref alloc_node_mem_map(struct pglist_data *pgdat)
- {
- 	unsigned long __maybe_unused start = 0;
-@@ -7289,7 +7289,7 @@ static void __ref alloc_node_mem_map(struct pglist_data *pgdat)
- }
- #else
- static void __ref alloc_node_mem_map(struct pglist_data *pgdat) { }
--#endif /* CONFIG_FLAT_NODE_MEM_MAP */
-+#endif /* CONFIG_FLATMEM */
- 
- #ifdef CONFIG_DEFERRED_STRUCT_PAGE_INIT
- static inline void pgdat_set_deferred_range(pg_data_t *pgdat)
-diff --git a/mm/page_ext.c b/mm/page_ext.c
-index df6f74aac8e1..293b2685fc48 100644
---- a/mm/page_ext.c
-+++ b/mm/page_ext.c
-@@ -191,7 +191,7 @@ void __init page_ext_init_flatmem(void)
- 	panic("Out of memory");
- }
- 
--#else /* CONFIG_FLAT_NODE_MEM_MAP */
-+#else /* CONFIG_FLATMEM */
- 
- struct page_ext *lookup_page_ext(const struct page *page)
- {
--- 
-2.28.0
+Whilst, as you've pointed out, there are a lot of ways that names
+don't match up to the normal "Firstname I. N. I. T. I. A. L. S.
+Lastname" format, that is the case for the vast majority of people and
+exceptions to that are rare. Your arguments against providing that
+name haven't exactly helped your case either as they are similar to
+the arguments someone trying to hide behind a pseudonym might use.
 
+Your points about previous instances of this happening also don't hold
+water either as we don't know the circumstances behind those cases.
+Git's history is considered immutable once it makes it to an
+"official" repository (generally one published publicly) so it's
+likely they were oversights that weren't caught until it was too late.
+
+Thanks,
+
+--=20
+Julian Calaby
+
+Email: julian.calaby@gmail.com
+Profile: http://www.google.com/profiles/julian.calaby/
