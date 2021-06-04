@@ -2,108 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98BFF39BB06
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47DAD39BB08
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 16:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbhFDOnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 10:43:05 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:51854 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229778AbhFDOnE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 10:43:04 -0400
-Received: from zn.tnic (p200300ec2f138500346025dad93ce3b3.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:8500:3460:25da:d93c:e3b3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1AB481EC0402;
-        Fri,  4 Jun 2021 16:41:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1622817677;
+        id S229675AbhFDOnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 10:43:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34235 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229778AbhFDOnM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 10:43:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622817685;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:
-         content-transfer-encoding:content-transfer-encoding:in-reply-to:
-         references; bh=qPyJV0r0gCUPNZF3Q3I+9vLGOG6rK1aBAVsO1EM+EVI=;
-        b=Zm5RIMQhltphw3/nC8otWa/mPezLeLUau57c1ydlfiR++kVSfj+g14dCwUq3a3i3kbteup
-        UQJuuxb+caqrzn014QT8nnm1xjZrD/kbioZS0G0k/7OIHoQzHZbFYJyaiRKQdRXSxD4KSZ
-        Jiwap8leevhgBI9uJSiVyM/9BxSYt8Y=
-From:   Borislav Petkov <bp@alien8.de>
-To:     X86 ML <x86@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH -v2] notifier: Return non-null when callback is already registered
-Date:   Fri,  4 Jun 2021 16:41:02 +0200
-Message-Id: <20210604144102.13849-1-bp@alien8.de>
-X-Mailer: git-send-email 2.29.2
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GT7Yzgt8GtEl514NLLVf2OF8ucixCZe8MHpPE+Hu6sc=;
+        b=MOwU/00toPc0vQt8McPOr/ojZ6LaYWaXyY3a0khBQvGULtN+HeMpyXclqsJ9ynU2XuGCqY
+        +ZsgeIqTtjHrgh0HGtwkmU4adIUBWO9YP0Y/HKyB4MVv42ymT4JC1u277Lw+cy8ia4qiqu
+        17ABu3MzwPBnMg3++q4U4SgWAnnfiFQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-517-XBEaa6fxMoCQ2KkCwVz77g-1; Fri, 04 Jun 2021 10:41:24 -0400
+X-MC-Unique: XBEaa6fxMoCQ2KkCwVz77g-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 02C478042AE;
+        Fri,  4 Jun 2021 14:41:23 +0000 (UTC)
+Received: from localhost (ovpn-113-138.ams2.redhat.com [10.36.113.138])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 20D935D705;
+        Fri,  4 Jun 2021 14:41:21 +0000 (UTC)
+From:   Giuseppe Scrivano <gscrivan@redhat.com>
+To:     ebiederm@xmission.com, christian.brauner@ubuntu.com
+Cc:     "Serge E. Hallyn" <serge@hallyn.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] userns: automatically split user namespace extent
+References: <20201203150252.1229077-1-gscrivan@redhat.com>
+        <20210510172351.GA19918@mail.hallyn.com>
+        <20210510185715.GA20897@mail.hallyn.com>
+Date:   Fri, 04 Jun 2021 16:41:19 +0200
+In-Reply-To: <20210510185715.GA20897@mail.hallyn.com> (Serge E. Hallyn's
+        message of "Mon, 10 May 2021 13:57:15 -0500")
+Message-ID: <87h7idbskw.fsf@redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+Christian, Eric,
 
-The notifier registration routine doesn't return a proper error value
-when a callback has already been registered, leading people to track
-whether that regisration has happened at the call site:
+are you fine with this patch or is there anything more you'd like me to
+change?
 
-  https://lore.kernel.org/amd-gfx/20210512013058.6827-1-mukul.joshi@amd.com/
+Thanks,
+Giuseppe
 
-Which is unnecessary.
 
-Return -EEXIST to signal that case so that callers can act accordingly.
 
-Signed-off-by: Borislav Petkov <bp@suse.de>
----
- kernel/notifier.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+"Serge E. Hallyn" <serge@hallyn.com> writes:
 
-diff --git a/kernel/notifier.c b/kernel/notifier.c
-index 1b019cbca594..5a31bc9b24b4 100644
---- a/kernel/notifier.c
-+++ b/kernel/notifier.c
-@@ -25,7 +25,7 @@ static int notifier_chain_register(struct notifier_block **nl,
- 	while ((*nl) != NULL) {
- 		if (unlikely((*nl) == n)) {
- 			WARN(1, "double register detected");
--			return 0;
-+			return -EEXIST;
- 		}
- 		if (n->priority > (*nl)->priority)
- 			break;
-@@ -134,7 +134,7 @@ static int notifier_call_chain_robust(struct notifier_block **nl,
-  *
-  *	Adds a notifier to an atomic notifier chain.
-  *
-- *	Currently always returns zero.
-+ *	Returns 0 on success, !0 on error.
-  */
- int atomic_notifier_chain_register(struct atomic_notifier_head *nh,
- 		struct notifier_block *n)
-@@ -235,7 +235,7 @@ NOKPROBE_SYMBOL(atomic_notifier_call_chain);
-  *	Adds a notifier to a blocking notifier chain.
-  *	Must be called in process context.
-  *
-- *	Currently always returns zero.
-+ *	Returns 0 on success, !0 on error.
-  */
- int blocking_notifier_chain_register(struct blocking_notifier_head *nh,
- 		struct notifier_block *n)
-@@ -354,7 +354,7 @@ EXPORT_SYMBOL_GPL(blocking_notifier_call_chain);
-  *	Adds a notifier to a raw notifier chain.
-  *	All locking must be provided by the caller.
-  *
-- *	Currently always returns zero.
-+ *	Returns 0 on success, !0 on error.
-  */
- int raw_notifier_chain_register(struct raw_notifier_head *nh,
- 		struct notifier_block *n)
-@@ -425,7 +425,7 @@ EXPORT_SYMBOL_GPL(raw_notifier_call_chain);
-  *	Adds a notifier to an SRCU notifier chain.
-  *	Must be called in process context.
-  *
-- *	Currently always returns zero.
-+ *	Returns 0 on success, !0 on error.
-  */
- int srcu_notifier_chain_register(struct srcu_notifier_head *nh,
- 		struct notifier_block *n)
--- 
-2.29.2
+> On Mon, May 10, 2021 at 12:23:51PM -0500, Serge E. Hallyn wrote:
+>> On Thu, Dec 03, 2020 at 04:02:52PM +0100, Giuseppe Scrivano wrote:
+>> > writing to the id map fails when an extent overlaps multiple mappings
+>> > in the parent user namespace, e.g.:
+>> > 
+>> > $ cat /proc/self/uid_map
+>> >          0       1000          1
+>> >          1     100000      65536
+>> > $ unshare -U sleep 100 &
+>> > [1] 1029703
+>> > $ printf "0 0 100\n" | tee /proc/$!/uid_map
+>> > 0 0 100
+>> > tee: /proc/1029703/uid_map: Operation not permitted
+>> > 
+>> > To prevent it from happening, automatically split an extent so that
+>> > each portion fits in one extent in the parent user namespace.
+>> > 
+>> > $ cat /proc/self/uid_map
+>> >          0       1000          1
+>> >          1     110000      65536
+>> > $ unshare -U sleep 100 &
+>> > [1] 1552
+>> > $ printf "0 0 100\n" | tee /proc/$!/uid_map
+>> > 0 0 100
+>> > $ cat /proc/$!/uid_map
+>> >          0          0          1
+>> >          1          1         99
+>> > 
+>> > Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
+>> 
+>> The patch on the whole looks great, easy to reason about.  But I have
+>> one question below:
+>
+> As you pointed out, I was misreading the variable name, thank you :)
+>
+> Reviewed-by: Serge Hallyn <serge@hallyn.com>
+>
+>> 
+>> > ---
+>> > v2:
+>> > - move the split logic when the extent are mapped to the parent map to
+>> >   reduce lookup complexity.
+>> > 
+>> > v1: https://lkml.kernel.org/lkml/20201126100839.381415-1-gscrivan@redhat.com
+>> > 
+>> >  kernel/user_namespace.c | 79 +++++++++++++++++++++++++++++++++++------
+>> >  1 file changed, 68 insertions(+), 11 deletions(-)
+>> > 
+>> > diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
+>> > index 87804e0371fe..550612c6e794 100644
+>> > --- a/kernel/user_namespace.c
+>> > +++ b/kernel/user_namespace.c
+>> > @@ -312,6 +312,55 @@ static u32 map_id_down(struct uid_gid_map *map, u32 id)
+>> >  	return map_id_range_down(map, id, 1);
+>> >  }
+>> >  
+>> > +/**
+>> > + * find_and_split_extent_down - Find lower_first for the target extent
+>> > + * using the specified map.
+>> > + * If the extent doesn't fit in a single lower extent, split target and
+>> > + * write the remaining IDs (first and count) to the overflow extent.
+>> > + * If no overflow happens, overflow->count is set to 0.
+>> > + */
+>> > +static int find_and_split_extent_down(struct uid_gid_map *map,
+>> > +				       struct uid_gid_extent *target,
+>> > +				       struct uid_gid_extent *overflow)
+>> > +{
+>> > +	unsigned int extents = map->nr_extents;
+>> > +	u32 lower_first = target->lower_first;
+>> > +	struct uid_gid_extent *extent;
+>> > +	u32 off, available;
+>> > +
+>> > +	overflow->count = 0;
+>> > +
+>> > +	/* Find the lower extent that includes the first ID.  */
+>> > +	if (extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
+>> > +		extent = map_id_range_down_base(extents, map, lower_first, 1);
+>> > +	else
+>> > +		extent = map_id_range_down_max(extents, map, lower_first, 1);
+>> > +
+>> > +	/* Could not map the first ID in the extent.  */
+>> > +	if (extent == NULL)
+>> > +		return -EPERM;
+>> > +
+>> > +	/* Offset of lower_first in the lower extent.  */
+>> > +	off = target->lower_first - extent->first;
+>> > +
+>> > +	/* How many IDs are available in the lower extent?  */
+>> > +	available = extent->count - off;
+>> > +
+>> > +	/* Requesting more IDs than available in the lower extent.  */
+>> > +	if (target->count > available) {
+>> > +		/* Move the remaining IDs to the overflow extent.  */
+>> > +		overflow->first = target->first + available;
+>> > +		overflow->lower_first = target->lower_first + available;
+>> > +		overflow->count = target->count - available;
+>> > +
+>> > +		/* Shrink the initial extent to what is available.  */
+>> > +		target->count = available;
+>> > +	}
+>> > +
+>> > +	target->lower_first = extent->lower_first + off;
+>> > +	return 0;
+>> > +}
+>> > +
+>> >  /**
+>> >   * map_id_up_base - Find idmap via binary search in static extent array.
+>> >   * Can only be called if number of mappings is equal or less than
+>> > @@ -749,6 +798,7 @@ static bool mappings_overlap(struct uid_gid_map *new_map,
+>> >   * insert_extent - Safely insert a new idmap extent into struct uid_gid_map.
+>> >   * Takes care to allocate a 4K block of memory if the number of mappings exceeds
+>> >   * UID_GID_MAP_MAX_BASE_EXTENTS.
+>> > + * The extent is appended at the position map->nr_extents.
+>> >   */
+>> >  static int insert_extent(struct uid_gid_map *map, struct uid_gid_extent *extent)
+>> >  {
+>> > @@ -968,30 +1018,37 @@ static ssize_t map_write(struct file *file, const char __user *buf,
+>> >  	if (!new_idmap_permitted(file, ns, cap_setid, &new_map))
+>> >  		goto out;
+>> >  
+>> > -	ret = -EPERM;
+>> >  	/* Map the lower ids from the parent user namespace to the
+>> >  	 * kernel global id space.
+>> >  	 */
+>> >  	for (idx = 0; idx < new_map.nr_extents; idx++) {
+>> > +		struct uid_gid_extent overflow;
+>> >  		struct uid_gid_extent *e;
+>> > -		u32 lower_first;
+>> >  
+>> >  		if (new_map.nr_extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
+>> >  			e = &new_map.extent[idx];
+>> >  		else
+>> >  			e = &new_map.forward[idx];
+>> >  
+>> > -		lower_first = map_id_range_down(parent_map,
+>> > -						e->lower_first,
+>> > -						e->count);
+>> > -
+>> > -		/* Fail if we can not map the specified extent to
+>> > -		 * the kernel global id space.
+>> > -		 */
+>> > -		if (lower_first == (u32) -1)
+>> > +		ret = find_and_split_extent_down(parent_map, e, &overflow);
+>> > +		if (ret < 0)
+>> >  			goto out;
+>> >  
+>> > -		e->lower_first = lower_first;
+>> > +		/* If the extent doesn't fit in a single lower extent,
+>> > +		 * move what could not be mapped to a new extent.
+>> > +		 * The new extent is appended to the existing ones in
+>> > +		 * new_map, it will be checked again and if necessary it
+>> > +		 * is split further.
+>> > +		 */
+>> > +		if (overflow.count > 0) {
+>> > +			if (new_map.nr_extents == UID_GID_MAP_MAX_EXTENTS) {
+>> 
+>> Why are you doing this?  The insert_extent() will automatically extend it
+>> if needed, right?  So this condition should be fine?
+>> 
+>> > +				ret = -EINVAL;
+>> > +				goto out;
+>> > +			}
+>> > +			ret = insert_extent(&new_map, &overflow);
+>> > +			if (ret < 0)
+>> > +				goto out;
+>> > +		}
+>> >  	}
+>> >  
+>> >  	/*
+>> > -- 
+>> > 2.28.0
+>> 
+>> Cheers,
+>> Balint
+>> 
+>> >
+>> > -serge
+>> 
+>> 
+>> 
+>> -- 
+>> Balint Reczey
+>> Ubuntu & Debian Developer
+>> > 
+>
 
