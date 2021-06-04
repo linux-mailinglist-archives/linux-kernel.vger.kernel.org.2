@@ -2,199 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3251439C127
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C08B839C129
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbhFDUUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 16:20:31 -0400
-Received: from mail-oo1-f47.google.com ([209.85.161.47]:37637 "EHLO
-        mail-oo1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbhFDUUa (ORCPT
+        id S231259AbhFDUUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 16:20:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231185AbhFDUUx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 16:20:30 -0400
-Received: by mail-oo1-f47.google.com with SMTP id t6-20020a4ae9a60000b0290245a5133898so2529591ood.4;
-        Fri, 04 Jun 2021 13:18:43 -0700 (PDT)
+        Fri, 4 Jun 2021 16:20:53 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8027CC061766
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 13:18:53 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so10287405otl.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 13:18:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=JIUKDgLWjb5adyuGQWg8djEN36TGFJnaegIkNxv9nZk=;
+        b=c8Qx3JTaUfRwguENdVAi4AmY/SvFm/9bS4pOGeTGgWv1uIsKQvO34HgTlLzzf86m9c
+         RQzj0EP/g+tktXDE2/Qk9F0SzsaP9zarJdeY/am6T9T+JaN4mzP0VT6D6nnubrC9Y4Dw
+         1NN7+5eVCgS9g97OjfyzhqvZKnsOY3jV6TaBY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MCfv6fQHDee2XjvXSHxeG0uhLM30iPs27L6wPGcgAxs=;
-        b=o0eAe56daEXySaaYE0QewKHE7uCfnN+z55S5paL3Xj6pZidRu4Zr7+WNKR/DJ3tcjW
-         ZnvobxiymSuOyyBmu6EvRZppVUr3Rlc21xfiWX2uwqsz32oNIlCqL9yR3a82BOnyrjV8
-         zInadxuEUuTvAKbiutAZ1GSJ2yChGr9yyy87VGJ610evG+cZONsNEUiPr46PlW8Kmluy
-         DHN3Jk7lRV0bulkd7ZMwbCKDvWmpHCsg4Oh5r66KZASSNEnmFs8UJ1s2ji1eAOtwsrOy
-         O4nOGen1tVzoXEtq6ngOwkdDmxYghwS3JOVypUVdq0Wl5WKX8eQ/8AhQpiUEy5Tc7zKu
-         HFpw==
-X-Gm-Message-State: AOAM53150WEN1SxYUkRD+/JimTSyfCzR6BZgXRfEYrj4JUEsA6+jefKY
-        9Om1I79qJUtN+jj+9UGisrF35vDPLw==
-X-Google-Smtp-Source: ABdhPJzRJDPfmgAea9/YY0WQx51jKCVAWE652ExVRIuOi+o8jdXEwJqKDYUFtdgGhgxX1EY+ifs3dQ==
-X-Received: by 2002:a4a:5246:: with SMTP id d67mr4967125oob.33.1622837923378;
-        Fri, 04 Jun 2021 13:18:43 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id f2sm634713ooj.22.2021.06.04.13.18.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 13:18:42 -0700 (PDT)
-Received: (nullmailer pid 3843001 invoked by uid 1000);
-        Fri, 04 Jun 2021 20:18:41 -0000
-Date:   Fri, 4 Jun 2021 15:18:41 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: Add SONY Synaptics JDI panel
-Message-ID: <20210604201841.GA3834184@robh.at.kernel.org>
-References: <20210525113105.52990-1-konrad.dybcio@somainline.org>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=JIUKDgLWjb5adyuGQWg8djEN36TGFJnaegIkNxv9nZk=;
+        b=S6BUxqtLB42+X2DvecrezSShDi+iJJu0SQm1YVW9xb98Rw7ZB7Pj37VN9WdY9ssvVm
+         2y9x8gF1TPhPBTwwQIPZs0B6uNFVZ4/+jQ3+hlnhyURU3YYFurBBO/Y2eGVBGX763k6J
+         m0OfUaRjz2k2v4nHcPcOR2TEWdz2qKhc4En88Y9VRhz3G2bjlPqpoShO557rSxRVwbtA
+         pFlCRlf96/cfuT5CG3L5fknOHHr2H/VPbS2ZRS6KKikUmlFsiN92KY0kHp3vU3PqRjUy
+         p9NG2E1wgnfqOOnLXi2nochYbft+F3pSZxA/afiuyc0/DGMzTAPsL6AHQzsOdSRqQBCK
+         HO6w==
+X-Gm-Message-State: AOAM5312fa7WHzh4HTq1Uxt/r7OJ7TgN4CbhltuXwAFTmCeqvJSi3wft
+        fuzJMsWtVhQsSUYOm2ex2xcfcPSYVXOwSCEKt9HiHg==
+X-Google-Smtp-Source: ABdhPJwAYnjRUHcRU3fQ9fHS5YzZI3bFT1EC/tJo1UmLyM68Mex37acWpg8A1SuIP0Z+u66aSLFMJmvMN2ul/8BnOEQ=
+X-Received: by 2002:a9d:18e:: with SMTP id e14mr5058613ote.34.1622837932886;
+ Fri, 04 Jun 2021 13:18:52 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 4 Jun 2021 20:18:52 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210525113105.52990-1-konrad.dybcio@somainline.org>
+In-Reply-To: <YLoj/2XmCo9OWjTS@kroah.com>
+References: <20210603202116.1841261-1-swboyd@chromium.org> <YLoj/2XmCo9OWjTS@kroah.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Fri, 4 Jun 2021 20:18:52 +0000
+Message-ID: <CAE-0n52SonMvf+c3YFt-u-LcrfOj4Nhg30JqyGyceSpdFhK2WA@mail.gmail.com>
+Subject: Re: [PATCH v2] driver core: Make cycle dev_info() message dev_dbg()
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Saravana Kannan <saravanak@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 01:31:02PM +0200, Konrad Dybcio wrote:
-> Add bindings for the SONY Synaptics JDI panel used in
-> Xperia X, X Performance, X Compact, XZ and XZs smartphones.
-> 
-> Due to the nature of phone manufacturing and lack of any docs
-> whatsoever, replacement names have been used to indicate the
-> devices that this panel is used on.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> ---
->  .../display/panel/sony,synaptics-jdi.yaml     | 100 ++++++++++++++++++
->  1 file changed, 100 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/panel/sony,synaptics-jdi.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/display/panel/sony,synaptics-jdi.yaml b/Documentation/devicetree/bindings/display/panel/sony,synaptics-jdi.yaml
-> new file mode 100644
-> index 000000000000..81d841c049e8
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/panel/sony,synaptics-jdi.yaml
-> @@ -0,0 +1,100 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/panel/sony,synaptics-jdi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: SONY Synaptics JDI panel
-> +
-> +maintainers:
-> +  - Konrad Dybcio <konrad.dybcio@somainline.org>
-> +
-> +description: |+
+Quoting Greg Kroah-Hartman (2021-06-04 06:00:47)
+> On Thu, Jun 03, 2021 at 01:21:16PM -0700, Stephen Boyd wrote:
+> > This seems to mostly print debug information about device link stuff at
+> > boot. It doesn't seem very useful outside of debugging so move it to
+> > dev_dbg().
+>
+> What messages at boot time are you seeing with this that should not be
+> there?  Shouldn't we fix the root cause here and not paper over it by
+> just lowering the logging level?
 
-Do you need the formatting? If not, drop '|+'.
+Is there any problem? If they're a problem then shouldn't the printk be
+at least warning level, pr_warn() if not pr_err()? I thought that
+sometimes devices have cyclic links so we want to back off at that time
+and stop trying.
 
-> +  This panel seems to only be found in SONY Xperia
-> +  X, X Performance, X Compact, XZ and XZs
-> +  smartphones and we have no straightforward way of
-> +  actually getting the correct model number,
-> +  as no schematics are released publicly.
+>
+> What drivers are having problems to trigger this?
+>
 
-Odd choice of line break length. 80 char please.
+It looks to be mostly the coresight devices that print this info message
+for me. The other one is the display panel. The coresight devices are in
+arch/arm64/boot/dts/qcom/sc7180.dtsi
 
-> +
-> +allOf:
-> +  - $ref: panel-common.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - sony,synaptics-jdi-dora
-> +          - sony,synaptics-jdi-kagura
-> +          - sony,synaptics-jdi-keyaki
-> +          - sony,synaptics-jdi-kugo
-> +          - sony,synaptics-jdi-suzu
-> +
-> +  reg: true
-> +
-> +  reset-gpios: true
-> +
-> +  avdd-supply:
-> +    description: avdd supply
-> +
-> +  vddio-supply:
-> +    description: vddio supply
-> +
-> +  vsn-supply:
-> +    description: voltage negative supply
-> +
-> +  vsp-supply:
-> +    description: voltage positive supply
-> +
-> +  tvdd-supply:
-> +    description: tvdd supply
-> +
-> +  preset-gpio:
-> +    description: panel reset pin
+[    0.545197] amba 6041000.funnel: Fixing up cyclic dependency with 6002000.stm
+[    0.547173] amba 6045000.funnel: Fixing up cyclic dependency with
+6042000.funnel
+[    0.548032] amba 6045000.funnel: Fixing up cyclic dependency with
+6041000.funnel
+[    0.549899] amba 6048000.etr: Fixing up cyclic dependency with
+6046000.replicator
+[    0.551371] amba 6b04000.funnel: Fixing up cyclic dependency with
+6045000.funnel
+[    0.552781] amba 6b05000.etf: Fixing up cyclic dependency with 6b04000.funnel
+[    0.554258] amba 6b06000.replicator: Fixing up cyclic dependency
+with 6b05000.etf
+[    0.555136] amba 6b06000.replicator: Fixing up cyclic dependency
+with 6046000.replicator
+[    0.560889] amba 7800000.funnel: Fixing up cyclic dependency with 7740000.etm
+[    0.561726] amba 7800000.funnel: Fixing up cyclic dependency with 7640000.etm
+[    0.562553] amba 7800000.funnel: Fixing up cyclic dependency with 7540000.etm
+[    0.563388] amba 7800000.funnel: Fixing up cyclic dependency with 7440000.etm
+[    0.564205] amba 7800000.funnel: Fixing up cyclic dependency with 7340000.etm
+[    0.565034] amba 7800000.funnel: Fixing up cyclic dependency with 7240000.etm
+[    0.565867] amba 7800000.funnel: Fixing up cyclic dependency with 7140000.etm
+[    0.566693] amba 7800000.funnel: Fixing up cyclic dependency with 7040000.etm
+[    0.568196] amba 7810000.funnel: Fixing up cyclic dependency with
+7800000.funnel
+[    0.569047] amba 7810000.funnel: Fixing up cyclic dependency with
+6042000.funnel
+[    0.623637] i2c 2-002d: Fixing up cyclic dependency with panel
+[    1.108625] platform ae94000.dsi: Fixing up cyclic dependency with 2-002d
+[    1.115646] platform ae94000.dsi: Fixing up cyclic dependency with
+ae01000.mdp
 
-What's reset-gpios then?
-
-> +
-> +  pvddio-gpio:
-> +    description: panel vddio pin
-> +
-> +  treset-gpio:
-> +    description: touch reset pin
-
-Use '-gpios'
-
-And need to define how many (maxItems: 1).
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - preset-gpio
-> +  - pvddio-gpio
-> +  - treset-gpio
-> +  - avdd-supply
-> +  - vddio-supply
-> +  - vsn-supply
-> +  - vsp-supply
-> +  - tvdd-supply
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    dsi {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +            panel: panel@0 {
-> +                    reg = <0>;
-> +
-> +                    pvddio-gpio = <&tlmm 51 GPIO_ACTIVE_HIGH>;
-> +                    preset-gpio = <&tlmm 8 GPIO_ACTIVE_HIGH>;
-> +                    treset-gpio = <&tlmm 89 GPIO_ACTIVE_HIGH>;
-> +
-> +                    vddio-supply = <&pm8994_s4>;
-> +                    avdd-supply = <&pm8994_l2>;
-> +                    tvdd-supply = <&panel_tvdd>;
-> +
-> +                    backlight = <&pmi8994_wled>;
-> +
-> +                    port {
-> +                      panel_in: endpoint {
-> +                        remote-endpoint = <&dsi0_out>;
-> +                      };
-
-Consistent indentation please. 4 spaces is good.
-
-> +                    };
-> +            };
-> +    };
-> -- 
-> 2.31.1
+I suppose with the graph binding making links we get these cyclic
+dependency messages now.
