@@ -2,63 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6C839B920
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 14:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA3D339B926
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 14:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbhFDMkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 08:40:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34854 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229718AbhFDMkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 08:40:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE8866141B
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 12:38:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622810303;
-        bh=Em96/u7mdtZXTQJe4ybQ2hBcfP5hVycbrPqpSQCpAN8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=m1AyZc6WME3Q3MW8C/l1auFla7T4C+Pz6mM62jtjMWzwB+Wc3orf7uwQOOCtNWffj
-         EGyAShY0oY9Ft9gohkSJfcZAOgAKxpgbzfcmuvsfcNhlU84gOnjJr4M4/8k0Jfodxc
-         8D49831/HjbL2fl01cziS9MwTtmKZMp1eHNrYu7E9CBp5hLVcEkfZFMJ/SBW9b9uUa
-         hWOc4EwDYxC4dknle77qJBLfLB1J9qY5dJJkUhCTWtgld3RmUGOwq4dub/vTIpkEWL
-         BbbbjL4WpN3V6lk4YEVtHrM3Ph8Vq/PMLK23aYW4H3e/5GOsCaCvXaeJxzNvdchCQj
-         7ucUA6yvYlULQ==
-Received: by mail-ed1-f51.google.com with SMTP id f5so5953994eds.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 05:38:23 -0700 (PDT)
-X-Gm-Message-State: AOAM533VmS6zIyQL7LJ+8GE2thgU+lHxJOE+zlgNrjXGxl9mD2nTtVdb
-        3GjzTd7VTnDJCfhrHaicjAKxCwAuvdDizaCOSg==
-X-Google-Smtp-Source: ABdhPJwHF1vFPz5c5WbQjZ5qaLJn1k8D8U9yi9o5lqrdzTiJ+OWwf5P12sT5T1JLhU0YteYfeDq9VI3GWW6A8GjMQ+c=
-X-Received: by 2002:aa7:cad3:: with SMTP id l19mr4519290edt.289.1622810302334;
- Fri, 04 Jun 2021 05:38:22 -0700 (PDT)
+        id S230150AbhFDMlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 08:41:37 -0400
+Received: from mail-qt1-f173.google.com ([209.85.160.173]:45885 "EHLO
+        mail-qt1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230004AbhFDMle (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 08:41:34 -0400
+Received: by mail-qt1-f173.google.com with SMTP id l17so2689077qtq.12;
+        Fri, 04 Jun 2021 05:39:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8tFXQQshqxSB1HMy8vDC7vDQu3YTSPaP6sR63Gdou1c=;
+        b=rAX+pnpB7Dvclp28To6NqrG6G4zEE6aJ2nCrSNJM6cssUc3AgNkffeQtKWekimrVtV
+         L0eYjB5ZjA+K3IJk1WWXf9vHqbS1/VHdOIE26Zs4CaCgfm3+AtzgCi2kEzT/IrXsOS5s
+         CYs3RKtn7Cygw7UxH7+C0FbOn8ujhsEL0UNKMZg3FL8ERgTAHva9tF2CqGHhdKUjOXq2
+         BiXiipzsM/lSubN2iLC3R9dcoSaXAeseYoXBY45EpKXNCEYfe1IiAWFK9CCvpgix+5HR
+         ubzIodtw/ASDfpr0I6MZSObuIXGEf/+6h0PNwKzkJgpRWR1Y8iml3LwhrcTOHks9QkC3
+         HJjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=8tFXQQshqxSB1HMy8vDC7vDQu3YTSPaP6sR63Gdou1c=;
+        b=um+LuWgjQdb860ct1h86kmlnd82FCV3LlCyfX55qooBjdL6PDvpkvzNtZGSAPkCI5u
+         AoAMEEWoplx2znEKjEXFhMnOUiHNgLQyz/XdkUb602LT8H9d/wzBhpDiGgLYJk5SKP2u
+         3NBtCmxFaAgkrGDQRWEkMxvIFg/k7EfiHSOBnVGY79w8sCp0Li4FfoG1Gx7C/yGjZJTI
+         n3Rn0IuWKt74Z0CQBgZFqfcrXBlFnpY1vvv4iXllWVylxWKXJJLgZdn8PiCXlF/fXd5C
+         arAC2Y/CFJ5UwFuRyxdI+nSxzixgI0mEHded9dX7tH/vF6HosVXiFu9x3cZryxo5MjaG
+         MY6Q==
+X-Gm-Message-State: AOAM532lj6bFLZ/KhoGAIULb1EDU07RoLGD0R7OT301Md7gJxM8GzR2b
+        pVCi9nPXvcEa4ZqdFoLI2pA=
+X-Google-Smtp-Source: ABdhPJxlotMgspuEyAtTyWXww/4NIkeRSjCQ1vlG6K+hRbbVDXks6kAI7g42AK7Htj8jNFiXE0jLjA==
+X-Received: by 2002:ac8:578d:: with SMTP id v13mr4394401qta.9.1622810312918;
+        Fri, 04 Jun 2021 05:38:32 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p12sm1652589qtw.61.2021.06.04.05.38.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 05:38:31 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 4 Jun 2021 05:38:29 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     robh+dt@kernel.org, jdelvare@suse.com, corbet@lwn.net,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, trivial@kernel.org,
+        Jonathan.Cameron@huawei.com, alexandre.belloni@bootlin.com,
+        sst@poczta.fm, krzk@kernel.org, alexandru.ardelean@analog.com,
+        devicetree@vger.kernel.org, Luka Perkov <luka.perkov@sartura.hr>,
+        jmp@epiphyte.org, Paul Menzel <pmenzel@molgen.mpg.de>,
+        Donald Buczek <buczek@molgen.mpg.de>
+Subject: Re: [PATCH v2 1/3] hwmon: (pmbus) Add driver for Delta DPS-920AB PSU
+Message-ID: <20210604123829.GA3939356@roeck-us.net>
+References: <20210528103828.53320-1-robert.marko@sartura.hr>
+ <479725a2-7d85-1489-4228-ddff16b52287@roeck-us.net>
+ <CA+HBbNGu6kkp23wHrnVeM7vry6nT0-P66U0V8KXCQ=kCcs+n8g@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210604014055.4060521-1-keescook@chromium.org>
-In-Reply-To: <20210604014055.4060521-1-keescook@chromium.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 4 Jun 2021 07:38:10 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqK-G76vqWqfYarj4r5u_QW0dRd8UMuwprVKNmzVjY81=A@mail.gmail.com>
-Message-ID: <CAL_JsqK-G76vqWqfYarj4r5u_QW0dRd8UMuwprVKNmzVjY81=A@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/pl111: Actually fix CONFIG_VEXPRESS_CONFIG depends
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>,
-        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+HBbNGu6kkp23wHrnVeM7vry6nT0-P66U0V8KXCQ=kCcs+n8g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 8:40 PM Kees Cook <keescook@chromium.org> wrote:
->
-> VEXPRESS_CONFIG needs to either be missing, built-in, or modular when
-> pl111 is modular. Update the Kconfig to reflect the need.
->
-> Fixes: 4dc7c97d04dc ("drm/pl111: depend on CONFIG_VEXPRESS_CONFIG")
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
-> v2: use expected Kconfig style to express this. :)
-> v1: https://lore.kernel.org/lkml/20210603215819.3904733-1-keescook@chromium.org
-> ---
->  drivers/gpu/drm/pl111/Kconfig | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+On Fri, Jun 04, 2021 at 02:16:02PM +0200, Robert Marko wrote:
+[ ... ]
+> >
+> > > +}
+> > > +
+> > > +static int dps920ab_write_word_data(struct i2c_client *client, int page, int reg,
+> > > +                                 u16 word)
+> > > +{
+> > > +     int ret;
+> > > +
+> > > +     /*
+> > > +      * This masks commands which are not supported.
+> > > +      * PSU only has one R/W register and that is
+> > > +      * for the fan.
+> > > +      */
+> > > +     switch (reg) {
+> > > +     case PMBUS_FAN_COMMAND_1:
+> > > +             break;
+> > > +     default:
+> > > +             ret = -ENODATA;
+> > > +     }
+> > > +
+> >
+> > Does this work ? It is the wrong error message for a failed write;
+> > it should probably return -EACCES.
+> 
+> It appears to work fine, I was looking at other drivers, and all of them
+> use -ENODATA for unsupported word registers.
 
-Acked-by: Rob Herring <robh@kernel.org>
+No. They return -ENODATA to tell the PMBus core to use standard PMBus
+access functions, ie to handle the access in the core. Please see
+_pmbus_write_word_data().
+
+Guenter
