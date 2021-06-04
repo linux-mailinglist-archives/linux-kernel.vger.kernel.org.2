@@ -2,119 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD4739BBF9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EDCE39BBF6
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbhFDPhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 11:37:09 -0400
-Received: from mail-lf1-f46.google.com ([209.85.167.46]:40472 "EHLO
-        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbhFDPhI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 11:37:08 -0400
-Received: by mail-lf1-f46.google.com with SMTP id w33so14721703lfu.7
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 08:35:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pxqXWpOMRKwzgShQLB13AAcIjid8zEdiCw/9s5AYCaI=;
-        b=D/dHG9Vnq2ijnQ3b1ICqDvX320BcdijuRqiTrRIz3ioL/opYdhr7zmaV3ULky8qGQ0
-         Zt87soWd/Lkhb2tZWNxm8fYnqFMQwAJIi/AO4CdqwVqRCv7BgkOdS2bMd92MowyQH/Vl
-         ptAFLJ9XUDL0dmo3CLOax6LIfjCRb7pE9j1CYtPHwdhbrBzTAueOl7LshYamr0dSzvCQ
-         xfYQEEzGE5GWGmB9oaGUciPjE4ntho6V05YfwTHRhPy61c74fszMPcbIfnTLiuu0IdFz
-         p214mDLMjXo4z3MpTsIl/TKWnqrOi642O9YfAYWwpS3a57WPtUU10BcvyOMmrnoT4lIr
-         4N3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pxqXWpOMRKwzgShQLB13AAcIjid8zEdiCw/9s5AYCaI=;
-        b=FkYLDEeGMfKt0HeCkElx82QdTGB5z+XUXolJZ4e+n+Jt+s5R3qHRNWJA7rh5Pxai1l
-         UngRsYxtTKkAiz/sk1abx6og2EuZLv0NyvDJus2EcgTU0ARiZBrycD5bJqkbAS3cPsH5
-         Fogu2v4Ehji9MfQNTTfzKbjRTWHvZkiGNp4DuZjfmR+bs0D3hu5tHrY0TjkcKQqiAzF4
-         Pq06y1SMdXY5ZcXhCQ21KQJaeBeR+uics1wR/i/wM8kB1M4LB+4rcOlMVicY2gqoOPR+
-         AEET+vSE5UCuNxuMiIiW8O2/3TfCqRCFffCYngsvYBxbDmdSCdh8/yUfeEQTXxkDsNiI
-         SkOQ==
-X-Gm-Message-State: AOAM530mFOZAZnTY57NNsGbO7QU2Gls3wsYYn+Lff9cGLHCj16goeDU2
-        9bJZqM3OjK226OU3HjHpVO4Quw==
-X-Google-Smtp-Source: ABdhPJwF64JHO79JO+CwXdAObnwrYkDUCZlqqNhd4DWfbD8ng+o3wqj+KJ1Z0kj5Qfdc1NHEafcU2A==
-X-Received: by 2002:ac2:4acd:: with SMTP id m13mr3037027lfp.620.1622820861219;
-        Fri, 04 Jun 2021 08:34:21 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id f10sm749818ljp.8.2021.06.04.08.34.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 08:34:20 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id F1DD51027A9; Fri,  4 Jun 2021 18:34:32 +0300 (+03)
-Date:   Fri, 4 Jun 2021 18:34:32 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
-        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/7] mm/thp: fix __split_huge_pmd_locked() on shmem
- migration entry
-Message-ID: <20210604153432.b4lck4q75z5oopym@box.shutemov.name>
-References: <alpine.LSU.2.11.2106011353270.2148@eggly.anvils>
- <alpine.LSU.2.11.2106011403540.2148@eggly.anvils>
+        id S230385AbhFDPge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 11:36:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35550 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229675AbhFDPge (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 11:36:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC37361402;
+        Fri,  4 Jun 2021 15:34:44 +0000 (UTC)
+Date:   Fri, 4 Jun 2021 16:34:42 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v13 7/8] KVM: arm64: ioctl to fetch/store tags in a guest
+Message-ID: <20210604153441.GG31173@arm.com>
+References: <20210524104513.13258-1-steven.price@arm.com>
+ <20210524104513.13258-8-steven.price@arm.com>
+ <20210603171336.GH20338@arm.com>
+ <02c7682e-5fb6-29eb-9105-02e3521756a2@arm.com>
+ <20210604114233.GE31173@arm.com>
+ <b3c869e3-b693-5e3f-3748-1c62b01e9b22@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2106011403540.2148@eggly.anvils>
+In-Reply-To: <b3c869e3-b693-5e3f-3748-1c62b01e9b22@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 02:05:45PM -0700, Hugh Dickins wrote:
-> Stressing huge tmpfs page migration racing hole punch often crashed on the
-> VM_BUG_ON(!pmd_present) in pmdp_huge_clear_flush(), with DEBUG_VM=y kernel;
-> or shortly afterwards, on a bad dereference in __split_huge_pmd_locked()
-> when DEBUG_VM=n.  They forgot to allow for pmd migration entries in the
-> non-anonymous case.
+On Fri, Jun 04, 2021 at 02:09:50PM +0100, Steven Price wrote:
+> On 04/06/2021 12:42, Catalin Marinas wrote:
+> > On Fri, Jun 04, 2021 at 12:15:56PM +0100, Steven Price wrote:
+> >> On 03/06/2021 18:13, Catalin Marinas wrote:
+> >>> On Mon, May 24, 2021 at 11:45:12AM +0100, Steven Price wrote:
+> >>>> diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
+> >>>> index 24223adae150..b3edde68bc3e 100644
+> >>>> --- a/arch/arm64/include/uapi/asm/kvm.h
+> >>>> +++ b/arch/arm64/include/uapi/asm/kvm.h
+> >>>> @@ -184,6 +184,17 @@ struct kvm_vcpu_events {
+> >>>>  	__u32 reserved[12];
+> >>>>  };
+> >>>>  
+> >>>> +struct kvm_arm_copy_mte_tags {
+> >>>> +	__u64 guest_ipa;
+> >>>> +	__u64 length;
+> >>>> +	void __user *addr;
+> >>>> +	__u64 flags;
+> >>>> +	__u64 reserved[2];
+> >>>> +};
+> >>>> +
+> >>>> +#define KVM_ARM_TAGS_TO_GUEST		0
+> >>>> +#define KVM_ARM_TAGS_FROM_GUEST		1
+> >>>> +
+> >>>>  /* If you need to interpret the index values, here is the key: */
+> >>>>  #define KVM_REG_ARM_COPROC_MASK		0x000000000FFF0000
+> >>>>  #define KVM_REG_ARM_COPROC_SHIFT	16
+> >>>> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> >>>> index e89a5e275e25..baa33359e477 100644
+> >>>> --- a/arch/arm64/kvm/arm.c
+> >>>> +++ b/arch/arm64/kvm/arm.c
+> >>>> @@ -1345,6 +1345,13 @@ long kvm_arch_vm_ioctl(struct file *filp,
+> >>>>  
+> >>>>  		return 0;
+> >>>>  	}
+> >>>> +	case KVM_ARM_MTE_COPY_TAGS: {
+> >>>> +		struct kvm_arm_copy_mte_tags copy_tags;
+> >>>> +
+> >>>> +		if (copy_from_user(&copy_tags, argp, sizeof(copy_tags)))
+> >>>> +			return -EFAULT;
+> >>>> +		return kvm_vm_ioctl_mte_copy_tags(kvm, &copy_tags);
+> >>>> +	}
+> >>>
+> >>> I wonder whether we need an update of the user structure following a
+> >>> fault, like how much was copied etc. In case of an error, some tags were
+> >>> copied and the VMM may want to skip the page before continuing. But here
+> >>> there's no such information provided.
+> >>>
+> >>> On the ptrace interface, we return 0 on the syscall if any bytes were
+> >>> copied and update iov_len to such number. Maybe you want to still return
+> >>> an error here but updating copy_tags.length would be nice (and, of
+> >>> course, a copy_to_user() back).
+> >>
+> >> Good idea - as you suggest I'll make it update length with the number of
+> >> bytes not processed. Although in general I think we're expecting the VMM
+> >> to know where the memory is so this is more of a programming error - but
+> >> could still be useful for debugging.
+> > 
+> > Or update it to the number of bytes copied to be consistent with
+> > ptrace()'s iov.len. On success, the structure is effectively left
+> > unchanged.
 > 
-> Full disclosure: those particular experiments were on a kernel with more
-> relaxed mmap_lock and i_mmap_rwsem locking, and were not repeated on the
-> vanilla kernel: it is conceivable that stricter locking happens to avoid
-> those cases, or makes them less likely; but __split_huge_pmd_locked()
-> already allowed for pmd migration entries when handling anonymous THPs,
-> so this commit brings the shmem and file THP handling into line.
+> I was avoiding that because it confuses the error code when the initial
+> copy_from_user() fails. In that case the structure is clearly unchanged,
+> so you can only tell from a -EFAULT return that nothing happened. By
+> returning the number of bytes left you can return an error code along
+> with the information that the copy only half completed.
 > 
-> Are there more places that need to be careful about pmd migration entries?
-> None hit in practice, but several of those is_huge_zero_pmd() tests were
-> done without checking pmd_present() first: I believe a pmd migration entry
-> could end up satisfying that test.  Ah, the inversion of swap offset, to
-> protect against L1TF, makes that impossible on x86; but other arches need
-> the pmd_present() check, and even x86 ought not to apply pmd_page() to a
-> swap-like pmd.  Fix those instances; __split_huge_pmd_locked() was not
-> wrong to be checking with pmd_trans_huge() instead, but I think it's
-> clearer to use pmd_present() in each instance.
+> It also seems cleaner to leave the structure unchanged if e.g. the flags
+> or reserved fields are invalid rather than having to set length=0 to
+> signal that nothing was done.
 > 
-> And while there: make it clearer to the eye that the !vma_is_anonymous()
-> and is_huge_zero_pmd() blocks make early returns (and don't return void).
+> Although I do feel like arguing whether to use a ptrace() interface or a
+> copy_{to,from}_user() interface is somewhat ridiculous considering
+> neither are exactly considered good.
 > 
-> Fixes: e71769ae5260 ("mm: enable thp migration for shmem thp")
-> Signed-off-by: Hugh Dickins <hughd@google.com>
-> Cc: <stable@vger.kernel.org>
+> Rather than changing the structure we could return either an error code
+> (if nothing was copied) or the number of bytes left. That way ioctl()==0
+> means complete success, >0 means partial success and <0 means complete
+> failure and provides a detailed error code. The ioctl() can be repeated
+> (with adjusted pointers) if it returns >0 and a detailed error is needed.
 
-Looks like a two fixes got squashed into one patch. Zero-page fix and
-migration entries in __split_huge_pmd_locked() deserve separate patches,
-no?
-
-Maybe add VM_BUG_ON(!pmd_present()) in is_huge_zero_pmd()?
-
-Also I wounder how much code we can remove if we would not establish
-migration ptes for file pages. We can make these page table entries 'none'
-on migration.
+That would be more like read/write (nearly, those always return the
+amount copied). Anyway, I don't have any strong preference, I'll leave
+the details up to you as long as there is some indication of how much
+was copied or left.
 
 -- 
- Kirill A. Shutemov
+Catalin
