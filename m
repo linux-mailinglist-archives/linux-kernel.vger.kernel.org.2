@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA2939B7EF
+	by mail.lfdr.de (Postfix) with ESMTP id B685239B7F0
 	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 13:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbhFDLdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 07:33:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34240 "EHLO mail.kernel.org"
+        id S230127AbhFDLdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 07:33:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229740AbhFDLdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 07:33:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A839613F9;
-        Fri,  4 Jun 2021 11:32:03 +0000 (UTC)
+        id S229740AbhFDLdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 07:33:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 324B7613FE;
+        Fri,  4 Jun 2021 11:32:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622806324;
-        bh=HBQeEl/CUgi+q6JezbobhTZCvfu9mgxmoaahKITVgPQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LBUxY5BpUKhPrEgSAYTDfML8Y2JaVbPPeF/f6lpCOStOUQfmoe+vfBVkC03Qn927K
-         6xei27p1wkZ84eDYGFfnYKfnjEAGlq4pfpaAdW27UruWgpIY+jrHQk2CkoImnIFNNI
-         kg4479S83pvscF4Dq4+NccM77ZAAh3PHFbiIczkXkOeCD5QNtyRahwkdiDvy8QJ/PL
-         VfCmUV89hh80Ut5W2jXMMzLZqX6R1GwJqvuCqNWBrB3UAL+Xfi6jh3PZ3tJFwqwoIc
-         BkIMyL2+xW7uleVKQyZvnxa32fm/PwcLyq7eVKd1zny2ZQxmyPpsN+tMrttCE2IQ4q
-         90zEIK9GHvOng==
+        s=k20201202; t=1622806326;
+        bh=UWTB2JFFGx0hcRAEvHxRwyTX7+TIbdrCudgu0abih/g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=cq9TMtMHx0mYceKQb9ptwNprxG0ZFt5uFO26KIYexU9b5z4f0wu0f2viwiEMXjUiV
+         4iU4gogV+Y5kZE7beYbv60i3Aotp2VGzICptpE1FRRfU2M2CZj+LzjKcMLOddartIV
+         8jnz+1fHahJQVrxolHNdoui7E5232hYJz/ha+DsNkNUYrbti4Y4ST5OefKIRkoxLCl
+         IRCjS27wL0uyFEU1P/Z+o6NrZ72Bsm1JZhmRmG3HIL/6aRYYatMB17J3ADUfpnbeR7
+         gWpclEjsw2x9lZx10gODV7iLxEwgfLreHP8Qtqi+cNB9BXNu0c5VFVGcluVdn2HEoF
+         cVzqycb+py4mQ==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -30,45 +30,81 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         "Eric W . Biederman" <ebiederm@xmission.com>,
         Oleg Nesterov <oleg@redhat.com>, Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH 0/6] posix-cpu-timers: Bunch of fixes 
-Date:   Fri,  4 Jun 2021 13:31:53 +0200
-Message-Id: <20210604113159.26177-1-frederic@kernel.org>
+Subject: [PATCH 1/6] posix-cpu-timers: Fix rearm racing against process tick
+Date:   Fri,  4 Jun 2021 13:31:54 +0200
+Message-Id: <20210604113159.26177-2-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210604113159.26177-1-frederic@kernel.org>
+References: <20210604113159.26177-1-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The first is a race due to locklessly starting process wide cputime
-counting.
+Since the process wide cputime counter is started locklessly from
+posix_cpu_timer_rearm(), it can be concurrently stopped by operations
+on other timers from the same thread group, such as in the following
+unlucky scenario:
 
-The others stop the process wide cputime counting and tick dependency
-when they are not necessary anymore.
+         CPU 0                                CPU 1
+         -----                                -----
+                                           timer_settime(TIMER B)
+   posix_cpu_timer_rearm(TIMER A)
+       cpu_clock_sample_group()
+           (pct->timers_active already true)
 
-Note I don't really like patch 5/6 and in fact I hope we could manage to
-remove this early inline cpu_timer_fire() call from timer_settime(). All
-we get from it is headaches. Besides, the handler isn't invoked from the
-actual target and that doesn't sound ideal.
+                                           handle_posix_cpu_timers()
+                                               check_process_timers()
+                                                   stop_process_timers()
+                                                       pct->timers_active = false
+       arm_timer(TIMER A)
 
-git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
-	timers/urgent
+   tick -> run_posix_cpu_timers()
+       // sees !pct->timers_active, ignore
+       // our TIMER A
 
-HEAD: f8f908c9d2b2f1e100cd549206c95a4e65e5f023
+Fix this with simply locking process wide cputime counting start and
+timer arm in the same block.
 
-Thanks,
-	Frederic
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Eric W. Biederman <ebiederm@xmission.com>
 ---
+ kernel/time/posix-cpu-timers.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Frederic Weisbecker (6):
-      posix-cpu-timers: Fix rearm racing against process tick
-      posix-cpu-timers: Don't start process wide cputime counter if timer is disabled
-      posix-cpu-timers: Force next_expiration recalc after timer deletion
-      posix-cpu-timers: Force next_expiration recalc after timer reset
-      posix-cpu-timers: Force next expiration recalc after early timer firing
-      posix-cpu-timers: Force next expiration recalc after itimer reset
+diff --git a/kernel/time/posix-cpu-timers.c b/kernel/time/posix-cpu-timers.c
+index 3bb96a8b49c9..aa52fc85dbcb 100644
+--- a/kernel/time/posix-cpu-timers.c
++++ b/kernel/time/posix-cpu-timers.c
+@@ -991,6 +991,11 @@ static void posix_cpu_timer_rearm(struct k_itimer *timer)
+ 	if (!p)
+ 		goto out;
+ 
++	/* Protect timer list r/w in arm_timer() */
++	sighand = lock_task_sighand(p, &flags);
++	if (unlikely(sighand == NULL))
++		goto out;
++
+ 	/*
+ 	 * Fetch the current sample and update the timer's expiry time.
+ 	 */
+@@ -1001,11 +1006,6 @@ static void posix_cpu_timer_rearm(struct k_itimer *timer)
+ 
+ 	bump_cpu_timer(timer, now);
+ 
+-	/* Protect timer list r/w in arm_timer() */
+-	sighand = lock_task_sighand(p, &flags);
+-	if (unlikely(sighand == NULL))
+-		goto out;
+-
+ 	/*
+ 	 * Now re-arm for the new expiry time.
+ 	 */
+-- 
+2.25.1
 
-
- include/linux/posix-timers.h   | 11 ++++-
- kernel/time/posix-cpu-timers.c | 97 +++++++++++++++++++++++++++++++++---------
- 2 files changed, 87 insertions(+), 21 deletions(-)
