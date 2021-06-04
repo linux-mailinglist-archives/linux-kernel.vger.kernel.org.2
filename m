@@ -2,59 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C1939C19B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A552739C1A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231200AbhFDUwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 16:52:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44418 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229906AbhFDUwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 16:52:09 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 082D2613FF;
-        Fri,  4 Jun 2021 20:50:20 +0000 (UTC)
-Date:   Fri, 4 Jun 2021 16:50:19 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Kate Carcia <kcarcia@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Clark Willaims <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH V3 6/9] trace/hwlat: Use the generic function to
- read/write width and window
-Message-ID: <20210604165019.061e9f51@oasis.local.home>
-In-Reply-To: <4ff9f435-9932-f555-9f19-65f92041950e@redhat.com>
-References: <cover.1621024265.git.bristot@redhat.com>
-        <bf0c568ddaf9e75e3d2e77b0ffd5ad1508c47afc.1621024265.git.bristot@redhat.com>
-        <20210603172709.25c322a1@gandalf.local.home>
-        <4ff9f435-9932-f555-9f19-65f92041950e@redhat.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231424AbhFDUxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 16:53:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229906AbhFDUxB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 16:53:01 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87A1EC061766;
+        Fri,  4 Jun 2021 13:51:02 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id u24so12571586edy.11;
+        Fri, 04 Jun 2021 13:51:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=N5QT07rrgG9f9WLFe7zl63Q/6BSW+uLjUfE7eE2mKP0=;
+        b=ZFuVijuEo2yHItqOwzxzVSWbeCfF/6exXrxqtieQcHh6pHI6InstArsNigaSt9VC+n
+         IDT09NOi5yzZBmqyTXwsrZljCmzVMmt91ELhhWjERv/kiSesoHoH7kbNpINPqGY2mbgo
+         vR/hexOk5TUgVCTzHZaA85wLuACTfrIY/U0SJiUvf4IfIBcXbtPlAiItOASto4eStL01
+         JFxTkIARO9uOXrpD/SrlUYBSi7BaRJ8DyCbJVOsALRC12KZf95CHfr5c1H5ymNTx/ute
+         BdUixtMTo4ZvPVoIeCgevfZ5mArGRtVnCkoTYSAMHrPh0TMe4x0z5VrfeEwPGQeWjSye
+         Nx2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=N5QT07rrgG9f9WLFe7zl63Q/6BSW+uLjUfE7eE2mKP0=;
+        b=FrQjINtDDcZlhtPGipmn+hMIVnjeEPpsBkEyWo7U9YzJ6qtamJmhkYqDfUGtPBw5ET
+         nIsXHereyRZe43hCSHgH0lZfWAAVywjnNnrmp7g2covlQdzsi8mOdAVhVPE8z13tr7xr
+         UV1XpCZ0K6XhoJOunTE5Zag5q1Gj9bY2dZSVgqycHgUqimjNo1xdT6yfc0iWVu5Or+fo
+         cpZC/foNSKatmeM474OXxJ5xEHnQaAfMaODKpQX+pydAj+P1Q7gGYaFbquzI7JVdc386
+         7ptz+n/bgYuGbLQKZekkAIF/cdFlK0gzjKJMpzUYh/iOV0DCBMBW6HUoOqbL28YMvpdG
+         GCSA==
+X-Gm-Message-State: AOAM533jMJcsKK/HbvqRzEclApYSABKB74gvr7eKvIMD1eVys9tB05ar
+        sYul9q35HzLrv0WjRynvYNs=
+X-Google-Smtp-Source: ABdhPJwoZespHv/dbtpfVtAyVAirxiDQKC4+riYeP71LbjJBgb/1CT7zdcI06HW4/WdNCwsHgEdWHw==
+X-Received: by 2002:a05:6402:702:: with SMTP id w2mr6733818edx.189.1622839861138;
+        Fri, 04 Jun 2021 13:51:01 -0700 (PDT)
+Received: from skbuf ([188.26.52.84])
+        by smtp.gmail.com with ESMTPSA id kb20sm3188097ejc.58.2021.06.04.13.51.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 13:51:00 -0700 (PDT)
+Date:   Fri, 4 Jun 2021 23:50:59 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     George McCollister <george.mccollister@gmail.com>
+Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: dsa: xrs700x: allow HSR/PRP supervision
+ dupes for node_table
+Message-ID: <20210604205059.jec6ee4yon7p3whs@skbuf>
+References: <20210604162922.76954-1-george.mccollister@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604162922.76954-1-george.mccollister@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Jun 2021 18:36:58 +0200
-Daniel Bristot de Oliveira <bristot@redhat.com> wrote:
-
-> I will rework the patch 5/9 to add a better explanation for the read/write
-> functions, and I will add comments to this patch, explaining the reason for the
-> min/max values.
+On Fri, Jun 04, 2021 at 11:29:22AM -0500, George McCollister wrote:
+> Add an inbound policy filter which matches the HSR/PRP supervision
+> MAC range and forwards to the CPU port without discarding duplicates.
+> This is required to correctly populate time_in[A] and time_in[B] in the
+> HSR/PRP node_table. Leave the policy disabled by default and
+> enable/disable it when joining/leaving hsr.
 > 
-> Sound good?
+> Signed-off-by: George McCollister <george.mccollister@gmail.com>
+> ---
 
-We'll see in v4 ;-)
-
--- Steve
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
