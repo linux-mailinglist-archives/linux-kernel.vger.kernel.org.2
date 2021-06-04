@@ -2,78 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A296A39C2D4
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:46:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0B839C2D7
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 23:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231496AbhFDVrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 17:47:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43816 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229930AbhFDVro (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 17:47:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D325B61403;
-        Fri,  4 Jun 2021 21:45:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622843157;
-        bh=/SeCtTg7XVH3TrVFpbsNU4uw/aknBvRf/HKh5NI2bA0=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=pCXGlYnNTnEBGa0tw0/6tK+OYJdENvh+QIqW4BzNnTsovjXENYOa4AWd8zF04nezW
-         ntS4jXTs3KUalCawi/ZTxXXVt9hgxGqPY60/RxHHY8b/bBt8LCdqOo81vfOZRTtpcc
-         uu0d4B4EW8aRpQFB4c4cslNMFC0lvYOmrCU4MYRss/fo2JWYrtzzmH/qBKsQElZxub
-         plIFs1SGGgJcqADYHUm92Ny5BnOq2xWQWPE1xJPp4r+WB3dsj3YasEhFJumIRYPBU4
-         NF3EOmEqxbz4aGGRzwJ2pC80f66QCY0Kzu4nfihEdyP5GltJUIO4Sv5Rf731NofQ4w
-         4qVQLTRWdbFpA==
-Content-Type: text/plain; charset="utf-8"
+        id S231566AbhFDVr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 17:47:59 -0400
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:46774 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231569AbhFDVr5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 17:47:57 -0400
+Received: by mail-oi1-f178.google.com with SMTP id c13so5607693oib.13;
+        Fri, 04 Jun 2021 14:46:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MxgELyl9ZDNqb+JhNnsjnlPROT2DhakY1WRv9qMjO0o=;
+        b=pIVFPAcNLGFK7gX4I5Cjh2uDm7W3lDO/R544953UPhjgfWvvL/qAa8X7n2tXCjizoi
+         2Obeuy8OhSsiXB5t69dkqfm1yIKI4OvPr8fR+V3eaT2kADFFm73/jrjOp3w0GF3yFOvl
+         A2xOY2cUvo1x0CHJryEjte/Ocmb5hQjBbNJwz3QJOsa2Z5WjcIodqtQfUpuBiH9UlJo2
+         9fKrGghfwG+EHZ53Q4+tUua5Zhab6NsqtgF6X0PPxNFKBUiUVYfamtxFAwhCwpqdVcH5
+         +RCgyVqB7xdo6GyFA1xbYJxg9WsKHZaNpHOO3iN6bZOeVfj+3RgsIFP8X/YvnfP1Ww0B
+         97nQ==
+X-Gm-Message-State: AOAM530/XaH+ZFoCdRAyWSzBTEDNK4ju4l8HagC1YhGaVZv8wHLVLYtW
+        PjxG10l+aPNWrAFdD7wtwA==
+X-Google-Smtp-Source: ABdhPJybUqJWZvBq74kjHndi571LzDfY6PMchE2P6H5ykzbgzu5zwjVbZ/u+xwihB6VH2rMS6e1ZHA==
+X-Received: by 2002:aca:670d:: with SMTP id z13mr12405152oix.24.1622843170228;
+        Fri, 04 Jun 2021 14:46:10 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id s15sm117977oih.15.2021.06.04.14.46.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 14:46:09 -0700 (PDT)
+Received: (nullmailer pid 3979057 invoked by uid 1000);
+        Fri, 04 Jun 2021 21:46:08 -0000
+Date:   Fri, 4 Jun 2021 16:46:08 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Harini Katakam <harinik@xilinx.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] dt-bindings: spi: convert Cadence SPI bindings to YAML
+Message-ID: <20210604214608.GA3974358@robh.at.kernel.org>
+References: <20210531141538.721613-1-iwamatsu@nigauri.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210604135439.19119-2-rojay@codeaurora.org>
-References: <20210604135439.19119-1-rojay@codeaurora.org> <20210604135439.19119-2-rojay@codeaurora.org>
-Subject: Re: [PATCH V3 1/3] arm64: dts: sc7280: Add QSPI node
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
-        Roja Rani Yarubandi <rojay@codeaurora.org>
-To:     Roja Rani Yarubandi <rojay@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org
-Date:   Fri, 04 Jun 2021 14:45:56 -0700
-Message-ID: <162284315655.1835121.6817703229350764867@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210531141538.721613-1-iwamatsu@nigauri.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Roja Rani Yarubandi (2021-06-04 06:54:37)
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dt=
-s/qcom/sc7280-idp.dts
-> index 3900cfc09562..d0edffc15736 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> @@ -268,6 +268,22 @@ pmr735b_die_temp {
->                 };
->  };
-> =20
-> +&qspi {
-> +       status =3D "okay";
-> +       pinctrl-names =3D "default";
-> +       pinctrl-0 =3D <&qspi_clk>, <&qspi_cs0>, <&qspi_data01>;
+On Mon, May 31, 2021 at 11:15:38PM +0900, Nobuhiro Iwamatsu wrote:
+> Convert spi for Cadence SPI bindings documentation to YAML.
+> 
+> Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+> ---
+>  .../devicetree/bindings/spi/spi-cadence.txt   | 30 ---------
+>  .../devicetree/bindings/spi/spi-cadence.yaml  | 63 +++++++++++++++++++
+>  2 files changed, 63 insertions(+), 30 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/spi/spi-cadence.txt
+>  create mode 100644 Documentation/devicetree/bindings/spi/spi-cadence.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/spi-cadence.txt b/Documentation/devicetree/bindings/spi/spi-cadence.txt
+> deleted file mode 100644
+> index 05a2ef945664be..00000000000000
+> --- a/Documentation/devicetree/bindings/spi/spi-cadence.txt
+> +++ /dev/null
+> @@ -1,30 +0,0 @@
+> -Cadence SPI controller Device Tree Bindings
+> --------------------------------------------
+> -
+> -Required properties:
+> -- compatible		: Should be "cdns,spi-r1p6" or "xlnx,zynq-spi-r1p6".
+> -- reg			: Physical base address and size of SPI registers map.
+> -- interrupts		: Property with a value describing the interrupt
+> -			  number.
+> -- clock-names		: List of input clock names - "ref_clk", "pclk"
+> -			  (See clock bindings for details).
+> -- clocks		: Clock phandles (see clock bindings for details).
+> -
+> -Optional properties:
+> -- num-cs		: Number of chip selects used.
+> -			  If a decoder is used, this will be the number of
+> -			  chip selects after the decoder.
+> -- is-decoded-cs		: Flag to indicate whether decoder is used or not.
+> -
+> -Example:
+> -
+> -	spi@e0007000 {
+> -		compatible = "xlnx,zynq-spi-r1p6";
+> -		clock-names = "ref_clk", "pclk";
+> -		clocks = <&clkc 26>, <&clkc 35>;
+> -		interrupt-parent = <&intc>;
+> -		interrupts = <0 49 4>;
+> -		num-cs = <4>;
+> -		is-decoded-cs = <0>;
+> -		reg = <0xe0007000 0x1000>;
+> -	} ;
+> diff --git a/Documentation/devicetree/bindings/spi/spi-cadence.yaml b/Documentation/devicetree/bindings/spi/spi-cadence.yaml
+> new file mode 100644
+> index 00000000000000..27a7121ed0f9ae
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/spi-cadence.yaml
+> @@ -0,0 +1,63 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spi/spi-cadence.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +       flash@0 {
-> +               compatible =3D "jedec,spi-nor";
-> +               reg =3D <0>;
+> +title: Cadence SPI controller Device Tree Bindings
 > +
-> +               /* TODO: Increase frequency after testing */
+> +maintainers:
+> +  - Michal Simek <michal.simek@xilinx.com>
+> +
+> +allOf:
+> +  - $ref: "spi-controller.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - cdns,spi-r1p6
+> +      - xlnx,zynq-spi-r1p6
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: ref_clk
+> +      - const: pclk
+> +
+> +  clocks:
+> +    maxItems: 2
+> +
+> +  num-cs:
+> +    description: |
+> +      Number of chip selects used. If a decoder is used,
+> +      this will be the number of chip selects after the
+> +      decoder.
+> +    minimum: 1
+> +    maximum: 4
+> +    default: 4
+> +
+> +  is-decoded-cs:
 
-Is this going to change? Please set it to 37.5MHz if that's the max
-supported.
+Needs a type ref. Despite being called a 'flag' looks like it's an 
+uint32. Presumably, it also needs:
 
-> +               spi-max-frequency =3D <25000000>;
-> +               spi-tx-bus-width =3D <2>;
-> +               spi-rx-bus-width =3D <2>;
-> +       };
-> +};
+enum: [ 0, 1 ]
+
+> +    description: |
+> +      Flag to indicate whether decoder is used or not.
+> +    default: 0
 > +
->  &qupv3_id_0 {
->         status =3D "okay";
->  };
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    spi@e0007000 {
+> +      compatible = "xlnx,zynq-spi-r1p6";
+> +      clock-names = "ref_clk", "pclk";
+> +      clocks = <&clkc 26>, <&clkc 35>;
+> +      interrupt-parent = <&intc>;
+> +      interrupts = <0 49 4>;
+> +      num-cs = <4>;
+> +      is-decoded-cs = <0>;
+> +      reg = <0xe0007000 0x1000>;
+> +    };
+> +...
+> -- 
+> 2.30.0
