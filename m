@@ -2,110 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 275F239B0A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 04:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9557139B09D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 04:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229840AbhFDC5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 22:57:02 -0400
-Received: from mail-qv1-f44.google.com ([209.85.219.44]:37415 "EHLO
-        mail-qv1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFDC47 (ORCPT
+        id S229791AbhFDC4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 22:56:18 -0400
+Received: from mail-pl1-f173.google.com ([209.85.214.173]:41752 "EHLO
+        mail-pl1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFDC4R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 22:56:59 -0400
-Received: by mail-qv1-f44.google.com with SMTP id z1so4293345qvo.4
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 19:55:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=tzIVv+lKCCHH2FflktthX9wxyuJutky8QPa/YVxWuE8=;
-        b=Ti9OjQCNoW3/TjQWP9o9zmOfFPCPJeIKzDZ0oWm4SfHRiekMW0qWopTYgy5cvt5CRb
-         I2he0vPPCj/OssW9bMaLKi6txZuMaGO3JgH0unSpauH7iCNI62j+UsBAdWvxAnxcaA9Z
-         mZycVBh110e+zgGQ8KbpoYpdp1/XUpLT7+mO6zc7F6Z0nIU30OlrdhzDEyI+WgejoOIM
-         BO4DNd8qxMjBkU3x+tJfAir4gBxhvouo1BEmddnjzz5qW84fYypyRLhGQXdD7B4jXgL/
-         VkWvTqxW2hlq1T9BH850dmsW7SRszqaOJLwnqZjb29oUxkSCNeHwaXH08HBxV4Xhvh19
-         d9XQ==
+        Thu, 3 Jun 2021 22:56:17 -0400
+Received: by mail-pl1-f173.google.com with SMTP id o12so532600plk.8;
+        Thu, 03 Jun 2021 19:54:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=tzIVv+lKCCHH2FflktthX9wxyuJutky8QPa/YVxWuE8=;
-        b=sFB22//lENjdnq5dCC31IL5WbK8PXAllXmL8ix+UuHPMfl4EOMAGSrC95g5+ftYOdf
-         7LN4sxBJgfK+C0/3FM2ejVoRYxdUfNdRDtphW9yikFtJNKFeUefaX/L+xsCKqsXcZOGT
-         1O9Akw9pdxKnda1zH1KQ/0K9U4paTgXVRFwrYobwXxQACsYk8B/vJdgxJwnMlRiHSFAa
-         fURL/z4K7Qpy2B4JFGHxFzx0dJvPX/Rfzi2eCoj9Ld5nBQyHY50cBNKOcPN4xC9eiTuB
-         5gFjrQ4KOac3BHQjyEQ1fPO/K/c1rbYy7PM6uPfwfcE8Ta1iJs3Wxt62JnkaRlqFUU0m
-         1q7A==
-X-Gm-Message-State: AOAM53324GYYk9PoZJDCGUhqtiXcNCkn6tE+gMbjWMR+47QTf/EHX++6
-        l0ieLZDZSJdxphOOaIR8CVWjRg==
-X-Google-Smtp-Source: ABdhPJzF6d8NhQAvBLeQNS13us0aYVeeZuG4N5vWNDnNrhSxzZ+/vFl9aKx7az720abBxGTw484eUg==
-X-Received: by 2002:a05:6214:485:: with SMTP id ay5mr2811633qvb.6.1622775253981;
-        Thu, 03 Jun 2021 19:54:13 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id x18sm3110686qkx.118.2021.06.03.19.54.12
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 03 Jun 2021 19:54:13 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 19:54:11 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Peter Xu <peterx@redhat.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>, Jue Wang <juew@google.com>,
-        Jan Kara <jack@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/7] mm/thp: try_to_unmap() use TTU_SYNC for safe DEBUG_VM
- splitting
-In-Reply-To: <YLlOPoP/rIRMm2U5@t490s>
-Message-ID: <alpine.LSU.2.11.2106031945280.12760@eggly.anvils>
-References: <alpine.LSU.2.11.2106011353270.2148@eggly.anvils> <alpine.LSU.2.11.2106011405510.2148@eggly.anvils> <YLlOPoP/rIRMm2U5@t490s>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lfarpHwfp7BSQa/GuG0n45sx11I+xDYjLeTC1R+2hdY=;
+        b=h6287yTu9DfgNt8W5XbTY5qArOJDz67YqZqRPMwAUnDHeA0sXfld82P/8SBJCQy7VL
+         fJoi+oRfDPT05pYCSC4HjfP4utSeIheMhsps78P5OSdvh8pWUxgEHE283GmDo0IC7gtR
+         7q49ndCBDautlhp+5rtB4wrCOMzRZrE/pv96Vk+hvO8z9layIGHTNEfRfiItz6Y4NkF9
+         Uhp9k4M/sNAUz7hy0tUyXsiqmKS2l1/zAh3TGwF3FzSFrEQRPzUyisu6WQYhITzOhJZc
+         UwPq0LRVXriSuVgdV/6sB9pKh8QWj7wTRJqIlFXxYuU6hHACVS8K0N+EMEX1QMMxV7sF
+         x42Q==
+X-Gm-Message-State: AOAM530KI0lA72ZZc0sv8OO7GVyfTfb/UJAWlJ+gQTf4HFvR+hi2pZgi
+        ldLf4RBuZekx4iqd2sUtqfk=
+X-Google-Smtp-Source: ABdhPJyOQnoyoKo/oXvCTEtseCc8AZciO65zt5hHMLY7TRhe8BGzAFT+4cWEuQF5BtdF1E/pvtCHVw==
+X-Received: by 2002:a17:90a:16c2:: with SMTP id y2mr2457951pje.236.1622775257215;
+        Thu, 03 Jun 2021 19:54:17 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id s22sm365790pfd.94.2021.06.03.19.54.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Jun 2021 19:54:16 -0700 (PDT)
+Subject: Re: [PATCH v35 3/4] scsi: ufs: Prepare HPB read for cached sub-region
+To:     daejun7.park@samsung.com, Greg KH <gregkh@linuxfoundation.org>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        Jaemyung Lee <jaemyung.lee@samsung.com>,
+        Jieon Seol <jieon.seol@samsung.com>
+References: <12392bef-e018-8260-5279-16b7b43f5a8f@acm.org>
+ <20210524084345epcms2p63dde85f3fdc127c29d25ada7d7f539cb@epcms2p6>
+ <20210524084546epcms2p2c91dc1df482fd593307892825532c6dd@epcms2p2>
+ <CGME20210524084345epcms2p63dde85f3fdc127c29d25ada7d7f539cb@epcms2p3>
+ <20210604011124epcms2p39a466db169ebbfd2c889e25fba9aa0b4@epcms2p3>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <4bf317c8-4c74-2207-95e2-34c59b14c454@acm.org>
+Date:   Thu, 3 Jun 2021 19:54:14 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <20210604011124epcms2p39a466db169ebbfd2c889e25fba9aa0b4@epcms2p3>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Jun 2021, Peter Xu wrote:
-> On Tue, Jun 01, 2021 at 02:07:53PM -0700, Hugh Dickins wrote:
-> > diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
-> > index 2cf01d933f13..b45d22738b45 100644
-> > --- a/mm/page_vma_mapped.c
-> > +++ b/mm/page_vma_mapped.c
-> > @@ -212,6 +212,14 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
-> >  			pvmw->ptl = NULL;
-> >  		}
-> >  	} else if (!pmd_present(pmde)) {
-> > +		/*
-> > +		 * If PVMW_SYNC, take and drop THP pmd lock so that we
-> > +		 * cannot return prematurely, while zap_huge_pmd() has
-> > +		 * cleared *pmd but not decremented compound_mapcount().
-> > +		 */
-> > +		if ((pvmw->flags & PVMW_SYNC) &&
-> > +		    PageTransCompound(pvmw->page))
-> > +			spin_unlock(pmd_lock(mm, pvmw->pmd));
-> >  		return false;
-> >  	}
-> >  	if (!map_pte(pvmw))
+On 6/3/21 6:11 PM, Daejun Park wrote:
+
+>>> +/*
+>>> + * This function will set up HPB read command using host-side L2P map data.
+>>> + * In HPB v1.0, maximum size of HPB read command is 4KB.
+>>> + */
+>>> +void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
+>>> +{
+>> [ ... ]
+>>> +
+>>> +        ufshpb_set_hpb_read_to_upiu(hpb, lrbp, lpn, ppn, transfer_len);
+>>
+>> 'transfer_len' has type int and is truncated to type 'u8' when passed as
+>> an argument to ufshpb_set_hpb_read_to_upiu(). Please handle transfer_len
+>> values >= 256 properly.
 > 
-> Sorry if I missed something important, but I'm totally confused on how this
-> unlock is pairing with another lock()..
+> Before entering the function, ufshpb_is_supported_chunk() checks whether
+> transfer_len <= hpb->pre_req_max_tr_len which is set to
+> HPB_MULTI_CHUNK_HIGH (128) on initalization.
 
-I imagine you're reading that as spin_unlock(pmd_lockptr(blah));
-no, the lock is right there, inside spin_unlock(pmd_lock(blah)).
+How about adding a WARN_ON_ONCE() in ufshpb_prep() that verifies that
+transfer_len is <= HPB_MULTI_CHUNK_HIGH?
 
-> 
-> And.. isn't PVMW_SYNC only meaningful for pte-level only (as I didn't see a
-> reference of it outside map_pte)?
+Thanks,
 
-But you are pointing directly to its reference outside map_pte()!
-
-Hugh
+Bart.
