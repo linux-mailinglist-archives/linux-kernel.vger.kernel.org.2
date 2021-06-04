@@ -2,70 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA46839C187
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED20939C18C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 22:44:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbhFDUqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 16:46:30 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:43882 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhFDUq2 (ORCPT
+        id S231503AbhFDUqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 16:46:43 -0400
+Received: from mail-oi1-f175.google.com ([209.85.167.175]:35398 "EHLO
+        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229854AbhFDUqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 16:46:28 -0400
-Received: from [192.168.254.32] (unknown [47.187.214.213])
-        by linux.microsoft.com (Postfix) with ESMTPSA id B81E420B7178;
-        Fri,  4 Jun 2021 13:44:40 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B81E420B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1622839481;
-        bh=TEj7EM3o5+98uJz07bRAjergvchDlGPCV6FJpuSvx4o=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=HouYNKoOc/HyfaQL1LCJbvsjnCx3jzuuAqk6uTacGwD253S95a3gu4rFYA4RAurVy
-         7ZicmjTFGm48ks6edRn8/E2mK4FrqUfA2BmC8/oGFKkyk+8VZ6M3alaa9PvjEQcxyg
-         vqo9nXtlvpetxo72bR+nFtDAIA1Xgm5aYcKeBA4c=
-Subject: Re: [RFC PATCH v5 0/2] arm64: Implement stack trace reliability
- checks
-To:     Mark Brown <broonie@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     jpoimboe@redhat.com, ardb@kernel.org, nobuta.keiya@fujitsu.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        pasha.tatashin@soleen.com, jthierry@redhat.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <ea0ef9ed6eb34618bcf468fbbf8bdba99e15df7d>
- <20210526214917.20099-1-madvenka@linux.microsoft.com>
- <20210604152908.GD4045@sirena.org.uk>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <3e3fdff0-26ed-e786-e570-3f569bda1609@linux.microsoft.com>
-Date:   Fri, 4 Jun 2021 15:44:39 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 4 Jun 2021 16:46:42 -0400
+Received: by mail-oi1-f175.google.com with SMTP id v22so11023237oic.2;
+        Fri, 04 Jun 2021 13:44:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/OM/wB6G0TcYiKxi3lHOYFVJpevT4bpYNZzrcyD4Qfo=;
+        b=mtu5Fdm9C66juE0zIyZ+JULiXsIiDGLteu3ERSlOxNjJNP3FgV/QWeCKwAIlM0to+1
+         3tQHp6XyU0rKhNyLOfrgPRB/HxJkW6kt79r8f0jIkuM6cGKi9PgiEVQRgXAi78BHoEp8
+         u2cpAvEK8pDfsJn4FFFDKBuGuC9b1Zg4niFoewgkEoTd1hbnzuQI8rCf8ug7lZrsjIez
+         xXu6o3vYgX0m+QMbNqsUzeyX5/pV0mAO+pcIBkYeJVUmEQ6y52rZOQCxtwaW2LtDPmpJ
+         KD9p3di78ZPPXvLhiYtb54Zb9XLKphAvzm9kRRJDPplu0OMD3dtONwqCAuOf+IUjMldy
+         S0Bg==
+X-Gm-Message-State: AOAM532YKzGUw8CPMD45bGAW33yQai/yJg1zX/gFTBRRT8orDsqOcUHd
+        3SQEWAfDMLVLZEkUYwCGyQ==
+X-Google-Smtp-Source: ABdhPJx6Vi4fyJQ/2XM1k6LY9+2IiKO8TUuRqcHHUDu8/kg9JqjdV75l1sYPJvvEJMxfbHyrMzshqA==
+X-Received: by 2002:a05:6808:992:: with SMTP id a18mr4087354oic.129.1622839495165;
+        Fri, 04 Jun 2021 13:44:55 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id l20sm647797oop.3.2021.06.04.13.44.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 13:44:54 -0700 (PDT)
+Received: (nullmailer pid 3883662 invoked by uid 1000);
+        Fri, 04 Jun 2021 20:44:52 -0000
+Date:   Fri, 4 Jun 2021 15:44:52 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Alex Bee <knaerzche@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-rockchip@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v2 02/12] dt-bindings: media: rockchip-vpu: add new
+ compatibles
+Message-ID: <20210604204452.GA3883628@robh.at.kernel.org>
+References: <20210525152225.154302-1-knaerzche@gmail.com>
+ <20210527154455.358869-1-knaerzche@gmail.com>
+ <20210527154455.358869-3-knaerzche@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210604152908.GD4045@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210527154455.358869-3-knaerzche@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark Rutland,
-
-Could you please review this patch series when you get a chance?
-I would really like to get a confirmation from you that there
-are no gaps in this.
-
-Thanks in advance!
-
-Madhavan
-
-On 6/4/21 10:29 AM, Mark Brown wrote:
-> On Wed, May 26, 2021 at 04:49:15PM -0500, madvenka@linux.microsoft.com wrote:
->> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
->>
->> There are a number of places in kernel code where the stack trace is not
->> reliable. Enhance the unwinder to check for those cases and mark the
->> stack trace as unreliable. Once all of the checks are in place, the unwinder
+On Thu, 27 May 2021 17:44:45 +0200, Alex Bee wrote:
+> Add compatibles for RK3036, RK3066, RK3188 and RK3228. Also reflect the
+> changes to the additional clocks for RK3066/RK3188.
 > 
-> Reviewed-by: Mark Brown <broonie@kernel.org>
+> Signed-off-by: Alex Bee <knaerzche@gmail.com>
+> ---
 > 
+>  Changes in v2:
+>  - fix order
+>  - fix indentation
+> 
+>  .../bindings/media/rockchip-vpu.yaml          | 33 ++++++++++++++-----
+>  1 file changed, 25 insertions(+), 8 deletions(-)
+> 
+
+Reviewed-by: Rob Herring <robh@kernel.org>
