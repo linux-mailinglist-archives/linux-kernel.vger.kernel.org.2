@@ -2,124 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 944D239BF0F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 186B039BF18
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhFDRuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 13:50:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37356 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229791AbhFDRuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 13:50:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D1B72611CE;
-        Fri,  4 Jun 2021 17:48:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622828909;
-        bh=itHLj7KgFnb/FecADbuq7I4biuZGdUj1du28UW6T8SI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Iqm0inp9VgNpzeAFuP421rSsgCv0Qhkv5QnQPUkLUJFiTIxp7TFY3QR4OyPttmT96
-         63UJ1NvLjEWUu6sIeGlZQM4Ted9nVFpDXdWeD/OOk+ONJBJL5Ar0gZ0w9EXx03CeNz
-         9hxeLBPU+4Vs1Iu13rVy6icMo7fyuPwvCQ+cWk5bEidGKBw04BNS3wfiw4K6ZGCyPX
-         6cUjTh3kCX/N4K95NY0l8Alu5nPdSl//4dOSMljRD2azPbGNPTGPvDRtwrHFnkFOCZ
-         c64/aftHtK6fT63h1C50fed28UcM2UZbSHegeAkgG/khU8kRyqVyIs14SrPvQtO8GW
-         fslW9h7sjgBEQ==
-Date:   Fri, 4 Jun 2021 18:48:18 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
-        jxgao@google.com, joonas.lahtinen@linux.intel.com,
-        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        matthew.auld@intel.com, rodrigo.vivi@intel.com,
-        thomas.hellstrom@linux.intel.com
-Subject: Re: [PATCH v8 00/15] Restricted DMA
-Message-ID: <20210604174818.GC3703@willie-the-truck>
-References: <20210527125845.1852284-1-tientzu@chromium.org>
+        id S229930AbhFDRwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 13:52:44 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:24316 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229690AbhFDRwo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 13:52:44 -0400
+Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 04 Jun 2021 10:50:57 -0700
+X-QCInternal: smtphost
+Received: from gurus-linux.qualcomm.com ([10.134.64.25])
+  by ironmsg05-sd.qualcomm.com with ESMTP; 04 Jun 2021 10:50:57 -0700
+Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
+        id 4C04F210ED; Fri,  4 Jun 2021 10:50:57 -0700 (PDT)
+Date:   Fri, 4 Jun 2021 10:50:57 -0700
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        lee.jones@linaro.org, agross@kernel.org,
+        dmitry.baryshkov@linaro.org
+Subject: Re: [PATCH -next v2] mfd: pm8008: Fix return value check in
+ pm8008_probe()
+Message-ID: <20210604175057.GA13362@codeaurora.org>
+References: <20210604013824.1040775-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210527125845.1852284-1-tientzu@chromium.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210604013824.1040775-1-yangyingliang@huawei.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Claire,
-
-On Thu, May 27, 2021 at 08:58:30PM +0800, Claire Chang wrote:
-> This series implements mitigations for lack of DMA access control on
-> systems without an IOMMU, which could result in the DMA accessing the
-> system memory at unexpected times and/or unexpected addresses, possibly
-> leading to data leakage or corruption.
+On Fri, Jun 04, 2021 at 09:38:24AM +0800, Yang Yingliang wrote:
+> In case of error, the function devm_regmap_init_i2c() returns ERR_PTR()
+> and never returns NULL. The NULL test in the return value check
+> should be replaced with IS_ERR().
 > 
-> For example, we plan to use the PCI-e bus for Wi-Fi and that PCI-e bus is
-> not behind an IOMMU. As PCI-e, by design, gives the device full access to
-> system memory, a vulnerability in the Wi-Fi firmware could easily escalate
-> to a full system exploit (remote wifi exploits: [1a], [1b] that shows a
-> full chain of exploits; [2], [3]).
+> Fixes: 6b149f3310a4 ("mfd: pm8008: Add driver for QCOM PM8008 PMIC")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+> v2:
+>   make the change correspond to the changelog
+> ---
+>  drivers/mfd/qcom-pm8008.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> To mitigate the security concerns, we introduce restricted DMA. Restricted
-> DMA utilizes the existing swiotlb to bounce streaming DMA in and out of a
-> specially allocated region and does memory allocation from the same region.
-> The feature on its own provides a basic level of protection against the DMA
-> overwriting buffer contents at unexpected times. However, to protect
-> against general data leakage and system memory corruption, the system needs
-> to provide a way to restrict the DMA to a predefined memory region (this is
-> usually done at firmware level, e.g. MPU in ATF on some ARM platforms [4]).
-> 
-> [1a] https://googleprojectzero.blogspot.com/2017/04/over-air-exploiting-broadcoms-wi-fi_4.html
-> [1b] https://googleprojectzero.blogspot.com/2017/04/over-air-exploiting-broadcoms-wi-fi_11.html
-> [2] https://blade.tencent.com/en/advisories/qualpwn/
-> [3] https://www.bleepingcomputer.com/news/security/vulnerabilities-found-in-highly-popular-firmware-for-wifi-chips/
-> [4] https://github.com/ARM-software/arm-trusted-firmware/blob/master/plat/mediatek/mt8183/drivers/emi_mpu/emi_mpu.c#L132
-> 
-> v8:
-> - Fix reserved-memory.txt and add the reg property in example.
-> - Fix sizeof for of_property_count_elems_of_size in
->   drivers/of/address.c#of_dma_set_restricted_buffer.
-> - Apply Will's suggestion to try the OF node having DMA configuration in
->   drivers/of/address.c#of_dma_set_restricted_buffer.
-> - Fix typo in the comment of drivers/of/address.c#of_dma_set_restricted_buffer.
-> - Add error message for PageHighMem in
->   kernel/dma/swiotlb.c#rmem_swiotlb_device_init and move it to
->   rmem_swiotlb_setup.
-> - Fix the message string in rmem_swiotlb_setup.
+> diff --git a/drivers/mfd/qcom-pm8008.c b/drivers/mfd/qcom-pm8008.c
+> index c472d7f8103c..476171455d32 100644
+> --- a/drivers/mfd/qcom-pm8008.c
+> +++ b/drivers/mfd/qcom-pm8008.c
+> @@ -228,7 +228,7 @@ static int pm8008_probe(struct i2c_client *client)
+>  
+>  	chip->dev = &client->dev;
+>  	chip->regmap = devm_regmap_init_i2c(client, &qcom_mfd_regmap_cfg);
+> -	if (!chip->regmap)
+> +	if (IS_ERR(chip->regmap))
+>  		return -ENODEV;
 
-Thanks for the v8. It works for me out of the box on arm64 under KVM, so:
+The error received from devm_regmap_init_i2c should be returned as-is and not
+-ENODEV. Could you please do:
 
-Tested-by: Will Deacon <will@kernel.org>
+	if (IS_ERR(chip->regmap))
+		return PTR_ERR(chip->regmap);
 
-Note that something seems to have gone wrong with the mail threading, so
-the last 5 patches ended up as a separate thread for me. Probably worth
-posting again with all the patches in one place, if you can.
+Thank you for this patch.
 
-Cheers,
-
-Will
+>  
+>  	i2c_set_clientdata(client, chip);
