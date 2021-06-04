@@ -2,100 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F69F39BD8B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F86739BD90
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231165AbhFDQsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 12:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49690 "EHLO
+        id S230270AbhFDQtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 12:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229892AbhFDQsG (ORCPT
+        with ESMTP id S229791AbhFDQtv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 12:48:06 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8045C061766
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 09:46:04 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id l7so7461696qtk.5
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 09:46:04 -0700 (PDT)
+        Fri, 4 Jun 2021 12:49:51 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 032D2C061767
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 09:48:05 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id y11so192720pgp.11
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 09:48:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=QmdH7mKnFkOZAH2JI/GCXFdUAnEZ4TREjy0wt14hYvE=;
-        b=C9WM3GBnDyo1IuG8vugzF7OJuv0/qSLc2h5rlH2vs9hPAsnhLP/AiXMndOeLbpR2IM
-         Ohtn8XR2SA70sT+Glx2x+oDv2XvXp4XsXKCzRp3r/+xQ35mo133BJzGzSP18qJtL2g6h
-         Aj3waqvEMKM8rNoNBayZGxz6o91LWXuicSMxg=
+         :content-disposition:in-reply-to;
+        bh=m+tuHAocWcuJzWvdGVhmtAZ0L2xQ0dgC0EsdO1uJTuM=;
+        b=SIVwRFswGc3aP5BmxCJ9AJkwql7geJWoxL/UsCiOtJXDElaoaJWjeqrWbx6yJ9HpPM
+         dZNdy17ufEhVvcggpv4j/W9KWphcJ2l+8cnlLN7rkolTsqWNWyoi/KuIko664ng3KsKV
+         yvMHnTbmzBA2izsnK60sgOfus+dXfWn9hMc+1N+0bT4YnO7YXM2ZeHCnUj2UFXqt8P0e
+         flYw1BBbY+H74McenLyNRs4KpaT+Tym8BpTbhhWmyE/roHEb6s9unFp1KusVs5c3zEI1
+         a9wXPi3Zve+Vq3yDOWXCxJbk1n3araRoz38eCV7mdjPER9ZxoeGPIiRChZVfWtOZpKxP
+         Zf1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=QmdH7mKnFkOZAH2JI/GCXFdUAnEZ4TREjy0wt14hYvE=;
-        b=YH1yMuU4KCan4nR47KQXiNAtVD2u+e8OzqHqUSSoeLFD/3gqa2fnzIcw2+2oXWwDfQ
-         hTeJljogUaEYDPTP0qaMbpBXGMnPJNWdVanjxr1Y87lYSWEGPnJDRzS7gK8PBJGTkdle
-         CXdWf064rAhC2CVpPvJWVDLV6IfzU98sWqnlN5GP5tnBda0RPdyFBW0bqtHVoPUC6QMB
-         A+cgvXxcEIWKSbgz3uHFn7YSZgAOAO1yM9627LYjJC5kjVNxyWvLlCKMom23csQUnTB7
-         PnlbkbWeP7orYkpWcOJ7XCzTgeNO9B0ON4z+M0+mvPPMG0QGsy6cceMCA8hQNnCupGyN
-         Ckcw==
-X-Gm-Message-State: AOAM531G7MhRQtJ3uD0+8yC4nP4JLER8H0w3b+A7H9JorhEh/0wRSIal
-        4QtVPsgbdpGLonWKKuSFgFEdpQ==
-X-Google-Smtp-Source: ABdhPJznrW8naIl7grTb0byn0Ki8g1mPccqfo2n3/Mzyg7GeZgz4J4vGwn8uDK7aL0u3V5bKWZOOgQ==
-X-Received: by 2002:ac8:544:: with SMTP id c4mr5373272qth.299.1622825163185;
-        Fri, 04 Jun 2021 09:46:03 -0700 (PDT)
-Received: from nitro.local ([89.36.78.230])
-        by smtp.gmail.com with ESMTPSA id d1sm3969137qti.72.2021.06.04.09.46.02
+         :mime-version:content-disposition:in-reply-to;
+        bh=m+tuHAocWcuJzWvdGVhmtAZ0L2xQ0dgC0EsdO1uJTuM=;
+        b=gEP2ZZ4FTNYs0idriFBvYvvo7OWXvPBHtBdaGBnfRZz6GkDR63QezqltAydv5hHpFM
+         bW2gH0fpXg1Ti+1mFzRcDV1RUh22m130yADGpw5V0HPwkXYz3BhQUxi15g6ZWcFwyhs4
+         ugQ0PpELFgU5uci8eABY5coPoBLwrUI2C5CD9KVvpRp8yg3ALnuotRZhC0OJ6b/atzeu
+         Nc6GH5gQoqFoYGCxjXIFhjb8FfOpYOc53FqZzlSngoy5Fmhmz/sV9oXIMHDuk1RehqI6
+         kWEkURLCGo7ngRbCNBv8oh1uuksxJb/bjyObGDgjrDJR85tLBp7M8Qov11ShIT/uUOl2
+         QnVg==
+X-Gm-Message-State: AOAM532A8Apdq8ncV+L2TJxxjAcrV8VC/2imLPSDzF3OquBourTJyq+Z
+        3TWBYeopqfijrqI5aZ7+TFJbJw==
+X-Google-Smtp-Source: ABdhPJwS+NF5wOICqnE9LegS9iGp0BzPSMBdNC32VA/zsnCuucM35oC7HboBdGOjqD0wqutybRuElA==
+X-Received: by 2002:a63:f5c:: with SMTP id 28mr6075538pgp.84.1622825284222;
+        Fri, 04 Jun 2021 09:48:04 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id n6sm2520661pgm.79.2021.06.04.09.48.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 09:46:02 -0700 (PDT)
-Date:   Fri, 4 Jun 2021 12:46:01 -0400
-From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>, balbi@kernel.org,
-        linux-usb@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: dwc3-meson-g12a: fix usb2 PHY glue init when phy0
- is disabled
-Message-ID: <20210604164601.hrlgkrsghhqtho6m@nitro.local>
-References: <20210601084830.260196-1-narmstrong@baylibre.com>
- <YLoHSJIOSRTyF0r1@kroah.com>
- <20210604150742.bssvnhm4gv72uw4h@nitro.local>
+        Fri, 04 Jun 2021 09:48:03 -0700 (PDT)
+Date:   Fri, 4 Jun 2021 16:48:00 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Cody Yao-oc <CodyYao-oc@zhaoxin.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, tglx@linutronix.de,
+        bp@alien8.de, hpa@zytor.com, x86@kernel.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/perf: Fixed obtaining address error about
+ performance monitor MSR on old Inel CPU.
+Message-ID: <YLpZQCyZWjnD/1ZP@google.com>
+References: <20210604055438.17705-1-CodyYao-oc@zhaoxin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210604150742.bssvnhm4gv72uw4h@nitro.local>
+In-Reply-To: <20210604055438.17705-1-CodyYao-oc@zhaoxin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 11:07:42AM -0400, Konstantin Ryabitsev wrote:
-> > Odd that DKIM didn't work for baylibre-com, but hey, I'll take a real
-> > signature over DKIM anyday!
+On Fri, Jun 04, 2021, Cody Yao-oc wrote:
+> From: CodyYao-oc <CodyYao-oc@zhaoxin.com>
 > 
-> That lookup happened to grab the thread from linux-amlogic, which is
-> mailman2-managed and is known to break DKIM. I'll try to fix our configuration
-> so that known-DKIM-friendly sources are given priority. This way, when a thread
-> exists on multiple lists, you'll get the one more likely to pass DKIM checks.
+> Fix "obtain wrong msr address" bug in function nmi_perfctr_msr_to_bit
+> and nmi_eventsel_msr_to_bit. In X86_VENDOR_INTEL switch branch, if all
+> of the check conditions are not met, code flow will slip to
+> X86_VENDOR_ZHAOXIN branch which may lead to incorrect information.
+> 
+> Therefore, "fallthrough" should be changed to "break" to avoid it.
 
-This is now in place -- lore will now prefer results from DKIM-friendly
-sources. E.g. grabbing the same message-id will now return the thread from
-linux-usb (via vger) instead of linux-amlogic (via infradead).
+This should explicitly state that using fallthrough instead of break was
+completely unintentional, assuming that's indeed the case.
 
-    $ b4 am -o/tmp 20210601084830.260196-1-narmstrong@baylibre.com
-    Looking up https://lore.kernel.org/r/20210601084830.260196-1-narmstrong%40baylibre.com
-    Grabbing thread from lore.kernel.org/linux-usb/20210601084830.260196-1-narmstrong%40baylibre.com/t.mbox.gz
-    Analyzing 4 messages in the thread
-    Checking attestation on all messages, may take a moment...
-    ---
-      ✓ [PATCH] usb: dwc3-meson-g12a: fix usb2 PHY glue init when phy0 is disabled
-        + Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com> (✓ DKIM/googlemail.com)
-      ---
-      ✓ Signed: openpgp/narmstrong@baylibre.com
-      ✓ Signed: DKIM/baylibre-com.20150623.gappssmtp.com (From: narmstrong@baylibre.com)
-    ---
-    Total patches: 1
-    ---
-     Link: https://lore.kernel.org/r/20210601084830.260196-1-narmstrong@baylibre.com
-     Base: not found
-           git am /tmp/20210601_narmstrong_usb_dwc3_meson_g12a_fix_usb2_phy_glue_init_when_phy0_is_disabled.mbx
+Fixes: 3a4ac121c2ca ("x86/perf: Add hardware performance events support for Zhaoxin CPU.")
 
--K
+> Signed-off-by: CodyYao-oc <CodyYao-oc@zhaoxin.com>
+> ---
+>  arch/x86/kernel/cpu/perfctr-watchdog.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/perfctr-watchdog.c b/arch/x86/kernel/cpu/perfctr-watchdog.c
+> index 3ef5868ac588..7aecb2fc3186 100644
+> --- a/arch/x86/kernel/cpu/perfctr-watchdog.c
+> +++ b/arch/x86/kernel/cpu/perfctr-watchdog.c
+> @@ -63,7 +63,7 @@ static inline unsigned int nmi_perfctr_msr_to_bit(unsigned int msr)
+>  		case 15:
+>  			return msr - MSR_P4_BPU_PERFCTR0;
+>  		}
+> -		fallthrough;
+> +		break;
+>  	case X86_VENDOR_ZHAOXIN:
+>  	case X86_VENDOR_CENTAUR:
+>  		return msr - MSR_ARCH_PERFMON_PERFCTR0;
+> @@ -96,7 +96,7 @@ static inline unsigned int nmi_evntsel_msr_to_bit(unsigned int msr)
+>  		case 15:
+>  			return msr - MSR_P4_BSU_ESCR0;
+>  		}
+> -		fallthrough;
+> +		break;
+>  	case X86_VENDOR_ZHAOXIN:
+>  	case X86_VENDOR_CENTAUR:
+>  		return msr - MSR_ARCH_PERFMON_EVENTSEL0;
+> -- 
+> 2.17.1
+> 
