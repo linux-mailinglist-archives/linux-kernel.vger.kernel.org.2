@@ -2,120 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7538039BA3E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D2B39BA40
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbhFDNw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 09:52:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33790 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230124AbhFDNw0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 09:52:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32DF9613C9;
-        Fri,  4 Jun 2021 13:50:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622814640;
-        bh=K/GY5g+siZhU8v4b9BjhoSm+Dq5y6/LVafctSr5ng7M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tuGi9PZakCL+fNw4WVIFTAUpGmeNIybdPOKJFFJC5ku5rdXeW5h+ZX58GLu00B9OY
-         i2NrTyCO0YUn2C6PUJ+Td35BwvFrRUm9PjzSK48kXJ29qsVs4fp1JDGeF5r6D1c4WI
-         cbwEWgvAFyHboCzZIyKX08XxYOWRNy6PQN/ZGWVFcSe77GLdBQ5LW29xFevZodXr6L
-         LHsaZ5JJXGqq/n7ygGIRolH2hOF4JjgRd+Vww5zMG0rAM1kngHUZI3RT2RpNpQX3kR
-         T46/bL7CIVZDfkVWxXa3KObEC5CIEaX/6nY+7+VJttaovuoSFQuthSUupnhdppyly6
-         NrIFRbX8xMM8A==
-Date:   Fri, 4 Jun 2021 14:50:33 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v8 02/19] arm64: Allow mismatched 32-bit EL0 support
-Message-ID: <20210604135033.GB2793@willie-the-truck>
-References: <20210602164719.31777-1-will@kernel.org>
- <20210602164719.31777-3-will@kernel.org>
- <20210603123715.GA48596@C02TD0UTHF1T.local>
- <20210603174413.GC1170@willie-the-truck>
- <20210604093808.GA64162@C02TD0UTHF1T.local>
- <20210604110526.GF2318@willie-the-truck>
- <20210604120352.GA67240@C02TD0UTHF1T.local>
+        id S230124AbhFDNwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 09:52:36 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53556 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230372AbhFDNwb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 09:52:31 -0400
+Date:   Fri, 04 Jun 2021 13:50:43 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622814644;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8PaP2rIdOEekIJ9b/kNZAsaRsupNN0g6L7nIiW85A5U=;
+        b=yYXb9VrIUwkcVHm9a+V8Cz+4hKESBHOkp/Vx3wugQooV8wyAWV5en0NIUZnqVmRFfzMi5O
+        6zTmYikr90ljR5ZNRUn4fLwuZvJawVYSRu4W4um9iyIcEiVlrT/n8fAQIv9hxXAdx6xk+7
+        VMU9A7tCLoI+0GCp109eESiSlXPl9MFBbOOOjsdm1ECdCJwyR9xV333jdQm+uVCSPLtjf8
+        GtYHw5K/EI4x9Rx9LnhDOtY6dvK2bte7Udywh3HhYslSHp2Yx983SNYa0d3IzwjYz5t3kx
+        8mXl1RqrWMqxi1T9Xd7MImeGtKk3KGIF3o86K/rx+y2QpoA4EjlvzqonFz0PRA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622814644;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8PaP2rIdOEekIJ9b/kNZAsaRsupNN0g6L7nIiW85A5U=;
+        b=LO+fO/RVkcLidWQGgFcmLrS7EX6qUcoHr2iHA6LjUqdQlTHE1RZInPYO11xZupY0aBQh+T
+        UDzmOogA8iExTkDw==
+From:   "tip-bot2 for Colin Ian King" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: ras/core] EDAC/mce_amd: Fix typo "FIfo" -> "Fifo"
+Cc:     Colin Ian King <colin.king@canonical.com>,
+        Borislav Petkov <bp@suse.de>,
+        Yazen Ghannam <yazen.ghannam@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210603103349.79117-1-colin.king@canonical.com>
+References: <20210603103349.79117-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604120352.GA67240@C02TD0UTHF1T.local>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Message-ID: <162281464318.29796.6032991160827413746.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 01:04:27PM +0100, Mark Rutland wrote:
-> On Fri, Jun 04, 2021 at 12:05:27PM +0100, Will Deacon wrote:
-> > On Fri, Jun 04, 2021 at 10:38:08AM +0100, Mark Rutland wrote:
-> > > On Thu, Jun 03, 2021 at 06:44:14PM +0100, Will Deacon wrote:
-> > > > On Thu, Jun 03, 2021 at 01:37:15PM +0100, Mark Rutland wrote:
-> > > > > On Wed, Jun 02, 2021 at 05:47:02PM +0100, Will Deacon wrote:
-> > > > > > diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-> 
-> > > > > That said. I reckon this could be much cleaner if we maintained separate
-> > > > > caps:
-> > > > > 
-> > > > > ARM64_ALL_CPUS_HAVE_32BIT_EL0
-> > > > > ARM64_SOME_CPUS_HAVE_32BIT_EL0
-> > > > > 
-> > > > > ... and allow arm64_mismatched_32bit_el0 to be set dependent on
-> > > > > ARM64_SOME_CPUS_HAVE_32BIT_EL0. With that, this can be simplified to:
-> > > > > 
-> > > > > static inline bool system_supports_32bit_el0(void)
-> > > > > {
-> > > > > 	return (cpus_have_const_cap(ARM64_ALL_CPUS_HAVE_32BIT_EL0)) ||
-> > > > > 		static_branch_unlikely(&arm64_mismatched_32bit_el0))
-> > > > 
-> > > > Something similar was discussed in November last year but this falls
-> > > > apart with late onlining because its not generally possible to tell whether
-> > > > you've seen all the CPUs or not.
-> > > 
-> > > Ah; is that for when your boot CPU set is all AArch32-capable, but a
-> > > late-onlined CPU is not?
-> > > 
-> > > I assume that we require at least one of the set of boot CPUs to be
-> > > AArch32 cpable, and don't settle the compat hwcaps after userspace has
-> > > started.
-> > 
-> > Heh, you assume wrong :)
-> > 
-> > When we allow the mismatch, then we do actually defer initialisation of
-> > the compat hwcaps until we see a 32-bit CPU. That's fine, as they won't
-> > be visible to userspace until then anyway (PER_LINUX32 is unavailable).
-> 
-> That sounds quite scary, to me, though I don't have a concrete problem
-> to hand. :/
-> 
-> Do we really need to support initializing that so late? For all other
-> caps we've settled things when the boot CPUs come up, and it's
-> unfortunate to have to treat this differently.
+The following commit has been merged into the ras/core branch of tip:
 
-I think it's the nature of the beast, unfortunately. Since we're talking
-about multiple generations of SoCs rather than just one oddball design,
-then placing artificial restrictions on the boot CPUs doesn't feel like
-it will last very long.
+Commit-ID:     429b2ba70812fc8ce7c591e787ec0f2b48d13319
+Gitweb:        https://git.kernel.org/tip/429b2ba70812fc8ce7c591e787ec0f2b48d13319
+Author:        Colin Ian King <colin.king@canonical.com>
+AuthorDate:    Thu, 03 Jun 2021 11:33:49 +01:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 04 Jun 2021 15:44:25 +02:00
 
-> I'll go see if there's anything that's liable to break today.
+EDAC/mce_amd: Fix typo "FIfo" -> "Fifo"
 
-Please let me know if you find anything.
+There is an uppercase letter I in one of the MCE error descriptions
+instead of a lowercase one. Fix it.
 
-Will
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
+Link: https://lkml.kernel.org/r/20210603103349.79117-1-colin.king@canonical.com
+---
+ drivers/edac/mce_amd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/edac/mce_amd.c b/drivers/edac/mce_amd.c
+index 43ba0f9..27d5692 100644
+--- a/drivers/edac/mce_amd.c
++++ b/drivers/edac/mce_amd.c
+@@ -431,7 +431,7 @@ static const char * const smca_xgmipcs_mce_desc[] = {
+ 	"Replay Buffer Parity Error",
+ 	"Data Parity Error",
+ 	"Replay Fifo Overflow Error",
+-	"Replay FIfo Underflow Error",
++	"Replay Fifo Underflow Error",
+ 	"Elastic Fifo Overflow Error",
+ 	"Deskew Error",
+ 	"Flow Control CRC Error",
