@@ -2,114 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1B739B9C7
+	by mail.lfdr.de (Postfix) with ESMTP id A551539B9C8
 	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbhFDNZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 09:25:26 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:35563 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230435AbhFDNZZ (ORCPT
+        id S230478AbhFDNZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 09:25:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230445AbhFDNZ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 09:25:25 -0400
-Received: by mail-il1-f199.google.com with SMTP id n7-20020a056e021487b02901d29983f028so6475939ilk.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 06:23:30 -0700 (PDT)
+        Fri, 4 Jun 2021 09:25:26 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B3CC061761
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 06:23:40 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id v206-20020a1cded70000b02901a586d3fa23so1338751wmg.4
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 06:23:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=+sT4YYKrQb2O5xI5wztXIAWtyacTFced2VFE4TLIp60=;
+        b=ySiUwhYzsJGSzp36XB999q1MbEQ96sQpPPHULrfsaUm/LbNGHvntoy9xwDR6LnPxFI
+         aaQlYLo5tfvAVdcsrADn6mrXtmvuH1RhsIXzPpuVQ81Y34PPKUUMjxj491nxsKp/pcy8
+         NrdQ6Syy/jwbcbdTdrCoZFjqcj61qpvaKhtZFcOd9wi2sOL+LpwY+SoXdtHyRliKS44L
+         RjqSzzMX2GPQsCTYaH1uxRBoEDqGbHUXXwHtHcYyrEcCdA+oykyyoGlhXr5lyk2A2Hvj
+         MrW+27uUG7L6hy2QSqWEG7VTQqSUi61G9XuX7+Dbr1sw5YISsiT7dD7FWd0pe/T9dEqw
+         7y7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Fh24XHn46QTE70Fu59zKbxgTcJCyyRl/2Zjm/XtlHpE=;
-        b=c17CsGaYdb5RcwezcIMzU2rge3vd1uG5TrRMYq07xPcZPnsIeeop5t6XqVvhS8mPjf
-         1cginlK1koWgmtVgThwg/pbsTOogzIPuEriZpXkXG+M35Wdj6uWmVBhkpy3xhumlOzyH
-         jrrCS9ddujS870woqZR1Ox5KHwIYdqLXafa+JziS2mzWtGh2oQ/RF7mA4U998v9JmyhH
-         vkNzGald7w0fFOgkA2peBHhxiiJRNxb3gnRqEkiTT4OB9yH1ZwzBj81KrDrhNkuscLbz
-         RTwpdKI9DITQbdyGXzeDC98B9FKNeAxfHdA0pyQIITMEAywWmf4/Dv+ElPEV75pf8J24
-         QN2w==
-X-Gm-Message-State: AOAM532uW+PK2ztJ2Cz/IPn6p6AbeVIGXHP616sXhq98O8ieDDZENT1m
-        UllIsRwc8tkRBFGZO6i1JmAKrtztTwc9zfPtWG9/Osr8Yae7
-X-Google-Smtp-Source: ABdhPJxWXuAhWz8YN5zGxhVMy7R/J0EnN7+wawXQeUd+tZuHM5Xi61MX38v2juDYAsq9D4/IFOzNvIe4IXdEfR/XlXIxAxF8jD2b
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=+sT4YYKrQb2O5xI5wztXIAWtyacTFced2VFE4TLIp60=;
+        b=qTWc0WY5UT9CydKYRjn6s80z5AKxyhfTLNV0OFttHa9l6FKob5eyaVl6+G7qXXdrDE
+         nCm5irWNIc9islBnTp8TO/5NrwSoNmWuy+xNNmn3DqbtmwU/X1hD3Zgjmo5rInUQJsbY
+         VONhFRK+xAlzu8Yp63fkBDHtS7l8AyJQf1dG56eraToLoVrpDKYw3mzqosM863RUWUnZ
+         fstCQg2mTfxTp71qeQKKpu1xET4f5TMdx3Oz+uvzJ6c3BLhJAxnaZqiFh1tGPSXSzk2A
+         Hsmsa21KjYOr1lOCF1zfGebaR3hv3unPamPCqdnbDDHX5r2o2mAJCoSHivsh847iwqee
+         o3lQ==
+X-Gm-Message-State: AOAM531ld1g3u01uBmuOgJLE95NP7laBb9DD9vKEiuOi/n/z2a7I7m8+
+        F/nFs+Oa2WXU1sXiK6OSyv3nYBQfHfRVWA==
+X-Google-Smtp-Source: ABdhPJyIXvaJGxAIuz9G9hqzr6MEeZebOlfx+GRaCsLAzvjVFcJ2FSSUkUHrMgXxV8y2OfWOc6gC0w==
+X-Received: by 2002:a1c:2805:: with SMTP id o5mr3625525wmo.103.1622813018831;
+        Fri, 04 Jun 2021 06:23:38 -0700 (PDT)
+Received: from dell ([91.110.221.214])
+        by smtp.gmail.com with ESMTPSA id q11sm5752457wmq.1.2021.06.04.06.23.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 06:23:38 -0700 (PDT)
+Date:   Fri, 4 Jun 2021 14:23:35 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Wendell Lin <wendell.lin@mediatek.com>
+Cc:     Stephen Boyd <sboyd@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        ARM/Mediatek SoC support <linux-mediatek@lists.infradead.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>
+Subject: Re: [PATCH 1/1] clk: Export clk_register_composite
+Message-ID: <20210604132335.GK2435141@dell>
+References: <1595493126-21611-1-git-send-email-wendell.lin@mediatek.com>
+ <1597052186.27843.1.camel@mtkswgap22>
+ <CAF2Aj3hZB08d8x6XOqsP4m5fv76fWH48U95j8ugLt-YWFJ-kkA@mail.gmail.com>
+ <162276982204.1835121.10976600065855289763@swboyd.mtv.corp.google.com>
+ <20210604082427.GE2435141@dell>
+ <20210604082524.GF2435141@dell>
+ <1622802121.26830.22.camel@mtkswgap22>
 MIME-Version: 1.0
-X-Received: by 2002:a5e:c708:: with SMTP id f8mr3818934iop.198.1622813010489;
- Fri, 04 Jun 2021 06:23:30 -0700 (PDT)
-Date:   Fri, 04 Jun 2021 06:23:30 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000006f82905c3f099be@google.com>
-Subject: [syzbot] WARNING in ieee80211_vif_release_channel
-From:   syzbot <syzbot+c299bc8bf2c766623e9c@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1622802121.26830.22.camel@mtkswgap22>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, 04 Jun 2021, Wendell Lin wrote:
 
-syzbot found the following issue on:
+> On Fri, 2021-06-04 at 09:25 +0100, Lee Jones wrote:
+> > On Fri, 04 Jun 2021, Lee Jones wrote:
+> > 
+> > > On Thu, 03 Jun 2021, Stephen Boyd wrote:
+> > > 
+> > > > Quoting Lee Jones (2021-05-20 09:07:42)
+> > > > > On Mon, 10 Aug 2020 at 10:36, Wendell Lin <wendell.lin@mediatek.com> wrote:
+> > > > > 
+> > > > >     Hi Matthias and all,
+> > > > > 
+> > > > >     Gentle ping on this patch.
+> > > > > 
+> > > > > 
+> > > > > What about a not-so-gentle ping on this patch?  Grrrr... :)
+> > > > > 
+> > > > > FYI, this is still required by more than one source.
+> > > > > 
+> > > > > Please help get this out of all of the vendor trees please.
+> > > > > 
+> > > > 
+> > > > Is there an in-kernel user?
+> > > 
+> > > How can there be?  It's not exported yet. :)
+> > > 
+> > > However there shouldn't be any barriers for vendors represented in
+> > > Mainline to build their drivers as modules if they so wish.  If/when
+> > > they do, this will need to be exported.
+> > 
+> > Wendell Lin, is this what you wish to do with the in-kernel MediaTek
+> > driver?
+> > 
+> This is because Mediatek clock driver would be built as kernel module,
+> so clk_register_composite() used should be exported, then we could use
+> it. 
+> 
+> Please refer:
+> [PATCH 2/2] clk: mediatek: Add EXPORT_SYMBOL for kernel module support 
+> https://lkml.org/lkml/2020/7/1/124
+> +EXPORT_SYMBOL(mtk_clk_register_composites);
+> 
+> clk_register_composite() is used by Mediatek clk kernel module.
+> From export symbol: mtk_clk_register_composites. 
 
-HEAD commit:    a729b8e6 Merge branch 'fixes-for-yt8511-phy-driver'
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=17bbd313d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=52fb5f4163b9aa88
-dashboard link: https://syzkaller.appspot.com/bug?extid=c299bc8bf2c766623e9c
+Perfect.  Thanks for the clarification.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Anything else you need from us Stephen?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c299bc8bf2c766623e9c@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 22187 at net/mac80211/chan.c:1830 ieee80211_vif_release_channel+0x1ad/0x220 net/mac80211/chan.c:1830
-Modules linked in:
-CPU: 1 PID: 22187 Comm: syz-executor.4 Not tainted 5.13.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:ieee80211_vif_release_channel+0x1ad/0x220 net/mac80211/chan.c:1830
-Code: c1 ea 03 80 3c 02 00 0f 85 82 00 00 00 48 8b ab 48 06 00 00 e9 60 ff ff ff e8 6f b1 fa f8 0f 0b e9 e2 fe ff ff e8 63 b1 fa f8 <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 e2 48 c1 ea 03 80 3c 02
-RSP: 0018:ffffc9000a837050 EFLAGS: 00010246
-RAX: 0000000000040000 RBX: ffff88802739cc00 RCX: ffffc90012325000
-RDX: 0000000000040000 RSI: ffffffff887a2b1d RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff887a2adc R11: 0000000000000000 R12: ffff88802739d248
-R13: 0000000000000001 R14: 00000000fffffff4 R15: 0000000000000000
-FS:  00007fe9d16b1700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f6c71cee000 CR3: 0000000077555000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- ieee80211_start_ap+0x18ed/0x24e0 net/mac80211/cfg.c:1200
- rdev_start_ap net/wireless/rdev-ops.h:158 [inline]
- nl80211_start_ap+0x1c17/0x2920 net/wireless/nl80211.c:5515
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:654 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:674
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
- do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665d9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fe9d16b1188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 000000000056c038 RCX: 00000000004665d9
-RDX: 0000000000000000 RSI: 00000000200001c0 RDI: 0000000000000003
-RBP: 00007fe9d16b11d0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffe90e7d1bf R14: 00007fe9d16b1300 R15: 0000000000022000
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
