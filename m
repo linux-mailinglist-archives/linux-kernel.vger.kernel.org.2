@@ -2,112 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C2839B1DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 07:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EAE239B1E1
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 07:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbhFDFQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 01:16:59 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:21152 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbhFDFQ5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 01:16:57 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622783712; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=uRQ5+HAqjf1zI3L21gFTmAKCk0wOVTgllZo9/C7+/WA=;
- b=jm4R3CEAcqRQc7NrCpHj9LoegFEPxR7t1boC5O0TjRb1VtadSyXuygirPHDrbGYuza769nt5
- N5ejA0vCrx+43DXSEgDOFbErIIvGFDLxHfy0BuDDeMlItgbydy3g1/YIM/ayzcpNipPdODdK
- B9x3GpC9jwj51IoUDoxwpvKqnUo=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 60b9b6dfe570c05619fab9e1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 04 Jun 2021 05:15:11
- GMT
-Sender: subashab=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1B22AC4323A; Fri,  4 Jun 2021 05:15:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: subashab)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7237CC433F1;
-        Fri,  4 Jun 2021 05:15:10 +0000 (UTC)
+        id S230008AbhFDFTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 01:19:01 -0400
+Received: from mout01.posteo.de ([185.67.36.65]:34565 "EHLO mout01.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229800AbhFDFTA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 01:19:00 -0400
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id 71AEE240027
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 07:17:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1622783833; bh=3cQbfQYwjrES5LvXEXh7AoPjA40u751RgjxAkq98j8c=;
+        h=Date:From:To:Cc:Subject:From;
+        b=m6KiiR/bm4hhK1bsVH+hHyAl3WdFRr+tlxLR565cW8ozB+9d8E3BKREXVSQ7TueaS
+         YmboNjA1JSSzLpl+7bfJIGCKD9epZMObzHVsPS0Y9ZiwhMvBvDfUPNI6BFH+Qczhwj
+         p2O/SC4u55BurYZwGlZ/bwCVhUOmLCJYUekWymua+1ehPe/BycFKTLP1bJukop6LuX
+         PSlasIEwAZIoAMlaiFXa/hwBj8zFVkJBVF5di+noJg6YqKxcZzY1lc4h89qYaodP8K
+         Oa2xaFJ56wf0ZqE2+1Gge+A7Tahmkxw6fIGvnd1p76GiaWTXEgk/U64a2GjcFSe1pt
+         Lp3BTvbrkjLxA==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4Fx9xN6D0Bz6tm9;
+        Fri,  4 Jun 2021 07:17:12 +0200 (CEST)
+Date:   Fri,  4 Jun 2021 05:17:11 +0000
+From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH v2] hwmon: corsair-psu: fix suspend behavior
+Message-ID: <20210604071711.78271072@monster.powergraphx.local>
+In-Reply-To: <20210603160533.GA3952041@roeck-us.net>
+References: <YLjCJiVtu5zgTabI@monster.powergraphx.local>
+        <20210603160533.GA3952041@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 03 Jun 2021 23:15:10 -0600
-From:   subashab@codeaurora.org
-To:     patchwork-bot+netdevbpf@kernel.org
-Cc:     Nathan Chancellor <nathan@kernel.org>, stranche@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org, ndesaulniers@google.com,
-        sharathv@codeaurora.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH net-next] net: ethernet: rmnet: Restructure if checks to
- avoid uninitialized warning
-In-Reply-To: <162276000605.13062.14467575723320615318.git-patchwork-notify@kernel.org>
-References: <20210603173410.310362-1-nathan@kernel.org>
- <162276000605.13062.14467575723320615318.git-patchwork-notify@kernel.org>
-Message-ID: <1f6f8246f0cd477c0b1e2b88b4ec825a@codeaurora.org>
-X-Sender: subashab@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-03 16:40, patchwork-bot+netdevbpf@kernel.org wrote:
-> Hello:
-> 
-> This patch was applied to netdev/net-next.git (refs/heads/master):
-> 
-> On Thu,  3 Jun 2021 10:34:10 -0700 you wrote:
->> Clang warns that proto in rmnet_map_v5_checksum_uplink_packet() might 
->> be
->> used uninitialized:
->> 
->> drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c:283:14: warning:
->> variable 'proto' is used uninitialized whenever 'if' condition is 
->> false
->> [-Wsometimes-uninitialized]
->>                 } else if (skb->protocol == htons(ETH_P_IPV6)) {
->>                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c:295:36: note:
->> uninitialized use occurs here
->>                 check = rmnet_map_get_csum_field(proto, trans);
->>                                                  ^~~~~
->> drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c:283:10: note:
->> remove the 'if' if its condition is always true
->>                 } else if (skb->protocol == htons(ETH_P_IPV6)) {
->>                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c:270:11: note:
->> initialize the variable 'proto' to silence this warning
->>                 u8 proto;
->>                         ^
->>                          = '\0'
->> 1 warning generated.
->> 
->> [...]
-> 
-> Here is the summary with links:
->   - [net-next] net: ethernet: rmnet: Restructure if checks to avoid
-> uninitialized warning
->     https://git.kernel.org/netdev/net-next/c/118de6106735
-> 
-> You are awesome, thank you!
-> --
-> Deet-doot-dot, I am a bot.
-> https://korg.docs.kernel.org/patchwork/pwbot.html
+On Thu, 3 Jun 2021 09:05:33 -0700
+Guenter Roeck <linux@roeck-us.net> wrote:
 
-Hi Nathan
+> On Thu, Jun 03, 2021 at 11:51:02AM +0000, Wilken Gottwalt wrote:
+> > During standby some PSUs turn off the microcontroller. A re-init is
+> > required during resume or the microcontroller stays unresponsive.
+> > 
+> > Fixes: d115b51e0e56 ("hwmon: add Corsair PSU HID controller driver")
+> > Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
+> 
+> Applied.
 
-Can you tell why CLANG detected this error.
-Does it require a bug fix.
+Thank you. Though I have an odd question. I would like to change the licensing to
+a dual license (GPL/MPL) to support the LibreHardwareMonitor project. They want
+to use my code but use a MPL license. What would be the best way to do this?
+
+greetings,
+Will
+
+> Thanks,
+> Guenter
+> 
+> > ---
+> > Changes in v2:
+> >   - corrected fixes commit
+> > ---
+> >  drivers/hwmon/corsair-psu.c | 14 ++++++++++++++
+> >  1 file changed, 14 insertions(+)
+> > 
+> > diff --git a/drivers/hwmon/corsair-psu.c b/drivers/hwmon/corsair-psu.c
+> > index 02298b86b57b..731d5117f9f1 100644
+> > --- a/drivers/hwmon/corsair-psu.c
+> > +++ b/drivers/hwmon/corsair-psu.c
+> > @@ -771,6 +771,16 @@ static int corsairpsu_raw_event(struct hid_device *hdev, struct hid_report
+> > *repo return 0;
+> >  }
+> >  
+> > +#ifdef CONFIG_PM
+> > +static int corsairpsu_resume(struct hid_device *hdev)
+> > +{
+> > +	struct corsairpsu_data *priv = hid_get_drvdata(hdev);
+> > +
+> > +	/* some PSUs turn off the microcontroller during standby, so a reinit is required */
+> > +	return corsairpsu_init(priv);
+> > +}
+> > +#endif
+> > +
+> >  static const struct hid_device_id corsairpsu_idtable[] = {
+> >  	{ HID_USB_DEVICE(0x1b1c, 0x1c03) }, /* Corsair HX550i */
+> >  	{ HID_USB_DEVICE(0x1b1c, 0x1c04) }, /* Corsair HX650i */
+> > @@ -793,6 +803,10 @@ static struct hid_driver corsairpsu_driver = {
+> >  	.probe		= corsairpsu_probe,
+> >  	.remove		= corsairpsu_remove,
+> >  	.raw_event	= corsairpsu_raw_event,
+> > +#ifdef CONFIG_PM
+> > +	.resume		= corsairpsu_resume,
+> > +	.reset_resume	= corsairpsu_resume,
+> > +#endif
+> >  };
+> >  module_hid_driver(corsairpsu_driver);
+> >  
+
