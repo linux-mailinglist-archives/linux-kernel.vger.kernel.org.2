@@ -2,114 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9343B39B492
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E8639B49C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 10:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbhFDIHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 04:07:06 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:49892 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbhFDIHF (ORCPT
+        id S230015AbhFDIKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 04:10:13 -0400
+Received: from mail-wm1-f45.google.com ([209.85.128.45]:55049 "EHLO
+        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229994AbhFDIKL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 04:07:05 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 154859fU194812;
-        Fri, 4 Jun 2021 08:05:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=jJWOOXSkYAkpt+g7vqJxwxRiAokBtYawViAkg0r5HqI=;
- b=n/BAzFw9fyHDxD6HPVZz/BaXjAfGynLNBHWiSyq4IrvuWhzCQ9UCaZwF0l3K3vLr366H
- Is5GRZFy0Bfvj0Qm2RfSIc3z0e0IiUxRFZpSoZE2LtJyr38MMZKLlBTC6pLC1s+5yf9K
- q4Pk1NZf5AMmEifo6vFGcy7wFAytdLpmYbxUyCmcuKRRZfU+m7WXw7+KhSF5UB+duHYl
- mcqvwDuiTnT/ho4/+Ea5N+ty8V+Pt0PGH/FZa4+dX2TXkowkA+04ErcgpiGH0oYykl+Y
- hd2HnBvzFLt8zdnXKi3m/dMPDVC1C8GcNbJG/er4Yv/aohNWmBqYEhfPwZdQ3e5UnFBR bQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 38ub4cwa26-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 04 Jun 2021 08:05:14 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15481bXu177927;
-        Fri, 4 Jun 2021 08:05:14 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 38xyn2vufn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 04 Jun 2021 08:05:14 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15484kT2008787;
-        Fri, 4 Jun 2021 08:05:13 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 38xyn2vuer-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 04 Jun 2021 08:05:13 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 15485B1Y010883;
-        Fri, 4 Jun 2021 08:05:11 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 04 Jun 2021 01:05:10 -0700
-Date:   Fri, 4 Jun 2021 11:05:03 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Oded Gabbay <ogabbay@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] habanalabs/gaudi: remove redundant assignment to
- variable err
-Message-ID: <20210604080503.GJ1955@kadam>
-References: <20210603131210.84763-1-colin.king@canonical.com>
+        Fri, 4 Jun 2021 04:10:11 -0400
+Received: by mail-wm1-f45.google.com with SMTP id o127so4827675wmo.4
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 01:08:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PRHSChmNHccXhvQtsBtRhC37xesOPVba6qRjYjpVSGo=;
+        b=tToyl49cVQo4Z5AyIlAePdUHnwKwKwhpJlDlNqXwnaucjE8AjtlSncfadmxZdStMfZ
+         1GuMkmnENTwdqfl0ihiepuem8+bCkHySEPel1eHaLvr9RklVpmr0m6Q9wlrGxbULVrDX
+         ZE7626uLL3Glu8gc4oV1hhANbT99r+ZLXb1KJ19bx5+xuiekD9hLNP2CCAjksPj2TH/V
+         2wVLMTolm/hvepcOOwVzfeOPnfKStPIZ+eXZRc4dlDPKvAq4FQgQexjHeFP1o0m/i78X
+         /9Tdovyj31BOAJaY4WJDVbDLAHU4bYU6prqcSP2AO8rAh7V6q9ZdpaPU6wkP9kQslgBk
+         sxyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PRHSChmNHccXhvQtsBtRhC37xesOPVba6qRjYjpVSGo=;
+        b=fQHRTf4Qp510XJqTPmEKsDqv0sZyy6JsTgxrzuYZszvx/ysNc92bGNXIJ85hcoAThg
+         T2UFPGrJj8rFYvRwYji5JrLeTtcXzUuOunKQcxNtGMeE60uj2m8NhP6WhcDncJvGZNsc
+         2mPldR/6KVCmeDHGfFZbpc0giOOShLIQdid0rVULxL+p9f0zDvVO9/fz+DDsKCRhLf3w
+         XbHNfVievmrBE+OWE71KGVofyK7yBVkerznqBoatexlvHJu1wshAL9EVVGxwt6wfe5xO
+         9lPPa1Yc8GgJnujBFZuNmZkT918tGT9M5E+VK0wBLwSEBrFMJyObN+7JhXCtn6a+cPtU
+         EAHQ==
+X-Gm-Message-State: AOAM533JqpzgtG59ca3/Gp3FlfF+Hn4P8OhWQGFk+m40urtohg6jl4yq
+        v0Fk+DTppfrS86abTDsmVifUXg==
+X-Google-Smtp-Source: ABdhPJwlhk2JqzA/gQYoHaK6TroOaueLxPuori2UJSeGGotJ4SyLQPVBvAEk9dp9D1YIwoFjhVE+gg==
+X-Received: by 2002:a1c:1bd8:: with SMTP id b207mr2267360wmb.80.1622794031014;
+        Fri, 04 Jun 2021 01:07:11 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:70d3:6c26:978:999d? ([2a01:e34:ed2f:f020:70d3:6c26:978:999d])
+        by smtp.googlemail.com with ESMTPSA id s28sm7343265wra.54.2021.06.04.01.07.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Jun 2021 01:07:10 -0700 (PDT)
+Subject: Re: [PATCH v3 2/2] clocksource: Add Intel Keem Bay timer support
+To:     shruthi.sanil@intel.com, tglx@linutronix.de, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     andriy.shevchenko@linux.intel.com, kris.pan@linux.intel.com,
+        mgross@linux.intel.com, srikanth.thokala@intel.com,
+        lakshmi.bai.raja.subramanian@intel.com,
+        mallikarjunappa.sangannavar@intel.com
+References: <20210527063906.18592-1-shruthi.sanil@intel.com>
+ <20210527063906.18592-3-shruthi.sanil@intel.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <a532a5e2-9d27-f529-ec8c-fec28e648666@linaro.org>
+Date:   Fri, 4 Jun 2021 10:07:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210603131210.84763-1-colin.king@canonical.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: WviqR1NcVCWnZldX1R1r5L7NXmfRlcp-
-X-Proofpoint-ORIG-GUID: WviqR1NcVCWnZldX1R1r5L7NXmfRlcp-
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10004 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
- mlxlogscore=999 malwarescore=0 bulkscore=0 phishscore=0 lowpriorityscore=0
- clxscore=1015 impostorscore=0 adultscore=0 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106040064
+In-Reply-To: <20210527063906.18592-3-shruthi.sanil@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 02:12:10PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On 27/05/2021 08:39, shruthi.sanil@intel.com wrote:
+> From: Shruthi Sanil <shruthi.sanil@intel.com>
 > 
-> The variable err is being assigned a value that is never read, the
-> assignment is redundant and can be removed. Also remove some empty
-> lines.
+> The Intel Keem Bay timer driver supports clocksource and clockevent
+> features for the timer IP used in Intel Keem Bay SoC.
+> The timer block supports 1 free running counter and 8 timers.
+> The free running counter can be used as a clocksource and
+> the timers can be used as clockevent. Each timer is capable of
+> generating individual interrupt.
+> Both the features are enabled through the timer general config register.
 > 
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+> Signed-off-by: Shruthi Sanil <shruthi.sanil@intel.com>
 > ---
->  drivers/misc/habanalabs/gaudi/gaudi.c | 3 ---
->  1 file changed, 3 deletions(-)
+>  MAINTAINERS                         |   5 +
+>  drivers/clocksource/Kconfig         |  11 ++
+>  drivers/clocksource/Makefile        |   1 +
+>  drivers/clocksource/timer-keembay.c | 255 ++++++++++++++++++++++++++++
+>  4 files changed, 272 insertions(+)
+>  create mode 100644 drivers/clocksource/timer-keembay.c
 > 
-> diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-> index 9e4a6bb3acd1..22f220859b46 100644
-> --- a/drivers/misc/habanalabs/gaudi/gaudi.c
-> +++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-> @@ -7379,9 +7379,6 @@ static int gaudi_hbm_read_interrupts(struct hl_device *hdev, int device,
->  			device, ch, hbm_ecc_data->first_addr, type,
->  			hbm_ecc_data->sec_cont_cnt, hbm_ecc_data->sec_cnt,
->  			hbm_ecc_data->dec_cnt);
-> -
-> -		err = 1;
-> -
->  		return 0;
->  	}
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 04babfa8fc76..73543ed60e84 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -9278,6 +9278,11 @@ F:	drivers/crypto/keembay/keembay-ocs-hcu-core.c
+>  F:	drivers/crypto/keembay/ocs-hcu.c
+>  F:	drivers/crypto/keembay/ocs-hcu.h
+>  
+> +INTEL KEEM BAY TIMER SUPPORT
+> +M:	Shruthi Sanil <shruthi.sanil@intel.com>
+> +S:	Maintained
+> +F:	drivers/clocksource/timer-keembay.c
+> +
+>  INTEL MANAGEMENT ENGINE (mei)
+>  M:	Tomas Winkler <tomas.winkler@intel.com>
+>  L:	linux-kernel@vger.kernel.org
+> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+> index 39aa21d01e05..08f491cf7f61 100644
+> --- a/drivers/clocksource/Kconfig
+> +++ b/drivers/clocksource/Kconfig
+> @@ -693,4 +693,15 @@ config MICROCHIP_PIT64B
+>  	  modes and high resolution. It is used as a clocksource
+>  	  and a clockevent.
+>  
+> +config KEEMBAY_TIMER
+> +	bool "Intel Keem Bay timer"
+> +	depends on ARCH_KEEMBAY
+> +	select TIMER_OF
 
-Not related to your patch (which seems fine), but I always feel like
-there should be a rule that function which return a mix of negative
-error codes and either zero or one on success should have to have
-documentation explaining why.
+Please refer to the other timer option to see how we create silent
+option. We want the Kconfig's platform to select the timer, not the user
+except for compilation coverage or expert mode.
 
-It's impossible to tell from the context here and neither of the callers
-check the return.  :P
+> +	help
+> +	  This option enables the support for the Intel Keem Bay
+> +	  general purpose timer and free running counter driver.
+> +	  Each timer can generate an individual interrupt and
+> +	  supports oneshot and periodic modes.
+> +	  The 64-bit counter can be used as a clock source.
+> +
+>  endmenu
 
-regards,
-dan carpenter
+Other than that, LGTM.
 
+Thanks
+  -- Daniel
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
