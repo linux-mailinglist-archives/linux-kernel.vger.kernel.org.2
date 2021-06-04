@@ -2,105 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A59AC39B9D6
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5950839B9D8
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbhFDN2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 09:28:49 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:53356 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbhFDN2r (ORCPT
+        id S230428AbhFDN3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 09:29:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230193AbhFDN3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 09:28:47 -0400
-Date:   Fri, 04 Jun 2021 13:26:58 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622813219;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Fri, 4 Jun 2021 09:29:38 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4173C061740;
+        Fri,  4 Jun 2021 06:27:51 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id A2C2222236;
+        Fri,  4 Jun 2021 15:27:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1622813268;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lX+bv7+K1Y9RKFj9gTVoQdQoRokKSs6FqRljwLTs9Mk=;
-        b=3hZ0oAC7kf7+hjizU/Cj+R3aRmO8TV6ankVZSW7gs6ppkBVGizR1u2HReEkRpBuDsYktSb
-        ul0aRyInbRF074mGvKTNNm7/ai+/xphMGFiN1w6PO8yF1F/OGMtKyA6qwJ00pthPNDwQ80
-        lC6ei5vourAcR1WKyvrSXXkt+N25MhW1LfunuQRvQQc6vVRs3FUwKfh9Il8YPmXf2fj0ge
-        D1SqwDW0TsKG196H0SvATQBHrxyTfZ5BFAmRlpatfYxX7u3q3VLPoZXBP4G9l9vPNCEhid
-        D/FM3fCZfjBKppvlySqnKDwxCudJC48MYTWtCDtP1FaNFIeLvKKJJdgRa/hJjg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622813219;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lX+bv7+K1Y9RKFj9gTVoQdQoRokKSs6FqRljwLTs9Mk=;
-        b=SrOXbBfF54ZTb0/Idq5aQ9WLYeMSvI2JjvU00CigDtrE+EYYK09s8J4Le3bwmMltdHSpar
-        ed2tHoRr//+fpIDw==
-From:   "tip-bot2 for Jiashuo Liang" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/fault: Don't send SIGSEGV twice on SEGV_PKUERR
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jiashuo Liang <liangjs@pku.edu.cn>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210601085203.40214-1-liangjs@pku.edu.cn>
-References: <20210601085203.40214-1-liangjs@pku.edu.cn>
+        bh=9ZjZ/byVkXGSw+O6l13Rn+fjw8dkV3sOkTd2A/W0i54=;
+        b=MLmf/xp7b4YHnZoE2WvlCSHDfXoQV3VvD9B2yj4v7Z4vEwD3tdrFxcUJtz9mknmLVIO9cG
+        6vrFLUToHmU+uEr11SJy3BRprSvKLCpBfNcL1WjDCyynavAGU0VpLnk9GcC7LfYAFfJuCm
+        DcHAyebEU+OOYWGeByJiNyyMqh5R9E0=
 MIME-Version: 1.0
-Message-ID: <162281321853.29796.18130084021269864131.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Fri, 04 Jun 2021 15:27:48 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [PATCH net-next] net: enetc: use get/put_unaligned() for mac
+ address handling
+In-Reply-To: <db1964cd-df60-08a2-1a66-8a8df7f14fef@gmail.com>
+References: <20210604123018.24940-1-michael@walle.cc>
+ <db1964cd-df60-08a2-1a66-8a8df7f14fef@gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <a1f426e85e24a910944fc712e5c08f01@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+Am 2021-06-04 14:44, schrieb Heiner Kallweit:
+> On 04.06.2021 14:30, Michael Walle wrote:
+>> The supplied buffer for the MAC address might not be aligned. Thus
+>> doing a 32bit (or 16bit) access could be on an unaligned address. For
+>> now, enetc is only used on aarch64 which can do unaligned accesses, 
+>> thus
+>> there is no error. In any case, be correct and use the 
+>> get/put_unaligned()
+>> helpers.
+>> 
+>> Signed-off-by: Michael Walle <michael@walle.cc>
+>> ---
+>>  drivers/net/ethernet/freescale/enetc/enetc_pf.c | 9 +++++----
+>>  1 file changed, 5 insertions(+), 4 deletions(-)
+>> 
+>> diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c 
+>> b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+>> index 31274325159a..a96d2acb5e11 100644
+>> --- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+>> +++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+>> @@ -1,6 +1,7 @@
+>>  // SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+>>  /* Copyright 2017-2019 NXP */
+>> 
+>> +#include <asm/unaligned.h>
+>>  #include <linux/mdio.h>
+>>  #include <linux/module.h>
+>>  #include <linux/fsl/enetc_mdio.h>
+>> @@ -17,15 +18,15 @@ static void enetc_pf_get_primary_mac_addr(struct 
+>> enetc_hw *hw, int si, u8 *addr)
+>>  	u32 upper = __raw_readl(hw->port + ENETC_PSIPMAR0(si));
+>>  	u16 lower = __raw_readw(hw->port + ENETC_PSIPMAR1(si));
+>> 
+>> -	*(u32 *)addr = upper;
+>> -	*(u16 *)(addr + 4) = lower;
+>> +	put_unaligned(upper, (u32 *)addr);
+>> +	put_unaligned(lower, (u16 *)(addr + 4));
+> 
+> I think you want to write little endian, therefore on a BE platform
+> this code may be wrong. Better use put_unaligned_le32?
+> By using these versions of the unaligned helpers you could also
+> remove the pointer cast.
 
-Commit-ID:     5405b42c2f08efe67b531799ba2fdb35bac93e70
-Gitweb:        https://git.kernel.org/tip/5405b42c2f08efe67b531799ba2fdb35bac93e70
-Author:        Jiashuo Liang <liangjs@pku.edu.cn>
-AuthorDate:    Tue, 01 Jun 2021 16:52:03 +08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 04 Jun 2021 15:23:28 +02:00
+I wasn't sure about the endianness. Might be the case, that on BE
+platforms, the endianess of the register will swap too. (OTOH I
+could use aarch64 with BE..)
 
-x86/fault: Don't send SIGSEGV twice on SEGV_PKUERR
+But I'm fine with changing it. I'd presume this being the only
+platform for now it doesn't really matter.
 
-__bad_area_nosemaphore() calls both force_sig_pkuerr() and
-force_sig_fault() when handling SEGV_PKUERR. This does not cause
-problems because the second signal is filtered by the legacy_queue()
-check in __send_signal() because in both cases, the signal is SIGSEGV,
-the second one seeing that the first one is already pending.
-
-This causes the kernel to do unnecessary work so send the signal only
-once for SEGV_PKUERR.
-
- [ bp: Massage commit message. ]
-
-Fixes: 9db812dbb29d ("signal/x86: Call force_sig_pkuerr from __bad_area_nosemaphore")
-Suggested-by: "Eric W. Biederman" <ebiederm@xmission.com>
-Signed-off-by: Jiashuo Liang <liangjs@pku.edu.cn>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
-Link: https://lkml.kernel.org/r/20210601085203.40214-1-liangjs@pku.edu.cn
----
- arch/x86/mm/fault.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index 1c548ad..6bda7f6 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -836,8 +836,8 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
- 
- 	if (si_code == SEGV_PKUERR)
- 		force_sig_pkuerr((void __user *)address, pkey);
--
--	force_sig_fault(SIGSEGV, si_code, (void __user *)address);
-+	else
-+		force_sig_fault(SIGSEGV, si_code, (void __user *)address);
- 
- 	local_irq_disable();
- }
+-michael
