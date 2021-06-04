@@ -2,150 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3134D39BA20
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C079539BA39
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 15:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbhFDNqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 09:46:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbhFDNqi (ORCPT
+        id S231199AbhFDNvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 09:51:07 -0400
+Received: from mail-wr1-f51.google.com ([209.85.221.51]:44690 "EHLO
+        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230142AbhFDNvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 09:46:38 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6626BC061766;
-        Fri,  4 Jun 2021 06:44:52 -0700 (PDT)
-Date:   Fri, 04 Jun 2021 13:44:50 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622814291;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rknRye6Pj01X8lmCtsBcQxZ/N02a5RRN31jvg68Mp0w=;
-        b=uS64hex4senYlnVHBMK44BnawputKuEiFRSSmeeqPaFE/M+BjhR+5HDlSuTL8RIVwSMwZC
-        nK/gG063vriQb2Xd2Nq9C5HwwhaBoyrrs6STNGf6aSIQMjOIwzD4ZlhDq7onyvRW/r9Ria
-        MMK/fiF8i59+xDiT+O82uvvsT2qc5jkIlZfudlfuBHiyuXi5ODilgMW+HLo6iRz0B4kHRU
-        Au6DU66DxOwSIvJkrOFKWLFifB0HQEiHub2C7AFztV+IXnZL2Pz8kEQKAT+wZ2dOyShODW
-        bfHTrE0PSmFpJTScjhjmPVGCraQHO7xh2DsvhYw1aohNzCTtuTzAMtOqjCLbMA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622814291;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rknRye6Pj01X8lmCtsBcQxZ/N02a5RRN31jvg68Mp0w=;
-        b=463xohIMbAWLyOvXUruHZtc8UvsVVolMfbdBLeG6Cp48wmAG5xFI4+b4ZGrfi5IaLCB6Vn
-        09iGEpBEbWsBD0AA==
-From:   "tip-bot2 for Eric Dumazet" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/debug: Remove obsolete init_schedstats()
-Cc:     Eric Dumazet <edumazet@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
+        Fri, 4 Jun 2021 09:51:05 -0400
+Received: by mail-wr1-f51.google.com with SMTP id f2so9356996wri.11;
+        Fri, 04 Jun 2021 06:49:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YqUvpMmz705GhCWmLxYJQO2eV15tdQbmMi+pH+r0IAA=;
+        b=P2XHJzSEv5j2qYW8no7gmd9OkzP8Sp3FJsV7ID8/aglZddcAyYPTlsQbMPM5t2fcwv
+         V96LYgGfI35QKQ1L6ER1tvPqpCUEl1jKSqKehwXHDigkfVhkT3a3NBIJJBRwMqYHoL44
+         PgJHURUe3F412mpi6Uglp9cMP/+R+gaS1k//kFxEacZ2vamcSIxFHOhgtRGOkR85Q/w2
+         WsfVc0Oqhq/ghwIyvRZhlER6C1nSz2JIXxEN0ytDeWGUUpcPYAi+HQg3zU9diHFFLYwa
+         36Xn0nWMM5u5CL+E69du/2USvgAMccYhqs8C3owQpHmsFazxlLPm/N8EznDrFqLtNPFp
+         ibxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YqUvpMmz705GhCWmLxYJQO2eV15tdQbmMi+pH+r0IAA=;
+        b=jklVEwDoz5zL5fgcJUGCmcpnP7ogWUsRpBo4NUqFuq8aGiPFKnu/GnCg6O/j/QPuE2
+         is0rvuAmo971hOEL6DVMDPuCPu1oLTk3qFC18ME1V/Q2prd2r7Nf4bkoZTPV+sojnInT
+         ZwP7+GKc+M0Hs2n3TCrMLvg0dwpmu6yphg86+dm9VoYmO0DctxQYuwrcrjFmJpIuSGHs
+         0NguMYNfWF4pXqk9ZCvG+aDqIBi0wbb6YMb5JOObsqIM22cV07COgN3xxONSaMSlA88U
+         AaOIVxKxW2tkDcypAMuRcEAOgyjRY3p2eVsXMlpoBzTmuONT1yT1gH+sF82xBNfRoloA
+         7a4g==
+X-Gm-Message-State: AOAM531VHIbRZLd5c531um75EnQYwjcA/K+jYPnni0FcWa0Y002PBM2d
+        vQvPVqk656ECOQSie7yM+9Ohhx9FjQY=
+X-Google-Smtp-Source: ABdhPJyBIwOfDIbswHqIHJ8pDe3I1nsav/kZOw6+MUuKbpGdn0U4ONh1CKpKibDDgbki3GZiAQQd7A==
+X-Received: by 2002:a5d:6952:: with SMTP id r18mr3997593wrw.392.1622814498333;
+        Fri, 04 Jun 2021 06:48:18 -0700 (PDT)
+Received: from xws.localdomain (pd9e5aba0.dip0.t-ipconnect.de. [217.229.171.160])
+        by smtp.gmail.com with ESMTPSA id u16sm7403167wru.56.2021.06.04.06.48.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 06:48:17 -0700 (PDT)
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        platform-driver-x86@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210602112108.1709635-1-eric.dumazet@gmail.com>
-References: <20210602112108.1709635-1-eric.dumazet@gmail.com>
+Subject: [PATCH v2 0/7] platform/surface: aggregator: Extend user-space interface for events
+Date:   Fri,  4 Jun 2021 15:47:48 +0200
+Message-Id: <20210604134755.535590-1-luzmaximilian@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Message-ID: <162281429016.29796.14526882751261492265.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+Extend the user-space debug interface so that it can be used to receive
+SSAM events in user-space.
 
-Commit-ID:     1faa491a49d53f5d1c8c23bdf01763cfc00a2b19
-Gitweb:        https://git.kernel.org/tip/1faa491a49d53f5d1c8c23bdf01763cfc00a2b19
-Author:        Eric Dumazet <edumazet@google.com>
-AuthorDate:    Wed, 02 Jun 2021 04:21:08 -07:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 04 Jun 2021 15:38:42 +02:00
+Version 1 and rationale:
+  https://lore.kernel.org/platform-driver-x86/20210603234526.2503590-1-luzmaximilian@gmail.com/
 
-sched/debug: Remove obsolete init_schedstats()
+Changes in version 2:
+ - PATCH 2/7: Avoid code duplication, remove unused variable
+ - PATCH 4/7: Add missing mutex_destroy() calls
 
-Revert commit 4698f88c06b8 ("sched/debug: Fix 'schedstats=enable'
-cmdline option").
+Maximilian Luz (7):
+  platform/surface: aggregator: Allow registering notifiers without
+    enabling events
+  platform/surface: aggregator: Allow enabling of events without
+    notifiers
+  platform/surface: aggregator: Update copyright
+  platform/surface: aggregator_cdev: Add support for forwarding events
+    to user-space
+  platform/surface: aggregator_cdev: Allow enabling of events from
+    user-space
+  platform/surface: aggregator_cdev: Add lockdep support
+  docs: driver-api: Update Surface Aggregator user-space interface
+    documentation
 
-After commit 6041186a3258 ("init: initialize jump labels before
-command line option parsing") we can rely on jump label infra being
-ready for use when setup_schedstats() is called.
+ .../surface_aggregator/clients/cdev.rst       | 127 ++++-
+ .../userspace-api/ioctl/ioctl-number.rst      |   2 +-
+ drivers/platform/surface/aggregator/Kconfig   |   2 +-
+ drivers/platform/surface/aggregator/Makefile  |   2 +-
+ drivers/platform/surface/aggregator/bus.c     |   2 +-
+ drivers/platform/surface/aggregator/bus.h     |   2 +-
+ .../platform/surface/aggregator/controller.c  | 332 +++++++++--
+ .../platform/surface/aggregator/controller.h  |   2 +-
+ drivers/platform/surface/aggregator/core.c    |   2 +-
+ .../platform/surface/aggregator/ssh_msgb.h    |   2 +-
+ .../surface/aggregator/ssh_packet_layer.c     |   2 +-
+ .../surface/aggregator/ssh_packet_layer.h     |   2 +-
+ .../platform/surface/aggregator/ssh_parser.c  |   2 +-
+ .../platform/surface/aggregator/ssh_parser.h  |   2 +-
+ .../surface/aggregator/ssh_request_layer.c    |   2 +-
+ .../surface/aggregator/ssh_request_layer.h    |   2 +-
+ drivers/platform/surface/aggregator/trace.h   |   2 +-
+ .../surface/surface_aggregator_cdev.c         | 534 +++++++++++++++++-
+ include/linux/surface_aggregator/controller.h |  27 +-
+ include/linux/surface_aggregator/device.h     |   2 +-
+ include/linux/surface_aggregator/serial_hub.h |   2 +-
+ include/uapi/linux/surface_aggregator/cdev.h  |  73 ++-
+ 22 files changed, 1018 insertions(+), 109 deletions(-)
 
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Link: https://lkml.kernel.org/r/20210602112108.1709635-1-eric.dumazet@gmail.com
----
- kernel/sched/core.c | 19 ++-----------------
- 1 file changed, 2 insertions(+), 17 deletions(-)
+-- 
+2.31.1
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 7e59466..9e9a5be 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -4009,7 +4009,6 @@ int sysctl_numa_balancing(struct ctl_table *table, int write,
- #ifdef CONFIG_SCHEDSTATS
- 
- DEFINE_STATIC_KEY_FALSE(sched_schedstats);
--static bool __initdata __sched_schedstats = false;
- 
- static void set_schedstats(bool enabled)
- {
-@@ -4033,16 +4032,11 @@ static int __init setup_schedstats(char *str)
- 	if (!str)
- 		goto out;
- 
--	/*
--	 * This code is called before jump labels have been set up, so we can't
--	 * change the static branch directly just yet.  Instead set a temporary
--	 * variable so init_schedstats() can do it later.
--	 */
- 	if (!strcmp(str, "enable")) {
--		__sched_schedstats = true;
-+		set_schedstats(true);
- 		ret = 1;
- 	} else if (!strcmp(str, "disable")) {
--		__sched_schedstats = false;
-+		set_schedstats(false);
- 		ret = 1;
- 	}
- out:
-@@ -4053,11 +4047,6 @@ out:
- }
- __setup("schedstats=", setup_schedstats);
- 
--static void __init init_schedstats(void)
--{
--	set_schedstats(__sched_schedstats);
--}
--
- #ifdef CONFIG_PROC_SYSCTL
- int sysctl_schedstats(struct ctl_table *table, int write, void *buffer,
- 		size_t *lenp, loff_t *ppos)
-@@ -4079,8 +4068,6 @@ int sysctl_schedstats(struct ctl_table *table, int write, void *buffer,
- 	return err;
- }
- #endif /* CONFIG_PROC_SYSCTL */
--#else  /* !CONFIG_SCHEDSTATS */
--static inline void init_schedstats(void) {}
- #endif /* CONFIG_SCHEDSTATS */
- 
- /*
-@@ -9089,8 +9076,6 @@ void __init sched_init(void)
- #endif
- 	init_sched_fair_class();
- 
--	init_schedstats();
--
- 	psi_init();
- 
- 	init_uclamp();
