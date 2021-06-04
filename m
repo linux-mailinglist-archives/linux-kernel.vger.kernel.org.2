@@ -2,100 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A096D39BC40
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 195E039BC41
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 17:51:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230342AbhFDPxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 11:53:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37448 "EHLO
+        id S231262AbhFDPxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 11:53:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbhFDPxG (ORCPT
+        with ESMTP id S229809AbhFDPxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 11:53:06 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF8CC061766;
-        Fri,  4 Jun 2021 08:51:05 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id m13so7287724qtk.13;
-        Fri, 04 Jun 2021 08:51:05 -0700 (PDT)
+        Fri, 4 Jun 2021 11:53:10 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09294C061767
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 08:51:10 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 27so8219994pgy.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 08:51:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uBZ/7zA0rgZN1i3qGEvYkxVHxjspKbk9HCZ8aw1XUNE=;
-        b=bY59MWvfcUywNdjpMUbwtYEHsD11yoPOxdrhEQsx9FOhgynwo7kkXWedl9XQsAy9z3
-         DUMRa5rEumkb0I6USrRgSlbMnbT1g2T0ibgeTGBHZujAdzzK0kYRF8HohIgYHAhRutdm
-         o419IsVMLvjkT3XOL/qlApJniWX2WmLMNFU+Py1BjoYyjpb0m/FO6Ahr5GkwAnRijC3X
-         ld/j5/pTft68bjR1Nh+DaF1pjzrlM1aT0U7oGqroUG5X8rDWLFSyVl0zNfRs/P2N09Gh
-         oZ33WXpfnbxdaTVwqGIpxP/TZ6HzIFfhtyg0nocOAlJwxXvoTmiD3Xiwj5G5++RAZRg3
-         YMwg==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EblRfcbrw2Bfqfw9tfH547IVGROshi6ov6X25dHCJ4A=;
+        b=yRJyGFcI2I1WPSrV9AuioyhAYT7ivG/QNeKzsKD+R3SWR+zmdDzvTJyQHDflLW48UZ
+         ZMN9fWF22tbQszlRzxddUiBYPzPGvPeEnHGVjyZ6H7fngyTpw3uXmStjFrVkZy+OQcso
+         kXMV0enVx2naw8jI3c2txamHX0gLCKYwF8ACEAmsgd2Et14JHk6UEFvFDvR1oTzWCNbc
+         otX5J5MRTZSIUstEeftY1EQ0uKBkF2eZATvJBfiVw08Kk4w5bqIaaJ0MPntelkdjHTOI
+         m1IhzpFWbc1BWJeMWkQZo/eHDUvPXDE1MN6zeKvq/oER5cjMWYiEQu4IxZyE8+iPMyTK
+         JF2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=uBZ/7zA0rgZN1i3qGEvYkxVHxjspKbk9HCZ8aw1XUNE=;
-        b=NY1lPjdJ7Xn8Zx/3Tf5uLZbQk+LvuWAgGsu2PLWZBAQAXLcRHzf6A6fcnAALgE0sCm
-         A29WptnpYm2eVP64XN3RhfjswVHqcW3Wimr4u56u0Z8EKYLY/9QllS4j4hIRlTHwJyIv
-         b0CDmcfBS5tn3/Tu1xwmXqB79tMHXUHYS+iSbIAPVPa091veZ8G7aNk+o/u9lLYZ7ZE6
-         xLPIjsW2Z2zVzZCUbacAFFV5ZH+kKLOegJtdoymB9m5wla5/SMnrrIkEuhwPDVJ65MU1
-         cx5hmG5FPrFUQjP1F3bOsWvB5EnjZ7Ramsmk7lB/BE51OmArEz0wrIB65V9lcgUE2CQ4
-         VKwg==
-X-Gm-Message-State: AOAM532W3CEfcUBv/hVs2zcI++CuuxpZRurpGWSZf4ggGJ1L1MXIFmom
-        i6b81gHRj/EG6pDQleDWpWc=
-X-Google-Smtp-Source: ABdhPJyu188ZUbkxyE/86Gh1Io9LR7qUTnlhY/CCRA7iq+vqTMqQDCZA+T5rHg0vLfahVTF8yCMxIQ==
-X-Received: by 2002:a05:622a:ce:: with SMTP id p14mr1413541qtw.133.1622821864221;
-        Fri, 04 Jun 2021 08:51:04 -0700 (PDT)
-Received: from localhost ([199.192.137.73])
-        by smtp.gmail.com with ESMTPSA id z136sm1079735qkb.34.2021.06.04.08.51.03
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=EblRfcbrw2Bfqfw9tfH547IVGROshi6ov6X25dHCJ4A=;
+        b=eVppBTqSmxSfOHEmiiMOkfCpun4slQSrzEFyX3wjupaHVb2kT0iROQpWnnZPP/oIk6
+         8E6/Z+0w85rqEuVBns8yzofEVCq6giBewxj6n0AhaT+3EI9Xty2yEeDDRs9fQJrahQum
+         B8KuSK9CPDNODDqubmV3aZBWzLPBGGfcltO+cywrzQVbf7IAmU+aBv2uSHBbs/YVxwSW
+         tZ8G+oSwsv/xD0BOIaE4ya0GLEcpqqSdPsni0zYNKW0feE9DSStqT/O0qqB7whJF0Xoz
+         eNmoR3MVbr2IkYAm6kYf9LNHcwNo8vP+N4JU9YH+jDafjBevkHAJQwblwXcsF6KtMZzz
+         cI/A==
+X-Gm-Message-State: AOAM531GQ8Kf9TYcda+bn5y7eAHw8IwAwCDugq5QgZNHijGtiSzOZMnX
+        abdNf1D3NW7ddToRcEZkv9NYrQ==
+X-Google-Smtp-Source: ABdhPJwjL1ysqjo2D10XZSVezd+QjVVOK16oTGexVdRXBHLeQlNEuD+FadY9VPzz6KqoG35+tyVkog==
+X-Received: by 2002:a62:5444:0:b029:2e9:c69d:dc64 with SMTP id i65-20020a6254440000b02902e9c69ddc64mr4996989pfb.32.1622821869389;
+        Fri, 04 Jun 2021 08:51:09 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id f5sm4869053pjp.37.2021.06.04.08.51.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 08:51:03 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 4 Jun 2021 11:51:02 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dennis Zhou <dennis@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>, cgroups@vger.kernel.org
-Subject: Re: [PATCH v7 6/6] writeback, cgroup: release dying cgwbs by
- switching attached inodes
-Message-ID: <YLpL5lpaRSS8uhHl@slm.duckdns.org>
-References: <20210604013159.3126180-1-guro@fb.com>
- <20210604013159.3126180-7-guro@fb.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604013159.3126180-7-guro@fb.com>
+        Fri, 04 Jun 2021 08:51:08 -0700 (PDT)
+Date:   Fri, 04 Jun 2021 08:51:08 -0700 (PDT)
+X-Google-Original-Date: Fri, 04 Jun 2021 08:51:06 PDT (-0700)
+Subject:     Re: [PATCH -fixes] riscv: Fix BUILTIN_DTB for sifive and microchip soc
+In-Reply-To: <CAK8P3a1TiSNoqUEjTaqPyqnU8d0-p-yZkrsvmXt5fo4Rkfue_w@mail.gmail.com>
+CC:     alex@ghiti.fr, robh+dt@kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Message-ID: <mhng-f1a76f5f-ad66-40ae-aad3-cd2f669f33bf@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, 04 Jun 2021 06:08:05 PDT (-0700), Arnd Bergmann wrote:
+> On Fri, Jun 4, 2021 at 2:06 PM Alexandre Ghiti <alex@ghiti.fr> wrote:
+>>
+>> Fix BUILTIN_DTB config which resulted in a dtb that was actually not built
+>> into the Linux image: in the same manner as Canaan soc does, create an object
+>> file from the dtb file that will get linked into the Linux image.
+>>
+>> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+>
+> Along the same lines as the comment that Jisheng Zhang made on the fixed
+> address, building a dtb into the kernel itself fundamentally breaks generic
+> kernel images.
+>
+> I can understand using it on K210, which is extremely limited and wouldn't
+> run a generic kernel anyway, but for normal platforms like microchip and
+> sifive, it would be better to disallow CONFIG_BUILTIN_DTB in Kconfig
+> and require a non-broken boot loader.
 
-On Thu, Jun 03, 2021 at 06:31:59PM -0700, Roman Gushchin wrote:
+When we first added BUILTIN_DTB we actually had a compatibility 
+mechanism in there.  There isn't enough in the ISA to handle board 
+compatibility, but we were hoping to get something to deal with that.  
+It didn't pan out so we dropped the compatibility mechanism, which is 
+how we ended up here.
 
-> +bool cleanup_offline_cgwb(struct bdi_writeback *wb)
-> +{
-> +	struct inode_switch_wbs_context *isw;
-> +	struct inode *inode;
-> +	int nr;
-> +	bool restart = false;
-> +
-> +	isw = kzalloc(sizeof(*isw) + WB_MAX_INODES_PER_ISW *
-> +		      sizeof(struct inode *), GFP_KERNEL);
-> +	if (!isw)
-> +		return restart;
-> +
-> +	/* no need to call wb_get() here: bdi's root wb is not refcounted */
-> +	isw->new_wb = &wb->bdi->wb;
-
-Not a deal breaker but I wonder whether it'd be safer to migrate it to the
-nearest live ancestor rather than directly to the root. As adaptive
-migration isn't something guaranteed, there's some chance that this can
-behave as escape-to-root path in pathological cases especially for inodes
-which may be written to by multiple cgroups.
-
-Thanks.
-
--- 
-tejun
+Maybe the right thing to do here is to add some sort of "be compatible 
+with the platform spec" Kconfig, which we could then use to disallow all 
+these features that result in non-portable kernels?
