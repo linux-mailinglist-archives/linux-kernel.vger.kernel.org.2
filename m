@@ -2,98 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B9E39BE42
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CFC639BE48
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbhFDRPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 13:15:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:43982 "EHLO foss.arm.com"
+        id S230085AbhFDRQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 13:16:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229878AbhFDRPT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 13:15:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9278B1063;
-        Fri,  4 Jun 2021 10:13:32 -0700 (PDT)
-Received: from slackpad.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 387D03F73D;
-        Fri,  4 Jun 2021 10:13:30 -0700 (PDT)
-Date:   Fri, 4 Jun 2021 18:13:22 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ondrej Jirman <megous@megous.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Jernej =?UTF-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        Josh Triplett <josh@joshtriplett.org>, tuxd3v@sapo.pt,
-        Rob Herring <robh@kernel.org>
-Subject: Re: sunxi: Bluetooth broken since 5.6-rc1
-Message-ID: <20210604181322.52a26de8@slackpad.fritz.box>
-In-Reply-To: <20210531144136.GS30436@shell.armlinux.org.uk>
-References: <20210530173454.5ab1dcf5@slackpad.fritz.box>
-        <YLTi8iYdLiKNeaLC@kroah.com>
-        <20210531144136.GS30436@shell.armlinux.org.uk>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
+        id S229690AbhFDRQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 13:16:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 83DB261359;
+        Fri,  4 Jun 2021 17:14:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622826891;
+        bh=7nmz1raQFUKAtzJAzWxRYkCXBl994MaAmMtLTvmwAO0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sHSbVNo3kyn5LCW9dS1oK+6B0SEvvjF5/l5WIgrZ85u6WwfAVJlJR/xYTyDIBX6dD
+         gg1zU/5WSAZoFVONBO+2toI2vMa3CrlNNewDlfQJmN48JfIPmqBNG5NWEikICH6tyk
+         /pgSMf91JTLOgjNxQtbBJ5sWfdAIP64FSbAvpS10JUPinMsU8bcdcuXAZwuDPdQZei
+         iCC05K5KV22uVnTyw1qe6uD2cEjjH9XiKt64YECFDYh3gMhc8RZSZvg6L+o9ruTCQk
+         ELCqTXp2JVE/T2DKYiqFeCm+j0ddsP7XX8NRTqxZ3Wb6teq0KjJQxiZYow/vuZS3Si
+         zaSl/gwVoOG9w==
+Date:   Fri, 4 Jun 2021 18:14:39 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Will Deacon <will@kernel.org>, Ali Saidi <alisaidi@amazon.com>
+Subject: Re: [PATCH] hwrng: Add Arm SMCCC TRNG based driver
+Message-ID: <20210604171439.GA39696@sirena.org.uk>
+References: <20210604170216.4705-1-andre.przywara@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="FCuugMFkClbJLl1L"
+Content-Disposition: inline
+In-Reply-To: <20210604170216.4705-1-andre.przywara@arm.com>
+X-Cookie: optimist, n:
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 May 2021 15:41:36 +0100
-"Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
 
-Hi Greg,
+--FCuugMFkClbJLl1L
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> On Mon, May 31, 2021 at 03:21:54PM +0200, Greg Kroah-Hartman wrote:
-> > On Sun, May 30, 2021 at 05:34:54PM +0100, Andre Przywara wrote:  
-> > > An obvious easy hack-fix is to just define
-> > > CONFIG_SERIAL_8250_16550A_VARIANTS, which brings the delays back and
-> > > seems to avoid the problem for me.
-> > > Another hack which seems to mitigate the problem is to avoid switching
-> > > the baudrate to something faster than 115200.
-> > > 
-> > > I observed this on a BananaPi-M64 (Allwinner A64 SoC with AP6212 WiFi/BT
-> > > chip), but others reported the same issue on a NanoPi Air (Allwinner H3
-> > > with 6212), but also other SoCs and devices (at least one AP6210).
-> > > 
-> > > Obviously those workarounds are not real solutions, and I was
-> > > wondering if anybody has an idea how to properly fix this?
-> > > What puzzles me is that the delay is happening during the *UART*
-> > > probe, so before we even start dealing with the Bluetooth device.  
-> > 
-> > What type of bluetooth device is this, and what does it have to do with
-> > the serial port?  Is the SoC device using the same IP blocks for both?  
-> 
-> Many bluetooth "devices" (I mean the interface from the local machine
-> to the BT world, not as in remote devices) are connected through a
-> standard UART. Pictorially, it's:
-> 
->   CPU <---> UART <---> BT chip <---> Bluetooth RF world
-> 
-> The reporter seems to be saying is that a change to the UART driver now
-> means that the bluetooth chip wired to that UART no longer functions due
-> to slightly different initialisation timings of the host UART.
+On Fri, Jun 04, 2021 at 06:02:16PM +0100, Andre Przywara wrote:
 
-Yes, exactly, thanks Russell for clarifying this.
-How this works (when it does) is that the UART driver probes, then we
-look at the children of the UART devicetree node, to probe for those, by
-virtue of the serdev bus.
+> +static int __init smccc_trng_dev_init(void)
+> +{
+> +	platform_device_register_simple("smccc_trng", -1, NULL, 0);
+> +
+> +	return 0;
+> +}
+> +
+> +device_initcall(smccc_trng_dev_init);
 
-My question was about if this rings a bell with someone, because I have
-a hard time piecing together how a delay in the *UART probe* could
-affect devices depending on it. And how to fix this ...
+This will leave the device registered if the driver is removed and cause
+the attempt to register the device again to fail if the module is
+reloaded.  We don't check the error here but I'm not sure the driver
+core won't complain about that and it's generally icky, better to clean
+up the device on module removal.
 
-Cheers,
-Andre
+--FCuugMFkClbJLl1L
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmC6X34ACgkQJNaLcl1U
+h9BBVQf/XQdxBvCAtkGB0q2r1SwBLIFxttR/4U1G2b30Z2V0EeHjbDa3guGVMoe6
+u/py83JO8RdTaFIDUgpJVTSn4YEQ49Jmw+zTng51oDEu/Jdkp390mYZ2+jnPzt6R
+PezUOOaD5P5mSPlEhZLSb9cSBlU60aFHIFcpjK11F5jechFsGz0H2g9mNN7AU7rH
+GR2CjCliZpkJsTG9ZTmd2tJMJqTRcU+KT/D/yw1+ynpMTXBaV6hrUduiD4E2VSs4
+2+rstDlKGZcwl8Rnz8DMum8c1uP0W/21yQYK2jmC72H+yDsyMlBJ291bqh//pQPn
+Qszkn3otjj3IL+Zg4JhoLzRxHenW3w==
+=LpY4
+-----END PGP SIGNATURE-----
+
+--FCuugMFkClbJLl1L--
