@@ -2,127 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 562A739BCA3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E3D39BCA1
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 18:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhFDQMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 12:12:38 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:22412 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230162AbhFDQMg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 12:12:36 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622823050; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=7OrD0eroTm8+Xh/p6MsHyA4aVI8DyLGbpiIhRk9+tQI=;
- b=mRjZlFs3xIHN3FbjHB2TCzS6RbD+XS2mbnbHg97mvVqC1tVT+zdCmoSV4Z4YklMpa50ZLcY/
- qL9Olx7FmFQoX8WMP/mrFNNnk5nU/UxgeaMfiwl+YWxVXT0nWD0XW5cVlmzbKqLy2//0Mim1
- +kQfF386eaW5HcjDgjYNV9XO5uM=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 60ba5076abfd22a3dc9e411c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 04 Jun 2021 16:10:30
- GMT
-Sender: rajeevny=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9B79DC43147; Fri,  4 Jun 2021 16:10:29 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rajeevny)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AC24EC433F1;
-        Fri,  4 Jun 2021 16:10:28 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 04 Jun 2021 21:40:28 +0530
-From:   rajeevny@codeaurora.org
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Sam Ravnborg <sam@ravnborg.org>, linux-arm-msm@vger.kernel.org,
-        Linus W <linus.walleij@linaro.org>,
-        Lyude Paul <lyude@redhat.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Steev Klimaszewski <steev@kali.org>, robdclark@chromium.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thierry Reding <treding@nvidia.com>,
-        dri-devel@lists.freedesktop.org,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Thierry Reding <thierry.reding@gmail.com>,
+        id S230246AbhFDQMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 12:12:35 -0400
+Received: from mail-il1-f180.google.com ([209.85.166.180]:39471 "EHLO
+        mail-il1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230034AbhFDQMe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 12:12:34 -0400
+Received: by mail-il1-f180.google.com with SMTP id o9so9342310ilh.6
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 09:10:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WmER0sPmJ9ixY8p+WTTY2FhzPf3j9TTlXo0+cEHTCt4=;
+        b=Ov+FNCp2K9h0Q8TXBjaEWytB7uXrE1SebSmmzumnsUDOHEiaBotZZjQfO8Bm/TevOx
+         CV8bJipn1HT0V+yTJZYQB8bFbOo/ZfAkoeUfy+Cq6BQ7tul7GpTY27lcD1nZEBcEpMYG
+         Vck9vhmACu03ZIieC9OfbrJbmwxHdEd11+ZvRRlafVYS3KSxA+qzF9dAW6M7mdqOJft8
+         QBAOH2x2tiSfgjqCxfgKBW+8J0jW6+0SK2Nqa8CIw0RxDrq7O5eYo2oAUwWT2Yc8MKd8
+         ij4EwJ2a4XK0h/FxpbPqBdYM3AKoy5sE4q5p+gYvkxMde6LEGijwnC8dlB7i1grZUfOl
+         V/KQ==
+X-Gm-Message-State: AOAM530U7uOmy0WozCOYDDnJeIWjzD8rGDufippm4oRLahbTf6J6/UET
+        PlJnnKwe8o3mAcDJjMv15bwjF/AIrqw=
+X-Google-Smtp-Source: ABdhPJzjiFSZ+MTAsRkaXfWKrteXuc2CVIWEYgOef8GmeTjnECm7PQkB5cw0yvFlGpZcgn6vdIVC4Q==
+X-Received: by 2002:a92:cecd:: with SMTP id z13mr4491352ilq.252.1622823047849;
+        Fri, 04 Jun 2021 09:10:47 -0700 (PDT)
+Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
+        by smtp.gmail.com with ESMTPSA id c19sm691087ili.62.2021.06.04.09.10.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 09:10:47 -0700 (PDT)
+Date:   Fri, 4 Jun 2021 16:10:46 +0000
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 07/11] drm/panel: panel-simple: Stash DP AUX bus; allow
- using it for DDC
-In-Reply-To: <20210524165920.v8.7.I18e60221f6d048d14d6c50a770b15f356fa75092@changeid>
-References: <20210525000159.3384921-1-dianders@chromium.org>
- <20210524165920.v8.7.I18e60221f6d048d14d6c50a770b15f356fa75092@changeid>
-Message-ID: <6e0cd667a8a776e524b42f1535827208@codeaurora.org>
-X-Sender: rajeevny@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Subject: Re: [PATCH v2 0/3] percpu: memcg memory accounting rework
+Message-ID: <YLpQhuZwuf32avkf@google.com>
+References: <20210603010931.1472512-1-guro@fb.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210603010931.1472512-1-guro@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
+Hello,
 
->  	panel->no_hpd = of_property_read_bool(dev->of_node, "no-hpd");
->  	if (!panel->no_hpd) {
-> @@ -708,6 +712,8 @@ static int panel_simple_probe(struct device *dev,
-> const struct panel_desc *desc)
+On Wed, Jun 02, 2021 at 06:09:28PM -0700, Roman Gushchin wrote:
+> This patchset reworks memcg-based accounting of the percpu memory:
+> instead of using two types of chunks (memcg-aware and non-memcg-aware)
+> it treats all chunks as memcg-aware. An extra memory used for objcg
+> arrays will is compensated by a better chunks utilization, so the
+> total memory footprint should be the same or smaller.
 > 
->  		if (!panel->ddc)
->  			return -EPROBE_DEFER;
-> +	} else if (aux) {
-> +		panel->ddc = &aux->ddc;
->  	}
+> First two patches are preparational changes and cleanups on the memcg side.
+> The third one is percpu accounting rework.
+> 
+> v2:
+>   - make all chunks memcg-aware instead of on-demand objcg allocation, by Dennis
+> 
+> v1:
+>   https://lkml.org/lkml/2021/5/11/1343
+> 
+> 
+> Roman Gushchin (3):
+>   mm, memcg: mark cgroup_memory_nosocket, nokmem and noswap as
+>     __ro_after_init
+>   mm, memcg: introduce mem_cgroup_kmem_disabled()
+>   percpu: rework memcg accounting
+> 
+>  include/linux/memcontrol.h |   5 ++
+>  mm/memcontrol.c            |  11 ++-
+>  mm/percpu-internal.h       |  52 +--------------
+>  mm/percpu-km.c             |   5 +-
+>  mm/percpu-stats.c          |  46 +++++--------
+>  mm/percpu-vm.c             |  11 ++-
+>  mm/percpu.c                | 133 +++++++++++++++----------------------
+>  7 files changed, 88 insertions(+), 175 deletions(-)
+> 
+> -- 
+> 2.31.1
+> 
 
-In panel_simple_probe(), the put_device(&panel->ddc->dev) call is 
-causing issue when the aux->ddc is used to assign panel->ddc
-It works well when "ddc-i2c-bus" is used to assign panel->ddc
+I think I'm pretty happy with this approach. If there is any issue with
+the delta of memcg on but kmem accounting off, we can tackle that
+separately. I'll need another day or so to review the last patch a
+little more carefully though.
 
-static int panel_simple_probe(...)
-{
-...
+Andrew do you mind if I route the first two in my tree too?
 
-free_ddc:
-         if (panel->ddc)
-                 put_device(&panel->ddc->dev);
-
-         return err;
-}
-
-== Log start ==
-
-[    2.393970] ------------[ cut here ]------------
-[    2.398747] kobject: '(null)' ((____ptrval____)): is not initialized, 
-yet kobject_put() is being called.
-[    2.408554] WARNING: CPU: 7 PID: 7 at lib/kobject.c:752 
-kobject_put+0x38/0xe0
-...
-...
-[    2.528574] Call trace:
-[    2.531092]  kobject_put+0x38/0xe0
-[    2.534594]  put_device+0x20/0x2c
-[    2.538002]  panel_simple_probe+0x4bc/0x550
-[    2.542300]  panel_simple_dp_aux_ep_probe+0x44/0x5c
-[    2.547305]  dp_aux_ep_probe+0x58/0x80
-
-== Log end ==
-
-
-Sincerely,
-Rajeev
+Thanks,
+Dennis
