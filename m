@@ -2,165 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE6ED39BF24
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6745739BF27
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 19:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230269AbhFDR4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 13:56:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36550 "EHLO
+        id S230314AbhFDR5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 13:57:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbhFDR4O (ORCPT
+        with ESMTP id S229690AbhFDR5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 13:56:14 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1544C061766
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 10:54:27 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id r5so15361547lfr.5
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 10:54:27 -0700 (PDT)
+        Fri, 4 Jun 2021 13:57:09 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6703C061766
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 10:55:16 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id u13so5371114qvt.7
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 10:55:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vfnMx6/ZkVtuDtw0ciVv336EcMYRTKWQaVjz13KGQBA=;
-        b=ChYC78odqFlVqgQXf/c6yHOpnVBZtmXzFxuqS35xMwqNbape5bLR94ccnEN/5pAfmt
-         zvPpXm9i6mQkb4wVF8rYpc2dAtbJrXTgFxV8ZG3xKWr4iRevT+m461E6ToFSJLVXQbwV
-         iEMEuejQGu7Y602TkvBEu9wjXFBgshdu8fSFqLNfXIrHPiDgBwTBuq+UMjlVOS/VjPa1
-         SwreIV6OTW+6Q5NNevnIAnOSxMl1X45/JLfdfG9vs2JqiptSkkm4Uee5oubG/YIJMTeS
-         90bz9lFTqtiL98Xpng9HqipuFivQfBKa8DJAuMig48wIE6BIv954uZq1h7o60+5TeUJ8
-         H/UA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sqTDYULOdmRO9QMOi5MUNNSuuP+YM4KULlFjGRM4XO0=;
+        b=k66xbR2Ts+amfEA9q0i1ECkO/Z69P8wiBWeObBl33PS/v0JtAcV6tI8rSOg56r2Scl
+         7LfvKYcKcsbkxsXL6n4+ljKo+QOhfajWKdY6PcQdYSkOW3bLR+RvL3JJIXPHl7zLuwtW
+         qPDr4XZfSNMCcJiExClWXWNJaa8EdQKOUr3WpbyZ/r/BumVVoNfEuhZeDhV38k5grkYC
+         L0lkGIJbCF63915JdQBLYXy7HSWmWeQWiQSOtw4RKOyPP4AmnjMrLCFP2SklRyiGn6wZ
+         5h1M8OopM6Qad5aMIk73CcNKPfWoxd9NYDyTvosKgz5NP4rmVNgIlNdZgKDkoXeiH6FI
+         UCfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vfnMx6/ZkVtuDtw0ciVv336EcMYRTKWQaVjz13KGQBA=;
-        b=GvkALwP8hEctqRUyYnIzwnqXfyzNFpFUvwyK5hCQ4NHyaJ2GEa4G/K5svhA24PIpZ1
-         gRpaCch0tBIar+wSmJl1/T4j5Q0RM/2WztSiOQ/hL0f7ndxGHEYqGsWqY+1SBNPvHkma
-         Dx9jcdTN3eaKAvRnhrfvecX45IOa9yOtDYwS9w169B2tl4vPear4yPGdThp2Y1GLVID0
-         1S8WmTPyYEdVmJuBu+jx+PBXdtLDuEbbsvU4w+XL0vJ1fAwAO7ZLqzWJkc3PfDpTsgxt
-         wJwHs0Ba636B2W1fyzWtV17x4xQ9MFJQ7dSBEUDyPZFFKu9RUuqFwl6od2FdxGHIPnJN
-         Iu0A==
-X-Gm-Message-State: AOAM531C+r5InoHcFnhzM6zjb0PxJzQBzVLpYN2Tfhtb421HllSmXxaI
-        AoUSIaprEdiYOnLfmCKsMTTguQ==
-X-Google-Smtp-Source: ABdhPJx2420HovtN/qRonmRPoIm+EcUaptic2C/wU9XyGpKIwbM4srVXzeKyGuud0ZGiopeZxd9HCw==
-X-Received: by 2002:a05:6512:3d8a:: with SMTP id k10mr3570387lfv.473.1622829265214;
-        Fri, 04 Jun 2021 10:54:25 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id n15sm670569lft.169.2021.06.04.10.54.24
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sqTDYULOdmRO9QMOi5MUNNSuuP+YM4KULlFjGRM4XO0=;
+        b=SHxAGSee6E6UE/0Cnz6qErxt226IlFj1+d48AYHAKJU9UISz/R/yu8OzjzBU8zHA1c
+         MwbBTfZ8XN6hvDeSNN3MpmytJ4RkZKA6mos8oZlZz8sKRXnmlsOe6IQPMNc8nVs5hH0U
+         LfpowZagRZANXEKkcxBkSoKmq2c3FJ3zEN2E1f0BaR2h7153h9KvkYigN8TlP2E1Si0V
+         o6KhiIjiIsylTMB1j19OcIbvLU6hIJWn8QN1XoZespbeb9KjnbsYdJ6ZZf/TZU74J8jl
+         iIXRhm5smiXLmpYJGQTADVXhXnpbrIIceRQISbsvvelwgMI/J7OjW/TkWGCZf1K1bIR+
+         fPQQ==
+X-Gm-Message-State: AOAM533viMegVd1h/h26UHZV1iRVbohtq36bIeNn2ui1YU8NPmDlhW3v
+        Pb80INH9LqlrGYMRodUSbpo=
+X-Google-Smtp-Source: ABdhPJxTw8Q2g4gJqdQ5VjeVcUsumg5m4xlJCqLwsEiMFIRljGLUCf9uZk2to7cRVIUw+zBccv3Zcg==
+X-Received: by 2002:a0c:ec10:: with SMTP id y16mr5743627qvo.49.1622829316048;
+        Fri, 04 Jun 2021 10:55:16 -0700 (PDT)
+Received: from hemlock.fiveisland.rocks ([2001:470:1d:225:af22:9bab:b26c:cac1])
+        by smtp.gmail.com with ESMTPSA id u2sm4301525qkk.75.2021.06.04.10.55.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 10:54:24 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id ECFB41027A9; Fri,  4 Jun 2021 20:54:36 +0300 (+03)
-Date:   Fri, 4 Jun 2021 20:54:36 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jim Mattson <jmattson@google.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Peter Gonda <pgonda@google.com>,
-        David Hildenbrand <david@redhat.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFCv2 13/13] KVM: unmap guest memory using poisoned pages
-Message-ID: <20210604175436.ltlvlzxoakzqe2zu@box.shutemov.name>
-References: <20210419142602.khjbzktk5tk5l6lk@box.shutemov.name>
- <YH2pam5b837wFM3z@google.com>
- <20210419164027.dqiptkebhdt5cfmy@box.shutemov.name>
- <YH3HWeOXFiCTZN4y@google.com>
- <20210419185354.v3rgandtrel7bzjj@box>
- <YH3jaf5ThzLZdY4K@google.com>
- <20210419225755.nsrtjfvfcqscyb6m@box.shutemov.name>
- <YH8L0ihIzL6UB6qD@google.com>
- <20210521123148.a3t4uh4iezm6ax47@box>
- <b367e721-d613-c171-20e7-fe9ea096e411@kernel.org>
+        Fri, 04 Jun 2021 10:55:15 -0700 (PDT)
+From:   Marc Dionne <marc.c.dionne@gmail.com>
+To:     Marc Dionne <marc.dionne@auristor.com>,
+        David Howells <dhowells@redhat.com>
+Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] afs: Fix partial writeback of large files on fsync and close
+Date:   Fri,  4 Jun 2021 14:55:04 -0300
+Message-Id: <20210604175504.4055-1-marc.c.dionne@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b367e721-d613-c171-20e7-fe9ea096e411@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 10:16:49AM -0700, Andy Lutomirski wrote:
-> On 5/21/21 5:31 AM, Kirill A. Shutemov wrote:
-> > Hi Sean,
-> > 
-> > The core patch of the approach we've discussed before is below. It
-> > introduce a new page type with the required semantics.
-> > 
-> > The full patchset can be found here:
-> > 
-> >  git://git.kernel.org/pub/scm/linux/kernel/git/kas/linux.git kvm-unmapped-guest-only
-> > 
-> > but only the patch below is relevant for TDX. QEMU patch is attached.
-> > 
-> > CONFIG_HAVE_KVM_PROTECTED_MEMORY has to be changed to what is appropriate
-> > for TDX and FOLL_GUEST has to be used in hva_to_pfn_slow() when running
-> > TDX guest.
-> > 
-> > When page get inserted into private sept we must make sure it is
-> > PageGuest() or SIGBUS otherwise. Inserting PageGuest() into shared is
-> > fine, but the page will not be accessible from userspace.
-> 
-> I may have missed a detail, and I think Sean almost said this, but:
-> 
-> I don't think that a single bit like this is sufficient.  A KVM host can
-> contain more than one TDX guest, and, to reliably avoid machine checks,
-> I think we need to make sure that secure pages are only ever mapped into
-> the guest to which they belong, as well as to the right GPA.  If a KVM
-> user host process creates a PageGuest page, what stops it from being
-> mapped into two different guests?  The refcount?
+From: Marc Dionne <marc.dionne@auristor.com>
 
-TDX module ensures that a pfn can only be used once as private memory.
+In commit e87b03f5830e ("afs: Prepare for use of THPs"), the return
+value for afs_write_back_from_locked_page was changed from a number
+of pages to a length in bytes.  The loop in afs_writepages_region uses
+the return value to compute the index that will be used to find dirty
+pages in the next iteration, but treats it as a number of pages and
+wrongly multiplies it by PAGE_SIZE.  This gives a very large index value,
+potentially skipping any dirty data that was not covered in the first
+pass, which is limited to 256M.
 
-> After contemplating this a bit, I have a somewhat different suggestion,
-> at least for TDX.  In TDX, a guest logically has two entirely separate
-> physical address spaces: the secure address space and the shared address
-> space.  They are managed separately, they have different contents, etc.
-> Normally one would expect a given numerical address (with the secure
-> selector bit masked off) to only exist in one of the two spaces, but
-> nothing in the architecture fundamentally requires this.  And switching
-> a page between the secure and shared states is a heavyweight operation.
-> 
-> So what if KVM actually treated them completely separately?  The secure
-> address space doesn't have any of the complex properties that the shared
-> address space has.  There are no paravirt pages there, no KSM pages
-> there, no forked pages there, no MAP_ANONYMOUS pages there, no MMIO
-> pages there, etc.  There could be a KVM API to allocate and deallocate a
-> secure page, and that would be it.
-> 
-> This could be inefficient if a guest does a bunch of MapGPA calls and
-> makes the shared address space highly sparse.  That could potentially be
-> mitigated by allowing a (shared) user memory region to come with a
-> bitmap of which pages are actually mapped.  Pages in the unmapped areas
-> are holes, and KVM won't look through to the QEMU page tables.
-> 
-> Does this make any sense?  It would completely eliminate all this
-> PageGuest stuff -- a secure page would be backed by a *kernel*
-> allocation (potentially a pageable allocation a la tmpfs if TDX ever
-> learns how to swap, but that's no currently possible nor would it be
-> user visible), so the kernel can straightforwardly guarantee that user
-> pagetables will not contain references to secure pages and that GUP will
-> not be called on them.
+This causes fsync(), and indirectly close(), to only do a partial
+writeback of a large file's dirty data.  The rest is eventually written
+back by background threads after dirty_expire_centisecs.
 
-It doesn't fit in KVM design AFAICS: userspace own guest memory mapping.
+Fixes: e87b03f5830e ("afs: Prepare for use of THPs")
+Signed-off-by: Marc Dionne <marc.dionne@auristor.com>
+---
+ fs/afs/write.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-And it's not future-proof: the private memory has to be subject of Linux
-memory management in the future. For instance, it should be possible to
-migrate such memory. Having the memory hiden within kernel makes it
-difficult: existing API is not suitable to handle it.
-
-> I'm not sure how this would map to SEV.  Certainly, with some degree of
-> host vs guest cooperation, SEV could work the same way, and the
-> migration support is pushing SEV in that direction.
-
+diff --git a/fs/afs/write.c b/fs/afs/write.c
+index 3edb6204b937..a523bb86915d 100644
+--- a/fs/afs/write.c
++++ b/fs/afs/write.c
+@@ -730,7 +730,7 @@ static int afs_writepages_region(struct address_space *mapping,
+ 			return ret;
+ 		}
+ 
+-		start += ret * PAGE_SIZE;
++		start += ret;
+ 
+ 		cond_resched();
+ 	} while (wbc->nr_to_write > 0);
 -- 
- Kirill A. Shutemov
+2.31.1
+
