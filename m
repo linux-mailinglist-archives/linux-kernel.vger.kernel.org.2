@@ -2,151 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F87439AF63
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA1C39AF69
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Jun 2021 03:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhFDBND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Jun 2021 21:13:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56119 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229754AbhFDBNB (ORCPT
+        id S229929AbhFDBNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Jun 2021 21:13:16 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:30496 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229947AbhFDBNP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Jun 2021 21:13:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622769076;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=74wa3D7052FGdwsOb19pvsgbuYGA5vLypJgGwvpg9kA=;
-        b=a37wmN21NMiNqjs6CSHLYuHZjqb6wCLH+LZfaXhCht2TsQxTxs6l+n0xHrtrQ4F8j+lSAB
-        eF0uY1mVHBer36oeFvnSDcASegOzFoJxD3FRjO7xf/IW7lZCPecPzXfzHCyeMcoUbBz68G
-        M2URL10SkPoKdMHoX10Eh8hftny+ZJw=
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
- [209.85.215.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-239-wtnnjxZjOvONSl9khzuPxA-1; Thu, 03 Jun 2021 21:11:14 -0400
-X-MC-Unique: wtnnjxZjOvONSl9khzuPxA-1
-Received: by mail-pg1-f199.google.com with SMTP id k9-20020a63d1090000b029021091ebb84cso4971503pgg.3
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Jun 2021 18:11:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=74wa3D7052FGdwsOb19pvsgbuYGA5vLypJgGwvpg9kA=;
-        b=j6SvCf9u8v8dB31I3amrANPEnXILk8qCetfhs5ic672vROni5mIXVqAi9HmQ1Fu8fX
-         A0629mHFPRK3WzfOS+mmR6722PFBxrYGHJq+9ymGXxkp56u4+6RgzxDQBPbuotMMlf8d
-         dEJVG+DRiMiOhbUXmyMGARsfoyR3HYrN01pldIweXR96fH63555lbq/Z753Lm2DRIgTf
-         GPESaoypkiL3UHB4COQHYhbhoxV7Hi67RaM/Tbc1x4quruVK9t65YmNK3nvTlumlGgMd
-         qaIiA8ksQQ1ow+v2AYeq6RD1OmrzJ+QZJRiJ1fVB2hdvFyDu17QE5XCWEcCsd0vJ954g
-         qiqw==
-X-Gm-Message-State: AOAM53077qM/E/Wedfx15Pe/s7miEjtTvMeFbi4748Sazf3b6abjfNkm
-        f2B9+2A803XtBW7DJd7DQfTC3DMm6zMWbH8ohpVJuxfmA7L0GZbheq5yH9qD5IHgOqAPMexRj2a
-        /cyFtooKxd0FHwKAHiHsN1WNF
-X-Received: by 2002:a63:370b:: with SMTP id e11mr2255877pga.356.1622769073851;
-        Thu, 03 Jun 2021 18:11:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw19wf1A8+65Q36xarUBfhf8NPj5f2hsFRG2/Iexl5uV4W9R5ePiMPVn1Z2bNWIP1oHtD7E3w==
-X-Received: by 2002:a63:370b:: with SMTP id e11mr2255853pga.356.1622769073569;
-        Thu, 03 Jun 2021 18:11:13 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id h18sm248362pgl.87.2021.06.03.18.11.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Jun 2021 18:11:13 -0700 (PDT)
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        David Woodhouse <dwmw2@infradead.org>
-References: <MWHPR11MB1886E8454A58661DC2CDBA678C3D9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210602160140.GV1002214@nvidia.com>
- <20210602111117.026d4a26.alex.williamson@redhat.com>
- <20210602173510.GE1002214@nvidia.com>
- <20210602120111.5e5bcf93.alex.williamson@redhat.com>
- <20210602180925.GH1002214@nvidia.com>
- <20210602130053.615db578.alex.williamson@redhat.com>
- <20210602195404.GI1002214@nvidia.com>
- <20210602143734.72fb4fa4.alex.williamson@redhat.com>
- <6a9426d7-ed55-e006-9c4c-6b7c78142e39@redhat.com>
- <20210603130927.GZ1002214@nvidia.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <65614634-1db4-7119-1a90-64ba5c6e9042@redhat.com>
-Date:   Fri, 4 Jun 2021 09:11:03 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
-MIME-Version: 1.0
-In-Reply-To: <20210603130927.GZ1002214@nvidia.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        Thu, 3 Jun 2021 21:13:15 -0400
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210604011128epoutp0408f33e772fb9e3b7f82381c9bb3321bc~FO_Nummbl2731827318epoutp04E
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 01:11:28 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210604011128epoutp0408f33e772fb9e3b7f82381c9bb3321bc~FO_Nummbl2731827318epoutp04E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1622769088;
+        bh=LRUiLiX4cSKymfrziHeHmnueGFkCDFslCiYp2VNfNeg=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=pMlAKXBvDh6LLPQiwZU++Jlvot5S/XeVjzswZISqpfLzfqFy3glrNclt7eC9EmXlY
+         JmWoDtEYxhXt5T5LLn4y5bSvjMbP0CnWmZtBEG0O1y2ngx1Q17YUjCXpV9q3aRzdUI
+         JF7KfQDtcPHFz2HuxC9/dknGq64+gyDokaMrh+8U=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20210604011127epcas2p4084ff7c128d4b5c98a4edfa6d94cb26b~FO_Mg4VSv3003830038epcas2p4A;
+        Fri,  4 Jun 2021 01:11:27 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.40.181]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4Fx4Tn3Htwz4x9Q3; Fri,  4 Jun
+        2021 01:11:25 +0000 (GMT)
+X-AuditID: b6c32a48-4fbff700000025f5-6b-60b97dbdc9bd
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        5F.EF.09717.DBD79B06; Fri,  4 Jun 2021 10:11:25 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: Re: [PATCH v35 3/4] scsi: ufs: Prepare HPB read for cached
+ sub-region
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Daejun Park <daejun7.park@samsung.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        Jaemyung Lee <jaemyung.lee@samsung.com>,
+        Jieon Seol <jieon.seol@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <12392bef-e018-8260-5279-16b7b43f5a8f@acm.org>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210604011124epcms2p39a466db169ebbfd2c889e25fba9aa0b4@epcms2p3>
+Date:   Fri, 04 Jun 2021 10:11:24 +0900
+X-CMS-MailID: 20210604011124epcms2p39a466db169ebbfd2c889e25fba9aa0b4
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrJJsWRmVeSWpSXmKPExsWy7bCmqe7e2p0JBo+msFo8mLeNzWJv2wl2
+        i5c/r7JZTPvwk9ni0/plrBYvD2la7Dp4kM1i1YNwi+bF69ks5pxtYLLo7d/KZrH54AZmi8d3
+        PrNbLLqxjcmi/187i8W2z4IWx0++Y7S4vGsOm0X39R1sFsuP/2OyWLr1JqNF5/Q1LA5iHpev
+        eHtc7utl8tg56y67x4RFBxg99s9dw+7RcnI/i8fHp7dYPPq2rGL0+LxJzqP9QDdTAFdUjk1G
+        amJKapFCal5yfkpmXrqtkndwvHO8qZmBoa6hpYW5kkJeYm6qrZKLT4CuW2YO0JtKCmWJOaVA
+        oYDE4mIlfTubovzSklSFjPziElul1IKUnAJDwwK94sTc4tK8dL3k/FwrQwMDI1OgyoScjN7D
+        J1gKrnFVLL/3mbWBsYeji5GTQ0LARKKxYRJLFyMXh5DADkaJH9cWsXcxcnDwCghK/N0hDFIj
+        LBAi8fv+HTYQW0hASWL9xVnsEHE9iVsP1zCC2GwCOhLTT9xnB5kjItDEIrHz8FuwocwC55kl
+        9txoZ4TYxisxo/0pC4QtLbF9+VawOKeAtcSDO0dYIeIaEj+W9TJD2KISN1e/ZYex3x+bDzVH
+        RKL13lmoGkGJBz93Q8UlJY7t/sAEYddLbL3zixHkCAmBHkaJwztvQS3Ql7jWsRHsCF4BX4ml
+        aw+CDWIRUJWY9GI7VLOLxJ0LE8BsZgF5ie1v5zCDQoVZQFNi/S59EFNCQFniyC0WmLcaNv5m
+        R2czC/BJdBz+CxffMe8J1HQ1iXU/1zNNYFSehQjqWUh2zULYtYCReRWjWGpBcW56arFRgQly
+        7G5iBKd5LY8djLPfftA7xMjEwXiIUYKDWUmEd4/ajgQh3pTEyqrUovz4otKc1OJDjKZAX05k
+        lhJNzgdmmrySeENTIzMzA0tTC1MzIwslcd6fqXUJQgLpiSWp2ampBalFMH1MHJxSDUzs/L3z
+        wtXNBLd1Nn2yTI+RXm9d9/j748c/rJZmNG19Xmue4Zl/WqVm1XHHf2/r/etYOL9yRLdXn+C7
+        9rfArE9qh/Zd7wVrjKRXaP+7/dgxZsO2EtsT+Qd13j+6FD75nb7lxvJNizLKD4q6td3svsL/
+        lHv7rKw0F2OHeRWzyz7xnO7Wk/G48iN9p9ixuYbdF40OvZn7eJfUHLGADY/V/+2/6x/80Wbx
+        fPtD269eEpimnbDe8MS5RW3TvLc/P2OZEhe1e7F0DvvfG+EbfKr5FeoXvq25F/j9Z4hN4s8z
+        14+scdC/tnV9zoUpb+903M4sneIr9fTyt5nHSwLULdSajzge+JsSrBpwzUV84p+VT40nKrEU
+        ZyQaajEXFScCAMPpsY18BAAA
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210524084345epcms2p63dde85f3fdc127c29d25ada7d7f539cb
+References: <12392bef-e018-8260-5279-16b7b43f5a8f@acm.org>
+        <20210524084345epcms2p63dde85f3fdc127c29d25ada7d7f539cb@epcms2p6>
+        <20210524084546epcms2p2c91dc1df482fd593307892825532c6dd@epcms2p2>
+        <CGME20210524084345epcms2p63dde85f3fdc127c29d25ada7d7f539cb@epcms2p3>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Bart,
 
-ÔÚ 2021/6/3 ÏÂÎç9:09, Jason Gunthorpe Ð´µÀ:
-> On Thu, Jun 03, 2021 at 10:52:51AM +0800, Jason Wang wrote:
->
->> Basically, we don't want to bother with pseudo KVM device like what VFIO
->> did. So for simplicity, we rules out the IOMMU that can't enforce coherency
->> in vhost-vDPA if the parent purely depends on the platform IOMMU:
-> VDPA HW cannot issue no-snoop TLPs in the first place.
+>> +static void
+>> +ufshpb_set_hpb_read_to_upiu(struct ufshpb_lu *hpb, struct ufshcd_lrb *lrbp,
+>> +                            u32 lpn, u64 ppn, u8 transfer_len)
+>> +{
+>> +        unsigned char *cdb = lrbp->cmd->cmnd;
+>> +
+>> +        cdb[0] = UFSHPB_READ;
+>> +
+>> +        /* ppn value is stored as big-endian in the host memory */
+> 
+>I think that that comment means that the type of the 'ppn' argument
+>should be changed from 'u64' into __be64.
 
+OK, I will change it.
 
-Note that virtio/vDPA is not necessarily a PCI device.
+> 
+>> +        memcpy(&cdb[6], &ppn, sizeof(__be64));
+>> +        cdb[14] = transfer_len;
+>> +
+>> +        lrbp->cmd->cmd_len = UFS_CDB_SIZE;
+>> +}
+>> +
+>> +/*
+>> + * This function will set up HPB read command using host-side L2P map data.
+>> + * In HPB v1.0, maximum size of HPB read command is 4KB.
+>> + */
+>> +void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
+>> +{
+>[ ... ]
+>> +
+>> +        ufshpb_set_hpb_read_to_upiu(hpb, lrbp, lpn, ppn, transfer_len);
+> 
+>'transfer_len' has type int and is truncated to type 'u8' when passed as
+>an argument to ufshpb_set_hpb_read_to_upiu(). Please handle transfer_len
+>values >= 256 properly.
 
+Before entering the function, ufshpb_is_supported_chunk() checks whether
+transfer_len <= hpb->pre_req_max_tr_len which is set to
+HPB_MULTI_CHUNK_HIGH (128) on initalization.
 
->
-> virtio does not define a protocol to discover such a functionality,
-
-
-Actually we had:
-
-VIRTIO_F_ACCESS_PLATFORM(33)
-This feature indicates that the device can be used on a platform where 
-device access to data in memory is limited and/or translated. E.g. this 
-is the case if the device can be located behind an IOMMU that translates 
-bus addresses from the device into physical addresses in memory, if the 
-device can be limited to only access certain memory addresses or if 
-special commands such as a cache flush can be needed to synchronise data 
-in memory with the device.
-
-
-> nor do any virtio drivers implement the required platform specific
-> cache flushing to make no-snoop TLPs work.
-
-
-I don't get why virtio drivers needs to do that. I think DMA API should 
-hide those arch/platform specific stuffs from us.
-
-
->
-> It is fundamentally part of the virtio HW PCI API that a device vendor
-> cannot alter.
-
-
-The spec doesn't forbid this, and it just leave the detection and action 
-to the driver in a platform specific way.
-
-Thanks
-
-
->
-> Basically since we already know that the virtio kernel drivers do not
-> call the cache flush instruction we don't need the weird KVM logic to
-> turn it on at all.
->
-> Enforcing no-snoop at the IOMMU here is redundant/confusing.
->
-> Jason
->
-
+Thanks,
+Daejun
