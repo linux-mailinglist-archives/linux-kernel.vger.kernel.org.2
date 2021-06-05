@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B382B39C448
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 02:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4925F39C45F
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 02:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230432AbhFEAVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 20:21:54 -0400
-Received: from mail-vs1-f42.google.com ([209.85.217.42]:45010 "EHLO
-        mail-vs1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbhFEAVw (ORCPT
+        id S230188AbhFEA16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 20:27:58 -0400
+Received: from mail-ua1-f51.google.com ([209.85.222.51]:44782 "EHLO
+        mail-ua1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229847AbhFEA15 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 20:21:52 -0400
-Received: by mail-vs1-f42.google.com with SMTP id i29so5741669vsr.11
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 17:20:05 -0700 (PDT)
+        Fri, 4 Jun 2021 20:27:57 -0400
+Received: by mail-ua1-f51.google.com with SMTP id 68so6207817uao.11
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 17:25:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=nigauri-org.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=0vbLUf0aNq8CIlyYhcbgGxZ5n0sokzL7OV8oejCBB1U=;
-        b=PQhd6CGBXas8S6LrCWN1Mv/pDpT54JLFlmSt6rq8sKmCieoY6ky3jUrUuW5mQg/uRj
-         z0MK9fYQN4t8wWf/3Bdcyej3r2el350DzmlRPaBxe5pAMBE2LEXYFaukyTPs1wJ2yStJ
-         pI6mdKKmjVUnyJxBe5VXAdHMfT/wRxKfNnt88YdxFB9ZNhDZTVO+R/TjHLRwVWmEyfUK
-         OPWMDWSU9ZxCAAJKhqBNvemnw4ZdDSrJmnutiVI8cDBVY/PBmvV3ylHDXEy2IgWwAiTz
-         tUWaz5ZgFeuryWw7iRKDm7X9/RiVCDnmKWLDTa2Obltn8Rq9dq2jElzznbF521DkBO0I
-         pn5w==
+        bh=sUFuRMnJeUbsvj2QDdwiuwSD5F69c4BG1mDs2axqiTs=;
+        b=zM5TBVEXzzTUIEFhS1qRdHVmP1tXYlBOmQd4/VjMnJ3DmdqFFU6bkbLyfrNxxnyWa9
+         blKUy6wA4j4eLX6D4rq1IoWM59ghqmVMwl0PuYuzcZRjV+Q4Rjp84cUyclR0WyP4zOzG
+         vsolpHhgM0Xcwpw48NzYsTtSoedzBg7VxM7QZipwYmptd21HTQy4ujjenVI1qzBiCaep
+         46wgeIFWFIed9H1Mej2xxgNiZVUdtORElQoVwE5W2SHA8EKBMNh1aLhXGxm/N3ShFfzk
+         c4CE/7gCakEjXeOM9aOcaOSO2Rx9LnqHKnQByJsVJfV9PXN+OTkq5V8kNAvBaboI25PF
+         2FNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0vbLUf0aNq8CIlyYhcbgGxZ5n0sokzL7OV8oejCBB1U=;
-        b=XfbxWXcdnaFJZJwtkIb2jp5S0n7MNeY1eQsbshTGfYp+/rY/zl6C9mvR8DpNbNKKgy
-         rQLWuZ67723Dbhb+mP2a5o0ts5PFqdYfZ2UqS4CvwdRHOBOFgtZX3TGNU0Fk0YH3x5Dg
-         zk7qBeYmPf5W8MwKAMHHskh3YQcM2Up3g0Zvlnwi/45P1tmOsYa8upQ8c2EXW0qg5Gju
-         fA7K/cuaqxls+zeKB00OO81gvypkvDa95GcvbTm2kpWY2ZMXzyQzzyIAbeTLPVWcVywE
-         kWq59L1FESNWuGk3lJ+DmVNGdMZMNt4K2MJLCKKY9zHHZ35/NX2Qi/p3ptxzUO1xpVmV
-         w+Ow==
-X-Gm-Message-State: AOAM531qKKolci8PAyBHGceIYcEyAyYgnuvnWRHPeoAw8cOVp/NFtRQe
-        LG1ysKerftT4zxX+pJ5wfnTuSudc11ucP+p7GsHySndqTQQgPgQ=
-X-Google-Smtp-Source: ABdhPJyAhM89H3/fMRDHSTdzSwklriEUs7T0qCo1JfZoLXrSmnztk2LrCj1qh2SHlaIPh0UN51aHI+TEdtcX/EyAiys=
-X-Received: by 2002:a05:6102:512:: with SMTP id l18mr4668087vsa.33.1622852345212;
- Fri, 04 Jun 2021 17:19:05 -0700 (PDT)
+        bh=sUFuRMnJeUbsvj2QDdwiuwSD5F69c4BG1mDs2axqiTs=;
+        b=gIdzZvq/ysENlbiuwzB00nnbc1ZZNMT8hzi0+JS5kOFy8BZMyirh9kNF6WH9IqSaCG
+         AvE7omkEVsFeKSuTEYXye7IAj7kppspvdvIVlVgy9QvrLrV6B5/SgDofOvT7wigyu121
+         mWZXPJDYFKCt1zCGixVONU9B2RbOHEP8jYjy5mmqREekmu/cMeTG/AFyu+DaxDHiK3gV
+         0fR9Sdf9UZ2BdFoiqVKWBQNqdBeAEmw4W6heNYdR43H+aUTKFuNNKxXokSUBKzAa4eCx
+         IKdAE4D7HCQdEExAEqe78ghl45yrgucRYfaJCiaSY3Fh3owwmlsRQhHbnUE3Y5EYfZZc
+         HOZg==
+X-Gm-Message-State: AOAM533tWIJO+Lu5gCw95tgVIfT7khnmeHvhyhvNaBI21oelh2xUtFCR
+        basJ14TyoB4AkH3iyV+5veb2lzrodFhme0MaQd45
+X-Google-Smtp-Source: ABdhPJy9MkmawDbOqXM8+0aak1zP96RnH18mtJOi8a8jw6esgtXEdnoySjtaD9YwZ/eE+42Yp3tI/fy1eEBGblAJGhA=
+X-Received: by 2002:a05:6122:40e:: with SMTP id e14mr4179610vkd.20.1622852699138;
+ Fri, 04 Jun 2021 17:24:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210531052142.695430-1-iwamatsu@nigauri.org> <20210604213326.GA3957165@robh.at.kernel.org>
-In-Reply-To: <20210604213326.GA3957165@robh.at.kernel.org>
+References: <20210531141538.721613-1-iwamatsu@nigauri.org> <20210604214608.GA3974358@robh.at.kernel.org>
+In-Reply-To: <20210604214608.GA3974358@robh.at.kernel.org>
 From:   Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-Date:   Sat, 5 Jun 2021 09:18:39 +0900
-Message-ID: <CABMQnV+ZjcrzZEZpaBBvO+VW8kV_2qWXwNPE7gYCdfcqa-UFkA@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: spi: xilinx: convert to yaml
+Date:   Sat, 5 Jun 2021 09:24:32 +0900
+Message-ID: <CABMQnV+waVdAcnbdYJnxt8rM2JfdcTuPBnJ+XK0Pie1Twar0Fg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: spi: convert Cadence SPI bindings to YAML
 To:     Rob Herring <robh@kernel.org>
-Cc:     Michal Simek <michal.simek@xilinx.com>,
-        Mark Brown <broonie@kernel.org>,
+Cc:     Mark Brown <broonie@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
         linux-spi <linux-spi@vger.kernel.org>,
         devicetree@vger.kernel.org,
-        linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Harini Katakam <harinik@xilinx.com>,
+        linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
@@ -65,69 +66,79 @@ Hi,
 
 Thanks for your review.
 
-2021=E5=B9=B46=E6=9C=885=E6=97=A5(=E5=9C=9F) 6:33 Rob Herring <robh@kernel.=
+2021=E5=B9=B46=E6=9C=885=E6=97=A5(=E5=9C=9F) 6:46 Rob Herring <robh@kernel.=
 org>:
 >
-> On Mon, May 31, 2021 at 02:21:42PM +0900, Nobuhiro Iwamatsu wrote:
-> > Convert SPI for Xilinx bindings documentation to YAML schemas.
+> On Mon, May 31, 2021 at 11:15:38PM +0900, Nobuhiro Iwamatsu wrote:
+> > Convert spi for Cadence SPI bindings documentation to YAML.
 > >
 > > Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
 > > ---
-> >  .../devicetree/bindings/spi/spi-xilinx.txt    | 23 ---------
-> >  .../devicetree/bindings/spi/spi-xilinx.yaml   | 51 +++++++++++++++++++
-> >  2 files changed, 51 insertions(+), 23 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/spi/spi-xilinx.tx=
-t
-> >  create mode 100644 Documentation/devicetree/bindings/spi/spi-xilinx.ya=
-ml
+> >  .../devicetree/bindings/spi/spi-cadence.txt   | 30 ---------
+> >  .../devicetree/bindings/spi/spi-cadence.yaml  | 63 +++++++++++++++++++
+> >  2 files changed, 63 insertions(+), 30 deletions(-)
+> >  delete mode 100644 Documentation/devicetree/bindings/spi/spi-cadence.t=
+xt
+> >  create mode 100644 Documentation/devicetree/bindings/spi/spi-cadence.y=
+aml
 > >
-> > diff --git a/Documentation/devicetree/bindings/spi/spi-xilinx.txt b/Doc=
-umentation/devicetree/bindings/spi/spi-xilinx.txt
+> > diff --git a/Documentation/devicetree/bindings/spi/spi-cadence.txt b/Do=
+cumentation/devicetree/bindings/spi/spi-cadence.txt
 > > deleted file mode 100644
-> > index 5f4ed3e5c9942c..00000000000000
-> > --- a/Documentation/devicetree/bindings/spi/spi-xilinx.txt
+> > index 05a2ef945664be..00000000000000
+> > --- a/Documentation/devicetree/bindings/spi/spi-cadence.txt
 > > +++ /dev/null
-> > @@ -1,23 +0,0 @@
-> > -Xilinx SPI controller Device Tree Bindings
-> > --------------------------------------------------
+> > @@ -1,30 +0,0 @@
+> > -Cadence SPI controller Device Tree Bindings
+> > --------------------------------------------
 > > -
 > > -Required properties:
-> > -- compatible         : Should be "xlnx,xps-spi-2.00.a", "xlnx,xps-spi-=
-2.00.b" or "xlnx,axi-quad-spi-1.00.a"
+> > -- compatible         : Should be "cdns,spi-r1p6" or "xlnx,zynq-spi-r1p=
+6".
 > > -- reg                        : Physical base address and size of SPI r=
 egisters map.
 > > -- interrupts         : Property with a value describing the interrupt
 > > -                       number.
+> > -- clock-names                : List of input clock names - "ref_clk", =
+"pclk"
+> > -                       (See clock bindings for details).
+> > -- clocks             : Clock phandles (see clock bindings for details)=
+.
 > > -
 > > -Optional properties:
-> > -- xlnx,num-ss-bits    : Number of chip selects used.
-> > -- xlnx,num-transfer-bits : Number of bits per transfer. This will be 8=
- if not specified
+> > -- num-cs             : Number of chip selects used.
+> > -                       If a decoder is used, this will be the number o=
+f
+> > -                       chip selects after the decoder.
+> > -- is-decoded-cs              : Flag to indicate whether decoder is use=
+d or not.
 > > -
 > > -Example:
-> > -     axi_quad_spi@41e00000 {
-> > -                     compatible =3D "xlnx,xps-spi-2.00.a";
-> > -                     interrupt-parent =3D <&intc>;
-> > -                     interrupts =3D <0 31 1>;
-> > -                     reg =3D <0x41e00000 0x10000>;
-> > -                     xlnx,num-ss-bits =3D <0x1>;
-> > -                     xlnx,num-transfer-bits =3D <32>;
-> > -     };
 > > -
-> > diff --git a/Documentation/devicetree/bindings/spi/spi-xilinx.yaml b/Do=
-cumentation/devicetree/bindings/spi/spi-xilinx.yaml
+> > -     spi@e0007000 {
+> > -             compatible =3D "xlnx,zynq-spi-r1p6";
+> > -             clock-names =3D "ref_clk", "pclk";
+> > -             clocks =3D <&clkc 26>, <&clkc 35>;
+> > -             interrupt-parent =3D <&intc>;
+> > -             interrupts =3D <0 49 4>;
+> > -             num-cs =3D <4>;
+> > -             is-decoded-cs =3D <0>;
+> > -             reg =3D <0xe0007000 0x1000>;
+> > -     } ;
+> > diff --git a/Documentation/devicetree/bindings/spi/spi-cadence.yaml b/D=
+ocumentation/devicetree/bindings/spi/spi-cadence.yaml
 > > new file mode 100644
-> > index 00000000000000..17463151b36a02
+> > index 00000000000000..27a7121ed0f9ae
 > > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/spi/spi-xilinx.yaml
-> > @@ -0,0 +1,51 @@
+> > +++ b/Documentation/devicetree/bindings/spi/spi-cadence.yaml
+> > @@ -0,0 +1,63 @@
 > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 > > +%YAML 1.2
 > > +---
-> > +$id: http://devicetree.org/schemas/spi/spi-xilinx.yaml#
+> > +$id: http://devicetree.org/schemas/spi/spi-cadence.yaml#
 > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > > +
-> > +title: Xilinx SPI controller Device Tree Bindings
+> > +title: Cadence SPI controller Device Tree Bindings
 > > +
 > > +maintainers:
 > > +  - Michal Simek <michal.simek@xilinx.com>
@@ -137,16 +148,9 @@ cumentation/devicetree/bindings/spi/spi-xilinx.yaml
 > > +
 > > +properties:
 > > +  compatible:
-> > +    oneOf:
-> > +      - const: xlnx,xps-spi-2.00.a
-> > +      - const: xlnx,xps-spi-2.00.b
-> > +      - const: xlnx,axi-quad-spi-1.00.a
->
-> Use enum instead of oneOf+const.
-
-OK, I will change using enum.
-
->
+> > +    enum:
+> > +      - cdns,spi-r1p6
+> > +      - xlnx,zynq-spi-r1p6
 > > +
 > > +  reg:
 > > +    maxItems: 1
@@ -154,27 +158,37 @@ OK, I will change using enum.
 > > +  interrupts:
 > > +    maxItems: 1
 > > +
-> > +  xlnx,num-ss-bits:
-> > +    description: Number of chip selects used.
->
-> Constraints? 0-2^32 is good?
-
-I will add constraints.
-
->
+> > +  clock-names:
+> > +    items:
+> > +      - const: ref_clk
+> > +      - const: pclk
 > > +
-> > +  xlnx,num-transfer-bits:
-> > +    description: Number of bits per transfer. This will be 8 if not sp=
-ecified.
+> > +  clocks:
+> > +    maxItems: 2
+> > +
+> > +  num-cs:
+> > +    description: |
+> > +      Number of chip selects used. If a decoder is used,
+> > +      this will be the number of chip selects after the
+> > +      decoder.
+> > +    minimum: 1
+> > +    maximum: 4
+> > +    default: 4
+> > +
+> > +  is-decoded-cs:
 >
-> Constraints?
+> Needs a type ref. Despite being called a 'flag' looks like it's an
+> uint32. Presumably, it also needs:
+>
+> enum: [ 0, 1 ]
 
-Same above.
+Yeah, this is a flag, but the driver source code uses it as u32.
+So, I will add ref and enum, thanks.
+
+>
+> > +    description: |
+> > +      Flag to indicate whether decoder is used or not.
+> > +    default: 0
 
 Best regards,
   Nobuhiro
-
---=20
-Nobuhiro Iwamatsu
-   iwamatsu at {nigauri.org / debian.org}
-   GPG ID: 40AD1FA6
