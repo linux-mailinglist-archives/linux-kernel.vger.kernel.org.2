@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA6B39C8CA
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 15:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6355D39C88D
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 15:18:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231515AbhFENVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 09:21:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34976 "EHLO mail.kernel.org"
+        id S230210AbhFENU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 09:20:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230049AbhFENU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 09:20:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5E4C6141B;
+        id S229933AbhFENUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 09:20:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68150613FE;
         Sat,  5 Jun 2021 13:18:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1622899117;
-        bh=4iDY7ITSxco/5aVtxfEvQxWOspvnAzSv9vo4fOxlCv4=;
+        bh=MZn/b+egYgV5T6zhO3wdcAfr9Ty9nBtYJvlFIpjsCtk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HPQtd/0Bm798vqjdivAGvu0fWShViE0+b/aSVzwdqCKSjKMSRFEbnxpS8G/40/NBh
-         WeIDd8lbutDs3YdhzzB+tWK3yFLVgE7AtZnr5taqeDOCmS4dRWNfy3u74tvOuozyPe
-         ZRr/BpjUwed/CX0YS6jcZQ8vrhCc3N0vP0rlnKJ9fkKNoLcmtqUQHN5YrSTdcIkVKU
-         EjtOrpvfyhjQ2Ji5ZxXzxgPpH3sIZY8mH/l+aofupDRMqZt7i4z2T5iNINFQ+SOvFw
-         uStf+WFxvo+1grglejZlR6cVddoH9NDy5oeLWi2M0zdFto5FT8+aTraRZkiEuQ094F
-         EGBPKZBxaG7ow==
+        b=ZtTd0YOfBUHABR/O/32+9rYjnBDSW92uYfVfgrr2hYM2onLNcbYxnvx5WfU2iOe4x
+         L8XCRSRTVQiRrhgXH1rrq8bfIkU0y/3DX2qsb08nLcpWkabcKr0nCAYmKdafSOarrF
+         qGzfhKUTbyzD8NYLJ9pmB41uXoMf9w1xZw6UVzOXIr5ZjyVC1iuYzWCRFIX/IPDg9r
+         K5Yq0m672UCJYBgVH87ZY+ybDz4lnxq3MmRjkX6FHFdFAqmWlJqttsesoTmLDawo/K
+         8Kj5ceITiSortfZuiCfHETvulqXiqdIDf0VsSMK1q56C0HNhBOyKv5/d33vEHZ3RX+
+         Txg3frZMECNjA==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lpWCB-008GEa-AA; Sat, 05 Jun 2021 15:18:35 +0200
+        id 1lpWCB-008GEe-Bz; Sat, 05 Jun 2021 15:18:35 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     "Jonathan Corbet" <corbet@lwn.net>,
         Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH 02/34] docs: dev-tools: kunit: don't use a table for docs name
-Date:   Sat,  5 Jun 2021 15:18:01 +0200
-Message-Id: <08ac283ac5bdc2664255a7ad34514e50d3ed85d8.1622898327.git.mchehab+huawei@kernel.org>
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: [PATCH 03/34] media: docs: */media/index.rst: don't use ReST doc:`foo`
+Date:   Sat,  5 Jun 2021 15:18:02 +0200
+Message-Id: <4c55f89ee17c762581610036acf2e8a4408b00a6.1622898327.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1622898327.git.mchehab+huawei@kernel.org>
 References: <cover.1622898327.git.mchehab+huawei@kernel.org>
@@ -46,34 +45,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We'll be replacing :doc:`foo` references to
-Documentation/foo.rst. Yet, here it happens inside a table.
-Doing a search-and-replace would break it.
-
-Yet, as there's no good reason to use a table there,
-let's just convert it into a list.
+The :doc:`foo` tag is auto-generated via automarkup.py.
+    So, use the filename at the sources, instead of :doc:`foo`.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/dev-tools/kunit/api/index.rst | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ Documentation/admin-guide/media/index.rst   | 12 +++++++-----
+ Documentation/driver-api/media/index.rst    | 10 ++++++----
+ Documentation/userspace-api/media/index.rst | 12 +++++++-----
+ 3 files changed, 20 insertions(+), 14 deletions(-)
 
-diff --git a/Documentation/dev-tools/kunit/api/index.rst b/Documentation/dev-tools/kunit/api/index.rst
-index 9b9bffe5d41a..b33ad72bcf0b 100644
---- a/Documentation/dev-tools/kunit/api/index.rst
-+++ b/Documentation/dev-tools/kunit/api/index.rst
-@@ -10,7 +10,7 @@ API Reference
- This section documents the KUnit kernel testing API. It is divided into the
- following sections:
+diff --git a/Documentation/admin-guide/media/index.rst b/Documentation/admin-guide/media/index.rst
+index 6e0d2bae7154..c676af665111 100644
+--- a/Documentation/admin-guide/media/index.rst
++++ b/Documentation/admin-guide/media/index.rst
+@@ -11,12 +11,14 @@ its supported drivers.
  
--================================= ==============================================
--:doc:`test`                       documents all of the standard testing API
--                                  excluding mocking or mocking related features.
--================================= ==============================================
-+Documentation/dev-tools/kunit/api/test.rst
+ Please see:
+ 
+-- :doc:`/userspace-api/media/index`
+-     for the userspace APIs used on media devices.
++Documentation/userspace-api/media/index.rst
+ 
+-- :doc:`/driver-api/media/index`
+-     for driver development information and Kernel APIs used by
+-     media devices;
++  - for the userspace APIs used on media devices.
 +
-+ - documents all of the standard testing API excluding mocking
-+   or mocking related features.
++Documentation/driver-api/media/index.rst
++
++  - for driver development information and Kernel APIs used by
++    media devices;
+ 
+ The media subsystem
+ ===================
+diff --git a/Documentation/driver-api/media/index.rst b/Documentation/driver-api/media/index.rst
+index 2ad71dfa8828..813d7db59da7 100644
+--- a/Documentation/driver-api/media/index.rst
++++ b/Documentation/driver-api/media/index.rst
+@@ -11,11 +11,13 @@ its supported drivers.
+ 
+ Please see:
+ 
+-- :doc:`/admin-guide/media/index`
+-    for usage information about media subsystem and supported drivers;
++Documentation/admin-guide/media/index.rst
+ 
+-- :doc:`/userspace-api/media/index`
+-     for the userspace APIs used on media devices.
++  - for usage information about media subsystem and supported drivers;
++
++Documentation/userspace-api/media/index.rst
++
++  - for the userspace APIs used on media devices.
+ 
+ 
+ .. only:: html
+diff --git a/Documentation/userspace-api/media/index.rst b/Documentation/userspace-api/media/index.rst
+index 7f42f83b9f59..d839904be085 100644
+--- a/Documentation/userspace-api/media/index.rst
++++ b/Documentation/userspace-api/media/index.rst
+@@ -11,12 +11,14 @@ used by media devices.
+ 
+ Please see:
+ 
+-- :doc:`/admin-guide/media/index`
+-    for usage information about media subsystem and supported drivers;
++Documentation/admin-guide/media/index.rst
+ 
+-- :doc:`/driver-api/media/index`
+-     for driver development information and Kernel APIs used by
+-     media devices;
++  - for usage information about media subsystem and supported drivers;
++
++Documentation/driver-api/media/index.rst
++
++  - for driver development information and Kernel APIs used by
++    media devices;
+ 
+ 
+ .. only:: html
 -- 
 2.31.1
 
