@@ -2,160 +2,380 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1D4239C97E
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 17:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5464B39C99D
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 17:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229981AbhFEP3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 11:29:21 -0400
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:46826 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhFEP3U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 11:29:20 -0400
-Received: by mail-ot1-f46.google.com with SMTP id 66-20020a9d02c80000b02903615edf7c1aso12071400otl.13;
-        Sat, 05 Jun 2021 08:27:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DSAXBIFY608M+ZvcjqaIQP81snTA88dzSnVRJksgNxw=;
-        b=h5L5ffBv0Bv1mMMtb8cVW9Fw4QeacwLhERCCkPsBk+T7SFWjnNm3rq6vMfA+a8Dv+u
-         1CLWFXClPcqOUMK+uX2D8IeF8LJxa8IcpIvJL/MqOGOxoSOHHIGrWU2ypPuKTfQuNfEK
-         /AVt0L9//1Ao4beG39fukiZUDnadRmbQGKrBFwOzBhQJaTyeU1TU+RlUfZNWToz60bS6
-         R1yILl6fCOeXHpY2mhMvicIZ4XeC7qqO7fiw07rhJDPbeL+IWU8l6lhFVzWnE3hzrVIi
-         P4KHG9Hub1n9GjnPn+IeeCG1JGT6U8myGPVt9b+v01NG96pMuxskDar4l6ET97J1EasD
-         4qEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DSAXBIFY608M+ZvcjqaIQP81snTA88dzSnVRJksgNxw=;
-        b=L3KpRui8XsYp/gAXCtCqqGNgzoX+hcpk9X8dN2XCNNn4FxEgvUt0DaOUq0/BUOZHDF
-         PlM342lDYmub86yOacNPsY0ltPaVquRbJ7d/OFskKMyqVpVqUmk1q84tLLNHgNfoh+ZW
-         LKCd2ctj3zbF90CEiGdiCmcP9hchZ0SqPLnoM7jqC2RUtnsTFiuoKd2y21tvaKWj1qbq
-         RKKK21PUBZVXvUrDH+7ipxEeVztb3jlzdWpqheOo+C/uBiXjZ+CiAPq3Hb5Z5GAHlmvw
-         cqCg+7UWkjMNfSYDG0mnrEs5JHON3+VgEL454OjqLsBO+do7aPxefuukLL0TVGetgi3A
-         cXhw==
-X-Gm-Message-State: AOAM532bpdpXxTcgipyiGqd/nA9qmdvV6mJ8Q8UgNu1hinJ3F7qOwu/T
-        N7xOcaRSHk3teu3l4HOGzAsQ3pwYwrLlimT9PQ==
-X-Google-Smtp-Source: ABdhPJygdbjnM1Q2EtD8ixMF/qr24RRqOWy89xlF1vODzBTaocGEbLKx4XK6se1y2dwoSQfXjTAdWnFxal9VFMQFsyg=
-X-Received: by 2002:a9d:4a8a:: with SMTP id i10mr7749479otf.282.1622906777094;
- Sat, 05 Jun 2021 08:26:17 -0700 (PDT)
+        id S230025AbhFEPvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 11:51:00 -0400
+Received: from mout.gmx.net ([212.227.15.15]:57561 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229933AbhFEPu7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 11:50:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1622908090;
+        bh=NR7CetDZEJKb4urZklHxpJH9CQk1kXh04lqUmzV2VFQ=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=Z14fX/BDAt8rlYVCQ2W1JNECZ3Nbr3z0zf696jh81htz40qSfRY0BFqa+OTqs6UQc
+         hvOtA2fzDnez1/y9ZLgQArJDKGPCzM/rXnk57dikoUY9XQfyIovRJX/elMzmWInjJv
+         6DwSejwqkhFwEpT48eX/PirFuddTqMi8EzKAWEEU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([83.52.228.41]) by mail.gmx.net
+ (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1M3DJv-1loAYJ1jtF-003cjU; Sat, 05 Jun 2021 17:48:10 +0200
+From:   John Wood <john.wood@gmx.com>
+To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     John Wood <john.wood@gmx.com>, Andi Kleen <ak@linux.intel.com>,
+        valdis.kletnieks@vt.edu,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        kernel-hardening@lists.openwall.com
+Subject: [PATCH v8 2/8] security/brute: Define a LSM and add sysctl attributes
+Date:   Sat,  5 Jun 2021 17:03:59 +0200
+Message-Id: <20210605150405.6936-3-john.wood@gmx.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210605150405.6936-1-john.wood@gmx.com>
+References: <20210605150405.6936-1-john.wood@gmx.com>
 MIME-Version: 1.0
-References: <1622702480-32140-1-git-send-email-zheyuma97@gmail.com> <YLon5kSwPkOh7p/z@kroah.com>
-In-Reply-To: <YLon5kSwPkOh7p/z@kroah.com>
-From:   Zheyu Ma <zheyuma97@gmail.com>
-Date:   Sat, 5 Jun 2021 23:26:04 +0800
-Message-ID: <CAMhUBjkqRprZO1BHLo_z2d74BiW75csUKeBJ++2T-y7n4wmEnQ@mail.gmail.com>
-Subject: Re: [PATCH] tty: serial: jsm: add checks against NULL pointer dereference
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     jirislaby@kernel.org, linux-serial@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:JXaQJfGTcSR0lvHjmBWsXjH1ZKVaVjnn0UvOhP+EbAQRPkBCgI1
+ DA5IRh+UNu+/Foy/9XrfO0tedY3Jna3eK8GYRvg5YfgDHkZ7aOB3/f0QHPN7+Xwm1B4ggPX
+ oF4zge1gUtstoNA8epEYi/+IrvFgxXlA4pXzn/AIm0P9Bl8GLGwwVUWvJtu5nqZzbSYriSE
+ +2Dl2rhtjTEbB952r9mdQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:cIMC9mC3TMU=:NSGpjSHDR71UOOzUcq+D8h
+ Fvx5o+hh92fPHWJCoZImAzaaAYFpFyeKLItdngS+TtLrwYzlxS5ehrb0bG2LB3XMbKLFnv5PN
+ 86dABR0nSTk4K5FhenkeF1vC+e3YB0zPVW1D8a/L+MHgpcaFAukMHa6/Xd2qZ0s9gumf5ig2E
+ aFn+4Pm19jsGKmko6OkS6LGmhJC2VwimAPKxzREORk+DP38nR0F2i6aSoNNFomvi4iu/JQ8af
+ AX2dWNn34sgzR2i0YxwZ8uhnXaJFeeh2SQBf/NxU2HXBG7glOAXU7S56KabsefLvuNI6AI63h
+ u8ZvIvGsTYpnMB7VhiuhMn+ASse+6vwL256Z2pVvJvpwkdl5wnbwPT5L72/3x0aNS9ovS6zW3
+ Cn2SFf63wFtkEnZRqiALV/MjmUNCYwFrP8wnIXLprTMCV8tXD3EfpRKBf6GtJ0v7O6Kpx+4if
+ Al0gDypbLmy17cwltnXRkgQEvbwRew2GjgCsc+KDzHnOXtgn7XT6AvWkyVR9McpKuk9fFIvXQ
+ Owgbv6OroIa/dya2wgqLir3LJlYDY30Rs7z+U5ppuHxm7P49ZPyAwGDaQOaS9KPyPVrhuSkzt
+ smBNh4Nr7Kb6gwyJwXSKj4jcZEWLR8pvUlUSgqFXv4jOWL4paYEf4STwbgo0cQ1/wq8PTN3Aj
+ 2OItlA9Enz/vdLPDvU1gO3EQeGyvTtm/nMU2IbvVh/sl6/7rHzOIej1+Lr9FCEklzzvlsCr7t
+ K5tXszJ84GAtLCxVMORdG4gBi2cCfPWZB5SrByb9lRO7AD7DSAnk+JU3dTuzRbhar1mgxlCJR
+ FoXUuG/OzuXs20SRiZBnSKPHTfMnHtTs+0eGJ8/w+B717zAQUWyZgp+3UQPyyyC5IsxT9JmCZ
+ Tac1sRS76dMFqsIBzpvBcsvW4PkMoodb47xx67mLHqQk4K5xH7wb2X0HhoUmB4EmASOkhAN+i
+ VgySvfPQLrQ+gYDr9NYu++wjRGK1Pjtld6lDxH5TCy7H0iY4WOaGoIGjpn1exHdSn9Ux3Zh/Z
+ 0TF1EvxFSXr8CfmUXLr2i92Ix//Yxg/C/pof6d9SQ+neM6joiowcHIDTaW6ibQ9qZnkcDdkZy
+ 4MJn6crPtaslDjYPO3bcXnVV5uPB8XftL+X
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 4, 2021 at 9:17 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Jun 03, 2021 at 06:41:20AM +0000, Zheyu Ma wrote:
-> > In function 'neo_intr', the driver uses 'ch->ch_equeue' and
-> > 'ch->ch_reuque'. These two pointers are initialized in 'jsm_tty_open',
-> > but the interrupt handler 'neo_intr' has been registered in the probe
-> > progress. If 'jsm_tty_open' has not been called at this time, it will
-> > cause null pointer dereference.
-> >
-> > Once the driver registers the interrupt handler, the driver should be
-> > ready to handle it.
-> >
-> > Fix this by checking whether it is a null pointer.
-> >
-> > This log reveals it:
-> >
-> > [   50.934983] BUG: kernel NULL pointer dereference, address:
-> > 0000000000000000
-> > [   50.938297] #PF: supervisor write access in kernel mode
-> > [   50.940075] #PF: error_code(0x0002) - not-present page
-> > [   50.940460] PGD 0 P4D 0
-> > [   50.940654] Oops: 0002 [#1] PREEMPT SMP PTI
-> > [   50.940967] CPU: 2 PID: 0 Comm: swapper/2 Not tainted
-> > 5.12.4-g70e7f0549188-dirty #97
-> > [   50.941554] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
-> > BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-> > [   50.942419] RIP: 0010:memcpy_fromio+0x75/0xa0
-> > [   50.942759] Code: e9 02 f3 a5 41 f6 c5 02 74 02 66 a5 41 f6 c5 01 74
-> > 01 a4 e8 5d 93 6b ff 5b 41 5c 41 5d 5d c3 e8 51 93 6b ff 4c 89 e7 48 89
-> > de <a4> 49 89 fc 48 89 f3 49 83 ed 01 eb a4 e8 39 93 6b ff 4c 89 e7 48
-> > [   50.944158] RSP: 0018:ffffc90000118df8 EFLAGS: 00010046
-> > [   50.944559] RAX: ffff888100258000 RBX: ffffc90007f0030f
-> > RCX: 0000000000000000
-> > [   50.945114] RDX: 0000000000000000 RSI: ffffc90007f0030f
-> > RDI: 0000000000000000
-> > [   50.945652] RBP: ffffc90000118e10 R08: 0000000000000000
-> > R09: 0000000000000000
-> > [   50.946192] R10: 0000000000000000 R11: 0000000000000001
-> > R12: 0000000000000000
-> > [   50.946729] R13: 0000000000000001 R14: 0000000007f0021e
-> > R15: 0000000000000000
-> > [   50.947279] FS:  0000000000000000(0000) GS:ffff88817bc80000(0000)
-> > knlGS:0000000000000000
-> > [   50.947912] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [   50.948346] CR2: 0000000000000000 CR3: 0000000107950000
-> > CR4: 00000000000006e0
-> > [   50.948892] DR0: 0000000000000000 DR1: 0000000000000000
-> > DR2: 0000000000000000
-> > [   50.949429] DR3: 0000000000000000 DR6: 00000000fffe0ff0
-> > DR7: 0000000000000400
-> > [   50.949950] Call Trace:
-> > [   50.950138]  <IRQ>
-> > [   50.950292]  neo_copy_data_from_uart_to_queue+0x2f7/0x4e0
-> > [   50.950694]  neo_intr+0x253/0x7a0
-> > [   50.950975]  __handle_irq_event_percpu+0x53/0x3e0
-> > [   50.951352]  handle_irq_event_percpu+0x35/0x90
-> > [   50.951706]  handle_irq_event+0x39/0x60
-> > [   50.951999]  handle_fasteoi_irq+0xc2/0x1d0
-> > [   50.952319]  __common_interrupt+0x7f/0x150
-> > [   50.952638]  common_interrupt+0xb4/0xd0
-> > [   50.952954]  </IRQ>
-> > [   50.953136]  asm_common_interrupt+0x1e/0x40
-> > [   50.969513] Kernel panic - not syncing: Fatal exception in interrupt
-> > [   50.970151] Dumping ftrace buffer:
-> > [   50.970420]    (ftrace buffer empty)
-> > [   50.970693] Kernel Offset: disabled
-> > [   50.970968] Rebooting in 1 seconds..
-> >
-> > Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-> > ---
-> >  drivers/tty/serial/jsm/jsm_neo.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/tty/serial/jsm/jsm_neo.c b/drivers/tty/serial/jsm/jsm_neo.c
-> > index bf0e2a4cb0ce..46be0b53ab42 100644
-> > --- a/drivers/tty/serial/jsm/jsm_neo.c
-> > +++ b/drivers/tty/serial/jsm/jsm_neo.c
-> > @@ -716,7 +716,7 @@ static void neo_parse_isr(struct jsm_board *brd, u32 port)
-> >               return;
-> >
-> >       ch = brd->channels[port];
-> > -     if (!ch)
-> > +     if (!ch || !ch->ch_equeue || !ch->ch_rqueue)
-> >               return;
->
-> Why not just allocate the memory at probe time and not at open time?
-> That would resolve this issue, and probably any other problems that are
-> only caused by initializing things at open time.
->
-> Once the interrupt is registered, it HAS to be able to be called,
-> otherwise it is a driver bug.  This change keeps that broken logic still
-> happening and just papers over the obvious crash.
->
-> Can you fix this the correct way instead please?
->
-> thanks,
->
-> greg k-h
+Add a new Kconfig file to define a menu entry under "Security options"
+to enable the "Fork brute force attack detection and mitigation"
+feature.
 
-Thanks for your review, I have sent the second version of the patch.
+The detection of a brute force attack can be based on the number of
+faults per application and its crash rate.
 
-Best regards,
-Zheyu Ma
+There are two types of brute force attacks that can be detected. The
+first one is a slow brute force attack that is detected if the maximum
+number of faults per fork hierarchy is reached. The second type is a
+fast brute force attack that is detected if the application crash period
+falls below a certain threshold.
+
+The application crash period must be a value that is not prone to change
+due to spurious data and follows the real crash period. So, to compute
+it, the exponential moving average (EMA) will be used.
+
+This kind of average defines a weight (between 0 and 1) for the new
+value to add and applies the remainder of the weight to the current
+average value. This way, some spurious data will not excessively modify
+the average and only if the new values are persistent, the moving
+average will tend towards them.
+
+Mathematically the application crash period's EMA can be expressed as
+follows:
+
+period_ema =3D period * weight + period_ema * (1 - weight)
+
+Moreover, it is important to note that a minimum number of faults is
+needed to guarantee a trend in the crash period when the EMA is used.
+
+So, based on all the previous information define a LSM with five sysctl
+attributes that will be used to fine tune the attack detection.
+
+ema_weight_numerator
+ema_weight_denominator
+max_faults
+min_faults
+crash_period_threshold
+
+This patch is a previous step on the way to fine tune the attack
+detection.
+
+Signed-off-by: John Wood <john.wood@gmx.com>
+=2D--
+ security/Kconfig        |  11 +--
+ security/Makefile       |   2 +
+ security/brute/Kconfig  |  14 ++++
+ security/brute/Makefile |   2 +
+ security/brute/brute.c  | 147 ++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 171 insertions(+), 5 deletions(-)
+ create mode 100644 security/brute/Kconfig
+ create mode 100644 security/brute/Makefile
+ create mode 100644 security/brute/brute.c
+
+diff --git a/security/Kconfig b/security/Kconfig
+index 0ced7fd33e4d..2df1727f2c2c 100644
+=2D-- a/security/Kconfig
++++ b/security/Kconfig
+@@ -241,6 +241,7 @@ source "security/lockdown/Kconfig"
+ source "security/landlock/Kconfig"
+
+ source "security/integrity/Kconfig"
++source "security/brute/Kconfig"
+
+ choice
+ 	prompt "First legacy 'major LSM' to be initialized"
+@@ -278,11 +279,11 @@ endchoice
+
+ config LSM
+ 	string "Ordered list of enabled LSMs"
+-	default "landlock,lockdown,yama,loadpin,safesetid,integrity,smack,selinu=
+x,tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
+-	default "landlock,lockdown,yama,loadpin,safesetid,integrity,apparmor,sel=
+inux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
+-	default "landlock,lockdown,yama,loadpin,safesetid,integrity,tomoyo,bpf" =
+if DEFAULT_SECURITY_TOMOYO
+-	default "landlock,lockdown,yama,loadpin,safesetid,integrity,bpf" if DEFA=
+ULT_SECURITY_DAC
+-	default "landlock,lockdown,yama,loadpin,safesetid,integrity,selinux,smac=
+k,tomoyo,apparmor,bpf"
++	default "landlock,lockdown,brute,yama,loadpin,safesetid,integrity,smack,=
+selinux,tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
++	default "landlock,lockdown,brute,yama,loadpin,safesetid,integrity,apparm=
+or,selinux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
++	default "landlock,lockdown,brute,yama,loadpin,safesetid,integrity,tomoyo=
+,bpf" if DEFAULT_SECURITY_TOMOYO
++	default "landlock,lockdown,brute,yama,loadpin,safesetid,integrity,bpf" i=
+f DEFAULT_SECURITY_DAC
++	default "landlock,lockdown,brute,yama,loadpin,safesetid,integrity,selinu=
+x,smack,tomoyo,apparmor,bpf"
+ 	help
+ 	  A comma-separated list of LSMs, in initialization order.
+ 	  Any LSMs left off this list will be ignored. This can be
+diff --git a/security/Makefile b/security/Makefile
+index 47e432900e24..94d325256413 100644
+=2D-- a/security/Makefile
++++ b/security/Makefile
+@@ -14,6 +14,7 @@ subdir-$(CONFIG_SECURITY_SAFESETID)    +=3D safesetid
+ subdir-$(CONFIG_SECURITY_LOCKDOWN_LSM)	+=3D lockdown
+ subdir-$(CONFIG_BPF_LSM)		+=3D bpf
+ subdir-$(CONFIG_SECURITY_LANDLOCK)	+=3D landlock
++subdir-$(CONFIG_SECURITY_FORK_BRUTE)	+=3D brute
+
+ # always enable default capabilities
+ obj-y					+=3D commoncap.o
+@@ -34,6 +35,7 @@ obj-$(CONFIG_SECURITY_LOCKDOWN_LSM)	+=3D lockdown/
+ obj-$(CONFIG_CGROUPS)			+=3D device_cgroup.o
+ obj-$(CONFIG_BPF_LSM)			+=3D bpf/
+ obj-$(CONFIG_SECURITY_LANDLOCK)		+=3D landlock/
++obj-$(CONFIG_SECURITY_FORK_BRUTE)	+=3D brute/
+
+ # Object integrity file lists
+ subdir-$(CONFIG_INTEGRITY)		+=3D integrity
+diff --git a/security/brute/Kconfig b/security/brute/Kconfig
+new file mode 100644
+index 000000000000..5da314d221aa
+=2D-- /dev/null
++++ b/security/brute/Kconfig
+@@ -0,0 +1,14 @@
++# SPDX-License-Identifier: GPL-2.0
++config SECURITY_FORK_BRUTE
++	bool "Fork brute force attack detection and mitigation"
++	depends on SECURITY
++	help
++	  This is an LSM that stops any fork brute force attack against
++	  vulnerable userspace processes. The detection method is based on
++	  the application crash period and as a mitigation procedure all the
++	  offending tasks are killed. Also, the executable file involved in the
++	  attack will be marked as "not allowed" and new execve system calls
++	  using this file will fail. Like capabilities, this security module
++	  stacks with other LSMs.
++
++	  If you are unsure how to answer this question, answer N.
+diff --git a/security/brute/Makefile b/security/brute/Makefile
+new file mode 100644
+index 000000000000..d3f233a132a9
+=2D-- /dev/null
++++ b/security/brute/Makefile
+@@ -0,0 +1,2 @@
++# SPDX-License-Identifier: GPL-2.0
++obj-$(CONFIG_SECURITY_FORK_BRUTE) +=3D brute.o
+diff --git a/security/brute/brute.c b/security/brute/brute.c
+new file mode 100644
+index 000000000000..0edb89a58ab0
+=2D-- /dev/null
++++ b/security/brute/brute.c
+@@ -0,0 +1,147 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
++#include <linux/lsm_hooks.h>
++#include <linux/sysctl.h>
++
++/**
++ * DOC: brute_ema_weight_numerator
++ *
++ * Weight's numerator of EMA.
++ */
++static unsigned int brute_ema_weight_numerator __read_mostly =3D 7;
++
++/**
++ * DOC: brute_ema_weight_denominator
++ *
++ * Weight's denominator of EMA.
++ */
++static unsigned int brute_ema_weight_denominator __read_mostly =3D 10;
++
++/**
++ * DOC: brute_max_faults
++ *
++ * Maximum number of faults.
++ *
++ * If a brute force attack is running slowly for a long time, the applica=
+tion
++ * crash period's EMA is not suitable for the detection. This type of att=
+ack
++ * must be detected using a maximum number of faults.
++ */
++static unsigned int brute_max_faults __read_mostly =3D 200;
++
++/**
++ * DOC: brute_min_faults
++ *
++ * Minimum number of faults.
++ *
++ * The application crash period's EMA cannot be used until a minimum numb=
+er of
++ * data has been applied to it. This constraint allows getting a trend wh=
+en this
++ * moving average is used.
++ */
++static unsigned int brute_min_faults __read_mostly =3D 5;
++
++/**
++ * DOC: brute_crash_period_threshold
++ *
++ * Application crash period threshold.
++ *
++ * A fast brute force attack is detected when the application crash perio=
+d falls
++ * below this threshold. The units are expressed in seconds.
++ */
++static unsigned int brute_crash_period_threshold __read_mostly =3D 30;
++
++#ifdef CONFIG_SYSCTL
++static unsigned int uint_max =3D UINT_MAX;
++#define SYSCTL_UINT_MAX (&uint_max)
++
++/*
++ * brute_sysctl_path - Sysctl attributes path.
++ */
++static struct ctl_path brute_sysctl_path[] =3D {
++	{ .procname =3D "kernel", },
++	{ .procname =3D "brute", },
++	{ }
++};
++
++/*
++ * brute_sysctl_table - Sysctl attributes.
++ */
++static struct ctl_table brute_sysctl_table[] =3D {
++	{
++		.procname	=3D "ema_weight_numerator",
++		.data		=3D &brute_ema_weight_numerator,
++		.maxlen		=3D sizeof(brute_ema_weight_numerator),
++		.mode		=3D 0644,
++		.proc_handler	=3D proc_douintvec_minmax,
++		.extra1		=3D SYSCTL_ZERO,
++		.extra2		=3D &brute_ema_weight_denominator,
++	},
++	{
++		.procname	=3D "ema_weight_denominator",
++		.data		=3D &brute_ema_weight_denominator,
++		.maxlen		=3D sizeof(brute_ema_weight_denominator),
++		.mode		=3D 0644,
++		.proc_handler	=3D proc_douintvec_minmax,
++		.extra1		=3D &brute_ema_weight_numerator,
++		.extra2		=3D SYSCTL_UINT_MAX,
++	},
++	{
++		.procname	=3D "max_faults",
++		.data		=3D &brute_max_faults,
++		.maxlen		=3D sizeof(brute_max_faults),
++		.mode		=3D 0644,
++		.proc_handler	=3D proc_douintvec_minmax,
++		.extra1		=3D &brute_min_faults,
++		.extra2		=3D SYSCTL_UINT_MAX,
++	},
++	{
++		.procname	=3D "min_faults",
++		.data		=3D &brute_min_faults,
++		.maxlen		=3D sizeof(brute_min_faults),
++		.mode		=3D 0644,
++		.proc_handler	=3D proc_douintvec_minmax,
++		.extra1		=3D SYSCTL_ONE,
++		.extra2		=3D &brute_max_faults,
++	},
++	{
++		.procname	=3D "crash_period_threshold",
++		.data		=3D &brute_crash_period_threshold,
++		.maxlen		=3D sizeof(brute_crash_period_threshold),
++		.mode		=3D 0644,
++		.proc_handler	=3D proc_douintvec_minmax,
++		.extra1		=3D SYSCTL_ONE,
++		.extra2		=3D SYSCTL_UINT_MAX,
++	},
++	{ }
++};
++
++/**
++ * brute_init_sysctl() - Initialize the sysctl interface.
++ */
++static void __init brute_init_sysctl(void)
++{
++	if (!register_sysctl_paths(brute_sysctl_path, brute_sysctl_table))
++		panic("sysctl registration failed\n");
++}
++
++#else
++static inline void brute_init_sysctl(void) { }
++#endif /* CONFIG_SYSCTL */
++
++/**
++ * brute_init() - Initialize the brute LSM.
++ *
++ * Return: Always returns zero.
++ */
++static int __init brute_init(void)
++{
++	pr_info("becoming mindful\n");
++	brute_init_sysctl();
++	return 0;
++}
++
++DEFINE_LSM(brute) =3D {
++	.name =3D KBUILD_MODNAME,
++	.init =3D brute_init,
++};
+=2D-
+2.25.1
+
