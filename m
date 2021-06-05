@@ -2,112 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9472239C7AA
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 13:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F118939C7A8
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 13:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230099AbhFELHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 07:07:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229929AbhFELHf (ORCPT
+        id S230048AbhFELEQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 5 Jun 2021 07:04:16 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:33881 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229929AbhFELEQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 07:07:35 -0400
-X-Greylist: delayed 470 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 05 Jun 2021 04:05:47 PDT
-Received: from rhcavspool01.kulnet.kuleuven.be (rhcavspool01.kulnet.kuleuven.be [IPv6:2a02:2c40:0:c0::25:193])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 672CCC061766
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Jun 2021 04:05:47 -0700 (PDT)
-Received: from icts-p-cavuit-4.kulnet.kuleuven.be (icts-p-cavuit-4.kulnet.kuleuven.be [134.58.240.134])
-        by rhcavspool01.kulnet.kuleuven.be (Postfix) with ESMTP id 084CC6151
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Jun 2021 12:57:54 +0200 (CEST)
-X-KULeuven-Envelope-From: mathy.vanhoef@kuleuven.be
-X-Spam-Status: not spam, SpamAssassin (cached, score=-50.59, required 5,
-        autolearn=disabled, NICE_REPLY_A -0.59, RCVD_SMTPS -50.00,
-        SPF_HELO_NONE 0.00, SPF_PASS -0.00)
-X-KULeuven-Scanned: Found to be clean
-X-KULeuven-ID: 7515AC4.AD1A7
-X-KULeuven-Information: Katholieke Universiteit Leuven
-Received: from icts-p-smtps-1.cc.kuleuven.be (icts-p-smtps-1e.kulnet.kuleuven.be [IPv6:2a02:2c40:0:c0::25:33])
-        by icts-p-cavuit-4.kulnet.kuleuven.be (Postfix) with ESMTP id 7515AC4
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Jun 2021 12:57:33 +0200 (CEST)
-X-CAV-Cluster: smtps
-Received: from [172.20.6.62] (bba146567.alshamil.net.ae [217.165.158.9])
-        (using TLSv1.2 with cipher AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by icts-p-smtps-1.cc.kuleuven.be (Postfix) with ESMTPSA id 4CBD840B2;
-        Sat,  5 Jun 2021 12:57:32 +0200 (CEST)
-Subject: Re: [PATCH 5.10 024/252] mac80211: prevent mixed key and fragment
- cache attacks
-To:     Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Johannes Berg <johannes.berg@intel.com>
-References: <20210531130657.971257589@linuxfoundation.org>
- <20210531130658.804599277@linuxfoundation.org> <20210601092619.GA30422@amd>
-X-Kuleuven: This mail passed the K.U.Leuven mailcluster
-From:   Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
-Message-ID: <52ae0752-422e-b791-365a-228c968ffed9@kuleuven.be>
-Date:   Sat, 5 Jun 2021 14:57:30 +0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Sat, 5 Jun 2021 07:04:16 -0400
+Received: from mail-wr1-f48.google.com ([209.85.221.48]) by
+ mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MMGZM-1m7ZQ50G8M-00JHp1; Sat, 05 Jun 2021 13:02:27 +0200
+Received: by mail-wr1-f48.google.com with SMTP id c9so3114441wrt.5;
+        Sat, 05 Jun 2021 04:02:26 -0700 (PDT)
+X-Gm-Message-State: AOAM532TQuh59e0hpwB79zHjANdC7gxxqumMJZ6Qbbom+zm28wHTKb+l
+        i8GPw3SIcLTHFItx7zzCtim5NnrmJh2pIpGysdQ=
+X-Google-Smtp-Source: ABdhPJyTgAm4kMtZ4p3Ermy7kQq56j4m/FpiomcM6zHsddzu7oi+hv92VtxR6BpYVuCoQL54tJkvc1afe1lQcNxED5I=
+X-Received: by 2002:a5d:4050:: with SMTP id w16mr8108472wrp.99.1622890946655;
+ Sat, 05 Jun 2021 04:02:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210601092619.GA30422@amd>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210604120639.1447869-1-alex@ghiti.fr> <CAK8P3a1TiSNoqUEjTaqPyqnU8d0-p-yZkrsvmXt5fo4Rkfue_w@mail.gmail.com>
+ <1287f6f3-2f07-3269-9048-8f7d08eecc09@ghiti.fr>
+In-Reply-To: <1287f6f3-2f07-3269-9048-8f7d08eecc09@ghiti.fr>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sat, 5 Jun 2021 13:00:42 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1_N6dAdjWR10FtgaVz828o7W5Mp55DO3Ex+3en-ikOUw@mail.gmail.com>
+Message-ID: <CAK8P3a1_N6dAdjWR10FtgaVz828o7W5Mp55DO3Ex+3en-ikOUw@mail.gmail.com>
+Subject: Re: [PATCH -fixes] riscv: Fix BUILTIN_DTB for sifive and microchip soc
+To:     Alex Ghiti <alex@ghiti.fr>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:YTlaWPsnSSYSmgYtT8aehuJJ230e/R61XsF1n8IhYHguuRwly3I
+ wOyvGO7HVYV02Gt5OSn/kHrdIOjRqsy/L04F5jX6NimcUR2T9qdnlthjrGfu8P5Kb9mjS0v
+ T/Ulpys6qkP0aud/O/j2EkrP63TJqCVMfawXCAn4ZROurh5ZBt1JL4Flfx69s2H0wXcUy8B
+ NzET+9KUNjGq8GzpEd/BA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Wq7e39+7AiM=:90/xaFsy8JKcLn9eCG4Ar6
+ HCizokA2fKOjGqc0TNac69ZlwVIjktKdZ41t+bi/4ZplTrNB/R4/OBtjBIf92I7IU3BBd0DsJ
+ K7DDv3i2PZPE0nj+J1fSU/99MWZGznQE37jcP2v2ZG0AIOlubHJ+nSecJguH/ruHnnJxUehWz
+ d5RXexvjmNKQBwZVlsE6VZ3NhmUiGNlsozpDxTEvbH+Lhw/Wx5e6+81yFWQRqi3TC4UEgWx2I
+ U54Xszc7P40dVh7KPYBAQTcmtNpEsiWfqN8zU9k/KGCim+j5Illa9vzqQpqlVjMTOZTHvjfrG
+ bmeoxMeG0rlDKIsOSKBNQcfD/m6f11OdEuwGrh4/PZUoLu46QTPPsY9V+jTaHGk/E5XMeml9t
+ v93XFkd7xXyiGRPN9np+Ml/lSdRAmonNKZNkO8tyY7vqO28CXoSqqcQ2VyRglUPRY94mo07Fb
+ sffeq0GEakpOSDgs/vMg/v8/Hk/k/9HNO2uMCbdInIE2/BmCi1gKdVNo8n2KyI455sfd9I8tI
+ EQibp2ma2iG9EY5qlJrvVnRTXaEKUliWuo1aw30F51R2jkI93JLckBb3iGP4VaD0ls6TdDoVn
+ Vt/VVDHdnKaiNyXAwVby0d2HTwzfoDICa3F5nqcxG06pqOLWWmZBaJWWD77ElYPro0auOL77K
+ euS0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Pavel,
+On Sat, Jun 5, 2021 at 8:37 AM Alex Ghiti <alex@ghiti.fr> wrote:
+> Le 4/06/2021 à 15:08, Arnd Bergmann a écrit :
+> > On Fri, Jun 4, 2021 at 2:06 PM Alexandre Ghiti <alex@ghiti.fr> wrote:
+> >>
+> >> Fix BUILTIN_DTB config which resulted in a dtb that was actually not built
+> >> into the Linux image: in the same manner as Canaan soc does, create an object
+> >> file from the dtb file that will get linked into the Linux image.
+> >>
+> >> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+> >
+> > Along the same lines as the comment that Jisheng Zhang made on the fixed
+> > address, building a dtb into the kernel itself fundamentally breaks generic
+> > kernel images.
+> >
+> > I can understand using it on K210, which is extremely limited and wouldn't
+> > run a generic kernel anyway, but for normal platforms like microchip and
+> > sifive, it would be better to disallow CONFIG_BUILTIN_DTB in Kconfig
+> > and require a non-broken boot loader.
+>
+> I kind of disagree because if I want to build a custom kernel for those
+> platforms with a builtin dtb for some reasons (debug, development..Etc),
+> I think I should be able to do so.
 
-Good remark. In practice this doesn't look like a problem: the overflow
-would need to happen in less than two seconds. If it takes longer, the
-mixed key and cache attack cannot be performed because the previous
-fragment(s) will be discarded, see
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/net/mac80211/rx.c?h=v5.13-rc4&id=8124c8a6b35386f73523d27eacb71b5364a68c4c#n2202
+How is the builtin dtb better than appended dtb, or passing the dtb to the
+boot loader in that case?
 
-It may be useful to add this as a comment to the code.
-
-Cheers,
-Mathy
-
-On 6/1/21 1:26 PM, Pavel Machek wrote:
-> Hi!
-> 
->> From: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
->>
->> commit 94034c40ab4a3fcf581fbc7f8fdf4e29943c4a24 upstream.
->>
->> Simultaneously prevent mixed key attacks (CVE-2020-24587) and fragment
->> cache attacks (CVE-2020-24586). This is accomplished by assigning a
->> unique color to every key (per interface) and using this to track which
->> key was used to decrypt a fragment. When reassembling frames, it is
->> now checked whether all fragments were decrypted using the same key.
->>
->> To assure that fragment cache attacks are also prevented, the ID that is
->> assigned to keys is unique even over (re)associations and (re)connects.
->> This means fragments separated by a (re)association or (re)connect will
->> not be reassembled. Because mac80211 now also prevents the reassembly of
->> mixed encrypted and plaintext fragments, all cache attacks are
->> prevented.
-> 
->> --- a/net/mac80211/key.c
->> +++ b/net/mac80211/key.c
->> @@ -799,6 +799,7 @@ int ieee80211_key_link(struct ieee80211_
->>  		       struct ieee80211_sub_if_data *sdata,
->>  		       struct sta_info *sta)
->>  {
->> +	static atomic_t key_color = ATOMIC_INIT(0);
->>  	struct ieee80211_key *old_key;
-> 
-> This is nice and simple, but does not include any kind of overflow
-> handling. sparc32 moved away from 24-bit atomics, which is good I
-> guess. OTOH if this is incremented 10 times a second, we'll still
-> overflow in 6 years or so. Can attacker make it overflow?
-> 
-> Should this have a note why overflow is not possible / why it is not a
-> problem?
-> 
-> Best regards,
-> 								Pavel
-> 
+         Arnd
