@@ -2,330 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9D939C9D8
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 18:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65EB839C9D0
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 18:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230099AbhFEQ2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 12:28:50 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:46798 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhFEQ2t (ORCPT
+        id S229982AbhFEQ1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 12:27:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229930AbhFEQ1E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 12:28:49 -0400
-Received: by mail-ej1-f67.google.com with SMTP id b9so19194971ejc.13;
-        Sat, 05 Jun 2021 09:26:47 -0700 (PDT)
+        Sat, 5 Jun 2021 12:27:04 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BADC061767
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Jun 2021 09:25:15 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id n24so1514768lji.2
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 09:25:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=PftSLZKR87WaT3//GeiQ8fZCHGuz2ewkTRNYI7wgal0=;
-        b=uRy7CW77oAo5ZffE+Gt6hLZLVWWwQApKYKrdGXNg4axd9Qz0TKz2a8IUR2zxVydaBy
-         qD5KxH/44ZU9KHn73LfQIBvqN6M0f4iH+ehsxJJbzC4Ww63gobAGJB0nryKI2dLD3gHy
-         zD5KT2e1k8woRR43W2jYgBip8hE1T98oEFQuC++uCqfT5HB1b8A6fIv0q4S+AhEdJfhs
-         7STV/IK+Q3zDzdwJSiQydmbMj4VC1diqRIFYtSjhk7wPE2Cv5ppyT9Qig5GX4olElrKG
-         PnzW6aHuvdSySqPmNgKOAIwWCs85bi3E1uOpgC+m33Fp8r08UM14tNHE64ygcybyLhcP
-         z9/Q==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GZa60s0glSdUWznibN+YHUgSL+wdhz/USRVQvcTkA3k=;
+        b=BQz+fRxwJrPzucEkOtxliKpTSWvi9EIwmF3SEXReAICeTz89zVE9OFvV9GV5MbYLsD
+         QawgOFSMA9wi0wj0NsKxUp4FAEdi/eYMeMPeXWixE0CcQUC8xKaX/e2LoWw17Q6irdME
+         KbDwe5zlt7LgNv46Z7UaR5DlXbYzZPGo7YHlM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=PftSLZKR87WaT3//GeiQ8fZCHGuz2ewkTRNYI7wgal0=;
-        b=pKpAg3hBDnTIs4FpV2RLv1KPAb8p/Vr4vN6j/00oX9kwo2pLc2PXuZSumTRimm3h94
-         xTQvZOMFnTorLI/gAeLBaZQE5m8SPzv8T5Rs5lti+7q9zC62SxGIkiau7MOMjDgZXGd+
-         zcK7zMJbJNG/vB6gLrx9bTUDU+hW4hD0iiVwm2uorEb7l9w2eZA+jD+dFa9IrDubLsHQ
-         2gIS62xUjbHRTOJsaI1isCtz+Gp1Rg/nXSVTm4+BQleG+qc0HssQtv9yBw4iFULkjCrR
-         wBy293A7m35CB2faaKMj4IbsCnJZr9+LhU1lKKG8+9GiFkuTo1A2bThZpUKAJsbW5v4L
-         dISA==
-X-Gm-Message-State: AOAM530waCNTmMFEB80ofdCMyh50rWSYI0bIUo3whVQAtRDcaFsQIB4Q
-        IE8CPZckCmKj5QXInxOvU/c=
-X-Google-Smtp-Source: ABdhPJzzbD+81wPAExrqbmkmituYVFhTf7MoH6n91v9gJ5J10ew6Ej1qH7RxJwjR4nS2Q2ZRcpoiLQ==
-X-Received: by 2002:a17:906:b24a:: with SMTP id ce10mr9887364ejb.83.1622910346631;
-        Sat, 05 Jun 2021 09:25:46 -0700 (PDT)
-Received: from localhost.localdomain ([51.15.127.58])
-        by smtp.gmail.com with ESMTPSA id r21sm5139434edy.78.2021.06.05.09.25.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 05 Jun 2021 09:25:46 -0700 (PDT)
-From:   yongw.pur@gmail.com
-To:     minchan@kernel.org, ngupta@vflare.org, senozhatsky@chromium.org,
-        axboe@kernel.dk, akpm@linux-foundation.org,
-        songmuchun@bytedance.com, david@redhat.com,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-mm@kvack.org, willy@infradead.org, linux-api@vger.kernel.org
-Cc:     wangyong <yongw.pur@gmail.com>
-Subject: [RFC PATCH V2] zram:calculate available memory when zram is used
-Date:   Sat,  5 Jun 2021 09:24:00 -0700
-Message-Id: <1622910240-4621-1-git-send-email-yongw.pur@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GZa60s0glSdUWznibN+YHUgSL+wdhz/USRVQvcTkA3k=;
+        b=AmgwXbrRP/nhe07d4r4p66wcY81ueOX5Qy1FDjkyPb6GBgqgM/ZJByvcEMM0PcnnGL
+         yJ6/iiIJQJhjDxm3Nozw6L1GFa19HIaeL9eWBaFVgaqbVuyX5bc/Vj2Que4r/6rwFYtf
+         2SZOXhXgxESNxsUoLyXjF6H25P31n/z1IK4sTYamTu/7XHlcV5ICJ/wokOX/u/Fj8Ue8
+         5uAhcF3/AZOsjy0l905obgWogKPkoqPYF5I029K0L68H8ta7+EQCUkLNnbC7kmwM9rb7
+         JnF7g3rc3rAQ5GmleoHtwaNdU9MFs36SHSKK5CrYSK002FJcJu9/nveab2SHKE9qfkPC
+         bzZQ==
+X-Gm-Message-State: AOAM533AnYSX9bHXwZdgrRtuLgvplw446tsMTDhN0ZOBQSErefU+sbG8
+        GB5j0O3syYYrpXqApXimsS/hBIO1Prr4E+QZgxc=
+X-Google-Smtp-Source: ABdhPJzwGhy8MWwftUSDd3CrrPWB9t4O2iVhLvfTk3ogyJheEIEFwWXM7NESn6RCnVs05J+JUKWuPg==
+X-Received: by 2002:a2e:990:: with SMTP id 138mr7566543ljj.79.1622910312348;
+        Sat, 05 Jun 2021 09:25:12 -0700 (PDT)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id m18sm1070064ljc.105.2021.06.05.09.25.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 05 Jun 2021 09:25:11 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id r5so18804449lfr.5
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 09:25:10 -0700 (PDT)
+X-Received: by 2002:a05:6512:987:: with SMTP id w7mr6239078lft.41.1622910310532;
+ Sat, 05 Jun 2021 09:25:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <YLoPJDzlTsvpjFWt@hirez.programming.kicks-ass.net>
+ <20210604134422.GA2793@willie-the-truck> <YLoxAOua/qsZXNmY@hirez.programming.kicks-ass.net>
+ <20210604151356.GC2793@willie-the-truck> <YLpFHE5Cr45rWTUV@hirez.programming.kicks-ass.net>
+ <YLpJ5K6O52o1cAVT@hirez.programming.kicks-ass.net> <20210604155154.GG1676809@rowland.harvard.edu>
+ <YLpSEM7sxSmsuc5t@hirez.programming.kicks-ass.net> <20210604182708.GB1688170@rowland.harvard.edu>
+ <CAHk-=wiuLpmOGJyB385UyQioWMVKT6wN9UtyVXzt48AZittCKg@mail.gmail.com> <20210605031403.GA1701165@rowland.harvard.edu>
+In-Reply-To: <20210605031403.GA1701165@rowland.harvard.edu>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 5 Jun 2021 09:24:54 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whFRjQZB9QckY=CCcgrWMMRqbxntF4aLnDf=HqhDj-2AQ@mail.gmail.com>
+Message-ID: <CAHk-=whFRjQZB9QckY=CCcgrWMMRqbxntF4aLnDf=HqhDj-2AQ@mail.gmail.com>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wangyong <yongw.pur@gmail.com>
+On Fri, Jun 4, 2021 at 8:14 PM Alan Stern <stern@rowland.harvard.edu> wrote:
+>
+> >
+> > then I could in theory see teh compiler doing that WRITE_ONCE() as
+> > some kind of non-control dependency.
+>
+> This may be a minor point, but can that loophole be closed as follows?
 
-When zram is used, available+Swap free memory is obviously
-bigger than we actually can use, because zram can compress
-memory by compression algorithm and zram compressed data
-will occupy memory too.
+Note that it's actually entirely sufficient to have the barrier just
+on one side.
 
-So, we can count the compression ratio of zram in the kernel.
-The space will be saved by zram and other swap device are
-calculated as follows:
-zram[swapfree - swapfree * compress ratio] + swapdev[swapfree]
-We can evaluate the available memory of the whole system as:
-MemAvailable+zram[swapfree - swapfree * compress ratio]+swapdev[swapfree]
+I brought it up mainly as an oddity, and that it can result in the
+compiler generating different code for the two different directions.
 
-Add an entry to the /proc/meminfo file, returns swap will save space.
-Which name is more appropriate is still under consideration.
-There are several alternative names: SwapAvailable, SwapSaved,
-SwapCompressible
+The reason that it is sufficient is that with the barrier in place (on
+either side), the compiler really can't do much. It can't join either
+of the sides, because it has to do that barrier on one side before any
+common code.
 
-Signed-off-by: wangyong <yongw.pur@gmail.com>
----
- drivers/block/zram/zcomp.h    |  1 +
- drivers/block/zram/zram_drv.c | 19 +++++++++
- drivers/block/zram/zram_drv.h |  1 +
- fs/proc/meminfo.c             |  1 +
- include/linux/swap.h          | 10 +++++
- mm/swapfile.c                 | 95 +++++++++++++++++++++++++++++++++++++++++++
- mm/vmscan.c                   |  1 +
- 7 files changed, 128 insertions(+)
+In fact, even if the compiler decides to first do a conditional call
+just around the barrier, and then do any common code (and then do
+_another_ conditional branch), it still did that conditional branch
+first, and the problem is solved. The CPU doesn't care, it will have
+to resolve the branch before any subsequent stores are finalized.
 
-diff --git a/drivers/block/zram/zcomp.h b/drivers/block/zram/zcomp.h
-index 40f6420..deb2dbf 100644
---- a/drivers/block/zram/zcomp.h
-+++ b/drivers/block/zram/zcomp.h
-@@ -40,4 +40,5 @@ int zcomp_decompress(struct zcomp_strm *zstrm,
- 		const void *src, unsigned int src_len, void *dst);
- 
- bool zcomp_set_max_streams(struct zcomp *comp, int num_strm);
-+int get_zram_major(void);
- #endif /* _ZCOMP_H_ */
-diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index fcaf275..8f527e0 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -59,6 +59,10 @@ static void zram_free_page(struct zram *zram, size_t index);
- static int zram_bvec_read(struct zram *zram, struct bio_vec *bvec,
- 				u32 index, int offset, struct bio *bio);
- 
-+int get_zram_major(void)
-+{
-+	return zram_major;
-+}
- 
- static int zram_slot_trylock(struct zram *zram, u32 index)
- {
-@@ -1040,6 +1044,19 @@ static ssize_t compact_store(struct device *dev,
- 	return len;
- }
- 
-+static ssize_t min_compr_ratio_show(struct device *dev,
-+		struct device_attribute *attr, char *buf)
-+{
-+	struct zram *zram = dev_to_zram(dev);
-+	ssize_t ret;
-+
-+	down_read(&zram->init_lock);
-+	ret = scnprintf(buf, PAGE_SIZE, "%d\n", atomic_read(&zram->stats.min_compr_ratio));
-+	up_read(&zram->init_lock);
-+
-+	return ret;
-+}
-+
- static ssize_t io_stat_show(struct device *dev,
- 		struct device_attribute *attr, char *buf)
- {
-@@ -1132,6 +1149,7 @@ static ssize_t debug_stat_show(struct device *dev,
- 	return ret;
- }
- 
-+static DEVICE_ATTR_RO(min_compr_ratio);
- static DEVICE_ATTR_RO(io_stat);
- static DEVICE_ATTR_RO(mm_stat);
- #ifdef CONFIG_ZRAM_WRITEBACK
-@@ -1859,6 +1877,7 @@ static struct attribute *zram_disk_attrs[] = {
- 	&dev_attr_idle.attr,
- 	&dev_attr_max_comp_streams.attr,
- 	&dev_attr_comp_algorithm.attr,
-+	&dev_attr_min_compr_ratio.attr,
- #ifdef CONFIG_ZRAM_WRITEBACK
- 	&dev_attr_backing_dev.attr,
- 	&dev_attr_writeback.attr,
-diff --git a/drivers/block/zram/zram_drv.h b/drivers/block/zram/zram_drv.h
-index 80c3b43..5717e06 100644
---- a/drivers/block/zram/zram_drv.h
-+++ b/drivers/block/zram/zram_drv.h
-@@ -88,6 +88,7 @@ struct zram_stats {
- 	atomic64_t bd_reads;		/* no. of reads from backing device */
- 	atomic64_t bd_writes;		/* no. of writes from backing device */
- #endif
-+	atomic_t min_compr_ratio;
- };
- 
- struct zram {
-diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-index 6fa761c..34a174b 100644
---- a/fs/proc/meminfo.c
-+++ b/fs/proc/meminfo.c
-@@ -86,6 +86,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
- 
- 	show_val_kb(m, "SwapTotal:      ", i.totalswap);
- 	show_val_kb(m, "SwapFree:       ", i.freeswap);
-+	show_val_kb(m, "SwapAvailable:	", count_avail_swaps());
- 	show_val_kb(m, "Dirty:          ",
- 		    global_node_page_state(NR_FILE_DIRTY));
- 	show_val_kb(m, "Writeback:      ",
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index bb48893..798f09b 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -515,6 +515,8 @@ extern int init_swap_address_space(unsigned int type, unsigned long nr_pages);
- extern void exit_swap_address_space(unsigned int type);
- extern struct swap_info_struct *get_swap_device(swp_entry_t entry);
- sector_t swap_page_sector(struct page *page);
-+extern void update_zram_zstats(void);
-+extern u64 count_avail_swaps(void);
- 
- static inline void put_swap_device(struct swap_info_struct *si)
- {
-@@ -689,6 +691,14 @@ static inline swp_entry_t get_swap_page(struct page *page)
- 	return entry;
- }
- 
-+void update_zram_zstats(void)
-+{
-+}
-+
-+u64 count_avail_swaps(void)
-+{
-+}
-+
- #endif /* CONFIG_SWAP */
- 
- #ifdef CONFIG_THP_SWAP
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 1e07d1c..fc934845 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -44,6 +44,7 @@
- #include <asm/tlbflush.h>
- #include <linux/swapops.h>
- #include <linux/swap_cgroup.h>
-+#include "../drivers/block/zram/zram_drv.h"
- 
- static bool swap_count_continued(struct swap_info_struct *, pgoff_t,
- 				 unsigned char);
-@@ -3387,6 +3388,100 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 	return error;
- }
- 
-+u64 count_avail_swap(struct swap_info_struct *si)
-+{
-+	u64 result;
-+	struct zram *z;
-+	unsigned int free;
-+	unsigned int ratio;
-+
-+	result = 0;
-+	if (!si)
-+		return 0;
-+
-+	//zram calculate available mem
-+	if (si->flags & SWP_USED && si->swap_map) {
-+		if (si->bdev->bd_disk->major == get_zram_major()) {
-+			z = (struct zram *)si->bdev->bd_disk->private_data;
-+			down_read(&z->init_lock);
-+			ratio = atomic_read(&z->stats.min_compr_ratio);
-+			free = (si->pages << (PAGE_SHIFT - 10))
-+				- (si->inuse_pages << (PAGE_SHIFT - 10));
-+			if (!ratio)
-+				result += free / 2;
-+			else
-+				result = free * (100 - 10000 / ratio) / 100;
-+			up_read(&z->init_lock);
-+		}
-+	} else
-+		result += (si->pages << (PAGE_SHIFT - 10))
-+				- (si->inuse_pages << (PAGE_SHIFT - 10));
-+
-+	return result;
-+}
-+
-+u64 count_avail_swaps(void)
-+{
-+	int type;
-+	u64 result;
-+	struct swap_info_struct *si;
-+
-+	result = 0;
-+	spin_lock(&swap_lock);
-+	for (type = 0; type < nr_swapfiles; type++) {
-+		si = swap_info[type];
-+		spin_lock(&si->lock);
-+		result += count_avail_swap(si);
-+		spin_unlock(&si->lock);
-+	}
-+	spin_unlock(&swap_lock);
-+
-+	return result;
-+}
-+
-+void update_zram_zstat(struct swap_info_struct *si)
-+{
-+	struct zram *z;
-+	struct zram_stats *stat;
-+	int ratio;
-+	u64 orig_size, compr_data_size;
-+
-+	if (!si)
-+		return;
-+
-+	//update zram min compress ratio
-+	if (si->flags & SWP_USED && si->swap_map) {
-+		if (si->bdev->bd_disk->major == get_zram_major()) {
-+			z = (struct zram *)si->bdev->bd_disk->private_data;
-+			down_read(&z->init_lock);
-+			stat = &z->stats;
-+			ratio = atomic_read(&stat->min_compr_ratio);
-+			orig_size = atomic64_read(&stat->pages_stored) << PAGE_SHIFT;
-+			compr_data_size = atomic64_read(&stat->compr_data_size);
-+			if (compr_data_size && (!ratio
-+					    || ((orig_size * 100) / compr_data_size < ratio)))
-+				atomic_set(&stat->min_compr_ratio,
-+					   (orig_size * 100) / compr_data_size);
-+			up_read(&z->init_lock);
-+		}
-+	}
-+}
-+
-+void update_zram_zstats(void)
-+{
-+	int type;
-+	struct swap_info_struct *si;
-+
-+	spin_lock(&swap_lock);
-+	for (type = 0; type < nr_swapfiles; type++) {
-+		si = swap_info[type];
-+		spin_lock(&si->lock);
-+		update_zram_zstat(si);
-+		spin_unlock(&si->lock);
-+	}
-+	spin_unlock(&swap_lock);
-+}
-+
- void si_swapinfo(struct sysinfo *val)
- {
- 	unsigned int type;
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index eb31452..ffaf59b 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -4159,6 +4159,7 @@ static int kswapd(void *p)
- 						alloc_order);
- 		reclaim_order = balance_pgdat(pgdat, alloc_order,
- 						highest_zoneidx);
-+		update_zram_zstats();
- 		if (reclaim_order < alloc_order)
- 			goto kswapd_try_sleep;
- 	}
--- 
-2.7.4
+Of course, if the compiler creates a conditional call just around the
+barrier, and the barrier is empty (like we do now), and the compiler
+leaves no mark of it in the result (like it does seem to do for empty
+asm stataments), I could imagine some optimizing assembler (or linker)
+screwing things up for us, and saying "a conditional branch to the
+next instruction can just be removed).
 
+At that point, we've lost again, and it's a toolchain issue. I don't
+think that issue can currently happen, but it's an example of yet
+another really subtle problem that *could* happen even if *we* do
+everything right.
+
+I also do not believe that any of our code that has this pattern would
+have that situation where the compiler would generate a branch over
+just the barrier. It's kind of similar to Paul's example in that
+sense. When we use volatile_if(), the two sides are very very
+different entirely regardless of the barrier, so in practice I think
+this is all entirely moot.
+
+              Linus
