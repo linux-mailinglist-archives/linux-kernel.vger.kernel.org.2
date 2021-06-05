@@ -2,186 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1603639CB17
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 22:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B9839CB1C
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 23:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhFEU7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 16:59:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229998AbhFEU73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 16:59:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B71146138C;
-        Sat,  5 Jun 2021 20:57:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622926661;
-        bh=TPWZg+mnjUPfUy/j5QyNwvmf07qGh6lfvORxedAcVOs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=H+Nb4suT87C76SMQ1VGje5ufamKQyO9PDReKKtdCwlCQcz0QtoeVB1GPs6Tv87Om9
-         RBOnsKfr1o9g2sr4iBhauCYTFm9G1/9GCTh3ckjTbieRIResqYT/lURd45zmyR3/BN
-         xCF7MB/JgowNKU6e6nFtazeMFLcovrauZm751xVJ3gtCdmqznXq951DjirdSkCT5pl
-         cr+wRf2aicAA8Mgry6dVhXhxk34yJ0UZ3k6fk5VfQ6OsboeNj6MJiSRYLub1zNUyyw
-         MZ+8TI78b7F/J/V/sbcBZWG+JtOlEWCwz1AHOsL7sfn/ePmGYjFS44maQC0uD7+7VB
-         rA6O2xL7zOnAA==
-Date:   Sat, 5 Jun 2021 15:57:39 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Amey Narkhede <ameynarkhede03@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, alex.williamson@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>
-Subject: Re: [PATCH v5 3/7] PCI: Remove reset_fn field from pci_dev
-Message-ID: <20210605205739.GA2322756@bjorn-Precision-5520>
+        id S230036AbhFEVER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 17:04:17 -0400
+Received: from mail-io1-f54.google.com ([209.85.166.54]:46747 "EHLO
+        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229998AbhFEVEQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 17:04:16 -0400
+Received: by mail-io1-f54.google.com with SMTP id o21so14166468iow.13
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 14:02:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NIy5STFt8B/kR9D8BVeg93HRdwmMgucQuLC6yJOK6dk=;
+        b=lAJG4pOLeFVrMdUYm0OjIQElPvcRHUmHnw1HUNnP6tzmhnscLqh/Ak1Hkt9HoNZuWp
+         oUU9jmELoZ1IOn4+oRjBxxUDWJn/QJoneqzujFEqcKPOD85uCgJxNvOrbzAaUJKkjVYW
+         J3fCyTS5YoIJvM6gOdGH5PxftJbEYNLvVw8smmvlvDwZTYK3afxjyGbyKLhy5pqHTvAv
+         QcxrnXmE67BLR0jSDptDU4ef5y9CJGi/qfZFKN3SrGGxMPgehmvTS4xDjIdJyJr1jQzN
+         R3pGf9si34hU6as+y5inWYZeIAQbmIkUkohL6Gl8r6yHeuy1+JGBt/AQ6puBk9QtqqJj
+         7WTg==
+X-Gm-Message-State: AOAM533NjmaoBogUW1cgWkBEtvdrblnmeLt6V5Iuy3ZF0JphktCM6xeJ
+        pP8MrTwj1O40STECuvoj2LQ=
+X-Google-Smtp-Source: ABdhPJyWWrUSoYvQZHAGvmkQ8w2hjt/hHWfQs8X8zS6sFu5SF5NTFTWssaEfAwrwAJu3P4xyBg+cIQ==
+X-Received: by 2002:a6b:a01:: with SMTP id z1mr1006458ioi.178.1622926947323;
+        Sat, 05 Jun 2021 14:02:27 -0700 (PDT)
+Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
+        by smtp.gmail.com with ESMTPSA id b8sm1567326iln.72.2021.06.05.14.02.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Jun 2021 14:02:26 -0700 (PDT)
+Date:   Sat, 5 Jun 2021 21:02:25 +0000
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] percpu: memcg memory accounting rework
+Message-ID: <YLvmYbbbeg6TK9Yh@google.com>
+References: <20210603010931.1472512-1-guro@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210529192527.2708-4-ameynarkhede03@gmail.com>
+In-Reply-To: <20210603010931.1472512-1-guro@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 30, 2021 at 12:55:23AM +0530, Amey Narkhede wrote:
-> reset_fn field is used to indicate whether the
-> device supports any reset mechanism or not.
-> Deprecate use of reset_fn in favor of new
-> reset_methods array which can be used to keep
-> track of all supported reset mechanisms of a device
-> and their ordering.
-> The octeon driver is incorrectly using reset_fn field
-> to detect if the device supports FLR or not. Use
-> pcie_reset_flr to probe whether it supports
-> FLR or not.
+Hello,
 
-s/Deprecate use of/Remove/
-("deprecate" means to disapprove of something, and you're doing more
-than that :))
-
-Rewrap above to fill 75 columns.  Separate paragraphs with blank
-lines.  Add "()" after function names (mentioned elsewhere, but please
-do it everywhere).
-
-> Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
-> Reviewed-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
-> Co-developed-by: Alex Williamson <alex.williamson@redhat.com>
-> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-> Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
-> ---
->  drivers/net/ethernet/cavium/liquidio/lio_vf_main.c | 2 +-
->  drivers/pci/pci-sysfs.c                            | 2 +-
->  drivers/pci/pci.c                                  | 6 +++---
->  drivers/pci/probe.c                                | 1 -
->  drivers/pci/quirks.c                               | 2 +-
->  drivers/pci/remove.c                               | 1 -
->  include/linux/pci.h                                | 1 -
->  7 files changed, 6 insertions(+), 9 deletions(-)
+On Wed, Jun 02, 2021 at 06:09:28PM -0700, Roman Gushchin wrote:
+> This patchset reworks memcg-based accounting of the percpu memory:
+> instead of using two types of chunks (memcg-aware and non-memcg-aware)
+> it treats all chunks as memcg-aware. An extra memory used for objcg
+> arrays will is compensated by a better chunks utilization, so the
+> total memory footprint should be the same or smaller.
 > 
-> diff --git a/drivers/net/ethernet/cavium/liquidio/lio_vf_main.c b/drivers/net/ethernet/cavium/liquidio/lio_vf_main.c
-> index 516f166ce..336d149ee 100644
-> --- a/drivers/net/ethernet/cavium/liquidio/lio_vf_main.c
-> +++ b/drivers/net/ethernet/cavium/liquidio/lio_vf_main.c
-> @@ -526,7 +526,7 @@ static void octeon_destroy_resources(struct octeon_device *oct)
->  			oct->irq_name_storage = NULL;
->  		}
->  		/* Soft reset the octeon device before exiting */
-> -		if (oct->pci_dev->reset_fn)
-> +		if (!pcie_reset_flr(oct->pci_dev, 1))
->  			octeon_pci_flr(oct);
->  		else
->  			cn23xx_vf_ask_pf_to_do_flr(oct);
-> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-> index beb8d1f4f..316f70c3e 100644
-> --- a/drivers/pci/pci-sysfs.c
-> +++ b/drivers/pci/pci-sysfs.c
-> @@ -1367,7 +1367,7 @@ static umode_t pci_dev_reset_attr_is_visible(struct kobject *kobj,
->  {
->  	struct pci_dev *pdev = to_pci_dev(kobj_to_dev(kobj));
->  
-> -	if (!pdev->reset_fn)
-> +	if (!pci_reset_supported(pdev))
->  		return 0;
->  
->  	return a->mode;
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index 67a2605d4..bbed852d9 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -5231,7 +5231,7 @@ int pci_reset_function(struct pci_dev *dev)
->  {
->  	int rc;
->  
-> -	if (!dev->reset_fn)
-> +	if (!pci_reset_supported(dev))
->  		return -ENOTTY;
->  
->  	pci_dev_lock(dev);
-> @@ -5267,7 +5267,7 @@ int pci_reset_function_locked(struct pci_dev *dev)
->  {
->  	int rc;
->  
-> -	if (!dev->reset_fn)
-> +	if (!pci_reset_supported(dev))
->  		return -ENOTTY;
->  
->  	pci_dev_save_and_disable(dev);
-> @@ -5290,7 +5290,7 @@ int pci_try_reset_function(struct pci_dev *dev)
->  {
->  	int rc;
->  
-> -	if (!dev->reset_fn)
-> +	if (!pci_reset_supported(dev))
->  		return -ENOTTY;
->  
->  	if (!pci_dev_trylock(dev))
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 8cf532681..90fd4f61f 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -2405,7 +2405,6 @@ static void pci_init_capabilities(struct pci_dev *dev)
->  
->  	pcie_report_downtraining(dev);
->  	pci_init_reset_methods(dev);
-> -	dev->reset_fn = pci_reset_supported(dev);
->  }
->  
->  /*
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index f977ba79a..e86cf4a3b 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -5589,7 +5589,7 @@ static void quirk_reset_lenovo_thinkpad_p50_nvgpu(struct pci_dev *pdev)
->  
->  	if (pdev->subsystem_vendor != PCI_VENDOR_ID_LENOVO ||
->  	    pdev->subsystem_device != 0x222e ||
-> -	    !pdev->reset_fn)
-> +	    !pci_reset_supported(pdev))
->  		return;
->  
->  	if (pci_enable_device_mem(pdev))
-> diff --git a/drivers/pci/remove.c b/drivers/pci/remove.c
-> index dd12c2fcc..4c54c7505 100644
-> --- a/drivers/pci/remove.c
-> +++ b/drivers/pci/remove.c
-> @@ -19,7 +19,6 @@ static void pci_stop_dev(struct pci_dev *dev)
->  	pci_pme_active(dev, false);
->  
->  	if (pci_dev_is_added(dev)) {
-> -		dev->reset_fn = 0;
->  
->  		device_release_driver(&dev->dev);
->  		pci_proc_detach_device(dev);
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 0955246f8..6e9bc4f9c 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -429,7 +429,6 @@ struct pci_dev {
->  	unsigned int	state_saved:1;
->  	unsigned int	is_physfn:1;
->  	unsigned int	is_virtfn:1;
-> -	unsigned int	reset_fn:1;
->  	unsigned int	is_hotplug_bridge:1;
->  	unsigned int	shpc_managed:1;		/* SHPC owned by shpchp */
->  	unsigned int	is_thunderbolt:1;	/* Thunderbolt controller */
+> First two patches are preparational changes and cleanups on the memcg side.
+> The third one is percpu accounting rework.
+> 
+> v2:
+>   - make all chunks memcg-aware instead of on-demand objcg allocation, by Dennis
+> 
+> v1:
+>   https://lkml.org/lkml/2021/5/11/1343
+> 
+> 
+> Roman Gushchin (3):
+>   mm, memcg: mark cgroup_memory_nosocket, nokmem and noswap as
+>     __ro_after_init
+>   mm, memcg: introduce mem_cgroup_kmem_disabled()
+>   percpu: rework memcg accounting
+> 
+>  include/linux/memcontrol.h |   5 ++
+>  mm/memcontrol.c            |  11 ++-
+>  mm/percpu-internal.h       |  52 +--------------
+>  mm/percpu-km.c             |   5 +-
+>  mm/percpu-stats.c          |  46 +++++--------
+>  mm/percpu-vm.c             |  11 ++-
+>  mm/percpu.c                | 133 +++++++++++++++----------------------
+>  7 files changed, 88 insertions(+), 175 deletions(-)
+> 
 > -- 
 > 2.31.1
 > 
+
+Thanks for this! It greatly simplifies the chunk maintenance.
+
+I've applied this to for-5.14.
+
+There is a trivial merge conflict though due to my for-5.14 being based
+on torvalds#v5.12-rc7, but that's fine.
+
+Thanks,
+Dennis
