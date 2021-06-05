@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D45BE39CBE2
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 02:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A6BD39CBDC
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 02:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbhFFAeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 20:34:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbhFFAeM (ORCPT
+        id S230111AbhFFAeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 20:34:11 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:32968 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230025AbhFFAeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 20:34:12 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B089C061767
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Jun 2021 17:32:23 -0700 (PDT)
-Message-Id: <20210606001322.910162032@linutronix.de>
+        Sat, 5 Jun 2021 20:34:11 -0400
+Message-Id: <20210606001323.067157324@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622939540;
+        s=2020; t=1622939541;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=HSiE2O6KFBOpT6Kb4cZTjcrtM1/7rzim6CIxeVHRjB0=;
-        b=zxhS+2c4EWQzEYYjUW7/5h9remTkuV8TkMvFlzhY1IdMZt7W2Vy9GNA50G++Wc1CpCj4vJ
-        doTVCterOgw63MPR5pFOceMwSU+wmiPEfmHgDIv6LD0V7Cv+BYjnjuZiDveamO/EUhWvbZ
-        MFulvStkCIjbMhDw5FgImJ7AUox5Ofc3KZs6RJd0UH4JcDTVSu3z/vypsFl4wDBgO/Ix7u
-        7xsW3mGC417nbUwZNEg2LlpOO2uj4PXIgb4AlPttzUo8cOUpqnIoW/jHVfqSIpB6KWd/8f
-        6rR19ktG7kPqa1mWUZYFe7vMIVKOQnlKpKfkyqu58Y0BMFvEpOaIjdYFEmtXqQ==
+        bh=WBUTfGNxNvSgHbeI2jsrGUtW90Hi09xpMn/ER3bz4aI=;
+        b=QjCMBXSplhThOU1uvhnkFuqIX//M1kbOsGmGhjQHRoT8NKFstACd5n/nm/POiNDt4tZTVV
+        jnhGJPVOI0e07Cb/sXa3kZiXLj7qgdui3Miynem0mKEjvYpmg9+tgo2U8X4kj4Cx9suGF0
+        SVzC8tnULI9zM51FpQZGWR74FuSA84a+sa3oxFqqZ4HX5YWH9LyQUCMq5zr0QlPVbGQImF
+        IkyE53NxcZ2z9rvLG5o5DNu26Qmm/Y7fHZKMH/SuVmRHNxtADANIWyd47OXf27H+jXUwqu
+        uE+SZ4W/N6R+3mZYlXazQTmYhPC7dImcXhAfQgEOMCjM7EbMcRgVNDJYCMigmQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622939540;
+        s=2020e; t=1622939541;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=HSiE2O6KFBOpT6Kb4cZTjcrtM1/7rzim6CIxeVHRjB0=;
-        b=U5y6ClonEH6T7Z4ui7PH0ueYOcUZst4Q73KYLQEvdkv5QQqeR4xLVE4xSZ4TSPpSv8BKzl
-        4UMSRf/E3ec+hyBg==
-Date:   Sun, 06 Jun 2021 01:47:43 +0200
+        bh=WBUTfGNxNvSgHbeI2jsrGUtW90Hi09xpMn/ER3bz4aI=;
+        b=A+FNEQPJumjdkbDH4Sp2SvWSmKCm28qOda6hpUo8zQiBL7nayVAIq4p4YHcEOkmXnMfh/4
+        fiK/mzSxiT3XQPCg==
+Date:   Sun, 06 Jun 2021 01:47:44 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
@@ -43,9 +40,10 @@ Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
         Fenghua Yu <fenghua.yu@intel.com>,
         Tony Luck <tony.luck@intel.com>,
         Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [patch V2 01/14] selftests/x86: Test signal frame XSTATE header
- corruption handling
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        syzbot+2067e764dbcd10721e2e@syzkaller.appspotmail.com,
+        stable@vger.kernel.org
+Subject: [patch V2 02/14] x86/fpu: Prevent state corruption in __fpu__restore_sig()
 References: <20210605234742.712464974@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -54,150 +52,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Lutomirski <luto@kernel.org>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-This is very heavily based on some code from Thomas Gleixner.  On a system
-without XSAVES, it triggers the WARN_ON():
+The non-compacted slowpath uses __copy_from_user() and copies the entire
+user buffer into the kernel buffer, verbatim.  This means that the kernel
+buffer may now contain entirely invalid state on which XRSTOR will #GP.
+validate_user_xstate_header() can detect some of that corruption, but that
+leaves the onus on callers to clear the buffer.
 
-    Bad FPU state detected at copy_kernel_to_fpregs+0x2f/0x40, reinitializing FPU registers.
+Prior to XSAVES support it was possible just to reinitialize the buffer,
+completely, but with supervisor states that is not longer possible as the
+buffer clearing code split got it backwards. Fixing that is possible, but
+not corrupting the state in the first place is more robust.
 
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
+Avoid corruption of the kernel XSAVE buffer by using copy_user_to_xstate()
+which validates the XSAVE header contents before copying the actual states
+to the kernel. copy_user_to_xstate() was previously only called for
+compacted-format kernel buffers, but it works for both compacted and
+non-compacted forms.
+
+Using it for the non-compacted form is slower because of multiple
+__copy_from_user() operations, but that cost is less important than robust
+code in an already slow path.
+
+[ Changelog polished by Dave Hansen ]
+
+Fixes: b860eb8dce59 ("x86/fpu/xstate: Define new functions for clearing fpregs and xstates")
+Reported-by: syzbot+2067e764dbcd10721e2e@syzkaller.appspotmail.com
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
 ---
-V2: main() -> main(void) - Borislav
+V2: Removed the make validate_user_xstate_header() static hunks (Borislav)
 ---
- tools/testing/selftests/x86/Makefile                |    3 
- tools/testing/selftests/x86/corrupt_xstate_header.c |  114 ++++++++++++++++++++
- 2 files changed, 116 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/x86/corrupt_xstate_header.c
+ arch/x86/kernel/fpu/signal.c |    9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
---- a/tools/testing/selftests/x86/Makefile
-+++ b/tools/testing/selftests/x86/Makefile
-@@ -17,7 +17,8 @@ TARGETS_C_BOTHBITS := single_step_syscal
- TARGETS_C_32BIT_ONLY := entry_from_vm86 test_syscall_vdso unwind_vdso \
- 			test_FCMOV test_FCOMI test_FISTTP \
- 			vdso_restorer
--TARGETS_C_64BIT_ONLY := fsgsbase sysret_rip syscall_numbering
-+TARGETS_C_64BIT_ONLY := fsgsbase sysret_rip syscall_numbering \
-+			corrupt_xstate_header
- # Some selftests require 32bit support enabled also on 64bit systems
- TARGETS_C_32BIT_NEEDED := ldt_gdt ptrace_syscall
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@ -405,14 +405,7 @@ static int __fpu__restore_sig(void __use
+ 	if (use_xsave() && !fx_only) {
+ 		u64 init_bv = xfeatures_mask_user() & ~user_xfeatures;
  
---- /dev/null
-+++ b/tools/testing/selftests/x86/corrupt_xstate_header.c
-@@ -0,0 +1,114 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Corrupt the XSTATE header in a signal frame
-+ *
-+ * Based on analysis and a test case from Thomas Gleixner.
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <sched.h>
-+#include <signal.h>
-+#include <err.h>
-+#include <unistd.h>
-+#include <stdint.h>
-+#include <sys/wait.h>
-+
-+static inline void __cpuid(unsigned int *eax, unsigned int *ebx,
-+			   unsigned int *ecx, unsigned int *edx)
-+{
-+	asm volatile(
-+		"cpuid;"
-+		: "=a" (*eax),
-+		  "=b" (*ebx),
-+		  "=c" (*ecx),
-+		  "=d" (*edx)
-+		: "0" (*eax), "2" (*ecx));
-+}
-+
-+static inline int xsave_enabled(void)
-+{
-+	unsigned int eax, ebx, ecx, edx;
-+
-+	eax = 0x1;
-+	ecx = 0x0;
-+	__cpuid(&eax, &ebx, &ecx, &edx);
-+
-+	/* Is CR4.OSXSAVE enabled ? */
-+	return ecx & (1U << 27);
-+}
-+
-+static void sethandler(int sig, void (*handler)(int, siginfo_t *, void *),
-+		       int flags)
-+{
-+	struct sigaction sa;
-+
-+	memset(&sa, 0, sizeof(sa));
-+	sa.sa_sigaction = handler;
-+	sa.sa_flags = SA_SIGINFO | flags;
-+	sigemptyset(&sa.sa_mask);
-+	if (sigaction(sig, &sa, 0))
-+		err(1, "sigaction");
-+}
-+
-+static void sigusr1(int sig, siginfo_t *info, void *uc_void)
-+{
-+	ucontext_t *uc = uc_void;
-+	uint8_t *fpstate = (uint8_t *)uc->uc_mcontext.fpregs;
-+	uint64_t *xfeatures = (uint64_t *)(fpstate + 512);
-+
-+	printf("\tWreckage XSTATE header\n");
-+	/* Wreckage the first reserved byte in the header */
-+	*(xfeatures + 2) = 0xfffffff;
-+}
-+
-+static void sigsegv(int sig, siginfo_t *info, void *uc_void)
-+{
-+	printf("\tGot SIGSEGV\n");
-+}
-+
-+int main(void)
-+{
-+	cpu_set_t set;
-+
-+	sethandler(SIGUSR1, sigusr1, 0);
-+	sethandler(SIGSEGV, sigsegv, 0);
-+
-+	if (!xsave_enabled()) {
-+		printf("[SKIP] CR4.OSXSAVE disabled.\n");
-+		return 0;
-+	}
-+
-+	CPU_ZERO(&set);
-+	CPU_SET(0, &set);
-+
-+	/*
-+	 * Enforce that the child runs on the same CPU
-+	 * which in turn forces a schedule.
-+	 */
-+	sched_setaffinity(getpid(), sizeof(set), &set);
-+
-+	printf("[RUN]\tSend ourselves a signal\n");
-+	raise(SIGUSR1);
-+
-+	printf("[OK]\tBack from the signal.  Now schedule.\n");
-+	pid_t child = fork();
-+	if (child < 0)
-+		err(1, "fork");
-+	if (child == 0)
-+		return 0;
-+	if (child)
-+		waitpid(child, NULL, 0);
-+	printf("[OK]\tBack in the main thread.\n");
-+
-+	/*
-+	 * We could try to confirm that extended state is still preserved
-+	 * when we schedule.  For now, the only indication of failure is
-+	 * a warning in the kernel logs.
-+	 */
-+
-+	return 0;
-+}
+-		if (using_compacted_format()) {
+-			ret = copy_user_to_xstate(&fpu->state.xsave, buf_fx);
+-		} else {
+-			ret = __copy_from_user(&fpu->state.xsave, buf_fx, state_size);
+-
+-			if (!ret && state_size > offsetof(struct xregs_state, header))
+-				ret = validate_user_xstate_header(&fpu->state.xsave.header);
+-		}
++		ret = copy_user_to_xstate(&fpu->state.xsave, buf_fx);
+ 		if (ret)
+ 			goto err_out;
+ 
 
