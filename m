@@ -2,101 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88F3F39CB6D
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 00:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4140F39CB70
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 00:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbhFEWSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 18:18:12 -0400
-Received: from mail-lj1-f172.google.com ([209.85.208.172]:43782 "EHLO
-        mail-lj1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhFEWSL (ORCPT
+        id S230091AbhFEWWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 18:22:35 -0400
+Received: from mail-wm1-f45.google.com ([209.85.128.45]:53026 "EHLO
+        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230010AbhFEWWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 18:18:11 -0400
-Received: by mail-lj1-f172.google.com with SMTP id w15so16481015ljo.10
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 15:16:22 -0700 (PDT)
+        Sat, 5 Jun 2021 18:22:34 -0400
+Received: by mail-wm1-f45.google.com with SMTP id f17so7503422wmf.2
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 15:20:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DSNtbl7+m8u1jF6spZR7rMM0J4kDmSlqDiqsN9hvk0I=;
-        b=HTYJzRm5lzImi1pUOx0Eml6+cHg9Dy2+ZaWqoBxBSxzgvFwPHQnQdOshvF7f3cdjzW
-         A+JREf3m58pe/oeXY2/ugj6mpNDaYnp2NOzbmSlZknI4mv8kjud3tWxuANo358Qfeq/6
-         E2cZB94Xdg+8koTCgq/zMf09RW9t4m6d9R/FIzGQ1eS5NkOq2wt+dMlr9Rwkxm3z06SW
-         rV/mYIf6LYPsy7TPYKCmEx8TlgsssOeaxO69aRL2b7nuzsr+yN4ZdJbxWI1QycdUQUcG
-         Wix7nZ4gfCwpyyGw9pmPdeQrvdbTPp4fHxDFJ2B+y/7UQbmfcuyWZpkQtrIlNlPGd/+h
-         wkmg==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=ZV6QHmLW2IhVe7aDucJtaOWmiQLmQd2BmiqxceC5f78=;
+        b=VyI/WF1SWGYXXj559OCdqmaiASZwVXGaTW7u3es2oQqtrKIRyxbRQXShiISwNO9zlY
+         YOxZT6J/S5vuF+6Ex1S3Xs4DtdqB2RQvVTHCw4paxbO8FYO6rcbbZcP8XjKcLs7bi4Bc
+         D7VaN9+aOLGFEbTAcarG7p3ajFzwwAFEgQFExMwZbclhwshc8Uk9VPMhywJMV9q4KrSx
+         ydh7gnkuHxSDgNy1510NSu7Y+mlCMjRkeswYX3acFaly85pew0NJOag3AWKSQsEbZdg+
+         18v3McNgA3n2RperEh80vM51cgkNC13u+oNu6XFYMNU6NqZWBZ9/sZ+6PydBin/XPAi7
+         +I6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DSNtbl7+m8u1jF6spZR7rMM0J4kDmSlqDiqsN9hvk0I=;
-        b=FthFqyG9hl3V3e3l3OOosv+XfuepyOl2hyKF14RXAq8HFbu3BgW6gNZbJGhHBPCmCy
-         TV55wsPF9UJ+mBAqYxhe0zrFRp0yv/XW1W9nB7GZHs9NV/BrITlcOnDbjx+QOwkhcJEK
-         iGnlyR4YznOo37u2NDqqvbg3b7OyhBBMnxABnTNSWQdDxMgb+7LhXGBAxnrHRo2Ob6EY
-         zXu5td6J+85tOab8wPN8m/l4ZziFm8pIAP7z6VW1YCAF/RLf4ZgRZsI19oCOM9kSXzg8
-         9z4nu7EETvbUY2hLnDiatosxKv4/UzYpWvDD8FVGWvr3CtepuGU6CwozCaZ1B0AylYrm
-         Qfdw==
-X-Gm-Message-State: AOAM533aecV06yV9lBEx8VcAe6Fzzn2e0uDBEfLVqA3CyzNm/WCV++Sb
-        NaYcVA9ipqLMMmR6Ff6LfTmIfO0P/tB8Sw==
-X-Google-Smtp-Source: ABdhPJzQ6upeQvGZ6QWD+jxYyfCteIEOQZkOSLTdSDIEMrGKac4CJznw/4GT4ZGK26tDHFWqAIcNGw==
-X-Received: by 2002:a2e:889a:: with SMTP id k26mr8734454lji.438.1622931321802;
-        Sat, 05 Jun 2021 15:15:21 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
-        by smtp.gmail.com with ESMTPSA id a20sm1183920ljk.29.2021.06.05.15.15.20
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=ZV6QHmLW2IhVe7aDucJtaOWmiQLmQd2BmiqxceC5f78=;
+        b=k/oLTx32HMeuefpKCDfIrv5/B0sv/U+R5TVsuz2tTBsRHOkaoWyK1fd5CHYpEPm+rn
+         fJTFP+FLcGXfbjIVRQDQhPHXP+LI85xvbqWVLNTd+wmKlGCZzJRVw3/pDPSiA1HMfGnL
+         VBP0z2TX23GNHiQte3445mODtnUJJk6bbyL/+x7YC3E9mNaII4VgkpxwPYX3Qa0Ou+0f
+         W8/jgNeiUyQ/xYD3vmkMXSn4hUn3jmPsE5zeAnpdEKM69Q0e5COmHDxs1aEniKQVz8BW
+         diPq3IbgdfJ6DE34RVysNvr0Ju8g9NWdm6XIyr2u/mOGnddTj+xAHd0UKGIY0oFhpifE
+         +Y/w==
+X-Gm-Message-State: AOAM532lDEX+hvqvJ3c6Juw6EDCfBHU7udfqY+4pjDOUlXQvwdmFBs62
+        3vtmZwh4ky9KY/HkRIg+rIbrpZDFng==
+X-Google-Smtp-Source: ABdhPJxXWGIx0aH27GJP/VxRnQpylLE2w2GWeENrz0lBN+zO3FeVp+SR3gOkdZ2pmZ/uSjvQCcpT+g==
+X-Received: by 2002:a1c:1f51:: with SMTP id f78mr9832629wmf.7.1622931570644;
+        Sat, 05 Jun 2021 15:19:30 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.252.132])
+        by smtp.gmail.com with ESMTPSA id t4sm10889365wru.53.2021.06.05.15.19.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Jun 2021 15:15:21 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] perf/hisi: Constify static attribute_group structs
-Date:   Sun,  6 Jun 2021 00:15:14 +0200
-Message-Id: <20210605221514.73449-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Sat, 05 Jun 2021 15:19:30 -0700 (PDT)
+Date:   Sun, 6 Jun 2021 01:19:28 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] lib: memscan() fixlet
+Message-ID: <YLv4cCf0t5UPdyK+@localhost.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These are only put in an array of pointers to const attribute_group
-structs. Make them const like the other static attribute_group structs
-to allow the compiler to put them in read-only memory.
+Generic version doesn't trucate second argument to char.
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Older brother memchr() does as do s390, sparc and i386 assembly
+versions.
+
+Fortunately, no code passes c >= 256.
+
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
 ---
- drivers/perf/hisilicon/hisi_uncore_pa_pmu.c   | 2 +-
- drivers/perf/hisilicon/hisi_uncore_sllc_pmu.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/perf/hisilicon/hisi_uncore_pa_pmu.c b/drivers/perf/hisilicon/hisi_uncore_pa_pmu.c
-index e1f71eab5640..83264ec0a957 100644
---- a/drivers/perf/hisilicon/hisi_uncore_pa_pmu.c
-+++ b/drivers/perf/hisilicon/hisi_uncore_pa_pmu.c
-@@ -333,7 +333,7 @@ static struct attribute *hisi_pa_pmu_identifier_attrs[] = {
- 	NULL
- };
- 
--static struct attribute_group hisi_pa_pmu_identifier_group = {
-+static const struct attribute_group hisi_pa_pmu_identifier_group = {
- 	.attrs = hisi_pa_pmu_identifier_attrs,
- };
- 
-diff --git a/drivers/perf/hisilicon/hisi_uncore_sllc_pmu.c b/drivers/perf/hisilicon/hisi_uncore_sllc_pmu.c
-index 08e028d9a406..6aedc303ff56 100644
---- a/drivers/perf/hisilicon/hisi_uncore_sllc_pmu.c
-+++ b/drivers/perf/hisilicon/hisi_uncore_sllc_pmu.c
-@@ -366,7 +366,7 @@ static struct attribute *hisi_sllc_pmu_identifier_attrs[] = {
- 	NULL
- };
- 
--static struct attribute_group hisi_sllc_pmu_identifier_group = {
-+static const struct attribute_group hisi_sllc_pmu_identifier_group = {
- 	.attrs = hisi_sllc_pmu_identifier_attrs,
- };
- 
--- 
-2.31.1
+ lib/string.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+--- a/lib/string.c
++++ b/lib/string.c
+@@ -977,7 +977,7 @@ void *memscan(void *addr, int c, size_t size)
+ 	unsigned char *p = addr;
+ 
+ 	while (size) {
+-		if (*p == c)
++		if (*p == (unsigned char)c)
+ 			return (void *)p;
+ 		p++;
+ 		size--;
