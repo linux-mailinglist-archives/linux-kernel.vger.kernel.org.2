@@ -2,63 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D030739C940
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 16:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FFA639C946
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 16:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhFEOyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 10:54:05 -0400
-Received: from mail-ua1-f53.google.com ([209.85.222.53]:38519 "EHLO
-        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230112AbhFEOyE (ORCPT
+        id S230034AbhFEO73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 10:59:29 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:38351 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S229998AbhFEO72 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 10:54:04 -0400
-Received: by mail-ua1-f53.google.com with SMTP id d13so6273047uav.5
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 07:52:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=EaYMRz5FnMODqFyqdlRK0aeJzGq0sU+8h7rdTmyh4FI=;
-        b=OnLDaNMeg+Jz5REkQr9/Veu+4UVm+yAQAcq935Z1UmoEeCG94DnXjE4xEFtyQvNPln
-         pcTDLgySGaaUode2vpolq8a58/KcOgXYZFeDQCy3KBRXPdRwUdxkkT8PI0pAFrggTJkR
-         jStRMBOW5G4vs75HpdwRW6qUskE9dAYC0i5BB6AHLlfSFM3kjp1EqEr9zp4LBtkZ8+7z
-         LgkxaK6SsB4eo1xG0JPzOZvFyZt/TL+LZXWvgJOhWbB42zFD2i0xOBvqyKfDLxvj1NaV
-         tSH7AVn2Kzpzr+CjDSJXSkfdtNX+b/i9xB+BhFhoBHfblvSCA5yDxF0Cl63yPaFBMosx
-         GdKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=EaYMRz5FnMODqFyqdlRK0aeJzGq0sU+8h7rdTmyh4FI=;
-        b=rFpdxBICT8fNSUj+OwznklWB5RSHML77K6JLWziWizdNCYuOXC4D2EjlwD4e/zEBZy
-         vGDTOkKM88Jj08aynIJcOWAgHVSfJzqHbE7czs3h/xS2cLI03IX+Mrzabc/zrBvJ4bRi
-         LHG2pQFsMRh9K5axfzlixWanLxHZLTHOQx1Q4hz2wGLtyzu8zS7sASmZpo6ZkLQiTozx
-         qBw7KMh7wYcPccfLjoM7lemOaH848PfCq16pHrB/DgZAIBGY+uM7tjqexWLDxIZVzwmf
-         zTEDGU9yfi9QjH1dNRQIhLyWFsCnWV6CQ4/+eUN06NW4zYlVTsjJ/KOL1kdWwGUpsxTf
-         xI7w==
-X-Gm-Message-State: AOAM5316URyDvwdTUK/Lzan3mVohsrGr6u4i0QWmdI1RB9z6NhkJ9wD3
-        8WS+OjHJwKKe7Vjn7j5PwW8lGSLNKOvVp0YpxsiCNY7B1LXjcw==
-X-Google-Smtp-Source: ABdhPJxR+RZZiKqyMSS5ZrW0TyrriuzYpeu3BcY0o581d89sWGIvLZmNDSxpDSdS33OiMDbdZQX1DD8KCCcjAT6Us+4=
-X-Received: by 2002:a1f:a681:: with SMTP id p123mr5234215vke.22.1622904665047;
- Sat, 05 Jun 2021 07:51:05 -0700 (PDT)
+        Sat, 5 Jun 2021 10:59:28 -0400
+Received: (qmail 1713364 invoked by uid 1000); 5 Jun 2021 10:57:39 -0400
+Date:   Sat, 5 Jun 2021 10:57:39 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <20210605145739.GB1712909@rowland.harvard.edu>
+References: <YLpJ5K6O52o1cAVT@hirez.programming.kicks-ass.net>
+ <20210604155154.GG1676809@rowland.harvard.edu>
+ <YLpSEM7sxSmsuc5t@hirez.programming.kicks-ass.net>
+ <20210604182708.GB1688170@rowland.harvard.edu>
+ <CAHk-=wiuLpmOGJyB385UyQioWMVKT6wN9UtyVXzt48AZittCKg@mail.gmail.com>
+ <CAHk-=wik7T+FoDAfqFPuMGVp6HxKYOf8UeKt3+EmovfivSgQ2Q@mail.gmail.com>
+ <20210604205600.GB4397@paulmck-ThinkPad-P17-Gen-1>
+ <CAHk-=wgmUbU6XPHz=4NFoLMxH7j_SR-ky4sKzOBrckmvk5AJow@mail.gmail.com>
+ <20210604214010.GD4397@paulmck-ThinkPad-P17-Gen-1>
+ <CAHk-=wg0w5L7-iJU_kvEh9stXZoh2srRF4jKToKmSKyHv-njvA@mail.gmail.com>
 MIME-Version: 1.0
-From:   jim.cromie@gmail.com
-Date:   Sat, 5 Jun 2021 08:50:39 -0600
-Message-ID: <CAJfuBxxo5hQLK36J1yL2MV3Zkfdnk=OmGh6Fms1adjB0GWULqA@mail.gmail.com>
-Subject: how to return a chunk of kernel .data to free mem ?
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Jason Baron <jbaron@akamai.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wg0w5L7-iJU_kvEh9stXZoh2srRF4jKToKmSKyHv-njvA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have convinced DYNAMIC_DEBUG code to not need
-about 15% of its __dyndbg section, about 30kb on my test kernel.
+On Fri, Jun 04, 2021 at 03:19:11PM -0700, Linus Torvalds wrote:
+> Now, part of this is that I do think that in *general* we should never
+> use this very suble load-cond-store pattern to begin with. We should
+> strive to use more smp_load_acquire() and smp_store_release() if we
+> care about ordering of accesses. They are typically cheap enough, and
+> if there's much of an ordering issue, they are the right things to do.
+> 
+> I think the whole "load-to-store ordering" subtle non-ordered case is
+> for very very special cases, when you literally don't have a general
+> memory ordering, you just have an ordering for *one* very particular
+> access. Like some of the very magical code in the rw-semaphore case,
+> or that smp_cond_load_acquire().
+> 
+> IOW, I would expect that we have a handful of uses of this thing. And
+> none of them have that "the conditional store is the same on both
+> sides" pattern, afaik.
+> 
+> And immediately when the conditional store is different, you end up
+> having a dependency on it that orders it.
+> 
+> But I guess I can accept the above made-up example as an "argument",
+> even though I feel it is entirely irrelevant to the actual issues and
+> uses we have.
 
-This memory is not kmalloc'd, so krealloc wont work.
-(I tried anyway, on a loaded module, it panicd)
+Indeed, the expansion of the currently proposed version of
 
-Is there a way to return a chunk of init .data memory to general use ?
+	volatile_if (A) {
+		B;
+	} else {
+		C;
+	}
 
-heres the patchset;
-https://lore.kernel.org/lkml/20210529200029.205306-1-jim.cromie@gmail.com/
+is basically the same as
+
+	if (A) {
+		barrier();
+		B;
+	} else {
+		barrier();
+		C;
+	}
+
+which is just about as easy to write by hand.  (For some reason my 
+fingers don't like typing "volatile_"; the letters tend to get 
+scrambled.)
+
+So given that:
+
+	1. Reliance on control dependencies is uncommon in the kernel,
+	   and
+
+	2. The loads in A could just be replaced with load_acquires
+	   at a low penalty (or store-releases could go into B and C),
+
+it seems that we may not need volatile_if at all!  The only real reason 
+for having it in the first place was to avoid the penalty of 
+load-acquire on architectures where it has a significant cost, when the 
+control dependency would provide the necessary ordering for free.  Such 
+architectures are getting less and less common.
+
+Alan
