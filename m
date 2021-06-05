@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 845A839C89E
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 15:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8800339C879
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 15:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbhFENUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 09:20:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35080 "EHLO mail.kernel.org"
+        id S230256AbhFENUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 09:20:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230035AbhFENU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 09:20:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 992C06141E;
+        id S229964AbhFENUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 09:20:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7868D61406;
         Sat,  5 Jun 2021 13:18:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1622899117;
-        bh=janX6lGWpNvG0PUkf3rzM6SEjOBtmIx/px5pdUZ6VA0=;
+        bh=pFz1r1h81+i/mGF2uSwI/JWJDbJHTjv4eb/e5YOT/x0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O58oyru+MIUDZzSrVWVjISx+l3QpbCr8+ul9AuEzs8f5ojYrYwI3Iu9LC8cos0/TE
-         UoGIBc7AQGmmNWV/JwYsRNI9UMUUBZAsi0VT7sqp8A8DEmn9Fu+qCe4TztxpxAnHNw
-         bWHymrNh8p2XBUQ9Z4Pit6Cbaer9D7V9IqYg548WZWFE30TKkSn9tHamlgp3f4uS37
-         BJDr8LsMnsGwRVZv5qngOy7NZ3PAkM15j8FX77Sqk8ELHP31Hv8SjmB++l2hKeWBV+
-         dtbzakbHG1A/8UIO9/is8zdmaY/cm1sjki0Eb08Bpbgbn+0OdOrJPJKNwjfXo6nFYz
-         9W+DDm3W+VPNg==
+        b=pQxK4XdEDHJQGeiboJ2g6mZ7vs+PsXACokEa4SvwWCPZjIFf3KXNCFGYdb+jks5tz
+         gPosWFuCYwipga33qKhV213sUEjR72eTxPCOiY7z6EptQ72f5kjSsONf7G7BaCW5j4
+         7zWKEMtsU3woFei5RmXtHvDB4CfBlQCQ1U0IQmASMkNSnYr7RUYEByenkBiTKVNdI0
+         qQbR3/PM8ZZQUjjsseP3UrLrw2X3SLxybnKEDVbfCPsroJlTO+asdujng/M8prZSPs
+         WNftfLV18nSeajxhQOV+muQ6+obPwW1fZnZl2lrfRSfzq0Z/BmybhhKZiIcdlVj0ao
+         1h9/Zo5DClsIg==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lpWCB-008GEr-Gf; Sat, 05 Jun 2021 15:18:35 +0200
+        id 1lpWCB-008GEv-IU; Sat, 05 Jun 2021 15:18:35 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     "Jonathan Corbet" <corbet@lwn.net>,
         Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH 06/34] media: admin-guide: avoid using ReST :doc:`foo` markup
-Date:   Sat,  5 Jun 2021 15:18:05 +0200
-Message-Id: <02010aebf09b64f32c33f8d8ad2d02a9f1ff59d1.1622898327.git.mchehab+huawei@kernel.org>
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: [PATCH 07/34] docs: admin-guide: pm: avoid using ReSt :doc:`foo` markup
+Date:   Sat,  5 Jun 2021 15:18:06 +0200
+Message-Id: <447890cd6772ec55e2100ff6f53fffef38674d6b.1622898327.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1622898327.git.mchehab+huawei@kernel.org>
 References: <cover.1622898327.git.mchehab+huawei@kernel.org>
@@ -50,135 +51,92 @@ So, use the filename at the sources, instead of :doc:`foo`.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/admin-guide/media/bt8xx.rst   | 15 ++++++++-------
- Documentation/admin-guide/media/bttv.rst    | 21 +++++++++++----------
- Documentation/admin-guide/media/saa7134.rst |  3 ++-
- 3 files changed, 21 insertions(+), 18 deletions(-)
+ Documentation/admin-guide/pm/intel_idle.rst   | 16 ++++++++++------
+ Documentation/admin-guide/pm/intel_pstate.rst |  9 +++++----
+ 2 files changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/admin-guide/media/bt8xx.rst b/Documentation/admin-guide/media/bt8xx.rst
-index 1382ada1e38e..3589f6ab7e46 100644
---- a/Documentation/admin-guide/media/bt8xx.rst
-+++ b/Documentation/admin-guide/media/bt8xx.rst
-@@ -15,11 +15,12 @@ Authors:
- General information
- -------------------
+diff --git a/Documentation/admin-guide/pm/intel_idle.rst b/Documentation/admin-guide/pm/intel_idle.rst
+index 89309e1b0e48..b799a43da62e 100644
+--- a/Documentation/admin-guide/pm/intel_idle.rst
++++ b/Documentation/admin-guide/pm/intel_idle.rst
+@@ -20,8 +20,8 @@ Nehalem and later generations of Intel processors, but the level of support for
+ a particular processor model in it depends on whether or not it recognizes that
+ processor model and may also depend on information coming from the platform
+ firmware.  [To understand ``intel_idle`` it is necessary to know how ``CPUIdle``
+-works in general, so this is the time to get familiar with :doc:`cpuidle` if you
+-have not done that yet.]
++works in general, so this is the time to get familiar with
++Documentation/admin-guide/pm/cpuidle.rst if you have not done that yet.]
  
--This class of cards has a bt878a as the PCI interface, and require the bttv driver
--for accessing the i2c bus and the gpio pins of the bt8xx chipset.
-+This class of cards has a bt878a as the PCI interface, and require the bttv
-+driver for accessing the i2c bus and the gpio pins of the bt8xx chipset.
+ ``intel_idle`` uses the ``MWAIT`` instruction to inform the processor that the
+ logical CPU executing it is idle and so it may be possible to put some of the
+@@ -53,7 +53,8 @@ processor) corresponding to them depends on the processor model and it may also
+ depend on the configuration of the platform.
  
--Please see :doc:`bttv-cardlist` for a complete list of Cards based on the
--Conexant Bt8xx PCI bridge supported by the Linux Kernel.
-+Please see Documentation/admin-guide/media/bttv-cardlist.rst for a complete
-+list of Cards based on the Conexant Bt8xx PCI bridge supported by the
-+Linux Kernel.
+ In order to create a list of available idle states required by the ``CPUIdle``
+-subsystem (see :ref:`idle-states-representation` in :doc:`cpuidle`),
++subsystem (see :ref:`idle-states-representation` in
++Documentation/admin-guide/pm/cpuidle.rst),
+ ``intel_idle`` can use two sources of information: static tables of idle states
+ for different processor models included in the driver itself and the ACPI tables
+ of the system.  The former are always used if the processor model at hand is
+@@ -98,7 +99,8 @@ states may not be enabled by default if there are no matching entries in the
+ preliminary list of idle states coming from the ACPI tables.  In that case user
+ space still can enable them later (on a per-CPU basis) with the help of
+ the ``disable`` idle state attribute in ``sysfs`` (see
+-:ref:`idle-states-representation` in :doc:`cpuidle`).  This basically means that
++:ref:`idle-states-representation` in
++Documentation/admin-guide/pm/cpuidle.rst).  This basically means that
+ the idle states "known" to the driver may not be enabled by default if they have
+ not been exposed by the platform firmware (through the ACPI tables).
  
- In order to be able to compile the kernel, some config options should be
- enabled::
-@@ -80,7 +81,7 @@ for dvb-bt8xx drivers by passing modprobe parameters may be necessary.
- Running TwinHan and Clones
- ~~~~~~~~~~~~~~~~~~~~~~~~~~
+@@ -186,7 +188,8 @@ be desirable.  In practice, it is only really necessary to do that if the idle
+ states in question cannot be enabled during system startup, because in the
+ working state of the system the CPU power management quality of service (PM
+ QoS) feature can be used to prevent ``CPUIdle`` from touching those idle states
+-even if they have been enumerated (see :ref:`cpu-pm-qos` in :doc:`cpuidle`).
++even if they have been enumerated (see :ref:`cpu-pm-qos` in
++Documentation/admin-guide/pm/cpuidle.rst).
+ Setting ``max_cstate`` to 0 causes the ``intel_idle`` initialization to fail.
  
--As shown at :doc:`bttv-cardlist`, TwinHan and
-+As shown at Documentation/admin-guide/media/bttv-cardlist.rst, TwinHan and
- clones use ``card=113`` modprobe parameter. So, in order to properly
- detect it for devices without EEPROM, you should use::
+ The ``no_acpi`` and ``use_acpi`` module parameters (recognized by ``intel_idle``
+@@ -202,7 +205,8 @@ Namely, the positions of the bits that are set in the ``states_off`` value are
+ the indices of idle states to be disabled by default (as reflected by the names
+ of the corresponding idle state directories in ``sysfs``, :file:`state0`,
+ :file:`state1` ... :file:`state<i>` ..., where ``<i>`` is the index of the given
+-idle state; see :ref:`idle-states-representation` in :doc:`cpuidle`).
++idle state; see :ref:`idle-states-representation` in
++Documentation/admin-guide/pm/cpuidle.rst).
  
-@@ -105,12 +106,12 @@ The autodetected values are determined by the cards' "response string".
- In your logs see f. ex.: dst_get_device_id: Recognize [DSTMCI].
+ For example, if ``states_off`` is equal to 3, the driver will disable idle
+ states 0 and 1 by default, and if it is equal to 8, idle state 3 will be
+diff --git a/Documentation/admin-guide/pm/intel_pstate.rst b/Documentation/admin-guide/pm/intel_pstate.rst
+index df29b4f1f219..7a7d4b041eac 100644
+--- a/Documentation/admin-guide/pm/intel_pstate.rst
++++ b/Documentation/admin-guide/pm/intel_pstate.rst
+@@ -18,8 +18,8 @@ General Information
+ (``CPUFreq``).  It is a scaling driver for the Sandy Bridge and later
+ generations of Intel processors.  Note, however, that some of those processors
+ may not be supported.  [To understand ``intel_pstate`` it is necessary to know
+-how ``CPUFreq`` works in general, so this is the time to read :doc:`cpufreq` if
+-you have not done that yet.]
++how ``CPUFreq`` works in general, so this is the time to read
++Documentation/admin-guide/pm/cpufreq.rst if you have not done that yet.]
  
- For bug reports please send in a complete log with verbose=4 activated.
--Please also see :doc:`ci`.
-+Please also see Documentation/admin-guide/media/ci.rst.
+ For the processors supported by ``intel_pstate``, the P-state concept is broader
+ than just an operating frequency or an operating performance point (see the
+@@ -445,8 +445,9 @@ Interpretation of Policy Attributes
+ -----------------------------------
  
- Running multiple cards
- ~~~~~~~~~~~~~~~~~~~~~~
+ The interpretation of some ``CPUFreq`` policy attributes described in
+-:doc:`cpufreq` is special with ``intel_pstate`` as the current scaling driver
+-and it generally depends on the driver's `operation mode <Operation Modes_>`_.
++Documentation/admin-guide/pm/cpufreq.rst is special with ``intel_pstate``
++as the current scaling driver and it generally depends on the driver's
++`operation mode <Operation Modes_>`_.
  
--See :doc:`bttv-cardlist` for a complete list of
-+See Documentation/admin-guide/media/bttv-cardlist.rst for a complete list of
- Card ID. Some examples:
- 
- 	===========================	===
-diff --git a/Documentation/admin-guide/media/bttv.rst b/Documentation/admin-guide/media/bttv.rst
-index 0ef1f203104d..125f6f47123d 100644
---- a/Documentation/admin-guide/media/bttv.rst
-+++ b/Documentation/admin-guide/media/bttv.rst
-@@ -24,7 +24,8 @@ If your board has digital TV, you'll also need::
- 
-     ./scripts/config -m DVB_BT8XX
- 
--In this case, please see :doc:`bt8xx` for additional notes.
-+In this case, please see Documentation/admin-guide/media/bt8xx.rst
-+for additional notes.
- 
- Make bttv work with your card
- -----------------------------
-@@ -39,7 +40,7 @@ If it doesn't bttv likely could not autodetect your card and needs some
- insmod options.  The most important insmod option for bttv is "card=n"
- to select the correct card type.  If you get video but no sound you've
- very likely specified the wrong (or no) card type.  A list of supported
--cards is in :doc:`bttv-cardlist`.
-+cards is in Documentation/admin-guide/media/bttv-cardlist.rst.
- 
- If bttv takes very long to load (happens sometimes with the cheap
- cards which have no tuner), try adding this to your modules configuration
-@@ -57,8 +58,8 @@ directory should be enough for it to be autoload during the driver's
- probing mode (e. g. when the Kernel boots or when the driver is
- manually loaded via ``modprobe`` command).
- 
--If your card isn't listed in :doc:`bttv-cardlist` or if you have
--trouble making audio work, please read :ref:`still_doesnt_work`.
-+If your card isn't listed in Documentation/admin-guide/media/bttv-cardlist.rst
-+or if you have trouble making audio work, please read :ref:`still_doesnt_work`.
- 
- 
- Autodetecting cards
-@@ -77,8 +78,8 @@ the Subsystem ID in the second line, looks like this:
- only bt878-based cards can have a subsystem ID (which does not mean
- that every card really has one).  bt848 cards can't have a Subsystem
- ID and therefore can't be autodetected.  There is a list with the ID's
--at :doc:`bttv-cardlist` (in case you are interested or want to mail
--patches with updates).
-+at Documentation/admin-guide/media/bttv-cardlist.rst
-+(in case you are interested or want to mail patches with updates).
- 
- 
- .. _still_doesnt_work:
-@@ -259,15 +260,15 @@ bug.  It is very helpful if you can tell where exactly it broke
- With a hard freeze you probably doesn't find anything in the logfiles.
- The only way to capture any kernel messages is to hook up a serial
- console and let some terminal application log the messages.  /me uses
--screen.  See :doc:`/admin-guide/serial-console` for details on setting
--up a serial console.
-+screen.  See Documentation/admin-guide/serial-console.rst for details on
-+setting up a serial console.
- 
--Read :doc:`/admin-guide/bug-hunting` to learn how to get any useful
-+Read Documentation/admin-guide/bug-hunting.rst to learn how to get any useful
- information out of a register+stack dump printed by the kernel on
- protection faults (so-called "kernel oops").
- 
- If you run into some kind of deadlock, you can try to dump a call trace
--for each process using sysrq-t (see :doc:`/admin-guide/sysrq`).
-+for each process using sysrq-t (see Documentation/admin-guide/sysrq.rst).
- This way it is possible to figure where *exactly* some process in "D"
- state is stuck.
- 
-diff --git a/Documentation/admin-guide/media/saa7134.rst b/Documentation/admin-guide/media/saa7134.rst
-index 7ab9c70b9abe..51eae7eb5ab7 100644
---- a/Documentation/admin-guide/media/saa7134.rst
-+++ b/Documentation/admin-guide/media/saa7134.rst
-@@ -50,7 +50,8 @@ To build and install, you should run::
- Once the new Kernel is booted, saa7134 driver should be loaded automatically.
- 
- Depending on the card you might have to pass ``card=<nr>`` as insmod option.
--If so, please check :doc:`saa7134-cardlist` for valid choices.
-+If so, please check Documentation/admin-guide/media/saa7134-cardlist.rst
-+for valid choices.
- 
- Once you have your card type number, you can pass a modules configuration
- via a file (usually, it is either ``/etc/modules.conf`` or some file at
+ First of all, the values of the ``cpuinfo_max_freq``, ``cpuinfo_min_freq`` and
+ ``scaling_cur_freq`` attributes are produced by applying a processor-specific
 -- 
 2.31.1
 
