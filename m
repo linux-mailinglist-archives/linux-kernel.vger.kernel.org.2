@@ -2,41 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7825439C63A
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 08:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A4F39C649
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 08:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbhFEG0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 02:26:49 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3065 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhFEG0s (ORCPT
+        id S229981AbhFEGaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 02:30:19 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3435 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhFEGaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 02:26:48 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FxqHc4zwFzWnvT
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Jun 2021 14:20:12 +0800 (CST)
+        Sat, 5 Jun 2021 02:30:19 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FxqPj2Gffz6tmM;
+        Sat,  5 Jun 2021 14:25:29 +0800 (CST)
 Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 5 Jun 2021 14:24:59 +0800
+ 15.1.2176.2; Sat, 5 Jun 2021 14:28:29 +0800
 Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
  (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 5 Jun 2021
- 14:24:58 +0800
+ 14:28:28 +0800
 From:   Baokun Li <libaokun1@huawei.com>
-To:     <tglx@linutronix.de>, <linux-kernel@vger.kernel.org>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>, <tglx@linutronix.de>,
+        <bp@alien8.de>, <x86@kernel.org>, <hpa@zytor.com>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
         <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
         <libaokun1@huawei.com>
-Subject: [PATCH -next] genirq/matrix: fix doc warnings in matrix.c
-Date:   Sat, 5 Jun 2021 14:34:13 +0800
-Message-ID: <20210605063413.684085-1-libaokun1@huawei.com>
+Subject: [PATCH -next] perf/x86/intel/pt: fix doc warnings in pt.c
+Date:   Sat, 5 Jun 2021 14:37:41 +0800
+Message-ID: <20210605063741.687206-1-libaokun1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  dggpeml500020.china.huawei.com (7.185.36.88)
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -45,32 +49,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
-kernel/irq/matrix.c:287: warning: Function parameter or
- member 'msk' not described in 'irq_matrix_alloc_managed'
-kernel/irq/matrix.c:287: warning: Function parameter or
- member 'mapped_cpu' not described in 'irq_matrix_alloc_managed'
-kernel/irq/matrix.c:287: warning: Excess function
- parameter 'cpu' description in 'irq_matrix_alloc_managed'
+ arch/x86/events/intel/pt.c:729: warning: Function parameter or 
+  member 'cpu' not described in 'topa_insert_pages'
+ arch/x86/events/intel/pt.c:1196: warning: Function parameter or 
+  member 'cpu' not described in 'pt_buffer_init_topa'
+ arch/x86/events/intel/pt.c:1196: warning: Function parameter or 
+  member 'nr_pages' not described in 'pt_buffer_init_topa'
+ arch/x86/events/intel/pt.c:1196: warning: Excess 
+  function parameter 'size' description in 'pt_buffer_init_topa'
+ arch/x86/events/intel/pt.c:1269: warning: Function parameter or 
+  member 'event' not described in 'pt_buffer_setup_aux'
+ arch/x86/events/intel/pt.c:1269: warning: Excess 
+  function parameter 'cpu' description in 'pt_buffer_setup_aux'
 
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
 ---
- kernel/irq/matrix.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/x86/events/intel/pt.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/irq/matrix.c b/kernel/irq/matrix.c
-index 578596e41cb6..bbfb26489aa1 100644
---- a/kernel/irq/matrix.c
-+++ b/kernel/irq/matrix.c
-@@ -280,7 +280,8 @@ void irq_matrix_remove_managed(struct irq_matrix *m, const struct cpumask *msk)
+diff --git a/arch/x86/events/intel/pt.c b/arch/x86/events/intel/pt.c
+index 915847655c06..035752429cea 100644
+--- a/arch/x86/events/intel/pt.c
++++ b/arch/x86/events/intel/pt.c
+@@ -718,6 +718,7 @@ static bool topa_table_full(struct topa *topa)
  /**
-  * irq_matrix_alloc_managed - Allocate a managed interrupt in a CPU map
-  * @m:		Matrix pointer
-- * @cpu:	On which CPU the interrupt should be allocated
-+ * @msk:	Which CPUs to search in
-+ * @mapped_cpu:	Pointer to store the CPU for which the irq was allocated
+  * topa_insert_pages() - create a list of ToPA tables
+  * @buf:	PT buffer being initialized.
++ * @cpu:	Cpu on which to allocate, -1 means current.
+  * @gfp:	Allocation flags.
+  *
+  * This initializes a list of ToPA tables with entries from
+@@ -1188,7 +1189,8 @@ static void pt_buffer_fini_topa(struct pt_buffer *buf)
+ /**
+  * pt_buffer_init_topa() - initialize ToPA table for pt buffer
+  * @buf:	PT buffer.
+- * @size:	Total size of all regions within this ToPA.
++ * @cpu:	Cpu on which to allocate, -1 means current.
++ * @nr_pages:	Number of pages in the buffer.
+  * @gfp:	Allocation flags.
   */
- int irq_matrix_alloc_managed(struct irq_matrix *m, const struct cpumask *msk,
- 			     unsigned int *mapped_cpu)
+ static int pt_buffer_init_topa(struct pt_buffer *buf, int cpu,
+@@ -1253,7 +1255,7 @@ static int pt_buffer_try_single(struct pt_buffer *buf, int nr_pages)
+ 
+ /**
+  * pt_buffer_setup_aux() - set up topa tables for a PT buffer
+- * @cpu:	Cpu on which to allocate, -1 means current.
++ * @event:	The perf event.
+  * @pages:	Array of pointers to buffer pages passed from perf core.
+  * @nr_pages:	Number of pages in the buffer.
+  * @snapshot:	If this is a snapshot/overwrite counter.
 -- 
 2.31.1
 
