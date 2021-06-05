@@ -2,78 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60C939C5F5
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 07:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CDAD39C609
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 07:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbhFEFLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 01:11:43 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:4311 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhFEFLl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 01:11:41 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Fxncx0rC4z1BH7R;
-        Sat,  5 Jun 2021 13:05:05 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 5 Jun 2021 13:09:51 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 5 Jun 2021
- 13:09:51 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>
-CC:     <pavel@ucw.cz>
-Subject: [PATCH -next] leds: leds-asic3: use devm_led_classdev_register()
-Date:   Sat, 5 Jun 2021 13:14:09 +0800
-Message-ID: <20210605051409.1851974-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S230034AbhFEFa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 01:30:28 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:47079 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229660AbhFEFa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 01:30:27 -0400
+Received: from localhost.localdomain (ip5f5aeece.dynamic.kabel-deutschland.de [95.90.238.206])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 7552461E64762;
+        Sat,  5 Jun 2021 07:28:37 +0200 (CEST)
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>
+Cc:     Madhava Reddy Siddareddygari <msiddare@cisco.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] hwmon: (pmbus_core) Check adapter PEC support
+Date:   Sat,  5 Jun 2021 07:27:02 +0200
+Message-Id: <20210605052700.541455-1-pmenzel@molgen.mpg.de>
+X-Mailer: git-send-email 2.32.0.rc2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use devm_led_classdev_register() for led device registration
-and remove led_classdev_unregister() in .remove(). This is done
-by managed device framework.
+From: Madhava Reddy Siddareddygari <msiddare@cisco.com>
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Currently, for Packet Error Checking (PEC) only the controller
+is checked for support. This causes problems on the cisco-8000
+platform where a SMBUS transaction errors are observed. This is
+because PEC has to be enabled only if both controller and
+adapter support it.
+
+Added code to check PEC capability for adapter and enable it
+only if both controller and adapter supports PEC.
+
+Signed-off-by: Madhava Reddy Siddareddygari <msiddare@cisco.com>
+[Upstream from SONiC https://github.com/Azure/sonic-linux-kernel/pull/215]
+Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
 ---
- drivers/leds/leds-asic3.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+v2: Do not revert check introduced by commit e5befc02 (hwmon: (pmbus)
+    Add a PMBUS_NO_CAPABILITY platform data flag).
 
-diff --git a/drivers/leds/leds-asic3.c b/drivers/leds/leds-asic3.c
-index 8cbc1b8bafa5..e01d33431633 100644
---- a/drivers/leds/leds-asic3.c
-+++ b/drivers/leds/leds-asic3.c
-@@ -110,7 +110,7 @@ static int asic3_led_probe(struct platform_device *pdev)
- 	led->cdev->blink_set = blink_set;
- 	led->cdev->default_trigger = led->default_trigger;
+ drivers/hwmon/pmbus/pmbus_core.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
+index bbd745178147..2fd0fec59d4f 100644
+--- a/drivers/hwmon/pmbus/pmbus_core.c
++++ b/drivers/hwmon/pmbus/pmbus_core.c
+@@ -2214,11 +2214,15 @@ static int pmbus_init_common(struct i2c_client *client, struct pmbus_data *data,
+ 		data->has_status_word = true;
+ 	}
  
--	ret = led_classdev_register(&pdev->dev, led->cdev);
-+	ret = devm_led_classdev_register(&pdev->dev, led->cdev);
- 	if (ret < 0)
- 		goto out;
+-	/* Enable PEC if the controller supports it */
++	/* Enable PEC if the controller and bus supports it */
+ 	if (!(data->flags & PMBUS_NO_CAPABILITY)) {
+ 		ret = i2c_smbus_read_byte_data(client, PMBUS_CAPABILITY);
+-		if (ret >= 0 && (ret & PB_CAPABILITY_ERROR_CHECK))
+-			client->flags |= I2C_CLIENT_PEC;
++		if (ret >= 0 && (ret & PB_CAPABILITY_ERROR_CHECK)) {
++			if (i2c_check_functionality(client->adapter,
++						I2C_FUNC_SMBUS_PEC)) {
++				client->flags |= I2C_CLIENT_PEC;
++			}
++		}
+ 	}
  
-@@ -123,10 +123,6 @@ static int asic3_led_probe(struct platform_device *pdev)
- 
- static int asic3_led_remove(struct platform_device *pdev)
- {
--	struct asic3_led *led = dev_get_platdata(&pdev->dev);
--
--	led_classdev_unregister(led->cdev);
--
- 	return mfd_cell_disable(pdev);
- }
- 
+ 	/*
 -- 
-2.25.1
+2.32.0.rc2
 
