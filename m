@@ -2,63 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 635D239CA1B
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 19:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBC4739CA1E
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 19:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbhFERIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 13:08:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33500 "EHLO mail.kernel.org"
+        id S230036AbhFERJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 13:09:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229980AbhFERH6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 13:07:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51E7A61418;
-        Sat,  5 Jun 2021 17:05:57 +0000 (UTC)
+        id S229930AbhFERJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 13:09:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE46361416;
+        Sat,  5 Jun 2021 17:07:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622912758;
-        bh=fmWyoypvW3fPUSv173csHffvcTtKlC7QUujd2CkF/MI=;
+        s=korg; t=1622912839;
+        bh=8K9ZUN1X6q7QYKaoMkC5sSzJVB3RkIZbgRR8IQ4iHzQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=He3r5GiDS9qSvf93LMekqeOM7+/g/LW3ais8ANjjjYOScPwLKzZsg/LWuvMJLb+f+
-         uFZOzZZtrnyKTmE4fm6HHKDKrH2ZZxU2HznNEj9hWmKUm8XtTHXL0ujachId3dH3IS
-         vbeZFBWVqrVzC/ubCYpMMe+AdbAOX7mrwGY3anzc=
-Date:   Sat, 5 Jun 2021 19:05:53 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 235/252] ALSA: usb-audio: scarlett2:
- snd_scarlett_gen2_controls_create() can be static
-Message-ID: <YLuu8eFJ7oXFHRIg@kroah.com>
-References: <20210531130657.971257589@linuxfoundation.org>
- <20210531130705.983881838@linuxfoundation.org>
- <20210605134222.GA28479@amd>
+        b=x4De8Ow1WFCPQahQj1Mh7hSTuUB1qDxOFpxa6yTPbIBjo526qD9iDpkpZCc18/p15
+         9TCgLoDTxbyQ5Goy7XmQZUK7TuuMFRx2kwWemNdhx13i0OD4Gzjnd9WVyG50J4098d
+         1Psbz8yOqqi+f2/r1tnfkXREw6ulgxLXGwx5/T6g=
+Date:   Sat, 5 Jun 2021 19:07:15 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     yongw.pur@gmail.com
+Cc:     minchan@kernel.org, ngupta@vflare.org, senozhatsky@chromium.org,
+        axboe@kernel.dk, akpm@linux-foundation.org,
+        songmuchun@bytedance.com, david@redhat.com,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-mm@kvack.org, willy@infradead.org, linux-api@vger.kernel.org
+Subject: Re: [RFC PATCH V2] zram:calculate available memory when zram is used
+Message-ID: <YLuvQwkZkl9UCoJw@kroah.com>
+References: <1622910240-4621-1-git-send-email-yongw.pur@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210605134222.GA28479@amd>
+In-Reply-To: <1622910240-4621-1-git-send-email-yongw.pur@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 05, 2021 at 03:42:22PM +0200, Pavel Machek wrote:
-> Hi!
+On Sat, Jun 05, 2021 at 09:24:00AM -0700, yongw.pur@gmail.com wrote:
+> From: wangyong <yongw.pur@gmail.com>
 > 
-> > From: kernel test robot <lkp@intel.com>
-> > 
-> > [ Upstream commit 2b899f31f1a6db2db4608bac2ac04fe2c4ad89eb ]
-> > 
-> > sound/usb/mixer_scarlett_gen2.c:2000:5: warning: symbol 'snd_scarlett_gen2_controls_create' was not declared. Should it be static?
-> > 
-> > Fixes: 265d1a90e4fb ("ALSA: usb-audio: scarlett2: Improve driver startup messages")
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: kernel test robot <lkp@intel.com>
-> > Link: https://lore.kernel.org/r/20210522180900.GA83915@f59a3af2f1d9
-> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> When zram is used, available+Swap free memory is obviously
+> bigger than we actually can use, because zram can compress
+> memory by compression algorithm and zram compressed data
+> will occupy memory too.
 > 
-> We normally require real, legal names for commit authors and
-> signoffs. I guess it is a bit late now, but... we don't take
-> pseudonyms so we should not take robots.
+> So, we can count the compression ratio of zram in the kernel.
+> The space will be saved by zram and other swap device are
+> calculated as follows:
+> zram[swapfree - swapfree * compress ratio] + swapdev[swapfree]
+> We can evaluate the available memory of the whole system as:
+> MemAvailable+zram[swapfree - swapfree * compress ratio]+swapdev[swapfree]
+> 
+> Add an entry to the /proc/meminfo file, returns swap will save space.
+> Which name is more appropriate is still under consideration.
+> There are several alternative names: SwapAvailable, SwapSaved,
+> SwapCompressible
+> 
+> Signed-off-by: wangyong <yongw.pur@gmail.com>
+> ---
+>  drivers/block/zram/zcomp.h    |  1 +
+>  drivers/block/zram/zram_drv.c | 19 +++++++++
+>  drivers/block/zram/zram_drv.h |  1 +
+>  fs/proc/meminfo.c             |  1 +
+>  include/linux/swap.h          | 10 +++++
+>  mm/swapfile.c                 | 95 +++++++++++++++++++++++++++++++++++++++++++
+>  mm/vmscan.c                   |  1 +
+>  7 files changed, 128 insertions(+)
 
-We have long-taken patches from the kernel test robot, this is not
-something new.
+You are adding a new sysfs file with no new Documentation/ABI entry.
+Also are you sure you are allowed to add a new proc file entry without
+breaking existing tools?
+
+thanks,
+
+greg k-h
