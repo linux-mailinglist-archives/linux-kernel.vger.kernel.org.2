@@ -2,69 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378D239C6B2
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 10:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27EEA39C6B3
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 10:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbhFEICL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 04:02:11 -0400
-Received: from mout.gmx.net ([212.227.17.21]:47563 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229881AbhFEICK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 04:02:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1622880021;
-        bh=jXkO+/WzWUdDgrD2llurrG6X4RBpdTGXMAUhcKfECc0=;
-        h=X-UI-Sender-Class:To:From:Subject:Date;
-        b=Tr2NutvaI3Xq5mmJhsFnzORSkQBsswVkng6JkOWMfWzFTFNqCOV29tgBYMDFOP4Q+
-         AY6T4zSsAZwigZNzF2t+Z2u5tQaBoRsCJzKCEZ6kK1j+xEgznHTfRqk4UqpymDti7n
-         WIAzgOHCThDsZYGhp0oMLv+hBgrbpTT6SdNiy4aI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.23] ([77.8.88.99]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MhD2Y-1lBRZf0OLS-00ePs7 for
- <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 10:00:21 +0200
-To:     Linux Kernel <linux-kernel@vger.kernel.org>
-From:   =?UTF-8?Q?Toralf_F=c3=b6rster?= <toralf.foerster@gmx.de>
-Subject: FAT_DEFAULT_CODEPAGE and FAT_DEFAULT_IOCHARSET should auto-select
- NLS_CODEPAGE_437 and NLS_ISO8859_1 respectively
-Message-ID: <6b15c8a9-ff00-5a9b-57fb-974028ec4de6@gmx.de>
-Date:   Sat, 5 Jun 2021 10:00:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S229931AbhFEIFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 04:05:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229864AbhFEIE6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 04:04:58 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED40AC061766
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Jun 2021 01:02:56 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id o27so11714555qkj.9
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 01:02:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K3vs5/z/aVaz7sVwe8HZzwxt5fKtTmUCCoC6h+qr0pU=;
+        b=n1OCSbuKQ8GmZqJs4O9nG2OBAKjoH25SuGqPdI6xaC8Sg9XtLLCRKwVVTOo7BbfHH6
+         Cgsbqwfg4VXRaIW6HJEdTLf2xB80fXzt85G41DXzyZ1Q/s3SJx8ru7JDKe1L8j74M0sO
+         7iW/WA4xtxMUcj7mpw0Zv2G0nUe3h+hJRzRB/KMPP1Y2YbCLSGrLlm8jQ/BpuTY8m0VE
+         1wgCNSg61bZcELyozQ26XeOCUmZzsFRhGsK6Ii9W2c7O5ij6RX+L+M1bsEFAg7SZEfeW
+         yzD1aRgS2qx+ILwIVbj8estvzJoITPiBjsMCcf0SKWfEhbGFqhiepojoY3JQff20RVrF
+         H/+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K3vs5/z/aVaz7sVwe8HZzwxt5fKtTmUCCoC6h+qr0pU=;
+        b=LHXpNxxywfQBA/+e9adPhDtA2qtggvaAjgdo2WPYoiMZY2YZ7JCMmKhvHS0Xm/Ayjh
+         BVZqgoqA9/uoCd/oWv5w1eqRXTxaxKCik1JwoAI5dwVRguVsrdSPEPW4J0ubboEF0tLj
+         yOCkNjXzBIxx/1dD8rrMfGjpg2CmWgIHZOlsb9rGy8JeyjWK1MzxNrhjinUU7cBy/FHO
+         VDtdppecJ8X4ZCgD2a96E5GgOi2fAWhBgsE8f3ujgZPiMl8peLRdx+s2z4nEd6/nYZpG
+         fywdy9r8JDNx4eZeG7Ys8jBaQIc3Jc/1EblKuZdfWT2zl/VrOYySy7eEhpLCldNgvQ/u
+         XFAg==
+X-Gm-Message-State: AOAM530ym0m6eUzxsiJaoEAg26Lh5sWXfgEBCPIRfLHgFs3Pr+v7vqxt
+        5T3cIAv3RYDOiHEurGY1GxzSkKBAditlGLk7GWs=
+X-Google-Smtp-Source: ABdhPJwQFYERWKhbbdBsVEWBnlIGuPXaC/4w6fI7rhWIUXxXf5ThvRnqz7YVnn9DApWcnfYqWAjI57KP2+ijKoMblpE=
+X-Received: by 2002:a37:6f85:: with SMTP id k127mr853833qkc.178.1622880175907;
+ Sat, 05 Jun 2021 01:02:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:YnnrB2BBi4yYlDa0S5kL+4FV9Wf/mi2VouYYQ564Zb3KXDknY96
- M/2yy8erIW7LM7dg/V5bt/uIYVichC0ATJB4HKehUvB7O/loiMWZ2FUcZjp1xaN0KR2N4/g
- TMAsw1Cw3QTnyFmORnW6TLTEPShTkAxeTlAQNzTcOyKObXL5H6+NzJR5EkpDlq9+JLLxvQk
- AX9p+UA4Hv0+xS6COut3Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:N40ZlTNFFpU=:I/RrexfkbSrgJkSEOOlm9p
- PKe34kwV7q88gW9HKdwb9atzK9LlnzOiqkDm1H9OQmdHf5VWgqxR67gvXJrYx3HFNSW1eY+3z
- dv3/H7amJt3Hq9CQ9XY11JMYjb/qB18mxDuFoj3i6C2AitSjyfeV9IC3eAvHq+8z2MB6BiZ/4
- gWrF6DZTRGxdNYBXQyJrZimJ1tzrFCaBoam00zq5K4JKAsgl3Rq46Rbuaolv2bAaoMknpyGKT
- W1KptyLOQywkQkdfxC0whturzIW8ZIzuOO8WMsfkprPrko+JSK8VVfV8kH1k3TkVFcJ+F/z/F
- rCQe5GIpy+AFvwZFg5vB18vHYi7AdWcKNCQlCgsAmP855qCPdu1Ze8Jwa6/blRpTu+xyT1u2u
- fWWoA6A0c5DqDm6oC/DVjmzjH0pDAKk3ylJCLd/F33Ba5/cZxmC/JmROQdXb/h7YTeBwIugLK
- geCYIJYG+K/qEtvtbZJAr+7nxVwHAthp07GjlA4PdHCnoKafmiTif8vMSoXd8byjeIKJ13O8p
- GsNgT+v4t91miLYIf+lVvtiWMBq3qu7DawonN9lpJeuU+H6m7Bkv2LySepNZOsg0jAq8I0RIS
- y/4xTV4biQARRyvgmTTC7WRIGxlw/5M4VRfi3tAAvTFeJ6Q1eyFbnXqjzhf7asyuQh45SW0VH
- NQCzB/GCHyCEYd5mM5h1xPtxmLNNWjcOzoRRrzXXm1nSmB4rIh53peKZlGEJT/ezFHvOvvZgj
- ULNA80dp1pJScu+tWMxttCFZ0R1CwidyxjJtoksTYScfcBDQ1yy6BzYUn3Vnd3F3WFGQnxK1j
- xKjwKE196aUDo+p4quuMnl7ByjG41gC0jsksnJ+GimYYK//1eqZuq9qsjUdvvOb+LSMmPZJRq
- kyYL0zaiMSANlZ6/+Ha6NfKrfqbbm/UPIcY0qas9crFtDModHX3YDKxt1UtVtBWli+eqKJPhv
- khrTVmMlUqoYxq55ERQ3Ou6k6nVHE8UjPRBvve4eklhem2uAKlajp0m7O7VpzVJvPP/PIu5B6
- Q03aH1iQnxs2ipfJhgTua4HECtP81o7xPc6GR9e4mRQVcR79V8FNDVIrzMuJxnH0YbKtbNrba
- Mhx1aWZKNm1bjWdyf7AhCyNzY7DNUtDJhPAxn4ElyXUIUMjztoFNCLc1g==
+References: <CACuRN0NjftJDUAsF2pkXbx0jnJ=bba9+j-hJA8Mjj0r4RVicLA@mail.gmail.com>
+ <mhng-a3a53753-73e5-4676-93d3-33c4b8760283@palmerdabbelt-glaptop>
+In-Reply-To: <mhng-a3a53753-73e5-4676-93d3-33c4b8760283@palmerdabbelt-glaptop>
+From:   Akira Tsukamoto <akira.tsukamoto@gmail.com>
+Date:   Sat, 5 Jun 2021 17:02:44 +0900
+Message-ID: <CACuRN0MV4zNj1rBTnppoSudy98aOj2Pj6Ld1+D8mz0fn8kxGtg@mail.gmail.com>
+Subject: Re: [PATCH 0/1] riscv: better network performance with memcpy, uaccess
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Gary Guo <gary@garyguo.net>,
+        Nick Hu <nickhu@andestech.com>,
+        Nylon Chen <nylon7@andestech.com>,
+        linux-riscv@lists.infradead.org,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I managed to boot a kernel (with UEFI boot) which wasn't able to mount
-its VFAT boot partition afterwards due to unsetting those config options
-by accident (=3D=3D stupidity).
+On Sat, Jun 5, 2021 at 1:19 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>
+> On Fri, 04 Jun 2021 02:53:33 PDT (-0700), akira.tsukamoto@gmail.com wrote:
+> > I am adding a cover letter to explain the history and details since
+> > improvement is a combination with Gary's memcpy patch [1].
+> >
+> > Comparison of iperf3 benchmark results by applying Gary's memcpy patch and
+> > my uaccess optimization patch. All results are from the same base kernel,
+> > same rootfs and save BeagleV beta board.
+> >
+> > First left column : beaglev 5.13.rc4 kernel [2]
+> > Second column     : Added Palmer's memcpy in C + my uaccess patch [3]
+> > Third column      : Added Gary's memcpy + my uaccess patch [4]
+> >
+> > --- TCP recv ---
+> > 686 Mbits/sec  |  700 Mbits/sec  |  904 Mbits/sec
+> > 683 Mbits/sec  |  701 Mbits/sec  |  898 Mbits/sec
+> > 695 Mbits/sec  |  702 Mbits/sec  |  905 Mbits/sec
+> >
+> > --- TCP send ---
+> > 383 Mbits/sec  |  390 Mbits/sec  |  393 Mbits/sec
+> > 384 Mbits/sec  |  393 Mbits/sec  |  392 Mbits/sec
+> >
+> > --- UDP send ---
+> > 307 Mbits/sec  |  358 Mbits/sec  |  402 Mbits/sec
+> > 307 Mbits/sec  |  359 Mbits/sec  |  402 Mbits/sec
+> >
+> > --- UDP recv ---
+> > 630 Mbits/sec  |  799 Mbits/sec  |  875 Mbits/sec
+> > 730 Mbits/sec  |  796 Mbits/sec  |  873 Mbits/sec
+> >
+> >
+> > The uaccess patch is reducing pipeline stall of read after write (RAW)
+> > by unroling load and store.
+> > The main reason for using assembler inside uaccess.S is because the
+> > __asm_to/copy_from_user() handling page fault must be done manually inside
+> > the functions.
+> >
+> > The above result is combination from Gary $B!G (Bs memcpy speeding up
+> > by reducing
+> > the S-mode and M-mode switching and my uaccess reducing pipeline stall for
+> > user space uses syscall with large data.
+> >
+> > We had a discussion of improving network performance on the BeagleV beta
+> > board with Palmer.
+> >
+> > Palmer suggested to use C-based string routines, which checks the unaligned
+> > address and use 8 bytes aligned copy if the both src and dest are aligned
+> > and if not use the current copy function.
+> >
+> > The Gary's assembly version of memcpy is improving by not using unaligned
+> > access in 64 bit boundary, uses shifting it after reading with offset of
+> > aligned access, because every misaligned access is trapped and switches to
+> > opensbi in M-mode. The main speed up is coming from avoiding S-mode (kernel)
+> > and M-mode (opensbi) switching.
+> >
+> > Processing network packets require a lot of unaligned access for the packet
+> > header, which is not able to change the design of the header format to be
+> > aligned.
+> > And user applications pass large packet data with send/recf() and sendto/
+> > recvfrom() to repeat less function calls for reading and writing data for the
+> > optimization.
+>
+> Makes sense.  I'm still not opposed to moving to a C version, but it'd
+> need to be a fairly complicated one.  I think having a fast C memcpy
+> would likely benefit a handful of architectures, as everything we're
+> talking about is an algorithmic improvement that can be expressed in C.
+>
+> Given that the simple memcpy doesn't perform well for your workload, I'm
+> fine taking the assembly version.
 
-IMO the 2 former ones should select and pin their corresponding
-partners, or?
-=2D-
-Toralf
+Thanks, for merging them.
+
+I agree that having a fast C memcpy would benefit many architectures.
+I will make the patches for lib/string.c by extending your memcpy and send
+them after I finish other priorities. The current functions in lib/string.c
+use a byte copy, while most linux capable cpus moved to 64 bits.
+
+Akira
+
+>
+> Thanks!
+>
+> >
+> > Akira
+> >
+> > [1] https://lkml.org/lkml/2021/2/16/778
+> > [2] https://github.com/mcd500/linux-jh7100/tree/starlight-sdimproved
+> > [3] https://github.com/mcd500/linux-jh7100/tree/starlight-sd-palmer-string
+> > [4] https://github.com/mcd500/linux-jh7100/tree/starlight-sd-gary
+> >
+> > Akira Tsukamoto (1):
+> >   riscv: prevent pipeline stall in __asm_to/copy_from_user
+> >
+> >  arch/riscv/lib/uaccess.S | 106 +++++++++++++++++++++++++++------------
+> >  1 file changed, 73 insertions(+), 33 deletions(-)
