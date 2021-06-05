@@ -2,242 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9427B39C61F
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 08:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8C039C648
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 08:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhFEF7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 01:59:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230175AbhFEF7E (ORCPT
+        id S229957AbhFEG3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 02:29:39 -0400
+Received: from mail-m964.mail.126.com ([123.126.96.4]:37604 "EHLO
+        mail-m964.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhFEG3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 01:59:04 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCB80C061766
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 22:57:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=GrEsopanR9p/IQQ540icq+GLFUYMnXtLje11736p+5k=; b=EXG64Tw6bSJGyoCE3FlVKjNv3r
-        ah9yxsQuSVcIHwbMdPfp2IJ2XUUg2JJz3PVuC9rUuiID7amMFVEZK4CxeGu+UwhQ12xSFSD8ceVYv
-        2+aPASL81wjro9y00knFfiP8L1n+Wd6+4HzA8pchAKpIIWsLCxvz35AKq9NHzDLBKPPGk65ThIpnr
-        OaK5QW/MdQSzdQDJi7b9532n6A4YE6Jh4cWZ1ds92YcHRHgc4N+xuGrHOpEO8SLlloOm50nuc+hYS
-        RE31hScaGNzfc6WXOfWFl3Vv/lSHVoHfESp886Lf+mg42bIMhwDs8HOGX6bu6atFs4ock3gOWGhfu
-        vUbu65Nw==;
-Received: from [2601:1c0:6280:3f0::bd57]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lpPIA-00G54c-0p; Sat, 05 Jun 2021 05:56:18 +0000
-Subject: Re: [PATCH v2 00/33] locking/atomic: convert all architectures to
- ARCH_ATOMIC
-To:     Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org,
-        will@kernel.org, boqun.feng@gmail.com, peterz@infradead.org
-Cc:     aou@eecs.berkeley.edu, arnd@arndb.de, bcain@codeaurora.org,
-        benh@kernel.crashing.org, chris@zankel.net, dalias@libc.org,
-        davem@davemloft.net, deanbo422@gmail.com, deller@gmx.de,
-        geert@linux-m68k.org, gerg@linux-m68k.org, green.hu@gmail.com,
-        guoren@kernel.org, ink@jurassic.park.msu.ru,
-        James.Bottomley@HansenPartnership.com, jcmvbkbc@gmail.com,
-        jonas@southpole.se, ley.foon.tan@intel.com, linux@armlinux.org.uk,
-        mattst88@gmail.com, monstr@monstr.eu, mpe@ellerman.id.au,
-        nickhu@andestech.com, palmerdabbelt@google.com, paulus@samba.org,
-        paul.walmsley@sifive.com, rth@twiddle.net, shorne@gmail.com,
-        stefan.kristiansson@saunalahti.fi, tsbogend@alpha.franken.de,
-        vgupta@synopsys.com, ysato@users.sourceforge.jp
-References: <20210525140232.53872-1-mark.rutland@arm.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <a15122e9-700d-c909-4794-d569ed1f6c61@infradead.org>
-Date:   Fri, 4 Jun 2021 22:56:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210525140232.53872-1-mark.rutland@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Sat, 5 Jun 2021 02:29:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=f9Wj/cFcMSLEZt3a7k
+        mUO3fOZsRQwFcAJUxx6KOO8rY=; b=hNR3nK60/UvwRNhsHINMLLlMwJK+/6k8CD
+        lFe4lKlznRBAMZT4s41NhGs5hrU6hqZdDn//22B/ienNpRgd+ZgmRgxEBHfhu5fL
+        eO1y9FpP/Fwt4wd2F6SHoOvWWS5pp0b1zR7JJ+k4AhXdHfMIUL3PM9zdUTvuR6AH
+        3zA9JTSgs=
+Received: from localhost.localdomain (unknown [122.194.9.184])
+        by smtp9 (Coremail) with SMTP id NeRpCgDHQTIOErtg28trXA--.18188S3;
+        Sat, 05 Jun 2021 13:56:30 +0800 (CST)
+From:   chenxb_99091@126.com
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paul.burton@mips.com>,
+        James Hogan <jhogan@kernel.org>, linux-mips@linux-mips.org,
+        linux-kernel@vger.kernel.org
+Cc:     Kailong <wkailong1993@163.com>
+Subject: [PATCH] MIPS:Loongson2F:delete mutex defined but not used
+Date:   Sat,  5 Jun 2021 13:56:27 +0800
+Message-Id: <1622872587-6873-1-git-send-email-chenxb_99091@126.com>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: NeRpCgDHQTIOErtg28trXA--.18188S3
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Wr4UKrWrWry8Xry7tr43ZFb_yoW3JFXEgF
+        y2kw48urWrAF1fu3sruF15Kw429a4ruFnxCF93Gr95Za1FvF9xCF4vvry8Wrn0gFnIv34r
+        WF48Cr45uF47tjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0OJ55UUUUU==
+X-Originating-IP: [122.194.9.184]
+X-CM-SenderInfo: hfkh05lebzmiizr6ij2wof0z/1tbifg+oxVpEDhH5nwAAs7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/25/21 7:01 AM, Mark Rutland wrote:
-> This series (based on v5.13-rc2) converts all architectures to
-> ARCH_ATOMIC. This will allow the use of instrumented atomics on all
-> architectures (e.g. for KASAN and similar), and simplifies the core
-> atomic code (which should allow for easier rework of the fallbacks and
-> other bits in future).
-> 
-> I'm hoping that we can queue this via the tip tree for v5.14.
-> 
-> I've build-tested this with the kernel.org crosstool GCC 10.3.0 binaries
-> (all arches except hexagon), and I haven't seen issues with the configs
-> I tried, so I'm fairly confident this is solid now. I'd like to get this
-> into linux-next ASAP to flush out any remaining issues.
-> 
-> The series is split into three parts:
-> 
-> 1) Some preparatory work is done to prepare architectures and common
->    code for the conversion. In this phase h8300 and microblaze are
->    converted to use the asm-generic atomics exclusively, and the
->    asm-generic implementations are made to function with or without
->    ARCH_ATOMIC.
-> 
-> 2) Architectures are converted one-by-one to use the ARCH_ATOMIC
->    interface. I've converted each architecture with its own patch (even
->    where the conversion is trivial) to make review and bisection easier.
-> 
-> 3) The code handling !ARCH_ATOMIC is removed.
-> 
-> Note: I've generated the patches with:
-> 
->   git format-patch -C -M -D
-> 
-> ... so the preimage of include/linux/atomic-fallback.h is not included
-> in the diff when it is deleted.
-> 
-> The series can also be found in my atomics/arch-atomic branch on
-> kernel.org:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=atomics/arch-atomic
->   git://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git atomics/arch-atomic
-> 
-> This version is tagged as arch-atomic-20210525.
-> 
-> Since v1 [1]:
-> * Rebase to v5.13-rc2
-> * Accumulate Acked-by / Reviewed-by tags
-> * Correct missing `arch_` prefixes
-> * Fix missing preprocessor glue
-> 
-> [1] https://lore.kernel.org/r/20210510093753.40683-1-mark.rutland@arm.com
-> 
-> Thanks,
-> Mark.
-> 
-> Mark Rutland (33):
->   locking/atomic: make ARCH_ATOMIC a Kconfig symbol
->   locking/atomic: net: use linux/atomic.h for xchg & cmpxchg
->   locking/atomic: h8300: use asm-generic exclusively
->   locking/atomic: microblaze: use asm-generic exclusively
->   locking/atomic: openrisc: avoid asm-generic/atomic.h
->   locking/atomic: atomic: remove stale comments
->   locking/atomic: atomic: remove redundant include
->   locking/atomic: atomic: simplify ifdeffery
->   locking/atomic: atomic: support ARCH_ATOMIC
->   locking/atomic: atomic64: support ARCH_ATOMIC
->   locking/atomic: cmpxchg: make `generic` a prefix
->   locking/atomic: cmpxchg: support ARCH_ATOMIC
->   locking/atomic: alpha: move to ARCH_ATOMIC
->   locking/atomic: arc: move to ARCH_ATOMIC
->   locking/atomic: arm: move to ARCH_ATOMIC
->   locking/atomic: csky: move to ARCH_ATOMIC
->   locking/atomic: h8300: move to ARCH_ATOMIC
->   locking/atomic: hexagon: move to ARCH_ATOMIC
->   locking/atomic: ia64: move to ARCH_ATOMIC
->   locking/atomic: m68k: move to ARCH_ATOMIC
->   locking/atomic: microblaze: move to ARCH_ATOMIC
->   locking/atomic: mips: move to ARCH_ATOMIC
->   locking/atomic: nds32: move to ARCH_ATOMIC
->   locking/atomic: nios2: move to ARCH_ATOMIC
->   locking/atomic: openrisc: move to ARCH_ATOMIC
->   locking/atomic: parisc: move to ARCH_ATOMIC
->   locking/atomic: powerpc: move to ARCH_ATOMIC
->   locking/atomic: riscv: move to ARCH_ATOMIC
->   locking/atomic: sh: move to ARCH_ATOMIC
->   locking/atomic: sparc: move to ARCH_ATOMIC
->   locking/atomic: xtensa: move to ARCH_ATOMIC
->   locking/atomic: delete !ARCH_ATOMIC remnants
->   locking/atomics: atomic-instrumented: simplify ifdeffery
-> 
->  arch/alpha/include/asm/atomic.h           |   88 +-
->  arch/alpha/include/asm/cmpxchg.h          |   12 +-
->  arch/arc/include/asm/atomic.h             |   60 +-
->  arch/arc/include/asm/cmpxchg.h            |   10 +-
->  arch/arm/include/asm/atomic.h             |   96 +-
->  arch/arm/include/asm/cmpxchg.h            |   20 +-
->  arch/arm/include/asm/sync_bitops.h        |    2 +-
->  arch/arm64/include/asm/atomic.h           |    2 -
->  arch/csky/include/asm/cmpxchg.h           |    8 +-
->  arch/h8300/include/asm/Kbuild             |    1 +
->  arch/h8300/include/asm/atomic.h           |   97 --
->  arch/h8300/include/asm/cmpxchg.h          |   66 -
->  arch/hexagon/include/asm/atomic.h         |   28 +-
->  arch/hexagon/include/asm/cmpxchg.h        |    4 +-
->  arch/ia64/include/asm/atomic.h            |   74 +-
->  arch/ia64/include/asm/cmpxchg.h           |   16 +
->  arch/ia64/include/uapi/asm/cmpxchg.h      |   10 +-
->  arch/m68k/include/asm/atomic.h            |   60 +-
->  arch/m68k/include/asm/cmpxchg.h           |   10 +-
->  arch/m68k/include/asm/mmu_context.h       |    2 +-
->  arch/microblaze/include/asm/Kbuild        |    1 +
->  arch/microblaze/include/asm/atomic.h      |   28 -
->  arch/microblaze/include/asm/cmpxchg.h     |    9 -
->  arch/mips/include/asm/atomic.h            |   55 +-
->  arch/mips/include/asm/cmpxchg.h           |   22 +-
->  arch/mips/kernel/cmpxchg.c                |    4 +-
->  arch/openrisc/include/asm/atomic.h        |   42 +-
->  arch/openrisc/include/asm/cmpxchg.h       |    4 +-
->  arch/parisc/include/asm/atomic.h          |   34 +-
->  arch/parisc/include/asm/cmpxchg.h         |   14 +-
->  arch/powerpc/include/asm/atomic.h         |  140 +-
->  arch/powerpc/include/asm/cmpxchg.h        |   30 +-
->  arch/powerpc/include/asm/qspinlock.h      |    2 +-
->  arch/riscv/include/asm/atomic.h           |  128 +-
->  arch/riscv/include/asm/cmpxchg.h          |   34 +-
->  arch/s390/include/asm/atomic.h            |    2 -
->  arch/sh/include/asm/atomic-grb.h          |    6 +-
->  arch/sh/include/asm/atomic-irq.h          |    6 +-
->  arch/sh/include/asm/atomic-llsc.h         |    6 +-
->  arch/sh/include/asm/atomic.h              |    8 +-
->  arch/sh/include/asm/cmpxchg.h             |    4 +-
->  arch/sparc/include/asm/atomic_32.h        |   38 +-
->  arch/sparc/include/asm/atomic_64.h        |   36 +-
->  arch/sparc/include/asm/cmpxchg_32.h       |   12 +-
->  arch/sparc/include/asm/cmpxchg_64.h       |   12 +-
->  arch/sparc/lib/atomic32.c                 |   24 +-
->  arch/sparc/lib/atomic_64.S                |   42 +-
->  arch/x86/include/asm/atomic.h             |    2 -
->  arch/xtensa/include/asm/atomic.h          |   26 +-
->  arch/xtensa/include/asm/cmpxchg.h         |   14 +-
->  include/asm-generic/atomic-instrumented.h |  498 +-----
->  include/asm-generic/atomic.h              |  118 +-
->  include/asm-generic/atomic64.h            |   45 +-
->  include/asm-generic/cmpxchg-local.h       |    4 +-
->  include/asm-generic/cmpxchg.h             |   42 +-
->  include/linux/atomic-fallback.h           | 2595 -----------------------------
->  include/linux/atomic.h                    |    4 -
->  lib/atomic64.c                            |   36 +-
->  net/core/filter.c                         |    2 +-
->  net/sunrpc/xprtmultipath.c                |    2 +-
->  scripts/atomic/check-atomics.sh           |    1 -
->  scripts/atomic/gen-atomic-instrumented.sh |   51 +-
->  scripts/atomic/gen-atomics.sh             |    1 -
->  63 files changed, 756 insertions(+), 4094 deletions(-)
->  delete mode 100644 arch/h8300/include/asm/atomic.h
->  delete mode 100644 arch/h8300/include/asm/cmpxchg.h
->  create mode 100644 arch/ia64/include/asm/cmpxchg.h
->  delete mode 100644 arch/microblaze/include/asm/atomic.h
->  delete mode 100644 arch/microblaze/include/asm/cmpxchg.h
->  delete mode 100644 include/linux/atomic-fallback.h
-> 
+From: Kailong <wkailong1993@163.com>
 
-Hi Mark,
-Sorry for the late reply. I was just trying to update a patch
-to arch/sh/include/asm/cmpxchg.h, in its xchg() macro:
+For 4.19.X, mutex clock_list_sem defined in
+ arch/mips/loongson64/lemote-2f/clock.c never be used.  So delete it
 
-https://lore.kernel.org/lkml/20210602231443.4670-2-rdunlap@infradead.org/
+Signed-off-by: Kailong <wkailong1993@163.com>
+---
+ arch/mips/loongson64/lemote-2f/clock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The patch simply converts xchg() to a GCC statement expression to
-eliminate a build warning.
-
-Arnd has done this for m68k and I have done it for sparc in the past.
-
-Is there any (good) reason that all versions of arch_xchg() are not
-statement expressions?  In this patch series, they seem to be quite
-mixed (as they were before this patch series). I count 11 arches
-that use a statement expression and 4 that do not (including arch/sh/).
-
-
-thanks.
+diff --git a/arch/mips/loongson64/lemote-2f/clock.c b/arch/mips/loongson64/lemote-2f/clock.c
+index 8281334..aff58b0 100644
+--- a/arch/mips/loongson64/lemote-2f/clock.c
++++ b/arch/mips/loongson64/lemote-2f/clock.c
+@@ -19,7 +19,7 @@
+ 
+ static LIST_HEAD(clock_list);
+ static DEFINE_SPINLOCK(clock_lock);
+-static DEFINE_MUTEX(clock_list_sem);
++
+ 
+ /* Minimum CLK support */
+ enum {
 -- 
-~Randy
+2.7.4
 
