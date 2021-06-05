@@ -2,70 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4466139C9B6
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 18:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F32B39C9DA
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 18:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbhFEQEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 12:04:01 -0400
-Received: from m15113.mail.126.com ([220.181.15.113]:43423 "EHLO
-        m15113.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbhFEQEA (ORCPT
+        id S230039AbhFEQbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 12:31:31 -0400
+Received: from m15114.mail.126.com ([220.181.15.114]:43131 "EHLO
+        m15114.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229958AbhFEQba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 12:04:00 -0400
-X-Greylist: delayed 1817 seconds by postgrey-1.27 at vger.kernel.org; Sat, 05 Jun 2021 12:03:59 EDT
+        Sat, 5 Jun 2021 12:31:30 -0400
+X-Greylist: delayed 1851 seconds by postgrey-1.27 at vger.kernel.org; Sat, 05 Jun 2021 12:31:29 EDT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=P3aIecmfoywK4mYusA
-        PSwpZJz/rMOG9160tktUCGrgI=; b=Qyn4F8UskAm4T1MMsebRgU8jr+6qGrh31r
-        v8E78W2sstGTMbaKW86irQMEoPnFKOWOayGbSrE4tA9dZxXlbCTEm2aHui9KBgso
-        vJzG5uzFW/b15jZWeU+pxkhPPc1ez4QBgO/hQ+hkeA2P+H7zYzgOiAsWth5qWux7
-        inkF7YMug=
+        s=s110527; h=From:Subject:Date:Message-Id; bh=3dW3YORctanWJ+fF+P
+        NqDTdyHt2AZo8sNgXLrG+WF8M=; b=OPvjNZrFl5rXsz1UAUznVdYwjuZmZWLHy7
+        scdtolOzsLgwWQ2yXtPmMJSxSaGJ2gomEDUe69vILA6FhAzU1UB5JZOFOsfwpGk4
+        drzjuDHamaWo3pvryfwwAdT2N7A1X6bZODGcf4ytcLjjzSAzPD/8Fk/DelnIsBC/
+        L8Z0Z2l9g=
 Received: from 192.168.137.133 (unknown [112.10.85.142])
-        by smtp3 (Coremail) with SMTP id DcmowABHl__CmLtghDc3SA--.48781S3;
-        Sat, 05 Jun 2021 23:31:15 +0800 (CST)
+        by smtp7 (Coremail) with SMTP id DsmowAA3e0HznrtgigGURQ--.14107S3;
+        Sat, 05 Jun 2021 23:57:41 +0800 (CST)
 From:   Xianting Tian <xianting_tian@126.com>
-To:     mst@redhat.com, jasowang@redhat.com, davem@davemloft.net,
-        kuba@kernel.org, linux-kernel@vger.kernel.org
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+To:     dan.j.williams@intel.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
         Xianting Tian <xianting.tian@linux.alibaba.com>
-Subject: [PATCH] [v2] virtio_net: Remove BUG() to avoid machine dead
-Date:   Sat,  5 Jun 2021 11:31:00 -0400
-Message-Id: <1622907060-8417-1-git-send-email-xianting_tian@126.com>
+Subject: [PATCH] async_tx: use dmaengine_submit() API
+Date:   Sat,  5 Jun 2021 11:57:19 -0400
+Message-Id: <1622908639-8774-1-git-send-email-xianting_tian@126.com>
 X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: DcmowABHl__CmLtghDc3SA--.48781S3
-X-Coremail-Antispam: 1Uf129KBjvdXoWruF18Kr4rJFyfXF1UuF4xXrb_yoW3Krc_Cr
-        yxtF4fGrW5KF12k3yxCa1rZr9xt3WFvF18WwnIq3s3ua1jyFy5Xr92vrnrJry7G340yF98
-        GFZxJr1v93saqjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8dOz3UUUUU==
+X-CM-TRANSID: DsmowAA3e0HznrtgigGURQ--.14107S3
+X-Coremail-Antispam: 1Uf129KBjvdXoW7XF18ZFy7tw4fur45XF4rAFb_yoWDZFcEgw
+        4S9rn7urWDAryfGF4UCa4xGrs8K3y2yFn09a18trW2qa4DJw1rWr4ft3sxX343WF1SvrW5
+        uF1DCryIkr17WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8nSdDUUUUU==
 X-Originating-IP: [112.10.85.142]
-X-CM-SenderInfo: h0ld03plqjs3xldqqiyswou0bp/1tbi5gSopFpEBDQX7wAAs4
+X-CM-SenderInfo: h0ld03plqjs3xldqqiyswou0bp/1tbiohWopFx5fPDKqgAAsy
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xianting Tian <xianting.tian@linux.alibaba.com>
-
-We should not directly BUG() when there is hdr error, it is
-better to output a print when such error happens. Currently,
-the caller of xmit_skb() already did it.
+Use the introduced API to submit DMA desc.
 
 Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
 ---
- drivers/net/virtio_net.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ crypto/async_tx/async_tx.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 9b6a4a8..7f11ea4 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -1623,7 +1623,7 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
- 	if (virtio_net_hdr_from_skb(skb, &hdr->hdr,
- 				    virtio_is_little_endian(vi->vdev), false,
- 				    0))
--		BUG();
-+		return -EPROTO;
+diff --git a/crypto/async_tx/async_tx.c b/crypto/async_tx/async_tx.c
+index 9256934..c95d90f 100644
+--- a/crypto/async_tx/async_tx.c
++++ b/crypto/async_tx/async_tx.c
+@@ -14,6 +14,7 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/async_tx.h>
++#include <linux/dmaengine.h>
  
- 	if (vi->mergeable_rx_bufs)
- 		hdr->num_buffers = 0;
+ #ifdef CONFIG_DMA_ENGINE
+ static int __init async_tx_init(void)
+@@ -110,7 +111,7 @@ struct dma_chan *
+ 
+ 		if (intr_tx) {
+ 			txd_clear_parent(intr_tx);
+-			intr_tx->tx_submit(intr_tx);
++			dmaengine_submit(intr_tx);
+ 			async_tx_ack(intr_tx);
+ 		}
+ 		device->device_issue_pending(chan);
+@@ -118,7 +119,7 @@ struct dma_chan *
+ 		if (dma_wait_for_async_tx(depend_tx) != DMA_COMPLETE)
+ 			panic("%s: DMA error waiting for depend_tx\n",
+ 			      __func__);
+-		tx->tx_submit(tx);
++		dmaengine_submit(tx);
+ 	}
+ }
+ 
 -- 
 1.8.3.1
 
