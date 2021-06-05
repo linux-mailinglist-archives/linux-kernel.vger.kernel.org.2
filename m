@@ -2,93 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79FE139C48F
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 02:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A2339C49B
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 02:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231161AbhFEAnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 20:43:00 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3430 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbhFEAm6 (ORCPT
+        id S231163AbhFEApi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 20:45:38 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56540 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230169AbhFEAph (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 20:42:58 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fxghy2Yp8z6trV;
-        Sat,  5 Jun 2021 08:38:10 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sat, 5 Jun 2021 08:41:10 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Sat, 5 Jun 2021 08:41:09 +0800
-Subject: Re: Linux 5.10.42
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
-        <torvalds@linux-foundation.org>, <stable@vger.kernel.org>
-CC:     <lwn@lwn.net>, <jslaby@suse.cz>
-References: <162270674910125@kroah.com>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <11d9ec23-ce28-5da1-3759-42abdc4013e2@huawei.com>
-Date:   Sat, 5 Jun 2021 08:41:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 4 Jun 2021 20:45:37 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622853829;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7JK99x2aCiwHcKoHUwYLrlYiiXcsZf3XTECQ6JDeNtg=;
+        b=2dFyG/SfB92H9PmpDRA7soX43NyiXJu1t6mOaoUOGo0g0VHQ/IOOojofkC2yqpX/00XBD6
+        jzjlQEl/0v1ybdFTNz4DbGuWgRASZTpxu8tWzCFMf96E6+CjEreuKTSUvBeD9DEli2aony
+        WwWO2/QqLyCJi8z68NoQ5mje4AYZjR09I94DNY/am7et2qYz8GMnpk4JIdKxqDoIKn+jOO
+        LB9yrSeuiqxVNzjwOJXDoAHDZr9K0EiHFDFmG4MOZrvUgcvGDj/f+h91GkWO4oB4KMhHMH
+        /U1i92y7qYJECjA38oaT9Gkpcs/UzFTy4MngINYpBOXEiVda3xwthcuBRngZCA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622853829;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7JK99x2aCiwHcKoHUwYLrlYiiXcsZf3XTECQ6JDeNtg=;
+        b=3GLJtO/fwiRXRqqM30wtOeGyzNH971QME09g79BySukpMaZ497oO0wX9kbhyAnbqE1v9bN
+        WAPj0Z9sYg5l+qCA==
+To:     Andres Freund <andres@anarazel.de>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 4/4] io_uring: implement futex wait
+In-Reply-To: <20210603190338.gfykgkc7ac2akvdt@alap3.anarazel.de>
+References: <cover.1622558659.git.asml.silence@gmail.com> <e91af9d8f8d6e376635005fd111e9fe7a1c50fea.1622558659.git.asml.silence@gmail.com> <bd824ec8-48af-b554-67a1-7ce20fcf608c@kernel.dk> <409a624c-de75-0ee5-b65f-ee09fff34809@gmail.com> <bdc55fcd-b172-def4-4788-8bf808ccf6d6@kernel.dk> <5ab4c8bd-3e82-e87b-1ae8-3b32ced72009@gmail.com> <87sg211ccj.ffs@nanos.tec.linutronix.de> <20210603190338.gfykgkc7ac2akvdt@alap3.anarazel.de>
+Date:   Sat, 05 Jun 2021 02:43:48 +0200
+Message-ID: <87v96tywcb.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <162270674910125@kroah.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Andres,
 
+On Thu, Jun 03 2021 at 12:03, Andres Freund wrote:
+> On 2021-06-01 23:53:00 +0200, Thomas Gleixner wrote:
+>> You surely made your point that this is well thought out.
+>
+> Really impressed with your effort to generously interpret the first
+> version of a proof of concept patch that explicitly was aimed at getting
+> feedback on the basic design and the different use cases.
 
-On 2021/6/3 15:52, Greg Kroah-Hartman wrote:
-> I'm announcing the release of the 5.10.42 kernel.
-> 
-> All users of the 5.10 kernel series must upgrade.
-> 
-> The updated 5.10.y git tree can be found at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.10.y
-> and can be browsed at the normal kernel.org git web browser:
-> 	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
-> 
-> thanks,
-> 
-> greg k-h
-> 
+feedback on what?
 
-Tested on arm64 and x86 for 5.10.42,
+There is absolutely no description of design and obviously there is no
+use case either. So what do you expect me to be generous about?
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.10.y
-Version: 5.10.42
-Commit: 65859eca4dff1af0db5e36d1cfbac15b834c6a65
-Compiler: gcc version 7.3.0 (GCC)
+Thanks,
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8900
-passed: 8900
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+        tglx
 
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8900
-passed: 8900
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
