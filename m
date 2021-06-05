@@ -2,209 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB7439C822
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 14:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F1F39C824
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 14:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhFEM3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 08:29:46 -0400
-Received: from mail-ej1-f54.google.com ([209.85.218.54]:38573 "EHLO
-        mail-ej1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbhFEM3p (ORCPT
+        id S230019AbhFEMa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 08:30:59 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:53923 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229902AbhFEMa6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 08:29:45 -0400
-Received: by mail-ej1-f54.google.com with SMTP id og14so13323441ejc.5;
-        Sat, 05 Jun 2021 05:27:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=yxAwoHb9R5ZBIZwDJsuyJCDfJDe34rxlobdXTwB9+cg=;
-        b=EuPUMxteWITDkddFMz6iypixhTrnTgPv+5col3X6LpXxQyHv4sxTxI0+Gku7F3ADRg
-         rS04VRxy3/Wt+fHwvUGeoU6AkjqAiJ01Rx/20pEamrxxoLemnL4baumDdTjVguFWJpEx
-         EkWa78i8YcwD/Ip77FmkdEgz3s20Ezre0P2TJ8wGWKkitWYx9yHDqSnYurs7ecvmYF2j
-         9JIiWuxdM7w0umqmbFm0SIcpG6qzuYmdq+p3/ODyZpyZANci9fifPEb9ovUb+Dkfr7GT
-         KMsEm1s9tF6whb4U8HYHEGMW9bdHbkOnEwEyH+uyIKrrxtkKlAIN1tSFAlbe42y61DQ6
-         5gEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=yxAwoHb9R5ZBIZwDJsuyJCDfJDe34rxlobdXTwB9+cg=;
-        b=EJ0NDHNAmmw0phCGqiuIp6vWHYnO2rzUzjyWp0UYMcMlNMssk0fmRFbTdYaXINlAJc
-         WhkZ8zaegadi2E+Fe8/hd2uhbbkMaR+9FtEsuYyCCf+Vh96KOnrZhkmkEX13VmcexAMF
-         Pb9xwaHNUiPp3pPfCFDcfm5Sq7op/fF5VbYk3aVyVolClClJ4pzdf4qrjimh6ICkb/HN
-         o+WwUOM+8eZQXbKrDB+vnzSSmT6tPznjYB5YZ0buGuaBSg5X/8b2f1j82vHs+BX3+S1H
-         s1FyJPBQcMznCRzk5+JEnaztcQmL0auGvxXSVknG1aoek8uMhu1peE12Lhveav1rDogx
-         OwHA==
-X-Gm-Message-State: AOAM532omfX2RBE5S1p3flL34G9KGeYyyLT05Z4BwuOgHqQaNpfQdoZ9
-        3KV6s73T17tq2k9ukraq7rDNb9Z3FQQ=
-X-Google-Smtp-Source: ABdhPJxA3NxXaF5z1JamjWtO8AvUfHjVciOQ+kfNmGvIVQZkQRE8eAwBjoxUcpxeHWC7+VXYYGbf+w==
-X-Received: by 2002:a17:907:10cc:: with SMTP id rv12mr8894741ejb.533.1622896001179;
-        Sat, 05 Jun 2021 05:26:41 -0700 (PDT)
-Received: from skbuf ([188.26.52.84])
-        by smtp.gmail.com with ESMTPSA id v1sm4079274ejg.22.2021.06.05.05.26.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Jun 2021 05:26:40 -0700 (PDT)
-Date:   Sat, 5 Jun 2021 15:26:39 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Igal Liberman <Igal.Liberman@freescale.com>,
-        Shruti Kanetkar <Shruti@freescale.com>,
-        Emil Medve <Emilian.Medve@freescale.com>,
-        Scott Wood <oss@buserror.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Camelia Alexandra Groza (OSS)" <camelia.groza@oss.nxp.com>
-Subject: Re: Unsupported phy-connection-type sgmii-2500 in
- arch/powerpc/boot/dts/fsl/t1023rdb.dts
-Message-ID: <20210605122639.4lpox5bfppoyynl3@skbuf>
-References: <20210603143453.if7hgifupx5k433b@pali>
- <YLjxX/XPDoRRIvYf@lunn.ch>
- <20210603194853.ngz4jdso3kfncnj4@pali>
- <AM6PR04MB3976B62084EC462BA02F0C4CEC3B9@AM6PR04MB3976.eurprd04.prod.outlook.com>
- <20210604192732.GW30436@shell.armlinux.org.uk>
- <AM6PR04MB39768A569CE3CC4EC61A8769EC3B9@AM6PR04MB3976.eurprd04.prod.outlook.com>
- <YLqLzOltcb6jan+B@lunn.ch>
- <AM6PR04MB39760B986E86BA9169DEECC5EC3B9@AM6PR04MB3976.eurprd04.prod.outlook.com>
- <20210604233455.fwcu2chlsed2gwmu@pali>
- <20210605003306.GY30436@shell.armlinux.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210605003306.GY30436@shell.armlinux.org.uk>
+        Sat, 5 Jun 2021 08:30:58 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 3E26D5804A2;
+        Sat,  5 Jun 2021 08:29:10 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute3.internal (MEProxy); Sat, 05 Jun 2021 08:29:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type:content-transfer-encoding; s=fm1; bh=1R
+        bQgq677nj7G3MUumWQjelLqbrdkBM2pt/CFGcdDww=; b=IWPbj+jS3yyI1hVyW5
+        5sN1YgyHOAAM6fqrk2zzGemytyt9Y3iPjsLueBl2TBunTetDC5YbPeGP9y681UJZ
+        0k39tUpGZjoiwtDxSXs3VNq+qyspKPfIwoVGz8Sy/zVqp+elJ8Q7TpWLcagAfzTG
+        Fl2uhYittvM3zHEWKL6nrG+tY+pyy/9t6iNUwpaPkiYMHZN0LrN9YR8MxzTBo9ks
+        kh9JYRUCbjEUPOv9tcBfmvICu690LGywZIq8K0jM+D91SCSt1EYv65huFmOYg+30
+        cFj11jFs5i3ieoJWrjeSERdBJ1s88ukANXH/1BYjic7uA3b/KO6/JbhtI+hgbNgw
+        Y5ag==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=1RbQgq677nj7G3MUumWQjelLqbrdkBM2pt/CFGcdD
+        ww=; b=ADM+zxMegh80UeqCKmGjOf/Ocfu3mACp0SHiArW5qzrB2UqrIe+7He8GL
+        CMuL7ZIHXeyUjBISAuo3oZ6RxK/k4QIzexC9QyF0ty+ERyD0lAFZKeTvZYCIHHut
+        zHY0MMM5x6LtZoUHPVCBHZxljMhWK3s1TgZt6aXDewrd7w24MwAWntciDl92O3Bf
+        ctxryzULFb8rbi3zEoklA2O0VbBHGPip7rnooYhB1EktosG+U+aaKI5mNa5GWErV
+        VWKKPulJc8i/JLr0cUe+wnIk/NOsjDPOS2B/G8mMRyonIf9itbQouiIfZWaRwLfD
+        5I4G0bX8ilWu4IbaMmcFgfyMJFTWw==
+X-ME-Sender: <xms:E267YA39LqHB289QpI4QO7j05cWK08AKUAPP9lSSZ2r2zb0duLytwA>
+    <xme:E267YLGITa5dwhee8kYQuI9Q8vvLb4wg9SvS9Vl214JzjnRJp03Wpf1N2fo6W0_8N
+    V5iAI5hm74zrKT9QGo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtfedgheefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpedfufhv
+    vghnucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrf
+    grthhtvghrnhepteeuudelteefueelvdelheehieevvdfhkeehjeejudfhieelffffudfh
+    keeileegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epshhvvghnsehsvhgvnhhpvghtvghrrdguvghv
+X-ME-Proxy: <xmx:E267YI6RXlh8AhpHUhLk-4BU1A25EogzJYRqZLkSE_vJCYyZ1_XRbA>
+    <xmx:E267YJ351C6D4mO9SnISqYVNpzlJnt3GUyvSeDcm0rWSM6PyuY-4Xg>
+    <xmx:E267YDEa8cc8BCZT5XSe1GJzDdSgVWHzQ_brkAp-bV_bXf7cd2hB8w>
+    <xmx:Fm67YDGLMS-_IYXnr35e9TtPqCVqR9RrTjXnmM3GYqXGSP7El6S0EA>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id E519451C0060; Sat,  5 Jun 2021 08:29:06 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
+Mime-Version: 1.0
+Message-Id: <89b391d1-c076-491a-97c0-d08593c006e7@www.fastmail.com>
+In-Reply-To: <d50ad9392f7719c01f752e73a00d4dc83b1a5c5c.camel@pengutronix.de>
+References: <20210603085003.50465-1-sven@svenpeter.dev>
+ <20210603085003.50465-4-sven@svenpeter.dev>
+ <d50ad9392f7719c01f752e73a00d4dc83b1a5c5c.camel@pengutronix.de>
+Date:   Sat, 05 Jun 2021 14:28:27 +0200
+From:   "Sven Peter" <sven@svenpeter.dev>
+To:     "Rouven Czerwinski" <r.czerwinski@pengutronix.de>,
+        "Will Deacon" <will@kernel.org>,
+        "Robin Murphy" <robin.murphy@arm.com>,
+        "Joerg Roedel" <joro@8bytes.org>,
+        "Rob Herring" <robh+dt@kernel.org>
+Cc:     "Arnd Bergmann" <arnd@kernel.org>, devicetree@vger.kernel.org,
+        "Hector Martin" <marcan@marcan.st>, linux-kernel@vger.kernel.org,
+        "Marc Zyngier" <maz@kernel.org>,
+        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
+        "Stan Skowronek" <stan@corellium.com>,
+        linux-arm-kernel@lists.infradead.org,
+        "Mark Kettenis" <mark.kettenis@xs4all.nl>,
+        "Petr Mladek via iommu" <iommu@lists.linux-foundation.org>,
+        "Alexander Graf" <graf@amazon.com>
+Subject: Re: [PATCH v3 3/3] iommu: dart: Add DART iommu driver
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 05, 2021 at 01:33:07AM +0100, Russell King (Oracle) wrote:
-> On Sat, Jun 05, 2021 at 01:34:55AM +0200, Pali Rohár wrote:
-> > But as this is really confusing what each mode means for Linux, I would
-> > suggest that documentation for these modes in ethernet-controller.yaml
-> > file (or in any other location) could be extended. I see that it is
-> > really hard to find exact information what these modes mean and what is
-> > their meaning in DTS / kernel.
->
-> We have been adding documentation to:
->
-> Documentation/networking/phy.rst
->
-> for each of the modes that have had issues. The 2500base-X entry
-> hasn't been updated yet, as the question whether it can have in-band
-> signaling is unclear (there is no well defined standard for this.)
->
-> Some vendors state that there is no in-band signalling in 2500base-X.
-> Others (e.g. Xilinx) make it clear that it is optional. Others don't
-> say either way, and when testing hardware, it appears to be functional.
->
-> So, coming up with a clear definition for this, when we have no real
-> method in the DT file to say "definitely do not use in-band" is a tad
-> difficult.
+Hi Rouven,
 
-If you use phylink, doesn't the lack of
-	managed = "in-band-status";
-mean "definitely do not use in-band"?
+On Sat, Jun 5, 2021, at 13:50, Rouven Czerwinski wrote:
+> Hi Sven,
+>=20
+> just a small comment, see inline.
+>=20
+> On Thu, 2021-06-03 at 10:50 +0200, Sven Peter wrote:
+> > +
+> > +/* must be called with held dart_domain->lock */
+>=20
+> You can remove this comment, include lockdep.h and=E2=80=A6
+>=20
+> > +static int apple_dart_finalize_domain(struct iommu_domain *domain)
+> > +{
+> > +	struct apple_dart_domain *dart_domain =3D to_dart_domain(domain);
+> > +	struct apple_dart *dart =3D dart_domain->dart;
+> > +	struct io_pgtable_cfg pgtbl_cfg;
+> > +
+>=20
+> 	lockdep_assert_held(&dart_domain->lock);
+>=20
+> A lockdep enabled kernel will warn if this function is called without
+> the lock held, otherwise this gets optimized out. Same for the similar=
 
-> It started out as described - literally, 1000base-X multiplied by 2.5x.
-> There are setups where that is known to work - namely GPON SFPs that
-> support 2500base-X. What that means is that we know the GPON SFP
-> module negotiates in-band AN with 2500base-X. However, we don't know
-> whether the module will work if we disable in-band AN.
+> comments below.
+>=20
 
-Pardon my ignorance, but what is inside a GPON ONT module? Just a laser
-and some amplifiers? So it would still be the MAC PCS negotiating flow
-control with the remote link partner? That's a different use case from a
-PHY transmitting the negotiated link modes to the MAC.
+That looks very useful, thanks! Will use it for v4.
 
-> There is hardware out there as well which allows one to decide whether
-> to use in-band AN with 2500base-X or not. Xilinx is one such vendor
-> who explicitly documents this. Marvell on the other hand do not
-> prohibit in-band AN with mvneta, neither to they explicitly state it
-> is permitted. In at least one of their PHY documents, they suggest it
-> isn't supported if the MAC side is operating in 2500base-X.
->
-> Others (NXP) take the position that in-band AN is not supported at
-> 2500base-X speeds. I think a few months ago, Vladimir persuaded me
-> that we should disable in-band AN for 2500base-X - I had forgotten
-> about the Xilinx documentation I had which shows that it's optional.
-> (Practically, it's optional in hardware with 1000base-X too, but then
-> it's not actually conforming with 802.3's definition of 1000base-X.)
+I only found assert_spin_locked originally but didn't want to have that
+performance overhead for code that (I hope :-)) correctly uses these fun=
+ctions
+with a held lock right now.
 
-I don't think it is me who persuaded you, but rather the reality exposed
-by Marek Behun that the Marvell switches and PHYs don't support clause
-37 in-band AN either, at least when connected to one another, just the
-mvneta appears to do something with the GPON modules:
 
-https://lore.kernel.org/netdev/20210113011823.3e407b31@kernel.org/
+Thanks,
 
-I tend to agree, though. We should prevent in-band AN from being
-requested on implementations where we know it will not work. That
-includes any NXP products. In the case of DPAA1, this uses the same PCS
-block as DPAA2, ENETC, Felix and Seville, so if it were to use phylink
-and the common drivers/net/pcs/pcs-lynx.c driver, then the comment near
-the lynx_pcs_link_up_2500basex() function would equally apply to it too
-(I hope this answers Pali's original question).
 
-> The result is, essentially, a total mess. 2500base-X is not a standards
-> defined thing, so different vendors have gone off and done different
-> things.
+Sven
 
-Correct, I can not find any document mentioning what 2500base-x is either,
-while I can find documents mentioning SGMII at 2500Mbps.
-https://patents.google.com/patent/US7356047B1/en
-
-This Cisco patent does say a few things, like the fact that the link for
-10/100/1000/2500 SGMII should operate at 3.125 Gbaud, and there should
-be a rate adaptation unit separate from the PCS block, which should
-split a frame into 2 segments, and say for 1Gbps, the first segment
-should have its octets repeated twice, and the second segment should
-have its octets repeated 3 times.
-
-This patent also does _not_ say how the in-band autonegotiation code
-word should be adapted to switch between 10/100/1000/2500. Which makes
-the whole patent kind of useless as the basis for a standard for real
-life products.
-
-NXP does _not_ follow that patent (we cannot perform symbol replication
-in that way, and in fact I would be surprised if anyone does, given the
-lack of a way to negotiate between them), and with the limited knowledge
-I currently have, that is the only thing I would call "SGMII-2500".
-So Cisco "SGMII-2500" does in theory exist, but in practice it is a bit
-mythical given what is currently public knowledge.
-
-By the "genus proximum et differentia specifica" criterion, what we have
-according to Linux terminology is 2500base-x (whatever that might be, we
-at least know the baud rate and the coding scheme) without in-band AN.
-We don't seem to have any characteristic that would make the "genus
-proximum" be Cisco SGMII (i.e. we can't operate at any other speeds via
-symbol replication). But that is ok given the actual use, for example
-we achieve the lower speeds using PAUSE frames sent by the PHY.
-
-> Sometimes it's amazing that you can connect two devices together and
-> they will actually talk to each other!
-
-This is not so surprising to me, if you consider the fact that these
-devices were built to common sense specs communicated over email between
-engineers at different companies. There aren't really that many
-companies building these things. The fact that the standards bodies
-haven't kept up and unified the implementations is a different story.
-
-I can agree that the chosen name is confusing. What it is is an overclocked
-serial GMII (in the sense that it is intended as a MAC-to-PHY link),
-with no intended relation to Cisco SGMII. Being intended as a MAC-to-PHY
-link, clause 37 AN does not make sense because flow control is 100%
-managed by the PHY (negotiated over the copper side, as well as used for
-rate adaptation). So there _is_ some merit in calling it something with
-"serial" and "GMII" in the name, it is just describing what it is.
-Using this interface type over a PHY-less fiber SFP+ module (therefore
-using it to its BASE-X name) works by virtue of the fact that the
-signaling/coding is compatible, but it wasn't intended that way,
-otherwise it would have had support for clause 37 flow control resolution.
