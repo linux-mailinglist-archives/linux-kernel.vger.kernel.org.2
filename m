@@ -2,169 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171C839CAD7
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 22:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6132939CADA
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 22:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbhFEUOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 16:14:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56300 "EHLO mail.kernel.org"
+        id S230104AbhFEUQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 16:16:29 -0400
+Received: from mout02.posteo.de ([185.67.36.66]:47103 "EHLO mout02.posteo.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229998AbhFEUOo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 16:14:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DBA86120E;
-        Sat,  5 Jun 2021 20:12:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622923975;
-        bh=oiClRQ8zNAbJxP7fr7sthVt6TG4eCBIs03ldx9MHKTU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=pHygaBTofx5Zsas0gkUSSpCT0vgcTPSrpT6Fh1j1q/hLCci+7T7jPo2Tq+UNwXfZP
-         zypnr1hvpJ7Msl0qOpvIFZ4iVVq8lWtitKrV4Y/0QY4V8ZWZuNTYy4Tyh1cGXTNUAj
-         wanvE40shXxxW/ERojHgWuO7XtukY2L9lbwi51AN3HBQRVleXSZKFqCC3gF1Dg63ze
-         Mtovy7QZS8DngLJZ5JK7kCbWsz7OI3f21IVdrlJ4hmTytgUUQJv+gRK3IEcvUK8BiD
-         wXKFkM88scyhwOdT6K3K379+54FFEEutJp0VESbDo9RYRSt7yZgNrh1A+haLt7nbGZ
-         u1P/+0gGqTcTg==
-Date:   Sat, 5 Jun 2021 15:12:53 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Sandor Bodo-Merle <sbodomerle@gmail.com>
-Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Ray Jui <ray.jui@broadcom.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH] PCI: iproc: restrict multi-MSI to single core CPUs
-Message-ID: <20210605201253.GA2318292@bjorn-Precision-5520>
+        id S230048AbhFEUQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 16:16:27 -0400
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id BE4E12400FF
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Jun 2021 22:14:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
+        t=1622924077; bh=nDHCUqSUkkNBEjr1gvugejRktRvRb7DwVwnaQYqgTkI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EzbdNl4bd1CDjSTTyPRw3aQwEZLt2i7oCtC39gGH3nhC0n4aFea4cWsepQz99ZqgS
+         PL7p539kxFBdzZNtHVf428jFaj338bPQNEeferqoqLq41dLg1FnzHq5ajuAo1czf/d
+         CNQUT5qw9Q2IzUI30NKI33XiVlWtai4a1Q647USSX1GPGytZNG7v6xMVvUXngbCgpm
+         4xOfnGYrOzzq6f7h+S32LqQNgQYsCNQZr6N1lCN1ROx8AQhcGQEn8dyjq3ii+jySsC
+         8jydvYJoUGxBdRW4mJlOlFvnzDe1EGCqvAYnN6gPeb2/xNawaDC7NBT9M4PY9SUhMl
+         n06LZhJn4S7+Q==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4Fy9pP0X9yz9rxF;
+        Sat,  5 Jun 2021 22:14:37 +0200 (CEST)
+From:   Benjamin Drung <bdrung@posteo.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Adam Goode <agoode@google.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Benjamin Drung <bdrung@posteo.de>, stable@vger.kernel.org
+Subject: [PATCH v3] media: uvcvideo: Fix pixel format change for Elgato Cam Link 4K
+Date:   Sat,  5 Jun 2021 20:13:33 +0000
+Message-Id: <20210605201332.52040-1-bdrung@posteo.de>
+In-Reply-To: <YLqnU+FYSAcWwaAZ@pendragon.ideasonboard.com>
+References: <YLqnU+FYSAcWwaAZ@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210605171736.15755-1-sbodomerle@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Lorenzo, linux-pci]
+The Elgato Cam Link 4K HDMI video capture card reports to support three
+different pixel formats, where the first format depends on the connected
+HDMI device.
 
-You can use this to find the appropriate cc list:
+```
+$ v4l2-ctl -d /dev/video0 --list-formats-ext
+ioctl: VIDIOC_ENUM_FMT
+	Type: Video Capture
 
-  ./scripts/get_maintainer.pl -f drivers/pci/controller/pcie-iproc-msi.c
+	[0]: 'NV12' (Y/CbCr 4:2:0)
+		Size: Discrete 3840x2160
+			Interval: Discrete 0.033s (29.970 fps)
+	[1]: 'NV12' (Y/CbCr 4:2:0)
+		Size: Discrete 3840x2160
+			Interval: Discrete 0.033s (29.970 fps)
+	[2]: 'YU12' (Planar YUV 4:2:0)
+		Size: Discrete 3840x2160
+			Interval: Discrete 0.033s (29.970 fps)
+```
 
-I added Lorenzo and linux-pci for you.
+Changing the pixel format to anything besides the first pixel format
+does not work:
 
-Please update the subject line to:
+```
+$ v4l2-ctl -d /dev/video0 --try-fmt-video pixelformat=YU12
+Format Video Capture:
+	Width/Height      : 3840/2160
+	Pixel Format      : 'NV12' (Y/CbCr 4:2:0)
+	Field             : None
+	Bytes per Line    : 3840
+	Size Image        : 12441600
+	Colorspace        : sRGB
+	Transfer Function : Rec. 709
+	YCbCr/HSV Encoding: Rec. 709
+	Quantization      : Default (maps to Limited Range)
+	Flags             :
+```
 
-  PCI: iproc: Support multi-MSI only on uniprocessor kernel
+User space applications like VLC might show an error message on the
+terminal in that case:
 
-On Sat, Jun 05, 2021 at 07:17:36PM +0200, Sandor Bodo-Merle wrote:
-> Commit fc54bae28818 ("PCI: iproc: Allow allocation of multiple MSIs")
-> introduced multi-MSI support with a broken allocation mechanism (it failed to
-> reserve the proper number of bits from the inner domain).  Natural alignment of
-> the base vector number was also not guaranteed.
+```
+libv4l2: error set_fmt gave us a different result than try_fmt!
+```
 
-This sounds like it's fixing *two* problems: the bitmap allocation
-problem above, and the multi-MSI restriction problem below.  Please
-split this into two separate patches if possible.
+Depending on the error handling of the user space applications, they
+might display a distorted video, because they use the wrong pixel format
+for decoding the stream.
 
-> The interrupt affinity scheme used by this driver is incompatible with
-> multi-MSI as implies moving the doorbell address to that of another MSI group.
-> This isn't possible for Multi-MSI, as all the MSIs must have the same doorbell
-> address. As such it is restricted to systems with single CPU core.
+The Elgato Cam Link 4K responds to the USB video probe
+VS_PROBE_CONTROL/VS_COMMIT_CONTROL with a malformed data structure: The
+second byte contains bFormatIndex (instead of being the second byte of
+bmHint). The first byte is always zero. The third byte is always 1.
 
-Please rewrap the commit log to fit in 75 columns, so it still fits
-in 80 when "git log" indents it.
+The firmware bug was reported to Elgato on 2020-12-01 and it was
+forwarded by the support team to the developers as feature request.
+There is no firmware update available since then. The latest firmware
+for Elgato Cam Link 4K as of 2021-03-23 has MCU 20.02.19 and FPGA 67.
 
-s/as implies/as it implies/
-s/Multi-MSI/multi-MSI/ (or capitalize them all; just be consistent)
-s/with single CPU core/with a single CPU/
+Therefore add a quirk to correct the malformed data structure.
 
-Using "core" here ("single core CPUs" or "single CPU core") suggests
-that this has something to do with single-core CPUs vs multi-core
-CPUs, but I don't think that's the case.
+The quirk was successfully tested with VLC, OBS, and Chromium using
+different pixel formats (YUYV, NV12, YU12), resolutions (3840x2160,
+1920x1080), and frame rates (29.970 and 59.940 fps).
 
-The patch says the important thing is whether the kernel supports one
-CPU or several CPUs.  Whether they're in a single package or not is
-irrelevant.  And apparently multi-MSI even works fine when you boot a
-uniprocessor kernel (CONFIG_NR_CPUS=1) on a multi-processor machine.
+Cc: stable@vger.kernel.org
+Signed-off-by: Benjamin Drung <bdrung@posteo.de>
+---
+ drivers/media/usb/uvc/uvc_video.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-> Fixes: fc54bae28818 ("PCI: iproc: Allow allocation of multiple MSIs")
-> Reported-by: Pali Rohár <pali@kernel.org>
-> Signed-off-by: Sandor Bodo-Merle <sbodomerle@gmail.com>
-> ---
->  drivers/pci/controller/pcie-iproc-msi.c | 23 ++++++++++++-----------
->  1 file changed, 12 insertions(+), 11 deletions(-)
-> 
-> diff --git drivers/pci/controller/pcie-iproc-msi.c drivers/pci/controller/pcie-iproc-msi.c
+v2: enhanced the comment describing the quirk
 
-Patch is incorrectly generated and lacks a path element, so doesn't
-apply cleanly.  I don't know how you did this, but it should look like
-this (note the leading "a/" and "b/"):
+v3:
+* hardcode ctrl->bmHint to 1
+* Use UVC_DBG_VIDEO instead of UVC_DBG_CONTROL (to match the rest of the
+  file)
 
-  diff --git a/drivers/pci/controller/pcie-iproc-msi.c b/drivers/pci/controller/pcie-iproc-msi.c
+v4:
+* Replace quirk bit by specific check for USB VID:PID test
 
-> index eede4e8f3f75..2e42c460b626 100644
-> --- drivers/pci/controller/pcie-iproc-msi.c
-> +++ drivers/pci/controller/pcie-iproc-msi.c
-> @@ -171,7 +171,7 @@ static struct irq_chip iproc_msi_irq_chip = {
->  
->  static struct msi_domain_info iproc_msi_domain_info = {
->  	.flags = MSI_FLAG_USE_DEF_DOM_OPS | MSI_FLAG_USE_DEF_CHIP_OPS |
-> -		MSI_FLAG_MULTI_PCI_MSI | MSI_FLAG_PCI_MSIX,
-> +		MSI_FLAG_PCI_MSIX,
->  	.chip = &iproc_msi_irq_chip,
->  };
->  
-> @@ -252,18 +252,15 @@ static int iproc_msi_irq_domain_alloc(struct irq_domain *domain,
->  
->  	mutex_lock(&msi->bitmap_lock);
->  
-> -	/* Allocate 'nr_cpus' number of MSI vectors each time */
-> -	hwirq = bitmap_find_next_zero_area(msi->bitmap, msi->nr_msi_vecs, 0,
-> -					   msi->nr_cpus, 0);
-> -	if (hwirq < msi->nr_msi_vecs) {
-> -		bitmap_set(msi->bitmap, hwirq, msi->nr_cpus);
-> -	} else {
-> -		mutex_unlock(&msi->bitmap_lock);
-> -		return -ENOSPC;
-> -	}
-> +	/* Allocate 'nr_irqs' multiplied by 'nr_cpus' number of MSI vectors each time */
+I tried setting different values for bmHint, but the response from the
+Cam Link was always 1. So this patch hardcodes ctrl->bmHint to 1 as
+suggested.
 
-Can you wrap this comment so it fits in 80 columns, please?  The rest
-of the file is formatted for 80 columns, so it will be nice if this
-matches.
+Patch version 4 implements the recommendation of Laurent Pinchart. It
+requires defining the device ID as variable since usb_match_one_id takes
+an pointer to it. In case more Elgato products like Game Capture
+HD 60 S+ (0fd9:006a) are affected, this version is harder to extent.
 
-> +	hwirq = bitmap_find_free_region(msi->bitmap, msi->nr_msi_vecs,
-> +					order_base_2(msi->nr_cpus * nr_irqs));
->  
->  	mutex_unlock(&msi->bitmap_lock);
->  
-> +	if (hwirq < 0)
-> +		return -ENOSPC;
-> +
->  	for (i = 0; i < nr_irqs; i++) {
->  		irq_domain_set_info(domain, virq + i, hwirq + i,
->  				    &iproc_msi_bottom_irq_chip,
-> @@ -284,7 +281,8 @@ static void iproc_msi_irq_domain_free(struct irq_domain *domain,
->  	mutex_lock(&msi->bitmap_lock);
->  
->  	hwirq = hwirq_to_canonical_hwirq(msi, data->hwirq);
-> -	bitmap_clear(msi->bitmap, hwirq, msi->nr_cpus);
-> +	bitmap_release_region(msi->bitmap, hwirq,
-> +			      order_base_2(msi->nr_cpus * nr_irqs));
->  
->  	mutex_unlock(&msi->bitmap_lock);
->  
-> @@ -539,6 +537,9 @@ int iproc_msi_init(struct iproc_pcie *pcie, struct device_node *node)
->  	mutex_init(&msi->bitmap_lock);
->  	msi->nr_cpus = num_possible_cpus();
->  
-> +	if (msi->nr_cpus == 1)
-> +		iproc_msi_domain_info.flags |=  MSI_FLAG_MULTI_PCI_MSI;
-> +
->  	msi->nr_irqs = of_irq_count(node);
->  	if (!msi->nr_irqs) {
->  		dev_err(pcie->dev, "found no MSI GIC interrupt\n");
-> -- 
-> 2.31.0
-> 
+Take patch version 3 or 4 depending on which version you prefer. Both
+work and are tested.
+
+diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+index a777b389a66e..35c3ce0e0716 100644
+--- a/drivers/media/usb/uvc/uvc_video.c
++++ b/drivers/media/usb/uvc/uvc_video.c
+@@ -130,6 +130,31 @@ static void uvc_fixup_video_ctrl(struct uvc_streaming *stream,
+ 	struct uvc_format *format = NULL;
+ 	struct uvc_frame *frame = NULL;
+ 	unsigned int i;
++	static const struct usb_device_id elgato_cam_link_4k = { USB_DEVICE(0x0fd9, 0x0066) };
++
++	/*
++	 * The response of the Elgato Cam Link 4K is incorrect: The second byte
++	 * contains bFormatIndex (instead of being the second byte of bmHint).
++	 * The first byte is always zero. The third byte is always 1.
++	 *
++	 * The UVC 1.5 class specification defines the first five bits in the
++	 * bmHint bitfield. The remaining bits are reserved and should be zero.
++	 * Therefore a valid bmHint will be less than 32.
++	 *
++	 * Latest Elgato Cam Link 4K firmware as of 2021-03-23 needs this quirk.
++	 * MCU: 20.02.19, FPGA: 67
++	 */
++	if (usb_match_one_id(stream->dev->intf, &elgato_cam_link_4k) && ctrl->bmHint > 255) {
++		__u8 corrected_format_index;
++
++		corrected_format_index = ctrl->bmHint >> 8;
++		uvc_dbg(stream->dev, VIDEO,
++			"Correct USB video probe response from {bmHint: 0x%04x, bFormatIndex: 0x%02x} to {bmHint: 0x%04x, bFormatIndex: 0x%02x}.\n",
++			ctrl->bmHint, ctrl->bFormatIndex,
++			1, corrected_format_index);
++		ctrl->bmHint = 1;
++		ctrl->bFormatIndex = corrected_format_index;
++	}
+ 
+ 	for (i = 0; i < stream->nformats; ++i) {
+ 		if (stream->format[i].index == ctrl->bFormatIndex) {
+-- 
+2.27.0
+
