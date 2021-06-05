@@ -2,77 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E330E39C573
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 05:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5FAE39C56C
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 05:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbhFEDYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 23:24:07 -0400
-Received: from mail-m121144.qiye.163.com ([115.236.121.144]:56436 "EHLO
-        mail-m121144.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229778AbhFEDYG (ORCPT
+        id S230414AbhFEDTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 23:19:43 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:4310 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229998AbhFEDTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 23:24:06 -0400
-Received: from Wanjb.localdomain (unknown [36.152.145.182])
-        by mail-m121144.qiye.163.com (Hmail) with ESMTPA id D2C4CAC00AC;
-        Sat,  5 Jun 2021 11:22:16 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
-        Imre Deak <imre.deak@intel.com>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Anusha Srivatsa <anusha.srivatsa@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] drm/i915/display: remove duplicated argument
-Date:   Sat,  5 Jun 2021 11:22:07 +0800
-Message-Id: <20210605032209.16111-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 4 Jun 2021 23:19:43 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Fxl7l4QrLz1BGSw;
+        Sat,  5 Jun 2021 11:13:07 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 5 Jun 2021 11:17:53 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 5 Jun 2021
+ 11:17:53 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>
+CC:     <pavel@ucw.cz>
+Subject: [PATCH -next] leds: wm831x-status: use devm_led_classdev_register()
+Date:   Sat, 5 Jun 2021 11:22:12 +0800
+Message-ID: <20210605032212.698200-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQ0NIHVZKSEMdSUNITk4ZQ09VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PRQ6TBw6Lj8JIwlOOEspHz0q
-        KhMwCglVSlVKTUlJQ01ISEhMTkNMVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFJQ0xLNwY+
-X-HM-Tid: 0a79da315725b039kuuud2c4cac00ac
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
+Use devm_led_classdev_register() for led device registration and
+get rid of .remove callback to remove led device. This is done by
+managed device framework.
 
-./drivers/gpu/drm/i915/display/intel_display_power.c:3081:1-28:
- duplicated argument to & or |
-
-This commit fixes duplicate argument. It might be a typo.
-But what I can do is to remove it now.
-
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- drivers/gpu/drm/i915/display/intel_display_power.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/leds/leds-wm831x-status.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/display/intel_display_power.c b/drivers/gpu/drm/i915/display/intel_display_power.c
-index 3e1f6ec61514..4298ae684d7d 100644
---- a/drivers/gpu/drm/i915/display/intel_display_power.c
-+++ b/drivers/gpu/drm/i915/display/intel_display_power.c
-@@ -3078,7 +3078,6 @@ intel_display_power_put_mask_in_set(struct drm_i915_private *i915,
- 	BIT_ULL(POWER_DOMAIN_PORT_DDI_C_LANES) |	\
- 	BIT_ULL(POWER_DOMAIN_PORT_DDI_LANES_D_XELPD) |	\
- 	BIT_ULL(POWER_DOMAIN_PORT_DDI_LANES_E_XELPD) |	\
--	BIT_ULL(POWER_DOMAIN_AUX_C) |			\
- 	BIT_ULL(POWER_DOMAIN_PORT_DDI_LANES_TC1) |	\
- 	BIT_ULL(POWER_DOMAIN_PORT_DDI_LANES_TC2) |	\
- 	BIT_ULL(POWER_DOMAIN_PORT_DDI_LANES_TC3) |	\
+diff --git a/drivers/leds/leds-wm831x-status.c b/drivers/leds/leds-wm831x-status.c
+index c48b80574f02..8ccd8b472572 100644
+--- a/drivers/leds/leds-wm831x-status.c
++++ b/drivers/leds/leds-wm831x-status.c
+@@ -269,7 +269,7 @@ static int wm831x_status_probe(struct platform_device *pdev)
+ 	drvdata->cdev.blink_set = wm831x_status_blink_set;
+ 	drvdata->cdev.groups = wm831x_status_groups;
+ 
+-	ret = led_classdev_register(wm831x->dev, &drvdata->cdev);
++	ret = devm_led_classdev_register(wm831x->dev, &drvdata->cdev);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "Failed to register LED: %d\n", ret);
+ 		return ret;
+@@ -280,21 +280,11 @@ static int wm831x_status_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int wm831x_status_remove(struct platform_device *pdev)
+-{
+-	struct wm831x_status *drvdata = platform_get_drvdata(pdev);
+-
+-	led_classdev_unregister(&drvdata->cdev);
+-
+-	return 0;
+-}
+-
+ static struct platform_driver wm831x_status_driver = {
+ 	.driver = {
+ 		   .name = "wm831x-status",
+ 		   },
+ 	.probe = wm831x_status_probe,
+-	.remove = wm831x_status_remove,
+ };
+ 
+ module_platform_driver(wm831x_status_driver);
 -- 
-2.20.1
+2.25.1
 
