@@ -2,86 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A33239C93D
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 16:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D030739C940
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 16:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbhFEOwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 10:52:50 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:56576 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhFEOwt (ORCPT
+        id S229931AbhFEOyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 10:54:05 -0400
+Received: from mail-ua1-f53.google.com ([209.85.222.53]:38519 "EHLO
+        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230112AbhFEOyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 10:52:49 -0400
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 155EonWD011460;
-        Sat, 5 Jun 2021 23:50:49 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 155EonWD011460
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1622904650;
-        bh=0R/kfUeR+gIHgRaI65q/lVZY4TzLH5HyqLuf8P5DTUU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=pUldV/D7NzRnShJ2JXfvcYe0VVK2goCKAf672etZLdVrUiqQXYD4Ob2xqCcgRjnwi
-         qAFeqUfOnUQVYz2zKGON2DQL6MBnljJ2YA7v+uQBfjTZD9Sp8UfmQndMABQTxShfdn
-         SZs1sWcBzD1BD3LLXuVw2eO1io/yr62l5fktEFxGsNaMe93LPjgLmzpANcY+nLLhZ7
-         UG6gDTiKmbrdkbS0X+0TGSVXr8STnPO/RRh4ZOw1+gGxhWALCsgfdB+sbZjGCOYrZu
-         1mKstCs1+zFH+w1Ky2w6iscHbV4vvQ9KpjMmJT2A5l/XSH9arrdOfNtb8lJmUaZ2WY
-         XSO7NG1zite/g==
-X-Nifty-SrcIP: [209.85.210.175]
-Received: by mail-pf1-f175.google.com with SMTP id u126so5622206pfu.13;
-        Sat, 05 Jun 2021 07:50:49 -0700 (PDT)
-X-Gm-Message-State: AOAM531NqjXgMMiyAgjN05LhlmMBwo3BwSgp/Cr7JnEYI4HmuP1SA9vY
-        VEqb3/l3KNQj2IRwvoZlVkl0DsgFUX5+4g+fHJA=
-X-Google-Smtp-Source: ABdhPJy/lwWexxX5CzHKzO795nR5J+PtyS3sS3cKV8RqA/YF12TaCe+h+W5TNRq4ehP8sEZEbg91EC9hF+315lTNENs=
-X-Received: by 2002:a62:2581:0:b029:2ea:228e:5a37 with SMTP id
- l123-20020a6225810000b02902ea228e5a37mr9499914pfl.63.1622904649006; Sat, 05
- Jun 2021 07:50:49 -0700 (PDT)
+        Sat, 5 Jun 2021 10:54:04 -0400
+Received: by mail-ua1-f53.google.com with SMTP id d13so6273047uav.5
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 07:52:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=EaYMRz5FnMODqFyqdlRK0aeJzGq0sU+8h7rdTmyh4FI=;
+        b=OnLDaNMeg+Jz5REkQr9/Veu+4UVm+yAQAcq935Z1UmoEeCG94DnXjE4xEFtyQvNPln
+         pcTDLgySGaaUode2vpolq8a58/KcOgXYZFeDQCy3KBRXPdRwUdxkkT8PI0pAFrggTJkR
+         jStRMBOW5G4vs75HpdwRW6qUskE9dAYC0i5BB6AHLlfSFM3kjp1EqEr9zp4LBtkZ8+7z
+         LgkxaK6SsB4eo1xG0JPzOZvFyZt/TL+LZXWvgJOhWbB42zFD2i0xOBvqyKfDLxvj1NaV
+         tSH7AVn2Kzpzr+CjDSJXSkfdtNX+b/i9xB+BhFhoBHfblvSCA5yDxF0Cl63yPaFBMosx
+         GdKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=EaYMRz5FnMODqFyqdlRK0aeJzGq0sU+8h7rdTmyh4FI=;
+        b=rFpdxBICT8fNSUj+OwznklWB5RSHML77K6JLWziWizdNCYuOXC4D2EjlwD4e/zEBZy
+         vGDTOkKM88Jj08aynIJcOWAgHVSfJzqHbE7czs3h/xS2cLI03IX+Mrzabc/zrBvJ4bRi
+         LHG2pQFsMRh9K5axfzlixWanLxHZLTHOQx1Q4hz2wGLtyzu8zS7sASmZpo6ZkLQiTozx
+         qBw7KMh7wYcPccfLjoM7lemOaH848PfCq16pHrB/DgZAIBGY+uM7tjqexWLDxIZVzwmf
+         zTEDGU9yfi9QjH1dNRQIhLyWFsCnWV6CQ4/+eUN06NW4zYlVTsjJ/KOL1kdWwGUpsxTf
+         xI7w==
+X-Gm-Message-State: AOAM5316URyDvwdTUK/Lzan3mVohsrGr6u4i0QWmdI1RB9z6NhkJ9wD3
+        8WS+OjHJwKKe7Vjn7j5PwW8lGSLNKOvVp0YpxsiCNY7B1LXjcw==
+X-Google-Smtp-Source: ABdhPJxR+RZZiKqyMSS5ZrW0TyrriuzYpeu3BcY0o581d89sWGIvLZmNDSxpDSdS33OiMDbdZQX1DD8KCCcjAT6Us+4=
+X-Received: by 2002:a1f:a681:: with SMTP id p123mr5234215vke.22.1622904665047;
+ Sat, 05 Jun 2021 07:51:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210528171321.158586-1-masahiroy@kernel.org>
-In-Reply-To: <20210528171321.158586-1-masahiroy@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 5 Jun 2021 23:50:11 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQdUtUwuZdx6PfxVtnwZ9Yzde24xv2d7C_xjuYMUmRQxg@mail.gmail.com>
-Message-ID: <CAK7LNAQdUtUwuZdx6PfxVtnwZ9Yzde24xv2d7C_xjuYMUmRQxg@mail.gmail.com>
-Subject: Re: [PATCH] kconfig: constify long_opts
-To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   jim.cromie@gmail.com
+Date:   Sat, 5 Jun 2021 08:50:39 -0600
+Message-ID: <CAJfuBxxo5hQLK36J1yL2MV3Zkfdnk=OmGh6Fms1adjB0GWULqA@mail.gmail.com>
+Subject: how to return a chunk of kernel .data to free mem ?
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Jason Baron <jbaron@akamai.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 29, 2021 at 2:13 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> getopt_long() does not modify the logopts structure.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
+I have convinced DYNAMIC_DEBUG code to not need
+about 15% of its __dyndbg section, about 30kb on my test kernel.
 
+This memory is not kmalloc'd, so krealloc wont work.
+(I tried anyway, on a loaded module, it panicd)
 
-Applied to linux-kbuild.
+Is there a way to return a chunk of init .data memory to general use ?
 
-
->  scripts/kconfig/conf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/scripts/kconfig/conf.c b/scripts/kconfig/conf.c
-> index bfa1ea8f5f98..5d84b44a2a2a 100644
-> --- a/scripts/kconfig/conf.c
-> +++ b/scripts/kconfig/conf.c
-> @@ -678,7 +678,7 @@ static void check_conf(struct menu *menu)
->                 check_conf(child);
->  }
->
-> -static struct option long_opts[] = {
-> +static const struct option long_opts[] = {
->         {"help",          no_argument,       NULL,            'h'},
->         {"silent",        no_argument,       NULL,            's'},
->         {"oldaskconfig",  no_argument,       &input_mode_opt, oldaskconfig},
-> --
-> 2.27.0
->
-
-
--- 
-Best Regards
-Masahiro Yamada
+heres the patchset;
+https://lore.kernel.org/lkml/20210529200029.205306-1-jim.cromie@gmail.com/
