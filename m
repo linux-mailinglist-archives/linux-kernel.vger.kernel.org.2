@@ -2,267 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E515D39C852
+	by mail.lfdr.de (Postfix) with ESMTP id 69BFA39C851
 	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 15:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbhFENCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 09:02:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60900 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229938AbhFENCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229964AbhFENCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sat, 5 Jun 2021 09:02:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D47B3613F8;
-        Sat,  5 Jun 2021 13:00:18 +0000 (UTC)
-Date:   Sat, 5 Jun 2021 15:00:16 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Giuseppe Scrivano <gscrivan@redhat.com>
-Cc:     ebiederm@xmission.com, "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] userns: automatically split user namespace extent
-Message-ID: <20210605130016.jdkkviwtuefocset@wittgenstein>
-References: <20201203150252.1229077-1-gscrivan@redhat.com>
- <20210510172351.GA19918@mail.hallyn.com>
- <20210510185715.GA20897@mail.hallyn.com>
- <87h7idbskw.fsf@redhat.com>
+Received: from mail-il1-f197.google.com ([209.85.166.197]:42727 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229916AbhFENCH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 09:02:07 -0400
+Received: by mail-il1-f197.google.com with SMTP id d17-20020a9236110000b02901cf25fcfdcdso8362617ila.9
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 06:00:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=iFXTtA8X2z+eX4opBgGHQYkpp91LW96NGV28D3XR+Ng=;
+        b=PiSsmxlI92Pd43OxtpDQYP8gtgTsN73E/Bsf1rtOXSA3AeSkNxdkOL8QKqLnnoilIB
+         acA3R8grgb4Ryl7+etjwP9UE2Q53BG0o3cT9g202+uEJKrTS7ELK6QY/0fYpkv+X53sS
+         8Bc1FcdSXc5i/sOM6wvE1K4X1lS4zDXXWv7lcErNEf27xbb8wKnChVaYY0cHR62yrAfq
+         yi7K3IbwyzZci/rEVv5E8LebCw7vjPl+tt/xqWOKMX43fjiQqfU2m/3UjnYtZI6gA9+L
+         xHk3GDE7OhJUMoHGgvVtt2DzBm9PhdJ8msAeRmJmj4KDEZwUkTDrMG09nv2wSlukLu0H
+         RZiA==
+X-Gm-Message-State: AOAM532sX1keCrKu+4ymbdN2q6x9FaXz9X8VD9YZgdNATIVT5o6Lt2+R
+        ulEqddwZ4ScTxAxBNzZe4i9xTkNkumg77+GkZGEE65ZpiI2v
+X-Google-Smtp-Source: ABdhPJxtDacZtV+pZIa+ZFcWZKxKwjVxI6fAAwh1dDcQ4+ayVG4yStlGizPDvEBT3naENRsqWpk52UnlWZEPebrRZZHbdFh5UbRF
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87h7idbskw.fsf@redhat.com>
+X-Received: by 2002:a5d:83ce:: with SMTP id u14mr7879807ior.45.1622898019609;
+ Sat, 05 Jun 2021 06:00:19 -0700 (PDT)
+Date:   Sat, 05 Jun 2021 06:00:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f7365905c4046327@google.com>
+Subject: [syzbot] WARNING in dlfb_set_video_mode/usb_submit_urb
+From:   syzbot <syzbot+b70e32fc4c6568d6d19e@syzkaller.appspotmail.com>
+To:     bernie@plugable.com, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 04:41:19PM +0200, Giuseppe Scrivano wrote:
-> Christian, Eric,
-> 
-> are you fine with this patch or is there anything more you'd like me to
-> change?
+Hello,
 
-Before being a little bit of a party pooper thanks for your patches! I
-appreciate the work you're doing!
+syzbot found the following issue on:
 
-So my concern is that this may cause silent regressions/security issues
-for tools in userspace by making this work automagically.
+HEAD commit:    c2131f7e Merge tag 'gfs2-v5.13-rc2-fixes' of git://git.ker..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1204b5d3d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e2ecf1aa681aadc1
+dashboard link: https://syzkaller.appspot.com/bug?extid=b70e32fc4c6568d6d19e
+compiler:       Debian clang version 11.0.1-2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15282db7d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1763504dd00000
 
-For example we have a go library that calculates idmap ranges and
-extents. Those idmappings are stored in the database and in the
-container's config and for backups and so on.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b70e32fc4c6568d6d19e@syzkaller.appspotmail.com
 
-The calculated extents match exactly with how these lines look in
-/proc/<pid>/*id_map.
-If we miscalculate the extents and we try to write them to
-/proc/<pid>/*id_map we get told to go away and immediately recognize the
-bug.
-With this patch however we may succeed and then we record misleading
-extents in the db or the config.
+usb 1-1: Read EDID byte 0 failed: -71
+usb 1-1: Read EDID byte 0 failed: -71
+usb 1-1: Read EDID byte 0 failed: -71
+usb 1-1: Unable to get valid EDID from device/display
+------------[ cut here ]------------
+usb 1-1: BOGUS urb xfer, pipe 3 != type 1
+WARNING: CPU: 0 PID: 8629 at drivers/usb/core/urb.c:494 usb_submit_urb+0xacd/0x1550 drivers/usb/core/urb.c:493
+Modules linked in:
+CPU: 0 PID: 8629 Comm: kworker/0:4 Not tainted 5.13.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+RIP: 0010:usb_submit_urb+0xacd/0x1550 drivers/usb/core/urb.c:493
+Code: d8 48 c1 e8 03 42 8a 04 28 84 c0 0f 85 bd 07 00 00 44 8b 03 48 c7 c7 80 86 e1 8a 4c 89 f6 4c 89 fa 89 e9 31 c0 e8 63 c7 8f fb <0f> 0b 4c 8b 74 24 30 45 89 f7 4c 89 ff 48 c7 c6 70 e1 8d 8d e8 6a
+RSP: 0018:ffffc90001f36660 EFLAGS: 00010246
+RAX: 0baf7fe5b4c01b00 RBX: ffffffff8ae184ac RCX: ffff888035c09c40
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: 0000000000000003 R08: ffffffff81655632 R09: ffffed1017345f90
+R10: ffffed1017345f90 R11: 0000000000000000 R12: ffff888017813700
+R13: dffffc0000000000 R14: ffffffff8ae226e0 R15: ffff888017212b90
+FS:  0000000000000000(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fe721263740 CR3: 0000000017ff3000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ dlfb_submit_urb drivers/video/fbdev/udlfb.c:1969 [inline]
+ dlfb_set_video_mode+0x1b2a/0x3500 drivers/video/fbdev/udlfb.c:315
+ dlfb_ops_set_par+0x731/0xb50 drivers/video/fbdev/udlfb.c:1110
+ dlfb_usb_probe+0x184e/0x21b0 drivers/video/fbdev/udlfb.c:1732
+ usb_probe_interface+0x633/0xb40 drivers/usb/core/driver.c:396
+ really_probe+0x3cb/0x1020 drivers/base/dd.c:580
+ driver_probe_device+0x178/0x350 drivers/base/dd.c:763
+ bus_for_each_drv+0x16a/0x1f0 drivers/base/bus.c:431
+ __device_attach+0x301/0x560 drivers/base/dd.c:938
+ bus_probe_device+0xb8/0x1f0 drivers/base/bus.c:491
+ device_add+0x11fc/0x1670 drivers/base/core.c:3324
+ usb_set_configuration+0x1a86/0x2100 drivers/usb/core/message.c:2164
+ usb_generic_driver_probe+0x83/0x140 drivers/usb/core/generic.c:238
+ usb_probe_device+0x13a/0x260 drivers/usb/core/driver.c:293
+ really_probe+0x3cb/0x1020 drivers/base/dd.c:580
+ driver_probe_device+0x178/0x350 drivers/base/dd.c:763
+ bus_for_each_drv+0x16a/0x1f0 drivers/base/bus.c:431
+ __device_attach+0x301/0x560 drivers/base/dd.c:938
+ bus_probe_device+0xb8/0x1f0 drivers/base/bus.c:491
+ device_add+0x11fc/0x1670 drivers/base/core.c:3324
+ usb_new_device+0xd45/0x1790 drivers/usb/core/hub.c:2556
+ hub_port_connect+0x1055/0x27a0 drivers/usb/core/hub.c:5276
+ hub_port_connect_change+0x5d0/0xbf0 drivers/usb/core/hub.c:5416
+ port_event+0xaee/0x1140 drivers/usb/core/hub.c:5562
+ hub_event+0x48d/0xd90 drivers/usb/core/hub.c:5644
+ process_one_work+0x833/0x10c0 kernel/workqueue.c:2276
+ worker_thread+0xac1/0x1300 kernel/workqueue.c:2422
+ kthread+0x39a/0x3c0 kernel/kthread.c:313
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
-Turning this into a general concern, I think it is a non-trivial
-semantic change to break up the 1:1 correspondence between mappings
-written and mappings applied that we had for such a long time now.
 
-In general I'm not sure it should be the kernel that has the idmapping
-ranges smarts.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-I'd rather see a generic userspace library that container runtimes make
-use of that also breaks up idmapping ranges. We can certainly accomodate
-this in
-https://pkg.go.dev/github.com/lxc/lxd/shared/idmap
-
-Is that a reasonable concern?
-
-Christian
-
-> 
-> Thanks,
-> Giuseppe
-> 
-> 
-> 
-> "Serge E. Hallyn" <serge@hallyn.com> writes:
-> 
-> > On Mon, May 10, 2021 at 12:23:51PM -0500, Serge E. Hallyn wrote:
-> >> On Thu, Dec 03, 2020 at 04:02:52PM +0100, Giuseppe Scrivano wrote:
-> >> > writing to the id map fails when an extent overlaps multiple mappings
-> >> > in the parent user namespace, e.g.:
-> >> > 
-> >> > $ cat /proc/self/uid_map
-> >> >          0       1000          1
-> >> >          1     100000      65536
-> >> > $ unshare -U sleep 100 &
-> >> > [1] 1029703
-> >> > $ printf "0 0 100\n" | tee /proc/$!/uid_map
-> >> > 0 0 100
-> >> > tee: /proc/1029703/uid_map: Operation not permitted
-> >> > 
-> >> > To prevent it from happening, automatically split an extent so that
-> >> > each portion fits in one extent in the parent user namespace.
-> >> > 
-> >> > $ cat /proc/self/uid_map
-> >> >          0       1000          1
-> >> >          1     110000      65536
-> >> > $ unshare -U sleep 100 &
-> >> > [1] 1552
-> >> > $ printf "0 0 100\n" | tee /proc/$!/uid_map
-> >> > 0 0 100
-> >> > $ cat /proc/$!/uid_map
-> >> >          0          0          1
-> >> >          1          1         99
-> >> > 
-> >> > Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
-> >> 
-> >> The patch on the whole looks great, easy to reason about.  But I have
-> >> one question below:
-> >
-> > As you pointed out, I was misreading the variable name, thank you :)
-> >
-> > Reviewed-by: Serge Hallyn <serge@hallyn.com>
-> >
-> >> 
-> >> > ---
-> >> > v2:
-> >> > - move the split logic when the extent are mapped to the parent map to
-> >> >   reduce lookup complexity.
-> >> > 
-> >> > v1: https://lkml.kernel.org/lkml/20201126100839.381415-1-gscrivan@redhat.com
-> >> > 
-> >> >  kernel/user_namespace.c | 79 +++++++++++++++++++++++++++++++++++------
-> >> >  1 file changed, 68 insertions(+), 11 deletions(-)
-> >> > 
-> >> > diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
-> >> > index 87804e0371fe..550612c6e794 100644
-> >> > --- a/kernel/user_namespace.c
-> >> > +++ b/kernel/user_namespace.c
-> >> > @@ -312,6 +312,55 @@ static u32 map_id_down(struct uid_gid_map *map, u32 id)
-> >> >  	return map_id_range_down(map, id, 1);
-> >> >  }
-> >> >  
-> >> > +/**
-> >> > + * find_and_split_extent_down - Find lower_first for the target extent
-> >> > + * using the specified map.
-> >> > + * If the extent doesn't fit in a single lower extent, split target and
-> >> > + * write the remaining IDs (first and count) to the overflow extent.
-> >> > + * If no overflow happens, overflow->count is set to 0.
-> >> > + */
-> >> > +static int find_and_split_extent_down(struct uid_gid_map *map,
-> >> > +				       struct uid_gid_extent *target,
-> >> > +				       struct uid_gid_extent *overflow)
-> >> > +{
-> >> > +	unsigned int extents = map->nr_extents;
-> >> > +	u32 lower_first = target->lower_first;
-> >> > +	struct uid_gid_extent *extent;
-> >> > +	u32 off, available;
-> >> > +
-> >> > +	overflow->count = 0;
-> >> > +
-> >> > +	/* Find the lower extent that includes the first ID.  */
-> >> > +	if (extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
-> >> > +		extent = map_id_range_down_base(extents, map, lower_first, 1);
-> >> > +	else
-> >> > +		extent = map_id_range_down_max(extents, map, lower_first, 1);
-> >> > +
-> >> > +	/* Could not map the first ID in the extent.  */
-> >> > +	if (extent == NULL)
-> >> > +		return -EPERM;
-> >> > +
-> >> > +	/* Offset of lower_first in the lower extent.  */
-> >> > +	off = target->lower_first - extent->first;
-> >> > +
-> >> > +	/* How many IDs are available in the lower extent?  */
-> >> > +	available = extent->count - off;
-> >> > +
-> >> > +	/* Requesting more IDs than available in the lower extent.  */
-> >> > +	if (target->count > available) {
-> >> > +		/* Move the remaining IDs to the overflow extent.  */
-> >> > +		overflow->first = target->first + available;
-> >> > +		overflow->lower_first = target->lower_first + available;
-> >> > +		overflow->count = target->count - available;
-> >> > +
-> >> > +		/* Shrink the initial extent to what is available.  */
-> >> > +		target->count = available;
-> >> > +	}
-> >> > +
-> >> > +	target->lower_first = extent->lower_first + off;
-> >> > +	return 0;
-> >> > +}
-> >> > +
-> >> >  /**
-> >> >   * map_id_up_base - Find idmap via binary search in static extent array.
-> >> >   * Can only be called if number of mappings is equal or less than
-> >> > @@ -749,6 +798,7 @@ static bool mappings_overlap(struct uid_gid_map *new_map,
-> >> >   * insert_extent - Safely insert a new idmap extent into struct uid_gid_map.
-> >> >   * Takes care to allocate a 4K block of memory if the number of mappings exceeds
-> >> >   * UID_GID_MAP_MAX_BASE_EXTENTS.
-> >> > + * The extent is appended at the position map->nr_extents.
-> >> >   */
-> >> >  static int insert_extent(struct uid_gid_map *map, struct uid_gid_extent *extent)
-> >> >  {
-> >> > @@ -968,30 +1018,37 @@ static ssize_t map_write(struct file *file, const char __user *buf,
-> >> >  	if (!new_idmap_permitted(file, ns, cap_setid, &new_map))
-> >> >  		goto out;
-> >> >  
-> >> > -	ret = -EPERM;
-> >> >  	/* Map the lower ids from the parent user namespace to the
-> >> >  	 * kernel global id space.
-> >> >  	 */
-> >> >  	for (idx = 0; idx < new_map.nr_extents; idx++) {
-> >> > +		struct uid_gid_extent overflow;
-> >> >  		struct uid_gid_extent *e;
-> >> > -		u32 lower_first;
-> >> >  
-> >> >  		if (new_map.nr_extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
-> >> >  			e = &new_map.extent[idx];
-> >> >  		else
-> >> >  			e = &new_map.forward[idx];
-> >> >  
-> >> > -		lower_first = map_id_range_down(parent_map,
-> >> > -						e->lower_first,
-> >> > -						e->count);
-> >> > -
-> >> > -		/* Fail if we can not map the specified extent to
-> >> > -		 * the kernel global id space.
-> >> > -		 */
-> >> > -		if (lower_first == (u32) -1)
-> >> > +		ret = find_and_split_extent_down(parent_map, e, &overflow);
-> >> > +		if (ret < 0)
-> >> >  			goto out;
-> >> >  
-> >> > -		e->lower_first = lower_first;
-> >> > +		/* If the extent doesn't fit in a single lower extent,
-> >> > +		 * move what could not be mapped to a new extent.
-> >> > +		 * The new extent is appended to the existing ones in
-> >> > +		 * new_map, it will be checked again and if necessary it
-> >> > +		 * is split further.
-> >> > +		 */
-> >> > +		if (overflow.count > 0) {
-> >> > +			if (new_map.nr_extents == UID_GID_MAP_MAX_EXTENTS) {
-> >> 
-> >> Why are you doing this?  The insert_extent() will automatically extend it
-> >> if needed, right?  So this condition should be fine?
-> >> 
-> >> > +				ret = -EINVAL;
-> >> > +				goto out;
-> >> > +			}
-> >> > +			ret = insert_extent(&new_map, &overflow);
-> >> > +			if (ret < 0)
-> >> > +				goto out;
-> >> > +		}
-> >> >  	}
-> >> >  
-> >> >  	/*
-> >> > -- 
-> >> > 2.28.0
-> >> 
-> >> Cheers,
-> >> Balint
-> >> 
-> >> >
-> >> > -serge
-> >> 
-> >> 
-> >> 
-> >> -- 
-> >> Balint Reczey
-> >> Ubuntu & Debian Developer
-> >> > 
-> >
-> 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
