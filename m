@@ -2,86 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F18D39C762
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 12:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A2F139C766
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 12:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhFEKUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 06:20:41 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58366 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229892AbhFEKUk (ORCPT
+        id S230019AbhFEK1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 06:27:42 -0400
+Received: from mail-wr1-f43.google.com ([209.85.221.43]:43578 "EHLO
+        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229902AbhFEK1k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 06:20:40 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622888331;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HGQSnyxSd6gfdoXrtQHIy8tVXnS/aduJxY/LMJIFW4Q=;
-        b=Xhph6mntOUK6AhYp0QEBEXsBxxJ2VDL5UJBh97iRggIWwJuOL50M6V5WCglGH1Fz+EdiiS
-        TGyESlM5V32sHNoF31wwYHYTA3HN2waSjyk1DGaxL1diD7OXdH7yPch9W8W+qjCbB3YkAP
-        cmz8rmqMNan32IbzYqzYW8wMp/6lBuJUuOTDpvdHMBX7g8V9CjoaQVIe8J0e+82JqIbDP5
-        bYJLh7Cg7W9kYrXM0diqdPag+oiPLwcoSMOTv8FVaGalRSA262GMgz6sT4yQzsvvWnYbxD
-        BL5Cq9E0vWcE7gIc1jy424ft3DheHpad1qSnVO2CT8hq8HvjwfOhVqFWBrXrcA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622888331;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HGQSnyxSd6gfdoXrtQHIy8tVXnS/aduJxY/LMJIFW4Q=;
-        b=AqjuWJigPU77v3xps+YZ4GeOifrdD8qNSBtzmBNebvWue0rerbmXMzsQIFtKZNwR01leFV
-        BxUPqvDi7ybOnhCg==
-To:     Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>
-Subject: Re: [patch 0/8] x86/fpu: Mop up XSAVES and related damage
-In-Reply-To: <433086cd-fadf-efe2-955b-0263a2fc969f@intel.com>
-References: <20210602095543.149814064@linutronix.de> <433086cd-fadf-efe2-955b-0263a2fc969f@intel.com>
-Date:   Sat, 05 Jun 2021 12:18:51 +0200
-Message-ID: <87mts4zkac.ffs@nanos.tec.linutronix.de>
+        Sat, 5 Jun 2021 06:27:40 -0400
+Received: by mail-wr1-f43.google.com with SMTP id u7so6296873wrs.10;
+        Sat, 05 Jun 2021 03:25:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=m969ISjz0Qg2RicSIh/DLDKZX7B7gGF5mGcynT3qU5g=;
+        b=gSTQ2+tued6UiImWuu//oBlJfjpt/gwxvwg29XwT4DnYnd8egzGn/L0o2ogOHSgA6d
+         rHBeSymp/nYKxg+oWHFjfFsLqyG42L42QV44U0Fksyf4Cm2MWpuOaSKivHTKx8y4STZ3
+         ofZdcOjBjR3hFFiqnQX4kZtjsmUrDCJaF8+yijmZz9b7bmuIakoHxI564DITRTS2a9Xv
+         Bc7RrMofn24GuhzVvsF352dyD4JipymAreTUkotBQkS9XBCwyLIyelkc4WakHggRuwWm
+         nNaabpWr4/vBxVjYaV5t8RPzXoHEDGP1JPRxXQTE2kxuzC2uSpcBcGbQMXvZN44S29d0
+         luxQ==
+X-Gm-Message-State: AOAM53297uQpBZUQGmdj1B+AaKbcY1FnYun40G0w8dUQjgUb8jmYInP7
+        WsIc5NXOgIGAmNx5WEeQHZg=
+X-Google-Smtp-Source: ABdhPJyd9jZ2BL1pEkcDkHDEA9rfDfI2xuCJiemXtQRM4Pul5Z0tJojgoUhXxbGqPt1WZB4KlOCO+Q==
+X-Received: by 2002:a05:6000:2a3:: with SMTP id l3mr8155566wry.395.1622888735842;
+        Sat, 05 Jun 2021 03:25:35 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id p187sm8242731wmp.28.2021.06.05.03.25.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Jun 2021 03:25:35 -0700 (PDT)
+Date:   Sat, 5 Jun 2021 10:25:33 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Sunil Muthuswamy <sunilmut@microsoft.com>
+Cc:     Michael Kelley <mikelley@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+Subject: Re: [PATCH 1/1] Drivers: hv: Move Hyper-V extended capability check
+ to arch neutral code
+Message-ID: <20210605102533.uzvd4l7el2afes5i@liuwe-devbox-debian-v2>
+References: <1622669804-2016-1-git-send-email-mikelley@microsoft.com>
+ <MW4PR21MB20040751A1A5AFF8D6C6FCA3C03B9@MW4PR21MB2004.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW4PR21MB20040751A1A5AFF8D6C6FCA3C03B9@MW4PR21MB2004.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04 2021 at 15:04, Dave Hansen wrote:
-> The nice Intel 0day folks threw some tests at this series.  It managed
-> to trigger an oops.  I can't right this moment publish the source for
-> the test, but it looks pretty trivial.  It basically creates a 0'd XSAVE
-> buffer, sets XCOMP_BV to:
->
-> #define XSAVES_FEATURES ( \
->         XFEATURE_MASK_PT | \
->         XFEATURE_MASK_SHSTK_USER | \
->         XFEATURE_MASK_SHSTK_KERNEL | \
->         0x8000000000000000 \
->         )
->
-> Then passes that buffer in to ptrace(PTRACE_SETREGSET, ...).
->
-> The oops is below.  It doesn't *look* to be XSAVES-related.  The oops
-> looks like it's happening in xstateregs_set() itself as opposed to down
-> in the code actually concerned with supervisor state.
->
-> No bug is jumping out of the code as I took a brief look at it.  The
-> xbuf versus kbuf code looks a bit wonky, but I can't find a hole in it.
+On Fri, Jun 04, 2021 at 12:14:09AM +0000, Sunil Muthuswamy wrote:
+> > The extended capability query code is currently under arch/x86, but it
+> > is architecture neutral, and is used by arch neutral code in the Hyper-V
+> > balloon driver. Hence the balloon driver fails to build on other
+> > architectures.
+> > 
+> > Fix by moving the ext cap code out from arch/x86.  Because it is also
+> > called from built-in architecture specific code, it can't be in a module,
+> > so the Makefile treats as built-in even when CONFIG_HYPERV is "m".  Also
+> > drivers/Makefile is tweaked because this is the first occurrence of a
+> > Hyper-V file that is built-in even when CONFIG_HYPERV is "m".
+> > 
+> > While here, update the hypercall status check to use the new helper
+> > function instead of open coding. No functional change.
+> > 
+> 
+> Thanks for taking care of this, Michael.
+> 
+> Reviewed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
 
-I can....
-
---- a/arch/x86/kernel/fpu/regset.c
-+++ b/arch/x86/kernel/fpu/regset.c
-@@ -128,7 +128,7 @@ int xstateregs_set(struct task_struct *t
- 		xbuf = vmalloc(count);
- 		if (!xbuf)
- 			return -ENOMEM;
--		ret = user_regset_copyin(&pos, &count, NULL, &ubuf, xbuf, 0, -1);
-+		ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf, xbuf, 0, -1);
- 		if (ret)
- 			goto out;
- 	}
+Applied to hyperv-next. Thanks.
