@@ -2,267 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7602339C779
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 12:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D168A39C77B
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 12:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhFEKjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 06:39:11 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:4369 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229892AbhFEKjJ (ORCPT
+        id S230126AbhFEKlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 06:41:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229892AbhFEKlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 06:39:09 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Fxwvw0DlVz68tl;
-        Sat,  5 Jun 2021 18:33:32 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sat, 5 Jun 2021 18:37:19 +0800
-Received: from [10.67.102.67] (10.67.102.67) by dggemi759-chm.china.huawei.com
- (10.1.198.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 5 Jun
- 2021 18:37:18 +0800
-Subject: Re: [RESEND net-next 1/2] net: hns3: add support for PTP
-To:     Richard Cochran <richardcochran@gmail.com>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <salil.mehta@huawei.com>,
-        <lipeng321@huawei.com>, <tanhuazhong@huawei.com>
-References: <1622602664-20274-1-git-send-email-huangguangbin2@huawei.com>
- <1622602664-20274-2-git-send-email-huangguangbin2@huawei.com>
- <20210603132237.GC6216@hoboy.vegasvil.org>
-From:   "huangguangbin (A)" <huangguangbin2@huawei.com>
-Message-ID: <a60de68c-ca2e-05e9-2770-a4d3ecb589ae@huawei.com>
-Date:   Sat, 5 Jun 2021 18:37:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Sat, 5 Jun 2021 06:41:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14A9AC061766
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Jun 2021 03:39:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=O6C1Dmxriqyn/gQ4Qn4heBEyEwp43YQhQLI8PrkD0ms=; b=ukIzKO2qVLmkl/NFZYhV+MOrTh
+        HIVhSFPZkApiUcFk5wHytCHeB+SuKzOvjKboXfYDqkKkj7Oq9YP10eGm0mUIzaxJJ5sMH0VaFZXWq
+        XO3LFeWdQmgAyClqJhzX4gyJW+iDwf2PvNNMpnqPzrqsiOq3vKixOk6zmiS9orlUQ0Xz6NPF5SPMJ
+        dOhyP4ePt7+BwLFGV8lE4KmgcgwCj6xmU7Vc15XUKZkCsYxPq5XZsm2A0imPJdd1Skaq1VPs8qdeD
+        QLNmsgICCXS75P64uK7VyLn9C17CQfD+z5HU5rDL1i0YCQWUZrJNq9pmoCtRkmVQHq8ENCDZ0cTQ8
+        p9GQOsKQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lpThe-00E1tM-Tb; Sat, 05 Jun 2021 10:38:56 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E231E300091;
+        Sat,  5 Jun 2021 12:38:51 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BD59A2CEABC01; Sat,  5 Jun 2021 12:38:51 +0200 (CEST)
+Date:   Sat, 5 Jun 2021 12:38:51 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Fangrui Song <maskray@google.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, lma@semihalf.com,
+        Guenter Roeck <groeck@google.com>,
+        Juergen Gross <jgross@suse.com>, lb@semihalf.com,
+        LKML <linux-kernel@vger.kernel.org>, mbenes@suse.com,
+        rad@semihalf.com, upstream@semihalf.com,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>
+Subject: Re: [PATCH v3 16/16] objtool,x86: Rewrite retpoline thunk calls
+Message-ID: <YLtUO/thYUp2wU7k@hirez.programming.kicks-ass.net>
+References: <CAFJ_xbq06nfaEWtVNLtg7XCJrQeQ9wCs4Zsoi5Y_HP3Dx0iTRA@mail.gmail.com>
+ <20210604205018.2238778-1-ndesaulniers@google.com>
+ <CAKwvOdmhg2tj8cKe-XitoZXGKaoOhgTsCEdVXubt+LiY9+46rw@mail.gmail.com>
+ <20210604235046.w3hazgcpsg4oefex@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210603132237.GC6216@hoboy.vegasvil.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.67]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggemi759-chm.china.huawei.com (10.1.198.145)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604235046.w3hazgcpsg4oefex@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 04, 2021 at 04:50:46PM -0700, Fangrui Song wrote:
+> On 2021-06-04, 'Nick Desaulniers' via Clang Built Linux wrote:
 
+> > is producing the linker error:
+> > 
+> > ld.lld: error: drivers/gpu/drm/amd/amdgpu/amdgpu.lto.o:
+> > SHT_SYMTAB_SHNDX has 79581 entries, but the symbol table associated
+> > has 79582
+> > 
+> > Readelf having issues with the output:
+> > $ readelf -s amdgpu.lto.o.orig
+> > <works fine>
+> > $ readelf -s amdgpu.lto.o
+> > readelf: Error: Reading 73014451695 bytes extends past end of file for
+> > string table
+> > $ llvm-readelf -s amdgpu.lto.o
+> > llvm-readelf: error: 'amdgpu.lto.o': unable to continue dumping, the
+> > file is corrupt: section table goes past the end of file
+> > 
 
-On 2021/6/3 21:22, Richard Cochran wrote:
-> On Wed, Jun 02, 2021 at 10:57:43AM +0800, Guangbin Huang wrote:
+> tools/objtool/elf.c:elf_add_symbol may not update .symtab_shndx .
+> Speaking of llvm-objcopy, it finalizes the content of .symtab_shndx when .symtab
+> is finalized. objtool may want to adopt a similar approach.
 > 
->> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_ptp.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_ptp.c
->> new file mode 100644
->> index 000000000000..b133b5984584
->> --- /dev/null
->> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_ptp.c
->> @@ -0,0 +1,520 @@
->> +// SPDX-License-Identifier: GPL-2.0+
->> +// Copyright (c) 2021 Hisilicon Limited.
->> +
->> +#include <linux/skbuff.h>
->> +#include "hclge_main.h"
->> +#include "hnae3.h"
->> +
->> +static int hclge_ptp_adjfreq(struct ptp_clock_info *ptp, s32 ppb)
->> +{
->> +	struct hclge_dev *hdev = hclge_ptp_get_hdev(ptp);
->> +	u64 adj_val, adj_base, diff;
->> +	bool is_neg = false;
->> +	u32 quo, numerator;
->> +
->> +	if (ppb < 0) {
->> +		ppb = -ppb;
->> +		is_neg = true;
->> +	}
->> +
->> +	adj_base = HCLGE_PTP_CYCLE_ADJ_BASE * HCLGE_PTP_CYCLE_ADJ_UNIT;
->> +	adj_val = adj_base * ppb;
->> +	diff = div_u64(adj_val, 1000000000ULL);
->> +
->> +	if (is_neg)
->> +		adj_val = adj_base - diff;
->> +	else
->> +		adj_val = adj_base + diff;
->> +
->> +	/* This clock cycle is defined by three part: quotient, numerator
->> +	 * and denominator. For example, 2.5ns, the quotient is 2,
->> +	 * denominator is fixed to HCLGE_PTP_CYCLE_ADJ_UNIT, and numerator
->> +	 * is 0.5 * HCLGE_PTP_CYCLE_ADJ_UNIT.
->> +	 */
->> +	quo = div_u64_rem(adj_val, HCLGE_PTP_CYCLE_ADJ_UNIT, &numerator);
->> +	writel(quo, hdev->ptp->io_base + HCLGE_PTP_CYCLE_QUO_REG);
->> +	writel(numerator, hdev->ptp->io_base + HCLGE_PTP_CYCLE_NUM_REG);
->> +	writel(HCLGE_PTP_CYCLE_ADJ_UNIT,
->> +	       hdev->ptp->io_base + HCLGE_PTP_CYCLE_DEN_REG);
->> +	writel(HCLGE_PTP_CYCLE_ADJ_EN,
->> +	       hdev->ptp->io_base + HCLGE_PTP_CYCLE_CFG_REG);
-> 
-> Need mutex or spinlock to protest against concurrent access.
-> 
-Ok, thank you. Is it better to add mutex or spinlock in the public place, like ptp_clock_adjtime()?
-Then there's no need to add mutex or spinlock in all the drives.
+> read_symbols searches for the section ".symtab_shndx". It'd be better to
+> use the section type SHT_SYMTAB_SHNDX.
 
-
->> +
->> +	return 0;
->> +}
->> +
->> +bool hclge_ptp_set_tx_info(struct hnae3_handle *handle, struct sk_buff *skb)
->> +{
->> +	struct hclge_vport *vport = hclge_get_vport(handle);
->> +	struct hclge_dev *hdev = vport->back;
->> +	struct hclge_ptp *ptp = hdev->ptp;
->> +
->> +	if (!test_bit(HCLGE_PTP_FLAG_TX_EN, &ptp->flags) ||
->> +	    test_and_set_bit(HCLGE_STATE_PTP_TX_HANDLING, &hdev->state)) {
->> +		ptp->tx_skipped++;
->> +		return false;
->> +	}
->> +
->> +	ptp->tx_start = jiffies;
->> +	ptp->tx_skb = skb_get(skb);
->> +	ptp->tx_cnt++;
->> +
->> +	return true;
->> +}
->> +
->> +void hclge_ptp_clean_tx_hwts(struct hclge_dev *hdev)
->> +{
->> +	struct sk_buff *skb = hdev->ptp->tx_skb;
->> +	struct skb_shared_hwtstamps hwts;
->> +	u32 hi, lo;
->> +	u64 ns;
->> +
->> +	ns = readl(hdev->ptp->io_base + HCLGE_PTP_TX_TS_NSEC_REG) &
->> +	     HCLGE_PTP_TX_TS_NSEC_MASK;
->> +	lo = readl(hdev->ptp->io_base + HCLGE_PTP_TX_TS_SEC_L_REG);
->> +	hi = readl(hdev->ptp->io_base + HCLGE_PTP_TX_TS_SEC_H_REG) &
->> +	     HCLGE_PTP_TX_TS_SEC_H_MASK;
->> +	hdev->ptp->last_tx_seqid = readl(hdev->ptp->io_base +
->> +		HCLGE_PTP_TX_TS_SEQID_REG);
->> +
->> +	if (skb) {
->> +		hdev->ptp->tx_skb = NULL;
->> +		hdev->ptp->tx_cleaned++;
->> +
->> +		ns += (((u64)hi) << 32 | lo) * NSEC_PER_SEC;
->> +		hwts.hwtstamp = ns_to_ktime(ns);
->> +		skb_tstamp_tx(skb, &hwts);
->> +		dev_kfree_skb_any(skb);
->> +	}
->> +
->> +	clear_bit(HCLGE_STATE_PTP_TX_HANDLING, &hdev->state);
->> +}
->> +
->> +void hclge_ptp_get_rx_hwts(struct hnae3_handle *handle, struct sk_buff *skb,
->> +			   u32 nsec, u32 sec)
->> +{
->> +	struct hclge_vport *vport = hclge_get_vport(handle);
->> +	struct hclge_dev *hdev = vport->back;
->> +	u64 ns = nsec;
->> +	u32 sec_h;
->> +
->> +	if (!test_bit(HCLGE_PTP_FLAG_RX_EN, &hdev->ptp->flags))
->> +		return;
->> +
->> +	/* Since the BD does not have enough space for the higher 16 bits of
->> +	 * second, and this part will not change frequently, so read it
->> +	 * from register.
->> +	 */
->> +	sec_h = readl(hdev->ptp->io_base + HCLGE_PTP_CUR_TIME_SEC_H_REG);
-> 
-> Need mutex or spinlock to protest against concurrent acces. >
-Same above.
-
->> +	ns += (((u64)sec_h) << HCLGE_PTP_SEC_H_OFFSET | sec) * NSEC_PER_SEC;
->> +	skb_hwtstamps(skb)->hwtstamp = ns_to_ktime(ns);
->> +	hdev->ptp->last_rx = jiffies;
->> +	hdev->ptp->rx_cnt++;
->> +}
->> +
->> +static int hclge_ptp_gettimex(struct ptp_clock_info *ptp, struct timespec64 *ts,
->> +			      struct ptp_system_timestamp *sts)
->> +{
->> +	struct hclge_dev *hdev = hclge_ptp_get_hdev(ptp);
->> +	u32 hi, lo;
->> +	u64 ns;
->> +
->> +	ns = readl(hdev->ptp->io_base + HCLGE_PTP_CUR_TIME_NSEC_REG);
->> +	hi = readl(hdev->ptp->io_base + HCLGE_PTP_CUR_TIME_SEC_H_REG);
->> +	lo = readl(hdev->ptp->io_base + HCLGE_PTP_CUR_TIME_SEC_L_REG);
-> 
-> Need mutex or spinlock to protest against concurrent access.
-> 
-Same above.
-
->> +	ns += (((u64)hi) << HCLGE_PTP_SEC_H_OFFSET | lo) * NSEC_PER_SEC;
->> +	*ts = ns_to_timespec64(ns);
->> +
->> +	return 0;
->> +}
->> +
->> +static int hclge_ptp_settime(struct ptp_clock_info *ptp,
->> +			     const struct timespec64 *ts)
->> +{
->> +	struct hclge_dev *hdev = hclge_ptp_get_hdev(ptp);
->> +
->> +	writel(ts->tv_nsec, hdev->ptp->io_base + HCLGE_PTP_TIME_NSEC_REG);
->> +	writel(ts->tv_sec >> HCLGE_PTP_SEC_H_OFFSET,
->> +	       hdev->ptp->io_base + HCLGE_PTP_TIME_SEC_H_REG);
->> +	writel(ts->tv_sec & HCLGE_PTP_SEC_L_MASK,
->> +	       hdev->ptp->io_base + HCLGE_PTP_TIME_SEC_L_REG);
->> +	/* synchronize the time of phc */
->> +	writel(HCLGE_PTP_TIME_SYNC_EN,
->> +	       hdev->ptp->io_base + HCLGE_PTP_TIME_SYNC_REG);
-> 
-> Need mutex or spinlock to protest against concurrent access.
-> 
-Same above.
-
->> +	return 0;
->> +}
->> +
->> +static int hclge_ptp_adjtime(struct ptp_clock_info *ptp, s64 delta)
->> +{
->> +	struct hclge_dev *hdev = hclge_ptp_get_hdev(ptp);
->> +	bool is_neg = false;
->> +	u32 adj_val = 0;
->> +
->> +	if (delta < 0) {
->> +		adj_val |= HCLGE_PTP_TIME_NSEC_NEG;
->> +		delta = -delta;
->> +		is_neg = true;
->> +	}
->> +
->> +	if (delta > HCLGE_PTP_TIME_NSEC_MASK) {
->> +		struct timespec64 ts;
->> +		s64 ns;
->> +
->> +		hclge_ptp_gettimex(ptp, &ts, NULL);
->> +		ns = timespec64_to_ns(&ts);
->> +		ns = is_neg ? ns - delta : ns + delta;
->> +		ts = ns_to_timespec64(ns);
->> +		return hclge_ptp_settime(ptp, &ts);
->> +	}
->> +
->> +	adj_val |= delta & HCLGE_PTP_TIME_NSEC_MASK;
->> +	writel(adj_val, hdev->ptp->io_base + HCLGE_PTP_TIME_NSEC_REG);
->> +	writel(HCLGE_PTP_TIME_ADJ_EN,
->> +	       hdev->ptp->io_base + HCLGE_PTP_TIME_ADJ_REG);
-> 
-> Need mutex or spinlock to protest against concurrent access.
-> 
-Same above.
-
->> +
->> +	return 0;
->> +}
-> 
-> Thanks,
-> Richard
-> 
-> .
-> 
+I think you've absolutely nailed it; but would you have more information
+or a code reference to what you're speaking about? My complete ELF
+and libelf knowledge is very limited and as demonstrated here, I'm not
+at all sure how all that extended index stuff is supposed to work.
