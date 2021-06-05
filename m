@@ -2,136 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D210939C7ED
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 13:38:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D1E39C7F2
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 13:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbhFELkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 07:40:20 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:54550 "EHLO m43-7.mailgun.net"
+        id S230133AbhFELvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 07:51:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:60000 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230163AbhFELkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 07:40:19 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622893111; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=I9mTsoSll4PU6WpX6xvp32UhW4o+I4xgxF3zmKj0BYo=; b=Od+kioVS/0nwM+qPCtm0vaNDN9XjL8M3NwXb5iwUI90OfGCqW/1VYVSHqEu5dzHTeq4MVOGs
- Jp+IUs2wZF2+f3KDsVt1/0OWGL2zu6LJONEtH1St4zGniX8RxxhHxBxrtS3uwTYJeRRxvHcq
- qMyzp75wpOX97byQvl4sD3Za95w=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 60bb62376ddc3305c492e3b7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 05 Jun 2021 11:38:31
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 082DEC433F1; Sat,  5 Jun 2021 11:38:30 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 00B5DC433F1;
-        Sat,  5 Jun 2021 11:38:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 00B5DC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        swboyd@chromium.org, judyhsiao@chromium.org
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: [PATCH v2] ASoC: qcom: Fix for DMA interrupt clear reg overwriting
-Date:   Sat,  5 Jun 2021 17:08:09 +0530
-Message-Id: <20210605113809.26584-1-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
+        id S229902AbhFELvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 07:51:00 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 707FB2B;
+        Sat,  5 Jun 2021 04:49:12 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6FE693F73D;
+        Sat,  5 Jun 2021 04:49:10 -0700 (PDT)
+Date:   Sat, 5 Jun 2021 12:49:08 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Xuewen Yan <xuewen.yan94@gmail.com>
+Cc:     Quentin Perret <qperret@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Ryan Y <xuewyan@foxmail.com>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>, tj@kernel.org
+Subject: Re: [PATCH] sched/uclamp: Avoid setting cpu.uclamp.min bigger than
+ cpu.uclamp.max
+Message-ID: <20210605114908.mqfsip5pskamls6k@e107158-lin.cambridge.arm.com>
+References: <20210602123803.15738-1-xuewen.yan94@gmail.com>
+ <YLeF/556Wbvx1Ssc@google.com>
+ <CAB8ipk9BqzEQ4Ta5s+vJeep=v1pmaXS-WsF2tq0u9G8Q2PGmsA@mail.gmail.com>
+ <20210604160839.2op4ak75vle3gmt3@e107158-lin.cambridge.arm.com>
+ <CAB8ipk9CgWvbGnJcvEtLcG=7v-pPmGJd25-R9jb2Am5zKngK3g@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAB8ipk9CgWvbGnJcvEtLcG=7v-pPmGJd25-R9jb2Am5zKngK3g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DMA interrupt clear register overwritten during
-simultaneous playback and capture in lpass platform
-interrupt handler. It's causing playback or capture stuck
-in similtaneous plaback on speaker and capture on dmic test.
-Update appropriate reg fields of corresponding channel instead
-of entire register write.
+On 06/05/21 10:12, Xuewen Yan wrote:
+> Hi Qais,
+> 
+> On Sat, Jun 5, 2021 at 12:08 AM Qais Yousef <qais.yousef@arm.com> wrote:
+> >
+> > On 06/03/21 10:24, Xuewen Yan wrote:
+> > > +CC Qais
+> >
+> > Thanks for the CC :)
+> >
+> > >
+> > >
+> > > Hi Quentin
+> > >
+> > > On Wed, Jun 2, 2021 at 9:22 PM Quentin Perret <qperret@google.com> wrote:
+> > > >
+> > > > +CC Patrick and Tejun
+> > > >
+> > > > On Wednesday 02 Jun 2021 at 20:38:03 (+0800), Xuewen Yan wrote:
+> > > > > From: Xuewen Yan <xuewen.yan@unisoc.com>
+> > > > >
+> > > > > When setting cpu.uclamp.min/max in cgroup, there is no validating
+> > > > > like uclamp_validate() in __sched_setscheduler(). It may cause the
+> > > > > cpu.uclamp.min is bigger than cpu.uclamp.max.
+> > > >
+> > > > ISTR this was intentional. We also allow child groups to ask for
+> > > > whatever clamps they want, but that is always limited by the parent, and
+> > > > reflected in the 'effective' values, as per the cgroup delegation model.
+> >
+> > As Quentin said. This intentional to comply with cgroup model.
+> >
+> > See Limits and Protections sections in Documentation/admin-guide/cgroup-v2.rst
+> >
+> > Specifically
+> >
+> >         "all configuration combinations are valid"
+> >
+> > So user can set cpu.uclamp.min higher than cpu.uclamp.max. But when we apply
+> > the setting, cpu.uclamp.min will be capped by cpu.uclamp.max. I can see you
+> > found the cpu_util_update_eff() logic.
+> >
+> 
+> Thanks a lot for your patience to explain, sorry for my ignorance of
+> Documentation/admin-guide/cgroup-v2.rst.
 
-Fixes: commit c5c8635a04711 ("ASoC: qcom: Add LPASS platform driver")
+No problem :)
 
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
- sound/soc/qcom/lpass-platform.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+> 
+> > >
+> > > It does not affect the 'effective' value. That because there is
+> > > protection in cpu_util_update_eff():
+> > > /* Ensure protection is always capped by limit */
+> > > eff[UCLAMP_MIN] = min(eff[UCLAMP_MIN], eff[UCLAMP_MAX]);
+> > >
+> > > When users set the cpu.uclamp.min > cpu.uclamp.max:
+> > > cpu.uclamp.max = 50;
+> > > to set : cpu.uclamp.min = 60;
+> > > That would make the uclamp_req[UCLAMP_MIN].value = 1024* 60% = 614,
+> > > uclamp_req[UCLAMP_MAX].value = 1024* 50% = 512;
+> > > But finally, the  uclamp[UCLAMP_MIN].value = uclamp[UCLAMP_MAX].value
+> > > = 1024* 50% = 512;
+> > >
+> > > Is it deliberately set not to validate because of the above?
+> >
+> > Sorry I'm not following you here. What code paths were you trying to explain
+> > here?
+> >
+> > Did you actually hit any problem here?
+> 
+> I just gave an example of the difference of uclamp_req and uclamp
+> without my patch, and can ignore it.
 
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index 0df9481ea4c6..f220a2739ac3 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -526,7 +526,7 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
- 			return -EINVAL;
- 		}
- 
--		ret = regmap_write(map, reg_irqclr, val_irqclr);
-+		ret = regmap_update_bits(map, reg_irqclr, val_irqclr, val_irqclr);
- 		if (ret) {
- 			dev_err(soc_runtime->dev, "error writing to irqclear reg: %d\n", ret);
- 			return ret;
-@@ -650,7 +650,7 @@ static irqreturn_t lpass_dma_interrupt_handler(
- 	struct lpass_variant *v = drvdata->variant;
- 	irqreturn_t ret = IRQ_NONE;
- 	int rv;
--	unsigned int reg = 0, val = 0;
-+	unsigned int reg, val, val_clr, val_mask;
- 	struct regmap *map;
- 	unsigned int dai_id = cpu_dai->driver->id;
- 
-@@ -676,8 +676,9 @@ static irqreturn_t lpass_dma_interrupt_handler(
- 	return -EINVAL;
- 	}
- 	if (interrupts & LPAIF_IRQ_PER(chan)) {
--
--		rv = regmap_write(map, reg, LPAIF_IRQ_PER(chan) | val);
-+		val_clr = LPAIF_IRQ_PER(chan) | val;
-+		val_mask = LPAIF_IRQ_ALL(chan);
-+		rv = regmap_update_bits(map, reg, val_mask, val_clr);
- 		if (rv) {
- 			dev_err(soc_runtime->dev,
- 				"error writing to irqclear reg: %d\n", rv);
-@@ -688,7 +689,9 @@ static irqreturn_t lpass_dma_interrupt_handler(
- 	}
- 
- 	if (interrupts & LPAIF_IRQ_XRUN(chan)) {
--		rv = regmap_write(map, reg, LPAIF_IRQ_XRUN(chan) | val);
-+		val_clr = (LPAIF_IRQ_XRUN(chan) | val);
-+		val_mask = LPAIF_IRQ_ALL(chan);
-+		rv = regmap_update_bits(map, reg, val_mask, val_clr);
- 		if (rv) {
- 			dev_err(soc_runtime->dev,
- 				"error writing to irqclear reg: %d\n", rv);
-@@ -700,7 +703,9 @@ static irqreturn_t lpass_dma_interrupt_handler(
- 	}
- 
- 	if (interrupts & LPAIF_IRQ_ERR(chan)) {
--		rv = regmap_write(map, reg, LPAIF_IRQ_ERR(chan) | val);
-+		val_clr = (LPAIF_IRQ_ERR(chan) | val);
-+		val_mask = LPAIF_IRQ_ALL(chan);
-+		rv = regmap_update_bits(map, reg, val_mask, val_clr);
- 		if (rv) {
- 			dev_err(soc_runtime->dev,
- 				"error writing to irqclear reg: %d\n", rv);
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+Cool.
 
+> 
+> >
+> In addition，In your patch:
+> 6938840392c89 ("sched/uclamp: Fix wrong implementation of cpu.uclamp.min")
+> https://lkml.kernel.org/r/20210510145032.1934078-2-qais.yousef@arm.com
+> 
+> + switch (clamp_id) {
+> + case UCLAMP_MIN: {
+> + struct uclamp_se uc_min = task_group(p)->uclamp[clamp_id];
+> + if (uc_req.value < uc_min.value)
+> + return uc_min;
+> + break;
+> 
+> When the clamp_id = UCLAMP_MIN, why not judge the uc_req.value is
+> bigger than task_group(p)->uclamp[UCLAMP_MAX] ?
+
+Because of the requirement I pointed you to in cgroup-v2.rst. We must allow any
+value to be requested.
+
+Ultimately if we had
+
+	cpu.uclamp.min = 80
+	cpu.uclamp.max = 50
+
+then we want to remember the original request but make sure the effective value
+is capped.
+
+For the user in the future modifies the values such that
+
+	cpu.uclamp.max = max
+
+Then we want to remember cpu.uclamp.min = 80 and apply it since now the
+cpu.uclamp.max was relaxed to allow the boost value.
+
+> Because when the p->uclamp_req[UCLAMP_MIN] >  task_group(p)->uclamp[UCLAMP_MAX],
+> the patch can not clamp the p->uclamp_req[UCLAMP_MIN/MAX] into
+> [ task_group(p)->uclamp[UCLAMP_MAX],  task_group(p)->uclamp[UCLAMP_MAX] ].
+> 
+> Is it necessary to fix it here？
+
+Nope. We must allow any combination values to be accepted and remember them so
+if one changes we ensure the new effective value is updated accordingly.
+This is how cgroups API works.
+
+Hope this makes sense.
+
+Cheers
+
+--
+Qais Yousef
