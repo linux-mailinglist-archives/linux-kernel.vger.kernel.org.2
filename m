@@ -2,83 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9531239C6DB
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 10:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 990E339C6E4
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 10:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbhFEIrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 04:47:10 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7114 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbhFEIrJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 04:47:09 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FxtRr53lTzYnLj;
-        Sat,  5 Jun 2021 16:42:32 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 5 Jun 2021 16:45:19 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 5 Jun 2021
- 16:45:18 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <ulli.kroll@googlemail.com>, <linus.walleij@linaro.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>
-Subject: [PATCH net-next] net: gemini: Use devm_platform_get_and_ioremap_resource()
-Date:   Sat, 5 Jun 2021 16:49:35 +0800
-Message-ID: <20210605084935.2078812-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+        id S229930AbhFEI56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 04:57:58 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:7299 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229864AbhFEI56 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 04:57:58 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4FxtlY5mymzBBMS;
+        Sat,  5 Jun 2021 10:56:09 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 5kEbC-E9tzoI; Sat,  5 Jun 2021 10:56:09 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FxtlY4kBNzBBMM;
+        Sat,  5 Jun 2021 10:56:09 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 799AE8B775;
+        Sat,  5 Jun 2021 10:56:09 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id jFNKuWosL3vt; Sat,  5 Jun 2021 10:56:09 +0200 (CEST)
+Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 465B18B763;
+        Sat,  5 Jun 2021 10:56:09 +0200 (CEST)
+Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 094B264BD2; Sat,  5 Jun 2021 08:56:09 +0000 (UTC)
+Message-Id: <3e5b63bb3daab54a1eb9c20221c2e9528c4db9b3.1622883330.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/mem: Add back missing header to fix 'no previous
+ prototype' error
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Sat,  5 Jun 2021 08:56:09 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use devm_platform_get_and_ioremap_resource() to simplify
-code.
+Commit b26e8f27253a ("powerpc/mem: Move cache flushing functions into
+mm/cacheflush.c") removed asm/sparsemem.h which is required when
+CONFIG_MEMORY_HOTPLUG is selected to get the declaration of
+create_section_mapping().
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Add it back.
+
+Fixes: b26e8f27253a ("powerpc/mem: Move cache flushing functions into mm/cacheflush.c")
+Cc: stable@vger.kernel.org
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- drivers/net/ethernet/cortina/gemini.c | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
+ arch/powerpc/mm/mem.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/cortina/gemini.c b/drivers/net/ethernet/cortina/gemini.c
-index 8df6f081f244..bc921bb42b34 100644
---- a/drivers/net/ethernet/cortina/gemini.c
-+++ b/drivers/net/ethernet/cortina/gemini.c
-@@ -2390,22 +2390,12 @@ static int gemini_ethernet_port_probe(struct platform_device *pdev)
- 	port->msg_enable = netif_msg_init(debug, DEFAULT_MSG_ENABLE);
+diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
+index 043bbeaf407c..a6b36a40897a 100644
+--- a/arch/powerpc/mm/mem.c
++++ b/arch/powerpc/mm/mem.c
+@@ -20,6 +20,7 @@
+ #include <asm/machdep.h>
+ #include <asm/rtas.h>
+ #include <asm/kasan.h>
++#include <asm/sparsemem.h>
+ #include <asm/svm.h>
  
- 	/* DMA memory */
--	dmares = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!dmares) {
--		dev_err(dev, "no DMA resource\n");
--		return -ENODEV;
--	}
--	port->dma_base = devm_ioremap_resource(dev, dmares);
-+	port->dma_base = devm_platform_get_and_ioremap_resource(pdev, 0, &dmares);
- 	if (IS_ERR(port->dma_base))
- 		return PTR_ERR(port->dma_base);
- 
- 	/* GMAC config memory */
--	gmacres = platform_get_resource(pdev, IORESOURCE_MEM, 1);
--	if (!gmacres) {
--		dev_err(dev, "no GMAC resource\n");
--		return -ENODEV;
--	}
--	port->gmac_base = devm_ioremap_resource(dev, gmacres);
-+	port->gmac_base = devm_platform_get_and_ioremap_resource(pdev, 1, &gmacres);
- 	if (IS_ERR(port->gmac_base))
- 		return PTR_ERR(port->gmac_base);
- 
+ #include <mm/mmu_decl.h>
 -- 
-2.25.1
+2.25.0
 
