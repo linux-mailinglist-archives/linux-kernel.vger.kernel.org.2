@@ -2,72 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1EED39C64E
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 08:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E51839C65C
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 08:43:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbhFEGeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 02:34:24 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:4480 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbhFEGeY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 02:34:24 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FxqVg4LhwzZcjD;
-        Sat,  5 Jun 2021 14:29:47 +0800 (CST)
-Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 5 Jun 2021 14:32:34 +0800
-Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
- (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 5 Jun 2021
- 14:32:33 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <axboe@kernel.dk>, <oleg@redhat.com>, <tglx@linutronix.de>,
-        <dvyukov@google.com>, <akpm@linux-foundation.org>,
-        <walter-zh.wu@mediatek.com>, <linux-kernel@vger.kernel.org>
-CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
-        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
-        <libaokun1@huawei.com>
-Subject: [PATCH -next] task_work: fix doc warnings in task_work.c
-Date:   Sat, 5 Jun 2021 14:41:47 +0800
-Message-ID: <20210605064147.690390-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        id S229959AbhFEGpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 02:45:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39726 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229660AbhFEGpa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 02:45:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C0F061380;
+        Sat,  5 Jun 2021 06:43:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622875414;
+        bh=TtRDgCW7OQ1zC3hQd1LY9Z/qTlTG9FRmSnSfEj5iwp0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1+SThqw8h3ikUWbPOVEdqdULG5Hgdn/wqmaXQlXN4g+vcHHQF0USqMoEcVM7kF/aC
+         nrwUW42x9XbF0DZtg2xT2j1W5jeW4goQ6uwT9UtmEj2nDIKCnDXdpB3X+OTGxsjJfb
+         B1nDJSzTGMxLziHsBbovlo2ki1qKye1gUle+RwxI=
+Date:   Sat, 5 Jun 2021 08:43:30 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Pascal Giard <pascal.giard@etsmtl.ca>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        Daniel Nguyen <daniel.nguyen.1@ens.etsmtl.ca>
+Subject: Re: [PATCH] HID: sony: fix freeze when inserting ghlive ps3/wii
+ dongles
+Message-ID: <YLsdEtbAWJxLB+GF@kroah.com>
+References: <20210604161023.1498582-1-pascal.giard@etsmtl.ca>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604161023.1498582-1-pascal.giard@etsmtl.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add description for `task_work_cancel_match` to fix the W=1 warnings:
+On Fri, Jun 04, 2021 at 12:10:23PM -0400, Pascal Giard wrote:
+> This commit fixes a freeze on insertion of a Guitar Hero Live PS3/WiiU
+> USB dongle. Indeed, with the current implementation, inserting one of
+> those USB dongles will lead to a hard freeze. I apologize for not
+> catching this earlier, it didn't occur on my old laptop.
+> 
+> While the issue was isolated to memory alloc/free, I could not figure
+> out why it causes a freeze. So this patch fixes this issue by
+> simplifying memory allocation and usage.
+> 
+> We remind that for the dongle to work properly, a control URB needs to
+> be sent periodically. We used to alloc/free the URB each time this URB
+> needed to be sent.
+> 
+> With this patch, the memory for the URB is allocated on the probe, reused
+> for as long as the dongle is plugged in, and freed once the dongle is
+> unplugged.
+> 
+> Signed-off-by: Pascal Giard <pascal.giard@etsmtl.ca>
+> ---
+>  drivers/hid/hid-sony.c | 98 +++++++++++++++++++++---------------------
+>  1 file changed, 49 insertions(+), 49 deletions(-)
 
-kernel/task_work.c:76: warning: Function parameter or
- member 'data' not described in 'task_work_cancel_match'
+<formletter>
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
- kernel/task_work.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
 
-diff --git a/kernel/task_work.c b/kernel/task_work.c
-index 1698fbe6f0e1..3992ebaabde5 100644
---- a/kernel/task_work.c
-+++ b/kernel/task_work.c
-@@ -65,7 +65,7 @@ int task_work_add(struct task_struct *task, struct callback_head *work,
-  * task_work_cancel_match - cancel a pending work added by task_work_add()
-  * @task: the task which should execute the work
-  * @match: match function to call
-- *
-+ * @data: data to match
-  * RETURNS:
-  * The found work or NULL if not found.
-  */
--- 
-2.31.1
-
+</formletter>
