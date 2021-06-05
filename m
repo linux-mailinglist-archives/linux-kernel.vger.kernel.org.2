@@ -2,75 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C930B39C503
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 04:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA8ED39C50A
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 04:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231282AbhFECWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 22:22:19 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3433 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230169AbhFECWS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 22:22:18 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FxjvX4pFPz6tph;
-        Sat,  5 Jun 2021 10:17:28 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 5 Jun 2021 10:20:28 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 5 Jun 2021
- 10:20:28 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
-CC:     <lee.jones@linaro.org>, <agross@kernel.org>,
-        <gurus@codeaurora.org>, <dmitry.baryshkov@linaro.org>
-Subject: [PATCH net-next v3] mfd: pm8008: Fix return value check in pm8008_probe()
-Date:   Sat, 5 Jun 2021 10:24:46 +0800
-Message-ID: <20210605022446.4119978-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S231225AbhFEC22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 22:28:28 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:49999 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230169AbhFEC21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 22:28:27 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fxk5x5gCbz9sT6;
+        Sat,  5 Jun 2021 12:26:29 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1622859990;
+        bh=QivWC1dcQeNJcbmVkKf7LuWjCr/ixyTQQ7gbnm07TKc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RUysbMEWEIpw/Ju9CYlHAISJ3Tlh24JUufh5B/ZM294Iq64sORvoeQXBgVXIFGGZo
+         xSAky2DVXgTLPFWKfs3s2llhd0fGaN8ykXvUZKEFwG5POExpDLLnZzGprdu0VVewRD
+         F2RfFsIUTQFIUhGXuspDgUEVs5Re9mUqr6N59ghHApbAp06i+3J+4dT0cYmSM+J5x1
+         3L49zagtAeccWOjYWLNVhfoCI0divNCITvWBE6mTHGGXbVeA9A5urozbcH9qaVXZlu
+         NMh7iI10RkSWonahaX6w/sOKMdZ/Qf1no242puYHjIookFD7o7RVj7Yc4SI5DyX4dA
+         Y8U3ev8pLPwbw==
+Date:   Sat, 5 Jun 2021 12:26:27 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Eric Huang <jinhuieric.huang@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the amdgpu tree
+Message-ID: <20210605122627.0650db4b@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/Q4H.HZ4OiJUasYIPdFcxplb";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case of error, the function devm_regmap_init_i2c() returns ERR_PTR()
-and never returns NULL. The NULL test in the return value check
-should be replaced with IS_ERR().
+--Sig_/Q4H.HZ4OiJUasYIPdFcxplb
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 6b149f3310a4 ("mfd: pm8008: Add driver for QCOM PM8008 PMIC")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
-v3:
-  return PTR_ERR(chip->regmap) instead of ENODEV
----
- drivers/mfd/qcom-pm8008.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Hi all,
 
-diff --git a/drivers/mfd/qcom-pm8008.c b/drivers/mfd/qcom-pm8008.c
-index c472d7f8103c..fb8915a682ad 100644
---- a/drivers/mfd/qcom-pm8008.c
-+++ b/drivers/mfd/qcom-pm8008.c
-@@ -228,8 +228,8 @@ static int pm8008_probe(struct i2c_client *client)
- 
- 	chip->dev = &client->dev;
- 	chip->regmap = devm_regmap_init_i2c(client, &qcom_mfd_regmap_cfg);
--	if (!chip->regmap)
--		return -ENODEV;
-+	if (IS_ERR(chip->regmap))
-+		return PTR_ERR(chip->regmap);
- 
- 	i2c_set_clientdata(client, chip);
- 
--- 
-2.25.1
+After merging the amdgpu tree, yesterday's linux-next build (htmldocs)
+produced this warning:
 
+drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:1838: warning: Function parameter or=
+ member 'table_freed' not described in 'amdgpu_vm_bo_update'
+
+Introduced by commit
+
+  891069653f51 ("drm/amdgpu: Add table_freed parameter to amdgpu_vm_bo_upda=
+te")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Q4H.HZ4OiJUasYIPdFcxplb
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC64NMACgkQAVBC80lX
+0GxDMggAiz9eGb8/JjJjsmCnu/day+iBcJV9G51RIUnUIj9MGk7efyYqy2XbNzWK
+BTlEGFM5bj/nxpzEZX1WA3Ao48q7vrzz8ZPkq+HZFZ4rdbQobr1isbX4VpcFi+C4
+Mnr5Du3LVQNgvMnLTqWQDhwfDTZKXMzvLrbwuZ87DDtWcSKpwklSrne2a+SXTmDL
+DYiZZSOp2kVwaegJYbIrMHEQFzigOC5pWZtGijD1gHYWBhLzuMu69eh852pyoFQc
+SEiUJMOV159E7XOEFQEJ6Sj4nzc3HBTzEcSV4NYKHaUH+60ZOOt+Y6P3+0VinMc1
+tXcFIM48/Dd5SvnG7rKez96kIRmr4A==
+=VnXd
+-----END PGP SIGNATURE-----
+
+--Sig_/Q4H.HZ4OiJUasYIPdFcxplb--
