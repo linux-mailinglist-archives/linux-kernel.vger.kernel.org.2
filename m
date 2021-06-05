@@ -2,282 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E7439CB57
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 23:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B8439CB5B
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 23:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhFEVyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 17:54:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhFEVyP (ORCPT
+        id S230108AbhFEV6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 17:58:10 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:49398 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229998AbhFEV6J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 17:54:15 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58AE0C061767;
-        Sat,  5 Jun 2021 14:52:27 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id 30D1C1F432FC
-From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-To:     Christoph Hellwig <hch@lst.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        Shuah Khan <shuah@kernel.org>, ~lkcamp/patches@lists.sr.ht,
-        nfraprado@collabora.com, leandro.ribeiro@collabora.com,
-        Vitor Massaru Iha <vitor@massaru.org>, lucmaga@gmail.com,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-Subject: [PATCH] lib: Convert UUID runtime test to KUnit
-Date:   Sat,  5 Jun 2021 18:52:15 -0300
-Message-Id: <20210605215215.171165-1-andrealmeid@collabora.com>
-X-Mailer: git-send-email 2.31.1
+        Sat, 5 Jun 2021 17:58:09 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0C3DAB2C;
+        Sat,  5 Jun 2021 23:56:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1622930180;
+        bh=o7++EuxkRgDP1duOfpmAjGiDUd3n2LOpOVmtNxKeWHo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uiuVFWnpKiyUW/Ze6mnEF//D9OtE3ivdHVFYGkpwV9j8/RNV1ToBU6mpy5Pzq3299
+         H5eMMW3PiXSIUfSZ6RucPPIBN6h2EaRPk3Is5mqdSwCXGZY30TXcKvEDNqOKWN56QB
+         8WVuTwbvcR/9k6EBAYdZ+TH3VEODKxu8gjI2UwIk=
+Date:   Sun, 6 Jun 2021 00:56:06 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Benjamin Drung <bdrung@posteo.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Adam Goode <agoode@google.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v4] media: uvcvideo: Fix pixel format change for Elgato
+ Cam Link 4K
+Message-ID: <YLvy9iE2Z+DpMvmg@pendragon.ideasonboard.com>
+References: <YLqnU+FYSAcWwaAZ@pendragon.ideasonboard.com>
+ <20210605201534.53114-1-bdrung@posteo.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210605201534.53114-1-bdrung@posteo.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove custom functions for testing and use KUnit framework. Test cases
-and test data remains the same.
+Hi Benjamin,
 
-Signed-off-by: André Almeida <andrealmeid@collabora.com>
----
- lib/Kconfig.debug |  13 +++--
- lib/Makefile      |   2 +-
- lib/test_uuid.c   | 131 ++++++++++++++++++----------------------------
- 3 files changed, 62 insertions(+), 84 deletions(-)
+Thank you for the patch.
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 678c13967580..e8bd574d7a67 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2188,9 +2188,6 @@ config TEST_BITMAP
- 
- 	  If unsure, say N.
- 
--config TEST_UUID
--	tristate "Test functions located in the uuid module at runtime"
--
- config TEST_XARRAY
- 	tristate "Test the XArray code at runtime"
- 
-@@ -2429,6 +2426,16 @@ config BITS_TEST
- 
- 	  If unsure, say N.
- 
-+config TEST_UUID
-+	tristate "Unit test for UUID" if !KUNIT_ALL_TESTS
-+	depends on KUNIT
-+	default KUNIT_ALL_TESTS
-+	help
-+	  This builds the UUID unit test.
-+	  Tests parsing functions for UUID/GUID strings.
-+
-+	  If unsure, say N.
-+
- config TEST_UDELAY
- 	tristate "udelay test driver"
- 	help
-diff --git a/lib/Makefile b/lib/Makefile
-index 2cc359ec1fdd..6ef3c614409d 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -85,7 +85,6 @@ obj-$(CONFIG_TEST_STATIC_KEYS) += test_static_key_base.o
- obj-$(CONFIG_TEST_PRINTF) += test_printf.o
- obj-$(CONFIG_TEST_BITMAP) += test_bitmap.o
- obj-$(CONFIG_TEST_STRSCPY) += test_strscpy.o
--obj-$(CONFIG_TEST_UUID) += test_uuid.o
- obj-$(CONFIG_TEST_XARRAY) += test_xarray.o
- obj-$(CONFIG_TEST_PARMAN) += test_parman.o
- obj-$(CONFIG_TEST_KMOD) += test_kmod.o
-@@ -354,5 +353,6 @@ obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
- obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
- obj-$(CONFIG_BITS_TEST) += test_bits.o
- obj-$(CONFIG_CMDLINE_KUNIT_TEST) += cmdline_kunit.o
-+obj-$(CONFIG_TEST_UUID) += test_uuid.o
- 
- obj-$(CONFIG_GENERIC_LIB_DEVMEM_IS_ALLOWED) += devmem_is_allowed.o
-diff --git a/lib/test_uuid.c b/lib/test_uuid.c
-index cd819c397dc7..45c919b0d724 100644
---- a/lib/test_uuid.c
-+++ b/lib/test_uuid.c
-@@ -1,21 +1,20 @@
-+// SPDX-License-Identifier: (GPL-2.0-or-later OR BSD-2-Clause)
- /*
-- * Test cases for lib/uuid.c module.
-+ * Unit tests for lib/uuid.c module.
-+ *
-+ * Copyright 2016 Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-+ * Copyright 2021 André Almeida <andrealmeid@riseup.net>
-  */
--#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
--
--#include <linux/init.h>
--#include <linux/kernel.h>
--#include <linux/module.h>
--#include <linux/string.h>
-+#include <kunit/test.h>
- #include <linux/uuid.h>
- 
--struct test_uuid_data {
-+struct test_data {
- 	const char *uuid;
- 	guid_t le;
- 	uuid_t be;
- };
- 
--static const struct test_uuid_data test_uuid_test_data[] = {
-+static const struct test_data correct_data[] = {
- 	{
- 		.uuid = "c33f4995-3701-450e-9fbf-206a2e98e576",
- 		.le = GUID_INIT(0xc33f4995, 0x3701, 0x450e, 0x9f, 0xbf, 0x20, 0x6a, 0x2e, 0x98, 0xe5, 0x76),
-@@ -33,101 +32,73 @@ static const struct test_uuid_data test_uuid_test_data[] = {
- 	},
- };
- 
--static const char * const test_uuid_wrong_data[] = {
-+static const char * const wrong_data[] = {
- 	"c33f4995-3701-450e-9fbf206a2e98e576 ",	/* no hyphen(s) */
- 	"64b4371c-77c1-48f9-8221-29f054XX023b",	/* invalid character(s) */
- 	"0cb4ddff-a545-4401-9d06-688af53e",	/* not enough data */
- };
- 
--static unsigned total_tests __initdata;
--static unsigned failed_tests __initdata;
--
--static void __init test_uuid_failed(const char *prefix, bool wrong, bool be,
--				    const char *data, const char *actual)
-+static void uuid_correct_le(struct kunit *test)
- {
--	pr_err("%s test #%u %s %s data: '%s'\n",
--	       prefix,
--	       total_tests,
--	       wrong ? "passed on wrong" : "failed on",
--	       be ? "BE" : "LE",
--	       data);
--	if (actual && *actual)
--		pr_err("%s test #%u actual data: '%s'\n",
--		       prefix,
--		       total_tests,
--		       actual);
--	failed_tests++;
-+	guid_t le;
-+	const struct test_data *data = (const struct test_data *)(test->param_value);
-+
-+	KUNIT_ASSERT_EQ(test, guid_parse(data->uuid, &le), 0);
-+	KUNIT_EXPECT_TRUE(test, guid_equal(&data->le, &le));
- }
- 
--static void __init test_uuid_test(const struct test_uuid_data *data)
-+static void uuid_correct_be(struct kunit *test)
- {
--	guid_t le;
- 	uuid_t be;
--	char buf[48];
--
--	/* LE */
--	total_tests++;
--	if (guid_parse(data->uuid, &le))
--		test_uuid_failed("conversion", false, false, data->uuid, NULL);
--
--	total_tests++;
--	if (!guid_equal(&data->le, &le)) {
--		sprintf(buf, "%pUl", &le);
--		test_uuid_failed("cmp", false, false, data->uuid, buf);
--	}
--
--	/* BE */
--	total_tests++;
--	if (uuid_parse(data->uuid, &be))
--		test_uuid_failed("conversion", false, true, data->uuid, NULL);
--
--	total_tests++;
--	if (!uuid_equal(&data->be, &be)) {
--		sprintf(buf, "%pUb", &be);
--		test_uuid_failed("cmp", false, true, data->uuid, buf);
--	}
-+	const struct test_data *data = (const struct test_data *)(test->param_value);
-+
-+	KUNIT_ASSERT_EQ(test, uuid_parse(data->uuid, &be), 0);
-+	KUNIT_EXPECT_TRUE(test, uuid_equal(&data->be, &be));
- }
- 
--static void __init test_uuid_wrong(const char *data)
-+static void uuid_wrong_le(struct kunit *test)
- {
- 	guid_t le;
--	uuid_t be;
--
--	/* LE */
--	total_tests++;
--	if (!guid_parse(data, &le))
--		test_uuid_failed("negative", true, false, data, NULL);
-+	const char *data = (const char *)(test->param_value);
- 
--	/* BE */
--	total_tests++;
--	if (!uuid_parse(data, &be))
--		test_uuid_failed("negative", true, true, data, NULL);
-+	KUNIT_ASSERT_NE(test, guid_parse(data, &le), 0);
- }
- 
--static int __init test_uuid_init(void)
-+static void uuid_wrong_be(struct kunit *test)
- {
--	unsigned int i;
--
--	for (i = 0; i < ARRAY_SIZE(test_uuid_test_data); i++)
--		test_uuid_test(&test_uuid_test_data[i]);
--
--	for (i = 0; i < ARRAY_SIZE(test_uuid_wrong_data); i++)
--		test_uuid_wrong(test_uuid_wrong_data[i]);
-+	uuid_t be;
-+	const char *data = (const char *)(test->param_value);
- 
--	if (failed_tests == 0)
--		pr_info("all %u tests passed\n", total_tests);
--	else
--		pr_err("failed %u out of %u tests\n", failed_tests, total_tests);
-+	KUNIT_ASSERT_NE(test, uuid_parse(data, &be), 0);
-+}
- 
--	return failed_tests ? -EINVAL : 0;
-+static void case_to_desc_correct(const struct test_data *t, char *desc)
-+{
-+	strcpy(desc, t->uuid);
- }
--module_init(test_uuid_init);
- 
--static void __exit test_uuid_exit(void)
-+KUNIT_ARRAY_PARAM(correct, correct_data, case_to_desc_correct);
-+
-+static void case_to_desc_wrong(const char * const *s, char *desc)
- {
--	/* do nothing */
-+	strcpy(desc, *s);
- }
--module_exit(test_uuid_exit);
-+
-+KUNIT_ARRAY_PARAM(wrong, wrong_data, case_to_desc_wrong);
-+
-+static struct kunit_case uuid_test_cases[] = {
-+	KUNIT_CASE_PARAM(uuid_correct_be, correct_gen_params),
-+	KUNIT_CASE_PARAM(uuid_correct_le, correct_gen_params),
-+	KUNIT_CASE_PARAM(uuid_wrong_be, wrong_gen_params),
-+	KUNIT_CASE_PARAM(uuid_wrong_le, wrong_gen_params),
-+	{}
-+};
-+
-+static struct kunit_suite uuid_test_suite = {
-+	.name = "uuid-test",
-+	.test_cases = uuid_test_cases,
-+};
-+kunit_test_suite(uuid_test_suite);
- 
- MODULE_AUTHOR("Andy Shevchenko <andriy.shevchenko@linux.intel.com>");
- MODULE_LICENSE("Dual BSD/GPL");
+On Sat, Jun 05, 2021 at 08:15:36PM +0000, Benjamin Drung wrote:
+> The Elgato Cam Link 4K HDMI video capture card reports to support three
+> different pixel formats, where the first format depends on the connected
+> HDMI device.
+> 
+> ```
+> $ v4l2-ctl -d /dev/video0 --list-formats-ext
+> ioctl: VIDIOC_ENUM_FMT
+> 	Type: Video Capture
+> 
+> 	[0]: 'NV12' (Y/CbCr 4:2:0)
+> 		Size: Discrete 3840x2160
+> 			Interval: Discrete 0.033s (29.970 fps)
+> 	[1]: 'NV12' (Y/CbCr 4:2:0)
+> 		Size: Discrete 3840x2160
+> 			Interval: Discrete 0.033s (29.970 fps)
+> 	[2]: 'YU12' (Planar YUV 4:2:0)
+> 		Size: Discrete 3840x2160
+> 			Interval: Discrete 0.033s (29.970 fps)
+> ```
+> 
+> Changing the pixel format to anything besides the first pixel format
+> does not work:
+> 
+> ```
+> $ v4l2-ctl -d /dev/video0 --try-fmt-video pixelformat=YU12
+> Format Video Capture:
+> 	Width/Height      : 3840/2160
+> 	Pixel Format      : 'NV12' (Y/CbCr 4:2:0)
+> 	Field             : None
+> 	Bytes per Line    : 3840
+> 	Size Image        : 12441600
+> 	Colorspace        : sRGB
+> 	Transfer Function : Rec. 709
+> 	YCbCr/HSV Encoding: Rec. 709
+> 	Quantization      : Default (maps to Limited Range)
+> 	Flags             :
+> ```
+> 
+> User space applications like VLC might show an error message on the
+> terminal in that case:
+> 
+> ```
+> libv4l2: error set_fmt gave us a different result than try_fmt!
+> ```
+> 
+> Depending on the error handling of the user space applications, they
+> might display a distorted video, because they use the wrong pixel format
+> for decoding the stream.
+> 
+> The Elgato Cam Link 4K responds to the USB video probe
+> VS_PROBE_CONTROL/VS_COMMIT_CONTROL with a malformed data structure: The
+> second byte contains bFormatIndex (instead of being the second byte of
+> bmHint). The first byte is always zero. The third byte is always 1.
+> 
+> The firmware bug was reported to Elgato on 2020-12-01 and it was
+> forwarded by the support team to the developers as feature request.
+> There is no firmware update available since then. The latest firmware
+> for Elgato Cam Link 4K as of 2021-03-23 has MCU 20.02.19 and FPGA 67.
+> 
+> Therefore add a quirk to correct the malformed data structure.
+> 
+> The quirk was successfully tested with VLC, OBS, and Chromium using
+> different pixel formats (YUYV, NV12, YU12), resolutions (3840x2160,
+> 1920x1080), and frame rates (29.970 and 59.940 fps).
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Benjamin Drung <bdrung@posteo.de>
+> ---
+>  drivers/media/usb/uvc/uvc_video.c | 25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+> 
+> (now sending this patch with v4 in the subject instead of falsely v3)
+> 
+> v2: enhanced the comment describing the quirk
+> 
+> v3:
+> * hardcode ctrl->bmHint to 1
+> * Use UVC_DBG_VIDEO instead of UVC_DBG_CONTROL (to match the rest of the
+>   file)
+> 
+> v4:
+> * Replace quirk bit by specific check for USB VID:PID test
+> 
+> I tried setting different values for bmHint, but the response from the
+> Cam Link was always 1. So this patch hardcodes ctrl->bmHint to 1 as
+> suggested.
+> 
+> Patch version 4 implements the recommendation of Laurent Pinchart. It
+> requires defining the device ID as variable since usb_match_one_id takes
+> an pointer to it. In case more Elgato products like Game Capture
+> HD 60 S+ (0fd9:006a) are affected, this version is harder to extent.
+> 
+> Take patch version 3 or 4 depending on which version you prefer. Both
+> work and are tested.
+> 
+> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+> index a777b389a66e..35c3ce0e0716 100644
+> --- a/drivers/media/usb/uvc/uvc_video.c
+> +++ b/drivers/media/usb/uvc/uvc_video.c
+> @@ -130,6 +130,31 @@ static void uvc_fixup_video_ctrl(struct uvc_streaming *stream,
+>  	struct uvc_format *format = NULL;
+>  	struct uvc_frame *frame = NULL;
+>  	unsigned int i;
+> +	static const struct usb_device_id elgato_cam_link_4k = { USB_DEVICE(0x0fd9, 0x0066) };
+
+Let's avoid long line
+
+	static const struct usb_device_id elgato_cam_link_4k = {
+		USB_DEVICE(0x0fd9, 0x0066)
+	};
+
+> +
+> +	/*
+> +	 * The response of the Elgato Cam Link 4K is incorrect: The second byte
+> +	 * contains bFormatIndex (instead of being the second byte of bmHint).
+> +	 * The first byte is always zero. The third byte is always 1.
+> +	 *
+> +	 * The UVC 1.5 class specification defines the first five bits in the
+> +	 * bmHint bitfield. The remaining bits are reserved and should be zero.
+> +	 * Therefore a valid bmHint will be less than 32.
+> +	 *
+> +	 * Latest Elgato Cam Link 4K firmware as of 2021-03-23 needs this quirk.
+> +	 * MCU: 20.02.19, FPGA: 67
+> +	 */
+> +	if (usb_match_one_id(stream->dev->intf, &elgato_cam_link_4k) && ctrl->bmHint > 255) {
+
+Similarly, I'd break this as
+
+	if (usb_match_one_id(stream->dev->intf, &elgato_cam_link_4k) &&
+	    ctrl->bmHint > 255) {
+
+> +		__u8 corrected_format_index;
+
+You can use u8 within the kernel.
+
+> +
+> +		corrected_format_index = ctrl->bmHint >> 8;
+> +		uvc_dbg(stream->dev, VIDEO,
+> +			"Correct USB video probe response from {bmHint: 0x%04x, bFormatIndex: 0x%02x} to {bmHint: 0x%04x, bFormatIndex: 0x%02x}.\n",
+
+I'd print bFormatIndex with %u as it's an index and thus more readable
+as a decimal integer.
+
+If you agree with those small changes, there's no need to resubmit, I
+can fold them in when applying the patch.
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> +			ctrl->bmHint, ctrl->bFormatIndex,
+> +			1, corrected_format_index);
+> +		ctrl->bmHint = 1;
+> +		ctrl->bFormatIndex = corrected_format_index;
+> +	}
+>  
+>  	for (i = 0; i < stream->nformats; ++i) {
+>  		if (stream->format[i].index == ctrl->bFormatIndex) {
+
 -- 
-2.31.1
+Regards,
 
+Laurent Pinchart
