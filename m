@@ -2,126 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69BFA39C851
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 15:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0FF39C857
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 15:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229964AbhFENCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 09:02:08 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:42727 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229916AbhFENCH (ORCPT
+        id S229981AbhFENFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 09:05:55 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:48402 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229902AbhFENFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 09:02:07 -0400
-Received: by mail-il1-f197.google.com with SMTP id d17-20020a9236110000b02901cf25fcfdcdso8362617ila.9
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 06:00:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=iFXTtA8X2z+eX4opBgGHQYkpp91LW96NGV28D3XR+Ng=;
-        b=PiSsmxlI92Pd43OxtpDQYP8gtgTsN73E/Bsf1rtOXSA3AeSkNxdkOL8QKqLnnoilIB
-         acA3R8grgb4Ryl7+etjwP9UE2Q53BG0o3cT9g202+uEJKrTS7ELK6QY/0fYpkv+X53sS
-         8Bc1FcdSXc5i/sOM6wvE1K4X1lS4zDXXWv7lcErNEf27xbb8wKnChVaYY0cHR62yrAfq
-         yi7K3IbwyzZci/rEVv5E8LebCw7vjPl+tt/xqWOKMX43fjiQqfU2m/3UjnYtZI6gA9+L
-         xHk3GDE7OhJUMoHGgvVtt2DzBm9PhdJ8msAeRmJmj4KDEZwUkTDrMG09nv2wSlukLu0H
-         RZiA==
-X-Gm-Message-State: AOAM532sX1keCrKu+4ymbdN2q6x9FaXz9X8VD9YZgdNATIVT5o6Lt2+R
-        ulEqddwZ4ScTxAxBNzZe4i9xTkNkumg77+GkZGEE65ZpiI2v
-X-Google-Smtp-Source: ABdhPJxtDacZtV+pZIa+ZFcWZKxKwjVxI6fAAwh1dDcQ4+ayVG4yStlGizPDvEBT3naENRsqWpk52UnlWZEPebrRZZHbdFh5UbRF
+        Sat, 5 Jun 2021 09:05:54 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lpVy5-0000U5-Gx; Sat, 05 Jun 2021 13:04:01 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Mustafa Ismail <mustafa.ismail@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] RDMA/irdma: remove extraneous indentation on a statement
+Date:   Sat,  5 Jun 2021 14:04:00 +0100
+Message-Id: <20210605130400.25987-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-Received: by 2002:a5d:83ce:: with SMTP id u14mr7879807ior.45.1622898019609;
- Sat, 05 Jun 2021 06:00:19 -0700 (PDT)
-Date:   Sat, 05 Jun 2021 06:00:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f7365905c4046327@google.com>
-Subject: [syzbot] WARNING in dlfb_set_video_mode/usb_submit_urb
-From:   syzbot <syzbot+b70e32fc4c6568d6d19e@syzkaller.appspotmail.com>
-To:     bernie@plugable.com, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Colin Ian King <colin.king@canonical.com>
 
-syzbot found the following issue on:
+A single statement is indented one level too deeply, clean up the
+code by removing the extraneous tab.
 
-HEAD commit:    c2131f7e Merge tag 'gfs2-v5.13-rc2-fixes' of git://git.ker..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1204b5d3d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e2ecf1aa681aadc1
-dashboard link: https://syzkaller.appspot.com/bug?extid=b70e32fc4c6568d6d19e
-compiler:       Debian clang version 11.0.1-2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15282db7d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1763504dd00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b70e32fc4c6568d6d19e@syzkaller.appspotmail.com
-
-usb 1-1: Read EDID byte 0 failed: -71
-usb 1-1: Read EDID byte 0 failed: -71
-usb 1-1: Read EDID byte 0 failed: -71
-usb 1-1: Unable to get valid EDID from device/display
-------------[ cut here ]------------
-usb 1-1: BOGUS urb xfer, pipe 3 != type 1
-WARNING: CPU: 0 PID: 8629 at drivers/usb/core/urb.c:494 usb_submit_urb+0xacd/0x1550 drivers/usb/core/urb.c:493
-Modules linked in:
-CPU: 0 PID: 8629 Comm: kworker/0:4 Not tainted 5.13.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-RIP: 0010:usb_submit_urb+0xacd/0x1550 drivers/usb/core/urb.c:493
-Code: d8 48 c1 e8 03 42 8a 04 28 84 c0 0f 85 bd 07 00 00 44 8b 03 48 c7 c7 80 86 e1 8a 4c 89 f6 4c 89 fa 89 e9 31 c0 e8 63 c7 8f fb <0f> 0b 4c 8b 74 24 30 45 89 f7 4c 89 ff 48 c7 c6 70 e1 8d 8d e8 6a
-RSP: 0018:ffffc90001f36660 EFLAGS: 00010246
-RAX: 0baf7fe5b4c01b00 RBX: ffffffff8ae184ac RCX: ffff888035c09c40
-RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-RBP: 0000000000000003 R08: ffffffff81655632 R09: ffffed1017345f90
-R10: ffffed1017345f90 R11: 0000000000000000 R12: ffff888017813700
-R13: dffffc0000000000 R14: ffffffff8ae226e0 R15: ffff888017212b90
-FS:  0000000000000000(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fe721263740 CR3: 0000000017ff3000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- dlfb_submit_urb drivers/video/fbdev/udlfb.c:1969 [inline]
- dlfb_set_video_mode+0x1b2a/0x3500 drivers/video/fbdev/udlfb.c:315
- dlfb_ops_set_par+0x731/0xb50 drivers/video/fbdev/udlfb.c:1110
- dlfb_usb_probe+0x184e/0x21b0 drivers/video/fbdev/udlfb.c:1732
- usb_probe_interface+0x633/0xb40 drivers/usb/core/driver.c:396
- really_probe+0x3cb/0x1020 drivers/base/dd.c:580
- driver_probe_device+0x178/0x350 drivers/base/dd.c:763
- bus_for_each_drv+0x16a/0x1f0 drivers/base/bus.c:431
- __device_attach+0x301/0x560 drivers/base/dd.c:938
- bus_probe_device+0xb8/0x1f0 drivers/base/bus.c:491
- device_add+0x11fc/0x1670 drivers/base/core.c:3324
- usb_set_configuration+0x1a86/0x2100 drivers/usb/core/message.c:2164
- usb_generic_driver_probe+0x83/0x140 drivers/usb/core/generic.c:238
- usb_probe_device+0x13a/0x260 drivers/usb/core/driver.c:293
- really_probe+0x3cb/0x1020 drivers/base/dd.c:580
- driver_probe_device+0x178/0x350 drivers/base/dd.c:763
- bus_for_each_drv+0x16a/0x1f0 drivers/base/bus.c:431
- __device_attach+0x301/0x560 drivers/base/dd.c:938
- bus_probe_device+0xb8/0x1f0 drivers/base/bus.c:491
- device_add+0x11fc/0x1670 drivers/base/core.c:3324
- usb_new_device+0xd45/0x1790 drivers/usb/core/hub.c:2556
- hub_port_connect+0x1055/0x27a0 drivers/usb/core/hub.c:5276
- hub_port_connect_change+0x5d0/0xbf0 drivers/usb/core/hub.c:5416
- port_event+0xaee/0x1140 drivers/usb/core/hub.c:5562
- hub_event+0x48d/0xd90 drivers/usb/core/hub.c:5644
- process_one_work+0x833/0x10c0 kernel/workqueue.c:2276
- worker_thread+0xac1/0x1300 kernel/workqueue.c:2422
- kthread+0x39a/0x3c0 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/infiniband/hw/irdma/verbs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index 294155293243..65cb58cb32e1 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -3442,7 +3442,7 @@ static void irdma_process_cqe(struct ib_wc *entry,
+ 		entry->src_qp = cq_poll_info->qp_id;
+ 	}
+ 
+-		entry->byte_len = cq_poll_info->bytes_xfered;
++	entry->byte_len = cq_poll_info->bytes_xfered;
+ }
+ 
+ /**
+-- 
+2.31.1
+
