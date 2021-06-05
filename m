@@ -2,241 +2,586 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37FE939CA86
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 20:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1849539CA84
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 20:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbhFESg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 14:36:28 -0400
-Received: from mail-lj1-f181.google.com ([209.85.208.181]:40545 "EHLO
-        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229978AbhFESg0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 14:36:26 -0400
-Received: by mail-lj1-f181.google.com with SMTP id x14so1694190ljp.7
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 11:34:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Pd7tf3i2pnO2Ok9Tv/vp503TcTB5cBTB11RLxlS7Uv8=;
-        b=SHZMwxLgxSJrLhj66EbwzrZlSQgqZmh8DV0H98sw7nObl4e1lQe8NbHfBBSPi1y7BQ
-         vft3kUPa7oVom64QBDktptjHWg8VEHVFDZeuGDpXlPFeSYUGlcbutqDsyg37xroTvWki
-         7Bxt/4dbajKcOz6t6/OtIfLIOWiyxJilNRN3pdih5c/YTQ7QudPQIXzVqjHqWOcVUhaf
-         OkHXZB/QcblN8Yvqu22W203NUCyo3mf/zlwDlvziQyKvgjtXbEIvj8rE9Dsw5A/zkj62
-         Rb95n18ghx3QCwnr1pOZkxJ2ApXxbG+lfOmNtGDrBMpQNBal6mmTE47sjAT4aE7VxMnX
-         3cfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Pd7tf3i2pnO2Ok9Tv/vp503TcTB5cBTB11RLxlS7Uv8=;
-        b=pCQd3+cZVSL+TIaNLvfmHU4Tl88yHhHHb+uTgcNJW54Ox4B0wdkRJQJN/8GhxWZNAM
-         DhtIo3scZQ5gzwcrl3Da/aCeBQqkWTDY+qJ1HzPCW5NPQU4bjaf0SmZjA/7jsI6e8uGY
-         o9zXLlt4THnx7C6+6vKwQ0mzPQhnvKrYIUyGY19IK8RtEhoX/X1IIN4zbLfTjgbdH1Mw
-         l6XZLOp9YZ+FEc4XK2PUTOL1JiWapISmgLN7lVfsUxTv1fIeYWfG5+o2zmW2/IJ0nwj4
-         /A3INZtZYDKdzl3oAVzdQcbaz/crjXkt9hx2s8ogkGiiD4NxWGERAYbku5jnCYlrF/qB
-         Zoqg==
-X-Gm-Message-State: AOAM532aexEzuFGivI3DDjg/qvO1oZsjTJDONAhb09VLojAxwaLzUl/Q
-        NZ3vhJdAuYYO9Jvgx4rtrig=
-X-Google-Smtp-Source: ABdhPJzAchRqFbX7wzaaWwsUM4bqwsi0b2uMf5D/Ut0ZYEx7mac8euPkXdz+PH6guEB+finZ2WSFuw==
-X-Received: by 2002:a2e:2c0a:: with SMTP id s10mr8116155ljs.171.1622918017098;
-        Sat, 05 Jun 2021 11:33:37 -0700 (PDT)
-Received: from HyperiorArchMachine.bb.dnainternet.fi (dcx7x4ybp09ts--z5-7ry-3.rev.dnainternet.fi. [2001:14ba:14f7:3c00:2cf7:60ff:fe99:fedc])
-        by smtp.gmail.com with ESMTPSA id r28sm1142441ljn.96.2021.06.05.11.33.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Jun 2021 11:33:36 -0700 (PDT)
-From:   Jarmo Tiitto <jarmo.tiitto@gmail.com>
-To:     Sami Tolvanen <samitolvanen@google.com>,
-        Bill Wendling <wcw@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-Cc:     Jarmo Tiitto <jarmo.tiitto@gmail.com>, morbo@google.com
-Subject: [PATCH v3 1/1] pgo: Fix sleep in atomic section in prf_open() v3
-Date:   Sat,  5 Jun 2021 21:31:29 +0300
-Message-Id: <20210605183128.129614-1-jarmo.tiitto@gmail.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S230036AbhFESfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 14:35:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47004 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229994AbhFESfd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 14:35:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D826D613DF;
+        Sat,  5 Jun 2021 18:33:44 +0000 (UTC)
+From:   Clark Williams <williams@redhat.com>
+Subject: [ANNOUNCE] 4.19.193-rt81
+Date:   Sat, 05 Jun 2021 18:32:32 -0000
+Message-ID: <162291795287.1461400.1185835369064633002@puck.lan>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <daniel.wagner@suse.com>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>,
+        Pavel Machek <pavel@denx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In prf_open() the required buffer size can be so large that
-vzalloc() may sleep thus triggering bug:
+Hello RT-list!
 
-======
- BUG: sleeping function called from invalid context at include/linux/sched/mm.h:201
- in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 337, name: cat
- CPU: 1 PID: 337 Comm: cat Not tainted 5.13.0-rc2-24-hack+ #154
- Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
- Call Trace:
-  dump_stack+0xc7/0x134
-  ___might_sleep+0x177/0x190
-  __might_sleep+0x5a/0x90
-  kmem_cache_alloc_node_trace+0x6b/0x3a0
-  ? __get_vm_area_node+0xcd/0x1b0
-  ? dput+0x283/0x300
-  __get_vm_area_node+0xcd/0x1b0
-  __vmalloc_node_range+0x7b/0x420
-  ? prf_open+0x1da/0x580
-  ? prf_open+0x32/0x580
-  ? __llvm_profile_instrument_memop+0x36/0x50
-  vzalloc+0x54/0x60
-  ? prf_open+0x1da/0x580
-  prf_open+0x1da/0x580
-  full_proxy_open+0x211/0x370
-  ....
-======
+I'm pleased to announce the 4.19.193-rt81 stable release.
 
-Since we can't vzalloc while holding pgo_lock,
-split the code into steps:
-* First get initial buffer size via prf_buffer_size()
-  and release the lock.
+You can get this release via the git tree at:
 
-* Round up to the page size and allocate the buffer.
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
 
-* Finally re-acquire the pgo_lock and call prf_serialize().
-  prf_serialize() will now check if the buffer is large enough
-  and returns -EAGAIN if it is not.
+  branch: v4.19-rt
+  Head SHA1: bc58d4d90cfb326853b7026cfe4cecbaa6fb964b
 
-Note that prf_buffer_size() walks linked lists that
-are modified by __llvm_profile_instrument_target(),
-so we have to "guess" the buffer size ahead of time.
-prf_serialize() will then return the actual data length.
+Or to build 4.19.193-rt81 directly, the following patches should be applied:
 
-Signed-off-by: Jarmo Tiitto <jarmo.tiitto@gmail.com>
+  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.19.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.19.193.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/patch-4.19.193-rt81.patch.xz
+
+
+You can also build from 4.19.191-rt80 by applying the incremental patch:
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/incr/patch-4.19.191-rt80-rt81.patch.xz
+
+Enjoy!
+Clark
+
+Changes from v4.19.191-rt80:
 ---
-v3: Go back the loop solution.
-    Explained why prf_buffer_size() need pgo_lock.
-    Cleanup the code a bit.
-v2: Loopless attempt.
+
+Adrian Hunter (2):
+      perf intel-pt: Fix sample instruction bytes
+      perf intel-pt: Fix transaction abort handling
+
+Alaa Emad (1):
+      media: dvb: Add check on sp8870_readreg return
+
+Alan Stern (1):
+      USB: usbfs: Don't WARN about excessively large memory allocations
+
+Alexander Usyskin (1):
+      mei: request autosuspend after sending rx flow control
+
+Alexei Starovoitov (1):
+      bpf: extend is_branch_taken to registers
+
+Andrey Ignatov (1):
+      selftests/bpf: Test narrow loads with off > 0 in test_verifier
+
+Andy Shevchenko (1):
+      platform/x86: intel_punit_ipc: Append MODULE_DEVICE_TABLE for ACPI
+
+Anirudh Rayabharam (4):
+      rapidio: handle create_workqueue() failure
+      net: stmicro: handle clk_prepare() failure during init
+      video: hgafb: correctly handle card detect failure during probe
+      net: fujitsu: fix potential null-ptr-deref
+
+Anna Schumaker (1):
+      NFSv4: Fix a NULL pointer dereference in pnfs_mark_matching_lsegs_return()
+
+Atul Gopinathan (2):
+      cdrom: gdrom: deallocate struct gdrom_unit fields in remove_gdrom
+      serial: max310x: unregister uart driver in case of failure and abort
+
+Aurelien Aptel (1):
+      cifs: set server->cipher_type to AES-128-CCM for SMB3.0
+
+Chris Park (1):
+      drm/amd/display: Disconnect non-DP with no EDID
+
+Christophe JAILLET (4):
+      openrisc: Fix a memory leak
+      net: netcp: Fix an error message
+      net: mdio: thunder: Fix a double free issue in the .remove function
+      net: mdio: octeon: Fix some double free issues
+
+Chunfeng Yun (1):
+      usb: core: reduce power-on-good delay time of root hub
+
+Clark Williams (3):
+      Merge tag 'v4.19.192' into v4.19-rt
+      Merge tag 'v4.19.193' into v4.19-rt
+      Linux 4.19.193-rt81
+
+DENG Qingfang (1):
+      net: dsa: mt7530: fix VLAN traffic leaks
+
+Dan Carpenter (6):
+      firmware: arm_scpi: Prevent the ternary sign expansion bug
+      NFS: fix an incorrect limit in filelayout_decode_layout()
+      net: dsa: fix a crash if ->get_sset_count() fails
+      staging: emxx_udc: fix loop in _nbu2ss_nuke()
+      ASoC: cs35l33: fix an error code in probe()
+      scsi: libsas: Use _safe() loop in sas_resume_port()
+
+Daniel Borkmann (13):
+      bpf, test_verifier: switch bpf_get_stack's 0 s> r8 test
+      bpf: Move off_reg into sanitize_ptr_alu
+      bpf: Ensure off_reg has no mixed signed bounds for all types
+      bpf: Rework ptr_limit into alu_limit and add common error path
+      bpf: Improve verifier error messages for users
+      bpf: Refactor and streamline bounds check into helper
+      bpf: Move sanitize_val_alu out of op switch
+      bpf: Tighten speculative pointer arithmetic mask
+      bpf: Update selftests to reflect new error states
+      bpf: Fix leakage of uninitialized bpf stack under speculation
+      bpf: Wrap aux data inside bpf_sanitize_info container
+      bpf: Fix mask direction swap upon off reg sign change
+      bpf: No need to simulate speculative domain for immediates
+
+Daniel Wagner (1):
+      nvmet: seset ns->file when open fails
+
+Daniele Palmas (1):
+      USB: serial: option: add Telit LE910-S1 compositions 0x7010, 0x7011
+
+Dominik Andreas Schorpp (1):
+      USB: serial: ftdi_sio: add IDs for IDS GmbH Products
+
+Dongliang Mu (2):
+      NFC: nci: fix memory leak in nci_allocate_device
+      misc/uss720: fix memory leak in uss720_probe
+
+Du Cheng (2):
+      ethernet: sun: niu: fix missing checks of niu_pci_eeprom_read()
+      net: caif: remove BUG_ON(dev == NULL) in caif_xmit
+
+Felix Fietkau (1):
+      perf jevents: Fix getting maximum number of fds
+
+Francesco Ruggeri (1):
+      ipv6: record frag_max_size in atomic fragments in input path
+
+Fugang Duan (1):
+      net: fec: fix the potential memory leak in fec_enet_init()
+
+Geert Uytterhoeven (1):
+      serial: sh-sci: Fix off-by-one error in FIFO threshold register setting
+
+Greg Kroah-Hartman (23):
+      Revert "ALSA: sb8: add a check for request_region"
+      Revert "rapidio: fix a NULL pointer dereference when create_workqueue() fails"
+      Revert "serial: mvebu-uart: Fix to avoid a potential NULL pointer dereference"
+      Revert "video: hgafb: fix potential NULL pointer dereference"
+      Revert "net: stmicro: fix a missing check of clk_prepare"
+      Revert "leds: lp5523: fix a missing check of return value of lp55xx_read"
+      Revert "hwmon: (lm80) fix a missing check of bus read in lm80 probe"
+      Revert "video: imsttfb: fix potential NULL pointer dereferences"
+      Revert "ecryptfs: replace BUG_ON with error handling code"
+      Revert "scsi: ufs: fix a missing check of devm_reset_control_get"
+      Revert "gdrom: fix a memory leak bug"
+      cdrom: gdrom: initialize global variable at init time
+      Revert "media: rcar_drif: fix a memory disclosure"
+      Revert "rtlwifi: fix a potential NULL pointer dereference"
+      Revert "qlcnic: Avoid potential NULL pointer dereference"
+      Revert "niu: fix missing checks of niu_pci_eeprom_read"
+      net: rtlwifi: properly check for alloc_workqueue() failure
+      Linux 4.19.192
+      kgdb: fix gcc-11 warnings harder
+      libertas: register sysfs groups properly
+      ASoC: cs43130: handle errors in cs43130_probe() properly
+      media: gspca: properly check for errors in po1030_probe()
+      Linux 4.19.193
+
+Hans de Goede (1):
+      platform/x86: dell-smbios-wmi: Fix oops on rmmod dell_smbios
+
+Hoang Le (1):
+      Revert "net:tipc: Fix a double free in tipc_sk_mcast_rcv"
+
+Hui Wang (1):
+      ALSA: hda/realtek: reset eapd coeff to default value for alc287
+
+Igor Matheus Andrade Torrente (1):
+      video: hgafb: fix potential NULL pointer dereference
+
+Jack Pham (1):
+      usb: dwc3: gadget: Enable suspend events
+
+Jan Beulich (1):
+      xen-pciback: reconfigure also from backend watch handler
+
+Jean Delvare (1):
+      i2c: i801: Don't generate an interrupt on bus reset
+
+Jesse Brandeburg (2):
+      ixgbe: fix large MTU request from VF
+      drivers/net/ethernet: clean up unused assignments
+
+Jingwen Chen (1):
+      drm/amd/amdgpu: fix refcount leak
+
+Johan Hovold (2):
+      net: hso: fix control-request directions
+      USB: trancevibrator: fix control-request direction
+
+Johannes Berg (5):
+      mac80211: drop A-MSDUs on old ciphers
+      mac80211: add fragment cache to sta_info
+      mac80211: check defrag PN against current frame
+      mac80211: prevent attacks on TKIP/WEP as well
+      mac80211: do not accept/forward invalid EAPOL frames
+
+John Fastabend (1):
+      bpf: Test_verifier, bpf_get_stack return value add <0
+
+Josef Bacik (1):
+      btrfs: do not BUG_ON in link_to_fixup_dir
+
+Jussi Maki (1):
+      bpf: Set mac_len in bpf_skb_change_head
+
+Kai-Heng Feng (1):
+      platform/x86: hp_accel: Avoid invoking _INI to speed up resume
+
+Kees Cook (1):
+      proc: Check /proc/$pid/attr/ writes against file opener
+
+Krzysztof Kozlowski (1):
+      i2c: s3c2410: fix possible NULL pointer deref on read message after write
+
+Leon Romanovsky (1):
+      RDMA/rxe: Clear all QP fields if creation failed
+
+Lucas Stankus (1):
+      staging: iio: cdc: ad7746: avoid overwrite of num_channels
+
+Luiz Augusto von Dentz (1):
+      Bluetooth: SMP: Fail if remote and local public keys are identical
+
+Lukas Wunner (3):
+      spi: gpio: Don't leak SPI master in probe error path
+      spi: mt7621: Disable clock in probe error path
+      spi: mt7621: Don't leak SPI master in probe error path
+
+Maciej W. Rozycki (2):
+      vgacon: Record video mode changes with VT_RESIZEX
+      vt: Fix character height handling with VT_RESIZEX
+
+Maor Gottlieb (1):
+      RDMA/mlx5: Recover from fatal event in dual port mode
+
+Mathias Nyman (1):
+      thunderbolt: dma_port: Fix NVM read buffer bounds and offset issue
+
+Mathy Vanhoef (4):
+      mac80211: assure all fragments are encrypted
+      mac80211: prevent mixed key and fragment cache attacks
+      mac80211: properly handle A-MSDUs that start with an RFC 1042 header
+      cfg80211: mitigate A-MSDU aggregation attacks
+
+Matt Wang (1):
+      scsi: BusLogic: Fix 64-bit system enumeration error for Buslogic
+
+Mike Kravetz (1):
+      hugetlbfs: hugetlb_fault_mutex_hash() cleanup
+
+Mikulas Patocka (2):
+      dm snapshot: fix crash with transient storage and zero chunk size
+      dm snapshot: properly fix a crash when an origin has no snapshots
+
+Neil Armstrong (1):
+      drm/meson: fix shutdown crash when component not probed
+
+Oleg Nesterov (1):
+      ptrace: make ptrace() fail if the tracee changed its pid unexpectedly
+
+Ovidiu Panait (2):
+      bpf: fix up selftests after backports were fixed
+      selftests/bpf: add selftest part of "bpf: improve verifier branch analysis"
+
+Pavel Skripkin (1):
+      net: usb: fix memory leak in smsc75xx_bind
+
+PeiSen Hou (1):
+      ALSA: hda/realtek: Add some CLOVE SSIDs of ALC293
+
+Peter Zijlstra (1):
+      openrisc: Define memory barrier mb
+
+Phillip Potter (4):
+      scsi: ufs: handle cleanup correctly on devm_reset_control_get error
+      leds: lp5523: check return value of lp5xx_read and jump to cleanup code
+      isdn: mISDNinfineon: check/cleanup ioremap failure correctly in setup_io
+      dmaengine: qcom_hidma: comment platform_driver_register call
+
+Piotr Krysiuk (1):
+      bpf, selftests: Fix up some test_verifier cases for unprivileged
+
+Randy Dunlap (2):
+      MIPS: alchemy: xxs1500: add gpio-au1000.h header file
+      MIPS: ralink: export rt_sysc_membase for rt2880_wdt.c
+
+Rolf Eike Beer (1):
+      iommu/vt-d: Fix sysfs leak in alloc_iommu()
+
+Ronnie Sahlberg (1):
+      cifs: fix memory leak in smb2_copychunk_range
+
+Sean MacLennan (1):
+      USB: serial: ti_usb_3410_5052: add startech.com device id
+
+Shyam Sundar S K (1):
+      platform/x86: hp-wireless: add AMD's hardware id to the supported list
+
+Sriram R (1):
+      ath10k: Validate first subframe of A-MSDU before processing the list
+
+Stephen Brennan (1):
+      mm, vmstat: drop zone->lock in /proc/pagetypeinfo
+
+Steve French (1):
+      SMB3: incorrect file id in requests compounded with open
+
+Taehee Yoo (2):
+      mld: fix panic in mld_newpack()
+      sch_dsmark: fix a NULL deref in qdisc_reset()
+
+Takashi Iwai (2):
+      ALSA: line6: Fix racy initialization of LINE6 MIDI
+      ALSA: usb-audio: Validate MS endpoint descriptors
+
+Takashi Sakamoto (3):
+      ALSA: dice: fix stream format for TC Electronic Konnekt Live at high sampling transfer frequency
+      ALSA: dice: fix stream format at middle sampling rate for Alesis iO 26
+      ALSA: bebob/oxfw: fix Kconfig entry for Mackie d.2 Pro
+
+Tao Liu (1):
+      openvswitch: meter: fix race when getting now_ms.
+
+Tetsuo Handa (1):
+      tty: vt: always invoke vc->vc_sw->con_resize callback
+
+Thadeu Lima de Souza Cascardo (1):
+      Bluetooth: cmtp: fix file refcount when cmtp_attach_device fails
+
+Thinh Nguyen (1):
+      usb: dwc3: gadget: Properly track pending and queued SG
+
+Tom Seewald (2):
+      qlcnic: Add null check after calling netdev_alloc_skb
+      char: hpet: add checks after calling ioremap
+
+Trond Myklebust (1):
+      NFS: Don't corrupt the value of pg_bytes_written in nfs_do_recoalesce()
+
+Vladimir Oltean (1):
+      net: dsa: fix error code getting shifted with 4 in dsa_slave_get_sset_count
+
+Vladyslav Tarasiuk (1):
+      net/mlx4: Fix EEPROM dump support
+
+Wen Gong (1):
+      mac80211: extend protection against mixed key and fragment cache attacks
+
+Xin Long (1):
+      tipc: skb_linearize the head skb when reassembling msgs
+
+Yoshihiro Shimoda (1):
+      usb: gadget: udc: renesas_usb3: Fix a race in usb3_start_pipen()
+
+YueHaibing (1):
+      iio: adc: ad7793: Add missing error code in ad7793_setup()
+
+Yunsheng Lin (1):
+      net: hns3: check the return of skb_checksum_help()
+
+Zhang Xiaoxu (1):
+      NFSv4: Fix v4.0/v4.1 SEEK_DATA return -ENOTSUPP when set NFS_V4_2 config
+
+Zhen Lei (2):
+      scsi: qla2xxx: Fix error return code in qla82xx_write_flash_dword()
+      net: bnx2: Fix error return code in bnx2_init_board()
+
+Zheyu Ma (1):
+      serial: rp2: use 'request_firmware' instead of 'request_firmware_nowait'
+
+Zolton Jheng (1):
+      USB: serial: pl2303: add device id for ADLINK ND-6530 GC
+
+Zqiang (1):
+      locking/mutex: clear MUTEX_FLAGS if wait_list is empty due to signal
+
+xinhui pan (1):
+      drm/amdgpu: Fix a use-after-free
 ---
- kernel/pgo/fs.c | 62 +++++++++++++++++++++++++++++++++++++------------
- 1 file changed, 47 insertions(+), 15 deletions(-)
-
-diff --git a/kernel/pgo/fs.c b/kernel/pgo/fs.c
-index ef985159dad3..0ce0dc9caf7a 100644
---- a/kernel/pgo/fs.c
-+++ b/kernel/pgo/fs.c
-@@ -24,13 +24,14 @@
- #include <linux/module.h>
- #include <linux/slab.h>
- #include <linux/vmalloc.h>
-+#include <linux/mm.h>
- #include "pgo.h"
- 
- static struct dentry *directory;
- 
- struct prf_private_data {
- 	void *buffer;
--	unsigned long size;
-+	size_t size;
- };
- 
- /*
-@@ -213,6 +214,7 @@ static inline unsigned long prf_get_padding(unsigned long size)
- 	return 7 & (sizeof(u64) - size % sizeof(u64));
- }
- 
-+/* Note: caller *must* hold pgo_lock */
- static unsigned long prf_buffer_size(void)
- {
- 	return sizeof(struct llvm_prf_header) +
-@@ -225,18 +227,22 @@ static unsigned long prf_buffer_size(void)
- 
- /*
-  * Serialize the profiling data into a format LLVM's tools can understand.
-+ * Returns actual buffer size in p->size.
-+ * Note: p->buffer must point into vzalloc()'d
-+ * area of at least prf_buffer_size() in size.
-  * Note: caller *must* hold pgo_lock.
-  */
--static int prf_serialize(struct prf_private_data *p)
-+static int prf_serialize(struct prf_private_data *p, size_t buf_size)
- {
- 	int err = 0;
- 	void *buffer;
- 
-+	/* get buffer size, again. */
- 	p->size = prf_buffer_size();
--	p->buffer = vzalloc(p->size);
- 
--	if (!p->buffer) {
--		err = -ENOMEM;
-+	/* check for unlikely overflow. */
-+	if (p->size > buf_size) {
-+		err = -EAGAIN;
- 		goto out;
- 	}
- 
-@@ -259,27 +265,53 @@ static int prf_open(struct inode *inode, struct file *file)
- {
- 	struct prf_private_data *data;
- 	unsigned long flags;
--	int err;
-+	size_t buf_size;
-+	int err = 0;
- 
- 	data = kzalloc(sizeof(*data), GFP_KERNEL);
- 	if (!data) {
- 		err = -ENOMEM;
--		goto out;
-+		goto out_free;
- 	}
- 
-+	/* get initial buffer size */
- 	flags = prf_lock();
-+	data->size = prf_buffer_size();
-+	prf_unlock(flags);
- 
--	err = prf_serialize(data);
--	if (unlikely(err)) {
--		kfree(data);
--		goto out_unlock;
--	}
-+	do {
-+		if (data->buffer)
-+			vfree(data->buffer);
-+
-+		/* allocate, round up to page size. */
-+		buf_size = PAGE_ALIGN(data->size);
-+		data->buffer = vzalloc(buf_size);
-+
-+		if (!data->buffer) {
-+			err = -ENOMEM;
-+			goto out_free;
-+		}
-+
-+		/*
-+		 * try serialize and get actual
-+		 * data length in data->size
-+		 */
-+		flags = prf_lock();
-+		err = prf_serialize(data, buf_size);
-+		prf_unlock(flags);
-+		/* in unlikely case, try again. */
-+	} while (err == -EAGAIN);
-+
-+	if (err)
-+		goto out_free;
- 
- 	file->private_data = data;
-+	return 0;
- 
--out_unlock:
--	prf_unlock(flags);
--out:
-+out_free:
-+	if (data)
-+		vfree(data->buffer);
-+	kfree(data);
- 	return err;
- }
- 
-
-base-commit: 46773f32ddf1d49a84eca5f19126d6dfaf08e8d9
--- 
-2.31.1
-
+Makefile                                           |   2 +-
+ arch/mips/alchemy/board-xxs1500.c                  |   1 +
+ arch/mips/ralink/of.c                              |   2 +
+ arch/openrisc/include/asm/barrier.h                |   9 +
+ arch/openrisc/kernel/setup.c                       |   2 +
+ drivers/cdrom/gdrom.c                              |  13 +-
+ drivers/char/hpet.c                                |   4 +
+ drivers/dma/qcom/hidma_mgmt.c                      |  14 +
+ drivers/firmware/arm_scpi.c                        |   4 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c             |   3 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c            |   1 +
+ drivers/gpu/drm/amd/display/dc/core/dc_link.c      |  18 ++
+ drivers/gpu/drm/meson/meson_drv.c                  |   9 +-
+ drivers/hwmon/lm80.c                               |  11 +-
+ drivers/i2c/busses/i2c-i801.c                      |   6 +-
+ drivers/i2c/busses/i2c-s3c2410.c                   |   3 +
+ drivers/iio/adc/ad7793.c                           |   1 +
+ drivers/infiniband/hw/mlx5/main.c                  |   1 +
+ drivers/infiniband/sw/rxe/rxe_qp.c                 |   7 +
+ drivers/iommu/dmar.c                               |   4 +-
+ drivers/isdn/hardware/mISDN/mISDNinfineon.c        |  24 +-
+ drivers/leds/leds-lp5523.c                         |   2 +-
+ drivers/md/dm-snap.c                               |   3 +-
+ drivers/media/dvb-frontends/sp8870.c               |   4 +-
+ drivers/media/platform/rcar_drif.c                 |   1 -
+ drivers/media/usb/gspca/m5602/m5602_po1030.c       |  10 +-
+ drivers/misc/kgdbts.c                              |   3 +-
+ drivers/misc/lis3lv02d/lis3lv02d.h                 |   1 +
+ drivers/misc/mei/interrupt.c                       |   3 +
+ drivers/net/caif/caif_serial.c                     |   1 -
+ drivers/net/dsa/mt7530.c                           |   8 -
+ drivers/net/ethernet/broadcom/bnx2.c               |   2 +-
+ drivers/net/ethernet/brocade/bna/bnad.c            |   7 +-
+ drivers/net/ethernet/dec/tulip/de4x5.c             |   4 +-
+ drivers/net/ethernet/dec/tulip/media.c             |   5 -
+ drivers/net/ethernet/freescale/fec_main.c          |  11 +-
+ drivers/net/ethernet/fujitsu/fmvj18x_cs.c          |   5 +
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    |  10 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_sriov.c     |  16 +-
+ drivers/net/ethernet/mellanox/mlx4/en_ethtool.c    |   4 +-
+ drivers/net/ethernet/mellanox/mlx4/en_tx.c         |   2 +-
+ drivers/net/ethernet/mellanox/mlx4/port.c          | 107 +++++++-
+ drivers/net/ethernet/micrel/ksz884x.c              |   3 +-
+ drivers/net/ethernet/microchip/lan743x_main.c      |   6 +-
+ drivers/net/ethernet/neterion/vxge/vxge-traffic.c  |  32 +--
+ .../net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c    |   3 +-
+ drivers/net/ethernet/sfc/falcon/farch.c            |  29 +-
+ drivers/net/ethernet/sis/sis900.c                  |   5 +-
+ drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c  |   8 +-
+ drivers/net/ethernet/sun/niu.c                     |  32 ++-
+ drivers/net/ethernet/synopsys/dwc-xlgmac-common.c  |   2 +-
+ drivers/net/ethernet/ti/davinci_emac.c             |   5 +-
+ drivers/net/ethernet/ti/netcp_core.c               |   2 +-
+ drivers/net/ethernet/ti/tlan.c                     |   4 +-
+ drivers/net/ethernet/via/via-velocity.c            |  13 -
+ drivers/net/phy/mdio-octeon.c                      |   2 -
+ drivers/net/phy/mdio-thunder.c                     |   1 -
+ drivers/net/usb/hso.c                              |   4 +-
+ drivers/net/usb/smsc75xx.c                         |   8 +-
+ drivers/net/wireless/ath/ath10k/htt_rx.c           |  61 ++++-
+ drivers/net/wireless/marvell/libertas/mesh.c       |  28 +-
+ drivers/net/wireless/realtek/rtlwifi/base.c        |  19 +-
+ drivers/nvme/target/io-cmd-file.c                  |   8 +-
+ drivers/platform/x86/dell-smbios-wmi.c             |   3 +-
+ drivers/platform/x86/hp-wireless.c                 |   2 +
+ drivers/platform/x86/hp_accel.c                    |  22 +-
+ drivers/platform/x86/intel_punit_ipc.c             |   1 +
+ drivers/rapidio/rio_cm.c                           |  17 +-
+ drivers/scsi/BusLogic.c                            |   6 +-
+ drivers/scsi/BusLogic.h                            |   2 +-
+ drivers/scsi/libsas/sas_port.c                     |   4 +-
+ drivers/scsi/qla2xxx/qla_nx.c                      |   3 +-
+ drivers/scsi/ufs/ufs-hisi.c                        |  15 +-
+ drivers/spi/spi-gpio.c                             |   8 +-
+ drivers/staging/emxx_udc/emxx_udc.c                |   4 +-
+ drivers/staging/iio/cdc/ad7746.c                   |   1 -
+ drivers/staging/mt7621-spi/spi-mt7621.c            |  10 +-
+ drivers/thunderbolt/dma_port.c                     |  11 +-
+ drivers/tty/serial/max310x.c                       |   6 +-
+ drivers/tty/serial/mvebu-uart.c                    |   3 -
+ drivers/tty/serial/rp2.c                           |  52 ++--
+ drivers/tty/serial/sh-sci.c                        |   4 +-
+ drivers/tty/vt/vt.c                                |   2 +-
+ drivers/tty/vt/vt_ioctl.c                          |   6 +-
+ drivers/usb/core/devio.c                           |  11 +-
+ drivers/usb/core/hub.h                             |   6 +-
+ drivers/usb/dwc3/gadget.c                          |  17 +-
+ drivers/usb/gadget/udc/renesas_usb3.c              |   5 +-
+ drivers/usb/misc/trancevibrator.c                  |   4 +-
+ drivers/usb/misc/uss720.c                          |   1 +
+ drivers/usb/serial/ftdi_sio.c                      |   3 +
+ drivers/usb/serial/ftdi_sio_ids.h                  |   7 +
+ drivers/usb/serial/option.c                        |   4 +
+ drivers/usb/serial/pl2303.c                        |   1 +
+ drivers/usb/serial/pl2303.h                        |   1 +
+ drivers/usb/serial/ti_usb_3410_5052.c              |   3 +
+ drivers/video/console/vgacon.c                     |  56 ++--
+ drivers/video/fbdev/core/fbcon.c                   |   2 +-
+ drivers/video/fbdev/hgafb.c                        |  21 +-
+ drivers/video/fbdev/imsttfb.c                      |   5 -
+ drivers/xen/xen-pciback/xenbus.c                   |  22 +-
+ fs/btrfs/tree-log.c                                |   2 -
+ fs/cifs/smb2ops.c                                  |   2 +
+ fs/cifs/smb2pdu.c                                  |  13 +-
+ fs/ecryptfs/crypto.c                               |   6 +-
+ fs/hugetlbfs/inode.c                               |   4 +-
+ fs/nfs/filelayout/filelayout.c                     |   2 +-
+ fs/nfs/nfs4file.c                                  |   2 +-
+ fs/nfs/pagelist.c                                  |  12 +-
+ fs/nfs/pnfs.c                                      |  15 +-
+ fs/proc/base.c                                     |   4 +
+ include/linux/bpf_verifier.h                       |   5 +-
+ include/linux/console_struct.h                     |   1 +
+ include/linux/hugetlb.h                            |   2 +-
+ include/net/cfg80211.h                             |   4 +-
+ include/net/nfc/nci_core.h                         |   1 +
+ kernel/bpf/verifier.c                              | 300 ++++++++++++++-------
+ kernel/locking/mutex-debug.c                       |   4 +-
+ kernel/locking/mutex-debug.h                       |   2 +-
+ kernel/locking/mutex.c                             |  18 +-
+ kernel/locking/mutex.h                             |   4 +-
+ kernel/ptrace.c                                    |  18 +-
+ localversion-rt                                    |   2 +-
+ mm/hugetlb.c                                       |  10 +-
+ mm/userfaultfd.c                                   |   2 +-
+ mm/vmstat.c                                        |   3 +
+ net/bluetooth/cmtp/core.c                          |   5 +
+ net/bluetooth/smp.c                                |   9 +
+ net/core/filter.c                                  |   1 +
+ net/dsa/master.c                                   |   5 +-
+ net/dsa/slave.c                                    |  12 +-
+ net/ipv6/mcast.c                                   |   3 -
+ net/ipv6/reassembly.c                              |   4 +-
+ net/mac80211/ieee80211_i.h                         |  36 +--
+ net/mac80211/iface.c                               |  11 +-
+ net/mac80211/key.c                                 |   7 +
+ net/mac80211/key.h                                 |   2 +
+ net/mac80211/rx.c                                  | 150 ++++++++---
+ net/mac80211/sta_info.c                            |   6 +-
+ net/mac80211/sta_info.h                            |  32 +++
+ net/mac80211/wpa.c                                 |  13 +-
+ net/nfc/nci/core.c                                 |   1 +
+ net/nfc/nci/hci.c                                  |   5 +
+ net/openvswitch/meter.c                            |   8 +
+ net/sched/sch_dsmark.c                             |   3 +-
+ net/tipc/msg.c                                     |   9 +-
+ net/tipc/socket.c                                  |   5 +-
+ net/wireless/util.c                                |   7 +-
+ sound/firewire/Kconfig                             |   4 +-
+ sound/firewire/bebob/bebob.c                       |   2 +-
+ sound/firewire/dice/dice-alesis.c                  |   2 +-
+ sound/firewire/dice/dice-tcelectronic.c            |   4 +-
+ sound/firewire/oxfw/oxfw.c                         |   1 -
+ sound/isa/sb/sb8.c                                 |   4 -
+ sound/pci/hda/patch_realtek.c                      |  20 +-
+ sound/soc/codecs/cs35l33.c                         |   1 +
+ sound/soc/codecs/cs43130.c                         |  28 +-
+ sound/usb/line6/driver.c                           |   4 +
+ sound/usb/line6/pod.c                              |   5 -
+ sound/usb/line6/variax.c                           |   6 -
+ sound/usb/midi.c                                   |   4 +
+ tools/perf/pmu-events/jevents.c                    |   2 +-
+ .../perf/util/intel-pt-decoder/intel-pt-decoder.c  |   6 +-
+ tools/perf/util/intel-pt.c                         |   5 +-
+ tools/testing/selftests/bpf/test_verifier.c        | 112 ++++++--
+ 165 files changed, 1285 insertions(+), 671 deletions(-)
