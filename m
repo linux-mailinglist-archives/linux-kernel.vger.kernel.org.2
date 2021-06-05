@@ -2,92 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 854B939C639
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 08:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8DB39C62A
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 08:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbhFEG0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 02:26:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhFEG0I (ORCPT
+        id S229926AbhFEGTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 02:19:07 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3064 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhFEGTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 02:26:08 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7FBBC061766;
-        Fri,  4 Jun 2021 23:24:07 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id j12so9557365pgh.7;
-        Fri, 04 Jun 2021 23:24:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=r2xrOsoZZxRSqy6qqxdG6tTS5Reg+2W0VGzUs3SrOYI=;
-        b=mX0ja+UyXWgWge+Nfd9JNZE2FWNPyXfhFLMZv8TiHr+JyS3IWaPGSERSU+I29OY3v6
-         c8mKxeRP4OD+5RaXkbU5m1TRiQS2x8ZE4HTkZUvLc3vp+aoQ6xx0RzYDr11wGt9hrClV
-         Hz8r44bIn734DK6qa97yY/2WFv1LKAGIl5lDHjNehyVuUXAaMdMKJKo1uHhDxbupjk3c
-         as185e6R6/rn6rYQ48N9GnW/QjVH48BXifkEywxUoUAKxv0rzPQ+VxRP0aEuAa1k1sH4
-         mOxTG5LHoSa3CW1YKBJ5+hDrrgy8DXsVTAQdyycEjm21oTzY5F57xF5mKrNx0rSN2HJs
-         clgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=r2xrOsoZZxRSqy6qqxdG6tTS5Reg+2W0VGzUs3SrOYI=;
-        b=VCHRsckoPx6nvANl/bq98dKxiqUYzoxGF2/ENcuEE0QK5z3DZvsZmd4WOBhnec+/Wm
-         Fm31Zsdkw/cSrHGcr6a6dyVPIV8/t7RZNpEWI0fYnGFsajkhvZMVTkFN22YBv+34le6H
-         BYp4QyDykeXwsop0RPyGjR4h5hu4JCKhAT9WKK/O04Q/44q3icEExt38xO1xEEQjSQKf
-         W6oYnsQ5nTMNFs4lRcBV+POO8SQQRz6qdAhQLv9rtilLxiqAABmm2dug3o9g9FyZD5oH
-         0MGb6C99SELzrMqiFmhYjpq4J2PsNGj88ImICYy0QN4dNJ9B6ihrz4TlOPb/paNbmeJA
-         4bxQ==
-X-Gm-Message-State: AOAM533IktJC/1IH08/2VsjMxy6xyvaxufMVmX2ZSgMNHsTd36DTAW8v
-        P7pt2NoD0K7ZZLmed0Mt68k=
-X-Google-Smtp-Source: ABdhPJyPUtXlYrM7kZKxm8T97ZgicScU6t6VgaJweoC768ycu9GYxWV/unBxwusbRTNFNUhu8chhtg==
-X-Received: by 2002:aa7:9438:0:b029:2df:258e:7f10 with SMTP id y24-20020aa794380000b02902df258e7f10mr7844755pfo.79.1622874247508;
-        Fri, 04 Jun 2021 23:24:07 -0700 (PDT)
-Received: from localhost.localdomain (199.19.111.227.16clouds.com. [199.19.111.227])
-        by smtp.gmail.com with ESMTPSA id v14sm2800870pgo.89.2021.06.04.23.24.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 23:24:07 -0700 (PDT)
-From:   xieqinick@gmail.com
-To:     robh+dt@kernel.org, narmstrong@baylibre.com, khilman@baylibre.com,
-        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     nick@khadas.com, artem@khadas.com
-Subject: [PATCH 6/6] arm64: dts: meson: vim2: add i2c aliases
-Date:   Sat,  5 Jun 2021 14:23:13 +0800
-Message-Id: <20210605062313.418343-7-xieqinick@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210605062313.418343-1-xieqinick@gmail.com>
-References: <20210605062313.418343-1-xieqinick@gmail.com>
+        Sat, 5 Jun 2021 02:19:06 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fxq6j6pwmzWn6G;
+        Sat,  5 Jun 2021 14:12:29 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 5 Jun 2021 14:17:16 +0800
+Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
+ (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 5 Jun 2021
+ 14:17:16 +0800
+From:   Baokun Li <libaokun1@huawei.com>
+To:     <serge@hallyn.com>, <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
+        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
+        <libaokun1@huawei.com>
+Subject: [PATCH -next] capability: fix doc warnings in capability.c
+Date:   Sat, 5 Jun 2021 14:26:02 +0800
+Message-ID: <20210605062602.678602-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Xie <nick@khadas.com>
+Fixes the following W=1 kernel build warning(s):
 
-Add i2c aliases for Khadas VIM2.
+kernel/capability.c:490: warning: Function parameter or
+ member 'mnt_userns' not described in 'privileged_wrt_inode_uidgid'
+kernel/capability.c:506: warning: Function parameter or
+ member 'mnt_userns' not described in 'capable_wrt_inode_uidgid'
 
-Signed-off-by: Nick Xie <nick@khadas.com>
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
 ---
- arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 2 ++
+ kernel/capability.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-index 70488ae45876..3f3ea65df665 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-@@ -21,6 +21,8 @@ aliases {
- 		serial2 = &uart_B;
- 		serial3 = &uart_C;
- 		serial4 = &uart_AO_B;
-+		i2c0 = &i2c_A;
-+		i2c1 = &i2c_B;
- 	};
- 
- 	chosen {
+diff --git a/kernel/capability.c b/kernel/capability.c
+index 46a361dde042..27a959aa897f 100644
+--- a/kernel/capability.c
++++ b/kernel/capability.c
+@@ -480,6 +480,7 @@ EXPORT_SYMBOL(file_ns_capable);
+ /**
+  * privileged_wrt_inode_uidgid - Do capabilities in the namespace work over the inode?
+  * @ns: The user namespace in question
++ * @mnt_userns: User namespace of the mount the inode was found from
+  * @inode: The inode in question
+  *
+  * Return true if the inode uid and gid are within the namespace.
+@@ -495,6 +496,7 @@ bool privileged_wrt_inode_uidgid(struct user_namespace *ns,
+ /**
+  * capable_wrt_inode_uidgid - Check nsown_capable and uid and gid mapped
+  * @inode: The inode in question
++ * @mnt_userns: User namespace of the mount the inode was found from
+  * @cap: The capability in question
+  *
+  * Return true if the current task has the given capability targeted at
 -- 
-2.25.1
+2.31.1
 
