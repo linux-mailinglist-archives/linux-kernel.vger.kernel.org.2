@@ -2,82 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CDAD39C609
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 07:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E05A639C60D
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 07:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbhFEFa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 01:30:28 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:47079 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229660AbhFEFa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 01:30:27 -0400
-Received: from localhost.localdomain (ip5f5aeece.dynamic.kabel-deutschland.de [95.90.238.206])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 7552461E64762;
-        Sat,  5 Jun 2021 07:28:37 +0200 (CEST)
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>
-Cc:     Madhava Reddy Siddareddygari <msiddare@cisco.com>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] hwmon: (pmbus_core) Check adapter PEC support
-Date:   Sat,  5 Jun 2021 07:27:02 +0200
-Message-Id: <20210605052700.541455-1-pmenzel@molgen.mpg.de>
-X-Mailer: git-send-email 2.32.0.rc2
+        id S230201AbhFEFcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 01:32:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhFEFcF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 01:32:05 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E66C061766
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 22:30:11 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id q16so5711851pls.6
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 22:30:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GEO+x6vBBqdP2GXyAGjmfIuQfAZkfCm84x8m+/E82go=;
+        b=X1YlFNR+PNVzSzYabNe/Gw9QYGH4jrovVEkC7Ac5Rpb4yLOzURcf42x5762w+Qa3L9
+         mrvzXEMiAVu30S3IZspee38ncBKBH7/ec0mtGLqqsGbV1b6/xbxEuR71OaJC6M7FwU7v
+         o4InsRzh5ajKyCnlB6vsnEag5jTMKhA84cmw9v5cIUN1T6+8iYbR1gK6G+HiAUfQ/VY6
+         FCMC+BVaG0p+aUNfSlZzY8Gm6PVQo6S/7PpZbcwa3Kxfa9/FPmxyB2jX/0SjfYmdhGWA
+         kQ1i/9dY71t0Q7h8FZSPotaBN6v1mQ/lrH/ImEUZjYFQNz/q4TXNmk6RRC0H0WjNpUuY
+         xSfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GEO+x6vBBqdP2GXyAGjmfIuQfAZkfCm84x8m+/E82go=;
+        b=OoX2ucUdMTCa3EYLLkC0tee3bu8B65HIQJ7jdu9HPZL4SKr+uXkSPdlCzWsYPMYG3L
+         wE/daUfq4xLZl2ixqKTgz2hl32MGfIuVe3EL5p9uxwhXXDlKniEoApNmhw/V7VAyjgdl
+         vOw4DB2eNAQjjYC4NtFXWJZZybBWeAECDocXl+ShNTXBdpoZywnKDIFFiEIyus2dow1n
+         H7WQaf/E4eXIT4o1tut49PaS05zLvKDVBvRFuSiveOtOlTl3SFaIAr2ZWdkH+24lUGif
+         PAIblm+bUt8VufEZkNKbcChO61fwynoHSbarPzPsyQuQVG7SwsuhVjflGbMXLzsUZrRd
+         TXZw==
+X-Gm-Message-State: AOAM532LPawdkPQ6MBQHUCfX2/ndX7GdQymMBPkO7mV9ufv53bqEZm6I
+        rEXLFcuyDE+D/VoHHaGRYzu8Rg==
+X-Google-Smtp-Source: ABdhPJzF5let5ONamUDEHHdvvfExJiXL2z2R01r6n9esJvrHTl/qrjkw774LNA0Wr4X3x5SGiLFAig==
+X-Received: by 2002:a17:902:bb8e:b029:f4:58d1:5170 with SMTP id m14-20020a170902bb8eb02900f458d15170mr7697725pls.84.1622871011016;
+        Fri, 04 Jun 2021 22:30:11 -0700 (PDT)
+Received: from localhost (ec2-18-167-84-74.ap-east-1.compute.amazonaws.com. [18.167.84.74])
+        by smtp.gmail.com with ESMTPSA id t12sm3278697pfc.133.2021.06.04.22.30.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 22:30:10 -0700 (PDT)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH] perf session: Correct buffer copying when peek event
+Date:   Sat,  5 Jun 2021 13:29:57 +0800
+Message-Id: <20210605052957.1070720-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Madhava Reddy Siddareddygari <msiddare@cisco.com>
+When peek an event, it has a short path and a long path.  The short path
+uses the session pointer "one_mmap_addr" to directly fetch event; and
+the long path needs to read out the event header and the followed event
+data from file and fill into the buffer pointer passed through the
+argument "buf".
 
-Currently, for Packet Error Checking (PEC) only the controller
-is checked for support. This causes problems on the cisco-8000
-platform where a SMBUS transaction errors are observed. This is
-because PEC has to be enabled only if both controller and
-adapter support it.
+The issue is in the long path that it copies the event header and event
+data into the same destination address which pointer "buf", this means
+the event header is overwritten.  We are just lucky to run into the
+short path in most cases, so we don't hit the issue in the long path.
 
-Added code to check PEC capability for adapter and enable it
-only if both controller and adapter supports PEC.
+This patch adds the offset "hdr_sz" to the pointer "buf" when copying
+the event data, so that it can reserve the event header which can be
+used properly by its caller.
 
-Signed-off-by: Madhava Reddy Siddareddygari <msiddare@cisco.com>
-[Upstream from SONiC https://github.com/Azure/sonic-linux-kernel/pull/215]
-Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Fixes: 5a52f33adf02 ("perf session: Add perf_session__peek_event()")
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
-v2: Do not revert check introduced by commit e5befc02 (hwmon: (pmbus)
-    Add a PMBUS_NO_CAPABILITY platform data flag).
+ tools/perf/util/session.c | 1 +
+ 1 file changed, 1 insertion(+)
 
- drivers/hwmon/pmbus/pmbus_core.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
-index bbd745178147..2fd0fec59d4f 100644
---- a/drivers/hwmon/pmbus/pmbus_core.c
-+++ b/drivers/hwmon/pmbus/pmbus_core.c
-@@ -2214,11 +2214,15 @@ static int pmbus_init_common(struct i2c_client *client, struct pmbus_data *data,
- 		data->has_status_word = true;
- 	}
+diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+index 106b3d60881a..e59242c361ce 100644
+--- a/tools/perf/util/session.c
++++ b/tools/perf/util/session.c
+@@ -1723,6 +1723,7 @@ int perf_session__peek_event(struct perf_session *session, off_t file_offset,
+ 	if (event->header.size < hdr_sz || event->header.size > buf_sz)
+ 		return -1;
  
--	/* Enable PEC if the controller supports it */
-+	/* Enable PEC if the controller and bus supports it */
- 	if (!(data->flags & PMBUS_NO_CAPABILITY)) {
- 		ret = i2c_smbus_read_byte_data(client, PMBUS_CAPABILITY);
--		if (ret >= 0 && (ret & PB_CAPABILITY_ERROR_CHECK))
--			client->flags |= I2C_CLIENT_PEC;
-+		if (ret >= 0 && (ret & PB_CAPABILITY_ERROR_CHECK)) {
-+			if (i2c_check_functionality(client->adapter,
-+						I2C_FUNC_SMBUS_PEC)) {
-+				client->flags |= I2C_CLIENT_PEC;
-+			}
-+		}
- 	}
++	buf += hdr_sz;
+ 	rest = event->header.size - hdr_sz;
  
- 	/*
+ 	if (readn(fd, buf, rest) != (ssize_t)rest)
 -- 
-2.32.0.rc2
+2.25.1
 
