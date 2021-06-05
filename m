@@ -2,274 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2E739CB21
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 23:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F42839CB29
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 23:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbhFEVLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 17:11:22 -0400
-Received: from mail-pj1-f49.google.com ([209.85.216.49]:36586 "EHLO
-        mail-pj1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhFEVLU (ORCPT
+        id S230060AbhFEVYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 17:24:21 -0400
+Received: from mail-io1-f41.google.com ([209.85.166.41]:43674 "EHLO
+        mail-io1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229998AbhFEVYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 17:11:20 -0400
-Received: by mail-pj1-f49.google.com with SMTP id d5-20020a17090ab305b02901675357c371so9129373pjr.1
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 14:09:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dudXczIM0n5b9xhwHuG4Xckp/1A176e1zSr4y54qLag=;
-        b=nKul2Nk9v2TEuU8KlSQeZBrSZ+1QNz3EbEVGJ8DkBuIaF+1qEuAGI39Oq5CraD9j1P
-         f3jOTyNjSHo8v2wQK7uPloBsshROxETCYWb6e8/M0WItaVcaa56rXzg+ldvRlgSTLfB3
-         /10hcZWkT0IQKqSd7ePp20aSIfLF/nRpGdK6ncbVUbrorYHOrk30LaBlbMjJ+FxcHkCH
-         FfXLIWXWUtUYYGW2i6iESTEKO/bZpugEyId1cbc7VHF9UNufdfol4BT8uil3SJp8BLb1
-         GQSmq3/+inEN/p+9noq/stXPphv8au2Yqw/NEpdNGYalRcr6JvYfo0zyXoOH0Ay9VJV0
-         ic9g==
+        Sat, 5 Jun 2021 17:24:20 -0400
+Received: by mail-io1-f41.google.com with SMTP id k16so14204012ios.10
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 14:22:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=dudXczIM0n5b9xhwHuG4Xckp/1A176e1zSr4y54qLag=;
-        b=GFkBYd/zu4sD5fJFXhrQuSkqHY0zakvOp30VvFi4UGnqkK/t3rPvZZZfT87ylZ5mni
-         zI/N268ySF85cEZG6kby8D+SF4QXC36/kn64Zqc5gnllup6aqOUyza86NRvGbcOSNkN1
-         mu/2+rfm02/t/pWUFE90x91y/8sN77VXxrMjLYcSRFTon43OPReUcVzsxqy2Icugg+QV
-         WvFbemTs2BQDaTBQq8k5j0azfZPF7ttR4+S2WSGWgCtCGa5i3RmWmGwxpbbgbxjEXyMj
-         96yZSrI2p0K51ll1xbBhpGJV7PqJ9bDMmlJFTOrq4W40tevjHNgolDElvj/ECtoKrb1d
-         XJ2Q==
-X-Gm-Message-State: AOAM531LbyXs2Q3ER5IBQTC5OqSxIvijBYjZqgfEEccDiwKMr1ck5E3f
-        J8fkHYx/cUJTib4wP4e5XYxhdomJu8+9biSmkfMBG8BfJJg=
-X-Google-Smtp-Source: ABdhPJxhz3r5YIRQmhaAiCVIaMy14vAVoI/p73ZTFxbeJchFfiVM9ZUDngEnNw3lYtlOmjlIollvu74TiStDMEDOHM0=
-X-Received: by 2002:a17:902:820a:b029:10c:a12b:e524 with SMTP id
- x10-20020a170902820ab029010ca12be524mr10336721pln.79.1622927312131; Sat, 05
- Jun 2021 14:08:32 -0700 (PDT)
+        bh=1X7C13eDQDl51/sBrcWLcBotS8EVFpLlVkgBBa2OCtE=;
+        b=LI7RTXGUDKjK7fTVTJ9N8nEYw6DXMzj3PF4SezDLOJrk76+kDDYOB5EPxH1pB7JC6G
+         AToJJbslFHiZpK2kRWyiIX5YG0CAXCZP/5Z1PhX/DiIUNCUk5cTagwwFplwJKKuJ8bIw
+         fEDfAhTYhniPrcUYh5BS3BOr+lKJ7lcN0vKfk3mDjaLjcXg4AOKKBNfQjlNg1XUjdONh
+         bW8EIXaDzDTMs1ReEHbOzTXKDl47y0Eeis9KocTSvwI95DKPkNKcZztC/URzoPYBHK/C
+         vw0sJ8EOh2N75ME2r71l8SHGuESB5rBpxaOeMVion/NmrYY4KaWBFfgd2b4j2AdOlWOw
+         lB9g==
+X-Gm-Message-State: AOAM532P0c20u4a664M3O5N2W/AsXq451S/HjGC9GZJh8WXXhl/f3GCm
+        e2xAiAzgUCB0kC+/4fKn6/iKCAl3m8eocpDnP7E=
+X-Google-Smtp-Source: ABdhPJwDYU/lj0l1DjZPjAxSIB2JYv48iw9FlskjP4Nx6BPAhCrmZ0g4qLeCdx7pfpqrwS+Al3ntrJqP3KVIghxLc3M=
+X-Received: by 2002:a05:6638:380a:: with SMTP id i10mr9765600jav.100.1622928151767;
+ Sat, 05 Jun 2021 14:22:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAPcyv4gBNqDFQEYjWqYTckPg-yy=LrvMw_FNY+tUuEwD35CfyA@mail.gmail.com>
- <20210527042356.3983284-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210527042356.3983284-4-sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAPcyv4jRCZwoJoKGP4v3e8V6u4Y+1VZo_k=umQuh-rrAoMKg4Q@mail.gmail.com> <ca836226-46e1-389c-e5c8-c5f1c91130ea@linux.intel.com>
-In-Reply-To: <ca836226-46e1-389c-e5c8-c5f1c91130ea@linux.intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Sat, 5 Jun 2021 14:08:21 -0700
-Message-ID: <CAPcyv4gmokd5YTbL0X8w3KKV6EEO0xraaB-OEFJyncjaHQUUuw@mail.gmail.com>
-Subject: Re: [RFC v2-fix-v1 3/3] x86/tdx: Handle port I/O
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <202106052143.52488.linux@zary.sk>
+In-Reply-To: <202106052143.52488.linux@zary.sk>
+From:   Ilia Mirkin <imirkin@alum.mit.edu>
+Date:   Sat, 5 Jun 2021 17:22:20 -0400
+Message-ID: <CAKb7Uvhh=iYxVhuacS74G+ubUYWVm1WiqZuQnbEhy=46__brfQ@mail.gmail.com>
+Subject: Re: [Nouveau] nouveau broken on Riva TNT2 in 5.13.0-rc4: NULL pointer
+ dereference in nouveau_bo_sync_for_device
+To:     Ondrej Zary <linux@zary.sk>
+Cc:     Ben Skeggs <bskeggs@redhat.com>,
+        nouveau <nouveau@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 5, 2021 at 1:08 PM Kuppuswamy, Sathyanarayanan
-<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
->
->
->
-> On 6/5/21 11:52 AM, Dan Williams wrote:
-> > On Wed, May 26, 2021 at 9:24 PM Kuppuswamy Sathyanarayanan
-> > <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
-> >>
-> >> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-> >>
-> >> TDX hypervisors cannot emulate instructions directly. This
-> >> includes port IO which is normally emulated in the hypervisor.
-> >> All port IO instructions inside TDX trigger the #VE exception
-> >> in the guest and would be normally emulated there.
-> >>
-> >> For the really early code in the decompressor, #VE cannot be
-> >> used because the IDT needed for handling the exception is not
-> >> set-up, and some other infrastructure needed by the handler
-> >> is missing. So to support port IO in decompressor code, add
-> >> support for paravirt based I/O port virtualization.
-> >>
-> >> Also string I/O is not supported in TDX guest. So, unroll the
-> >> string I/O operation into a loop operating on one element at
-> >> a time. This method is similar to AMD SEV, so just extend the
-> >> support for TDX guest platform.
-> >
-> > Given early port IO is broken out in its own previous I think it makes
-> > sense to break out the decompressor port IO enabling from final
-> > runtime port IO support.
->
-> Patch titled "x86/tdx: Handle early IO operations" mainly adds
-> IO #VE support in early exception handler. Decompression code IO
-> support does not have dependency on it. You still think it is
-> better to move it that patch?
->
+Another instance of a report like this here:
+https://gitlab.freedesktop.org/drm/nouveau/-/issues/92
 
-No, I was suggesting three patches instead of 2:
-
-early
-decompressor
-final-runtime
-
-> >
-> > The argument in the previous patch about using #VE emulation in the
-> > early code was collisions with trace and printk support in the "fully
-> > featured" #VE handler later in the series. My interpretation of that
-> > collision was due to the possibility of the #VE handler going into
-> > infinite recursion if a printk in the handler triggered port IO. It
+On Sat, Jun 5, 2021 at 3:53 PM Ondrej Zary <linux@zary.sk> wrote:
 >
-> No. AFAIK, It has nothing to do with infinite recursion. We are just
-> highlighting the fact that when kernel uses early exception handler
-> support, we cannot use code path that enables tracing support. So we
-> use simplest way to trigger IO hypercalls.
-
-Ok, then how does this approach handle printk from the #VE handler if
-printk issues port IO?
-
+> Hello,
+> I'm testing 5.13.0-rc4 and nouveau crashes with NULL pointer dereference in nouveau_bo_sync_for_device.
+> Found various reports like this but that was back in februaryso that should be fixed now.
 >
-> if (early #VE exception path)
->      handle_io_ve()
->          __tdx_hypercall
+> [   21.003216] BUG: kernel NULL pointer dereference, address: 00000000
+> [   21.003235] #PF: supervisor read access in kernel mode
+> [   21.003243] #PF: error_code(0x0000) - not-present page
+> [   21.003250] *pde = 00000000
+> [   21.003258] Oops: 0000 [#1] SMP
+> [   21.003268] CPU: 0 PID: 222 Comm: systemd-udevd Not tainted 5.13.0-rc4+ #327
+> [   21.003278] Hardware name:  /848P-ICH5, BIOS 6.00 PG 02/03/2005
+> [   21.003285] EIP: nouveau_bo_sync_for_device+0x9e/0xbf [nouveau]
+> [   21.003571] Code: 02 89 45 e8 01 d1 8b 19 89 5d ec bb 01 00 00 00 3b 5d e8 74 0d 89 d8 c1 e0 05 03 45 ec 39 04 99 74 1e 8b 46 10 89 d9 c1 e1 0c <8b> 14 10 8b 47 e0 8b 40 08 6a 01 e8 d5 03 55 df 01 5d f0 58 eb ae
+> [   21.003588] EAX: 00000000 EBX: 00000010 ECX: 00010000 EDX: 00000000
+> [   21.003597] ESI: c3e90280 EDI: c185a494 EBP: c2ed7c10 ESP: c2ed7bf8
+> [   21.003606] DS: 007b ES: 007b FS: 00d8 GS: 0033 SS: 0068 EFLAGS: 00210206
+> [   21.003615] CR0: 80050033 CR2: 00000000 CR3: 02ecb000 CR4: 00000690
+> [   21.003625] Call Trace:
+> [   21.003635]  nouveau_bo_validate+0x3f/0x48 [nouveau]
+> [   21.003911]  nouveau_bo_pin+0xf0/0x187 [nouveau]
+> [   21.004182]  nouveau_channel_prep+0xc0/0x269 [nouveau]
+> [   21.004454]  nouveau_channel_new+0x3c/0x5f5 [nouveau]
+> [   21.004725]  ? slab_free_freelist_hook+0x3b/0xa7
+> [   21.004740]  ? kfree+0x9e/0x11a
+> [   21.004749]  ? nvif_object_sclass_put+0xd/0x16 [nouveau]
+> [   21.004944]  nouveau_drm_device_init+0x2e2/0x646 [nouveau]
+> [   21.005186]  ? pci_enable_device_flags+0x23/0x97
+> [   21.005202]  nouveau_drm_probe+0xe5/0x182 [nouveau]
+> [   21.005443]  ? nouveau_drm_device_init+0x646/0x646 [nouveau]
+> [   21.005683]  pci_device_probe+0x89/0xe9
+> [   21.005696]  really_probe+0x127/0x2b9
+> [   21.005707]  driver_probe_device+0x62/0x89
+> [   21.005715]  device_driver_attach+0x2e/0x41
+> [   21.005724]  __driver_attach+0x83/0x8a
+> [   21.005732]  bus_for_each_dev+0x4c/0x66
+> [   21.005740]  driver_attach+0x14/0x16
+> [   21.005747]  ? device_driver_attach+0x41/0x41
+> [   21.005756]  bus_add_driver+0xc5/0x16c
+> [   21.005764]  driver_register+0x87/0xb9
+> [   21.005772]  __pci_register_driver+0x38/0x3b
+> [   21.005780]  ? 0xf0be4000
+> [   21.005787]  nouveau_drm_init+0x14c/0x1000 [nouveau]
+> [   21.005964]  do_one_initcall+0x5a/0x134
+> [   21.005975]  ? __vunmap+0x124/0x12d
+> [   21.005984]  ? __vunmap+0x124/0x12d
+> [   21.005992]  ? kmem_cache_alloc+0xa8/0xb6
+> [   21.006001]  ? do_init_module+0x17/0x1cf
+> [   21.006012]  do_init_module+0x46/0x1cf
+> [   21.006021]  load_module+0x1799/0x1bcb
+> [   21.006032]  __ia32_sys_finit_module+0x72/0x7a
+> [   21.006044]  do_int80_syscall_32+0x53/0x62
+> [   21.006054]  entry_INT80_32+0xf0/0xf0
+> [   21.006063] EIP: 0xb7f40092
+> [   21.006071] Code: 00 00 00 e9 90 ff ff ff ff a3 24 00 00 00 68 30 00 00 00 e9 80 ff ff ff ff a3 e8 ff ff ff 66 90 00 00 00 00 00 00 00 00 cd 80 <c3> 8d b4 26 00 00 00 00 8d b6 00 00 00 00 8b 1c 24 c3 8d b4 26 00
+> [   21.006086] EAX: ffffffda EBX: 00000010 ECX: b7e9bbdd EDX: 00000000
+> [   21.006095] ESI: 008f27d0 EDI: 008f9e10 EBP: 00000000 ESP: bfa140b8
+> [   21.006103] DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b EFLAGS: 00200296
+> [   21.006114] Modules linked in: nouveau(+) snd_intel8x0 snd_ac97_codec pcmcia wmi hwmon ac97_bus yenta_socket pcmcia_rsrc drm_ttm_helper snd_pcm ttm snd_timer pcmcia_core psmouse 8139cp snd sg soundcore serio_raw parport_pc intel_agp parport
+> [   21.006165] CR2: 0000000000000000
+> [   21.006201] ---[ end trace 02dc541683feafc6 ]---
+> [   21.006211] EIP: nouveau_bo_sync_for_device+0x9e/0xbf [nouveau]
+> [   21.006460] Code: 02 89 45 e8 01 d1 8b 19 89 5d ec bb 01 00 00 00 3b 5d e8 74 0d 89 d8 c1 e0 05 03 45 ec 39 04 99 74 1e 8b 46 10 89 d9 c1 e1 0c <8b> 14 10 8b 47 e0 8b 40 08 6a 01 e8 d5 03 55 df 01 5d f0 58 eb ae
+> [   21.006476] EAX: 00000000 EBX: 00000010 ECX: 00010000 EDX: 00000000
+> [   21.006485] ESI: c3e90280 EDI: c185a494 EBP: c2ed7c10 ESP: c2ed7bf8
+> [   21.006494] DS: 007b ES: 007b FS: 00d8 GS: 0033 SS: 0068 EFLAGS: 00210206
+> [   21.006503] CR0: 80050033 CR2: 00000000 CR3: 02ecb000 CR4: 00000690
 >
-> if (normal #VE path)
->      handle_io_ve()
->          __tdx_hypercall (current version)
->         // Later on when adding tracing support, we will replace it
->         // with trace hypercalls.
->         __trace_tdx_hypercall
 >
-> As you can see in above design flow, later on when adding tracing
-> support we will have split the early #IO handling code from
-> normal IO handling code. So instead of using common code now and
-> refactor it later on, we just use different code path for both
-> of them.
-
-Could you put that in the changelog, it was non-obvious to me.
-
-> > seems I do not have the right picture of the constraints. Given the
-> > runtime kernel can direct replace in/out macros I would expect a
-> > statement of the tradeoff with #VE emulation and why the post
-> > decompressor code is still using emulation.
->
-> Currently decompression code cannot use #VE based IO emulation. It does
-> not know how to handle #VE exceptions. Also, It is much easier to replace
-> IO calls with TDX hypercalls in decompression code when compared with
-> teaching how to handle #VE exceptions in decompression code.
-
-Ok, but that does not answer the background behind the decision to use
-emulation rather than direct replacement of port IO instructions in
-the final kernel runtime image.
-
-This patch mixes those 2 concerns and I think it deserves to be broken
-out and explained.
-
->
-> >
-> >>
-> >> Co-developed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> >> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> >> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> >> Reviewed-by: Andi Kleen <ak@linux.intel.com>
-> >> ---
-> >>   arch/x86/boot/compressed/Makefile |  1 +
-> >>   arch/x86/boot/compressed/tdcall.S |  3 ++
-> >>   arch/x86/boot/compressed/tdx.c    | 28 ++++++++++++++++++
-> >>   arch/x86/include/asm/io.h         |  7 +++--
-> >>   arch/x86/include/asm/tdx.h        | 47 ++++++++++++++++++++++++++++++-
-> >>   arch/x86/kernel/tdx.c             | 39 +++++++++++++++++++++++++
-> >>   6 files changed, 122 insertions(+), 3 deletions(-)
-> >>   create mode 100644 arch/x86/boot/compressed/tdcall.S
-> >>
-> >> diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
-> >> index a2554621cefe..a944a2038797 100644
-> >> --- a/arch/x86/boot/compressed/Makefile
-> >> +++ b/arch/x86/boot/compressed/Makefile
-> >> @@ -97,6 +97,7 @@ endif
-> >>
->
-> >>   static int __ro_after_init tdx_guest = -1;
-> >>
-> >> @@ -30,3 +32,29 @@ bool is_tdx_guest(void)
-> >>          return !!tdx_guest;
-> >>   }
-> >>
-> >> +/*
-> >> + * Helper function used for making hypercall for "out"
-> >> + * instruction. It will be called from __out IO
-> >> + * macro (in tdx.h).
-> >> + */
-> >> +void tdg_out(int size, int port, unsigned int value)
-> >> +{
-> >> +       __tdx_hypercall(EXIT_REASON_IO_INSTRUCTION, size, 1,
-> >> +                       port, value, NULL);
-> >> +}
-> >> +
-> >> +/*
-> >> + * Helper function used for making hypercall for "in"
-> >> + * instruction. It will be called from __in IO macro
-> >> + * (in tdx.h). If IO is failed, it will return all 1s.
-> >> + */
-> >> +unsigned int tdg_in(int size, int port)
-> >> +{
-> >> +       struct tdx_hypercall_output out = {0};
-> >> +       int err;
-> >> +
-> >> +       err = __tdx_hypercall(EXIT_REASON_IO_INSTRUCTION, size, 0,
-> >> +                             port, 0, &out);
-> >> +
-> >> +       return err ? UINT_MAX : out.r11;
-> >> +}
-> >
-> > The previous patch open coded tdg_{in,out} and this one provides
-> > helpers. I think at a minimum they should be consistent and pick one
-> > style.
->
-> As I have mentioned above, early IO #VE handler is a special case. we
-> don't want to complicate its code path with debug or tracing support.
-> So it is not a good comparison target.
-
-This patch and the last do the same thing in 2 different ways. One of
-them should match the other even if the helpers are not directly
-reused.
-
-> In this case, the reason for adding helper function is to make it easier
-> for calling it from tdx.h.
-> >
-> >> diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
-> >> index ef7a686a55a9..daa75c8eef5d 100644
-> >> --- a/arch/x86/include/asm/io.h
-> >> +++ b/arch/x86/include/asm/io.h
-> >> @@ -40,6 +40,7 @@
-> >>
->
-> snip
->
-> >> +
-> >> +/* Helper function for converting {b,w,l} to byte size */
-> >> +static inline int tdx_get_iosize(char *str)
-> >> +{
-> >> +       if (str[0] == 'w')
-> >> +               return 2;
-> >> +       else if (str[0] == 'l')
-> >> +               return 4;
-> >> +
-> >> +       return 1;
-> >> +}
-> >
-> > This seems like an unnecessary novelty. The BUILDIO() macro in
-> > arch/x86/include/asm/io.h takes a type argument, why can't the size be
-> > explicitly specified rather than inferred from string parsing?
->
-> I don't want to make changes to generic macros in io.h if it can be
-> avoided. It follows similar argument/type in all arch/* code. Also, it
-> is easier to handle TDX as a special case here.
->
-
-What changes are you talking about to the generic macros? The BUILDIO
-macro passes in a size parameter explicitly rather than inferring the
-size from the string name of an argument. BUILDIO does not need to
-change, it's backend just needs to do the right thing in the TDX case.
-
-Otherwise, "I don't want to" is not a sufficient justification for
-avoiding needlessly new design patterns.
+> --
+> Ondrej Zary
+> _______________________________________________
+> Nouveau mailing list
+> Nouveau@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/nouveau
