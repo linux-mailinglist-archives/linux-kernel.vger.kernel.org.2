@@ -2,77 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 845B739CA85
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 20:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8DEF39CA88
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 20:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhFESfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 14:35:39 -0400
-Received: from smtprelay0135.hostedemail.com ([216.40.44.135]:38042 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229994AbhFESfh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 14:35:37 -0400
-Received: from omf05.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id A8334837F24D;
-        Sat,  5 Jun 2021 18:33:47 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf05.hostedemail.com (Postfix) with ESMTPA id EC46BB2793;
-        Sat,  5 Jun 2021 18:33:46 +0000 (UTC)
-Message-ID: <294bb4a2c3f5f8cf4a744cf59bfd37562653afb9.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: Fix check for embedded filename
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Sat, 05 Jun 2021 11:33:45 -0700
-In-Reply-To: <CABJPP5B3jZHnAprT15uEkuAbYPUT49VXRFT+pkubVVep-2=XmA@mail.gmail.com>
-References: <20210605161219.26421-1-dwaipayanray1@gmail.com>
-         <eac3b988f4993a77f8eea3550a6dd5980b25e92f.camel@perches.com>
-         <CABJPP5B3jZHnAprT15uEkuAbYPUT49VXRFT+pkubVVep-2=XmA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S230112AbhFESif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 14:38:35 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:47280 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230010AbhFESid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 14:38:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=Q9A9bTRJ/BXurUIJsUUU4JvGyPYO4HbEeNeoOZQLTfY=; b=YP0u6wrCeuDe3xcvb8vjsb5iwm
+        yv362nXUTADnZDnyHXMDBwHZXNBhgUExEs57fiqnZdMRR2+4ro8MkWyfbBNlQLFLVI1PfJpcmIufA
+        rdirRijazmNXcFRLThSSVR1VOAlE8aPwqbTJY1VfObTSHXMkPW9HcW0DWDPTYg8WtpaI=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lpb9x-007x00-9I; Sat, 05 Jun 2021 20:36:37 +0200
+Date:   Sat, 5 Jun 2021 20:36:37 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Wong Vee Khee <vee.khee.wong@linux.intel.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC net-next 0/2] Introduce MDIO probe order C45 over C22
+Message-ID: <YLvENQ/aadG0TcRp@lunn.ch>
+References: <20210601104734.GA18984@linux.intel.com>
+ <YLYwcx3aHXFu4n5C@lunn.ch>
+ <20210601154423.GA27463@linux.intel.com>
+ <YLazBrpXbpsb6aXI@lunn.ch>
+ <20210601230352.GA28209@linux.intel.com>
+ <YLbqv0Sy/3E2XaVU@lunn.ch>
+ <20210602141557.GA29554@linux.intel.com>
+ <YLed2G1iDRTbA9eT@lunn.ch>
+ <20210602235155.GA31624@linux.intel.com>
+ <20210605003722.GA4979@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: EC46BB2793
-X-Spam-Status: No, score=-2.90
-X-Stat-Signature: b5yzkn4qgyapqtuzt5tzciuzubqacscb
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19AREj44sKeK8Ez8ZCbYDzApueB4bwl2YQ=
-X-HE-Tag: 1622918026-594305
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210605003722.GA4979@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-06-05 at 23:03 +0530, Dwaipayan Ray wrote:
-> On Sat, Jun 5, 2021 at 10:51 PM Joe Perches <joe@perches.com> wrote:
-> > 
-> > On Sat, 2021-06-05 at 21:42 +0530, Dwaipayan Ray wrote:
-> > > When checkpatch is run on file contents piped through stdin,
-> > > it may generate false EMBEDDED_FILENAME warnings if the
-> > > --file flag is used.
-> > 
-> > I think this is a "don't do that" scenario and this change
-> > is not necessary.
-> > 
-> 
-> Okay then. I will drop this.
-> Sorry for the noise.
+> Can you take a look at the latest implementation and provide
+> feedback?
 
-I think you want something like this:
----
- scripts/checkpatch.pl | 1 +
- 1 file changed, 1 insertion(+)
+I think we are close, so please submit a proper patch.
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index dad87c3686326..582f8e07d32d5 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -331,6 +331,7 @@ help(0) if ($help);
- 
- die "$P: --git cannot be used with --file or --fix\n" if ($git && ($file || $fix));
- die "$P: --verbose cannot be used with --terse\n" if ($verbose && $terse);
-+die "$P: -f/--file requires at least one filename\n" if ($file && $#ARGV < 0);
- 
- if ($color =~ /^[01]$/) {
- 	$color = !$color;
-
+       Andrew
