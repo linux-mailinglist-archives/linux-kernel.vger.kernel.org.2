@@ -2,126 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D5C39C43A
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 02:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 128CE39C445
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 02:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbhFEARN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 20:17:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39558 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229847AbhFEARM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 20:17:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04AE86121F;
-        Sat,  5 Jun 2021 00:15:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622852125;
-        bh=CUYejrv1TGj5nCu6srkZoxNQGNQ4jCN+weoTDbXo4Ow=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RNZUMuoAy+1XER6Q+k6mO3psSn4w8H7IxFBvyRcx6DM+SxC/ZOiOk4kUI8KQckckg
-         cr6jFWsi1e2Quk2Nu6ozrL5zvd2UJOlBegHi8F6Pi43WtHSARV+zp/Ekuz6EDihqM7
-         7AMEcpsW2rh4mGFwrIFY4LTBso6IelFU6fF0NVaDCf5OJ+cQ9y7i4P+tBJWBNDNyMD
-         xfXDrtU6GCsbHnC1wKG05tYNWB9Coe2Sf+06LdVil8u3Xxv2Fqgq7Ku/PMYRlcZTyG
-         mObaTvxPmE2M8kbQiv/92szvDU9SSrlK+G0gSMNIb8wl6jiF+fUOj90kr9pTTTFWFL
-         aJIPErrhl33sQ==
-Date:   Fri, 4 Jun 2021 17:15:23 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <chao@kernel.org>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Daniel Rosenberg <drosen@google.com>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com, stable@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] f2fs: Advertise encrypted casefolding in sysfs
-Message-ID: <YLrCG/3e0xPE9P84@google.com>
-References: <20210603095038.314949-1-drosen@google.com>
- <20210603095038.314949-3-drosen@google.com>
- <YLlj+h4RiT6FvyK6@sol.localdomain>
- <YLmv5Ykb3QUzDOlL@google.com>
- <YLmzkzPZwBVYf5LO@sol.localdomain>
- <YLm8aOs6Sc/CLaAv@google.com>
- <452273b4-b386-3180-9b6e-f060bdbe3802@kernel.org>
+        id S230390AbhFEAVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 20:21:01 -0400
+Received: from mail-pf1-f173.google.com ([209.85.210.173]:36817 "EHLO
+        mail-pf1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229847AbhFEAU7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 20:20:59 -0400
+Received: by mail-pf1-f173.google.com with SMTP id c12so8621525pfl.3;
+        Fri, 04 Jun 2021 17:18:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=/jqiL/qTfJjmBNhopBIMzK+jxUaOluXuMLOEamwPvz4=;
+        b=ooclrGet83DUu230tf4FqjEw2jni37mOcex/cGUcFjMlNdwwCLSISFDiNRYVGZ9NQA
+         B4SgPsfHY6NHGf+Gp66PHRzYG/TuTxaFDmhYJhFKvW/6CFD1XZdBVUoDjbjWjY8FD6oh
+         t9nz3xwRWtomGIQkOo8YDeWKAC17Y1UmYvFzpar/5hOKvXSH6R2IfU0ngKebihdFo86X
+         VAWza+XExghJ6BtC+oyThvexpU6t7NfhWBExIhZJENY8GlAF6gPpaMAgdHMO2s/qUW5V
+         4TnJfwhemtLgA49w4ebjwlJ4GOhiqZDiQUS6bn4D5Y2ZoQBlU7zppo8mkYcZ1Gpiybv0
+         dF7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=/jqiL/qTfJjmBNhopBIMzK+jxUaOluXuMLOEamwPvz4=;
+        b=gnCQucdFcDrP1F2BpVMaILobt73/5/WxnjYZ3JXWLZ6CqP3n9A+XM0X09FC/Mqxb3F
+         lNzzNPxD56DRL39nWg6BPbn9WQzBEOJ9Sr1qjYoX/Lb8xvMjo/5+kyPupW8OPogHfX5Q
+         5wMdRUp8Kh4IyQB+yFcxP27ZMYR1EfqiqUYMTh7/RWUr1Kpn0K6unwR1xBwacYMaAQL3
+         CEltDlI3BOGdLGa61JA1MKOa+VYmaUEc0g15jQ/pEZr7Xl+xOIlGc6VbqBnuzOmRNAaN
+         eUTGGQ8mcBJf/etv905erIa2fTmyN8i0Y86/4MAwL7pSriP9y1yR0jxJLt078SJq/x0V
+         hLAA==
+X-Gm-Message-State: AOAM532SmUHLPoXq+tbFoWB76KWd/4TuoM6926ypmj1S0byqubc/yHB2
+        P3W6TfrRTFamnLxk4eLw6QI=
+X-Google-Smtp-Source: ABdhPJxX5xGQ+5qD398du3WDmRtK/4PslOYTIhUdOtbETp67cATNtF6hZ89Y4CwdJ6aYpZEVsE0mEw==
+X-Received: by 2002:a63:8c09:: with SMTP id m9mr1584275pgd.392.1622852276317;
+        Fri, 04 Jun 2021 17:17:56 -0700 (PDT)
+Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
+        by smtp.gmail.com with ESMTPSA id l126sm2665004pfl.16.2021.06.04.17.17.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 17:17:56 -0700 (PDT)
+Date:   Sat, 05 Jun 2021 10:17:50 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v3 0/4] shoot lazy tlbs
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Anton Blanchard <anton@ozlabs.org>, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org, Randy Dunlap <rdunlap@infradead.org>
+References: <20210601062303.3932513-1-npiggin@gmail.com>
+        <603ffd67-3638-4c47-8067-c1bdfdf65f1b@kernel.org>
+        <991660c3-c2bf-c303-a55c-7454f0cc45f7@kernel.org>
+In-Reply-To: <991660c3-c2bf-c303-a55c-7454f0cc45f7@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <452273b4-b386-3180-9b6e-f060bdbe3802@kernel.org>
+Message-Id: <1622851909.wxi3vcx3m8.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/05, Chao Yu wrote:
-> On 2021/6/4 13:38, Jaegeuk Kim wrote:
-> > On 06/03, Eric Biggers wrote:
-> > > On Thu, Jun 03, 2021 at 09:45:25PM -0700, Jaegeuk Kim wrote:
-> > > > On 06/03, Eric Biggers wrote:
-> > > > > On Thu, Jun 03, 2021 at 09:50:38AM +0000, Daniel Rosenberg wrote:
-> > > > > > Older kernels don't support encryption with casefolding. This adds
-> > > > > > the sysfs entry encrypted_casefold to show support for those combined
-> > > > > > features. Support for this feature was originally added by
-> > > > > > commit 7ad08a58bf67 ("f2fs: Handle casefolding with Encryption")
-> > > > > > 
-> > > > > > Fixes: 7ad08a58bf67 ("f2fs: Handle casefolding with Encryption")
-> > > > > > Cc: stable@vger.kernel.org # v5.11+
-> > > > > > Signed-off-by: Daniel Rosenberg <drosen@google.com>
-> > > > > > ---
-> > > > > >   fs/f2fs/sysfs.c | 15 +++++++++++++--
-> > > > > >   1 file changed, 13 insertions(+), 2 deletions(-)
-> > > > > > 
-> > > > > > diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-> > > > > > index 09e3f258eb52..6604291a3cdf 100644
-> > > > > > --- a/fs/f2fs/sysfs.c
-> > > > > > +++ b/fs/f2fs/sysfs.c
-> > > > > > @@ -161,6 +161,9 @@ static ssize_t features_show(struct f2fs_attr *a,
-> > > > > >   	if (f2fs_sb_has_compression(sbi))
-> > > > > >   		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
-> > > > > >   				len ? ", " : "", "compression");
-> > > > > > +	if (f2fs_sb_has_casefold(sbi) && f2fs_sb_has_encrypt(sbi))
-> > > > > > +		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
-> > > > > > +				len ? ", " : "", "encrypted_casefold");
-> > > > > >   	len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s",
-> > > > > >   				len ? ", " : "", "pin_file");
-> > > > > >   	len += scnprintf(buf + len, PAGE_SIZE - len, "\n");
-> > > > > > @@ -579,6 +582,7 @@ enum feat_id {
-> > > > > >   	FEAT_CASEFOLD,
-> > > > > >   	FEAT_COMPRESSION,
-> > > > > >   	FEAT_TEST_DUMMY_ENCRYPTION_V2,
-> > > > > > +	FEAT_ENCRYPTED_CASEFOLD,
-> > > > > >   };
-> > > > > 
-> > > > > Actually looking at it more closely, this patch is wrong.
-> > > > > 
-> > > > > It only makes sense to declare "encrypted_casefold" as a feature of the
-> > > > > filesystem implementation, i.e. /sys/fs/f2fs/features/encrypted_casefold.
-> > > > > 
-> > > > > It does *not* make sense to declare it as a feature of a particular filesystem
-> > > > > instance, i.e. /sys/fs/f2fs/$disk/features, as it is already implied by the
-> > > > > filesystem instance having both the encryption and casefold features enabled.
-> > > > > 
-> > > > > Can we add /sys/fs/f2fs/features/encrypted_casefold only?
-> > > > 
-> > > > wait.. /sys/fs/f2fs/features/encrypted_casefold is on by
-> > > > CONFIG_FS_ENCRYPTION && CONFIG_UNICODE.
-> > > > OTOH, /sys/fs/f2fs/$dis/feature_list/encrypted_casefold is on by
-> > > > on-disk features: F2FS_FEATURE_ENCRYPT and F2FS_FEATURE_CASEFOLD.
-> > > > 
-> > > 
-> > > Yes, but in the on-disk case, encrypted_casefold is redundant because it simply
-> > > means encrypt && casefold.  There is no encrypted_casefold flag on-disk.
-> > 
-> > I prefer to keep encrypted_casefold likewise kernel feature, which is more
-> > intuitive to users.
-> 
-> encrypted_casefold is a kernel feature support flag, not a disk one, IMO, it's
-> not needed to add it in to per-disk feature list, it may mislead user that
-> compatible encrypted casefold needs a extra disk layout support while disk has
-> already encrypted and casefold feature enabled.
+Excerpts from Andy Lutomirski's message of June 5, 2021 3:05 am:
+> On 6/4/21 9:54 AM, Andy Lutomirski wrote:
+>> On 5/31/21 11:22 PM, Nicholas Piggin wrote:
+>>> There haven't been objections to the series since last posting, this
+>>> is just a rebase and tidies up a few comments minor patch rearranging.
+>>>
+>>=20
+>> I continue to object to having too many modes.  I like my more generic
+>> improvements better.  Let me try to find some time to email again.
+>>=20
+>=20
+> Specifically, this:
+>=20
+> https://git.kernel.org/pub/scm/linux/kernel/git/luto/linux.git/commit/?h=
+=3Dx86/mm
 
-Yeah, I overlooked, and per Ted and Daniel's comments, I already removed it
-locally, but couldn't post it yet. :P
+That's worse than what powerpc does with the shoot lazies code so=20
+we wouldn't use it anyway.
 
-> 
-> Thanks,
-> 
-> > 
-> > > 
-> > > - Eric
+The fact is mm-cpumask and lazy mm is very architecture specific, so I=20
+don't really see that another "mode" is such a problem, it's for the=20
+most part "this is what powerpc does" -> "this is what powerpc does".
+The only mode in the context switch is just "take a ref on the lazy mm"
+or "don't take a ref". Surely that's not too onerous to add!?
+
+Actually the bigger part of it is actually the no-lazy mmu mode which
+is not yet used, I thought it was a neat little demonstrator of how code
+works with/without lazy but I will get rid of that for submission.
+
+
+> I, or someone, needs to dust off my membarrier series before any of
+> these kinds of changes get made.  The barrier situation in the scheduler
+> is too confusing otherwise.
+>=20
+
+I disagree, I've disentangled the changes from membarrier stuff now,=20
+they can be done concurrently.
+
+Thanks,
+Nick
