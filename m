@@ -2,213 +2,384 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 440D539C80B
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 14:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3E839C807
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 14:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbhFEMN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 08:13:26 -0400
-Received: from m34-101.88.com ([104.250.34.101]:37324 "EHLO 88.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229931AbhFEMNY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 08:13:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=From:To:Date; bh=u+hKeiabGOshfj1YllaLsm5aJat7BJBTEB04L
-        dMpjSs=; b=I260UqAmcq69G9MrNLlV43m+BwCQ64UG+thXBmPqAkggxlg0+sKdv
-        AS/6qRu+oHf5qW62C/CfDu8oCSJJARmchkaxoJ0ugd8k37PW42HCfFhPdAMpeVIO
-        cid9P1I2J2w4rrgGcICQ7Mr2th4mNAJdXJx4k5TKVI+VI64uNdgaKg=
-Received: from localhost.localdomain (unknown [113.251.11.103])
-        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgD3RVhyaLtgGHhmAA--.3388S2;
-        Sat, 05 Jun 2021 20:05:08 +0800 (CST)
-From:   Hu Haowen <src.res@email.cn>
-To:     alexs@kernel.org, corbet@lwn.net, bobwxc@email.cn,
-        bernard@vivo.com, maskray@google.com
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hu Haowen <src.res@email.cn>
-Subject: [PATCH v3] docs/zh_CN: create new translations for zh_CN/dev-tools/testing-overview
-Date:   Sat,  5 Jun 2021 20:05:04 +0800
-Message-Id: <20210605120504.40246-1-src.res@email.cn>
-X-Mailer: git-send-email 2.25.1
+        id S230178AbhFEMMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 08:12:37 -0400
+Received: from relay05.th.seeweb.it ([5.144.164.166]:33539 "EHLO
+        relay05.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229933AbhFEMMf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 08:12:35 -0400
+Received: from localhost.localdomain (bband-dyn9.178-41-130.t-com.sk [178.41.130.9])
+        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 924A73ECA8;
+        Sat,  5 Jun 2021 14:10:46 +0200 (CEST)
+From:   Martin Botka <martin.botka@somainline.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        konrad.dybcio@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Martin Botka <martin.botka@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 1/2] dt-bindings: clk: qcom: gcc-sm6125: Document SM6125 GCC driver
+Date:   Sat,  5 Jun 2021 14:10:37 +0200
+Message-Id: <20210605121040.282053-1-martin.botka@somainline.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GiKnCgD3RVhyaLtgGHhmAA--.3388S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Gr17KFy3JF1fXw1xCryfJFb_yoW3AF43pr
-        Wv9r97K3WUury7A340ka4jqr1UCFn7uF43tF18Ja4Sqr18AFsYkrsFgFyqq3y3WrW8ZF98
-        AF4rKFyj9w1vy3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUg01xkIjI8I6I8E6xAIw20EY4v20xvaj40_JFC_Wr1l8cAvFVAK
-        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4
-        x0Y4vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l
-        84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8w
-        Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E74AGY7Cv6cx26F4UJr1UMcvjeVCFs4IE7xkE
-        bVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2
-        Ij64vIr41l42xK82IY6x8ErcxFaVAv8VWxJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC2
-        0s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI
-        0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv2
-        0xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2js
-        IE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZE
-        Xa7VU0mhF7UUUUU==
-X-Originating-IP: [113.251.11.103]
-X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create new translations for dev-tools/testing-overview.rst and link it
-to dev-tools/index.rst with TODOList modifications.
+Document the newly added SM6125 GCC driver.
 
-Signed-off-by: Hu Haowen <src.res@email.cn>
+Signed-off-by: Martin Botka <martin.botka@somainline.org>
 ---
- .../translations/zh_CN/dev-tools/index.rst    |   5 +
- .../zh_CN/dev-tools/testing-overview.rst      | 110 ++++++++++++++++++
- 2 files changed, 115 insertions(+)
- create mode 100644 Documentation/translations/zh_CN/dev-tools/testing-overview.rst
+Changes in V2:
+Add commit description.
+Changes in V3:
+Use rpmcc.h instead of rpmh.h
+Changes in V4:
+Fix indentation
+License
+ .../bindings/clock/qcom,gcc-sm6125.yaml       |  72 ++++++
+ include/dt-bindings/clock/qcom,gcc-sm6125.h   | 240 ++++++++++++++++++
+ 2 files changed, 312 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-sm6125.yaml
+ create mode 100644 include/dt-bindings/clock/qcom,gcc-sm6125.h
 
-diff --git a/Documentation/translations/zh_CN/dev-tools/index.rst b/Documentation/translations/zh_CN/dev-tools/index.rst
-index fd73c479917b..6424590ea382 100644
---- a/Documentation/translations/zh_CN/dev-tools/index.rst
-+++ b/Documentation/translations/zh_CN/dev-tools/index.rst
-@@ -11,6 +11,9 @@
- 目前这些文档已经整理在一起，不需要再花费额外的精力。
- 欢迎任何补丁。
- 
-+有关测试专用工具的简要概述，参见
-+Documentation/dev-tools/translations/zh_CN/testing-overview.rst
-+
- .. class:: toc-title
- 
- 	   目录
-@@ -19,6 +22,7 @@
-    :maxdepth: 2
- 
-    gcov
-+   testing-overview
- 
- Todolist:
- 
-@@ -29,6 +33,7 @@ Todolist:
-  - ubsan
-  - kmemleak
-  - kcsan
-+ - kfence
-  - gdb-kernel-debugging
-  - kgdb
-  - kselftest
-diff --git a/Documentation/translations/zh_CN/dev-tools/testing-overview.rst b/Documentation/translations/zh_CN/dev-tools/testing-overview.rst
+diff --git a/Documentation/devicetree/bindings/clock/qcom,gcc-sm6125.yaml b/Documentation/devicetree/bindings/clock/qcom,gcc-sm6125.yaml
 new file mode 100644
-index 000000000000..a2746c81033b
+index 000000000000..ab12b391effc
 --- /dev/null
-+++ b/Documentation/translations/zh_CN/dev-tools/testing-overview.rst
-@@ -0,0 +1,110 @@
-+.. SPDX-License-Identifier: GPL-2.0
++++ b/Documentation/devicetree/bindings/clock/qcom,gcc-sm6125.yaml
+@@ -0,0 +1,72 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/qcom,gcc-sm6125.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+.. include:: ../disclaimer-zh_CN.rst
++title: Qualcomm Global Clock & Reset Controller Binding for SM6125
 +
-+:Original: Documentation/dev-tools/testing-overview.rst
-+:Translator: 胡皓文 Hu Haowen <src.res@email.cn>
++maintainers:
++  - Konrad Dybcio <konrad.dybcio@somainline.org>
 +
-+============
-+内核测试指南
-+============
++description: |
++  Qualcomm global clock control module which supports the clocks, resets and
++  power domains on SM6125.
 +
-+有许多不同的工具可以用于测试Linux内核，因此了解什么时候使用它们可能
-+很困难。本文档粗略概述了它们之间的区别，并阐释了它们是怎样糅合在一起
-+的。
++  See also:
++  - dt-bindings/clock/qcom,gcc-sm6125.h
 +
-+编写和运行测试
-+==============
++properties:
++  compatible:
++    const: qcom,gcc-sm6125
 +
-+大多数内核测试都是用kselftest或KUnit框架之一编写的。它们都让运行测试
-+更加简化，并为编写新测试提供帮助。
++  clocks:
++    items:
++      - description: Board XO source
++      - description: Sleep clock source
 +
-+如果你想验证内核的行为——尤其是内核的特定部分——那你就要使用kUnit或
-+kselftest。
++  clock-names:
++    items:
++      - const: bi_tcxo
++      - const: sleep_clk
 +
-+KUnit和kselftest的区别
-+----------------------
++  '#clock-cells':
++    const: 1
 +
-+.. note::
-+     由于本文段中部分术语尚无较好的对应中文释义，可能导致与原文含义
-+     存在些许差异，因此建议读者结合原文
-+     （Documentation/dev-tools/testing-overview.rst）辅助阅读。
++  '#reset-cells':
++    const: 1
 +
-+     如对部分翻译有异议或有更好的翻译意见，欢迎联系译者进行修订。
++  '#power-domain-cells':
++    const: 1
 +
-+KUnit（Documentation/dev-tools/kunit/index.rst）是用于“白箱”测
-+试的一个完整的内核内部系统：因为测试代码是内核的一部分，所以它能够访
-+问用户空间不能访问到的内部结构和功能。
++  reg:
++    maxItems: 1
 +
-+因此，KUnit测试最好针对内核中较小的、自包含的部分，以便能够独立地测
-+试。“单元”测试的概念亦是如此。
++  protected-clocks:
++    description:
++      Protected clock specifier list as per common clock binding.
 +
-+比如，一个KUnit测试可能测试一个单独的内核功能（甚至通过一个函数测试
-+一个单一的代码路径，例如一个错误处理案例），而不是整个地测试一个特性。
++required:
++  - compatible
++  - clocks
++  - clock-names
++  - reg
++  - '#clock-cells'
++  - '#reset-cells'
++  - '#power-domain-cells'
 +
-+这也使得KUnit测试构建和运行非常地快，从而能够作为开发流程的一部分被
-+频繁地运行。
++additionalProperties: false
 +
-+有关更详细的介绍，请参阅KUnit测试代码风格指南
-+Documentation/dev-tools/kunit/style.rst
++examples:
++  - |
++    #include <dt-bindings/clock/qcom,rpmcc.h>
++    clock-controller@1400000 {
++        compatible = "qcom,gcc-sm6125";
++        reg = <0x01400000 0x1f0000>;
++        #clock-cells = <1>;
++        #reset-cells = <1>;
++        #power-domain-cells = <1>;
++        clock-names = "bi_tcxo", "sleep_clk";
++        clocks = <&rpmcc RPM_SMD_XO_CLK_SRC>, <&sleep_clk>;
++    };
++...
+diff --git a/include/dt-bindings/clock/qcom,gcc-sm6125.h b/include/dt-bindings/clock/qcom,gcc-sm6125.h
+new file mode 100644
+index 000000000000..08ea18086824
+--- /dev/null
++++ b/include/dt-bindings/clock/qcom,gcc-sm6125.h
+@@ -0,0 +1,240 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
++/*
++ * Copyright (c) 2021, Konrad Dybcio <konrad.dybcio@somainline.org>
++ */
 +
-+kselftest（Documentation/dev-tools/kselftest.rst），相对来说，大量用
-+于用户空间，并且通常测试用户空间的脚本或程序。
++#ifndef _DT_BINDINGS_CLK_QCOM_GCC_SM6125_H
++#define _DT_BINDINGS_CLK_QCOM_GCC_SM6125_H
 +
-+这使得编写复杂的测试，或者需要操作更多全局系统状态的测试更加容易（诸
-+如生成进程之类）。然而，从kselftest直接调用内核函数是不行的。这也就
-+意味着只有通过某种方式（如系统调用、驱动设备、文件系统等）导出到了用
-+户空间的内核功能才能使用kselftest来测试。为此，有些测试包含了一个伴
-+生的内核模块用于导出更多的信息和功能。不过，对于基本上或者完全在内核
-+中运行的测试，KUnit可能是更佳工具。
++#define GPLL0_OUT_AUX2				0
++#define GPLL0_OUT_MAIN				1
++#define GPLL6_OUT_MAIN				2
++#define GPLL7_OUT_MAIN				3
++#define GPLL8_OUT_MAIN				4
++#define GPLL9_OUT_MAIN				5
++#define GPLL0_OUT_EARLY				6
++#define GPLL3_OUT_EARLY				7
++#define GPLL4_OUT_MAIN				8
++#define GPLL5_OUT_MAIN				9
++#define GPLL6_OUT_EARLY				10
++#define GPLL7_OUT_EARLY				11
++#define GPLL8_OUT_EARLY				12
++#define GPLL9_OUT_EARLY				13
++#define GCC_AHB2PHY_CSI_CLK			14
++#define GCC_AHB2PHY_USB_CLK			15
++#define GCC_APC_VS_CLK				16
++#define GCC_BOOT_ROM_AHB_CLK		17
++#define GCC_CAMERA_AHB_CLK			18
++#define GCC_CAMERA_XO_CLK			19
++#define GCC_CAMSS_AHB_CLK_SRC		20
++#define GCC_CAMSS_CCI_AHB_CLK		21
++#define GCC_CAMSS_CCI_CLK			22
++#define GCC_CAMSS_CCI_CLK_SRC			23
++#define GCC_CAMSS_CPHY_CSID0_CLK		24
++#define GCC_CAMSS_CPHY_CSID1_CLK		25
++#define GCC_CAMSS_CPHY_CSID2_CLK		26
++#define GCC_CAMSS_CPHY_CSID3_CLK		27
++#define GCC_CAMSS_CPP_AHB_CLK			28
++#define GCC_CAMSS_CPP_AXI_CLK			29
++#define GCC_CAMSS_CPP_CLK			30
++#define GCC_CAMSS_CPP_CLK_SRC			31
++#define GCC_CAMSS_CPP_VBIF_AHB_CLK		32
++#define GCC_CAMSS_CSI0_AHB_CLK			33
++#define GCC_CAMSS_CSI0_CLK				34
++#define GCC_CAMSS_CSI0_CLK_SRC			35
++#define GCC_CAMSS_CSI0PHYTIMER_CLK		36
++#define GCC_CAMSS_CSI0PHYTIMER_CLK_SRC	37
++#define GCC_CAMSS_CSI0PIX_CLK			38
++#define GCC_CAMSS_CSI0RDI_CLK			39
++#define GCC_CAMSS_CSI1_AHB_CLK			40
++#define GCC_CAMSS_CSI1_CLK				41
++#define GCC_CAMSS_CSI1_CLK_SRC			42
++#define GCC_CAMSS_CSI1PHYTIMER_CLK		43
++#define GCC_CAMSS_CSI1PHYTIMER_CLK_SRC	44
++#define GCC_CAMSS_CSI1PIX_CLK			45
++#define GCC_CAMSS_CSI1RDI_CLK			46
++#define GCC_CAMSS_CSI2_AHB_CLK			47
++#define GCC_CAMSS_CSI2_CLK				48
++#define GCC_CAMSS_CSI2_CLK_SRC			49
++#define GCC_CAMSS_CSI2PHYTIMER_CLK		50
++#define GCC_CAMSS_CSI2PHYTIMER_CLK_SRC	51
++#define GCC_CAMSS_CSI2PIX_CLK			52
++#define GCC_CAMSS_CSI2RDI_CLK			53
++#define GCC_CAMSS_CSI3_AHB_CLK			54
++#define GCC_CAMSS_CSI3_CLK				55
++#define GCC_CAMSS_CSI3_CLK_SRC			56
++#define GCC_CAMSS_CSI3PIX_CLK			57
++#define GCC_CAMSS_CSI3RDI_CLK			58
++#define GCC_CAMSS_CSI_VFE0_CLK			59
++#define GCC_CAMSS_CSI_VFE1_CLK			60
++#define GCC_CAMSS_CSIPHY0_CLK			61
++#define GCC_CAMSS_CSIPHY1_CLK			62
++#define GCC_CAMSS_CSIPHY2_CLK			63
++#define GCC_CAMSS_CSIPHY_CLK_SRC		64
++#define GCC_CAMSS_GP0_CLK				65
++#define GCC_CAMSS_GP0_CLK_SRC			66
++#define GCC_CAMSS_GP1_CLK				67
++#define GCC_CAMSS_GP1_CLK_SRC			68
++#define GCC_CAMSS_ISPIF_AHB_CLK			69
++#define GCC_CAMSS_JPEG_AHB_CLK			70
++#define GCC_CAMSS_JPEG_AXI_CLK			71
++#define GCC_CAMSS_JPEG_CLK				72
++#define GCC_CAMSS_JPEG_CLK_SRC			73
++#define GCC_CAMSS_MCLK0_CLK				74
++#define GCC_CAMSS_MCLK0_CLK_SRC			75
++#define GCC_CAMSS_MCLK1_CLK				76
++#define GCC_CAMSS_MCLK1_CLK_SRC			77
++#define GCC_CAMSS_MCLK2_CLK				78
++#define GCC_CAMSS_MCLK2_CLK_SRC			79
++#define GCC_CAMSS_MCLK3_CLK				80
++#define GCC_CAMSS_MCLK3_CLK_SRC			81
++#define GCC_CAMSS_MICRO_AHB_CLK			82
++#define GCC_CAMSS_THROTTLE_NRT_AXI_CLK	83
++#define GCC_CAMSS_THROTTLE_RT_AXI_CLK	84
++#define GCC_CAMSS_TOP_AHB_CLK			85
++#define GCC_CAMSS_VFE0_AHB_CLK			86
++#define GCC_CAMSS_VFE0_CLK				87
++#define GCC_CAMSS_VFE0_CLK_SRC			88
++#define GCC_CAMSS_VFE0_STREAM_CLK		89
++#define GCC_CAMSS_VFE1_AHB_CLK			90
++#define GCC_CAMSS_VFE1_CLK				91
++#define GCC_CAMSS_VFE1_CLK_SRC			92
++#define GCC_CAMSS_VFE1_STREAM_CLK		93
++#define GCC_CAMSS_VFE_TSCTR_CLK			94
++#define GCC_CAMSS_VFE_VBIF_AHB_CLK		95
++#define GCC_CAMSS_VFE_VBIF_AXI_CLK		96
++#define GCC_CE1_AHB_CLK					97
++#define GCC_CE1_AXI_CLK					98
++#define GCC_CE1_CLK						99
++#define GCC_CFG_NOC_USB3_PRIM_AXI_CLK	100
++#define GCC_CPUSS_GNOC_CLK				101
++#define GCC_DISP_AHB_CLK				102
++#define GCC_DISP_GPLL0_DIV_CLK_SRC		103
++#define GCC_DISP_HF_AXI_CLK				104
++#define GCC_DISP_THROTTLE_CORE_CLK		105
++#define GCC_DISP_XO_CLK					106
++#define GCC_GP1_CLK						107
++#define GCC_GP1_CLK_SRC					108
++#define GCC_GP2_CLK						109
++#define GCC_GP2_CLK_SRC					110
++#define GCC_GP3_CLK						111
++#define GCC_GP3_CLK_SRC					112
++#define GCC_GPU_CFG_AHB_CLK				113
++#define GCC_GPU_GPLL0_CLK_SRC			114
++#define GCC_GPU_GPLL0_DIV_CLK_SRC		115
++#define GCC_GPU_MEMNOC_GFX_CLK			116
++#define GCC_GPU_SNOC_DVM_GFX_CLK		117
++#define GCC_GPU_THROTTLE_CORE_CLK		118
++#define GCC_GPU_THROTTLE_XO_CLK			119
++#define GCC_MSS_VS_CLK					120
++#define GCC_PDM2_CLK					121
++#define GCC_PDM2_CLK_SRC				122
++#define GCC_PDM_AHB_CLK					123
++#define GCC_PDM_XO4_CLK					124
++#define GCC_PRNG_AHB_CLK				125
++#define GCC_QMIP_CAMERA_NRT_AHB_CLK		126
++#define GCC_QMIP_CAMERA_RT_AHB_CLK		127
++#define GCC_QMIP_DISP_AHB_CLK			128
++#define GCC_QMIP_GPU_CFG_AHB_CLK		129
++#define GCC_QMIP_VIDEO_VCODEC_AHB_CLK	130
++#define GCC_QUPV3_WRAP0_CORE_2X_CLK		131
++#define GCC_QUPV3_WRAP0_CORE_CLK		132
++#define GCC_QUPV3_WRAP0_S0_CLK			133
++#define GCC_QUPV3_WRAP0_S0_CLK_SRC		134
++#define GCC_QUPV3_WRAP0_S1_CLK			135
++#define GCC_QUPV3_WRAP0_S1_CLK_SRC		136
++#define GCC_QUPV3_WRAP0_S2_CLK			137
++#define GCC_QUPV3_WRAP0_S2_CLK_SRC		138
++#define GCC_QUPV3_WRAP0_S3_CLK			139
++#define GCC_QUPV3_WRAP0_S3_CLK_SRC		140
++#define GCC_QUPV3_WRAP0_S4_CLK			141
++#define GCC_QUPV3_WRAP0_S4_CLK_SRC		142
++#define GCC_QUPV3_WRAP0_S5_CLK			143
++#define GCC_QUPV3_WRAP0_S5_CLK_SRC		144
++#define GCC_QUPV3_WRAP1_CORE_2X_CLK		145
++#define GCC_QUPV3_WRAP1_CORE_CLK		146
++#define GCC_QUPV3_WRAP1_S0_CLK			147
++#define GCC_QUPV3_WRAP1_S0_CLK_SRC		148
++#define GCC_QUPV3_WRAP1_S1_CLK			149
++#define GCC_QUPV3_WRAP1_S1_CLK_SRC		150
++#define GCC_QUPV3_WRAP1_S2_CLK			151
++#define GCC_QUPV3_WRAP1_S2_CLK_SRC		152
++#define GCC_QUPV3_WRAP1_S3_CLK			153
++#define GCC_QUPV3_WRAP1_S3_CLK_SRC		154
++#define GCC_QUPV3_WRAP1_S4_CLK			155
++#define GCC_QUPV3_WRAP1_S4_CLK_SRC		156
++#define GCC_QUPV3_WRAP1_S5_CLK			157
++#define GCC_QUPV3_WRAP1_S5_CLK_SRC		158
++#define GCC_QUPV3_WRAP_0_M_AHB_CLK		159
++#define GCC_QUPV3_WRAP_0_S_AHB_CLK		160
++#define GCC_QUPV3_WRAP_1_M_AHB_CLK		161
++#define GCC_QUPV3_WRAP_1_S_AHB_CLK		162
++#define GCC_SDCC1_AHB_CLK				163
++#define GCC_SDCC1_APPS_CLK				164
++#define GCC_SDCC1_APPS_CLK_SRC			165
++#define GCC_SDCC1_ICE_CORE_CLK			166
++#define GCC_SDCC1_ICE_CORE_CLK_SRC		167
++#define GCC_SDCC2_AHB_CLK				168
++#define GCC_SDCC2_APPS_CLK				169
++#define GCC_SDCC2_APPS_CLK_SRC			170
++#define GCC_SYS_NOC_CPUSS_AHB_CLK		171
++#define GCC_SYS_NOC_UFS_PHY_AXI_CLK		172
++#define GCC_SYS_NOC_USB3_PRIM_AXI_CLK	173
++#define GCC_UFS_PHY_AHB_CLK				174
++#define GCC_UFS_PHY_AXI_CLK				175
++#define GCC_UFS_PHY_AXI_CLK_SRC			176
++#define GCC_UFS_PHY_ICE_CORE_CLK		177
++#define GCC_UFS_PHY_ICE_CORE_CLK_SRC	178
++#define GCC_UFS_PHY_PHY_AUX_CLK			179
++#define GCC_UFS_PHY_PHY_AUX_CLK_SRC		180
++#define GCC_UFS_PHY_RX_SYMBOL_0_CLK		181
++#define GCC_UFS_PHY_TX_SYMBOL_0_CLK		182
++#define GCC_UFS_PHY_UNIPRO_CORE_CLK		183
++#define GCC_UFS_PHY_UNIPRO_CORE_CLK_SRC	184
++#define GCC_USB30_PRIM_MASTER_CLK		185
++#define GCC_USB30_PRIM_MASTER_CLK_SRC	186
++#define GCC_USB30_PRIM_MOCK_UTMI_CLK	187
++#define GCC_USB30_PRIM_MOCK_UTMI_CLK_SRC	188
++#define GCC_USB30_PRIM_SLEEP_CLK		189
++#define GCC_USB3_PRIM_PHY_AUX_CLK_SRC	190
++#define GCC_USB3_PRIM_PHY_COM_AUX_CLK	191
++#define GCC_USB3_PRIM_PHY_PIPE_CLK		192
++#define GCC_VDDA_VS_CLK					193
++#define GCC_VDDCX_VS_CLK				194
++#define GCC_VDDMX_VS_CLK				195
++#define GCC_VIDEO_AHB_CLK				196
++#define GCC_VIDEO_AXI0_CLK				197
++#define GCC_VIDEO_THROTTLE_CORE_CLK		198
++#define GCC_VIDEO_XO_CLK				199
++#define GCC_VS_CTRL_AHB_CLK				200
++#define GCC_VS_CTRL_CLK					201
++#define GCC_VS_CTRL_CLK_SRC				202
++#define GCC_VSENSOR_CLK_SRC				203
++#define GCC_WCSS_VS_CLK					204
++#define GCC_USB3_PRIM_CLKREF_CLK		205
++#define GCC_SYS_NOC_COMPUTE_SF_AXI_CLK	206
++#define GCC_BIMC_GPU_AXI_CLK			207
++#define GCC_UFS_MEM_CLKREF_CLK			208
 +
-+kselftest也因此非常适合于全部功能的测试，因为这些功能会将接口暴露到
-+用户空间，从而能够被测试，而不是展现实现细节。“system”测试和
-+“end-to-end”测试亦是如此。
++/* GDSCs */
++#define USB30_PRIM_GDSC					0
++#define UFS_PHY_GDSC					1
++#define CAMSS_VFE0_GDSC					2
++#define CAMSS_VFE1_GDSC					3
++#define CAMSS_TOP_GDSC					4
++#define CAM_CPP_GDSC					5
++#define HLOS1_VOTE_TURING_MMU_TBU1_GDSC	6
++#define HLOS1_VOTE_MM_SNOC_MMU_TBU_RT_GDSC	7
++#define HLOS1_VOTE_MM_SNOC_MMU_TBU_NRT_GDSC	8
++#define HLOS1_VOTE_TURING_MMU_TBU0_GDSC	9
 +
-+比如，一个新的系统调用应该伴随有新的kselftest测试。
++#define GCC_QUSB2PHY_PRIM_BCR			0
++#define GCC_QUSB2PHY_SEC_BCR			1
++#define GCC_UFS_PHY_BCR				2
++#define GCC_USB30_PRIM_BCR			3
++#define GCC_USB_PHY_CFG_AHB2PHY_BCR		4
++#define GCC_USB3_PHY_PRIM_SP0_BCR		5
++#define GCC_USB3PHY_PHY_PRIM_SP0_BCR		6
++#define GCC_CAMSS_MICRO_BCR			7
 +
-+代码覆盖率工具
-+==============
-+
-+支持两种不同代码之间的覆盖率测量工具。它们可以用来验证一项测试执行的
-+确切函数或代码行。这有助于决定内核被测试了多少，或用来查找合适的测试
-+中没有覆盖到的极端情况。
-+
-+:doc:`gcov` 是GCC的覆盖率测试工具，能用于获取内核的全局或每个模块的
-+覆盖率。与KCOV不同的是，这个工具不记录每个任务的覆盖率。覆盖率数据可
-+以通过debugfs读取，并通过常规的gcov工具进行解释。
-+
-+:doc:`kcov` 是能够构建在内核之中，用于在每个任务的层面捕捉覆盖率的一
-+个功能。因此，它对于模糊测试和关于代码执行期间信息的其它情况非常有用，
-+比如在一个单一系统调用里使用它就很有用。
-+
-+动态分析工具
-+============
-+
-+内核也支持许多动态分析工具，用以检测正在运行的内核中出现的多种类型的
-+问题。这些工具通常每个去寻找一类不同的缺陷，比如非法内存访问，数据竞
-+争等并发问题，或整型溢出等其他未定义行为。
-+
-+如下所示：
-+
-+* kmemleak检测可能的内存泄漏。参阅
-+  Documentation/dev-tools/kmemleak.rst
-+* KASAN检测非法内存访问，如数组越界和释放后重用（UAF）。参阅
-+  Documentation/dev-tools/kasan.rst
-+* UBSAN检测C标准中未定义的行为，如整型溢出。参阅
-+  Documentation/dev-tools/ubsan.rst
-+* KCSAN检测数据竞争。参阅 Documentation/dev-tools/kcsan.rst
-+* KFENCE是一个低开销的内存问题检测器，比KASAN更快且能被用于批量构建。
-+  参阅 Documentation/dev-tools/kfence.rst
-+* lockdep是一个锁定正确性检测器。参阅
-+  Documentation/locking/lockdep-design.rst
-+* 除此以外，在内核中还有一些其它的调试工具，大多数能在
-+  lib/Kconfig.debug 中找到。
-+
-+这些工具倾向于对内核进行整体测试，并且不像kselftest和KUnit一样“传递”。
-+它们可以通过在启用这些工具时运行内核测试以与kselftest或KUnit结合起来：
-+之后你就能确保这些错误在测试过程中都不会发生了。
-+
-+一些工具与KUnit和kselftest集成，并且在检测到问题时会自动打断测试。
-+
++#endif
 -- 
-2.25.1
+2.31.1
 
