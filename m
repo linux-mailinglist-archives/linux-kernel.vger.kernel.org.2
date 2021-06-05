@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF3539C843
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1B639C844
 	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 14:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230149AbhFEMyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 08:54:10 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:44198 "EHLO
+        id S230169AbhFEMyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 08:54:20 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:44212 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhFEMyJ (ORCPT
+        with ESMTP id S229930AbhFEMyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 08:54:09 -0400
+        Sat, 5 Jun 2021 08:54:19 -0400
 Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id A4F8321A17;
-        Sat,  5 Jun 2021 12:52:20 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id C80BD21A1B;
+        Sat,  5 Jun 2021 12:52:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622897540; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1622897550; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=LGPbiqAqKqqbKrLpUpTYs/aXqBN0DC+Xf/wnxIMgY+Y=;
-        b=CkKQ1VNbHDedVTulWcxgBRaULWv746UfrrioXe17KGZV9H8StPKWAghMKU7NPuzuN7DkPh
-        zUQfr6WvNKafLMWKgRQiKpZdd4CGt7VwVor7JPBg3vnoXte3jQxTf/INq1B0gpMhoEVMed
-        yEQVdEVwB/ZadFZCPb+5EoGEWx1/oBg=
+        bh=PiNpktxwaBLpMxp02+QYeNR49gCDKuJMGpSeFzGPk+M=;
+        b=IjxxsjK0iWn/sJPt4bwrjONroHweNKcTaGJOLBiH62qJ6yUrr1IiUPl2EK6aEuHNliNKeY
+        ffUp3w25sKDYJ6o0ATLIdj67gTEzqqvmOXaIFvHpuVOaT1t9zW8WBw8OpoZ2bhVsh5VV/o
+        r9SWi7GWb2cwutXk6sFltVx1iXPw6Ps=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622897540;
+        s=susede2_ed25519; t=1622897550;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=LGPbiqAqKqqbKrLpUpTYs/aXqBN0DC+Xf/wnxIMgY+Y=;
-        b=OJqBVY0EGhX6UAIRbnz6i5wVNNeZLh/g9JtqYV8cW9YegLpfT0s27pC+taV/duPPaa1Sub
-        61FU8JxX3BQ4lNCQ==
+        bh=PiNpktxwaBLpMxp02+QYeNR49gCDKuJMGpSeFzGPk+M=;
+        b=USfn+kmibqGZt4VLlybeZGP8aG5OhoNGhZ2Kd4r+zayBc3Cqy3wNJbSrDoA2XX0r8xU1KX
+        67gN0dATEpR0TzAg==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
-        by relay2.suse.de (Postfix) with ESMTP id 8E691A3B81;
-        Sat,  5 Jun 2021 12:52:20 +0000 (UTC)
-Date:   Sat, 05 Jun 2021 14:52:20 +0200
-Message-ID: <s5hpmx0fp8b.wl-tiwai@suse.de>
+        by relay2.suse.de (Postfix) with ESMTP id B3317A3B8F;
+        Sat,  5 Jun 2021 12:52:30 +0000 (UTC)
+Date:   Sat, 05 Jun 2021 14:52:30 +0200
+Message-ID: <s5ho8ckfp81.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Jeremy Szu <jeremy.szu@canonical.com>
 Cc:     tiwai@suse.com, Jaroslav Kysela <perex@perex.cz>,
@@ -46,10 +46,10 @@ Cc:     tiwai@suse.com, Jaroslav Kysela <perex@perex.cz>,
         Huacai Chen <chenhuacai@kernel.org>,
         alsa-devel@alsa-project.org (moderated list:SOUND),
         linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH 2/3] ALSA: hda/realtek: fix mute/micmute LEDs and speaker for HP EliteBook x360 1040 G8
-In-Reply-To: <20210605082539.41797-2-jeremy.szu@canonical.com>
+Subject: Re: [PATCH 3/3] ALSA: hda/realtek: fix mute/micmute LEDs for HP EliteBook 840 Aero G8
+In-Reply-To: <20210605082539.41797-3-jeremy.szu@canonical.com>
 References: <20210605082539.41797-1-jeremy.szu@canonical.com>
-        <20210605082539.41797-2-jeremy.szu@canonical.com>
+        <20210605082539.41797-3-jeremy.szu@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -59,11 +59,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 05 Jun 2021 10:25:37 +0200,
+On Sat, 05 Jun 2021 10:25:38 +0200,
 Jeremy Szu wrote:
 > 
-> The HP EliteBook x360 1040 G8 using ALC285 codec which using 0x04 to control
-> mute LED and 0x01 to control micmute LED.
+> The HP EliteBook 840 Aero G8 using ALC285 codec which using 0x04 to
+> control mute LED and 0x01 to control micmute LED.
 > In the other hand, there is no output from right channel of speaker.
 > Therefore, add a quirk to make it works.
 > 
