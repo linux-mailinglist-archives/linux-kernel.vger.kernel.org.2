@@ -2,194 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C6139C5F2
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 07:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D4F39C601
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 07:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhFEFIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 01:08:43 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7108 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhFEFIm (ORCPT
+        id S230060AbhFEFSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 01:18:11 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:4312 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229544AbhFEFSK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 01:08:42 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fxnbm0lnMzYpvc;
-        Sat,  5 Jun 2021 13:04:04 +0800 (CST)
+        Sat, 5 Jun 2021 01:18:10 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FxnmQ5Crtz1BGXl;
+        Sat,  5 Jun 2021 13:11:34 +0800 (CST)
 Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
  dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 5 Jun 2021 13:06:50 +0800
+ 15.1.2176.2; Sat, 5 Jun 2021 13:16:21 +0800
 Received: from huawei.com (10.175.113.32) by dggpemm500009.china.huawei.com
  (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 5 Jun 2021
- 13:06:50 +0800
+ 13:16:20 +0800
 From:   Liu Shixin <liushixin2@huawei.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH -next] crypto: remove CRYPTOA_U32 and related functions
-Date:   Sat, 5 Jun 2021 13:39:02 +0800
-Message-ID: <20210605053902.2017295-1-liushixin2@huawei.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        "Liu Shixin" <liushixin2@huawei.com>
+Subject: [PATCH -next] riscv: Enable HAVE_ARCH_HUGE_VMAP for 64BIT
+Date:   Sat, 5 Jun 2021 13:48:37 +0800
+Message-ID: <20210605054838.2017817-1-liushixin2@huawei.com>
 X-Mailer: git-send-email 2.18.0.huawei.25
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.175.113.32]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  dggpemm500009.china.huawei.com (7.185.36.225)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to the advice of Eric and Herbert, type CRYPTOA_U32
-has been unused for over a decade, so remove the code related to
-CRYPTOA_U32.
-
-After removing CRYPTOA_U32, the type of the variable attrs can be
-changed from union to struct.
+This sets the HAVE_ARCH_HUGE_VMAP option. Enable pmd vmap support and
+define the required page table functions(Currently, riscv has only
+three-level page tables support for 64BIT).
 
 Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 ---
- crypto/algapi.c         | 18 ------------------
- crypto/algboss.c        | 32 +++++++-------------------------
- include/crypto/algapi.h |  1 -
- include/linux/crypto.h  |  5 -----
- 4 files changed, 7 insertions(+), 49 deletions(-)
+ arch/riscv/Kconfig               |  1 +
+ arch/riscv/include/asm/vmalloc.h | 12 ++++++++++
+ arch/riscv/mm/Makefile           |  1 +
+ arch/riscv/mm/pgtable.c          | 40 ++++++++++++++++++++++++++++++++
+ 4 files changed, 54 insertions(+)
+ create mode 100644 arch/riscv/mm/pgtable.c
 
-diff --git a/crypto/algapi.c b/crypto/algapi.c
-index fdabf2675b63..43f999dba4dc 100644
---- a/crypto/algapi.c
-+++ b/crypto/algapi.c
-@@ -868,24 +868,6 @@ const char *crypto_attr_alg_name(struct rtattr *rta)
- }
- EXPORT_SYMBOL_GPL(crypto_attr_alg_name);
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 4c0bfb2569e9..fb3c48fa96c1 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -61,6 +61,7 @@ config RISCV
+ 	select GENERIC_TIME_VSYSCALL if MMU && 64BIT
+ 	select HANDLE_DOMAIN_IRQ
+ 	select HAVE_ARCH_AUDITSYSCALL
++	select HAVE_ARCH_HUGE_VMAP if MMU && 64BIT
+ 	select HAVE_ARCH_JUMP_LABEL
+ 	select HAVE_ARCH_JUMP_LABEL_RELATIVE
+ 	select HAVE_ARCH_KASAN if MMU && 64BIT
+diff --git a/arch/riscv/include/asm/vmalloc.h b/arch/riscv/include/asm/vmalloc.h
+index ff9abc00d139..8f17f421f80c 100644
+--- a/arch/riscv/include/asm/vmalloc.h
++++ b/arch/riscv/include/asm/vmalloc.h
+@@ -1,4 +1,16 @@
+ #ifndef _ASM_RISCV_VMALLOC_H
+ #define _ASM_RISCV_VMALLOC_H
  
--int crypto_attr_u32(struct rtattr *rta, u32 *num)
--{
--	struct crypto_attr_u32 *nu32;
--
--	if (!rta)
--		return -ENOENT;
--	if (RTA_PAYLOAD(rta) < sizeof(*nu32))
--		return -EINVAL;
--	if (rta->rta_type != CRYPTOA_U32)
--		return -EINVAL;
--
--	nu32 = RTA_DATA(rta);
--	*num = nu32->num;
--
--	return 0;
--}
--EXPORT_SYMBOL_GPL(crypto_attr_u32);
--
- int crypto_inst_setname(struct crypto_instance *inst, const char *name,
- 			struct crypto_alg *alg)
- {
-diff --git a/crypto/algboss.c b/crypto/algboss.c
-index 5ebccbd6b74e..71016a923a79 100644
---- a/crypto/algboss.c
-+++ b/crypto/algboss.c
-@@ -28,16 +28,9 @@ struct cryptomgr_param {
- 		struct crypto_attr_type data;
- 	} type;
++#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
++
++#define IOREMAP_MAX_ORDER (PMD_SHIFT)
++
++#define arch_vmap_pmd_supported	arch_vmap_pmd_supported
++static inline bool __init arch_vmap_pmd_supported(pgprot_t prot)
++{
++	return true;
++}
++
++#endif
++
+ #endif /* _ASM_RISCV_VMALLOC_H */
+diff --git a/arch/riscv/mm/Makefile b/arch/riscv/mm/Makefile
+index 7ebaef10ea1b..f932b4d69946 100644
+--- a/arch/riscv/mm/Makefile
++++ b/arch/riscv/mm/Makefile
+@@ -13,6 +13,7 @@ obj-y += extable.o
+ obj-$(CONFIG_MMU) += fault.o pageattr.o
+ obj-y += cacheflush.o
+ obj-y += context.o
++obj-y += pgtable.o
  
--	union {
-+	struct {
- 		struct rtattr attr;
--		struct {
--			struct rtattr attr;
--			struct crypto_attr_alg data;
--		} alg;
--		struct {
--			struct rtattr attr;
--			struct crypto_attr_u32 data;
--		} nu32;
-+		struct crypto_attr_alg data;
- 	} attrs[CRYPTO_MAX_ATTRS];
- 
- 	char template[CRYPTO_MAX_ALG_NAME];
-@@ -104,12 +97,10 @@ static int cryptomgr_schedule_probe(struct crypto_larval *larval)
- 
- 	i = 0;
- 	for (;;) {
--		int notnum = 0;
--
- 		name = ++p;
- 
- 		for (; isalnum(*p) || *p == '-' || *p == '_'; p++)
--			notnum |= !isdigit(*p);
-+			;
- 
- 		if (*p == '(') {
- 			int recursion = 0;
-@@ -123,7 +114,6 @@ static int cryptomgr_schedule_probe(struct crypto_larval *larval)
- 					break;
- 			}
- 
--			notnum = 1;
- 			p++;
- 		}
- 
-@@ -131,18 +121,10 @@ static int cryptomgr_schedule_probe(struct crypto_larval *larval)
- 		if (!len)
- 			goto err_free_param;
- 
--		if (notnum) {
--			param->attrs[i].alg.attr.rta_len =
--				sizeof(param->attrs[i].alg);
--			param->attrs[i].alg.attr.rta_type = CRYPTOA_ALG;
--			memcpy(param->attrs[i].alg.data.name, name, len);
--		} else {
--			param->attrs[i].nu32.attr.rta_len =
--				sizeof(param->attrs[i].nu32);
--			param->attrs[i].nu32.attr.rta_type = CRYPTOA_U32;
--			param->attrs[i].nu32.data.num =
--				simple_strtol(name, NULL, 0);
--		}
-+		param->attrs[i].attr.rta_len =
-+			sizeof(param->attrs[i]);
-+		param->attrs[i].attr.rta_type = CRYPTOA_ALG;
-+		memcpy(param->attrs[i].data.name, name, len);
- 
- 		param->tb[i + 1] = &param->attrs[i].attr;
- 		i++;
-diff --git a/include/crypto/algapi.h b/include/crypto/algapi.h
-index 86f0748009af..41d42e649da4 100644
---- a/include/crypto/algapi.h
-+++ b/include/crypto/algapi.h
-@@ -118,7 +118,6 @@ void *crypto_spawn_tfm2(struct crypto_spawn *spawn);
- struct crypto_attr_type *crypto_get_attr_type(struct rtattr **tb);
- int crypto_check_attr_type(struct rtattr **tb, u32 type, u32 *mask_ret);
- const char *crypto_attr_alg_name(struct rtattr *rta);
--int crypto_attr_u32(struct rtattr *rta, u32 *num);
- int crypto_inst_setname(struct crypto_instance *inst, const char *name,
- 			struct crypto_alg *alg);
- 
-diff --git a/include/linux/crypto.h b/include/linux/crypto.h
-index da5e0d74bb2f..3b9263d6122f 100644
---- a/include/linux/crypto.h
-+++ b/include/linux/crypto.h
-@@ -647,7 +647,6 @@ enum {
- 	CRYPTOA_UNSPEC,
- 	CRYPTOA_ALG,
- 	CRYPTOA_TYPE,
--	CRYPTOA_U32,
- 	__CRYPTOA_MAX,
- };
- 
-@@ -665,10 +664,6 @@ struct crypto_attr_type {
- 	u32 mask;
- };
- 
--struct crypto_attr_u32 {
--	u32 num;
--};
--
- /* 
-  * Transform user interface.
-  */
+ ifeq ($(CONFIG_MMU),y)
+ obj-$(CONFIG_SMP) += tlbflush.o
+diff --git a/arch/riscv/mm/pgtable.c b/arch/riscv/mm/pgtable.c
+new file mode 100644
+index 000000000000..738dc6f3530f
+--- /dev/null
++++ b/arch/riscv/mm/pgtable.c
+@@ -0,0 +1,40 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <asm/pgalloc.h>
++#include <linux/gfp.h>
++#include <linux/kernel.h>
++#include <linux/pgtable.h>
++
++#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
++
++#ifndef __PAGETABLE_PMD_FOLDED
++int pmd_set_huge(pmd_t *pmd, phys_addr_t phys, pgprot_t prot)
++{
++	pmd_t new_pmd = pfn_pmd(__phys_to_pfn(phys), prot);
++
++	set_pmd(pmd, new_pmd);
++	return 1;
++}
++
++int pmd_clear_huge(pmd_t *pmd)
++{
++	if (!pmd_leaf(READ_ONCE(*pmd)))
++		return 0;
++	pmd_clear(pmd);
++	return 1;
++}
++#endif
++
++int pmd_free_pte_page(pmd_t *pmd, unsigned long addr)
++{
++	pte_t *pte;
++
++	pte = (pte_t *)pmd_page_vaddr(*pmd);
++	pmd_clear(pmd);
++
++	flush_tlb_kernel_range(addr, addr + PMD_SIZE);
++	pte_free_kernel(NULL, pte);
++	return 1;
++}
++
++#endif /* CONFIG_HAVE_ARCH_HUGE_VMAP */
 -- 
 2.18.0.huawei.25
 
