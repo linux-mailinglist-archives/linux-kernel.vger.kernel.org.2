@@ -2,210 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B8439CB5B
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 23:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B7339CB5C
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 23:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhFEV6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 17:58:10 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:49398 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhFEV6J (ORCPT
+        id S230129AbhFEV7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 17:59:23 -0400
+Received: from mail-pj1-f48.google.com ([209.85.216.48]:54215 "EHLO
+        mail-pj1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230025AbhFEV7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 17:58:09 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0C3DAB2C;
-        Sat,  5 Jun 2021 23:56:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1622930180;
-        bh=o7++EuxkRgDP1duOfpmAjGiDUd3n2LOpOVmtNxKeWHo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uiuVFWnpKiyUW/Ze6mnEF//D9OtE3ivdHVFYGkpwV9j8/RNV1ToBU6mpy5Pzq3299
-         H5eMMW3PiXSIUfSZ6RucPPIBN6h2EaRPk3Is5mqdSwCXGZY30TXcKvEDNqOKWN56QB
-         8WVuTwbvcR/9k6EBAYdZ+TH3VEODKxu8gjI2UwIk=
-Date:   Sun, 6 Jun 2021 00:56:06 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Benjamin Drung <bdrung@posteo.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Adam Goode <agoode@google.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v4] media: uvcvideo: Fix pixel format change for Elgato
- Cam Link 4K
-Message-ID: <YLvy9iE2Z+DpMvmg@pendragon.ideasonboard.com>
-References: <YLqnU+FYSAcWwaAZ@pendragon.ideasonboard.com>
- <20210605201534.53114-1-bdrung@posteo.de>
+        Sat, 5 Jun 2021 17:59:22 -0400
+Received: by mail-pj1-f48.google.com with SMTP id ei4so7524630pjb.3
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 14:57:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q92KLRBaN+TGTzRouKOXN6ZtVbUvC8kgL6nFwLg04f4=;
+        b=C79Sx918BT0VxgYNOmAIbBgGT+WRWKqImgUdP1qP/y+wD30yeWQOGqMwQZerVCNSYc
+         r26ivWz4RYQzOHmqW8/py+4MtR3bi21pvN6Gm6Ey24n+wBRjAC7l8xEIj1XbhUDTBFMK
+         TwypVj+jBuSMkK+ATzl/fp2bUYAFQugbDkpb85itH2S+wylXBERyDeqYKz6L8fh9NRd9
+         Ww/Qe14kZIjWo3dPlX34QnzDHKNtbhQJ3Phkz3eQ4LhgYYdVv+j0qRaLvDIonN+tygwS
+         MpqBp2ZzG/mypSLsnntiAMmncx9DgOnmmIR8/LoemO/yGHloSKeh3rqTY6bs9Yb3yzZc
+         9p9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q92KLRBaN+TGTzRouKOXN6ZtVbUvC8kgL6nFwLg04f4=;
+        b=qXXS2THpDnlzal2u4RLxmJPlEd+Efk2NYUvOpU3Hdx1qr4XgWR+qmnr8/+hXE/h/Vf
+         hpisOYf/T0lYD2WUDouZqJuBYYN6NPS6bqr6ZXHOwSB6oTK2CBGcohP4Tw3mK4Dqjlrf
+         TpUJ0mTxEzs8vDFATaRWDxS+iPQSvpgi+N15y8L/WS5UzQejy4cK9flZWAvuW0fEI5kQ
+         5AkvFwkWYvxfaF3fOHoGTy7iTdPKCwRwSrvGxUjAeY7NNVoIYlsJdI+QeeK18nNtCSfE
+         1cl5xmxWl02xNFikXr/gAkoiNeisqy8jL8pIc80u98ZlDyhaAABHAgWNZ8fWl62rQr7C
+         LByA==
+X-Gm-Message-State: AOAM530swCHygVZwOCmKM2tm+cHIcGdJq6O5gWhkTHE/+gPiVZqlcTGX
+        bBv5LWaOxuypua6We7xOPYCKeKP4+JJriog6UAcGjw==
+X-Google-Smtp-Source: ABdhPJxYyUULKSZFmZJx8cSUjvLa9nYuGMrvs6fpGpdt+jLxXpF8RQmhiRE2dtCmc+ymwENzTs0UHiBjGtMG4CTKDFI=
+X-Received: by 2002:a17:90a:414a:: with SMTP id m10mr23366177pjg.149.1622930193442;
+ Sat, 05 Jun 2021 14:56:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210605201534.53114-1-bdrung@posteo.de>
+References: <3e9a26c3-8eee-88f5-f8e2-8a2dd2c028ea@intel.com>
+ <20210602194220.2227863-1-sathyanarayanan.kuppuswamy@linux.intel.com> <20210602194220.2227863-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20210602194220.2227863-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Sat, 5 Jun 2021 14:56:22 -0700
+Message-ID: <CAPcyv4jR4Ci=yKmCWk2toNFr-8NBy-MXfDYiH0Xmv9KFiBm2wQ@mail.gmail.com>
+Subject: Re: [RFC v2-fix-v2 1/2] x86/sev-es: Abstract out MMIO instruction decoding
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Benjamin,
+On Wed, Jun 2, 2021 at 12:42 PM Kuppuswamy Sathyanarayanan
+<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+>
+> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+>
 
-Thank you for the patch.
+Lead in with the what because I read 2 paragraphs to figure out that
+this was a prep patch.
 
-On Sat, Jun 05, 2021 at 08:15:36PM +0000, Benjamin Drung wrote:
-> The Elgato Cam Link 4K HDMI video capture card reports to support three
-> different pixel formats, where the first format depends on the connected
-> HDMI device.
-> 
-> ```
-> $ v4l2-ctl -d /dev/video0 --list-formats-ext
-> ioctl: VIDIOC_ENUM_FMT
-> 	Type: Video Capture
-> 
-> 	[0]: 'NV12' (Y/CbCr 4:2:0)
-> 		Size: Discrete 3840x2160
-> 			Interval: Discrete 0.033s (29.970 fps)
-> 	[1]: 'NV12' (Y/CbCr 4:2:0)
-> 		Size: Discrete 3840x2160
-> 			Interval: Discrete 0.033s (29.970 fps)
-> 	[2]: 'YU12' (Planar YUV 4:2:0)
-> 		Size: Discrete 3840x2160
-> 			Interval: Discrete 0.033s (29.970 fps)
-> ```
-> 
-> Changing the pixel format to anything besides the first pixel format
-> does not work:
-> 
-> ```
-> $ v4l2-ctl -d /dev/video0 --try-fmt-video pixelformat=YU12
-> Format Video Capture:
-> 	Width/Height      : 3840/2160
-> 	Pixel Format      : 'NV12' (Y/CbCr 4:2:0)
-> 	Field             : None
-> 	Bytes per Line    : 3840
-> 	Size Image        : 12441600
-> 	Colorspace        : sRGB
-> 	Transfer Function : Rec. 709
-> 	YCbCr/HSV Encoding: Rec. 709
-> 	Quantization      : Default (maps to Limited Range)
-> 	Flags             :
-> ```
-> 
-> User space applications like VLC might show an error message on the
-> terminal in that case:
-> 
-> ```
-> libv4l2: error set_fmt gave us a different result than try_fmt!
-> ```
-> 
-> Depending on the error handling of the user space applications, they
-> might display a distorted video, because they use the wrong pixel format
-> for decoding the stream.
-> 
-> The Elgato Cam Link 4K responds to the USB video probe
-> VS_PROBE_CONTROL/VS_COMMIT_CONTROL with a malformed data structure: The
-> second byte contains bFormatIndex (instead of being the second byte of
-> bmHint). The first byte is always zero. The third byte is always 1.
-> 
-> The firmware bug was reported to Elgato on 2020-12-01 and it was
-> forwarded by the support team to the developers as feature request.
-> There is no firmware update available since then. The latest firmware
-> for Elgato Cam Link 4K as of 2021-03-23 has MCU 20.02.19 and FPGA 67.
-> 
-> Therefore add a quirk to correct the malformed data structure.
-> 
-> The quirk was successfully tested with VLC, OBS, and Chromium using
-> different pixel formats (YUYV, NV12, YU12), resolutions (3840x2160,
-> 1920x1080), and frame rates (29.970 and 59.940 fps).
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Benjamin Drung <bdrung@posteo.de>
-> ---
->  drivers/media/usb/uvc/uvc_video.c | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
-> 
-> (now sending this patch with v4 in the subject instead of falsely v3)
-> 
-> v2: enhanced the comment describing the quirk
-> 
-> v3:
-> * hardcode ctrl->bmHint to 1
-> * Use UVC_DBG_VIDEO instead of UVC_DBG_CONTROL (to match the rest of the
->   file)
-> 
-> v4:
-> * Replace quirk bit by specific check for USB VID:PID test
-> 
-> I tried setting different values for bmHint, but the response from the
-> Cam Link was always 1. So this patch hardcodes ctrl->bmHint to 1 as
-> suggested.
-> 
-> Patch version 4 implements the recommendation of Laurent Pinchart. It
-> requires defining the device ID as variable since usb_match_one_id takes
-> an pointer to it. In case more Elgato products like Game Capture
-> HD 60 S+ (0fd9:006a) are affected, this version is harder to extent.
-> 
-> Take patch version 3 or 4 depending on which version you prefer. Both
-> work and are tested.
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> index a777b389a66e..35c3ce0e0716 100644
-> --- a/drivers/media/usb/uvc/uvc_video.c
-> +++ b/drivers/media/usb/uvc/uvc_video.c
-> @@ -130,6 +130,31 @@ static void uvc_fixup_video_ctrl(struct uvc_streaming *stream,
->  	struct uvc_format *format = NULL;
->  	struct uvc_frame *frame = NULL;
->  	unsigned int i;
-> +	static const struct usb_device_id elgato_cam_link_4k = { USB_DEVICE(0x0fd9, 0x0066) };
+"In preparation for sharing MMIO instruction decode between SEV-ES and
+TDX factor out the common decode into a new insn_decode_mmio()
+helper."
 
-Let's avoid long line
+> For regular virtual machine, MMIO is handled by the VMM: KVM
+> emulates instruction that caused MMIO. But, this model doesn't
+> work for a secure VMs (like SEV or TDX) as VMM doesn't have
+> access to the guest memory and register state. VMM needs
+> assistance in handling MMIO: it induces exception in the guest.
+> Guest has to decode the instruction and handle it on its own.
+>
+> Instruction decoding logic is similar between AMD SEV and TDX
+> code. So extract the decoding code to insn-eval.c where it can
+> be used by both SEV and TDX.
+>
+> This code adds no functional changes. It is only build-tested
+> for SEV.
 
-	static const struct usb_device_id elgato_cam_link_4k = {
-		USB_DEVICE(0x0fd9, 0x0066)
-	};
+The diff is such that I could not verify "no functional change" change
+without doing more careful analysis. Typically with non-trivial
+refactoring they are split out over a few patches with a final removal
+of replaced infra at the end. This does the entire conversion all at
+once.
 
-> +
-> +	/*
-> +	 * The response of the Elgato Cam Link 4K is incorrect: The second byte
-> +	 * contains bFormatIndex (instead of being the second byte of bmHint).
-> +	 * The first byte is always zero. The third byte is always 1.
-> +	 *
-> +	 * The UVC 1.5 class specification defines the first five bits in the
-> +	 * bmHint bitfield. The remaining bits are reserved and should be zero.
-> +	 * Therefore a valid bmHint will be less than 32.
-> +	 *
-> +	 * Latest Elgato Cam Link 4K firmware as of 2021-03-23 needs this quirk.
-> +	 * MCU: 20.02.19, FPGA: 67
-> +	 */
-> +	if (usb_match_one_id(stream->dev->intf, &elgato_cam_link_4k) && ctrl->bmHint > 255) {
+How about an approach that has vc_handle_mmio() handle
+MMIO_DECODE_FAILED for missing support in the common helper until the
+final patch that can do:
 
-Similarly, I'd break this as
+> +       mmio = insn_decode_mmio(insn, &bytes);
+> +       if (mmio == MMIO_DECODE_FAILED)
+> +               return ES_DECODE_FAILED;
 
-	if (usb_match_one_id(stream->dev->intf, &elgato_cam_link_4k) &&
-	    ctrl->bmHint > 255) {
+...i.e. insn_decode_mmio() is finally prepared to handle all scenarios
+and vc_handle_mmio_twobyte_ops() can finally be deleted. This also
+helps a future bisect that finds "whoops, 'no functional changes' was
+incorrect".
 
-> +		__u8 corrected_format_index;
+>
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: Joerg Roedel <jroedel@suse.de>
 
-You can use u8 within the kernel.
-
-> +
-> +		corrected_format_index = ctrl->bmHint >> 8;
-> +		uvc_dbg(stream->dev, VIDEO,
-> +			"Correct USB video probe response from {bmHint: 0x%04x, bFormatIndex: 0x%02x} to {bmHint: 0x%04x, bFormatIndex: 0x%02x}.\n",
-
-I'd print bFormatIndex with %u as it's an index and thus more readable
-as a decimal integer.
-
-If you agree with those small changes, there's no need to resubmit, I
-can fold them in when applying the patch.
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> +			ctrl->bmHint, ctrl->bFormatIndex,
-> +			1, corrected_format_index);
-> +		ctrl->bmHint = 1;
-> +		ctrl->bFormatIndex = corrected_format_index;
-> +	}
->  
->  	for (i = 0; i < stream->nformats; ++i) {
->  		if (stream->format[i].index == ctrl->bFormatIndex) {
-
--- 
-Regards,
-
-Laurent Pinchart
+Missing Sathya signed-off-by...
