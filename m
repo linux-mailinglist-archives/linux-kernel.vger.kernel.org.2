@@ -2,167 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E8839CAC5
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 21:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE3639CACD
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 21:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbhFETlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 15:41:19 -0400
-Received: from mail-wr1-f41.google.com ([209.85.221.41]:36811 "EHLO
-        mail-wr1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhFETlR (ORCPT
+        id S230073AbhFETzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 15:55:02 -0400
+Received: from hosting.gsystem.sk ([212.5.213.30]:48342 "EHLO
+        hosting.gsystem.sk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230010AbhFETy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 15:41:17 -0400
-Received: by mail-wr1-f41.google.com with SMTP id e11so2508975wrg.3;
-        Sat, 05 Jun 2021 12:39:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3GrYxT56XNME4bKlaCycc5lDDPukBRXU2exTZWylSWo=;
-        b=Vp36yZCt2ooPxJXPANdCH2/6FDMlsKuNbiUQgu56IgA3VNdGzHC1ng5O3vGeY6aJae
-         H3XYnLUbl9pNS8OIBGuUWvlsXnk3pCYJjeW44jaz+hY0vjBe8D8O6/8f8FploI86X/4G
-         uErSQfXaI0rYYojbvoG0fNWrx9uQ9DJ12d+xFmRhxq8tiB3ZL9m81CmsubOqugWvpO8P
-         8Oejsfe4jgCSlH+66Q74/Ox39mp1iQMoADv9WyA8lNqJ6Ce7Zzbj9QVjVouAxeQb8h1W
-         vmMv5ZMwFY4daY/72RDlFWAUMtNxhePbI/HEeA2Nln9pmfjhtVcPqH2XyV9XHTV71E+S
-         iSbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3GrYxT56XNME4bKlaCycc5lDDPukBRXU2exTZWylSWo=;
-        b=m0oQVFULND3NWzP6JFb8TR8MpTzJTgihbzIdPbDksEzMgZYakNod0/WUja4LxwOlBs
-         GyZhYornTyMoykhTV5FccM2HWqW0kUpjVKEdisd8Z9toxsADxz3f6ndSaMaWXIwizQav
-         BL+Ejjb1iSrfH+2Znn84q5/kkOXsekOcOI846EXY9+0YCTEIcLNeo9Zun7lcxIzKPL9I
-         vcHGzsfuMwrSHK3i49VAUYhXE9Cbw7i6BPOapsZPcUZ5nSKgyJZ9O7ZDibUlNxmjoijY
-         BzR3W7VFxuCaC9vSS9Rji0oMt7AwC9YDq/RmVbsijOM09AhaAZPvPUfcDlEFSnoEzpZf
-         6sig==
-X-Gm-Message-State: AOAM53373E3ke+HSjv4ZmRlHs7yyfwzjLMeM+3VM4TOBSOw5cGvh9YgN
-        2HzRmoWUr98DNLW8IMeNSE1A0H4H8w8=
-X-Google-Smtp-Source: ABdhPJzCOK97CjRyQZ44LI4gfLgk1Qlq0v4ujR0Oj5I8fm4lcTyabOK4YkTEqdxI3pt4ost+PgZfzw==
-X-Received: by 2002:a5d:5752:: with SMTP id q18mr9767435wrw.419.1622921891645;
-        Sat, 05 Jun 2021 12:38:11 -0700 (PDT)
-Received: from cluster5 ([80.76.206.81])
-        by smtp.gmail.com with ESMTPSA id m21sm7009243wms.42.2021.06.05.12.38.10
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Sat, 05 Jun 2021 12:38:11 -0700 (PDT)
-From:   Matthew Hagan <mnhagan88@gmail.com>
-Cc:     Matthew Hagan <mnhagan88@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH net-next] net: dsa: tag_qca: Check for upstream VLAN tag
-Date:   Sat,  5 Jun 2021 20:37:48 +0100
-Message-Id: <20210605193749.730836-1-mnhagan88@gmail.com>
-X-Mailer: git-send-email 2.26.3
+        Sat, 5 Jun 2021 15:54:59 -0400
+X-Greylist: delayed 553 seconds by postgrey-1.27 at vger.kernel.org; Sat, 05 Jun 2021 15:54:59 EDT
+Received: from [192.168.0.2] (188-167-68-178.dynamic.chello.sk [188.167.68.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by hosting.gsystem.sk (Postfix) with ESMTPSA id 93AA07A021C;
+        Sat,  5 Jun 2021 21:43:56 +0200 (CEST)
+From:   Ondrej Zary <linux@zary.sk>
+To:     Ben Skeggs <bskeggs@redhat.com>
+Subject: nouveau broken on Riva TNT2 in 5.13.0-rc4: NULL pointer dereference in nouveau_bo_sync_for_device
+Date:   Sat, 5 Jun 2021 21:43:52 +0200
+User-Agent: KMail/1.9.10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <202106052143.52488.linux@zary.sk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The qca_tag_rcv function unconditionally expects a QCA tag to be present
-between source MAC and EtherType. However if an upstream switch is used,
-this may create a special case where VLAN tags are subsequently inserted
-between the source MAC and the QCA tag. Thus when qca_tag_rcv is called,
-it will attempt to read the 802.1q TPID as a QCA tag. This results in
-complication since the TPID will pass the QCA tag version checking on bits
-14 and 15, but the resulting packet after trimming the TPID will be
-unusable.
+Hello,
+I'm testing 5.13.0-rc4 and nouveau crashes with NULL pointer dereference in nouveau_bo_sync_for_device.
+Found various reports like this but that was back in februaryso that should be fixed now.
 
-The tested case is a Meraki MX65 which features two QCA8337 switches with
-their CPU ports attached to a BCM58625 switch ports 4 and 5 respectively.
-In this case a VLAN tag with VID 0 is added by the upstream BCM switch
-when the port is unconfigured and packets with this VLAN tag or without
-will be accepted at the BCM's CPU port. However, it is arguably possible
-that other switches may be configured to drop VLAN untagged traffic at
-their respective CPU port. Thus where packets are VLAN untagged, the
-default VLAN tag, added by the upstream switch, should be maintained. Where
-inbound packets are already VLAN tagged when arriving at the QCA switch, we
-should replace the default VLAN tag, added by the upstream port, with the
-correct VLAN tag.
+[   21.003216] BUG: kernel NULL pointer dereference, address: 00000000
+[   21.003235] #PF: supervisor read access in kernel mode
+[   21.003243] #PF: error_code(0x0000) - not-present page
+[   21.003250] *pde = 00000000
+[   21.003258] Oops: 0000 [#1] SMP
+[   21.003268] CPU: 0 PID: 222 Comm: systemd-udevd Not tainted 5.13.0-rc4+ #327
+[   21.003278] Hardware name:  /848P-ICH5, BIOS 6.00 PG 02/03/2005
+[   21.003285] EIP: nouveau_bo_sync_for_device+0x9e/0xbf [nouveau]
+[   21.003571] Code: 02 89 45 e8 01 d1 8b 19 89 5d ec bb 01 00 00 00 3b 5d e8 74 0d 89 d8 c1 e0 05 03 45 ec 39 04 99 74 1e 8b 46 10 89 d9 c1 e1 0c <8b> 14 10 8b 47 e0 8b 40 08 6a 01 e8 d5 03 55 df 01 5d f0 58 eb ae
+[   21.003588] EAX: 00000000 EBX: 00000010 ECX: 00010000 EDX: 00000000
+[   21.003597] ESI: c3e90280 EDI: c185a494 EBP: c2ed7c10 ESP: c2ed7bf8
+[   21.003606] DS: 007b ES: 007b FS: 00d8 GS: 0033 SS: 0068 EFLAGS: 00210206
+[   21.003615] CR0: 80050033 CR2: 00000000 CR3: 02ecb000 CR4: 00000690
+[   21.003625] Call Trace:
+[   21.003635]  nouveau_bo_validate+0x3f/0x48 [nouveau]
+[   21.003911]  nouveau_bo_pin+0xf0/0x187 [nouveau]
+[   21.004182]  nouveau_channel_prep+0xc0/0x269 [nouveau]
+[   21.004454]  nouveau_channel_new+0x3c/0x5f5 [nouveau]
+[   21.004725]  ? slab_free_freelist_hook+0x3b/0xa7
+[   21.004740]  ? kfree+0x9e/0x11a
+[   21.004749]  ? nvif_object_sclass_put+0xd/0x16 [nouveau]
+[   21.004944]  nouveau_drm_device_init+0x2e2/0x646 [nouveau]
+[   21.005186]  ? pci_enable_device_flags+0x23/0x97
+[   21.005202]  nouveau_drm_probe+0xe5/0x182 [nouveau]
+[   21.005443]  ? nouveau_drm_device_init+0x646/0x646 [nouveau]
+[   21.005683]  pci_device_probe+0x89/0xe9
+[   21.005696]  really_probe+0x127/0x2b9
+[   21.005707]  driver_probe_device+0x62/0x89
+[   21.005715]  device_driver_attach+0x2e/0x41
+[   21.005724]  __driver_attach+0x83/0x8a
+[   21.005732]  bus_for_each_dev+0x4c/0x66
+[   21.005740]  driver_attach+0x14/0x16
+[   21.005747]  ? device_driver_attach+0x41/0x41
+[   21.005756]  bus_add_driver+0xc5/0x16c
+[   21.005764]  driver_register+0x87/0xb9
+[   21.005772]  __pci_register_driver+0x38/0x3b
+[   21.005780]  ? 0xf0be4000
+[   21.005787]  nouveau_drm_init+0x14c/0x1000 [nouveau]
+[   21.005964]  do_one_initcall+0x5a/0x134
+[   21.005975]  ? __vunmap+0x124/0x12d
+[   21.005984]  ? __vunmap+0x124/0x12d
+[   21.005992]  ? kmem_cache_alloc+0xa8/0xb6
+[   21.006001]  ? do_init_module+0x17/0x1cf
+[   21.006012]  do_init_module+0x46/0x1cf
+[   21.006021]  load_module+0x1799/0x1bcb
+[   21.006032]  __ia32_sys_finit_module+0x72/0x7a
+[   21.006044]  do_int80_syscall_32+0x53/0x62
+[   21.006054]  entry_INT80_32+0xf0/0xf0
+[   21.006063] EIP: 0xb7f40092
+[   21.006071] Code: 00 00 00 e9 90 ff ff ff ff a3 24 00 00 00 68 30 00 00 00 e9 80 ff ff ff ff a3 e8 ff ff ff 66 90 00 00 00 00 00 00 00 00 cd 80 <c3> 8d b4 26 00 00 00 00 8d b6 00 00 00 00 8b 1c 24 c3 8d b4 26 00
+[   21.006086] EAX: ffffffda EBX: 00000010 ECX: b7e9bbdd EDX: 00000000
+[   21.006095] ESI: 008f27d0 EDI: 008f9e10 EBP: 00000000 ESP: bfa140b8
+[   21.006103] DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b EFLAGS: 00200296
+[   21.006114] Modules linked in: nouveau(+) snd_intel8x0 snd_ac97_codec pcmcia wmi hwmon ac97_bus yenta_socket pcmcia_rsrc drm_ttm_helper snd_pcm ttm snd_timer pcmcia_core psmouse 8139cp snd sg soundcore serio_raw parport_pc intel_agp parport
+[   21.006165] CR2: 0000000000000000
+[   21.006201] ---[ end trace 02dc541683feafc6 ]---
+[   21.006211] EIP: nouveau_bo_sync_for_device+0x9e/0xbf [nouveau]
+[   21.006460] Code: 02 89 45 e8 01 d1 8b 19 89 5d ec bb 01 00 00 00 3b 5d e8 74 0d 89 d8 c1 e0 05 03 45 ec 39 04 99 74 1e 8b 46 10 89 d9 c1 e1 0c <8b> 14 10 8b 47 e0 8b 40 08 6a 01 e8 d5 03 55 df 01 5d f0 58 eb ae
+[   21.006476] EAX: 00000000 EBX: 00000010 ECX: 00010000 EDX: 00000000
+[   21.006485] ESI: c3e90280 EDI: c185a494 EBP: c2ed7c10 ESP: c2ed7bf8
+[   21.006494] DS: 007b ES: 007b FS: 00d8 GS: 0033 SS: 0068 EFLAGS: 00210206
+[   21.006503] CR0: 80050033 CR2: 00000000 CR3: 02ecb000 CR4: 00000690
 
-This patch introduces:
-  1 - A check for a VLAN tag before EtherType. If found, skip past this to
-      find the QCA tag.
-  2 - Check for a second VLAN tag after the QCA tag if one was found in 1.
-      If found, remove both the initial VLAN tag and the QCA tag. If not
-      found, remove only the QCA tag to maintain the VLAN tag added by the
-      upstream switch.
 
-Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
----
- net/dsa/tag_qca.c | 41 +++++++++++++++++++++++++++++++----------
- 1 file changed, 31 insertions(+), 10 deletions(-)
-
-diff --git a/net/dsa/tag_qca.c b/net/dsa/tag_qca.c
-index 88181b52f480..e5273a27bf8a 100644
---- a/net/dsa/tag_qca.c
-+++ b/net/dsa/tag_qca.c
-@@ -52,18 +52,27 @@ static struct sk_buff *qca_tag_rcv(struct sk_buff *skb, struct net_device *dev,
- 				   struct packet_type *pt)
- {
- 	u8 ver;
--	u16  hdr;
--	int port;
--	__be16 *phdr;
-+	u16 hdr, vlan_hdr;
-+	int port, vlan_offset = 0, vlan_skip = 0;
-+	__be16 *phdr, *vlan_phdr;
- 
- 	if (unlikely(!pskb_may_pull(skb, QCA_HDR_LEN)))
- 		return NULL;
- 
--	/* The QCA header is added by the switch between src addr and Ethertype
--	 * At this point, skb->data points to ethertype so header should be
--	 * right before
-+	/* The QCA header is added by the switch between src addr and
-+	 * Ethertype. Normally at this point, skb->data points to ethertype so the
-+	 * header should be right before. However if a VLAN tag has subsequently
-+	 * been added upstream, we need to skip past it to find the QCA header.
- 	 */
--	phdr = (__be16 *)(skb->data - 2);
-+	vlan_phdr = (__be16 *)(skb->data - 2);
-+	vlan_hdr = ntohs(*vlan_phdr);
-+
-+	/* Check for VLAN tag before QCA tag */
-+	if (!(vlan_hdr ^ ETH_P_8021Q))
-+		vlan_offset = VLAN_HLEN;
-+
-+	/* Look for QCA tag at the correct location */
-+	phdr = (__be16 *)(skb->data - 2 + vlan_offset);
- 	hdr = ntohs(*phdr);
- 
- 	/* Make sure the version is correct */
-@@ -71,10 +80,22 @@ static struct sk_buff *qca_tag_rcv(struct sk_buff *skb, struct net_device *dev,
- 	if (unlikely(ver != QCA_HDR_VERSION))
- 		return NULL;
- 
-+	/* Check for second VLAN tag after QCA tag if one was found prior */
-+	if (!!(vlan_offset)) {
-+		vlan_phdr = (__be16 *)(skb->data + 4);
-+		vlan_hdr = ntohs(*vlan_phdr);
-+		if (!!(vlan_hdr ^ ETH_P_8021Q)) {
-+		/* Do not remove existing tag in case a tag is required */
-+			vlan_offset = 0;
-+			vlan_skip = VLAN_HLEN;
-+		}
-+	}
-+
- 	/* Remove QCA tag and recalculate checksum */
--	skb_pull_rcsum(skb, QCA_HDR_LEN);
--	memmove(skb->data - ETH_HLEN, skb->data - ETH_HLEN - QCA_HDR_LEN,
--		ETH_HLEN - QCA_HDR_LEN);
-+	skb_pull_rcsum(skb, QCA_HDR_LEN + vlan_offset);
-+	memmove(skb->data - ETH_HLEN,
-+		skb->data - ETH_HLEN - QCA_HDR_LEN - vlan_offset,
-+		ETH_HLEN - QCA_HDR_LEN + vlan_skip);
- 
- 	/* Get source port information */
- 	port = (hdr & QCA_HDR_RECV_SOURCE_PORT_MASK);
 -- 
-2.26.3
-
+Ondrej Zary
