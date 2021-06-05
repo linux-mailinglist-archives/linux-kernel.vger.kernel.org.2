@@ -2,67 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037EE39C73B
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 12:02:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FB0239C73D
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 12:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbhFEKEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 06:04:06 -0400
-Received: from fgw22-7.mail.saunalahti.fi ([62.142.5.83]:45748 "EHLO
-        fgw22-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229902AbhFEKEE (ORCPT
+        id S230026AbhFEKGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 06:06:50 -0400
+Received: from mail-pj1-f51.google.com ([209.85.216.51]:51983 "EHLO
+        mail-pj1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229902AbhFEKGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 06:04:04 -0400
-Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
-        by fgw22.mail.saunalahti.fi (Halon) with ESMTP
-        id dc745646-c5e2-11eb-88cb-005056bdf889;
-        Sat, 05 Jun 2021 12:46:12 +0300 (EEST)
-Date:   Sat, 5 Jun 2021 12:46:11 +0300
-From:   andy@surfacebook.localdomain
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Amireddy Mallikarjuna reddy 
-        <mallikarjunax.reddy@linux.intel.com>,
-        Abanoub Sameh <abanoubsameh8@gmail.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 12/13] leds: rt8515: Put fwnode in any case during
- ->probe()
-Message-ID: <YLtH45iTFAn9QcpQ@surfacebook.localdomain>
-References: <20210529111935.3849707-1-andy.shevchenko@gmail.com>
- <20210529111935.3849707-12-andy.shevchenko@gmail.com>
- <CACRpkdb21tMWyoxHuv8CwUB9fZeD332B_ui2jtMP7ocfbi6LSQ@mail.gmail.com>
+        Sat, 5 Jun 2021 06:06:48 -0400
+Received: by mail-pj1-f51.google.com with SMTP id k5so6902819pjj.1
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 03:04:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2kfc/aUPwnTdhzCNytjgqFr2bbR5n0+oAS9lEPwRsCE=;
+        b=EQclQEKG5s5ma8+a2tAF2oxc20nQzVAltE6r/UTnrmkn7pyyb+1O4aC45h+eAQmvEl
+         hzQ748quieqUks+LMXQ9SSEAh0VNYZc/YnYaLdFIJpw8t4PcxfehaEhwaiLLFYqHUMZm
+         nSsCWd/WEOU/oSQFP2l620iqx2hPMdX8sUrjU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2kfc/aUPwnTdhzCNytjgqFr2bbR5n0+oAS9lEPwRsCE=;
+        b=s1slACwfW6ocz77M2gCp6uBavf2xouXviPaSHGaKUpFhvIxUiZqCrzKqyObXhtq0I9
+         SKThcCN1ZUddkeFNI3Xj5wSpvS8E5yYDVzgGlYdjwtBMYYbFow7xhcwCf1USiZ5jOq99
+         TgCT8BfmMSo644m6rvTHJlW07MVLTgwftNl/ykhY4udA+p1P8eos2pCADepcXZymzptc
+         seU9INE15++MxHdjBvyDT0aJlgzaApowtICC/MbguuLr8wr4m3hLGRE2H/FQRZjs/Zhe
+         pvskf+cOuu6zw3bkjdi834pLHQ4Xl84hgcCbDyuQw3n3v6080odzIWtxB1WwWbm2JYJW
+         EV5A==
+X-Gm-Message-State: AOAM530gqe3+5UZE+kT0yH7GeIKdGwvTzCSOH28FwbOiB1pxSsVV3AeR
+        rShltET9593xYJmhe2RCmVhcaA==
+X-Google-Smtp-Source: ABdhPJzBpTv6ENeG7LO/XB6NHveLxN/fD1mK3I8y3kccdgfwy4g3Ww4SnC8Zc2Bz4lko7adzfzo6Ug==
+X-Received: by 2002:a17:90a:e654:: with SMTP id ep20mr9433635pjb.168.1622887425979;
+        Sat, 05 Jun 2021 03:03:45 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:5981:261e:350c:bb45])
+        by smtp.gmail.com with ESMTPSA id d66sm3487856pfa.32.2021.06.05.03.03.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Jun 2021 03:03:45 -0700 (PDT)
+Date:   Sat, 5 Jun 2021 19:03:40 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Marc Zyngier <maz@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Suleiman Souhlal <suleiman@google.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv2 2/2] kvm: x86: implement KVM PM-notifier
+Message-ID: <YLtL/JPvGs2efZKO@google.com>
+References: <20210605023042.543341-1-senozhatsky@chromium.org>
+ <20210605023042.543341-2-senozhatsky@chromium.org>
+ <87k0n8u1nk.wl-maz@kernel.org>
+ <YLtK09pY1EjOtllS@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACRpkdb21tMWyoxHuv8CwUB9fZeD332B_ui2jtMP7ocfbi6LSQ@mail.gmail.com>
+In-Reply-To: <YLtK09pY1EjOtllS@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tue, Jun 01, 2021 at 12:06:05PM +0200, Linus Walleij kirjoitti:
-> On Sat, May 29, 2021 at 1:19 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
+On (21/06/05 18:58), Sergey Senozhatsky wrote:
+[..]
+> > > +static int kvm_arch_suspend_notifier(struct kvm *kvm)
+> > > +{
+> > > +	struct kvm_vcpu *vcpu;
+> > > +	int i, ret;
+> > > +
+> > > +	mutex_lock(&kvm->lock);
+> > > +	kvm_for_each_vcpu(i, vcpu, kvm) {
+> > > +		ret = kvm_set_guest_paused(vcpu);
+> > > +		if (ret) {
+> > > +			pr_err("Failed to pause guest VCPU%d: %d\n",
+> > > +			       vcpu->vcpu_id, ret);
+> > 
+> > Is it really a good idea to fail suspend when a guest doesn't have PV
+> > time enabled? I also wonder how useful the pr_err() is, given that it
+> > contains no information that would help identifying which guest failed
+> > to pause.
 > 
-> > fwnode_get_next_available_child_node() bumps a reference counting of
-> > a returned variable. We have to balance it whenever we return to
-> > the caller.
-> >
-> > Fixes: e1c6edcbea13 ("leds: rt8515: Add Richtek RT8515 LED driver")
-> > Cc: Linus Walleij <linus.walleij@linaro.org>
-> > Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> 
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> No opinion. What shall we do when we fail to suspend the VM?
+> VM's watchdogs will trigger and maybe panic the system after
+> resume.
 
-Thanks!
-
-Pavel, can you, please, review this batch? I think I addressed most of your
-comments if not all.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+For the time being kvm_set_guest_paused() errors out when
+!vcpu->arch.pv_time_enabled, but this probably can change
+in the future (who knows?). So shall I check vcpu->arch.pv_time_enabled
+in  kvm_arch_suspend_notifier()?
