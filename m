@@ -2,125 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76E5439C939
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 16:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A33239C93D
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 16:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbhFEOud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 10:50:33 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:46374 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhFEOuc (ORCPT
+        id S230026AbhFEOwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 10:52:50 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:56576 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229931AbhFEOwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 10:50:32 -0400
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 155EmEWE016438
-        for <linux-kernel@vger.kernel.org>; Sat, 5 Jun 2021 23:48:15 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 155EmEWE016438
+        Sat, 5 Jun 2021 10:52:49 -0400
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 155EonWD011460;
+        Sat, 5 Jun 2021 23:50:49 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 155EonWD011460
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1622904495;
-        bh=cRMYCqyhbuHYo3PtQo2hB2py/0ma5qgzmiV8CCsV0Io=;
+        s=dec2015msa; t=1622904650;
+        bh=0R/kfUeR+gIHgRaI65q/lVZY4TzLH5HyqLuf8P5DTUU=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hLQnNZVovI1oAWggePY0HMHN++z6up/fxQh/OTiAlhkMSeU9GVX1ZsTBEDGjK1thP
-         hxT3xr8Y/HpH7yO+BuXDpLxszUcZCE0Tfl0/I0CiMFXr6YEfvpb+D3ujJIf6JUa9u7
-         iN4Ukr/BoQ+NX/nSEGBCCdlyb2/uniXgftvOIxEvvSXxL8cB99A2ePA+AMeGWSwdAZ
-         dAHkQH/Tc/9SXFuPug0QIa/6RsunUuL94o9cK6iA5C1eUEXm8tN+uV1HMVVutvPvqP
-         tAXbxEnhYZTWQWrEv7bguUuBLwHnPdKdgZeQuFjJLjeFb7PyhKt37JWYd006r4CaAF
-         7Grs9emLV6stg==
-X-Nifty-SrcIP: [209.85.210.170]
-Received: by mail-pf1-f170.google.com with SMTP id d16so9565501pfn.12
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 07:48:15 -0700 (PDT)
-X-Gm-Message-State: AOAM532swFACewIvEq3e4hwFczJvLB/XjraeRF1fp4jSUJfw5TSxOXFb
-        7g3n701YYapjY7HOGVGjFr7CLGIuLo5WGCU1mmU=
-X-Google-Smtp-Source: ABdhPJz1hAvmJW1oyuAhOamHZfEhkrQJm9BPserYFjsywFJEnd6o6imkyq8dp4rY8Nl9//tYLkUwF3X2h8y1Sr6BJlU=
-X-Received: by 2002:a63:36c1:: with SMTP id d184mr10124119pga.47.1622904494341;
- Sat, 05 Jun 2021 07:48:14 -0700 (PDT)
+        b=pUldV/D7NzRnShJ2JXfvcYe0VVK2goCKAf672etZLdVrUiqQXYD4Ob2xqCcgRjnwi
+         qAFeqUfOnUQVYz2zKGON2DQL6MBnljJ2YA7v+uQBfjTZD9Sp8UfmQndMABQTxShfdn
+         SZs1sWcBzD1BD3LLXuVw2eO1io/yr62l5fktEFxGsNaMe93LPjgLmzpANcY+nLLhZ7
+         UG6gDTiKmbrdkbS0X+0TGSVXr8STnPO/RRh4ZOw1+gGxhWALCsgfdB+sbZjGCOYrZu
+         1mKstCs1+zFH+w1Ky2w6iscHbV4vvQ9KpjMmJT2A5l/XSH9arrdOfNtb8lJmUaZ2WY
+         XSO7NG1zite/g==
+X-Nifty-SrcIP: [209.85.210.175]
+Received: by mail-pf1-f175.google.com with SMTP id u126so5622206pfu.13;
+        Sat, 05 Jun 2021 07:50:49 -0700 (PDT)
+X-Gm-Message-State: AOAM531NqjXgMMiyAgjN05LhlmMBwo3BwSgp/Cr7JnEYI4HmuP1SA9vY
+        VEqb3/l3KNQj2IRwvoZlVkl0DsgFUX5+4g+fHJA=
+X-Google-Smtp-Source: ABdhPJy/lwWexxX5CzHKzO795nR5J+PtyS3sS3cKV8RqA/YF12TaCe+h+W5TNRq4ehP8sEZEbg91EC9hF+315lTNENs=
+X-Received: by 2002:a62:2581:0:b029:2ea:228e:5a37 with SMTP id
+ l123-20020a6225810000b02902ea228e5a37mr9499914pfl.63.1622904649006; Sat, 05
+ Jun 2021 07:50:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210601213143.1973770-1-helgaas@kernel.org> <819816a2-be1a-8d63-a26b-31f8caa8c944@infradead.org>
-In-Reply-To: <819816a2-be1a-8d63-a26b-31f8caa8c944@infradead.org>
+References: <20210528171321.158586-1-masahiroy@kernel.org>
+In-Reply-To: <20210528171321.158586-1-masahiroy@kernel.org>
 From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 5 Jun 2021 23:47:37 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARSxkAJp_PmW2wnZeadQq30UXJY+4hGFmTm5X=sxMPr1Q@mail.gmail.com>
-Message-ID: <CAK7LNARSxkAJp_PmW2wnZeadQq30UXJY+4hGFmTm5X=sxMPr1Q@mail.gmail.com>
-Subject: Re: [PATCH] kconfig.h: explain IS_MODULE(), IS_ENABLED()
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Paul Cercueil <paul@crapouillou.net>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
+Date:   Sat, 5 Jun 2021 23:50:11 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQdUtUwuZdx6PfxVtnwZ9Yzde24xv2d7C_xjuYMUmRQxg@mail.gmail.com>
+Message-ID: <CAK7LNAQdUtUwuZdx6PfxVtnwZ9Yzde24xv2d7C_xjuYMUmRQxg@mail.gmail.com>
+Subject: Re: [PATCH] kconfig: constify long_opts
+To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 2, 2021 at 6:53 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+On Sat, May 29, 2021 at 2:13 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
-> On 6/1/21 2:31 PM, Bjorn Helgaas wrote:
-> > From: Bjorn Helgaas <bhelgaas@google.com>
-> >
-> > Extend IS_MODULE() and IS_ENABLED comments to explain why one might use
-> > "#if IS_ENABLED(CONFIG_FOO)" instead of "#ifdef CONFIG_FOO".
-> >
-> > To wit, "#ifdef CONFIG_FOO" is true only for CONFIG_FOO=y, while
-> > "#if IS_ENABLED(CONFIG_FOO)" is true for both CONFIG_FOO=y and
-> > CONFIG_FOO=m.
-> >
-> > This is because "CONFIG_FOO=m" in .config does not result in "CONFIG_FOO"
-> > being defined.  The actual definitions are in autoconf.h, where:
-> >
-> >   CONFIG_FOO=y   results in   #define CONFIG_FOO 1
-> >   CONFIG_FOO=m   results in   #define CONFIG_FOO_MODULE 1
-> >
-> > Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> getopt_long() does not modify the logopts structure.
 >
-> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+
+
+Applied to linux-kbuild.
+
+
+>  scripts/kconfig/conf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-
-
-
-Applied to linux-kbuild. Thanks.
-
-
-
-
-> Thanks.
+> diff --git a/scripts/kconfig/conf.c b/scripts/kconfig/conf.c
+> index bfa1ea8f5f98..5d84b44a2a2a 100644
+> --- a/scripts/kconfig/conf.c
+> +++ b/scripts/kconfig/conf.c
+> @@ -678,7 +678,7 @@ static void check_conf(struct menu *menu)
+>                 check_conf(child);
+>  }
 >
-> > ---
-> >  include/linux/kconfig.h | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/linux/kconfig.h b/include/linux/kconfig.h
-> > index cc8fa109cfa3..20d1079e92b4 100644
-> > --- a/include/linux/kconfig.h
-> > +++ b/include/linux/kconfig.h
-> > @@ -51,7 +51,8 @@
-> >
-> >  /*
-> >   * IS_MODULE(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'm', 0
-> > - * otherwise.
-> > + * otherwise.  CONFIG_FOO=m results in "#define CONFIG_FOO_MODULE 1" in
-> > + * autoconf.h.
-> >   */
-> >  #define IS_MODULE(option) __is_defined(option##_MODULE)
-> >
-> > @@ -66,7 +67,8 @@
-> >
-> >  /*
-> >   * IS_ENABLED(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'y' or 'm',
-> > - * 0 otherwise.
-> > + * 0 otherwise.  Note that CONFIG_FOO=y results in "#define CONFIG_FOO 1" in
-> > + * autoconf.h, while CONFIG_FOO=m results in "#define CONFIG_FOO_MODULE 1".
-> >   */
-> >  #define IS_ENABLED(option) __or(IS_BUILTIN(option), IS_MODULE(option))
-> >
-> >
->
->
+> -static struct option long_opts[] = {
+> +static const struct option long_opts[] = {
+>         {"help",          no_argument,       NULL,            'h'},
+>         {"silent",        no_argument,       NULL,            's'},
+>         {"oldaskconfig",  no_argument,       &input_mode_opt, oldaskconfig},
 > --
-> ~Randy
+> 2.27.0
 >
 
 
