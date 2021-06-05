@@ -2,131 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37E1D39C78E
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 12:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EAF239C793
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 12:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbhFEKxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 06:53:34 -0400
-Received: from mail-qt1-f175.google.com ([209.85.160.175]:34712 "EHLO
-        mail-qt1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229892AbhFEKxd (ORCPT
+        id S230193AbhFEKzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 06:55:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229924AbhFEKy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 06:53:33 -0400
-Received: by mail-qt1-f175.google.com with SMTP id u20so744177qtx.1
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 03:51:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:in-reply-to:references:mime-version:date
-         :message-id;
-        bh=AAjK4RnrixesQdsO5w2Wdh9utWEzsYLWg7tqEzuFSmY=;
-        b=N/Slh0TetcKjwO2WeBYGTZdg0GBXeo6pGPJZPy2nTmvBK96Ir8hF7Ydujt8g5woTtf
-         4pk4ZoCuWtZdEC06Q3J/V0UYF91j8mdLc1KELc2/DI0mMUDEzBT3v2z2VtbMs9NWDsTz
-         wCj+4SWWZ3SSSo6hqGUcU2HgrQdY/kvuc7tUacf9uBesC3w0tVv53iPNW5sx05cohC82
-         FyBNQXVSXTqn9I1EKb89Sus1v2Q/asFhrNbKwgXAIh4IkqsuaReXXK9v5fpnDahYSzu5
-         OI64yZN045dOB/fFXfBea/mGklbYPRo7qy6WagAOrS9MoQa+fuxxx7TNazoih+Ji3a1c
-         XcVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :mime-version:date:message-id;
-        bh=AAjK4RnrixesQdsO5w2Wdh9utWEzsYLWg7tqEzuFSmY=;
-        b=tIjKdv5Tc0Vv2eB05lVRdAHDWdU1K3TCVu8nlQzfM8sSshKXUv6yWnVvsMMDvRTVuE
-         vHpnLYri612H4m5B57UGUTvP1qdN5B9UKYukZXslVXdsJ6Cq803/w5+jndkOlxLNgZdo
-         9Zz8dn+jSpq1mv5Bl9aAe4H4WpZnExv4M7kGWa0MICuGlylNCQC1cwKo3MkQZtuK8b/+
-         AgLYQeQtTrUQ7m/c5i0343k1G5U/rjIwa3BytCJ8TLEIlTRwfLzqffcRfOb0KtXPGzog
-         QpA7FNqXInGNtU/qaty9iAd6fwQyAQO0m3gDwypeLnTauBt9rz49qBPknZ8jWpl2sWDt
-         O91Q==
-X-Gm-Message-State: AOAM533byHVHDATrDs2trnRgmiwMhDwwro4u0Hztb+TMkbGsWHV4w+K4
-        3lGfo8FdSVEZ2G8I469o9mzTVA==
-X-Google-Smtp-Source: ABdhPJw7ITgbKAZiX/Yjx/Q+n4jSnFEYrSMa7CyvmsZRWFonxJG330U5aJTmqGC5O6F9VXYjBwtsvQ==
-X-Received: by 2002:a05:622a:588:: with SMTP id c8mr8325520qtb.49.1622890245288;
-        Sat, 05 Jun 2021 03:50:45 -0700 (PDT)
-Received: from turing-police ([2601:5c0:c380:d61::359])
-        by smtp.gmail.com with ESMTPSA id j197sm5599108qke.73.2021.06.05.03.50.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Jun 2021 03:50:44 -0700 (PDT)
-Sender: Valdis Kletnieks <valdis@vt.edu>
-From:   "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
-To:     Masahiro Yamada <masahiroy@kernel.org>
-cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>
-Subject: Re: x86 - weird cross-compile build problem with try-run next-20210602
-In-reply-to: <CAK7LNATbWnduSfqehJ7yMjxCbkrM87aojDCdQ79J+kXiTaZ-fQ@mail.gmail.com>
-References: <454425.1622838810@turing-police>
- <CAK7LNATbWnduSfqehJ7yMjxCbkrM87aojDCdQ79J+kXiTaZ-fQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date:   Sat, 05 Jun 2021 06:50:43 -0400
-Message-ID: <602426.1622890243@turing-police>
+        Sat, 5 Jun 2021 06:54:59 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F69BC061766;
+        Sat,  5 Jun 2021 03:53:11 -0700 (PDT)
+Received: from zn.tnic (p4fed32f0.dip0.t-ipconnect.de [79.237.50.240])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C2FC41EC01A2;
+        Sat,  5 Jun 2021 12:53:09 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1622890389;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=m4WFNDMn/F2hBFMtOb5KcbkKEA5fPujaJDdSpXTf3yI=;
+        b=b9euwxNWNDPFTyr/DO+tkH5SKsRbrIAcUy0+u+Jvmj/u6fbpiZz9u3lFXvXcgwIemAcufI
+        NyCxlLalL3M1NPfNHFgQhUWN/nBA/Vh8556EE5bzxFiKvpEO+aa9S/C6oi3V7LKg6VQ6eu
+        Z/KRkDNbfBU2ttfxGH9aWiVrTQ//cn8=
+Date:   Sat, 5 Jun 2021 12:50:53 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
+        npmccallum@redhat.com
+Subject: Re: [PATCH Part1 RFC v3 04/22] x86/mm: Add sev_feature_enabled()
+ helper
+Message-ID: <YLtXDQHWnAvCl99M@zn.tnic>
+References: <20210602140416.23573-1-brijesh.singh@amd.com>
+ <20210602140416.23573-5-brijesh.singh@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210602140416.23573-5-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 05 Jun 2021 17:19:30 +0900, Masahiro Yamada said:
+On Wed, Jun 02, 2021 at 09:03:58AM -0500, Brijesh Singh wrote:
+> @@ -78,6 +85,7 @@ static inline void sev_es_init_vc_handling(void) { }
+>  static inline bool sme_active(void) { return false; }
+>  static inline bool sev_active(void) { return false; }
+>  static inline bool sev_es_active(void) { return false; }
+> +static inline bool sev_snp_active(void) { return false; }
 
-> > Anybody have a clue why $(x32_ld_ok)  is null rather than 'y' or 'n'?
->
->
-> What command did you run?
->
-> I see this warning message for 'make install' for example.
->
-> $ make install
-> arch/x86/Makefile:148: CONFIG_X86_X32 enabled but no binutils support
+Leftover from the previous version, can go.
 
-> Please add one more debug line:
->   $(warning need-compiler is +$(need-compiler)+)
-> and what will you get?
->
-Bingo.
+> +bool sev_feature_enabled(unsigned int type)
+> +{
+> +	switch (type) {
+> +	case SEV: return sev_status & MSR_AMD64_SEV_ENABLED;
+> +	case SEV_ES: return sev_status & MSR_AMD64_SEV_ES_ENABLED;
+> +	case SEV_SNP: return sev_status & MSR_AMD64_SEV_SNP_ENABLED;
+> +	default: return false;
+> +	}
+> +}
 
-arch/x86/Makefile:143: need-compiler is ++ x32_ld_ok is ++ with CC=(.... same as before)
+Yeah, btw, we might even do a generic one, see:
 
-And it was hitting on a 'make kernelrelease'
+https://lkml.kernel.org/r/YLkcIuL2qvo0hviU@zn.tnic
 
-805b2e1d427aa (Masahiro Yamada          2021-02-28 15:10:28 +0900  275) # is an exception where build artifacts may be updated. This must be fixed.
-805b2e1d427aa (Masahiro Yamada          2021-02-28 15:10:28 +0900  276) no-compiler-targets := $(no-dot-config-targets) install dtbs_install \
-805b2e1d427aa (Masahiro Yamada          2021-02-28 15:10:28 +0900  277)                         headers_install modules_install kernelrelease image_name
-993bdde945478 (Masahiro Yamada          2021-02-28 15:10:25 +0900  278) no-sync-config-targets := $(no-dot-config-targets) %install kernelrelease \
+and the following mail.
 
-I suspect it's this:
+But that doesn't matter as sev_feature_enabled()'s body can go into
+sev_protected_guest_has() or whatever we end up calling it.
 
- # Include this also for config targets because some architectures need
- # cc-cross-prefix to determine CROSS_COMPILE.
-+ifdef need-compiler
- include $(srctree)/scripts/Makefile.compiler
-+endif
+Thx.
 
-and as a result, try-run isn't defined when we get into the ifdef CONFIG_X86_32
-chunk in arch/x86/Makefile, which silently fails and returns a null.   I added
-more debugging to double-check...
+-- 
+Regards/Gruss,
+    Boris.
 
-ifdef CONFIG_X86_X32
-        x32_ld_ok := $(call try-run,\
-                        /bin/echo -e '1: .quad 1b' | \ 
-                        $(CC) $(KBUILD_AFLAGS) -c -x assembler -o "$$TMP" - && \
-                        $(OBJCOPY) -O elf32-x86-64 "$$TMP" "$$TMP.o" && \
-                        $(LD) -m elf32_x86_64 "$$TMP.o" -o "$$TMP",y,n)
- $(warning need-compiler is +$(need-compiler)+ x32_ld_ok is +$(x32_ld_ok)+ with CC=$(CC) $(KBUILD_AFLAGS) OBJ=$(OBJCOPY) LD=$(LD) )
- foo := $(call wombats-r-us )
- $(warning foo is +$(foo)+ )
-        ifeq ($(x32_ld_ok),y)
-
-and that gets:
-
-/usr/src/linux-next/arch/x86/Makefile:143: need-compiler is ++ x32_ld_ok is ++ with CC=x86_64-unknown-linux-gnu-gcc -D__ASSEMBLY__ -fno-PIE -m64 OBJ=x86_64-unknown-linux-gnu-objcopy LD=x86_64-unknown-linux-gnu-ld 
-/usr/src/linux-next/arch/x86/Makefile:145: foo is ++ 
-/usr/src/linux-next/arch/x86/Makefile:151: CONFIG_X86_X32 enabled but no binutils support
-
-So the call to the undefined 'wombats-r-us' fails silently and returns a null..
-and try-run is also failing silently the same way because it's not defined either.
-
-There's only a few uses of try-run outside Makefile.compiler, and it looks like
-x32_ld_ok is the only place where Makefile logic changes based on what try-run
-returns (the rest just change compiler flags).
-
-Havings said that, I'm not sure what the proper fix is. Move try-run out of Makefile.compiler?
+https://people.kernel.org/tglx/notes-about-netiquette
