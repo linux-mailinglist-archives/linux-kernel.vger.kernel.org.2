@@ -2,71 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40BEC39C4D7
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 03:36:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DDC239C4E5
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 03:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231499AbhFEBhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 21:37:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54514 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231424AbhFEBhs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 21:37:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2E2FA613AC;
-        Sat,  5 Jun 2021 01:36:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622856961;
-        bh=XSkfsV7/WtaBLG+bsTNHCt2zHpDBIPZJLjRxdk43DKs=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Ww3etRyv+rddjrCxfdrZ9av4SdM+EfYsp6H/TC0Nqt7oLuC/4pQ1MsT2D4QdvtzQ9
-         V4IzA3vllUzREH5K5BeCPNeRQU+d0BYPPfbpy2a8Mt/jzAokUpKJq6I+Qxi/Wro6mh
-         thzgNIV3P8hrua0zcVmxV4aTQbjq0SBO17VIhZDkU8A7c/rXUaRvAga5Iw3ihaj1Cz
-         AtwwPIYsyrs1sDHFwqJAL0jCYbcF98R+/aLIBne7/ZV6AFL9//7hOBWTDb2FEo/I/+
-         MV/+LHJ+MY2iZhRMR5VGxFG4s6ZwI+Px7AscI61N61gTQcslDeyyI0FVR10xJT0CQg
-         6S55DbDdx7nTQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 26FA260BCF;
-        Sat,  5 Jun 2021 01:36:01 +0000 (UTC)
-Subject: Re: [GIT PULL] perf tools fixes for v5.13: 4th batch
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210604195827.517650-1-acme@kernel.org>
-References: <20210604195827.517650-1-acme@kernel.org>
-X-PR-Tracked-List-Id: <linux-perf-users.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210604195827.517650-1-acme@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-fixes-for-v5.13-2021-06-04
-X-PR-Tracked-Commit-Id: 67069a1f0fe5f9eeca86d954fff2087f5542a008
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 2cb26c15a247a2b2bc9de653773cf21d969bf570
-Message-Id: <162285696115.3539.17398265731408584788.pr-tracker-bot@kernel.org>
-Date:   Sat, 05 Jun 2021 01:36:01 +0000
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Li Huafei <lihuafei1@huawei.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Yu Kuai <yukuai3@huawei.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
+        id S231527AbhFEBp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 21:45:27 -0400
+Received: from mail-pj1-f53.google.com ([209.85.216.53]:42871 "EHLO
+        mail-pj1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230185AbhFEBp0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 21:45:26 -0400
+Received: by mail-pj1-f53.google.com with SMTP id l23-20020a17090a0717b029016ae774f973so6209781pjl.1;
+        Fri, 04 Jun 2021 18:43:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HN/yxlFRhCXI2lz6pRuRsVES8dA6IrWBhzB/BkiqJsM=;
+        b=N0fg6MCuH9s4HsYj1nxf2+QZ+2ZtLPsunpN49Xp5z9VUsR5/shhK52a/meE/srVFid
+         ft3AwOKvuTu/Ow2IgqFiVkW+hUu4T7Ionoz8cv1WWEoa5akwrzvX7R5m2v5rgExT+PF/
+         80Sawjo8WzzUNSO196wSDIAJeVG//SnGL/MQYgOknM38h4n7joShRzKzbxANFS1n4ErI
+         0waMLNoO0AdM0p+GbsvLSeQQaM3zAG+RNT/VsygJupHzRbiVdrvw3HkJXTiRWHSSZE2N
+         SYuLVx7C6U51dFDBdLP7UeYGg5fDNixmKSsgJtcyUcv3cfd2uaIt1Nmq+H0oB3m4TYVt
+         wCMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HN/yxlFRhCXI2lz6pRuRsVES8dA6IrWBhzB/BkiqJsM=;
+        b=LvwlZ+Bo4/z/KA1zUX4V0TlXM+eXpJuX4tdRZIabUyoIu6dndRxNpfEATfeJjk1ir0
+         J9pLn5vQUPAYaLJqlxeQs0BzK525mBxzjYeX7WOXcXmufXvh/btM49WSI1WlLayfnOrt
+         dC9i+tu38j+S5Zi/1IKyw0LSp3iPejGqP7nA//s5CNkpweFQsBbcf29eTCWls35KhBin
+         vXFPhRJBU53ZKPNWwuDk5dqzKtHAd4XP83RmvmGe8cVaH8hQMZmIjDpkSZvomJB53t+R
+         xCfhbKQL80IUOIOWhp4AElCo+RmVAyzRH+k/RCwz6Fnl6dY0T2/JfT7Ge44nIOexKqES
+         KUVA==
+X-Gm-Message-State: AOAM532zvOX0EQVAfiSeYvLIlD+Oe6hXH/DVJf6j+B6Bbk6MtFVSv1SM
+        fOsml5zNvwwaPymruBVqF/k=
+X-Google-Smtp-Source: ABdhPJzIPBaIsLM9CINwZgXyOGPdZc74cQHpiU2KKEGygcnKSh9Gm9bVFr7pTSjQUx6UdhKyvKVXDg==
+X-Received: by 2002:a17:902:eccb:b029:106:def0:2717 with SMTP id a11-20020a170902eccbb0290106def02717mr7216193plh.66.1622857346021;
+        Fri, 04 Jun 2021 18:42:26 -0700 (PDT)
+Received: from bobo.ozlabs.ibm.com (60-242-147-73.tpgi.com.au. [60.242.147.73])
+        by smtp.gmail.com with ESMTPSA id q68sm5779056pjq.45.2021.06.04.18.42.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 18:42:25 -0700 (PDT)
+From:   Nicholas Piggin <npiggin@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+        Anton Blanchard <anton@ozlabs.org>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: [PATCH v4 0/4] shoot lazy tlbs
+Date:   Sat,  5 Jun 2021 11:42:12 +1000
+Message-Id: <20210605014216.446867-1-npiggin@gmail.com>
+X-Mailer: git-send-email 2.23.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri,  4 Jun 2021 16:58:27 -0300:
+The additional unused config option was a valid criticism, so this now
+purely just toggles refcounting of the lazy tlb mm.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-fixes-for-v5.13-2021-06-04
+Thanks,
+Nick
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/2cb26c15a247a2b2bc9de653773cf21d969bf570
+Since v3:
+- Removed the extra config option, MMU_LAZY_TLB=n. This can be
+  resurrected if an arch wants it.
 
-Thank you!
+Nicholas Piggin (4):
+  lazy tlb: introduce lazy mm refcount helper functions
+  lazy tlb: allow lazy tlb mm refcounting to be configurable
+  lazy tlb: shoot lazies, a non-refcounting lazy tlb option
+  powerpc/64s: enable MMU_LAZY_TLB_SHOOTDOWN
+
+ arch/Kconfig                         | 17 ++++++++++
+ arch/arm/mach-rpc/ecard.c            |  2 +-
+ arch/powerpc/Kconfig                 |  1 +
+ arch/powerpc/kernel/smp.c            |  2 +-
+ arch/powerpc/mm/book3s64/radix_tlb.c |  4 +--
+ fs/exec.c                            |  4 +--
+ include/linux/sched/mm.h             | 20 +++++++++++
+ kernel/cpu.c                         |  2 +-
+ kernel/exit.c                        |  2 +-
+ kernel/fork.c                        | 51 ++++++++++++++++++++++++++++
+ kernel/kthread.c                     | 11 +++---
+ kernel/sched/core.c                  | 35 +++++++++++++------
+ kernel/sched/sched.h                 |  4 ++-
+ 13 files changed, 132 insertions(+), 23 deletions(-)
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.23.0
+
