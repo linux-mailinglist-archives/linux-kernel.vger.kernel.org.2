@@ -2,178 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 586A739C6AA
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 09:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6655739C6AE
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 09:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbhFEHxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 03:53:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55262 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229994AbhFEHxN (ORCPT
+        id S230051AbhFEHyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 03:54:18 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:7113 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229889AbhFEHyR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 03:53:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622879485;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AFxfbRh44tx3itGF+2reHu0Dp0ddlJOouXymhxZA6d8=;
-        b=Nm366a6vgCQ2PUM+0FY3vHaH0hLfBwu2Ge238/N7SGVBDf5ViWAqHeT/9Vf0Y0eL3mR1ux
-        fkSvhZkro7IFKYXU+0ieO40RkiBShcSgO2QGvuh0QLyNBfMGtmu1Ro8gSkY14rI6xUIjrd
-        pm+pZ+yFxloBO7nL/ybhpwZGgD5nG1U=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-286-fqSHjizUNGWV-HX4g9qZow-1; Sat, 05 Jun 2021 03:51:21 -0400
-X-MC-Unique: fqSHjizUNGWV-HX4g9qZow-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 652ED801B12;
-        Sat,  5 Jun 2021 07:51:20 +0000 (UTC)
-Received: from dhcp-128-65.nay.redhat.com (ovpn-12-110.pek2.redhat.com [10.72.12.110])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7BCB71B5B7;
-        Sat,  5 Jun 2021 07:51:16 +0000 (UTC)
-Date:   Sat, 5 Jun 2021 15:51:05 +0800
-From:   Dave Young <dyoung@redhat.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Javier =?iso-8859-1?B?VGnh?= <javier.tia@gmail.com>,
-        kexec@lists.infradead.org, Eric Biederman <ebiederm@xmission.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Matt Fleming <matt@codeblueprint.co.uk>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH v1 0/2] firmware: dmi_scan: Make it work in kexec'ed
- kernel
-Message-ID: <YLss6ZNPMIXleLLF@dhcp-128-65.nay.redhat.com>
-References: <20161202195416.58953-1-andriy.shevchenko@linux.intel.com>
- <YLdEZoSWI41fcTB1@smile.fi.intel.com>
- <YLdG91qspr19heDS@smile.fi.intel.com>
+        Sat, 5 Jun 2021 03:54:17 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FxsGs2x84zYq74;
+        Sat,  5 Jun 2021 15:49:41 +0800 (CST)
+Received: from huawei.com (10.175.104.170) by dggeme703-chm.china.huawei.com
+ (10.1.199.99) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 5 Jun
+ 2021 15:52:27 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>, <sjenning@redhat.com>,
+        <ddstreet@ieee.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH 0/2] Cleanups for zbud
+Date:   Sat, 5 Jun 2021 15:51:39 +0800
+Message-ID: <20210605075141.1359969-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLdG91qspr19heDS@smile.fi.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.170]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-On 06/02/21 at 11:53am, Andy Shevchenko wrote:
-> +Cc: Ard
-> 
-> On Wed, Jun 02, 2021 at 11:42:14AM +0300, Andy Shevchenko wrote:
-> > On Fri, Dec 02, 2016 at 09:54:14PM +0200, Andy Shevchenko wrote:
-> > > Until now DMI information is lost when kexec'ing. Fix this in the same way as
-> > > it has been done for ACPI RSDP.
-> > > 
-> > > Series has been tested on Galileo Gen2 where DMI is used by drivers, in
-> > > particular the default I2C host speed is choosen based on DMI system
-> > > information and now gets it correct.
-> > 
-> > Still nothing happens for a while and problem still exists.
-> > Can we do something about it, please?
+Hi all,
+This series contains just cleanups to save some possible memory in
+zbud_pool and avoid exporting any unneeded zbud API. More details
+can be found in the respective changelogs. Thanks!
 
-Seems I totally missed this thread. Old emails lost.
+Miaohe Lin (2):
+  mm/zbud: reuse unbuddied[0] as buddied in zbud_pool
+  mm/zbud: don't export any zbud API
 
-The question Ard asked is to confirm if the firmware converted the
-SMBIOS3 addr to a virtual address after exit boot service. I do not
-remember some easy way to check it due to lost the context of the code.
-But you can try to check it via dmesg|grep SMBIOS both in normal boot
-and kexeced boot log.  And then compare if those addresses are
-identical.
+ MAINTAINERS          |   1 -
+ include/linux/zbud.h |  23 ---
+ mm/zbud.c            | 372 ++++++++++++++++++++++---------------------
+ 3 files changed, 189 insertions(+), 207 deletions(-)
+ delete mode 100644 include/linux/zbud.h
 
-If the SMBIOS3 addr in kexec kernel is different then it should have
-been modified by firmware. Then we need patch kernel and kexec-tools to
-support it.
-
-You can try below patch to see if it works:
-
-apply a kexec-tools patch to kexec-tools if you do not use kexec -s
-(kexec_file_load):
---- kexec-tools.orig/kexec/arch/i386/x86-linux-setup.c
-+++ kexec-tools/kexec/arch/i386/x86-linux-setup.c
-@@ -533,7 +533,8 @@ struct efi_setup_data {
- 	uint64_t runtime;
- 	uint64_t tables;
- 	uint64_t smbios;
--	uint64_t reserved[8];
-+	uint64_t smbios3;
-+	uint64_t reserved[7];
- };
- 
- struct setup_data {
-@@ -580,6 +581,8 @@ static int get_efi_values(struct efi_set
- 
- 	ret = get_efi_value("/sys/firmware/efi/systab", "SMBIOS=0x",
- 			    &esd->smbios);
-+	ret |= get_efi_value("/sys/firmware/efi/systab", "SMBIOS3=0x",
-+			    &esd->smbios3);
- 	ret |= get_efi_value("/sys/firmware/efi/fw_vendor", "0x",
- 			     &esd->fw_vendor);
- 	ret |= get_efi_value("/sys/firmware/efi/runtime", "0x",
-
-=============================================
-Kernel patch:
-
---- linux-x86.orig/arch/x86/include/asm/efi.h
-+++ linux-x86/arch/x86/include/asm/efi.h
-@@ -167,7 +167,8 @@ struct efi_setup_data {
- 	u64 __unused;
- 	u64 tables;
- 	u64 smbios;
--	u64 reserved[8];
-+	u64 smbios3;
-+	u64 reserved[7];
- };
- 
- extern u64 efi_setup;
---- linux-x86.orig/arch/x86/kernel/kexec-bzimage64.c
-+++ linux-x86/arch/x86/kernel/kexec-bzimage64.c
-@@ -144,6 +144,7 @@ prepare_add_efi_setup_data(struct boot_p
- 	esd->fw_vendor = efi_fw_vendor;
- 	esd->tables = efi_config_table;
- 	esd->smbios = efi.smbios;
-+	esd->smbios3 = efi.smbios3;
- 
- 	sd->type = SETUP_EFI;
- 	sd->len = sizeof(struct efi_setup_data);
---- linux-x86.orig/arch/x86/platform/efi/quirks.c
-+++ linux-x86/arch/x86/platform/efi/quirks.c
-@@ -497,8 +497,8 @@ void __init efi_free_boot_services(void)
-  * their physical addresses therefore we pass them via setup_data and
-  * correct those entries to their respective physical addresses here.
-  *
-- * Currently only handles smbios which is necessary for some firmware
-- * implementation.
-+ * Currently only handles smbios and smbios3 which is necessary for
-+ * some firmware implementation.
-  */
- int __init efi_reuse_config(u64 tables, int nr_tables)
- {
-@@ -521,7 +521,7 @@ int __init efi_reuse_config(u64 tables,
- 		goto out;
- 	}
- 
--	if (!data->smbios)
-+	if (!data->smbios  && !data->smbios3)
- 		goto out_memremap;
- 
- 	sz = sizeof(efi_config_table_64_t);
-@@ -538,8 +538,10 @@ int __init efi_reuse_config(u64 tables,
- 
- 		guid = ((efi_config_table_64_t *)p)->guid;
- 
--		if (!efi_guidcmp(guid, SMBIOS_TABLE_GUID))
-+		if (!efi_guidcmp(guid, SMBIOS_TABLE_GUID) && data->smbios)
- 			((efi_config_table_64_t *)p)->table = data->smbios;
-+		else if (!efi_guidcmp(guid, SMBIOS3_TABLE_GUID) && data->smbios3)
-+			((efi_config_table_64_t *)p)->table = data->smbios3;
- 		p += sz;
- 	}
- 	early_memunmap(tablep, nr_tables * sz);
-
-
-Thanks
-Dave
+-- 
+2.23.0
 
