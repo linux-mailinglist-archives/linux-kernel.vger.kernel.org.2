@@ -2,176 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D1E39C7F2
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 13:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5771339C7F4
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 13:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbhFELvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 07:51:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:60000 "EHLO foss.arm.com"
+        id S230169AbhFELwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 07:52:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229902AbhFELvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 07:51:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 707FB2B;
-        Sat,  5 Jun 2021 04:49:12 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6FE693F73D;
-        Sat,  5 Jun 2021 04:49:10 -0700 (PDT)
-Date:   Sat, 5 Jun 2021 12:49:08 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Xuewen Yan <xuewen.yan94@gmail.com>
-Cc:     Quentin Perret <qperret@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Ryan Y <xuewyan@foxmail.com>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>, tj@kernel.org
-Subject: Re: [PATCH] sched/uclamp: Avoid setting cpu.uclamp.min bigger than
- cpu.uclamp.max
-Message-ID: <20210605114908.mqfsip5pskamls6k@e107158-lin.cambridge.arm.com>
-References: <20210602123803.15738-1-xuewen.yan94@gmail.com>
- <YLeF/556Wbvx1Ssc@google.com>
- <CAB8ipk9BqzEQ4Ta5s+vJeep=v1pmaXS-WsF2tq0u9G8Q2PGmsA@mail.gmail.com>
- <20210604160839.2op4ak75vle3gmt3@e107158-lin.cambridge.arm.com>
- <CAB8ipk9CgWvbGnJcvEtLcG=7v-pPmGJd25-R9jb2Am5zKngK3g@mail.gmail.com>
+        id S229902AbhFELwS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 07:52:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4EA361380;
+        Sat,  5 Jun 2021 11:50:21 +0000 (UTC)
+Date:   Sat, 5 Jun 2021 13:50:19 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     menglong8.dong@gmail.com
+Cc:     viro@zeniv.linux.org.uk, keescook@chromium.org,
+        samitolvanen@google.com, johan@kernel.org, ojeda@kernel.org,
+        jeyu@kernel.org, masahiroy@kernel.org, joe@perches.com,
+        dong.menglong@zte.com.cn, jack@suse.cz, hare@suse.de,
+        axboe@kernel.dk, tj@kernel.org, gregkh@linuxfoundation.org,
+        song@kernel.org, neilb@suse.de, akpm@linux-foundation.org,
+        linux@rasmusvillemoes.dk, brho@google.com, f.fainelli@gmail.com,
+        palmerdabbelt@google.com, wangkefeng.wang@huawei.com,
+        mhiramat@kernel.org, rostedt@goodmis.org, vbabka@suse.cz,
+        glider@google.com, pmladek@suse.com, johannes.berg@intel.com,
+        ebiederm@xmission.com, jojing64@gmail.com, terrelln@fb.com,
+        geert@linux-m68k.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mcgrof@kernel.org, arnd@arndb.de,
+        chris@chrisdown.name, mingo@kernel.org, bhelgaas@google.com,
+        josh@joshtriplett.org
+Subject: Re: [PATCH v6 2/2] init/do_mounts.c: create second mount for
+ initramfs
+Message-ID: <20210605115019.umjumoasiwrclcks@wittgenstein>
+References: <20210605034447.92917-1-dong.menglong@zte.com.cn>
+ <20210605034447.92917-3-dong.menglong@zte.com.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAB8ipk9CgWvbGnJcvEtLcG=7v-pPmGJd25-R9jb2Am5zKngK3g@mail.gmail.com>
+In-Reply-To: <20210605034447.92917-3-dong.menglong@zte.com.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/05/21 10:12, Xuewen Yan wrote:
-> Hi Qais,
+On Sat, Jun 05, 2021 at 11:44:47AM +0800, menglong8.dong@gmail.com wrote:
+> From: Menglong Dong <dong.menglong@zte.com.cn>
 > 
-> On Sat, Jun 5, 2021 at 12:08 AM Qais Yousef <qais.yousef@arm.com> wrote:
-> >
-> > On 06/03/21 10:24, Xuewen Yan wrote:
-> > > +CC Qais
-> >
-> > Thanks for the CC :)
-> >
-> > >
-> > >
-> > > Hi Quentin
-> > >
-> > > On Wed, Jun 2, 2021 at 9:22 PM Quentin Perret <qperret@google.com> wrote:
-> > > >
-> > > > +CC Patrick and Tejun
-> > > >
-> > > > On Wednesday 02 Jun 2021 at 20:38:03 (+0800), Xuewen Yan wrote:
-> > > > > From: Xuewen Yan <xuewen.yan@unisoc.com>
-> > > > >
-> > > > > When setting cpu.uclamp.min/max in cgroup, there is no validating
-> > > > > like uclamp_validate() in __sched_setscheduler(). It may cause the
-> > > > > cpu.uclamp.min is bigger than cpu.uclamp.max.
-> > > >
-> > > > ISTR this was intentional. We also allow child groups to ask for
-> > > > whatever clamps they want, but that is always limited by the parent, and
-> > > > reflected in the 'effective' values, as per the cgroup delegation model.
-> >
-> > As Quentin said. This intentional to comply with cgroup model.
-> >
-> > See Limits and Protections sections in Documentation/admin-guide/cgroup-v2.rst
-> >
-> > Specifically
-> >
-> >         "all configuration combinations are valid"
-> >
-> > So user can set cpu.uclamp.min higher than cpu.uclamp.max. But when we apply
-> > the setting, cpu.uclamp.min will be capped by cpu.uclamp.max. I can see you
-> > found the cpu_util_update_eff() logic.
-> >
+> If using container platforms such as Docker, upon initialization it
+> wants to use pivot_root() so that currently mounted devices do not
+> propagate to containers. An example of value in this is that
+> a USB device connected prior to the creation of a containers on the
+> host gets disconnected after a container is created; if the
+> USB device was mounted on containers, but already removed and
+> umounted on the host, the mount point will not go away until all
+> containers unmount the USB device.
 > 
-> Thanks a lot for your patience to explain, sorry for my ignorance of
-> Documentation/admin-guide/cgroup-v2.rst.
-
-No problem :)
-
+> Another reason for container platforms such as Docker to use pivot_root
+> is that upon initialization the net-namspace is mounted under
+> /var/run/docker/netns/ on the host by dockerd. Without pivot_root
+> Docker must either wait to create the network namespace prior to
+> the creation of containers or simply deal with leaking this to each
+> container.
 > 
-> > >
-> > > It does not affect the 'effective' value. That because there is
-> > > protection in cpu_util_update_eff():
-> > > /* Ensure protection is always capped by limit */
-> > > eff[UCLAMP_MIN] = min(eff[UCLAMP_MIN], eff[UCLAMP_MAX]);
-> > >
-> > > When users set the cpu.uclamp.min > cpu.uclamp.max:
-> > > cpu.uclamp.max = 50;
-> > > to set : cpu.uclamp.min = 60;
-> > > That would make the uclamp_req[UCLAMP_MIN].value = 1024* 60% = 614,
-> > > uclamp_req[UCLAMP_MAX].value = 1024* 50% = 512;
-> > > But finally, the  uclamp[UCLAMP_MIN].value = uclamp[UCLAMP_MAX].value
-> > > = 1024* 50% = 512;
-> > >
-> > > Is it deliberately set not to validate because of the above?
-> >
-> > Sorry I'm not following you here. What code paths were you trying to explain
-> > here?
-> >
-> > Did you actually hit any problem here?
+> pivot_root is supported if the rootfs is a initrd or block device, but
+> it's not supported if the rootfs uses an initramfs (tmpfs). This means
+> container platforms today must resort to using block devices if
+> they want to pivot_root from the rootfs. A workaround to use chroot()
+> is not a clean viable option given every container will have a
+> duplicate of every mount point on the host.
 > 
-> I just gave an example of the difference of uclamp_req and uclamp
-> without my patch, and can ignore it.
-
-Cool.
-
+> In order to support using container platforms such as Docker on
+> all the supported rootfs types we must extend Linux to support
+> pivot_root on initramfs as well. This patch does the work to do
+> just that.
 > 
-> >
-> In addition，In your patch:
-> 6938840392c89 ("sched/uclamp: Fix wrong implementation of cpu.uclamp.min")
-> https://lkml.kernel.org/r/20210510145032.1934078-2-qais.yousef@arm.com
+> pivot_root will unmount the mount of the rootfs from its parent mount
+> and mount the new root to it. However, when it comes to initramfs, it
+> donesn't work, because the root filesystem has not parent mount, which
+> makes initramfs not supported by pivot_root.
 > 
-> + switch (clamp_id) {
-> + case UCLAMP_MIN: {
-> + struct uclamp_se uc_min = task_group(p)->uclamp[clamp_id];
-> + if (uc_req.value < uc_min.value)
-> + return uc_min;
-> + break;
+> In order to make pivot_root supported on initramfs, we create a second
+> mount with type of rootfs before unpacking cpio, and change root to
+> this mount after unpacking.
 > 
-> When the clamp_id = UCLAMP_MIN, why not judge the uc_req.value is
-> bigger than task_group(p)->uclamp[UCLAMP_MAX] ?
-
-Because of the requirement I pointed you to in cgroup-v2.rst. We must allow any
-value to be requested.
-
-Ultimately if we had
-
-	cpu.uclamp.min = 80
-	cpu.uclamp.max = 50
-
-then we want to remember the original request but make sure the effective value
-is capped.
-
-For the user in the future modifies the values such that
-
-	cpu.uclamp.max = max
-
-Then we want to remember cpu.uclamp.min = 80 and apply it since now the
-cpu.uclamp.max was relaxed to allow the boost value.
-
-> Because when the p->uclamp_req[UCLAMP_MIN] >  task_group(p)->uclamp[UCLAMP_MAX],
-> the patch can not clamp the p->uclamp_req[UCLAMP_MIN/MAX] into
-> [ task_group(p)->uclamp[UCLAMP_MAX],  task_group(p)->uclamp[UCLAMP_MAX] ].
+> While mounting the second rootfs, 'rootflags' is passed, and it means
+> that we can set options for the mount of rootfs in boot cmd now.
+> For example, the size of tmpfs can be set with 'rootflags=size=1024M'.
 > 
-> Is it necessary to fix it here？
+> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+> ---
+>  init/do_mounts.c | 44 ++++++++++++++++++++++++++++++++++++++++++++
+>  init/do_mounts.h | 17 ++++++++++++++++-
+>  init/initramfs.c |  8 ++++++++
+>  usr/Kconfig      | 10 ++++++++++
+>  4 files changed, 78 insertions(+), 1 deletion(-)
+> 
+> diff --git a/init/do_mounts.c b/init/do_mounts.c
+> index a78e44ee6adb..715bdaa89b81 100644
+> --- a/init/do_mounts.c
+> +++ b/init/do_mounts.c
+> @@ -618,6 +618,49 @@ void __init prepare_namespace(void)
+>  }
+>  
+>  static bool is_tmpfs;
+> +#ifdef CONFIG_INITRAMFS_MOUNT
+> +
+> +/*
+> + * Give systems running from the initramfs and making use of pivot_root a
+> + * proper mount so it can be umounted during pivot_root.
+> + */
+> +int __init prepare_mount_rootfs(void)
+> +{
+> +	char *rootfs = "ramfs";
+> +
+> +	if (is_tmpfs)
+> +		rootfs = "tmpfs";
+> +
+> +	return do_mount_root(rootfs, rootfs,
+> +			     root_mountflags & ~MS_RDONLY,
+> +			     root_mount_data);
+> +}
+> +
+> +/*
+> + * Revert to previous mount by chdir to '/' and unmounting the second
+> + * mount.
+> + */
+> +void __init revert_mount_rootfs(void)
+> +{
+> +	init_chdir("/");
+> +	init_umount(".", MNT_DETACH);
+> +}
+> +
+> +/*
+> + * Change root to the new rootfs that mounted in prepare_mount_rootfs()
+> + * if cpio is unpacked successfully and 'ramdisk_execute_command' exist.
+> + */
+> +void __init finish_mount_rootfs(void)
+> +{
+> +	init_mount(".", "/", NULL, MS_MOVE, NULL);
+> +	if (likely(ramdisk_exec_exist()))
+> +		init_chroot(".");
+> +	else
+> +		revert_mount_rootfs();
+> +}
+> +
+> +#define rootfs_init_fs_context ramfs_init_fs_context
 
-Nope. We must allow any combination values to be accepted and remember them so
-if one changes we ensure the new effective value is updated accordingly.
-This is how cgroups API works.
+Sorry, I think we're nearly there. What's the rationale for using ramfs
+when unconditionally when a separate mount for initramfs is requested?
+Meaning, why do we need this define at all?
 
-Hope this makes sense.
-
-Cheers
-
---
-Qais Yousef
+> +#else
+>  static int rootfs_init_fs_context(struct fs_context *fc)
+>  {
+>  	if (IS_ENABLED(CONFIG_TMPFS) && is_tmpfs)
+> @@ -625,6 +668,7 @@ static int rootfs_init_fs_context(struct fs_context *fc)
+>  
+>  	return ramfs_init_fs_context(fc);
+>  }
+> +#endif
+>  
+>  struct file_system_type rootfs_fs_type = {
+>  	.name		= "rootfs",
+> diff --git a/init/do_mounts.h b/init/do_mounts.h
+> index 7a29ac3e427b..ae4ab306caa9 100644
+> --- a/init/do_mounts.h
+> +++ b/init/do_mounts.h
+> @@ -10,9 +10,24 @@
+>  #include <linux/root_dev.h>
+>  #include <linux/init_syscalls.h>
+>  
+> +extern int root_mountflags;
+> +
+>  void  mount_block_root(char *name, int flags);
+>  void  mount_root(void);
+> -extern int root_mountflags;
+> +
+> +#ifdef CONFIG_INITRAMFS_MOUNT
+> +
+> +int  prepare_mount_rootfs(void);
+> +void finish_mount_rootfs(void);
+> +void revert_mount_rootfs(void);
+> +
+> +#else
+> +
+> +static inline int  prepare_mount_rootfs(void) { return 0; }
+> +static inline void finish_mount_rootfs(void) { }
+> +static inline void revert_mount_rootfs(void) { }
+> +
+> +#endif
+>  
+>  static inline __init int create_dev(char *name, dev_t dev)
+>  {
+> diff --git a/init/initramfs.c b/init/initramfs.c
+> index af27abc59643..1833de3cf04e 100644
+> --- a/init/initramfs.c
+> +++ b/init/initramfs.c
+> @@ -16,6 +16,8 @@
+>  #include <linux/namei.h>
+>  #include <linux/init_syscalls.h>
+>  
+> +#include "do_mounts.h"
+> +
+>  static ssize_t __init xwrite(struct file *file, const char *p, size_t count,
+>  		loff_t *pos)
+>  {
+> @@ -682,13 +684,19 @@ static void __init do_populate_rootfs(void *unused, async_cookie_t cookie)
+>  	else
+>  		printk(KERN_INFO "Unpacking initramfs...\n");
+>  
+> +	if (prepare_mount_rootfs())
+> +		panic("Failed to mount rootfs");
+> +
+>  	err = unpack_to_rootfs((char *)initrd_start, initrd_end - initrd_start);
+>  	if (err) {
+> +		revert_mount_rootfs();
+>  #ifdef CONFIG_BLK_DEV_RAM
+>  		populate_initrd_image(err);
+>  #else
+>  		printk(KERN_EMERG "Initramfs unpacking failed: %s\n", err);
+>  #endif
+> +	} else {
+> +		finish_mount_rootfs();
+>  	}
+>  
+>  done:
+> diff --git a/usr/Kconfig b/usr/Kconfig
+> index 8bbcf699fe3b..4f6ac12eafe9 100644
+> --- a/usr/Kconfig
+> +++ b/usr/Kconfig
+> @@ -52,6 +52,16 @@ config INITRAMFS_ROOT_GID
+>  
+>  	  If you are not sure, leave it set to "0".
+>  
+> +config INITRAMFS_MOUNT
+> +	bool "Create second mount to make pivot_root() supported"
+> +	default y
+> +	help
+> +	  Before unpacking cpio, create a second mount and make it become
+> +	  the root filesystem. Therefore, initramfs will be supported by
+> +	  pivot_root().
+> +
+> +	  If container platforms is used with initramfs, say Y.
+> +
+>  config RD_GZIP
+>  	bool "Support initial ramdisk/ramfs compressed using gzip"
+>  	default y
+> -- 
+> 2.32.0.rc0
+> 
