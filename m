@@ -2,134 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55FC139C4FD
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 04:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C930B39C503
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 04:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231424AbhFECRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 22:17:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230169AbhFECRI (ORCPT
+        id S231282AbhFECWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 22:22:19 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3433 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230169AbhFECWS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 22:17:08 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39389C061766
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 19:15:07 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id v22so15479357lfa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 19:15:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1EI6m4DFQAlCt7nir2Xp+wCzvHYT20bXHAsNalWojQQ=;
-        b=QWsgQnfVWlVwkO8wXtuVA8D26uH86+8XkaNXxmUgybfCss6KHbg3Jsf+csekF8M3P4
-         4X7yp6jRsNc+4pZoBLlFXSO0tqAGUteW2rtN6a39ZKvgPNJiID9zi9nBx1nvf3S5grZO
-         m3BynhIye9NJ8Fq0G3QZTOrg4BASGwDZoS3x7auJN2JmKe0kkQftCz4W2fAKfxfSYtDm
-         XQrugGXaJNXA1wnKnifbj4Z/shK20QV/KoN4o2w8hhOzPgI4/R5BM7IPu86OcAzJJRge
-         qLYAZIMjTWZVdY22qWH9vVYn1PrUhuHPqaUkm/YitHosAQe05IlKyPWL5RnpjhCLEYXS
-         mF1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1EI6m4DFQAlCt7nir2Xp+wCzvHYT20bXHAsNalWojQQ=;
-        b=rUA1mG9LynoOULldm7tlg2GDkQdAtZAQ4tKGf9TGb1ve4xHai7FYCBJPNJ4N1/rw5F
-         U66wfzGECdfFVgS3Pz8l9uWubUPD+fDqgY+LFBmHNNQX0WrTk+bkNy3iUkwQfYR/8/mD
-         47lztiOnKjWsXYUel16EWoZLbxDTuTAY61vETXjxWQLoBhJJYKTcx3tAPuPI8nXkCyIl
-         XX0DFAnANSRMrA2jEYnX/hW6a0RFTHepm+Pi6WaCNNtAZwhJgb7UGCwT7X7cRuF+nxM9
-         QG80x/iVSCzQikcnm7HBBD40N8hqKOZeVsg/9BTjjVokrH19Ttk3TItH9gbPK4r9HIM9
-         osNw==
-X-Gm-Message-State: AOAM530DW+ic9yMjbDC/zHS4RZS7OajXcrRQRU5anCD+C5DxcCi4jR1E
-        b+84308GzVk3MEP2lqkjO/mOqTN9VzLwpViRoBA=
-X-Google-Smtp-Source: ABdhPJwnVHtwJzEup1p+5GKbnv4WHi4QY45TAGmHdjIZTyAf+gX52IUPSmhq6zMLWCrTBkquqcu7tYZ77fVeqJpbkQg=
-X-Received: by 2002:a05:6512:3749:: with SMTP id a9mr4737337lfs.110.1622859305584;
- Fri, 04 Jun 2021 19:15:05 -0700 (PDT)
+        Fri, 4 Jun 2021 22:22:18 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FxjvX4pFPz6tph;
+        Sat,  5 Jun 2021 10:17:28 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 5 Jun 2021 10:20:28 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 5 Jun 2021
+ 10:20:28 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
+CC:     <lee.jones@linaro.org>, <agross@kernel.org>,
+        <gurus@codeaurora.org>, <dmitry.baryshkov@linaro.org>
+Subject: [PATCH net-next v3] mfd: pm8008: Fix return value check in pm8008_probe()
+Date:   Sat, 5 Jun 2021 10:24:46 +0800
+Message-ID: <20210605022446.4119978-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210602123803.15738-1-xuewen.yan94@gmail.com>
- <YLeF/556Wbvx1Ssc@google.com> <CAB8ipk9BqzEQ4Ta5s+vJeep=v1pmaXS-WsF2tq0u9G8Q2PGmsA@mail.gmail.com>
- <20210604160839.2op4ak75vle3gmt3@e107158-lin.cambridge.arm.com> <d57e4a37-3e17-3f30-d055-729ece19f555@arm.com>
-In-Reply-To: <d57e4a37-3e17-3f30-d055-729ece19f555@arm.com>
-From:   Xuewen Yan <xuewen.yan94@gmail.com>
-Date:   Sat, 5 Jun 2021 10:14:04 +0800
-Message-ID: <CAB8ipk_7_ta3Wtfn4=g=08u7nXoR403y0AKQZUR3i=j=yeUeng@mail.gmail.com>
-Subject: Re: [PATCH] sched/uclamp: Avoid setting cpu.uclamp.min bigger than cpu.uclamp.max
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Qais Yousef <qais.yousef@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Ryan Y <xuewyan@foxmail.com>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>, tj@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 5, 2021 at 12:22 AM Dietmar Eggemann
-<dietmar.eggemann@arm.com> wrote:
->
-> On 04/06/2021 18:08, Qais Yousef wrote:
-> > On 06/03/21 10:24, Xuewen Yan wrote:
-> >> +CC Qais
-> >
-> > Thanks for the CC :)
-> >
-> >>
-> >>
-> >> Hi Quentin
-> >>
-> >> On Wed, Jun 2, 2021 at 9:22 PM Quentin Perret <qperret@google.com> wrote:
-> >>>
-> >>> +CC Patrick and Tejun
-> >>>
-> >>> On Wednesday 02 Jun 2021 at 20:38:03 (+0800), Xuewen Yan wrote:
-> >>>> From: Xuewen Yan <xuewen.yan@unisoc.com>
-> >>>>
-> >>>> When setting cpu.uclamp.min/max in cgroup, there is no validating
-> >>>> like uclamp_validate() in __sched_setscheduler(). It may cause the
-> >>>> cpu.uclamp.min is bigger than cpu.uclamp.max.
-> >>>
-> >>> ISTR this was intentional. We also allow child groups to ask for
-> >>> whatever clamps they want, but that is always limited by the parent, and
-> >>> reflected in the 'effective' values, as per the cgroup delegation model.
-> >
-> > As Quentin said. This intentional to comply with cgroup model.
-> >
-> > See Limits and Protections sections in Documentation/admin-guide/cgroup-v2.rst
-> >
-> > Specifically
-> >
-> >       "all configuration combinations are valid"
-> >
-> > So user can set cpu.uclamp.min higher than cpu.uclamp.max. But when we apply
-> > the setting, cpu.uclamp.min will be capped by cpu.uclamp.max. I can see you
-> > found the cpu_util_update_eff() logic.
->
-> To support this:
->
-> Patrick had appropriate checks in his `[PATCH v10 12/16] sched/core:
-> uclamp: Extend CPU's cgroup controller`.
->
-> https://lkml.kernel.org/r/20190621084217.8167-13-patrick.bellasi@arm.com
->
-> But is was discussed that cgroup v2 `resource distribution model`
-> configurations (here protection/limit: uclamp_min/uclamp_max) should not
-> be restricted.
->
-> Further down in this thread:
->
-> "... Limits always trump protection in effect of course but please don't
-> limit what can be configured..."
+In case of error, the function devm_regmap_init_i2c() returns ERR_PTR()
+and never returns NULL. The NULL test in the return value check
+should be replaced with IS_ERR().
 
-Okay, I have got it. Thanks a lot!
+Fixes: 6b149f3310a4 ("mfd: pm8008: Add driver for QCOM PM8008 PMIC")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+v3:
+  return PTR_ERR(chip->regmap) instead of ENODEV
+---
+ drivers/mfd/qcom-pm8008.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-BR
-xuewen.yan
+diff --git a/drivers/mfd/qcom-pm8008.c b/drivers/mfd/qcom-pm8008.c
+index c472d7f8103c..fb8915a682ad 100644
+--- a/drivers/mfd/qcom-pm8008.c
++++ b/drivers/mfd/qcom-pm8008.c
+@@ -228,8 +228,8 @@ static int pm8008_probe(struct i2c_client *client)
+ 
+ 	chip->dev = &client->dev;
+ 	chip->regmap = devm_regmap_init_i2c(client, &qcom_mfd_regmap_cfg);
+-	if (!chip->regmap)
+-		return -ENODEV;
++	if (IS_ERR(chip->regmap))
++		return PTR_ERR(chip->regmap);
+ 
+ 	i2c_set_clientdata(client, chip);
+ 
+-- 
+2.25.1
+
