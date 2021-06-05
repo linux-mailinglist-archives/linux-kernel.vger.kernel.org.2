@@ -2,82 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C9039C8E9
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 15:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDDD039C8FF
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 16:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbhFENoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 09:44:13 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:35682 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhFENoM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 09:44:12 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 555151C0B76; Sat,  5 Jun 2021 15:42:23 +0200 (CEST)
-Date:   Sat, 5 Jun 2021 15:42:22 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 235/252] ALSA: usb-audio: scarlett2:
- snd_scarlett_gen2_controls_create() can be static
-Message-ID: <20210605134222.GA28479@amd>
-References: <20210531130657.971257589@linuxfoundation.org>
- <20210531130705.983881838@linuxfoundation.org>
+        id S230078AbhFEOTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 10:19:03 -0400
+Received: from 0.mx.nanl.de ([217.115.11.12]:51780 "EHLO 0.mx.nanl.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229930AbhFEOTC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 10:19:02 -0400
+X-Greylist: delayed 655 seconds by postgrey-1.27 at vger.kernel.org; Sat, 05 Jun 2021 10:19:02 EDT
+Received: from [217.115.11.14] (unknown [217.115.11.14])
+        by 0.mx.nanl.de (Postfix) with ESMTPSA id 2279D40302;
+        Sat,  5 Jun 2021 14:03:49 +0000 (UTC)
+Subject: Re: [PATCH 1/1] spi-sun6i: Fix chipselect/clock bug
+To:     Ralf Schlatterbeck <rsc@runtux.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Andre Przywara <andre.przywara@arm.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Mirko Vogt <mirko-dev|linux@nanl.de>
+References: <20210520100656.rgkdexdvrddt3upy@runtux.com>
+ <20210521173011.1c602682@slackpad.fritz.box>
+ <20210521201913.2gapcmrzynxekro7@runtux.com> <YK0LR3077RUsSYti@sirena.org.uk>
+ <20210527113920.ncpzrpst2d6rij3t@runtux.com>
+From:   Mirko Vogt <mirko-dev|linux@nanl.de>
+Message-ID: <0418aba2-6bca-8de1-9f72-2fb10007fc81@nanl.de>
+Date:   Sat, 5 Jun 2021 16:06:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="yrj/dFKFPuw6o+aM"
-Content-Disposition: inline
-In-Reply-To: <20210531130705.983881838@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20210527113920.ncpzrpst2d6rij3t@runtux.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 5/27/21 1:39 PM, Ralf Schlatterbeck wrote
+> OK, let me know if I should repost in new thread with increased version
+> number in the subjec
+Assuming this wasn't answered yet: was this just a comment for further 
+patches and things are going their way or should it indeed be resent as 
+new thread/version with respective changes applied?
+Can I do something to help / resolve this?
 
---yrj/dFKFPuw6o+aM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Have a nice weekend
 
-Hi!
-
-> From: kernel test robot <lkp@intel.com>
->=20
-> [ Upstream commit 2b899f31f1a6db2db4608bac2ac04fe2c4ad89eb ]
->=20
-> sound/usb/mixer_scarlett_gen2.c:2000:5: warning: symbol 'snd_scarlett_gen=
-2_controls_create' was not declared. Should it be static?
->=20
-> Fixes: 265d1a90e4fb ("ALSA: usb-audio: scarlett2: Improve driver startup =
-messages")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: kernel test robot <lkp@intel.com>
-> Link: https://lore.kernel.org/r/20210522180900.GA83915@f59a3af2f1d9
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-
-We normally require real, legal names for commit authors and
-signoffs. I guess it is a bit late now, but... we don't take
-pseudonyms so we should not take robots.
-
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---yrj/dFKFPuw6o+aM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmC7fz0ACgkQMOfwapXb+vK5WwCeN1V8IcodHCJc1fv/6cUAec+9
-AVwAn31eohvJOOPPdFrayKktglOb327m
-=sJs1
------END PGP SIGNATURE-----
-
---yrj/dFKFPuw6o+aM--
+   mirko
