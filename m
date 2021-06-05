@@ -2,145 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A6939CB0E
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 22:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6130A39CB0A
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 22:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230099AbhFEUyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 16:54:36 -0400
-Received: from mail-lf1-f42.google.com ([209.85.167.42]:34341 "EHLO
-        mail-lf1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbhFEUyd (ORCPT
+        id S230085AbhFEUy3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 5 Jun 2021 16:54:29 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:54334 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229998AbhFEUy1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 16:54:33 -0400
-Received: by mail-lf1-f42.google.com with SMTP id f30so19481720lfj.1;
-        Sat, 05 Jun 2021 13:52:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NeucVVYBqR4NtptCPVit6uqG78d6Me8sFT/5HJOioMM=;
-        b=UfZ4Y7S5wJzmo3KdhQjAWo1UGVea5AGtbObSBCNksHi9GeZ4EqgAOCYZuHrxpi2ZJm
-         2lLEwjhagfvssQnvzTqEW4Yl0o4LV1/919zs5jo1jviyRzGo1oyPqv/Bk7HJj6BmlMIw
-         AR5LCiMhWuxQs1ePGaWgJ5cVfOBALYWL16whSOI/NAOvnYwC9ym2AAT5xIHGU8Yw5DIQ
-         4neDdEWkWHEBjAoCz1i5Yu/jKicm5QYom+uIlaiodv0uRPnzUGkzmHBMwgPpHcX2QGvX
-         gJGBaAaDK49yi2XUb8ZWNX3JMMqYXfyZQMYfOgR4w7HZcCcNR/jYsfb0DK5J3VU7WSJB
-         3/oQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NeucVVYBqR4NtptCPVit6uqG78d6Me8sFT/5HJOioMM=;
-        b=AvHcLy/9WMwwVLkVlBwa1Kmg9/NF9HrHh9KqW1G2VYMWUptmtiKjX7wYT33uzT4PLc
-         eo7BjIgA1eQ8HWKi9WOXVPzUlgMz9F0r69nGDEpc8m31kVwuKEnKbNWmJU9wi7mp7H8D
-         E2ATH17+jZ0+eZgn2ADTmq07RQghlZITL95KXMGeV5CODzk572Zn6jsFqzTiDVu8nQM4
-         pZrZXjvMHXiZeu0Ys+Y6dvEBxh/y0ETaEXn7RiHLo5QDF21rKh1bnKtsSa340Ta37w4f
-         v4ALh2hX5/ALLTMvufFjbIduD/Iehjswgan0RQoeGg1LH8LMVe8SYCEphVDca3c2bmYZ
-         mejg==
-X-Gm-Message-State: AOAM532o82Ij/A1osNqP0DqAUCFUXyq3QCvifi44GsKeL7eVPiLebQbf
-        hbGS9tGZfThoTnBSNLg6er6ZjK95fV9lMpjjg9o=
-X-Google-Smtp-Source: ABdhPJyaUmu4mJHf+r5EO7tRZFWoqjozfEnvSWdk9NCAhRrVk4dbn75NWh5kpQIuUY6no0ANnljhmpkNOeAmaKpllUg=
-X-Received: by 2002:a05:6512:b17:: with SMTP id w23mr6565422lfu.133.1622926290273;
- Sat, 05 Jun 2021 13:51:30 -0700 (PDT)
+        Sat, 5 Jun 2021 16:54:27 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lpdHX-00ENY9-9y; Sat, 05 Jun 2021 14:52:35 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lpdHF-006HEL-7F; Sat, 05 Jun 2021 14:52:34 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Ian Kent <raven@themaw.net>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+In-Reply-To: <9b62c14a7fe71076107ab6dca9bd9fadac4ea08d.camel@themaw.net> (Ian
+        Kent's message of "Sat, 05 Jun 2021 11:19:34 +0800")
+References: <162218354775.34379.5629941272050849549.stgit@web.messagingengine.com>
+        <162218364554.34379.636306635794792903.stgit@web.messagingengine.com>
+        <87czt2q2pl.fsf@disp2133>
+        <CAJfpegsVxoL8WgQa7hFXAg4RBbA-suaeo5pZ5EE7HDpL0rT03A@mail.gmail.com>
+        <87y2bqli8b.fsf@disp2133>
+        <6ae8e5f843855c2c14b58227340e2a0070ef1b6c.camel@themaw.net>
+        <87k0n9ln52.fsf@disp2133>
+        <9b62c14a7fe71076107ab6dca9bd9fadac4ea08d.camel@themaw.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+Date:   Sat, 05 Jun 2021 15:52:10 -0500
+Message-ID: <871r9gkpad.fsf@disp2133>
 MIME-Version: 1.0
-References: <CA+G9fYsnWUYuahxv3+vQx3UQ_CvJ5caiQwb7BXEuDGxPjmrM1w@mail.gmail.com>
-In-Reply-To: <CA+G9fYsnWUYuahxv3+vQx3UQ_CvJ5caiQwb7BXEuDGxPjmrM1w@mail.gmail.com>
-From:   Steve French <smfrench@gmail.com>
-Date:   Sat, 5 Jun 2021 15:51:19 -0500
-Message-ID: <CAH2r5msKk8=6msSYpUHJftKuV9zq15ptME4MHBNacc4FXb9iUQ@mail.gmail.com>
-Subject: Re: [next] fs: cifsglob.h:955:20: error: passing argument 2 of
- 'test_bit' from incompatible pointer type
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, Steve French <sfrench@samba.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-XM-SPF: eid=1lpdHF-006HEL-7F;;;mid=<871r9gkpad.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX185yts+/340p6bjibOs4qlawakhrp21EVU=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_XMHurry_00,XMSubLong,
+        XM_B_Unicode,XM_Body_Dirty_Words autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 XM_B_Unicode BODY: Testing for specific types of unicode
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.0 T_XMHurry_00 Hurry and Do Something
+        *  1.0 XM_Body_Dirty_Words Contains a dirty word
+X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Ian Kent <raven@themaw.net>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 15053 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 14 (0.1%), b_tie_ro: 12 (0.1%), parse: 1.43
+        (0.0%), extract_message_metadata: 22 (0.1%), get_uri_detail_list: 4.4
+        (0.0%), tests_pri_-1000: 3.1 (0.0%), tests_pri_-950: 1.36 (0.0%),
+        tests_pri_-900: 1.26 (0.0%), tests_pri_-90: 194 (1.3%), check_bayes:
+        192 (1.3%), b_tokenize: 14 (0.1%), b_tok_get_all: 16 (0.1%),
+        b_comp_prob: 5 (0.0%), b_tok_touch_all: 152 (1.0%), b_finish: 1.22
+        (0.0%), tests_pri_0: 6600 (43.8%), check_dkim_signature: 0.64 (0.0%),
+        check_dkim_adsp: 6009 (39.9%), poll_dns_idle: 14199 (94.3%),
+        tests_pri_10: 2.0 (0.0%), tests_pri_500: 8210 (54.5%), rewrite_mail:
+        0.00 (0.0%)
+Subject: Re: [REPOST PATCH v4 2/5] kernfs: use VFS negative dentry caching
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Probably was reported earlier and this code has been changed.  The
-multichannel patches are also temporarily removed from for-next while
-Shyam is doing some fixes to the series.
+Ian Kent <raven@themaw.net> writes:
 
-On Fri, Jun 4, 2021 at 4:23 AM Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> On Fri, 2021-06-04 at 09:28 -0500, Eric W. Biederman wrote:
+>> Ian Kent <raven@themaw.net> writes:
+>> 
+>> > On Thu, 2021-06-03 at 17:02 -0500, Eric W. Biederman wrote:
+>> > > Miklos Szeredi <miklos@szeredi.hu> writes:
+>> > > 
+>> > > > On Thu, 3 Jun 2021 at 19:26, Eric W. Biederman < 
+>> > > > ebiederm@xmission.com> wrote:
+>> > > > > 
+>> > > > > Ian Kent <raven@themaw.net> writes:
+>> > > > > 
+>> > > > > > If there are many lookups for non-existent paths these
+>> > > > > > negative
+>> > > > > > lookups
+>> > > > > > can lead to a lot of overhead during path walks.
+>> > > > > > 
+>> > > > > > The VFS allows dentries to be created as negative and
+>> > > > > > hashed,
+>> > > > > > and caches
+>> > > > > > them so they can be used to reduce the fairly high overhead
+>> > > > > > alloc/free
+>> > > > > > cycle that occurs during these lookups.
+>> > > > > > 
+>> > > > > > Signed-off-by: Ian Kent <raven@themaw.net>
+>> > > > > > ---
+>> > > > > >  fs/kernfs/dir.c |   55 +++++++++++++++++++++++++++++++++--
+>> > > > > > ----
+>> > > > > > ----------------
+>> > > > > >  1 file changed, 33 insertions(+), 22 deletions(-)
+>> > > > > > 
+>> > > > > > diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+>> > > > > > index 4c69e2af82dac..5151c712f06f5 100644
+>> > > > > > --- a/fs/kernfs/dir.c
+>> > > > > > +++ b/fs/kernfs/dir.c
+>> > > > > > @@ -1037,12 +1037,33 @@ static int
+>> > > > > > kernfs_dop_revalidate(struct
+>> > > > > > dentry *dentry, unsigned int flags)
+>> > > > > >       if (flags & LOOKUP_RCU)
+>> > > > > >               return -ECHILD;
+>> > > > > > 
+>> > > > > > -     /* Always perform fresh lookup for negatives */
+>> > > > > > -     if (d_really_is_negative(dentry))
+>> > > > > > -             goto out_bad_unlocked;
+>> > > > > > +     mutex_lock(&kernfs_mutex);
+>> > > > > > 
+>> > > > > >       kn = kernfs_dentry_node(dentry);
+>> > > > > > -     mutex_lock(&kernfs_mutex);
+>> > > > > 
+>> > > > > Why bring kernfs_dentry_node inside the mutex?
+>> > > > > 
+>> > > > > The inode lock of the parent should protect negative to
+>> > > > > positive
+>> > > > > transitions not the kernfs_mutex.  So moving the code inside
+>> > > > > the mutex looks unnecessary and confusing.
+>> > > > 
+>> > > > Except that d_revalidate() may or may not be called with parent
+>> > > > lock
+>> > > > held.
+>> > 
+>> > Bringing the kernfs_dentry_node() inside taking the mutex is
+>> > probably
+>> > wasteful, as you say, oddly the reason I did it that conceptually
+>> > it
+>> > makes sense to me since the kernfs node is being grabbed. But it
+>> > probably isn't possible for a concurrent unlink so is not
+>> > necessary.
+>> > 
+>> > Since you feel strongly about I can change it.
+>> > 
+>> > > 
+>> > > I grant that this works because kernfs_io_lookup today holds
+>> > > kernfs_mutex over d_splice_alias.
+>> > 
+>> > Changing that will require some thought but your points about
+>> > maintainability are well taken.
+>> > 
+>> > > 
+>> > > The problem is that the kernfs_mutex only should be protecting
+>> > > the
+>> > > kernfs data structures not the vfs data structures.
+>> > > 
+>> > > Reading through the code history that looks like a hold over from
+>> > > when
+>> > > sysfs lived in the dcache before it was reimplemented as a
+>> > > distributed
+>> > > file system.  So it was probably a complete over sight and
+>> > > something
+>> > > that did not matter.
+>> > > 
+>> > > The big problem is that if the code starts depending upon the
+>> > > kernfs_mutex (or the kernfs_rwsem) to provide semantics the rest
+>> > > of
+>> > > the
+>> > > filesystems does not the code will diverge from the rest of the
+>> > > filesystems and maintenance will become much more difficult.
+>> > > 
+>> > > Diverging from other filesystems and becoming a maintenance pain
+>> > > has
+>> > > already been seen once in the life of sysfs and I don't think we
+>> > > want
+>> > > to
+>> > > go back there.
+>> > > 
+>> > > Further extending the scope of lock, when the problem is that the
+>> > > locking is causing problems seems like the opposite of the
+>> > > direction
+>> > > we
+>> > > want the code to grow.
+>> > > 
+>> > > I really suspect all we want kernfs_dop_revalidate doing for
+>> > > negative
+>> > > dentries is something as simple as comparing the timestamp of the
+>> > > negative dentry to the timestamp of the parent dentry, and if the
+>> > > timestamp has changed perform the lookup.  That is roughly what
+>> > > nfs does today with negative dentries.
+>> > > 
+>> > > The dentry cache will always lag the kernfs_node data structures,
+>> > > and
+>> > > that is fundamental.  We should take advantage of that to make
+>> > > the
+>> > > code
+>> > > as simple and as fast as we can not to perform lots of work that
+>> > > creates
+>> > > overhead.
+>> > > 
+>> > > Plus the kernfs data structures should not change much so I
+>> > > expect
+>> > > there will be effectively 0 penalty in always performing the
+>> > > lookup
+>> > > of a
+>> > > negative dentry when the directory itself has changed.
+>> > 
+>> > This sounds good to me.
+>> > 
+>> > In fact this approach should be able to be used to resolve the
+>> > potential race Miklos pointed out in a much simpler way, not to
+>> > mention the revalidate simplification itself.
+>> > 
+>> > But isn't knowing whether the directory has changed harder to
+>> > do than checking a time stamp?
+>> > 
+>> > Look at kernfs_refresh_inode() and it's callers for example.
+>> > 
+>> > I suspect that would require bringing back the series patch to use
+>> > a generation number to identify directory changes (and also getting
+>> > rid of the search in revalidate).
+>> 
+>> In essence it is a simple as looking at a sequence number or a
+>> timestamp
+>> to detect the directory has changed.
 >
-> The following builds failed on Linux next-20210604 due to warnings / errors.
+> Yes, both Miklos and Al suggested using a simple revision to detect
+> changes to the parent. I did that early on and I don't think I grokked
+> what Al recommended and ended up with something more complex than was
+> needed. So I dropped it because I wanted to keep the changes to a
+> minimum.
 >
->   - arm (s3c2410_defconfig) with gcc- 8 / 9 / 10
->   - parisc (defconfig) with gcc-8 / 9 / 10
->   - powerpc (ppc6xx_defconfig) with gcc- 8 / 9 /10
+> But a quick test, bringing that patch back, and getting rid of the
+> search in revalidate works well. It's as effective at eliminating
+> contention I saw with d_alloc_parallel() for the case of a lot of
+> deterministic accesses to the same non-existent file as the racy
+> search method I had there, perhaps a bit better, it's certainly
+> more straight forward.
 >
-> In file included from fs/cifs/transport.c:38:
-> fs/cifs/transport.c: In function 'cifs_pick_channel':
-> fs/cifs/cifsglob.h:955:20: error: passing argument 2 of 'test_bit'
-> from incompatible pointer type [-Werror=incompatible-pointer-types]
->   955 |  test_bit((index), &(ses)->chans_need_reconnect)
->            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
->            |
->            size_t * {aka unsigned int *}
-> fs/cifs/transport.c:1065:7: note: in expansion of macro
-> 'CIFS_CHAN_NEEDS_RECONNECT'
->  1065 |   if (CIFS_CHAN_NEEDS_RECONNECT(ses, index))
->       |       ^~~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from arch/powerpc/include/asm/bitops.h:193,
->                  from include/linux/bitops.h:32,
->                  from include/linux/kernel.h:12,
->                  from include/linux/list.h:9,
->                  from include/linux/wait.h:7,
->                  from include/linux/wait_bit.h:8,
->                  from include/linux/fs.h:6,
->                  from fs/cifs/transport.c:23:
-> include/asm-generic/bitops/non-atomic.h:104:66: note: expected 'const
-> volatile long unsigned int *' but argument is of type 'size_t *' {aka
-> 'unsigned int *'}
->   104 | static inline int test_bit(int nr, const volatile unsigned long *addr)
->                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
-> cc1: some warnings being treated as errors
-> make[3]: *** [scripts/Makefile.build:272: fs/cifs/transport.o] Error 1
-> fs/cifs/sess.c: In function 'cifs_chan_set_need_reconnect':
-> fs/cifs/sess.c:98:22: error: passing argument 2 of 'set_bit' from
-> incompatible pointer type [-Werror=incompatible-pointer-types]
->    98 |  set_bit(chan_index, &ses->chans_need_reconnect);
->              ^~~~~~~~~~~~~~~~~~~~~~~~~~
->              |
->              size_t * {aka unsigned int *}
+>> 
+>> In practice there are always details that make things more
+>> complicated.
+>> 
+>> I was actually wondering if the approach should be to have an seqlock
+>> around an individual directories rbtree.  I think that would give a
+>> lot
+>> of potential for rcu style optimization during lookups.
 >
+> Yeah, it's tempting, but another constraint I had is to not increase
+> the size of the kernfs_node struct (Greg and Tejun) and there's a
+> hole in the node union variant kernfs_elem_dir at least big enough
+> for sizeof(pointer) so I can put the revision there. And, given the
+> simplification in revalidate, as well as that extra code being pretty
+> straight forward itself, it's not too bad from the minimal change
+> POV.
 >
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
->
-> Full build log:
-> https://gitlab.com/Linaro/lkft/mirrors/next/linux-next/-/jobs/1317929765#L247
->
-> Steps to reproduce:
-> -----------------------------
->
-> # TuxMake is a command line tool and Python library that provides
-> # portable and repeatable Linux kernel builds across a variety of
-> # architectures, toolchains, kernel configurations, and make targets.
-> #
-> # TuxMake supports the concept of runtimes.
-> # See https://docs.tuxmake.org/runtimes/, for that to work it requires
-> # that you install podman or docker on your system.
-> #
-> # To install tuxmake on your system globally:
-> # sudo pip3 install -U tuxmake
-> #
-> # See https://docs.tuxmake.org/ for complete documentation.
->
-> tuxmake --runtime podman --target-arch arm --toolchain gcc-8 --kconfig
-> s3c2410_defconfig
->
->
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
+> So I'd like to go with using a revision for now.
 
+No objection from me.
 
-
--- 
-Thanks,
-
-Steve
+Eric
