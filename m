@@ -2,84 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D54DD39C780
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 12:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05DDB39C783
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 12:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230173AbhFEKmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 06:42:12 -0400
-Received: from mail-wm1-f46.google.com ([209.85.128.46]:39453 "EHLO
-        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhFEKmL (ORCPT
+        id S230192AbhFEKmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 06:42:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229902AbhFEKmq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 06:42:11 -0400
-Received: by mail-wm1-f46.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso9336120wmh.4;
-        Sat, 05 Jun 2021 03:40:23 -0700 (PDT)
+        Sat, 5 Jun 2021 06:42:46 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2557DC061766
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Jun 2021 03:40:58 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id w21so13972021edv.3
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 03:40:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=snejp.pl; s=gmail;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hj3/Nk+tqYRB1c5ojPz5XgdR7/8/e5iUg8MA/Htec1o=;
+        b=ZyCuiia6imOYMBfDloSPJqp1YVwUtFj4UtM+6NJnEYdt9nB7GuzJzRtP391xT9A7AG
+         kki7mUZ/mb7g0esRxTYp7ZH/iG0KyHISO3cD7uGlxYIT28+vRcVmZ5yUaSKnQlyglTJQ
+         Lt8pJi2bVKJGhBjUIagF1fL20VfYm8GdVRDSZy6AsPY26eYs3PqExwEVwRDu+Tbsyner
+         OGpQfrfRwBWrBuMkJcIF22HRKd0Hnmzd5YvGeMaH11wnaixT0T0YDg+tZzW0g/Ip4h+k
+         8nDrPDBxld2cKHLTT7jgH1+eZdNNj1vkRbVYsh85sh36dG3IDN4Zbg/hae0bbMTiOrpB
+         +a8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MxmxV/mHxrDJzyy3n7zHJvUC9KP69YHsvKcSnHbPolw=;
-        b=TRgGCSTTLbauWIbp/hW6+SxB79aeJt9tVC1CfnljBTa7SVyn+lpwGGwNe+vf3+HmzN
-         XiRFIzm3zD5F2D/HSW8tGC4uUSLrQtq8p1lBf/0O6ZEKZRoLbVAlm+wsNHPo7jVKk//L
-         HEae/f8CLefAXuU74f/vxYZWBL5Humg7Gi215sWc60Guyv9yQnpI4spUfFs2lqo4BwoV
-         /DP96SCiv3LEgEGnoC6lGBe+WafZrVTRoXXmEKQ4COtDZMirYgkpg8ivitOwbMnWWC9N
-         aa6qFDWDs41BDbuVhKsEm8lMWOf8L8I+rWmsix5+nzLQVTiYZbhPFn2w/cRx12iqTOVx
-         lFiQ==
-X-Gm-Message-State: AOAM530Sk9xBZGeKWN4stmJWsTL4PzZMfr2Ony6msPXc4u7AVhOiOW2G
-        /vNIlHsHiUJnHMSC1mzWpQY=
-X-Google-Smtp-Source: ABdhPJznTaipBm9WBZkXSg1Hd8uDl7mUVzTiZvhqC3xEzmoyM4aaTFDvDboh6C0S6DdxTQXXq/oqzA==
-X-Received: by 2002:a1c:4c07:: with SMTP id z7mr7525903wmf.90.1622889623185;
-        Sat, 05 Jun 2021 03:40:23 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id d5sm9217270wrb.16.2021.06.05.03.40.22
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hj3/Nk+tqYRB1c5ojPz5XgdR7/8/e5iUg8MA/Htec1o=;
+        b=DALwZ6pUtJd3BS0z0WxqQFZCmlFEtYcVwwXVfxCKfDUR39PdkV0A/J/0dvdsOF8iZJ
+         S3Ejrix1bQxdhID07ImroL8mSG+hQOf7jrHmG1NMVVsn0xGrZcv50zFJ37qcdBrToX4M
+         fxmLA5oSykNIlpO677bYLsJ6Wn5UlOb9oF7kyUBcqvBsW1xzN7S9oF8tkHd3yMZP8NbW
+         xZsTFJ+KQLK7bc3R7VCx8rqHgxqRLcswJ9NmGaWE2aH5n3DxyhdB+86hh0lzOXQ3Y5Wt
+         GgBtUZL7Ply2J/ANE7KywvHQ9UF8Vf8Q7D9b6zfH9DH8HvnwiKrM6A8bedvXru1B/X3N
+         QGTQ==
+X-Gm-Message-State: AOAM5328ZWwsbU7PnCpAuNMO24ojimM9QRBmIjyiGip4QpkQG9gjuFkY
+        P+L1P4ZUDqHm1eA2cBrimNjn0w==
+X-Google-Smtp-Source: ABdhPJyE6j2DVkqFkGJfEn2XqF01kE5lQ5IRImg8mwauc2KXepuf/4gtvnDwnX7MeMrDSLt6OE9JYA==
+X-Received: by 2002:a05:6402:848:: with SMTP id b8mr9714418edz.159.1622889656790;
+        Sat, 05 Jun 2021 03:40:56 -0700 (PDT)
+Received: from PackardBell (192038129059.mbb.telenor.dk. [192.38.129.59])
+        by smtp.googlemail.com with ESMTPSA id gx28sm3991353ejc.107.2021.06.05.03.40.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Jun 2021 03:40:22 -0700 (PDT)
-Date:   Sat, 5 Jun 2021 10:40:21 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Haiyang Zhang <haiyangz@microsoft.com>, bhelgaas@google.com,
-        lorenzo.pieralisi@arm.com, linux-hyperv@vger.kernel.org,
-        linux-pci@vger.kernel.org, kys@microsoft.com, olaf@aepfle.de,
-        vkuznets@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pci-hyperv: Add check for hyperv_initialized in
- init_hv_pci_drv()
-Message-ID: <20210605104021.amywuuhlyesgmybw@liuwe-devbox-debian-v2>
-References: <20210602103206.4nx55xsl3nxqt6zj@liuwe-devbox-debian-v2>
- <20210604212622.GA2241239@bjorn-Precision-5520>
+        Sat, 05 Jun 2021 03:40:56 -0700 (PDT)
+Received: from localhost (PackardBell [local])
+        by PackardBell (OpenSMTPD) with ESMTPA id 315d7738;
+        Sat, 5 Jun 2021 10:40:53 +0000 (UTC)
+From:   Bartosz Dudziak <bartosz.dudziak@snejp.pl>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Bartosz Dudziak <bartosz.dudziak@snejp.pl>
+Subject: [PATCH v2] clk: qcom: smd-rpmcc: Add support for MSM8226 rpm clocks
+Date:   Sat,  5 Jun 2021 12:40:40 +0200
+Message-Id: <20210605104040.12960-1-bartosz.dudziak@snejp.pl>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604212622.GA2241239@bjorn-Precision-5520>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 04:26:22PM -0500, Bjorn Helgaas wrote:
-> On Wed, Jun 02, 2021 at 10:32:06AM +0000, Wei Liu wrote:
-> > On Tue, May 25, 2021 at 04:17:33PM -0700, Haiyang Zhang wrote:
-> > > Add check for hv_is_hyperv_initialized() at the top of init_hv_pci_drv(),
-> > > so if the pci-hyperv driver is force-loaded on non Hyper-V platforms, the
-> > > init_hv_pci_drv() will exit immediately, without any side effects, like
-> > > assignments to hvpci_block_ops, etc.
-> > > 
-> > > Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-> > > Reported-and-tested-by: Mohammad Alqayeem <mohammad.alqyeem@nutanix.com>
-> > 
-> > Hello PCI subsystem maintainers, are you going to take this patch or
-> > shall I?
-> 
-> This was mistakenly assigned to me, so I reassigned it back to
-> Lorenzo.
-> 
-> If you *do* take this, please at least update it to follow the PCI
-> commit log conventions, e.g.,
-> 
->   PCI: hv: Add check ...
-> 
-> and wrap the text so it fits in 75 columns.
+Add compatible for rpm smd clocks, PMIC and bus clocks which are required
+on MSM8226 for clients to vote on.
 
-Lorenzo already picked up two Hyper-V PCI patches from Long Li. I think
-leaving this to him is better.
+Signed-off-by: Bartosz Dudziak <bartosz.dudziak@snejp.pl>
+---
+ drivers/clk/qcom/clk-smd-rpm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Wei.
+diff --git a/drivers/clk/qcom/clk-smd-rpm.c b/drivers/clk/qcom/clk-smd-rpm.c
+index 295fc08edd..8bced53b49 100644
+--- a/drivers/clk/qcom/clk-smd-rpm.c
++++ b/drivers/clk/qcom/clk-smd-rpm.c
+@@ -914,6 +914,7 @@ static const struct rpm_smd_clk_desc rpm_clk_sdm660 = {
+ };
+ 
+ static const struct of_device_id rpm_smd_clk_match_table[] = {
++	{ .compatible = "qcom,rpmcc-msm8226", .data = &rpm_clk_msm8974 },
+ 	{ .compatible = "qcom,rpmcc-msm8916", .data = &rpm_clk_msm8916 },
+ 	{ .compatible = "qcom,rpmcc-msm8936", .data = &rpm_clk_msm8936 },
+ 	{ .compatible = "qcom,rpmcc-msm8974", .data = &rpm_clk_msm8974 },
+-- 
+2.25.1
+
