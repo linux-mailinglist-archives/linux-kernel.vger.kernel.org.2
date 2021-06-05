@@ -2,276 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C3439C591
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 05:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A63039C595
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 05:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbhFEDs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 23:48:27 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:39821 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbhFEDsZ (ORCPT
+        id S231282AbhFEDub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 23:50:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229822AbhFEDua (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 23:48:25 -0400
-Received: by mail-pl1-f194.google.com with SMTP id q16so5632242pls.6;
-        Fri, 04 Jun 2021 20:46:25 -0700 (PDT)
+        Fri, 4 Jun 2021 23:50:30 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0D8C061766
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 20:48:28 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id k125-20020a3788830000b02903a65618d46cso7952335qkd.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 20:48:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SO+yaAY8Fk45u9d7CKIQc/HZvjGFxnb666ka7wNnXAs=;
-        b=C8Ip1DjssxWq1dZe/uqZBbxzaxEVMS7RMFfdCwuuXTPtSr/d0d0a2nKHDHiEG2nK3F
-         3zZNXeKjTEGl4zev9xmoKdIXtCMZsxJMmhXs0RINn0dLiJLmUn8fgVoiu0P+3Yo0Ly3q
-         H4zmHRLBG6N5C6nUFHa+EVnjMQCpfFo6Ke8Y8FuS7grAaENWu88u6zvn8aGzlMxl6RUs
-         tPxRzEvK8iUTka/btIvxcBmI6VfduPjOpGRFE8kLL8V6cxP1ADUiJklwbakagRGifxIa
-         Qi4Ng88fTiLD0xf/MDo5I1wiT7vJti98AG17Be21Nlh9adkZc3dlUeLd3BoC310tZmCz
-         74qQ==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=XPZDtLKS30vXkuj6yT8Gl5haFHJZ9BAHWp7Vy4vosPo=;
+        b=TvjnijF0vPDLPSEaiTmZFU9TzbbKhy0hoiMyrAevNrBhCYahvldQr5j0W8oFB4ivfH
+         KQZyj+izjiJof0v9yJBVk42uRcQTic9/Y9djD5Hnxshe+cNFZ8bAqnZ5c1UCtE8KnA7o
+         jMbvXMjxRkLZHCWloXdYpJsuvrM6U5SKDGE/dGaj6+Xs5NigenABUX0iJk0zoRrMAnyl
+         nP4FTi2k+qWCMay3CzCiiKt04z7c2Tb6xNyq5333dNk0LgyD1ESdXZu2qfWHJem8aN5P
+         PX0FBlgh35reEx5nc7aAFM0lwH4LblEayEmPdcQXh6kmTGaEqARGRMB5CIMIuLthGXNo
+         EHbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SO+yaAY8Fk45u9d7CKIQc/HZvjGFxnb666ka7wNnXAs=;
-        b=G+LuwIpks01w1BfYrAl7+4sGzd/BxMeVMfnVkZpfYwftGOy93pnhdnjjhrQzcDQemr
-         0Fj6s2FC03YdhoWZGFD8a9+raAmv3FBW2k4oj//26ywjnJhpJJRLZx8Z0SKNNdvVjuLn
-         lIrgLt9/Y6Rr/zpTkDFhwtqp4EJjBxCVSvj0Y9mCxfoE7Lnzh0ZeUfOSwQQuTTx4+dwx
-         9HhiWxG55fjDZ1vW90ggbavnhIr27vQ1NQyI6BWuJtUpFfh4wC1Ivdqp7BL4j6jgby67
-         S2z1Tit/cyuMkDzU6W7dwdhF3ZbMukzyPykyjFj0kKGz1Xzu7rerUFMX1rwRf+h+De7p
-         5KNw==
-X-Gm-Message-State: AOAM533MnVFP+QwpPhFKISWLFZjKN1LNlFvypKUviRq80JHSDRH3++/Q
-        k3QAtmbzrA/cNZXVnbQgbdY=
-X-Google-Smtp-Source: ABdhPJzPAKUItdRzDe5QyifhuhFM/ppGFwnoWr6+dTn/kPApkyeQRrmxJaL+25RHl+4+rXE+xMkmaw==
-X-Received: by 2002:a17:90b:4b0c:: with SMTP id lx12mr8321724pjb.88.1622864724605;
-        Fri, 04 Jun 2021 20:45:24 -0700 (PDT)
-Received: from localhost ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id i10sm2879186pfk.74.2021.06.04.20.45.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 20:45:24 -0700 (PDT)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     christian.brauner@ubuntu.com
-Cc:     viro@zeniv.linux.org.uk, keescook@chromium.org,
-        samitolvanen@google.com, johan@kernel.org, ojeda@kernel.org,
-        jeyu@kernel.org, masahiroy@kernel.org, joe@perches.com,
-        dong.menglong@zte.com.cn, jack@suse.cz, hare@suse.de,
-        axboe@kernel.dk, tj@kernel.org, gregkh@linuxfoundation.org,
-        song@kernel.org, neilb@suse.de, akpm@linux-foundation.org,
-        linux@rasmusvillemoes.dk, brho@google.com, f.fainelli@gmail.com,
-        palmerdabbelt@google.com, wangkefeng.wang@huawei.com,
-        mhiramat@kernel.org, rostedt@goodmis.org, vbabka@suse.cz,
-        glider@google.com, pmladek@suse.com, johannes.berg@intel.com,
-        ebiederm@xmission.com, jojing64@gmail.com, terrelln@fb.com,
-        geert@linux-m68k.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mcgrof@kernel.org, arnd@arndb.de,
-        chris@chrisdown.name, mingo@kernel.org, bhelgaas@google.com,
-        josh@joshtriplett.org
-Subject: [PATCH v6 2/2] init/do_mounts.c: create second mount for initramfs
-Date:   Sat,  5 Jun 2021 11:44:47 +0800
-Message-Id: <20210605034447.92917-3-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.32.0.rc0
-In-Reply-To: <20210605034447.92917-1-dong.menglong@zte.com.cn>
-References: <20210605034447.92917-1-dong.menglong@zte.com.cn>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=XPZDtLKS30vXkuj6yT8Gl5haFHJZ9BAHWp7Vy4vosPo=;
+        b=A6u65Us1mCfDmjKnTO0lwl2T88OrrRk2bI0uq/lWXlkc3fqrNrsA1iul1U20uOFRu8
+         b3Bgpgjx3MBlpb/02sjTy0O2FE4FcsD19EXOVMqvNqoURbJn8jBi78GA+5wDXNf5R7eA
+         2zlszs4FIHy+YJDqcb20VlsLo2T1rB26Bvcm0YVYe3r4PNsAwz3MX3IW5HfcZmQZDqyb
+         F/8OR1n4dWaWaQ8yxkgVN+RTniLxl+Dg1S2krNCkHT3qsQwM2hZ4vvaF+ACwveNTtpAi
+         e1X1FasRmQZP/Ey7S0UMIC5+RVRwoGelZG2UcAYMSIE4kRP5b9a89wfyoD2nR19mKk+v
+         SYjw==
+X-Gm-Message-State: AOAM530Ohgkhg3I/yoA1+zb7h1BLqescjWaRwsN7txulgSWyuP0eiUvF
+        4gqx34k88c4mqNNgGZbOLzwcE+M0RoOxGA==
+X-Google-Smtp-Source: ABdhPJz7cBjexK94rflz9gn4I2v/TXByvAjjxpfrYXkp022JYQ7GP4NKC9u3eMPyHNYy0+BU6AhML4QyipVcPw==
+X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:b70c:2182:75b0:bac0])
+ (user=davidgow job=sendgmr) by 2002:a0c:dc92:: with SMTP id
+ n18mr8063460qvk.8.1622864907203; Fri, 04 Jun 2021 20:48:27 -0700 (PDT)
+Date:   Fri,  4 Jun 2021 20:48:21 -0700
+Message-Id: <20210605034821.2098034-1-davidgow@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
+Subject: [PATCH v2] kasan: test: Improve failure message in KUNIT_EXPECT_KASAN_FAIL()
+From:   David Gow <davidgow@google.com>
+To:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Daniel Axtens <dja@axtens.net>,
+        Brendan Higgins <brendanhiggins@google.com>
+Cc:     David Gow <davidgow@google.com>, kasan-dev@googlegroups.com,
+        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+The KUNIT_EXPECT_KASAN_FAIL() macro currently uses KUNIT_EXPECT_EQ() to
+compare fail_data.report_expected and fail_data.report_found. This
+always gave a somewhat useless error message on failure, but the
+addition of extra compile-time checking with READ_ONCE() has caused it
+to get much longer, and be truncated before anything useful is displayed.
 
-If using container platforms such as Docker, upon initialization it
-wants to use pivot_root() so that currently mounted devices do not
-propagate to containers. An example of value in this is that
-a USB device connected prior to the creation of a containers on the
-host gets disconnected after a container is created; if the
-USB device was mounted on containers, but already removed and
-umounted on the host, the mount point will not go away until all
-containers unmount the USB device.
+Instead, just check fail_data.report_found by hand (we've just set
+report_expected to 'true'), and print a better failure message with
+KUNIT_FAIL(). Because of this, report_expected is no longer used
+anywhere, and can be removed.
 
-Another reason for container platforms such as Docker to use pivot_root
-is that upon initialization the net-namspace is mounted under
-/var/run/docker/netns/ on the host by dockerd. Without pivot_root
-Docker must either wait to create the network namespace prior to
-the creation of containers or simply deal with leaking this to each
-container.
+Beforehand, a failure in:
+KUNIT_EXPECT_KASAN_FAIL(test, ((volatile char *)area)[3100]);
+would have looked like:
+[22:00:34] [FAILED] vmalloc_oob
+[22:00:34]     # vmalloc_oob: EXPECTATION FAILED at lib/test_kasan.c:991
+[22:00:34]     Expected ({ do { extern void __compiletime_assert_705(void) __attribute__((__error__("Unsupported access size for {READ,WRITE}_ONCE()."))); if (!((sizeof(fail_data.report_expected) == sizeof(char) || sizeof(fail_data.repp
+[22:00:34]     not ok 45 - vmalloc_oob
 
-pivot_root is supported if the rootfs is a initrd or block device, but
-it's not supported if the rootfs uses an initramfs (tmpfs). This means
-container platforms today must resort to using block devices if
-they want to pivot_root from the rootfs. A workaround to use chroot()
-is not a clean viable option given every container will have a
-duplicate of every mount point on the host.
+With this change, it instead looks like:
+[22:04:04] [FAILED] vmalloc_oob
+[22:04:04]     # vmalloc_oob: EXPECTATION FAILED at lib/test_kasan.c:993
+[22:04:04]     KASAN failure expected in "((volatile char *)area)[3100]", but none occurred
+[22:04:04]     not ok 45 - vmalloc_oob
 
-In order to support using container platforms such as Docker on
-all the supported rootfs types we must extend Linux to support
-pivot_root on initramfs as well. This patch does the work to do
-just that.
-
-pivot_root will unmount the mount of the rootfs from its parent mount
-and mount the new root to it. However, when it comes to initramfs, it
-donesn't work, because the root filesystem has not parent mount, which
-makes initramfs not supported by pivot_root.
-
-In order to make pivot_root supported on initramfs, we create a second
-mount with type of rootfs before unpacking cpio, and change root to
-this mount after unpacking.
-
-While mounting the second rootfs, 'rootflags' is passed, and it means
-that we can set options for the mount of rootfs in boot cmd now.
-For example, the size of tmpfs can be set with 'rootflags=size=1024M'.
-
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+Signed-off-by: David Gow <davidgow@google.com>
 ---
- init/do_mounts.c | 44 ++++++++++++++++++++++++++++++++++++++++++++
- init/do_mounts.h | 17 ++++++++++++++++-
- init/initramfs.c |  8 ++++++++
- usr/Kconfig      | 10 ++++++++++
- 4 files changed, 78 insertions(+), 1 deletion(-)
+Changes since v1:
+https://groups.google.com/g/kasan-dev/c/CbabdwoXGlE
+- Remove fail_data.report_expected now that it's unused.
+- Use '!' instead of '== false' in the comparison.
+- Minor typo fixes in the commit message.
 
-diff --git a/init/do_mounts.c b/init/do_mounts.c
-index a78e44ee6adb..715bdaa89b81 100644
---- a/init/do_mounts.c
-+++ b/init/do_mounts.c
-@@ -618,6 +618,49 @@ void __init prepare_namespace(void)
- }
+The test failure being used as an example is tracked in:
+https://bugzilla.kernel.org/show_bug.cgi?id=213335
+
+Cheers,
+-- David
+
+ include/linux/kasan.h |  1 -
+ lib/test_kasan.c      | 11 +++++------
+ 2 files changed, 5 insertions(+), 7 deletions(-)
+
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index b1678a61e6a7..18cd5ec2f469 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -17,7 +17,6 @@ struct task_struct;
  
- static bool is_tmpfs;
-+#ifdef CONFIG_INITRAMFS_MOUNT
-+
-+/*
-+ * Give systems running from the initramfs and making use of pivot_root a
-+ * proper mount so it can be umounted during pivot_root.
-+ */
-+int __init prepare_mount_rootfs(void)
-+{
-+	char *rootfs = "ramfs";
-+
-+	if (is_tmpfs)
-+		rootfs = "tmpfs";
-+
-+	return do_mount_root(rootfs, rootfs,
-+			     root_mountflags & ~MS_RDONLY,
-+			     root_mount_data);
-+}
-+
-+/*
-+ * Revert to previous mount by chdir to '/' and unmounting the second
-+ * mount.
-+ */
-+void __init revert_mount_rootfs(void)
-+{
-+	init_chdir("/");
-+	init_umount(".", MNT_DETACH);
-+}
-+
-+/*
-+ * Change root to the new rootfs that mounted in prepare_mount_rootfs()
-+ * if cpio is unpacked successfully and 'ramdisk_execute_command' exist.
-+ */
-+void __init finish_mount_rootfs(void)
-+{
-+	init_mount(".", "/", NULL, MS_MOVE, NULL);
-+	if (likely(ramdisk_exec_exist()))
-+		init_chroot(".");
-+	else
-+		revert_mount_rootfs();
-+}
-+
-+#define rootfs_init_fs_context ramfs_init_fs_context
-+#else
- static int rootfs_init_fs_context(struct fs_context *fc)
- {
- 	if (IS_ENABLED(CONFIG_TMPFS) && is_tmpfs)
-@@ -625,6 +668,7 @@ static int rootfs_init_fs_context(struct fs_context *fc)
+ /* kasan_data struct is used in KUnit tests for KASAN expected failures */
+ struct kunit_kasan_expectation {
+-	bool report_expected;
+ 	bool report_found;
+ };
  
- 	return ramfs_init_fs_context(fc);
- }
-+#endif
+diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+index cacbbbdef768..44e08f4d9c52 100644
+--- a/lib/test_kasan.c
++++ b/lib/test_kasan.c
+@@ -55,7 +55,6 @@ static int kasan_test_init(struct kunit *test)
+ 	multishot = kasan_save_enable_multi_shot();
+ 	kasan_set_tagging_report_once(false);
+ 	fail_data.report_found = false;
+-	fail_data.report_expected = false;
+ 	kunit_add_named_resource(test, NULL, NULL, &resource,
+ 					"kasan_data", &fail_data);
+ 	return 0;
+@@ -94,20 +93,20 @@ static void kasan_test_exit(struct kunit *test)
+ 	    !kasan_async_mode_enabled())				\
+ 		migrate_disable();					\
+ 	KUNIT_EXPECT_FALSE(test, READ_ONCE(fail_data.report_found));	\
+-	WRITE_ONCE(fail_data.report_expected, true);			\
+ 	barrier();							\
+ 	expression;							\
+ 	barrier();							\
+-	KUNIT_EXPECT_EQ(test,						\
+-			READ_ONCE(fail_data.report_expected),		\
+-			READ_ONCE(fail_data.report_found));		\
++	if (!READ_ONCE(fail_data.report_found)) {			\
++		KUNIT_FAIL(test, KUNIT_SUBTEST_INDENT "KASAN failure "	\
++				"expected in \"" #expression		\
++				 "\", but none occurred");		\
++	}								\
+ 	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS)) {				\
+ 		if (READ_ONCE(fail_data.report_found))			\
+ 			kasan_enable_tagging_sync();			\
+ 		migrate_enable();					\
+ 	}								\
+ 	WRITE_ONCE(fail_data.report_found, false);			\
+-	WRITE_ONCE(fail_data.report_expected, false);			\
+ } while (0)
  
- struct file_system_type rootfs_fs_type = {
- 	.name		= "rootfs",
-diff --git a/init/do_mounts.h b/init/do_mounts.h
-index 7a29ac3e427b..ae4ab306caa9 100644
---- a/init/do_mounts.h
-+++ b/init/do_mounts.h
-@@ -10,9 +10,24 @@
- #include <linux/root_dev.h>
- #include <linux/init_syscalls.h>
- 
-+extern int root_mountflags;
-+
- void  mount_block_root(char *name, int flags);
- void  mount_root(void);
--extern int root_mountflags;
-+
-+#ifdef CONFIG_INITRAMFS_MOUNT
-+
-+int  prepare_mount_rootfs(void);
-+void finish_mount_rootfs(void);
-+void revert_mount_rootfs(void);
-+
-+#else
-+
-+static inline int  prepare_mount_rootfs(void) { return 0; }
-+static inline void finish_mount_rootfs(void) { }
-+static inline void revert_mount_rootfs(void) { }
-+
-+#endif
- 
- static inline __init int create_dev(char *name, dev_t dev)
- {
-diff --git a/init/initramfs.c b/init/initramfs.c
-index af27abc59643..1833de3cf04e 100644
---- a/init/initramfs.c
-+++ b/init/initramfs.c
-@@ -16,6 +16,8 @@
- #include <linux/namei.h>
- #include <linux/init_syscalls.h>
- 
-+#include "do_mounts.h"
-+
- static ssize_t __init xwrite(struct file *file, const char *p, size_t count,
- 		loff_t *pos)
- {
-@@ -682,13 +684,19 @@ static void __init do_populate_rootfs(void *unused, async_cookie_t cookie)
- 	else
- 		printk(KERN_INFO "Unpacking initramfs...\n");
- 
-+	if (prepare_mount_rootfs())
-+		panic("Failed to mount rootfs");
-+
- 	err = unpack_to_rootfs((char *)initrd_start, initrd_end - initrd_start);
- 	if (err) {
-+		revert_mount_rootfs();
- #ifdef CONFIG_BLK_DEV_RAM
- 		populate_initrd_image(err);
- #else
- 		printk(KERN_EMERG "Initramfs unpacking failed: %s\n", err);
- #endif
-+	} else {
-+		finish_mount_rootfs();
- 	}
- 
- done:
-diff --git a/usr/Kconfig b/usr/Kconfig
-index 8bbcf699fe3b..4f6ac12eafe9 100644
---- a/usr/Kconfig
-+++ b/usr/Kconfig
-@@ -52,6 +52,16 @@ config INITRAMFS_ROOT_GID
- 
- 	  If you are not sure, leave it set to "0".
- 
-+config INITRAMFS_MOUNT
-+	bool "Create second mount to make pivot_root() supported"
-+	default y
-+	help
-+	  Before unpacking cpio, create a second mount and make it become
-+	  the root filesystem. Therefore, initramfs will be supported by
-+	  pivot_root().
-+
-+	  If container platforms is used with initramfs, say Y.
-+
- config RD_GZIP
- 	bool "Support initial ramdisk/ramfs compressed using gzip"
- 	default y
+ #define KASAN_TEST_NEEDS_CONFIG_ON(test, config) do {			\
 -- 
-2.32.0.rc0
+2.32.0.rc1.229.g3e70b5a671-goog
 
