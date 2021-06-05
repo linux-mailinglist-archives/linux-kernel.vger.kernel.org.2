@@ -2,69 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57A1E39C4F0
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 04:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E86F739C4F4
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 04:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231342AbhFECEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 22:04:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230169AbhFECEo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 22:04:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B9D9613BF;
-        Sat,  5 Jun 2021 02:02:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622858577;
-        bh=r4EcPxMJSzOnJumoMVDFIEmBiosX3pqnj+rFFKZBTdE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FjKa4X0QV01OweMLfCz0TTewqTcl6egVJWc2mp0IcCUaSoGJzARjsVyOla9pxZjj3
-         rdJtQjz0dLc+E5jqGH47SDe++quTm5n7wfLb08ol+TZFXf0HE23Bu/dux2JEZ84etk
-         Cz9Oj4vqYJylSd0aBVQ5M9czWqSagDxF2lYOmLJNJc3DeZlh//33XjqwpDT5TJLbMw
-         +nrUrrfFyLoopuNTObNYavgzY8CgeuY4uW2aLxSogc9IJ9q1GP6WdKoEqtk+Qo2LdA
-         ne5HzTjF9IubV9BiSlks7yn4OsShh8tMKKOLBoWtHyoa7Y1+FH41CEu82VztDTt6ij
-         jiLd5oX4Tk+CA==
-Date:   Fri, 4 Jun 2021 19:02:56 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH 3/3] f2fs: clean up
- /sys/fs/f2fs/<disk>/features
-Message-ID: <YLrbUHfOa3zfwmNs@gmail.com>
-References: <20210605003210.856458-1-jaegeuk@kernel.org>
- <20210605003210.856458-3-jaegeuk@kernel.org>
+        id S231225AbhFECKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 22:10:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230169AbhFECKx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 22:10:53 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E394C061766;
+        Fri,  4 Jun 2021 19:09:02 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id h24so17314672ejy.2;
+        Fri, 04 Jun 2021 19:09:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ae8aO+EcXpY+/Z6vk9bck8nM2UH/1bl+PzXd6sCUhb8=;
+        b=eh8hMZC0XKYFIDWYBcJaE6kEw2ULmpOJ/a3PoxdAr62Hu3vqx3+x/OaoNrX9+1xMPY
+         zCC/tLKzgbpX+AA/vy/XMzR6dzOOHfXkWNYVbwH6XrUMshnX9BR8O2FCa8uihDN8oKzm
+         VC9lnvcAf1Mbn1nTTfe7If1r1NNpP9hWW/rWIpZH5tKRaPuWAir8cbe5tNKPCtQdCdoH
+         Gj2piHRg5KqbSNdWBpLKkf8Yj/havUSlOK13MOVpzgnMEP0MU4ivqgnWLrSgSZyhmPRL
+         inwNOJ7QO0ZvnjZqvZDFv6U0VnW14wz+D/cKim2K6qWiEbxqsf2A85Fs/RjzrdY/A1eF
+         5YdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ae8aO+EcXpY+/Z6vk9bck8nM2UH/1bl+PzXd6sCUhb8=;
+        b=XH451L18CKauZ0W3Rerwfdcl82WuGeQTaBPs+PVt97oF9rrQpQDU7HF2NYFzzJ/Fzi
+         76yQXH1XrmRKs0wo3DWaF4vmhwxGXQ2XxkZY81h48yyvDkA9qK1BcWO4rEQ3pahJnjDF
+         y8iqktmlS1O/wAw/8SO8KCQvjhNsOWqVoYhIkOa5YX934X4qLcWeAVsAbSpRUkn9D0Ba
+         6Z/cBmuM7pjMdIGyC8bHU01WbV9gw/UwSkMXLGTV6tSUSGTOu6QT0VUmN+RH9iSqsyXX
+         IyiZCG7iajeRg2HZLgvWwpgm+KfXo24RHjuiaSZs3+7P6oe2zXiCPCw1ch9Hj+JzGN1E
+         Qlfw==
+X-Gm-Message-State: AOAM5333zlXPaTfx75MLavtzaXo/a5LFNHjGI8P7Fi8mcqk3Fp27YHV6
+        lr29Ds6iB7m3gtbCEZa97xU=
+X-Google-Smtp-Source: ABdhPJw0lyNr1u+lwMQPhKdENwjyWfuoxWWQmqVIfOrrTMlkHr2cQ3WLDO1DLc1q9sJt59LXfVZjUw==
+X-Received: by 2002:a17:907:b14:: with SMTP id h20mr6996353ejl.257.1622858940994;
+        Fri, 04 Jun 2021 19:09:00 -0700 (PDT)
+Received: from linux.local (host-82-59-55-132.retail.telecomitalia.it. [82.59.55.132])
+        by smtp.gmail.com with ESMTPSA id gz5sm3496232ejb.113.2021.06.04.19.08.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 19:09:00 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH v2 0/2] Remove unnecessary tests and cast before kfree/kvfree
+Date:   Sat,  5 Jun 2021 04:08:53 +0200
+Message-Id: <20210605020855.1065-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210605003210.856458-3-jaegeuk@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 05:32:10PM -0700, Jaegeuk Kim wrote:
-> +What:		/sys/fs/f2fs/feature/
+(1/2) Removed unnecessary test of pointers != NULL before passing them to
+kfree() and kvfree(). 
+(2/2) Removed an unncecessary (void *) cast for an argument passed to kfree().
 
-features/, not feature/.
+v1 -> v2: Added patch 2/2.
 
-> +/*
-> + * Note that there are three feature list entries:
-> + * 1) /sys/fs/f2fs/features
-> + *   : shows runtime features supported by in-kernel f2fs along with Kconfig
-> + *     - ref. F2FS_FEATURE_RO_ATTR()
-> + *
-> + * 2) /sys/fs/f2fs/$s_id/features <deprecated>
-> + *   : shows on-disk features enabled by mkfs.f2fs, used for old kernels
-> + *
-> + * 3) /sys/fs/f2fs/$s_id/feature_list
-> + *   : shows on-disk features enabled by mkfs.f2fs per instance.
-> + *     this list covers old feature list provided by 2) and beyond
-> + *     - ref. F2FS_SB_FEATURE_RO_ATTR()
-> + */
+Fabio M. De Francesco (2):
+  staging: media: atomisp: pci: Remove checks before kfree/kvfree
+  staging: media: atomisp: pci: Remove unnecessary (void *) cast
 
-It would be helpful to make it clear which of these use the one-feature-per-file
-convention and which use the comma-separated features convention.  And also
-whether future features will be listed in both (2) and (3), or just in (3).
+ drivers/staging/media/atomisp/pci/sh_css_firmware.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Otherwise this patch looks good -- thanks!
+-- 
+2.31.1
 
-- Eric
