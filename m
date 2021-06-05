@@ -2,113 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C3539CA16
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 19:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 635D239CA1B
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 19:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230116AbhFERGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 13:06:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbhFERGu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 13:06:50 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0847C061789;
-        Sat,  5 Jun 2021 10:04:51 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id a11so10573315wrt.13;
-        Sat, 05 Jun 2021 10:04:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=g/W44ow+C6jPmps5gfwR35TPNfFxt3RYI3mHXT3ZiRU=;
-        b=Bw2IBYrnzHyx4A99ZqsNvFNjENfkjgf2045SpAsco2Ufqd1uK/etMZ7muBq3Ida0AX
-         GDxstPbhFwStHlWpaxXwRVC4m56a/XUcNBqkRpMOtSZHmZf83QaYbbKvdCBjnfzU4kKp
-         E0MClDxVpoHeoNHPzdIWPS2mvFZ5vo7DiDt2yjBoSFlf0bGrM71MCmcsUJ+wNhEVhfx4
-         NQHo+LmWi+AnA80SdQj6e5INRe0a+b395toR0ot52zKtv3umVc0Lz4o9oqtoIGwh0ePI
-         jmOyxBYuYDXrZuaqUBEe3/8KLXNn+/MmfKKPhmexZilVC3Sg2CYuvLkgnV1dn9l5dWSK
-         ofhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=g/W44ow+C6jPmps5gfwR35TPNfFxt3RYI3mHXT3ZiRU=;
-        b=GP+pwLTa1iKmzZA/EUin27Iu4hl3dy0A5ihV0UmWDANY6OmSSfL+vMfZcC6V6v8/CE
-         wYpmGhtKMghzrQYOLufuB/+1c6qQt1/ztakMekCo/Ar03eXQBiVp268EaTCe19n7aS6G
-         NOrpSJ3F9zvJ2ZRRJDnUj1Uf5xbRzftOqBFrDlVbFWmcz0hbmj/MQXQf6YtWdUlLbTiy
-         RU73RG8oMBee0YW0P8S73sjPefPs8b8ez/77aH64+M+6saekC6i3puBEwCfUJluxO0cS
-         G7Rc16tNmqHICZBoommjc2wfdf7/tXeCn0B7IhS7+3r6ga2Lt3cmdNSPx7flRJqSY3Gt
-         9zyQ==
-X-Gm-Message-State: AOAM530hAg5W/qqiBJDk5kQsf0KaEbm0AN/1WrxG1paHRhXtT7JUo0fo
-        jKJEznTplWvj4sck3SLxbxerXNqrSqg=
-X-Google-Smtp-Source: ABdhPJybYMS+Qt8hUA7uuNlltK6Z2xKsKaPvHD9Ky0eTMbcjFktPuaTwZqWLA98/yeoyRA08QmTKfg==
-X-Received: by 2002:a5d:414e:: with SMTP id c14mr8965921wrq.81.1622912690062;
-        Sat, 05 Jun 2021 10:04:50 -0700 (PDT)
-Received: from debby (176-141-241-253.abo.bbox.fr. [176.141.241.253])
-        by smtp.gmail.com with ESMTPSA id z19sm11201170wmf.31.2021.06.05.10.04.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Jun 2021 10:04:49 -0700 (PDT)
-From:   Romain Perier <romain.perier@gmail.com>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Daniel Palmer <daniel@0x0f.com>,
-        Mohammed Billoo <mohammed.billoo@gmail.com>,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] ARM: dts: mstar: Add watchdog device_node definition
-Date:   Sat,  5 Jun 2021 19:04:41 +0200
-Message-Id: <20210605170441.33667-4-romain.perier@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210605170441.33667-1-romain.perier@gmail.com>
-References: <20210605170441.33667-1-romain.perier@gmail.com>
+        id S230163AbhFERIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 13:08:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33500 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229980AbhFERH6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 13:07:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51E7A61418;
+        Sat,  5 Jun 2021 17:05:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622912758;
+        bh=fmWyoypvW3fPUSv173csHffvcTtKlC7QUujd2CkF/MI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=He3r5GiDS9qSvf93LMekqeOM7+/g/LW3ais8ANjjjYOScPwLKzZsg/LWuvMJLb+f+
+         uFZOzZZtrnyKTmE4fm6HHKDKrH2ZZxU2HznNEj9hWmKUm8XtTHXL0ujachId3dH3IS
+         vbeZFBWVqrVzC/ubCYpMMe+AdbAOX7mrwGY3anzc=
+Date:   Sat, 5 Jun 2021 19:05:53 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        kernel test robot <lkp@intel.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 235/252] ALSA: usb-audio: scarlett2:
+ snd_scarlett_gen2_controls_create() can be static
+Message-ID: <YLuu8eFJ7oXFHRIg@kroah.com>
+References: <20210531130657.971257589@linuxfoundation.org>
+ <20210531130705.983881838@linuxfoundation.org>
+ <20210605134222.GA28479@amd>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210605134222.GA28479@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds the definition of both an oscillator at 12Mhz required by the
-the watchdog and the watchdog device_node.
+On Sat, Jun 05, 2021 at 03:42:22PM +0200, Pavel Machek wrote:
+> Hi!
+> 
+> > From: kernel test robot <lkp@intel.com>
+> > 
+> > [ Upstream commit 2b899f31f1a6db2db4608bac2ac04fe2c4ad89eb ]
+> > 
+> > sound/usb/mixer_scarlett_gen2.c:2000:5: warning: symbol 'snd_scarlett_gen2_controls_create' was not declared. Should it be static?
+> > 
+> > Fixes: 265d1a90e4fb ("ALSA: usb-audio: scarlett2: Improve driver startup messages")
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: kernel test robot <lkp@intel.com>
+> > Link: https://lore.kernel.org/r/20210522180900.GA83915@f59a3af2f1d9
+> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> 
+> We normally require real, legal names for commit authors and
+> signoffs. I guess it is a bit late now, but... we don't take
+> pseudonyms so we should not take robots.
 
-Signed-off-by: Romain Perier <romain.perier@gmail.com>
----
- arch/arm/boot/dts/mstar-v7.dtsi | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/arch/arm/boot/dts/mstar-v7.dtsi b/arch/arm/boot/dts/mstar-v7.dtsi
-index 3d5d8c634de3..471d005e2e62 100644
---- a/arch/arm/boot/dts/mstar-v7.dtsi
-+++ b/arch/arm/boot/dts/mstar-v7.dtsi
-@@ -62,6 +62,14 @@ rtc_xtal: rtc_xtal {
- 			clock-frequency = <32768>;
- 			status = "disabled";
- 		};
-+
-+		xtal_div2: xtal_div2 {
-+			#clock-cells = <0>;
-+			compatible = "fixed-factor-clock";
-+			clocks = <&xtal>;
-+			clock-div = <2>;
-+			clock-mult = <1>;
-+		};
- 	};
- 
- 	soc: soc {
-@@ -119,6 +127,12 @@ pm_irin_pins: pm_irin {
- 				};
- 			};
- 
-+			watchdog@6000 {
-+				compatible = "mstar,msc313e-wdt";
-+				reg = <0x6000 0x1f>;
-+				clocks = <&xtal_div2>;
-+			};
-+
- 			intc_fiq: interrupt-controller@201310 {
- 				compatible = "mstar,mst-intc";
- 				reg = <0x201310 0x40>;
--- 
-2.30.2
-
+We have long-taken patches from the kernel test robot, this is not
+something new.
