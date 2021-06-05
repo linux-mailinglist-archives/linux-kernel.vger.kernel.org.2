@@ -2,130 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0A939C480
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 02:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5269D39C485
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 02:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbhFEAjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 20:39:16 -0400
-Received: from mga07.intel.com ([134.134.136.100]:58803 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229847AbhFEAjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 20:39:15 -0400
-IronPort-SDR: TTSQQpN06xVbRtkelTu8l4nlmrSXO5aChgPk1NeXxF7bslqi0N9I7VIGGJaIC6j4CUgd4+0ykz
- qBfmaMjcpPiQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10005"; a="268258106"
-X-IronPort-AV: E=Sophos;i="5.83,249,1616482800"; 
-   d="scan'208";a="268258106"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2021 17:37:27 -0700
-IronPort-SDR: dZSYWsbI8WMbx0NVGQcTp6yCHM6omP2z4iz7i1xpHadTtU8huN99fkmgBeZ5Mtjlm0xHWVnAI3
- xdgIfzKWfecA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,249,1616482800"; 
-   d="scan'208";a="550690425"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga004.jf.intel.com with ESMTP; 04 Jun 2021 17:37:27 -0700
-Received: from linux.intel.com (unknown [10.88.229.80])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 674685805A3;
-        Fri,  4 Jun 2021 17:37:26 -0700 (PDT)
-Date:   Sat, 5 Jun 2021 08:37:22 +0800
-From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC net-next 0/2] Introduce MDIO probe order C45 over C22
-Message-ID: <20210605003722.GA4979@linux.intel.com>
-References: <YKz86iMwoP3VT4uh@lunn.ch>
- <20210601104734.GA18984@linux.intel.com>
- <YLYwcx3aHXFu4n5C@lunn.ch>
- <20210601154423.GA27463@linux.intel.com>
- <YLazBrpXbpsb6aXI@lunn.ch>
- <20210601230352.GA28209@linux.intel.com>
- <YLbqv0Sy/3E2XaVU@lunn.ch>
- <20210602141557.GA29554@linux.intel.com>
- <YLed2G1iDRTbA9eT@lunn.ch>
- <20210602235155.GA31624@linux.intel.com>
+        id S230041AbhFEAkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 20:40:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229847AbhFEAkV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 20:40:21 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B3FC061766
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 17:38:21 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id l23-20020a17090a0717b029016ae774f973so6157461pjl.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 17:38:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=nigauri-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Npywn0HnEi7TokGQksP3F7Mehjp4DGkaDdu4QW8xtjA=;
+        b=bt45kfpYiGzbTE/1td/xLlUt7LKFR4LXmmpKxKtgoqdGUy48MaGWFyot96fJGdmrUL
+         CGMttKF+aNbkNU8CFGAxzw0QccgGPiKt0XyDjeWhux5KRkISmW1CHx/AhnYcmHJPl7xd
+         wr3GEFCMzpI46krvTSVbZQ8YA+eJ4F75BNzsQzLy6RncwsTYo9mS3qbYxihK86C8B031
+         UX4URS9pTnOlO0EYTqDo9f3BWZ/fMP8WJRVWRePJOkmYWPFemzsvfHlXSUUkGQ+5VlX9
+         49qqMeBdef0pLrBN3MpqD1h38aaC/F6fynw+SMrwoqvkWQNrs/hO2Y4u5kzdh4UNChTn
+         +BYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Npywn0HnEi7TokGQksP3F7Mehjp4DGkaDdu4QW8xtjA=;
+        b=hvGpmTFRqqn3Xt2oQBA8z7Fcabx+46yNoHz2pksGEQyHUKEUOWm7L/4ISvknSRsA5l
+         Dh1hAtOnO/RV4GJDPWf4jqjWXeEuF3mSGhgZiYpSk0Rpgmdxl0EpuxiW4dTE1VYwACyJ
+         oErssm3Cakaa4YAuj+9G74JlGIsVB1TCraJAiKFuZDyyPW7noXvIPjZ+i3WeMANzEqfF
+         VEQFI6S2hbHO1gU0owoAGviRqjndfUbc6XwQPehc5CXno1sdUnrFfy7e1iyRG12qOfOu
+         KH4Hdq71jTl8DcNEhGHR/dKlugCxZ2eMy4imNyAAy+pU7AVGHEpfLQ8uDEEAfX9flTQc
+         WzIQ==
+X-Gm-Message-State: AOAM530tl7jl1k40lpB0wZLcJ/VLBV8KszQfcEoqdxjdDjMnAJKf9xZp
+        xS1UMtpFYWtGRtXYWl/a7EKe
+X-Google-Smtp-Source: ABdhPJxGppuC2laUC+0tTTLXrJ36B6jsIS7Skz1eLJqLCjkoXIH3mzpnbSfyLPEczH0ewvYWge+3Jw==
+X-Received: by 2002:a17:90a:6002:: with SMTP id y2mr20074659pji.197.1622853500758;
+        Fri, 04 Jun 2021 17:38:20 -0700 (PDT)
+Received: from localhost ([2405:6581:5360:1800:7285:c2ff:fec2:8f97])
+        by smtp.gmail.com with ESMTPSA id t23sm3030909pgj.9.2021.06.04.17.38.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 17:38:20 -0700 (PDT)
+From:   Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+To:     broonie@kernel.org, michal.simek@xilinx.com, robh+dt@kernel.org
+Cc:     harinik@xilinx.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+Subject: [PATCH v2] dt-bindings: spi: convert Cadence SPI bindings to YAML
+Date:   Sat,  5 Jun 2021 09:38:11 +0900
+Message-Id: <20210605003811.858676-1-iwamatsu@nigauri.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602235155.GA31624@linux.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+Convert spi for Cadence SPI bindings documentation to YAML.
 
-On Thu, Jun 03, 2021 at 07:51:55AM +0800, Wong Vee Khee wrote:
-> On Wed, Jun 02, 2021 at 05:03:52PM +0200, Andrew Lunn wrote:
-> > > I took a look at how most ethernet drivers implement their "bus->read"
-> > > function. Most of them either return -EIO or -ENODEV.
-> > > 
-> > > I think it safe to drop the return error type when we try with C45 access:
-> > > 
-> > > 
-> > > diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-> > > index 1539ea021ac0..282d16fdf6e1 100644
-> > > --- a/drivers/net/phy/phy_device.c
-> > > +++ b/drivers/net/phy/phy_device.c
-> > > @@ -870,6 +870,18 @@ struct phy_device *get_phy_device(struct mii_bus *bus, int addr, bool is_c45)
-> > >         if (r)
-> > >                 return ERR_PTR(r);
-> > > 
-> > > +       /* PHY device such as the Marvell Alaska 88E2110 will return a PHY ID
-> > > +        * of 0 when probed using get_phy_c22_id() with no error. Proceed to
-> > > +        * probe with C45 to see if we're able to get a valid PHY ID in the C45
-> > > +        * space, if successful, create the C45 PHY device.
-> > > +        */
-> > > +       if ((!is_c45) && (phy_id == 0)) {
-> > > +               r = get_phy_c45_ids(bus, addr, &c45_ids);
-> > > +               if (!r)
-> > > +                       return phy_device_create(bus, addr, phy_id,
-> > > +                                                true, &c45_ids);
-> > > +       }
-> > 
-> > This is getting better. But look at for example
-> > drivers/net/mdio/mdio-bcm-unimac.c. What will happen when you ask it
-> > to do get_phy_c45_ids()?
-> >
-> 
-> I will add an additional check for bus->probe_capabilities. This will ensure
-> that only a MDIO bus that is capable for C45 access will go for the 'try getting
-> PHY ID from C45 space' approach. Currently, only Freescale's QorIQ 10G MDIO
-> Controller driver and STMMAC driver has a bus->probe_capabilities of > MDIOBUS_C45.
-> So, I would say with this additional checking, it would not break most of the drivers:-
-> 
-> 
-> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-> index 1539ea021ac0..460c0866ac84 100644
-> --- a/drivers/net/phy/phy_device.c
-> +++ b/drivers/net/phy/phy_device.c
-> @@ -870,6 +870,19 @@ struct phy_device *get_phy_device(struct mii_bus *bus, int addr, bool is_c45)
->         if (r)
->                 return ERR_PTR(r);
-> 
-> +       /* PHY device such as the Marvell Alaska 88E2110 will return a PHY ID
-> +        * of 0 when probed using get_phy_c22_id() with no error. Proceed to
-> +        * probe with C45 to see if we're able to get a valid PHY ID in the C45
-> +        * space, if successful, create the C45 PHY device.
-> +        */
-> +       if ((!is_c45) && (phy_id == 0) &&
-> +            (bus->probe_capabilities >= MDIOBUS_C45)) {
-> +               r = get_phy_c45_ids(bus, addr, &c45_ids);
-> +               if (!r)
-> +                       return phy_device_create(bus, addr, phy_id,
-> +                                                true, &c45_ids);
-> +       }
-> +
->         return phy_device_create(bus, addr, phy_id, is_c45, &c45_ids);
->  }
->  EXPORT_SYMBOL(get_phy_device);
-> 
+Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+---
 
-Can you take a look at the latest implementation and provide
-feedback?
+ v2: Add ref and enum is-decoded-cs.
+     Add ref to num-cs.
 
-VK
+ .../devicetree/bindings/spi/spi-cadence.txt   | 30 ---------
+ .../devicetree/bindings/spi/spi-cadence.yaml  | 66 +++++++++++++++++++
+ 2 files changed, 66 insertions(+), 30 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/spi/spi-cadence.txt
+ create mode 100644 Documentation/devicetree/bindings/spi/spi-cadence.yaml
+
+diff --git a/Documentation/devicetree/bindings/spi/spi-cadence.txt b/Documentation/devicetree/bindings/spi/spi-cadence.txt
+deleted file mode 100644
+index 05a2ef945664be..00000000000000
+--- a/Documentation/devicetree/bindings/spi/spi-cadence.txt
++++ /dev/null
+@@ -1,30 +0,0 @@
+-Cadence SPI controller Device Tree Bindings
+--------------------------------------------
+-
+-Required properties:
+-- compatible		: Should be "cdns,spi-r1p6" or "xlnx,zynq-spi-r1p6".
+-- reg			: Physical base address and size of SPI registers map.
+-- interrupts		: Property with a value describing the interrupt
+-			  number.
+-- clock-names		: List of input clock names - "ref_clk", "pclk"
+-			  (See clock bindings for details).
+-- clocks		: Clock phandles (see clock bindings for details).
+-
+-Optional properties:
+-- num-cs		: Number of chip selects used.
+-			  If a decoder is used, this will be the number of
+-			  chip selects after the decoder.
+-- is-decoded-cs		: Flag to indicate whether decoder is used or not.
+-
+-Example:
+-
+-	spi@e0007000 {
+-		compatible = "xlnx,zynq-spi-r1p6";
+-		clock-names = "ref_clk", "pclk";
+-		clocks = <&clkc 26>, <&clkc 35>;
+-		interrupt-parent = <&intc>;
+-		interrupts = <0 49 4>;
+-		num-cs = <4>;
+-		is-decoded-cs = <0>;
+-		reg = <0xe0007000 0x1000>;
+-	} ;
+diff --git a/Documentation/devicetree/bindings/spi/spi-cadence.yaml b/Documentation/devicetree/bindings/spi/spi-cadence.yaml
+new file mode 100644
+index 00000000000000..9787be21318e66
+--- /dev/null
++++ b/Documentation/devicetree/bindings/spi/spi-cadence.yaml
+@@ -0,0 +1,66 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/spi/spi-cadence.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Cadence SPI controller Device Tree Bindings
++
++maintainers:
++  - Michal Simek <michal.simek@xilinx.com>
++
++allOf:
++  - $ref: "spi-controller.yaml#"
++
++properties:
++  compatible:
++    enum:
++      - cdns,spi-r1p6
++      - xlnx,zynq-spi-r1p6
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clock-names:
++    items:
++      - const: ref_clk
++      - const: pclk
++
++  clocks:
++    maxItems: 2
++
++  num-cs:
++    description: |
++      Number of chip selects used. If a decoder is used,
++      this will be the number of chip selects after the
++      decoder.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 1
++    maximum: 4
++    default: 4
++
++  is-decoded-cs:
++    description: |
++      Flag to indicate whether decoder is used or not.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [ 0, 1 ]
++    default: 0
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    spi@e0007000 {
++      compatible = "xlnx,zynq-spi-r1p6";
++      clock-names = "ref_clk", "pclk";
++      clocks = <&clkc 26>, <&clkc 35>;
++      interrupt-parent = <&intc>;
++      interrupts = <0 49 4>;
++      num-cs = <4>;
++      is-decoded-cs = <0>;
++      reg = <0xe0007000 0x1000>;
++    };
++...
+-- 
+2.30.0
+
