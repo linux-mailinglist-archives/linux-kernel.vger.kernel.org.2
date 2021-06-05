@@ -2,181 +2,439 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B15C739C983
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 17:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 660F739C958
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 17:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbhFEP3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 11:29:41 -0400
-Received: from mout.gmx.net ([212.227.15.18]:42997 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229930AbhFEP3k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 11:29:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1622906786;
-        bh=V+/W+fEoSiOjB3w8FDJE2wQ1DNe8mLPtzk6quPwutvo=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=iojLmS3oTN1DZsuRR/9kSaXZCGZfZFJdGoPfE4LYE35NzhqE+PH0i8QWuoSoO3ig4
-         0JngVPtJQX19ChfEqfqd/uYPbTfQMIgFOXT9yfcsDzgp5iQWkZ6M5rdwdgYtppmBQ+
-         AgsMyUCQsUzlrWcQ2uUUGoVQflciOPKlRo41cXxA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.228.41]) by mail.gmx.net
- (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1MxUnz-1lQzxz0ynB-00xwA9; Sat, 05 Jun 2021 17:26:26 +0200
-From:   John Wood <john.wood@gmx.com>
-To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     John Wood <john.wood@gmx.com>, Andi Kleen <ak@linux.intel.com>,
-        valdis.kletnieks@vt.edu,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-Subject: [PATCH v8 1/8] security: Add LSM hook at the point where a task gets a fatal signal
-Date:   Sat,  5 Jun 2021 17:03:58 +0200
-Message-Id: <20210605150405.6936-2-john.wood@gmx.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210605150405.6936-1-john.wood@gmx.com>
-References: <20210605150405.6936-1-john.wood@gmx.com>
+        id S230050AbhFEPIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 11:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229930AbhFEPIW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 11:08:22 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7116AC061766;
+        Sat,  5 Jun 2021 08:06:18 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id c3so12949175oic.8;
+        Sat, 05 Jun 2021 08:06:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pZGBUTcsC9wLwf22JBVKSKAB8z8I5XCkTelCimnUDxM=;
+        b=j2/2j5z52zUCyAIzh+24r4ZQzgPlhlbp360qcvdjQyzoZuq3oEB3xqVKO5B0wUhZQp
+         bAAyS6tBB6lNJy/CumNy3yjep/OB+YbZ1m0Q8Z9hPHlxLa5bu+/mPWoq7YSb/H8hDNtI
+         YM5RUish+tmddCmUWZQ/aRFB3G1fTM2b2cK64luMnE89Tcj/+BNh5RdF7q5EFDtIEBin
+         1SoMpWuVQQYr7d8wk7LjdUx+D3rmAkMastaWEI5NEiFIVQ8EBDurg8JRioTP7vEzEcIb
+         6S/cj+3adUB+pEauEI5QVHc/6kA6Jz2Nb2BZbaojOSIQ9S5hNZ8M2eDxo8OTK4yk4+d8
+         FR7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pZGBUTcsC9wLwf22JBVKSKAB8z8I5XCkTelCimnUDxM=;
+        b=ErDtLvfSSGDZ9uJffYaYfVpdVFjwMCtQbZKe4GDyip+Ra2urBW4Govoq2X9/jFeRfx
+         QO5ASxgu/M1rqRxLrMy64z1s4oJkHBF7lhiK1ZP/pnCN+0MhCt4++sAV5rQ9lMUE6kIn
+         tn39m3O3Chp3Grx5pneeDOLOKOhcnE9Dkdhfkh0kN4feIFpvxXDnR9NYbk2gC4xPqgQ1
+         qfrqFQukfWDaubb/FXQyK1w4hgB7OXY2p8b0OHQpoSiJsDimPmG5QfdVFcSHUbY0zkZm
+         AzGrLO0WE7IiXSD8oFapTSeywOla2PSdu9nl45dReIbNmYJ7vlfPo6S3dBHBtRDMiUYB
+         vh1Q==
+X-Gm-Message-State: AOAM533oFvlJhHCsIaWYs11LeYtUMAV34BXuLJBd8voNkBrZAnyEPprl
+        9RqFcJngBPB1mop7Sjpf4LxtDtveSzHfcVdaChM=
+X-Google-Smtp-Source: ABdhPJyJwrkhnizoShzf9kfDu/xsTlC8+y7YCvIAdiYSB6wgIlc3p6eZGEoW1xcKxBkkbuFAmbQtyFS9Bv3LqGEdqMA=
+X-Received: by 2002:aca:efc1:: with SMTP id n184mr14372406oih.23.1622905577676;
+ Sat, 05 Jun 2021 08:06:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:AXIG8C6g+ihrnMi0Z4HkpARpgiKyCwVIo4zDsrAYAVY7GlNoZU6
- 7O/98xMjJRXPp5Qat/wXAqITJjdc3Cg9KVDUkv9jMTAC4TmaJiwFSk+4T6TOSiObnjiNVug
- 5nZhRlb2yHN0s2og2Qe+i3xYhvcGTiItAt6TDApjVwCMOjKleIr60AAiwo95nL9p1fVQ/6I
- S8e6Adp97nN0pqVcqVFpQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+rmuCovomkA=:ToTPjaCqTPRANlpKwgY+BI
- Td9B1Od85sW7rN2BHlZx0S9yGMlNrRoNPYKw30EdwZpFQCw0MJ1R0CK7jNGYsnXyO/JWmtABx
- BP8IkODttWs14kSIcSCNKNy4q9JWsUjjZTaSYWrXwi64xsSYLhWaaddKFpk8MUuuvSv9uqJAX
- E/hUUtc0B9GArMYdIA78pHLTWuSIdCh8Q6yZFjSzqfSAR3zBStXRTFgc6GEb7llc9k4u8FD+R
- XtlGDWysWOLPvtgnghV5DjcNE6AUKsVR7/3NR/PDlkpUufHxi09Ppq7iL9YoFl0WE5upzqFIj
- q2ZzkVHB18mUQ06x7p6IFopYkvLGrVWFazETXmveEJbPqu/5Xu7Riy03cOUfz3v11HrIzMpMz
- +aIux0EuCwEfa60cVU4z8Nv7Zm4W7JsHaheyBhL6dxdOf/4gr4Hgajen8Eh3d8F6FbVSPOsxt
- s6Uybc/P9ER94vsN5/ev4rT+BM0jb2diW8cHTOUaV3rYTpxStwxWfbvo2PowP9gpvZVXNz+hx
- TSva2yUeepFKks37O8PHbO7IArxS+MAlRplA68Dn18k9iGuaEofOOzhOSpZcTTyMvillCS1iM
- xqv87MAi6Ut/ohkzwdAmStfNxUwBmvnY7nV9e8iChfcxFcplTo9Rx6RldUnyeSImra4jB7Vzx
- RpXyAAGqsDguITO8wNAo58W2qV5VbIh+W+g4Bv/8q+pxIopd3BEaf7KRG3D8XZq/xwcthsF6j
- wqyLd1NJlM3kM3uZl0ZVlHGMTBb4M37rkjQU5DqMJuu5YsZffDQO5e6ZNnBtcnt+pa8zge1yT
- auceOueO8F+cLAD8VsMsN/Y5wu6H3S0/kPvI24SydTLiJRY6XYuHqkDh2qVoyPCJnfkeGgDa7
- l+JKO2UYiadlnCcOEv/DRYUnCcD3MQAWGmIgoIUXbLesQfwXrIwoUVlqfxVLY+/2X5KxnltMR
- lU21EnKuEaYy41oQ7lvgOfWYYsSQ4i/w/egMQ05Hi30jVL3FoXlaWlI9UMRBTcs13VMp4M3JP
- cpn10EqaCybbccD3nURqqCVccxWiBfvbdBPp/8NvdtR7Uibubz38DMLWBhCZoPwm+Cn4J4NwY
- 1+oTCRz76ExaLmdSmDYJMKJUpA2ai+aDo4z
+References: <20210515124055.22225-1-sergio.paracuellos@gmail.com>
+ <20210515124055.22225-2-sergio.paracuellos@gmail.com> <20210604193506.GC3695694@robh.at.kernel.org>
+ <CAMhs-H8vkVoMaQr4Ky9xhzpwz-LjpBzd0kK=NTgO0Lo-m3pyng@mail.gmail.com>
+In-Reply-To: <CAMhs-H8vkVoMaQr4Ky9xhzpwz-LjpBzd0kK=NTgO0Lo-m3pyng@mail.gmail.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Sat, 5 Jun 2021 17:06:06 +0200
+Message-ID: <CAMhs-H9JCVS8ve8xLVdoSdexipPAtQLtEvDo8bKXZu4MABX78Q@mail.gmail.com>
+Subject: Re: [PATCH 1/4] dt-bindings: mt7621-pci: PCIe binding documentation
+ for MT7621 SoCs
+To:     Rob Herring <robh@kernel.org>
+Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        John Crispin <john@phrozen.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-staging@lists.linux.dev,
+        Greg KH <gregkh@linuxfoundation.org>,
+        NeilBrown <neil@brown.name>,
+        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a security hook that allows a LSM to be notified when a task gets a
-fatal signal. This patch is a previous step on the way to compute the
-task crash period by the "brute" LSM (linux security module to detect
-and mitigate fork brute force attack against vulnerable userspace
-processes).
+Hi Rob,
 
-Signed-off-by: John Wood <john.wood@gmx.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-=2D--
- include/linux/lsm_hook_defs.h | 1 +
- include/linux/lsm_hooks.h     | 4 ++++
- include/linux/security.h      | 4 ++++
- kernel/signal.c               | 1 +
- security/security.c           | 5 +++++
- 5 files changed, 15 insertions(+)
+On Fri, Jun 4, 2021 at 11:32 PM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+>
+> Hi Rob,
+>
+> Thanks for the review.
+>
+> On Fri, Jun 4, 2021 at 9:35 PM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Sat, May 15, 2021 at 02:40:52PM +0200, Sergio Paracuellos wrote:
+> > > Add device tree binding documentation for PCIe in MT7621 SoCs.
+> > >
+> > > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > > ---
+> > >  .../bindings/pci/mediatek,mt7621-pci.yaml     | 149 ++++++++++++++++++
+> > >  1 file changed, 149 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml b/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
+> > > new file mode 100644
+> > > index 000000000000..7f5f9d583032
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
+> > > @@ -0,0 +1,149 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/pci/mediatek,mt7621-pci.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: MediaTek MT7621 PCIe controller
+> > > +
+> > > +maintainers:
+> > > +  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > > +
+> > > +description: |+
+> > > +  MediaTek MT7621 PCIe subsys supports single Root complex (RC)
+> > > +  with 3 Root Ports. Each Root Ports supports a Gen1 1-lane Link
+> > > +
+> > > +allOf:
+> > > +  - $ref: /schemas/pci/pci-bus.yaml#
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: mediatek,mt7621-pci
+> > > +
+> > > +  reg:
+> > > +    items:
+> > > +      - description: host-pci bridge registers
+> > > +      - description: pcie port 0 RC control registers
+> > > +      - description: pcie port 1 RC control registers
+> > > +      - description: pcie port 2 RC control registers
+> > > +
+> > > +  ranges:
+> > > +    maxItems: 2
+> > > +
+> > > +  resets:
+> > > +    items:
+> > > +      - description: pcie port 0 reset.
+> > > +      - description: pcie port 1 reset.
+> > > +      - description: pcie port 2 reset.
+> > > +
+> > > +  reset-names:
+> > > +    items:
+> > > +      - const: pcie0
+> > > +      - const: pcie1
+> > > +      - const: pcie2
+> > > +
+> > > +  clocks:
+> > > +    items:
+> > > +      - description: pcie port 0 clock.
+> > > +      - description: pcie port 1 clock.
+> > > +      - description: pcie port 2 clock.
+> > > +
+> > > +  clock-names:
+> > > +    items:
+> > > +      - const: pcie0
+> > > +      - const: pcie1
+> > > +      - const: pcie2
+> > > +
+> > > +  phys:
+> > > +    items:
+> > > +      - description: Dual-ported phy for pcie port 0 and 1.
+> > > +      - description: Phy for pcie port 2.
+> > > +
+> > > +  phy-names:
+> > > +    items:
+> > > +      - const: pcie-phy0
+> > > +      - const: pcie-phy2
+> >
+> > If you're going to keep the ports (and I think that's right because
+> > there's only a single PCI address space AFAICT), then I think you should
+> > move resets, clocks, and phys into each port node.
+> >
+> > So you'll need to define 'pcie@[0-2],0' node with those properties under
+> > it.
+>
+> Ok I will move these stuff to each port node. So each port node will
+> be similar to:
+>
+> pcie@0,0 {
+>     reg = <0x0000 0 0 0 0>;
+>     #address-cells = <3>;
+>     #size-cells = <2>;
+>     device_type = "pci";
+>     #interrupt-cells = <1>;
+>     clocks = <&clkctrl 24>;
+>     resets = <&rstctrl 24>;
+>     phys = <&pcie0_phy 1>;
+>     interrupt-map-mask = <0 0 0 0>;
+>     interrupt-map = <0 0 0 0 &gic GIC_SHARED 4 IRQ_TYPE_LEVEL_HIGH>;
+>     ranges;
+> };
+>
+> How can I be sure by schema that the clocks, reset and phy properties
+> are in each port node if I move them from the parent? By now each port
+> node is just validating because of ' $ref:
+> /schemas/pci/pci-bus.yaml#'.
+>
+> Thanks in advance for your time.
+>
 
-diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-index 04c01794de83..e28468e84300 100644
-=2D-- a/include/linux/lsm_hook_defs.h
-+++ b/include/linux/lsm_hook_defs.h
-@@ -225,6 +225,7 @@ LSM_HOOK(int, -ENOSYS, task_prctl, int option, unsigne=
-d long arg2,
- 	 unsigned long arg3, unsigned long arg4, unsigned long arg5)
- LSM_HOOK(void, LSM_RET_VOID, task_to_inode, struct task_struct *p,
- 	 struct inode *inode)
-+LSM_HOOK(void, LSM_RET_VOID, task_fatal_signal, const kernel_siginfo_t *s=
-iginfo)
- LSM_HOOK(int, 0, ipc_permission, struct kern_ipc_perm *ipcp, short flag)
- LSM_HOOK(void, LSM_RET_VOID, ipc_getsecid, struct kern_ipc_perm *ipcp,
- 	 u32 *secid)
-diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-index 5c4c5c0602cb..fc8bef0f15d9 100644
-=2D-- a/include/linux/lsm_hooks.h
-+++ b/include/linux/lsm_hooks.h
-@@ -799,6 +799,10 @@
-  *	security attributes, e.g. for /proc/pid inodes.
-  *	@p contains the task_struct for the task.
-  *	@inode contains the inode structure for the inode.
-+ * @task_fatal_signal:
-+ *	This hook allows security modules to be notified when a task gets a
-+ *	fatal signal.
-+ *	@siginfo contains the signal information.
-  *
-  * Security hooks for Netlink messaging.
-  *
-diff --git a/include/linux/security.h b/include/linux/security.h
-index 06f7c50ce77f..609c76c6c764 100644
-=2D-- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -433,6 +433,7 @@ int security_task_kill(struct task_struct *p, struct k=
-ernel_siginfo *info,
- int security_task_prctl(int option, unsigned long arg2, unsigned long arg=
-3,
- 			unsigned long arg4, unsigned long arg5);
- void security_task_to_inode(struct task_struct *p, struct inode *inode);
-+void security_task_fatal_signal(const kernel_siginfo_t *siginfo);
- int security_ipc_permission(struct kern_ipc_perm *ipcp, short flag);
- void security_ipc_getsecid(struct kern_ipc_perm *ipcp, u32 *secid);
- int security_msg_msg_alloc(struct msg_msg *msg);
-@@ -1183,6 +1184,9 @@ static inline int security_task_prctl(int option, un=
-signed long arg2,
- static inline void security_task_to_inode(struct task_struct *p, struct i=
-node *inode)
- { }
+So I think, this should be enough:
 
-+static inline void security_task_fatal_signal(const kernel_siginfo_t *sig=
-info)
-+{ }
-+
- static inline int security_ipc_permission(struct kern_ipc_perm *ipcp,
- 					  short flag)
- {
-diff --git a/kernel/signal.c b/kernel/signal.c
-index f7c6ffcbd044..4380763b3d8d 100644
-=2D-- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2804,6 +2804,7 @@ bool get_signal(struct ksignal *ksig)
- 		/*
- 		 * Anything else is fatal, maybe with a core dump.
- 		 */
-+		security_task_fatal_signal(&ksig->info);
- 		current->flags |=3D PF_SIGNALED;
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/pci/mediatek,mt7621-pci.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
 
- 		if (sig_kernel_coredump(signr)) {
-diff --git a/security/security.c b/security/security.c
-index b38155b2de83..208e3e7d4284 100644
-=2D-- a/security/security.c
-+++ b/security/security.c
-@@ -1891,6 +1891,11 @@ void security_task_to_inode(struct task_struct *p, =
-struct inode *inode)
- 	call_void_hook(task_to_inode, p, inode);
- }
+title: MediaTek MT7621 PCIe controller
 
-+void security_task_fatal_signal(const kernel_siginfo_t *siginfo)
-+{
-+	call_void_hook(task_fatal_signal, siginfo);
-+}
-+
- int security_ipc_permission(struct kern_ipc_perm *ipcp, short flag)
- {
- 	return call_int_hook(ipc_permission, 0, ipcp, flag);
-=2D-
-2.25.1
+maintainers:
+  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
 
+description: |+
+  MediaTek MT7621 PCIe subsys supports single Root complex (RC)
+  with 3 Root Ports. Each Root Ports supports a Gen1 1-lane Link
+
+allOf:
+  - $ref: /schemas/pci/pci-bus.yaml#
+
+properties:
+  compatible:
+    const: mediatek,mt7621-pci
+
+  reg:
+    items:
+      - description: host-pci bridge registers
+      - description: pcie port 0 RC control registers
+      - description: pcie port 1 RC control registers
+      - description: pcie port 2 RC control registers
+
+  ranges:
+    maxItems: 2
+
+patternProperties:
+  'pcie@[0-2],0':
+    type: object
+    $ref: /schemas/pci/pci-bus.yaml#
+
+    properties:
+      resets:
+        maxItems: 1
+
+      clocks:
+        maxItems: 1
+
+      phys:
+        maxItems: 1
+
+    required:
+      - "#interrupt-cells"
+      - interrupt-map-mask
+      - interrupt-map
+      - resets
+      - clocks
+      - phys
+      - phy-names
+      - ranges
+
+    unevaluatedProperties: false
+
+required:
+  - compatible
+  - reg
+  - ranges
+  - "#interrupt-cells"
+  - interrupt-map-mask
+  - interrupt-map
+  - reset-gpios
+
+unevaluatedProperties: false
+
+examples:
+  - |
+    #include <dt-bindings/gpio/gpio.h>
+    #include <dt-bindings/interrupt-controller/mips-gic.h>
+
+    pcie: pcie@1e140000 {
+        compatible = "mediatek,mt7621-pci";
+        reg = <0x1e140000 0x100>,
+              <0x1e142000 0x100>,
+              <0x1e143000 0x100>,
+              <0x1e144000 0x100>;
+
+        #address-cells = <3>;
+        #size-cells = <2>;
+        pinctrl-names = "default";
+        pinctrl-0 = <&pcie_pins>;
+        device_type = "pci";
+        ranges = <0x02000000 0 0x00000000 0x60000000 0 0x10000000>,
+/* pci memory */
+                 <0x01000000 0 0x00000000 0x1e160000 0 0x00010000>;
+/* io space */
+        #interrupt-cells = <1>;
+        interrupt-map-mask = <0xF800 0 0 0>;
+        interrupt-map = <0x0000 0 0 0 &gic GIC_SHARED 4 IRQ_TYPE_LEVEL_HIGH>,
+                        <0x0800 0 0 0 &gic GIC_SHARED 24 IRQ_TYPE_LEVEL_HIGH>,
+                        <0x1000 0 0 0 &gic GIC_SHARED 25 IRQ_TYPE_LEVEL_HIGH>;
+        reset-gpios = <&gpio 19 GPIO_ACTIVE_LOW>;
+
+        pcie@0,0 {
+            reg = <0x0000 0 0 0 0>;
+            #address-cells = <3>;
+            #size-cells = <2>;
+            device_type = "pci";
+            #interrupt-cells = <1>;
+            interrupt-map-mask = <0 0 0 0>;
+            interrupt-map = <0 0 0 0 &gic GIC_SHARED 4 IRQ_TYPE_LEVEL_HIGH>;
+            resets = <&rstctrl 24>;
+            clocks = <&clkctrl 24>;
+            phys = <&pcie0_phy 1>;
+            phy-names = "pcie-phy0";
+            ranges;
+        };
+
+        pcie@1,0 {
+            reg = <0x0800 0 0 0 0>;
+            #address-cells = <3>;
+            #size-cells = <2>;
+            device_type = "pci";
+            #interrupt-cells = <1>;
+            interrupt-map-mask = <0 0 0 0>;
+            interrupt-map = <0 0 0 0 &gic GIC_SHARED 24 IRQ_TYPE_LEVEL_HIGH>;
+            resets = <&rstctrl 25>;
+            clocks = <&clkctrl 25>;
+            phys = <&pcie0_phy 1>;
+            phy-names = "pcie-phy1";
+            ranges;
+        };
+
+        pcie@2,0 {
+            reg = <0x1000 0 0 0 0>;
+            #address-cells = <3>;
+            #size-cells = <2>;
+            device_type = "pci";
+            #interrupt-cells = <1>;
+            interrupt-map-mask = <0 0 0 0>;
+            interrupt-map = <0 0 0 0 &gic GIC_SHARED 25 IRQ_TYPE_LEVEL_HIGH>;
+            resets = <&rstctrl 26>;
+            clocks = <&clkctrl 26>;
+            phys = <&pcie2_phy 0>;
+            phy-names = "pcie-phy2";
+            ranges;
+        };
+    };
+...
+
+I will send these bindings for v2 if you are ok with them.
+
+Thanks,
+     Sergio Paracuellos
+
+> Best regards,
+>     Sergio Paracuellos
+>
+> >
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - reg
+> > > +  - ranges
+> > > +  - "#interrupt-cells"
+> > > +  - interrupt-map-mask
+> > > +  - interrupt-map
+> > > +  - resets
+> > > +  - reset-names
+> > > +  - clocks
+> > > +  - clock-names
+> > > +  - phys
+> > > +  - phy-names
+> > > +  - reset-gpios
+> > > +
+> > > +unevaluatedProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    #include <dt-bindings/gpio/gpio.h>
+> > > +    #include <dt-bindings/interrupt-controller/mips-gic.h>
+> > > +
+> > > +    pcie: pcie@1e140000 {
+> > > +        compatible = "mediatek,mt7621-pci";
+> > > +        reg = <0x1e140000 0x100>,
+> > > +              <0x1e142000 0x100>,
+> > > +              <0x1e143000 0x100>,
+> > > +              <0x1e144000 0x100>;
+> > > +
+> > > +        #address-cells = <3>;
+> > > +        #size-cells = <2>;
+> > > +        pinctrl-names = "default";
+> > > +        pinctrl-0 = <&pcie_pins>;
+> > > +        device_type = "pci";
+> > > +        ranges = <0x02000000 0 0x00000000 0x60000000 0 0x10000000>,  /* pci memory */
+> > > +                 <0x01000000 0 0x00000000 0x1e160000 0 0x00010000>;  /* io space */
+> > > +        #interrupt-cells = <1>;
+> > > +        interrupt-map-mask = <0xF800 0 0 0>;
+> > > +        interrupt-map = <0x0000 0 0 0 &gic GIC_SHARED 4 IRQ_TYPE_LEVEL_HIGH>,
+> > > +                        <0x0800 0 0 0 &gic GIC_SHARED 24 IRQ_TYPE_LEVEL_HIGH>,
+> > > +                        <0x1000 0 0 0 &gic GIC_SHARED 25 IRQ_TYPE_LEVEL_HIGH>;
+> > > +        resets = <&rstctrl 24>, <&rstctrl 25>, <&rstctrl 26>;
+> > > +        reset-names = "pcie0", "pcie1", "pcie2";
+> > > +        clocks = <&clkctrl 24>, <&clkctrl 25>, <&clkctrl 26>;
+> > > +        clock-names = "pcie0", "pcie1", "pcie2";
+> > > +        phys = <&pcie0_phy 1>, <&pcie2_phy 0>;
+> > > +        phy-names = "pcie-phy0", "pcie-phy2";
+> > > +        reset-gpios = <&gpio 19 GPIO_ACTIVE_LOW>;
+> > > +
+> > > +        pcie@0,0 {
+> > > +            reg = <0x0000 0 0 0 0>;
+> > > +            #address-cells = <3>;
+> > > +            #size-cells = <2>;
+> > > +            device_type = "pci";
+> > > +            #interrupt-cells = <1>;
+> > > +            interrupt-map-mask = <0 0 0 0>;
+> > > +            interrupt-map = <0 0 0 0 &gic GIC_SHARED 4 IRQ_TYPE_LEVEL_HIGH>;
+> > > +            ranges;
+> > > +        };
+> > > +
+> > > +        pcie@1,0 {
+> > > +            reg = <0x0800 0 0 0 0>;
+> > > +            #address-cells = <3>;
+> > > +            #size-cells = <2>;
+> > > +            device_type = "pci";
+> > > +            #interrupt-cells = <1>;
+> > > +            interrupt-map-mask = <0 0 0 0>;
+> > > +            interrupt-map = <0 0 0 0 &gic GIC_SHARED 24 IRQ_TYPE_LEVEL_HIGH>;
+> > > +            ranges;
+> > > +        };
+> > > +
+> > > +        pcie@2,0 {
+> > > +            reg = <0x1000 0 0 0 0>;
+> > > +            #address-cells = <3>;
+> > > +            #size-cells = <2>;
+> > > +            device_type = "pci";
+> > > +            #interrupt-cells = <1>;
+> > > +            interrupt-map-mask = <0 0 0 0>;
+> > > +            interrupt-map = <0 0 0 0 &gic GIC_SHARED 25 IRQ_TYPE_LEVEL_HIGH>;
+> > > +            ranges;
+> > > +        };
+> > > +    };
+> > > +...
+> > > --
+> > > 2.25.1
