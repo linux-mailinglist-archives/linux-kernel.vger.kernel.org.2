@@ -2,107 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A15339CA49
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 19:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C641339CA63
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 20:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhFERnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 13:43:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229964AbhFERnq (ORCPT
+        id S230111AbhFESCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 14:02:06 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:33692 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230010AbhFESCA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 13:43:46 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B76FDC061766;
-        Sat,  5 Jun 2021 10:41:57 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id e11so2310888wrg.3;
-        Sat, 05 Jun 2021 10:41:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zDrH59vPVGwHTPRMUG66pWvn8DwNgjhaTZ8+7bVvWks=;
-        b=hvBFg06ltlfMtFlCvnLQq1j7N9UIN3KeE7n8H53Qw+eQ4bR4Rsl7HVWxa5tn2hy5/H
-         nrFs87Ymz7vSIjN+IghhgpGNbKzkVzdb1KznXrQmiVeDyShc25SMLdgEo4qBaVsW/8IT
-         jTiRTL2zjzHQp6fEXT3wmZ1xeKvdG86xBPzPQ9n0PbxCWfxmh5VKXha5vUXzukrqwpZU
-         15wtQ1wpcc3EO7MHAmJA7TaXLdDKEvRqdy/a9njJSAti+tj3ncVCQrv+w1gmh06WhnEI
-         em7TI/c863zZiU5bXf5Yjg9L0LbqU/ksjsO0LtIo4jfECxYxJX/k4PIlZnAGuxmFz+xT
-         +ckg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zDrH59vPVGwHTPRMUG66pWvn8DwNgjhaTZ8+7bVvWks=;
-        b=KsXasaXgTi1aFGG0n1WkTCSRnMXfNoIqZ4EANFCoWymyGKay5BItuOqfRLxhCqHxse
-         dY0KFg3SCQ9xqPLC2onOWaI0xljBK5W5rOHklcpwjDU5uL1XVxuF0KTr+5dcEOqZqBfa
-         NNWfyVnS7xTK6FpHc5Zh7HhYgg0RNwOl7PWHqEXGuruMaBufCuhPesmLBJE0Ss4PLwcq
-         /Onzst6aNCnMy1lHE5iTpLUSLf37girm12R5DVPvqT2/Q8VXa/eiIPeBd9+X7p2dHixu
-         GCrDuyz0dudZyOmaFSduEdnGWGhSRj8+u3a31juj9rgDr1sG/JV+GVfmnfKrhU/FBkPz
-         cB2Q==
-X-Gm-Message-State: AOAM5334+KoURJdwh32yBpLE6HEYvE5ZtLsOBtbPLxE5QHHJ4dxqpxot
-        xCk3unPNcMd/Wn91bVWlXg4=
-X-Google-Smtp-Source: ABdhPJx3BUcRirbykVkDF5f4joc8UrtKp3p0OEUvd2smzOzw0Qw6oI6yfoY4Mg2YdD8+Vsjqe9+fYQ==
-X-Received: by 2002:a5d:538c:: with SMTP id d12mr9251525wrv.116.1622914916430;
-        Sat, 05 Jun 2021 10:41:56 -0700 (PDT)
-Received: from cluster5 ([80.76.206.81])
-        by smtp.gmail.com with ESMTPSA id t4sm10352505wru.53.2021.06.05.10.41.55
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Sat, 05 Jun 2021 10:41:56 -0700 (PDT)
-From:   Matthew Hagan <mnhagan88@gmail.com>
-Cc:     Matthew Hagan <mnhagan88@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Wong Vee Khee <vee.khee.wong@linux.intel.com>,
-        Tan Tee Min <tee.min.tan@intel.com>,
-        "Wong, Vee Khee" <vee.khee.wong@intel.com>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 3/3] dt-bindings: net: stmmac: add ahb reset to example
-Date:   Sat,  5 Jun 2021 18:35:39 +0100
-Message-Id: <20210605173546.4102455-3-mnhagan88@gmail.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210605173546.4102455-1-mnhagan88@gmail.com>
-References: <20210605173546.4102455-1-mnhagan88@gmail.com>
+        Sat, 5 Jun 2021 14:02:00 -0400
+X-Greylist: delayed 375 seconds by postgrey-1.27 at vger.kernel.org; Sat, 05 Jun 2021 14:01:59 EDT
+Date:   Sat, 5 Jun 2021 20:53:51 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Hoan Tran <hoan@os.amperecomputing.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v1 1/1] gpio-dwapb: Drop unused headers and sort the rest
+Message-ID: <20210605175351.hv7m4fzegq4oxlpc@mobilestation>
+References: <20210604185013.86662-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210604185013.86662-1-andriy.shevchenko@linux.intel.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add ahb reset to the reset properties within the example gmac node.
+On Fri, Jun 04, 2021 at 09:50:13PM +0300, Andy Shevchenko wrote:
+> Drop unused headers and drop the rest.
 
-Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
----
- Documentation/devicetree/bindings/net/ipq806x-dwmac.txt | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Thanks for cleanup.
+Acked-by: Serge Semin <fancer.lancer@gmail.com>
+Tested-by: Serge Semin <fancer.lancer@gmail.com>
 
-diff --git a/Documentation/devicetree/bindings/net/ipq806x-dwmac.txt b/Documentation/devicetree/bindings/net/ipq806x-dwmac.txt
-index 6d7ab4e524d4..ef5fd9f0b156 100644
---- a/Documentation/devicetree/bindings/net/ipq806x-dwmac.txt
-+++ b/Documentation/devicetree/bindings/net/ipq806x-dwmac.txt
-@@ -30,6 +30,7 @@ Example:
- 		clocks = <&gcc GMAC_CORE1_CLK>;
- 		clock-names = "stmmaceth";
- 
--		resets = <&gcc GMAC_CORE1_RESET>;
--		reset-names = "stmmaceth";
-+		resets = <&gcc GMAC_CORE1_RESET>,
-+			 <&gcc GMAC_AHB_RESET>;
-+		reset-names = "stmmaceth", "ahb";
- 	};
--- 
-2.26.3
+-Sergey
 
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/gpio/gpio-dwapb.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
+> index 7d61f5821e32..3eb13d6d31ef 100644
+> --- a/drivers/gpio/gpio-dwapb.c
+> +++ b/drivers/gpio/gpio-dwapb.c
+> @@ -13,17 +13,15 @@
+>  #include <linux/io.h>
+>  #include <linux/ioport.h>
+>  #include <linux/irq.h>
+> +#include <linux/mod_devicetable.h>
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+> -#include <linux/of_address.h>
+> -#include <linux/of_device.h>
+> -#include <linux/of_irq.h>
+> +#include <linux/platform_data/gpio-dwapb.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/property.h>
+>  #include <linux/reset.h>
+> -#include <linux/spinlock.h>
+> -#include <linux/platform_data/gpio-dwapb.h>
+>  #include <linux/slab.h>
+> +#include <linux/spinlock.h>
+>  
+>  #include "gpiolib.h"
+>  #include "gpiolib-acpi.h"
+> -- 
+> 2.30.2
+> 
