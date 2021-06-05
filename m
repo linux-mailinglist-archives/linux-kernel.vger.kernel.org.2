@@ -2,105 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4C839C768
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 12:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B299739C76A
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 12:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbhFEK2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 06:28:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbhFEK2U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 06:28:20 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCE9C061767
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Jun 2021 03:26:16 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id k15so9287181pfp.6
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 03:26:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=A7dQxJYaCXMIhpLLE5OL3sgALzOxVshV1s/+sLvv2mA=;
-        b=OfAr6bXPncM5uCFphXI3MFVT/USlPReB4Lv8lg9guId8a5OyRnU3TmEG268l1svDiJ
-         zUwbjqFmUagVzzvnEjoHMWg4peiz3tmUEy+NrpqiERcrK0cQPtfYOlfrvbho+hVfe590
-         sBIU+3QRk0cfCwuQEx3Gz7m2viUmv5GHIO2Rg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=A7dQxJYaCXMIhpLLE5OL3sgALzOxVshV1s/+sLvv2mA=;
-        b=A8w3D2cJYK8TCM5YAaJlZKSKxTfFYjOlhpTZxIeEonvxUQ13g4xyYiHUCWIi6AapEo
-         fUnngtuFlx0QiO+J2+08G6KhBLNnD/EKW12Ow8T3Wun6A9OOFUZ1ajqGt0PVWSPZaPtk
-         mzSPJeHBWBkdD0FKCV3BqypIF2fOi6gn/gYEGqCAOc+GnAtWIyuLoIQBln1YIU80efAC
-         dTdijbylIOj3PLPeCA59oXa7Zduig6SSBPbuALZhFUppUkOTvK+myi2C8vroIIFsOINa
-         QWH65+/hI84kTn9/oWZ/ou7nb8IEAOIECT/bCK9gMkDEdZYyOBZMyd4uW3rbpP/KgvaV
-         ozBw==
-X-Gm-Message-State: AOAM5317NrWUkMtDglLt/rkB6FDfxc0jDiqq72yG85eqZ+3kSwqfmZyV
-        s6pDcZnGyOGJG75VKHglCY/ULQ==
-X-Google-Smtp-Source: ABdhPJyVnf1Sfj9IsodJVK9bc2KmHiVTZ1LFECsZ//Q95AMgY73GH+UrJw92aQL39XgpHtR6Pw2eYw==
-X-Received: by 2002:a63:db17:: with SMTP id e23mr9327049pgg.274.1622888776525;
-        Sat, 05 Jun 2021 03:26:16 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:5981:261e:350c:bb45])
-        by smtp.gmail.com with ESMTPSA id j10sm6815520pjb.36.2021.06.05.03.26.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Jun 2021 03:26:16 -0700 (PDT)
-Date:   Sat, 5 Jun 2021 19:26:11 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Suleiman Souhlal <suleiman@google.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2 2/2] kvm: x86: implement KVM PM-notifier
-Message-ID: <YLtRQ/uYQoVbve0v@google.com>
-References: <20210605023042.543341-1-senozhatsky@chromium.org>
- <20210605023042.543341-2-senozhatsky@chromium.org>
- <87k0n8u1nk.wl-maz@kernel.org>
- <YLtK09pY1EjOtllS@google.com>
- <YLtL/JPvGs2efZKO@google.com>
- <87im2sty5k.wl-maz@kernel.org>
+        id S230127AbhFEK2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 06:28:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44584 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229902AbhFEK2v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 06:28:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1C5A613D8;
+        Sat,  5 Jun 2021 10:27:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622888823;
+        bh=YioKZDxufSEZE3P4aTZ9DMtkP6Zo6Hey96e+OoMhoro=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=auQvtFtAysLkdD/b3mhz7wZtSilohlTDynB4JzfHDWlnfELjqW7eAzmem7BckHsuL
+         OnA1z2gk3T1fD4BsgZ/W51WgNG1DMuxBjKlHBfup7dTM4Uo1hR79sHEpbTOU9/VaPs
+         ehdtvp+qZPULNM6MtUpRGuEWT8Nlg43BpULp9no6gHdWD64shIe/Zj2OF4tiNlDZFx
+         kAVSTjnuXM/7voXFbaoc2540CJJnMJpbWhygN1PoHlwKSdK5E4ZMmvy4s8oQNCzvMk
+         jLig1LPbN/sj6pXxyRhOtQ/2oA5jw8BISB3LqhWLOfMpegWBkbUzrpR1dyWLXNBZc4
+         JHTtbV0prvQSw==
+Received: from johan by xi with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1lpTW8-0007Wd-O3; Sat, 05 Jun 2021 12:27:00 +0200
+Date:   Sat, 5 Jun 2021 12:27:00 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     George McCollister <george.mccollister@gmail.com>
+Cc:     linux-usb@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] USB: serial: ftdi_sio: add NovaTech OrionMX product ID
+Message-ID: <YLtRdEz8wwbGUvLi@hovoldconsulting.com>
+References: <20210604003208.31799-1-george.mccollister@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87im2sty5k.wl-maz@kernel.org>
+In-Reply-To: <20210604003208.31799-1-george.mccollister@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/06/05 11:15), Marc Zyngier wrote:
-> > For the time being kvm_set_guest_paused() errors out when
-> > !vcpu->arch.pv_time_enabled, but this probably can change in the
-> > future (who knows?).  So shall I check vcpu->arch.pv_time_enabled in
-> > kvm_arch_suspend_notifier()?
+On Thu, Jun 03, 2021 at 07:32:08PM -0500, George McCollister wrote:
+> Add PID for the NovaTech OrionMX so it can be automatically detected.
 > 
-> That, or check for the -EINVAL return value.
+> Signed-off-by: George McCollister <george.mccollister@gmail.com>
 
-I suppose this should do the trick then (hate to do `int ret = 0`,
-but we can have no VCPUs with enabled pv_time)
+Now applied, thanks.
 
----
-
-+static int kvm_arch_suspend_notifier(struct kvm *kvm)
-+{
-+       struct kvm_vcpu *vcpu;
-+       int i, ret = 0;
-+
-+       mutex_lock(&kvm->lock);
-+       kvm_for_each_vcpu(i, vcpu, kvm) {
-+               if (!vcpu->arch.pv_time_enabled)
-+                       continue;
-+
-+               ret = kvm_set_guest_paused(vcpu);
-+               if (ret) {
-+                       pr_err("Failed to pause guest VCPU%d: %d\n",
-+                              vcpu->vcpu_id, ret);
-+                       break;
-+               }
-+       }
-+       mutex_unlock(&kvm->lock);
-+
-+       return ret ? NOTIFY_BAD : NOTIFY_DONE;
-+}
+Johan
