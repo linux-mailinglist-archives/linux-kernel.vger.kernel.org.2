@@ -2,107 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 895B739CA5D
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 19:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9DA539CA38
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 19:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbhFESBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 14:01:16 -0400
-Received: from mout.gmx.net ([212.227.15.15]:41791 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229964AbhFESBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 14:01:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1622915918;
-        bh=LJZMH4mKKG4Y4RH/IKRmcuoSuYAs3YZ6GSXZNks3Imw=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=EXvn/Qe1G20n0eCfzE5oqH9nCio58KhDVyrKq87mvUn5a8gNLLkdFSi6kOi+BoMnY
-         1hDvjbSm7pE5rTXadLV9eQ8lFHUU+l7oMzrA0fvIEEgGuFDDUwD7mQLglDQSkSDCKk
-         7YpGopCJ5tA0g8uLT9Zl3u6SXCYduGi1BElJOQoY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.228.41]) by mail.gmx.net
- (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1M9FnZ-1llRpx0p9T-006QJB; Sat, 05 Jun 2021 19:58:38 +0200
-From:   John Wood <john.wood@gmx.com>
-To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     John Wood <john.wood@gmx.com>, Andi Kleen <ak@linux.intel.com>,
-        valdis.kletnieks@vt.edu,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-Subject: [PATCH v8 8/8] MAINTAINERS: Add a new entry for the Brute LSM
-Date:   Sat,  5 Jun 2021 17:04:05 +0200
-Message-Id: <20210605150405.6936-9-john.wood@gmx.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210605150405.6936-1-john.wood@gmx.com>
-References: <20210605150405.6936-1-john.wood@gmx.com>
+        id S230036AbhFERfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 13:35:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229964AbhFERfx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 13:35:53 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B46C061766
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Jun 2021 10:34:05 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id o8so15949613ljp.0
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 10:34:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=REtD3sQUY2CNZZ7L/kkisPb7LHWcDlAjQWErJEwmS9Q=;
+        b=XpcgMspxhzm0fDb876MPwnlsxb3LwumDBMvd+lFxCaI/oqKyWJqxMXGB38pzA1N2F0
+         /RT7qMH1jRkuKhvQ7T4AO7F7t0pYGd0v+VY+3L3mhLdSqitTqHnQVa+YlgKbxcRtnaxG
+         Pe666dCCyAMurX8EBSpiBjTbF/z0K5UgOmjb9RUx+hPpcQWpBLMETLa8Dqe9ZbP/xcWb
+         xy/ZTPGL9XZJngTCdhZ+YkF4yiP3UJRMbLgxyrhJ6rPfbjeVnH5XgfWi3Cc7Z0VwJzR3
+         c5EpgxSafH6zZ2xibyUPomt/Zx/6QmjTqw+TnVMj3AUr31ViXXKdhiLRVsayDLAwGMjg
+         rNvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=REtD3sQUY2CNZZ7L/kkisPb7LHWcDlAjQWErJEwmS9Q=;
+        b=r93Uhkl6bh3m0aQhkVZMgp0F1TwtKV15H3mUVTmHuaGUjRRjvxN1Y4apzJYlNspxv9
+         ghHktrApsZu++OerVHs1LxFh33IZCBUVUDM1CVo+LlsYRpqjSg0+w0etx5j0g6gUmfvI
+         m299OnYHMZjtZOMBq64GCe5ArKJAzeDH4JDbqBPBpi0na85g7mQEW7d1/tsX4nF2fjlP
+         8tpaUWajU576FLDNFTv2if1WjklxVIMXhjtdcuYGaHRpnZY3Yae6SnBi1/lbM6wizNdU
+         G1u8uDz/9o/cUc7aayERZq78ccE3hcEEp1/MDLLKb7/wy2+D/XDN6ecgquebnyiLrgVJ
+         tTrw==
+X-Gm-Message-State: AOAM532T1sohTf40u3t5t034oLdpM7dt2P7154QPRE7DY555T7TChs2K
+        7vGGGR0q2eLT7UN3SAnY+5PQTTBJl9WfjypG8MI=
+X-Google-Smtp-Source: ABdhPJz20LKZAr9K35giDgoxRAqQQJnsSZ/D2Ae+bumOvQ8Gy8g9IFkbXn2KCe3cIMiukuU/jPWRtpgq2KSBrl09180=
+X-Received: by 2002:a2e:8146:: with SMTP id t6mr2585941ljg.40.1622914443624;
+ Sat, 05 Jun 2021 10:34:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:zkSY+Nk10Hb9RRhiRldy4BtP2AIFThepaw+IBLiQxGRKAu76Tfz
- u/xwkD/5Xjj+4nPrpcNbps49Prlmno1jLjtPMU0HsCFJ8K+bm+sJ7XuKlC6BGL7piwviohY
- sTlX6Cko1RB0w10cj7CJ1tXWloewJz9zjikX65FCu8KyF9jqJGcXtdHzxZDjQX0PCOxFvnd
- 7U8jbQRCot2JkQcmxsVhA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Zll4jERGK4o=:b0ECLFhKc1ov8XftBxIOl9
- Bm00CA3vk6hTwdngrb1VLwvu2bvhDT96UWxpd5QHIfH1c2O5zW+gq6YD8aknBSKHms6Dub/s5
- f7jMvDzfr5Mutwll/uQ5YbB8JC7nFGHTzf6hbcttzV66aa+9jlbs3/ABbaQDmtH+Ly+qYDQE6
- FJpIA61UHheW6K0IyVh8t2m1+jHn7my8B3BQhdc+PrMe0gQHPjEU+ZJis00K5/gvkyrxTuGHo
- 3iKblKo1mjMcUN1oGVKrRjirMb/TSVxwz7XTUB/P51Velw8SgxuMTg53j1FnpuIvvv+ZG7xcM
- rmG1oAg0tdheQ+pPQogFWskdNK4Ag8VyzweuZ0fUVY+dWaKKtmpBQ874+29gkw6Y3+70hvc1t
- jKfB8ckTMcibE9oDb6mKVl78uE1GRAIS8nhyb/kne1ua2bEqJ7tysrbjFc8360U1qjgPFE4a8
- kWRb0oTX6CQSAAeJ3YGCjz+WCiRyJYAMcfo4Gn83R2JOjPBXdJoPX6iGxF/2A24DJQBruU8hr
- Mt5TAwuaw/q+PHowLaTJbqCFVrXJ0aCas4utyh4tULM1nV2SfxU9vYtxtz598ePmrFz2Xgi0N
- dlWbtJrwwBzPMAiQBUv0awrFs6FmK0tviDCY30HkQcsnHvCZbJHH3BVCrJqzP/oRtfGvpjpF7
- R6w3tXo5XyxV95pQb8np03wgVP40n7oGErvs5Elsw1r2nS4zDRzQKQ/0CQgjA4tAH2DIAd8fn
- NzoaFJZg0jIvsi7Mx8a575YtGSGwFGOSaMS2YstcN/TkldgpaI0M9AGAxklmmiTQ9w0ZRsBAD
- zAAsVtzFlfXsBbPEYB16GqQVR1GfJw+QirLv+4i1jFPM6vcesajUz1HKeqxtFjkNlHVVEZzTY
- thwIgWTL1P9kdR7uy66I1xegj0nPCui+X1+xHTtLWMLfBk6Ci9RK2kI28meJyPq0ITYlS6OGv
- N3iR4UwFaRr2RLHQPZFXPZW46bgHRTI7sKQOtVwRVVSEGZCyTVyf/dR8zdcZig0VOlLAIWyvz
- OGAAlfnYKEtf+eT3FDxtEzVc1viYBZUKzCl716RqEIlhUc1D9FYU7g/5bQrWTIyT/wv1i6IbI
- PubMFX8o76gckRAj7fkDwA2yyiLtOqwYun5
+References: <20210605161219.26421-1-dwaipayanray1@gmail.com> <eac3b988f4993a77f8eea3550a6dd5980b25e92f.camel@perches.com>
+In-Reply-To: <eac3b988f4993a77f8eea3550a6dd5980b25e92f.camel@perches.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Sat, 5 Jun 2021 23:03:52 +0530
+Message-ID: <CABJPP5B3jZHnAprT15uEkuAbYPUT49VXRFT+pkubVVep-2=XmA@mail.gmail.com>
+Subject: Re: [PATCH] checkpatch: Fix check for embedded filename
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to maintain the code for the Brute LSM add a new entry to the
-maintainers list.
+On Sat, Jun 5, 2021 at 10:51 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Sat, 2021-06-05 at 21:42 +0530, Dwaipayan Ray wrote:
+> > When checkpatch is run on file contents piped through stdin,
+> > it may generate false EMBEDDED_FILENAME warnings if the
+> > --file flag is used.
+>
+> I think this is a "don't do that" scenario and this change
+> is not necessary.
+>
 
-Signed-off-by: John Wood <john.wood@gmx.com>
-=2D--
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Okay then. I will drop this.
+Sorry for the noise.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 503fd21901f1..665cd6aaadac 100644
-=2D-- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3847,6 +3847,14 @@ L:	netdev@vger.kernel.org
- S:	Supported
- F:	drivers/net/ethernet/brocade/bna/
-
-+BRUTE SECURITY MODULE
-+M:	John Wood <john.wood@gmx.com>
-+S:	Maintained
-+F:	Documentation/admin-guide/LSM/Brute.rst
-+F:	include/brute/
-+F:	security/brute/
-+F:	tools/testing/selftests/brute/
-+
- BSG (block layer generic sg v4 driver)
- M:	FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
- L:	linux-scsi@vger.kernel.org
-=2D-
-2.25.1
-
+Thanks & Regards,
+Dwaipayan.
