@@ -2,100 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E21BE39C60C
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 07:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39C6139C5F2
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 07:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbhFEFbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 01:31:47 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:49543 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229660AbhFEFbq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 01:31:46 -0400
-Received: from [192.168.0.3] (ip5f5aeece.dynamic.kabel-deutschland.de [95.90.238.206])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 2D75361E64762;
-        Sat,  5 Jun 2021 07:29:58 +0200 (CEST)
-Subject: Re: [PATCH] hwmon: (pmbus_core) Check adapter PEC support
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Madhava Reddy Siddareddygari <msiddare@cisco.com>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210604135714.529042-1-pmenzel@molgen.mpg.de>
- <20210605005124.GA255680@roeck-us.net>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <8534d106-0936-a41d-b9c7-2f527b315dae@molgen.mpg.de>
-Date:   Sat, 5 Jun 2021 07:29:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229996AbhFEFIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 01:08:43 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:7108 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229544AbhFEFIm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 01:08:42 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fxnbm0lnMzYpvc;
+        Sat,  5 Jun 2021 13:04:04 +0800 (CST)
+Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 5 Jun 2021 13:06:50 +0800
+Received: from huawei.com (10.175.113.32) by dggpemm500009.china.huawei.com
+ (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 5 Jun 2021
+ 13:06:50 +0800
+From:   Liu Shixin <liushixin2@huawei.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Liu Shixin <liushixin2@huawei.com>
+Subject: [PATCH -next] crypto: remove CRYPTOA_U32 and related functions
+Date:   Sat, 5 Jun 2021 13:39:02 +0800
+Message-ID: <20210605053902.2017295-1-liushixin2@huawei.com>
+X-Mailer: git-send-email 2.18.0.huawei.25
 MIME-Version: 1.0
-In-Reply-To: <20210605005124.GA255680@roeck-us.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.32]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Guenter,
+According to the advice of Eric and Herbert, type CRYPTOA_U32
+has been unused for over a decade, so remove the code related to
+CRYPTOA_U32.
 
+After removing CRYPTOA_U32, the type of the variable attrs can be
+changed from union to struct.
 
-Am 05.06.21 um 02:51 schrieb Guenter Roeck:
-> On Fri, Jun 04, 2021 at 03:57:14PM +0200, Paul Menzel wrote:
->> From: Madhava Reddy Siddareddygari <msiddare@cisco.com>
->>
->> Currently, for Packet Error Checking (PEC) only the controller
->> is checked for support. This causes problems on the cisco-8000
->> platform where a SMBUS transaction errors are observed. This is
->> because PEC has to be enabled only if both controller and
->> adapter support it.
->>
->> Added code to check PEC capability for adapter and enable it
->> only if both controller and adapter supports PEC.
->>
->> Signed-off-by: Madhava Reddy Siddareddygari <msiddare@cisco.com>
->> [Upstream from SONiC https://github.com/Azure/sonic-linux-kernel/pull/215]
->> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
->> ---
->>   drivers/hwmon/pmbus/pmbus_core.c | 10 ++++++----
->>   1 file changed, 6 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
->> index bbd745178147..7fbd82b7560d 100644
->> --- a/drivers/hwmon/pmbus/pmbus_core.c
->> +++ b/drivers/hwmon/pmbus/pmbus_core.c
->> @@ -2214,11 +2214,13 @@ static int pmbus_init_common(struct i2c_client *client, struct pmbus_data *data,
->>   		data->has_status_word = true;
->>   	}
->>   
->> -	/* Enable PEC if the controller supports it */
->> -	if (!(data->flags & PMBUS_NO_CAPABILITY)) {
-> 
-> What is the rationale for removing this check ?
-> AFAICS that will render the ibm-cffps driver unusable.
+Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+---
+ crypto/algapi.c         | 18 ------------------
+ crypto/algboss.c        | 32 +++++++-------------------------
+ include/crypto/algapi.h |  1 -
+ include/linux/crypto.h  |  5 -----
+ 4 files changed, 7 insertions(+), 49 deletions(-)
 
-I screwed up forward porting this change. Thank you for spotting this. I 
-sent a second iteration/version 2 of this patch.
+diff --git a/crypto/algapi.c b/crypto/algapi.c
+index fdabf2675b63..43f999dba4dc 100644
+--- a/crypto/algapi.c
++++ b/crypto/algapi.c
+@@ -868,24 +868,6 @@ const char *crypto_attr_alg_name(struct rtattr *rta)
+ }
+ EXPORT_SYMBOL_GPL(crypto_attr_alg_name);
+ 
+-int crypto_attr_u32(struct rtattr *rta, u32 *num)
+-{
+-	struct crypto_attr_u32 *nu32;
+-
+-	if (!rta)
+-		return -ENOENT;
+-	if (RTA_PAYLOAD(rta) < sizeof(*nu32))
+-		return -EINVAL;
+-	if (rta->rta_type != CRYPTOA_U32)
+-		return -EINVAL;
+-
+-	nu32 = RTA_DATA(rta);
+-	*num = nu32->num;
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(crypto_attr_u32);
+-
+ int crypto_inst_setname(struct crypto_instance *inst, const char *name,
+ 			struct crypto_alg *alg)
+ {
+diff --git a/crypto/algboss.c b/crypto/algboss.c
+index 5ebccbd6b74e..71016a923a79 100644
+--- a/crypto/algboss.c
++++ b/crypto/algboss.c
+@@ -28,16 +28,9 @@ struct cryptomgr_param {
+ 		struct crypto_attr_type data;
+ 	} type;
+ 
+-	union {
++	struct {
+ 		struct rtattr attr;
+-		struct {
+-			struct rtattr attr;
+-			struct crypto_attr_alg data;
+-		} alg;
+-		struct {
+-			struct rtattr attr;
+-			struct crypto_attr_u32 data;
+-		} nu32;
++		struct crypto_attr_alg data;
+ 	} attrs[CRYPTO_MAX_ATTRS];
+ 
+ 	char template[CRYPTO_MAX_ALG_NAME];
+@@ -104,12 +97,10 @@ static int cryptomgr_schedule_probe(struct crypto_larval *larval)
+ 
+ 	i = 0;
+ 	for (;;) {
+-		int notnum = 0;
+-
+ 		name = ++p;
+ 
+ 		for (; isalnum(*p) || *p == '-' || *p == '_'; p++)
+-			notnum |= !isdigit(*p);
++			;
+ 
+ 		if (*p == '(') {
+ 			int recursion = 0;
+@@ -123,7 +114,6 @@ static int cryptomgr_schedule_probe(struct crypto_larval *larval)
+ 					break;
+ 			}
+ 
+-			notnum = 1;
+ 			p++;
+ 		}
+ 
+@@ -131,18 +121,10 @@ static int cryptomgr_schedule_probe(struct crypto_larval *larval)
+ 		if (!len)
+ 			goto err_free_param;
+ 
+-		if (notnum) {
+-			param->attrs[i].alg.attr.rta_len =
+-				sizeof(param->attrs[i].alg);
+-			param->attrs[i].alg.attr.rta_type = CRYPTOA_ALG;
+-			memcpy(param->attrs[i].alg.data.name, name, len);
+-		} else {
+-			param->attrs[i].nu32.attr.rta_len =
+-				sizeof(param->attrs[i].nu32);
+-			param->attrs[i].nu32.attr.rta_type = CRYPTOA_U32;
+-			param->attrs[i].nu32.data.num =
+-				simple_strtol(name, NULL, 0);
+-		}
++		param->attrs[i].attr.rta_len =
++			sizeof(param->attrs[i]);
++		param->attrs[i].attr.rta_type = CRYPTOA_ALG;
++		memcpy(param->attrs[i].data.name, name, len);
+ 
+ 		param->tb[i + 1] = &param->attrs[i].attr;
+ 		i++;
+diff --git a/include/crypto/algapi.h b/include/crypto/algapi.h
+index 86f0748009af..41d42e649da4 100644
+--- a/include/crypto/algapi.h
++++ b/include/crypto/algapi.h
+@@ -118,7 +118,6 @@ void *crypto_spawn_tfm2(struct crypto_spawn *spawn);
+ struct crypto_attr_type *crypto_get_attr_type(struct rtattr **tb);
+ int crypto_check_attr_type(struct rtattr **tb, u32 type, u32 *mask_ret);
+ const char *crypto_attr_alg_name(struct rtattr *rta);
+-int crypto_attr_u32(struct rtattr *rta, u32 *num);
+ int crypto_inst_setname(struct crypto_instance *inst, const char *name,
+ 			struct crypto_alg *alg);
+ 
+diff --git a/include/linux/crypto.h b/include/linux/crypto.h
+index da5e0d74bb2f..3b9263d6122f 100644
+--- a/include/linux/crypto.h
++++ b/include/linux/crypto.h
+@@ -647,7 +647,6 @@ enum {
+ 	CRYPTOA_UNSPEC,
+ 	CRYPTOA_ALG,
+ 	CRYPTOA_TYPE,
+-	CRYPTOA_U32,
+ 	__CRYPTOA_MAX,
+ };
+ 
+@@ -665,10 +664,6 @@ struct crypto_attr_type {
+ 	u32 mask;
+ };
+ 
+-struct crypto_attr_u32 {
+-	u32 num;
+-};
+-
+ /* 
+  * Transform user interface.
+  */
+-- 
+2.18.0.huawei.25
 
-
-Kind regards,
-
-Paul
-
-
->> -		ret = i2c_smbus_read_byte_data(client, PMBUS_CAPABILITY);
->> -		if (ret >= 0 && (ret & PB_CAPABILITY_ERROR_CHECK))
->> +	/* Enable PEC if the controller and bus supports it */
->> +	ret = i2c_smbus_read_byte_data(client, PMBUS_CAPABILITY);
->> +	if (ret >= 0 && (ret & PB_CAPABILITY_ERROR_CHECK)) {
->> +		if (i2c_check_functionality(client->adapter,
->> +			I2C_FUNC_SMBUS_PEC)) {
->>   			client->flags |= I2C_CLIENT_PEC;
->> +		}
->>   	}
->>   
->>   	/*
->> -- 
->> 2.32.0.rc2
