@@ -2,170 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2059D39CAAE
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 21:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 749DB39CAB6
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 21:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhFETNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 15:13:41 -0400
-Received: from mail-lf1-f43.google.com ([209.85.167.43]:33658 "EHLO
-        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbhFETNk (ORCPT
+        id S230060AbhFETUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 15:20:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229996AbhFETUW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 15:13:40 -0400
-Received: by mail-lf1-f43.google.com with SMTP id t7so12070071lff.0;
-        Sat, 05 Jun 2021 12:11:39 -0700 (PDT)
+        Sat, 5 Jun 2021 15:20:22 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75D45C061766
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Jun 2021 12:18:19 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id md2-20020a17090b23c2b029016de4440381so513890pjb.1
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 12:18:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bi0pwEi0pQ/oYx7SVz3LT6qWBi6qRoYFdBg0PjjtkiU=;
-        b=LuXg4DkraiESutoTGMgFWtNaz/vXvFOcBH/rRyEA8MkW6FvWC7kW37LoUs75OFaVGk
-         y//mqBrjlcZ/SmtFqs6n2tgyMGvdNczJlR586At142OeIxXINk2wnuAjo5flaxHqe2oN
-         V+ROfCEaSuOUCKOtjF5iFK0SW+RPFMswCGkddaiXBvImx3VMDNhT8O5JJ/oq2UA9adQb
-         EsHaTJvHNyycot71/VHlUzNR893T2H9nSUO85iph/BXbeiUjcSkZH4hA0A4oKUvz+di3
-         zUvvwB35QRYUqcxy1vtZaHY2zS9Joe5MvEfCo1B6qVZVa5/t5fRqBErEro5W10YYZJ6L
-         Ewng==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lEDQpHfLYsPS4ui/OdWsymIsdBIwBJQksSc8kuj65Ho=;
+        b=gK9XcHv2xaVwaycQOD2OzjboZGuZMeWxjcGF6dzcwSUWLUdR1YpiIgk6mA4QdywsAY
+         smnx6NtAqPs8aKDGXtexs2ycrcTM2yCwlZDt4pm4rzE37d8rhoOwZF/D2TW4AF55oama
+         SJgDH/foH01eQkEewYlkhRin5UxH8C0A6lqhAeJXXCr+gZLn830X0FRb3CjaLxg9P7T+
+         K5+BYFppbaIgxexGUGeof3+Oko2/cc1NjUc2e5kA7csiXp5Jk1scesyPr1s138oCi65j
+         vkzjhHNs+5So9S3mV82GZFbAovdgS0qKaQ8QHHYLVbi51NFgoLQP1YKdcGivgtNu/VGS
+         EbPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bi0pwEi0pQ/oYx7SVz3LT6qWBi6qRoYFdBg0PjjtkiU=;
-        b=B+LhKU8T1x+9CCf5nR6U+km0/aGdm5BRPOpHxT3hB03CX4xsptomW9xHr3C0WCJyG0
-         Hox6FT/A7+y4IN7sXWsbz0ibl/Wdcr4e2XSTc2NQOFJkEmj2jJLOdnsTaCEq8veOby3m
-         SYo1Z2MU+wEqo3i5nBS76vyia10dlacNx/0S+YUL8jaw8Z0jZSvp8KoVCiollEriHL64
-         aEATcX67/E7dMJsfcnlCknRxVi+vOp2mhwnaCC/0ulUUDeJ3GVEY379xSMRJtH9Ikh4C
-         FkOIc1cbrXPfHIVJgi+vrwcjRFCfiPX1zriZPZz5xOOK2FvBJwZBQLys3+s2yIXoZi8L
-         dPrg==
-X-Gm-Message-State: AOAM532cC0jrCf8ILhGdaS2+UrOKceckNxCWSYKcp/LM+fTWU74zAmop
-        gd2z8FitRyQ8LlO5KmKNLAl1JDTLA2RresICmx4=
-X-Google-Smtp-Source: ABdhPJxkGuWFy365VSP1rud7bkI+QSPlqLX2IOttcHb7321Z43JZOgQDYk9TcAqdmKPMWykGTZgGvbVJNE4GoJz1uJM=
-X-Received: by 2002:a05:6512:2010:: with SMTP id a16mr4002379lfb.38.1622920238423;
- Sat, 05 Jun 2021 12:10:38 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lEDQpHfLYsPS4ui/OdWsymIsdBIwBJQksSc8kuj65Ho=;
+        b=EiOgcWlNmXIcgprNHuk7RhfPhoe6r8C6+DxEAbX8ZdkgkSCJYqpEPfnAtxe9MNYWek
+         sPETZ/YxXaPvUSopN7SREk6xxLMlBCncnU5Xc2TmTfSFrijZixN99WPhtLzZ0J2Eu6Vk
+         /F0w8RjlcxLxWZFce+Avf9cJ5NlkbAXIhlAUB5L9qyDR6FXVYwd5qRwcaYdJJmSyWxOf
+         quCR4tGriznM6P3cBGqy9EB3EnIsGyNlSFs2W5RH8JZT+tWl0W2ilelR96ecl1ZkLir+
+         7H0z3L2ZJ7kOyvsB/K/wwX+T9JqkqTjmUEXlSj9rYsSbDwOM8H2FR5/YerXm7aq88J5U
+         2Jnw==
+X-Gm-Message-State: AOAM532kYHZ14HEWBpQqXcNoHU2g1eKlT+u4SgB6OcpTliGwpx9RNX86
+        qRCK+PGhj+kJfyGEUWVvaP8+/mrtxYCmSw==
+X-Google-Smtp-Source: ABdhPJy26Ei8wT6dgonYjXfqR7TTcZTXKWQxrjMYOFWHfgHWnPGxCN2c2aBpvcDqDtKE7ohycMIXlw==
+X-Received: by 2002:a17:90a:7bce:: with SMTP id d14mr11946793pjl.38.1622920698314;
+        Sat, 05 Jun 2021 12:18:18 -0700 (PDT)
+Received: from localhost.localdomain ([49.37.1.243])
+        by smtp.gmail.com with ESMTPSA id cq24sm399437pjb.18.2021.06.05.12.18.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Jun 2021 12:18:17 -0700 (PDT)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com
+Cc:     linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>
+Subject: [PATCH] checkpatch: do not allow using -f/--file option without a filename
+Date:   Sun,  6 Jun 2021 00:47:54 +0530
+Message-Id: <20210605191754.28165-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <000000000000c2987605be907e41@google.com> <20210602212726.7-1-fuzzybritches0@gmail.com>
- <YLhd8BL3HGItbXmx@kroah.com> <87609-531187-curtm@phaethon> <6a392b66-6f26-4532-d25f-6b09770ce366@fb.com>
-In-Reply-To: <6a392b66-6f26-4532-d25f-6b09770ce366@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 5 Jun 2021 12:10:26 -0700
-Message-ID: <CAADnVQKexxZQw0yK_7rmFOdaYabaFpi2EmF6RGs5bXvFHtUQaA@mail.gmail.com>
-Subject: Re: [PATCH v4] bpf: core: fix shift-out-of-bounds in ___bpf_prog_run
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Kurt Manucredo <fuzzybritches0@gmail.com>,
-        syzbot+bed360704c521841c85d@syzkaller.appspotmail.com,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        nathan@kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 5, 2021 at 10:55 AM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 6/5/21 8:01 AM, Kurt Manucredo wrote:
-> > Syzbot detects a shift-out-of-bounds in ___bpf_prog_run()
-> > kernel/bpf/core.c:1414:2.
->
-> This is not enough. We need more information on why this happens
-> so we can judge whether the patch indeed fixed the issue.
->
-> >
-> > I propose: In adjust_scalar_min_max_vals() move boundary check up to avoid
-> > missing them and return with error when detected.
-> >
-> > Reported-and-tested-by: syzbot+bed360704c521841c85d@syzkaller.appspotmail.com
-> > Signed-off-by: Kurt Manucredo <fuzzybritches0@gmail.com>
-> > ---
-> >
-> > https://syzkaller.appspot.com/bug?id=edb51be4c9a320186328893287bb30d5eed09231
-> >
-> > Changelog:
-> > ----------
-> > v4 - Fix shift-out-of-bounds in adjust_scalar_min_max_vals.
-> >       Fix commit message.
-> > v3 - Make it clearer what the fix is for.
-> > v2 - Fix shift-out-of-bounds in ___bpf_prog_run() by adding boundary
-> >       check in check_alu_op() in verifier.c.
-> > v1 - Fix shift-out-of-bounds in ___bpf_prog_run() by adding boundary
-> >       check in ___bpf_prog_run().
-> >
-> > thanks
-> >
-> > kind regards
-> >
-> > Kurt
-> >
-> >   kernel/bpf/verifier.c | 30 +++++++++---------------------
-> >   1 file changed, 9 insertions(+), 21 deletions(-)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 94ba5163d4c5..ed0eecf20de5 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -7510,6 +7510,15 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
-> >       u32_min_val = src_reg.u32_min_value;
-> >       u32_max_val = src_reg.u32_max_value;
-> >
-> > +     if ((opcode == BPF_LSH || opcode == BPF_RSH || opcode == BPF_ARSH) &&
-> > +                     umax_val >= insn_bitness) {
-> > +             /* Shifts greater than 31 or 63 are undefined.
-> > +              * This includes shifts by a negative number.
-> > +              */
-> > +             verbose(env, "invalid shift %lld\n", umax_val);
-> > +             return -EINVAL;
-> > +     }
->
-> I think your fix is good. I would like to move after
+When checkpatch is run without a filename, it reads from stdin.
+But if --file option is used along with that, it may generate
+false positives.
 
-I suspect such change will break valid programs that do shift by register.
+Consider the following test file:
+$cat test.c
+int x = a - b;
 
-> the following code though:
->
->          if (!src_known &&
->              opcode != BPF_ADD && opcode != BPF_SUB && opcode != BPF_AND) {
->                  __mark_reg_unknown(env, dst_reg);
->                  return 0;
->          }
->
-> > +
-> >       if (alu32) {
-> >               src_known = tnum_subreg_is_const(src_reg.var_off);
-> >               if ((src_known &&
-> > @@ -7592,39 +7601,18 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
-> >               scalar_min_max_xor(dst_reg, &src_reg);
-> >               break;
-> >       case BPF_LSH:
-> > -             if (umax_val >= insn_bitness) {
-> > -                     /* Shifts greater than 31 or 63 are undefined.
-> > -                      * This includes shifts by a negative number.
-> > -                      */
-> > -                     mark_reg_unknown(env, regs, insn->dst_reg);
-> > -                     break;
-> > -             }
->
-> I think this is what happens. For the above case, we simply
-> marks the dst reg as unknown and didn't fail verification.
-> So later on at runtime, the shift optimization will have wrong
-> shift value (> 31/64). Please correct me if this is not right
-> analysis. As I mentioned in the early please write detailed
-> analysis in commit log.
+$cat test.c | ./scripts/checkpatch.pl -f
+WARNING: It's generally not useful to have the filename in the file
++int x = a - b;
 
-The large shift is not wrong. It's just undefined.
-syzbot has to ignore such cases.
+This is a false positive and occurs because $realfile is set to "-".
+Also since checkpatch relies on the file's extension to run specific
+checks for c files, assembly files, etc, most of the checks are
+not run as well.
+
+So it is better to disable -f/--file option when checkpatch is
+run without a filename.
+
+Link: https://lore.kernel.org/lkml/294bb4a2c3f5f8cf4a744cf59bfd37562653afb9.camel@perches.com/T/#t
+Suggested-by: Joe Perches <joe@perches.com>
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+---
+ scripts/checkpatch.pl | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 3e1795311c87..7dff9206f9f0 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -331,6 +331,7 @@ help(0) if ($help);
+ 
+ die "$P: --git cannot be used with --file or --fix\n" if ($git && ($file || $fix));
+ die "$P: --verbose cannot be used with --terse\n" if ($verbose && $terse);
++die "$P: -f/--file requires at least one filename\n" if ($file && $#ARGV < 0);
+ 
+ if ($color =~ /^[01]$/) {
+ 	$color = !$color;
+-- 
+2.28.0
+
