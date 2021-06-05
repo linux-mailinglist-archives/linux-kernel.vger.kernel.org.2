@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B504439CBE0
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 02:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D45BE39CBE2
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 02:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbhFFAeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 20:34:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39298 "EHLO
+        id S230178AbhFFAeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 20:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230116AbhFFAeM (ORCPT
+        with ESMTP id S230126AbhFFAeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 5 Jun 2021 20:34:12 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8379FC061766
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B089C061767
         for <linux-kernel@vger.kernel.org>; Sat,  5 Jun 2021 17:32:23 -0700 (PDT)
-Message-Id: <20210605234742.712464974@linutronix.de>
+Message-Id: <20210606001322.910162032@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622939539;
+        s=2020; t=1622939540;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=PDU/VEaGgHypBXGdUOwgOZcP0B2DI/IP4sSBIdbvmk4=;
-        b=IMgjGqphWtBaOG2CjznmVT+RbIsx4BlyQfbtlFfJgYUG4Or+LBxstJ8ITmzlc++7uerhyM
-        vv41C/O77I6wUNDsdGHPsHPql36Vwr6q7hNK8W9QzCfQbc+Jm7BMqx2uJpXYmI4dBj2JcP
-        o1v6LpB+Etj9HWEVJh08TgYXjOUhY/rrFRfUjyHdhHOE+z5VtwwL9c37MYqeZVcoVvYlW+
-        XAukJHv+/nAEADYxS2fXYn8TBBotH1EVQaxnU8JgzbmI8b6Z73WJNOTjEC4fvyHFRZxioQ
-        3RQWV7gfQjT6myL9wZlBHvmSr6pqtwgSezbDex1FQpyY5SP4GzGf8HaIL2w5nQ==
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=HSiE2O6KFBOpT6Kb4cZTjcrtM1/7rzim6CIxeVHRjB0=;
+        b=zxhS+2c4EWQzEYYjUW7/5h9remTkuV8TkMvFlzhY1IdMZt7W2Vy9GNA50G++Wc1CpCj4vJ
+        doTVCterOgw63MPR5pFOceMwSU+wmiPEfmHgDIv6LD0V7Cv+BYjnjuZiDveamO/EUhWvbZ
+        MFulvStkCIjbMhDw5FgImJ7AUox5Ofc3KZs6RJd0UH4JcDTVSu3z/vypsFl4wDBgO/Ix7u
+        7xsW3mGC417nbUwZNEg2LlpOO2uj4PXIgb4AlPttzUo8cOUpqnIoW/jHVfqSIpB6KWd/8f
+        6rR19ktG7kPqa1mWUZYFe7vMIVKOQnlKpKfkyqu58Y0BMFvEpOaIjdYFEmtXqQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622939539;
+        s=2020e; t=1622939540;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=PDU/VEaGgHypBXGdUOwgOZcP0B2DI/IP4sSBIdbvmk4=;
-        b=LaxZANayh804WmwA1zaS6rax+6K37UcJOa5cS6HwLqVWKdfBx92eLM+qEHvxGmwlFmIvNN
-        t9jn99gg6vVtdxAA==
-Date:   Sun, 06 Jun 2021 01:47:42 +0200
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=HSiE2O6KFBOpT6Kb4cZTjcrtM1/7rzim6CIxeVHRjB0=;
+        b=U5y6ClonEH6T7Z4ui7PH0ueYOcUZst4Q73KYLQEvdkv5QQqeR4xLVE4xSZ4TSPpSv8BKzl
+        4UMSRf/E3ec+hyBg==
+Date:   Sun, 06 Jun 2021 01:47:43 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
@@ -44,62 +44,160 @@ Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
         Tony Luck <tony.luck@intel.com>,
         Yu-cheng Yu <yu-cheng.yu@intel.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [patch V2 00/14] x86/fpu: Mop up XSAVES and related damage
+Subject: [patch V2 01/14] selftests/x86: Test signal frame XSTATE header
+ corruption handling
+References: <20210605234742.712464974@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-c3lzemJvdCByZXBvcnRlZCBhIHdhcm5vbiBmb3IgWFJTVE9SIHJhaXNpbmcgI0dQOgoKICBodHRw
-czovL2xvcmUua2VybmVsLm9yZy9yLzAwMDAwMDAwMDAwMDRjNDUzOTA1YzMwZjgzMzRAZ29vZ2xl
-LmNvbQoKd2l0aCBhIHN5emNhbGxlciByZXByb2R1Y2VyIGFuZCBhIGNvbmNsdXNpdmUgYmlzZWN0
-IHJlc3VsdC4gIEl0IHRvb2sgYQp3aGlsZSB0byBkZXN0aWxsIGEgc2ltcGxlIEMgcmVwcm9kdWNl
-ciBvdXQgb2YgaXQgd2hpY2ggYWxsb3dlZCB0byBwaW4gcG9pbnQKdGhlIHJvb3QgY2F1c2U6IFRo
-ZSByZWNlbnQgYWRkaXRpb24gb2Ygc3VwZXJ2aXNvciBYU1RBVEVzIGJyb2tlIHRoZSBzaWduYWwK
-cmVzdG9yZSBwYXRoIGZvciB0aGUgY2FzZSB3aGVyZSB0aGUgc2lnbmFsIGhhbmRsZXIgd3JlY2th
-Z2VkIHRoZSBYU1RBVEUgb24Kc3RhY2sgYmVjYXVzZSBpdCBkb2VzIG5vdCBzYW5pdGl6ZSB0aGUg
-WFNUQVRFIGhlYWRlciB3aGljaCBjYXVzZXMgYQpzdWJzZXF1ZW50IFhSU1RPUiB0byBmYWlsIGFu
-ZCAjR1AuCgpUaGUgZm9sbG93aW5nIHNlcmllcyBhZGRyZXNzZXMgdGhlIHByb2JsZW0gYW5kIGZp
-eGVzIHJlbGF0ZWQgaXNzdWVzIHdoaWNoCndlcmUgZm91bmQgd2hpbGUgaW5zcGVjdGluZyB0aGUg
-cmVsYXRlZCBjaGFuZ2VzLgoKVjEgb2YgdGhpcyBjYW4gYmUgZm91bmQgaGVyZToKCiAgaHR0cHM6
-Ly9sb3JlLmtlcm5lbC5vcmcvci8yMDIxMDYwMjA5NTU0My4xNDk4MTQwNjRAbGludXRyb25peC5k
-ZQoKQ2hhbmdlcyB2cy4gVjE6CgogIC0gQWRkcmVzcyByZXZpZXcgY29tbWVudHMKCiAgLSBGaXgg
-dGhlIHJlcG9ydGVkIGZhbGxvdXQgKG1vc3RseSBQS1JVIGFuZCBQVFJBQ0UpLiBUaGUgdGVzdCBj
-YXNlcyBwYXNzCiAgICBub3cuCgogIC0gQWRkcmVzcyB0aGUgYnJva2VuIGluaXRfZnBzdGF0ZSBm
-aWRkbGluZyB3aGljaCB3YXMgZm91bmQgYnkgZGVlcGVyCiAgICBpbnNwZWN0aW9uIG9mIHRoZSBQ
-S1JVL1hTVEFURSByZWxhdGVkIGNvZGUuCgpUaGFua3MsCgoJdGdseAotLS0KClAuUzogSSBwaWNr
-ZWQgdXAgRGF2ZSdzIFBLUlUgc2VyaWVzIGZyb20KCiAgaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcv
-ci8yMDIxMDYwMzIzMDgwMy4zMTY2MEFGRUB2aWdnby5qZi5pbnRlbC5jb20KCmFuZCBhZG9wdGVk
-IGl0IHRvIHRoaXMgcGlsZS4gVGhlIHJlc3VsdCBpcyBoZXJlOgoKICAgIGh0dHBzOi8vdGdseC5k
-ZS9+dGdseC9wYXRjaGVzLWZwdS1wa3J1LnRhcgoKVGhlcmUgYXJlIHNvbWUgZml4ZXMgYXQgdGhl
-IGVuZCB3aGljaCBJIGRpZCBubyBmb2xkIGJhY2sgeWV0IGFuZCB0aGUgZ2xpYmMKUEtSVSB0ZXN0
-IGNhc2Ugd2l0aCBhbGwgdGhhdCBhcHBsaWVkIHN0aWxsIGZhaWxzIHdpdGg6CgogLi4vc3lzZGVw
-cy91bml4L3N5c3YvbGludXgvdHN0LXBrZXkuYzozNzc6IG51bWVyaWMgY29tcGFyaXNvbiBmYWls
-dXJlCiAgICBsZWZ0OiAxICgweDEpOyBmcm9tOiByZXN1bHQtPmFjY2Vzc19yaWdodHNbaV0KICAg
-cmlnaHQ6IDAgKDB4MCk7IGZyb206IDAKIC4uL3N5c2RlcHMvdW5peC9zeXN2L2xpbnV4L3RzdC1w
-a2V5LmM6MzgyOiBudW1lcmljIGNvbXBhcmlzb24gZmFpbHVyZQogICAgbGVmdDogMSAoMHgxKTsg
-ZnJvbTogcmVzdWx0Mi0+YWNjZXNzX3JpZ2h0c1tpXQogICByaWdodDogMCAoMHgwKTsgZnJvbTog
-MAogZXJyb3I6IDIgdGVzdCBmYWlsdXJlcwoKVG9vIHRpcmVkIHRvIGFuYWx5emUgdGhhdCByaWdo
-dCBub3csIGJ1dCBJIHdhbnRlZCB0byBzaGFyZSB0aGUgd29yay4KICAgICAKLS0tCiBhcmNoL3g4
-Ni9pbmNsdWRlL2FzbS9mcHUvaW50ZXJuYWwuaCAgICAgICAgICAgICAgICAgICB8ICAgMTcgLS0K
-IGFyY2gveDg2L2luY2x1ZGUvYXNtL2ZwdS94c3RhdGUuaCAgICAgICAgICAgICAgICAgICAgIHwg
-ICAxMCAtCiBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9wZ3RhYmxlLmggICAgICAgICAgICAgICAgICAg
-ICAgICB8ICAgIDYgCiBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9wa2V5cy5oICAgICAgICAgICAgICAg
-ICAgICAgICAgICB8ICAgMTEgLQogYXJjaC94ODYva2VybmVsL2NwdS9idWdzLmMgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgfCAgICAzIAogYXJjaC94ODYva2VybmVsL2NwdS9jb21tb24uYyAg
-ICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDI3ICstLS0KIGFyY2gveDg2L2tlcm5lbC9mcHUv
-Y29yZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDExOSArKysrKysrKysrKystLS0t
-LS0KIGFyY2gveDg2L2tlcm5lbC9mcHUvcmVnc2V0LmMgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgICA0NSArKy0tLS0KIGFyY2gveDg2L2tlcm5lbC9mcHUvc2lnbmFsLmMgICAgICAgICAgICAg
-ICAgICAgICAgICAgIHwgICAzMCArKystCiBhcmNoL3g4Ni9rZXJuZWwvZnB1L3hzdGF0ZS5jICAg
-ICAgICAgICAgICAgICAgICAgICAgICB8ICAxMDAgKysrKystLS0tLS0tLS0tCiBhcmNoL3g4Ni9r
-ZXJuZWwvcHJvY2Vzcy5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMTQgKy0KIGFy
-Y2gveDg2L21tL2ZhdWx0LmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAg
-MiAKIGFyY2gveDg2L21tL3BrZXlzLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgICAzMSArKy0tCiBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL3g4Ni9jb3JydXB0X3hzdGF0
-ZV9oZWFkZXIuYyB8ICAxMTQgKysrKysrKysrKysrKysrKysKIGluY2x1ZGUvbGludXgvcGtleXMu
-aCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgMiAKIHRvb2xzL3Rlc3Rpbmcv
-c2VsZnRlc3RzL3g4Ni9NYWtlZmlsZSAgICAgICAgICAgICAgICAgIHwgICAgMyAKIDE2IGZpbGVz
-IGNoYW5nZWQsIDMzNCBpbnNlcnRpb25zKCspLCAyMDAgZGVsZXRpb25zKC0pCgo=
+From: Andy Lutomirski <luto@kernel.org>
+
+This is very heavily based on some code from Thomas Gleixner.  On a system
+without XSAVES, it triggers the WARN_ON():
+
+    Bad FPU state detected at copy_kernel_to_fpregs+0x2f/0x40, reinitializing FPU registers.
+
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+V2: main() -> main(void) - Borislav
+---
+ tools/testing/selftests/x86/Makefile                |    3 
+ tools/testing/selftests/x86/corrupt_xstate_header.c |  114 ++++++++++++++++++++
+ 2 files changed, 116 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/x86/corrupt_xstate_header.c
+
+--- a/tools/testing/selftests/x86/Makefile
++++ b/tools/testing/selftests/x86/Makefile
+@@ -17,7 +17,8 @@ TARGETS_C_BOTHBITS := single_step_syscal
+ TARGETS_C_32BIT_ONLY := entry_from_vm86 test_syscall_vdso unwind_vdso \
+ 			test_FCMOV test_FCOMI test_FISTTP \
+ 			vdso_restorer
+-TARGETS_C_64BIT_ONLY := fsgsbase sysret_rip syscall_numbering
++TARGETS_C_64BIT_ONLY := fsgsbase sysret_rip syscall_numbering \
++			corrupt_xstate_header
+ # Some selftests require 32bit support enabled also on 64bit systems
+ TARGETS_C_32BIT_NEEDED := ldt_gdt ptrace_syscall
+ 
+--- /dev/null
++++ b/tools/testing/selftests/x86/corrupt_xstate_header.c
+@@ -0,0 +1,114 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Corrupt the XSTATE header in a signal frame
++ *
++ * Based on analysis and a test case from Thomas Gleixner.
++ */
++
++#define _GNU_SOURCE
++
++#include <stdlib.h>
++#include <stdio.h>
++#include <string.h>
++#include <sched.h>
++#include <signal.h>
++#include <err.h>
++#include <unistd.h>
++#include <stdint.h>
++#include <sys/wait.h>
++
++static inline void __cpuid(unsigned int *eax, unsigned int *ebx,
++			   unsigned int *ecx, unsigned int *edx)
++{
++	asm volatile(
++		"cpuid;"
++		: "=a" (*eax),
++		  "=b" (*ebx),
++		  "=c" (*ecx),
++		  "=d" (*edx)
++		: "0" (*eax), "2" (*ecx));
++}
++
++static inline int xsave_enabled(void)
++{
++	unsigned int eax, ebx, ecx, edx;
++
++	eax = 0x1;
++	ecx = 0x0;
++	__cpuid(&eax, &ebx, &ecx, &edx);
++
++	/* Is CR4.OSXSAVE enabled ? */
++	return ecx & (1U << 27);
++}
++
++static void sethandler(int sig, void (*handler)(int, siginfo_t *, void *),
++		       int flags)
++{
++	struct sigaction sa;
++
++	memset(&sa, 0, sizeof(sa));
++	sa.sa_sigaction = handler;
++	sa.sa_flags = SA_SIGINFO | flags;
++	sigemptyset(&sa.sa_mask);
++	if (sigaction(sig, &sa, 0))
++		err(1, "sigaction");
++}
++
++static void sigusr1(int sig, siginfo_t *info, void *uc_void)
++{
++	ucontext_t *uc = uc_void;
++	uint8_t *fpstate = (uint8_t *)uc->uc_mcontext.fpregs;
++	uint64_t *xfeatures = (uint64_t *)(fpstate + 512);
++
++	printf("\tWreckage XSTATE header\n");
++	/* Wreckage the first reserved byte in the header */
++	*(xfeatures + 2) = 0xfffffff;
++}
++
++static void sigsegv(int sig, siginfo_t *info, void *uc_void)
++{
++	printf("\tGot SIGSEGV\n");
++}
++
++int main(void)
++{
++	cpu_set_t set;
++
++	sethandler(SIGUSR1, sigusr1, 0);
++	sethandler(SIGSEGV, sigsegv, 0);
++
++	if (!xsave_enabled()) {
++		printf("[SKIP] CR4.OSXSAVE disabled.\n");
++		return 0;
++	}
++
++	CPU_ZERO(&set);
++	CPU_SET(0, &set);
++
++	/*
++	 * Enforce that the child runs on the same CPU
++	 * which in turn forces a schedule.
++	 */
++	sched_setaffinity(getpid(), sizeof(set), &set);
++
++	printf("[RUN]\tSend ourselves a signal\n");
++	raise(SIGUSR1);
++
++	printf("[OK]\tBack from the signal.  Now schedule.\n");
++	pid_t child = fork();
++	if (child < 0)
++		err(1, "fork");
++	if (child == 0)
++		return 0;
++	if (child)
++		waitpid(child, NULL, 0);
++	printf("[OK]\tBack in the main thread.\n");
++
++	/*
++	 * We could try to confirm that extended state is still preserved
++	 * when we schedule.  For now, the only indication of failure is
++	 * a warning in the kernel logs.
++	 */
++
++	return 0;
++}
+
