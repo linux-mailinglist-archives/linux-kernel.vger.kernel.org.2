@@ -2,234 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11D9F39CB91
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 00:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E5C39CBA0
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 01:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbhFEXAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 19:00:51 -0400
-Received: from mout02.posteo.de ([185.67.36.66]:38913 "EHLO mout02.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230025AbhFEXAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 19:00:50 -0400
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id 10C3C2400FD
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 00:58:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
-        t=1622933938; bh=nPGY2VcDEnZ+t+bGcuIh6wvTeAHTfrpR6gz4oJQz/XA=;
-        h=Subject:From:To:Cc:Date:From;
-        b=M6RgW9z2Wo9PpytxmKofdYrlsyanAd/BWG9wwzZNV54ZUqiAu9jbw5P3a4fAARuLZ
-         WAhKuKG8Zuu1VcIktMXrxErozmN3USampf/XxH76gpF5UnUmfidzHOPB55/UNHyK/z
-         QMN6GvMFburlsxNnpQgCENz3Z6eJfe2l9u76Hx1Iy5wgLgFLQpnwtLcnqmqG28RnDN
-         8BuNNgrks2VAAaEWYfHRBTacYAvR72ppOlQxnaSxKx/9JEvxIKlheHcoVqSgLska+z
-         ZF3sqqu/cLOVoAYpIsEYqnZ06pACYO4rLkG/DPfAqz1qIPgGVQZdOs5nAAGJz5KaJT
-         uouvoDmZXWIPQ==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4FyFS118dqz9rxB;
-        Sun,  6 Jun 2021 00:58:57 +0200 (CEST)
-Message-ID: <c891893c80a0f0d30b464427fe1ee904d95df99e.camel@posteo.de>
-Subject: Re: [PATCH v4] media: uvcvideo: Fix pixel format change for Elgato
- Cam Link 4K
-From:   Benjamin Drung <bdrung@posteo.de>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Adam Goode <agoode@google.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Date:   Sat, 05 Jun 2021 22:58:56 +0000
-In-Reply-To: <YLvy9iE2Z+DpMvmg@pendragon.ideasonboard.com>
-References: <YLqnU+FYSAcWwaAZ@pendragon.ideasonboard.com>
-         <20210605201534.53114-1-bdrung@posteo.de>
-         <YLvy9iE2Z+DpMvmg@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S230090AbhFEXJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 19:09:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230010AbhFEXJw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 19:09:52 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34BA5C061766;
+        Sat,  5 Jun 2021 16:08:04 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id f17so7541328wmf.2;
+        Sat, 05 Jun 2021 16:08:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=XWQOeDNetl8UqnHPJUQjjvOHA7LNu8Ic6TyUbdOorqs=;
+        b=oUDh7JiDO9mrLvD61KvsDx0GFNTAXwpE+Ch5LrxM86ifXgveP3JG94hrc+fldZUAQC
+         hJfu8LGpFHLffvN2fHZA1toSHHzPlFRw+SKq45jrBI+1v3wLXp0reM9l4G4ZzxLua1qP
+         81hyKfbsyFcMRgWnE/bJr0fTa9c3Ze3/Fczg0tg9KBh42O5baQ55OG0K3u88NS85OQbq
+         wYEXupbbKfQWHEgcyiCZxq3ZXYFs9/D1TPHOg4JZ5iGplwLhDNshek6FAh3sahfe9eNH
+         11SUZIenfH+NWWoPScGa/+ht1jysI0nkOv7MvIypdzxrrK2vPY+7P3+QhOR+yl8WVU1z
+         OV1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=XWQOeDNetl8UqnHPJUQjjvOHA7LNu8Ic6TyUbdOorqs=;
+        b=BHU2FOK2b0anLKxhK11ents7rTWAoZe1JouggSTEIiQWWPdtMy66sXa7ooAtPNpqtT
+         iARxRQ4JkXzjTkb2C4ADtdrb/wHzOQhmaRIKpuwT92UgB1Aa3DWYTn52tpVWUI61pAvD
+         zO+e/Qgkd/p30Cm/qm8baTGDBhg2KhKQ8tQpverlO/po4aKdFkFvphTGpQHi1i+tjSg2
+         1eNs4TKekenFDGedcgq886CyzfoOEoSE+yt/QaXQXeO0vFqtVv1xOHxNHycS2P6EOcW0
+         koF72Gq3JH2lzitviXzfvdU8zV7xfgE6mZdDxaNlLDapEMH9boom2LoeCe/V1LOPqZMK
+         pQhQ==
+X-Gm-Message-State: AOAM5323r4Q69MpNYkn6w3/CtECQiTUcGJ9q8Jw/NgEoKDNLzLtHOFY6
+        jdBIE2Al/yqwms5ZqpiBG6c=
+X-Google-Smtp-Source: ABdhPJw6+lZPeYszBUn8aMQkKy6foGfI99/ILAywZKofFSvRh4OwezEb5re6agR0nLf9aArqwNBvEg==
+X-Received: by 2002:a1c:b783:: with SMTP id h125mr10019551wmf.182.1622934478325;
+        Sat, 05 Jun 2021 16:07:58 -0700 (PDT)
+Received: from [192.168.1.211] ([2.29.20.84])
+        by smtp.gmail.com with ESMTPSA id q11sm9561009wmq.1.2021.06.05.16.07.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 05 Jun 2021 16:07:57 -0700 (PDT)
+Subject: Re: [PATCH v5 5/6] platform/x86: Add intel_skl_int3472 driver
+To:     kernel test robot <lkp@intel.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org
+Cc:     kbuild-all@lists.01.org
+References: <20210603224007.120560-6-djrscally@gmail.com>
+ <202106040951.xabRueHQ-lkp@intel.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <68dcb60a-be0b-9bb6-b661-03a629e52f70@gmail.com>
+Date:   Sun, 6 Jun 2021 00:07:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <202106040951.xabRueHQ-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Sonntag, den 06.06.2021, 00:56 +0300 schrieb Laurent Pinchart:
-> Hi Benjamin,
-> 
-> Thank you for the patch.
-> 
-> On Sat, Jun 05, 2021 at 08:15:36PM +0000, Benjamin Drung wrote:
-> > The Elgato Cam Link 4K HDMI video capture card reports to support three
-> > different pixel formats, where the first format depends on the connected
-> > HDMI device.
-> > 
-> > ```
-> > $ v4l2-ctl -d /dev/video0 --list-formats-ext
-> > ioctl: VIDIOC_ENUM_FMT
-> > 	Type: Video Capture
-> > 
-> > 	[0]: 'NV12' (Y/CbCr 4:2:0)
-> > 		Size: Discrete 3840x2160
-> > 			Interval: Discrete 0.033s (29.970 fps)
-> > 	[1]: 'NV12' (Y/CbCr 4:2:0)
-> > 		Size: Discrete 3840x2160
-> > 			Interval: Discrete 0.033s (29.970 fps)
-> > 	[2]: 'YU12' (Planar YUV 4:2:0)
-> > 		Size: Discrete 3840x2160
-> > 			Interval: Discrete 0.033s (29.970 fps)
-> > ```
-> > 
-> > Changing the pixel format to anything besides the first pixel format
-> > does not work:
-> > 
-> > ```
-> > $ v4l2-ctl -d /dev/video0 --try-fmt-video pixelformat=YU12
-> > Format Video Capture:
-> > 	Width/Height      : 3840/2160
-> > 	Pixel Format      : 'NV12' (Y/CbCr 4:2:0)
-> > 	Field             : None
-> > 	Bytes per Line    : 3840
-> > 	Size Image        : 12441600
-> > 	Colorspace        : sRGB
-> > 	Transfer Function : Rec. 709
-> > 	YCbCr/HSV Encoding: Rec. 709
-> > 	Quantization      : Default (maps to Limited Range)
-> > 	Flags             :
-> > ```
-> > 
-> > User space applications like VLC might show an error message on the
-> > terminal in that case:
-> > 
-> > ```
-> > libv4l2: error set_fmt gave us a different result than try_fmt!
-> > ```
-> > 
-> > Depending on the error handling of the user space applications, they
-> > might display a distorted video, because they use the wrong pixel format
-> > for decoding the stream.
-> > 
-> > The Elgato Cam Link 4K responds to the USB video probe
-> > VS_PROBE_CONTROL/VS_COMMIT_CONTROL with a malformed data structure: The
-> > second byte contains bFormatIndex (instead of being the second byte of
-> > bmHint). The first byte is always zero. The third byte is always 1.
-> > 
-> > The firmware bug was reported to Elgato on 2020-12-01 and it was
-> > forwarded by the support team to the developers as feature request.
-> > There is no firmware update available since then. The latest firmware
-> > for Elgato Cam Link 4K as of 2021-03-23 has MCU 20.02.19 and FPGA 67.
-> > 
-> > Therefore add a quirk to correct the malformed data structure.
-> > 
-> > The quirk was successfully tested with VLC, OBS, and Chromium using
-> > different pixel formats (YUYV, NV12, YU12), resolutions (3840x2160,
-> > 1920x1080), and frame rates (29.970 and 59.940 fps).
-> > 
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Benjamin Drung <bdrung@posteo.de>
-> > ---
-> >  drivers/media/usb/uvc/uvc_video.c | 25 +++++++++++++++++++++++++
-> >  1 file changed, 25 insertions(+)
-> > 
-> > (now sending this patch with v4 in the subject instead of falsely v3)
-> > 
-> > v2: enhanced the comment describing the quirk
-> > 
-> > v3:
-> > * hardcode ctrl->bmHint to 1
-> > * Use UVC_DBG_VIDEO instead of UVC_DBG_CONTROL (to match the rest of the
-> >   file)
-> > 
-> > v4:
-> > * Replace quirk bit by specific check for USB VID:PID test
-> > 
-> > I tried setting different values for bmHint, but the response from the
-> > Cam Link was always 1. So this patch hardcodes ctrl->bmHint to 1 as
-> > suggested.
-> > 
-> > Patch version 4 implements the recommendation of Laurent Pinchart. It
-> > requires defining the device ID as variable since usb_match_one_id takes
-> > an pointer to it. In case more Elgato products like Game Capture
-> > HD 60 S+ (0fd9:006a) are affected, this version is harder to extent.
-> > 
-> > Take patch version 3 or 4 depending on which version you prefer. Both
-> > work and are tested.
-> > 
-> > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> > index a777b389a66e..35c3ce0e0716 100644
-> > --- a/drivers/media/usb/uvc/uvc_video.c
-> > +++ b/drivers/media/usb/uvc/uvc_video.c
-> > @@ -130,6 +130,31 @@ static void uvc_fixup_video_ctrl(struct uvc_streaming *stream,
-> >  	struct uvc_format *format = NULL;
-> >  	struct uvc_frame *frame = NULL;
-> >  	unsigned int i;
-> > +	static const struct usb_device_id elgato_cam_link_4k = { USB_DEVICE(0x0fd9, 0x0066) };
-> 
-> Let's avoid long line
-> 
-> 	static const struct usb_device_id elgato_cam_link_4k = {
-> 		USB_DEVICE(0x0fd9, 0x0066)
-> 	};
+Ah - forgot to make the function static, let me sent another of this patch.
 
-Yes. That's better readable.
-
-> > +
-> > +	/*
-> > +	 * The response of the Elgato Cam Link 4K is incorrect: The second byte
-> > +	 * contains bFormatIndex (instead of being the second byte of bmHint).
-> > +	 * The first byte is always zero. The third byte is always 1.
-> > +	 *
-> > +	 * The UVC 1.5 class specification defines the first five bits in the
-> > +	 * bmHint bitfield. The remaining bits are reserved and should be zero.
-> > +	 * Therefore a valid bmHint will be less than 32.
-> > +	 *
-> > +	 * Latest Elgato Cam Link 4K firmware as of 2021-03-23 needs this quirk.
-> > +	 * MCU: 20.02.19, FPGA: 67
-> > +	 */
-> > +	if (usb_match_one_id(stream->dev->intf, &elgato_cam_link_4k) && ctrl->bmHint > 255) {
-> 
-> Similarly, I'd break this as
-> 
-> 	if (usb_match_one_id(stream->dev->intf, &elgato_cam_link_4k) &&
-> 	    ctrl->bmHint > 255) {
-
-Agreed.
-
-> > +		__u8 corrected_format_index;
-> 
-> You can use u8 within the kernel.
-
-Good to know. I can't remember why I used __u8 instead.
-
-> > +
-> > +		corrected_format_index = ctrl->bmHint >> 8;
-> > +		uvc_dbg(stream->dev, VIDEO,
-> > +			"Correct USB video probe response from {bmHint: 0x%04x, bFormatIndex: 0x%02x} to {bmHint: 0x%04x, bFormatIndex: 0x%02x}.\n",
-> 
-> I'd print bFormatIndex with %u as it's an index and thus more readable
-> as a decimal integer.
-
-So print bmHint as hex and bFormatIndex as integer? That would change
-the log from e.g.
-
-uvcvideo: Correct USB video probe response from {bmHint: 0x0300, bFormatIndex: 0x01} to {bmHint: 0x0001, bFormatIndex: 0x03}.
-
-to
-
-uvcvideo: Correct USB video probe response from {bmHint: 0x0300, bFormatIndex: 1} to {bmHint: 0x0001, bFormatIndex: 3}.
-
-That would be fine for me as well (since bFormatIndex is only one byte).
-
-> If you agree with those small changes, there's no need to resubmit, I
-> can fold them in when applying the patch.
-
-I agree. Thanks for reviewing it.
-
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> 
-> > +			ctrl->bmHint, ctrl->bFormatIndex,
-> > +			1, corrected_format_index);
-> > +		ctrl->bmHint = 1;
-> > +		ctrl->bFormatIndex = corrected_format_index;
-> > +	}
-> >  
-> > 
-> >  	for (i = 0; i < stream->nformats; ++i) {
-> >  		if (stream->format[i].index == ctrl->bFormatIndex) {
-> 
-
-
+On 04/06/2021 02:31, kernel test robot wrote:
+> Hi Daniel,
+>
+> I love your patch! Perhaps something to improve:
+>
+> [auto build test WARNING on pm/linux-next]
+> [also build test WARNING on lee-mfd/for-mfd-next linus/master v5.13-rc4 next-20210603]
+> [cannot apply to gpio/for-next]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+>
+> url:    https://github.com/0day-ci/linux/commits/Daniel-Scally/Introduce-intel_skl_int3472-module/20210604-064345
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
+> config: x86_64-allyesconfig (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> reproduce (this is a W=1 build):
+>         # https://github.com/0day-ci/linux/commit/3edcad8c200f211063a35d125e9fd350a2efeb40
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Daniel-Scally/Introduce-intel_skl_int3472-module/20210604-064345
+>         git checkout 3edcad8c200f211063a35d125e9fd350a2efeb40
+>         # save the attached .config to linux build tree
+>         make W=1 ARCH=x86_64 
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All warnings (new ones prefixed by >>):
+>
+>>> drivers/platform/x86/intel-int3472/intel_skl_int3472_tps68470.c:76:5: warning: no previous prototype for 'skl_int3472_tps68470_calc_type' [-Wmissing-prototypes]
+>       76 | int skl_int3472_tps68470_calc_type(struct acpi_device *adev)
+>          |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+>
+> vim +/skl_int3472_tps68470_calc_type +76 drivers/platform/x86/intel-int3472/intel_skl_int3472_tps68470.c
+>
+>     52	
+>     53	/** skl_int3472_tps68470_calc_type: Check what platform a device is designed for
+>     54	 * @adev: A pointer to a &struct acpi_device
+>     55	 *
+>     56	 * Check CLDB buffer against the PMIC's adev. If present, then we check
+>     57	 * the value of control_logic_type field and follow one of the
+>     58	 * following scenarios:
+>     59	 *
+>     60	 *	1. No CLDB - likely ACPI tables designed for ChromeOS. We
+>     61	 *	create platform devices for the GPIOs and OpRegion drivers.
+>     62	 *
+>     63	 *	2. CLDB, with control_logic_type = 2 - probably ACPI tables
+>     64	 *	made for Windows 2-in-1 platforms. Register pdevs for GPIO,
+>     65	 *	Clock and Regulator drivers to bind to.
+>     66	 *
+>     67	 *	3. Any other value in control_logic_type, we should never have
+>     68	 *	gotten to this point; fail probe and return.
+>     69	 *
+>     70	 * Return:
+>     71	 * * 1		Device intended for ChromeOS
+>     72	 * * 2		Device intended for Windows
+>     73	 * * -EINVAL	Where @adev has an object named CLDB but it does not conform to
+>     74	 *		our expectations
+>     75	 */
+>   > 76	int skl_int3472_tps68470_calc_type(struct acpi_device *adev)
+>     77	{
+>     78		struct int3472_cldb cldb = { 0 };
+>     79		int ret;
+>     80	
+>     81		/*
+>     82		 * A CLDB buffer that exists, but which does not match our expectations
+>     83		 * should trigger an error so we don't blindly continue.
+>     84		 */
+>     85		ret = skl_int3472_fill_cldb(adev, &cldb);
+>     86		if (ret && ret != -ENODEV)
+>     87			return ret;
+>     88	
+>     89		if (ret)
+>     90			return DESIGNED_FOR_CHROMEOS;
+>     91	
+>     92		if (cldb.control_logic_type != 2)
+>     93			return -EINVAL;
+>     94	
+>     95		return DESIGNED_FOR_WINDOWS;
+>     96	}
+>     97	
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
