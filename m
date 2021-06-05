@@ -2,314 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0ED739C935
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 16:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DDB839C938
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 16:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbhFEOsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 10:48:31 -0400
-Received: from mout.web.de ([212.227.17.12]:60149 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229931AbhFEOsa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 10:48:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1622904397;
-        bh=lU2qhab8CsKJQnVi2szr9fclahfiPhXGLz+tXbWVx0Y=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:References:Date:In-Reply-To;
-        b=o9op4OAzPvtkBZadXHEdIcLdEKMgLHnNNlhM1FCc/8hdow7L1wVKWzAqHRFMLgxjl
-         ou2cvTC/5NTRtKvVU7cydqXa/pYBkUdmYH7RsWfKzbTBknvMez5qShaYzQ41V9liI7
-         a59axyXj+ctMmM2AEWi4Un3CbKXcIxNFWb/+NlBc=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.2.51] ([92.211.144.244]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MQxsD-1m35wp3br5-00NwwJ; Sat, 05
- Jun 2021 16:46:36 +0200
-Subject: Re: QCA6174 pcie wifi: Add pci quirks
-From:   Ingmar Klein <ingmar_klein@web.de>
-To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>, bhelgaas@google.com,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210525221215.GA1235899@bjorn-Precision-5520>
- <19c3850e-e29c-3e39-9d44-9623a4f97346@web.de>
- <20210528182135.e7uiugoyuj7hjilb@pali>
- <8e443996-cead-a826-78ab-1c3f899228cb@web.de>
-Message-ID: <f72fad24-3b4a-2c62-55be-041ab4e67371@web.de>
-Date:   Sat, 5 Jun 2021 16:46:36 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230060AbhFEOuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 10:50:10 -0400
+Received: from mail-lf1-f43.google.com ([209.85.167.43]:42498 "EHLO
+        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229931AbhFEOuI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 10:50:08 -0400
+Received: by mail-lf1-f43.google.com with SMTP id a2so18479723lfc.9;
+        Sat, 05 Jun 2021 07:48:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wcvtrW5lKa338/Gad0nAXWl+Nu1ItOkpV4wMx5SbYls=;
+        b=eCmRc8D6ZLbg8C1E6TDq1ZK6LVFbjiJFW37TZeSC5qmi8UG5eVRzUslI9+GVew5OiJ
+         GqvidqxCHJcZrieOSifsVG5oSD//uT8ybTeMdZlLddFA0zKKp1TQo3M7FdfEEWzDX5QU
+         npraqwJu70RvL3YfDl2i8qm/3LA2edTJop68vHlMGNaMA8iPkP5cBTIte6728Leum0SZ
+         Zuugjv72+4/a/pOMvizWUgslsRCzve1fmLaV3+0UGHXS3niYOM+zIEAwm2aiXVGwhwtf
+         Cg746iV2LKa/oRViJnGhAYtWxcB1vV5dWhK09heCFN9dW8byjNLH9+JFJfyDHRVo+cUX
+         F+eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wcvtrW5lKa338/Gad0nAXWl+Nu1ItOkpV4wMx5SbYls=;
+        b=ZzrjNRCigpsoK0oU9gclfyGPn/ZK7l5rxIEL9IzOMpsoIMxEE/1MB+BFP3YXjHWOs+
+         czUnk0kc53eBvEYdWNkRon2jS5/JkgC1TysQqnsuVGAPqh5lXfWUBSlAxaKuqPTZCqlV
+         CrzlwrLWFIlZ9sJlcefVjQuAdcwKp+Tochyw0mdnVgJSqNZ3Kni76JyPIAiv+C/8We3Q
+         t249dQgVw4Liz9+pxzjH90I8UX14Yf6/toPZDDxXr6bqMOHYvFMx7U4FfdLWkOrdAFEi
+         zqtN6mtBqN/f3WmW9JEUi0D6DmMHQZycPZwD+A2erurf/UW2GejqrP9b7b7bQ7zlxd/5
+         KHtw==
+X-Gm-Message-State: AOAM530o7M1K11YSiN+XhdbBdigMtvsJh337luXvu0TnShNJw4hm7hfP
+        O3r+Nky2gybr2ve1mspjkcHJb/17CRk4A4Qh+Ow=
+X-Google-Smtp-Source: ABdhPJxF6LDHm5m+1SkC49jJYcji06gTtk1MoV8nzCkDrHpP1ynqMSAe9m4zSYSigkxinVfYiggyjfcAoiYR4PXp5BY=
+X-Received: by 2002:ac2:548d:: with SMTP id t13mr5994474lfk.568.1622904439398;
+ Sat, 05 Jun 2021 07:47:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <8e443996-cead-a826-78ab-1c3f899228cb@web.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:t2oN3FvNcgvOPqPdxqYULeZQyAlD4YgYUKAxOIn4BSaVkdiPWqq
- 4jVNenDe+zA0lvPxgM09fAF2ERESySHnO28ZkDNgYaC0bHANqsQe8/eNlaP/RNj4YuFY/4u
- OMNVWfzjcLdAhySU6dmTyweWPoTmbrIoHpS8RumB9stkCk2dTSfXQ3e+rV2SL+PB5dAcn1J
- barBjrYCH0dk43QHUMGgg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:n6ZXVsgsblw=:BU1rAczfd3SErttbH8/OmC
- tZ7o4pZcjzf1rrapTQc4fqaCDcqAnG3+GQXRgo0aynLUMVzB7SnzjUyuCUFFMmYWo4Yu6HcIH
- GAIfTc9cIcMBG9KEBt+yxTwKIWwgsyhZkP2xD/2PRQdpsBtDbFefnCUPXlz3Z3IzqaVma30J4
- paWleiM5Bt3S3cqZ/qdi+SCtTzXoO/yQYm66Cwd5i555FcpR8DB0ySqZbvdM8+Tu8uH/pWaDE
- CNswLWcGV3wJdrTqtYJksawBGoMhA9ZqG4QknJmIKnlYwKaFIb8h+/L3FtBJifcjxlYUpoye4
- 880f8r9A6mivavExTvrXXkBYKcXYJwgBmbzbMxf3DL9lokXf01L6HNQHyD4BGbxw+l4E5ekbR
- gz7stQopFFv1wHT+ru06MqEXO9aRn0/IblL0XteV9bxsSe1oYjdW23FN5Ah+VULYB5yTBW/ad
- VMnConIDlpz+KZEHLAgqpb9P8HghE122pRl2eDeRqtx6XAxQr1+4UBmupOJ9mZkyoAIkLOyEp
- ChAjgsRLtv9DcJLnNoVifO72qKFYHksuf6fvGEPNY3tuTK5ZITHOYW9Yzv51/ZqMhKguC7cw1
- EYSds3vK7clc+jxZVDhGuO68Gtbz7aQmAlScEQraxTWDUxzzkcY5BpmGNsCND3+KwmcAanGqu
- rC+0H+snA4SqU4gJ5SQnh/jhtVqcvn5VPmMK/GC8gs/2bOgNARePtuQ1eRugD+hW29qnIXNaj
- Sf0ninH6TJu2D4/hVD+CFfBzx6pTSBW06zEFG/v3ctf9STYywmKFgRZb6BrAPjD7hXX/c/ppN
- 9vY/fRLnkUZA7Pvjn8NMicv4BrKc/miOWvgnYCjtAF5HtPKkIBq10+ebP7fcEbdy+gY8Ek/Bp
- p30e2ik12+PYksztsFb+0dUb0lvQgoP+FUbx++ZwFPcHcF4a2IZF2JrgEi3tfdSLMKQcNL70f
- dwc3Gc43lsp8FC8HVbw1sOtyR2Yt+BvePGx0l6yXQbn2bDN7797tnfSAVz6JGMgDGf3Kv/nu7
- lckO4cbGfmU721d5gb+2272yMsekKzNiKbG6eXdycs6CwCKYh9uyrkK+CP3thryxJ3OS8nxBw
- swwwBiQr5H5ITwdE7waE/z9+xpEkDqIogDA
+References: <20210605034447.92917-1-dong.menglong@zte.com.cn>
+ <20210605034447.92917-3-dong.menglong@zte.com.cn> <20210605115019.umjumoasiwrclcks@wittgenstein>
+In-Reply-To: <20210605115019.umjumoasiwrclcks@wittgenstein>
+From:   Menglong Dong <menglong8.dong@gmail.com>
+Date:   Sat, 5 Jun 2021 22:47:07 +0800
+Message-ID: <CADxym3bs1r_+aPk9Z_5Y7QBBV_RzUbW9PUqSLB7akbss_dJi_g@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] init/do_mounts.c: create second mount for initramfs
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>, johan@kernel.org,
+        ojeda@kernel.org, jeyu@kernel.org, masahiroy@kernel.org,
+        joe@perches.com, Menglong Dong <dong.menglong@zte.com.cn>,
+        Jan Kara <jack@suse.cz>, hare@suse.de,
+        Jens Axboe <axboe@kernel.dk>, tj@kernel.org,
+        gregkh@linuxfoundation.org, song@kernel.org,
+        NeilBrown <neilb@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Barret Rhoden <brho@google.com>, f.fainelli@gmail.com,
+        palmerdabbelt@google.com, wangkefeng.wang@huawei.com,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>, vbabka@suse.cz,
+        Alexander Potapenko <glider@google.com>, pmladek@suse.com,
+        johannes.berg@intel.com,
+        "Eric W. Biederman" <ebiederm@xmission.com>, jojing64@gmail.com,
+        terrelln@fb.com, geert@linux-m68k.org,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>, arnd@arndb.de,
+        Chris Down <chris@chrisdown.name>, mingo@kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Josh Triplett <josh@joshtriplett.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pali and Bjorn,
+Hello,
 
-finally found the time to test.
-Pali's v3 patch seems to work like a charm for my card with "0x003e" id
-as well.
-Just finished compiling a pve-kernel v5.11.21 with Pali's patch,
-slightly adjusted for my test card and the Ubuntu kernel source (no
-functional differences, just minor adjustments to make it fit the
-Proxmox pve-kernel).
-
-System works just fine, in contrast to without patch. Of course, no long
-term tests, yet. However, it is looking really good.
-Thanks guys!
-
-Best regards,
-Ingmar
-
-
-Am 28.05.2021 um 20:47 schrieb Ingmar Klein:
-> Hi Pali,
-> sorry for not checking that detail!
-> Of course no problem that you couldn't test that ID. Will be glad to
-> do so.
+On Sat, Jun 5, 2021 at 7:50 PM Christian Brauner
+<christian.brauner@ubuntu.com> wrote:
 >
-> I'll let you know how this turns out.
+> On Sat, Jun 05, 2021 at 11:44:47AM +0800, menglong8.dong@gmail.com wrote:
+> > From: Menglong Dong <dong.menglong@zte.com.cn>
+> >
+> > If using container platforms such as Docker, upon initialization it
+> > wants to use pivot_root() so that currently mounted devices do not
+> > propagate to containers. An example of value in this is that
+> > a USB device connected prior to the creation of a containers on the
+> > host gets disconnected after a container is created; if the
+> > USB device was mounted on containers, but already removed and
+> > umounted on the host, the mount point will not go away until all
+> > containers unmount the USB device.
+> >
+> > Another reason for container platforms such as Docker to use pivot_root
+> > is that upon initialization the net-namspace is mounted under
+> > /var/run/docker/netns/ on the host by dockerd. Without pivot_root
+> > Docker must either wait to create the network namespace prior to
+> > the creation of containers or simply deal with leaking this to each
+> > container.
+> >
+> > pivot_root is supported if the rootfs is a initrd or block device, but
+> > it's not supported if the rootfs uses an initramfs (tmpfs). This means
+> > container platforms today must resort to using block devices if
+> > they want to pivot_root from the rootfs. A workaround to use chroot()
+> > is not a clean viable option given every container will have a
+> > duplicate of every mount point on the host.
+> >
+> > In order to support using container platforms such as Docker on
+> > all the supported rootfs types we must extend Linux to support
+> > pivot_root on initramfs as well. This patch does the work to do
+> > just that.
+> >
+> > pivot_root will unmount the mount of the rootfs from its parent mount
+> > and mount the new root to it. However, when it comes to initramfs, it
+> > donesn't work, because the root filesystem has not parent mount, which
+> > makes initramfs not supported by pivot_root.
+> >
+> > In order to make pivot_root supported on initramfs, we create a second
+> > mount with type of rootfs before unpacking cpio, and change root to
+> > this mount after unpacking.
+> >
+> > While mounting the second rootfs, 'rootflags' is passed, and it means
+> > that we can set options for the mount of rootfs in boot cmd now.
+> > For example, the size of tmpfs can be set with 'rootflags=size=1024M'.
+> >
+> > Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+> > ---
+> >  init/do_mounts.c | 44 ++++++++++++++++++++++++++++++++++++++++++++
+> >  init/do_mounts.h | 17 ++++++++++++++++-
+> >  init/initramfs.c |  8 ++++++++
+> >  usr/Kconfig      | 10 ++++++++++
+> >  4 files changed, 78 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/init/do_mounts.c b/init/do_mounts.c
+> > index a78e44ee6adb..715bdaa89b81 100644
+> > --- a/init/do_mounts.c
+> > +++ b/init/do_mounts.c
+> > @@ -618,6 +618,49 @@ void __init prepare_namespace(void)
+> >  }
+> >
+> >  static bool is_tmpfs;
+> > +#ifdef CONFIG_INITRAMFS_MOUNT
+> > +
+> > +/*
+> > + * Give systems running from the initramfs and making use of pivot_root a
+> > + * proper mount so it can be umounted during pivot_root.
+> > + */
+> > +int __init prepare_mount_rootfs(void)
+> > +{
+> > +     char *rootfs = "ramfs";
+> > +
+> > +     if (is_tmpfs)
+> > +             rootfs = "tmpfs";
+> > +
+> > +     return do_mount_root(rootfs, rootfs,
+> > +                          root_mountflags & ~MS_RDONLY,
+> > +                          root_mount_data);
+> > +}
+> > +
+> > +/*
+> > + * Revert to previous mount by chdir to '/' and unmounting the second
+> > + * mount.
+> > + */
+> > +void __init revert_mount_rootfs(void)
+> > +{
+> > +     init_chdir("/");
+> > +     init_umount(".", MNT_DETACH);
+> > +}
+> > +
+> > +/*
+> > + * Change root to the new rootfs that mounted in prepare_mount_rootfs()
+> > + * if cpio is unpacked successfully and 'ramdisk_execute_command' exist.
+> > + */
+> > +void __init finish_mount_rootfs(void)
+> > +{
+> > +     init_mount(".", "/", NULL, MS_MOVE, NULL);
+> > +     if (likely(ramdisk_exec_exist()))
+> > +             init_chroot(".");
+> > +     else
+> > +             revert_mount_rootfs();
+> > +}
+> > +
+> > +#define rootfs_init_fs_context ramfs_init_fs_context
 >
-> Best regards,
-> Ingmar
+> Sorry, I think we're nearly there. What's the rationale for using ramfs
+> when unconditionally when a separate mount for initramfs is requested?
+> Meaning, why do we need this define at all?
+
+I think it's necessary, as I explained in the third patch. When the rootfs
+is a block device, ramfs is used in init_mount_tree() unconditionally,
+which can be seen from the enable of is_tmpfs.
+
+That makes sense, because rootfs will not become the root if a block
+device is specified by 'root' in boot cmd, so it makes no sense to use
+tmpfs, because ramfs is more simple.
+
+Here, I make rootfs as ramfs for the same reason: the first mount is not
+used as the root, so make it ramfs which is more simple.
+
+Thanks!
+Menglong Dong
+
 >
->
-> Am 28.05.2021 um 20:21 schrieb Pali Roh=C3=A1r:
->> Hello Ingmar!
->>
->> Now I see that in your patch you have Atheros card with id 0x003e:
->> https://lore.kernel.org/linux-pci/08982e05-b6e8-5a8d-24ab-da1488ee50a8@=
-web.de/
->>
->>
->> With my patch I have tested 5 different Atheros cards but none has id
->> 0x003e:
->> https://lore.kernel.org/linux-pci/20210505163357.16012-1-pali@kernel.or=
-g/
->>
->>
->> So my patch does not fix that issue for your 0x003e card. I just do not
->> have such card for testing.
->>
->> Could you try to apply my patch and then add your id 0x003e into quirk
->> list if it helps?
->>
->> On Friday 28 May 2021 20:08:52 Ingmar Klein wrote:
->>> Thanks to both of you, Bjorn and Pali!
->>> I had hoped that Pali would come with an appropriate fix. Good to know=
-,
->>> that this is taken care of.
->>>
->>> Will test ASAP, but I am confident, that it will work anyway.
->>> Should it unexpectedly not fix my issues, I'll let you know.
->>> Have a nice weekend!
->>> Best regards,
->>> Ingmar
->>>
->>>
->>> Am 26.05.2021 um 00:12 schrieb Bjorn Helgaas:
->>>> On Thu, Apr 15, 2021 at 09:53:38PM +0200, Pali Roh=C3=A1r wrote:
->>>>> Hello!
->>>>>
->>>>> On Thursday 15 April 2021 13:01:19 Alex Williamson wrote:
->>>>>> [cc +Pali]
->>>>>>
->>>>>> On Thu, 15 Apr 2021 20:02:23 +0200
->>>>>> Ingmar Klein <ingmar_klein@web.de> wrote:
->>>>>>
->>>>>>> First thanks to you both, Alex and Bjorn!
->>>>>>> I am in no way an expert on this topic, so I have to fully rely
->>>>>>> on your
->>>>>>> feedback, concerning this issue.
->>>>>>>
->>>>>>> If you should have any other solution approach, in form of
->>>>>>> patch-set, I
->>>>>>> would be glad to test it out. Just let me know, what you think
->>>>>>> might
->>>>>>> make sense.
->>>>>>> I will wait for your further feedback on the issue. In the
->>>>>>> meantime I
->>>>>>> have my current workaround via quirk entry.
->>>>>>>
->>>>>>> By the way, my layman's question:
->>>>>>> Do you think, that the following topic might also apply for the
->>>>>>> QCA6174?
->>>>>>> https://www.spinics.net/lists/linux-pci/msg106395.html
->>>>> I have been testing more ath cards and I'm going to send a new
->>>>> version
->>>>> of this patch with including more PCI ids.
->>>> Dropping this patch in favor of Pali's new version.
->>>>
->>>>>>> Or in other words, should a similar approach be tried for the
->>>>>>> QCA6174
->>>>>>> and if yes, would it bring any benefit at all?
->>>>>>> I hope you can excuse me, in case the questions should not make
->>>>>>> too much
->>>>>>> sense.
->>>>>> If you run lspci -vvv on your device, what do LnkCap and LnkSta
->>>>>> report
->>>>>> under the express capability?=C2=A0 I wonder if your device even su=
-pports
->>>>>>> Gen1 speeds, mine does not.
->>>>>> I would not expect that patch to be relevant to you based on your
->>>>>> report.=C2=A0 I understand it to resolve an issue during link
->>>>>> retraining to a
->>>>>> higher speed on boot, not during a bus reset.=C2=A0 Pali can correc=
-t
->>>>>> if I'm
->>>>>> wrong.=C2=A0 Thanks,
->>>>> These two issues are are related. Both operations (PCIe Hot Reset an=
-d
->>>>> PCIe Link Retraining) cause reset of ath chips. Seems that they caus=
-e
->>>>> double reset. After reset these chips reads configuration from
->>>>> internal
->>>>> EEPROM/OTP and if another reset is triggered prior chip finishes
->>>>> internal configuration read then it stops working. My testing showed
->>>>> that ath10k chips completely disappear from the PCIe bus, some ath9k
->>>>> chips works fine but starts reporting incorrect PCI ID (0xABCD)
->>>>> and some
->>>>> other ath9k chips reports correct PCI ID but does not work. I had
->>>>> discussion with Adrian Chadd who knows probably everything about
->>>>> ath9k
->>>>> and confirmed me that this issue is there with ath9k and ath10k
->>>>> chips.
->>>>>
->>>>> He wrote me that workaround to turn card back from this "broken"
->>>>> state
->>>>> is to do PCIe Cold Reset of the card, which means turning power
->>>>> supply
->>>>> off for particular PCIe slot. Such thing is not supported on many
->>>>> low-end boards, so workaround cannot be applied.
->>>>>
->>>>> I was able to recover my testing cards from this "broken" state by
->>>>> PCIe
->>>>> Warm Reset (=3D reset via PERST# pin).
->>>>>
->>>>> I have tried many other reset methods (PCIe PM reset, Link Down, PCI=
-e
->>>>> Hot Reset with bigger internal, ...) but nothing worked. So seems
->>>>> that
->>>>> the only workaround is to do PCIe Cold Reset or PCIe Warm Reset.
->>>>>
->>>>> I will send V2 of my patch with details and explanation.
->>>>>
->>>>> As kernel does not have API for doing PCIe Warm Reset, I think is
->>>>> another argument why kernel really needs it.
->>>>>
->>>>> I do not have any QCA6174 card for testing, but based on the fact I
->>>>> reproduced this issue with more ath9k and ath10 cards and Adrian
->>>>> confirmed that above reset issue is there, I think that it affects
->>>>> all
->>>>> AR9xxx and QCAxxxx cards handled by ath9k and ath10 drivers.
->>>>>
->>>>> I was told that AMI BIOS was patching their BIOSes found in
->>>>> notebooks to
->>>>> avoid triggering this issue on notebooks ath9k cards.
->>>>>
->>>>>> Alex
->>>>>>
->>>>>>> Am 15.04.2021 um 04:36 schrieb Alex Williamson:
->>>>>>>> On Wed, 14 Apr 2021 16:03:50 -0500
->>>>>>>> Bjorn Helgaas <helgaas@kernel.org> wrote:
->>>>>>>>
->>>>>>>>> [+cc Alex]
->>>>>>>>>
->>>>>>>>> On Fri, Apr 09, 2021 at 11:26:33AM +0200, Ingmar Klein wrote:
->>>>>>>>>> Edit: Retry, as I did not consider, that my mail-client would
->>>>>>>>>> make this
->>>>>>>>>> party html.
->>>>>>>>>>
->>>>>>>>>> Dear maintainers,
->>>>>>>>>> I recently encountered an issue on my Proxmox server system,
->>>>>>>>>> that
->>>>>>>>>> includes a Qualcomm QCA6174 m.2 PCIe wifi module.
->>>>>>>>>> https://deviwiki.com/wiki/AIRETOS_AFX-QCA6174-NX
->>>>>>>>>>
->>>>>>>>>> On system boot and subsequent virtual machine start (with
->>>>>>>>>> passed-through
->>>>>>>>>> QCA6174), the VM would just freeze/hang, at the point where
->>>>>>>>>> the ath10k
->>>>>>>>>> driver loads.
->>>>>>>>>> Quick search in the proxmox related topics, brought me to the
->>>>>>>>>> following
->>>>>>>>>> discussion, which suggested a PCI quirk entry for the QCA6174
->>>>>>>>>> in the kernel:
->>>>>>>>>> https://forum.proxmox.com/threads/pcie-passthrough-freezes-prox=
-mox.27513/
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>> I then went ahead, got the Proxmox kernel source (v5.4.106)
->>>>>>>>>> and applied
->>>>>>>>>> the attached patch.
->>>>>>>>>> Effect was as hoped, that the VM hangs are now gone. System
->>>>>>>>>> boots and
->>>>>>>>>> runs as intended.
->>>>>>>>>>
->>>>>>>>>> Judging by the existing quirk entries for Atheros, I would
->>>>>>>>>> think, that
->>>>>>>>>> my proposed "fix" could be included in the vanilla kernel.
->>>>>>>>>> As far as I saw, there is no entry yet, even in the latest
->>>>>>>>>> kernel sources.
->>>>>>>>> This would need a signed-off-by; see
->>>>>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.g=
-it/tree/Documentation/process/submitting-patches.rst?id=3Dv5.11#n361
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> This is an old issue, and likely we'll end up just applying
->>>>>>>>> this as
->>>>>>>>> yet another quirk.=C2=A0 But looking at c3e59ee4e766 ("PCI: Mark
->>>>>>>>> Atheros
->>>>>>>>> AR93xx to avoid bus reset"), where it started, it seems to be
->>>>>>>>> connected to 425c1b223dac ("PCI: Add Virtual Channel to
->>>>>>>>> save/restore
->>>>>>>>> support").
->>>>>>>>>
->>>>>>>>> I'd like to dig into that a bit more to see if there are any
->>>>>>>>> clues.
->>>>>>>>> AFAIK Linux itself still doesn't use VC at all, and
->>>>>>>>> 425c1b223dac added
->>>>>>>>> a fair bit of code.=C2=A0 I wonder if we're restoring something =
-out of
->>>>>>>>> order or making some simple mistake in the way to restore VC
->>>>>>>>> config.
->>>>>>>> I don't really have any faith in that bisect report in commit
->>>>>>>> c3e59ee4e766.=C2=A0 To double check I dug out the card from that
->>>>>>>> commit,
->>>>>>>> installed an old Fedora release so I could build kernel v3.13,
->>>>>>>> pre-dating 425c1b223dac and tested triggering a bus reset both vi=
-a
->>>>>>>> setpci and by masking PM reset so that sysfs can trigger the
->>>>>>>> bus reset
->>>>>>>> path with the kernel save/restore code.=C2=A0 Both result in the =
-system
->>>>>>>> hanging when the device is accessed either restoring from the
->>>>>>>> kernel
->>>>>>>> bus reset or reading from the device after the setpci reset.=C2=
-=A0
->>>>>>>> Thanks,
->>>>>>>>
->>>>>>>> Alex
->>>>>>>>
+> > +#else
+> >  static int rootfs_init_fs_context(struct fs_context *fc)
+> >  {
+> >       if (IS_ENABLED(CONFIG_TMPFS) && is_tmpfs)
+> > @@ -625,6 +668,7 @@ static int rootfs_init_fs_context(struct fs_context *fc)
+> >
+> >       return ramfs_init_fs_context(fc);
+> >  }
+> > +#endif
+> >
+> >  struct file_system_type rootfs_fs_type = {
+> >       .name           = "rootfs",
+> > diff --git a/init/do_mounts.h b/init/do_mounts.h
+> > index 7a29ac3e427b..ae4ab306caa9 100644
+> > --- a/init/do_mounts.h
+> > +++ b/init/do_mounts.h
+> > @@ -10,9 +10,24 @@
+> >  #include <linux/root_dev.h>
+> >  #include <linux/init_syscalls.h>
+> >
+> > +extern int root_mountflags;
+> > +
+> >  void  mount_block_root(char *name, int flags);
+> >  void  mount_root(void);
+> > -extern int root_mountflags;
+> > +
+> > +#ifdef CONFIG_INITRAMFS_MOUNT
+> > +
+> > +int  prepare_mount_rootfs(void);
+> > +void finish_mount_rootfs(void);
+> > +void revert_mount_rootfs(void);
+> > +
+> > +#else
+> > +
+> > +static inline int  prepare_mount_rootfs(void) { return 0; }
+> > +static inline void finish_mount_rootfs(void) { }
+> > +static inline void revert_mount_rootfs(void) { }
+> > +
+> > +#endif
+> >
+> >  static inline __init int create_dev(char *name, dev_t dev)
+> >  {
+> > diff --git a/init/initramfs.c b/init/initramfs.c
+> > index af27abc59643..1833de3cf04e 100644
+> > --- a/init/initramfs.c
+> > +++ b/init/initramfs.c
+> > @@ -16,6 +16,8 @@
+> >  #include <linux/namei.h>
+> >  #include <linux/init_syscalls.h>
+> >
+> > +#include "do_mounts.h"
+> > +
+> >  static ssize_t __init xwrite(struct file *file, const char *p, size_t count,
+> >               loff_t *pos)
+> >  {
+> > @@ -682,13 +684,19 @@ static void __init do_populate_rootfs(void *unused, async_cookie_t cookie)
+> >       else
+> >               printk(KERN_INFO "Unpacking initramfs...\n");
+> >
+> > +     if (prepare_mount_rootfs())
+> > +             panic("Failed to mount rootfs");
+> > +
+> >       err = unpack_to_rootfs((char *)initrd_start, initrd_end - initrd_start);
+> >       if (err) {
+> > +             revert_mount_rootfs();
+> >  #ifdef CONFIG_BLK_DEV_RAM
+> >               populate_initrd_image(err);
+> >  #else
+> >               printk(KERN_EMERG "Initramfs unpacking failed: %s\n", err);
+> >  #endif
+> > +     } else {
+> > +             finish_mount_rootfs();
+> >       }
+> >
+> >  done:
+> > diff --git a/usr/Kconfig b/usr/Kconfig
+> > index 8bbcf699fe3b..4f6ac12eafe9 100644
+> > --- a/usr/Kconfig
+> > +++ b/usr/Kconfig
+> > @@ -52,6 +52,16 @@ config INITRAMFS_ROOT_GID
+> >
+> >         If you are not sure, leave it set to "0".
+> >
+> > +config INITRAMFS_MOUNT
+> > +     bool "Create second mount to make pivot_root() supported"
+> > +     default y
+> > +     help
+> > +       Before unpacking cpio, create a second mount and make it become
+> > +       the root filesystem. Therefore, initramfs will be supported by
+> > +       pivot_root().
+> > +
+> > +       If container platforms is used with initramfs, say Y.
+> > +
+> >  config RD_GZIP
+> >       bool "Support initial ramdisk/ramfs compressed using gzip"
+> >       default y
+> > --
+> > 2.32.0.rc0
+> >
