@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B9639C867
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 15:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA6B39C8CA
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 15:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbhFENU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 09:20:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34836 "EHLO mail.kernel.org"
+        id S231515AbhFENVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 09:21:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229930AbhFENUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 09:20:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5447B613D8;
+        id S230049AbhFENU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 09:20:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5E4C6141B;
         Sat,  5 Jun 2021 13:18:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1622899117;
-        bh=asTkRaIynv0EXyPf2YOE4npgGc5H+lLigxxTS3UFkZ8=;
+        bh=4iDY7ITSxco/5aVtxfEvQxWOspvnAzSv9vo4fOxlCv4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kWjNieVyd9OpRyqw850ZLuEqUL6ind5aa7j0879u/Jb5eDn/PJnP0uH/ZuWkuBbcN
-         o8mwd4xJS0BNWwM5XomJPU4LNkqmDdP8ENQdCsgsjeyP2itBOtACYNk2yp0HfVlSTh
-         1mNHJ5MycYr7UVJ1OvSwZeSpStg4n+5fVRoDdm73aet2Wwz1osGXxB6AqqkUD86X8a
-         lvuYLIeq4SioFxBzHkiuE7NYUr7b6P1rhkmu0C/dH6TPSNWbud0LrM1y7ECbKt28H3
-         qhWGaLwvZChMpRq9Rrwrg+ZmImvGuJGvALEl3IgE6mOzK/l3a+0VKxOCqkrpeGq2E6
-         dRWnB8RyiZgag==
+        b=HPQtd/0Bm798vqjdivAGvu0fWShViE0+b/aSVzwdqCKSjKMSRFEbnxpS8G/40/NBh
+         WeIDd8lbutDs3YdhzzB+tWK3yFLVgE7AtZnr5taqeDOCmS4dRWNfy3u74tvOuozyPe
+         ZRr/BpjUwed/CX0YS6jcZQ8vrhCc3N0vP0rlnKJ9fkKNoLcmtqUQHN5YrSTdcIkVKU
+         EjtOrpvfyhjQ2Ji5ZxXzxgPpH3sIZY8mH/l+aofupDRMqZt7i4z2T5iNINFQ+SOvFw
+         uStf+WFxvo+1grglejZlR6cVddoH9NDy5oeLWi2M0zdFto5FT8+aTraRZkiEuQ094F
+         EGBPKZBxaG7ow==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lpWCB-008GEX-8w; Sat, 05 Jun 2021 15:18:35 +0200
+        id 1lpWCB-008GEa-AA; Sat, 05 Jun 2021 15:18:35 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     "Jonathan Corbet" <corbet@lwn.net>,
         Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 01/34] docs: devices.rst: better reference documentation docs
-Date:   Sat,  5 Jun 2021 15:18:00 +0200
-Message-Id: <0c0302e9294a3c3694a3c362d4b54b336e7ef9c8.1622898327.git.mchehab+huawei@kernel.org>
+        Brendan Higgins <brendanhiggins@google.com>,
+        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH 02/34] docs: dev-tools: kunit: don't use a table for docs name
+Date:   Sat,  5 Jun 2021 15:18:01 +0200
+Message-Id: <08ac283ac5bdc2664255a7ad34514e50d3ed85d8.1622898327.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1622898327.git.mchehab+huawei@kernel.org>
 References: <cover.1622898327.git.mchehab+huawei@kernel.org>
@@ -44,55 +46,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's no need to use either :file: or :doc: tags for documentation,
-as automarkup.py automatically converts Documentation/*.rst into
-a cross-reference.
+We'll be replacing :doc:`foo` references to
+Documentation/foo.rst. Yet, here it happens inside a table.
+Doing a search-and-replace would break it.
+
+Yet, as there's no good reason to use a table there,
+let's just convert it into a list.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/driver-api/pm/devices.rst | 8 ++++----
+ Documentation/dev-tools/kunit/api/index.rst | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/driver-api/pm/devices.rst b/Documentation/driver-api/pm/devices.rst
-index 6b3bfd29fd84..d448cb57df86 100644
---- a/Documentation/driver-api/pm/devices.rst
-+++ b/Documentation/driver-api/pm/devices.rst
-@@ -217,7 +217,7 @@ system-wide transition to a sleep state even though its :c:member:`runtime_auto`
- flag is clear.
+diff --git a/Documentation/dev-tools/kunit/api/index.rst b/Documentation/dev-tools/kunit/api/index.rst
+index 9b9bffe5d41a..b33ad72bcf0b 100644
+--- a/Documentation/dev-tools/kunit/api/index.rst
++++ b/Documentation/dev-tools/kunit/api/index.rst
+@@ -10,7 +10,7 @@ API Reference
+ This section documents the KUnit kernel testing API. It is divided into the
+ following sections:
  
- For more information about the runtime power management framework, refer to
--:file:`Documentation/power/runtime_pm.rst`.
-+Documentation/power/runtime_pm.rst.
- 
- 
- Calling Drivers to Enter and Leave System Sleep States
-@@ -655,7 +655,7 @@ been thawed.  Generally speaking, the PM notifiers are suitable for performing
- actions that either require user space to be available, or at least won't
- interfere with user space.
- 
--For details refer to :doc:`notifiers`.
-+For details refer to Documentation/driver-api/pm/notifiers.rst.
- 
- 
- Device Low-Power (suspend) States
-@@ -726,7 +726,7 @@ it into account in any way.
- 
- Devices may be defined as IRQ-safe which indicates to the PM core that their
- runtime PM callbacks may be invoked with disabled interrupts (see
--:file:`Documentation/power/runtime_pm.rst` for more information).  If an
-+Documentation/power/runtime_pm.rst for more information).  If an
- IRQ-safe device belongs to a PM domain, the runtime PM of the domain will be
- disallowed, unless the domain itself is defined as IRQ-safe. However, it
- makes sense to define a PM domain as IRQ-safe only if all the devices in it
-@@ -805,7 +805,7 @@ The ``DPM_FLAG_MAY_SKIP_RESUME`` Driver Flag
- --------------------------------------------
- 
- During system-wide resume from a sleep state it's easiest to put devices into
--the full-power state, as explained in :file:`Documentation/power/runtime_pm.rst`.
-+the full-power state, as explained in Documentation/power/runtime_pm.rst.
- [Refer to that document for more information regarding this particular issue as
- well as for information on the device runtime power management framework in
- general.]  However, it often is desirable to leave devices in suspend after
+-================================= ==============================================
+-:doc:`test`                       documents all of the standard testing API
+-                                  excluding mocking or mocking related features.
+-================================= ==============================================
++Documentation/dev-tools/kunit/api/test.rst
++
++ - documents all of the standard testing API excluding mocking
++   or mocking related features.
 -- 
 2.31.1
 
