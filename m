@@ -2,86 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0142139C96B
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 17:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C67D39C971
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 17:19:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbhFEPPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 11:15:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229930AbhFEPPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 11:15:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E446D613DF;
-        Sat,  5 Jun 2021 15:13:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622906033;
-        bh=q32TmPFHFLcbVcbZPuwKpHBVSsjdVYl/vMKBcDp23I8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VTrjaJV3bhae6c+jmXmQY3npLh/jqazRkfYlJFz0el613zy6L50Ye76zcepOPG0+m
-         bbYI5kUKSbIi9pcGrQ2nW6/6zJokKvYCirpRV59voLTbhpmul2ipxWsi5iMYsNd4CY
-         3/mXsRGH90DinAz5A71h9ZApqSiZiMXldPvRRPM+a2NrdUJg7jSEwMwjjo2+6TCuK1
-         nIUDfDNMIFvIUJYc+Ko8IOHZXFpwMUQrmhuu5B/cVLToQxcjnsmVRIe9RyO4/Fh0lf
-         sNFQeA+/3p1sqq3Si1wh6RIkqOPqbK2xcfkTY1HNEyDWyIKgWBDrwMrWgyRJ+Yud/h
-         4M6VYnV8OGOZg==
-Date:   Sat, 5 Jun 2021 17:13:43 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 23/34] docs: i2c: avoid using ReSt :doc:`foo` markup
-Message-ID: <YLuUpxl6tGmym4Qs@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1622898327.git.mchehab+huawei@kernel.org>
- <88f7b2e2299cdfba4c3d00d623c852f18650d1bc.1622898327.git.mchehab+huawei@kernel.org>
+        id S230025AbhFEPUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 11:20:46 -0400
+Received: from mail-lf1-f50.google.com ([209.85.167.50]:40795 "EHLO
+        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229930AbhFEPUq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 11:20:46 -0400
+Received: by mail-lf1-f50.google.com with SMTP id w33so18577901lfu.7
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 08:18:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EZnFe/YPkagTwcuo6+qZIKKsCGRjyloxniZLJsXubJw=;
+        b=QchpKmlTMdYVfzB4+RCQf/u3zr/bhQ5zBYpwpBROhpQjG5sTgbJOyI/v8swbAF5Myl
+         zuWsLsK1LdCr3gAYujwSbr77aQPYQYWfazK6qhC6Y/m1uzGa6WE/sRZ1zzDVW9bHaPQj
+         QozKFmsjqd/jRWeEyXrday1ChQLvEJOxTGnkHkyzx8MehR0DP/1I8gS0K+m3GiR9SJaU
+         x3XlXc629qCNu1MXKVVKQfVlKVu4kHH+nothQtgm2rCY8YQDwSAPTOwGYazkZLh5r3R2
+         p1DfrIn6JQoGlWMxeKl/kTKLpw5arhJPY3CdKOMq+PIrgt0mUTknx98tA7BeAziN1o5A
+         9k9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EZnFe/YPkagTwcuo6+qZIKKsCGRjyloxniZLJsXubJw=;
+        b=q2pgncl6isK1kv18+5bpMxWRSor//F1kCxSUy14iyOgBXtJXXQD0rx9JbQYjxGjfyu
+         b+2ie+BkjVCJh5z0lWRsst+RPo3Go7VpFZdRHdetU6KmFyWereJGMyBbKXQPeM2DRYbs
+         z9PoWtco5llai9id8NGKbd3JhgapeaVNTaP+Mkb1GUsEv6RfwjIo18KF5DreljAGcfjx
+         P+DyN3zlNuF3ulYM9eKHG1oyUNIbwPA70a62rHUvE9OzkKQU7WPbUcOMvh3wVGMc3U4z
+         3SBmeWPDn4t/ZJ/IrIvm+tCuHLZpV+zt5bG5ZT4tOXQL2v3lZZZiwDtJVGx92MjHXk6i
+         nFtw==
+X-Gm-Message-State: AOAM532ZPfRMtiFXjFSCJBk6bJ7IshmPujB+Skhtt4AQJYKftUe6LFlw
+        tlOwiM46vDpLm3RWdF5lSVEjkvfd3bc1f+llnklzMw==
+X-Google-Smtp-Source: ABdhPJy2RU2ANSqGxvNcpJx5nyiCZ/gsiRuRmAEhi9SMJ1hnSjkVHHIGoaxD+IUsSAZ3phSXJRUMLKhwxkblqc4D8tE=
+X-Received: by 2002:ac2:544f:: with SMTP id d15mr6108972lfn.465.1622906264687;
+ Sat, 05 Jun 2021 08:17:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="B8Piwll8ivrSiePv"
-Content-Disposition: inline
-In-Reply-To: <88f7b2e2299cdfba4c3d00d623c852f18650d1bc.1622898327.git.mchehab+huawei@kernel.org>
+References: <20210605123636.2485041-1-yangyingliang@huawei.com>
+In-Reply-To: <20210605123636.2485041-1-yangyingliang@huawei.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 5 Jun 2021 17:17:33 +0200
+Message-ID: <CACRpkdZi-W-vnCH05C4CkQdnYtUKuD4NWoBTh8hGXmok_=Dsfw@mail.gmail.com>
+Subject: Re: [PATCH net-next v2] net: gemini: Use devm_platform_get_and_ioremap_resource()
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Jun 5, 2021 at 2:32 PM Yang Yingliang <yangyingliang@huawei.com> wrote:
 
---B8Piwll8ivrSiePv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Use devm_platform_get_and_ioremap_resource() to simplify
+> code.
+>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+(...)
+> -       dmares = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -       gmacres = platform_get_resource(pdev, IORESOURCE_MEM, 1);
 
-On Sat, Jun 05, 2021 at 03:18:22PM +0200, Mauro Carvalho Chehab wrote:
-> The :doc:`foo` tag is auto-generated via automarkup.py.
-> So, use the filename at the sources, instead of :doc:`foo`.
->=20
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Should you not also delete the local variables
+dmares and gmacres? I doubt they are used
+after this.
 
-Thanks for doing this!
-
-Acked-by: Wolfram Sang <wsa@kernel.org>
-
-
---B8Piwll8ivrSiePv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmC7lKMACgkQFA3kzBSg
-KbaLaRAAgL3qwWjkIDARr7I5Oe2cIwUWRMHv8ndxbjCDfVDzaTnKMhkb1StLZBSy
-ePpAz+HnLGYqV4zSVfadHsrS/RP5WDNGLhaqydEknfd329eIQ63tcCOCvPZknEqu
-xHuJdf9CUmSimIL4ZJc5rsHDpBRCGVYxZpa0OAR0SgvajNjm1L9PFnwqgrDOZFjt
-J6Lf55trqHf6QkDdulMVI4kU4SmUI0HyOJaIiuRxnjupc5S7OZaysDJGmtYKB5vk
-uuRAaQ07VJdVlcbxN1e6d+0ThZgSkplsgcZs8LZPE4R+SgFxelUDqp1ukOJEF39Q
-MSRhwM2xrE8VwG1gHpPq6ZbqRA27MEIQHSUJn+s7BiMM8YZeNPVmYF9SfR+7+4ek
-hcY6YXKlWaYXqJXTLbIQjVpn3MAcz+uGiiC9rWUbyDsMJX5pN9koQqvAtBlyti8o
-rWhPONwAcHpDrV2Wv7l4ovKkfZlWP0qejXplqrd5fMzbP+Bp6LmOFeTv2gj710Vy
-f0sXsdfCid84MKJHUxwRhyeOE/Qo8+X81KyqorT+wsPBTtIMXv5cKYTctBAnQjbJ
-LWfQ+rFfU1t0iXidvzBavApc4tQdpV8DbLDy/GMy+S4xUvDwo56G0qv+FEczcbjI
-vWYSPP7A9kh38EsQzYg2Yvw9GYX2uvGY/XvZ6bhtnr4htfeHOB8=
-=3GSv
------END PGP SIGNATURE-----
-
---B8Piwll8ivrSiePv--
+Yours,
+Linus Walleij
