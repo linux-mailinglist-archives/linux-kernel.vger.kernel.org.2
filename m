@@ -2,153 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD7039C4FA
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 04:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0A7239C4FC
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 04:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231569AbhFECMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 22:12:48 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:4359 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230185AbhFECMr (ORCPT
+        id S231259AbhFECPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 22:15:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230169AbhFECPd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 22:12:47 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Fxjgg198lz68q4;
-        Sat,  5 Jun 2021 10:07:11 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 5 Jun 2021 10:10:58 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 5 Jun 2021 10:10:57 +0800
-Subject: Re: [PATCH] powerpc: Remove klimit
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "Michael Ellerman" <mpe@ellerman.id.au>
-CC:     <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>
-References: <9fa9ba6807c17f93f35a582c199c646c4a8bfd9c.1622800638.git.christophe.leroy@csgroup.eu>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <99bdf356-4698-56eb-c3b0-3e4069d01c07@huawei.com>
-Date:   Sat, 5 Jun 2021 10:10:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Fri, 4 Jun 2021 22:15:33 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C36F1C061766
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Jun 2021 19:13:31 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id m3so13906822lji.12
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Jun 2021 19:13:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=WNniSkgSAc5S7s5FLQAPPQEUdxZhABUBkTI5NiMDOWk=;
+        b=jRrx7aGlQeP2pPya3RfBcXZJtRjTDPZPkXpwgLqjb0WFxZtdAgBtuzbueC8OJ+eYQO
+         XQHO9JW9liS0K3aF6cEtphm3YGwNjSXesg+vIBV/UTYQFxSdLjwPleaAP4hzNbop+iMs
+         7yK2jq95fRn6N9RZJWnecYlD4HrhHsTgxx+CqA4Jkc9xBB223/Ss6JOyJRsghj3uCtZ1
+         ru3Ql2MfQq+egezgcdGiIfu38SGRHAFOfDYC8yIFPzRzUo+1dJ/Me2yNNSytTvYVeCeD
+         Zl4tSHccvM3tTclcPfOd1tyssOQ4oaCvZlRXd8nVk7gizKi6hamY00CeAy5jZwEtKaPR
+         aZ/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WNniSkgSAc5S7s5FLQAPPQEUdxZhABUBkTI5NiMDOWk=;
+        b=q4XQZ5m9JLuo6U54Nhia9/Qpgr8+gJr6x/gth/cAYAIrsIoZeHQIyZ1wDY13YWrMZi
+         aPbz/2S615M1yIHZJVID9/szE5OIJXkBEiFTs31Idn2k8pnSKVHV3KyVAe2ahPfrPVj2
+         ub5on9QBcjB9lDXZe6ijFud+TxDWR2EIyX3qtrD6J2Ni7d2k/6qtjBj8DwBqpEgoJEz+
+         neqTUgjeI6kmFYbM8m8sTfH6MBqgnslvHZZm6KDJ/tSIePqRv/feoa5GWIsumjDjmRO7
+         HdP+yhWjZW2g6L+aq3lTN/1aVb/UMaKbiyuFRmZWJHpVyjPXp2+op0Z6fYLPhvNQHXkF
+         G7Ag==
+X-Gm-Message-State: AOAM533o4XD4AYgjEkUHVN/Ntfgsn5FvhEIrKte4DFkdNfQ2sDDCkm0+
+        T6w8T4NhU9GVjTsfkz3CYnNddenlXu+MN1XVU8o=
+X-Google-Smtp-Source: ABdhPJzQAL70Mly6fL/m9Hhlf5q+cqNQPNifk2EBRlES54E+UaaCMO5oTiWbymT5UwEXh1A0rji9+ZA0eGEoLNc/Zro=
+X-Received: by 2002:a2e:a717:: with SMTP id s23mr5561084lje.282.1622859210169;
+ Fri, 04 Jun 2021 19:13:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <9fa9ba6807c17f93f35a582c199c646c4a8bfd9c.1622800638.git.christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+References: <20210602123803.15738-1-xuewen.yan94@gmail.com>
+ <YLeF/556Wbvx1Ssc@google.com> <CAB8ipk9BqzEQ4Ta5s+vJeep=v1pmaXS-WsF2tq0u9G8Q2PGmsA@mail.gmail.com>
+ <20210604160839.2op4ak75vle3gmt3@e107158-lin.cambridge.arm.com>
+In-Reply-To: <20210604160839.2op4ak75vle3gmt3@e107158-lin.cambridge.arm.com>
+From:   Xuewen Yan <xuewen.yan94@gmail.com>
+Date:   Sat, 5 Jun 2021 10:12:29 +0800
+Message-ID: <CAB8ipk9CgWvbGnJcvEtLcG=7v-pPmGJd25-R9jb2Am5zKngK3g@mail.gmail.com>
+Subject: Re: [PATCH] sched/uclamp: Avoid setting cpu.uclamp.min bigger than cpu.uclamp.max
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Quentin Perret <qperret@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Ryan Y <xuewyan@foxmail.com>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>, tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Qais,
 
-On 2021/6/4 17:57, Christophe Leroy wrote:
-> klimit is a global variable initialised at build time with the
-> value of _end.
+On Sat, Jun 5, 2021 at 12:08 AM Qais Yousef <qais.yousef@arm.com> wrote:
 >
-> This variable is never modified, so _end symbol can be used directly.
+> On 06/03/21 10:24, Xuewen Yan wrote:
+> > +CC Qais
 >
-> Remove klimit.
-Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> Thanks for the CC :)
 >
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
-> ---
->   arch/powerpc/include/asm/setup.h             | 1 -
->   arch/powerpc/kernel/head_book3s_32.S         | 6 ++----
->   arch/powerpc/kernel/prom.c                   | 2 +-
->   arch/powerpc/kernel/setup-common.c           | 4 +---
->   arch/powerpc/platforms/powermac/bootx_init.c | 2 +-
->   5 files changed, 5 insertions(+), 10 deletions(-)
+> >
+> >
+> > Hi Quentin
+> >
+> > On Wed, Jun 2, 2021 at 9:22 PM Quentin Perret <qperret@google.com> wrot=
+e:
+> > >
+> > > +CC Patrick and Tejun
+> > >
+> > > On Wednesday 02 Jun 2021 at 20:38:03 (+0800), Xuewen Yan wrote:
+> > > > From: Xuewen Yan <xuewen.yan@unisoc.com>
+> > > >
+> > > > When setting cpu.uclamp.min/max in cgroup, there is no validating
+> > > > like uclamp_validate() in __sched_setscheduler(). It may cause the
+> > > > cpu.uclamp.min is bigger than cpu.uclamp.max.
+> > >
+> > > ISTR this was intentional. We also allow child groups to ask for
+> > > whatever clamps they want, but that is always limited by the parent, =
+and
+> > > reflected in the 'effective' values, as per the cgroup delegation mod=
+el.
 >
-> diff --git a/arch/powerpc/include/asm/setup.h b/arch/powerpc/include/asm/setup.h
-> index e89bfebd4e00..6c1a7d217d1a 100644
-> --- a/arch/powerpc/include/asm/setup.h
-> +++ b/arch/powerpc/include/asm/setup.h
-> @@ -10,7 +10,6 @@ extern void ppc_printk_progress(char *s, unsigned short hex);
->   extern unsigned int rtas_data;
->   extern unsigned long long memory_limit;
->   extern bool init_mem_is_free;
-> -extern unsigned long klimit;
->   extern void *zalloc_maybe_bootmem(size_t size, gfp_t mask);
->   
->   struct device_node;
-> diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
-> index 326262030279..b724e88bcdaf 100644
-> --- a/arch/powerpc/kernel/head_book3s_32.S
-> +++ b/arch/powerpc/kernel/head_book3s_32.S
-> @@ -766,9 +766,6 @@ PerformanceMonitor:
->    * the kernel image to physical address PHYSICAL_START.
->    */
->   relocate_kernel:
-> -	addis	r9,r26,klimit@ha	/* fetch klimit */
-> -	lwz	r25,klimit@l(r9)
-> -	addis	r25,r25,-KERNELBASE@h
->   	lis	r3,PHYSICAL_START@h	/* Destination base address */
->   	li	r6,0			/* Destination offset */
->   	li	r5,0x4000		/* # bytes of memory to copy */
-> @@ -776,7 +773,8 @@ relocate_kernel:
->   	addi	r0,r3,4f@l		/* jump to the address of 4f */
->   	mtctr	r0			/* in copy and do the rest. */
->   	bctr				/* jump to the copy */
-> -4:	mr	r5,r25
-> +4:	lis	r5,_end-KERNELBASE@h
-> +	ori	r5,r5,_end-KERNELBASE@l
->   	bl	copy_and_flush		/* copy the rest */
->   	b	turn_on_mmu
->   
-> diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
-> index fbe9deebc8e1..f620e04dc9bf 100644
-> --- a/arch/powerpc/kernel/prom.c
-> +++ b/arch/powerpc/kernel/prom.c
-> @@ -758,7 +758,7 @@ void __init early_init_devtree(void *params)
->   		first_memblock_size = min_t(u64, first_memblock_size, memory_limit);
->   	setup_initial_memory_limit(memstart_addr, first_memblock_size);
->   	/* Reserve MEMBLOCK regions used by kernel, initrd, dt, etc... */
-> -	memblock_reserve(PHYSICAL_START, __pa(klimit) - PHYSICAL_START);
-> +	memblock_reserve(PHYSICAL_START, __pa(_end) - PHYSICAL_START);
->   	/* If relocatable, reserve first 32k for interrupt vectors etc. */
->   	if (PHYSICAL_START > MEMORY_START)
->   		memblock_reserve(MEMORY_START, 0x8000);
-> diff --git a/arch/powerpc/kernel/setup-common.c b/arch/powerpc/kernel/setup-common.c
-> index 74a98fff2c2f..138bb7f49ef9 100644
-> --- a/arch/powerpc/kernel/setup-common.c
-> +++ b/arch/powerpc/kernel/setup-common.c
-> @@ -91,8 +91,6 @@ EXPORT_SYMBOL_GPL(boot_cpuid);
->   int dcache_bsize;
->   int icache_bsize;
->   
-> -unsigned long klimit = (unsigned long) _end;
-> -
->   /*
->    * This still seems to be needed... -- paulus
->    */
-> @@ -930,7 +928,7 @@ void __init setup_arch(char **cmdline_p)
->   	init_mm.start_code = (unsigned long)_stext;
->   	init_mm.end_code = (unsigned long) _etext;
->   	init_mm.end_data = (unsigned long) _edata;
-> -	init_mm.brk = klimit;
-> +	init_mm.brk = (unsigned long)_end;
->   
->   	mm_iommu_init(&init_mm);
->   	irqstack_early_init();
-> diff --git a/arch/powerpc/platforms/powermac/bootx_init.c b/arch/powerpc/platforms/powermac/bootx_init.c
-> index 9d4ecd292255..d20ef35e6d9d 100644
-> --- a/arch/powerpc/platforms/powermac/bootx_init.c
-> +++ b/arch/powerpc/platforms/powermac/bootx_init.c
-> @@ -433,7 +433,7 @@ static void __init btext_welcome(boot_infos_t *bi)
->   	bootx_printf("\nframe buffer at  : 0x%x", bi->dispDeviceBase);
->   	bootx_printf(" (phys), 0x%x", bi->logicalDisplayBase);
->   	bootx_printf(" (log)");
-> -	bootx_printf("\nklimit           : 0x%x",(unsigned long)klimit);
-> +	bootx_printf("\nklimit           : 0x%x",(unsigned long)_end);
->   	bootx_printf("\nboot_info at     : 0x%x", bi);
->   	__asm__ __volatile__ ("mfmsr %0" : "=r" (flags));
->   	bootx_printf("\nMSR              : 0x%x", flags);
+> As Quentin said. This intentional to comply with cgroup model.
+>
+> See Limits and Protections sections in Documentation/admin-guide/cgroup-v=
+2.rst
+>
+> Specifically
+>
+>         "all configuration combinations are valid"
+>
+> So user can set cpu.uclamp.min higher than cpu.uclamp.max. But when we ap=
+ply
+> the setting, cpu.uclamp.min will be capped by cpu.uclamp.max. I can see y=
+ou
+> found the cpu_util_update_eff() logic.
+>
+
+Thanks a lot for your patience to explain, sorry for my ignorance of
+Documentation/admin-guide/cgroup-v2.rst.
+
+> >
+> > It does not affect the 'effective' value. That because there is
+> > protection in cpu_util_update_eff():
+> > /* Ensure protection is always capped by limit */
+> > eff[UCLAMP_MIN] =3D min(eff[UCLAMP_MIN], eff[UCLAMP_MAX]);
+> >
+> > When users set the cpu.uclamp.min > cpu.uclamp.max:
+> > cpu.uclamp.max =3D 50;
+> > to set : cpu.uclamp.min =3D 60;
+> > That would make the uclamp_req[UCLAMP_MIN].value =3D 1024* 60% =3D 614,
+> > uclamp_req[UCLAMP_MAX].value =3D 1024* 50% =3D 512;
+> > But finally, the  uclamp[UCLAMP_MIN].value =3D uclamp[UCLAMP_MAX].value
+> > =3D 1024* 50% =3D 512;
+> >
+> > Is it deliberately set not to validate because of the above?
+>
+> Sorry I'm not following you here. What code paths were you trying to expl=
+ain
+> here?
+>
+> Did you actually hit any problem here?
+
+I just gave an example of the difference of uclamp_req and uclamp
+without my patch, and can ignore it.
+
+>
+In addition=EF=BC=8CIn your patch:
+6938840392c89 ("sched/uclamp: Fix wrong implementation of cpu.uclamp.min")
+https://lkml.kernel.org/r/20210510145032.1934078-2-qais.yousef@arm.com
+
++ switch (clamp_id) {
++ case UCLAMP_MIN: {
++ struct uclamp_se uc_min =3D task_group(p)->uclamp[clamp_id];
++ if (uc_req.value < uc_min.value)
++ return uc_min;
++ break;
+
+When the clamp_id =3D UCLAMP_MIN, why not judge the uc_req.value is
+bigger than task_group(p)->uclamp[UCLAMP_MAX] ?
+Because when the p->uclamp_req[UCLAMP_MIN] >  task_group(p)->uclamp[UCLAMP_=
+MAX],
+the patch can not clamp the p->uclamp_req[UCLAMP_MIN/MAX] into
+[ task_group(p)->uclamp[UCLAMP_MAX],  task_group(p)->uclamp[UCLAMP_MAX] ].
+
+Is it necessary to fix it here=EF=BC=9F
+
+Thanks
+xuewen
