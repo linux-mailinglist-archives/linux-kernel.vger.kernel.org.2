@@ -2,248 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C1239C6A6
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 09:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 586A739C6AA
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 09:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbhFEHvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 03:51:38 -0400
-Received: from mga04.intel.com ([192.55.52.120]:29383 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229850AbhFEHvh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 03:51:37 -0400
-IronPort-SDR: mjWbI9B+8XFRaRz0EpFL0sCqKN0cq5bKJG0pmuzj+8oS6d9s8Gu/ThADXCjUQduIwdQ7Ew9daG
- izxDeqnuSILw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10005"; a="202560285"
-X-IronPort-AV: E=Sophos;i="5.83,250,1616482800"; 
-   d="scan'208";a="202560285"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2021 00:49:50 -0700
-IronPort-SDR: hbmRlMRgY0we2cqUVUuD81R9GDjls0hfrK2gCCbBa5f1qqTtYAGVz/EDP/B1xW0/t3JpPXukwx
- gMh7Q+lBFg3Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,250,1616482800"; 
-   d="scan'208";a="550758000"
-Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 05 Jun 2021 00:49:48 -0700
-Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lpR40-0007KD-6J; Sat, 05 Jun 2021 07:49:48 +0000
-Date:   Sat, 05 Jun 2021 15:49:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/next] BUILD SUCCESS
- 5587a2080684547b08b76e7817d192177b4f49f6
-Message-ID: <60bb2c95.dZARuVMZfKn8FHVF%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230033AbhFEHxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 03:53:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55262 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229994AbhFEHxN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 03:53:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622879485;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AFxfbRh44tx3itGF+2reHu0Dp0ddlJOouXymhxZA6d8=;
+        b=Nm366a6vgCQ2PUM+0FY3vHaH0hLfBwu2Ge238/N7SGVBDf5ViWAqHeT/9Vf0Y0eL3mR1ux
+        fkSvhZkro7IFKYXU+0ieO40RkiBShcSgO2QGvuh0QLyNBfMGtmu1Ro8gSkY14rI6xUIjrd
+        pm+pZ+yFxloBO7nL/ybhpwZGgD5nG1U=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-286-fqSHjizUNGWV-HX4g9qZow-1; Sat, 05 Jun 2021 03:51:21 -0400
+X-MC-Unique: fqSHjizUNGWV-HX4g9qZow-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 652ED801B12;
+        Sat,  5 Jun 2021 07:51:20 +0000 (UTC)
+Received: from dhcp-128-65.nay.redhat.com (ovpn-12-110.pek2.redhat.com [10.72.12.110])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7BCB71B5B7;
+        Sat,  5 Jun 2021 07:51:16 +0000 (UTC)
+Date:   Sat, 5 Jun 2021 15:51:05 +0800
+From:   Dave Young <dyoung@redhat.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Javier =?iso-8859-1?B?VGnh?= <javier.tia@gmail.com>,
+        kexec@lists.infradead.org, Eric Biederman <ebiederm@xmission.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Matt Fleming <matt@codeblueprint.co.uk>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH v1 0/2] firmware: dmi_scan: Make it work in kexec'ed
+ kernel
+Message-ID: <YLss6ZNPMIXleLLF@dhcp-128-65.nay.redhat.com>
+References: <20161202195416.58953-1-andriy.shevchenko@linux.intel.com>
+ <YLdEZoSWI41fcTB1@smile.fi.intel.com>
+ <YLdG91qspr19heDS@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <YLdG91qspr19heDS@smile.fi.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-branch HEAD: 5587a2080684547b08b76e7817d192177b4f49f6  torture: Create KCSAN summaries for torture.sh runs
+Hi,
+On 06/02/21 at 11:53am, Andy Shevchenko wrote:
+> +Cc: Ard
+> 
+> On Wed, Jun 02, 2021 at 11:42:14AM +0300, Andy Shevchenko wrote:
+> > On Fri, Dec 02, 2016 at 09:54:14PM +0200, Andy Shevchenko wrote:
+> > > Until now DMI information is lost when kexec'ing. Fix this in the same way as
+> > > it has been done for ACPI RSDP.
+> > > 
+> > > Series has been tested on Galileo Gen2 where DMI is used by drivers, in
+> > > particular the default I2C host speed is choosen based on DMI system
+> > > information and now gets it correct.
+> > 
+> > Still nothing happens for a while and problem still exists.
+> > Can we do something about it, please?
 
-elapsed time: 722m
+Seems I totally missed this thread. Old emails lost.
 
-configs tested: 186
-configs skipped: 2
+The question Ard asked is to confirm if the firmware converted the
+SMBIOS3 addr to a virtual address after exit boot service. I do not
+remember some easy way to check it due to lost the context of the code.
+But you can try to check it via dmesg|grep SMBIOS both in normal boot
+and kexeced boot log.  And then compare if those addresses are
+identical.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+If the SMBIOS3 addr in kexec kernel is different then it should have
+been modified by firmware. Then we need patch kernel and kexec-tools to
+support it.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                 mpc8540_ads_defconfig
-powerpc                          allyesconfig
-arc                            hsdk_defconfig
-riscv             nommu_k210_sdcard_defconfig
-arm                  colibri_pxa270_defconfig
-powerpc                    adder875_defconfig
-powerpc                       ebony_defconfig
-sh                        apsh4ad0a_defconfig
-arm                        keystone_defconfig
-powerpc                    gamecube_defconfig
-mips                      maltasmvp_defconfig
-powerpc                 mpc836x_rdk_defconfig
-mips                           gcw0_defconfig
-powerpc                      obs600_defconfig
-arm                           sama5_defconfig
-mips                    maltaup_xpa_defconfig
-powerpc                       eiger_defconfig
-powerpc                      chrp32_defconfig
-arm                           corgi_defconfig
-um                               alldefconfig
-powerpc                  iss476-smp_defconfig
-xtensa                generic_kc705_defconfig
-mips                     loongson2k_defconfig
-mips                  maltasmvp_eva_defconfig
-m68k                         apollo_defconfig
-m68k                        mvme16x_defconfig
-mips                      maltaaprp_defconfig
-nios2                               defconfig
-arc                         haps_hs_defconfig
-mips                           xway_defconfig
-powerpc                          allmodconfig
-mips                         tb0287_defconfig
-arm                            mmp2_defconfig
-sparc                            alldefconfig
-mips                           rs90_defconfig
-i386                                defconfig
-sh                        edosk7705_defconfig
-sparc64                             defconfig
-arm                       versatile_defconfig
-arm                        multi_v5_defconfig
-m68k                           sun3_defconfig
-openrisc                            defconfig
-arc                        nsim_700_defconfig
-mips                        bcm47xx_defconfig
-mips                            gpr_defconfig
-mips                           ci20_defconfig
-powerpc                    ge_imp3a_defconfig
-arm                           stm32_defconfig
-arm                            xcep_defconfig
-arm                         assabet_defconfig
-ia64                            zx1_defconfig
-mips                     cu1830-neo_defconfig
-sh                          urquell_defconfig
-sh                           se7724_defconfig
-mips                        maltaup_defconfig
-arm                         lpc32xx_defconfig
-m68k                          multi_defconfig
-powerpc                 mpc832x_rdb_defconfig
-sh                        dreamcast_defconfig
-arm                      integrator_defconfig
-arm                            mps2_defconfig
-arm                          simpad_defconfig
-arm                            qcom_defconfig
-arc                 nsimosci_hs_smp_defconfig
-riscv                            alldefconfig
-powerpc                      katmai_defconfig
-powerpc                mpc7448_hpc2_defconfig
-powerpc                 mpc834x_mds_defconfig
-sh                         ap325rxa_defconfig
-sh                            titan_defconfig
-powerpc                     stx_gp3_defconfig
-sh                          rsk7201_defconfig
-powerpc                      tqm8xx_defconfig
-arm                       imx_v6_v7_defconfig
-mips                           jazz_defconfig
-xtensa                         virt_defconfig
-sh                          sdk7780_defconfig
-arm                            lart_defconfig
-arm                          pxa910_defconfig
-arc                        nsimosci_defconfig
-mips                           ip28_defconfig
-powerpc                       holly_defconfig
-xtensa                              defconfig
-powerpc                     kmeter1_defconfig
-mips                         cobalt_defconfig
-powerpc                   motionpro_defconfig
-m68k                            q40_defconfig
-powerpc                     ppa8548_defconfig
-powerpc                     kilauea_defconfig
-mips                           ip22_defconfig
-sh                           se7750_defconfig
-openrisc                  or1klitex_defconfig
-arc                              alldefconfig
-mips                        nlm_xlp_defconfig
-nios2                         3c120_defconfig
-powerpc                        fsp2_defconfig
-sparc                       sparc32_defconfig
-sh                        sh7785lcr_defconfig
-arm                        multi_v7_defconfig
-m68k                                defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20210604
-x86_64               randconfig-a004-20210604
-x86_64               randconfig-a003-20210604
-x86_64               randconfig-a006-20210604
-x86_64               randconfig-a005-20210604
-x86_64               randconfig-a001-20210604
-i386                 randconfig-a003-20210604
-i386                 randconfig-a006-20210604
-i386                 randconfig-a004-20210604
-i386                 randconfig-a001-20210604
-i386                 randconfig-a005-20210604
-i386                 randconfig-a002-20210604
-i386                 randconfig-a003-20210603
-i386                 randconfig-a006-20210603
-i386                 randconfig-a004-20210603
-i386                 randconfig-a001-20210603
-i386                 randconfig-a002-20210603
-i386                 randconfig-a005-20210603
-x86_64               randconfig-a015-20210605
-x86_64               randconfig-a011-20210605
-x86_64               randconfig-a014-20210605
-x86_64               randconfig-a012-20210605
-x86_64               randconfig-a016-20210605
-x86_64               randconfig-a013-20210605
-i386                 randconfig-a015-20210604
-i386                 randconfig-a013-20210604
-i386                 randconfig-a016-20210604
-i386                 randconfig-a011-20210604
-i386                 randconfig-a014-20210604
-i386                 randconfig-a012-20210604
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+You can try below patch to see if it works:
 
-clang tested configs:
-x86_64               randconfig-b001-20210604
-x86_64               randconfig-a015-20210604
-x86_64               randconfig-a011-20210604
-x86_64               randconfig-a014-20210604
-x86_64               randconfig-a012-20210604
-x86_64               randconfig-a016-20210604
-x86_64               randconfig-a013-20210604
+apply a kexec-tools patch to kexec-tools if you do not use kexec -s
+(kexec_file_load):
+--- kexec-tools.orig/kexec/arch/i386/x86-linux-setup.c
++++ kexec-tools/kexec/arch/i386/x86-linux-setup.c
+@@ -533,7 +533,8 @@ struct efi_setup_data {
+ 	uint64_t runtime;
+ 	uint64_t tables;
+ 	uint64_t smbios;
+-	uint64_t reserved[8];
++	uint64_t smbios3;
++	uint64_t reserved[7];
+ };
+ 
+ struct setup_data {
+@@ -580,6 +581,8 @@ static int get_efi_values(struct efi_set
+ 
+ 	ret = get_efi_value("/sys/firmware/efi/systab", "SMBIOS=0x",
+ 			    &esd->smbios);
++	ret |= get_efi_value("/sys/firmware/efi/systab", "SMBIOS3=0x",
++			    &esd->smbios3);
+ 	ret |= get_efi_value("/sys/firmware/efi/fw_vendor", "0x",
+ 			     &esd->fw_vendor);
+ 	ret |= get_efi_value("/sys/firmware/efi/runtime", "0x",
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+=============================================
+Kernel patch:
+
+--- linux-x86.orig/arch/x86/include/asm/efi.h
++++ linux-x86/arch/x86/include/asm/efi.h
+@@ -167,7 +167,8 @@ struct efi_setup_data {
+ 	u64 __unused;
+ 	u64 tables;
+ 	u64 smbios;
+-	u64 reserved[8];
++	u64 smbios3;
++	u64 reserved[7];
+ };
+ 
+ extern u64 efi_setup;
+--- linux-x86.orig/arch/x86/kernel/kexec-bzimage64.c
++++ linux-x86/arch/x86/kernel/kexec-bzimage64.c
+@@ -144,6 +144,7 @@ prepare_add_efi_setup_data(struct boot_p
+ 	esd->fw_vendor = efi_fw_vendor;
+ 	esd->tables = efi_config_table;
+ 	esd->smbios = efi.smbios;
++	esd->smbios3 = efi.smbios3;
+ 
+ 	sd->type = SETUP_EFI;
+ 	sd->len = sizeof(struct efi_setup_data);
+--- linux-x86.orig/arch/x86/platform/efi/quirks.c
++++ linux-x86/arch/x86/platform/efi/quirks.c
+@@ -497,8 +497,8 @@ void __init efi_free_boot_services(void)
+  * their physical addresses therefore we pass them via setup_data and
+  * correct those entries to their respective physical addresses here.
+  *
+- * Currently only handles smbios which is necessary for some firmware
+- * implementation.
++ * Currently only handles smbios and smbios3 which is necessary for
++ * some firmware implementation.
+  */
+ int __init efi_reuse_config(u64 tables, int nr_tables)
+ {
+@@ -521,7 +521,7 @@ int __init efi_reuse_config(u64 tables,
+ 		goto out;
+ 	}
+ 
+-	if (!data->smbios)
++	if (!data->smbios  && !data->smbios3)
+ 		goto out_memremap;
+ 
+ 	sz = sizeof(efi_config_table_64_t);
+@@ -538,8 +538,10 @@ int __init efi_reuse_config(u64 tables,
+ 
+ 		guid = ((efi_config_table_64_t *)p)->guid;
+ 
+-		if (!efi_guidcmp(guid, SMBIOS_TABLE_GUID))
++		if (!efi_guidcmp(guid, SMBIOS_TABLE_GUID) && data->smbios)
+ 			((efi_config_table_64_t *)p)->table = data->smbios;
++		else if (!efi_guidcmp(guid, SMBIOS3_TABLE_GUID) && data->smbios3)
++			((efi_config_table_64_t *)p)->table = data->smbios3;
+ 		p += sz;
+ 	}
+ 	early_memunmap(tablep, nr_tables * sz);
+
+
+Thanks
+Dave
+
