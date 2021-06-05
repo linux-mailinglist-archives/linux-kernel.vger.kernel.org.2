@@ -2,43 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9429139C8C5
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 15:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DF4039C8C0
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 15:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbhFENV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 09:21:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35088 "EHLO mail.kernel.org"
+        id S231288AbhFENVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 09:21:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230103AbhFENU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230112AbhFENU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 5 Jun 2021 09:20:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06A8061445;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2734661448;
         Sat,  5 Jun 2021 13:18:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1622899118;
-        bh=B5lTEnXkGEyVgmsK8p6BhCFjJdgDkkDfTb1jiWTpZPs=;
+        bh=zlUdrPVUJU1EIWuENgh6HqMK4e28J4JfFjwSRLcdyZQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P6nXCytB7KSaVv5R7x9+KYabnohlW0SWzXPr6UxF/ZKomHyqF3GpLSFFAT8Be376w
-         OY4X7XnfcKDWq/qIT7b6KGEQsHNJFxWTy6yNFoiGEvPZ1HC4qZ/DKe4AsedDlCkoGU
-         YZKpg+X84rUB3jYVsjANgcEq+N/Sv7Z1prYGFwBfPbhohUxHd8QeUuFXXitweVe/fl
-         knqtSsNGmCKxkhD/tq/1+0/p1I9xJ6b9jGI+07cViTUsok0V8o2854q10XTpAUpcNE
-         c+lshrED7y8pPM8+T2dlWPz0vpSkt7oysn3k6Hekfdb+imqE6Ly8sf5GDpSSRku9MP
-         9HWHvu8LyGmUA==
+        b=oqQdnSoafV4LtWDLZ5Jh3d1B1ytrDYZXu9yVloY1vajzKSqbYm8PN98ELsRbSnSMR
+         caP3Cjn3/PRlUvtjfg3weISWe9ihk1A89+coIXhnm9IQjR8Ckm7p5mOikXJR30narL
+         cSNsZ0xGdVToP97O9aNu2Xzeusc3CnQhezi6oAwORRTz1HlajLCLfKtDMsuUjJG2Yg
+         5igWGKYgVV0Cm+sHD03K9ngVdI7nxJRndcapos2BCPOHendYnhVYY8f8tYUr0vPkqg
+         Xu9ArI6l2cLEpHWjB1RR+D865YEg5qDp7vn4k113WQFNeieECXkLmbMDHB2BU2wt75
+         MVFRQTtyA9w0g==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lpWCC-008GFp-7p; Sat, 05 Jun 2021 15:18:36 +0200
+        id 1lpWCC-008GFt-9d; Sat, 05 Jun 2021 15:18:36 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     "Jonathan Corbet" <corbet@lwn.net>,
         Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 21/34] docs: firmware-guide: acpi: avoid using ReSt :doc:`foo` markup
-Date:   Sat,  5 Jun 2021 15:18:20 +0200
-Message-Id: <9e782f9175e81acb6d3a29bffeea6f97e024ffd8.1622898327.git.mchehab+huawei@kernel.org>
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 22/34] docs: hwmon: adm1177.rst: avoid using ReSt :doc:`foo` markup
+Date:   Sat,  5 Jun 2021 15:18:21 +0200
+Message-Id: <32b0db7e79a3ed0e817213113c607a1b819e3867.1622898327.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1622898327.git.mchehab+huawei@kernel.org>
 References: <cover.1622898327.git.mchehab+huawei@kernel.org>
@@ -54,60 +51,23 @@ So, use the filename at the sources, instead of :doc:`foo`.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../firmware-guide/acpi/dsd/data-node-references.rst       | 3 ++-
- Documentation/firmware-guide/acpi/dsd/graph.rst            | 2 +-
- Documentation/firmware-guide/acpi/enumeration.rst          | 7 ++++---
- 3 files changed, 7 insertions(+), 5 deletions(-)
+ Documentation/hwmon/adm1177.rst | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/firmware-guide/acpi/dsd/data-node-references.rst b/Documentation/firmware-guide/acpi/dsd/data-node-references.rst
-index 9b17dc77d18c..b7ad47df49de 100644
---- a/Documentation/firmware-guide/acpi/dsd/data-node-references.rst
-+++ b/Documentation/firmware-guide/acpi/dsd/data-node-references.rst
-@@ -79,7 +79,8 @@ the ANOD object which is also the final target node of the reference.
- 	    })
- 	}
+diff --git a/Documentation/hwmon/adm1177.rst b/Documentation/hwmon/adm1177.rst
+index 471be1e98d6f..1c85a2af92bf 100644
+--- a/Documentation/hwmon/adm1177.rst
++++ b/Documentation/hwmon/adm1177.rst
+@@ -20,7 +20,8 @@ Usage Notes
+ -----------
  
--Please also see a graph example in :doc:`graph`.
-+Please also see a graph example in
-+Documentation/firmware-guide/acpi/dsd/graph.rst.
+ This driver does not auto-detect devices. You will have to instantiate the
+-devices explicitly. Please see :doc:`/i2c/instantiating-devices` for details.
++devices explicitly. Please see Documentation/i2c/instantiating-devices.rst
++for details.
  
- References
- ==========
-diff --git a/Documentation/firmware-guide/acpi/dsd/graph.rst b/Documentation/firmware-guide/acpi/dsd/graph.rst
-index 7072db801aeb..4341299aa937 100644
---- a/Documentation/firmware-guide/acpi/dsd/graph.rst
-+++ b/Documentation/firmware-guide/acpi/dsd/graph.rst
-@@ -174,4 +174,4 @@ References
-     referenced 2016-10-04.
  
- [7] _DSD Device Properties Usage Rules.
--    :doc:`../DSD-properties-rules`
-+    Documentation/firmware-guide/acpi/DSD-properties-rules.rst
-diff --git a/Documentation/firmware-guide/acpi/enumeration.rst b/Documentation/firmware-guide/acpi/enumeration.rst
-index 9f0d5c854fa4..18074eb71860 100644
---- a/Documentation/firmware-guide/acpi/enumeration.rst
-+++ b/Documentation/firmware-guide/acpi/enumeration.rst
-@@ -339,8 +339,8 @@ a code like this::
- There are also devm_* versions of these functions which release the
- descriptors once the device is released.
- 
--See Documentation/firmware-guide/acpi/gpio-properties.rst for more information about the
--_DSD binding related to GPIOs.
-+See Documentation/firmware-guide/acpi/gpio-properties.rst for more information
-+about the _DSD binding related to GPIOs.
- 
- MFD devices
- ===========
-@@ -460,7 +460,8 @@ the _DSD of the device object itself or the _DSD of its ancestor in the
- Otherwise, the _DSD itself is regarded as invalid and therefore the "compatible"
- property returned by it is meaningless.
- 
--Refer to :doc:`DSD-properties-rules` for more information.
-+Refer to Documentation/firmware-guide/acpi/DSD-properties-rules.rst for more
-+information.
- 
- PCI hierarchy representation
- ============================
+ Sysfs entries
 -- 
 2.31.1
 
