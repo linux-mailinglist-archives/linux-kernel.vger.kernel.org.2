@@ -2,76 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A77639C82C
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 14:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A9539C829
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 14:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbhFEMhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 08:37:36 -0400
-Received: from mail-m17639.qiye.163.com ([59.111.176.39]:51496 "EHLO
-        mail-m17639.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbhFEMhf (ORCPT
+        id S230030AbhFEMeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 08:34:10 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:4324 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229902AbhFEMeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 08:37:35 -0400
-Received: from ubuntu.localdomain (unknown [36.152.145.181])
-        by mail-m17639.qiye.163.com (Hmail) with ESMTPA id 321F4380146;
-        Sat,  5 Jun 2021 20:35:45 +0800 (CST)
-From:   Bernard Zhao <bernard@vivo.com>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Bernard Zhao <bernard@vivo.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/msm: remove no need local variable
-Date:   Sat,  5 Jun 2021 05:35:20 -0700
-Message-Id: <20210605123543.8986-1-bernard@vivo.com>
-X-Mailer: git-send-email 2.31.0
+        Sat, 5 Jun 2021 08:34:09 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FxzRS5nGTz1BGFd;
+        Sat,  5 Jun 2021 20:27:32 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 5 Jun 2021 20:32:19 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 5 Jun 2021
+ 20:32:19 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <ulli.kroll@googlemail.com>, <linus.walleij@linaro.org>,
+        <davem@davemloft.net>, <kuba@kernel.org>
+Subject: [PATCH net-next v2] net: gemini: Use devm_platform_get_and_ioremap_resource()
+Date:   Sat, 5 Jun 2021 20:36:36 +0800
+Message-ID: <20210605123636.2485041-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQkgdGFZJGB1OHx5DSk5OGENVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OUk6Dhw5Hz8XGQkaCx4KDhkt
-        MB8wCy9VSlVKTUlJQ0JNTk9NSk5NVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlITVVK
-        TklVSk9OVUpDSllXWQgBWUFJSE5INwY+
-X-HM-Tid: 0a79dc2c0f02d994kuws321f4380146
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unneeded variable: "ret". Return "0" on line 880
+Use devm_platform_get_and_ioremap_resource() to simplify
+code.
 
-Signed-off-by: Bernard Zhao <bernard@vivo.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- drivers/gpu/drm/msm/dp/dp_panel.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+v2:
+  Also use devm_platform_get_and_ioremap_resource() in gemini_ethernet_probe().
+  Keep the error message to distinguish remap which address failed in
+  gemini_ethernet_port_probe().
+---
+ drivers/net/ethernet/cortina/gemini.c | 28 +++++++++------------------
+ 1 file changed, 9 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_panel.c b/drivers/gpu/drm/msm/dp/dp_panel.c
-index 9cc816663668..8cb3d016101c 100644
---- a/drivers/gpu/drm/msm/dp/dp_panel.c
-+++ b/drivers/gpu/drm/msm/dp/dp_panel.c
-@@ -351,7 +351,6 @@ void dp_panel_dump_regs(struct dp_panel *dp_panel)
+diff --git a/drivers/net/ethernet/cortina/gemini.c b/drivers/net/ethernet/cortina/gemini.c
+index 8df6f081f244..6f7ff1f1fb2b 100644
+--- a/drivers/net/ethernet/cortina/gemini.c
++++ b/drivers/net/ethernet/cortina/gemini.c
+@@ -2390,24 +2390,18 @@ static int gemini_ethernet_port_probe(struct platform_device *pdev)
+ 	port->msg_enable = netif_msg_init(debug, DEFAULT_MSG_ENABLE);
  
- int dp_panel_timing_cfg(struct dp_panel *dp_panel)
- {
--	int rc = 0;
- 	u32 data, total_ver, total_hor;
- 	struct dp_catalog *catalog;
- 	struct dp_panel_private *panel;
-@@ -404,7 +403,7 @@ int dp_panel_timing_cfg(struct dp_panel *dp_panel)
- 	dp_catalog_panel_timing_cfg(catalog);
- 	panel->panel_on = true;
+ 	/* DMA memory */
+-	dmares = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!dmares) {
+-		dev_err(dev, "no DMA resource\n");
+-		return -ENODEV;
+-	}
+-	port->dma_base = devm_ioremap_resource(dev, dmares);
+-	if (IS_ERR(port->dma_base))
++	port->dma_base = devm_platform_get_and_ioremap_resource(pdev, 0, &dmares);
++	if (IS_ERR(port->dma_base)) {
++		dev_err(dev, "get DMA address failed\n");
+ 		return PTR_ERR(port->dma_base);
++	}
  
--	return rc;
-+	return 0;
- }
+ 	/* GMAC config memory */
+-	gmacres = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+-	if (!gmacres) {
+-		dev_err(dev, "no GMAC resource\n");
+-		return -ENODEV;
+-	}
+-	port->gmac_base = devm_ioremap_resource(dev, gmacres);
+-	if (IS_ERR(port->gmac_base))
++	port->gmac_base = devm_platform_get_and_ioremap_resource(pdev, 1, &gmacres);
++	if (IS_ERR(port->gmac_base)) {
++		dev_err(dev, "get GMAC address failed\n");
+ 		return PTR_ERR(port->gmac_base);
++	}
  
- int dp_panel_init_panel_info(struct dp_panel *dp_panel)
+ 	/* Interrupt */
+ 	irq = platform_get_irq(pdev, 0);
+@@ -2544,17 +2538,13 @@ static int gemini_ethernet_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct gemini_ethernet *geth;
+ 	unsigned int retry = 5;
+-	struct resource *res;
+ 	u32 val;
+ 
+ 	/* Global registers */
+ 	geth = devm_kzalloc(dev, sizeof(*geth), GFP_KERNEL);
+ 	if (!geth)
+ 		return -ENOMEM;
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!res)
+-		return -ENODEV;
+-	geth->base = devm_ioremap_resource(dev, res);
++	geth->base = devm_platform_get_and_ioremap_resource(pdev, 0, NULL);
+ 	if (IS_ERR(geth->base))
+ 		return PTR_ERR(geth->base);
+ 	geth->dev = dev;
 -- 
-2.31.0
+2.25.1
 
