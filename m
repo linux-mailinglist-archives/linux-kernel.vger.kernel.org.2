@@ -2,385 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 966C339C473
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 02:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1BC039C47B
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 02:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbhFEAeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 20:34:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229886AbhFEAeE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 20:34:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8883F61028;
-        Sat,  5 Jun 2021 00:32:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622853137;
-        bh=NL6I+Obdw7TbmfAn/0ivtNO8MTNJChoFU1v+SD9ha3w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tcm1e6lW4qeG66e6qEZEFUc3Cb7FkAbxkrEa+GbF30D3ROKHzpvPe2p2XIfUL8z9c
-         zzDy1qQVevJMyGMV7GxOIODw0gKkmIHd67SDNJMTojLh6RGnGkMVB03fm+iucWEOBe
-         vi+K7l2UvEGJZ5Kl4pUe+QLXfsc5Ku/NGtbhJwulvROeP6lwIu8yZlk1N9bsXMVFHn
-         PBqBWgcijIDsEKqxyOqLvNG4kfoCfsq3UNpVjVv9NIKGwKOhKcnogZuU6HhvGYgOX1
-         vHT3H3rbv5W/b7jinLmL1akkBR20KxZ25BGI0LYUapRU5UMtF9G3c4mKPYv0bW3UdE
-         li2PA3sJshhaw==
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH 3/3] f2fs: clean up /sys/fs/f2fs/<disk>/features
-Date:   Fri,  4 Jun 2021 17:32:10 -0700
-Message-Id: <20210605003210.856458-3-jaegeuk@kernel.org>
-X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
-In-Reply-To: <20210605003210.856458-1-jaegeuk@kernel.org>
-References: <20210605003210.856458-1-jaegeuk@kernel.org>
+        id S231208AbhFEAfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 20:35:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229886AbhFEAfC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Jun 2021 20:35:02 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4EF5C061766;
+        Fri,  4 Jun 2021 17:33:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=V+hjMwL6pv5S226ZXdxW+r94VZLwnnDUg913Mua7a68=; b=n6AGsFe4s1jPWOG3sII7rVVTf
+        f23QBTGnxo36zLhYzPwjfg/+kBblHjfsiRyDTS7Rawc4BIl2zJJ9OPayxRPHF30sMVi8aCUOvtFQK
+        fLqKbF0z/8gt8CeMGM1Qe9NUEb9jFtnqjvvWZlqqrBNcbuSlR9EgyAyssr9XroZTAOsu4MqT8hws/
+        vLp5DNNwbGMQWTak0fOOxyrsf/HbCirRs1mGPhD75l5T7ZIaHLe2H979dMI2KNMcn2UFq89/2v+GE
+        ZDk13TOltm5JT41pm1IlF2fuWe2QLe6+4FK2Wq02mUsCvB8gMQpRJzonPWDnAcHz5WIgW5ReIkm1N
+        K5Ok4P4WA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44722)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lpKFQ-0005OD-M6; Sat, 05 Jun 2021 01:33:08 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lpKFP-0003Vi-3E; Sat, 05 Jun 2021 01:33:07 +0100
+Date:   Sat, 5 Jun 2021 01:33:07 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Madalin Bucur <madalin.bucur@nxp.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Igal Liberman <Igal.Liberman@freescale.com>,
+        Shruti Kanetkar <Shruti@freescale.com>,
+        Emil Medve <Emilian.Medve@freescale.com>,
+        Scott Wood <oss@buserror.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Camelia Alexandra Groza (OSS)" <camelia.groza@oss.nxp.com>
+Subject: Re: Unsupported phy-connection-type sgmii-2500 in
+ arch/powerpc/boot/dts/fsl/t1023rdb.dts
+Message-ID: <20210605003306.GY30436@shell.armlinux.org.uk>
+References: <20210603143453.if7hgifupx5k433b@pali>
+ <YLjxX/XPDoRRIvYf@lunn.ch>
+ <20210603194853.ngz4jdso3kfncnj4@pali>
+ <AM6PR04MB3976B62084EC462BA02F0C4CEC3B9@AM6PR04MB3976.eurprd04.prod.outlook.com>
+ <20210604192732.GW30436@shell.armlinux.org.uk>
+ <AM6PR04MB39768A569CE3CC4EC61A8769EC3B9@AM6PR04MB3976.eurprd04.prod.outlook.com>
+ <YLqLzOltcb6jan+B@lunn.ch>
+ <AM6PR04MB39760B986E86BA9169DEECC5EC3B9@AM6PR04MB3976.eurprd04.prod.outlook.com>
+ <20210604233455.fwcu2chlsed2gwmu@pali>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210604233455.fwcu2chlsed2gwmu@pali>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's create /sys/fs/f2fs/<disk>/feature_list/ to meet sysfs rule.
+On Sat, Jun 05, 2021 at 01:34:55AM +0200, Pali Rohár wrote:
+> But as this is really confusing what each mode means for Linux, I would
+> suggest that documentation for these modes in ethernet-controller.yaml
+> file (or in any other location) could be extended. I see that it is
+> really hard to find exact information what these modes mean and what is
+> their meaning in DTS / kernel.
 
-Note that there are three feature list entries:
-1) /sys/fs/f2fs/features
-  : shows runtime features supported by in-kernel f2fs along with Kconfig
-    - ref. F2FS_FEATURE_RO_ATTR()
+We have been adding documentation to:
 
-2) /sys/fs/f2fs/$s_id/features <deprecated>
-  : shows on-disk features enabled by mkfs.f2fs, used for old kernels
+Documentation/networking/phy.rst
 
-3) /sys/fs/f2fs/$s_id/feature_list
-  : shows on-disk features enabled by mkfs.f2fs per instance.
-    this list covers old feature list provided by 2) and beyond
-    - ref. F2FS_SB_FEATURE_RO_ATTR()
+for each of the modes that have had issues. The 2500base-X entry
+hasn't been updated yet, as the question whether it can have in-band
+signaling is unclear (there is no well defined standard for this.)
 
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
- Documentation/ABI/testing/sysfs-fs-f2fs |  29 +++-
- fs/f2fs/f2fs.h                          |   3 +
- fs/f2fs/sysfs.c                         | 191 ++++++++++++++++--------
- 3 files changed, 159 insertions(+), 64 deletions(-)
+Some vendors state that there is no in-band signalling in 2500base-X.
+Others (e.g. Xilinx) make it clear that it is optional. Others don't
+say either way, and when testing hardware, it appears to be functional.
 
-diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
-index 5088281e312e..0c40b3a5961c 100644
---- a/Documentation/ABI/testing/sysfs-fs-f2fs
-+++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-@@ -203,7 +203,34 @@ Description:	Shows total written kbytes issued to disk.
- What:		/sys/fs/f2fs/<disk>/features
- Date:		July 2017
- Contact:	"Jaegeuk Kim" <jaegeuk@kernel.org>
--Description:	Shows all enabled features in current device.
-+Description:	<deprecated: should use /sys/fs/f2fs/<disk>/feature_list/
-+		Shows all enabled features in current device.
-+		Supported features:
-+		encryption, blkzoned, extra_attr, projquota, inode_checksum,
-+		flexible_inline_xattr, quota_ino, inode_crtime, lost_found,
-+		verity, sb_checksum, casefold, readonly, compression, pin_file.
-+
-+What:		/sys/fs/f2fs/<disk>/feature_list/
-+Date:		June 2021
-+Contact:	"Jaegeuk Kim" <jaegeuk@kernel.org>
-+Description:	Expand /sys/fs/f2fs/<disk>/features to meet sysfs rule.
-+		Supported on-disk features:
-+		encryption, block_zoned (aka blkzoned), extra_attr,
-+		project_quota (aka projquota), inode_checksum,
-+		flexible_inline_xattr, quota_ino, inode_crtime, lost_found,
-+		verity, sb_checksum, casefold, readonly, compression.
-+		Note that, pin_file is moved into /sys/fs/f2fs/features/.
-+
-+What:		/sys/fs/f2fs/feature/
-+Date:		July 2017
-+Contact:	"Jaegeuk Kim" <jaegeuk@kernel.org>
-+Description:	Shows all enabled kernel features.
-+		Supported features:
-+		encryption, block_zoned, extra_attr, project_quota,
-+		inode_checksum, flexible_inline_xattr, quota_ino,
-+		inode_crtime, lost_found, verity, sb_checksum,
-+		casefold, readonly, compression, test_dummy_encryption_v2,
-+		atomic_write, pin_file, encrypted_casefold.
- 
- What:		/sys/fs/f2fs/<disk>/inject_rate
- Date:		May 2016
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 8903c43091f8..bbc36828a9d9 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -1665,6 +1665,9 @@ struct f2fs_sb_info {
- 	struct kobject s_stat_kobj;		/* /sys/fs/f2fs/<devname>/stat */
- 	struct completion s_stat_kobj_unregister;
- 
-+	struct kobject s_feature_list_kobj;		/* /sys/fs/f2fs/<devname>/feature_list */
-+	struct completion s_feature_list_kobj_unregister;
-+
- 	/* For shrinker support */
- 	struct list_head s_list;
- 	int s_ndevs;				/* number of devices */
-diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-index e4d5090b7cb3..d41b41fab0d3 100644
---- a/fs/f2fs/sysfs.c
-+++ b/fs/f2fs/sysfs.c
-@@ -566,50 +566,46 @@ static void f2fs_sb_release(struct kobject *kobj)
- 	complete(&sbi->s_kobj_unregister);
- }
- 
--enum feat_id {
--	FEAT_CRYPTO = 0,
--	FEAT_BLKZONED,
--	FEAT_ATOMIC_WRITE,
--	FEAT_EXTRA_ATTR,
--	FEAT_PROJECT_QUOTA,
--	FEAT_INODE_CHECKSUM,
--	FEAT_FLEXIBLE_INLINE_XATTR,
--	FEAT_QUOTA_INO,
--	FEAT_INODE_CRTIME,
--	FEAT_LOST_FOUND,
--	FEAT_VERITY,
--	FEAT_SB_CHECKSUM,
--	FEAT_CASEFOLD,
--	FEAT_COMPRESSION,
--	FEAT_RO,
--	FEAT_TEST_DUMMY_ENCRYPTION_V2,
--	FEAT_ENCRYPTED_CASEFOLD,
--};
-+/*
-+ * Note that there are three feature list entries:
-+ * 1) /sys/fs/f2fs/features
-+ *   : shows runtime features supported by in-kernel f2fs along with Kconfig
-+ *     - ref. F2FS_FEATURE_RO_ATTR()
-+ *
-+ * 2) /sys/fs/f2fs/$s_id/features <deprecated>
-+ *   : shows on-disk features enabled by mkfs.f2fs, used for old kernels
-+ *
-+ * 3) /sys/fs/f2fs/$s_id/feature_list
-+ *   : shows on-disk features enabled by mkfs.f2fs per instance.
-+ *     this list covers old feature list provided by 2) and beyond
-+ *     - ref. F2FS_SB_FEATURE_RO_ATTR()
-+ */
- 
- static ssize_t f2fs_feature_show(struct f2fs_attr *a,
- 		struct f2fs_sb_info *sbi, char *buf)
- {
--	switch (a->id) {
--	case FEAT_CRYPTO:
--	case FEAT_BLKZONED:
--	case FEAT_ATOMIC_WRITE:
--	case FEAT_EXTRA_ATTR:
--	case FEAT_PROJECT_QUOTA:
--	case FEAT_INODE_CHECKSUM:
--	case FEAT_FLEXIBLE_INLINE_XATTR:
--	case FEAT_QUOTA_INO:
--	case FEAT_INODE_CRTIME:
--	case FEAT_LOST_FOUND:
--	case FEAT_VERITY:
--	case FEAT_SB_CHECKSUM:
--	case FEAT_CASEFOLD:
--	case FEAT_COMPRESSION:
--	case FEAT_RO:
--	case FEAT_TEST_DUMMY_ENCRYPTION_V2:
--	case FEAT_ENCRYPTED_CASEFOLD:
-+	return sprintf(buf, "supported\n");
-+}
-+
-+#define F2FS_FEATURE_RO_ATTR(_name)				\
-+static struct f2fs_attr f2fs_attr_##_name = {			\
-+	.attr = {.name = __stringify(_name), .mode = 0444 },	\
-+	.show	= f2fs_feature_show,				\
-+}
-+
-+static ssize_t f2fs_sb_feature_show(struct f2fs_attr *a,
-+		struct f2fs_sb_info *sbi, char *buf)
-+{
-+	if (F2FS_HAS_FEATURE(sbi, a->id))
- 		return sprintf(buf, "supported\n");
--	}
--	return 0;
-+	return sprintf(buf, "unsupported\n");
-+}
-+
-+#define F2FS_SB_FEATURE_RO_ATTR(_name, _feat)			\
-+static struct f2fs_attr f2fs_attr_sb_##_name = {		\
-+	.attr = {.name = __stringify(_name), .mode = 0444 },	\
-+	.show	= f2fs_sb_feature_show,				\
-+	.id	= F2FS_FEATURE_##_feat,				\
- }
- 
- #define F2FS_ATTR_OFFSET(_struct_type, _name, _mode, _show, _store, _offset) \
-@@ -629,13 +625,6 @@ static struct f2fs_attr f2fs_attr_##_name = {			\
- #define F2FS_GENERAL_RO_ATTR(name) \
- static struct f2fs_attr f2fs_attr_##name = __ATTR(name, 0444, name##_show, NULL)
- 
--#define F2FS_FEATURE_RO_ATTR(_name, _id)			\
--static struct f2fs_attr f2fs_attr_##_name = {			\
--	.attr = {.name = __stringify(_name), .mode = 0444 },	\
--	.show	= f2fs_feature_show,				\
--	.id	= _id,						\
--}
--
- #define F2FS_STAT_ATTR(_struct_type, _struct_name, _name, _elname)	\
- static struct f2fs_attr f2fs_attr_##_name = {			\
- 	.attr = {.name = __stringify(_name), .mode = 0444 },	\
-@@ -709,33 +698,33 @@ F2FS_GENERAL_RO_ATTR(avg_vblocks);
- #endif
- 
- #ifdef CONFIG_FS_ENCRYPTION
--F2FS_FEATURE_RO_ATTR(encryption, FEAT_CRYPTO);
--F2FS_FEATURE_RO_ATTR(test_dummy_encryption_v2, FEAT_TEST_DUMMY_ENCRYPTION_V2);
-+F2FS_FEATURE_RO_ATTR(encryption);
-+F2FS_FEATURE_RO_ATTR(test_dummy_encryption_v2);
- #ifdef CONFIG_UNICODE
--F2FS_FEATURE_RO_ATTR(encrypted_casefold, FEAT_ENCRYPTED_CASEFOLD);
-+F2FS_FEATURE_RO_ATTR(encrypted_casefold);
- #endif
- #endif /* CONFIG_FS_ENCRYPTION */
- #ifdef CONFIG_BLK_DEV_ZONED
--F2FS_FEATURE_RO_ATTR(block_zoned, FEAT_BLKZONED);
-+F2FS_FEATURE_RO_ATTR(block_zoned);
- #endif
--F2FS_FEATURE_RO_ATTR(atomic_write, FEAT_ATOMIC_WRITE);
--F2FS_FEATURE_RO_ATTR(extra_attr, FEAT_EXTRA_ATTR);
--F2FS_FEATURE_RO_ATTR(project_quota, FEAT_PROJECT_QUOTA);
--F2FS_FEATURE_RO_ATTR(inode_checksum, FEAT_INODE_CHECKSUM);
--F2FS_FEATURE_RO_ATTR(flexible_inline_xattr, FEAT_FLEXIBLE_INLINE_XATTR);
--F2FS_FEATURE_RO_ATTR(quota_ino, FEAT_QUOTA_INO);
--F2FS_FEATURE_RO_ATTR(inode_crtime, FEAT_INODE_CRTIME);
--F2FS_FEATURE_RO_ATTR(lost_found, FEAT_LOST_FOUND);
-+F2FS_FEATURE_RO_ATTR(atomic_write);
-+F2FS_FEATURE_RO_ATTR(extra_attr);
-+F2FS_FEATURE_RO_ATTR(project_quota);
-+F2FS_FEATURE_RO_ATTR(inode_checksum);
-+F2FS_FEATURE_RO_ATTR(flexible_inline_xattr);
-+F2FS_FEATURE_RO_ATTR(quota_ino);
-+F2FS_FEATURE_RO_ATTR(inode_crtime);
-+F2FS_FEATURE_RO_ATTR(lost_found);
- #ifdef CONFIG_FS_VERITY
--F2FS_FEATURE_RO_ATTR(verity, FEAT_VERITY);
-+F2FS_FEATURE_RO_ATTR(verity);
- #endif
--F2FS_FEATURE_RO_ATTR(sb_checksum, FEAT_SB_CHECKSUM);
-+F2FS_FEATURE_RO_ATTR(sb_checksum);
- #ifdef CONFIG_UNICODE
--F2FS_FEATURE_RO_ATTR(casefold, FEAT_CASEFOLD);
-+F2FS_FEATURE_RO_ATTR(casefold);
- #endif
--F2FS_FEATURE_RO_ATTR(readonly, FEAT_RO);
-+F2FS_FEATURE_RO_ATTR(readonly);
- #ifdef CONFIG_F2FS_FS_COMPRESSION
--F2FS_FEATURE_RO_ATTR(compression, FEAT_COMPRESSION);
-+F2FS_FEATURE_RO_ATTR(compression);
- F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_written_block, compr_written_block);
- F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_saved_block, compr_saved_block);
- F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_new_inode, compr_new_inode);
-@@ -866,6 +855,40 @@ static struct attribute *f2fs_stat_attrs[] = {
- };
- ATTRIBUTE_GROUPS(f2fs_stat);
- 
-+F2FS_SB_FEATURE_RO_ATTR(encryption, ENCRYPT);
-+F2FS_SB_FEATURE_RO_ATTR(block_zoned, BLKZONED);
-+F2FS_SB_FEATURE_RO_ATTR(extra_attr, EXTRA_ATTR);
-+F2FS_SB_FEATURE_RO_ATTR(project_quota, PRJQUOTA);
-+F2FS_SB_FEATURE_RO_ATTR(inode_checksum, INODE_CHKSUM);
-+F2FS_SB_FEATURE_RO_ATTR(flexible_inline_xattr, FLEXIBLE_INLINE_XATTR);
-+F2FS_SB_FEATURE_RO_ATTR(quota_ino, QUOTA_INO);
-+F2FS_SB_FEATURE_RO_ATTR(inode_crtime, INODE_CRTIME);
-+F2FS_SB_FEATURE_RO_ATTR(lost_found, LOST_FOUND);
-+F2FS_SB_FEATURE_RO_ATTR(verity, VERITY);
-+F2FS_SB_FEATURE_RO_ATTR(sb_checksum, SB_CHKSUM);
-+F2FS_SB_FEATURE_RO_ATTR(casefold, CASEFOLD);
-+F2FS_SB_FEATURE_RO_ATTR(compression, COMPRESSION);
-+F2FS_SB_FEATURE_RO_ATTR(readonly, RO);
-+
-+static struct attribute *f2fs_sb_feat_attrs[] = {
-+	ATTR_LIST(sb_encryption),
-+	ATTR_LIST(sb_block_zoned),
-+	ATTR_LIST(sb_extra_attr),
-+	ATTR_LIST(sb_project_quota),
-+	ATTR_LIST(sb_inode_checksum),
-+	ATTR_LIST(sb_flexible_inline_xattr),
-+	ATTR_LIST(sb_quota_ino),
-+	ATTR_LIST(sb_inode_crtime),
-+	ATTR_LIST(sb_lost_found),
-+	ATTR_LIST(sb_verity),
-+	ATTR_LIST(sb_sb_checksum),
-+	ATTR_LIST(sb_casefold),
-+	ATTR_LIST(sb_compression),
-+	ATTR_LIST(sb_readonly),
-+	NULL,
-+};
-+ATTRIBUTE_GROUPS(f2fs_sb_feat);
-+
- static const struct sysfs_ops f2fs_attr_ops = {
- 	.show	= f2fs_attr_show,
- 	.store	= f2fs_attr_store,
-@@ -932,6 +955,34 @@ static struct kobj_type f2fs_stat_ktype = {
- 	.release	= f2fs_stat_kobj_release,
- };
- 
-+static ssize_t f2fs_sb_feat_attr_show(struct kobject *kobj,
-+				struct attribute *attr, char *buf)
-+{
-+	struct f2fs_sb_info *sbi = container_of(kobj, struct f2fs_sb_info,
-+							s_feature_list_kobj);
-+	struct f2fs_attr *a = container_of(attr, struct f2fs_attr, attr);
-+
-+	return a->show ? a->show(a, sbi, buf) : 0;
-+}
-+
-+static void f2fs_feature_list_kobj_release(struct kobject *kobj)
-+{
-+	struct f2fs_sb_info *sbi = container_of(kobj, struct f2fs_sb_info,
-+							s_feature_list_kobj);
-+	complete(&sbi->s_feature_list_kobj_unregister);
-+}
-+
-+static const struct sysfs_ops f2fs_feature_list_attr_ops = {
-+	.show	= f2fs_sb_feat_attr_show,
-+};
-+
-+static struct kobj_type f2fs_feature_list_ktype = {
-+	.default_groups = f2fs_sb_feat_groups,
-+	.sysfs_ops	= &f2fs_feature_list_attr_ops,
-+	.release	= f2fs_feature_list_kobj_release,
-+};
-+
-+
- static int __maybe_unused segment_info_seq_show(struct seq_file *seq,
- 						void *offset)
- {
-@@ -1148,6 +1199,14 @@ int f2fs_register_sysfs(struct f2fs_sb_info *sbi)
- 	if (err)
- 		goto put_stat_kobj;
- 
-+	sbi->s_feature_list_kobj.kset = &f2fs_kset;
-+	init_completion(&sbi->s_feature_list_kobj_unregister);
-+	err = kobject_init_and_add(&sbi->s_feature_list_kobj,
-+					&f2fs_feature_list_ktype,
-+					&sbi->s_kobj, "feature_list");
-+	if (err)
-+		goto put_feature_list_kobj;
-+
- 	if (f2fs_proc_root)
- 		sbi->s_proc = proc_mkdir(sb->s_id, f2fs_proc_root);
- 
-@@ -1162,6 +1221,9 @@ int f2fs_register_sysfs(struct f2fs_sb_info *sbi)
- 				victim_bits_seq_show, sb);
- 	}
- 	return 0;
-+put_feature_list_kobj:
-+	kobject_put(&sbi->s_feature_list_kobj);
-+	wait_for_completion(&sbi->s_feature_list_kobj_unregister);
- put_stat_kobj:
- 	kobject_put(&sbi->s_stat_kobj);
- 	wait_for_completion(&sbi->s_stat_kobj_unregister);
-@@ -1184,6 +1246,9 @@ void f2fs_unregister_sysfs(struct f2fs_sb_info *sbi)
- 	kobject_del(&sbi->s_stat_kobj);
- 	kobject_put(&sbi->s_stat_kobj);
- 	wait_for_completion(&sbi->s_stat_kobj_unregister);
-+	kobject_del(&sbi->s_feature_list_kobj);
-+	kobject_put(&sbi->s_feature_list_kobj);
-+	wait_for_completion(&sbi->s_feature_list_kobj_unregister);
- 
- 	kobject_del(&sbi->s_kobj);
- 	kobject_put(&sbi->s_kobj);
+So, coming up with a clear definition for this, when we have no real
+method in the DT file to say "definitely do not use in-band" is a tad
+difficult.
+
+It started out as described - literally, 1000base-X multiplied by 2.5x.
+There are setups where that is known to work - namely GPON SFPs that
+support 2500base-X. What that means is that we know the GPON SFP
+module negotiates in-band AN with 2500base-X. However, we don't know
+whether the module will work if we disable in-band AN.
+
+There is hardware out there as well which allows one to decide whether
+to use in-band AN with 2500base-X or not. Xilinx is one such vendor
+who explicitly documents this. Marvell on the other hand do not
+prohibit in-band AN with mvneta, neither to they explicitly state it
+is permitted. In at least one of their PHY documents, they suggest it
+isn't supported if the MAC side is operating in 2500base-X.
+
+Others (NXP) take the position that in-band AN is not supported at
+2500base-X speeds. I think a few months ago, Vladimir persuaded me
+that we should disable in-band AN for 2500base-X - I had forgotten
+about the Xilinx documentation I had which shows that it's optional.
+(Practically, it's optional in hardware with 1000base-X too, but then
+it's not actually conforming with 802.3's definition of 1000base-X.)
+
+The result is, essentially, a total mess. 2500base-X is not a standards
+defined thing, so different vendors have gone off and done different
+things.
+
+Sometimes it's amazing that you can connect two devices together and
+they will actually talk to each other!
+
 -- 
-2.32.0.rc1.229.g3e70b5a671-goog
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
