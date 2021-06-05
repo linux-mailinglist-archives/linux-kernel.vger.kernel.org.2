@@ -2,278 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6DF839CAC9
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 21:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08A8939CAD2
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 22:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230162AbhFETq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 15:46:59 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:33860 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbhFETq5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 15:46:57 -0400
-Date:   Sat, 5 Jun 2021 22:45:06 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        kernel test robot <lkp@intel.com>, <kbuild-all@lists.01.org>,
-        <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: hppa64-linux-ld: kernel/sched/psi.o(.text+0x730): cannot reach
- mutex_unlock
-Message-ID: <20210605194506.qad6cxyrv72pqtcq@mobilestation>
-References: <202106051133.syZ3wwK0-lkp@intel.com>
- <CAHp75VfFVBhNqe4W4fuTUmPVejpxEf0VRpFdJt1xSvLgXWs_kg@mail.gmail.com>
+        id S230085AbhFEUI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 16:08:58 -0400
+Received: from mout01.posteo.de ([185.67.36.65]:60799 "EHLO mout01.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229998AbhFEUI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 16:08:56 -0400
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id 4A9AC24002A
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Jun 2021 22:07:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
+        t=1622923626; bh=T4VYj3/eGK7pi6+D8aI7iDFDg9ZRzBumV2sHHqJe9VI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=B6ujzN9qKT+XdiMY5VFGsh8p/Icm38hIuTU7qer180aF168CmQL8TkixSwYTpFoZY
+         Usndwcq4OB0SkN82CrapIDfhOKjbu8lx1VLGWpcnVtngnyLSS6KScySPyMVswAnTjZ
+         1Vk59Wlf0ae9m7guMWrIxNNK+Ry8lzE0KVwBxQ93/9DziYFJfNgJyfI/vQyyFByBBj
+         7InZzFSQv+RXS2t/6LfwAYBa0gJfzxVgn9DYheZ/hZBsDfYlkNd0kuW9XfaqjNDWXC
+         TqJEu2uPj0wbN9R4W/VzNsQbnZPDLcJHLf74tf2twbq960xrUy1F18208p06QD4Yhr
+         Uc0CKW2z3D7Aw==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4Fy9dj3V9Xz9rxH;
+        Sat,  5 Jun 2021 22:07:05 +0200 (CEST)
+From:   Benjamin Drung <bdrung@posteo.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Adam Goode <agoode@google.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Benjamin Drung <bdrung@posteo.de>, stable@vger.kernel.org
+Subject: [PATCH v3] media: uvcvideo: Fix pixel format change for Elgato Cam Link 4K
+Date:   Sat,  5 Jun 2021 20:05:49 +0000
+Message-Id: <20210605200548.51779-1-bdrung@posteo.de>
+In-Reply-To: <YLqnU+FYSAcWwaAZ@pendragon.ideasonboard.com>
+References: <YLqnU+FYSAcWwaAZ@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAHp75VfFVBhNqe4W4fuTUmPVejpxEf0VRpFdJt1xSvLgXWs_kg@mail.gmail.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 05, 2021 at 12:37:13PM +0300, Andy Shevchenko wrote:
-> On Sat, Jun 5, 2021 at 6:02 AM kernel test robot <lkp@intel.com> wrote:
-> >
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> > head:   ff6091075a687676d76b3beb24fa77389b387b00
-> 
-> > commit: 06cfadb8c51b05c6b91c2d43e0fe72b3d643dced spi: dw: Remove DW DMA code dependency from DW_DMAC_PCI
-> 
-> How is this relevant?
+The Elgato Cam Link 4K HDMI video capture card reports to support three
+different pixel formats, where the first format depends on the connected
+HDMI device.
 
-The same question popped up in my mind.)
+```
+$ v4l2-ctl -d /dev/video0 --list-formats-ext
+ioctl: VIDIOC_ENUM_FMT
+	Type: Video Capture
 
-> 
-> > date:   1 year ago
-> > config: parisc-randconfig-r003-20210605 (attached as .config)
-> > compiler: hppa64-linux-gcc (GCC) 9.3.0
-> > reproduce (this is a W=1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=06cfadb8c51b05c6b91c2d43e0fe72b3d643dced
-> >         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> >         git fetch --no-tags linus master
-> >         git checkout 06cfadb8c51b05c6b91c2d43e0fe72b3d643dced
-> >         # save the attached .config to linux build tree
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=parisc
-> >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> > All errors (new ones prefixed by >>):
-> >
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x261c): cannot reach _raw_spin_lock_irq
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x270c): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x282c): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x2840): cannot reach _raw_spin_lock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x287c): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x2960): cannot reach _raw_spin_lock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x2a38): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x2dd4): cannot reach _raw_spin_lock_irqsave
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x2eac): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x2f10): cannot reach _raw_spin_lock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x2f40): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x2f70): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x2fa4): cannot reach $$mulI
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x2fec): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x3100): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x31e0): cannot reach _raw_spin_lock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x3210): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x3240): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x3274): cannot reach $$mulI
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x32bc): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x3590): cannot reach _raw_spin_lock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x35c0): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x35f0): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x3624): cannot reach $$mulI
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x366c): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x3a98): cannot reach _raw_spin_lock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x3ac8): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x3af8): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x3b2c): cannot reach $$mulI
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x3b74): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x3cfc): cannot reach _raw_spin_lock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x3d2c): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x3d5c): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x3d90): cannot reach $$mulI
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x3dd8): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x4284): cannot reach _raw_spin_lock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x42b4): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x42e4): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x4318): cannot reach $$mulI
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x4360): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x43d8): cannot reach _raw_spin_lock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x440c): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x443c): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x4470): cannot reach $$mulI
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x44b8): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x4850): cannot reach _raw_spin_lock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x4884): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x48b4): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x48e8): cannot reach $$mulI
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x4930): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x4ad4): cannot reach _raw_spin_lock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x4b04): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x4b34): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x4b68): cannot reach $$mulI
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x4bb0): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x4d24): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x4d44): cannot reach __udivdi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x4eec): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x4f40): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x4f58): cannot reach __udivdi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x4f90): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x55b4): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x55d4): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x5624): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x5654): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x57c8): cannot reach __udivdi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x5b28): cannot reach __udivdi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x5b48): cannot reach __udivdi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x5b6c): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x5b84): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x5cc8): cannot reach __udivdi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x5cf0): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x60ac): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x60c8): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x6150): cannot reach _raw_spin_lock_irqsave
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x6294): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x62ac): cannot reach _raw_spin_lock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x6320): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x64d8): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x65e4): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x6644): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x6688): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x66c0): cannot reach _raw_spin_lock_irqsave
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x6724): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x67a0): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x67e0): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x68a4): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x6a04): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x6c8c): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x6d50): cannot reach _raw_spin_trylock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x6d8c): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x6de8): cannot reach __muldi3
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x7108): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x72b0): cannot reach _raw_spin_lock
-> >    hppa64-linux-ld: kernel/sched/fair.o(.text+0x7354): cannot reach _raw_spin_lock
-> >    hppa64-linux-ld: kernel/sched/topology.o(.text+0xb28): cannot reach _raw_spin_lock_irqsave
-> >    hppa64-linux-ld: kernel/sched/topology.o(.text+0xd58): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/topology.o(.text+0x2ec8): cannot reach mutex_lock
-> >    hppa64-linux-ld: kernel/sched/topology.o(.text+0x2ef4): cannot reach mutex_unlock
-> >    hppa64-linux-ld: kernel/sched/psi.o(.text+0x6d4): cannot reach mutex_lock
-> > >> hppa64-linux-ld: kernel/sched/psi.o(.text+0x730): cannot reach mutex_unlock
-> >    hppa64-linux-ld: kernel/sched/psi.o(.text+0x934): cannot reach mutex_lock
-> >    hppa64-linux-ld: kernel/sched/psi.o(.text+0xa00): cannot reach mutex_unlock
-> >    hppa64-linux-ld: kernel/sched/psi.o(.text+0xaa4): cannot reach mutex_unlock
-> >    hppa64-linux-ld: kernel/sched/psi.o(.text+0xd94): cannot reach mutex_lock
-> >    hppa64-linux-ld: kernel/sched/psi.o(.text+0xe24): cannot reach mutex_unlock
-> >    hppa64-linux-ld: kernel/sched/psi.o(.text+0x109c): cannot reach mutex_lock
-> >    hppa64-linux-ld: kernel/sched/psi.o(.text+0x1524): cannot reach mutex_lock
-> >    hppa64-linux-ld: kernel/irq/irqdesc.o(.ref.text+0x17c): cannot reach arch_dynirq_lower_bound
-> >    hppa64-linux-ld: kernel/time/clocksource.o(.init.text+0x90): cannot reach mutex_lock
-> >    hppa64-linux-ld: kernel/time/clocksource.o(.init.text+0xc4): cannot reach mutex_unlock
-> >    hppa64-linux-ld: kernel/time/clocksource.o(.init.text+0x1c0): cannot reach mutex_lock
-> >    hppa64-linux-ld: kernel/time/clocksource.o(.init.text+0x210): cannot reach mutex_unlock
-> >    hppa64-linux-ld: drivers/tty/serial/8250/8250_gsc.o: in function `serial_init_chip':
-> >    (.init.text+0xc4): undefined reference to `iosapic_serial_irq'
-> >    hppa64-linux-ld: drivers/tty/serial/8250/8250_gsc.o(.init.text+0xc4): cannot reach iosapic_serial_irq
-> >    hppa64-linux-ld: drivers/input/serio/gscps2.o(.exit.text+0x20): cannot reach unregister_parisc_driver
-> >    hppa64-linux-ld: drivers/input/serio/gscps2.o(.exit.text+0xd0): cannot reach iounmap
-> >    hppa64-linux-ld: kernel/softirq.o(.text+0x2d8): cannot reach yield
-> >    hppa64-linux-ld: kernel/softirq.o(.text+0x520): cannot reach preempt_schedule
-> >    hppa64-linux-ld: kernel/softirq.o(.text+0xbf8): cannot reach __do_softirq
-> >    hppa64-linux-ld: kernel/softirq.o(.softirqentry.text+0x26c): cannot reach unknown
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x2c): cannot reach _raw_spin_lock_irqsave
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x84): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x38c): cannot reach _raw_spin_unlock_irq
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0xa28): cannot reach _raw_spin_lock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0xa84): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0xb08): cannot reach _raw_spin_lock_irqsave
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0xb30): cannot reach _raw_spin_lock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0xb94): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0xbac): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0xc80): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0xc98): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0xe44): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0xe58): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x13e4): cannot reach _raw_spin_lock_irqsave
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x1438): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x1784): cannot reach _raw_spin_lock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x17d4): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x17f4): cannot reach schedule
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x18bc): cannot reach preempt_schedule
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x1c84): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x1c9c): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x1ce4): cannot reach preempt_schedule
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x2068): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x207c): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x2130): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x2148): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x261c): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x262c): cannot reach unknown
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x263c): cannot reach _raw_spin_lock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x29ac): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x29d8): cannot reach _raw_spin_lock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x3068): cannot reach _raw_spin_lock_irqsave
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x3314): cannot reach preempt_schedule
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x3334): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x33a0): cannot reach _raw_spin_lock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x33ec): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x34d4): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x3548): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x35f8): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x3890): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x38a4): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x3a14): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x3a2c): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x3c00): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x3c18): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x3c84): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x3c98): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x3cd0): cannot reach schedule_hrtimeout
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x3e50): cannot reach _raw_spin_lock_irqsave
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x3ec8): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x3f54): cannot reach _raw_spin_lock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x3f68): cannot reach _raw_spin_lock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x3f90): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x3fa0): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x41dc): cannot reach _raw_spin_lock_irqsave
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x4200): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x4364): cannot reach _raw_spin_lock_irqsave
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x43bc): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x44d0): cannot reach __udivdi3
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x4550): cannot reach _raw_spin_lock_irqsave
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x46d8): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x46ec): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x4850): cannot reach preempt_schedule
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x4b4c): cannot reach _raw_spin_lock_irqsave
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x4bdc): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x4c2c): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x4cd8): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x4cec): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x4ec0): cannot reach _raw_spin_lock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x4f44): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x5014): cannot reach _raw_spin_lock_irqsave
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x5044): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x5068): cannot reach unknown
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x51e4): cannot reach _raw_spin_unlock
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x52b0): cannot reach preempt_schedule
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x63f0): cannot reach _raw_spin_lock_irqsave
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x6424): cannot reach _raw_spin_unlock_irqrestore
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x68c4): cannot reach _raw_spin_lock_irqsave
-> >    hppa64-linux-ld: kernel/sched/core.o(.text+0x68dc): cannot reach _raw_spin_lock
-> >
-> > ---
-> > 0-DAY CI Kernel Test Service, Intel Corporation
-> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> 
-> 
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
+	[0]: 'NV12' (Y/CbCr 4:2:0)
+		Size: Discrete 3840x2160
+			Interval: Discrete 0.033s (29.970 fps)
+	[1]: 'NV12' (Y/CbCr 4:2:0)
+		Size: Discrete 3840x2160
+			Interval: Discrete 0.033s (29.970 fps)
+	[2]: 'YU12' (Planar YUV 4:2:0)
+		Size: Discrete 3840x2160
+			Interval: Discrete 0.033s (29.970 fps)
+```
+
+Changing the pixel format to anything besides the first pixel format
+does not work:
+
+```
+$ v4l2-ctl -d /dev/video0 --try-fmt-video pixelformat=YU12
+Format Video Capture:
+	Width/Height      : 3840/2160
+	Pixel Format      : 'NV12' (Y/CbCr 4:2:0)
+	Field             : None
+	Bytes per Line    : 3840
+	Size Image        : 12441600
+	Colorspace        : sRGB
+	Transfer Function : Rec. 709
+	YCbCr/HSV Encoding: Rec. 709
+	Quantization      : Default (maps to Limited Range)
+	Flags             :
+```
+
+User space applications like VLC might show an error message on the
+terminal in that case:
+
+```
+libv4l2: error set_fmt gave us a different result than try_fmt!
+```
+
+Depending on the error handling of the user space applications, they
+might display a distorted video, because they use the wrong pixel format
+for decoding the stream.
+
+The Elgato Cam Link 4K responds to the USB video probe
+VS_PROBE_CONTROL/VS_COMMIT_CONTROL with a malformed data structure: The
+second byte contains bFormatIndex (instead of being the second byte of
+bmHint). The first byte is always zero. The third byte is always 1.
+
+The firmware bug was reported to Elgato on 2020-12-01 and it was
+forwarded by the support team to the developers as feature request.
+There is no firmware update available since then. The latest firmware
+for Elgato Cam Link 4K as of 2021-03-23 has MCU 20.02.19 and FPGA 67.
+
+Therefore add a quirk to correct the malformed data structure.
+
+The quirk was successfully tested with VLC, OBS, and Chromium using
+different pixel formats (YUYV, NV12, YU12), resolutions (3840x2160,
+1920x1080), and frame rates (29.970 and 59.940 fps).
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Benjamin Drung <bdrung@posteo.de>
+---
+ drivers/media/usb/uvc/uvc_driver.c | 13 +++++++++++++
+ drivers/media/usb/uvc/uvc_video.c  | 21 +++++++++++++++++++++
+ drivers/media/usb/uvc/uvcvideo.h   |  1 +
+ 3 files changed, 35 insertions(+)
+
+v2: enhanced the comment describing the quirk
+
+v3:
+* hardcode ctrl->bmHint to 1
+* Use UVC_DBG_VIDEO instead of UVC_DBG_CONTROL (to match the rest of the
+  file)
+
+I tried setting different values for bmHint, but the response from the
+Cam Link was always 1. So this patch hardcodes ctrl->bmHint to 1 as
+suggested.
+
+diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+index 9a791d8ef200..6ce58950d78b 100644
+--- a/drivers/media/usb/uvc/uvc_driver.c
++++ b/drivers/media/usb/uvc/uvc_driver.c
+@@ -3164,6 +3164,19 @@ static const struct usb_device_id uvc_ids[] = {
+ 	  .bInterfaceSubClass	= 1,
+ 	  .bInterfaceProtocol	= 0,
+ 	  .driver_info		= UVC_INFO_META(V4L2_META_FMT_D4XX) },
++	/*
++	 * Elgato Cam Link 4K
++	 * Latest firmware as of 2021-03-23 needs this quirk.
++	 * MCU: 20.02.19, FPGA: 67
++	 */
++	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
++				| USB_DEVICE_ID_MATCH_INT_INFO,
++	  .idVendor		= 0x0fd9,
++	  .idProduct		= 0x0066,
++	  .bInterfaceClass	= USB_CLASS_VIDEO,
++	  .bInterfaceSubClass	= 1,
++	  .bInterfaceProtocol	= 0,
++	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_FIX_FORMAT_INDEX) },
+ 	/* Generic USB Video Class */
+ 	{ USB_INTERFACE_INFO(USB_CLASS_VIDEO, 1, UVC_PC_PROTOCOL_UNDEFINED) },
+ 	{ USB_INTERFACE_INFO(USB_CLASS_VIDEO, 1, UVC_PC_PROTOCOL_15) },
+diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+index a777b389a66e..3f61cb2c9103 100644
+--- a/drivers/media/usb/uvc/uvc_video.c
++++ b/drivers/media/usb/uvc/uvc_video.c
+@@ -131,6 +131,27 @@ static void uvc_fixup_video_ctrl(struct uvc_streaming *stream,
+ 	struct uvc_frame *frame = NULL;
+ 	unsigned int i;
+ 
++	/*
++	 * The response of the Elgato Cam Link 4K is incorrect: The second byte
++	 * contains bFormatIndex (instead of being the second byte of bmHint).
++	 * The first byte is always zero. The third byte is always 1.
++	 *
++	 * The UVC 1.5 class specification defines the first five bits in the
++	 * bmHint bitfield. The remaining bits are reserved and should be zero.
++	 * Therefore a valid bmHint will be less than 32.
++	 */
++	if (stream->dev->quirks & UVC_QUIRK_FIX_FORMAT_INDEX && ctrl->bmHint > 255) {
++		__u8 corrected_format_index;
++
++		corrected_format_index = ctrl->bmHint >> 8;
++		uvc_dbg(stream->dev, VIDEO,
++			"Correct USB video probe response from {bmHint: 0x%04x, bFormatIndex: 0x%02x} to {bmHint: 0x%04x, bFormatIndex: 0x%02x}.\n",
++			ctrl->bmHint, ctrl->bFormatIndex,
++			1, corrected_format_index);
++		ctrl->bmHint = 1;
++		ctrl->bFormatIndex = corrected_format_index;
++	}
++
+ 	for (i = 0; i < stream->nformats; ++i) {
+ 		if (stream->format[i].index == ctrl->bFormatIndex) {
+ 			format = &stream->format[i];
+diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+index cce5e38133cd..cbb4ef61a64d 100644
+--- a/drivers/media/usb/uvc/uvcvideo.h
++++ b/drivers/media/usb/uvc/uvcvideo.h
+@@ -209,6 +209,7 @@
+ #define UVC_QUIRK_RESTORE_CTRLS_ON_INIT	0x00000400
+ #define UVC_QUIRK_FORCE_Y8		0x00000800
+ #define UVC_QUIRK_FORCE_BPP		0x00001000
++#define UVC_QUIRK_FIX_FORMAT_INDEX	0x00002000
+ 
+ /* Format flags */
+ #define UVC_FMT_FLAG_COMPRESSED		0x00000001
+-- 
+2.27.0
+
