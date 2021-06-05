@@ -2,136 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2F239C80E
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 14:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D8139C815
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 14:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbhFEMOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 08:14:43 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:40605 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229931AbhFEMOl (ORCPT
+        id S230230AbhFEMVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 08:21:23 -0400
+Received: from mail-qk1-f172.google.com ([209.85.222.172]:35647 "EHLO
+        mail-qk1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229931AbhFEMVV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 08:14:41 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 8DE7D580495;
-        Sat,  5 Jun 2021 08:12:53 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute3.internal (MEProxy); Sat, 05 Jun 2021 08:12:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm1; bh=MxyOvMLl95ktMBkCbMfFZ11IUGzG
-        uBuq3YVlZ9Bud88=; b=nVRc+gaMsaB9JcUDdwZ9eRwOC7MDvLZtIPJ3UJS8COsK
-        701EFjYtgt+V9PiXfOwUcrbza3T3BriPuo37SIafWFMVpJ5K7p4jFMPH0ja5P6CS
-        gjAfP65STMemVkOWQH/g42w6aLthHHVOA/cKUhqK61VbVUowBF6JpY4rXcAPgSFP
-        7vYrrFf+gNSy06U8cjjrkd6/GtEUHnlFzFmDZ9w1om5Xt1USSB3Zc0aC5I/Y8cfU
-        c+nsxbWPrI0QjSLxd4dM+Du9z+Gi8VgVhy59zKJx/NuPN+wjb9TQgxuTelI6o6aF
-        sDUHYhkbSIsUN0Hw5yDYnHL60ZlZDNwRoHGwSp/Q+g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=MxyOvM
-        Ll95ktMBkCbMfFZ11IUGzGuBuq3YVlZ9Bud88=; b=TP9rISCfVzcyZQPFW7M+ZE
-        HR+e0uhf3VnH/zKrWK+9zp5WhD80OljFuHTRaSlvbarGfO8YxGzlrzXfIZzrZxD3
-        KJlfidUVv5sp+Pyg4RK67k7Ttu2ADRVR8Gf5y3P3RYZ/9XdObIOx5Rgr8hxH2TWr
-        aDrHuzxrv1cXez5+nio7YCgkk9H5XgXTM2U6ylwoF15z/ivF2y3gFDTGTKpCmn62
-        F2Ae9bLaaP5CUrluqwPh0ddrTDm5o6Q3uZMLbfvt0EBwmMR+PnCIZytw8srANGwC
-        D9JcqQ9sE+SruupxUuBv0CJtC62qrcSl73NQpjM8gwVsNtT0nrml7H3KbBf1doiw
-        ==
-X-ME-Sender: <xms:Q2q7YB54fnEfX6mH32TaiKKmEaXTnIQeF4VWdfAsVlj02X3btYGjYA>
-    <xme:Q2q7YO40Yvog3dpEFW5WFY6Wvpo9c3vZb96KWu_D3CrQf96JQgrVw6QmINff8f3to
-    v3v6ZzKG--5uM5CniU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtfedggeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdfuvhgv
-    nhcurfgvthgvrhdfuceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrg
-    htthgvrhhnpefgieegieffuefhtedtjefgteejteefleefgfefgfdvvddtgffhffduhedv
-    feekffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hsvhgvnhesshhvvghnphgvthgvrhdruggvvh
-X-ME-Proxy: <xmx:Q2q7YIe1Jv7qmmIMci7Gr-PNWq-CwWYbz-GTi3fINlLWpdYkWsVzDg>
-    <xmx:Q2q7YKIA6qxdJB0QFZQ1CZO8rYGpSHuSGgyDnheJvK08Q7aSBg14KA>
-    <xmx:Q2q7YFKVzykK6BPKOeUIirfIyapc40AnujpiEkOW9m75vbjCZLMCww>
-    <xmx:RWq7YM8NGu4nGXOPK4nOCz6pt8G8SdC7opf2DIxPuqSHjURRuy9Tig>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id B6BE651C0060; Sat,  5 Jun 2021 08:12:51 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
-Mime-Version: 1.0
-Message-Id: <02176203-7f29-4ff4-933b-70235cf0dd22@www.fastmail.com>
-In-Reply-To: <YLnZtJtUKdif47zE@atomide.com>
-References: <20210524182745.22923-1-sven@svenpeter.dev>
- <CAL_JsqKqpSQbdj_Crc-LSc12700kyFFkMTU29BDY2bwGNLXn9A@mail.gmail.com>
- <YK32Mmiq9QXGkELF@atomide.com>
- <9ff6ec26-4b78-4684-9c23-16d5cbfef857@www.fastmail.com>
- <YLdOsA63GyMj4SgR@atomide.com>
- <1ff54382-7137-49d6-841d-318e400e956e@www.fastmail.com>
- <YLnZtJtUKdif47zE@atomide.com>
-Date:   Sat, 05 Jun 2021 14:12:31 +0200
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Tony Lindgren" <tony@atomide.com>
-Cc:     "Rob Herring" <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Hector Martin" <marcan@marcan.st>,
-        "Michael Turquette" <mturquette@baylibre.com>,
-        "Stephen Boyd" <sboyd@kernel.org>,
-        "Mark Kettenis" <mark.kettenis@xs4all.nl>,
-        "Arnd Bergmann" <arnd@kernel.org>
-Subject: Re: [PATCH 0/3] Apple M1 clock gate driver
-Content-Type: text/plain
+        Sat, 5 Jun 2021 08:21:21 -0400
+Received: by mail-qk1-f172.google.com with SMTP id j189so12107755qkf.2;
+        Sat, 05 Jun 2021 05:19:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2XU5HDbmcHnF712wVpqM6iQ1X7EhYZWOfK4vwV87prU=;
+        b=FWobSpgrhp0Af/hcJqRgDfsHgRC3XmmPbsTFVx7BVZIZsbDAiAq6QmHzQc9wN6ld5l
+         6OlQdRVBJ4+zJAXiNK0mBkcTt5KDuPzVbIfcnPn0aHjMdOO+fXMorjb5pGOISWE05oWS
+         E+545N6/1rPXvrj+XtwR4xKiapXjMbyzDxyvv1TIezV2LtV2Gc7EJTx4sr9E4BXgjl08
+         Mp/gY390Qh61pvf0wqhzTTtw4+GUeasRTiDSVrtZWD6CUES2pnc6QT+2onqSTsGLX+TT
+         cKiijQcGu3QN5k2RzM47GLUs61t7zUhpLlYQC9rx9SK1AGJJTyeklrKsl9XqbPS5rlEV
+         wEDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2XU5HDbmcHnF712wVpqM6iQ1X7EhYZWOfK4vwV87prU=;
+        b=OkLlSmOX4PXeWBQBfyOUDgnm/Qa2hsOvSP8v/Bq4zPchSMvk7FBuLkVtVo2k/lhBx4
+         wHRouuJQ6Bj+R6JsS/Yon8PNc4+nlfmyOvAtFGMVEqIhhZluoC9Fq6Dz+VI3PuBOcr7z
+         XGDATbRRXqZssTpvCvplw/RlxXtO+Py72O/BsXugIcRGQaP0IC7GxUNtpB7podPBbhJb
+         wsfnOT+HdfnjZYC3p7hOCehj7u7I1HR8qE0kVDw6YbK6sYx5CMigyduC+IMSLoKVm/4z
+         OnX6VivOcy4SGFI+2vMXaVgnYPKlS0Y4pBWdikpWTqjTcgoBYLjOeQVJc9NWA+5Gh+Kj
+         FgZg==
+X-Gm-Message-State: AOAM532RAhUoLNUuj88TArdOyrjIUhJY99/+xanQCmpm19F8l5m3qIy0
+        wYdckjIanGzCgC+CtkEVc1JFthJkqpKfbCqvQEY=
+X-Google-Smtp-Source: ABdhPJz616zbzLkCG4N8pskE1XrPJz4cf9/NOusosJu2q74PjtNEUUCHcdBR5LFqOAKT12RVqIG5z0nyLpZzvcV8Bos=
+X-Received: by 2002:a05:620a:119c:: with SMTP id b28mr8701321qkk.374.1622895503195;
+ Sat, 05 Jun 2021 05:18:23 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210605104942.39487-1-konrad.dybcio@somainline.org> <20210605104942.39487-2-konrad.dybcio@somainline.org>
+In-Reply-To: <20210605104942.39487-2-konrad.dybcio@somainline.org>
+From:   Marijn Suijten <marijns95@gmail.com>
+Date:   Sat, 5 Jun 2021 14:18:12 +0200
+Message-ID: <CANX-K3t35412cnsWwiG=oi7MK9qYoOFCD5NBOqCwzXFA9OamsQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] drm/panel: Add support for SONY JDI Synaptics panel
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+On Sat, 5 Jun 2021 at 12:49, Konrad Dybcio <konrad.dybcio@somainline.org> wrote:
+>
+> From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+>
+> This commit adds support for Synaptics+JDI display panels
+> used in SONY Xperia X, X Compact, X Performance, XZ and XZs
+> smartphones.
+>
+> Due to the nature of phone manufacturing, it is impossible
+> to retrieve the actual panel names, hence the replacement
+> ones, detailing the devices they are used on.
+>
+> Co-developed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> ---
+>  drivers/gpu/drm/panel/Kconfig                 |  10 +
+>  drivers/gpu/drm/panel/Makefile                |   1 +
+>  .../gpu/drm/panel/panel-sony-synaptics-jdi.c  | 511 ++++++++++++++++++
+>  3 files changed, 522 insertions(+)
+>  create mode 100644 drivers/gpu/drm/panel/panel-sony-synaptics-jdi.c
+>
+[..]
+> diff --git a/drivers/gpu/drm/panel/panel-sony-synaptics-jdi.c b/drivers/gpu/drm/panel/panel-sony-synaptics-jdi.c
+> new file mode 100644
+> index 000000000000..2b1972dea58a
+> --- /dev/null
+> +++ b/drivers/gpu/drm/panel/panel-sony-synaptics-jdi.c
+> @@ -0,0 +1,511 @@
+[..]
+> +struct synaptics_jdi_panel {
+> +       struct drm_panel base;
+> +       struct mipi_dsi_device *dsi;
+> +
+> +       struct backlight_device *backlight;
 
-On Fri, Jun 4, 2021, at 09:43, Tony Lindgren wrote:
-> Hi,
-> 
-> How about the following where you set up the gate clocks as separate 
-> child nodes:
-> 
-> pmgr0: clock-controller@23b700000 {
-> 	compatible = "apple,foo-clock-controller";
-> 	#clock-cells = <1>;
-> 	reg = <0x2 0x3b700000 0x0 0x4000>;
-> 
-> 	clk_uart0: clock@270 {
-> 		compatible = "apple,t8103-gate-clock";
-> 		#clock-cells = <0>;
-> 		assigned-clock-parents = <&pmgr0 APPLE_CLK_SIO>,
-> 					 <&pmgr0 APPLE_CLK_UART_P>;
-> 		// ...
-> 	};
-> 
-> };
-> 
-> Keep the clock controller still addressable by offset from base as discussed,
-> and additionally have the driver parse and set up the child node clocks.
+As mentioned in pre-review, don't forget to actually probe the
+backlight.  It is not necessary to store the backlight (anymore), it
+is already kept in base->backli  Something like this should work:
 
-Nice, I like that one even better! We can keep the internal clocks "hidden"
-inside the parent node and only need to model the actual consumer clocks
-as separate nodes.
+    rc = drm_panel_of_backlight(&synaptics_jdi_panel->base);
+    if (rc)
+            return dev_err_probe(dev, rc,
+                    "cannot register of backlight\n");
 
-Are you aware of any clock driver that implements something similar?
-I'd like to avoid reinventing the wheel if it's already been done before.
+> +       struct regulator_bulk_data supplies[5];
+> +
+> +       struct gpio_desc *pan_reset_gpio;
+> +       struct gpio_desc *ts_reset_gpio;
+> +
+> +       bool prepared;
+> +       bool enabled;
+> +
+> +       const struct synaptics_jdi_panel_desc *desc;
+> +};
 
-> 
-> Then I think the consumer driver can just do:
-> 
-> serial0: serial@235200000 {
-> 	// ...
-> 	clocks = <&clk_uart0>, <&clk24>;
-> 	clock-names = "uart", "clk_uart_baud0";
-> 	// ...
-> };
-> 
-> Regards,
-> 
-> Tony
-> 
-
-Best,
-
-Sven
+Thanks!
