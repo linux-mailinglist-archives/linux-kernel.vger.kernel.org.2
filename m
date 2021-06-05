@@ -2,115 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A9539C829
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 14:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBEA939C835
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 14:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230030AbhFEMeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 08:34:10 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:4324 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbhFEMeJ (ORCPT
+        id S229980AbhFEMus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 08:50:48 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:43526 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229916AbhFEMur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 08:34:09 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FxzRS5nGTz1BGFd;
-        Sat,  5 Jun 2021 20:27:32 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 5 Jun 2021 20:32:19 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 5 Jun 2021
- 20:32:19 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <ulli.kroll@googlemail.com>, <linus.walleij@linaro.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>
-Subject: [PATCH net-next v2] net: gemini: Use devm_platform_get_and_ioremap_resource()
-Date:   Sat, 5 Jun 2021 20:36:36 +0800
-Message-ID: <20210605123636.2485041-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 5 Jun 2021 08:50:47 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 155Ci19S112138;
+        Sat, 5 Jun 2021 12:48:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=07BOHHPaJrmXU5W7/AFSyJRb0cJYxMTbyObPQAH3yd0=;
+ b=mGX/IO+Z5uRjA6BmSCsJIH3EHN1cA/bFccMo28wvQn0j8IUKsDqExKMVADpCJdC/z7Lp
+ 6zRGxYM8f43SX1E3tUSViJE2EKutMpZWFaj3b4CFsMKnGejg8C9HJLrn2Xe0SbmaIWRW
+ 2Ocyi/2GNw+spmCOsFvyrFWTfjA3lCtoUHj7FeEg6lK1gSM1clVYGYblku+c55CH2syu
+ smp15iY5RjKRcfq/TF1fO5kwN0z9B4SEy/NKkdmTQnoGwyEY52mORs2Uqp/YEtkLrl4p
+ MOfSPOqvr//GDBwC7T3M552JLcDSgCanAS/eVEZqN1P+yuJqV3nqe0yECGMymmwdy6sO xQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 3900ps0cm5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 05 Jun 2021 12:48:41 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 155CkOwo135464;
+        Sat, 5 Jun 2021 12:48:41 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 38yxcsjrq6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 05 Jun 2021 12:48:41 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 155Cmem4137233;
+        Sat, 5 Jun 2021 12:48:40 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 38yxcsjrpx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 05 Jun 2021 12:48:40 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 155CmW3p012720;
+        Sat, 5 Jun 2021 12:48:32 GMT
+Received: from mwanda (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 05 Jun 2021 05:48:31 -0700
+Date:   Sat, 5 Jun 2021 15:48:16 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Keith Busch <kbusch@kernel.org>
+Cc:     Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Roy Shterman <roys@lightbitslabs.com>,
+        Solganik Alexander <sashas@lightbitslabs.com>,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] nvme-tcp: fix error codes in nvme_tcp_setup_ctrl()
+Message-ID: <YLtykIn+Or0l08oV@mwanda>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-GUID: c7xZCEaeYkskdruWm_5pWeTmldsdxDrL
+X-Proofpoint-ORIG-GUID: c7xZCEaeYkskdruWm_5pWeTmldsdxDrL
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10005 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 clxscore=1011
+ bulkscore=0 spamscore=0 mlxscore=0 adultscore=0 malwarescore=0
+ phishscore=0 suspectscore=0 lowpriorityscore=0 mlxlogscore=999
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106050092
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use devm_platform_get_and_ioremap_resource() to simplify
-code.
+These error paths currently return success but they should return
+-EOPNOTSUPP.
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Fixes: 73ffcefcfca0 ("nvme-tcp: check sgl supported by target")
+Fixes: 3f2304f8c6d6 ("nvme-tcp: add NVMe over TCP host driver")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
-v2:
-  Also use devm_platform_get_and_ioremap_resource() in gemini_ethernet_probe().
-  Keep the error message to distinguish remap which address failed in
-  gemini_ethernet_port_probe().
----
- drivers/net/ethernet/cortina/gemini.c | 28 +++++++++------------------
- 1 file changed, 9 insertions(+), 19 deletions(-)
+ drivers/nvme/host/tcp.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/cortina/gemini.c b/drivers/net/ethernet/cortina/gemini.c
-index 8df6f081f244..6f7ff1f1fb2b 100644
---- a/drivers/net/ethernet/cortina/gemini.c
-+++ b/drivers/net/ethernet/cortina/gemini.c
-@@ -2390,24 +2390,18 @@ static int gemini_ethernet_port_probe(struct platform_device *pdev)
- 	port->msg_enable = netif_msg_init(debug, DEFAULT_MSG_ENABLE);
+diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+index 34f4b3402f7c..72e9d34c3092 100644
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -1973,11 +1973,13 @@ static int nvme_tcp_setup_ctrl(struct nvme_ctrl *ctrl, bool new)
+ 		return ret;
  
- 	/* DMA memory */
--	dmares = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!dmares) {
--		dev_err(dev, "no DMA resource\n");
--		return -ENODEV;
--	}
--	port->dma_base = devm_ioremap_resource(dev, dmares);
--	if (IS_ERR(port->dma_base))
-+	port->dma_base = devm_platform_get_and_ioremap_resource(pdev, 0, &dmares);
-+	if (IS_ERR(port->dma_base)) {
-+		dev_err(dev, "get DMA address failed\n");
- 		return PTR_ERR(port->dma_base);
-+	}
+ 	if (ctrl->icdoff) {
++		ret = -EOPNOTSUPP;
+ 		dev_err(ctrl->device, "icdoff is not supported!\n");
+ 		goto destroy_admin;
+ 	}
  
- 	/* GMAC config memory */
--	gmacres = platform_get_resource(pdev, IORESOURCE_MEM, 1);
--	if (!gmacres) {
--		dev_err(dev, "no GMAC resource\n");
--		return -ENODEV;
--	}
--	port->gmac_base = devm_ioremap_resource(dev, gmacres);
--	if (IS_ERR(port->gmac_base))
-+	port->gmac_base = devm_platform_get_and_ioremap_resource(pdev, 1, &gmacres);
-+	if (IS_ERR(port->gmac_base)) {
-+		dev_err(dev, "get GMAC address failed\n");
- 		return PTR_ERR(port->gmac_base);
-+	}
- 
- 	/* Interrupt */
- 	irq = platform_get_irq(pdev, 0);
-@@ -2544,17 +2538,13 @@ static int gemini_ethernet_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct gemini_ethernet *geth;
- 	unsigned int retry = 5;
--	struct resource *res;
- 	u32 val;
- 
- 	/* Global registers */
- 	geth = devm_kzalloc(dev, sizeof(*geth), GFP_KERNEL);
- 	if (!geth)
- 		return -ENOMEM;
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!res)
--		return -ENODEV;
--	geth->base = devm_ioremap_resource(dev, res);
-+	geth->base = devm_platform_get_and_ioremap_resource(pdev, 0, NULL);
- 	if (IS_ERR(geth->base))
- 		return PTR_ERR(geth->base);
- 	geth->dev = dev;
+ 	if (!(ctrl->sgls & ((1 << 0) | (1 << 1)))) {
++		ret = -EOPNOTSUPP;
+ 		dev_err(ctrl->device, "Mandatory sgls are not supported!\n");
+ 		goto destroy_admin;
+ 	}
 -- 
-2.25.1
+2.30.2
 
