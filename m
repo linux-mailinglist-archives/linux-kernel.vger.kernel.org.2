@@ -2,214 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A53B339C428
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 02:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE7539C431
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 02:09:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhFEABw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Jun 2021 20:01:52 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:50500 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbhFEABv (ORCPT
+        id S230255AbhFEAKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Jun 2021 20:10:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229847AbhFEAKp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Jun 2021 20:01:51 -0400
+        Fri, 4 Jun 2021 20:10:45 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1537C061766;
+        Fri,  4 Jun 2021 17:08:41 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id a2so16514627lfc.9;
+        Fri, 04 Jun 2021 17:08:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1622851205; x=1654387205;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=s3t6VihAkPp9eTSAWs95/T+GZwYoZ0V/3Fe9pqxjazo=;
-  b=Nw5UXHuj19E+dPdEa8BM0g7s4n2X+pKKsiu2L0RMBPNC+hTgm30cr9vd
-   PAc8kiSIAxfX7K0NDAhbzB9WbCgu8RD/KC8kQswhPEZBgMUnaRDakK7Lj
-   qGYdPWLD7tNseE4VBMbVbby2iwUwiW5obE7bAFptq7jG2dUP4pWO54g9M
-   s=;
-X-IronPort-AV: E=Sophos;i="5.83,249,1616457600"; 
-   d="scan'208";a="129358420"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-33001.sea14.amazon.com with ESMTP; 05 Jun 2021 00:00:04 +0000
-Received: from EX13MTAUWC002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com (Postfix) with ESMTPS id D3003A052A;
-        Fri,  4 Jun 2021 23:59:59 +0000 (UTC)
-Received: from EX13D30UWC001.ant.amazon.com (10.43.162.128) by
- EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Fri, 4 Jun 2021 23:59:59 +0000
-Received: from u3c3f5cfe23135f.ant.amazon.com (10.43.161.201) by
- EX13D30UWC001.ant.amazon.com (10.43.162.128) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Fri, 4 Jun 2021 23:59:58 +0000
-From:   Suraj Jitindar Singh <surajjs@amazon.com>
-To:     <linux-arm-kernel@lists.infradead.org>
-CC:     <linux-kernel@vger.kernel.org>, <live-patching@vger.kernel.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <mark.rutland@arm.com>, <broonie@kernel.org>,
-        <madvenka@linux.microsoft.com>, <duwe@lst.de>,
-        <sjitindarsingh@gmail.com>, <benh@kernel.crashing.org>,
-        Suraj Jitindar Singh <surajjs@amazon.com>
-Subject: [RFC PATCH 1/1] arm64: implement live patching
-Date:   Fri, 4 Jun 2021 16:59:30 -0700
-Message-ID: <20210604235930.603-1-surajjs@amazon.com>
-X-Mailer: git-send-email 2.17.1
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7O4yi6cn6gBER8XX7UVPJXE8JpTGO2BmTJOk3c1YezY=;
+        b=lONezNtAYZiUSr1iYLLF2FAFUQSyPAyKMiOyNd4PyFlEEnMeuQSfMC3kgd+j+4lyji
+         fB5o3HzOIrLuUbRM74zkvm4Lt68gJ2bu5r4E/DIf+13z01pKiEq2BtEUXGB73MKFTX3w
+         OEDOrkvwgTp9wS6cLO57bDvnaiRV8YFGvYrFASu3FMK79mLc02KdHb6y+LVIDrnO6QKw
+         OSuOcAHiocCmla4RrGF0uChppDDsJ5qc8sbiJuIE4IFOCKqw+6XUleMpLHNKKl40lPFC
+         3RjG+nHOzqrsTla4+yu4BnwK2TNFFsAS5jni8Dx5cVESEw7yHiVvjBYtk2QSO39BkQ7e
+         wgDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7O4yi6cn6gBER8XX7UVPJXE8JpTGO2BmTJOk3c1YezY=;
+        b=dvBbrvd6DRAvLd0X/ulF/IXJg7JVPaDLFRYtlkOhr3JdilQEqrIZriNMTIMX94zm6d
+         NpKNwTLGvypNYiNM6hqvfPdV6W5mQWSGJBvz4cQl1R4mzRjlosZ/mB5HbURyFvJc6c2J
+         5ny1ShcixfrqIlAjf/eVAk7A721VUrneF+NB4zHyitavLxoduKXzenDn89VGrvQwEw2+
+         tcW7d2V3u5xDEBoYdGYd2NUSiDtahVDlRcy3G+yvFVs2BELxxMQOAy+LpkIgrAGDMVz9
+         gwOzsCia8zjjEjeGegrFFsx9zUr8l/7V8NRsOPcJKqqb2RQvOKGRkde33fgtoWjRy+ks
+         B5RQ==
+X-Gm-Message-State: AOAM533VJlS/9jE4YjhS7Kps3jNjdhkHxXbnMwZhg+7l/ThFUUX5wGSX
+        4COUzwcHoZvylUKG/OgM5lfAWS3Xo3VWR0N7nbA=
+X-Google-Smtp-Source: ABdhPJyE/AGEeMxwVpH/EFqVAUdh2yIubA70g70dg+zntH7F/uX+weKdCYbLk357XbEMR55n50qHL7nDnccDNBTMu8k=
+X-Received: by 2002:a05:6512:3c91:: with SMTP id h17mr4482345lfv.214.1622851715688;
+ Fri, 04 Jun 2021 17:08:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.201]
-X-ClientProxiedBy: EX13D32UWA004.ant.amazon.com (10.43.160.193) To
- EX13D30UWC001.ant.amazon.com (10.43.162.128)
+References: <20210517092006.803332-1-omosnace@redhat.com> <CAHC9VhTasra0tU=bKwVqAwLRYaC+hYakirRz0Mn5jbVMuDkwrA@mail.gmail.com>
+ <01135120-8bf7-df2e-cff0-1d73f1f841c3@iogearbox.net> <CAHC9VhR-kYmMA8gsqkiL5=poN9FoL-uCyx1YOLCoG2hRiUBYug@mail.gmail.com>
+ <c7c2d7e1-e253-dce0-d35c-392192e4926e@iogearbox.net> <CAHC9VhS1XRZjKcTFgH1+n5uA-CeT+9BeSP5jvT2+RE5ougLpUg@mail.gmail.com>
+ <2e541bdc-ae21-9a07-7ac7-6c6a4dda09e8@iogearbox.net> <CAHC9VhT464vr9sWxqY3PRB4DAccz=LvRMLgWBsSViWMR0JJvOQ@mail.gmail.com>
+ <3ca181e3-df32-9ae0-12c6-efb899b7ce7a@iogearbox.net> <CAHC9VhTuPnPs1wMTmoGUZ4fvyy-es9QJpE7O_yTs2JKos4fgbw@mail.gmail.com>
+ <f4373013-88fb-b839-aaaa-3826548ebd0c@iogearbox.net> <CAHC9VhS=BeGdaAi8Ae5Fx42Fzy_ybkcXwMNcPwK=uuA6=+SRcg@mail.gmail.com>
+ <c59743f6-0000-1b15-bc16-ff761b443aef@iogearbox.net> <CAHC9VhT1JhdRw9P_m3niY-U-vukxTWKTE9q6AMyQ=r_ohpPxMw@mail.gmail.com>
+In-Reply-To: <CAHC9VhT1JhdRw9P_m3niY-U-vukxTWKTE9q6AMyQ=r_ohpPxMw@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 4 Jun 2021 17:08:24 -0700
+Message-ID: <CAADnVQ+0bNtDj46Q8s-h=rqJgZz2JaGTeHpbmof3e7fBBQKuDQ@mail.gmail.com>
+Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
+ permission checks
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        selinux@vger.kernel.org, ppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's my understanding that the two pieces of work required to enable live
-patching on arm are in flight upstream;
-- Reliable stack traces as implemented by Madhavan T. Venkataraman [1]
-- Objtool as implemented by Julien Thierry [2]
+On Fri, Jun 4, 2021 at 4:34 PM Paul Moore <paul@paul-moore.com> wrote:
+>
+> > Again, the problem is not limited to BPF at all. kprobes is doing register-
+> > time hooks which are equivalent to the one of BPF. Anything in run-time
+> > trying to prevent probe_read_kernel by kprobes or BPF is broken by design.
+>
+> Not being an expert on kprobes I can't really comment on that, but
+> right now I'm focused on trying to make things work for the BPF
+> helpers.  I suspect that if we can get the SELinux lockdown
+> implementation working properly for BPF the solution for kprobes won't
+> be far off.
 
-This is the remaining part required to enable live patching on arm.
-Based on work by Torsten Duwe [3]
+Paul,
 
-Allocate a task flag used to represent the patch pending state for the
-task. Also implement generic functions klp_arch_set_pc() &
-klp_get_ftrace_location().
-
-In klp_arch_set_pc() it is sufficient to set regs->pc as in
-ftrace_common_return() the return address is loaded from the stack.
-
-ldr     x9, [sp, #S_PC]
-<snip>
-ret     x9
-
-In klp_get_ftrace_location() it is necessary to advance the address by
-AARCH64_INSN_SIZE (4) to point to the BL in the callsite as 2 nops were
-placed at the start of the function, one to be patched to save the LR and
-another to be patched to branch to the ftrace call, and
-klp_get_ftrace_location() is expected to return the address of the BL. It
-may also be necessary to advance the address by another AARCH64_INSN_SIZE
-if CONFIG_ARM64_BTI_KERNEL is enabled due to the instruction placed at the
-branch target to satisfy BTI,
-
-Signed-off-by: Suraj Jitindar Singh <surajjs@amazon.com>
-
-[1] https://lkml.org/lkml/2021/5/26/1212
-[2] https://lkml.org/lkml/2021/3/3/1135
-[3] https://lkml.org/lkml/2018/10/26/536
----
- arch/arm64/Kconfig                   |  3 ++
- arch/arm64/include/asm/livepatch.h   | 42 ++++++++++++++++++++++++++++
- arch/arm64/include/asm/thread_info.h |  4 ++-
- arch/arm64/kernel/signal.c           |  4 +++
- 4 files changed, 52 insertions(+), 1 deletion(-)
- create mode 100644 arch/arm64/include/asm/livepatch.h
-
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index b098dabed8c2..c4636990c01d 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -187,6 +187,7 @@ config ARM64
- 	select HAVE_GCC_PLUGINS
- 	select HAVE_HW_BREAKPOINT if PERF_EVENTS
- 	select HAVE_IRQ_TIME_ACCOUNTING
-+	select HAVE_LIVEPATCH
- 	select HAVE_NMI
- 	select HAVE_PATA_PLATFORM
- 	select HAVE_PERF_EVENTS
-@@ -1946,3 +1947,5 @@ source "arch/arm64/kvm/Kconfig"
- if CRYPTO
- source "arch/arm64/crypto/Kconfig"
- endif
-+
-+source "kernel/livepatch/Kconfig"
-diff --git a/arch/arm64/include/asm/livepatch.h b/arch/arm64/include/asm/livepatch.h
-new file mode 100644
-index 000000000000..72d7cd86f158
---- /dev/null
-+++ b/arch/arm64/include/asm/livepatch.h
-@@ -0,0 +1,42 @@
-+/* SPDX-License-Identifier: GPL-2.0
-+ *
-+ * livepatch.h - arm64-specific Kernel Live Patching Core
-+ */
-+#ifndef _ASM_ARM64_LIVEPATCH_H
-+#define _ASM_ARM64_LIVEPATCH_H
-+
-+#include <linux/ftrace.h>
-+
-+static inline void klp_arch_set_pc(struct ftrace_regs *fregs, unsigned long ip)
-+{
-+	struct pt_regs *regs = ftrace_get_regs(fregs);
-+
-+	regs->pc = ip;
-+}
-+
-+/*
-+ * klp_get_ftrace_location is expected to return the address of the BL to the
-+ * relevant ftrace handler in the callsite. The location of this can vary based
-+ * on several compilation options.
-+ * CONFIG_DYNAMIC_FTRACE_WITH_REGS
-+ *	- Inserts 2 nops on function entry the second of which is the BL
-+ *	  referenced above. (See ftrace_init_nop() for the callsite sequence)
-+ *	  (this is required by livepatch and must be selected)
-+ * CONFIG_ARM64_BTI_KERNEL:
-+ *	- Inserts a hint #0x22 on function entry if the function is called
-+ *	  indirectly (to satisfy BTI requirements), which is inserted before
-+ *	  the two nops from above.
-+ */
-+#define klp_get_ftrace_location klp_get_ftrace_location
-+static inline unsigned long klp_get_ftrace_location(unsigned long faddr)
-+{
-+	unsigned long addr = faddr + AARCH64_INSN_SIZE;
-+
-+#if IS_ENABLED(CONFIG_ARM64_BTI_KERNEL)
-+	addr = ftrace_location_range(addr, addr + AARCH64_INSN_SIZE);
-+#endif
-+
-+	return addr;
-+}
-+
-+#endif /* _ASM_ARM64_LIVEPATCH_H */
-diff --git a/arch/arm64/include/asm/thread_info.h b/arch/arm64/include/asm/thread_info.h
-index 6623c99f0984..cca936d53a40 100644
---- a/arch/arm64/include/asm/thread_info.h
-+++ b/arch/arm64/include/asm/thread_info.h
-@@ -67,6 +67,7 @@ int arch_dup_task_struct(struct task_struct *dst,
- #define TIF_UPROBE		4	/* uprobe breakpoint or singlestep */
- #define TIF_MTE_ASYNC_FAULT	5	/* MTE Asynchronous Tag Check Fault */
- #define TIF_NOTIFY_SIGNAL	6	/* signal notifications exist */
-+#define TIF_PATCH_PENDING	7	/* pending live patching update */
- #define TIF_SYSCALL_TRACE	8	/* syscall trace active */
- #define TIF_SYSCALL_AUDIT	9	/* syscall auditing */
- #define TIF_SYSCALL_TRACEPOINT	10	/* syscall tracepoint for ftrace */
-@@ -97,11 +98,12 @@ int arch_dup_task_struct(struct task_struct *dst,
- #define _TIF_SVE		(1 << TIF_SVE)
- #define _TIF_MTE_ASYNC_FAULT	(1 << TIF_MTE_ASYNC_FAULT)
- #define _TIF_NOTIFY_SIGNAL	(1 << TIF_NOTIFY_SIGNAL)
-+#define _TIF_PATCH_PENDING	(1 << TIF_PATCH_PENDING)
- 
- #define _TIF_WORK_MASK		(_TIF_NEED_RESCHED | _TIF_SIGPENDING | \
- 				 _TIF_NOTIFY_RESUME | _TIF_FOREIGN_FPSTATE | \
- 				 _TIF_UPROBE | _TIF_MTE_ASYNC_FAULT | \
--				 _TIF_NOTIFY_SIGNAL)
-+				 _TIF_NOTIFY_SIGNAL | _TIF_PATCH_PENDING)
- 
- #define _TIF_SYSCALL_WORK	(_TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT | \
- 				 _TIF_SYSCALL_TRACEPOINT | _TIF_SECCOMP | \
-diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
-index 6237486ff6bb..d1eedb0589a7 100644
---- a/arch/arm64/kernel/signal.c
-+++ b/arch/arm64/kernel/signal.c
-@@ -18,6 +18,7 @@
- #include <linux/sizes.h>
- #include <linux/string.h>
- #include <linux/tracehook.h>
-+#include <linux/livepatch.h>
- #include <linux/ratelimit.h>
- #include <linux/syscalls.h>
- 
-@@ -932,6 +933,9 @@ asmlinkage void do_notify_resume(struct pt_regs *regs,
- 					       (void __user *)NULL, current);
- 			}
- 
-+			if (thread_flags & _TIF_PATCH_PENDING)
-+				klp_update_patch_state(current);
-+
- 			if (thread_flags & (_TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL))
- 				do_signal(regs);
- 
--- 
-2.17.1
-
+Both kprobe and bpf can call probe_read_kernel==copy_from_kernel_nofault
+from all contexts.
+Including NMI. Most of audit_log_* is not acceptable.
+Just removing a wakeup is not solving anything.
+Audit hooks don't belong in NMI.
+Audit design needs memory allocation. Hence it's not suitable
+for NMI and hardirq. But kprobes and bpf progs do run just fine there.
+BPF, for example, only uses pre-allocated memory.
