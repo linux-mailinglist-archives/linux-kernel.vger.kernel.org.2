@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8800339C879
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 15:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD1839C89B
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Jun 2021 15:19:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbhFENUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 09:20:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34954 "EHLO mail.kernel.org"
+        id S230352AbhFENUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 09:20:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229964AbhFENUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 09:20:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7868D61406;
+        id S230034AbhFENU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 09:20:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 979F461418;
         Sat,  5 Jun 2021 13:18:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1622899117;
-        bh=pFz1r1h81+i/mGF2uSwI/JWJDbJHTjv4eb/e5YOT/x0=;
+        bh=xcfRrSbIcqTm3T+UKP24MyVZeyMtewq5A8yaR3rp+m8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pQxK4XdEDHJQGeiboJ2g6mZ7vs+PsXACokEa4SvwWCPZjIFf3KXNCFGYdb+jks5tz
-         gPosWFuCYwipga33qKhV213sUEjR72eTxPCOiY7z6EptQ72f5kjSsONf7G7BaCW5j4
-         7zWKEMtsU3woFei5RmXtHvDB4CfBlQCQ1U0IQmASMkNSnYr7RUYEByenkBiTKVNdI0
-         qQbR3/PM8ZZQUjjsseP3UrLrw2X3SLxybnKEDVbfCPsroJlTO+asdujng/M8prZSPs
-         WNftfLV18nSeajxhQOV+muQ6+obPwW1fZnZl2lrfRSfzq0Z/BmybhhKZiIcdlVj0ao
-         1h9/Zo5DClsIg==
+        b=KgWK6sJKud42d9RnPIJfJm2jWlCo2BXcLWVAWMQ+ig6xWYD92FUt8z9dtoh8M26k4
+         9POZUiPwieCSOGhvUaOco0fXW5GIRntA6HqI/4takQGEdIDSh0tK68prjfq0hHzQrd
+         0NyoKq9eunNFgwBRnRb3FojD5JbHjZZmcA4p1VNPTPy4FagNpMLvy5CT6eV7mY1lOK
+         Wc02weXpe4L0XA5FL0bckbSN0Hu42EWVVeXKlog+mOF2VRG/BE0u6NTjrw0bBc5dAi
+         JaQiEDZL9JJw+gb5VMiWe2jppCr/ALcb2WoRcS4Lp/Vu313ekhhUI/+BDac6UxWds3
+         yO7nk+roaqrZg==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lpWCB-008GEv-IU; Sat, 05 Jun 2021 15:18:35 +0200
+        id 1lpWCB-008GEz-Jf; Sat, 05 Jun 2021 15:18:35 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     "Jonathan Corbet" <corbet@lwn.net>,
         Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: [PATCH 07/34] docs: admin-guide: pm: avoid using ReSt :doc:`foo` markup
-Date:   Sat,  5 Jun 2021 15:18:06 +0200
-Message-Id: <447890cd6772ec55e2100ff6f53fffef38674d6b.1622898327.git.mchehab+huawei@kernel.org>
+        Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        Mark Gross <mgross@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 08/34] docs: admin-guide: hw-vuln: avoid using ReST :doc:`foo` markup
+Date:   Sat,  5 Jun 2021 15:18:07 +0200
+Message-Id: <8624b461dda80606e9f0e48701e070f1509fad94.1622898327.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1622898327.git.mchehab+huawei@kernel.org>
 References: <cover.1622898327.git.mchehab+huawei@kernel.org>
@@ -51,92 +51,23 @@ So, use the filename at the sources, instead of :doc:`foo`.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/admin-guide/pm/intel_idle.rst   | 16 ++++++++++------
- Documentation/admin-guide/pm/intel_pstate.rst |  9 +++++----
- 2 files changed, 15 insertions(+), 10 deletions(-)
+ .../hw-vuln/special-register-buffer-data-sampling.rst          | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/pm/intel_idle.rst b/Documentation/admin-guide/pm/intel_idle.rst
-index 89309e1b0e48..b799a43da62e 100644
---- a/Documentation/admin-guide/pm/intel_idle.rst
-+++ b/Documentation/admin-guide/pm/intel_idle.rst
-@@ -20,8 +20,8 @@ Nehalem and later generations of Intel processors, but the level of support for
- a particular processor model in it depends on whether or not it recognizes that
- processor model and may also depend on information coming from the platform
- firmware.  [To understand ``intel_idle`` it is necessary to know how ``CPUIdle``
--works in general, so this is the time to get familiar with :doc:`cpuidle` if you
--have not done that yet.]
-+works in general, so this is the time to get familiar with
-+Documentation/admin-guide/pm/cpuidle.rst if you have not done that yet.]
+diff --git a/Documentation/admin-guide/hw-vuln/special-register-buffer-data-sampling.rst b/Documentation/admin-guide/hw-vuln/special-register-buffer-data-sampling.rst
+index 3b1ce68d2456..966c9b3296ea 100644
+--- a/Documentation/admin-guide/hw-vuln/special-register-buffer-data-sampling.rst
++++ b/Documentation/admin-guide/hw-vuln/special-register-buffer-data-sampling.rst
+@@ -3,7 +3,8 @@
+ SRBDS - Special Register Buffer Data Sampling
+ =============================================
  
- ``intel_idle`` uses the ``MWAIT`` instruction to inform the processor that the
- logical CPU executing it is idle and so it may be possible to put some of the
-@@ -53,7 +53,8 @@ processor) corresponding to them depends on the processor model and it may also
- depend on the configuration of the platform.
- 
- In order to create a list of available idle states required by the ``CPUIdle``
--subsystem (see :ref:`idle-states-representation` in :doc:`cpuidle`),
-+subsystem (see :ref:`idle-states-representation` in
-+Documentation/admin-guide/pm/cpuidle.rst),
- ``intel_idle`` can use two sources of information: static tables of idle states
- for different processor models included in the driver itself and the ACPI tables
- of the system.  The former are always used if the processor model at hand is
-@@ -98,7 +99,8 @@ states may not be enabled by default if there are no matching entries in the
- preliminary list of idle states coming from the ACPI tables.  In that case user
- space still can enable them later (on a per-CPU basis) with the help of
- the ``disable`` idle state attribute in ``sysfs`` (see
--:ref:`idle-states-representation` in :doc:`cpuidle`).  This basically means that
-+:ref:`idle-states-representation` in
-+Documentation/admin-guide/pm/cpuidle.rst).  This basically means that
- the idle states "known" to the driver may not be enabled by default if they have
- not been exposed by the platform firmware (through the ACPI tables).
- 
-@@ -186,7 +188,8 @@ be desirable.  In practice, it is only really necessary to do that if the idle
- states in question cannot be enabled during system startup, because in the
- working state of the system the CPU power management quality of service (PM
- QoS) feature can be used to prevent ``CPUIdle`` from touching those idle states
--even if they have been enumerated (see :ref:`cpu-pm-qos` in :doc:`cpuidle`).
-+even if they have been enumerated (see :ref:`cpu-pm-qos` in
-+Documentation/admin-guide/pm/cpuidle.rst).
- Setting ``max_cstate`` to 0 causes the ``intel_idle`` initialization to fail.
- 
- The ``no_acpi`` and ``use_acpi`` module parameters (recognized by ``intel_idle``
-@@ -202,7 +205,8 @@ Namely, the positions of the bits that are set in the ``states_off`` value are
- the indices of idle states to be disabled by default (as reflected by the names
- of the corresponding idle state directories in ``sysfs``, :file:`state0`,
- :file:`state1` ... :file:`state<i>` ..., where ``<i>`` is the index of the given
--idle state; see :ref:`idle-states-representation` in :doc:`cpuidle`).
-+idle state; see :ref:`idle-states-representation` in
-+Documentation/admin-guide/pm/cpuidle.rst).
- 
- For example, if ``states_off`` is equal to 3, the driver will disable idle
- states 0 and 1 by default, and if it is equal to 8, idle state 3 will be
-diff --git a/Documentation/admin-guide/pm/intel_pstate.rst b/Documentation/admin-guide/pm/intel_pstate.rst
-index df29b4f1f219..7a7d4b041eac 100644
---- a/Documentation/admin-guide/pm/intel_pstate.rst
-+++ b/Documentation/admin-guide/pm/intel_pstate.rst
-@@ -18,8 +18,8 @@ General Information
- (``CPUFreq``).  It is a scaling driver for the Sandy Bridge and later
- generations of Intel processors.  Note, however, that some of those processors
- may not be supported.  [To understand ``intel_pstate`` it is necessary to know
--how ``CPUFreq`` works in general, so this is the time to read :doc:`cpufreq` if
--you have not done that yet.]
-+how ``CPUFreq`` works in general, so this is the time to read
-+Documentation/admin-guide/pm/cpufreq.rst if you have not done that yet.]
- 
- For the processors supported by ``intel_pstate``, the P-state concept is broader
- than just an operating frequency or an operating performance point (see the
-@@ -445,8 +445,9 @@ Interpretation of Policy Attributes
- -----------------------------------
- 
- The interpretation of some ``CPUFreq`` policy attributes described in
--:doc:`cpufreq` is special with ``intel_pstate`` as the current scaling driver
--and it generally depends on the driver's `operation mode <Operation Modes_>`_.
-+Documentation/admin-guide/pm/cpufreq.rst is special with ``intel_pstate``
-+as the current scaling driver and it generally depends on the driver's
-+`operation mode <Operation Modes_>`_.
- 
- First of all, the values of the ``cpuinfo_max_freq``, ``cpuinfo_min_freq`` and
- ``scaling_cur_freq`` attributes are produced by applying a processor-specific
+-SRBDS is a hardware vulnerability that allows MDS :doc:`mds` techniques to
++SRBDS is a hardware vulnerability that allows MDS
++Documentation/admin-guide/hw-vuln/mds.rst techniques to
+ infer values returned from special register accesses.  Special register
+ accesses are accesses to off core registers.  According to Intel's evaluation,
+ the special register reads that have a security expectation of privacy are
 -- 
 2.31.1
 
