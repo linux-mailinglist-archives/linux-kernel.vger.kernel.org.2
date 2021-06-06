@@ -2,14 +2,14 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F272C39CF28
+	by mail.lfdr.de (Postfix) with ESMTP id 7C71D39CF27
 	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 14:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbhFFMrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 08:47:01 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:35086 "EHLO
+        id S231253AbhFFMq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 08:46:59 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:35082 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230088AbhFFMpp (ORCPT
+        with ESMTP id S230241AbhFFMpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 6 Jun 2021 08:45:45 -0400
 Date:   Sun, 06 Jun 2021 12:43:54 -0000
@@ -18,29 +18,29 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=TElj5jnf9edw91rvBOTcBtk+v7e26frcOWFThEYK5u0=;
-        b=FgP8ouygUQDVOImAq6D8Uqtv22vmRZ1mbU92TS+C+NS9cxk6cRHRgruAk5vX4JNF6EssqG
-        HBm0S0/HUcRyxuog0Q7adJUaiM1NjgbVdqcTtP9vUA2lxsewJC8xmfgcdKPnZc8gFgYVYs
-        uVkohiez+i4K2fKrzbtCazV/uStyfjPRmpQtWDvCielPo5AwbmrwgoXxeqFMOGvFQ9D2Fm
-        AOL4NNKedA0SRhYeKRxwXZKdrW5f+Ve3RRiX7OoRfhYl4h3sbaoMYULmfIGdElkNZHW0gY
-        kZMOZH7m1JsSD4nq9tXdJP6x8mV+kGKIniibgVwg20nhuZ9oxX2GAn5GZMt/pg==
+        bh=2JnN0L28+A/8ls7YQBd5MtOFwbAJmQhSlJSWvs8H8xc=;
+        b=a6uA+kAJzItz4vdkEk8pD69+hmiXiEPY3AGA7so38/MStPNnroH5wGu9TXu13p2pI/7CaR
+        gg5zKpvz5N0sduH+OtikySBVHn8bcR4CqieHn9oC9WcVqQtIB9OqWLpH6AKdN8/QRoQML1
+        CkdBMYRnhlGiD00JhDXvpbuk0hAFjG2ffOll+2r6CWXNUrOZs1U+nGzlT0IHjuj62heSqY
+        /mmh4hX86BP2irFDl47TBBk2KsTGcHvNoVijFe2Z2J5ACLBVeW655w0kzpeAbKVQaEMmIj
+        tYDBtrYvYIUaKCK0f6wdS6sPoKAQCQAfG0n00U4diI8DaSWKt+rLT8PT8JOvGA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1622983435;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=TElj5jnf9edw91rvBOTcBtk+v7e26frcOWFThEYK5u0=;
-        b=BXhd4FsutBWcFMh4vjeX2BfWrTK4+JWFP9MNO5OyKmUQMMFf20aZLFMJHpTydQ9g5BGnVD
-        jUpN5+bt3JOxF5DA==
+        bh=2JnN0L28+A/8ls7YQBd5MtOFwbAJmQhSlJSWvs8H8xc=;
+        b=5gYnygF98RyAJ7WEN8B0JG1m3SgP82JciSDv0RzoyRcWX6vWXiy6edNhcqiO1/wRwJ+bJM
+        yKphbm/on7ADqPBA==
 From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] watchdog/octeon-wdt: Directly include
+Subject: [irqchip: irq/irqchip-next] irqchip/mips-gic: Directly include
  linux/irqdomain.h
 Cc:     Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
 MIME-Version: 1.0
-Message-ID: <162298343483.29796.18340903739200064941.tip-bot2@tip-bot2>
+Message-ID: <162298343441.29796.1685549921123937521.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -51,14 +51,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     39c55b6680c30dfa75e5dd4132add7327cb50750
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/39c55b6680c30dfa75e5dd4132add7327cb50750
+Commit-ID:     009ea522d834b6025dc2b69687897fd1f02f772e
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/009ea522d834b6025dc2b69687897fd1f02f772e
 Author:        Marc Zyngier <maz@kernel.org>
 AuthorDate:    Thu, 13 Sep 2018 09:30:34 +01:00
 Committer:     Marc Zyngier <maz@kernel.org>
 CommitterDate: Wed, 02 Jun 2021 14:34:47 +01:00
 
-watchdog/octeon-wdt: Directly include linux/irqdomain.h
+irqchip/mips-gic: Directly include linux/irqdomain.h
 
 This drivers currently obtains linux/irqdomain.h by luck and
 a chain of bizarre inclusions, which we're about to fix.
@@ -67,18 +67,18 @@ Let's include the required file directly.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- drivers/watchdog/octeon-wdt-main.c | 1 +
+ drivers/irqchip/irq-mips-gic.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/watchdog/octeon-wdt-main.c b/drivers/watchdog/octeon-wdt-main.c
-index fde9e73..391c774 100644
---- a/drivers/watchdog/octeon-wdt-main.c
-+++ b/drivers/watchdog/octeon-wdt-main.c
-@@ -54,6 +54,7 @@
- #include <linux/delay.h>
- #include <linux/cpu.h>
+diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
+index 2158859..a2cbf0a 100644
+--- a/drivers/irqchip/irq-mips-gic.c
++++ b/drivers/irqchip/irq-mips-gic.c
+@@ -16,6 +16,7 @@
+ #include <linux/interrupt.h>
  #include <linux/irq.h>
+ #include <linux/irqchip.h>
 +#include <linux/irqdomain.h>
- 
- #include <asm/mipsregs.h>
- #include <asm/uasm.h>
+ #include <linux/of_address.h>
+ #include <linux/percpu.h>
+ #include <linux/sched.h>
