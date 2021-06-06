@@ -2,93 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B62D739CF87
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 16:32:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C093B39CF9A
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 16:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbhFFOeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 10:34:31 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:50777 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbhFFOea (ORCPT
+        id S230192AbhFFOlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 10:41:51 -0400
+Received: from mail-wm1-f46.google.com ([209.85.128.46]:53951 "EHLO
+        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230156AbhFFOlr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 10:34:30 -0400
-Received: by mail-io1-f71.google.com with SMTP id x4-20020a5eda040000b02904a91aa10037so8430780ioj.17
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 07:32:24 -0700 (PDT)
+        Sun, 6 Jun 2021 10:41:47 -0400
+Received: by mail-wm1-f46.google.com with SMTP id h3so8294370wmq.3;
+        Sun, 06 Jun 2021 07:39:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=SEVMnnp5jdJsfAi2k7Qasv3hIqmGSZ59KOCLXsglWOA=;
+        b=BhlhgQ9N06MFmRnop6dpWkPHolaAHbqtg/S1iH7IkTPMYWqV3cuHpOza8s5TPhWn/m
+         kacj+V//eT5wfef/cBFWLqJKBeEmIcOKxJC7tRUg53dQSceeYhb9pGDgIYKHPTRjkc3J
+         Ri+D49LbinizfAQo5VR8NNyrMD+pNN/kw8x0y3Hik1suuKNLojvUz7e5C3pW/ZVx3wID
+         Eg/E02DR5l2fkKqlZpnz/FY30IB5tc3AHSpND3KypkLuGZ4TtJDGDSG4OPeU672Gq/Fe
+         ELvi71Cz2ogQqnD591h8eD+Vcgkr/FhAo3GAfjr4LYW8kq+3cu5odsJILUQGSkWJ3mF0
+         a9kA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=uqSTnJmF6jkd8M7kvxPaJdh5Qa8x9pELicXxPo/lEo0=;
-        b=JCEj2Dzj3gZbqbe3dYnwauXlgsHrYb3oPzBt5c62Fz7YS7WtLibTM3KeC8PwTK7xGE
-         8e+ljm8ovQyHJDqIo7VIUVjBS/gJkl8MVSXMKsx5ZkouAZQjAS/S90UXgXPc0DrVmMgr
-         nSddZ0Z8OgyXaU9qRsITHfiFP6XpxbmJ24RiCWIb8wfV7ru5g4EStnsxIaS2/Pxy3LYR
-         46n5z3xeA/qD2MiOf/cxMf2Q6sQ0SKwoPMAbfpRULWezV5uN2wjhV5IiAIMTvMiKNo0N
-         qk5S3W4Qqpu73NkbyhuVG5+wjxzxRlXvr5rXXqO8dPmM0a6G5yA0Wan7/HoUEYSbLk9w
-         KAIw==
-X-Gm-Message-State: AOAM533ft61BN3HQWe7H/68A/vcbiHuKjtzi616kpv+lrRva8TygW45d
-        E6ic3KVaPU8P7M7e49uRRIQHufLHKB1PPBbCDqdIf5ITmrkv
-X-Google-Smtp-Source: ABdhPJx4T0AraLHIkc5THAXNkdb6wcIykgSSIXYevqIncn6XVl13S9tK73/JcwXuOxbSLvFNeCqYGcYPqRDzI9P7TyzO/UdiD+Se
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=SEVMnnp5jdJsfAi2k7Qasv3hIqmGSZ59KOCLXsglWOA=;
+        b=kQqyhoqgElJ2b+2zp4r0S2YR0KErrHXsLkc1IkQuIIn7JIFm779YniG4YspP51d+FL
+         cQ0uxQR/1dXh0jy+iGAFhvF6V+S6vImEW22PPBGUudUaulyL3kVkdw9fagFxxK5cTsJV
+         zsZbK9Gp/hh59B5D/f+EXi6WRxtwoEIaBCbvaWmZ/0peng8PCsnjLmTCPCJGLeP2+fV7
+         h6y7B6Aq8iUS7EUq9ZYYZEqUrIdvKGpeiJK5jF0pZqosSJClaT1cKyxo9wO47ti+a1qf
+         qGMLdi6Gd+omFL5bDaquJfaOpV28qVonyWx7wQfm8NTpdMMuspHay7wo9Y3vxDn3vKQl
+         K/ug==
+X-Gm-Message-State: AOAM530q1PT1EFq6/mvG1vaqW45XoiODsxugLOt9QEKM4dsStLQwIogJ
+        ZTAMzM/jRddnuZOXPDoXKvM=
+X-Google-Smtp-Source: ABdhPJwO7FetrZnpByd+buizj9rapzo5bXP50YMSXUYMlLCtYO90cuwv/6b2PSRFmQvSgM7IdmwcrQ==
+X-Received: by 2002:a05:600c:198c:: with SMTP id t12mr4191738wmq.16.1622990319748;
+        Sun, 06 Jun 2021 07:38:39 -0700 (PDT)
+Received: from localhost.localdomain (haganm.plus.com. [212.159.108.31])
+        by smtp.gmail.com with ESMTPSA id a123sm15383703wmd.2.2021.06.06.07.38.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 06 Jun 2021 07:38:39 -0700 (PDT)
+Subject: Re: [PATCH 1/3] net: stmmac: explicitly deassert GMAC_AHB_RESET
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Voon Weifeng <weifeng.voon@intel.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        Wong Vee Khee <vee.khee.wong@linux.intel.com>,
+        Tan Tee Min <tee.min.tan@intel.com>,
+        "Wong, Vee Khee" <vee.khee.wong@intel.com>,
+        Fugang Duan <fugang.duan@nxp.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+References: <20210605173546.4102455-1-mnhagan88@gmail.com>
+ <YLw//XARgqNlRoTB@builder.lan>
+From:   Matthew Hagan <mnhagan88@gmail.com>
+Message-ID: <a322fc12-b041-5530-0b2a-5bb6a5ca050c@gmail.com>
+Date:   Sun, 6 Jun 2021 15:38:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:88f:: with SMTP id z15mr11096749ils.61.1622989943899;
- Sun, 06 Jun 2021 07:32:23 -0700 (PDT)
-Date:   Sun, 06 Jun 2021 07:32:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000148b4b05c419cbbb@google.com>
-Subject: [syzbot] memory leak in __send_signal
-From:   syzbot <syzbot+0bac5fec63d4f399ba98@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, christian@brauner.io, ebiederm@xmission.com,
-        elver@google.com, linux-kernel@vger.kernel.org, oleg@redhat.com,
-        pcc@google.com, peterz@infradead.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YLw//XARgqNlRoTB@builder.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 06/06/2021 04:24, Bjorn Andersson wrote:
 
-syzbot found the following issue on:
+>> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+>> index 97a1fedcc9ac..d8ae58bdbbe3 100644
+>> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+>> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+>> @@ -600,6 +600,13 @@ stmmac_probe_config_dt(struct platform_device *pdev, u8 *mac)
+>>  		goto error_hw_init;
+>>  	}
+>>  
+>> +	plat->stmmac_ahb_rst = devm_reset_control_get_optional_shared(
+>> +							&pdev->dev, "ahb");
+>> +	if (IS_ERR(plat->stmmac_ahb_rst)) {
+>> +		ret = plat->stmmac_ahb_rst;
+> You need a PTR_ERR() around the plat->stmmac_ahb_rst.
 
-HEAD commit:    9d32fa5d Merge tag 'net-5.13-rc5' of git://git.kernel.org/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10fd97dfd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=de8efb0998945e75
-dashboard link: https://syzkaller.appspot.com/bug?extid=0bac5fec63d4f399ba98
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16029ce0300000
+This is giving a warning. Shouldn't v1 be kept as it is here? Please refer
+to "net: stmmac: platform: use optional clk/reset get APIs" [1] which
+modified error handling for plat->stmmac_rst. PTR_ERR() would then be
+called by the parent function on the returned value of ret.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0bac5fec63d4f399ba98@syzkaller.appspotmail.com
+[1]: https://lore.kernel.org/netdev/20201112092606.5173aa6f@xhacker.debian/
 
-2021/06/05 21:42:36 executed programs: 303
-2021/06/05 21:42:42 executed programs: 312
-2021/06/05 21:42:48 executed programs: 319
-2021/06/05 21:42:54 executed programs: 331
-BUG: memory leak
-unreferenced object 0xffff8881278e3c80 (size 80):
-  comm "syz-executor.4", pid 12851, jiffies 4295068441 (age 14.610s)
-  hex dump (first 32 bytes):
-    80 3c 8e 27 81 88 ff ff 80 3c 8e 27 81 88 ff ff  .<.'.....<.'....
-    00 00 00 00 00 00 00 00 05 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff812450d6>] __sigqueue_alloc+0xd6/0x240 kernel/signal.c:441
-    [<ffffffff81247d31>] __send_signal+0x231/0x600 kernel/signal.c:1155
-    [<ffffffff8124b123>] do_send_sig_info+0x63/0xc0 kernel/signal.c:1333
-    [<ffffffff8124b4f9>] do_send_specific+0xc9/0xf0 kernel/signal.c:3881
-    [<ffffffff8124b5ab>] do_tkill+0x8b/0xb0 kernel/signal.c:3907
-    [<ffffffff8124e811>] __do_sys_tkill kernel/signal.c:3942 [inline]
-    [<ffffffff8124e811>] __se_sys_tkill kernel/signal.c:3936 [inline]
-    [<ffffffff8124e811>] __x64_sys_tkill+0x31/0x50 kernel/signal.c:3936
-    [<ffffffff843540da>] do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
-    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+Thanks,
+Matthew
 
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
