@@ -2,66 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C7439CF69
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 15:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A28A439CF5D
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 15:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230158AbhFFN7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 09:59:06 -0400
-Received: from disco-boy.misterjones.org ([51.254.78.96]:48616 "EHLO
-        disco-boy.misterjones.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbhFFN7D (ORCPT
+        id S230126AbhFFNrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 09:47:25 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:49489 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S230003AbhFFNrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 09:59:03 -0400
-X-Greylist: delayed 1842 seconds by postgrey-1.27 at vger.kernel.org; Sun, 06 Jun 2021 09:59:02 EDT
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <maz@misterjones.org>)
-        id 1lpsnB-005lcJ-9b; Sun, 06 Jun 2021 14:26:17 +0100
+        Sun, 6 Jun 2021 09:47:24 -0400
+Received: (qmail 1736478 invoked by uid 1000); 6 Jun 2021 09:45:32 -0400
+Date:   Sun, 6 Jun 2021 09:45:32 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <20210606134532.GA1736178@rowland.harvard.edu>
+References: <CAHk-=wiuLpmOGJyB385UyQioWMVKT6wN9UtyVXzt48AZittCKg@mail.gmail.com>
+ <CAHk-=wik7T+FoDAfqFPuMGVp6HxKYOf8UeKt3+EmovfivSgQ2Q@mail.gmail.com>
+ <20210604205600.GB4397@paulmck-ThinkPad-P17-Gen-1>
+ <CAHk-=wgmUbU6XPHz=4NFoLMxH7j_SR-ky4sKzOBrckmvk5AJow@mail.gmail.com>
+ <20210604214010.GD4397@paulmck-ThinkPad-P17-Gen-1>
+ <CAHk-=wg0w5L7-iJU_kvEh9stXZoh2srRF4jKToKmSKyHv-njvA@mail.gmail.com>
+ <20210605145739.GB1712909@rowland.harvard.edu>
+ <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210606012903.GA1723421@rowland.harvard.edu>
+ <20210606115336.GS18427@gate.crashing.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Sun, 06 Jun 2021 14:26:17 +0100
-From:   Marc Zyngier <maz@misterjones.org>
-To:     Sandor Bodo-Merle <sbodomerle@gmail.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Subject: Re: [PATCH 1/2] PCI: iproc: fix the base vector number allocation for
- multi-MSI
-In-Reply-To: <20210606123044.31250-1-sbodomerle@gmail.com>
-References: <20210606123044.31250-1-sbodomerle@gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <473f3d7dd4252f14629be63dc220cd7e@misterjones.org>
-X-Sender: maz@misterjones.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: sbodomerle@gmail.com, lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com, bhelgaas@google.com, rjui@broadcom.com, sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com, linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, pali@kernel.org
-X-SA-Exim-Mail-From: maz@misterjones.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210606115336.GS18427@gate.crashing.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-06 13:30, Sandor Bodo-Merle wrote:
-> Commit fc54bae28818 ("PCI: iproc: Allow allocation of multiple MSIs")
-> introduced multi-MSI support with a broken allocation mechanism (it 
-> failed
-> to reserve the proper number of bits from the inner domain).  Natural
-> alignment of the base vector number was also not guaranteed.
+On Sun, Jun 06, 2021 at 06:53:36AM -0500, Segher Boessenkool wrote:
+> On Sat, Jun 05, 2021 at 09:29:03PM -0400, Alan Stern wrote:
+> > Interesting.  And changing one of the branches from barrier() to __asm__ 
+> > __volatile__("nop": : :"memory") also causes a branch to be emitted.  So 
+> > even though the compiler doesn't "look inside" assembly code, it does 
+> > compare two pieces at least textually and apparently assumes if they are 
+> > identical then they do the same thing.
 > 
-> Fixes: fc54bae28818 ("PCI: iproc: Allow allocation of multiple MSIs")
-> Reported-by: Pali Rohár <pali@kernel.org>
-> Signed-off-by: Sandor Bodo-Merle <sbodomerle@gmail.com>
+> And that is a simple fact, since the same assembler code (at the same
+> spot in the program) will do the same thing no matter how that ended up
+> there.
 
-Acked-by: Marc Zyngier <maz@kernel.org>
+Sure.  But the same assembler code at two different spots in the program 
+might not do the same thing.  (Think of code that stores the current EIP 
+register's value into a variable.)
 
-         M.
--- 
-Who you jivin' with that Cosmik Debris?
+So while de-duplicating such code may be allowed, it will give rise to 
+observable results at execution time.
+
+Alan
+
+> And the compiler always is allowed to duplicate, join, delete, you name
+> it, inline assembler code.  The only thing that it cares about is
+> semantics of the code, just like for any other code.
+> 
+> 
+> Segher
