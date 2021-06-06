@@ -2,99 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8871A39CF3E
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 15:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1000939CF45
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 15:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhFFNDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 09:03:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59604 "EHLO
+        id S230175AbhFFNJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 09:09:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbhFFNDo (ORCPT
+        with ESMTP id S230060AbhFFNJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 09:03:44 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157B2C061766;
-        Sun,  6 Jun 2021 06:01:39 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so240770otl.0;
-        Sun, 06 Jun 2021 06:01:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wL5lK/b92oqC0FMeaL7qFxLQLCTfCIxg70uGbHOejLQ=;
-        b=bfdR8034AFmMEBBb2jO2wPp0Adu6tAmzVP3uL2kcFYNjtaSa2LqEM7WI2oj9MINo2k
-         WGLA9BpHxB8xvPxcYQrHcX55dk2ynHxP/AVDN0TfDqm8qByqzBXYy0PE/zVyX7ZOrv9j
-         Hm0GrvjydGmMC/9BIuMbfnNZ3mVcbK/AYW1MjqBwglAl4FabDVmRC6rt6xXiBJnuCDOE
-         knag1PyhDqoIO7baQH+tZDi6aKr8G6Lm2UQEWtx+j5yQfnVWDF4c5cn5XcFUUQBIfwLK
-         iDbamUWkvFOMmg9llc73yz1LWRrZi9zMaS1rDUH7MthcGvqKEuR40fu04uc/nlMf55aN
-         QUzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=wL5lK/b92oqC0FMeaL7qFxLQLCTfCIxg70uGbHOejLQ=;
-        b=J86tkwcckMCNW3/iQSW92Qp67Y9zxr7YQlsIN2KcdS39raq4V77ZpYWh9lQzqWqziL
-         ZpCxcG+Gc+4PRz6phi9hDYc3nNKt0N5OxNqJMAVGhjdXQQs5ZrMbbVX7D8b6QeBuPSzS
-         L3JgUdwFrXZsk4utDrCGj57BoSjtj9tfReLrEoLbxDwKU0aA60FhX612HwKIcrUmSqwl
-         r2CnwUbSSTx4yMI4M87jiTmLS1Kl2wbMf0j7TA2r9yP6rWTYvpuTayhKMu4T5GfY90Zn
-         xiBYFUtkHW+voI1FAERm7ZqZQlqg83QA3mW0pJAUy/QNAEbjnML4DVbPIdOmYm+W/Ood
-         S9iw==
-X-Gm-Message-State: AOAM531oIG/miX4wrMQ7i6q8phS24whILgr9smRlgnHNPeNBJ110BWXl
-        vOazRvDL6TE8CSJuzaNFOJs=
-X-Google-Smtp-Source: ABdhPJxl8dpxfANCMVhQ66Uoyx4brTHGFl5OMLtbw9QDMhmSLHBCw6EZuQVJEQv4h0Uch/kjKD6HJg==
-X-Received: by 2002:a05:6830:108a:: with SMTP id y10mr10302282oto.187.1622984498503;
-        Sun, 06 Jun 2021 06:01:38 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a18sm1656400oiy.24.2021.06.06.06.01.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Jun 2021 06:01:37 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sun, 6 Jun 2021 06:01:36 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 22/34] docs: hwmon: adm1177.rst: avoid using ReSt
- :doc:`foo` markup
-Message-ID: <20210606130136.GA3050494@roeck-us.net>
-References: <cover.1622898327.git.mchehab+huawei@kernel.org>
- <32b0db7e79a3ed0e817213113c607a1b819e3867.1622898327.git.mchehab+huawei@kernel.org>
+        Sun, 6 Jun 2021 09:09:22 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DABA9C061766
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 06:07:31 -0700 (PDT)
+Date:   Sun, 06 Jun 2021 13:07:29 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622984850;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kJRZFEv+WqTaNK8BOKq1zcQD5O3X1Rbkkoo570KSgd0=;
+        b=BIndqeWQnnmENeW7hYbTclB7/dqUo+wEbRK84NXEesHhzobivHQfasdCyyA22esJ0DPo1u
+        xqT3nfvBqPmknwXA/LWDAkA4UDtaeF8JoN+tM5kpC0PgohKOEu7WgO6YE12x/y8vE1ouse
+        Odm4iGn5VPek5YHkdchuctU1Qbb/k1Uw1AMyvJYkK+bwX7RJXcJMnlzjVF49OSH9w00WPd
+        3Z1/0STBMmj78cFnTL9UQqnXRBuaBzL9K89ao7MQrLDhT490080QEqRYYKg1T7cRfxxaT0
+        q5aaSBtkFHpDDo5/e3Xc7mQKo4TDbJfbe0tGWcrV8l1/LufL7lh3v2PhYIx+Rg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622984850;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kJRZFEv+WqTaNK8BOKq1zcQD5O3X1Rbkkoo570KSgd0=;
+        b=dnpu7OoeBzfyFqi5nzmzop4wY1u4kb2l6rwPNFZlt/M7wSmBVkRiX/Npr0cROgjoxFcL6N
+        lbvngAmWS3xGzECA==
+From:   "irqchip-bot for Yang Yingliang" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
+Subject: [irqchip: irq/irqchip-next] irqchip/mbigen: Fix compile warning when
+ CONFIG_ACPI is disabled
+Cc:     Yang Yingliang <yangyingliang@huawei.com>,
+        Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
+In-Reply-To: <20210519050455.1693953-1-yangyingliang@huawei.com>
+References: <20210519050455.1693953-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <32b0db7e79a3ed0e817213113c607a1b819e3867.1622898327.git.mchehab+huawei@kernel.org>
+Message-ID: <162298484952.29796.11651971445696613807.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 05, 2021 at 03:18:21PM +0200, Mauro Carvalho Chehab wrote:
-> The :doc:`foo` tag is auto-generated via automarkup.py.
-> So, use the filename at the sources, instead of :doc:`foo`.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+The following commit has been merged into the irq/irqchip-next branch of irqc=
+hip:
 
-Applied.
+Commit-ID:     c96d6abbec52d6723bef6b50846f40f7fb27e93c
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platfo=
+rms/c96d6abbec52d6723bef6b50846f40f7fb27e93c
+Author:        Yang Yingliang <yangyingliang@huawei.com>
+AuthorDate:    Wed, 19 May 2021 13:04:55 +08:00
+Committer:     Marc Zyngier <maz@kernel.org>
+CommitterDate: Sun, 06 Jun 2021 13:59:09 +01:00
 
-Thanks,
-Guenter
+irqchip/mbigen: Fix compile warning when CONFIG_ACPI is disabled
 
-> ---
->  Documentation/hwmon/adm1177.rst | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/hwmon/adm1177.rst b/Documentation/hwmon/adm1177.rst
-> index 471be1e98d6f..1c85a2af92bf 100644
-> --- a/Documentation/hwmon/adm1177.rst
-> +++ b/Documentation/hwmon/adm1177.rst
-> @@ -20,7 +20,8 @@ Usage Notes
->  -----------
->  
->  This driver does not auto-detect devices. You will have to instantiate the
-> -devices explicitly. Please see :doc:`/i2c/instantiating-devices` for details.
-> +devices explicitly. Please see Documentation/i2c/instantiating-devices.rst
-> +for details.
->  
->  
->  Sysfs entries
+Fix the following compile warning:
+
+  drivers/irqchip/irq-mbigen.c:372:36: warning: =E2=80=98mbigen_acpi_match=E2=
+=80=99 defined but not used [-Wunused-const-variable=3D]
+   static const struct acpi_device_id mbigen_acpi_match[] =3D {
+
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210519050455.1693953-1-yangyingliang@huawei=
+.com
+---
+ drivers/irqchip/irq-mbigen.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/irqchip/irq-mbigen.c b/drivers/irqchip/irq-mbigen.c
+index 2cb45c6..f565317 100644
+--- a/drivers/irqchip/irq-mbigen.c
++++ b/drivers/irqchip/irq-mbigen.c
+@@ -273,6 +273,12 @@ static int mbigen_of_create_domain(struct platform_devic=
+e *pdev,
+ }
+=20
+ #ifdef CONFIG_ACPI
++static const struct acpi_device_id mbigen_acpi_match[] =3D {
++	{ "HISI0152", 0 },
++	{}
++};
++MODULE_DEVICE_TABLE(acpi, mbigen_acpi_match);
++
+ static int mbigen_acpi_create_domain(struct platform_device *pdev,
+ 				     struct mbigen_device *mgn_chip)
+ {
+@@ -369,12 +375,6 @@ static const struct of_device_id mbigen_of_match[] =3D {
+ };
+ MODULE_DEVICE_TABLE(of, mbigen_of_match);
+=20
+-static const struct acpi_device_id mbigen_acpi_match[] =3D {
+-	{ "HISI0152", 0 },
+-	{}
+-};
+-MODULE_DEVICE_TABLE(acpi, mbigen_acpi_match);
+-
+ static struct platform_driver mbigen_platform_driver =3D {
+ 	.driver =3D {
+ 		.name		=3D "Hisilicon MBIGEN-V2",
