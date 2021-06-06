@@ -2,98 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 956F139CF05
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 14:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D7FA39CF09
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 14:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbhFFMcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 08:32:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhFFMcJ (ORCPT
+        id S230177AbhFFMeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 08:34:10 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]:40608 "EHLO
+        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230150AbhFFMeF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 08:32:09 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 213E6C061766;
-        Sun,  6 Jun 2021 05:30:20 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id z3so15091768oib.5;
-        Sun, 06 Jun 2021 05:30:20 -0700 (PDT)
+        Sun, 6 Jun 2021 08:34:05 -0400
+Received: by mail-wr1-f45.google.com with SMTP id y7so9569683wrh.7;
+        Sun, 06 Jun 2021 05:32:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ENd7sSyq/iEYvgSgyS1HxAHWvKgBszoennu7z1+uEUw=;
-        b=kF4HUvN2KAuEhbH3GAYIzOvQB69iaHttxskOZ9HfBu713RIjsxLLPNNeMDZBg/3VR/
-         1V6V59CcL1+YoL9DowoU+CyWEKdkv2fQQq4YC4qpoI/vqsK5G/3THnpfmgbIhxU+WYFa
-         5JAd5ZF+pYvslR7P8LqdHnyunrqcAbpHESVhG53P4CUg1k/NRk3xA8uIZRjPPlvXKxHb
-         pGgHykbEAnkdHrRJahH4UmHpkD4her0sLydk96rJIfAsdKVTOGa/F6MrV+dSfbJKOJhB
-         0KKeCyLDzjk9THL3OQFztUdWBnzI0kXKvLWWrTate/Lha/UXygdY5UTABigCm/Rgksqh
-         Uu7w==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ngEb9x/2utKfD/oQZnoIJU7hrPHYhp9F52zqoVWgx2Q=;
+        b=ln3LRqC6tLdxL+1LU08oPx52dfBqDds6fq3/rr4qQA4cUSbe0SzLnE6+4MMNXd2bH7
+         Qnro11dvjRucyBvvWclLmMRQVoy5WDhwtt/OqzhoEIY1dEsH7smnEtn0f7pTXf1EDelr
+         bdriH02MC6Ksuck9Hfj44uZDAXf8mAdYqbyzzOpKYh/S43xhCKVpdxSH4P+BrRBS/6Do
+         enX4qeCZCOpfw5ix6q/5rv2yY2WZlr3CXEOXC11OtYhhL7+vI8MWGvF8REk2R/g9ZXRX
+         aWAaSSr2v8Wdop1Tq0Wxs6MwasZZMDBN82qPVc2E1pUHTPAueVOZeCKz1XOTzUMSO/YR
+         Frrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ENd7sSyq/iEYvgSgyS1HxAHWvKgBszoennu7z1+uEUw=;
-        b=gGn+TcavHIC+zEAM+AO0ONdgG3/ZAwMvtFvZlgyXAAXqcPOmPiG6aXrmN5Qur0Zqu/
-         TVG6va1ADaYitAI7R3plKGUO7BHzJHkgv+4MXg7Y+DmKqz4t2VvYfHTMknN2jdNN2fVO
-         cE7adfvHFo3NiQZT432PT6a0d7ObfZwNGBcUGKyEbvuCcs2aAvt9i2ePbKiUa/JS8FoA
-         ZtclHiWoGmuBNh93T4U4RI34oWtvc8RgWXRt937QimqtJzjHu18OvmvbOPLI0DXoDNi1
-         Q/+ejAHuvG+VJSsmDyO1Imd/vpjhFh+V3l6ijb68HoU9rjPndRzdOS1Tkx8kCe0casnQ
-         X5Cg==
-X-Gm-Message-State: AOAM5305mU46lGfVNxLK2ddTVhVZYWfqH3lSVheQ2kqNLlFilOA/K4iO
-        9Z44jNi4kyogLBlil7m6Puk=
-X-Google-Smtp-Source: ABdhPJy0Ir9WMGmRcOtr9Iq76BMnLEqnU7Q9G2u/ZnUDgts99XM6ILMKSigKhWEXPXtaBGay2xMt6A==
-X-Received: by 2002:aca:efc1:: with SMTP id n184mr16525909oih.23.1622982619340;
-        Sun, 06 Jun 2021 05:30:19 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w200sm1621336oie.10.2021.06.06.05.30.18
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ngEb9x/2utKfD/oQZnoIJU7hrPHYhp9F52zqoVWgx2Q=;
+        b=ZLMHgghV2xgRFZCeUTvUPCoIhM+karvF6asqMD3qFGBVUWQMPQsAk7XMZnAAnfpPXR
+         IWF1L+V38Qxati9lq+kPgJjlGa9cmioRBi0MkWDw3v1/zHjNwEhFYBfsrhO/hkRgzZqv
+         IT+xrDuINYXPT0RcKGeNY/n2XK7QVhHI0Lj7xk5wvNZ2UVkPNVeaSHgd7/sAG3r83aZc
+         mSpDcwR1LVH5QeQOypt1N3oZkGbAw7mvqP/UeDkJChQh/Z/1yfkuqwjoo84kdo6b1HzX
+         ncKFAt/8Qbl+VN20wxrHzC5XLy32GQF3pJgG8nqHrqR2SNuELYtEW66KFKu1fhCb1yk6
+         jBfw==
+X-Gm-Message-State: AOAM531aGtkZL+Ww62QsjH7RLYbJ8XNw183X3e8DtfYG5lDLMKgdDs1I
+        24n1siTnAFCDj8Y6OrgITz0=
+X-Google-Smtp-Source: ABdhPJxWiQPwTbCyI7h2PehlUVgYVecZGrRQnXC+VdJYC3TS78WhRModc4mvqS8dbMGWjdUi2qYDKw==
+X-Received: by 2002:adf:fd90:: with SMTP id d16mr12536436wrr.35.1622982674405;
+        Sun, 06 Jun 2021 05:31:14 -0700 (PDT)
+Received: from snuff.lan (178-164-181-11.pool.digikabel.hu. [178.164.181.11])
+        by smtp.gmail.com with ESMTPSA id p5sm12922023wrd.25.2021.06.06.05.31.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Jun 2021 05:30:18 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sun, 6 Jun 2021 05:30:17 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Kyle Tso <kyletso@google.com>
-Cc:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org,
-        badhri@google.com, linux-usb@vger.kernel.org,
+        Sun, 06 Jun 2021 05:31:14 -0700 (PDT)
+From:   Sandor Bodo-Merle <sbodomerle@gmail.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Sandor Bodo-Merle <sbodomerle@gmail.com>,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: typec: tcpm: Do not finish VDM AMS for retrying
- Responses
-Message-ID: <20210606123017.GA2886010@roeck-us.net>
-References: <20210606081452.764032-1-kyletso@google.com>
+Cc:     =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Subject: [PATCH 1/2] PCI: iproc: fix the base vector number allocation for multi-MSI
+Date:   Sun,  6 Jun 2021 14:30:43 +0200
+Message-Id: <20210606123044.31250-1-sbodomerle@gmail.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210606081452.764032-1-kyletso@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 06, 2021 at 04:14:52PM +0800, Kyle Tso wrote:
-> If the VDM responses couldn't be sent successfully, it doesn't need to
-> finish the AMS until the retry count reaches the limit.
-> 
-> Fixes: 0908c5aca31e ("usb: typec: tcpm: AMS and Collision Avoidance")
-> Signed-off-by: Kyle Tso <kyletso@google.com>
+Commit fc54bae28818 ("PCI: iproc: Allow allocation of multiple MSIs")
+introduced multi-MSI support with a broken allocation mechanism (it failed
+to reserve the proper number of bits from the inner domain).  Natural
+alignment of the base vector number was also not guaranteed.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Fixes: fc54bae28818 ("PCI: iproc: Allow allocation of multiple MSIs")
+Reported-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Sandor Bodo-Merle <sbodomerle@gmail.com>
+---
+ drivers/pci/controller/pcie-iproc-msi.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 0db685d5d9c0..08fabe1fc31d 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -1965,6 +1965,9 @@ static void vdm_run_state_machine(struct tcpm_port *port)
->  			tcpm_log(port, "VDM Tx error, retry");
->  			port->vdm_retries++;
->  			port->vdm_state = VDM_STATE_READY;
-> +			if (PD_VDO_SVDM(vdo_hdr) && PD_VDO_CMDT(vdo_hdr) == CMDT_INIT)
-> +				tcpm_ams_finish(port);
-> +		} else {
->  			tcpm_ams_finish(port);
->  		}
->  		break;
-> -- 
-> 2.32.0.rc1.229.g3e70b5a671-goog
-> 
+diff --git a/drivers/pci/controller/pcie-iproc-msi.c b/drivers/pci/controller/pcie-iproc-msi.c
+index eede4e8f3f75..557d93dcb3bc 100644
+--- a/drivers/pci/controller/pcie-iproc-msi.c
++++ b/drivers/pci/controller/pcie-iproc-msi.c
+@@ -252,18 +252,18 @@ static int iproc_msi_irq_domain_alloc(struct irq_domain *domain,
+ 
+ 	mutex_lock(&msi->bitmap_lock);
+ 
+-	/* Allocate 'nr_cpus' number of MSI vectors each time */
+-	hwirq = bitmap_find_next_zero_area(msi->bitmap, msi->nr_msi_vecs, 0,
+-					   msi->nr_cpus, 0);
+-	if (hwirq < msi->nr_msi_vecs) {
+-		bitmap_set(msi->bitmap, hwirq, msi->nr_cpus);
+-	} else {
+-		mutex_unlock(&msi->bitmap_lock);
+-		return -ENOSPC;
+-	}
++	/*
++	 * Allocate 'nr_irqs' multiplied by 'nr_cpus' number of MSI vectors
++	 * each time
++	 */
++	hwirq = bitmap_find_free_region(msi->bitmap, msi->nr_msi_vecs,
++					order_base_2(msi->nr_cpus * nr_irqs));
+ 
+ 	mutex_unlock(&msi->bitmap_lock);
+ 
++	if (hwirq < 0)
++		return -ENOSPC;
++
+ 	for (i = 0; i < nr_irqs; i++) {
+ 		irq_domain_set_info(domain, virq + i, hwirq + i,
+ 				    &iproc_msi_bottom_irq_chip,
+@@ -284,7 +284,8 @@ static void iproc_msi_irq_domain_free(struct irq_domain *domain,
+ 	mutex_lock(&msi->bitmap_lock);
+ 
+ 	hwirq = hwirq_to_canonical_hwirq(msi, data->hwirq);
+-	bitmap_clear(msi->bitmap, hwirq, msi->nr_cpus);
++	bitmap_release_region(msi->bitmap, hwirq,
++			      order_base_2(msi->nr_cpus * nr_irqs));
+ 
+ 	mutex_unlock(&msi->bitmap_lock);
+ 
+-- 
+2.31.0
+
