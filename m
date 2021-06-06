@@ -2,91 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 117DE39CD5F
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 07:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF1EB39CD62
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 07:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhFFFH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 01:07:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229464AbhFFFH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 01:07:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A45D61186;
-        Sun,  6 Jun 2021 05:06:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622955968;
-        bh=1pRd3PUJmxWH0xFOe34qsLGnOaIyBtt1Zt0gUhUXH50=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hLnXuX/rGaq9+6i4FsE1NXUM+o1R52Q39QUoo0QCfmrPiBCZg2VuPeYbx2Bnh8G/f
-         KJ+sZjZSBxnBxFyQg6QXjuAfWvjTn2SGx6r+LIGw3vblcphCgvV2qUEFfWiS/s9emW
-         EH0tcw0n8Dii/8RmR9dffGiGUkE8snl0t2llHomxar9MGxauiNz9SqdXGhWjgKYaMv
-         2Vdy9LgAbmwRfFt3XXq1KeKhCPWIninL4tcxy54nSM6FYmYtdkY7fgJSBckdjnTZQo
-         n4yxbsB7vTcSgaKqzj7a+b/5NKM41sXPW7AgvwZ3rK0/iX81n6zo4gaQaGrn09hfc0
-         uDUwkYocEH0zg==
-Date:   Sun, 6 Jun 2021 08:06:05 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     SyzScope <syzscope@gmail.com>, davem@davemloft.net,
-        johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: KASAN: use-after-free Read in hci_chan_del
-Message-ID: <YLxXvfi1P8qZdQH3@unreal>
-References: <000000000000adea7f05abeb19cf@google.com>
- <c2004663-e54a-7fbc-ee19-b2749549e2dd@gmail.com>
- <YLn24sFxJqGDNBii@kroah.com>
- <0f489a64-f080-2f89-6e4a-d066aeaea519@gmail.com>
- <YLsrLz7otkQAkIN7@kroah.com>
+        id S229531AbhFFFJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 01:09:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229508AbhFFFJB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 01:09:01 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602EFC061767
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Jun 2021 22:07:12 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id u11so14503366oiv.1
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 22:07:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yS6q0T3N9afYQN5HdfWE5z7pv3ReU18X80dOdXsawn0=;
+        b=F2tuo+vePIjuZq6maCAptHCP9qgP3Apo2dhGkToFBYsgQdS2L6KJYf4SOxlHZjH2q3
+         EZ3tuCclRrjKH1U+Q8NXEqvjUwcKpxhUOhlP4Ocs5B8IwJwNKBJnPWswJTXxLPh2Rns0
+         ahKPWlSSOGkau6mcxd86A91vqGNXDSRwgWCuhlS7UZJLhpeuwJt8OyLa8GREd4p3Efrg
+         scPUoR8t+/KNb/DMHoL1gVHTkMrQlVzE+KhkPPvMmQa7W70sa3W2fFiCXGiJ30oT9SYm
+         9pnWP5wM1ur9GWhqelEhR4TcHMr6Gz2FUnMjHk6Yyq9E6FptvVK1nmQIi70zdgjQCu2q
+         qc8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yS6q0T3N9afYQN5HdfWE5z7pv3ReU18X80dOdXsawn0=;
+        b=Nvl/zNYyTKhQRAUk4Htag6Xi3Su+4AjXgRZ7sN69bpzGe+gDNXSor4ovZmOCpsB4pF
+         ZsdBe9hEj0qVxErcwpEDzQe3by2t6CxScEcGDGCs3mA9y+Pkfm2MmWxiJyBIyIO4EviF
+         EgZuKPl0S8os0UcYan4a5PECylqu/s3QFlXT6uJlk+RKlDah7A3TyYzDEaAviz6/aHf8
+         NjCJEUof6rfN3DGNz3gOrDxleATzy1u1uT0rmME5HMkyEJJ8rGUvfVJpsiN7DMVPbWv0
+         F2Qtpu+QCp+TQeqOTBX1ytCEcCn3TWp2m/Hpp6hd8eF8DLcfnsNG+V2/vu5fOOsJpXE6
+         BK5w==
+X-Gm-Message-State: AOAM532asY4AHu1bAH7jYnPqh0N0RgSjEwOAbtjLHAKnMlDU/Ov2MKyv
+        FWKfVbcsEjhz0D2zEjQdeFPDAg==
+X-Google-Smtp-Source: ABdhPJxq+wFGA2yHIm0XUjuXzAIZpsyd09ngggNZe3/Va1Pg+/uWCcOXkmOOvCcKNZfj57WIIzO/AA==
+X-Received: by 2002:a54:4e82:: with SMTP id c2mr15961103oiy.137.1622956031734;
+        Sat, 05 Jun 2021 22:07:11 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 123sm555226ooe.24.2021.06.05.22.07.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Jun 2021 22:07:11 -0700 (PDT)
+Date:   Sun, 6 Jun 2021 00:07:09 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     khsieh@codeaurora.org
+Cc:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        vkoul@kernel.org, agross@kernel.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] arm64/dts/qcom/sc7180: Add Display Port dt node
+Message-ID: <YLxX/YtegtbLmkri@builder.lan>
+References: <1622736555-15775-1-git-send-email-khsieh@codeaurora.org>
+ <YLkI/6ItCz+SbbuJ@yoga>
+ <ac326ec8689c0babb08b2311e19d52cc@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YLsrLz7otkQAkIN7@kroah.com>
+In-Reply-To: <ac326ec8689c0babb08b2311e19d52cc@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 05, 2021 at 09:43:43AM +0200, Greg KH wrote:
-> On Fri, Jun 04, 2021 at 10:11:03AM -0700, SyzScope wrote:
-> > Hi Greg,
+On Thu 03 Jun 16:56 CDT 2021, khsieh@codeaurora.org wrote:
+
+> On 2021-06-03 09:53, Bjorn Andersson wrote:
+> > On Thu 03 Jun 11:09 CDT 2021, Kuogee Hsieh wrote:
+[..]
+> > > diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+[..]
+> > > +				power-domains = <&rpmhpd SC7180_CX>;
 > > 
-> > > Who is working on and doing this "reseach project"?
-> > We are a group of researchers from University of California, Riverside (we
-> > introduced ourselves in an earlier email to security@kernel.org if you
-> > recall).
+> > Just curious, but isn't the DP block in the MDSS_GDCS? Or do we need to
+> > mention CX here in order for the opp framework to apply required-opps
+> > of CX?
 > 
-> I do not recall that, sorry, when was that?
-> 
-> > Please allow us to articulate the goal of our research. We'd be
-> > happy to hear your feedback and suggestions.
-> > 
-> > > And what is it
-> > > doing to actually fix the issues that syzbot finds?  Seems like that
-> > > would be a better solution instead of just trying to send emails saying,
-> > > in short "why isn't this reported issue fixed yet?"
-> > From our limited understanding, we know a key problem with syzbot bugs is
-> > that there are too many of them - more than what can be handled by
-> > developers and maintainers. Therefore, it seems some form of prioritization
-> > on bug fixing would be helpful. The goal of the SyzScope project is to
-> > *automatically* analyze the security impact of syzbot bugs, which helps with
-> > prioritizing bug fixes. In other words, when a syzbot bug is reported, we
-> > aim to attach a corresponding security impact "signal" to help developers
-> > make an informed decision on which ones to fix first.
-> 
-> Is that really the reason why syzbot-reported problems are not being
-> fixed?  Just because we don't know which ones are more "important"?
-> 
-> As someone who has been managing many interns for a year or so working
-> on these, I do not think that is the problem, but hey, what do I know...
+> yes,
 
-My 2 cents, as the one who is fixing these external and internal syzkaller bugs
-in RDMA. I would say that the main reason is lack of specific knowledge to fix
-them or/and amount of work to actually do it.
+If you want me, or other maintainers, to spend any time reviewing or
+applying your patches going forward then you need to actually bother
+replying properly to the questions asked.
 
-Many of such failures are in neglected parts of code.
-
-And no, I personally won't care if someone adds security score or not to
-syzkaller report, all reports should be fixed.
-
-Thanks
+Thanks,
+Bjorn
