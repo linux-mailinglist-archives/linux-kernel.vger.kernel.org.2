@@ -2,199 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9989339D238
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 01:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8506839D239
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 01:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbhFFXb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 19:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbhFFXbz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 19:31:55 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 552DAC061766;
-        Sun,  6 Jun 2021 16:30:05 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lq2DP-005CsL-Rc; Sun, 06 Jun 2021 23:29:59 +0000
-Date:   Sun, 6 Jun 2021 23:29:59 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        David Howells <dhowells@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: [RFC][PATCHSET] iov_iter work
-Message-ID: <YL1ad7+I30xnCto8@zeniv-ca.linux.org.uk>
-References: <YL0dCEVEiVL+NwG6@zeniv-ca.linux.org.uk>
- <CAHk-=wj6ZiTgqbeCPtzP+5tgHjur6Amag66YWub_2DkGpP9h-Q@mail.gmail.com>
+        id S230156AbhFFXcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 19:32:11 -0400
+Received: from vps.xff.cz ([195.181.215.36]:45602 "EHLO vps.xff.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229839AbhFFXcK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 19:32:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
+        t=1623022218; bh=GZvB4cKVUQepDY46C8gDXhb5mqbZg4ujUBa2NJqtOi8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=CESemvH5PSjyLinFUeySjiEZiqsSPoo8Liw6gutud4BuOdJl0OloiW4ZnUVaUq/Zb
+         IWEv4IMQce92KKk2437M/lb+O4R4XPqf5VsX2FFzrzCy+ekqrD/vZtmVLLpuo4lGJ6
+         F/g8yg+x783J95I8OHH/j67jHnFVS0QA+FIMJMaY=
+From:   Ondrej Jirman <megous@megous.com>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR ALLWINNER DE2
+        AND DE3 ENGINE),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Allwinner
+        sunXi SoC support),
+        linux-sunxi@lists.linux.dev (open list:ARM/Allwinner sunXi SoC support),
+        linux-kernel@vger.kernel.org (open list)
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Ondrej Jirman <megous@megous.com>
+Subject: [PATCH] drm/sun4i: dw-hdmi: Make HDMI PHY into a platform device
+Date:   Mon,  7 Jun 2021 01:30:16 +0200
+Message-Id: <20210606233017.2730285-1-megous@megous.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHk-=wj6ZiTgqbeCPtzP+5tgHjur6Amag66YWub_2DkGpP9h-Q@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 06, 2021 at 03:05:49PM -0700, Linus Torvalds wrote:
+From: Saravana Kannan <saravanak@google.com>
 
-> The end result certainly looks cleaner than before, although I can't
-> say that it's pretty. It's still haitry and grotty, but at least
-> _some_ of the hairiness has been removed (yay for
-> _copy_from_iter_full() being *much* simpler now, and
-> iterate_all_kinds() being gone).
-> 
-> I also have to admit to despising what iov_iter_init() ends up looking
-> like. Not because I think that using those initializer assignments to
-> set it is wrong, but simply because the initializers are basically
-> identical except for "iter_type".
+On sunxi boards that use HDMI output, HDMI device probe keeps being
+avoided indefinitely with these repeated messages in dmesg:
 
-TBH, I wonder if we still need that these days.  That is to say,
-do we even call iov_iter_init() when uaccess_kernel() is true?
-We certainly used to do that, but...  We have
+  platform 1ee0000.hdmi: probe deferral - supplier 1ef0000.hdmi-phy
+    not ready
 
-* copy_from_kernel_nofault(); calls __copy_from_user_inatomic() under
-KERNEL_DS and pagefault_disable(), and that would better *not* fuck with
-iov_iter inside.
+There's a fwnode_link being created with fw_devlink=on between hdmi
+and hdmi-phy nodes, because both nodes have 'compatible' property set.
 
-* copy_to_kernel_nofault(); similar, with s/_from_/_to_/.
+Fw_devlink code assumes that nodes that have compatible property
+set will also have a device associated with them by some driver
+eventually. This is not the case with the current sun8i-hdmi-phy
+driver.
 
-* strncpy_from_kernel_nofault(); ditto, with __get_user() instead of
-__copy_..._user_inatomic().
+This commit makes sun8i-hdmi-phy into a proper platform device
+and fixes the display pipeline probe on sunxi boards that use HDMI.
 
-* unaligned trap handling in kernel mode on sh and itanic
+More context: https://lkml.org/lkml/2021/5/16/203
 
-* arm dumping insns in oops handler
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+Signed-off-by: Ondrej Jirman <megous@megous.com>
+---
+ drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c  |  4 +--
+ drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h  |  3 +-
+ drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c | 42 +++++++++++++++++++++++---
+ 3 files changed, 39 insertions(+), 10 deletions(-)
 
-* 3 turds in arm oabi compat: sys_semtimedop_time32(), sys_epoll_wait()
-and sys_fcntl64() (for [GS]ETLK... fcntls) called under KERNEL_DS.
-The last one should simply call fcntl_[gs]etlk() and be done with
-that, not that it was going to play with any iov_iter anyway.
-epoll_wait() is currently not using iov_iter (it does use __put_user()
-and not in a pretty way, but that's a separate story).  And
-for semtimedop_time32(), we do not have any iov_iter in sight *and*
-I would rather get rid of KERNEL_DS there completely - all it takes
-is a variant of do_semtimedop() with tsops already copied into the
-kernel.  In any case, none of those do iov_iter_init().
-
-	I have *not* checked if any kernel threads might be playing
-with iov_iter_init() outside of kthread_use_mm(); some might, but
-IMO any such place would be a good candidate for conversion to
-explicit iov_iter_kvec()...
-
-	BTW, speaking of initializers...  Pavel, could you check if
-the following breaks anything?  Unless I'm misreading __io_import_fixed(),
-looks like that's what it's trying to do...
-
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index f46acbbeed57..9bd2da9a4c3d 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -2773,57 +2773,14 @@ static int __io_import_fixed(struct io_kiocb *req, int rw, struct iov_iter *iter
- {
- 	size_t len = req->rw.len;
- 	u64 buf_end, buf_addr = req->rw.addr;
--	size_t offset;
+diff --git a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
+index bbdfd5e26ec88..e892a05e69e9b 100644
+--- a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
++++ b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
+@@ -209,7 +209,7 @@ static int sun8i_dw_hdmi_bind(struct device *dev, struct device *master,
+ 		goto err_disable_clk_tmds;
+ 	}
  
- 	if (unlikely(check_add_overflow(buf_addr, (u64)len, &buf_end)))
- 		return -EFAULT;
- 	/* not inside the mapped region */
- 	if (unlikely(buf_addr < imu->ubuf || buf_end > imu->ubuf_end))
- 		return -EFAULT;
--
--	/*
--	 * May not be a start of buffer, set size appropriately
--	 * and advance us to the beginning.
--	 */
--	offset = buf_addr - imu->ubuf;
--	iov_iter_bvec(iter, rw, imu->bvec, imu->nr_bvecs, offset + len);
--
--	if (offset) {
--		/*
--		 * Don't use iov_iter_advance() here, as it's really slow for
--		 * using the latter parts of a big fixed buffer - it iterates
--		 * over each segment manually. We can cheat a bit here, because
--		 * we know that:
--		 *
--		 * 1) it's a BVEC iter, we set it up
--		 * 2) all bvecs are PAGE_SIZE in size, except potentially the
--		 *    first and last bvec
--		 *
--		 * So just find our index, and adjust the iterator afterwards.
--		 * If the offset is within the first bvec (or the whole first
--		 * bvec, just use iov_iter_advance(). This makes it easier
--		 * since we can just skip the first segment, which may not
--		 * be PAGE_SIZE aligned.
--		 */
--		const struct bio_vec *bvec = imu->bvec;
--
--		if (offset <= bvec->bv_len) {
--			iov_iter_advance(iter, offset);
--		} else {
--			unsigned long seg_skip;
--
--			/* skip first vec */
--			offset -= bvec->bv_len;
--			seg_skip = 1 + (offset >> PAGE_SHIFT);
--
--			iter->bvec = bvec + seg_skip;
--			iter->nr_segs -= seg_skip;
--			iter->count -= bvec->bv_len + offset;
--			iter->iov_offset = offset & ~PAGE_MASK;
--		}
--	}
--
--	return 0;
-+	return import_pagevec(rw, buf_addr, len, imu->ubuf,
-+			      imu->nr_bvecs, imu->bvec, iter);
+-	ret = sun8i_hdmi_phy_probe(hdmi, phy_node);
++	ret = sun8i_hdmi_phy_get(hdmi, phy_node);
+ 	of_node_put(phy_node);
+ 	if (ret) {
+ 		dev_err(dev, "Couldn't get the HDMI PHY\n");
+@@ -242,7 +242,6 @@ static int sun8i_dw_hdmi_bind(struct device *dev, struct device *master,
+ 
+ cleanup_encoder:
+ 	drm_encoder_cleanup(encoder);
+-	sun8i_hdmi_phy_remove(hdmi);
+ err_disable_clk_tmds:
+ 	clk_disable_unprepare(hdmi->clk_tmds);
+ err_assert_ctrl_reset:
+@@ -263,7 +262,6 @@ static void sun8i_dw_hdmi_unbind(struct device *dev, struct device *master,
+ 	struct sun8i_dw_hdmi *hdmi = dev_get_drvdata(dev);
+ 
+ 	dw_hdmi_unbind(hdmi->hdmi);
+-	sun8i_hdmi_phy_remove(hdmi);
+ 	clk_disable_unprepare(hdmi->clk_tmds);
+ 	reset_control_assert(hdmi->rst_ctrl);
+ 	gpiod_set_value(hdmi->ddc_en, 0);
+diff --git a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h
+index d4b55af0592f8..8a8adef48be0f 100644
+--- a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h
++++ b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h
+@@ -201,8 +201,7 @@ encoder_to_sun8i_dw_hdmi(struct drm_encoder *encoder)
+ 	return container_of(encoder, struct sun8i_dw_hdmi, encoder);
  }
  
- static int io_import_fixed(struct io_kiocb *req, int rw, struct iov_iter *iter)
-diff --git a/include/linux/uio.h b/include/linux/uio.h
-index fd88d9911dad..f6291e981d07 100644
---- a/include/linux/uio.h
-+++ b/include/linux/uio.h
-@@ -299,5 +299,8 @@ ssize_t __import_iovec(int type, const struct iovec __user *uvec,
- 		 struct iov_iter *i, bool compat);
- int import_single_range(int type, void __user *buf, size_t len,
- 		 struct iovec *iov, struct iov_iter *i);
-+int import_pagevec(int rw, unsigned long from, size_t len,
-+		unsigned long base, unsigned nr_pages,
-+		struct bio_vec *bvec, struct iov_iter *i);
+-int sun8i_hdmi_phy_probe(struct sun8i_dw_hdmi *hdmi, struct device_node *node);
+-void sun8i_hdmi_phy_remove(struct sun8i_dw_hdmi *hdmi);
++int sun8i_hdmi_phy_get(struct sun8i_dw_hdmi *hdmi, struct device_node *node);
  
- #endif
-diff --git a/lib/iov_iter.c b/lib/iov_iter.c
-index 11b39bd1d1ab..4a771fcb529b 100644
---- a/lib/iov_iter.c
-+++ b/lib/iov_iter.c
-@@ -1982,3 +1982,21 @@ int import_single_range(int rw, void __user *buf, size_t len,
- 	return 0;
- }
- EXPORT_SYMBOL(import_single_range);
-+
-+int import_pagevec(int rw, unsigned long from, size_t len,
-+		unsigned long base, unsigned nr_pages,
-+		struct bio_vec *bvec, struct iov_iter *i)
-+
+ void sun8i_hdmi_phy_init(struct sun8i_hdmi_phy *phy);
+ void sun8i_hdmi_phy_set_ops(struct sun8i_hdmi_phy *phy,
+diff --git a/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c b/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c
+index 9994edf675096..947b4231f6449 100644
+--- a/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c
++++ b/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c
+@@ -5,6 +5,7 @@
+ 
+ #include <linux/delay.h>
+ #include <linux/of_address.h>
++#include <linux/of_platform.h>
+ 
+ #include "sun8i_dw_hdmi.h"
+ 
+@@ -597,10 +598,30 @@ static const struct of_device_id sun8i_hdmi_phy_of_table[] = {
+ 	{ /* sentinel */ }
+ };
+ 
+-int sun8i_hdmi_phy_probe(struct sun8i_dw_hdmi *hdmi, struct device_node *node)
++int sun8i_hdmi_phy_get(struct sun8i_dw_hdmi *hdmi, struct device_node *node)
 +{
-+	unsigned long skip_pages = (from >> PAGE_SHIFT) - (base >> PAGE_SHIFT);
++	struct platform_device *pdev = of_find_device_by_node(node);
++	struct sun8i_hdmi_phy *phy;
 +
-+	*i = (struct iov_iter){
-+		.iter_type = ITER_BVEC,
-+		.data_source = rw,
-+		.bvec = bvec + skip_pages,
-+		.nr_segs = nr_pages - skip_pages,
-+		.iov_offset = skip_pages ? from & ~PAGE_MASK : from - base,
-+		.count = len
-+	};
++	if (!pdev)
++		return -EPROBE_DEFER;
++
++	phy = platform_get_drvdata(pdev);
++	if (!phy)
++		return -EPROBE_DEFER;
++
++	hdmi->phy = phy;
++
++	put_device(&pdev->dev);
++
 +	return 0;
 +}
++
++int sun8i_hdmi_phy_probe(struct platform_device *pdev)
+ {
+ 	const struct of_device_id *match;
+-	struct device *dev = hdmi->dev;
++	struct device *dev = &pdev->dev;
++	struct device_node *node = dev->of_node;
+ 	struct sun8i_hdmi_phy *phy;
+ 	struct resource res;
+ 	void __iomem *regs;
+@@ -704,7 +725,7 @@ int sun8i_hdmi_phy_probe(struct sun8i_dw_hdmi *hdmi, struct device_node *node)
+ 		clk_prepare_enable(phy->clk_phy);
+ 	}
+ 
+-	hdmi->phy = phy;
++	platform_set_drvdata(pdev, phy);
+ 
+ 	return 0;
+ 
+@@ -728,9 +749,9 @@ int sun8i_hdmi_phy_probe(struct sun8i_dw_hdmi *hdmi, struct device_node *node)
+ 	return ret;
+ }
+ 
+-void sun8i_hdmi_phy_remove(struct sun8i_dw_hdmi *hdmi)
++int sun8i_hdmi_phy_remove(struct platform_device *pdev)
+ {
+-	struct sun8i_hdmi_phy *phy = hdmi->phy;
++	struct sun8i_hdmi_phy *phy = platform_get_drvdata(pdev);
+ 
+ 	clk_disable_unprepare(phy->clk_mod);
+ 	clk_disable_unprepare(phy->clk_bus);
+@@ -744,4 +765,15 @@ void sun8i_hdmi_phy_remove(struct sun8i_dw_hdmi *hdmi)
+ 	clk_put(phy->clk_pll1);
+ 	clk_put(phy->clk_mod);
+ 	clk_put(phy->clk_bus);
++	return 0;
+ }
++
++static struct platform_driver sun8i_hdmi_phy_driver = {
++	.probe  = sun8i_hdmi_phy_probe,
++	.remove = sun8i_hdmi_phy_remove,
++	.driver = {
++		.name = "sun8i-hdmi-phy",
++		.of_match_table = sun8i_hdmi_phy_of_table,
++	},
++};
++module_platform_driver(sun8i_hdmi_phy_driver);
 -- 
-2.11.0
+2.31.1
 
