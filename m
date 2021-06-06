@@ -2,100 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB8F39CBF4
+	by mail.lfdr.de (Postfix) with ESMTP id 5272C39CBF3
 	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 02:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbhFFA4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 20:56:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbhFFA4a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 20:56:30 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 275FCC061767
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Jun 2021 17:54:26 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id h22-20020a05600c3516b02901a826f84095so2785484wmq.5
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 17:54:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3DxaiNSkw+eA+wXHpN2KP+oFrvWPJdQHdeQTKj9QQeM=;
-        b=lUQyRaiq4AaXZaYWlH94S6Gn12mM38lNqlot8GXQItBQd53hfwyniIc3wxruyGl52c
-         qPJLxMg+MoWiZ5jxmbF5hdBJ0Wvgggv/tFbZ+2Fn4ANbufSO58IbuYYcDgbbe4vDDX2P
-         kbnBXtL3XwrbRdOHZJ8gHyqoVnMFfhcrCBGcPNdw/n8FjfvikX4oKWGwKskfOUwe8WBe
-         eY4ffJ10mJ1mC6rgIn2BQTY+jdFPgpnyGZQWMUXuIdqBH1ZwekIsaGPm6I/c2ARSmmIZ
-         4dV9ZkZ4E37cKxXXaN+tJdcdKMDDzKGC8Qadioa+J6X17wG7PJv+GhknTR8sHhSoIzcO
-         GPRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3DxaiNSkw+eA+wXHpN2KP+oFrvWPJdQHdeQTKj9QQeM=;
-        b=CsJeceZ5cVOQSYOK0d6wHqZ+vNZjHhdJDAeudZIwsSZONq6Zh7ft4vhr/60iz0w85c
-         7yRUOl/jXAEoytwNBSRVyK4yHkz5SkqW4WYdNP90MmaR95sERVz9f0KSRvHNcy1ihG51
-         5ySrcvRgOSzgpr3COZHnq874NIYJo3e/e2Gv1Pam3Z1z9qqmJeu8QI2QrayG3Nqk9it2
-         LH2uIQy0zLrcP9yMaUXI7IZ2JMNN/7Csz0sPjonl3rfL1KG+TIaC6c784sdqUr6t6tw+
-         ZBdaU1rghEHdQZCeYlAVsaKnqorFDu0xdAxZYUYBVkIGpylmyvRqNoLjwKVlHrnz5Mam
-         YQKA==
-X-Gm-Message-State: AOAM5318du+Lv3JA2b4CyHcB3XXC8/jWJlS4Bol2vEKKBjJ71P4Qgza+
-        hDg+RyoP2dQ3qDOVSAkoAx0Xd3iJi5/eEu7ZUBj24g==
-X-Google-Smtp-Source: ABdhPJxW3B5oI9ev63JTOffeqEWrYZWrYU5sFyNrebXusVFcqbrVZAViyfqSDs3CtmbFkC5ZdBVCMuWtumEoQzrBCjQ=
-X-Received: by 2002:a7b:c44f:: with SMTP id l15mr10268090wmi.151.1622940864731;
- Sat, 05 Jun 2021 17:54:24 -0700 (PDT)
+        id S230097AbhFFA4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 20:56:14 -0400
+Received: from mga12.intel.com ([192.55.52.136]:47919 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230022AbhFFA4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 20:56:12 -0400
+IronPort-SDR: qpzvihpEEDaZGQKRs1Jmb6V9+5F2Z+pHIl/tG5n9fIgI89oYgsHhwMSSJgU9iNuXe46YXnzyIu
+ Uece5OkT0Lsg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10006"; a="184150402"
+X-IronPort-AV: E=Sophos;i="5.83,252,1616482800"; 
+   d="scan'208";a="184150402"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2021 17:54:23 -0700
+IronPort-SDR: Z9Git1Ru7Cz8NqeCFcygTofXGZrBDyXZeGZue/4AhMzH2zN/hc+LeqsFrvdhc+Y6yrvy+UE0Ty
+ Yt8ECc9QyuNA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,252,1616482800"; 
+   d="scan'208";a="439617649"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga007.jf.intel.com with ESMTP; 05 Jun 2021 17:54:23 -0700
+Received: from linux.intel.com (unknown [10.88.229.80])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id AE541580522;
+        Sat,  5 Jun 2021 17:54:21 -0700 (PDT)
+Date:   Sun, 6 Jun 2021 08:54:18 +0800
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC net-next 0/2] Introduce MDIO probe order C45 over C22
+Message-ID: <20210606005418.GA9776@linux.intel.com>
+References: <YLYwcx3aHXFu4n5C@lunn.ch>
+ <20210601154423.GA27463@linux.intel.com>
+ <YLazBrpXbpsb6aXI@lunn.ch>
+ <20210601230352.GA28209@linux.intel.com>
+ <YLbqv0Sy/3E2XaVU@lunn.ch>
+ <20210602141557.GA29554@linux.intel.com>
+ <YLed2G1iDRTbA9eT@lunn.ch>
+ <20210602235155.GA31624@linux.intel.com>
+ <20210605003722.GA4979@linux.intel.com>
+ <YLvENQ/aadG0TcRp@lunn.ch>
 MIME-Version: 1.0
-References: <20210605215215.171165-1-andrealmeid@collabora.com>
-In-Reply-To: <20210605215215.171165-1-andrealmeid@collabora.com>
-From:   David Gow <davidgow@google.com>
-Date:   Sun, 6 Jun 2021 08:54:13 +0800
-Message-ID: <CABVgOS=QMTjFEPqgBab27sTRdnW6PLG_bcD20ui_nC2wK_GAPA@mail.gmail.com>
-Subject: Re: [PATCH] lib: Convert UUID runtime test to KUnit
-To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Shuah Khan <shuah@kernel.org>, ~lkcamp/patches@lists.sr.ht,
-        nfraprado@collabora.com, leandro.ribeiro@collabora.com,
-        Vitor Massaru Iha <vitor@massaru.org>, lucmaga@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLvENQ/aadG0TcRp@lunn.ch>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 6, 2021 at 5:52 AM Andr=C3=A9 Almeida <andrealmeid@collabora.co=
-m> wrote:
+On Sat, Jun 05, 2021 at 08:36:37PM +0200, Andrew Lunn wrote:
+> > Can you take a look at the latest implementation and provide
+> > feedback?
+> 
+> I think we are close, so please submit a proper patch.
 >
-> Remove custom functions for testing and use KUnit framework. Test cases
-> and test data remains the same.
->
-> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@collabora.com>
-> ---
 
-Thanks! It's always exciting to see more tests using KUnit.
+Will do. Thanks Andrew!
 
-Note that the names here (filename, suite name, and Kconfig entry
-name) don't match what we usually recommend for KUnit tests:
-https://www.kernel.org/doc/html/latest/dev-tools/kunit/style.html
-
-Given that this is an existing test, it is definitely okay to keep the
-old names if you think it'd break something, but if there's no issue
-it may be worth renaming them. The test suite name (which is new
-anyway) ideally shouldn't end in "-test": just "uuid" is best.
-
-I know there are quite a few existing tests which don't adhere to
-these perfectly yet, but ideally new ones will if it's convenient.
-
-Otherwise, this looks great. I've run it here, and it worked well and
-picked up on any deliberate errors I introduced.
-
-So this is
-Tested-by: David Gow <davidgow@google.com>
-
-Cheers,
--- David
+ VK 
