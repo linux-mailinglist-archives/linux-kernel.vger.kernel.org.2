@@ -2,155 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E66639CFD8
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 17:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64DFA39CFDB
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 17:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbhFFPnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 11:43:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230128AbhFFPnv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 11:43:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7B0A6141E;
-        Sun,  6 Jun 2021 15:42:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622994121;
-        bh=UALv1P9ICCpdZuB9WXtufq8mFK4k0gfcSTsGNuUHdbs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=N9rfx5WEM01sc2oMICMR3LxHqzPwHxVD3X8RaCYGAz2aqJLvnGQKEjWlwIcAJ90vP
-         FSyE+y4lcqtA2TIifHh6qG0g8ALpoHwdJfdFDcAoVhN6GURA2sAnCYO9UNbxvVB2RF
-         CU2fMPGiGHcj6x0NfT7qT8+UqkfQ+nhrCTFOvdM8XKjXlDergtr9cmR/bQvMxgIhkk
-         5ach0+jzOFf412AgFUHq0QcsDzu/AP8R/P6BV0Y9REFYKd46o+DIizQfbGlg43aBVQ
-         W0uT8riRypy0LfiJrCdqNWH3Cojpd96xA7ZlZZ0IfKo6JIveUoo+bNCNJuwPa7nTWT
-         vr1Minc11imBg==
-Received: by mail-lj1-f175.google.com with SMTP id d2so14310010ljj.11;
-        Sun, 06 Jun 2021 08:42:01 -0700 (PDT)
-X-Gm-Message-State: AOAM53020T8PVnMSPbH767qlEwgHUrtMdpIa1SRyr9VL93u8pBOGhdGU
-        mgDuSd3udLdgBtU4mLMIzr4tp0xO1CLRzU6Pma0=
-X-Google-Smtp-Source: ABdhPJz/ymuruvAxsVBO3eBrDTvU5oqkJkvuhWlYn5kOpMHnRZRI9xA7WGJSBhIVrhRZH65ESpGQlHUhEJNlEggaNUM=
-X-Received: by 2002:a2e:8e90:: with SMTP id z16mr11137106ljk.508.1622994120228;
- Sun, 06 Jun 2021 08:42:00 -0700 (PDT)
+        id S230187AbhFFPrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 11:47:19 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:52121 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230108AbhFFPrR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 11:47:17 -0400
+Received: from mail-wr1-f54.google.com ([209.85.221.54]) by
+ mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MIKs0-1lbb5m22Lc-00EO1n; Sun, 06 Jun 2021 17:45:26 +0200
+Received: by mail-wr1-f54.google.com with SMTP id c9so5846230wrt.5;
+        Sun, 06 Jun 2021 08:45:26 -0700 (PDT)
+X-Gm-Message-State: AOAM531WyvQj5cyLjRk1g2cIgxqev43RKJqJfFT0A6Ju2PU/S9c+gIGJ
+        Khp8RIc1zVKXy4a6RpUIVK4gjsrkh4Ds54WvFuY=
+X-Google-Smtp-Source: ABdhPJxtH8sg72nbDMc2xvlPEkjVgPkkeVaBoEaft/QXwhgaWWLA0oGbW/f7EgR9AF8QpW+XOKQuoewXDnnIPfZJ7ak=
+X-Received: by 2002:a5d:5084:: with SMTP id a4mr13544368wrt.286.1622994326220;
+ Sun, 06 Jun 2021 08:45:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <1622970249-50770-1-git-send-email-guoren@kernel.org>
- <20210606115027.5c715e64@slackpad.fritz.box> <CAJF2gTQgaJFW9knuVmW8J8zMAt_Gtq3KJ9gsGKg6=xLBuq0=uA@mail.gmail.com>
- <49182865.cm8dGOVcTj@jernej-laptop>
-In-Reply-To: <49182865.cm8dGOVcTj@jernej-laptop>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Sun, 6 Jun 2021 23:41:48 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTR3nUYsFv5=29DbE=nrgDaqmcj3KRm8F-WKsdTXHX02sQ@mail.gmail.com>
-Message-ID: <CAJF2gTR3nUYsFv5=29DbE=nrgDaqmcj3KRm8F-WKsdTXHX02sQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 11/11] riscv: soc: Allwinner D1 GMAC driver only
- for temp use
-To:     =?UTF-8?Q?Jernej_=C5=A0krabec?= <jernej.skrabec@gmail.com>
-Cc:     Andre Przywara <andre.przywara@arm.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, wens@csie.org,
-        maxime@cerno.tech, Drew Fustini <drew@beagleboard.org>,
-        liush@allwinnertech.com,
-        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
-        wefu@redhat.com, linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Maxime Ripard <mripard@kernel.org>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        LABBE Corentin <clabbe.montjoie@gmail.com>,
-        Michael Walle <michael@walle.cc>,
-        Guo Ren <guoren@linux.alibaba.com>
+References: <20210606103656.71079-1-sven@svenpeter.dev>
+In-Reply-To: <20210606103656.71079-1-sven@svenpeter.dev>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sun, 6 Jun 2021 17:43:39 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3TetrYDq0un8NT2ZPM=MSGg68Qr0gEV0Ua4Jfqoy-ErQ@mail.gmail.com>
+Message-ID: <CAK8P3a3TetrYDq0un8NT2ZPM=MSGg68Qr0gEV0Ua4Jfqoy-ErQ@mail.gmail.com>
+Subject: Re: [PATCH v2] usb: dwc3: support 64 bit DMA in platform driver
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     USB list <linux-usb@vger.kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:gFrwvFMRjzWLG74QxE6g7S/QvbeOVNsRRetFPZM2/nMmrCeDbz2
+ HJQP+YSBK2fqxCAEWdxttO9U9pCFsDfe4oxVH0GsiD2O0jGhSHsFRuextKzPgA5ZE44NxEE
+ Ec+dzQpYYdwVdXpNXlCT6MKOn80yhjGr0yTU9LrJX5RW0ZB2a432ugCFkJElxQv/Zat1TTY
+ ukzBHWFWzhmb4tb9ZJnyw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:KgQcoNB7rK0=:Fzl8i+NOf5PrBrN4JjgKrj
+ XqXftn0tuqj5ttxWD7u0O37Z+0C3lB7WiAY0dzXlYEmglIJkvwgGJvHHQ1+Dmw2arHq+d/rtT
+ P9WKVXHjKfDuqMK3R0UyoR4Wcz7hrXKCQ/yRo1U+opdfFM/VIAQ2p/VPtsz5i+gTyefW09Umu
+ LfLF8maKbOQSD6mqDzgH43GF/5qTZ/VDt4G3ZLnlTBwbbWjSMfgWQY3k4yb0cKxTzSIlpjuOi
+ mUIi6AsYpmgRWqzCSV/aU7piHZaou31VYp8H/K23s3jtk1IHlwq0oy5VZxlGuKheHbhnPs7xx
+ 9FStf1piCZ96T6jWIeFfxb2cR0ezwPWl9YwVPoz5N7z3F3KxbytUfbTcYXvPJDL9Te6xpCR/e
+ GuEj82iW0qoCnh7xmzmS/oTCWoKarzI8PUtKAWWka4xqClodTDGVK0/1enxpCtYUt9XMWq0Ag
+ GeNWWm2u4CJaHS3by/fsRAwRW0RBCv6psr/DYNXkPrGgHDDysVdb4cG8kZlulm9YsoqkSvz01
+ b7M3NQwyfBkNyzNXfWHoAE=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 6, 2021 at 11:39 PM Jernej =C5=A0krabec <jernej.skrabec@gmail.c=
-om> wrote:
+On Sun, Jun 6, 2021 at 12:36 PM Sven Peter <sven@svenpeter.dev> wrote:
+> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+> index b6e53d8212cd..4930541a8984 100644
+> --- a/drivers/usb/dwc3/core.c
+> +++ b/drivers/usb/dwc3/core.c
+> @@ -1545,6 +1545,21 @@ static int dwc3_probe(struct platform_device *pdev)
 >
-> Hi!
+>         dwc3_get_properties(dwc);
 >
-> Dne nedelja, 06. junij 2021 ob 17:32:22 CEST je Guo Ren napisal(a):
-> >  ,
-> >
-> > On Sun, Jun 6, 2021 at 6:50 PM Andre Przywara <andre.przywara@arm.com>
-> wrote:
-> > > On Sun,  6 Jun 2021 09:04:09 +0000
-> > > guoren@kernel.org wrote:
-> > >
-> > > Hi,
-> > >
-> > > > From: liush <liush@allwinnertech.com>
-> > > >
-> > > > This is a temporary driver, only guaranteed to work on allwinner
-> > > > D1. In order to ensure the developer's demand for network usage.
-> > >
-> > > That looks like some Allwinner BSP driver, please don't endorse code
-> > > of this quality (just look at all that commented code and the attempt
-> > > for compile-time configuration).
-> > >
-> > > > It only could work at 1Gps mode.
-> > > >
-> > > > The correct gmac driver should follow (I guess)
-> > > > drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-> > > >
-> > > > If anyone is familiar with it and can help porting, I would be
-> > > > very grateful.
-> > >
-> > > Have you tried compiling and using that driver? Ideally it should jus=
-t
-> > > work, Linux drivers are meant to be portable, by design. And the driv=
-er
-> > > is already enabled by COMPILE_TEST.
-> >
-> > It still needs some work with dwmac-sun8i.c glue layer, eg:
-> > tx/rx-delay setting, clk & pinmux drivers.
-> >
-> > The patch is just to help people using D1 with GMAC temporarily with
-> > network function.
->
-> It should be marked "DO NOT MERGE" or similar then.
-Yes, thx for reminding. I'll fix it next time.
+> +       /* Try to set 64-bit DMA first */
+> +       if (!dwc->sysdev->dma_mask)
+> +               /* Platform did not initialize dma_mask */
+> +               ret = dma_coerce_mask_and_coherent(dwc->sysdev,
+> +                                                  DMA_BIT_MASK(64));
+> +       else
+> +               ret = dma_set_mask_and_coherent(dwc->sysdev, DMA_BIT_MASK(64));
+> +
+> +       /* If seting 64-bit DMA mask fails, fall back to 32-bit DMA mask */
+> +       if (ret) {
+> +               ret = dma_set_mask_and_coherent(dwc->sysdev, DMA_BIT_MASK(32));
+> +               if (ret)
+> +                       return ret;
+> +       }
 
->
-> Best regards,
-> Jernej
->
-> >
-> > > But I guess you need some extra care to make the non-coherent DMA wor=
-k?
-> > > I haven't looked in detail, but are those new CMOs hooked into the
-> > > generic DMA framework?
-> >
-> > Yes, we have the simliar principle with arm & csky for non-coherent:
-> >  - Using PTE attributes setting Using PTE attributes to support
-> > _PAGE_IOREMAP & _PAGE_WRITECOMBINE
-> >  - Using CMO instructions deal SYNC_DMA_FOR_CPU/DEVICE.
-> >
-> > > Cheers,
-> > > Andre
-> > >
-> > > > Signed-off-by: Liu Shaohua <liush@allwinnertech.com>
-> > > > Tested-by: Guo Ren <guoren@kernel.org>
-> > > > Signed-off-by: Guo Ren <guoren@kernel.org>
-> > > > Cc: Maxime Ripard <mripard@kernel.org>
-> > > > Cc: Corentin Labbe <clabbe@baylibre.com>
-> > > > Cc: Samuel Holland <samuel@sholland.org>
-> > > > Cc: Icenowy Zheng <icenowy@aosc.io>
-> > > > Cc: LABBE Corentin <clabbe.montjoie@gmail.com>
-> > > > Cc: Michael Walle <michael@walle.cc>
-> > > > Cc: Chen-Yu Tsai <wens@csie.org>
-> > > > Cc: Maxime Ripard <maxime@cerno.tech>
-> > > > Cc: Wei Fu <wefu@redhat.com>
-> > > > Cc: Wei Wu <lazyparser@gmail.com>
-> > > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
->
->
->
+Please drop the dma_coerce_mask_and_coherent() code path as well: if
+the device is marked as non-DMA capable in the platform, it's better have
+it not be usable at all than to assume a particular bus property that may
+or may not be present on that bus.
 
+The 32-bit mask is the default on all buses you might see a dwc3 controller
+on, so you can drop that as well, and just leave the
+dma_set_mask_and_coherent().
 
---=20
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
+        Arnd
