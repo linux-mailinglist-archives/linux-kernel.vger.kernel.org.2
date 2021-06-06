@@ -2,144 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFB939CC31
+	by mail.lfdr.de (Postfix) with ESMTP id D921939CC33
 	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 04:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbhFFCM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 22:12:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60552 "EHLO
+        id S230173AbhFFCNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 22:13:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230111AbhFFCM6 (ORCPT
+        with ESMTP id S230111AbhFFCNK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 22:12:58 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30707C061767
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Jun 2021 19:10:55 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id u7so6711800plq.4
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 19:10:55 -0700 (PDT)
+        Sat, 5 Jun 2021 22:13:10 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12872C061767
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Jun 2021 19:11:15 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id cb9so15860713edb.1
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 19:11:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=dEHi0nLGv5PfBaxyr6DdBRy0QUGk/obWt0c36R9kJV8=;
-        b=EJy8zAGmJkYV43CiZRUYsGQFoP605zrn/Ann+QB5tZGDLciBJIhh7RLqXjXilWC5o1
-         54HFislHjIwa2sLCN69oTR9sOKZXYxJiWh3Vx7kbP/gtfiGh26MHEPBhsuvMJiNfh7s6
-         gXbGyZ6gcCB/B4UKfY5JQuCb1aOhv70MZn6yA=
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nOTcniWTVc9slYXWLxXSv1uRyKmcmZRO+63M/pSzE/U=;
+        b=cwZ2lIKKIQuoesuejMOtqIBw38LWmdJQRco7DTpm+On7hiyFzSIynCDa52d+sLCIqB
+         2zP8pj4E3rGCuqfhnJ5MRag1NFm53lXVMwQKVQbdijwfbaxWRtV4bmYjHioSZXD6kkwg
+         Dlj3L7D4QLBXl9X//0lK2mPz5kWslHUxKRvcBa2juD05DpNuxQp//Z0f+OYjTO6stdwc
+         EZHN0Y1DxgOncdZ7gzfETOgtK9k4bhYfZebdAtgUMPDxU3VJkT9f7Tfuk6EcJw0zLdbF
+         FqFv+pxxBNtA2aX39hOynje/H5TcETj5t1HDzA84k39g9uwCsZz2riUv/7IvQm3jw6Tq
+         ydjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dEHi0nLGv5PfBaxyr6DdBRy0QUGk/obWt0c36R9kJV8=;
-        b=BLcLlnIiMlR923cTxDHY9Wv95iUk2hVbgXw0qcgY40yjyaQ6FmIO/oFARFMPEXNZqM
-         5JvRdlHnfeDYCpqhfd+L8ZqBpxyUU9li9QZDN1csa01AJXZtQOzvsMq7Ah00174JC0d+
-         ESSI72G4vK7CMXNW8kdaPkGAMBJnE2bnIlMRfGkHTlMDc4Boqlj29Ml4C/NivDz/Nfub
-         Az5xID6uBKDbo1id/2zMCn5z7Mxugokn/DZNnOSpZG7hpqNA5r+3B7UQskuOFbqA7lKS
-         r4zMn/iTNL2MHEm3SLLO6Dz+ZHiKQkTr0N9hGnhukvbwDbKebgk42CGzVmik9gi1d9DO
-         yv+A==
-X-Gm-Message-State: AOAM532G6my/9nQzCic+DHhuWYDF2rPRM/XFoUorTGL4153mMJy78kaY
-        jhYmLW+G67izNqsnV4Xkp4sypA==
-X-Google-Smtp-Source: ABdhPJzRznPqp1FH5GFT4MorUkuBHJ6PF3pdo16Sw5uSMHWrRpmmlQmpTJXS2XKoUpDhLfMQzXyfEw==
-X-Received: by 2002:a17:902:548:b029:10f:30af:7d5f with SMTP id 66-20020a1709020548b029010f30af7d5fmr10598403plf.22.1622945454788;
-        Sat, 05 Jun 2021 19:10:54 -0700 (PDT)
-Received: from senozhatsky.flets-east.jp ([2409:10:2e40:5100:c87a:995:bf9d:93bb])
-        by smtp.gmail.com with ESMTPSA id v15sm5586327pgf.26.2021.06.05.19.10.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Jun 2021 19:10:54 -0700 (PDT)
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Suleiman Souhlal <suleiman@google.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCHv3 2/2] kvm: x86: implement KVM PM-notifier
-Date:   Sun,  6 Jun 2021 11:10:45 +0900
-Message-Id: <20210606021045.14159-2-senozhatsky@chromium.org>
-X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
-In-Reply-To: <20210606021045.14159-1-senozhatsky@chromium.org>
-References: <20210606021045.14159-1-senozhatsky@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nOTcniWTVc9slYXWLxXSv1uRyKmcmZRO+63M/pSzE/U=;
+        b=MVwF01qbYVMEI3lA/J8BeDgf+9uYI4n6YBJArmrsLDh5F5Rh9MHz6mCtf1UzSl75nS
+         hykvjas9JwK/RFz6EEQYiNr7ZUpY4KUJyeV1YDmlyIX2zqR7UazeTpZitzChRy0GhwVa
+         nHHXUyFdm94Je2iv3BK24527pBETUf1vA/ou7DpJg4hnHMTDNPUli2r6m5qapU+6P6sr
+         +dpKSw2mF39YefsPcOAckR29di4hL7OjawG0MnjNhizEP56F6PoRjImNV6Bcb21vWGiR
+         6y4XjnfIX4JHn7aEfoFR/0bkJ1CAPnkhngLiI5isMQsiuVLxDOtdq7yVYZGOvcwUsBS/
+         4I/g==
+X-Gm-Message-State: AOAM532/+oOlNrJ2hBWFvRfIoSIqEDdEZz94+Mf8shdKyVbSj8Gg9pYL
+        CBC3R32ivWggmgrROG3Lt84zQHoFzi0595C73z0cQ+pr0Q==
+X-Google-Smtp-Source: ABdhPJwLR1qKiHaU3a0P90iLeTPVN3ZXpgSHJmVvViAS0IGrSqN4ECheDNlb9g/W/t2kLVz7Gr1DZIJGJ5G/2AgcIkk=
+X-Received: by 2002:a05:6402:348f:: with SMTP id v15mr1175334edc.135.1622945471846;
+ Sat, 05 Jun 2021 19:11:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210517092006.803332-1-omosnace@redhat.com> <CAHC9VhTasra0tU=bKwVqAwLRYaC+hYakirRz0Mn5jbVMuDkwrA@mail.gmail.com>
+ <01135120-8bf7-df2e-cff0-1d73f1f841c3@iogearbox.net> <CAHC9VhR-kYmMA8gsqkiL5=poN9FoL-uCyx1YOLCoG2hRiUBYug@mail.gmail.com>
+ <c7c2d7e1-e253-dce0-d35c-392192e4926e@iogearbox.net> <CAHC9VhS1XRZjKcTFgH1+n5uA-CeT+9BeSP5jvT2+RE5ougLpUg@mail.gmail.com>
+ <2e541bdc-ae21-9a07-7ac7-6c6a4dda09e8@iogearbox.net> <CAHC9VhT464vr9sWxqY3PRB4DAccz=LvRMLgWBsSViWMR0JJvOQ@mail.gmail.com>
+ <3ca181e3-df32-9ae0-12c6-efb899b7ce7a@iogearbox.net> <CAHC9VhTuPnPs1wMTmoGUZ4fvyy-es9QJpE7O_yTs2JKos4fgbw@mail.gmail.com>
+ <f4373013-88fb-b839-aaaa-3826548ebd0c@iogearbox.net> <CAHC9VhS=BeGdaAi8Ae5Fx42Fzy_ybkcXwMNcPwK=uuA6=+SRcg@mail.gmail.com>
+ <c59743f6-0000-1b15-bc16-ff761b443aef@iogearbox.net> <CAHC9VhT1JhdRw9P_m3niY-U-vukxTWKTE9q6AMyQ=r_ohpPxMw@mail.gmail.com>
+ <CAADnVQ+0bNtDj46Q8s-h=rqJgZz2JaGTeHpbmof3e7fBBQKuDQ@mail.gmail.com>
+ <64552a82-d878-b6e6-e650-52423153b624@schaufler-ca.com> <CAHk-=wiUVqHN76YUwhkjZzwTdjMMJf_zN4+u7vEJjmEGh3recw@mail.gmail.com>
+In-Reply-To: <CAHk-=wiUVqHN76YUwhkjZzwTdjMMJf_zN4+u7vEJjmEGh3recw@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Sat, 5 Jun 2021 22:11:00 -0400
+Message-ID: <CAHC9VhRJDr6HO8NbEwcqcXCgpzyLL7KEmKM=VLXGz0zPJG5iXw@mail.gmail.com>
+Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
+ permission checks
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        ppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement PM hibernation/suspend prepare notifiers so that KVM
-can reliably set PVCLOCK_GUEST_STOPPED on VCPUs and properly
-suspend VMs.
+On Sat, Jun 5, 2021 at 2:17 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> On Sat, Jun 5, 2021 at 11:11 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> >
+> > You have fallen into a common fallacy. The fact that the "code runs"
+> > does not assure that the "system works right". In the security world
+> > we face this all the time, often with performance expectations. In this
+> > case the BPF design has failed [..]
+>
+> I think it's the lockdown patches that have failed. They did the wrong
+> thing, they didn't work,
+>
+> The report in question is for a regression.
+>
+> THERE ARE NO VALID ARGUMENTS FOR REGRESSIONS.
 
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
----
- arch/x86/kvm/Kconfig |  1 +
- arch/x86/kvm/x86.c   | 36 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 37 insertions(+)
+To think I was worried we might end this thread without a bit of CAPS
+LOCK, whew! :)
 
-diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-index fb8efb387aff..ac69894eab88 100644
---- a/arch/x86/kvm/Kconfig
-+++ b/arch/x86/kvm/Kconfig
-@@ -43,6 +43,7 @@ config KVM
- 	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
- 	select KVM_VFIO
- 	select SRCU
-+	select HAVE_KVM_PM_NOTIFIER if PM
- 	help
- 	  Support hosting fully virtualized guest machines using hardware
- 	  virtualization extensions.  You will need a fairly recent
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index b594275d49b5..af1ab527a0cb 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -58,6 +58,7 @@
- #include <linux/sched/isolation.h>
- #include <linux/mem_encrypt.h>
- #include <linux/entry-kvm.h>
-+#include <linux/suspend.h>
- 
- #include <trace/events/kvm.h>
- 
-@@ -5615,6 +5616,41 @@ static int kvm_vm_ioctl_set_msr_filter(struct kvm *kvm, void __user *argp)
- 	return 0;
- }
- 
-+#ifdef CONFIG_HAVE_KVM_PM_NOTIFIER
-+static int kvm_arch_suspend_notifier(struct kvm *kvm)
-+{
-+	struct kvm_vcpu *vcpu;
-+	int i, ret = 0;
-+
-+	mutex_lock(&kvm->lock);
-+	kvm_for_each_vcpu(i, vcpu, kvm) {
-+		if (!vcpu->arch.pv_time_enabled)
-+			continue;
-+
-+		ret = kvm_set_guest_paused(vcpu);
-+		if (ret) {
-+			kvm_err("Failed to pause guest VCPU%d: %d\n",
-+				vcpu->vcpu_id, ret);
-+			break;
-+		}
-+	}
-+	mutex_unlock(&kvm->lock);
-+
-+	return ret ? NOTIFY_BAD : NOTIFY_DONE;
-+}
-+
-+int kvm_arch_pm_notifier(struct kvm *kvm, unsigned long state)
-+{
-+	switch (state) {
-+	case PM_HIBERNATION_PREPARE:
-+	case PM_SUSPEND_PREPARE:
-+		return kvm_arch_suspend_notifier(kvm);
-+	}
-+
-+	return NOTIFY_DONE;
-+}
-+#endif /* CONFIG_HAVE_KVM_PM_NOTIFIER */
-+
- long kvm_arch_vm_ioctl(struct file *filp,
- 		       unsigned int ioctl, unsigned long arg)
- {
+I don't think anyone in this discussion, even Casey's last comment,
+was denying that there was a problem.  The discussion and the
+disagreements were about what a "proper" fix would be, and how one
+might implement that fix; of course there were different ideas of
+"proper" and implementations vary even when people agree, so things
+were a bit of a mess.  If you want to get upset and shouty, I think
+there are a few things spread across the subsystems involved that
+would be worthy targets, but to say that Casey, myself, or anyone else
+who plays under security/ denied the problem in this thread is not
+fair, or correct, in my opinion.
+
+> Honestly, security people need to understand that "not working" is not
+> a success case of security. It's a failure case.
+
+I can't pretend to know what all of the "security people" are
+thinking, but I can say with a good degree of certainty that my goal
+is not to crash, panic, kill, or otherwise disable a user's system.
+When it comes to things like the LSM hooks, my goal is to try and make
+sure we have the right hooks in the right places so that admins and
+users have the tools they need to control access to their data and
+systems in the way that they choose.  Sometimes this puts us at odds
+with other subsystems in the kernel, we saw that in this thread, but
+that's to be expected anytime you have competing priorities.  The
+important part is that eventually we figure out some way to move
+forward, and the fact that we are still all making progress and
+putting out new kernel releases is proof that we are finding a way.
+That's what matters to me, and if I was forced to guess, I would
+imagine that matters quite a lot to most of us here.
+
 -- 
-2.32.0.rc1.229.g3e70b5a671-goog
-
+paul moore
+www.paul-moore.com
