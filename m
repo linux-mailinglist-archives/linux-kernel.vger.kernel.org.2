@@ -2,79 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F3239D02D
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 19:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D3539D02F
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 19:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhFFRUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 13:20:51 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:57324 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhFFRUt (ORCPT
+        id S230093AbhFFRYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 13:24:22 -0400
+Received: from mailgate.ics.forth.gr ([139.91.1.2]:26050 "EHLO
+        mailgate.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229573AbhFFRYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 13:20:49 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id B92351F42052
-Subject: Re: [PATCH] lib: Convert UUID runtime test to KUnit
-To:     David Gow <davidgow@google.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Shuah Khan <shuah@kernel.org>, ~lkcamp/patches@lists.sr.ht,
-        nfraprado@collabora.com, leandro.ribeiro@collabora.com,
-        Vitor Massaru Iha <vitor@massaru.org>, lucmaga@gmail.com
-References: <20210605215215.171165-1-andrealmeid@collabora.com>
- <CABVgOS=QMTjFEPqgBab27sTRdnW6PLG_bcD20ui_nC2wK_GAPA@mail.gmail.com>
-From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
-Message-ID: <afc18aea-cdca-5768-bbb1-32b6ee637c97@collabora.com>
-Date:   Sun, 6 Jun 2021 14:18:48 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Sun, 6 Jun 2021 13:24:14 -0400
+Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
+        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 156HMMWr051941
+        for <linux-kernel@vger.kernel.org>; Sun, 6 Jun 2021 20:22:22 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
+        q=dns/txt; i=@ics.forth.gr; t=1623000137; x=1625592137;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ofh6S0qmxbTfwOwm6I6W/gPma32NXMANo65YCZP3Xvs=;
+        b=G6lDnSKK77R8A849bGJ25Ey3IPPHNmHKtsEWtiaT8ySLxRN1CgvFHRTz3lYdC3Gb
+        IiUd44ADfAmdZtwdIR/GQxZ/yhcvSk+iKUGJ7vN+78H0Jjk59TGxUhHz3Gr7GtKJ
+        WUoYzchYtTmjMKbw7L1+8yV+8xY8w1PkTJZY5zw+YbOJ6l8NuhGpEZLG0K+MA3GZ
+        96HXduLc+YlJYcyteF3C+2OJrOQbm8tGuIkVjkC6qGi215LnUjSTHui4T6fo57gD
+        iChGdQ736ul6Ki8jT30a3Jj6+zmr+zfKwWi8w7EfEtkXkDDzM7nl8oRQY24yzqaf
+        XFeSvKRKTknxtcvsHy930A==;
+X-AuditID: 8b5b014d-96ef2700000067b6-e0-60bd04486a19
+Received: from enigma.ics.forth.gr (webmail.ics.forth.gr [139.91.151.35])
+        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id 4A.2A.26550.8440DB06; Sun,  6 Jun 2021 20:22:16 +0300 (EEST)
+X-ICS-AUTH-INFO: Authenticated user:  at ics.forth.gr
 MIME-Version: 1.0
-In-Reply-To: <CABVgOS=QMTjFEPqgBab27sTRdnW6PLG_bcD20ui_nC2wK_GAPA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
+Date:   Sun, 06 Jun 2021 20:22:14 +0300
+From:   Nick Kossifidis <mick@ics.forth.gr>
+To:     guoren@kernel.org
+Cc:     anup.patel@wdc.com, palmerdabbelt@google.com, arnd@arndb.de,
+        wens@csie.org, maxime@cerno.tech, drew@beagleboard.org,
+        liush@allwinnertech.com, lazyparser@gmail.com, wefu@redhat.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [RFC PATCH v2 06/11] riscv: pgtable: Add DMA_COHERENT with custom
+ PTE attributes
+Organization: FORTH
+In-Reply-To: <1622970249-50770-10-git-send-email-guoren@kernel.org>
+References: <1622970249-50770-1-git-send-email-guoren@kernel.org>
+ <1622970249-50770-10-git-send-email-guoren@kernel.org>
+Message-ID: <610849b6f66e8d5a9653c9f62f46c48d@mailhost.ics.forth.gr>
+X-Sender: mick@mailhost.ics.forth.gr
+User-Agent: Roundcube Webmail/1.3.16
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrAIsWRmVeSWpSXmKPExsXSHT1dWdeDZW+CwaPjlhZPPkxks/g76Ri7
+        xb0Vy9gtXuxtZLE4/mgXi8XK1UeZLC59ucZi0bHrK4vF5V1z2Cy2fW5hs5iybxebxcp1x5gt
+        Zvz4x2ixdeM6RouW/VNYLH4eOs/kIODxqu0Zk8fvX5MYPd79XsbocefceTaPDY9Ws3rsnHWX
+        3WPBplKPTas62Tx2PrT02Lyk3uPF5pmMHrtvNrB5vN93lc3j8yY5j/YD3UwB/FFcNimpOZll
+        qUX6dglcGfum72YvaOCoOHDmEnMD4062LkZODgkBE4ll0y4C2VwcQgLHGCU6fn+GSphKzN7b
+        yQhi8woISpyc+YQFxGYWsJCYemU/I4QtL9G8dTYziM0ioCrxvasZrIZNQFNi/qWDYLaIgKjE
+        +tnzwRYwCyxilth4eytYg7BAvMT2yc/YQWx+AWGJT3cvsnYxcnBwCjhL3N4FFhYSqJJYvvU6
+        K8QNLhLXd6xhhbhNReLD7wfsIOWiQPbmuUoTGAVnIbl0FpJLZyG5dAEj8ypGgcQyY73M5GK9
+        tPyikgy99KJNjOBIZfTdwXh781u9Q4xMHIyHGCU4mJVEeL1k9iQI8aYkVlalFuXHF5XmpBYf
+        YpTmYFES5+XVmxAvJJCeWJKanZpakFoEk2Xi4JRqYJqUqDJJ9reE+6uaOWYlzSFl7abzt07o
+        eluzd6NShuHpSS7vZfga6pniXtRdmlgW9XzGKZfsNedmN2Qw/9xV9UUrPaCL67Cw+GQLA2Oh
+        V4K9HDc2bDjW9v9FMoPBOa0gW6muVtffxmb3JP7U9saGPjX99P7PoVuJN/qX3SsrXSLUEC1p
+        n8d+4NFsRV8ZcyXZjqVRLWmhy35F31F6k2VmFcy0uy98+rJlwh8fce9MmT23duGWC5kX/N+H
+        cfYzBm/e8e7q6sOtZkW3wq2a0jm8T7ybs6zgp5LZtLM/xYTXSEuK3tFcVKG01OnQcY+vD1be
+        0/wb1lG/t9mfVcUk81yP9cTmWyJ2x+Q+ZDxkzszfosRSnJFoqMVcVJwIAKcjnVpDAwAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Às 21:54 de 05/06/21, David Gow escreveu:
-> On Sun, Jun 6, 2021 at 5:52 AM André Almeida <andrealmeid@collabora.com> wrote:
->>
->> Remove custom functions for testing and use KUnit framework. Test cases
->> and test data remains the same.
->>
->> Signed-off-by: André Almeida <andrealmeid@collabora.com>
->> ---
+Στις 2021-06-06 12:04, guoren@kernel.org έγραψε:
+> From: Guo Ren <guoren@linux.alibaba.com>
 > 
-> Thanks! It's always exciting to see more tests using KUnit.
+> The dma-noncoherent SOCs need different virtual memory mappings
+> with different attributes:
+>  - noncached + Strong Order (for IO/DMA descriptor)
+>  - noncached + Weak Order (for writecombine usage, eg: frame
+>    buffer)
 > 
-> Note that the names here (filename, suite name, and Kconfig entry
-> name) don't match what we usually recommend for KUnit tests:
-> https://www.kernel.org/doc/html/latest/dev-tools/kunit/style.html
+> All above base on PTE attributes by MMU hardware. That means
+> address attributes are determined by PTE entry, not PMA. RISC-V
+> soc vendors have defined their own custom PTE attributes for
+> dma-noncoherency.
 > 
-> Given that this is an existing test, it is definitely okay to keep the
-> old names if you think it'd break something, but if there's no issue
-> it may be worth renaming them. The test suite name (which is new
-> anyway) ideally shouldn't end in "-test": just "uuid" is best.
-> 
-> I know there are quite a few existing tests which don't adhere to
-> these perfectly yet, but ideally new ones will if it's convenient.
-> 
-> Otherwise, this looks great. I've run it here, and it worked well and
-> picked up on any deliberate errors I introduced.
-> 
-> So this is
-> Tested-by: David Gow <davidgow@google.com>
 
-Thank you for the feedback :) I'll submit a v2 applying your suggestions.
+This patch violates the Privilege Spec section 4.4.1 that clearly 
+states:
 
-> 
-> Cheers,
-> -- David
-> 
+"Bits63–54 are reserved for future standard use and must be zeroed by 
+software for forward compatibility"
+
+Standard use means that valid values can only be defined by the Priv. 
+Spec, not by the vendor (otherwise they'd be marked as "custom use" or 
+"platform use"), and since they "must" be zeroed by software we 'll be 
+violating the Privilege Spec if we do otherwise.
