@@ -2,44 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AAC739CF2C
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 14:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD3E39CF2A
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 14:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231357AbhFFMrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 08:47:14 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:35070 "EHLO
+        id S231296AbhFFMrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 08:47:08 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:35032 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230247AbhFFMpq (ORCPT
+        with ESMTP id S230220AbhFFMpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 6 Jun 2021 08:45:46 -0400
-Date:   Sun, 06 Jun 2021 12:43:55 -0000
+Date:   Sun, 06 Jun 2021 12:43:56 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1622983436;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=/jd96Su0XmJ+c5ce1/0zNAR+bADa1De5WSFUeCk/xG4=;
-        b=AnHn/cp/wbQVbyQGnJuEsT+k3d5NjQJ1CIOzTwGA/nexEuxPJEhq/mDaLMfsGn7NlX+yiZ
-        SMtmFV7LoaSJmsTcRpzDnA2pUc8XPws2ESPf6CQ95r7PlrfjkjYUNgrn+AysA2vuJuAJQK
-        6DA734HFtibO3yZZuN62FOBa3Wh3YH4tuUVPdesOK6rugdIDYmfBpIMV8vJaTtnAtnssXU
-        ELOBbaYcxPpEORW0UfwKLLoKrf5OGcNFU374+JxeF580p8tZOCHp39xnOBSSva2syoFsGf
-        JS/brYm9iCGdETkLEaYUwVfgaZGUvqHsO13oTd03e/rCnoKRup3hHY9c0mOlrw==
+        bh=BKzJ+EZM7QtdZGQro9O8mQaXJr8C17fDCg9ykXdFMFQ=;
+        b=A2eHhgJU+NplBmSRDacHiai2ecyNqHHPxXXsKqg0WTJR7bAE8DKkxnMKVCRnvv1zU1bWlz
+        v8LQuuxLpybD8dBFWoOoYd4GFjqOuGvo0WCDJ2r8ncQL8B5TvH9wvjZDDakoioy1Vqx3OA
+        bc0OWrFuYR8vNMU41/g2GL3jFGKxpsnp71JnbX1a++oKD78l+5HoUtJdLBox9/tIWiB+Ry
+        TkU/DDrK/iiL7MQrmvN9/V4aexJC0/ocHKf55dX2HiG4kPhpSU0HQwx35OnTxOVSmf0SMl
+        NBaK9APVkdKMpcVMgS3B7UbSeIPa9ir3GIQLh+kWszwJKM+bwgZfYCQFAVF1FQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1622983436;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=/jd96Su0XmJ+c5ce1/0zNAR+bADa1De5WSFUeCk/xG4=;
-        b=ZkJZkqUkQUr0Jt+48oh4cmQNhgel8JX/WOHjHm+DZ4YwCScPlOP5mD8/VUvLe63TGwzaFg
-        Zsutd3h4xpThZTDA==
+        bh=BKzJ+EZM7QtdZGQro9O8mQaXJr8C17fDCg9ykXdFMFQ=;
+        b=CwnbdeIhSlu6hHDFUz3+Nq1rBeeRFhFl2XmR1IZlJy0Jp9IJyEcAy3TUTyN4CCRMIw83Gz
+        wGJhOTJxxohcUCBw==
 From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] staging: octeon-hcd: Directly include linux/of.h
+Subject: [irqchip: irq/irqchip-next] nios2: Do not include linux/irqdomain.h
+ from asm/irq.h
 Cc:     Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
 MIME-Version: 1.0
-Message-ID: <162298343573.29796.13129265386937739547.tip-bot2@tip-bot2>
+Message-ID: <162298343616.29796.542984438945877584.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -50,34 +51,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     6cd461a7a422d0c5968d706ea1acda11ea20c96e
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/6cd461a7a422d0c5968d706ea1acda11ea20c96e
+Commit-ID:     41188caed10a9d23f08ff5b693c84863fbfbc21e
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/41188caed10a9d23f08ff5b693c84863fbfbc21e
 Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Thu, 13 Sep 2018 09:31:09 +01:00
+AuthorDate:    Thu, 13 Sep 2018 10:59:03 +01:00
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Wed, 02 Jun 2021 14:34:47 +01:00
+CommitterDate: Wed, 02 Jun 2021 14:34:46 +01:00
 
-staging: octeon-hcd: Directly include linux/of.h
+nios2: Do not include linux/irqdomain.h from asm/irq.h
 
-This drivers currently obtains linux/of.h by luck and a chain of
-bizarre inclusions, which we're about to fix.
-
-Let's include the required file directly.
+Including linux/irqdomain.h from asm/irq.h is going to break
+as soon as linux/irqdomain.h will include linux/irq.h, so
+let's fix this. Code relying on linux/irqomain.h should include
+it directly.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- drivers/staging/octeon-usb/octeon-hcd.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/nios2/include/asm/irq.h | 1 -
+ arch/nios2/kernel/irq.c      | 1 +
+ 2 files changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/octeon-usb/octeon-hcd.c b/drivers/staging/octeon-usb/octeon-hcd.c
-index f27f20a..a079bd0 100644
---- a/drivers/staging/octeon-usb/octeon-hcd.c
-+++ b/drivers/staging/octeon-usb/octeon-hcd.c
-@@ -52,6 +52,7 @@
- #include <linux/prefetch.h>
- #include <linux/dma-mapping.h>
- #include <linux/platform_device.h>
-+#include <linux/of.h>
+diff --git a/arch/nios2/include/asm/irq.h b/arch/nios2/include/asm/irq.h
+index 13ce372..c52c948 100644
+--- a/arch/nios2/include/asm/irq.h
++++ b/arch/nios2/include/asm/irq.h
+@@ -10,6 +10,5 @@
+ #define NIOS2_CPU_NR_IRQS	32
  
- #include <asm/octeon/octeon.h>
+ #include <asm-generic/irq.h>
+-#include <linux/irqdomain.h>
  
+ #endif
+diff --git a/arch/nios2/kernel/irq.c b/arch/nios2/kernel/irq.c
+index 5f3555c..c6a1a9f 100644
+--- a/arch/nios2/kernel/irq.c
++++ b/arch/nios2/kernel/irq.c
+@@ -11,6 +11,7 @@
+ 
+ #include <linux/init.h>
+ #include <linux/interrupt.h>
++#include <linux/irqdomain.h>
+ #include <linux/of.h>
+ 
+ static u32 ienable;
