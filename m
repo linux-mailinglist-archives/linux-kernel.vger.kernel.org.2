@@ -2,47 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE5739D102
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 21:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21BC639D100
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 21:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbhFFT2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 15:28:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbhFFT20 (ORCPT
+        id S229764AbhFFT21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 15:28:27 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36574 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229573AbhFFT2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 15:28:26 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B278C061766
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 12:26:36 -0700 (PDT)
+        Sun, 6 Jun 2021 15:28:25 -0400
 Date:   Sun, 06 Jun 2021 19:26:33 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1623007594;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=/Z7Mk4xjfow0i3jL1Mr4rkbkC6cQnWWjnjlJj+dDr6g=;
-        b=xw13nLPHurAN9HmWSfYvl7fragH95M0go4BpsCCL4ghf8TX+jVGKuqf2d1wfWv8eYJhy/G
-        oNPoYl65IHhpIZtP7yWbP7qT8M4Vz2rhBOwK56qDUvqcMTGDGPRSON0m4N9+KFcwAGX+8Q
-        9euWdNV/V/y3VDrouer4A3qFy4Eq+CUJ5tptmQ19dL9jh1b1Pb8Lm3xZMagGmoaDTKHJYa
-        hD6DAmYctWkHvgTM6xUUoK3+DPUglBRdVvjbxt+5iy0D77EqlpvY1GJdIUN061Xds2wFJd
-        DQ4SLSruIn0Ekim2V6Xl7kTFdydlRNrqJTPPmEbdPR0dz42Clj/f4ij2NKxK8A==
+        bh=4E3ueUiWYkqfDHgMawcLyMAQE84TBVIhzeOZP9gRehc=;
+        b=o11dnlzrQ2H2cBf/LtSwX4TKbb/yZzYsYG8qdHTqvwtfm62l2XpfdKokiRd7b9DPo88vXY
+        qhwC2DObT9V9vQRrOj2TWysfYBH1tfYP+CDuUMb2BCq/b4Z3prEdRyW4ATmgvmabbfs+3h
+        iDOvttx6f71/IS2YZxylTlo8GzOnzH9dqgHdmJQ4iB64jJ2ujFTA3hEWdgIgNehOCD8ARe
+        e8PJM1DRX0WRAh5WT/M+GJgGfsR2AQBZKAGxJwTyTjsNjTzl/6Y+xIjC5DIWBEwQjwAa+b
+        sQ00UmufAa8AQRKH0jiPuuFntd9Z2gO6Z/hC9OhrXWAQ6HUF8XrQFNoQzrj0Cw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1623007594;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=/Z7Mk4xjfow0i3jL1Mr4rkbkC6cQnWWjnjlJj+dDr6g=;
-        b=xvBBXLlGkRy+fc5R9Hy9lUJnF4Gg3obBKlSpgKv42XVzlUYiaFhddknwSiQLvHZKs9pcAr
-        p9e1dEVb4VPFjTAg==
+        bh=4E3ueUiWYkqfDHgMawcLyMAQE84TBVIhzeOZP9gRehc=;
+        b=1bw0MlSj3oPbxWdGbDz9NMfVrbekuiMMLM8PNN8yl3nScupx3SeTh72P86g+BK6XgeucCD
+        7fKMnqv1wz5NDrAQ==
 From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] fixup! irqdomain: Introduce irq_resolve_mapping()
+Subject: [irqchip: irq/irqchip-next] fixup! irqchip: Bulk conversion to
+ generic_handle_domain_irq()
 Cc:     maz@kernel.org, tglx@linutronix.de
 MIME-Version: 1.0
-Message-ID: <162300759319.29796.5552916661574311821.tip-bot2@tip-bot2>
+Message-ID: <162300759381.29796.15824095054552048651.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -53,37 +51,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     9b8a506983a1e5d8c5c0841c66d42b6e309ba60d
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/9b8a506983a1e5d8c5c0841c66d42b6e309ba60d
+Commit-ID:     70d49fc8ebd2fabcb223288ec8a9f2c58ceb3407
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/70d49fc8ebd2fabcb223288ec8a9f2c58ceb3407
 Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Sun, 06 Jun 2021 20:19:14 +01:00
+AuthorDate:    Sun, 06 Jun 2021 19:28:32 +01:00
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Sun, 06 Jun 2021 20:19:14 +01:00
+CommitterDate: Sun, 06 Jun 2021 19:28:32 +01:00
 
-fixup! irqdomain: Introduce irq_resolve_mapping()
+fixup! irqchip: Bulk conversion to generic_handle_domain_irq()
 ---
- include/linux/irqdomain.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/irqchip/irq-xilinx-intc.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
-index 5b7de06..23e4ee5 100644
---- a/include/linux/irqdomain.h
-+++ b/include/linux/irqdomain.h
-@@ -31,8 +31,7 @@
- #define _LINUX_IRQDOMAIN_H
+diff --git a/drivers/irqchip/irq-xilinx-intc.c b/drivers/irqchip/irq-xilinx-intc.c
+index 875ff52..356a597 100644
+--- a/drivers/irqchip/irq-xilinx-intc.c
++++ b/drivers/irqchip/irq-xilinx-intc.c
+@@ -150,7 +150,6 @@ static void xil_intc_irq_handler(struct irq_desc *desc)
+ {
+ 	struct irq_chip *chip = irq_desc_get_chip(desc);
+ 	struct xintc_irq_chip *irqc;
+-	u32 pending;
  
- #include <linux/types.h>
--#include <linux/irq.h>
--#include <linux/irqdesc.h>
-+#include <linux/irqhandler.h>
- #include <linux/of.h>
- #include <linux/mutex.h>
- #include <linux/radix-tree.h>
-@@ -42,6 +41,7 @@ struct fwnode_handle;
- struct irq_domain;
- struct irq_chip;
- struct irq_data;
-+struct irq_desc;
- struct cpumask;
- struct seq_file;
- struct irq_affinity_desc;
+ 	irqc = irq_data_get_irq_handler_data(&desc->irq_data);
+ 	chained_irq_enter(chip, desc);
