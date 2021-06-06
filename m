@@ -2,120 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D96439D1A5
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 23:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B58A39D1AA
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 23:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230380AbhFFVbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 17:31:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51778 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230270AbhFFVbJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 17:31:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 953E4613B6;
-        Sun,  6 Jun 2021 21:29:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623014959;
-        bh=4t5DawWhLmQPAFGRKhX1jFE4WEqbArxXgmERWe2C0xQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Wu/fyJA4UR/3OsXx5PdnZuKJmqUDl6cQ0I5qOPmOobYB/YwD3loa7CHDMxmjDs7+O
-         /+vTonUI3DKMDg+OJCEqqvIqeoGeqCBaFfCM6MGkwmW6KvTZO5CLkleOMNy5KmfR4d
-         PteqC/M3+gPE1uiUsTSHvYSMYrpSkJ75a30BXywU3cSKzUfAv/A0+aJ76/IGuUYyhl
-         S6LUi9EmnHUL5lEcDnAewWs8EsYomaOBUCef/cImLCqjaabNrEeHJoCWkyMWvCEGV1
-         9+bVS1xXN0QGlOiLh2r3UXefQeesEuK/PQnscumw1S0RmHISk2eF6NrfUP8ytWcSpP
-         sTzKK7DJdkKEw==
-Date:   Mon, 7 Jun 2021 00:29:09 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: Re: [PATCH v2 00/15] init_mm: cleanup ARCH's text/data/brk setup code
-Message-ID: <YL0+Jargm+y9aqx1@kernel.org>
-References: <20210604070633.32363-1-wangkefeng.wang@huawei.com>
+        id S230382AbhFFVdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 17:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230270AbhFFVdD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 17:33:03 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3095C061766
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 14:31:12 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lq0MK-0004Mn-Ai; Sun, 06 Jun 2021 23:31:04 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lq0ME-0005Io-NV; Sun, 06 Jun 2021 23:30:58 +0200
+Date:   Sun, 6 Jun 2021 23:30:54 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Flavio Suligoi <f.suligoi@asem.it>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Subject: Re: [PATCH v2 2/7] pwm: core: Always require PWM flags to be provided
+Message-ID: <20210606213054.bmqgs5hehbowa62d@pengutronix.de>
+References: <20210531194947.10770-1-andriy.shevchenko@linux.intel.com>
+ <20210531194947.10770-2-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="nhpwy4vsiqbpl5ml"
 Content-Disposition: inline
-In-Reply-To: <20210604070633.32363-1-wangkefeng.wang@huawei.com>
+In-Reply-To: <20210531194947.10770-2-andriy.shevchenko@linux.intel.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Kefeng,
 
-On Fri, Jun 04, 2021 at 03:06:18PM +0800, Kefeng Wang wrote:
-> Add setup_initial_init_mm() helper, then use it
-> to cleanup the text, data and brk setup code.
-> 
-> v2:
-> - change argument from "char *" to "void *" setup_initial_init_mm()
->   suggested by Geert Uytterhoeven
-> - use NULL instead of (void *)0 on h8300 and m68k
-> - collect ACKs
-> 
-> Cc: linux-snps-arc@lists.infradead.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-csky@vger.kernel.org
-> Cc: uclinux-h8-devel@lists.sourceforge.jp
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: openrisc@lists.librecores.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-riscv@lists.infradead.org
-> Cc: linux-sh@vger.kernel.org
-> Cc: linux-s390@vger.kernel.org
-> Kefeng Wang (15):
->   mm: add setup_initial_init_mm() helper
->   arc: convert to setup_initial_init_mm()
->   arm: convert to setup_initial_init_mm()
->   arm64: convert to setup_initial_init_mm()
->   csky: convert to setup_initial_init_mm()
->   h8300: convert to setup_initial_init_mm()
->   m68k: convert to setup_initial_init_mm()
->   nds32: convert to setup_initial_init_mm()
->   nios2: convert to setup_initial_init_mm()
->   openrisc: convert to setup_initial_init_mm()
->   powerpc: convert to setup_initial_init_mm()
->   riscv: convert to setup_initial_init_mm()
->   s390: convert to setup_initial_init_mm()
->   sh: convert to setup_initial_init_mm()
->   x86: convert to setup_initial_init_mm()
+--nhpwy4vsiqbpl5ml
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I might be missing something, but AFAIU the init_mm.start_code and other
-fields are not used really early so the new setup_initial_init_mm()
-function can be called in the generic code outside setup_arch(), e.g in
-mm_init().
- 
->  arch/arc/mm/init.c                 | 5 +----
->  arch/arm/kernel/setup.c            | 5 +----
->  arch/arm64/kernel/setup.c          | 5 +----
->  arch/csky/kernel/setup.c           | 5 +----
->  arch/h8300/kernel/setup.c          | 5 +----
->  arch/m68k/kernel/setup_mm.c        | 5 +----
->  arch/m68k/kernel/setup_no.c        | 5 +----
->  arch/nds32/kernel/setup.c          | 5 +----
->  arch/nios2/kernel/setup.c          | 5 +----
->  arch/openrisc/kernel/setup.c       | 5 +----
->  arch/powerpc/kernel/setup-common.c | 5 +----
->  arch/riscv/kernel/setup.c          | 5 +----
->  arch/s390/kernel/setup.c           | 5 +----
->  arch/sh/kernel/setup.c             | 5 +----
->  arch/x86/kernel/setup.c            | 5 +----
->  include/linux/mm_types.h           | 8 ++++++++
->  16 files changed, 23 insertions(+), 60 deletions(-)
-> 
-> -- 
-> 2.26.2
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+Hello Andy,
 
--- 
-Sincerely yours,
-Mike.
+On Mon, May 31, 2021 at 10:49:42PM +0300, Andy Shevchenko wrote:
+> It makes little sense to make PWM flags optional since in case
+> of multi-channel consumer the flags can be optional only for
+> the last listed channel.
+
+I think the same holds true for dt references.
+
+> Thus always require PWM flags to be provided.
+
+I'm not sure I want to follow that conclusion. Most consumers only need
+a single PWM and then not providing flags is fine, isn't it? Or does
+this change fix an error?
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--nhpwy4vsiqbpl5ml
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmC9PooACgkQwfwUeK3K
+7Al5owf+OYpBUlr20vHA24UHWhu+gsClpK+8L8A6RESJMnFiTSsemRJr+eM4l3wx
+xKsyoMxP0rCCi17voYm7gM/+hwKtMODz+AJFnItb8LoxqrGjld94dR5Xf66VqOiE
+habNp+dYBMDJ4Ig1pTYLIHKp6ISonFqoH6EoHGE2dNd4neqYF1/WfcGfJJkLrA0C
+Y2t552+7RWjjuBOgEsKW1iaNNMj0uiJlwnh16n6b0IMqrJ1sw6bjLwb5bKfbrKkE
+gTNe7xSwPSdjsZ9Xvj78BsHjXG3VIVzWx24XDTTcoLzbiihyXEsnNhvtiPfWBT7e
+rykeESezuepTBHcu8pl7CFamvSMLxw==
+=GlHq
+-----END PGP SIGNATURE-----
+
+--nhpwy4vsiqbpl5ml--
