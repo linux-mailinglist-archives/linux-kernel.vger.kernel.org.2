@@ -2,120 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BAF839D0E5
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 21:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72DE039D0E7
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 21:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbhFFTQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 15:16:19 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:57925 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231409AbhFFTPc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 15:15:32 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 16EFA13CA;
-        Sun,  6 Jun 2021 15:13:39 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute3.internal (MEProxy); Sun, 06 Jun 2021 15:13:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm1; bh=MvwFPayhTcEWvcEKv5TmWDsTvmr0
-        uW8J60CdljadmjU=; b=npM9QM3gszq8Ill6wwP/SEkE4LhInrBY4dFbI9BhX0dD
-        kKD2bcY8I5mJpeCkwo3fhY+88TRsYuJLy8Xf27Qe/d+0z6yQIwqcOgbmI3uJD1NE
-        081ARB9ehTaeq/RdI6uVNmS9fYJnJP0AXvB4pLE3XpakWIwMPJUG1D4P8+XtHwmb
-        BPP5eGdW6MB0dw2/dqTriTRxXVYy8fEwNisAH3tCUsp1uqJzofDY3Rh7kPqOU9Bg
-        pG7sDigVZIi8d+Pu50uKOHRMjokZkYmv4JVFdILB1c6ioKhadtZgSzOUHTFo4ey0
-        NeEqVDF2VahZ4QNBS7/dtxuh/rTUkJcY+htPe0itoA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=MvwFPa
-        yhTcEWvcEKv5TmWDsTvmr0uW8J60CdljadmjU=; b=vE6KlurLNw53dkBYH8EL2n
-        9Jkl/4Hz3XbvsZ1KXAUCTPZRdWBPTzQLOD4Zlp04/gZDoNVsnyh0Mb+qJpiUlk8/
-        Snd+qkuYOBDDFlI00sIDWshBOnvwDQS6AYTpz2IIYTMtkamu+hjRWjj3OZ18d019
-        6liUA6na4BjR18xbSby1QculoUE+y4PIgIxKcyIudhOnwmzYCJMhARiXswSU8Hea
-        zGYVY4dr41SMtiJwTZaGt218eFTB+Scn5MeFXBDI7FiftalgOsC+D/ybuYBfTbTZ
-        QYIEoJbYzatA1eavW1UvM66o9S+GeN8I54ah2Yf2GTezcA/0dvgh5gEL0/e1U8Nw
-        ==
-X-ME-Sender: <xms:Yh69YLICqtCInGw4nSR1CQjjwXbsWoqpwSEfQpZph3s85fsSkXgbqQ>
-    <xme:Yh69YPIt3bYtF4xtWzCshCFmHtiSivm3KuL8TcPACBppjk_ObD5amG0I8kQz-Knh0
-    P0ji7azBxf8Oug4n3A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedthedgudefiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfufhv
-    vghnucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrf
-    grthhtvghrnhepgfeigeeiffeuhfettdejgfetjeetfeelfefgfefgvddvtdfghfffudeh
-    vdefkeffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epshhvvghnsehsvhgvnhhpvghtvghrrdguvghv
-X-ME-Proxy: <xmx:Yh69YDtU7MGezEX6tXJPpnMJyRxAMFvAJYH4IdTPDMolBY7WRGn14w>
-    <xmx:Yh69YEZLlPpEzoaTTFMtpmcqp5Qe1Vd-n1yi2Dg6Wkz5zj16O1_hUQ>
-    <xmx:Yh69YCa1kEHSGvPGxa10_dMm7svRkC8DICUbQ6siXtYwvWo9whDbSQ>
-    <xmx:Yh69YBkBc9maanbms25rrGOBoaLzjOhl29efwsazPxCmiO8VT9E4PQ>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 2FE7F51C0060; Sun,  6 Jun 2021 15:13:37 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
-Mime-Version: 1.0
-Message-Id: <f321012c-8108-4797-9f24-7786c1f7d468@www.fastmail.com>
-In-Reply-To: <CAK8P3a3TetrYDq0un8NT2ZPM=MSGg68Qr0gEV0Ua4Jfqoy-ErQ@mail.gmail.com>
-References: <20210606103656.71079-1-sven@svenpeter.dev>
- <CAK8P3a3TetrYDq0un8NT2ZPM=MSGg68Qr0gEV0Ua4Jfqoy-ErQ@mail.gmail.com>
-Date:   Sun, 06 Jun 2021 21:13:17 +0200
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Arnd Bergmann" <arnd@arndb.de>
-Cc:     "USB list" <linux-usb@vger.kernel.org>,
-        "Felipe Balbi" <balbi@kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] usb: dwc3: support 64 bit DMA in platform driver
-Content-Type: text/plain
+        id S230112AbhFFTRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 15:17:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57352 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230340AbhFFTRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 15:17:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 532AB61287;
+        Sun,  6 Jun 2021 19:15:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623006929;
+        bh=wvJiq1aGB+9WeuKZmWAPp0jOhE+zr1mmCVbd1NGNGRA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=kkj7nPcFYhr1VThzJW/TU+bNYpzdLKj6i9sie9zIil+K0cEyI9g16ci+In9LCUNjZ
+         8aVyEiDB6g7mz6Y5Lz86BaXOc95NzCy8Ixq3HLprgtWlG+/OK7/0Y2/j8b2GjSVFOy
+         8dRsgrKOGGkZuAJIKp8042ayAXHtW/ins+nCOuzbzsa7O8Sk9UN9ivQ+ywiw7wtT2m
+         gq7RekJk7T0gvYWXbiKeMKgcx6spjoGrgK4yy7EdBscPjMs4Z5/UrkZ6hmLmW3cfyO
+         B9OkooxTjqUr7VvwF7SV7wGtPiSBzZRPKHNGpa+9fAH5yeRxAnpp5HVU2ev85ZNend
+         TZB5vp9SW01KQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 1F6B05C014A; Sun,  6 Jun 2021 12:15:29 -0700 (PDT)
+Date:   Sun, 6 Jun 2021 12:15:29 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Jakub Jelinek <jakub@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <20210606191529.GM4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <CAHk-=wik7T+FoDAfqFPuMGVp6HxKYOf8UeKt3+EmovfivSgQ2Q@mail.gmail.com>
+ <20210604205600.GB4397@paulmck-ThinkPad-P17-Gen-1>
+ <CAHk-=wgmUbU6XPHz=4NFoLMxH7j_SR-ky4sKzOBrckmvk5AJow@mail.gmail.com>
+ <20210604214010.GD4397@paulmck-ThinkPad-P17-Gen-1>
+ <CAHk-=wg0w5L7-iJU_kvEh9stXZoh2srRF4jKToKmSKyHv-njvA@mail.gmail.com>
+ <20210605145739.GB1712909@rowland.harvard.edu>
+ <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210606012903.GA1723421@rowland.harvard.edu>
+ <CAHk-=wgUsReyz4uFymB8mmpphuP0vQ3DktoWU_x4u6impbzphg@mail.gmail.com>
+ <20210606185922.GF7746@tucnak>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210606185922.GF7746@tucnak>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Sun, Jun 6, 2021, at 17:43, Arnd Bergmann wrote:
-> On Sun, Jun 6, 2021 at 12:36 PM Sven Peter <sven@svenpeter.dev> wrote:
-> > diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-> > index b6e53d8212cd..4930541a8984 100644
-> > --- a/drivers/usb/dwc3/core.c
-> > +++ b/drivers/usb/dwc3/core.c
-> > @@ -1545,6 +1545,21 @@ static int dwc3_probe(struct platform_device *pdev)
-> >
-> >         dwc3_get_properties(dwc);
-> >
-> > +       /* Try to set 64-bit DMA first */
-> > +       if (!dwc->sysdev->dma_mask)
-> > +               /* Platform did not initialize dma_mask */
-> > +               ret = dma_coerce_mask_and_coherent(dwc->sysdev,
-> > +                                                  DMA_BIT_MASK(64));
-> > +       else
-> > +               ret = dma_set_mask_and_coherent(dwc->sysdev, DMA_BIT_MASK(64));
-> > +
-> > +       /* If seting 64-bit DMA mask fails, fall back to 32-bit DMA mask */
-> > +       if (ret) {
-> > +               ret = dma_set_mask_and_coherent(dwc->sysdev, DMA_BIT_MASK(32));
-> > +               if (ret)
-> > +                       return ret;
-> > +       }
+On Sun, Jun 06, 2021 at 08:59:22PM +0200, Jakub Jelinek wrote:
+> On Sat, Jun 05, 2021 at 08:41:00PM -0700, Linus Torvalds wrote:
+> > Something like this *does* seem to work:
+> > 
+> >    #define ____barrier(id) __asm__ __volatile__("#" #id: : :"memory")
+> >    #define __barrier(id) ____barrier(id)
+> >    #define barrier() __barrier(__COUNTER__)
+> > 
+> > which is "interesting" or "disgusting" depending on how you happen to feel.
 > 
-> Please drop the dma_coerce_mask_and_coherent() code path as well: if
-> the device is marked as non-DMA capable in the platform, it's better have
-> it not be usable at all than to assume a particular bus property that may
-> or may not be present on that bus.
+> I think just
+> #define barrier() __asm__ __volatile__("" : : "i" (__COUNTER__) : "memory")
+> should be enough (or "X" instead of "i" if some arch uses -fpic and will not
+> accept small constants in PIC code), for CSE gcc compares that the asm template
+> string and all arguments are the same.
+
+This does seem to do the trick: https://godbolt.org/z/K5j3bYqGT
+
+So thank you for that!
+
+							Thanx, Paul
+
+> As for volatile, that is implicit on asm without any output operands and
+> it is about whether the inline asm can be DCEd, not whether it can be CSEd.
 > 
-> The 32-bit mask is the default on all buses you might see a dwc3 controller
-> on, so you can drop that as well, and just leave the
-> dma_set_mask_and_coherent().
+> 	Jakub
 > 
->         Arnd
-> 
-
-Makes sense, will drop the two things for v3.
-
-Thanks,
-
-Sven
-
