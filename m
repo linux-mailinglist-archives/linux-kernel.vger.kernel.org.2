@@ -2,150 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE13F39CC93
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 05:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 209DC39CC90
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 05:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230158AbhFFDu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 23:50:29 -0400
-Received: from mail-lf1-f44.google.com ([209.85.167.44]:44937 "EHLO
-        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230025AbhFFDu1 (ORCPT
+        id S230142AbhFFDqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 23:46:16 -0400
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:35691 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230025AbhFFDqO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 23:50:27 -0400
-Received: by mail-lf1-f44.google.com with SMTP id r198so17024334lff.11
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 20:48:24 -0700 (PDT)
+        Sat, 5 Jun 2021 23:46:14 -0400
+Received: by mail-oi1-f169.google.com with SMTP id v22so14378469oic.2
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 20:44:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oYTZ0aVkCupy147WxRNKwW/8x7k8EKzPl0T5uXCBADE=;
-        b=Zo6bRdKVAXx4rABaNQFHDKIcnmCE0mQIEHI2xzzZsiSixlnzFQRE7LEfhxGkjl6YKa
-         tqQ2emAPcylF8ergb0DoTwbkVnUyd3IZD1Fc/0M87b1M2fNep6H/kY+77J3vUZh3Ge3U
-         tTIZehMKt1Lln/1Lh7r9w8XgIHb5V+QKF+nkE=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NeFD/X/bZOxXpTRfRudMJyF7Fp7mjQ5t9npIatv+GWw=;
+        b=h9FOpfPPswviZblqwRovErB5uSjagSMz/VMPp6ZmdE5TFmaXPe/oLhQH4NSGmWFpRe
+         nE4j/rgDtjgkm8CeANZ/w22G4VOveRE5GcrHRKX1EQYcYEo/MXkR2lHaiiSjbUvX2YJ/
+         abU4CSpVqCEklGjUDBOnZcBG/JNs0VTJX/IgKSMuv6NTBNDz5MqxZgO2GoucnY/a1AnT
+         Cx7O9Lfnxz3ro994dXeWK3D9p45HUNbY70cx/wE+zphui9JaZUQP74znulh79GxzqccP
+         Yx0btF/44o7fcqtqAtBMfF4RzgJjuYQrDaHy07p4YsuPQ4kzOpcqx55LrV625JYW0BFV
+         uo6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oYTZ0aVkCupy147WxRNKwW/8x7k8EKzPl0T5uXCBADE=;
-        b=Ypw9svuwuWGO1Owtg5ZWDCPvAKAsEbrdTicY30nALD1pqjt0JAmgRxa04R3e/9BgM2
-         E1f3sGWr6UV4I47eIF6gghukuixpCcU/UX19LQEsmq57kL9bdu2Z3Hk5qe9+NI9pgy6C
-         9BYu8zLm8te0Q59u0VcFC1yhybLwxiJmkDOwE9pY83pvRov0xedlK3LZlTxdFNSwlT1x
-         dFCt4F4ngQm/yuinCx2i1ax1BZPtSzgqJKHAbr/GI5H+ohjbUEo7mrB8wBNcoNao5BCy
-         kW51iHMkn6FMV+D3Ycz+bqjBfWSK7X0joAW0klQfixXq0mUP04CWuOeFjipxr1k7bNad
-         koBQ==
-X-Gm-Message-State: AOAM532bmnVBc1ymNzXXK0s0LtjK2CUieKwRkjyytLeraWqJlv997N5t
-        ibkrd16Kc3jC9eHa+Iu1Jn4Lio+ybMCo9Q5PXE4=
-X-Google-Smtp-Source: ABdhPJxxEjYaw1UvNeaxv6GZL3MqBK0y7LZakD7qw7VnEqwL/9Ah8P/FYmD3Hd6MqbNZTlqU4Gj4Uw==
-X-Received: by 2002:a05:6512:3fa2:: with SMTP id x34mr7518555lfa.437.1622951243147;
-        Sat, 05 Jun 2021 20:47:23 -0700 (PDT)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
-        by smtp.gmail.com with ESMTPSA id s11sm1245475ljc.66.2021.06.05.20.47.22
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 05 Jun 2021 20:47:23 -0700 (PDT)
-Received: by mail-lf1-f51.google.com with SMTP id r5so20414382lfr.5
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 20:47:22 -0700 (PDT)
-X-Received: by 2002:a05:6512:374b:: with SMTP id a11mr7389694lfs.377.1622950876683;
- Sat, 05 Jun 2021 20:41:16 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NeFD/X/bZOxXpTRfRudMJyF7Fp7mjQ5t9npIatv+GWw=;
+        b=ll4y+hGe00pdHVx0Ijlb0iTCTIFQIGdgcVvvJpFHgjiRWhuePaYt8G8TADlQepCTc7
+         r6qY9r9IhzSveJnOBDkQUEoK3zvnQoiB6w1wbtLeuHDudJfwuXW2aF/ik2/6oLgh5JQy
+         8S80OmdIMM2Tgr2zn2xcxrJBVEG/WBW3Egz93HC8nHNbzeLDLb7Q4YkGdmNEu6fr4Etf
+         bEGWDu0Md0/7KmVPm5pWML0vrQdzHsF5rc/azvMLcoH6Ig93cdYW9BQJMnzaslA1VlzR
+         krc5zil2ah5iA2fo9u1VYrDEv3+noO5QIdA26L67iIAQaGIU/Go0APF/GpGvXPS4tVBC
+         +6KA==
+X-Gm-Message-State: AOAM531qFwebMV6ZFVTvWs+OlFYifs0v9aovu0f0CvJRRlnnryjyPk33
+        WWES262FzMqaX4kLeeb/WiHS3w==
+X-Google-Smtp-Source: ABdhPJyuWcnHt2IlLLaaW4PeU/4t+iP/z2uKL/taoQ4wCW2IlUseNhGAropDtu64zdIZwg4JVrn1HA==
+X-Received: by 2002:a54:4504:: with SMTP id l4mr9344859oil.152.1622950976611;
+        Sat, 05 Jun 2021 20:42:56 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id q1sm1432231oog.46.2021.06.05.20.42.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Jun 2021 20:42:56 -0700 (PDT)
+Date:   Sat, 5 Jun 2021 22:42:54 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Maulik Shah <mkshah@codeaurora.org>, evgreen@chromium.org,
+        mka@chromium.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, agross@kernel.org,
+        dianders@chromium.org, linux@roeck-us.net, rnayak@codeaurora.org,
+        lsrao@codeaurora.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v8 3/5] arm64: dts: qcom: sc7180: Enable SoC sleep stats
+Message-ID: <YLxEPkQdKKYNDHqv@builder.lan>
+References: <1621596371-26482-1-git-send-email-mkshah@codeaurora.org>
+ <1621596371-26482-4-git-send-email-mkshah@codeaurora.org>
+ <CAE-0n53ySKwDwzRYFYjnQnqVAujVrkik2U-PeCuS61xQU-hbWA@mail.gmail.com>
+ <YLUjbwFSJOSWS0IV@builder.lan>
+ <CAE-0n53hdd1tEmYwTL0CNi=S6CUxRhWnkJz-KoTj2UnedNKXmg@mail.gmail.com>
+ <YLhCGC/qgP6ESNl7@yoga>
+ <CAE-0n511_GHcyPDSeDaf5QSqVQqyHOqxJCGaSWNr=x9uotegLg@mail.gmail.com>
 MIME-Version: 1.0
-References: <YLpSEM7sxSmsuc5t@hirez.programming.kicks-ass.net>
- <20210604182708.GB1688170@rowland.harvard.edu> <CAHk-=wiuLpmOGJyB385UyQioWMVKT6wN9UtyVXzt48AZittCKg@mail.gmail.com>
- <CAHk-=wik7T+FoDAfqFPuMGVp6HxKYOf8UeKt3+EmovfivSgQ2Q@mail.gmail.com>
- <20210604205600.GB4397@paulmck-ThinkPad-P17-Gen-1> <CAHk-=wgmUbU6XPHz=4NFoLMxH7j_SR-ky4sKzOBrckmvk5AJow@mail.gmail.com>
- <20210604214010.GD4397@paulmck-ThinkPad-P17-Gen-1> <CAHk-=wg0w5L7-iJU_kvEh9stXZoh2srRF4jKToKmSKyHv-njvA@mail.gmail.com>
- <20210605145739.GB1712909@rowland.harvard.edu> <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1>
- <20210606012903.GA1723421@rowland.harvard.edu>
-In-Reply-To: <20210606012903.GA1723421@rowland.harvard.edu>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 5 Jun 2021 20:41:00 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgUsReyz4uFymB8mmpphuP0vQ3DktoWU_x4u6impbzphg@mail.gmail.com>
-Message-ID: <CAHk-=wgUsReyz4uFymB8mmpphuP0vQ3DktoWU_x4u6impbzphg@mail.gmail.com>
-Subject: Re: [RFC] LKMM: Add volatile_if()
-To:     Alan Stern <stern@rowland.harvard.edu>,
-        Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAE-0n511_GHcyPDSeDaf5QSqVQqyHOqxJCGaSWNr=x9uotegLg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 5, 2021 at 6:29 PM Alan Stern <stern@rowland.harvard.edu> wrote:
->
-> Interesting.  And changing one of the branches from barrier() to __asm__
-> __volatile__("nop": : :"memory") also causes a branch to be emitted.  So
-> even though the compiler doesn't "look inside" assembly code, it does
-> compare two pieces at least textually and apparently assumes if they are
-> identical then they do the same thing.
+On Fri 04 Jun 16:53 CDT 2021, Stephen Boyd wrote:
 
-That's actually a feature in some cases, ie the ability to do CSE on
-asm statements (ie the "always has the same output" optimization that
-the docs talk about).
+> Quoting Bjorn Andersson (2021-06-02 19:44:40)
+> > On Wed 02 Jun 19:26 CDT 2021, Stephen Boyd wrote:
+> >
+> > > Quoting Bjorn Andersson (2021-05-31 10:57:03)
+> > > > On Wed 26 May 18:30 CDT 2021, Stephen Boyd wrote:
+> > > >
+> > > > > Quoting Maulik Shah (2021-05-21 04:26:09)
+> > > > > > @@ -3223,6 +3223,11 @@
+> > > > > >                         #power-domain-cells = <1>;
+> > > > > >                 };
+> > > > > >
+> > > > > > +               rpmh-sleep-stats@c3f0000 {
+> > > > > > +                       compatible = "qcom,rpmh-sleep-stats";
+> > > > > > +                       reg = <0 0x0c3f0000 0 0x400>;
+> > > > > > +               };
+> > > > > > +
+> > > > >
+> > > > > Does this need to be in DT? Can the sc7180-aoss-qmp driver use the
+> > > > > aux-bus and stick the sleep stats device on there?
+> > > > >
+> > > >
+> > > > The AOSS memory space has N chunks of "message ram", one is used for the
+> > > > QMP protocol (presumably the APSS specific one), a different one is used
+> > > > for the sleep stats.
+> > > >
+> > > > I presume we could have come up with a binding for the entire AOSS/AOP
+> > > > and then describe (either implicit or explicitly) the QMP and
+> > > > debug-stats under that.
+> > > >
+> > > > But we'd also have to come up with the same container-device for the RPM
+> > > > case.
+> > >
+> > > Because the rpm node doesn't include this region of memory today? I
+> > > still fail to see why we're changing the existing binding and adding a
+> > > DT node for this new region that is basically a debug feature.
+> >
+> > We're not changing the binding, the memory region for the "AOSS QMP"
+> > thing was never larger than 0x400.
+> >
+> > 0x100000 is the size of all the AOSS "msg_ram" regions. We don't have
+> > this whole thing described in a binding and we don't have an
+> > implementation for the whole thing.
+> >
+> > If we're going for that we'd need to extend the binding to indicate
+> > which of the msg_ram regions are used for APSS QMP and for debug stats
+> > on particular platform (either by compatible, explicit properties or as
+> > some subnodes).
+> 
+> Fair enough. At the least, can we change the name of the node then to
+> 'sram' or 'ram'? The 'rpmh-sleep-stats' node name is nonsense.
+> 
 
-So gcc has always looked at the asm string for that reason, afaik.
+Yes, "ram" sounds like a better node name for both the qmp and
+sleep-stats region - in the RPMH case.
 
-I think it's something of a bug when it comes to "asm volatile", but
-the documentation isn't exactly super-specific.
+> >
+> >
+> > That said, as I looked into my other objection, for the RPM
+> > (non-hardened) case it seems that we're actually describing the RPM
+> > region. So there it would make sense to describe it as such in DT - but
+> > we don't have any other code (that I'm aware of) that would implement
+> > the "qcom,<platform>-rpm".
+> >
+> 
+> I only half parsed this part. Are you saying that because we don't have
+> a driver for qcom,<platform>-rpm we shouldn't keep it all within the rpm
+> node?
 
-There is a statement of "Under certain circumstances, GCC may
-duplicate (or remove duplicates of) your assembly code when
-optimizing" and a suggestion of using "%=" to generate a unique
-instance of an asm.
+What I was trying to say is that in the RPM (non-H) case the described
+memory region is not a chunk of "ram" (or "sram"), but seems to rather
+be the RPM region. So there it seems more reasonable to have a non-debug
+compatible, but I don't think we have any other use for it than the
+debug-stats...
 
-Which might actually be a good idea for "barrier()", just in case.
-However, the problem with that is that I don't think we are guaranteed
-to have a universal comment character for asm statements.
-
-IOW, it might be a good idea to do something like
-
-   #define barrier() \
-        __asm__ __volatile__("# barrier %=": : :"memory")
-
-but I'm  not 100% convinced that '#' is always a comment in asm code,
-so the above might not actually build everywhere.
-
-However, *testing* the above (in my config, where '#' does work as a
-comment character) shows that gcc doesn't actually consider them to be
-distinct EVEN THEN, and will still merge two barrier statements.
-
-That's distressing.
-
-So the gcc docs are actively wrong, and %= does nothing - it will
-still compare as the exact same inline asm, because the string
-equality testing is apparently done before any expansion.
-
-Something like this *does* seem to work:
-
-   #define ____barrier(id) __asm__ __volatile__("#" #id: : :"memory")
-   #define __barrier(id) ____barrier(id)
-   #define barrier() __barrier(__COUNTER__)
-
-which is "interesting" or "disgusting" depending on how you happen to feel.
-
-And again - the above works only as long as "#" is a valid comment
-character in the assembler. And I have this very dim memory of us
-having comments in inline asm, and it breaking certain configurations
-(for when the assembler that the compiler uses is a special
-human-unfriendly one that only accepts compiler output).
-
-You could make even more disgusting hacks, and have it generate something like
-
-    .pushsection .discard.barrier
-    .long #id
-    .popsection
-
-instead of a comment. We already expect that to work and have generic
-inline asm cases that generate code like that.
-
-              Linus
+Regards,
+Bjorn
