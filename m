@@ -2,247 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0951D39CFE0
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 17:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E43CC39CFE2
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 17:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230207AbhFFPvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 11:51:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbhFFPvE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 11:51:04 -0400
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04BCCC061766;
-        Sun,  6 Jun 2021 08:49:14 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id E4EA21280946;
-        Sun,  6 Jun 2021 08:49:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1622994552;
-        bh=FYl7mwu6LLvSpk3rnuHAfiCIgSiclVR/MbkXA3/WIEQ=;
-        h=Message-ID:Subject:From:To:Date:From;
-        b=W0bKIKp5rhOQNfnbJy8PsMAVgCrijhuZ2Yn3MPEarIeoDyjlkyq1/xjVs0vJ0BOYp
-         G0keR26GLTFCWaM3Y4pbZyS9tJ8K6DsoiF0gts1C4TZ8xZCgGg2oc5kbzS2O9tBNIY
-         We3o0RUjO3B8ZOpKk4XCzKEncJ7imvCuY8NOdFoA=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id TTzNMhhgMJha; Sun,  6 Jun 2021 08:49:12 -0700 (PDT)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::c447])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 23526128093E;
-        Sun,  6 Jun 2021 08:49:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1622994552;
-        bh=FYl7mwu6LLvSpk3rnuHAfiCIgSiclVR/MbkXA3/WIEQ=;
-        h=Message-ID:Subject:From:To:Date:From;
-        b=W0bKIKp5rhOQNfnbJy8PsMAVgCrijhuZ2Yn3MPEarIeoDyjlkyq1/xjVs0vJ0BOYp
-         G0keR26GLTFCWaM3Y4pbZyS9tJ8K6DsoiF0gts1C4TZ8xZCgGg2oc5kbzS2O9tBNIY
-         We3o0RUjO3B8ZOpKk4XCzKEncJ7imvCuY8NOdFoA=
-Message-ID: <22894c5d4fd4bcfa29bd945ce81112606d2fe5fc.camel@HansenPartnership.com>
-Subject: [GIT PULL] SCSI fixes for 5.13-rc4
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Sun, 06 Jun 2021 08:49:10 -0700
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S230233AbhFFPv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 11:51:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50050 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230090AbhFFPvX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 11:51:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 247E861420;
+        Sun,  6 Jun 2021 15:49:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622994573;
+        bh=Ba0ZRzfXy1ZboAF2cVFrAv6htLIq1wX9Swr8Tt/5sOw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=RUZVwwjLQkUl5KRHf2wlVoxOel2Lm2hxJIfdekgyJUr6vaDCM+yBqJ1aHufRDa0sS
+         Hie3hMbuVwlytQKrjXHNSv29BBdGhnNMMqaB+4cl3Qs5EDG7CRqX9UwbAvRGq4F4jw
+         r4GfoF2H0eaYsFS+NQ+HnJa56HuxV1/BRZ3G1okVN6hY6UDqhkVE84nzi8mky7Uj1w
+         fcoNlO/VuM+cBOmnXe9gF1+a5Ooeb/iuB8oxn07VzbXjccEmSVU8HjVpA67M9hkzTH
+         KuArdORyTMrA3CQ30RKYmRKBzL5X813XKShhgZsPjCrsTSul79lsrBHNZavJ9omAKb
+         lCUvr7aIX12DQ==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org,
+        aneesh.kumar@linux.ibm.com, Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>
+Subject: [PATCH v2] perf/probe: Report permission error for tracefs access
+Date:   Mon,  7 Jun 2021 00:49:28 +0900
+Message-Id: <162299456839.503471.13863002017089255222.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210605125650.acab55ee6c8e954541bfb85f@kernel.org>
+References: <20210605125650.acab55ee6c8e954541bfb85f@kernel.org>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Five small and fairly minor fixes, all in drivers.
+Report permission error for the tracefs open and rewrite
+whole the error message code around it.
+You'll see a hint according to what you want to do with
+perf probe as below.
 
-The patch is available here:
+  $ perf probe -l
+  No permission to read tracefs.
+  Please try 'sudo mount -o remount,mode=755 /sys/kernel/tracing/'
+    Error: Failed to show event list.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+  $ perf probe -d \*
+  No permission to write tracefs.
+  Please run this command again with sudo.
+    Error: Failed to delete events.
 
-The short changelog is:
+This also fixes -ENOTSUP checking for mounting tracefs/debugfs.
+Actually open returns -ENOENT in that case and we have to check
+it with current mount point list. If we unmount debugfs and tracefs
+perf probe shows correct message as below.
 
-Daniel Wagner (1):
-      scsi: qedf: Do not put host in qedf_vport_create() unconditionally
+  $ perf probe -l
+  Debugfs or tracefs is not mounted
+  Please try 'sudo mount -t tracefs nodev /sys/kernel/tracing/'
+    Error: Failed to show event list.
 
-Ewan D. Milne (1):
-      scsi: scsi_devinfo: Add blacklist entry for HPE OPEN-V
 
-James Smart (1):
-      scsi: lpfc: Fix failure to transmit ABTS on FC link
-
-Maurizio Lombardi (1):
-      scsi: target: core: Fix warning on realtime kernels
-
-Stanley Chu (1):
-      scsi: ufs: ufs-mediatek: Fix HCI version in some platforms
-
-And the diffstat:
-
- drivers/scsi/lpfc/lpfc_sli.c           |  4 +---
- drivers/scsi/qedf/qedf_main.c          | 20 +++++++++-----------
- drivers/scsi/scsi_devinfo.c            |  1 +
- drivers/scsi/ufs/ufs-mediatek.c        | 15 ++++++++++++++-
- drivers/target/target_core_transport.c |  4 +---
- 5 files changed, 26 insertions(+), 18 deletions(-)
-
-With full diff below.
-
-James
-
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
+ Changes in v2:
+  - Rewrite whole the error message for the tracefs access.
+---
+ tools/perf/util/probe-file.c |   95 +++++++++++++++++++++++++++++-------------
+ 1 file changed, 65 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
-index 573c8599d71c..fc3682f15f50 100644
---- a/drivers/scsi/lpfc/lpfc_sli.c
-+++ b/drivers/scsi/lpfc/lpfc_sli.c
-@@ -20589,10 +20589,8 @@ lpfc_sli4_issue_abort_iotag(struct lpfc_hba *phba, struct lpfc_iocbq *cmdiocb,
- 	abtswqe = &abtsiocb->wqe;
- 	memset(abtswqe, 0, sizeof(*abtswqe));
+diff --git a/tools/perf/util/probe-file.c b/tools/perf/util/probe-file.c
+index 52273542e6ef..f9a6cbcd6415 100644
+--- a/tools/perf/util/probe-file.c
++++ b/tools/perf/util/probe-file.c
+@@ -22,6 +22,7 @@
+ #include "symbol.h"
+ #include "strbuf.h"
+ #include <api/fs/tracing_path.h>
++#include <api/fs/fs.h>
+ #include "probe-event.h"
+ #include "probe-file.h"
+ #include "session.h"
+@@ -31,44 +32,78 @@
+ /* 4096 - 2 ('\n' + '\0') */
+ #define MAX_CMDLEN 4094
  
--	if (lpfc_is_link_up(phba))
-+	if (!lpfc_is_link_up(phba))
- 		bf_set(abort_cmd_ia, &abtswqe->abort_cmd, 1);
--	else
--		bf_set(abort_cmd_ia, &abtswqe->abort_cmd, 0);
- 	bf_set(abort_cmd_criteria, &abtswqe->abort_cmd, T_XRI_TAG);
- 	abtswqe->abort_cmd.rsrvd5 = 0;
- 	abtswqe->abort_cmd.wqe_com.abort_tag = xritag;
-diff --git a/drivers/scsi/qedf/qedf_main.c b/drivers/scsi/qedf/qedf_main.c
-index 756231151882..b92570a7c309 100644
---- a/drivers/scsi/qedf/qedf_main.c
-+++ b/drivers/scsi/qedf/qedf_main.c
-@@ -1827,22 +1827,20 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
- 		fcoe_wwn_to_str(vport->port_name, buf, sizeof(buf));
- 		QEDF_WARN(&(base_qedf->dbg_ctx), "Failed to create vport, "
- 			   "WWPN (0x%s) already exists.\n", buf);
--		goto err1;
-+		return rc;
- 	}
+-static void print_open_warning(int err, bool uprobe)
++static bool print_common_warning(int err, bool readwrite)
+ {
+-	char sbuf[STRERR_BUFSIZE];
++	if (err == -EACCES)
++		pr_warning("No permission to %s tracefs.\nPlease %s\n",
++			   readwrite ? "write" : "read",
++			   readwrite ? "run this command again with sudo." :
++				       "try 'sudo mount -o remount,mode=755 /sys/kernel/tracing/'");
++	else
++		return false;
  
- 	if (atomic_read(&base_qedf->link_state) != QEDF_LINK_UP) {
- 		QEDF_WARN(&(base_qedf->dbg_ctx), "Cannot create vport "
- 			   "because link is not up.\n");
--		rc = -EIO;
--		goto err1;
-+		return -EIO;
- 	}
+-	if (err == -ENOENT) {
+-		const char *config;
++	return true;
++}
  
- 	vn_port = libfc_vport_create(vport, sizeof(struct qedf_ctx));
- 	if (!vn_port) {
- 		QEDF_WARN(&(base_qedf->dbg_ctx), "Could not create lport "
- 			   "for vport.\n");
--		rc = -ENOMEM;
--		goto err1;
-+		return -ENOMEM;
- 	}
- 
- 	fcoe_wwn_to_str(vport->port_name, buf, sizeof(buf));
-@@ -1866,7 +1864,7 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
- 	if (rc) {
- 		QEDF_ERR(&(base_qedf->dbg_ctx), "Could not allocate memory "
- 		    "for lport stats.\n");
--		goto err2;
-+		goto err;
- 	}
- 
- 	fc_set_wwnn(vn_port, vport->node_name);
-@@ -1884,7 +1882,7 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
- 	if (rc) {
- 		QEDF_WARN(&base_qedf->dbg_ctx,
- 			  "Error adding Scsi_Host rc=0x%x.\n", rc);
--		goto err2;
-+		goto err;
- 	}
- 
- 	/* Set default dev_loss_tmo based on module parameter */
-@@ -1925,9 +1923,10 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
- 	vport_qedf->dbg_ctx.host_no = vn_port->host->host_no;
- 	vport_qedf->dbg_ctx.pdev = base_qedf->pdev;
- 
--err2:
-+	return 0;
-+
-+err:
- 	scsi_host_put(vn_port->host);
--err1:
- 	return rc;
- }
- 
-@@ -1968,8 +1967,7 @@ static int qedf_vport_destroy(struct fc_vport *vport)
- 	fc_lport_free_stats(vn_port);
- 
- 	/* Release Scsi_Host */
--	if (vn_port->host)
--		scsi_host_put(vn_port->host);
-+	scsi_host_put(vn_port->host);
- 
- out:
- 	return 0;
-diff --git a/drivers/scsi/scsi_devinfo.c b/drivers/scsi/scsi_devinfo.c
-index d92cec12454c..d33355ab6e14 100644
---- a/drivers/scsi/scsi_devinfo.c
-+++ b/drivers/scsi/scsi_devinfo.c
-@@ -184,6 +184,7 @@ static struct {
- 	{"HP", "C3323-300", "4269", BLIST_NOTQ},
- 	{"HP", "C5713A", NULL, BLIST_NOREPORTLUN},
- 	{"HP", "DISK-SUBSYSTEM", "*", BLIST_REPORTLUN2},
-+	{"HPE", "OPEN-", "*", BLIST_REPORTLUN2 | BLIST_TRY_VPD_PAGES},
- 	{"IBM", "AuSaV1S2", NULL, BLIST_FORCELUN},
- 	{"IBM", "ProFibre 4000R", "*", BLIST_SPARSELUN | BLIST_LARGELUN},
- 	{"IBM", "2105", NULL, BLIST_RETRY_HWERROR},
-diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-mediatek.c
-index aee3cfc7142a..0a84ec9e7cea 100644
---- a/drivers/scsi/ufs/ufs-mediatek.c
-+++ b/drivers/scsi/ufs/ufs-mediatek.c
-@@ -603,11 +603,23 @@ static void ufs_mtk_get_controller_version(struct ufs_hba *hba)
- 
- 	ret = ufshcd_dme_get(hba, UIC_ARG_MIB(PA_LOCALVERINFO), &ver);
- 	if (!ret) {
--		if (ver >= UFS_UNIPRO_VER_1_8)
-+		if (ver >= UFS_UNIPRO_VER_1_8) {
- 			host->hw_ver.major = 3;
-+			/*
-+			 * Fix HCI version for some platforms with
-+			 * incorrect version
-+			 */
-+			if (hba->ufs_version < ufshci_version(3, 0))
-+				hba->ufs_version = ufshci_version(3, 0);
-+		}
- 	}
- }
- 
-+static u32 ufs_mtk_get_ufs_hci_version(struct ufs_hba *hba)
+-		if (uprobe)
+-			config = "CONFIG_UPROBE_EVENTS";
+-		else
+-			config = "CONFIG_KPROBE_EVENTS";
++static bool print_configure_probe_event(int kerr, int uerr)
 +{
-+	return hba->ufs_version;
++	const char *config, *file;
++
++	if (kerr == -ENOENT && uerr == -ENOENT) {
++		file = "{k,u}probe_events";
++		config = "CONFIG_KPROBE_EVENTS=y and CONFIG_UPROBE_EVENTS=y";
++	} else if (kerr == -ENOENT) {
++		file = "kprobe_events";
++		config = "CONFIG_KPROBE_EVENTS=y";
++	} else if (uerr == -ENOENT) {
++		file = "uprobe_events";
++		config = "CONFIG_UPROBE_EVENTS=y";
++	} else
++		return false;
+ 
+-		pr_warning("%cprobe_events file does not exist"
+-			   " - please rebuild kernel with %s.\n",
+-			   uprobe ? 'u' : 'k', config);
+-	} else if (err == -ENOTSUP)
+-		pr_warning("Tracefs or debugfs is not mounted.\n");
++	if (!debugfs__configured() && !tracefs__configured())
++		pr_warning("Debugfs or tracefs is not mounted\n"
++			   "Please try 'sudo mount -t tracefs nodev /sys/kernel/tracing/'\n");
+ 	else
+-		pr_warning("Failed to open %cprobe_events: %s\n",
+-			   uprobe ? 'u' : 'k',
+-			   str_error_r(-err, sbuf, sizeof(sbuf)));
++		pr_warning("%s/%s does not exist.\nPlease rebuild kernel with %s.\n",
++			   tracing_path_mount(), file, config);
++
++	return true;
 +}
 +
- /**
-  * ufs_mtk_init - find other essential mmio bases
-  * @hba: host controller instance
-@@ -1048,6 +1060,7 @@ static void ufs_mtk_event_notify(struct ufs_hba *hba,
- static const struct ufs_hba_variant_ops ufs_hba_mtk_vops = {
- 	.name                = "mediatek.ufshci",
- 	.init                = ufs_mtk_init,
-+	.get_ufs_hci_version = ufs_mtk_get_ufs_hci_version,
- 	.setup_clocks        = ufs_mtk_setup_clocks,
- 	.hce_enable_notify   = ufs_mtk_hce_enable_notify,
- 	.link_startup_notify = ufs_mtk_link_startup_notify,
-diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
-index 05d7ffd59df6..7e35eddd9eb7 100644
---- a/drivers/target/target_core_transport.c
-+++ b/drivers/target/target_core_transport.c
-@@ -3121,9 +3121,7 @@ __transport_wait_for_tasks(struct se_cmd *cmd, bool fabric_stop,
- 	__releases(&cmd->t_state_lock)
- 	__acquires(&cmd->t_state_lock)
- {
--
--	assert_spin_locked(&cmd->t_state_lock);
--	WARN_ON_ONCE(!irqs_disabled());
-+	lockdep_assert_held(&cmd->t_state_lock);
++static void print_open_warning(int err, bool uprobe, bool readwrite)
++{
++	char sbuf[STRERR_BUFSIZE];
++
++	if (print_common_warning(err, readwrite))
++		return;
++
++	if (print_configure_probe_event(uprobe ? 0 : err, uprobe ? err : 0))
++		return;
++
++	pr_warning("Failed to open %s/%cprobe_events: %s\n",
++		   tracing_path_mount(), uprobe ? 'u' : 'k',
++		   str_error_r(-err, sbuf, sizeof(sbuf)));
+ }
  
- 	if (fabric_stop)
- 		cmd->transport_state |= CMD_T_FABRIC_STOP;
+-static void print_both_open_warning(int kerr, int uerr)
++static void print_both_open_warning(int kerr, int uerr, bool readwrite)
+ {
+-	/* Both kprobes and uprobes are disabled, warn it. */
+-	if (kerr == -ENOTSUP && uerr == -ENOTSUP)
+-		pr_warning("Tracefs or debugfs is not mounted.\n");
+-	else if (kerr == -ENOENT && uerr == -ENOENT)
+-		pr_warning("Please rebuild kernel with CONFIG_KPROBE_EVENTS "
+-			   "or/and CONFIG_UPROBE_EVENTS.\n");
+-	else {
+-		char sbuf[STRERR_BUFSIZE];
+-		pr_warning("Failed to open kprobe events: %s.\n",
++	char sbuf[STRERR_BUFSIZE];
++
++	if (kerr == uerr && print_common_warning(kerr, readwrite))
++		return;
++
++	if (print_configure_probe_event(kerr, uerr))
++		return;
++
++	if (kerr < 0)
++		pr_warning("Failed to open %s/kprobe_events: %s.\n",
++			   tracing_path_mount(),
+ 			   str_error_r(-kerr, sbuf, sizeof(sbuf)));
+-		pr_warning("Failed to open uprobe events: %s.\n",
++	if (uerr < 0)
++		pr_warning("Failed to open %s/uprobe_events: %s.\n",
++			   tracing_path_mount(),
+ 			   str_error_r(-uerr, sbuf, sizeof(sbuf)));
+-	}
+ }
+ 
+ int open_trace_file(const char *trace_file, bool readwrite)
+@@ -109,7 +144,7 @@ int probe_file__open(int flag)
+ 	else
+ 		fd = open_kprobe_events(flag & PF_FL_RW);
+ 	if (fd < 0)
+-		print_open_warning(fd, flag & PF_FL_UPROBE);
++		print_open_warning(fd, flag & PF_FL_UPROBE, flag & PF_FL_RW);
+ 
+ 	return fd;
+ }
+@@ -122,7 +157,7 @@ int probe_file__open_both(int *kfd, int *ufd, int flag)
+ 	*kfd = open_kprobe_events(flag & PF_FL_RW);
+ 	*ufd = open_uprobe_events(flag & PF_FL_RW);
+ 	if (*kfd < 0 && *ufd < 0) {
+-		print_both_open_warning(*kfd, *ufd);
++		print_both_open_warning(*kfd, *ufd, flag & PF_FL_RW);
+ 		return *kfd;
+ 	}
+ 
 
