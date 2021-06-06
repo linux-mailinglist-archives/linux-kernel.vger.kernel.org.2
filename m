@@ -2,109 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 674B739CC11
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 03:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F46D39CC15
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 03:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230110AbhFFBay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 21:30:54 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:56167 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S230084AbhFFBaw (ORCPT
+        id S230132AbhFFBdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 21:33:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230073AbhFFBdN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 21:30:52 -0400
-Received: (qmail 1723601 invoked by uid 1000); 5 Jun 2021 21:29:03 -0400
-Date:   Sat, 5 Jun 2021 21:29:03 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <20210606012903.GA1723421@rowland.harvard.edu>
-References: <YLpSEM7sxSmsuc5t@hirez.programming.kicks-ass.net>
- <20210604182708.GB1688170@rowland.harvard.edu>
- <CAHk-=wiuLpmOGJyB385UyQioWMVKT6wN9UtyVXzt48AZittCKg@mail.gmail.com>
- <CAHk-=wik7T+FoDAfqFPuMGVp6HxKYOf8UeKt3+EmovfivSgQ2Q@mail.gmail.com>
- <20210604205600.GB4397@paulmck-ThinkPad-P17-Gen-1>
- <CAHk-=wgmUbU6XPHz=4NFoLMxH7j_SR-ky4sKzOBrckmvk5AJow@mail.gmail.com>
- <20210604214010.GD4397@paulmck-ThinkPad-P17-Gen-1>
- <CAHk-=wg0w5L7-iJU_kvEh9stXZoh2srRF4jKToKmSKyHv-njvA@mail.gmail.com>
- <20210605145739.GB1712909@rowland.harvard.edu>
- <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1>
+        Sat, 5 Jun 2021 21:33:13 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10ED1C061768
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Jun 2021 18:31:10 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id og14so15242302ejc.5
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 18:31:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fCe+jGmEAwmTn8B7zS0WgL0TEtprm2eMCt59nOvx6D0=;
+        b=1C/ZT6VO9/kFcqfqv3/zGsJrGPbrhEkvKHwxEuzs8VA+HqFgEw+D7iKUER1uKs1Jo/
+         WFi9sbz3aeTG7eP+wDUwtqXJxTGLIeLKpe+Neul/K0LwdDBXA6m6MUnx7DVMfVCm0TNl
+         24B6T3B5amn7STxRsQYCiKJoj/OTiS9PdP6TF3DpFYm4CINKKT2/qhFX55q9g5XzM1gW
+         IsLV/oz6uv37DVUDE/J4BvW1bzN2zZWz2qp9lhp57jie5gag3PPX2j+mA/S9azmajBOK
+         UH4ORdfwCnJ6mSDzr3achqJ+PRt1OuF9IX6S/DKHAy992Bmd7Ocqyxg5RmNb5/eOhu3C
+         p9Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fCe+jGmEAwmTn8B7zS0WgL0TEtprm2eMCt59nOvx6D0=;
+        b=muW/ua2WxqTiFp5OtOSIaffynlljU/7Pkp8rgen7CBdSnKkBU8qi4ttYRgBBbSmP3U
+         mqaiZEpb1ELbmTF2qQ3NJ5J2bmYtS3b8b1NQGayYh7bNag7iFllF58BhHiPFs7T4Ifx8
+         Topu0lgFuPo8zUzUgMFjda9+XAwFH8IPEs1ZvWT2Vo+WEFPJxHWNOnG8uvo0g856IArR
+         bQXQswfBCOfdKSrFVz1IvmhfJlmT7E/dr7F4R4nvQfAPLqpl2RI7VXneiPB09cLXrOF+
+         ic5W5X8d2/Px5VmziGF5UiHVXqIkU91+26TV1TwBclkNqaVJilVyvb/sGXDtcUEJgThk
+         sMZA==
+X-Gm-Message-State: AOAM533F1VQRQcTpn4HzBdFuCU3ZV/SzPa+lpRrwl04ePi3XUfCPSzF9
+        ih86XTkUFbuBSsIM36UXsusdsXT0SyrMRuzhhdWQ
+X-Google-Smtp-Source: ABdhPJyhY/AL0NTznJ9xF6JwaBvqMnxz7Ps9n6YMYTY6wpWXUGQF/hzXLj9xr7+Kqv4CWEHA77JSrz2Ou+hnQjZ4Kv8=
+X-Received: by 2002:a17:906:4111:: with SMTP id j17mr11223553ejk.488.1622943068465;
+ Sat, 05 Jun 2021 18:31:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210517092006.803332-1-omosnace@redhat.com> <CAHC9VhTasra0tU=bKwVqAwLRYaC+hYakirRz0Mn5jbVMuDkwrA@mail.gmail.com>
+ <01135120-8bf7-df2e-cff0-1d73f1f841c3@iogearbox.net> <CAHC9VhR-kYmMA8gsqkiL5=poN9FoL-uCyx1YOLCoG2hRiUBYug@mail.gmail.com>
+ <c7c2d7e1-e253-dce0-d35c-392192e4926e@iogearbox.net> <CAHC9VhS1XRZjKcTFgH1+n5uA-CeT+9BeSP5jvT2+RE5ougLpUg@mail.gmail.com>
+ <2e541bdc-ae21-9a07-7ac7-6c6a4dda09e8@iogearbox.net> <CAHC9VhT464vr9sWxqY3PRB4DAccz=LvRMLgWBsSViWMR0JJvOQ@mail.gmail.com>
+ <3ca181e3-df32-9ae0-12c6-efb899b7ce7a@iogearbox.net> <CAHC9VhTuPnPs1wMTmoGUZ4fvyy-es9QJpE7O_yTs2JKos4fgbw@mail.gmail.com>
+ <f4373013-88fb-b839-aaaa-3826548ebd0c@iogearbox.net> <CAHC9VhS=BeGdaAi8Ae5Fx42Fzy_ybkcXwMNcPwK=uuA6=+SRcg@mail.gmail.com>
+ <c59743f6-0000-1b15-bc16-ff761b443aef@iogearbox.net> <CAHC9VhT1JhdRw9P_m3niY-U-vukxTWKTE9q6AMyQ=r_ohpPxMw@mail.gmail.com>
+ <CAADnVQ+0bNtDj46Q8s-h=rqJgZz2JaGTeHpbmof3e7fBBQKuDQ@mail.gmail.com>
+In-Reply-To: <CAADnVQ+0bNtDj46Q8s-h=rqJgZz2JaGTeHpbmof3e7fBBQKuDQ@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Sat, 5 Jun 2021 21:30:57 -0400
+Message-ID: <CAHC9VhQv4xNhHsxpR7wqBsuch2UC=5DPAXTJAtujtF9G8wpfmQ@mail.gmail.com>
+Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
+ permission checks
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        selinux@vger.kernel.org, ppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 05, 2021 at 05:14:18PM -0700, Paul E. McKenney wrote:
-> On Sat, Jun 05, 2021 at 10:57:39AM -0400, Alan Stern wrote:
-> > Indeed, the expansion of the currently proposed version of
-> > 
-> > 	volatile_if (A) {
-> > 		B;
-> > 	} else {
-> > 		C;
-> > 	}
-> > 
-> > is basically the same as
-> > 
-> > 	if (A) {
-> > 		barrier();
-> > 		B;
-> > 	} else {
-> > 		barrier();
-> > 		C;
-> > 	}
+On Fri, Jun 4, 2021 at 8:08 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+> On Fri, Jun 4, 2021 at 4:34 PM Paul Moore <paul@paul-moore.com> wrote:
+> >
+> > > Again, the problem is not limited to BPF at all. kprobes is doing register-
+> > > time hooks which are equivalent to the one of BPF. Anything in run-time
+> > > trying to prevent probe_read_kernel by kprobes or BPF is broken by design.
+> >
+> > Not being an expert on kprobes I can't really comment on that, but
+> > right now I'm focused on trying to make things work for the BPF
+> > helpers.  I suspect that if we can get the SELinux lockdown
+> > implementation working properly for BPF the solution for kprobes won't
+> > be far off.
+>
+> Paul,
 
-> That does sound good, but...
-> 
-> Current compilers beg to differ at -O2: https://godbolt.org/z/5K55Gardn
-> 
-> ------------------------------------------------------------------------
-> #define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
-> #define WRITE_ONCE(x, val) (READ_ONCE(x) = (val))
-> #define barrier() __asm__ __volatile__("": : :"memory")
-> 
-> int x, y;
-> 
-> int main(int argc, char *argv[])
-> {
->     if (READ_ONCE(x)) {
->         barrier();
->         WRITE_ONCE(y, 1);
->     } else {
->         barrier();
->         WRITE_ONCE(y, 1);
->     }
->     return 0;
-> }
-> ------------------------------------------------------------------------
-> 
-> Both gcc and clang generate a load followed by a store, with no branch.
-> ARM gets the same results from both compilers.
-> 
-> As Linus suggested, removing one (but not both!) invocations of barrier()
-> does cause a branch to be emitted, so maybe that is a way forward.
-> Assuming it is more than just dumb luck, anyway.  :-/
+Hi Alexei,
 
-Interesting.  And changing one of the branches from barrier() to __asm__ 
-__volatile__("nop": : :"memory") also causes a branch to be emitted.  So 
-even though the compiler doesn't "look inside" assembly code, it does 
-compare two pieces at least textually and apparently assumes if they are 
-identical then they do the same thing.
+> Both kprobe and bpf can call probe_read_kernel==copy_from_kernel_nofault
+> from all contexts.
+> Including NMI.
 
-Alan
+Thanks, that is helpful.  In hindsight it should have been obvious
+that kprobe/BPF would offer to insert code into the NMI handlers, but
+I don't recall it earlier in the discussion, it's possible I simply
+missed the mention.
+
+> Most of audit_log_* is not acceptable.
+> Just removing a wakeup is not solving anything.
+
+That's not really fair now is it?  Removing the wakeups in
+audit_log_start() and audit_log_end() does solve some problems,
+although not all of them (i.e. the NMI problem being the 800lb
+gorilla).  Because of the NMI case we're not going to solve the
+LSM/audit case anytime soon so it looks like we are going to have to
+fall back to the patch Daniel proposed.
+
+Acked-by: Paul Moore <paul@paul-moore.com>
+
+--
+paul moore
+www.paul-moore.com
