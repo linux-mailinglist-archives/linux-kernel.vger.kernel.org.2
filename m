@@ -2,152 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA09339D1FC
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 00:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CF9139D1EF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 00:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbhFFWsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 18:48:05 -0400
-Received: from mail-ej1-f47.google.com ([209.85.218.47]:41592 "EHLO
-        mail-ej1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230519AbhFFWsD (ORCPT
+        id S230517AbhFFWld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 18:41:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230368AbhFFWlc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 18:48:03 -0400
-Received: by mail-ej1-f47.google.com with SMTP id ho18so12469058ejc.8
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 15:46:01 -0700 (PDT)
+        Sun, 6 Jun 2021 18:41:32 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A174C061766
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 15:39:30 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id e20so455801pgg.0
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 15:39:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gtTe+bW9CJrIIoUl0y1d11JaP4RsQBfOevBdp08DRug=;
-        b=OxInyRJVkqQCmKRmT6KGFE8qM7XAfQzY8nbQmo5qsLIenPiuQZPigbSL/hrNiuh00j
-         Fiyq6WXUnbySLjjZhVoY4ZVWT2wgI8gyhocnD0Acawt0/u24ZMB8KiorrZ5u8WVzW5Mp
-         bJ3imPB0o2E2dsaZWR8zv/W4ByDxPBlNuhDHo=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9bYFOydettRZiZfUc0/NYg9V0FKj/gOB4eMwxzHPpNU=;
+        b=UmXfhwOeXRsHrSOMBwxjLBqfP4AE/FtPfopT8EUYOfZX13udQvAGQR02dmS7XvQsgW
+         XGgmXvdU73JxG5CSDZ15Hj2m97zdmvqJNo9Qo/UpVXymXpYF26WHXcRxVbftIiENr2ZO
+         zU1ayrNqKRmd6RuZrWkjpl5a+gF8Z2WG7n3gLP8G9PTTKeFZJU0TGIaQPOMHxU3soNKI
+         R1NmY+s2o1J7HF+DouL8s50EmA19o+gFIPBtWn5t4wSwDtI7VAuT6aN6NFyDV3/lqycF
+         nVHW1TPILQswfRouXwIkMS+BWC+Vczx9ZLbMd7zjpbJsOzs5iP5Czygwzm4dpMjpBUcp
+         WLIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gtTe+bW9CJrIIoUl0y1d11JaP4RsQBfOevBdp08DRug=;
-        b=GdsghPiKnTmtEsVp/6NbfgS1iFf9XRqlZs+rYVobGPQZLNGFFdfWrukOp1yz3viLTx
-         JUhY0Y4LZxDML5YOMxQLLGteUzlEu62O/mQ6CWP+YtgA/P6DQbrhmFTmJTuX7tnD6+ar
-         I2fTSE19xeNQytiYtEH+GMxnhQ1vgwemBtsVPxlBmobQrKU8Eszbst66PfmAq+I1uNZ0
-         u7dAyZZB21+D9s4qzZqC8pMGyPcoGME2P/QkC49+dtpyxqHAlW51ZOSS3GmkJAe7WEmE
-         TR+A2F1TIxAJc+V5Q5OYUOal0ZS/A6OaZ2vsDSkmjyjICFYtkPkQOrzgYlJ7mxgWNs8j
-         P3dw==
-X-Gm-Message-State: AOAM530ucytnsJ03SY045TyvUgIZIif5S1XMqtzzDM9sOJZe1q3C+mxL
-        ncOvf3gGevem+gQAVE4wSbzqbUJgO58Ls2e7KLE=
-X-Google-Smtp-Source: ABdhPJybpF1diQrTgLDNtXh+c4fZkoNW8ZxKyQ+MCAnDCfNJd9VcZrs1erMjxBR0akuffsBeoUMr5g==
-X-Received: by 2002:a17:906:3845:: with SMTP id w5mr15545197ejc.518.1623019500719;
-        Sun, 06 Jun 2021 15:45:00 -0700 (PDT)
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com. [209.85.221.54])
-        by smtp.gmail.com with ESMTPSA id v23sm6989711eds.25.2021.06.06.15.45.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 06 Jun 2021 15:45:00 -0700 (PDT)
-Received: by mail-wr1-f54.google.com with SMTP id a11so13466013wrt.13
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 15:45:00 -0700 (PDT)
-X-Received: by 2002:a05:6512:3f82:: with SMTP id x2mr9598539lfa.421.1623019102844;
- Sun, 06 Jun 2021 15:38:22 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9bYFOydettRZiZfUc0/NYg9V0FKj/gOB4eMwxzHPpNU=;
+        b=s4mdh9rLDDUIP8JUx/1CCnskiwQ7UDZzh0OgmlRjVCF+e8OgUXrY49l1pQGUrn/zLC
+         cVVWGgKeTSd8GPI2mmhwyhYRPrDV97O6J91MEtDDXdNxdMc2yEvBrGeTO+CmVcnB3Oin
+         75eBD+jGbkSIkQYNMYF61JEtYJDVJ16oDwskiIczMPdn6xTMR1bBZNegBA2rOwn4OgOa
+         3AwBYXHqgNXcRYgdu5Evi9TAXy0ixqlFdGX7ovDT968+BySuiKmR1iS6MujFd4sYpNNg
+         457mFTHh+J+Bm0O8gt8z4/se2+k4xY0yM8CnJTCCkg0SjkhZpJxEEtaC+RdkYrACXJoR
+         g5VA==
+X-Gm-Message-State: AOAM5308JjxCw12G0ZIL9QZpu+BdbvnpHZDfftz/8UlE3Cogs9kHGrEH
+        Hwz8cr2xV8a9eeGLBO009/I=
+X-Google-Smtp-Source: ABdhPJwh55IEPLh3pEAlMyXeUxM6YvAw+3mAVFyQ7rAmGY+0iUDzu0pBaKKlo6Fh5e3Mu2Cb19u2vA==
+X-Received: by 2002:a05:6a00:1794:b029:2ee:c59c:56bf with SMTP id s20-20020a056a001794b02902eec59c56bfmr4762081pfg.2.1623019169679;
+        Sun, 06 Jun 2021 15:39:29 -0700 (PDT)
+Received: from Crosshair-VIII-Hero.lan (066-188-147-045.res.spectrum.com. [66.188.147.45])
+        by smtp.gmail.com with ESMTPSA id f3sm6245272pfd.21.2021.06.06.15.39.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Jun 2021 15:39:29 -0700 (PDT)
+From:   riptide_wave <chrisrblake93@gmail.com>
+To:     ptyser@xes-inc.com, lee.jones@linaro.org,
+        linux-kernel@vger.kernel.org
+Cc:     riptide_wave <chrisrblake93@gmail.com>
+Subject: [PATCH] mfd: lpc_ich: Enable GPIO driver for DH89xxCC
+Date:   Sun,  6 Jun 2021 17:39:19 -0500
+Message-Id: <20210606223919.24015-1-chrisrblake93@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CAHk-=wiuLpmOGJyB385UyQioWMVKT6wN9UtyVXzt48AZittCKg@mail.gmail.com>
- <CAHk-=wik7T+FoDAfqFPuMGVp6HxKYOf8UeKt3+EmovfivSgQ2Q@mail.gmail.com>
- <20210604205600.GB4397@paulmck-ThinkPad-P17-Gen-1> <CAHk-=wgmUbU6XPHz=4NFoLMxH7j_SR-ky4sKzOBrckmvk5AJow@mail.gmail.com>
- <20210604214010.GD4397@paulmck-ThinkPad-P17-Gen-1> <CAHk-=wg0w5L7-iJU_kvEh9stXZoh2srRF4jKToKmSKyHv-njvA@mail.gmail.com>
- <20210605145739.GB1712909@rowland.harvard.edu> <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1>
- <20210606012903.GA1723421@rowland.harvard.edu> <CAHk-=wgUsReyz4uFymB8mmpphuP0vQ3DktoWU_x4u6impbzphg@mail.gmail.com>
- <20210606185922.GF7746@tucnak> <CAHk-=wis8zq3WrEupCY6wcBeW3bB0WMOzaUkXpb-CsKuxM=6-w@mail.gmail.com>
- <alpine.LNX.2.20.13.2106070017070.7184@monopod.intra.ispras.ru>
-In-Reply-To: <alpine.LNX.2.20.13.2106070017070.7184@monopod.intra.ispras.ru>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 6 Jun 2021 15:38:06 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjwXs5+SOZGTaZ0bP9nsoA+PymAcGE4CBDVX3edGUcVRg@mail.gmail.com>
-Message-ID: <CAHk-=wjwXs5+SOZGTaZ0bP9nsoA+PymAcGE4CBDVX3edGUcVRg@mail.gmail.com>
-Subject: Re: [RFC] LKMM: Add volatile_if()
-To:     Alexander Monakov <amonakov@ispras.ru>
-Cc:     Jakub Jelinek <jakub@redhat.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 6, 2021 at 2:19 PM Alexander Monakov <amonakov@ispras.ru> wrote:
->
-> > So yeah, that seems like a nice solution to the issue, and should make
-> > the barriers all unique to the compiler.
->
-> It also plants a nice LTO time-bomb (__COUNTER__ values will be unique
-> only within each LTO input unit, not across all of them).
+Based on the Intel Datasheet for the DH89xxCC PCH, the GPIO driver
+is the same as ICH_v5_GPIO, minus the fact the DH89xxCC also has
+blink support. However, blink support isn't supported by the GPIO
+driver so we should use ICH_v5_GPIO. Tested and working on a Meraki
+MX100-HW.
 
-That could be an issue in other circumstances, but for at least
-volatile_if() that doesn't much matter. The decision there is purely
-local, and it's literally about the two sides of the conditional not
-being merged.
+Signed-off-by: Chris Blake <chrisrblake93@gmail.com>
+---
+ drivers/mfd/lpc_ich.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Now, an optimizing linker or assembler can of course do anything at
-all in theory: and if that ends up being an issue we'd have to have
-some way to actually propagate the barrier from being just a compiler
-thing. Right now gcc doesn't even output the barrier in the assembly
-code, so it's invisible to any optimizing assembler/linker thing.
+diff --git a/drivers/mfd/lpc_ich.c b/drivers/mfd/lpc_ich.c
+index 3bbb29a7e7a5..f10e53187f67 100644
+--- a/drivers/mfd/lpc_ich.c
++++ b/drivers/mfd/lpc_ich.c
+@@ -489,6 +489,7 @@ static struct lpc_ich_info lpc_chipset_info[] = {
+ 	[LPC_DH89XXCC] = {
+ 		.name = "DH89xxCC",
+ 		.iTCO_version = 2,
++		.gpio_version = ICH_V5_GPIO,
+ 	},
+ 	[LPC_PPT] = {
+ 		.name = "Panther Point",
+-- 
+2.25.1
 
-But I don't think that's an issue with what _currently_ goes on in an
-assembler or linker - not even a smart one like LTO.
-
-And such things really are independent of "volatile_if()". We use
-barriers for other things where we need to force some kind of
-operation ordering, and right now the only thing that re-orders
-accesses etc is the compiler.
-
-Btw, since we have compiler people on line, the suggested 'barrier()'
-isn't actually perfect for this particular use:
-
-   #define barrier() __asm__ __volatile__("" : : "i" (__COUNTER__) : "memory")
-
-in the general barrier case, we very much want to have that "memory"
-clobber, because the whole point of the general barrier case is that
-we want to make sure that the compiler doesn't cache memory state
-across it (ie the traditional use was basically what we now use
-"cpu_relax()" for, and you would use it for busy-looping on some
-condition).
-
-In the case of "volatile_if()", we actually would like to have not a
-memory clobber, but a "memory read". IOW, it would be a barrier for
-any writes taking place, but reads can move around it.
-
-I don't know of any way to express that to the compiler. We've used
-hacks for it before (in gcc, BLKmode reads turn into that kind of
-barrier in practice, so you can do something like make the memory
-input to the asm be a big array). But that turned out to be fairly
-unreliable, so now we use memory clobbers even if we just mean "reads
-random memory".
-
-Example: variable_test_bit(), which generates a "bt" instruction, does
-
-                     : "m" (*(unsigned long *)addr), "Ir" (nr) : "memory");
-
-and the memory clobber is obviously wrong: 'bt' only *reads* memory,
-but since the whole reason we use it is that it's not just that word
-at address 'addr', in order to make sure that any previous writes are
-actually stable in memory, we use that "memory" clobber.
-
-It would be much nicer to have a "memory read" marker instead, to let
-the compiler know "I need to have done all pending writes to memory,
-but I can still cache read values over this op because it doesn't
-_change_ memory".
-
-Anybody have ideas or suggestions for something like that?
-
-                 Linus
