@@ -2,3663 +2,461 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D3D39CFCA
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 17:32:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC0F39CFCB
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 17:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbhFFPeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 11:34:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47852 "EHLO mail.kernel.org"
+        id S230197AbhFFPfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 11:35:11 -0400
+Received: from mga18.intel.com ([134.134.136.126]:16847 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230097AbhFFPe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 11:34:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E496F6142E;
-        Sun,  6 Jun 2021 15:32:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622993558;
-        bh=KkzqFoZewwIMqvH1Ttp32h4AkC8G2qorf5g5Wxki15o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nUG6UIvtHuQCNj4XYZl8qkCwUB+tKU2Y3Z67rDpj2IPJD2ZDP3vQnAe00p/4FlyT2
-         mSnoXy17yq3ifu6Z9ei9NBz325a0NkCmAbCBjV6ZExpw6O3FNhjoJJnRjqfu8dOS8z
-         9vMqq6AMIiruqKND/PYO9Bajliv3xIljbYo8qfdIPjx64AVQYQjzjZ1/edZtWZqcvZ
-         duiClWBbrbOaPVZ0I0UVYSLntKg2gpWg89Y6EuOLflOOSN2yjfkvZOgTEnd2a0aUuC
-         E1879AdfaVpYeENIwLSoAaxPU36hu7+2JL73QkeFrAgXgITwDXORAccjd7LiMFq6Pf
-         E3SKj9SfD34dg==
-Received: by mail-lj1-f173.google.com with SMTP id m3so18400472lji.12;
-        Sun, 06 Jun 2021 08:32:37 -0700 (PDT)
-X-Gm-Message-State: AOAM531a2CaSsN+C6dLtRBO4eUgL27AQel+KDvBtS5V07KIJyOu3z79z
-        +0DlgVlP7tCtq1JUESl28vFZ2qbxl3JP9CzbefA=
-X-Google-Smtp-Source: ABdhPJxQ1K5qnhnHkbSg5RVAe3Yi7D0B0w1CuW2CFLqpbbtSyUxR6U8QCrkLL86G83/1Ph9jhn6CTinqqq5CyofCv80=
-X-Received: by 2002:a2e:8e90:: with SMTP id z16mr11113397ljk.508.1622993555844;
- Sun, 06 Jun 2021 08:32:35 -0700 (PDT)
+        id S230097AbhFFPfJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 11:35:09 -0400
+IronPort-SDR: 68sGYyOTSEIdqJiKUYS817YqdWwkvTk8cQF/xWmp4+qNkc5qZzNmAtBQi+Kua1cL7ZFQhTmJMe
+ eHrTuY1Ae4Yw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="191845179"
+X-IronPort-AV: E=Sophos;i="5.83,253,1616482800"; 
+   d="gz'50?scan'50,208,50";a="191845179"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 08:33:19 -0700
+IronPort-SDR: ua23AfhIQbuhVUXp/QLlFRN1FHfBUFpJlnm+NWf+DxSe3LONfqdxZcEJBZd5t4R3qkXR4d6ALy
+ jt/uhtVB/Fmg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,253,1616482800"; 
+   d="gz'50?scan'50,208,50";a="412830170"
+Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 06 Jun 2021 08:33:17 -0700
+Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lpum4-0007yq-Kv; Sun, 06 Jun 2021 15:33:16 +0000
+Date:   Sun, 6 Jun 2021 23:32:48 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     irqchip-bot for Marc Zyngier <tip-bot2@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, Marc Zyngier <maz@kernel.org>,
+        tglx@linutronix.de
+Subject: Re: [irqchip: irq/irqchip-next] MIPS: Do not include
+ linux/irqdomain.h from asm/irq.h
+Message-ID: <202106062305.4t26GT9p-lkp@intel.com>
+References: <162298343311.29796.14184763483794137414.tip-bot2@tip-bot2>
 MIME-Version: 1.0
-References: <1622970249-50770-1-git-send-email-guoren@kernel.org>
- <1622970249-50770-15-git-send-email-guoren@kernel.org> <20210606115027.5c715e64@slackpad.fritz.box>
-In-Reply-To: <20210606115027.5c715e64@slackpad.fritz.box>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Sun, 6 Jun 2021 23:32:22 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQgaJFW9knuVmW8J8zMAt_Gtq3KJ9gsGKg6=xLBuq0=uA@mail.gmail.com>
-Message-ID: <CAJF2gTQgaJFW9knuVmW8J8zMAt_Gtq3KJ9gsGKg6=xLBuq0=uA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 11/11] riscv: soc: Allwinner D1 GMAC driver only
- for temp use
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, wens@csie.org,
-        maxime@cerno.tech, Drew Fustini <drew@beagleboard.org>,
-        liush@allwinnertech.com,
-        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
-        wefu@redhat.com, linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Maxime Ripard <mripard@kernel.org>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        LABBE Corentin <clabbe.montjoie@gmail.com>,
-        Michael Walle <michael@walle.cc>,
-        Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="+QahgC5+KEYLbs62"
+Content-Disposition: inline
+In-Reply-To: <162298343311.29796.14184763483794137414.tip-bot2@tip-bot2>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- ,
 
-On Sun, Jun 6, 2021 at 6:50 PM Andre Przywara <andre.przywara@arm.com> wrot=
-e:
->
-> On Sun,  6 Jun 2021 09:04:09 +0000
-> guoren@kernel.org wrote:
->
-> Hi,
->
-> > From: liush <liush@allwinnertech.com>
-> >
-> > This is a temporary driver, only guaranteed to work on allwinner
-> > D1. In order to ensure the developer's demand for network usage.
->
-> That looks like some Allwinner BSP driver, please don't endorse code
-> of this quality (just look at all that commented code and the attempt
-> for compile-time configuration).
->
-> > It only could work at 1Gps mode.
-> >
-> > The correct gmac driver should follow (I guess)
-> > drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-> >
-> > If anyone is familiar with it and can help porting, I would be
-> > very grateful.
->
-> Have you tried compiling and using that driver? Ideally it should just
-> work, Linux drivers are meant to be portable, by design. And the driver
-> is already enabled by COMPILE_TEST.
-It still needs some work with dwmac-sun8i.c glue layer, eg:
-tx/rx-delay setting, clk & pinmux drivers.
+--+QahgC5+KEYLbs62
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The patch is just to help people using D1 with GMAC temporarily with
-network function.
+Hi irqchip-bot,
 
-> But I guess you need some extra care to make the non-coherent DMA work?
-> I haven't looked in detail, but are those new CMOs hooked into the
-> generic DMA framework?
-Yes, we have the simliar principle with arm & csky for non-coherent:
- - Using PTE attributes setting Using PTE attributes to support
-_PAGE_IOREMAP & _PAGE_WRITECOMBINE
- - Using CMO instructions deal SYNC_DMA_FOR_CPU/DEVICE.
+Thank you for the patch! Yet something to improve:
 
->
-> Cheers,
-> Andre
->
-> > Signed-off-by: Liu Shaohua <liush@allwinnertech.com>
-> > Tested-by: Guo Ren <guoren@kernel.org>
-> > Signed-off-by: Guo Ren <guoren@kernel.org>
-> > Cc: Maxime Ripard <mripard@kernel.org>
-> > Cc: Corentin Labbe <clabbe@baylibre.com>
-> > Cc: Samuel Holland <samuel@sholland.org>
-> > Cc: Icenowy Zheng <icenowy@aosc.io>
-> > Cc: LABBE Corentin <clabbe.montjoie@gmail.com>
-> > Cc: Michael Walle <michael@walle.cc>
-> > Cc: Chen-Yu Tsai <wens@csie.org>
-> > Cc: Maxime Ripard <maxime@cerno.tech>
-> > Cc: Wei Fu <wefu@redhat.com>
-> > Cc: Wei Wu <lazyparser@gmail.com>
-> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > ---
-> >  .../boot/dts/allwinner/allwinner-d1-nezha-kit.dts  |    2 +-
-> >  arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi    |   16 +
-> >  drivers/net/ethernet/Kconfig                       |    1 +
-> >  drivers/net/ethernet/Makefile                      |    1 +
-> >  drivers/net/ethernet/allwinnertmp/Kconfig          |   17 +
-> >  drivers/net/ethernet/allwinnertmp/Makefile         |    7 +
-> >  drivers/net/ethernet/allwinnertmp/sunxi-gmac-ops.c |  690 ++++++
-> >  drivers/net/ethernet/allwinnertmp/sunxi-gmac.c     | 2240 ++++++++++++=
-++++++++
-> >  drivers/net/ethernet/allwinnertmp/sunxi-gmac.h     |  258 +++
-> >  drivers/net/phy/realtek.c                          |    2 +-
-> >  10 files changed, 3232 insertions(+), 2 deletions(-)
-> >  create mode 100644 drivers/net/ethernet/allwinnertmp/Kconfig
-> >  create mode 100644 drivers/net/ethernet/allwinnertmp/Makefile
-> >  create mode 100644 drivers/net/ethernet/allwinnertmp/sunxi-gmac-ops.c
-> >  create mode 100644 drivers/net/ethernet/allwinnertmp/sunxi-gmac.c
-> >  create mode 100644 drivers/net/ethernet/allwinnertmp/sunxi-gmac.h
-> >
-> > diff --git a/arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-kit.dts b=
-/arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-kit.dts
-> > index cd9f7c9..31b681d 100644
-> > --- a/arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-kit.dts
-> > +++ b/arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-kit.dts
-> > @@ -11,7 +11,7 @@
-> >       compatible =3D "allwinner,d1-nezha-kit";
-> >
-> >       chosen {
-> > -             bootargs =3D "console=3DttyS0,115200";
-> > +             bootargs =3D "console=3DttyS0,115200 rootwait init=3D/sbi=
-n/init root=3D/dev/nfs rw nfsroot=3D192.168.101.200:/tmp/rootfs_nfs,v3,tcp,=
-nolock ip=3D192.168.101.23";
-> >               stdout-path =3D &serial0;
-> >       };
-> >
-> > diff --git a/arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi b/arch/ris=
-cv/boot/dts/allwinner/allwinner-d1.dtsi
-> > index 11cd938..d317e19 100644
-> > --- a/arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi
-> > +++ b/arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi
-> > @@ -80,5 +80,21 @@
-> >                       clocks =3D <&dummy_apb>;
-> >                       status =3D "disabled";
-> >               };
-> > +
-> > +             eth@4500000 {
-> > +                     compatible =3D "allwinner,sunxi-gmac";
-> > +                     reg =3D <0x00 0x4500000 0x00 0x10000 0x00 0x30000=
-30 0x00 0x04>;
-> > +                     interrupts-extended =3D <&plic 0x3e 0x04>;
-> > +                     interrupt-names =3D "gmacirq";
-> > +                     device_type =3D "gmac0";
-> > +                     phy-mode =3D "rgmii";
-> > +                     use_ephy25m =3D <0x01>;
-> > +                     tx-delay =3D <0x03>;
-> > +                     rx-delay =3D <0x03>;
-> > +                     gmac-power0;
-> > +                     gmac-power1;
-> > +                     gmac-power2;
-> > +                     status =3D "okay";
-> > +             };
-> >       };
-> >  };
-> > diff --git a/drivers/net/ethernet/Kconfig b/drivers/net/ethernet/Kconfi=
-g
-> > index 1cdff1d..1f8e37c 100644
-> > --- a/drivers/net/ethernet/Kconfig
-> > +++ b/drivers/net/ethernet/Kconfig
-> > @@ -18,6 +18,7 @@ config MDIO
-> >  config SUNGEM_PHY
-> >       tristate
-> >
-> > +source "drivers/net/ethernet/allwinnertmp/Kconfig"
-> >  source "drivers/net/ethernet/3com/Kconfig"
-> >  source "drivers/net/ethernet/actions/Kconfig"
-> >  source "drivers/net/ethernet/adaptec/Kconfig"
-> > diff --git a/drivers/net/ethernet/Makefile b/drivers/net/ethernet/Makef=
-ile
-> > index cb3f908..3dacc0c 100644
-> > --- a/drivers/net/ethernet/Makefile
-> > +++ b/drivers/net/ethernet/Makefile
-> > @@ -3,6 +3,7 @@
-> >  # Makefile for the Linux network Ethernet device drivers.
-> >  #
-> >
-> > +obj-y +=3D allwinnertmp/
-> >  obj-$(CONFIG_NET_VENDOR_3COM) +=3D 3com/
-> >  obj-$(CONFIG_NET_VENDOR_8390) +=3D 8390/
-> >  obj-$(CONFIG_NET_VENDOR_ACTIONS) +=3D actions/
-> > diff --git a/drivers/net/ethernet/allwinnertmp/Kconfig b/drivers/net/et=
-hernet/allwinnertmp/Kconfig
-> > new file mode 100644
-> > index 00000000..4b7b378
-> > --- /dev/null
-> > +++ b/drivers/net/ethernet/allwinnertmp/Kconfig
-> > @@ -0,0 +1,17 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only
-> > +#
-> > +# Allwinner device configuration
-> > +#
-> > +
-> > +config SUNXI_GMAC
-> > +     tristate "Allwinner GMAC support"
-> > +     default y
-> > +     depends on OF
-> > +     select CRC32
-> > +     select MII
-> > +     select PHYLIB
-> > +     help
-> > +       Support for Allwinner Gigabit ethernet driver.
-> > +
-> > +       To compile this driver as a module, choose M here.  The module
-> > +       will be called sunxi-gmac.
-> > diff --git a/drivers/net/ethernet/allwinnertmp/Makefile b/drivers/net/e=
-thernet/allwinnertmp/Makefile
-> > new file mode 100644
-> > index 00000000..1375dea
-> > --- /dev/null
-> > +++ b/drivers/net/ethernet/allwinnertmp/Makefile
-> > @@ -0,0 +1,7 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only
-> > +#
-> > +# Makefile for the Allwinner device drivers.
-> > +#
-> > +
-> > +obj-$(CONFIG_SUNXI_GMAC) +=3D sunxi_gmac.o
-> > +sunxi_gmac-objs :=3D sunxi-gmac.o sunxi-gmac-ops.o
-> > diff --git a/drivers/net/ethernet/allwinnertmp/sunxi-gmac-ops.c b/drive=
-rs/net/ethernet/allwinnertmp/sunxi-gmac-ops.c
-> > new file mode 100644
-> > index 00000000..26ffd7f
-> > --- /dev/null
-> > +++ b/drivers/net/ethernet/allwinnertmp/sunxi-gmac-ops.c
-> > @@ -0,0 +1,690 @@
-> > +/*
-> > + * linux/drivers/net/ethernet/allwinner/sunxi_gmac_ops.c
-> > + *
-> > + * Copyright =C2=A9 2016-2018, fuzhaoke
-> > + *           Author: fuzhaoke <fuzhaoke@allwinnertech.com>
-> > + *
-> > + * This file is provided under a dual BSD/GPL license.  When using or
-> > + * redistributing this file, you may do so under either license.
-> > + *
-> > + * This program is distributed in the hope that it will be useful,
-> > + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> > + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.       See the
-> > + * GNU General Public License for more details.
-> > + */
-> > +#include <linux/kernel.h>
-> > +#include <linux/ctype.h>
-> > +#include <linux/printk.h>
-> > +#include <linux/io.h>
-> > +#include "sunxi-gmac.h"
-> > +
-> > +/*********************************************************************=
-*********
-> > + *   sun8iw6 operations
-> > + *********************************************************************=
-********/
-> > +#define GETH_BASIC_CTL0              0x00
-> > +#define GETH_BASIC_CTL1              0x04
-> > +#define GETH_INT_STA         0x08
-> > +#define GETH_INT_EN          0x0C
-> > +#define GETH_TX_CTL0         0x10
-> > +#define GETH_TX_CTL1         0x14
-> > +#define GETH_TX_FLOW_CTL     0x1C
-> > +#define GETH_TX_DESC_LIST    0x20
-> > +#define GETH_RX_CTL0         0x24
-> > +#define GETH_RX_CTL1         0x28
-> > +#define GETH_RX_DESC_LIST    0x34
-> > +#define GETH_RX_FRM_FLT              0x38
-> > +#define GETH_RX_HASH0                0x40
-> > +#define GETH_RX_HASH1                0x44
-> > +#define GETH_MDIO_ADDR               0x48
-> > +#define GETH_MDIO_DATA               0x4C
-> > +#define GETH_ADDR_HI(reg)    (0x50 + ((reg) << 3))
-> > +#define GETH_ADDR_LO(reg)    (0x54 + ((reg) << 3))
-> > +#define GETH_TX_DMA_STA              0xB0
-> > +#define GETH_TX_CUR_DESC     0xB4
-> > +#define GETH_TX_CUR_BUF              0xB8
-> > +#define GETH_RX_DMA_STA              0xC0
-> > +#define GETH_RX_CUR_DESC     0xC4
-> > +#define GETH_RX_CUR_BUF              0xC8
-> > +#define GETH_RGMII_STA               0xD0
-> > +
-> > +#define RGMII_IRQ            0x00000001
-> > +
-> > +#define      CTL0_LM                 0x02
-> > +#define CTL0_DM                      0x01
-> > +#define CTL0_SPEED           0x04
-> > +
-> > +#define BURST_LEN            0x3F000000
-> > +#define RX_TX_PRI            0x02
-> > +#define SOFT_RST             0x01
-> > +
-> > +#define TX_FLUSH             0x01
-> > +#define TX_MD                        0x02
-> > +#define TX_NEXT_FRM          0x04
-> > +#define TX_TH                        0x0700
-> > +
-> > +#define RX_FLUSH             0x01
-> > +#define RX_MD                        0x02
-> > +#define RX_RUNT_FRM          0x04
-> > +#define RX_ERR_FRM           0x08
-> > +#define RX_TH                        0x0030
-> > +
-> > +#define TX_INT                       0x00001
-> > +#define TX_STOP_INT          0x00002
-> > +#define TX_UA_INT            0x00004
-> > +#define TX_TOUT_INT          0x00008
-> > +#define TX_UNF_INT           0x00010
-> > +#define TX_EARLY_INT         0x00020
-> > +#define RX_INT                       0x00100
-> > +#define RX_UA_INT            0x00200
-> > +#define RX_STOP_INT          0x00400
-> > +#define RX_TOUT_INT          0x00800
-> > +#define RX_OVF_INT           0x01000
-> > +#define RX_EARLY_INT         0x02000
-> > +#define LINK_STA_INT         0x10000
-> > +
-> > +#define DISCARD_FRAME        -1
-> > +#define GOOD_FRAME   0
-> > +#define CSUM_NONE    2
-> > +#define LLC_SNAP     4
-> > +
-> > +#define SF_DMA_MODE          1
-> > +
-> > +/* Flow Control defines */
-> > +#define FLOW_OFF     0
-> > +#define FLOW_RX              1
-> > +#define FLOW_TX              2
-> > +#define FLOW_AUTO    (FLOW_TX | FLOW_RX)
-> > +
-> > +#define HASH_TABLE_SIZE 64
-> > +#define PAUSE_TIME 0x200
-> > +#define GMAC_MAX_UNICAST_ADDRESSES   8
-> > +
-> > +/* PHY address */
-> > +#define PHY_ADDR             0x01
-> > +#define PHY_DM                       0x0010
-> > +#define PHY_AUTO_NEG         0x0020
-> > +#define PHY_POWERDOWN                0x0080
-> > +#define PHY_NEG_EN           0x1000
-> > +
-> > +#define MII_BUSY             0x00000001
-> > +#define MII_WRITE            0x00000002
-> > +#define MII_PHY_MASK         0x0000FFC0
-> > +#define MII_CR_MASK          0x0000001C
-> > +#define MII_CLK                      0x00000008
-> > +/* bits 4 3 2 | AHB1 Clock   | MDC Clock
-> > + * -------------------------------------------------------
-> > + *      0 0 0 | 60 ~ 100 MHz | div-42
-> > + *      0 0 1 | 100 ~ 150 MHz        | div-62
-> > + *      0 1 0 | 20 ~ 35 MHz  | div-16
-> > + *      0 1 1 | 35 ~ 60 MHz  | div-26
-> > + *      1 0 0 | 150 ~ 250 MHz        | div-102
-> > + *      1 0 1 | 250 ~ 300 MHz        | div-124
-> > + *      1 1 x | Reserved     |
-> > + */
-> > +
-> > +enum csum_insertion {
-> > +     cic_dis         =3D 0, /* Checksum Insertion Control */
-> > +     cic_ip          =3D 1, /* Only IP header */
-> > +     cic_no_pse      =3D 2, /* IP header but not pseudoheader */
-> > +     cic_full        =3D 3, /* IP header and pseudoheader */
-> > +};
-> > +
-> > +struct gethdev {
-> > +     void *iobase;
-> > +     unsigned int ver;
-> > +     unsigned int mdc_div;
-> > +};
-> > +
-> > +static struct gethdev hwdev;
-> > +
-> > +/*********************************************************************=
-******
-> > + * External interface
-> > + *********************************************************************=
-*****/
-> > +/* Set a ring desc buffer */
-> > +void desc_init_chain(struct dma_desc *desc, unsigned long addr, unsign=
-ed int size)
-> > +{
-> > +     /* In chained mode the desc3 points to the next element in the ri=
-ng.
-> > +      * The latest element has to point to the head.
-> > +      */
-> > +     int i;
-> > +     struct dma_desc *p =3D desc;
-> > +     unsigned long dma_phy =3D addr;
-> > +
-> > +     for (i =3D 0; i < (size - 1); i++) {
-> > +             dma_phy +=3D sizeof(struct dma_desc);
-> > +             p->desc3 =3D (unsigned int)dma_phy;
-> > +             /* Chain mode */
-> > +             p->desc1.all |=3D (1 << 24);
-> > +             p++;
-> > +     }
-> > +     p->desc1.all |=3D (1 << 24);
-> > +     p->desc3 =3D (unsigned int)addr;
-> > +}
-> > +
-> > +int sunxi_mdio_read(void *iobase, int phyaddr, int phyreg)
-> > +{
-> > +     unsigned int value =3D 0;
-> > +
-> > +     /* Mask the MDC_DIV_RATIO */
-> > +     value |=3D ((hwdev.mdc_div & 0x07) << 20);
-> > +     value |=3D (((phyaddr << 12) & (0x0001F000)) |
-> > +                     ((phyreg << 4) & (0x000007F0)) |
-> > +                     MII_BUSY);
-> > +
-> > +     while (((readl(iobase + GETH_MDIO_ADDR)) & MII_BUSY) =3D=3D 1)
-> > +             ;
-> > +
-> > +     writel(value, iobase + GETH_MDIO_ADDR);
-> > +     while (((readl(iobase + GETH_MDIO_ADDR)) & MII_BUSY) =3D=3D 1)
-> > +             ;
-> > +
-> > +     return (int)readl(iobase + GETH_MDIO_DATA);
-> > +}
-> > +
-> > +int sunxi_mdio_write(void *iobase, int phyaddr, int phyreg, unsigned s=
-hort data)
-> > +{
-> > +     unsigned int value;
-> > +
-> > +     value =3D ((0x07 << 20) & readl(iobase + GETH_MDIO_ADDR)) |
-> > +              (hwdev.mdc_div << 20);
-> > +     value |=3D (((phyaddr << 12) & (0x0001F000)) |
-> > +               ((phyreg << 4) & (0x000007F0))) |
-> > +               MII_WRITE | MII_BUSY;
-> > +
-> > +     /* Wait until any existing MII operation is complete */
-> > +     while (((readl(iobase + GETH_MDIO_ADDR)) & MII_BUSY) =3D=3D 1)
-> > +             ;
-> > +
-> > +     /* Set the MII address register to write */
-> > +     writel(data, iobase + GETH_MDIO_DATA);
-> > +     writel(value, iobase + GETH_MDIO_ADDR);
-> > +
-> > +     /* Wait until any existing MII operation is complete */
-> > +     while (((readl(iobase + GETH_MDIO_ADDR)) & MII_BUSY) =3D=3D 1)
-> > +             ;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +int sunxi_mdio_reset(void *iobase)
-> > +{
-> > +     writel((4 << 2), iobase + GETH_MDIO_ADDR);
-> > +     return 0;
-> > +}
-> > +
-> > +void sunxi_set_link_mode(void *iobase, int duplex, int speed)
-> > +{
-> > +     unsigned int ctrl =3D readl(iobase + GETH_BASIC_CTL0);
-> > +
-> > +     if (!duplex)
-> > +             ctrl &=3D ~CTL0_DM;
-> > +     else
-> > +             ctrl |=3D CTL0_DM;
-> > +
-> > +     switch (speed) {
-> > +     case 1000:
-> > +             ctrl &=3D ~0x0C;
-> > +             break;
-> > +     case 100:
-> > +     case 10:
-> > +     default:
-> > +             ctrl |=3D 0x08;
-> > +             if (speed =3D=3D 100)
-> > +                     ctrl |=3D 0x04;
-> > +             else
-> > +                     ctrl &=3D ~0x04;
-> > +             break;
-> > +     }
-> > +
-> > +     writel(ctrl, iobase + GETH_BASIC_CTL0);
-> > +}
-> > +
-> > +void sunxi_mac_loopback(void *iobase, int enable)
-> > +{
-> > +     int reg;
-> > +
-> > +     reg =3D readl(iobase + GETH_BASIC_CTL0);
-> > +     if (enable)
-> > +             reg |=3D 0x02;
-> > +     else
-> > +             reg &=3D ~0x02;
-> > +     writel(reg, iobase + GETH_BASIC_CTL0);
-> > +}
-> > +
-> > +void sunxi_flow_ctrl(void *iobase, int duplex, int fc, int pause)
-> > +{
-> > +     unsigned int flow =3D 0;
-> > +
-> > +     if (fc & FLOW_RX) {
-> > +             flow =3D readl(iobase + GETH_RX_CTL0);
-> > +             flow |=3D 0x10000;
-> > +             writel(flow, iobase + GETH_RX_CTL0);
-> > +     }
-> > +
-> > +     if (fc & FLOW_TX) {
-> > +             flow =3D readl(iobase + GETH_TX_FLOW_CTL);
-> > +             flow |=3D 0x00001;
-> > +             writel(flow, iobase + GETH_TX_FLOW_CTL);
-> > +     }
-> > +
-> > +     if (duplex) {
-> > +             flow =3D readl(iobase + GETH_TX_FLOW_CTL);
-> > +             flow |=3D (pause << 4);
-> > +             writel(flow, iobase + GETH_TX_FLOW_CTL);
-> > +     }
-> > +}
-> > +
-> > +int sunxi_int_status(void *iobase, struct geth_extra_stats *x)
-> > +{
-> > +     int ret =3D 0;
-> > +     /* read the status register (CSR5) */
-> > +     unsigned int intr_status;
-> > +
-> > +     intr_status =3D readl(iobase + GETH_RGMII_STA);
-> > +     if (intr_status & RGMII_IRQ)
-> > +             readl(iobase + GETH_RGMII_STA);
-> > +
-> > +     intr_status =3D readl(iobase + GETH_INT_STA);
-> > +
-> > +     /* ABNORMAL interrupts */
-> > +     if (intr_status & TX_UNF_INT) {
-> > +             ret =3D tx_hard_error_bump_tc;
-> > +             x->tx_undeflow_irq++;
-> > +     }
-> > +     if (intr_status & TX_TOUT_INT) {
-> > +             x->tx_jabber_irq++;
-> > +     }
-> > +     if (intr_status & RX_OVF_INT) {
-> > +             x->rx_overflow_irq++;
-> > +     }
-> > +     if (intr_status & RX_UA_INT) {
-> > +             x->rx_buf_unav_irq++;
-> > +     }
-> > +     if (intr_status & RX_STOP_INT) {
-> > +             x->rx_process_stopped_irq++;
-> > +     }
-> > +     if (intr_status & RX_TOUT_INT) {
-> > +             x->rx_watchdog_irq++;
-> > +     }
-> > +     if (intr_status & TX_EARLY_INT) {
-> > +             x->tx_early_irq++;
-> > +     }
-> > +     if (intr_status & TX_STOP_INT) {
-> > +             x->tx_process_stopped_irq++;
-> > +             ret =3D tx_hard_error;
-> > +     }
-> > +
-> > +     /* TX/RX NORMAL interrupts */
-> > +     if (intr_status & (TX_INT | RX_INT | RX_EARLY_INT | TX_UA_INT)) {
-> > +             x->normal_irq_n++;
-> > +             if (intr_status & (TX_INT | RX_INT))
-> > +                     ret =3D handle_tx_rx;
-> > +     }
-> > +     /* Clear the interrupt by writing a logic 1 to the CSR5[15-0] */
-> > +     writel(intr_status & 0x3FFF, iobase + GETH_INT_STA);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +void sunxi_start_rx(void *iobase, unsigned long rxbase)
-> > +{
-> > +     unsigned int value;
-> > +
-> > +     /* Write the base address of Rx descriptor lists into registers *=
-/
-> > +     writel(rxbase, iobase + GETH_RX_DESC_LIST);
-> > +
-> > +     value =3D readl(iobase + GETH_RX_CTL1);
-> > +     value |=3D 0x40000000;
-> > +     writel(value, iobase + GETH_RX_CTL1);
-> > +}
-> > +
-> > +void sunxi_stop_rx(void *iobase)
-> > +{
-> > +     unsigned int value;
-> > +
-> > +     value =3D readl(iobase + GETH_RX_CTL1);
-> > +     value &=3D ~0x40000000;
-> > +     writel(value, iobase + GETH_RX_CTL1);
-> > +}
-> > +
-> > +void sunxi_start_tx(void *iobase, unsigned long txbase)
-> > +{
-> > +     unsigned int value;
-> > +
-> > +     /* Write the base address of Tx descriptor lists into registers *=
-/
-> > +     writel(txbase, iobase + GETH_TX_DESC_LIST);
-> > +
-> > +     value =3D readl(iobase + GETH_TX_CTL1);
-> > +     value |=3D 0x40000000;
-> > +     writel(value, iobase + GETH_TX_CTL1);
-> > +}
-> > +
-> > +void sunxi_stop_tx(void *iobase)
-> > +{
-> > +     unsigned int value =3D readl(iobase + GETH_TX_CTL1);
-> > +
-> > +     value &=3D ~0x40000000;
-> > +     writel(value, iobase + GETH_TX_CTL1);
-> > +}
-> > +
-> > +static int sunxi_dma_init(void *iobase)
-> > +{
-> > +     unsigned int value;
-> > +
-> > +     /* Burst should be 8 */
-> > +     value =3D (8 << 24);
-> > +
-> > +#ifdef CONFIG_GMAC_DA
-> > +     value |=3D RX_TX_PRI;     /* Rx has priority over tx */
-> > +#endif
-> > +     writel(value, iobase + GETH_BASIC_CTL1);
-> > +
-> > +     /* Mask interrupts by writing to CSR7 */
-> > +     writel(RX_INT | TX_UNF_INT, iobase + GETH_INT_EN);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +int sunxi_mac_init(void *iobase, int txmode, int rxmode)
-> > +{
-> > +     unsigned int value;
-> > +
-> > +     sunxi_dma_init(iobase);
-> > +
-> > +     /* Initialize the core component */
-> > +     value =3D readl(iobase + GETH_TX_CTL0);
-> > +     value |=3D (1 << 30);     /* Jabber Disable */
-> > +     writel(value, iobase + GETH_TX_CTL0);
-> > +
-> > +     value =3D readl(iobase + GETH_RX_CTL0);
-> > +     value |=3D (1 << 27);     /* Enable CRC & IPv4 Header Checksum */
-> > +     value |=3D (1 << 28);     /* Automatic Pad/CRC Stripping */
-> > +     value |=3D (1 << 29);     /* Jumbo Frame Enable */
-> > +     writel(value, iobase + GETH_RX_CTL0);
-> > +
-> > +     writel((hwdev.mdc_div << 20), iobase + GETH_MDIO_ADDR); /* MDC_DI=
-V_RATIO */
-> > +
-> > +     /* Set the Rx&Tx mode */
-> > +     value =3D readl(iobase + GETH_TX_CTL1);
-> > +     if (txmode =3D=3D SF_DMA_MODE) {
-> > +             /* Transmit COE type 2 cannot be done in cut-through mode=
-. */
-> > +             value |=3D TX_MD;
-> > +             /* Operating on second frame increase the performance
-> > +              * especially when transmit store-and-forward is used.
-> > +              */
-> > +             value |=3D TX_NEXT_FRM;
-> > +     } else {
-> > +             value &=3D ~TX_MD;
-> > +             value &=3D ~TX_TH;
-> > +             /* Set the transmit threshold */
-> > +             if (txmode <=3D 64)
-> > +                     value |=3D 0x00000000;
-> > +             else if (txmode <=3D 128)
-> > +                     value |=3D 0x00000100;
-> > +             else if (txmode <=3D 192)
-> > +                     value |=3D 0x00000200;
-> > +             else
-> > +                     value |=3D 0x00000300;
-> > +     }
-> > +     writel(value, iobase + GETH_TX_CTL1);
-> > +
-> > +     value =3D readl(iobase + GETH_RX_CTL1);
-> > +     if (rxmode =3D=3D SF_DMA_MODE) {
-> > +             value |=3D RX_MD;
-> > +     } else {
-> > +             value &=3D ~RX_MD;
-> > +             value &=3D ~RX_TH;
-> > +             if (rxmode <=3D 32)
-> > +                     value |=3D 0x10;
-> > +             else if (rxmode <=3D 64)
-> > +                     value |=3D 0x00;
-> > +             else if (rxmode <=3D 96)
-> > +                     value |=3D 0x20;
-> > +             else
-> > +                     value |=3D 0x30;
-> > +     }
-> > +
-> > +     /* Forward frames with error and undersized good frame. */
-> > +     value |=3D (RX_ERR_FRM | RX_RUNT_FRM);
-> > +
-> > +     writel(value, iobase + GETH_RX_CTL1);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +void sunxi_hash_filter(void *iobase, unsigned long low, unsigned long =
-high)
-> > +{
-> > +     writel(high, iobase + GETH_RX_HASH0);
-> > +     writel(low, iobase + GETH_RX_HASH1);
-> > +}
-> > +
-> > +void sunxi_set_filter(void *iobase, unsigned long flags)
-> > +{
-> > +     int tmp_flags =3D 0;
-> > +
-> > +     tmp_flags |=3D ((flags >> 31) |
-> > +                     ((flags >> 9) & 0x00000002) |
-> > +                     ((flags << 1) & 0x00000010) |
-> > +                     ((flags >> 3) & 0x00000060) |
-> > +                     ((flags << 7) & 0x00000300) |
-> > +                     ((flags << 6) & 0x00003000) |
-> > +                     ((flags << 12) & 0x00030000) |
-> > +                     (flags << 31));
-> > +
-> > +     writel(tmp_flags, iobase + GETH_RX_FRM_FLT);
-> > +}
-> > +
-> > +void sunxi_set_umac(void *iobase, unsigned char *addr, int index)
-> > +{
-> > +     unsigned long data;
-> > +
-> > +     data =3D (addr[5] << 8) | addr[4];
-> > +     writel(data, iobase + GETH_ADDR_HI(index));
-> > +     data =3D (addr[3] << 24) | (addr[2] << 16) | (addr[1] << 8) | add=
-r[0];
-> > +     writel(data, iobase + GETH_ADDR_LO(index));
-> > +}
-> > +
-> > +void sunxi_mac_enable(void *iobase)
-> > +{
-> > +     unsigned long value;
-> > +
-> > +     value =3D readl(iobase + GETH_TX_CTL0);
-> > +     value |=3D (1 << 31);
-> > +     writel(value, iobase + GETH_TX_CTL0);
-> > +
-> > +     value =3D readl(iobase + GETH_RX_CTL0);
-> > +     value |=3D (1 << 31);
-> > +     writel(value, iobase + GETH_RX_CTL0);
-> > +}
-> > +
-> > +void sunxi_mac_disable(void *iobase)
-> > +{
-> > +     unsigned long value;
-> > +
-> > +     value =3D readl(iobase + GETH_TX_CTL0);
-> > +     value &=3D ~(1 << 31);
-> > +     writel(value, iobase + GETH_TX_CTL0);
-> > +
-> > +     value =3D readl(iobase + GETH_RX_CTL0);
-> > +     value &=3D ~(1 << 31);
-> > +     writel(value, iobase + GETH_RX_CTL0);
-> > +}
-> > +
-> > +void sunxi_tx_poll(void *iobase)
-> > +{
-> > +     unsigned int value;
-> > +
-> > +     value =3D readl(iobase + GETH_TX_CTL1);
-> > +     writel(value | 0x80000000, iobase + GETH_TX_CTL1);
-> > +}
-> > +
-> > +void sunxi_rx_poll(void *iobase)
-> > +{
-> > +     unsigned int value;
-> > +
-> > +     value =3D readl(iobase + GETH_RX_CTL1);
-> > +     writel(value | 0x80000000, iobase + GETH_RX_CTL1);
-> > +}
-> > +
-> > +void sunxi_int_enable(void *iobase)
-> > +{
-> > +     writel(RX_INT | TX_UNF_INT, iobase + GETH_INT_EN);
-> > +}
-> > +
-> > +void sunxi_int_disable(void *iobase)
-> > +{
-> > +     writel(0, iobase + GETH_INT_EN);
-> > +}
-> > +
-> > +void desc_buf_set(struct dma_desc *desc, unsigned long paddr, int size=
-)
-> > +{
-> > +     desc->desc1.all &=3D (~((1 << 11) - 1));
-> > +     desc->desc1.all |=3D (size & ((1 << 11) - 1));
-> > +     desc->desc2 =3D paddr;
-> > +}
-> > +
-> > +void desc_set_own(struct dma_desc *desc)
-> > +{
-> > +     desc->desc0.all |=3D 0x80000000;
-> > +}
-> > +
-> > +void desc_tx_close(struct dma_desc *first, struct dma_desc *end, int c=
-sum_insert)
-> > +{
-> > +     struct dma_desc *desc =3D first;
-> > +
-> > +     first->desc1.tx.first_sg =3D 1;
-> > +     end->desc1.tx.last_seg =3D 1;
-> > +     end->desc1.tx.interrupt =3D 1;
-> > +
-> > +     if (csum_insert)
-> > +             do {
-> > +                     desc->desc1.tx.cic =3D 3;
-> > +                     desc++;
-> > +             } while (desc <=3D end);
-> > +}
-> > +
-> > +void desc_init(struct dma_desc *desc)
-> > +{
-> > +     desc->desc1.all =3D 0;
-> > +     desc->desc2  =3D 0;
-> > +
-> > +     desc->desc1.all |=3D (1 << 24);
-> > +}
-> > +
-> > +int desc_get_tx_status(struct dma_desc *desc, struct geth_extra_stats =
-*x)
-> > +{
-> > +     int ret =3D 0;
-> > +
-> > +     if (desc->desc0.tx.under_err) {
-> > +             x->tx_underflow++;
-> > +             ret =3D -1;
-> > +     }
-> > +     if (desc->desc0.tx.no_carr) {
-> > +             x->tx_carrier++;
-> > +             ret =3D -1;
-> > +     }
-> > +     if (desc->desc0.tx.loss_carr) {
-> > +             x->tx_losscarrier++;
-> > +             ret =3D -1;
-> > +     }
-> > +
-> > +#if 0
-> > +     if ((desc->desc0.tx.ex_deferral) ||
-> > +                     (desc->desc0.tx.ex_coll) ||
-> > +                     (desc->desc0.tx.late_coll))
-> > +             stats->collisions +=3D desc->desc0.tx.coll_cnt;
-> > +#endif
-> > +
-> > +     if (desc->desc0.tx.deferred)
-> > +             x->tx_deferred++;
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +int desc_buf_get_len(struct dma_desc *desc)
-> > +{
-> > +     return (desc->desc1.all & ((1 << 11) - 1));
-> > +}
-> > +
-> > +int desc_buf_get_addr(struct dma_desc *desc)
-> > +{
-> > +     return desc->desc2;
-> > +}
-> > +
-> > +int desc_rx_frame_len(struct dma_desc *desc)
-> > +{
-> > +     return desc->desc0.rx.frm_len;
-> > +}
-> > +
-> > +int desc_get_rx_status(struct dma_desc *desc, struct geth_extra_stats =
-*x)
-> > +{
-> > +     int ret =3D good_frame;
-> > +
-> > +     if (desc->desc0.rx.last_desc =3D=3D 0) {
-> > +             return discard_frame;
-> > +     }
-> > +
-> > +     if (desc->desc0.rx.err_sum) {
-> > +             if (desc->desc0.rx.desc_err)
-> > +                     x->rx_desc++;
-> > +
-> > +             if (desc->desc0.rx.sou_filter)
-> > +                     x->sa_filter_fail++;
-> > +
-> > +             if (desc->desc0.rx.over_err)
-> > +                     x->overflow_error++;
-> > +
-> > +             if (desc->desc0.rx.ipch_err)
-> > +                     x->ipc_csum_error++;
-> > +
-> > +             if (desc->desc0.rx.late_coll)
-> > +                     x->rx_collision++;
-> > +
-> > +             if (desc->desc0.rx.crc_err)
-> > +                     x->rx_crc++;
-> > +
-> > +             ret =3D discard_frame;
-> > +     }
-> > +
-> > +     if (desc->desc0.rx.len_err) {
-> > +             ret =3D discard_frame;
-> > +     }
-> > +     if (desc->desc0.rx.mii_err) {
-> > +             ret =3D discard_frame;
-> > +     }
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +int desc_get_own(struct dma_desc *desc)
-> > +{
-> > +     return desc->desc0.all & 0x80000000;
-> > +}
-> > +
-> > +int desc_get_tx_ls(struct dma_desc *desc)
-> > +{
-> > +     return desc->desc1.tx.last_seg;
-> > +}
-> > +
-> > +int sunxi_geth_register(void *iobase, int version, unsigned int div)
-> > +{
-> > +     hwdev.ver =3D version;
-> > +     hwdev.iobase =3D iobase;
-> > +     hwdev.mdc_div =3D div;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +int sunxi_mac_reset(void *iobase, void (*delay)(int), int n)
-> > +{
-> > +     unsigned int value;
-> > +
-> > +     /* DMA SW reset */
-> > +     value =3D readl(iobase + GETH_BASIC_CTL1);
-> > +     value |=3D SOFT_RST;
-> > +     writel(value, iobase + GETH_BASIC_CTL1);
-> > +
-> > +     delay(n);
-> > +
-> > +     return !!(readl(iobase + GETH_BASIC_CTL1) & SOFT_RST);
-> > +}
-> > diff --git a/drivers/net/ethernet/allwinnertmp/sunxi-gmac.c b/drivers/n=
-et/ethernet/allwinnertmp/sunxi-gmac.c
-> > new file mode 100644
-> > index 00000000..0c67877
-> > --- /dev/null
-> > +++ b/drivers/net/ethernet/allwinnertmp/sunxi-gmac.c
-> > @@ -0,0 +1,2240 @@
-> > +/*
-> > + * linux/drivers/net/ethernet/allwinner/sunxi_gmac.c
-> > + *
-> > + * Copyright =C2=A9 2016-2018, fuzhaoke
-> > + *           Author: fuzhaoke <fuzhaoke@allwinnertech.com>
-> > + *
-> > + * This file is provided under a dual BSD/GPL license.  When using or
-> > + * redistributing this file, you may do so under either license.
-> > + *
-> > + * This program is distributed in the hope that it will be useful,
-> > + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> > + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.       See the
-> > + * GNU General Public License for more details.
-> > + */
-> > +//#include <linux/clk.h>
-> > +//#include <linux/clk-provider.h>
-> > +#include <linux/mii.h>
-> > +#include <linux/gpio.h>
-> > +#include <linux/crc32.h>
-> > +#include <linux/skbuff.h>
-> > +#include <linux/module.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/interrupt.h>
-> > +#include <linux/dma-mapping.h>
-> > +#include <linux/platform_device.h>
-> > +//#include <linux/pinctrl/consumer.h>
-> > +//#include <linux/pinctrl/pinctrl.h>
-> > +#include <linux/crypto.h>
-> > +#include <crypto/algapi.h>
-> > +#include <crypto/hash.h>
-> > +#include <linux/err.h>
-> > +#include <linux/scatterlist.h>
-> > +//#include <linux/regulator/consumer.h>
-> > +#include <linux/of_net.h>
-> > +//#include <linux/of_gpio.h>
-> > +#include <linux/io.h>
-> > +//#include <linux/sunxi-sid.h>
-> > +//#include <linux/sunxi-gpio.h>
-> > +//#include <linux/reset.h>
-> > +#include "sunxi-gmac.h"
-> > +
-> > +#define SUNXI_GMAC_VERSION "1.0.0"
-> > +
-> > +#define DMA_DESC_RX  256
-> > +#define DMA_DESC_TX  256
-> > +#define BUDGET               (dma_desc_rx / 4)
-> > +#define TX_THRESH    (dma_desc_tx / 4)
-> > +
-> > +#define HASH_TABLE_SIZE      64
-> > +#define MAX_BUF_SZ   (SZ_2K - 1)
-> > +
-> > +#define POWER_CHAN_NUM       3
-> > +
-> > +#undef PKT_DEBUG
-> > +#undef DESC_PRINT
-> > +
-> > +#define circ_cnt(head, tail, size) (((head) > (tail)) ? \
-> > +                                     ((head) - (tail)) : \
-> > +                                     ((head) - (tail)) & ((size) - 1))
-> > +
-> > +#define circ_space(head, tail, size) circ_cnt((tail), ((head) + 1), (s=
-ize))
-> > +
-> > +#define circ_inc(n, s) (((n) + 1) % (s))
-> > +
-> > +#define GETH_MAC_ADDRESS "00:00:00:00:00:00"
-> > +static char *mac_str =3D GETH_MAC_ADDRESS;
-> > +module_param(mac_str, charp, S_IRUGO | S_IWUSR);
-> > +MODULE_PARM_DESC(mac_str, "MAC Address String.(xx:xx:xx:xx:xx:xx)");
-> > +
-> > +static int rxmode =3D 1;
-> > +module_param(rxmode, int, S_IRUGO | S_IWUSR);
-> > +MODULE_PARM_DESC(rxmode, "DMA threshold control value");
-> > +
-> > +static int txmode =3D 1;
-> > +module_param(txmode, int, S_IRUGO | S_IWUSR);
-> > +MODULE_PARM_DESC(txmode, "DMA threshold control value");
-> > +
-> > +static int pause =3D 0x400;
-> > +module_param(pause, int, S_IRUGO | S_IWUSR);
-> > +MODULE_PARM_DESC(pause, "Flow Control Pause Time");
-> > +
-> > +#define TX_TIMEO     5000
-> > +static int watchdog =3D TX_TIMEO;
-> > +module_param(watchdog, int, S_IRUGO | S_IWUSR);
-> > +MODULE_PARM_DESC(watchdog, "Transmit timeout in milliseconds");
-> > +
-> > +static int dma_desc_rx =3D DMA_DESC_RX;
-> > +module_param(dma_desc_rx, int, S_IRUGO | S_IWUSR);
-> > +MODULE_PARM_DESC(watchdog, "The number of receive's descriptors");
-> > +
-> > +static int dma_desc_tx =3D DMA_DESC_TX;
-> > +module_param(dma_desc_tx, int, S_IRUGO | S_IWUSR);
-> > +MODULE_PARM_DESC(watchdog, "The number of transmit's descriptors");
-> > +
-> > +/* - 0: Flow Off
-> > + * - 1: Rx Flow
-> > + * - 2: Tx Flow
-> > + * - 3: Rx & Tx Flow
-> > + */
-> > +static int flow_ctrl;
-> > +module_param(flow_ctrl, int, S_IRUGO | S_IWUSR);
-> > +MODULE_PARM_DESC(flow_ctrl, "Flow control [0: off, 1: rx, 2: tx, 3: bo=
-th]");
-> > +
-> > +struct geth_priv {
-> > +     struct dma_desc *dma_tx;
-> > +     struct sk_buff **tx_sk;
-> > +     unsigned int tx_clean;
-> > +     unsigned int tx_dirty;
-> > +     dma_addr_t dma_tx_phy;
-> > +
-> > +     unsigned long buf_sz;
-> > +
-> > +     struct dma_desc *dma_rx;
-> > +     struct sk_buff **rx_sk;
-> > +     unsigned int rx_clean;
-> > +     unsigned int rx_dirty;
-> > +     dma_addr_t dma_rx_phy;
-> > +
-> > +     struct net_device *ndev;
-> > +     struct device *dev;
-> > +     struct napi_struct napi;
-> > +
-> > +     struct geth_extra_stats xstats;
-> > +
-> > +     struct mii_bus *mii;
-> > +     int link;
-> > +     int speed;
-> > +     int duplex;
-> > +#define INT_PHY 0
-> > +#define EXT_PHY 1
-> > +     int phy_ext;
-> > +     phy_interface_t phy_interface;
-> > +
-> > +     void __iomem *base;
-> > +     void __iomem *base_phy;
-> > +/*
-> > +     struct clk *geth_clk;
-> > +     struct clk *ephy_clk;
-> > +     struct reset_control *reset;
-> > +     struct pinctrl *pinctrl;
-> > +*/
-> > +     struct regulator *gmac_power[POWER_CHAN_NUM];
-> > +     bool is_suspend;
-> > +     int phyrst;
-> > +     u8  rst_active_low;
-> > +     /* definition spinlock */
-> > +     spinlock_t lock;
-> > +     spinlock_t tx_lock;
-> > +
-> > +     /* whether using ephy_clk */
-> > +     int use_ephy_clk;
-> > +     int phy_addr;
-> > +
-> > +     /* adjust transmit clock delay, value: 0~7 */
-> > +     /* adjust receive clock delay, value: 0~31 */
-> > +     unsigned int tx_delay;
-> > +     unsigned int rx_delay;
-> > +
-> > +     /* resume work */
-> > +     struct work_struct eth_work;
-> > +};
-> > +
-> > +static u64 geth_dma_mask =3D DMA_BIT_MASK(32);
-> > +
-> > +void sunxi_udelay(int n)
-> > +{
-> > +     udelay(n);
-> > +}
-> > +
-> > +static int geth_stop(struct net_device *ndev);
-> > +static int geth_open(struct net_device *ndev);
-> > +static void geth_tx_complete(struct geth_priv *priv);
-> > +static void geth_rx_refill(struct net_device *ndev);
-> > +
-> > +#ifdef CONFIG_GETH_ATTRS
-> > +static ssize_t adjust_bgs_show(struct device *dev, struct device_attri=
-bute *attr, char *buf)
-> > +{
-> > +     int value =3D 0;
-> > +     u32 efuse_value;
-> > +     struct net_device *ndev =3D to_net_dev(dev);
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +
-> > +     if (priv->phy_ext =3D=3D INT_PHY) {
-> > +             value =3D readl(priv->base_phy) >> 28;
-> > +             if (sunxi_efuse_read(EFUSE_OEM_NAME, &efuse_value) !=3D 0=
-)
-> > +                     pr_err("get PHY efuse fail!\n");
-> > +             else
-> > +#if IS_ENABLED(CONFIG_ARCH_SUN50IW2)
-> > +                     value =3D value - ((efuse_value >> 24) & 0x0F);
-> > +#else
-> > +                     pr_warn("miss config come from efuse!\n");
-> > +#endif
-> > +     }
-> > +
-> > +     return sprintf(buf, "bgs: %d\n", value);
-> > +}
-> > +
-> > +static ssize_t adjust_bgs_write(struct device *dev, struct device_attr=
-ibute *attr,
-> > +                             const char *buf, size_t count)
-> > +{
-> > +     unsigned int out =3D 0;
-> > +     struct net_device *ndev =3D to_net_dev(dev);
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +     u32 clk_value =3D readl(priv->base_phy);
-> > +     u32 efuse_value;
-> > +
-> > +     out =3D simple_strtoul(buf, NULL, 10);
-> > +
-> > +     if (priv->phy_ext =3D=3D INT_PHY) {
-> > +             clk_value &=3D ~(0xF << 28);
-> > +             if (sunxi_efuse_read(EFUSE_OEM_NAME, &efuse_value) !=3D 0=
-)
-> > +                     pr_err("get PHY efuse fail!\n");
-> > +             else
-> > +#if IS_ENABLED(CONFIG_ARCH_SUN50IW2)
-> > +                     clk_value |=3D (((efuse_value >> 24) & 0x0F) + ou=
-t) << 28;
-> > +#else
-> > +                     pr_warn("miss config come from efuse!\n");
-> > +#endif
-> > +     }
-> > +
-> > +     writel(clk_value, priv->base_phy);
-> > +
-> > +     return count;
-> > +}
-> > +
-> > +static struct device_attribute adjust_reg[] =3D {
-> > +     __ATTR(adjust_bgs, 0664, adjust_bgs_show, adjust_bgs_write),
-> > +};
-> > +
-> > +static int geth_create_attrs(struct net_device *ndev)
-> > +{
-> > +     int j, ret;
-> > +
-> > +     for (j =3D 0; j < ARRAY_SIZE(adjust_reg); j++) {
-> > +             ret =3D device_create_file(&ndev->dev, &adjust_reg[j]);
-> > +             if (ret)
-> > +                     goto sysfs_failed;
-> > +     }
-> > +     goto succeed;
-> > +
-> > +sysfs_failed:
-> > +     while (j--)
-> > +             device_remove_file(&ndev->dev, &adjust_reg[j]);
-> > +succeed:
-> > +     return ret;
-> > +}
-> > +#endif
-> > +
-> > +#ifdef DEBUG
-> > +static void desc_print(struct dma_desc *desc, int size)
-> > +{
-> > +#ifdef DESC_PRINT
-> > +     int i;
-> > +
-> > +     for (i =3D 0; i < size; i++) {
-> > +             u32 *x =3D (u32 *)(desc + i);
-> > +
-> > +             pr_info("\t%d [0x%08lx]: %08x %08x %08x %08x\n",
-> > +                     i, (unsigned long)(&desc[i]),
-> > +                     x[0], x[1], x[2], x[3]);
-> > +     }
-> > +     pr_info("\n");
-> > +#endif
-> > +}
-> > +#endif
-> > +
-> > +static ssize_t extra_tx_stats_show(struct device *dev,
-> > +             struct device_attribute *attr, char *buf)
-> > +{
-> > +     struct net_device *ndev =3D dev_get_drvdata(dev);
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +
-> > +     if (!dev) {
-> > +             pr_err("Argment is invalid\n");
-> > +             return 0;
-> > +     }
-> > +
-> > +     if (!ndev) {
-> > +             pr_err("Net device is null\n");
-> > +             return 0;
-> > +     }
-> > +
-> > +     return sprintf(buf, "tx_underflow: %lu\ntx_carrier: %lu\n"
-> > +                     "tx_losscarrier: %lu\nvlan_tag: %lu\n"
-> > +                     "tx_deferred: %lu\ntx_vlan: %lu\n"
-> > +                     "tx_jabber: %lu\ntx_frame_flushed: %lu\n"
-> > +                     "tx_payload_error: %lu\ntx_ip_header_error: %lu\n=
-\n",
-> > +                     priv->xstats.tx_underflow, priv->xstats.tx_carrie=
-r,
-> > +                     priv->xstats.tx_losscarrier, priv->xstats.vlan_ta=
-g,
-> > +                     priv->xstats.tx_deferred, priv->xstats.tx_vlan,
-> > +                     priv->xstats.tx_jabber, priv->xstats.tx_frame_flu=
-shed,
-> > +                     priv->xstats.tx_payload_error, priv->xstats.tx_ip=
-_header_error);
-> > +}
-> > +static DEVICE_ATTR(extra_tx_stats, 0444, extra_tx_stats_show, NULL);
-> > +
-> > +static ssize_t extra_rx_stats_show(struct device *dev,
-> > +             struct device_attribute *attr, char *buf)
-> > +{
-> > +     struct net_device *ndev =3D dev_get_drvdata(dev);
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +
-> > +     if (!dev) {
-> > +             pr_err("Argment is invalid\n");
-> > +             return 0;
-> > +     }
-> > +
-> > +     if (!ndev) {
-> > +             pr_err("Net device is null\n");
-> > +             return 0;
-> > +     }
-> > +
-> > +     return sprintf(buf, "rx_desc: %lu\nsa_filter_fail: %lu\n"
-> > +                     "overflow_error: %lu\nipc_csum_error: %lu\n"
-> > +                     "rx_collision: %lu\nrx_crc: %lu\n"
-> > +                     "dribbling_bit: %lu\nrx_length: %lu\n"
-> > +                     "rx_mii: %lu\nrx_multicast: %lu\n"
-> > +                     "rx_gmac_overflow: %lu\nrx_watchdog: %lu\n"
-> > +                     "da_rx_filter_fail: %lu\nsa_rx_filter_fail: %lu\n=
-"
-> > +                     "rx_missed_cntr: %lu\nrx_overflow_cntr: %lu\n"
-> > +                     "rx_vlan: %lu\n\n",
-> > +                     priv->xstats.rx_desc, priv->xstats.sa_filter_fail=
-,
-> > +                     priv->xstats.overflow_error, priv->xstats.ipc_csu=
-m_error,
-> > +                     priv->xstats.rx_collision, priv->xstats.rx_crc,
-> > +                     priv->xstats.dribbling_bit, priv->xstats.rx_lengt=
-h,
-> > +                     priv->xstats.rx_mii, priv->xstats.rx_multicast,
-> > +                     priv->xstats.rx_gmac_overflow, priv->xstats.rx_le=
-ngth,
-> > +                     priv->xstats.da_rx_filter_fail, priv->xstats.sa_r=
-x_filter_fail,
-> > +                     priv->xstats.rx_missed_cntr, priv->xstats.rx_over=
-flow_cntr,
-> > +                     priv->xstats.rx_vlan);
-> > +}
-> > +static DEVICE_ATTR(extra_rx_stats, 0444, extra_rx_stats_show, NULL);
-> > +
-> > +static ssize_t gphy_test_show(struct device *dev,
-> > +             struct device_attribute *attr, char *buf)
-> > +{
-> > +     struct net_device *ndev =3D dev_get_drvdata(dev);
-> > +
-> > +     if (!dev) {
-> > +             pr_err("Argment is invalid\n");
-> > +             return 0;
-> > +     }
-> > +
-> > +     if (!ndev) {
-> > +             pr_err("Net device is null\n");
-> > +             return 0;
-> > +     }
-> > +
-> > +     return sprintf(buf, "Usage:\necho [0/1/2/3/4] > gphy_test\n"
-> > +                     "0 - Normal Mode\n"
-> > +                     "1 - Transmit Jitter Test\n"
-> > +                     "2 - Transmit Jitter Test(MASTER mode)\n"
-> > +                     "3 - Transmit Jitter Test(SLAVE mode)\n"
-> > +                     "4 - Transmit Distortion Test\n\n");
-> > +}
-> > +
-> > +static ssize_t gphy_test_store(struct device *dev,
-> > +             struct device_attribute *attr, const char *buf, size_t co=
-unt)
-> > +{
-> > +     struct net_device *ndev =3D dev_get_drvdata(dev);
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +     u16 value =3D 0;
-> > +     int ret =3D 0;
-> > +     u16 data =3D 0;
-> > +
-> > +     if (!dev) {
-> > +             pr_err("Argument is invalid\n");
-> > +             return count;
-> > +     }
-> > +
-> > +     if (!ndev) {
-> > +             pr_err("Net device is null\n");
-> > +             return count;
-> > +     }
-> > +
-> > +     data =3D sunxi_mdio_read(priv->base, priv->phy_addr, MII_CTRL1000=
-);
-> > +
-> > +     ret =3D kstrtou16(buf, 0, &value);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     if (value >=3D 0 && value <=3D 4) {
-> > +             data &=3D ~(0x7 << 13);
-> > +             data |=3D value << 13;
-> > +             sunxi_mdio_write(priv->base, priv->phy_addr, MII_CTRL1000=
-, data);
-> > +             pr_info("Set MII_CTRL1000(0x09) Reg: 0x%x\n", data);
-> > +     } else {
-> > +             pr_info("unknown value (%d)\n", value);
-> > +     }
-> > +
-> > +     return count;
-> > +}
-> > +
-> > +static DEVICE_ATTR(gphy_test, 0664, gphy_test_show, gphy_test_store);
-> > +
-> > +static ssize_t mii_reg_show(struct device *dev,
-> > +             struct device_attribute *attr, char *buf)
-> > +{
-> > +     struct net_device *ndev =3D NULL;
-> > +     struct geth_priv *priv =3D NULL;
-> > +
-> > +     if (dev =3D=3D NULL) {
-> > +             pr_err("Argment is invalid\n");
-> > +             return 0;
-> > +     }
-> > +
-> > +     ndev =3D dev_get_drvdata(dev);
-> > +     if (ndev =3D=3D NULL) {
-> > +             pr_err("Net device is null\n");
-> > +             return 0;
-> > +     }
-> > +
-> > +     priv =3D netdev_priv(ndev);
-> > +     if (priv =3D=3D NULL) {
-> > +             pr_err("geth_priv is null\n");
-> > +             return 0;
-> > +     }
-> > +
-> > +     if (!netif_running(ndev)) {
-> > +             pr_warn("eth is down!\n");
-> > +             return 0;
-> > +     }
-> > +
-> > +     return sprintf(buf,
-> > +             "Current MII Registers:\n"
-> > +             "BMCR[0x%02x] =3D 0x%04x,\t\tBMSR[0x%02x] =3D 0x%04x,\t\t=
-PHYSID1[0x%02x] =3D 0x%04x\n"
-> > +             "PHYSID2[0x%02x] =3D 0x%04x,\t\tADVERTISE[0x%02x] =3D 0x%=
-04x,\tLPA[0x%02x] =3D 0x%04x\n"
-> > +             "EXPANSION[0x%02x] =3D 0x%04x,\tCTRL1000[0x%02x] =3D 0x%0=
-4x,\tSTAT1000[0x%02x] =3D 0x%04x\n",
-> > +             MII_BMCR, sunxi_mdio_read(priv->base, priv->phy_addr, MII=
-_BMCR),
-> > +             MII_BMSR, sunxi_mdio_read(priv->base, priv->phy_addr, MII=
-_BMSR),
-> > +             MII_PHYSID1, sunxi_mdio_read(priv->base, priv->phy_addr, =
-MII_PHYSID1),
-> > +             MII_PHYSID2, sunxi_mdio_read(priv->base, priv->phy_addr, =
-MII_PHYSID2),
-> > +             MII_ADVERTISE, sunxi_mdio_read(priv->base, priv->phy_addr=
-, MII_ADVERTISE),
-> > +             MII_LPA, sunxi_mdio_read(priv->base, priv->phy_addr, MII_=
-LPA),
-> > +             MII_EXPANSION, sunxi_mdio_read(priv->base, priv->phy_addr=
-, MII_EXPANSION),
-> > +             MII_CTRL1000, sunxi_mdio_read(priv->base, priv->phy_addr,=
- MII_CTRL1000),
-> > +             MII_STAT1000, sunxi_mdio_read(priv->base, priv->phy_addr,=
- MII_STAT1000));
-> > +}
-> > +static DEVICE_ATTR(mii_reg, 0444, mii_reg_show, NULL);
-> > +
-> > +static ssize_t loopback_test_show(struct device *dev,
-> > +             struct device_attribute *attr, char *buf)
-> > +{
-> > +     return sprintf(buf, "Usage:\necho [0/1/2] > loopback_test\n"
-> > +                     "0 - Normal Mode\n"
-> > +                     "1 - Mac loopback test mode\n"
-> > +                     "2 - Phy loopback test mode\n");
-> > +}
-> > +
-> > +static ssize_t loopback_test_store(struct device *dev,
-> > +             struct device_attribute *attr, const char *buf, size_t co=
-unt)
-> > +{
-> > +     struct net_device *ndev =3D NULL;
-> > +     struct geth_priv *priv =3D NULL;
-> > +     u16 value =3D 0;
-> > +     int ret =3D 0;
-> > +     u16 data =3D 0;
-> > +
-> > +     if (dev =3D=3D NULL) {
-> > +             pr_err("Argment is invalid\n");
-> > +             return count;
-> > +     }
-> > +
-> > +     ndev =3D dev_get_drvdata(dev);
-> > +     if (ndev =3D=3D NULL) {
-> > +             pr_err("Net device is null\n");
-> > +             return count;
-> > +     }
-> > +
-> > +     priv =3D netdev_priv(ndev);
-> > +     if (priv =3D=3D NULL) {
-> > +             pr_err("geth_priv is null\n");
-> > +             return count;
-> > +     }
-> > +
-> > +     if (!netif_running(ndev)) {
-> > +             pr_warn("eth is down!\n");
-> > +             return count;
-> > +     }
-> > +
-> > +     ret =3D kstrtou16(buf, 0, &value);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     if (value =3D=3D 0) { /* normal mode */
-> > +             /* clear mac loopback */
-> > +             sunxi_mac_loopback(priv->base, 0);
-> > +
-> > +             /* clear phy loopback */
-> > +             data =3D sunxi_mdio_read(priv->base, priv->phy_addr, MII_=
-BMCR);
-> > +             sunxi_mdio_write(priv->base, priv->phy_addr, MII_BMCR, da=
-ta & ~BMCR_LOOPBACK);
-> > +     } else if (value =3D=3D 1) { /* mac loopback test mode */
-> > +             data =3D sunxi_mdio_read(priv->base, priv->phy_addr, MII_=
-BMCR);
-> > +             sunxi_mdio_write(priv->base, priv->phy_addr, MII_BMCR, da=
-ta & ~BMCR_LOOPBACK);
-> > +
-> > +             sunxi_mac_loopback(priv->base, 1);
-> > +     } else if (value =3D=3D 2) { /* phy loopback test mode */
-> > +             sunxi_mac_loopback(priv->base, 0);
-> > +
-> > +             data =3D sunxi_mdio_read(priv->base, priv->phy_addr, MII_=
-BMCR);
-> > +             sunxi_mdio_write(priv->base, priv->phy_addr, MII_BMCR, da=
-ta | BMCR_LOOPBACK);
-> > +     } else {
-> > +             pr_err("Undefined value (%d)\n", value);
-> > +     }
-> > +
-> > +     return count;
-> > +}
-> > +static DEVICE_ATTR(loopback_test, 0664, loopback_test_show, loopback_t=
-est_store);
-> > +
-> > +static int geth_power_on(struct geth_priv *priv)
-> > +{
-> > +     int value;
-> > +
-> > +     value =3D readl(priv->base_phy);
-> > +     if (priv->phy_ext =3D=3D INT_PHY) {
-> > +             value |=3D (1 << 15);
-> > +             value &=3D ~(1 << 16);
-> > +             value |=3D (3 << 17);
-> > +     } else {
-> > +             value &=3D ~(1 << 15);
-> > +/*
-> > +             for (i =3D 0; i < POWER_CHAN_NUM; i++) {
-> > +                     if (IS_ERR_OR_NULL(priv->gmac_power[i]))
-> > +                             continue;
-> > +                     if (regulator_enable(priv->gmac_power[i]) !=3D 0)=
- {
-> > +                             pr_err("gmac-power%d enable error\n", i);
-> > +                             return -EINVAL;
-> > +                     }
-> > +             }
-> > +*/
-> > +     }
-> > +
-> > +     writel(value, priv->base_phy);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static void geth_power_off(struct geth_priv *priv)
-> > +{
-> > +     int value;
-> > +
-> > +     if (priv->phy_ext =3D=3D INT_PHY) {
-> > +             value =3D readl(priv->base_phy);
-> > +             value |=3D (1 << 16);
-> > +             writel(value, priv->base_phy);
-> > +     } else {
-> > +/*
-> > +             for (i =3D 0; i < POWER_CHAN_NUM; i++) {
-> > +                     if (IS_ERR_OR_NULL(priv->gmac_power[i]))
-> > +                             continue;
-> > +                     regulator_disable(priv->gmac_power[i]);
-> > +             }
-> > +*/
-> > +     }
-> > +}
-> > +
-> > +/* PHY interface operations */
-> > +static int geth_mdio_read(struct mii_bus *bus, int phyaddr, int phyreg=
-)
-> > +{
-> > +     struct net_device *ndev =3D bus->priv;
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +
-> > +     return (int)sunxi_mdio_read(priv->base,  phyaddr, phyreg);
-> > +}
-> > +
-> > +static int geth_mdio_write(struct mii_bus *bus, int phyaddr,
-> > +                        int phyreg, u16 data)
-> > +{
-> > +     struct net_device *ndev =3D bus->priv;
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +
-> > +     sunxi_mdio_write(priv->base, phyaddr, phyreg, data);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int geth_mdio_reset(struct mii_bus *bus)
-> > +{
-> > +     struct net_device *ndev =3D bus->priv;
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +
-> > +     return sunxi_mdio_reset(priv->base);
-> > +}
-> > +
-> > +static void geth_adjust_link(struct net_device *ndev)
-> > +{
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +     struct phy_device *phydev =3D ndev->phydev;
-> > +     unsigned long flags;
-> > +     int new_state =3D 0;
-> > +
-> > +     if (!phydev)
-> > +             return;
-> > +
-> > +     spin_lock_irqsave(&priv->lock, flags);
-> > +     if (phydev->link) {
-> > +             /* Now we make sure that we can be in full duplex mode.
-> > +              * If not, we operate in half-duplex mode.
-> > +              */
-> > +             if (phydev->duplex !=3D priv->duplex) {
-> > +                     new_state =3D 1;
-> > +                     priv->duplex =3D phydev->duplex;
-> > +             }
-> > +             /* Flow Control operation */
-> > +             if (phydev->pause)
-> > +                     sunxi_flow_ctrl(priv->base, phydev->duplex,
-> > +                                     flow_ctrl, pause);
-> > +
-> > +             if (phydev->speed !=3D priv->speed) {
-> > +                     new_state =3D 1;
-> > +                     priv->speed =3D phydev->speed;
-> > +             }
-> > +
-> > +             if (priv->link =3D=3D 0) {
-> > +                     new_state =3D 1;
-> > +                     priv->link =3D phydev->link;
-> > +             }
-> > +
-> > +             if (new_state)
-> > +                     sunxi_set_link_mode(priv->base, priv->duplex, pri=
-v->speed);
-> > +
-> > +#ifdef LOOPBACK_DEBUG
-> > +             phydev->state =3D PHY_FORCING;
-> > +#endif
-> > +
-> > +     } else if (priv->link !=3D phydev->link) {
-> > +             new_state =3D 1;
-> > +             priv->link =3D 0;
-> > +             priv->speed =3D 0;
-> > +             priv->duplex =3D -1;
-> > +     }
-> > +
-> > +     if (new_state)
-> > +             phy_print_status(phydev);
-> > +
-> > +     spin_unlock_irqrestore(&priv->lock, flags);
-> > +}
-> > +
-> > +static int geth_phy_init(struct net_device *ndev)
-> > +{
-> > +     int value;
-> > +     struct mii_bus *new_bus;
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +     struct phy_device *phydev =3D ndev->phydev;
-> > +
-> > +     /* Fixup the phy interface type */
-> > +     if (priv->phy_ext =3D=3D INT_PHY) {
-> > +             priv->phy_interface =3D PHY_INTERFACE_MODE_MII;
-> > +     } else {
-> > +             /* If config gpio to reset the phy device, we should rese=
-t it */
-> > +             /*
-> > +             if (gpio_is_valid(priv->phyrst)) {
-> > +                     gpio_direction_output(priv->phyrst,
-> > +                                     priv->rst_active_low);
-> > +                     msleep(50);
-> > +                     gpio_direction_output(priv->phyrst,
-> > +                                     !priv->rst_active_low);
-> > +                     msleep(50);
-> > +             }
-> > +             */
-> > +     }
-> > +
-> > +     if (priv->is_suspend && phydev)
-> > +             goto resume;
-> > +
-> > +     new_bus =3D mdiobus_alloc();
-> > +     if (!new_bus) {
-> > +             netdev_err(ndev, "Failed to alloc new mdio bus\n");
-> > +             return -ENOMEM;
-> > +     }
-> > +
-> > +     new_bus->name =3D dev_name(priv->dev);
-> > +     new_bus->read =3D &geth_mdio_read;
-> > +     new_bus->write =3D &geth_mdio_write;
-> > +     new_bus->reset =3D &geth_mdio_reset;
-> > +     snprintf(new_bus->id, MII_BUS_ID_SIZE, "%s-%x", new_bus->name, 0)=
-;
-> > +
-> > +     new_bus->parent =3D priv->dev;
-> > +     new_bus->priv =3D ndev;
-> > +
-> > +     if (mdiobus_register(new_bus)) {
-> > +             pr_err("%s: Cannot register as MDIO bus\n", new_bus->name=
-);
-> > +             goto reg_fail;
-> > +     }
-> > +
-> > +     priv->mii =3D new_bus;
-> > +
-> > +     {
-> > +             int addr;
-> > +
-> > +             for (addr =3D 0; addr < PHY_MAX_ADDR; addr++) {
-> > +                     struct phy_device *phydev_tmp =3D mdiobus_get_phy=
-(new_bus, addr);
-> > +
-> > +                     if (phydev_tmp && (phydev_tmp->phy_id !=3D 0x00))=
- {
-> > +                             phydev =3D phydev_tmp;
-> > +                             priv->phy_addr =3D addr;
-> > +                             break;
-> > +                     }
-> > +             }
-> > +     }
-> > +
-> > +     if (!phydev) {
-> > +             netdev_err(ndev, "No PHY found!\n");
-> > +             goto err;
-> > +     }
-> > +
-> > +     phydev->irq =3D PHY_POLL;
-> > +
-> > +     value =3D phy_connect_direct(ndev, phydev, &geth_adjust_link, pri=
-v->phy_interface);
-> > +     if (value) {
-> > +             netdev_err(ndev, "Could not attach to PHY\n");
-> > +             goto err;
-> > +     } else {
-> > +             netdev_info(ndev, "%s: Type(%d) PHY ID %08x at %d IRQ %s =
-(%s)\n",
-> > +                         ndev->name, phydev->interface, phydev->phy_id=
-,
-> > +                         phydev->mdio.addr, "poll", dev_name(&phydev->=
-mdio.dev));
-> > +     }
-> > +
-> > +     //phydev->supported &=3D PHY_GBIT_FEATURES;
-> > +     phydev->is_gigabit_capable =3D 1;
-> > +     //phydev->advertising =3D phydev->supported;
-> > +
-> > +resume:
-> > +     phy_write(phydev, MII_BMCR, BMCR_RESET);
-> > +     while (BMCR_RESET & phy_read(phydev, MII_BMCR))
-> > +             msleep(30);
-> > +
-> > +     value =3D phy_read(phydev, MII_BMCR);
-> > +     phy_write(phydev, MII_BMCR, (value & ~BMCR_PDOWN));
-> > +
-> > +     if (priv->phy_ext =3D=3D INT_PHY) {
-> > +             /* EPHY Initial */
-> > +             phy_write(phydev, 0x1f, 0x0100); /* switch to page 1 */
-> > +             phy_write(phydev, 0x12, 0x4824); /* Disable APS */
-> > +             phy_write(phydev, 0x1f, 0x0200); /* switchto page 2 */
-> > +             phy_write(phydev, 0x18, 0x0000); /* PHYAFE TRX optimizati=
-on */
-> > +             phy_write(phydev, 0x1f, 0x0600); /* switchto page 6 */
-> > +             phy_write(phydev, 0x14, 0x708F); /* PHYAFE TX optimizatio=
-n */
-> > +             phy_write(phydev, 0x19, 0x0000);
-> > +             phy_write(phydev, 0x13, 0xf000); /* PHYAFE RX optimizatio=
-n */
-> > +             phy_write(phydev, 0x15, 0x1530);
-> > +             phy_write(phydev, 0x1f, 0x0800); /* switch to page 8 */
-> > +             phy_write(phydev, 0x18, 0x00bc); /* PHYAFE TRX optimizati=
-on */
-> > +             phy_write(phydev, 0x1f, 0x0100); /* switchto page 1 */
-> > +             /* reg 0x17 bit3,set 0 to disable iEEE */
-> > +             phy_write(phydev, 0x17, phy_read(phydev, 0x17) & (~(1<<3)=
-));
-> > +             phy_write(phydev, 0x1f, 0x0000); /* switch to page 0 */
-> > +     }
-> > +     if (priv->is_suspend)
-> > +             phy_init_hw(phydev);
-> > +
-> > +     return 0;
-> > +
-> > +err:
-> > +     mdiobus_unregister(new_bus);
-> > +reg_fail:
-> > +     mdiobus_free(new_bus);
-> > +
-> > +     return -EINVAL;
-> > +}
-> > +
-> > +static int geth_phy_release(struct net_device *ndev)
-> > +{
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +     struct phy_device *phydev =3D ndev->phydev;
-> > +     int value =3D 0;
-> > +
-> > +     /* Stop and disconnect the PHY */
-> > +     if (phydev)
-> > +             phy_stop(phydev);
-> > +
-> > +     priv->link =3D PHY_DOWN;
-> > +     priv->speed =3D 0;
-> > +     priv->duplex =3D -1;
-> > +
-> > +     if (phydev) {
-> > +             value =3D phy_read(phydev, MII_BMCR);
-> > +             phy_write(phydev, MII_BMCR, (value | BMCR_PDOWN));
-> > +     }
-> > +
-> > +     if (priv->is_suspend)
-> > +             return 0;
-> > +
-> > +     if (phydev) {
-> > +             phy_disconnect(phydev);
-> > +             ndev->phydev =3D NULL;
-> > +     }
-> > +
-> > +     if (priv->mii) {
-> > +             mdiobus_unregister(priv->mii);
-> > +             priv->mii->priv =3D NULL;
-> > +             mdiobus_free(priv->mii);
-> > +             priv->mii =3D NULL;
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static void geth_rx_refill(struct net_device *ndev)
-> > +{
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +     struct dma_desc *desc;
-> > +     struct sk_buff *sk =3D NULL;
-> > +     dma_addr_t paddr;
-> > +
-> > +     while (circ_space(priv->rx_clean, priv->rx_dirty, dma_desc_rx) > =
-0) {
-> > +             int entry =3D priv->rx_clean;
-> > +
-> > +             /* Find the dirty's desc and clean it */
-> > +             desc =3D priv->dma_rx + entry;
-> > +
-> > +             if (priv->rx_sk[entry] =3D=3D NULL) {
-> > +                     sk =3D netdev_alloc_skb_ip_align(ndev, priv->buf_=
-sz);
-> > +
-> > +                     if (unlikely(sk =3D=3D NULL))
-> > +                             break;
-> > +
-> > +                     priv->rx_sk[entry] =3D sk;
-> > +                     paddr =3D dma_map_single(priv->dev, sk->data,
-> > +                                            priv->buf_sz, DMA_FROM_DEV=
-ICE);
-> > +                     desc_buf_set(desc, paddr, priv->buf_sz);
-> > +             }
-> > +
-> > +             /* sync memery */
-> > +             wmb();
-> > +             desc_set_own(desc);
-> > +             priv->rx_clean =3D circ_inc(priv->rx_clean, dma_desc_rx);
-> > +     }
-> > +}
-> > +
-> > +/* geth_dma_desc_init - initialize the RX/TX descriptor list
-> > + * @ndev: net device structure
-> > + * Description: initialize the list for dma.
-> > + */
-> > +static int geth_dma_desc_init(struct net_device *ndev)
-> > +{
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +     unsigned int buf_sz;
-> > +
-> > +     priv->rx_sk =3D kzalloc(sizeof(struct sk_buff *) * dma_desc_rx,
-> > +                             GFP_KERNEL);
-> > +     if (!priv->rx_sk)
-> > +             return -ENOMEM;
-> > +
-> > +     priv->tx_sk =3D kzalloc(sizeof(struct sk_buff *) * dma_desc_tx,
-> > +                             GFP_KERNEL);
-> > +     if (!priv->tx_sk)
-> > +             goto tx_sk_err;
-> > +
-> > +     /* Set the size of buffer depend on the MTU & max buf size */
-> > +     buf_sz =3D MAX_BUF_SZ;
-> > +
-> > +     priv->dma_tx =3D dma_alloc_coherent(priv->dev,
-> > +                                     dma_desc_tx *
-> > +                                     sizeof(struct dma_desc),
-> > +                                     &priv->dma_tx_phy,
-> > +                                     GFP_KERNEL);
-> > +     if (!priv->dma_tx)
-> > +             goto dma_tx_err;
-> > +
-> > +     priv->dma_rx =3D dma_alloc_coherent(priv->dev,
-> > +                                     dma_desc_rx *
-> > +                                     sizeof(struct dma_desc),
-> > +                                     &priv->dma_rx_phy,
-> > +                                     GFP_KERNEL);
-> > +     if (!priv->dma_rx)
-> > +             goto dma_rx_err;
-> > +
-> > +     priv->buf_sz =3D buf_sz;
-> > +
-> > +     return 0;
-> > +
-> > +dma_rx_err:
-> > +     dma_free_coherent(priv->dev, dma_desc_rx * sizeof(struct dma_desc=
-),
-> > +                       priv->dma_tx, priv->dma_tx_phy);
-> > +dma_tx_err:
-> > +     kfree(priv->tx_sk);
-> > +tx_sk_err:
-> > +     kfree(priv->rx_sk);
-> > +
-> > +     return -ENOMEM;
-> > +}
-> > +
-> > +static void geth_free_rx_sk(struct geth_priv *priv)
-> > +{
-> > +     int i;
-> > +
-> > +     for (i =3D 0; i < dma_desc_rx; i++) {
-> > +             if (priv->rx_sk[i] !=3D NULL) {
-> > +                     struct dma_desc *desc =3D priv->dma_rx + i;
-> > +
-> > +                     dma_unmap_single(priv->dev, (u32)desc_buf_get_add=
-r(desc),
-> > +                                      desc_buf_get_len(desc),
-> > +                                      DMA_FROM_DEVICE);
-> > +                     dev_kfree_skb_any(priv->rx_sk[i]);
-> > +                     priv->rx_sk[i] =3D NULL;
-> > +             }
-> > +     }
-> > +}
-> > +
-> > +static void geth_free_tx_sk(struct geth_priv *priv)
-> > +{
-> > +     int i;
-> > +
-> > +     for (i =3D 0; i < dma_desc_tx; i++) {
-> > +             if (priv->tx_sk[i] !=3D NULL) {
-> > +                     struct dma_desc *desc =3D priv->dma_tx + i;
-> > +
-> > +                     if (desc_buf_get_addr(desc))
-> > +                             dma_unmap_single(priv->dev, (u32)desc_buf=
-_get_addr(desc),
-> > +                                              desc_buf_get_len(desc),
-> > +                                              DMA_TO_DEVICE);
-> > +                     dev_kfree_skb_any(priv->tx_sk[i]);
-> > +                     priv->tx_sk[i] =3D NULL;
-> > +             }
-> > +     }
-> > +}
-> > +
-> > +static void geth_free_dma_desc(struct geth_priv *priv)
-> > +{
-> > +     /* Free the region of consistent memory previously allocated for =
-the DMA */
-> > +     dma_free_coherent(priv->dev, dma_desc_tx * sizeof(struct dma_desc=
-),
-> > +                       priv->dma_tx, priv->dma_tx_phy);
-> > +     dma_free_coherent(priv->dev, dma_desc_rx * sizeof(struct dma_desc=
-),
-> > +                       priv->dma_rx, priv->dma_rx_phy);
-> > +
-> > +     kfree(priv->rx_sk);
-> > +     kfree(priv->tx_sk);
-> > +}
-> > +
-> > +#if IS_ENABLED(CONFIG_PM)
-> > +/*
-> > +static int geth_select_gpio_state(struct pinctrl *pctrl, char *name)
-> > +{
-> > +     int ret =3D 0;
-> > +     struct pinctrl_state *pctrl_state =3D NULL;
-> > +
-> > +     pctrl_state =3D pinctrl_lookup_state(pctrl, name);
-> > +     if (IS_ERR(pctrl_state)) {
-> > +             pr_err("gmac pinctrl_lookup_state(%s) failed! return %p\n=
-",
-> > +                                             name, pctrl_state);
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     ret =3D pinctrl_select_state(pctrl, pctrl_state);
-> > +     if (ret < 0)
-> > +             pr_err("gmac pinctrl_select_state(%s) failed! return %d\n=
-",
-> > +                                             name, ret);
-> > +
-> > +     return ret;
-> > +}
-> > +*/
-> > +static int geth_suspend(struct device *dev)
-> > +{
-> > +     struct net_device *ndev =3D dev_get_drvdata(dev);
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +
-> > +     cancel_work_sync(&priv->eth_work);
-> > +
-> > +     if (!ndev || !netif_running(ndev))
-> > +             return 0;
-> > +
-> > +     priv->is_suspend =3D true;
-> > +
-> > +     spin_lock(&priv->lock);
-> > +     netif_device_detach(ndev);
-> > +     spin_unlock(&priv->lock);
-> > +
-> > +     geth_stop(ndev);
-> > +/*
-> > +     if (priv->phy_ext =3D=3D EXT_PHY)
-> > +
-> > +     geth_select_gpio_state(priv->pinctrl, PINCTRL_STATE_SLEEP);
-> > +*/
-> > +     return 0;
-> > +}
-> > +
-> > +static void geth_resume_work(struct work_struct *work)
-> > +{
-> > +     struct geth_priv *priv =3D container_of(work, struct geth_priv, e=
-th_work);
-> > +     struct net_device *ndev =3D priv->ndev;
-> > +     int ret =3D 0;
-> > +
-> > +     if (!netif_running(ndev))
-> > +             return;
-> > +/*
-> > +     if (priv->phy_ext =3D=3D EXT_PHY)
-> > +             geth_select_gpio_state(priv->pinctrl, PINCTRL_STATE_DEFAU=
-LT);
-> > +*/
-> > +     spin_lock(&priv->lock);
-> > +     netif_device_attach(ndev);
-> > +     spin_unlock(&priv->lock);
-> > +
-> > +#if IS_ENABLED(CONFIG_SUNXI_EPHY)
-> > +     if (!ephy_is_enable()) {
-> > +             pr_info("[geth_resume] ephy is not enable, waiting...\n")=
-;
-> > +             msleep(2000);
-> > +             if (!ephy_is_enable()) {
-> > +                     netdev_err(ndev, "Wait for ephy resume timeout.\n=
-");
-> > +                     return;
-> > +             }
-> > +     }
-> > +#endif
-> > +
-> > +     ret =3D geth_open(ndev);
-> > +     if (!ret)
-> > +             priv->is_suspend =3D false;
-> > +}
-> > +
-> > +static void geth_resume(struct device *dev)
-> > +{
-> > +     struct net_device *ndev =3D dev_get_drvdata(dev);
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +
-> > +     schedule_work(&priv->eth_work);
-> > +}
-> > +
-> > +static int geth_freeze(struct device *dev)
-> > +{
-> > +     return 0;
-> > +}
-> > +
-> > +static int geth_restore(struct device *dev)
-> > +{
-> > +     return 0;
-> > +}
-> > +
-> > +static const struct dev_pm_ops geth_pm_ops =3D {
-> > +     .complete =3D geth_resume,
-> > +     .prepare =3D geth_suspend,
-> > +     .suspend =3D NULL,
-> > +     .resume =3D NULL,
-> > +     .freeze =3D geth_freeze,
-> > +     .restore =3D geth_restore,
-> > +};
-> > +#else
-> > +static const struct dev_pm_ops geth_pm_ops;
-> > +#endif /* CONFIG_PM */
-> > +
-> > +#define sunxi_get_soc_chipid(x) {}
-> > +static void geth_chip_hwaddr(u8 *addr)
-> > +{
-> > +#define MD5_SIZE     16
-> > +#define CHIP_SIZE    16
-> > +
-> > +     struct crypto_ahash *tfm;
-> > +     struct ahash_request *req;
-> > +     struct scatterlist sg;
-> > +     u8 result[MD5_SIZE];
-> > +     u8 chipid[CHIP_SIZE];
-> > +     int i =3D 0;
-> > +     int ret =3D -1;
-> > +
-> > +     memset(chipid, 0, sizeof(chipid));
-> > +     memset(result, 0, sizeof(result));
-> > +
-> > +     sunxi_get_soc_chipid((u8 *)chipid);
-> > +
-> > +     tfm =3D crypto_alloc_ahash("md5", 0, CRYPTO_ALG_ASYNC);
-> > +     if (IS_ERR(tfm)) {
-> > +             pr_err("Failed to alloc md5\n");
-> > +             return;
-> > +     }
-> > +
-> > +     req =3D ahash_request_alloc(tfm, GFP_KERNEL);
-> > +     if (!req)
-> > +             goto out;
-> > +
-> > +     ahash_request_set_callback(req, 0, NULL, NULL);
-> > +
-> > +     ret =3D crypto_ahash_init(req);
-> > +     if (ret) {
-> > +             pr_err("crypto_ahash_init() failed\n");
-> > +             goto out;
-> > +     }
-> > +
-> > +     sg_init_one(&sg, chipid, sizeof(chipid));
-> > +     ahash_request_set_crypt(req, &sg, result, sizeof(chipid));
-> > +     ret =3D crypto_ahash_update(req);
-> > +     if (ret) {
-> > +             pr_err("crypto_ahash_update() failed for id\n");
-> > +             goto out;
-> > +     }
-> > +
-> > +     ret =3D crypto_ahash_final(req);
-> > +     if (ret) {
-> > +             pr_err("crypto_ahash_final() failed for result\n");
-> > +             goto out;
-> > +     }
-> > +
-> > +     ahash_request_free(req);
-> > +
-> > +     /* Choose md5 result's [0][2][4][6][8][10] byte as mac address */
-> > +     for (i =3D 0; i < ETH_ALEN; i++)
-> > +             addr[i] =3D result[2 * i];
-> > +     addr[0] &=3D 0xfe; /* clear multicast bit */
-> > +     addr[0] |=3D 0x02; /* set local assignment bit (IEEE802) */
-> > +
-> > +out:
-> > +     crypto_free_ahash(tfm);
-> > +}
-> > +
-> > +static void geth_check_addr(struct net_device *ndev, unsigned char *ma=
-c)
-> > +{
-> > +     int i;
-> > +     char *p =3D mac;
-> > +
-> > +     if (!is_valid_ether_addr(ndev->dev_addr)) {
-> > +             for (i =3D 0; i < ETH_ALEN; i++, p++)
-> > +                     ndev->dev_addr[i] =3D simple_strtoul(p, &p, 16);
-> > +
-> > +             if (!is_valid_ether_addr(ndev->dev_addr))
-> > +                     geth_chip_hwaddr(ndev->dev_addr);
-> > +
-> > +             if (!is_valid_ether_addr(ndev->dev_addr)) {
-> > +                     random_ether_addr(ndev->dev_addr);
-> > +                     pr_warn("%s: Use random mac address\n", ndev->nam=
-e);
-> > +             }
-> > +     }
-> > +}
-> > +
-> > +static int geth_clk_enable(struct geth_priv *priv)
-> > +{
-> > +     int ret;
-> > +     phy_interface_t phy_interface =3D 0;
-> > +     u32 clk_value;
-> > +     /*u32 efuse_value;*/
-> > +/*
-> > +     ret =3D reset_control_deassert(priv->reset);
-> > +     if (ret) {
-> > +             pr_err("deassert gmac rst failed!\n");
-> > +             return ret;
-> > +     }
-> > +
-> > +     ret =3D clk_prepare_enable(priv->geth_clk);
-> > +     if (ret) {
-> > +             pr_err("try to enable geth_clk failed!\n");
-> > +             goto assert_reset;
-> > +     }
-> > +
-> > +     if (((priv->phy_ext =3D=3D INT_PHY) || priv->use_ephy_clk)
-> > +                     && !IS_ERR_OR_NULL(priv->ephy_clk)) {
-> > +             ret =3D clk_prepare_enable(priv->ephy_clk);
-> > +             if (ret) {
-> > +                     pr_err("try to enable ephy_clk failed!\n");
-> > +                     goto ephy_clk_disable;
-> > +             }
-> > +     }
-> > +*/
-> > +     phy_interface =3D priv->phy_interface;
-> > +
-> > +     clk_value =3D readl(priv->base_phy);
-> > +     if (phy_interface =3D=3D PHY_INTERFACE_MODE_RGMII)
-> > +             clk_value |=3D 0x00000004;
-> > +     else
-> > +             clk_value &=3D (~0x00000004);
-> > +
-> > +     clk_value &=3D (~0x00002003);
-> > +     if (phy_interface =3D=3D PHY_INTERFACE_MODE_RGMII
-> > +                     || phy_interface =3D=3D PHY_INTERFACE_MODE_GMII)
-> > +             clk_value |=3D 0x00000002;
-> > +     else if (phy_interface =3D=3D PHY_INTERFACE_MODE_RMII)
-> > +             clk_value |=3D 0x00002001;
-> > +
-> > +     /*if (priv->phy_ext =3D=3D INT_PHY) {
-> > +             if (0 !=3D sunxi_efuse_read(EFUSE_OEM_NAME, &efuse_value)=
-)
-> > +                     pr_err("get PHY efuse fail!\n");
-> > +             else
-> > +#if IS_ENABLED(CONFIG_ARCH_SUN50IW2)
-> > +                     clk_value |=3D (((efuse_value >> 24) & 0x0F) + 3)=
- << 28;
-> > +#else
-> > +                     pr_warn("miss config come from efuse!\n");
-> > +#endif
-> > +     }*/
-> > +
-> > +     /* Adjust Tx/Rx clock delay */
-> > +     clk_value &=3D ~(0x07 << 10);
-> > +     clk_value |=3D ((priv->tx_delay & 0x07) << 10);
-> > +     clk_value &=3D ~(0x1F << 5);
-> > +     clk_value |=3D ((priv->rx_delay & 0x1F) << 5);
-> > +
-> > +     writel(clk_value, priv->base_phy);
-> > +
-> > +    return 0;
-> > +/*
-> > +ephy_clk_disable:
-> > +    clk_disable_unprepare(priv->ephy_clk);
-> > +assert_reset:
-> > +    reset_control_assert(priv->reset);
-> > +*/
-> > +    return ret;
-> > +}
-> > +
-> > +static void geth_clk_disable(struct geth_priv *priv)
-> > +{
-> > +/*
-> > +     if (((priv->phy_ext =3D=3D INT_PHY) || priv->use_ephy_clk)
-> > +                     && !IS_ERR_OR_NULL(priv->ephy_clk))
-> > +             clk_disable_unprepare(priv->ephy_clk);
-> > +
-> > +     clk_disable_unprepare(priv->geth_clk);
-> > +    reset_control_assert(priv->reset);
-> > +*/
-> > +}
-> > +
-> > +static void geth_tx_err(struct geth_priv *priv)
-> > +{
-> > +     netif_stop_queue(priv->ndev);
-> > +
-> > +     sunxi_stop_tx(priv->base);
-> > +
-> > +     geth_free_tx_sk(priv);
-> > +     memset(priv->dma_tx, 0, dma_desc_tx * sizeof(struct dma_desc));
-> > +     desc_init_chain(priv->dma_tx, (unsigned long)priv->dma_tx_phy, dm=
-a_desc_tx);
-> > +     priv->tx_dirty =3D 0;
-> > +     priv->tx_clean =3D 0;
-> > +     sunxi_start_tx(priv->base, priv->dma_tx_phy);
-> > +
-> > +     priv->ndev->stats.tx_errors++;
-> > +     netif_wake_queue(priv->ndev);
-> > +}
-> > +
-> > +static inline void geth_schedule(struct geth_priv *priv)
-> > +{
-> > +     if (likely(napi_schedule_prep(&priv->napi))) {
-> > +             sunxi_int_disable(priv->base);
-> > +             __napi_schedule(&priv->napi);
-> > +     }
-> > +}
-> > +
-> > +static irqreturn_t geth_interrupt(int irq, void *dev_id)
-> > +{
-> > +     struct net_device *ndev =3D (struct net_device *)dev_id;
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +     int status;
-> > +
-> > +     if (unlikely(!ndev)) {
-> > +             pr_err("%s: invalid ndev pointer\n", __func__);
-> > +             return IRQ_NONE;
-> > +     }
-> > +
-> > +     status =3D sunxi_int_status(priv->base, (void *)(&priv->xstats));
-> > +
-> > +     if (likely(status =3D=3D handle_tx_rx))
-> > +             geth_schedule(priv);
-> > +     else if (unlikely(status =3D=3D tx_hard_error_bump_tc))
-> > +             netdev_info(ndev, "Do nothing for bump tc\n");
-> > +     else if (unlikely(status =3D=3D tx_hard_error))
-> > +             geth_tx_err(priv);
-> > +     else
-> > +             netdev_info(ndev, "Do nothing.....\n");
-> > +
-> > +     return IRQ_HANDLED;
-> > +}
-> > +
-> > +static int geth_open(struct net_device *ndev)
-> > +{
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +     int ret =3D 0;
-> > +
-> > +     ret =3D geth_power_on(priv);
-> > +     if (ret) {
-> > +             netdev_err(ndev, "Power on is failed\n");
-> > +             ret =3D -EINVAL;
-> > +     }
-> > +
-> > +     ret =3D geth_clk_enable(priv);
-> > +     if (ret) {
-> > +             pr_err("%s: clk enable is failed\n", __func__);
-> > +             ret =3D -EINVAL;
-> > +     }
-> > +
-> > +     netif_carrier_off(ndev);
-> > +
-> > +     ret =3D geth_phy_init(ndev);
-> > +     if (ret)
-> > +             goto err;
-> > +
-> > +     ret =3D sunxi_mac_reset((void *)priv->base, &sunxi_udelay, 10000)=
-;
-> > +     if (ret) {
-> > +             netdev_err(ndev, "Initialize hardware error\n");
-> > +             goto desc_err;
-> > +     }
-> > +
-> > +     sunxi_mac_init(priv->base, txmode, rxmode);
-> > +     sunxi_set_umac(priv->base, ndev->dev_addr, 0);
-> > +
-> > +     if (!priv->is_suspend) {
-> > +             ret =3D geth_dma_desc_init(ndev);
-> > +             if (ret) {
-> > +                     ret =3D -EINVAL;
-> > +                     goto desc_err;
-> > +             }
-> > +     }
-> > +
-> > +     memset(priv->dma_tx, 0, dma_desc_tx * sizeof(struct dma_desc));
-> > +     memset(priv->dma_rx, 0, dma_desc_rx * sizeof(struct dma_desc));
-> > +
-> > +     desc_init_chain(priv->dma_rx, (unsigned long)priv->dma_rx_phy, dm=
-a_desc_rx);
-> > +     desc_init_chain(priv->dma_tx, (unsigned long)priv->dma_tx_phy, dm=
-a_desc_tx);
-> > +
-> > +     priv->rx_clean =3D 0;
-> > +     priv->rx_dirty =3D 0;
-> > +     priv->tx_clean =3D 0;
-> > +     priv->tx_dirty =3D 0;
-> > +     geth_rx_refill(ndev);
-> > +
-> > +     /* Extra statistics */
-> > +     memset(&priv->xstats, 0, sizeof(struct geth_extra_stats));
-> > +
-> > +     if (ndev->phydev)
-> > +             phy_start(ndev->phydev);
-> > +
-> > +     sunxi_start_rx(priv->base, (unsigned long)((struct dma_desc *)
-> > +                    priv->dma_rx_phy + priv->rx_dirty));
-> > +     sunxi_start_tx(priv->base, (unsigned long)((struct dma_desc *)
-> > +                    priv->dma_tx_phy + priv->tx_clean));
-> > +
-> > +     napi_enable(&priv->napi);
-> > +     netif_start_queue(ndev);
-> > +
-> > +     /* Enable the Rx/Tx */
-> > +     sunxi_mac_enable(priv->base);
-> > +
-> > +     return 0;
-> > +
-> > +desc_err:
-> > +     geth_phy_release(ndev);
-> > +err:
-> > +     geth_clk_disable(priv);
-> > +     if (priv->is_suspend)
-> > +             napi_enable(&priv->napi);
-> > +
-> > +     geth_power_off(priv);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static int geth_stop(struct net_device *ndev)
-> > +{
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +
-> > +     netif_stop_queue(ndev);
-> > +     napi_disable(&priv->napi);
-> > +
-> > +     netif_carrier_off(ndev);
-> > +
-> > +     /* Release PHY resources */
-> > +     geth_phy_release(ndev);
-> > +
-> > +     /* Disable Rx/Tx */
-> > +     sunxi_mac_disable(priv->base);
-> > +
-> > +     geth_clk_disable(priv);
-> > +     geth_power_off(priv);
-> > +
-> > +     netif_tx_lock_bh(ndev);
-> > +     /* Release the DMA TX/RX socket buffers */
-> > +     geth_free_rx_sk(priv);
-> > +     geth_free_tx_sk(priv);
-> > +     netif_tx_unlock_bh(ndev);
-> > +
-> > +     /* Ensure that hareware have been stopped */
-> > +     if (!priv->is_suspend)
-> > +             geth_free_dma_desc(priv);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static void geth_tx_complete(struct geth_priv *priv)
-> > +{
-> > +     unsigned int entry =3D 0;
-> > +     struct sk_buff *skb =3D NULL;
-> > +     struct dma_desc *desc =3D NULL;
-> > +     int tx_stat;
-> > +
-> > +     spin_lock(&priv->tx_lock);
-> > +     while (circ_cnt(priv->tx_dirty, priv->tx_clean, dma_desc_tx) > 0)=
- {
-> > +             entry =3D priv->tx_clean;
-> > +             desc =3D priv->dma_tx + entry;
-> > +
-> > +             /* Check if the descriptor is owned by the DMA. */
-> > +             if (desc_get_own(desc))
-> > +                     break;
-> > +
-> > +             /* Verify tx error by looking at the last segment */
-> > +             if (desc_get_tx_ls(desc)) {
-> > +                     tx_stat =3D desc_get_tx_status(desc, (void *)(&pr=
-iv->xstats));
-> > +
-> > +                     if (likely(!tx_stat))
-> > +                             priv->ndev->stats.tx_packets++;
-> > +                     else
-> > +                             priv->ndev->stats.tx_errors++;
-> > +             }
-> > +
-> > +             dma_unmap_single(priv->dev, (u32)desc_buf_get_addr(desc),
-> > +                              desc_buf_get_len(desc), DMA_TO_DEVICE);
-> > +
-> > +             skb =3D priv->tx_sk[entry];
-> > +             priv->tx_sk[entry] =3D NULL;
-> > +             desc_init(desc);
-> > +
-> > +             /* Find next dirty desc */
-> > +             priv->tx_clean =3D circ_inc(entry, dma_desc_tx);
-> > +
-> > +             if (unlikely(skb =3D=3D NULL))
-> > +                     continue;
-> > +
-> > +             dev_kfree_skb(skb);
-> > +     }
-> > +
-> > +     if (unlikely(netif_queue_stopped(priv->ndev)) &&
-> > +         circ_space(priv->tx_dirty, priv->tx_clean, dma_desc_tx) >
-> > +         TX_THRESH) {
-> > +             netif_wake_queue(priv->ndev);
-> > +     }
-> > +     spin_unlock(&priv->tx_lock);
-> > +}
-> > +
-> > +static netdev_tx_t geth_xmit(struct sk_buff *skb, struct net_device *n=
-dev)
-> > +{
-> > +     struct geth_priv  *priv =3D netdev_priv(ndev);
-> > +     unsigned int entry;
-> > +     struct dma_desc *desc, *first;
-> > +     unsigned int len, tmp_len =3D 0;
-> > +     int i, csum_insert;
-> > +     int nfrags =3D skb_shinfo(skb)->nr_frags;
-> > +     dma_addr_t paddr;
-> > +
-> > +     spin_lock(&priv->tx_lock);
-> > +     if (unlikely(circ_space(priv->tx_dirty, priv->tx_clean,
-> > +         dma_desc_tx) < (nfrags + 1))) {
-> > +             if (!netif_queue_stopped(ndev)) {
-> > +                     netdev_err(ndev, "%s: BUG! Tx Ring full when queu=
-e awake\n", __func__);
-> > +                     netif_stop_queue(ndev);
-> > +             }
-> > +             spin_unlock(&priv->tx_lock);
-> > +
-> > +             return NETDEV_TX_BUSY;
-> > +     }
-> > +
-> > +     csum_insert =3D (skb->ip_summed =3D=3D CHECKSUM_PARTIAL);
-> > +     entry =3D priv->tx_dirty;
-> > +     first =3D priv->dma_tx + entry;
-> > +     desc =3D priv->dma_tx + entry;
-> > +
-> > +     len =3D skb_headlen(skb);
-> > +     priv->tx_sk[entry] =3D skb;
-> > +
-> > +#ifdef PKT_DEBUG
-> > +     printk("=3D=3D=3D=3D=3D=3DTX PKT DATA: =3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D\n");
-> > +     /* dump the packet */
-> > +     print_hex_dump(KERN_DEBUG, "skb->data: ", DUMP_PREFIX_NONE,
-> > +                    16, 1, skb->data, 64, true);
-> > +#endif
-> > +
-> > +     /* Every desc max size is 2K */
-> > +     while (len !=3D 0) {
-> > +             desc =3D priv->dma_tx + entry;
-> > +             tmp_len =3D ((len > MAX_BUF_SZ) ?  MAX_BUF_SZ : len);
-> > +
-> > +             paddr =3D dma_map_single(priv->dev, skb->data, tmp_len, D=
-MA_TO_DEVICE);
-> > +             if (dma_mapping_error(priv->dev, paddr)) {
-> > +                     dev_kfree_skb(skb);
-> > +                     return -EIO;
-> > +             }
-> > +             desc_buf_set(desc, paddr, tmp_len);
-> > +             /* Don't set the first's own bit, here */
-> > +             if (first !=3D desc) {
-> > +                     priv->tx_sk[entry] =3D NULL;
-> > +                     desc_set_own(desc);
-> > +             }
-> > +
-> > +             entry =3D circ_inc(entry, dma_desc_tx);
-> > +             len -=3D tmp_len;
-> > +     }
-> > +
-> > +     for (i =3D 0; i < nfrags; i++) {
-> > +             const skb_frag_t *frag =3D &skb_shinfo(skb)->frags[i];
-> > +
-> > +             len =3D skb_frag_size(frag);
-> > +             desc =3D priv->dma_tx + entry;
-> > +             paddr =3D skb_frag_dma_map(priv->dev, frag, 0, len, DMA_T=
-O_DEVICE);
-> > +             if (dma_mapping_error(priv->dev, paddr)) {
-> > +                     dev_kfree_skb(skb);
-> > +                     return -EIO;
-> > +             }
-> > +
-> > +             desc_buf_set(desc, paddr, len);
-> > +             desc_set_own(desc);
-> > +             priv->tx_sk[entry] =3D NULL;
-> > +             entry =3D circ_inc(entry, dma_desc_tx);
-> > +     }
-> > +
-> > +     ndev->stats.tx_bytes +=3D skb->len;
-> > +     priv->tx_dirty =3D entry;
-> > +     desc_tx_close(first, desc, csum_insert);
-> > +
-> > +     desc_set_own(first);
-> > +     spin_unlock(&priv->tx_lock);
-> > +
-> > +     if (circ_space(priv->tx_dirty, priv->tx_clean, dma_desc_tx) <=3D
-> > +                     (MAX_SKB_FRAGS + 1)) {
-> > +             netif_stop_queue(ndev);
-> > +             if (circ_space(priv->tx_dirty, priv->tx_clean, dma_desc_t=
-x) >
-> > +                             TX_THRESH)
-> > +                     netif_wake_queue(ndev);
-> > +     }
-> > +
-> > +#ifdef DEBUG
-> > +     printk("=3D=3D=3D=3D=3D=3D=3DTX Descriptor DMA: 0x%08llx\n", priv=
-->dma_tx_phy);
-> > +     printk("Tx pointor: dirty: %d, clean: %d\n", priv->tx_dirty, priv=
-->tx_clean);
-> > +     desc_print(priv->dma_tx, dma_desc_tx);
-> > +#endif
-> > +     sunxi_tx_poll(priv->base);
-> > +     geth_tx_complete(priv);
-> > +
-> > +     return NETDEV_TX_OK;
-> > +}
-> > +
-> > +static int geth_rx(struct geth_priv *priv, int limit)
-> > +{
-> > +     unsigned int rxcount =3D 0;
-> > +     unsigned int entry;
-> > +     struct dma_desc *desc;
-> > +     struct sk_buff *skb;
-> > +     int status;
-> > +     int frame_len;
-> > +
-> > +     while (rxcount < limit) {
-> > +             entry =3D priv->rx_dirty;
-> > +             desc =3D priv->dma_rx + entry;
-> > +
-> > +             if (desc_get_own(desc))
-> > +                     break;
-> > +
-> > +             rxcount++;
-> > +             priv->rx_dirty =3D circ_inc(priv->rx_dirty, dma_desc_rx);
-> > +
-> > +             /* Get length & status from hardware */
-> > +             frame_len =3D desc_rx_frame_len(desc);
-> > +             status =3D desc_get_rx_status(desc, (void *)(&priv->xstat=
-s));
-> > +
-> > +             netdev_dbg(priv->ndev, "Rx frame size %d, status: %d\n",
-> > +                        frame_len, status);
-> > +
-> > +             skb =3D priv->rx_sk[entry];
-> > +             if (unlikely(!skb)) {
-> > +                     netdev_err(priv->ndev, "Skb is null\n");
-> > +                     priv->ndev->stats.rx_dropped++;
-> > +                     break;
-> > +             }
-> > +
-> > +#ifdef PKT_DEBUG
-> > +             printk("=3D=3D=3D=3D=3D=3DRX PKT DATA: =3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D\n");
-> > +             /* dump the packet */
-> > +             print_hex_dump(KERN_DEBUG, "skb->data: ", DUMP_PREFIX_NON=
-E,
-> > +                             16, 1, skb->data, 64, true);
-> > +#endif
-> > +
-> > +             if (status =3D=3D discard_frame) {
-> > +                     netdev_dbg(priv->ndev, "Get error pkt\n");
-> > +                     priv->ndev->stats.rx_errors++;
-> > +                     continue;
-> > +             }
-> > +
-> > +             if (unlikely(status !=3D llc_snap))
-> > +                     frame_len -=3D ETH_FCS_LEN;
-> > +
-> > +             priv->rx_sk[entry] =3D NULL;
-> > +
-> > +             skb_put(skb, frame_len);
-> > +             dma_unmap_single(priv->dev, (u32)desc_buf_get_addr(desc),
-> > +                              desc_buf_get_len(desc), DMA_FROM_DEVICE)=
-;
-> > +
-> > +             skb->protocol =3D eth_type_trans(skb, priv->ndev);
-> > +
-> > +             skb->ip_summed =3D CHECKSUM_UNNECESSARY;
-> > +             napi_gro_receive(&priv->napi, skb);
-> > +
-> > +             priv->ndev->stats.rx_packets++;
-> > +             priv->ndev->stats.rx_bytes +=3D frame_len;
-> > +     }
-> > +
-> > +#ifdef DEBUG
-> > +     if (rxcount > 0) {
-> > +             printk("=3D=3D=3D=3D=3D=3DRX Descriptor DMA: 0x%08llx=3D\=
-n", priv->dma_rx_phy);
-> > +             printk("RX pointor: dirty: %d, clean: %d\n", priv->rx_dir=
-ty, priv->rx_clean);
-> > +             desc_print(priv->dma_rx, dma_desc_rx);
-> > +     }
-> > +#endif
-> > +     geth_rx_refill(priv->ndev);
-> > +
-> > +     return rxcount;
-> > +}
-> > +
-> > +static int geth_poll(struct napi_struct *napi, int budget)
-> > +{
-> > +     struct geth_priv *priv =3D container_of(napi, struct geth_priv, n=
-api);
-> > +     int work_done =3D 0;
-> > +
-> > +     geth_tx_complete(priv);
-> > +     work_done =3D geth_rx(priv, budget);
-> > +
-> > +     if (work_done < budget) {
-> > +             napi_complete(napi);
-> > +             sunxi_int_enable(priv->base);
-> > +     }
-> > +
-> > +     return work_done;
-> > +}
-> > +
-> > +static int geth_change_mtu(struct net_device *ndev, int new_mtu)
-> > +{
-> > +     int max_mtu;
-> > +
-> > +     if (netif_running(ndev)) {
-> > +             pr_err("%s: must be stopped to change its MTU\n", ndev->n=
-ame);
-> > +             return -EBUSY;
-> > +     }
-> > +
-> > +     max_mtu =3D SKB_MAX_HEAD(NET_SKB_PAD + NET_IP_ALIGN);
-> > +
-> > +     if ((new_mtu < 46) || (new_mtu > max_mtu)) {
-> > +             pr_err("%s: invalid MTU, max MTU is: %d\n", ndev->name, m=
-ax_mtu);
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     ndev->mtu =3D new_mtu;
-> > +     netdev_update_features(ndev);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static netdev_features_t geth_fix_features(struct net_device *ndev,
-> > +                                        netdev_features_t features)
-> > +{
-> > +     return features;
-> > +}
-> > +
-> > +static void geth_set_rx_mode(struct net_device *ndev)
-> > +{
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +     unsigned int value =3D 0;
-> > +
-> > +     pr_debug("%s: # mcasts %d, # unicast %d\n",
-> > +              __func__, netdev_mc_count(ndev), netdev_uc_count(ndev));
-> > +
-> > +     spin_lock(&priv->lock);
-> > +     if (ndev->flags & IFF_PROMISC) {
-> > +             value =3D GETH_FRAME_FILTER_PR;
-> > +     } else if ((netdev_mc_count(ndev) > HASH_TABLE_SIZE) ||
-> > +                (ndev->flags & IFF_ALLMULTI)) {
-> > +             value =3D GETH_FRAME_FILTER_PM;   /* pass all multi */
-> > +             sunxi_hash_filter(priv->base, ~0UL, ~0UL);
-> > +     } else if (!netdev_mc_empty(ndev)) {
-> > +             u32 mc_filter[2];
-> > +             struct netdev_hw_addr *ha;
-> > +
-> > +             /* Hash filter for multicast */
-> > +             value =3D GETH_FRAME_FILTER_HMC;
-> > +
-> > +             memset(mc_filter, 0, sizeof(mc_filter));
-> > +             netdev_for_each_mc_addr(ha, ndev) {
-> > +                     /* The upper 6 bits of the calculated CRC are use=
-d to
-> > +                      *  index the contens of the hash table
-> > +                      */
-> > +                     int bit_nr =3D bitrev32(~crc32_le(~0, ha->addr, 6=
-)) >> 26;
-> > +                     /* The most significant bit determines the regist=
-er to
-> > +                      * use (H/L) while the other 5 bits determine the=
- bit
-> > +                      * within the register.
-> > +                      */
-> > +                     mc_filter[bit_nr >> 5] |=3D 1 << (bit_nr & 31);
-> > +             }
-> > +             sunxi_hash_filter(priv->base, mc_filter[0], mc_filter[1])=
-;
-> > +     }
-> > +
-> > +     /* Handle multiple unicast addresses (perfect filtering)*/
-> > +     if (netdev_uc_count(ndev) > 16) {
-> > +             /* Switch to promiscuous mode is more than 8 addrs are re=
-quired */
-> > +             value |=3D GETH_FRAME_FILTER_PR;
-> > +     } else {
-> > +             int reg =3D 1;
-> > +             struct netdev_hw_addr *ha;
-> > +
-> > +             netdev_for_each_uc_addr(ha, ndev) {
-> > +                     sunxi_set_umac(priv->base, ha->addr, reg);
-> > +                     reg++;
-> > +             }
-> > +     }
-> > +
-> > +#ifdef FRAME_FILTER_DEBUG
-> > +     /* Enable Receive all mode (to debug filtering_fail errors) */
-> > +     value |=3D GETH_FRAME_FILTER_RA;
-> > +#endif
-> > +     sunxi_set_filter(priv->base, value);
-> > +     spin_unlock(&priv->lock);
-> > +}
-> > +
-> > +static void geth_tx_timeout(struct net_device *ndev, unsigned int txqu=
-eue)
-> > +{
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +
-> > +     geth_tx_err(priv);
-> > +}
-> > +
-> > +static int geth_ioctl(struct net_device *ndev, struct ifreq *rq, int c=
-md)
-> > +{
-> > +     if (!netif_running(ndev))
-> > +             return -EINVAL;
-> > +
-> > +     if (!ndev->phydev)
-> > +             return -EINVAL;
-> > +
-> > +     return phy_mii_ioctl(ndev->phydev, rq, cmd);
-> > +}
-> > +
-> > +/* Configuration changes (passed on by ifconfig) */
-> > +static int geth_config(struct net_device *ndev, struct ifmap *map)
-> > +{
-> > +     if (ndev->flags & IFF_UP)       /* can't act on a running interfa=
-ce */
-> > +             return -EBUSY;
-> > +
-> > +     /* Don't allow changing the I/O address */
-> > +     if (map->base_addr !=3D ndev->base_addr) {
-> > +             pr_warn("%s: can't change I/O address\n", ndev->name);
-> > +             return -EOPNOTSUPP;
-> > +     }
-> > +
-> > +     /* Don't allow changing the IRQ */
-> > +     if (map->irq !=3D ndev->irq) {
-> > +             pr_warn("%s: can't change IRQ number %d\n", ndev->name, n=
-dev->irq);
-> > +             return -EOPNOTSUPP;
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int geth_set_mac_address(struct net_device *ndev, void *p)
-> > +{
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +     struct sockaddr *addr =3D p;
-> > +
-> > +     if (!is_valid_ether_addr(addr->sa_data))
-> > +             return -EADDRNOTAVAIL;
-> > +
-> > +     memcpy(ndev->dev_addr, addr->sa_data, ndev->addr_len);
-> > +     sunxi_set_umac(priv->base, ndev->dev_addr, 0);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +int geth_set_features(struct net_device *ndev, netdev_features_t featu=
-res)
-> > +{
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +
-> > +     if (features & NETIF_F_LOOPBACK && netif_running(ndev))
-> > +             sunxi_mac_loopback(priv->base, 1);
-> > +     else
-> > +             sunxi_mac_loopback(priv->base, 0);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +#if IS_ENABLED(CONFIG_NET_POLL_CONTROLLER)
-> > +/* Polling receive - used by NETCONSOLE and other diagnostic tools
-> > + * to allow network I/O with interrupts disabled.
-> > + */
-> > +static void geth_poll_controller(struct net_device *dev)
-> > +{
-> > +     disable_irq(dev->irq);
-> > +     geth_interrupt(dev->irq, dev);
-> > +     enable_irq(dev->irq);
-> > +}
-> > +#endif
-> > +
-> > +static const struct net_device_ops geth_netdev_ops =3D {
-> > +     .ndo_init =3D NULL,
-> > +     .ndo_open =3D geth_open,
-> > +     .ndo_start_xmit =3D geth_xmit,
-> > +     .ndo_stop =3D geth_stop,
-> > +     .ndo_change_mtu =3D geth_change_mtu,
-> > +     .ndo_fix_features =3D geth_fix_features,
-> > +     .ndo_set_rx_mode =3D geth_set_rx_mode,
-> > +     .ndo_tx_timeout =3D geth_tx_timeout,
-> > +     .ndo_do_ioctl =3D geth_ioctl,
-> > +     .ndo_set_config =3D geth_config,
-> > +#if IS_ENABLED(CONFIG_NET_POLL_CONTROLLER)
-> > +     .ndo_poll_controller =3D geth_poll_controller,
-> > +#endif
-> > +     .ndo_set_mac_address =3D geth_set_mac_address,
-> > +     .ndo_set_features =3D geth_set_features,
-> > +};
-> > +
-> > +static int geth_check_if_running(struct net_device *ndev)
-> > +{
-> > +     if (!netif_running(ndev))
-> > +             return -EBUSY;
-> > +     return 0;
-> > +}
-> > +
-> > +static int geth_get_sset_count(struct net_device *netdev, int sset)
-> > +{
-> > +     int len;
-> > +
-> > +     switch (sset) {
-> > +     case ETH_SS_STATS:
-> > +             len =3D 0;
-> > +             return len;
-> > +     default:
-> > +             return -EOPNOTSUPP;
-> > +     }
-> > +}
-> > +
-> > +/*static int geth_ethtool_getsettings(struct net_device *ndev,
-> > +                                 struct ethtool_cmd *cmd)
-> > +{
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +     struct phy_device *phy =3D ndev->phydev;
-> > +     int rc;
-> > +
-> > +     if (phy =3D=3D NULL) {
-> > +             netdev_err(ndev, "%s: %s: PHY is not registered\n",
-> > +                    __func__, ndev->name);
-> > +             return -ENODEV;
-> > +     }
-> > +
-> > +     if (!netif_running(ndev)) {
-> > +             pr_err("%s: interface is disabled: we cannot track "
-> > +                    "link speed / duplex setting\n", ndev->name);
-> > +             return -EBUSY;
-> > +     }
-> > +
-> > +     cmd->transceiver =3D XCVR_INTERNAL;
-> > +     spin_lock_irq(&priv->lock);
-> > +     //rc =3D phy_ethtool_gset(phy, cmd);
-> > +     spin_unlock_irq(&priv->lock);
-> > +
-> > +     return rc;
-> > +}
-> > +
-> > +static int geth_ethtool_setsettings(struct net_device *ndev,
-> > +                                 struct ethtool_cmd *cmd)
-> > +{
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +     struct phy_device *phy =3D ndev->phydev;
-> > +     int rc;
-> > +
-> > +     spin_lock(&priv->lock);
-> > +     rc =3D phy_ethtool_sset(phy, cmd);
-> > +     spin_unlock(&priv->lock);
-> > +
-> > +     return rc;
-> > +}*/
-> > +
-> > +static void geth_ethtool_getdrvinfo(struct net_device *ndev,
-> > +                                 struct ethtool_drvinfo *info)
-> > +{
-> > +     strlcpy(info->driver, "sunxi_geth", sizeof(info->driver));
-> > +
-> > +#define DRV_MODULE_VERSION "SUNXI Gbgit driver V1.1"
-> > +
-> > +     strcpy(info->version, DRV_MODULE_VERSION);
-> > +     info->fw_version[0] =3D '\0';
-> > +}
-> > +
-> > +static const struct ethtool_ops geth_ethtool_ops =3D {
-> > +     .begin =3D geth_check_if_running,
-> > +     //.get_settings =3D geth_ethtool_getsettings,
-> > +     //.set_settings =3D geth_ethtool_setsettings,
-> > +     .get_link =3D ethtool_op_get_link,
-> > +     .get_pauseparam =3D NULL,
-> > +     .set_pauseparam =3D NULL,
-> > +     .get_ethtool_stats =3D NULL,
-> > +     .get_strings =3D NULL,
-> > +     .get_wol =3D NULL,
-> > +     .set_wol =3D NULL,
-> > +     .get_sset_count =3D geth_get_sset_count,
-> > +     .get_drvinfo =3D geth_ethtool_getdrvinfo,
-> > +};
-> > +
-> > +/* config hardware resource */
-> > +static int geth_hw_init(struct platform_device *pdev)
-> > +{
-> > +     struct net_device *ndev =3D platform_get_drvdata(pdev);
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +     struct device_node *np =3D pdev->dev.of_node;
-> > +     int ret =3D 0;
-> > +     struct resource *res;
-> > +     u32 value;
-> > +//   struct gpio_config cfg;
-> > +//   const char *gmac_power;
-> > +//   char power[20];
-> > +//   int i;
-> > +
-> > +#if 1
-> > +     priv->phy_ext =3D EXT_PHY;
-> > +#else
-> > +     priv->phy_ext =3D INT_PHY;
-> > +#endif
-> > +
-> > +     /* config memery resource */
-> > +     res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > +     if (unlikely(!res)) {
-> > +             pr_err("%s: ERROR: get gmac memory failed", __func__);
-> > +             return -ENODEV;
-> > +     }
-> > +
-> > +     priv->base =3D devm_ioremap_resource(&pdev->dev, res);
-> > +     if (!priv->base) {
-> > +             pr_err("%s: ERROR: gmac memory mapping failed", __func__)=
-;
-> > +             return -ENOMEM;
-> > +     }
-> > +
-> > +     res =3D platform_get_resource(pdev, IORESOURCE_MEM, 1);
-> > +     if (unlikely(!res)) {
-> > +             pr_err("%s: ERROR: get phy memory failed", __func__);
-> > +             ret =3D -ENODEV;
-> > +             goto mem_err;
-> > +     }
-> > +
-> > +     priv->base_phy =3D devm_ioremap_resource(&pdev->dev, res);
-> > +     if (unlikely(!priv->base_phy)) {
-> > +             pr_err("%s: ERROR: phy memory mapping failed", __func__);
-> > +             ret =3D -ENOMEM;
-> > +             goto mem_err;
-> > +     }
-> > +
-> > +     /* config IRQ */
-> > +     ndev->irq =3D platform_get_irq_byname(pdev, "gmacirq");
-> > +     if (ndev->irq =3D=3D -ENXIO) {
-> > +             pr_err("%s: ERROR: MAC IRQ not found\n", __func__);
-> > +             ret =3D -ENXIO;
-> > +             goto irq_err;
-> > +     }
-> > +
-> > +     ret =3D request_irq(ndev->irq, geth_interrupt, IRQF_SHARED, dev_n=
-ame(&pdev->dev), ndev);
-> > +     if (unlikely(ret < 0)) {
-> > +             pr_err("Could not request irq %d, error: %d\n", ndev->irq=
-, ret);
-> > +             goto irq_err;
-> > +     }
-> > +
-> > +     /* get gmac rst handle */
-> > +/*
-> > +     priv->reset =3D devm_reset_control_get(&pdev->dev, NULL);
-> > +     if (IS_ERR(priv->reset)) {
-> > +             pr_err("%s: Get gmac reset control failed!\n", __func__);
-> > +             return PTR_ERR(priv->reset);
-> > +     }
-> > +*/
-> > +     /* config clock */
-> > +/*
-> > +     priv->geth_clk =3D of_clk_get_by_name(np, "gmac");
-> > +     if (unlikely(!priv->geth_clk || IS_ERR(priv->geth_clk))) {
-> > +             pr_err("Get gmac clock failed!\n");
-> > +             ret =3D -EINVAL;
-> > +             goto clk_err;
-> > +     }
-> > +
-> > +     if (INT_PHY =3D=3D priv->phy_ext) {
-> > +             priv->ephy_clk =3D of_clk_get_by_name(np, "ephy");
-> > +             if (unlikely(IS_ERR_OR_NULL(priv->ephy_clk))) {
-> > +                     pr_err("Get ephy clock failed!\n");
-> > +                     ret =3D -EINVAL;
-> > +                     goto clk_err;
-> > +             }
-> > +     } else {
-> > +             if (!of_property_read_u32(np, "use-ephy25m", &(priv->use_=
-ephy_clk))
-> > +                             && priv->use_ephy_clk) {
-> > +                     priv->ephy_clk =3D of_clk_get_by_name(np, "ephy")=
-;
-> > +                     if (unlikely(IS_ERR_OR_NULL(priv->ephy_clk))) {
-> > +                             pr_err("Get ephy clk failed!\n");
-> > +                             ret =3D -EINVAL;
-> > +                             goto clk_err;
-> > +                     }
-> > +             }
-> > +     }
-> > +*/
-> > +     /* config power regulator */
-> > +/*
-> > +     if (EXT_PHY =3D=3D priv->phy_ext) {
-> > +             for (i =3D 0; i < POWER_CHAN_NUM; i++) {
-> > +                     snprintf(power, 15, "gmac-power%d", i);
-> > +                     ret =3D of_property_read_string(np, power, &gmac_=
-power);
-> > +                     if (ret) {
-> > +                             priv->gmac_power[i] =3D NULL;
-> > +                             pr_info("gmac-power%d: NULL\n", i);
-> > +                             continue;
-> > +                     }
-> > +                     priv->gmac_power[i] =3D regulator_get(NULL, gmac_=
-power);
-> > +                     if (IS_ERR(priv->gmac_power[i])) {
-> > +                             pr_err("gmac-power%d get error!\n", i);
-> > +                             ret =3D -EINVAL;
-> > +                             goto clk_err;
-> > +                     }
-> > +             }
-> > +     }
-> > +*/
-> > +     /* config other parameters */
-> > +     of_get_phy_mode(np, &(priv->phy_interface));
-> > +     if (priv->phy_interface !=3D PHY_INTERFACE_MODE_MII &&
-> > +         priv->phy_interface !=3D PHY_INTERFACE_MODE_RGMII &&
-> > +         priv->phy_interface !=3D PHY_INTERFACE_MODE_RMII) {
-> > +             pr_err("Not support phy type!\n");
-> > +             priv->phy_interface =3D PHY_INTERFACE_MODE_MII;
-> > +     }
-> > +
-> > +     if (!of_property_read_u32(np, "tx-delay", &value))
-> > +             priv->tx_delay =3D value;
-> > +
-> > +     if (!of_property_read_u32(np, "rx-delay", &value))
-> > +             priv->rx_delay =3D value;
-> > +
-> > +     /* config pinctrl */
-> > +/*
-> > +     if (EXT_PHY =3D=3D priv->phy_ext) {
-> > +             priv->phyrst =3D of_get_named_gpio_flags(np, "phy-rst", 0=
-, (enum of_gpio_flags *)&cfg);
-> > +             priv->rst_active_low =3D (cfg.data =3D=3D OF_GPIO_ACTIVE_=
-LOW) ? 1 : 0;
-> > +
-> > +             if (gpio_is_valid(priv->phyrst)) {
-> > +                     if (gpio_request(priv->phyrst, "phy-rst") < 0) {
-> > +                             pr_err("gmac gpio request fail!\n");
-> > +                             ret =3D -EINVAL;
-> > +                             goto pin_err;
-> > +                     }
-> > +             }
-> > +
-> > +             priv->pinctrl =3D devm_pinctrl_get_select_default(&pdev->=
-dev);
-> > +             if (IS_ERR_OR_NULL(priv->pinctrl)) {
-> > +                     pr_err("gmac pinctrl error!\n");
-> > +                     priv->pinctrl =3D NULL;
-> > +                     ret =3D -EINVAL;
-> > +                     goto pin_err;
-> > +             }
-> > +     }
-> > +*/
-> > +     return 0;
-> > +
-> > +//pin_err:
-> > +/*
-> > +     if (EXT_PHY =3D=3D priv->phy_ext) {
-> > +             for (i =3D 0; i < POWER_CHAN_NUM; i++) {
-> > +                     if (IS_ERR_OR_NULL(priv->gmac_power[i]))
-> > +                             continue;
-> > +                     regulator_put(priv->gmac_power[i]);
-> > +             }
-> > +     }
-> > +*/
-> > +//clk_err:
-> > +//   free_irq(ndev->irq, ndev);
-> > +irq_err:
-> > +     devm_iounmap(&pdev->dev, priv->base_phy);
-> > +mem_err:
-> > +     devm_iounmap(&pdev->dev, priv->base);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static void geth_hw_release(struct platform_device *pdev)
-> > +{
-> > +     struct net_device *ndev =3D platform_get_drvdata(pdev);
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +
-> > +     devm_iounmap(&pdev->dev, (priv->base_phy));
-> > +     devm_iounmap(&pdev->dev, priv->base);
-> > +     free_irq(ndev->irq, ndev);
-> > +/*
-> > +     if (priv->geth_clk)
-> > +             clk_put(priv->geth_clk);
-> > +
-> > +     if (EXT_PHY =3D=3D priv->phy_ext) {
-> > +             for (i =3D 0; i < POWER_CHAN_NUM; i++) {
-> > +                     if (IS_ERR_OR_NULL(priv->gmac_power[i]))
-> > +                             continue;
-> > +                     regulator_put(priv->gmac_power[i]);
-> > +             }
-> > +
-> > +             if (!IS_ERR_OR_NULL(priv->pinctrl))
-> > +                     devm_pinctrl_put(priv->pinctrl);
-> > +
-> > +             if (gpio_is_valid(priv->phyrst))
-> > +                     gpio_free(priv->phyrst);
-> > +     }
-> > +
-> > +     if (!IS_ERR_OR_NULL(priv->ephy_clk))
-> > +             clk_put(priv->ephy_clk);
-> > +*/
-> > +}
-> > +
-> > +/**
-> > + * geth_probe
-> > + * @pdev: platform device pointer
-> > + * Description: the driver is initialized through platform_device.
-> > + */
-> > +static int geth_probe(struct platform_device *pdev)
-> > +{
-> > +     int ret =3D 0;
-> > +     struct net_device *ndev =3D NULL;
-> > +     struct geth_priv *priv;
-> > +
-> > +     pr_info("sunxi gmac driver's version: %s\n", SUNXI_GMAC_VERSION);
-> > +
-> > +#if IS_ENABLED(CONFIG_OF)
-> > +     pdev->dev.dma_mask =3D &geth_dma_mask;
-> > +     pdev->dev.coherent_dma_mask =3D DMA_BIT_MASK(32);
-> > +#endif
-> > +
-> > +     ndev =3D alloc_etherdev(sizeof(struct geth_priv));
-> > +     if (!ndev) {
-> > +             dev_err(&pdev->dev, "could not allocate device.\n");
-> > +             return -ENOMEM;
-> > +     }
-> > +     SET_NETDEV_DEV(ndev, &pdev->dev);
-> > +
-> > +     priv =3D netdev_priv(ndev);
-> > +     platform_set_drvdata(pdev, ndev);
-> > +
-> > +     /* Must set private data to pdev, before call it */
-> > +     ret =3D geth_hw_init(pdev);
-> > +     if (0 !=3D ret) {
-> > +             pr_err("geth_hw_init fail!\n");
-> > +             goto hw_err;
-> > +     }
-> > +
-> > +     /* setup the netdevice, fill the field of netdevice */
-> > +     ether_setup(ndev);
-> > +     ndev->netdev_ops =3D &geth_netdev_ops;
-> > +     netdev_set_default_ethtool_ops(ndev, &geth_ethtool_ops);
-> > +     ndev->base_addr =3D (unsigned long)priv->base;
-> > +
-> > +     priv->ndev =3D ndev;
-> > +     priv->dev =3D &pdev->dev;
-> > +
-> > +     /* TODO: support the VLAN frames */
-> > +     ndev->hw_features =3D NETIF_F_SG | NETIF_F_HIGHDMA | NETIF_F_IP_C=
-SUM |
-> > +                             NETIF_F_IPV6_CSUM | NETIF_F_RXCSUM;
-> > +
-> > +     ndev->features |=3D ndev->hw_features;
-> > +     ndev->hw_features |=3D NETIF_F_LOOPBACK;
-> > +     ndev->priv_flags |=3D IFF_UNICAST_FLT;
-> > +
-> > +     ndev->watchdog_timeo =3D msecs_to_jiffies(watchdog);
-> > +
-> > +     netif_napi_add(ndev, &priv->napi, geth_poll,  BUDGET);
-> > +
-> > +     spin_lock_init(&priv->lock);
-> > +     spin_lock_init(&priv->tx_lock);
-> > +
-> > +     /* The last val is mdc clock ratio */
-> > +     sunxi_geth_register((void *)ndev->base_addr, HW_VERSION, 0x03);
-> > +
-> > +     ret =3D register_netdev(ndev);
-> > +     if (ret) {
-> > +             netif_napi_del(&priv->napi);
-> > +             pr_err("Error: Register %s failed\n", ndev->name);
-> > +             goto reg_err;
-> > +     }
-> > +
-> > +     /* Before open the device, the mac address should be set */
-> > +     geth_check_addr(ndev, mac_str);
-> > +
-> > +#ifdef CONFIG_GETH_ATTRS
-> > +     geth_create_attrs(ndev);
-> > +#endif
-> > +     device_create_file(&pdev->dev, &dev_attr_gphy_test);
-> > +     device_create_file(&pdev->dev, &dev_attr_mii_reg);
-> > +     device_create_file(&pdev->dev, &dev_attr_loopback_test);
-> > +     device_create_file(&pdev->dev, &dev_attr_extra_tx_stats);
-> > +     device_create_file(&pdev->dev, &dev_attr_extra_rx_stats);
-> > +
-> > +     device_enable_async_suspend(&pdev->dev);
-> > +
-> > +#if IS_ENABLED(CONFIG_PM)
-> > +     INIT_WORK(&priv->eth_work, geth_resume_work);
-> > +#endif
-> > +
-> > +     return 0;
-> > +
-> > +reg_err:
-> > +     geth_hw_release(pdev);
-> > +hw_err:
-> > +     platform_set_drvdata(pdev, NULL);
-> > +     free_netdev(ndev);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static int geth_remove(struct platform_device *pdev)
-> > +{
-> > +     struct net_device *ndev =3D platform_get_drvdata(pdev);
-> > +     struct geth_priv *priv =3D netdev_priv(ndev);
-> > +
-> > +     device_remove_file(&pdev->dev, &dev_attr_gphy_test);
-> > +     device_remove_file(&pdev->dev, &dev_attr_mii_reg);
-> > +     device_remove_file(&pdev->dev, &dev_attr_loopback_test);
-> > +     device_remove_file(&pdev->dev, &dev_attr_extra_tx_stats);
-> > +     device_remove_file(&pdev->dev, &dev_attr_extra_rx_stats);
-> > +
-> > +     netif_napi_del(&priv->napi);
-> > +     unregister_netdev(ndev);
-> > +     geth_hw_release(pdev);
-> > +     platform_set_drvdata(pdev, NULL);
-> > +     free_netdev(ndev);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static const struct of_device_id geth_of_match[] =3D {
-> > +     {.compatible =3D "allwinner,sunxi-gmac",},
-> > +     {},
-> > +};
-> > +MODULE_DEVICE_TABLE(of, geth_of_match);
-> > +
-> > +static struct platform_driver geth_driver =3D {
-> > +     .probe  =3D geth_probe,
-> > +     .remove =3D geth_remove,
-> > +     .driver =3D {
-> > +                .name =3D "sunxi-gmac",
-> > +                .owner =3D THIS_MODULE,
-> > +                .pm =3D &geth_pm_ops,
-> > +                .of_match_table =3D geth_of_match,
-> > +     },
-> > +};
-> > +module_platform_driver(geth_driver);
-> > +
-> > +#ifdef MODULE
-> > +static int __init set_mac_addr(char *str)
-> > +{
-> > +     char *p =3D str;
-> > +
-> > +     if (str && strlen(str))
-> > +             memcpy(mac_str, p, 18);
-> > +
-> > +     return 0;
-> > +}
-> > +__setup("mac_addr=3D", set_mac_addr);
-> > +#endif
-> > +
-> > +MODULE_DESCRIPTION("Allwinner Gigabit Ethernet driver");
-> > +MODULE_AUTHOR("fuzhaoke <fuzhaoke@allwinnertech.com>");
-> > +MODULE_LICENSE("Dual BSD/GPL");
-> > diff --git a/drivers/net/ethernet/allwinnertmp/sunxi-gmac.h b/drivers/n=
-et/ethernet/allwinnertmp/sunxi-gmac.h
-> > new file mode 100644
-> > index 00000000..ea7a6f15
-> > --- /dev/null
-> > +++ b/drivers/net/ethernet/allwinnertmp/sunxi-gmac.h
-> > @@ -0,0 +1,258 @@
-> > +/*
-> > + * linux/drivers/net/ethernet/allwinner/sunxi_gmac.h
-> > + *
-> > + * Copyright =C2=A9 2016-2018, fuzhaoke
-> > + *           Author: fuzhaoke <fuzhaoke@allwinnertech.com>
-> > + *
-> > + * This file is provided under a dual BSD/GPL license.  When using or
-> > + * redistributing this file, you may do so under either license.
-> > + *
-> > + * This program is distributed in the hope that it will be useful,
-> > + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> > + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.       See the
-> > + * GNU General Public License for more details.
-> > + */
-> > +#ifndef __SUNXI_GETH_H__
-> > +#define __SUNXI_GETH_H__
-> > +
-> > +#include <linux/etherdevice.h>
-> > +#include <linux/netdevice.h>
-> > +#include <linux/phy.h>
-> > +#include <linux/module.h>
-> > +#include <linux/init.h>
-> > +
-> > +/* GETH_FRAME_FILTER  register value */
-> > +#define GETH_FRAME_FILTER_PR 0x00000001      /* Promiscuous Mode */
-> > +#define GETH_FRAME_FILTER_HUC        0x00000002      /* Hash Unicast *=
-/
-> > +#define GETH_FRAME_FILTER_HMC        0x00000004      /* Hash Multicast=
- */
-> > +#define GETH_FRAME_FILTER_DAIF       0x00000008      /* DA Inverse Fil=
-tering */
-> > +#define GETH_FRAME_FILTER_PM 0x00000010      /* Pass all multicast */
-> > +#define GETH_FRAME_FILTER_DBF        0x00000020      /* Disable Broadc=
-ast frames */
-> > +#define GETH_FRAME_FILTER_SAIF       0x00000100      /* Inverse Filter=
-ing */
-> > +#define GETH_FRAME_FILTER_SAF        0x00000200      /* Source Address=
- Filter */
-> > +#define GETH_FRAME_FILTER_HPF        0x00000400      /* Hash or perfec=
-t Filter */
-> > +#define GETH_FRAME_FILTER_RA 0x80000000      /* Receive all mode */
-> > +
-> > +/* Default tx descriptor */
-> > +#define TX_SINGLE_DESC0              0x80000000
-> > +#define TX_SINGLE_DESC1              0x63000000
-> > +
-> > +/* Default rx descriptor */
-> > +#define RX_SINGLE_DESC0              0x80000000
-> > +#define RX_SINGLE_DESC1              0x83000000
-> > +
-> > +typedef union {
-> > +     struct {
-> > +             /* TDES0 */
-> > +             unsigned int deferred:1;        /* Deferred bit (only hal=
-f-duplex) */
-> > +             unsigned int under_err:1;       /* Underflow error */
-> > +             unsigned int ex_deferral:1;     /* Excessive deferral */
-> > +             unsigned int coll_cnt:4;        /* Collision count */
-> > +             unsigned int vlan_tag:1;        /* VLAN Frame */
-> > +             unsigned int ex_coll:1;         /* Excessive collision */
-> > +             unsigned int late_coll:1;       /* Late collision */
-> > +             unsigned int no_carr:1;         /* No carrier */
-> > +             unsigned int loss_carr:1;       /* Loss of collision */
-> > +             unsigned int ipdat_err:1;       /* IP payload error */
-> > +             unsigned int frm_flu:1;         /* Frame flushed */
-> > +             unsigned int jab_timeout:1;     /* Jabber timeout */
-> > +             unsigned int err_sum:1;         /* Error summary */
-> > +             unsigned int iphead_err:1;      /* IP header error */
-> > +             unsigned int ttss:1;            /* Transmit time stamp st=
-atus */
-> > +             unsigned int reserved0:13;
-> > +             unsigned int own:1;             /* Own bit. CPU:0, DMA:1 =
-*/
-> > +     } tx;
-> > +
-> > +     /* bits 5 7 0 | Frame status
-> > +      * ----------------------------------------------------------
-> > +      *      0 0 0 | IEEE 802.3 Type frame (length < 1536 octects)
-> > +      *      1 0 0 | IPv4/6 No CSUM errorS.
-> > +      *      1 0 1 | IPv4/6 CSUM PAYLOAD error
-> > +      *      1 1 0 | IPv4/6 CSUM IP HR error
-> > +      *      1 1 1 | IPv4/6 IP PAYLOAD AND HEADER errorS
-> > +      *      0 0 1 | IPv4/6 unsupported IP PAYLOAD
-> > +      *      0 1 1 | COE bypassed.. no IPv4/6 frame
-> > +      *      0 1 0 | Reserved.
-> > +      */
-> > +     struct {
-> > +             /* RDES0 */
-> > +             unsigned int chsum_err:1;       /* Payload checksum error=
- */
-> > +             unsigned int crc_err:1;         /* CRC error */
-> > +             unsigned int dribbling:1;       /* Dribble bit error */
-> > +             unsigned int mii_err:1;         /* Received error (bit3) =
-*/
-> > +             unsigned int recv_wt:1;         /* Received watchdog time=
-out */
-> > +             unsigned int frm_type:1;        /* Frame type */
-> > +             unsigned int late_coll:1;       /* Late Collision */
-> > +             unsigned int ipch_err:1;        /* IPv header checksum er=
-ror (bit7) */
-> > +             unsigned int last_desc:1;       /* Laset descriptor */
-> > +             unsigned int first_desc:1;      /* First descriptor */
-> > +             unsigned int vlan_tag:1;        /* VLAN Tag */
-> > +             unsigned int over_err:1;        /* Overflow error (bit11)=
- */
-> > +             unsigned int len_err:1;         /* Length error */
-> > +             unsigned int sou_filter:1;      /* Source address filter =
-fail */
-> > +             unsigned int desc_err:1;        /* Descriptor error */
-> > +             unsigned int err_sum:1;         /* Error summary (bit15) =
-*/
-> > +             unsigned int frm_len:14;        /* Frame length */
-> > +             unsigned int des_filter:1;      /* Destination address fi=
-lter fail */
-> > +             unsigned int own:1;             /* Own bit. CPU:0, DMA:1 =
-*/
-> > +     #define RX_PKT_OK               0x7FFFB77C
-> > +     #define RX_LEN                  0x3FFF0000
-> > +     } rx;
-> > +
-> > +     unsigned int all;
-> > +} desc0_u;
-> > +
-> > +typedef union {
-> > +     struct {
-> > +             /* TDES1 */
-> > +             unsigned int buf1_size:11;      /* Transmit buffer1 size =
-*/
-> > +             unsigned int buf2_size:11;      /* Transmit buffer2 size =
-*/
-> > +             unsigned int ttse:1;            /* Transmit time stamp en=
-able */
-> > +             unsigned int dis_pad:1;         /* Disable pad (bit23) */
-> > +             unsigned int adr_chain:1;       /* Second address chained=
- */
-> > +             unsigned int end_ring:1;        /* Transmit end of ring *=
-/
-> > +             unsigned int crc_dis:1;         /* Disable CRC */
-> > +             unsigned int cic:2;             /* Checksum insertion con=
-trol (bit27:28) */
-> > +             unsigned int first_sg:1;        /* First Segment */
-> > +             unsigned int last_seg:1;        /* Last Segment */
-> > +             unsigned int interrupt:1;       /* Interrupt on completio=
-n */
-> > +     } tx;
-> > +
-> > +     struct {
-> > +             /* RDES1 */
-> > +             unsigned int buf1_size:11;      /* Received buffer1 size =
-*/
-> > +             unsigned int buf2_size:11;      /* Received buffer2 size =
-*/
-> > +             unsigned int reserved1:2;
-> > +             unsigned int adr_chain:1;       /* Second address chained=
- */
-> > +             unsigned int end_ring:1;                /* Received end o=
-f ring */
-> > +             unsigned int reserved2:5;
-> > +             unsigned int dis_ic:1;          /* Disable interrupt on c=
-ompletion */
-> > +     } rx;
-> > +
-> > +     unsigned int all;
-> > +} desc1_u;
-> > +
-> > +typedef struct dma_desc {
-> > +     desc0_u desc0;
-> > +     desc1_u desc1;
-> > +     /* The address of buffers */
-> > +     unsigned int    desc2;
-> > +     /* Next desc's address */
-> > +     unsigned int    desc3;
-> > +} __attribute__((packed)) dma_desc_t;
-> > +
-> > +enum rx_frame_status { /* IPC status */
-> > +     good_frame =3D 0,
-> > +     discard_frame =3D 1,
-> > +     csum_none =3D 2,
-> > +     llc_snap =3D 4,
-> > +};
-> > +
-> > +enum tx_dma_irq_status {
-> > +     tx_hard_error =3D 1,
-> > +     tx_hard_error_bump_tc =3D 2,
-> > +     handle_tx_rx =3D 3,
-> > +};
-> > +
-> > +struct geth_extra_stats {
-> > +     /* Transmit errors */
-> > +     unsigned long tx_underflow;
-> > +     unsigned long tx_carrier;
-> > +     unsigned long tx_losscarrier;
-> > +     unsigned long vlan_tag;
-> > +     unsigned long tx_deferred;
-> > +     unsigned long tx_vlan;
-> > +     unsigned long tx_jabber;
-> > +     unsigned long tx_frame_flushed;
-> > +     unsigned long tx_payload_error;
-> > +     unsigned long tx_ip_header_error;
-> > +
-> > +     /* Receive errors */
-> > +     unsigned long rx_desc;
-> > +     unsigned long sa_filter_fail;
-> > +     unsigned long overflow_error;
-> > +     unsigned long ipc_csum_error;
-> > +     unsigned long rx_collision;
-> > +     unsigned long rx_crc;
-> > +     unsigned long dribbling_bit;
-> > +     unsigned long rx_length;
-> > +     unsigned long rx_mii;
-> > +     unsigned long rx_multicast;
-> > +     unsigned long rx_gmac_overflow;
-> > +     unsigned long rx_watchdog;
-> > +     unsigned long da_rx_filter_fail;
-> > +     unsigned long sa_rx_filter_fail;
-> > +     unsigned long rx_missed_cntr;
-> > +     unsigned long rx_overflow_cntr;
-> > +     unsigned long rx_vlan;
-> > +
-> > +     /* Tx/Rx IRQ errors */
-> > +     unsigned long tx_undeflow_irq;
-> > +     unsigned long tx_process_stopped_irq;
-> > +     unsigned long tx_jabber_irq;
-> > +     unsigned long rx_overflow_irq;
-> > +     unsigned long rx_buf_unav_irq;
-> > +     unsigned long rx_process_stopped_irq;
-> > +     unsigned long rx_watchdog_irq;
-> > +     unsigned long tx_early_irq;
-> > +     unsigned long fatal_bus_error_irq;
-> > +
-> > +     /* Extra info */
-> > +     unsigned long threshold;
-> > +     unsigned long tx_pkt_n;
-> > +     unsigned long rx_pkt_n;
-> > +     unsigned long poll_n;
-> > +     unsigned long sched_timer_n;
-> > +     unsigned long normal_irq_n;
-> > +};
-> > +
-> > +int sunxi_mdio_read(void *,  int, int);
-> > +int sunxi_mdio_write(void *, int, int, unsigned short);
-> > +int sunxi_mdio_reset(void *);
-> > +void sunxi_set_link_mode(void *iobase, int duplex, int speed);
-> > +void sunxi_int_disable(void *);
-> > +int sunxi_int_status(void *, struct geth_extra_stats *x);
-> > +int sunxi_mac_init(void *, int txmode, int rxmode);
-> > +void sunxi_set_umac(void *, unsigned char *, int);
-> > +void sunxi_mac_enable(void *);
-> > +void sunxi_mac_disable(void *);
-> > +void sunxi_tx_poll(void *);
-> > +void sunxi_int_enable(void *);
-> > +void sunxi_start_rx(void *, unsigned long);
-> > +void sunxi_start_tx(void *, unsigned long);
-> > +void sunxi_stop_tx(void *);
-> > +void sunxi_stop_rx(void *);
-> > +void sunxi_hash_filter(void *iobase, unsigned long low, unsigned long =
-high);
-> > +void sunxi_set_filter(void *iobase, unsigned long flags);
-> > +void sunxi_flow_ctrl(void *iobase, int duplex, int fc, int pause);
-> > +void sunxi_mac_loopback(void *iobase, int enable);
-> > +
-> > +void desc_buf_set(struct dma_desc *p, unsigned long paddr, int size);
-> > +void desc_set_own(struct dma_desc *p);
-> > +void desc_init_chain(struct dma_desc *p, unsigned long paddr,  unsigne=
-d int size);
-> > +void desc_tx_close(struct dma_desc *first, struct dma_desc *end, int c=
-sum_insert);
-> > +void desc_init(struct dma_desc *p);
-> > +int desc_get_tx_status(struct dma_desc *desc, struct geth_extra_stats =
-*x);
-> > +int desc_buf_get_len(struct dma_desc *desc);
-> > +int desc_buf_get_addr(struct dma_desc *desc);
-> > +int desc_get_rx_status(struct dma_desc *desc, struct geth_extra_stats =
-*x);
-> > +int desc_get_own(struct dma_desc *desc);
-> > +int desc_get_tx_ls(struct dma_desc *desc);
-> > +int desc_rx_frame_len(struct dma_desc *desc);
-> > +
-> > +int sunxi_mac_reset(void *iobase, void (*mdelay)(int), int n);
-> > +int sunxi_geth_register(void *iobase, int version, unsigned int div);
-> > +
-> > +#if IS_ENABLED(CONFIG_SUNXI_EPHY)
-> > +extern int ephy_is_enable(void);
-> > +#endif
-> > +
-> > +#if IS_ENABLED(CONFIG_ARCH_SUN8IW3) \
-> > +     || IS_ENABLED(CONFIG_ARCH_SUN9IW1) \
-> > +     || IS_ENABLED(CONFIG_ARCH_SUN7I)
-> > +#define HW_VERSION   0
-> > +#else
-> > +#define HW_VERSION   1
-> > +#endif
-> > +
-> > +#endif
-> > diff --git a/drivers/net/phy/realtek.c b/drivers/net/phy/realtek.c
-> > index 821e85a..3c86c2a 100644
-> > --- a/drivers/net/phy/realtek.c
-> > +++ b/drivers/net/phy/realtek.c
-> > @@ -338,7 +338,7 @@ static int rtl8211f_config_init(struct phy_device *=
-phydev)
-> >                       "2ns TX delay was already %s (by pin-strapping RX=
-D1 or bootloader configuration)\n",
-> >                       val_txdly ? "enabled" : "disabled");
-> >       }
-> > -
-> > +return 0;
-> >       ret =3D phy_modify_paged_changed(phydev, 0xd08, 0x15, RTL8211F_RX=
-_DELAY,
-> >                                      val_rxdly);
-> >       if (ret < 0) {
->
+[auto build test ERROR on linux/master]
+[also build test ERROR on linus/master v5.13-rc4 next-20210604]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
+
+url:    https://github.com/0day-ci/linux/commits/irqchip-bot-for-Marc-Zyngier/MIPS-Do-not-include-linux-irqdomain-h-from-asm-irq-h/20210606-205208
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git dd860052c99b1e088352bdd4fb7aef46f8d2ef47
+config: mips-xway_defconfig (attached as .config)
+compiler: mips-linux-gcc (GCC) 9.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/09879bee8f56d44f0bd49d7dba858ff743a608bf
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review irqchip-bot-for-Marc-Zyngier/MIPS-Do-not-include-linux-irqdomain-h-from-asm-irq-h/20210606-205208
+        git checkout 09879bee8f56d44f0bd49d7dba858ff743a608bf
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=mips 
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+>> arch/mips/lantiq/xway/dma.c:243:34: error: array type has incomplete element type 'struct of_device_id'
+     243 | static const struct of_device_id dma_match[] = {
+         |                                  ^~~~~~~~~
+>> arch/mips/lantiq/xway/dma.c:244:4: error: field name not in record or union initializer
+     244 |  { .compatible = "lantiq,dma-xway" },
+         |    ^
+   arch/mips/lantiq/xway/dma.c:244:4: note: (near initialization for 'dma_match')
+   arch/mips/lantiq/xway/dma.c:257:1: warning: no previous prototype for 'dma_init' [-Wmissing-prototypes]
+     257 | dma_init(void)
+         | ^~~~~~~~
+   arch/mips/lantiq/xway/dma.c:243:34: warning: 'dma_match' defined but not used [-Wunused-variable]
+     243 | static const struct of_device_id dma_match[] = {
+         |                                  ^~~~~~~~~
 
 
+vim +243 arch/mips/lantiq/xway/dma.c
 
---
-Best Regards
- Guo Ren
+dfec1a827d2bdc John Crispin 2011-05-06  242  
+ddd4eeca961cc6 John Crispin 2012-04-12 @243  static const struct of_device_id dma_match[] = {
+ddd4eeca961cc6 John Crispin 2012-04-12 @244  	{ .compatible = "lantiq,dma-xway" },
+ddd4eeca961cc6 John Crispin 2012-04-12  245  	{},
+ddd4eeca961cc6 John Crispin 2012-04-12  246  };
+ddd4eeca961cc6 John Crispin 2012-04-12  247  
 
-ML: https://lore.kernel.org/linux-csky/
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+--+QahgC5+KEYLbs62
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+
+--+QahgC5+KEYLbs62--
