@@ -2,419 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A2839CDE0
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 09:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8234B39CDE4
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 09:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230099AbhFFH0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 03:26:34 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:54399 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbhFFH0d (ORCPT
+        id S230129AbhFFHeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 03:34:04 -0400
+Received: from esa10.sap.c3s2.iphmx.com ([68.232.156.179]:3295 "EHLO
+        esa10.sap.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229508AbhFFHeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 03:26:33 -0400
-Received: (Authenticated sender: alex@ghiti.fr)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 2F580C0003;
-        Sun,  6 Jun 2021 07:24:02 +0000 (UTC)
-Subject: Re: [PATCH] riscv: mm: init: Consolidate vars, functions
-To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>,
-        Nathan Chancellor <nathan@kernel.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-References: <20210516211556.43c00055@xhacker>
- <YLaWseLdg5JYElVx@Ryzen-9-3900X.localdomain>
- <20210602231226.0e45524b@xhacker> <20210602235851.001a0d41@xhacker>
- <YLfiADFHMyXst55Y@Ryzen-9-3900X.localdomain>
- <20210603082714.6e524f4c@xhacker> <20210603195418.21fded50@xhacker>
- <20210605010918.7424a0aa@xhacker>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <b90a6bcb-22c4-e500-2586-d54cd881e02e@ghiti.fr>
-Date:   Sun, 6 Jun 2021 09:23:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Sun, 6 Jun 2021 03:34:03 -0400
+X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Sun, 06 Jun 2021 03:34:02 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=sap.com; i=@sap.com; q=dns/txt; s=it-20200722;
+  t=1622964734; x=1654500734;
+  h=from:to:cc:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=1v0+I1B8Yhey5nHE2QRf6q/VtAIGOi960BV/PsjHhwc=;
+  b=XnXd5KmfWXhTrkH/WFzdW+doDVJQ/K2w4h+NdtTW/cG0UwQwFlFxSN0c
+   l7F4A9wKvpb1rKQz9wUOUb8sLoByMcHLDISz1+A1pCYPE6XaXxIV7a649
+   cjG0GmhgnoMEokCQkGCBN0p+BpItgeJXiRbYW25OMWpcUGxrlrQVYqK8u
+   7CvSvxPGzMjXSqNiasgLsU08N4LV0/q0wRtYR+JWrzgYxL8ir/ajETKGN
+   qkGabo+uv8MSFgWyzCnHYkpLi/Aa7vNgycCLSVJNFwL97gRqoby3NSWjh
+   CQTLFx+dhCOlZ8ecMsNLHpFFjVsc7iqAKjRGWkYlU7sdzwIBlcIMsUoAL
+   g==;
+IronPort-SDR: zOXpo7svUbwDo3eN4ctM5vm1ASCUZaU0PTJpxYF2OCgJgHqV3oR3KGt6QtDhKIOrY/SgGsAa2c
+ Y/UlJMkkXyXVB+fi4E37GRTFZxt+C/va76t1d8+gYWiemXaaXpFnjH+G5zXgaxFJNWOElLycdU
+ 3fG2AB6sT9igZ3Fdwt013dwLZNC+CQg7Tx4smUpP+3CB9n6eF8t0Y87uBq2PfDcGHOeak4D8ys
+ ti5G1WTO+Pd0GPwJNbg5aAtiGlDjJyr+Xrioxt5PZlGvDfG0YyT33xTGmMBY6j1O4jqIFgAKuZ
+ 6OuU0b9GkbGeyvfH3vhoX3FF
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from smtpgw02.mail.net.sap (HELO smtpgw.sap-ag.de) ([155.56.66.97])
+  by esa10.sap.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA384; 06 Jun 2021 09:25:04 +0200
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (104.47.17.171)
+ by smtpgw02.mail.net.sap (155.56.66.97) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.18; Sun, 6 Jun 2021 09:25:03 +0200
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TUy/6s8Cm2qrzFI0Ucmct40QfKPJFrDzWvCWan1wHC/dxcfqE706pGM9DnARaKI+JzzUUXNkdT7TcvWr+dtgxKA16BS9PWwb9N0AaQ7Ty1miIGuMHOGVPQ4UZx0okIa6eJC/Qsjk25wB5IOJXbKe0JDoxJJqr67Ywa6+puCfNWrq2YYSy2IeJ7+ggall1iZyBXQjAaqFCayrGfFwEHoMKBaTQ/zMhXAvcXmdPO+VDvsD6k2g0mQtsyoXVcSXMihp55Gqu4A2X4cZcxYIpO9uqS76G8EZu2PbpfaqV88fCYoFSIoKxx4ghTcn8FZAh7AQZDfYw99ot9qMcUcaxZ66Zw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1v0+I1B8Yhey5nHE2QRf6q/VtAIGOi960BV/PsjHhwc=;
+ b=M20Mx3npkRm9JNGYMDO/ih6khPHPhePUsy84chlLmlFV/uOgUrVWwWiofn4sf4tf6NwqUVYSvQhxiEsEGge6A1/v+bsu2lQG6OVsUtRMCEjZkvhP1KsDO1OqN/XuNJ8RYCTn6Txg2ZKb3Zz9JsHwBMiRA/Z80bOA2ehUQDFgvyO6gUtjNA/r/UHwZ79BN7bsPUyP3kAkQDUkpc535ruS18BqlvuOeR6MCstuE5KMf8IG+ErIO1yK9rMP9i889/+2jtjpy4qSAgwOcV+/WB1kO2GxtoGV4mwwIh7C6dIJFLwt12kEkBU/2ydSi2B1qMeYASwLpKrpPMrpUJ0DQYZyog==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=sap.com; dmarc=pass action=none header.from=sap.com; dkim=pass
+ header.d=sap.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sap.onmicrosoft.com;
+ s=selector2-sap-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1v0+I1B8Yhey5nHE2QRf6q/VtAIGOi960BV/PsjHhwc=;
+ b=OSCSpgdHDsdosORTJ9XEUjVAglanEKIdW/GCxq2P6xPGKtpDqujm4/QSupYCfZaIWV4Jr5AK9MCYYtA59XvdUmaAYGU0oBpHzbAfPCjkBhuz++awaosQeSyKoxRzdaExYV0wfh9aOQASSMmAOhC+iP1TCcqGJfMeW96tWmXb6s8=
+Received: from AM0PR02MB5668.eurprd02.prod.outlook.com (2603:10a6:208:159::21)
+ by AM4PR02MB3028.eurprd02.prod.outlook.com (2603:10a6:205:f::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Sun, 6 Jun
+ 2021 07:25:02 +0000
+Received: from AM0PR02MB5668.eurprd02.prod.outlook.com
+ ([fe80::ecd4:f127:8555:8c4b]) by AM0PR02MB5668.eurprd02.prod.outlook.com
+ ([fe80::ecd4:f127:8555:8c4b%7]) with mapi id 15.20.4195.029; Sun, 6 Jun 2021
+ 07:25:02 +0000
+From:   "Czerwacki, Eial" <eial.czerwacki@sap.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     SAP vSMP Linux Maintainer <linux.vsmp@sap.com>
+Subject: [PATCH 1/2] vsmp_64: change ownership
+Thread-Topic: [PATCH 1/2] vsmp_64: change ownership
+Thread-Index: AddapG4OXXzX0NGmTLahlslWwNMXzQ==
+Date:   Sun, 6 Jun 2021 07:25:01 +0000
+Message-ID: <AM0PR02MB56685F1C8190E0993003C60A81399@AM0PR02MB5668.eurprd02.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [176.231.4.109]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a62c28df-c079-4159-0c9c-08d928bc32d0
+x-ms-traffictypediagnostic: AM4PR02MB3028:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM4PR02MB3028C343990842BAB6EBE3E981399@AM4PR02MB3028.eurprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dTrvnr70WP0ma4NiPPNw8SqAt+TGYUvwLqrZlpzge0TXs/JTSVoKwkLD+sSGbp3xDFHvl0nub9n+rYHqIuOR1c00k1CcKWAvoQFwfUcgcAlbx6inbwh08APS8LdS6MjftS+mT2uzmYIL94iZs7zrPs9JwviWK+Zz91LwEQYZvSxi1bfOI9B1Z0BwE+iKygALYE3Ob+5amMuv8UDpIfKj1NxWqqsbAVfwEbnqHOCxdTkWZF8M2nH0wsuEFTSmJfpETU22ZPZchM2cw7xFctvCJSt7nnPSic8wQkqxWe3Mnr/ijoF9+lXR4H3ZQj5iLng3UP32gocQU3lFh9Vq5gy7Q9uXuF1fFtAC5x7Z5/kJ6YBf92ednWmzihFm3aINkBaP2gevu3W8YEqgna9cAfMk1rk5y+pq+kVoejtvujx9kAeFvtCDydvhD9ex2lcaocFgAwPaQbO518iBh4/f0ELDbEK9PkfkaUrmj/S15ngqFWPK2SW/G8tkfdKreWweRLeUIrCxv4Ui5E+IcxBxjUiYDeT09U77VGqBmuee3Ayxjz4plc0Tag0DqgYSWYGX1i8fypOXe9oX4D+zsK6dqrLgGJX1Rf2sFKCeIeIKNTG6VkA=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR02MB5668.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(136003)(346002)(366004)(396003)(8676002)(6916009)(66946007)(52536014)(4744005)(83380400001)(64756008)(26005)(33656002)(66476007)(5660300002)(66446008)(86362001)(71200400001)(122000001)(76116006)(9686003)(7696005)(8936002)(55016002)(4326008)(2906002)(6506007)(316002)(38100700002)(186003)(478600001)(66556008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?OXM5QUY1UG5VWktsQm9uU2ozMEZFUUt2ZmdMNmJSQ0xLMXUxMmlhY0JFNk5m?=
+ =?utf-8?B?QVFVVmpzNWt0bUlkU1hPNlNiWDM2bFA3Yi8rN3JvWE5IdmNyZGg1dXdwemVs?=
+ =?utf-8?B?Nmk0dnNrdlFSSkV4eGZ6bTVWMnZUOGZ0SHFLTHJqYlR1d255QnNIUGNIVVVL?=
+ =?utf-8?B?OWZ5Mmx3Q21PTGZhQXF3ejE0MEZRNUZML3dCU1RmMUpNZGxJeTBTS2RDRC91?=
+ =?utf-8?B?QVN1ZEg4ajlFaVBlVDMxSW1CUFVQTDZERGxUT0JwRkFIM3JDZUJ5eE9lODk2?=
+ =?utf-8?B?MUkveHA3aStucWtWdmR6TE9ZSmkyNStnK3kxZitkeDM3L2RCY0xxYUpPallS?=
+ =?utf-8?B?dS8xd0J5dVJpMjNKWkhhY0pTaU1wK1RXc3VkVEJPUDMwREVMSkpTQTlVMjR2?=
+ =?utf-8?B?SlBqbzdtcEVNc0ptRGpEdjQrckk5SU5GSExqQjJpQnNsbDB1by91S084Y0Z1?=
+ =?utf-8?B?L2pJaUVBV2lYZnlnTU5TaHFIUElySHI4V3k4ZVpTT050cWdndDVnc2RWeWs5?=
+ =?utf-8?B?L3RXTGdyQ2FNVldEamI3d1pKdTRXRGR5ZnhMV2s1VnpXbFpYVXYrWHhZSUZo?=
+ =?utf-8?B?Y2ZUZSt6R2phQk9jQ3V3SjQ0TGU4MEJESFYrTVkzSlhjc1gxYXpKZE8zaTd0?=
+ =?utf-8?B?TGpZT0VIRG9EL3E2ejJOZTM4UURvNzlZZi9vQzUyZGdpUjRubk11WXFHb2ZE?=
+ =?utf-8?B?S01rMHprTkk3TGx6dE5ucjg5M3lFVVBSTGZqWExuc0xJWUJCNWdwc1lscHVL?=
+ =?utf-8?B?MUI5OGZwdU94V2hkUmZCTVlzN2E3NnFqc3E3bVN0SGJ4Y2tWTlgzRnowMXg2?=
+ =?utf-8?B?aHUxOFRpejBMM2kvOTBycjRYTHhlbkZFalJPZ2J6Um9zYmdTNkRMSHh1VUJU?=
+ =?utf-8?B?Nm5sZXUwYTVxckd5cXBUTHNzSE1TNjBSUms3WS9EK1h0M3FQUE1na0hFZEg2?=
+ =?utf-8?B?L2M2VXVGZ2JZcXM4eStPVTRqTng3b2NhZzdBNTVZZitKRWlMU0twNm9xOFBY?=
+ =?utf-8?B?SUNFUHFYalZiU2RuNUtsYVJjSExjc3ZGQ2lMTWFlWEc5VWNkWXRQRU8zQnJm?=
+ =?utf-8?B?ZDlMZWhoRVpIVWJMWmNtbXl2WWFSQVZ3dzRldndVcjkvNllyaGdObitnWHFJ?=
+ =?utf-8?B?WE9tc3IzOWpEMDNadEZoaStreGc4WiswQjNLanR6d1JCa3ZKdkdQSWdidkZx?=
+ =?utf-8?B?cFZqZ1ZQZ3UzOHM5ZHY0bFpxVWlTVjZTMVg0Yzc1TDhTSkNnNjgzSUJjZms1?=
+ =?utf-8?B?VTBLNW40RVY5YWRBeEhwT3V6TXkzRGhBS3QxWUsvOFJLWjRnbWZBaHpla0Nv?=
+ =?utf-8?B?TU9kV2wwVmVxV0svYW5CR3N2bVBWek9KNVR6Q1R4amxqVll1OW9tMXNUOG5h?=
+ =?utf-8?B?QjlQYWJzeVFKNndHZDdzM2RBc0g3ZEhrSThKazBjZFQ5NTgzTGNwbUVEdHNH?=
+ =?utf-8?B?cGpnQ1VQK0ZZbVJxbitwVXlwVTM3TzJjT2hyc0NxNEJnUDF4RTBFaldPQUZs?=
+ =?utf-8?B?RjN1QngrU2pMcGh1djBhSVNpRENCbll6dURaTnJPWlpOSjZwRm0zSW1XcTRB?=
+ =?utf-8?B?cExzVkhBWWkxN3dYcW94L2M2T3NQRTVOalFNM2taVHAzRXhEVHdVZUhJZUp2?=
+ =?utf-8?B?d05tS2VxSDFvUXN6REY0ZThEb1hselJ4Y0xZR2dKdTRpdXpVbkZySVBTM3Q0?=
+ =?utf-8?B?ZWZHSUpBMTRPUnliQWhvYTVZeFhSUVVpRFJKKzlXYkFNcHhrMkdhSy9vQ1BX?=
+ =?utf-8?Q?FTG04c+WgZvVKYDD0T+ZcNFjQVgEj4RJiamUehO?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20210605010918.7424a0aa@xhacker>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR02MB5668.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a62c28df-c079-4159-0c9c-08d928bc32d0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jun 2021 07:25:02.0114
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 42f7676c-f455-423c-82f6-dc2d99791af7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rC1J7duUGw7JRs6KLIfBlrOAvoSEp7ycIwulvGAwo87rkfDSk881t6TzwYpUSQysCweeImENOCg9h0r8uYK4iQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR02MB3028
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jisheng,
-
-Le 4/06/2021 à 19:09, Jisheng Zhang a écrit :
-> On Thu, 3 Jun 2021 19:54:18 +0800
-> Jisheng Zhang <jszhang3@mail.ustc.edu.cn> wrote:
-> 
->> On Thu, 3 Jun 2021 08:27:14 +0800
->> Jisheng Zhang <jszhang3@mail.ustc.edu.cn> wrote:
->>
->>> On Wed, 2 Jun 2021 12:54:40 -0700
->>> Nathan Chancellor <nathan@kernel.org> wrote:
->>>    
->>>> On Wed, Jun 02, 2021 at 11:58:51PM +0800, Jisheng Zhang wrote:
->>>>> On Wed, 2 Jun 2021 23:12:26 +0800
->>>>> Jisheng Zhang <jszhang3@mail.ustc.edu.cn> wrote:
->>>>>        
->>>>>> On Tue, 1 Jun 2021 13:21:05 -0700
->>>>>> Nathan Chancellor <nathan@kernel.org> wrote:
->>>>>>        
->>>>>>> Hi Jisheng,
->>>>>>
->>>>>> Hi Nathan,
->>>>>>        
->>>>>>>
->>>>>>> On Sun, May 16, 2021 at 09:15:56PM +0800, Jisheng Zhang wrote:
->>>>>>>> From: Jisheng Zhang <jszhang@kernel.org>
->>>>>>>>
->>>>>>>> Consolidate the following items in init.c
->>>>>>>>
->>>>>>>> Staticize global vars as much as possible;
->>>>>>>> Add __initdata mark if the global var isn't needed after init
->>>>>>>> Add __init mark if the func isn't needed after init
->>>>>>>> Add __ro_after_init if the global var is read only after init
->>>>>>>>
->>>>>>>> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
->>>>>>>> ---
->>>>>>>>   arch/riscv/include/asm/set_memory.h |  2 +-
->>>>>>>>   arch/riscv/mm/init.c                | 36 +++++++++++++++--------------
->>>>>>>>   2 files changed, 20 insertions(+), 18 deletions(-)
->>>>>>>>
->>>>>>>> diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm/set_memory.h
->>>>>>>> index 086f757e8ba3..9d4d455726d4 100644
->>>>>>>> --- a/arch/riscv/include/asm/set_memory.h
->>>>>>>> +++ b/arch/riscv/include/asm/set_memory.h
->>>>>>>> @@ -27,7 +27,7 @@ static inline int set_memory_rw_nx(unsigned long addr, int numpages) { return 0;
->>>>>>>>   #endif
->>>>>>>>   
->>>>>>>>   #if defined(CONFIG_64BIT) && defined(CONFIG_STRICT_KERNEL_RWX)
->>>>>>>> -void protect_kernel_linear_mapping_text_rodata(void);
->>>>>>>> +void __init protect_kernel_linear_mapping_text_rodata(void);
->>>>>>>>   #else
->>>>>>>>   static inline void protect_kernel_linear_mapping_text_rodata(void) {}
->>>>>>>>   #endif
->>>>>>>> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
->>>>>>>> index 4c4c92ce0bb8..eac2d5c27b3e 100644
->>>>>>>> --- a/arch/riscv/mm/init.c
->>>>>>>> +++ b/arch/riscv/mm/init.c
->>>>>>>> @@ -53,7 +53,7 @@ struct pt_alloc_ops {
->>>>>>>>   #endif
->>>>>>>>   };
->>>>>>>>   
->>>>>>>> -static phys_addr_t dma32_phys_limit __ro_after_init;
->>>>>>>> +static phys_addr_t dma32_phys_limit __initdata;
->>>>>>>>   
->>>>>>>>   static void __init zone_sizes_init(void)
->>>>>>>>   {
->>>>>>>> @@ -184,7 +184,7 @@ extern char _sdata[], _edata[];
->>>>>>>>   #endif /* CONFIG_XIP_KERNEL */
->>>>>>>>   
->>>>>>>>   #ifdef CONFIG_MMU
->>>>>>>> -static struct pt_alloc_ops _pt_ops __ro_after_init;
->>>>>>>> +static struct pt_alloc_ops _pt_ops __initdata;
->>>>>>>>   
->>>>>>>>   #ifdef CONFIG_XIP_KERNEL
->>>>>>>>   #define pt_ops (*(struct pt_alloc_ops *)XIP_FIXUP(&_pt_ops))
->>>>>>>> @@ -200,13 +200,13 @@ EXPORT_SYMBOL(va_pa_offset);
->>>>>>>>   #endif
->>>>>>>>   /* Offset between kernel mapping virtual address and kernel load address */
->>>>>>>>   #ifdef CONFIG_64BIT
->>>>>>>> -unsigned long va_kernel_pa_offset;
->>>>>>>> +unsigned long va_kernel_pa_offset __ro_after_init;
->>>>>>>>   EXPORT_SYMBOL(va_kernel_pa_offset);
->>>>>>>>   #endif
->>>>>>>>   #ifdef CONFIG_XIP_KERNEL
->>>>>>>>   #define va_kernel_pa_offset    (*((unsigned long *)XIP_FIXUP(&va_kernel_pa_offset)))
->>>>>>>>   #endif
->>>>>>>> -unsigned long va_kernel_xip_pa_offset;
->>>>>>>> +unsigned long va_kernel_xip_pa_offset __ro_after_init;
->>>>>>>>   EXPORT_SYMBOL(va_kernel_xip_pa_offset);
->>>>>>>>   #ifdef CONFIG_XIP_KERNEL
->>>>>>>>   #define va_kernel_xip_pa_offset        (*((unsigned long *)XIP_FIXUP(&va_kernel_xip_pa_offset)))
->>>>>>>> @@ -216,7 +216,7 @@ EXPORT_SYMBOL(pfn_base);
->>>>>>>>   
->>>>>>>>   pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
->>>>>>>>   pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
->>>>>>>> -pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
->>>>>>>> +static pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
->>>>>>>>   
->>>>>>>>   pgd_t early_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
->>>>>>>>   
->>>>>>>> @@ -253,7 +253,7 @@ static inline pte_t *__init get_pte_virt_fixmap(phys_addr_t pa)
->>>>>>>>   	return (pte_t *)set_fixmap_offset(FIX_PTE, pa);
->>>>>>>>   }
->>>>>>>>   
->>>>>>>> -static inline pte_t *get_pte_virt_late(phys_addr_t pa)
->>>>>>>> +static inline pte_t *__init get_pte_virt_late(phys_addr_t pa)
->>>>>>>>   {
->>>>>>>>   	return (pte_t *) __va(pa);
->>>>>>>>   }
->>>>>>>> @@ -272,7 +272,7 @@ static inline phys_addr_t __init alloc_pte_fixmap(uintptr_t va)
->>>>>>>>   	return memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
->>>>>>>>   }
->>>>>>>>   
->>>>>>>> -static phys_addr_t alloc_pte_late(uintptr_t va)
->>>>>>>> +static phys_addr_t __init alloc_pte_late(uintptr_t va)
->>>>>>>>   {
->>>>>>>>   	unsigned long vaddr;
->>>>>>>>   
->>>>>>>> @@ -296,10 +296,10 @@ static void __init create_pte_mapping(pte_t *ptep,
->>>>>>>>   
->>>>>>>>   #ifndef __PAGETABLE_PMD_FOLDED
->>>>>>>>   
->>>>>>>> -pmd_t trampoline_pmd[PTRS_PER_PMD] __page_aligned_bss;
->>>>>>>> -pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
->>>>>>>> -pmd_t early_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
->>>>>>>> -pmd_t early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
->>>>>>>> +static pmd_t trampoline_pmd[PTRS_PER_PMD] __page_aligned_bss;
->>>>>>>> +static pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
->>>>>>>> +static pmd_t early_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
->>>>>>>> +static pmd_t early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
->>>>>>>>   
->>>>>>>>   #ifdef CONFIG_XIP_KERNEL
->>>>>>>>   #define trampoline_pmd ((pmd_t *)XIP_FIXUP(trampoline_pmd))
->>>>>>>> @@ -319,7 +319,7 @@ static pmd_t *__init get_pmd_virt_fixmap(phys_addr_t pa)
->>>>>>>>   	return (pmd_t *)set_fixmap_offset(FIX_PMD, pa);
->>>>>>>>   }
->>>>>>>>   
->>>>>>>> -static pmd_t *get_pmd_virt_late(phys_addr_t pa)
->>>>>>>> +static pmd_t *__init get_pmd_virt_late(phys_addr_t pa)
->>>>>>>>   {
->>>>>>>>   	return (pmd_t *) __va(pa);
->>>>>>>>   }
->>>>>>>> @@ -336,7 +336,7 @@ static phys_addr_t __init alloc_pmd_fixmap(uintptr_t va)
->>>>>>>>   	return memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
->>>>>>>>   }
->>>>>>>>   
->>>>>>>> -static phys_addr_t alloc_pmd_late(uintptr_t va)
->>>>>>>> +static phys_addr_t __init alloc_pmd_late(uintptr_t va)
->>>>>>>>   {
->>>>>>>>   	unsigned long vaddr;
->>>>>>>>   
->>>>>>>> @@ -454,14 +454,16 @@ asmlinkage void __init __copy_data(void)
->>>>>>>>   #error "setup_vm() is called from head.S before relocate so it should not use absolute addressing."
->>>>>>>>   #endif
->>>>>>>>   
->>>>>>>> -uintptr_t load_pa, load_sz;
->>>>>>>> +static uintptr_t load_pa __initdata;
->>>>>>>
->>>>>>> Making load_pa static causing clang built kernels to no longer boot,
->>>>>>> hanging after just a few lines of output in the console:
->>>>>>>
->>>>>>> https://github.com/ClangBuiltLinux/continuous-integration2/runs/2717606254?check_suite_focus=true
->>>>>>>
->>>>>>> I am not sure why that would make a difference nor why GCC is okay with
->>>>>>> it. If it is a clang bug, it appears to be there for a while, given that
->>>>>>> it reproduces back to clang-11.
->>>>>>
->>>>>> I can reproduce the issue. Here are my findindings:
->>>>>>
->>>>>> * gcc + binutils can't reproduce it
->>>>>> * clang + llvm-utils + ias can reproduce it
->>>>>> * clang + binutils can reproduce it
->>>>
->>>> Yes, this seems like something strictly related to clang so that is what
->>>> I have been testing with.
->>>>      
->>>>>> All below tests are done with clang + binutils.
->>>>>>
->>>>>> Then I applied below modification:
->>>>>>
->>>>>> -static uintptr_t load_pa __initdata;
->>>>>> +uintptr_t load_pa __initdata;
->>>>>>
->>>>>> I got below panic log:
->>>>>> [    0.015418] Unable to handle kernel paging request at virtual address fffffffffffffff9
->>>>>> [    0.016432] Oops [#1]
->>>>>> [    0.016679] Modules linked in:
->>>>>> [    0.017103] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.13.0-rc1+ #5
->>>>>> [    0.017711] Hardware name: riscv-virtio,qemu (DT)
->>>>>> [    0.018201] epc : trace_hardirqs_on+0x60/0xb2
->>>>>> [    0.018582]  ra : restore_all+0xe/0x66
->>>>>> [    0.018879] epc : ffffffff800cb09a ra : ffffffff800027b8 sp : ffffffff80c03dd0
->>>>>> [    0.019376]  gp : ffffffff80d001c8 tp : ffffffff80c0c180 t0 : 0000000000000020
->>>>>> [    0.019870]  t1 : ffffffff80006e40 t2 : ffffffff800d2e0a s0 : ffffffff80c03e00
->>>>>> [    0.020346]  s1 : 0000000000000001 a0 : 0000000000000001 a1 : 0000000000000001
->>>>>> [    0.020800]  a2 : 0000000000000001 a3 : 0000000000000000 a4 : 0000000000000000
->>>>>> [    0.021243]  a5 : 0000000000000000 a6 : 0000000000000000 a7 : 0000000054494d45
->>>>>> [    0.021717]  s2 : ffffffff800027b8 s3 : ffffffff80d35968 s4 : ffffffff8061e1d8
->>>>>> [    0.022179]  s5 : ffffffff80c0c180 s6 : ffffffe000e34b50 s7 : 00000000800130f0
->>>>>> [    0.022674]  s8 : 000000000000007f s9 : 0000000080012010 s10: 0000000000000000
->>>>>> [    0.023176]  s11: 0000000000000000 t3 : ffffffff80d00108 t4 : ffffffff80006e40
->>>>>> [    0.023693]  t5 : ffffffff80006e40 t6 : ffffffff800d2e0a
->>>>>> [    0.024153] status: 0000000000000100 badaddr: fffffffffffffff9 cause: 000000000000000d
->>>>>> [    0.025367] Call Trace:
->>>>>> [    0.025749] [<ffffffff800cb09a>] trace_hardirqs_on+0x60/0xb2
->>>>>> [    0.026402] [<ffffffff800027b8>] restore_all+0xe/0x66
->>>>>> [    0.027261] Unable to handle kernel paging request at virtual address fffffffffffffffa
->>>>>> [    0.027827] Oops [#2]
->>>>>> [    0.028013] Modules linked in:
->>>>>> [    0.028321] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G      D           5.13.0-rc1+ #5
->>>>>> [    0.028839] Hardware name: riscv-virtio,qemu (DT)
->>>>>> [    0.029166] epc : trace_hardirqs_on+0x60/0xb2
->>>>>> [    0.029505]  ra : restore_all+0xe/0x66
->>>>>> [    0.029785] epc : ffffffff800cb09a ra : ffffffff800027b8 sp : ffffffff80c03a80
->>>>>> [    0.030266]  gp : ffffffff80d001c8 tp : ffffffff80c0c180 t0 : 0000000000000020
->>>>>> [    0.030748]  t1 : ffffffff80006e40 t2 : ffffffff800d2e0a s0 : ffffffff80c03ab0
->>>>>> [    0.031227]  s1 : 0000000000000001 a0 : 0000000000000002 a1 : 0000000000000002
->>>>>> [    0.031717]  a2 : 0000000000000001 a3 : 0000000000000000 a4 : 0000000000000000
->>>>>> [    0.032199]  a5 : 0000000000000000 a6 : 0000000000000000 a7 : 0000000054494d45
->>>>>> [    0.032680]  s2 : ffffffff800027b8 s3 : ffffffff80d35968 s4 : ffffffff8061e1d8
->>>>>> [    0.033160]  s5 : ffffffff80c0c180 s6 : ffffffe000e34b50 s7 : 00000000800130f0
->>>>>> [    0.033642]  s8 : 000000000000007f s9 : 0000000080012010 s10: 0000000000000000
->>>>>> [    0.034123]  s11: 0000000000000000 t3 : ffffffff80d00108 t4 : ffffffff80006e40
->>>>>> [    0.034601]  t5 : ffffffff80006e40 t6 : ffffffff800d2e0a
->>>>>> [    0.034965] status: 0000000000000100 badaddr: fffffffffffffffa cause: 000000000000000d
->>>>>> [    0.035492] Call Trace:
->>>>>> [    0.035682] [<ffffffff800cb09a>] trace_hardirqs_on+0x60/0xb2
->>>>>> [    0.036077] [<ffffffff800027b8>] restore_all+0xe/0x66
->>>>>> [    0.036545] ---[ end trace 7f4fbff09d927668 ]---
->>>>>> [    0.037188] Kernel panic - not syncing: Attempted to kill the idle task!
->>>>>> [    0.038107] ---[ end Kernel panic - not syncing: Attempted to kill the idle task! ]---
->>>>>>
->>>>>> Then I checked 5.13-rc1, above panic log can be reproduced too. So the issue
->>>>>> should exist there for a while. I never tried clang with riscv, did you remember
->>>>>> which last commit or version clang works, I may try to bisect.
->>>> V> >
->>>>>
->>>>> More findings:
->>>>>
->>>>> *The above panic issue can also be seen from 5.12-rc2. If disable FTRACE, then
->>>>> the panic disappears, kernel can boot
->>>>>
->>>>> *so I retested riscv next tree w/ FTRACE disabled, kernel can boot w/ below
->>>>> modification:
->>>>
->>>> Yeah, I do not enable CONFIG_FTRACE because it is not enabled in
->>>> ARCH=riscv defconfig by default.
->>>>      
->>>>> -static uintptr_t load_pa __initdata;
->>>>> +uintptr_t load_pa __initdata;
->>>>>
->>>>> This is a weird issue. Any clue is appreciated.
->>>>
->>>> Unfortunately, this is outside of my realm of expertise, as I am
->>>> unfamiliar with RISC-V at this level. Maybe Palmer has some ideas. I
->>>> would think that changing this variable to static would be fine given
->>>> that the symbol is only used in this translation unit but clearly not. I
->>>> have attempted to debug this in gdb but that does not really get me
->>>> anywhere: I cannot break on start_kernel() for whatever reason and the
->>>> kernel never gets to my breakpoint in setup_vm().
->>>>
->>>> I did decide to through a BUG() around arch/riscv/mm/init.c to see
->>>> exactly which statement causes everything to hang. I landed on:
->>>>
->>>> csr_write(CSR_SATP, PFN_DOWN(__pa_symbol(swapper_pg_dir)) | SATP_MODE);
->>>>
->>>> in setup_vm_final(). No idea how that is relevant to this.
->>>>
->>>> Some people in the ClangBuiltLinux bi-weekly meeting today pointed out
->>>> that since load_pa is assigned to the linker defined symbol _start,
->>>> there could be some optimization that goes awry here. I have keyed that
->>>
->>> Thanks for the inspiration. Below patch fixes the hang issue, but I didn't
->>> go through all necessary WRITE_ONCE convertions.
->>>
->>> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
->>> index ae32f78207f0..fa9336a2583f 100644
->>> --- a/arch/riscv/mm/init.c
->>> +++ b/arch/riscv/mm/init.c
->>> @@ -504,7 +504,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->>>   
->>>          va_kernel_xip_pa_offset = kernel_virt_addr - xiprom;
->>>   #else
->>> -       load_pa = (uintptr_t)(&_start);
->>> +       WRITE_ONCE(load_pa, (uintptr_t)(&_start));
->>>          load_sz = (uintptr_t)(&_end) - load_pa;
->>>   #endif
->>>    
->>
->> I think I found the root cause, but I dunno whether this is clang bug or
->> we need WRITE_ONCE patch.
->> W/O WRITE_ONCE, the setup_vm() is compiled to
->>
->> ffffffff8040472a <setup_vm>:
->> ffffffff8040472a:       1101                    addi    sp,sp,-32
->> ffffffff8040472c:       ec06                    sd      ra,24(sp)
->> ffffffff8040472e:       e822                    sd      s0,16(sp)
->> ffffffff80404730:       e426                    sd      s1,8(sp)
->> ffffffff80404732:       e04a                    sd      s2,0(sp)
->> ffffffff80404734:       1000                    addi    s0,sp,32
->> ffffffff80404736:       892a                    mv      s2,a0
->> ffffffff80404738:       001fd517                auipc   a0,0x1fd
->> ffffffff8040473c:       8c850513                addi    a0,a0,-1848 # ffffffff80601000 <load_pa>
->> ffffffff80404740:       4585                    li      a1,1
->> ffffffff80404742:       00b50023                sb      a1,0(a0)     // BUG!
->> ffffffff80404746:       001fd517                auipc   a0,0x1fd
->> ffffffff8040474a:       8c250513                addi    a0,a0,-1854 # ffffffff80601008 <load_sz>
->> ffffffff8040474e:       00b50023                sb      a1,0(a0)     // BUG!
->> ffffffff80404752:       ffbfc517                auipc   a0,0xffbfc
->> ffffffff80404756:       8ae50513                addi    a0,a0,-1874 # ffffffff80000000 <_start>
->> ffffffff8040475a:       55fd                    li      a1,-1
->> ffffffff8040475c:       02559613                slli    a2,a1,0x25
->> ffffffff80404760:       83018593                addi    a1,gp,-2000 # ffffffff80ca6428 <kernel_virt_addr>
->> ffffffff80404764:       618c                    ld      a1,0(a1)
->> ffffffff80404766:       8e09                    sub     a2,a2,a0
->> ...
->>
->> It seems load_pa and load_sz are stored with 1, this is obviously not what the
->> code expected.
->>
->>
->> W/ WRITE_ONCE, the setup_vm() is compiled to:
->>
->> ffffffff8040472a <setup_vm>:
->> ffffffff8040472a:       1101                    addi    sp,sp,-32
->> ffffffff8040472c:       ec06                    sd      ra,24(sp)
->> ffffffff8040472e:       e822                    sd      s0,16(sp)
->> ffffffff80404730:       e426                    sd      s1,8(sp)
->> ffffffff80404732:       e04a                    sd      s2,0(sp)
->> ffffffff80404734:       1000                    addi    s0,sp,32
->> ffffffff80404736:       892a                    mv      s2,a0
->> ffffffff80404738:       001fd597                auipc   a1,0x1fd
->> ffffffff8040473c:       8c858593                addi    a1,a1,-1848 # ffffffff80601000 <load_pa>
->> ffffffff80404740:       ffbfc517                auipc   a0,0xffbfc
->> ffffffff80404744:       8c050513                addi    a0,a0,-1856 # ffffffff80000000 <_start>
->> ffffffff80404748:       e188                    sd      a0,0(a1)
->> ffffffff8040474a:       001fd597                auipc   a1,0x1fd
->> ffffffff8040474e:       8be58593                addi    a1,a1,-1858 # ffffffff80601008 <load_sz>
->> ffffffff80404752:       4605                    li      a2,1
->> ffffffff80404754:       00c58023                sb      a2,0(a1)
->> ffffffff80404758:       55fd                    li      a1,-1
->> ffffffff8040475a:       02559613                slli    a2,a1,0x25
->> ffffffff8040475e:       83018593                addi    a1,gp,-2000 # ffffffff80ca6428 <kernel_virt_addr>
->> ffffffff80404762:       618c                    ld      a1,0(a1)
->> ffffffff80404764G       8e09                    sub     a2,a2,a0
->> ...
->>
->> This is what the code expected.
-> 
-> This issue can also be solved by avoiding global vars: load_pa and load_sz.
-> 
-> Hi Alexandre,
-> 
-> IMHO, the load_pa and load_sz can be removed, I have one patch to remove
-> them, it works. I'm not sure whether will the two vars be used in your
-> future patches?
-> 
-
-More or less, I want to move all the address conversion macros to inline 
-functions as suggested by Christoph, and there I will need load_sz and 
-load_pa. But I'm not sure it is really necessary.
-
-Anyway, that would "solve" this issue, but I think we all agree the real 
-problem should be solved at clang level.
-
-
-> Thanks in advance,
-> Jisheng
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> 
+T3duZXJzaGlwIG9mIFNjYWxlTVDigJlzIElQIHdhcyBhY3F1aXJlZCBieSBTQVAsIGFuZCB0aGUg
+dGVhbSBtYWludGFpbmluZyB0aGlzIGNvbXBvbmVudCBpbiB0aGUga2VybmVsIGhhcyBtb3ZlZCB0
+byBTQVAsIGhlbmNlIHRoZSBjaGFuZ2UgaW4gZW1haWwgYWRkcmVzcy4NCg0KU2lnbmVkLW9mZi1i
+eTogRWlhbCBDemVyd2Fja2kgPGVpYWwuY3plcndhY2tpQHNhcC5jb20+DQotLS0NCiBhcmNoL3g4
+Ni9rZXJuZWwvdnNtcF82NC5jIHwgNSArKysrLQ0KIDEgZmlsZSBjaGFuZ2VkLCA0IGluc2VydGlv
+bnMoKyksIDEgZGVsZXRpb24oLSkNCg0KZGlmZiAtLWdpdCBhL2FyY2gveDg2L2tlcm5lbC92c21w
+XzY0LmMgYi9hcmNoL3g4Ni9rZXJuZWwvdnNtcF82NC5jDQppbmRleCA3OTZjZmFhNDZiZmEuLmMz
+OThhZjNjMWNmMyAxMDA2NDQNCi0tLSBhL2FyY2gveDg2L2tlcm5lbC92c21wXzY0LmMNCisrKyBi
+L2FyY2gveDg2L2tlcm5lbC92c21wXzY0LmMNCkBAIC0xLDEyICsxLDE1IEBADQogLy8gU1BEWC1M
+aWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb25seQ0KIC8qDQogICogdlNNUG93ZXJlZCh0bSkg
+c3lzdGVtcyBzcGVjaWZpYyBpbml0aWFsaXphdGlvbg0KLSAqIENvcHlyaWdodCAoQykgMjAwNSBT
+Y2FsZU1QIEluYy4NCisgKiBDb3B5cmlnaHQgKEMpIDIwMDUgLSAyMDIxIFNjYWxlTVAgSW5jLg0K
+ICAqDQogICogUmF2aWtpcmFuIFRoaXJ1bWFsYWkgPGtpcmFuQHNjYWxlbXAuY29tPiwNCiAgKiBT
+aGFpIEZ1bHRoZWltIDxzaGFpQHNjYWxlbXAuY29tPg0KICAqIFBhcmF2aXJ0IG9wcyBpbnRlZ3Jh
+dGlvbjogR2xhdWJlciBkZSBPbGl2ZWlyYSBDb3N0YSA8Z2Nvc3RhQHJlZGhhdC5jb20+LA0KICAq
+ICAgICAgICAgICAgICAgICAgICAgICAgICBSYXZpa2lyYW4gVGhpcnVtYWxhaSA8a2lyYW5Ac2Nh
+bGVtcC5jb20+DQorICoNCisgKiBDb3B5cmlnaHQgKEMpIDIwMjEgU0FQLg0KKyAqIEVpYWwgQ3pl
+cndhY2tpIDxlaWFsLmN6ZXJ3YWNraUBzYXAuY29tPg0KICAqLw0KDQogI2luY2x1ZGUgPGxpbnV4
+L2luaXQuaD4NCi0tDQoyLjMxLjENCg==
