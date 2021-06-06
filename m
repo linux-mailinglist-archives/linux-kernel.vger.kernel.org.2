@@ -2,77 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1C939D208
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 00:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9957839D20A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 00:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231140AbhFFWx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 18:53:29 -0400
-Received: from mail-lf1-f42.google.com ([209.85.167.42]:43722 "EHLO
-        mail-lf1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbhFFWx2 (ORCPT
+        id S231222AbhFFWxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 18:53:54 -0400
+Received: from mail-pj1-f44.google.com ([209.85.216.44]:35664 "EHLO
+        mail-pj1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231174AbhFFWxw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 18:53:28 -0400
-Received: by mail-lf1-f42.google.com with SMTP id n12so15984732lft.10
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 15:51:24 -0700 (PDT)
+        Sun, 6 Jun 2021 18:53:52 -0400
+Received: by mail-pj1-f44.google.com with SMTP id fy24-20020a17090b0218b029016c5a59021fso4202633pjb.0;
+        Sun, 06 Jun 2021 15:51:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+HiD5HhosM/emrEAZdYOI7Gyss6pcG+u5xu0k8IYo/s=;
-        b=livSg6TPBfB6EwkqK26GA5esocsahxpk9Ws4GoILwWOPBp2A6PiTejz1uQQnv1Ukbe
-         l28jrxgjtvs6ugRUUpaaQITCCGMHzJYg4DS9mUYiS1ZpBFmc/V9iwhkhvAJs6VGeCz9g
-         9MRQkZ0EVpBBI9XmBXkr1rk8GnW3srMoAWjO8Q3qiQ0oxaAJj//yWlrhfZ9Jx4Tnsalk
-         o4f/TPInvfDSfcT5/7PO2+BPKskOJmI1U6pvlKKLOnEp1XZ+ZmhlhhH73M2K9AIbCfgb
-         aNoej8BCXxLFa9E7HhCa1TrHoE0fATpePVUY2k+gLWU+ixKN/6k9LRDESe8Dg6kZLMH2
-         t5Wg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0ghfSYAN+EVP3Evuag496Y75PilLoCwuoOi7hPsLqYc=;
+        b=YG/Yfwy1zoxzmE+xWEaMwB9gTsAEkBlTzYGyfRwUKRPPSxjROaP3kVXJZ4m5v8MO6V
+         qz0hZajNLWlRNQrPpPOCIuHKOzQyWLfKT8yG+4H8RiI7vVu/oXL4HVod5h34ole+XFdm
+         d9DKG1ohdY0VUR58DRbC2hTikScBbosrSJ4MhG77FqPK62VkInKzDnW+vFTf1aF6Xea6
+         TtFs9VHINDbVWtPyYR7wvB0JY9anL75f+j+SJBp+JWfbYbsXimc2oghK8f1b5eq+H7cX
+         w5HogQOWLZnBGg7jSiXE39gsbCB7cIoLOIvsoNlreQojMxMT6S0xLRi+fsixUvXZzV9L
+         WUoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+HiD5HhosM/emrEAZdYOI7Gyss6pcG+u5xu0k8IYo/s=;
-        b=B7DkN17PAlZgs2c0zxHha/DeRhNnjMlNEdRvDBVjsNRvDPxYYEACMNu+R7HxPfZjbm
-         J2QkOoMTF24o5tOMzW/Wj6qZwuP1W3V/9hnyAVm7Gw/ccZgwSCzEne3OPZ0WZeC+zl/A
-         dQ0zwAfzDbXL+XqpDRjtfC3l1iOu7XKHOSKhCIhXGy8HJdsiowTeqXw23KfO/61A40yU
-         +g7Is2Xy+RM394mUD+mZOt4gO5QnINDQMuPP84k39s0/wBk3Sb6HGnVKu8oV/cYEVatO
-         tAqhAG/jJnO2LgCJH5UJscfoTdMTna9IojucO4XYFMW91Wuz/oaRvLFyUV+uaaJv+OiK
-         UnkA==
-X-Gm-Message-State: AOAM531afUoEJHgg7H9jJy1tUIidtvnnGHLmGXNVPkKNHe9bUPyyfIs5
-        HBA8PqOHdM1tiY3OY0LFyVP/NghcUThi6CtPIOzCRQ==
-X-Google-Smtp-Source: ABdhPJxS6LPwuFoRiie241fNnwRDTKf9/sDPiCKNe2Q6490BW6AvfGX/NDaSl1qkxJm0Tmk6frP3noZZ8DSbdR96gNY=
-X-Received: by 2002:a05:6512:2105:: with SMTP id q5mr9665431lfr.649.1623019823537;
- Sun, 06 Jun 2021 15:50:23 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0ghfSYAN+EVP3Evuag496Y75PilLoCwuoOi7hPsLqYc=;
+        b=sHgaC/yplJpJpCxUkKyWopMQyienLH+oTAmm6izzoxM+zSY4zh4lqGbmJBPPwAJ2+h
+         3+bEdnVHiEvJ4tt4lL/pJH8HkfEH3mYE83QRmANgkN6pt6husedbkOzb0hNLZH7qmFfl
+         PMtOqi7196s2kSGnicBViz+DqiGLbKihd7KedZ3ZFYw/i/onQUOcMZXfhEqdxknC9x4R
+         luznKaEtrH67XESrckKaJplFxumHHQC1KjZGzY+jQSvo/1mSlkvjPqPTzjXZBcrODWw1
+         x11iyco5CXlN30yyXkF8WwUEiFN0rXg6brg7L5bOrchIJ7ylgfLMGWgQa+iOwWroROBZ
+         NZDw==
+X-Gm-Message-State: AOAM533Py4Mci9DzianEZ3UffDr8bZGzC5oEkkN65JOqZBfDwQjAL8JB
+        EXcOTtBbtxUfJeoENAiTocc=
+X-Google-Smtp-Source: ABdhPJye5Xj64abcuZKTgOddCODlLRmDQZCcbMQoSolTX1s/adTx35TeA9c7CfnBdrwWXvbWrbXfCA==
+X-Received: by 2002:a17:90a:43a6:: with SMTP id r35mr28280553pjg.222.1623019849035;
+        Sun, 06 Jun 2021 15:50:49 -0700 (PDT)
+Received: from Crosshair-VIII-Hero.lan (066-188-147-045.res.spectrum.com. [66.188.147.45])
+        by smtp.gmail.com with ESMTPSA id x11sm5553505pjc.26.2021.06.06.15.50.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Jun 2021 15:50:48 -0700 (PDT)
+From:   Chris Blake <chrisrblake93@gmail.com>
+To:     ptyser@xes-inc.com, lee.jones@linaro.org,
+        linux-kernel@vger.kernel.org, chunkeey@gmail.com,
+        linux-gpio@vger.kernel.org
+Cc:     Chris Blake <chrisrblake93@gmail.com>
+Subject: [PATCH v2] mfd: lpc_ich: Enable GPIO driver for DH89xxCC
+Date:   Sun,  6 Jun 2021 17:50:37 -0500
+Message-Id: <20210606225037.26130-1-chrisrblake93@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <cover.1622648507.git.mchehab+huawei@kernel.org> <0d437806f3f8d2c930656872be482820ef1c2301.1622648507.git.mchehab+huawei@kernel.org>
-In-Reply-To: <0d437806f3f8d2c930656872be482820ef1c2301.1622648507.git.mchehab+huawei@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 7 Jun 2021 00:50:12 +0200
-Message-ID: <CACRpkdYPtOWSLFDDhx-Z5DYO+_JfKGxvuvjYALB8w90=wmkGuA@mail.gmail.com>
-Subject: Re: [PATCH 08/12] MAINTAINERS: update faraday,ftrtc010.yaml reference
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 2, 2021 at 5:43 PM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
+Based on the Intel Datasheet for the DH89xxCC PCH, the GPIO driver
+is the same as ICH_v5_GPIO, minus the fact the DH89xxCC also has
+blink support. However, blink support isn't supported by the GPIO
+driver so we should use ICH_v5_GPIO. Tested and working on a Meraki
+MX100-HW.
 
-> Changeset 8df65d4adca6 ("dt-bindings: convert rtc/faraday,ftrtc01 to yaml")
-> renamed: Documentation/devicetree/bindings/rtc/faraday,ftrtc010.txt
-> to: Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml.
->
-> Update its cross-reference accordingly.
->
-> Fixes: 8df65d4adca6 ("dt-bindings: convert rtc/faraday,ftrtc01 to yaml")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+V2: Updated commit message, and added Christian Lamparter as a
+contributor.
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Chris Blake <chrisrblake93@gmail.com>
+Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
+---
+ drivers/mfd/lpc_ich.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Yours,
-Linus Walleij
+diff --git a/drivers/mfd/lpc_ich.c b/drivers/mfd/lpc_ich.c
+index 3bbb29a7e7a5..f10e53187f67 100644
+--- a/drivers/mfd/lpc_ich.c
++++ b/drivers/mfd/lpc_ich.c
+@@ -489,6 +489,7 @@ static struct lpc_ich_info lpc_chipset_info[] = {
+ 	[LPC_DH89XXCC] = {
+ 		.name = "DH89xxCC",
+ 		.iTCO_version = 2,
++		.gpio_version = ICH_V5_GPIO,
+ 	},
+ 	[LPC_PPT] = {
+ 		.name = "Panther Point",
+-- 
+2.25.1
+
