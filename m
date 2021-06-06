@@ -2,134 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7635C39CE99
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 12:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5B139CE9B
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 12:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbhFFKix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 06:38:53 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:41669 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229465AbhFFKiv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 06:38:51 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 0D2875C010A;
-        Sun,  6 Jun 2021 06:37:02 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Sun, 06 Jun 2021 06:37:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=SmKvFMjBu/a0urc3RGRKw51AD7
-        PuMxYFcgBohA05z0Q=; b=jnwCt1OcYp2RG/uWgT/Rt3w7wgw4B2lwS7sHkOzlUv
-        CefOnLcPw7by9k4yrLYL5ehhn2PnB6kEGyVFwfL7YzrZl04m1olk6snXhiXck4/N
-        5AP1G9ec6LzKzwJ2P9pDe0LXb+rBYxH8HhtAj+iM22WJ9q0eaNvYA9BghAAPDv+p
-        cJ5g9qaul3ShkI2WYl9PpXE1bsIHdTMQMURmOBynxxILgrBgZa1Ugdxy5Hrtkbl2
-        xgs7Ew6Zr/0H0bIPPQiDsCCl9I40nt7+oXB8uATlqJZoaIE1KPWjI08VQypsqrpQ
-        bdilQyEMy9vnFK7hWDQdmSR2kPa2YbOxgiyuiVAUPhQw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=SmKvFMjBu/a0urc3R
-        GRKw51AD7PuMxYFcgBohA05z0Q=; b=QaZkEO0AMDpdG4MxgVJ99h6pmiuLSGFle
-        ZRdS3yi0DzltUhWhjjcSme1auYJ7WvVouXcJkfu4CJK31rFnxJ2FBPMclOZ2N0+F
-        rmwVFgXsWrQeb8jplkoi+WeMrDYOnOMauk/1QnsKuCibrdv/UDAPGv8shILU884h
-        /SkT79ISXyZRYtDkfNod3hZMUyaPCzkHTxlliAVYZj40Iu48SnEONteBHDW0rFlM
-        ZhzpP7NzvzelGqjlaF7P5q8RHyUleE9yHf2KX68unZ/F8SI+KehJYcfI5MIkBxhl
-        E3op1/XqYFeC1sC9FdXlMSinX8aNyXLXWdaNBKnkMEwlK6be6uLLQ==
-X-ME-Sender: <xms:TaW8YInKjia9Eai-raIGrcsntvLUVXq-pbTf-ENaFwTETXj3NpaLhg>
-    <xme:TaW8YH1uBYFFQH3M-5yTXvXLfC3ipz15f3-Im_S2KIsT7s4_6u74r3iT9y4hXiOsv
-    rUDJPfX5sD8Q1bbnPU>
-X-ME-Received: <xmr:TaW8YGqxMAlb8metNJ4-jaaojZ2iXP3o3B9GrbJyroGCXtonXngAm3ciuvtCIDKpzWl4dDiRlDfnmF63Mz8fsOMWuGa1y6YeX6_o7hTd_vSTZW0-wNcfr28Hhnvjig>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedthedgfeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefuvhgvnhcurfgv
-    thgvrhcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrfgrthhtvghrnh
-    epuefgleekvddtjefffeejheevleefveekgfduudfhgefhfeegtdehveejfefffffgnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshhvvghnse
-    hsvhgvnhhpvghtvghrrdguvghv
-X-ME-Proxy: <xmx:TaW8YEkyvGfZHCdIoGvY9GloZHsOyIlv824QYpdL4TctcSbjLNqrLw>
-    <xmx:TaW8YG3D3iUT8_xcVnCDi4-LrtAvQk4DplUoS2jovSwz1Loc6V6HZQ>
-    <xmx:TaW8YLu_z3IfV_nR4nU0bXT8b3n3yZ106c_e6ntBTPgxX6SobqYFcg>
-    <xmx:TaW8YJSEqimqUrWBj_DHQh813m1NW07hnSAwa_KEpSY9Dqu6xq3Zvg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 6 Jun 2021 06:37:00 -0400 (EDT)
-From:   Sven Peter <sven@svenpeter.dev>
-To:     linux-usb@vger.kernel.org
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Sven Peter <sven@svenpeter.dev>
-Subject: [PATCH v2] usb: dwc3: support 64 bit DMA in platform driver
-Date:   Sun,  6 Jun 2021 12:36:56 +0200
-Message-Id: <20210606103656.71079-1-sven@svenpeter.dev>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+        id S230255AbhFFKnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 06:43:13 -0400
+Received: from mail-db8eur06olkn2075.outbound.protection.outlook.com ([40.92.51.75]:21281
+        "EHLO EUR06-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229465AbhFFKnL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 06:43:11 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WA04zfXJXWvziVRLeCMaOzQbAfqH5ryl2ed5Ufl9sLoiKlftb9GgoF3FA2pYx9cZ01ytxOhUUQEfvL9vjKxECcWIe9/bzkpClAOtjsmxV/hbSjsN+35aA9Tq//ER0Y6m0SFEuZu8nMKJGMrcVoW3CV1CGncAFiTDoNY6Qocex4a7ZsYK2bfaxvHhgywjQ/+6qveJlRkuCQPiXtbVwbM5GJl3NaVZNA4xHD7zNE6qdgKfWEd5NoIo7GyDV1VTRjkxbxyleZUF2eqEb92hAN0Gk93ZQlUXV9ukuPhS3LLDalOUgr1CJqAuvZGROdkfgibR1cm5q4N6Xt/TC7Wvzu2Tmg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CMzbF5oJ24FBzPyK1hDO+ZYjZ8XdIJ+SNZEUphDYcTg=;
+ b=Xi7pPs7vKtpR5u0YPu5HisJ9m7izrSb/+RFmEPko51MqKADyToNw8SVvwiGZffu+3KebeA7+Dv7BBJ6kgp9VTw/0bQ8i7mPZz5RwAeENCkngGwSDcet/q+0HT8OXEBxphAY4+14YUfkj4jR/bZjJq7TBhomYaWNJqEb1wMYf+bo869mKrqqHPJdMKOFSfA2TPwXW0554AOryBYCHYP6oSJ2T7I2PqHlDkagt2dTN8X75jlbpdYs/lnNej46zdCBx7zZP0I2snaxnsj9c63AyZGWqkthl8sZjcgveJBpR5ZhzvIAByHND1/eMn8PbFHyj7/3JCcj9cq/PoQ9jGea9XQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from AM7EUR06FT025.eop-eur06.prod.protection.outlook.com
+ (2a01:111:e400:fc36::48) by
+ AM7EUR06HT198.eop-eur06.prod.protection.outlook.com (2a01:111:e400:fc36::422)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.18; Sun, 6 Jun
+ 2021 10:41:20 +0000
+Received: from AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM
+ (2a01:111:e400:fc36::50) by AM7EUR06FT025.mail.protection.outlook.com
+ (2a01:111:e400:fc36::479) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.18 via Frontend
+ Transport; Sun, 6 Jun 2021 10:41:20 +0000
+X-IncomingTopHeaderMarker: OriginalChecksum:66B4EAC390992C68A83A6F27C5A8BFA92F1B4E920BC48E860A74D7F4A6A522A2;UpperCasedChecksum:F3D353D4E9F796723102BEE1B216F9CA20E5C3C392047EB5B0625DC484DB122C;SizeAsReceived:7847;Count:45
+Received: from AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::ad12:6a2c:b949:f65d]) by AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::ad12:6a2c:b949:f65d%5]) with mapi id 15.20.4195.029; Sun, 6 Jun 2021
+ 10:41:20 +0000
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Bernd Edlinger <bernd.edlinger@hotmail.de>
+Subject: [PATCH] Fix error handling in begin_new_exec
+Message-ID: <AM8PR10MB47081071E64EAAB343196D5AE4399@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
+Date:   Sun, 6 Jun 2021 12:41:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TMN:  [+tbO9SgzIhULFiA8X4kFUOU6R6aDiYbm]
+X-ClientProxiedBy: AM0PR03CA0075.eurprd03.prod.outlook.com
+ (2603:10a6:208:69::16) To AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:20b:364::23)
+X-Microsoft-Original-Message-ID: <5561c512-8fbf-f44d-05db-8d8c9fd856f4@hotmail.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.101] (84.57.61.94) by AM0PR03CA0075.eurprd03.prod.outlook.com (2603:10a6:208:69::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.15 via Frontend Transport; Sun, 6 Jun 2021 10:41:19 +0000
+X-MS-PublicTrafficType: Email
+X-IncomingHeaderCount: 45
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-Correlation-Id: 2ca2089a-a010-4a7f-fba1-08d928d79e96
+X-MS-TrafficTypeDiagnostic: AM7EUR06HT198:
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EAj5lRodYfnInghOwQG9cxAtDJvOtsbPwyRdj7ONzqanOKUBcF8TogIlKtHGvmmRTmFixXbBAi7pE1zO6BwwyQSL3quvZRgVliOkti0DlHKINzGvalg9j/YAfJCm0og+nQOJDP0mfacSdAECc/XjFL6rUnsDeyl6peN8vd1OHVCfaY9kdDVH2bkLhhEflorZit56gaxDPmfS5gN8chZMrDn/pY2xPMrh1bOI+eNhd7KumqQmlOghUW3o5Y3mE3sDbCtPxLD/25PPd/H/UK6RrJkFAyKKy9qwmB+G3WhqMo7zfrLhzxHBibyeMWE2Kta48f5XGnMRnHHfo6O2XwW0xhStwVLFajPZokM+rMU+yFScNvjmFsnIUeJA1cxLpgs6FzfIo6nkaoaWMXEjUmlwXw==
+X-MS-Exchange-AntiSpam-MessageData: pXgQUsKuKBMCCXaqrOO0GDuGOWAfn1eBefPxNqW0SX/MeskmYBCb25IJYfYPXi9qHeBsrYEVadl6Za6hnjheUAINnqEwDcWkCpHUgtBEWwjkMp3pbj0Rx22HpKHWxP/+aN7Mlm0sLtbUyZNlHVotJA==
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2ca2089a-a010-4a7f-fba1-08d928d79e96
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jun 2021 10:41:20.2390
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-AuthSource: AM7EUR06FT025.eop-eur06.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7EUR06HT198
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the dwc3 platform driver does not explicitly ask for
-a DMA mask. This makes it fall back to the default 32-bit mask which
-breaks the driver on systems that only have RAM starting above the
-first 4G like the Apple M1 SoC.
+If get_unused_fd_flags() fails, the error handling is incomplete
+because bprm->cred is already set to NULL, and therefore
+free_bprm will not unlock the cred_guard_mutex.
+Note there are two error conditions which end up here,
+one before and one after bprm->cred is cleared.
 
-Fix this by using the same logic already present in xhci-plat.c:
-First, try to set a coherent dma mask for 64-bit, and then attempt
-again with a 32-bit mask if this fails.
+Fixes: b8a61c9e7b4 ("exec: Generic execfd support")
 
-Signed-off-by: Sven Peter <sven@svenpeter.dev>
+Signed-off-by: Bernd Edlinger <bernd.edlinger@hotmail.de>
 ---
-I have taken the code directly from the xhci-plat.c driver so
-I think this change should be fairly low risk.
-Unfortunately I only have the Apple M1 to test this on but here
-the driver still works with the iommu enabled which limits the
-address space to 32 bit. It also enables to use this with the iommu
-in bypass mode which requires 64 bit addresses.
+ fs/exec.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-I believe this has been working fine so far since the dwc3 driver
-only uses a few very small buffers in host mode which might still
-fit within the first 4G of address space on many devices. The
-majority of DMA buffers are allocated inside the xhci driver which
-will already call dma_set_mask_and_coherent.
-
-Best,
-
-Sven
-
-changes from v1:
- - removed WARN_ON around !dwc->sysdev->dma_mask; pointed out by greg k-h
-
- drivers/usb/dwc3/core.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index b6e53d8212cd..4930541a8984 100644
---- a/drivers/usb/dwc3/core.c
-+++ b/drivers/usb/dwc3/core.c
-@@ -1545,6 +1545,21 @@ static int dwc3_probe(struct platform_device *pdev)
+diff --git a/fs/exec.c b/fs/exec.c
+index 18594f1..d8af85f 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1396,6 +1396,9 @@ int begin_new_exec(struct linux_binprm * bprm)
  
- 	dwc3_get_properties(dwc);
- 
-+	/* Try to set 64-bit DMA first */
-+	if (!dwc->sysdev->dma_mask)
-+		/* Platform did not initialize dma_mask */
-+		ret = dma_coerce_mask_and_coherent(dwc->sysdev,
-+						   DMA_BIT_MASK(64));
-+	else
-+		ret = dma_set_mask_and_coherent(dwc->sysdev, DMA_BIT_MASK(64));
+ out_unlock:
+ 	up_write(&me->signal->exec_update_lock);
++	if (!bprm->cred)
++		mutex_unlock(&me->signal->cred_guard_mutex);
 +
-+	/* If seting 64-bit DMA mask fails, fall back to 32-bit DMA mask */
-+	if (ret) {
-+		ret = dma_set_mask_and_coherent(dwc->sysdev, DMA_BIT_MASK(32));
-+		if (ret)
-+			return ret;
-+	}
-+
- 	dwc->reset = devm_reset_control_array_get_optional_shared(dev);
- 	if (IS_ERR(dwc->reset))
- 		return PTR_ERR(dwc->reset);
+ out:
+ 	return retval;
+ }
 -- 
-2.25.1
-
+1.9.1
