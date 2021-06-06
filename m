@@ -2,148 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3F839CE67
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 11:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8D039CE69
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 11:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbhFFJ3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 05:29:37 -0400
-Received: from mail-pj1-f52.google.com ([209.85.216.52]:39640 "EHLO
-        mail-pj1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhFFJ3g (ORCPT
+        id S230108AbhFFJcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 05:32:05 -0400
+Received: from esa10.sap.c3s2.iphmx.com ([68.232.156.179]:65140 "EHLO
+        esa10.sap.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229508AbhFFJcD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 05:29:36 -0400
-Received: by mail-pj1-f52.google.com with SMTP id o17-20020a17090a9f91b029015cef5b3c50so10031415pjp.4
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 02:27:47 -0700 (PDT)
+        Sun, 6 Jun 2021 05:32:03 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9hJszFq4lHbv1ND+qGe92RXy6gvvhI7dS9USahuU+98=;
-        b=Vt3+cyZRJXGj6xpBlOINayeqRQyPymvqKkEkTi8r2G35aqYVZ5kDrQ9wz76UPIKp1O
-         J/GUI71fJWta4TBwyCyzp1772WWL+Jc4O79foJqWuLVazVO6UUCvPhwIzHmkKXsd5rtu
-         cQlEr/WOLcKrOLrd9pySXBySDSwgLRqI0bMVfUO1WnSkau36v/duvOfIkU7KbAlAawkw
-         6yrPADea992BdvvmISJxGS3Tq8RbTCc/+Xoe9GHqB+2wYT8aCGV8uuRZX0kwHw8C9vO/
-         QnfCJ4ohQ42XkUqnhwtPKT2tFtyQLH22o32nvPbtQ/pL4WuE8+fXteX2xvPyfELGzElv
-         yVrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9hJszFq4lHbv1ND+qGe92RXy6gvvhI7dS9USahuU+98=;
-        b=HfDAJbok5VYQBLDD2jVow4vwz7P8XNAm9SBq9F6yZPpsBQJtQ6VqyUYTvMQJdQQJjc
-         R/pnYMHw4mCGy3I3s8wwl4+U1am/ZQ9O68jE6a4wBvRBbmcaOr6mda77XRLFKn9ltoLT
-         2dgDaaaemuOeFk+l52ABvb742ZtgqyI7xvf+A2jRPU99L6Ci+D6SMJ0cr0q0vseeCdEI
-         XOQku8D80Gi8nHwARwQpKdjVmLmEjr2Z9mWU8g8YlY5s+okmvu3vKYylEMzzxA9XdwwW
-         I/CP1Sgyh4ceCg4BZ4L+4tJhrmEfDbzwmdcDb0y8jl9rveUwcH6gwLJtV0It1qCOfG0O
-         JC/A==
-X-Gm-Message-State: AOAM533tKBsh7xdKCNs1PNi0akGObnXFAnPj/HgSGCaErOvqf03rWhiE
-        QeSZPMXKOqpOQXt+x7Q5yK8=
-X-Google-Smtp-Source: ABdhPJzRFNHBngQCYf1/triH9Yxq3zROcJpdkjGA9Iwn69RR5HN2xm2Uw5zFqa1dC0DF99WdlmRoMA==
-X-Received: by 2002:a17:90a:be0b:: with SMTP id a11mr13647302pjs.197.1622971606863;
-        Sun, 06 Jun 2021 02:26:46 -0700 (PDT)
-Received: from ojas ([2405:204:130d:e843:24e:5eab:4be9:d84d])
-        by smtp.gmail.com with ESMTPSA id gn4sm9047526pjb.16.2021.06.06.02.26.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Jun 2021 02:26:46 -0700 (PDT)
-Date:   Sun, 6 Jun 2021 14:56:32 +0530
-From:   Ojaswin Mujoo <ojaswin98@gmail.com>
-To:     Stefan Wahren <stefan.wahren@i2se.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>, nsaenz@kernel.org,
-        gregkh@linuxfoundation.org, arnd@arndb.de, phil@raspberrypi.com,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: staging: vc04_services: Need suggestions on trying to fix sparse
- warning in vchiq_arm.c
-Message-ID: <20210606092601.GA6609@ojas>
-References: <20210601200513.GA10204@ojas>
- <20210601202307.GC1955@kadam>
- <20210602145000.GA3999@ojas>
- <9ba341f7-17fc-980d-a7a0-2293c75dcf92@i2se.com>
- <20210605072249.GA5967@ojas>
- <57aa6e2b-0267-664d-539a-e82000928101@i2se.com>
+  d=sap.com; i=@sap.com; q=dns/txt; s=it-20200722;
+  t=1622971815; x=1654507815;
+  h=from:to:cc:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=4rS88nQyKsUFVjQz3ASVMWmYl8wK7lp7wSjTX5X+COg=;
+  b=HVrHgtlMswNl5F/vxW4cqujkQ758c8VgIsnsCuPuAMjWs3u9aWIiZxab
+   xITge4VRRUUZORn0WIGB4m+D6UzpdMUaGXixDEtWDKW/qT62b4ybn8rUX
+   OgUPd8r7BageservvUpWZExwEEPyApqOux+jB2ZcOA/DooO6XMcZlNzlX
+   PeIG8FShYYRHKNLiIHOo/Eg+5CiVCSWmUxD+vHVqFD3dzveXD6c1u5Hyj
+   DwcTTbPFIX4dBpcbfvGYIHY3flxduAKsncXF3azOUPXqE+Y+ukDuNWxPg
+   A3/yYkJmvmGD5Rwxcc2z2rIZSrDgpEn2Gt1eLa/7WXdRiruJm9iHAtPZK
+   A==;
+IronPort-SDR: F7c+ECQbm/VHw74CglZ2Jl7i8FGeHV3wTeGdWZNj9lYPOChiajqXJ6ptJAV4sgrCc0jsSRwI/H
+ Rva9Vmmsm3UTiP+lkJ/JAqUr8ybLRT5KfDtliTImCzhO53SHFjXgGKnXSNmPR8k5wBpvWLDLoP
+ F6GFm9uOmYDp4T2EOdRVye9zR78TEEjHiJswkq1i5aYxEAtCbJ8LcQODJNybIeDUBwbc6jIxIK
+ gIkdMdP+DwV5aVpZmBlBN5/obEF/bUDKhLcHtore+X6rx7B5UsOkamGtctamJ6CkDPaj5rfWzi
+ jGskN3EiGfRWjJqPvFCd7Ikf
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from smtpgw03.mail.net.sap (HELO smtpgw.sap-ag.de) ([155.56.66.98])
+  by esa10.sap.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA384; 06 Jun 2021 11:30:14 +0200
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (104.47.17.176)
+ by smtpgw03.mail.net.sap (155.56.66.98) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.18; Sun, 6 Jun 2021 11:30:12 +0200
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cjBZ45+K0jjtIQ0ArSFSbIcguH2CnWfoE7MNG/+7jvr73MNrG5TeTj5JItF12lHKuN/MJWTZ7ArEhTIDNi5JKvNt/vzOtry7xfWZufsbdD0dy8E3leT1wJPYd6/NvYOB9eEf7OrNwLSJAWk4yGBH/WeM5nnEr8Z1EZvrEffeyJXJIhxy/Rf9/Bcdc5cHIn/ueFXIIno3o6loOGFBpmGMzH5EfTV26bC1Q+3bpBYX1ohYrgJyOVv26Dk/cMqvyYek8MLyPqMyLZaoWGGAr852DPmK7P81/fIDFM7t69906Z4dTJegHjVo4moBQZAToVoXdVWi00XZI+M+DVNS88NPtA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4rS88nQyKsUFVjQz3ASVMWmYl8wK7lp7wSjTX5X+COg=;
+ b=hk8Pb8TnbRjDEJ4taGEEyUUwst7IeTtbMB+W44YayEi5zfim9ygfuazc4tviRYgDs0bldYhpE4u5H3qrjIiOAH8ftmGMObz2eJRWoYMlg0f7Wv2jkDsRZnqtot/DimedJlfZtdeyQoAAEvJJaFF59acGfWMbBWapXww9cf4i5/gR9nGQ0LsSREB8tK1PVmEenHksL8NJwt3TVSVay1lxfcT6ECbYUy0aqhHrCLbWJfd/Qiw0ymhynFk4ij5SdPIHxH6i3PJ1LZIxOOAj8+8f/xMp8e8tdt+6OAgbAmJpCMOn8D3l2byt/nsU9ZIB77YvFXWccGJS4nGs/RK9gZQ8yQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=sap.com; dmarc=pass action=none header.from=sap.com; dkim=pass
+ header.d=sap.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sap.onmicrosoft.com;
+ s=selector2-sap-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4rS88nQyKsUFVjQz3ASVMWmYl8wK7lp7wSjTX5X+COg=;
+ b=SMAvlRThyIpQbNMd97xk6w+KFfn1h2WWmqEAuVIf/0vO8ZKJudyyzBoodmfENKfjeK3rOmpTW9lCNBENn9ab1k9bYVoU32C6OevzClkAn/rBnTKhcoJdG4K0I5sI3OPm8w4OduWwG020f5AstJTG7YRCC+cdrXzzTq0PFnRRF8w=
+Received: from AM0PR02MB5668.eurprd02.prod.outlook.com (2603:10a6:208:159::21)
+ by AM9PR02MB6817.eurprd02.prod.outlook.com (2603:10a6:20b:2c2::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.23; Sun, 6 Jun
+ 2021 09:30:11 +0000
+Received: from AM0PR02MB5668.eurprd02.prod.outlook.com
+ ([fe80::ecd4:f127:8555:8c4b]) by AM0PR02MB5668.eurprd02.prod.outlook.com
+ ([fe80::ecd4:f127:8555:8c4b%7]) with mapi id 15.20.4195.029; Sun, 6 Jun 2021
+ 09:30:11 +0000
+From:   "Czerwacki, Eial" <eial.czerwacki@sap.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     SAP vSMP Linux Maintainer <linux.vsmp@sap.com>
+Subject: [PATCH 2/2 v2] MAINTAINERS: add entry for vsmp_64.
+Thread-Topic: [PATCH 2/2 v2] MAINTAINERS: add entry for vsmp_64.
+Thread-Index: AddatmxfSmiD9mikRfKGBXKQkGCvXw==
+Date:   Sun, 6 Jun 2021 09:30:11 +0000
+Message-ID: <AM0PR02MB5668CDEAF71950F84BAF8DE481399@AM0PR02MB5668.eurprd02.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [176.231.4.109]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a8e6bc29-0af1-4ba9-f8ea-08d928cdaedb
+x-ms-traffictypediagnostic: AM9PR02MB6817:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM9PR02MB6817A78058DEED7BA3BB5E2081399@AM9PR02MB6817.eurprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1079;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: T+nVSkZdc6wVZJ/uEam+1kUdFTmO7r19MafOzB1wgLHqdjHIjaxvu+76iauHWi/H7yPSbLBddGHUinoQlBvVvBkZmRRFjSgzrgJ1N9XtDj8GAHaX9jyqqEoTdx3fr0MqB6hXVShRv5efbKqAXGPosZaREF8bC+dRVi6R0tD/F1ElOAHUxHP+JXgQR1MaM43inGWirFGRqa9Yu/Ii++5HkOqt8YoEf3j/JJx48bsDGCWrfBQ/WhLMGA9yMk6PD6W8yqr3/HQi3Xhvm6IB8hfasyPAn1jYAjHY0w91uEmY1ngZ0QPkHxn8KwdK+fAmKOXf8XAhxfG/funSqF/TyFZIqU5TyVJBZbSrlYHGSO0p7i/VqtaCJuP0JwV0k1lhJmEr9DiZ0KVx1CXy1GBnNE6HCsvQbFEwQtIstBQ57So//hMGs7adP78XZD4eWpHpvNVJCCf9/09WAF7ghKGAyCSKs68hSRccnRk+xKnFGwPHgt0d+NYgIxxxc/cZGRnErEt9U1msFmcfzCbJckuH1IeO99471w+EeqNSL1cvFZAxgna3Q1UkPxoPrrDxC/4LjVQUHK2r/xte3L5OPRh+oMiZttobnslu18S8D7Gw3yXZkjM=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR02MB5668.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(346002)(376002)(136003)(366004)(26005)(6916009)(4326008)(6506007)(38100700002)(2906002)(186003)(9686003)(86362001)(8676002)(7696005)(66446008)(66476007)(66946007)(5660300002)(71200400001)(33656002)(66556008)(478600001)(76116006)(8936002)(4744005)(316002)(55016002)(122000001)(64756008)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bmlOZzVCd2RYU1Vic1B0YUU5Sms0aExUODNaTnpOZXRTNEZXQnlNNmd5bU5K?=
+ =?utf-8?B?QktBTG94V0N1eit6RTZxRGtYQlgvVEJncHkvR3hjelBhOVg0Z3JXWnhaNFFm?=
+ =?utf-8?B?MXhGNDhqVitSdmtZVFc3RDYwRC9LSWcxTGxNVzhZK1cvalc1bmc0SE5OOU1n?=
+ =?utf-8?B?T0ZUVHY4NzJHRXNIM0ZMcmRYdDJiTGFESTk4VVlOVEVrWjU0UmQvemxMZ3JO?=
+ =?utf-8?B?WnVjNmVWRWZ4aExNcDRnbUp3QUN2K2dwN3YwU0lmRVdyeklFK1RWZWZkMXVQ?=
+ =?utf-8?B?SFVRQjVMUnVUdjVndWMwM0MwckQzVjJqZE1RdVg4NjVJS3gxemV1dnNnUGpD?=
+ =?utf-8?B?bDQxUDdpVzQwcHRqamIrc2ZCK2dxejdlaUtoN1ZiMjBNVks4dVphOTBHVkp0?=
+ =?utf-8?B?aUl2cXRUSGtoNCtaaEZ4UnBLcm1nQ1ZmN2MrNy9GU2kySFl2SDh3UG16blFT?=
+ =?utf-8?B?Tnh6cXI1TUNlT3hRK0wrM0JLaUZObDFWQytHWS9CL0lvSVJkL0NOdlJzM2pW?=
+ =?utf-8?B?S3Z2SEVCU21ZTTRtY1k2MEtHbVVNTHoyWTZXbXlKQThmeFViSHliUlRySlhy?=
+ =?utf-8?B?NVU5M2xlRDFVNFVBYlV3STNBSVBDQnEwMERldmN3ZXJoRCtDMnJ0Y1hiUmc0?=
+ =?utf-8?B?cGt6YklBSldKVkQxeUxYQk9OdVA0WjZucnc5SEFYVGNXeVR2eEVYY2RrNE0z?=
+ =?utf-8?B?dThudXczbFYxUW51N2YwYnFVN1VFZEVmTTZUZE5xazFHbDFJdHNPS3YzMmQ0?=
+ =?utf-8?B?UUpWZkhGTEFlOUpUTkRSM3lwcEc2NDZqNWhJYlE3djJWUlZZWGM4ODNheDR1?=
+ =?utf-8?B?eVh4Y2VGdHdNeEIyR21ib1pDRDg0WFFUMFJNMmJVWnZPNUJON2FvZmhFbW0v?=
+ =?utf-8?B?SWhyS3N1SHNRMUNZcHU4eXJSaDJkMGZTb1NMcVZudGhTNnVySVBjeXRXWkNY?=
+ =?utf-8?B?TGdMUUlad01WVkZ4ZlFkaFBya21sZEloaHZqMnFhN3BKYUlyZUxweWY1aGNO?=
+ =?utf-8?B?Nm8rZXcwM0w1UkdkZ0E3ZW1Ob0NsY3p1a1hIL2htc3kvYm1TMFFrUDdldzN5?=
+ =?utf-8?B?cGhFRHRNUUZEcHduNW04YkFqQkQ3TjgxRmttczFlN3NXUUUxU3hKSXJXZm5U?=
+ =?utf-8?B?N1RUcjR2aFFBSDFieXdTVWRLcTVBV2Jrd0V3OHlhakVTSDE4VitvZzl1bWpQ?=
+ =?utf-8?B?emhQbWgzZU5PR3VFK0xOSjNDSnhveGErU0Y1czZSVk5ZNnk1RWJVaXhUeFRR?=
+ =?utf-8?B?OWdPNnlLZW5CTENuUURCeUFuQTB2OExHR2g1R3pQeXlCbmYyaGVhcHcxTGtS?=
+ =?utf-8?B?ZFhNQ0FQVHRUSGgyRDJTbHd4aVR6bzlxaGFscFJ2QmsyRjE2WjJ6d0VBTVdE?=
+ =?utf-8?B?K2ovZXo5ZEZsbmt4QkFqY2poS2ZLck4vZEFMVUZKb2xyMGZQRTU5cm9qR251?=
+ =?utf-8?B?TE4vNkQ1Mkc5YVRjTnEwYTRMVUlTTzIxMkZnaHIyQkFjZ3FTRFBYdkJPaWlt?=
+ =?utf-8?B?ZktJTDNoMW9pdVd1K2JYQkl1SWVNdHJ0UjFDVURSSzNaM0RXVlU2aWRWYWdI?=
+ =?utf-8?B?NElZQkhZeU0xR0g2RTI1WnNGVEYxc1RBOXhQemZJcGZBcG1ubmp1cEFBNktE?=
+ =?utf-8?B?cFhpNjU4L2pvMnlHVVAvdUdDNDcyTXpTTEo0RHZxYkNWM0V6ampoWDFRRnFN?=
+ =?utf-8?B?OGxqcTdjeDVHUW9rb2xkaDZlR2lHM1MyK0VRTHYvejNjb0RSTENBb1E4ZGVs?=
+ =?utf-8?Q?DHwoqnzo0e7qSHgtCJX6/WOJWWqyLSCgbd6Z7ld?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <57aa6e2b-0267-664d-539a-e82000928101@i2se.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR02MB5668.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a8e6bc29-0af1-4ba9-f8ea-08d928cdaedb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jun 2021 09:30:11.4995
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 42f7676c-f455-423c-82f6-dc2d99791af7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Cwoi/Gd6fDPJ5AQcOt1EUnNmdU0/jmkj0XI70syMxdDtmnMHc7xt+d/uE4VnlqBiJpJY/ebx6gl1SggchahvFA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR02MB6817
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 05, 2021 at 10:41:17AM +0200, Stefan Wahren wrote:
-> Hi Ojaswin,
-> 
-> Am 05.06.21 um 09:23 schrieb Ojaswin Mujoo:
-> > On Fri, Jun 04, 2021 at 08:13:06AM +0200, Stefan Wahren wrote:
-> >> Hi Ojaswin,
-> >>
-> >> Am 02.06.21 um 16:50 schrieb Ojaswin Mujoo:
-> >>> On Tue, Jun 01, 2021 at 11:23:07PM +0300, Dan Carpenter wrote:
-> >>>> The problem is not the Sparse warning, the problem is that this code is
-> >>>> a mess.  It used to very clearly buggy and I reported the bug.  I think
-> >>>> Arnd found the bug again independently and fixed it.
-> >>>>
-> >>>> A couple weeks ago Al Viro looked at this code.  Here is his write up:
-> >>>>
-> >>>> https://www.spinics.net/lists/kernel/msg3952745.html
-> >>>>
-> >>>> It shouldn't take Al Viro dozens of pages of detailed analysis to try
-> >>>> figure out if the code is safe or not.  Your idea silences the warning
-> >>>> but would make the code even more subtle and complicated.
-> >>>>
-> >>>> The right thing to do is to re-write the code to be simpler.
-> >>>>
-> >>>> regards,
-> >>>> dan carpenter
-> >>>>
-> >>> Thank you for the prompt reply and the link, it was very insightful. You
-> >>> are right, I was definitely going about this the wrong way and missing
-> >>> the larger picture. I'll spend some time trying to understand this
-> >>> codebase as I think that'd be a good start to understand how stuff works in
-> >>> the kernel (even though some of the things in this driver are anti patterns)
-> >>> and hopefully get some ideas on ways to clean this up.
-> >>>
-> >>> Anyways, thanks again for the help, cheers!
-> >> thanks for your interest in cleaning this up. Yes, it's not clear which
-> >> points on the TODO list are the lower hanging fruits. In case you don't
-> >> want to fix checkpatch issues, maybe you can look at points 8, 9, 10, 12
-> >> and 13. Most of them require testing with a Raspberry Pi, but feel free
-> >> to ask if you have problems with it.
-> >>
-> >> Regards
-> >> Stefan
-> >>
-> > Got it, Task 10 (cdev to its own file) seems like a pretty good task to
-> > get started with. I'm planning to buy a Rpi 4 so I think I can run tests
-> > on that. 
-> 
-> okay, but the AFAIK the vchiq driver in the mainline kernel doesn't work
-> with Rpi 4 yet. The Raspberry Pi 3 B Plus is currently the recommend
-> devel platform, so you can test 32 and 64 bit kernel.
-> 
-> Best regards
-Hey Stefan,
-
-Ahh got it. sure I can get a 3B+ instead, thanks for the heads up.
-> 
-> >
-> > Thank you so much for the help, I'll get back incase I face any issues down 
-> > the line.
-> >
-> > Regards,
-> > Ojaswin
-> >
-> >>> Ojaswin
-> >>>
-> >>> _______________________________________________
-> >>> linux-arm-kernel mailing list
-> >>> linux-arm-kernel@lists.infradead.org
-> >>> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> > _______________________________________________
-> > linux-arm-kernel mailing list
-> > linux-arm-kernel@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
-
-Regards,
-Ojaswin
+YWRkIG1pc3NpbmcgZW50cnkgZm9yIHZzbXBfNjQuYw0KDQpTaWduZWQtb2ZmLWJ5OiBFaWFsIEN6
+ZXJ3YWNraSA8ZWlhbC5jemVyd2Fja2lAc2FwLmNvbT4NCi0tLQ0KIE1BSU5UQUlORVJTIHwgNiAr
+KysrKysNCiAxIGZpbGUgY2hhbmdlZCwgNiBpbnNlcnRpb25zKCspDQoNCnYxIC0+IHYyOg0KCWZp
+eCBzZWNvbmQgbWFpbnRhaW5lciBsaXN0IGVtYWlsIGFkZHJlc3MNCg0KZGlmZiAtLWdpdCBhL01B
+SU5UQUlORVJTIGIvTUFJTlRBSU5FUlMNCmluZGV4IDk0ODcwNjE3NGZhZS4uMjliYzFlYjdmNjdk
+IDEwMDY0NA0KLS0tIGEvTUFJTlRBSU5FUlMNCisrKyBiL01BSU5UQUlORVJTDQpAQCAtMTk1ODcs
+NiArMTk1ODcsMTIgQEAgRjogICAgIERvY3VtZW50YXRpb24vY29yZS1hcGkvcHJpbnRrLWZvcm1h
+dHMucnN0DQogRjogICAgIGxpYi90ZXN0X3ByaW50Zi5jDQogRjogICAgIGxpYi92c3ByaW50Zi5j
+DQoNCitWU01QDQorTTogICAgIEVpYWwgQ3plcndhY2tpIDxlaWFsLmN6ZXJ3YWNraUBzYXAuY29t
+Pg0KK006ICAgICBMaW51eC52c21wQHNhcC5jb20NCitTOiAgICAgTWFpbnRhaW5lZA0KK0Y6ICAg
+ICBhcmNoL3g4Ni9rZXJuZWwvdnNtcF82NC5jDQorDQogVlQxMjExIEhBUkRXQVJFIE1PTklUT1Ig
+RFJJVkVSDQogTTogICAgIEp1ZXJnIEhhZWZsaWdlciA8anVlcmdoQGdtYWlsLmNvbT4NCiBMOiAg
+ICAgbGludXgtaHdtb25Admdlci5rZXJuZWwub3JnDQotLQ0KMi4zMS4xDQo=
