@@ -2,47 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8DDF39CF18
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 14:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE98539CF15
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 14:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbhFFMqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 08:46:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230161AbhFFMpk (ORCPT
+        id S230297AbhFFMpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 08:45:53 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:35032 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230128AbhFFMpj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 08:45:40 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70522C061766
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 05:43:50 -0700 (PDT)
+        Sun, 6 Jun 2021 08:45:39 -0400
 Date:   Sun, 06 Jun 2021 12:43:47 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1622983428;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=0i0+dQ/wIIIh2wHdFD8iyz7N0TIwZ0pZsKx27Hp5/24=;
-        b=EkPSQE8Fc0x0+I3FdgZIDXYwRQ97ySNc6devKu18zQ2vRWefKFLlikXV6NQhMcTDKB3qiS
-        bSbXmegnQ4RTq6doqHHBaUhMKvMLB4aH1js33j5hsJINEDW4C0NetVqHJJ633ztk5p4Ceg
-        XW9OsmAc7EbN8RZ/XtRSBbaoop7mcI4HPy0kFgS1KIU8M4u6CXXRjmUOgLgvCZvGre82e1
-        JTAD3Zx1Hd/ATscWuL5l92JTQOURyKxr4u26LqA48xSZazSZYmjSCggYyyCbbobt3yZWG1
-        DsXtK4HihcwlYwW0dNezShwPcctCdMZYHgd+n0d5QJZ6TF8M0o/+pHXqrc8Dmg==
+        bh=a/qey5VSXHGn6QXpxSaX7QbdEKKNYhU547eQ7paDc5Q=;
+        b=07kHlz1C3ajL07wLjKwfqO5maYSr2ZtYAzYieRe4gIRaW8WqStZoEwuNvwfroBCEhQwHqV
+        3yaEZww4CO4/lNWA6Djam6CRA8ts1J21fDjExKUnfr9/9rvlZOMbCWBfEjK3+nlUYN0mwu
+        pVbSTdFbhI85zDZG1m4CbdKBGcCicC1pePyr9q8mVtUNA6RkCytgmbdoTWf+MM7Rv/A/mh
+        8xTVEzneR9UK1D5LXk16iVuPbJ6S70BOidCCHDPYZGBpY7V1c30BnM4vkeNZ8qvxxGWVzR
+        ThvJMx4KkLtfompioKF1FeAAAW+bCODOTlXAm7qwq8MzsQ9UgzQSREcbyTTTng==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1622983428;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=0i0+dQ/wIIIh2wHdFD8iyz7N0TIwZ0pZsKx27Hp5/24=;
-        b=+KFa3V3T/t69DS6ICsnTGkLeHZXGkFyiQD/5eoN/C9KmhnG4frtMyik225rYBcIa/6pefo
-        4MEbH7aOYYxUrhBw==
+        bh=a/qey5VSXHGn6QXpxSaX7QbdEKKNYhU547eQ7paDc5Q=;
+        b=3o+Jj9HxJGnXjaa8AuC/6im9wgTPazahz8e9gvH7D8NMQx91o4H1jS5kBbMfZYAcXKgJIS
+        ma8ORjTNycdV8JAQ==
 From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] irqdomain: Protect the linear revmap with RCU
+Subject: [irqchip: irq/irqchip-next] irqdomain: Introduce irq_resolve_mapping()
 Cc:     Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
 MIME-Version: 1.0
-Message-ID: <162298342768.29796.9241794621138427749.tip-bot2@tip-bot2>
+Message-ID: <162298342725.29796.5624405969623096364.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -53,127 +50,138 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     e0f5b5fa10f5bf9cfa547dce21c92dd323daf584
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/e0f5b5fa10f5bf9cfa547dce21c92dd323daf584
+Commit-ID:     c24b101789faab2e325b6d48171524f5337a72cf
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/c24b101789faab2e325b6d48171524f5337a72cf
 Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Mon, 05 Apr 2021 12:57:27 +01:00
+AuthorDate:    Tue, 04 May 2021 14:00:13 +01:00
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Wed, 02 Jun 2021 14:34:49 +01:00
+CommitterDate: Wed, 02 Jun 2021 17:35:36 +01:00
 
-irqdomain: Protect the linear revmap with RCU
+irqdomain: Introduce irq_resolve_mapping()
 
-It is pretty odd that the radix tree uses RCU while the linear
-portion doesn't, leading to potential surprises for the users,
-depending on how the irqdomain has been created.
+Rework irq_find_mapping() to return an both an irq_desc pointer,
+optionally the virtual irq number, and rename the result to
+__irq_resolve_mapping(). a new helper called irq_resolve_mapping()
+is provided for code that doesn't need the virtual irq number.
 
-Fix this by moving the update of the linear revmap under
-the mutex, and the lookup under the RCU read-side lock.
-
-The mutex name is updated to reflect that it doesn't only
-cover the radix-tree anymore.
+irq_find_mapping() is also rewritten in terms of __irq_resolve_mapping().
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- include/linux/irqdomain.h |  5 +++--
- kernel/irq/irqdomain.c    | 38 ++++++++++++++++++--------------------
- 2 files changed, 21 insertions(+), 22 deletions(-)
+ include/linux/irqdomain.h | 25 ++++++++++++++++++++++---
+ kernel/irq/irqdomain.c    | 28 ++++++++++++++++++++--------
+ 2 files changed, 42 insertions(+), 11 deletions(-)
 
 diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
-index 340cc04..2b696c9 100644
+index 2b696c9..5b7de06 100644
 --- a/include/linux/irqdomain.h
 +++ b/include/linux/irqdomain.h
-@@ -151,6 +151,7 @@ struct irq_domain_chip_generic;
-  * Revmap data, used internally by irq_domain
-  * @revmap_size: Size of the linear map table @revmap[]
-  * @revmap_tree: Radix map tree for hwirqs that don't fit in the linear map
-+ * @revmap_mutex: Lock for the revmap
-  * @revmap: Linear table of irq_data pointers
-  */
- struct irq_domain {
-@@ -173,8 +174,8 @@ struct irq_domain {
- 	irq_hw_number_t hwirq_max;
- 	unsigned int revmap_size;
- 	struct radix_tree_root revmap_tree;
--	struct mutex revmap_tree_mutex;
--	struct irq_data *revmap[];
-+	struct mutex revmap_mutex;
-+	struct irq_data __rcu *revmap[];
- };
+@@ -31,7 +31,8 @@
+ #define _LINUX_IRQDOMAIN_H
  
- /* Irq domain flags */
+ #include <linux/types.h>
+-#include <linux/irqhandler.h>
++#include <linux/irq.h>
++#include <linux/irqdesc.h>
+ #include <linux/of.h>
+ #include <linux/mutex.h>
+ #include <linux/radix-tree.h>
+@@ -401,13 +402,31 @@ static inline unsigned int irq_create_mapping(struct irq_domain *host,
+ 	return irq_create_mapping_affinity(host, hwirq, NULL);
+ }
+ 
++extern struct irq_desc *__irq_resolve_mapping(struct irq_domain *domain,
++					      irq_hw_number_t hwirq,
++					      unsigned int *irq);
++
++static inline struct irq_desc *irq_resolve_mapping(struct irq_domain *domain,
++						   irq_hw_number_t hwirq)
++{
++	return __irq_resolve_mapping(domain, hwirq, NULL);
++}
++
+ /**
+  * irq_find_mapping() - Find a linux irq from a hw irq number.
+  * @domain: domain owning this hardware interrupt
+  * @hwirq: hardware irq number in that domain space
+  */
+-extern unsigned int irq_find_mapping(struct irq_domain *host,
+-				     irq_hw_number_t hwirq);
++static inline unsigned int irq_find_mapping(struct irq_domain *domain,
++					    irq_hw_number_t hwirq)
++{
++	unsigned int irq;
++
++	if (__irq_resolve_mapping(domain, hwirq, &irq))
++		return irq;
++
++	return 0;
++}
+ 
+ static inline unsigned int irq_linear_revmap(struct irq_domain *domain,
+ 					     irq_hw_number_t hwirq)
 diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-index ed2ffff..8e55bb8 100644
+index 8e55bb8..012d6bf 100644
 --- a/kernel/irq/irqdomain.c
 +++ b/kernel/irq/irqdomain.c
-@@ -213,7 +213,7 @@ struct irq_domain *__irq_domain_add(struct fwnode_handle *fwnode, int size,
- 
- 	/* Fill structure */
- 	INIT_RADIX_TREE(&domain->revmap_tree, GFP_KERNEL);
--	mutex_init(&domain->revmap_tree_mutex);
-+	mutex_init(&domain->revmap_mutex);
- 	domain->ops = ops;
- 	domain->host_data = host_data;
- 	domain->hwirq_max = hwirq_max;
-@@ -505,13 +505,12 @@ static void irq_domain_set_mapping(struct irq_domain *domain,
- 	if (irq_domain_is_nomap(domain))
- 		return;
- 
--	if (hwirq < domain->revmap_size) {
--		domain->revmap[hwirq] = irq_data;
--	} else {
--		mutex_lock(&domain->revmap_tree_mutex);
-+	mutex_lock(&domain->revmap_mutex);
-+	if (hwirq < domain->revmap_size)
-+		rcu_assign_pointer(domain->revmap[hwirq], irq_data);
-+	else
- 		radix_tree_insert(&domain->revmap_tree, hwirq, irq_data);
--		mutex_unlock(&domain->revmap_tree_mutex);
--	}
-+	mutex_unlock(&domain->revmap_mutex);
- }
- 
- static void irq_domain_clear_mapping(struct irq_domain *domain,
-@@ -902,12 +901,12 @@ unsigned int irq_find_mapping(struct irq_domain *domain,
- 		return 0;
- 	}
- 
-+	rcu_read_lock();
- 	/* Check if the hwirq is in the linear revmap. */
- 	if (hwirq < domain->revmap_size)
--		return domain->revmap[hwirq]->irq;
--
--	rcu_read_lock();
--	data = radix_tree_lookup(&domain->revmap_tree, hwirq);
-+		data = rcu_dereference(domain->revmap[hwirq]);
-+	else
-+		data = radix_tree_lookup(&domain->revmap_tree, hwirq);
- 	rcu_read_unlock();
- 	return data ? data->irq : 0;
- }
-@@ -1490,18 +1489,17 @@ static void irq_domain_fix_revmap(struct irq_data *d)
- 	if (irq_domain_is_nomap(d->domain))
- 		return;
- 
-+	/* Fix up the revmap. */
-+	mutex_lock(&d->domain->revmap_mutex);
- 	if (d->hwirq < d->domain->revmap_size) {
- 		/* Not using radix tree */
--		d->domain->revmap[d->hwirq] = d;
--		return;
-+		rcu_assign_pointer(d->domain->revmap[d->hwirq], d);
-+	} else {
-+		slot = radix_tree_lookup_slot(&d->domain->revmap_tree, d->hwirq);
-+		if (slot)
-+			radix_tree_replace_slot(&d->domain->revmap_tree, slot, d);
- 	}
--
--	/* Fix up the revmap. */
--	mutex_lock(&d->domain->revmap_tree_mutex);
--	slot = radix_tree_lookup_slot(&d->domain->revmap_tree, d->hwirq);
--	if (slot)
--		radix_tree_replace_slot(&d->domain->revmap_tree, slot, d);
--	mutex_unlock(&d->domain->revmap_tree_mutex);
-+	mutex_unlock(&d->domain->revmap_mutex);
- }
+@@ -876,29 +876,34 @@ void irq_dispose_mapping(unsigned int virq)
+ EXPORT_SYMBOL_GPL(irq_dispose_mapping);
  
  /**
+- * irq_find_mapping() - Find a linux irq from a hw irq number.
++ * irq_resolve_mapping() - Find a linux irq from a hw irq number.
+  * @domain: domain owning this hardware interrupt
+  * @hwirq: hardware irq number in that domain space
++ * @irq: optional pointer to return the Linux irq if required
++ *
++ * Returns the interrupt descriptor.
+  */
+-unsigned int irq_find_mapping(struct irq_domain *domain,
+-			      irq_hw_number_t hwirq)
++struct irq_desc *__irq_resolve_mapping(struct irq_domain *domain,
++				       irq_hw_number_t hwirq,
++				       unsigned int *irq)
+ {
++	struct irq_desc *desc = NULL;
+ 	struct irq_data *data;
+ 
+ 	/* Look for default domain if necessary */
+ 	if (domain == NULL)
+ 		domain = irq_default_domain;
+ 	if (domain == NULL)
+-		return 0;
++		return desc;
+ 
+ 	if (irq_domain_is_nomap(domain)) {
+ 		if (hwirq < domain->revmap_size) {
+ 			data = irq_domain_get_irq_data(domain, hwirq);
+ 			if (data && data->hwirq == hwirq)
+-				return hwirq;
++				desc = irq_data_to_desc(data);
+ 		}
+ 
+-		return 0;
++		return desc;
+ 	}
+ 
+ 	rcu_read_lock();
+@@ -907,10 +912,17 @@ unsigned int irq_find_mapping(struct irq_domain *domain,
+ 		data = rcu_dereference(domain->revmap[hwirq]);
+ 	else
+ 		data = radix_tree_lookup(&domain->revmap_tree, hwirq);
++
++	if (likely(data)) {
++		desc = irq_data_to_desc(data);
++		if (irq)
++			*irq = data->irq;
++	}
++
+ 	rcu_read_unlock();
+-	return data ? data->irq : 0;
++	return desc;
+ }
+-EXPORT_SYMBOL_GPL(irq_find_mapping);
++EXPORT_SYMBOL_GPL(__irq_resolve_mapping);
+ 
+ /**
+  * irq_domain_xlate_onecell() - Generic xlate for direct one cell bindings
