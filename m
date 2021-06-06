@@ -2,240 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC8639D19E
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 23:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FEE939D19F
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 23:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230366AbhFFVZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 17:25:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54442 "EHLO
+        id S230375AbhFFVZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 17:25:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230281AbhFFVZA (ORCPT
+        with ESMTP id S230281AbhFFVZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 17:25:00 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AEBFC061767
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 14:23:10 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lq0Ea-0003hT-Qp; Sun, 06 Jun 2021 23:23:04 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lq0EX-000516-Vw; Sun, 06 Jun 2021 23:23:01 +0200
-Date:   Sun, 6 Jun 2021 23:22:58 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Jitao Shi <jitao.shi@mediatek.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pwm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        srv_heupstream@mediatek.com, yingjoe.chen@mediatek.com,
-        eddie.huang@mediatek.com, cawa.cheng@mediatek.com,
-        bibby.hsieh@mediatek.com, ck.hu@mediatek.com, stonea168@163.com,
-        huijuan.xie@mediatek.com
-Subject: Re: [PATCH v4 3/3] pwm: mtk-disp: Switch to atomic API
-Message-ID: <20210606212258.coki62b5vl7iaiyd@pengutronix.de>
-References: <20210603100531.161901-1-jitao.shi@mediatek.com>
- <20210603100531.161901-4-jitao.shi@mediatek.com>
+        Sun, 6 Jun 2021 17:25:44 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39A78C061766
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 14:23:41 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id e2so19308803ljk.4
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 14:23:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8mJNIfuVAxCNYBc6IddSNVh1jF7eplIdFKdsjIJGwSM=;
+        b=XGTum73bgSDtdP2ynbXodGST1CTGtY4OKprhQtHIOXQ8OyH4WDH4EnXS4tB7l2ilSt
+         jvg8qp1e4dcWkf6nuX+p5XbePG8fbWmSRcHJR871kjPN6EU1xxL1h1RkaYa8SED6StFV
+         ovR/2eucfY7l96YpY342cNt/+E5PBIwJuM+tc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8mJNIfuVAxCNYBc6IddSNVh1jF7eplIdFKdsjIJGwSM=;
+        b=Mu3IRazPO7kjuq84siQ4O2lsyl6uG5Ejy9XfUlinPgyDgCchaPx1OAATkcit5Cl/Vr
+         /GZ/GrWhdGQlGPZrWulZLjZgn3Jm4CtqMQM4Uiy1L3x7VujKeZhUnLvCVw16wuXW9Zjp
+         IAkPwtX8QNA7V11DGjf8dJ2FTju2r3iwCoTJpXPG1knJZUrqbE23gWprshSf/2bLtnVK
+         frq20bFek6p74kNN0vQ5gJ3E7BmXxVbmJkuQxVP5YAtinzx4gbZCellXdEo7l9Ndcwbd
+         YGtQskh/aISJziNn59gq4fu5ixgSCy5GupfB8Mg4Gi3lX6O1glZqoKzXP+Nzty9t8yEp
+         1/Hg==
+X-Gm-Message-State: AOAM532/FlHzm0JM9LG9a6fMN+1RLYD/SbvCXg+uS7rPtNWF7XB29g0Z
+        /11XqFXOCs9zXUY2C4aqomGXzsE9AXoVmXNIR+c=
+X-Google-Smtp-Source: ABdhPJwQzDLjTUdQ5O5IdX5Jkng42+dx8Ou0qUeUXgP2BlXK3lHTE7NveBss7Tln4El7Yl1qev6PLA==
+X-Received: by 2002:a2e:bf10:: with SMTP id c16mr12710580ljr.289.1623014618237;
+        Sun, 06 Jun 2021 14:23:38 -0700 (PDT)
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
+        by smtp.gmail.com with ESMTPSA id k8sm1259503lfe.89.2021.06.06.14.23.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 06 Jun 2021 14:23:37 -0700 (PDT)
+Received: by mail-lj1-f178.google.com with SMTP id d2so15112581ljj.11
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 14:23:37 -0700 (PDT)
+X-Received: by 2002:a2e:c52:: with SMTP id o18mr12142201ljd.411.1623014617608;
+ Sun, 06 Jun 2021 14:23:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="przpmhvmw72tg2dd"
-Content-Disposition: inline
-In-Reply-To: <20210603100531.161901-4-jitao.shi@mediatek.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <YLx/iA8xeRzwhXJn@zn.tnic> <CAHk-=wjXKsJVk+LPiOSiBACchPJLne7O+U+jmvw8CaLBYn-3=Q@mail.gmail.com>
+ <YL029aQZb09G3ShY@linux.ibm.com>
+In-Reply-To: <YL029aQZb09G3ShY@linux.ibm.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 6 Jun 2021 14:23:21 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg7+-Q-jvrwQmyZtQ3pirAUcAQmvUpiLu=0nJv8NObntg@mail.gmail.com>
+Message-ID: <CAHk-=wg7+-Q-jvrwQmyZtQ3pirAUcAQmvUpiLu=0nJv8NObntg@mail.gmail.com>
+Subject: Re: [GIT PULL] x86/urgent for v5.13-rc5
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Cc:     Borislav Petkov <bp@suse.de>, x86-ml <x86@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Jun 6, 2021 at 1:58 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
+>
+> A while ago hpa said:
+>
+>         As far as I know, Windows 7 actually reserves all memory below
+>         1 MiB to avoid BIOS bugs.
+>
+> (https://bugzilla.kernel.org/show_bug.cgi?id=16661#c2)
 
---przpmhvmw72tg2dd
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It would be good to have that checked somehow.
 
-Hello,
+I don't think this matters on any machine with gigs of RAM, but I do
+wonder about the people who want to do small configurations. Maybe
+they've given up on x86?
 
-On Thu, Jun 03, 2021 at 06:05:31PM +0800, Jitao Shi wrote:
-> Convert the legacy api to atomic API.
->=20
-> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
-> ---
->  drivers/pwm/pwm-mtk-disp.c | 78 ++++++++++++++++++++++++++++----------
->  1 file changed, 59 insertions(+), 19 deletions(-)
->=20
-> diff --git a/drivers/pwm/pwm-mtk-disp.c b/drivers/pwm/pwm-mtk-disp.c
-> index b87b3c00a685..d77348d0527c 100644
-> --- a/drivers/pwm/pwm-mtk-disp.c
-> +++ b/drivers/pwm/pwm-mtk-disp.c
-> @@ -67,8 +67,8 @@ static void mtk_disp_pwm_update_bits(struct mtk_disp_pw=
-m *mdp, u32 offset,
->  	writel(value, address);
->  }
-> =20
-> -static int mtk_disp_pwm_config(struct pwm_chip *chip, struct pwm_device =
-*pwm,
-> -			       int duty_ns, int period_ns)
-> +static int mtk_disp_pwm_config(struct pwm_chip *chip,
-> +			       const struct pwm_state *state)
->  {
->  	struct mtk_disp_pwm *mdp =3D to_mtk_disp_pwm(chip);
->  	u32 clk_div, period, high_width, value;
-> @@ -102,7 +102,7 @@ static int mtk_disp_pwm_config(struct pwm_chip *chip,=
- struct pwm_device *pwm,
->  	 * high_width =3D (PWM_CLK_RATE * duty_ns) / (10^9 * (clk_div + 1))
->  	 */
->  	rate =3D clk_get_rate(mdp->clk_main);
-> -	clk_div =3D div_u64(rate * period_ns, NSEC_PER_SEC) >>
-> +	clk_div =3D div_u64(rate * state->period, NSEC_PER_SEC) >>
->  			  PWM_PERIOD_BIT_WIDTH;
->  	if (clk_div > PWM_CLKDIV_MAX) {
->  		dev_err(chip->dev, "clock rate is too high: rate =3D %d Hz\n",
-> @@ -114,11 +114,11 @@ static int mtk_disp_pwm_config(struct pwm_chip *chi=
-p, struct pwm_device *pwm,
->  		return -EINVAL;
->  	}
->  	div =3D NSEC_PER_SEC * (clk_div + 1);
-> -	period =3D div64_u64(rate * period_ns, div);
-> +	period =3D div64_u64(rate * state->period, div);
->  	if (period > 0)
->  		period--;
-> =20
-> -	high_width =3D div64_u64(rate * duty_ns, div);
-> +	high_width =3D div64_u64(rate * state->duty_cycle, div);
->  	value =3D period | (high_width << PWM_HIGH_WIDTH_SHIFT);
-> =20
->  	mtk_disp_pwm_update_bits(mdp, mdp->data->con0,
-> @@ -144,39 +144,79 @@ static int mtk_disp_pwm_config(struct pwm_chip *chi=
-p, struct pwm_device *pwm,
->  					 mdp->data->con0_sel);
->  	}
-> =20
-> +	mtk_disp_pwm_update_bits(mdp, DISP_PWM_EN, mdp->data->enable_mask,
-> +				 mdp->data->enable_mask);
-> +	mdp->enabled =3D true;
-> +
->  	return 0;
->  }
-> =20
-> -static int mtk_disp_pwm_enable(struct pwm_chip *chip, struct pwm_device =
-*pwm)
-> +static int mtk_disp_pwm_apply(struct pwm_chip *chip, struct pwm_device *=
-pwm,
-> +			      const struct pwm_state *state)
->  {
->  	struct mtk_disp_pwm *mdp =3D to_mtk_disp_pwm(chip);
-> -	int err;
-> =20
-> -	mtk_disp_pwm_update_bits(mdp, DISP_PWM_EN, mdp->data->enable_mask,
-> -				 mdp->data->enable_mask);
-> -	mdp->enabled =3D true;
-> +	if (!state->enabled) {
-> +		mtk_disp_pwm_update_bits(mdp, DISP_PWM_EN, mdp->data->enable_mask,
-> +					 0x0);
-> =20
-> -	return 0;
-> +		if (mdp->enabled) {
-> +			clk_disable_unprepare(mdp->clk_mm);
-> +			clk_disable_unprepare(mdp->clk_main);
-> +		}
-> +		mdp->enabled =3D false;
-> +		return 0;
-> +	}
-> +
-> +	return mtk_disp_pwm_config(chip, state);
+It also eats into that somewhat precious legacy DMA resource and eats
+up a fair chunk of that. Again, not an issue on modern hardware, but
+..
 
-Please unroll this function call. Having the old name is irritating.
+> I believe that reserving everything below 1M after the real mode trampoline
+> is allocated reduces amount of hidden dependencies and makes things simpler
+> overall.
 
->  }
-> =20
-> -static void mtk_disp_pwm_disable(struct pwm_chip *chip, struct pwm_devic=
-e *pwm)
-> +static void mtk_disp_pwm_get_state(struct pwm_chip *chip,
-> +				   struct pwm_device *pwm,
-> +				   struct pwm_state *state)
+Simpler, perhaps, and _I_ personally don't care about about 512kB of
+memory any more on any machines I have, but ..
 
-Adding .get_state() is great and warrants a separate patch.
-
->  {
->  	struct mtk_disp_pwm *mdp =3D to_mtk_disp_pwm(chip);
-> +	u32 clk_div, period, high_width, con0, con1;
-> +	u64 rate;
-> +	int err;
-> =20
-> -	mtk_disp_pwm_update_bits(mdp, DISP_PWM_EN, mdp->data->enable_mask,
-> -				 0x0);
-> +	if (!mdp->enabled) {
-> +		err =3D clk_prepare_enable(mdp->clk_main);
-> +		if (err < 0) {
-> +			dev_err(chip->dev, "Can't enable mdp->clk_main: %d\n", err);
-> +			return;
-> +		}
-> +		err =3D clk_prepare_enable(mdp->clk_mm);
-> +		if (err < 0) {
-> +			dev_err(chip->dev, "Can't enable mdp->clk_mm: %d\n", err);
-> +			clk_disable_unprepare(mdp->clk_main);
-> +			return;
-> +		}
-> +	}
-> +
-> +	rate =3D clk_get_rate(mdp->clk_main);
-> =20
-> -	if (mdp->enabled) {
-> +	con0 =3D readl(mdp->base + mdp->data->con0);
-> +	con1 =3D readl(mdp->base + mdp->data->con1);
-> +
-> +	state->enabled =3D !!(con0 & BIT(0));
-> +
-> +	clk_div =3D (con0 & PWM_CLKDIV_MASK) >> PWM_CLKDIV_SHIFT;
-
-clk_div =3D FIELD_GET(PWM_CLKDIV_MASK, con0);
-
-> +	period =3D con1 & PWM_PERIOD_MASK;
-> +	state->period =3D div_u64(period * (clk_div + 1) * NSEC_PER_SEC, rate);
-
-Can this multiplication overflow? Note this is a 32bit multiplication
-only. As .apply() uses round-down in the divisions (which is good)
-please round up there to get idempotency between .get_state() and
-=2Eapply().
-
-> +	high_width =3D (con1 & PWM_HIGH_WIDTH_MASK) >> PWM_HIGH_WIDTH_SHIFT;
-> +	state->duty_cycle =3D div_u64(high_width * (clk_div + 1) * NSEC_PER_SEC,
-> +				    rate);
-> +
-> +	if (!mdp->enabled) {
->  		clk_disable_unprepare(mdp->clk_mm);
->  		clk_disable_unprepare(mdp->clk_main);
->  	}
-> -	mdp->enabled =3D false;
->  }
-
-If my review comments contain too little details for you to understand,
-please feel free to ask. I'm willing to explain in more detail.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---przpmhvmw72tg2dd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmC9PK4ACgkQwfwUeK3K
-7Ak6DQgAjfNYrYLdUjYDx08rDdM4o8ULtRVpqZGT9e/ZRBdfXt8dqv57cerwo5Gq
-pOg+jjXsjx/pgt8kwwP/fKTnbl/yZYUwWIP/pwO0mOGRCGfvOX3SuPj9CgmR9U6b
-3tDygrSlzcekbdHuDOfFZZvieQs3c/WAlFqlAKcZiyWN3SeO6tSjOI1MwUkR6pJl
-/i6j+UTZQ1RKZFERv9YlZYbpJXSFZBMHRL5+xdS3R3e1wrK/D2js+FqlpFbfagAz
-RUPM+4AWFpw5ZfyrYSFX9TW2mhjIh5SuoaZCRyCAoHBJzbG+pUne1LK4VNxxUPoI
-M7IltmOgdefxGum8HhCDD7dFXce3+w==
-=8ycI
------END PGP SIGNATURE-----
-
---przpmhvmw72tg2dd--
+          Linus
