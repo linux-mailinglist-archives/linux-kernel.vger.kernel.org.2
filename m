@@ -2,1341 +2,1143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ACC039CF0F
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 14:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E4CC39CF14
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 14:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbhFFMmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 08:42:19 -0400
-Received: from pb-smtp1.pobox.com ([64.147.108.70]:53531 "EHLO
-        pb-smtp1.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbhFFMmQ (ORCPT
+        id S230284AbhFFMpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 08:45:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230108AbhFFMpi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 08:42:16 -0400
-Received: from pb-smtp1.pobox.com (unknown [127.0.0.1])
-        by pb-smtp1.pobox.com (Postfix) with ESMTP id 78B1CC5E83;
-        Sun,  6 Jun 2021 08:40:26 -0400 (EDT)
-        (envelope-from junio@pobox.com)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=from:to:cc
-        :subject:date:message-id:mime-version:content-type
-        :content-transfer-encoding; s=sasl; bh=lzqQz+JqgjS5l7fvG2TyleXT8
-        WHaVE6zHz8NVuDMBVc=; b=YzLb377NBmcghSfKfQ0t9bDwDYDzgFjz3rTvA6LGx
-        h3PMuybmquWzff4RM5QPeXACP8ZxlXxpttcWWkoACQdCtLwa8v/NSJBrrteaxtSO
-        AzyJmLW80UMSY1W8qH/sKFu/x3JXuKQ5FXDKeWnAtgbxwEK0O2Uef7VxSZTWcrlH
-        Oo=
-Received: from pb-smtp1.nyi.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp1.pobox.com (Postfix) with ESMTP id 5F7BDC5E81;
-        Sun,  6 Jun 2021 08:40:26 -0400 (EDT)
-        (envelope-from junio@pobox.com)
-Received: from pobox.com (unknown [104.196.172.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp1.pobox.com (Postfix) with ESMTPSA id B544FC5E7C;
-        Sun,  6 Jun 2021 08:40:25 -0400 (EDT)
-        (envelope-from junio@pobox.com)
-From:   Junio C Hamano <gitster@pobox.com>
-To:     git@vger.kernel.org
-Cc:     Linux Kernel <linux-kernel@vger.kernel.org>,
-        git-packagers@googlegroups.com
-Subject: [ANNOUNCE] Git v2.32.0
-Date:   Sun, 06 Jun 2021 21:40:25 +0900
-Message-ID: <xmqqa6o3xj2e.fsf@gitster.g>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        Sun, 6 Jun 2021 08:45:38 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB6E4C061767
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 05:43:48 -0700 (PDT)
+Date:   Sun, 06 Jun 2021 12:43:44 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622983425;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=ky2rafi7B9BLiTdHEuUYiQ2MjJbWRhQk9MriymunN/g=;
+        b=fNSNRAwlVs4tq/9VWdvPnIEDU6q1IMIa4zcstIjSGZX86fk1Ooa1zyej7sXx+F9i5ep13P
+        59oirX9JFrYdFrNixtscGessyib+VgAcOVUMZd6K9sSng7fHYFGHMMVSxjW+FCnoCFRr4/
+        ilmudQSv01zZ2vter/SXGgq3mYS3XY+y36WWSIUyZ0x7B/B6c2dHXZA1eVYXwZ0XdNx375
+        AuMbcpeDdVak4PoHwwc/Iabtya8ysyYlCEDHlPzBsjAd6mDid8XfEbgh8k9oGa4b2wwNEJ
+        icKEdw5yeu5COm+qLJ7kpHXmehYQKySV+byewA3dxudstxnAMUq68CNvo8O7kg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622983425;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=ky2rafi7B9BLiTdHEuUYiQ2MjJbWRhQk9MriymunN/g=;
+        b=k3RuA6eEc/Ftq2rYB7Pbg5QipkA/Qtqf2canjA/8FrcXmWbxvS8x3oIHrdfCacMX31NrcX
+        Bwu4G/2fQKWw3yAQ==
+From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
+Subject: [irqchip: irq/irqchip-next] irqchip: Bulk conversion to
+ generic_handle_domain_irq()
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-X-Pobox-Relay-ID: 5DFB6CD0-C6C4-11EB-8C8D-8B3BC6D8090B-77302942!pb-smtp1.pobox.com
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <162298342429.29796.18285342948279820467.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The latest feature release Git v2.32.0 is now available at the
-usual places.  It is comprised of 617 non-merge commits since
-v2.31.0, contributed by 100 people, 35 of which are new faces [*].
-
-The tarballs are found at:
-
-    https://www.kernel.org/pub/software/scm/git/
-
-The following public repositories all have a copy of the 'v2.32.0'
-tag and the 'master' branch that the tag points at:
-
-  url =3D https://git.kernel.org/pub/scm/git/git
-  url =3D https://kernel.googlesource.com/pub/scm/git/git
-  url =3D git://repo.or.cz/alt-git.git
-  url =3D https://github.com/gitster/git
-
-New contributors whose contributions weren't in v2.31.0 are as
-follows.  Welcome to the Git development community!
-
-  Adam Sharafeddine, Alexey Roslyakov, Andrey Bienkowski,
-  Atharva Raykar, Bruno Albuquerque, Chinmoy Chakraborty,
-  Christopher Schenk, Dan Moseley, David Emett, Dmitry Torilov,
-  Fabien Terrani, Firmin Martin, Georgios Kontaxis, Jason Gore,
-  Jerry Zhang, Joachim Kuebart, Joseph Vusich, Josh Soref,
-  Julien Richard, Li Linchao, Louis Sautier, Luke Shumaker,
-  Matheus Tavares Bernardino, Nicholas Clark, Peter Oliver,
-  Renato Botelho, rlespinasse, Robert Foss, RyotaK, Sardorbek
-  Imomaliev, Tom Saeger, Vincent Tam, Will Chandler, Wolfgang
-  M=C3=BCller, and Yiyuan guo.
-
-Returning contributors who helped this release are as follows.
-Thanks for your continued support.
-
-  Adam Dinwoodie, =C3=86var Arnfj=C3=B6r=C3=B0 Bjarmason, Alexander Shopo=
-v,
-  Alex Henrie, Andrzej Hunt, Bagas Sanjaya, Ben Humphreys, brian
-  m. carlson, Charvi Mendiratta, Christian Couder, Christopher Diaz
-  Riveros, Daniel Santos, David Aguilar, Dennis Ameling, Denton
-  Liu, Derrick Stolee, =C4=90o=C3=A0n Tr=E1=BA=A7n C=C3=B4ng Danh, Elijah=
- Newren,
-  Emir Sar=C4=B1, Eric Sunshine, Eric Wong, Han-Wen Nienhuys, Han Xin,
-  Jean-No=C3=ABl Avila, Jeff Hostetler, Jeff King, Jiang Xin, Johannes
-  Schindelin, Johannes Sixt, John Szakmeister, Jonathan Nieder,
-  Jonathan Tan, Jordi Mas, Junio C Hamano, Kyle Meyer, L=C3=A9na=C3=AFc
-  Huard, Luke Diamand, Marc Branchaud, Martin =C3=85gren, Matheus
-  Tavares, Matthias R=C3=BCster, Nguy=E1=BB=85n Th=C3=A1i Ng=E1=BB=8Dc Du=
-y, Nipunn
-  Koorapati, =C3=98ystein Walle, Patrick Steinhardt, Peter Krefting,
-  Phillip Wood, Rafael Silva, Ralf Thielow, Ramkumar Ramachandra,
-  Ramsay Jones, Randall S. Becker, Ren=C3=A9 Scharfe, Sergey Organov,
-  Shubham Verma, Son Luong Ngoc, SZEDER G=C3=A1bor, Taylor Blau,
-  Todd Zullinger, Torsten B=C3=B6gershausen, Tr=E1=BA=A7n Ng=E1=BB=8Dc Qu=
-=C3=A2n,
-  Trygve Aaberge, Ville Skytt=C3=A4, Yi-Jyun Pan, and ZheNing Hu.
-
-[*] We are counting not just the authorship contribution but issue
-    reporting, mentoring, helping and reviewing that are recorded in
-    the commit trailers.
-
-----------------------------------------------------------------
-
-Git 2.32 Release Notes
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-Backward compatibility notes
-----------------------------
-
- * ".gitattributes", ".gitignore", and ".mailmap" files that are
-   symbolic links are ignored.
-
- * "git apply --3way" used to first attempt a straight application,
-   and only fell back to the 3-way merge algorithm when the stright
-   application failed.  Starting with this version, the command will
-   first try the 3-way merge algorithm and only when it fails (either
-   resulting with conflict or the base versions of blobs are missing),
-   falls back to the usual patch application.
-
-
-Updates since v2.31
--------------------
-
-UI, Workflows & Features
-
- * It does not make sense to make ".gitattributes", ".gitignore" and
-   ".mailmap" symlinks, as they are supposed to be usable from the
-   object store (think: bare repositories where HEAD:.mailmap etc. are
-   used).  When these files are symbolic links, we used to read the
-   contents of the files pointed by them by mistake, which has been
-   corrected.
-
- * "git stash show" learned to optionally show untracked part of the
-   stash.
-
- * "git log --format=3D'...'" learned "%(describe)" placeholder.
-
- * "git repack" so far has been only capable of repacking everything
-   under the sun into a single pack (or split by size).  A cleverer
-   strategy to reduce the cost of repacking a repository has been
-   introduced.
-
- * The http codepath learned to let the credential layer to cache the
-   password used to unlock a certificate that has successfully been
-   used.
-
- * "git commit --fixup=3D<commit>", which was to tweak the changes made
-   to the contents while keeping the original log message intact,
-   learned "--fixup=3D(amend|reword):<commit>", that can be used to
-   tweak both the message and the contents, and only the message,
-   respectively.
-
- * "git send-email" learned to honor the core.hooksPath configuration.
-
- * "git format-patch -v<n>" learned to allow a reroll count that is
-   not an integer.
-
- * "git commit" learned "--trailer <key>[=3D<value>]" option; together
-   with the interpret-trailers command, this will make it easier to
-   support custom trailers.
-
- * "git clone --reject-shallow" option fails the clone as soon as we
-   notice that we are cloning from a shallow repository.
-
- * A configuration variable has been added to force tips of certain
-   refs to be given a reachability bitmap.
-
- * "gitweb" learned "e-mail privacy" feature to redact strings that
-   look like e-mail addresses on various pages.
-
- * "git apply --3way" has always been "to fall back to 3-way merge
-   only when straight application fails". Swap the order of falling
-   back so that 3-way is always attempted first (only when the option
-   is given, of course) and then straight patch application is used as
-   a fallback when it fails.
-
- * "git apply" now takes "--3way" and "--cached" at the same time, and
-   work and record results only in the index.
-
- * The command line completion (in contrib/) has learned that
-   CHERRY_PICK_HEAD is a possible pseudo-ref.
-
- * Userdiff patterns for "Scheme" has been added.
-
- * "git log" learned "--diff-merges=3D<style>" option, with an
-   associated configuration variable log.diffMerges.
-
- * "git log --format=3D..." placeholders learned %ah/%ch placeholders to
-   request the --date=3Dhuman output.
-
- * Replace GIT_CONFIG_NOSYSTEM mechanism to decline from reading the
-   system-wide configuration file with GIT_CONFIG_SYSTEM that lets
-   users specify from which file to read the system-wide configuration
-   (setting it to an empty file would essentially be the same as
-   setting NOSYSTEM), and introduce GIT_CONFIG_GLOBAL to override the
-   per-user configuration in $HOME/.gitconfig.
-
- * "git add" and "git rm" learned not to touch those paths that are
-   outside of sparse checkout.
-
- * "git rev-list" learns the "--filter=3Dobject:type=3D<type>" option,
-   which can be used to exclude objects of the given kind from the
-   packfile generated by pack-objects.
-
- * The command line completion (in contrib/) for "git stash" has been
-   updated.
-
- * "git subtree" updates.
-
- * It is now documented that "format-patch" skips merges.
-
- * Options to "git pack-objects" that take numeric values like
-   --window and --depth should not accept negative values; the input
-   validation has been tightened.
-
- * The way the command line specified by the trailer.<token>.command
-   configuration variable receives the end-user supplied value was
-   both error prone and misleading.  An alternative to achieve the
-   same goal in a safer and more intuitive way has been added, as
-   the trailer.<token>.cmd configuration variable, to replace it.
-
- * "git add -i --dry-run" does not dry-run, which was surprising.  The
-   combination of options has taught to error out.
-
- * "git push" learns to discover common ancestor with the receiving
-   end over protocol v2.  This will hopefully make "git push" as
-   efficient as "git fetch" in avoiding objects from getting
-   transferred unnecessarily.
-
- * "git mailinfo" (hence "git am") learned the "--quoted-cr" option to
-   control how lines ending with CRLF wrapped in base64 or qp are
-   handled.
-
-
-Performance, Internal Implementation, Development Support etc.
-
- * Rename detection rework continues.
-
- * GIT_TEST_FAIL_PREREQS is a mechanism to skip test pieces with
-   prerequisites to catch broken tests that depend on the side effects
-   of optional pieces, but did not work at all when negative
-   prerequisites were involved.
-   (merge 27d578d904 jk/fail-prereq-testfix later to maint).
-
- * "git diff-index" codepath has been taught to trust fsmonitor status
-   to reduce number of lstat() calls.
-   (merge 7e5aa13d2c nk/diff-index-fsmonitor later to maint).
-
- * Reorganize Makefile to allow building git.o and other essential
-   objects without extra stuff needed only for testing.
-
- * Preparatory API changes for parallel checkout.
-
- * A simple IPC interface gets introduced to build services like
-   fsmonitor on top.
-
- * Fsck API clean-up.
-
- * SECURITY.md that is facing individual contributors and end users
-   has been introduced.  Also a procedure to follow when preparing
-   embargoed releases has been spelled out.
-   (merge 09420b7648 js/security-md later to maint).
-
- * Optimize "rev-list --use-bitmap-index --objects" corner case that
-   uses negative tags as the stopping points.
-
- * CMake update for vsbuild.
-
- * An on-disk reverse-index to map the in-pack location of an object
-   back to its object name across multiple packfiles is introduced.
-
- * Generate [ec]tags under $(QUIET_GEN).
-
- * Clean-up codepaths that implements "git send-email --validate"
-   option and improves the message from it.
-
- * The last remnant of gettext-poison has been removed.
-
- * The test framework has been taught to optionally turn the default
-   merge strategy to "ort" throughout the system where we use
-   three-way merges internally, like cherry-pick, rebase etc.,
-   primarily to enhance its test coverage (the strategy has been
-   available as an explicit "-s ort" choice).
-
- * A bit of code clean-up and a lot of test clean-up around userdiff
-   area.
-
- * Handling of "promisor packs" that allows certain objects to be
-   missing and lazily retrievable has been optimized (a bit).
-
- * When packet_write() fails, we gave an extra error message
-   unnecessarily, which has been corrected.
-
- * The checkout machinery has been taught to perform the actual
-   write-out of the files in parallel when able.
-
- * Show errno in the trace output in the error codepath that calls
-   read_raw_ref method.
-
- * Effort to make the command line completion (in contrib/) safe with
-   "set -u" continues.
-
- * Tweak a few tests for "log --format=3D..." that show timestamps in
-   various formats.
-
- * The reflog expiry machinery has been taught to emit trace events.
-
- * Over-the-wire protocol learns a new request type to ask for object
-   sizes given a list of object names.
-
-
-Fixes since v2.31
------------------
-
- * The fsmonitor interface read from its input without making sure
-   there is something to read from.  This bug is new in 2.31
-   timeframe.
-
- * The data structure used by fsmonitor interface was not properly
-   duplicated during an in-core merge, leading to use-after-free etc.
-
- * "git bisect" reimplemented more in C during 2.30 timeframe did not
-   take an annotated tag as a good/bad endpoint well.  This regression
-   has been corrected.
-
- * Fix macros that can silently inject unintended null-statements.
-
- * CALLOC_ARRAY() macro replaces many uses of xcalloc().
-
- * Update insn in Makefile comments to run fuzz-all target.
-
- * Fix a corner case bug in "git mv" on case insensitive systems,
-   which was introduced in 2.29 timeframe.
-
- * We had a code to diagnose and die cleanly when a required
-   clean/smudge filter is missing, but an assert before that
-   unnecessarily fired, hiding the end-user facing die() message.
-   (merge 6fab35f748 mt/cleanly-die-upon-missing-required-filter later to=
- maint).
-
- * Update C code that sets a few configuration variables when a remote
-   is configured so that it spells configuration variable names in the
-   canonical camelCase.
-   (merge 0f1da600e6 ab/remote-write-config-in-camel-case later to maint)=
-.
-
- * A new configuration variable has been introduced to allow choosing
-   which version of the generation number gets used in the
-   commit-graph file.
-   (merge 702110aac6 ds/commit-graph-generation-config later to maint).
-
- * Perf test update to work better in secondary worktrees.
-   (merge 36e834abc1 jk/perf-in-worktrees later to maint).
-
- * Updates to memory allocation code around the use of pcre2 library.
-   (merge c1760352e0 ab/grep-pcre2-allocfix later to maint).
-
- * "git -c core.bare=3Dfalse clone --bare ..." would have segfaulted,
-   which has been corrected.
-   (merge 75555676ad bc/clone-bare-with-conflicting-config later to maint=
-).
-
- * When "git checkout" removes a path that does not exist in the
-   commit it is checking out, it wasn't careful enough not to follow
-   symbolic links, which has been corrected.
-   (merge fab78a0c3d mt/checkout-remove-nofollow later to maint).
-
- * A few option description strings started with capital letters,
-   which were corrected.
-   (merge 5ee90326dc cc/downcase-opt-help later to maint).
-
- * Plug or annotate remaining leaks that trigger while running the
-   very basic set of tests.
-   (merge 68ffe095a2 ah/plugleaks later to maint).
-
- * The hashwrite() API uses a buffering mechanism to avoid calling
-   write(2) too frequently. This logic has been refactored to be
-   easier to understand.
-   (merge ddaf1f62e3 ds/clarify-hashwrite later to maint).
-
- * "git cherry-pick/revert" with or without "--[no-]edit" did not spawn
-   the editor as expected (e.g. "revert --no-edit" after a conflict
-   still asked to edit the message), which has been corrected.
-   (merge 39edfd5cbc en/sequencer-edit-upon-conflict-fix later to maint).
-
- * "git daemon" has been tightened against systems that take backslash
-   as directory separator.
-   (merge 9a7f1ce8b7 rs/daemon-sanitize-dir-sep later to maint).
-
- * A NULL-dereference bug has been corrected in an error codepath in
-   "git for-each-ref", "git branch --list" etc.
-   (merge c685450880 jk/ref-filter-segfault-fix later to maint).
-
- * Streamline the codepath to fix the UTF-8 encoding issues in the
-   argv[] and the prefix on macOS.
-   (merge c7d0e61016 tb/precompose-prefix-simplify later to maint).
-
- * The command-line completion script (in contrib/) had a couple of
-   references that would have given a warning under the "-u" (nounset)
-   option.
-   (merge c5c0548d79 vs/completion-with-set-u later to maint).
-
- * When "git pack-objects" makes a literal copy of a part of existing
-   packfile using the reachability bitmaps, its update to the progress
-   meter was broken.
-   (merge 8e118e8490 jk/pack-objects-bitmap-progress-fix later to maint).
-
- * The dependencies for config-list.h and command-list.h were broken
-   when the former was split out of the latter, which has been
-   corrected.
-   (merge 56550ea718 sg/bugreport-fixes later to maint).
-
- * "git push --quiet --set-upstream" was not quiet when setting the
-   upstream branch configuration, which has been corrected.
-   (merge f3cce896a8 ow/push-quiet-set-upstream later to maint).
-
- * The prefetch task in "git maintenance" assumed that "git fetch"
-   from any remote would fetch all its local branches, which would
-   fetch too much if the user is interested in only a subset of
-   branches there.
-   (merge 32f67888d8 ds/maintenance-prefetch-fix later to maint).
-
- * Clarify that pathnames recorded in Git trees are most often (but
-   not necessarily) encoded in UTF-8.
-   (merge 9364bf465d ab/pathname-encoding-doc later to maint).
-
- * "git --config-env var=3Dval cmd" weren't accepted (only
-   --config-env=3Dvar=3Dval was).
-   (merge c331551ccf ps/config-env-option-with-separate-value later to ma=
-int).
-
- * When the reachability bitmap is in effect, the "do not lose
-   recently created objects and those that are reachable from them"
-   safety to protect us from races were disabled by mistake, which has
-   been corrected.
-   (merge 2ba582ba4c jk/prune-with-bitmap-fix later to maint).
-
- * Cygwin pathname handling fix.
-   (merge bccc37fdc7 ad/cygwin-no-backslashes-in-paths later to maint).
-
- * "git rebase --[no-]reschedule-failed-exec" did not work well with
-   its configuration variable, which has been corrected.
-   (merge e5b32bffd1 ab/rebase-no-reschedule-failed-exec later to maint).
-
- * Portability fix for command line completion script (in contrib/).
-   (merge f2acf763e2 si/zsh-complete-comment-fix later to maint).
-
- * "git repack -A -d" in a partial clone unnecessarily loosened
-   objects in promisor pack.
-
- * "git bisect skip" when custom words are used for new/old did not
-   work, which has been corrected.
-
- * A few variants of informational message "Already up-to-date" has
-   been rephrased.
-   (merge ad9322da03 js/merge-already-up-to-date-message-reword later to =
-maint).
-
- * "git submodule update --quiet" did not propagate the quiet option
-   down to underlying "git fetch", which has been corrected.
-   (merge 62af4bdd42 nc/submodule-update-quiet later to maint).
-
- * Document that our test can use "local" keyword.
-   (merge a84fd3bcc6 jc/test-allows-local later to maint).
-
- * The word-diff mode has been taught to work better with a word
-   regexp that can match an empty string.
-   (merge 0324e8fc6b pw/word-diff-zero-width-matches later to maint).
-
- * "git p4" learned to find branch points more efficiently.
-   (merge 6b79818bfb jk/p4-locate-branch-point-optim later to maint).
-
- * When "git update-ref -d" removes a ref that is packed, it left
-   empty directories under $GIT_DIR/refs/ for
-   (merge 5f03e5126d wc/packed-ref-removal-cleanup later to maint).
-
- * "git clean" and "git ls-files -i" had confusion around working on
-   or showing ignored paths inside an ignored directory, which has
-   been corrected.
-   (merge b548f0f156 en/dir-traversal later to maint).
-
- * The handling of "%(push)" formatting element of "for-each-ref" and
-   friends was broken when the same codepath started handling
-   "%(push:<what>)", which has been corrected.
-   (merge 1e1c4c5eac zh/ref-filter-push-remote-fix later to maint).
-
- * The bash prompt script (in contrib/) did not work under "set -u".
-   (merge 5c0cbdb107 en/prompt-under-set-u later to maint).
-
- * The "chainlint" feature in the test framework is a handy way to
-   catch common mistakes in writing new tests, but tends to get
-   expensive.  An knob to selectively disable it has been introduced
-   to help running tests that the developer has not modified.
-   (merge 2d86a96220 jk/test-chainlint-softer later to maint).
-
- * The "rev-parse" command did not diagnose the lack of argument to
-   "--path-format" option, which was introduced in v2.31 era, which
-   has been corrected.
-   (merge 99fc555188 wm/rev-parse-path-format-wo-arg later to maint).
-
- * Other code cleanup, docfix, build fix, etc.
-   (merge f451960708 dl/cat-file-doc-cleanup later to maint).
-   (merge 12604a8d0c sv/t9801-test-path-is-file-cleanup later to maint).
-   (merge ea7e63921c jr/doc-ignore-typofix later to maint).
-   (merge 23c781f173 ps/update-ref-trans-hook-doc later to maint).
-   (merge 42efa1231a jk/filter-branch-sha256 later to maint).
-   (merge 4c8e3dca6e tb/push-simple-uses-branch-merge-config later to mai=
-nt).
-   (merge 6534d436a2 bs/asciidoctor-installation-hints later to maint).
-   (merge 47957485b3 ab/read-tree later to maint).
-   (merge 2be927f3d1 ab/diff-no-index-tests later to maint).
-   (merge 76593c09bb ab/detox-gettext-tests later to maint).
-   (merge 28e29ee38b jc/doc-format-patch-clarify later to maint).
-   (merge fc12b6fdde fm/user-manual-use-preface later to maint).
-   (merge dba94e3a85 cc/test-helper-bloom-usage-fix later to maint).
-   (merge 61a7660516 hn/reftable-tables-doc-update later to maint).
-   (merge 81ed96a9b2 jt/fetch-pack-request-fix later to maint).
-   (merge 151b6c2dd7 jc/doc-do-not-capitalize-clarification later to main=
-t).
-   (merge 9160068ac6 js/access-nul-emulation-on-windows later to maint).
-   (merge 7a14acdbe6 po/diff-patch-doc later to maint).
-   (merge f91371b948 pw/patience-diff-clean-up later to maint).
-   (merge 3a7f0908b6 mt/clean-clean later to maint).
-   (merge d4e2d15a8b ab/streaming-simplify later to maint).
-   (merge 0e59f7ad67 ah/merge-ort-i18n later to maint).
-   (merge e6f68f62e0 ls/typofix later to maint).
-
-----------------------------------------------------------------
-
-Changes since v2.31.0 are as follows:
-
-Adam Dinwoodie (1):
-      cygwin: disallow backslashes in file names
-
-Alex Henrie (2):
-      merge-ort: split "distinct types" message into two translatable mes=
-sages
-      l10n: Update Catalan translation
-
-Alexander Shopov (1):
-      l10n: bg.po: Updated Bulgarian translation (5204t)
-
-Alexey Roslyakov (1):
-      l10n: ru.po: fix typo in Russian translation
-
-Andrey Bienkowski (1):
-      doc: clarify the filename encoding in git diff
-
-Andrzej Hunt (24):
-      Makefile: update 'make fuzz-all' docs to reflect modern clang
-      symbolic-ref: don't leak shortened refname in check_symref()
-      reset: free instead of leaking unneeded ref
-      clone: free or UNLEAK further pointers when finished
-      worktree: fix leak in dwim_branch()
-      init: remove git_init_db_config() while fixing leaks
-      init-db: silence template_dir leak when converting to absolute path
-      fsmonitor: avoid global-buffer-overflow READ when checking trivial =
-response
-      parse-options: convert bitfield values to use binary shift
-      parse-options: don't leak alias help messages
-      transport: also free remote_refs in transport_disconnect()
-      merge-ort: only do pointer arithmetic for non-empty lists
-      revision: free remainder of old commit list in limit_list
-      wt-status: fix multiple small leaks
-      ls-files: free max_prefix when done
-      bloom: clear each bloom_key after use
-      branch: FREE_AND_NULL instead of NULL'ing real_ref
-      builtin/bugreport: don't leak prefixed filename
-      builtin/check-ignore: clear_pathspec before returning
-      builtin/checkout: clear pending objects after diffing
-      mailinfo: also free strbuf lists when clearing mailinfo
-      builtin/for-each-ref: free filter and UNLEAK sorting.
-      builtin/rebase: release git_format_patch_opt too
-      builtin/rm: avoid leaking pathspec and seen
-
-Atharva Raykar (1):
-      userdiff: add support for Scheme
-
-Bagas Sanjaya (6):
-      INSTALL: note on using Asciidoctor to build doc
-      l10n: id: po-id for 2.32.0 (round 1)
-      l10n: README: document git-po-helper
-      l10n: README: document "core translation"
-      l10n: README: document l10n conventions
-      l10n: README: note on fuzzy translations
-
-Bruno Albuquerque (1):
-      object-info: support for retrieving object info
-
-Charvi Mendiratta (23):
-      sequencer: pass todo_item to do_pick_commit()
-      sequencer: use const variable for commit message comments
-      rebase -i: add fixup [-C | -c] command
-      t3437: test script for fixup [-C|-c] options in interactive rebase
-      rebase -i: teach --autosquash to work with amend!
-      doc/git-rebase: add documentation for fixup [-C|-c] options
-      sequencer: fixup the datatype of the 'flag' argument
-      sequencer: rename a few functions
-      rebase -i: clarify and fix 'fixup -c' rebase-todo help
-      t/lib-rebase: update the documentation of FAKE_LINES
-      t/t3437: fixup here-docs in the 'setup' test
-      t/t3437: remove the dependency of 'expected-message' file from test=
-s
-      t/t3437: check the author date of fixed up commit
-      t/t3437: simplify and document the test helpers
-      t/t3437: use named commits in the tests
-      t/t3437: fixup the test 'multiple fixup -c opens editor once'
-      doc/rebase -i: fix typo in the documentation of 'fixup' command
-      sequencer: export and rename subject_length()
-      commit: add amend suboption to --fixup to create amend! commit
-      commit: add a reword suboption to --fixup
-      t7500: add tests for --fixup=3D[amend|reword] options
-      t3437: use --fixup with options to create amend! commit
-      doc/git-commit: add documentation for fixup=3D[amend|reword] option=
-s
-
-Chinmoy Chakraborty (1):
-      column, range-diff: downcase option description
-
-Christian Couder (1):
-      test-bloom: fix missing 'bloom' from usage string
-
-Christopher Diaz Riveros (1):
-      l10n: es: 2.32.0 round 1
-
-Christopher Schenk (1):
-      remote-curl: fall back to basic auth if Negotiate fails
-
-Daniel Santos (2):
-      l10n: pt_PT: add Portuguese translations part 2
-      l10n: pt_PT: add Portuguese translations part 3
-
-David Aguilar (1):
-      contrib/completion: fix zsh completion regression from 59d85a2a05
-
-Dennis Ameling (2):
-      cmake(install): fix double .exe suffixes
-      cmake(install): include vcpkg dlls
-
-Denton Liu (14):
-      git-cat-file.txt: monospace args, placeholders and filenames
-      git-cat-file.txt: remove references to "sha1"
-      stash show: teach --include-untracked and --only-untracked
-      stash show: learn stash.showIncludeUntracked
-      git-completion.bash: pass $__git_subcommand_idx from __git_main()
-      git-completion.bash: extract from else in _git_stash()
-      git-completion.bash: use __gitcomp_builtin() in _git_stash()
-      git-completion.bash: separate some commands onto their own line
-      git-completion.bash: rename to $__git_cmd_idx
-      git-completion.bash: use $__git_cmd_idx in more places
-      git-completion.bash: consolidate cases in _git_stash()
-      t3905: correct test title
-      stash show: fix segfault with --{include,only}-untracked
-      stash show: use stash.showIncludeUntracked even when diff options g=
-iven
-
-Derrick Stolee (58):
-      commit-graph: create local repository pointer
-      commit-graph: use config to specify generation type
-      csum-file: make hashwrite() more readable
-      sparse-index: design doc and format update
-      t/perf: add performance test for sparse operations
-      t1092: clean up script quoting
-      sparse-index: add guard to ensure full index
-      sparse-index: implement ensure_full_index()
-      t1092: compare sparse-checkout to sparse-index
-      test-read-cache: print cache entries with --table
-      test-tool: don't force full index
-      unpack-trees: ensure full index
-      sparse-checkout: hold pattern list in index
-      sparse-index: add 'sdir' index extension
-      sparse-index: convert from full to sparse
-      submodule: sparse-index should not collapse links
-      unpack-trees: allow sparse directories
-      sparse-index: check index conversion happens
-      sparse-index: add index.sparse config option
-      sparse-checkout: toggle sparse index from builtin
-      sparse-checkout: disable sparse-index
-      cache-tree: integrate with sparse directory entries
-      sparse-index: loose integration with cache_tree_verify()
-      p2000: add sparse-index repos
-      maintenance: simplify prefetch logic
-      sparse-index: API protection strategy
-      *: remove 'const' qualifier for struct index_state
-      read-cache: expand on query into sparse-directory entry
-      cache: move ensure_full_index() to cache.h
-      add: ensure full index
-      checkout-index: ensure full index
-      checkout: ensure full index
-      commit: ensure full index
-      difftool: ensure full index
-      fsck: ensure full index
-      grep: ensure full index
-      ls-files: ensure full index
-      merge-index: ensure full index
-      rm: ensure full index
-      stash: ensure full index
-      update-index: ensure full index
-      dir: ensure full index
-      entry: ensure full index
-      merge-recursive: ensure full index
-      pathspec: ensure full index
-      read-cache: ensure full index
-      resolve-undo: ensure full index
-      revision: ensure full index
-      name-hash: don't add directories to name_hash
-      sparse-index: expand_to_path()
-      name-hash: use expand_to_path()
-      fetch: add --prefetch option
-      maintenance: use 'git fetch --prefetch'
-      maintenance: respect remote.*.skipFetchAll
-      dir: update stale description of treat_directory()
-      sparse-index: fix uninitialized jump
-      t1092: use GIT_PROGRESS_DELAY for consistent results
-      dir: update stale description of treat_directory()
-
-Elijah Newren (50):
-      diffcore-rename: use directory rename guided basename comparisons
-      diffcore-rename: provide basic implementation of idx_possible_renam=
-e()
-      diffcore-rename: add a mapping of destination names to their indice=
-s
-      Move computation of dir_rename_count from merge-ort to diffcore-ren=
-ame
-      diffcore-rename: add function for clearing dir_rename_count
-      diffcore-rename: move dir_rename_counts into dir_rename_info struct
-      diffcore-rename: extend cleanup_dir_rename_info()
-      diffcore-rename: compute dir_rename_counts in stages
-      diffcore-rename: limit dir_rename_counts computation to relevant di=
-rs
-      diffcore-rename: compute dir_rename_guess from dir_rename_counts
-      diffcore-rename: enable filtering possible rename sources
-      merge-ort: precompute subset of sources for which we need rename de=
-tection
-      merge-ort: add data structures for an alternate tree traversal
-      merge-ort: introduce wrappers for alternate tree traversal
-      merge-ort: precompute whether directory rename detection is needed
-      merge-ort: use relevant_sources to filter possible rename sources
-      merge-ort: skip rename detection entirely if possible
-      diffcore-rename: avoid doing basename comparisons for irrelevant so=
-urces
-      diffcore-rename: take advantage of "majority rules" to skip more re=
-names
-      merge-ort, diffcore-rename: tweak dirs_removed and relevant_source =
-type
-      merge-ort: record the reason that we want a rename for a directory
-      diffcore-rename: only compute dir_rename_count for relevant directo=
-ries
-      diffcore-rename: check if we have enough renames for directories ea=
-rly on
-      diffcore-rename: add computation of number of unknown renames
-      merge-ort: record the reason that we want a rename for a file
-      diffcore-rename: determine which relevant_sources are no longer rel=
-evant
-      merge-ort: use STABLE_QSORT instead of QSORT where required
-      merge-ort: add a special minimal index just for renormalization
-      merge-ort: have ll_merge() use a special attr_index for renormaliza=
-tion
-      merge-ort: let renormalization change modify/delete into clean dele=
-te
-      merge-ort: support subtree shifting
-      t6428: new test for SKIP_WORKTREE handling and conflicts
-      merge-ort: implement CE_SKIP_WORKTREE handling with conflicted entr=
-ies
-      t: mark several submodule merging tests as fixed under merge-ort
-      merge-ort: write $GIT_DIR/AUTO_MERGE whenever we hit a conflict
-      merge-recursive: add a bunch of FIXME comments documenting known bu=
-gs
-      Revert "merge-ort: ignore the directory rename split conflict for n=
-ow"
-      t6423: mark remaining expected failure under merge-ort as such
-      Add testing with merge-ort merge strategy
-      sequencer: fix edit handling for cherry-pick and revert messages
-      dir: convert trace calls to trace2 equivalents
-      dir: report number of visited directories and paths with trace2
-      ls-files: error out on -i unless -o or -c are specified
-      t7300: add testcase showing unnecessary traversal into ignored dire=
-ctory
-      t3001, t7300: add testcase showcasing missed directory traversal
-      dir: avoid unnecessary traversal into ignored directory
-      dir: traverse into untracked directories if they may have ignored s=
-ubfiles
-      dir: introduce readdir_skip_dot_and_dotdot() helper
-      git-prompt: work under set -u
-      dir: introduce readdir_skip_dot_and_dotdot() helper
-
-Emir Sar=C4=B1 (1):
-      l10n: tr: v2.32.0-r1
-
-Eric Sunshine (1):
-      merge(s): apply consistent punctuation to "up to date" messages
-
-Eric Wong (1):
-      remote-curl: fix clone on sha256 repos
-
-Firmin Martin (1):
-      user-manual.txt: assign preface an id and a title
-
-Georgios Kontaxis (1):
-      gitweb: add "e-mail privacy" feature to redact e-mail addresses
-
-Han Xin (1):
-      pack-objects: fix comment of reused_chunk.difference
-
-Han-Wen Nienhuys (3):
-      reftable: document an alternate cleanup method on Windows
-      refs: print errno for read_raw_ref if GIT_TRACE_REFS is set
-      refs/debug: trace into reflog expiry too
-
-Jean-No=C3=ABl Avila (1):
-      l10n: fr: v2.32.0 round 1
-
-Jeff Hostetler (14):
-      pkt-line: eliminate the need for static buffer in packet_write_gent=
-ly()
-      simple-ipc: design documentation for new IPC mechanism
-      simple-ipc: add win32 implementation
-      unix-socket: eliminate static unix_stream_socket() helper function
-      unix-socket: add backlog size option to unix_stream_listen()
-      unix-socket: disallow chdir() when creating unix domain sockets
-      unix-stream-server: create unix domain socket under lock
-      convert: make convert_attrs() and convert structs public
-      convert: add [async_]convert_to_working_tree_ca() variants
-      convert: add get_stream_filter_ca() variant
-      convert: add classification for conv_attrs struct
-      simple-ipc: add Unix domain socket implementation
-      t0052: add simple-ipc tests and t/helper/test-simple-ipc tool
-      simple-ipc: correct ifdefs when NO_PTHREADS is defined
-
-Jeff King (43):
-      add open_nofollow() helper
-      attr: convert "macro_ok" into a flags field
-      exclude: add flags parameter to add_patterns()
-      attr: do not respect symlinks for in-tree .gitattributes
-      exclude: do not respect symlinks for in-tree .gitignore
-      mailmap: do not respect symlinks for in-tree .mailmap
-      p5303: add missing &&-chains
-      p5303: measure time to repack with keep
-      builtin/pack-objects.c: rewrite honor-pack-keep logic
-      packfile: add kept-pack cache for find_kept_pack_entry()
-      t/perf: handle worktrees as test repos
-      t/perf: avoid copying worktree files from test repo
-      t7003: test ref rewriting explicitly
-      filter-branch: drop multiple-ancestor warning
-      filter-branch: drop $_x40 glob
-      bisect: peel annotated tags to commits
-      t: annotate !PTHREADS tests with !FAIL_PREREQS
-      ref-filter: fix NULL check for parse object failure
-      midx.c: improve cache locality in midx_pack_order_cmp()
-      pack-objects: update "nr_seen" progress based on pack-reused count
-      is_promisor_object(): free tree buffer after parsing
-      lookup_unknown_object(): take a repository argument
-      revision: avoid parsing with --exclude-promisor-objects
-      pack-bitmap: clean up include_check after use
-      prune: save reachable-from-recent objects with bitmaps
-      t5300: modernize basic tests
-      t5300: check that we produced expected number of deltas
-      pack-objects: clamp negative window size to 0
-      t5316: check behavior of pack-objects --depth=3D0
-      pack-objects: clamp negative depth to 0
-      docs/format-patch: mention handling of merges
-      t7415: remove out-dated comment about translation
-      fsck_tree(): fix shadowed variable
-      fsck_tree(): wrap some long lines
-      t7415: rename to expand scope
-      t7450: test verify_path() handling of gitmodules
-      t7450: test .gitmodules symlink matching against obscured names
-      t0060: test ntfs/hfs-obscured dotfiles
-      fsck: warn about symlinked dotfiles we'll open with O_NOFOLLOW
-      docs: document symlink restrictions for dot-files
-      t: avoid sed-based chain-linting in some expensive cases
-      t5551: test http interaction with credential helpers
-      Revert "remote-curl: fall back to basic auth if Negotiate fails"
-
-Jerry Zhang (3):
-      git-apply: try threeway first when "--3way" is used
-      git-apply: allow simultaneous --cached and --3way options
-      apply: adjust messages to account for --3way changes
-
-Jiang Xin (4):
-      l10n: git.pot: v2.32.0 round 1 (126 new, 26 removed)
-      l10n: fix typos in po/TEAMS
-      l10n: README: add file extention ".md"
-      l10n: zh_CN: for git v2.32.0 l10n round 1
-
-Joachim Kuebart (2):
-      git-p4: ensure complex branches are cloned correctly
-      git-p4: speed up search for branch parent
-
-Johannes Schindelin (10):
-      pkt-line: do not issue flush packets in write_packetized_*()
-      pkt-line: add PACKET_READ_GENTLE_ON_READ_ERROR option
-      pkt-line: add options argument to read_packetized_to_strbuf()
-      fsmonitor: fix memory corruption in some corner cases
-      fsmonitor: do not forget to release the token in `discard_index()`
-      SECURITY: describe how to report vulnerabilities
-      Document how we do embargoed releases
-      cmake: support SKIP_DASHED_BUILT_INS
-      cmake: add a preparatory work-around to accommodate `vcpkg`
-      msvc: avoid calling `access("NUL", flags)`
-
-Johannes Sixt (1):
-      t9001-send-email.sh: fix expected absolute paths on Windows
-
-John Szakmeister (2):
-      http: store credential when PKI auth is used
-      http: drop the check for an empty proxy password before approving
-
-Jonathan Tan (8):
-      t5606: run clone branch name test with protocol v2
-      fetch-pack: buffer object-format with other args
-      fetch-pack: refactor process_acks()
-      fetch-pack: refactor add_haves()
-      fetch-pack: refactor command and capability write
-      fetch: teach independent negotiation (no packfile)
-      send-pack: support push negotiation
-      t5601: mark protocol v2-only test
-
-Jordi Mas (1):
-      l10n: Update Catalan translation
-
-Josh Soref (1):
-      merge: fix swapped "up to date" message components
-
-Julien Richard (1):
-      doc: .gitignore documentation typofix
-
-Junio C Hamano (34):
-      builtin/repack.c: reword comment around pack-objects flags
-      xcalloc: use CALLOC_ARRAY() when applicable
-      cocci: allow xcalloc(1, size)
-      The first batch in 2.32 cycle
-      The second batch
-      format-patch: give an overview of what a "patch" message is
-      The third patch
-      Git 2.31.1
-      The fourth batch
-      The fifth batch
-      The sixth batch
-      The seventh batch
-      The eighth batch
-      The ninth batch
-      doc: clarify "do not capitalize the first word" rule
-      The tenth batch
-      The eleventh (aka "ort") batch
-      The twelfth batch
-      The thirteenth batch
-      CodingGuidelines: explicitly allow "local" for test scripts
-      The fourteenth batch
-      The fifteenth batch
-      The sixteenth batch
-      The seventeenth batch
-      Git 2.32-rc0
-      A handful more topics before -rc1
-      Git 2.32-rc1
-      t1092: revert the "-1" hack for emulating "no progress meter"
-      Revert "dir: introduce readdir_skip_dot_and_dotdot() helper"
-      Revert "dir: update stale description of treat_directory()"
-      Git 2.32-rc2
-      Git 2.32-rc3
-      fsync(): be prepared to see EINTR
-      Git 2.32
-
-Kyle Meyer (1):
-      config.txt: add missing period
-
-Li Linchao (1):
-      builtin/clone.c: add --reject-shallow option
-
-Louis Sautier (1):
-      pretty: fix a typo in the documentation for %(trailers)
-
-Luke Shumaker (30):
-      .gitignore: ignore 'git-subtree' as a build artifact
-      subtree: t7900: update for having the default branch name be 'main'
-      subtree: t7900: use test-lib.sh's test_count
-      subtree: t7900: use consistent formatting
-      subtree: t7900: comment subtree_test_create_repo
-      subtree: t7900: use 'test' for string equality
-      subtree: t7900: delete some dead code
-      subtree: t7900: fix 'verify one file change per commit'
-      subtree: t7900: rename last_commit_message to last_commit_subject
-      subtree: t7900: add a test for the -h flag
-      subtree: t7900: add porcelain tests for 'pull' and 'push'
-      subtree: don't have loose code outside of a function
-      subtree: more consistent error propagation
-      subtree: drop support for git < 1.7
-      subtree: use `git merge-base --is-ancestor`
-      subtree: use git-sh-setup's `say`
-      subtree: use more explicit variable names for cmdline args
-      subtree: use "$*" instead of "$@" as appropriate
-      subtree: don't fuss with PATH
-      subtree: use "^{commit}" instead of "^0"
-      subtree: parse revs in individual cmd_ functions
-      subtree: remove duplicate check
-      subtree: add comments and sanity checks
-      subtree: don't let debug and progress output clash
-      subtree: have $indent actually affect indentation
-      subtree: give the docs a once-over
-      subtree: allow --squash to be used with --rejoin
-      subtree: allow 'split' flags to be passed to 'push'
-      subtree: push: allow specifying a local rev other than HEAD
-      subtree: be stricter about validating flags
-
-L=C3=A9na=C3=AFc Huard (1):
-      maintenance: fix two memory leaks
-
-Martin =C3=85gren (2):
-      git-repack.txt: remove spurious ")"
-      pretty-formats.txt: add missing space
-
-Matheus Tavares (32):
-      convert: fail gracefully upon missing clean cmd on required filter
-      symlinks: update comment on threaded_check_leading_path()
-      checkout: don't follow symlinks when removing entries
-      entry: extract a header file for entry.c functions
-      entry: make fstat_output() and read_blob_entry() public
-      entry: extract update_ce_after_write() from write_entry()
-      entry: move conv_attrs lookup up to checkout_entry()
-      entry: add checkout_entry_ca() taking preloaded conv_attrs
-      add: include magic part of pathspec on --refresh error
-      t3705: add tests for `git add` in sparse checkouts
-      add: make --chmod and --renormalize honor sparse checkouts
-      pathspec: allow to ignore SKIP_WORKTREE entries on index matching
-      refresh_index(): add flag to ignore SKIP_WORKTREE entries
-      add: warn when asked to update SKIP_WORKTREE entries
-      rm: honor sparse checkout patterns
-      pkt-line: do not report packet write errors twice
-      unpack-trees: add basic support for parallel checkout
-      parallel-checkout: make it truly parallel
-      parallel-checkout: add configuration options
-      parallel-checkout: support progress displaying
-      parallel-checkout: add design documentation
-      make_transient_cache_entry(): optionally alloc from mem_pool
-      builtin/checkout.c: complete parallel checkout support
-      parallel-checkout: add tests related to path collisions
-      t0028: extract encoding helpers to lib-encoding.sh
-      checkout-index: add parallel checkout support
-      parallel-checkout: add tests related to .gitattributes
-      parallel-checkout: add tests for basic operations
-      ci: run test round with parallel-checkout enabled
-      clean: remove unnecessary variable
-      init: fix bug regarding ~/ expansion in init.templateDir
-      t2080: fix cp invocation to copy symlinks instead of following them
-
-Matthias R=C3=BCster (1):
-      l10n: de.po: Update German translation for Git v2.32.0
-
-Nicholas Clark (1):
-      submodule update: silence underlying fetch with "--quiet"
-
-Nipunn Koorapati (3):
-      fsmonitor: skip lstat deletion check during git diff-index
-      fsmonitor: add assertion that fsmonitor is valid to check_removed
-      fsmonitor: add perf test for git diff HEAD
-
-Patrick Steinhardt (17):
-      githooks.txt: replace mentions of SHA-1 specific properties
-      githooks.txt: clarify documentation on reference-transaction hook
-      pack-bitmap: avoid traversal of objects referenced by uninteresting=
- tag
-      uploadpack.txt: document implication of `uploadpackfilter.allow`
-      revision: mark commit parents as NOT_USER_GIVEN
-      list-objects: move tag processing into its own function
-      list-objects: support filtering by tag and commit
-      list-objects: implement object type filter
-      pack-bitmap: implement object type filter
-      pack-bitmap: implement combined filter
-      rev-list: allow filtering of provided items
-      config: rename `git_etc_config()`
-      config: unify code paths to get global config paths
-      config: allow overriding of global and system configuration
-      t1300: fix unset of GIT_CONFIG_NOSYSTEM leaking into subsequent tes=
-ts
-      git.txt: fix synopsis of `--config-env` missing the equals sign
-      git: support separate arg for `--config-env`'s value
-
-Peter Krefting (1):
-      l10n: sv.po: Update Swedish translation (5204t0f0u)
-
-Peter Oliver (1):
-      doc: point to diff attribute in patch format docs
-
-Phillip Wood (6):
-      rebase -i: only write fixup-message when it's needed
-      sequencer: factor out code to append squash message
-      rebase -i: comment out squash!/fixup! subjects from squash message
-      word diff: handle zero length matches
-      patience diff: remove unnecessary string comparisons
-      patience diff: remove unused variable
-
-Rafael Silva (1):
-      repack: avoid loosening promisor objects in partial clones
-
-Ramkumar Ramachandra (1):
-      Add entry for Ramkumar Ramachandra
-
-Ramsay Jones (1):
-      bisect--helper: use BISECT_TERMS in 'bisect skip' command
-
-Ren=C3=A9 Scharfe (13):
-      pretty: add %(describe)
-      pretty: add merge and exclude options to %(describe)
-      t4205: assert %(describe) test coverage
-      pretty: document multiple %(describe) being inconsistent
-      fix xcalloc() argument order
-      archive: expand only a single %(describe) per archive
-      git-compat-util.h: drop trailing semicolon from macro definition
-      use CALLOC_ARRAY
-      vcs-svn: remove header files as well
-      block-sha1: drop trailing semicolon from macro definition
-      mem-pool: drop trailing semicolon from macro definition
-      daemon: sanitize all directory separators
-      parallel-checkout: avoid dash local bug in tests
-
-Robert Foss (1):
-      git-send-email: Respect core.hooksPath setting
-
-SZEDER G=C3=A1bor (1):
-      Makefile: add missing dependencies of 'config-list.h'
-
-Sardorbek Imomaliev (1):
-      work around zsh comment in __git_complete_worktree_paths
-
-Sergey Organov (5):
-      diff-merges: introduce --diff-merges=3Don
-      diff-merges: refactor set_diff_merges()
-      diff-merges: adapt -m to enable default diff format
-      diff-merges: introduce log.diffMerges config variable
-      doc/diff-options: document new --diff-merges features
-
-Shubham Verma (1):
-      t9801: replace test -f with test_path_is_file
-
-Taylor Blau (28):
-      packfile: introduce 'find_kept_pack_entry()'
-      revision: learn '--no-kept-objects'
-      builtin/pack-objects.c: add '--stdin-packs' option
-      builtin/repack.c: add '--geometric' option
-      builtin/repack.c: do not repack single packs with --geometric
-      t7703: test --geometric repack with loose objects
-      builtin/repack.c: assign pack split later
-      builtin/repack.c: be more conservative with unsigned overflows
-      Documentation/git-push.txt: correct configuration typo
-      builtin/pack-objects.c: ignore missing links with --stdin-packs
-      builtin/multi-pack-index.c: inline 'flags' with options
-      builtin/multi-pack-index.c: don't handle 'progress' separately
-      builtin/multi-pack-index.c: define common usage with a macro
-      builtin/multi-pack-index.c: split sub-commands
-      builtin/multi-pack-index.c: don't enter bogus cmd_mode
-      builtin/multi-pack-index.c: display usage on unrecognized command
-      t/helper/test-read-midx.c: add '--show-objects'
-      pack-bitmap: add 'test_bitmap_commits()' helper
-      t/helper/test-bitmap.c: initial commit
-      builtin/pack-objects.c: respect 'pack.preferBitmapTips'
-      midx: allow marking a pack as preferred
-      midx: don't free midx_name early
-      midx: keep track of the checksum
-      midx: make some functions non-static
-      Documentation/technical: describe multi-pack reverse indexes
-      pack-revindex: read multi-pack reverse indexes
-      pack-write.c: extract 'write_rev_file_order'
-      pack-revindex: write multi-pack reverse indexes
-
-Todd Zullinger (1):
-      t7500: remove non-existant C_LOCALE_OUTPUT prereq
-
-Torsten B=C3=B6gershausen (3):
-      git mv foo FOO ; git mv foo bar gave an assert
-      precompose_utf8: make precompose_string_if_needed() public
-      macOS: precompose startup_info->prefix
-
-Tr=E1=BA=A7n Ng=E1=BB=8Dc Qu=C3=A2n (1):
-      l10n: vi.po(5204t): Updated Vietnamese translation for v2.32.0
-
-Ville Skytt=C3=A4 (2):
-      completion: audit and guard $GIT_* against unset use
-      completion: avoid aliased command lookup error in nounset mode
-
-Vincent Tam (1):
-      l10n: fr.po fixed inconsistencies
-
-Will Chandler (1):
-      refs: cleanup directories when deleting packed ref
-
-Wolfgang M=C3=BCller (1):
-      rev-parse: fix segfault with missing --path-format argument
-
-Yi-Jyun Pan (2):
-      l10n: zh_TW.po: v2.32.0 round 1 (11 untranslated)
-      l10n: zh_TW.po: localized
-
-ZheNing Hu (8):
-      commit: add --trailer option
-      format-patch: allow a non-integral version numbers
-      ref-filter: get rid of show_ref_array_item
-      ref-filter: reuse output buffer
-      pretty: provide human date format
-      docs: correct descript of trailer.<token>.command
-      trailer: add new .cmd config option
-      ref-filter: fix read invalid union member bug
-
-brian m. carlson (14):
-      builtin/init-db: handle bare clones when core.bare set to false
-      hash: add an algo member to struct object_id
-      Always use oidread to read into struct object_id
-      http-push: set algorithm when reading object ID
-      hash: add a function to finalize object IDs
-      Use the final_oid_fn to finalize hashing of object IDs
-      builtin/pack-redundant: avoid casting buffers to struct object_id
-      hash: set, copy, and use algo field in struct object_id
-      hash: provide per-algorithm null OIDs
-      builtin/show-index: set the algorithm for object IDs
-      commit-graph: don't store file hashes as struct object_id
-      builtin/pack-objects: avoid using struct object_id for pack hash
-      hex: default to the_hash_algo on zero algorithm value
-      hex: print objects using the hash algorithm member
-
-rlespinasse (1):
-      l10n: fr: fixed inconsistencies
-
-=C3=86var Arnfj=C3=B6r=C3=B0 Bjarmason (97):
-      grep/pcre2: drop needless assignment + assert() on opt->pcre2
-      grep/pcre2: drop needless assignment to NULL
-      grep/pcre2: correct reference to grep_init() in comment
-      grep/pcre2: prepare to add debugging to pcre2_malloc()
-      grep/pcre2: add GREP_PCRE2_DEBUG_MALLOC debug mode
-      grep/pcre2: use compile-time PCREv2 version test
-      grep/pcre2: use pcre2_maketables_free() function
-      grep/pcre2: actually make pcre2 use custom allocator
-      grep/pcre2: move back to thread-only PCREv2 structures
-      grep/pcre2: move definitions of pcre2_{malloc,free}
-      Makefile: guard against TEST_OBJS in the environment
-      Makefile: split up long OBJECTS line
-      Makefile: sort OBJECTS assignment for subsequent change
-      Makefile: split OBJECTS into OBJECTS and GIT_OBJS
-      Makefile: add {program,xdiff,test,git,fuzz}-objs & objects targets
-      remote: add camel-cased *.tagOpt key, like clone
-      remote: write camel-cased *.pushRemote on rename
-      fsck.c: refactor and rename common config callback
-      show tests: add test for "git show <tree>"
-      ls-files tests: add meaningful --with-tree tests
-      tree.c API: move read_tree() into builtin/ls-files.c
-      ls-files: don't needlessly pass around stage variable
-      ls-files: refactor away read_tree()
-      archive: stop passing "stage" through read_tree_recursive()
-      tree.h API: expose read_tree_1() as read_tree_at()
-      tree.h API: simplify read_tree_recursive() signature
-      diff --no-index tests: add test for --exit-code
-      diff --no-index tests: test mode normalization
-      rebase: remove transitory rebase.useBuiltin setting & env
-      mktag tests: fix broken "&&" chain
-      fsck.h: use designed initializers for FSCK_OPTIONS_{DEFAULT,STRICT}
-      fsck.h: use "enum object_type" instead of "int"
-      fsck.c: rename variables in fsck_set_msg_type() for less confusion
-      fsck.c: remove (mostly) redundant append_msg_id() function
-      fsck.c: rename remaining fsck_msg_id "id" to "msg_id"
-      fsck.c: refactor fsck_msg_type() to limit scope of "int msg_type"
-      fsck.h: move FSCK_{FATAL,INFO,ERROR,WARN,IGNORE} into an enum
-      fsck.h: re-order and re-assign "enum fsck_msg_type"
-      fsck.c: call parse_msg_type() early in fsck_set_msg_type()
-      fsck.c: undefine temporary STR macro after use
-      fsck.c: give "FOREACH_MSG_ID" a more specific name
-      fsck.[ch]: move FOREACH_FSCK_MSG_ID & fsck_msg_id from *.c to *.h
-      fsck.c: pass along the fsck_msg_id in the fsck_error callback
-      fsck.c: add an fsck_set_msg_type() API that takes enums
-      fsck.c: move gitmodules_{found,done} into fsck_options
-      fetch-pack: don't needlessly copy fsck_options
-      fetch-pack: use file-scope static struct for fsck_options
-      fetch-pack: use new fsck API to printing dangling submodules
-      Makefile: add QUIET_GEN to "tags" and "TAGS" targets
-      git-send-email: replace "map" in void context with "for"
-      git-send-email: test full --validate output
-      git-send-email: refactor duplicate $? checks into a function
-      git-send-email: improve --validate error output
-      bash completion: complete CHERRY_PICK_HEAD
-      config.c: remove last remnant of GIT_TEST_GETTEXT_POISON
-      userdiff style: re-order drivers in alphabetical order
-      userdiff style: declare patterns with consistent style
-      userdiff style: normalize pascal regex declaration
-      userdiff: add and use for_each_userdiff_driver()
-      userdiff tests: explicitly test "default" pattern
-      userdiff tests: list builtin drivers via test-tool
-      userdiff: remove support for "broken" tests
-      blame tests: don't rely on t/t4018/ directory
-      blame tests: simplify userdiff driver test
-      rebase tests: camel-case rebase.rescheduleFailedExec consistently
-      rebase: don't override --no-reschedule-failed-exec with config
-      Documentation/Makefile: make $(wildcard howto/*.txt) a var
-      Documentation/Makefile: make doc.dep dependencies a variable again
-      doc lint: Perl "strict" and "warnings" in lint-gitlink.perl
-      doc lint: fix bugs in, simplify and improve lint script
-      doc lint: lint and fix missing "GIT" end sections
-      doc lint: lint relative section order
-      docs: fix linting issues due to incorrect relative section order
-      svn tests: remove legacy re-setup from init-clone test
-      svn tests: refactor away a "set -e" in test body
-      tests: remove all uses of test_i18cmp
-      usage.c: don't copy/paste the same comment three times
-      api docs: document BUG() in api-error-handling.txt
-      api docs: document that BUG() emits a trace2 error event
-      pretty tests: simplify %aI/%cI date format test
-      pretty tests: give --date/format tests a better description
-      sparse-index.c: remove set_index_sparse_config()
-      streaming.c: avoid forward declarations
-      streaming.c: remove enum/function/vtbl indirection
-      streaming.c: remove {open,close,read}_method_decl() macros
-      streaming.c: stop passing around "object_info *" to open()
-      streaming.c: move {open,close,read} from vtable to "struct git_istr=
-eam"
-      Makefile: don't re-define PERL_DEFINES
-      Makefile: regenerate perl/build/* if GIT-PERL-DEFINES changes
-      Makefile: regenerate *.pm on NO_PERL_CPAN_FALLBACKS change
-      perl: use mock i18n functions under NO_GETTEXT=3DY
-      Makefile: make PERL_DEFINES recursively expanded
-      send-email: fix missing error message regression
-      send-email: don't needlessly abs_path() the core.hooksPath
-      send-email: move "hooks_path" invocation to git-send-email.perl
-      pack-objects: move static inline from a header to the sole consumer
-      builtin/fsck.c: don't conflate "int" and "enum" in callback
-
-=C3=98ystein Walle (2):
-      transport: respect verbosity when setting upstream
-      add: die if both --dry-run and --interactive are given
-
-=C4=90o=C3=A0n Tr=E1=BA=A7n C=C3=B4ng Danh (6):
-      mailinfo: load default metainfo_charset lazily
-      mailinfo: stop parsing options manually
-      mailinfo: warn if CRLF found in decoded base64/QP email
-      mailinfo: allow squelching quoted CRLF warning
-      mailinfo: allow stripping quoted CR without warning
-      am: learn to process quoted lines that ends with CRLF
-
+The following commit has been merged into the irq/irqchip-next branch of irqchip:
+
+Commit-ID:     dcb10b426d70fa739927103bec8ae544180fc073
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/dcb10b426d70fa739927103bec8ae544180fc073
+Author:        Marc Zyngier <maz@kernel.org>
+AuthorDate:    Tue, 04 May 2021 17:42:18 +01:00
+Committer:     Marc Zyngier <maz@kernel.org>
+CommitterDate: Sun, 06 Jun 2021 13:20:51 +01:00
+
+irqchip: Bulk conversion to generic_handle_domain_irq()
+
+Wherever possible, replace constructs that match either
+generic_handle_irq(irq_find_mapping()) or
+generic_handle_irq(irq_linear_revmap()) to a single call to
+generic_handle_domain_irq().
+
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+---
+ drivers/irqchip/exynos-combiner.c      | 10 ++++------
+ drivers/irqchip/irq-al-fic.c           |  7 ++-----
+ drivers/irqchip/irq-armada-370-xp.c    | 19 ++++++++-----------
+ drivers/irqchip/irq-aspeed-i2c-ic.c    |  8 +++-----
+ drivers/irqchip/irq-aspeed-scu-ic.c    |  6 ++----
+ drivers/irqchip/irq-ath79-misc.c       |  2 +-
+ drivers/irqchip/irq-bcm2835.c          |  2 +-
+ drivers/irqchip/irq-bcm2836.c          |  2 +-
+ drivers/irqchip/irq-bcm7038-l1.c       |  6 ++----
+ drivers/irqchip/irq-bcm7120-l2.c       |  6 ++----
+ drivers/irqchip/irq-brcmstb-l2.c       |  2 +-
+ drivers/irqchip/irq-dw-apb-ictl.c      |  3 +--
+ drivers/irqchip/irq-gic.c              | 13 +++++--------
+ drivers/irqchip/irq-goldfish-pic.c     |  5 ++---
+ drivers/irqchip/irq-i8259.c            |  4 +---
+ drivers/irqchip/irq-idt3243x.c         |  6 ++----
+ drivers/irqchip/irq-imgpdc.c           | 11 ++++-------
+ drivers/irqchip/irq-imx-intmux.c       |  9 +++------
+ drivers/irqchip/irq-imx-irqsteer.c     |  9 +++------
+ drivers/irqchip/irq-ingenic-tcu.c      |  2 +-
+ drivers/irqchip/irq-ingenic.c          |  3 +--
+ drivers/irqchip/irq-keystone.c         | 14 ++++++--------
+ drivers/irqchip/irq-loongson-htpic.c   |  2 +-
+ drivers/irqchip/irq-loongson-htvec.c   |  4 ++--
+ drivers/irqchip/irq-loongson-liointc.c |  2 +-
+ drivers/irqchip/irq-lpc32xx.c          |  2 +-
+ drivers/irqchip/irq-ls-scfg-msi.c      |  6 ++----
+ drivers/irqchip/irq-ls1x.c             |  2 +-
+ drivers/irqchip/irq-mips-gic.c         | 20 ++++++++++----------
+ drivers/irqchip/irq-mscc-ocelot.c      |  2 +-
+ drivers/irqchip/irq-mvebu-pic.c        |  7 ++-----
+ drivers/irqchip/irq-mvebu-sei.c        | 13 ++++---------
+ drivers/irqchip/irq-orion.c            |  2 +-
+ drivers/irqchip/irq-partition-percpu.c |  9 +++------
+ drivers/irqchip/irq-pruss-intc.c       |  9 +++------
+ drivers/irqchip/irq-realtek-rtl.c      |  2 +-
+ drivers/irqchip/irq-renesas-irqc.c     |  2 +-
+ drivers/irqchip/irq-sifive-plic.c      |  8 +++-----
+ drivers/irqchip/irq-stm32-exti.c       | 10 ++++------
+ drivers/irqchip/irq-sunxi-nmi.c        |  3 +--
+ drivers/irqchip/irq-tb10x.c            |  2 +-
+ drivers/irqchip/irq-ti-sci-inta.c      |  9 +++------
+ drivers/irqchip/irq-ts4800.c           |  3 +--
+ drivers/irqchip/irq-versatile-fpga.c   |  2 +-
+ drivers/irqchip/irq-vic.c              |  2 +-
+ drivers/irqchip/irq-xilinx-intc.c      | 22 +++++-----------------
+ drivers/irqchip/qcom-irq-combiner.c    |  6 +-----
+ 47 files changed, 111 insertions(+), 189 deletions(-)
+
+diff --git a/drivers/irqchip/exynos-combiner.c b/drivers/irqchip/exynos-combiner.c
+index 0b85d9a..1410612 100644
+--- a/drivers/irqchip/exynos-combiner.c
++++ b/drivers/irqchip/exynos-combiner.c
+@@ -66,8 +66,9 @@ static void combiner_handle_cascade_irq(struct irq_desc *desc)
+ {
+ 	struct combiner_chip_data *chip_data = irq_desc_get_handler_data(desc);
+ 	struct irq_chip *chip = irq_desc_get_chip(desc);
+-	unsigned int cascade_irq, combiner_irq;
++	unsigned int combiner_irq;
+ 	unsigned long status;
++	int ret;
+ 
+ 	chained_irq_enter(chip, desc);
+ 
+@@ -80,12 +81,9 @@ static void combiner_handle_cascade_irq(struct irq_desc *desc)
+ 		goto out;
+ 
+ 	combiner_irq = chip_data->hwirq_offset + __ffs(status);
+-	cascade_irq = irq_find_mapping(combiner_irq_domain, combiner_irq);
+-
+-	if (unlikely(!cascade_irq))
++	ret = generic_handle_domain_irq(combiner_irq_domain, combiner_irq);
++	if (unlikely(ret))
+ 		handle_bad_irq(desc);
+-	else
+-		generic_handle_irq(cascade_irq);
+ 
+  out:
+ 	chained_irq_exit(chip, desc);
+diff --git a/drivers/irqchip/irq-al-fic.c b/drivers/irqchip/irq-al-fic.c
+index 0b0a737..886de02 100644
+--- a/drivers/irqchip/irq-al-fic.c
++++ b/drivers/irqchip/irq-al-fic.c
+@@ -111,7 +111,6 @@ static void al_fic_irq_handler(struct irq_desc *desc)
+ 	struct irq_chip *irqchip = irq_desc_get_chip(desc);
+ 	struct irq_chip_generic *gc = irq_get_domain_generic_chip(domain, 0);
+ 	unsigned long pending;
+-	unsigned int irq;
+ 	u32 hwirq;
+ 
+ 	chained_irq_enter(irqchip, desc);
+@@ -119,10 +118,8 @@ static void al_fic_irq_handler(struct irq_desc *desc)
+ 	pending = readl_relaxed(fic->base + AL_FIC_CAUSE);
+ 	pending &= ~gc->mask_cache;
+ 
+-	for_each_set_bit(hwirq, &pending, NR_FIC_IRQS) {
+-		irq = irq_find_mapping(domain, hwirq);
+-		generic_handle_irq(irq);
+-	}
++	for_each_set_bit(hwirq, &pending, NR_FIC_IRQS)
++		generic_handle_domain_irq(domain, hwirq);
+ 
+ 	chained_irq_exit(irqchip, desc);
+ }
+diff --git a/drivers/irqchip/irq-armada-370-xp.c b/drivers/irqchip/irq-armada-370-xp.c
+index 32938df..7557ab5 100644
+--- a/drivers/irqchip/irq-armada-370-xp.c
++++ b/drivers/irqchip/irq-armada-370-xp.c
+@@ -582,20 +582,19 @@ static void armada_370_xp_handle_msi_irq(struct pt_regs *regs, bool is_chained)
+ 
+ 	for (msinr = PCI_MSI_DOORBELL_START;
+ 	     msinr < PCI_MSI_DOORBELL_END; msinr++) {
+-		int irq;
++		unsigned int irq;
+ 
+ 		if (!(msimask & BIT(msinr)))
+ 			continue;
+ 
+-		if (is_chained) {
+-			irq = irq_find_mapping(armada_370_xp_msi_inner_domain,
+-					       msinr - PCI_MSI_DOORBELL_START);
+-			generic_handle_irq(irq);
+-		} else {
+-			irq = msinr - PCI_MSI_DOORBELL_START;
++		irq = msinr - PCI_MSI_DOORBELL_START;
++
++		if (is_chained)
++			generic_handle_domain_irq(armada_370_xp_msi_inner_domain,
++						  irq);
++		else
+ 			handle_domain_irq(armada_370_xp_msi_inner_domain,
+ 					  irq, regs);
+-		}
+ 	}
+ }
+ #else
+@@ -606,7 +605,6 @@ static void armada_370_xp_mpic_handle_cascade_irq(struct irq_desc *desc)
+ {
+ 	struct irq_chip *chip = irq_desc_get_chip(desc);
+ 	unsigned long irqmap, irqn, irqsrc, cpuid;
+-	unsigned int cascade_irq;
+ 
+ 	chained_irq_enter(chip, desc);
+ 
+@@ -628,8 +626,7 @@ static void armada_370_xp_mpic_handle_cascade_irq(struct irq_desc *desc)
+ 			continue;
+ 		}
+ 
+-		cascade_irq = irq_find_mapping(armada_370_xp_mpic_domain, irqn);
+-		generic_handle_irq(cascade_irq);
++		generic_handle_domain_irq(armada_370_xp_mpic_domain, irqn);
+ 	}
+ 
+ 	chained_irq_exit(chip, desc);
+diff --git a/drivers/irqchip/irq-aspeed-i2c-ic.c b/drivers/irqchip/irq-aspeed-i2c-ic.c
+index 8d591c1..a47db16 100644
+--- a/drivers/irqchip/irq-aspeed-i2c-ic.c
++++ b/drivers/irqchip/irq-aspeed-i2c-ic.c
+@@ -34,14 +34,12 @@ static void aspeed_i2c_ic_irq_handler(struct irq_desc *desc)
+ 	struct aspeed_i2c_ic *i2c_ic = irq_desc_get_handler_data(desc);
+ 	struct irq_chip *chip = irq_desc_get_chip(desc);
+ 	unsigned long bit, status;
+-	unsigned int bus_irq;
+ 
+ 	chained_irq_enter(chip, desc);
+ 	status = readl(i2c_ic->base);
+-	for_each_set_bit(bit, &status, ASPEED_I2C_IC_NUM_BUS) {
+-		bus_irq = irq_find_mapping(i2c_ic->irq_domain, bit);
+-		generic_handle_irq(bus_irq);
+-	}
++	for_each_set_bit(bit, &status, ASPEED_I2C_IC_NUM_BUS)
++		generic_handle_domain_irq(i2c_ic->irq_domain, bit);
++
+ 	chained_irq_exit(chip, desc);
+ }
+ 
+diff --git a/drivers/irqchip/irq-aspeed-scu-ic.c b/drivers/irqchip/irq-aspeed-scu-ic.c
+index c90a334..f3c6855 100644
+--- a/drivers/irqchip/irq-aspeed-scu-ic.c
++++ b/drivers/irqchip/irq-aspeed-scu-ic.c
+@@ -44,7 +44,6 @@ struct aspeed_scu_ic {
+ 
+ static void aspeed_scu_ic_irq_handler(struct irq_desc *desc)
+ {
+-	unsigned int irq;
+ 	unsigned int sts;
+ 	unsigned long bit;
+ 	unsigned long enabled;
+@@ -74,9 +73,8 @@ static void aspeed_scu_ic_irq_handler(struct irq_desc *desc)
+ 	max = scu_ic->num_irqs + bit;
+ 
+ 	for_each_set_bit_from(bit, &status, max) {
+-		irq = irq_find_mapping(scu_ic->irq_domain,
+-				       bit - scu_ic->irq_shift);
+-		generic_handle_irq(irq);
++		generic_handle_domain_irq(scu_ic->irq_domain,
++					  bit - scu_ic->irq_shift);
+ 
+ 		regmap_update_bits(scu_ic->scu, scu_ic->reg, mask,
+ 				   BIT(bit + ASPEED_SCU_IC_STATUS_SHIFT));
+diff --git a/drivers/irqchip/irq-ath79-misc.c b/drivers/irqchip/irq-ath79-misc.c
+index 3d641bb..92f001a 100644
+--- a/drivers/irqchip/irq-ath79-misc.c
++++ b/drivers/irqchip/irq-ath79-misc.c
+@@ -50,7 +50,7 @@ static void ath79_misc_irq_handler(struct irq_desc *desc)
+ 	while (pending) {
+ 		int bit = __ffs(pending);
+ 
+-		generic_handle_irq(irq_linear_revmap(domain, bit));
++		generic_handle_domain_irq(domain, bit);
+ 		pending &= ~BIT(bit);
+ 	}
+ 
+diff --git a/drivers/irqchip/irq-bcm2835.c b/drivers/irqchip/irq-bcm2835.c
+index a1e004a..adc1556 100644
+--- a/drivers/irqchip/irq-bcm2835.c
++++ b/drivers/irqchip/irq-bcm2835.c
+@@ -254,7 +254,7 @@ static void bcm2836_chained_handle_irq(struct irq_desc *desc)
+ 	u32 hwirq;
+ 
+ 	while ((hwirq = get_next_armctrl_hwirq()) != ~0)
+-		generic_handle_irq(irq_linear_revmap(intc.domain, hwirq));
++		generic_handle_domain_irq(intc.domain, hwirq);
+ }
+ 
+ IRQCHIP_DECLARE(bcm2835_armctrl_ic, "brcm,bcm2835-armctrl-ic",
+diff --git a/drivers/irqchip/irq-bcm2836.c b/drivers/irqchip/irq-bcm2836.c
+index 25c9a9c..501facd 100644
+--- a/drivers/irqchip/irq-bcm2836.c
++++ b/drivers/irqchip/irq-bcm2836.c
+@@ -161,7 +161,7 @@ static void bcm2836_arm_irqchip_handle_ipi(struct irq_desc *desc)
+ 	mbox_val = readl_relaxed(intc.base + LOCAL_MAILBOX0_CLR0 + 16 * cpu);
+ 	if (mbox_val) {
+ 		int hwirq = ffs(mbox_val) - 1;
+-		generic_handle_irq(irq_find_mapping(ipi_domain, hwirq));
++		generic_handle_domain_irq(ipi_domain, hwirq);
+ 	}
+ 
+ 	chained_irq_exit(chip, desc);
+diff --git a/drivers/irqchip/irq-bcm7038-l1.c b/drivers/irqchip/irq-bcm7038-l1.c
+index 9dc9bf8..a035c38 100644
+--- a/drivers/irqchip/irq-bcm7038-l1.c
++++ b/drivers/irqchip/irq-bcm7038-l1.c
+@@ -145,10 +145,8 @@ static void bcm7038_l1_irq_handle(struct irq_desc *desc)
+ 			  ~cpu->mask_cache[idx];
+ 		raw_spin_unlock_irqrestore(&intc->lock, flags);
+ 
+-		for_each_set_bit(hwirq, &pending, IRQS_PER_WORD) {
+-			generic_handle_irq(irq_find_mapping(intc->domain,
+-							    base + hwirq));
+-		}
++		for_each_set_bit(hwirq, &pending, IRQS_PER_WORD)
++			generic_handle_domain_irq(intc->domain, base + hwirq);
+ 	}
+ 
+ 	chained_irq_exit(chip, desc);
+diff --git a/drivers/irqchip/irq-bcm7120-l2.c b/drivers/irqchip/irq-bcm7120-l2.c
+index ad59656..f23d765 100644
+--- a/drivers/irqchip/irq-bcm7120-l2.c
++++ b/drivers/irqchip/irq-bcm7120-l2.c
+@@ -74,10 +74,8 @@ static void bcm7120_l2_intc_irq_handle(struct irq_desc *desc)
+ 					    data->irq_map_mask[idx];
+ 		irq_gc_unlock(gc);
+ 
+-		for_each_set_bit(hwirq, &pending, IRQS_PER_WORD) {
+-			generic_handle_irq(irq_find_mapping(b->domain,
+-					   base + hwirq));
+-		}
++		for_each_set_bit(hwirq, &pending, IRQS_PER_WORD)
++			generic_handle_domain_irq(b->domain, base + hwirq);
+ 	}
+ 
+ 	chained_irq_exit(chip, desc);
+diff --git a/drivers/irqchip/irq-brcmstb-l2.c b/drivers/irqchip/irq-brcmstb-l2.c
+index cdd6a42..8e09115 100644
+--- a/drivers/irqchip/irq-brcmstb-l2.c
++++ b/drivers/irqchip/irq-brcmstb-l2.c
+@@ -110,7 +110,7 @@ static void brcmstb_l2_intc_irq_handle(struct irq_desc *desc)
+ 	do {
+ 		irq = ffs(status) - 1;
+ 		status &= ~(1 << irq);
+-		generic_handle_irq(irq_linear_revmap(b->domain, irq));
++		generic_handle_domain_irq(b->domain, irq);
+ 	} while (status);
+ out:
+ 	chained_irq_exit(chip, desc);
+diff --git a/drivers/irqchip/irq-dw-apb-ictl.c b/drivers/irqchip/irq-dw-apb-ictl.c
+index 54b09d6..a67266e 100644
+--- a/drivers/irqchip/irq-dw-apb-ictl.c
++++ b/drivers/irqchip/irq-dw-apb-ictl.c
+@@ -62,9 +62,8 @@ static void dw_apb_ictl_handle_irq_cascaded(struct irq_desc *desc)
+ 
+ 		while (stat) {
+ 			u32 hwirq = ffs(stat) - 1;
+-			u32 virq = irq_find_mapping(d, gc->irq_base + hwirq);
++			generic_handle_domain_irq(d, gc->irq_base + hwirq);
+ 
+-			generic_handle_irq(virq);
+ 			stat &= ~BIT(hwirq);
+ 		}
+ 	}
+diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
+index b1d9c22..46c9c5f 100644
+--- a/drivers/irqchip/irq-gic.c
++++ b/drivers/irqchip/irq-gic.c
+@@ -375,8 +375,9 @@ static void gic_handle_cascade_irq(struct irq_desc *desc)
+ {
+ 	struct gic_chip_data *chip_data = irq_desc_get_handler_data(desc);
+ 	struct irq_chip *chip = irq_desc_get_chip(desc);
+-	unsigned int cascade_irq, gic_irq;
++	unsigned int gic_irq;
+ 	unsigned long status;
++	int ret;
+ 
+ 	chained_irq_enter(chip, desc);
+ 
+@@ -386,14 +387,10 @@ static void gic_handle_cascade_irq(struct irq_desc *desc)
+ 	if (gic_irq == GICC_INT_SPURIOUS)
+ 		goto out;
+ 
+-	cascade_irq = irq_find_mapping(chip_data->domain, gic_irq);
+-	if (unlikely(gic_irq < 32 || gic_irq > 1020)) {
++	isb();
++	ret = generic_handle_domain_irq(chip_data->domain, gic_irq);
++	if (unlikely(ret))
+ 		handle_bad_irq(desc);
+-	} else {
+-		isb();
+-		generic_handle_irq(cascade_irq);
+-	}
+-
+  out:
+ 	chained_irq_exit(chip, desc);
+ }
+diff --git a/drivers/irqchip/irq-goldfish-pic.c b/drivers/irqchip/irq-goldfish-pic.c
+index 4f02153..513f6ed 100644
+--- a/drivers/irqchip/irq-goldfish-pic.c
++++ b/drivers/irqchip/irq-goldfish-pic.c
+@@ -34,15 +34,14 @@ static void goldfish_pic_cascade(struct irq_desc *desc)
+ {
+ 	struct goldfish_pic_data *gfpic = irq_desc_get_handler_data(desc);
+ 	struct irq_chip *host_chip = irq_desc_get_chip(desc);
+-	u32 pending, hwirq, virq;
++	u32 pending, hwirq;
+ 
+ 	chained_irq_enter(host_chip, desc);
+ 
+ 	pending = readl(gfpic->base + GFPIC_REG_IRQ_PENDING);
+ 	while (pending) {
+ 		hwirq = __fls(pending);
+-		virq = irq_linear_revmap(gfpic->irq_domain, hwirq);
+-		generic_handle_irq(virq);
++		generic_handle_domain_irq(gfpic->irq_domain, hwirq);
+ 		pending &= ~(1 << hwirq);
+ 	}
+ 
+diff --git a/drivers/irqchip/irq-i8259.c b/drivers/irqchip/irq-i8259.c
+index b6f6aa7..b70ce0d 100644
+--- a/drivers/irqchip/irq-i8259.c
++++ b/drivers/irqchip/irq-i8259.c
+@@ -333,13 +333,11 @@ static void i8259_irq_dispatch(struct irq_desc *desc)
+ {
+ 	struct irq_domain *domain = irq_desc_get_handler_data(desc);
+ 	int hwirq = i8259_poll();
+-	unsigned int irq;
+ 
+ 	if (hwirq < 0)
+ 		return;
+ 
+-	irq = irq_linear_revmap(domain, hwirq);
+-	generic_handle_irq(irq);
++	generic_handle_domain_irq(domain, hwirq);
+ }
+ 
+ int __init i8259_of_init(struct device_node *node, struct device_node *parent)
+diff --git a/drivers/irqchip/irq-idt3243x.c b/drivers/irqchip/irq-idt3243x.c
+index f099682..0732a0e 100644
+--- a/drivers/irqchip/irq-idt3243x.c
++++ b/drivers/irqchip/irq-idt3243x.c
+@@ -28,7 +28,7 @@ static void idt_irq_dispatch(struct irq_desc *desc)
+ {
+ 	struct idt_pic_data *idtpic = irq_desc_get_handler_data(desc);
+ 	struct irq_chip *host_chip = irq_desc_get_chip(desc);
+-	u32 pending, hwirq, virq;
++	u32 pending, hwirq;
+ 
+ 	chained_irq_enter(host_chip, desc);
+ 
+@@ -36,9 +36,7 @@ static void idt_irq_dispatch(struct irq_desc *desc)
+ 	pending &= ~idtpic->gc->mask_cache;
+ 	while (pending) {
+ 		hwirq = __fls(pending);
+-		virq = irq_linear_revmap(idtpic->irq_domain, hwirq);
+-		if (virq)
+-			generic_handle_irq(virq);
++		generic_handle_domain_irq(idtpic->irq_domain, hwirq);
+ 		pending &= ~(1 << hwirq);
+ 	}
+ 
+diff --git a/drivers/irqchip/irq-imgpdc.c b/drivers/irqchip/irq-imgpdc.c
+index 698d07f..646dfbf 100644
+--- a/drivers/irqchip/irq-imgpdc.c
++++ b/drivers/irqchip/irq-imgpdc.c
+@@ -223,7 +223,7 @@ static void pdc_intc_perip_isr(struct irq_desc *desc)
+ {
+ 	unsigned int irq = irq_desc_get_irq(desc);
+ 	struct pdc_intc_priv *priv;
+-	unsigned int i, irq_no;
++	unsigned int i;
+ 
+ 	priv = (struct pdc_intc_priv *)irq_desc_get_handler_data(desc);
+ 
+@@ -237,14 +237,13 @@ static void pdc_intc_perip_isr(struct irq_desc *desc)
+ found:
+ 
+ 	/* pass on the interrupt */
+-	irq_no = irq_linear_revmap(priv->domain, i);
+-	generic_handle_irq(irq_no);
++	generic_handle_domain_irq(priv->domain, i);
+ }
+ 
+ static void pdc_intc_syswake_isr(struct irq_desc *desc)
+ {
+ 	struct pdc_intc_priv *priv;
+-	unsigned int syswake, irq_no;
++	unsigned int syswake;
+ 	unsigned int status;
+ 
+ 	priv = (struct pdc_intc_priv *)irq_desc_get_handler_data(desc);
+@@ -258,9 +257,7 @@ static void pdc_intc_syswake_isr(struct irq_desc *desc)
+ 		if (!(status & 1))
+ 			continue;
+ 
+-		irq_no = irq_linear_revmap(priv->domain,
+-					   syswake_to_hwirq(syswake));
+-		generic_handle_irq(irq_no);
++		generic_handle_domain_irq(priv->domain, syswake_to_hwirq(syswake));
+ 	}
+ }
+ 
+diff --git a/drivers/irqchip/irq-imx-intmux.c b/drivers/irqchip/irq-imx-intmux.c
+index 7709f97..e86ff74 100644
+--- a/drivers/irqchip/irq-imx-intmux.c
++++ b/drivers/irqchip/irq-imx-intmux.c
+@@ -182,18 +182,15 @@ static void imx_intmux_irq_handler(struct irq_desc *desc)
+ 	struct intmux_data *data = container_of(irqchip_data, struct intmux_data,
+ 						irqchip_data[idx]);
+ 	unsigned long irqstat;
+-	int pos, virq;
++	int pos;
+ 
+ 	chained_irq_enter(irq_desc_get_chip(desc), desc);
+ 
+ 	/* read the interrupt source pending status of this channel */
+ 	irqstat = readl_relaxed(data->regs + CHANIPR(idx));
+ 
+-	for_each_set_bit(pos, &irqstat, 32) {
+-		virq = irq_find_mapping(irqchip_data->domain, pos);
+-		if (virq)
+-			generic_handle_irq(virq);
+-	}
++	for_each_set_bit(pos, &irqstat, 32)
++		generic_handle_domain_irq(irqchip_data->domain, pos);
+ 
+ 	chained_irq_exit(irq_desc_get_chip(desc), desc);
+ }
+diff --git a/drivers/irqchip/irq-imx-irqsteer.c b/drivers/irqchip/irq-imx-irqsteer.c
+index 1edf769..8d91a02 100644
+--- a/drivers/irqchip/irq-imx-irqsteer.c
++++ b/drivers/irqchip/irq-imx-irqsteer.c
+@@ -122,7 +122,7 @@ static void imx_irqsteer_irq_handler(struct irq_desc *desc)
+ 	for (i = 0; i < 2; i++, hwirq += 32) {
+ 		int idx = imx_irqsteer_get_reg_index(data, hwirq);
+ 		unsigned long irqmap;
+-		int pos, virq;
++		int pos;
+ 
+ 		if (hwirq >= data->reg_num * 32)
+ 			break;
+@@ -130,11 +130,8 @@ static void imx_irqsteer_irq_handler(struct irq_desc *desc)
+ 		irqmap = readl_relaxed(data->regs +
+ 				       CHANSTATUS(idx, data->reg_num));
+ 
+-		for_each_set_bit(pos, &irqmap, 32) {
+-			virq = irq_find_mapping(data->domain, pos + hwirq);
+-			if (virq)
+-				generic_handle_irq(virq);
+-		}
++		for_each_set_bit(pos, &irqmap, 32)
++			generic_handle_domain_irq(data->domain, pos + hwirq);
+ 	}
+ 
+ 	chained_irq_exit(irq_desc_get_chip(desc), desc);
+diff --git a/drivers/irqchip/irq-ingenic-tcu.c b/drivers/irqchip/irq-ingenic-tcu.c
+index b938d1d..34a7d26 100644
+--- a/drivers/irqchip/irq-ingenic-tcu.c
++++ b/drivers/irqchip/irq-ingenic-tcu.c
+@@ -38,7 +38,7 @@ static void ingenic_tcu_intc_cascade(struct irq_desc *desc)
+ 	irq_reg &= ~irq_mask;
+ 
+ 	for_each_set_bit(i, (unsigned long *)&irq_reg, 32)
+-		generic_handle_irq(irq_linear_revmap(domain, i));
++		generic_handle_domain_irq(domain, i);
+ 
+ 	chained_irq_exit(irq_chip, desc);
+ }
+diff --git a/drivers/irqchip/irq-ingenic.c b/drivers/irqchip/irq-ingenic.c
+index ea36bb0..cee839c 100644
+--- a/drivers/irqchip/irq-ingenic.c
++++ b/drivers/irqchip/irq-ingenic.c
+@@ -49,8 +49,7 @@ static irqreturn_t intc_cascade(int irq, void *data)
+ 		while (pending) {
+ 			int bit = __fls(pending);
+ 
+-			irq = irq_linear_revmap(domain, bit + (i * 32));
+-			generic_handle_irq(irq);
++			generic_handle_domain_irq(domain, bit + (i * 32));
+ 			pending &= ~BIT(bit);
+ 		}
+ 	}
+diff --git a/drivers/irqchip/irq-keystone.c b/drivers/irqchip/irq-keystone.c
+index 8118ebe..d47c804 100644
+--- a/drivers/irqchip/irq-keystone.c
++++ b/drivers/irqchip/irq-keystone.c
+@@ -89,7 +89,7 @@ static irqreturn_t keystone_irq_handler(int irq, void *keystone_irq)
+ 	struct keystone_irq_device *kirq = keystone_irq;
+ 	unsigned long wa_lock_flags;
+ 	unsigned long pending;
+-	int src, virq;
++	int src, err;
+ 
+ 	dev_dbg(kirq->dev, "start irq %d\n", irq);
+ 
+@@ -104,16 +104,14 @@ static irqreturn_t keystone_irq_handler(int irq, void *keystone_irq)
+ 
+ 	for (src = 0; src < KEYSTONE_N_IRQ; src++) {
+ 		if (BIT(src) & pending) {
+-			virq = irq_find_mapping(kirq->irqd, src);
+-			dev_dbg(kirq->dev, "dispatch bit %d, virq %d\n",
+-				src, virq);
+-			if (!virq)
+-				dev_warn(kirq->dev, "spurious irq detected hwirq %d, virq %d\n",
+-					 src, virq);
+ 			raw_spin_lock_irqsave(&kirq->wa_lock, wa_lock_flags);
+-			generic_handle_irq(virq);
++			err = generic_handle_domain_irq(kirq->irqd, src);
+ 			raw_spin_unlock_irqrestore(&kirq->wa_lock,
+ 						   wa_lock_flags);
++
++			if (err)
++				dev_warn_ratelimited(kirq->dev, "spurious irq detected hwirq %d\n",
++						     src);
+ 		}
+ 	}
+ 
+diff --git a/drivers/irqchip/irq-loongson-htpic.c b/drivers/irqchip/irq-loongson-htpic.c
+index 1b801c4..f4abdf1 100644
+--- a/drivers/irqchip/irq-loongson-htpic.c
++++ b/drivers/irqchip/irq-loongson-htpic.c
+@@ -48,7 +48,7 @@ static void htpic_irq_dispatch(struct irq_desc *desc)
+ 			break;
+ 		}
+ 
+-		generic_handle_irq(irq_linear_revmap(priv->domain, bit));
++		generic_handle_domain_irq(priv->domain, bit);
+ 		pending &= ~BIT(bit);
+ 	}
+ 	chained_irq_exit(chip, desc);
+diff --git a/drivers/irqchip/irq-loongson-htvec.c b/drivers/irqchip/irq-loongson-htvec.c
+index 6392aaf..60a335d 100644
+--- a/drivers/irqchip/irq-loongson-htvec.c
++++ b/drivers/irqchip/irq-loongson-htvec.c
+@@ -47,8 +47,8 @@ static void htvec_irq_dispatch(struct irq_desc *desc)
+ 		while (pending) {
+ 			int bit = __ffs(pending);
+ 
+-			generic_handle_irq(irq_linear_revmap(priv->htvec_domain, bit +
+-							     VEC_COUNT_PER_REG * i));
++			generic_handle_domain_irq(priv->htvec_domain,
++						  bit + VEC_COUNT_PER_REG * i);
+ 			pending &= ~BIT(bit);
+ 			handled = true;
+ 		}
+diff --git a/drivers/irqchip/irq-loongson-liointc.c b/drivers/irqchip/irq-loongson-liointc.c
+index 8ccb304..649c583 100644
+--- a/drivers/irqchip/irq-loongson-liointc.c
++++ b/drivers/irqchip/irq-loongson-liointc.c
+@@ -73,7 +73,7 @@ static void liointc_chained_handle_irq(struct irq_desc *desc)
+ 	while (pending) {
+ 		int bit = __ffs(pending);
+ 
+-		generic_handle_irq(irq_find_mapping(gc->domain, bit));
++		generic_handle_domain_irq(gc->domain, bit);
+ 		pending &= ~BIT(bit);
+ 	}
+ 
+diff --git a/drivers/irqchip/irq-lpc32xx.c b/drivers/irqchip/irq-lpc32xx.c
+index 7d9b388..5e6f6e2 100644
+--- a/drivers/irqchip/irq-lpc32xx.c
++++ b/drivers/irqchip/irq-lpc32xx.c
+@@ -141,7 +141,7 @@ static void lpc32xx_sic_handler(struct irq_desc *desc)
+ 	while (hwirq) {
+ 		irq = __ffs(hwirq);
+ 		hwirq &= ~BIT(irq);
+-		generic_handle_irq(irq_find_mapping(ic->domain, irq));
++		generic_handle_domain_irq(ic->domain, irq);
+ 	}
+ 
+ 	chained_irq_exit(chip, desc);
+diff --git a/drivers/irqchip/irq-ls-scfg-msi.c b/drivers/irqchip/irq-ls-scfg-msi.c
+index 61dbfda..55322da 100644
+--- a/drivers/irqchip/irq-ls-scfg-msi.c
++++ b/drivers/irqchip/irq-ls-scfg-msi.c
+@@ -194,7 +194,7 @@ static void ls_scfg_msi_irq_handler(struct irq_desc *desc)
+ 	struct ls_scfg_msir *msir = irq_desc_get_handler_data(desc);
+ 	struct ls_scfg_msi *msi_data = msir->msi_data;
+ 	unsigned long val;
+-	int pos, size, virq, hwirq;
++	int pos, size, hwirq;
+ 
+ 	chained_irq_enter(irq_desc_get_chip(desc), desc);
+ 
+@@ -206,9 +206,7 @@ static void ls_scfg_msi_irq_handler(struct irq_desc *desc)
+ 	for_each_set_bit_from(pos, &val, size) {
+ 		hwirq = ((msir->bit_end - pos) << msi_data->cfg->ibs_shift) |
+ 			msir->srs;
+-		virq = irq_find_mapping(msi_data->parent, hwirq);
+-		if (virq)
+-			generic_handle_irq(virq);
++		generic_handle_domain_irq(msi_data->parent, hwirq);
+ 	}
+ 
+ 	chained_irq_exit(irq_desc_get_chip(desc), desc);
+diff --git a/drivers/irqchip/irq-ls1x.c b/drivers/irqchip/irq-ls1x.c
+index 353111a..77a3f7d 100644
+--- a/drivers/irqchip/irq-ls1x.c
++++ b/drivers/irqchip/irq-ls1x.c
+@@ -50,7 +50,7 @@ static void ls1x_chained_handle_irq(struct irq_desc *desc)
+ 	while (pending) {
+ 		int bit = __ffs(pending);
+ 
+-		generic_handle_irq(irq_find_mapping(priv->domain, bit));
++		generic_handle_domain_irq(priv->domain, bit);
+ 		pending &= ~BIT(bit);
+ 	}
+ 
+diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
+index a2cbf0a..b146e06 100644
+--- a/drivers/irqchip/irq-mips-gic.c
++++ b/drivers/irqchip/irq-mips-gic.c
+@@ -148,7 +148,7 @@ int gic_get_c0_fdc_int(void)
+ 
+ static void gic_handle_shared_int(bool chained)
+ {
+-	unsigned int intr, virq;
++	unsigned int intr;
+ 	unsigned long *pcpu_mask;
+ 	DECLARE_BITMAP(pending, GIC_MAX_INTRS);
+ 
+@@ -165,12 +165,12 @@ static void gic_handle_shared_int(bool chained)
+ 	bitmap_and(pending, pending, pcpu_mask, gic_shared_intrs);
+ 
+ 	for_each_set_bit(intr, pending, gic_shared_intrs) {
+-		virq = irq_linear_revmap(gic_irq_domain,
+-					 GIC_SHARED_TO_HWIRQ(intr));
+ 		if (chained)
+-			generic_handle_irq(virq);
++			generic_handle_domain_irq(gic_irq_domain,
++						  GIC_SHARED_TO_HWIRQ(intr));
+ 		else
+-			do_IRQ(virq);
++			do_IRQ(irq_find_mapping(gic_irq_domain,
++						GIC_SHARED_TO_HWIRQ(intr)));
+ 	}
+ }
+ 
+@@ -308,7 +308,7 @@ static struct irq_chip gic_edge_irq_controller = {
+ static void gic_handle_local_int(bool chained)
+ {
+ 	unsigned long pending, masked;
+-	unsigned int intr, virq;
++	unsigned int intr;
+ 
+ 	pending = read_gic_vl_pend();
+ 	masked = read_gic_vl_mask();
+@@ -316,12 +316,12 @@ static void gic_handle_local_int(bool chained)
+ 	bitmap_and(&pending, &pending, &masked, GIC_NUM_LOCAL_INTRS);
+ 
+ 	for_each_set_bit(intr, &pending, GIC_NUM_LOCAL_INTRS) {
+-		virq = irq_linear_revmap(gic_irq_domain,
+-					 GIC_LOCAL_TO_HWIRQ(intr));
+ 		if (chained)
+-			generic_handle_irq(virq);
++			generic_handle_domain_irq(gic_irq_domain,
++						  GIC_LOCAL_TO_HWIRQ(intr));
+ 		else
+-			do_IRQ(virq);
++			do_IRQ(irq_find_mapping(gic_irq_domain,
++						GIC_LOCAL_TO_HWIRQ(intr)));
+ 	}
+ }
+ 
+diff --git a/drivers/irqchip/irq-mscc-ocelot.c b/drivers/irqchip/irq-mscc-ocelot.c
+index 8235d98..4d0c353 100644
+--- a/drivers/irqchip/irq-mscc-ocelot.c
++++ b/drivers/irqchip/irq-mscc-ocelot.c
+@@ -107,7 +107,7 @@ static void ocelot_irq_handler(struct irq_desc *desc)
+ 	while (reg) {
+ 		u32 hwirq = __fls(reg);
+ 
+-		generic_handle_irq(irq_find_mapping(d, hwirq));
++		generic_handle_domain_irq(d, hwirq);
+ 		reg &= ~(BIT(hwirq));
+ 	}
+ 
+diff --git a/drivers/irqchip/irq-mvebu-pic.c b/drivers/irqchip/irq-mvebu-pic.c
+index eec6395..dc1cee4 100644
+--- a/drivers/irqchip/irq-mvebu-pic.c
++++ b/drivers/irqchip/irq-mvebu-pic.c
+@@ -91,15 +91,12 @@ static void mvebu_pic_handle_cascade_irq(struct irq_desc *desc)
+ 	struct mvebu_pic *pic = irq_desc_get_handler_data(desc);
+ 	struct irq_chip *chip = irq_desc_get_chip(desc);
+ 	unsigned long irqmap, irqn;
+-	unsigned int cascade_irq;
+ 
+ 	irqmap = readl_relaxed(pic->base + PIC_CAUSE);
+ 	chained_irq_enter(chip, desc);
+ 
+-	for_each_set_bit(irqn, &irqmap, BITS_PER_LONG) {
+-		cascade_irq = irq_find_mapping(pic->domain, irqn);
+-		generic_handle_irq(cascade_irq);
+-	}
++	for_each_set_bit(irqn, &irqmap, BITS_PER_LONG)
++		generic_handle_domain_irq(pic->domain, irqn);
+ 
+ 	chained_irq_exit(chip, desc);
+ }
+diff --git a/drivers/irqchip/irq-mvebu-sei.c b/drivers/irqchip/irq-mvebu-sei.c
+index 3a7b7a7..4ecef6d 100644
+--- a/drivers/irqchip/irq-mvebu-sei.c
++++ b/drivers/irqchip/irq-mvebu-sei.c
+@@ -337,17 +337,12 @@ static void mvebu_sei_handle_cascade_irq(struct irq_desc *desc)
+ 		irqmap = readl_relaxed(sei->base + GICP_SECR(idx));
+ 		for_each_set_bit(bit, &irqmap, SEI_IRQ_COUNT_PER_REG) {
+ 			unsigned long hwirq;
+-			unsigned int virq;
++			int err;
+ 
+ 			hwirq = idx * SEI_IRQ_COUNT_PER_REG + bit;
+-			virq = irq_find_mapping(sei->sei_domain, hwirq);
+-			if (likely(virq)) {
+-				generic_handle_irq(virq);
+-				continue;
+-			}
+-
+-			dev_warn(sei->dev,
+-				 "Spurious IRQ detected (hwirq %lu)\n", hwirq);
++			err = generic_handle_domain_irq(sei->sei_domain, hwirq);
++			if (unlikely(err))
++				dev_warn(sei->dev, "Spurious IRQ detected (hwirq %lu)\n", hwirq);
+ 		}
+ 	}
+ 
+diff --git a/drivers/irqchip/irq-orion.c b/drivers/irqchip/irq-orion.c
+index c4b5ffb..b6868f7 100644
+--- a/drivers/irqchip/irq-orion.c
++++ b/drivers/irqchip/irq-orion.c
+@@ -117,7 +117,7 @@ static void orion_bridge_irq_handler(struct irq_desc *desc)
+ 	while (stat) {
+ 		u32 hwirq = __fls(stat);
+ 
+-		generic_handle_irq(irq_find_mapping(d, gc->irq_base + hwirq));
++		generic_handle_domain_irq(d, gc->irq_base + hwirq);
+ 		stat &= ~(1 << hwirq);
+ 	}
+ }
+diff --git a/drivers/irqchip/irq-partition-percpu.c b/drivers/irqchip/irq-partition-percpu.c
+index 0c4c8ed..89c23a1 100644
+--- a/drivers/irqchip/irq-partition-percpu.c
++++ b/drivers/irqchip/irq-partition-percpu.c
+@@ -124,13 +124,10 @@ static void partition_handle_irq(struct irq_desc *desc)
+ 			break;
+ 	}
+ 
+-	if (unlikely(hwirq == part->nr_parts)) {
++	if (unlikely(hwirq == part->nr_parts))
+ 		handle_bad_irq(desc);
+-	} else {
+-		unsigned int irq;
+-		irq = irq_find_mapping(part->domain, hwirq);
+-		generic_handle_irq(irq);
+-	}
++	else
++		generic_handle_domain_irq(part->domain, hwirq);
+ 
+ 	chained_irq_exit(chip, desc);
+ }
+diff --git a/drivers/irqchip/irq-pruss-intc.c b/drivers/irqchip/irq-pruss-intc.c
+index 92fb578..fa8d89b 100644
+--- a/drivers/irqchip/irq-pruss-intc.c
++++ b/drivers/irqchip/irq-pruss-intc.c
+@@ -488,8 +488,7 @@ static void pruss_intc_irq_handler(struct irq_desc *desc)
+ 
+ 	while (true) {
+ 		u32 hipir;
+-		unsigned int virq;
+-		int hwirq;
++		int hwirq, err;
+ 
+ 		/* get highest priority pending PRUSS system event */
+ 		hipir = pruss_intc_read_reg(intc, PRU_INTC_HIPIR(host_irq));
+@@ -497,16 +496,14 @@ static void pruss_intc_irq_handler(struct irq_desc *desc)
+ 			break;
+ 
+ 		hwirq = hipir & GENMASK(9, 0);
+-		virq = irq_find_mapping(intc->domain, hwirq);
++		err = generic_handle_domain_irq(intc->domain, hwirq);
+ 
+ 		/*
+ 		 * NOTE: manually ACK any system events that do not have a
+ 		 * handler mapped yet
+ 		 */
+-		if (WARN_ON_ONCE(!virq))
++		if (WARN_ON_ONCE(err))
+ 			pruss_intc_write_reg(intc, PRU_INTC_SICR, hwirq);
+-		else
+-			generic_handle_irq(virq);
+ 	}
+ 
+ 	chained_irq_exit(chip, desc);
+diff --git a/drivers/irqchip/irq-realtek-rtl.c b/drivers/irqchip/irq-realtek-rtl.c
+index b57c67d..fd9f275 100644
+--- a/drivers/irqchip/irq-realtek-rtl.c
++++ b/drivers/irqchip/irq-realtek-rtl.c
+@@ -85,7 +85,7 @@ static void realtek_irq_dispatch(struct irq_desc *desc)
+ 		goto out;
+ 	}
+ 	domain = irq_desc_get_handler_data(desc);
+-	generic_handle_irq(irq_find_mapping(domain, __ffs(pending)));
++	generic_handle_domain_irq(domain, __ffs(pending));
+ 
+ out:
+ 	chained_irq_exit(chip, desc);
+diff --git a/drivers/irqchip/irq-renesas-irqc.c b/drivers/irqchip/irq-renesas-irqc.c
+index 11abc09..07a6d8b 100644
+--- a/drivers/irqchip/irq-renesas-irqc.c
++++ b/drivers/irqchip/irq-renesas-irqc.c
+@@ -115,7 +115,7 @@ static irqreturn_t irqc_irq_handler(int irq, void *dev_id)
+ 	if (ioread32(p->iomem + DETECT_STATUS) & bit) {
+ 		iowrite32(bit, p->iomem + DETECT_STATUS);
+ 		irqc_dbg(i, "demux2");
+-		generic_handle_irq(irq_find_mapping(p->irq_domain, i->hw_irq));
++		generic_handle_domain_irq(p->irq_domain, i->hw_irq);
+ 		return IRQ_HANDLED;
+ 	}
+ 	return IRQ_NONE;
+diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
+index 97d4d04..cf74cfa 100644
+--- a/drivers/irqchip/irq-sifive-plic.c
++++ b/drivers/irqchip/irq-sifive-plic.c
+@@ -233,13 +233,11 @@ static void plic_handle_irq(struct irq_desc *desc)
+ 	chained_irq_enter(chip, desc);
+ 
+ 	while ((hwirq = readl(claim))) {
+-		int irq = irq_find_mapping(handler->priv->irqdomain, hwirq);
+-
+-		if (unlikely(irq <= 0))
++		int err = generic_handle_domain_irq(handler->priv->irqdomain,
++						    hwirq);
++		if (unlikely(err))
+ 			pr_warn_ratelimited("can't find mapping for hwirq %lu\n",
+ 					hwirq);
+-		else
+-			generic_handle_irq(irq);
+ 	}
+ 
+ 	chained_irq_exit(chip, desc);
+diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
+index 4704f2e..33c7671 100644
+--- a/drivers/irqchip/irq-stm32-exti.c
++++ b/drivers/irqchip/irq-stm32-exti.c
+@@ -257,7 +257,7 @@ static void stm32_irq_handler(struct irq_desc *desc)
+ {
+ 	struct irq_domain *domain = irq_desc_get_handler_data(desc);
+ 	struct irq_chip *chip = irq_desc_get_chip(desc);
+-	unsigned int virq, nbanks = domain->gc->num_chips;
++	unsigned int nbanks = domain->gc->num_chips;
+ 	struct irq_chip_generic *gc;
+ 	unsigned long pending;
+ 	int n, i, irq_base = 0;
+@@ -268,11 +268,9 @@ static void stm32_irq_handler(struct irq_desc *desc)
+ 		gc = irq_get_domain_generic_chip(domain, irq_base);
+ 
+ 		while ((pending = stm32_exti_pending(gc))) {
+-			for_each_set_bit(n, &pending, IRQS_PER_BANK) {
+-				virq = irq_find_mapping(domain, irq_base + n);
+-				generic_handle_irq(virq);
+-			}
+-		}
++			for_each_set_bit(n, &pending, IRQS_PER_BANK)
++				generic_handle_domain_irq(domain, irq_base + n);
++ 		}
+ 	}
+ 
+ 	chained_irq_exit(chip, desc);
+diff --git a/drivers/irqchip/irq-sunxi-nmi.c b/drivers/irqchip/irq-sunxi-nmi.c
+index 9f2bd0c..21d4979 100644
+--- a/drivers/irqchip/irq-sunxi-nmi.c
++++ b/drivers/irqchip/irq-sunxi-nmi.c
+@@ -88,10 +88,9 @@ static void sunxi_sc_nmi_handle_irq(struct irq_desc *desc)
+ {
+ 	struct irq_domain *domain = irq_desc_get_handler_data(desc);
+ 	struct irq_chip *chip = irq_desc_get_chip(desc);
+-	unsigned int virq = irq_find_mapping(domain, 0);
+ 
+ 	chained_irq_enter(chip, desc);
+-	generic_handle_irq(virq);
++	generic_handle_domain_irq(domain, 0);
+ 	chained_irq_exit(chip, desc);
+ }
+ 
+diff --git a/drivers/irqchip/irq-tb10x.c b/drivers/irqchip/irq-tb10x.c
+index 9a63b02..8a0e692 100644
+--- a/drivers/irqchip/irq-tb10x.c
++++ b/drivers/irqchip/irq-tb10x.c
+@@ -91,7 +91,7 @@ static void tb10x_irq_cascade(struct irq_desc *desc)
+ 	struct irq_domain *domain = irq_desc_get_handler_data(desc);
+ 	unsigned int irq = irq_desc_get_irq(desc);
+ 
+-	generic_handle_irq(irq_find_mapping(domain, irq));
++	generic_handle_domain_irq(domain, irq);
+ }
+ 
+ static int __init of_tb10x_init_irq(struct device_node *ictl,
+diff --git a/drivers/irqchip/irq-ti-sci-inta.c b/drivers/irqchip/irq-ti-sci-inta.c
+index ca1f593..97f454e 100644
+--- a/drivers/irqchip/irq-ti-sci-inta.c
++++ b/drivers/irqchip/irq-ti-sci-inta.c
+@@ -147,7 +147,7 @@ static void ti_sci_inta_irq_handler(struct irq_desc *desc)
+ 	struct ti_sci_inta_vint_desc *vint_desc;
+ 	struct ti_sci_inta_irq_domain *inta;
+ 	struct irq_domain *domain;
+-	unsigned int virq, bit;
++	unsigned int bit;
+ 	unsigned long val;
+ 
+ 	vint_desc = irq_desc_get_handler_data(desc);
+@@ -159,11 +159,8 @@ static void ti_sci_inta_irq_handler(struct irq_desc *desc)
+ 	val = readq_relaxed(inta->base + vint_desc->vint_id * 0x1000 +
+ 			    VINT_STATUS_MASKED_OFFSET);
+ 
+-	for_each_set_bit(bit, &val, MAX_EVENTS_PER_VINT) {
+-		virq = irq_find_mapping(domain, vint_desc->events[bit].hwirq);
+-		if (virq)
+-			generic_handle_irq(virq);
+-	}
++	for_each_set_bit(bit, &val, MAX_EVENTS_PER_VINT)
++		generic_handle_domain_irq(domain, vint_desc->events[bit].hwirq);
+ 
+ 	chained_irq_exit(irq_desc_get_chip(desc), desc);
+ }
+diff --git a/drivers/irqchip/irq-ts4800.c b/drivers/irqchip/irq-ts4800.c
+index 2325fb3..34337a6 100644
+--- a/drivers/irqchip/irq-ts4800.c
++++ b/drivers/irqchip/irq-ts4800.c
+@@ -79,10 +79,9 @@ static void ts4800_ic_chained_handle_irq(struct irq_desc *desc)
+ 
+ 	do {
+ 		unsigned int bit = __ffs(status);
+-		int irq = irq_find_mapping(data->domain, bit);
+ 
++		generic_handle_domain_irq(data->domain, bit);
+ 		status &= ~(1 << bit);
+-		generic_handle_irq(irq);
+ 	} while (status);
+ 
+ out:
+diff --git a/drivers/irqchip/irq-versatile-fpga.c b/drivers/irqchip/irq-versatile-fpga.c
+index f138673..75be350 100644
+--- a/drivers/irqchip/irq-versatile-fpga.c
++++ b/drivers/irqchip/irq-versatile-fpga.c
+@@ -85,7 +85,7 @@ static void fpga_irq_handle(struct irq_desc *desc)
+ 		unsigned int irq = ffs(status) - 1;
+ 
+ 		status &= ~(1 << irq);
+-		generic_handle_irq(irq_find_mapping(f->domain, irq));
++		generic_handle_domain_irq(f->domain, irq);
+ 	} while (status);
+ 
+ out:
+diff --git a/drivers/irqchip/irq-vic.c b/drivers/irqchip/irq-vic.c
+index 62f3d29..1e1f2d1 100644
+--- a/drivers/irqchip/irq-vic.c
++++ b/drivers/irqchip/irq-vic.c
+@@ -225,7 +225,7 @@ static void vic_handle_irq_cascaded(struct irq_desc *desc)
+ 
+ 	while ((stat = readl_relaxed(vic->base + VIC_IRQ_STATUS))) {
+ 		hwirq = ffs(stat) - 1;
+-		generic_handle_irq(irq_find_mapping(vic->domain, hwirq));
++		generic_handle_domain_irq(vic->domain, hwirq);
+ 	}
+ 
+ 	chained_irq_exit(host_chip, desc);
+diff --git a/drivers/irqchip/irq-xilinx-intc.c b/drivers/irqchip/irq-xilinx-intc.c
+index 8cd1bfc..875ff52 100644
+--- a/drivers/irqchip/irq-xilinx-intc.c
++++ b/drivers/irqchip/irq-xilinx-intc.c
+@@ -110,20 +110,6 @@ static struct irq_chip intc_dev = {
+ 	.irq_mask_ack = intc_mask_ack,
+ };
+ 
+-static unsigned int xintc_get_irq_local(struct xintc_irq_chip *irqc)
+-{
+-	unsigned int irq = 0;
+-	u32 hwirq;
+-
+-	hwirq = xintc_read(irqc, IVR);
+-	if (hwirq != -1U)
+-		irq = irq_find_mapping(irqc->root_domain, hwirq);
+-
+-	pr_debug("irq-xilinx: hwirq=%d, irq=%d\n", hwirq, irq);
+-
+-	return irq;
+-}
+-
+ unsigned int xintc_get_irq(void)
+ {
+ 	unsigned int irq = -1;
+@@ -169,10 +155,12 @@ static void xil_intc_irq_handler(struct irq_desc *desc)
+ 	irqc = irq_data_get_irq_handler_data(&desc->irq_data);
+ 	chained_irq_enter(chip, desc);
+ 	do {
+-		pending = xintc_get_irq_local(irqc);
+-		if (pending == 0)
++		u32 hwirq = xintc_read(irqc, IVR);
++
++		if (hwirq == -1U)
+ 			break;
+-		generic_handle_irq(pending);
++
++		generic_handle_domain_irq(irqc->root_domain, hwirq);
+ 	} while (true);
+ 	chained_irq_exit(chip, desc);
+ }
+diff --git a/drivers/irqchip/qcom-irq-combiner.c b/drivers/irqchip/qcom-irq-combiner.c
+index aa54bfc..18e696d 100644
+--- a/drivers/irqchip/qcom-irq-combiner.c
++++ b/drivers/irqchip/qcom-irq-combiner.c
+@@ -53,7 +53,6 @@ static void combiner_handle_irq(struct irq_desc *desc)
+ 	chained_irq_enter(chip, desc);
+ 
+ 	for (reg = 0; reg < combiner->nregs; reg++) {
+-		int virq;
+ 		int hwirq;
+ 		u32 bit;
+ 		u32 status;
+@@ -70,10 +69,7 @@ static void combiner_handle_irq(struct irq_desc *desc)
+ 			bit = __ffs(status);
+ 			status &= ~(1 << bit);
+ 			hwirq = irq_nr(reg, bit);
+-			virq = irq_find_mapping(combiner->domain, hwirq);
+-			if (virq > 0)
+-				generic_handle_irq(virq);
+-
++			generic_handle_domain_irq(combiner->domain, hwirq);
+ 		}
+ 	}
+ 
