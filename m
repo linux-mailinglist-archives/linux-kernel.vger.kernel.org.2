@@ -2,133 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12CB039CEBA
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 13:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4815E39CEBF
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 13:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229878AbhFFL64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 07:58:56 -0400
-Received: from m12-13.163.com ([220.181.12.13]:45461 "EHLO m12-13.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229465AbhFFL6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 07:58:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=pesI/MGsRpDnh54JhJ
-        c2VQiwfW2DknO904cI7gJytfQ=; b=E9eacGtVpkIYJPdGqUO8zS4MN6eNjYsql+
-        Zbc493cY+XPYhSCOc+Rb18mykRBo37Kw28nTtIP7sjR9VinlFUQrAzUNthWd6LD/
-        MJ37uhT8wo8EXs0VjXwgL3iq7vkdTG6he9W5sY2oPbYsNXZGART9CFMpyEKfHEYC
-        bf08Wdwmg=
-Received: from localhost.localdomain (unknown [117.139.248.43])
-        by smtp9 (Coremail) with SMTP id DcCowABHTHyZt7xg8kJqEw--.30289S2;
-        Sun, 06 Jun 2021 19:55:06 +0800 (CST)
-From:   Hailong Liu <liuhailongg6@163.com>
-To:     Ingo Molnar <mingo@redhat.com>,
+        id S230203AbhFFMAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 08:00:41 -0400
+Received: from mail-pg1-f173.google.com ([209.85.215.173]:35417 "EHLO
+        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229776AbhFFMAh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 08:00:37 -0400
+Received: by mail-pg1-f173.google.com with SMTP id o9so8806155pgd.2;
+        Sun, 06 Jun 2021 04:58:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=aPhZd0Ev1Ws/GdwHl8PJdNKfaX6hJwWh4xylt4wxRXc=;
+        b=Na4D8qBD3WbOV8ekMSlAia9NMbFTdGHAa+HvQcwfTucGT2H9caXMMBLm45GJVXA1vj
+         G58hHRdJjm3gE6MOFk8AlnVMZFnByfSnycUTus1HZCpCh7TG562tLypVdKCdYnLqhQ0Z
+         lGEkMsFs8z8c8c7iUSbEP4QAyaLB8cNC4Caf3GsuT2RalMCmOndS7N6eS0t4uhsvuKCm
+         Gbl0pv49bjReRXrkgcyuKAwHgTjkjWAY4Z6jsDCSfQVeFkDFW2zA2r42UT3goB1bxP5D
+         hwOmQNKFIOYlS33hyLIFQhyxNfdzfIbdLbarBDKrNVUf4qMBRsS+59ZxsePGIITCSwyX
+         1z0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=aPhZd0Ev1Ws/GdwHl8PJdNKfaX6hJwWh4xylt4wxRXc=;
+        b=aZ5RXldlpTWUe3thjCbMeg1qpZjOL8SC1NVhhDq9EOlqkKCJWahy761subSfJKj3rN
+         lvpb3EFtY4KoNEkT/b40Kk/ed6ejtZ9GZDevqUvKpj/A/tr6YFGgDADhXeCSFOCiN9Mf
+         vjPsl2Mze3AuAQ5NB6SC3/dd2iURxXmEgz9L7A+/eqssY1VrOKfv8T9FCgtxMKi1luOl
+         n5Enu9qg5VUZ07lM2YfuGEjgVNF5tCGY4187/gkHGjXjmTe1zOHYuzxaCOpwuTnUbOJr
+         FIXRE6erFYVhipq4XqQMl7bpzzr4VPliiEX5dX10pMbjmOsBw7M6460UnsfIxg6JSA+d
+         edyg==
+X-Gm-Message-State: AOAM530xwfDFIkzzKmfpv0y+vCHM3svnniDrfbneWJxnDGQdyTqhr1NR
+        +LSjHOvYZRHuPd0SpAwMKro=
+X-Google-Smtp-Source: ABdhPJy1errmzyynWPa3ewKLZyjUWzm63irnwwd8zEtqQmGGqnOkU/D4lBRwVA3CX9TPyUVedCULLw==
+X-Received: by 2002:a05:6a00:810:b029:2ec:3b54:6a89 with SMTP id m16-20020a056a000810b02902ec3b546a89mr13064663pfk.0.1622980654096;
+        Sun, 06 Jun 2021 04:57:34 -0700 (PDT)
+Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
+        by smtp.gmail.com with ESMTPSA id s33sm5306006pfw.150.2021.06.06.04.57.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Jun 2021 04:57:33 -0700 (PDT)
+Date:   Sun, 06 Jun 2021 21:57:27 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v4 00/15] Add futex2 syscalls
+To:     =?iso-8859-1?b?QW5kcuk=?= Almeida <andrealmeid@collabora.com>,
+        Andrey Semashev <andrey.semashev@gmail.com>
+Cc:     acme@kernel.org, Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        corbet@lwn.net, Davidlohr Bueso <dave@stgolabs.net>,
+        Darren Hart <dvhart@infradead.org>, fweimer@redhat.com,
+        joel@joelfernandes.org, kernel@collabora.com,
+        krisman@collabora.com, libc-alpha@sourceware.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, malteskarupke@fastmail.fm,
+        Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Guilherme G . Piccoli" <gpiccoli@canonical.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Paul Turner <pjt@google.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        linux-kernel@vger.kernel.org (open list),
-        Hailong Liu <liu.hailong6@zte.com.cn>
-Subject: [PATCH] sysctl: sched: move extern sysctl declarations to sched.h
-Date:   Sun,  6 Jun 2021 19:54:51 +0800
-Message-Id: <20210606115451.26745-1-liuhailongg6@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: DcCowABHTHyZt7xg8kJqEw--.30289S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxWFWDXrykAFyfKw1xGry8Xwb_yoW5Aw43pF
-        98Zr1UXr4UK340qr93Cw4rJrZ3Jr43Ar92yFsrXr4xAr1YgrWSqr1xKFWfGrW2krWxCFWS
-        vF12g34akw4jyaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jXJ5rUUUUU=
-X-Originating-IP: [117.139.248.43]
-X-CM-SenderInfo: xolxxtxlor0wjjw6il2tof0z/1tbi7xupYFr79sgv-wAAsy
+        pgriffais@valvesoftware.com, Peter Oskolkov <posk@posk.io>,
+        Steven Rostedt <rostedt@goodmis.org>, shuah@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, z.figura12@gmail.com
+References: <20210603195924.361327-1-andrealmeid@collabora.com>
+        <1622799088.hsuspipe84.astroid@bobo.none>
+        <fb85fb20-5421-b095-e68b-955afa105467@collabora.com>
+        <1622853816.mokf23xgnt.astroid@bobo.none>
+        <6d8e3bb4-0cef-b991-9a16-1f03d10f131d@gmail.com>
+In-Reply-To: <6d8e3bb4-0cef-b991-9a16-1f03d10f131d@gmail.com>
+MIME-Version: 1.0
+Message-Id: <1622980258.cfsuodze38.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hailong Liu <liu.hailong6@zte.com.cn>
+Excerpts from Andrey Semashev's message of June 5, 2021 6:56 pm:
+> On 6/5/21 4:09 AM, Nicholas Piggin wrote:
+>> Excerpts from Andr=C3=A9 Almeida's message of June 5, 2021 6:01 am:
+>>> =C3=80s 08:36 de 04/06/21, Nicholas Piggin escreveu:
+>>=20
+>>>> I'll be burned at the stake for suggesting it but it would be great if
+>>>> we could use file descriptors. At least for the shared futex, maybe
+>>>> private could use a per-process futex allocator. It solves all of the
+>>>> above, although I'm sure has many of its own problem. It may not play
+>>>> so nicely with the pthread mutex API because of the whole static
+>>>> initialiser problem, but the first futex proposal did use fds. But it'=
+s
+>>>> an example of an alternate API.
+>>>>
+>>>
+>>> FDs and futex doesn't play well, because for futex_wait() you need to
+>>> tell the kernel the expected value in the futex address to avoid
+>>> sleeping in a free lock. FD operations (poll, select) don't have this
+>>> `value` argument, so they could sleep forever, but I'm not sure if you
+>>> had taken this in consideration.
+>>=20
+>> I had. The futex wait API would take a fd additional. The only
+>> difference is the waitqueue that is used when a sleep or wake is
+>> required is derived from the fd, not from an address.
+>>=20
+>> I think the bigger sticking points would be if it's too heavyweight an
+>> object to use (which could be somewhat mitigated with a simpler ida
+>> allocator although that's difficult to do with shared), and whether libc
+>> could sanely use them due to the static initialiser problem of pthread
+>> mutexes.
+>=20
+> The static initialization feature is not the only benefit of the current=20
+> futex design, and probably not the most important one. You can work=20
+> around the static initialization in userspace, e.g. by initializing fd=20
+> to an invalid value and creating a valid fd upon the first use. Although=20
+> that would still incur a performance penalty and add a new source of=20
+> failure.
 
-Since commit '8a99b6833c88(sched: Move SCHED_DEBUG sysctl to debugfs)',
-SCHED_DEBUG sysctls are moved to debugfs, so these extern sysctls in
-include/linux/sched/sysctl.h are no longer needed for sysctl.c, even
-some are no longer needed.
+Sounds like a serious problem, but maybe it isn't. On the other hand,
+maybe we don't have to support pthread mutexes as they are anyway=20
+because futex already does that fairly well.
 
-So move those extern sysctls that needed by kernel/sched/debug.c to
-kernel/sched/sched.h, and remove others that are no longer needed.
+> What is more important is that waiting on fd always requires a kernel=20
+> call. This will be terrible for performance of uncontended locks, which=20
+> is the majority of time.
 
-Signed-off-by: Hailong Liu <liu.hailong6@zte.com.cn>
----
- include/linux/sched/sysctl.h | 18 ------------------
- kernel/sched/sched.h         | 15 +++++++++++++++
- 2 files changed, 15 insertions(+), 18 deletions(-)
+No. As I said just before, it would be the same except the waitqueue is=20
+derived from fd rather than address.
 
-diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
-index db2c0f34aaaf..304f431178fd 100644
---- a/include/linux/sched/sysctl.h
-+++ b/include/linux/sched/sysctl.h
-@@ -28,30 +28,12 @@ enum { sysctl_hung_task_timeout_secs = 0 };
- 
- extern unsigned int sysctl_sched_child_runs_first;
- 
--extern unsigned int sysctl_sched_latency;
--extern unsigned int sysctl_sched_min_granularity;
--extern unsigned int sysctl_sched_wakeup_granularity;
--
- enum sched_tunable_scaling {
- 	SCHED_TUNABLESCALING_NONE,
- 	SCHED_TUNABLESCALING_LOG,
- 	SCHED_TUNABLESCALING_LINEAR,
- 	SCHED_TUNABLESCALING_END,
- };
--extern unsigned int sysctl_sched_tunable_scaling;
--
--extern unsigned int sysctl_numa_balancing_scan_delay;
--extern unsigned int sysctl_numa_balancing_scan_period_min;
--extern unsigned int sysctl_numa_balancing_scan_period_max;
--extern unsigned int sysctl_numa_balancing_scan_size;
--
--#ifdef CONFIG_SCHED_DEBUG
--extern __read_mostly unsigned int sysctl_sched_migration_cost;
--extern __read_mostly unsigned int sysctl_sched_nr_migrate;
--
--extern int sysctl_resched_latency_warn_ms;
--extern int sysctl_resched_latency_warn_once;
--#endif
- 
- /*
-  *  control realtime throttling:
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index a189bec13729..d79d4c8d01fc 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2107,6 +2107,21 @@ extern void check_preempt_curr(struct rq *rq, struct task_struct *p, int flags);
- extern const_debug unsigned int sysctl_sched_nr_migrate;
- extern const_debug unsigned int sysctl_sched_migration_cost;
- 
-+#ifdef CONFIG_SCHED_DEBUG
-+extern unsigned int sysctl_sched_latency;
-+extern unsigned int sysctl_sched_min_granularity;
-+extern unsigned int sysctl_sched_wakeup_granularity;
-+extern int sysctl_resched_latency_warn_ms;
-+extern int sysctl_resched_latency_warn_once;
-+
-+extern unsigned int sysctl_sched_tunable_scaling;
-+
-+extern unsigned int sysctl_numa_balancing_scan_delay;
-+extern unsigned int sysctl_numa_balancing_scan_period_min;
-+extern unsigned int sysctl_numa_balancing_scan_period_max;
-+extern unsigned int sysctl_numa_balancing_scan_size;
-+#endif
-+
- #ifdef CONFIG_SCHED_HRTICK
- 
- /*
--- 
-2.17.1
+>=20
+> Another important point is that a futex that is not being waited on=20
+> consumes zero kernel resources while fd is a limited resource even when=20
+> not used. You can have millions futexes in userspace and you are=20
+> guaranteed not to exhaust any limit as long as you have memory. That is=20
+> an important feature, and the current userspace is relying on it by=20
+> assuming that creating mutexes and condition variables is cheap.
 
+Is it an important feture? Would 1 byte of kernel memory per uncontended=20
+futex be okay? 10? 100?
 
+I do see it's very nice the current design that requires no=20
+initialization for uncontended, I'm just asking questions to get an idea=20
+of what constraints we're working with. We have a pretty good API=20
+already which can support unlimited uncontended futexes, so I'm=20
+wondering do we really need another very very similar API that doesn't
+fix the really difficult problems of the existing one?
+
+Thanks,
+Nick
+
+> Having futex fd would be useful in some cases to be able to integrate=20
+> futexes with IO. I did have use cases where I would have liked to have=20
+> FUTEX_FD in the past. These cases arise when you already have a thread=20
+> that operates on fds and you want to avoid having a separate thread that=20
+> blocks on futexes in a similar fashion. But, IMO, that should be an=20
+> optional opt-in feature. By far, not every futex needs to have an fd.=20
+> For just waiting on multiple futexes, the native support that futex2=20
+> provides is superior.
+>=20
+> PS: I'm not asking FUTEX_FD to be implemented as part of futex2 API.=20
+> futex2 would be great even without it.
