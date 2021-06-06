@@ -2,59 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C28539D203
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 00:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6B839D205
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 00:48:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbhFFWt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 18:49:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47624 "EHLO mail.kernel.org"
+        id S231284AbhFFWul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 18:50:41 -0400
+Received: from ozlabs.org ([203.11.71.1]:40619 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231143AbhFFWtx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 18:49:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4A69F6141E;
-        Sun,  6 Jun 2021 22:48:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623019683;
-        bh=6WgVq3fHdJOIf7AZ+J5/HRDsb1lorC9/S3M2coj3RG8=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=frAzwBeNOazyuSHgRe3l2BgFOBH2ruZAssuPeRyfzrv81IhD9+VGMY0+4BadNDlAQ
-         MqT7zTR0Glfcu1t79GV05bjQhPSGPcYna9cfusTe5PwBIKQ+Oab9zRr4KQABjJ0HIk
-         0fKKPzpajnR7XGlmfjkWgTJEDoOJ56Rsf7vqSDWKsc7Fhp5TU2rbUW9lSbtNhH+Ih+
-         MzmtKQszFtXgwlRyxuUGSqrn17Qi9mSH8IwFwGUwU7r4KGfG447bEwYov2Rzkhsfcr
-         kMbhONryzgAzGMNDxQc7AlFwUy4VkCQgzhnXGnikOZbl7gtflCnZB5dm87nTsHOeA0
-         wkOr+i2hppsQg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3864F60283;
-        Sun,  6 Jun 2021 22:48:03 +0000 (UTC)
-Subject: Re: [GIT PULL] ext4 fixes for v5.13
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YLzZz/Mh2HQQd80+@mit.edu>
-References: <YLzZz/Mh2HQQd80+@mit.edu>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YLzZz/Mh2HQQd80+@mit.edu>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
-X-PR-Tracked-Commit-Id: e71f99f2dfb45f4e7203a0732e85f71ef1d04dab
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 20e41d9bc80456207deb71141147a3de2c34e676
-Message-Id: <162301968317.14999.16965060077439289773.pr-tracker-bot@kernel.org>
-Date:   Sun, 06 Jun 2021 22:48:03 +0000
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+        id S231172AbhFFWuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 18:50:40 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fys9r1G4Jz9sRf;
+        Mon,  7 Jun 2021 08:48:48 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623019729;
+        bh=awGXucHVI3y+7HShzGTa4yx0jdME2qw+Akoo9ojNQZE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=rTsFE/bPxbyBaxcN8O16wmx64vclxJ1/Sl4/F9HdDCHP/BLmhHc1DBPAXZuvupLPK
+         bRHiD/AbRcmZMf4ReUxWpO3tvOH/4kkkGUvCSYkEAwyE99oLzfMFZ3fFsFuhoqqY7c
+         ZOg029O2/hr2KTRRYzVDshgqF5+6Ffq4ZlDzWm86K0vgRWz5fLRQdVi4m/EJAt/lM2
+         a2JZuhRnlmLFu97leXbpmZPBebVtKoraBcfEoUH+oTG6k5SoS3EZyfQ5Z8iKR0w5ey
+         EobxYx4EAc44cZ2bWIIZM+o0y3kRHWRVGxvTCgtN2Jp0BzE1DFxvnRdyJY0L/H81fH
+         GiDreSApR2p6g==
+Date:   Mon, 7 Jun 2021 08:48:47 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Yang Li <yang.lee@linux.alibaba.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the cgroup tree
+Message-ID: <20210607084847.34b4980f@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/9w7WsdYEgSHvr/WfUia.bYh";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 6 Jun 2021 10:21:03 -0400:
+--Sig_/9w7WsdYEgSHvr/WfUia.bYh
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
+Hi all,
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/20e41d9bc80456207deb71141147a3de2c34e676
+In commit
 
-Thank you!
+  2ca11b0e043b ("cgroup: Fix kernel-doc")
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Fixes tag
+
+  Fixes: 'commit e595cd706982 ("cgroup: track migration context in cgroup_m=
+gctx")'
+
+has these problem(s):
+
+  - No SHA1 recognised
+
+Please just use
+
+git log -1 --format=3D'Fixes: %h ("%s")' <commit>
+
+so
+
+Fixes: e595cd706982 ("cgroup: track migration context in cgroup_mgctx")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/9w7WsdYEgSHvr/WfUia.bYh
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC9UM8ACgkQAVBC80lX
+0GzLVQf8CmT5C9NFNZ+UQxyaO1VXruiVVtYouFRabrI+UQ4c91sU1+YEHB4f68vd
+bxGwMHHmraRJxpmBRZ3+xmCNKRuHPts9kpNEYEvq8Vtdh+IPIb92Yfu5YQa5z9uw
++jjppp3Qqr5HIPmIceVtWDPUwbioN3PtdvjmdP48aKpyCSE1ekaRCq4XCZuJcnQt
+yvy9RYpqzyR3DzTFCNJUuSMbIhl+8dYdcwNR8NijLABrokKG48Mwngao+ueZCQJn
+z/aq4VMCSyfdRNl6FnjEv8BgdgI7X2KrU15m5YVx1/P0KsroOUie7QNctcJ8XuTy
+HLrQ7a6IoSdt+oT/cWV4ezfTtJrV5Q==
+=IsKx
+-----END PGP SIGNATURE-----
+
+--Sig_/9w7WsdYEgSHvr/WfUia.bYh--
