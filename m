@@ -2,137 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBDE539CFD3
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 17:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E82C39CFD5
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 17:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230230AbhFFPlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 11:41:08 -0400
-Received: from mail-pl1-f171.google.com ([209.85.214.171]:33308 "EHLO
-        mail-pl1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbhFFPlC (ORCPT
+        id S230247AbhFFPlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 11:41:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230225AbhFFPlN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 11:41:02 -0400
-Received: by mail-pl1-f171.google.com with SMTP id c13so7281409plz.0
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 08:38:59 -0700 (PDT)
+        Sun, 6 Jun 2021 11:41:13 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D742C061766;
+        Sun,  6 Jun 2021 08:39:14 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id l11-20020a05600c4f0bb029017a7cd488f5so8515880wmq.0;
+        Sun, 06 Jun 2021 08:39:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6+x2D/lxfvdpb/kRO1O/4x7Jx1x5bjZzwFIZplCL9AU=;
-        b=PhmIyidjuBJ3qAKsas3qnNHe7fOIFgvmz/lxjZn6KC+AbOCO7dgpxdNBuCgkhAuB6Y
-         LcQKy66RF75wZxLiljYoxlZ7IMeiOEuzu7D+dRRM61wH3luJ2+wk8ppKmjq5Z7KiAZzn
-         reuvRFeikj2powqHxqns9L5Ip3ZpyTa0VAju0DopDQ/D6CByK/6mbHRjNW+iE+JVwTpR
-         XtYRvHAC5XKaDwyMslEuH0i62whd/IwUo1zELedlpHKZjsdMZkYvA6bZVpEO3N4Zutqp
-         snm7RQrxRKvioADyTUbludTFW7+AHagyAHpp7jOW6WPRon17BdWME0p1lfpvhbMQkWiG
-         6Ukw==
+        bh=tXVK6dmsPKFlxVGsnju6Gmzr7jy3YZ4iKuNuKJOxdWw=;
+        b=JOvuaADx3aNM3K94Mgv7uoshwLFoOBBxt+pdTzvdBBN2//CSdNpWIIsYmwg2dvQ/Ex
+         DGIHYa91NfPNIMRutxQawEBgMJJ/Uiuwzvw3uywKGw6woRT6pn/3Ahn3P+Z6T2TeyFQO
+         Ppyjx7DAmMPpsHvwz3sLNMoK2NaCu6+ORaml+9s1IDyjT4rT3TgAfZSFwYqAdqMSbYYN
+         2+9Vsh/5639do0hlzWgfzGD/uoRDjLSKqZVFXUJZ3DA0qRRoPknbtrvawyODg9NF6xku
+         RUcE7lVj4u1RpcIkFNZKfxGfkHcXvEi0608OrAGbYUH6zONN/xtob1pE65sPVDCkuZn7
+         t3Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6+x2D/lxfvdpb/kRO1O/4x7Jx1x5bjZzwFIZplCL9AU=;
-        b=JTiO/wklyrgg/tuzwi8hyCg42Npbp4BAgPlhgo6mbCkMUvOYQ9TiFlp+YA0N7omC+e
-         ou943V/Jja4LeM89dFjEA9eAzFVZtOgyCdYapKK7S0PDJrDDLqOYfqXqvE9zxpOW1rei
-         ReHZP3cD4Q4wNV9aPBn6BoPpzNUGdM5c2XMUmBFJUNTww0GBabc2sQCtnHK/Yi6FcL9n
-         6jGr29Rm0pNaTGH+5OYbPSyTO+DF9eKPTYCtf8ricwEJiq2kKa+JuzObFoeNZtRk3U2c
-         moUuLgA/okWk7H9Us8lm+LFVEhH49q7L6qD1j0ycSdHCpvYfBzGG3Feevc0i05U3dvh/
-         rzIA==
-X-Gm-Message-State: AOAM531TczEzjZTRvXlkJO32UKg8SLT/kVRURfDS7xvq0Z9VOThu8itc
-        NPheozs0l/KKmJ/YD1rjJAHc
-X-Google-Smtp-Source: ABdhPJy5YiPNgt9WCE8NA3Kpi5m5FfUp5jd9HShX7AG7Zo/6na0sDHeX9s3dEA9C5JEPZlL1Raj2Xw==
-X-Received: by 2002:a17:90a:130a:: with SMTP id h10mr1834979pja.188.1622993879272;
-        Sun, 06 Jun 2021 08:37:59 -0700 (PDT)
-Received: from localhost.localdomain ([120.138.12.59])
-        by smtp.gmail.com with ESMTPSA id g29sm6497919pgm.11.2021.06.06.08.37.56
+        bh=tXVK6dmsPKFlxVGsnju6Gmzr7jy3YZ4iKuNuKJOxdWw=;
+        b=bG1zdkjxl4AYX7zo7a9y8VfINWUjDR58zvIyIKRRgWZL0s4H9krk0Kt1YQbmToVTto
+         KnODPr8PwW+d09Bxt94OmCi0X+7JzQWArjU7S3qvCTaTbWg73Uf9UmH+b2TqFcRhTdp7
+         iXUHuJ8CoyZH2DPEgFCFXp203wyTs1RB2QDSkmrx0unxQ/ctCdFnKxa15FXcaPaCJEWx
+         +5kGS+bljjCa71gkusHVVNDsRCqaCKqMBoMF4zkqSuU3bkziofxld89+SzRBskglrm76
+         1jNMKeANiAHjMqP4WmmE+Cmzp2N+AK/YcOVmY5lteLIAW9coD3Nj0t+OVPO59ehvpqMV
+         lB5Q==
+X-Gm-Message-State: AOAM533LNZMCZqIqii83T87Ygcqn1IqTyaI+QjwzEzZcGlQ4fTnBQWK5
+        PW1sAWWLohM2tCAINmq8AbU=
+X-Google-Smtp-Source: ABdhPJzk5jC8DWCQBqX+x/UEE4Ml4TK5R3j6VYfcijR+eC1lozRFL3EB2lxSBndsOMBtKoSQPka6UA==
+X-Received: by 2002:a7b:c750:: with SMTP id w16mr11781738wmk.69.1622993953117;
+        Sun, 06 Jun 2021 08:39:13 -0700 (PDT)
+Received: from jernej-laptop.localnet (cpe-86-58-17-133.cable.triera.net. [86.58.17.133])
+        by smtp.gmail.com with ESMTPSA id 3sm14203074wmi.7.2021.06.06.08.39.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Jun 2021 08:37:58 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     gregkh@linuxfoundation.org
-Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jarvis.w.jiang@gmail.com, loic.poulain@linaro.org,
-        Shujun Wang <wsj20369@163.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 3/3] bus: mhi: pci-generic: Fix hibernation
-Date:   Sun,  6 Jun 2021 21:07:41 +0530
-Message-Id: <20210606153741.20725-4-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210606153741.20725-1-manivannan.sadhasivam@linaro.org>
-References: <20210606153741.20725-1-manivannan.sadhasivam@linaro.org>
+        Sun, 06 Jun 2021 08:39:12 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     Andre Przywara <andre.przywara@arm.com>,
+        Guo Ren <guoren@kernel.org>
+Cc:     Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Arnd Bergmann <arnd@arndb.de>, wens@csie.org,
+        maxime@cerno.tech, Drew Fustini <drew@beagleboard.org>,
+        liush@allwinnertech.com,
+        Wei Wu =?utf-8?B?KOWQtOS8nyk=?= <lazyparser@gmail.com>,
+        wefu@redhat.com, linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-sunxi@lists.linux.dev, Maxime Ripard <mripard@kernel.org>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        LABBE Corentin <clabbe.montjoie@gmail.com>,
+        Michael Walle <michael@walle.cc>,
+        Guo Ren <guoren@linux.alibaba.com>
+Subject: Re: [RFC PATCH v2 11/11] riscv: soc: Allwinner D1 GMAC driver only for temp use
+Date:   Sun, 06 Jun 2021 17:39:09 +0200
+Message-ID: <49182865.cm8dGOVcTj@jernej-laptop>
+In-Reply-To: <CAJF2gTQgaJFW9knuVmW8J8zMAt_Gtq3KJ9gsGKg6=xLBuq0=uA@mail.gmail.com>
+References: <1622970249-50770-1-git-send-email-guoren@kernel.org> <20210606115027.5c715e64@slackpad.fritz.box> <CAJF2gTQgaJFW9knuVmW8J8zMAt_Gtq3KJ9gsGKg6=xLBuq0=uA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Loic Poulain <loic.poulain@linaro.org>
+Hi!
 
-This patch fixes crash after resuming from hibernation. The issue
-occurs when mhi stack is builtin and so part of the 'restore-kernel',
-causing the device to be resumed from 'restored kernel' with a no
-more valid context (memory mappings etc...) and leading to spurious
-crashes.
+Dne nedelja, 06. junij 2021 ob 17:32:22 CEST je Guo Ren napisal(a):
+>  ,
+> 
+> On Sun, Jun 6, 2021 at 6:50 PM Andre Przywara <andre.przywara@arm.com> 
+wrote:
+> > On Sun,  6 Jun 2021 09:04:09 +0000
+> > guoren@kernel.org wrote:
+> > 
+> > Hi,
+> > 
+> > > From: liush <liush@allwinnertech.com>
+> > > 
+> > > This is a temporary driver, only guaranteed to work on allwinner
+> > > D1. In order to ensure the developer's demand for network usage.
+> > 
+> > That looks like some Allwinner BSP driver, please don't endorse code
+> > of this quality (just look at all that commented code and the attempt
+> > for compile-time configuration).
+> > 
+> > > It only could work at 1Gps mode.
+> > > 
+> > > The correct gmac driver should follow (I guess)
+> > > drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
+> > > 
+> > > If anyone is familiar with it and can help porting, I would be
+> > > very grateful.
+> > 
+> > Have you tried compiling and using that driver? Ideally it should just
+> > work, Linux drivers are meant to be portable, by design. And the driver
+> > is already enabled by COMPILE_TEST.
+> 
+> It still needs some work with dwmac-sun8i.c glue layer, eg:
+> tx/rx-delay setting, clk & pinmux drivers.
+> 
+> The patch is just to help people using D1 with GMAC temporarily with
+> network function.
 
-This patch fixes the issue by implementing proper freeze/restore
-callbacks.
+It should be marked "DO NOT MERGE" or similar then.
 
-Reported-by: Shujun Wang <wsj20369@163.com>
-Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Link: https://lore.kernel.org/r/1622571445-4505-1-git-send-email-loic.poulain@linaro.org
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/bus/mhi/pci_generic.c | 36 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 35 insertions(+), 1 deletion(-)
+Best regards,
+Jernej
 
-diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
-index 0a6619ad292c..b3357a8a2fdb 100644
---- a/drivers/bus/mhi/pci_generic.c
-+++ b/drivers/bus/mhi/pci_generic.c
-@@ -935,9 +935,43 @@ static int __maybe_unused mhi_pci_resume(struct device *dev)
- 	return ret;
- }
- 
-+static int __maybe_unused mhi_pci_freeze(struct device *dev)
-+{
-+	struct mhi_pci_device *mhi_pdev = dev_get_drvdata(dev);
-+	struct mhi_controller *mhi_cntrl = &mhi_pdev->mhi_cntrl;
-+
-+	/* We want to stop all operations, hibernation does not guarantee that
-+	 * device will be in the same state as before freezing, especially if
-+	 * the intermediate restore kernel reinitializes MHI device with new
-+	 * context.
-+	 */
-+	if (test_and_clear_bit(MHI_PCI_DEV_STARTED, &mhi_pdev->status)) {
-+		mhi_power_down(mhi_cntrl, false);
-+		mhi_unprepare_after_power_down(mhi_cntrl);
-+	}
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused mhi_pci_restore(struct device *dev)
-+{
-+	struct mhi_pci_device *mhi_pdev = dev_get_drvdata(dev);
-+
-+	/* Reinitialize the device */
-+	queue_work(system_long_wq, &mhi_pdev->recovery_work);
-+
-+	return 0;
-+}
-+
- static const struct dev_pm_ops mhi_pci_pm_ops = {
- 	SET_RUNTIME_PM_OPS(mhi_pci_runtime_suspend, mhi_pci_runtime_resume, NULL)
--	SET_SYSTEM_SLEEP_PM_OPS(mhi_pci_suspend, mhi_pci_resume)
-+#ifdef CONFIG_PM_SLEEP
-+	.suspend = mhi_pci_suspend,
-+	.resume = mhi_pci_resume,
-+	.freeze = mhi_pci_freeze,
-+	.thaw = mhi_pci_restore,
-+	.restore = mhi_pci_restore,
-+#endif
- };
- 
- static struct pci_driver mhi_pci_driver = {
--- 
-2.25.1
+> 
+> > But I guess you need some extra care to make the non-coherent DMA work?
+> > I haven't looked in detail, but are those new CMOs hooked into the
+> > generic DMA framework?
+> 
+> Yes, we have the simliar principle with arm & csky for non-coherent:
+>  - Using PTE attributes setting Using PTE attributes to support
+> _PAGE_IOREMAP & _PAGE_WRITECOMBINE
+>  - Using CMO instructions deal SYNC_DMA_FOR_CPU/DEVICE.
+> 
+> > Cheers,
+> > Andre
+> > 
+> > > Signed-off-by: Liu Shaohua <liush@allwinnertech.com>
+> > > Tested-by: Guo Ren <guoren@kernel.org>
+> > > Signed-off-by: Guo Ren <guoren@kernel.org>
+> > > Cc: Maxime Ripard <mripard@kernel.org>
+> > > Cc: Corentin Labbe <clabbe@baylibre.com>
+> > > Cc: Samuel Holland <samuel@sholland.org>
+> > > Cc: Icenowy Zheng <icenowy@aosc.io>
+> > > Cc: LABBE Corentin <clabbe.montjoie@gmail.com>
+> > > Cc: Michael Walle <michael@walle.cc>
+> > > Cc: Chen-Yu Tsai <wens@csie.org>
+> > > Cc: Maxime Ripard <maxime@cerno.tech>
+> > > Cc: Wei Fu <wefu@redhat.com>
+> > > Cc: Wei Wu <lazyparser@gmail.com>
+> > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+
+
 
