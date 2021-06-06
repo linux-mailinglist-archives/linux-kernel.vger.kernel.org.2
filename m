@@ -2,103 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57AC739D067
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 20:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8104039D06D
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 20:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbhFFSSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 14:18:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230155AbhFFSSf (ORCPT
+        id S230081AbhFFSYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 14:24:11 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:53281 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S229738AbhFFSYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 14:18:35 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DC6AC061766;
-        Sun,  6 Jun 2021 11:16:43 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id dj8so17396997edb.6;
-        Sun, 06 Jun 2021 11:16:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=07UrgWTUrvd41OIpiSSSUai1/EscZkb/oDXQgnTVOVI=;
-        b=RlJFng2oujbRP5GmKodhuSw5e/WwTGOcywGxdKk8ouL5YU4vWtadBbFGSXkUNyTsB/
-         ToMJ+hdBs4gvdlUGY8lwhKW08UwYA8nxey0Bsddke4R/5GXqj1AI1GcCvbnZbOkPjhrT
-         VFe6gSObR/KBdGEN4MVUf3/XIt1g0BDui0F2wZlXcej+YS/puUFdrSFXdeWH+WxPiQw7
-         3X7Go0d+46aCDQ56uFFjrQz5HTonaeaaVKpRll05f07Y4TX6GLQf4mXs5KitNBnYeot8
-         3FxukhV4yxRRJwCxy0bdyJStLB1klCzonsc8shFXPhsKUg5RLrqD9D2ubC4y3qaA9tlV
-         8iEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=07UrgWTUrvd41OIpiSSSUai1/EscZkb/oDXQgnTVOVI=;
-        b=Z6XD0YWujaDbh3XibV8SZplsnpbrmsBTW9CSc+SnADu+6iOrzS68wjrEWTUib8bbPA
-         /wSLY9l0KtkIBVo4WqD/XJbzYo44OhIA6xaG8vtfKggAHse/9ngZcPJwJODaQDv34yJJ
-         L91AYoSy0aZ92ncZKeyqLGCOIkl5R9mjed8/ccxF02e+kQiTHcclBUqkBgrJgtg/tlup
-         oZnX/QIAfUR0LOAyAxsGYvnxC5IF3hiLNdQz+XgNSnpppK37vtxCC85cn1ar6UKqaP5+
-         KCOHXAC2kBi4vKC+ekawoPJpZYphePGaIHPh73ziuUDzzoJKHSpZR6tnqeWWE7UB8V/f
-         m1kQ==
-X-Gm-Message-State: AOAM5330YcG2/UFwtssHkVDrb9rjJUMJx6YqmLK9lzxOpuL4jtiDLgP5
-        fcVWEbaCeMXQ4rMLOO2ZoABqsct5JhW+Qg==
-X-Google-Smtp-Source: ABdhPJybhG2sFlGgCbW76SCPoPv85702fLqv89akUJ8LhblfPozxj/blYPKtMYJPABXwj3KRqfqXcg==
-X-Received: by 2002:aa7:db90:: with SMTP id u16mr16072806edt.106.1623003401891;
-        Sun, 06 Jun 2021 11:16:41 -0700 (PDT)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id qq26sm4415932ejb.6.2021.06.06.11.16.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 06 Jun 2021 11:16:41 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: dts: rockchip: fix supply properties in io-domains nodes
-Date:   Sun,  6 Jun 2021 20:16:32 +0200
-Message-Id: <20210606181632.13371-1-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        Sun, 6 Jun 2021 14:24:04 -0400
+Received: (qmail 1741840 invoked by uid 1000); 6 Jun 2021 14:22:13 -0400
+Date:   Sun, 6 Jun 2021 14:22:13 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Segher Boessenkool <segher@kernel.crashing.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <20210606182213.GA1741684@rowland.harvard.edu>
+References: <CAHk-=wik7T+FoDAfqFPuMGVp6HxKYOf8UeKt3+EmovfivSgQ2Q@mail.gmail.com>
+ <20210604205600.GB4397@paulmck-ThinkPad-P17-Gen-1>
+ <CAHk-=wgmUbU6XPHz=4NFoLMxH7j_SR-ky4sKzOBrckmvk5AJow@mail.gmail.com>
+ <20210604214010.GD4397@paulmck-ThinkPad-P17-Gen-1>
+ <CAHk-=wg0w5L7-iJU_kvEh9stXZoh2srRF4jKToKmSKyHv-njvA@mail.gmail.com>
+ <20210605145739.GB1712909@rowland.harvard.edu>
+ <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210606012903.GA1723421@rowland.harvard.edu>
+ <20210606115336.GS18427@gate.crashing.org>
+ <CAHk-=wjgzAn9DfR9DpU-yKdg74v=fvyzTJMD8jNjzoX4kaUBHQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjgzAn9DfR9DpU-yKdg74v=fvyzTJMD8jNjzoX4kaUBHQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A test with rockchip-io-domain.yaml gives notifications
-for supply properties in io-domains nodes.
-Fix them all into ".*-supply$" format.
+On Sun, Jun 06, 2021 at 11:04:49AM -0700, Linus Torvalds wrote:
+> On Sun, Jun 6, 2021 at 4:56 AM Segher Boessenkool
+> <segher@kernel.crashing.org> wrote:
+> >
+> > And that is a simple fact, since the same assembler code (at the same
+> > spot in the program) will do the same thing no matter how that ended up
+> > there.
+> 
+> The thing is, that's exactl;y what gcc violates.
+> 
+> The example - you may not have been cc'd personally on that one - was
+> something like
+> 
+>     if (READ_ONCE(a)) {
+>         barrier();
+>         WRITE_ONCE(b,1);
+>    } else {
+>         barrier();
+>         WRITE_ONCE(b, 1);
+>     }
+> 
+> and currently because gcc thinks "same exact code", it will actually
+> optimize this to (pseudo-asm):
+> 
+>     LD A
+>     "empty asm"
+>     ST $1,B
+> 
+> which is very much NOT equivalent to
+> 
+>     LD A
+>     BEQ over
+>     "empty asm"
+>     ST $1,B
+>     JMP join
+> 
+> over:
+>     "empty asm"
+>     ST $1,B
+> 
+> join:
+> 
+> and that's the whole point of the barriers.
+> 
+> It's not equivalent exactly because of memory ordering. In the first
+> case, there is no ordering on weak architectures. In the second case,
+> there is always an ordering, because of CPU consistency guarantees.
+> 
+> And no, gcc doesn't understand about memory ordering. But that's
+> exactly why we use inline asms.
+> 
+> > And the compiler always is allowed to duplicate, join, delete, you name
+> > it, inline assembler code.  The only thing that it cares about is
+> > semantics of the code, just like for any other code.
+> 
+> See, but it VIOLATES the semantics of the code.
+> 
+> You can't join those two empty asm's (and then remove the branch),
+> because the semantics of the code really aren't the same any more if
+> you do. Truly.
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- arch/arm/boot/dts/rk3288-rock2-som.dtsi | 2 +-
- arch/arm/boot/dts/rk3288-vyasa.dts      | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+To be fair, the same argument applies even without the asm code.  The 
+compiler will translate
 
-diff --git a/arch/arm/boot/dts/rk3288-rock2-som.dtsi b/arch/arm/boot/dts/rk3288-rock2-som.dtsi
-index 44bb5e6f8..76363b8af 100644
---- a/arch/arm/boot/dts/rk3288-rock2-som.dtsi
-+++ b/arch/arm/boot/dts/rk3288-rock2-som.dtsi
-@@ -218,7 +218,7 @@
- 	flash0-supply = <&vcc_flash>;
- 	flash1-supply = <&vccio_pmu>;
- 	gpio30-supply = <&vccio_pmu>;
--	gpio1830 = <&vcc_io>;
-+	gpio1830-supply = <&vcc_io>;
- 	lcdc-supply = <&vcc_io>;
- 	sdcard-supply = <&vccio_sd>;
- 	wifi-supply = <&vcc_18>;
-diff --git a/arch/arm/boot/dts/rk3288-vyasa.dts b/arch/arm/boot/dts/rk3288-vyasa.dts
-index aa50f8ed4..b156a83eb 100644
---- a/arch/arm/boot/dts/rk3288-vyasa.dts
-+++ b/arch/arm/boot/dts/rk3288-vyasa.dts
-@@ -379,10 +379,10 @@
- 	audio-supply = <&vcc_18>;
- 	bb-supply = <&vcc_io>;
- 	dvp-supply = <&vcc_io>;
--	flash0-suuply = <&vcc_18>;
-+	flash0-supply = <&vcc_18>;
- 	flash1-supply = <&vcc_lan>;
- 	gpio30-supply = <&vcc_io>;
--	gpio1830 = <&vcc_io>;
-+	gpio1830-supply = <&vcc_io>;
- 	lcdc-supply = <&vcc_io>;
- 	sdcard-supply = <&vccio_sd>;
- 	wifi-supply = <&vcc_18>;
--- 
-2.11.0
+     if (READ_ONCE(a))
+         WRITE_ONCE(b, 1);
+     else
+         WRITE_ONCE(b, 1);
 
+to
+
+     LD A
+     ST $1,B
+
+intstead of
+
+     LD A
+     BEQ over
+     ST $1,B
+     JMP join
+ 
+ over:
+     ST $1,B
+ 
+ join:
+
+And these two are different for the same memory ordering reasons as 
+above.
+
+Alan
