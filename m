@@ -2,64 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C499D39CEA9
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 13:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF03539CEB7
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 13:41:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhFFLMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 07:12:23 -0400
-Received: from bmailout1.hostsharing.net ([83.223.95.100]:58717 "EHLO
-        bmailout1.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229878AbhFFLMV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 07:12:21 -0400
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
-        by bmailout1.hostsharing.net (Postfix) with ESMTPS id 5F836300002D0;
-        Sun,  6 Jun 2021 13:10:28 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 532441EDD; Sun,  6 Jun 2021 13:10:28 +0200 (CEST)
-Date:   Sun, 6 Jun 2021 13:10:28 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Saravana Kannan <saravanak@google.com>,
-        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.12 03/43] spi: Fix spi device unregister flow
-Message-ID: <20210606111028.GA20948@wunner.de>
-References: <20210603170734.3168284-1-sashal@kernel.org>
- <20210603170734.3168284-3-sashal@kernel.org>
-MIME-Version: 1.0
+        id S230091AbhFFLnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 07:43:18 -0400
+Received: from gate.crashing.org ([63.228.1.57]:59079 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229465AbhFFLnP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 07:43:15 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 156Baslq023488;
+        Sun, 6 Jun 2021 06:36:54 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 156BapHt023485;
+        Sun, 6 Jun 2021 06:36:51 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Sun, 6 Jun 2021 06:36:51 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        will@kernel.org, stern@rowland.harvard.edu, parri.andrea@gmail.com,
+        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
+        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
+        linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <20210606113651.GR18427@gate.crashing.org>
+References: <YLn8dzbNwvqrqqp5@hirez.programming.kicks-ass.net> <YLoSJaOVbzKXU4/7@hirez.programming.kicks-ass.net> <20210604153518.GD18427@gate.crashing.org> <YLpQj+S3vpTLX7cc@hirez.programming.kicks-ass.net> <20210604164047.GH18427@gate.crashing.org> <20210604185526.GW4397@paulmck-ThinkPad-P17-Gen-1> <20210604195301.GM18427@gate.crashing.org> <20210604204042.GZ4397@paulmck-ThinkPad-P17-Gen-1>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210603170734.3168284-3-sashal@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210604204042.GZ4397@paulmck-ThinkPad-P17-Gen-1>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 01:06:53PM -0400, Sasha Levin wrote:
-> From: Saravana Kannan <saravanak@google.com>
+On Fri, Jun 04, 2021 at 01:40:42PM -0700, Paul E. McKenney wrote:
+> On Fri, Jun 04, 2021 at 02:53:01PM -0500, Segher Boessenkool wrote:
+> > On Fri, Jun 04, 2021 at 11:55:26AM -0700, Paul E. McKenney wrote:
+> > > On Fri, Jun 04, 2021 at 11:40:47AM -0500, Segher Boessenkool wrote:
+> > > > My point is that you ask compiler developers to paint themselves into a
+> > > > corner if you ask them to change such fundamental C syntax.
+> > > 
+> > > Once we have some experience with a language extension, the official
+> > > syntax for a standardized version of that extension can be bikeshedded.
+> > > Committees being what they are, what we use in the meantime will
+> > > definitely not be what is chosen, so there is not a whole lot of point
+> > > in worrying about the exact syntax in the meantime.  ;-)
+> > 
+> > I am only saying that it is unlikely any compiler that is used in
+> > production will want to experiment with "volatile if".
 > 
-> [ Upstream commit c7299fea67696db5bd09d924d1f1080d894f92ef ]
+> That unfortunately matches my experience over quite a few years.  But if
+> something can be implemented using existing extensions, the conversations
+> often get easier.  Especially given many more people are now familiar
+> with concurrency.
 
-This commit shouldn't be backported to stable by itself, it requires
-that the following fixups are applied on top of it:
+This was about the syntax "volatile if", not about the concept, let's
+call that "volatile_if".  And no, it was not me who brought this up :-)
 
-* Upstream commit 27e7db56cf3d ("spi: Don't have controller clean up spi
-  device before driver unbind")
+> > > Which is exactly why these conversations are often difficult.  There is
+> > > a tension between pushing the as-if rule as far as possible within the
+> > > compiler on the one hand and allowing developers to write code that does
+> > > what is needed on the other.  ;-)
+> > 
+> > There is a tension between what users expect from the compiler and what
+> > actually is promised.  The compiler is not pushing the as-if rule any
+> > further than it always has: it just becomes better at optimising over
+> > time.  The as-if rule is and always has been absolute.
+> 
+> Heh!  The fact that the compiler has become better at optimizing
+> over time is exactly what has been pushing the as-if rule further.
+> 
+> The underlying problem is that it is often impossible to write large
+> applications (such as the Linux kernel) completely within the confines of
+> the standard.  Thus, most large applications, and especially concurrent
+> applications, are vulnerable to either the compiler becoming better
+> at optimizing or compilers pushing the as-if rule, however you want to
+> say it.
 
-* spi.git commit 2ec6f20b33eb ("spi: Cleanup on failure of initial setup")
-  https://git.kernel.org/broonie/spi/c/2ec6f20b33eb
+Oh definitely.  But there is nothing the compiler can do about most
+cases of undefined behaviour: it cannot detect it, and there is no way
+it *can* be handled sanely.  Take for example dereferencing a pointer
+that does not point to an object.
 
-Note that the latter is queued for v5.13, but hasn't landed there yet.
-So you probably need to back out c7299fea6769 from the stable queue and
-wait for 2ec6f20b33eb to land in upstream.
 
-Since you've applied c7299fea6769 to v5.12, v5.10, v5.4, v4.14 and v4.19
-stable trees, the two fixups listed above need to be backported to all
-of them.
-
-Thanks,
-
-Lukas
+Segher
