@@ -2,420 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C3839D0E3
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 21:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BAF839D0E5
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 21:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbhFFTPt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 6 Jun 2021 15:15:49 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55108 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231522AbhFFTOi (ORCPT
+        id S230425AbhFFTQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 15:16:19 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:57925 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231409AbhFFTPc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 15:14:38 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id CF06921A83;
-        Sun,  6 Jun 2021 19:12:44 +0000 (UTC)
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id A8D70118DD;
-        Sun,  6 Jun 2021 19:12:39 +0000 (UTC)
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id 1dwyHycevWBQXAAALh3uQQ
-        (envelope-from <dave@stgolabs.net>); Sun, 06 Jun 2021 19:12:39 +0000
-Date:   Sun, 6 Jun 2021 12:12:33 -0700
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     =?utf-8?B?QW5kcsOvwr/CvQ==?= Almeida <andrealmeid@collabora.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        kernel@collabora.com, krisman@collabora.com,
-        pgriffais@valvesoftware.com, z.figura12@gmail.com,
-        joel@joelfernandes.org, malteskarupke@fastmail.fm,
-        linux-api@vger.kernel.org, fweimer@redhat.com,
-        libc-alpha@sourceware.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org, acme@kernel.org, corbet@lwn.net,
-        Peter Oskolkov <posk@posk.io>,
-        Andrey Semashev <andrey.semashev@gmail.com>,
-        torvalds@linux-foundation.org
-Subject: Re: [PATCH v4 05/15] futex2: Implement support for different futex
- sizes
-Message-ID: <20210606191233.asjaichvylpryser@offworld>
-References: <20210603195924.361327-1-andrealmeid@collabora.com>
- <20210603195924.361327-6-andrealmeid@collabora.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20210603195924.361327-6-andrealmeid@collabora.com>
-User-Agent: NeoMutt/20201120
+        Sun, 6 Jun 2021 15:15:32 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 16EFA13CA;
+        Sun,  6 Jun 2021 15:13:39 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute3.internal (MEProxy); Sun, 06 Jun 2021 15:13:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm1; bh=MvwFPayhTcEWvcEKv5TmWDsTvmr0
+        uW8J60CdljadmjU=; b=npM9QM3gszq8Ill6wwP/SEkE4LhInrBY4dFbI9BhX0dD
+        kKD2bcY8I5mJpeCkwo3fhY+88TRsYuJLy8Xf27Qe/d+0z6yQIwqcOgbmI3uJD1NE
+        081ARB9ehTaeq/RdI6uVNmS9fYJnJP0AXvB4pLE3XpakWIwMPJUG1D4P8+XtHwmb
+        BPP5eGdW6MB0dw2/dqTriTRxXVYy8fEwNisAH3tCUsp1uqJzofDY3Rh7kPqOU9Bg
+        pG7sDigVZIi8d+Pu50uKOHRMjokZkYmv4JVFdILB1c6ioKhadtZgSzOUHTFo4ey0
+        NeEqVDF2VahZ4QNBS7/dtxuh/rTUkJcY+htPe0itoA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=MvwFPa
+        yhTcEWvcEKv5TmWDsTvmr0uW8J60CdljadmjU=; b=vE6KlurLNw53dkBYH8EL2n
+        9Jkl/4Hz3XbvsZ1KXAUCTPZRdWBPTzQLOD4Zlp04/gZDoNVsnyh0Mb+qJpiUlk8/
+        Snd+qkuYOBDDFlI00sIDWshBOnvwDQS6AYTpz2IIYTMtkamu+hjRWjj3OZ18d019
+        6liUA6na4BjR18xbSby1QculoUE+y4PIgIxKcyIudhOnwmzYCJMhARiXswSU8Hea
+        zGYVY4dr41SMtiJwTZaGt218eFTB+Scn5MeFXBDI7FiftalgOsC+D/ybuYBfTbTZ
+        QYIEoJbYzatA1eavW1UvM66o9S+GeN8I54ah2Yf2GTezcA/0dvgh5gEL0/e1U8Nw
+        ==
+X-ME-Sender: <xms:Yh69YLICqtCInGw4nSR1CQjjwXbsWoqpwSEfQpZph3s85fsSkXgbqQ>
+    <xme:Yh69YPIt3bYtF4xtWzCshCFmHtiSivm3KuL8TcPACBppjk_ObD5amG0I8kQz-Knh0
+    P0ji7azBxf8Oug4n3A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedthedgudefiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfufhv
+    vghnucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrf
+    grthhtvghrnhepgfeigeeiffeuhfettdejgfetjeetfeelfefgfefgvddvtdfghfffudeh
+    vdefkeffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epshhvvghnsehsvhgvnhhpvghtvghrrdguvghv
+X-ME-Proxy: <xmx:Yh69YDtU7MGezEX6tXJPpnMJyRxAMFvAJYH4IdTPDMolBY7WRGn14w>
+    <xmx:Yh69YEZLlPpEzoaTTFMtpmcqp5Qe1Vd-n1yi2Dg6Wkz5zj16O1_hUQ>
+    <xmx:Yh69YCa1kEHSGvPGxa10_dMm7svRkC8DICUbQ6siXtYwvWo9whDbSQ>
+    <xmx:Yh69YBkBc9maanbms25rrGOBoaLzjOhl29efwsazPxCmiO8VT9E4PQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 2FE7F51C0060; Sun,  6 Jun 2021 15:13:37 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
+Mime-Version: 1.0
+Message-Id: <f321012c-8108-4797-9f24-7786c1f7d468@www.fastmail.com>
+In-Reply-To: <CAK8P3a3TetrYDq0un8NT2ZPM=MSGg68Qr0gEV0Ua4Jfqoy-ErQ@mail.gmail.com>
+References: <20210606103656.71079-1-sven@svenpeter.dev>
+ <CAK8P3a3TetrYDq0un8NT2ZPM=MSGg68Qr0gEV0Ua4Jfqoy-ErQ@mail.gmail.com>
+Date:   Sun, 06 Jun 2021 21:13:17 +0200
+From:   "Sven Peter" <sven@svenpeter.dev>
+To:     "Arnd Bergmann" <arnd@arndb.de>
+Cc:     "USB list" <linux-usb@vger.kernel.org>,
+        "Felipe Balbi" <balbi@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] usb: dwc3: support 64 bit DMA in platform driver
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 03 Jun 2021, Andrï¿½ Almeida wrote:
 
->Implement support for 8, 16 and 64 bit futexes, along with the existing
->32 bit support. Userspace should use flags to specify in the syscall
->the size of the *uaddr they are operating on.
->
->Variable sized futexes are useful for implementing atomic primitives in
->userspace in an efficient manner. 64bit sized futexes are also
->particularly useful when userspace stores information to be used in an
->atomic fashion on the futex value, given more room for flexibility.
 
-Note that at least in the past, Linus has been vehemently against 64-bit
-futexes.
+On Sun, Jun 6, 2021, at 17:43, Arnd Bergmann wrote:
+> On Sun, Jun 6, 2021 at 12:36 PM Sven Peter <sven@svenpeter.dev> wrote:
+> > diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+> > index b6e53d8212cd..4930541a8984 100644
+> > --- a/drivers/usb/dwc3/core.c
+> > +++ b/drivers/usb/dwc3/core.c
+> > @@ -1545,6 +1545,21 @@ static int dwc3_probe(struct platform_device *pdev)
+> >
+> >         dwc3_get_properties(dwc);
+> >
+> > +       /* Try to set 64-bit DMA first */
+> > +       if (!dwc->sysdev->dma_mask)
+> > +               /* Platform did not initialize dma_mask */
+> > +               ret = dma_coerce_mask_and_coherent(dwc->sysdev,
+> > +                                                  DMA_BIT_MASK(64));
+> > +       else
+> > +               ret = dma_set_mask_and_coherent(dwc->sysdev, DMA_BIT_MASK(64));
+> > +
+> > +       /* If seting 64-bit DMA mask fails, fall back to 32-bit DMA mask */
+> > +       if (ret) {
+> > +               ret = dma_set_mask_and_coherent(dwc->sysdev, DMA_BIT_MASK(32));
+> > +               if (ret)
+> > +                       return ret;
+> > +       }
+> 
+> Please drop the dma_coerce_mask_and_coherent() code path as well: if
+> the device is marked as non-DMA capable in the platform, it's better have
+> it not be usable at all than to assume a particular bus property that may
+> or may not be present on that bus.
+> 
+> The 32-bit mask is the default on all buses you might see a dwc3 controller
+> on, so you can drop that as well, and just leave the
+> dma_set_mask_and_coherent().
+> 
+>         Arnd
+> 
 
-Basically this additional data, like for implementing read/write locks,
-does not need to be in the futex atomic wait/wake parts. You can instead
-split the userspace lock into two adjacent 32-bit words and do 64-bit
-atomic ops on it.
-
-Of course, this is a new interface altogether, so this time it might
-be fair game.
+Makes sense, will drop the two things for v3.
 
 Thanks,
-Davidlohr
 
->
->Overlapping futexes are not allowed, so userspace can't wait and wake on
->the same memory address if the are using different sizes.
->
->Signed-off-by: André Almeida <andrealmeid@collabora.com>
->---
-> include/uapi/linux/futex.h |   3 +
-> kernel/futex2.c            | 124 ++++++++++++++++++++++++-------------
-> 2 files changed, 84 insertions(+), 43 deletions(-)
->
->diff --git a/include/uapi/linux/futex.h b/include/uapi/linux/futex.h
->index 06ea9bdfa69e..5786270b0c75 100644
->--- a/include/uapi/linux/futex.h
->+++ b/include/uapi/linux/futex.h
->@@ -42,7 +42,10 @@
->					 FUTEX_PRIVATE_FLAG)
->
-> /* Size argument to futex2 syscall */
->+#define FUTEX_8		0
->+#define FUTEX_16	1
-> #define FUTEX_32	2
->+#define FUTEX_64	3
->
-> #define FUTEX_SIZE_MASK	0x3
->
->diff --git a/kernel/futex2.c b/kernel/futex2.c
->index 012d7f7fc17a..1e97e5f2e793 100644
->--- a/kernel/futex2.c
->+++ b/kernel/futex2.c
->@@ -89,9 +89,11 @@ struct futex_bucket {
-> #define FUTEXV_WAITER_MASK (FUTEX_SIZE_MASK | FUTEX_SHARED_FLAG)
->
-> #define is_object_shared ((futexv->objects[i].flags & FUTEX_SHARED_FLAG) ? true : false)
->+#define object_size (futexv->objects[i].flags & FUTEX_SIZE_MASK)
->
->-#define FUT_OFF_INODE    1 /* We set bit 0 if key has a reference on inode */
->-#define FUT_OFF_MMSHARED 2 /* We set bit 1 if key has a reference on mm */
->+#define FUT_OFF_INODE    PAGE_SIZE
->+#define FUT_OFF_MMSHARED (PAGE_SIZE << 1)
->+#define FUT_OFF_SIZE     1
->
-> static struct futex_bucket *futex_table;
-> static unsigned int futex2_hashsize;
->@@ -321,6 +323,7 @@ static int futex_get_shared_key(uintptr_t address, struct mm_struct *mm,
->  * @uaddr:   futex user address
->  * @key:     data that uniquely identifies a futex
->  * @shared:  is this a shared futex?
->+ * @flags:   flags for the size
->  *
->  * For private futexes, each uaddr will be unique for a given mm_struct, and it
->  * won't be freed for the life time of the process. For shared futexes, check
->@@ -330,21 +333,41 @@ static int futex_get_shared_key(uintptr_t address, struct mm_struct *mm,
->  */
-> static struct futex_bucket *futex_get_bucket(void __user *uaddr,
->					     struct futex_key *key,
->-					     bool shared)
->+					     bool shared, unsigned int flags)
-> {
->	uintptr_t address = (uintptr_t)uaddr;
->	u32 hash_key;
->
->+	size_t size;
->+
->+	switch (flags) {
->+	case FUTEX_8:
->+		size = sizeof(u8);
->+		break;
->+	case FUTEX_16:
->+		size = sizeof(u16);
->+		break;
->+	case FUTEX_32:
->+		size = sizeof(u32);
->+		break;
->+	case FUTEX_64:
->+		size = sizeof(u64);
->+		break;
->+	default:
->+		return ERR_PTR(-EINVAL);
->+	}
->+
->	/* Checking if uaddr is valid and accessible */
->-	if (unlikely(!IS_ALIGNED(address, sizeof(u32))))
->+	if (unlikely(!IS_ALIGNED(address, size)))
->		return ERR_PTR(-EINVAL);
->-	if (unlikely(!access_ok(uaddr, sizeof(u32))))
->+	if (unlikely(!access_ok(uaddr, size)))
->		return ERR_PTR(-EFAULT);
->
->	key->offset = address % PAGE_SIZE;
->	address -= key->offset;
->	key->pointer = (u64)address;
->	key->index = (unsigned long)current->mm;
->+	key->offset |= FUT_OFF_SIZE << (size - sizeof(u8));
->
->	if (shared)
->		futex_get_shared_key(address, current->mm, key);
->@@ -358,18 +381,39 @@ static struct futex_bucket *futex_get_bucket(void __user *uaddr,
->
-> /**
->  * futex_get_user - Get the userspace value on this address
->- * @uval:  variable to store the value
->- * @uaddr: userspace address
->+ * @uval:	variable to store the value
->+ * @uaddr:	userspace address
->+ * @pagefault:	true if pagefault should be disabled
->+ * @flags:	flags for the size
->  *
->  * Check the comment at futex_enqueue() for more information.
->  */
->-static int futex_get_user(u32 *uval, u32 __user *uaddr)
->+static int futex_get_user(u64 *uval, void __user *uaddr, unsigned int flags, bool pagefault)
-> {
->	int ret;
->
->-	pagefault_disable();
->-	ret = __get_user(*uval, uaddr);
->-	pagefault_enable();
->+	if (pagefault)
->+		pagefault_disable();
->+
->+	switch (flags) {
->+	case FUTEX_8:
->+		ret = __get_user(*uval, (u8 __user *)uaddr);
->+		break;
->+	case FUTEX_16:
->+		ret = __get_user(*uval, (u16 __user *)uaddr);
->+		break;
->+	case FUTEX_32:
->+		ret = __get_user(*uval, (u32 __user *)uaddr);
->+		break;
->+	case FUTEX_64:
->+		ret = __get_user(*uval, (u64 __user *)uaddr);
->+		break;
->+	default:
->+		BUG();
->+	}
->+
->+	if (pagefault)
->+		pagefault_enable();
->
->	return ret;
-> }
->@@ -484,8 +528,8 @@ static int futex_enqueue(struct futex_waiter_head *futexv, unsigned int nr_futex
->			 int *awakened)
-> {
->	int i, ret;
->-	u32 uval, val;
->-	u32 __user *uaddr;
->+	u64 uval, val;
->+	void __user *uaddr;
->	bool retry = false;
->	struct futex_bucket *bucket;
->
->@@ -493,13 +537,14 @@ static int futex_enqueue(struct futex_waiter_head *futexv, unsigned int nr_futex
->	set_current_state(TASK_INTERRUPTIBLE);
->
->	for (i = 0; i < nr_futexes; i++) {
->-		uaddr = (u32 __user *)futexv->objects[i].uaddr;
->-		val = (u32)futexv->objects[i].val;
->+		uaddr = futexv->objects[i].uaddr;
->+		val = (u64)futexv->objects[i].val;
->
->		if (is_object_shared && retry) {
->			struct futex_bucket *tmp =
->				futex_get_bucket((void __user *)uaddr,
->-						 &futexv->objects[i].key, true);
->+						 &futexv->objects[i].key, true,
->+						 object_size);
->			if (IS_ERR(tmp)) {
->				__set_current_state(TASK_RUNNING);
->				futex_dequeue_multiple(futexv, i);
->@@ -513,7 +558,7 @@ static int futex_enqueue(struct futex_waiter_head *futexv, unsigned int nr_futex
->		bucket_inc_waiters(bucket);
->		spin_lock(&bucket->lock);
->
->-		ret = futex_get_user(&uval, uaddr);
->+		ret = futex_get_user(&uval, uaddr, object_size, true);
->
->		if (unlikely(ret)) {
->			spin_unlock(&bucket->lock);
->@@ -525,7 +570,7 @@ static int futex_enqueue(struct futex_waiter_head *futexv, unsigned int nr_futex
->			if (*awakened >= 0)
->				return 1;
->
->-			if (__get_user(uval, uaddr))
->+			if (futex_get_user(&uval, uaddr, object_size, false))
->				return -EFAULT;
->
->			retry = true;
->@@ -656,9 +701,6 @@ static long ksys_futex_wait(void __user *uaddr, u64 val, unsigned int flags,
->	if (flags & ~FUTEX2_MASK)
->		return -EINVAL;
->
->-	if (size != FUTEX_32)
->-		return -EINVAL;
->-
->	futexv = &wait_single.futexv;
->	futexv->task = current;
->	futexv->hint = false;
->@@ -667,12 +709,13 @@ static long ksys_futex_wait(void __user *uaddr, u64 val, unsigned int flags,
->	waiter->index = 0;
->	waiter->val = val;
->	waiter->uaddr = uaddr;
->+	waiter->flags = flags;
->	memset(&wait_single.waiter.key, 0, sizeof(struct futex_key));
->
->	INIT_LIST_HEAD(&waiter->list);
->
->	/* Get an unlocked hash bucket */
->-	waiter->bucket = futex_get_bucket(uaddr, &waiter->key, shared);
->+	waiter->bucket = futex_get_bucket(uaddr, &waiter->key, shared, size);
->	if (IS_ERR(waiter->bucket))
->		return PTR_ERR(waiter->bucket);
->
->@@ -728,8 +771,7 @@ static int compat_futex_parse_waitv(struct futex_waiter_head *futexv,
->		if (copy_from_user(&waitv, &uwaitv[i], sizeof(waitv)))
->			return -EFAULT;
->
->-		if ((waitv.flags & ~FUTEXV_WAITER_MASK) ||
->-		    (waitv.flags & FUTEX_SIZE_MASK) != FUTEX_32)
->+		if (waitv.flags & ~FUTEXV_WAITER_MASK)
->			return -EINVAL;
->
->		futexv->objects[i].key.pointer = 0;
->@@ -740,7 +782,7 @@ static int compat_futex_parse_waitv(struct futex_waiter_head *futexv,
->
->		bucket = futex_get_bucket(compat_ptr(waitv.uaddr),
->					  &futexv->objects[i].key,
->-					  is_object_shared);
->+					  is_object_shared, object_size);
->
->		if (IS_ERR(bucket))
->			return PTR_ERR(bucket);
->@@ -805,8 +847,7 @@ static int futex_parse_waitv(struct futex_waiter_head *futexv,
->		if (copy_from_user(&waitv, &uwaitv[i], sizeof(waitv)))
->			return -EFAULT;
->
->-		if ((waitv.flags & ~FUTEXV_WAITER_MASK) ||
->-		    (waitv.flags & FUTEX_SIZE_MASK) != FUTEX_32)
->+		if (waitv.flags & ~FUTEXV_WAITER_MASK)
->			return -EINVAL;
->
->		futexv->objects[i].key.pointer = 0;
->@@ -816,7 +857,7 @@ static int futex_parse_waitv(struct futex_waiter_head *futexv,
->		futexv->objects[i].index  = i;
->
->		bucket = futex_get_bucket(waitv.uaddr, &futexv->objects[i].key,
->-					  is_object_shared);
->+					  is_object_shared, object_size);
->
->		if (IS_ERR(bucket))
->			return PTR_ERR(bucket);
->@@ -947,10 +988,7 @@ SYSCALL_DEFINE3(futex_wake, void __user *, uaddr, unsigned int, nr_wake,
->	if (flags & ~FUTEX2_MASK)
->		return -EINVAL;
->
->-	if (size != FUTEX_32)
->-		return -EINVAL;
->-
->-	bucket = futex_get_bucket(uaddr, &waiter.key, shared);
->+	bucket = futex_get_bucket(uaddr, &waiter.key, shared, size);
->	if (IS_ERR(bucket))
->		return PTR_ERR(bucket);
->
->@@ -987,28 +1025,30 @@ static inline int __futex_requeue(struct futex_requeue rq1,
->	bool retry = false;
->	struct futex_bucket *b1, *b2;
->	DEFINE_WAKE_Q(wake_q);
->-	u32 uval;
->+	u64 uval;
->	int ret;
->	bool shared1 = (rq1.flags  & FUTEX_SHARED_FLAG) ? true : false;
->	bool shared2 = (rq2.flags  & FUTEX_SHARED_FLAG) ? true : false;
->+	unsigned int size1 = (rq1.flags  & FUTEX_SIZE_MASK);
->+	unsigned int size2 = (rq2.flags  & FUTEX_SIZE_MASK);
->
->-	b1 = futex_get_bucket(rq1.uaddr, &w1.key, shared1);
->+	b1 = futex_get_bucket(rq1.uaddr, &w1.key, shared1, size1);
->	if (IS_ERR(b1))
->		return PTR_ERR(b1);
->
->-	b2 = futex_get_bucket(rq2.uaddr, &w2.key, shared2);
->+	b2 = futex_get_bucket(rq2.uaddr, &w2.key, shared2, size2);
->	if (IS_ERR(b2))
->		return PTR_ERR(b2);
->
-> retry:
->	if (shared1 && retry) {
->-		b1 = futex_get_bucket(rq1.uaddr, &w1.key, shared1);
->+		b1 = futex_get_bucket(rq1.uaddr, &w1.key, shared1, size1);
->		if (IS_ERR(b1))
->			return PTR_ERR(b1);
->	}
->
->	if (shared2 && retry) {
->-		b2 = futex_get_bucket(rq2.uaddr, &w2.key, shared2);
->+		b2 = futex_get_bucket(rq2.uaddr, &w2.key, shared2, size2);
->		if (IS_ERR(b2))
->			return PTR_ERR(b2);
->	}
->@@ -1027,11 +1067,11 @@ static inline int __futex_requeue(struct futex_requeue rq1,
->		spin_lock_nested(&b1->lock, SINGLE_DEPTH_NESTING);
->	}
->
->-	ret = futex_get_user(&uval, rq1.uaddr);
->+	ret = futex_get_user(&uval, rq1.uaddr, size1, true);
->
->	if (unlikely(ret)) {
->		futex_double_unlock(b1, b2);
->-		if (__get_user(uval, (u32 __user *)rq1.uaddr))
->+		if (futex_get_user(&uval, rq1.uaddr, size1, false))
->			return -EFAULT;
->
->		bucket_dec_waiters(b2);
->@@ -1088,8 +1128,7 @@ static int compat_futex_parse_requeue(struct futex_requeue *rq,
->	if (copy_from_user(&tmp, uaddr, sizeof(tmp)))
->		return -EFAULT;
->
->-	if (tmp.flags & ~FUTEXV_WAITER_MASK ||
->-	    (tmp.flags & FUTEX_SIZE_MASK) != FUTEX_32)
->+	if (tmp.flags & ~FUTEXV_WAITER_MASK)
->		return -EINVAL;
->
->	rq->uaddr = compat_ptr(tmp.uaddr);
->@@ -1134,8 +1173,7 @@ static int futex_parse_requeue(struct futex_requeue *rq,
->	if (copy_from_user(rq, uaddr, sizeof(*rq)))
->		return -EFAULT;
->
->-	if (rq->flags & ~FUTEXV_WAITER_MASK ||
->-	    (rq->flags & FUTEX_SIZE_MASK) != FUTEX_32)
->+	if (rq->flags & ~FUTEXV_WAITER_MASK)
->		return -EINVAL;
->
->	return 0;
->--
->2.31.1
->
+Sven
+
