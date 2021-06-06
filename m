@@ -2,158 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C112439CF44
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 15:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58D2F39CF46
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 15:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbhFFNJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 09:09:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60858 "EHLO
+        id S230183AbhFFNJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 09:09:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbhFFNJW (ORCPT
+        with ESMTP id S230088AbhFFNJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 6 Jun 2021 09:09:22 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58AAFC061767;
-        Sun,  6 Jun 2021 06:07:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8632C061787
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 06:07:32 -0700 (PDT)
 Date:   Sun, 06 Jun 2021 13:07:30 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622984850;
+        s=2020; t=1622984851;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=iIRFb1jKnTo5dWo4vdft2FiOkoJM8ahbNvFiqMbznyk=;
-        b=ltstbgsahkZUdbqLiyLQq5sQTlO5N41+hC9GhiDBQkPCCs/IFALZjg0pGMH6Uwo7JYURUB
-        KMsAtQS2lFbW0geZ1P+v3p7wL6Ai4mi/8YpytJX/1xu84aZGw/6yTdhDgNxjZdEQVPZN7f
-        LPx5HidkeQ+/CbxiWtppSvIC2+vrxJfsIBldLFxwTB+rHox4yP8fcdhCfCogDjKswNAT8U
-        pYzU/d/mE+hZO4uHvOc78sulXGJi0Hs/S58RRja0a6ol/wFA9tsukebZIT78QfEreqWNxR
-        2WMGZcjU5ORwt+axgoTcX8LagP0aJTCdHGs9aPqyNM27yorJ3Y/BBLuJg2Ca9g==
+        bh=TKznpwkJ1SXxrF4PSQx+avWfDR6o9bxtnNRFYfgezKQ=;
+        b=REdHNjrRTo6YSoWwNziHiPLU6MhDd1NgzXizF7r68iPUXdyT+geuEzCxYgpzbwtNeAfc/n
+        VEmrokg2nS8NMbw3qw23bMGw1Wemnk5lKyWvgbHt3aV063fMkLISU7rnlXFWs1efRnI00q
+        EsrynycyRWD9hTLlFaJuxga1sniM9EvScdVBvusczyROSF9unGWa22yKZMKxbCRV5FRJ5H
+        6y0a7Q8aFk9Hhd5/13AfbVv9Rs0ZuwJz5p4Wd3tkidFCldhE7+SFN53xC/YRsREh5Zn+Fy
+        SKeoA35Ag9qV5KVu8l+W9iFtHQrbj5o52DnDWTKj+7cZ8mOfY4qDfPcvs10Qgg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622984850;
+        s=2020e; t=1622984851;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=iIRFb1jKnTo5dWo4vdft2FiOkoJM8ahbNvFiqMbznyk=;
-        b=4lzV7xjaPAgFsIcDl+zLI85Jv5+nn9pDqmPtDep36NRE1BISmpNMGlMVs65Rl/jw4PEYRJ
-        jUy1tGr6Aq/CETAw==
-From:   "irqchip-bot for Saravana Kannan" <tip-bot2@linutronix.de>
+        bh=TKznpwkJ1SXxrF4PSQx+avWfDR6o9bxtnNRFYfgezKQ=;
+        b=RltjuxE4Kb3lrUKfEvClxSyYTFZjJCqtDpug+ymh2AenyIsBfikIQRbZlgIP8QymeFLLGg
+        nbEG5GW7E8RUN9BA==
+From:   "irqchip-bot for Geert Uytterhoeven" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] irqchip/qcom-pdc: Switch to
- IRQCHIP_PLATFORM_DRIVER and allow as a module
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-gpio@vger.kernel.org, John Stultz <john.stultz@linaro.org>
-In-Reply-To: <20210518211922.3474368-1-john.stultz@linaro.org>
-References: <20210518211922.3474368-1-john.stultz@linaro.org>
+Subject: [irqchip: irq/irqchip-next] dt-bindings: irqchip: renesas-irqc: Add
+ R-Car M3-W+ support
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        niklas.soderlund+renesas@ragnatech.se,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        tglx@linutronix.de
+In-Reply-To: =?utf-8?q?=3C55d2c30cb14b2e10193a7fd4aa7670c70f360037=2E16225?=
+ =?utf-8?q?46880=2Egit=2Egeert+renesas=40glider=2Ebe=3E?=
+References: =?utf-8?q?=3C55d2c30cb14b2e10193a7fd4aa7670c70f360037=2E162254?=
+ =?utf-8?q?6880=2Egit=2Egeert+renesas=40glider=2Ebe=3E?=
 MIME-Version: 1.0
-Message-ID: <162298485012.29796.14375276303480597518.tip-bot2@tip-bot2>
+Message-ID: <162298485058.29796.14880327116673909682.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/irqchip-next branch of irqchip:
+The following commit has been merged into the irq/irqchip-next branch of irqc=
+hip:
 
-Commit-ID:     4acd8a4be614a6c191273f2247aff7374a92f318
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/4acd8a4be614a6c191273f2247aff7374a92f318
-Author:        Saravana Kannan <saravanak@google.com>
-AuthorDate:    Tue, 18 May 2021 21:19:21 
+Commit-ID:     e22808071d4d23596e6cc8f62588225515789031
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platfo=
+rms/e22808071d4d23596e6cc8f62588225515789031
+Author:        Geert Uytterhoeven <geert+renesas@glider.be>
+AuthorDate:    Tue, 01 Jun 2021 13:31:55 +02:00
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Sun, 06 Jun 2021 13:57:41 +01:00
+CommitterDate: Sun, 06 Jun 2021 13:54:59 +01:00
 
-irqchip/qcom-pdc: Switch to IRQCHIP_PLATFORM_DRIVER and allow as a module
+dt-bindings: irqchip: renesas-irqc: Add R-Car M3-W+ support
 
-This patch revives changes from Saravana Kannan to switch the
-qcom-pdc driver to use IRQCHIP_PLATFORM_DRIVER helper macros,
-and allows qcom-pdc driver to be loaded as a permanent module.
+Document support for the Interrupt Controller for External Devices
+(INT-EC) in the Renesas R-Car M3-W+ (r8a77961) SoC.
 
-Earlier attempts at this ran into trouble with loading
-dependencies, but with Saravana's fw_devlink=on set by default
-now we should avoid those.
-
-[jstultz: Folded in with my changes to allow the driver to be
- loadable as a permenent module]
-
-Cc: Andy Gross <agross@kernel.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Jason Cooper <jason@lakedaemon.net>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Maulik Shah <mkshah@codeaurora.org>
-Cc: Lina Iyer <ilina@codeaurora.org>
-Cc: Saravana Kannan <saravanak@google.com>
-Cc: Todd Kjos <tkjos@google.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-arm-msm@vger.kernel.org
-Cc: iommu@lists.linux-foundation.org
-Cc: linux-gpio@vger.kernel.org
-Signed-off-by: Saravana Kannan <saravanak@google.com>
-Signed-off-by: John Stultz <john.stultz@linaro.org>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Niklas S=C3=B6derlund <niklas.soderlund+renesas@ragnatech.se>
+Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210518211922.3474368-1-john.stultz@linaro.org
+Link: https://lore.kernel.org/r/55d2c30cb14b2e10193a7fd4aa7670c70f360037.1622=
+546880.git.geert+renesas@glider.be
 ---
- drivers/irqchip/Kconfig    | 2 +-
- drivers/irqchip/qcom-pdc.c | 8 +++++++-
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/interrupt-controller/renesas,irqc.yaml | 1=
+ +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index 62543a4..4d5924e 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -415,7 +415,7 @@ config GOLDFISH_PIC
-          for Goldfish based virtual platforms.
- 
- config QCOM_PDC
--	bool "QCOM PDC"
-+	tristate "QCOM PDC"
- 	depends on ARCH_QCOM
- 	select IRQ_DOMAIN_HIERARCHY
- 	help
-diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
-index 5dc63c2..32d5920 100644
---- a/drivers/irqchip/qcom-pdc.c
-+++ b/drivers/irqchip/qcom-pdc.c
-@@ -11,9 +11,11 @@
- #include <linux/irqdomain.h>
- #include <linux/io.h>
- #include <linux/kernel.h>
-+#include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/of_device.h>
-+#include <linux/of_irq.h>
- #include <linux/soc/qcom/irq.h>
- #include <linux/spinlock.h>
- #include <linux/slab.h>
-@@ -459,4 +461,8 @@ fail:
- 	return ret;
- }
- 
--IRQCHIP_DECLARE(qcom_pdc, "qcom,pdc", qcom_pdc_init);
-+IRQCHIP_PLATFORM_DRIVER_BEGIN(qcom_pdc)
-+IRQCHIP_MATCH("qcom,pdc", qcom_pdc_init)
-+IRQCHIP_PLATFORM_DRIVER_END(qcom_pdc)
-+MODULE_DESCRIPTION("Qualcomm Technologies, Inc. Power Domain Controller");
-+MODULE_LICENSE("GPL v2");
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/renesas,i=
+rqc.yaml b/Documentation/devicetree/bindings/interrupt-controller/renesas,irq=
+c.yaml
+index b67b8cb..abb22db 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/renesas,irqc.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/renesas,irqc.yaml
+@@ -29,6 +29,7 @@ properties:
+           - renesas,intc-ex-r8a774c0    # RZ/G2E
+           - renesas,intc-ex-r8a7795     # R-Car H3
+           - renesas,intc-ex-r8a7796     # R-Car M3-W
++          - renesas,intc-ex-r8a77961    # R-Car M3-W+
+           - renesas,intc-ex-r8a77965    # R-Car M3-N
+           - renesas,intc-ex-r8a77970    # R-Car V3M
+           - renesas,intc-ex-r8a77980    # R-Car V3H
