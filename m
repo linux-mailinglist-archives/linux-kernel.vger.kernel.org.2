@@ -2,175 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE3D39D005
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 18:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B35DA39D014
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 18:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230209AbhFFQfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 12:35:46 -0400
-Received: from mail-wr1-f48.google.com ([209.85.221.48]:38837 "EHLO
-        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbhFFQfo (ORCPT
+        id S230149AbhFFQyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 12:54:54 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:27380 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229738AbhFFQyv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 12:35:44 -0400
-Received: by mail-wr1-f48.google.com with SMTP id c9so5938550wrt.5;
-        Sun, 06 Jun 2021 09:33:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WY+YV1R5ZgejabQGRTVw30i8+uym8jnUtOXA94/K5lw=;
-        b=pDNjmTE9Fw2s8w/IYPMqwLkqVK0ZnfsZyN/vW6EZdkc8VQu8pqVkSoqHa/IFNWsah0
-         Xk9BMZau+4UajqSK3D6dGg9P2rhhLCOmi49Thovi1uREAelVPdWtwCJLxP5qfadEmcAk
-         b2BZ5h+5krfK1+iC/Y9oNZbhBtDU73wA3wE8xcB+jfluZLoEG4bVfDcWOvtrpwIwxMka
-         pGHdyi+gkGIxMEUcjdmpiHN9Kn+clhkiEW8J2p/XBP+PlgVLPT9ckvUgFsLnaQ/B+foi
-         RqwU+ggam2Xp/MYk7kvLqMZawzi/wp6yZ/Z9D12EerUa3MUOheTlO/q9Km5c7kScfYZ2
-         FZFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WY+YV1R5ZgejabQGRTVw30i8+uym8jnUtOXA94/K5lw=;
-        b=Eawgr46hjtnqLJNqlUkQcdHTlCB8rtVJKAoCLJvVJmi83IGgly2/R0UFTP9o+PZ1VN
-         XjZ/Ovl0cy6uQMfuVplvOo15R+r63YYbplQmep8HDVulFnITwFnFTNMR7LQyfppvnLPW
-         jIBzcY/FgxBNMiD1XJTDDK4pLwkaDDbc38hl08BbIaFjp27vJeYkL8WKD+HZhW3z3oGa
-         RMXJtqkX/14G+b5FBe2PBcosT9iQzUz8FIKkEMw1sfKxs7mcOTPcowUKS63cXo8gYTME
-         mVh9ANP7quNtIpmKmDoWCxBXjUP3X32SDGm7Q36hUVzeNIqX8umIePQPEHQvE1R1UzGq
-         KXLQ==
-X-Gm-Message-State: AOAM530w4SjNCep1OE+0/ebhsJtq+iq3vi68u17MNp5CfVphswdZZmD/
-        7LmAQ0J8DjX44OB0awluXg0=
-X-Google-Smtp-Source: ABdhPJx9EE3POJCPH3kxhrEgOKzF6jzZizEM4HKXVQ6BY0PswtcBRetUeMuVDjcmubaKep41FB6ang==
-X-Received: by 2002:adf:a28c:: with SMTP id s12mr13841510wra.105.1622997173876;
-        Sun, 06 Jun 2021 09:32:53 -0700 (PDT)
-Received: from jernej-laptop.localnet (cpe-86-58-17-133.cable.triera.net. [86.58.17.133])
-        by smtp.gmail.com with ESMTPSA id w11sm13382470wrv.89.2021.06.06.09.32.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Jun 2021 09:32:53 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Guo Ren <guoren@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Drew Fustini <drew@beagleboard.org>, liush@allwinnertech.com,
-        lazyparser@gmail.com, wefu@redhat.com,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Maxime Ripard <mripard@kernel.org>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        LABBE Corentin <clabbe.montjoie@gmail.com>,
-        Michael Walle <michael@walle.cc>,
-        Guo Ren <guoren@linux.alibaba.com>
-Subject: Re: [RFC PATCH v2 11/11] riscv: soc: Allwinner D1 GMAC driver only for temp use
-Date:   Sun, 06 Jun 2021 18:32:51 +0200
-Message-ID: <811499816.OAcyhOWOk8@jernej-laptop>
-In-Reply-To: <CAK8P3a0yHEGH8=o_TQ+ajRn53j+mHxYxqyYLPXnUe=YWkTHDBw@mail.gmail.com>
-References: <1622970249-50770-1-git-send-email-guoren@kernel.org> <1622970249-50770-15-git-send-email-guoren@kernel.org> <CAK8P3a0yHEGH8=o_TQ+ajRn53j+mHxYxqyYLPXnUe=YWkTHDBw@mail.gmail.com>
+        Sun, 6 Jun 2021 12:54:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1622998382; x=1654534382;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=r3foDektlpWCZiIYs5tiX3amxQGmMFfjzU0zjQT7iOo=;
+  b=bhc6GwNR0iNDWrp99TiB301MhdNTIA77REeKKE6C7bbzU3g36wJTEi4d
+   2wWyxeeFLnt+9nVrX4e9kL6MJK9PDyV3Cjy2F37ARSiXP62K1AF6ytZX/
+   teGhifZnopBvKCksJLTTUXamxEOJA0TqCtfAji5hGJoPcmRRuu8HV1eeU
+   NKp52E5N1b8dzSNC56AALpHeXsv5RG/GC5YypP2x8qT7D1+kfmVIyQYb6
+   7nSkR0bYkOQttzbV0dE0TObgQWcBCfAVkPk5tai8ZSGyiE7avafOvOnNT
+   iVtDQgzsYKuZv8nC2++5h9NXbtE0fzYGogjeuTktRUtvlM0M5jOhZ5GvQ
+   w==;
+IronPort-SDR: WV4os3pfZ6cZd/F+isGOSsgdRoZqlZmoe1Jd/BcmuciyzyoKjZnW4A3/ZkfTuKfu3bwxoV7UsS
+ dxmt/Mk8IbEGPFoCSZMmFu6o/7YkmXqI2RpMHMfvNkemSlldRuMdf/M7XGOS3pHY0IiBZRtxFS
+ Djvvopcgp0EDhVva1LFzXTFRtnoZgr1PqUg5cKPHq2xy3VCRUAQ/Hcdf7CWGW+KjnZkkkRUuNH
+ Oe/Dh6VGD1L+Ly528+CvkZiK3be3O6s7W4gRuL6ThaH0Z9ImGxCb01P0J3DOLJ5CDbnuMP4zYf
+ fPs=
+X-IronPort-AV: E=Sophos;i="5.83,253,1616482800"; 
+   d="scan'208";a="123701277"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 Jun 2021 09:53:01 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sun, 6 Jun 2021 09:53:00 -0700
+Received: from [10.12.72.78] (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
+ Transport; Sun, 6 Jun 2021 09:52:59 -0700
+Subject: Re: [PATCH 1/3] dt-bindings: watchdog: sama5d4-wdt: convert to yaml
+To:     Eugen Hristev <eugen.hristev@microchip.com>,
+        <wim@linux-watchdog.org>, <linux@roeck-us.net>,
+        <robh+dt@kernel.org>
+CC:     <linux-watchdog@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210527100120.266796-1-eugen.hristev@microchip.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <2360b414-6a92-2952-8eec-954497f84bae@microchip.com>
+Date:   Sun, 6 Jun 2021 18:52:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+In-Reply-To: <20210527100120.266796-1-eugen.hristev@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne nedelja, 06. junij 2021 ob 18:16:44 CEST je Arnd Bergmann napisal(a):
-> On Sun, Jun 6, 2021 at 11:04 AM <guoren@kernel.org> wrote:
-> > diff --git a/arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-kit.dts
-> > b/arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-kit.dts index
-> > cd9f7c9..31b681d 100644
-> > --- a/arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-kit.dts
-> > +++ b/arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-kit.dts
-> > @@ -11,7 +11,7 @@
-> >=20
-> >         compatible =3D "allwinner,d1-nezha-kit";
-> >        =20
-> >         chosen {
-> >=20
-> > -               bootargs =3D "console=3DttyS0,115200";
-> > +               bootargs =3D "console=3DttyS0,115200 rootwait init=3D/s=
-bin/init
-> > root=3D/dev/nfs rw nfsroot=3D192.168.101.200:/tmp/rootfs_nfs,v3,tcp,nol=
-ock
-> > ip=3D192.168.101.23";
-> These are not board specific options, they should be set by the bootloader
-> according to the network environment. It clearly doens't belong
-> into this patch .
->=20
-> >                 stdout-path =3D &serial0;
-> >        =20
-> >         };
-> >=20
-> > diff --git a/arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi
-> > b/arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi index 11cd938..d317e19
-> > 100644
-> > --- a/arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi
-> > +++ b/arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi
-> > @@ -80,5 +80,21 @@
-> >=20
-> >                         clocks =3D <&dummy_apb>;
-> >                         status =3D "disabled";
-> >                =20
-> >                 };
-> >=20
-> > +
-> > +               eth@4500000 {
-> > +                       compatible =3D "allwinner,sunxi-gmac";
-> > +                       reg =3D <0x00 0x4500000 0x00 0x10000 0x00 0x300=
-0030
-> > 0x00 0x04>; +                       interrupts-extended =3D <&plic 0x3e
-> > 0x04>;
-> > +                       interrupt-names =3D "gmacirq";
-> > +                       device_type =3D "gmac0";
-> > +                       phy-mode =3D "rgmii";
-> > +                       use_ephy25m =3D <0x01>;
-> > +                       tx-delay =3D <0x03>;
-> > +                       rx-delay =3D <0x03>;
-> > +                       gmac-power0;
-> > +                       gmac-power1;
-> > +                       gmac-power2;
-> > +                       status =3D "okay";
-> > +               };
->=20
-> Before you add this in the dts file, the properties need to be documented=
- in
-> the binding file. The "allwinner,sunxi-gmac" identifier does not appear to
-> be specific enough here, and the properties don't match what dwmac uses,
-> which would make it unnecessarily hard to change to the other driver later
-> on without breaking compatibility to old dtb files.
->=20
-> > +++ b/drivers/net/ethernet/allwinnertmp/sunxi-gmac-ops.c
-> > @@ -0,0 +1,690 @@
-> > +/*
-> > + * linux/drivers/net/ethernet/allwinner/sunxi_gmac_ops.c
-> > + *
-> > + * Copyright =A9 2016-2018, fuzhaoke
-> > + *             Author: fuzhaoke <fuzhaoke@allwinnertech.com>
-> > + *
-> > + * This file is provided under a dual BSD/GPL license.  When using or
-> > + * redistributing this file, you may do so under either license.
->=20
-> Are you sure this is the correct copyright information and "fuzhaoke" is
-> the copyright holder for this file? If this is derived from either the
-> designware
-> code or the Linux stmmac driver, the authors should be mentioned,
-> and the license be compatible with the original license terms.
->=20
-> Andre already commented on the driver quality and code duplication, those
-> are also show-stoppers, but the unclear license terms and dt binding
-> compatibility are even stronger reasons to not get anywhere close to this
-> driver.
+On 27/05/2021 at 12:01, Eugen Hristev wrote:
+> Convert the old txt binding to yaml format.
+> 
+> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
 
-I got impression that this patch is not meant to be merged and it's forward=
-=20
-ported from vendor kernel as a stop gap measure for developers until proper=
-=20
-mainline ethernet driver is developed.
+Series queued on at91-dt for 5.14. Will be sent to arm-soc soon.
+Thanks, best regards,
+   Nicolas
 
-Best regards,
-Jernej
+> ---
+>   .../bindings/watchdog/atmel,sama5d4-wdt.yaml  | 73 +++++++++++++++++++
+>   .../bindings/watchdog/atmel-sama5d4-wdt.txt   | 34 ---------
+>   2 files changed, 73 insertions(+), 34 deletions(-)
+>   create mode 100644 Documentation/devicetree/bindings/watchdog/atmel,sama5d4-wdt.yaml
+>   delete mode 100644 Documentation/devicetree/bindings/watchdog/atmel-sama5d4-wdt.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/watchdog/atmel,sama5d4-wdt.yaml b/Documentation/devicetree/bindings/watchdog/atmel,sama5d4-wdt.yaml
+> new file mode 100644
+> index 000000000000..0d0ab81da040
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/watchdog/atmel,sama5d4-wdt.yaml
+> @@ -0,0 +1,73 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/watchdog/atmel,sama5d4-wdt.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Atmel SAMA5D4 Watchdog Timer (WDT) Controller
+> +
+> +maintainers:
+> +  - Eugen Hristev <eugen.hristev@microchip.com>
+> +
+> +allOf:
+> +  - $ref: "watchdog.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - atmel,sama5d4-wdt
+> +      - microchip,sam9x60-wdt
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  atmel,watchdog-type:
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    description: should be hardware or software.
+> +    oneOf:
+> +      - description:
+> +          Enable watchdog fault reset. A watchdog fault triggers
+> +          watchdog reset.
+> +        const: hardware
+> +      - description:
+> +          Enable watchdog fault interrupt. A watchdog fault asserts
+> +          watchdog interrupt.
+> +        const: software
+> +    default: hardware
+> +
+> +  atmel,idle-halt:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description: |
+> +      present if you want to stop the watchdog when the CPU is in idle state.
+> +      CAUTION: This property should be used with care, it actually makes the
+> +      watchdog not counting when the CPU is in idle state, therefore the
+> +      watchdog reset time depends on mean CPU usage and will not reset at all
+> +      if the CPU stop working while it is in idle state, which is probably
+> +      not what you want.
+> +
+> +  atmel,dbg-halt:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description: |
+> +      present if you want to stop the watchdog when the CPU is in debug state.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    watchdog@fc068640 {
+> +      compatible = "atmel,sama5d4-wdt";
+> +      reg = <0xfc068640 0x10>;
+> +      interrupts = <4 IRQ_TYPE_LEVEL_HIGH 5>;
+> +      timeout-sec = <10>;
+> +      atmel,watchdog-type = "hardware";
+> +      atmel,dbg-halt;
+> +      atmel,idle-halt;
+> +    };
+> +
+> +...
+> diff --git a/Documentation/devicetree/bindings/watchdog/atmel-sama5d4-wdt.txt b/Documentation/devicetree/bindings/watchdog/atmel-sama5d4-wdt.txt
+> deleted file mode 100644
+> index 44727fcc2729..000000000000
+> --- a/Documentation/devicetree/bindings/watchdog/atmel-sama5d4-wdt.txt
+> +++ /dev/null
+> @@ -1,34 +0,0 @@
+> -* Atmel SAMA5D4 Watchdog Timer (WDT) Controller
+> -
+> -Required properties:
+> -- compatible: "atmel,sama5d4-wdt" or "microchip,sam9x60-wdt"
+> -- reg: base physical address and length of memory mapped region.
+> -
+> -Optional properties:
+> -- timeout-sec: watchdog timeout value (in seconds).
+> -- interrupts: interrupt number to the CPU.
+> -- atmel,watchdog-type: should be "hardware" or "software".
+> -	"hardware": enable watchdog fault reset. A watchdog fault triggers
+> -		    watchdog reset.
+> -	"software": enable watchdog fault interrupt. A watchdog fault asserts
+> -		    watchdog interrupt.
+> -- atmel,idle-halt: present if you want to stop the watchdog when the CPU is
+> -		   in idle state.
+> -	CAUTION: This property should be used with care, it actually makes the
+> -	watchdog not counting when the CPU is in idle state, therefore the
+> -	watchdog reset time depends on mean CPU usage and will not reset at all
+> -	if the CPU stop working while it is in idle state, which is probably
+> -	not what you want.
+> -- atmel,dbg-halt: present if you want to stop the watchdog when the CPU is
+> -		  in debug state.
+> -
+> -Example:
+> -	watchdog@fc068640 {
+> -		compatible = "atmel,sama5d4-wdt";
+> -		reg = <0xfc068640 0x10>;
+> -		interrupts = <4 IRQ_TYPE_LEVEL_HIGH 5>;
+> -		timeout-sec = <10>;
+> -		atmel,watchdog-type = "hardware";
+> -		atmel,dbg-halt;
+> -		atmel,idle-halt;
+> -	};
+> 
 
 
-
-
+-- 
+Nicolas Ferre
