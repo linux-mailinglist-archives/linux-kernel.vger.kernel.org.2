@@ -2,115 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2880E39CF2F
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 14:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B5ED39CF31
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 14:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbhFFMxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 08:53:33 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:34429 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbhFFMx2 (ORCPT
+        id S230131AbhFFM6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 08:58:07 -0400
+Received: from mail-ej1-f44.google.com ([209.85.218.44]:33387 "EHLO
+        mail-ej1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229776AbhFFM6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 08:53:28 -0400
-Received: by mail-oi1-f178.google.com with SMTP id u11so15144677oiv.1;
-        Sun, 06 Jun 2021 05:51:25 -0700 (PDT)
+        Sun, 6 Jun 2021 08:58:02 -0400
+Received: by mail-ej1-f44.google.com with SMTP id g20so21996768ejt.0;
+        Sun, 06 Jun 2021 05:55:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FzPmmTSd9f81mgE13fCWqQLxiSdjVDOHgMzyzpM78iE=;
-        b=OTPnOy1V51RHfNRi0tHuaj2w4hLWmglGkN+9hLO0ycblyTTXD7PjubrpRm6uZaMsQ1
-         EHLHlxU3SLaxgTVvWdtuj3uoo8b5pJzTPajfW3j8TkAe4drVmvjyGHAdUy0EhulN81i3
-         rpZBLyzyixWzRUcfXQwBRFriSgE+hhiXyGJOmy2wyPTvhnaBeIb1OWJ6xlvyn0WPmUDt
-         R2iTe8ht8etm1pPzuV4dztHAMqdccbCsMJdNUaTC8xN+JD/TLxudJfmZqSrvAw+FDPcL
-         hYN7BLFrINnpJGunZz7d2K6+DrPAuor8Nfxn6hrqNQFUR2FjXaYX0PRNK01MsSAY13cu
-         DXbg==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=tr7Lt7RoIFMihYEgMQ8zel7djKpOflGGiHAXEUE2og8=;
+        b=n4mzvFOJXBwfmhZm5YxQp3b6lLP+dWQMM4k1p2JW5SCiti73aTbXq2Hd59g+4DhKzh
+         g9AiGQN9pS2bW1PszWN92tLTBSsbsWjfFMSW5kI7CdqZuXmdxgVsEG4WlTyI0neR4Rs1
+         GZ8cgNI6q0mWGnb67oJkSJPa5eOEMblf/IPsQb0La/sA8Y3XgAAlzZMLE4cTLzESERud
+         XAphRew7Z0iHZH9P1w/veC/IgTqSGo17ybKVNBhA+15M3+RWwvv7Jd9AExRI3JSRoQJj
+         vuwFNHKaXYGyCveYWCyomNcFbZWfd4GLLh5zmksVoN95Ag7uuYUSrhw8Jz9o4/hHjWsf
+         E0zQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=FzPmmTSd9f81mgE13fCWqQLxiSdjVDOHgMzyzpM78iE=;
-        b=FOU+/AcLLJBuz3x92aRiimo32l7f+Wn6M4o5PCtwAmAa4aZ9AvZJu6hVCS0z7taTbh
-         /iMnFDkmGit+cpo/ei5YpcWr0gMSRXvCZhuP4eDSDcP11Wyo5LS2+wA0rA/epjH41DrD
-         dyaxCwFFUs8cYJkh2FrELPfI7hnn9HJnOMIItrloNGXT+1QaP+oXx4VeKN6XTtYJ4jxG
-         b/jpETC4Vih+gvCeD97QsAfpjiqlJtKeJyV6WfZLWDOJPwuymLJVFq9znUxFlCrgMQY1
-         Hu6A4XZJVddG59OkvP7pZXEe3kinoAZqMJOJFPQjENHEKhIzC7Eva1dx5+hSaUzPcO46
-         O0lA==
-X-Gm-Message-State: AOAM531Lj86Ts3MRE3GPxK8Rs62rDCdKmA1Mfhg/9vBk1TTHh81OsPn0
-        lEMCH/ppnHJSFwxwIIDhazrtF7Kzphw=
-X-Google-Smtp-Source: ABdhPJwUzw4EHVBwhQtj5t3UEbv9VfevSWK0ECWfk46pyQv+H8J6s4UYGM/WT5O3XCyWg33tdyQx3g==
-X-Received: by 2002:a05:6808:1396:: with SMTP id c22mr15943162oiw.85.1622983813900;
-        Sun, 06 Jun 2021 05:50:13 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i133sm1623068oia.2.2021.06.06.05.50.13
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=tr7Lt7RoIFMihYEgMQ8zel7djKpOflGGiHAXEUE2og8=;
+        b=FOeVxIilJtUSTeY7AQ/JdfqFKBzr64ZWA4ZZRPucRmydgvJ07g8BNyg57qaTYFhrNu
+         jG2DMFMWBsgMWbWQhLiOFlxcGZrJAzX6v/3FyFDLEN3si8L0AFXXz7E4oPZJpx1aqEEz
+         A8X2rBfwQAIM3M6atuqKIoFu7mmboCFEjjrI6lBMDU0U6qS8OYGVf0DTAPOvfYl+hS4J
+         ufsfYeFdmE4txMACEq5p+Yia6Q0jqhazPixJYdF09HNnWp1+7lE1O2os88IX9e5e4RyS
+         KFFkkZWAPZHHvLC8HWV1XH9zOpZjPozbg93onABcOqi5jJ8tM9i83cwtX2UyW1vlUVxO
+         5ovw==
+X-Gm-Message-State: AOAM531jHT8wb3Y2lKHvr/Q9DWlDgroVcUMJrB9Fsa2fwNNBJuziDTwt
+        ULJbmIH5JwKhJeAGPKihcD/h8nKpbEnqDg==
+X-Google-Smtp-Source: ABdhPJw1ocmAaupeeSOMBslIlHOmexwvbZeSTqUDcWDw4VngMadVpfwumd8DzIDwr2fEkoazBj7suQ==
+X-Received: by 2002:a17:907:7201:: with SMTP id dr1mr13692637ejc.19.1622984095311;
+        Sun, 06 Jun 2021 05:54:55 -0700 (PDT)
+Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
+        by smtp.gmail.com with ESMTPSA id bd3sm6388122edb.34.2021.06.06.05.54.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Jun 2021 05:50:13 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sun, 6 Jun 2021 05:50:12 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Madhava Reddy Siddareddygari <msiddare@cisco.com>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] hwmon: (pmbus_core) Check adapter PEC support
-Message-ID: <20210606125012.GA2887349@roeck-us.net>
-References: <20210605052700.541455-1-pmenzel@molgen.mpg.de>
+        Sun, 06 Jun 2021 05:54:54 -0700 (PDT)
+Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
+Date:   Sun, 6 Jun 2021 14:54:53 +0200
+From:   Salvatore Bonaccorso <carnil@debian.org>
+To:     =?utf-8?Q?Lauren=C8=9Biu_P=C4=83ncescu?= <lpancescu@gmail.com>
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ACPI: EC: Look for ECDT EC after calling
+ acpi_load_tables()
+Message-ID: <YLzFnW8jbGb8l+is@eldamar.lan>
+References: <eeb5ebeb-5313-3763-7b5b-8701e582f1fc@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210605052700.541455-1-pmenzel@molgen.mpg.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <eeb5ebeb-5313-3763-7b5b-8701e582f1fc@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 05, 2021 at 07:27:02AM +0200, Paul Menzel wrote:
-> From: Madhava Reddy Siddareddygari <msiddare@cisco.com>
-> 
-> Currently, for Packet Error Checking (PEC) only the controller
-> is checked for support. This causes problems on the cisco-8000
-> platform where a SMBUS transaction errors are observed. This is
-> because PEC has to be enabled only if both controller and
-> adapter support it.
-> 
-> Added code to check PEC capability for adapter and enable it
-> only if both controller and adapter supports PEC.
-> 
-> Signed-off-by: Madhava Reddy Siddareddygari <msiddare@cisco.com>
-> [Upstream from SONiC https://github.com/Azure/sonic-linux-kernel/pull/215]
-> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Hi,
 
-Applied.
+On Fri, Jun 04, 2021 at 05:22:43PM +0200, Laurențiu Păncescu wrote:
+> commit b1c0330823fe upstream.
 
-Thanks,
-Guenter
+This should be in any case the full commmit hash as 
 
+"commit b1c0330823fe842dbb34641f1410f0afa51c29d3 upstream."
+
+without shortening.
+
+> Backport of ACPI fix for #199981 for linux-4.9.y, tested on an Asus EeePC
+> 1005PE running Debian Buster.
+> 
+> Some systems have had functional issues since commit 5a8361f7ecce
+> (ACPICA: Integrate package handling with module-level code) that,
+> among other things, changed the initial values of the
+> acpi_gbl_group_module_level_code and acpi_gbl_parse_table_as_term_list
+> global flags in ACPICA which implicitly caused acpi_ec_ecdt_probe() to
+> be called before acpi_load_tables() on the vast majority of platforms.
+> 
+> Namely, before commit 5a8361f7ecce, acpi_load_tables() was called from
+> acpi_early_init() if acpi_gbl_parse_table_as_term_list was FALSE and
+> acpi_gbl_group_module_level_code was TRUE, which almost always was
+> the case as FALSE and TRUE were their initial values, respectively.
+> The acpi_gbl_parse_table_as_term_list value would be changed to TRUE
+> for a couple of platforms in acpi_quirks_dmi_table[], but it remained
+> FALSE in the vast majority of cases.
+> 
+> After commit 5a8361f7ecce, the initial values of the two flags have
+> been reversed, so in effect acpi_load_tables() has not been called
+> from acpi_early_init() any more.  That, in turn, affects
+> acpi_ec_ecdt_probe() which is invoked before acpi_load_tables() now
+> and it is not possible to evaluate the _REG method for the EC address
+> space handler installed by it.  That effectively causes the EC address
+> space to be inaccessible to AML on platforms with an ECDT matching the
+> EC device definition in the DSDT and functional problems ensue in
+> there.
+> 
+> Because the default behavior before commit 5a8361f7ecce was to call
+> acpi_ec_ecdt_probe() after acpi_load_tables(), it should be safe to
+> do that again.  Moreover, the EC address space handler installed by
+> acpi_ec_ecdt_probe() is only needed for AML to be able to access the
+> EC address space and the only AML that can run during acpi_load_tables()
+> is module-level code which only is allowed to access address spaces
+> with default handlers (memory, I/O and PCI config space).
+> 
+> For this reason, move the acpi_ec_ecdt_probe() invocation back to
+> acpi_bus_init(), from where it was taken away by commit d737f333b211
+> (ACPI: probe ECDT before loading AML tables regardless of module-level
+> code flag), and put it after the invocation of acpi_load_tables() to
+> restore the original code ordering from before commit 5a8361f7ecce.
+> 
+> Fixes: 5a8361f7ecce ("ACPICA: Integrate package handling with module-level
+> code")
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=199981
+> Reported-by: step-ali <sunmooon15@gmail.com>
+> Reported-by: Charles Stanhope <charles.stanhope@gmail.com>
+> Tested-by: Charles Stanhope <charles.stanhope@gmail.com>
+> Reported-by: Paulo Nascimento <paulo.ulusu@googlemail.com>
+> Reported-by: David Purton <dcpurton@marshwiggle.net>
+> Reported-by: Adam Harvey <adam@adamharvey.name>
+> Reported-by: Zhang Rui <rui.zhang@intel.com>
+> Tested-by: Zhang Rui <rui.zhang@intel.com>
+> Tested-by: Jean-Marc Lenoir <archlinux@jihemel.com>
+> Tested-by: Laurentiu Pancescu <laurentiu@laurentiupancescu.com>
+> Signed-off-by: Laurentiu Pancescu <laurentiu@laurentiupancescu.com>
 > ---
-> v2: Do not revert check introduced by commit e5befc02 (hwmon: (pmbus)
->     Add a PMBUS_NO_CAPABILITY platform data flag).
-> 
->  drivers/hwmon/pmbus/pmbus_core.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
-> index bbd745178147..2fd0fec59d4f 100644
-> --- a/drivers/hwmon/pmbus/pmbus_core.c
-> +++ b/drivers/hwmon/pmbus/pmbus_core.c
-> @@ -2214,11 +2214,15 @@ static int pmbus_init_common(struct i2c_client *client, struct pmbus_data *data,
->  		data->has_status_word = true;
->  	}
->  
-> -	/* Enable PEC if the controller supports it */
-> +	/* Enable PEC if the controller and bus supports it */
->  	if (!(data->flags & PMBUS_NO_CAPABILITY)) {
->  		ret = i2c_smbus_read_byte_data(client, PMBUS_CAPABILITY);
-> -		if (ret >= 0 && (ret & PB_CAPABILITY_ERROR_CHECK))
-> -			client->flags |= I2C_CLIENT_PEC;
-> +		if (ret >= 0 && (ret & PB_CAPABILITY_ERROR_CHECK)) {
-> +			if (i2c_check_functionality(client->adapter,
-> +						I2C_FUNC_SMBUS_PEC)) {
-> +				client->flags |= I2C_CLIENT_PEC;
-> +			}
-> +		}
->  	}
->  
->  	/*
+>  drivers/acpi/bus.c | 23 ++++++++++++-----------
+>  1 file changed, 12 insertions(+), 11 deletions(-)
+
+For the rest, but this is more up to the stable maintainers, maybe
+though eeds as well comments from the respective maintainers, it might
+be an option to make it apply cleanly by first cherry-pick
+a46393c02c764a9d8a3e636bfe56f9d2f6f2c397 as well (which fixes a bug on
+its own as well).
+
+Cf. https://lore.kernel.org/stable/YLzAw27CQpdEshBl@eldamar.lan/T/#m6f4a7798eb4f9b0c40e6a10a694c0a6b40ab5044
+
+Regards,
+Salvatore
