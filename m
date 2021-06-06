@@ -2,112 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0D939CDBD
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 08:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E629139CDC1
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 09:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230207AbhFFGyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 02:54:22 -0400
-Received: from mail-pf1-f171.google.com ([209.85.210.171]:42773 "EHLO
-        mail-pf1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbhFFGyU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 02:54:20 -0400
-Received: by mail-pf1-f171.google.com with SMTP id s14so9818978pfd.9;
-        Sat, 05 Jun 2021 23:52:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GSJgNOcL/Z+5ft4U7oxqLqn4lSGnAiuWQnkxsMTyq3Y=;
-        b=KH/cH/QrIKfjMmlZXQM5lBBhOkfuZqBTCiMqS60oqkYGg8yV3BxbtR9+8yNMONe4UF
-         aaTQHUMcgSobcV1Avvv3oV1ssixF6Fc4FmyILu48D/ViADGPVdyYic452w1FJjUcmII8
-         VY2LvrUHZdsG0pwmtYXg7r427BPR9GY7qY9ScMPUgqhg7BMGkizqASlY59d7nDEvujLj
-         RrUAEeXdHvc9mNdjk/Z7xDFZUfZYQiQywpNnL+VSezEnxsCwM4XPLyKbi6027JGLt4+j
-         Ca/WRfXbeoAWhwuZORpV6zusC5sCjWZ939jkV19wMaXtc11ux+efnPdBjvGDG2ex6L5n
-         7DHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GSJgNOcL/Z+5ft4U7oxqLqn4lSGnAiuWQnkxsMTyq3Y=;
-        b=Tv00LtXujVHsLhBdZ6LLXtqkRtbseiaRTuGA9yvDbGzU9Bp8r9MGirfCmX4YjrajF0
-         omUjXbszuHtyd0NbVFjnZbfM88cwE5EjU2ldXkvKNAwUDc8mxQWWQVpNlXxbzahrrXAA
-         G8qzvgOENYRVXRNJ2Gk3ZiUsNrzDbhPT+8mxoCEGWFQyqWJu6Z/3XxxX+XK0gkyzyvpm
-         SxZjtwgA3ucbLfP7L9BA9Q4P8JTcq3rSplkYARmhUrFBmEFfzBDyXk/HDzif9FNONXFe
-         RO2fQ1XFD4LPiFYEkq7IhFJecATXcm9qOtJbsLS7CXgtEky3l9A3cNz9MqxE8RMiyPi+
-         YV3A==
-X-Gm-Message-State: AOAM531kkdmey9H9ZwbISmBZXyW7e4he+odB6ylAt9IulZK+q+3kVqKg
-        OwmxVSJ2GyAAeDMDah/fHevc5NxGSVYrXPm0
-X-Google-Smtp-Source: ABdhPJxef16XBir6T5Jyl/5LZnWZt3EJcUJP5zUhUp38ZYmYZtuJx6WmecvjlVLp1TKM/QmBJGu3Lg==
-X-Received: by 2002:a63:e703:: with SMTP id b3mr12854701pgi.36.1622962291645;
-        Sat, 05 Jun 2021 23:51:31 -0700 (PDT)
-Received: from localhost (185.212.56.112.16clouds.com. [185.212.56.112])
-        by smtp.gmail.com with ESMTPSA id e188sm5114990pfe.23.2021.06.05.23.51.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Jun 2021 23:51:31 -0700 (PDT)
-Date:   Sun, 6 Jun 2021 14:51:29 +0800
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, corbet@lwn.net,
-        jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
-        rric@kernel.org, bhelgaas@google.com, wsa@kernel.org,
-        linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexander Gordeev <agordeev@redhat.com>,
-        Jonathan Derrick <jonathan.derrick@intel.com>,
-        Kurt Schwemmer <kurt.schwemmer@microsemi.com>,
-        Logan Gunthorpe <logang@deltatee.com>
-Subject: Re: [PATCH v5 1/4] PCI: Introduce pcim_alloc_irq_vectors()
-Message-ID: <20210606064805.GA778208@nuc8i5>
-References: <20210226155056.1068534-2-zhengdejin5@gmail.com>
- <20210323224710.GA610170@bjorn-Precision-5520>
- <20210505162716.GB1851@nuc8i5>
- <YLdGfmrk6+FbTbNN@smile.fi.intel.com>
+        id S230091AbhFFHCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 03:02:43 -0400
+Received: from mail-eopbgr660088.outbound.protection.outlook.com ([40.107.66.88]:11761
+        "EHLO CAN01-QB1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229478AbhFFHCm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 03:02:42 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aBVsEPv9fILYJEgy7K0n/HUUmfNWfLndJXt/Nswt9IoVkd5eHgOegpyfztq5xOMSpF8+HuDWCh97vG3EQCfHt1xvnMT+m3HpdipEc/DxMHetFxfoFRCPXIwVPXvYoDZ88rEPUtRve6F6ZXKrUX5sUFLAc7rwGARUY6OvuUgMhhW9f8PZeY78zeJPz01kjMN0RbvvtaIkDffmhvLItPVY68bRzYLBSXjcXe+JEzqDojykdDHiDeD5yxHJ9U7QFYScpVQd8xyMCu26Q2s5WR2piKKq0NspfdJjr1m7PJRhK4woLJxeryEXWZxh5BbQkKSrWc8yC+B0OZuY34d1TC4/2A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6xZSrYax78CWXy7ga9i9hISE7YsJfd2OXZNkcMTOQLo=;
+ b=QTjzBlbbgqG6AH5hD941mFbqtMNB/a8pXgV3pkKzw9RQ37i/1uurdYnAbdBKjal5wa3H6ClH7GjN6QrhZ0JP/3QVXikxtezpcH/I1Ah2T+TbiKaxqq/OWgzXJtRT9H2OahIpobYz7IwC3Pz58n/mvlO4lkZ5HxSMdTJABDqQ1Y+dWVNVTU7mWILFTJD4YveI7VC2DND43LpQ5hoFXWrKSUIpteCIsU4Wz7Se2kKgVN/T+oP+WSECXPvS5AU91FcNeEgjGtLPF9VQg+AxV9h/lIGYR23k0/32k5CNP2UH8o4yk1TSv+Tk/p6giluSLdQAjN5RzJXH8o0np0fGFKx7+A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ucalgary.ca; dmarc=pass action=none header.from=ucalgary.ca;
+ dkim=pass header.d=ucalgary.ca; arc=none
+Authentication-Results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=ucalgary.ca;
+Received: from YQXPR01MB3302.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c00:4a::23)
+ by QB1PR01MB3201.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c00:2f::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.27; Sun, 6 Jun
+ 2021 07:00:51 +0000
+Received: from YQXPR01MB3302.CANPRD01.PROD.OUTLOOK.COM
+ ([fe80::90eb:8466:4635:4b35]) by YQXPR01MB3302.CANPRD01.PROD.OUTLOOK.COM
+ ([fe80::90eb:8466:4635:4b35%7]) with mapi id 15.20.4173.037; Sun, 6 Jun 2021
+ 07:00:51 +0000
+From:   Wenli Looi <wlooi@ucalgary.ca>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     Wenli Looi <wlooi@ucalgary.ca>
+Subject: [PATCH] staging: rtl8723bs: Fix uninitialized variable
+Date:   Sun,  6 Jun 2021 00:00:21 -0700
+Message-Id: <20210606070021.116284-1-wlooi@ucalgary.ca>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [73.63.255.0]
+X-ClientProxiedBy: BYAPR01CA0051.prod.exchangelabs.com (2603:10b6:a03:94::28)
+ To YQXPR01MB3302.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c00:4a::23)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLdGfmrk6+FbTbNN@smile.fi.intel.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (73.63.255.0) by BYAPR01CA0051.prod.exchangelabs.com (2603:10b6:a03:94::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20 via Frontend Transport; Sun, 6 Jun 2021 07:00:50 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fba14e75-731d-4810-4e60-08d928b8d1fd
+X-MS-TrafficTypeDiagnostic: QB1PR01MB3201:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <QB1PR01MB32019E7AEC2BFEA81A2A1657B2399@QB1PR01MB3201.CANPRD01.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1751;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dD5FN83pN/YNSZjh0eqKNftOQ2AehbZcul8BfLXMUwg0DNPCD65q7/4vsEsCQNFG/7k3RJPHas3pwSydS+S2FEFddMUm36mKrJv7zIOT0G7gBBy1JB+N+WXAKS9pYDPCfl0s8LmviV/s1kKoenUi8o9Isk81ImIM3DaX9Dtcml4AQLxBv0GWkzFE3Z1vFgQolqhONAPHa4wNvWEAYfT9oVPPQ9ku3kmmGfLTJayS3P15cBf9unESMkAv94rBM2E+RjMoGLowKCZtKU71lUvjnwJIweIjwIiiFQ3i5RV2zZwwtOE/Pr99g28zddq6XnxSacDLR1VQUe7F2uFMmW6DPSjhlxfYXzMetj7OO134ZsL9+R9XIOIdjh/YD6dvNdziG0UdU8RJqPqy9vrGgqSO/Uwzae9ntl0g/csCYp1tYtaNbgxWEX7JLrzaQABZvo719sIsppVN1/YmECjqBNpaGzTjp8ZZQrRE3t6Nc2cpOiEtKZvtjLFNXLSZYbg1B1DvprnrQrKQnqEYyCu3SASGFHOhlCcmWJtfHgcmx7SvLxS1kWAsaPDhTnKj0txv+cmaJGQ9fsRlPQUKGy2vDZzbzjpOmKgioSQjS1fUpSn18vPS/X+jRXk8lgHXhj3Rb/XgYnVlFSGgk8ywg2hvJhwB1lV7zgoqIZUCAOso0Eb+sH58eM1XXRJs4om8yJflDyRWMmuXgalvgr3EQQwPHN9LtgRfMETCLKx/SkhZM8nFNx9S9Kw3CcpkVJ516lg6t0tG41saeqPbN/D+wi0ubWsbwbf2MTDJcr44VBf1lu6o4IbfcKkwYQne9CTRNgmCQGsI
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YQXPR01MB3302.CANPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(376002)(366004)(346002)(6506007)(86362001)(4744005)(8676002)(66946007)(2616005)(966005)(956004)(66476007)(6512007)(107886003)(38350700002)(8936002)(26005)(2906002)(4326008)(38100700002)(66556008)(83380400001)(52116002)(316002)(186003)(1076003)(786003)(6666004)(478600001)(16526019)(6486002)(36756003)(5660300002)(69590400013);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?+gQrHufhJ8zJ3LatVv34gBwSXMNeEdU3laHYLfAfTkJxiyu4DcD/+lI4jp0R?=
+ =?us-ascii?Q?mqIIh2/w9YRuwmRlpe/uFdAc8vRVumeh2Uit9yCCSjJA3r9XeAsP9wxBjM3+?=
+ =?us-ascii?Q?6EV8ou5hyZ2cn/8f0U0byg0/jVOoiWdKj+b1j5EwipmJNAaG8ZFDFsbK52S0?=
+ =?us-ascii?Q?PK3owlQFoKeT2w2+ekUTZ8rzmD9Q+EISfQlhM8DI2e6xNzYiPTl5jPfyOPX3?=
+ =?us-ascii?Q?m3Sj8rB11ZLAv0QClMkhoBSeRvMUvELr9MfW21MIlTcnNLYsTwYlBnhv2W4B?=
+ =?us-ascii?Q?2jly1mT106Hvhx6/atRVoBya8TQjwcePsd4t4FjgVZ111ITTraxLjbMg9sr4?=
+ =?us-ascii?Q?A+WKOyL/NDI/wRGC+i5SJGBdmYWL+KTMsWKY7eDNVD91NKQ5ufnFLDHyGA4y?=
+ =?us-ascii?Q?haGqSiIlCzIaf7b35wkBp356Eas3o3O4hoLrChojvXv0e7DWFoIsPPsaXQo/?=
+ =?us-ascii?Q?W8mDOSvlau/CnUzUEjN/wDuqqhpXgo25pMhCDbd22k///SfuWmeFp36FvMFz?=
+ =?us-ascii?Q?4kZPeQhZBPeV5SIeZYgZK1wdY+gbywnWHVXrYuyRWyZtoAsC5cNf7Iw8L/Ln?=
+ =?us-ascii?Q?kmc+9nE1oQ93IieJMRpkgchSwM4PddJ1vNYlB5HAh9MqfisIvL69rOrc5pqX?=
+ =?us-ascii?Q?7itdfqUulVExG4wEfpEC1dMOyjY1L3a/EJkVMfWl1jjenjAs0ulQIvocpFz+?=
+ =?us-ascii?Q?oTY2RpcMLRUF4TeUCqPR7KAxfixKbddUFP0wFdRFv74cy/1OXzKIb8mzotur?=
+ =?us-ascii?Q?yK1udXFSVZxL12hv7SPEljFsDEdBMGiglpsQAcr0kDgId0etmrU914bVQ/Ex?=
+ =?us-ascii?Q?7qqV0EkTXbNAsLCMJdDSWyuihStwcp1Nz5gIr4THyxJxvMc1iOn8vjlHmXi5?=
+ =?us-ascii?Q?m/6Nil2e2I6z2ZupZXdAWbMpu5pt9bDyDSRG5lh8pjo9shVcdXwflx9Yq4Fl?=
+ =?us-ascii?Q?2TwawjHB4FBVhFc16sUgubQjkDe7L+zLXmHdNNWG/4ydcpfl0Lzx14I39y5+?=
+ =?us-ascii?Q?xxVNFYGKT4vSJtf3HA35C1EyE+llbznFgvBIjBHm5JGuAbfBAfEIW7+9O+aA?=
+ =?us-ascii?Q?jBONmcr4VuzJPGN7Bk5BUExcb8C12TPY1WCxvtBMGCE7pi0dHLO4aGeA4Ui0?=
+ =?us-ascii?Q?mwN3nwoZRwUYnIyijmTJTmh9RopVTc2s43Y8SFUHfJtJUWrSc5wyIoPF0zuK?=
+ =?us-ascii?Q?Qa43h0YXhDrE/1gI0fn/UNFPT9xT6v9VSGqzMTrCPzeRdj7ZB+AKMbC5sB4E?=
+ =?us-ascii?Q?AaMKuLCIy0iYZtjo699GZpBX2NLcK377V9ZcPCbqpXFUgBp2jqp9Mbw5ctvA?=
+ =?us-ascii?Q?gU96mQ1PfiHKKKN6J3VvIvPB?=
+X-OriginatorOrg: ucalgary.ca
+X-MS-Exchange-CrossTenant-Network-Message-Id: fba14e75-731d-4810-4e60-08d928b8d1fd
+X-MS-Exchange-CrossTenant-AuthSource: YQXPR01MB3302.CANPRD01.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jun 2021 07:00:51.4186
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: c609a0ec-a5e3-4631-9686-192280bd9151
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WHFGV0kq/Mq8c6gIcvz8D35sSF1n3oInvUIwiCICZlooa2paCU78Ch7UJQKtAJzufbo19p7CdHKeas1WPxRWfw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: QB1PR01MB3201
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 11:51:10AM +0300, Andy Shevchenko wrote:
-> On Thu, May 06, 2021 at 12:27:16AM +0800, Dejin Zheng wrote:
-> > On Tue, Mar 23, 2021 at 05:47:10PM -0500, Bjorn Helgaas wrote:
-> > > [+cc Christoph, Thomas, Alexander, in case you're interested]
-> > > [+cc Jonathan, Kurt, Logan: vmd.c and switchtec.c use managed resources
-> > > and pci_alloc_irq_vectors()]
-> 
-> > > On Fri, Feb 26, 2021 at 11:50:53PM +0800, Dejin Zheng wrote:
-> > > > Introduce pcim_alloc_irq_vectors(), a device-managed version of
-> > > > pci_alloc_irq_vectors(). Introducing this function can simplify
-> > > > the error handling path in many drivers.
-> > > > 
-> > > > And use pci_free_irq_vectors() to replace some code in pcim_release(),
-> > > > they are equivalent, and no functional change. It is more explicit
-> > > > that pcim_alloc_irq_vectors() is a device-managed function.
-> > > > 
-> > > > Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > > Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
-> > > 
-> > > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> > > 
-> > > Let me know if you'd like me to take the series.
-> > >
-> > Hi Bjorn,
-> > 
-> > These patches are still invisible on the mainline, could you help me to
-> > take it? Thanks very much!
-> 
-> I guess you have to rebase them on top of the latest rc (or PCI for-next) and
-> send with a cover letter.
->
-Andy, thanks for your reminder, I will do it.
+Uninitialized struct with invalid pointer causes BUG and prevents access
+point from working. Access point works once I apply this patch.
 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+https://forum.armbian.com/topic/14727-wifi-ap-kernel-bug-in-kernel-5444/
+has more details.
+
+Signed-off-by: Wenli Looi <wlooi@ucalgary.ca>
+---
+ drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+index 2fb80b6eb..7308e1185 100644
+--- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
++++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+@@ -2384,7 +2384,7 @@ void rtw_cfg80211_indicate_sta_assoc(struct adapter *padapter, u8 *pmgmt_frame,
+ 	DBG_871X(FUNC_ADPT_FMT"\n", FUNC_ADPT_ARG(padapter));
+ 
+ 	{
+-		struct station_info sinfo;
++		struct station_info sinfo = {};
+ 		u8 ie_offset;
+ 		if (GetFrameSubType(pmgmt_frame) == WIFI_ASSOCREQ)
+ 			ie_offset = _ASOCREQ_IE_OFFSET_;
+-- 
+2.25.1
+
