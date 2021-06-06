@@ -2,248 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B8739CC69
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 05:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6784C39CC75
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 05:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230173AbhFFDQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 23:16:59 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:41563 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230085AbhFFDQ6 (ORCPT
+        id S230131AbhFFD1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 23:27:39 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:42851 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230075AbhFFD1h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 23:16:58 -0400
-Received: by mail-oi1-f174.google.com with SMTP id t40so1290963oiw.8
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 20:14:59 -0700 (PDT)
+        Sat, 5 Jun 2021 23:27:37 -0400
+Received: by mail-ot1-f41.google.com with SMTP id w23-20020a9d5a970000b02903d0ef989477so8857244oth.9
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 20:25:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=xH80370bHV15kfuYCzEWUP1rX8OlyoQ1QuT/JYRtRcg=;
-        b=Wc09PMW68hTR2QhIBmNkmJprsSFnC2+7L3XobjpMuKwWpkbRA9nWmZdtp57EzKXNcT
-         Oeqp2TPaUx/RPHzYcG+qb+fPBpBpux1JGRZfGwjoTAe1oVYkDbK7CsGQt/CLcqMm/6sW
-         OnVW56I5M/U28hOOcV6YfvIdKUSbhe6bV7KgcUQWUmcY3f/oDjWX3dJjO9PWehPabcBC
-         3eFojHSiPd24UmGSFlqKHldMusgmzk4zaKuNixBsF9Nka6fyA8o4FnsG4VUxulxIIld2
-         sS9GDLq5YGfLW/sAxHwqFoxUkBrp3ElnFI72BiJRmiQDr09OteYk9yGDTiTxiJ7A7MhI
-         K/Vw==
+        bh=ni3eGvt+i+5aePMZevK8GoIbwGrBNouUTOTilLJGCcQ=;
+        b=LZf9hwtjLmlD/EeoSYDYbj1A9ZyuAdhJaEjcMiUf+pLmtpvxN1dqbojhVk3jwiAB+T
+         C3s/rZ/3IRkbA8x2zD4urLBe7zBpASZAnNkF/guex8VaxoqWGd1ijxIhBxeLW4hoiiX9
+         f3Neg36W0u6VZgVicl3P951NMdw/+0SnHmokQRFpGQyQwH7JbvB2jjoFLL/UqOHel2Wd
+         8n85WNYLu6Ih1fLoV2FzJz9eTL2lw6/Tq7gqdlj8OnFGRpgH0I/xyBObS2ra9sXppGYK
+         ffEZOTLB1Sg6wgBhHclUaxFBQF7lYlWD3trE0dyApVz52/uEWr3GiKCIZF3MXwoDM05K
+         +RnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=xH80370bHV15kfuYCzEWUP1rX8OlyoQ1QuT/JYRtRcg=;
-        b=ZGJ02ummK8/MDO7F1MlSqhMOrtTYqR7nSZTWYSyOFOXdwlnOtnCoPU3PPcdMt/QVTz
-         jyEjpGF5eup6uzhC+gAOXSxpBGM8S8hlN5ksy4l7wqehSaMT7169nQbwm4RTRAgUOBKd
-         Cy69jfnv4HZLof41hmGc4mRVwbjpUeFsfAmxrq8mvqeKisSI6rlNvrWkRrMl2AKDsweg
-         Ke34zSr26yE6XUBPJeD1JT+FQaAh27wljaAoGaG/ejZCdioDLz88ouyM09MEk/rp6q45
-         myMFECxeNbDVlnQ2XZBSKu7uPXm+oMFaa5Nd7BzuwVCkQeGKsiZQzOE2Rw/PqWwbbm78
-         LGWQ==
-X-Gm-Message-State: AOAM532COnyFkzhf9rBlkoyipE+yunErZTNj2NdYnBLdQKgSJs+z3ktf
-        xCgT7lCjlJ2Gvra94opKvw64yQ==
-X-Google-Smtp-Source: ABdhPJwQLv9q4Q2roLYPReQRqcL9zOdvnmOn69wKr6VWF7D1nBTgUpAkzMUQjhcScE5Ltly8XZ8QHA==
-X-Received: by 2002:a54:4501:: with SMTP id l1mr7554665oil.19.1622949239584;
-        Sat, 05 Jun 2021 20:13:59 -0700 (PDT)
+        bh=ni3eGvt+i+5aePMZevK8GoIbwGrBNouUTOTilLJGCcQ=;
+        b=Vy8LAMOjHaFJ3u1e36yLXzqY6gIcegk95qrk+9K6b45eyQpux+aejaXyH6DdMfjy5N
+         hYyDeWDFroN5NJpLL15YPNvH7IvkbsaQQ4EUzqKx+d1Ke5mXIhWAnAXqoj4nnG+9IG/l
+         +kcU0MjSwpcAZPx1LEUzWGdQxra+CfvGkYdmSuKjka3zJbfj1kREN4nu6cfXI6OqcnQr
+         ODU/rb91fsPSAiUj9Ii6udT7VctHBVghUJ4iHE3b0QpS/2gCN6rIJ6H4IXaPVr/siMRY
+         Mh/pg7oK0xfZPWNVxIpB6ar70g0y24VE+eq4nU8Bkx1yF53dLgoXnQydfR+o0Da+I3y6
+         kaAA==
+X-Gm-Message-State: AOAM531wYw7Biuavj3X7sklEgg3HsdkJw163z9Zxi7yE33ED10iDxODP
+        tD7UrZ5mS+xT/vMCAgKloBWRbg==
+X-Google-Smtp-Source: ABdhPJyRc/QyzvY3Swve80HRZpUbaVQo39xFAvWvcHetsyu19hof3cyxtGdvkdZZlNmzXkkX2BnMdg==
+X-Received: by 2002:a9d:704b:: with SMTP id x11mr3397307otj.110.1622949887957;
+        Sat, 05 Jun 2021 20:24:47 -0700 (PDT)
 Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id i133sm1421545oia.2.2021.06.05.20.13.58
+        by smtp.gmail.com with ESMTPSA id r5sm1539711otp.45.2021.06.05.20.24.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Jun 2021 20:13:59 -0700 (PDT)
-Date:   Sat, 5 Jun 2021 22:13:57 -0500
+        Sat, 05 Jun 2021 20:24:47 -0700 (PDT)
+Date:   Sat, 5 Jun 2021 22:24:45 -0500
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        robh@kernel.org
-Cc:     lorenzo.pieralisi@arm.com, bhelgaas@google.com,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] dt-bindings: pci: Add devicetree binding for
- Qualcomm PCIe EP controller
-Message-ID: <YLw9de/J7h5KZtHu@builder.lan>
-References: <20210603103814.95177-1-manivannan.sadhasivam@linaro.org>
- <20210603103814.95177-2-manivannan.sadhasivam@linaro.org>
+To:     Matthew Hagan <mnhagan88@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Voon Weifeng <weifeng.voon@intel.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        Wong Vee Khee <vee.khee.wong@linux.intel.com>,
+        Tan Tee Min <tee.min.tan@intel.com>,
+        "Wong, Vee Khee" <vee.khee.wong@intel.com>,
+        Fugang Duan <fugang.duan@nxp.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/3] net: stmmac: explicitly deassert GMAC_AHB_RESET
+Message-ID: <YLw//XARgqNlRoTB@builder.lan>
+References: <20210605173546.4102455-1-mnhagan88@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210603103814.95177-2-manivannan.sadhasivam@linaro.org>
+In-Reply-To: <20210605173546.4102455-1-mnhagan88@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 03 Jun 05:38 CDT 2021, Manivannan Sadhasivam wrote:
+On Sat 05 Jun 12:35 CDT 2021, Matthew Hagan wrote:
 
-> Add devicetree binding for Qualcomm PCIe EP controller used in platforms
-> like SDX55. The EP controller is based on the Designware core with
-> Qualcomm specific wrappers.
+> We are currently assuming that GMAC_AHB_RESET will already be deasserted
+> by the bootloader. However if this has not been done, probing of the GMAC
+> will fail. To remedy this we must ensure GMAC_AHB_RESET has been deasserted
+> prior to probing.
 > 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+Sounds good, just some small style comments below.
+
+> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
 > ---
->  .../devicetree/bindings/pci/qcom,pcie-ep.yaml | 144 ++++++++++++++++++
->  1 file changed, 144 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
+>  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c     | 7 +++++++
+>  drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c | 7 +++++++
+>  include/linux/stmmac.h                                | 1 +
+>  3 files changed, 15 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
-> new file mode 100644
-> index 000000000000..3e357cb03a5c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
-> @@ -0,0 +1,144 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pci/qcom,pcie-ep.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm PCIe Endpoint Controller binding
-> +
-> +maintainers:
-> +  - Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> +
-> +allOf:
-> +  - $ref: "pci-ep.yaml#"
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,sdx55-pcie-ep
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> index 6d41dd6f9f7a..1e28058b65a8 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> @@ -6840,6 +6840,13 @@ int stmmac_dvr_probe(struct device *device,
+>  			reset_control_reset(priv->plat->stmmac_rst);
+>  	}
+>  
+> +	if (priv->plat->stmmac_ahb_rst) {
 
-The binding looks good, but this is going to cause us an inevitable
-warning as we'd have to describe the controller twice (rc + ep) in the
-sdx55.dtsi.
+You don't need this conditional, stmmac_ahb_rst will be NULL if not
+specified and you can reset_control_deassert(NULL) without any problems.
 
-@Rob, what do you suggest we do about this, because it's the same
-problem currently responsible for hundreds of warnings in the case of
-GENI (where each node is duplicated for different functions).
+> +		ret = reset_control_deassert(priv->plat->stmmac_ahb_rst);
+> +		if (ret == -ENOTSUPP)
+> +			dev_err(priv->device,
+> +				"unable to bring out of ahb reset\n");
 
+No need to wrap this line.
+
+> +	}
 > +
-> +  reg:
-> +    items:
-> +      - description: Qualcomm specific PARF configuration registers
-> +      - description: Designware PCIe registers
-> +      - description: External local bus interface registers
-> +      - description: Address Translation Unit (ATU) registers
-> +      - description: Memory region used to map remote RC address space
-> +      - description: Qualcomm specific TCSR registers
+>  	/* Init MAC and get the capabilities */
+>  	ret = stmmac_hw_init(priv);
+>  	if (ret)
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+> index 97a1fedcc9ac..d8ae58bdbbe3 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+> @@ -600,6 +600,13 @@ stmmac_probe_config_dt(struct platform_device *pdev, u8 *mac)
+>  		goto error_hw_init;
+>  	}
+>  
+> +	plat->stmmac_ahb_rst = devm_reset_control_get_optional_shared(
+> +							&pdev->dev, "ahb");
+> +	if (IS_ERR(plat->stmmac_ahb_rst)) {
+> +		ret = plat->stmmac_ahb_rst;
 
-tcsr is separate hardware block with "misc" registers, I think it's
-better if we describe that as qcom,sdx55-tcsr, syscon and use the syscon
-API to access those registers...
+You need a PTR_ERR() around the plat->stmmac_ahb_rst.
 
 Regards,
 Bjorn
 
+> +		goto error_hw_init;
+> +	}
 > +
-> +  reg-names:
-> +    items:
-> +      - const: parf
-> +      - const: dbi
-> +      - const: elbi
-> +      - const: atu
-> +      - const: addr_space
-> +      - const: tcsr
-> +
-> +  clocks:
-> +    items:
-> +      - description: PCIe Auxiliary clock
-> +      - description: PCIe CFG AHB clock
-> +      - description: PCIe Master AXI clock
-> +      - description: PCIe Slave AXI clock
-> +      - description: PCIe Slave Q2A AXI clock
-> +      - description: PCIe Sleep clock
-> +      - description: PCIe Reference clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: aux
-> +      - const: cfg
-> +      - const: bus_master
-> +      - const: bus_slave
-> +      - const: slave_q2a
-> +      - const: sleep
-> +      - const: ref
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +    description: PCIe Global interrupt
-> +
-> +  interrupt-names:
-> +    const: global
-> +
-> +  reset-gpios:
-> +    description: GPIO that is being used as PERST# input signal
-> +    maxItems: 1
-> +
-> +  wake-gpios:
-> +    description: GPIO that is being used as WAKE# output signal
-> +    maxItems: 1
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +  reset-names:
-> +    const: core
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  phys:
-> +    maxItems: 1
-> +
-> +  phy-names:
-> +    const: pciephy
-> +
-> +  num-lanes:
-> +    default: 2
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - clocks
-> +  - clock-names
-> +  - interrupts
-> +  - interrupt-names
-> +  - reset-gpios
-> +  - resets
-> +  - reset-names
-> +  - power-domains
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/qcom,gcc-sdx55.h>
-> +    #include <dt-bindings/gpio/gpio.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    pcie_ep: pcie-ep@40000000 {
-> +        compatible = "qcom,sdx55-pcie-ep";
-> +        reg = <0x01c00000 0x3000>,
-> +              <0x40000000 0xf1d>,
-> +              <0x40000f20 0xc8>,
-> +              <0x40001000 0x1000>,
-> +              <0x42000000 0x1000>,
-> +              <0x01fcb000 0x1000>;
-> +        reg-names = "parf", "dbi", "elbi", "atu", "addr_space",
-> +                    "tcsr";
-> +
-> +        clocks = <&gcc GCC_PCIE_AUX_CLK>,
-> +             <&gcc GCC_PCIE_CFG_AHB_CLK>,
-> +             <&gcc GCC_PCIE_MSTR_AXI_CLK>,
-> +             <&gcc GCC_PCIE_SLV_AXI_CLK>,
-> +             <&gcc GCC_PCIE_SLV_Q2A_AXI_CLK>,
-> +             <&gcc GCC_PCIE_SLEEP_CLK>,
-> +             <&gcc GCC_PCIE_0_CLKREF_CLK>;
-> +        clock-names = "aux", "cfg", "bus_master", "bus_slave",
-> +                      "slave_q2a", "sleep", "ref";
-> +
-> +        interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>;
-> +        interrupt-names = "global";
-> +        reset-gpios = <&tlmm 57 GPIO_ACTIVE_HIGH>;
-> +        wake-gpios = <&tlmm 53 GPIO_ACTIVE_LOW>;
-> +        resets = <&gcc GCC_PCIE_BCR>;
-> +        reset-names = "core";
-> +        power-domains = <&gcc PCIE_GDSC>;
-> +        phys = <&pcie0_lane>;
-> +        phy-names = "pciephy";
-> +        max-link-speed = <3>;
-> +        num-lanes = <2>;
-> +
-> +        status = "disabled";
-> +    };
+>  	return plat;
+>  
+>  error_hw_init:
+> diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+> index e55a4807e3ea..9b6a64f3e3dc 100644
+> --- a/include/linux/stmmac.h
+> +++ b/include/linux/stmmac.h
+> @@ -239,6 +239,7 @@ struct plat_stmmacenet_data {
+>  	unsigned int mult_fact_100ns;
+>  	s32 ptp_max_adj;
+>  	struct reset_control *stmmac_rst;
+> +	struct reset_control *stmmac_ahb_rst;
+>  	struct stmmac_axi *axi;
+>  	int has_gmac4;
+>  	bool has_sun8i;
 > -- 
-> 2.25.1
+> 2.26.3
 > 
