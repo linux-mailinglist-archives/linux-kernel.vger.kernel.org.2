@@ -2,96 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B58A39D1AA
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 23:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8EA439D1B1
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 23:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230382AbhFFVdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 17:33:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230270AbhFFVdD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 17:33:03 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3095C061766
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 14:31:12 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lq0MK-0004Mn-Ai; Sun, 06 Jun 2021 23:31:04 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lq0ME-0005Io-NV; Sun, 06 Jun 2021 23:30:58 +0200
-Date:   Sun, 6 Jun 2021 23:30:54 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Flavio Suligoi <f.suligoi@asem.it>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Subject: Re: [PATCH v2 2/7] pwm: core: Always require PWM flags to be provided
-Message-ID: <20210606213054.bmqgs5hehbowa62d@pengutronix.de>
-References: <20210531194947.10770-1-andriy.shevchenko@linux.intel.com>
- <20210531194947.10770-2-andriy.shevchenko@linux.intel.com>
+        id S230405AbhFFVdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 17:33:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230383AbhFFVdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 17:33:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AEFDA613B6;
+        Sun,  6 Jun 2021 21:31:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623015078;
+        bh=ZtDz+Tx3gDJURxeLGuynFGZ8uxab5SNEIC7k5srsrBY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AHcE9g6brTgSAV+4xVNhxekKQlGM0mhAwBWD7XpWpqvtSKGR2QVl9LLO9Fp8mdhc+
+         pc81xS+K6zgxjC9BvkiLbrgqfQSTHMEsv0LbOBaFKiII1tEOu5/8nloj4MSsU82HIa
+         zrNuIDNh84AL4LuphasPGIwe4LNbg9inob5KFPcyQWr6fCOpQ1hseHxL1zqLaM0xud
+         rcUhT1KG4HC3/rPAMCNByPC09q5k03V88CjP/YnrWLRCt6Qt1kUehiQTJUTNwYN4hW
+         To0R1RL/ILuw03NT52wJ9AiDWAT36NN77oYd2Bnz8ID2ZeewkpMb92YVMYNyVavhgv
+         L/9jySVl4Hzcg==
+Date:   Mon, 7 Jun 2021 00:31:09 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-sh@vger.kernel.org, linux-s390@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH v2 01/15] mm: add setup_initial_init_mm() helper
+Message-ID: <YL0+nZPViz5xzxca@kernel.org>
+References: <20210604070633.32363-1-wangkefeng.wang@huawei.com>
+ <20210604070633.32363-2-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="nhpwy4vsiqbpl5ml"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210531194947.10770-2-andriy.shevchenko@linux.intel.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210604070633.32363-2-wangkefeng.wang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Kefeng,
 
---nhpwy4vsiqbpl5ml
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, Jun 04, 2021 at 03:06:19PM +0800, Kefeng Wang wrote:
+> Add setup_initial_init_mm() helper to setup kernel text,
+> data and brk.
+> 
+> Cc: linux-snps-arc@lists.infradead.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-csky@vger.kernel.org
+> Cc: uclinux-h8-devel@lists.sourceforge.jp
+> Cc: linux-m68k@lists.linux-m68k.org
+> Cc: openrisc@lists.librecores.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-riscv@lists.infradead.org
+> Cc: linux-sh@vger.kernel.org
+> Cc: linux-s390@vger.kernel.org
+> Cc: x86@kernel.org
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>  include/linux/mm_types.h | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index 5aacc1c10a45..e1d2429089a4 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -572,6 +572,14 @@ struct mm_struct {
+>  };
+>  
+>  extern struct mm_struct init_mm;
+> +static inline void setup_initial_init_mm(void *start_code, void *end_code,
+> +					 void *end_data, void *brk)
 
-Hello Andy,
+I think it's not that performance sensitive to make it inline. It can be
+placed in mm/init-mm.c with a forward declaration in mm.h
 
-On Mon, May 31, 2021 at 10:49:42PM +0300, Andy Shevchenko wrote:
-> It makes little sense to make PWM flags optional since in case
-> of multi-channel consumer the flags can be optional only for
-> the last listed channel.
+> +{
+> +	init_mm.start_code = (unsigned long)start_code;
+> +	init_mm.end_code = (unsigned long)end_code;
+> +	init_mm.end_data = (unsigned long)end_data;
+> +	init_mm.brk = (unsigned long)brk;
+> +}
+  
+>  /* Pointer magic because the dynamic array size confuses some compilers. */
+>  static inline void mm_init_cpumask(struct mm_struct *mm)
+> -- 
+> 2.26.2
+> 
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-I think the same holds true for dt references.
-
-> Thus always require PWM flags to be provided.
-
-I'm not sure I want to follow that conclusion. Most consumers only need
-a single PWM and then not providing flags is fine, isn't it? Or does
-this change fix an error?
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---nhpwy4vsiqbpl5ml
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmC9PooACgkQwfwUeK3K
-7Al5owf+OYpBUlr20vHA24UHWhu+gsClpK+8L8A6RESJMnFiTSsemRJr+eM4l3wx
-xKsyoMxP0rCCi17voYm7gM/+hwKtMODz+AJFnItb8LoxqrGjld94dR5Xf66VqOiE
-habNp+dYBMDJ4Ig1pTYLIHKp6ISonFqoH6EoHGE2dNd4neqYF1/WfcGfJJkLrA0C
-Y2t552+7RWjjuBOgEsKW1iaNNMj0uiJlwnh16n6b0IMqrJ1sw6bjLwb5bKfbrKkE
-gTNe7xSwPSdjsZ9Xvj78BsHjXG3VIVzWx24XDTTcoLzbiihyXEsnNhvtiPfWBT7e
-rykeESezuepTBHcu8pl7CFamvSMLxw==
-=GlHq
------END PGP SIGNATURE-----
-
---nhpwy4vsiqbpl5ml--
+-- 
+Sincerely yours,
+Mike.
