@@ -2,81 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5232439D033
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 19:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F9C39D039
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 19:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbhFFRee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 13:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbhFFReb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 13:34:31 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6DB3C061766;
-        Sun,  6 Jun 2021 10:32:25 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id m13-20020a17090b068db02901656cc93a75so10450769pjz.3;
-        Sun, 06 Jun 2021 10:32:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=cRPepCTS6zgzWUNR1A/pDqzrNSJcYoBgYKnfTBAwU2s=;
-        b=eK2nRLBec2pVJQtCqMIfpIsU5SSncVBjK+jLTXHp5xYRkEVTtNKpwDgS+iYIEtp81w
-         ynNFxNCRfEu4qARTV9AT3t/YWnMVtkS5lGmAQ4a4Elzl8EJJ09RrTsCkGP2T0EUPlIrU
-         8oVewjsqYChLPlG2WjRfk3L7Mv5ZvtTQlC8kgtkoQ2KvME3vxb/UsfGmkVh88OzWONCq
-         X5scpsLAFx6mcfCPjSMydB8IcoameDS0OTh2vdwHOR/dEVU0FmCrCIr/T7Qler96onLK
-         WNtBpioomzFtdibwJpGimt3dPWZQGo4nCdrASq85D6VtRjuyQyw6NN5g27gSHYojvkSQ
-         T3OQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=cRPepCTS6zgzWUNR1A/pDqzrNSJcYoBgYKnfTBAwU2s=;
-        b=XxA8iflt5c1EUXGr0HYTII90GzPOfw2Y/jFNZlOxuaNpk387aKiDoVcY8O5VIBrNyZ
-         k95n4MAUGXSleMG2E/4aJfdPcezxM/sZgiu6G1WYflQSlVygLJiNWGjWZfuz67k7ajyv
-         Aiwvp2HnDchTtjXtBWc+z777/eUUQoXxoom3ZYByxZvH9ZFVne+8+4y7OK5p3SZiXcc7
-         TRVwCz36b3qUgSwq5ILhvft9r6MwMjG7CHBSzNSxDNONcNtrLOFoN6Br8pW5wiEkmo5g
-         ICbAwasu+z5RFVwjFgby+6xyZBcTsxw/HmPfFJ58q5MR3SeQAlf0WorTzWF++zsidnxv
-         AMtg==
-X-Gm-Message-State: AOAM530hZk67XMZ9tVuOMgSfM8Ba3R1QE5Onak++ZEazU2mgDx2S6/Ky
-        NYOxggEf4hlUVjl4IxayP9BHd/S6N5PE6m5VeyQ=
-X-Google-Smtp-Source: ABdhPJxsq0mOS1qpRZ81nJSUUUuAwLr8X8jQ+tah7IjEZ35KbttqRrCVBgqRcV8rQPTXSP5G0lqQ4yDRSt84sp8bb7w=
-X-Received: by 2002:a17:90a:80c5:: with SMTP id k5mr28576767pjw.129.1623000744412;
- Sun, 06 Jun 2021 10:32:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210605215215.171165-1-andrealmeid@collabora.com>
-In-Reply-To: <20210605215215.171165-1-andrealmeid@collabora.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 6 Jun 2021 20:32:08 +0300
-Message-ID: <CAHp75VcM_ikg26cs724rsTBz1Vc6HVcycQShWRtq_viFrX0AYw@mail.gmail.com>
-Subject: Re: [PATCH] lib: Convert UUID runtime test to KUnit
-To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Shuah Khan <shuah@kernel.org>, ~lkcamp/patches@lists.sr.ht,
-        nfraprado@collabora.com, leandro.ribeiro@collabora.com,
-        Vitor Massaru Iha <vitor@massaru.org>, lucmaga@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S229799AbhFFRpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 13:45:20 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:65150 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229445AbhFFRpQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 13:45:16 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4FykPD5sk3zBBbP;
+        Sun,  6 Jun 2021 19:43:12 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id PCk2U_ulrj21; Sun,  6 Jun 2021 19:43:12 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FykPD4wNxzBBZn;
+        Sun,  6 Jun 2021 19:43:12 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 987C28B770;
+        Sun,  6 Jun 2021 19:43:12 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 9H6RTjQbUkHE; Sun,  6 Jun 2021 19:43:12 +0200 (CEST)
+Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5B1C98B763;
+        Sun,  6 Jun 2021 19:43:12 +0200 (CEST)
+Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 15B9B64C49; Sun,  6 Jun 2021 17:43:11 +0000 (UTC)
+Message-Id: <b175c35ce1596603bf321a5193e89400ae180057.1623001343.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] Fixup for "[v2] powerpc/8xx: Allow disabling KUAP at boot
+ time"
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Sun,  6 Jun 2021 17:43:11 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 6, 2021 at 12:53 AM Andr=C3=A9 Almeida <andrealmeid@collabora.c=
-om> wrote:
->
-> Remove custom functions for testing and use KUnit framework. Test cases
-> and test data remains the same.
+Kernel test robot reported:
 
-Can you provide the output in OK and non-OK runs before and after your patc=
-h?
+>> ERROR: modpost: "disable_kuap_key" [net/phonet/pn_pep.ko] undefined!
+>> ERROR: modpost: "disable_kuap_key" [net/phonet/phonet.ko] undefined!
+>> ERROR: modpost: "disable_kuap_key" [net/decnet/decnet.ko] undefined!
+>> ERROR: modpost: "disable_kuap_key" [drivers/tee/tee.ko] undefined!
+>> ERROR: modpost: "disable_kuap_key" [drivers/input/evdev.ko] undefined!
+>> ERROR: modpost: "disable_kuap_key" [drivers/input/joydev.ko] undefined!
+>> ERROR: modpost: "disable_kuap_key" [drivers/input/mousedev.ko] undefined!
+>> ERROR: modpost: "disable_kuap_key" [drivers/input/serio/serio_raw.ko] undefined!
+>> ERROR: modpost: "disable_kuap_key" [drivers/fsi/fsi-scom.ko] undefined!
+>> ERROR: modpost: "disable_kuap_key" [drivers/watchdog/mv64x60_wdt.ko] undefined!
+WARNING: modpost: suppressed 13 unresolved symbol warnings because there were too many)
 
---=20
-With Best Regards,
-Andy Shevchenko
+disable_kuap_key has to be exported. Use EXPORT_SYMBOL() as userspace
+access function are not exported as GPL today.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/mm/nohash/8xx.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/powerpc/mm/nohash/8xx.c b/arch/powerpc/mm/nohash/8xx.c
+index a8d44e9342f3..fc663322ba58 100644
+--- a/arch/powerpc/mm/nohash/8xx.c
++++ b/arch/powerpc/mm/nohash/8xx.c
+@@ -257,6 +257,7 @@ void __init setup_kuep(bool disabled)
+ 
+ #ifdef CONFIG_PPC_KUAP
+ struct static_key_false disable_kuap_key;
++EXPORT_SYMBOL(disable_kuap_key);
+ 
+ void __init setup_kuap(bool disabled)
+ {
+-- 
+2.25.0
+
