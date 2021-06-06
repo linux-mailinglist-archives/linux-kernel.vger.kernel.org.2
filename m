@@ -2,72 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA5D39CF52
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 15:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E66FF39CF56
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 15:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230088AbhFFNaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 09:30:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34210 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229878AbhFFNaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 09:30:03 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 582DC613D4;
-        Sun,  6 Jun 2021 13:28:14 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1lpsp2-005ldH-7W; Sun, 06 Jun 2021 14:28:12 +0100
+        id S230130AbhFFNcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 09:32:14 -0400
+Received: from mail-pj1-f46.google.com ([209.85.216.46]:46963 "EHLO
+        mail-pj1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229878AbhFFNcN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 09:32:13 -0400
+Received: by mail-pj1-f46.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso8682335pjb.5;
+        Sun, 06 Jun 2021 06:30:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hYcKAmYrkT12yrCkZCPxBOfTA321ZJWoXkYrMXfOxJ0=;
+        b=WQueEqbo2NBlKjvZ6KO/rLFnz5TpCCSTcmQMDcf8qtQHRJyp6tjkvQqjMDDvRWNvg/
+         ojY8msMKfjue0x9xNFLV3t9l/kCCZeo4JZAtzeTrJkJn3SFMywdU2rbl7Bd9WakOBlRt
+         YAkrkqMw8+KgLDVnCzFAlNQ2pzF9dRv5CMtiVoVq1m4MkFGfG+VbcraT09mYoB0nW95S
+         S4POp00X3jRUtpk/R9SiR0aACf9o8cOZZo8DgNZhtn9cFN5sK4dLesBr9cQ176nXSfwd
+         miSgxm/3GlEik79UCHguP4u3DWg9W5kiYmjWSfiZLY9AHLffbf2fsBGYawntp6VsMINT
+         VOvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hYcKAmYrkT12yrCkZCPxBOfTA321ZJWoXkYrMXfOxJ0=;
+        b=Fc+X3mdYqrZusJ5JqQ6vxTRjVjSbrXfZ9vCyDwjXNfyYdCw1GSU3FBZYxqa7AjVYIY
+         76z5Hyw6D5qVsVDpO5u/07TVjXw3XQf1z/uEjdmttdn7LpyGY1lfib7eUmXxP9pmhucV
+         ETUswCyka919Sm9v17lFixL0qfa9Li5XpQuauHhBOp80Ktx+YLsA1mdE4kTE710ihaX9
+         PqhpLvwSvYZ4yDXRITlNjDLD+2v3HnNrbugKXAmnbUmNK+D/LuMZMJh6eIXGJq9jvUOL
+         qnVOpZkjQb6fdtmNDvxOv0WfqGNhyk576Es5URPpBfsz31NyLuedLL1mEYneQNU33/Nw
+         9CLA==
+X-Gm-Message-State: AOAM531Z9HhHOLcRu2UjwWJjJetLN/mOvMpE6mYXI5Jy8d69HC/Bl7DB
+        KR5v2hp5fUmjCUmpw7tUpy8=
+X-Google-Smtp-Source: ABdhPJyj2di16bPb/HKfLXkHVUGrsIbLZuBW9vI9YNQDT8Dz2RXLca9RdoJpECF8q1i5AX0DFaPRow==
+X-Received: by 2002:a17:90b:4504:: with SMTP id iu4mr15678423pjb.110.1622986150087;
+        Sun, 06 Jun 2021 06:29:10 -0700 (PDT)
+Received: from ndr730u.nd.solarflarecom.com ([182.71.24.30])
+        by smtp.googlemail.com with ESMTPSA id bv3sm8252826pjb.1.2021.06.06.06.29.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 06 Jun 2021 06:29:09 -0700 (PDT)
+From:   Gautam Dawar <gdawar.xilinx@gmail.com>
+Cc:     martinh@xilinx.com, hanand@xilinx.com, gdawar@xilinx.com,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] vhost-vdpa: log warning message if vhost_vdpa_remove gets blocked
+Date:   Sun,  6 Jun 2021 18:59:09 +0530
+Message-Id: <20210606132909.177640-1-gdawar.xilinx@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Sun, 06 Jun 2021 14:28:12 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Sandor Bodo-Merle <sbodomerle@gmail.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] PCI: iproc: Support multi-MSI only on uniprocessor
- kernel
-In-Reply-To: <20210606123044.31250-2-sbodomerle@gmail.com>
-References: <20210606123044.31250-1-sbodomerle@gmail.com>
- <20210606123044.31250-2-sbodomerle@gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <ee29ebea89cdde2ae891a53c92a8b7a1@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: sbodomerle@gmail.com, lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com, bhelgaas@google.com, rjui@broadcom.com, sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com, linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-06 13:30, Sandor Bodo-Merle wrote:
-> The interrupt affinity scheme used by this driver is incompatible with
-> multi-MSI as it implies moving the doorbell address to that of another 
-> MSI
-> group.  This isn't possible for multi-MSI, as all the MSIs must have 
-> the
-> same doorbell address. As such it is restricted to systems with a 
-> single
-> CPU.
-> 
-> Fixes: fc54bae28818 ("PCI: iproc: Allow allocation of multiple MSIs")
-> Reported-by: Marc Zyngier <maz@kernel.org>
-> Signed-off-by: Sandor Bodo-Merle <sbodomerle@gmail.com>
+From: Gautam Dawar <gdawar@xilinx.com>
 
-Acked-by: Marc Zyngier <maz@kernel.org>
+If some module invokes vdpa_device_unregister (usually in the module
+unload function) when the userspace app (eg. QEMU) which had opened
+the vhost-vdpa character device is still running, vhost_vdpa_remove()
+function will block indefinitely in call to wait_for_completion().
 
-         M.
+This causes the vdpa_device_unregister caller to hang and with a
+usual side-effect of rmmod command not returning when this call
+is in the module_exit function.
+
+This patch converts the wait_for_completion call to its timeout based
+counterpart (wait_for_completion_timeout) and also adds a warning
+message to alert the user/administrator about this hang situation.
+
+To eventually fix this problem, a mechanism will be required to let
+vhost-vdpa module inform the userspace of this situation and
+userspace will close the descriptor of vhost-vdpa char device.
+This will enable vhost-vdpa to continue with graceful clean-up.
+
+Signed-off-by: Gautam Dawar <gdawar@xilinx.com>
+---
+ drivers/vhost/vdpa.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+index bfa4c6ef554e..572b64d09b06 100644
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -1091,7 +1091,11 @@ static void vhost_vdpa_remove(struct vdpa_device *vdpa)
+ 		opened = atomic_cmpxchg(&v->opened, 0, 1);
+ 		if (!opened)
+ 			break;
+-		wait_for_completion(&v->completion);
++		wait_for_completion_timeout(&v->completion,
++					    msecs_to_jiffies(1000));
++		dev_warn_ratelimited(&v->dev,
++				     "%s waiting for /dev/%s to be closed\n",
++				     __func__, dev_name(&v->dev));
+ 	} while (1);
+ 
+ 	put_device(&v->dev);
 -- 
-Jazz is not dead. It just smells funny...
+2.30.1
+
