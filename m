@@ -2,139 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA0939D18F
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 23:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E52CC39D191
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 23:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230378AbhFFVQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 17:16:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbhFFVQ4 (ORCPT
+        id S230386AbhFFVR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 17:17:59 -0400
+Received: from hosting.gsystem.sk ([212.5.213.30]:55282 "EHLO
+        hosting.gsystem.sk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229723AbhFFVR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 17:16:56 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35CF0C061767
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 14:15:06 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lq06n-0002yI-LA; Sun, 06 Jun 2021 23:15:01 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lq06m-0004j3-NR; Sun, 06 Jun 2021 23:15:00 +0200
-Date:   Sun, 6 Jun 2021 23:14:57 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Jitao Shi <jitao.shi@mediatek.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pwm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        srv_heupstream@mediatek.com, yingjoe.chen@mediatek.com,
-        eddie.huang@mediatek.com, cawa.cheng@mediatek.com,
-        bibby.hsieh@mediatek.com, ck.hu@mediatek.com, stonea168@163.com,
-        huijuan.xie@mediatek.com
-Subject: Re: [PATCH v4 2/3] pwm: mtk-disp: move the commit to clock enabled
-Message-ID: <20210606211457.ya5nbp6fqevuhzwa@pengutronix.de>
-References: <20210603100531.161901-1-jitao.shi@mediatek.com>
- <20210603100531.161901-3-jitao.shi@mediatek.com>
+        Sun, 6 Jun 2021 17:17:57 -0400
+Received: from [192.168.0.2] (unknown [188.167.68.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by hosting.gsystem.sk (Postfix) with ESMTPSA id E3DBC7A021C;
+        Sun,  6 Jun 2021 23:16:05 +0200 (CEST)
+From:   Ondrej Zary <linux@zary.sk>
+To:     Ben Skeggs <bskeggs@redhat.com>
+Subject: Re: nouveau broken on Riva TNT2 in 5.13.0-rc4: NULL pointer dereference in nouveau_bo_sync_for_device
+Date:   Sun, 6 Jun 2021 23:16:03 +0200
+User-Agent: KMail/1.9.10
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <202106052143.52488.linux@zary.sk> <202106052334.23943.linux@zary.sk>
+In-Reply-To: <202106052334.23943.linux@zary.sk>
+X-KMail-QuotePrefix: > 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jvjznihrdfdbgbae"
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <20210603100531.161901-3-jitao.shi@mediatek.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Message-Id: <202106062316.03369.linux@zary.sk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Saturday 05 June 2021 23:34:23 Ondrej Zary wrote:
+> On Saturday 05 June 2021 21:43:52 Ondrej Zary wrote:
+> > Hello,
+> > I'm testing 5.13.0-rc4 and nouveau crashes with NULL pointer dereference in nouveau_bo_sync_for_device.
+> > Found various reports like this but that was back in februaryso that should be fixed now.
+> 
+> So it is the same bug. Broken since 5.11. This revert fixes it in 5.11:
+> https://lists.freedesktop.org/archives/dri-devel/2021-February/298531.html
+> 
+> Added some debug printks to nouveau_bo_sync_for_device:
+> [   22.225048] ttm_dma=fc33b500
+> [   22.225066] ttm_dma->num_pages=18
+> [   22.225071] i=0 num_pages=16
+> [   22.225077] ttm_dma->dma_address=00000000
+> [   22.225094] BUG: kernel NULL pointer dereference, address: 00000000
+> 
+> So ttm->dma_address is NULL.
+> 
 
---jvjznihrdfdbgbae
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Tested reverting f295c8cfec833c2707ff1512da10d65386dde7af again and it does not work...
+Not sure what I did before.
 
-On Thu, Jun 03, 2021 at 06:05:30PM +0800, Jitao Shi wrote:
-> Due to the clock sequence changing, so move the reg commit to
+Bisecting between 5.10 and 5.11 is impossible - I keep hitting neverending stream of bugs.
+As always with nouveau...
 
-Which change do you refer to, here? The previous patch? If so, I assume
-this means the series is not bisectable because the driver is broken
-when only the first patch is applied?
-
-> config().
->=20
-> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
-> ---
->  drivers/pwm/pwm-mtk-disp.c | 20 +++++++-------------
->  1 file changed, 7 insertions(+), 13 deletions(-)
->=20
-> diff --git a/drivers/pwm/pwm-mtk-disp.c b/drivers/pwm/pwm-mtk-disp.c
-> index b5771e2c54b8..b87b3c00a685 100644
-> --- a/drivers/pwm/pwm-mtk-disp.c
-> +++ b/drivers/pwm/pwm-mtk-disp.c
-> @@ -135,6 +135,13 @@ static int mtk_disp_pwm_config(struct pwm_chip *chip=
-, struct pwm_device *pwm,
->  		mtk_disp_pwm_update_bits(mdp, mdp->data->commit,
->  					 mdp->data->commit_mask,
->  					 0x0);
-> +	} else {
-
-You dropped the code comment? Is it wrong? Or is it too obvious to be
-mentioned?
-
-> +		mtk_disp_pwm_update_bits(mdp, mdp->data->bls_debug,
-> +					 mdp->data->bls_debug_mask,
-> +					 mdp->data->bls_debug_mask);
-> +		mtk_disp_pwm_update_bits(mdp, mdp->data->con0,
-> +					 mdp->data->con0_sel,
-> +					 mdp->data->con0_sel);
->  	}
-> =20
->  	return 0;
-> @@ -208,19 +215,6 @@ static int mtk_disp_pwm_probe(struct platform_device=
- *pdev)
-> =20
->  	platform_set_drvdata(pdev, mdp);
-> =20
-> -	/*
-> -	 * For MT2701, disable double buffer before writing register
-> -	 * and select manual mode and use PWM_PERIOD/PWM_HIGH_WIDTH.
-> -	 */
-> -	if (!mdp->data->has_commit) {
-> -		mtk_disp_pwm_update_bits(mdp, mdp->data->bls_debug,
-> -					 mdp->data->bls_debug_mask,
-> -					 mdp->data->bls_debug_mask);
-> -		mtk_disp_pwm_update_bits(mdp, mdp->data->con0,
-> -					 mdp->data->con0_sel,
-> -					 mdp->data->con0_sel);
-> -	}
-> -
->  	return 0;
->  }
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---jvjznihrdfdbgbae
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmC9Os0ACgkQwfwUeK3K
-7AknMQf/dO4dXSwiikRqYQNqvIbdInbSpYBnrau2T9MOiN5AH/QMduQ+nantgN2k
-A1gLIo3VUq0ZaNJXHD6U87VNc35H+95g9u+GJBnDej1Lp1EbLxnUHKJVT4b5XLni
-/CuVEtZ6bJJeIn26hTgVDUlBpbxRQ8MUPYFtRprds+yFlGD6Nc3Ilm9WcjoOg9iK
-WWHH3XVs4i87mdsCj6E0bQKN5VjZv8xOkchs5FUS05L4/gCuAZ6gDJ+LeiFb8bIB
-OtL5QYI8NtHWJGdnM+uuQcbCVVv9g+KNEV4lFLJi45Ev8SNDU60zWJRcyXJ5+brO
-5lzwP8YivZt8H14qmTg/ojo/FhZoOw==
-=6tuB
------END PGP SIGNATURE-----
-
---jvjznihrdfdbgbae--
+-- 
+Ondrej Zary
