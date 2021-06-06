@@ -2,145 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8D039CE69
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 11:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E48339CE6B
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 11:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhFFJcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 05:32:05 -0400
-Received: from esa10.sap.c3s2.iphmx.com ([68.232.156.179]:65140 "EHLO
-        esa10.sap.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhFFJcD (ORCPT
+        id S230104AbhFFJic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 05:38:32 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:57213 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229962AbhFFJia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 05:32:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=sap.com; i=@sap.com; q=dns/txt; s=it-20200722;
-  t=1622971815; x=1654507815;
-  h=from:to:cc:subject:date:message-id:
-   content-transfer-encoding:mime-version;
-  bh=4rS88nQyKsUFVjQz3ASVMWmYl8wK7lp7wSjTX5X+COg=;
-  b=HVrHgtlMswNl5F/vxW4cqujkQ758c8VgIsnsCuPuAMjWs3u9aWIiZxab
-   xITge4VRRUUZORn0WIGB4m+D6UzpdMUaGXixDEtWDKW/qT62b4ybn8rUX
-   OgUPd8r7BageservvUpWZExwEEPyApqOux+jB2ZcOA/DooO6XMcZlNzlX
-   PeIG8FShYYRHKNLiIHOo/Eg+5CiVCSWmUxD+vHVqFD3dzveXD6c1u5Hyj
-   DwcTTbPFIX4dBpcbfvGYIHY3flxduAKsncXF3azOUPXqE+Y+ukDuNWxPg
-   A3/yYkJmvmGD5Rwxcc2z2rIZSrDgpEn2Gt1eLa/7WXdRiruJm9iHAtPZK
-   A==;
-IronPort-SDR: F7c+ECQbm/VHw74CglZ2Jl7i8FGeHV3wTeGdWZNj9lYPOChiajqXJ6ptJAV4sgrCc0jsSRwI/H
- Rva9Vmmsm3UTiP+lkJ/JAqUr8ybLRT5KfDtliTImCzhO53SHFjXgGKnXSNmPR8k5wBpvWLDLoP
- F6GFm9uOmYDp4T2EOdRVye9zR78TEEjHiJswkq1i5aYxEAtCbJ8LcQODJNybIeDUBwbc6jIxIK
- gIkdMdP+DwV5aVpZmBlBN5/obEF/bUDKhLcHtore+X6rx7B5UsOkamGtctamJ6CkDPaj5rfWzi
- jGskN3EiGfRWjJqPvFCd7Ikf
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from smtpgw03.mail.net.sap (HELO smtpgw.sap-ag.de) ([155.56.66.98])
-  by esa10.sap.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA384; 06 Jun 2021 11:30:14 +0200
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (104.47.17.176)
- by smtpgw03.mail.net.sap (155.56.66.98) with Microsoft SMTP Server (TLS) id
- 15.0.1497.18; Sun, 6 Jun 2021 11:30:12 +0200
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cjBZ45+K0jjtIQ0ArSFSbIcguH2CnWfoE7MNG/+7jvr73MNrG5TeTj5JItF12lHKuN/MJWTZ7ArEhTIDNi5JKvNt/vzOtry7xfWZufsbdD0dy8E3leT1wJPYd6/NvYOB9eEf7OrNwLSJAWk4yGBH/WeM5nnEr8Z1EZvrEffeyJXJIhxy/Rf9/Bcdc5cHIn/ueFXIIno3o6loOGFBpmGMzH5EfTV26bC1Q+3bpBYX1ohYrgJyOVv26Dk/cMqvyYek8MLyPqMyLZaoWGGAr852DPmK7P81/fIDFM7t69906Z4dTJegHjVo4moBQZAToVoXdVWi00XZI+M+DVNS88NPtA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4rS88nQyKsUFVjQz3ASVMWmYl8wK7lp7wSjTX5X+COg=;
- b=hk8Pb8TnbRjDEJ4taGEEyUUwst7IeTtbMB+W44YayEi5zfim9ygfuazc4tviRYgDs0bldYhpE4u5H3qrjIiOAH8ftmGMObz2eJRWoYMlg0f7Wv2jkDsRZnqtot/DimedJlfZtdeyQoAAEvJJaFF59acGfWMbBWapXww9cf4i5/gR9nGQ0LsSREB8tK1PVmEenHksL8NJwt3TVSVay1lxfcT6ECbYUy0aqhHrCLbWJfd/Qiw0ymhynFk4ij5SdPIHxH6i3PJ1LZIxOOAj8+8f/xMp8e8tdt+6OAgbAmJpCMOn8D3l2byt/nsU9ZIB77YvFXWccGJS4nGs/RK9gZQ8yQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=sap.com; dmarc=pass action=none header.from=sap.com; dkim=pass
- header.d=sap.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sap.onmicrosoft.com;
- s=selector2-sap-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4rS88nQyKsUFVjQz3ASVMWmYl8wK7lp7wSjTX5X+COg=;
- b=SMAvlRThyIpQbNMd97xk6w+KFfn1h2WWmqEAuVIf/0vO8ZKJudyyzBoodmfENKfjeK3rOmpTW9lCNBENn9ab1k9bYVoU32C6OevzClkAn/rBnTKhcoJdG4K0I5sI3OPm8w4OduWwG020f5AstJTG7YRCC+cdrXzzTq0PFnRRF8w=
-Received: from AM0PR02MB5668.eurprd02.prod.outlook.com (2603:10a6:208:159::21)
- by AM9PR02MB6817.eurprd02.prod.outlook.com (2603:10a6:20b:2c2::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.23; Sun, 6 Jun
- 2021 09:30:11 +0000
-Received: from AM0PR02MB5668.eurprd02.prod.outlook.com
- ([fe80::ecd4:f127:8555:8c4b]) by AM0PR02MB5668.eurprd02.prod.outlook.com
- ([fe80::ecd4:f127:8555:8c4b%7]) with mapi id 15.20.4195.029; Sun, 6 Jun 2021
- 09:30:11 +0000
-From:   "Czerwacki, Eial" <eial.czerwacki@sap.com>
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     SAP vSMP Linux Maintainer <linux.vsmp@sap.com>
-Subject: [PATCH 2/2 v2] MAINTAINERS: add entry for vsmp_64.
-Thread-Topic: [PATCH 2/2 v2] MAINTAINERS: add entry for vsmp_64.
-Thread-Index: AddatmxfSmiD9mikRfKGBXKQkGCvXw==
-Date:   Sun, 6 Jun 2021 09:30:11 +0000
-Message-ID: <AM0PR02MB5668CDEAF71950F84BAF8DE481399@AM0PR02MB5668.eurprd02.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [176.231.4.109]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a8e6bc29-0af1-4ba9-f8ea-08d928cdaedb
-x-ms-traffictypediagnostic: AM9PR02MB6817:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM9PR02MB6817A78058DEED7BA3BB5E2081399@AM9PR02MB6817.eurprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1079;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: T+nVSkZdc6wVZJ/uEam+1kUdFTmO7r19MafOzB1wgLHqdjHIjaxvu+76iauHWi/H7yPSbLBddGHUinoQlBvVvBkZmRRFjSgzrgJ1N9XtDj8GAHaX9jyqqEoTdx3fr0MqB6hXVShRv5efbKqAXGPosZaREF8bC+dRVi6R0tD/F1ElOAHUxHP+JXgQR1MaM43inGWirFGRqa9Yu/Ii++5HkOqt8YoEf3j/JJx48bsDGCWrfBQ/WhLMGA9yMk6PD6W8yqr3/HQi3Xhvm6IB8hfasyPAn1jYAjHY0w91uEmY1ngZ0QPkHxn8KwdK+fAmKOXf8XAhxfG/funSqF/TyFZIqU5TyVJBZbSrlYHGSO0p7i/VqtaCJuP0JwV0k1lhJmEr9DiZ0KVx1CXy1GBnNE6HCsvQbFEwQtIstBQ57So//hMGs7adP78XZD4eWpHpvNVJCCf9/09WAF7ghKGAyCSKs68hSRccnRk+xKnFGwPHgt0d+NYgIxxxc/cZGRnErEt9U1msFmcfzCbJckuH1IeO99471w+EeqNSL1cvFZAxgna3Q1UkPxoPrrDxC/4LjVQUHK2r/xte3L5OPRh+oMiZttobnslu18S8D7Gw3yXZkjM=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR02MB5668.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(346002)(376002)(136003)(366004)(26005)(6916009)(4326008)(6506007)(38100700002)(2906002)(186003)(9686003)(86362001)(8676002)(7696005)(66446008)(66476007)(66946007)(5660300002)(71200400001)(33656002)(66556008)(478600001)(76116006)(8936002)(4744005)(316002)(55016002)(122000001)(64756008)(52536014);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bmlOZzVCd2RYU1Vic1B0YUU5Sms0aExUODNaTnpOZXRTNEZXQnlNNmd5bU5K?=
- =?utf-8?B?QktBTG94V0N1eit6RTZxRGtYQlgvVEJncHkvR3hjelBhOVg0Z3JXWnhaNFFm?=
- =?utf-8?B?MXhGNDhqVitSdmtZVFc3RDYwRC9LSWcxTGxNVzhZK1cvalc1bmc0SE5OOU1n?=
- =?utf-8?B?T0ZUVHY4NzJHRXNIM0ZMcmRYdDJiTGFESTk4VVlOVEVrWjU0UmQvemxMZ3JO?=
- =?utf-8?B?WnVjNmVWRWZ4aExNcDRnbUp3QUN2K2dwN3YwU0lmRVdyeklFK1RWZWZkMXVQ?=
- =?utf-8?B?SFVRQjVMUnVUdjVndWMwM0MwckQzVjJqZE1RdVg4NjVJS3gxemV1dnNnUGpD?=
- =?utf-8?B?bDQxUDdpVzQwcHRqamIrc2ZCK2dxejdlaUtoN1ZiMjBNVks4dVphOTBHVkp0?=
- =?utf-8?B?aUl2cXRUSGtoNCtaaEZ4UnBLcm1nQ1ZmN2MrNy9GU2kySFl2SDh3UG16blFT?=
- =?utf-8?B?Tnh6cXI1TUNlT3hRK0wrM0JLaUZObDFWQytHWS9CL0lvSVJkL0NOdlJzM2pW?=
- =?utf-8?B?S3Z2SEVCU21ZTTRtY1k2MEtHbVVNTHoyWTZXbXlKQThmeFViSHliUlRySlhy?=
- =?utf-8?B?NVU5M2xlRDFVNFVBYlV3STNBSVBDQnEwMERldmN3ZXJoRCtDMnJ0Y1hiUmc0?=
- =?utf-8?B?cGt6YklBSldKVkQxeUxYQk9OdVA0WjZucnc5SEFYVGNXeVR2eEVYY2RrNE0z?=
- =?utf-8?B?dThudXczbFYxUW51N2YwYnFVN1VFZEVmTTZUZE5xazFHbDFJdHNPS3YzMmQ0?=
- =?utf-8?B?UUpWZkhGTEFlOUpUTkRSM3lwcEc2NDZqNWhJYlE3djJWUlZZWGM4ODNheDR1?=
- =?utf-8?B?eVh4Y2VGdHdNeEIyR21ib1pDRDg0WFFUMFJNMmJVWnZPNUJON2FvZmhFbW0v?=
- =?utf-8?B?SWhyS3N1SHNRMUNZcHU4eXJSaDJkMGZTb1NMcVZudGhTNnVySVBjeXRXWkNY?=
- =?utf-8?B?TGdMUUlad01WVkZ4ZlFkaFBya21sZEloaHZqMnFhN3BKYUlyZUxweWY1aGNO?=
- =?utf-8?B?Nm8rZXcwM0w1UkdkZ0E3ZW1Ob0NsY3p1a1hIL2htc3kvYm1TMFFrUDdldzN5?=
- =?utf-8?B?cGhFRHRNUUZEcHduNW04YkFqQkQ3TjgxRmttczFlN3NXUUUxU3hKSXJXZm5U?=
- =?utf-8?B?N1RUcjR2aFFBSDFieXdTVWRLcTVBV2Jrd0V3OHlhakVTSDE4VitvZzl1bWpQ?=
- =?utf-8?B?emhQbWgzZU5PR3VFK0xOSjNDSnhveGErU0Y1czZSVk5ZNnk1RWJVaXhUeFRR?=
- =?utf-8?B?OWdPNnlLZW5CTENuUURCeUFuQTB2OExHR2g1R3pQeXlCbmYyaGVhcHcxTGtS?=
- =?utf-8?B?ZFhNQ0FQVHRUSGgyRDJTbHd4aVR6bzlxaGFscFJ2QmsyRjE2WjJ6d0VBTVdE?=
- =?utf-8?B?K2ovZXo5ZEZsbmt4QkFqY2poS2ZLck4vZEFMVUZKb2xyMGZQRTU5cm9qR251?=
- =?utf-8?B?TE4vNkQ1Mkc5YVRjTnEwYTRMVUlTTzIxMkZnaHIyQkFjZ3FTRFBYdkJPaWlt?=
- =?utf-8?B?ZktJTDNoMW9pdVd1K2JYQkl1SWVNdHJ0UjFDVURSSzNaM0RXVlU2aWRWYWdI?=
- =?utf-8?B?NElZQkhZeU0xR0g2RTI1WnNGVEYxc1RBOXhQemZJcGZBcG1ubmp1cEFBNktE?=
- =?utf-8?B?cFhpNjU4L2pvMnlHVVAvdUdDNDcyTXpTTEo0RHZxYkNWM0V6ampoWDFRRnFN?=
- =?utf-8?B?OGxqcTdjeDVHUW9rb2xkaDZlR2lHM1MyK0VRTHYvejNjb0RSTENBb1E4ZGVs?=
- =?utf-8?Q?DHwoqnzo0e7qSHgtCJX6/WOJWWqyLSCgbd6Z7ld?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Sun, 6 Jun 2021 05:38:30 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id E83565C00DB;
+        Sun,  6 Jun 2021 05:36:40 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Sun, 06 Jun 2021 05:36:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=LJcFNkqkwBNMBLl3DFLZ1dS+fa
+        kHnDWkRd6GlAOn3lo=; b=OILKlS5oLwBhgpURjfVoumk5v8MmeuviTO0jszfl8c
+        MXPCj14y/W5hDMzqJjdJfspVvkapQ7wqiEzk7gLNJonosxcgLNuobLNj6j08O0qy
+        smdNch3VW1BZ4emxiVgBXZnoeJYLksP6DLOKnVPRGbSNObRj0gzGv1P976dWmfYK
+        vVy3Ethd3xmBuz2TY80qDZrxUoZrMvhlgc9VxB4YymMRcIA5AzwHeRtY07R76Kz7
+        7D2oBcunxtUttgNwKtdVba0yKwyxD7RL29X6s7QY6eBURQvTjt6HERdMQklK+pTM
+        gFivZKe5Uqmu9eVMcCekIMim22Zw9evt60gUc9rmFxJw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=LJcFNkqkwBNMBLl3D
+        FLZ1dS+fakHnDWkRd6GlAOn3lo=; b=rrvgsUdsYtZLKAsoVumCXOPivchcgSA5t
+        oVDNQSehz5uEpcrCgoHPiL/2ZsoChXNM+oYP+zi0azlTgWMpG0llzb7AwlwOhqBX
+        g5K13h21hMvG54/m5eKYOGAJ/49VLis++Nk6jBtUSmVtw1LW1Jm2EIRE5Pxe+L8I
+        yZDayG17BD8OFYRTHuNk1o9//WJiJF1UJmh6BBj++YWlmcCKdjGxYkMBdXQigcW/
+        vN2ZXvpF9SsrFwHS8KQ+nphUgqlDU5/o9AXn1Y3cYLm1WIAs8FTjRysnAKPtR9xC
+        MZrNwSudrlHdbKNGjwDPEN+gyiMI+L20qbYb0tYajvM6oaj3EOY+A==
+X-ME-Sender: <xms:KJe8YKieZWyvgX_QeqACrwBaxpjC8ZAybhsOZJdE5cz7Fb5pdoeOoA>
+    <xme:KJe8YLCZpa5p0wYUBSSBvDir2oZJOOmMg57B_hN_t-wjQOpmxH7ZyYpZZT48cu3GC
+    sBy3c3HdFGvE1bNNss>
+X-ME-Received: <xmr:KJe8YCHoNmp6weGsJsvh0IP50CLgFoAeoAGUwIrJ4hfld20lA9KL6oRrwixsHx4UGRpvvgo9uDIq_Bxmx5qzI7rUxBKgsFh4Mv9_Fv6KePCioGB3n7ZA6tchPD5uDA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedthedgudekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefuvhgvnhcurfgv
+    thgvrhcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrfgrthhtvghrnh
+    epuefgleekvddtjefffeejheevleefveekgfduudfhgefhfeegtdehveejfefffffgnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshhvvghnse
+    hsvhgvnhhpvghtvghrrdguvghv
+X-ME-Proxy: <xmx:KJe8YDToPW8W6SDWLEqsEN9Wlbw3dT-ZyWgzytmRsUFpIe_yybQ9yw>
+    <xmx:KJe8YHxaLmB45_pdM6Vb_8yz7LHoXiNpAm0C4qReWIgfyWWYG40woQ>
+    <xmx:KJe8YB6LPgz5ps87rCwoZbFgcj9yuQhYq04oHJm1CGFBdRwIZAv-cQ>
+    <xmx:KJe8YJutV8hBCqd_SSIknHcrZRVMSBrXFfAN8cr3ikndsQm6g6bOFw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 6 Jun 2021 05:36:39 -0400 (EDT)
+From:   Sven Peter <sven@svenpeter.dev>
+To:     linux-usb@vger.kernel.org
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Sven Peter <sven@svenpeter.dev>
+Subject: [PATCH] usb: dwc3: support 64 bit DMA in platform driver
+Date:   Sun,  6 Jun 2021 11:36:29 +0200
+Message-Id: <20210606093629.69786-1-sven@svenpeter.dev>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR02MB5668.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a8e6bc29-0af1-4ba9-f8ea-08d928cdaedb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jun 2021 09:30:11.4995
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 42f7676c-f455-423c-82f6-dc2d99791af7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Cwoi/Gd6fDPJ5AQcOt1EUnNmdU0/jmkj0XI70syMxdDtmnMHc7xt+d/uE4VnlqBiJpJY/ebx6gl1SggchahvFA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR02MB6817
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-YWRkIG1pc3NpbmcgZW50cnkgZm9yIHZzbXBfNjQuYw0KDQpTaWduZWQtb2ZmLWJ5OiBFaWFsIEN6
-ZXJ3YWNraSA8ZWlhbC5jemVyd2Fja2lAc2FwLmNvbT4NCi0tLQ0KIE1BSU5UQUlORVJTIHwgNiAr
-KysrKysNCiAxIGZpbGUgY2hhbmdlZCwgNiBpbnNlcnRpb25zKCspDQoNCnYxIC0+IHYyOg0KCWZp
-eCBzZWNvbmQgbWFpbnRhaW5lciBsaXN0IGVtYWlsIGFkZHJlc3MNCg0KZGlmZiAtLWdpdCBhL01B
-SU5UQUlORVJTIGIvTUFJTlRBSU5FUlMNCmluZGV4IDk0ODcwNjE3NGZhZS4uMjliYzFlYjdmNjdk
-IDEwMDY0NA0KLS0tIGEvTUFJTlRBSU5FUlMNCisrKyBiL01BSU5UQUlORVJTDQpAQCAtMTk1ODcs
-NiArMTk1ODcsMTIgQEAgRjogICAgIERvY3VtZW50YXRpb24vY29yZS1hcGkvcHJpbnRrLWZvcm1h
-dHMucnN0DQogRjogICAgIGxpYi90ZXN0X3ByaW50Zi5jDQogRjogICAgIGxpYi92c3ByaW50Zi5j
-DQoNCitWU01QDQorTTogICAgIEVpYWwgQ3plcndhY2tpIDxlaWFsLmN6ZXJ3YWNraUBzYXAuY29t
-Pg0KK006ICAgICBMaW51eC52c21wQHNhcC5jb20NCitTOiAgICAgTWFpbnRhaW5lZA0KK0Y6ICAg
-ICBhcmNoL3g4Ni9rZXJuZWwvdnNtcF82NC5jDQorDQogVlQxMjExIEhBUkRXQVJFIE1PTklUT1Ig
-RFJJVkVSDQogTTogICAgIEp1ZXJnIEhhZWZsaWdlciA8anVlcmdoQGdtYWlsLmNvbT4NCiBMOiAg
-ICAgbGludXgtaHdtb25Admdlci5rZXJuZWwub3JnDQotLQ0KMi4zMS4xDQo=
+Currently, the dwc3 platform driver does not explicitly ask for
+a DMA mask. This makes it fall back to the default 32-bit mask which
+breaks the driver on systems that only have RAM starting above the
+first 4G like the Apple M1 SoC.
+
+Fix this by using the same logic already present in xhci-plat.c:
+First, try to set a coherent dma mask for 64-bit, and then attempt
+again with a 32-bit mask if this fails.
+
+Signed-off-by: Sven Peter <sven@svenpeter.dev>
+---
+
+I have taken the code directly from the xhci-plat.c driver so
+I think this change should be fairly low risk.
+Unfortunately I only have the Apple M1 to test this on but here
+the driver still works with the iommu enabled which limits the
+address space to 32 bit. It also enables to use this with the iommu
+in bypass mode which requires 64 bit addresses.
+
+I believe this has been working fine so far since the dwc3 driver
+only uses a few very small buffers in host mode which might still
+fit within the first 4G of address space on many devices. The
+majority of DMA buffers are allocated inside the xhci driver which
+will already call dma_set_mask_and_coherent.
+
+Best,
+
+Sven
+
+ drivers/usb/dwc3/core.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+index b6e53d8212cd..ef6bb6aaffd8 100644
+--- a/drivers/usb/dwc3/core.c
++++ b/drivers/usb/dwc3/core.c
+@@ -1545,6 +1545,21 @@ static int dwc3_probe(struct platform_device *pdev)
+ 
+ 	dwc3_get_properties(dwc);
+ 
++	/* Try to set 64-bit DMA first */
++	if (WARN_ON(!dwc->sysdev->dma_mask))
++		/* Platform did not initialize dma_mask */
++		ret = dma_coerce_mask_and_coherent(dwc->sysdev,
++						   DMA_BIT_MASK(64));
++	else
++		ret = dma_set_mask_and_coherent(dwc->sysdev, DMA_BIT_MASK(64));
++
++	/* If seting 64-bit DMA mask fails, fall back to 32-bit DMA mask */
++	if (ret) {
++		ret = dma_set_mask_and_coherent(dwc->sysdev, DMA_BIT_MASK(32));
++		if (ret)
++			return ret;
++	}
++
+ 	dwc->reset = devm_reset_control_array_get_optional_shared(dev);
+ 	if (IS_ERR(dwc->reset))
+ 		return PTR_ERR(dwc->reset);
+-- 
+2.25.1
+
