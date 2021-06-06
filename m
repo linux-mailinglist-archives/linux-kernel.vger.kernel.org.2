@@ -2,332 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5448F39D16E
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 22:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5965839D16F
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 22:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230282AbhFFUZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 16:25:27 -0400
-Received: from smtp-35-i2.italiaonline.it ([213.209.12.35]:41567 "EHLO
-        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230246AbhFFUZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 16:25:24 -0400
-Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
- ([79.17.119.101])
-        by smtp-35.iol.local with ESMTPA
-        id pzIbl3WgQsptipzIzlrvWo; Sun, 06 Jun 2021 22:23:33 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1623011013; bh=7TibbJ0LOnEf1ZctGuV7Pk/dOWYQeKP9WQI9bvANLpY=;
-        h=From;
-        b=LWJeNxbCBmLyfZ0xmPdYZLwv/Hwo4SaKDyugNpVX21SWoy6At2OuEAwk1Iu0Sk425
-         nbdOph7ejpLizbeRBsPUmuUsfQLUQFkDq0mL7S3K9rZq3Jqkwv3Sus1nvTqenm/hHq
-         O1vtkGQaNJYmEgoG3UBY0TR0BXiW6YBkTIGAejIyGhFGVpba+YVTH++uKVVzdOpTGw
-         VDzSVd7XM3dYjbVX4Fu9uKJOXH8kPTs5w0+EvwpDRGJfxPsMdGnTHWk/SmM0ZoWF1p
-         kDsAN5h1OBgt6XEfBQe23n1lJ+v5aKHfzi1rIA1E3gl83GjT6R5u3T7a75J7DRLJsw
-         mTfWz5D58J0ew==
-X-CNFS-Analysis: v=2.4 cv=Bo1Yfab5 c=1 sm=1 tr=0 ts=60bd2ec5 cx=a_exe
- a=do1bHx4A/kh2kuTIUQHSxQ==:117 a=do1bHx4A/kh2kuTIUQHSxQ==:17
- a=IkcTkHD0fZMA:10 a=VwQbUJbxAAAA:8 a=o_rbLAqdoS-kjYQczG8A:9 a=QEXdDO2ut3YA:10
- a=5yUOnwQy5QICz8m5uxDm:22 a=AjGcO6oz07-iQ99wixmX:22 a=pHzHmUro8NiASowvMSCR:22
- a=xoEH_sTeL_Rfw54TyV31:22
-From:   Dario Binacchi <dariobin@libero.it>
-To:     linux-clk@vger.kernel.org
-Cc:     Rob Herring <robh@kernel.org>, Tony Lindgren <tony@atomide.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Dario Binacchi <dariobin@libero.it>,
-        linux-omap@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
-        Tero Kristo <kristo@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH v7 5/5] clk: ti: add am33xx/am43xx spread spectrum clock support
-Date:   Sun,  6 Jun 2021 22:22:53 +0200
-Message-Id: <20210606202253.31649-6-dariobin@libero.it>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210606202253.31649-1-dariobin@libero.it>
-References: <20210606202253.31649-1-dariobin@libero.it>
+        id S230020AbhFFU2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 16:28:12 -0400
+Received: from mga05.intel.com ([192.55.52.43]:53405 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229723AbhFFU2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 16:28:12 -0400
+IronPort-SDR: IJ1A6k82fDyHyb2qfrJoATKBp0eRJLMz3I1WMIj7uZvgb5IBPZZvOs/pi2J0zKBxLatz8T6qGd
+ Fz323EvtuV9Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="290158244"
+X-IronPort-AV: E=Sophos;i="5.83,253,1616482800"; 
+   d="scan'208";a="290158244"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 13:26:20 -0700
+IronPort-SDR: kdeDkmxSfT21G5/iwUkFYCMEnJDM7uX+ujWUXW485b+z+OhrghzlyjSJtT7FfQgHSyBVyhidPU
+ i0I/xdb9EKXg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,253,1616482800"; 
+   d="scan'208";a="447274086"
+Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 06 Jun 2021 13:26:18 -0700
+Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lpzLe-00082c-8d; Sun, 06 Jun 2021 20:26:18 +0000
+Date:   Mon, 07 Jun 2021 04:25:20 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ d2781acb34c7a82234d2b42d84d4f783415dbbe1
+Message-ID: <60bd2f30.rSkvdUYE3dkvvTwY%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfLLaJJ8jPN7pF9d2GpwsiIvkZNJtgHyZFHlPB8FkizO5KodAsMHApMaMwDkqirCXbTQu5Fq6ZYTULfMvUq+zrrQjJJJrpVJO3rgIyrO5dJZ4RnclJJhk
- XKgnudEkYyzYG7xnZWzPk+y51Tqk7IjbGL7QQvEmVB7f/LSJBDBYX1nn4drMZo+tQ+Pn+tJCGAstt76iZ2Vfcs5QWpBOeW6F3vVEl75oWjFsI2lm0uCJZ2W3
- x4Llah5r2B5xQoJ/9uDLLhJxkEVpVIh43BTgPO3VwqGN/vqfKhlA/CBYrguMRx4KBI9eudSCsm1kFszGpRCbs6LnIjaw9R066603E4y4xewt6WBK7+WFepBI
- 5oFc4difOQrRoipQC4MBXevXF8G+BXJLDxZoCQK6OBv/YLYeXfgCtMiYrantxxvTON7KE+Ytukwm7SrrzPkn9zNuTc9CbURvUdXF6nhiLVdJJFn2bqKoXIds
- qtfmGmQXwDyIsSPhPsvYKh3nfm3IzAsFWWqvga5tYYgCh7h76GKgQimAFUKDH4o2wsLaK3LN+TVG5pafyNudNN7w3TRxsR0xInz7Ow==
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The patch enables spread spectrum clocking (SSC) for MPU and LCD PLLs.
-As reported by the TI spruh73x/spruhl7x RM, SSC is only supported for
-the DISP/LCD and MPU PLLs on am33xx/am43xx. SSC is not supported for
-DDR, PER, and CORE PLLs.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: d2781acb34c7a82234d2b42d84d4f783415dbbe1  Merge branch 'linus'
 
-Calculating the required values and setting the registers accordingly
-was taken from the set_mpu_spreadspectrum routine contained in the
-arch/arm/mach-omap2/am33xx/clock_am33xx.c file of the u-boot project.
+elapsed time: 725m
 
-In locked condition, DPLL output clock = CLKINP *[M/N]. In case of
-SSC enabled, the reference manual explains that there is a restriction
-of range of M values. Since the omap2_dpll_round_rate routine attempts
-to select the minimum possible N, the value of M obtained is not
-guaranteed to be within the range required. With the new "ti,min-div"
-parameter it is possible to increase N and consequently M to satisfy the
-constraint imposed by SSC.
+configs tested: 152
+configs skipped: 2
 
-Signed-off-by: Dario Binacchi <dariobin@libero.it>
-Reviewed-by: Tero Kristo <kristo@kernel.org>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                         shannon_defconfig
+arm                           corgi_defconfig
+arm                            lart_defconfig
+sh                        sh7785lcr_defconfig
+powerpc                  storcenter_defconfig
+powerpc                     sequoia_defconfig
+sh                             shx3_defconfig
+powerpc                     kmeter1_defconfig
+microblaze                          defconfig
+openrisc                 simple_smp_defconfig
+powerpc                      chrp32_defconfig
+nds32                             allnoconfig
+mips                      fuloong2e_defconfig
+xtensa                    smp_lx200_defconfig
+arm                       netwinder_defconfig
+ia64                             allyesconfig
+powerpc                      tqm8xx_defconfig
+i386                             alldefconfig
+powerpc                      obs600_defconfig
+ia64                                defconfig
+arm                        vexpress_defconfig
+powerpc                 mpc834x_itx_defconfig
+arm                         socfpga_defconfig
+arm64                            alldefconfig
+arm                        mvebu_v7_defconfig
+mips                      pic32mzda_defconfig
+sh                ecovec24-romimage_defconfig
+mips                             allmodconfig
+powerpc                     stx_gp3_defconfig
+m68k                          multi_defconfig
+powerpc                    ge_imp3a_defconfig
+powerpc                      cm5200_defconfig
+arc                            hsdk_defconfig
+mips                  cavium_octeon_defconfig
+arm                           sunxi_defconfig
+mips                           ip22_defconfig
+mips                      maltaaprp_defconfig
+powerpc                     mpc5200_defconfig
+arm                         hackkit_defconfig
+arm                         at91_dt_defconfig
+sh                               allmodconfig
+mips                           ip32_defconfig
+powerpc                 xes_mpc85xx_defconfig
+mips                        omega2p_defconfig
+arm                             rpc_defconfig
+mips                          malta_defconfig
+powerpc                      ppc44x_defconfig
+sh                          polaris_defconfig
+powerpc                     tqm5200_defconfig
+arm                           stm32_defconfig
+powerpc                mpc7448_hpc2_defconfig
+arm                        multi_v7_defconfig
+s390                          debug_defconfig
+sh                           se7206_defconfig
+alpha                            alldefconfig
+mips                        bcm47xx_defconfig
+riscv                          rv32_defconfig
+arm                       imx_v4_v5_defconfig
+powerpc                 mpc832x_mds_defconfig
+mips                            gpr_defconfig
+m68k                        m5272c3_defconfig
+sh                        edosk7705_defconfig
+arm                         nhk8815_defconfig
+arm                       cns3420vb_defconfig
+riscv             nommu_k210_sdcard_defconfig
+x86_64                            allnoconfig
+riscv                            allyesconfig
+ia64                        generic_defconfig
+arc                        nsim_700_defconfig
+arm                     am200epdkit_defconfig
+openrisc                    or1ksim_defconfig
+sh                   secureedge5410_defconfig
+sh                   sh7770_generic_defconfig
+arm                  colibri_pxa270_defconfig
+arm                          pxa168_defconfig
+sh                           se7751_defconfig
+csky                             alldefconfig
+arm                        neponset_defconfig
+arm                       mainstone_defconfig
+arm                         s5pv210_defconfig
+powerpc                          allmodconfig
+mips                      maltasmvp_defconfig
+powerpc                           allnoconfig
+ia64                             allmodconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+powerpc                          allyesconfig
+x86_64               randconfig-a002-20210606
+x86_64               randconfig-a004-20210606
+x86_64               randconfig-a003-20210606
+x86_64               randconfig-a006-20210606
+x86_64               randconfig-a005-20210606
+x86_64               randconfig-a001-20210606
+i386                 randconfig-a003-20210606
+i386                 randconfig-a006-20210606
+i386                 randconfig-a004-20210606
+i386                 randconfig-a001-20210606
+i386                 randconfig-a005-20210606
+i386                 randconfig-a002-20210606
+i386                 randconfig-a015-20210606
+i386                 randconfig-a013-20210606
+i386                 randconfig-a016-20210606
+i386                 randconfig-a011-20210606
+i386                 randconfig-a014-20210606
+i386                 randconfig-a012-20210606
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-b001-20210606
+x86_64               randconfig-a015-20210606
+x86_64               randconfig-a011-20210606
+x86_64               randconfig-a014-20210606
+x86_64               randconfig-a012-20210606
+x86_64               randconfig-a016-20210606
+x86_64               randconfig-a013-20210606
 
 ---
-
-(no changes since v6)
-
-Changes in v6:
-- Add Tero Kristo review tag.
-
-Changes in v5:
-- Remove ssc_ack_mask field from dpll_data structure. It was not used.
-- Change ssc_downspread type from u8 to bool in dpll_data structure.
-
-Changes in v4:
-- Update commit message.
-
-Changes in v3:
-- Use "ti,ssc-modfreq-hz" binding instead of "ti,ssc-modfreq".
-
-Changes in v2:
-- Move the DT changes to the previous patch in the series.
-
- drivers/clk/ti/dpll.c     | 39 ++++++++++++++++++
- drivers/clk/ti/dpll3xxx.c | 85 +++++++++++++++++++++++++++++++++++++++
- include/linux/clk/ti.h    | 22 ++++++++++
- 3 files changed, 146 insertions(+)
-
-diff --git a/drivers/clk/ti/dpll.c b/drivers/clk/ti/dpll.c
-index d6f1ac5b53e1..e9f9aee936ae 100644
---- a/drivers/clk/ti/dpll.c
-+++ b/drivers/clk/ti/dpll.c
-@@ -290,7 +290,9 @@ static void __init of_ti_dpll_setup(struct device_node *node,
- 	struct clk_init_data *init = NULL;
- 	const char **parent_names = NULL;
- 	struct dpll_data *dd = NULL;
-+	int ssc_clk_index;
- 	u8 dpll_mode = 0;
-+	u32 min_div;
- 
- 	dd = kmemdup(ddt, sizeof(*dd), GFP_KERNEL);
- 	clk_hw = kzalloc(sizeof(*clk_hw), GFP_KERNEL);
-@@ -345,6 +347,27 @@ static void __init of_ti_dpll_setup(struct device_node *node,
- 	if (dd->autoidle_mask) {
- 		if (ti_clk_get_reg_addr(node, 3, &dd->autoidle_reg))
- 			goto cleanup;
-+
-+		ssc_clk_index = 4;
-+	} else {
-+		ssc_clk_index = 3;
-+	}
-+
-+	if (dd->ssc_deltam_int_mask && dd->ssc_deltam_frac_mask &&
-+	    dd->ssc_modfreq_mant_mask && dd->ssc_modfreq_exp_mask) {
-+		if (ti_clk_get_reg_addr(node, ssc_clk_index++,
-+					&dd->ssc_deltam_reg))
-+			goto cleanup;
-+
-+		if (ti_clk_get_reg_addr(node, ssc_clk_index++,
-+					&dd->ssc_modfreq_reg))
-+			goto cleanup;
-+
-+		of_property_read_u32(node, "ti,ssc-modfreq-hz",
-+				     &dd->ssc_modfreq);
-+		of_property_read_u32(node, "ti,ssc-deltam", &dd->ssc_deltam);
-+		dd->ssc_downspread =
-+			of_property_read_bool(node, "ti,ssc-downspread");
- 	}
- 
- 	if (of_property_read_bool(node, "ti,low-power-stop"))
-@@ -356,6 +379,10 @@ static void __init of_ti_dpll_setup(struct device_node *node,
- 	if (of_property_read_bool(node, "ti,lock"))
- 		dpll_mode |= 1 << DPLL_LOCKED;
- 
-+	if (!of_property_read_u32(node, "ti,min-div", &min_div) &&
-+	    min_div > dd->min_divider)
-+		dd->min_divider = min_div;
-+
- 	if (dpll_mode)
- 		dd->modes = dpll_mode;
- 
-@@ -585,8 +612,14 @@ static void __init of_ti_am3_no_gate_dpll_setup(struct device_node *node)
- 	const struct dpll_data dd = {
- 		.idlest_mask = 0x1,
- 		.enable_mask = 0x7,
-+		.ssc_enable_mask = 0x1 << 12,
-+		.ssc_downspread_mask = 0x1 << 14,
- 		.mult_mask = 0x7ff << 8,
- 		.div1_mask = 0x7f,
-+		.ssc_deltam_int_mask = 0x3 << 18,
-+		.ssc_deltam_frac_mask = 0x3ffff,
-+		.ssc_modfreq_mant_mask = 0x7f,
-+		.ssc_modfreq_exp_mask = 0x7 << 8,
- 		.max_multiplier = 2047,
- 		.max_divider = 128,
- 		.min_divider = 1,
-@@ -645,8 +678,14 @@ static void __init of_ti_am3_dpll_setup(struct device_node *node)
- 	const struct dpll_data dd = {
- 		.idlest_mask = 0x1,
- 		.enable_mask = 0x7,
-+		.ssc_enable_mask = 0x1 << 12,
-+		.ssc_downspread_mask = 0x1 << 14,
- 		.mult_mask = 0x7ff << 8,
- 		.div1_mask = 0x7f,
-+		.ssc_deltam_int_mask = 0x3 << 18,
-+		.ssc_deltam_frac_mask = 0x3ffff,
-+		.ssc_modfreq_mant_mask = 0x7f,
-+		.ssc_modfreq_exp_mask = 0x7 << 8,
- 		.max_multiplier = 2047,
- 		.max_divider = 128,
- 		.min_divider = 1,
-diff --git a/drivers/clk/ti/dpll3xxx.c b/drivers/clk/ti/dpll3xxx.c
-index 94d5b5fe9a2b..e32b3515f9e7 100644
---- a/drivers/clk/ti/dpll3xxx.c
-+++ b/drivers/clk/ti/dpll3xxx.c
-@@ -291,6 +291,88 @@ static void _lookup_sddiv(struct clk_hw_omap *clk, u8 *sd_div, u16 m, u8 n)
- 	*sd_div = sd;
- }
- 
-+/**
-+ * omap3_noncore_dpll_ssc_program - set spread-spectrum clocking registers
-+ * @clk:	struct clk * of DPLL to set
-+ *
-+ * Enable the DPLL spread spectrum clocking if frequency modulation and
-+ * frequency spreading have been set, otherwise disable it.
-+ */
-+static void omap3_noncore_dpll_ssc_program(struct clk_hw_omap *clk)
-+{
-+	struct dpll_data *dd = clk->dpll_data;
-+	unsigned long ref_rate;
-+	u32 v, ctrl, mod_freq_divider, exponent, mantissa;
-+	u32 deltam_step, deltam_ceil;
-+
-+	ctrl = ti_clk_ll_ops->clk_readl(&dd->control_reg);
-+
-+	if (dd->ssc_modfreq && dd->ssc_deltam) {
-+		ctrl |= dd->ssc_enable_mask;
-+
-+		if (dd->ssc_downspread)
-+			ctrl |= dd->ssc_downspread_mask;
-+		else
-+			ctrl &= ~dd->ssc_downspread_mask;
-+
-+		ref_rate = clk_hw_get_rate(dd->clk_ref);
-+		mod_freq_divider =
-+		    (ref_rate / dd->last_rounded_n) / (4 * dd->ssc_modfreq);
-+		if (dd->ssc_modfreq > (ref_rate / 70))
-+			pr_warn("clock: SSC modulation frequency of DPLL %s greater than %ld\n",
-+				__clk_get_name(clk->hw.clk), ref_rate / 70);
-+
-+		exponent = 0;
-+		mantissa = mod_freq_divider;
-+		while ((mantissa > 127) && (exponent < 7)) {
-+			exponent++;
-+			mantissa /= 2;
-+		}
-+		if (mantissa > 127)
-+			mantissa = 127;
-+
-+		v = ti_clk_ll_ops->clk_readl(&dd->ssc_modfreq_reg);
-+		v &= ~(dd->ssc_modfreq_mant_mask | dd->ssc_modfreq_exp_mask);
-+		v |= mantissa << __ffs(dd->ssc_modfreq_mant_mask);
-+		v |= exponent << __ffs(dd->ssc_modfreq_exp_mask);
-+		ti_clk_ll_ops->clk_writel(v, &dd->ssc_modfreq_reg);
-+
-+		deltam_step = dd->last_rounded_m * dd->ssc_deltam;
-+		deltam_step /= 10;
-+		if (dd->ssc_downspread)
-+			deltam_step /= 2;
-+
-+		deltam_step <<= __ffs(dd->ssc_deltam_int_mask);
-+		deltam_step /= 100;
-+		deltam_step /= mod_freq_divider;
-+		if (deltam_step > 0xFFFFF)
-+			deltam_step = 0xFFFFF;
-+
-+		deltam_ceil = (deltam_step & dd->ssc_deltam_int_mask) >>
-+		    __ffs(dd->ssc_deltam_int_mask);
-+		if (deltam_step & dd->ssc_deltam_frac_mask)
-+			deltam_ceil++;
-+
-+		if ((dd->ssc_downspread &&
-+		     ((dd->last_rounded_m - (2 * deltam_ceil)) < 20 ||
-+		      dd->last_rounded_m > 2045)) ||
-+		    ((dd->last_rounded_m - deltam_ceil) < 20 ||
-+		     (dd->last_rounded_m + deltam_ceil) > 2045))
-+			pr_warn("clock: SSC multiplier of DPLL %s is out of range\n",
-+				__clk_get_name(clk->hw.clk));
-+
-+		v = ti_clk_ll_ops->clk_readl(&dd->ssc_deltam_reg);
-+		v &= ~(dd->ssc_deltam_int_mask | dd->ssc_deltam_frac_mask);
-+		v |= deltam_step << __ffs(dd->ssc_deltam_int_mask |
-+					  dd->ssc_deltam_frac_mask);
-+		ti_clk_ll_ops->clk_writel(v, &dd->ssc_deltam_reg);
-+	} else {
-+		ctrl &= ~dd->ssc_enable_mask;
-+	}
-+
-+	ti_clk_ll_ops->clk_writel(ctrl, &dd->control_reg);
-+}
-+
- /**
-  * omap3_noncore_dpll_program - set non-core DPLL M,N values directly
-  * @clk:	struct clk * of DPLL to set
-@@ -390,6 +472,9 @@ static int omap3_noncore_dpll_program(struct clk_hw_omap *clk, u16 freqsel)
- 		ti_clk_ll_ops->clk_writel(v, &dd->control_reg);
- 	}
- 
-+	if (dd->ssc_enable_mask)
-+		omap3_noncore_dpll_ssc_program(clk);
-+
- 	/* We let the clock framework set the other output dividers later */
- 
- 	/* REVISIT: Set ramp-up delay? */
-diff --git a/include/linux/clk/ti.h b/include/linux/clk/ti.h
-index c62f6fa6763d..3486f20a3753 100644
---- a/include/linux/clk/ti.h
-+++ b/include/linux/clk/ti.h
-@@ -63,6 +63,17 @@ struct clk_omap_reg {
-  * @auto_recal_bit: bitshift of the driftguard enable bit in @control_reg
-  * @recal_en_bit: bitshift of the PRM_IRQENABLE_* bit for recalibration IRQs
-  * @recal_st_bit: bitshift of the PRM_IRQSTATUS_* bit for recalibration IRQs
-+ * @ssc_deltam_reg: register containing the DPLL SSC frequency spreading
-+ * @ssc_modfreq_reg: register containing the DPLL SSC modulation frequency
-+ * @ssc_modfreq_mant_mask: mask of the mantissa component in @ssc_modfreq_reg
-+ * @ssc_modfreq_exp_mask: mask of the exponent component in @ssc_modfreq_reg
-+ * @ssc_enable_mask: mask of the DPLL SSC enable bit in @control_reg
-+ * @ssc_downspread_mask: mask of the DPLL SSC low frequency only bit in
-+ *                       @control_reg
-+ * @ssc_modfreq: the DPLL SSC frequency modulation in kHz
-+ * @ssc_deltam: the DPLL SSC frequency spreading in permille (10th of percent)
-+ * @ssc_downspread: require the only low frequency spread of the DPLL in SSC
-+ *                   mode
-  * @flags: DPLL type/features (see below)
-  *
-  * Possible values for @flags:
-@@ -110,6 +121,17 @@ struct dpll_data {
- 	u8			auto_recal_bit;
- 	u8			recal_en_bit;
- 	u8			recal_st_bit;
-+	struct clk_omap_reg	ssc_deltam_reg;
-+	struct clk_omap_reg	ssc_modfreq_reg;
-+	u32			ssc_deltam_int_mask;
-+	u32			ssc_deltam_frac_mask;
-+	u32			ssc_modfreq_mant_mask;
-+	u32			ssc_modfreq_exp_mask;
-+	u32                     ssc_enable_mask;
-+	u32                     ssc_downspread_mask;
-+	u32                     ssc_modfreq;
-+	u32                     ssc_deltam;
-+	bool                    ssc_downspread;
- 	u8			flags;
- };
- 
--- 
-2.17.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
