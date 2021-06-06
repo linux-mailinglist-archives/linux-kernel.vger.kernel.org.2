@@ -2,123 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A1D39CF85
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 16:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B62D739CF87
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 16:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230111AbhFFOdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 10:33:13 -0400
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:32837 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230025AbhFFOdJ (ORCPT
+        id S230127AbhFFOeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 10:34:31 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:50777 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230084AbhFFOea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 10:33:09 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d04 with ME
-        id DqXB2500121Fzsu03qXBtD; Sun, 06 Jun 2021 16:31:18 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 06 Jun 2021 16:31:18 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, matthias.bgg@gmail.com,
-        pierre-louis.bossart@linux.intel.com, lumi.lee@mediatek.com,
-        kaichieh.chuang@mediatek.com
-Cc:     alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] ASoC: mediatek: mtk-btcvsd: Fix an error handling path in 'mtk_btcvsd_snd_probe()'
-Date:   Sun,  6 Jun 2021 16:31:09 +0200
-Message-Id: <0c2ba562c3364e61bfbd5b3013a99dfa0d9045d7.1622989685.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sun, 6 Jun 2021 10:34:30 -0400
+Received: by mail-io1-f71.google.com with SMTP id x4-20020a5eda040000b02904a91aa10037so8430780ioj.17
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 07:32:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=uqSTnJmF6jkd8M7kvxPaJdh5Qa8x9pELicXxPo/lEo0=;
+        b=JCEj2Dzj3gZbqbe3dYnwauXlgsHrYb3oPzBt5c62Fz7YS7WtLibTM3KeC8PwTK7xGE
+         8e+ljm8ovQyHJDqIo7VIUVjBS/gJkl8MVSXMKsx5ZkouAZQjAS/S90UXgXPc0DrVmMgr
+         nSddZ0Z8OgyXaU9qRsITHfiFP6XpxbmJ24RiCWIb8wfV7ru5g4EStnsxIaS2/Pxy3LYR
+         46n5z3xeA/qD2MiOf/cxMf2Q6sQ0SKwoPMAbfpRULWezV5uN2wjhV5IiAIMTvMiKNo0N
+         qk5S3W4Qqpu73NkbyhuVG5+wjxzxRlXvr5rXXqO8dPmM0a6G5yA0Wan7/HoUEYSbLk9w
+         KAIw==
+X-Gm-Message-State: AOAM533ft61BN3HQWe7H/68A/vcbiHuKjtzi616kpv+lrRva8TygW45d
+        E6ic3KVaPU8P7M7e49uRRIQHufLHKB1PPBbCDqdIf5ITmrkv
+X-Google-Smtp-Source: ABdhPJx4T0AraLHIkc5THAXNkdb6wcIykgSSIXYevqIncn6XVl13S9tK73/JcwXuOxbSLvFNeCqYGcYPqRDzI9P7TyzO/UdiD+Se
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:88f:: with SMTP id z15mr11096749ils.61.1622989943899;
+ Sun, 06 Jun 2021 07:32:23 -0700 (PDT)
+Date:   Sun, 06 Jun 2021 07:32:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000148b4b05c419cbbb@google.com>
+Subject: [syzbot] memory leak in __send_signal
+From:   syzbot <syzbot+0bac5fec63d4f399ba98@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, christian@brauner.io, ebiederm@xmission.com,
+        elver@google.com, linux-kernel@vger.kernel.org, oleg@redhat.com,
+        pcc@google.com, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If an error occurs after a successful 'of_iomap()' call, it must be undone
-by a corresponding 'iounmap()' call, as already done in the remove
-function.
+Hello,
 
-While at it, remove the useless initialization of 'ret' at the beginning of
-the function.
+syzbot found the following issue on:
 
-Fixes: 4bd8597dc36c ("ASoC: mediatek: add btcvsd driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+HEAD commit:    9d32fa5d Merge tag 'net-5.13-rc5' of git://git.kernel.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10fd97dfd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=de8efb0998945e75
+dashboard link: https://syzkaller.appspot.com/bug?extid=0bac5fec63d4f399ba98
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16029ce0300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0bac5fec63d4f399ba98@syzkaller.appspotmail.com
+
+2021/06/05 21:42:36 executed programs: 303
+2021/06/05 21:42:42 executed programs: 312
+2021/06/05 21:42:48 executed programs: 319
+2021/06/05 21:42:54 executed programs: 331
+BUG: memory leak
+unreferenced object 0xffff8881278e3c80 (size 80):
+  comm "syz-executor.4", pid 12851, jiffies 4295068441 (age 14.610s)
+  hex dump (first 32 bytes):
+    80 3c 8e 27 81 88 ff ff 80 3c 8e 27 81 88 ff ff  .<.'.....<.'....
+    00 00 00 00 00 00 00 00 05 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff812450d6>] __sigqueue_alloc+0xd6/0x240 kernel/signal.c:441
+    [<ffffffff81247d31>] __send_signal+0x231/0x600 kernel/signal.c:1155
+    [<ffffffff8124b123>] do_send_sig_info+0x63/0xc0 kernel/signal.c:1333
+    [<ffffffff8124b4f9>] do_send_specific+0xc9/0xf0 kernel/signal.c:3881
+    [<ffffffff8124b5ab>] do_tkill+0x8b/0xb0 kernel/signal.c:3907
+    [<ffffffff8124e811>] __do_sys_tkill kernel/signal.c:3942 [inline]
+    [<ffffffff8124e811>] __se_sys_tkill kernel/signal.c:3936 [inline]
+    [<ffffffff8124e811>] __x64_sys_tkill+0x31/0x50 kernel/signal.c:3936
+    [<ffffffff843540da>] do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+
+
 ---
-This is NOT compile tested.
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Even if CONFIG_SND_SOC_MTK_BTCVSD is correctly set in my .config file, I've
-not been able to have this file compiled.
----
- sound/soc/mediatek/common/mtk-btcvsd.c | 24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/mediatek/common/mtk-btcvsd.c b/sound/soc/mediatek/common/mtk-btcvsd.c
-index f85b5ea180ec..d884bb7c0fc7 100644
---- a/sound/soc/mediatek/common/mtk-btcvsd.c
-+++ b/sound/soc/mediatek/common/mtk-btcvsd.c
-@@ -1281,7 +1281,7 @@ static const struct snd_soc_component_driver mtk_btcvsd_snd_platform = {
- 
- static int mtk_btcvsd_snd_probe(struct platform_device *pdev)
- {
--	int ret = 0;
-+	int ret;
- 	int irq_id;
- 	u32 offset[5] = {0, 0, 0, 0, 0};
- 	struct mtk_btcvsd_snd *btcvsd;
-@@ -1337,7 +1337,8 @@ static int mtk_btcvsd_snd_probe(struct platform_device *pdev)
- 	btcvsd->bt_sram_bank2_base = of_iomap(dev->of_node, 1);
- 	if (!btcvsd->bt_sram_bank2_base) {
- 		dev_err(dev, "iomap bt_sram_bank2_base fail\n");
--		return -EIO;
-+		ret = -EIO;
-+		goto unmap_pkv_err;
- 	}
- 
- 	btcvsd->infra = syscon_regmap_lookup_by_phandle(dev->of_node,
-@@ -1345,7 +1346,8 @@ static int mtk_btcvsd_snd_probe(struct platform_device *pdev)
- 	if (IS_ERR(btcvsd->infra)) {
- 		dev_err(dev, "cannot find infra controller: %ld\n",
- 			PTR_ERR(btcvsd->infra));
--		return PTR_ERR(btcvsd->infra);
-+		ret = PTR_ERR(btcvsd->infra);
-+		goto unmap_bank2_err;
- 	}
- 
- 	/* get offset */
-@@ -1354,7 +1356,7 @@ static int mtk_btcvsd_snd_probe(struct platform_device *pdev)
- 					 ARRAY_SIZE(offset));
- 	if (ret) {
- 		dev_warn(dev, "%s(), get offset fail, ret %d\n", __func__, ret);
--		return ret;
-+		goto unmap_bank2_err;
- 	}
- 	btcvsd->infra_misc_offset = offset[0];
- 	btcvsd->conn_bt_cvsd_mask = offset[1];
-@@ -1373,8 +1375,18 @@ static int mtk_btcvsd_snd_probe(struct platform_device *pdev)
- 	mtk_btcvsd_snd_set_state(btcvsd, btcvsd->tx, BT_SCO_STATE_IDLE);
- 	mtk_btcvsd_snd_set_state(btcvsd, btcvsd->rx, BT_SCO_STATE_IDLE);
- 
--	return devm_snd_soc_register_component(dev, &mtk_btcvsd_snd_platform,
--					       NULL, 0);
-+	ret = devm_snd_soc_register_component(dev, &mtk_btcvsd_snd_platform,
-+					      NULL, 0);
-+	if (ret)
-+		goto unmap_bank2_err;
-+
-+	return 0;
-+
-+unmap_bank2_err:
-+	iounmap(btcvsd->bt_sram_bank2_base);
-+unmap_pkv_err:
-+	iounmap(btcvsd->bt_pkv_base);
-+	return ret;
- }
- 
- static int mtk_btcvsd_snd_remove(struct platform_device *pdev)
--- 
-2.30.2
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
