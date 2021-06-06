@@ -2,168 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8525639CBFF
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 03:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6557039CC06
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 03:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230247AbhFFBD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 21:03:27 -0400
-Received: from mga14.intel.com ([192.55.52.115]:63706 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230147AbhFFBD0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 21:03:26 -0400
-IronPort-SDR: fuBRhO6f7CCgA4WWgbR+Pttnk5ouIs7+EeBDq7MGNZBWR0hYXINDUMUPaSlqvKx0sypftWB1o0
- nruLx0zCa8FA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10006"; a="204283895"
-X-IronPort-AV: E=Sophos;i="5.83,252,1616482800"; 
-   d="scan'208";a="204283895"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2021 18:01:37 -0700
-IronPort-SDR: N0nuN/A298sqmvJi2BrB0/rNdxzhhGMIMscwyuRGynCC0D9R1JUtqW3nyQDuRrXt1tsEvtysJl
- G14KaxTJPzyA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,252,1616482800"; 
-   d="scan'208";a="412724682"
-Received: from brentlu-desk0.itwn.intel.com ([10.5.253.32])
-  by fmsmga007.fm.intel.com with ESMTP; 05 Jun 2021 18:01:33 -0700
-From:   Brent Lu <brent.lu@intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Brent Lu <brent.lu@intel.com>,
-        Rander Wang <rander.wang@intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        linux-kernel@vger.kernel.org,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Dharageswari R <dharageswari.r@intel.com>,
-        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Naveen Manohar <naveen.m@intel.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Tzung-Bi Shih <tzungbi@google.com>
-Subject: [PATCH 4/4] ASoC: Intel: sof_rt5682: code refactor for max98360a
-Date:   Sun,  6 Jun 2021 08:41:02 +0800
-Message-Id: <20210606004102.26190-5-brent.lu@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210606004102.26190-1-brent.lu@intel.com>
-References: <20210606004102.26190-1-brent.lu@intel.com>
+        id S230258AbhFFBFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 21:05:34 -0400
+Received: from mail-ej1-f52.google.com ([209.85.218.52]:43939 "EHLO
+        mail-ej1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230060AbhFFBFd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 21:05:33 -0400
+Received: by mail-ej1-f52.google.com with SMTP id ci15so20449730ejc.10;
+        Sat, 05 Jun 2021 18:03:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=K3QT/luiltDMXGTueO6/nzzVpvGtP3BJwTP9aroO22g=;
+        b=CBQWE+ojexCOCiPljOBPeHtDH+SIinzvpdwG+W50KMiNz/fFVT7KmL5O8OZ/j38G+O
+         P5lEPRQv8uAkvb0ElV5I2yQlgQGen47Um6m2pnfLZ8qVxSv2MJhhE+euZ7aaNoHsUV9B
+         iIcsJdSIkGSxQPHZexpmBji/zB6IxKljx3gaH/FFY7Ljzx2OhhxjxOUg+1NFHf2l5jPW
+         YrtY5xdKdGvdQRhfZt2ru+DHtZrI/VcRWgH9D7Ooz1lMfnlG0sD0u/7XIq/bZ1CJVRWu
+         6ou+US5HRhuSFCr0Sor2dZRcAi+8+8P/vB0je6ifJmUz/P7boUdI8myF9jDxpH+VPE4V
+         TZgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=K3QT/luiltDMXGTueO6/nzzVpvGtP3BJwTP9aroO22g=;
+        b=dyDAwg8JmPqF9jEoMf8HIGvzrsed+GmFNJW/8Pwsr0clgZOntiC21kM5Mo/90jT/kZ
+         2GDevtkWQr1eeTDMwLi6OwAK7KIfyXYr8S1GpqmpZyMdzypvNZvPLjf+EItSrp8Vh7Ol
+         3bTOu8+9HXpdvr0gKkoDDJJpl2DdLcpbTY8ujM0ipJ6SJ+WIjjKxA3FhhRgKv+mZ8+oO
+         EXxX6h9fgBvAfxqOkVAyVj0yv/bTnNYkUhW6kOWQOsvtoWBrvyqfJJQ5IreDgMzQp0lU
+         By/YhUCTOdJtiCYsT2yNvOzxqUDWsuEzM9xC4DXat0/xZKYB0UPNmnUVZpZTDh6roj5r
+         jjYQ==
+X-Gm-Message-State: AOAM533bgxN+7LTppBQ78WdQU+03s/8bdn+l7HJ8tsLu9+56crO7htVJ
+        Unpkr1aAhZPOm74qafbZRTFbOjVN9Og=
+X-Google-Smtp-Source: ABdhPJwXNc9xuCFOiEpzcS74zzbJpZTODFy3nZ6of8PG5Gua1S8YfClWrMsumJFBnGqtxZYxsckMgw==
+X-Received: by 2002:a17:906:7d0:: with SMTP id m16mr11410853ejc.319.1622941363548;
+        Sat, 05 Jun 2021 18:02:43 -0700 (PDT)
+Received: from skbuf ([188.26.52.84])
+        by smtp.gmail.com with ESMTPSA id q9sm5497406edw.51.2021.06.05.18.02.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Jun 2021 18:02:43 -0700 (PDT)
+Date:   Sun, 6 Jun 2021 04:02:42 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        vladimir.oltean@nxp.com, davem@davemloft.net, kuba@kernel.org
+Subject: Re: [PATCH net-next v2] net: mscc: ocelot: check return value after
+ calling platform_get_resource()
+Message-ID: <20210606010242.ymvkn2ccdg5ypaji@skbuf>
+References: <20210605023148.4124956-1-yangyingliang@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210605023148.4124956-1-yangyingliang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refactor the machine driver by using the common code in maxim-common
-module to support max98360a.
+On Sat, Jun 05, 2021 at 10:31:48AM +0800, Yang Yingliang wrote:
+> It will cause null-ptr-deref if platform_get_resource() returns NULL,
+> we need check the return value.
+> 
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
 
-Signed-off-by: Brent Lu <brent.lu@intel.com>
----
- sound/soc/intel/boards/sof_rt5682.c | 52 +----------------------------
- 1 file changed, 1 insertion(+), 51 deletions(-)
-
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 3e69feaf052b..910c054b0b42 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -456,10 +456,6 @@ static const struct snd_kcontrol_new sof_controls[] = {
- 
- };
- 
--static const struct snd_kcontrol_new speaker_controls[] = {
--	SOC_DAPM_PIN_SWITCH("Spk"),
--};
--
- static const struct snd_soc_dapm_widget sof_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-@@ -467,10 +463,6 @@ static const struct snd_soc_dapm_widget sof_widgets[] = {
- 	SND_SOC_DAPM_SPK("Right Spk", NULL),
- };
- 
--static const struct snd_soc_dapm_widget speaker_widgets[] = {
--	SND_SOC_DAPM_SPK("Spk", NULL),
--};
--
- static const struct snd_soc_dapm_widget dmic_widgets[] = {
- 	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
- };
-@@ -484,11 +476,6 @@ static const struct snd_soc_dapm_route sof_map[] = {
- 	{ "IN1P", NULL, "Headset Mic" },
- };
- 
--static const struct snd_soc_dapm_route speaker_map[] = {
--	/* speaker */
--	{ "Spk", NULL, "Speaker" },
--};
--
- static const struct snd_soc_dapm_route speaker_map_lr[] = {
- 	{ "Left Spk", NULL, "Left SPO" },
- 	{ "Right Spk", NULL, "Right SPO" },
-@@ -505,34 +492,6 @@ static int speaker_codec_init_lr(struct snd_soc_pcm_runtime *rtd)
- 				       ARRAY_SIZE(speaker_map_lr));
- }
- 
--static int speaker_codec_init(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_soc_card *card = rtd->card;
--	int ret;
--
--	ret = snd_soc_dapm_new_controls(&card->dapm, speaker_widgets,
--					ARRAY_SIZE(speaker_widgets));
--	if (ret) {
--		dev_err(rtd->dev, "unable to add dapm controls, ret %d\n", ret);
--		/* Don't need to add routes if widget addition failed */
--		return ret;
--	}
--
--	ret = snd_soc_add_card_controls(card, speaker_controls,
--					ARRAY_SIZE(speaker_controls));
--	if (ret) {
--		dev_err(rtd->dev, "unable to add card controls, ret %d\n", ret);
--		return ret;
--	}
--
--	ret = snd_soc_dapm_add_routes(&card->dapm, speaker_map,
--				      ARRAY_SIZE(speaker_map));
--
--	if (ret)
--		dev_err(rtd->dev, "Speaker map addition failed: %d\n", ret);
--	return ret;
--}
--
- static int dmic_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_card *card = rtd->card;
-@@ -594,13 +553,6 @@ static struct snd_soc_dai_link_component dmic_component[] = {
- 	}
- };
- 
--static struct snd_soc_dai_link_component max98360a_component[] = {
--	{
--		.name = "MX98360A:00",
--		.dai_name = "HiFi",
--	}
--};
--
- static struct snd_soc_dai_link_component rt1015_components[] = {
- 	{
- 		.name = "i2c-10EC1015:00",
-@@ -775,9 +727,7 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
- 			links[id].dpcm_capture = 1;
- 		} else if (sof_rt5682_quirk &
- 				SOF_MAX98360A_SPEAKER_AMP_PRESENT) {
--			links[id].codecs = max98360a_component;
--			links[id].num_codecs = ARRAY_SIZE(max98360a_component);
--			links[id].init = speaker_codec_init;
-+			max_98360a_dai_link(&links[id]);
- 		} else if (sof_rt5682_quirk &
- 				SOF_RT1011_SPEAKER_AMP_PRESENT) {
- 			sof_rt1011_dai_link(&links[id]);
--- 
-2.17.1
-
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
