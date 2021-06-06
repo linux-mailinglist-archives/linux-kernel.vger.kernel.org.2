@@ -2,104 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9301339D173
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 22:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62BA239D175
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 22:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbhFFUc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 16:32:27 -0400
-Received: from gate.crashing.org ([63.228.1.57]:54568 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229723AbhFFUcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 16:32:25 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 156KQInJ013180;
-        Sun, 6 Jun 2021 15:26:18 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 156KQGXe013177;
-        Sun, 6 Jun 2021 15:26:16 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Sun, 6 Jun 2021 15:26:16 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
+        id S230104AbhFFUdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 16:33:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229813AbhFFUdk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 16:33:40 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF46C061766
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 13:31:50 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d16so11523992pfn.12
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 13:31:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QJw8DZU4yi86LnpH4Q8S+TCN5lpChk0DAgboMArge9U=;
+        b=WRfP4cqukcmbPDthuW3N3/UKU+5lw1IPToj/yRY3sZmoOYdaAzhiSwskVQMdvbmfFs
+         iWiqLIqhCfFBFVm1vj5gINDhgR3z4aB8aLYfA0KGyISwMTHNolDPVjoCUzCGM2AuFXpk
+         OOBvD35VvqeimPiuKq+T2S1Crh3d/qt8OJg4rUS0lBpHD5nS71fr39Q54ksXdZ87Db9p
+         dAXQrY7lJD0+TnIDmLSv8MUunB64mfvPLvKPGC8ci99ZELTLa3aoedKSSTvI1LR+BkaT
+         gKtczoASYqFSCDt7oWLH/Gk4X69Z8XdIn9yz29VZL5Lz9x6kfHzTihlmRp9ZmnNbzch1
+         ssiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QJw8DZU4yi86LnpH4Q8S+TCN5lpChk0DAgboMArge9U=;
+        b=udgF5iW3JQdS8j2u0XLD9QfoZ8Nz19GfYHks4dNLlZXjC2w3Z78h7xPEoKwZZKCD0x
+         9OjxMa9Zr0XCBMa0f5wZ4pW/y+Rc0dSDqtjH1fBKnW8H9hZnMoFAYABlVNYTwewJYEF9
+         +Fg1uNKTXg9xwrwuv9Kak2iRWwWIN+KdJ/P+xO4EVq/RZgM+J+1wgc3/U7wHKJ3jfs46
+         /hIgvo6fCs37k1UA6gnJuB+zPld5TQUSjjfvQLR5F31eeDHCqTOqGN4uq+7jES3ZDnbX
+         l5QdYu1D2NewR7p6ca51MZkAZElq2SCA/8SdemBdKJhLerv8Qm4TH8jXXQisr0k2Jqr/
+         cZ7Q==
+X-Gm-Message-State: AOAM533Q7lvZnJ0+QGR8oPlX0ZqI8WLGLAiK3ZcAJquMMx2WjkxDtWL/
+        izlu2GJ5VW1e6BG/sZ3dGl2e+ATV0K5PbEmG/3E=
+X-Google-Smtp-Source: ABdhPJzTHcDivLpAKsIXprg7NM6DRuXQpT6zs+lkC1COf1HJRlayDCT+SWTjgYluLWtxFGnPI0/C+iWdXqJGqKrFZsA=
+X-Received: by 2002:a63:79c3:: with SMTP id u186mr14908427pgc.203.1623011505684;
+ Sun, 06 Jun 2021 13:31:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <1622996045-25826-1-git-send-email-faiyazm@codeaurora.org>
+In-Reply-To: <1622996045-25826-1-git-send-email-faiyazm@codeaurora.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 6 Jun 2021 23:31:29 +0300
+Message-ID: <CAHp75VdM0aziN4zHaf6=z6D0Nb=+GTbjV1pdTpRZ=yxGDZRkhw@mail.gmail.com>
+Subject: Re: [PATCH v10] mm: slub: move sysfs slab alloc/free interfaces to debugfs
+To:     Faiyaz Mohammed <faiyazm@codeaurora.org>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        linux-mm <linux-mm@kvack.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <20210606202616.GC18427@gate.crashing.org>
-References: <CAHk-=wg0w5L7-iJU_kvEh9stXZoh2srRF4jKToKmSKyHv-njvA@mail.gmail.com> <20210605145739.GB1712909@rowland.harvard.edu> <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1> <20210606012903.GA1723421@rowland.harvard.edu> <20210606115336.GS18427@gate.crashing.org> <CAHk-=wjgzAn9DfR9DpU-yKdg74v=fvyzTJMD8jNjzoX4kaUBHQ@mail.gmail.com> <20210606184021.GY18427@gate.crashing.org> <CAHk-=wjEHbGifWgA+04Y4_m43s-o+3bXpL5qPQL3ECg+86XuLg@mail.gmail.com> <20210606195242.GA18427@gate.crashing.org> <CAHk-=wgd+Gx9bcmTwxhHbPq=RYb_A_gf=GcmUNOU3vYR1RBxbA@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgd+Gx9bcmTwxhHbPq=RYb_A_gf=GcmUNOU3vYR1RBxbA@mail.gmail.com>
-User-Agent: Mutt/1.4.2.3i
+        Greg KH <greg@kroah.com>, glittao@gmail.com,
+        vinmenon@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 06, 2021 at 01:11:53PM -0700, Linus Torvalds wrote:
-> On Sun, Jun 6, 2021 at 12:56 PM Segher Boessenkool
-> <segher@kernel.crashing.org> wrote:
-> >
-> > Yes, I know.  But it is literally the *only* way to *always* get a
-> > conditional branch: by writing one.
-> 
-> The thing is, I don't actually believe you.
+On Sun, Jun 6, 2021 at 7:16 PM Faiyaz Mohammed <faiyazm@codeaurora.org> wrote:
+>
+> alloc_calls and free_calls implementation in sysfs have two issues,
+> one is PAGE_SIZE limitiation of sysfs and other is it does not adhere
 
-Fortune favours the bold!
+limitation
 
-> The barrier() thing can work - all we need to do is to simply make it
-> impossible for gcc to validly create anything but a conditional
-> branch.
+> to "one value per file" rule.
+>
+> To overcome this issues, move the alloc_calls and free_calls implemeation
 
-And the only foolproof way of doing that is by writing a branch.
+implementation
 
-> If either side of the thing have an asm that cannot be combined, gcc
-> simply doesn't have any choice in the matter. There's no other valid
-> model than a conditional branch around it (of some sort - doing an
-> indirect branch that has a data dependency isn't wrong either, it just
-> wouldn't be something that a sane compiler would generate because it's
-> obviously much slower and more complicated).
+> to debugfs.
+>
+> Debugfs cache will be created if SLAB_STORE_USER flag is set.
+>
+> Rename the alloc_calls/free_calls to alloc_traces/free_traces,
+> to be inline with what it does.
 
-Or push something to the stack and return.  Or rewrite the whole thing
-as an FSM.  Or or or.
+...
 
-(And yes, there are existing compilers that can do both of these things
-on some code).
+> +#if defined(CONFIG_DEBUG_FS) && defined(CONFIG_SLUB_DEBUG)
+> +void debugfs_slab_release(struct kmem_cache *);
+> +#else
 
-> We are very used to just making the compiler generate the code we
-> need. That is, fundamentally, what any use of inline asm is all about.
-> We want the compiler to generate all the common cases and all the
-> regular instructions.
-> 
-> The conditional branch itself - and the instructions leading up to it
-> - are exactly those "common regular instructions" that we'd want the
-> compiler to generate. That is in fact more true here than for most
-> inline asm, exactly because there are so many different possible
-> combinations of conditional branches (equal, not equal, less than,..)
-> and so many ways to generate the code that generates the condition.
-> 
-> So we are much better off letting the compiler do all that for us -
-> it's very much what the compiler is good at.
+> +static inline void debugfs_slab_release(struct kmem_cache *s)
+> +{
+> +}
 
-Yes, exactly.
+It can be one line.
 
-I am saying that if you depend on that some C code you write will result
-in some particular machine code, without actually *forcing* the compiler
-to output that exact machine code, then you will be disappointed.  Maybe
-not today, and maybe it will take years, if you are lucky.
+> +#endif
 
-(s/forcing/instructing/ of course, compilers have feelings too!)
+...
 
 
-Segher
+> +               if (l->sum_time != l->min_time) {
+> +                       seq_printf(seq, " age=%ld/%ld/%ld",
+> +                               l->min_time,
+
+> +                               (long)div_u64(l->sum_time, l->count),
+
+Hmm... Why is the cast needed here?
+
+> +                               l->max_time);
+> +               } else
+> +                       seq_printf(seq, " age=%ld",
+> +                               l->min_time);
+
+...
+
+> +               if (num_online_cpus() > 1 &&
+> +                               !cpumask_empty(to_cpumask(l->cpus)))
+
+One line?
+
+...
+
+> +static const struct seq_operations slab_debugfs_sops = {
+> +       .start  = slab_debugfs_start,
+> +       .next   = slab_debugfs_next,
+> +       .stop   = slab_debugfs_stop,
+
+> +       .show   = slab_debugfs_show
+
+Leave a comma here. It might not be the last one in the future.
+
+> +};
+
++ blank line?
+
+> +static int slab_debug_trace_open(struct inode *inode, struct file *filep)
+> +{
+
+...
+
+> +static const struct file_operations slab_debugfs_fops = {
+> +       .open    = slab_debug_trace_open,
+> +       .read    = seq_read,
+> +       .llseek  = seq_lseek,
+> +       .release = slab_debug_trace_release,
+> +};
+> +
+> +
+
+One blank line is enough.
+
+...
+
+> +       debugfs_remove_recursive(debugfs_lookup(s->name,
+> +                                       slab_debugfs_root));
+
+One line?
+
+-- 
+With Best Regards,
+Andy Shevchenko
