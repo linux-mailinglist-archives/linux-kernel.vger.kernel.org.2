@@ -2,226 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5690839CFB3
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 17:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 709B739CFB5
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 17:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbhFFPMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 11:12:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45384 "EHLO mail.kernel.org"
+        id S230150AbhFFPRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 11:17:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230088AbhFFPMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 11:12:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5D2C6142A;
-        Sun,  6 Jun 2021 15:10:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622992211;
-        bh=6SAVyd1SzFpYco+54dJsIay9qkBgHR9Q47j6DtBPqvk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=lKQw6RmlnW8/saMq4ls0pS4VxyyNwAOr+IyTQkXXtLDq55gbCUJLCNiDWL96NVxTp
-         RLWegtsAQUQqO3R3z4xhmU0uM6MDPkvcV/D7BIdx7DjPZ4nvg6J9iMevMycuKLJZQI
-         SvTRI52hIICbrfUi+u65yosDgFFc63IqtUuaBteBwqIsRJA6O3RfbfHs+cVsUS7vaK
-         B0pBMITIal0XHX/zR0So1v8MpqDcycFRWQJ5Ag59af1iwy4cIWV50UVMd2qIyV/Cz6
-         9hTJdxTg/rLWjqmqtOVXza3KvUxpWjJTDzWOCfmoo2b5BALYsU7mmanRx7FMcWRN32
-         bKw0vSXZTQOJw==
-Received: by pali.im (Postfix)
-        id 614017B9; Sun,  6 Jun 2021 17:10:08 +0200 (CEST)
-Date:   Sun, 6 Jun 2021 17:10:08 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     netdev@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        linux-kernel@vger.kernel.org
-Subject: Issues during assigning addresses on point to point interfaces
-Message-ID: <20210606151008.7dwx5ukrlvxt4t3k@pali>
+        id S230088AbhFFPRC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 11:17:02 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FDCC61358;
+        Sun,  6 Jun 2021 15:15:02 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lpuUO-005mFA-EV; Sun, 06 Jun 2021 16:15:00 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sun, 06 Jun 2021 16:15:00 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     irqchip-bot for Marc Zyngier <tip-bot2@linutronix.de>,
+        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
+        tglx@linutronix.de
+Subject: Re: [irqchip: irq/irqchip-next] irqdomain: Kill
+ irq_domain_add_legacy_isa
+In-Reply-To: <202106062321.3Z0IkIka-lkp@intel.com>
+References: <162298343087.29796.2303741743539407585.tip-bot2@tip-bot2>
+ <202106062321.3Z0IkIka-lkp@intel.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <bebfd30fc7ba6ffb20ab0b4d4afec7ec@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: lkp@intel.com, tip-bot2@linutronix.de, linux-kernel@vger.kernel.org, kbuild-all@lists.01.org, tglx@linutronix.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On 2021-06-06 16:06, kernel test robot wrote:
+> Hi irqchip-bot,
+> 
+> Thank you for the patch! Perhaps something to improve:
+> 
+> [auto build test WARNING on tip/irq/core]
+> [also build test WARNING on linux/master linus/master v5.13-rc4 
+> next-20210604]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:
+> https://github.com/0day-ci/linux/commits/irqchip-bot-for-Marc-Zyngier/irqdomain-Kill-irq_domain_add_legacy_isa/20210606-204659
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
+> 006ae1970a8cde1d3e92da69b324d12880133a13
+> config: powerpc-allyesconfig (attached as .config)
+> compiler: powerpc64-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget
+> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross
+> -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         #
+> https://github.com/0day-ci/linux/commit/7d6d9b0177b4ae53ccae4fb2c5cd387460def6ac
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review
+> irqchip-bot-for-Marc-Zyngier/irqdomain-Kill-irq_domain_add_legacy_isa/20210606-204659
+>         git checkout 7d6d9b0177b4ae53ccae4fb2c5cd387460def6ac
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross
+> ARCH=powerpc
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>    arch/powerpc/sysdev/i8259.c: In function 'i8259_init':
+>    arch/powerpc/sysdev/i8259.c:263:15: error: implicit declaration of
+> function 'irq_domain_add_legacy_isa'; did you mean
+> 'irq_domain_add_legacy'? [-Werror=implicit-function-declaration]
+>      263 |  i8259_host = irq_domain_add_legacy_isa(node, 
+> &i8259_host_ops, NULL);
+>          |               ^~~~~~~~~~~~~~~~~~~~~~~~~
+>          |               irq_domain_add_legacy
+>>> arch/powerpc/sysdev/i8259.c:263:13: warning: assignment to 'struct 
+>>> irq_domain *' from 'int' makes pointer from integer without a cast 
+>>> [-Wint-conversion]
+>      263 |  i8259_host = irq_domain_add_legacy_isa(node, 
+> &i8259_host_ops, NULL);
+>          |             ^
+>    cc1: some warnings being treated as errors
 
-Seems that there is a bug during assigning IP addresses on point to
-point interfaces.
+This makes zero sense. At the point where this patch is applied in
+the series, all instances of irq_domain_add_legacy_isa() have been
+removed, except for one in the Chinese translation of the documentation:
 
-Assigning just one local address works fine:
+<quote>
+maz@hot-poop:~/arm-platforms$ git checkout 
+bf541b2ef87c162c8129333c55d2357bab122d8e
+HEAD is now at bf541b2ef87c irqdomain: Kill irq_domain_add_legacy_isa
+maz@hot-poop:~/arm-platforms$ git grep irq_domain_add_legacy_isa
+Documentation/translations/zh_CN/core-api/irq/irq-domain.rst:   
+irq_domain_add_legacy_isa()
+</quote>
 
-    ip address add fe80::6 dev ppp1 --> inet6 fe80::6/128 scope link
+Are you applying the patches out of order, by any chance?
 
-Assigning both local and remote peer address also works fine:
+Thanks,
 
-    ip address add fe80::7 peer fe80::8 dev ppp1 ---> inet6 fe80::7 peer fe80::8/128 scope link
-
-But trying to assign just remote peer address does not work. Moreover
-"ip address" call does not fail, it returns zero but instead of setting
-remote peer address, it sets local address:
-
-    ip address add peer fe80::5 dev ppp1 --> inet6 fe80::5/128 scope link
-
-I suspect that this is a bug either in iproute2 "ip" utility or in
-kernel how it parse and process netlink messages.
-
-strace for the last command see this netlink packet:
-
-    sendmsg(3, {
-        msg_name={
-            sa_family=AF_NETLINK,
-            nl_pid=0,
-            nl_groups=00000000
-        },
-        msg_namelen=12,
-        msg_iov=[{
-            iov_base={
-                {
-                    len=44,
-                    type=RTM_NEWADDR,
-                    flags=NLM_F_REQUEST|NLM_F_ACK|NLM_F_EXCL|NLM_F_CREATE,
-                    seq=1622990155,
-                    pid=0
-                },
-                {
-                    ifa_family=AF_INET6,
-                    ifa_prefixlen=128,
-                    ifa_flags=0,
-                    ifa_scope=RT_SCOPE_UNIVERSE,
-                    ifa_index=if_nametoindex("ppp1")
-                },
-                {
-                    {
-                        nla_len=20,
-                        nla_type=IFA_ADDRESS
-                    },
-                    inet_pton(AF_INET6, "fe80::5")
-                }
-            },
-            iov_len=44
-        }],
-        msg_iovlen=1,
-        msg_controllen=0,
-        msg_flags=0
-    }, 0) = 44
-
-On the other hand strace for the first command (which assigns only local
-address) see following netlink packet:
-
-    sendmsg(3, {
-        msg_name={
-            sa_family=AF_NETLINK,
-            nl_pid=0,
-            nl_groups=00000000
-        },
-        msg_namelen=12,
-        msg_iov=[{
-            iov_base={
-                {
-                    len=64,
-                    type=RTM_NEWADDR,
-                    flags=NLM_F_REQUEST|NLM_F_ACK|NLM_F_EXCL|NLM_F_CREATE,
-                    seq=1622990488,
-                    pid=0
-                },
-                {
-                    ifa_family=AF_INET6,
-                    ifa_prefixlen=128,
-                    ifa_flags=0,
-                    ifa_scope=RT_SCOPE_UNIVERSE,
-                    ifa_index=if_nametoindex("ppp1")
-                },
-                [
-                    {
-                        {
-                            nla_len=20,
-                            nla_type=IFA_LOCAL
-                        },
-                        inet_pton(AF_INET6, "fe80::6")
-                    },
-                    {
-                        {
-                            nla_len=20,
-                            nla_type=IFA_ADDRESS
-                        },
-                        inet_pton(AF_INET6, "fe80::6")
-                    }
-                ]
-            },
-            iov_len=64
-        }],
-        msg_iovlen=1,
-        msg_controllen=0,
-        msg_flags=0
-    }, 0) = 64
-
-So it sends two addresses, one IFA_LOCAL, one IFA_ADDRESS, but both are
-same.
-
-For completeness here is strace output when assigning both local and
-remote peer address:
-
-    sendmsg(3, {
-        msg_name={
-            sa_family=AF_NETLINK,
-            nl_pid=0,
-            nl_groups=00000000
-        },
-        msg_namelen=12,
-        msg_iov=[{
-            iov_base={
-                {
-                    len=64,
-                    type=RTM_NEWADDR,
-                    flags=NLM_F_REQUEST|NLM_F_ACK|NLM_F_EXCL|NLM_F_CREATE,
-                    seq=1622990883,
-                    pid=0
-                },
-                {
-                    ifa_family=AF_INET6,
-                    ifa_prefixlen=128,
-                    ifa_flags=0,
-                    ifa_scope=RT_SCOPE_UNIVERSE,
-                    ifa_index=if_nametoindex("ppp1")
-                },
-                [
-                    {
-                        {
-                            nla_len=20,
-                            nla_type=IFA_LOCAL
-                        },
-                        inet_pton(AF_INET6, "fe80::7")
-                    },
-                    {
-                        {
-                            nla_len=20,
-                            nla_type=IFA_ADDRESS
-                        },
-                        inet_pton(AF_INET6, "fe80::8")
-                    }
-                ]
-            },
-            iov_len=64
-        }],
-        msg_iovlen=1,
-        msg_controllen=0,
-        msg_flags=0
-    }, 0) = 64
-
-Which means that IFA_LOCAL sets local address and IFA_ADDRESS sets
-remote peer address on point point interface.
-
-Therefore there are two suspicious things about address configuration on
-point to point interfaces:
-
-1) "ip address add fe80::6 dev ppp1" is trying to set not only local but
-   also remote peer address to fe80::6
-
-2) kernel does not configure remote peer address from IFA_ADDRESS when
-   local address via IFA_LOCAL is not specified in netlink packet
-
-
-For tests I used:
-
-    ip -V --> ip utility, iproute2-ss190107
-    uname -r -v -m --> 4.19.0-16-amd64 #1 SMP Debian 4.19.181-1 (2021-03-19) x86_64
+         M.
+-- 
+Jazz is not dead. It just smells funny...
