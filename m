@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D676C39D1CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 00:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D5B539D1CE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 00:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230483AbhFFWPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 18:15:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:46356 "EHLO foss.arm.com"
+        id S231151AbhFFWPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 18:15:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:46374 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230514AbhFFWPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 18:15:09 -0400
+        id S230487AbhFFWPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 18:15:11 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 41BB531B;
-        Sun,  6 Jun 2021 15:13:19 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A4D1412FC;
+        Sun,  6 Jun 2021 15:13:21 -0700 (PDT)
 Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 157743F719;
-        Sun,  6 Jun 2021 15:13:16 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8F9863F719;
+        Sun,  6 Jun 2021 15:13:19 -0700 (PDT)
 From:   Cristian Marussi <cristian.marussi@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
         Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
         etienne.carriere@linaro.org, vincent.guittot@linaro.org,
         souvik.chakravarty@arm.com, cristian.marussi@arm.com
-Subject: [RFC PATCH 05/10] include: trace: Add new scmi_xfer_response_wait event
-Date:   Sun,  6 Jun 2021 23:12:27 +0100
-Message-Id: <20210606221232.33768-6-cristian.marussi@arm.com>
+Subject: [RFC PATCH 06/10] firmware: arm_scmi: Use new trace event scmi_xfer_response_wait
+Date:   Sun,  6 Jun 2021 23:12:28 +0100
+Message-Id: <20210606221232.33768-7-cristian.marussi@arm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210606221232.33768-1-cristian.marussi@arm.com>
 References: <20210606221232.33768-1-cristian.marussi@arm.com>
@@ -33,54 +33,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Having a new step to trace SCMI stack while it waits for synchronous
-responses is useful to analyze system performance when changing waiting
-mode between polling and interrupt completion.
+Use new trace event to mark start of waiting for response section.
 
 Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 ---
- include/trace/events/scmi.h | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+ drivers/firmware/arm_scmi/driver.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/include/trace/events/scmi.h b/include/trace/events/scmi.h
-index f3a4b4d60714..ba82082f30d7 100644
---- a/include/trace/events/scmi.h
-+++ b/include/trace/events/scmi.h
-@@ -33,6 +33,34 @@ TRACE_EVENT(scmi_xfer_begin,
- 		__entry->seq, __entry->poll)
- );
+diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+index 276b729f2f43..11bea548947f 100644
+--- a/drivers/firmware/arm_scmi/driver.c
++++ b/drivers/firmware/arm_scmi/driver.c
+@@ -458,6 +458,11 @@ static int scmi_wait_for_message_response(struct scmi_chan_info *cinfo,
+ 	struct device *dev = info->dev;
+ 	int ret = 0, timeout_ms = info->desc->max_rx_timeout_ms;
  
-+TRACE_EVENT(scmi_xfer_response_wait,
-+	TP_PROTO(int transfer_id, u8 msg_id, u8 protocol_id, u16 seq,
-+		 bool poll, bool atomic),
-+	TP_ARGS(transfer_id, msg_id, protocol_id, seq, poll, atomic),
++	trace_scmi_xfer_response_wait(xfer->transfer_id, xfer->hdr.id,
++				      xfer->hdr.protocol_id, xfer->hdr.seq,
++				      xfer->hdr.poll_completion,
++				      info->desc->atomic_capable);
 +
-+	TP_STRUCT__entry(
-+		__field(int, transfer_id)
-+		__field(u8, msg_id)
-+		__field(u8, protocol_id)
-+		__field(u16, seq)
-+		__field(bool, poll)
-+		__field(bool, atomic)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->transfer_id = transfer_id;
-+		__entry->msg_id = msg_id;
-+		__entry->protocol_id = protocol_id;
-+		__entry->seq = seq;
-+		__entry->poll = poll;
-+		__entry->atomic = atomic;
-+	),
-+
-+	TP_printk("transfer_id=%d msg_id=%u protocol_id=%u seq=%u poll=%u atomic=%u",
-+		__entry->transfer_id, __entry->msg_id, __entry->protocol_id,
-+		__entry->seq, __entry->poll, __entry->atomic)
-+);
-+
- TRACE_EVENT(scmi_xfer_end,
- 	TP_PROTO(int transfer_id, u8 msg_id, u8 protocol_id, u16 seq,
- 		 int status),
+ 	if (!xfer->hdr.poll_completion) {
+ 		if (!info->desc->atomic_capable) {
+ 			if (!wait_for_completion_timeout(&xfer->done,
 -- 
 2.17.1
 
