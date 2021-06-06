@@ -2,115 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F256039D11B
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 21:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C41A39D129
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 21:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbhFFTsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 15:48:16 -0400
-Received: from mail-lj1-f172.google.com ([209.85.208.172]:34667 "EHLO
-        mail-lj1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbhFFTsP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 15:48:15 -0400
-Received: by mail-lj1-f172.google.com with SMTP id bn21so19075379ljb.1;
-        Sun, 06 Jun 2021 12:46:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WEFvXNtn4l4k8GsstWahlRU4zhK55NEXKuCsYYjkt3g=;
-        b=jvjAMfR77o7iynHF9Gv3c85ReL6hZm31XE9zJumoFB7gFUgfXEj7QqfD2eDi0TAZHG
-         OYhsQvkmiMfHLeSJhl1jKveTl+3zrKDaYDZua1CCaEbgBIYnWE9zS0QnxT2yYCLOOR0s
-         Iqgz+2w087eK/DR+ms1r7z9tCa7KW3plUOm1bnavqHIoS40QrgASr3c++tURHV5vxcbx
-         fVfak/8PHXCniG77//OBDVYBAuQMuPgbd/uPk0Jx+qiGuQDzIn77LKvWJqgbcCJxsSGf
-         /IyPpniJPi4OBvajZWK3OFduEHH8w6zqY71YIvRupqnvj1Q6peyXPHvxQfAL8RFn1wWJ
-         i/FQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WEFvXNtn4l4k8GsstWahlRU4zhK55NEXKuCsYYjkt3g=;
-        b=IYMLjPfu3c8g2Do/S3RiYJT+bvMLxsInphYq2/LUG9Ev1lA4E045y4stchXrr1GVs0
-         U7tihpfPNX9zJWuEXuQgRziXVpei9q0lc5X1xUI2IwugdVhtp+Qh3VLke6OorzYkiw7k
-         5U0hdLXjaV03wXmd4SQnF8n8oghvinvPlRhMbLT9tZ+4HCohdkKT7S7TLRBZ4KaL8HWe
-         9Bg1B7nmolzGFI2s0SqR3BLVQLbHybZwxlw8g57y4KQwRpj3sbVPHNYBhiUQjiVplsRD
-         IaVi7hp3WE3zf+FnlseaBrrJjKENV9vS34LYFACVkE7z685I3TwaJc4oQw1W4wBjuUy3
-         N/qA==
-X-Gm-Message-State: AOAM5326qgFy5w6CD6SplzCeDfzHXZFTd4g3KXXFoVYEttH40+DAEAic
-        DHml6077PXTtq4jbaZjSSUWRrpV30jKm7HTgnxRXmEvtw4cauw==
-X-Google-Smtp-Source: ABdhPJyG8AjuhX/M3rcNTnsWON11DR9FNo24GF7QLHSomPzWWRXDYr8/o+tGRgjbgHHTbxdge8ekpHiRrO0YvdAj2bk=
-X-Received: by 2002:a2e:509:: with SMTP id 9mr12425172ljf.6.1623008724338;
- Sun, 06 Jun 2021 12:45:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210310075127.1045556-1-ribalda@chromium.org> <YLoWzSoSUQ6HYsyO@chromium.org>
-In-Reply-To: <YLoWzSoSUQ6HYsyO@chromium.org>
-From:   Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Date:   Sun, 6 Jun 2021 21:45:06 +0200
-Message-ID: <CAPybu_2u-5nEy0ayT0-wrEmHpjx+UNR+iS-9+sPYb-yuRW9+qQ@mail.gmail.com>
-Subject: Re: [PATCH v2] media: videobuf2: Fix integer overrun in vb2_mmap
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     Ricardo Ribalda <ribalda@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, Jiri Slaby <jslaby@suse.cz>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S229956AbhFFT66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 15:58:58 -0400
+Received: from gate.crashing.org ([63.228.1.57]:47652 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229772AbhFFT64 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 15:58:56 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 156JqiJX012123;
+        Sun, 6 Jun 2021 14:52:44 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 156JqgQT012119;
+        Sun, 6 Jun 2021 14:52:42 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Sun, 6 Jun 2021 14:52:42 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <20210606195242.GA18427@gate.crashing.org>
+References: <CAHk-=wgmUbU6XPHz=4NFoLMxH7j_SR-ky4sKzOBrckmvk5AJow@mail.gmail.com> <20210604214010.GD4397@paulmck-ThinkPad-P17-Gen-1> <CAHk-=wg0w5L7-iJU_kvEh9stXZoh2srRF4jKToKmSKyHv-njvA@mail.gmail.com> <20210605145739.GB1712909@rowland.harvard.edu> <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1> <20210606012903.GA1723421@rowland.harvard.edu> <20210606115336.GS18427@gate.crashing.org> <CAHk-=wjgzAn9DfR9DpU-yKdg74v=fvyzTJMD8jNjzoX4kaUBHQ@mail.gmail.com> <20210606184021.GY18427@gate.crashing.org> <CAHk-=wjEHbGifWgA+04Y4_m43s-o+3bXpL5qPQL3ECg+86XuLg@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjEHbGifWgA+04Y4_m43s-o+3bXpL5qPQL3ECg+86XuLg@mail.gmail.com>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tomasz
-
-Thanks for your review!
-
-We finally figured out that we would not like to support allocations
-of exactly 4GiB. The rest of the code is not designed for it.
-
-And you will get a descriptive enough error if you overrun (at least
-in recent kernels):
- if (length < (vma->vm_end - vma->vm_start)) {
-
-Best regards!
-
-On Fri, Jun 4, 2021 at 2:06 PM Tomasz Figa <tfiga@chromium.org> wrote:
->
-> On Wed, Mar 10, 2021 at 08:51:27AM +0100, Ricardo Ribalda wrote:
-> > The plane_length is an unsigned integer. So, if we have a size of
-> > 0xffffffff bytes we incorrectly allocate 0 bytes instead of 1 << 32.
+On Sun, Jun 06, 2021 at 11:48:32AM -0700, Linus Torvalds wrote:
+> On Sun, Jun 6, 2021 at 11:43 AM Segher Boessenkool
+> <segher@kernel.crashing.org> wrote:
 > >
-> > Suggested-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> > Cc: stable@vger.kernel.org
-> > Fixes: 7f8414594e47 ("[media] media: videobuf2: fix the length check for mmap")
-> > Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > ---
-> >  drivers/media/common/videobuf2/videobuf2-core.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-> > index 543da515c761..89c8bacb94a7 100644
-> > --- a/drivers/media/common/videobuf2/videobuf2-core.c
-> > +++ b/drivers/media/common/videobuf2/videobuf2-core.c
-> > @@ -2256,7 +2256,7 @@ int vb2_mmap(struct vb2_queue *q, struct vm_area_struct *vma)
-> >        * The buffer length was page_aligned at __vb2_buf_mem_alloc(),
-> >        * so, we need to do the same here.
-> >        */
-> > -     length = PAGE_ALIGN(vb->planes[plane].length);
-> > +     length = PAGE_ALIGN((unsigned long)vb->planes[plane].length);
-> >       if (length < (vma->vm_end - vma->vm_start)) {
-> >               dprintk(q, 1,
-> >                       "MMAP invalid, as it would overflow buffer length\n");
-> > --
-> > 2.30.1.766.gb4fecdf3b7-goog
-> >
->
-> Acked-by: Tomasz Figa <tfiga@chromium.org>
->
-> Best regards,
-> Tomasz
+> > You truly should have written a branch in tthe asm if you truly wanted
+> > a branch instruction.
+> 
+> That's exactly what I don't want to do, and what the original patch by
+> PeterZ did.
+
+Yes, I know.  But it is literally the *only* way to *always* get a
+conditional branch: by writing one.
+
+> And to work well, it needs "asm goto", which is so recent that a lot
+> of compilers don't support it (thank God for clang dragging gcc
+> kicking and screaming to implement it at all - I'd asked for it over a
+> decade ago).
+
+GCC has had it since 2009.
+
+> So you get bad code generation in a lot of cases, which entirely
+> obviates the _point_ of this all - which is that we can avoid an
+> expensive operation (a memory barrier) by just doing clever code
+> generation.
+> 
+> So if we can't get the clever code generation, it's all pretty much
+> moot, imnsho.
+
+Yes.
 
 
-
--- 
-Ricardo Ribalda
+Segher
