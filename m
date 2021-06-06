@@ -2,101 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 564FD39D08B
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 20:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5221839D08E
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 21:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229894AbhFFTBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 15:01:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26149 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229573AbhFFTB3 (ORCPT
+        id S230093AbhFFTCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 15:02:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229573AbhFFTCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 15:01:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623005979;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:in-reply-to:in-reply-to:  references:references;
-        bh=KXWrX6wBq5TioPWpDxBNh/+AQclSH0iG9b0SVz2qp/k=;
-        b=Zh/1SiICwaDxP8lMk5KLH6HBrA1YXbd93dGVloeykjlCEwiykWH9T6l0KKDUHO3r5dHkn8
-        aP6Kub6RYyIGKk3Cyoo19Xm8UPCm0DO8T2TmtZvq8woGwGqd47UYDtqV6TEFKVFE66mj7O
-        oegfjuPNt9aTY6Of7qSiWaDDdJkHDzg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-377-2EurjrPUNo--k71WjI_Ddw-1; Sun, 06 Jun 2021 14:59:36 -0400
-X-MC-Unique: 2EurjrPUNo--k71WjI_Ddw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 550FD8015F5;
-        Sun,  6 Jun 2021 18:59:33 +0000 (UTC)
-Received: from tucnak.zalov.cz (ovpn-112-147.ams2.redhat.com [10.36.112.147])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9710E5D9C0;
-        Sun,  6 Jun 2021 18:59:32 +0000 (UTC)
-Received: from tucnak.zalov.cz (localhost [127.0.0.1])
-        by tucnak.zalov.cz (8.16.1/8.16.1) with ESMTPS id 156IxSJQ4093308
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Sun, 6 Jun 2021 20:59:28 +0200
-Received: (from jakub@localhost)
-        by tucnak.zalov.cz (8.16.1/8.16.1/Submit) id 156IxMY94093305;
-        Sun, 6 Jun 2021 20:59:22 +0200
-Date:   Sun, 6 Jun 2021 20:59:22 +0200
-From:   Jakub Jelinek <jakub@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <20210606185922.GF7746@tucnak>
-Reply-To: Jakub Jelinek <jakub@redhat.com>
-References: <CAHk-=wiuLpmOGJyB385UyQioWMVKT6wN9UtyVXzt48AZittCKg@mail.gmail.com>
- <CAHk-=wik7T+FoDAfqFPuMGVp6HxKYOf8UeKt3+EmovfivSgQ2Q@mail.gmail.com>
- <20210604205600.GB4397@paulmck-ThinkPad-P17-Gen-1>
- <CAHk-=wgmUbU6XPHz=4NFoLMxH7j_SR-ky4sKzOBrckmvk5AJow@mail.gmail.com>
- <20210604214010.GD4397@paulmck-ThinkPad-P17-Gen-1>
- <CAHk-=wg0w5L7-iJU_kvEh9stXZoh2srRF4jKToKmSKyHv-njvA@mail.gmail.com>
- <20210605145739.GB1712909@rowland.harvard.edu>
- <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1>
- <20210606012903.GA1723421@rowland.harvard.edu>
- <CAHk-=wgUsReyz4uFymB8mmpphuP0vQ3DktoWU_x4u6impbzphg@mail.gmail.com>
+        Sun, 6 Jun 2021 15:02:40 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C9D3C061766;
+        Sun,  6 Jun 2021 12:00:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=tYadTfIoZ063BCYi28o2+yHVKdZM0UZmfXU63uIM+zg=; b=gZkcRLe4vImUM9yyx9hjE4R9SZ
+        6IauWEXbBajAilT2DGhO50oDmgKBOa9G1QxRJBMwamqxClusF6Ad7DeSjo+OXsjKPN7lU1/Px5ml2
+        RJQLTH437JqUyvBWFr3H+jXbtVTnX7qdVUjaHMbCqyH2Hh6YtyIzQl74RR6RKIX0PW7cgxJKq7r1m
+        1Z9nS6FmHAn+e37m36gdoY47c0hwumm1GPZDUozIswGmvktxBAP7//XWTTKSVh2HPusTL79RRVL67
+        qHTRVMgx7F0Fw04tRSiQwDbRtNlYXWY5ApXeUIiRv2w9fa3LankQZ5cAdXMLpbx29oOQm6NdoZgxZ
+        sjHEyEHA==;
+Received: from [2601:1c0:6280:3f0::bd57] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lpy0v-000hJc-AB; Sun, 06 Jun 2021 19:00:49 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, He Ying <heying24@huawei.com>
+Subject: [PATCH] cpuidle: ARM_QCOM_SPM_CPUIDLE should depend on HAVE_ARM_SMCCC
+Date:   Sun,  6 Jun 2021 12:00:48 -0700
+Message-Id: <20210606190048.689-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgUsReyz4uFymB8mmpphuP0vQ3DktoWU_x4u6impbzphg@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 05, 2021 at 08:41:00PM -0700, Linus Torvalds wrote:
-> Something like this *does* seem to work:
-> 
->    #define ____barrier(id) __asm__ __volatile__("#" #id: : :"memory")
->    #define __barrier(id) ____barrier(id)
->    #define barrier() __barrier(__COUNTER__)
-> 
-> which is "interesting" or "disgusting" depending on how you happen to feel.
+QCOM_SCM depends on HAVE_ARM_SMCCC, so ARM_QCOM_SPM_CPUIDLE should
+also depend on HAVE_ARM_SMCCC since 'select' does not follow any
+dependency chains.
 
-I think just
-#define barrier() __asm__ __volatile__("" : : "i" (__COUNTER__) : "memory")
-should be enough (or "X" instead of "i" if some arch uses -fpic and will not
-accept small constants in PIC code), for CSE gcc compares that the asm template
-string and all arguments are the same.
+This fixes a kconfig warning and subsequent build errors:
 
-As for volatile, that is implicit on asm without any output operands and
-it is about whether the inline asm can be DCEd, not whether it can be CSEd.
+WARNING: unmet direct dependencies detected for QCOM_SCM
+  Depends on [n]: (ARM [=y] || ARM64) && HAVE_ARM_SMCCC [=n]
+  Selected by [y]:
+  - ARM_QCOM_SPM_CPUIDLE [=y] && CPU_IDLE [=y] && (ARM [=y] || ARM64) && (ARCH_QCOM [=n] || COMPILE_TEST [=y]) && !ARM64 && MMU [=y]
 
-	Jakub
+arm-linux-gnueabi-ld: drivers/firmware/qcom_scm-smc.o: in function `__scm_smc_do_quirk':
+qcom_scm-smc.c:(.text+0x5c): undefined reference to `__arm_smccc_smc'
+arm-linux-gnueabi-ld: drivers/firmware/qcom_scm-legacy.o: in function `scm_legacy_call':
+qcom_scm-legacy.c:(.text+0x140): undefined reference to `__arm_smccc_smc'
+arm-linux-gnueabi-ld: drivers/firmware/qcom_scm-legacy.o: in function `scm_legacy_call_atomic':
+qcom_scm-legacy.c:(.text+0x364): undefined reference to `__arm_smccc_smc'
 
+Fixes: a871be6b8eee ("cpuidle: Convert Qualcomm SPM driver to a generic CPUidle driver")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Stephan Gerhold <stephan@gerhold.net>
+Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Cc: Andy Gross <agross@kernel.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org
+Cc: He Ying <heying24@huawei.com>
+---
+ drivers/cpuidle/Kconfig.arm |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- linux-next-20210604.orig/drivers/cpuidle/Kconfig.arm
++++ linux-next-20210604/drivers/cpuidle/Kconfig.arm
+@@ -108,6 +108,7 @@ config ARM_TEGRA_CPUIDLE
+ config ARM_QCOM_SPM_CPUIDLE
+ 	bool "CPU Idle Driver for Qualcomm Subsystem Power Manager (SPM)"
+ 	depends on (ARCH_QCOM || COMPILE_TEST) && !ARM64 && MMU
++	depends on HAVE_ARM_SMCCC
+ 	select ARM_CPU_SUSPEND
+ 	select CPU_IDLE_MULTIPLE_DRIVERS
+ 	select DT_IDLE_STATES
