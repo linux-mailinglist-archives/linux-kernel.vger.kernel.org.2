@@ -2,89 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C3739D1C6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 00:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8675639D1C8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 00:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbhFFWJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 18:09:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230403AbhFFWJz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 18:09:55 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD196C061766
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 15:08:05 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f3a7d00ac6b86a87c3b23f6.dip0.t-ipconnect.de [IPv6:2003:ec:2f3a:7d00:ac6b:86a8:7c3b:23f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 904EA1EC0407;
-        Mon,  7 Jun 2021 00:08:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1623017283;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=K6uYifQ5D1ExMd/dZl+zmjDEJmLTqaUKjABvv0ndK48=;
-        b=QFw38partLRXOIZhu+C4t6A8EIrVFy2d+4xxs4+icXriidRDgZiRrdwETzBJlm9C8jU3vb
-        B4Bryw+XNHIx35HGBsAXgKg/1rVN20Cbe41YuMwewqDFh0v40imp8GXAFBcQferC8m8I4R
-        r1y751Fm64cg3Yq4TSegD2bn98SJ8Fg=
-Date:   Mon, 7 Jun 2021 00:07:58 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Cc:     Mike Rapoport <rppt@linux.ibm.com>, x86-ml <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] x86/urgent for v5.13-rc5
-Message-ID: <YL1HLdmh55uGAIs/@zn.tnic>
-References: <YLx/iA8xeRzwhXJn@zn.tnic>
- <CAHk-=wjXKsJVk+LPiOSiBACchPJLne7O+U+jmvw8CaLBYn-3=Q@mail.gmail.com>
- <YL029aQZb09G3ShY@linux.ibm.com>
- <CAHk-=wg7+-Q-jvrwQmyZtQ3pirAUcAQmvUpiLu=0nJv8NObntg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wg7+-Q-jvrwQmyZtQ3pirAUcAQmvUpiLu=0nJv8NObntg@mail.gmail.com>
+        id S230426AbhFFWO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 18:14:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:46282 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230355AbhFFWO5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 18:14:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A73AE31B;
+        Sun,  6 Jun 2021 15:13:06 -0700 (PDT)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1FC053F719;
+        Sun,  6 Jun 2021 15:13:04 -0700 (PDT)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
+        etienne.carriere@linaro.org, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com, cristian.marussi@arm.com
+Subject: [RFC PATCH 00/10] Introduce SCMI transport atomic support
+Date:   Sun,  6 Jun 2021 23:12:22 +0100
+Message-Id: <20210606221232.33768-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 06, 2021 at 02:23:21PM -0700, Linus Torvalds wrote:
-> On Sun, Jun 6, 2021 at 1:58 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
-> >
-> > A while ago hpa said:
-> >
-> >         As far as I know, Windows 7 actually reserves all memory below
-> >         1 MiB to avoid BIOS bugs.
-> >
-> > (https://bugzilla.kernel.org/show_bug.cgi?id=16661#c2)
-> 
-> It would be good to have that checked somehow.
-> 
-> I don't think this matters on any machine with gigs of RAM, but I do
-> wonder about the people who want to do small configurations. Maybe
-> they've given up on x86?
-> 
-> It also eats into that somewhat precious legacy DMA resource and eats
-> up a fair chunk of that. Again, not an issue on modern hardware, but
-> ..
-> 
-> > I believe that reserving everything below 1M after the real mode trampoline
-> > is allocated reduces amount of hidden dependencies and makes things simpler
-> > overall.
-> 
-> Simpler, perhaps, and _I_ personally don't care about about 512kB of
-> memory any more on any machines I have, but ..
+Hi all,
 
-Let's see if Sasha can dig out something... CCed.
+This RFC series mainly aims to introduce atomic support for transport that
+can support it.
 
-@Sasha, can you figure out who we can talk to whether Windoze reserves
-the first megabyte of memory unconditionally?
+At first in [03/10], as a closely related addition, it is introduced a
+common way  for a transport to signal to the SCMI core that it does not
+offer completion interrupts, so that the usual polling behaviour based
+on .poll_done() will be required: this can be done enabling statically
+a global polling behaviour for the whole transport with flag
+scmi_desc.force_polling OR dynamically enabling at runtime such polling
+behaviour on a per-channel basis with scmi_chan_info.needs_polling,
+typically during .chan_setup(). The usual per-command polling selection
+behaviour based on hdr.poll_completion is preserved as before.
 
-Thx.
+then in [04/10], a transport that supports atomic operation on its tx path
+can now declare itself as .atomic_capable and as a consequence the SCMI
+core will refrain itself from sleeping on the correspondent rx-path.
+
+In [07/10] a simple method is introduced so that an SCMI driver can easily
+query the core to check if the currently used transport is configured to
+behave in an atomic manner: in this way, interested SCMI driver users, like
+Clock framework [08/10], can optionally support atomic operations when
+operating on an atomically configured transport.
+
+Finally there are 2 *tentative" patch for SMC transport: at first [09/10]
+ports SMC to use the common core completions when completion interrupt is
+available or otherwise revert to use common core polling mechanism above
+introduced; then in [10/10] SMC is converted to be .atomic_capable by
+substituting the mutexes with busy-waiting to keep the channel 'locked'.
+
+SMC changes have not been tested so far (I cannot), AND they are just a
+proposal at this stage to try to better abstract and unify behaviour with
+the SCMI core; both patches are completely intended as RFCs, though, not
+only regarding their implementation but even their mere existence is RFC:
+I mean maybe we just don't want to do such kind of unification/abstraction,
+and I can just drop those SMC patches if unwanted; any feedback welcome.
+
+Atomic support has been minimally tested against the upcoming virtio
+transport draft(unposted) series, while polling has been tested both
+with virtio and mailbox transports.
+
+The series is based on sudeep/for-next [1] on top of commit:
+
+commit 0aa69c9fc80d ("firmware: arm_scmi: Add compatibility checks for
+		     shmem node")
+
+Given the RFC status of the series in general I still not have CCed any
+maintainer out of SCMI subsystem.
+
+Any feedback welcome.
+
+Thanks,
+
+Cristian
+
+---
+
+[1]:https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/log/?h=for-next/scmi
+
+Cristian Marussi (10):
+  firmware: arm_scmi: Reset properly xfer SCMI status
+  firmware: arm_scmi: Add missing xfer reinit_completion
+  firmware: arm_scmi: Add configurable polling mode for transports
+  firmware: arm_scmi: Add support for atomic transports
+  include: trace: Add new scmi_xfer_response_wait event
+  firmware: arm_scmi: Use new trace event scmi_xfer_response_wait
+  firmware: arm_scmi: Add is_transport_atomic() handle method
+  clk: scmi: Support atomic enable/disable API
+  firmware: arm-scmi: Make smc transport use common completions
+  firmware: arm-scmi: Make smc transport atomic
+
+ drivers/clk/clk-scmi.c             |  44 +++++--
+ drivers/firmware/arm_scmi/common.h |  11 ++
+ drivers/firmware/arm_scmi/driver.c | 184 +++++++++++++++++++++++++----
+ drivers/firmware/arm_scmi/smc.c    |  60 ++++++----
+ include/linux/scmi_protocol.h      |   8 ++
+ include/trace/events/scmi.h        |  28 +++++
+ 6 files changed, 277 insertions(+), 58 deletions(-)
 
 -- 
-Regards/Gruss,
-    Boris.
+2.17.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
