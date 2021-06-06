@@ -2,108 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED34739D1DE
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 00:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA09339D1FC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 00:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230444AbhFFWbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 18:31:35 -0400
-Received: from mail-lj1-f179.google.com ([209.85.208.179]:37408 "EHLO
-        mail-lj1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230355AbhFFWbe (ORCPT
+        id S231220AbhFFWsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 18:48:05 -0400
+Received: from mail-ej1-f47.google.com ([209.85.218.47]:41592 "EHLO
+        mail-ej1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230519AbhFFWsD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 18:31:34 -0400
-Received: by mail-lj1-f179.google.com with SMTP id e2so19466817ljk.4
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 15:29:29 -0700 (PDT)
+        Sun, 6 Jun 2021 18:48:03 -0400
+Received: by mail-ej1-f47.google.com with SMTP id ho18so12469058ejc.8
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 15:46:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=UwWzxYz9+U86AfgXfL1goygie7Gy2zkFjiUJTJ3EoKs=;
-        b=kxMgCYy0vlpyi5AxRTHdMn6e+jmq/2X4YVIV7ESue3MoUcw92UfESVJ3sdbDulxWA1
-         tPdf3RMim5CdNxQH4OEUKwrHvJnjGln2XCnil/Kd6HralhcTQrUYq+J0uan1laHAr8i9
-         AVNc8GksMQVDByd6y3gKsDYGiXZbZ+sazjLwH9Zfczi0tPK+lrLvqlV7bhxCoG1+FxAA
-         9N5LDRa6ULJ8os2HzpYhySygRDYFQScmw1IVTHhH6tTF2ej/5RVdFOnqx3urP68g4ZPf
-         6S0ZH4fjO247kE6HloU4lbp6BgAfT+H8TigLljR//wJL1hgtqQ1Or9u0aP6Vp1MX4G43
-         bP3w==
+        bh=gtTe+bW9CJrIIoUl0y1d11JaP4RsQBfOevBdp08DRug=;
+        b=OxInyRJVkqQCmKRmT6KGFE8qM7XAfQzY8nbQmo5qsLIenPiuQZPigbSL/hrNiuh00j
+         Fiyq6WXUnbySLjjZhVoY4ZVWT2wgI8gyhocnD0Acawt0/u24ZMB8KiorrZ5u8WVzW5Mp
+         bJ3imPB0o2E2dsaZWR8zv/W4ByDxPBlNuhDHo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=UwWzxYz9+U86AfgXfL1goygie7Gy2zkFjiUJTJ3EoKs=;
-        b=GbPqmKwS3lanWWwWo+ns2wejRGEkEqT0g9Tl+yPzspaZ2RXP4CzSj69/QiYu+oZNsk
-         BeV9ISyXacQCKG/AJeQWfPb6uLgDaWW3Mc1YtSSAh3EK7TjrCjlXLVRNk64q91xt5E4v
-         hPEDhAhp3Ky89j+VLK6NsS0k8/b7OAc0AOlpYRsGm9Xn6vBlHIM1GamYyN752x8ldS4L
-         PfB7M0uRBLmtkWZ2v2oYT9fh+O9tukJnuTYoiz0QCqHyx9ecT1wsZ6PWhGrGSQml0Vpr
-         9tksmcGzkTo1kYUKrCHzBIKiXt9PLqof5+hOQsaRSVupeEiINoFONSXG57ezJIuaBz3i
-         7gjg==
-X-Gm-Message-State: AOAM532k0fI0AXi5kNGr78MZzuWSNEofr5r+JV+LHBq2Tv83UPEWMtoI
-        fSetCVldHCHLF36zLYtjDaOF12VKcuWtpvg1h+nvdg==
-X-Google-Smtp-Source: ABdhPJwd0M4l7QBJaYxqX2KVo84RtPuoN2RuZ8lx+Cbpug6jYPX8lTD/yitLZl+l8asOm1ZUPwC7gsj2Leas0Dk+ukE=
-X-Received: by 2002:a2e:22c3:: with SMTP id i186mr12719543lji.273.1623018508658;
- Sun, 06 Jun 2021 15:28:28 -0700 (PDT)
+        bh=gtTe+bW9CJrIIoUl0y1d11JaP4RsQBfOevBdp08DRug=;
+        b=GdsghPiKnTmtEsVp/6NbfgS1iFf9XRqlZs+rYVobGPQZLNGFFdfWrukOp1yz3viLTx
+         JUhY0Y4LZxDML5YOMxQLLGteUzlEu62O/mQ6CWP+YtgA/P6DQbrhmFTmJTuX7tnD6+ar
+         I2fTSE19xeNQytiYtEH+GMxnhQ1vgwemBtsVPxlBmobQrKU8Eszbst66PfmAq+I1uNZ0
+         u7dAyZZB21+D9s4qzZqC8pMGyPcoGME2P/QkC49+dtpyxqHAlW51ZOSS3GmkJAe7WEmE
+         TR+A2F1TIxAJc+V5Q5OYUOal0ZS/A6OaZ2vsDSkmjyjICFYtkPkQOrzgYlJ7mxgWNs8j
+         P3dw==
+X-Gm-Message-State: AOAM530ucytnsJ03SY045TyvUgIZIif5S1XMqtzzDM9sOJZe1q3C+mxL
+        ncOvf3gGevem+gQAVE4wSbzqbUJgO58Ls2e7KLE=
+X-Google-Smtp-Source: ABdhPJybpF1diQrTgLDNtXh+c4fZkoNW8ZxKyQ+MCAnDCfNJd9VcZrs1erMjxBR0akuffsBeoUMr5g==
+X-Received: by 2002:a17:906:3845:: with SMTP id w5mr15545197ejc.518.1623019500719;
+        Sun, 06 Jun 2021 15:45:00 -0700 (PDT)
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com. [209.85.221.54])
+        by smtp.gmail.com with ESMTPSA id v23sm6989711eds.25.2021.06.06.15.45.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 06 Jun 2021 15:45:00 -0700 (PDT)
+Received: by mail-wr1-f54.google.com with SMTP id a11so13466013wrt.13
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 15:45:00 -0700 (PDT)
+X-Received: by 2002:a05:6512:3f82:: with SMTP id x2mr9598539lfa.421.1623019102844;
+ Sun, 06 Jun 2021 15:38:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210601104429.GA26261@DESKTOP-I556OUN.localdomain> <AM7PR06MB6769E1183F68DEBB252F665ABA3E9@AM7PR06MB6769.eurprd06.prod.outlook.com>
-In-Reply-To: <AM7PR06MB6769E1183F68DEBB252F665ABA3E9@AM7PR06MB6769.eurprd06.prod.outlook.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 7 Jun 2021 00:28:17 +0200
-Message-ID: <CACRpkdZ2iZSkQngyN-XFfCrjPv+_C4Z4+OnewfXg+dsw+SnLgw@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: mcp23s08: fix race condition in irq handler
-To:     Radim Pavlik <radim.pavlik@tbs-biometrics.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Thomas Preston <thomas.preston@codethink.co.uk>,
-        =?UTF-8?B?SmFuIEt1bmRyw6F0?= <jan.kundrat@cesnet.cz>,
-        Phil Reid <preid@electromag.com.au>,
-        Lars Poeschel <poeschel@lemonage.de>,
-        Jason Kridner <jkridner@gmail.com>
-Cc:     "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <CAHk-=wiuLpmOGJyB385UyQioWMVKT6wN9UtyVXzt48AZittCKg@mail.gmail.com>
+ <CAHk-=wik7T+FoDAfqFPuMGVp6HxKYOf8UeKt3+EmovfivSgQ2Q@mail.gmail.com>
+ <20210604205600.GB4397@paulmck-ThinkPad-P17-Gen-1> <CAHk-=wgmUbU6XPHz=4NFoLMxH7j_SR-ky4sKzOBrckmvk5AJow@mail.gmail.com>
+ <20210604214010.GD4397@paulmck-ThinkPad-P17-Gen-1> <CAHk-=wg0w5L7-iJU_kvEh9stXZoh2srRF4jKToKmSKyHv-njvA@mail.gmail.com>
+ <20210605145739.GB1712909@rowland.harvard.edu> <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210606012903.GA1723421@rowland.harvard.edu> <CAHk-=wgUsReyz4uFymB8mmpphuP0vQ3DktoWU_x4u6impbzphg@mail.gmail.com>
+ <20210606185922.GF7746@tucnak> <CAHk-=wis8zq3WrEupCY6wcBeW3bB0WMOzaUkXpb-CsKuxM=6-w@mail.gmail.com>
+ <alpine.LNX.2.20.13.2106070017070.7184@monopod.intra.ispras.ru>
+In-Reply-To: <alpine.LNX.2.20.13.2106070017070.7184@monopod.intra.ispras.ru>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 6 Jun 2021 15:38:06 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjwXs5+SOZGTaZ0bP9nsoA+PymAcGE4CBDVX3edGUcVRg@mail.gmail.com>
+Message-ID: <CAHk-=wjwXs5+SOZGTaZ0bP9nsoA+PymAcGE4CBDVX3edGUcVRg@mail.gmail.com>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+To:     Alexander Monakov <amonakov@ispras.ru>
+Cc:     Jakub Jelinek <jakub@redhat.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 1, 2021 at 12:48 PM Radim Pavlik
-<radim.pavlik@tbs-biometrics.com> wrote:
-
-> Checking value of MCP_INTF in mcp23s08_irq suggests that the handler may be
-> called even when there is no interrupt pending.
+On Sun, Jun 6, 2021 at 2:19 PM Alexander Monakov <amonakov@ispras.ru> wrote:
 >
-> But the actual interrupt could happened between reading MCP_INTF and MCP_GPIO.
-> In this situation we got nothing from MCP_INTF, but the event gets acknowledged
-> on the expander by reading MCP_GPIO. This leads to losing events.
+> > So yeah, that seems like a nice solution to the issue, and should make
+> > the barriers all unique to the compiler.
 >
-> Fix the problem by not reading any register until we see something in MCP_INTF.
->
-> The error was reproduced and fix tested on MCP23017.
->
-> Signed-off-by: Radim Pavlik <radim.pavlik@tbs-biometrics.com>
+> It also plants a nice LTO time-bomb (__COUNTER__ values will be unique
+> only within each LTO input unit, not across all of them).
 
-The patch makes perfect sense to me.
+That could be an issue in other circumstances, but for at least
+volatile_if() that doesn't much matter. The decision there is purely
+local, and it's literally about the two sides of the conditional not
+being merged.
 
-This message was mangled really seriously and could not be
-applied, but since the patch was simple I recreated it locally
-and applied for fixes.
+Now, an optimizing linker or assembler can of course do anything at
+all in theory: and if that ends up being an issue we'd have to have
+some way to actually propagate the barrier from being just a compiler
+thing. Right now gcc doesn't even output the barrier in the assembly
+code, so it's invisible to any optimizing assembler/linker thing.
 
-It also seems the lore mail archive has not accepted it.
+But I don't think that's an issue with what _currently_ goes on in an
+assembler or linker - not even a smart one like LTO.
 
-> +       if (intf == 0) {
-> +               /* There is no interrupt pending */
-> +               goto unlock;
-> +       }
->          if (mcp_read(mcp, MCP_INTCAP, &intcap))
->                  goto unlock;
->
-> @@ -368,10 +372,6 @@ static irqreturn_t mcp23s08_irq(int irq, void *data)
->          mcp->cached_gpio = gpio;
->          mutex_unlock(&mcp->lock);
->
-> -       if (intf == 0) {
-> -               /* There is no interrupt pending */
-> -               return IRQ_HANDLED;
-> -       }
+And such things really are independent of "volatile_if()". We use
+barriers for other things where we need to force some kind of
+operation ordering, and right now the only thing that re-orders
+accesses etc is the compiler.
 
-Paging some other mcp28s08 users to make sure they don't have
-a problem with this.
+Btw, since we have compiler people on line, the suggested 'barrier()'
+isn't actually perfect for this particular use:
 
-Yours,
-Linus Walleij
+   #define barrier() __asm__ __volatile__("" : : "i" (__COUNTER__) : "memory")
+
+in the general barrier case, we very much want to have that "memory"
+clobber, because the whole point of the general barrier case is that
+we want to make sure that the compiler doesn't cache memory state
+across it (ie the traditional use was basically what we now use
+"cpu_relax()" for, and you would use it for busy-looping on some
+condition).
+
+In the case of "volatile_if()", we actually would like to have not a
+memory clobber, but a "memory read". IOW, it would be a barrier for
+any writes taking place, but reads can move around it.
+
+I don't know of any way to express that to the compiler. We've used
+hacks for it before (in gcc, BLKmode reads turn into that kind of
+barrier in practice, so you can do something like make the memory
+input to the asm be a big array). But that turned out to be fairly
+unreliable, so now we use memory clobbers even if we just mean "reads
+random memory".
+
+Example: variable_test_bit(), which generates a "bt" instruction, does
+
+                     : "m" (*(unsigned long *)addr), "Ir" (nr) : "memory");
+
+and the memory clobber is obviously wrong: 'bt' only *reads* memory,
+but since the whole reason we use it is that it's not just that word
+at address 'addr', in order to make sure that any previous writes are
+actually stable in memory, we use that "memory" clobber.
+
+It would be much nicer to have a "memory read" marker instead, to let
+the compiler know "I need to have done all pending writes to memory,
+but I can still cache read values over this op because it doesn't
+_change_ memory".
+
+Anybody have ideas or suggestions for something like that?
+
+                 Linus
