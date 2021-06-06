@@ -2,31 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD8639CEEC
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 14:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8EC039CEE9
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 14:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230366AbhFFMO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 08:14:57 -0400
-Received: from ozlabs.org ([203.11.71.1]:36435 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230287AbhFFMOI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 08:14:08 -0400
+        id S230361AbhFFMOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 08:14:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230253AbhFFMOC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 08:14:02 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91855C06178B
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 05:12:12 -0700 (PDT)
 Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4Fyb3P2YbVz9t0p; Sun,  6 Jun 2021 22:12:16 +1000 (AEST)
+        id 4Fyb3G4c1Kz9sfG; Sun,  6 Jun 2021 22:12:10 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        linux-kernel@vger.kernel.org, Oliver O'Halloran <oohall@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, Joe Perches <joe@perches.com>,
+To:     naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
+        mhiramat@kernel.org, davem@davemloft.net,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Paul Mackerras <paulus@samba.org>
-In-Reply-To: <20210518204044.2390064-1-ndesaulniers@google.com>
-References: <87cztok1r5.fsf@mpe.ellerman.id.au> <20210518204044.2390064-1-ndesaulniers@google.com>
-Subject: Re: [PATCH v2] powerpc/powernv/pci: fix header guard
-Message-Id: <162298132083.2353459.1100923917875069463.b4-ty@ellerman.id.au>
-Date:   Sun, 06 Jun 2021 22:08:40 +1000
+Cc:     linuxppc-dev@lists.ozlabs.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <40a43d6df1fdf41ade36e9a46e60a4df774ca9f6.1620896780.git.christophe.leroy@csgroup.eu>
+References: <40a43d6df1fdf41ade36e9a46e60a4df774ca9f6.1620896780.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH v2 1/2] kprobes: Allow architectures to override optinsn page allocation
+Message-Id: <162298132158.2353459.12128294246619463248.b4-ty@ellerman.id.au>
+Date:   Sun, 06 Jun 2021 22:08:41 +1000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -34,19 +38,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 May 2021 13:40:41 -0700, Nick Desaulniers wrote:
-> While looking at -Wundef warnings, the #if CONFIG_EEH stood out as a
-> possible candidate to convert to #ifdef CONFIG_EEH.
+On Thu, 13 May 2021 09:07:51 +0000 (UTC), Christophe Leroy wrote:
+> Some architectures like powerpc require a non standard
+> allocation of optinsn page, because module pages are
+> too far from the kernel for direct branches.
 > 
-> It seems that based on Kconfig dependencies it's not possible to build
-> this file without CONFIG_EEH enabled, but based on upstream discussion,
-> it's not clear yet that CONFIG_EEH should be enabled by default.
-> 
-> [...]
+> Define weak alloc_optinsn_page() and free_optinsn_page(), that
+> fall back on alloc_insn_page() and free_insn_page() when not
+> overriden by the architecture.
 
 Applied to powerpc/next.
 
-[1/1] powerpc/powernv/pci: fix header guard
-      https://git.kernel.org/powerpc/c/73e6e4e01134c9ee97433ad1f470c71b0748b08f
+[1/2] kprobes: Allow architectures to override optinsn page allocation
+      https://git.kernel.org/powerpc/c/7ee3e97e00a3893e354c3993c3f7d9dc127e9c5e
+[2/2] powerpc/kprobes: Replace ppc_optinsn by common optinsn
+      https://git.kernel.org/powerpc/c/b73c8cccd72ac28beaf262fd6ef4b91411fc8335
 
 cheers
