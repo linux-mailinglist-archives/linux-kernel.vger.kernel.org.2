@@ -2,88 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6005539D1F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 00:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5373739D1F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 00:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbhFFWnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 18:43:14 -0400
-Received: from mail-lj1-f179.google.com ([209.85.208.179]:38649 "EHLO
-        mail-lj1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbhFFWnM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 18:43:12 -0400
-Received: by mail-lj1-f179.google.com with SMTP id a4so19482203ljd.5;
-        Sun, 06 Jun 2021 15:41:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1GGJToq6i4FyeVRgJK+tocSjb9/+pC5ZQ5M4IXJpq6o=;
-        b=Mem2B/UUWNTL5KuAVNcaL+JsgqvSnNRdJmEc38/EL5Bd7Z2BKqK9r1EKj8Sj457dyO
-         iU4G5KCRV5XLcqfZQScec5zKVJilmpzfesbGYHQAAx0wZ6PP2Gg5NI/c5BO6h4JqJS2g
-         ZtpTL8R9ZCuPEhq3OtDeO5wQFRh88cSWcmnwsiG2He/FErIA/Fhp+iFz/mXJ31TF1Jrr
-         11pFrQHZtZzv07LhoJblgiaqh8P/f1+Lbq/FkOjdRpkKOhTMIoPUO+wDR+wFM7D47Fb1
-         Uatr90zTItMQHqKNlDGTFwdbhQwgLTIKhGH/yY1Ceju2E6wSAqtlSivrUXYcFiW5vTQ6
-         R8Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1GGJToq6i4FyeVRgJK+tocSjb9/+pC5ZQ5M4IXJpq6o=;
-        b=Z9ZucJ2F9NvwQmD/SVGL4EP6MtDcZSDmBs3+5Lx3nMsFhSN4W4EuUG/pDpTFTCp1EW
-         UxEIK+hCjs+HVhpJrciIGSDX3CMjB6PtwjVxTiafkVwKfkCprAxsBeLiST0aDmJMuRlp
-         k2aJx6o90mswUtENzUfSm8JSQf/8EUXdkolchWPIeHngcx5DWAWS+DEi50HuZmG+n/aq
-         TH3NsVTBeCeWsbFvyp8iqHHG8P5jQYbV8SKgw9vmmnM3va1Frs2Cwd53wFXEaD+FcG9v
-         CjEJlFgSoXdWs6IlKcIoRzi3LDSNNIe4TAytFMIGquFuiZE1nBxSPrxFsCB3rauCTVs6
-         CZQA==
-X-Gm-Message-State: AOAM532JP2LK0Qc6hzwLAbxhbeAgGPdMbVc+NS86kDYv/HKbJBKhEp5J
-        zoXr8i1GyReldM56zucKJ+A=
-X-Google-Smtp-Source: ABdhPJyMQu9/FcrHkV8dRQItFculAkw1RXMxChQnHeiFJuNFbl7PO6XBoALQ1s94VBaENxwY6u/FNQ==
-X-Received: by 2002:a2e:7018:: with SMTP id l24mr12562657ljc.12.1623019208259;
-        Sun, 06 Jun 2021 15:40:08 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-51-134.dynamic.spd-mgts.ru. [94.29.51.134])
-        by smtp.googlemail.com with ESMTPSA id q184sm1728861ljb.54.2021.06.06.15.40.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 06 Jun 2021 15:40:07 -0700 (PDT)
-Subject: Re: [PATCH v18 0/2] Add memory bandwidth management to NVIDIA Tegra
- DRM driver
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-References: <20210601042108.1942-1-digetx@gmail.com>
-Message-ID: <8accfe1e-fc48-21ca-f7c6-bd2d60162e6d@gmail.com>
-Date:   Mon, 7 Jun 2021 01:40:06 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231157AbhFFWmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 18:42:02 -0400
+Received: from ozlabs.org ([203.11.71.1]:56509 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230368AbhFFWl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 18:41:59 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fyrzr2H1Kz9sRf;
+        Mon,  7 Jun 2021 08:40:08 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623019208;
+        bh=mn0noDOVhY2c6b084ZMVxLp74oK4ckJLZgI8Pf9GmoQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=dwEoGZJGuN/OfHtt3NPOaUxfd3s6EaoBzxIk/tA4pjNx4XRvbOFmIgV+X9BioWAIK
+         lD5ay8uAQg7mMxoFt4T/3bIJEA5PtvvTMj8GPHsroQaZswR1s5lV3Mr8k9WG1recfe
+         ku8E+TciSmf3Vl6hFZI+v8K8FQHfZVBhdx25itC20WTB+3sukjw6o/GQV6DHMQ2Beg
+         QM+EOW3SbY2MXJylw+piWiEbKU/b24ZcOZG2m4bcWk+/EzVRFWfeMitKXiFrkgL0CT
+         PUGJX2GGAYXGUHUODSSC9UqAMwZLXNEMAazNbhuOrdsCvQUTOTLiFyzHpOyC31IqD7
+         Lb3gCb8d/C9FA==
+Date:   Mon, 7 Jun 2021 08:40:07 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the irqchip tree
+Message-ID: <20210607084007.6aa8aa27@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210601042108.1942-1-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/qyfizYNdZmKTH/2qfK2H5xi";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-01.06.2021 07:21, Dmitry Osipenko пишет:
-> This series adds memory bandwidth management to the NVIDIA Tegra DRM driver,
-> which is done using interconnect framework. It fixes display corruption that
-> happens due to insufficient memory bandwidth.
-> 
-> Changelog:
-> 
-> v18: - Moved total peak bandwidth from CRTC state to plane state and removed
->        dummy plane bandwidth state initialization from T186+ plane hub. This
->        was suggested by Thierry Reding to v17.
-> 
->      - I haven't done anything about the cursor's plane bandwidth which
->        doesn't contribute to overlapping bandwidths for a small sized
->        window because it works okay as-is.
+--Sig_/qyfizYNdZmKTH/2qfK2H5xi
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thierry, will you take these patches for 5.14?
+Hi all,
+
+Commits
+
+  9b8a506983a1 ("fixup! irqdomain: Introduce irq_resolve_mapping()")
+  70d49fc8ebd2 ("fixup! irqchip: Bulk conversion to generic_handle_domain_i=
+rq()")
+  69250ebd068e ("fixup! staging: octeon-hcd: Directly include linux/of.h")
+  09816d49a254 ("fixup! irqdomain: Introduce irq_resolve_mapping()")
+
+are missing a Signed-off-by from their author and committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/qyfizYNdZmKTH/2qfK2H5xi
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC9TscACgkQAVBC80lX
+0Gwdawf6AvlENEQAyXJIj+k0gxoC4vZi/OLWf3pZPrwIE4LhFeFpoff7vynBJ15W
+o19xls8u6TKLprVm6QZP0dMMB8WeAVUXiVgYgYTdF9Di1WPW9y3h6Z9p3lvngwrQ
+zaEE+VdSFV4OVzluqIVvac0bZlrptKdsL4y3Qm9opSAY0hsZbWOLNXyUZP5xUEdn
+WOFHT5iIR79TwXWdBLQr71s2sga8VeG8DvZMAjoV6e53tiKQzuFVKsSCGxpz7yq6
+xtpW/KxWIyxIFNaCWKb8gJ0WN9UWMbG2BHg6MQEcut/ONMVLIhoAmFEh9e/KbDsE
+LE1ITKOMgoDdfrxXweTySTaOn5X+eQ==
+=cOHA
+-----END PGP SIGNATURE-----
+
+--Sig_/qyfizYNdZmKTH/2qfK2H5xi--
