@@ -2,111 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C367039CE30
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 10:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B690739CE38
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 11:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbhFFIvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 04:51:21 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:43734 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbhFFIvU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 04:51:20 -0400
-Received: by mail-il1-f200.google.com with SMTP id t16-20020a92d1500000b02901c521a389f7so9824769ilg.10
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 01:49:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=3fkxxtONOcltbxGELVRZttHeuDg/ooRlUEJGK7DDlkw=;
-        b=p29LLmQHAQol4VuWBN0AS1B1eakZw7gV4m9MdQ0Mwn2GatX2MgnCz+lmieoXswbJZY
-         4WFmfjRLy90xlkoTdM1FZJpVQqD1feMp7j7yGaitHHeGT5suhIGaEmqKGdm62D9PWzIc
-         FJWqd7n7iaKIEP4KnYuTR6bSK7XDIlh2XDjdWU8lC9nIPGmScD5JJdOYEs3TJ+JHXToS
-         FfuBG0Zk91A8fqwD8kwBhBcuqj3E0+HxgQ7mQj4Cdw2RyqghBoNaTVUddfHCXSH/JNPC
-         edgIwDTcfqvo7JkXpTAQ5l6Id0lCUXzn3+WStv7jXYTBYpOdNqvXbGBRQxLM9idW3CD2
-         9zFg==
-X-Gm-Message-State: AOAM530+AVNzN7gO4TIZBeTZyOOE8cknxVtNy/b3vwzpoGL7T+SD6PFH
-        ivlt9xRoPrlctkvYE9JwzCl3dYMRAxN4n1hXqL/l6V3oo9Lx
-X-Google-Smtp-Source: ABdhPJwlGUz+uO1cr7JpdZY2YFh0le2aLsXzM2TacBAZa1XrdQEN4HPR/8NRr3JE3k3pCWwwmnrplq3XDEFmUeNFJ64awlk1O/NU
-MIME-Version: 1.0
-X-Received: by 2002:a6b:7d0b:: with SMTP id c11mr10378089ioq.8.1622969358063;
- Sun, 06 Jun 2021 01:49:18 -0700 (PDT)
-Date:   Sun, 06 Jun 2021 01:49:18 -0700
-In-Reply-To: <00000000000073e9c305a341a39a@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000119d4505c4150042@google.com>
-Subject: Re: [syzbot] WARNING in cpu_latency_qos_remove_request
-From:   syzbot <syzbot+6e2d4fbfbf03293bb776@syzkaller.appspotmail.com>
-To:     len.brown@intel.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, pavel@ucw.cz, rjw@rjwysocki.net,
-        syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+        id S230145AbhFFJGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 05:06:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229465AbhFFJGt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 05:06:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5084A61422;
+        Sun,  6 Jun 2021 09:04:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622970300;
+        bh=WCq0jCKZFKVHZkUKk3gJmYAjMTZohhpA6kBYeDMWP54=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oxm3u1RP/XRReqemGC1w532UhAYbNFeDtf/dUXCrcNLysVUcw4/kGCyTdx9vNl5TS
+         r6hlzvO/e7yX0PDSFziN3hyZcemocYljnFsJP7aY75U+5QY16SyqN0TRAakBGTCQmN
+         PQM1cFGkvmha5xMK1voUxdWPUHNPcNqiCJsAvuLLb0SSka+oLcnleqO/S/4lNlMoFk
+         oAkyp08HeBmpT1lJreARal81zS5mUr89OQm7JCNabNHIoAxKVWRc52fFZMnIfrVAEZ
+         G8Mr7Zk5CE5h5lVNkRb8WJQOtmVvTDTQDUjAEjuNcTRB/NuYG+/NPmJNRiZRhEdXiq
+         OkMVD5ZRlFBhA==
+From:   guoren@kernel.org
+To:     guoren@kernel.org, anup.patel@wdc.com, palmerdabbelt@google.com,
+        arnd@arndb.de, wens@csie.org, maxime@cerno.tech,
+        drew@beagleboard.org, liush@allwinnertech.com,
+        lazyparser@gmail.com, wefu@redhat.com
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        Guo Ren <guoren@linux.alibaba.com>
+Subject: [RFC PATCH v2 00/11] riscv: Add DMA_COHERENT support for Allwinner D1
+Date:   Sun,  6 Jun 2021 09:03:55 +0000
+Message-Id: <1622970249-50770-1-git-send-email-guoren@kernel.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+From: Guo Ren <guoren@linux.alibaba.com>
 
-HEAD commit:    a1f92694 Add linux-next specific files for 20210518
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=12e1f4e0300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d612e75ffd53a6d3
-dashboard link: https://syzkaller.appspot.com/bug?extid=6e2d4fbfbf03293bb776
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12897d33d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=177199afd00000
+The RISC-V ISA doesn't yet specify how to query or modify PMAs, so let
+vendors define the custom properties of memory regions in PTE.
 
-The issue was bisected to:
+This patchset helps SOC vendors to support their own custom interconnect
+coherent solution with PTE attributes.
 
-commit c20037652700024cffeb6b0f74306ce9b391248f
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat Mar 7 20:20:29 2020 +0000
+For example, allwinner D1[1] uses T-HEAD C906 as main processor, C906 has
+two modes in MMU:
+ - Compatible mode, the same as the definitions in spec.
+ - Enhanced mode, add custom DMA_COHERENT attribute bits in PTE which
+   not mentioned in spec.
 
-    Merge tag 'io_uring-5.6-2020-03-07' of git://git.kernel.dk/linux-block
+Allwinner D1 needs the enhanced mode to support the DMA type device with
+non-coherent interconnect in its SOC. C906 uses BITS(63 - 59) as custom
+attribute bits in PTE.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14a8bdb3e00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=16a8bdb3e00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12a8bdb3e00000
+The patchset contain 4 parts (asid, pgtable, cmo, soc) which have been
+tested on D1:
+ - asid: T-HEAD C906 of D1 contains full asid hw facilities which has no
+   conflict with RISC-V spec, and hope these patches soon could be
+   approved.
+ - pgtable: Using a image-hdr to pass vendor specific information and
+   setup custom PTE attributes in a global struct variable during boot
+   stage. Also it needs define custom protection_map in linux/mm.
+ - cmo: We need deal with dma_sync & icache_sync & __vdso_icache_sync.
+   In this patchset, I just show you how T-HEAD C9xx work, and seems Atish
+   is working for the DMA infrustructure, please let me know the idea.
+ - soc: Add allwinner gmac driver & dts & Kconfig for sunxi test.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6e2d4fbfbf03293bb776@syzkaller.appspotmail.com
-Fixes: c20037652700 ("Merge tag 'io_uring-5.6-2020-03-07' of git://git.kernel.dk/linux-block")
+The patchset could work with linux-5.13-rc4, here is the steps for D1:
+ - Download linux-5.13-rc4 and apply the patchset
+ - make ARCH=riscv CROSS_COMPILE=riscv64-linux- defconfig
+ - make ARCH=riscv CROSS_COMPILE=riscv64-linux- Image modules dtbs
+ - mkimage -A riscv -O linux -T kernel -C none -a 0x00200000 -e 0x00200000 -n Linux -d arch/riscv/boot/Image uImage
+ - Download newest opensbi [2], build with [3], and get fw_dynamic.bin
+ - Copy uImage, fw_dynamic.bin, allwinner-d1-nezha-kit.dtb into boot
+   partition of TF card.
+ - Plugin the TF card and power on D1.
 
-------------[ cut here ]------------
-cpu_latency_qos_remove_request called for unknown object
-WARNING: CPU: 0 PID: 8994 at kernel/power/qos.c:322 cpu_latency_qos_remove_request+0x50/0x80 kernel/power/qos.c:322
-Modules linked in:
-CPU: 0 PID: 8994 Comm: syz-executor649 Not tainted 5.13.0-rc2-next-20210518-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:cpu_latency_qos_remove_request+0x50/0x80 kernel/power/qos.c:322
-Code: ea 03 80 3c 02 00 75 3d 48 81 7d 28 20 0b 08 8c 74 20 e8 83 de 19 00 48 c7 c6 60 24 8c 89 48 c7 c7 c0 1f 8c 89 e8 4b ca 7f 07 <0f> 0b 5d e9 68 de 19 00 e8 63 de 19 00 48 89 ef e8 ab fc ff ff 5d
-RSP: 0018:ffffc90001adfd40 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff888021ef1c80 RSI: ffffffff815dbea5 RDI: fffff5200035bf9a
-RBP: ffff8880279fd040 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815d5cee R11: 0000000000000000 R12: ffff8880279fd000
-R13: ffff8880279fd1e4 R14: 1ffff9200035bfb4 R15: 0000000000000000
-FS:  0000000001ee0300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000458dc0 CR3: 0000000021b24000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- snd_pcm_hw_free sound/core/pcm_native.c:842 [inline]
- snd_pcm_common_ioctl+0x19d8/0x3330 sound/core/pcm_native.c:3219
- snd_pcm_ioctl+0x7e/0xb0 sound/core/pcm_native.c:3302
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:1069 [inline]
- __se_sys_ioctl fs/ioctl.c:1055 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
- do_syscall_64+0x31/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x444639
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe82f2e568 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00000000000f4240 RCX: 0000000000444639
-RDX: 0000000000000000 RSI: 0000000000004112 RDI: 0000000000000005
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
-R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000012b9e
-R13: 00007ffe82f2e57c R14: 00007ffe82f2e590 R15: 00007ffe82f2e580
+Link: https://linux-sunxi.org/D1 [1]
+Link: https://github.com/riscv/opensbi branch:master [2]
+Link: https://github.com/riscv/opensbi/blob/master/docs/platform/thead-c9xx.md [3]
+
+Changes since v1:
+ - Rebase on linux-5.13-rc4
+ - Support defconfig for different PTE attributes
+ - Support C906 icache_sync
+ - Add Allwinner D1 dts & Kconfig & gmac for testing
+ - Add asid optimization for D1 usage
+
+Guo Ren (10):
+  riscv: asid: Use global mappings for kernel pages
+  riscv: asid: Add ASID-based tlbflushing methods
+  riscv: asid: Optimize tlbflush coding convention
+  riscv: pgtable: Fixup _PAGE_CHG_MASK usage
+  riscv: pgtable: Add custom protection_map init
+  riscv: pgtable: Add DMA_COHERENT with custom PTE attributes
+  riscv: cmo: Add dma-noncoherency support
+  riscv: cmo: Add vendor custom icache sync
+  riscv: soc: Initial DTS for Allwinner D1 NeZha board
+  riscv: soc: Add Allwinner SoC kconfig option
+
+liush (1):
+  riscv: soc: Allwinner D1 GMAC driver only for temp use
+
+ arch/riscv/Kconfig                                 |    9 +
+ arch/riscv/Kconfig.socs                            |   12 +
+ arch/riscv/boot/dts/Makefile                       |    1 +
+ arch/riscv/boot/dts/allwinner/Makefile             |    2 +
+ .../boot/dts/allwinner/allwinner-d1-nezha-kit.dts  |   29 +
+ arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi    |  100 +
+ arch/riscv/configs/defconfig                       |    1 +
+ arch/riscv/include/asm/cacheflush.h                |   48 +-
+ arch/riscv/include/asm/mmu_context.h               |    2 +
+ arch/riscv/include/asm/pgtable-64.h                |    8 +-
+ arch/riscv/include/asm/pgtable-bits.h              |   20 +-
+ arch/riscv/include/asm/pgtable.h                   |   44 +-
+ arch/riscv/include/asm/sbi.h                       |   15 +
+ arch/riscv/include/asm/soc.h                       |    1 +
+ arch/riscv/include/asm/tlbflush.h                  |   22 +
+ arch/riscv/include/asm/vendorid_list.h             |    1 +
+ arch/riscv/kernel/sbi.c                            |   19 +
+ arch/riscv/kernel/soc.c                            |   22 +
+ arch/riscv/kernel/vdso/flush_icache.S              |   33 +-
+ arch/riscv/mm/Makefile                             |    1 +
+ arch/riscv/mm/cacheflush.c                         |    3 +-
+ arch/riscv/mm/context.c                            |    2 +-
+ arch/riscv/mm/dma-mapping.c                        |   53 +
+ arch/riscv/mm/init.c                               |   26 +
+ arch/riscv/mm/tlbflush.c                           |   57 +-
+ drivers/net/ethernet/Kconfig                       |    1 +
+ drivers/net/ethernet/Makefile                      |    1 +
+ drivers/net/ethernet/allwinnertmp/Kconfig          |   17 +
+ drivers/net/ethernet/allwinnertmp/Makefile         |    7 +
+ drivers/net/ethernet/allwinnertmp/sunxi-gmac-ops.c |  690 ++++++
+ drivers/net/ethernet/allwinnertmp/sunxi-gmac.c     | 2240 ++++++++++++++++++++
+ drivers/net/ethernet/allwinnertmp/sunxi-gmac.h     |  258 +++
+ drivers/net/phy/realtek.c                          |    2 +-
+ mm/mmap.c                                          |    4 +
+ 34 files changed, 3714 insertions(+), 37 deletions(-)
+ create mode 100644 arch/riscv/boot/dts/allwinner/Makefile
+ create mode 100644 arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-kit.dts
+ create mode 100644 arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi
+ create mode 100644 arch/riscv/mm/dma-mapping.c
+ create mode 100644 drivers/net/ethernet/allwinnertmp/Kconfig
+ create mode 100644 drivers/net/ethernet/allwinnertmp/Makefile
+ create mode 100644 drivers/net/ethernet/allwinnertmp/sunxi-gmac-ops.c
+ create mode 100644 drivers/net/ethernet/allwinnertmp/sunxi-gmac.c
+ create mode 100644 drivers/net/ethernet/allwinnertmp/sunxi-gmac.h
+
+-- 
+2.7.4
 
