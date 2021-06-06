@@ -2,69 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A7B39CFB1
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 17:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5690839CFB3
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 17:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbhFFPKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 11:10:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
+        id S230198AbhFFPMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 11:12:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230088AbhFFPKi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 11:10:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C7D46142F;
-        Sun,  6 Jun 2021 15:08:48 +0000 (UTC)
+        id S230088AbhFFPMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 11:12:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5D2C6142A;
+        Sun,  6 Jun 2021 15:10:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622992128;
-        bh=AhywmWO1uW2jDKsvU3KSsBf1Kkmtd2FEg+HllYogrIM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ajFGntH12SxVgKVVKpzQeZtSpkiTjX/QOPxqJYBiMexhd5GBqSgTszMH8SPS4i6YN
-         wgLvCDNsKhQ83MOa9Q0ZTF2sD1n5g9o8qx+95bkODxsQLVnjPZUVIvsTJ1DGNTPktQ
-         qRz98HVhIJLcZj1Qbh/SWHQ/lx+QyL2cgOyPXjyVqVMPEeAxSyvPn4B2wVV3h/5Ajc
-         +htUD8GYTn8/3GZt+IagSizbjFJTt4L2y7F2UuKYVQO2oI4qwRvEU7fEk16km9GzW6
-         HV8cgiXd4fVe8GPdRaW1MijdYbrWgGi6bfdmA6Z/AAGy+sHIi2SOJdykyz/BKKVS4X
-         59gXs3u86+qSg==
-Received: by mail-lf1-f51.google.com with SMTP id v8so21746168lft.8;
-        Sun, 06 Jun 2021 08:08:48 -0700 (PDT)
-X-Gm-Message-State: AOAM530Al6rD0bsbKXYaK9jjRIEJGat/I4uyePkpz6H9ulVImDXfMylu
-        f2+iQAiLH+Pio+OWE0ixzxI1l7BxqVF3E8uHrD4=
-X-Google-Smtp-Source: ABdhPJyN4zk4ZVANOV7l1jrNmtOScbBae+ijxon/C5Plq0iSayaFTJMxmyxUk9u52Aevqlf99inavVPw73IheJW5qYU=
-X-Received: by 2002:a05:6512:3f02:: with SMTP id y2mr9426858lfa.355.1622992126503;
- Sun, 06 Jun 2021 08:08:46 -0700 (PDT)
+        s=k20201202; t=1622992211;
+        bh=6SAVyd1SzFpYco+54dJsIay9qkBgHR9Q47j6DtBPqvk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=lKQw6RmlnW8/saMq4ls0pS4VxyyNwAOr+IyTQkXXtLDq55gbCUJLCNiDWL96NVxTp
+         RLWegtsAQUQqO3R3z4xhmU0uM6MDPkvcV/D7BIdx7DjPZ4nvg6J9iMevMycuKLJZQI
+         SvTRI52hIICbrfUi+u65yosDgFFc63IqtUuaBteBwqIsRJA6O3RfbfHs+cVsUS7vaK
+         B0pBMITIal0XHX/zR0So1v8MpqDcycFRWQJ5Ag59af1iwy4cIWV50UVMd2qIyV/Cz6
+         9hTJdxTg/rLWjqmqtOVXza3KvUxpWjJTDzWOCfmoo2b5BALYsU7mmanRx7FMcWRN32
+         bKw0vSXZTQOJw==
+Received: by pali.im (Postfix)
+        id 614017B9; Sun,  6 Jun 2021 17:10:08 +0200 (CEST)
+Date:   Sun, 6 Jun 2021 17:10:08 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     netdev@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        linux-kernel@vger.kernel.org
+Subject: Issues during assigning addresses on point to point interfaces
+Message-ID: <20210606151008.7dwx5ukrlvxt4t3k@pali>
 MIME-Version: 1.0
-References: <1622970249-50770-1-git-send-email-guoren@kernel.org>
- <1622970249-50770-10-git-send-email-guoren@kernel.org> <20210606143941.GA6032@lst.de>
-In-Reply-To: <20210606143941.GA6032@lst.de>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Sun, 6 Jun 2021 23:08:35 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSCqQkVEdGDuc3z_4XpDu0iSX-PZH-kYYUrVCMP7zuYcg@mail.gmail.com>
-Message-ID: <CAJF2gTSCqQkVEdGDuc3z_4XpDu0iSX-PZH-kYYUrVCMP7zuYcg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 06/11] riscv: pgtable: Add DMA_COHERENT with custom
- PTE attributes
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, wens@csie.org,
-        maxime@cerno.tech, Drew Fustini <drew@beagleboard.org>,
-        liush@allwinnertech.com,
-        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
-        wefu@redhat.com, linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 6, 2021 at 10:39 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> NAK, no SOC must ever mess with pagetable attributes.
+Hello!
 
-I don't think it messes with page table attributes. _PAGE_BASE
-contains variable won't cause any problem.
+Seems that there is a bug during assigning IP addresses on point to
+point interfaces.
 
--- 
-Best Regards
- Guo Ren
+Assigning just one local address works fine:
 
-ML: https://lore.kernel.org/linux-csky/
+    ip address add fe80::6 dev ppp1 --> inet6 fe80::6/128 scope link
+
+Assigning both local and remote peer address also works fine:
+
+    ip address add fe80::7 peer fe80::8 dev ppp1 ---> inet6 fe80::7 peer fe80::8/128 scope link
+
+But trying to assign just remote peer address does not work. Moreover
+"ip address" call does not fail, it returns zero but instead of setting
+remote peer address, it sets local address:
+
+    ip address add peer fe80::5 dev ppp1 --> inet6 fe80::5/128 scope link
+
+I suspect that this is a bug either in iproute2 "ip" utility or in
+kernel how it parse and process netlink messages.
+
+strace for the last command see this netlink packet:
+
+    sendmsg(3, {
+        msg_name={
+            sa_family=AF_NETLINK,
+            nl_pid=0,
+            nl_groups=00000000
+        },
+        msg_namelen=12,
+        msg_iov=[{
+            iov_base={
+                {
+                    len=44,
+                    type=RTM_NEWADDR,
+                    flags=NLM_F_REQUEST|NLM_F_ACK|NLM_F_EXCL|NLM_F_CREATE,
+                    seq=1622990155,
+                    pid=0
+                },
+                {
+                    ifa_family=AF_INET6,
+                    ifa_prefixlen=128,
+                    ifa_flags=0,
+                    ifa_scope=RT_SCOPE_UNIVERSE,
+                    ifa_index=if_nametoindex("ppp1")
+                },
+                {
+                    {
+                        nla_len=20,
+                        nla_type=IFA_ADDRESS
+                    },
+                    inet_pton(AF_INET6, "fe80::5")
+                }
+            },
+            iov_len=44
+        }],
+        msg_iovlen=1,
+        msg_controllen=0,
+        msg_flags=0
+    }, 0) = 44
+
+On the other hand strace for the first command (which assigns only local
+address) see following netlink packet:
+
+    sendmsg(3, {
+        msg_name={
+            sa_family=AF_NETLINK,
+            nl_pid=0,
+            nl_groups=00000000
+        },
+        msg_namelen=12,
+        msg_iov=[{
+            iov_base={
+                {
+                    len=64,
+                    type=RTM_NEWADDR,
+                    flags=NLM_F_REQUEST|NLM_F_ACK|NLM_F_EXCL|NLM_F_CREATE,
+                    seq=1622990488,
+                    pid=0
+                },
+                {
+                    ifa_family=AF_INET6,
+                    ifa_prefixlen=128,
+                    ifa_flags=0,
+                    ifa_scope=RT_SCOPE_UNIVERSE,
+                    ifa_index=if_nametoindex("ppp1")
+                },
+                [
+                    {
+                        {
+                            nla_len=20,
+                            nla_type=IFA_LOCAL
+                        },
+                        inet_pton(AF_INET6, "fe80::6")
+                    },
+                    {
+                        {
+                            nla_len=20,
+                            nla_type=IFA_ADDRESS
+                        },
+                        inet_pton(AF_INET6, "fe80::6")
+                    }
+                ]
+            },
+            iov_len=64
+        }],
+        msg_iovlen=1,
+        msg_controllen=0,
+        msg_flags=0
+    }, 0) = 64
+
+So it sends two addresses, one IFA_LOCAL, one IFA_ADDRESS, but both are
+same.
+
+For completeness here is strace output when assigning both local and
+remote peer address:
+
+    sendmsg(3, {
+        msg_name={
+            sa_family=AF_NETLINK,
+            nl_pid=0,
+            nl_groups=00000000
+        },
+        msg_namelen=12,
+        msg_iov=[{
+            iov_base={
+                {
+                    len=64,
+                    type=RTM_NEWADDR,
+                    flags=NLM_F_REQUEST|NLM_F_ACK|NLM_F_EXCL|NLM_F_CREATE,
+                    seq=1622990883,
+                    pid=0
+                },
+                {
+                    ifa_family=AF_INET6,
+                    ifa_prefixlen=128,
+                    ifa_flags=0,
+                    ifa_scope=RT_SCOPE_UNIVERSE,
+                    ifa_index=if_nametoindex("ppp1")
+                },
+                [
+                    {
+                        {
+                            nla_len=20,
+                            nla_type=IFA_LOCAL
+                        },
+                        inet_pton(AF_INET6, "fe80::7")
+                    },
+                    {
+                        {
+                            nla_len=20,
+                            nla_type=IFA_ADDRESS
+                        },
+                        inet_pton(AF_INET6, "fe80::8")
+                    }
+                ]
+            },
+            iov_len=64
+        }],
+        msg_iovlen=1,
+        msg_controllen=0,
+        msg_flags=0
+    }, 0) = 64
+
+Which means that IFA_LOCAL sets local address and IFA_ADDRESS sets
+remote peer address on point point interface.
+
+Therefore there are two suspicious things about address configuration on
+point to point interfaces:
+
+1) "ip address add fe80::6 dev ppp1" is trying to set not only local but
+   also remote peer address to fe80::6
+
+2) kernel does not configure remote peer address from IFA_ADDRESS when
+   local address via IFA_LOCAL is not specified in netlink packet
+
+
+For tests I used:
+
+    ip -V --> ip utility, iproute2-ss190107
+    uname -r -v -m --> 4.19.0-16-amd64 #1 SMP Debian 4.19.181-1 (2021-03-19) x86_64
