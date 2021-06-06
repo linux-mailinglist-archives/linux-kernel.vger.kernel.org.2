@@ -2,127 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEAB839CE13
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 10:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D32F439CE1F
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 10:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhFFIYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 04:24:31 -0400
-Received: from mail-mw2nam12on2088.outbound.protection.outlook.com ([40.107.244.88]:58287
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230258AbhFFIY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 04:24:29 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FgGReczPtyvgjhFBJE2d3XHGoz1FBKyULorCMj+M5J5X4YUDPjj8VrPZb6Ha3a/95IQKF5ftrsy1tPQS6IjhfZfGQwYCtCfRJQH7OJT9x87sDhIGWugdz6Dcnz5l2NZWBrKaqZ+QkiPP9RB31FRLid4meA3KtigfsVW7ZfFx9G9rnCmpO0fCFbZ+GNMlyQ33ORLFOQSzBzfmo666euqUOgqLQDegpIVVdPai0hyODA0r7UVNUQ8v3cTqjs9kPbt+Hz/EYrSb7xHreEcvvJBUCXl9MxU3dq5HJTJj3mWJlCZJZskHajKpOCw3gQT7CRk6sPwJV0UP59D6olYlUtqLaA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oG8VmMbc+i3+ywRgNnTrGbHx27HxSK7tNzOpd7aasF4=;
- b=BYIafJDe3Wu8TdmS4pN4lx8zbHqmLE5JFT3ZkWCj/SH3cFDBriUjEVPaQI3dKMVO7UNOwcSSAoBQ84yEphllzxns69GLVF+tn2yl5EK3+1tc585UuhCejRSgE1smzgsObbWYXiUP/ugdYVeT9yQtiEfJhxfQrc1SSjAJp1xLIgtLqG4yDLKqB4uzQ0IOJCc2Ns+EC3luKwqgelS9EUO7yFlQg+tQKo+ja+kttf1sjvAITnZ/JgDeJqN8wgmf5msvkpnxz3qpw95dF3CGw1YgeGsrz9841bfBkFQYrG39u1kckL4HKEf9BGe8zrxgtUkJhLJ4jEsS4OJZtTo7dwKKIQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.36) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oG8VmMbc+i3+ywRgNnTrGbHx27HxSK7tNzOpd7aasF4=;
- b=p9BlpfphdtI57BAKwb9yt27hhnGd7d0TIKFt+SIidIZprbOJ8yiDh6naS/qmiEWPAKHN2yW//CAGI7Rx5o+cyC61aMsM/t9kbjxsgSXJN1gp97RvztpDnSZtrSmRJuGQDwIQu7Vrb/EtLAovjynmaJQHhovE+fzH57X1+la15Vn09U9Dcz+wPxK9sQkyFigImFA6vJGfcA5JLU8L0oZViyA16fWgiw0J9bVdBgSmauDlYNoQ67t8Gip/yzeOqU3iZPxNW4lEh2d1jQ8ZmFm77ak9dhac9J6lxhxbOtLvt7hBY1ML3OtgQutjG+oVJsJ0HBhfoWHULBqOQO/I9M5oRg==
-Received: from MW4PR04CA0001.namprd04.prod.outlook.com (2603:10b6:303:69::6)
- by BN6PR12MB1329.namprd12.prod.outlook.com (2603:10b6:404:19::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.23; Sun, 6 Jun
- 2021 08:22:39 +0000
-Received: from CO1NAM11FT034.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:69:cafe::3b) by MW4PR04CA0001.outlook.office365.com
- (2603:10b6:303:69::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.23 via Frontend
- Transport; Sun, 6 Jun 2021 08:22:38 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.36)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.36 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.36; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.36) by
- CO1NAM11FT034.mail.protection.outlook.com (10.13.174.248) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4195.22 via Frontend Transport; Sun, 6 Jun 2021 08:22:38 +0000
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 6 Jun
- 2021 08:22:37 +0000
-Received: from buildserver-hdc-comms.nvidia.com (172.20.187.5) by
- mail.nvidia.com (172.20.187.18) with Microsoft SMTP Server id 15.0.1497.2 via
- Frontend Transport; Sun, 6 Jun 2021 08:22:34 +0000
-From:   Om Prakash Singh <omp@nvidia.com>
-To:     <kw@linux.com>, <helgaas@kernel.org>, <vidyas@nvidia.com>,
-        <lorenzo.pieralisi@arm.com>, <bhelgaas@google.com>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>
-CC:     <linux-tegra@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kthota@nvidia.com>,
-        <mmaddireddy@nvidia.com>, Om Prakash Singh <omp@nvidia.com>
-Subject: [PATCH V2 5/5] PCI: tegra: Cleanup unused code
-Date:   Sun, 6 Jun 2021 13:52:04 +0530
-Message-ID: <20210606082204.14222-6-omp@nvidia.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210606082204.14222-1-omp@nvidia.com>
-References: <20210606082204.14222-1-omp@nvidia.com>
-X-NVConfidentiality: public
+        id S230353AbhFFI0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 04:26:24 -0400
+Received: from mail-ej1-f50.google.com ([209.85.218.50]:39523 "EHLO
+        mail-ej1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230183AbhFFI0W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 04:26:22 -0400
+Received: by mail-ej1-f50.google.com with SMTP id l1so21403453ejb.6;
+        Sun, 06 Jun 2021 01:24:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N/vOnbubwerL0nc4R2J7xmAJRI2agwwqe8FU/KvYiSg=;
+        b=RkOuCWPUM3rS/puvGGtl+u6x/466zVzs6idAXCdCzv/oxKqF3p4g4BPEqIRFs4kv7+
+         n+huszyyrKlaX8ULmfxtaYiV4+viKf+yPqV/GVS6jrJieDVHmHzDqfQuRcnIOvJ3wzku
+         ZTbPdxB4LecEptg17ERwrQksLz/2W8EqqZmzXMt4pvq4Id3js1i9H7fe4A9YaD9/WSSB
+         FcSH1RwJJvOaiSQoZT4+GfTKRMFR3d9dPo/xbsJTTQKfrt37YTvpwflseGJbCjmbk4B8
+         UF6pslpmrctlSgTo15cWjq3sfi9Tf172+Ngv84Qx5ogwQAtxhB2AcLucKm775Yc8KfHS
+         KLTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N/vOnbubwerL0nc4R2J7xmAJRI2agwwqe8FU/KvYiSg=;
+        b=GlhN0qHfNVqcab8+63x1lRcX/0I0WMcD+gk6LYai/bpu9YbHOqj5SnPeGnZ3vDO75M
+         eZ/Y5ns/+Fj1xC3/PMjKqYL/Wt1e+++xcgJUTXS0DGJb2hpF5nscLXjz30Q3FaVpjMC0
+         CgrcFlkgXa+gLXGe3WowPhRI8tqoC07cPyyCN6T8Mp6IrGLxBhIOXbiqEBUXP5jxKGk4
+         z9fsklOEVaUUyoxHoAecYBrExrgczEV25RgA5yFGN1X1jhjU06QnNQgRyRqR34aGNmPb
+         9Tq7mzW9JoEgrbKD+NYZnAQ3vIvWNgr8ecXQVnLjlmxKO4C5v1Q/a3QP5DKhx/wMt/Os
+         KzPg==
+X-Gm-Message-State: AOAM531fwZgbqQqbBHmk1OqqCLTBz8zGNjBWBom5RhPwlx9fbU9xWtbq
+        Z0jsPrODaRnkNxn6DvF+2mRgiaaHYSw07w==
+X-Google-Smtp-Source: ABdhPJyAALTJE+uOjrSqsQrGA4Ld/5qb+yfFGBo+PZkaanH7pQiMtJjPAWsx+PCTFw+aTBgaJKjFug==
+X-Received: by 2002:a17:906:d1ce:: with SMTP id bs14mr13030518ejb.183.1622967812482;
+        Sun, 06 Jun 2021 01:23:32 -0700 (PDT)
+Received: from kista.localdomain (cpe-86-58-17-133.cable.triera.net. [86.58.17.133])
+        by smtp.gmail.com with ESMTPSA id y1sm4945908ejl.7.2021.06.06.01.23.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Jun 2021 01:23:32 -0700 (PDT)
+From:   Jernej Skrabec <jernej.skrabec@gmail.com>
+To:     mripard@kernel.org, paul.kocialkowski@bootlin.com
+Cc:     mchehab@kernel.org, gregkh@linuxfoundation.org, wens@csie.org,
+        hverkuil-cisco@xs4all.nl, ezequiel@collabora.com,
+        benjamin.gaignard@collabora.com, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Subject: [PATCH 0/2] media: cedrus: hevc: add support for multiple slices
+Date:   Sun,  6 Jun 2021 10:23:12 +0200
+Message-Id: <20210606082314.454193-1-jernej.skrabec@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 11619f53-b962-41b4-17f7-08d928c43ef7
-X-MS-TrafficTypeDiagnostic: BN6PR12MB1329:
-X-Microsoft-Antispam-PRVS: <BN6PR12MB13298800F7C9C89918B3953FDA399@BN6PR12MB1329.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:327;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /I913n5bmvPsL8628QYPRt0KIzNTfU/cRSBOYzxRHuvs4/tHzUSGTbf3xz/O6MlPdTxaovtlKe2sMkZ3a2NgaWHRtpqjlozRUz+rnSl36Vomwx2JIAoiQpJefDC54c+NBdlWETSJzQFvV/y5dGJARcQColmE5FSAG5aMzKfsRHHSh7UCt2tXqEPrtPil1HMXeNk7Qti1nAT2E/xIeNH6vMFJjo3zEY+2a1XBzfA1s/L7kK+8Glu8AM1RIgm1obZs9Cl+Ce6JeiDA6AvuyUlTK/hTT3YJUtaI12VKNoiBYYW0sj1WaiWAyOwqhexiT2IvYryPlgcWZjwu1R+xM68aj0t4j1oM1Q/L3btW0dRYNNwMlPErYMOLXs9LN55AKE87HtAI+1punt/KTIm+1gHQ5+yjJg/MIJmiYIYmKOROmAQht5MFneJApTNx6H78XMIx+8bgk243FqrCogsKKemQiGd0xHbvZQtaxqGMOCPxjKPDdSpSokroV3/4prdN49DdjhxQFyxacdzvFKaUcuSFajB2mjaG0kTF01n19XjTmbODFfGCk9n/vFeS6Qv1qjqyWAn106dM05Q0kX5wGFRgnvrz/z3/9LRVLCkKRm73MLtHKJIhLGzhGwJYAZ4IiQE8bqUIvN1ZPkI4MkFjrzzZ6gcyjlZ68ll4biv2zndxbwQ=
-X-Forefront-Antispam-Report: CIP:216.228.112.36;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid05.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(136003)(39860400002)(46966006)(36840700001)(2616005)(107886003)(426003)(82310400003)(83380400001)(336012)(6666004)(86362001)(7636003)(356005)(54906003)(5660300002)(110136005)(316002)(4744005)(4326008)(82740400003)(8676002)(7696005)(70586007)(36860700001)(36906005)(36756003)(26005)(1076003)(6636002)(186003)(47076005)(2906002)(70206006)(478600001)(8936002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jun 2021 08:22:38.3574
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 11619f53-b962-41b4-17f7-08d928c43ef7
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.36];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT034.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1329
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused code from function tegra_pcie_config_ep.
+HEVC frames can be encoded in multiple slices. This short series add
+supports for them. First patch adds slice_segment_address to HEVC slice
+parameters and second patch implements HEVC multi slice support in
+Cedrus.
 
-Signed-off-by: Om Prakash Singh <omp@nvidia.com>
----
+Question 1: HEVC specs talk about slice_segment_address, but "slice_"
+prefix seems redundant in our case, because this field is part of slice
+params structure. Should I drop it or leave it?
 
-Changes in V2:
-	- No change
+Question 2: I made slice_segment_address __u32 but __u16 might be
+already enough. Which one should it be?
 
- drivers/pci/controller/dwc/pcie-tegra194.c | 7 -------
- 1 file changed, 7 deletions(-)
+Note: These patches depends on following pull request:
+https://www.spinics.net/lists/linux-media/msg193744.html
 
-diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-index ae4c0a29818d..e9d573c850dd 100644
---- a/drivers/pci/controller/dwc/pcie-tegra194.c
-+++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-@@ -2045,13 +2045,6 @@ static int tegra_pcie_config_ep(struct tegra_pcie_dw *pcie,
- 		return ret;
- 	}
- 
--	name = devm_kasprintf(dev, GFP_KERNEL, "tegra_pcie_%u_ep_work",
--			      pcie->cid);
--	if (!name) {
--		dev_err(dev, "Failed to create PCIe EP work thread string\n");
--		return -ENOMEM;
--	}
--
- 	pm_runtime_enable(dev);
- 
- 	ret = dw_pcie_ep_init(ep);
+Jernej Skrabec (2):
+  media: hevc: Add segment address field
+  media: cedrus: hevc: Add support for multiple slices
+
+ .../media/v4l/ext-ctrls-codec.rst             |  3 +++
+ .../staging/media/sunxi/cedrus/cedrus_h265.c  | 26 ++++++++++++-------
+ .../staging/media/sunxi/cedrus/cedrus_video.c |  1 +
+ include/media/hevc-ctrls.h                    |  3 ++-
+ 4 files changed, 22 insertions(+), 11 deletions(-)
+
 -- 
-2.17.1
+2.31.1
 
