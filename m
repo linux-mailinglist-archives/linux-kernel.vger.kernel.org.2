@@ -2,69 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 909EA39D065
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 20:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57AC739D067
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 20:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbhFFSR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 14:17:26 -0400
-Received: from mx3.wp.pl ([212.77.101.9]:49986 "EHLO mx3.wp.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230147AbhFFSRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 14:17:23 -0400
-Received: (wp-smtpd smtp.wp.pl 26224 invoked from network); 6 Jun 2021 20:15:30 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
-          t=1623003330; bh=S2klCgJAmaBVPeN2YQ5na+TGsXxz0uC1PvtFIIoyahI=;
-          h=From:To:Subject;
-          b=cAl85gL/yAfswe7EVhJftNHxMp936T/W3Kfx2seFBXudWC5IACi0rv4UkhqmSl5kC
-           yKWgTC/wX60wWeyvXHSoqcDzCIgnEe6Tfayec9YakHD8kNEeILAbz3BOizvOJOTYMy
-           D831iVTNZOJtuzc7VOmXlG80urxDl/qAqHe3bpgI=
-Received: from riviera.nat.ds.pw.edu.pl (HELO LAPTOP-OLEK.lan) (olek2@wp.pl@[194.29.137.1])
-          (envelope-sender <olek2@wp.pl>)
-          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <tsbogend@alpha.franken.de>; 6 Jun 2021 20:15:30 +0200
-From:   Aleksander Jan Bajkowski <olek2@wp.pl>
-To:     tsbogend@alpha.franken.de, olek2@wp.pl, linux-mips@vger.kernel.org,
+        id S230235AbhFFSSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 14:18:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230155AbhFFSSf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 14:18:35 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DC6AC061766;
+        Sun,  6 Jun 2021 11:16:43 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id dj8so17396997edb.6;
+        Sun, 06 Jun 2021 11:16:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=07UrgWTUrvd41OIpiSSSUai1/EscZkb/oDXQgnTVOVI=;
+        b=RlJFng2oujbRP5GmKodhuSw5e/WwTGOcywGxdKk8ouL5YU4vWtadBbFGSXkUNyTsB/
+         ToMJ+hdBs4gvdlUGY8lwhKW08UwYA8nxey0Bsddke4R/5GXqj1AI1GcCvbnZbOkPjhrT
+         VFe6gSObR/KBdGEN4MVUf3/XIt1g0BDui0F2wZlXcej+YS/puUFdrSFXdeWH+WxPiQw7
+         3X7Go0d+46aCDQ56uFFjrQz5HTonaeaaVKpRll05f07Y4TX6GLQf4mXs5KitNBnYeot8
+         3FxukhV4yxRRJwCxy0bdyJStLB1klCzonsc8shFXPhsKUg5RLrqD9D2ubC4y3qaA9tlV
+         8iEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=07UrgWTUrvd41OIpiSSSUai1/EscZkb/oDXQgnTVOVI=;
+        b=Z6XD0YWujaDbh3XibV8SZplsnpbrmsBTW9CSc+SnADu+6iOrzS68wjrEWTUib8bbPA
+         /wSLY9l0KtkIBVo4WqD/XJbzYo44OhIA6xaG8vtfKggAHse/9ngZcPJwJODaQDv34yJJ
+         L91AYoSy0aZ92ncZKeyqLGCOIkl5R9mjed8/ccxF02e+kQiTHcclBUqkBgrJgtg/tlup
+         oZnX/QIAfUR0LOAyAxsGYvnxC5IF3hiLNdQz+XgNSnpppK37vtxCC85cn1ar6UKqaP5+
+         KCOHXAC2kBi4vKC+ekawoPJpZYphePGaIHPh73ziuUDzzoJKHSpZR6tnqeWWE7UB8V/f
+         m1kQ==
+X-Gm-Message-State: AOAM5330YcG2/UFwtssHkVDrb9rjJUMJx6YqmLK9lzxOpuL4jtiDLgP5
+        fcVWEbaCeMXQ4rMLOO2ZoABqsct5JhW+Qg==
+X-Google-Smtp-Source: ABdhPJybhG2sFlGgCbW76SCPoPv85702fLqv89akUJ8LhblfPozxj/blYPKtMYJPABXwj3KRqfqXcg==
+X-Received: by 2002:aa7:db90:: with SMTP id u16mr16072806edt.106.1623003401891;
+        Sun, 06 Jun 2021 11:16:41 -0700 (PDT)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id qq26sm4415932ejb.6.2021.06.06.11.16.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 06 Jun 2021 11:16:41 -0700 (PDT)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 1/1] MIPS: smp-mt: enable all hardware interrupts on second VPE
-Date:   Sun,  6 Jun 2021 20:15:25 +0200
-Message-Id: <20210606181525.761333-2-olek2@wp.pl>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210606181525.761333-1-olek2@wp.pl>
-References: <20210606181525.761333-1-olek2@wp.pl>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-WP-MailID: f8043a694713caab3a944cc00f95c0d9
-X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000000 [MXOU]                               
+Subject: [PATCH] ARM: dts: rockchip: fix supply properties in io-domains nodes
+Date:   Sun,  6 Jun 2021 20:16:32 +0200
+Message-Id: <20210606181632.13371-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is needed to handle interrupts by the second VPE on Lantiq.
-It seems the Lantiq SoC is using all the hardware interrupt lines.
-Currently changing smp_affinity to the second VPE hangs interrupts.
+A test with rockchip-io-domain.yaml gives notifications
+for supply properties in io-domains nodes.
+Fix them all into ".*-supply$" format.
 
-Tested on lantiq xRX200 and xRX330 (MIPS 34Kc core).
-
-Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
- arch/mips/kernel/smp-mt.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/arm/boot/dts/rk3288-rock2-som.dtsi | 2 +-
+ arch/arm/boot/dts/rk3288-vyasa.dts      | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/kernel/smp-mt.c b/arch/mips/kernel/smp-mt.c
-index 5f04a0141068..f21cd0eb1fa7 100644
---- a/arch/mips/kernel/smp-mt.c
-+++ b/arch/mips/kernel/smp-mt.c
-@@ -113,8 +113,7 @@ static void vsmp_init_secondary(void)
- 					 STATUSF_IP4 | STATUSF_IP5 |
- 					 STATUSF_IP6 | STATUSF_IP7);
- 	else
--		change_c0_status(ST0_IM, STATUSF_IP0 | STATUSF_IP1 |
--					 STATUSF_IP6 | STATUSF_IP7);
-+		set_c0_status(ST0_IM);
- }
- 
- static void vsmp_smp_finish(void)
+diff --git a/arch/arm/boot/dts/rk3288-rock2-som.dtsi b/arch/arm/boot/dts/rk3288-rock2-som.dtsi
+index 44bb5e6f8..76363b8af 100644
+--- a/arch/arm/boot/dts/rk3288-rock2-som.dtsi
++++ b/arch/arm/boot/dts/rk3288-rock2-som.dtsi
+@@ -218,7 +218,7 @@
+ 	flash0-supply = <&vcc_flash>;
+ 	flash1-supply = <&vccio_pmu>;
+ 	gpio30-supply = <&vccio_pmu>;
+-	gpio1830 = <&vcc_io>;
++	gpio1830-supply = <&vcc_io>;
+ 	lcdc-supply = <&vcc_io>;
+ 	sdcard-supply = <&vccio_sd>;
+ 	wifi-supply = <&vcc_18>;
+diff --git a/arch/arm/boot/dts/rk3288-vyasa.dts b/arch/arm/boot/dts/rk3288-vyasa.dts
+index aa50f8ed4..b156a83eb 100644
+--- a/arch/arm/boot/dts/rk3288-vyasa.dts
++++ b/arch/arm/boot/dts/rk3288-vyasa.dts
+@@ -379,10 +379,10 @@
+ 	audio-supply = <&vcc_18>;
+ 	bb-supply = <&vcc_io>;
+ 	dvp-supply = <&vcc_io>;
+-	flash0-suuply = <&vcc_18>;
++	flash0-supply = <&vcc_18>;
+ 	flash1-supply = <&vcc_lan>;
+ 	gpio30-supply = <&vcc_io>;
+-	gpio1830 = <&vcc_io>;
++	gpio1830-supply = <&vcc_io>;
+ 	lcdc-supply = <&vcc_io>;
+ 	sdcard-supply = <&vccio_sd>;
+ 	wifi-supply = <&vcc_18>;
 -- 
-2.30.2
+2.11.0
 
