@@ -2,555 +2,440 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B98239CBC5
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 01:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9729C39CBCB
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 02:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbhFEX5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 19:57:36 -0400
-Received: from mga07.intel.com ([134.134.136.100]:42373 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230022AbhFEX5g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 19:57:36 -0400
-IronPort-SDR: El8JvkTMgEqlYDkBzdxls2JwrBV4YCOZSdigrIghDbg8McADQ40bRN2ZX6Dk+/+9qdbJOMzwOG
- 7aAx6D3A5cHA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10006"; a="268328409"
-X-IronPort-AV: E=Sophos;i="5.83,252,1616482800"; 
-   d="gz'50?scan'50,208,50";a="268328409"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2021 16:55:45 -0700
-IronPort-SDR: fWaUZURqaioJjRZwMhi+erRFnxP0l8KJ/1QvHdfkvZxEv02sJBHrOIk2TeosJhcEAmhSuzPkfO
- 0bQWdCYMtb2w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,252,1616482800"; 
-   d="gz'50?scan'50,208,50";a="448685385"
-Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 05 Jun 2021 16:55:43 -0700
-Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lpg8l-0007g7-Jj; Sat, 05 Jun 2021 23:55:43 +0000
-Date:   Sun, 6 Jun 2021 07:55:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: include/linux/compiler_types.h:319:38: error: call to
- '__compiletime_assert_234' declared with attribute error: BUILD_BUG_ON
- failed: FIX_KMAP_SLOTS > PTRS_PER_PTE
-Message-ID: <202106060721.1ayIJN4Z-lkp@intel.com>
+        id S230136AbhFFAGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 20:06:01 -0400
+Received: from mail-bn8nam12on2047.outbound.protection.outlook.com ([40.107.237.47]:51361
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230084AbhFFAGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Jun 2021 20:06:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Zb23E4Nq4gp5/mwBedaHDPpBFhyxS09oJRteG2STcNiKUH+ZnJgTUcIeBeRvwmGMP28bSYO2szQsNKH1mHJoUZ7b9QrM+s1oafi7HAVifb3SL0cksNmgwO5tIGjkDCjnjX4X2brV/TLi+ORJPpjuS+X+g+Qlcjps/+gfH4mztS7725CYccj+4ovkMANYzeKv3nWkk43jV2l2e4N6z9MwD+jUsI4UlG0ZKyLBs2LWDDtdueURneliKkOGqKwAbpGSGZgrtwB2uamecRTVUiqet+7dQ4Z4rXxp0y8QH2ugi1QyrZ6TtsDsXgVcPLt8poGrksEqL88SEp7N+pIdipxljQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=toravh5CONJ2Bv5nbQv4zFXFq1TzPUi+jzrE0lz2nxY=;
+ b=YeeNmri2gmn7Prsg3Nkem3V8+GGmdtfN6WtdpqdfsbDFKkWzTlDsvZQfzsIlwJodj/bEyvtsEVtsEfyQ0HgX0XunMw2wLrsajTK4Dk4gwdKRKT/vC6WkkRNoPbNmAa6dioZsn81pNkYXFk7ucmh6yPP+ZyMAEm6CRvYtDCa8VoUj/c9Z6+bJi7LqdmpF61Gt9i6QLGOv7+NR89F8wLXjJTlDA1W6Z7vzEWtPV92UembIt5VriNBLANxg3KhhC5MM9m2veB5uiYkSAQWLORR3w5++1iuqD3/wOliEQ8n0OnOGR+CRSwzciHY8L3t0Hy7Wf+W+y1n49jqPGaCe4tPWkw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=toravh5CONJ2Bv5nbQv4zFXFq1TzPUi+jzrE0lz2nxY=;
+ b=XukbS2KzOan44Kjr9mX1PKJZ0WRc77NBmVQqu4TIA20WIpJ4EvcdpE8IMuwplYJL9MXfWOhmW2nAYg0bnGyRLjRMPoY3HZb8cP+gWEfogipZOtAPil3VyDU+KaN39suDbATqIHWoJTRbKLPsQrLClpF3sO9S+ZTe7Pe7y/e71CyB09PDeH0jPYPmJCIxDaBBG49n6hk30t0MOmmxJR3RPLWMgASjkdIrbjGVJLJCMrRizfhMtgX5kyp4o7vPjRJYnQQ99H3Qtp3bg1yLf7y7pUw7Nxedr2n72D0XxZ7V1iW1lWxKsdEovDxJbARorbcEc2TqGfUXsLk0THyKtctWWg==
+Received: from CO2PR04CA0198.namprd04.prod.outlook.com (2603:10b6:104:5::28)
+ by DM6PR12MB4747.namprd12.prod.outlook.com (2603:10b6:5:30::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.21; Sun, 6 Jun
+ 2021 00:04:10 +0000
+Received: from CO1NAM11FT034.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:104:5:cafe::b2) by CO2PR04CA0198.outlook.office365.com
+ (2603:10b6:104:5::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20 via Frontend
+ Transport; Sun, 6 Jun 2021 00:04:10 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT034.mail.protection.outlook.com (10.13.174.248) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4195.22 via Frontend Transport; Sun, 6 Jun 2021 00:04:09 +0000
+Received: from [10.20.112.58] (172.20.187.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 6 Jun
+ 2021 00:04:07 +0000
+From:   Shanker R Donthineni <sdonthineni@nvidia.com>
+Subject: Re: [PATCH v5 5/7] PCI: Add support for a function level reset based
+ on _RST method
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Amey Narkhede <ameynarkhede03@gmail.com>
+CC:     Bjorn Helgaas <bhelgaas@google.com>, <alex.williamson@redhat.com>,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kw@linux.com>, Sinan Kaya <okaya@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+References: <20210605205317.GA2254430@bjorn-Precision-5520>
+Message-ID: <5d1b9b9b-568a-d581-8938-cac174a22f7a@nvidia.com>
+Date:   Sat, 5 Jun 2021 19:04:05 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="pWyiEgJYm5f9v55/"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210605205317.GA2254430@bjorn-Precision-5520>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 81617498-62a6-4fd4-307b-08d9287e9c0e
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4747:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB47473AE59B8E97209D2DDB32C7399@DM6PR12MB4747.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:597;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lqMcKa+eKzgOUcDwBZv5RG4kBSlKFauI9CD4Rp1Avtzsvx7fji2mBiQGfWbmVMSc9oGN/ZUyaila6j3iNjafCLWEq+vtjiCehtqYzScSwP70/k5aVqhQ1DdzkBjNiVwPrPTAzkYydqGb5SDS8ILnTC5p2z7yLXNl23D+cSzfZRLtjFuMzZgsgJezpfzaXqB/mYyUhZP6yuyoe3IpqiL/zzkqpY1qa0vsc8kZa2hMHdgDhE+9+wMVNxFhqk1RwNEtZVWBrO9gXcvNonjUOG7H5NLWgw1BNGlnLbvRTmYpHOAxi65aM7Z2nfdHajk+JI32Oa6GdvpBYeqhBjXrShvJK8vTw8WSmjNyuHsFb/ymIqJclNel2Bg0PzoGqXARlrMAYGPYtf1MdUSvo1ppb13X4oxvT370iApJWc3xfLIx0yQ1oLhPkogzyppTENETaU1DhDkK3xPSUhP5rLZhuJpU1fkJhfLkIKNSpMiaA7906GdE7vWP4MM0EIGimf8kh0wNC3Dzpb/58z1yXUDP+wP16F7gDSl7tWwa/KeleX+2EOk4RYz0ubxN4UOHvORo13Tb+gW0wrBb5iazD38aYCYsjO4mjhxKirid9/WBzSY8mty98Cf5mCWscD+v5lcQNz4W8Z/WusutwhO7+WWemKo4PiL5l9mTE1gA4z1m5lxeHPSVbT+YCVGSnGZyBh5pTamI
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(39860400002)(136003)(46966006)(36840700001)(26005)(2906002)(16576012)(316002)(53546011)(30864003)(16526019)(54906003)(110136005)(5660300002)(186003)(47076005)(31686004)(31696002)(36860700001)(86362001)(7416002)(82740400003)(336012)(7636003)(4326008)(8936002)(36756003)(478600001)(8676002)(2616005)(36906005)(70206006)(70586007)(356005)(82310400003)(426003)(83380400001)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jun 2021 00:04:09.7698
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 81617498-62a6-4fd4-307b-08d9287e9c0e
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT034.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4747
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Bjorn,
 
---pWyiEgJYm5f9v55/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 6/5/21 3:53 PM, Bjorn Helgaas wrote:
+> Mention ACPI in the subject, e.g.,
+>
+>   PCI: Add support for ACPI _RST reset method
+Will change in the next patch.
+> On Sun, May 30, 2021 at 12:55:25AM +0530, Amey Narkhede wrote:
+>> From: Shanker Donthineni <sdonthineni@nvidia.com>
+>>
+>> The _RST is a standard method specified in the ACPI specification. It
+>> provides a function level reset when it is described in the acpi_device
+>> context associated with PCI-device.
+>>
+>> Implement a new reset function pci_dev_acpi_reset() for probing RST
+>> method and execute if it is defined in the firmware. The ACPI binding
+>> information is available only after calling device_add(). To consider
+>> _RST method, move pci_init_reset_methods() to end of pci_device_add()
+>> and craete two sysfs entries reset & reset_methond from
+>> pci_create_sysfs_dev_files()
+> s/craete/create/
+> s/reset_methond/reset_method/
+Will fix it.
+>> The default priority of the acpi reset is set to below device-specific
+>> and above hardware resets.
+> s/acpi/ACPI/
+Will fix it.
+>> Signed-off-by: Shanker Donthineni <sdonthineni@nvidia.com>
+>> Reviewed-by: Sinan Kaya <okaya@kernel.org>
+>> ---
+>>  drivers/pci/pci-sysfs.c | 23 ++++++++++++++++++++---
+>>  drivers/pci/pci.c       | 30 ++++++++++++++++++++++++++++++
+>>  drivers/pci/probe.c     |  2 +-
+>>  include/linux/pci.h     |  2 +-
+>>  4 files changed, 52 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+>> index 04b3d6565..b332d7923 100644
+>> --- a/drivers/pci/pci-sysfs.c
+>> +++ b/drivers/pci/pci-sysfs.c
+>> @@ -1482,12 +1482,30 @@ static const struct attribute_group pci_dev_reset_attr_group = {
+>>       .is_visible = pci_dev_reset_attr_is_visible,
+>>  };
+>>
+>> +const struct attribute_group *pci_dev_reset_groups[] = {
+>> +     &pci_dev_reset_attr_group,
+>> +     &pci_dev_reset_method_attr_group,
+>> +     NULL,
+>> +};
+> These should be static sysfs attributes if possible, e.g., see
+> e1d3f3268b0e ("PCI/sysfs: Convert "config" to static attribute").
+> pci_create_sysfs_dev_files() will soon be removed completely.
+>
+>>  int __must_check pci_create_sysfs_dev_files(struct pci_dev *pdev)
+>>  {
+>> +     int retval;
+>> +
+>>       if (!sysfs_initialized)
+>>               return -EACCES;
+>>
+>> -     return pci_create_resource_files(pdev);
+>> +     retval = pci_create_resource_files(pdev);
+>> +     if (retval)
+>> +             return retval;
+>> +
+>> +     retval = device_add_groups(&pdev->dev, pci_dev_reset_groups);
+>> +     if (retval) {
+>> +             pci_remove_resource_files(pdev);
+>> +             return retval;
+>> +     }
+>> +
+>> +     return 0;
+>>  }
+>>
+>>  /**
+>> @@ -1501,6 +1519,7 @@ void pci_remove_sysfs_dev_files(struct pci_dev *pdev)
+>>       if (!sysfs_initialized)
+>>               return;
+>>
+>> +     device_remove_groups(&pdev->dev, pci_dev_reset_groups);
+>>       pci_remove_resource_files(pdev);
+>>  }
+>>
+>> @@ -1594,8 +1613,6 @@ const struct attribute_group *pci_dev_groups[] = {
+>>       &pci_dev_group,
+>>       &pci_dev_config_attr_group,
+>>       &pci_dev_rom_attr_group,
+>> -     &pci_dev_reset_attr_group,
+>> -     &pci_dev_reset_method_attr_group,
+>>       &pci_dev_vpd_attr_group,
+>>  #ifdef CONFIG_DMI
+>>       &pci_dev_smbios_attr_group,
+>> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+>> index bbed852d9..4a7019d0b 100644
+>> --- a/drivers/pci/pci.c
+>> +++ b/drivers/pci/pci.c
+>> @@ -5115,6 +5115,35 @@ static void pci_dev_restore(struct pci_dev *dev)
+>>               err_handler->reset_done(dev);
+>>  }
+>>
+>> +/**
+>> + * pci_dev_acpi_reset - do a function level reset using _RST method
+>> + * @dev: device to reset
+>> + * @probe: check if _RST method is included in the acpi_device context.
+>> + */
+>> +static int pci_dev_acpi_reset(struct pci_dev *dev, int probe)
+>> +{
+>> +#ifdef CONFIG_ACPI
+>> +     acpi_handle handle = ACPI_HANDLE(&dev->dev);
+>> +
+>> +     /* Return -ENOTTY if _RST method is not included in the dev context */
+>> +     if (!handle || !acpi_has_method(handle, "_RST"))
+>> +             return -ENOTTY;
+>> +
+>> +     /* Return 0 for probe phase indicating that we can reset this device */
+>> +     if (probe)
+>> +             return 0;
+>> +
+>> +     /* Invoke _RST() method to perform a function level reset */
+> Superfluous comment.  Actually all the single-line comments here are
+> superfluous.
+Will remove in the next patch.
+>> +     if (ACPI_FAILURE(acpi_evaluate_object(handle, "_RST", NULL, NULL))) {
+>> +             pci_warn(dev, "Failed to reset the device\n");
+> The message should mention the type of reset, e.g., "ACPI _RST failed ..."
+>
+Will change to pci_warn(dev, "ACPI _RST failed\n");
+>> +             return -EINVAL;
+>> +     }
+>> +     return 0;
+>> +#else
+>> +     return -ENOTTY;
+>> +#endif
+>> +}
+>> +
+>>  /*
+>>   * The ordering for functions in pci_reset_fn_methods
+>>   * is required for reset_methods byte array defined
+>> @@ -5122,6 +5151,7 @@ static void pci_dev_restore(struct pci_dev *dev)
+>>   */
+>>  const struct pci_reset_fn_method pci_reset_fn_methods[] = {
+>>       { &pci_dev_specific_reset, .name = "device_specific" },
+>> +     { &pci_dev_acpi_reset, .name = "acpi" },
+>>       { &pcie_reset_flr, .name = "flr" },
+>>       { &pci_af_flr, .name = "af_flr" },
+>>       { &pci_pm_reset, .name = "pm" },
+>> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+>> index 90fd4f61f..eeab791a0 100644
+>> --- a/drivers/pci/probe.c
+>> +++ b/drivers/pci/probe.c
+>> @@ -2404,7 +2404,6 @@ static void pci_init_capabilities(struct pci_dev *dev)
+>>       pci_rcec_init(dev);             /* Root Complex Event Collector */
+>>
+>>       pcie_report_downtraining(dev);
+>> -     pci_init_reset_methods(dev);
+>>  }
+>>
+>>  /*
+>> @@ -2495,6 +2494,7 @@ void pci_device_add(struct pci_dev *dev, struct pci_bus *bus)
+>>       dev->match_driver = false;
+>>       ret = device_add(&dev->dev);
+>>       WARN_ON(ret < 0);
+>> +     pci_init_reset_methods(dev);
+> This is a little sketchy.  We shouldn't be doing device config stuff
+> after device_add() because that's when it becomes available for
+> drivers to bind to the device.  If we do anything with the device
+> after that point, we may interfere with a driver.
+The reason I did PCI driver attach/bind is happening from pci_bus_add_device()
+after setting 'dev->match_driver = true'. I thought it's safe to update reset
+methods after calling device_add() and before driver bind happens.
 
-Hi Thomas,
+void pci_bus_add_device(struct pci_dev *dev)
+{
+    int retval;
 
-FYI, the error/warning still remains.
+    /*
+     * Can not put in pci_device_add yet because resources
+     * are not assigned yet for some devices.
+     */
+    pcibios_bus_add_device(dev);
+    pci_fixup_device(pci_fixup_final, dev);
+    pci_create_sysfs_dev_files(dev);
+    pci_proc_attach_device(dev);
+    pci_bridge_d3_update(dev);
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   f5b6eb1e018203913dfefcf6fa988649ad11ad6e
-commit: 39cac191ff37939544af80d5d2af6b870fd94c9b arc/mm/highmem: Use generic kmap atomic implementation
-date:   7 months ago
-config: arc-randconfig-r031-20210606 (attached as .config)
-compiler: arceb-elf-gcc (GCC) 9.3.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=39cac191ff37939544af80d5d2af6b870fd94c9b
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout 39cac191ff37939544af80d5d2af6b870fd94c9b
-        # save the attached .config to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=arc 
+    dev->match_driver = true;     
+    retval = device_attach(&dev->dev);  ---- > PCI driver bind call
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+> I think the problem is that we don't call acpi_bind_one() until
+> device_add().  There's some hackery in pci-acpi.c to deal with a
+> similar problem for something else -- see acpi_pci_bridge_d3().
+>
+> I don't know how to fix this yet.  Here's the call graph that I think
+> is relevant:
+>
+>   pci_scan_single_device
+>     pci_scan_device
+>       pci_set_of_node
+>         dev->dev.of_node = of_pci_find_child_device()  <-- set OF stuff
+>     pci_device_add
+>       device_add
+>         device_platform_notify
+>           acpi_platform_notify
+>             case KOBJ_ADD:
+>               acpi_device_notify
+>                 acpi_bind_one
+>                   ACPI_COMPANION_SET()       <-- sets ACPI_COMPANION
+>       pci_init_reset_methods
+>         pci_dev_acpi_reset(PCI_RESET_PROBE)
+>           handle = ACPI_HANDLE(&dev->dev)    <-- uses ACPI_COMPANION
+>
+> I think it's kind of a general problem that we currently don't have
+> access to the ACPI stuff until *after* device_add().  I included
+> pci_set_of_node() in the graph above because that seems sort of
+> like an OF analogue of what acpi_bind_one() is doing.
+>
+> I would really like to do the ACPI_COMPANION setup earlier, maybe
+> at the same time as pci_set_of_node().  But I don't know enough about
+> what acpi_bind_one() does -- there's a lot going on in there.
+>
+Yes, it's a general problem ACPI binding information is available only after
+calling device_platform_notify(). There are no exported functions to set
+the ACPI_COMPANION like OF_NODE.
 
-All errors (new ones prefixed by >>):
+Another approach: It simplifies the code logic if we update reset methods
+when creating sysfs entries 'reset' and 'reset_method'. I've verified this
+code and getting an expected behavior.
 
-   In file included from <command-line>:
-   arch/arc/mm/highmem.c: In function 'kmap_init':
->> include/linux/compiler_types.h:319:38: error: call to '__compiletime_assert_234' declared with attribute error: BUILD_BUG_ON failed: FIX_KMAP_SLOTS > PTRS_PER_PTE
-     319 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |                                      ^
-   include/linux/compiler_types.h:300:4: note: in definition of macro '__compiletime_assert'
-     300 |    prefix ## suffix();    \
-         |    ^~~~~~
-   include/linux/compiler_types.h:319:2: note: in expansion of macro '_compiletime_assert'
-     319 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |  ^~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-         |                                     ^~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:50:2: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-      50 |  BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-         |  ^~~~~~~~~~~~~~~~
-   arch/arc/mm/highmem.c:69:2: note: in expansion of macro 'BUILD_BUG_ON'
-      69 |  BUILD_BUG_ON(FIX_KMAP_SLOTS > PTRS_PER_PTE);
-         |  ^~~~~~~~~~~~
+root@jetson:~# cat /sys/bus/pci/devices/0009\:01\:00.0/reset_method
+acpi,flr
+
+--- a/drivers/pci/pci-sysfs.c
++++ b/drivers/pci/pci-sysfs.c
+@@ -1427,7 +1427,7 @@ static umode_t pci_dev_reset_method_attr_is_visible(struct kobject *kobj,
+ {
+        struct pci_dev *pdev = to_pci_dev(kobj_to_dev(kobj));
+
+-       if (!pci_reset_supported(pdev))
++       if (!pci_reset_supported(pdev) && !pci_init_reset_methods(pdev))
+                return 0;
+
+        return a->mode;
+@@ -1471,7 +1471,7 @@ static umode_t pci_dev_reset_attr_is_visible(struct kobject *kobj,
+ {
+        struct pci_dev *pdev = to_pci_dev(kobj_to_dev(kobj));
+
+-       if (!pci_reset_supported(pdev))
++       if (!pci_reset_supported(pdev) && !pci_init_reset_methods(pdev))
+                return 0;
+
+        return a->mode;
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index bbed852d977f1..13654255fa3dc 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -5115,6 +5115,32 @@ static void pci_dev_restore(struct pci_dev *dev)
+                err_handler->reset_done(dev);
+ }
++/**
++ * pci_dev_acpi_reset - do a function level reset using _RST method
++ * @dev: device to reset
++ * @probe: check if _RST method is included in the acpi_device context.
++ */
++static int pci_dev_acpi_reset(struct pci_dev *dev, int probe)
++{
++#ifdef CONFIG_ACPI
++       acpi_handle handle = ACPI_HANDLE(&dev->dev);
++
++       if (!handle || !acpi_has_method(handle, "_RST"))
++               return -ENOTTY;
++
++       if (probe)
++               return 0;
++
++       if (ACPI_FAILURE(acpi_evaluate_object(handle, "_RST", NULL, NULL))) {
++               pci_warn(dev, "ACPI _RST failed\n");
++               return -EINVAL;
++       }
++       return 0;
++#else
++       return -ENOTTY;
++#endif
++}
++
+ /*
+  * The ordering for functions in pci_reset_fn_methods
+  * is required for reset_methods byte array defined
+@@ -5122,6 +5148,7 @@ static void pci_dev_restore(struct pci_dev *dev)
+  */
+ const struct pci_reset_fn_method pci_reset_fn_methods[] = {
+        { &pci_dev_specific_reset, .name = "device_specific" },
++       { &pci_dev_acpi_reset, .name = "acpi" },
+        { &pcie_reset_flr, .name = "flr" },
+        { &pci_af_flr, .name = "af_flr" },
+        { &pci_pm_reset, .name = "pm" },
+@@ -5191,7 +5218,7 @@ EXPORT_SYMBOL_GPL(__pci_reset_function_locked);
+  * Stores reset mechanisms supported by device in reset_methods byte array
+  * which is a member of struct pci_dev.
+  */
+-void pci_init_reset_methods(struct pci_dev *dev)
++bool pci_init_reset_methods(struct pci_dev *dev)
+ {
+        int i, rc;
+        u8 prio = PCI_RESET_METHODS_NUM;
+@@ -5209,6 +5236,7 @@ void pci_init_reset_methods(struct pci_dev *dev)
+                        break;
+        }
+        memcpy(dev->reset_methods, reset_methods, sizeof(reset_methods));
++       return pci_reset_supported(dev);
+ }
+
+ /**
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index 13ec6bd6f4f76..3e871a5a21bbd 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -33,7 +33,7 @@ enum pci_mmap_api {
+ int pci_mmap_fits(struct pci_dev *pdev, int resno, struct vm_area_struct *vmai,
+                  enum pci_mmap_api mmap_api);
+
+-void pci_init_reset_methods(struct pci_dev *dev);
++bool pci_init_reset_methods(struct pci_dev *dev);
+ int pci_bridge_secondary_bus_reset(struct pci_dev *dev);
+ int pci_bus_error_reset(struct pci_dev *dev);
+-void pci_init_reset_methods(struct pci_dev *dev);
++bool pci_init_reset_methods(struct pci_dev *dev);
+ int pci_bridge_secondary_bus_reset(struct pci_dev *dev);
+ int pci_bus_error_reset(struct pci_dev *dev);
+
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index 90fd4f61f3802..275a067d7a282 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -2404,7 +2404,6 @@ static void pci_init_capabilities(struct pci_dev *dev)
+        pci_rcec_init(dev);             /* Root Complex Event Collector */
+
+        pcie_report_downtraining(dev);
+-       pci_init_reset_methods(dev);
+ }
 
 
-vim +/__compiletime_assert_234 +319 include/linux/compiler_types.h
-
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  305  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  306  #define _compiletime_assert(condition, msg, prefix, suffix) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  307  	__compiletime_assert(condition, msg, prefix, suffix)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  308  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  309  /**
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  310   * compiletime_assert - break build and emit msg if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  311   * @condition: a compile-time constant condition to check
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  312   * @msg:       a message to emit if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  313   *
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  314   * In tradition of POSIX assert, this macro will break the build if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  315   * supplied condition is *false*, emitting the supplied error message if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  316   * compiler has support to do so.
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  317   */
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  318  #define compiletime_assert(condition, msg) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21 @319  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  320  
-
-:::::: The code at line 319 was first introduced by commit
-:::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move compiletime_assert() macros into compiler_types.h
-
-:::::: TO: Will Deacon <will@kernel.org>
-:::::: CC: Will Deacon <will@kernel.org>
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
---pWyiEgJYm5f9v55/
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
-
-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
-
---pWyiEgJYm5f9v55/--
