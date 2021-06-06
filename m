@@ -2,65 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F81439CFDE
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 17:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0951D39CFE0
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 17:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbhFFPs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 11:48:27 -0400
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:53975 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230209AbhFFPsV (ORCPT
+        id S230207AbhFFPvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 11:51:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230090AbhFFPvE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 11:48:21 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d04 with ME
-        id DrmV2500P21Fzsu03rmVAo; Sun, 06 Jun 2021 17:46:30 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 06 Jun 2021 17:46:30 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     spock@gentoo.org, adaplas@gmail.com, akpm@linux-foundation.org
-Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] video: fbdev: uvesafb: Fixes an error handling path in 'uvesafb_probe()'
-Date:   Sun,  6 Jun 2021 17:46:28 +0200
-Message-Id: <dd2a4806d3a570ab84947806f38a494454fd0245.1622994310.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sun, 6 Jun 2021 11:51:04 -0400
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04BCCC061766;
+        Sun,  6 Jun 2021 08:49:14 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id E4EA21280946;
+        Sun,  6 Jun 2021 08:49:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1622994552;
+        bh=FYl7mwu6LLvSpk3rnuHAfiCIgSiclVR/MbkXA3/WIEQ=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=W0bKIKp5rhOQNfnbJy8PsMAVgCrijhuZ2Yn3MPEarIeoDyjlkyq1/xjVs0vJ0BOYp
+         G0keR26GLTFCWaM3Y4pbZyS9tJ8K6DsoiF0gts1C4TZ8xZCgGg2oc5kbzS2O9tBNIY
+         We3o0RUjO3B8ZOpKk4XCzKEncJ7imvCuY8NOdFoA=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id TTzNMhhgMJha; Sun,  6 Jun 2021 08:49:12 -0700 (PDT)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::c447])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 23526128093E;
+        Sun,  6 Jun 2021 08:49:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1622994552;
+        bh=FYl7mwu6LLvSpk3rnuHAfiCIgSiclVR/MbkXA3/WIEQ=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=W0bKIKp5rhOQNfnbJy8PsMAVgCrijhuZ2Yn3MPEarIeoDyjlkyq1/xjVs0vJ0BOYp
+         G0keR26GLTFCWaM3Y4pbZyS9tJ8K6DsoiF0gts1C4TZ8xZCgGg2oc5kbzS2O9tBNIY
+         We3o0RUjO3B8ZOpKk4XCzKEncJ7imvCuY8NOdFoA=
+Message-ID: <22894c5d4fd4bcfa29bd945ce81112606d2fe5fc.camel@HansenPartnership.com>
+Subject: [GIT PULL] SCSI fixes for 5.13-rc4
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Sun, 06 Jun 2021 08:49:10 -0700
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If an error occurs after a successful 'uvesafb_init_mtrr()' call, it must
-be undone by a corresponding 'arch_phys_wc_del()' call, as already done in
-the remove function.
+Five small and fairly minor fixes, all in drivers.
 
-This has been added in the remove function in commit 63e28a7a5ffc
-("uvesafb: Clean up MTRR code")
+The patch is available here:
 
-Fixes: 8bdb3a2d7df4 ("uvesafb: the driver core")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+
+The short changelog is:
+
+Daniel Wagner (1):
+      scsi: qedf: Do not put host in qedf_vport_create() unconditionally
+
+Ewan D. Milne (1):
+      scsi: scsi_devinfo: Add blacklist entry for HPE OPEN-V
+
+James Smart (1):
+      scsi: lpfc: Fix failure to transmit ABTS on FC link
+
+Maurizio Lombardi (1):
+      scsi: target: core: Fix warning on realtime kernels
+
+Stanley Chu (1):
+      scsi: ufs: ufs-mediatek: Fix HCI version in some platforms
+
+And the diffstat:
+
+ drivers/scsi/lpfc/lpfc_sli.c           |  4 +---
+ drivers/scsi/qedf/qedf_main.c          | 20 +++++++++-----------
+ drivers/scsi/scsi_devinfo.c            |  1 +
+ drivers/scsi/ufs/ufs-mediatek.c        | 15 ++++++++++++++-
+ drivers/target/target_core_transport.c |  4 +---
+ 5 files changed, 26 insertions(+), 18 deletions(-)
+
+With full diff below.
+
+James
+
 ---
-Unsure about the Fixes tag, maybe it is 63e28a7a5ffc
----
- drivers/video/fbdev/uvesafb.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/video/fbdev/uvesafb.c b/drivers/video/fbdev/uvesafb.c
-index 4df6772802d7..a7e606520dfc 100644
---- a/drivers/video/fbdev/uvesafb.c
-+++ b/drivers/video/fbdev/uvesafb.c
-@@ -1757,6 +1757,7 @@ static int uvesafb_probe(struct platform_device *dev)
+diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
+index 573c8599d71c..fc3682f15f50 100644
+--- a/drivers/scsi/lpfc/lpfc_sli.c
++++ b/drivers/scsi/lpfc/lpfc_sli.c
+@@ -20589,10 +20589,8 @@ lpfc_sli4_issue_abort_iotag(struct lpfc_hba *phba, struct lpfc_iocbq *cmdiocb,
+ 	abtswqe = &abtsiocb->wqe;
+ 	memset(abtswqe, 0, sizeof(*abtswqe));
  
- out_unmap:
- 	iounmap(info->screen_base);
-+	arch_phys_wc_del(par->mtrr_handle);
- out_mem:
- 	release_mem_region(info->fix.smem_start, info->fix.smem_len);
- out_reg:
--- 
-2.30.2
+-	if (lpfc_is_link_up(phba))
++	if (!lpfc_is_link_up(phba))
+ 		bf_set(abort_cmd_ia, &abtswqe->abort_cmd, 1);
+-	else
+-		bf_set(abort_cmd_ia, &abtswqe->abort_cmd, 0);
+ 	bf_set(abort_cmd_criteria, &abtswqe->abort_cmd, T_XRI_TAG);
+ 	abtswqe->abort_cmd.rsrvd5 = 0;
+ 	abtswqe->abort_cmd.wqe_com.abort_tag = xritag;
+diff --git a/drivers/scsi/qedf/qedf_main.c b/drivers/scsi/qedf/qedf_main.c
+index 756231151882..b92570a7c309 100644
+--- a/drivers/scsi/qedf/qedf_main.c
++++ b/drivers/scsi/qedf/qedf_main.c
+@@ -1827,22 +1827,20 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
+ 		fcoe_wwn_to_str(vport->port_name, buf, sizeof(buf));
+ 		QEDF_WARN(&(base_qedf->dbg_ctx), "Failed to create vport, "
+ 			   "WWPN (0x%s) already exists.\n", buf);
+-		goto err1;
++		return rc;
+ 	}
+ 
+ 	if (atomic_read(&base_qedf->link_state) != QEDF_LINK_UP) {
+ 		QEDF_WARN(&(base_qedf->dbg_ctx), "Cannot create vport "
+ 			   "because link is not up.\n");
+-		rc = -EIO;
+-		goto err1;
++		return -EIO;
+ 	}
+ 
+ 	vn_port = libfc_vport_create(vport, sizeof(struct qedf_ctx));
+ 	if (!vn_port) {
+ 		QEDF_WARN(&(base_qedf->dbg_ctx), "Could not create lport "
+ 			   "for vport.\n");
+-		rc = -ENOMEM;
+-		goto err1;
++		return -ENOMEM;
+ 	}
+ 
+ 	fcoe_wwn_to_str(vport->port_name, buf, sizeof(buf));
+@@ -1866,7 +1864,7 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
+ 	if (rc) {
+ 		QEDF_ERR(&(base_qedf->dbg_ctx), "Could not allocate memory "
+ 		    "for lport stats.\n");
+-		goto err2;
++		goto err;
+ 	}
+ 
+ 	fc_set_wwnn(vn_port, vport->node_name);
+@@ -1884,7 +1882,7 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
+ 	if (rc) {
+ 		QEDF_WARN(&base_qedf->dbg_ctx,
+ 			  "Error adding Scsi_Host rc=0x%x.\n", rc);
+-		goto err2;
++		goto err;
+ 	}
+ 
+ 	/* Set default dev_loss_tmo based on module parameter */
+@@ -1925,9 +1923,10 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
+ 	vport_qedf->dbg_ctx.host_no = vn_port->host->host_no;
+ 	vport_qedf->dbg_ctx.pdev = base_qedf->pdev;
+ 
+-err2:
++	return 0;
++
++err:
+ 	scsi_host_put(vn_port->host);
+-err1:
+ 	return rc;
+ }
+ 
+@@ -1968,8 +1967,7 @@ static int qedf_vport_destroy(struct fc_vport *vport)
+ 	fc_lport_free_stats(vn_port);
+ 
+ 	/* Release Scsi_Host */
+-	if (vn_port->host)
+-		scsi_host_put(vn_port->host);
++	scsi_host_put(vn_port->host);
+ 
+ out:
+ 	return 0;
+diff --git a/drivers/scsi/scsi_devinfo.c b/drivers/scsi/scsi_devinfo.c
+index d92cec12454c..d33355ab6e14 100644
+--- a/drivers/scsi/scsi_devinfo.c
++++ b/drivers/scsi/scsi_devinfo.c
+@@ -184,6 +184,7 @@ static struct {
+ 	{"HP", "C3323-300", "4269", BLIST_NOTQ},
+ 	{"HP", "C5713A", NULL, BLIST_NOREPORTLUN},
+ 	{"HP", "DISK-SUBSYSTEM", "*", BLIST_REPORTLUN2},
++	{"HPE", "OPEN-", "*", BLIST_REPORTLUN2 | BLIST_TRY_VPD_PAGES},
+ 	{"IBM", "AuSaV1S2", NULL, BLIST_FORCELUN},
+ 	{"IBM", "ProFibre 4000R", "*", BLIST_SPARSELUN | BLIST_LARGELUN},
+ 	{"IBM", "2105", NULL, BLIST_RETRY_HWERROR},
+diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-mediatek.c
+index aee3cfc7142a..0a84ec9e7cea 100644
+--- a/drivers/scsi/ufs/ufs-mediatek.c
++++ b/drivers/scsi/ufs/ufs-mediatek.c
+@@ -603,11 +603,23 @@ static void ufs_mtk_get_controller_version(struct ufs_hba *hba)
+ 
+ 	ret = ufshcd_dme_get(hba, UIC_ARG_MIB(PA_LOCALVERINFO), &ver);
+ 	if (!ret) {
+-		if (ver >= UFS_UNIPRO_VER_1_8)
++		if (ver >= UFS_UNIPRO_VER_1_8) {
+ 			host->hw_ver.major = 3;
++			/*
++			 * Fix HCI version for some platforms with
++			 * incorrect version
++			 */
++			if (hba->ufs_version < ufshci_version(3, 0))
++				hba->ufs_version = ufshci_version(3, 0);
++		}
+ 	}
+ }
+ 
++static u32 ufs_mtk_get_ufs_hci_version(struct ufs_hba *hba)
++{
++	return hba->ufs_version;
++}
++
+ /**
+  * ufs_mtk_init - find other essential mmio bases
+  * @hba: host controller instance
+@@ -1048,6 +1060,7 @@ static void ufs_mtk_event_notify(struct ufs_hba *hba,
+ static const struct ufs_hba_variant_ops ufs_hba_mtk_vops = {
+ 	.name                = "mediatek.ufshci",
+ 	.init                = ufs_mtk_init,
++	.get_ufs_hci_version = ufs_mtk_get_ufs_hci_version,
+ 	.setup_clocks        = ufs_mtk_setup_clocks,
+ 	.hce_enable_notify   = ufs_mtk_hce_enable_notify,
+ 	.link_startup_notify = ufs_mtk_link_startup_notify,
+diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
+index 05d7ffd59df6..7e35eddd9eb7 100644
+--- a/drivers/target/target_core_transport.c
++++ b/drivers/target/target_core_transport.c
+@@ -3121,9 +3121,7 @@ __transport_wait_for_tasks(struct se_cmd *cmd, bool fabric_stop,
+ 	__releases(&cmd->t_state_lock)
+ 	__acquires(&cmd->t_state_lock)
+ {
+-
+-	assert_spin_locked(&cmd->t_state_lock);
+-	WARN_ON_ONCE(!irqs_disabled());
++	lockdep_assert_held(&cmd->t_state_lock);
+ 
+ 	if (fabric_stop)
+ 		cmd->transport_state |= CMD_T_FABRIC_STOP;
 
