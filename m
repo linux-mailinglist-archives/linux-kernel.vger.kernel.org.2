@@ -2,80 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C41A39D129
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 21:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22ADC39D12D
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 22:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbhFFT66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 15:58:58 -0400
-Received: from gate.crashing.org ([63.228.1.57]:47652 "EHLO gate.crashing.org"
+        id S230097AbhFFUId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 16:08:33 -0400
+Received: from mx3.wp.pl ([212.77.101.9]:51979 "EHLO mx3.wp.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229772AbhFFT64 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 15:58:56 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 156JqiJX012123;
-        Sun, 6 Jun 2021 14:52:44 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 156JqgQT012119;
-        Sun, 6 Jun 2021 14:52:42 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Sun, 6 Jun 2021 14:52:42 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <20210606195242.GA18427@gate.crashing.org>
-References: <CAHk-=wgmUbU6XPHz=4NFoLMxH7j_SR-ky4sKzOBrckmvk5AJow@mail.gmail.com> <20210604214010.GD4397@paulmck-ThinkPad-P17-Gen-1> <CAHk-=wg0w5L7-iJU_kvEh9stXZoh2srRF4jKToKmSKyHv-njvA@mail.gmail.com> <20210605145739.GB1712909@rowland.harvard.edu> <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1> <20210606012903.GA1723421@rowland.harvard.edu> <20210606115336.GS18427@gate.crashing.org> <CAHk-=wjgzAn9DfR9DpU-yKdg74v=fvyzTJMD8jNjzoX4kaUBHQ@mail.gmail.com> <20210606184021.GY18427@gate.crashing.org> <CAHk-=wjEHbGifWgA+04Y4_m43s-o+3bXpL5qPQL3ECg+86XuLg@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjEHbGifWgA+04Y4_m43s-o+3bXpL5qPQL3ECg+86XuLg@mail.gmail.com>
-User-Agent: Mutt/1.4.2.3i
+        id S229813AbhFFUIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 16:08:30 -0400
+Received: (wp-smtpd smtp.wp.pl 19935 invoked from network); 6 Jun 2021 22:06:38 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1623009998; bh=hQhPaaBVb++b0UTU9Rraa6ZhDCCVr/iAER3n3txOb2w=;
+          h=From:To:Cc:Subject;
+          b=bc32+VPrlLz28hAoAr/gDwfWa4O+1iRtdkAtsLo9EyCqbQcEiNlE4wvHNC2SbCtdy
+           hFFRhn14TlwEdgw3uKokTspXfJiVr3laIEunnvCcpbBpJ7Y8Uch6dZpWjKWCj1byBl
+           czWq7tJsJ/7ZK7CFT2W6H/pPGoSXJ7udqmJV5Dwc=
+Received: from riviera.nat.ds.pw.edu.pl (HELO LAPTOP-OLEK.lan) (olek2@wp.pl@[194.29.137.1])
+          (envelope-sender <olek2@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <hauke@hauke-m.de>; 6 Jun 2021 22:06:38 +0200
+From:   Aleksander Jan Bajkowski <olek2@wp.pl>
+To:     hauke@hauke-m.de, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Aleksander Jan Bajkowski <olek2@wp.pl>
+Subject: [PATCH net] lantiq: net: fix duplicated skb in rx descriptor ring
+Date:   Sun,  6 Jun 2021 22:05:51 +0200
+Message-Id: <20210606200551.1609521-1-olek2@wp.pl>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-WP-DKIM-Status: good (id: wp.pl)                                      
+X-WP-MailID: 8a3beb05101d63dc280b56f4a59e28da
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000000 [QYOk]                               
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 06, 2021 at 11:48:32AM -0700, Linus Torvalds wrote:
-> On Sun, Jun 6, 2021 at 11:43 AM Segher Boessenkool
-> <segher@kernel.crashing.org> wrote:
-> >
-> > You truly should have written a branch in tthe asm if you truly wanted
-> > a branch instruction.
-> 
-> That's exactly what I don't want to do, and what the original patch by
-> PeterZ did.
+The previous commit didn't fix the bug properly. By mistake, it replaces
+the pointer of the next skb in the descriptor ring instead of the current
+one. As a result, the two descriptors are assigned the same SKB. The error
+is seen during the iperf test when skb_put tries to insert a second packet
+and exceeds the available buffer.
 
-Yes, I know.  But it is literally the *only* way to *always* get a
-conditional branch: by writing one.
+Fixes: c7718ee96dbc ("net: lantiq: fix memory corruption in RX ring ")
 
-> And to work well, it needs "asm goto", which is so recent that a lot
-> of compilers don't support it (thank God for clang dragging gcc
-> kicking and screaming to implement it at all - I'd asked for it over a
-> decade ago).
+Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+---
+ drivers/net/ethernet/lantiq_xrx200.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-GCC has had it since 2009.
+diff --git a/drivers/net/ethernet/lantiq_xrx200.c b/drivers/net/ethernet/lantiq_xrx200.c
+index 36dc3e5f6218..e710f83b3700 100644
+--- a/drivers/net/ethernet/lantiq_xrx200.c
++++ b/drivers/net/ethernet/lantiq_xrx200.c
+@@ -193,17 +193,18 @@ static int xrx200_hw_receive(struct xrx200_chan *ch)
+ 	int ret;
+ 
+ 	ret = xrx200_alloc_skb(ch);
+-
+-	ch->dma.desc++;
+-	ch->dma.desc %= LTQ_DESC_NUM;
+-
+ 	if (ret) {
+ 		ch->skb[ch->dma.desc] = skb;
+ 		net_dev->stats.rx_dropped++;
++		ch->dma.desc++;
++		ch->dma.desc %= LTQ_DESC_NUM;
+ 		netdev_err(net_dev, "failed to allocate new rx buffer\n");
+ 		return ret;
+ 	}
+ 
++	ch->dma.desc++;
++	ch->dma.desc %= LTQ_DESC_NUM;
++
+ 	skb_put(skb, len);
+ 	skb->protocol = eth_type_trans(skb, net_dev);
+ 	netif_receive_skb(skb);
+-- 
+2.30.2
 
-> So you get bad code generation in a lot of cases, which entirely
-> obviates the _point_ of this all - which is that we can avoid an
-> expensive operation (a memory barrier) by just doing clever code
-> generation.
-> 
-> So if we can't get the clever code generation, it's all pretty much
-> moot, imnsho.
-
-Yes.
-
-
-Segher
