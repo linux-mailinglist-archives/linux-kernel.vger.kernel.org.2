@@ -2,157 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463A239CC24
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 03:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA3E739CC2B
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 04:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbhFFBxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Jun 2021 21:53:20 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:58846 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbhFFBxT (ORCPT
+        id S230158AbhFFCBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Jun 2021 22:01:55 -0400
+Received: from mail-yb1-f175.google.com ([209.85.219.175]:40920 "EHLO
+        mail-yb1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230022AbhFFCBz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Jun 2021 21:53:19 -0400
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 9A2F920B8027;
-        Sat,  5 Jun 2021 18:51:30 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9A2F920B8027
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1622944290;
-        bh=hq9cHjEwlYtFNMaabuWi/qemHRYJLP/I1ov0U2e1p9c=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=blGG0CEumDG1fGxvE6DeFwVbmie32LXID+WEhn9ijU0HEN+ANXpBhDL8wVR4US7/I
-         r6zk0VtBlimq/zydlcYiN0jTYRpVyP/rXxGwxU/joeLE7aGjP7M2UBcTTxY10TMIL4
-         xjDxaOfZEeOCGsDfLJ9W172fhe/9bPYpxat837LI=
-Received: by mail-pl1-f169.google.com with SMTP id 69so6687748plc.5;
-        Sat, 05 Jun 2021 18:51:30 -0700 (PDT)
-X-Gm-Message-State: AOAM532kaejNa9EwLwC1bzI1fagjL0imPPbgw5iPmxMbIkriNg2JhUHf
-        pdWkWMpThzJYMY1g/GKAMPUuAlIIjIsImmsQGuQ=
-X-Google-Smtp-Source: ABdhPJz1wH7ptf/ewmtIOXdDzgWJUmOSxfHGsbcxc3/LyYj2NOa9PgQfFtm4iA9MSYUKxqVC4IwqKesok/67GPHLQpE=
-X-Received: by 2002:a17:90b:4b49:: with SMTP id mi9mr12670611pjb.187.1622944290004;
- Sat, 05 Jun 2021 18:51:30 -0700 (PDT)
+        Sat, 5 Jun 2021 22:01:55 -0400
+Received: by mail-yb1-f175.google.com with SMTP id e10so19578772ybb.7
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Jun 2021 18:59:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=cYyrGjaBUAmVv/YqrB3kqZUIXcDyhBPIOEKwA4ICIM8=;
+        b=k5QllBMpAbOOICxq67Ifot6mFNeBIKxqn6AObjfS3qU9eUGVonodREz0M2nEtteCuH
+         1TKoppXL7Q9DCUgHOJjtAAGce50Xt7ok2lN+n/HCt1lSNFv/myluIyBBAXZOpWABE9aK
+         qzkFwPuBo1DzLoTcEC41/IsNTNfK5goeBQVjhIbD9g6gZznMiQamc/g9NW9eWKgBcCnw
+         lqIwmpKbXjghfsPewlSWeLsMF7FbiRsR5Y6K14E+7aH3ixImk8PB8sjls8x5vk6ut64k
+         f/tc+HL4xWR+l0LibD0SrLvixe4UFconFw2d3CGnA8FDTa0rqhMyLYFQu9duq0XAh1tP
+         c6KQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=cYyrGjaBUAmVv/YqrB3kqZUIXcDyhBPIOEKwA4ICIM8=;
+        b=Nm60FrbsryCrwlOCEusxTZfVtLtFdBtdk32zyFLoS4x0c8EK5D6U7jAGAkJLZFpRuT
+         dlxdl9FW3oem6dBU8vhAfxhd1tDQzrMDQK94uOfJEmvFKeKQe3VQbBrz4RBqD06Ss1NU
+         wiYLbaHjCAA6icnclpIrt7OUobtIoedmz6HoeMsNyHfnI3lO6M+eWK0WiyDpBpbYKWjq
+         BEkrwTL/+xgUBSakjVRnxNCOlqXZXnsbZ5D4+GcjayszgjxJHVqSO5eBHEbeemI0nLsA
+         fzY9N6JsvOtEEvA51Ty3ulzTo+OKFg3IPCnIjoD9z0/wb67zTk0mSJn4iRRbY3+Md30l
+         IcNA==
+X-Gm-Message-State: AOAM530e1diD/J5PygpvyqBL1/OK68VslixyZ9lVNTOq3FRge8XzTfFY
+        84xZKG2VxEEvJYDvMEu90Sc0In+4DBBPR9k6mbRzN/Ga+SgtasuV
+X-Google-Smtp-Source: ABdhPJyl6JsyzfB5Tq568U87K85f3x5cVODVFW/VFLTEkOxm+R8fny/NO6Jn7cyhGWer8pkT8XBJfMJj16Hf8Mswr4A=
+X-Received: by 2002:a25:bbd1:: with SMTP id c17mr15378175ybk.507.1622944730650;
+ Sat, 05 Jun 2021 18:58:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210604183349.30040-1-mcroce@linux.microsoft.com>
- <20210604183349.30040-2-mcroce@linux.microsoft.com> <YLp6D7mEh85vL+pY@casper.infradead.org>
- <CAFnufp2jGRsr9jexBLFRZfJu9AwGO0ghzExT1R4bJdscwHqSnQ@mail.gmail.com> <YLuK9P+loeKwUUK3@casper.infradead.org>
-In-Reply-To: <YLuK9P+loeKwUUK3@casper.infradead.org>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Sun, 6 Jun 2021 03:50:54 +0200
-X-Gmail-Original-Message-ID: <CAFnufp1e893Yz+KTjDvX4tyA8ngqmnMVudf1v0cBPdi9d_2zLw@mail.gmail.com>
-Message-ID: <CAFnufp1e893Yz+KTjDvX4tyA8ngqmnMVudf1v0cBPdi9d_2zLw@mail.gmail.com>
-Subject: Re: [PATCH net-next v7 1/5] mm: add a signature in struct page
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
+References: <CAFJ_xbq06nfaEWtVNLtg7XCJrQeQ9wCs4Zsoi5Y_HP3Dx0iTRA@mail.gmail.com>
+ <20210604205018.2238778-1-ndesaulniers@google.com> <CAKwvOdmhg2tj8cKe-XitoZXGKaoOhgTsCEdVXubt+LiY9+46rw@mail.gmail.com>
+ <20210604235046.w3hazgcpsg4oefex@google.com> <YLtUO/thYUp2wU7k@hirez.programming.kicks-ass.net>
+In-Reply-To: <YLtUO/thYUp2wU7k@hirez.programming.kicks-ass.net>
+From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Date:   Sat, 5 Jun 2021 18:58:39 -0700
+Message-ID: <CAFP8O3+ggR8N-ffsaYSMPX7s2XgrzzTQQjOgCwUe9smyos-waA@mail.gmail.com>
+Subject: Re: [PATCH v3 16/16] objtool,x86: Rewrite retpoline thunk calls
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, lma@semihalf.com,
+        Guenter Roeck <groeck@google.com>,
+        Juergen Gross <jgross@suse.com>, lb@semihalf.com,
+        LKML <linux-kernel@vger.kernel.org>, mbenes@suse.com,
+        =?UTF-8?Q?Rados=C5=82aw_Biernacki?= <rad@semihalf.com>,
+        upstream@semihalf.com,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 5, 2021 at 4:32 PM Matthew Wilcox <willy@infradead.org> wrote:
+On Sat, Jun 5, 2021 at 3:39 AM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> On Sat, Jun 05, 2021 at 12:59:50AM +0200, Matteo Croce wrote:
-> > On Fri, Jun 4, 2021 at 9:08 PM Matthew Wilcox <willy@infradead.org> wrote:
+> On Fri, Jun 04, 2021 at 04:50:46PM -0700, Fangrui Song wrote:
+> > On 2021-06-04, 'Nick Desaulniers' via Clang Built Linux wrote:
+>
+> > > is producing the linker error:
 > > >
-> > > On Fri, Jun 04, 2021 at 08:33:45PM +0200, Matteo Croce wrote:
-> > > > @@ -130,7 +137,10 @@ struct page {
-> > > >                       };
-> > > >               };
-> > > >               struct {        /* Tail pages of compound page */
-> > > > -                     unsigned long compound_head;    /* Bit zero is set */
-> > > > +                     /* Bit zero is set
-> > > > +                      * Bit one if pfmemalloc page
-> > > > +                      */
-> > > > +                     unsigned long compound_head;
+> > > ld.lld: error: drivers/gpu/drm/amd/amdgpu/amdgpu.lto.o:
+> > > SHT_SYMTAB_SHNDX has 79581 entries, but the symbol table associated
+> > > has 79582
 > > >
-> > > I would drop this hunk.  Bit 1 is not used for this purpose in tail
-> > > pages; it's used for that purpose in head and base pages.
+> > > Readelf having issues with the output:
+> > > $ readelf -s amdgpu.lto.o.orig
+> > > <works fine>
+> > > $ readelf -s amdgpu.lto.o
+> > > readelf: Error: Reading 73014451695 bytes extends past end of file fo=
+r
+> > > string table
+> > > $ llvm-readelf -s amdgpu.lto.o
+> > > llvm-readelf: error: 'amdgpu.lto.o': unable to continue dumping, the
+> > > file is corrupt: section table goes past the end of file
 > > >
-> > > I suppose we could do something like ...
-> > >
-> > >  static inline void set_page_pfmemalloc(struct page *page)
-> > >  {
-> > > -       page->index = -1UL;
-> > > +       page->lru.next = (void *)2;
-> > >  }
-> > >
-> > > if it's causing confusion.
-> > >
+>
+> > tools/objtool/elf.c:elf_add_symbol may not update .symtab_shndx .
+> > Speaking of llvm-objcopy, it finalizes the content of .symtab_shndx whe=
+n .symtab
+> > is finalized. objtool may want to adopt a similar approach.
 > >
+> > read_symbols searches for the section ".symtab_shndx". It'd be better t=
+o
+> > use the section type SHT_SYMTAB_SHNDX.
+>
+> I think you've absolutely nailed it; but would you have more information
+> or a code reference to what you're speaking about? My complete ELF
+> and libelf knowledge is very limited and as demonstrated here, I'm not
+> at all sure how all that extended index stuff is supposed to work.
 
-And change all the *_pfmemalloc functions to use page->lru.next like this?
+The section index field of an Elf{32,64}_Sym (st_shndx) is 16-bit, so
+it cannot represent a section index greater than 0xffff.
+ELF actually reserves values in 0xff00~0xff00 for other purposes, so
+st_shndx cannot represent a section whose index is greater or equal to
+0xff00.
+To overcome the 16-bit section index limitation, .symtab_shndx was designed=
+.
 
-@@ -1668,10 +1668,12 @@ struct address_space *page_mapping(struct page *page);
-static inline bool page_is_pfmemalloc(const struct page *page)
-{
-       /*
--        * Page index cannot be this large so this must be
--        * a pfmemalloc page.
-+        * This is not a tail page; compound_head of a head page is unused
-+        * at return from the page allocator, and will be overwritten
-+        * by callers who do not care whether the page came from the
-+        * reserves.
-        */
--       return page->index == -1UL;
-+       return (uintptr_t)page->lru.next & BIT(1);
-}
+http://www.sco.com/developers/gabi/latest/ch4.symtab.html says
 
-/*
-@@ -1680,12 +1682,12 @@ static inline bool page_is_pfmemalloc(const
-struct page *page)
- */
-static inline void set_page_pfmemalloc(struct page *page)
-{
--       page->index = -1UL;
-+       page->lru.next = (void *)BIT(1);
-}
+> SHN_XINDEX
+> This value is an escape value. It indicates that the symbol refers to a s=
+pecific location within a section, but that the section header index for th=
+at section is too large to be represented directly in the symbol table entr=
+y. The actual section header index is found in the associated SHT_SYMTAB_SH=
+NDX section. The entries in that section correspond one to one with the ent=
+ries in the symbol table. Only those entries in SHT_SYMTAB_SHNDX that corre=
+spond to symbol table entries with SHN_XINDEX will hold valid section heade=
+r indexes; all other entries will have value 0.
 
-static inline void clear_page_pfmemalloc(struct page *page)
-{
--       page->index = 0;
-+       page->lru.next = NULL;
-
-}
-
--- 
-per aspera ad upstream
+You may use https://github.com/llvm/llvm-project/blob/main/llvm/tools/llvm-=
+objcopy/ELF/Object.cpp#L843
+as a reference.
