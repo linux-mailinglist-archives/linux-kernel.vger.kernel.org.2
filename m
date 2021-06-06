@@ -2,30 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6418539CEEA
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 14:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3737E39CEEE
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Jun 2021 14:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbhFFMOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 08:14:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48846 "EHLO
+        id S230420AbhFFMPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 08:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230230AbhFFMOE (ORCPT
+        with ESMTP id S230311AbhFFMON (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 08:14:04 -0400
+        Sun, 6 Jun 2021 08:14:13 -0400
 Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91101C061766;
-        Sun,  6 Jun 2021 05:12:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9697C061787
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 05:12:23 -0700 (PDT)
 Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4Fyb3J41gsz9sRN; Sun,  6 Jun 2021 22:12:12 +1000 (AEST)
+        id 4Fyb3S67zcz9t1r; Sun,  6 Jun 2021 22:12:20 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     mpe@ellerman.id.au, Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     shuah@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <1620903820-68213-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-References: <1620903820-68213-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Subject: Re: [PATCH] selftests/powerpc: Fix duplicate included pthread.h
-Message-Id: <162298131858.2353459.10654405461714592334.b4-ty@ellerman.id.au>
+To:     mpe@ellerman.id.au, paulus@samba.org, benh@kernel.crashing.org,
+        YueHaibing <yuehaibing@huawei.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210514071041.17432-1-yuehaibing@huawei.com>
+References: <20210514071041.17432-1-yuehaibing@huawei.com>
+Subject: Re: [PATCH -next] powerpc/pseries/memhotplug: Remove unused inline function dlpar_memory_remove()
+Message-Id: <162298131833.2353459.4514813747754717384.b4-ty@ellerman.id.au>
 Date:   Sun, 06 Jun 2021 22:08:38 +1000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -34,17 +33,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 May 2021 19:03:40 +0800, Jiapeng Chong wrote:
-> Clean up the following includecheck warning:
-> 
-> ./tools/testing/selftests/powerpc/tm/tm-vmx-unavail.c: pthread.h is
-> included more than once.
-> 
-> No functional change.
+On Fri, 14 May 2021 15:10:41 +0800, YueHaibing wrote:
+> dlpar_memory_remove() is never used, so can be removed.
 
 Applied to powerpc/next.
 
-[1/1] selftests/powerpc: Fix duplicate included pthread.h
-      https://git.kernel.org/powerpc/c/c67454615cf95160cb806f7a471158a901eb261d
+[1/1] powerpc/pseries/memhotplug: Remove unused inline function dlpar_memory_remove()
+      https://git.kernel.org/powerpc/c/9b373899e9606d252364191ce2b385043a8808bc
 
 cheers
