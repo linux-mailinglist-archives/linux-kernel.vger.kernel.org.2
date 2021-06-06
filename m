@@ -2,91 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6B839D205
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 00:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1C939D208
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 00:51:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231284AbhFFWul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 18:50:41 -0400
-Received: from ozlabs.org ([203.11.71.1]:40619 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231172AbhFFWuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 18:50:40 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fys9r1G4Jz9sRf;
-        Mon,  7 Jun 2021 08:48:48 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1623019729;
-        bh=awGXucHVI3y+7HShzGTa4yx0jdME2qw+Akoo9ojNQZE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=rTsFE/bPxbyBaxcN8O16wmx64vclxJ1/Sl4/F9HdDCHP/BLmhHc1DBPAXZuvupLPK
-         bRHiD/AbRcmZMf4ReUxWpO3tvOH/4kkkGUvCSYkEAwyE99oLzfMFZ3fFsFuhoqqY7c
-         ZOg029O2/hr2KTRRYzVDshgqF5+6Ffq4ZlDzWm86K0vgRWz5fLRQdVi4m/EJAt/lM2
-         a2JZuhRnlmLFu97leXbpmZPBebVtKoraBcfEoUH+oTG6k5SoS3EZyfQ5Z8iKR0w5ey
-         EobxYx4EAc44cZ2bWIIZM+o0y3kRHWRVGxvTCgtN2Jp0BzE1DFxvnRdyJY0L/H81fH
-         GiDreSApR2p6g==
-Date:   Mon, 7 Jun 2021 08:48:47 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Yang Li <yang.lee@linux.alibaba.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the cgroup tree
-Message-ID: <20210607084847.34b4980f@canb.auug.org.au>
+        id S231140AbhFFWx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 18:53:29 -0400
+Received: from mail-lf1-f42.google.com ([209.85.167.42]:43722 "EHLO
+        mail-lf1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230368AbhFFWx2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 18:53:28 -0400
+Received: by mail-lf1-f42.google.com with SMTP id n12so15984732lft.10
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 15:51:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+HiD5HhosM/emrEAZdYOI7Gyss6pcG+u5xu0k8IYo/s=;
+        b=livSg6TPBfB6EwkqK26GA5esocsahxpk9Ws4GoILwWOPBp2A6PiTejz1uQQnv1Ukbe
+         l28jrxgjtvs6ugRUUpaaQITCCGMHzJYg4DS9mUYiS1ZpBFmc/V9iwhkhvAJs6VGeCz9g
+         9MRQkZ0EVpBBI9XmBXkr1rk8GnW3srMoAWjO8Q3qiQ0oxaAJj//yWlrhfZ9Jx4Tnsalk
+         o4f/TPInvfDSfcT5/7PO2+BPKskOJmI1U6pvlKKLOnEp1XZ+ZmhlhhH73M2K9AIbCfgb
+         aNoej8BCXxLFa9E7HhCa1TrHoE0fATpePVUY2k+gLWU+ixKN/6k9LRDESe8Dg6kZLMH2
+         t5Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+HiD5HhosM/emrEAZdYOI7Gyss6pcG+u5xu0k8IYo/s=;
+        b=B7DkN17PAlZgs2c0zxHha/DeRhNnjMlNEdRvDBVjsNRvDPxYYEACMNu+R7HxPfZjbm
+         J2QkOoMTF24o5tOMzW/Wj6qZwuP1W3V/9hnyAVm7Gw/ccZgwSCzEne3OPZ0WZeC+zl/A
+         dQ0zwAfzDbXL+XqpDRjtfC3l1iOu7XKHOSKhCIhXGy8HJdsiowTeqXw23KfO/61A40yU
+         +g7Is2Xy+RM394mUD+mZOt4gO5QnINDQMuPP84k39s0/wBk3Sb6HGnVKu8oV/cYEVatO
+         tAqhAG/jJnO2LgCJH5UJscfoTdMTna9IojucO4XYFMW91Wuz/oaRvLFyUV+uaaJv+OiK
+         UnkA==
+X-Gm-Message-State: AOAM531afUoEJHgg7H9jJy1tUIidtvnnGHLmGXNVPkKNHe9bUPyyfIs5
+        HBA8PqOHdM1tiY3OY0LFyVP/NghcUThi6CtPIOzCRQ==
+X-Google-Smtp-Source: ABdhPJxS6LPwuFoRiie241fNnwRDTKf9/sDPiCKNe2Q6490BW6AvfGX/NDaSl1qkxJm0Tmk6frP3noZZ8DSbdR96gNY=
+X-Received: by 2002:a05:6512:2105:: with SMTP id q5mr9665431lfr.649.1623019823537;
+ Sun, 06 Jun 2021 15:50:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/9w7WsdYEgSHvr/WfUia.bYh";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <cover.1622648507.git.mchehab+huawei@kernel.org> <0d437806f3f8d2c930656872be482820ef1c2301.1622648507.git.mchehab+huawei@kernel.org>
+In-Reply-To: <0d437806f3f8d2c930656872be482820ef1c2301.1622648507.git.mchehab+huawei@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 7 Jun 2021 00:50:12 +0200
+Message-ID: <CACRpkdYPtOWSLFDDhx-Z5DYO+_JfKGxvuvjYALB8w90=wmkGuA@mail.gmail.com>
+Subject: Re: [PATCH 08/12] MAINTAINERS: update faraday,ftrtc010.yaml reference
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        Rob Herring <robh@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/9w7WsdYEgSHvr/WfUia.bYh
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Jun 2, 2021 at 5:43 PM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
 
-Hi all,
+> Changeset 8df65d4adca6 ("dt-bindings: convert rtc/faraday,ftrtc01 to yaml")
+> renamed: Documentation/devicetree/bindings/rtc/faraday,ftrtc010.txt
+> to: Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml.
+>
+> Update its cross-reference accordingly.
+>
+> Fixes: 8df65d4adca6 ("dt-bindings: convert rtc/faraday,ftrtc01 to yaml")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-In commit
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-  2ca11b0e043b ("cgroup: Fix kernel-doc")
-
-Fixes tag
-
-  Fixes: 'commit e595cd706982 ("cgroup: track migration context in cgroup_m=
-gctx")'
-
-has these problem(s):
-
-  - No SHA1 recognised
-
-Please just use
-
-git log -1 --format=3D'Fixes: %h ("%s")' <commit>
-
-so
-
-Fixes: e595cd706982 ("cgroup: track migration context in cgroup_mgctx")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/9w7WsdYEgSHvr/WfUia.bYh
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC9UM8ACgkQAVBC80lX
-0GzLVQf8CmT5C9NFNZ+UQxyaO1VXruiVVtYouFRabrI+UQ4c91sU1+YEHB4f68vd
-bxGwMHHmraRJxpmBRZ3+xmCNKRuHPts9kpNEYEvq8Vtdh+IPIb92Yfu5YQa5z9uw
-+jjppp3Qqr5HIPmIceVtWDPUwbioN3PtdvjmdP48aKpyCSE1ekaRCq4XCZuJcnQt
-yvy9RYpqzyR3DzTFCNJUuSMbIhl+8dYdcwNR8NijLABrokKG48Mwngao+ueZCQJn
-z/aq4VMCSyfdRNl6FnjEv8BgdgI7X2KrU15m5YVx1/P0KsroOUie7QNctcJ8XuTy
-HLrQ7a6IoSdt+oT/cWV4ezfTtJrV5Q==
-=IsKx
------END PGP SIGNATURE-----
-
---Sig_/9w7WsdYEgSHvr/WfUia.bYh--
+Yours,
+Linus Walleij
