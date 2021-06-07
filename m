@@ -2,43 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC66539E124
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 17:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36AE439E121
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 17:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231462AbhFGPsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 11:48:33 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:52196 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231423AbhFGPsb (ORCPT
+        id S230197AbhFGPsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 11:48:19 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:55275 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230239AbhFGPsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 11:48:31 -0400
-Received: by mail-io1-f70.google.com with SMTP id d17-20020a0566021851b02904c0de164d44so773022ioi.18
+        Mon, 7 Jun 2021 11:48:17 -0400
+Received: by mail-io1-f69.google.com with SMTP id s14-20020a5eaa0e0000b02904abce57cb24so9475281ioe.21
         for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 08:46:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=TrMhmU0JCMnXZFPSiuVYpKbEcdcwJ8R8CkELJLbUjHw=;
-        b=L0EROg4tfYwQEiBVrOX8keL0NxqM90nwuI1sULBNkwKw7juLpLFsr0Vj5rJQrG7wFf
-         oBBa6Adxysq6eSrQRc8duKP965tAHMP7fokXZzurH48+KkdD3gATL4uSPjKgvKJR6NS7
-         lBf5bmflzkvN0UcQ4ZcXUFLcmqac7UQi57MxJxvlV69VdeLB0FdzTU/vxcTeq/M4n6oo
-         XzxMo5dX58EKDeVWEHV+W1tXMVAXyOEr1fCav9JcKef4gGYZ4mL7Pl7sg1QD9FaMO1/E
-         KBTgqGOkQmuH57Iqo9Co+Oi7UA7tXB44ggTbgWphBceej98LGAxhj3FeLzuJJMLevRjv
-         7tcA==
-X-Gm-Message-State: AOAM531Z0Zd7KLbpwHUb6PFBsCOiy2uzIoJuSEgpJ8cqvpAZgW01VOR0
-        UdLCetRX68DR7YFxgDT6A0b0biSY34AVSMgVrBBZmoywYxZP
-X-Google-Smtp-Source: ABdhPJzfNxCRnxvzSAMT/fI/+MN9OdMlENIoNPg3dkobV2Uv1lQwNevTRucuL91b06tBe7LxW4cvIwuxjC2xpOXjPT62XugAZtPF
+        bh=INHA8ZEnrl18BkANOT7Nn30hsnu7iHrn0GE/AclKKVs=;
+        b=FL6uyj/iKTgshOkf2v3z4rQ6HPNixGCyx+BpKA5aQ3t5clz352YU2OoJtbAc3Jgi8s
+         9W3ogJ+mWfljpJnLok8tELeF2eNUdUmKIaWXBhpWgd09rwTPfMziYqcw/ITlUi9+seZL
+         T9UE4RBe/bP58Cvv9/CPMBPkO+49jCMCAZZYe/yV+i6d2UwbO75TXAQfHoJiLdDKNbkK
+         0xmsdQ9ft8Zf4Y5sZwuBIC7KqZQRXgHxha1phw3bT4eD58ZiAH/J+eBASg73DLTJMjvB
+         AbrYJwzHm7c0fSBI+F2LldPNDJ8Ntk9SAkHHjnJz/g/3BJSb7XvONB4qKbHHGPXKBZZn
+         8RkA==
+X-Gm-Message-State: AOAM531XQKNqxliaB8DQv0TTp+bCgsYzis8DvzBVFKtlAKaoLNV6qjMg
+        iwAQSbMgHWAqYfCehzs5Hi57LzIZi/ju/ZsSlVtMn6L1GA9H
+X-Google-Smtp-Source: ABdhPJzwA6WXEXD9nC5toM6mIdr2yQ3UPrc/70NhvH7vkSC/ePqYEsb0kgPJ3EgBWwxp+fNe3Cra+mT5CMCWo4cI0YEQUyB76KHe
 MIME-Version: 1.0
-X-Received: by 2002:a92:ccd1:: with SMTP id u17mr15425574ilq.239.1623080786444;
+X-Received: by 2002:a05:6e02:1809:: with SMTP id a9mr4996983ilv.221.1623080786195;
  Mon, 07 Jun 2021 08:46:26 -0700 (PDT)
 Date:   Mon, 07 Jun 2021 08:46:26 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b7ca4c05c42ef16c@google.com>
-Subject: [syzbot] BUG: sleeping function called from invalid context in
- console_lock (2)
-From:   syzbot <syzbot+dbac96d8e73b61aa559c@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000b3f96105c42ef146@google.com>
+Subject: [syzbot] general protection fault in kcm_sendmsg
+From:   syzbot <syzbot+65badd5e74ec62cb67dc@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        coreteam@netfilter.org, daniel@iogearbox.net, davem@davemloft.net,
+        dsahern@kernel.org, fw@strlen.de, john.fastabend@gmail.com,
+        jonathan.lemon@gmail.com, kadlec@netfilter.org, kafai@fb.com,
+        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        matthieu.baerts@tessares.net, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        paskripkin@gmail.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, unixbhaskar@gmail.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org, zhengyongjun3@huawei.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,67 +55,82 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    e5220dd1 Merge branch 'akpm' (patches from Andrew)
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13fbe875d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8a9e9956ca52a5f6
-dashboard link: https://syzkaller.appspot.com/bug?extid=dbac96d8e73b61aa559c
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14ae4ec0300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12f3c6c0300000
+HEAD commit:    1a802423 virtio-net: fix for skb_over_panic inside big mode
+git tree:       bpf
+console output: https://syzkaller.appspot.com/x/log.txt?x=159b08afd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=770708ea7cfd4916
+dashboard link: https://syzkaller.appspot.com/bug?extid=65badd5e74ec62cb67dc
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=104624afd00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16e36197d00000
 
-Bisection is inconclusive: the issue happens on the oldest tested release.
+The issue was bisected to:
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13e0c2e0300000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1010c2e0300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17e0c2e0300000
+commit f9006acc8dfe59e25aa75729728ac57a8d84fc32
+Author: Florian Westphal <fw@strlen.de>
+Date:   Wed Apr 21 07:51:08 2021 +0000
+
+    netfilter: arp_tables: pass table pointer via nf_hook_ops
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11739740300000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=13739740300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15739740300000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+dbac96d8e73b61aa559c@syzkaller.appspotmail.com
+Reported-by: syzbot+65badd5e74ec62cb67dc@syzkaller.appspotmail.com
+Fixes: f9006acc8dfe ("netfilter: arp_tables: pass table pointer via nf_hook_ops")
 
-BUG: sleeping function called from invalid context at kernel/printk/printk.c:2460
-in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 8430, name: syz-executor396
-3 locks held by syz-executor396/8430:
- #0: ffff88801f8ff098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:267
- #1: ffff88801f8ff3f8 (&tty->flow_lock){....}-{2:2}, at: spin_lock_irq include/linux/spinlock.h:379 [inline]
- #1: ffff88801f8ff3f8 (&tty->flow_lock){....}-{2:2}, at: n_tty_ioctl_helper+0xcc/0x3a0 drivers/tty/tty_ioctl.c:857
- #2: ffff88801f8ff098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref+0x1d/0x80 drivers/tty/tty_ldisc.c:288
-irq event stamp: 16848
-hardirqs last  enabled at (16847): [<ffffffff89193940>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
-hardirqs last  enabled at (16847): [<ffffffff89193940>] _raw_spin_unlock_irqrestore+0x50/0x70 kernel/locking/spinlock.c:191
-hardirqs last disabled at (16848): [<ffffffff891936a1>] __raw_spin_lock_irq include/linux/spinlock_api_smp.h:126 [inline]
-hardirqs last disabled at (16848): [<ffffffff891936a1>] _raw_spin_lock_irq+0x41/0x50 kernel/locking/spinlock.c:167
-softirqs last  enabled at (15244): [<ffffffff812aa603>] fpu__clear+0xd3/0x220 arch/x86/kernel/fpu/core.c:379
-softirqs last disabled at (15242): [<ffffffff812aa55a>] fpu__clear+0x2a/0x220 arch/x86/kernel/fpu/core.c:364
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 1 PID: 8430 Comm: syz-executor396 Not tainted 5.13.0-rc4-syzkaller #0
+general protection fault, probably for non-canonical address 0xdffffc0000000019: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x00000000000000c8-0x00000000000000cf]
+CPU: 1 PID: 8423 Comm: syz-executor788 Not tainted 5.13.0-rc3-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:skb_end_pointer include/linux/skbuff.h:1419 [inline]
+RIP: 0010:skb_has_frag_list include/linux/skbuff.h:3566 [inline]
+RIP: 0010:kcm_sendmsg+0xdd7/0x2240 net/kcm/kcmsock.c:1069
+Code: fb 05 0f 84 25 0b 00 00 e8 b6 f3 48 f9 48 8b 44 24 18 4c 8d a8 c8 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 ea 48 c1 ea 03 <80> 3c 02 00 0f 85 5d 11 00 00 48 8b 44 24 18 48 8d a8 c4 00 00 00
+RSP: 0018:ffffc900017ef9b8 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000019 RSI: ffffffff882be8ca RDI: 0000000000000003
+RBP: ffff8880361685aa R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff882bec2b R11: 0000000000000000 R12: 00000000fffffe00
+R13: 00000000000000c8 R14: ffff88802ab74540 R15: ffff888036168000
+FS:  0000000000c0e300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055c4467bb930 CR3: 0000000023a8c000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:8338
- console_lock+0x19/0x80 kernel/printk/printk.c:2460
- do_con_write+0x10f/0x1e60 drivers/tty/vt/vt.c:2868
- con_write+0x21/0x40 drivers/tty/vt/vt.c:3255
- n_hdlc_send_frames+0x24b/0x490 drivers/tty/n_hdlc.c:290
- tty_wakeup+0xe1/0x120 drivers/tty/tty_io.c:534
- __start_tty drivers/tty/tty_io.c:822 [inline]
- __start_tty+0x116/0x150 drivers/tty/tty_io.c:815
- n_tty_ioctl_helper+0x348/0x3a0 drivers/tty/tty_ioctl.c:860
- n_hdlc_tty_ioctl+0xe4/0x360 drivers/tty/n_hdlc.c:631
- tty_ioctl+0xef9/0x1600 drivers/tty/tty_io.c:2814
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:1069 [inline]
- __se_sys_ioctl fs/ioctl.c:1055 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
  entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43f159
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc20312ca8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043f159
-RDX: 0000000000000001 RSI: 000000000000540a RDI: 0000000000000003
-RBP: 0000000000402fe0 R08: 0000000000400488 R09: 0000000000400488
+RIP: 0033:0x43fcb9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff00f21778 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043fcb9
+RDX: 0000000000000000 RSI: 0000000020001c80 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 00007fff00f21918 R09: 00007fff00f21918
+R10: 00007fff00f21918 R11: 0000000000000246 R12: 0000000000403540
+R13: 431bde82d7b634db R14: 00000000004ae018 R15: 0000000000400488
+Modules linked in:
+---[ end trace 458d0f6d0de61f61 ]---
+RIP: 0010:skb_end_pointer include/linux/skbuff.h:1419 [inline]
+RIP: 0010:skb_has_frag_list include/linux/skbuff.h:3566 [inline]
+RIP: 0010:kcm_sendmsg+0xdd7/0x2240 net/kcm/kcmsock.c:1069
+Code: fb 05 0f 84 25 0b 00 00 e8 b6 f3 48 f9 48 8b 44 24 18 4c 8d a8 c8 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 ea 48 c1 ea 03 <80> 3c 02 00 0f 85 5d 11 00 00 48 8b 44 24 18 48 8d a8 c4 00 00 00
+RSP: 0018:ffffc900017ef9b8 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000019 RSI: ffffffff882be8ca RDI: 0000000000000003
+RBP: ffff8880361685aa R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff882bec2b R11: 0000000000000000 R12: 00000000fffffe00
+R13: 00000000000000c8 R14: ffff88802ab74540 R15: ffff888036168000
+FS:  0000000000c0e300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000c0e2c0 CR3: 0000000023a8c000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
 ---
