@@ -2,161 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0345039E16F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4129A39E16B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbhFGQFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 12:05:23 -0400
-Received: from mail-pf1-f174.google.com ([209.85.210.174]:44710 "EHLO
-        mail-pf1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230254AbhFGQFW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 12:05:22 -0400
-Received: by mail-pf1-f174.google.com with SMTP id u18so13395796pfk.11
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 09:03:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=S2ebInYGpF1WI3iSf00AhxxVa41E0+LgB6jF5A4/MpY=;
-        b=j6pUzUMEqozYc1QqJS6dI49MmsDeUYdANLfcoCOzDl+rifVgDwVwErdysEglpq19U0
-         IeAdiUzp1f31qH3YOfkuOVcFLB/aFfpWB6/a4rccKUVcUzCunRqQOCoRQYudjkj4yyCi
-         pUfl3nJVGtlICi+xIh0ak6LvCYn8H/Xda3UvteC0tqQW6s/IXuq02QiEhUCtL7UYOApS
-         LeVO3KFzZtomYist3ntt1rRhkukI3KLcBNrSlJMsSP7a6JtqvkFbBbeav6BAQliDVwep
-         LIjfbQAV2UdW4wOdpAdPh0pKNZ3jVAlH1athgDFwE7lkwPgoHhdqyK7Q0ukfjfqxlxbM
-         /zPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=S2ebInYGpF1WI3iSf00AhxxVa41E0+LgB6jF5A4/MpY=;
-        b=AtO2SQ7MwSdiUn9D2cWfxN8WqNk9oKBCGxfqriPlINPmXPlrmSGO4gtiU9ib96ugub
-         o7PZ4Vm4mBRK0Do3LtGs3ntdhoSVHmkIBVKq3zlICYStHEizrN8wGvJtmBLpbbqoI0+b
-         QaP3d9ZwUdx2uhbv179/nn3FvFBonzIhhpXWMbz8dlapahPD9PRr31UhqKfPrqnWOjXo
-         mAlK1ZSWzvPnuwxx5B5mIH5pnsqsf4e9d7EI9PNLY768b223fADpc4SaBPFoGaUvnACJ
-         syoJb+AJnOIFgWryu9Wb0Gd44ARJdhmzmM4ZJV/7AWlOaV4fvkw/WjeYkJkz+nIbE8TB
-         UI/A==
-X-Gm-Message-State: AOAM531LI8s/v+MYb6M63bGo4Dlmjt6OKPuQcTA09eYEY9W/q+An9Q+A
-        OHrCEguQZ7Ik0dldoXUgQOupTIviI1BhqA==
-X-Google-Smtp-Source: ABdhPJyjh/ydI474RWGq1/ASY8DdyBwxcvvpjtbbWU3y/hzG9lF5QN+I961XT891nzz+V8PP/BXk1g==
-X-Received: by 2002:a65:498e:: with SMTP id r14mr9221782pgs.57.1623081751392;
-        Mon, 07 Jun 2021 09:02:31 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id z205sm3610230pfc.165.2021.06.07.09.02.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 09:02:30 -0700 (PDT)
-Date:   Mon, 7 Jun 2021 16:02:27 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
+        id S231409AbhFGQEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 12:04:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38578 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230294AbhFGQEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 12:04:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3CB76108E;
+        Mon,  7 Jun 2021 16:02:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623081779;
+        bh=QS7X75IN+igUoh1ptcIfo9XF7KyeMHZPP9cfmN4i6vg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ByQC6QohKF5NbpdJsLjBDos9tGrBfUNfROouf5Wv6sJwMLkrKDcIVUkFbcwBDzxe3
+         GaJnCcYKqaW3reykXCzDW5fZX3tYWWg8RWmuWG0ZOR3YPEr6Tgp3Ttng6lusnts3WO
+         AJB7x2NEAIqqwGmQjYf1oPtFMoCn26YrE2+uu1rDDGvZZtgwu6qtrNDUmYx6nFwCdI
+         edvob/e1tS0HkyCOZ4LVCz5HHMycMEdOHu2VP3mtoF/Qb2l9li42+Y5GEPv05LHO5l
+         oKGNF3C1cKbPEz6+DnWxroKBChCTvQcwArfAa2JiFDR0/eyN9OyDNjZZO5t2mtxRez
+         ShSt1jop8LwPQ==
+Date:   Mon, 7 Jun 2021 17:02:53 +0100
+From:   Will Deacon <will@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Jacob Wen <jian.w.wen@oracle.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 2/2] tracing: Add a verifier to check string pointers for
- trace events
-Message-ID: <YL5DE9vqDG/fUSMh@google.com>
-References: <20210226185909.100032746@goodmis.org>
- <20210226190705.871102407@goodmis.org>
- <YLrRUmwjjaozIt4K@google.com>
- <20210604222830.2505d67a@rorschach.local.home>
- <20210604224544.134c652f@rorschach.local.home>
+        Alan Stern <stern@rowland.harvard.edu>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <20210607160252.GA7580@willie-the-truck>
+References: <20210605145739.GB1712909@rowland.harvard.edu>
+ <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210606012903.GA1723421@rowland.harvard.edu>
+ <20210606115336.GS18427@gate.crashing.org>
+ <CAHk-=wjgzAn9DfR9DpU-yKdg74v=fvyzTJMD8jNjzoX4kaUBHQ@mail.gmail.com>
+ <20210606182213.GA1741684@rowland.harvard.edu>
+ <CAHk-=whDrTbYT6Y=9+XUuSd5EAHWtB9NBUvQLMFxooHjxtzEGA@mail.gmail.com>
+ <YL34NZ12mKoiSLvu@hirez.programming.kicks-ass.net>
+ <20210607115234.GA7205@willie-the-truck>
+ <20210607152533.GQ4397@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210604224544.134c652f@rorschach.local.home>
+In-Reply-To: <20210607152533.GQ4397@paulmck-ThinkPad-P17-Gen-1>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021, Steven Rostedt wrote:
-> On Fri, 4 Jun 2021 22:28:30 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
-> > What you described to me does not sound like a false positive, and
-> > converting to __string() is not a workaround but an actual fix, and
-> > would also need to be backported to stable.
-> 
-> If the event you are talking about is kvm_nested_vmenter_failed, which
-> records a pointer to the message, then, yes, that is unsafe and buggy.
+Hi Paul,
 
-Yep, that's the one.
+On Mon, Jun 07, 2021 at 08:25:33AM -0700, Paul E. McKenney wrote:
+> On Mon, Jun 07, 2021 at 12:52:35PM +0100, Will Deacon wrote:
+> > It's the conditional instructions that are more fun. For example, the CSEL
+> > instruction:
+> > 
+> > 	CSEL	X0, X1, X2, <cond>
+> > 
+> > basically says:
+> > 
+> > 	if (cond)
+> > 		X0 = X1;
+> > 	else
+> > 		X0 = X2;
+> > 
+> > these are just register-register operations, but the idea is that the CPU
+> > can predict that "branching event" inside the CSEL instruction and
+> > speculatively rename X0 while waiting for the condition to resolve.
+> > 
+> > So then you can add loads and stores to the mix along the lines of:
+> > 
+> > 	LDR	X0, [X1]		// X0 = *X1
+> > 	CMP	X0, X2
+> > 	CSEL	X3, X4, X5, EQ		// X3 = (X0 == X2) ? X4 : X5
+> > 	STR	X3, [X6]		// MUST BE ORDERED AFTER THE LOAD
+> > 	STR	X7, [X8]		// Can be reordered
+> > 
+> > (assuming X1, X6, X8 all point to different locations in memory)
+> > 
+> > So now we have a dependency from the load to the first store, but the
+> > interesting part is that the last store is _not_ ordered wrt either of the
+> > other two memory accesses, whereas it would be if we used a conditional
+> > branch instead of the CSEL. Make sense?
+> 
+> And if I remember correctly, this is why LKMM orders loads in the
+> "if" condition only with stores in the "then" and "else" clauses,
+> not with stores after the end of the "if" statement.  Or is there
+> some case that I am missing?
 
-> If that event is defined by the kvm module, and used in kvm_intel. If
-> you have this:
-> 
-> 	# echo 1 > /sys/kernel/tracing/events/kvm/kvm_nested_vmenter_failed
-> 
-> 	# do_whatever_causes_that_to_trigger
-> 
-> 	# rmmod kvm_intel
-> 
-> 	# cat trace
-> 
-> Then that pointer to the string will point to some random memory.
-> Before this patch, it could even possibly crash the kernel!
+It's not clear to me that such a restriction prevents the compiler from
+using any of the arm64 conditional instructions in place of the conditional
+branch in such a way that you end up with an "independent" store in the
+assembly output constructed from two stores on the "then" and "else" paths
+which the compiler determined where the same.
 
-I assumed that was the gist of the unsafe string detection, but the module core
-data exemption confused me.  I take it that the tracepoint itself goes away if
-the module is unloaded?  I.e. it's safe for a module to pass a constant string to
-its own tracepoints, but not to tracepoints defined elsewhere?  The comment
-above tracepoint_string() seems to confirm this.
-
-> There's two fixes you can do with this. One is to covert that to use
-> __string, the other is to do what RCU does, and use the
-> tracepoint_string() functionality.
+> > Now, obviously the compiler is blissfully unaware that conditional
+> > data processing instructions can give rise to dependencies than
+> > conditional branches, so the question really is how much do we need to
+> > care in the kernel?
+> > 
+> > My preference is to use load-acquire instead of control dependencies so
+> > that we don't have to worry about this, or any future relaxations to the
+> > CPU architecture, at all.
 > 
-> RCU has:
+> From what I can see, ARMv8 has DMB(LD) and DMB(ST).  Does it have
+> something like a DMB(LD,ST) that would act something like powerpc lwsync?
 > 
-> 	#define TPS(x)	tracepoint_string(x)
+> Or are you proposing rewriting the "if" conditions to upgrade
+> READ_ONCE() to smp_load_acquire()?  Or something else?
 > 
-> And wrap all strings with that TPS(), like in nested_vmx_reflect_vmexit():
-> 
->         if (unlikely(vmx->fail)) {
->                 trace_kvm_nested_vmenter_failed(
-> -                       "hardware VM-instruction error: ",
-> +                       TPS("hardware VM-instruction error: "),
->                         vmcs_read32(VM_INSTRUCTION_ERROR));
->                 exit_intr_info = 0;
->                 exit_qual = 0;
->                 goto reflect_vmexit;
->         }
-> 
-> What the tracepoint_string does is to save the string into core kernel
-> memory (there's logic to use the same string if it is already
-> available), and it wont free it when the module is unloaded.
+> Just trying to find out exactly what you are proposing.  ;-)
 
-This doesn't appear to be correct.  Were you thinking of something else?
+Some options are:
 
-Unless I'm misreading the code and section output, tracepoint_string() just saves
-a pointer to the string into a dedicated section, it doesn't magically hoist the
-string itself into the kernel proper.  And I can't see how that would work, e.g.
-if the module is compiled and linked independent from the core kernel.
+ (1) Do nothing until something actually goes wrong (and hope we spot/debug it)
 
-And the comment above the macro strongly suggests that persistence needs to be
-guaranteed by the entity using tracepoint_string().  Testing bears this out, e.g.
-the WARN and UNSAFE_MEMORY errors still happen when using tracepoint_string().
+ (2) Have volatile_if force a conditional branch, assuming that it solves
+     the problem and doesn't hurt codegen (I still haven't convinced myself
+     for either case)
 
- * The @str used must be a constant string and persistent as it would not
- * make sense to show a string that no longer exists. But it is still fine
- * to be used with modules, because when modules are unloaded, if they
- * had tracepoints, the ring buffers are cleared too. As long as the string
- * does not change during the life of the module, it is fine to use
- * tracepoint_string() within a module.
- */
-#define tracepoint_string(str)						\
-	({								\
-		static const char *___tp_str __tracepoint_string = str; \
-		___tp_str;						\
-	})
+ (3) Upgrade READ_ONCE() to RCpc acquire, relaxed atomic RMWs to RCsc
+     acquire on arm64
 
+ (4) Introduce e.g. READ_ONCE_CTRL(), atomic_add_return_ctrl() etc
+     specifically for control dependencies and upgrade only those for
+     arm64
 
-Thanks for the help!
+ (5) Work to get toolchain support for dependency ordering and use that
 
-> This makes the string safe to use by the trace event directly.
-> 
-> Not only is the TPS safe, it also allows userspace tools to know what
-> the string is, as it is exported in printk_formats. Otherwise trace-cmd
-> and perf will only display a pointer hex value as it has no idea what
-> its pointing to (both TPS and __string fixes this).
+I'm suggesting (3) or (4) because, honestly, it feels like we're being
+squeezed from both sides with both the compiler and the hardware prepared
+to break control dependencies.
+
+Will
