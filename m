@@ -2,80 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D1239E627
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D92739E628
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230436AbhFGSGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 14:06:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbhFGSGJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 14:06:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 285F4C061766
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 11:04:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ZTh2RnYV27oLVt4BJj4ZhqnskEuzydcOTMgQsGZpXh4=; b=RxwF/q2Rye4NC95etr0kDbNka+
-        tROFkFQ+1cDU8FWiO0vAOD4ceReIB59VAIYX3i1CrWedoFgQEr93OxIGkjtMnfxcVNcxP8vaz+bNZ
-        IZ1vpMu9XasdCayeQud6YvPpIXwAYtdtI4dFSeSBWOwuThMJmTQ/76lxj6HOgGrZ3ZgDAAA5A6lpY
-        gXYMN2J+JZrbshybaIkbcQz1KrHScMrbK9bH3SClCJL9Yrp6379zrd01Ox60MSku9JIWi01w2wF4s
-        zlM+UGDmMSyEhNFG4MDnVIXnJZXzs9ISLxhKn3Rr+bXmg8rZz0S1km5AR9f8rAXgvKIN6FJnynitY
-        +bEwad1Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lqJat-00G67M-KS; Mon, 07 Jun 2021 18:03:29 +0000
-Date:   Mon, 7 Jun 2021 19:03:23 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jann Horn <jannh@google.com>
-Cc:     Linux-MM <linux-mm@kvack.org>, Zi Yan <ziy@nvidia.com>,
-        Peter Xu <peterx@redhat.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        chinwen.chang@mediatek.com,
-        kernel list <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michel Lespinasse <walken@google.com>,
-        syzbot <syzbot+1f52b3a18d5633fa7f82@syzkaller.appspotmail.com>
-Subject: Re: split_huge_page_to_list() races with page_mapcount() on
- migration entry in smaps code? [was: Re: [syzbot] kernel BUG in
- __page_mapcount]
-Message-ID: <YL5fayfh03Wecyd7@casper.infradead.org>
-References: <00000000000017977605c395a751@google.com>
- <CAG48ez0M=iwJu=Q8yUQHD-+eZDg6ZF8QCF86Sb=CN1petP=Y0Q@mail.gmail.com>
+        id S230523AbhFGSGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 14:06:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:39498 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230233AbhFGSG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 14:06:29 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5357B12FC;
+        Mon,  7 Jun 2021 11:04:38 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A51313F73D;
+        Mon,  7 Jun 2021 11:04:36 -0700 (PDT)
+Date:   Mon, 7 Jun 2021 19:04:34 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        f.fainelli@gmail.com, etienne.carriere@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
+Subject: Re: [RFC PATCH 02/10] firmware: arm_scmi: Add missing xfer
+ reinit_completion
+Message-ID: <20210607180434.GC40811@e120937-lin>
+References: <20210606221232.33768-1-cristian.marussi@arm.com>
+ <20210606221232.33768-3-cristian.marussi@arm.com>
+ <20210607174142.jdirvbasvgl7q4oj@bogus>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAG48ez0M=iwJu=Q8yUQHD-+eZDg6ZF8QCF86Sb=CN1petP=Y0Q@mail.gmail.com>
+In-Reply-To: <20210607174142.jdirvbasvgl7q4oj@bogus>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 07:27:23PM +0200, Jann Horn wrote:
-> === Short summary ===
-> I believe the issue here is a race between /proc/*/smaps and
-> split_huge_page_to_list():
-> 
-> The codepath for /proc/*/smaps walks the pagetables and (e.g. in
-> smaps_account()) calls page_mapcount() not just on pages from normal
-> PTEs but also on migration entries (since commit b1d4d9e0cbd0a
-> "proc/smaps: carefully handle migration entries", from Linux v3.5).
-> page_mapcount() expects compound pages to be stable.
-> 
-> The split_huge_page_to_list() path first protects the compound page by
-> locking it and replacing all its PTEs with migration entries (since
-> the THP rewrite in v4.5, I think?), then does the actual splitting
-> using __split_huge_page().
-> 
-> So there's a mismatch of expectations here:
-> The smaps code expects that migration entries point to stable compound
-> pages, while the THP code expects that it's okay to split a compound
-> page while it has migration entries.
+Hi,
 
-Will it be a colossal performance penalty if we always get the page
-refcount after looking it up?  That will cause split_huge_page() to
-fail to split the page if it hits this race.
+On Mon, Jun 07, 2021 at 06:42:57PM +0100, Sudeep Holla wrote:
+> On Sun, Jun 06, 2021 at 11:12:24PM +0100, Cristian Marussi wrote:
+> > Reusing timed out xfers in a loop can lead to issue if completion was not
+> > properly reinitialized.
+> >
+> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> > ---
+> >  drivers/firmware/arm_scmi/driver.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+> > index bee33f9c2032..759ae4a23e74 100644
+> > --- a/drivers/firmware/arm_scmi/driver.c
+> > +++ b/drivers/firmware/arm_scmi/driver.c
+> > @@ -448,6 +448,7 @@ static int do_xfer(const struct scmi_protocol_handle *ph,
+> >  			      xfer->hdr.poll_completion);
+> >
+> >  	xfer->hdr.status = SCMI_SUCCESS;
+> > +	reinit_completion(&xfer->done);
+> >
+> 
+> What could happen after xfer_get_init->scmi_xfer_get->reinit_completion
+> that it needs to be re-initialised again. I don't see any reason for this ?
+> If there are, please state them explicitly. If this is needed, I would drop
+> the one in scmi_xfer_get().
+> 
+
+The reason, like I explained in the other reply in hdr.status, is the
+possibility of do_xfer loops and being more defensive.
+
+I agree that if what I blabbed in the other email is acceptable, I could
+drop the reinit_completion in xfer_get() and just use it before
+send_message().
+
+Thanks,
+Cristian
+
+> --
+> Regards,
+> Sudeep
