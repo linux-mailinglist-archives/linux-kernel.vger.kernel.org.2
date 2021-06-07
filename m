@@ -2,202 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A608139D846
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8445139D844
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhFGJI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:08:59 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:60487 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230395AbhFGJI4 (ORCPT
+        id S230320AbhFGJIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:08:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229966AbhFGJIh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:08:56 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 5963E194D;
-        Mon,  7 Jun 2021 05:07:04 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute3.internal (MEProxy); Mon, 07 Jun 2021 05:07:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm1; bh=4Xrn6sBXHve5ttmu1qx/tNnwpXxm
-        QzMsmndeqFUhd1U=; b=eKo0efSNlXsAbYkTNXPkGZywnHA6g84b+8TL0vmP44gr
-        Cn8C2H3NSezWhpmqOD0SYrFHHyZJIfkzXyJzpwKFvBNB9p1xqlLUOGW/p74BI/OQ
-        VHGFxUL/NFrEAYSXWlZ6f1Z35cdteE8CfGVl9jb9jRqpLmr1QyNlt0+iY1gkMllX
-        8QVrUbAg4HZUCSMeg1vih5evZ09jrKweOqu9gPAM2Kj+6rg44kyx6k1dLcvlCSeB
-        vxrLrXQH3ECT7c5JULeRsPuClPwUNfC8WvQTrngNM70/5k+LmsHzwZPIIyv7pmi/
-        aY/L/qU2MJOIXI3jylwADfzUV3LIJPx0KKdwma7ATA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=4Xrn6s
-        BXHve5ttmu1qx/tNnwpXxmQzMsmndeqFUhd1U=; b=vgIOA5qTokj4eDiaVTF5Pr
-        iIRE5Uymrqabl3GaFIKQr0CrRZBaGaeJARddeW5swCWtYjw6idI+vzf/QLdmaPVF
-        Ce6iTjL27vyl/s4jjxWt3UvHsKGBpmCy6hm1cHHVY4eF2yShab2tjKJb3UDojQRv
-        +TFvg3xm9N50UMNl5W5nu0dgLAhDuBRoeJB+Da8Zn8mym7j+X7jNvNpD5Lna3Dlf
-        Et9P/1vz1EML+qPlmL31J6n6jUUJVBkIyfr/3nzOvC1XHascqPJ15ZisIEBdnqBk
-        8blDOHUajrd1WRlFD6XS6kTgN5oxNLDfV/+w9al+meLFtZJWqcfA9BX7gHSqt4DA
-        ==
-X-ME-Sender: <xms:t-G9YFvulZ_OTnTGPqxfJUcOz2amlsSiI1DVCAOS7HFCYxF1QFCe8g>
-    <xme:t-G9YOda1pQb--BKeLVxNhnrX_cjXOe9YALMma7yMDw5nj0r4L7ZrtcsBeWXVeHAS
-    iI_-bvZKx68vrBkF4k>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtjedgudduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdfuvhgv
-    nhcurfgvthgvrhdfuceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrg
-    htthgvrhhnpedtudejteetgfegtdetvdeiueffgfduteegjefghfefudeuveduffeutedt
-    teeffeenucffohhmrghinheplhhinhhugihfohhunhgurghtihhonhdrohhrghenucevlh
-    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsvhgvnhesshhv
-    vghnphgvthgvrhdruggvvh
-X-ME-Proxy: <xmx:t-G9YIyWRAtM_1Xz7yLikLmtF4wGa5-TRBRTdJJ-CePg4P5tiLUKvA>
-    <xmx:t-G9YMNNaeGemUHICB1reVglJNKwotVOJj6GCX4TdFS2Df4GDw9fnQ>
-    <xmx:t-G9YF8Su5sUxY1H7gxLfOLOJ1stXgWYlkmt8WiPUj2pQmtbbl8HKg>
-    <xmx:t-G9YHJsDKmVdw9orqiXfFdNWxreLEZhD0XIAIcaddWKqLLG6eNZMg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 4B48151C0060; Mon,  7 Jun 2021 05:07:03 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
-Mime-Version: 1.0
-Message-Id: <5b1431bc-64e3-4ecc-a498-eda8e46d5a95@www.fastmail.com>
-In-Reply-To: <CAK8P3a0j=vowKpdJxt-GBsFuwqNJZv-dB-XoZihg=XHey1VoCg@mail.gmail.com>
-References: <20210607061751.89752-1-sven@svenpeter.dev>
- <CAK8P3a0vbyq-90pUQ6-0Ed=DadR3Pnf0juupLQ70psQSuu_1nw@mail.gmail.com>
- <23348bfc-aad7-4e5f-83b1-e69463e618e5@www.fastmail.com>
- <CAK8P3a0j=vowKpdJxt-GBsFuwqNJZv-dB-XoZihg=XHey1VoCg@mail.gmail.com>
-Date:   Mon, 07 Jun 2021 11:06:08 +0200
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Arnd Bergmann" <arnd@arndb.de>
-Cc:     "USB list" <linux-usb@vger.kernel.org>,
-        "Felipe Balbi" <balbi@kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] usb: dwc3: support 64 bit DMA in platform driver
-Content-Type: text/plain
+        Mon, 7 Jun 2021 05:08:37 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ACBFC061766;
+        Mon,  7 Jun 2021 02:06:32 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id y11so5182496pgp.11;
+        Mon, 07 Jun 2021 02:06:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7mCsMCEhuV7MAR015P3zNuPFELHjbOdjUW/NEayiKp0=;
+        b=PuSuJHdd5ZfWWjAgMQn8L5aTaDaNgKk5twoSIdVVfKs/fQgYstTAoO324APpTv4Vl5
+         Ja2iwj1WeDad56Nqjd20UzUqBypPMmWow9G5KHGpzJE5m2UDuv/lpOecYUFdIQ/8eHaL
+         WFd4ja2R557tGn3ZE2pbwWl89AjvkEOsWCH+jjJAmjEt9ShdrQUP0xUhnklms1wy/Lt4
+         ZVwT2N1xD9mD8Ov7miewqa/JNH2fDf6ytipOQXOp/ijObWTclsudlMP0Ve1x3jEc8O1K
+         3P8y6TzeSwHZ6VO7N2+1cE2FLHRr4mIpGK7aTbOo/2K4+N+9bqzO7o+k/OQvJ0ALtx7B
+         Co3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7mCsMCEhuV7MAR015P3zNuPFELHjbOdjUW/NEayiKp0=;
+        b=C6MCN83r4yM6zeBzRaMCHL9QO7ePEmkk3/iGZkPMLfLPSFclIFx76oNve1gHysVFot
+         gZ1vCjN9i6EiT+3FXo+tRXnyPJwBsfe40ONnSgo6I+givcFWA0dK6UOIOn6DpeGQKlTh
+         NMFLo2kkAEZ18IqYUhWLGBC9Z7LX2jIXmYh9e2lo4/2YKUgP0eZseyqSKt8xv+aeSpyR
+         H1Vp3SVwWVys4WL0TLn8eHhtzA5ZSI8P6yDxm6C1TluHf8C0PRi2Av+iu0qLw4EnU6Np
+         0I1s2VGBK9tzoXW3zOG1yilXmerIg9ZHknf8K4ynYJzTw79X8rf7lEh8FQaB4eRicWZK
+         DoVQ==
+X-Gm-Message-State: AOAM533ct8TJk+uVfJMUQ9bjdzSSGPm4HmXSp+lqAYrHiV4EE9iKjyG/
+        yuHQ6PASIcud1RnUb7KKvplbrMS884qC2zH5fTc=
+X-Google-Smtp-Source: ABdhPJyGY+nQvvnj3uig7SEb5d34EnaiMwwPrVJ/+is/XEFGptxJMNuRbqsxLwbi8uMRFFEUQSfHe/pWbRr78v5UBvc=
+X-Received: by 2002:a63:b507:: with SMTP id y7mr17008986pge.74.1623056788993;
+ Mon, 07 Jun 2021 02:06:28 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210607031537.12366-1-thunder.leizhen@huawei.com>
+ <CAHp75VdcCQ_ZxBg8Ot+9k2kPFSTwxG+x0x1C+PBRgA3p8MsbBw@mail.gmail.com>
+ <658d4369-06ce-a2e6-151d-5fcb1b527e7e@huawei.com> <829eedee-609a-1b5f-8fbc-84ba0d2f794b@huawei.com>
+In-Reply-To: <829eedee-609a-1b5f-8fbc-84ba0d2f794b@huawei.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 7 Jun 2021 12:06:13 +0300
+Message-ID: <CAHp75VczLpKB4jnXO1be96nZYGrUWRwidj=LCLV=JuTqBpcM3g@mail.gmail.com>
+Subject: Re: [PATCH 1/1] lib/test: Fix spelling mistakes
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Mon, Jun 7, 2021, at 10:22, Arnd Bergmann wrote:
-> On Mon, Jun 7, 2021 at 10:01 AM Sven Peter <sven@svenpeter.dev> wrote:
-> > On Mon, Jun 7, 2021, at 09:25, Arnd Bergmann wrote:
-> > > On Mon, Jun 7, 2021 at 8:18 AM Sven Peter <sven@svenpeter.dev> wrote:
-> > > >
-> > > > Currently, the dwc3 platform driver does not explicitly ask for
-> > > > a DMA mask. This makes it fall back to the default 32-bit mask which
-> > > > breaks the driver on systems that only have RAM starting above the
-> > > > first 4G like the Apple M1 SoC.
-> > > >
-> > > > Fix this by calling dma_set_mask_and_coherent with a 64bit mask.
-> > > >
-> > > > Signed-off-by: Sven Peter <sven@svenpeter.dev>
-> > > > ---
-> > > >
-> > > > Third time's a charm I hope - this time much simpler :)
-> > >
-> > > I think this is almost good, but there is still one small issue:
-> > >
-> > > > diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-> > > > index b6e53d8212cd..ba4792b6a98f 100644
-> > > > --- a/drivers/usb/dwc3/core.c
-> > > > +++ b/drivers/usb/dwc3/core.c
-> > > > @@ -1545,6 +1545,10 @@ static int dwc3_probe(struct platform_device *pdev)
-> > > >
-> > > >         dwc3_get_properties(dwc);
-> > > >
-> > > > +       ret = dma_set_mask_and_coherent(dwc->sysdev, DMA_BIT_MASK(64));
-> > > > +       if (ret)
-> > > > +               return ret;
-> > >
-> > > This will now  fail on machines with dwc3 connected to a 32-bit bus (or a
-> > > bus that is accidentally not annotated as supporting 64-bit) when there is
-> > > some memory that is not addressable through that bus.
-> > >
-> > > If dma_set_mask_and_coherent() fails, the platform should just fall back to
-> > > 32-bit addressing as it did before your change. dma_alloc_*() will do that
-> > > implicitly by allocating from ZONE_DMA32, while dma_map_*() fails
-> > > on any non-addressable memory, or falls back to swiotlb if that is available.
+On Mon, Jun 7, 2021 at 11:56 AM Leizhen (ThunderTown)
+<thunder.leizhen@huawei.com> wrote:
+> On 2021/6/7 16:52, Leizhen (ThunderTown) wrote:
+> > On 2021/6/7 16:39, Andy Shevchenko wrote:
+> >> On Mon, Jun 7, 2021 at 6:21 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+> >>
+> >>> Fix some spelling mistakes in comments:
+> >>> thats ==> that's
+> >>> unitialized ==> uninitialized
+> >>> panicing ==> panicking
+> >>> sucess ==> success
+> >>> possitive ==> positive
+> >>> intepreted ==> interpreted
+> >>
+> >> Thanks for the fix! Is it done with the help of the codespell tool? If
+> >> not, can you run it and check if it suggests more fixes?
 > >
-> >
-> > Makes sense, but just to make sure I understand this correctly:
-> > All that needs to be done is call dma_set_mask_and_coherent with a 64 bit
-> > mask and then just ignore the return value?
-> 
-> If the driver never calls dma_map_*() on the device, that is correct, otherwise
-> it has to be careful about what pointers it passes in there to avoid
-> failing later.
-> Since it is already working without the dma_set_mask(), I don't expect a
-> problem there.
-> 
-> I suppose in theory, the dwc3_alloc_scratch_buffers() should use GFP_DMA32
-> if dma_set_mask_and_coherent() failed. On arm32, it won't matter since
-> all kernel pointers are generall within ZONE_DMA32, and on arm64 we always
-> build with SWIOTLB enabled. Not sure where else you'd typically find dwc3,
-> or if any of them are broken without changing this.
-> 
->         Arnd
-> 
+> > Yes, it's detected by codespell tool. But to avoid too many changes in one patch, I tried
+> > breaking it down into smaller patches(If it can be classified) to make it easier to review.
+> > In fact, the other patch I just posted included the rest.
+>
+> https://lkml.org/lkml/2021/6/7/151
+>
+> All the remaining spelling mistakes are fixed by the patch above. I can combine the two of
+> them into one patch if you think it's necessary.
 
-I've looked at Documentation/core-api/dma-api-howto.rst again which mentions that
-
-	By default, the kernel assumes that your device can address 32-bits of DMA
-	addressing.  For a 64-bit capable device, this needs to be increased, and for
-	a device with limitations, it needs to be decreased.
-	[...]
-	These calls usually return zero to indicated your device can perform DMA
-	properly on the machine given the address mask you provided, but they might
-	return an error if the mask is too small to be supportable on the given
-	system.  If it returns non-zero, your device cannot perform DMA properly on
-	this platform, and attempting to do so will result in undefined behavior.
-	You must not use DMA on this device unless the dma_set_mask family of
-	functions has returned success.
-
-which, unless I'm reading this incorrectly, should mean that asking for a 64bit
-mask is always fine. In the worst case the mask will just be downgraded to
-32bit if the bus is correctly annotated (the places I looked at that use the mask
-take the min of that one and dev->bus_dma_limit).
-Only asking for a mask that is too small would be bad.
-
-I have also found [1],[2] which made changes to that documentation and that also
-seems to confirm that it's fine to just ask for a 64 bit mask either way.
+No, it's good to keep them split. What I meant is to use the tool
+against the same subset of the files you have done your patch for. But
+please mention in the commit message that you have used that tool, so
+reviewers will not waste time on the comments like mine.
 
 
-So for these cases
-
-> > > This will now  fail on machines with dwc3 connected to a 32-bit bus (or a
-> > > bus that is accidentally not annotated as supporting 64-bit) when there is
-> > > some memory that is not addressable through that bus.
-
-the call should return success but the final mask used for allocations should
-remain at 32bit. Before the change no memory above the 32bit limit was used by
-the dwc3 core and after the change we still can't use any memory above the
-32bit limit.
-
-
-Now if we had a dwc3 controller with
- * a quirk that only allows 32bit DMA for the core dwc3 controller
- * but support for >32bit DMA for xhci buffers (xhci already asks for a 64bit mask) 
- * on a bus that's otherwise annotated to support 64bit
-this change will break that.
-
-But that's unrelated to the dma_set_mask_and_coherent return value since
-just calling it with a 64bit mask will already cause trouble (and also be successful!).
-
-The problem I see is that we likely wouldn't know about devices with a quirk like this
-since so far everything has been working fine there. I'm not really sure how to guard
-against that either since we would only notice on the first DMA transfer above the 32bit
-limit. I'm also not sure how likely the existence of such a weird device is.
-
-This hypothetical dwc3 controller should probably either be confined to a bus with a 
-proper 32bit limit or get a quirk that enforces allocations from ZONE_DMA32. Doesn't
-change the fact that they used to work but would now break after this patch.
-
-
-
-[1] https://lists.linuxfoundation.org/pipermail/iommu/2019-February/033669.html
-[2] https://lists.linuxfoundation.org/pipermail/iommu/2019-February/033674.html
-
-Best,
-
-Sven
+-- 
+With Best Regards,
+Andy Shevchenko
