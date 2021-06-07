@@ -2,147 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4628039DED4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1396039DED5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbhFGOeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 10:34:15 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20244 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230482AbhFGOeN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 10:34:13 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 157EPl5n089930;
-        Mon, 7 Jun 2021 10:32:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=DWW2uC4s31sQDhzOPH6ZTcX6VdddzpmfIN+KxzFhM+k=;
- b=EQ7g9EP4dW9AcfN1at+jU4VsuIrwFGftnBOmOTO/4Ar27gpUdIZw6HJglwl9NkbpksE8
- NkucJNoKB8GVzHH8dgwpWEIcBEXMVkDpiBeIKA7UybqJIBMHUvMkLp7Gkgwzh5hpw0ev
- mx9hUCUBGOTQ1kuFdIjIPUtUCry2YZ68dSG7emSobfeNdcGB0g0MqRjBFV0pXbXwEUdo
- vRzKeG+W79vU+/5Biqu2gdN/r/u84mAyu3JnFz4Utf6kv3givyjlY+F63SwHhQkLS0PQ
- 322mP6GhHRjlnF3B6WGyL03tGfpvq6ITvfam7lZFeRNZNcecuZQWW3teIouvWPPFVUS+ Ow== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 391n7a86v3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Jun 2021 10:32:19 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 157ESSk6024625;
-        Mon, 7 Jun 2021 14:32:17 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma01fra.de.ibm.com with ESMTP id 3900w88hf5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Jun 2021 14:32:17 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 157EWFWn28442896
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 7 Jun 2021 14:32:15 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1ED325204F;
-        Mon,  7 Jun 2021 14:32:15 +0000 (GMT)
-Received: from [9.145.172.247] (unknown [9.145.172.247])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id EF1685204E;
-        Mon,  7 Jun 2021 14:32:14 +0000 (GMT)
-Subject: Re: gcov: NULL pointer dereference with gcc 9.3.1
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     linux-kernel@vger.kernel.org
-References: <YLZYwgs5hyzFZMlw@suse.de>
- <0a013450-75eb-de2c-f90a-3df193800cea@linux.ibm.com>
- <YLeUMit+CTfZl8pw@suse.de>
-From:   Peter Oberparleiter <oberpar@linux.ibm.com>
-Message-ID: <e8207b09-265b-60a6-7fb0-51dda7cf59d6@linux.ibm.com>
-Date:   Mon, 7 Jun 2021 16:32:14 +0200
-MIME-Version: 1.0
-In-Reply-To: <YLeUMit+CTfZl8pw@suse.de>
+        id S230517AbhFGOe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 10:34:26 -0400
+Received: from mail-mw2nam10on2062.outbound.protection.outlook.com ([40.107.94.62]:51068
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230203AbhFGOeY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 10:34:24 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nta1fSqlZQaVy42jlvfKP+nmNgZYp0OqTd5w8FD384tT5UeOoeEu2mXOrgeq3Gi3tbpUncMwxMSId94TCbgHcNXr0wZ8P6Qu5eS6OIEx2Ss5bp2eOE89Hi3J9myBGnq8OvzY0/bvWRUjFNbGYN3BWW07DLZVgahDun5Ha8vwQtmbtbjfmc9bSSbyN03jlN1SyLVwTwQqvuQLxM23CH+xmjVukx5u06x4jrh10zAsRAzcqO7EUTDtN8PUhB84HjKZnlQP6jgAJ/qrJrxJ5jPyKMi29b/3u0PszkY5pPa/XNGNahYnpaM4gXA2JI49F7If1nQso/UIKkfDU9JkNabWRA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c676288MzZrfTFL2Csnut+dS/RjvlOS4l10kw9BnWkE=;
+ b=UrED01GE2DkjFcauDEdPtD4HmTAe8XS33o6g2pE94IVgolnGe+iLGK7P3M0QtfTkYmKD8OapPdvnUez/YLHJpIoyV6zy0yQ6l4ygaAzWU9bfXKop7cvRDQZczzTv9rZ3lwywZsSik4d2KsHGYrVP+YnogNcN3sajhdFD4w9zTNZoSsn3hmm5kkN8XtidabRjNVhzqfCbDa5qZcnsQBpuQOJ/4Ft/BVEvgyWlg/QzRFGJhUSPE1A3wYlF6JR0YLGtLlowB4p+NwiJ+FUtIAPgD6e/f955j2j9TU0Haj29+kIYYG4+qRB/DAQwPzS1fEy8SNIMryFp0IyqBIXKOmERCQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c676288MzZrfTFL2Csnut+dS/RjvlOS4l10kw9BnWkE=;
+ b=L2qHX/tHYwqEoGrVUAePqIR/F468MMFKASi5Gb8+OdmLSdBhHnovDP2FOYOtagMDK+djVR9qXg/GJEWQQMQbNJEs+5PCo02XN6lCwAyp+dH8jTnn7Q+OKG6mtQG21UNC48y0VTBHWiXK/yHjaSQ3ec+9PuqiXVIWz+YUmXFwh4M=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
+ DM6PR12MB4942.namprd12.prod.outlook.com (2603:10b6:5:1be::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4195.24; Mon, 7 Jun 2021 14:32:31 +0000
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::b914:4704:ad6f:aba9]) by DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::b914:4704:ad6f:aba9%12]) with mapi id 15.20.4195.030; Mon, 7 Jun 2021
+ 14:32:31 +0000
+Subject: Re: [PATCH v1 03/11] x86/cpufeatures: Add TDX Guest CPU feature
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+References: <20210602022136.2186759-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210602022136.2186759-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <dc064764-7736-33c7-7a32-b4dec68eb745@amd.com>
+Date:   Mon, 7 Jun 2021 09:32:28 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+In-Reply-To: <20210602022136.2186759-4-sathyanarayanan.kuppuswamy@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ahaQOWbbNczhPr2goL5yuD_Q7tmNKXNr
-X-Proofpoint-ORIG-GUID: ahaQOWbbNczhPr2goL5yuD_Q7tmNKXNr
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-07_11:2021-06-04,2021-06-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- priorityscore=1501 mlxlogscore=999 adultscore=0 lowpriorityscore=0
- suspectscore=0 impostorscore=0 phishscore=0 bulkscore=0 clxscore=1015
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106070100
+X-Originating-IP: [67.79.209.213]
+X-ClientProxiedBy: SA0PR12CA0024.namprd12.prod.outlook.com
+ (2603:10b6:806:6f::29) To DM5PR12MB1355.namprd12.prod.outlook.com
+ (2603:10b6:3:6e::7)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from office-linux.texastahm.com (67.79.209.213) by SA0PR12CA0024.namprd12.prod.outlook.com (2603:10b6:806:6f::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.15 via Frontend Transport; Mon, 7 Jun 2021 14:32:30 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5976b576-fa0a-4a0c-f90f-08d929c1154f
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4942:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4942F809BDDF562E886CD7ACEC389@DM6PR12MB4942.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: n2obNTY5n5yNWZ6Ant54A3sAHZkajaDIkVli5p0yac8yPdW0cPax89t6lTy7hPHjw4qlBM0VIa4qZgW/UOy24Wi4244H/xXyAz5yheH1LKdSvBXyquxgDtNP2MiCee2tALZnFvJ1ThFN+91X4SEND6yb9P0WjxUlmlFzswybMdVkJdbdfxjzA/axFijik/H8pKT41S1B83DLWlbFHU/gHW4VdXWWyoqJ3vl/A5glmnapmrnBTXXjBIKVXVAsXAxzmNYfZ4YPvkkTPBRB77Ei/gpaA0rDj3ZYPf+OkynbOPnv8XyNaZM9pywvfNAkGCSpue3iHk566fn1pYGCC5b0yID117G7rjRWbCG+6uKjD5CnDbKLQD3X8J3cb2X4TlMDOW0zz46jfsHwTzwkHOTKKSWDEnAJi5Wh/ES3eUl4Zey1UHhf2gDMvuRTuyMuQvlKtVPhEMp2JVV3DrHLsNQGtPMc8I/Dvze54qDeK3TkkFfEbTQdQrwEJLLxHdjPmjwuZHl4ambX6M5t9/jqWKodiPi3vBTkcgZQetkaklh+M4tJtQRu7hWTmhC7u57oktfqh8mj3o52Wbls57oCozjKZibpimx3KOPXVGugoLe1ZgjABsr0Xu7KVZDDxviGx5/dBLzZRot3U8XaNCAMISkJ48bohdIQPfxOiueoCqQuGqa3g+4mwZza+xu5PQKZe6Sl
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(396003)(376002)(346002)(39850400004)(4326008)(8936002)(54906003)(7416002)(6512007)(31696002)(66476007)(66556008)(16526019)(66946007)(31686004)(86362001)(26005)(8676002)(53546011)(2616005)(478600001)(6506007)(5660300002)(2906002)(956004)(83380400001)(110136005)(316002)(186003)(38100700002)(36756003)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MEc3Nm9UZXFFa05Hd2tvYUNRYkRBWG5oaTBsSDg3VDNXZEJZZ01jR09DWkFa?=
+ =?utf-8?B?dFNkdWlJKzBmakpqOEJ4dlFEdWtUeTFhbExKTkFFdjFsdGxOVUhVWlZxY1kw?=
+ =?utf-8?B?S0pWTGJUTDMwUEI1N1BXMVZCY0xDM29kekF5Nm50a3BIOTJXRDlhS1lpK2cr?=
+ =?utf-8?B?RU9rV2NrSkRwRUlMQXVXMHl0UUpFZXJ0djMrVHBFTlorV2Z5dHlJSDFaWW9r?=
+ =?utf-8?B?VVVvbmlxMlh6a2p5eGxTMVJ5R3E0SnRybXY0aExQMERmTzdYZFpESHo0R3Vi?=
+ =?utf-8?B?ZW5hNE5OTStMajVYeS9tWTlhUTJiOE5qL3ZtMUdlNkgxeEFkL1RPTUlpNkcx?=
+ =?utf-8?B?WStSZFQ1OTNsWmw2aW5uWHRJeDdSWUlDUXNTdGdDa3J2L2tSTDFZNFlaWGU5?=
+ =?utf-8?B?SEtiVTNDK2NNZzBCQTZUVWFqN3pQQWVQTHM1VWQ4dmdSN2toVWJnaUJ1MVJT?=
+ =?utf-8?B?ZlN6WnQ4Z0cwMEJvZklhSDY1K2VqN0FvYmtId0NHTjdTOXVhKzh1Tjc5Ulhi?=
+ =?utf-8?B?OUhkekxxNldKdmszdGwxS0U0QUJrWHBzTmxBZXNSTjF4aG9meTZpUkt0NHQ4?=
+ =?utf-8?B?cGd3cGdFVGRYVG81RmVLVzczWFdjOEx0RnIxQ3VqVjMvbGpoUmJJSjRhUjla?=
+ =?utf-8?B?SWE5Mm0wSXBibm1pa0hHRmdCMUdtZW05UHZjZjlsekNra3YzdjFXVTQ4SlJq?=
+ =?utf-8?B?d2RYUjNqMDBjZE1saFA4TGcyWXhaTE5PZ2Y1MWk0bUhHckYyUVNWZm5aOVpj?=
+ =?utf-8?B?dzZMSFJOcldldUpRUERIR1U2eTY2YmZtdnFqbUZFRDhMTXpaM1g5MkE5M1Zy?=
+ =?utf-8?B?NnVmaU81QnRKVlVidkxtZno5a3kxZDhDUWZTbkh4bWU3a2JraWQ0bW1Ia0th?=
+ =?utf-8?B?SE9reHI5RzcrZDNZL1EzYVg0VVhQQ3VvN3BlbXNESGhiR1lOQ0RXVno3R1Vl?=
+ =?utf-8?B?c1BBR1pBWThxUmc4M2xKaWtTTzZuZGlHMjJ5NlB5ZkV2TW0xQ1QrMEtCMEJq?=
+ =?utf-8?B?L1VHMWlDNm02MGpQYldRTHdDQVN3TWtIWjBTaHNuZFY4TjFQdUxtZU93clR1?=
+ =?utf-8?B?NTB1SnBtUzBUczRHdERGaUE5c3RIbEJjTzZUV1FZVGFPT2lESjNjRW9LNEFh?=
+ =?utf-8?B?alZCV2xHOWgySFhSYkRZUDBiMXNwaWlSdEYrbUxhbW02a0dCRGEwTHRwd0NG?=
+ =?utf-8?B?aDExZUtpQUlYTWV4RXFDdjNPY0tSVmFZQ2tSZWpDNGh5Wjc1WC9KczI2bHZT?=
+ =?utf-8?B?NTJNdlJrVWtkSGpHZUc4T0Z2OWtSaEJYczd2SGhYbjNoc0FsbE1USk9aQ0h3?=
+ =?utf-8?B?cnFwWEsxVnNUcEFQeWREQ2c0VTB4Q2NuN051RlVyQ2Q2NzN3N3NpcXBwR0dx?=
+ =?utf-8?B?NFF3QXlqMmJqa1ROWHAxK29PMHRWdDJxbjdQaHBJZk5tYk5aOVJWTGRQK0Zn?=
+ =?utf-8?B?Z3RjaXVpNXdxRHpoMzdiaUpqRTlPdzJvZllpM3pMVllsd1JUQWcrZEJXRk5z?=
+ =?utf-8?B?YmMrS2dmZ0NRYWt0UCthdmhFd3BUcFFGNkpSSE9sMkg3UXNuR3J4OHUwNEsr?=
+ =?utf-8?B?cGxSb203dW9mVFQxcVhTcG1PTG9BZ3N5MkdIbHlOcFhKVXJWT1VkeVVQU0RC?=
+ =?utf-8?B?dU41T0NqWlMyZWF4UVdZZnpHRi8wTjYrOUgrZFNCdHpFdzg5TDBFQmQ0dUMv?=
+ =?utf-8?B?dlpuaThjZFZDdlhBcnMxNjdDTGhPdHBXanJWOHB6VXJmOEhWbzgveEJDbzdr?=
+ =?utf-8?Q?n1K37nuLIXpc7oAx+9DM6yZjFNP48S5Oxs/O1Aw?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5976b576-fa0a-4a0c-f90f-08d929c1154f
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2021 14:32:31.4274
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WL25t45FzC0+CRCzbAS2yzSKxhyIMn+qs60cgCmodVdXaXGqygttDp0jr0Ow0eoMUhdgIk7px/xXgDkUc5X+yA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4942
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.06.2021 16:22, Luis Henriques wrote:
-> On Wed, Jun 02, 2021 at 02:35:31PM +0200, Peter Oberparleiter wrote:
->> On 01.06.2021 17:56, Luis Henriques wrote:
->>> Hi!
->>>
->>> Maybe this is a known (gcc?) issue, but I'm seeing a NULL pointer splat if
->>> I instrument my kernel (or a module, more specifically) using gcc 9.3.1.
->>>
->>> It looks like, during initialization in __gcov_init(), gcov_info struct is
->>> invalid: the filename seems to be correct but ->function is NULL and
->>> ->n_functions contains garbage.
->>
->> Thanks for reporting this issue. The symptoms you're seeing look similar
->> to those that occur when the struct gcov_info layout emitted by GCC does
->> not match the one used by the kernel. In particular a change in the
->> GCOV_COUNTER value can cause this behavior.
->>
->> I've checked upstream GCC 9.3.1 and it seems to match what is used by
->> the kernel for that GCC version. Could you provide the exact version of
->> the compiler you are using? Both 'gcc --version' output and the GCC
->> package version should help. Also what architecture are you seeing this on?
+On 6/1/21 9:21 PM, Kuppuswamy Sathyanarayanan wrote:
+> Add CPU feature detection for Trusted Domain Extensions support.
+> TDX feature adds capabilities to keep guest register state and
+> memory isolated from hypervisor.
 > 
-> Here's the output of 'gcc --version':
+> For TDX guest platforms, executing CPUID(0x21, 0) will return
+> following values in EAX, EBX, ECX and EDX.
 > 
-> gcc (SUSE Linux) 9.3.1 20200903 [revision 9790fa53b48f3a48e0f7a7ad65e2bbf3b206a7b0]
-> Copyright (C) 2019 Free Software Foundation, Inc.
-> This is free software; see the source for copying conditions.  There is NO
-> warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> EAX:  Maximum sub-leaf number:  0
+> EBX/EDX/ECX:  Vendor string:
 > 
-> This is the version shipped with openSUSE Tumbleweed, and I'm using it to
-> compile an x86_64 kernel.  Regarding the 'package version', I'm assuming
-> the packages as per the distro package version, right?  Here's the data
-> from 'zypper info':
+> EBX =  "Inte"
+> EDX =  "lTDX"
+> ECX =  "    "
 > 
-> Information for package gcc9:
-> -----------------------------
-> Repository     : Main Repository (OSS)
-> Name           : gcc9
-> Version        : 9.3.1+git1684-3.5
-> Arch           : x86_64
-> Vendor         : openSUSE
-> Installed Size : 94.6 MiB
-> Installed      : Yes (automatically)
-> Status         : up-to-date
-> Source package : gcc9-9.3.1+git1684-3.5.src
+> So when above condition is true, set X86_FEATURE_TDX_GUEST
+> feature cap bit
+> 
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> ---
 
-I've checked the source you referenced and found that it contains a
-backport of a change to gcov_info that was only introduced with GCC 10
-to upstream source: the value of GCOV_COUNTERS was reduced from 9 to 8.
+...
 
-Since I don't think it's feasible to implement support for such
-vendor-specific changes in the upstream kernel source my suggestion for
-you would be to either
+>  /*
+>   * Manage page tables very early on.
+> @@ -491,6 +492,8 @@ asmlinkage __visible void __init x86_64_start_kernel(char * real_mode_data)
+>  
+>  	kasan_early_init();
+>  
+> +	tdx_early_init();
+> +
 
-a) fall back to a vanilla GCC version,
-b) fall back to a known-to-work vendor-specific GCC version (GCC 10
-   should be fine), or
-c) to manually change the GCOV_COUNTERS value in
-   linux/kernel/gcov/gcc_4_7.c to 8.
+Just a real minor nit, but does this have to be after kasan_early_init()?
+If not, keeping the SME/SEV/TDX calls "together" might read clearer. So
+just moving it up before kasan_early_init() will group them.
 
-> Do you have a link with binaries I could test for upstream 9.3.1?  I
-> checked [1] but there's only 9.3.0.
+Thanks,
+Tom
 
-I'm not sure there is any. My analysis was based on source code for
-9.3.0 alone.
-
-
-Regards,
-  Peter Oberparleiter
-
--- 
-Peter Oberparleiter
-Linux on Z Development - IBM Germany
