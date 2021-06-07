@@ -2,105 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C21139D6DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 185A739D6E7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbhFGIRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 04:17:33 -0400
-Received: from mail-ua1-f42.google.com ([209.85.222.42]:40897 "EHLO
-        mail-ua1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhFGIRb (ORCPT
+        id S230334AbhFGIS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 04:18:26 -0400
+Received: from mail-ed1-f54.google.com ([209.85.208.54]:43671 "EHLO
+        mail-ed1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230211AbhFGISZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 04:17:31 -0400
-Received: by mail-ua1-f42.google.com with SMTP id e12so6560593ual.7
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 01:15:27 -0700 (PDT)
+        Mon, 7 Jun 2021 04:18:25 -0400
+Received: by mail-ed1-f54.google.com with SMTP id s6so19225493edu.10;
+        Mon, 07 Jun 2021 01:16:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=K89JEvr85cNLVGSNruqsSq3SJC58qTPUfjZOJypE398=;
+        b=eCJfDnUWsGlw5Enrdk3Jns3FXgd6MMJQpD3UOt8lHyRMIu98184qLWZkiRLljwqJxY
+         5OcWiejI3nEYcgYhlnsOrllVQH3cE02D/gkfrDK1+lwK6jTjAMLbwpFOp3CKyB/j0AnL
+         xPOMjbC2NfV9eSBhhbKGOV3NN7xQ8/n9qXd3Mnvixwmt4UPMxgNcK3dVviOXbrMhoq1u
+         tJrJkdgzM6SUwfTcyCvrHaHOQKhpmeOAixxRVBXQZFpE7Fd2s6bZZ2RDTPFz24ZzkVLO
+         NpXifHVREn/tJ1BEZZe6V6RolRTnvv9zvyxjMh1ogLwdq3n7mKcE/rrrwrd/JPei0IbB
+         D9DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ltpVj0TZnSAm7Nm7Sf6ejq98h2Pbq2EQteDLv/+/C2c=;
-        b=TYOLNeDx7B/WnpnxeD7C+Abu0z9Bh5qWBntpME3bKKaGvHWJkDRfOoFEehudkqLwmV
-         noEzg2yNEqsDqqIAuDjzF5CHOday4KXPHwzUQApB94RkYliczrgDjMN1AqwpPnT3ORzB
-         7E6HmTa+PCeLmcVt94XKrZ6ofkgYt1Qo4ZanXunPTqqrjrPfrzUHYYyYh9/AvBHCwB6F
-         soTe/veNcfKGrzn2chpZpNc5/QSjP90cHFQNjdnoS/62a1AB8MxymE+14bIlSNPFHZ6i
-         2yd91xcTDSrL/cYmQBkiyEXQbeajSglIwO/vPVIBbg6KROC5Ja/m/BkLkVc05Pzv3vKl
-         NjIQ==
-X-Gm-Message-State: AOAM533zhVeUnGqgE+g2pmRb3cq4c1QXgo8mu1K1QtcCG0Rlb08j8ElD
-        MykSxki6aP0uUQVrwqcKelD59O0qTIVPd3qB/Mc=
-X-Google-Smtp-Source: ABdhPJykJXTpBMRc+s8xp9NUTmOJPCoQNvL5RWXka8MUoLUVSI4QaQfhXcthL2Kgw76oV5hrUTHO31CogIfY+c7gxg8=
-X-Received: by 2002:ab0:b09:: with SMTP id b9mr3624984uak.58.1623053727004;
- Mon, 07 Jun 2021 01:15:27 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=K89JEvr85cNLVGSNruqsSq3SJC58qTPUfjZOJypE398=;
+        b=cDDIe6VsRovbt3gRx7Vuj7caGXaJMCJi3moF9qyK3h8ArIGJ7w2MbXxZKTcXeVGBpR
+         pomcZ63ehz3pcRUZjFwNvEPzPjXUQSIVpmJiAPH3zEfm3DAKl9Cfm/YTxD4mkD1dMdDE
+         r8f3BszJ1XjPptIzgxfNlL448f6KOiE+LamVancvsMMXGXElPinWjBkpY70jRJ+otyR5
+         H31yhZ6VzwXvxlqSTtObLzoqiRKUtPuF06a3EI/xVMbS7gSY7zO7F1N3liR82j4wERbR
+         cDA1eDcB/Z1p3wcRZTKg2wtVarrVaHop6OjQJ3nox5c0FA2iOz8eFz7smxoKOh8gIeQd
+         CFSg==
+X-Gm-Message-State: AOAM530zbd9tXB1n6sIUuWkaw0AcDczCBkjAJvM1kwq1vUIgW/0Swtku
+        X0IT82npqgnormEJsYjXQ+o=
+X-Google-Smtp-Source: ABdhPJx9aAufKoe/BlIe2Lu+49fT2xA4KIvgNKER4pcSOqtT/92ok2Sr4TA6thgdE7uipk5OwvgncQ==
+X-Received: by 2002:a50:fb8f:: with SMTP id e15mr18105598edq.46.1623053733932;
+        Mon, 07 Jun 2021 01:15:33 -0700 (PDT)
+Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id z22sm5766732ejm.71.2021.06.07.01.15.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Jun 2021 01:15:33 -0700 (PDT)
+Subject: Re: [PATCH v4 1/6] dt-bindings: spi: spi-rockchip: add description
+ for rv1126 and rk3568
+To:     Jon Lin <jon.lin@rock-chips.com>, broonie@kernel.org
+Cc:     devicetree@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+References: <20210607063448.29589-1-jon.lin@rock-chips.com>
+ <20210607063448.29589-2-jon.lin@rock-chips.com>
+From:   Johan Jonker <jbx6244@gmail.com>
+Message-ID: <ef90ae6d-40bb-8389-f4f8-536a7b610fb7@gmail.com>
+Date:   Mon, 7 Jun 2021 10:15:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <20210428063203.691-1-thunder.leizhen@huawei.com>
- <CAMuHMdWX7rC2zswHoo6aFf3CYp3NKAfJ7E0x4W2wbVkybGa84g@mail.gmail.com> <d8d98365-98f6-d0a4-233e-279172004f51@huawei.com>
-In-Reply-To: <d8d98365-98f6-d0a4-233e-279172004f51@huawei.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 7 Jun 2021 10:15:15 +0200
-Message-ID: <CAMuHMdWeJkDvhf-J-S4dLqKmSvqnkf+AcWdjyPNu-G8zu2jOkA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] lib: devres: Add error information printing for __devm_ioremap_resource()
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210607063448.29589-2-jon.lin@rock-chips.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leizhen,
+Hi Jon,
 
-On Mon, Jun 7, 2021 at 9:11 AM Leizhen (ThunderTown)
-<thunder.leizhen@huawei.com> wrote:
-> On 2021/5/17 15:04, Geert Uytterhoeven wrote:
-> > On Wed, Apr 28, 2021 at 8:33 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
-> >> Ensure that all error handling branches print error information. In this
-> >> way, when this function fails, the upper-layer functions can directly
-> >> return an error code without missing debugging information. Otherwise,
-> >> the error message will be printed redundantly or missing.
-> >>
-> >> Fixes: 35bd8c07db2c ("devres: keep both device name and resource name in pretty name")
-> >> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> >
-> > Thanks for your patch, which is now commit 5c3e241f5246445d ("lib:
-> > devres: Add error information printing for __devm_ioremap_resource()")
-> > in driver-core-next.
-> >
-> >> --- a/lib/devres.c
-> >> +++ b/lib/devres.c
-> >> @@ -157,8 +157,10 @@ __devm_ioremap_resource(struct device *dev, const struct resource *res,
-> >>                                              dev_name(dev), res->name);
-> >>         else
-> >>                 pretty_name = devm_kstrdup(dev, dev_name(dev), GFP_KERNEL);
-> >> -       if (!pretty_name)
-> >> +       if (!pretty_name) {
-> >> +               dev_err(dev, "can't generate pretty name for resource %pR\n", res);
-> >
-> > If the above fails, it is due to a memory allocation failure, and the
-> > memory allocation core will have already printed an error message.
-> > So there is no need to print a second message.
-> > Hence IMHO this commit should be reverted.
->
-> If the memory allocation fails, only the 'size' is printed, but the start address of
-> the 'res' is not printed. So the printing here is not repeated. The start address is
-> the more critical help information.
+On 6/7/21 8:34 AM, Jon Lin wrote:
+> The description below will be used for rv1126.dtsi or rk3568.dtsi in
+> the future
+> 
+> Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+> ---
+> 
+> Changes in v4:
+> - Adjust the order patches
+> - Simply commit massage like redundancy "application" content
+> 
+> Changes in v3:
+> - Fix compile error which is find by Sascha in [v2,2/8]
+> 
+>  Documentation/devicetree/bindings/spi/spi-rockchip.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/spi-rockchip.yaml b/Documentation/devicetree/bindings/spi/spi-rockchip.yaml
+> index 1e6cf29e6388..2d7957f9ae0a 100644
+> --- a/Documentation/devicetree/bindings/spi/spi-rockchip.yaml
+> +++ b/Documentation/devicetree/bindings/spi/spi-rockchip.yaml
+> @@ -27,12 +27,14 @@ properties:
+>        - items:
+>            - enum:
+>                - rockchip,px30-spi
 
-Does that actually matter?
-What can the user or developer do to fix this problem, with the
-additional knowledge of the resource's start address?
+> +              - rockchip,rv1126-spi
 
-> >>                 return IOMEM_ERR_PTR(-ENOMEM);
-> >> +       }
-> >>
-> >>         if (!devm_request_mem_region(dev, res->start, size, pretty_name)) {
-> >>                 dev_err(dev, "can't request region for resource %pR\n", res);
+This list is sort alphabetically.
+Move "rockchip,rv1126-spi" below "rockchip,rk3568-spi"
 
-Gr{oetje,eeting}s,
+>                - rockchip,rk3188-spi
+>                - rockchip,rk3288-spi
+>                - rockchip,rk3308-spi
+>                - rockchip,rk3328-spi
+>                - rockchip,rk3368-spi
+>                - rockchip,rk3399-spi
+> +              - rockchip,rk3568-spi
 
-                        Geert
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>            - const: rockchip,rk3066-spi
+>  
+>    reg:
+> 
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+===
+
+Your comment in [PATCH v3 3/8]:
+>> Adding "rockchip,rv1126-spi" to rockchip_spi_dt_match[] is strictly not
+>> needed when using "rockchip,rk3066-spi" as fall back string.
+>> Could a maintainer advise?
+>>
+>> Maybe this bug of mine should revert too?? Or is it legacy?
+>> spi: rockchip: add compatible string for px30 rk3308 rk3328
+>> https://lore.kernel.org/r/20200309151004.7780-1-jbx6244@gmail.com
+
+> I agree with you. If the maintainer doesn't have any comments, I will use
+> "rockchip,spi" as compatible names for the subsequent rk platform.
+
+Compatibility strings are supposed to be SoC orientated.
+So generic ones like in the manufacturer tree can't be used here.
+
+===
+
+Johan
