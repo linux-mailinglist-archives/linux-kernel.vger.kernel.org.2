@@ -2,98 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233C839EA11
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 01:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF4039EA16
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 01:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbhFGXYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 19:24:44 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:56549 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230237AbhFGXYm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 19:24:42 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 28BCB5803A8;
-        Mon,  7 Jun 2021 19:22:50 -0400 (EDT)
-Received: from imap43 ([10.202.2.93])
-  by compute2.internal (MEProxy); Mon, 07 Jun 2021 19:22:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm3; bh=QICwXEloCx6aw2/RCotid55ESt9TMAU
-        7Fh6aVjperoc=; b=Qc0M7i9qAyYrzxXWgXuC95IXot+t6pTavyAWIdEeKVrFCUY
-        RKtyVKM6aYP32csgFYUEIOZO6Pi97kYKTIlAWwljoB5/UlOe97YGZ2AmZpKAwCt9
-        5qq56pefkTWmU7KGJ2ZAZrfQiBYOUrhhu1dE229jgPB4sHgjOOV71qZctGncC+LC
-        HeGf2FLzT8EWS/Wrdwc264HZJp32Qcpj7RMJRg3ZE+s5fc3h9zpQ4YAuulEGEgpJ
-        /RO6CUI20XVW/pVtGMonfL/odnniSNc7i7QIaOhSnkGp/8IOIX2c1HvHUg1n6Qxo
-        lkFpsYGzxw0V8pGLnaGRT4zYJKm66DPfwh+WYJA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=QICwXE
-        loCx6aw2/RCotid55ESt9TMAU7Fh6aVjperoc=; b=ubFTo3by9lSkT2+k7Fhzzt
-        TX6lstx2njF6lqoexmHlcHwL601VjcpdSJKJi5RXvxcy3V5RbvuJk9Lb0wVF94Mg
-        FkiROCrcliDuWinqknBv83XCq1vjP04hwadCXtwcnEllpYQoZ5kJXM/gntcWtpiu
-        HAvO25XT7KK3jbv6y/GUh7Bc0agjk7mlYEDVC5OwdPHonaZCReU+aEO23cAZ6FWF
-        1Mi8k7UFYzhg7lkGYbfKFe7TvJRywOz2l3Y05P5CN3nC2DCHrPaYDdQRohUX6p5t
-        OnixvDrn6DdMCOuzmDKz0o9kjy+1jjLyprqkDz2lE7NErcrwziJ7/9rz/8VRXnlA
-        ==
-X-ME-Sender: <xms:R6q-YMo-JJfZP-iql89XEhlPDyMPh6gAwAj6YcDCSnPrwuSRxHGLPA>
-    <xme:R6q-YCpUBkETy0EM1nQn8EXJQiMR13To0TX8bjFwOKYqdk_JGpHoJ01Lo1wDFbLn0
-    rRoZb1W-z2QAc8Z8g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtkedguddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
-    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:R6q-YBPqZ1lazXFrW8PmanqwwsBTsPNw9C5km0c0eKsczulqoeNRKg>
-    <xmx:R6q-YD4o8_XdUnH1u1ykjxToir9lzpaiwD2F591RXcQfr94jYSJNmw>
-    <xmx:R6q-YL6aG0jp2HljAXfFVxhxyQJ1Cuf7UMw85czeJ3Cv9iiRC4niVQ>
-    <xmx:Sqq-YIxYtnS-BsfMWXfDqPIIYKzY4sSNrGqKWCvTbm_RWh4ujtdD2g>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 27546AC0062; Mon,  7 Jun 2021 19:22:47 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
-Mime-Version: 1.0
-Message-Id: <578c8522-a182-427f-8587-746fc8ec93d5@www.fastmail.com>
-In-Reply-To: <20210607071514.11727-3-steven_lee@aspeedtech.com>
-References: <20210607071514.11727-1-steven_lee@aspeedtech.com>
- <20210607071514.11727-3-steven_lee@aspeedtech.com>
-Date:   Tue, 08 Jun 2021 08:52:26 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Steven Lee" <steven_lee@aspeedtech.com>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Joel Stanley" <joel@jms.id.au>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        "open list" <linux-kernel@vger.kernel.org>
-Cc:     "Hongwei Zhang" <Hongweiz@ami.com>,
-        "Ryan Chen" <ryan_chen@aspeedtech.com>,
-        "Billy Tsai" <billy_tsai@aspeedtech.com>
-Subject: =?UTF-8?Q?Re:_[PATCH_v4_2/7]_dt-bindings:_aspeed-sgpio:_Add_ast2600_sgpi?=
- =?UTF-8?Q?o_compatibles.?=
-Content-Type: text/plain
+        id S230306AbhFGX2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 19:28:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230183AbhFGX2C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 19:28:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B38F8610E5;
+        Mon,  7 Jun 2021 23:26:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623108370;
+        bh=327icG9dhrui9P/iN7jHzr+RvZa+0wmUKM11g81/s6k=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=WnkTh7CT/0S6iUf+GUbl1FyCBt+1dLdnURyMrDhPzKLnAipbbm8xt3B2FF6hS3bDb
+         6KvKXeGQBjx4lvM94WHyQnHEwdnl/8BMbFrnIuRzQzpqJbH6L94Ves10qwTg5RsowX
+         ZchtG99dC2c5g/hZdbe4YpyVNqd+FfdPvEqIZnXxZMXHusi/KromhpVxm3i4ZH2BMH
+         LuERZ6gZ5nfWzupfdvjd5WvQwff2bktswcTSCGeuibkMU5zpI3QSJqJjmq+F6Q2HPK
+         QWp6Vz+zxgHNbRK/3ckyEmHHjXq7Mz57bNtabE+jJuoWgIrHH0jC/hSrdbkV31EEyb
+         bAvjnszEhX9/g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 764CB5C084C; Mon,  7 Jun 2021 16:26:10 -0700 (PDT)
+Date:   Mon, 7 Jun 2021 16:26:10 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <20210607232610.GX4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210606195242.GA18427@gate.crashing.org>
+ <CAHk-=wgd+Gx9bcmTwxhHbPq=RYb_A_gf=GcmUNOU3vYR1RBxbA@mail.gmail.com>
+ <20210606202616.GC18427@gate.crashing.org>
+ <20210606233729.GN4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210607141242.GD18427@gate.crashing.org>
+ <20210607152712.GR4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210607182335.GI18427@gate.crashing.org>
+ <20210607195144.GC1779688@rowland.harvard.edu>
+ <20210607201633.GW4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210607224037.GQ18427@gate.crashing.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210607224037.GQ18427@gate.crashing.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Mon, 7 Jun 2021, at 16:45, Steven Lee wrote:
-> AST2600 SoC has 2 SGPIO master interfaces one with 128 pins another one
-> with 80 pins. Add ast2600-sgpiom0-80 and ast2600-sgpiom-128 compatibles
-> and update descriptions to introduce the max number of available gpio
-> pins that AST2600 supported.
+On Mon, Jun 07, 2021 at 05:40:37PM -0500, Segher Boessenkool wrote:
+> On Mon, Jun 07, 2021 at 01:16:33PM -0700, Paul E. McKenney wrote:
+> > On Mon, Jun 07, 2021 at 03:51:44PM -0400, Alan Stern wrote:
+> > > On Mon, Jun 07, 2021 at 01:23:35PM -0500, Segher Boessenkool wrote:
+> > > > On Mon, Jun 07, 2021 at 08:27:12AM -0700, Paul E. McKenney wrote:
+> > > > > > > > > The barrier() thing can work - all we need to do is to simply make it
+> > > > > > > > > impossible for gcc to validly create anything but a conditional
+> > > > > > > > > branch.
+> > > > 
+> > > > > > > What would you suggest as a way of instructing the compiler to emit the
+> > > > > > > conditional branch that we are looking for?
+> > > > > > 
+> > > > > > You write it in the assembler code.
+> > > > > > 
+> > > > > > Yes, it sucks.  But it is the only way to get a branch if you really
+> > > > > > want one.  Now, you do not really need one here anyway, so there may be
+> > > > > > some other way to satisfy the actual requirements.
+> > > > > 
+> > > > > Hmmm...  What do you see Peter asking for that is different than what
+> > > > > I am asking for?  ;-)
+> > > > 
+> > > > I don't know what you are referring to, sorry?
+> > > > 
+> > > > I know what you asked for: literally some way to tell the compiler to
+> > > > emit a conditional branch.  If that is what you want, the only way to
+> > > > make sure that is what you get is by writing exactly that in assembler.
+> > > 
+> > > That's not necessarily it.
+> > > 
+> > > People would be happy to have an easy way of telling the compiler that 
+> > > all writes in the "if" branch of an if statement must be ordered after 
+> > > any reads that the condition depends on.  Or maybe all writes in either 
+> > > the "if" branch or the "else" branch.  And maybe not all reads that the 
+> > > condition depends on, but just the reads appearing syntactically in the 
+> > > condition.  Or maybe even just the volatile reads appearing in the 
+> > > condition.  Nobody has said exactly.
+> > > 
+> > > The exact method used for doing this doesn't matter.  It could be 
+> > > accomplished by treating those reads as load-acquires.  Or it could be 
+> > > done by ensuring that the object code contains a dependency (control or 
+> > > data) from the reads to the writes.  Or it could be done by treating 
+> > > the writes as store-releases.  But we do want the execution-time 
+> > > penalty to be small.
+> > > 
+> > > In short, we want to guarantee somehow that the conditional writes are 
+> > > not re-ordered before the reads in the condition.  (But note that 
+> > > "conditional writes" includes identical writes occurring in both 
+> > > branches.)
+> > 
+> > What Alan said!  ;-)
 > 
-> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+> Okay, I'll think about that.
+> 
+> But you wrote:
+> 
+> > > > > > > What would you suggest as a way of instructing the compiler to emit the
+> > > > > > > conditional branch that we are looking for?
+> 
+> ... and that is what I answered.  I am sorry if you do not like being
+> taken literally, but that is how I read technical remarks: as literally
+> what they say.  If you say you want a branch, I take it you want a
+> branch!  :-)
 
-Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+When it is the cheapest means of providing the needed ordering, I really
+do want a branch.  ;-)
+
+And a branch would implement Alan's "control dependency" above.
+
+							Thanx, Paul
