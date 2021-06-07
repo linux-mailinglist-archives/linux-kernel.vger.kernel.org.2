@@ -2,153 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A9E39E4BA
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 19:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 381AC39E4BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 19:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbhFGRHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 13:07:13 -0400
-Received: from mail-wm1-f42.google.com ([209.85.128.42]:40877 "EHLO
-        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230294AbhFGRHJ (ORCPT
+        id S231266AbhFGRHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 13:07:23 -0400
+Received: from mail-ej1-f52.google.com ([209.85.218.52]:33759 "EHLO
+        mail-ej1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231238AbhFGRHT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 13:07:09 -0400
-Received: by mail-wm1-f42.google.com with SMTP id b145-20020a1c80970000b029019c8c824054so114242wmd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 10:05:17 -0700 (PDT)
+        Mon, 7 Jun 2021 13:07:19 -0400
+Received: by mail-ej1-f52.google.com with SMTP id g20so27927485ejt.0;
+        Mon, 07 Jun 2021 10:05:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=OMN53l5kgmJODOqHMs4OIt4N0K7fGpwPftPnoN3Bz5s=;
-        b=ZNM4gYUViZanj9/vAZduPYUXzYtUUR9b86JylUfgSNPzOL9DCNzReHk6Cj3AoQQE0W
-         cxKi298ibi3N+qxRhPVcej0+dn7POuWTWjcze4lDG9iDmifAP45btUNhGmV2NdZn3u63
-         JN8NWG1c3pFkxMIQ/6QlD4wLN4S7dPAzUdiFU3LrxhAsMl3R35s6sLCpG1fW+qJxXOem
-         Gidq9ARTuiQp7V2+IzS1A+jHcXpurImIpMiIUqR3yFOTLNDJmyhORTDS8uNBUHevz2+F
-         taibtSSlxD3v0kH6V6gewsmk24X6UDyy4yflm5UPO/5G8+Rj0DxGH1qBJQrJiGSREZek
-         TvPQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vrWddwWHw9uPgT90OED9mI59lJfe1xzoeVULMb6Xu3I=;
+        b=vOMlssHEtFlFXMQxi2c6WwrCgLYjEIUc/VEJn4yGw0dPyPTLqjae3B1QdECCW8MJ6A
+         sXWeU6ynNlqgvouzxPQk4qwQo61CM+ok+tYlkiuuJxewaCeVHfYMP4yrQn8lpueU2Ruf
+         trk5MsyEKpEyZlMv1B5JtW3Icw59wFyd3VNGcDF6DyxkueJxHasR8JQ8Wqyqrm3uvrir
+         D+7Be5dFY+KxUKdjmCagzQqFeILMq9+LxrzON3J38i0ktG+qIQm17/ezHDNZBe54IPYX
+         fU/CTNkJKHCwkffOdzNCZsJOYoaHBhMG0QSI8FNXWN8+j5j5jXh9n/lMG777l9Iue+c8
+         77PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=OMN53l5kgmJODOqHMs4OIt4N0K7fGpwPftPnoN3Bz5s=;
-        b=eVeZAUHVVtTXChKqbTI9kXYjf8JKdSf9Nz39KpqDOxLHx9LVAZkJ6wBeRtXsV+2ydr
-         Pis91+i3whlmSFPc5fcrIGJYprWNocvN4ZZsQolBEDvQ/FTNoGNKFEb8nwNXH+bRvA/1
-         LHi7SlTBu8vffRnCHTTG93ArM0XLKcLOGfXzs4jcbIki9OOaNqB1uimtQsu0yPkUl2hl
-         TmjX84uKvaV5LP40H2Bm+o2xjJxlPefZROG9wKhQGB+BkpzRt6jGxqdvZoSovEE/Pwoz
-         MzQ/0jcIORgLC/NG5ydxpZJjeRNEwTQfFXn7VUAYNoipOKlqKjktF95FSBV8cyg0NSgw
-         m62g==
-X-Gm-Message-State: AOAM533D9lfGxlD0K6CyAyvDVWO724hkp8iuSbaTTrory31eIYrQXFX5
-        lkO0Zuh0iG6N+Cx5yrZkHlRDPg==
-X-Google-Smtp-Source: ABdhPJwhWLXmUu+DzAU028r37DJhwCFO6+ropbXNZ4fH0vKHNfRaTXn0Y9djsCFEWN8UMRWk0N5m0g==
-X-Received: by 2002:a7b:c189:: with SMTP id y9mr17858306wmi.106.1623085456693;
-        Mon, 07 Jun 2021 10:04:16 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:15:13:a68c:2469:3bfe:52b4])
-        by smtp.gmail.com with ESMTPSA id n8sm14697495wmi.16.2021.06.07.10.04.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 10:04:15 -0700 (PDT)
-Date:   Mon, 7 Jun 2021 19:04:10 +0200
-From:   Marco Elver <elver@google.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Alexander Monakov <amonakov@ispras.ru>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <YL5Risa6sFgnvvnG@elver.google.com>
-References: <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1>
- <20210606012903.GA1723421@rowland.harvard.edu>
- <CAHk-=wgUsReyz4uFymB8mmpphuP0vQ3DktoWU_x4u6impbzphg@mail.gmail.com>
- <20210606185922.GF7746@tucnak>
- <CAHk-=wis8zq3WrEupCY6wcBeW3bB0WMOzaUkXpb-CsKuxM=6-w@mail.gmail.com>
- <alpine.LNX.2.20.13.2106070017070.7184@monopod.intra.ispras.ru>
- <CAHk-=wjwXs5+SOZGTaZ0bP9nsoA+PymAcGE4CBDVX3edGUcVRg@mail.gmail.com>
- <alpine.LNX.2.20.13.2106070956310.7184@monopod.intra.ispras.ru>
- <CANpmjNMwq6ENUtBunP-rw9ZSrJvZnQw18rQ47U3JuqPEQZsaXA@mail.gmail.com>
- <20210607152806.GS4397@paulmck-ThinkPad-P17-Gen-1>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vrWddwWHw9uPgT90OED9mI59lJfe1xzoeVULMb6Xu3I=;
+        b=kwk2YRll1+QSzPMJB/1r/jnq88T/u+LHwf8eW3fesD/Sfaida/ysInYguDu5B0u7z9
+         kBKtM8j7J9Cljt5/i63bRIET40VUY7wJ8bH/YpQmg0inQuWibXBzhphouk84Bh4wOg0N
+         3PdLDdEpIganFnWCecD9wDk93Qc30rvf4CFnaCBureOarbrwkUvrJlG3n6X/ch9t4OpQ
+         iqSHrpJAPbCNmW9/1qTV0Zo9saxthOlprtf7RQ9BDOc0hRrhM+Gh//UlKjHrOOQq5ue5
+         CbRLFnXEe1RLL6Zsc/9DPJbTiz9gQm/TBvqmeEBCVG078m+sbdU9+wpAMaqSer72OjGh
+         OnKg==
+X-Gm-Message-State: AOAM533pJlAz12pYATiK7LTdd9iOfxISwVMv999BsM76ooEkP3jy3AHx
+        nuv/C2w9//eEbGVgKWhQWLVnrEtsjbfQtQ==
+X-Google-Smtp-Source: ABdhPJwt055ZeOAcDRjhVFOzQkOYa90oEcJZ/OcMXCyPgqJpMV0jz1h4Fm3+oAc2i5cs5/Rz6JC8Pg==
+X-Received: by 2002:a17:907:1c9e:: with SMTP id nb30mr10363749ejc.0.1623085466935;
+        Mon, 07 Jun 2021 10:04:26 -0700 (PDT)
+Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id x13sm6753581ejj.21.2021.06.07.10.04.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Jun 2021 10:04:26 -0700 (PDT)
+Subject: Re: [PATCH] arm64: dts: rockchip: add EEPROM node for NanoPi R4S
+To:     Tianling Shen <cnsztl@gmail.com>
+Cc:     Chen-Yu Tsai <wens@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Marty Jones <mj8263788@gmail.com>, Pavel Machek <pavel@ucw.cz>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210607081727.4723-1-cnsztl@gmail.com>
+ <9258ab23-ef65-2c3d-f0d2-ca5f77d7c12a@gmail.com>
+ <CAGb2v65ck=LV+UCdQoaUtEjFaTaHr9-wmGmpkCCkebUOuYtikw@mail.gmail.com>
+ <f085da86-8b6d-ba99-2d0a-736ec02424db@gmail.com>
+ <CAOP2_TiHwYhLVLOEx-Vgx6k3XmHgNsiyR8CqrWyABnP0AidMBg@mail.gmail.com>
+From:   Johan Jonker <jbx6244@gmail.com>
+Message-ID: <b5cc8e2b-10b6-de5d-38dd-5e5cfd84e984@gmail.com>
+Date:   Mon, 7 Jun 2021 19:04:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607152806.GS4397@paulmck-ThinkPad-P17-Gen-1>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+In-Reply-To: <CAOP2_TiHwYhLVLOEx-Vgx6k3XmHgNsiyR8CqrWyABnP0AidMBg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 08:28AM -0700, Paul E. McKenney wrote:
-> On Mon, Jun 07, 2021 at 10:27:10AM +0200, Marco Elver wrote:
-> > On Mon, 7 Jun 2021 at 10:02, Alexander Monakov <amonakov@ispras.ru> wrote:
-> > > On Sun, 6 Jun 2021, Linus Torvalds wrote:
-> > [...]
-> > > > On Sun, Jun 6, 2021 at 2:19 PM Alexander Monakov <amonakov@ispras.ru> wrote:
-> > [...]
-> > > > Btw, since we have compiler people on line, the suggested 'barrier()'
-> > > > isn't actually perfect for this particular use:
-> > > >
-> > > >    #define barrier() __asm__ __volatile__("" : : "i" (__COUNTER__) : "memory")
-> > > >
-> > > > in the general barrier case, we very much want to have that "memory"
-> > > > clobber, because the whole point of the general barrier case is that
-> > > > we want to make sure that the compiler doesn't cache memory state
-> > > > across it (ie the traditional use was basically what we now use
-> > > > "cpu_relax()" for, and you would use it for busy-looping on some
-> > > > condition).
-> > > >
-> > > > In the case of "volatile_if()", we actually would like to have not a
-> > > > memory clobber, but a "memory read". IOW, it would be a barrier for
-> > > > any writes taking place, but reads can move around it.
-> > > >
-> > > > I don't know of any way to express that to the compiler. We've used
-> > > > hacks for it before (in gcc, BLKmode reads turn into that kind of
-> > > > barrier in practice, so you can do something like make the memory
-> > > > input to the asm be a big array). But that turned out to be fairly
-> > > > unreliable, so now we use memory clobbers even if we just mean "reads
-> > > > random memory".
-> > >
-> > > So the barrier which is a compiler barrier but not a machine barrier is
-> > > __atomic_signal_fence(model), but internally GCC will not treat it smarter
-> > > than an asm-with-memory-clobber today.
-> > 
-> > FWIW, Clang seems to be cleverer about it, and seems to do the optimal
-> > thing if I use a __atomic_signal_fence(__ATOMIC_RELEASE):
-> > https://godbolt.org/z/4v5xojqaY
+
+
+On 6/7/21 6:01 PM, Tianling Shen wrote:
+> Hi Johan,
 > 
-> Indeed it does!  But I don't know of a guarantee for that helpful
-> behavior.
+> On Mon, Jun 7, 2021 at 6:26 PM Johan Jonker <jbx6244@gmail.com> wrote:
+>>
+>> Hi Chen-Yu,
+>>
+>> On 6/7/21 11:40 AM, Chen-Yu Tsai wrote:
+>>> On Mon, Jun 7, 2021 at 5:31 PM Johan Jonker <jbx6244@gmail.com> wrote:
+>>>>
+>>>> Hi Tianling,
+>>>>
+>>>> On 6/7/21 10:17 AM, Tianling Shen wrote:
+>>>>> NanoPi R4S has a EEPROM attached to the 2nd I2C bus (U92), which
+>>>>> stores the MAC address.
+>>>>>
+>>>>> Signed-off-by: Tianling Shen <cnsztl@gmail.com>
+>>>>> ---
+>>>>>  arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts | 9 +++++++++
+>>>>>  1 file changed, 9 insertions(+)
+>>>>>
+>>>>> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
+>>>>> index cef4d18b599d..4a82f50a07c5 100644
+>>>>> --- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
+>>>>> +++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
+>>>>> @@ -68,6 +68,15 @@
+>>>>>       status = "disabled";
+>>>>>  };
+>>>>>
+>>>>> +&i2c2 {
+>>>>> +     eeprom@51 {
+>>>>> +             compatible = "microchip,24c02", "atmel,24c02";
+>>>>> +             reg = <0x51>;
+>>>>> +             pagesize = <16>;
+>>>>
+>>>>> +             read-only; /* This holds our MAC */
+>>>>
+>>>> The mainline dts files should be generic I think.
+>>>> Any comment about "use", partitions or write ability should be avoided.
+>>>> It's up the user.
+>>>
+>>
+>>> Per the datasheet for this specific EEPROM, the latter half (128 bytes)
+>>> is read-only in hardware by design though.
+>>
+>> The 24AA02XEXX is programmed at the factory with a
+>> globally unique node address stored in the upper half
+>> of the array and permanently write-protected. The
+>> remaining 1,024 bits are available for application use.
+>>
+> 
 
-Is there a way we can interpret the standard in such a way that it
-should be guaranteed?
+> In my opinion, as this contains data programmed by the factory, would
+> it be okay to keep it read-only?
 
-If yes, it should be easy to add tests to the compiler repos for
-snippets that the Linux kernel relies on (if we decide to use
-__atomic_signal_fence() for this).
+This chip is not completely read-only.
+There might be users that like to try some other mac_address or store
+something else in that lower part. Is this then still possible?
+Generic DT describes hardware independent from what Linux drivers or
+other OS are capable off.
+This factory mac_addres is permanently write-protected, so no need to
+keep the rest read-only.
 
-If no, we can still try to add tests to the compiler repos, but may
-receive some push-back at the very latest when some optimization pass
-decides to break it. Because the argument then is that it's well within
-the language standard.
+     nvmem-cells = <&new_mac_address_in_lower_part>;
+     nvmem-cells-names = "mac-address";
 
-Adding language extensions will likely be met with resistance, because
-some compiler folks are afraid of creating language forks (the reason
-why we have '-enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang').
-That could be solved if we declare Linux-C a "standard", and finally get
--std=linux or such, at which point asking for "volatile if" directly
-would probably be easier without jumping through hoops.
+> 
+>> Just a question...
+>>
+>>     nvmem-cells = <&mac_address>;
+>>     nvmem-cells-names = "mac-address";
+>>
+>> Which part does this point to?
+>>
+>> Can we use the lower part to store/rewrite this too?
+>>
+>> ===
+>>
+>> From at24.yaml:
+>>
+>>             items:
+>>               - pattern:
+>> "^(atmel|catalyst|microchip|nxp|ramtron|renesas|rohm|st),(24(c|cs|lc|mac)[0-9]+|spd)$"
+>>               - pattern: "^atmel,(24(c|cs|mac)[0-9]+|spd)$"
+>>
+>> How does Microchip 24AA025E48 fit the regex?
+>> What compatible would you advise?
+> 
+> It seems that 24AA025E48 is a variant of 24MAC402 [1], and
+> `atmel,24c02` will be okay in this case.
+> 1. https://lkml.org/lkml/2018/1/24/494
 
-The jumping-through-hoops variant would probably be asking for a
-__builtin primitive that allows constructing volatile_if() (if we can't
-bend existing primitives to do what we want).
+Ask Heiko. ;)
 
-Thanks,
--- Marco
+As long as it does not generate more notifications then we already have.
+
+> 
+> Thanks,
+> Tianling.
+> 
+>>
+>> ===
+>>
+>> Johan
+>>
+>>>
+>>> ChenYu
+>>>
