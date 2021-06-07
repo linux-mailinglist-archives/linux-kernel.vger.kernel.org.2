@@ -2,82 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C16439DDD9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7825039DE32
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230394AbhFGNls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 09:41:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230378AbhFGNlr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 09:41:47 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 259FFC061766
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 06:39:56 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id y2so24920126ybq.13
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 06:39:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VlXDuzHKluTkhD5zvNM3nuwm1YIsxipLM0a14l1XdN4=;
-        b=n8zru0ajQmXsS/hEV3K5YVM3VTbwv84fG1iqwEZFzABWmUcpIeP4t4ig/EFDRd9yDA
-         eZB48b6Ly6VNPnXr73amlDSMG0r/VezuhvcsKSFpah8S2e7lKfvs/qGWGGamaPumOifr
-         zFEqSwx6HmC+e/Bpv1U5ZgvSEffPWaOh4aOlFeOS0Nzc2+bb4K9M4ZW0pTnKzlRp/YBr
-         SqrS4PmCxyL1Rdwj8rOA9V/hbBEuNKtYHvq4VvrLr+7CRk1fzh7Ow23flTk5JsDw1v/2
-         noPrzfDIyrwMiyxoRJruQXw3fpyOwEEg1+KQZl9NLomTE/ZYSQkVpi4CXrsguCnf+cib
-         oy1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VlXDuzHKluTkhD5zvNM3nuwm1YIsxipLM0a14l1XdN4=;
-        b=Odj2lKqaT/+6h203prlLyHjxNAY/00B8TDsPLiPOSpJb/7Gn5hfUgucojGlDom6aCa
-         B3j3P+xGWgZT5dCZaUiQTExGyPcSSK7nb1PdrfTV/SNqGSbhQ2+I1Po+gpVBWIGY8Nxg
-         l0j8SzcPqWk97gTuBocRPtvwJ2NS+5jbHTbYfBs6yziQnfOLaAo168pyKuhknv6BUPen
-         Fo/ACh2UJ5GAYAs3kESPhQ2zh+ZfWI3l1gKoDSDdFAph4E1pmnioOI6AwNxXDOp4oPU9
-         Dy9dySu2h5kMxOu+ug5RL53zFz1oRYfeYezkiXSSz7lYDn3mC4cM1bCtmArmAstX6io+
-         xUXw==
-X-Gm-Message-State: AOAM533dCc5dNbw8zbyjX7b92Bs7Ob/KTO5B+/I9kcOvXa4g4ddSuDlh
-        BYpaSkb8X6ISq8efXbvAiAwUHnRsDx0BlCKzj2a/ZQ==
-X-Google-Smtp-Source: ABdhPJzKoUs8qoJEnd+R+x3/KSsW2OZ2yeBPW9osZaSI2IxCBvJQovcJAFCC/EHEVBIfwR4ko42JMpDGASzHS094hfM=
-X-Received: by 2002:a25:1ec2:: with SMTP id e185mr23958988ybe.23.1623073195494;
- Mon, 07 Jun 2021 06:39:55 -0700 (PDT)
+        id S230365AbhFGOAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 10:00:25 -0400
+Received: from mga09.intel.com ([134.134.136.24]:17126 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230328AbhFGOAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 10:00:23 -0400
+IronPort-SDR: 4JD6xIvLxFgEuMb8r1OqzqT34dgj/hC9G87UY67DViwk8lkeIGDIndUnJTMS5vh8sKlPm/pSVO
+ IpKAUrLLXR5w==
+X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="204594342"
+X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
+   d="scan'208";a="204594342"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 06:58:31 -0700
+IronPort-SDR: PMgHgFA2Pq/OzjyuHeOKRoET1itANVY6jX8ucvGI1shsQ8DmFZ0LxBPMfR/smLxxJFrKaSPKU/
+ Bogf+fx4AIKQ==
+X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
+   d="scan'208";a="401636390"
+Received: from flobatol-mobl1.amr.corp.intel.com (HELO [10.209.152.154]) ([10.209.152.154])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 06:58:29 -0700
+Subject: Re: [PATCH 3/4] ASoC: intel: sof_cs42l42: add support for
+ jsl_cs4242_mx98360a
+To:     Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Rander Wang <rander.wang@intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        linux-kernel@vger.kernel.org,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Dharageswari R <dharageswari.r@intel.com>,
+        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Naveen Manohar <naveen.m@intel.com>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Tzung-Bi Shih <tzungbi@google.com>
+References: <20210606004102.26190-1-brent.lu@intel.com>
+ <20210606004102.26190-4-brent.lu@intel.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <505c7e46-316c-9fa1-feaa-115f4561ed19@linux.intel.com>
+Date:   Mon, 7 Jun 2021 08:40:44 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210604225857.18694-1-michael@walle.cc>
-In-Reply-To: <20210604225857.18694-1-michael@walle.cc>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 7 Jun 2021 15:39:44 +0200
-Message-ID: <CAMpxmJWQf6JYy9CBD0Avp_KP5KqL6ew05ohGLmHyzX62hu1f3A@mail.gmail.com>
-Subject: Re: [PATCH v2] gpio: regmap: move drvdata to config data
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210606004102.26190-4-brent.lu@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 5, 2021 at 1:01 AM Michael Walle <michael@walle.cc> wrote:
->
-> Drop gpio_regmap_set_drvdata() and instead add it to the configuration
-> data passed to gpio_regmap_register().
->
-> gpio_regmap_set_drvdata() can't really be used in a race free way. This
-> is because the gpio_regmap object which is needed by _set_drvdata() is
-> returned by gpio_regmap_register(). On the other hand, the callbacks
-> which use the drvdata might already be called right after the
-> gpiochip_add() call in gpio_regmap_register(). Therefore, we have to
-> provide the drvdata early before we call gpiochip_add().
->
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+
+On 6/5/21 7:41 PM, Brent Lu wrote:
+> This patch adds driver data for jsl_cs4242_mx98360a which supports two
+> max98360a speaker amplifiers on SSP1 and cs42l42 headphone codec on
+> SSP0 running on JSL platform. DAI format is leveraged from sof_rt5682
+> machine driver to reuse the topology.
+
+This also looks like we have two topologies configuring the same DAIs 
+differently on different platforms.
+
+Why can't we pick one configuration that would work in all cases?
+
+> Also use module device table to replace module alias.
+
+Humm, this looks like a missing dependency, I modified this a while ago.
+
+> 
+> Signed-off-by: Brent Lu <brent.lu@intel.com>
 > ---
-
-Applied, thanks!
-
-Bart
+>   sound/soc/intel/boards/sof_cs42l42.c          | 22 +++++++++++++++----
+>   .../intel/common/soc-acpi-intel-jsl-match.c   |  8 +++++++
+>   2 files changed, 26 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/soc/intel/boards/sof_cs42l42.c b/sound/soc/intel/boards/sof_cs42l42.c
+> index e3171242f612..d712cfb91fd1 100644
+> --- a/sound/soc/intel/boards/sof_cs42l42.c
+> +++ b/sound/soc/intel/boards/sof_cs42l42.c
+> @@ -36,7 +36,9 @@
+>   #define SOF_CS42L42_NUM_HDMIDEV_MASK		(GENMASK(9, 7))
+>   #define SOF_CS42L42_NUM_HDMIDEV(quirk)	\
+>   	(((quirk) << SOF_CS42L42_NUM_HDMIDEV_SHIFT) & SOF_CS42L42_NUM_HDMIDEV_MASK)
+> -#define SOF_MAX98357A_SPEAKER_AMP_PRESENT	BIT(10)
+> +#define SOF_CS42L42_BCLK_2400000		BIT(10)
+> +#define SOF_MAX98357A_SPEAKER_AMP_PRESENT	BIT(11)
+> +#define SOF_MAX98360A_SPEAKER_AMP_PRESENT	BIT(12)
+>   
+>   /* Default: SSP2 */
+>   static unsigned long sof_cs42l42_quirk = SOF_CS42L42_SSP_CODEC(2);
+> @@ -122,7 +124,10 @@ static int sof_cs42l42_hw_params(struct snd_pcm_substream *substream,
+>   	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+>   	int clk_freq, ret;
+>   
+> -	clk_freq = 3072000; /* BCLK freq */
+> +	if (sof_cs42l42_quirk & SOF_CS42L42_BCLK_2400000)
+> +		clk_freq = 2400000; /* BCLK freq */
+> +	else
+> +		clk_freq = 3072000; /* BCLK freq */
+>   
+>   	/* Configure sysclk for codec */
+>   	ret = snd_soc_dai_set_sysclk(codec_dai, 0,
+> @@ -281,6 +286,8 @@ static int create_spk_amp_dai_links(struct device *dev,
+>   
+>   	if (sof_cs42l42_quirk & SOF_MAX98357A_SPEAKER_AMP_PRESENT) {
+>   		max_98357a_dai_link(&links[*id]);
+> +	} else if (sof_cs42l42_quirk & SOF_MAX98360A_SPEAKER_AMP_PRESENT) {
+> +		max_98360a_dai_link(&links[*id]);
+>   	} else {
+>   		dev_err(dev, "no amp defined\n");
+>   		ret = -EINVAL;
+> @@ -584,8 +591,17 @@ static const struct platform_device_id board_ids[] = {
+>   					SOF_MAX98357A_SPEAKER_AMP_PRESENT |
+>   					SOF_CS42L42_SSP_AMP(1)),
+>   	},
+> +	{
+> +		.name = "jsl_cs4242_mx98360a",
+> +		.driver_data = (kernel_ulong_t)(SOF_CS42L42_SSP_CODEC(0) |
+> +					SOF_SPEAKER_AMP_PRESENT |
+> +					SOF_MAX98360A_SPEAKER_AMP_PRESENT |
+> +					SOF_CS42L42_SSP_AMP(1)) |
+> +					SOF_CS42L42_BCLK_2400000,
+> +	},
+>   	{ }
+>   };
+> +MODULE_DEVICE_TABLE(platform, board_ids);
+>   
+>   static struct platform_driver sof_audio = {
+>   	.probe = sof_audio_probe,
+> @@ -601,7 +617,5 @@ module_platform_driver(sof_audio)
+>   MODULE_DESCRIPTION("SOF Audio Machine driver for CS42L42");
+>   MODULE_AUTHOR("Brent Lu <brent.lu@intel.com>");
+>   MODULE_LICENSE("GPL");
+> -MODULE_ALIAS("platform:sof_cs42l42");
+> -MODULE_ALIAS("platform:glk_cs4242_max98357a");
+>   MODULE_IMPORT_NS(SND_SOC_INTEL_HDA_DSP_COMMON);
+>   MODULE_IMPORT_NS(SND_SOC_INTEL_SOF_MAXIM_COMMON);
+> diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+> index 73fe4f89a82d..8e86476d48de 100644
+> --- a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+> +++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+> @@ -73,6 +73,14 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
+>   		.quirk_data = &mx98360a_spk,
+>   		.sof_tplg_filename = "sof-jsl-rt5682-mx98360a.tplg",
+>   	},
+> +	{
+> +		.id = "10134242",
+> +		.drv_name = "jsl_cs4242_mx98360a",
+> +		.sof_fw_filename = "sof-jsl.ri",
+> +		.machine_quirk = snd_soc_acpi_codec_list,
+> +		.quirk_data = &mx98360a_spk,
+> +		.sof_tplg_filename = "sof-jsl-rt5682-mx98360a.tplg",
+> +	},
+>   	{},
+>   };
+>   EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_jsl_machines);
+> 
