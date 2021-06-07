@@ -2,128 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C8C39E941
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 00:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F92B39E944
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 00:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbhFGWEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 18:04:13 -0400
-Received: from mail-lj1-f178.google.com ([209.85.208.178]:37518 "EHLO
-        mail-lj1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230359AbhFGWEM (ORCPT
+        id S231343AbhFGWF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 18:05:57 -0400
+Received: from mail-ed1-f49.google.com ([209.85.208.49]:45801 "EHLO
+        mail-ed1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230359AbhFGWFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 18:04:12 -0400
-Received: by mail-lj1-f178.google.com with SMTP id e2so24271402ljk.4
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 15:02:20 -0700 (PDT)
+        Mon, 7 Jun 2021 18:05:55 -0400
+Received: by mail-ed1-f49.google.com with SMTP id r7so7794185edv.12
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 15:03:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=txXYmOupJbYB1C7rh8a5WZGYrF5P61AgRLYJOTkAc4w=;
-        b=WOEKIfOY+a2tx1fOyB+1DJ2V0dv3wdWvUNlmvbzKS01EFyJvhhqT34KzbsEA084j5h
-         4sUk5X4jWSFsI1/FccKpcjKJNMW9UCWLjOzJ7I02RPD4rIIHKKs0WPVHffH94EsJ0rDc
-         7ndLZHqpRDKNO98VfyE7Zqk4G8JHe0bPTOLJs=
+        bh=zOe4rQFtxBwGRN1K+AKPaoefxAAn3spLFX1ByOSM/mo=;
+        b=itxlC5css5jLtTv9vn/LKgdTnt3i7NlF7vkViO9R2VSHBPx/qO5ad3w5XDOvR7Yhcq
+         c7tzrMxpd0a9Xv6z0XTJonyS9y6OLDoocibZ8SZin3Q+x3CRqJKd/aOG+aRxXzKEKWdm
+         TzP1Ly/35YzQrgXu5p/VfVetTEsYA++PSeF4K4e4fQG1vIzXGZseUgUT9BhAvJtgAAin
+         /0yRw1WVQgtOI2Sqfu2pOgkTjLPmLvpjd5/32CpOW9s4kyPNUyPqd/BaG7A8qJ6jTSvL
+         cN6PZk9rmCg/OjVoQhNQJi46gOiSIA+HUeotHA6mr0JT2/euSqavkM3G1Wh1d1EVyIEg
+         atAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=txXYmOupJbYB1C7rh8a5WZGYrF5P61AgRLYJOTkAc4w=;
-        b=QsbUAYNJgojQcpK7AlQU6e1tbVkezXM3Kox9p7T1heapcYcnZKtHciSi8Hy8hG16WR
-         cSo5vkLGTrPXi4Z5aq9lHKhu8cnYYS8gqq8lIeOhWujaJPH7gCCRBVwCnTirfwZjHz5x
-         42GHbe/pEqkJbcL0HFTlcIQojkxGv5YvgfBJAebaSDuT1AwNZMVvmY1QxgsTcbVpqmGt
-         JCQVW/e6bAURNdH+bLcH5L5FMQq9X8CWfD8U//IK5uPkdpz9yfCUSxytTg3utOVZtkqR
-         Ep29KFVhxNR+YtiXpw102MUAHBYLiLXyaKYt7fVIQhEaJscE2LGW1DAG8zP3ppLv1jGe
-         Fr/A==
-X-Gm-Message-State: AOAM532TCQjVe8yZxJpfjgzTZyISoIN2zSsv7ObxVzaJ+ABVeZnKOai4
-        zNrV8IMZzIfjyKvElG05UQAOU1iBmwqYCfMK3rQ=
-X-Google-Smtp-Source: ABdhPJxYJH9JQ+1VU88hkJTdY/enWsLrTPK+qECbOhBQ+g6rXebnZoBICQW3NTf8TIEwaL6bWaWFvg==
-X-Received: by 2002:a2e:b4b4:: with SMTP id q20mr9964385ljm.27.1623103279095;
-        Mon, 07 Jun 2021 15:01:19 -0700 (PDT)
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
-        by smtp.gmail.com with ESMTPSA id w10sm833568lfn.187.2021.06.07.15.01.18
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Jun 2021 15:01:18 -0700 (PDT)
-Received: by mail-lj1-f177.google.com with SMTP id z22so8298033ljh.8
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 15:01:18 -0700 (PDT)
-X-Received: by 2002:a2e:a443:: with SMTP id v3mr15723931ljn.251.1623103277694;
- Mon, 07 Jun 2021 15:01:17 -0700 (PDT)
+        bh=zOe4rQFtxBwGRN1K+AKPaoefxAAn3spLFX1ByOSM/mo=;
+        b=sIY2wlxhnXJKUIKreNKCaIGpGlh85bgKZlB5uORoBRjZ1zBD5Gr2l60Atqpyqc6RGP
+         pGGqyL05fZp/awe0oAK6HeVMXd1UPXoeXcOWuIBhrkK0tqErFUqofEISHUtNTrGCvVRr
+         jbyXqkwBaJVS9PUjdbkufXRZhD9MuS6ScwBLX1zuGJ0TetdKMANNsEBjfkama3mwTNVy
+         SHsQ2jnArO2W2rreRYklKN+8MHa8qKo0a9aIcUWUxRGyl/B2YN6yjFtptEIF4LlIuZmB
+         Udsv9L9hpAfg3WEAXmhf4hG2z0mhtCs1N1NgDVofkAxtYDbDP8DEc3cd0108+iCGH6rL
+         19vA==
+X-Gm-Message-State: AOAM531kqUA4eNjdKSjsNLSUPSiU5IOmg87aUKaV3oWu3EZn1WcCmLCJ
+        D/3wJ0NUlXp35UqlI2h0QwCjIXLZXqzJQ6wyig+cR5BMmatssQ==
+X-Google-Smtp-Source: ABdhPJx8Fxb9YF2ZLWBL0PAME1svLwLI3W+xko1ynG08vhVviDgvl2PG57GJXgJUskKdMp7ZUOND6Z1wUj6DxBccbMM=
+X-Received: by 2002:aa7:cf0f:: with SMTP id a15mr19806266edy.313.1623103371320;
+ Mon, 07 Jun 2021 15:02:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <YL0dCEVEiVL+NwG6@zeniv-ca.linux.org.uk> <CAHk-=wj6ZiTgqbeCPtzP+5tgHjur6Amag66YWub_2DkGpP9h-Q@mail.gmail.com>
- <CAHk-=wiYPhhieXHBtBku4kZWHfLUTU7VZN9_zg0LTxcYH+0VRQ@mail.gmail.com>
- <YL3mxdEc7uw4rhjn@infradead.org> <YL4wnMbSmy3507fk@zeniv-ca.linux.org.uk>
- <YL5CTiR94f5DYPFK@infradead.org> <YL6KdoHzYiBOsu5t@zeniv-ca.linux.org.uk>
-In-Reply-To: <YL6KdoHzYiBOsu5t@zeniv-ca.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 7 Jun 2021 15:01:01 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgr3o6cKTNpU9wg7fj_+OUh5kFwrD29Lg0n2=-1nhvoZA@mail.gmail.com>
-Message-ID: <CAHk-=wgr3o6cKTNpU9wg7fj_+OUh5kFwrD29Lg0n2=-1nhvoZA@mail.gmail.com>
-Subject: Re: [RFC][PATCHSET] iov_iter work
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        David Howells <dhowells@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Pavel Begunkov <asml.silence@gmail.com>
+References: <20210604203513.240709-1-shy828301@gmail.com> <YL265A86DQe5Rgon@dhcp22.suse.cz>
+ <CAHbLzkowcskM=p==-q48Ca12D=h9SgqUuUB4NknRNR=64TyXCw@mail.gmail.com> <YL5rvdzh9dou+uAz@dhcp22.suse.cz>
+In-Reply-To: <YL5rvdzh9dou+uAz@dhcp22.suse.cz>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 7 Jun 2021 15:02:39 -0700
+Message-ID: <CAHbLzkooYAi=Hb0=oJ+2b6G=h5Sx4jnyo5L0nPYjDcBqBHnfug@mail.gmail.com>
+Subject: Re: [PATCH] mm: mempolicy: don't have to split pmd for huge zero page
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Zi Yan <ziy@nvidia.com>, nao.horiguchi@gmail.com,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 2:07 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+On Mon, Jun 7, 2021 at 11:55 AM Michal Hocko <mhocko@suse.com> wrote:
 >
-> Anyway, what I'm going to do is
+> On Mon 07-06-21 10:00:01, Yang Shi wrote:
+> > On Sun, Jun 6, 2021 at 11:21 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Fri 04-06-21 13:35:13, Yang Shi wrote:
+> > > > When trying to migrate pages to obey mempolicy, the huge zero page is
+> > > > split then the page table walk at PTE level just skips zero page.  So it
+> > > > seems pointless to split huge zero page, it could be just skipped like
+> > > > base zero page.
+> > >
+> > > My THP knowledge is not the best but this is incorrect AIACS. Huge zero
+> > > page is not split. We do split the pmd which is mapping the said page. I
+> > > suspect you refer to vm_normal_page when talking about a zero page but
+> > > please be aware that huge zero page is not a normal zero page. It is
+> > > allocated dynamically (see get_huge_zero_page).
+> >
+> > For a normal huge page, yes, split_huge_pmd() just splits pmd. But
+> > actually the base zero pfn will be inserted to PTEs when splitting
+> > huge zero pmd. Please check __split_huge_zero_page_pmd() out.
 >
->         if (WARN_ON(uaccess_kernel())) {
->                 // shouldn't be any such callers left...
->                 iov_iter_kvec(i, direction, (const struct kvec *)iov,
->                               nr_segs, count);
->                 return;
->         }
+> My bad. I didn't have a look all the way down there. The naming
+> suggested that this is purely page table operations and I have suspected
+> that ptes just point to the offset of the THP.
+>
+> But I am obviously wrong here. Sorry about that.
+>
+> > I should make this point clearer in the commit log. Sorry for the confusion.
+> >
+> > >
+> > > So in the end you patch disables mbind of zero pages to a target node
+> > > and that is a regression.
+> >
+> > Do we really migrate zero page? IIUC zero page is just skipped by
+> > vm_normal_page() check in queue_pages_pte_range(), isn't it?
+>
+> Yeah, normal zero pages are skipped indeed. I haven't studied why this
+> is the case yet. It surely sounds a bit suspicious because this is an
+> explicit request to migrate memory and if the zero page is misplaced it
+> should be moved. On the hand this would increase RSS so maybe this is
+> the point.
 
-Yeah, this looks better to me simply because it makes it obvious how
-that kvec case is a legacy special case.
+The zero page is a global shared page, I don't think "misplace"
+applies to it. It doesn't make too much sense to migrate a shared
+page. Actually there is page mapcount check in migrate_page_add() to
+skip shared normal pages as well.
 
-But make that a WARN_ON_ONCE() - if it ever triggers, we don't want it
-to spam the logs.
+>
+> > > Have you tested the patch?
+> >
+> > No, just build test. I thought this change was straightforward.
+> >
+> > >
+> > > > Set ACTION_CONTINUE to prevent the walk_page_range() split the pmd for
+> > > > this case.
+> > >
+> > > Btw. this changelog is missing a problem statement. I suspect there is
+> > > no actual problem that it should fix and it is likely driven by reading
+> > > the code. Right?
+> >
+> > The actual problem is it is pointless to split a huge zero pmd. Yes,
+> > it is driven by visual inspection.
+>
+> Is there any actual workload that cares? This is quite a subtle area so
+> I would be careful to do changes just because...
 
-I guess 32-bit arm is still CONFIG_SET_FS, so we should get some
-fairly timely testing of this on the various arm farms.
+I'm not sure whether there is measurable improvement for actual
+workloads, but I believe this change does eliminate some unnecessary
+work.
 
-I wonder if it's even worth trying to make any such cases work any
-more. In addition to the warning, maybe we might as well just not fill
-in the kvec at all, and we should just do
+I think the test shown in the previous email gives us some confidence
+that the change doesn't have regression.
 
-        iov_iter_kvec(i, direction, NULL, 0, 0);
-
-for that case too.
-
-Having looked around quickly, I think
-
- (a) none of the actual set_fs(KERNEL_DS) users seem to do anything
-remotely related to iovecs
-
- (b) on all the common non-SET_FS architectures, kernel threads using
-iov_iter_init() wouldn't work anyway, because on those architectures
-it would always fill the thing in with an iov, not a kvec.
-
-So I'm starting to agree with Christoph that this case can't actually
-happen. It would have to be some architecture-specific kernel thread
-that does this, and I don't think we _have_ any architecture-specific
-ones.
-
-My first thought was that we probably still had some odd core-dumping
-code or other that might still use that set_fs() model, but that seems
-to have all gotten cleaned up. Wonder of wonders.
-
-So I'd _almost_ just remove this all right now, and if not removing it
-I think making it an empty kvec might be preferable to that cast from
-an iovec to a kvec.
-
-But no hugely strong opinions. I'm ok with your version too, modulo
-that WARN_ON_ONCE comment.
-
-              Linus
+> --
+> Michal Hocko
+> SUSE Labs
