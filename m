@@ -2,108 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBF839D866
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1968439D869
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbhFGJRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:17:37 -0400
-Received: from mail-ej1-f51.google.com ([209.85.218.51]:33604 "EHLO
-        mail-ej1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbhFGJRd (ORCPT
+        id S230230AbhFGJRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:17:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230214AbhFGJRp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:17:33 -0400
-Received: by mail-ej1-f51.google.com with SMTP id g20so25538329ejt.0;
-        Mon, 07 Jun 2021 02:15:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UZrq5VlhmQW6JZmMPrVakR8M/Jz/bAVYPXpHBFjrH1c=;
-        b=KLn0ZlNqWao86EIujuLqufe3OtsEytKF0ws/B3wc3/r7n3np7VmGBbtKzL47joK9cC
-         DPxaG75RV5SEQARuDIlNwRb2azNgabL9fbK890DZu2A2bpgyBCS0L1/JqQVbBDSqjPRI
-         mEPPkB0MsUv3koqXOXp0hq7dSZARqaJ6//+uxLvfEIJErcQ6ua+Cp54rfNOZrqroLQSc
-         gK73DjWJriG2Vpjv2DPaUymgpmJH5SkHboVw3C8E+scOFq+DS+p2PdoP20SMeoqGNh7j
-         81uAGcyJTM5jMRevo01ap3EaAGIoj7qngHGu5IQLKtGMCtUgqV9OmhxIcEUTRbk6mvWf
-         a0lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UZrq5VlhmQW6JZmMPrVakR8M/Jz/bAVYPXpHBFjrH1c=;
-        b=rN7Yt2Wc3QBHdRRKRQVivnYnyPykVpWdy0BcSFvM5cJ1MMF32bnHrhEB8Tl2msksy1
-         MCErahdR7IVVVAFcWONKBEDlyKnPMYkDfqDCTgk+fJwUR/Hq3xEXnDaNp5YbI1zdqALR
-         P8cVK9/Npmv2QXaWlCm7wSuCf4CutALwfIhhlgf+e1Z5FwjS4uiW+TEhSbMk1+OFlrx+
-         gMey4gcsN6oRdahVF3MdLT752fQSFXz4va9hbomsr1kBU6XyKA+ztpHcrIswKKCq6b4l
-         JHSrYyWmmLQ88oMcJArU/6wd8mKfWSTnEpPGCqWeNZogpx7b7SYS+YAjKk+R5NgOksuJ
-         nMFA==
-X-Gm-Message-State: AOAM531nIzq0sJL+AowTKZfjatVO86Sai/WZbP7X4S8gy/zbOrDxAsGs
-        8+ETOcV4wuoM7AvGK1nAfeYmVVjDoS/QEg==
-X-Google-Smtp-Source: ABdhPJzXK2A9L9nkflnok98q7PG7rX1Tcr7XYduvR8sIGZiKEBv2cHiQo0Pymrmm8SJyMG5RlEkWxw==
-X-Received: by 2002:a17:906:f8d0:: with SMTP id lh16mr17075823ejb.331.1623057265308;
-        Mon, 07 Jun 2021 02:14:25 -0700 (PDT)
-Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id gx28sm6320117ejc.107.2021.06.07.02.14.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Jun 2021 02:14:25 -0700 (PDT)
-Subject: Re: [PATCH] arm64: dts: rockchip: add EEPROM node for NanoPi R4S
-To:     Tianling Shen <cnsztl@gmail.com>, Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Marty Jones <mj8263788@gmail.com>, Pavel Machek <pavel@ucw.cz>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210607081727.4723-1-cnsztl@gmail.com>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <9258ab23-ef65-2c3d-f0d2-ca5f77d7c12a@gmail.com>
-Date:   Mon, 7 Jun 2021 11:14:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Mon, 7 Jun 2021 05:17:45 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0824C061766;
+        Mon,  7 Jun 2021 02:15:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=blk+qU+EJ0CgsqjQySGfwxy4jy/uyc+QZgfdiP07n5w=; b=z5rOxv6VLUUTMbVY/QR4MTe54
+        dhIBdr4OqxrL2O6WFOJYHeOMbFtrGJRphUaJqVqMcBpVB88eUxv9VHA1yHGjpkNO+veXHN0AF/toR
+        2euxnacI62zMLLfQi5iaRwMnzIBoTQzcCFtM9y23DNdIpUBSD3HcINYjIXQO2PEds9qy/qaxBTaw4
+        6cj6Y+IxJearwrConHAeqKHgrXz6QhukJ73kzVn/9z3w2DDBAHfCsN5gxQ1n8GM+ipQRzSdxiVz9o
+        tg/9Jnzwk3GPEDKZF1G6K6xtl7KLFdb/krvaY4MY/vUhm1DtGkYulO7xPFV4xbHsz1IKDParoIq3Q
+        xtFpsTfsA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44776)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lqBMB-0000CM-KI; Mon, 07 Jun 2021 10:15:39 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lqBM8-0005mm-VG; Mon, 07 Jun 2021 10:15:36 +0100
+Date:   Mon, 7 Jun 2021 10:15:36 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Steen Hegelund <steen.hegelund@microchip.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Mark Einon <mark.einon@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Simon Horman <simon.horman@netronome.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>
+Subject: Re: [PATCH net-next v3 03/10] net: sparx5: add hostmode with phylink
+ support
+Message-ID: <20210607091536.GA30436@shell.armlinux.org.uk>
+References: <20210604085600.3014532-1-steen.hegelund@microchip.com>
+ <20210604085600.3014532-4-steen.hegelund@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <20210607081727.4723-1-cnsztl@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604085600.3014532-4-steen.hegelund@microchip.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tianling,
-
-On 6/7/21 10:17 AM, Tianling Shen wrote:
-> NanoPi R4S has a EEPROM attached to the 2nd I2C bus (U92), which
-> stores the MAC address.
-> 
-> Signed-off-by: Tianling Shen <cnsztl@gmail.com>
-> ---
->  arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-> index cef4d18b599d..4a82f50a07c5 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-> +++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-> @@ -68,6 +68,15 @@
->  	status = "disabled";
->  };
->  
-> +&i2c2 {
-> +	eeprom@51 {
-> +		compatible = "microchip,24c02", "atmel,24c02";
-> +		reg = <0x51>;
-> +		pagesize = <16>;
-
-> +		read-only; /* This holds our MAC */
-
-The mainline dts files should be generic I think.
-Any comment about "use", partitions or write ability should be avoided.
-It's up the user.
-
-Johan
-
-> +	};
-> +};
+On Fri, Jun 04, 2021 at 10:55:53AM +0200, Steen Hegelund wrote:
+> +static void sparx5_phylink_mac_config(struct phylink_config *config,
+> +				      unsigned int mode,
+> +				      const struct phylink_link_state *state)
+> +{
+> +	struct sparx5_port *port = netdev_priv(to_net_dev(config->dev));
+> +	struct sparx5_port_config conf;
 > +
->  &i2c4 {
->  	status = "disabled";
->  };
-> 
+> +	conf = port->conf;
+> +	conf.power_down = false;
+> +	conf.portmode = state->interface;
+> +	conf.speed = state->speed;
+> +	conf.autoneg = state->an_enabled;
+> +	conf.pause = state->pause;
+> +
+> +	if (state->interface == PHY_INTERFACE_MODE_10GBASER) {
+> +		if (state->speed == SPEED_UNKNOWN) {
+> +			/* When a SFP is plugged in we use capabilities to
+> +			 * default to the highest supported speed
+> +			 */
+> +			if (phylink_test(state->advertising, 25000baseSR_Full) ||
+> +			    phylink_test(state->advertising, 25000baseCR_Full))
+> +				conf.speed = SPEED_25000;
+> +			else if (state->interface == PHY_INTERFACE_MODE_10GBASER)
+> +				conf.speed = SPEED_10000;
+> +		} else if (state->speed == SPEED_2500) {
+> +			conf.portmode = PHY_INTERFACE_MODE_2500BASEX;
+> +		} else if (state->speed == SPEED_1000) {
+> +			conf.portmode = PHY_INTERFACE_MODE_1000BASEX;
+> +		}
+
+1) As detailed in the documentation for phylink, state->speed is not
+   guaranteed to be valid in the mac_config method.
+
+2) We clearly need PHY_INTERFACE_MODE_25GBASER rather than working
+   around this by testing bits in the advertising bitmap.
+
+3) I really don't get what's going on with setting the port mode to
+   2500base-X and 1000base-X here when state->interface is 10GBASER.
+
+> +		if (phylink_test(state->advertising, FIBRE))
+> +			conf.media = PHY_MEDIA_SR;
+> +		else
+> +			conf.media = PHY_MEDIA_DAC;
+> +	}
+> +
+> +	if (!port_conf_has_changed(&port->conf, &conf))
+> +		return;
+> +}
+> +
+> +static void sparx5_phylink_mac_link_up(struct phylink_config *config,
+> +				       struct phy_device *phy,
+> +				       unsigned int mode,
+> +				       phy_interface_t interface,
+> +				       int speed, int duplex,
+> +				       bool tx_pause, bool rx_pause)
+> +{
+
+This is the only place that the MAC is guaranteed to know the
+negotiated speed.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
