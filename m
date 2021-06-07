@@ -2,66 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6DB839D33E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 05:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE4939D366
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 05:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbhFGDE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 23:04:27 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:4329 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbhFGDE0 (ORCPT
+        id S230225AbhFGD0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 23:26:31 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:60184 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230172AbhFGD0b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 23:04:26 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Fyyj51S6Dz1BJnb;
-        Mon,  7 Jun 2021 10:57:45 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 11:02:33 +0800
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 7 Jun 2021 11:02:32 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <jdelvare@suse.com>
-CC:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] i2c: Fix missing pci_disable_device() on error in ali1535_setup()
-Date:   Mon, 7 Jun 2021 11:21:08 +0800
-Message-ID: <1623036068-30668-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        Sun, 6 Jun 2021 23:26:31 -0400
+X-UUID: 4104ab5d812e4f5cbe188db290a0ae51-20210607
+X-UUID: 4104ab5d812e4f5cbe188db290a0ae51-20210607
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+        (envelope-from <mark-pk.tsai@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1696112267; Mon, 07 Jun 2021 11:24:38 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 7 Jun 2021 11:24:36 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 7 Jun 2021 11:24:36 +0800
+From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     Ingo Molnar <mingo@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <mark-pk.tsai@mediatek.com>,
+        <yj.chiang@mediatek.com>
+Subject: [PATCH] arm64: ftrace: don't dereference a probably invalid address
+Date:   Mon, 7 Jun 2021 11:23:30 +0800
+Message-ID: <20210607032329.28671-1-mark-pk.tsai@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the missing pci_disable_device() before return
-from ali1535_setup() in the error handling case.
+Address in __mcount_loc may be invalid if somthing goes wrong.
+On our arm64 platform, the bug in recordmcount make kernel
+crash in ftrace_init().
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
+https://lore.kernel.org/lkml/20210607023839.26387-1-mark-pk.tsai@mediatek.com/
+
+Return -EFAULT if we are dealing with out-of-range condition
+to prevent dereference the invalid address in ftrace_bug(),
+then the kernel can disable ftrace safely for problematic
+__mcount_loc.
+
+Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
 ---
- drivers/i2c/busses/i2c-ali1535.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/kernel/ftrace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/i2c-ali1535.c b/drivers/i2c/busses/i2c-ali1535.c
-index fb93152..bdbaf79 100644
---- a/drivers/i2c/busses/i2c-ali1535.c
-+++ b/drivers/i2c/busses/i2c-ali1535.c
-@@ -206,6 +206,7 @@ static int ali1535_setup(struct pci_dev *dev)
- exit_free:
- 	release_region(ali1535_smba, ALI1535_SMB_IOSIZE);
- exit:
-+	pci_disable_device(dev);
- 	return retval;
- }
+diff --git a/arch/arm64/kernel/ftrace.c b/arch/arm64/kernel/ftrace.c
+index b5d3ddaf69d9..98bec8445a58 100644
+--- a/arch/arm64/kernel/ftrace.c
++++ b/arch/arm64/kernel/ftrace.c
+@@ -201,7 +201,7 @@ int ftrace_make_nop(struct module *mod, struct dyn_ftrace *rec,
+ 			preempt_enable();
  
+ 			if (WARN_ON(!mod))
+-				return -EINVAL;
++				return -EFAULT;
+ 		}
+ 
+ 		/*
 -- 
-2.6.2
+2.18.0
 
