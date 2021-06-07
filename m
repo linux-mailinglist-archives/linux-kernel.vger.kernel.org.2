@@ -2,39 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 696EC39DE29
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDB939DE2F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbhFGN7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 09:59:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59548 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230193AbhFGN7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 09:59:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DC8A60FF0;
-        Mon,  7 Jun 2021 13:57:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623074274;
-        bh=PpzF3zWAl8Xl1TXx6+EAS7kLqch5FlBePP3ou+vk7Ug=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=rXjQyMsxFA7O5vsEx2sM/b/mez3iFLAqAsIDt7RDs2kPS3WrJUbu+eiJSItSOYhfE
-         JVT+e54LgAesk4Rs7PHPMOMbalbhoYT4+WYvfXjQSQBAZhhygswFBKD9zz9Nkwss1J
-         Y3Fb78kOTyeT0Zi3IYobvC7QmDJN/z7vu1nPBeSsdXXaJowHwGcUb5UQIggeb9Ln0G
-         0R6t3S1tO0lMpE/RvMzo+qhm61NOFLxdPgKLXef1dil9ahti3bREfbZNCosYdZc9Qj
-         tgFvn6fITewnr61IBhcU6VpefoMnwCVJIk0+7PiKRAqAH0mvh8Nd1Kfb1dl4MAi1sK
-         ZtjiPpI1PQMyw==
-Subject: Re: [f2fs-dev] [PATCH 2/3] f2fs: add pin_file in feature list
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-References: <20210605003210.856458-1-jaegeuk@kernel.org>
- <20210605003210.856458-2-jaegeuk@kernel.org>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <b6c48972-7135-cec7-60d0-e6c067505052@kernel.org>
-Date:   Mon, 7 Jun 2021 21:57:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230322AbhFGOAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 10:00:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30495 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230193AbhFGOAR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 10:00:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623074305;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qaZbcAf5eiKLkS93+DRSvuWGnuST7UIbnXTeiPSRJ1s=;
+        b=GoQ4kFS2iDH3JHRcY1DDdeGU5nmcNfbBnkKWg+mPmz57N0PrXLArpwDxKDfLy54WX4A/1e
+        04nQA3XYNzS30PCAryywRYlRxslaGUUq3UG4AGbkA/6CntwSYCfoLxa4xGPrsl7r/a5vBh
+        PkDoMyWmiUEOtxEPhsF/OnEj6VIogZ0=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-356-G_UKrx-GNz6ZJI-0cNbN4w-1; Mon, 07 Jun 2021 09:58:24 -0400
+X-MC-Unique: G_UKrx-GNz6ZJI-0cNbN4w-1
+Received: by mail-wr1-f71.google.com with SMTP id n2-20020adfb7420000b029010e47b59f31so7823385wre.9
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 06:58:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qaZbcAf5eiKLkS93+DRSvuWGnuST7UIbnXTeiPSRJ1s=;
+        b=c13TaXMNoPsayLIUeBEMb9c3AIDoyoZF4djVhW6Be3y/b4pnG0CDkvN4wWS4Hn2xdu
+         qA955Xe7CXMKKQUWMjlqRxjyUeqmXLVq48XRB259FVQ913Uki/vHvbVa73MQMPh2II5p
+         PTRTYO/NoBV1tp0tSYETQV005dI0p4X4Z7HtxgLv7647VRDCqeQjg4h1yIdLJhcL8R5T
+         zjsQ1aKNxFVMaGshwWqsXw6Dqx29wcUqA4pd0rRcvpyZFRwoNvK5blswY8MVtiC2MvK4
+         Klts49YAlgYI5T4vFXFtK/1tn1VeFFeHKRKmotd+YECDZLDB1luV//zAM1gFKPFtcQ8o
+         hBpg==
+X-Gm-Message-State: AOAM5312/LQB4a1NAGJV/kt6WWStsqbzH26IlXEg9E/U/ZjqVQm1QkCW
+        eXoupryL5hYdzewFjSF3QUAxX+OwO2axqYcYtVdSNQ3pmzYdXkcUtw0uWTZyIor+1BlCqeklh7X
+        Pwbs8aztFOxasgzaQfRM+vzPs
+X-Received: by 2002:adf:f043:: with SMTP id t3mr16841798wro.422.1623074301930;
+        Mon, 07 Jun 2021 06:58:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz1MZD6Vvun57JTNyHHjVmCPd//9h6LSDBCJGLlCz6Ek50lE2EWGyJmwHb5DdxDm7nOe7TD0w==
+X-Received: by 2002:adf:f043:: with SMTP id t3mr16841771wro.422.1623074301708;
+        Mon, 07 Jun 2021 06:58:21 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id o18sm6406465wrx.59.2021.06.07.06.58.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Jun 2021 06:58:21 -0700 (PDT)
+Subject: Re: [syzbot] WARNING in x86_emulate_instruction
+To:     Dmitry Vyukov <dvyukov@google.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        syzkaller <syzkaller@googlegroups.com>
+Cc:     syzbot <syzbot+71271244f206d17f6441@syzkaller.appspotmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, jarkko@kernel.org,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kan.liang@linux.intel.com,
+        kvm <kvm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-sgx@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <seanjc@google.com>, steve.wahl@hpe.com,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        the arch/x86 maintainers <x86@kernel.org>
+References: <000000000000f3fc9305c2e24311@google.com>
+ <87v9737pt8.ffs@nanos.tec.linutronix.de>
+ <0f6e6423-f93a-5d96-f452-4e08dbad9b23@redhat.com>
+ <87sg277muh.ffs@nanos.tec.linutronix.de>
+ <CANRm+CxaJ2Wu-f0Ys-1Fi7mo4FY9YBXNymdt142poSuND-K36A@mail.gmail.com>
+ <CACT4Y+YDtBf1GebeAA=twsfuv9e0HN+w7Lt5ZqDJhMJ5-PWYXQ@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <fa3c04ea-f27f-eeb2-d118-77f8fb805a8a@redhat.com>
+Date:   Mon, 7 Jun 2021 15:58:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210605003210.856458-2-jaegeuk@kernel.org>
+In-Reply-To: <CACT4Y+YDtBf1GebeAA=twsfuv9e0HN+w7Lt5ZqDJhMJ5-PWYXQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -42,12 +91,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/5 8:32, Jaegeuk Kim wrote:
-> This patch adds missing pin_file feature supported by kernel.
+On 07/06/21 12:34, Dmitry Vyukov wrote:
+> On Fri, May 28, 2021 at 2:34 AM Wanpeng Li <kernellwp@gmail.com> wrote:
+>>
+>> On Fri, 28 May 2021 at 08:31, Thomas Gleixner <tglx@linutronix.de> wrote:
+>>>
+>>> On Fri, May 28 2021 at 01:21, Paolo Bonzini wrote:
+>>>> On 28/05/21 00:52, Thomas Gleixner wrote:
+>>>>>
+>>>>> So this is stale for a week now. It's fully reproducible and nobody
+>>>>> can't be bothered to look at that?
+>>>>>
+>>>>> What's wrong with you people?
+>>>>
+>>>> Actually there's a patch on list ("KVM: X86: Fix warning caused by stale
+>>>> emulation context").  Take care.
+>>>
+>>> That's useful, but does not change the fact that nobody bothered to
+>>> reply to this report ...
+>>
+>> Will do it next time. Have a nice evening, guys!
 > 
-> Fixes: f5a53edcf01e ("f2fs: support aligned pinned file")
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> There was an idea to do this automatically by syzbot:
+> 
+> dashboard/app: notify bug report about fix patches
+> https://github.com/google/syzkaller/issues/1574
+> 
+> Namely: if syzbot discovers a fix anywhere (by the hash), it could
+> send a notification email to the bug report email thread.
+> The downside is that the robot sends even more emails, so I am not
+> sure how it will be accepted. Any opinions?
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
+I would like it.  Usually somebody replies _before_ they start working 
+on it, but sometimes they send a patch right away.
 
-Thanks,
+Paolo
+
