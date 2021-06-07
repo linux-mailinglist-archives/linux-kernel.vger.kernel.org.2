@@ -2,174 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A174739DA88
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A3439DA93
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhFGLDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 07:03:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbhFGLD2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 07:03:28 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C51C061766;
-        Mon,  7 Jun 2021 04:01:24 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id y2so24224355ybq.13;
-        Mon, 07 Jun 2021 04:01:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eOk28QuplFXUqfx4Omxl+hHoy7+LeKbRcCFQxR2HiDg=;
-        b=kcacTHFqZjpKgAGn83h6ZcGEfrTYMF4xHxvDO5D+aKf7yGAl7SNutkJU/dns5/0Toi
-         L1W8p4oMYhasUQYqMU3QnzwgkEIv+DbUoxv9IC7jrGZbbZV+fePV+frtSgJ9Qw+iPqrS
-         XycjgZ8aFN+QD8jSPmFNukQqU8gDo5BI04Qwfprk7lkMu67Lb3z8v4maNZfxpaffu/I6
-         UfEzizAUmMdxjMkqnALnuKmQfjeh0nhAAEuYXSeDuTLT+m6fv8R8Bn/EwtbDTAUwVhAQ
-         d1Y9eV8XiMghf2xI3ujnzpwSIbNOUJWpiQPSg3qaAU6nW+GvWgs5KQyazogzhF4M1H3l
-         xFfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eOk28QuplFXUqfx4Omxl+hHoy7+LeKbRcCFQxR2HiDg=;
-        b=QFSApm/SQRZHC6hN2PD5ykOOHY24BrPXulTPHnW6Nf7Pd5yIGDwvw/ThpMMlNHbf+U
-         2JSTk1AghR9DnDvNwdAdDKOAOaRfdbQPSlOCq+oEBCVO7sr+Qhtb6vqhKdEXw0VruEyC
-         Fn/QGIxYxJJu78hIktFXXiRr1dUl6vSMpTKcd4xq3N8pI0XUrQXjSABF9ZDxupaD2PH+
-         lSCbAjEMq/6QtR5jvZknKztiUuQdG2e2q2ryfHbK6qJPg5hPNTCXGZGJZg51v08DtaW+
-         chcEJlIntsi4iBe7XFin74L0Ot9sVlxmPKR8E5Hmt+ctxDq2BImOB+Xi3GyV4f4kLxXe
-         8juA==
-X-Gm-Message-State: AOAM533jKo1lGgj5odiLR9+iFcyYsVnLiYeYaqE1nUbmVPcjainfra5G
-        L2j4ndSOcRSg/AW20+lPgGNCXAOrBjUbUp66iV0=
-X-Google-Smtp-Source: ABdhPJxsAO4O7+1PJKJdXSJWiRnllFxvdUp/lmPmeLed0v6u2MYw19nOBSus4DzafHPuZRqHHk1Z52A1NP3Si7Ogius=
-X-Received: by 2002:a25:a26a:: with SMTP id b97mr23644097ybi.62.1623063683489;
- Mon, 07 Jun 2021 04:01:23 -0700 (PDT)
+        id S230465AbhFGLGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 07:06:00 -0400
+Received: from first.geanix.com ([116.203.34.67]:41006 "EHLO first.geanix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230131AbhFGLF7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 07:05:59 -0400
+Received: from zen.. (unknown [185.17.218.86])
+        by first.geanix.com (Postfix) with ESMTPSA id 9A67346261A;
+        Mon,  7 Jun 2021 11:04:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+        t=1623063845; bh=+WoSHYWiqrrDaZuoquHBwPk2NLLZ8Aff/DoPqDje5dY=;
+        h=From:To:Cc:Subject:Date;
+        b=Z3YuDLtHHaN4hPVC8xKzqrAR4lPj02mzYabKJxercVlp/fdWh3Gf5a3CvQ6FgMQYM
+         AjHiYW9SQJvQOyxVFgQ1e0L09M3KeZn4zTjqmmATs0V78G+H+e356SVCIIK8RZ/BiG
+         Y3jX3dbEfCrxU6i2LQ+lGdWhLALTdEh6ptTfHpsE1Zv/efdvGVvgr5gDDuY9+MNpMO
+         AP9FnWqkbb+7XyvWBSYwBnOhlCnVEhaAJXXDgtYAKdAxa/gcg0yrWTMpCvwaFNloz1
+         rhCaQ/84hYsBOd7KRRN9S3/ISYMOF5r4YCNPh0RibHgTUCl0G9LwpCNGoQxiatyZee
+         xavqCG74OqxLw==
+From:   Sean Nyekjaer <sean@geanix.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Sean Nyekjaer <sean@geanix.com>, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [RFC PATCH] clk: fix possible circular locking in clk_notifier_register()
+Date:   Mon,  7 Jun 2021 13:01:54 +0200
+Message-Id: <20210607110154.1291335-1-sean@geanix.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-References: <20210603221758.10305-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210603221758.10305-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Mon, 7 Jun 2021 12:00:57 +0100
-Message-ID: <CA+V-a8syJ=ea9Bhu1gBr=LgEc9ie0j9WmtvmbW285XxjJqE5XA@mail.gmail.com>
-Subject: Re: [PATCH v2 00/12] Add new Renesas RZ/G2L SoC and Renesas RZ/G2L
- SMARC EVK support
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        LAK <linux-arm-kernel@lists.infradead.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.4 required=4.0 tests=ALL_TRUSTED,BAYES_50,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on 93bd6fdb21b5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+Allocating memory with prepare_lock mutex held makes lockdep unhappy
+when memory pressure makes the system do fs_reclaim on eg. rawnand using
+clk.
 
-On Thu, Jun 3, 2021 at 11:18 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
->
-> Hi All,
->
-> This patch series adds initial support for Renesas RZ/G2L SoC and
-> Renesas RZ/G2L SMARC EVK.
->
-> Initial patches enables minimal peripherals on Renesas RZ/G2L
-> SMARC EVK and booted via initramfs.
-> * Documentation for RZ/G2{L,LC,UL} SoC variants
-> * SoC identification support
-> * CPG core support
-> * Minimal SoC DTSi
-> * Minimal DTS for SMARC EVK
->
-> Changes for v2:
-> * Included type-2 RZ/G2Ul SoC in binding doc
-> * Added single entry for SMARC EVK "renesas,smarc-evk"
-> * Renamed ARCH_R9A07G044L to ARCH_R9A07G044 and
->   dropped ARCH_R9A07G044LC config
-> * Dropped SoC identification changes will post them as
->   separate patch.
-> * Updated comment in sh-sci.c
-> * Binding documentation patch for serial driver has been
->   accepted so dropped the patch from this series
-> * Incorporated changes requested by Geert for CPG core
-> * Fixed dtbs_check errors
-> * Dropped 'clock-names'/'clocks'/'power-domains'/'resets'
->   properties from GIC node and will include them in a separate
->   patch along with arm,gic-v3.yaml binding updates
-> * Included ACK's from Rob
->
-> Patches are based on top of [1] master branch.
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git/
->
-> Cheers,
-> Prabhakar
->
-> Biju Das (1):
->   serial: sh-sci: Add support for RZ/G2L SoC
->
-> Lad Prabhakar (11):
->   dt-bindings: arm: renesas: Document Renesas RZ/G2UL SoC
->   dt-bindings: arm: renesas: Document Renesas RZ/G2{L,LC} SoC variants
->   dt-bindings: arm: renesas: Document SMARC EVK
->   soc: renesas: Add ARCH_R9A07G044 for the new RZ/G2L SoC's
->   arm64: defconfig: Enable ARCH_R9A07G044
->   clk: renesas: Define RZ/G2L CPG Clock Definitions
->   dt-bindings: clock: renesas: Document RZ/G2L SoC CPG driver
->   clk: renesas: Add CPG core wrapper for RZ/G2L SoC
->   clk: renesas: Add support for R9A07G044 SoC
->   arm64: dts: renesas: Add initial DTSI for RZ/G2{L,LC} SoC's
->   arm64: dts: renesas: Add initial device tree for RZ/G2L SMARC EVK
->
-Biju pointed out USB/ADC isn't working with the current implementation
-on upstream kernel, I'll have to re-structure to accommodate this
-use-case. I'll send a v3 fixing the issue.
+Fix this by allocating with GFP_ATOMIC instead of GFP_KERNEL.
 
-Sorry for the inconvenience.
+[  462.466020] ======================================================
+[  462.472211] WARNING: possible circular locking dependency detected
+[  462.478406] 4.19.128-00489-gffc0949c2231 #2 Not tainted
+[  462.483641] ------------------------------------------------------
+[  462.489831] kswapd0/22 is trying to acquire lock:
+[  462.494553] 882c9532 (&c->commit_sem){++++}, at: make_reservation+0x68/0x41c
+[  462.501638]
+[  462.501638] but task is already holding lock:
+[  462.507483] 11f3c233 (fs_reclaim){+.+.}, at: __fs_reclaim_acquire+0x0/0x48
+[  462.514388]
+[  462.514388] which lock already depends on the new lock.
+[  462.514388]
+[  462.522579]
+[  462.522579] the existing dependency chain (in reverse order) is:
+[  462.530073]
+[  462.530073] -> #4 (fs_reclaim){+.+.}:
+[  462.535242]        fs_reclaim_acquire+0x78/0x88
+[  462.539792]        kmem_cache_alloc_trace+0x34/0x2e8
+[  462.544775]        clk_notifier_register+0x84/0xfc
+[  462.549586]        i2c_imx_probe+0x23c/0x678
+[  462.553872]        platform_drv_probe+0x50/0xa0
+[  462.558419]        really_probe+0x2b8/0x3d8
+[  462.562617]        driver_probe_device+0x64/0x16c
+[  462.567334]        __driver_attach+0x120/0x144
+[  462.571795]        bus_for_each_dev+0x7c/0xc4
+[  462.576166]        driver_attach+0x20/0x28
+[  462.580276]        bus_add_driver+0x174/0x208
+[  462.584646]        driver_register+0x90/0x120
+[  462.589016]        __platform_driver_register+0x38/0x4c
+[  462.594260]        i2c_adap_imx_init+0x18/0x20
+[  462.598721]        do_one_initcall+0x8c/0x32c
+[  462.603096]        kernel_init_freeable+0x300/0x3e4
+[  462.607993]        kernel_init+0x10/0x114
+[  462.612016]        ret_from_fork+0x14/0x20
+[  462.616124]          (null)
+[  462.618928]
+[  462.618928] -> #3 (prepare_lock){+.+.}:
+[  462.624270]        __mutex_lock+0x60/0x8dc
+[  462.628381]        mutex_lock_nested+0x24/0x2c
+[  462.632843]        clk_prepare_lock+0x44/0xec
+[  462.637216]        clk_unprepare+0x24/0x34
+[  462.641327]        gpmi_disable_clk+0x2c/0x3c
+[  462.645697]        gpmi_select_chip+0x84/0xa4
+[  462.650071]        nand_read_oob+0x748/0x7b8
+[  462.654358]        part_read_oob+0x40/0x78
+[  462.658466]        mtd_read+0x10c/0x13c
+[  462.662318]        ubi_io_read+0xc8/0x354
+[  462.666342]        ubi_eba_read_leb+0xc8/0x544
+[  462.670798]        ubi_eba_read_leb_sg+0x70/0x170
+[  462.675514]        ubi_leb_read_sg+0x7c/0xbc
+[  462.679799]        ubiblock_do_work+0xcc/0x118
+[  462.684260]        process_one_work+0x2a4/0x744
+[  462.688805]        worker_thread+0x5c/0x554
+[  462.693004]        kthread+0x120/0x160
+[  462.696767]        ret_from_fork+0x14/0x20
+[  462.700874]          (null)
+[  462.703676]
+[  462.703676] -> #2 (&le->mutex){++++}:
+[  462.708842]        down_read+0x3c/0x80
+[  462.712608]        ubi_eba_read_leb+0x4c/0x544
+[  462.717065]        ubi_leb_read+0x7c/0xbc
+[  462.721089]        ubifs_leb_read+0x34/0x80
+[  462.725288]        ubifs_read_nnode+0x194/0x208
+[  462.729831]        ubifs_lpt_lookup_dirty+0x1e0/0x294
+[  462.734899]        ubifs_replay_journal+0x48/0x15a8
+[  462.739789]        ubifs_mount+0x104c/0x15f0
+[  462.744074]        mount_fs+0x1c/0xb8
+[  462.747753]        vfs_kern_mount.part.0+0x58/0x148
+[  462.752648]        do_mount+0x6a4/0xec8
+[  462.756499]        ksys_mount+0x90/0xbc
+[  462.760349]        sys_mount+0x1c/0x24
+[  462.764108]        ret_fast_syscall+0x0/0x28
+[  462.768390]        0xbebcbb38
+[  462.771367]
+[  462.771367] -> #1 (&c->lp_mutex){+.+.}:
+[  462.776705]        __mutex_lock+0x60/0x8dc
+[  462.780818]        mutex_lock_nested+0x24/0x2c
+[  462.785277]        ubifs_gc_start_commit+0x28/0x32c
+[  462.790170]        do_commit+0x1cc/0x7e4
+[  462.794105]        ubifs_run_commit+0x98/0xd0
+[  462.798476]        grab_empty_leb+0x60/0x98
+[  462.802674]        ubifs_rcvry_gc_commit+0x10c/0x1d8
+[  462.807651]        ubifs_mount+0x1308/0x15f0
+[  462.811934]        mount_fs+0x1c/0xb8
+[  462.815610]        vfs_kern_mount.part.0+0x58/0x148
+[  462.820503]        do_mount+0x6a4/0xec8
+[  462.824353]        ksys_mount+0x90/0xbc
+[  462.828201]        sys_mount+0x1c/0x24
+[  462.831962]        ret_fast_syscall+0x0/0x28
+[  462.836243]        0xbebcbb38
+[  462.839220]
+[  462.839220] -> #0 (&c->commit_sem){++++}:
+[  462.844733]        lock_acquire+0xd4/0x1f8
+[  462.848845]        down_read+0x3c/0x80
+[  462.852608]        make_reservation+0x68/0x41c
+[  462.857064]        ubifs_jnl_write_data+0x134/0x2b8
+[  462.861955]        do_writepage+0x88/0x210
+[  462.866063]        ubifs_writepage+0x1b8/0x274
+[  462.870522]        shrink_page_list+0x800/0xf68
+[  462.875065]        shrink_inactive_list+0x1b4/0x4f0
+[  462.879956]        shrink_node+0x44c/0x9c0
+[  462.884063]        kswapd+0x3f8/0x928
+[  462.887741]        kthread+0x120/0x160
+[  462.891504]        ret_from_fork+0x14/0x20
+[  462.895609]          (null)
+[  462.898412]
+[  462.898412] other info that might help us debug this:
+[  462.898412]
+[  462.906428] Chain exists of:
+[  462.906428]   &c->commit_sem --> prepare_lock --> fs_reclaim
+[  462.906428]
+[  462.916455]  Possible unsafe locking scenario:
+[  462.916455]
+[  462.922384]        CPU0                    CPU1
+[  462.926923]        ----                    ----
+[  462.931459]   lock(fs_reclaim);
+[  462.934613]                                lock(prepare_lock);
+[  462.940458]                                lock(fs_reclaim);
+[  462.946127]   lock(&c->commit_sem);
+[  462.949628]
+[  462.949628]  *** DEADLOCK ***
+[  462.949628]
+[  462.955563] 1 lock held by kswapd0/22:
+[  462.959322]  #0: 11f3c233 (fs_reclaim){+.+.}, at: __fs_reclaim_acquire+0x0/0x48
 
-Cheers,
-Prabhakar
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+---
 
->  .../devicetree/bindings/arm/renesas.yaml      |  18 +
->  .../bindings/clock/renesas,rzg2l-cpg.yaml     |  80 ++
->  arch/arm64/boot/dts/renesas/Makefile          |   2 +
->  arch/arm64/boot/dts/renesas/r9a07g044.dtsi    | 119 +++
->  arch/arm64/boot/dts/renesas/r9a07g044l1.dtsi  |  25 +
->  .../boot/dts/renesas/r9a07g044l2-smarc.dts    |  21 +
->  arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi  |  27 +
->  arch/arm64/configs/defconfig                  |   1 +
->  drivers/clk/renesas/Kconfig                   |   9 +
->  drivers/clk/renesas/Makefile                  |   2 +
->  drivers/clk/renesas/r9a07g044-cpg.c           | 372 +++++++
->  drivers/clk/renesas/renesas-rzg2l-cpg.c       | 979 ++++++++++++++++++
->  drivers/clk/renesas/renesas-rzg2l-cpg.h       | 217 ++++
->  drivers/soc/renesas/Kconfig                   |   5 +
->  drivers/tty/serial/sh-sci.c                   |  12 +-
->  drivers/tty/serial/sh-sci.h                   |   1 +
->  include/dt-bindings/clock/r9a07g044-cpg.h     |  89 ++
->  17 files changed, 1978 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/devicetree/bindings/clock/renesas,rzg2l-cpg.yaml
->  create mode 100644 arch/arm64/boot/dts/renesas/r9a07g044.dtsi
->  create mode 100644 arch/arm64/boot/dts/renesas/r9a07g044l1.dtsi
->  create mode 100644 arch/arm64/boot/dts/renesas/r9a07g044l2-smarc.dts
->  create mode 100644 arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi
->  create mode 100644 drivers/clk/renesas/r9a07g044-cpg.c
->  create mode 100644 drivers/clk/renesas/renesas-rzg2l-cpg.c
->  create mode 100644 drivers/clk/renesas/renesas-rzg2l-cpg.h
->  create mode 100644 include/dt-bindings/clock/r9a07g044-cpg.h
->
-> --
-> 2.17.1
->
+Could have used GPF_NOWAIT, but it seems wrong during memory reclaim.
+
+ drivers/clk/clk.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index 65508eb89ec9..eb2a547487d6 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -4348,7 +4348,7 @@ int clk_notifier_register(struct clk *clk, struct notifier_block *nb)
+ 			goto found;
+ 
+ 	/* if clk wasn't in the notifier list, allocate new clk_notifier */
+-	cn = kzalloc(sizeof(*cn), GFP_KERNEL);
++	cn = kzalloc(sizeof(*cn), GFP_ATOMIC);
+ 	if (!cn)
+ 		goto out;
+ 
+-- 
+2.31.0
+
