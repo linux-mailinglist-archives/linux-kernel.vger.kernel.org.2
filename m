@@ -2,192 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E83D539E6CB
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0876039E6CD
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230468AbhFGSow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 14:44:52 -0400
-Received: from mail-ed1-f41.google.com ([209.85.208.41]:35551 "EHLO
-        mail-ed1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230378AbhFGSos (ORCPT
+        id S230322AbhFGSqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 14:46:37 -0400
+Received: from mail-lj1-f181.google.com ([209.85.208.181]:34420 "EHLO
+        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230183AbhFGSqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 14:44:48 -0400
-Received: by mail-ed1-f41.google.com with SMTP id ba2so19853681edb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 11:42:40 -0700 (PDT)
+        Mon, 7 Jun 2021 14:46:34 -0400
+Received: by mail-lj1-f181.google.com with SMTP id bn21so23608909ljb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 11:44:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=uH3JX7eLYLyOx1BXQqsWzSMIggN9SNhVfMkmQqWxCNc=;
-        b=ikWnpIie5hZMfnWHLaAlHOf3oFbHhY+zg+SStiWL60r5U+C0O4Ue2By9cpXdtflevA
-         uWT39JDJ19Cm+CO+hACPkQJyJY5t0jPVbHzfaZqjESs07e14KndIApuWEMYzopEuXvzN
-         0Aml7wOvBPkK8Eq8PyrYVZGn5r0ZsN9mv58nFGPbjC1HZMYobQBZSwBTWxxL7k7r6/YZ
-         Tshq72TGLuXYsLvaJBytxAfSZJASVXMWAHLRxoXzohOSQb6z+V/6/Ob+bZc0CFYJNqkA
-         jyFkgEDete6cM1nyN61V+H/vnGEa+aNDriUXOySLUkbg2DneeT3nhegxTvbCLi+w+QtO
-         6lPA==
+        bh=9B3Sx0V5Yfw+vtWDBKV2BfxkUflJbs+2GKJxnszO55Y=;
+        b=JVjhJug0KdhaJOBiBHpFvDeRVhgV0Ul6evOlc+aRMWWUbUNSFW3lOXdde7k4daaLg0
+         wQB/N5wqPD4Og71CI6zSqWbK+MK7XDWK7hlPbyCWMftSlB28YgyUOnLBPmIEw7uSj7Iv
+         g0yyuf5bNvBLryh8AAgJrOY9yKHD7mHu1OcjGMaox/aRqja9dX0M/3ulloZ+eBBzEDG4
+         7V/A/7wVr/Ywi4+M1PHGyXhsbLxSIK+lfzoltUKaSntmOPcKM9oF59Qhc4KhTmcfJLvg
+         ytDz4Y23NI5Sga5/V0sKt67h1p/blm/DkPGezDsTaYBfYimNV2DENBiHI2/mmhPt1eFb
+         lt0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=uH3JX7eLYLyOx1BXQqsWzSMIggN9SNhVfMkmQqWxCNc=;
-        b=OSyh+CMbpIui8V7UQar4hGG3Nyw1Y2RKzeNVeK4YsqhmsxpKrCyzdgdlwjgAVaj9X7
-         DUXXKZ1/LLkGMhgZmG8BIUXYnQUmV/vC2LhczZwmbthzgTSadFq5u/h93BPuvCA5616H
-         ik7K3wOfeSBvt2VFBu1mz7pkiSEbpj5x5KrtnUMsO1AaLo7BHbO2Hb/P9KtQmhoLawXV
-         CNHlnUr+rGFTsZ+IqBMSM2vutO6r/059PEEmc+F+LDK1XKIL9v9ij8yu8+nQfgxds8T1
-         MFjF5rAAjagw5r5Pvp1WPMrFw2U2wDXNy9kEWoJTeJCzI1LFJQWIkdCzGa+qEqS4Jhio
-         gAIQ==
-X-Gm-Message-State: AOAM533qwi2oeoCT2mksKbFMrFdKlpUd1IBTAMSadI0WIJsm05E/5i+y
-        SMS0+RwDFVMOXO8nXwWRAxCqkOB8M4lcIyCqCuQ=
-X-Google-Smtp-Source: ABdhPJxXXvFSZ4J8Womwhx/S9wH7EqXmcyHijmzrDfdRjsFBFnuDp0KcoJnDN2VODbCoopayt21wrEL7t478AIamAko=
-X-Received: by 2002:a05:6402:42d2:: with SMTP id i18mr21378919edc.168.1623091299806;
- Mon, 07 Jun 2021 11:41:39 -0700 (PDT)
+        bh=9B3Sx0V5Yfw+vtWDBKV2BfxkUflJbs+2GKJxnszO55Y=;
+        b=keRZGUJHV8j4nKl6i8fU+EY6RAtGtyMTam2MPfC2M5B7QrnDhw2RmTNsEGZtIFgWOH
+         245Aa/l2IUeHqAW1wTTjitKvToR3woQBtvwNirpCnBaJealSyfQQM9V1yeLmNVLe06Dt
+         N9RjaC+hjJ375pdAj8nCW+YL2nkRLFysBL8rGlluFy6Dc8GpGa0MwYJkt2r1KsKYvIYO
+         o3XUIt0RAGcVehuPbZdJSVj5VX4ZJ0/GuhEeqtiowpsK643NpXResZfUwNQjbxu6N9IY
+         sjOM9FV4hdl3y9WcEpwDI8zMT5T+kbEDkg/skO7Yct2RA92zXcTHCGxZ5/HzLNMbIPSG
+         xI0A==
+X-Gm-Message-State: AOAM530qoUrnWN8sNbRaCU5jFp4r8A1s/rzh6jzRznnvyu/i6fL5f+4U
+        df0qV3P5ohbi6ZvlvX4ZG/lw/R3QkJjrdpg3cIeuYIFoW5Q=
+X-Google-Smtp-Source: ABdhPJyvqnABqg6mvaB/IbD/smKfWMJZsFMwS1ZAqErX+JwSU0e7UktY4aOeeU9ILrsrfbcqpnXh5UkwWjrXTTlySGo=
+X-Received: by 2002:a05:651c:b1f:: with SMTP id b31mr16093698ljr.0.1623091410157;
+ Mon, 07 Jun 2021 11:43:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210604203513.240709-1-shy828301@gmail.com> <YL265A86DQe5Rgon@dhcp22.suse.cz>
- <CAHbLzkowcskM=p==-q48Ca12D=h9SgqUuUB4NknRNR=64TyXCw@mail.gmail.com>
-In-Reply-To: <CAHbLzkowcskM=p==-q48Ca12D=h9SgqUuUB4NknRNR=64TyXCw@mail.gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Mon, 7 Jun 2021 11:41:27 -0700
-Message-ID: <CAHbLzkqWa2SMQTc6vfsus5u58X9ODZ1BhEwmg1t+1XynrnbNHA@mail.gmail.com>
-Subject: Re: [PATCH] mm: mempolicy: don't have to split pmd for huge zero page
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Zi Yan <ziy@nvidia.com>, nao.horiguchi@gmail.com,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Hugh Dickins <hughd@google.com>,
+References: <20210607163103.632681-1-atomlin@redhat.com> <c16893a9-35e2-7625-d7f3-83488f874040@redhat.com>
+In-Reply-To: <c16893a9-35e2-7625-d7f3-83488f874040@redhat.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 7 Jun 2021 11:43:19 -0700
+Message-ID: <CALvZod4eUoquGTQ5AsWgbWTQyqtCNNwb-9+fRw_ZPavH-r9dbA@mail.gmail.com>
+Subject: Re: [RFC PATCH] mm/oom_kill: allow oom kill allocating task for
+ non-global case
+To:     Waiman Long <llong@redhat.com>
+Cc:     Aaron Tomlin <atomlin@redhat.com>, Linux MM <linux-mm@kvack.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 10:00 AM Yang Shi <shy828301@gmail.com> wrote:
+On Mon, Jun 7, 2021 at 9:45 AM Waiman Long <llong@redhat.com> wrote:
 >
-> On Sun, Jun 6, 2021 at 11:21 PM Michal Hocko <mhocko@suse.com> wrote:
+> On 6/7/21 12:31 PM, Aaron Tomlin wrote:
+> > At the present time, in the context of memcg OOM, even when
+> > sysctl_oom_kill_allocating_task is enabled/or set, the "allocating"
+> > task cannot be selected, as a target for the OOM killer.
 > >
-> > On Fri 04-06-21 13:35:13, Yang Shi wrote:
-> > > When trying to migrate pages to obey mempolicy, the huge zero page is
-> > > split then the page table walk at PTE level just skips zero page.  So it
-> > > seems pointless to split huge zero page, it could be just skipped like
-> > > base zero page.
+> > This patch removes the restriction entirely.
 > >
-> > My THP knowledge is not the best but this is incorrect AIACS. Huge zero
-> > page is not split. We do split the pmd which is mapping the said page. I
-> > suspect you refer to vm_normal_page when talking about a zero page but
-> > please be aware that huge zero page is not a normal zero page. It is
-> > allocated dynamically (see get_huge_zero_page).
->
-> For a normal huge page, yes, split_huge_pmd() just splits pmd. But
-> actually the base zero pfn will be inserted to PTEs when splitting
-> huge zero pmd. Please check __split_huge_zero_page_pmd() out.
->
-> I should make this point clearer in the commit log. Sorry for the confusion.
->
+> > Signed-off-by: Aaron Tomlin <atomlin@redhat.com>
+> > ---
+> >   mm/oom_kill.c | 6 +++---
+> >   1 file changed, 3 insertions(+), 3 deletions(-)
 > >
-> > So in the end you patch disables mbind of zero pages to a target node
-> > and that is a regression.
->
-> Do we really migrate zero page? IIUC zero page is just skipped by
-> vm_normal_page() check in queue_pages_pte_range(), isn't it?
->
+> > diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> > index eefd3f5fde46..3bae33e2d9c2 100644
+> > --- a/mm/oom_kill.c
+> > +++ b/mm/oom_kill.c
+> > @@ -1089,9 +1089,9 @@ bool out_of_memory(struct oom_control *oc)
+> >               oc->nodemask = NULL;
+> >       check_panic_on_oom(oc);
 > >
-> > Have you tested the patch?
+> > -     if (!is_memcg_oom(oc) && sysctl_oom_kill_allocating_task &&
+> > -         current->mm && !oom_unkillable_task(current) &&
+> > -         oom_cpuset_eligible(current, oc) &&
+> > +     if (sysctl_oom_kill_allocating_task && current->mm &&
+> > +            !oom_unkillable_task(current) &&
+> > +            oom_cpuset_eligible(current, oc) &&
+> >           current->signal->oom_score_adj != OOM_SCORE_ADJ_MIN) {
+> >               get_task_struct(current);
+> >               oc->chosen = current;
 >
-> No, just build test. I thought this change was straightforward.
+> To provide more context for this patch, we are actually seeing that in a
+> customer report about OOM happened in a container where the dominating
+> task used up most of the memory and it happened to be the task that
+> triggered the OOM with the result that no killable process could be
+> found.
 
-Just came up with a quick test, the test is trying to mbind 1G address
-space (use huge zero page) to another node, the result is:
+Why was there no killable process? What about the process allocating
+the memory or is this remote memcg charging?
 
-w/o patch:
-pgmigrate_success 0
-pgmigrate_fail 0
-thp_migration_success 0
-thp_migration_fail 0
-thp_migration_split 0
-
-thp_split_pmd 512
-thp_split_pud 0
-thp_zero_page_alloc 1
-
-
-w/ patch:
-pgmigrate_success 0
-pgmigrate_fail 0
-thp_migration_success 0
-thp_migration_fail 0
-thp_migration_split 0
-
-thp_split_pmd 0
-thp_split_pud 0
-thp_zero_page_alloc 1
-
-
-We can tell neither huge zero nor base zero was migrated even before
-the patch. The patch just kills the pointless pmd split and we keep
-the huge zero page.
-
+> I don't see a reason why this should be limited to a global OOM only.
 >
-> >
-> > > Set ACTION_CONTINUE to prevent the walk_page_range() split the pmd for
-> > > this case.
-> >
-> > Btw. this changelog is missing a problem statement. I suspect there is
-> > no actual problem that it should fix and it is likely driven by reading
-> > the code. Right?
+> Acked-by: Waiman Long <longman@redhat.com>
 >
-> The actual problem is it is pointless to split a huge zero pmd. Yes,
-> it is driven by visual inspection.
+> Cheers,
+> Longman
 >
-> The behavior before the patch for huge zero page is:
-> split huge zero pmd (insert base zero pfn to ptes)
-> walk ptes
-> skip zero pfn
->
-> So why not just skip the huge zero page in the first place?
->
-> >
-> > > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > > ---
-> > >  mm/mempolicy.c | 9 +++++----
-> > >  1 file changed, 5 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> > > index b5f4f584009b..205c1a768775 100644
-> > > --- a/mm/mempolicy.c
-> > > +++ b/mm/mempolicy.c
-> > > @@ -436,7 +436,8 @@ static inline bool queue_pages_required(struct page *page,
-> > >
-> > >  /*
-> > >   * queue_pages_pmd() has four possible return values:
-> > > - * 0 - pages are placed on the right node or queued successfully.
-> > > + * 0 - pages are placed on the right node or queued successfully, or
-> > > + *     special page is met, i.e. huge zero page.
-> > >   * 1 - there is unmovable page, and MPOL_MF_MOVE* & MPOL_MF_STRICT were
-> > >   *     specified.
-> > >   * 2 - THP was split.
-> > > @@ -460,8 +461,7 @@ static int queue_pages_pmd(pmd_t *pmd, spinlock_t *ptl, unsigned long addr,
-> > >       page = pmd_page(*pmd);
-> > >       if (is_huge_zero_page(page)) {
-> > >               spin_unlock(ptl);
-> > > -             __split_huge_pmd(walk->vma, pmd, addr, false, NULL);
-> > > -             ret = 2;
-> > > +             walk->action = ACTION_CONTINUE;
-> > >               goto out;
-> > >       }
-> > >       if (!queue_pages_required(page, qp))
-> > > @@ -488,7 +488,8 @@ static int queue_pages_pmd(pmd_t *pmd, spinlock_t *ptl, unsigned long addr,
-> > >   * and move them to the pagelist if they do.
-> > >   *
-> > >   * queue_pages_pte_range() has three possible return values:
-> > > - * 0 - pages are placed on the right node or queued successfully.
-> > > + * 0 - pages are placed on the right node or queued successfully, or
-> > > + *     special page is met, i.e. zero page.
-> > >   * 1 - there is unmovable page, and MPOL_MF_MOVE* & MPOL_MF_STRICT were
-> > >   *     specified.
-> > >   * -EIO - only MPOL_MF_STRICT was specified and an existing page was already
-> > > --
-> > > 2.26.2
-> >
-> > --
-> > Michal Hocko
-> > SUSE Labs
