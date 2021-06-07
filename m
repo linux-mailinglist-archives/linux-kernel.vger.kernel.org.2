@@ -2,115 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B1D39D582
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0609839D587
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbhFGHBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 03:01:45 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:54761 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229436AbhFGHBo (ORCPT
+        id S230222AbhFGHEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 03:04:30 -0400
+Received: from mail-wr1-f46.google.com ([209.85.221.46]:38512 "EHLO
+        mail-wr1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhFGHE2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 03:01:44 -0400
-X-UUID: e2d4cd33c0544e2c9a862bef06d87a8e-20210607
-X-UUID: e2d4cd33c0544e2c9a862bef06d87a8e-20210607
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <mark-pk.tsai@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1830994713; Mon, 07 Jun 2021 14:59:49 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 7 Jun 2021 14:59:48 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 7 Jun 2021 14:59:47 +0800
-From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-To:     <ardb@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <mark-pk.tsai@mediatek.com>,
-        <matthias.bgg@gmail.com>, <mhelsley@vmware.com>,
-        <rostedt@goodmis.org>, <samitolvanen@google.com>,
-        <yj.chiang@mediatek.com>
-Subject: Re: [PATCH] recordmcount: avoid using ABS symbol as reference
-Date:   Mon, 7 Jun 2021 14:59:48 +0800
-Message-ID: <20210607065948.31632-1-mark-pk.tsai@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <CAMj1kXE3faN7nSSdoSU=ed+OPruefD_vJuhyRnsMuNiRygZZbg@mail.gmail.com>
-References: <CAMj1kXE3faN7nSSdoSU=ed+OPruefD_vJuhyRnsMuNiRygZZbg@mail.gmail.com>
+        Mon, 7 Jun 2021 03:04:28 -0400
+Received: by mail-wr1-f46.google.com with SMTP id c9so7588182wrt.5
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 00:02:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=51VmsxUZ/IAwiM9uqtyHR/QzterIDzyNotbKCVYVi6U=;
+        b=UErHyRPG3ov/MsTwHowtTjWSFcC+P/2iwVP5iJLA1usgbYKBmvqeFxr3XeTFR2JnVM
+         tIwANwHiuwIBNwHB0Yyx/8jZZjbXyx1OXp1dFW1HaaWLtu+o1HKEmcnxlbCbgMaDkBtK
+         hOzisd/j7mC1huYAZW/58XnfF1PuQP3eZ1B/DiEsKfSXbxSPlcixSlI6KxskHB2EhYjg
+         7kiwleNFIsXUD0zS3bgYHZxO5Av2tUPWotOwO2acjibOs8/mbOR0SqbYTytrCd66RVHP
+         T1O4I6dw0hcdZ4jyXyDOBZYyOm3rimC5OB3+ARrJwBZj3iIdOUQbSTB10RSsCV2Yd2Bq
+         iGxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=51VmsxUZ/IAwiM9uqtyHR/QzterIDzyNotbKCVYVi6U=;
+        b=rs17Yuwu7zcmX6VaZMZI7UqEm/V+UHkQalmOIy60E5x+ytY0UM+plgY5i4AyG0kmGt
+         X2d0HRAftSvWNZg/UHYp7+oQufldFLaHf4n0AA6fJvO+w/y3KZ8jjPx0KARMFQQbw3aw
+         U3AQF1Ty3Fs9X2JuTckk0ue1FrLgth6T/e10MN2swg+v8TO9NlI9XnIyfXvfH3qAQvWs
+         CjvmTOHP8rN7H6+pkhbGl91oEm+PYxR6urPVCvJDiLFAdCxgBDMTpuNX7GVDU+3+bnAw
+         GzSiZ//K1K7VmNRFYVIWS0RzIJAvxVWeLHSFgeuY31sgfX7qltUhto6KFrTiAS0qIeNW
+         vLIw==
+X-Gm-Message-State: AOAM533vD3DKiNrdbvhhEKAxI/VU6NhNuXctsF3Ra9p73j+6cH7T8mnp
+        hYskvZYPOrDy0bPYh1eEaxB41w==
+X-Google-Smtp-Source: ABdhPJyFU5Bdb0c/UXMAqn+htCSNFOi08UtRCmr3smv+Y+vGV9/Wwr8eHauHTkflHSi04H1eurQDzg==
+X-Received: by 2002:a05:6000:89:: with SMTP id m9mr1446926wrx.8.1623049297239;
+        Mon, 07 Jun 2021 00:01:37 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:90c:e290:7c1f:1c9f:555e:7398? ([2a01:e0a:90c:e290:7c1f:1c9f:555e:7398])
+        by smtp.gmail.com with ESMTPSA id q11sm14647214wrx.80.2021.06.07.00.01.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Jun 2021 00:01:36 -0700 (PDT)
+Subject: Re: [PATCH 0/6] Add serial and i2c aliases for Khadas VIM boards
+To:     xieqinick@gmail.com, robh+dt@kernel.org, devicetree@vger.kernel.org
+Cc:     nick@khadas.com, artem@khadas.com, khilman@baylibre.com,
+        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org
+References: <20210605062313.418343-1-xieqinick@gmail.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <4e1e960c-16b3-59a5-61c2-6d6e2f8204ac@baylibre.com>
+Date:   Mon, 7 Jun 2021 09:01:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <20210605062313.418343-1-xieqinick@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > On Mon, 7 Jun 2021 at 04:42, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
-> >
-> > Avoid using ABS symbol, which won't be relocate, as reference.
-> >
-> > On arm64 platform, if there's shndx equals SHN_ABS(0xfff1).
-> >
-> > Section Headers:
-> > [Nr]    Name                         Type      Address          Off      Size   ES  Flg Lk     Inf    Al
-> > [65521] .text.n_tty_receive_buf      PROGBITS  0000000000000000 3cdab520 000054 00  AX  0      0      4
-> > [65522] .rela.text.n_tty_receive_buf RELA      0000000000000000 3cdab578 000030 18  I   152076 65521  8
-> >
->
-> A RELA section's r_info field points to the section to which it
-> applies. This is why in the example above section #65522 points to
-> section #65521. This has nothing to do with the numerical value of
-> SHN_ABS.
+Hi Nick,
 
-If the r_info of RELA section is 65521(0xfff1),
-find_secsym_ndx() will use it to find the base symbol.
+On 05/06/2021 08:23, xieqinick@gmail.com wrote:
+> From: Nick Xie <nick@khadas.com>
+> 
+> This patch series update / add serial and i2c aliases to
+> keep the same with 4.9 kernel for Khadas VIM boards
+> (VIM1, VIM2, VIM3 and VIM3L).
+> 
+> Nick Xie (6):
+>   arm64: dts: meson: vim3: add serial aliases
+>   arm64: dts: meson: vim1: update serial aliases
+>   arm64: dts: meson: vim2: update serial aliases
+>   arm64: dts: meson: vim3: add i2c aliases
+>   arm64: dts: meson: vim1: add i2c aliases
+>   arm64: dts: meson: vim2: add i2c aliases
+> 
+>  .../boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts      | 8 +++++++-
+>  arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts    | 7 ++++++-
+>  arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi       | 9 +++++++++
+>  3 files changed, 22 insertions(+), 2 deletions(-)
+> 
 
-And in the symbol search loop in find_secsym_ndx(), get_symindex will
-return 0xfff1 if the symbol is in ABS section.
+Thanks for these patches.
 
-In this case, find_secsym_ndx() will return a absolute symbol as
-base, which won't be relocate, if an ABS symbol is found before the
-real symbol in section 65521.
+I'm not sure about the current policy about aliases, but when we started upstreaming the amlogic boards,
+only the exposed interfaces could have an alias and in the board.dts file only. But since other vendors
+added a bunch of aliases of all the possible i2c/spi/uart/mmc/ethernet interfaces in the SoC dtsi....
 
->
-> > find_secsym_ndx, which use r_info in rela section to find the reference
-> > symbol, may take ABS symbol as base.
-> >
-> > Symbol table '.symtab' contains 453285 entries:
-> >    Num:    Value          Size Type    Bind   Vis       Ndx Name
-> >      6: 0000000000000002     0 NOTYPE  LOCAL  DEFAULT   ABS section_count
-> >
-> > Which cause an invalid address in __mcount_loc.
-> >
->
-> Could you give a better account of the error you are trying to address?
->
-> Also, arm64 no longer defines a section_count symbol (since v5.11), so
-> please make sure that the diagnostics of the issue you are addressing
-> are accurate for mainline.
->
+But the question of the 40pins header remains, should we add aliases for interfaces present on the 40pin header ?????
 
-My kernel version is 5.4.61.
-But as I explained, I suppose mainline also have this issue.
+Personally, we should'nt since these pins has no defined functions, so any alias should be added by a DT overlay loaded from U-boot.
 
->
-> > Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-> > ---
-> >  scripts/recordmcount.h | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >
-> > diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
-> > index f9b19524da11..9b69167fb7ff 100644
-> > --- a/scripts/recordmcount.h
-> > +++ b/scripts/recordmcount.h
-> > @@ -526,6 +526,10 @@ static int find_secsym_ndx(unsigned const txtndx,
-> >         for (symp = sym0, t = nsym; t; --t, ++symp) {
-> >                 unsigned int const st_bind = ELF_ST_BIND(symp->st_info);
-> >
-> > +               /* avoid absolute symbols */
-> > +               if (symp->st_shndx == SHN_ABS)
-> > +                       continue;
-> > +
-> >                 if (txtndx == get_symindex(symp, symtab, symtab_shndx)
-> >                         /* avoid STB_WEAK */
-> >                     && (STB_LOCAL == st_bind || STB_GLOBAL == st_bind)) {
+But it's my own opinion.
+
+Rob ? what's the current policy on that ?
+
+Neil
