@@ -2,111 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE99A39E6EC
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C52DA39E6F7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 21:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231244AbhFGS5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 14:57:51 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:49466 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230494AbhFGS5u (ORCPT
+        id S231363AbhFGTB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 15:01:59 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:62241 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230516AbhFGTB6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 14:57:50 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 8B6DB219A2;
-        Mon,  7 Jun 2021 18:55:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623092158; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xTTNvN2IGVmRB+Hi3pIM5/gMVmzfroo2fQlotpvh6qI=;
-        b=opAvG0UKd+EYVEXI97H4xHDjF9j+W/HwIM8XO09eMwyAeacv2iTxx7PdRTqucKA+SxAH7Z
-        2x59C7aIdrBZyQM96tMHZ6d9d+AFTTLF3JO1gi1ncHnwqzwdorHX3VT+2LfPjuXRa3qn6T
-        eAETwTAHTR/H04Fqawnq4IAwdF3XVfU=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 2D988A3B8E;
-        Mon,  7 Jun 2021 18:55:58 +0000 (UTC)
-Date:   Mon, 7 Jun 2021 20:55:57 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Zi Yan <ziy@nvidia.com>, nao.horiguchi@gmail.com,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: mempolicy: don't have to split pmd for huge zero page
-Message-ID: <YL5rvdzh9dou+uAz@dhcp22.suse.cz>
-References: <20210604203513.240709-1-shy828301@gmail.com>
- <YL265A86DQe5Rgon@dhcp22.suse.cz>
- <CAHbLzkowcskM=p==-q48Ca12D=h9SgqUuUB4NknRNR=64TyXCw@mail.gmail.com>
+        Mon, 7 Jun 2021 15:01:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1623092406; x=1654628406;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=jISdOgQ/JTsW0H3WM9A+q97dEXgXLmFL+7Pu1AAf/5U=;
+  b=lUkAi663tLabMowYdJ8iGl1eqznBOtf5ZuZE00zXkGVKVLfPIjEvZHwA
+   hYB/64D1ohQYDsalRgtWcRkoZCOtdEA6HlfHTIC4uSOSpKxPpc+C2Abqg
+   6ZSLDX79bK2i+fKndnHcI5yD6+TBxnoXlbHVGblU3J/XIU/SVjbER+w7C
+   0=;
+X-IronPort-AV: E=Sophos;i="5.83,255,1616457600"; 
+   d="scan'208";a="118583534"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-2225282c.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-6001.iad6.amazon.com with ESMTP; 07 Jun 2021 18:59:58 +0000
+Received: from EX13D19EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2c-2225282c.us-west-2.amazon.com (Postfix) with ESMTPS id 69681A1810;
+        Mon,  7 Jun 2021 18:59:57 +0000 (UTC)
+Received: from u5213831450fd59.ant.amazon.com (10.43.161.201) by
+ EX13D19EUA001.ant.amazon.com (10.43.165.74) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Mon, 7 Jun 2021 18:59:52 +0000
+From:   Jinank Jain <jinankj@amazon.de>
+To:     <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>
+CC:     Jinank Jain <jinankj@amazon.de>, Marc Zyngier <maz@kernel.org>,
+        Alexander Graf <graf@amazon.de>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH v2] KVM: arm64: Properly restore PMU state during live-migration
+Date:   Mon, 7 Jun 2021 20:58:59 +0200
+Message-ID: <20210607185858.2254-1-jinankj@amazon.de>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210603110554.13643-1-jinankj@amazon.de>
+References: <20210603110554.13643-1-jinankj@amazon.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHbLzkowcskM=p==-q48Ca12D=h9SgqUuUB4NknRNR=64TyXCw@mail.gmail.com>
+X-Originating-IP: [10.43.161.201]
+X-ClientProxiedBy: EX13D46UWC003.ant.amazon.com (10.43.162.119) To
+ EX13D19EUA001.ant.amazon.com (10.43.165.74)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 07-06-21 10:00:01, Yang Shi wrote:
-> On Sun, Jun 6, 2021 at 11:21 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Fri 04-06-21 13:35:13, Yang Shi wrote:
-> > > When trying to migrate pages to obey mempolicy, the huge zero page is
-> > > split then the page table walk at PTE level just skips zero page.  So it
-> > > seems pointless to split huge zero page, it could be just skipped like
-> > > base zero page.
-> >
-> > My THP knowledge is not the best but this is incorrect AIACS. Huge zero
-> > page is not split. We do split the pmd which is mapping the said page. I
-> > suspect you refer to vm_normal_page when talking about a zero page but
-> > please be aware that huge zero page is not a normal zero page. It is
-> > allocated dynamically (see get_huge_zero_page).
-> 
-> For a normal huge page, yes, split_huge_pmd() just splits pmd. But
-> actually the base zero pfn will be inserted to PTEs when splitting
-> huge zero pmd. Please check __split_huge_zero_page_pmd() out.
+Currently if a guest is live-migrated while it is actively using perf
+counters, then after live-migrate it will notice that all counters would
+suddenly start reporting 0s. This is due to the fact we are not
+re-creating the relevant perf events inside the kernel.
 
-My bad. I didn't have a look all the way down there. The naming
-suggested that this is purely page table operations and I have suspected
-that ptes just point to the offset of the THP.
+Usually on live-migration guest state is restored using KVM_SET_ONE_REG
+ioctl interface, which simply restores the value of PMU registers
+values but does not re-program the perf events so that the guest can seamlessly
+use these counters even after live-migration like it was doing before
+live-migration.
 
-But I am obviously wrong here. Sorry about that.
+Instead there are two completely different code path between guest
+accessing PMU registers and VMM restoring counters on
+live-migration.
 
-> I should make this point clearer in the commit log. Sorry for the confusion.
-> 
-> >
-> > So in the end you patch disables mbind of zero pages to a target node
-> > and that is a regression.
-> 
-> Do we really migrate zero page? IIUC zero page is just skipped by
-> vm_normal_page() check in queue_pages_pte_range(), isn't it?
+In case of KVM_SET_ONE_REG:
 
-Yeah, normal zero pages are skipped indeed. I haven't studied why this
-is the case yet. It surely sounds a bit suspicious because this is an
-explicit request to migrate memory and if the zero page is misplaced it
-should be moved. On the hand this would increase RSS so maybe this is
-the point.
+kvm_arm_set_reg()
+...... kvm_arm_sys_reg_set_reg()
+........... reg_from_user()
 
-> > Have you tested the patch?
-> 
-> No, just build test. I thought this change was straightforward.
-> 
-> >
-> > > Set ACTION_CONTINUE to prevent the walk_page_range() split the pmd for
-> > > this case.
-> >
-> > Btw. this changelog is missing a problem statement. I suspect there is
-> > no actual problem that it should fix and it is likely driven by reading
-> > the code. Right?
-> 
-> The actual problem is it is pointless to split a huge zero pmd. Yes,
-> it is driven by visual inspection.
+but in case when guest tries to access these counters:
 
-Is there any actual workload that cares? This is quite a subtle area so
-I would be careful to do changes just because...
+handle_exit()
+..... kvm_handle_sys_reg()
+..........perform_access()
+...............access_pmu_evcntr()
+...................kvm_pmu_set_counter_value()
+.......................kvm_pmu_create_perf_event()
+
+The drawback of using the KVM_SET_ONE_REG interface is that the host pmu
+events which were registered for the source instance are not present for
+the destination instance. Thus, passively restoring PMCR_EL0 using
+KVM_SET_ONE_REG interface would not create the necessary host pmu events
+which are crucial for seamless guest experience across live migration.
+
+In ordet to fix the situation, on first vcpu load we should restore
+PMCR_EL0 in the same exact way like the guest was trying to access
+these counters. And then we will also recreate the relevant host pmu
+events.
+
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Jinank Jain <jinankj@amazon.de>
+Cc: Alexander Graf (AWS) <graf@amazon.de>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: James Morse <james.morse@arm.com>
+Cc: Alexandru Elisei <alexandru.elisei@arm.com>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+---
+ arch/arm64/include/asm/kvm_host.h | 1 +
+ arch/arm64/kvm/arm.c              | 4 ++++
+ arch/arm64/kvm/pmu-emul.c         | 3 +++
+ 3 files changed, 8 insertions(+)
+
+diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+index 7cd7d5c8c4bc..6336b4309114 100644
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -46,6 +46,7 @@
+ #define KVM_REQ_VCPU_RESET	KVM_ARCH_REQ(2)
+ #define KVM_REQ_RECORD_STEAL	KVM_ARCH_REQ(3)
+ #define KVM_REQ_RELOAD_GICv4	KVM_ARCH_REQ(4)
++#define KVM_REQ_RELOAD_PMU	KVM_ARCH_REQ(5)
+ 
+ #define KVM_DIRTY_LOG_MANUAL_CAPS   (KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE | \
+ 				     KVM_DIRTY_LOG_INITIALLY_SET)
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index e720148232a0..facf4d41d32a 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -689,6 +689,10 @@ static void check_vcpu_requests(struct kvm_vcpu *vcpu)
+ 			vgic_v4_load(vcpu);
+ 			preempt_enable();
+ 		}
++
++		if (kvm_check_request(KVM_REQ_RELOAD_PMU, vcpu))
++			kvm_pmu_handle_pmcr(vcpu,
++					    __vcpu_sys_reg(vcpu, PMCR_EL0));
+ 	}
+ }
+ 
+diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
+index fd167d4f4215..a0bbb7111f57 100644
+--- a/arch/arm64/kvm/pmu-emul.c
++++ b/arch/arm64/kvm/pmu-emul.c
+@@ -850,6 +850,9 @@ int kvm_arm_pmu_v3_enable(struct kvm_vcpu *vcpu)
+ 		   return -EINVAL;
+ 	}
+ 
++	/* One-off reload of the PMU on first run */
++	kvm_make_request(KVM_REQ_RELOAD_PMU, vcpu);
++
+ 	return 0;
+ }
+ 
 -- 
-Michal Hocko
-SUSE Labs
+2.31.1
+
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
+
