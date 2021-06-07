@@ -2,102 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D86839D29D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 03:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0622539D2A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 03:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbhFGBcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 21:32:36 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:58807 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230078AbhFGBcf (ORCPT
+        id S230159AbhFGBdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 21:33:41 -0400
+Received: from ZXSHCAS2.zhaoxin.com ([203.148.12.82]:45844 "EHLO
+        ZXSHCAS2.zhaoxin.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230078AbhFGBdk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 21:32:35 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 900305C00E6;
-        Sun,  6 Jun 2021 21:30:44 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Sun, 06 Jun 2021 21:30:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
-        :to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm3; bh=GRzcE4hI5AG2i78thbcMf/cB97
-        dZ01L3NdzHyw2+Nv0=; b=e57ywDicKtu87q+d8RSK+Uh9L+fpAXqXjvcuSEdrNA
-        4iHp3kY2ObBLPAtZqbbaQoNrY3Fu0qtd3G5q2F6DRnpOwCTgsK1qNs4Mvo0tiARr
-        Bnyzxq8IzTvKZC5PlVnAWHSNAB2/yVEFYp3Wr+eA5dYW1X+uSqllNBfCrOgL+sZO
-        m99glIg3eGoyH1S8TIDMfe/EFMEKv8gkrY7mgGibogV+eGPZ0SA/ZT3GBWJvonM2
-        MoW3Odv/3r5OInfFmeQzpPXUC1yR0STMXiHw4RNszb++wEDNNbpZbAIMIe0xrxSp
-        sEtXFbNteFGjeuoJ0xdpsT9LrJFmzzaWDYPJdrts6PIA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=GRzcE4hI5AG2i78th
-        bcMf/cB97dZ01L3NdzHyw2+Nv0=; b=jrfBPDSHqWTSn1tTrDWLEYuUwOHA3dRg2
-        r3x5OHNhDPozYBJj8tiGWPYrcTQtUvroc2ghN9bfxBIAjWsFwrCo92r1AFUYnFCi
-        BIBo5hgOwRTIaF283gcjpHZdoIBIwHr2nwcvN9vxa3NBVIHuLR6K70Fct1CB1XkP
-        tqh9oG79mhDBYV9bG52Wg+H5XAYZ2+R5KExo/m7qV+7oEuXW6Yf6Q60VMtBGjDYY
-        yTY9andCckGWOBT1ZI9lBNuAKyYLqovPDnuOiWtyW+2XFooce05pfBRt+cLqvkIK
-        i4lhY+l3xRT9dbFjeSNZs0QKRbeTNOXlvU1qzOFll6y5rAG4szjyQ==
-X-ME-Sender: <xms:wXa9YEWDXwXFZ6g8NYlLZY_702XFeDVqDcXqN61vA4OdvtGDD5vqAw>
-    <xme:wXa9YIn-LDtYf-omv_F4Kquy7u8LEEQ1Y1iMyHkNfLIg5mreol-J5IfL4BLGsK8nD
-    BigXcdMJ5GE2iMrHw>
-X-ME-Received: <xmr:wXa9YIbOgwrK3i4IsRFBsD2AHpHvLd1Vgl_naaekebiFIZpr6wyN1sFZctMZicU73zF8-YmsprQUX2MioLZOspj1aFld352E2Sc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtiedggeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
-    dttdenucfhrhhomheptehnughrvgifucflvghffhgvrhihuceorghnughrvgifsegrjhdr
-    ihgurdgruheqnecuggftrfgrthhtvghrnhepkefhieffjeevfeevhedtieeihfefvdejle
-    dvvddthefftedujeethfeuueelfedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghr
-    rghmpehmrghilhhfrhhomheprghnughrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:wXa9YDW_FsLN34ITeOFGjIeUOTXP3_6AE6GpQAYsYLqgC5f8my6Jgg>
-    <xmx:wXa9YOnLmIp8wO6HSs98XjMzbLoyEgoTDkZSnkh4R-hUXYKZ8fw1cQ>
-    <xmx:wXa9YIfE9NN3M8bUSqsZfw_sf9fUhZiipvyQY7pJYvRzl06OLFvb3w>
-    <xmx:xHa9YMZD-CLNWEsaYLvqgHtO2oNiOxVYIBaF_Dsn2Kv0788WEYsX0Q>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 6 Jun 2021 21:30:38 -0400 (EDT)
-From:   Andrew Jeffery <andrew@aj.id.au>
-To:     linux-mmc@vger.kernel.org
-Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org, joel@jms.id.au,
-        linux-aspeed@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        steven_lee@aspeedtech.com
-Subject: [PATCH] mmc: sdhci-of-aspeed: Turn down a phase correction warning
-Date:   Mon,  7 Jun 2021 11:00:20 +0930
-Message-Id: <20210607013020.85885-1-andrew@aj.id.au>
-X-Mailer: git-send-email 2.30.2
+        Sun, 6 Jun 2021 21:33:40 -0400
+Received: from zxbjmbx2.zhaoxin.com (10.29.252.164) by ZXSHCAS2.zhaoxin.com
+ (10.28.252.162) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Mon, 7 Jun
+ 2021 09:31:41 +0800
+Received: from zx.zhaoxin.com (10.28.64.91) by zxbjmbx2.zhaoxin.com
+ (10.29.252.164) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Mon, 7 Jun
+ 2021 09:31:40 +0800
+From:   Cody Yao-oc <CodyYao-oc@zhaoxin.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>, <tglx@linutronix.de>,
+        <bp@alien8.de>, <hpa@zytor.com>, <x86@kernel.org>
+CC:     <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <shyaololo@163.com>, CodyYao-oc <CodyYao-oc@zhaoxin.com>
+Subject: [PATCH] x86/perf: Fixed kernel panic during boot on Nano processor.
+Date:   Mon, 7 Jun 2021 09:31:09 +0800
+Message-ID: <20210607013109.7870-1-CodyYao-oc@zhaoxin.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.28.64.91]
+X-ClientProxiedBy: ZXSHCAS1.zhaoxin.com (10.28.252.161) To
+ zxbjmbx2.zhaoxin.com (10.29.252.164)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The card timing and the bus frequency are not changed atomically with
-respect to calls to the set_clock() callback in the driver. The result
-is the driver sees a transient state where there's a mismatch between
-the two and thus the inputs to the phase correction calculation
-formula are garbage.
+From: CodyYao-oc <CodyYao-oc@zhaoxin.com>
 
-Switch from dev_warn() to dev_dbg() to avoid noise in the normal case,
-though the change does make bad configurations less likely to be
-noticed.
+Nano processor may not fully support rdpmc instruction, it works well
+for reading general pmc counter, but will lead to GP(general protection)
+when accessing fixed pmc counter. Futhermore, family/model information
+is same between Nano processor and ZX-C processor, it leads to zhaoxin
+pmu driver is wrongly loaded for Nano processor, which resulting boot
+kernal fail.
 
-Reported-by: Joel Stanley <joel@jms.id.au>
-Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+To solve this problem, stepping information will be checked to distinguish
+between Nano processor and ZX-C processor.
+
+[https://bugzilla.kernel.org/show_bug.cgi?id=212389]
+
+Reported-by: Arjan <8vvbbqzo567a@nospam.xutrox.com>
+Signed-off-by: CodyYao-oc <CodyYao-oc@zhaoxin.com>
 ---
- drivers/mmc/host/sdhci-of-aspeed.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/events/zhaoxin/core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/sdhci-of-aspeed.c b/drivers/mmc/host/sdhci-of-aspeed.c
-index d001c51074a0..e4665a438ec5 100644
---- a/drivers/mmc/host/sdhci-of-aspeed.c
-+++ b/drivers/mmc/host/sdhci-of-aspeed.c
-@@ -150,7 +150,7 @@ static int aspeed_sdhci_phase_to_tap(struct device *dev, unsigned long rate_hz,
+diff --git a/arch/x86/events/zhaoxin/core.c b/arch/x86/events/zhaoxin/core.c
+index 949d845c922b..cef1de251613 100644
+--- a/arch/x86/events/zhaoxin/core.c
++++ b/arch/x86/events/zhaoxin/core.c
+@@ -541,7 +541,8 @@ __init int zhaoxin_pmu_init(void)
  
- 	tap = div_u64(phase_period_ps, prop_delay_ps);
- 	if (tap > ASPEED_SDHCI_NR_TAPS) {
--		dev_warn(dev,
-+		dev_dbg(dev,
- 			 "Requested out of range phase tap %d for %d degrees of phase compensation at %luHz, clamping to tap %d\n",
- 			 tap, phase_deg, rate_hz, ASPEED_SDHCI_NR_TAPS);
- 		tap = ASPEED_SDHCI_NR_TAPS;
+ 	switch (boot_cpu_data.x86) {
+ 	case 0x06:
+-		if (boot_cpu_data.x86_model == 0x0f || boot_cpu_data.x86_model == 0x19) {
++		if ((boot_cpu_data.x86_model == 0x0f && boot_cpu_data.x86_stepping >= 0x0e) ||
++			boot_cpu_data.x86_model == 0x19) {
+ 
+ 			x86_pmu.max_period = x86_pmu.cntval_mask >> 1;
+ 
 -- 
-2.30.2
+2.17.1
 
