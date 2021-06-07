@@ -2,276 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F2539D65D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3CDC39D661
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230209AbhFGHyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 03:54:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhFGHya (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 03:54:30 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F5EC061766
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 00:52:39 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id e2so20933588ljk.4
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 00:52:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=VnwLRNd5kR0LUPEcbUD7x6J+EfFd1ZumEapw+492kUI=;
-        b=M6YHQmqDQrHfqJsSaBCfrOSFeYuAx/4Wuvxqxfz55b1SM2edz/SvDqQXdLIzSnXa//
-         Pmy+lXBSk4AVN0Ua2/qwhB/5yWuvGtiQdGZnG1ZrTghgDXGH8W/pC6UPS+ZnP5yu4ocG
-         ZLj3bhWthn4w9J7LzPEyEuqZzaVSXUb9NrSsVMcW7s4i++gu2GoyImrsXh/lJFkNj+k8
-         lvLBTozTgdtSUrDcQQ+xF7yxIBLY4noTaY5vHWPsjSuOfDo2UIvVYpJEhUILYE5YpNzC
-         aCwzGGPoRoyyWSFmzpxalQLHJAFZLr/mag5V6p8Sn90DdYx6D24J3AWODazxugWCsemb
-         e4vA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=VnwLRNd5kR0LUPEcbUD7x6J+EfFd1ZumEapw+492kUI=;
-        b=B/wj+AHk0WIUDt2I+X29oRLyFb1EfLeivafSghZLNInx1FPw7UoDw6jWfDdWche+fR
-         Cdbxe2InI0RBlCZGkoh3d9LVTUKQHNILrmIWG1jT6tr64DXMpBxWw/9fw+l0FygGZnHG
-         jfm4CMfvvWbaivbdvC2tSAD3/eMFPWgQmmg60oKaeO5oq4MGm3Q0D+YbeXb9uQspSIRQ
-         /eMoEfCbQHCATU8ob9I/kbllUUmlC60Gox+yC7y7SUZ/Yc5EP0uge9b4JGGxg54LVne4
-         fIdnC/Qsy+4YCUuwk0KjjUidhhbNPTZGoe4Z51EMndo1BdDO7lBQfCZI6evirmRcuZpM
-         NwFw==
-X-Gm-Message-State: AOAM530fD2Glm1zYsIxf+ijE/4TwYUi0Jcut/0aBqR+aN7Jmo79lvZ/7
-        LmmgIs5zVnx8CMnUTiBEsRU=
-X-Google-Smtp-Source: ABdhPJz+lZIAtnEawBFkr/CaeDTWVqXJP2b4seJMifEs5d4X8i1rjyEr38elPNLJqEl0HLg7HjyMPQ==
-X-Received: by 2002:a05:651c:1138:: with SMTP id e24mr13811331ljo.403.1623052357820;
-        Mon, 07 Jun 2021 00:52:37 -0700 (PDT)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id e9sm896925lfc.144.2021.06.07.00.52.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 00:52:37 -0700 (PDT)
-Date:   Mon, 7 Jun 2021 10:52:34 +0300
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     Werner Sembach <wse@tuxedocomputers.com>
-Cc:     harry.wentland@amd.com, sunpeng.li@amd.com,
-        alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org
-Subject: Re: [PATCH 2/4] drm/uAPI: Add "active bpc" as feedback channel for
- "max bpc" drm property
-Message-ID: <20210607105234.4bb8aae6@eldfell>
-In-Reply-To: <20210604171723.10276-3-wse@tuxedocomputers.com>
-References: <20210604171723.10276-1-wse@tuxedocomputers.com>
-        <20210604171723.10276-3-wse@tuxedocomputers.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S230215AbhFGHza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 03:55:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55092 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229436AbhFGHz2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 03:55:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 678746120F;
+        Mon,  7 Jun 2021 07:53:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623052417;
+        bh=bZf1oPujuHjZMOhIewYXXJEcGVTtrINZZrYSSOjle5w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NNznX+gSK1ubk2X3/IRC/NKUHBNtUpj3pIv/4c2uJBBiJUtAV/KhZcOXzgKlTc197
+         JoaqNhfMIWWrKQn+ytYhGSXvaYtI570te4Vf2QyUsmIwnEioZqlYZoWTtD3s/olZ1r
+         zXU5lkoWfLDBysgxbwtN+RMG+JJ6rSHG187xSFhIHkUpAhqI91/h8j7NLXHV+zL4Ya
+         kzZSX1foXTx99yEqWn2UEdMCZtAFdYIHFVjM5lYuzSOaV0RKUi40RbmSeLfz2PBK7X
+         uWdUT9XRikixdbajY+xQgkc2hyki1enBqAao5zY2bxSkhf1xV+/LbpZIJLfCEA4My/
+         KUsm9jil4LFGg==
+Received: by mail-lj1-f182.google.com with SMTP id d2so16745867ljj.11;
+        Mon, 07 Jun 2021 00:53:37 -0700 (PDT)
+X-Gm-Message-State: AOAM531rfeZGcq1+kM3rTS3rfR4v1pQcp+FkSr78r5f2nc3rP68Z5sD3
+        oo5ksIIUIQJbSowZ8hfeK7+gE0YSgenWzg9cllk=
+X-Google-Smtp-Source: ABdhPJwH/bIcZcv9bYZevLpASI9avmmDzuyYLA4C+R6RK/v/ZYHyxwKOcgETDO+RRKacBwp8wDxom+B3t+B9y1ptv1M=
+X-Received: by 2002:a2e:3506:: with SMTP id z6mr14531480ljz.238.1623052415598;
+ Mon, 07 Jun 2021 00:53:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/Pr+2/0V=PQE=VGC=tSRkY=f"; protocol="application/pgp-signature"
+References: <1622970249-50770-1-git-send-email-guoren@kernel.org>
+ <1622970249-50770-13-git-send-email-guoren@kernel.org> <2490489.OUOj5N01qN@jernej-laptop>
+ <CAJF2gTTDVy89R-gvWUS0sgpX=B14LnH5rDoGP7pv1=OSyJq28Q@mail.gmail.com> <20210607072709.ul4jdvtyspj6t4c6@gilmour>
+In-Reply-To: <20210607072709.ul4jdvtyspj6t4c6@gilmour>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Mon, 7 Jun 2021 15:53:23 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTS9+JYBg2dPEwQccNGku4_z_tv0qwgWQiFN8dQcQ=WweQ@mail.gmail.com>
+Message-ID: <CAJF2gTS9+JYBg2dPEwQccNGku4_z_tv0qwgWQiFN8dQcQ=WweQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 09/11] riscv: soc: Initial DTS for Allwinner D1
+ NeZha board
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     =?UTF-8?Q?Jernej_=C5=A0krabec?= <jernej.skrabec@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
+        Drew Fustini <drew@beagleboard.org>, liush@allwinnertech.com,
+        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
+        wefu@redhat.com, linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Pr+2/0V=PQE=VGC=tSRkY=f
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Thx for the clarification.
 
-On Fri,  4 Jun 2021 19:17:21 +0200
-Werner Sembach <wse@tuxedocomputers.com> wrote:
+On Mon, Jun 7, 2021 at 3:27 PM Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> On Mon, Jun 07, 2021 at 11:44:03AM +0800, Guo Ren wrote:
+> > On Mon, Jun 7, 2021 at 12:26 AM Jernej =C5=A0krabec <jernej.skrabec@gma=
+il.com> wrote:
+> > >
+> > > Hi!
+> > >
+> > > I didn't go through all details. After you fix all comments below, yo=
+u should
+> > > run "make dtbs_check" and fix all reported warnings too.
+> > >
+> > > Dne nedelja, 06. junij 2021 ob 11:04:07 CEST je guoren@kernel.org nap=
+isal(a):
+> > > > From: Guo Ren <guoren@linux.alibaba.com>
+> > > >
+> > > > Add initial DTS for Allwinner D1 NeZha board having only essential
+> > > > devices (uart, dummy, clock, reset, clint, plic, etc).
+> > > >
+> > > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > > > Co-Developed-by: Liu Shaohua <liush@allwinnertech.com>
+> > > > Signed-off-by: Liu Shaohua <liush@allwinnertech.com>
+> > > > Cc: Anup Patel <anup.patel@wdc.com>
+> > > > Cc: Atish Patra <atish.patra@wdc.com>
+> > > > Cc: Christoph Hellwig <hch@lst.de>
+> > > > Cc: Chen-Yu Tsai <wens@csie.org>
+> > > > Cc: Drew Fustini <drew@beagleboard.org>
+> > > > Cc: Maxime Ripard <maxime@cerno.tech>
+> > > > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+> > > > Cc: Wei Fu <wefu@redhat.com>
+> > > > Cc: Wei Wu <lazyparser@gmail.com>
+> > > > ---
+> > > >  arch/riscv/boot/dts/Makefile                       |  1 +
+> > > >  arch/riscv/boot/dts/allwinner/Makefile             |  2 +
+> > > >  .../boot/dts/allwinner/allwinner-d1-nezha-kit.dts  | 29 ++++++++
+> > > >  arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi    | 84
+> > > > ++++++++++++++++++++++ 4 files changed, 116 insertions(+)
+> > > >  create mode 100644 arch/riscv/boot/dts/allwinner/Makefile
+> > > >  create mode 100644 arch/riscv/boot/dts/allwinner/allwinner-d1-nezh=
+a-kit.dts
+> > > > create mode 100644 arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi
+> > > >
+> > > > diff --git a/arch/riscv/boot/dts/Makefile b/arch/riscv/boot/dts/Mak=
+efile
+> > > > index fe996b8..3e7b264 100644
+> > > > --- a/arch/riscv/boot/dts/Makefile
+> > > > +++ b/arch/riscv/boot/dts/Makefile
+> > > > @@ -2,5 +2,6 @@
+> > > >  subdir-y +=3D sifive
+> > > >  subdir-$(CONFIG_SOC_CANAAN_K210_DTB_BUILTIN) +=3D canaan
+> > > >  subdir-y +=3D microchip
+> > > > +subdir-y +=3D allwinner
+> > > >
+> > > >  obj-$(CONFIG_BUILTIN_DTB) :=3D $(addsuffix /, $(subdir-y))
+> > > > diff --git a/arch/riscv/boot/dts/allwinner/Makefile
+> > > > b/arch/riscv/boot/dts/allwinner/Makefile new file mode 100644
+> > > > index 00000000..4adbf4b
+> > > > --- /dev/null
+> > > > +++ b/arch/riscv/boot/dts/allwinner/Makefile
+> > > > @@ -0,0 +1,2 @@
+> > > > +# SPDX-License-Identifier: GPL-2.0
+> > > > +dtb-$(CONFIG_SOC_SUNXI) +=3D allwinner-d1-nezha-kit.dtb
+> > > > diff --git a/arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-kit.d=
+ts
+> > > > b/arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-kit.dts new file=
+ mode
+> > > > 100644
+> > > > index 00000000..cd9f7c9
+> > > > --- /dev/null
+> > > > +++ b/arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-kit.dts
+> > >
+> > > Board DT names are comprised of soc name and board name, in this case=
+ it would
+> > > be "sun20i-d1-nezha-kit.dts"
+> > >
+> > > > @@ -0,0 +1,29 @@
+> > > > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> > >
+> > > Usually copyrights are added below spdx id.
+> > >
+> > > > +
+> > > > +/dts-v1/;
+> > > > +
+> > > > +#include "allwinner-d1.dtsi"
+> > > > +
+> > > > +/ {
+> > > > +     #address-cells =3D <2>;
+> > > > +     #size-cells =3D <2>;
+> > >
+> > > This should be part of SoC level DTSI.
+> > >
+> > > > +     model =3D "Allwinner D1 NeZha Kit";
+> > > > +     compatible =3D "allwinner,d1-nezha-kit";
+> > >
+> > > Board specific compatible string should be followed with SoC compatib=
+le, in
+> > > this case "allwinner,sun20i-d1".  You should document it too.
+> > >
+> > > > +
+> > > > +     chosen {
+> > > > +             bootargs =3D "console=3DttyS0,115200";
+> > >
+> > > Above line doesn't belong here. If anything, it should be added dynam=
+ically by
+> > > bootloader.
+> >
+> > After discussion, we still want to keep a default value here.
+> > Sometimes we could boot with jtag and parse dtb is hard for gdbinit
+> > script.
+> >
+> > >
+> > > > +             stdout-path =3D &serial0;
+> > > > +     };
+> > > > +
+> > > > +     memory@40000000 {
+> > > > +             device_type =3D "memory";
+> > > > +             reg =3D <0x0 0x40000000 0x0 0x20000000>;
+> > > > +     };
+> > >
+> > > Ditto for whole memory node.
+> >
+> > Ditto
+>
+> The thing is that there's never a good value for a default. Let's take
+> the memory node here: what would be a good default? If we want to make
+> it work everywhere it's going to be the lowest amount of memory
+> available on the D1 boards. It's going to be hard to maintain and very
+> likely to be overlooked, resulting in broken boards anyway.
+>
+> If someone is savvy enough to use JTAG, it's not really difficult to
+> modify the DT for their board when they need it.
+okay, I see. I'll follow the rule in the next version of the patchset.
 
-> Add a new general drm property "active bpc" which can be used by graphic =
-drivers
-> to report the applied bit depth per pixel back to userspace.
->=20
-> While "max bpc" can be used to change the color depth, there was no way t=
-o check
-> which one actually got used. While in theory the driver chooses the best/=
-highest
-> color depth within the max bpc setting a user might not be fully aware wh=
-at his
-> hardware is or isn't capable off. This is meant as a quick way to double =
-check
-> the setup.
->=20
-> In the future, automatic color calibration for screens might also depend =
-on this
-> information available.
->=20
-> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-> ---
->  drivers/gpu/drm/drm_atomic_uapi.c |  2 ++
->  drivers/gpu/drm/drm_connector.c   | 40 +++++++++++++++++++++++++++++++
->  include/drm/drm_connector.h       | 15 ++++++++++++
->  3 files changed, 57 insertions(+)
->=20
-> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atom=
-ic_uapi.c
-> index 268bb69c2e2f..7ae4e40936b5 100644
-> --- a/drivers/gpu/drm/drm_atomic_uapi.c
-> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
-> @@ -873,6 +873,8 @@ drm_atomic_connector_get_property(struct drm_connecto=
-r *connector,
->  		*val =3D 0;
->  	} else if (property =3D=3D connector->max_bpc_property) {
->  		*val =3D state->max_requested_bpc;
-> +	} else if (property =3D=3D connector->active_bpc_property) {
-> +		*val =3D state->active_bpc;
->  	} else if (connector->funcs->atomic_get_property) {
->  		return connector->funcs->atomic_get_property(connector,
->  				state, property, val);
-> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connec=
-tor.c
-> index 7631f76e7f34..5f42a5be5822 100644
-> --- a/drivers/gpu/drm/drm_connector.c
-> +++ b/drivers/gpu/drm/drm_connector.c
-> @@ -1195,6 +1195,13 @@ static const struct drm_prop_enum_list dp_colorspa=
-ces[] =3D {
->   *	drm_connector_attach_max_bpc_property() to create and attach the
->   *	property to the connector during initialization.
->   *
-> + * active bpc:
-> + *	This read-only range property is used by userspace check the bit depth
-> + *	actually applied by the GPU driver after evaluation all hardware
-> + *	capabilities and max bpc. Drivers to use the function
-> + *	drm_connector_attach_active_bpc_property() to create and attach the
-> + *	property to the connector during initialization.
-> + *
-
-Hi Werner,
-
-the idea looks good to me, but the above doc could be a little more
-fluent. May I suggest something like:
-
-	This read-only range property tells userspace the pixel color
-	bit depth actually used by the hardware display engine on "the
-	cable" on a connector. The chosen value depends on hardware
-	capabilities, both display engine and connected monitor, and
-	the "max bpc" property. Drivers shall use
-	drm_connector_attach_active_bpc_property() to install this
-	property.
-
-There should also be something said about dithering done by the display
-engine (not monitor), but I'm not sure how that should be worded. It
-may also depend on if and how userspace can know about dithering. So if
-a dithering related property is added later, maybe add a note here too
-in that patch.
-
-
-Thanks,
-pq
-
-
->   * Connectors also have one standardized atomic property:
->   *
->   * CRTC_ID:
-> @@ -2150,6 +2157,39 @@ int drm_connector_attach_max_bpc_property(struct d=
-rm_connector *connector,
->  }
->  EXPORT_SYMBOL(drm_connector_attach_max_bpc_property);
-> =20
-> +/**
-> + * drm_connector_attach_active_bpc_property - attach "active bpc" proper=
-ty
-> + * @connector: connector to attach active bpc property on.
-> + * @min: The minimum bit depth supported by the connector.
-> + * @max: The maximum bit depth supported by the connector.
-> + *
-> + * This is used to check the applied bit depth on a connector.
-> + *
-> + * Returns:
-> + * Zero on success, negative errno on failure.
-> + */
-> +int drm_connector_attach_active_bpc_property(struct drm_connector *conne=
-ctor,
-> +					  int min, int max)
-> +{
-> +	struct drm_device *dev =3D connector->dev;
-> +	struct drm_property *prop;
-> +
-> +	prop =3D connector->active_bpc_property;
-> +	if (!prop) {
-> +		prop =3D drm_property_create_range(dev, 0, "active bpc", min, max);
-> +		if (!prop)
-> +			return -ENOMEM;
-> +
-> +		connector->active_bpc_property =3D prop;
-> +	}
-> +
-> +	drm_object_attach_property(&connector->base, prop, 0);
-> +	connector->state->active_bpc =3D 0;
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(drm_connector_attach_active_bpc_property);
-> +
->  /**
->   * drm_connector_set_vrr_capable_property - sets the variable refresh ra=
-te
->   * capable property for a connector
-> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
-> index 1922b278ffad..c58cba2b6afe 100644
-> --- a/include/drm/drm_connector.h
-> +++ b/include/drm/drm_connector.h
-> @@ -781,6 +781,13 @@ struct drm_connector_state {
->  	 */
->  	u8 max_bpc;
-> =20
-> +	/**
-> +	 * @active_bpc: Read only property set by the GPU driver to the actually
-> +	 * applied bit depth of the pixels after evaluating all hardware
-> +	 * limitations.
-> +	 */
-> +	u8 active_bpc;
-> +
->  	/**
->  	 * @hdr_output_metadata:
->  	 * DRM blob property for HDR output metadata
-> @@ -1380,6 +1387,12 @@ struct drm_connector {
->  	 */
->  	struct drm_property *max_bpc_property;
-> =20
-> +	/**
-> +	 * @active_bpc_property: Default connector property for the active bpc
-> +	 * to be driven out of the connector.
-> +	 */
-> +	struct drm_property *active_bpc_property;
-> +
->  #define DRM_CONNECTOR_POLL_HPD (1 << 0)
->  #define DRM_CONNECTOR_POLL_CONNECT (1 << 1)
->  #define DRM_CONNECTOR_POLL_DISCONNECT (1 << 2)
-> @@ -1698,6 +1711,8 @@ int drm_connector_set_panel_orientation_with_quirk(
->  	int width, int height);
->  int drm_connector_attach_max_bpc_property(struct drm_connector *connecto=
-r,
->  					  int min, int max);
-> +int drm_connector_attach_active_bpc_property(struct drm_connector *conne=
-ctor,
-> +					  int min, int max);
-> =20
->  /**
->   * struct drm_tile_group - Tile group metadata
+>
+> Maxime
 
 
---Sig_/Pr+2/0V=PQE=VGC=tSRkY=f
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
+--=20
+Best Regards
+ Guo Ren
 
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmC90EIACgkQI1/ltBGq
-qqdGCQ//cRerWSb24BlhxlzYGB8NQvHZrLXOSiGRs2viHwBP913JnXJGRViEDx5x
-clhIXqdHwsmh+ezmYxHhAgi6lrgNhCr+9MBkLqhX5YbHmXdwSzQBWezRibzXjbYW
-KeTvPx0z8Nvh3ViRHcb/dd4LcXflp7Ii9ksSW2avNktSJR7EZu6o+krZxTuOgKmx
-nOWXVqxEwTcLDxp/ubDbEEOTvaaYyQVpGa3wSuyOVuW4ea4i/cm9Ax+N2f0/aHCH
-Bj0F9S2qYNgGTDpGSm3myipPx2Lqd/teEqiEXH+Gxr6+vI8V+cfZz/xjoe0Ko84b
-2BEuD3t22bDLSlC6C214virxbxV7R5fWRD72XfyDmDJrILVBWV2b2ftG9pKbS4GE
-hJSbYs8eRS44o7RplbFYrJMVRf7DK3k/l8H9kpasLG36GxRMvaVtSCgrZLUBnCEb
-gMKcqvf824YjA7FWFEAASHr0lDbroSxGuzxU8Ts2wYLyuK6PCvXv9TDwc3tcMB94
-zhB3rToba+3Rmw+/lSLwp85EyHvtRTV/OrJMAZASLRVJs/mMsYCWupW1783Ueh4L
-tvRnZ/MBz48DoZpYo3bOLySG4Nb7jhGgjmYI6I9huWXHUuBcknGf4oFn7cwPXFR2
-3IOghkwAL3prSMIz80cfPeLBg7ahq2zA6C8KGj1xLU8IOST/knU=
-=6CeT
------END PGP SIGNATURE-----
-
---Sig_/Pr+2/0V=PQE=VGC=tSRkY=f--
+ML: https://lore.kernel.org/linux-csky/
