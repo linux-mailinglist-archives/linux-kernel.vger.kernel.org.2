@@ -2,105 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 154F239E69D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B14039E6A0
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230517AbhFGS1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 14:27:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230365AbhFGS1m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 14:27:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5D6C061766
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 11:25:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=8uaV7xI/+irpdecqa7C0H89FvUwfwt/YmJnM9tKmEOc=; b=hyjsdw95BYy4GQny/6wGgb4lq4
-        7/+mEmtVgX1PyuHCy4nUDU+R4FNsEJQuPrMI9XRPYiDSt/k04mkM4IfReWZnk1xue5I5xfFnD1UDc
-        zRE49wEEI9pkS5V63sxyzsOBR3duu/wgwvVfomb79pz8oHlmf0GXs7VDzMEwvZC0QlNIcAC7kAHKU
-        ouhV4dQMMeLadiuTPv2w5pKWt10I4UZ/kOu2GVcSpEelJNkYOi/XxRkVbAXTsQLv1pJXhyTmw2WoB
-        it/mxTT0GKlU/+pS09jhQnPtx6sakRa2i/NK3sjJohgTkEDKpKawWQw9zM9R1mrmSDP2SFHXw6dqR
-        8CPwpjKg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lqJvw-00G7Ec-Ig; Mon, 07 Jun 2021 18:25:11 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B4766300258;
-        Mon,  7 Jun 2021 20:25:07 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9BA942DC8FF14; Mon,  7 Jun 2021 20:25:07 +0200 (CEST)
-Date:   Mon, 7 Jun 2021 20:25:07 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, lma@semihalf.com,
-        Guenter Roeck <groeck@google.com>,
-        Juergen Gross <jgross@suse.com>, lb@semihalf.com,
-        LKML <linux-kernel@vger.kernel.org>, mbenes@suse.com,
-        =?utf-8?B?UmFkb3PFgmF3?= Biernacki <rad@semihalf.com>,
-        upstream@semihalf.com,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>
-Subject: Re: [PATCH v3 16/16] objtool,x86: Rewrite retpoline thunk calls
-Message-ID: <YL5kgx53yQeoJua3@hirez.programming.kicks-ass.net>
-References: <CAFJ_xbq06nfaEWtVNLtg7XCJrQeQ9wCs4Zsoi5Y_HP3Dx0iTRA@mail.gmail.com>
- <20210604205018.2238778-1-ndesaulniers@google.com>
- <CAKwvOdmhg2tj8cKe-XitoZXGKaoOhgTsCEdVXubt+LiY9+46rw@mail.gmail.com>
- <20210604235046.w3hazgcpsg4oefex@google.com>
- <YLtUO/thYUp2wU7k@hirez.programming.kicks-ass.net>
- <CAFP8O3+ggR8N-ffsaYSMPX7s2XgrzzTQQjOgCwUe9smyos-waA@mail.gmail.com>
- <YL3RQCJGIw9835Y1@hirez.programming.kicks-ass.net>
- <YL3lQ5QdNV2qwLR/@hirez.programming.kicks-ass.net>
- <YL3q1qFO9QIRL/BA@hirez.programming.kicks-ass.net>
- <20210607172311.ynnrzihgz74vdyjq@google.com>
+        id S230525AbhFGS2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 14:28:03 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:45502 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230314AbhFGS2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 14:28:01 -0400
+Received: from zn.tnic (p200300ec2f0b4f0088b5a9d37dea41e8.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:4f00:88b5:a9d3:7dea:41e8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 539F91EC046E;
+        Mon,  7 Jun 2021 20:26:09 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1623090369;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=azms+Yk2ZETfvoS+P+DUK8+0jUupud5mBLYULKl7iGc=;
+        b=ULD7Pl98JEvCjX/K6tcniNLBpm0mLFd3n7JWgE2IusVZtD2+V7E5sJwZHITYhvOGUHiHkJ
+        FbpTUC8IA+uwaEVRWO/8/JAQsiVe5nZtw/d9b0ZWtjuUZIs96sFHeqPO1yqLAMo1pX0Tzr
+        Db/8A7k5ZSK+WVeJbj09AXEHHeZaIf8=
+Date:   Mon, 7 Jun 2021 20:26:04 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [RFC v2-fix-v2 1/1] x86: Introduce generic protected guest
+ abstraction
+Message-ID: <YL5kvLvCpG37zWc/@zn.tnic>
+References: <20210527042356.3983284-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210601211417.2177598-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YLkcIuL2qvo0hviU@zn.tnic>
+ <82f9e5a9-682a-70be-e5ea-938bb742265f@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210607172311.ynnrzihgz74vdyjq@google.com>
+In-Reply-To: <82f9e5a9-682a-70be-e5ea-938bb742265f@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 10:23:11AM -0700, Fāng-ruì Sòng wrote:
-> On 2021-06-07, Peter Zijlstra wrote:
+On Mon, Jun 07, 2021 at 11:01:05AM -0700, Kuppuswamy, Sathyanarayanan wrote:
+> Why move this header outside CONFIG_INTEL_TDX_GUEST or
+> CONFIG_AMD_MEM_ENCRYPT ifdef?
 
-> > That does indeed seem to do the trick. Bit daft if you ask me, anybody
-> > reading that file ought to have a handy bucket of 0s available, but
-> > whatever.
-> 
-> Does the representation use the section index directly? (sym->sym.st_shndx)
-> This can be fragile when the number of sections changes..., e.g. elf_add_section
+Because asm headers are usually included at the beginning of another,
+possibly generic header. Unless you have a specially particular
+reason to put them in additional guarding ifdeffery. Have a look at
+include/linux/.
 
-No, things are supposed to use sym->sec, which is a pointer to our
-struct section representation.
+> This header only exists in x86 arch code. So it is better to protect
+> it with x86 specific header file.
 
-> So in llvm-objcopy's representation, the section index is represented as
-> the section object.
-> 
-> struct Symbol {
->   ...
->   SectionBase *DefinedIn = nullptr;
->   ...
-> };
+That doesn't sound like a special reason to me. And compilers are
+usually very able at discarding unused symbols so I don't see a problem
+with keeping all includes at the top, like it is usually done.
 
-Somewhat like that.
+-- 
+Regards/Gruss,
+    Boris.
 
-> In the writer stage, sections are assigned 32-bit indexes and the writer
-> knows that an SHN_XINDEX for a symbol is needed if the index is >= 0xff00.
-
-I think we only ever append sections, so pre-existing section numbers
-stay correct. If libelf somehow does something else, we rely on it to
-then keep the section numbers internally consistent.
-
-And the only symbol write is this append of undef symbols, which are
-always on section 0.
+https://people.kernel.org/tglx/notes-about-netiquette
