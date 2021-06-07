@@ -2,78 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8377339D4E5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADCEA39D4DC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230262AbhFGGYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 02:24:45 -0400
-Received: from m12-12.163.com ([220.181.12.12]:45456 "EHLO m12-12.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230127AbhFGGYp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 02:24:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Qrrb1
-        rsPUF0AKmUKmPEmEGlMM3yy0iINcnL1U/Z5Su8=; b=YkFT7L1vlLQo7lyv7Q5PV
-        vUvYoBQSqgLpJXxbeXKipbZnAdhXOv2XS+jHqsM0FeT2QUBLBjcK3AqCIJdxKQn5
-        b76xzq5bbKu0+YS7qDQZDDBA+pC6oz0xVdG/0wVRzfZ1z0o/D2C4AKkI2cOxdK5z
-        WsYsEguPpJoiUqW/n7OOd0=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp8 (Coremail) with SMTP id DMCowABHT6P9ur1gmagdIg--.2995S2;
-        Mon, 07 Jun 2021 14:21:51 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     viro@zeniv.linux.org.uk, bcrl@kvack.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
-        linux-kernel@vger.kernel.org, lijian <lijian@yulong.com>
-Subject: [PATCH] fs: aio: Fix a typo
-Date:   Mon,  7 Jun 2021 14:20:49 +0800
-Message-Id: <20210607062049.189901-1-lijian_8010a29@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S230139AbhFGGXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 02:23:19 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:35084 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhFGGXQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 02:23:16 -0400
+Received: from relay2.suse.de (unknown [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id CF53621A6E;
+        Mon,  7 Jun 2021 06:21:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1623046884; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6eZHG0uIgBTA1Ifaghvq/R+L0/1vhjozGE9giw8fveQ=;
+        b=sOpfnymbGTdyrX5yUXr03S7Bo8EWyPaspDGDblDSvIETp4aFNcVpoOZhbJqg6GlgzDTZZF
+        rJxp1+2as822+wGiZjsww2wiy8d1GTsUDTp58+j32e1NYRrF5TCxA+YZAHxqIJ4TESuAUS
+        DITfi7PDJlDZUwlaPK+1KGrHIsJY4ww=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 82248A3B81;
+        Mon,  7 Jun 2021 06:21:24 +0000 (UTC)
+Date:   Mon, 7 Jun 2021 08:21:24 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     ziy@nvidia.com, nao.horiguchi@gmail.com,
+        kirill.shutemov@linux.intel.com, hughd@google.com,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: mempolicy: don't have to split pmd for huge zero page
+Message-ID: <YL265A86DQe5Rgon@dhcp22.suse.cz>
+References: <20210604203513.240709-1-shy828301@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DMCowABHT6P9ur1gmagdIg--.2995S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWruryrKrW8Jr13Xw43KF47twb_yoW8JF1UpF
-        4qk3WFkFWrCr12v3Wftryj9FySk39Y9FsFqaykAw1DArs5Xr1ruF4UtayDWFykWryxAFW3
-        Za9Fqas8tw1kZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jl38nUUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbiSh+qUFPAOmbpDQAAsE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604203513.240709-1-shy828301@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
+On Fri 04-06-21 13:35:13, Yang Shi wrote:
+> When trying to migrate pages to obey mempolicy, the huge zero page is
+> split then the page table walk at PTE level just skips zero page.  So it
+> seems pointless to split huge zero page, it could be just skipped like
+> base zero page.
 
-Change 'submited' to 'submitted', and
-change 'peformance' to 'performance'.
+My THP knowledge is not the best but this is incorrect AIACS. Huge zero
+page is not split. We do split the pmd which is mapping the said page. I
+suspect you refer to vm_normal_page when talking about a zero page but
+please be aware that huge zero page is not a normal zero page. It is
+allocated dynamically (see get_huge_zero_page).
 
-Signed-off-by: lijian <lijian@yulong.com>
----
- fs/aio.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+So in the end you patch disables mbind of zero pages to a target node
+and that is a regression.
 
-diff --git a/fs/aio.c b/fs/aio.c
-index e499cbcef117..2ddcabcaa370 100644
---- a/fs/aio.c
-+++ b/fs/aio.c
-@@ -850,7 +850,7 @@ static int kill_ioctx(struct mm_struct *mm, struct kioctx *ctx,
- 
- /*
-  * exit_aio: called when the last user of mm goes away.  At this point, there is
-- * no way for any new requests to be submited or any of the io_* syscalls to be
-+ * no way for any new requests to be submitted or any of the io_* syscalls to be
-  * called on the context.
-  *
-  * There may be outstanding kiocbs, but free_ioctx() will explicitly wait on
-@@ -1181,7 +1181,7 @@ static long aio_read_events_ring(struct kioctx *ctx,
- 	 * The mutex can block and wake us up and that will cause
- 	 * wait_event_interruptible_hrtimeout() to schedule without sleeping
- 	 * and repeat. This should be rare enough that it doesn't cause
--	 * peformance issues. See the comment in read_events() for more detail.
-+	 * performance issues. See the comment in read_events() for more detail.
- 	 */
- 	sched_annotate_sleep();
- 	mutex_lock(&ctx->ring_lock);
+Have you tested the patch?
+
+> Set ACTION_CONTINUE to prevent the walk_page_range() split the pmd for
+> this case.
+
+Btw. this changelog is missing a problem statement. I suspect there is
+no actual problem that it should fix and it is likely driven by reading
+the code. Right?
+
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
+> ---
+>  mm/mempolicy.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index b5f4f584009b..205c1a768775 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -436,7 +436,8 @@ static inline bool queue_pages_required(struct page *page,
+>  
+>  /*
+>   * queue_pages_pmd() has four possible return values:
+> - * 0 - pages are placed on the right node or queued successfully.
+> + * 0 - pages are placed on the right node or queued successfully, or
+> + *     special page is met, i.e. huge zero page.
+>   * 1 - there is unmovable page, and MPOL_MF_MOVE* & MPOL_MF_STRICT were
+>   *     specified.
+>   * 2 - THP was split.
+> @@ -460,8 +461,7 @@ static int queue_pages_pmd(pmd_t *pmd, spinlock_t *ptl, unsigned long addr,
+>  	page = pmd_page(*pmd);
+>  	if (is_huge_zero_page(page)) {
+>  		spin_unlock(ptl);
+> -		__split_huge_pmd(walk->vma, pmd, addr, false, NULL);
+> -		ret = 2;
+> +		walk->action = ACTION_CONTINUE;
+>  		goto out;
+>  	}
+>  	if (!queue_pages_required(page, qp))
+> @@ -488,7 +488,8 @@ static int queue_pages_pmd(pmd_t *pmd, spinlock_t *ptl, unsigned long addr,
+>   * and move them to the pagelist if they do.
+>   *
+>   * queue_pages_pte_range() has three possible return values:
+> - * 0 - pages are placed on the right node or queued successfully.
+> + * 0 - pages are placed on the right node or queued successfully, or
+> + *     special page is met, i.e. zero page.
+>   * 1 - there is unmovable page, and MPOL_MF_MOVE* & MPOL_MF_STRICT were
+>   *     specified.
+>   * -EIO - only MPOL_MF_STRICT was specified and an existing page was already
+> -- 
+> 2.26.2
+
 -- 
-2.25.1
-
-
+Michal Hocko
+SUSE Labs
