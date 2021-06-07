@@ -2,153 +2,363 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A185539DDFF
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CCD239DE03
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230269AbhFGNr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 09:47:58 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:46992 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230177AbhFGNr4 (ORCPT
+        id S230314AbhFGNs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 09:48:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230177AbhFGNs0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 09:47:56 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R571e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jnwang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UbemA7z_1623073562;
-Received: from B-VE2WML7H-1820.local(mailfrom:jnwang@linux.alibaba.com fp:SMTPD_---0UbemA7z_1623073562)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 07 Jun 2021 21:46:03 +0800
-Subject: Re: [PATCH] tracing: Correct the length check which causes memory
- corruption
-To:     Liangyan <liangyan.peng@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Xunlei Pang <xlpang@linux.alibaba.com>, yinbinbin@alibabacloud.com,
-        wetp <wetp.zy@linux.alibaba.com>, stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <20210607125734.1770447-1-liangyan.peng@linux.alibaba.com>
-From:   James Wang <jnwang@linux.alibaba.com>
-Message-ID: <71fa2e69-a60b-0795-5fef-31658f89591a@linux.alibaba.com>
-Date:   Mon, 7 Jun 2021 21:46:02 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        Mon, 7 Jun 2021 09:48:26 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE4BC061787
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 06:46:21 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id g204so10074779wmf.5
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 06:46:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qhQP/twr4QHiTiaT0FbKTQmnBGc43UZ8tEbQ/KGkrgc=;
+        b=LZTyNqzN2Q0dMX9fyO5XOuX+dzc2Y97EIzu8p1ZuxMvKj3kOaUTp8qahVTXRpRC/N2
+         W46mVhXu6QowxAtY6vEZcgQCY9W5trsB9ub8vYObbVUak3BBRyFI2V12ZGOwVix52NtM
+         oygRoiekCbez3DKzC6IKAInwGUcyPUrNgpp5XXVm5ICHLVopUhMqc5PcQ0GqaXisTved
+         gCYdXpDfAX0q/vXhpTGh8bo7uDTcCoHgXJsAAebYOkDqXvgA9Un3mu4sb4vmqQ/ONlOj
+         g3E/KZkT9sAY6ZN+vYqPBHLrru9gSzUgX5eVvHYYFlp/monzJR9aeiL02l/wHtT+jf0e
+         Aahw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qhQP/twr4QHiTiaT0FbKTQmnBGc43UZ8tEbQ/KGkrgc=;
+        b=esyg3MNAQZebzWPy0xwY9RBbTc/Y7yeadgOG9SddMiTc1XW1lbXEas7IetWQ2ZSrsD
+         pYyollpTK1io3eSALGiZptLMN9oCjb/YSkdaIh8Batxdi0kXcSjEJOiNwQBicwC67MpA
+         vLC0ASAnlc+VOx+pspqIV47JXmwBnlFE74rxmVkUqRFsxdRAVZgQeJEY69rqmTW34b3b
+         77FJ0YmS9erVY8wXG6onBjJwtD2jc+Fzyo+lW+4Pk8mpmunsiSW1M7+oSEODzHg0qW7K
+         612Z06ZAiiU1jCfeazwC0+ieOgeGBpiuXwxcugHd0oIeQASwhfAI2LZYwW06uIyeQ73L
+         UBUQ==
+X-Gm-Message-State: AOAM531Z+ZmHfGYF94G2N4IPlAAm9EWIffYRIoGI8MoH9MOHrU2ETkQc
+        nzVfywrmMLMtKn27YuuQhWg=
+X-Google-Smtp-Source: ABdhPJydJhge1kqWUV245pB7ZLalEYQEpRt33owopQg5/EAI9n+CAlHq/um/jxHid7kg6P+VrXXKJA==
+X-Received: by 2002:a1c:65c2:: with SMTP id z185mr17296092wmb.2.1623073579945;
+        Mon, 07 Jun 2021 06:46:19 -0700 (PDT)
+Received: from agape ([5.171.73.82])
+        by smtp.gmail.com with ESMTPSA id 89sm17452102wrq.14.2021.06.07.06.46.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 06:46:19 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     dan.carpenter@oracle.com, hdegoede@redhat.com,
+        Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH] staging: rtl8723bs: use list_for_each_safe in loops deleting iterated items
+Date:   Mon,  7 Jun 2021 15:46:18 +0200
+Message-Id: <20210607134618.11237-1-fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210607125734.1770447-1-liangyan.peng@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi list,
+Fix some beautified loops over linked lists.
+Use list_for_each_safe on loops which could delete
+objects in the list.
 
-The originally reproduce command could help you to verify quickly;
+Fixes: b3cd518c5abd ("staging: rtl8723bs: Use list iterators and helpers")
+Suggested-by: Guenter Roeck <linux@roeck-us.net>
+Tested-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+---
+ drivers/staging/rtl8723bs/core/rtw_ap.c        | 18 +++++++++---------
+ drivers/staging/rtl8723bs/core/rtw_mlme.c      |  4 ++--
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c  |  4 ++--
+ drivers/staging/rtl8723bs/core/rtw_sta_mgt.c   |  4 ++--
+ drivers/staging/rtl8723bs/core/rtw_xmit.c      | 18 +++++++++---------
+ drivers/staging/rtl8723bs/hal/rtl8723bs_xmit.c |  4 ++--
+ .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c  |  4 ++--
+ 7 files changed, 28 insertions(+), 28 deletions(-)
 
-#!/bin/bash
-stress-ng --all 2  --class filesystem -x 
-chattr,chdir,chmod,chown,symlink,sync-file,utime,verity,xattr --log-file 
-./stress.log
+diff --git a/drivers/staging/rtl8723bs/core/rtw_ap.c b/drivers/staging/rtl8723bs/core/rtw_ap.c
+index 98b1bec67999..23bbdf084631 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_ap.c
++++ b/drivers/staging/rtl8723bs/core/rtw_ap.c
+@@ -174,7 +174,7 @@ u8 chk_sta_is_alive(struct sta_info *psta)
+ 
+ void expire_timeout_chk(struct adapter *padapter)
+ {
+-	struct list_head	*phead, *plist;
++	struct list_head *phead, *plist, *tmp;
+ 	u8 updated = false;
+ 	struct sta_info *psta = NULL;
+ 	struct sta_priv *pstapriv = &padapter->stapriv;
+@@ -186,7 +186,7 @@ void expire_timeout_chk(struct adapter *padapter)
+ 
+ 	phead = &pstapriv->auth_list;
+ 	/* check auth_queue */
+-	list_for_each(plist, phead) {
++	list_for_each_safe(plist, tmp, phead) {
+ 		psta = list_entry(plist, struct sta_info, auth_list);
+ 
+ 		if (psta->expire_to > 0) {
+@@ -211,7 +211,7 @@ void expire_timeout_chk(struct adapter *padapter)
+ 
+ 	phead = &pstapriv->asoc_list;
+ 	/* check asoc_queue */
+-	list_for_each(plist, phead) {
++	list_for_each_safe(plist, tmp, phead) {
+ 		psta = list_entry(plist, struct sta_info, asoc_list);
+ 		if (chk_sta_is_alive(psta) || !psta->expire_to) {
+ 			psta->expire_to = pstapriv->expire_to;
+@@ -1243,7 +1243,7 @@ int rtw_acl_add_sta(struct adapter *padapter, u8 *addr)
+ 
+ void rtw_acl_remove_sta(struct adapter *padapter, u8 *addr)
+ {
+-	struct list_head	*plist, *phead;
++	struct list_head *plist, *phead, *tmp;
+ 	struct rtw_wlan_acl_node *paclnode;
+ 	struct sta_priv *pstapriv = &padapter->stapriv;
+ 	struct wlan_acl_pool *pacl_list = &pstapriv->acl_list;
+@@ -1253,7 +1253,7 @@ void rtw_acl_remove_sta(struct adapter *padapter, u8 *addr)
+ 	spin_lock_bh(&(pacl_node_q->lock));
+ 
+ 	phead = get_list_head(pacl_node_q);
+-	list_for_each(plist, phead) {
++	list_for_each_safe(plist, tmp, phead) {
+ 		paclnode = list_entry(plist, struct rtw_wlan_acl_node, list);
+ 
+ 		if (
+@@ -1940,7 +1940,7 @@ u8 ap_free_sta(
+ 
+ void rtw_sta_flush(struct adapter *padapter)
+ {
+-	struct list_head	*phead, *plist;
++	struct list_head *phead, *plist, *tmp;
+ 	struct sta_info *psta = NULL;
+ 	struct sta_priv *pstapriv = &padapter->stapriv;
+ 	struct mlme_ext_priv *pmlmeext = &padapter->mlmeextpriv;
+@@ -1953,7 +1953,7 @@ void rtw_sta_flush(struct adapter *padapter)
+ 	spin_lock_bh(&pstapriv->asoc_list_lock);
+ 	phead = &pstapriv->asoc_list;
+ 	/* free sta asoc_queue */
+-	list_for_each(plist, phead) {
++	list_for_each_safe(plist, tmp, phead) {
+ 		psta = list_entry(plist, struct sta_info, asoc_list);
+ 
+ 		list_del_init(&psta->asoc_list);
+@@ -2132,7 +2132,7 @@ void start_ap_mode(struct adapter *padapter)
+ 
+ void stop_ap_mode(struct adapter *padapter)
+ {
+-	struct list_head	*phead, *plist;
++	struct list_head *phead, *plist, *tmp;
+ 	struct rtw_wlan_acl_node *paclnode;
+ 	struct sta_info *psta = NULL;
+ 	struct sta_priv *pstapriv = &padapter->stapriv;
+@@ -2156,7 +2156,7 @@ void stop_ap_mode(struct adapter *padapter)
+ 	/* for ACL */
+ 	spin_lock_bh(&(pacl_node_q->lock));
+ 	phead = get_list_head(pacl_node_q);
+-	list_for_each(plist, phead) {
++	list_for_each_safe(plist, tmp, phead) {
+ 		paclnode = list_entry(plist, struct rtw_wlan_acl_node, list);
+ 
+ 		if (paclnode->valid) {
+diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme.c b/drivers/staging/rtl8723bs/core/rtw_mlme.c
+index 7bd9e3a4f345..158f92d4d882 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_mlme.c
++++ b/drivers/staging/rtl8723bs/core/rtw_mlme.c
+@@ -260,7 +260,7 @@ struct wlan_network *_rtw_find_network(struct __queue *scanned_queue, u8 *addr)
+ 
+ void rtw_free_network_queue(struct adapter *padapter, u8 isfreeall)
+ {
+-	struct list_head *phead, *plist;
++	struct list_head *phead, *plist, *tmp;
+ 	struct wlan_network *pnetwork;
+ 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+ 	struct __queue *scanned_queue = &pmlmepriv->scanned_queue;
+@@ -268,7 +268,7 @@ void rtw_free_network_queue(struct adapter *padapter, u8 isfreeall)
+ 	spin_lock_bh(&scanned_queue->lock);
+ 
+ 	phead = get_list_head(scanned_queue);
+-	list_for_each(plist, phead) {
++	list_for_each_safe(plist, tmp, phead) {
+ 
+ 		pnetwork = list_entry(plist, struct wlan_network, list);
+ 
+diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+index 2b95a49ab469..0f50c2576356 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
++++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+@@ -6058,7 +6058,7 @@ u8 h2c_msg_hdl(struct adapter *padapter, unsigned char *pbuf)
+ u8 chk_bmc_sleepq_hdl(struct adapter *padapter, unsigned char *pbuf)
+ {
+ 	struct sta_info *psta_bmc;
+-	struct list_head	*xmitframe_plist, *xmitframe_phead;
++	struct list_head *xmitframe_plist, *xmitframe_phead, *tmp;
+ 	struct xmit_frame *pxmitframe = NULL;
+ 	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
+ 	struct sta_priv  *pstapriv = &padapter->stapriv;
+@@ -6075,7 +6075,7 @@ u8 chk_bmc_sleepq_hdl(struct adapter *padapter, unsigned char *pbuf)
+ 		spin_lock_bh(&pxmitpriv->lock);
+ 
+ 		xmitframe_phead = get_list_head(&psta_bmc->sleep_q);
+-		list_for_each(xmitframe_plist, xmitframe_phead) {
++		list_for_each_safe(xmitframe_plist, tmp, xmitframe_phead) {
+ 			pxmitframe = list_entry(xmitframe_plist,
+ 						struct xmit_frame, list);
+ 
+diff --git a/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c b/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
+index fa164d25f4eb..67ca219f95bf 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
++++ b/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
+@@ -423,7 +423,7 @@ u32 rtw_free_stainfo(struct adapter *padapter, struct sta_info *psta)
+ /*  free all stainfo which in sta_hash[all] */
+ void rtw_free_all_stainfo(struct adapter *padapter)
+ {
+-	struct list_head	*plist, *phead;
++	struct list_head *plist, *phead, *tmp;
+ 	s32	index;
+ 	struct sta_info *psta = NULL;
+ 	struct	sta_priv *pstapriv = &padapter->stapriv;
+@@ -436,7 +436,7 @@ void rtw_free_all_stainfo(struct adapter *padapter)
+ 
+ 	for (index = 0; index < NUM_STA; index++) {
+ 		phead = &(pstapriv->sta_hash[index]);
+-		list_for_each(plist, phead) {
++		list_for_each_safe(plist, tmp, phead) {
+ 			psta = list_entry(plist, struct sta_info, hash_list);
+ 
+ 			if (pbcmc_stainfo != psta)
+diff --git a/drivers/staging/rtl8723bs/core/rtw_xmit.c b/drivers/staging/rtl8723bs/core/rtw_xmit.c
+index e37c4ba50d6d..0562fa6c1255 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_xmit.c
++++ b/drivers/staging/rtl8723bs/core/rtw_xmit.c
+@@ -1723,13 +1723,13 @@ s32 rtw_free_xmitframe(struct xmit_priv *pxmitpriv, struct xmit_frame *pxmitfram
+ 
+ void rtw_free_xmitframe_queue(struct xmit_priv *pxmitpriv, struct __queue *pframequeue)
+ {
+-	struct list_head	*plist, *phead;
++	struct list_head *plist, *phead, *tmp;
+ 	struct	xmit_frame	*pxmitframe;
+ 
+ 	spin_lock_bh(&pframequeue->lock);
+ 
+ 	phead = get_list_head(pframequeue);
+-	list_for_each(plist, phead) {
++	list_for_each_safe(plist, tmp, phead) {
+ 		pxmitframe = list_entry(plist, struct xmit_frame, list);
+ 
+ 		rtw_free_xmitframe(pxmitpriv, pxmitframe);
+@@ -2122,7 +2122,7 @@ signed int xmitframe_enqueue_for_sleeping_sta(struct adapter *padapter, struct x
+ static void dequeue_xmitframes_to_sleeping_queue(struct adapter *padapter, struct sta_info *psta, struct __queue *pframequeue)
+ {
+ 	signed int ret;
+-	struct list_head	*plist, *phead;
++	struct list_head *plist, *phead, *tmp;
+ 	u8 ac_index;
+ 	struct tx_servq	*ptxservq;
+ 	struct pkt_attrib	*pattrib;
+@@ -2130,7 +2130,7 @@ static void dequeue_xmitframes_to_sleeping_queue(struct adapter *padapter, struc
+ 	struct hw_xmit *phwxmits =  padapter->xmitpriv.hwxmits;
+ 
+ 	phead = get_list_head(pframequeue);
+-	list_for_each(plist, phead) {
++	list_for_each_safe(plist, tmp, phead) {
+ 		pxmitframe = list_entry(plist, struct xmit_frame, list);
+ 
+ 		pattrib = &pxmitframe->attrib;
+@@ -2191,7 +2191,7 @@ void wakeup_sta_to_xmit(struct adapter *padapter, struct sta_info *psta)
+ {
+ 	u8 update_mask = 0, wmmps_ac = 0;
+ 	struct sta_info *psta_bmc;
+-	struct list_head	*xmitframe_plist, *xmitframe_phead;
++	struct list_head *xmitframe_plist, *xmitframe_phead, *tmp;
+ 	struct xmit_frame *pxmitframe = NULL;
+ 	struct sta_priv *pstapriv = &padapter->stapriv;
+ 	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
+@@ -2201,7 +2201,7 @@ void wakeup_sta_to_xmit(struct adapter *padapter, struct sta_info *psta)
+ 	spin_lock_bh(&pxmitpriv->lock);
+ 
+ 	xmitframe_phead = get_list_head(&psta->sleep_q);
+-	list_for_each(xmitframe_plist, xmitframe_phead) {
++	list_for_each_safe(xmitframe_plist, tmp, xmitframe_phead) {
+ 		pxmitframe = list_entry(xmitframe_plist, struct xmit_frame,
+ 					list);
+ 
+@@ -2272,7 +2272,7 @@ void wakeup_sta_to_xmit(struct adapter *padapter, struct sta_info *psta)
+ 
+ 	if ((pstapriv->sta_dz_bitmap&0xfffe) == 0x0) { /* no any sta in ps mode */
+ 		xmitframe_phead = get_list_head(&psta_bmc->sleep_q);
+-		list_for_each(xmitframe_plist, xmitframe_phead) {
++		list_for_each_safe(xmitframe_plist, tmp, xmitframe_phead) {
+ 			pxmitframe = list_entry(xmitframe_plist,
+ 						struct xmit_frame, list);
+ 
+@@ -2308,7 +2308,7 @@ void wakeup_sta_to_xmit(struct adapter *padapter, struct sta_info *psta)
+ void xmit_delivery_enabled_frames(struct adapter *padapter, struct sta_info *psta)
+ {
+ 	u8 wmmps_ac = 0;
+-	struct list_head	*xmitframe_plist, *xmitframe_phead;
++	struct list_head *xmitframe_plist, *xmitframe_phead, *tmp;
+ 	struct xmit_frame *pxmitframe = NULL;
+ 	struct sta_priv *pstapriv = &padapter->stapriv;
+ 	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
+@@ -2316,7 +2316,7 @@ void xmit_delivery_enabled_frames(struct adapter *padapter, struct sta_info *pst
+ 	spin_lock_bh(&pxmitpriv->lock);
+ 
+ 	xmitframe_phead = get_list_head(&psta->sleep_q);
+-	list_for_each(xmitframe_plist, xmitframe_phead) {
++	list_for_each_safe(xmitframe_plist, tmp, xmitframe_phead) {
+ 		pxmitframe = list_entry(xmitframe_plist, struct xmit_frame,
+ 					list);
+ 
+diff --git a/drivers/staging/rtl8723bs/hal/rtl8723bs_xmit.c b/drivers/staging/rtl8723bs/hal/rtl8723bs_xmit.c
+index ec9f275cbc7e..a05d43b716ee 100644
+--- a/drivers/staging/rtl8723bs/hal/rtl8723bs_xmit.c
++++ b/drivers/staging/rtl8723bs/hal/rtl8723bs_xmit.c
+@@ -178,7 +178,7 @@ static s32 xmit_xmitframes(struct adapter *padapter, struct xmit_priv *pxmitpriv
+ 	struct hw_xmit *hwxmits, *phwxmit;
+ 	u8 idx, hwentry;
+ 	struct tx_servq *ptxservq;
+-	struct list_head *sta_plist, *sta_phead, *frame_plist, *frame_phead;
++	struct list_head *sta_plist, *sta_phead, *frame_plist, *frame_phead, *tmp;
+ 	struct xmit_frame *pxmitframe;
+ 	struct __queue *pframe_queue;
+ 	struct xmit_buf *pxmitbuf;
+@@ -225,7 +225,7 @@ static s32 xmit_xmitframes(struct adapter *padapter, struct xmit_priv *pxmitpriv
+ 		sta_phead = get_list_head(phwxmit->sta_queue);
+ 		/* because stop_sta_xmit may delete sta_plist at any time */
+ 		/* so we should add lock here, or while loop can not exit */
+-		list_for_each(sta_plist, sta_phead) {
++		list_for_each_safe(sta_plist, tmp, sta_phead) {
+ 			ptxservq = list_entry(sta_plist, struct tx_servq,
+ 					      tx_pending);
+ 
+diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+index 9a6e47877c4e..c10146428757 100644
+--- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
++++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+@@ -2453,7 +2453,7 @@ static int cfg80211_rtw_del_station(struct wiphy *wiphy, struct net_device *ndev
+ 				    struct station_del_parameters *params)
+ {
+ 	int ret = 0;
+-	struct list_head	*phead, *plist;
++	struct list_head *phead, *plist, *tmp;
+ 	u8 updated = false;
+ 	struct sta_info *psta = NULL;
+ 	struct adapter *padapter = rtw_netdev_priv(ndev);
+@@ -2483,7 +2483,7 @@ static int cfg80211_rtw_del_station(struct wiphy *wiphy, struct net_device *ndev
+ 
+ 	phead = &pstapriv->asoc_list;
+ 	/* check asoc_queue */
+-	list_for_each(plist, phead) {
++	list_for_each_safe(plist, tmp, phead) {
+ 		psta = list_entry(plist, struct sta_info, asoc_list);
+ 
+ 		if (!memcmp((u8 *)mac, psta->hwaddr, ETH_ALEN)) {
+-- 
+2.20.1
 
-After inspection, I believe this key stressor should be:
-
-stress-ng  --dirdeep 10
-
-It will create a lots of files that with very long PATH; It could make 
-some of OOB issue;
-
-My test box is ~100cores Intel platform.
-
-
-James
-
-
-在 2021/6/7 PM8:57, Liangyan 写道:
-> We've suffered from severe kernel crashes due to memory corruption on
-> our production environment, like,
->
-> Call Trace:
-> [1640542.554277] general protection fault: 0000 [#1] SMP PTI
-> [1640542.554856] CPU: 17 PID: 26996 Comm: python Kdump: loaded Tainted:G
-> [1640542.556629] RIP: 0010:kmem_cache_alloc+0x90/0x190
-> [1640542.559074] RSP: 0018:ffffb16faa597df8 EFLAGS: 00010286
-> [1640542.559587] RAX: 0000000000000000 RBX: 0000000000400200 RCX:
-> 0000000006e931bf
-> [1640542.560323] RDX: 0000000006e931be RSI: 0000000000400200 RDI:
-> ffff9a45ff004300
-> [1640542.560996] RBP: 0000000000400200 R08: 0000000000023420 R09:
-> 0000000000000000
-> [1640542.561670] R10: 0000000000000000 R11: 0000000000000000 R12:
-> ffffffff9a20608d
-> [1640542.562366] R13: ffff9a45ff004300 R14: ffff9a45ff004300 R15:
-> 696c662f65636976
-> [1640542.563128] FS:  00007f45d7c6f740(0000) GS:ffff9a45ff840000(0000)
-> knlGS:0000000000000000
-> [1640542.563937] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [1640542.564557] CR2: 00007f45d71311a0 CR3: 000000189d63e004 CR4:
-> 00000000003606e0
-> [1640542.565279] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-> 0000000000000000
-> [1640542.566069] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-> 0000000000000400
-> [1640542.566742] Call Trace:
-> [1640542.567009]  anon_vma_clone+0x5d/0x170
-> [1640542.567417]  __split_vma+0x91/0x1a0
-> [1640542.567777]  do_munmap+0x2c6/0x320
-> [1640542.568128]  vm_munmap+0x54/0x70
-> [1640542.569990]  __x64_sys_munmap+0x22/0x30
-> [1640542.572005]  do_syscall_64+0x5b/0x1b0
-> [1640542.573724]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [1640542.575642] RIP: 0033:0x7f45d6e61e27
->
-> James Wang has reproduced it stably on the latest 4.19 LTS.
-> After some debugging, we finally proved that it's due to ftrace
-> buffer out-of-bound access using a debug tool as follows:
-> [   86.775200] BUG: Out-of-bounds write at addr 0xffff88aefe8b7000
-> [   86.780806]  no_context+0xdf/0x3c0
-> [   86.784327]  __do_page_fault+0x252/0x470
-> [   86.788367]  do_page_fault+0x32/0x140
-> [   86.792145]  page_fault+0x1e/0x30
-> [   86.795576]  strncpy_from_unsafe+0x66/0xb0
-> [   86.799789]  fetch_memory_string+0x25/0x40
-> [   86.804002]  fetch_deref_string+0x51/0x60
-> [   86.808134]  kprobe_trace_func+0x32d/0x3a0
-> [   86.812347]  kprobe_dispatcher+0x45/0x50
-> [   86.816385]  kprobe_ftrace_handler+0x90/0xf0
-> [   86.820779]  ftrace_ops_assist_func+0xa1/0x140
-> [   86.825340]  0xffffffffc00750bf
-> [   86.828603]  do_sys_open+0x5/0x1f0
-> [   86.832124]  do_syscall_64+0x5b/0x1b0
-> [   86.835900]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
->
-> commit b220c049d519 ("tracing: Check length before giving out
-> the filter buffer") adds length check to protect trace data
-> overflow introduced in 0fc1b09ff1ff, seems that this fix can't prevent
-> overflow entirely, the length check should also take the sizeof
-> entry->array[0] into account, since this array[0] is filled the
-> length of trace data and occupy addtional space and risk overflow.
->
-> Cc: stable@vger.kernel.org
-> Fixes: b220c049d519 ("tracing: Check length before giving out the filter buffer")
-> Signed-off-by: Liangyan <liangyan.peng@linux.alibaba.com>
-> Reviewed-by: Xunlei Pang <xlpang@linux.alibaba.com>
-> Reviewed-by: yinbinbin <yinbinbin@alibabacloud.com>
-> Reviewed-by: Wetp Zhang <wetp.zy@linux.alibaba.com>
-> Tested-by: James Wang <jnwang@linux.alibaba.com>
-> Cc: Xunlei Pang <xlpang@linux.alibaba.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->   kernel/trace/trace.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index a21ef9cd2aae..9299057feb56 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -2736,7 +2736,7 @@ trace_event_buffer_lock_reserve(struct trace_buffer **current_rb,
->   	    (entry = this_cpu_read(trace_buffered_event))) {
->   		/* Try to use the per cpu buffer first */
->   		val = this_cpu_inc_return(trace_buffered_event_cnt);
-> -		if ((len < (PAGE_SIZE - sizeof(*entry))) && val == 1) {
-> +		if ((len < (PAGE_SIZE - sizeof(*entry) - sizeof(entry->array[0]))) && val == 1) {
->   			trace_event_setup(entry, type, trace_ctx);
->   			entry->array[0] = len;
->   			return entry;
