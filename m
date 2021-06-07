@@ -2,138 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6422D39E922
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 23:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2DA39E924
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 23:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231158AbhFGVeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 17:34:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230359AbhFGVeW (ORCPT
+        id S231176AbhFGVfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 17:35:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51202 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230359AbhFGVfl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 17:34:22 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E35C061574;
-        Mon,  7 Jun 2021 14:32:30 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id m18so19217987wrv.2;
-        Mon, 07 Jun 2021 14:32:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vDwdlII4xvRHYMeALYz88M86eElsCZPiDN/teNVAvlY=;
-        b=ZzBwJJEjMdi8Sj9uSmMTvUY5dvdi5DswCqZiL46IbaiX8kEjLOrRPjYPF+3Rcekmps
-         aOIGJODSP/4/+nH3Un8UUD2v0IS45VIiGO1KcDuSppLJDSKoJPJWyExX7BpbpvVpXaF9
-         EVMPlS7Fz2tIqrsR1XdxG/FkgaOOr23I0BL4hzrs14GfglItwnX5JnU4JFMVMAJzbsRq
-         DuIT+dFzHf+pZ9UjE4qpbcvaxUdnl9cZU43S1TxWKisrhkm5l9xdqxETJWc1JPkStlDO
-         XY2uu1cjx72Hx1PUAtIf3hIHe02pQDkfb+mRjAYY4Rs1Vwr04NkkJhX2PNISN96HIkQs
-         ORoQ==
+        Mon, 7 Jun 2021 17:35:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623101629;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Ne0sdd3NZl98G4gVbRdymPLZj6j1uGmDFhwuH8srjsM=;
+        b=hqQSjSYvpqBzNCAIHFl24rlfsdiqCIayT9cBO3ZRFfIrhSpc2yN3/YrgheTSbJQtUyWffP
+        bJFtBnPxlTyhaaPdXYCmX9dSK717gBn6ISFmhP8Y6mO4Qjgbm/IzZEZhlIj2ic+ApyRCFf
+        7s4dJPv6xryDZPogjKcx1oRkHKyZIZY=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-532-ksTGdOzCOWKvEqe-JIIR3w-1; Mon, 07 Jun 2021 17:33:48 -0400
+X-MC-Unique: ksTGdOzCOWKvEqe-JIIR3w-1
+Received: by mail-wm1-f69.google.com with SMTP id f186-20020a1c1fc30000b02901aaa08ad8f4so347611wmf.8
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 14:33:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vDwdlII4xvRHYMeALYz88M86eElsCZPiDN/teNVAvlY=;
-        b=ueVa2LODphOnORo5Hj+4kRP+cthKbs1t/PwqnHup9MbukE+fw1OplxyooKLMOAS1rW
-         23RfOFCvjCFJ8QhUvzkQidSpLOZkRtQPXpZ8uidpZI48wOZH9IqYBfOcuLYhxXZ8ZJn5
-         ocA5mBZP7q/3aowAY9Z9V5IibsnxPZjuHCDIGBedBoUTIyb1VQQlqW3TT7Zc+BxL8iHl
-         EJ4mkI8/tgATucGFDZ68rMHBVqW87JdPyVXvWcplZE+Av5+vRsEd2m39HxpKxuCbU1NN
-         3FDZh8+jBXjusow9zv0MkZ6cq2yKy97YD+3XYQeVkm4B3dfqbeyO8keLcU9bRIJtCzo5
-         mmCg==
-X-Gm-Message-State: AOAM531CmWX1JNO3nNdqFA+g8AxT4zeeiRUfoa8kho36mVdIx4YjfXhG
-        3A9eMtEO3JsIZa8aIskZwRN2RhqZP3fT+To4Wcs=
-X-Google-Smtp-Source: ABdhPJzvPtqdfmAIJbFBnlWMRVMPMd5FM5ysUui85hJNne03xVPiNOTQjx1I3fifRbtK8dmOYH5eqfpqH5pSqkOYKxQ=
-X-Received: by 2002:adf:e507:: with SMTP id j7mr18490221wrm.178.1623101548421;
- Mon, 07 Jun 2021 14:32:28 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ne0sdd3NZl98G4gVbRdymPLZj6j1uGmDFhwuH8srjsM=;
+        b=DrTn/kJYwygSjXeULzgTNxBR676/vTRIbnKJLqWOtdMOdyX3QryzsGofjCpznZyF4b
+         zWfBnBPF/lNDM2kTRZpuPEua5EqhKYIWlyA706c5JeHSRWTR7q3Qtf1F/PEBbmFeX9aq
+         2qDkJOTfILtV/Cdqu3vP9GplrB68jHAYdmLR2vFDwSBacGZQpqnH5cdJ7lxwKbIY0i9U
+         J5IYWzoaNn4XsJVhaQG0csnNfXs9eUXr8y8VMeDoHdhfcEAlpXAQyA9uyA+XyhuywpxN
+         1C+bfU3p+F95w7O/DQBdL+YFAr0dBeLTMlbF/0IP2ahkSkL/+YkFj6BnDaOhlp1kVwq5
+         FD5Q==
+X-Gm-Message-State: AOAM533HjLSr2QEH3omQ14x8GG/G12+imzby8d1Cw1iczpMMljZjOEcW
+        NsGKACNd0vsEdqkFW8N5J4DmrvsBoGyWcUt+mj/OsdQoFxcNHT9hfnuGPcCJBJG6nX9wvDhEsDN
+        E5iJnME9BcCGKSWYgkxaVcfrCB4CKTBOJpiM3Z/CzWuYt2XZkCm8LlP6rbEUXyyEj7MRtPUV3TQ
+        s=
+X-Received: by 2002:a7b:c24e:: with SMTP id b14mr19012456wmj.6.1623101627247;
+        Mon, 07 Jun 2021 14:33:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy4ll9t3EwcCKy3igwdQwoTdXU//20aYaO8amkuTKLrzZN/i3Xio/esdoJJJge80qbLcxBnjQ==
+X-Received: by 2002:a7b:c24e:: with SMTP id b14mr19012434wmj.6.1623101626926;
+        Mon, 07 Jun 2021 14:33:46 -0700 (PDT)
+Received: from minerva.home ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id q5sm17659319wrm.15.2021.06.07.14.33.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 14:33:46 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+Subject: [PATCH] PCI: rockchip: Avoid accessing PCIe registers with clocks gated
+Date:   Mon,  7 Jun 2021 23:33:28 +0200
+Message-Id: <20210607213328.1711570-1-javierm@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210605070502.22288-1-dwaipayanray1@gmail.com>
- <CAKXUXMydnnun3iu3B2_acQLd6EgDHOGUhKvbuUCh6WaS-ohiDw@mail.gmail.com> <CABJPP5CfoPrybLgmZ2AP15x_esCPC6J780QYzEahMB9qzkRD=Q@mail.gmail.com>
-In-Reply-To: <CABJPP5CfoPrybLgmZ2AP15x_esCPC6J780QYzEahMB9qzkRD=Q@mail.gmail.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Tue, 8 Jun 2021 03:02:16 +0530
-Message-ID: <CABJPP5BufzwYjHd=U0Xhz+3+miMOv-DP5DZiUo+jvNFraw2X_A@mail.gmail.com>
-Subject: Re: [PATCH v2] docs: checkpatch: Document and segregate more
- checkpatch message types
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Joe Perches <joe@perches.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 7:17 PM Dwaipayan Ray <dwaipayanray1@gmail.com> wrote:
->
-> > > +  **CONSTANT_CONVERSION**
-> > > +    Use of __constant_<foo> form is discouraged for the following functions::
-> > > +
-> > > +      __constant_cpu_to_be[x]
-> > > +      __constant_cpu_to_le[x]
-> > > +      __constant_be[x]_to_cpu
-> > > +      __constant_le[x]_to_cpu
-> > > +      __constant_htons
-> > > +      __constant_ntohs
-> > > +
-> > > +    Using any of these outside of include/uapi/ isn't preferred as using the
-> >
-> > write out: s/isn't/is not/
-> >
-> > ...or even stylistically much better is to just write the
-> > recommendation positively and clear:
-> >
-> > Use the corresponding function without __constant_ prefix, e.g., htons
-> > instead of __constant_htons, for any use in files, except
-> > include/uapi/.
-> >
-> > Are there other __constant_ functions in the code base beyond all the
-> > ones you listed? Then, we should explain why only those above and why
-> > not the others. Otherwise, we can keep the list above quite brief, and
-> > just say all __constant_ functions can be replaced by their
-> > counterparts without __constant_ prefix.
-> >
+IRQ handlers that are registered for shared interrupts can be called at
+any time after have been registered using the request_irq() function.
 
-So, as Lukas said, I came up with this updated explanation for
-constant conversion:
+It's up to drivers to ensure that's always safe for these to be called.
 
-  **CONSTANT_CONVERSION**
-    Use of __constant_<foo> form is discouraged for the following functions::
+Both the "pcie-sys" and "pcie-client" interrupts are shared, but since
+their handlers are registered very early in the probe function, an error
+later can lead to these handlers being executed before all the required
+have been properly setup.
 
-      __constant_cpu_to_be[x]
-      __constant_cpu_to_le[x]
-      __constant_be[x]_to_cpu
-      __constant_le[x]_to_cpu
-      __constant_htons
-      __constant_ntohs
+For example, the rockchip_pcie_read() function used by these IRQ handlers
+expects that some PCIe clocks will already be enabled, otherwise trying
+to access the PCIe registers causes the read to hang and never return.
 
-    Using any of these outside of include/uapi/ is not preferred as using the
-    function without __constant_ is identical when the argument is a
-    constant.
+The CONFIG_DEBUG_SHIRQ option tests if drivers are able to cope with their
+shared interrupt handlers being called, by generating a spurious interrupt
+just before a shared interrupt handler is unregistered.
 
-    In big endian systems, the macros like __constant_cpu_to_be32(x) and
-    cpu_to_be32(x) expand to the same expression::
+But this means that if the option is enabled, any error in the probe path
+of this driver could lead to one of the IRQ handlers to be executed.
 
-      #define __constant_cpu_to_be32(x) ((__force __be32)(__u32)(x))
-      #define __cpu_to_be32(x)          ((__force __be32)(__u32)(x))
+In a rockpro64 board, the following sequence of events happens:
 
-    In little endian systems, the macros __constant_cpu_to_be32(x) and
-    cpu_to_be32(x) expand to __constant_swab32 and __swab32.  __swab32
-    has a __builtin_constant_p check::
+  1) "pcie-sys" IRQ is requested and its handler registered.
+  2) "pcie-client" IRQ is requested and its handler registered.
+  3) probe later fails due readl_poll_timeout() returning a timeout.
+  4) the "pcie-sys" IRQ is unregistered.
+  5) CONFIG_DEBUG_SHIRQ triggers a spurious interrupt.
+  6) "pcie-client" IRQ handler is called for this spurious interrupt.
+  7) IRQ handler tries to read PCIE_CLIENT_INT_STATUS with clocks gated.
+  8) the machine hangs because rockchip_pcie_read() call never returns.
 
-      #define __swab32(x) \
-        (__builtin_constant_p((__u32)(x)) ? \
-        ___constant_swab32(x) : \
-        __fswab32(x))
+To avoid cases like this, the handlers don't have to be registered until
+very late in the probe function, once all the resources have been setup.
 
-    So ultimately they have a special case for constants.
-    Similar is the case with all of the macros in the list.  Thus
-    using the __constant_... forms are unnecessarily verbose and
-    not preferred outside of include/uapi.
+So let's just move all the IRQ init before the pci_host_probe() call, that
+will prevent issues like this and seems to be the correct thing to do too.
 
-    See: https://lore.kernel.org/lkml/1400106425.12666.6.camel@joe-AO725/
+Reported-by: Peter Robinson <pbrobinson@gmail.com>
+Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+---
 
-Can Lukas or Joe confirm this or have any comments on it. I can send
-an updated patch then.
+ drivers/pci/controller/pcie-rockchip-host.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Thanks,
-Dwaipayan.
+diff --git a/drivers/pci/controller/pcie-rockchip-host.c b/drivers/pci/controller/pcie-rockchip-host.c
+index f1d08a1b159..78d04ac29cd 100644
+--- a/drivers/pci/controller/pcie-rockchip-host.c
++++ b/drivers/pci/controller/pcie-rockchip-host.c
+@@ -592,10 +592,6 @@ static int rockchip_pcie_parse_host_dt(struct rockchip_pcie *rockchip)
+ 	if (err)
+ 		return err;
+ 
+-	err = rockchip_pcie_setup_irq(rockchip);
+-	if (err)
+-		return err;
+-
+ 	rockchip->vpcie12v = devm_regulator_get_optional(dev, "vpcie12v");
+ 	if (IS_ERR(rockchip->vpcie12v)) {
+ 		if (PTR_ERR(rockchip->vpcie12v) != -ENODEV)
+@@ -973,8 +969,6 @@ static int rockchip_pcie_probe(struct platform_device *pdev)
+ 	if (err)
+ 		goto err_vpcie;
+ 
+-	rockchip_pcie_enable_interrupts(rockchip);
+-
+ 	err = rockchip_pcie_init_irq_domain(rockchip);
+ 	if (err < 0)
+ 		goto err_deinit_port;
+@@ -992,6 +986,12 @@ static int rockchip_pcie_probe(struct platform_device *pdev)
+ 	bridge->sysdata = rockchip;
+ 	bridge->ops = &rockchip_pcie_ops;
+ 
++	err = rockchip_pcie_setup_irq(rockchip);
++	if (err)
++		goto err_remove_irq_domain;
++
++	rockchip_pcie_enable_interrupts(rockchip);
++
+ 	err = pci_host_probe(bridge);
+ 	if (err < 0)
+ 		goto err_remove_irq_domain;
+-- 
+2.31.1
+
