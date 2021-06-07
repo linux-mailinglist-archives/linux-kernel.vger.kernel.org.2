@@ -2,57 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA07339D4ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4EC839D4DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230173AbhFGG26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 02:28:58 -0400
-Received: from verein.lst.de ([213.95.11.211]:44507 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229545AbhFGG2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 02:28:55 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 3212967373; Mon,  7 Jun 2021 08:27:01 +0200 (CEST)
-Date:   Mon, 7 Jun 2021 08:27:01 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Nick Kossifidis <mick@ics.forth.gr>,
-        Christoph Hellwig <hch@lst.de>,
-        Drew Fustini <drew@beagleboard.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>, wefu@redhat.com,
-        Wei Wu =?utf-8?B?KOWQtOS8nyk=?= <lazyparser@gmail.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Benjamin Koch <snowball@c3pb.de>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        Wei Fu <tekkamanninja@gmail.com>
-Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
-Message-ID: <20210607062701.GB24060@lst.de>
-References: <1621400656-25678-1-git-send-email-guoren@kernel.org> <20210519052048.GA24853@lst.de> <CAJF2gTTjwB4U-NxCtfgMA5aR2HzoQtA8a51W5UM1LHGRbjz9pg@mail.gmail.com> <20210519064435.GA3076809@x1> <20210519065352.GA31590@lst.de> <CAJF2gTR4FXRbp7oky-ypdVJba6btFHpp-+dPyJStRaQX_-5rzg@mail.gmail.com> <29733b0931d9dd6a2f0b6919067c7efe@mailhost.ics.forth.gr> <CAJF2gTTpSbNWS4VLHAu4XsV5-Vos=6R9MmPOx8-yzMFJu=wX4A@mail.gmail.com> <a8f2e68dcc1a6eb1ff3b95fcb8d0d0d2@mailhost.ics.forth.gr> <CAJF2gTQuQ5bE6HeGSoNaDynA0o3+KEo4snwft42YGzE=+DjKOQ@mail.gmail.com>
+        id S230217AbhFGGYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 02:24:00 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3078 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhFGGX6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 02:23:58 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fz37G2kFDzWsmN;
+        Mon,  7 Jun 2021 14:17:14 +0800 (CST)
+Received: from dggemi758-chm.china.huawei.com (10.1.198.144) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 14:22:03 +0800
+Received: from huawei.com (10.175.101.6) by dggemi758-chm.china.huawei.com
+ (10.1.198.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 7 Jun
+ 2021 14:22:03 +0800
+From:   ChenXiaoSong <chenxiaosong2@huawei.com>
+To:     <bfields@fieldses.org>, <chuck.lever@oracle.com>,
+        <trond.myklebust@hammerspace.com>, <anna.schumaker@netapp.com>
+CC:     <linux-nfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yukuai3@huawei.com>, <yi.zhang@huawei.com>,
+        <chenxiaosong2@huawei.com>
+Subject: [PATCH -next] nfs_common: fix doc warning
+Date:   Mon, 7 Jun 2021 14:28:23 +0800
+Message-ID: <20210607062823.328716-1-chenxiaosong2@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJF2gTQuQ5bE6HeGSoNaDynA0o3+KEo4snwft42YGzE=+DjKOQ@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggemi758-chm.china.huawei.com (10.1.198.144)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 11:19:03AM +0800, Guo Ren wrote:
-> >From Linux non-coherency view, we need:
->  - Non-cache + Strong Order PTE attributes to deal with drivers' DMA descriptors
->  - Non-cache + weak order to deal with framebuffer drivers
->  - CMO dma_sync to sync cache with DMA devices
+Fix gcc W=1 warning:
 
-This is not strictly true.  At the very minimum you only need cache
-invalidation and writeback instructions.  For example early parisc
-CPUs and some m68knommu SOCs have no support for uncached areas at all,
-and Linux works.  But to be fair this is very painful and supports only
-very limited periphals.  So for modern full Linux support some uncahed
-memory is advisable.  But that doesn't have to be using PTE attributes.
-It could also be physical memory regions that are either totally fixed
-or somewhat dynamic.
+fs/nfs_common/grace.c:91: warning: Function parameter or member 'net' not described in 'locks_in_grace'
+
+Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
+---
+ fs/nfs_common/grace.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/nfs_common/grace.c b/fs/nfs_common/grace.c
+index 26f2a50eceac..edec45831585 100644
+--- a/fs/nfs_common/grace.c
++++ b/fs/nfs_common/grace.c
+@@ -82,6 +82,7 @@ __state_in_grace(struct net *net, bool open)
+ 
+ /**
+  * locks_in_grace
++ * @net: network namespace
+  *
+  * Lock managers call this function to determine when it is OK for them
+  * to answer ordinary lock requests, and when they should accept only
+-- 
+2.25.4
+
