@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9429139DB41
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 905B439DB43
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231329AbhFGL3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 07:29:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40956 "EHLO
+        id S231384AbhFGL3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 07:29:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbhFGL3l (ORCPT
+        with ESMTP id S231202AbhFGL3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 07:29:41 -0400
+        Mon, 7 Jun 2021 07:29:43 -0400
 Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60B90C061766
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 04:27:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3DDAC061766
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 04:27:51 -0700 (PDT)
 Received: from mwalle01.fritz.box (ip4d17858c.dynamic.kabel-deutschland.de [77.23.133.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 7FC4F22173;
-        Mon,  7 Jun 2021 13:27:48 +0200 (CEST)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 0C7362224A;
+        Mon,  7 Jun 2021 13:27:49 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1623065268;
+        t=1623065269;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=rTTnPr3fbvvQSNNNubDTYCs5dbtwiY5bKpv1GTbh7/g=;
-        b=J/RhPK7ufBxJc64d0sTZ4yDIIUE5ohUBfbyq1PHnz+Opsn/8s1GMqEpZaRzt1CqDBShzhX
-        VU7SZ5FOfjrpQV7OaQS5FOBR1l68cPRifQdxtrVslf9Wlu+O1dBVyudnl+QmLeyLsKukNE
-        sFWFAcbKKexhYWrO9rQ4PmIztrCybwQ=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YkS4sNM+ctsrAic8C8mVED//V6I0yEE4C5cW8CX1yvk=;
+        b=iJcfTr+GSxYqRzBMwEjPz11P8ytzuuAShNRT0ayEZL+GsnCYb41rGOje7qsKgMsQN3KnSj
+        icblYjmW1MFACyZoH4SXKL1CjxVdyfmpRRBz/7uy5aq3p3uTqrgUJb1jKxurK61K51l3i8
+        PNc9bMczBpYPMJQmIT5mgRyAJbHDEhI=
 From:   Michael Walle <michael@walle.cc>
 To:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
@@ -38,61 +39,50 @@ Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
         Miquel Raynal <miquel.raynal@bootlin.com>,
         Richard Weinberger <richard@nod.at>,
         Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH v6 0/4] mtd: spi-nor: otp: 4 byte mode fix and erase support
-Date:   Mon,  7 Jun 2021 13:27:40 +0200
-Message-Id: <20210607112744.21587-1-michael@walle.cc>
+Subject: [PATCH v6 1/4] mtd: spi-nor: otp: fix access to security registers in 4 byte mode
+Date:   Mon,  7 Jun 2021 13:27:41 +0200
+Message-Id: <20210607112744.21587-2-michael@walle.cc>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210607112744.21587-1-michael@walle.cc>
+References: <20210607112744.21587-1-michael@walle.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series is the follow up on the single patch
-mtd: spi-nor: implement OTP erase for Winbond and similar flashes
+The security registers either take a 3 byte or a 4 byte address offset,
+depending on the address mode of the flash. Thus just leave the
+nor->addr_width as is.
 
-Pratyush Yadav discovered a likely problem with bigger flashes, the address
-to access the security registers is either 3 or 4 byte (at least for
-winbond flashes).
+Fixes: cad3193fe9d1 ("mtd: spi-nor: implement OTP support for Winbond and similar flashes")
+Signed-off-by: Michael Walle <michael@walle.cc>
+Acked-by: Pratyush Yadav <p.yadav@ti.com>
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+---
+ drivers/mtd/spi-nor/otp.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Changes since v5:
- - squash new patch into "Fixes:" patch
-
-Changes since v4:
- - add new patch to get rid taking the spi lock if length is zero. Please
-   note, that I didn't squash this into the "Fixes:" patch because it is
-   unrelated to the actual bug.
- - add comment which explains that we could also branch on an error in
-   spi_nor_mtd_otp_range_is_locked()
- - check zero length in spi_nor_mtd_otp_erase() and return early before
-   taking the lock
-
-Changes since v3:
- - new patch to check for read-only OTP regions before writing
- - clarify term "security register"
- - don't combine lock and erase functions anymore. there are now
-   more difference than similarities.
-
-Changes since v2:
- - fix 3/4 byte mode access
- - use spi_nor_erase_sector() by swapping the nor->erase_opcode
- - use more consistent wording regarding the security registers
-
-Changes since v1:
-- fixed kernel doc
-
-Michael Walle (4):
-  mtd: spi-nor: otp: fix access to security registers in 4 byte mode
-  mtd: spi-nor: otp: use more consistent wording
-  mtd: spi-nor: otp: return -EROFS if region is read-only
-  mtd: spi-nor: otp: implement erase for Winbond and similar flashes
-
- drivers/mtd/spi-nor/core.c    |   2 +-
- drivers/mtd/spi-nor/core.h    |   4 +
- drivers/mtd/spi-nor/otp.c     | 156 +++++++++++++++++++++++++++++++---
- drivers/mtd/spi-nor/winbond.c |   1 +
- 4 files changed, 149 insertions(+), 14 deletions(-)
-
+diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
+index 61036c716abb..91a4c510ed51 100644
+--- a/drivers/mtd/spi-nor/otp.c
++++ b/drivers/mtd/spi-nor/otp.c
+@@ -40,7 +40,6 @@ int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf)
+ 	rdesc = nor->dirmap.rdesc;
+ 
+ 	nor->read_opcode = SPINOR_OP_RSECR;
+-	nor->addr_width = 3;
+ 	nor->read_dummy = 8;
+ 	nor->read_proto = SNOR_PROTO_1_1_1;
+ 	nor->dirmap.rdesc = NULL;
+@@ -84,7 +83,6 @@ int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len,
+ 	wdesc = nor->dirmap.wdesc;
+ 
+ 	nor->program_opcode = SPINOR_OP_PSECR;
+-	nor->addr_width = 3;
+ 	nor->write_proto = SNOR_PROTO_1_1_1;
+ 	nor->dirmap.wdesc = NULL;
+ 
 -- 
 2.20.1
 
