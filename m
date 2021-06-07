@@ -2,117 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D69A39DAA9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 166DE39DAAD
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbhFGLKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 07:10:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55542 "EHLO mail.kernel.org"
+        id S231176AbhFGLKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 07:10:25 -0400
+Received: from foss.arm.com ([217.140.110.172]:58492 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230194AbhFGLKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 07:10:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 84D3C60FF2;
-        Mon,  7 Jun 2021 11:08:07 +0000 (UTC)
-Date:   Mon, 7 Jun 2021 13:08:04 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Giuseppe Scrivano <gscrivan@redhat.com>
-Cc:     ebiederm@xmission.com, "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] userns: automatically split user namespace extent
-Message-ID: <20210607110804.qgkpxktig2upzfrk@wittgenstein>
-References: <20201203150252.1229077-1-gscrivan@redhat.com>
- <20210510172351.GA19918@mail.hallyn.com>
- <20210510185715.GA20897@mail.hallyn.com>
- <87h7idbskw.fsf@redhat.com>
- <20210605130016.jdkkviwtuefocset@wittgenstein>
- <874keaaume.fsf@redhat.com>
+        id S230483AbhFGLKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 07:10:23 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5F0B41063;
+        Mon,  7 Jun 2021 04:08:32 -0700 (PDT)
+Received: from e112269-lin.arm.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 28A923F73D;
+        Mon,  7 Jun 2021 04:08:29 -0700 (PDT)
+From:   Steven Price <steven.price@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
+Cc:     Steven Price <steven.price@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: [PATCH v14 0/8] MTE support for KVM guest
+Date:   Mon,  7 Jun 2021 12:08:08 +0100
+Message-Id: <20210607110816.25762-1-steven.price@arm.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <874keaaume.fsf@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 11:31:37AM +0200, Giuseppe Scrivano wrote:
-> Christian Brauner <christian.brauner@ubuntu.com> writes:
-> 
-> > On Fri, Jun 04, 2021 at 04:41:19PM +0200, Giuseppe Scrivano wrote:
-> >> Christian, Eric,
-> >> 
-> >> are you fine with this patch or is there anything more you'd like me to
-> >> change?
-> >
-> > Before being a little bit of a party pooper thanks for your patches! I
-> > appreciate the work you're doing!
-> >
-> > So my concern is that this may cause silent regressions/security issues
-> > for tools in userspace by making this work automagically.
-> >
-> > For example we have a go library that calculates idmap ranges and
-> > extents. Those idmappings are stored in the database and in the
-> > container's config and for backups and so on.
-> >
-> > The calculated extents match exactly with how these lines look in
-> > /proc/<pid>/*id_map.
-> > If we miscalculate the extents and we try to write them to
-> > /proc/<pid>/*id_map we get told to go away and immediately recognize the
-> > bug.
-> > With this patch however we may succeed and then we record misleading
-> > extents in the db or the config.
-> >
-> > Turning this into a general concern, I think it is a non-trivial
-> > semantic change to break up the 1:1 correspondence between mappings
-> > written and mappings applied that we had for such a long time now.
-> >
-> > In general I'm not sure it should be the kernel that has the idmapping
-> > ranges smarts.
-> >
-> > I'd rather see a generic userspace library that container runtimes make
-> > use of that also breaks up idmapping ranges. We can certainly accomodate
-> > this in
-> > https://pkg.go.dev/github.com/lxc/lxd/shared/idmap
-> >
-> > Is that a reasonable concern?
-> 
-> I've ended up adding a similar logic to Podman for the same reason as
-> above.
-> 
-> In our use case, containers are created within a user namespace that
-> usually has two extents, the current unprivileged ID mapped to root,
-> and any additional ID allocated to the user through /etc/sub?id mapped
-> to 1.
-> 
-> Within this user namespace, other user namespaces can be created and we
-> let users specify the mappings.  It is a common mistake to specify a
-> mapping that overlaps multiple extents in the parent userns e.g:
-> 0:0:IDS_AVAILABLE.
-> 
-> To avoid the problem we have to first parse /proc/self/?id_map and then
-> split the specified extents when they overlap.
-> 
-> In our case this is not an issue anymore, moving the logic to the kernel
-> would just avoid a open syscall.
-> 
-> IMHO the 1:1 mapping is just an implementation detail, that is not
+This series adds support for using the Arm Memory Tagging Extensions
+(MTE) in a KVM guest.
 
-With proc such details tend to have the unfortunate tendency to become
-part of the api which is what makes me a bit uneasy.
-For non-lxd users that use the low-level lxc library directly we allow
-callers to specify the idmappings in the exact same format they will
-appear in procfs. This means you can reason 1:1 about the extents used.
-A change like this on the kernel level would break that assumption
-meaning e.g. that container configs would suddenly start that would
-otherwise fail because of miscalculated or "wrong" extents.
+Changes since v13[1]:
 
-Since we all have solved that problem in userspace already saving a
-single open system call is not a good enough win maybe.
+ * Add Reviewed-by tags from Catalin - thanks!
 
-It feels like the new libsubid library in shadow that we added should
-grow that feature to split extents instead.
-Potentially making new*idmap handle that case by default in newer
-versions. That's easier to revert if anything breaks, allows us to see
-whether this causes trouble, and users that write to new*idmap directly
-aren't affected at all.
+ * Introduce a new function mte_prepare_page_tags() for handling the
+   initialisation of pages ready for a KVM guest. This takes the big
+   tag_sync_lock removing any race with the VMM (or another guest)
+   around clearing the tags and setting PG_mte_tagged.
 
-Christian
+ * The ioctl to fetch/store tags now returns the number of bytes
+   processed so userspace can tell how far a partial fetch/store got.
+
+ * Some minor refactoring to tidy up the code thanks to pointers from
+   Catalin.
+
+[1] https://lore.kernel.org/r/20210524104513.13258-1-steven.price%40arm.com
+
+Catalin Marinas (1):
+  arm64: Handle MTE tags zeroing in __alloc_zeroed_user_highpage()
+
+Steven Price (7):
+  arm64: mte: Handle race when synchronising tags
+  arm64: mte: Sync tags for pages where PTE is untagged
+  KVM: arm64: Introduce MTE VM feature
+  KVM: arm64: Save/restore MTE registers
+  KVM: arm64: Expose KVM_ARM_CAP_MTE
+  KVM: arm64: ioctl to fetch/store tags in a guest
+  KVM: arm64: Document MTE capability and ioctl
+
+ Documentation/virt/kvm/api.rst             | 57 +++++++++++++++
+ arch/arm64/include/asm/kvm_arm.h           |  3 +-
+ arch/arm64/include/asm/kvm_emulate.h       |  3 +
+ arch/arm64/include/asm/kvm_host.h          | 12 ++++
+ arch/arm64/include/asm/kvm_mte.h           | 66 +++++++++++++++++
+ arch/arm64/include/asm/mte-def.h           |  1 +
+ arch/arm64/include/asm/mte.h               |  8 ++-
+ arch/arm64/include/asm/page.h              |  6 +-
+ arch/arm64/include/asm/pgtable.h           | 22 +++++-
+ arch/arm64/include/asm/sysreg.h            |  3 +-
+ arch/arm64/include/uapi/asm/kvm.h          | 11 +++
+ arch/arm64/kernel/asm-offsets.c            |  2 +
+ arch/arm64/kernel/mte.c                    | 54 ++++++++++++--
+ arch/arm64/kvm/arm.c                       | 16 +++++
+ arch/arm64/kvm/guest.c                     | 82 ++++++++++++++++++++++
+ arch/arm64/kvm/hyp/entry.S                 |  7 ++
+ arch/arm64/kvm/hyp/exception.c             |  3 +-
+ arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h | 21 ++++++
+ arch/arm64/kvm/mmu.c                       | 42 ++++++++++-
+ arch/arm64/kvm/reset.c                     |  3 +-
+ arch/arm64/kvm/sys_regs.c                  | 32 +++++++--
+ arch/arm64/mm/fault.c                      | 21 ++++++
+ include/uapi/linux/kvm.h                   |  2 +
+ 23 files changed, 454 insertions(+), 23 deletions(-)
+ create mode 100644 arch/arm64/include/asm/kvm_mte.h
+
+-- 
+2.20.1
+
