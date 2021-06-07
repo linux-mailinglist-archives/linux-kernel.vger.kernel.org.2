@@ -2,105 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E83A39D8EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E069A39D8F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbhFGJhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:37:39 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:50717 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229436AbhFGJhi (ORCPT
+        id S230428AbhFGJiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:38:14 -0400
+Received: from regular1.263xmail.com ([211.150.70.197]:39254 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230348AbhFGJiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:37:38 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=chengshuyi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UbaGK7H_1623058536;
-Received: from localhost(mailfrom:chengshuyi@linux.alibaba.com fp:SMTPD_---0UbaGK7H_1623058536)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 07 Jun 2021 17:35:44 +0800
-From:   Shuyi Cheng <chengshuyi@linux.alibaba.com>
-To:     chengshuyi@linux.alibaba.com, edumazet@google.com,
-        davem@davemloft.net, kuba@kernel.org, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH net-next] net: tcp:  Updating MSS, when the sending window is smaller than MSS.
-Date:   Mon,  7 Jun 2021 17:35:34 +0800
-Message-Id: <1623058534-78782-1-git-send-email-chengshuyi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Mon, 7 Jun 2021 05:38:12 -0400
+Received: from localhost (unknown [192.168.167.235])
+        by regular1.263xmail.com (Postfix) with ESMTP id 30E301BBF;
+        Mon,  7 Jun 2021 17:35:36 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from [172.16.12.73] (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P31751T140094889510656S1623058535154905_;
+        Mon, 07 Jun 2021 17:35:36 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <64b7a42d8996c14ab6b47535c6dccd2d>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: linux-arm-kernel@lists.infradead.org
+X-RCPT-COUNT: 9
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+Subject: Re: [PATCH v4 1/6] dt-bindings: spi: spi-rockchip: add description
+ for rv1126 and rk3568
+To:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
+        broonie@kernel.org, Johan Jonker <jbx6244@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+References: <20210607063448.29589-1-jon.lin@rock-chips.com>
+ <20210607063448.29589-2-jon.lin@rock-chips.com>
+ <ef90ae6d-40bb-8389-f4f8-536a7b610fb7@gmail.com> <3681106.bcXerOTE6V@diego>
+From:   Jon Lin <jon.lin@rock-chips.com>
+Message-ID: <a38fc74e-809a-0823-2abe-bf6e05e1a5a3@rock-chips.com>
+Date:   Mon, 7 Jun 2021 17:35:40 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <3681106.bcXerOTE6V@diego>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the lo network card is used for communication, the tcp server
-reduces the size of the receiving buffer, causing the tcp client
-to have a delay of 200ms. Examples are as follows:
 
-Suppose that the MTU of the lo network card is 65536, and the tcp server
-sets the receive buffer size to 42KB. According to the
-tcp_bound_to_half_wnd function, the MSS of the server and client is
-21KB. Then, the tcp server sets the buffer size of the connection to
-16KB. At this time, the MSS of the server is 8KB, and the MSS of the
-client is still 21KB. But it will cause the client to fail to send the
-message, that is, tcp_write_xmit fails. Mainly because tcp_snd_wnd_test
-failed, and then entered the zero window detection phase, resulting in a
-200ms delay.
+On 6/7/21 5:04 PM, Heiko Stübner wrote:
+> Am Montag, 7. Juni 2021, 10:15:30 CEST schrieb Johan Jonker:
+>> Hi Jon,
+>>
+>> On 6/7/21 8:34 AM, Jon Lin wrote:
+>>> The description below will be used for rv1126.dtsi or rk3568.dtsi in
+>>> the future
+>>>
+>>> Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+>>> ---
+>>>
+>>> Changes in v4:
+>>> - Adjust the order patches
+>>> - Simply commit massage like redundancy "application" content
+>>>
+>>> Changes in v3:
+>>> - Fix compile error which is find by Sascha in [v2,2/8]
+>>>
+>>>   Documentation/devicetree/bindings/spi/spi-rockchip.yaml | 2 ++
+>>>   1 file changed, 2 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/spi/spi-rockchip.yaml b/Documentation/devicetree/bindings/spi/spi-rockchip.yaml
+>>> index 1e6cf29e6388..2d7957f9ae0a 100644
+>>> --- a/Documentation/devicetree/bindings/spi/spi-rockchip.yaml
+>>> +++ b/Documentation/devicetree/bindings/spi/spi-rockchip.yaml
+>>> @@ -27,12 +27,14 @@ properties:
+>>>         - items:
+>>>             - enum:
+>>>                 - rockchip,px30-spi
+>>> +              - rockchip,rv1126-spi
+>> This list is sort alphabetically.
+>> Move "rockchip,rv1126-spi" below "rockchip,rk3568-spi"
+>>
+>>>                 - rockchip,rk3188-spi
+>>>                 - rockchip,rk3288-spi
+>>>                 - rockchip,rk3308-spi
+>>>                 - rockchip,rk3328-spi
+>>>                 - rockchip,rk3368-spi
+>>>                 - rockchip,rk3399-spi
+>>> +              - rockchip,rk3568-spi
+>>
+>>>             - const: rockchip,rk3066-spi
+>>>   
+>>>     reg:
+>>>
+>> ===
+>>
+>> Your comment in [PATCH v3 3/8]:
+>>>> Adding "rockchip,rv1126-spi" to rockchip_spi_dt_match[] is strictly not
+>>>> needed when using "rockchip,rk3066-spi" as fall back string.
+>>>> Could a maintainer advise?
+With consulting to my colleague，we plane to:
+1.If new soc's spi ip is compatible with the fall back one, we wont add 
+new compatible id to the code.
+2.I will add new fall back string stand for new generation ip: 
+rockchip,rv1126-spi
+>>>>
+>>>> Maybe this bug of mine should revert too?? Or is it legacy?
+>>>> spi: rockchip: add compatible string for px30 rk3308 rk3328
+>>>> https://lore.kernel.org/r/20200309151004.7780-1-jbx6244@gmail.com
+>>> I agree with you. If the maintainer doesn't have any comments, I will use
+>>> "rockchip,spi" as compatible names for the subsequent rk platform.
+>> Compatibility strings are supposed to be SoC orientated.
+>> So generic ones like in the manufacturer tree can't be used here.
+> Johan ist right :-) .
+>
+> rockchip,spi won't work at all, especially as these controllers always change
+> over time. [0]
+>
+> Best example is the iommu. We started with "rockchip,iommu" thinking this
+> won't change over time, but with the rk3568 we get a new slightly different
+> iommu.
+>
+> The vendor-kernel then introduces somewhat random "-vX" additions to
+> distinguish them, but often they do seem to be very software-centric.
+>
+> Meaning, hardware-designers moved stuff around and software-developers
+> then invented the versioning to differentiate between versions.
+>
+> The devicetree is supposed to describe the hardware though, so going with
+> the relevant soc-specific compatible gives us the necessary hardware-centric
+> differentiation.
+>
+> Also this allows to catch later issues with specific soc implementations ;-)
+> Like 6 monts down the road we discover some special behaviour on the
+> rk3568 and devicetree is supposed to be stable.
+>
+> So having the relevant compatibles in place allows us to just add driver
+> fixes and have those apply on the rk3568 if that is need at some point.
+>
+> Heiko
+>
+After the explain from you and Johan, I found that the idea 
+"rockchip,spi" was immature.
+>
+>
+>
+>
 
-Therefore, we mainly modify two places. One is the tcp_current_mss
-function. When the sending window is smaller than the current mss, mss
-needs to be updated. The other is the tcp_bound_to_half_wnd function.
-When the sending window is smaller than the current mss, the mss value
-should be calculated according to the current sending window, not
-max_window.
-
-Signed-off-by: Shuyi Cheng <chengshuyi@linux.alibaba.com>
----
- include/net/tcp.h     | 11 ++++++++---
- net/ipv4/tcp_output.c |  3 ++-
- 2 files changed, 10 insertions(+), 4 deletions(-)
-
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index e668f1b..fcdef16 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -641,6 +641,11 @@ static inline void tcp_clear_xmit_timers(struct sock *sk)
- static inline int tcp_bound_to_half_wnd(struct tcp_sock *tp, int pktsize)
- {
- 	int cutoff;
-+	int window;
-+
-+	window = tp->max_window;
-+	if (tp->snd_wnd && tp->snd_wnd < pktsize)
-+		window = tp->snd_wnd;
- 
- 	/* When peer uses tiny windows, there is no use in packetizing
- 	 * to sub-MSS pieces for the sake of SWS or making sure there
-@@ -649,10 +654,10 @@ static inline int tcp_bound_to_half_wnd(struct tcp_sock *tp, int pktsize)
- 	 * On the other hand, for extremely large MSS devices, handling
- 	 * smaller than MSS windows in this way does make sense.
- 	 */
--	if (tp->max_window > TCP_MSS_DEFAULT)
--		cutoff = (tp->max_window >> 1);
-+	if (window > TCP_MSS_DEFAULT)
-+		cutoff = (window >> 1);
- 	else
--		cutoff = tp->max_window;
-+		cutoff = window;
- 
- 	if (cutoff && pktsize > cutoff)
- 		return max_t(int, cutoff, 68U - tp->tcp_header_len);
-diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-index bde781f..88dcdf2 100644
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -1833,7 +1833,8 @@ unsigned int tcp_current_mss(struct sock *sk)
- 
- 	if (dst) {
- 		u32 mtu = dst_mtu(dst);
--		if (mtu != inet_csk(sk)->icsk_pmtu_cookie)
-+		if (mtu != inet_csk(sk)->icsk_pmtu_cookie ||
-+		    (tp->snd_wnd && tp->snd_wnd < mss_now))
- 			mss_now = tcp_sync_mss(sk, mtu);
- 	}
- 
--- 
-1.8.3.1
 
