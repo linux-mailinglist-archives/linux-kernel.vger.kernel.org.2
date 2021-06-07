@@ -2,108 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 144A939D2EC
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 04:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BCA439D2FB
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 04:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhFGC3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 22:29:08 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:4490 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230178AbhFGC3H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 22:29:07 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fyxyf67zXzZdPf;
-        Mon,  7 Jun 2021 10:24:26 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 10:27:15 +0800
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 10:27:14 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <linux-mm@kvack.org>, Kefeng Wang <wangkefeng.wang@huawei.com>,
-        <linux-snps-arc@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-csky@vger.kernel.org>,
-        <uclinux-h8-devel@lists.sourceforge.jp>,
-        <linux-m68k@lists.linux-m68k.org>, <openrisc@lists.librecores.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <linux-riscv@lists.infradead.org>,
-        <linux-sh@vger.kernel.org>, <linux-s390@vger.kernel.org>,
-        <x86@kernel.org>
-Subject: [PATCH v3] mm: add setup_initial_init_mm() helper
-Date:   Mon, 7 Jun 2021 10:36:11 +0800
-Message-ID: <20210607023611.159804-1-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <YL0+nZPViz5xzxca@kernel.org>
-References: <YL0+nZPViz5xzxca@kernel.org>
+        id S230228AbhFGCe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 22:34:56 -0400
+Received: from ozlabs.org ([203.11.71.1]:51067 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230147AbhFGCe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 22:34:56 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fyy8b4G9qz9sPf;
+        Mon,  7 Jun 2021 12:33:03 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623033183;
+        bh=zJj9pnXbsRVN4x1k3a5Axd0SWXmOVfoPt99073WBUDE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=MlCUDViwr0ZhmmXboCPopjqUv7SF8PRbMMLSveZtSKUQqP44xs0t+t3iwi79beSzk
+         Wj4ud0GBc4YPy+O0CZCHWb1WTumFUzsQz/IoH5+6p4Z+lZx7Z8//fxQaHSlRE/5jG5
+         1RqAm534r6wZHE6q+ON+lwCykWcbaf0SyYGOx5tpUmMF0OLU4IsqbrNuRUWxpATKIo
+         vVzhGbN1mGyolkfjQAuJe2nQD2Y0XUGIZwYgvqtPGDg5yY8sNsUNRqTnhKtqk4eZ8y
+         042kq5iPv7T1An9VxTU+eagvjKiCEtVZUKdnCq4poJ6kmR4NQBTeNhW9SPii6uXEcH
+         6Wd46urMdObHA==
+Date:   Mon, 7 Jun 2021 12:33:02 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the drm-misc tree
+Message-ID: <20210607123302.446ccbbb@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/b+1TpCNYac_XU6OZ37vakU=";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add setup_initial_init_mm() helper to setup kernel text,
-data and brk.
+--Sig_/b+1TpCNYac_XU6OZ37vakU=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Cc: linux-snps-arc@lists.infradead.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-csky@vger.kernel.org
-Cc: uclinux-h8-devel@lists.sourceforge.jp
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: openrisc@lists.librecores.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-riscv@lists.infradead.org
-Cc: linux-sh@vger.kernel.org
-Cc: linux-s390@vger.kernel.org
-Cc: x86@kernel.org
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
-v3: declaration in mm.h, implemention in init-mm.c
- include/linux/mm.h | 3 +++
- mm/init-mm.c       | 9 +++++++++
- 2 files changed, 12 insertions(+)
+Hi all,
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index c274f75efcf9..02aa057540b7 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -244,6 +244,9 @@ int __add_to_page_cache_locked(struct page *page, struct address_space *mapping,
- 
- #define lru_to_page(head) (list_entry((head)->prev, struct page, lru))
- 
-+void setup_initial_init_mm(void *start_code, void *end_code,
-+			   void *end_data, void *brk);
-+
- /*
-  * Linux kernel virtual memory manager primitives.
-  * The idea being to have a "virtual" mm in the same way
-diff --git a/mm/init-mm.c b/mm/init-mm.c
-index 153162669f80..b4a6f38fb51d 100644
---- a/mm/init-mm.c
-+++ b/mm/init-mm.c
-@@ -40,3 +40,12 @@ struct mm_struct init_mm = {
- 	.cpu_bitmap	= CPU_BITS_NONE,
- 	INIT_MM_CONTEXT(init_mm)
- };
-+
-+void setup_initial_init_mm(void *start_code, void *end_code,
-+			   void *end_data, void *brk)
-+{
-+	init_mm.start_code = (unsigned long)start_code;
-+	init_mm.end_code = (unsigned long)end_code;
-+	init_mm.end_data = (unsigned long)end_data;
-+	init_mm.brk = (unsigned long)brk;
-+}
--- 
-2.26.2
+After merging the drm-misc tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
 
+drivers/infiniband/core/umem_dmabuf.c: In function 'ib_umem_dmabuf_map_page=
+s':
+drivers/infiniband/core/umem_dmabuf.c:69:10: error: implicit declaration of=
+ function 'dma_resv_get_excl'; did you mean 'dma_resv_get_fences'? [-Werror=
+=3Dimplicit-function-declaration]
+   69 |  fence =3D dma_resv_get_excl(umem_dmabuf->attach->dmabuf->resv);
+      |          ^~~~~~~~~~~~~~~~~
+      |          dma_resv_get_fences
+drivers/infiniband/core/umem_dmabuf.c:69:8: warning: assignment to 'struct =
+dma_fence *' from 'int' makes pointer from integer without a cast [-Wint-co=
+nversion]
+   69 |  fence =3D dma_resv_get_excl(umem_dmabuf->attach->dmabuf->resv);
+      |        ^
+
+Caused by commit
+
+  6edbd6abb783 ("dma-buf: rename and cleanup dma_resv_get_excl v3")
+
+I have used the drm-misc tree from next-20210604 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/b+1TpCNYac_XU6OZ37vakU=
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC9hV4ACgkQAVBC80lX
+0Gw5+gf7B6H+gNu20dyFmT7ojd+Og08t482xd1fGHSBr8dLRU9hgK2VbBYSJi4fr
+5WEM/8SfnHVruJK/uNbP9R6AYMiMi3SYEX1dyxs6hHKC7BI5/pue24l8GjK+jSXm
+6B36o8nRNDaEL0VrZ3LK0fQWS8A5LZKr60m9aRlqTTr9K22RGY2ki8PBIGTzXTh3
+f3STRjnstiwPuamyMK0Gc7nPrO1wJpWrEacUubUrrvaC4frbIuAxZL8/zJmNhR5r
+g0aBzW1baBRfrkgbLOeo6nw9fslXv6Mv3eFIHtBdKmQRfrMZPkpw9cvIoTDLhs00
+CS/PzKMu/lgbn8gywX76uzcuPXtbrg==
+=7ka1
+-----END PGP SIGNATURE-----
+
+--Sig_/b+1TpCNYac_XU6OZ37vakU=--
