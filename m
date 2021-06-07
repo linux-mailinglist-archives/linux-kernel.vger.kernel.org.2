@@ -2,68 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 180C939DDD6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44ED239DDF2
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230374AbhFGNlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 09:41:37 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:5272 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbhFGNle (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 09:41:34 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FzDrD43TGz1BJqF;
-        Mon,  7 Jun 2021 21:34:52 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 21:39:42 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 7 Jun 2021
- 21:39:41 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <nicolas.ferre@microchip.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>
-Subject: [PATCH net-next] net: macb: Use devm_platform_get_and_ioremap_resource()
-Date:   Mon, 7 Jun 2021 21:43:54 +0800
-Message-ID: <20210607134354.3582182-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S230386AbhFGNq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 09:46:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57316 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230217AbhFGNq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 09:46:27 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E2EBF61001;
+        Mon,  7 Jun 2021 13:44:34 +0000 (UTC)
+Date:   Mon, 7 Jun 2021 09:44:33 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Mark-PK Tsai <mark-pk.tsai@mediatek.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Matt Helsley <mhelsley@vmware.com>,
+        Sami Tolvanen <samitolvanen@google.com>, yj.chiang@mediatek.com
+Subject: Re: [PATCH] recordmcount: avoid using ABS symbol as reference
+Message-ID: <20210607094433.473100d9@oasis.local.home>
+In-Reply-To: <YL4GlbfMJiuLkRhR@hirez.programming.kicks-ass.net>
+References: <20210607074258.32322-1-mark-pk.tsai@mediatek.com>
+        <20210607080626.32612-1-mark-pk.tsai@mediatek.com>
+        <CAMj1kXGCoME4Wy4e3FNAjWLY=G56ivHzFTLrXRE0mLtnaBVEDQ@mail.gmail.com>
+        <YL4GlbfMJiuLkRhR@hirez.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use devm_platform_get_and_ioremap_resource() to simplify
-code.
+On Mon, 7 Jun 2021 13:44:21 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/net/ethernet/cadence/macb_main.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+> There's an extended section header index section for just that. And
+> recordmcount actually seems to use that as well.
+> 
+> I can't seem to find enough of the thread to figure out what the actual
+> problem is though. The lore archive doesn't have anything prior to this
+> message.
+> 
+> One should only use st_shndx when >SHN_UDEF and <SHN_LORESERVE. When
+> SHN_XINDEX, then use .symtab_shndx.
+> 
+> Apparently you've found a case where neither is true? In that case
+> objtool seems to use shndx 0. A matching recordmcount patch would be
+> something like this.
 
-diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-index a0c7b1167dbb..7d2fe13a52f8 100644
---- a/drivers/net/ethernet/cadence/macb_main.c
-+++ b/drivers/net/ethernet/cadence/macb_main.c
-@@ -4655,8 +4655,7 @@ static int macb_probe(struct platform_device *pdev)
- 	struct macb *bp;
- 	int err, val;
- 
--	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	mem = devm_ioremap_resource(&pdev->dev, regs);
-+	mem = devm_platform_get_and_ioremap_resource(pdev, 0, &regs);
- 	if (IS_ERR(mem))
- 		return PTR_ERR(mem);
- 
--- 
-2.25.1
+Mark-PK,
+
+Does the below patch fix it for you too (if you backport it to your
+kernel). I much rather have recordmcount match objtool, as one day the
+two will hopefully merge to one executable.
+
+-- Steve
+
+
+> 
+> 
+> diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
+> index f9b19524da11..d99cc0aed6fe 100644
+> --- a/scripts/recordmcount.h
+> +++ b/scripts/recordmcount.h
+> @@ -194,13 +194,18 @@ static unsigned int get_symindex(Elf_Sym const *sym, Elf32_Word const *symtab,
+>  	unsigned long offset;
+>  	int index;
+>  
+> -	if (sym->st_shndx != SHN_XINDEX)
+> +	if (sym->st_shndx > SHN_UDEF &&
+> +	    sym->st_shndx < SHN_LORESERVE)
+>  		return w2(sym->st_shndx);
+>  
+> -	offset = (unsigned long)sym - (unsigned long)symtab;
+> -	index = offset / sizeof(*sym);
+> +	if (sym->st_shndx == SHN_XINDEX) {
+> +		offset = (unsigned long)sym - (unsigned long)symtab;
+> +		index = offset / sizeof(*sym);
+>  
+> -	return w(symtab_shndx[index]);
+> +		return w(symtab_shndx[index]);
+> +	}
+> +
+> +	return 0;
+>  }
+>  
+>  static unsigned int get_shnum(Elf_Ehdr const *ehdr, Elf_Shdr const *shdr0)
 
