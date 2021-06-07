@@ -2,124 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5AE339D98E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C5F39D98F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230390AbhFGKZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 06:25:24 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:47808 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbhFGKZV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 06:25:21 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id ED35E1FDA5;
-        Mon,  7 Jun 2021 10:23:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623061407; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3yTVmuXnYhofXBlCbo4IT8YVBm6HcKA8wUzVzSayMos=;
-        b=WzFfC+Wgz7EnMtRD06x4fPqve4Fc88iJSnKAXQcb7EnFrMdFTGTGsiwLavkHVSaRziNCC1
-        KOEReCqMtueednd86PjVL2UNHo+0u6vS2nSl/yflhcvDpxdE9fMEiT73GFJ8xnGVir6Fn2
-        jYxAw7LfE8zDDShj3W8EwUpsRxB5Cr8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623061407;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3yTVmuXnYhofXBlCbo4IT8YVBm6HcKA8wUzVzSayMos=;
-        b=aoUH1FPnrcaW8PlQgRV9SfiN0ykK3H1waLliOZoBU+6SYnL4wGcL+HKsSSGu59S1RV0PuO
-        jDptSuhc8e/WcgDA==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 4EA63118DD;
-        Mon,  7 Jun 2021 10:23:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623061407; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3yTVmuXnYhofXBlCbo4IT8YVBm6HcKA8wUzVzSayMos=;
-        b=WzFfC+Wgz7EnMtRD06x4fPqve4Fc88iJSnKAXQcb7EnFrMdFTGTGsiwLavkHVSaRziNCC1
-        KOEReCqMtueednd86PjVL2UNHo+0u6vS2nSl/yflhcvDpxdE9fMEiT73GFJ8xnGVir6Fn2
-        jYxAw7LfE8zDDShj3W8EwUpsRxB5Cr8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623061407;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3yTVmuXnYhofXBlCbo4IT8YVBm6HcKA8wUzVzSayMos=;
-        b=aoUH1FPnrcaW8PlQgRV9SfiN0ykK3H1waLliOZoBU+6SYnL4wGcL+HKsSSGu59S1RV0PuO
-        jDptSuhc8e/WcgDA==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id d7jdD5/zvWC2MgAALh3uQQ
-        (envelope-from <osalvador@suse.de>); Mon, 07 Jun 2021 10:23:27 +0000
-Date:   Mon, 7 Jun 2021 12:23:25 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] mm,page_alloc: Use {get,put}_online_mems() to get
- stable zone's values
-Message-ID: <20210607102318.GA12683@linux>
-References: <20210602091457.17772-1-osalvador@suse.de>
- <20210602091457.17772-2-osalvador@suse.de>
- <39473305-6e91-262d-bcc2-76b745a5b14a@redhat.com>
- <ed17a39ad61edeb19b04c0f4308d5d36@suse.de>
- <YLiVAAsCTR7B6Db9@localhost.localdomain>
- <YLjO2YU2G5fTVB3x@dhcp22.suse.cz>
- <20210604074140.GA25063@linux>
- <20210607075147.GA10554@linux>
- <85984701-55ae-dfa5-2a8d-f637051b612d@redhat.com>
+        id S230406AbhFGKZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 06:25:26 -0400
+Received: from mga06.intel.com ([134.134.136.31]:1083 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230355AbhFGKZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 06:25:22 -0400
+IronPort-SDR: 2zjjMgRhiUzi/VvT3pcdxuW4VTv/NCsVMBYMb8Zb++SupHjsnnoRhMXlN8RFtDHjTOuFvb9ubA
+ WmQWv/TEN2Uw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="265750749"
+X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
+   d="scan'208";a="265750749"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 03:23:30 -0700
+IronPort-SDR: 6KMKnIbtqCdKX6P8IKQCGifSJPd27S+5hs7Sg2E/hDInGVq3EvHkHIlOxuDoyPdh33ib2f0jAL
+ Tl6R3qQTFOqA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
+   d="scan'208";a="484727860"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by fmsmga002.fm.intel.com with ESMTP; 07 Jun 2021 03:23:25 -0700
+Subject: Re: [PATCH v2 8/8] perf record: Directly bail out for compat case
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
+References: <20210602103007.184993-1-leo.yan@linaro.org>
+ <20210602103007.184993-9-leo.yan@linaro.org>
+ <c321e998-6fd2-86e9-7876-7250a9b23c25@intel.com>
+ <20210602123847.GE10272@leoy-ThinkPad-X240s>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <96e5fac6-17a2-ea03-9b15-338b84321ecf@intel.com>
+Date:   Mon, 7 Jun 2021 13:23:43 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <85984701-55ae-dfa5-2a8d-f637051b612d@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210602123847.GE10272@leoy-ThinkPad-X240s>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 10:49:01AM +0200, David Hildenbrand wrote:
-> I'd like to point out that I think the seqlock is not in place to
-> synchronize with actual growing/shrinking but to get consistent zone ranges
-> -- like using atomics, but we have two inter-dependent values here.
+On 2/06/21 3:38 pm, Leo Yan wrote:
+> Hi Adrain,
+> 
+> On Wed, Jun 02, 2021 at 02:18:47PM +0300, Adrian Hunter wrote:
+>> On 2/06/21 1:30 pm, Leo Yan wrote:
+>>> Since the 64-bit atomicity is not promised in 32-bit perf, directly
+>>> report the error and bail out for this case.
+>>>
+>>> Now only applies on x86_64 and Arm64 platforms.
+>>>
+>>> Suggested-by: Adrian Hunter <adrian.hunter@intel.com>
+>>
+>> Maybe we can do better for the compat case.
+>>
+>> We can assume the upper 32-bits change very seldom,
+>> and always increase. So for the 'read' case:
+>>
+>> 	u64 first, second, last;
+>> 	u64 mask = (u64)((u32)-1) << 32;
+>>
+>> 	do {
+>> 		first = READ_ONCE(pc->aux_head);
+>> 		rmb();
+>> 		second = READ_ONCE(pc->aux_head);
+>> 		rmb();
+>> 		last = READ_ONCE(pc->aux_head);
+>> 	} while ((first & mask) != (last & mask));
+>> 	return second;
+>>
+>> For the write case, we can cause a fatal error only if the new
+>> tail has non-zero upper 32-bits.  That gives up to 4GiB of data
+>> before aborting:
+>>
+>> 	if (tail & mask)
+>> 		return -1;
+>> 	smp_mb();
+>> 	WRITE_ONCE(pc->aux_tail, tail);
+> 
+> Seems to me, it's pointless to only support aux_head for 64-bit and
+> support aux_tail for 32-bit.  I understand this can be helpful for the
+> snapshot mode which only uses aux_head, but it still fails to support
+> the normal case for AUX ring buffer using 64-bit head/tail.
 
-I guess so, at least that's what it should do.
-But the way it is placed right now is misleading.
+I am not sure why you say it is pointless.  'perf record' would still be
+able to capture up to 4GiB of data. Do you mean you usually capture more
+than 4GiB of data?
 
-If we really want to get consistent zone ranges, we should start using
-zone's seqlock where it matters and that is pretty much all those
-places that use zone_spans_pfn().
-Otherwise there is no way you can be sure the pfn you're checking is
-within the limits. Moreover, as Michal pointed out early, if we really
-want to go down that road the locking should be made in the caller
-evolving the operation, otheriwse things might change once the lock
-is dropped and you're working with a wrong assumption.
+I was thinking we would separate out the compat case:
 
-I can see arguments for both riping it out and doing it right (but none for
-the way it is right now).
-For riping it out, one could say that those races might not be fatal,
-as usually the pfn you're working with (the one you want to check falls
-within a certain range) you know is valid, so the worst can happen is
-you get false positives/negatives and that might or might not be detected
-further down. How bad are false positive/negatives I guess it depends on the
-situation, but we already do that right now.
-The zone_spans_pfn() from page_outside_zone_boundaries() is the only one using
-locking right now, so well, if we survided this long without locks in other places
-using zone_spans_pfn() makes one wonder if it is that bad.
+#if BITS_PER_LONG == 32
+	if (kernel_is_64_bit)
+		return compat_auxtrace_mmap__[read_head/write_tail]()
+#endif
 
-On the other hand, one could argue that for correctness sake, we should be holding
-zone's seqlock whenever checking for zone_spans_pfn() to avoid any inconsistency.
-
-
--- 
-Oscar Salvador
-SUSE L3
+So the non-compat cases would not be affected.
