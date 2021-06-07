@@ -2,74 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E62039E4DA
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 19:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4761C39E4C9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 19:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231496AbhFGRIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 13:08:32 -0400
-Received: from mail-ej1-f47.google.com ([209.85.218.47]:37460 "EHLO
-        mail-ej1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230483AbhFGRIa (ORCPT
+        id S231360AbhFGRIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 13:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230382AbhFGRIV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 13:08:30 -0400
-Received: by mail-ej1-f47.google.com with SMTP id ce15so27873638ejb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 10:06:26 -0700 (PDT)
+        Mon, 7 Jun 2021 13:08:21 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B36A3C061789
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 10:06:16 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id q15so14291504pgg.12
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 10:06:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6jG8fG0GqzHaHTewjIgBEd/sf2X5LfQRA/MV1//47rE=;
-        b=whUEEw+Tpa+aHX4KqcRNinkQaQDZZR1eVDWgqy2acmutkSNAKodGfV3Eh3zCFF/r2E
-         EZuI6vEGmpvM9b9tpCC3m4mE6rV4VGvDBbEdp6/eMQIHAfmXLAq+rgKyWXQDYLWxN1DW
-         PkeyeB552VkZiac16yN5s9wfxUBlnIw7Ro7n9VmzUTx861wQKnDEgOobPy2LmTu1Pu3I
-         lPF6JKTP5EKFQ8XbaJ0rb4pswTvk1E4jLVsSz2a8dXxrvvB/QeIxVPpdTlJu0NqHFHjd
-         o8qoGwkTRbeEJOFR0vl6mqJfDhu2pHl0gk1AsW+SSo1T6rJAFL3TuCrYCjzdO57Eff+C
-         q7ZA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=h1KlkStLvRStBVJTSQFYwmRz+Osk/Ua5tWW4TsExsnQ=;
+        b=JjGREny0zqtnXUIvzi865hDU8o/5J9xd3glLyUEUxz8AJyDIDzkllfB707Xi93Vncm
+         xsLGlCMFwsg8jX6EdLFvztxWNsXfJo8gTSE62syPgNUD8xYgdlq7D65h2Hcp1L3+68Nc
+         mui8QFN4XuzfbMUW2HFBr9DMsLiX7w1aANTWo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6jG8fG0GqzHaHTewjIgBEd/sf2X5LfQRA/MV1//47rE=;
-        b=fIPmmhtPyHqE2+JaDMoyAUGcAYpR+QBo0org4hKouc6CKFRmGI8dBzTJnqNal4lIK9
-         WMRWdoKgqoJBMSpvGPlT3OKgcmAH9iOZFdebwBk55KM9nwiCZxFasVA/CZ5oIQQ+8Ehd
-         OO9yyih8DV+fnW1a6HcFA/bzfp8/U5LwGz7LMxlTED97trgLLniq8EfUziUr6OojU4Gc
-         D/aYYjlM+q+d98DPDOPmFi+Yxh0BVMdHupHMHih41esABvnJoK8aJXsTZ4YBx3/5F+y6
-         BM3C1StCEmEA3jHyKfmBEZLtrV2Sz/WR4rQhoAEDeXr27G89QUxb/o4i4hvwzJfyRJtp
-         TnmQ==
-X-Gm-Message-State: AOAM530Iw09pakZrJxgNQ6mZ2RHw0/zb7nEabReZIRQdstI4gKKwaCR5
-        Xq/Yk9kjwBvsPn6dmrAupW5yavGk1PEMSpfdvHPd
-X-Google-Smtp-Source: ABdhPJxSqbbzdEkBauzBSZOj63lXqru92bwaU25QDlfWMPQ0Xv+0ErdjoGY3j8FBExHlfkyjKqjxqNBL+6LMw0E28KE=
-X-Received: by 2002:a17:906:1113:: with SMTP id h19mr18675234eja.398.1623085525430;
- Mon, 07 Jun 2021 10:05:25 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=h1KlkStLvRStBVJTSQFYwmRz+Osk/Ua5tWW4TsExsnQ=;
+        b=V9+myywFYq0EFz+H3Ewzdgd/DDQ20ETPgVjywHLk58ben9U3TCQ8danhSAM22xMJ5b
+         YfMJh4f4Q/GKpFv18VOhiR20Em02kn9c/wKJjDBc0HDtLMORiqHzgMjYeX3wOKZqyp7J
+         8/F3FlLFiS4OU7MtEzxIqSYEve+u6l6rvoOO80navTpWaTabb6MDcT/G/b0HR1fugFlt
+         erG3cunmkxZJh2pCyBLtYqR6izbwXrDwWdNAWnwEWJAr/LmD7TaAqPnCU1aZDQrngXtO
+         zHbDpBAwgkqklwR/ttPvsWvVcUVJv3DobA1KxSGLJe/kD2t0IEOVeQ72wwCqnjx8KAN5
+         vNzg==
+X-Gm-Message-State: AOAM530SBrXZZ866M8OHHWrs7P+WIRgsanQEiJknsVcJJQHGIE7XistN
+        FpzOWP7HhV+UrXW8BR2O5aMRDQ==
+X-Google-Smtp-Source: ABdhPJwEfiZm77qEdH3k3vccPX5tPvVMCtHuG5+GI/0giuu5WAtkte5L9u8ICH/G1ZkDyKcuDboEeg==
+X-Received: by 2002:a63:1260:: with SMTP id 32mr18681828pgs.232.1623085575938;
+        Mon, 07 Jun 2021 10:06:15 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:f656:ffce:6348:a42a])
+        by smtp.gmail.com with ESMTPSA id fs24sm12897639pjb.6.2021.06.07.10.06.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 10:06:15 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     Linus W <linus.walleij@linaro.org>, robdclark@chromium.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Steev Klimaszewski <steev@kali.org>,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Thierry Reding <treding@nvidia.com>,
+        Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Robert Foss <robert.foss@linaro.org>,
+        Sandeep Panda <spanda@codeaurora.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v9 00/11] drm: Fix EDID reading on ti-sn65dsi86 by introducing the DP AUX bus
+Date:   Mon,  7 Jun 2021 10:05:44 -0700
+Message-Id: <20210607170555.4006050-1-dianders@chromium.org>
+X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
 MIME-Version: 1.0
-References: <20210607150100.2856110-1-zhengyongjun3@huawei.com>
-In-Reply-To: <20210607150100.2856110-1-zhengyongjun3@huawei.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 7 Jun 2021 13:05:14 -0400
-Message-ID: <CAHC9VhRbcBjYSpt0q2LrizWA6O2iPPOSfsEggUxfU4oigk3x2A@mail.gmail.com>
-Subject: Re: [PATCH net-next] netlabel: Fix spelling mistakes
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 10:47 AM Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
->
-> Fix some spelling mistakes in comments:
-> Interate  ==> Iterate
-> sucess  ==> success
->
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
->  net/netlabel/netlabel_domainhash.c | 2 +-
->  net/netlabel/netlabel_kapi.c       | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+The primary goal of this series is to try to properly fix EDID reading
+for eDP panels using the ti-sn65dsi86 bridge.
 
-Acked-by: Paul Moore <paul@paul-moore.com>
+Previously we had a patch that added EDID reading but it turned out
+not to work at bootup. This caused some extra churn at bootup as we
+tried (and failed) to read the EDID several times and also ended up
+forcing us to use the hardcoded mode at boot. With this patch series I
+believe EDID reading is reliable at boot now and we never use the
+hardcoded mode.
+
+High level note: in this series the EDID reading is driven by the
+panel driver, not by the bridge chip driver. I believe this makes a
+reasonable amount of sense since the panel driver already _could_
+drive reading the EDID if provided with the DDC bus and in future
+planned work we'll want to give the panel driver the DDC bus (to make
+decisions based on EDID) and the AUX bus (to control the
+backlight). There are also planned patches from Laurent to make
+ti-sn65dsi86 able to drive full DP monitors. In that case the bridge
+chip will still be in charge of reading the EDID, but it's not hard to
+make this dynamic.
+
+This series is the logical successor to the 3-part series containing
+the patch ("drm/bridge: ti-sn65dsi86: Properly get the EDID, but only
+if refclk") [1].
+
+This patch was tested against drm-misc-next commit 24994b91ecc5
+("MAINTAINERS: Add maintainer for hyperv video device") on a
+sc7180-trogdor-lazor device.
+
+At v9 now this just had a few tiny tweaks / bugfixes. I also added a
+patch to the end to make deferred probe a bit prettier. I _think_ this
+series is now ready to land and seems to be fairly well-reviewed. I
+believe all that's left is Laurent's official blessing that it's OK
+for the panel to drive the EDID reading in this case.
+
+Between v2 and v3, high-level view of changes:
+- stop doing the EDID caching in the core.
+
+Between v3 and v4, high-level view of changes:
+- EDID reading is actually driven by the panel driver now. See above.
+- Lots of chicken-and-egg problems solved w/ sub-devices.
+
+Between v4 and v5, high-level view of changes.
+- Some of the early patches landed, so dropped from series.
+- New pm_runtime_disable() fix (fixed a patch that already landed).
+- Added Bjorn's tags to most patches
+- Fixed problems when building as a module.
+- Reordered debugfs patch and fixed error handling there.
+- Dropped last patch. I'm not convinced it's safe w/out more work.
+
+Between v5 and v6, high-level view of changes:
+- Added the patch ("drm/dp: Allow an early call to register DDC i2c
+  bus")
+- Many patches had been landed, so only a few "controversial" ones
+  left.
+
+Between v6 and v7, high-level view of changes:
+- New AUX DP bus!
+
+Between v7 and v8, high-level view of changes:
+- More bindings work.
+- Fixed allmodconfig.
+
+Between v8 and v9, high-level view of changes:
+- Fixed error/remove in panel.
+- Properly handle of_node in sub-devices in sn65dsi86.
+- Tiny bindings touchup including dropping "Example" patch.
+- Added review tags.
+- Added error message cleanup patch at the end.
+- First patch (bugfix) dropped (it landed).
+
+[1] https://lore.kernel.org/r/20210304155144.3.I60a7fb23ce4589006bc95c64ab8d15c74b876e68@changeid/
+
+Changes in v9:
+- ("Improve probe errors") patch new for v9.
+- Commit message now notes aux-bus yaml won't have an "Example".
+- Fix error handling / remove case when using AUX bus for DDC.
+- Properly set the of_node of sn65dsi86 auxbus devices now.
+- Rebased atop v9 ("Promote the AUX channel") patch.
+- Use an absolute path to refer to aux-bus schema.
+
+Changes in v8:
+- Allow dp-aux-bus to be a module to fix allmodconfig builds
+- Explain better why HPD needs to be in panel-simple in commit msg.
+- Separate DP AUX bus binding is new for v8.
+- ti-sn65dsi86 references the new aux bus bindings.
+
+Changes in v7:
+- Adjusted commit message to talk about DP AUX bus.
+- Beefed up commit message in context of the DP AUX bus.
+- List hpd properties bindings patch new for v7.
+- Panel now under bridge chip instead of getting a link to ddc-i2c
+- Patch introducing the DP AUX bus is new for v7.
+- Patch to allow panel-simple to be DP AUX EP new for v7.
+- Patch to support for DP AUX bus on ti-sn65dsi86 new for v7.
+- Patch using the DP AUX for DDC new for v7.
+- Remove use of now-dropped drm_dp_aux_register_ddc() call.
+- Set the proper sub-device "dev" pointer in the AUX structure.
+- ti-sn65dsi86: Add aux-bus child patch new for v7.
+
+Changes in v6:
+- Use new drm_dp_aux_register_ddc() calls.
+
+Douglas Anderson (11):
+  dt-bindings: display: simple: List hpd properties in panel-simple
+  dt-bindings: drm: Introduce the DP AUX bus
+  dt-bindings: drm/bridge: ti-sn65dsi86: Add aux-bus child
+  drm: Introduce the DP AUX bus
+  drm/panel: panel-simple: Allow panel-simple be a DP AUX endpoint
+    device
+  drm/panel: panel-simple: Stash DP AUX bus; allow using it for DDC
+  drm/bridge: ti-sn65dsi86: Promote the AUX channel to its own sub-dev
+  drm/bridge: ti-sn65dsi86: Add support for the DP AUX bus
+  drm/bridge: ti-sn65dsi86: Don't read EDID blob over DDC
+  drm/bridge: ti-sn65dsi86: Improve probe errors with dev_err_probe()
+  arm64: dts: qcom: sc7180-trogdor: Move panel under the bridge chip
+
+ .../bindings/display/bridge/ti,sn65dsi86.yaml |  20 +-
+ .../bindings/display/dp-aux-bus.yaml          |  37 ++
+ .../bindings/display/panel/panel-simple.yaml  |   2 +
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi  |  30 +-
+ drivers/gpu/drm/Kconfig                       |   5 +
+ drivers/gpu/drm/Makefile                      |   2 +
+ drivers/gpu/drm/bridge/Kconfig                |   1 +
+ drivers/gpu/drm/bridge/ti-sn65dsi86.c         | 129 +++----
+ drivers/gpu/drm/drm_dp_aux_bus.c              | 326 ++++++++++++++++++
+ drivers/gpu/drm/panel/Kconfig                 |   1 +
+ drivers/gpu/drm/panel/panel-simple.c          |  68 +++-
+ include/drm/drm_dp_aux_bus.h                  |  57 +++
+ 12 files changed, 594 insertions(+), 84 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/dp-aux-bus.yaml
+ create mode 100644 drivers/gpu/drm/drm_dp_aux_bus.c
+ create mode 100644 include/drm/drm_dp_aux_bus.h
 
 -- 
-paul moore
-www.paul-moore.com
+2.32.0.rc1.229.g3e70b5a671-goog
+
