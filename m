@@ -2,749 +2,1045 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1635B39E065
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 17:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70EDE39E057
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 17:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231225AbhFGPbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 11:31:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38408 "EHLO
+        id S230435AbhFGPat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 11:30:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231173AbhFGPbO (ORCPT
+        with ESMTP id S230220AbhFGPaq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 11:31:14 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB8FC061789
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 08:29:16 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id c5so18074431wrq.9
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 08:29:15 -0700 (PDT)
+        Mon, 7 Jun 2021 11:30:46 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63CD9C061787;
+        Mon,  7 Jun 2021 08:28:55 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id c31-20020a056830349fb02903a5bfa6138bso17089738otu.7;
+        Mon, 07 Jun 2021 08:28:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=W1iJl2Pfs5N04zh5cLmR0BZtU7zADLjxFUl+4rPcNnk=;
-        b=PZvr5x8LLRtYX0iEUaExxo/EiqG7KnCAH89iSPZDz82w6vUpYSqZjPKMUNXygi1LrR
-         XLpkqkEcab1OM6cImBk5E9fPbAzM6smRJcnHu7zJ2ty0DIW1VBTV+m/yLhD4ZXHwUSR4
-         bDDL7enzp4XjJjzxa+SxpCn2btgDCNP1W5ocHC0aCd39iVLcrucLiwlDm760MIsjT6Zl
-         2lzZfYOARQg5Ci89bYQtWkfM0N/e0yeIhUKvVj3dagOmS4YP4ArT6fQsQBbtfyQmq2m/
-         GDQrAJggXTwD7xscNflS+2cAQXwOQIZ2qEIE8s77h1QJHAVU2ChtTTd9qpIZneweUYCD
-         pbZg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JBIa/s/4oXvYg8u/4s/haH9oPCDWMjScJ7ZRaKwVV1E=;
+        b=efTfnkA7i4xfSQYu+TFmyhK4Oh1VOvM8LOHw6Xtsyr63pzo7m1U24HujBdvEaPg7u9
+         pKkMYLGjf/Qb0KGjcQc/zXC8VwvjF73SPNishBVqKl3+73IvAqM3zZ1+aH9ryZoqORqb
+         YO/C4fl7bpYx5QKGBewZpUYXk8LjtwmzPyBXD8kphjk6Zlqsd3IysYmf8DWttaVSHqf5
+         5iHxnTXdVVlDwq5Ph5+P0A41TIs+0phSnF4wG+friVWf3DUOIXH8D9FeLYs1HP04LBsa
+         BN+aU2YnTtbWQKPhIp9gzIZQ+mzHxYVN7CZ70RTIJvY4KIqAmlNLiLxnPXX/CLlDLqVs
+         lacg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=W1iJl2Pfs5N04zh5cLmR0BZtU7zADLjxFUl+4rPcNnk=;
-        b=jqdnGrLOib8NjGPJgEaqzyaso9NBHlurlLxQrqb5+iedF+xda45AuKI1RDIZHXMr7p
-         aXkwi070myzbtlqt3/FlYIaTKqQyos+tnwTMyi2KX0iHtCArKHhHT4WKl1JbcfB6ZzsS
-         cQpMbIVxhpWgMSzbBXYoim1+wITv6cWm2RmmZngP/vkUhymxhhvnWffvh/7r+WP6UYso
-         wzo1RpjUUL/KQvSvcj5I4pJqXNM5a27Eosz9h8ZQGZ5BsdXtlZlhmONyaSgB0stFHZfA
-         YhLGvucQkm7rCj4JMNP4uXqi8uM45Tp5MjQ4GvssyulV9DSvjEuSpkV/8BieP0aUIi9r
-         vdJA==
-X-Gm-Message-State: AOAM533PCoF3B1hhJs4G7FqhLzKMEprqKxRxSakqolCGYfW3vEuteUWo
-        RSDMzZeJi9pAK733JPxRzYeBzw==
-X-Google-Smtp-Source: ABdhPJxVry44u6Yqfb8ZZZYlSIbauOYV/owsF4CO10Qh09+t1V9EpliABlCj9lCFha936gdRCM6/1g==
-X-Received: by 2002:adf:cd87:: with SMTP id q7mr17501714wrj.370.1623079754630;
-        Mon, 07 Jun 2021 08:29:14 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id q3sm16370170wrr.43.2021.06.07.08.29.13
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JBIa/s/4oXvYg8u/4s/haH9oPCDWMjScJ7ZRaKwVV1E=;
+        b=G8l6jSz6c1IzbJZwS8O2ujqrRLscFhIWzJKwbO0IETdi3y4mGuzORGoPtIuaTNHISE
+         6Zd97LRArI2YxDEwqIhwmyBWCyXwuXst2ek99qD/++8lR03XyeNQOh68k4EZB0R+E9xh
+         cBYIejIc02S+uFIk/xm/SkjENzv4dlwVsDfLR+/MhzxY0MilvI1CFeLOpqypDPzPHnMO
+         iCRJQhXyuacPuBgCQmzfapPfbSh+k7AeUbKlIEVi2thCeDuRCatZeadzAMjZAHhUoenH
+         2FdyTUYPToVclgL38gN5GU300U8omRzW3lsp1ho9F7eCoh+IJjps3qVXzWvD/Hzl7F2O
+         tfcw==
+X-Gm-Message-State: AOAM533GcvllCmTSinBot05RDyBRyUB8AcEkV52SzuDTEskBmGDCmpvO
+        mUQTkokrsAnZfWVtU40OxLs=
+X-Google-Smtp-Source: ABdhPJzs3G5buYk743C0dnuwPTwafKwCMmC4Us4c7q1MpmxwfzeUZugWg8FjxpklCN/OnKUx1Hmb+w==
+X-Received: by 2002:a05:6830:43:: with SMTP id d3mr3675924otp.118.1623079733617;
+        Mon, 07 Jun 2021 08:28:53 -0700 (PDT)
+Received: from wintermute.localdomain (cpe-76-183-134-35.tx.res.rr.com. [76.183.134.35])
+        by smtp.gmail.com with ESMTPSA id w4sm209996otm.31.2021.06.07.08.28.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 08:29:14 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     bjorn.andersson@linaro.org, broonie@kernel.org
-Cc:     plai@codeaurora.org, tiwai@suse.de, robh@kernel.org,
-        devicetree@vger.kernel.org, perex@perex.cz,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        lgirdwood@gmail.com, bgoswami@codeaurora.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [RFC PATCH 11/13] ASoC: qcom: audioreach: add q6prm support
-Date:   Mon,  7 Jun 2021 16:28:34 +0100
-Message-Id: <20210607152836.17154-12-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210607152836.17154-1-srinivas.kandagatla@linaro.org>
-References: <20210607152836.17154-1-srinivas.kandagatla@linaro.org>
+        Mon, 07 Jun 2021 08:28:53 -0700 (PDT)
+Date:   Mon, 7 Jun 2021 10:28:49 -0500
+From:   Chris Morgan <macroalpha82@gmail.com>
+To:     Jon Lin <jon.lin@rock-chips.com>
+Cc:     linux-spi@vger.kernel.org, broonie@kernel.org, robh+dt@kernel.org,
+        heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
+        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
+        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+        p.yadav@ti.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Chris Morgan <macromorgan@hotmail.com>
+Subject: Re: [PATCH v5 2/8] spi: rockchip-sfc: add rockchip serial flash
+ controller
+Message-ID: <20210607152849.GA43@wintermute.localdomain>
+References: <20210607124303.22393-1-jon.lin@rock-chips.com>
+ <20210607124303.22393-3-jon.lin@rock-chips.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210607124303.22393-3-jon.lin@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support to q6prm (Proxy Resource Manager) module used for clock resources
+On Mon, Jun 07, 2021 at 08:42:57PM +0800, Jon Lin wrote:
+> From: Chris Morgan <macromorgan@hotmail.com>
+> 
+> Add the rockchip serial flash controller (SFC) driver.
+> 
+> Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+> Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+> ---
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- include/dt-bindings/sound/qcom,q6prm.h | 205 ++++++++++++
- sound/soc/qcom/Kconfig                 |   4 +
- sound/soc/qcom/audioreach/Makefile     |   2 +
- sound/soc/qcom/audioreach/q6prm.c      | 412 +++++++++++++++++++++++++
- 4 files changed, 623 insertions(+)
- create mode 100644 include/dt-bindings/sound/qcom,q6prm.h
- create mode 100644 sound/soc/qcom/audioreach/q6prm.c
+Lukas Wunner provided me some comments on my last patch series
+which I am including in here to make sure they get seen.
 
-diff --git a/include/dt-bindings/sound/qcom,q6prm.h b/include/dt-bindings/sound/qcom,q6prm.h
-new file mode 100644
-index 000000000000..1c5f84fa573a
---- /dev/null
-+++ b/include/dt-bindings/sound/qcom,q6prm.h
-@@ -0,0 +1,205 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __DT_BINDINGS_Q6_PRM_H__
-+#define __DT_BINDINGS_Q6_PRM_H__
-+
-+/* Audio Front End (PRM) virtual ports IDs */
-+#define HDMI_RX		1
-+#define SLIMBUS_0_RX    2
-+#define SLIMBUS_0_TX    3
-+#define SLIMBUS_1_RX    4
-+#define SLIMBUS_1_TX    5
-+#define SLIMBUS_2_RX    6
-+#define SLIMBUS_2_TX    7
-+#define SLIMBUS_3_RX    8
-+#define SLIMBUS_3_TX    9
-+#define SLIMBUS_4_RX    10
-+#define SLIMBUS_4_TX    11
-+#define SLIMBUS_5_RX    12
-+#define SLIMBUS_5_TX    13
-+#define SLIMBUS_6_RX    14
-+#define SLIMBUS_6_TX    15
-+#define PRIMARY_MI2S_RX		16
-+#define PRIMARY_MI2S_TX		17
-+#define SECONDARY_MI2S_RX	18
-+#define SECONDARY_MI2S_TX	19
-+#define TERTIARY_MI2S_RX	20
-+#define TERTIARY_MI2S_TX	21
-+#define QUATERNARY_MI2S_RX	22
-+#define QUATERNARY_MI2S_TX	23
-+#define PRIMARY_TDM_RX_0	24
-+#define PRIMARY_TDM_TX_0	25
-+#define PRIMARY_TDM_RX_1	26
-+#define PRIMARY_TDM_TX_1	27
-+#define PRIMARY_TDM_RX_2	28
-+#define PRIMARY_TDM_TX_2	29
-+#define PRIMARY_TDM_RX_3	30
-+#define PRIMARY_TDM_TX_3	31
-+#define PRIMARY_TDM_RX_4	32
-+#define PRIMARY_TDM_TX_4	33
-+#define PRIMARY_TDM_RX_5	34
-+#define PRIMARY_TDM_TX_5	35
-+#define PRIMARY_TDM_RX_6	36
-+#define PRIMARY_TDM_TX_6	37
-+#define PRIMARY_TDM_RX_7	38
-+#define PRIMARY_TDM_TX_7	39
-+#define SECONDARY_TDM_RX_0	40
-+#define SECONDARY_TDM_TX_0	41
-+#define SECONDARY_TDM_RX_1	42
-+#define SECONDARY_TDM_TX_1	43
-+#define SECONDARY_TDM_RX_2	44
-+#define SECONDARY_TDM_TX_2	45
-+#define SECONDARY_TDM_RX_3	46
-+#define SECONDARY_TDM_TX_3	47
-+#define SECONDARY_TDM_RX_4	48
-+#define SECONDARY_TDM_TX_4	49
-+#define SECONDARY_TDM_RX_5	50
-+#define SECONDARY_TDM_TX_5	51
-+#define SECONDARY_TDM_RX_6	52
-+#define SECONDARY_TDM_TX_6	53
-+#define SECONDARY_TDM_RX_7	54
-+#define SECONDARY_TDM_TX_7	55
-+#define TERTIARY_TDM_RX_0	56
-+#define TERTIARY_TDM_TX_0	57
-+#define TERTIARY_TDM_RX_1	58
-+#define TERTIARY_TDM_TX_1	59
-+#define TERTIARY_TDM_RX_2	60
-+#define TERTIARY_TDM_TX_2	61
-+#define TERTIARY_TDM_RX_3	62
-+#define TERTIARY_TDM_TX_3	63
-+#define TERTIARY_TDM_RX_4	64
-+#define TERTIARY_TDM_TX_4	65
-+#define TERTIARY_TDM_RX_5	66
-+#define TERTIARY_TDM_TX_5	67
-+#define TERTIARY_TDM_RX_6	68
-+#define TERTIARY_TDM_TX_6	69
-+#define TERTIARY_TDM_RX_7	70
-+#define TERTIARY_TDM_TX_7	71
-+#define QUATERNARY_TDM_RX_0	72
-+#define QUATERNARY_TDM_TX_0	73
-+#define QUATERNARY_TDM_RX_1	74
-+#define QUATERNARY_TDM_TX_1	75
-+#define QUATERNARY_TDM_RX_2	76
-+#define QUATERNARY_TDM_TX_2	77
-+#define QUATERNARY_TDM_RX_3	78
-+#define QUATERNARY_TDM_TX_3	79
-+#define QUATERNARY_TDM_RX_4	80
-+#define QUATERNARY_TDM_TX_4	81
-+#define QUATERNARY_TDM_RX_5	82
-+#define QUATERNARY_TDM_TX_5	83
-+#define QUATERNARY_TDM_RX_6	84
-+#define QUATERNARY_TDM_TX_6	85
-+#define QUATERNARY_TDM_RX_7	86
-+#define QUATERNARY_TDM_TX_7	87
-+#define QUINARY_TDM_RX_0	88
-+#define QUINARY_TDM_TX_0	89
-+#define QUINARY_TDM_RX_1	90
-+#define QUINARY_TDM_TX_1	91
-+#define QUINARY_TDM_RX_2	92
-+#define QUINARY_TDM_TX_2	93
-+#define QUINARY_TDM_RX_3	94
-+#define QUINARY_TDM_TX_3	95
-+#define QUINARY_TDM_RX_4	96
-+#define QUINARY_TDM_TX_4	97
-+#define QUINARY_TDM_RX_5	98
-+#define QUINARY_TDM_TX_5	99
-+#define QUINARY_TDM_RX_6	100
-+#define QUINARY_TDM_TX_6	101
-+#define QUINARY_TDM_RX_7	102
-+#define QUINARY_TDM_TX_7	103
-+#define DISPLAY_PORT_RX		104
-+#define WSA_CODEC_DMA_RX_0	105
-+#define WSA_CODEC_DMA_TX_0	106
-+#define WSA_CODEC_DMA_RX_1	107
-+#define WSA_CODEC_DMA_TX_1	108
-+#define WSA_CODEC_DMA_TX_2	109
-+#define VA_CODEC_DMA_TX_0	110
-+#define VA_CODEC_DMA_TX_1	111
-+#define VA_CODEC_DMA_TX_2	112
-+#define RX_CODEC_DMA_RX_0	113
-+#define TX_CODEC_DMA_TX_0	114
-+#define RX_CODEC_DMA_RX_1	115
-+#define TX_CODEC_DMA_TX_1	116
-+#define RX_CODEC_DMA_RX_2	117
-+#define TX_CODEC_DMA_TX_2	118
-+#define RX_CODEC_DMA_RX_3	119
-+#define TX_CODEC_DMA_TX_3	120
-+#define RX_CODEC_DMA_RX_4	121
-+#define TX_CODEC_DMA_TX_4	122
-+#define RX_CODEC_DMA_RX_5	123
-+#define TX_CODEC_DMA_TX_5	124
-+#define RX_CODEC_DMA_RX_6	125
-+#define RX_CODEC_DMA_RX_7	126
-+
-+#define LPASS_CLK_ID_PRI_MI2S_IBIT	1
-+#define LPASS_CLK_ID_PRI_MI2S_EBIT	2
-+#define LPASS_CLK_ID_SEC_MI2S_IBIT	3
-+#define LPASS_CLK_ID_SEC_MI2S_EBIT	4
-+#define LPASS_CLK_ID_TER_MI2S_IBIT	5
-+#define LPASS_CLK_ID_TER_MI2S_EBIT	6
-+#define LPASS_CLK_ID_QUAD_MI2S_IBIT	7
-+#define LPASS_CLK_ID_QUAD_MI2S_EBIT	8
-+#define LPASS_CLK_ID_SPEAKER_I2S_IBIT	9
-+#define LPASS_CLK_ID_SPEAKER_I2S_EBIT	10
-+#define LPASS_CLK_ID_SPEAKER_I2S_OSR	11
-+#define LPASS_CLK_ID_QUI_MI2S_IBIT	12
-+#define LPASS_CLK_ID_QUI_MI2S_EBIT	13
-+#define LPASS_CLK_ID_SEN_MI2S_IBIT	14
-+#define LPASS_CLK_ID_SEN_MI2S_EBIT	15
-+#define LPASS_CLK_ID_INT0_MI2S_IBIT	16
-+#define LPASS_CLK_ID_INT1_MI2S_IBIT	17
-+#define LPASS_CLK_ID_INT2_MI2S_IBIT	18
-+#define LPASS_CLK_ID_INT3_MI2S_IBIT	19
-+#define LPASS_CLK_ID_INT4_MI2S_IBIT	20
-+#define LPASS_CLK_ID_INT5_MI2S_IBIT	21
-+#define LPASS_CLK_ID_INT6_MI2S_IBIT	22
-+#define LPASS_CLK_ID_QUI_MI2S_OSR	23
-+#define LPASS_CLK_ID_PRI_PCM_IBIT	24
-+#define LPASS_CLK_ID_PRI_PCM_EBIT	25
-+#define LPASS_CLK_ID_SEC_PCM_IBIT	26
-+#define LPASS_CLK_ID_SEC_PCM_EBIT	27
-+#define LPASS_CLK_ID_TER_PCM_IBIT	28
-+#define LPASS_CLK_ID_TER_PCM_EBIT	29
-+#define LPASS_CLK_ID_QUAD_PCM_IBIT	30
-+#define LPASS_CLK_ID_QUAD_PCM_EBIT	31
-+#define LPASS_CLK_ID_QUIN_PCM_IBIT	32
-+#define LPASS_CLK_ID_QUIN_PCM_EBIT	33
-+#define LPASS_CLK_ID_QUI_PCM_OSR	34
-+#define LPASS_CLK_ID_PRI_TDM_IBIT	35
-+#define LPASS_CLK_ID_PRI_TDM_EBIT	36
-+#define LPASS_CLK_ID_SEC_TDM_IBIT	37
-+#define LPASS_CLK_ID_SEC_TDM_EBIT	38
-+#define LPASS_CLK_ID_TER_TDM_IBIT	39
-+#define LPASS_CLK_ID_TER_TDM_EBIT	40
-+#define LPASS_CLK_ID_QUAD_TDM_IBIT	41
-+#define LPASS_CLK_ID_QUAD_TDM_EBIT	42
-+#define LPASS_CLK_ID_QUIN_TDM_IBIT	43
-+#define LPASS_CLK_ID_QUIN_TDM_EBIT	44
-+#define LPASS_CLK_ID_QUIN_TDM_OSR	45
-+#define LPASS_CLK_ID_MCLK_1		46
-+#define LPASS_CLK_ID_MCLK_2		47
-+#define LPASS_CLK_ID_MCLK_3		48
-+#define LPASS_CLK_ID_MCLK_4		49
-+#define LPASS_CLK_ID_INTERNAL_DIGITAL_CODEC_CORE	50
-+#define LPASS_CLK_ID_INT_MCLK_0		51
-+#define LPASS_CLK_ID_INT_MCLK_1		52
-+#define LPASS_CLK_ID_MCLK_5		53
-+#define LPASS_CLK_ID_WSA_CORE_MCLK	54
-+#define LPASS_CLK_ID_WSA_CORE_NPL_MCLK	55
-+#define LPASS_CLK_ID_VA_CORE_MCLK	56
-+#define LPASS_CLK_ID_TX_CORE_MCLK	57
-+#define LPASS_CLK_ID_TX_CORE_NPL_MCLK	58
-+#define LPASS_CLK_ID_RX_CORE_MCLK	59
-+#define LPASS_CLK_ID_RX_CORE_NPL_MCLK	60
-+#define LPASS_CLK_ID_VA_CORE_2X_MCLK	61
-+
-+#define LPASS_HW_MACRO_VOTE		102
-+#define LPASS_HW_DCODEC_VOTE		103
-+
-+#define Q6PRM_MAX_CLK_ID			104
-+
-+#define LPASS_CLK_ATTRIBUTE_INVALID		0x0
-+#define LPASS_CLK_ATTRIBUTE_COUPLE_NO		0x1
-+#define LPASS_CLK_ATTRIBUTE_COUPLE_DIVIDEND	0x2
-+#define LPASS_CLK_ATTRIBUTE_COUPLE_DIVISOR	0x3
-+
-+#endif /* __DT_BINDINGS_Q6_PRM_H__ */
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 4eb1b1a7c1f7..fa3ab78b125e 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -109,12 +109,16 @@ config SND_SOC_QCOM_APM_DAI
- config SND_SOC_QCOM_APM_BEDAI
- 	tristate
- 
-+config SND_SOC_QCOM_PRM
-+	tristate
-+
- config SND_SOC_QCOM_AUDIOREACH
- 	tristate "SoC ALSA audio drives for Qualcomm AUDIOREACH"
- 	depends on QCOM_GPR
- 	select SND_SOC_TOPOLOGY
- 	select SND_SOC_QCOM_APM_DAI
- 	select SND_SOC_QCOM_APM_BEDAI
-+	select SND_SOC_QCOM_PRM
- 	help
- 	 Support for AudioReach in QDSP
- 
-diff --git a/sound/soc/qcom/audioreach/Makefile b/sound/soc/qcom/audioreach/Makefile
-index e8651455b206..d9904201ccf0 100644
---- a/sound/soc/qcom/audioreach/Makefile
-+++ b/sound/soc/qcom/audioreach/Makefile
-@@ -2,9 +2,11 @@
- snd-ar-objs := audioreach.o q6apm.o topology.o
- snd-apm-dai-objs := q6apm-dai.o
- snd-apm-bedai-objs := q6apm-bedai.o
-+snd-prm-objs := q6prm.o
- 
- obj-$(CONFIG_SND_SOC_QCOM_AUDIOREACH) += snd-ar.o
- obj-$(CONFIG_SND_SOC_QCOM_APM_DAI) += snd-apm-dai.o
- obj-$(CONFIG_SND_SOC_QCOM_APM_BEDAI) += snd-apm-bedai.o
-+obj-$(CONFIG_SND_SOC_QCOM_PRM) += snd-prm.o
- 
- 
-diff --git a/sound/soc/qcom/audioreach/q6prm.c b/sound/soc/qcom/audioreach/q6prm.c
-new file mode 100644
-index 000000000000..84a9ca3aa7fd
---- /dev/null
-+++ b/sound/soc/qcom/audioreach/q6prm.c
-@@ -0,0 +1,412 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2021, Linaro Limited
-+
-+#include <linux/slab.h>
-+#include <linux/wait.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/delay.h>
-+#include <linux/of_platform.h>
-+#include <linux/clk-provider.h>
-+#include <linux/jiffies.h>
-+#include <linux/soc/qcom/gpr.h>
-+#include <dt-bindings/soc/qcom,gpr.h>
-+#include <dt-bindings/sound/qcom,q6prm.h>
-+#include "audioreach.h"
-+
-+#define Q6PRM_CLK(id) &(struct q6prm_clk) {		\
-+		.clk_id	= id,				\
-+		.afe_clk_id	= Q6PRM_##id,		\
-+		.name = #id,				\
-+		.attributes = LPASS_CLK_ATTRIBUTE_COUPLE_NO, \
-+		.rate = 19200000,			\
-+		.hw.init = &(struct clk_init_data) {	\
-+			.ops = &clk_q6prm_ops,		\
-+			.name = #id,			\
-+		},					\
-+	}
-+
-+#define Q6PRM_VOTE_CLK(id, blkid) &(struct q6prm_clk) { \
-+		.clk_id	= id,				\
-+		.afe_clk_id = blkid,			\
-+		.hw.init = &(struct clk_init_data) {	\
-+			.ops = &clk_vote_q6prm_ops,	\
-+			.name = #id,			\
-+		},					\
-+	}
-+
-+struct q6prm_clk {
-+	struct device *dev;
-+	int clk_id;
-+	int afe_clk_id;
-+	char *name;
-+	int attributes;
-+	int rate;
-+	uint32_t handle;
-+	struct clk_hw hw;
-+};
-+#define to_q6prm_clk(_hw) container_of(_hw, struct q6prm_clk, hw)
-+
-+struct q6prm {
-+	struct device *dev;
-+	struct gpr_device *gdev;
-+	wait_queue_head_t wait;
-+	struct gpr_ibasic_rsp_result_t result;
-+	struct mutex lock;
-+	struct q6prm_clk **clks;
-+	int num_clks;
-+};
-+
-+#define PRM_CMD_REQUEST_HW_RSC		0x0100100F
-+#define PRM_CMD_RSP_REQUEST_HW_RSC	0x02001002
-+#define PRM_CMD_RELEASE_HW_RSC		0x01001010
-+#define PRM_CMD_RSP_RELEASE_HW_RSC	0x02001003
-+
-+#define PARAM_ID_RSC_HW_CORE		0x08001032
-+#define PARAM_ID_RSC_LPASS_CORE		0x0800102B
-+#define PARAM_ID_RSC_AUDIO_HW_CLK	0x0800102C
-+
-+#define Q6PRM_LPASS_CLK_ID_WSA_CORE_MCLK			0x305
-+#define Q6PRM_LPASS_CLK_ID_WSA_CORE_NPL_MCLK			0x306
-+
-+#define Q6PRM_LPASS_CLK_ID_VA_CORE_MCLK				0x307
-+#define Q6PRM_LPASS_CLK_ID_VA_CORE_2X_MCLK			0x308
-+
-+#define Q6PRM_LPASS_CLK_ID_TX_CORE_MCLK				0x30c
-+#define Q6PRM_LPASS_CLK_ID_TX_CORE_NPL_MCLK			0x30d
-+
-+#define Q6PRM_LPASS_CLK_ID_RX_CORE_MCLK				0x30e
-+#define Q6PRM_LPASS_CLK_ID_RX_CORE_NPL_MCLK			0x30f
-+
-+#define Q6PRM_LPASS_CLK_SRC_INTERNAL	1
-+#define Q6PRM_LPASS_CLK_ROOT_DEFAULT	0
-+#define Q6PRM_HW_CORE_ID_LPASS		1
-+#define Q6PRM_HW_CORE_ID_DCODEC		2
-+
-+struct prm_cmd_request_hw_core {
-+	struct apm_module_param_data param_data;
-+	uint32_t hw_clk_id;
-+} __packed;
-+
-+struct prm_cmd_request_rsc {
-+	struct apm_module_param_data param_data;
-+	uint32_t num_clk_id;
-+	struct audio_hw_clk_cfg clock_ids[1];
-+} __packed;
-+
-+struct prm_cmd_release_rsc {
-+	struct apm_module_param_data param_data;
-+	uint32_t num_clk_id;
-+	struct audio_hw_clk_cfg clock_ids[1];
-+} __packed;
-+
-+static int q6prm_send_cmd_sync(struct q6prm *prm, struct gpr_pkt *pkt,
-+			uint32_t rsp_opcode)
-+{
-+	struct gpr_device *gdev = prm->gdev;
-+	struct gpr_hdr *hdr = &pkt->hdr;
-+	int rc;
-+
-+	mutex_lock(&prm->lock);
-+	prm->result.opcode = 0;
-+	prm->result.status = 0;
-+
-+	rc = gpr_send_pkt(prm->gdev, pkt);
-+	if (rc < 0)
-+		goto err;
-+
-+	if (rsp_opcode)
-+		rc = wait_event_timeout(prm->wait,
-+					(prm->result.opcode == hdr->opcode) ||
-+					(prm->result.opcode == rsp_opcode),
-+					5 * HZ);
-+	else
-+		rc = wait_event_timeout(prm->wait,
-+					(prm->result.opcode == hdr->opcode),
-+					5 * HZ);
-+
-+	if (!rc) {
-+		dev_err(&gdev->dev, "CMD timeout for [%x] opcode\n",
-+			hdr->opcode);
-+		rc = -ETIMEDOUT;
-+	} else if (prm->result.status > 0) {
-+		dev_err(&gdev->dev, "DSP returned error[%x] %x\n", hdr->opcode,
-+			prm->result.status);
-+		rc = -EINVAL;
-+	} else {
-+		dev_err(&gdev->dev, "DSP returned [%x]\n",
-+			prm->result.status);
-+		rc = 0;
-+	}
-+
-+err:
-+	mutex_unlock(&prm->lock);
-+	return rc;
-+}
-+
-+static int q6prm_set_hw_core_req(struct device *dev, uint32_t hw_block_id,   bool enable)
-+{
-+	struct prm_cmd_request_hw_core *req;
-+	struct apm_module_param_data *param_data;
-+	struct gpr_pkt *pkt;
-+	struct q6prm *prm = dev_get_drvdata(dev);
-+	struct gpr_device *gdev  = prm->gdev;
-+	void *p;
-+	int rc = 0;
-+	uint32_t opcode, rsp_opcode;
-+
-+	if (enable) {
-+		opcode = PRM_CMD_REQUEST_HW_RSC;
-+		rsp_opcode = PRM_CMD_RSP_REQUEST_HW_RSC;
-+	} else {
-+		opcode = PRM_CMD_RELEASE_HW_RSC;
-+		rsp_opcode = PRM_CMD_RSP_RELEASE_HW_RSC;
-+	}
-+
-+	p = audioreach_alloc_cmd_pkt(sizeof(*req), opcode, 0, gdev->port.id,
-+				     GPR_PRM_MODULE_IID);
-+	if (IS_ERR(p))
-+		return -ENOMEM;
-+
-+	pkt = p;
-+	req = p + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
-+
-+	param_data = &req->param_data;
-+
-+	param_data->module_instance_id = GPR_PRM_MODULE_IID;
-+	param_data->error_code = 0;
-+	param_data->param_id = PARAM_ID_RSC_HW_CORE;
-+	param_data->param_size = sizeof(*req) - APM_MODULE_PARAM_DATA_SIZE;
-+
-+	req->hw_clk_id = hw_block_id;
-+
-+	q6prm_send_cmd_sync(prm, pkt, rsp_opcode);
-+
-+	kfree(pkt);
-+
-+	return rc;
-+}
-+
-+static int q6prm_set_lpass_clock(struct device *dev, int clk_id, int clk_attr,
-+				 int clk_root, unsigned int freq)
-+{
-+	struct prm_cmd_request_rsc *req;
-+	struct apm_module_param_data *param_data;
-+	struct gpr_pkt *pkt;
-+	struct q6prm *prm = dev_get_drvdata(dev);
-+	struct gpr_device *gdev  = prm->gdev;
-+	void *p;
-+	int rc = 0;
-+
-+	p = audioreach_alloc_cmd_pkt(sizeof(*req), PRM_CMD_REQUEST_HW_RSC,
-+				     0, gdev->port.id, GPR_PRM_MODULE_IID);
-+	if (IS_ERR(p))
-+		return -ENOMEM;
-+
-+	pkt = p;
-+	req = p + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
-+
-+	param_data = &req->param_data;
-+
-+	param_data->module_instance_id = GPR_PRM_MODULE_IID;
-+	param_data->error_code = 0;
-+	param_data->param_id = PARAM_ID_RSC_AUDIO_HW_CLK;
-+	param_data->param_size = sizeof(*req) - APM_MODULE_PARAM_DATA_SIZE;
-+
-+	req->num_clk_id = 1;
-+	req->clock_ids[0].clock_id = clk_id;
-+	req->clock_ids[0].clock_freq = freq;
-+	req->clock_ids[0].clock_attri = clk_attr;
-+	req->clock_ids[0].clock_root = clk_root;
-+
-+	q6prm_send_cmd_sync(prm, pkt, PRM_CMD_RSP_REQUEST_HW_RSC);
-+
-+	kfree(pkt);
-+
-+	return rc;
-+}
-+
-+static int prm_callback(struct gpr_resp_pkt *data, void *priv, int op)
-+{
-+	struct gpr_device *gdev = priv;
-+	struct q6prm *prm = dev_get_drvdata(&gdev->dev);
-+	struct gpr_ibasic_rsp_result_t *result;
-+	struct gpr_hdr *hdr = &data->hdr;
-+
-+	result = data->payload;
-+
-+	switch (hdr->opcode) {
-+	case PRM_CMD_RSP_REQUEST_HW_RSC:
-+	case PRM_CMD_RSP_RELEASE_HW_RSC:
-+		prm->result.opcode = hdr->opcode;
-+		prm->result.status = result->status;
-+		wake_up(&prm->wait);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int clk_q6prm_prepare(struct clk_hw *hw)
-+{
-+	struct q6prm_clk *clk = to_q6prm_clk(hw);
-+
-+	return q6prm_set_lpass_clock(clk->dev, clk->afe_clk_id, clk->attributes,
-+				     Q6PRM_LPASS_CLK_ROOT_DEFAULT, clk->rate);
-+}
-+
-+static void clk_q6prm_unprepare(struct clk_hw *hw)
-+{
-+	struct q6prm_clk *clk = to_q6prm_clk(hw);
-+
-+	q6prm_set_lpass_clock(clk->dev, clk->afe_clk_id, clk->attributes,
-+			      Q6PRM_LPASS_CLK_ROOT_DEFAULT, 0);
-+}
-+
-+static int clk_q6prm_set_rate(struct clk_hw *hw, unsigned long rate,
-+			      unsigned long parent_rate)
-+{
-+	struct q6prm_clk *clk = to_q6prm_clk(hw);
-+
-+	clk->rate = rate;
-+
-+	return 0;
-+}
-+
-+static unsigned long clk_q6prm_recalc_rate(struct clk_hw *hw,
-+					   unsigned long parent_rate)
-+{
-+	struct q6prm_clk *clk = to_q6prm_clk(hw);
-+
-+	return clk->rate;
-+}
-+
-+static long clk_q6prm_round_rate(struct clk_hw *hw, unsigned long rate,
-+				 unsigned long *parent_rate)
-+{
-+	return rate;
-+}
-+
-+static const struct clk_ops clk_q6prm_ops = {
-+	.prepare	= clk_q6prm_prepare,
-+	.unprepare	= clk_q6prm_unprepare,
-+	.set_rate	= clk_q6prm_set_rate,
-+	.round_rate	= clk_q6prm_round_rate,
-+	.recalc_rate	= clk_q6prm_recalc_rate,
-+};
-+
-+static int clk_vote_q6prm_block(struct clk_hw *hw)
-+{
-+	struct q6prm_clk *clk = to_q6prm_clk(hw);
-+
-+	return q6prm_set_hw_core_req(clk->dev, clk->afe_clk_id, true);
-+}
-+
-+static void clk_unvote_q6prm_block(struct clk_hw *hw)
-+{
-+	struct q6prm_clk *clk = to_q6prm_clk(hw);
-+
-+	q6prm_set_hw_core_req(clk->dev, clk->afe_clk_id, false);
-+}
-+
-+static const struct clk_ops clk_vote_q6prm_ops = {
-+	.prepare	= clk_vote_q6prm_block,
-+	.unprepare	= clk_unvote_q6prm_block,
-+};
-+
-+static struct q6prm_clk *q6prm_clks[Q6PRM_MAX_CLK_ID] = {
-+	[LPASS_CLK_ID_WSA_CORE_MCLK] = Q6PRM_CLK(LPASS_CLK_ID_WSA_CORE_MCLK),
-+	[LPASS_CLK_ID_WSA_CORE_NPL_MCLK] =
-+				Q6PRM_CLK(LPASS_CLK_ID_WSA_CORE_NPL_MCLK),
-+	[LPASS_CLK_ID_VA_CORE_MCLK] = Q6PRM_CLK(LPASS_CLK_ID_VA_CORE_MCLK),
-+	[LPASS_CLK_ID_TX_CORE_MCLK] = Q6PRM_CLK(LPASS_CLK_ID_TX_CORE_MCLK),
-+	[LPASS_CLK_ID_TX_CORE_NPL_MCLK] =
-+			Q6PRM_CLK(LPASS_CLK_ID_TX_CORE_NPL_MCLK),
-+	[LPASS_CLK_ID_RX_CORE_MCLK] = Q6PRM_CLK(LPASS_CLK_ID_RX_CORE_MCLK),
-+	[LPASS_CLK_ID_RX_CORE_NPL_MCLK] =
-+				Q6PRM_CLK(LPASS_CLK_ID_RX_CORE_NPL_MCLK),
-+	[LPASS_CLK_ID_VA_CORE_2X_MCLK] =
-+				Q6PRM_CLK(LPASS_CLK_ID_VA_CORE_2X_MCLK),
-+	[LPASS_HW_MACRO_VOTE] = Q6PRM_VOTE_CLK(LPASS_HW_MACRO_VOTE,
-+						Q6PRM_HW_CORE_ID_LPASS),
-+	[LPASS_HW_DCODEC_VOTE] = Q6PRM_VOTE_CLK(LPASS_HW_DCODEC_VOTE,
-+						Q6PRM_HW_CORE_ID_DCODEC),
-+};
-+
-+static struct clk_hw *q6prm_of_clk_hw_get(struct of_phandle_args *clkspec,
-+					  void *data)
-+{
-+	struct q6prm *cc = data;
-+	unsigned int idx = clkspec->args[0];
-+	unsigned int attr = clkspec->args[1];
-+
-+	if (idx >= cc->num_clks || attr > LPASS_CLK_ATTRIBUTE_COUPLE_DIVISOR) {
-+		dev_err(cc->dev, "Invalid clk specifier (%d, %d)\n", idx, attr);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	if (cc->clks[idx]) {
-+		cc->clks[idx]->attributes = attr;
-+		return &cc->clks[idx]->hw;
-+	}
-+
-+	return ERR_PTR(-ENOENT);
-+}
-+
-+static int prm_probe(struct gpr_device *gdev)
-+{
-+	struct device *dev = &gdev->dev;
-+	struct q6prm *cc;
-+	int i, ret;
-+
-+	cc = devm_kzalloc(dev, sizeof(*cc), GFP_KERNEL);
-+	if (!cc)
-+		return -ENOMEM;
-+
-+	cc->dev = dev;
-+	cc->gdev = gdev;
-+	mutex_init(&cc->lock);
-+	init_waitqueue_head(&cc->wait);
-+	cc->clks = &q6prm_clks[0];
-+	cc->num_clks = ARRAY_SIZE(q6prm_clks);
-+	for (i = 0; i < ARRAY_SIZE(q6prm_clks); i++) {
-+		if (!q6prm_clks[i])
-+			continue;
-+
-+		q6prm_clks[i]->dev = dev;
-+
-+		ret = devm_clk_hw_register(dev, &q6prm_clks[i]->hw);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	ret = of_clk_add_hw_provider(dev->of_node, q6prm_of_clk_hw_get, cc);
-+	if (ret)
-+		return ret;
-+
-+	dev_set_drvdata(dev, cc);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id prm_device_id[]  = {
-+	{ .compatible = "qcom,q6prm" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, prm_device_id);
-+
-+static struct gpr_driver prm_driver = {
-+	.probe = prm_probe,
-+	.callback = prm_callback,
-+	.driver = {
-+		.name = "qcom-prm",
-+		.of_match_table = of_match_ptr(prm_device_id),
-+	},
-+};
-+
-+module_gpr_driver(prm_driver);
-+MODULE_DESCRIPTION("Audio Process Manager");
-+MODULE_LICENSE("GPL v2");
--- 
-2.21.0
+Thank you.
 
+> 
+> Changes in v5: None
+> Changes in v4: None
+> Changes in v3: None
+> Changes in v2: None
+> Changes in v1: None
+> 
+>  drivers/spi/Kconfig            |   9 +
+>  drivers/spi/Makefile           |   1 +
+>  drivers/spi/spi-rockchip-sfc.c | 863 +++++++++++++++++++++++++++++++++
+>  3 files changed, 873 insertions(+)
+>  create mode 100644 drivers/spi/spi-rockchip-sfc.c
+> 
+> diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
+> index e71a4c514f7b..d89e5f3c9107 100644
+> --- a/drivers/spi/Kconfig
+> +++ b/drivers/spi/Kconfig
+> @@ -658,6 +658,15 @@ config SPI_ROCKCHIP
+>  	  The main usecase of this controller is to use spi flash as boot
+>  	  device.
+>  
+> +config SPI_ROCKCHIP_SFC
+> +	tristate "Rockchip Serial Flash Controller (SFC)"
+> +	depends on ARCH_ROCKCHIP || COMPILE_TEST
+> +	depends on HAS_IOMEM && HAS_DMA
+> +	help
+> +	  This enables support for Rockchip serial flash controller. This
+> +	  is a specialized controller used to access SPI flash on some
+> +	  Rockchip SOCs.
+> +
+>  config SPI_RB4XX
+>  	tristate "Mikrotik RB4XX SPI master"
+>  	depends on SPI_MASTER && ATH79
+> diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
+> index 13e54c45e9df..699db95c8441 100644
+> --- a/drivers/spi/Makefile
+> +++ b/drivers/spi/Makefile
+> @@ -95,6 +95,7 @@ obj-$(CONFIG_SPI_QCOM_GENI)		+= spi-geni-qcom.o
+>  obj-$(CONFIG_SPI_QCOM_QSPI)		+= spi-qcom-qspi.o
+>  obj-$(CONFIG_SPI_QUP)			+= spi-qup.o
+>  obj-$(CONFIG_SPI_ROCKCHIP)		+= spi-rockchip.o
+> +obj-$(CONFIG_SPI_ROCKCHIP_SFC)		+= spi-rockchip-sfc.o
+>  obj-$(CONFIG_SPI_RB4XX)			+= spi-rb4xx.o
+>  obj-$(CONFIG_MACH_REALTEK_RTL)		+= spi-realtek-rtl.o
+>  obj-$(CONFIG_SPI_RPCIF)			+= spi-rpc-if.o
+> diff --git a/drivers/spi/spi-rockchip-sfc.c b/drivers/spi/spi-rockchip-sfc.c
+> new file mode 100644
+> index 000000000000..ddce87a2f319
+> --- /dev/null
+> +++ b/drivers/spi/spi-rockchip-sfc.c
+> @@ -0,0 +1,863 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +//
+> +// Rockchip Serial Flash Controller Driver
+> +//
+> +// Copyright (c) 2017, Rockchip Inc.
+
+Should we change this to you?
+
+> +// Author: Shawn Lin <shawn.lin@rock-chips.com>
+> +//
+> +
+> +#include <linux/bitops.h>
+> +#include <linux/clk.h>
+> +#include <linux/completion.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/iopoll.h>
+> +#include <linux/mm.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/spi/spi-mem.h>
+> +
+> +/* System control */
+> +#define SFC_CTRL			0x0
+> +#define  SFC_CTRL_COMMON_BITS_1		0x0
+> +#define  SFC_CTRL_COMMON_BITS_2		0x1
+> +#define  SFC_CTRL_COMMON_BITS_4		0x2
+> +#define  SFC_CTRL_DATA_BITS_SHIFT	12
+> +#define  SFC_CTRL_ADDR_BITS_SHIFT	10
+> +#define  SFC_CTRL_CMD_BITS_SHIFT	8
+> +#define  SFC_CTRL_PHASE_SEL_NEGETIVE	BIT(1)
+> +
+> +/* Interrupt mask */
+> +#define SFC_IMR				0x4
+> +#define  SFC_IMR_RX_FULL		BIT(0)
+> +#define  SFC_IMR_RX_UFLOW		BIT(1)
+> +#define  SFC_IMR_TX_OFLOW		BIT(2)
+> +#define  SFC_IMR_TX_EMPTY		BIT(3)
+> +#define  SFC_IMR_TRAN_FINISH		BIT(4)
+> +#define  SFC_IMR_BUS_ERR		BIT(5)
+> +#define  SFC_IMR_NSPI_ERR		BIT(6)
+> +#define  SFC_IMR_DMA			BIT(7)
+> +
+> +/* Interrupt clear */
+> +#define SFC_ICLR			0x8
+> +#define  SFC_ICLR_RX_FULL		BIT(0)
+> +#define  SFC_ICLR_RX_UFLOW		BIT(1)
+> +#define  SFC_ICLR_TX_OFLOW		BIT(2)
+> +#define  SFC_ICLR_TX_EMPTY		BIT(3)
+> +#define  SFC_ICLR_TRAN_FINISH		BIT(4)
+> +#define  SFC_ICLR_BUS_ERR		BIT(5)
+> +#define  SFC_ICLR_NSPI_ERR		BIT(6)
+> +#define  SFC_ICLR_DMA			BIT(7)
+> +
+> +/* FIFO threshold level */
+> +#define SFC_FTLR			0xc
+> +#define  SFC_FTLR_TX_SHIFT		0
+> +#define  SFC_FTLR_TX_MASK		0x1f
+> +#define  SFC_FTLR_RX_SHIFT		8
+> +#define  SFC_FTLR_RX_MASK		0x1f
+> +
+> +/* Reset FSM and FIFO */
+> +#define SFC_RCVR			0x10
+> +#define  SFC_RCVR_RESET			BIT(0)
+> +
+> +/* Enhanced mode */
+> +#define SFC_AX				0x14
+> +
+> +/* Address Bit number */
+> +#define SFC_ABIT			0x18
+> +
+> +/* Interrupt status */
+> +#define SFC_ISR				0x1c
+> +#define  SFC_ISR_RX_FULL_SHIFT		BIT(0)
+> +#define  SFC_ISR_RX_UFLOW_SHIFT		BIT(1)
+> +#define  SFC_ISR_TX_OFLOW_SHIFT		BIT(2)
+> +#define  SFC_ISR_TX_EMPTY_SHIFT		BIT(3)
+> +#define  SFC_ISR_TX_FINISH_SHIFT	BIT(4)
+> +#define  SFC_ISR_BUS_ERR_SHIFT		BIT(5)
+> +#define  SFC_ISR_NSPI_ERR_SHIFT		BIT(6)
+> +#define  SFC_ISR_DMA_SHIFT		BIT(7)
+> +
+> +/* FIFO status */
+> +#define SFC_FSR				0x20
+> +#define  SFC_FSR_TX_IS_FULL		BIT(0)
+> +#define  SFC_FSR_TX_IS_EMPTY		BIT(1)
+> +#define  SFC_FSR_RX_IS_EMPTY		BIT(2)
+> +#define  SFC_FSR_RX_IS_FULL		BIT(3)
+> +#define  SFC_FSR_TXLV_MASK		GENMASK(12, 8)
+> +#define  SFC_FSR_TXLV_SHIFT		8
+> +#define  SFC_FSR_RXLV_MASK		GENMASK(20, 16)
+> +#define  SFC_FSR_RXLV_SHIFT		16
+> +
+> +/* FSM status */
+> +#define SFC_SR				0x24
+> +#define  SFC_SR_IS_IDLE			0x0
+> +#define  SFC_SR_IS_BUSY			0x1
+> +
+> +/* Raw interrupt status */
+> +#define SFC_RISR			0x28
+> +#define  SFC_RISR_RX_FULL		BIT(0)
+> +#define  SFC_RISR_RX_UNDERFLOW		BIT(1)
+> +#define  SFC_RISR_TX_OVERFLOW		BIT(2)
+> +#define  SFC_RISR_TX_EMPTY		BIT(3)
+> +#define  SFC_RISR_TRAN_FINISH		BIT(4)
+> +#define  SFC_RISR_BUS_ERR		BIT(5)
+> +#define  SFC_RISR_NSPI_ERR		BIT(6)
+> +#define  SFC_RISR_DMA			BIT(7)
+> +
+> +/* Master trigger */
+> +#define SFC_DMA_TRIGGER			0x80
+> +
+> +/* Src or Dst addr for master */
+> +#define SFC_DMA_ADDR			0x84
+> +
+> +/* Command */
+> +#define SFC_CMD				0x100
+> +#define  SFC_CMD_IDX_SHIFT		0
+> +#define  SFC_CMD_DUMMY_SHIFT		8
+> +#define  SFC_CMD_DIR_RD			0
+> +#define  SFC_CMD_DIR_WR			1
+> +#define  SFC_CMD_DIR_SHIFT		12
+> +#define  SFC_CMD_ADDR_ZERO		(0x0 << 14)
+> +#define  SFC_CMD_ADDR_24BITS		(0x1 << 14)
+> +#define  SFC_CMD_ADDR_32BITS		(0x2 << 14)
+> +#define  SFC_CMD_ADDR_FRS		(0x3 << 14)
+> +#define  SFC_CMD_TRAN_BYTES_SHIFT	16
+> +#define  SFC_CMD_CS_SHIFT		30
+> +
+> +/* Address */
+> +#define SFC_ADDR			0x104
+> +
+> +/* Data */
+> +#define SFC_DATA			0x108
+> +
+> +/* The controller and documentation reports that it supports up to 4 CS
+> + * devices (0-3), however I have only been able to test a single CS (CS 0)
+> + * due to the configuration of my device.
+> + */
+> +#define SFC_MAX_CHIPSELECT_NUM		4
+> +
+> +/* The SFC can transfer max 16KB - 1 at one time
+> + * we set it to 15.5KB here for alignment.
+> + */
+> +#define SFC_MAX_TRANS_BYTES		(512 * 31)
+> +
+> +/* Maximum clock values from datasheet suggest keeping clock value under
+> + * 150MHz. No minimum or average value is suggested, but the U-boot BSP driver
+> + * has a minimum of 10MHz and a default of 80MHz which seems reasonable.
+> + */
+> +#define SFC_MIN_SPEED_HZ		(10 * 1000 * 1000)
+> +#define SFC_DEFAULT_SPEED_HZ		(80 * 1000 * 1000)
+> +#define SFC_MAX_SPEED_HZ		(150 * 1000 * 1000)
+> +
+> +#define SFC_CMD_DUMMY(x) \
+> +	((x) << SFC_CMD_DUMMY_SHIFT)
+> +
+> +enum rockchip_sfc_iftype {
+> +	IF_TYPE_STD,
+> +	IF_TYPE_DUAL,
+> +	IF_TYPE_QUAD,
+> +};
+> +
+> +struct rockchip_sfc;
+> +struct rockchip_sfc_chip_priv {
+> +	u8 cs;
+> +	u32 clk_rate;
+> +	struct rockchip_sfc *sfc;
+> +};
+> +
+> +struct rockchip_sfc {
+> +	struct device *dev;
+> +	void __iomem *regbase;
+> +	struct clk *hclk;
+> +	struct clk *clk;
+> +	/* virtual mapped addr for dma_buffer */
+> +	void *buffer;
+> +	dma_addr_t dma_buffer;
+> +	struct completion cp;
+> +	struct rockchip_sfc_chip_priv flash[SFC_MAX_CHIPSELECT_NUM];
+> +	u8 num_chip;
+> +	bool use_dma;
+> +};
+> +
+> +static int rockchip_sfc_get_if_type(const struct spi_mem_op *op,
+> +				    struct rockchip_sfc *sfc)
+> +{
+> +	switch (op->data.buswidth) {
+> +	case 1:
+> +		return IF_TYPE_STD;
+> +	case 2:
+> +		return IF_TYPE_DUAL;
+> +	case 4:
+> +		return IF_TYPE_QUAD;
+> +	default:
+> +		dev_err(sfc->dev, "unsupported SPI read mode\n");
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static int rockchip_sfc_reset(struct rockchip_sfc *sfc)
+> +{
+> +	int err;
+> +	u32 status;
+> +
+> +	writel_relaxed(SFC_RCVR_RESET, sfc->regbase + SFC_RCVR);
+> +
+> +	err = readl_poll_timeout(sfc->regbase + SFC_RCVR, status,
+> +				 !(status & SFC_RCVR_RESET), 20,
+> +				 jiffies_to_usecs(HZ));
+> +	if (err)
+> +		dev_err(sfc->dev, "SFC reset never finished\n");
+> +
+> +	/* Still need to clear the masked interrupt from RISR */
+> +	writel_relaxed(SFC_ICLR_RX_FULL | SFC_ICLR_RX_UFLOW |
+> +		       SFC_ICLR_TX_OFLOW | SFC_ICLR_TX_EMPTY |
+> +		       SFC_ICLR_TRAN_FINISH | SFC_ICLR_BUS_ERR |
+> +		       SFC_ICLR_NSPI_ERR | SFC_ICLR_DMA,
+> +		       sfc->regbase + SFC_ICLR);
+> +
+> +	dev_dbg(sfc->dev, "reset\n");
+> +
+> +	return err;
+> +}
+> +
+> +static int rockchip_sfc_init(struct rockchip_sfc *sfc)
+> +{
+> +	int err;
+> +
+> +	err = clk_set_rate(sfc->clk, SFC_DEFAULT_SPEED_HZ);
+> +	if (err)
+> +		return err;
+> +
+> +	err = rockchip_sfc_reset(sfc);
+> +	if (err)
+> +		return err;
+> +
+> +	/* Mask all eight interrupts */
+> +	writel_relaxed(0xff, sfc->regbase + SFC_IMR);
+> +
+> +	writel_relaxed(SFC_CTRL_PHASE_SEL_NEGETIVE, sfc->regbase + SFC_CTRL);
+> +
+> +	return 0;
+> +}
+> +
+> +static inline int rockchip_sfc_get_fifo_level(struct rockchip_sfc *sfc, int wr)
+> +{
+> +	u32 fsr = readl_relaxed(sfc->regbase + SFC_FSR);
+> +	int level;
+> +
+> +	if (wr)
+> +		level = (fsr & SFC_FSR_TXLV_MASK) >> SFC_FSR_TXLV_SHIFT;
+> +	else
+> +		level = (fsr & SFC_FSR_RXLV_MASK) >> SFC_FSR_RXLV_SHIFT;
+> +
+> +	return level;
+> +}
+> +
+> +static int rockchip_sfc_wait_fifo_ready(struct rockchip_sfc *sfc, int wr, u32 timeout)
+> +{
+> +	unsigned long deadline = jiffies + timeout;
+> +	int level;
+> +
+> +	while (!(level = rockchip_sfc_get_fifo_level(sfc, wr))) {
+> +		if (time_after_eq(jiffies, deadline)) {
+> +			dev_warn(sfc->dev, "%s fifo timeout\n", wr ? "write" : "read");
+> +			return -ETIMEDOUT;
+> +		}
+> +		udelay(1);
+> +	}
+> +
+> +	return level;
+> +}
+> +
+> +/* The SFC_CTRL register is a global control register,
+> + * when the controller is in busy state(SFC_SR),
+> + * SFC_CTRL cannot be set.
+> + */
+> +static void rockchip_sfc_wait_idle(struct rockchip_sfc *sfc, u32 timeout_us)
+> +{
+> +	u32 status;
+> +	int ret;
+> +
+> +	ret = readl_poll_timeout(sfc->regbase + SFC_SR, status,
+> +				 !(status & SFC_SR_IS_BUSY),
+> +				 20, timeout_us);
+> +	if (ret) {
+> +		dev_err(sfc->dev, "wait sfc idle timeout\n");
+> +		rockchip_sfc_reset(sfc);
+> +	}
+> +}
+> +
+> +static void rockchip_sfc_setup_ctrl(struct rockchip_sfc *sfc)
+> +{
+> +	u32 reg;
+> +
+> +	reg = IF_TYPE_STD << SFC_CTRL_DATA_BITS_SHIFT;
+> +	reg |= IF_TYPE_STD << SFC_CTRL_ADDR_BITS_SHIFT;
+> +	reg |= IF_TYPE_STD << SFC_CTRL_CMD_BITS_SHIFT;
+> +	reg |= SFC_CTRL_PHASE_SEL_NEGETIVE;
+> +
+> +	rockchip_sfc_wait_idle(sfc, 10000);
+> +
+> +	writel_relaxed(reg, sfc->regbase + SFC_CTRL);
+> +}
+> +
+> +static int rockchip_sfc_op_reg(struct rockchip_sfc_chip_priv *priv,
+> +			       u8 opcode, int len, u8 optype)
+> +{
+> +	struct rockchip_sfc *sfc = priv->sfc;
+> +	u32 reg;
+> +
+> +	rockchip_sfc_setup_ctrl(sfc);
+> +
+> +	reg = opcode << SFC_CMD_IDX_SHIFT;
+> +	reg |= len << SFC_CMD_TRAN_BYTES_SHIFT;
+> +	reg |= priv->cs << SFC_CMD_CS_SHIFT;
+> +	reg |= optype << SFC_CMD_DIR_SHIFT;
+> +	writel_relaxed(reg, sfc->regbase + SFC_CMD);
+> +
+> +	return 0;
+> +}
+> +
+> +static int rockchip_sfc_write_fifo(struct rockchip_sfc *sfc, const u8 *buf, int len)
+> +{
+> +	u8 bytes = len & 0x3;
+> +	u32 dwords;
+> +	int tx_level;
+> +	u32 write_words;
+> +	u32 tmp = 0;
+> +
+> +	dwords = len >> 2;
+> +	while (dwords) {
+> +		tx_level = rockchip_sfc_wait_fifo_ready(sfc, SFC_CMD_DIR_WR, HZ);
+> +		if (tx_level < 0)
+> +			return tx_level;
+> +		write_words = min_t(u32, tx_level, dwords);
+> +		iowrite32_rep(sfc->regbase + SFC_DATA, buf, write_words);
+> +		buf += write_words << 2;
+> +		dwords -= write_words;
+> +	}
+> +
+> +	/* write the rest of the bytes that are not a multiple of word size */
+> +	if (bytes) {
+> +		tx_level = rockchip_sfc_wait_fifo_ready(sfc, SFC_CMD_DIR_WR, HZ);
+> +		if (tx_level < 0)
+> +			return tx_level;
+> +		memcpy(&tmp, buf, bytes);
+> +		writel_relaxed(tmp, sfc->regbase + SFC_DATA);
+> +	}
+> +
+> +	return len;
+> +}
+> +
+> +static int rockchip_sfc_read_fifo(struct rockchip_sfc *sfc, u8 *buf, int len)
+> +{
+> +	u8 bytes = len & 0x3;
+> +	u32 dwords;
+> +	u8 read_words;
+> +	int rx_level;
+> +	int tmp;
+> +
+> +	/* word aligned access only */
+> +	dwords = len >> 2;
+> +	while (dwords) {
+> +		rx_level = rockchip_sfc_wait_fifo_ready(sfc, SFC_CMD_DIR_RD, HZ);
+> +		if (rx_level < 0)
+> +			return rx_level;
+> +		read_words = min_t(u32, rx_level, dwords);
+> +		ioread32_rep(sfc->regbase + SFC_DATA, buf, read_words);
+> +		buf += read_words << 2;
+> +		dwords -= read_words;
+> +	}
+> +
+> +	/* read the rest of the bytes that are not a multiple of word size */
+> +	if (bytes) {
+> +		rx_level = rockchip_sfc_wait_fifo_ready(sfc, SFC_CMD_DIR_RD, HZ);
+> +		if (rx_level < 0)
+> +			return rx_level;
+> +		tmp = readl_relaxed(sfc->regbase + SFC_DATA);
+> +		memcpy(buf, &tmp, bytes);
+> +	}
+> +
+> +	return len;
+> +}
+> +
+> +static int rockchip_sfc_read_reg(struct rockchip_sfc_chip_priv *priv,
+> +				 const struct spi_mem_op *op)
+> +{
+> +	struct rockchip_sfc *sfc = priv->sfc;
+> +	int ret;
+> +	int trans;
+> +	size_t n_rx = op->data.nbytes;
+> +	u8 opcode = op->cmd.opcode;
+> +	u8 *rxbuf = op->data.buf.in;
+> +
+> +	trans = min_t(int, n_rx, SFC_MAX_TRANS_BYTES);
+> +	ret = rockchip_sfc_op_reg(priv, opcode, trans, SFC_CMD_DIR_RD);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = rockchip_sfc_read_fifo(sfc, rxbuf, trans);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return 0;
+> +}
+> +
+> +static int rockchip_sfc_write_reg(struct rockchip_sfc_chip_priv *priv,
+> +				  const struct spi_mem_op *op)
+> +{
+> +	struct rockchip_sfc *sfc = priv->sfc;
+> +	int ret;
+> +	size_t n_tx = op->data.nbytes;
+> +	u8 opcode = op->cmd.opcode;
+> +	const u8 *txbuf = op->data.buf.out;
+> +
+> +	ret = rockchip_sfc_op_reg(priv, opcode, n_tx, SFC_CMD_DIR_WR);
+> +	if (ret)
+> +		return ret;
+> +	ret = rockchip_sfc_write_fifo(sfc, txbuf, n_tx);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return 0;
+> +}
+> +
+> +static int rockchip_sfc_setup_transfer(struct rockchip_sfc_chip_priv *priv,
+> +				       const struct spi_mem_op *op,
+> +				       loff_t from_to, size_t len, u8 op_type)
+> +{
+> +	struct rockchip_sfc *sfc = priv->sfc;
+> +	u8 if_type = IF_TYPE_STD;
+> +	u8 addr_width = op->addr.nbytes;
+> +	u8 read_dummy_bits = op->dummy.nbytes << 3;
+> +	u32 reg;
+> +
+> +	if (op_type == SFC_CMD_DIR_RD)
+> +		if_type = rockchip_sfc_get_if_type(op, sfc);
+> +
+> +	rockchip_sfc_wait_idle(sfc, 10000);
+> +
+> +	writel_relaxed((if_type << SFC_CTRL_DATA_BITS_SHIFT) |
+> +		       (IF_TYPE_STD << SFC_CTRL_ADDR_BITS_SHIFT) |
+> +		       (IF_TYPE_STD << SFC_CTRL_CMD_BITS_SHIFT) |
+> +		       SFC_CTRL_PHASE_SEL_NEGETIVE,
+> +		       sfc->regbase + SFC_CTRL);
+> +
+> +	reg = op->cmd.opcode << SFC_CMD_IDX_SHIFT;
+> +
+> +	reg |= op_type << SFC_CMD_DIR_SHIFT;
+> +	reg |= (addr_width == 4) ?
+> +		SFC_CMD_ADDR_32BITS : SFC_CMD_ADDR_24BITS;
+> +
+> +	reg |= priv->cs << SFC_CMD_CS_SHIFT;
+> +	reg |= len << SFC_CMD_TRAN_BYTES_SHIFT;
+> +
+> +	if (op_type == SFC_CMD_DIR_RD)
+> +		reg |= SFC_CMD_DUMMY(read_dummy_bits);
+> +
+> +	writel_relaxed(reg, sfc->regbase + SFC_CMD);
+> +	writel_relaxed(from_to, sfc->regbase + SFC_ADDR);
+> +
+> +	return 0;
+> +}
+> +
+> +static int rockchip_sfc_do_dma_transfer(struct rockchip_sfc_chip_priv *priv,
+> +					const struct spi_mem_op *op, loff_t from_to,
+> +					dma_addr_t dma_buf, size_t len, u8 op_type)
+> +{
+> +	struct rockchip_sfc *sfc = priv->sfc;
+> +	u32 reg;
+> +	int err = 0;
+> +
+> +	init_completion(&sfc->cp);
+> +
+> +	writel_relaxed(SFC_ICLR_RX_FULL | SFC_ICLR_RX_UFLOW |
+> +		       SFC_ICLR_TX_OFLOW | SFC_ICLR_TX_EMPTY |
+> +		       SFC_ICLR_TRAN_FINISH | SFC_ICLR_BUS_ERR |
+> +		       SFC_ICLR_NSPI_ERR | SFC_ICLR_DMA,
+> +		       sfc->regbase + SFC_ICLR);
+> +
+> +	/* Enable transfer complete interrupt */
+> +	reg = readl_relaxed(sfc->regbase + SFC_IMR);
+> +	reg &= ~SFC_IMR_TRAN_FINISH;
+> +	writel_relaxed(reg, sfc->regbase + SFC_IMR);
+> +
+> +	err = rockchip_sfc_setup_transfer(priv, op, from_to, len, op_type);
+> +	if (err < 0)
+> +		return err;
+> +
+> +	writel_relaxed(dma_buf, sfc->regbase + SFC_DMA_ADDR);
+> +
+> +	/*
+> +	 * Start dma but note that the sfc->dma_buffer is derived from
+> +	 * dmam_alloc_coherent so we don't actually need any sync operations
+> +	 * for coherent dma memory.
+> +	 */
+> +	writel(0x1, sfc->regbase + SFC_DMA_TRIGGER);
+> +
+> +	/* Wait for the interrupt. */
+> +	if (!wait_for_completion_timeout(&sfc->cp, msecs_to_jiffies(2000))) {
+> +		dev_err(sfc->dev, "DMA wait for transfer finish timeout\n");
+> +		err = -ETIMEDOUT;
+> +	}
+> +
+> +	writel_relaxed(SFC_ICLR_RX_FULL | SFC_ICLR_RX_UFLOW |
+> +		       SFC_ICLR_TX_OFLOW | SFC_ICLR_TX_EMPTY |
+> +		       SFC_ICLR_TRAN_FINISH | SFC_ICLR_BUS_ERR |
+> +		       SFC_ICLR_NSPI_ERR | SFC_ICLR_DMA,
+> +		       sfc->regbase + SFC_ICLR);
+> +	/* Disable transfer finish interrupt */
+> +	reg = readl_relaxed(sfc->regbase + SFC_IMR);
+> +	reg |= SFC_IMR_TRAN_FINISH;
+> +	writel_relaxed(reg, sfc->regbase + SFC_IMR);
+> +
+> +	if (err) {
+> +		rockchip_sfc_reset(sfc);
+> +		return err;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static inline int rockchip_sfc_pio_write(struct rockchip_sfc *sfc, u_char *buf,
+> +					 size_t len)
+> +{
+> +	return rockchip_sfc_write_fifo(sfc, buf, len);
+> +}
+> +
+> +static inline int rockchip_sfc_pio_read(struct rockchip_sfc *sfc, u_char *buf,
+> +					size_t len)
+> +{
+> +	return rockchip_sfc_read_fifo(sfc, buf, len);
+> +}
+> +
+> +static int rockchip_sfc_pio_transfer(struct rockchip_sfc_chip_priv *priv,
+> +				     const struct spi_mem_op *op, loff_t from_to, size_t len,
+> +				     u_char *buf, u8 op_type)
+> +{
+> +	struct rockchip_sfc *sfc = priv->sfc;
+> +	size_t trans;
+> +	int ret;
+> +
+> +	trans = min_t(size_t, SFC_MAX_TRANS_BYTES, len);
+> +	ret = rockchip_sfc_setup_transfer(priv, op, from_to, trans, op_type);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	if (op_type == SFC_CMD_DIR_WR)
+> +		ret = rockchip_sfc_pio_write(sfc, buf, trans);
+> +	else
+> +		ret = rockchip_sfc_pio_read(sfc, buf, trans);
+> +
+> +	return ret;
+> +}
+> +
+> +static int rockchip_sfc_dma_transfer(struct rockchip_sfc_chip_priv *priv,
+> +				     const struct spi_mem_op *op, loff_t from_to, size_t len,
+> +				     u_char *buf, u8 op_type)
+> +{
+> +	struct rockchip_sfc *sfc = priv->sfc;
+> +	size_t trans;
+> +	int ret;
+> +
+> +	trans = min_t(size_t, SFC_MAX_TRANS_BYTES, len);
+> +
+> +	if (op_type == SFC_CMD_DIR_WR)
+> +		memcpy(sfc->buffer, buf, trans);
+> +
+> +	ret = rockchip_sfc_do_dma_transfer(priv, op, from_to, sfc->dma_buffer,
+> +					   trans, op_type);
+> +	if (ret) {
+> +		dev_warn(sfc->dev, "DMA timeout\n");
+> +		return ret;
+> +	}
+> +
+> +	if (op_type == SFC_CMD_DIR_RD)
+> +		memcpy(buf, sfc->buffer, trans);
+> +
+> +	return trans;
+> +}
+> +
+> +static ssize_t rockchip_sfc_do_rd_wr(struct rockchip_sfc_chip_priv *priv,
+> +				     const struct spi_mem_op *op, loff_t from_to, size_t len,
+> +				     u_char *buf, u32 op_type)
+> +{
+> +	struct rockchip_sfc *sfc = priv->sfc;
+> +
+> +	/* DMA can only handle word aligned transfer chunks */
+> +	if (likely(sfc->use_dma) && !(len & 0x3))
+> +		return rockchip_sfc_dma_transfer(priv, op, from_to, len, buf, op_type);
+> +	else
+> +		return rockchip_sfc_pio_transfer(priv, op, from_to, len, buf, op_type);
+> +}
+> +
+> +static ssize_t rockchip_sfc_read(struct rockchip_sfc_chip_priv *priv,
+> +				 const struct spi_mem_op *op)
+> +{
+> +	loff_t from = op->addr.val;
+> +	size_t len = op->data.nbytes;
+> +	u_char *read_buf = op->data.buf.in;
+> +
+> +	return rockchip_sfc_do_rd_wr(priv, op, from, len, read_buf, SFC_CMD_DIR_RD);
+> +}
+> +
+> +static ssize_t rockchip_sfc_write(struct rockchip_sfc_chip_priv *priv,
+> +				  const struct spi_mem_op *op)
+> +{
+> +	loff_t to = op->addr.val;
+> +	size_t len = op->data.nbytes;
+> +	const u_char *write_buf = op->data.buf.out;
+> +
+> +	return rockchip_sfc_do_rd_wr(priv, op, to, len, (u_char *)write_buf, SFC_CMD_DIR_WR);
+> +}
+> +
+> +static int rockchip_sfc_mem_process(struct spi_mem *mem, const struct spi_mem_op *op)
+> +{
+> +	struct rockchip_sfc *sfc = spi_master_get_devdata(mem->spi->master);
+> +	struct rockchip_sfc_chip_priv *priv = &sfc->flash[mem->spi->chip_select];
+> +
+> +	if (op->data.dir == SPI_MEM_DATA_IN && op->data.buf.in) {
+> +		if (!op->addr.nbytes)
+> +			return rockchip_sfc_read_reg(priv, op);
+> +
+> +		return rockchip_sfc_read(priv, op);
+> +	}
+> +
+> +	if (!op->addr.nbytes || !op->data.buf.out)
+> +		return rockchip_sfc_write_reg(priv, op);
+> +
+> +	return rockchip_sfc_write(priv, op);
+> +}
+> +
+> +static int rockchip_sfc_exec_mem_op(struct spi_mem *mem, const struct spi_mem_op *op)
+> +{
+> +	struct rockchip_sfc *sfc = spi_master_get_devdata(mem->spi->master);
+> +	struct rockchip_sfc_chip_priv *priv = &sfc->flash[mem->spi->chip_select];
+> +	int ret;
+> +
+> +	ret = clk_set_rate(sfc->clk, priv->clk_rate);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = rockchip_sfc_mem_process(mem, op);
+> +	if (ret < 0) {
+> +		dev_err(&mem->spi->dev, "operation failed with %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const char *rockchip_sfc_get_name(struct spi_mem *mem)
+> +{
+> +	struct rockchip_sfc *sfc = spi_master_get_devdata(mem->spi->master);
+> +	struct device *dev = sfc->dev;
+> +
+> +	return devm_kasprintf(dev, GFP_KERNEL, "%s.%d", dev_name(dev), mem->spi->chip_select);
+> +}
+> +
+> +static const struct spi_controller_mem_ops rockchip_sfc_mem_ops = {
+> +	.exec_op = rockchip_sfc_exec_mem_op,
+> +	.get_name = rockchip_sfc_get_name,
+> +};
+> +
+> +static int rockchip_sfc_register(struct device_node *np,
+> +				 struct rockchip_sfc *sfc)
+> +{
+> +	struct device *dev = sfc->dev;
+> +	int ret;
+> +
+> +	ret = of_property_read_u8(np, "reg", &sfc->flash[sfc->num_chip].cs);
+> +	if (ret) {
+> +		dev_err(dev, "No reg property for %s\n",
+> +			np->full_name);
+> +		return ret;
+> +	}
+> +
+> +	ret = of_property_read_u32(np, "spi-max-frequency",
+> +				   &sfc->flash[sfc->num_chip].clk_rate);
+> +	if (ret) {
+> +		dev_err(dev, "No spi-max-frequency property for %s\n",
+> +			np->full_name);
+> +		return ret;
+> +	}
+> +
+> +	sfc->flash[sfc->num_chip].sfc = sfc;
+> +	sfc->num_chip++;
+> +	return 0;
+> +}
+> +
+> +static int rockchip_sfc_register_all(struct rockchip_sfc *sfc)
+> +{
+> +	struct device *dev = sfc->dev;
+> +	struct device_node *np;
+> +	int ret;
+> +
+> +	for_each_available_child_of_node(dev->of_node, np) {
+> +		ret = rockchip_sfc_register(np, sfc);
+> +		if (ret)
+> +			dev_err(dev, "Failed to register all chips\n");
+> +			return ret;
+> +
+> +		if (sfc->num_chip >= SFC_MAX_CHIPSELECT_NUM) {
+> +			dev_warn(dev, "Exceeds the max cs limitation\n");
+> +			break;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static irqreturn_t rockchip_sfc_irq_handler(int irq, void *dev_id)
+> +{
+> +	struct rockchip_sfc *sfc = dev_id;
+> +	u32 reg;
+> +
+> +	reg = readl(sfc->regbase + SFC_RISR);
+> +
+> +	/* Clear interrupt if transfer is finished */
+> +	if (reg & SFC_RISR_TRAN_FINISH) {
+> +		writel_relaxed(reg, sfc->regbase + SFC_ICLR);
+> +		complete(&sfc->cp);
+> +		return IRQ_HANDLED;
+> +	}
+> +
+> +	return IRQ_NONE;
+> +}
+> +
+> +static int rockchip_sfc_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct spi_master *master;
+> +	struct resource *res;
+> +	struct rockchip_sfc *sfc;
+> +	int ret;
+> +
+> +	master = spi_alloc_master(&pdev->dev, sizeof(*sfc));
+
+We should use devm_spi_alloc_master here since we're not freeing
+the allocation if we fail.
+
+> +	if (!master) {
+
+We should just return here (no dev_err) since an error will stackdump.
+
+> +		dev_err(&pdev->dev, "spi_alloc_master failed\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	master->mem_ops = &rockchip_sfc_mem_ops;
+> +	master->dev.of_node = pdev->dev.of_node;
+> +	master->mode_bits = SPI_RX_QUAD | SPI_RX_DUAL;
+> +	master->min_speed_hz = SFC_MIN_SPEED_HZ;
+> +	master->max_speed_hz = SFC_MAX_SPEED_HZ;
+> +
+> +	sfc = spi_master_get_devdata(master);
+> +	sfc->dev = dev;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	sfc->regbase = devm_ioremap_resource(dev, res);
+> +	if (IS_ERR(sfc->regbase))
+> +		return PTR_ERR(sfc->regbase);
+> +
+> +	sfc->clk = devm_clk_get(&pdev->dev, "sfc");
+> +	if (IS_ERR(sfc->clk)) {
+> +		dev_err(&pdev->dev, "Failed to get sfc interface clk\n");
+> +		return PTR_ERR(sfc->clk);
+> +	}
+> +
+> +	sfc->hclk = devm_clk_get(&pdev->dev, "ahb");
+> +	if (IS_ERR(sfc->hclk)) {
+> +		dev_err(&pdev->dev, "Failed to get sfc ahb clk\n");
+> +		return PTR_ERR(sfc->hclk);
+> +	}
+> +
+> +	sfc->use_dma = !of_property_read_bool(sfc->dev->of_node,
+> +					      "rockchip,sfc-no-dma");
+> +
+> +	if (sfc->use_dma) {
+> +		ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
+> +		if (ret) {
+> +			dev_warn(dev, "Unable to set dma mask\n");
+> +			return ret;
+> +		}
+> +
+> +		sfc->buffer = dmam_alloc_coherent(dev, SFC_MAX_TRANS_BYTES,
+> +						  &sfc->dma_buffer,
+> +						  GFP_KERNEL);
+> +		if (!sfc->buffer)
+> +			return -ENOMEM;
+> +	}
+> +
+> +	ret = clk_prepare_enable(sfc->hclk);
+> +	if (ret) {
+
+We don't need to print an error and goto anything, we should just return
+a failure at this point. No need for the err_hclk label either.
+
+> +		dev_err(&pdev->dev, "Failed to enable ahb clk\n");
+> +		goto err_hclk;
+> +	}
+> +
+> +	ret = clk_prepare_enable(sfc->clk);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Failed to enable interface clk\n");
+> +		goto err_clk;
+> +	}
+> +
+> +	/* Find the irq */
+> +	ret = platform_get_irq(pdev, 0);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to get the irq\n");
+> +		goto err_irq;
+> +	}
+> +
+> +	ret = devm_request_irq(dev, ret, rockchip_sfc_irq_handler,
+> +			       0, pdev->name, sfc);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to request irq\n");
+> +		goto err_irq;
+> +	}
+> +
+> +	sfc->num_chip = 0;
+> +	ret = rockchip_sfc_init(sfc);
+> +	if (ret)
+> +		goto err_irq;
+> +
+> +	ret = rockchip_sfc_register_all(sfc);
+> +	if (ret)
+> +		goto err_irq;
+> +
+
+We should use spi_register_master, not devm_spi_register_master here.
+
+> +	ret = devm_spi_register_master(dev, master);
+> +	if (ret)
+> +		goto err_irq;
+> +
+> +	return 0;
+> +
+> +err_irq:
+> +	clk_disable_unprepare(sfc->clk);
+> +err_clk:
+> +	clk_disable_unprepare(sfc->hclk);
+> +err_hclk:
+> +	return ret;
+> +}
+> +
+> +static int rockchip_sfc_remove(struct platform_device *pdev)
+> +{
+> +	struct rockchip_sfc *sfc = platform_get_drvdata(pdev);
+> +
+
+We need to add an spi_unregister_master here.
+
+The comments for these changes from Lukas are as follows:
+
+You need to use spi_register_master() here (*not* the devm variant)
+and add spi_unregister_master() at the top of rockchip_sfc_remove().
+
+The reason is that ->remove() is executed *before* devres resources
+are freed and rockchip_sfc_remove() disables the clocks, presumably
+rendering the chip inaccessible.
+
+However the chip may be performing SPI transfers until
+spi_unregister_master() returns, so the chip needs to be accessible
+as long.
+
+Because you're using devm_spi_register_master(), the chip may try
+to perform SPI transfers even though its clocks have been disabled.
+So you've got an ordering problem with the devm variant.
+
+> +	clk_disable_unprepare(sfc->clk);
+> +	clk_disable_unprepare(sfc->hclk);
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id rockchip_sfc_dt_ids[] = {
+> +	{ .compatible = "rockchip,rk3036-sfc"},
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, rockchip_sfc_dt_ids);
+> +
+> +static struct platform_driver rockchip_sfc_driver = {
+> +	.driver = {
+> +		.name	= "rockchip-sfc",
+> +		.of_match_table = rockchip_sfc_dt_ids,
+> +	},
+> +	.probe	= rockchip_sfc_probe,
+> +	.remove	= rockchip_sfc_remove,
+> +};
+> +module_platform_driver(rockchip_sfc_driver);
+> +
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_DESCRIPTION("Rockchip Serial Flash Controller Driver");
+
+Should we change this to you?  Thanks.
+
+> +MODULE_AUTHOR("Shawn Lin <shawn.lin@rock-chips.com>");
+> -- 
+> 2.17.1
+> 
+> 
+> 
