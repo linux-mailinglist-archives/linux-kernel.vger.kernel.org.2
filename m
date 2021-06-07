@@ -2,98 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA1339DEF2
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD9839DEF4
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhFGOkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 10:40:33 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:50616 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbhFGOkZ (ORCPT
+        id S230287AbhFGOl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 10:41:27 -0400
+Received: from mail-wr1-f46.google.com ([209.85.221.46]:39685 "EHLO
+        mail-wr1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230193AbhFGOl1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 10:40:25 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 157EcQl8006429;
-        Mon, 7 Jun 2021 09:38:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623076706;
-        bh=jNaIN+Gya1SwEJ/A/roKUkAMJzCE7ATMF2355uU1Ytk=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=Ichz9okHzgsb/ajyqd/s5aQ1IEAKaPm1XERuy0cmculoaIW0qtm2d6uHuXWXMqViy
-         cSCp3oQtH+krYbB886wvON/1WMQE0lRuqIvinkLQQnZas0o5G/meJP7Vfho6hAQbl0
-         9r4e0Qh1oRhoWAdaXJ0iuApM+AphhXSB8HeEc0HM=
-Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 157EcQ0M087431
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 7 Jun 2021 09:38:26 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 7 Jun
- 2021 09:38:26 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 7 Jun 2021 09:38:25 -0500
-Received: from [10.250.235.117] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 157EcINC020778;
-        Mon, 7 Jun 2021 09:38:20 -0500
-Subject: Re: [PATCH v2 0/4] J721E: Use external clock in EVM for SERDES
-To:     Kishon Vijay Abraham I <kishon@ti.com>, Nishanth Menon <nm@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-References: <20210603143427.28735-1-kishon@ti.com>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <f2202e2a-e66b-449f-f2fe-7a677799c265@ti.com>
-Date:   Mon, 7 Jun 2021 20:08:16 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 7 Jun 2021 10:41:27 -0400
+Received: by mail-wr1-f46.google.com with SMTP id l2so17938628wrw.6;
+        Mon, 07 Jun 2021 07:39:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=AQEKxKVEnKLJRyGaUv0SeKM1LMIxcVRtYk8SISspw4E=;
+        b=ZIh2+8zsD/IhcNEuk2F31p8Es/525XfUKhUYnpfHNxvx7Hw+XUGbymDrB5i9UZoZK7
+         YvppZjwgK4Nq3oQ/L/8oV8K/eBtfUOTuLuCpLvpwipSy0bo0XhtuRqgheOZMoP4RQ1yw
+         zhFNYSgCeH+k1bmKyn7zrFxAoPI7Zd8r3+HPX3Wz6eTuQh1LtT0qOZUFYMN/CRYag1er
+         /O3dQoOHds/NSopU5qRwF336Vt/Elf4EZBcSclTyj1hsoDc6gb8KWu7lkl/6RAB2IalJ
+         H+BwT8+hbn++WjIYslVmSbTs7yQ6aPPtLjlDw5MA24yZLO97xshdlrWmzIVwHzDKtiOv
+         HObw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=AQEKxKVEnKLJRyGaUv0SeKM1LMIxcVRtYk8SISspw4E=;
+        b=GV3wmUzjL0xHLYcnaT8xzwS1mU0+ROwYzo57W/93rtsSAlxpqLG0iMqJQNYqK40X7A
+         a6RDcvdtD9WQkZWYllU6Vo2PBg4sxgudpZg07cft5SFIktovxHvKssPto70FiGpNQO9k
+         ZcMzXnPhjTs1E3Pz0/zJdtSlwlQuvPe4rln6uIKSKzOVLxlIcrBsHtBFDX6UYydkSoT1
+         UI6yVJysDF/HZABPooHiRUA985ea78TENcfEZx1kcg1rDPwdIOMdGs/2JC9urShIZXZe
+         H3E6YNV2GMxXHMK6+In1zSMNU+/lDGD/ZNbR+MqdJT55oZLZZPmRvd5kLJeppbA5rcsU
+         HK8g==
+X-Gm-Message-State: AOAM532LRtROvNDtjsyvbiSs5B8jMjK9ajLo3EWOax9wPfL9q+tSXFvj
+        EMzNEo6nhq6eB+khfoTI9mA=
+X-Google-Smtp-Source: ABdhPJyX9TmI/pwv5vpMST2BM1phzyIaw9dPFg7f4S3SLahnSrWgJp+Jjs5QSMc0+zbDpSroteJ9uw==
+X-Received: by 2002:a5d:6082:: with SMTP id w2mr17656684wrt.209.1623076714914;
+        Mon, 07 Jun 2021 07:38:34 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id z11sm15543052wrs.7.2021.06.07.07.38.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 07:38:33 -0700 (PDT)
+Date:   Mon, 7 Jun 2021 16:40:14 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     Clemens Gruber <clemens.gruber@pqgruber.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: Re: [PATCH 1/4] pwm: core: Support new usage_power setting in PWM
+ state
+Message-ID: <YL4vzvznTzqih0pA@orome.fritz.box>
+References: <20210507131845.37605-1-clemens.gruber@pqgruber.com>
+ <20210507150317.bnluhqrqepde4xjm@pengutronix.de>
+ <YJVhLrkeNXBp6M1p@workstation.tuxnet>
+ <20210507231831.zmvyspcq7xhm25y4@pengutronix.de>
+ <YLUK8GXHaBYyVe1R@workstation.tuxnet>
+ <YLn3MZ+6HJM/UrRT@orome.fritz.box>
+ <20210607060827.vxdihsfqtw3otyco@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210603143427.28735-1-kishon@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="xwy1/Qax+gOdkBIj"
+Content-Disposition: inline
+In-Reply-To: <20210607060827.vxdihsfqtw3otyco@pengutronix.de>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/06/21 8:04 pm, Kishon Vijay Abraham I wrote:
-> J721E EVM has clock generator that feeds both to the SERDES and to the
-> PCIe slot present in the EVM. In order to use common reference clock on
-> either side of the link, configure SERDES to use external reference
-> clock.
-> 
-> Previously SERDES used internal reference clock and the attached device
-> used clock from clock generator in the EVM.
-> 
-> Changes from v1:
-> 1) Fixed clock names as suggested by Nishanth
-> 2) Limit to < 100 lines
-> 
-> v1: http://lore.kernell.org/r/20210512151209.27560-1-kishon@ti.com
-> 
 
-For the whole series,
+--xwy1/Qax+gOdkBIj
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Aswath Govindraju <a-govindraju@ti.com>
+On Mon, Jun 07, 2021 at 08:08:27AM +0200, Uwe Kleine-K=C3=B6nig wrote:
+> Hello Thierry,
+>=20
+> On Fri, Jun 04, 2021 at 11:49:37AM +0200, Thierry Reding wrote:
+> > In the interest of making forward progress, I've applied this series.
+>=20
+> I proposed a different approach that in contrast to usage_power:
+>=20
+>  - is well defined
+>    (so driver authors and consumers know what to provide or expect resp.);
+>  - has good name people understand without reading documentation;
+>  - fully covers the problem Clemens want to address;
+>  - fully covers what the only implementing lowlevel driver does; and
+>  - is easy to implement based on the patches in this series
+>=20
+> This is not what I call "forward progress". I take it personal that
+> after I pointed out technical shortcomings with this patch set and even
+> suggested a better concept, you didn't even made the effort to argue
+> but instead simply went on applying the patches.
 
-Thanks,
-Aswath
+Forward progress doesn't always mean that everybody gets their way. And
+this is nothing personal, so please don't take it that way.
 
-> Kishon Vijay Abraham I (4):
->   arm64: dts: ti: k3-j721e-main: Fix external refclk input to SERDES
->   arm64: dts: ti: k3-j721e-main: Add #clock-cells property to serdes DT
->     node
->   arm64: dts: ti: k3-j721e-common-proc-board: Use external clock for
->     SERDES
->   arm64: dts: ti: k3-j721e-common-proc-board: Re-name "link" name as
->     "phy"
-> 
->  .../dts/ti/k3-j721e-common-proc-board.dts     | 52 ++++++++++-
->  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     | 86 +++++++++++--------
->  2 files changed, 98 insertions(+), 40 deletions(-)
-> 
+I don't see where you pointed out technical shortcomings with this
+patch, you merely pointed out that you don't like this solution and that
+there might be a better way to implement it by expanding on the concepts
+introduced in this patch series.
 
+As I said, this is now no longer impacting ABI, so we can improve on
+this further down the road if we choose to. However, I didn't see any
+reason to postpone this any further. This is something that Clemens has
+been working on for more than half a year and we've changed our minds
+often enough. In my opinion this proposal is good enough.
+
+Thierry
+
+--xwy1/Qax+gOdkBIj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmC+L8sACgkQ3SOs138+
+s6G4Zw//XUROGNoS170lWAxGbjxoOOBKdHW85K465igvZNayXMRl7jtqecHshOs2
+xARMj0OspgqWA66ZBWqEHvG9V8FYu6fhPeBlkOLs+vppSZPiK4o8dWgSLKNp61W8
+Yy631s36LmbqxVwkvJyQrzZKhdP6pMDSIlQRT0891GEH28HekbQ/XXL8morgV0zu
+BtM9wuTxfi7+n6VfeYysFpkbqXvIQGoq1SJ5fLcfK6AjCgv3sV4iQB1mZDaL6clP
+mU1U4wQ1tOICA6zxzrYyM4kbeReqIwHaBPFx3+JV29W2oSdbZec+RjID+E4KQD5A
+Qpg6tFcVYf+YDafEZ1WpxAAPjv1PZj7GfctKIOAxUMKEumQAydMAa1eBru5hEWaL
+AADmHjWt1nywM4RovmruE0WutBLswPVYSPHUvxPAbEaZlLYeyYo8s2D0BsmL18Ps
+H7Ny7j5tJGa1xtbqZ4kOCiGQkNpoYX9u06HJBrs5un0NWs+2vhTpjw2rrUTmZeVy
+mLgsvqn9He15kngJkLw/rkQTZaqAYa5qgoO1CjnkVGzibwr5NTtZ1Uc/UG7f2KsF
+ZKaOuCGQ1NOWg1Ca5hfAxaCsBITtXP4e8PY/twGuZcBDOJAXvuufW+qUp1vWF4j3
+yaxLjVjglBP8QIOCIPF1uBc6lL0I2lGcQupSGJY6lsKFWr3Sank=
+=NYrY
+-----END PGP SIGNATURE-----
+
+--xwy1/Qax+gOdkBIj--
