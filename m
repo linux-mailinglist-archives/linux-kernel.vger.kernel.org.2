@@ -2,197 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F3839E72A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 21:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A224B39E71A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 21:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231626AbhFGTF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 15:05:58 -0400
-Received: from mail-wr1-f42.google.com ([209.85.221.42]:44557 "EHLO
-        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231623AbhFGTFw (ORCPT
+        id S231545AbhFGTF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 15:05:28 -0400
+Received: from gateway33.websitewelcome.com ([192.185.146.82]:25732 "EHLO
+        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231281AbhFGTF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 15:05:52 -0400
-Received: by mail-wr1-f42.google.com with SMTP id f2so18770578wri.11;
-        Mon, 07 Jun 2021 12:03:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KVXA2B0j0E76Hw4rKgteG9BP+cY/0VQ2EiVfHUNMg/4=;
-        b=L/I6KHhV8nWwyacvEtPNzdmBXfUH5ZEsJ4J3th5BcP1l8pDnNmk13+0zJztQKhpGUM
-         gUF6ef9BXpbjnTROVIjQpJyxc56/YboXAH7+OKJLwR8UAR0pnyUqAjL1iSFVsYm4z/DZ
-         opnL8u8J796ZTLQfy37dMVKmMG77Q78HbH/hfh6+BAmHZWJgw+w+cVV+cnnQguH4X3X+
-         NCi1LBy738cvWEHIKGkv0Ut/DCzdasLNbUTv00VqX+tDj5lS2pJIMqvXw6sPNMKPznGF
-         fWKBZhAut8pI3MOmJ8R7bZSWVU/5p9GuX8Gi/Y6BRICnR7o7vzx/4I+uGkfG9x9p8W3n
-         pw6Q==
-X-Gm-Message-State: AOAM532uc+6IyeF6e723v6jsE6a3ox0Z+Lny+B3+FJ1SVdAQCmwpke/q
-        xAMm3+GVKrqYcdrkjNyukHn7uNQ7Z1U22w==
-X-Google-Smtp-Source: ABdhPJzNZJiNdyZFFUxhc150qts/zF4QA/HLJcifyxEuiMByRZ69cr9rwdxpgcIZFH/A7yaeZ1ZcTA==
-X-Received: by 2002:a5d:698e:: with SMTP id g14mr18619051wru.212.1623092624709;
-        Mon, 07 Jun 2021 12:03:44 -0700 (PDT)
-Received: from msft-t490s.teknoraver.net (net-37-119-128-179.cust.vodafonedsl.it. [37.119.128.179])
-        by smtp.gmail.com with ESMTPSA id g17sm12185968wrp.61.2021.06.07.12.03.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 12:03:44 -0700 (PDT)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     netdev@vger.kernel.org, linux-mm@kvack.org
-Cc:     Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>,
-        Yonghong Song <yhs@fb.com>,
-        Michel Lespinasse <walken@google.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Hildenbrand <david@redhat.com>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH net-next v8 5/5] mvneta: recycle buffers
-Date:   Mon,  7 Jun 2021 21:02:40 +0200
-Message-Id: <20210607190240.36900-6-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210607190240.36900-1-mcroce@linux.microsoft.com>
-References: <20210607190240.36900-1-mcroce@linux.microsoft.com>
+        Mon, 7 Jun 2021 15:05:27 -0400
+Received: from cm15.websitewelcome.com (cm15.websitewelcome.com [100.42.49.9])
+        by gateway33.websitewelcome.com (Postfix) with ESMTP id 9F1271B1F9
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 14:03:00 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id qKWal5zGYHFifqKWalv7Vv; Mon, 07 Jun 2021 14:03:00 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=yngJfhdJltO5vFUnNbwfVYVcqu0UX/H3j06Drqm3jmM=; b=h7OzdLp9emwfcv6H1B7jdYZoF5
+        Mux6TczeCdyqYjjirBLxJiO5YE5mky9UWgp55m8muvF2y/e+CNo8Jy4S08qbpAhKfK4SUBe7QF7x5
+        2c1iBU/SJWDwL1QFzCYPCVsLxUB8UGOmzH6La5F7xZLllX0RGSCZsVgP/WIxmbqpld/9+P/UrwwWu
+        efcNzJXAmGh2WJr/IvsztlJdtUiA+8vetus7RVT73P2PfVQhoTXXX6959KPnM7rYFGyJSXTTCs4hg
+        utqmMj4kaJnN4tcpW9yoBjgDPgwgXwMWzW28NbqUEFlAufoaGpBxJmQ44l/jYA3OPTYH9thOL9gMn
+        ip9PqY4w==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:50482 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lqKWX-0028rF-SY; Mon, 07 Jun 2021 14:02:57 -0500
+Subject: Re: [PATCH RESEND][next] media: siano: Fix out-of-bounds warnings in
+ smscore_load_firmware_family2()
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
+References: <20210511174547.GA33234@embeddedor>
+ <fbff2fe5-6675-1538-f9aa-a8d77810a63b@embeddedor.com>
+Message-ID: <97eb2065-e8cd-d818-9fcf-7e399d245bc1@embeddedor.com>
+Date:   Mon, 7 Jun 2021 14:04:08 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <fbff2fe5-6675-1538-f9aa-a8d77810a63b@embeddedor.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lqKWX-0028rF-SY
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:50482
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 4
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
+Hi all,
 
-Use the new recycling API for page_pool.
-In a drop rate test, the packet rate increased by 10%,
-from 296 Kpps to 326 Kpps.
+As I haven't received any response for this patch in almost three months[1] since I first
+sent it out, I'm taking this in my -next[2] branch for v5.14.
 
-perf top on a stock system shows:
+Thanks
+--
+Gustavo
 
-Overhead  Shared Object     Symbol
-  23.66%  [kernel]          [k] __pi___inval_dcache_area
-  22.85%  [mvneta]          [k] mvneta_rx_swbm
-   7.54%  [kernel]          [k] kmem_cache_alloc
-   6.49%  [kernel]          [k] eth_type_trans
-   3.94%  [kernel]          [k] dev_gro_receive
-   3.91%  [kernel]          [k] __netif_receive_skb_core
-   3.91%  [kernel]          [k] kmem_cache_free
-   3.76%  [kernel]          [k] page_pool_release_page
-   3.56%  [kernel]          [k] free_unref_page
-   2.40%  [kernel]          [k] build_skb
-   1.49%  [kernel]          [k] skb_release_data
-   1.45%  [kernel]          [k] __alloc_pages_bulk
-   1.30%  [kernel]          [k] page_frag_free
+[1] https://lore.kernel.org/linux-hardening/20210311021947.GA129388@embeddedor/
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp
 
-And this is the same output with recycling enabled:
-
-Overhead  Shared Object     Symbol
-  26.41%  [kernel]          [k] __pi___inval_dcache_area
-  25.00%  [mvneta]          [k] mvneta_rx_swbm
-   8.14%  [kernel]          [k] kmem_cache_alloc
-   6.84%  [kernel]          [k] eth_type_trans
-   4.44%  [kernel]          [k] __netif_receive_skb_core
-   4.38%  [kernel]          [k] kmem_cache_free
-   4.16%  [kernel]          [k] dev_gro_receive
-   3.21%  [kernel]          [k] page_pool_put_page
-   2.41%  [kernel]          [k] build_skb
-   1.82%  [kernel]          [k] skb_release_data
-   1.61%  [kernel]          [k] napi_gro_receive
-   1.25%  [kernel]          [k] page_pool_refill_alloc_cache
-   1.16%  [kernel]          [k] __netif_receive_skb_list_core
-
-We can see that page_pool_release_page(), free_unref_page() and
-__alloc_pages_bulk() are no longer on top of the list when receiving
-traffic.
-
-The test was done with mausezahn on the TX side with 64 byte raw
-ethernet frames.
-
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
----
- drivers/net/ethernet/marvell/mvneta.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-index 7d5cd9bc6c99..c15ce06427d0 100644
---- a/drivers/net/ethernet/marvell/mvneta.c
-+++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -2320,7 +2320,7 @@ mvneta_swbm_add_rx_fragment(struct mvneta_port *pp,
- }
- 
- static struct sk_buff *
--mvneta_swbm_build_skb(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
-+mvneta_swbm_build_skb(struct mvneta_port *pp, struct page_pool *pool,
- 		      struct xdp_buff *xdp, u32 desc_status)
- {
- 	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
-@@ -2331,7 +2331,7 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
- 	if (!skb)
- 		return ERR_PTR(-ENOMEM);
- 
--	page_pool_release_page(rxq->page_pool, virt_to_page(xdp->data));
-+	skb_mark_for_recycle(skb, virt_to_page(xdp->data), pool);
- 
- 	skb_reserve(skb, xdp->data - xdp->data_hard_start);
- 	skb_put(skb, xdp->data_end - xdp->data);
-@@ -2343,7 +2343,10 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
- 		skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
- 				skb_frag_page(frag), skb_frag_off(frag),
- 				skb_frag_size(frag), PAGE_SIZE);
--		page_pool_release_page(rxq->page_pool, skb_frag_page(frag));
-+		/* We don't need to reset pp_recycle here. It's already set, so
-+		 * just mark fragments for recycling.
-+		 */
-+		page_pool_store_mem_info(skb_frag_page(frag), pool);
- 	}
- 
- 	return skb;
-@@ -2425,7 +2428,7 @@ static int mvneta_rx_swbm(struct napi_struct *napi,
- 		    mvneta_run_xdp(pp, rxq, xdp_prog, &xdp_buf, frame_sz, &ps))
- 			goto next;
- 
--		skb = mvneta_swbm_build_skb(pp, rxq, &xdp_buf, desc_status);
-+		skb = mvneta_swbm_build_skb(pp, rxq->page_pool, &xdp_buf, desc_status);
- 		if (IS_ERR(skb)) {
- 			struct mvneta_pcpu_stats *stats = this_cpu_ptr(pp->stats);
- 
--- 
-2.31.1
-
+On 6/1/21 17:12, Gustavo A. R. Silva wrote:
+> Hi,
+> 
+> I've been pinging and resending this patch multiple times. Is there someone out there
+> that can give me some feedback on this, please?
+> 
+> I'm fine with adding this to my -next branch for 5.14 if no one cares. :)
+> 
+> Thanks
+> --
+> Gustavo
+> 
+> On 5/11/21 12:45, Gustavo A. R. Silva wrote:
+>> Rename struct sms_msg_data4 to sms_msg_data5 and increase the size of
+>> its msg_data array from 4 to 5 elements. Notice that at some point
+>> the 5th element of msg_data is being accessed in function
+>> smscore_load_firmware_family2():
+>>
+>> 1006                 trigger_msg->msg_data[4] = 4; /* Task ID */
+>>
+>> Also, there is no need for the object _trigger_msg_ of type struct
+>> sms_msg_data *, when _msg_ can be used, directly. Notice that msg_data
+>> in struct sms_msg_data is a one-element array, which causes multiple
+>> out-of-bounds warnings when accessing beyond its first element
+>> in function smscore_load_firmware_family2():
+>>
+>>  992                 struct sms_msg_data *trigger_msg =                                                  
+>>  993                         (struct sms_msg_data *) msg;                                                
+>>  994                                                                                                     
+>>  995                 pr_debug("sending MSG_SMS_SWDOWNLOAD_TRIGGER_REQ\n");                               
+>>  996                 SMS_INIT_MSG(&msg->x_msg_header,                                                    
+>>  997                                 MSG_SMS_SWDOWNLOAD_TRIGGER_REQ,                                     
+>>  998                                 sizeof(struct sms_msg_hdr) +                                        
+>>  999                                 sizeof(u32) * 5);                                                   
+>> 1000                                                                                                     
+>> 1001                 trigger_msg->msg_data[0] = firmware->start_address;                                 
+>> 1002                                         /* Entry point */                                           
+>> 1003                 trigger_msg->msg_data[1] = 6; /* Priority */                                        
+>> 1004                 trigger_msg->msg_data[2] = 0x200; /* Stack size */                                  
+>> 1005                 trigger_msg->msg_data[3] = 0; /* Parameter */                                       
+>> 1006                 trigger_msg->msg_data[4] = 4; /* Task ID */ 
+>>
+>> even when enough dynamic memory is allocated for _msg_:
+>>
+>>  929         /* PAGE_SIZE buffer shall be enough and dma aligned */
+>>  930         msg = kmalloc(PAGE_SIZE, GFP_KERNEL | coredev->gfp_buf_flags);
+>>
+>> but as _msg_ is casted to (struct sms_msg_data *):
+>>
+>>  992                 struct sms_msg_data *trigger_msg =
+>>  993                         (struct sms_msg_data *) msg;
+>>
+>> the out-of-bounds warnings are actually valid and should be addressed.
+>>
+>> Fix this by declaring object _msg_ of type struct sms_msg_data5 *,
+>> which contains a 5-elements array, instead of just 4. And use
+>> _msg_ directly, instead of creating object trigger_msg.
+>>
+>> This helps with the ongoing efforts to enable -Warray-bounds by fixing
+>> the following warnings:
+>>
+>>   CC [M]  drivers/media/common/siano/smscoreapi.o
+>> drivers/media/common/siano/smscoreapi.c: In function ‘smscore_load_firmware_family2’:
+>> drivers/media/common/siano/smscoreapi.c:1003:24: warning: array subscript 1 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+>>  1003 |   trigger_msg->msg_data[1] = 6; /* Priority */
+>>       |   ~~~~~~~~~~~~~~~~~~~~~^~~
+>> In file included from drivers/media/common/siano/smscoreapi.c:12:
+>> drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
+>>   619 |  u32 msg_data[1];
+>>       |      ^~~~~~~~
+>> drivers/media/common/siano/smscoreapi.c:1004:24: warning: array subscript 2 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+>>  1004 |   trigger_msg->msg_data[2] = 0x200; /* Stack size */
+>>       |   ~~~~~~~~~~~~~~~~~~~~~^~~
+>> In file included from drivers/media/common/siano/smscoreapi.c:12:
+>> drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
+>>   619 |  u32 msg_data[1];
+>>       |      ^~~~~~~~
+>> drivers/media/common/siano/smscoreapi.c:1005:24: warning: array subscript 3 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+>>  1005 |   trigger_msg->msg_data[3] = 0; /* Parameter */
+>>       |   ~~~~~~~~~~~~~~~~~~~~~^~~
+>> In file included from drivers/media/common/siano/smscoreapi.c:12:
+>> drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
+>>   619 |  u32 msg_data[1];
+>>       |      ^~~~~~~~
+>> drivers/media/common/siano/smscoreapi.c:1006:24: warning: array subscript 4 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+>>  1006 |   trigger_msg->msg_data[4] = 4; /* Task ID */
+>>       |   ~~~~~~~~~~~~~~~~~~~~~^~~
+>> In file included from drivers/media/common/siano/smscoreapi.c:12:
+>> drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
+>>   619 |  u32 msg_data[1];
+>>       |      ^~~~~~~~
+>>
+>> Fixes: 018b0c6f8acb ("[media] siano: make load firmware logic to work with newer firmwares")
+>> Co-developed-by: Kees Cook <keescook@chromium.org>
+>> Signed-off-by: Kees Cook <keescook@chromium.org>
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> ---
+>> Hi,
+>>
+>> We are about to be able to globally enable -Warray-bounds and,
+>> these are pretty much the last out-of-bounds warnings in linux-next.
+>>
+>> Thanks
+>>
+>>  drivers/media/common/siano/smscoreapi.c | 22 +++++++++-------------
+>>  drivers/media/common/siano/smscoreapi.h |  4 ++--
+>>  2 files changed, 11 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/drivers/media/common/siano/smscoreapi.c b/drivers/media/common/siano/smscoreapi.c
+>> index 410cc3ac6f94..bceaf91faa15 100644
+>> --- a/drivers/media/common/siano/smscoreapi.c
+>> +++ b/drivers/media/common/siano/smscoreapi.c
+>> @@ -908,7 +908,7 @@ static int smscore_load_firmware_family2(struct smscore_device_t *coredev,
+>>  					 void *buffer, size_t size)
+>>  {
+>>  	struct sms_firmware *firmware = (struct sms_firmware *) buffer;
+>> -	struct sms_msg_data4 *msg;
+>> +	struct sms_msg_data5 *msg;
+>>  	u32 mem_address,  calc_checksum = 0;
+>>  	u32 i, *ptr;
+>>  	u8 *payload = firmware->payload;
+>> @@ -989,24 +989,20 @@ static int smscore_load_firmware_family2(struct smscore_device_t *coredev,
+>>  		goto exit_fw_download;
+>>  
+>>  	if (coredev->mode == DEVICE_MODE_NONE) {
+>> -		struct sms_msg_data *trigger_msg =
+>> -			(struct sms_msg_data *) msg;
+>> -
+>>  		pr_debug("sending MSG_SMS_SWDOWNLOAD_TRIGGER_REQ\n");
+>>  		SMS_INIT_MSG(&msg->x_msg_header,
+>>  				MSG_SMS_SWDOWNLOAD_TRIGGER_REQ,
+>> -				sizeof(struct sms_msg_hdr) +
+>> -				sizeof(u32) * 5);
+>> +				sizeof(*msg));
+>>  
+>> -		trigger_msg->msg_data[0] = firmware->start_address;
+>> +		msg->msg_data[0] = firmware->start_address;
+>>  					/* Entry point */
+>> -		trigger_msg->msg_data[1] = 6; /* Priority */
+>> -		trigger_msg->msg_data[2] = 0x200; /* Stack size */
+>> -		trigger_msg->msg_data[3] = 0; /* Parameter */
+>> -		trigger_msg->msg_data[4] = 4; /* Task ID */
+>> +		msg->msg_data[1] = 6; /* Priority */
+>> +		msg->msg_data[2] = 0x200; /* Stack size */
+>> +		msg->msg_data[3] = 0; /* Parameter */
+>> +		msg->msg_data[4] = 4; /* Task ID */
+>>  
+>> -		rc = smscore_sendrequest_and_wait(coredev, trigger_msg,
+>> -					trigger_msg->x_msg_header.msg_length,
+>> +		rc = smscore_sendrequest_and_wait(coredev, msg,
+>> +					msg->x_msg_header.msg_length,
+>>  					&coredev->trigger_done);
+>>  	} else {
+>>  		SMS_INIT_MSG(&msg->x_msg_header, MSG_SW_RELOAD_EXEC_REQ,
+>> diff --git a/drivers/media/common/siano/smscoreapi.h b/drivers/media/common/siano/smscoreapi.h
+>> index 4a6b9f4c44ac..f8789ee0d554 100644
+>> --- a/drivers/media/common/siano/smscoreapi.h
+>> +++ b/drivers/media/common/siano/smscoreapi.h
+>> @@ -624,9 +624,9 @@ struct sms_msg_data2 {
+>>  	u32 msg_data[2];
+>>  };
+>>  
+>> -struct sms_msg_data4 {
+>> +struct sms_msg_data5 {
+>>  	struct sms_msg_hdr x_msg_header;
+>> -	u32 msg_data[4];
+>> +	u32 msg_data[5];
+>>  };
+>>  
+>>  struct sms_data_download {
+>>
