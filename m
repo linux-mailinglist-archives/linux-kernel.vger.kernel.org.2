@@ -2,53 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB5739DD28
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D5B39DD1E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231143AbhFGNAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 09:00:15 -0400
-Received: from mail-qk1-f201.google.com ([209.85.222.201]:46735 "EHLO
-        mail-qk1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230390AbhFGNAM (ORCPT
+        id S230373AbhFGM7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 08:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230210AbhFGM7S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 09:00:12 -0400
-Received: by mail-qk1-f201.google.com with SMTP id 205-20020a3707d60000b02903aa9208caa2so3432760qkh.13
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 05:58:10 -0700 (PDT)
+        Mon, 7 Jun 2021 08:59:18 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A33C061766
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 05:57:12 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id o14-20020a05620a130eb02902ea53a6ef80so12784715qkj.6
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 05:57:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=/aaoSey+XaULg1MGdgAn1yub4BLSR83Q711t6YMKbyU=;
-        b=B5Q6qv/j239qQSq6QJOHU/OxhznMCBm9n11rUWkTiUGjoQULfGq5emaVxGXHLCg9gd
-         gXCvku07ga/IYzdieyxbL3Zblq8Y66DXyyUYe9zI5VeINeqftPT/D4TjjNMsQ6xQh96J
-         BQ1WkBYwn/55v4cWCmq094UlcISISd1RAsxZnkHmWSEogjGMEHZ/ic0SPBSE3wkrIrFI
-         L39xw3URqXUW1TmnXhM80Wxk+q2boXxAsytGtIpQgDol/Bgxi77rnWLFMonUGsV/DUMs
-         RfTSrUjbeghSwrwTXVQ3sfEOqlP4aS2qf94oJ29xRRZ85LYQGUpf9BEXd053N/jOKxHj
-         JbJg==
+        bh=52fGvbimaCnuRXDzSCXEKwhsxycQvh+gPJni4oHCnrE=;
+        b=HWg0wtm6XFMA3fVNr7tPjA7qi8f4rG61TWvDhephndChJV8pk7inyQ7N7dHszf//Rb
+         VEsfDXImxtXQhtzPgvOt5JPDfw3z8OQPJb6tRT2pkNK5vG2RJC6ZFO0PUgYd2unum8F8
+         XJD0ObbwCvz9pL0xWRc1vjXHaiXh4+0t4eBJ1c+zjlth4ppB41VRDRuCTb8qX+54pj6i
+         fKvMuS9pYvYWlaHdTuOgb3kLWtbxS5B7wfSzNmR5sCoj5NBxUmPgkTn018gfXFnl+X8Z
+         exY5A/qQk5tWCO7AW5CXusiFrIgP8cf+SrvAEOn/0Kjx50NBGZBXOT0xYbZHRCkbLti6
+         Mu+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=/aaoSey+XaULg1MGdgAn1yub4BLSR83Q711t6YMKbyU=;
-        b=VgepGkPtsyyEsF1C9hNsxTNMQhqeUdjR6jQjhTmDEHquc3a46ILS8zm15/qy3thMBT
-         1GVelmpA0ElNoutXr/GrDJ45fxYKjblVca0eeuw1m6obf7VB6KQAhDqnsCsZHzi3hNv5
-         qnU4XVSvMqqeYyM0Ad8sSdmLzeamr3PNsIZrPM/0/Xdguymz6OaQiP1OXsla2Kk4BmeT
-         RZRaDNGNSzfn9mJVipixpujtwL+MwZ0TAYlHk2Hk9Nnb5O6L2zpeXfbXhoBzFdGrte3u
-         H/S0NtFLToDLfmL0flotEyuXr8zlbtM6wsDBKcft7ueV7FuVrR8TvaoL4hfERUwdULbh
-         d7qw==
-X-Gm-Message-State: AOAM532XUBA4JOwRs9kwbce6mUGBJ37UubPVKzEEIszOydsW+THJSgGQ
-        E5vp2/YerGYFqaZRvciC1X4MvMXXnw==
-X-Google-Smtp-Source: ABdhPJzUWTXUX+DHChUEZmw+b4TzmHxrK8Ry7wK76pnR64uuGksVdPl4HkAK24lnvjlo1mBbe8I7BdwxKA==
+        bh=52fGvbimaCnuRXDzSCXEKwhsxycQvh+gPJni4oHCnrE=;
+        b=oqVHJOxt7z4F35Nze8vIBT/G+J7+xX7aguAAW5laLdqDnNieZXxE8jGO1kleIxXx4Z
+         6qTpyKTzA38vbDd5H2pkg6TNCpACkDoo9Ot6I7WZWYTUoqAGQFNSiIvmCYSn1XfBnidQ
+         gTuFZ2wBAG61JGt0FKO83jDWOBowwRgJD8i33RtqIcIo60aLwXcjn4TFI6GH3MkYLyu+
+         Hx7WWwILOIbneE1+9kDPf2FRhUcVRwwmjRhm8ELJixGipgWam0Rb0xeTB+aqzhpUCG5I
+         4qzYO/bWwYIf1f82QBb2MA4z5kh02A0y/b92pyOuAZKlyD+OyKGdYbM/KdJqSkTxwYpR
+         FJSg==
+X-Gm-Message-State: AOAM533qiTn/0aA2j4iWYjwr3BWVsJlhPtodOWCvk/pjDP0/QiWgRDkn
+        q1G5KqaY7wy09niYckgqyYsv5EgX5Q==
+X-Google-Smtp-Source: ABdhPJyM612oWkwLCB9W3qmZDVflG0IRvkLjZ3gnMKlKj7XtNMhiBd2EtbRQmkjjVPj2Z+JO/8SflbBkKQ==
 X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:2587:50:741c:6fde])
- (user=elver job=sendgmr) by 2002:ad4:4e89:: with SMTP id dy9mr13977400qvb.40.1623070629649;
- Mon, 07 Jun 2021 05:57:09 -0700 (PDT)
-Date:   Mon,  7 Jun 2021 14:56:48 +0200
+ (user=elver job=sendgmr) by 2002:a0c:c587:: with SMTP id a7mr17495867qvj.59.1623070631856;
+ Mon, 07 Jun 2021 05:57:11 -0700 (PDT)
+Date:   Mon,  7 Jun 2021 14:56:49 +0200
 In-Reply-To: <20210607125653.1388091-1-elver@google.com>
-Message-Id: <20210607125653.1388091-3-elver@google.com>
+Message-Id: <20210607125653.1388091-4-elver@google.com>
 Mime-Version: 1.0
 References: <20210607125653.1388091-1-elver@google.com>
 X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
-Subject: [PATCH 2/7] kcsan: Remove CONFIG_KCSAN_DEBUG
+Subject: [PATCH 3/7] kcsan: Introduce CONFIG_KCSAN_STRICT
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com, paulmck@kernel.org
 Cc:     boqun.feng@gmail.com, mark.rutland@arm.com, will@kernel.org,
@@ -59,54 +62,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By this point CONFIG_KCSAN_DEBUG is pretty useless, as the system just
-isn't usable with it due to spamming console (I imagine a randconfig
-test robot will run into this sooner or later). Remove it.
-
-Back in 2019 I used it occasionally to record traces of watchpoints and
-verify the encoding is correct, but these days we have proper tests. If
-something similar is needed in future, just add it back ad-hoc.
+Add a simpler Kconfig variable to configure KCSAN's "strict" mode. This
+makes it simpler in documentation or messages to suggest just a single
+configuration option to select the strictest checking mode (vs.
+currently having to list several options).
 
 Signed-off-by: Marco Elver <elver@google.com>
 ---
- kernel/kcsan/core.c | 9 ---------
- lib/Kconfig.kcsan   | 3 ---
- 2 files changed, 12 deletions(-)
+ Documentation/dev-tools/kcsan.rst |  4 ++++
+ lib/Kconfig.kcsan                 | 10 ++++++++++
+ 2 files changed, 14 insertions(+)
 
-diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
-index 26709ea65c71..d92977ede7e1 100644
---- a/kernel/kcsan/core.c
-+++ b/kernel/kcsan/core.c
-@@ -479,15 +479,6 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
- 		break; /* ignore; we do not diff the values */
- 	}
+diff --git a/Documentation/dev-tools/kcsan.rst b/Documentation/dev-tools/kcsan.rst
+index ba059df10b7d..17f974213b88 100644
+--- a/Documentation/dev-tools/kcsan.rst
++++ b/Documentation/dev-tools/kcsan.rst
+@@ -124,6 +124,10 @@ Kconfig options:
+   causes KCSAN to not report data races due to conflicts where the only plain
+   accesses are aligned writes up to word size.
  
--	if (IS_ENABLED(CONFIG_KCSAN_DEBUG)) {
--		kcsan_disable_current();
--		pr_err("watching %s, size: %zu, addr: %px [slot: %d, encoded: %lx]\n",
--		       is_write ? "write" : "read", size, ptr,
--		       watchpoint_slot((unsigned long)ptr),
--		       encode_watchpoint((unsigned long)ptr, size, is_write));
--		kcsan_enable_current();
--	}
--
- 	/*
- 	 * Delay this thread, to increase probability of observing a racy
- 	 * conflicting access.
++To use the strictest possible rules, select ``CONFIG_KCSAN_STRICT=y``, which
++configures KCSAN to follow the Linux-kernel memory consistency model (LKMM) as
++closely as possible.
++
+ DebugFS interface
+ ~~~~~~~~~~~~~~~~~
+ 
 diff --git a/lib/Kconfig.kcsan b/lib/Kconfig.kcsan
-index 6152fbd5cbb4..5304f211f81f 100644
+index 5304f211f81f..c76fbb3ee09e 100644
 --- a/lib/Kconfig.kcsan
 +++ b/lib/Kconfig.kcsan
-@@ -62,9 +62,6 @@ config KCSAN_VERBOSE
- 	  generated from any one of them, system stability may suffer due to
- 	  deadlocks or recursion.  If in doubt, say N.
+@@ -183,9 +183,17 @@ config KCSAN_REPORT_RACE_UNKNOWN_ORIGIN
+ 	  reported if it was only possible to infer a race due to a data value
+ 	  change while an access is being delayed on a watchpoint.
  
--config KCSAN_DEBUG
--	bool "Debugging of KCSAN internals"
--
- config KCSAN_SELFTEST
- 	bool "Perform short selftests on boot"
++config KCSAN_STRICT
++	bool "Strict data-race checking"
++	help
++	  KCSAN will report data races with the strictest possible rules, which
++	  closely aligns with the rules defined by the Linux-kernel memory
++	  consistency model (LKMM).
++
+ config KCSAN_REPORT_VALUE_CHANGE_ONLY
+ 	bool "Only report races where watcher observed a data value change"
  	default y
++	depends on !KCSAN_STRICT
+ 	help
+ 	  If enabled and a conflicting write is observed via a watchpoint, but
+ 	  the data value of the memory location was observed to remain
+@@ -194,6 +202,7 @@ config KCSAN_REPORT_VALUE_CHANGE_ONLY
+ config KCSAN_ASSUME_PLAIN_WRITES_ATOMIC
+ 	bool "Assume that plain aligned writes up to word size are atomic"
+ 	default y
++	depends on !KCSAN_STRICT
+ 	help
+ 	  Assume that plain aligned writes up to word size are atomic by
+ 	  default, and also not subject to other unsafe compiler optimizations
+@@ -206,6 +215,7 @@ config KCSAN_ASSUME_PLAIN_WRITES_ATOMIC
+ 
+ config KCSAN_IGNORE_ATOMICS
+ 	bool "Do not instrument marked atomic accesses"
++	depends on !KCSAN_STRICT
+ 	help
+ 	  Never instrument marked atomic accesses. This option can be used for
+ 	  additional filtering. Conflicting marked atomic reads and plain
 -- 
 2.32.0.rc1.229.g3e70b5a671-goog
 
