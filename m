@@ -2,72 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEBF239E873
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 22:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B60E39E87C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 22:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231481AbhFGUdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 16:33:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230251AbhFGUdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 16:33:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AF6D61139;
-        Mon,  7 Jun 2021 20:31:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623097872;
-        bh=pPJBqBlQGXvfAld1PUvVv5IJNwFjE/rO5W6JlS1cXrU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=kODygim17HTj9MZtf/1L5Umw+L256UX+5IukHOU8+Imp1NX53aO03JrJSGiruIBKN
-         jHjTGGJ97JPUg9Zojj4T8J1O/yo4QKhjqDLJY0chP71mjYCm1LwJzGxgGp9okUq2pM
-         TVVnIPzZig4viPX2cNfav+KGBs74T84oR4jNdF75Yg35V5/CRkgGfW6Eu8RdF4Bs9p
-         1xrcA6TyrFX2YPj/Z7i8XWoZm4ed+I34rjgVeI/pB3Fabp/M6w2mBnMWm7yw0soHVf
-         VIt0gRAPF9M+zNenNQaXXn4gr7TGaR5VBb5t1hH3/3GAAfK8+eIxS1Ry0hu2QZ4hR1
-         oah4RLjVBy4Ng==
-Date:   Mon, 7 Jun 2021 15:32:29 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Subject: [PATCH][next] drm/i915/gem: Fix fall-through warning for Clang
-Message-ID: <20210607203229.GA60476@embeddedor>
+        id S231469AbhFGUex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 16:34:53 -0400
+Received: from mail-lj1-f171.google.com ([209.85.208.171]:45878 "EHLO
+        mail-lj1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230436AbhFGUew (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 16:34:52 -0400
+Received: by mail-lj1-f171.google.com with SMTP id u18so3806879lju.12
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 13:32:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kteMWI8wqvnKbw9QPTVRDBy7GPMe911SvO5GJ7EDIIo=;
+        b=DBmsALCCUaGl/AsAhStDaRku1s3wuNNlysYwZV3avf0trIA4fgd3qdx/kJYwf3UO6P
+         RVujQzv/zjbuLQIcZqiN0YqSfz9j8Ek1UF2WTIdcppVu2J0t0BJMi2j8GvoUqTRSapAQ
+         URU9aCCc0d1NcbPLvHkwwQ2JUUTVGUza1ifOc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kteMWI8wqvnKbw9QPTVRDBy7GPMe911SvO5GJ7EDIIo=;
+        b=JWiVxQBwodw2V7re3JvqtxCqdrQ7Xk4T4pHwrmkEM8tkkI1q4gyT3C1UaOJuV6RycO
+         SEizNp575DIUTP4UmIUqoLH9RuRpb33NS4rbx78SkYsa8jwpppipjJhhsg4ol/8CB1S/
+         TdEHNSiKJBNccOvXE8CXISm5/LNslv0g0+sBST3fPVnOcrHptkA33lSK8gVnX/KvyQgp
+         Ef0GAkNyMlNLyWlCvnnHcFTRloTbrAcM8Wy78wVYPV89k99nkckefCGipyMx+noeRzzQ
+         j+ErjSMwVi/VDapD6ztnSK4NrJpv9nFb3j/2aMQSo1hPXXcDkhxyXdpsXH5zjgIgQ7qk
+         L22A==
+X-Gm-Message-State: AOAM530RVqgWTWeDohGZCmFoefdFJi17YGPny3nuncwnz13M6jqYS7EV
+        DT+RjYXWgB4wV+vPDAwpTv0B9ZbhL72MXUmueBo=
+X-Google-Smtp-Source: ABdhPJyRQCJIjGeEtCUviF2w0cR5Zj01WdqwtdyT1I4K57E8u5nr18jcRv9EkPl4SNyR4qRZWKwyVA==
+X-Received: by 2002:a2e:9855:: with SMTP id e21mr16683376ljj.295.1623097902521;
+        Mon, 07 Jun 2021 13:31:42 -0700 (PDT)
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
+        by smtp.gmail.com with ESMTPSA id i23sm1379127ljg.38.2021.06.07.13.31.41
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Jun 2021 13:31:41 -0700 (PDT)
+Received: by mail-lf1-f54.google.com with SMTP id i10so28449074lfj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 13:31:41 -0700 (PDT)
+X-Received: by 2002:a05:6512:3f82:: with SMTP id x2mr12594362lfa.421.1623097901047;
+ Mon, 07 Jun 2021 13:31:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210604214010.GD4397@paulmck-ThinkPad-P17-Gen-1>
+ <CAHk-=wg0w5L7-iJU_kvEh9stXZoh2srRF4jKToKmSKyHv-njvA@mail.gmail.com>
+ <20210605145739.GB1712909@rowland.harvard.edu> <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210606012903.GA1723421@rowland.harvard.edu> <CAHk-=wgUsReyz4uFymB8mmpphuP0vQ3DktoWU_x4u6impbzphg@mail.gmail.com>
+ <20210606185922.GF7746@tucnak> <CAHk-=wis8zq3WrEupCY6wcBeW3bB0WMOzaUkXpb-CsKuxM=6-w@mail.gmail.com>
+ <alpine.LNX.2.20.13.2106070017070.7184@monopod.intra.ispras.ru>
+ <CAHk-=wjwXs5+SOZGTaZ0bP9nsoA+PymAcGE4CBDVX3edGUcVRg@mail.gmail.com> <20210607174206.GF18427@gate.crashing.org>
+In-Reply-To: <20210607174206.GF18427@gate.crashing.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 7 Jun 2021 13:31:24 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiOTcBuxx1pYj=mQz-f0dvhbxq2a=ricTuHH5xwUKE5Yw@mail.gmail.com>
+Message-ID: <CAHk-=wiOTcBuxx1pYj=mQz-f0dvhbxq2a=ricTuHH5xwUKE5Yw@mail.gmail.com>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Alexander Monakov <amonakov@ispras.ru>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation to enable -Wimplicit-fallthrough for Clang, fix a
-warning by explicitly adding a fallthrough; statement.
+On Mon, Jun 7, 2021 at 10:45 AM Segher Boessenkool
+<segher@kernel.crashing.org> wrote:
+>
+> On Sun, Jun 06, 2021 at 03:38:06PM -0700, Linus Torvalds wrote:
+> >
+> > Example: variable_test_bit(), which generates a "bt" instruction, does
+> >
+> >                      : "m" (*(unsigned long *)addr), "Ir" (nr) : "memory");
+> >
+> > and the memory clobber is obviously wrong: 'bt' only *reads* memory,
+> > but since the whole reason we use it is that it's not just that word
+> > at address 'addr', in order to make sure that any previous writes are
+> > actually stable in memory, we use that "memory" clobber.
+>
+> You can split the "I" version from the "r" version, it does not need
+> the memory clobber.  If you know the actual maximum bit offset used you
+> don't need the clobber for "r" either.  Or you could even write
+>   "m"(((unsigned long *)addr)[nr/32])
+> That should work for all cases.
 
-Link: https://github.com/KSPP/linux/issues/115
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
-JFYI: We had thousands of these sorts of warnings and now we are down
-      to just 13 in linux-next(20210607). This is one of those last
-      remaining warnings. :)
+Note that the bit test thing really was just an example.
 
- drivers/gpu/drm/i915/gem/i915_gem_shrinker.c | 1 +
- 1 file changed, 1 insertion(+)
+And some other cases don't actually have an address range at all,
+because they affect arbitrary ranges, not - like that bit test - just
+one particular range.
 
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_shrinker.c b/drivers/gpu/drm/i915/gem/i915_gem_shrinker.c
-index f4fb68e8955a..17714da24033 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_shrinker.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_shrinker.c
-@@ -62,6 +62,7 @@ static void try_to_writeback(struct drm_i915_gem_object *obj,
- 	switch (obj->mm.madv) {
- 	case I915_MADV_DONTNEED:
- 		i915_gem_object_truncate(obj);
-+		fallthrough;
- 	case __I915_MADV_PURGED:
- 		return;
- 	}
--- 
-2.27.0
+To pick a couple of examples of that, think of
 
+ (a) write memory barrier. On some architectures it's an explicit
+instruction, on x86 it's just a compiler barrier, since writes are
+ordered on the CPU anyway, and we only need to make sure that the
+compiler doesn't re-order writes around the barrier
+
+Again, we currently use that same "barrier()" macro for that:
+
+    #define __smp_wmb()     barrier()
+
+but as mentioned, the barrier() thing has a "memory" clobber, and that
+means that this write barrier - which is really really cheap on x86 -
+also unnecessarily ends up causing pointless reloads from globals. It
+obviously doesn't actually *change* memory, but it very much requires
+that writes are not moved around it.
+
+ (b) things like cache flush and/or invalidate instructions, eg
+
+        asm volatile("wbinvd": : :"memory");
+
+Again, this one doesn't actually *modify* memory, and honestly, this
+one is not performance critical so the memory clobber is not actually
+a problem, but I'm pointing it out as an example of the exact same
+issue: the notion of an instruction that we don't want _writes_ to
+move around, but reads can happily be moved and/or cached around it.
+
+ (c) this whole "volatile_if()" situation: we want to make sure writes
+can't move around it, but there's no reason to re-load memory values,
+because it doesn't modify memory, and we only need to make sure that
+any writes are delayed to after the conditional.
+
+We long long ago (over 20 years by now) used to do things like this:
+
+  struct __dummy { unsigned long a[100]; };
+  #define ADDR (*(volatile struct __dummy *) addr)
+
+      __asm__ __volatile__(
+              "btl %2,%1\n\tsbbl %0,%0"
+              :"=r" (oldbit)
+              :"m" (ADDR),"ir" (nr));
+
+for that test-bit thing. Note how the above doesn't need the memory
+clobber, because for gcc that ADDR thing (access to a big struct) ends
+up being a "BLKmode" read, and then gcc at least used to treat it as
+an arbitrary read.
+
+I forget just why we had to stop using that trick, I think it caused
+some reload confusion for some gcc version at some point. Probably
+exactly because inline asms had issues with some BLKmode thing. That
+change happened before 2001, we didn't have nice changelogs with
+detailed commit messages back then, so
+
+> > Anybody have ideas or suggestions for something like that?
+>
+> Is it useful in general for the kernel to have separate "read" and
+> "write" clobbers in asm expressions?  And for other applications?
+
+See above. It's actually not all that uncommon that you have a "this
+doesn't modify memory, but you can't move writes around it". It's
+usually very much about cache handling or memory ordering operations,
+and that bit test example was probably a bad example exactly because
+it made it look like it's about some controlled range.
+
+The "write memory barroer" is likely the best and simplest example,
+but it's in not the only one.
+
+            Linus
