@@ -2,84 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EEEC39DBF3
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39FA139DBF8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhFGMKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 08:10:18 -0400
-Received: from verein.lst.de ([213.95.11.211]:45916 "EHLO verein.lst.de"
+        id S230353AbhFGMKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 08:10:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230286AbhFGMKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 08:10:17 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 4CCDE67373; Mon,  7 Jun 2021 14:08:22 +0200 (CEST)
-Date:   Mon, 7 Jun 2021 14:08:22 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Coly Li <colyli@suse.de>
-Cc:     Christoph Hellwig <hch@lst.de>, axboe@kernel.dk,
-        linux-bcache@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Alexander Ullrich <ealex1979@gmail.com>,
-        Diego Ercolani <diego.ercolani@gmail.com>,
-        Jan Szubiak <jan.szubiak@linuxpolska.pl>,
-        Marco Rebhan <me@dblsaiko.net>,
-        Matthias Ferdinand <bcache@mfedv.net>,
-        Victor Westerhuis <victor@westerhu.is>,
-        Vojtech Pavlik <vojtech@suse.cz>,
-        Rolf Fokkens <rolf@rolffokkens.nl>,
-        Thorsten Knabe <linux@thorsten-knabe.de>,
-        stable@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Nix <nix@esperi.org.uk>, Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH v5 2/2] bcache: avoid oversized read request in cache
- missing code path
-Message-ID: <20210607120822.GA11665@lst.de>
-References: <20210607103539.12823-1-colyli@suse.de> <20210607103539.12823-3-colyli@suse.de> <20210607110657.GB6729@lst.de> <6d08d23b-b778-4e5f-a5f3-7106a42e26a1@suse.de>
+        id S230227AbhFGMKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 08:10:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC51661249;
+        Mon,  7 Jun 2021 12:08:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623067710;
+        bh=paaH3iQ+5TS/ajt9upTenr9LFIEQSXfHeNWCORxZ058=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=smkIfRggyd0GC9wNAjW0pusmX4byoVwFg1plBd3NAdLvn8vU8EbKRVxllwnEY+1Lf
+         DiWl8N9gGAqKfO9TzKVERfe8JHA0ZcA3WOOoweR0mr0jrQZ0ky45gHSPNquvW6kb+j
+         Lg1vdB8Iz+vLEwpbWs9YmCKqsLdy6CrXge1GA45U=
+Date:   Mon, 7 Jun 2021 14:08:27 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        clang-built-linux@googlegroups.com,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Gal Pressman <galpress@amazon.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next v1 10/15] RDMA/cm: Use an attribute_group on
+ the ib_port_attribute intead of kobj's
+Message-ID: <YL4MOyxQi1O3dog5@kroah.com>
+References: <cover.1623053078.git.leonro@nvidia.com>
+ <00e578937f557954d240bc0856f45b3f752d6cba.1623053078.git.leonro@nvidia.com>
+ <YL3z/xpm5EYHFuZs@kroah.com>
+ <YL36OFkmlxJiqjvc@unreal>
+ <YL4Bcm2dOyWKLGJ7@kroah.com>
+ <YL4E7C7tVUMy3poz@unreal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6d08d23b-b778-4e5f-a5f3-7106a42e26a1@suse.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <YL4E7C7tVUMy3poz@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 07:55:22PM +0800, Coly Li wrote:
-> On 6/7/21 7:06 PM, Christoph Hellwig wrote:
-> > On Mon, Jun 07, 2021 at 06:35:39PM +0800, Coly Li wrote:
-> >> +	/* Limitation for valid replace key size and cache_bio bvecs number */
-> >> +	size_limit = min_t(unsigned int, bio_max_segs(UINT_MAX) * PAGE_SECTORS,
-> >> +			   (1 << KEY_SIZE_BITS) - 1);
-> > bio_max_segs kaps the argument to BIO_MAX_VECS, so you might as well
+On Mon, Jun 07, 2021 at 02:37:16PM +0300, Leon Romanovsky wrote:
+> On Mon, Jun 07, 2021 at 01:22:26PM +0200, Greg KH wrote:
+> > On Mon, Jun 07, 2021 at 01:51:36PM +0300, Leon Romanovsky wrote:
+> > > On Mon, Jun 07, 2021 at 12:25:03PM +0200, Greg KH wrote:
+> > > > On Mon, Jun 07, 2021 at 11:17:35AM +0300, Leon Romanovsky wrote:
+> > > > > From: Jason Gunthorpe <jgg@nvidia.com>
+> > > > > 
+> > > > > This code is trying to attach a list of counters grouped into 4 groups to
+> > > > > the ib_port sysfs. Instead of creating a bunch of kobjects simply express
+> > > > > everything naturally as an ib_port_attribute and add a single
+> > > > > attribute_groups list.
+> > > > > 
+> > > > > Remove all the naked kobject manipulations.
+> > > > 
+> > > > Much nicer.
+> > > > 
+> > > > But why do you need your counters to be atomic in the first place?  What
+> > > > are they counting that requires this?  Given that they are just a
+> > > > statistic for userspace, making them be a u64 should work just the same,
+> > > > right?
+> > > 
+> > > The statistic counters are per-port, while the cm.c flows run in
+> > > asynchronically in parallel for every CM connection.
+> > > 
+> > > We need atomic variable to ensure that "write to u64" is not
+> > > interrupted.
+> > 
+> > On what system is "write to u64" interruptable? 
 > 
-> It was suggested to not directly access BIO_MAX_VECS by you, maybe I
-> misunderstood you.
+> On 32 bits, and yes, we have a customer who still uses such system.
 
-Yes, drivers really should not care about it.  But hiding that behind
-a tiny wrapper doesn't help either.
+So you will see what, a "tear"?  Or a stale value?
 
-> > directly write BIO_MAX_VECS.  Can you explain the PAGE_SECTORS here a bit
-> > more? Does this code path use discontiguous per-sector allocations?
-> > Preferably in a comment.
+> > As these are per-port, do multiple threads try to increment these at
+> > the same time?  
 > 
+> Yes, CM connection can be seen as thread. Bottom line everything in parallel.
 > 
-> It is just because bch_bio_map() assume the maximum bio size is 1MB. It
-> was not true since the multiple pages bvecs
-> was merged in mainline kernel.
->  
-> The PAGE_SECTORS part is legacy for 1MB maximum size bio (256*4KB), it
-> should be fixed/improved later to
-> use multiple pages for bio size > 1MB and replace bch_bio_map().
+> > And even if they do, what happens if one is 'dropped' somehow because of this?
+> 
+> Probably nothing, we increment the statistics only.
 
-bch_bio_map and bch_bio_alloc_pages that poke directly into the bio are
-the root cause of a lot of these problems.
+So you are hitting cache lines for no good reason, probably not a good
+idea, you are wasting cpu cycles for nothing :(
 
-I had a series fixing some of that but Kent did not like it.  Drivers must
-not diretly access bi_vcnt or directly build bios.
+thanks,
 
-> Not any more. Now the line limit is 100 characters. Though I still
-> prefer 80 characters, place 86 characters in single line
-> makes the change more obvious.
-
-It makes it really hard to read in a normal terminal.
+greg k-h
