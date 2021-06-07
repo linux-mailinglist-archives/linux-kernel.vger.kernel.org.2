@@ -2,113 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DFD739DE1A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA3A39DE22
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbhFGNyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 09:54:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbhFGNyx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 09:54:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 684E1C061766;
-        Mon,  7 Jun 2021 06:53:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UxlTIzPnHvNXvpvNY8WXGYTkZQTDM1BOIfqbe2VK5Js=; b=CetJfXmyZyFXZxc0ZDB2x+X1sn
-        BndDqR/iA2xddJOq735dsFYR6NNIW4H0oZtDRH3Lvl65DkNtV48y2wYQJxi00epZy1226mMZqo9+8
-        uTuSnoaPfw/xJxIA+t6dKmij2+saw0Z85Fkr6z7cpchvBSenrOhKDTuuEdahF+h7C/Y0T7DM3KvU5
-        piiz78iI7X5BnRk74yOD51w4gIb6aBSfiDmsriaMGUYvwsp4cUQvZiw2Kiz9j5lQ0ENS2QGB+xq7q
-        2tNboIvbRKReTQHf5DeLpsFLpHKAvQx97M6YLSCEZbr8rCv8yE1nh9lkAQZPDGqlnTmweOrHE13Fy
-        /L/uNugw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lqFgE-00FrLN-9D; Mon, 07 Jun 2021 13:52:40 +0000
-Date:   Mon, 7 Jun 2021 14:52:38 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: Re: [PATCH net-next v7 1/5] mm: add a signature in struct page
-Message-ID: <YL4kpntfzMBXGSfV@casper.infradead.org>
-References: <20210604183349.30040-1-mcroce@linux.microsoft.com>
- <20210604183349.30040-2-mcroce@linux.microsoft.com>
- <YLp6D7mEh85vL+pY@casper.infradead.org>
- <CAFnufp2jGRsr9jexBLFRZfJu9AwGO0ghzExT1R4bJdscwHqSnQ@mail.gmail.com>
- <YLuK9P+loeKwUUK3@casper.infradead.org>
- <CAFnufp1e893Yz+KTjDvX4tyA8ngqmnMVudf1v0cBPdi9d_2zLw@mail.gmail.com>
+        id S230256AbhFGN4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 09:56:24 -0400
+Received: from mail-vi1eur06olkn2105.outbound.protection.outlook.com ([40.92.17.105]:8673
+        "EHLO EUR06-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230200AbhFGN4X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 09:56:23 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j6pnKDU+CR34Fy81FIfuDhViZ5wbJr08Cp38/GdP9Xs+R+T31DPBrhiSYrideeXPuEBA8pT/DUZOglOT6E8DPwRmjhIPTabYKatD3zLQIvCUyJvbNY25Nd7BomO5vGdyBQrgYMyFx4MRkFAoHlL0esH+R2KjcKv2N/5IGh0jABsRA3fmJhPMLrmJttBk+OAjpzigRVLhpMK1BNz6Pk12isYB4X34DFv3BNfA1m3q+WkpI5OiNsjPlCpqDn7xr4B6AsUMM4zM41pZ6xRnf7FCHy8yg3EufJKG0KJ8Y4/HOYnJ9oyNwkpgvlwiOatM4P3GJGpC0lSzJTVrup3wg1pElw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UNwk8Sfpw55fJEBkh9T6iBhu2n0lFvthgnDEUV6/bQ4=;
+ b=eyNUC0+6MIGC2yefK7nUGeckQKHe5xd+qhehwyGzbjYLZaeWZsyVtYFgwjg/PiZ8cCSxR/qRdm1mbqIZ9YyDcJ9vskOOx7dk09mwrC6zFpQi0APyo9ai03P9zGn+d0DrzkP5TRy4t3bJE3JkWFzXvFYjDY3jxAb5QB3TAS9m9F/b5N8Vxrgdv9Hk9i3oV46UCI+5eX/vIDw5oNOWJUsH/wjdvLJVOjbgiT1de+GZkfm75BKlGazRkCj6l74nC6UlTCAqBeA2ODtl1gmpbc8UUDCwXxWqVE1P6hocNtxrrSa3NgkEqwthoLT40Pt2LvzW5baAvfbJIxlkFsV1EpKmWg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from DB8EUR06FT003.eop-eur06.prod.protection.outlook.com
+ (2a01:111:e400:fc35::44) by
+ DB8EUR06HT140.eop-eur06.prod.protection.outlook.com (2a01:111:e400:fc35::507)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.18; Mon, 7 Jun
+ 2021 13:54:30 +0000
+Received: from AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM
+ (2a01:111:e400:fc35::41) by DB8EUR06FT003.mail.protection.outlook.com
+ (2a01:111:e400:fc35::217) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.18 via Frontend
+ Transport; Mon, 7 Jun 2021 13:54:30 +0000
+X-IncomingTopHeaderMarker: OriginalChecksum:F16B866306BA8707C32E0E54B32B37DB7B5BA275547D652D38C1AA6CF8A882BE;UpperCasedChecksum:20991EAA4F1729536F3D650F86EA2346A801013E4A3EE6C89E44074C9D11C90A;SizeAsReceived:7851;Count:45
+Received: from AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::ad12:6a2c:b949:f65d]) by AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::ad12:6a2c:b949:f65d%5]) with mapi id 15.20.4195.030; Mon, 7 Jun 2021
+ 13:54:30 +0000
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Bernd Edlinger <bernd.edlinger@hotmail.de>
+Subject: [PATCH] exec: Copy oldsighand->action under spin-lock
+Message-ID: <AM8PR10MB470871DEBD1DED081F9CC391E4389@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
+Date:   Mon, 7 Jun 2021 15:54:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TMN:  [FjRsIOwsgINOyROqTRauOjJubFakRh2J]
+X-ClientProxiedBy: FR3P281CA0025.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:1c::23) To AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:20b:364::23)
+X-Microsoft-Original-Message-ID: <b4328d8a-f6ea-2429-5376-5a2ff1d1ca9e@hotmail.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFnufp1e893Yz+KTjDvX4tyA8ngqmnMVudf1v0cBPdi9d_2zLw@mail.gmail.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.101] (84.57.61.94) by FR3P281CA0025.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:1c::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.10 via Frontend Transport; Mon, 7 Jun 2021 13:54:29 +0000
+X-MS-PublicTrafficType: Email
+X-IncomingHeaderCount: 45
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-Correlation-Id: c634e32a-4053-4210-e4e7-08d929bbc571
+X-MS-TrafficTypeDiagnostic: DB8EUR06HT140:
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5ZCZ21lBDbDx++se0IjiCc3uCL6qXeYUVNu+Zdm2OvLgov/G2XZa++igTyY3yh4rCK+Btv+lTl2YC15lGCUWjOcKXdUIDeRo1tqoH/DDiJnKsDxZ5hEA3Ws6+VRi4VQzSuJzSp35zjLd+dW5ddU4ZJrAlk2zOqCZkf0jPQUTJ/MyU1RD3fguCROMIxZawT0BBMeA2q4G+OkjENAqf3EN+ZS/sCRh0Hx94qjqTRltUaGLVJRyLGwplZs3UiN8AzMsqHDLUZvOY9zf2QDZrErFrK6UjvAIEOJ3t1EomVH9Bn6WbAGNGGwJuIAcw5eZc9qXQhtWZq8VQOD//XwPEBllDtt0Zjahmz1OLVHtwL5Xzw0aMcTTg3AVzTMAl2bq9gNs/HsMeuoNtke9JEj3tCmITA==
+X-MS-Exchange-AntiSpam-MessageData: La4XL8qusWOmwusLCk/3w9E4eoiB5wIejwgikH5/Z+pGW2ynZRZC6hI4L2WGPMkaOpFQw24nY/Tu7uSiOUMCuQL64Y01jlqvrtANFWQcf4qAoY1TYPj807y56OUp7+XC+y/0gcoy82dp2r9pnnd+TA==
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c634e32a-4053-4210-e4e7-08d929bbc571
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2021 13:54:30.1896
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-AuthSource: DB8EUR06FT003.eop-eur06.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8EUR06HT140
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 06, 2021 at 03:50:54AM +0200, Matteo Croce wrote:
-> And change all the *_pfmemalloc functions to use page->lru.next like this?
-> 
-> @@ -1668,10 +1668,12 @@ struct address_space *page_mapping(struct page *page);
-> static inline bool page_is_pfmemalloc(const struct page *page)
-> {
->        /*
-> -        * Page index cannot be this large so this must be
-> -        * a pfmemalloc page.
-> +        * This is not a tail page; compound_head of a head page is unused
-> +        * at return from the page allocator, and will be overwritten
-> +        * by callers who do not care whether the page came from the
-> +        * reserves.
->         */
+unshare_sighand should only access oldsighand->action
+while holding oldsighand->siglock, to make sure that
+newsighand->action is in a consistent state.
 
-The comment doesn't make a lot of sense if we're switching to use
-lru.next.  How about:
+Signed-off-by: Bernd Edlinger <bernd.edlinger@hotmail.de>
+---
+ fs/exec.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-	/*
-	 * lru.next has bit 1 set if the page is allocated from the
-	 * pfmemalloc reserves.  Callers may simply overwrite it if
-	 * they do not need to preserve that information.
-	 */
+diff --git a/fs/exec.c b/fs/exec.c
+index d8af85f..8344fba 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1193,11 +1193,11 @@ static int unshare_sighand(struct task_struct *me)
+ 			return -ENOMEM;
+ 
+ 		refcount_set(&newsighand->count, 1);
+-		memcpy(newsighand->action, oldsighand->action,
+-		       sizeof(newsighand->action));
+ 
+ 		write_lock_irq(&tasklist_lock);
+ 		spin_lock(&oldsighand->siglock);
++		memcpy(newsighand->action, oldsighand->action,
++		       sizeof(newsighand->action));
+ 		rcu_assign_pointer(me->sighand, newsighand);
+ 		spin_unlock(&oldsighand->siglock);
+ 		write_unlock_irq(&tasklist_lock);
+-- 
+1.9.1
