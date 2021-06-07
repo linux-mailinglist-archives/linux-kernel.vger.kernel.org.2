@@ -2,79 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAFB339DE45
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BFBF39DE4A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbhFGOEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 10:04:04 -0400
-Received: from mail-yb1-f180.google.com ([209.85.219.180]:42762 "EHLO
-        mail-yb1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbhFGODu (ORCPT
+        id S230353AbhFGOEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 10:04:07 -0400
+Received: from mail-lj1-f173.google.com ([209.85.208.173]:33506 "EHLO
+        mail-lj1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230282AbhFGOD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 10:03:50 -0400
-Received: by mail-yb1-f180.google.com with SMTP id g142so5760304ybf.9
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 07:01:58 -0700 (PDT)
+        Mon, 7 Jun 2021 10:03:56 -0400
+Received: by mail-lj1-f173.google.com with SMTP id o8so22415254ljp.0;
+        Mon, 07 Jun 2021 07:02:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p9E8O5w/zkKI+sZ2afykxRWuriykTpkma4WIu7fNyIo=;
-        b=FIt3KmJd++bHSzROQDE1qiyb4qF2bS66n6OFSnPYsreDNZpn5ikyqiNPMudRhHQE/o
-         Q9yErBnO6nU8cItuUZqnITfjxBd6n8imCs4RajexvQvy1laeZScfSPWJJG2NuHdc8nhT
-         TkRgHnqlXr7ukioUCXvlW5BWu4Fa0cWbzAR5Ju8MWFy0fZsazoqacWF+k+oGqsSMIl28
-         XWDlL+VYSO3fhmx1rVxccM8s/kYFztMVjGXwc4pq84h7AWtySpUMsV9NBYNc8mDdn4hV
-         2km8FRrWQk7UhYPrlemBLlKv8jqnPjSc6tMXVR0xxg+3pp8+vpS1gTfMUyA3QlxeMkT4
-         vdCA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=j/h58gR4t5OdekYQSFNWFSj/ytcD8nEYOcwTds5lTpM=;
+        b=cZ7XwpDmaKUFyRGuU/gySPHGHuthR5dZLIB7M0erV4onywKe23DLtafLrWOETo7w7T
+         hec5JQpo9owxIclFPifVIDu5njeS1SVs4jF/KMo8rQKYpmQLn+fZ/9aAZ8EKKtFPNW7H
+         49F6BSpfSgBjMCBbl3KpmVCDfCM1TJKe4pC2Nk1/6WsjTHnKy7Gqzkv8XgHqnP5IBtZG
+         GencLDReN0jxgqKJnkJB+cv/pT3NPJVv2orkahuGhqhga+9z/r5KBWuqA2P8n3VqXVTi
+         MiwDtmfQdL4oAK20X0SqY/RmbPdbM9NkOAAjlxsXVM7dJjteoUxAo3fUGYWqUsUr3Pnb
+         LN/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p9E8O5w/zkKI+sZ2afykxRWuriykTpkma4WIu7fNyIo=;
-        b=GF5R66joLD6LkvzK0tZSgXfB5fXugcsW07PjuCHbYQXPatcT2mdOKpJ3TKINJbQ2PI
-         kdGTHguDbEztkY8IK1CCnjqGfuNAv6Nd60Qo9juV7Z10D+Kq0Y4Fmfxz008QbP4qTLPk
-         VryQhZAGB2Lqk8UJc+oeOfkQLIj6CdkqzKjNvnrqhJCTDsUGFrylyTu0rpHk4OBda4ri
-         OfxNH7DemCsASwP7DfSxdI2T3xR3GrfNEcug3m4AKGdwNIUPHEzoTxoOpbHMpyWW5xRD
-         7ICMvxvfnQa1vis3lXl4EVvSdZtqTd8yClNkJfGRDGk5TdCqbHz0qzl8RqYsVjB16Zsd
-         Cvow==
-X-Gm-Message-State: AOAM532pHtihs/g0iIrumu3G9H9wszutBWRVPbq974mnY5Q9nPatOy5C
-        ZIMyDbMNiOj+6ncQaO3so7S5nJpSIwKlN31i4D9gz8IL5OY=
-X-Google-Smtp-Source: ABdhPJxQAjRPnrTamhPFtLVjNmDSjKsYm8FSssRCgIhEJ9WM4D5e+Rb2US2TlunEUXj5ul/iDseg0wsMSaRxHx6dEjE=
-X-Received: by 2002:a25:420c:: with SMTP id p12mr23656144yba.25.1623074458505;
- Mon, 07 Jun 2021 07:00:58 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=j/h58gR4t5OdekYQSFNWFSj/ytcD8nEYOcwTds5lTpM=;
+        b=EC4Oj2EPBsKKvvLuCE2kkpoconoDvp/CyjZnUxiTA5OslhSKQtgO1HdCcN6rlGq8Xw
+         Jwr75EM3OR5w1/nB1hw5Tmghz5QQ963bhOZt9F2iUw1KszJvTGc360aN7ntPuWUDMDfY
+         2Y3xhXcnkyzBqEkl6aAFnsMWw0fwOnZUDz1DZupwPf3nJydpUmwtPzMILG3/klCDQ5SA
+         4e9FM7akhASUMT6ZmZOr/LJ5/SO8sGYWY4wc8s3X8R6CI85VX6QE4apkV3N4Gu26klPT
+         DED/WeTv8Pb2u8tG2Z93nKSL7EGXTxXs0wEj2ta/fKj2prrAxsgeWPdUDO9VwaERO/66
+         TfVw==
+X-Gm-Message-State: AOAM530x/m9odo1NPGv0ZJHAk3wgTSJ2JRb8k3k8tBUVSdhHPtcabGZL
+        4C2eQk2dhSnouuGEoHHMxg7Jwa1eA67Phg==
+X-Google-Smtp-Source: ABdhPJwJPJlxEzcJy2V7HIsl9pZaKXUR1EHrfEc7wtr6r3yjIsl4WVm+fC5F1nStGJ5G324XD61png==
+X-Received: by 2002:a2e:98b:: with SMTP id 133mr14370450ljj.88.1623074463327;
+        Mon, 07 Jun 2021 07:01:03 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-21-60.dynamic.spd-mgts.ru. [94.29.21.60])
+        by smtp.googlemail.com with ESMTPSA id u25sm1871572ljo.56.2021.06.07.07.01.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Jun 2021 07:01:02 -0700 (PDT)
+Subject: Re: [PATCH v6 08/14] memory: tegra: Enable compile testing for all
+ drivers
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        =?UTF-8?Q?Nikola_Milosavljevi=c4=87?= <mnidza@outlook.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Paul Fertser <fercerpav@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-clk@vger.kernel.org
+References: <20210601023119.22044-1-digetx@gmail.com>
+ <20210601023119.22044-9-digetx@gmail.com>
+ <41899ef4-bb16-6c3a-035c-1e840a993bec@canonical.com>
+ <YL4gwxWopKT7LomG@orome.fritz.box>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <a1f20257-f041-966e-c37e-5c81c4cf94d9@gmail.com>
+Date:   Mon, 7 Jun 2021 17:01:02 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210514123309.134048-1-tsbogend@alpha.franken.de>
- <20210604122223.GA8940@alpha.franken.de> <CACRpkdafaMUjai4VCxePX2kWFkh4=Ks5qQvHTtYvVtkeHPhKKA@mail.gmail.com>
-In-Reply-To: <CACRpkdafaMUjai4VCxePX2kWFkh4=Ks5qQvHTtYvVtkeHPhKKA@mail.gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 7 Jun 2021 16:00:47 +0200
-Message-ID: <CAMpxmJUH7ap1r4EM8h=moXOinBP6=FKt9hDwOiu_oMedNinyeA@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] gpio: Add support for IDT 79RC3243x GPIO controller
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YL4gwxWopKT7LomG@orome.fritz.box>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 5, 2021 at 12:04 AM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Fri, Jun 4, 2021 at 2:22 PM Thomas Bogendoerfer
-> <tsbogend@alpha.franken.de> wrote:
->
-> > is there anything a still need to do to get this integrated for v5.14 ?
->
-> IMO not really:
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
->
-> Bartosz is collecting the patches for v5.14.
->
-> Yours,
-> Linus Walleij
+07.06.2021 16:36, Thierry Reding пишет:
+>> /bin/ld: warning: orphan section `__reservedmem_of_table' from `drivers/memory/tegra/tegra210-emc-table.o' being placed in section `__reservedmem_of_table'
+>> /bin/ld: drivers/memory/tegra/mc.o: in function `tegra_mc_probe':
+>> mc.c:(.text+0x87a): undefined reference to `reset_controller_register'
+>> make[1]: *** [/home/buildbot/worker/builddir/build/Makefile:1191: vmlinux] Error 1
+...
 
-Sorry for the delay, I'm currently overwhelmed with a house renovation
-and the approaching move. Now applied (together with the bindings),
-thanks!
+> Not sure what to do about that orphaned __reservedmem_of_table section.
+> Maybe all we need to do is to select OF_RESERVED_MEM from
+> TEGRA210_EMC_TABLE?
 
-Bartosz
+Select won't work easily, but the dependency for TEGRA210_EMC should.
