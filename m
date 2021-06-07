@@ -2,110 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D147A39DB5F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0FCA39DB63
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhFGLcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 07:32:54 -0400
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:34348 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230403AbhFGLcw (ORCPT
+        id S231574AbhFGLdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 07:33:24 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:39166 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230272AbhFGLdW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 07:32:52 -0400
-Received: by mail-ot1-f46.google.com with SMTP id v27-20020a056830091bb02903cd67d40070so13265100ott.1;
-        Mon, 07 Jun 2021 04:30:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ouJCJpb+cVjhmk8j2qfxiU2PiYqfLkfly1jYgo8fmy4=;
-        b=l3tb4Ti3/ESiVNC9be61igb7NBBFLs9+KwCCmS9OlfdmYt9uey00TQd3qX11GWioZN
-         1+ht04CVQrf0UM6VxgqDaPTArSmodK3BYXWL0udJ10T612ebj1W+0ybZrwUKDjsQuhz9
-         aWq1IA6ZVklOffOiHORlXUO69XDw1ADiZSo4idLvQ6h12ToQK4a3jHvnbUEDNlOV7+01
-         LHmOyaDW05UPY+c5NgwRVD0iUH0Ay+szsy6qGJttnnxPj4TS8L4kte71gGZfk7PUgjGH
-         YTpNlsQaMR01+gfrJZDGC4WLAe6ZtK5ULr1ZXOXZv/AUuicjXaRdIFWza8lUe7VY4EFm
-         7eVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ouJCJpb+cVjhmk8j2qfxiU2PiYqfLkfly1jYgo8fmy4=;
-        b=aM5TMckYUCdvIQkaaYY2ShCdAcHNr+zPR5bcRQZqLxhc/zrVp8IapuT2yB1wYwkiNi
-         NOaJR6m15hGMPEpRHpjhBwqgbjZKu0vBAOMM0pDWfZxPKE7dRG/vSkWs4jALDnt8KO3k
-         uRKBT0VVR0DRLDc1QsmcT3pWBXut/pE53U9SxBvDihy12EHP61OyN0hqGuQZJQQ81TNv
-         sx4fIhbqPt0T2OSLzTn4bAmuYTbxh8SRCv6JzPEnh6DhxULRI/GYw/8qTDlm/9JCu4Of
-         C1UG0LVdhEraSAgUjTSyfaLf7G4wgEK8Xtg9jH7cw7fsb5f/8qi4UoBH0JTH2Jyo859I
-         9CIw==
-X-Gm-Message-State: AOAM530L6+tJbirNqSXsA7DVqe79lpwzGgsKkI3alap4vcJERoTiV89Q
-        dJn9drjUwLe0D9LYKtaICZU=
-X-Google-Smtp-Source: ABdhPJwfGgFpT8BfA9ywyPV9GozhTIyRKAxRs5/zwSlum7MqzjvC9UecMC6ghRBNcLEBwvai1toqHQ==
-X-Received: by 2002:a9d:560a:: with SMTP id e10mr13685889oti.353.1623065392393;
-        Mon, 07 Jun 2021 04:29:52 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l9sm2105274oou.43.2021.06.07.04.29.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 04:29:51 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 7 Jun 2021 04:29:50 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-watchdog@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH] watchdog: Remove MV64x60 watchdog driver
-Message-ID: <20210607112950.GB314533@roeck-us.net>
-References: <9c2952bcfaec3b1789909eaa36bbce2afbfab7ab.1616085654.git.christophe.leroy@csgroup.eu>
- <31d702e5-22d1-1766-76dd-e24860e5b1a4@roeck-us.net>
- <87im3hk3t2.fsf@mpe.ellerman.id.au>
- <e2a33fc1-f519-653d-9230-b06506b961c5@roeck-us.net>
- <87czsyfo01.fsf@mpe.ellerman.id.au>
+        Mon, 7 Jun 2021 07:33:22 -0400
+Received: from [IPv6:2a01:e0a:4cb:a870:6b79:f23c:29c1:895d] (unknown [IPv6:2a01:e0a:4cb:a870:6b79:f23c:29c1:895d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 7A9241F4226B;
+        Mon,  7 Jun 2021 12:31:29 +0100 (BST)
+Subject: Re: [PATCH 4/8] media: Add P010 video format
+To:     Nicolas Dufresne <nicolas@ndufresne.ca>, hverkuil@xs4all.nl,
+        ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
+        andrzej.p@collabora.com, jc@kynesim.co.uk
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210604130619.491200-1-benjamin.gaignard@collabora.com>
+ <20210604130619.491200-5-benjamin.gaignard@collabora.com>
+ <f9fccfc4325e32022fac5f2c7b11c5e6b42e6fc8.camel@ndufresne.ca>
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Message-ID: <d7b89e82-4b7a-69ce-74ad-d61934c03764@collabora.com>
+Date:   Mon, 7 Jun 2021 13:31:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87czsyfo01.fsf@mpe.ellerman.id.au>
+In-Reply-To: <f9fccfc4325e32022fac5f2c7b11c5e6b42e6fc8.camel@ndufresne.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 11:43:26AM +1000, Michael Ellerman wrote:
-> Guenter Roeck <linux@roeck-us.net> writes:
-> > On 5/17/21 4:17 AM, Michael Ellerman wrote:
-> >> Guenter Roeck <linux@roeck-us.net> writes:
-> >>> On 3/18/21 10:25 AM, Christophe Leroy wrote:
-> >>>> Commit 92c8c16f3457 ("powerpc/embedded6xx: Remove C2K board support")
-> >>>> removed the last selector of CONFIG_MV64X60.
-> >>>>
-> >>>> Therefore CONFIG_MV64X60_WDT cannot be selected anymore and
-> >>>> can be removed.
-> >>>>
-> >>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> >>>
-> >>> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-> >>>
-> >>>> ---
-> >>>>   drivers/watchdog/Kconfig       |   4 -
-> >>>>   drivers/watchdog/Makefile      |   1 -
-> >>>>   drivers/watchdog/mv64x60_wdt.c | 324 ---------------------------------
-> >>>>   include/linux/mv643xx.h        |   8 -
-> >>>>   4 files changed, 337 deletions(-)
-> >>>>   delete mode 100644 drivers/watchdog/mv64x60_wdt.c
-> >> 
-> >> I assumed this would go via the watchdog tree, but seems like I
-> >> misinterpreted.
-> >> 
-> >
-> > Wim didn't send a pull request this time around.
-> >
-> > Guenter
-> >
-> >> Should I take this via the powerpc tree for v5.14 ?
-> 
-> I still don't see this in the watchdog tree, should I take it?
-> 
-It is in my personal watchdog-next tree, but afaics Wim hasn't picked any
-of it up yet. Wim ?
 
-Thanks,
-Guenter
+Le 04/06/2021 à 18:17, Nicolas Dufresne a écrit :
+> Le vendredi 04 juin 2021 à 15:06 +0200, Benjamin Gaignard a écrit :
+>> P010 is a YUV format with 10-bits per pixel with interleaved UV.
+>>
+>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>> ---
+>>   .../userspace-api/media/v4l/pixfmt-yuv-planar.rst         | 8 ++++++++
+>>   drivers/media/v4l2-core/v4l2-common.c                     | 1 +
+>>   drivers/media/v4l2-core/v4l2-ioctl.c                      | 1 +
+>>   include/uapi/linux/videodev2.h                            | 1 +
+>>   4 files changed, 11 insertions(+)
+>>
+>> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
+>> index 090c091affd2..71fed70c03ec 100644
+>> --- a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
+>> +++ b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
+>> @@ -100,6 +100,13 @@ All components are stored with the same number of bits per component.
+>>         - Cb, Cr
+>>         - No
+>>         - 64x32 macroblocks
+>> +    * - V4L2_PIX_FMT_P010
+>> +      - 'P010'
+>> +      - 10
+>> +      - 4:2:0
+>> +      - Cb, Cr
+>> +      - No
+>> +      - Linear
+>>   
+>>           Horizontal Z order
+>>       * - V4L2_PIX_FMT_NV12MT_16X16
+>> @@ -171,6 +178,7 @@ horizontally.
+>>   .. _V4L2-PIX-FMT-NV21:
+>>   .. _V4L2-PIX-FMT-NV12M:
+>>   .. _V4L2-PIX-FMT-NV21M:
+>> +.. _V4L2-PIX-FMT-P010:
+> The NV12/21 documentation is not sufficient to describe this format. While it
+> shares the layout (two planes Y and interleaved UV), it does not share the
+> packing. In this case, assuming this is P010 (and not the P010 the Rockchip
+> tried to upstreamed previously), each 10bit worth of pixel data would be pakced
+> into 16 bits with the least significant 6 bit being padding bits.
+
+Yes it 10 bits packed in 16 bits. I was think that the 'Bits per component' columns
+was referring to the number of encoded bits.
+So like this is it fine ? or does something else than the bit per component need to be changed ?
+  * - V4L2_PIX_FMT_P010
+       - 'P010'
+       - 16
+       - 4:2:0
+       - Cb, Cr
+       - No
+       - Linear
+
+Regards,
+Benjamin
+
+>
+>>   
+>>   NV12, NV21, NV12M and NV21M
+>>   ---------------------------
+>> diff --git a/drivers/media/v4l2-core/v4l2-common.c b/drivers/media/v4l2-core/v4l2-common.c
+>> index 04af03285a20..37b5d82359dd 100644
+>> --- a/drivers/media/v4l2-core/v4l2-common.c
+>> +++ b/drivers/media/v4l2-core/v4l2-common.c
+>> @@ -266,6 +266,7 @@ const struct v4l2_format_info *v4l2_format_info(u32 format)
+>>   		{ .format = V4L2_PIX_FMT_NV61,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 2, .bpp = { 1, 2, 0, 0 }, .hdiv = 2, .vdiv = 1 },
+>>   		{ .format = V4L2_PIX_FMT_NV24,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 2, .bpp = { 1, 2, 0, 0 }, .hdiv = 1, .vdiv = 1 },
+>>   		{ .format = V4L2_PIX_FMT_NV42,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 2, .bpp = { 1, 2, 0, 0 }, .hdiv = 1, .vdiv = 1 },
+>> +		{ .format = V4L2_PIX_FMT_P010,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 2, .bpp = { 2, 2, 0, 0 }, .hdiv = 2, .vdiv = 1 },
+>>   
+>>   		{ .format = V4L2_PIX_FMT_YUV410,  .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 4, .vdiv = 4 },
+>>   		{ .format = V4L2_PIX_FMT_YVU410,  .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 4, .vdiv = 4 },
+>> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+>> index 2673f51aafa4..6404d5b6e350 100644
+>> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+>> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+>> @@ -1282,6 +1282,7 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
+>>   	case V4L2_PIX_FMT_NV61:		descr = "Y/CrCb 4:2:2"; break;
+>>   	case V4L2_PIX_FMT_NV24:		descr = "Y/CbCr 4:4:4"; break;
+>>   	case V4L2_PIX_FMT_NV42:		descr = "Y/CrCb 4:4:4"; break;
+>> +	case V4L2_PIX_FMT_P010:		descr = "10-bit Y/CrCb 4:2:0"; break;
+>>   	case V4L2_PIX_FMT_NV12M:	descr = "Y/CbCr 4:2:0 (N-C)"; break;
+>>   	case V4L2_PIX_FMT_NV21M:	descr = "Y/CrCb 4:2:0 (N-C)"; break;
+>>   	case V4L2_PIX_FMT_NV16M:	descr = "Y/CbCr 4:2:2 (N-C)"; break;
+>> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+>> index 9260791b8438..e5f7acde0730 100644
+>> --- a/include/uapi/linux/videodev2.h
+>> +++ b/include/uapi/linux/videodev2.h
+>> @@ -602,6 +602,7 @@ struct v4l2_pix_format {
+>>   #define V4L2_PIX_FMT_NV24    v4l2_fourcc('N', 'V', '2', '4') /* 24  Y/CbCr 4:4:4  */
+>>   #define V4L2_PIX_FMT_NV42    v4l2_fourcc('N', 'V', '4', '2') /* 24  Y/CrCb 4:4:4  */
+>>   #define V4L2_PIX_FMT_HM12    v4l2_fourcc('H', 'M', '1', '2') /*  8  YUV 4:2:0 16x16 macroblocks */
+>> +#define V4L2_PIX_FMT_P010    v4l2_fourcc('P', '0', '1', '0') /* 15  Y/CbCr 4:2:0 10-bit per pixel*/
+>>   
+>>   /* two non contiguous planes - one Y, one Cr + Cb interleaved  */
+>>   #define V4L2_PIX_FMT_NV12M   v4l2_fourcc('N', 'M', '1', '2') /* 12  Y/CbCr 4:2:0  */
+>
