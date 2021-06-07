@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0EA39DAB8
+	by mail.lfdr.de (Postfix) with ESMTP id 5793D39DAB9
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231261AbhFGLKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 07:10:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:58534 "EHLO foss.arm.com"
+        id S231296AbhFGLKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 07:10:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:58556 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231177AbhFGLK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 07:10:29 -0400
+        id S231177AbhFGLKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 07:10:32 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 942B6143D;
-        Mon,  7 Jun 2021 04:08:38 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AC73E1476;
+        Mon,  7 Jun 2021 04:08:41 -0700 (PDT)
 Received: from e112269-lin.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B2F5E3F73D;
-        Mon,  7 Jun 2021 04:08:35 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CD6383F73D;
+        Mon,  7 Jun 2021 04:08:38 -0700 (PDT)
 From:   Steven Price <steven.price@arm.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
@@ -33,9 +33,9 @@ Cc:     Steven Price <steven.price@arm.com>,
         Richard Henderson <richard.henderson@linaro.org>,
         Peter Maydell <peter.maydell@linaro.org>,
         Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: [PATCH v14 2/8] arm64: Handle MTE tags zeroing in __alloc_zeroed_user_highpage()
-Date:   Mon,  7 Jun 2021 12:08:10 +0100
-Message-Id: <20210607110816.25762-3-steven.price@arm.com>
+Subject: [PATCH v14 3/8] arm64: mte: Sync tags for pages where PTE is untagged
+Date:   Mon,  7 Jun 2021 12:08:11 +0100
+Message-Id: <20210607110816.25762-4-steven.price@arm.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210607110816.25762-1-steven.price@arm.com>
 References: <20210607110816.25762-1-steven.price@arm.com>
@@ -45,75 +45,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Catalin Marinas <catalin.marinas@arm.com>
+A KVM guest could store tags in a page even if the VMM hasn't mapped
+the page with PROT_MTE. So when restoring pages from swap we will
+need to check to see if there are any saved tags even if !pte_tagged().
 
-Currently, on an anonymous page fault, the kernel allocates a zeroed
-page and maps it in user space. If the mapping is tagged (PROT_MTE),
-set_pte_at() additionally clears the tags under a spinlock to avoid a
-race on the page->flags. In order to optimise the lock, clear the page
-tags on allocation in __alloc_zeroed_user_highpage() if the vma flags
-have VM_MTE set.
+However don't check pages for which pte_access_permitted() returns false
+as these will not have been swapped out.
 
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Steven Price <steven.price@arm.com>
 ---
- arch/arm64/include/asm/page.h |  6 ++++--
- arch/arm64/mm/fault.c         | 21 +++++++++++++++++++++
- 2 files changed, 25 insertions(+), 2 deletions(-)
+ arch/arm64/include/asm/mte.h     |  4 ++--
+ arch/arm64/include/asm/pgtable.h | 22 +++++++++++++++++++---
+ arch/arm64/kernel/mte.c          | 17 +++++++++++++----
+ 3 files changed, 34 insertions(+), 9 deletions(-)
 
-diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
-index 012cffc574e8..97853570d0f1 100644
---- a/arch/arm64/include/asm/page.h
-+++ b/arch/arm64/include/asm/page.h
-@@ -13,6 +13,7 @@
- #ifndef __ASSEMBLY__
+diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+index bc88a1ced0d7..347ef38a35f7 100644
+--- a/arch/arm64/include/asm/mte.h
++++ b/arch/arm64/include/asm/mte.h
+@@ -37,7 +37,7 @@ void mte_free_tag_storage(char *storage);
+ /* track which pages have valid allocation tags */
+ #define PG_mte_tagged	PG_arch_2
  
- #include <linux/personality.h> /* for READ_IMPLIES_EXEC */
-+#include <linux/types.h>
- #include <asm/pgtable-types.h>
+-void mte_sync_tags(pte_t *ptep, pte_t pte);
++void mte_sync_tags(pte_t old_pte, pte_t pte);
+ void mte_copy_page_tags(void *kto, const void *kfrom);
+ void mte_thread_init_user(void);
+ void mte_thread_switch(struct task_struct *next);
+@@ -53,7 +53,7 @@ int mte_ptrace_copy_tags(struct task_struct *child, long request,
+ /* unused if !CONFIG_ARM64_MTE, silence the compiler */
+ #define PG_mte_tagged	0
  
- struct page;
-@@ -28,8 +29,9 @@ void copy_user_highpage(struct page *to, struct page *from,
- void copy_highpage(struct page *to, struct page *from);
- #define __HAVE_ARCH_COPY_HIGHPAGE
- 
--#define __alloc_zeroed_user_highpage(movableflags, vma, vaddr) \
--	alloc_page_vma(GFP_HIGHUSER | __GFP_ZERO | movableflags, vma, vaddr)
-+struct page *__alloc_zeroed_user_highpage(gfp_t movableflags,
-+					  struct vm_area_struct *vma,
-+					  unsigned long vaddr);
- #define __HAVE_ARCH_ALLOC_ZEROED_USER_HIGHPAGE
- 
- #define clear_user_page(page, vaddr, pg)	clear_page(page)
-diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-index 871c82ab0a30..5a03428e97f3 100644
---- a/arch/arm64/mm/fault.c
-+++ b/arch/arm64/mm/fault.c
-@@ -921,3 +921,24 @@ void do_debug_exception(unsigned long addr_if_watchpoint, unsigned int esr,
- 	debug_exception_exit(regs);
+-static inline void mte_sync_tags(pte_t *ptep, pte_t pte)
++static inline void mte_sync_tags(pte_t old_pte, pte_t pte)
+ {
  }
- NOKPROBE_SYMBOL(do_debug_exception);
-+
-+/*
-+ * Used during anonymous page fault handling.
-+ */
-+struct page *__alloc_zeroed_user_highpage(gfp_t movableflags,
-+					  struct vm_area_struct *vma,
-+					  unsigned long vaddr)
-+{
-+	struct page *page;
-+	bool tagged = system_supports_mte() && (vma->vm_flags & VM_MTE);
-+
-+	page = alloc_page_vma(GFP_HIGHUSER | __GFP_ZERO | movableflags, vma,
-+			      vaddr);
-+	if (tagged && page) {
-+		mte_clear_page_tags(page_address(page));
-+		page_kasan_tag_reset(page);
-+		set_bit(PG_mte_tagged, &page->flags);
+ static inline void mte_copy_page_tags(void *kto, const void *kfrom)
+diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+index 0b10204e72fc..db5402168841 100644
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -314,9 +314,25 @@ static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
+ 	if (pte_present(pte) && pte_user_exec(pte) && !pte_special(pte))
+ 		__sync_icache_dcache(pte);
+ 
+-	if (system_supports_mte() &&
+-	    pte_present(pte) && pte_tagged(pte) && !pte_special(pte))
+-		mte_sync_tags(ptep, pte);
++	/*
++	 * If the PTE would provide user space access to the tags associated
++	 * with it then ensure that the MTE tags are synchronised.  Although
++	 * pte_access_permitted() returns false for exec only mappings, they
++	 * don't expose tags (instruction fetches don't check tags).
++	 */
++	if (system_supports_mte() && pte_access_permitted(pte, false) &&
++	    !pte_special(pte)) {
++		pte_t old_pte = READ_ONCE(*ptep);
++		/*
++		 * We only need to synchronise if the new PTE has tags enabled
++		 * or if swapping in (in which case another mapping may have
++		 * set tags in the past even if this PTE isn't tagged).
++		 * (!pte_none() && !pte_present()) is an open coded version of
++		 * is_swap_pte()
++		 */
++		if (pte_tagged(pte) || (!pte_none(old_pte) && !pte_present(old_pte)))
++			mte_sync_tags(old_pte, pte);
 +	}
+ 
+ 	__check_racy_pte_update(mm, ptep, pte);
+ 
+diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+index a3583a7fd400..ae0a3c68fece 100644
+--- a/arch/arm64/kernel/mte.c
++++ b/arch/arm64/kernel/mte.c
+@@ -33,10 +33,10 @@ DEFINE_STATIC_KEY_FALSE(mte_async_mode);
+ EXPORT_SYMBOL_GPL(mte_async_mode);
+ #endif
+ 
+-static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
++static void mte_sync_page_tags(struct page *page, pte_t old_pte,
++			       bool check_swap, bool pte_is_tagged)
+ {
+ 	unsigned long flags;
+-	pte_t old_pte = READ_ONCE(*ptep);
+ 
+ 	spin_lock_irqsave(&tag_sync_lock, flags);
+ 
+@@ -53,6 +53,9 @@ static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
+ 		}
+ 	}
+ 
++	if (!pte_is_tagged)
++		goto out;
 +
-+	return page;
-+}
+ 	page_kasan_tag_reset(page);
+ 	/*
+ 	 * We need smp_wmb() in between setting the flags and clearing the
+@@ -69,16 +72,22 @@ static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
+ 	spin_unlock_irqrestore(&tag_sync_lock, flags);
+ }
+ 
+-void mte_sync_tags(pte_t *ptep, pte_t pte)
++void mte_sync_tags(pte_t old_pte, pte_t pte)
+ {
+ 	struct page *page = pte_page(pte);
+ 	long i, nr_pages = compound_nr(page);
+ 	bool check_swap = nr_pages == 1;
++	bool pte_is_tagged = pte_tagged(pte);
++
++	/* Early out if there's nothing to do */
++	if (!check_swap && !pte_is_tagged)
++		return;
+ 
+ 	/* if PG_mte_tagged is set, tags have already been initialised */
+ 	for (i = 0; i < nr_pages; i++, page++) {
+ 		if (!test_bit(PG_mte_tagged, &page->flags))
+-			mte_sync_page_tags(page, ptep, check_swap);
++			mte_sync_page_tags(page, old_pte, check_swap,
++					   pte_is_tagged);
+ 	}
+ }
+ 
 -- 
 2.20.1
 
