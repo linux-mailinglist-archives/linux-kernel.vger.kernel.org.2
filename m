@@ -2,105 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CB8C39E42B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B6F39E422
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231931AbhFGQce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 12:32:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232573AbhFGQ0W (ORCPT
+        id S233783AbhFGQby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 12:31:54 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:49677 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231689AbhFGQXM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 12:26:22 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A981C0604C5;
-        Mon,  7 Jun 2021 09:20:57 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso17250157otu.10;
-        Mon, 07 Jun 2021 09:20:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=NCnduflce68YkMnn3i+unqWk8SYuVU7hs0nySniBIqo=;
-        b=NqbK6nDyy6LvMfquS66sa0nUEDrX7atPQMGjlhl1ZFugtyvAjezaTleeVNnhdRGWLa
-         F7CYeHqE0qgkFY83UNGtW7eeCDZSjh8M37KwkDrJIQZHNwpi63a2pXWE/noNkEJTM9IE
-         ZXdYL3H3/JO6REQrqENp2NSQHg0rNwDsSZdx1Q7tfboer6KbJK69LGRx2xx6rCRa8sOI
-         SEQeI8HjFtX37olEP/ILtonHJAX+Q9X2CgWfIC2mJei4KroAgWcoDTOQ0qyjeXbi/WtW
-         UKHcRmo7GNTu/y22jVmJwv/hwT/DNQcRKgpdPC6IfPT4fDNCz2/cV6NOeAH3Ni+O4cwu
-         xQvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NCnduflce68YkMnn3i+unqWk8SYuVU7hs0nySniBIqo=;
-        b=cjmAyet+sy6sZT83+oAbKXpFThZWZ3Z6k4gSJnwyu53cAf77hyDADxZp+NJrI8FJXd
-         lBTmqteH2gdOc6ab6LT+4Y1PNHoGrcS43EDLQOeGzD/lw4yBcgAHl2JAefUvVNwDADPq
-         d5MdBgQ8T+As4bf28OrBtceiJ1QWXVR86Nk0NunYUnm7zMhhoox1qoc2BU+xiNwK99nk
-         yay0vpE0ZPbH3Wt8NAbFqz3xmqf3VmCSrF4ZgwEFqs7rEd7vn2/2InCEXoY5N9HEw3vB
-         jZqrtxVDhuBttoPXti6wDBXhpAqgLBLoiHJqaj4ZE3+JbU6khnh48eo/aM4EPAXq2NVR
-         Gw6w==
-X-Gm-Message-State: AOAM531ROZdzfdiBI0CHAT7UxaXT+a8BltHL2dnRtTKrVAC+1QscQCnx
-        qoXHst8FKJf43a36VtuCMebKcuh1FdE=
-X-Google-Smtp-Source: ABdhPJxWDfzJm1mcMJbUJOfYtNE2NGOlVfTBtBG+2Py222H6hSWCZ8dmX9wMmAqIVaN1ckkVGiq1ow==
-X-Received: by 2002:a05:6830:1d72:: with SMTP id l18mr2388313oti.150.1623082856345;
-        Mon, 07 Jun 2021 09:20:56 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.22])
-        by smtp.googlemail.com with ESMTPSA id n17sm2372879oij.57.2021.06.07.09.20.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Jun 2021 09:20:56 -0700 (PDT)
-Subject: Re: [PATCH net-next] net: ipv4: Remove unneed BUG() function
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210607143909.2844407-1-zhengyongjun3@huawei.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <9274e18e-dc57-f6c2-e0cc-0d06841df54e@gmail.com>
-Date:   Mon, 7 Jun 2021 10:20:54 -0600
+        Mon, 7 Jun 2021 12:23:12 -0400
+Received: from MacBook-AirM1.fshome ([92.117.144.110]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis)
+ id 1Mzy6q-1lSijQ3HuQ-00x1SO; Mon, 07 Jun 2021 18:21:10 +0200
+Subject: Re: [PATCH 1/4] platform/x86: hdaps: Constify static attribute_group
+ struct
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        "David E. Box" <david.e.box@linux.intel.com>,
+        Justin Ernst <justin.ernst@hpe.com>,
+        Frank Seidel <frank@f-seidel.de>
+Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mike Travis <mike.travis@hpe.com>
+References: <20210605203807.60547-1-rikard.falkeborn@gmail.com>
+ <20210605203807.60547-2-rikard.falkeborn@gmail.com>
+From:   Frank Seidel <frank@f-seidel.de>
+Message-ID: <5f39a247-25ce-03b0-21f2-506bae576117@f-seidel.de>
+Date:   Mon, 7 Jun 2021 18:21:09 +0200
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210607143909.2844407-1-zhengyongjun3@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20210605203807.60547-2-rikard.falkeborn@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: de-DE
+X-Provags-ID: V03:K1:ji5HeJeUwPzkBHckWfIOBoZAIiKvAwWr+0bWxMdxTk0DGV193K9
+ 4GJVbuOXhMFWjZ19mVOM8KQGt8FKQ7ZVEvnK9HoDwYkCMsWhHb4JS8R/t8/pcsbjGNHMdAy
+ SrEApo40udNRWtCzN4m0Thsrm4JjeolWd8l6XsJeBoXLHVdG0aglLKMllGMfhZ/dSYwedDJ
+ DADpaUmEj42Ec54HYB77A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:pqcBjBtAtv4=:2rFKCoRTIO1S/rLCt5lHSr
+ NOGIf8aWc2qmtamnVP6IROpRvr9WZIPJ1k+kU44wCO13q+ocP86tdgNepW2MeGnJsyRks4iS7
+ TIVDZ8CFCfzXwKwSJbSBFj8yChROwbXHi9tPp71FPnUguK0uvNrXPqW9+6ommNXZHpVGM6a8S
+ tjjM5zXnBcDqlGRtOU3iprWB7OXWyeyHlhSFuT+ov0xFRSfkGhSgTbG55lnxPvLhVdFvtm/ls
+ SDcpLC78ic9HKNrJ+VAmcGxyDl3lcwYFBYfeLhkLPtqvboaxUFiUeA5SQnboddf6+bBdc2QPR
+ FlS0Ggl+bvXdPHTq6ToxGQgr1NA2G++2AM3ys/DZAT0JUJG4Dd0ddhlTl8Br+2Lfr8EcLwB5b
+ 8X5tBtgpKg7By0PG69o8NbpT1RU/0bac4kfuVvdfh7HlSKnZIC7NK9x7ggU+IPwUQd9fuuH1E
+ oWF4L9uDmWrl1p33QzkkaUc2a4SzANDbFKf3z7kQPIfKqVw5se7cdVutVYvv/Zw5Vf/mbD2Ox
+ zuDkyYruK9gBmVLwzRU/S0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/7/21 8:39 AM, Zheng Yongjun wrote:
-> When 'nla_parse_nested_deprecated' failed, it's no need to
-> BUG() here, return -EINVAL is ok.
-> 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> The only use of hdaps_attribute_group is to pass its address to
+> sysfs_create_group() and sysfs_remove_group(), both which takes pointers
+> to const attribute_group structs. Make it const to allow the compiler to
+> put it in read-only memory.
+>
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+
+Thanks for the patch and keeping me informed.
+
+Reviewed-by: Frank Seidel <frank@f-seidel.de>
+
 > ---
->  net/ipv4/devinet.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/net/ipv4/devinet.c b/net/ipv4/devinet.c
-> index 2e35f68da40a..1c6429c353a9 100644
-> --- a/net/ipv4/devinet.c
-> +++ b/net/ipv4/devinet.c
-> @@ -1989,7 +1989,7 @@ static int inet_set_link_af(struct net_device *dev, const struct nlattr *nla,
->  		return -EAFNOSUPPORT;
->  
->  	if (nla_parse_nested_deprecated(tb, IFLA_INET_MAX, nla, NULL, NULL) < 0)
-
-Avoid assumptions on the failure reason:
-
-	int err;
-
-	err = nla_parse_nested_deprecated();
-	if (err < 0)
-		return err;
-
-> -		BUG();
-> +		return -EINVAL;
->  
->  	if (tb[IFLA_INET_CONF]) {
->  		nla_for_each_nested(a, tb[IFLA_INET_CONF], rem)
-> 
-
-seems like this patch and a similar fix for the IPv6 version of
-set_link_af should go to net rather than net-next.
-
+>   drivers/platform/x86/hdaps.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/platform/x86/hdaps.c b/drivers/platform/x86/hdaps.c
+> index a72270932ec3..9996485f5295 100644
+> --- a/drivers/platform/x86/hdaps.c
+> +++ b/drivers/platform/x86/hdaps.c
+> @@ -462,7 +462,7 @@ static struct attribute *hdaps_attributes[] = {
+>   	NULL,
+>   };
+>   
+> -static struct attribute_group hdaps_attribute_group = {
+> +static const struct attribute_group hdaps_attribute_group = {
+>   	.attrs = hdaps_attributes,
+>   };
+>   
+>
