@@ -2,128 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C93E839D252
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 02:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 970FE39D256
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 02:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230111AbhFGAGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 20:06:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42352 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229772AbhFGAGn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 20:06:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2419161244;
-        Mon,  7 Jun 2021 00:04:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623024293;
-        bh=atz/fcsESOx4m+4QdyLdkqW2IvLkfkghNsC8hMHMoCA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KurZTjpisOGAbiz8svMmX6uc4+SaRSwiEJJH43yI/4co87lGcqFgAAS4k6LCPkroD
-         lHv1jHyzy7HV08taRk5MiYDAW/mWOr34psAtqjYh53vwxwdXV7PGnZw2mkkizTbvst
-         fPOaZgRm/0/tRQcego1vRCK0JWhYbMd0L2sqlr5iKhZbYEKQwbxE0dWlLA8Qo1bOL4
-         Rni2BcHIbw53+0fLUm2WOqAFJO8ZqlVVbATNhg+e4pq8fOxApd7kzKAQbaOJ4A06mW
-         iSOqOvVTZVOZE1hVm0gdM6256I/ydU8WXp8Txm6QT0h/6BvgKZeAVsiX7OMZ/Cr3mb
-         Xhs8u93K9lyLw==
-Received: by mail-lf1-f49.google.com with SMTP id v22so21871577lfa.3;
-        Sun, 06 Jun 2021 17:04:53 -0700 (PDT)
-X-Gm-Message-State: AOAM531LfmJv7F0SygchUyUpQ/i+MnLdK/zY4aydNvlp8ojhssQUG89Y
-        H7Hbb+99bJI5UADRt0TwGMx1UrsQ8sr60vS66jw=
-X-Google-Smtp-Source: ABdhPJwuQllzav+cgeOOUIngf06MsoU9QTjK26Dvhvo+prT7F1wWL0rZ9xfVmzD2sZ6rrVJ00qzd3egZjVUgtaov0Vw=
-X-Received: by 2002:a05:6512:218d:: with SMTP id b13mr10221837lft.346.1623024291473;
- Sun, 06 Jun 2021 17:04:51 -0700 (PDT)
+        id S230104AbhFGALs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 20:11:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31770 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229884AbhFGALr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 20:11:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623024597;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VS0VjKAJZ5TDLigUxCxbJG/FM9ESIm9kTnLGe+d/ZcE=;
+        b=RD9aKHLcJSGhKj9J4rabMZT7LQ779AQbR3iVro+Kg4chgSBx9RGK9m6uiGOuyFO7Fr45Ij
+        Qo3eFvUfeKqaZ/NrgS8BOIQAId1Br0E1dKkHsp3baf9Rryp21I99C8gDnhRi0rD2f7KBuu
+        G82O8lUJu+IgOj7riXqdd2hbsirNF2Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-460-loLTsHyRMvymEOT77fI9Dw-1; Sun, 06 Jun 2021 20:09:54 -0400
+X-MC-Unique: loLTsHyRMvymEOT77fI9Dw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 472D5800D55;
+        Mon,  7 Jun 2021 00:09:52 +0000 (UTC)
+Received: from T590 (ovpn-12-62.pek2.redhat.com [10.72.12.62])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9B7225D736;
+        Mon,  7 Jun 2021 00:09:43 +0000 (UTC)
+Date:   Mon, 7 Jun 2021 08:09:38 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     longli@linuxonhyperv.com
+Cc:     linux-block@vger.kernel.org, Long Li <longli@microsoft.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Tejun Heo <tj@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [Patch v2] block: return the correct bvec when checking for gaps
+Message-ID: <YL1jwr2MfbW4hFb7@T590>
+References: <1622849839-5407-1-git-send-email-longli@linuxonhyperv.com>
 MIME-Version: 1.0
-References: <1621400656-25678-1-git-send-email-guoren@kernel.org>
- <20210519052048.GA24853@lst.de> <CAJF2gTTjwB4U-NxCtfgMA5aR2HzoQtA8a51W5UM1LHGRbjz9pg@mail.gmail.com>
- <20210519064435.GA3076809@x1> <20210519065352.GA31590@lst.de>
- <CAJF2gTR4FXRbp7oky-ypdVJba6btFHpp-+dPyJStRaQX_-5rzg@mail.gmail.com> <29733b0931d9dd6a2f0b6919067c7efe@mailhost.ics.forth.gr>
-In-Reply-To: <29733b0931d9dd6a2f0b6919067c7efe@mailhost.ics.forth.gr>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Mon, 7 Jun 2021 08:04:40 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTTpSbNWS4VLHAu4XsV5-Vos=6R9MmPOx8-yzMFJu=wX4A@mail.gmail.com>
-Message-ID: <CAJF2gTTpSbNWS4VLHAu4XsV5-Vos=6R9MmPOx8-yzMFJu=wX4A@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
-To:     Nick Kossifidis <mick@ics.forth.gr>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Drew Fustini <drew@beagleboard.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>, wefu@redhat.com,
-        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Benjamin Koch <snowball@c3pb.de>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        Wei Fu <tekkamanninja@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1622849839-5407-1-git-send-email-longli@linuxonhyperv.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 2:14 AM Nick Kossifidis <mick@ics.forth.gr> wrote:
->
-> =CE=A3=CF=84=CE=B9=CF=82 2021-05-20 04:45, Guo Ren =CE=AD=CE=B3=CF=81=CE=
-=B1=CF=88=CE=B5:
-> > On Wed, May 19, 2021 at 2:53 PM Christoph Hellwig <hch@lst.de> wrote:
-> >>
-> >> On Tue, May 18, 2021 at 11:44:35PM -0700, Drew Fustini wrote:
-> >> > This patch series looks like it might be useful for the StarFive JH7=
-100
-> >> > [1] [2] too as it has peripherals on a non-coherent interconnect. GM=
-AC,
-> >> > USB and SDIO require that the L2 cache must be manually flushed afte=
-r
-> >> > DMA operations if the data is intended to be shared with U74 cores [=
-2].
-> >>
-> >> Not too much, given that the SiFive lineage CPUs have an uncached
-> >> window, that is a totally different way to allocate uncached memory.
-> > It's a very big MIPS smell. What's the attribute of the uncached
-> > window? (uncached + strong-order/ uncached + weak, most vendors still
-> > use AXI interconnect, how to deal with a bufferable attribute?) In
-> > fact, customers' drivers use different ways to deal with DMA memory in
-> > non-coherent SOC. Most riscv SOC vendors are from ARM, so giving them
-> > the same way in DMA memory is a smart choice. So using PTE attributes
-> > is more suitable.
-> >
-> > See:
-> > https://github.com/riscv/virtual-memory/blob/main/specs/611-virtual-mem=
-ory-diff.pdf
-> > 4.4.1
-> > The draft supports custom attribute bits in PTE.
-> >
->
-> Not only it doesn't support custom attributes on PTEs:
->
-> "Bits63=E2=80=9354 are reserved for future standard use and must be zeroe=
-d by
-> software for forward compatibility."
->
-> It also goes further to say that:
->
-> "if any of these bits are set, a page-fault exception is raised"
+On Fri, Jun 04, 2021 at 04:37:19PM -0700, longli@linuxonhyperv.com wrote:
+> From: Long Li <longli@microsoft.com>
+> 
+> After commit 07173c3ec276 ("block: enable multipage bvecs"), a bvec can
+> have multiple pages. But bio_will_gap() still assumes one page bvec while
+> checking for merging. If the pages in the bvec go across the
+> seg_boundary_mask, this check for merging can potentially succeed if only
+> the 1st page is tested, and can fail if all the pages are tested.
+> 
+> Later, when SCSI builds the SG list the same check for merging is done in
+> __blk_segment_map_sg_merge() with all the pages in the bvec tested. This
+> time the check may fail if the pages in bvec go across the
+> seg_boundary_mask (but tested okay in bio_will_gap() earlier, so those
+> BIOs were merged). If this check fails, we end up with a broken SG list
+> for drivers assuming the SG list not having offsets in intermediate pages.
+> This results in incorrect pages written to the disk.
+> 
+> Fix this by returning the multi-page bvec when testing gaps for merging.
+> 
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Cc: Pavel Begunkov <asml.silence@gmail.com>
+> Cc: Ming Lei <ming.lei@redhat.com>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> Cc: Jeffle Xu <jefflexu@linux.alibaba.com>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: stable@vger.kernel.org
+> Fixes: 07173c3ec276 ("block: enable multipage bvecs")
+> Signed-off-by: Long Li <longli@microsoft.com>
+> ---
+> Change from v1: add commit details on how data corruption happens
 
-In RISC-V VM TG, A C-bit discussion is raised. So it's a comm idea to
-support it.
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
 
-Let Linux support custom PTE attributes won't get any side effect in practi=
-ce.
+-- 
+Ming
 
-IMO:
-We needn't waste a bit in PTE, but the custom idea in PTE reserved
-bits is necessary. Because Allwinner D1 needs custom PTE bits in
-reserved bits to work around.
-So I recommend just remove the "C" bit in PTE, but allow vendors to
-define their own PTE attributes in reserved bits. I've found a way to
-compact different PTE attributes of different vendors during the Linux
-boot stage. That means we still could use One Image for all vendors in
-Linux
-
-
-
---=20
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
