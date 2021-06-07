@@ -2,131 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 913E639DE0B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7FEB39DE0C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230287AbhFGNuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 09:50:37 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:48234 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbhFGNug (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 09:50:36 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 157DmcDA069301;
-        Mon, 7 Jun 2021 08:48:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623073718;
-        bh=HGkB3N6wZim5Jz5vrC7ro/91fXnGzv4dfwqqAWDT120=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=t8N9g8yVHxRUkW1gTUfz8cmafpC5knGJkz8m8lpDLwuwWfIj/kXHbNryWCXvnOLC8
-         zLPzXnwEfU2BwiXdw6DVRXrl9UH4O/cPwYfyvw3IQ2SLL+sJwbJ7pSjOc9Kl1Bupd6
-         9mWlFJbgadg4LKPZ8hWLfUNt8yR0mRLNMWoEDVYI=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 157Dmc8I017282
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 7 Jun 2021 08:48:38 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 7 Jun
- 2021 08:48:38 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 7 Jun 2021 08:48:38 -0500
-Received: from [10.250.235.117] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 157DmUnt056871;
-        Mon, 7 Jun 2021 08:48:32 -0500
-Subject: Re: [PATCH 3/5] arm64: dts: ti: am65: align ti,pindir-d0-out-d1-in
- property with dt-shema
-To:     Nishanth Menon <nm@ti.com>
-CC:     Lokesh Vutla <lokeshvutla@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Tero Kristo <kristo@kernel.org>, <linux-spi@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210602123416.20378-1-a-govindraju@ti.com>
- <20210602123416.20378-4-a-govindraju@ti.com>
- <20210607134047.isfuedgjxpubpcb5@ungloved>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <9e27bd14-e16a-4177-bba8-d5d0e5638f04@ti.com>
-Date:   Mon, 7 Jun 2021 19:18:29 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230330AbhFGNu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 09:50:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:33896 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230177AbhFGNu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 09:50:58 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 99802143D;
+        Mon,  7 Jun 2021 06:49:06 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9B19F3F694;
+        Mon,  7 Jun 2021 06:49:04 -0700 (PDT)
+Date:   Mon, 7 Jun 2021 14:49:02 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Xuewen Yan <xuewen.yan94@gmail.com>
+Cc:     Quentin Perret <qperret@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Ryan Y <xuewyan@foxmail.com>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>, tj@kernel.org
+Subject: Re: [PATCH] sched/uclamp: Avoid setting cpu.uclamp.min bigger than
+ cpu.uclamp.max
+Message-ID: <20210607134902.nlgvqtzj35rhjg7x@e107158-lin.cambridge.arm.com>
+References: <20210602123803.15738-1-xuewen.yan94@gmail.com>
+ <YLeF/556Wbvx1Ssc@google.com>
+ <CAB8ipk9BqzEQ4Ta5s+vJeep=v1pmaXS-WsF2tq0u9G8Q2PGmsA@mail.gmail.com>
+ <20210604160839.2op4ak75vle3gmt3@e107158-lin.cambridge.arm.com>
+ <CAB8ipk9CgWvbGnJcvEtLcG=7v-pPmGJd25-R9jb2Am5zKngK3g@mail.gmail.com>
+ <20210605114908.mqfsip5pskamls6k@e107158-lin.cambridge.arm.com>
+ <CAB8ipk_a6VFNjiEnHRHkUMBKbA+qzPQvhtNjJ_YNzQhqV_o8Zw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210607134047.isfuedgjxpubpcb5@ungloved>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAB8ipk_a6VFNjiEnHRHkUMBKbA+qzPQvhtNjJ_YNzQhqV_o8Zw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nishanth,
-
-On 07/06/21 7:10 pm, Nishanth Menon wrote:
-> On 18:04-20210602, Aswath Govindraju wrote:
->> ti,pindir-d0-out-d1-in property is expected to be of type boolean.
->> Therefore, fix the property accordingly.
->>
->> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-> No need for Fixes?
+On 06/05/21 21:24, Xuewen Yan wrote:
+> Hi Qais
 > 
-
-Functionality wise this is not a bug as the driver only checks for the
-presence of the property. This is the reason why I did not include fixes.
-
-> Also please split up the patches per maintainer so that we are'nt
-> confused on who should pick what etc..
+> On Sat, Jun 5, 2021 at 7:49 PM Qais Yousef <qais.yousef@arm.com> wrote:
+> > > >
+> > > In addition，In your patch:
+> > > 6938840392c89 ("sched/uclamp: Fix wrong implementation of cpu.uclamp.min")
+> > > https://lkml.kernel.org/r/20210510145032.1934078-2-qais.yousef@arm.com
+> > >
+> > > + switch (clamp_id) {
+> > > + case UCLAMP_MIN: {
+> > > + struct uclamp_se uc_min = task_group(p)->uclamp[clamp_id];
+> > > + if (uc_req.value < uc_min.value)
+> > > + return uc_min;
+> > > + break;
+> > >
+> > > When the clamp_id = UCLAMP_MIN, why not judge the uc_req.value is
+> > > bigger than task_group(p)->uclamp[UCLAMP_MAX] ?
+> >
+> > Because of the requirement I pointed you to in cgroup-v2.rst. We must allow any
+> > value to be requested.
+> >
+> > Ultimately if we had
+> >
+> >         cpu.uclamp.min = 80
+> >         cpu.uclamp.max = 50
+> >
+> > then we want to remember the original request but make sure the effective value
+> > is capped.
+> >
+> > For the user in the future modifies the values such that
+> >
+> >         cpu.uclamp.max = max
+> >
+> > Then we want to remember cpu.uclamp.min = 80 and apply it since now the
+> > cpu.uclamp.max was relaxed to allow the boost value.
+> >
+> > > Because when the p->uclamp_req[UCLAMP_MIN] >  task_group(p)->uclamp[UCLAMP_MAX],
+> > > the patch can not clamp the p->uclamp_req[UCLAMP_MIN/MAX] into
+> > > [ task_group(p)->uclamp[UCLAMP_MAX],  task_group(p)->uclamp[UCLAMP_MAX] ].
+> > >
+> > > Is it necessary to fix it here？
+> >
+> > Nope. We must allow any combination values to be accepted and remember them so
+> > if one changes we ensure the new effective value is updated accordingly.
+> > This is how cgroups API works.
 > 
-
-okay. Will be aware of this from next time.
-
-Thanks,
-Aswath
-
->> ---
->>  arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi | 2 +-
->>  arch/arm64/boot/dts/ti/k3-am654-base-board.dts     | 2 +-
->>  2 files changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
->> index f4ec9ed52939..23d51b6a9cf2 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
->> @@ -575,7 +575,7 @@
->>  
->>  	#address-cells = <1>;
->>  	#size-cells= <0>;
->> -	ti,pindir-d0-out-d1-in = <1>;
->> +	ti,pindir-d0-out-d1-in;
->>  };
->>  
->>  &tscadc0 {
->> diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
->> index eddb2ffb93ca..1b947e2c2e74 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
->> +++ b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
->> @@ -299,7 +299,7 @@
->>  	pinctrl-0 = <&main_spi0_pins_default>;
->>  	#address-cells = <1>;
->>  	#size-cells= <0>;
->> -	ti,pindir-d0-out-d1-in = <1>;
->> +	ti,pindir-d0-out-d1-in;
->>  
->>  	flash@0{
->>  		compatible = "jedec,spi-nor";
->> -- 
->> 2.17.1
->>
+> Sorry. I may not have expressed it clearly. In your patch (which has
+> not yet merged into the mainline):
 > 
+> 6938840392c89 ("sched/uclamp: Fix wrong implementation of cpu.uclamp.min")
+>  https://lkml.kernel.org/r/20210510145032.1934078-2-qais.yousef@arm.com
 > 
+> This patch will not affect p->uclamp_req, but consider the following situation:
+> 
+> tg->cpu.uclamp.min = 0
+> tg->cpu.uclamp.max = 50%
+> 
+> p->uclamp_req[UCLAMP_MIN] = 60%
+> p->uclamp_req[UCLAMP_MIN] = 80%
+> 
+> The function call process is as follows：
+> uclamp_eff_value() -> uclamp_eff_get() ->uclamp_tg_restrict()
+> 
+> with your patch, the result is:
+> 
+> p->effective_uclamp_min = 60%
+> p->effective_uclamp_max = 50%
+> 
+> It would not affect the uclamp_task_util(p), but affect the rq:
+> when p enqueued:
+> rq->uclamp[UCLAMP_MIN] = 60%
+> rq->uclamp[UCLAMP_MIN] = 50%
+> 
+> futher more,  in uclamp_rq_util_with() {
+> ...
+> 
+> min_util = READ_ONCE(rq->uclamp[UCLAMP_MIN].value); //60%
+> max_util = READ_ONCE(rq->uclamp[UCLAMP_MAX].value);//50%
+> ...
+> if (unlikely(min_util >= max_util))
+> return min_util;
+> 
+> return clamp(util, min_util, max_util);
+> ...
+> }
+> as a result, it would return 60%.
+
+Looking at this again now, I better understand what you were trying to say.
+I got confused that you were still arguing about cgroup inverted
+cpu.uclamp.min/max, but you're actually talking about something else.
+
+It would be a lot easier to not cross talk threads and reply to my patch
+directly with this remark.
+
+Anyways, still well spotted!
+
+What you're saying is we need something like the patch below to ensure that the
+*task request* is within tg uclamp range, right? The worry is that the task's
+uclamp_min is higher than the tg's uclamp_min, so we end up with the inversion
+because of that which will not be corrected later.
+
+Hmm I need to think a bit more about this..
+
+Cheers
+
+--
+Qais Yousef
+
+--->8---
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 9e9a5be35cde..e867813b9d5e 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1405,6 +1405,7 @@ uclamp_tg_restrict(struct task_struct *p, enum uclamp_id clamp_id)
+ {
+        struct uclamp_se uc_req = p->uclamp_req[clamp_id];
+ #ifdef CONFIG_UCLAMP_TASK_GROUP
++       unsigned long uc_min, uc_max, val;
+
+        /*
+         * Tasks in autogroups or root task group will be
+@@ -1415,23 +1416,10 @@ uclamp_tg_restrict(struct task_struct *p, enum uclamp_id clamp_id)
+        if (task_group(p) == &root_task_group)
+                return uc_req;
+
+-       switch (clamp_id) {
+-       case UCLAMP_MIN: {
+-               struct uclamp_se uc_min = task_group(p)->uclamp[clamp_id];
+-               if (uc_req.value < uc_min.value)
+-                       return uc_min;
+-               break;
+-       }
+-       case UCLAMP_MAX: {
+-               struct uclamp_se uc_max = task_group(p)->uclamp[clamp_id];
+-               if (uc_req.value > uc_max.value)
+-                       return uc_max;
+-               break;
+-       }
+-       default:
+-               WARN_ON_ONCE(1);
+-               break;
+-       }
++       uc_min = task_group(p)->uclamp[UCLAMP_MIN].value;
++       uc_max = task_group(p)->uclamp[UCLAMP_MAX].value;
++       val = uc_req.value;
++       uc_req.value = clamp(val, uc_min, uc_max);
+ #endif
+
+        return uc_req;
 
