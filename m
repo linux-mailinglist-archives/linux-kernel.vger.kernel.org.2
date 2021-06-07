@@ -2,160 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5B239E4A8
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 19:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7CC39E4A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 19:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbhFGRCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 13:02:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230504AbhFGRCR (ORCPT
+        id S231462AbhFGRCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 13:02:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42758 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230331AbhFGRCR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 7 Jun 2021 13:02:17 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A70C061766
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 10:00:14 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id r7so6832076edv.12
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 10:00:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jW69KZFe/XuaGImn+7cx9RiotDNOGd9QgoUO4oCEX5I=;
-        b=rjLwWqomwAsbpO8msDMz9xkrgxxQKgeeRbnnD3rxAUUqsv5IwQZzNrVu0Hz83sXW9U
-         9YZtt9ROVLupgqmTgNyj547P7uVMWhry5nhALfbSZCMOZoTdtpW1mTK3V5riQUkfPcEX
-         r4l/WpQ2KjncmDxKj2TGk6+tfJZl130/B3Lei3bPmpGtpxJenbtDGQEgtcu+YOW6uZ8M
-         gv5quly1mJjB8GUajXLNmb4MOenE+r/vYBSAsa5PFgvvMrMZh2Y4QA3MIOFfUIwVJn0X
-         BoT4nq6ToD78PLW7PCK4txrI0fVmZFOM5L73PhV4HuweIjNleutSfz6kpIPpwRrmMWOA
-         AEbg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623085224;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TImFWC0HTGVlVbnQIUSZh0jMNDwAtpjYOcXi7DdGfsg=;
+        b=MIQwGDOo8RX1/nksDoCa3lWLSRbfpOsqTTf0TG0g37/4DtxW+EH3mPoGX4STXsfFeDGPOM
+        RbM6DDTWt0xp6n6QV8f8rejdGEf5CWi3e6h2pygiywrE5ecfsZINB0lhVIG0tOGM4G0Mov
+        xhDN/2lLOCjDNKOGZ9U+lF3EgtHREsI=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-119-KCVOE2aWPNWYIe_3i-c-eg-1; Mon, 07 Jun 2021 13:00:19 -0400
+X-MC-Unique: KCVOE2aWPNWYIe_3i-c-eg-1
+Received: by mail-lj1-f199.google.com with SMTP id w8-20020a05651c1028b02900f6e4f47184so7179345ljm.5
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 10:00:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=jW69KZFe/XuaGImn+7cx9RiotDNOGd9QgoUO4oCEX5I=;
-        b=DCVxX8hkcAye6URBs4b2jEA5vrJC3BvczlzFte8TgAuvsfVYZ79WDJH7f7xbSHdpAB
-         VVHDeUjlbRSc7eBtMwdY/ZAQ6kh6JJhiJhQTXV80XAkbHfUl9QwJwzvG5r49MZlAvzRL
-         VBVUcOsFZuyd2jzDPr3NBJdjna1l7117gwHY3W2hceUfUySc1b5lNgI0LT6sPCIdwjVD
-         tSFNip0/ex0ZuEzkuk8+XF0iaj9uBeBCXH7w4ha4qmIdv4ClDZm+L39AX/dDBD4onCPJ
-         86bRNNV3iXLwKt/PmkoMOd8ZSZPm+vC7fbLnw5UY5TBhhyIBt7aeevB/II+ERVJ+Z9ya
-         nTZg==
-X-Gm-Message-State: AOAM530SzdJ+mJXvhUz0W3Q/YeBcLZma5VmI81i/zfbVJZqT7B7MdsE+
-        ilpy1DLZGnADIQp7gropxGxdKA2HaX+xMUkgq7o=
-X-Google-Smtp-Source: ABdhPJyXS2QpHrPa/CIuatbmyt7Vrkhc+ZBH/iDjIMF1d5alRpx3R2P+HnrTuXLxSuAZ2ODANvtRr8aqsiBzzyGB+K8=
-X-Received: by 2002:a05:6402:1d0f:: with SMTP id dg15mr18446657edb.137.1623085212831;
- Mon, 07 Jun 2021 10:00:12 -0700 (PDT)
+        bh=TImFWC0HTGVlVbnQIUSZh0jMNDwAtpjYOcXi7DdGfsg=;
+        b=QluJadHaz4CW+WVJ/qe6s5vZknfDzmxDS8QYld/HNF91yQOTPyxq70SpaLa/+ryWVv
+         TTaGtMxsRyVQyZmb6EtHu0ayZyxGogiDQ4IqUm3P69Zxb7Vs3RUG58H8WqX3WE51Voac
+         IpJUt1kDguuI7s4D5akKaTdEmD928SkLUYiRQ5PXpfNLGatoaFisEbke9FdwEGO/mKEN
+         2Ds+FEtiGmOXw7GInGGLCt9+g912fklFhFp+fdp2glcbIZx5Wf4KBALcYsmpsMWSV7Tg
+         AOqmWsKL0u+xeyR6tyqfZ4ZyaS3cW6Lp+5KqQfl/6pPWSIFDPX5n5UsAC3E7h1zt6v/7
+         LNcw==
+X-Gm-Message-State: AOAM5306JHTb3QwCMAjfLtPFYRbHiRCc1oQ7XCOJg2P7ALupnbsGJSju
+        DvLyajiTounbRh0z+Mnoxvi4WpqtMq0s6C7/fdFqkHktiWNNsO+qlVbT2gGXa6SNZmmba2Bx9mg
+        I323P+bTD/Lsmaq8sr+kA27A9m4C8nF4gXbzOaKk1
+X-Received: by 2002:a2e:580e:: with SMTP id m14mr7269747ljb.197.1623085217110;
+        Mon, 07 Jun 2021 10:00:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwTkhzmxCJi6PS7y4jmDE+BJDdiD5YSK4954D2dCrGy7KysHZPt6B2LiTHdtA/lDYEXA8GWz+cruQBsawKJZwc=
+X-Received: by 2002:a2e:580e:: with SMTP id m14mr7269730ljb.197.1623085216890;
+ Mon, 07 Jun 2021 10:00:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210604203513.240709-1-shy828301@gmail.com> <YL265A86DQe5Rgon@dhcp22.suse.cz>
-In-Reply-To: <YL265A86DQe5Rgon@dhcp22.suse.cz>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Mon, 7 Jun 2021 10:00:01 -0700
-Message-ID: <CAHbLzkowcskM=p==-q48Ca12D=h9SgqUuUB4NknRNR=64TyXCw@mail.gmail.com>
-Subject: Re: [PATCH] mm: mempolicy: don't have to split pmd for huge zero page
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Zi Yan <ziy@nvidia.com>, nao.horiguchi@gmail.com,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210504092340.00006c61@intel.com> <87pmxpdr32.ffs@nanos.tec.linutronix.de>
+ <CAFki+Lkjn2VCBcLSAfQZ2PEkx-TR0Ts_jPnK9b-5ne3PUX37TQ@mail.gmail.com>
+ <87im3gewlu.ffs@nanos.tec.linutronix.de> <CAFki+L=gp10W1ygv7zdsee=BUGpx9yPAckKr7pyo=tkFJPciEg@mail.gmail.com>
+ <CAFki+L=eQoMq+mWhw_jVT-biyuDXpxbXY5nO+F6HvCtpbG9V2w@mail.gmail.com>
+ <CAFki+LkB1sk3mOv4dd1D-SoPWHOs28ZwN-PqL_6xBk=Qkm40Lw@mail.gmail.com>
+ <87zgwo9u79.ffs@nanos.tec.linutronix.de> <87wnrs9tvp.ffs@nanos.tec.linutronix.de>
+In-Reply-To: <87wnrs9tvp.ffs@nanos.tec.linutronix.de>
+From:   Nitesh Lal <nilal@redhat.com>
+Date:   Mon, 7 Jun 2021 13:00:05 -0400
+Message-ID: <CAFki+L=QTOu_O=1uNobVMi2s9mbcxXgSdTLADCpeBWBoPAikgQ@mail.gmail.com>
+Subject: Re: [PATCH] genirq: Provide new interfaces for affinity hints
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, jbrandeb@kernel.org,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "stephen@networkplumber.org" <stephen@networkplumber.org>,
+        "rppt@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
+        "jinyuqi@huawei.com" <jinyuqi@huawei.com>,
+        "zhangshaokun@hisilicon.com" <zhangshaokun@hisilicon.com>,
+        netdev@vger.kernel.org, chris.friesen@windriver.com,
+        Marc Zyngier <maz@kernel.org>,
+        Neil Horman <nhorman@tuxdriver.com>, pjwaskiewicz@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 6, 2021 at 11:21 PM Michal Hocko <mhocko@suse.com> wrote:
+On Fri, May 21, 2021 at 8:03 AM Thomas Gleixner <tglx@linutronix.de> wrote:
 >
-> On Fri 04-06-21 13:35:13, Yang Shi wrote:
-> > When trying to migrate pages to obey mempolicy, the huge zero page is
-> > split then the page table walk at PTE level just skips zero page.  So it
-> > seems pointless to split huge zero page, it could be just skipped like
-> > base zero page.
+> The discussion about removing the side effect of irq_set_affinity_hint() of
+> actually applying the cpumask (if not NULL) as affinity to the interrupt,
+> unearthed a few unpleasantries:
 >
-> My THP knowledge is not the best but this is incorrect AIACS. Huge zero
-> page is not split. We do split the pmd which is mapping the said page. I
-> suspect you refer to vm_normal_page when talking about a zero page but
-> please be aware that huge zero page is not a normal zero page. It is
-> allocated dynamically (see get_huge_zero_page).
-
-For a normal huge page, yes, split_huge_pmd() just splits pmd. But
-actually the base zero pfn will be inserted to PTEs when splitting
-huge zero pmd. Please check __split_huge_zero_page_pmd() out.
-
-I should make this point clearer in the commit log. Sorry for the confusion.
-
+>   1) The modular perf drivers rely on the current behaviour for the very
+>      wrong reasons.
 >
-> So in the end you patch disables mbind of zero pages to a target node
-> and that is a regression.
-
-Do we really migrate zero page? IIUC zero page is just skipped by
-vm_normal_page() check in queue_pages_pte_range(), isn't it?
-
+>   2) While none of the other drivers prevents user space from changing
+>      the affinity, a cursorily inspection shows that there are at least
+>      expectations in some drivers.
 >
-> Have you tested the patch?
-
-No, just build test. I thought this change was straightforward.
-
+> #1 needs to be cleaned up anyway, so that's not a problem
 >
-> > Set ACTION_CONTINUE to prevent the walk_page_range() split the pmd for
-> > this case.
+> #2 might result in subtle regressions especially when irqbalanced (which
+>    nowadays ignores the affinity hint) is disabled.
 >
-> Btw. this changelog is missing a problem statement. I suspect there is
-> no actual problem that it should fix and it is likely driven by reading
-> the code. Right?
-
-The actual problem is it is pointless to split a huge zero pmd. Yes,
-it is driven by visual inspection.
-
-The behavior before the patch for huge zero page is:
-split huge zero pmd (insert base zero pfn to ptes)
-walk ptes
-skip zero pfn
-
-So why not just skip the huge zero page in the first place?
-
+> Provide new interfaces:
 >
-> > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > ---
-> >  mm/mempolicy.c | 9 +++++----
-> >  1 file changed, 5 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> > index b5f4f584009b..205c1a768775 100644
-> > --- a/mm/mempolicy.c
-> > +++ b/mm/mempolicy.c
-> > @@ -436,7 +436,8 @@ static inline bool queue_pages_required(struct page *page,
-> >
-> >  /*
-> >   * queue_pages_pmd() has four possible return values:
-> > - * 0 - pages are placed on the right node or queued successfully.
-> > + * 0 - pages are placed on the right node or queued successfully, or
-> > + *     special page is met, i.e. huge zero page.
-> >   * 1 - there is unmovable page, and MPOL_MF_MOVE* & MPOL_MF_STRICT were
-> >   *     specified.
-> >   * 2 - THP was split.
-> > @@ -460,8 +461,7 @@ static int queue_pages_pmd(pmd_t *pmd, spinlock_t *ptl, unsigned long addr,
-> >       page = pmd_page(*pmd);
-> >       if (is_huge_zero_page(page)) {
-> >               spin_unlock(ptl);
-> > -             __split_huge_pmd(walk->vma, pmd, addr, false, NULL);
-> > -             ret = 2;
-> > +             walk->action = ACTION_CONTINUE;
-> >               goto out;
-> >       }
-> >       if (!queue_pages_required(page, qp))
-> > @@ -488,7 +488,8 @@ static int queue_pages_pmd(pmd_t *pmd, spinlock_t *ptl, unsigned long addr,
-> >   * and move them to the pagelist if they do.
-> >   *
-> >   * queue_pages_pte_range() has three possible return values:
-> > - * 0 - pages are placed on the right node or queued successfully.
-> > + * 0 - pages are placed on the right node or queued successfully, or
-> > + *     special page is met, i.e. zero page.
-> >   * 1 - there is unmovable page, and MPOL_MF_MOVE* & MPOL_MF_STRICT were
-> >   *     specified.
-> >   * -EIO - only MPOL_MF_STRICT was specified and an existing page was already
-> > --
-> > 2.26.2
+>   irq_update_affinity_hint() - Only sets the affinity hint pointer
+>   irq_apply_affinity_hint()  - Set the pointer and apply the affinity to
+>                                the interrupt
 >
-> --
-> Michal Hocko
-> SUSE Labs
+> Make irq_set_affinity_hint() a wrapper around irq_apply_affinity_hint() and
+> document it to be phased out.
+>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Link: https://lore.kernel.org/r/20210501021832.743094-1-jesse.brandeburg@intel.com
+> ---
+> Applies on:
+>    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
+> ---
+>  include/linux/interrupt.h |   41 ++++++++++++++++++++++++++++++++++++++++-
+>  kernel/irq/manage.c       |    8 ++++----
+>  2 files changed, 44 insertions(+), 5 deletions(-)
+>
+> --- a/include/linux/interrupt.h
+> +++ b/include/linux/interrupt.h
+> @@ -328,7 +328,46 @@ extern int irq_force_affinity(unsigned i
+>  extern int irq_can_set_affinity(unsigned int irq);
+>  extern int irq_select_affinity(unsigned int irq);
+>
+> -extern int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m);
+> +extern int __irq_apply_affinity_hint(unsigned int irq, const struct cpumask *m,
+> +                                    bool setaffinity);
+> +
+> +/**
+> + * irq_update_affinity_hint - Update the affinity hint
+> + * @irq:       Interrupt to update
+> + * @cpumask:   cpumask pointer (NULL to clear the hint)
+> + *
+> + * Updates the affinity hint, but does not change the affinity of the interrupt.
+> + */
+> +static inline int
+> +irq_update_affinity_hint(unsigned int irq, const struct cpumask *m)
+> +{
+> +       return __irq_apply_affinity_hint(irq, m, true);
+> +}
+> +
+> +/**
+> + * irq_apply_affinity_hint - Update the affinity hint and apply the provided
+> + *                          cpumask to the interrupt
+> + * @irq:       Interrupt to update
+> + * @cpumask:   cpumask pointer (NULL to clear the hint)
+> + *
+> + * Updates the affinity hint and if @cpumask is not NULL it applies it as
+> + * the affinity of that interrupt.
+> + */
+> +static inline int
+> +irq_apply_affinity_hint(unsigned int irq, const struct cpumask *m)
+> +{
+> +       return __irq_apply_affinity_hint(irq, m, true);
+> +}
+> +
+> +/*
+> + * Deprecated. Use irq_update_affinity_hint() or irq_apply_affinity_hint()
+> + * instead.
+> + */
+> +static inline int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m)
+> +{
+> +       return irq_apply_affinity_hint(irq, cpumask);
+
+Another change required here, the above should be 'm' instead of 'cpumask'.
+
+> +}
+> +
+>  extern int irq_update_affinity_desc(unsigned int irq,
+>                                     struct irq_affinity_desc *affinity);
+>
+> --- a/kernel/irq/manage.c
+> +++ b/kernel/irq/manage.c
+> @@ -487,7 +487,8 @@ int irq_force_affinity(unsigned int irq,
+>  }
+>  EXPORT_SYMBOL_GPL(irq_force_affinity);
+>
+> -int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m)
+> +int __irq_apply_affinity_hint(unsigned int irq, const struct cpumask *m,
+> +                             bool setaffinity)
+>  {
+>         unsigned long flags;
+>         struct irq_desc *desc = irq_get_desc_lock(irq, &flags, IRQ_GET_DESC_CHECK_GLOBAL);
+> @@ -496,12 +497,11 @@ int irq_set_affinity_hint(unsigned int i
+>                 return -EINVAL;
+>         desc->affinity_hint = m;
+>         irq_put_desc_unlock(desc, flags);
+> -       /* set the initial affinity to prevent every interrupt being on CPU0 */
+> -       if (m)
+> +       if (m && setaffinity)
+>                 __irq_set_affinity(irq, m, false);
+>         return 0;
+>  }
+> -EXPORT_SYMBOL_GPL(irq_set_affinity_hint);
+> +EXPORT_SYMBOL_GPL(__irq_apply_affinity_hint);
+>
+>  static void irq_affinity_notify(struct work_struct *work)
+>  {
+>
+
+
+-- 
+Thanks
+Nitesh
+
