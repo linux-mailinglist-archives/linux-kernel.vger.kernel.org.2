@@ -2,135 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C83039D780
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3F6639D786
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbhFGIhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 04:37:55 -0400
-Received: from mailgate.ics.forth.gr ([139.91.1.2]:40720 "EHLO
-        mailgate.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbhFGIhy (ORCPT
+        id S230319AbhFGIix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 04:38:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230267AbhFGIiu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 04:37:54 -0400
-Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
-        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 1578a10X075206
-        for <linux-kernel@vger.kernel.org>; Mon, 7 Jun 2021 11:36:01 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
-        q=dns/txt; i=@ics.forth.gr; t=1623054956; x=1625646956;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=U2J+Ype/9wfTlT1A3imO+PgEUuLf+/IqrknC2YO9Ouw=;
-        b=bG9eFawA/MiBh1Ajgsjq8Jb319A0IeZOVL7YWEF+8upJj7Op3XKkQiR6LUOOYFeV
-        pzz2evNRRJ4oXxegB4le1VP+rDitLomkFYl8tZ3m4WOd5+9DUBfR5Kd2Ez4A9wax
-        DyPndqwcmtdP/b3WUT055Z2UscW58fs7smtY+GwGsnsIrYNKGcJMCLxKMzBCUU7k
-        rHestxfq3/fEtn+o3KpY1gQ97Igkvt8gq5pvQttpLsB5f3cgrB0h9J9RdPOeMRmr
-        O9FZSATzQzZF4Aepjn0sW7FM0tsqHW//ykdK4b4gI27+/WnJi0q22JTq2lpSB6Y8
-        hOCec2Kz+PIKGrxqoPr4bg==;
-X-AuditID: 8b5b014d-962f1700000067b6-37-60bdda6c6f6f
-Received: from enigma.ics.forth.gr (webmail.ics.forth.gr [139.91.151.35])
-        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id 52.7F.26550.C6ADDB06; Mon,  7 Jun 2021 11:35:56 +0300 (EEST)
-X-ICS-AUTH-INFO: Authenticated user:  at ics.forth.gr
+        Mon, 7 Jun 2021 04:38:50 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B57EC061766
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 01:36:49 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id f20so5236897wmg.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 01:36:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fooishbar-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OqAD7JyQJLtIUaTq7HisxnM/3X8ut9jR2CAddAB1Cqg=;
+        b=doyN4rgRGFyq1Kz5xW+zSGP5eyprWLTmJNWt5GNCkcTtUajEwG24mgCalhI3uWmOKW
+         E7LCI4cmGi21nURQKDnzjr6hmcWUA+rBgfNF0vs0mpK1jp45ve6KaLrJPGXSoe771ahY
+         YKf6eaFqhhkVJBN+po2m0v/39VhNx4Arqs+4GJXeCrwOnb/BEDmWL6RlCMNOZVyPCcx2
+         bFmYtkdXB5wB3CTjH+SBYgDr/uhhou6x/6QjqNkwbIk+KvX/AwWrxXr1Hfu+EZD8AZ59
+         C+/A0ECO+spDAadILs7h5QCLyZDNdFTp7/Urc2/s3rg+8a9uhPG29gc1YAzWaRhruw29
+         ym6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OqAD7JyQJLtIUaTq7HisxnM/3X8ut9jR2CAddAB1Cqg=;
+        b=tPlJc90619Il2PNNCiBinCKa5yyamdSk4FhLG4RPXK752G0/OagOY2NcX2FHqPv5g6
+         fSECmUaEn+vhqZ+OZ9oKvVcXpLHHhSifYyTr/h42UezlNqCcZiavjX6EVoIOywL/XX04
+         WL3FvWNbU3t/NPJJHbc0LwK0xnqz4f3PwZ8QYzctDCwdWHc6JA0AOvazQsdkLv/Z3BP/
+         9AoDDQH7eWTyf1mlwOAljNUDYm9a/iuIztnVbX5IiZUvY/e5448YhmM/om/sPhAYY+FZ
+         2vhcywY3yAjIiClENuRD2f3ado+92djOyeZJW34c9d1JILa+1s+FfelwcnI2YE5ohDq8
+         GwAw==
+X-Gm-Message-State: AOAM533bkpXFHdBIo2NUaWoq0f7S+FZOYuT2jc9rDDK1Zmy3vHuwjWto
+        KG9v9Xpi3yXroOcPpoPT+8wknj/QkUpVSsW37kJlYw==
+X-Google-Smtp-Source: ABdhPJz8hM3hqr1V4jECe7fc+5nfq3AknPzC5rkIflKDlHDhykr0xPABNXJ3M2qlpZSxchzC5A0kjKaWCdCtcDbvsBk=
+X-Received: by 2002:a1c:b782:: with SMTP id h124mr15900314wmf.168.1623055007668;
+ Mon, 07 Jun 2021 01:36:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Mon, 07 Jun 2021 11:35:55 +0300
-From:   Nick Kossifidis <mick@ics.forth.gr>
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Nick Kossifidis <mick@ics.forth.gr>,
-        Christoph Hellwig <hch@lst.de>,
-        Drew Fustini <drew@beagleboard.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>, wefu@redhat.com,
-        =?UTF-8?Q?Wei_Wu_?= =?UTF-8?Q?=28=E5=90=B4=E4=BC=9F=29?= 
-        <lazyparser@gmail.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
+References: <20210605073534.3786194-1-jernej.skrabec@gmail.com>
+In-Reply-To: <20210605073534.3786194-1-jernej.skrabec@gmail.com>
+From:   Daniel Stone <daniel@fooishbar.org>
+Date:   Mon, 7 Jun 2021 09:36:36 +0100
+Message-ID: <CAPj87rNFXkoRJw2_Y7aW0+7mzOYGpirs6YgUfuFrDFfXcyOMeA@mail.gmail.com>
+Subject: Re: [PATCH] drm/sun4i: de3: Be explicit about supported modifiers
+To:     Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Piotr Oniszczuk <piotr.oniszczuk@gmail.com>,
+        Daniel Stone <daniel.stone@collabora.com>,
+        David Airlie <airlied@linux.ie>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Benjamin Koch <snowball@c3pb.de>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        Wei Fu <tekkamanninja@gmail.com>
-Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
-Organization: FORTH
-In-Reply-To: <CAJF2gTQuQ5bE6HeGSoNaDynA0o3+KEo4snwft42YGzE=+DjKOQ@mail.gmail.com>
-References: <1621400656-25678-1-git-send-email-guoren@kernel.org>
- <20210519052048.GA24853@lst.de>
- <CAJF2gTTjwB4U-NxCtfgMA5aR2HzoQtA8a51W5UM1LHGRbjz9pg@mail.gmail.com>
- <20210519064435.GA3076809@x1> <20210519065352.GA31590@lst.de>
- <CAJF2gTR4FXRbp7oky-ypdVJba6btFHpp-+dPyJStRaQX_-5rzg@mail.gmail.com>
- <29733b0931d9dd6a2f0b6919067c7efe@mailhost.ics.forth.gr>
- <CAJF2gTTpSbNWS4VLHAu4XsV5-Vos=6R9MmPOx8-yzMFJu=wX4A@mail.gmail.com>
- <a8f2e68dcc1a6eb1ff3b95fcb8d0d0d2@mailhost.ics.forth.gr>
- <CAJF2gTQuQ5bE6HeGSoNaDynA0o3+KEo4snwft42YGzE=+DjKOQ@mail.gmail.com>
-Message-ID: <7347df23102503c77c5da10b48afcf9a@mailhost.ics.forth.gr>
-X-Sender: mick@mailhost.ics.forth.gr
-User-Agent: Roundcube Webmail/1.3.16
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrKIsWRmVeSWpSXmKPExsXSHT1dWTfn1t4Eg2k3ZCyefJjIZnFvxTJ2
-        ixd7G1ksjj/axWKxcvVRJotLX66xWHTs+spicXnXHDaLbZ9b2Cym7NvFZnHx13xGi+Z359gt
-        tm5cx2jRNovfYtbi2+wW99edY7No2T+FxUHQ493vZYwe994+YfLYOesuu8eCTaUeDzddYvLY
-        tKqTzWPnQ0uPX9uPMnlsXlLv8WLzTEaP3Tcb2Dze77vK5nGp+Tq7x+dNch7tB7qZAvijuGxS
-        UnMyy1KL9O0SuDIevN7MXLCCr2LDk7usDYzruLsYOTkkBEwken4fYOxi5OIQEjjGKPF26kEW
-        iISpxOy9nYwgNq+AoMTJmU/A4swCFhJTr+xnhLDlJZq3zmYGsVkEVCW27twOVsMmoCkx/xLE
-        HBGgmt9HO1kh6j+zSvQ/4AWxhQVsJA5dWQ8W5xcQlvh09yKYzSkQKDFlyh92iIO2skg0HnrL
-        BHGEi8S9Y5tYIY5Tkfjw+wFQEQeHKJC9ea7SBEbBWUhOnYXk1FlITl3AyLyKUSCxzFgvM7lY
-        Ly2/qCRDL71oEyM4Zhl9dzDe3vxW7xAjEwfjIUYJDmYlEV4vmT0JQrwpiZVVqUX58UWlOanF
-        hxilOViUxHl59SbECwmkJ5akZqemFqQWwWSZODilGpgM/5z/5q9dvOFa98sH4Voitq6Rgt8c
-        v+z+EP/fZIswT8CPr6cL9zy+ItomO2HHdAt/1gKzIHOWb1ZR5glfUxNl/rXeChYS8ufz9TTb
-        t/DJ7/VTw9oE3vWcsH7PaP3lyy6ru/xX3Lh5LHeZrSx2UVv+bN2iunVJfV8fdlvP2LtF7yBX
-        2zP1xJj3wt0WU5inf11g6KNs+4Tb+epUx6qLW3/LHRU/+n3uHqHct7LX/oqv7rn2q7isZqIG
-        c17cGbmPBU+nv5TYm/btnU/u/jOHezfGakt8DDlYufaK8+4Hf89Nmf38xol3/pM31UQlP/Y7
-        Pyco/oZ4tZLPsYP/3PY90yheOH+l8fTs09PLz/Hd+FFyUImlOCPRUIu5qDgRABsgYjJIAwAA
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-sunxi@lists.linux.dev,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Στις 2021-06-07 06:19, Guo Ren έγραψε:
->> The C-bit was recently dropped, there is a new proposal for Page Based
->> Memory Attributes (PBMT) that we can work on / push for.
-> C-bit still needs discussion, we shouldn't drop it directly.
-> 
+On Sat, 5 Jun 2021 at 08:36, Jernej Skrabec <jernej.skrabec@gmail.com> wrote:
+> Currently only linear formats are supported in sun4i-drm driver, but
+> SoCs like H6 supports AFBC variant of some of them in multiple cores
+> (GPU, VPU, DE3). Panfrost already implements AFBC compression and is
+> sometimes confused what should be default choice (linear, AFBC) if DRM
+> driver is not explicit about modifier support (MiniMyth2 distro with
+> MythTV app).
+>
+> After some discussion with Daniel Stone on #panfrost IRC, it was decided
+> to make modifiers in sun4i-drm explicit, to avoid any kind of guessing,
+> not just in panfrost, but everywhere. In fact, long term idea is to make
+> modifier parameter in drm_universal_plane_init() mandatory (non NULL).
 
-You can always participate on the discussion on virtmem mailing list.
+Thanks Piotr & Jernej!
 
-> Raise a page fault won't solve anything. We still need access to the
-> page with proper performance.
-> 
+Acked-by: Daniel Stone <daniels@collabora.com>
 
-The point is that future hw implementations will be required to return a 
-page fault in case we tamper with those reserved bits, they won't just 
-ignore them. Supporting custom values there means supporting 
-non-compliant implementations.
-
-> 
-> We need PTEs to provide a non-coherency solution, and only CMO
-> instructions are not enough. We can't modify so many Linux drivers to
-> fit it.
-> From Linux non-coherency view, we need:
->  - Non-cache + Strong Order PTE attributes to deal with drivers' DMA 
-> descriptors
->  - Non-cache + weak order to deal with framebuffer drivers
->  - CMO dma_sync to sync cache with DMA devices
->  - Userspace icache_sync solution, which prevents calls to S-mode with
-> IPI fence.i. (Necessary to JIT java scenarios.)
-> 
-> All above are not in spec, but the real chips are done.
-> (Actually, these have been talked about for more than five years, we
-> still haven't the uniform idea.)
-> 
-> The idea of C-bit is really important for us which prevents our chips
-> violates the spec.
-
-Have you checked the PBMT proposal ? It defines (so far) the following 
-attributes that can be set on PTEs to override the PMAs of the 
-underlying physical memory:
-
-Bits [62:61]
-00 (WB) -> Cacheable, default ordering
-01 (NC) -> Noncacheable, default ordering
-10 (IO) -> Noncacheable, strong ordering
-
-So it'll cover the use cases you mention.
+Cheers,
+Daniel
