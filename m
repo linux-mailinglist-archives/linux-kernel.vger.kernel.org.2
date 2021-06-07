@@ -2,95 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 970FE39D256
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 02:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE67539D261
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 02:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhFGALs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 20:11:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31770 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229884AbhFGALr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 20:11:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623024597;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VS0VjKAJZ5TDLigUxCxbJG/FM9ESIm9kTnLGe+d/ZcE=;
-        b=RD9aKHLcJSGhKj9J4rabMZT7LQ779AQbR3iVro+Kg4chgSBx9RGK9m6uiGOuyFO7Fr45Ij
-        Qo3eFvUfeKqaZ/NrgS8BOIQAId1Br0E1dKkHsp3baf9Rryp21I99C8gDnhRi0rD2f7KBuu
-        G82O8lUJu+IgOj7riXqdd2hbsirNF2Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-460-loLTsHyRMvymEOT77fI9Dw-1; Sun, 06 Jun 2021 20:09:54 -0400
-X-MC-Unique: loLTsHyRMvymEOT77fI9Dw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S230081AbhFGA3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 20:29:36 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:55093 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229772AbhFGA3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 20:29:35 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 472D5800D55;
-        Mon,  7 Jun 2021 00:09:52 +0000 (UTC)
-Received: from T590 (ovpn-12-62.pek2.redhat.com [10.72.12.62])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9B7225D736;
-        Mon,  7 Jun 2021 00:09:43 +0000 (UTC)
-Date:   Mon, 7 Jun 2021 08:09:38 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     longli@linuxonhyperv.com
-Cc:     linux-block@vger.kernel.org, Long Li <longli@microsoft.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Tejun Heo <tj@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [Patch v2] block: return the correct bvec when checking for gaps
-Message-ID: <YL1jwr2MfbW4hFb7@T590>
-References: <1622849839-5407-1-git-send-email-longli@linuxonhyperv.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FyvMy6Mbdz9sPf;
+        Mon,  7 Jun 2021 10:27:42 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623025663;
+        bh=r4rdCsZV0alb4f5aKhXBr6OwsAvgLial/NJLF5WlbWI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=dPFANbnkt5l21z2Lt7y1d6I+fXuoeIX6osLfpVMccVrxDVsLRiElA580mLswth19H
+         assp6LQ8zzmjRnUkq6xw5bf+tFh8PchBij+9Pih5fKk0g6A4pw9A4kG2uqmr5KKEJy
+         RKoYCaBcZ4d5FgRkDU59K77q8KS6sz5QDJnHxxCFU6TpqE09LMArqApA1qgGOaOK+Y
+         q7jWdkje93lwmgnF+bzWzq9R+Cg8pg6nZIPw2VjL7eCHpVWVg5JTKiZh7xvZg65AHw
+         ry0m2Gwiin3P9SWfUCIQPpcDGR+Ojr/ZcyjXrvKm8sldMlcvW+FSdMJZ2jisZhnSC+
+         IOyH1sNUzrPWw==
+Date:   Mon, 7 Jun 2021 10:27:40 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Leah Rumancik <leah.rumancik@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: linux-next: manual merge of the ext4 tree with Linus' tree
+Message-ID: <20210607102740.55c10d82@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1622849839-5407-1-git-send-email-longli@linuxonhyperv.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: multipart/signed; boundary="Sig_/3m38Qe1iGhm5mDXY0p0Umom";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 04:37:19PM -0700, longli@linuxonhyperv.com wrote:
-> From: Long Li <longli@microsoft.com>
-> 
-> After commit 07173c3ec276 ("block: enable multipage bvecs"), a bvec can
-> have multiple pages. But bio_will_gap() still assumes one page bvec while
-> checking for merging. If the pages in the bvec go across the
-> seg_boundary_mask, this check for merging can potentially succeed if only
-> the 1st page is tested, and can fail if all the pages are tested.
-> 
-> Later, when SCSI builds the SG list the same check for merging is done in
-> __blk_segment_map_sg_merge() with all the pages in the bvec tested. This
-> time the check may fail if the pages in bvec go across the
-> seg_boundary_mask (but tested okay in bio_will_gap() earlier, so those
-> BIOs were merged). If this check fails, we end up with a broken SG list
-> for drivers assuming the SG list not having offsets in intermediate pages.
-> This results in incorrect pages written to the disk.
-> 
-> Fix this by returning the multi-page bvec when testing gaps for merging.
-> 
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> Cc: Pavel Begunkov <asml.silence@gmail.com>
-> Cc: Ming Lei <ming.lei@redhat.com>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> Cc: Jeffle Xu <jefflexu@linux.alibaba.com>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: stable@vger.kernel.org
-> Fixes: 07173c3ec276 ("block: enable multipage bvecs")
-> Signed-off-by: Long Li <longli@microsoft.com>
-> ---
-> Change from v1: add commit details on how data corruption happens
+--Sig_/3m38Qe1iGhm5mDXY0p0Umom
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Hi all,
 
--- 
-Ming
+Today's linux-next merge of the ext4 tree got a conflict in:
 
+  fs/ext4/ioctl.c
+
+between commit:
+
+  4db5c2e6236f ("ext4: convert to fileattr")
+
+from Linus' tree and commit:
+
+  339183dfb87c ("ext4: add ioctl EXT4_IOC_CHECKPOINT")
+
+from the ext4 tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc fs/ext4/ioctl.c
+index 31627f7dc5cd,d25eaec1afdc..000000000000
+--- a/fs/ext4/ioctl.c
++++ b/fs/ext4/ioctl.c
+@@@ -1291,6 -1455,9 +1335,7 @@@ long ext4_compat_ioctl(struct file *fil
+  	case EXT4_IOC_CLEAR_ES_CACHE:
+  	case EXT4_IOC_GETSTATE:
+  	case EXT4_IOC_GET_ES_CACHE:
+ -	case FS_IOC_FSGETXATTR:
+ -	case FS_IOC_FSSETXATTR:
++ 	case EXT4_IOC_CHECKPOINT:
+  		break;
+  	default:
+  		return -ENOIOCTLCMD;
+
+--Sig_/3m38Qe1iGhm5mDXY0p0Umom
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC9Z/wACgkQAVBC80lX
+0GxF/Qf+Kn1wOxf9+Ef/wuLz1RRE/9YWxQp7zOAdCRUAnj6qzKQpxc2tp1CAJ3BG
+Rn+W/ZXpFfQahj3QwL8TTdvlybAE54mMtRxKQRbDLNPMewYW1+bW2KhU0EV3bHJF
+60roHWV/0Sg472VQgOZR2YXgRvySJx3o1sb5tbGtDWnDWa7sPyPgUlKUZquK7X/L
+5CSSLzaYz8doszfgriyhNYqgJ34wLgvsw+nYv0PuBgT20DWbGgeDfRI0x8WFlK+0
+ovAcpi0HvDhSbpfWlywlJw8Mt2xyi72uA5wTvuIRze9Em++otlH9MEKxEDcRABjo
+hog/royNk5RH79vaLE7BN6qyYgJlDQ==
+=ezeJ
+-----END PGP SIGNATURE-----
+
+--Sig_/3m38Qe1iGhm5mDXY0p0Umom--
