@@ -2,69 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B178B39D2D0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 04:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F11939D2D2
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 04:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhFGCNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 22:13:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60270 "EHLO
+        id S230191AbhFGCOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 22:14:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56972 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230127AbhFGCNX (ORCPT
+        by vger.kernel.org with ESMTP id S230127AbhFGCOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 22:13:23 -0400
+        Sun, 6 Jun 2021 22:14:03 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623031892;
+        s=mimecast20190719; t=1623031932;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=A/EuEKKNsDXHQ7kk/CTUamf7HDQxmDfNXZ1E2EtyO34=;
-        b=fAgv4K3GQbMeaLJrzTCBWNOxmoxhJCi7VpyLyUyNDNqkClPFhJXOpkqdJRgksaoLdd21tp
-        hD6gzlO0XB3QyqY+myRCJ2HHgBw+gjj6PCGRm41DLdMhrn8NX2RpGqA4ny/C19m3l9BV6B
-        huGeLvVkfARmGw2WNkIYqLO6TpZ7BI4=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-501-2Vi4CMfnNoyAgo_RnOz5ug-1; Sun, 06 Jun 2021 22:11:31 -0400
-X-MC-Unique: 2Vi4CMfnNoyAgo_RnOz5ug-1
-Received: by mail-pf1-f200.google.com with SMTP id l3-20020a056a001403b02902ea25d3c7d4so6292423pfu.15
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 19:11:31 -0700 (PDT)
+        bh=1GHvZi0Hu8bvsfMDpX0vr7h/j/v59gu9iThhVOJvcjU=;
+        b=dHwqgLtKVkn8/R3i08iGd4/MCMkzcR1EgyaOdDqc1cPSIHL54fxwXoGLxkRjBL6Pbg9q+r
+        qWPa4HzhHVMR/uyLc6C9Ul/ytwwAS6VSUjVlL4+XDsR/9tWFLHHuLKxU1TGpoVI+PaxwJC
+        X9ihPD5fKRujyu4aoGd1jjyjMt1XzKQ=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-62-N99-4dnHPUmnqkyPVah9Iw-1; Sun, 06 Jun 2021 22:12:11 -0400
+X-MC-Unique: N99-4dnHPUmnqkyPVah9Iw-1
+Received: by mail-pj1-f72.google.com with SMTP id u11-20020a17090a1d4bb029016df2fceb76so2766937pju.0
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 19:12:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=A/EuEKKNsDXHQ7kk/CTUamf7HDQxmDfNXZ1E2EtyO34=;
-        b=SJhfiuOycIt4nAsrV6j4bxree8zgbSmqPYGSQYB4avLDyQAkmlAGkXhxLQyhwSH2Q2
-         h54vDGe9Y+uqWPktuv6GpPJhQ1HVrAPk5fznEHfoAa39CiAa0MtVQ42c+knyHa1FVorZ
-         zg89wTAE8AYVeJ+nPY98q7kGPCrpAl9colgqg4a65cIawA9puOBN2lFqeF8lsFT4gBuw
-         lWCW29SXd3tNrHOmEilrUqcIUTsXvGYNX9qtOexu7PubvxHiavSqwOEMDNdasWJrsRf3
-         nw6Lx4CX3qzN+VIMvIsKjnTGocYqqy3ZLLxkyEW/3V3WPLsO22xTUT7S0BPOy2lz+2Qv
-         t4Vg==
-X-Gm-Message-State: AOAM531WWWXRfyDhLXGKaP20NW0D6po5hx3m7emh6aCzdtoRXU0IuGXg
-        J2L3ckDDrrSc+ePz0GwVIbNuIfD70SjYENCZo05HmU9zqDAjELajtY+MmJHPqzjw/wU3wF0YE5V
-        qjIkkar3gjbGP8Vs5/kL8r9Ts+xmVyy2og25NXPncR02D4x/ADnr/ipCIC4o5Xuf9QPlh3QDSB0
-        mq
-X-Received: by 2002:a17:90a:17ad:: with SMTP id q42mr30280715pja.181.1623031889878;
-        Sun, 06 Jun 2021 19:11:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzAx4rB2M3pplY+UpbwardmP9ceIokSBmI4mAdVk+jKYwUSzn/gx2IwSAPiLV02x1ehjAP2dg==
-X-Received: by 2002:a17:90a:17ad:: with SMTP id q42mr30280685pja.181.1623031889551;
-        Sun, 06 Jun 2021 19:11:29 -0700 (PDT)
+        bh=1GHvZi0Hu8bvsfMDpX0vr7h/j/v59gu9iThhVOJvcjU=;
+        b=WEl3PnP5DoKVB8A7d3IpAk+wIcveafw8+aO0Xu0AngZ5PF1ia0ksXEnRtwLEQTcQRg
+         6ohMv6t7hwqOkrRA9RTP4TZJj36N8an799ZOdBrIpOQl7UPcmx7P3jKi38BCx+yoVTSO
+         MwqzG8TCZzvnZnTqYhjIKYYxYNnqZ5V3FGL0ZHUxbV+R9TQ3/+A42SxITRzmcmsH82D/
+         /sWvJ5CnKQFccPDYRKyqzzo4XLJUuhQyJChWtnchTTVI/MoJ83SazT7TVnSH3AdVmibd
+         QjISM6ikaOlqj6EfW4IAeCp7cb3HRDNqv2E6mscfyy9/sYjO/xhf+5IarwpKbfhgmWJ6
+         tIiQ==
+X-Gm-Message-State: AOAM533RiBBegV8sC9k1aP/yoCkD7Tg8lnvdUomYLg4l9cCC6do4xaZl
+        67xpISno0JVPRYxTV+d1fKKJiSvCnGV+9F5T8eHdXk/YHQ2NXkS2vcJyOz4vuAOc2p8EGHT0rsG
+        ZLQqZDDI55xkGxTWrdN2oJCWay7rTkFdCQmls8tEmuN2mv7J1k51T0IkgpEuy4gqa5QXRUO5qm/
+        6U
+X-Received: by 2002:aa7:9491:0:b029:2ed:2787:be36 with SMTP id z17-20020aa794910000b02902ed2787be36mr8154621pfk.43.1623031929953;
+        Sun, 06 Jun 2021 19:12:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxk8i6NVq+YGcz1/Ru/wEpcsxv/kHrMFUEev1UCldIKwxQ4GZDyPeEjNVZOTCVY349/iC9K/Q==
+X-Received: by 2002:aa7:9491:0:b029:2ed:2787:be36 with SMTP id z17-20020aa794910000b02902ed2787be36mr8154609pfk.43.1623031929662;
+        Sun, 06 Jun 2021 19:12:09 -0700 (PDT)
 Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id h16sm6699394pfk.119.2021.06.06.19.11.27
+        by smtp.gmail.com with ESMTPSA id y138sm6935458pfc.11.2021.06.06.19.12.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 06 Jun 2021 19:11:29 -0700 (PDT)
-Subject: Re: [PATCH v1] vdp/mlx5: Fix setting the correct dma_device
+        Sun, 06 Jun 2021 19:12:09 -0700 (PDT)
+Subject: Re: [PATCH v2] vdpa/mlx5: Clear vq ready indication upon device reset
 To:     Eli Cohen <elic@nvidia.com>, mst@redhat.com,
         virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-References: <20210606053150.170489-1-elic@nvidia.com>
+References: <20210606053128.170399-1-elic@nvidia.com>
 From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <fa91edcc-2c99-311d-3501-8643e37c83de@redhat.com>
-Date:   Mon, 7 Jun 2021 10:11:25 +0800
+Message-ID: <6f257eb1-c3ff-c17c-c937-7cc7f945f22d@redhat.com>
+Date:   Mon, 7 Jun 2021 10:12:06 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210606053150.170489-1-elic@nvidia.com>
+In-Reply-To: <20210606053128.170399-1-elic@nvidia.com>
 Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
@@ -74,18 +74,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 ÔÚ 2021/6/6 ÏÂÎç1:31, Eli Cohen Ð´µÀ:
-> Before SF support was introduced, the DMA device was equal to
-> mdev->device which was in essence equal to pdev->dev.
+> After device reset, the virtqueues are not ready so clear the ready
+> field.
 >
-> With SF introduction this is no longer true. It has already been
-> handled for vhost_vdpa since the reference to the dma device can from
-> within mlx5_vdpa. With virtio_vdpa this broke. To fix this we set the
-> real dma device when initializing the device.
+> Failing to do so can result in virtio_vdpa failing to load if the device
+> was previously used by vhost_vdpa and the old values are ready.
+> virtio_vdpa expects to find VQs in "not ready" state.
 >
-> In addition, for the sake of consistency, previous references in the
-> code to the dma device are changed to vdev->dma_dev.
->
-> Fixes: d13a15d544ce5 ("vdpa/mlx5: Use the correct dma device when registering memory")
+> Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
 > Signed-off-by: Eli Cohen <elic@nvidia.com>
 
 
@@ -94,57 +90,38 @@ Acked-by: Jason Wang <jasowang@redhat.com>
 
 > ---
 > v0 --> v1:
->     Change blamed commit and modify references to the dma device
+>     Make sure clear of ready is done only in reset flow
+> v1 --> v2:
+>     use ascending loop iterator to avoid confusion
 >
->   drivers/vdpa/mlx5/core/mr.c       | 9 ++-------
->   drivers/vdpa/mlx5/net/mlx5_vnet.c | 2 +-
->   2 files changed, 3 insertions(+), 8 deletions(-)
+>   drivers/vdpa/mlx5/net/mlx5_vnet.c | 9 +++++++++
+>   1 file changed, 9 insertions(+)
 >
-> diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
-> index f0b89b62de36..dcee6039e966 100644
-> --- a/drivers/vdpa/mlx5/core/mr.c
-> +++ b/drivers/vdpa/mlx5/core/mr.c
-> @@ -219,11 +219,6 @@ static void destroy_indirect_key(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_m
->   	mlx5_vdpa_destroy_mkey(mvdev, &mkey->mkey);
->   }
->   
-> -static struct device *get_dma_device(struct mlx5_vdpa_dev *mvdev)
-> -{
-> -	return &mvdev->mdev->pdev->dev;
-> -}
-> -
->   static int map_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr *mr,
->   			 struct vhost_iotlb *iotlb)
->   {
-> @@ -239,7 +234,7 @@ static int map_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr
->   	u64 pa;
->   	u64 paend;
->   	struct scatterlist *sg;
-> -	struct device *dma = get_dma_device(mvdev);
-> +	struct device *dma = mvdev->vdev.dma_dev;
->   
->   	for (map = vhost_iotlb_itree_first(iotlb, mr->start, mr->end - 1);
->   	     map; map = vhost_iotlb_itree_next(map, start, mr->end - 1)) {
-> @@ -298,7 +293,7 @@ static int map_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr
->   
->   static void unmap_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr *mr)
->   {
-> -	struct device *dma = get_dma_device(mvdev);
-> +	struct device *dma = mvdev->vdev.dma_dev;
->   
->   	destroy_direct_mr(mvdev, mr);
->   	dma_unmap_sg_attrs(dma, mr->sg_head.sgl, mr->nsg, DMA_BIDIRECTIONAL, 0);
 > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> index 7e0d1b8ae3d3..a5163d8a4828 100644
+> index 02a05492204c..a42db592e7bb 100644
 > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
 > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -2046,7 +2046,7 @@ static int mlx5_vdpa_dev_add(struct vdpa_mgmt_dev *v_mdev, const char *name)
->   	if (err)
->   		goto err_mtu;
+> @@ -1766,6 +1766,14 @@ static void teardown_driver(struct mlx5_vdpa_net *ndev)
+>   	mutex_unlock(&ndev->reslock);
+>   }
 >   
-> -	mvdev->vdev.dma_dev = mdev->device;
-> +	mvdev->vdev.dma_dev = &mdev->pdev->dev;
->   	err = mlx5_vdpa_alloc_resources(&ndev->mvdev);
->   	if (err)
->   		goto err_mtu;
+> +static void clear_vqs_ready(struct mlx5_vdpa_net *ndev)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < ndev->mvdev.max_vqs; i++)
+> +		ndev->vqs[i].ready = false;
+> +}
+> +
+>   static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
+>   {
+>   	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
+> @@ -1776,6 +1784,7 @@ static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
+>   	if (!status) {
+>   		mlx5_vdpa_info(mvdev, "performing device reset\n");
+>   		teardown_driver(ndev);
+> +		clear_vqs_ready(ndev);
+>   		mlx5_vdpa_destroy_mr(&ndev->mvdev);
+>   		ndev->mvdev.status = 0;
+>   		ndev->mvdev.mlx_features = 0;
 
