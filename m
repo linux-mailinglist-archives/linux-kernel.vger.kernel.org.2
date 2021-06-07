@@ -2,90 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F58939E8DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 23:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1820139E8ED
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 23:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230481AbhFGVJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 17:09:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230366AbhFGVJE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 17:09:04 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E43C061574;
-        Mon,  7 Jun 2021 14:07:12 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lqMSc-005abR-Q6; Mon, 07 Jun 2021 21:07:02 +0000
-Date:   Mon, 7 Jun 2021 21:07:02 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        David Howells <dhowells@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: [RFC][PATCHSET] iov_iter work
-Message-ID: <YL6KdoHzYiBOsu5t@zeniv-ca.linux.org.uk>
-References: <YL0dCEVEiVL+NwG6@zeniv-ca.linux.org.uk>
- <CAHk-=wj6ZiTgqbeCPtzP+5tgHjur6Amag66YWub_2DkGpP9h-Q@mail.gmail.com>
- <CAHk-=wiYPhhieXHBtBku4kZWHfLUTU7VZN9_zg0LTxcYH+0VRQ@mail.gmail.com>
- <YL3mxdEc7uw4rhjn@infradead.org>
- <YL4wnMbSmy3507fk@zeniv-ca.linux.org.uk>
- <YL5CTiR94f5DYPFK@infradead.org>
+        id S231517AbhFGVMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 17:12:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47416 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230385AbhFGVL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 17:11:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id B51DE6124B;
+        Mon,  7 Jun 2021 21:10:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623100205;
+        bh=8njfDxxSsDzit8jkUYvGeehk1lwT6z0FX5PBRXc0rXM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=s3DREzRSrXVWZrq7RhZTRCAWpwrB8xkLZyYTclOqgmbmSJScOEN+T5Dl7ArxQPwJW
+         LLw/mBaRAJV9tNXZ368C18g3M/TNDgWMsr1zt62tDQClsrbWxxtFbvgi8dqTxAIseM
+         UBqI2rT5NhAe5DA8Fgwd6viJOU0veNZ0gZD1vHlHM2Unkc2NGCFNmsKCG1EvshEwCC
+         sh65jtzN7mN7nkFHiUJj2X6pwCAvCZCTA0UcLCxC83LeoEGsmcXTLRX1GZCHX4Y+9Z
+         uoC1rI5lg6+yGwRkG76XOAbVRFhLUN3dOFfu5vzwqtOdQLZsqT/R/wkSmlxrgdA2rf
+         T6fuI3hBJzWuQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AA0A6609F1;
+        Mon,  7 Jun 2021 21:10:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YL5CTiR94f5DYPFK@infradead.org>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] qed: Fix duplicate included linux/kernel.h
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162310020569.31357.4028012659215741108.git-patchwork-notify@kernel.org>
+Date:   Mon, 07 Jun 2021 21:10:05 +0000
+References: <1623061874-35234-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1623061874-35234-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     aelior@marvell.com, GR-everest-linux-l2@marvell.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 04:59:10PM +0100, Christoph Hellwig wrote:
-> On Mon, Jun 07, 2021 at 02:43:40PM +0000, Al Viro wrote:
-> > > It can't even happen for the legacy architectures, given that the
-> > > remaining set_fs() areas are small and never do iov_iter based I/O.
-> > 
-> > 	Umm...  It's a bit trickier than that - e.g. a kernel thread on
-> > a CONFIG_SET_FS target passing a kernel pointer to vfs_read() could've
-> > ended up with new_sync_write() hitting iov_iter_init().
+Hello:
+
+This patch was applied to netdev/net-next.git (refs/heads/master):
+
+On Mon,  7 Jun 2021 18:31:14 +0800 you wrote:
+> Clean up the following includecheck warning:
 > 
-> Yes, that is a possbility, but rather unlikely - it would require an
-> arch-specific thread using iov_iter_init.  iov_iter_init instances are
-> rather fewer, and only very few in arch code.
+> ./drivers/net/ethernet/qlogic/qed/qed_nvmetcp_fw_funcs.h: linux/kernel.h
+> is included more than once.
+> 
+> No functional change.
+> 
+> [...]
 
-Doesn't have to be in arch code itself (see above re vfs_read()/vfs_write()),
-but AFAICS it doesn't happen.
+Here is the summary with links:
+  - qed: Fix duplicate included linux/kernel.h
+    https://git.kernel.org/netdev/net-next/c/ca4e2b94eb98
 
-Anyway, what I'm going to do is
-void iov_iter_init(struct iov_iter *i, unsigned int direction,
-                        const struct iovec *iov, unsigned long nr_segs,
-			size_t count)
-{
-	WARN_ON(direction & ~(READ | WRITE));
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-        if (WARN_ON(uaccess_kernel())) {
-		// shouldn't be any such callers left...
-		iov_iter_kvec(i, direction, (const struct kvec *)iov,
-			      nr_segs, count);
-		return;
-	}
-	*i = (struct iov_iter) {
-		.iter_type = ITER_IOVEC,
-		.data_source = direction,
-		.iov = iov,
-		.nr_segs = nr_segs,
-		.iov_offset = 0,
-		.count = count
-	};
-}
 
-and in a cycle or two replace that if (WARN_ON()) into flat BUG_ON()
-
-Linus, can you live with that variant?  AFAICS, we really should have
-no such callers left on any targets.
