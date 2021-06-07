@@ -2,133 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F50439E252
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4002339E193
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232331AbhFGQQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 12:16:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48406 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231633AbhFGQOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 12:14:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 46A63613C1;
-        Mon,  7 Jun 2021 16:12:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623082377;
-        bh=a4TIiWANEKxTnYf+JVI7YM6TQKyxchagbhSFNk43bco=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hLOj15/QpYGro4DGmFAWafvkSKls60ZtEmsXHX276HPjJ73pR+hpFIcQ5kzRpf7iR
-         OnBHr/9MCk1aMidl/e2VEv4CC1u39K1rEW67vkR3JUD58C3daKE284lQZniMI0nDIo
-         9el4/wJX50+bFANaMXs6BDGybMBTbr8+OB4eOfZxkyA9mzjdKMswc0TGrTXMrCO9v7
-         o35Rg3OXEPFtEjMn6QgwO/7+agV5XRKiUJqnBonmrnJDkHubPdTaGTX1u2vto9cyNM
-         GkMuEUAp1Bc6l2ArHu+yn+T/+35GkHGc3ImTRuD+mCuSFRH4RJc+RRFjemRtLkQ0H3
-         GFcak0hhSBmMQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Daniel Wagner <dwagner@suse.de>, Javed Hasan <jhasan@marvell.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.12 33/49] scsi: qedf: Do not put host in qedf_vport_create() unconditionally
-Date:   Mon,  7 Jun 2021 12:11:59 -0400
-Message-Id: <20210607161215.3583176-33-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210607161215.3583176-1-sashal@kernel.org>
-References: <20210607161215.3583176-1-sashal@kernel.org>
+        id S230508AbhFGQOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 12:14:05 -0400
+Received: from router.aksignal.cz ([62.44.4.214]:50656 "EHLO
+        router.aksignal.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230313AbhFGQOB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 12:14:01 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by router.aksignal.cz (Postfix) with ESMTP id 84B4644413;
+        Mon,  7 Jun 2021 18:12:06 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at router.aksignal.cz
+Received: from router.aksignal.cz ([127.0.0.1])
+        by localhost (router.aksignal.cz [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id Sb2xD9NikW5u; Mon,  7 Jun 2021 18:12:06 +0200 (CEST)
+Received: from pc-gameroom.prchals.tk (unknown [83.240.30.185])
+        (Authenticated sender: jiri.prchal@aksignal.cz)
+        by router.aksignal.cz (Postfix) with ESMTPSA id 72FD044411;
+        Mon,  7 Jun 2021 18:12:05 +0200 (CEST)
+From:   Jiri Prchal <jiri.prchal@aksignal.cz>
+To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Christian Eggers <ceggers@arri.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Prchal <jiri.prchal@aksignal.cz>
+Subject: [PATCH v8 4/5] nvmem: eeprom: at25: export FRAM serial num
+Date:   Mon,  7 Jun 2021 18:12:00 +0200
+Message-Id: <20210607161201.223697-5-jiri.prchal@aksignal.cz>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210607161201.223697-1-jiri.prchal@aksignal.cz>
+References: <20210607161201.223697-1-jiri.prchal@aksignal.cz>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Wagner <dwagner@suse.de>
+This exports serial number of FRAM in sysfs file named "sernum".
+Formatted in hex, each byte separated by space.
+Example:
+$ cat /sys/class/spi_master/spi0/spi0.0/sernum
+0000a43644f2ae6c
 
-[ Upstream commit 79c932cd6af9829432888c4a0001d01793a09f12 ]
-
-Do not drop reference count on vn_port->host in qedf_vport_create()
-unconditionally. Instead drop the reference count in qedf_vport_destroy().
-
-Link: https://lore.kernel.org/r/20210521143440.84816-1-dwagner@suse.de
-Reported-by: Javed Hasan <jhasan@marvell.com>
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Jiri Prchal <jiri.prchal@aksignal.cz>
 ---
- drivers/scsi/qedf/qedf_main.c | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
+v2: no change here
+v3: resend and added more recipients
+v4: resend
+v5: reworked up on Greg comments: no spaces in string, sysfs done correctly
+v6: no change here
+v7: moved FM25_SN_LEN, static array, used sysfs_emit, DEVICE_ATTR_RO
+v8: clarify sysfs_emit format
+---
+ drivers/misc/eeprom/at25.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/qedf/qedf_main.c b/drivers/scsi/qedf/qedf_main.c
-index e5076f09d5ed..16a0470aedfc 100644
---- a/drivers/scsi/qedf/qedf_main.c
-+++ b/drivers/scsi/qedf/qedf_main.c
-@@ -1827,22 +1827,20 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
- 		fcoe_wwn_to_str(vport->port_name, buf, sizeof(buf));
- 		QEDF_WARN(&(base_qedf->dbg_ctx), "Failed to create vport, "
- 			   "WWPN (0x%s) already exists.\n", buf);
--		goto err1;
-+		return rc;
- 	}
+diff --git a/drivers/misc/eeprom/at25.c b/drivers/misc/eeprom/at25.c
+index e25cec7c474b..4a47a7e2d90d 100644
+--- a/drivers/misc/eeprom/at25.c
++++ b/drivers/misc/eeprom/at25.c
+@@ -31,6 +31,7 @@
+  *   AT25M02, AT25128B
+  */
  
- 	if (atomic_read(&base_qedf->link_state) != QEDF_LINK_UP) {
- 		QEDF_WARN(&(base_qedf->dbg_ctx), "Cannot create vport "
- 			   "because link is not up.\n");
--		rc = -EIO;
--		goto err1;
-+		return -EIO;
- 	}
++#define	FM25_SN_LEN	8		/* serial number length */
+ struct at25_data {
+ 	struct spi_device	*spi;
+ 	struct mutex		lock;
+@@ -39,6 +40,7 @@ struct at25_data {
+ 	struct nvmem_config	nvmem_config;
+ 	struct nvmem_device	*nvmem;
+ 	int has_sernum;
++	u8 sernum[FM25_SN_LEN];
+ };
  
- 	vn_port = libfc_vport_create(vport, sizeof(struct qedf_ctx));
- 	if (!vn_port) {
- 		QEDF_WARN(&(base_qedf->dbg_ctx), "Could not create lport "
- 			   "for vport.\n");
--		rc = -ENOMEM;
--		goto err1;
-+		return -ENOMEM;
- 	}
- 
- 	fcoe_wwn_to_str(vport->port_name, buf, sizeof(buf));
-@@ -1866,7 +1864,7 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
- 	if (rc) {
- 		QEDF_ERR(&(base_qedf->dbg_ctx), "Could not allocate memory "
- 		    "for lport stats.\n");
--		goto err2;
-+		goto err;
- 	}
- 
- 	fc_set_wwnn(vn_port, vport->node_name);
-@@ -1884,7 +1882,7 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
- 	if (rc) {
- 		QEDF_WARN(&base_qedf->dbg_ctx,
- 			  "Error adding Scsi_Host rc=0x%x.\n", rc);
--		goto err2;
-+		goto err;
- 	}
- 
- 	/* Set default dev_loss_tmo based on module parameter */
-@@ -1925,9 +1923,10 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
- 	vport_qedf->dbg_ctx.host_no = vn_port->host->host_no;
- 	vport_qedf->dbg_ctx.pdev = base_qedf->pdev;
- 
--err2:
-+	return 0;
-+
-+err:
- 	scsi_host_put(vn_port->host);
--err1:
- 	return rc;
+ #define	AT25_WREN	0x06		/* latch the write enable */
+@@ -172,6 +174,21 @@ static int fm25_aux_read(struct at25_data *at25, u8 *buf, uint8_t command,
+ 	return status;
  }
  
-@@ -1968,8 +1967,7 @@ static int qedf_vport_destroy(struct fc_vport *vport)
- 	fc_lport_free_stats(vn_port);
++static ssize_t sernum_show(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	struct at25_data *at25;
++
++	at25 = dev_get_drvdata(dev);
++	return sysfs_emit(buf, "%*phN\n", sizeof at25->sernum, at25->sernum);
++}
++static DEVICE_ATTR_RO(sernum);
++
++static struct attribute *sernum_attrs[] = {
++	&dev_attr_sernum.attr,
++	NULL,
++};
++ATTRIBUTE_GROUPS(sernum);
++
+ static int at25_ee_write(void *priv, unsigned int off, void *val, size_t count)
+ {
+ 	struct at25_data *at25 = priv;
+@@ -416,8 +433,10 @@ static int at25_probe(struct spi_device *spi)
+ 		else
+ 			at25->chip.flags |= EE_ADDR2;
  
- 	/* Release Scsi_Host */
--	if (vn_port->host)
--		scsi_host_put(vn_port->host);
-+	scsi_host_put(vn_port->host);
+-		if (id[8])
++		if (id[8]) {
+ 			at25->has_sernum = 1;
++			fm25_aux_read(at25, at25->sernum, FM25_RDSN, FM25_SN_LEN);
++		}
+ 		else
+ 			at25->has_sernum = 0;
  
- out:
- 	return 0;
+@@ -471,6 +490,7 @@ static struct spi_driver at25_driver = {
+ 	.driver = {
+ 		.name		= "at25",
+ 		.of_match_table = at25_of_match,
++		.dev_groups	= sernum_groups,
+ 	},
+ 	.probe		= at25_probe,
+ };
 -- 
-2.30.2
+2.25.1
 
