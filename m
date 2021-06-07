@@ -2,103 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B36439D889
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB7839D88A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230372AbhFGJVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:21:24 -0400
-Received: from mga06.intel.com ([134.134.136.31]:43396 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230239AbhFGJVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:21:22 -0400
-IronPort-SDR: khPzT3tuV3/Yv/91MYRl5+PI4RkxVxtEXzVdLQg2VTvvh/Nm45N9CZM6HfvkzAUlqtugkw8GAN
- 3JpdQ4bRGarA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="265743711"
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="265743711"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 02:19:31 -0700
-IronPort-SDR: D+TGh23U+FT9mUuSbPOMyIJcYIgbZrdRiQdCzlaWOigvRHKUm99Jb1DgoATUgo0+2f6UiYA6/9
- 2skc/Ujq0NNA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="551815937"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 07 Jun 2021 02:19:28 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 07 Jun 2021 12:19:27 +0300
-Date:   Mon, 7 Jun 2021 12:19:27 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Kyle Tso <kyletso@google.com>
-Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 4/4] usb: typec: tcpm: Fix misuses of AMS invocation
-Message-ID: <YL3kn3C0/3bdNPwi@kuha.fi.intel.com>
-References: <20210601123151.3441914-1-kyletso@google.com>
- <20210601123151.3441914-5-kyletso@google.com>
+        id S230288AbhFGJV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:21:56 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:46494 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229966AbhFGJVz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 05:21:55 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=yaohuiwang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UbaGHXf_1623057601;
+Received: from localhost(mailfrom:yaohuiwang@linux.alibaba.com fp:SMTPD_---0UbaGHXf_1623057601)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 07 Jun 2021 17:20:01 +0800
+From:   Yaohui Wang <yaohuiwang@linux.alibaba.com>
+To:     dave.hansen@linux.intel.com
+Cc:     luto@kernel.org, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, yaohuiwang@linux.alibaba-inc.com,
+        luoben@linux.alibaba.com, Yahui Wang <yaohuiwang@linux.alibaba.com>
+Subject: [PATCH] mm: fix pfn calculation mistake in __ioremap_check_ram
+Date:   Mon,  7 Jun 2021 17:19:39 +0800
+Message-Id: <20210607091938.47960-1-yaohuiwang@linux.alibaba.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210601123151.3441914-5-kyletso@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 08:31:51PM +0800, Kyle Tso wrote:
-> tcpm_ams_start is used to initiate an AMS as well as checking Collision
-> Avoidance conditions but not for flagging passive AMS (initiated by the
-> port partner). Fix the misuses of tcpm_ams_start in tcpm_pd_svdm.
-> 
-> ATTENTION doesn't need responses so the AMS flag is not needed here.
-> 
-> Fixes: 0bc3ee92880d ("usb: typec: tcpm: Properly interrupt VDM AMS")
-> Signed-off-by: Kyle Tso <kyletso@google.com>
+According to the source code in function
+arch/x86/mm/ioremap.c:__ioremap_caller, after __ioremap_check_mem, if the
+mem range is IORES_MAP_SYSTEM_RAM, then __ioremap_caller should fail. But
+because of the pfn calculation problem, __ioremap_caller can success
+on IORES_MAP_SYSTEM_RAM region when the @size parameter is less than
+PAGE_SIZE. This may cause misuse of the ioremap function and raise the
+risk of performance issues. For example, ioremap(phys, PAGE_SIZE-1) may
+cause the direct memory mapping of @phys to be uncached, and iounmap won't
+revert this change. This patch fixes this issue.
 
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+In arch/x86/mm/ioremap.c:__ioremap_check_ram, start_pfn should wrap down
+the res->start address, and end_pfn should wrap up the res->end address.
+This makes the check more strict and should be more reasonable.
 
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index ebe490949fa0..c4b02a6ca3d7 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -1583,7 +1583,7 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
->  				svdm_version = PD_VDO_SVDM_VER(p[0]);
->  			}
->  
-> -			tcpm_ams_start(port, DISCOVER_IDENTITY);
-> +			port->ams = DISCOVER_IDENTITY;
->  			/*
->  			 * PD2.0 Spec 6.10.3: respond with NAK as DFP (data host)
->  			 * PD3.1 Spec 6.4.4.2.5.1: respond with NAK if "invalid field" or
-> @@ -1604,19 +1604,18 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
->  			}
->  			break;
->  		case CMD_DISCOVER_SVID:
-> -			tcpm_ams_start(port, DISCOVER_SVIDS);
-> +			port->ams = DISCOVER_SVIDS;
->  			break;
->  		case CMD_DISCOVER_MODES:
-> -			tcpm_ams_start(port, DISCOVER_MODES);
-> +			port->ams = DISCOVER_MODES;
->  			break;
->  		case CMD_ENTER_MODE:
-> -			tcpm_ams_start(port, DFP_TO_UFP_ENTER_MODE);
-> +			port->ams = DFP_TO_UFP_ENTER_MODE;
->  			break;
->  		case CMD_EXIT_MODE:
-> -			tcpm_ams_start(port, DFP_TO_UFP_EXIT_MODE);
-> +			port->ams = DFP_TO_UFP_EXIT_MODE;
->  			break;
->  		case CMD_ATTENTION:
-> -			tcpm_ams_start(port, ATTENTION);
->  			/* Attention command does not have response */
->  			*adev_action = ADEV_ATTENTION;
->  			return 0;
-> -- 
-> 2.32.0.rc0.204.g9fa02ecfa5-goog
+Signed-off-by: Ben Luo <luoben@linux.alibaba.com>
+Signed-off-by: Yahui Wang <yaohuiwang@linux.alibaba.com>
+---
+ arch/x86/mm/ioremap.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/arch/x86/mm/ioremap.c b/arch/x86/mm/ioremap.c
+index 9e5ccc56f..79adf0d2d 100644
+--- a/arch/x86/mm/ioremap.c
++++ b/arch/x86/mm/ioremap.c
+@@ -74,8 +74,8 @@ static unsigned int __ioremap_check_ram(struct resource *res)
+ 	if ((res->flags & IORESOURCE_SYSTEM_RAM) != IORESOURCE_SYSTEM_RAM)
+ 		return 0;
+ 
+-	start_pfn = (res->start + PAGE_SIZE - 1) >> PAGE_SHIFT;
+-	stop_pfn = (res->end + 1) >> PAGE_SHIFT;
++	start_pfn = res->start >> PAGE_SHIFT;
++	stop_pfn = (res->end + PAGE_SIZE) >> PAGE_SHIFT;
+ 	if (stop_pfn > start_pfn) {
+ 		for (i = 0; i < (stop_pfn - start_pfn); ++i)
+ 			if (pfn_valid(start_pfn + i) &&
 -- 
-heikki
+2.25.1
+
