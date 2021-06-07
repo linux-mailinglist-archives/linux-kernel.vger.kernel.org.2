@@ -2,93 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1006D39D46F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 07:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0CE939D470
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 07:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbhFGFqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 01:46:14 -0400
-Received: from mga04.intel.com ([192.55.52.120]:19856 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229436AbhFGFqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 01:46:13 -0400
-IronPort-SDR: FmGsXn4017DcCq5BGQWgBGQp8n0FfBVyhETZE+VIm0vA0B/o1dpr3W3gEjNM0EjRQXfGZUOpzx
- TTWxWwFtPNAg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="202704604"
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="202704604"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 22:44:21 -0700
-IronPort-SDR: 0X/pscciBeUWshvi5HVOHY4hJbxSHyBnzMS0gv/EJHLc/Cg0/OEhsTqU54MaSZLxV+v6+WabIp
- vypB0D/hoLvw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="447366356"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by orsmga008.jf.intel.com with ESMTP; 06 Jun 2021 22:44:18 -0700
-Subject: Re: [PATCH] perf session: Correct buffer copying when peek event
-To:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210605052957.1070720-1-leo.yan@linaro.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <587603d3-c707-49d8-08a9-193a22e5e227@intel.com>
-Date:   Mon, 7 Jun 2021 08:44:36 +0300
+        id S230127AbhFGFsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 01:48:22 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:49986 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhFGFsV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 01:48:21 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1575kBLg005472;
+        Mon, 7 Jun 2021 00:46:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1623044771;
+        bh=b3YribPsLsUNBcVX/uBU0uUtAjN0H/Dr6M1HW8UYZKg=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Rmu6KxldSL3T4RDaoN0NsYS+xvbdRRySK3B9EF9dwUXuFSLe7Wao3hpmkudAxDvXj
+         QIj8bhXEUlL4q6ELOVBbrrGxsMOedRR/kGI60ALuLsqfqKD3KUUmGctEipKKN4UK2N
+         q1QIJoKWuy56VwePeBFtsXY+0lIvl3U8TGepuEOA=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1575kB1H106501
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 7 Jun 2021 00:46:11 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 7 Jun
+ 2021 00:46:11 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 7 Jun 2021 00:46:11 -0500
+Received: from [10.250.234.148] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1575k8o2089338;
+        Mon, 7 Jun 2021 00:46:09 -0500
+Subject: Re: [PATCH v5 3/5] mtd: spi-nor: otp: return -EROFS if region is
+ read-only
+To:     Michael Walle <michael@walle.cc>, <Tudor.Ambarus@microchip.com>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <p.yadav@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>
+References: <20210604100252.9975-1-michael@walle.cc>
+ <20210604100252.9975-4-michael@walle.cc>
+ <c2b58dcc-5a60-792c-30ac-a3db327a85ed@microchip.com>
+ <e117bc50b9f9e10549c25602b66cfe26@walle.cc>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <1549db61-500a-e5df-9303-823b41457861@ti.com>
+Date:   Mon, 7 Jun 2021 11:16:07 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210605052957.1070720-1-leo.yan@linaro.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <e117bc50b9f9e10549c25602b66cfe26@walle.cc>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/06/21 8:29 am, Leo Yan wrote:
-> When peek an event, it has a short path and a long path.  The short path
-> uses the session pointer "one_mmap_addr" to directly fetch event; and
-> the long path needs to read out the event header and the followed event
-> data from file and fill into the buffer pointer passed through the
-> argument "buf".
-> 
-> The issue is in the long path that it copies the event header and event
-> data into the same destination address which pointer "buf", this means
-> the event header is overwritten.  We are just lucky to run into the
-> short path in most cases, so we don't hit the issue in the long path.
-> 
-> This patch adds the offset "hdr_sz" to the pointer "buf" when copying
-> the event data, so that it can reserve the event header which can be
-> used properly by its caller.
-> 
-> Fixes: 5a52f33adf02 ("perf session: Add perf_session__peek_event()")
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-> ---
->  tools/perf/util/session.c | 1 +
->  1 file changed, 1 insertion(+)
+On 6/4/21 6:45 PM, Michael Walle wrote:
+> Am 2021-06-04 15:07, schrieb Tudor.Ambarus@microchip.com:
+>> On 6/4/21 1:02 PM, Michael Walle wrote:
+>>> EXTERNAL EMAIL: Do not click links or open attachments unless you
+>>> know the content is safe
+>>>
+>>> SPI NOR flashes will just ignore program commands if the OTP region is
+>>> locked. Thus, a user might not notice that the intended write didn't end
+>>> up in the flash. Return -EROFS to the user in this case. From what I can
+>>> tell, chips/cfi_cmdset_0001.c also return this error code.
+>>>
+>>> One could optimize spi_nor_mtd_otp_range_is_locked() to read the status
+>>> register only once and not for every OTP region, but for that we would
+>>> need some more invasive changes. Given that this is
+>>> one-time-programmable memory and the normal access mode is reading, we
+>>> just live with the small overhead.
+>>>
+>>> Fixes: 069089acf88b ("mtd: spi-nor: add OTP support")
+>>> Signed-off-by: Michael Walle <michael@walle.cc>
+>>> Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+>>> ---
+>>>  drivers/mtd/spi-nor/otp.c | 36 ++++++++++++++++++++++++++++++++++++
+>>>  1 file changed, 36 insertions(+)
+>>>
+>>> diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
+>>> index 3898ed67ba1c..063f8fb68649 100644
+>>> --- a/drivers/mtd/spi-nor/otp.c
+>>> +++ b/drivers/mtd/spi-nor/otp.c
+>>> @@ -249,6 +249,32 @@ static int spi_nor_mtd_otp_info(struct mtd_info
+>>> *mtd, size_t len,
+>>>         return ret;
+>>>  }
+>>>
+>>> +static int spi_nor_mtd_otp_range_is_locked(struct spi_nor *nor,
+>>> loff_t ofs,
+>>> +                                          size_t len)
+>>> +{
+>>> +       const struct spi_nor_otp_ops *ops = nor->params->otp.ops;
+>>> +       unsigned int region;
+>>> +       int locked;
+>>> +
+>>> +       if (!len)
+>>> +               return 0;
+>>> +
+>>
+>> You won't need this if you put patch 4/5 before this one. With this:
 > 
-> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> index 106b3d60881a..e59242c361ce 100644
-> --- a/tools/perf/util/session.c
-> +++ b/tools/perf/util/session.c
-> @@ -1723,6 +1723,7 @@ int perf_session__peek_event(struct perf_session *session, off_t file_offset,
->  	if (event->header.size < hdr_sz || event->header.size > buf_sz)
->  		return -1;
->  
-> +	buf += hdr_sz;
->  	rest = event->header.size - hdr_sz;
->  
->  	if (readn(fd, buf, rest) != (ssize_t)rest)
+> This patch will get backported to the stable kernels. Patch 4 on the
+> other hand does not.
 > 
 
+I don't see why 4/5 cannot be marked for backport too as it makes 3/5
+much cleaner?
+
+Regards
+Vignesh
