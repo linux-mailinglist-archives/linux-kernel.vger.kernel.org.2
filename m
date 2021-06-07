@@ -2,107 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9BD39D97D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6BDD39D984
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbhFGKXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 06:23:01 -0400
-Received: from mga05.intel.com ([192.55.52.43]:50986 "EHLO mga05.intel.com"
+        id S230383AbhFGKXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 06:23:13 -0400
+Received: from mail.zx2c4.com ([104.131.123.232]:45678 "EHLO mail.zx2c4.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230139AbhFGKW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 06:22:59 -0400
-IronPort-SDR: EgvVF5FwAX0BDBJ0kjmEwUkf0BJKlNFP99SWCDdfK46fWhpRYHyJunZmdpYE3Q7OtVhaGvMLDt
- fdtdeuPAG9ww==
-X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="290222965"
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="290222965"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 03:21:08 -0700
-IronPort-SDR: KAVwJ8SOXmoipagfCWW0N+nqntivHVMgALuZ37ntjj1WZSX0oqNpYJcjdlQjMQJKTkRdHSPuzx
- n5ND3wXjp9Ow==
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="484727492"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 03:21:04 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lqCNR-000EF9-KD; Mon, 07 Jun 2021 13:21:01 +0300
-Date:   Mon, 7 Jun 2021 13:21:01 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Flavio Suligoi <f.suligoi@asem.it>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Subject: Re: [PATCH v2 2/7] pwm: core: Always require PWM flags to be provided
-Message-ID: <YL3zDUWsY9mUW0eQ@smile.fi.intel.com>
-References: <20210531194947.10770-1-andriy.shevchenko@linux.intel.com>
- <20210531194947.10770-2-andriy.shevchenko@linux.intel.com>
- <20210606213054.bmqgs5hehbowa62d@pengutronix.de>
- <YL3grTQ00lFCXyCp@smile.fi.intel.com>
- <20210607095324.yaiu5lzb5zgoejpa@pengutronix.de>
- <YL3xuJyAcbPLW7yG@smile.fi.intel.com>
+        id S230284AbhFGKXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 06:23:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1623061276;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KioGibBoPTgURi+nNw0lrmRpBYY/hFk/apnT1dhLqhM=;
+        b=VDyzC34gXIn/tTkF613iVoW2HVRVJKysFmTGAUaZeD2pzuz4ZsIcGsFzfAQLeRz6Ll3M/m
+        bv5qtIOi8rRykDm1EJGGTRvSC0GmMAio83X1ye05npoHfHpubgGFqbqIRapkn/g8eaqBj+
+        0UrPNAbOS3E3ey2uPoY7j+lOLP/IcDY=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id ab50dd02 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Mon, 7 Jun 2021 10:21:16 +0000 (UTC)
+Date:   Mon, 7 Jun 2021 12:21:12 +0200
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     SyzScope <syzscope@gmail.com>
+Cc:     syzbot <syzbot+305a91e025a73e4fd6ce@syzkaller.appspotmail.com>,
+        davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        kernel-hardening@lists.openwall.com
+Subject: Re: KASAN: use-after-free Read in hci_chan_del
+Message-ID: <YL3zGGMRwmD7fNK+@zx2c4.com>
+References: <000000000000adea7f05abeb19cf@google.com>
+ <2fb47714-551c-f44b-efe2-c6708749d03f@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YL3xuJyAcbPLW7yG@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <2fb47714-551c-f44b-efe2-c6708749d03f@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 01:15:20PM +0300, Andy Shevchenko wrote:
-> On Mon, Jun 07, 2021 at 11:53:24AM +0200, Uwe Kleine-König wrote:
-> > On Mon, Jun 07, 2021 at 12:02:37PM +0300, Andy Shevchenko wrote:
-> > > On Sun, Jun 06, 2021 at 11:30:54PM +0200, Uwe Kleine-König wrote:
-> > > > On Mon, May 31, 2021 at 10:49:42PM +0300, Andy Shevchenko wrote:
-> > > > > It makes little sense to make PWM flags optional since in case
-> > > > > of multi-channel consumer the flags can be optional only for
-> > > > > the last listed channel.
-> > > > 
-> > > > I think the same holds true for dt references.
-> > > 
-> > > Can you elaborate this? I haven't got what you are talking about, not a DT
-> > > expert here.
-> > 
-> > Ah no, I mixed that up. While the function that parses the phandle is
-> > flexible, for each pwm controller the number of arguments is fixed, so
-> > 
-> > 	pwms = <&pwm1 100000 &pwm2 100000 &pwm3 1000000>;
-> > 
-> > cannot be interpreted as 3-argument references to two PWMs. This is
-> > different to ACPI (I guess, not an ACPI expert here :-) because &pwm1
-> > "knows" if it needs 1 or 2 additional parameters (#pwm-cells).
-> 
-> It's not about ACPI, it's about "the ACPI glue layer in Linux kernel".
-> Used API is a part of it and it does allow only two cases, either NULL entry
-> (by having 0 as an argument) or full-length supplied tuple (in case of PWM it's
-> 3, so, means 4 parameters.
-> 
-> Let's consider examples:
-> 
-> (0, 0, x3, y3, z3, t3) // NULL, NULL, PWM3
-> (x1, y1, z1, t1, 0, x3, y3, z3, t3) // PWM1, NULL, PWM3
-> 
-> So, making last parameter "flexible" will work only for the last tuple in the
-> array.
-> 
-> Read this [1] for further information.
-> 
-> [1]: https://elixir.bootlin.com/linux/latest/source/drivers/acpi/property.c#L629
+Hi SyzScope,
 
-Hmm... I have read the actual implementation and it seems it's possible to have
-flexible array, so this patch needs to be reconsidered.
+On Fri, May 28, 2021 at 02:12:01PM -0700, SyzScope wrote:
+ 
+> The bug was reported by syzbot first in Aug 2020. Since it remains 
+> unpatched to this date, we have conducted some analysis to determine its 
+> security impact and root causes, which hopefully can help with the 
+> patching decisions.
+> Specifically, we find that even though it is labeled as "UAF read" by 
+> syzbot, it can in fact lead to double free and control flow hijacking as 
+> well. Here is our analysis below (on this kernel version: 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=af5043c89a8ef6b6949a245fff355a552eaed240)
+> 
+> ----------------------------- Root cause analysis: 
+> --------------------------
+> The use-after-free bug happened because the object has two different 
+> references. But when it was freed, only one reference was removed, 
+> allowing the other reference to be used incorrectly.
+> [...]
 
+Thank you very much for your detailed analysis. I think this is very
+valuable work, and I appreciate you doing it. I wanted to jump in to
+this thread here so as not to discourage you, following Greg's hasty
+dismissal. The bad arguments made I've seen have been something like:
 
--- 
-With Best Regards,
-Andy Shevchenko
+- Who cares about the impact? Bugs are bugs and these should be fixed
+  regardless. Severity ratings are a waste of time.
+- Spend your time writing patches, not writing tools to discover
+  security issues.
+- This doesn't help my interns.
+- "research project" scare quotes.
 
+I think this entire set of argumentation is entirely bogus, and I really
+hope it doesn't dissuade you from continuing to conduct useful research
+on the kernel.
 
+Specifically, it sounds like your tool is scanning through syzbot
+reports, loading them into a symbolic execution engine, and seeing what
+other primitives you can finesse out of the bugs, all in an automated
+way. So, in the end, a developer gets a report that, rather than just
+saying "4 byte out of bounds read into all zeroed memory so not a big
+deal anyway even if it should be fixed," the developer gets a report
+that says, "4 byte out of bounds read, or a UaF if approached in this
+other way." Knowing that seems like very useful information, not just
+for prioritization, but also for the urgency at which patches might be
+deployed. For example, that's a meaningful distinction were that kind of
+bug found in core networking stack or in wifi or ethernet drivers. I
+also think it's great that you're pushing forward the field of automated
+vulnerability discovery and exploit writing. Over time, hopefully that
+leads to crushing all sorts of classes of bugs. It's also impressive
+that you're able to do so much with kernel code in a symbolic execution
+environment; this sounds a few steps beyond Angr ;-)...
+
+My one suggestion would be that your email alerts / follow-ups to syzbot
+reports, if automated, contain a bit more "dumbed-down" information
+about what's happening. Not all kernel developers speak security, and as
+you've seen, in some places it might be an uphill battle to have your
+contributions taken seriously. On the other hand, it sounds like you
+might already be working with Dmitry to integrate this into the
+syzkaller infrastructure itself, somehow? If so, that'd be great.
+
+Regards,
+Jason
