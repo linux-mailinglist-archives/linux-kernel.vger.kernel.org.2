@@ -2,92 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B473A39E032
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 17:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5546D39E03E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 17:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230426AbhFGPYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 11:24:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60590 "EHLO mail.kernel.org"
+        id S230493AbhFGPZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 11:25:29 -0400
+Received: from mga09.intel.com ([134.134.136.24]:24482 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230212AbhFGPY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 11:24:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A693C60C3D;
-        Mon,  7 Jun 2021 15:22:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623079357;
-        bh=AkvIZcOQR2MjwlCMTjuU8Ke8Ur/AqM0yyXCdXSHEmT0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r4trKSgMEv1ujYT26qffTcHnjCB78vQbzvPmedPzR04Wif7Dvy9GUxCHND6d0Ufcy
-         vjX9kz8BjVDrRZoJpAQd3zXMmz7jLo+nwZ+UZ9W5+PsaCpxD1qsGMTM3AuC3blgENQ
-         Bb/hga9U+05XmSNQa2ucPjtEOZUJH5gXGibW3MOTEBHcU4hBidQRTHISicPnyRkVSf
-         q2fLCRl8ZIl7GCRbr9bzNfOawa9Y6rldJ4AsSxLrcz/mzMvEq34RMMaMvdb2wAgNK1
-         T41iF6yM6/pSg9aLJs7HU7qNZ+6ZPJm6Gx/vVrFb6o1V2MxPkPcSNxMKybKLY0/wep
-         9jFkL3bBBxWqQ==
-Date:   Mon, 7 Jun 2021 20:52:33 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        bhupesh.linux@gmail.com
-Subject: Re: [PATCH 8/8] arm64: dts: qcom: sa8155p-adp: Add base dts file
-Message-ID: <YL45uRr6+Q3jvPrO@vkoul-mobl>
-References: <20210607113840.15435-1-bhupesh.sharma@linaro.org>
- <20210607113840.15435-9-bhupesh.sharma@linaro.org>
+        id S230434AbhFGPZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 11:25:20 -0400
+IronPort-SDR: ju35xT6NFlNRrbETWmzp5lhx+Gm7bkLsL3WlSyZr3XdnoMACQlShHwHVWK55w7Sg8b8uECThq+
+ S+k3kYw40/EA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="204611124"
+X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
+   d="scan'208";a="204611124"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 08:23:28 -0700
+IronPort-SDR: VPYcu9LpLjRaNJp498khsubMmaiFY1UWv/nJ1JiEAOhpmjiGHfkmTkdjoh/mHNQuBXg3oYgisY
+ t1Q1HBvw7rOA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
+   d="scan'208";a="469122169"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga004.fm.intel.com with ESMTP; 07 Jun 2021 08:23:26 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id DC2C7C5; Mon,  7 Jun 2021 18:23:48 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        wsa@kernel.org
+Subject: [PATCH v2 1/3] units: Add SI metric prefix definitions
+Date:   Mon,  7 Jun 2021 18:23:42 +0300
+Message-Id: <20210607152344.57458-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607113840.15435-9-bhupesh.sharma@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07-06-21, 17:08, Bhupesh Sharma wrote:
-> Add base DTS file for sa8155p-adp and enable boot to console,
-> tlmm reserved range and also include pmic file(s).
+Sometimes it's useful to have well-defined SI metric prefix to be used
+to self-describe the formulas or equations.
 
-I see ufs added too, pls mention that as well
+List most popular ones in the units.h.
 
- --- a/arch/arm64/boot/dts/qcom/Makefile
-> +++ b/arch/arm64/boot/dts/qcom/Makefile
-> @@ -71,6 +71,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-xiaomi-beryllium.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sdm850-lenovo-yoga-c630.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-hdk.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-mtp.dtb
-> +dtb-$(CONFIG_ARCH_QCOM)	+= sa8155p-adp.dtb
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v2: no changes
+ include/linux/units.h | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-I think this should go before sdm..
-
-
-> +		vdd_usb_hs_core:
-> +		vdda_pll_hv_cc_ebi01:
-> +		vdda_pll_hv_cc_ebi23:
-> +		vdda_ufs_2ln_core:
-> +		vdda_ufs_2ln_core:
-> +		vdda_usb_ss_core:
-> +		vdda_usb_ss_dp_core_1:
-> +		vdda_usb_ss_dp_core_2:
-> +		vdda_sp_sensor:
-> +		vdda_qlink_lv:
-> +		vdda_qlink_lv_ck:
-> +		vdda_qrefs_0p875_5:
-
-I didnt find these labels very useful, so maybe remove?
-It helped me to understand that a regulator is vreg_l5a_0p88 as it
-implies I am using l5a with 0p88V :)
-
-> +		vreg_l5a_0p88: ldo5 {
-> +			regulator-min-microvolt = <880000>;
-> +			regulator-max-microvolt = <880000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-
-Pls do add regulator-name property, it helps in understanding which ldo
-in logs/debugfs, otherwise ldo5 will comes for both pmics
-
+diff --git a/include/linux/units.h b/include/linux/units.h
+index dcc30a53fa93..7366fcd45ec2 100644
+--- a/include/linux/units.h
++++ b/include/linux/units.h
+@@ -4,6 +4,22 @@
+ 
+ #include <linux/math.h>
+ 
++/* Metric prefixes in accordance with Système international (d'unités) */
++#define PETA	1000000000000000LL
++#define TERA	1000000000000LL
++#define GIGA	1000000000L
++#define MEGA	1000000L
++#define KILO	1000L
++#define HECTO	100L
++#define DECA	10L
++#define DECI	10L
++#define CENTI	100L
++#define MILLI	1000L
++#define MICRO	1000000L
++#define NANO	1000000000L
++#define PICO	1000000000000LL
++#define FEMTO	1000000000000000LL
++
+ #define MILLIWATT_PER_WATT	1000L
+ #define MICROWATT_PER_MILLIWATT	1000L
+ #define MICROWATT_PER_WATT	1000000L
 -- 
-~Vinod
+2.30.2
+
