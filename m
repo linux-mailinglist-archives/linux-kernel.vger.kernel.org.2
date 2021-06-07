@@ -2,96 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E06C39E452
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F84839E454
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230483AbhFGQsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 12:48:54 -0400
-Received: from mail-pl1-f176.google.com ([209.85.214.176]:39452 "EHLO
-        mail-pl1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230395AbhFGQsw (ORCPT
+        id S230523AbhFGQtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 12:49:01 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:44970 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230462AbhFGQs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 12:48:52 -0400
-Received: by mail-pl1-f176.google.com with SMTP id v11so546011ply.6;
-        Mon, 07 Jun 2021 09:47:01 -0700 (PDT)
+        Mon, 7 Jun 2021 12:48:59 -0400
+Received: by mail-io1-f71.google.com with SMTP id p20-20020a6bce140000b029049372849df8so12552092iob.11
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 09:47:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RqM/V5eLWFeMro1faYW6Y0l876M4QVLq21ePu11ZzHo=;
-        b=niFZyRnjSZJUNGMlrmksvrbJSipG+ozte98gtTST863mnM4S0pJ/hW/0pn1dS4LBb+
-         NthETeqqL6TxjPNijfj/pKrOl0X4Ki7Uwzgbm0VXnql1IUvsWtMtuBqM81cmVJ+klaL0
-         Z7QlJHOJleJlYG/nvil5WBkb2rXAsA7ME9A3quqKa6YzgMFuQdyfG54AZ/3HXRpyNV/K
-         sjUsVZzeNMvfbnLgmTaez+OaHe/oDjNGc2yldeJfOWT96IYyykYnZlXLYCcYFCOXY9jD
-         tNeXbONBQ+7TRTqlVtb4mnicUEoqACg9IEwRxPRPbTDJPTNzqUcUqD92spcwM71E7MfM
-         uTeg==
-X-Gm-Message-State: AOAM53219joUKd4texRR/6tx74XRqpxBBsqzzWsxnmTNxkbwVU3b+B/R
-        MbQzDqwZRvpZkMNWNTFy8LY=
-X-Google-Smtp-Source: ABdhPJygdkxD8CUNwO3gYZnjRveMacyt4NUWgX026stBqMkMsRkcnezkILEftsvJah1e8t9mswV/2Q==
-X-Received: by 2002:a17:902:145:b029:10d:c0d5:d6ac with SMTP id 63-20020a1709020145b029010dc0d5d6acmr18880586plb.9.1623084420905;
-        Mon, 07 Jun 2021 09:47:00 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id k13sm8408819pfh.68.2021.06.07.09.46.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Jun 2021 09:47:00 -0700 (PDT)
-Subject: Re: [PATCH v12 1/3] bio: control bio max size
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Changheun Lee <nanich.lee@samsung.com>, damien.lemoal@wdc.com,
-        Avri.Altman@wdc.com, Johannes.Thumshirn@wdc.com,
-        alex_y_xu@yahoo.ca, alim.akhtar@samsung.com,
-        asml.silence@gmail.com, axboe@kernel.dk, bgoncalv@redhat.com,
-        cang@codeaurora.org, gregkh@linuxfoundation.org,
-        jaegeuk@kernel.org, jejb@linux.ibm.com, jisoo2146.oh@samsung.com,
-        junho89.kim@samsung.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, ming.lei@redhat.com,
-        mj0123.lee@samsung.com, osandov@fb.com, patchwork-bot@kernel.org,
-        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
-        tj@kernel.org, tom.leiming@gmail.com, woosung2.lee@samsung.com,
-        yi.zhang@redhat.com, yt0928.kim@samsung.com
-References: <DM6PR04MB70812AF342F46F453696A447E73B9@DM6PR04MB7081.namprd04.prod.outlook.com>
- <CGME20210604075331epcas1p13bb57f9ddfc7b112dec1ba8cf40fdc74@epcas1p1.samsung.com>
- <20210604073459.29235-1-nanich.lee@samsung.com>
- <63afd2d3-9fa3-9f90-a2b3-37235739f5e2@acm.org>
- <YL2+HeyKVMHsLNe2@infradead.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <221377e3-05d1-f250-1ad8-6e5c9485d756@acm.org>
-Date:   Mon, 7 Jun 2021 09:46:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=5sWTD7ZtJJvFb5Hd+ZcQxV3BC6zm39TRieMzIj8ghAE=;
+        b=gZOqM3vO7Mp4a5tZTO6gzw20qxfQZMv6tjLH3wjYXlUOeMcMZI37vnO1rMaDZkqV0d
+         gt0zWbnhR0zAggSmweXQ2ELvbmiIHbfbizvX7iQEc3TO/D/a8IYuUwWPVZOATo9i38DT
+         FzSci5uBMHAzyKw+9YAqkBSufikTK2dFgATgDxekt2DVBf9sgYuziU2eblH8BN+XfPJI
+         RMUVmsTmZiitLtW/HALvQZRb+3kK2Jy3tZ9rDgNKNaRdtOUVavgckMctxcxhPW7SF3Xi
+         zTZbQBTnBcukg4CRaEuxjtKogy7vr6bf0sL4RiY73bQOAdyz543M1//xrpYIlD6JpeT2
+         B1lg==
+X-Gm-Message-State: AOAM533HJY/IakTtzGQmqQov68UlV29EwCH5jGTDzZL9h7mDq7YMLPME
+        FQ3AQF3lLLpG1L4HymTPjrlZZuY3QNsh0QMLOH/j1zNKHO0q
+X-Google-Smtp-Source: ABdhPJyDXPNYTwfbSAd6P+4H7FvAg0x1fEf6Q0O5hD6MvbI9qvTgusV4qviPUlvsH2Fzk78BjCH5i0R7y+J5mBz6CGfrRiefw9Wq
 MIME-Version: 1.0
-In-Reply-To: <YL2+HeyKVMHsLNe2@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a92:c7b0:: with SMTP id f16mr14813184ilk.169.1623084427231;
+ Mon, 07 Jun 2021 09:47:07 -0700 (PDT)
+Date:   Mon, 07 Jun 2021 09:47:07 -0700
+In-Reply-To: <000000000000a363b205a74ca6a2@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b9c68205c42fcacb@google.com>
+Subject: Re: [syzbot] BUG: using smp_processor_id() in preemptible code in radix_tree_node_alloc
+From:   syzbot <syzbot+3eec59e770685e3dc879@syzkaller.appspotmail.com>
+To:     bjorn.andersson@linaro.org, brookebasile@gmail.com,
+        coreteam@netfilter.org, davem@davemloft.net, dsahern@kernel.org,
+        ducheng2@gmail.com, ebiggers@kernel.org, fw@strlen.de,
+        gregkh@linuxfoundation.org, kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, manivannan.sadhasivam@linaro.org,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, skhan@linuxfoundation.org,
+        syzkaller-bugs@googlegroups.com, willy@infradead.org,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/6/21 11:35 PM, Christoph Hellwig wrote:
-> On Fri, Jun 04, 2021 at 07:52:35AM -0700, Bart Van Assche wrote:
->>  Damien is right. bd_disk can be NULL. From
-> 
-> bd_disk is initialized in bdev_alloc, so it should never be NULL.
-> bi_bdev OTOH is only set afer bio_add_page in various places or not at
-> all in case of passthrough bios.  Which is a bit of a mess and I have
-> plans to fix it.
+syzbot suspects this issue was fixed by commit:
 
-Hi Christoph,
+commit 43016d02cf6e46edfc4696452251d34bba0c0435
+Author: Florian Westphal <fw@strlen.de>
+Date:   Mon May 3 11:51:15 2021 +0000
 
-Thank you for having shared your plans for how to improve how bi_bdev is
-set.
+    netfilter: arptables: use pernet ops struct during unregister
 
-In case you would not yet have had the time to do this, please take a
-look at the call trace available on
-https://lore.kernel.org/linux-block/20210425043020.30065-1-bvanassche@acm.org/.
-That call trace shows how bio_add_pc_page() is called by the SCSI core
-before alloc_disk() is called. I think that sending a SCSI command
-before alloc_disk() is called is fundamental in the SCSI core because
-the SCSI INQUIRY command has to be sent before it is known whether or
-not a SCSI LUN represents a disk.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12dfdf47d00000
+start commit:   acf25aa6 Merge tag 'Smack-for-5.8' of git://github.com/csc..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5263d9b5bce03c67
+dashboard link: https://syzkaller.appspot.com/bug?extid=3eec59e770685e3dc879
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15bd4c1e100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1520c9de100000
 
-Thanks,
+If the result looks correct, please mark the issue as fixed by replying with:
 
-Bart.
+#syz fix: netfilter: arptables: use pernet ops struct during unregister
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
