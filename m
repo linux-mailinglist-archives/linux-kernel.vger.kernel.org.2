@@ -2,96 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD52F39E18F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3D439E243
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230416AbhFGQOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 12:14:03 -0400
-Received: from router.aksignal.cz ([62.44.4.214]:50632 "EHLO
-        router.aksignal.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230254AbhFGQOB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 12:14:01 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by router.aksignal.cz (Postfix) with ESMTP id A7AAB44416;
-        Mon,  7 Jun 2021 18:12:05 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at router.aksignal.cz
-Received: from router.aksignal.cz ([127.0.0.1])
-        by localhost (router.aksignal.cz [127.0.0.1]) (amavisd-new, port 10026)
-        with LMTP id d4G_pKfME2et; Mon,  7 Jun 2021 18:12:05 +0200 (CEST)
-Received: from pc-gameroom.prchals.tk (unknown [83.240.30.185])
-        (Authenticated sender: jiri.prchal@aksignal.cz)
-        by router.aksignal.cz (Postfix) with ESMTPSA id D3E8644412;
-        Mon,  7 Jun 2021 18:12:04 +0200 (CEST)
-From:   Jiri Prchal <jiri.prchal@aksignal.cz>
-To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Christian Eggers <ceggers@arri.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Prchal <jiri.prchal@aksignal.cz>
-Subject: [PATCH v8 1/5] nvmem: prepare basics for FRAM support
-Date:   Mon,  7 Jun 2021 18:11:57 +0200
-Message-Id: <20210607161201.223697-2-jiri.prchal@aksignal.cz>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210607161201.223697-1-jiri.prchal@aksignal.cz>
-References: <20210607161201.223697-1-jiri.prchal@aksignal.cz>
+        id S232290AbhFGQQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 12:16:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48704 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231688AbhFGQOp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 12:14:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1055613CC;
+        Mon,  7 Jun 2021 16:12:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623082374;
+        bh=NNYMrU7qDmvuDUIHGSDRc0rCC7wKmCagHB5KajDZb9c=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HUv8P/msLdH/B4vixfsJpLgDc/YfK5wzjigj31rITvxsuH48FaVwt1axf6cMFdh6N
+         xFLFn1pXDV5QP56nGnWq1kK1waH/hksr0DH5sLB/TfSx+osqgHusaj4i12GfH7L2cI
+         crUb0M6bEyBpJIE4lldEd671nAlJK+G+MW9hOFNe25TEjHA/OYJe70Gi0iV/ffNIwm
+         84peFWFOv+qa/BT3PihXDHQC46D4+CIKp90Tr0azrCJ5/SRSYx7zSwLXNFgGmprbCr
+         e6c4WTj6A1UFC6Z1IjDtsWNFyNyEe9fAbOOZJeRQP78Ef2bXnjXo8JweehDPhQJmPs
+         0E6twLED18ekw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Maurizio Lombardi <mlombard@redhat.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.12 31/49] scsi: target: core: Fix warning on realtime kernels
+Date:   Mon,  7 Jun 2021 12:11:57 -0400
+Message-Id: <20210607161215.3583176-31-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210607161215.3583176-1-sashal@kernel.org>
+References: <20210607161215.3583176-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added enum and string for FRAM to expose it as "fram".
+From: Maurizio Lombardi <mlombard@redhat.com>
 
-Signed-off-by: Jiri Prchal <jiri.prchal@aksignal.cz>
----
-v2: no change here
-v3: resend and added more recipients
-v4: resend
-v5: no change here
-v6: changed commit subject
-v7: no change here
-v8: changed subject
----
- drivers/nvmem/core.c           | 4 ++++
- include/linux/nvmem-provider.h | 1 +
- 2 files changed, 5 insertions(+)
+[ Upstream commit 515da6f4295c2c42b8c54572cce3d2dd1167c41e ]
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 177f5bf27c6d..01ef9a934b0a 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -180,6 +180,7 @@ static const char * const nvmem_type_str[] = {
- 	[NVMEM_TYPE_EEPROM] = "EEPROM",
- 	[NVMEM_TYPE_OTP] = "OTP",
- 	[NVMEM_TYPE_BATTERY_BACKED] = "Battery backed",
-+	[NVMEM_TYPE_FRAM] = "FRAM",
- };
+On realtime kernels, spin_lock_irq*(spinlock_t) do not disable the
+interrupts, a call to irqs_disabled() will return false thus firing a
+warning in __transport_wait_for_tasks().
+
+Remove the warning and also replace assert_spin_locked() with
+lockdep_assert_held()
+
+Link: https://lore.kernel.org/r/20210531121326.3649-1-mlombard@redhat.com
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Maurizio Lombardi <mlombard@redhat.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/target/target_core_transport.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
+index 9e8cd07179d7..28479addb2d1 100644
+--- a/drivers/target/target_core_transport.c
++++ b/drivers/target/target_core_transport.c
+@@ -2995,9 +2995,7 @@ __transport_wait_for_tasks(struct se_cmd *cmd, bool fabric_stop,
+ 	__releases(&cmd->t_state_lock)
+ 	__acquires(&cmd->t_state_lock)
+ {
+-
+-	assert_spin_locked(&cmd->t_state_lock);
+-	WARN_ON_ONCE(!irqs_disabled());
++	lockdep_assert_held(&cmd->t_state_lock);
  
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
-@@ -359,6 +360,9 @@ static int nvmem_sysfs_setup_compat(struct nvmem_device *nvmem,
- 	if (!config->base_dev)
- 		return -EINVAL;
- 
-+	if (config->type == NVMEM_TYPE_FRAM)
-+		bin_attr_nvmem_eeprom_compat.attr.name = "fram";
-+
- 	nvmem->eeprom = bin_attr_nvmem_eeprom_compat;
- 	nvmem->eeprom.attr.mode = nvmem_bin_attr_get_umode(nvmem);
- 	nvmem->eeprom.size = nvmem->size;
-diff --git a/include/linux/nvmem-provider.h b/include/linux/nvmem-provider.h
-index e162b757b6d5..890003565761 100644
---- a/include/linux/nvmem-provider.h
-+++ b/include/linux/nvmem-provider.h
-@@ -25,6 +25,7 @@ enum nvmem_type {
- 	NVMEM_TYPE_EEPROM,
- 	NVMEM_TYPE_OTP,
- 	NVMEM_TYPE_BATTERY_BACKED,
-+	NVMEM_TYPE_FRAM,
- };
- 
- #define NVMEM_DEVID_NONE	(-1)
+ 	if (fabric_stop)
+ 		cmd->transport_state |= CMD_T_FABRIC_STOP;
 -- 
-2.25.1
+2.30.2
 
