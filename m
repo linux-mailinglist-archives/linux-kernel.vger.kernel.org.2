@@ -2,311 +2,405 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D3339EA39
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 01:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1A139EA4A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 01:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbhFGXjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 19:39:11 -0400
-Received: from smtprelay0088.hostedemail.com ([216.40.44.88]:34326 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230306AbhFGXjK (ORCPT
+        id S230319AbhFGXqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 19:46:16 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:49415 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230183AbhFGXqO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 19:39:10 -0400
-Received: from omf09.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id AB5A118077354;
-        Mon,  7 Jun 2021 23:37:17 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id 82C8B1E04D6;
-        Mon,  7 Jun 2021 23:37:16 +0000 (UTC)
-Message-ID: <6147b2a2a5992525482f2cf61d2939b110062d8c.camel@perches.com>
-Subject: Re: irdma: utils.c typos in irdma_cqp_gather_stats_gen1 ?
-From:   Joe Perches <joe@perches.com>
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Mon, 07 Jun 2021 16:37:15 -0700
-In-Reply-To: <7bc8c264a70a4026b3bc7d9edd9e8945@intel.com>
-References: <9e07e80d8aa464447323670fd810f455d53f76f3.camel@perches.com>
-         <d41c5503b5b74996af3f3c1853a67935@intel.com>
-         <e3242b18d12db4bff77127d82d5e788b7712035a.camel@perches.com>
-         <7bc8c264a70a4026b3bc7d9edd9e8945@intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.90
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: 82C8B1E04D6
-X-Stat-Signature: d45niqe4yw5xhxfs6gdho5hrae19i1aj
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18hao3+0yMIuOu06omwYSzKFt0v/HHg0tw=
-X-HE-Tag: 1623109036-565830
+        Mon, 7 Jun 2021 19:46:14 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 67171580384;
+        Mon,  7 Jun 2021 19:44:22 -0400 (EDT)
+Received: from imap43 ([10.202.2.93])
+  by compute2.internal (MEProxy); Mon, 07 Jun 2021 19:44:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm3; bh=LKjlonoDHSB6cNwTtD8tHFxqDhZN1so
+        OtK2I94aHC28=; b=l/b+IF9I1o2T95qmtGCbzZMIaq/yVseBnrOR5+ca30EnIm7
+        KNjRhFAd616PGvHuds5o+uEjuy8myYNG59dADy/TG0lBBaGlJ5rEnmLsAC78D83H
+        3kwWZLCs+WxPLyb2OekS32PpcYW7Ax7w7p4AkniIs10Ivl2sXPX566y+VOERqHzE
+        MABedMa8kB7a4rwCXWcuprBrL4vpszDQ7z0OPnGYU820PCA6LkDpq/scGM0G+Wqf
+        yxB8y7YAFrN+YBbyLmSduQIx+2aJpckxO2AKFZXaH2zYp93miQKY5KPDO/MNIl0I
+        Gptea1yxbl24VeVOFIIyIB+t5SuWFsocUcrdm4Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=LKjlon
+        oDHSB6cNwTtD8tHFxqDhZN1soOtK2I94aHC28=; b=Ku9xR5znRcyCXRSZ/adzND
+        aJS2Qi+WAOb73KhflrhK+y/mcbGzfxLl6ju6dtKRum6cq4Lsb+fFFAf+/Xljn5HY
+        7t02pgFYcs9nW6fbSr6uS2bWN4hFRhXPEOEGg/ytx1b9d5DoNv0rT3fti+lCHGAL
+        DddwuvZdsBkUA/b1V1V08bDeelsiTYgdBbZfs4B4rP5EtCyIaT4ZH2SzhwGAw8RE
+        2puv73sLHWl6sPAV3tFsqvnhZBOlimHjh8mLCUr5ecQA9N7/RfefknZeu9L7p8A4
+        ZtpQZ9/IBe/6ocGYzNPvrti7j9+AfHrt1IVP0IdJELKesR3ItDToHcggzIV/DHHw
+        ==
+X-ME-Sender: <xms:U6--YBwzYwzopNFjYHBsXnf9oFXwucQ4T4_ONOIyvhyd5TZZhPVaRg>
+    <xme:U6--YBQH7hOMomZ7w2nfGuIq0ecDa-PLk5PYGDPHV7GhPRkV5W1J_eK8wZp91QzMN
+    W_n6paUf2m2hJNcqA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtkedgudeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhephefhfeekgfekudevheffheeihedujeefjeevjeefudfgfeeutdeuvdeh
+    hfevueffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:U6--YLVThSygM4ZTY374Sr5EPdlK_uVAxpF0oE6I3bCsJDgRXOBRHQ>
+    <xmx:U6--YDiuuCM6I0cf0jE20W61UiysyUjd-uWpD04UFUGupwCfUBh_Qg>
+    <xmx:U6--YDBCDIp3gjkiV297484gXmnK3-ObmZLWx4G57UkV48jI2mvGCw>
+    <xmx:Vq--YH7Ax7O-F3MzmzxAJw7sO1FRbdSgDiJCeeRQd9j8BrEj0hOZHw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 66036AC0064; Mon,  7 Jun 2021 19:44:19 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
+Mime-Version: 1.0
+Message-Id: <f3805ca3-3d77-4482-b75f-3e869625e0bc@www.fastmail.com>
+In-Reply-To: <20210607071514.11727-5-steven_lee@aspeedtech.com>
+References: <20210607071514.11727-1-steven_lee@aspeedtech.com>
+ <20210607071514.11727-5-steven_lee@aspeedtech.com>
+Date:   Tue, 08 Jun 2021 09:13:59 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Steven Lee" <steven_lee@aspeedtech.com>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        "open list" <linux-kernel@vger.kernel.org>
+Cc:     "Hongwei Zhang" <Hongweiz@ami.com>,
+        "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        "Billy Tsai" <billy_tsai@aspeedtech.com>
+Subject: Re: [PATCH v4 4/7] gpio: gpio-aspeed-sgpio: Add AST2600 sgpio support
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-06-07 at 22:40 +0000, Saleem, Shiraz wrote:
-> > Subject: Re: irdma: utils.c typos in irdma_cqp_gather_stats_gen1 ?
-> > 
-> > On Mon, 2021-06-07 at 14:54 +0000, Saleem, Shiraz wrote:
-> > > > Subject: irdma: utils.c typos in irdma_cqp_gather_stats_gen1 ?
-> > > > 
-> > > > There are some odd mismatches in field and access index.
-> > > > These may be simple cut/paste typos.
-> > > > 
-> > > > Are these intentional?
-> > > 
-> > > No. Accidental. Likely cut/copy mistake. I will send a fix. Thanks
-> > > Joe!
-> > 
-> > Reason is I was refactoring what I thought was rather templated and
-> > overly verbose
-> > code.
-> > 
-> > Here's a possible patch (with probable corrections to these index
-> > typos):
+
+
+On Mon, 7 Jun 2021, at 16:45, Steven Lee wrote:
+> AST2600 SoC has 2 SGPIO master interfaces one with 128 pins another one
+> with 80 pins.
+> In the current driver, the maximum number of gpio pins of SoC is hardcoded
+> as 80 and the gpio pin count mask for GPIO Configuration register is
+> hardcode as GENMASK(9,6). In addition, some functions use the hardcoded
+> value to calculate the gpio offset.
+> The patch adds ast2600 compatibles and platform data that includes the
+> max number of gpio pins supported by ast2600 and gpio pin count mask for
+> GPIO Configuration register.
+> The patch also modifies some functions to pass aspeed_sgpio struct for
+> calculating gpio offset without using the hardcoded value.
 > 
-> Looks reasonable to me. Wondering if irdma_update_stats should also
-> use your IRDMA_STAT macro.
+> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+> ---
+>  drivers/gpio/gpio-aspeed-sgpio.c | 110 +++++++++++++++++++++----------
+>  1 file changed, 76 insertions(+), 34 deletions(-)
+> 
+> diff --git a/drivers/gpio/gpio-aspeed-sgpio.c b/drivers/gpio/gpio-aspeed-sgpio.c
+> index 64e54f8c30d2..8b893356f0ca 100644
+> --- a/drivers/gpio/gpio-aspeed-sgpio.c
+> +++ b/drivers/gpio/gpio-aspeed-sgpio.c
+> @@ -35,12 +35,18 @@
+>  #define ASPEED_SGPIO_CLK_DIV_MASK	GENMASK(31, 16)
+>  #define ASPEED_SGPIO_ENABLE		BIT(0)
+>  
+> +struct aspeed_sgpio_pdata {
+> +	const u32 pin_mask;
+> +	int max_ngpios;
+> +};
+> +
+>  struct aspeed_sgpio {
+>  	struct gpio_chip chip;
+>  	struct clk *pclk;
+>  	spinlock_t lock;
+>  	void __iomem *base;
+>  	int irq;
+> +	int max_ngpios;
+>  	int n_sgpio;
+>  };
+>  
+> @@ -75,7 +81,13 @@ static const struct aspeed_sgpio_bank 
+> aspeed_sgpio_banks[] = {
+>  		.val_regs = 0x0038,
+>  		.rdata_reg = 0x0078,
+>  		.irq_regs = 0x003C,
+> -		.names = { "I", "J" },
+> +		.names = { "I", "J", "K", "L" },
+> +	},
+> +	{
+> +		.val_regs = 0x0090,
+> +		.rdata_reg = 0x007C,
+> +		.irq_regs = 0x0094,
+> +		.names = { "M", "N", "O", "P" },
+>  	},
+>  };
+>  
+> @@ -121,15 +133,15 @@ static void __iomem *bank_reg(struct aspeed_sgpio *gpio,
+>  	}
+>  }
+>  
+> -#define GPIO_BANK(x)    ((x % SGPIO_OUTPUT_OFFSET) >> 5)
+> -#define GPIO_OFFSET(x)  ((x % SGPIO_OUTPUT_OFFSET) & 0x1f)
+> -#define GPIO_BIT(x)     BIT(GPIO_OFFSET(x))
+> +#define GPIO_BANK(x, gpio)    ((x % (gpio)->max_ngpios) >> 5)
 
-Probably, and it could really a macro or two of its own.
+I couldn't stop myself from commenting on this: The 'context' parameter should be first (by convention), so:
 
-And it looks like that block has it's own copy/paste defects.
+#define GPIO_BANK(gpio, x) ((x % (gpio)->max_ngpios) >> 5)
 
-Maybe:
----
- drivers/infiniband/hw/irdma/ctrl.c | 219 +++++++++----------------------------
- 1 file changed, 51 insertions(+), 168 deletions(-)
+There's another fix necessary here too - the x needs to be parenthesised:
 
-diff --git a/drivers/infiniband/hw/irdma/ctrl.c b/drivers/infiniband/hw/irdma/ctrl.c
-index 5aa112067bce8..90c6f82ea0c8d 100644
---- a/drivers/infiniband/hw/irdma/ctrl.c
-+++ b/drivers/infiniband/hw/irdma/ctrl.c
-@@ -5484,174 +5484,57 @@ void irdma_update_stats(struct irdma_dev_hw_stats *hw_stats,
- {
- 	u64 *stats_val = hw_stats->stats_val_32;
- 
--	stats_val[IRDMA_HW_STAT_INDEX_RXVLANERR] +=
--		IRDMA_STATS_DELTA(gather_stats->rxvlanerr,
--				  last_gather_stats->rxvlanerr,
--				  IRDMA_MAX_STATS_32);
--	stats_val[IRDMA_HW_STAT_INDEX_IP4RXDISCARD] +=
--		IRDMA_STATS_DELTA(gather_stats->ip4rxdiscard,
--				  last_gather_stats->ip4rxdiscard,
--				  IRDMA_MAX_STATS_32);
--	stats_val[IRDMA_HW_STAT_INDEX_IP4RXTRUNC] +=
--		IRDMA_STATS_DELTA(gather_stats->ip4rxtrunc,
--				  last_gather_stats->ip4rxtrunc,
--				  IRDMA_MAX_STATS_32);
--	stats_val[IRDMA_HW_STAT_INDEX_IP4TXNOROUTE] +=
--		IRDMA_STATS_DELTA(gather_stats->ip4txnoroute,
--				  last_gather_stats->ip4txnoroute,
--				  IRDMA_MAX_STATS_32);
--	stats_val[IRDMA_HW_STAT_INDEX_IP6RXDISCARD] +=
--		IRDMA_STATS_DELTA(gather_stats->ip6rxdiscard,
--				  last_gather_stats->ip6rxdiscard,
--				  IRDMA_MAX_STATS_32);
--	stats_val[IRDMA_HW_STAT_INDEX_IP6RXTRUNC] +=
--		IRDMA_STATS_DELTA(gather_stats->ip6rxtrunc,
--				  last_gather_stats->ip6rxtrunc,
--				  IRDMA_MAX_STATS_32);
--	stats_val[IRDMA_HW_STAT_INDEX_IP6TXNOROUTE] +=
--		IRDMA_STATS_DELTA(gather_stats->ip6txnoroute,
--				  last_gather_stats->ip6txnoroute,
--				  IRDMA_MAX_STATS_32);
--	stats_val[IRDMA_HW_STAT_INDEX_TCPRTXSEG] +=
--		IRDMA_STATS_DELTA(gather_stats->tcprtxseg,
--				  last_gather_stats->tcprtxseg,
--				  IRDMA_MAX_STATS_32);
--	stats_val[IRDMA_HW_STAT_INDEX_TCPRXOPTERR] +=
--		IRDMA_STATS_DELTA(gather_stats->tcprxopterr,
--				  last_gather_stats->tcprxopterr,
--				  IRDMA_MAX_STATS_32);
--	stats_val[IRDMA_HW_STAT_INDEX_TCPRXPROTOERR] +=
--		IRDMA_STATS_DELTA(gather_stats->tcprxprotoerr,
--				  last_gather_stats->tcprxprotoerr,
--				  IRDMA_MAX_STATS_32);
--	stats_val[IRDMA_HW_STAT_INDEX_RXRPCNPHANDLED] +=
--		IRDMA_STATS_DELTA(gather_stats->rxrpcnphandled,
--				  last_gather_stats->rxrpcnphandled,
--				  IRDMA_MAX_STATS_32);
--	stats_val[IRDMA_HW_STAT_INDEX_RXRPCNPIGNORED] +=
--		IRDMA_STATS_DELTA(gather_stats->rxrpcnpignored,
--				  last_gather_stats->rxrpcnpignored,
--				  IRDMA_MAX_STATS_32);
--	stats_val[IRDMA_HW_STAT_INDEX_TXNPCNPSENT] +=
--		IRDMA_STATS_DELTA(gather_stats->txnpcnpsent,
--				  last_gather_stats->txnpcnpsent,
--				  IRDMA_MAX_STATS_32);
-+#define irdma_update_stat(index, var, size)				\
-+	stats_val[IRDMA_STAT(index)] +=					\
-+		IRDMA_STATS_DELTA(gather_stats->var,			\
-+				  last_gather_stats->var,		\
-+				  IRDMA_MAX_STATS_##size)
-+
-+	irdma_update_stat(RXVLANERR, rxvlanerr, 32);
-+	irdma_update_stat(IP4RXDISCARD, ip4rxdiscard, 32);
-+	irdma_update_stat(IP4RXTRUNC, ip4rxtrunc, 32);
-+	irdma_update_stat(IP4TXNOROUTE, ip4txnoroute, 32);
-+	irdma_update_stat(IP6RXDISCARD, ip6rxdiscard, 32);
-+	irdma_update_stat(IP6RXTRUNC, ip6rxtrunc, 32);
-+	irdma_update_stat(IP6TXNOROUTE, ip6txnoroute, 32);
-+	irdma_update_stat(TCPRTXSEG, tcprtxseg, 32);
-+	irdma_update_stat(TCPRXOPTERR, tcprxopterr, 32);
-+	irdma_update_stat(TCPRXPROTOERR, tcprxprotoerr, 32);
-+	irdma_update_stat(RXRPCNPHANDLED, rxrpcnphandled, 32);
-+	irdma_update_stat(RXRPCNPIGNORED, rxrpcnpignored, 32);
-+	irdma_update_stat(TXNPCNPSENT, txnpcnpsent, 32);
-+
- 	stats_val = hw_stats->stats_val_64;
--	stats_val[IRDMA_HW_STAT_INDEX_IP4RXOCTS] +=
--		IRDMA_STATS_DELTA(gather_stats->ip4rxocts,
--				  last_gather_stats->ip4rxocts,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_IP4RXPKTS] +=
--		IRDMA_STATS_DELTA(gather_stats->ip4rxpkts,
--				  last_gather_stats->ip4rxpkts,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_IP4RXFRAGS] +=
--		IRDMA_STATS_DELTA(gather_stats->ip4txfrag,
--				  last_gather_stats->ip4txfrag,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_IP4RXMCPKTS] +=
--		IRDMA_STATS_DELTA(gather_stats->ip4rxmcpkts,
--				  last_gather_stats->ip4rxmcpkts,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_IP4TXOCTS] +=
--		IRDMA_STATS_DELTA(gather_stats->ip4txocts,
--				  last_gather_stats->ip4txocts,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_IP4TXPKTS] +=
--		IRDMA_STATS_DELTA(gather_stats->ip4txpkts,
--				  last_gather_stats->ip4txpkts,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_IP4TXFRAGS] +=
--		IRDMA_STATS_DELTA(gather_stats->ip4txfrag,
--				  last_gather_stats->ip4txfrag,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_IP4TXMCPKTS] +=
--		IRDMA_STATS_DELTA(gather_stats->ip4txmcpkts,
--				  last_gather_stats->ip4txmcpkts,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_IP6RXOCTS] +=
--		IRDMA_STATS_DELTA(gather_stats->ip6rxocts,
--				  last_gather_stats->ip6rxocts,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_IP6RXPKTS] +=
--		IRDMA_STATS_DELTA(gather_stats->ip6rxpkts,
--				  last_gather_stats->ip6rxpkts,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_IP6RXFRAGS] +=
--		IRDMA_STATS_DELTA(gather_stats->ip6txfrags,
--				  last_gather_stats->ip6txfrags,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_IP6RXMCPKTS] +=
--		IRDMA_STATS_DELTA(gather_stats->ip6rxmcpkts,
--				  last_gather_stats->ip6rxmcpkts,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_IP6TXOCTS] +=
--		IRDMA_STATS_DELTA(gather_stats->ip6txocts,
--				  last_gather_stats->ip6txocts,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_IP6TXPKTS] +=
--		IRDMA_STATS_DELTA(gather_stats->ip6txpkts,
--				  last_gather_stats->ip6txpkts,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_IP6TXFRAGS] +=
--		IRDMA_STATS_DELTA(gather_stats->ip6txfrags,
--				  last_gather_stats->ip6txfrags,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_IP6TXMCPKTS] +=
--		IRDMA_STATS_DELTA(gather_stats->ip6txmcpkts,
--				  last_gather_stats->ip6txmcpkts,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_TCPRXSEGS] +=
--		IRDMA_STATS_DELTA(gather_stats->tcprxsegs,
--				  last_gather_stats->tcprxsegs,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_TCPTXSEG] +=
--		IRDMA_STATS_DELTA(gather_stats->tcptxsegs,
--				  last_gather_stats->tcptxsegs,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_RDMARXRDS] +=
--		IRDMA_STATS_DELTA(gather_stats->rdmarxrds,
--				  last_gather_stats->rdmarxrds,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_RDMARXSNDS] +=
--		IRDMA_STATS_DELTA(gather_stats->rdmarxsnds,
--				  last_gather_stats->rdmarxsnds,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_RDMARXWRS] +=
--		IRDMA_STATS_DELTA(gather_stats->rdmarxwrs,
--				  last_gather_stats->rdmarxwrs,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_RDMATXRDS] +=
--		IRDMA_STATS_DELTA(gather_stats->rdmatxrds,
--				  last_gather_stats->rdmatxrds,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_RDMATXSNDS] +=
--		IRDMA_STATS_DELTA(gather_stats->rdmatxsnds,
--				  last_gather_stats->rdmatxsnds,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_RDMATXWRS] +=
--		IRDMA_STATS_DELTA(gather_stats->rdmatxwrs,
--				  last_gather_stats->rdmatxwrs,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_RDMAVBND] +=
--		IRDMA_STATS_DELTA(gather_stats->rdmavbn,
--				  last_gather_stats->rdmavbn,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_RDMAVINV] +=
--		IRDMA_STATS_DELTA(gather_stats->rdmavinv,
--				  last_gather_stats->rdmavinv,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_UDPRXPKTS] +=
--		IRDMA_STATS_DELTA(gather_stats->udprxpkts,
--				  last_gather_stats->udprxpkts,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_UDPTXPKTS] +=
--		IRDMA_STATS_DELTA(gather_stats->udptxpkts,
--				  last_gather_stats->udptxpkts,
--				  IRDMA_MAX_STATS_48);
--	stats_val[IRDMA_HW_STAT_INDEX_RXNPECNMARKEDPKTS] +=
--		IRDMA_STATS_DELTA(gather_stats->rxnpecnmrkpkts,
--				  last_gather_stats->rxnpecnmrkpkts,
--				  IRDMA_MAX_STATS_48);
-+
-+	irdma_update_stat(IP4RXOCTS, ip4rxocts, 48);
-+	irdma_update_stat(IP4RXPKTS, ip4rxpkts, 48);
-+	irdma_update_stat(IP4RXFRAGS, ip4rxfrags, 48);
-+	irdma_update_stat(IP4RXMCPKTS, ip4rxmcpkts, 48);
-+	irdma_update_stat(IP4TXOCTS, ip4txocts, 48);
-+	irdma_update_stat(IP4TXPKTS, ip4txpkts, 48);
-+	irdma_update_stat(IP4TXFRAGS, ip4txfrag, 48);
-+	irdma_update_stat(IP4TXMCPKTS, ip4txmcpkts, 48);
-+	irdma_update_stat(IP6RXOCTS, ip6rxocts, 48);
-+	irdma_update_stat(IP6RXPKTS, ip6rxpkts, 48);
-+	irdma_update_stat(IP6RXFRAGS, ip6rxfrags, 48);
-+	irdma_update_stat(IP6RXMCPKTS, ip6rxmcpkts, 48);
-+	irdma_update_stat(IP6TXOCTS, ip6txocts, 48);
-+	irdma_update_stat(IP6TXPKTS, ip6txpkts, 48);
-+	irdma_update_stat(IP6TXFRAGS, ip6txfrags, 48);
-+	irdma_update_stat(IP6TXMCPKTS, ip6txmcpkts, 48);
-+	irdma_update_stat(TCPRXSEGS, tcprxsegs, 48);
-+	irdma_update_stat(TCPTXSEG, tcptxsegs, 48);
-+	irdma_update_stat(RDMARXRDS, rdmarxrds, 48);
-+	irdma_update_stat(RDMARXSNDS, rdmarxsnds, 48);
-+	irdma_update_stat(RDMARXWRS, rdmarxwrs, 48);
-+	irdma_update_stat(RDMATXRDS, rdmatxrds, 48);
-+	irdma_update_stat(RDMATXSNDS, rdmatxsnds, 48);
-+	irdma_update_stat(RDMATXWRS, rdmatxwrs, 48);
-+	irdma_update_stat(RDMAVBND, rdmavbn, 48);
-+	irdma_update_stat(RDMAVINV, rdmavinv, 48);
-+	irdma_update_stat(UDPRXPKTS, udprxpkts, 48);
-+	irdma_update_stat(UDPTXPKTS, udptxpkts, 48);
-+	irdma_update_stat(RXNPECNMARKEDPKTS, rxnpecnmrkpkts, 48);
-+
- 	memcpy(last_gather_stats, gather_stats, sizeof(*last_gather_stats));
- }
+#define GPIO_BANK(gpio, x) (((x) % (gpio)->max_ngpios) >> 5)
 
+> +#define GPIO_OFFSET(x)        ((x) & GENMASK(4, 0))
+> +#define GPIO_BIT(x, gpio)     BIT(GPIO_OFFSET(x % (gpio)->max_ngpios))
+
+Again, put the context parameter first. And again we should add the parentheses around x in the expression.
+
+>  
+> -static const struct aspeed_sgpio_bank *to_bank(unsigned int offset)
+> +static const struct aspeed_sgpio_bank *to_bank(unsigned int offset, 
+> const struct aspeed_sgpio *gpio)
+>  {
+>  	unsigned int bank;
+>  
+> -	bank = GPIO_BANK(offset);
+> +	bank = GPIO_BANK(offset, gpio);
+>  
+>  	WARN_ON(bank >= ARRAY_SIZE(aspeed_sgpio_banks));
+>  	return &aspeed_sgpio_banks[bank];
+> @@ -139,18 +151,19 @@ static int aspeed_sgpio_init_valid_mask(struct 
+> gpio_chip *gc,
+>  		unsigned long *valid_mask, unsigned int ngpios)
+>  {
+>  	struct aspeed_sgpio *sgpio = gpiochip_get_data(gc);
+> +	int max_ngpios = sgpio->max_ngpios;
+>  	int n = sgpio->n_sgpio;
+> -	int c = SGPIO_OUTPUT_OFFSET - n;
+> +	int c = max_ngpios - n;
+>  
+> -	WARN_ON(ngpios < MAX_NR_HW_SGPIO * 2);
+> +	WARN_ON(ngpios < max_ngpios * 2);
+>  
+>  	/* input GPIOs in the lower range */
+>  	bitmap_set(valid_mask, 0, n);
+>  	bitmap_clear(valid_mask, n, c);
+>  
+> -	/* output GPIOS above SGPIO_OUTPUT_OFFSET */
+> -	bitmap_set(valid_mask, SGPIO_OUTPUT_OFFSET, n);
+> -	bitmap_clear(valid_mask, SGPIO_OUTPUT_OFFSET + n, c);
+> +	/* output GPIOS above max_ngpios */
+> +	bitmap_set(valid_mask, max_ngpios, n);
+> +	bitmap_clear(valid_mask, max_ngpios + n, c);
+>  
+>  	return 0;
+>  }
+> @@ -161,30 +174,30 @@ static void 
+> aspeed_sgpio_irq_init_valid_mask(struct gpio_chip *gc,
+>  	struct aspeed_sgpio *sgpio = gpiochip_get_data(gc);
+>  	int n = sgpio->n_sgpio;
+>  
+> -	WARN_ON(ngpios < MAX_NR_HW_SGPIO * 2);
+> +	WARN_ON(ngpios < sgpio->max_ngpios * 2);
+>  
+>  	/* input GPIOs in the lower range */
+>  	bitmap_set(valid_mask, 0, n);
+>  	bitmap_clear(valid_mask, n, ngpios - n);
+>  }
+>  
+> -static bool aspeed_sgpio_is_input(unsigned int offset)
+> +static bool aspeed_sgpio_is_input(unsigned int offset, const struct 
+> aspeed_sgpio *gpio)
+>  {
+> -	return offset < SGPIO_OUTPUT_OFFSET;
+> +	return offset < gpio->max_ngpios;
+>  }
+>  
+>  static int aspeed_sgpio_get(struct gpio_chip *gc, unsigned int offset)
+>  {
+>  	struct aspeed_sgpio *gpio = gpiochip_get_data(gc);
+> -	const struct aspeed_sgpio_bank *bank = to_bank(offset);
+> +	const struct aspeed_sgpio_bank *bank = to_bank(offset, gpio);
+>  	unsigned long flags;
+>  	enum aspeed_sgpio_reg reg;
+>  	int rc = 0;
+>  
+>  	spin_lock_irqsave(&gpio->lock, flags);
+>  
+> -	reg = aspeed_sgpio_is_input(offset) ? reg_val : reg_rdata;
+> -	rc = !!(ioread32(bank_reg(gpio, bank, reg)) & GPIO_BIT(offset));
+> +	reg = aspeed_sgpio_is_input(offset, gpio) ? reg_val : reg_rdata;
+> +	rc = !!(ioread32(bank_reg(gpio, bank, reg)) & GPIO_BIT(offset, gpio));
+>  
+>  	spin_unlock_irqrestore(&gpio->lock, flags);
+>  
+> @@ -194,11 +207,11 @@ static int aspeed_sgpio_get(struct gpio_chip *gc, 
+> unsigned int offset)
+>  static int sgpio_set_value(struct gpio_chip *gc, unsigned int offset, 
+> int val)
+>  {
+>  	struct aspeed_sgpio *gpio = gpiochip_get_data(gc);
+> -	const struct aspeed_sgpio_bank *bank = to_bank(offset);
+> +	const struct aspeed_sgpio_bank *bank = to_bank(offset, gpio);
+>  	void __iomem *addr_r, *addr_w;
+>  	u32 reg = 0;
+>  
+> -	if (aspeed_sgpio_is_input(offset))
+> +	if (aspeed_sgpio_is_input(offset, gpio))
+>  		return -EINVAL;
+>  
+>  	/* Since this is an output, read the cached value from rdata, then
+> @@ -209,9 +222,9 @@ static int sgpio_set_value(struct gpio_chip *gc, 
+> unsigned int offset, int val)
+>  	reg = ioread32(addr_r);
+>  
+>  	if (val)
+> -		reg |= GPIO_BIT(offset);
+> +		reg |= GPIO_BIT(offset, gpio);
+>  	else
+> -		reg &= ~GPIO_BIT(offset);
+> +		reg &= ~GPIO_BIT(offset, gpio);
+>  
+>  	iowrite32(reg, addr_w);
+>  
+> @@ -232,7 +245,9 @@ static void aspeed_sgpio_set(struct gpio_chip *gc, 
+> unsigned int offset, int val)
+>  
+>  static int aspeed_sgpio_dir_in(struct gpio_chip *gc, unsigned int offset)
+>  {
+> -	return aspeed_sgpio_is_input(offset) ? 0 : -EINVAL;
+> +	struct aspeed_sgpio *gpio = gpiochip_get_data(gc);
+> +
+> +	return aspeed_sgpio_is_input(offset, gpio) ? 0 : -EINVAL;
+>  }
+>  
+>  static int aspeed_sgpio_dir_out(struct gpio_chip *gc, unsigned int 
+> offset, int val)
+> @@ -253,7 +268,9 @@ static int aspeed_sgpio_dir_out(struct gpio_chip 
+> *gc, unsigned int offset, int v
+>  
+>  static int aspeed_sgpio_get_direction(struct gpio_chip *gc, unsigned 
+> int offset)
+>  {
+> -	return !!aspeed_sgpio_is_input(offset);
+> +	struct aspeed_sgpio *gpio = gpiochip_get_data(gc);
+> +
+> +	return !!aspeed_sgpio_is_input(offset, gpio);
+>  }
+>  
+>  static void irqd_to_aspeed_sgpio_data(struct irq_data *d,
+> @@ -268,8 +285,8 @@ static void irqd_to_aspeed_sgpio_data(struct irq_data *d,
+>  	WARN_ON(!internal);
+>  
+>  	*gpio = internal;
+> -	*bank = to_bank(*offset);
+> -	*bit = GPIO_BIT(*offset);
+> +	*bank = to_bank(*offset, internal);
+> +	*bit = GPIO_BIT(*offset, internal);
+>  }
+>  
+>  static void aspeed_sgpio_irq_ack(struct irq_data *d)
+> @@ -466,9 +483,21 @@ static int aspeed_sgpio_setup_irqs(struct 
+> aspeed_sgpio *gpio,
+>  	return 0;
+>  }
+>  
+> +static const struct aspeed_sgpio_pdata ast2600_sgpiom_128_pdata = {
+> +	.max_ngpios = 128,
+> +	.pin_mask = GENMASK(10, 6),
+> +};
+> +
+> +static const struct aspeed_sgpio_pdata ast2600_sgpiom_80_pdata = {
+> +	.max_ngpios = 80,
+> +	.pin_mask = GENMASK(10, 6),
+> +};
+> +
+>  static const struct of_device_id aspeed_sgpio_of_table[] = {
+>  	{ .compatible = "aspeed,ast2400-sgpio" },
+>  	{ .compatible = "aspeed,ast2500-sgpio" },
+
+Add .data for these too.
+
+> +	{ .compatible = "aspeed,ast2600-sgpiom-128", .data = 
+> &ast2600_sgpiom_128_pdata, },
+> +	{ .compatible = "aspeed,ast2600-sgpiom-80", .data = 
+> &ast2600_sgpiom_80_pdata, },
+>  	{}
+>  };
+>  
+> @@ -476,10 +505,11 @@ MODULE_DEVICE_TABLE(of, aspeed_sgpio_of_table);
+>  
+>  static int __init aspeed_sgpio_probe(struct platform_device *pdev)
+>  {
+> +	u32 nr_gpios, sgpio_freq, sgpio_clk_div, gpio_cnt_regval, pin_mask;
+> +	const struct aspeed_sgpio_pdata *pdata;
+>  	struct aspeed_sgpio *gpio;
+> -	u32 nr_gpios, sgpio_freq, sgpio_clk_div;
+> -	int rc;
+>  	unsigned long apb_freq;
+> +	int rc;
+>  
+>  	gpio = devm_kzalloc(&pdev->dev, sizeof(*gpio), GFP_KERNEL);
+>  	if (!gpio)
+> @@ -489,13 +519,26 @@ static int __init aspeed_sgpio_probe(struct 
+> platform_device *pdev)
+>  	if (IS_ERR(gpio->base))
+>  		return PTR_ERR(gpio->base);
+>  
+> +	pdata = device_get_match_data(&pdev->dev);
+> +	if (pdata) {
+> +		gpio->max_ngpios = pdata->max_ngpios;
+> +		pin_mask = pdata->pin_mask;
+> +	} else {
+> +		gpio->max_ngpios = MAX_NR_HW_SGPIO;
+> +		pin_mask = ASPEED_SGPIO_PINS_MASK;
+
+Given the refactor I think the MAX_NR_HW_SGPIO and ASPEED_SGPIO_PINS_MASK macros are confusing and should be dropped.
+
+Further, I think it would be better to just define these 'default' values in .data for the 2400 and 2500 compatibles and drop this if/else entirely.
+
+> +	}
+> +
+>  	rc = of_property_read_u32(pdev->dev.of_node, "ngpios", &nr_gpios);
+>  	if (rc < 0) {
+>  		dev_err(&pdev->dev, "Could not read ngpios property\n");
+>  		return -EINVAL;
+> -	} else if (nr_gpios > MAX_NR_HW_SGPIO) {
+> +	} else if (nr_gpios % 8) {
+> +		dev_err(&pdev->dev, "Number of GPIOs not multiple of 8: %d\n",
+> +			nr_gpios);
+> +		return -EINVAL;
+> +	} else if (nr_gpios > gpio->max_ngpios) {
+
+I'd prefer this in a separate patch.
+
+>  		dev_err(&pdev->dev, "Number of GPIOs exceeds the maximum of %d: 
+> %d\n",
+> -			MAX_NR_HW_SGPIO, nr_gpios);
+> +			gpio->max_ngpios, nr_gpios);
+>  		return -EINVAL;
+>  	}
+>  	gpio->n_sgpio = nr_gpios;
+> @@ -531,15 +574,14 @@ static int __init aspeed_sgpio_probe(struct 
+> platform_device *pdev)
+>  	if (sgpio_clk_div > (1 << 16) - 1)
+>  		return -EINVAL;
+>  
+> -	iowrite32(FIELD_PREP(ASPEED_SGPIO_CLK_DIV_MASK, sgpio_clk_div) |
+> -		  FIELD_PREP(ASPEED_SGPIO_PINS_MASK, (nr_gpios / 8)) |
+> -		  ASPEED_SGPIO_ENABLE,
+> -		  gpio->base + ASPEED_SGPIO_CTRL);
+> +	gpio_cnt_regval = ((nr_gpios / 8) << 6) & pin_mask;
+
+Add a #define for the field starting at bit 6.
+
+Andrew
