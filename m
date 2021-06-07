@@ -2,134 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B58B339DCE8
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FCF039DCEC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbhFGMu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 08:50:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230220AbhFGMu4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 08:50:56 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB223C061766;
-        Mon,  7 Jun 2021 05:48:48 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id n12so19044815lft.10;
-        Mon, 07 Jun 2021 05:48:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YqSp7b2sF5G/FF6lZynv4Wa2NCgdSNo+g2maX/I5cg4=;
-        b=pozxQO3Soc1f0c4FqsKQO2eA/CLdqPKeeIYIWArpk+9A/mym4x8dN7I/j5gGR3eWCA
-         7+niI5ea+m1cgiXG0rITWVXWlhi9wqIwR+uOMaiyxnAfQVLMmTDlFWNofOaOGNuCaAr3
-         0PuONwtNf++K6/Ic1rzwBZAHCCUg2yLTaXm4NYBCHfWWt3mggPqlZECDyQFqLHXGKVTL
-         d6IPcVNbhsAGTPFqoD1oUBIZPh2wVxlsLsANH2szOnVKDKbA8vyDlHwfKWAtlfme1sMJ
-         7LKj4LtX+sYYRL8oQosg4JYmqzo7x4HS2NBKfP7DfECNN2fg9VKQoiEw9uXxyFKOFMdS
-         zFBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YqSp7b2sF5G/FF6lZynv4Wa2NCgdSNo+g2maX/I5cg4=;
-        b=kk+eWdI4jtOLTKQcyNpjJAYJwWcYn7K/xvwYtnZrnmhhpix6ICHEYkMiUw81aysT43
-         jRIHWvGYL2DFMqrHaOzRZ6bg2IG28jSV585puFuJXgsfxK5coA0UOUuCWohWlO/vhB3p
-         QgSVNdLbG91kW71m2wvF83JbF+6IJ6s0OiMZxMImmFdodXPVUdfer8ILv3Yd8RR5PMZ9
-         Ds5QA365+8tXny4TLsK3hD8vyAuYhoygUpghYBBlnkT3tzW5QIhxUge6sJq2sc8BMreI
-         h1ZYThBupYqtIqtT5lSLvokzLLDhGJ+8PI1ROOUWKjgbg3/iMI9PXlodIVRfTybmRBvJ
-         CrdA==
-X-Gm-Message-State: AOAM532xXO92Ep4vsrT4KtpZc5p2mhCSHIiwmrFlhoIFLuNqNM7/m0mv
-        SJyxi15VSidIwybjq5Vwx9qShEJctpsKAYZUvLMj29oeqk3q3rXA
-X-Google-Smtp-Source: ABdhPJwabZWyYF88pXBQ24zGo/RXBDrYpovZ3Uck29FJ5jy9VhDjT86KbW2/5rSd+najOgm/CPFmNxVbSw0A8REqkr4=
-X-Received: by 2002:a19:3846:: with SMTP id d6mr12512848lfj.187.1623070127020;
- Mon, 07 Jun 2021 05:48:47 -0700 (PDT)
+        id S230363AbhFGMvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 08:51:49 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:49162 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230145AbhFGMvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 08:51:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=eBPqfa/JpLvYxpSvRFZHUQbIzjJk5kfAOuunDaotAwk=; b=VUMyCE2Yq9YOb5B1HfPNE+IOMc
+        tUb+b3Gr/7+rMkPcjuM3Fs+Nkp1JtpCM/JnADzUkWSL/G+SB3t2EWMX2WG94T4CMXuQh8Ucror+NF
+        Ia3KTKY5fCUxUmLXZB6BQzCteo7/CwkWykrT2qr1xVKGJuiY6kJZnGLFvnxwnyQwl//w=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lqEhO-008AwQ-R2; Mon, 07 Jun 2021 14:49:46 +0200
+Date:   Mon, 7 Jun 2021 14:49:46 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     'Koba Ko' <koba.ko@canonical.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] r8169: introduce polling method for link change
+Message-ID: <YL4V6jak3TYxDPg8@lunn.ch>
+References: <20210603025414.226526-1-koba.ko@canonical.com>
+ <3d2e7a11-92ad-db06-177b-c6602ef1acd4@gmail.com>
+ <CAJB-X+V4vpLoNt2C_i=3mS4UtFnDdro5+hgaFXHWxcvobO=pzg@mail.gmail.com>
+ <f969a075-25a1-84ba-daad-b4ed0e7f75f5@gmail.com>
+ <CAJB-X+U5VEeSNS4sF0DBxc-p0nxA6QLVVrORHsscZuY37rGJ7w@mail.gmail.com>
+ <bfc68450-422d-1968-1316-64f7eaa7cbe9@gmail.com>
+ <CAJB-X+UDRK5-fKEGc+PS+_02HePmb34Pw_+tMyNr_iGGeE+jbQ@mail.gmail.com>
+ <16f24c21776a4772ac41e6d3e0a9150c@AcuMS.aculab.com>
 MIME-Version: 1.0
-References: <20210607081727.4723-1-cnsztl@gmail.com> <CAGb2v66GAOtF40o5XoK_K3bWPa2L8jGxH=R-YK8060TGeAKreQ@mail.gmail.com>
-In-Reply-To: <CAGb2v66GAOtF40o5XoK_K3bWPa2L8jGxH=R-YK8060TGeAKreQ@mail.gmail.com>
-From:   Tianling Shen <cnsztl@gmail.com>
-Date:   Mon, 7 Jun 2021 20:48:34 +0800
-Message-ID: <CAOP2_TiZYXWnDZ1-_K-EvHt3-=sV1k8cRaenW8xqr44KdLCQiw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: rockchip: add EEPROM node for NanoPi R4S
-To:     Chen-Yu Tsai <wens@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-        Marty Jones <mj8263788@gmail.com>, Pavel Machek <pavel@ucw.cz>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <16f24c21776a4772ac41e6d3e0a9150c@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chen-Yu,
+On Mon, Jun 07, 2021 at 12:32:29PM +0000, David Laight wrote:
+> From: Koba Ko
+> > Sent: 07 June 2021 05:35
+> ...
+> > After consulting with REALTEK, I can identify RTL8106e by PCI_VENDOR
+> > REALTEK, DEVICE 0x8136, Revision 0x7.
+> > I would like to make PHY_POLL as default for RTL8106E on V2.
+> > because there's no side effects besides the cpu usage rate would be a
+> > little higher,
+> > How do you think?
+> 
+> If reading the PHY registers involves a software bit-bang
+> of an MII register (rather than, say, a sleep for interrupt
+> while the MAC unit does the bit-bang) then you can clobber
+> interrupt latency because of all the time spent spinning.
 
-On Mon, Jun 7, 2021 at 4:36 PM Chen-Yu Tsai <wens@kernel.org> wrote:
->
-> Hi,
->
-> On Mon, Jun 7, 2021 at 4:19 PM Tianling Shen <cnsztl@gmail.com> wrote:
-> >
-> > NanoPi R4S has a EEPROM attached to the 2nd I2C bus (U92), which
-> > stores the MAC address.
-> >
-> > Signed-off-by: Tianling Shen <cnsztl@gmail.com>
-> > ---
-> >  arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-> > index cef4d18b599d..4a82f50a07c5 100644
-> > --- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-> > +++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-> > @@ -68,6 +68,15 @@
-> >         status = "disabled";
-> >  };
-> >
-> > +&i2c2 {
-> > +       eeprom@51 {
-> > +               compatible = "microchip,24c02", "atmel,24c02";
->
-> The actual part number is Microchip 24AA025E48, but I don't think
-> the way this device splits its storage area is easy to support
-> without additional modifications to the driver.
->
+That is not what PHY IRQ/POLL means in the PHY subsystem.
 
-On the face of it, it seems to work fine, and I can read the data correctly.
-(built with at24 eeprom driver)
+Many PHYs don't actually have there interrupt output connected to a
+GPIO. This is partially because 803.2 C22 and C45 standards don't
+define interrupts. Each vendor which supports interrupts uses
+proprietary registers. So by default, the PHY subsystem will poll the
+status of the PHY once per second to see if the link has changed
+state. If the combination of PHY hardware, board hardware and PHY
+driver does have interrupts, the PHY subsystem will not poll, but wait
+for an interrupt, and then check the status of the link.
 
-Thanks,
-Tianling.
+As for MII bus masters, i only know of one which is interrupt driven,
+rather than polled IO, for completion. The hardware is clocking out 64
+bits at 2.5MHz. So it is done rather quickly. I profiled that one
+using interrupts, and the overhead of dealing with the interrupt is
+bigger than polling.
 
-> > +               reg = <0x51>;
-> > +               pagesize = <16>;
-> > +               read-only; /* This holds our MAC */
->
-> Please also add the size, as well as a cell defining the offset
-> and length to the MAC address. The gmac node can then reference
-> this with:
->
->     nvmem-cells = <&mac_address>;
->     nvmem-cells-names = "mac-address";
->
-> which will actually pick up the MAC address.
->
->
-> Regards
-> ChenYu
->
-> > +       };
-> > +};
-> > +
-> >  &i2c4 {
-> >         status = "disabled";
-> >  };
-> > --
-> > 2.17.1
-> >
-> >
-> > _______________________________________________
-> > linux-arm-kernel mailing list
-> > linux-arm-kernel@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+    Andrew
