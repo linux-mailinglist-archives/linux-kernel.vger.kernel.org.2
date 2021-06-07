@@ -2,112 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560A839E56D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 19:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD95539E575
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 19:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230363AbhFGRcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 13:32:35 -0400
-Received: from mga02.intel.com ([134.134.136.20]:61742 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230266AbhFGRce (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 13:32:34 -0400
-IronPort-SDR: ZAZM8Xqh3GcRawNmstUShO7qRyg6kY7yiQJd2/ZwCxt8CjnQg8UoBUPAuG63dcjZcBPP0F3fYD
- qE/cIheAjyiA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="191778267"
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
-   d="scan'208";a="191778267"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 10:30:41 -0700
-IronPort-SDR: deirWvcCsgtdXm90yHp0Uzo2d9GpC2TweX2Cmw0E55DhCmB2kxSVjbhDMQXjthAHCKFtCmE0hY
- MB6b1F0LqgUA==
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
-   d="scan'208";a="447563923"
-Received: from rjwysock-mobl1.ger.corp.intel.com (HELO [10.249.139.144]) ([10.249.139.144])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 10:30:38 -0700
-Subject: Re: [PATCH] cpuidle: ARM_QCOM_SPM_CPUIDLE should depend on
- HAVE_ARM_SMCCC
-To:     Stephan Gerhold <stephan@gerhold.net>,
-        Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, He Ying <heying24@huawei.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-References: <20210606190048.689-1-rdunlap@infradead.org>
- <YL4Is1LNzBuViF3/@gerhold.net>
-From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
- 173, 80-298 Gdansk
-Message-ID: <7a207351-43e1-d439-9d86-bb28b6935fa2@intel.com>
-Date:   Mon, 7 Jun 2021 19:30:36 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S231501AbhFGRcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 13:32:45 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:51841 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230409AbhFGRcn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 13:32:43 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 157HLnSP016433;
+        Mon, 7 Jun 2021 19:30:40 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=4K7B8Tgo+sUqb2EMy3lz5Ixcq5OEwNr88+4MnIdV1OM=;
+ b=Co4w9wRz4lQ8dPql6Jf/sS3j5kNCWIHCMTGf6vFHRemZ9SsofaOXUS8S2QJ/2EuYtB+X
+ vu6PKuSRNDhST08xVh9nH6Gconbt2JYyW64zsYP49lTXwwIcfVa5mO2ogJ/bNzE6w/jM
+ Vtg6hhlhDNu0rGo/WQjkyapyvQhGOs8G2vqNkOhtGbp241qH34hudnm/cP6BIZaoFWER
+ 9mL/Wm39IKu/xQ1inAoj2UPDivmZGK5ccg0qbR9ML3ibzDw0u3Hdnn2NO26ZQItXMZpt
+ CuAdrJPKrlp6Qbeluu+A8vf9fvSm7aQfiXHCcpzz9jQhAKA8zJgRkyyrDnrwbfYEQWpC Hw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 391evfbb29-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Jun 2021 19:30:40 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4D49E10002A;
+        Mon,  7 Jun 2021 19:30:37 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 120102142B6;
+        Mon,  7 Jun 2021 19:30:37 +0200 (CEST)
+Received: from localhost (10.75.127.51) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 7 Jun 2021 19:30:36
+ +0200
+From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <julien.massot@iot.bzh>, <arnaud.pouliquen@foss.st.com>
+Subject: [PATCH 0/4] rpmsg: char: introduce the rpmsg-raw channel
+Date:   Mon, 7 Jun 2021 19:30:28 +0200
+Message-ID: <20210607173032.30133-1-arnaud.pouliquen@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <YL4Is1LNzBuViF3/@gerhold.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-07_14:2021-06-04,2021-06-07 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/7/2021 1:53 PM, Stephan Gerhold wrote:
-> Hi!
->
-> On Sun, Jun 06, 2021 at 12:00:48PM -0700, Randy Dunlap wrote:
->> QCOM_SCM depends on HAVE_ARM_SMCCC, so ARM_QCOM_SPM_CPUIDLE should
->> also depend on HAVE_ARM_SMCCC since 'select' does not follow any
->> dependency chains.
->>
->> This fixes a kconfig warning and subsequent build errors:
->>
->> WARNING: unmet direct dependencies detected for QCOM_SCM
->>    Depends on [n]: (ARM [=y] || ARM64) && HAVE_ARM_SMCCC [=n]
->>    Selected by [y]:
->>    - ARM_QCOM_SPM_CPUIDLE [=y] && CPU_IDLE [=y] && (ARM [=y] || ARM64) && (ARCH_QCOM [=n] || COMPILE_TEST [=y]) && !ARM64 && MMU [=y]
->>
->> arm-linux-gnueabi-ld: drivers/firmware/qcom_scm-smc.o: in function `__scm_smc_do_quirk':
->> qcom_scm-smc.c:(.text+0x5c): undefined reference to `__arm_smccc_smc'
->> arm-linux-gnueabi-ld: drivers/firmware/qcom_scm-legacy.o: in function `scm_legacy_call':
->> qcom_scm-legacy.c:(.text+0x140): undefined reference to `__arm_smccc_smc'
->> arm-linux-gnueabi-ld: drivers/firmware/qcom_scm-legacy.o: in function `scm_legacy_call_atomic':
->> qcom_scm-legacy.c:(.text+0x364): undefined reference to `__arm_smccc_smc'
->>
->> Fixes: a871be6b8eee ("cpuidle: Convert Qualcomm SPM driver to a generic CPUidle driver")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Cc: Stephan Gerhold <stephan@gerhold.net>
->> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->> Cc: Andy Gross <agross@kernel.org>
->> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
->> Cc: linux-arm-msm@vger.kernel.org
->> Cc: He Ying <heying24@huawei.com>
-> There was a similar patch from Arnd a while ago (which fixes another
-> warning for ARM_CPU_SUSPEND?):
->
-> https://lore.kernel.org/linux-pm/20210421135723.3601743-1-arnd@kernel.org/
->
-> I'm not sure who is supposed to pick it up. :)
+Purpose:
+  Allow the remote processor to instantiate a /dev/rpmsgX interface relying on the NS announcement
+  of the "rpmsg-raw" service.
+  This patchet is extracted from  the series [1] with rework to add rpmsg_create_default_ept helper.
 
-ARM cpuidle drivers are maintained by Daniel Lezcano.
+  
+Aim:
+  There is no generic sysfs interface based on RPMsg that allows a user application to communicate
+  with a remote processor in a simple way.
+  The rpmsg_char dev solves a part of this problem by allowing an endpoint to be created on the
+  local side. But it does not take advantage of the NS announcement mechanism implemented for some
+  backends such as the virtio backend. So it is not possible to probe it from  a remote initiative.
+  Extending the char rpmsg device to support NS announcement makes the rpmsg_char more generic.
+  By announcing a "rpmg-raw" service, the firmware of a remote processor will be able to
+  instantiate a /dev/rpmsgX interface providing to the user application a basic link to communicate
+  with it without any knowledge of the rpmsg protocol.
 
-Also, please CC power management material to linux-pm@vger.kernel.org.
+Implementation details:
+  - Register a rpmsg driver for the rpmsg_char driver, associated to the "rpmsg-raw" channel service.
+  - In case of rpmsg char device instantiated by the rpmsg bus (on NS announcement) manage the 
+    channel default endpoint to ensure a stable default endpoint address, for communication with 
+    the remote processor.
+
+How to test it:
+  - This series can be applied on git/andersson/remoteproc.git for-next branch (dc0e14fa833b)
+    + the "Restructure the rpmsg char to decorrelate the control part" series[2]
+
+[1] https://patchwork.kernel.org/project/linux-remoteproc/list/?series=475217
+[2] https://patchwork.kernel.org/project/linux-remoteproc/list/?series=483793
 
 
->
->> ---
->>   drivers/cpuidle/Kconfig.arm |    1 +
->>   1 file changed, 1 insertion(+)
->>
->> --- linux-next-20210604.orig/drivers/cpuidle/Kconfig.arm
->> +++ linux-next-20210604/drivers/cpuidle/Kconfig.arm
->> @@ -108,6 +108,7 @@ config ARM_TEGRA_CPUIDLE
->>   config ARM_QCOM_SPM_CPUIDLE
->>   	bool "CPU Idle Driver for Qualcomm Subsystem Power Manager (SPM)"
->>   	depends on (ARCH_QCOM || COMPILE_TEST) && !ARM64 && MMU
->> +	depends on HAVE_ARM_SMCCC
->>   	select ARM_CPU_SUSPEND
->>   	select CPU_IDLE_MULTIPLE_DRIVERS
->>   	select DT_IDLE_STATES
 
+Arnaud Pouliquen (4):
+  rpmsg: Introduce rpmsg_create_default_ept function
+  rpmsg: char: Add possibility to create and reuse default endpoint
+  rpmsg: char: Introduce the "rpmsg-raw" channel
+  rpmsg: char: Return error if user tries to destroy a default endpoint.
+
+ drivers/rpmsg/rpmsg_char.c | 92 +++++++++++++++++++++++++++++++++++---
+ drivers/rpmsg/rpmsg_core.c | 51 +++++++++++++++++++++
+ include/linux/rpmsg.h      | 14 ++++++
+ 3 files changed, 151 insertions(+), 6 deletions(-)
+
+-- 
+2.17.1
 
