@@ -2,68 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEBF239DE98
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6AF39DE80
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhFGOXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 10:23:13 -0400
-Received: from gate.crashing.org ([63.228.1.57]:33204 "EHLO gate.crashing.org"
+        id S230353AbhFGOTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 10:19:52 -0400
+Received: from foss.arm.com ([217.140.110.172]:34402 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230211AbhFGOXE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 10:23:04 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 157EGxr9002306;
-        Mon, 7 Jun 2021 09:16:59 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 157EGxho002305;
-        Mon, 7 Jun 2021 09:16:59 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Mon, 7 Jun 2021 09:16:58 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <20210607141658.GE18427@gate.crashing.org>
-References: <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1> <20210606012903.GA1723421@rowland.harvard.edu> <20210606115336.GS18427@gate.crashing.org> <CAHk-=wjgzAn9DfR9DpU-yKdg74v=fvyzTJMD8jNjzoX4kaUBHQ@mail.gmail.com> <20210606184021.GY18427@gate.crashing.org> <CAHk-=wjEHbGifWgA+04Y4_m43s-o+3bXpL5qPQL3ECg+86XuLg@mail.gmail.com> <20210606195242.GA18427@gate.crashing.org> <CAHk-=wgd+Gx9bcmTwxhHbPq=RYb_A_gf=GcmUNOU3vYR1RBxbA@mail.gmail.com> <20210606202616.GC18427@gate.crashing.org> <YL36XzUxfs2YGlnw@hirez.programming.kicks-ass.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YL36XzUxfs2YGlnw@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.4.2.3i
+        id S230212AbhFGOTr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 10:19:47 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DB1116D;
+        Mon,  7 Jun 2021 07:17:54 -0700 (PDT)
+Received: from slackpad.fritz.box (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B5ECB3F694;
+        Mon,  7 Jun 2021 07:17:52 -0700 (PDT)
+Date:   Mon, 7 Jun 2021 15:17:42 +0100
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
+        Samuel Holland <samuel@sholland.org>,
+        Ondrej Jirman <megous@megous.com>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, linux-phy@lists.infradead.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH v6 12/17] phy: sun4i-usb: Introduce port2 SIDDQ quirk
+Message-ID: <20210607151742.2f05ff95@slackpad.fritz.box>
+In-Reply-To: <20210607132255.7fa75a7k7ud2g7ux@gilmour>
+References: <20210519104152.21119-1-andre.przywara@arm.com>
+        <20210519104152.21119-13-andre.przywara@arm.com>
+        <20210524115946.jwsasjbr3biyixhz@gilmour>
+        <20210525122901.778bfccd@slackpad.fritz.box>
+        <20210607132255.7fa75a7k7ud2g7ux@gilmour>
+Organization: Arm Ltd.
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 12:52:15PM +0200, Peter Zijlstra wrote:
-> On Sun, Jun 06, 2021 at 03:26:16PM -0500, Segher Boessenkool wrote:
-> > I am saying that if you depend on that some C code you write will result
-> > in some particular machine code, without actually *forcing* the compiler
-> > to output that exact machine code, then you will be disappointed.  Maybe
-> > not today, and maybe it will take years, if you are lucky.
+On Mon, 7 Jun 2021 15:22:55 +0200
+Maxime Ripard <maxime@cerno.tech> wrote:
+
+Hi Maxime,
+
+> On Tue, May 25, 2021 at 12:29:01PM +0100, Andre Przywara wrote:
+> > On Mon, 24 May 2021 13:59:46 +0200
+> > Maxime Ripard <maxime@cerno.tech> wrote:
 > > 
-> > (s/forcing/instructing/ of course, compilers have feelings too!)
+> > Hi Maxime,
+> >   
+> > > On Wed, May 19, 2021 at 11:41:47AM +0100, Andre Przywara wrote:  
+> > > > At least the Allwinner H616 SoC requires a weird quirk to make most
+> > > > USB PHYs work: Only port2 works out of the box, but all other ports
+> > > > need some help from this port2 to work correctly: The CLK_BUS_PHY2 and
+> > > > RST_USB_PHY2 clock and reset need to be enabled, and the SIDDQ bit in
+> > > > the PMU PHY control register needs to be cleared. For this register to
+> > > > be accessible, CLK_BUS_ECHI2 needs to be ungated. Don't ask ....
+> > > > 
+> > > > Instead of disguising this as some generic feature, do exactly that
+> > > > in our PHY init:
+> > > > If the quirk bit is set, and we initialise a PHY other than PHY2, ungate
+> > > > this one special clock, and clear the SIDDQ bit. We can pull in the
+> > > > other required clocks via the DT.
+> > > > 
+> > > > Signed-off-by: Andre Przywara <andre.przywara@arm.com>    
+> > > 
+> > > What is this SIDDQ bit doing exactly?  
+> > 
+> > I probably know as much as you do, but as Jernej pointed out, in some
+> > Rockchip code it's indeed documented as some analogue PHY supply switch:
+> > ($ git grep -i siddq drivers/phy/rockchip)
+> > 
+> > In fact we had this pin/bit for ages, it was just hidden as BIT(1) in
+> > our infamous PMU_UNK1 register. Patch 10/17 drags that into the light.  
 > 
-> And hence the request for a language extension. Both compilers have a
-> vast array of language extensions that are outside of the C spec (thank
-> you!), so can we please get one more?
+> Ok
+> 
+> > > I guess we could also expose this using a power-domain if it's relevant?  
+> > 
+> > Mmmh, interesting idea. So are you thinking about registering a genpd
+> > provider in sun4i_usb_phy_probe(), then having a power-domains property
+> > in the ehci/ohci nodes, pointing to the PHY node? And if yes, should
+> > the provider be a subnode of the USB PHY node, with a separate
+> > compatible? That sounds a bit more involved, but would have the
+> > advantage of allowing us to specify the resets and clocks from PHY2
+> > there, and would look a bit cleaner than hacking them into the
+> > other EHCI/OHCI nodes.  
+> 
+> I'm not sure we need a separate device node, we could just register the
+> phy driver as a genpd provider, and then with an arg (so with
+> of_genpd_add_provider_onecell?) the index of the USB controller we want
+> to power up.
 
-I don't see why not?  It will need to be well-defined, so that it *can*
-be implemented.  And ideally it will be useful for other applications as
-well.  Finally, it should "play nice" with other extensions and language
-features.
+Yeah, I figured that myself meanwhile ;-) I now have a fairly nice
+implementation, which does away with the extra clocks and resets from
+the EHCI/OHCI nodes, and just adds one extra clock to the PHY node. The
+rest is power domains properties.
 
+> > I would not touch the existing SoCs (even though it seems to apply to
+> > them as well, just not in the exact same way), but I can give it a
+> > try for the H616. It seems like the other SIDDQ bits (in the other
+> > PHYs) are still needed for operation, but the PD provide could actually
+> > take care of this as well.
+> > 
+> > Does that make sense or is this a bit over the top for just clearing an
+> > extra bit?  
+> 
+> Using what I described above should be fairly simple, so if we can fit
+> in an available and relevant abstraction, yeah, I guess :)
 
-Segher
+Thanks!
+I will post what I have, just need to find some solution for the RTC
+clock bits.
+
+Cheers,
+Andre
