@@ -2,163 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7EA39E6A5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70AD639E6B0
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230483AbhFGS3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 14:29:38 -0400
-Received: from mail-pj1-f41.google.com ([209.85.216.41]:45041 "EHLO
-        mail-pj1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230333AbhFGS3h (ORCPT
+        id S231327AbhFGSat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 14:30:49 -0400
+Received: from mail-yb1-f181.google.com ([209.85.219.181]:41702 "EHLO
+        mail-yb1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230253AbhFGSaq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 14:29:37 -0400
-Received: by mail-pj1-f41.google.com with SMTP id h12-20020a17090aa88cb029016400fd8ad8so594357pjq.3;
-        Mon, 07 Jun 2021 11:27:29 -0700 (PDT)
+        Mon, 7 Jun 2021 14:30:46 -0400
+Received: by mail-yb1-f181.google.com with SMTP id q21so26348193ybg.8
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 11:28:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=+prxwIPLyH+3qfUxR26q6/ynXr5WzZBCORfLDri/oCA=;
-        b=SjHRTXyAlplogG5SrJqfUYuwNMuf+r7f2igxHisESwyrmz+9AsIE8TuW0h0ZfIi5PA
-         wzYNhfU6TFe/+MKE4xy+YFTAvSSeUaQt4QA4+fdMAvhSjWlUagxsuSS90sFcB4dDBrka
-         ofXHKCfDLJyC6eHUqinIuMzTyzUB8wbjRNFZE4BdFK76WyYV2Yz72X7FBPGovILqVeiw
-         flDzGAEDvOV3k2nShRAFHPHtp33QftM6w9NFXXWYpbbwRKrxtOUQJT1z2Eo5OJs3cga/
-         2Ds46CbpJyjD9woGfnnmEaYXoRmagSjD1YOWKXzlgZHZFoQZQ7zv7xEsyJIFix1opJBE
-         JdKA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+0Qwo32Oi1nv9vlDwm2eqEKRAzjcx7HfOAwXOuTbk10=;
+        b=lkaKgvYp2UoBsbN0mkUg7ioP3c5jqxct7eqLECGRJveesvW4KC2u1BWVhzfqxf6FSt
+         HhQixNRJpZH3+7y0A2oZg1XSElp+Dr2IA308Z7sOrS3VRG/gY9in2SoimvKMgqoWKpgO
+         ek1/b7A3Qwz5EYIi/CY12UoCeXWU2z/+bfhzPd+/c55NF9kmPQapkxknUHefsJ393eD+
+         Df6jsV7q4u4MRXOqpNXEOh64c2G6CvR71F9RajfCGEfYIy6549eKKO4h6gFD+z5NceXk
+         TaRHXRGLjE8gsKm2Cn/9AjIFDWWNuPoZlFzV82pLgrFA2jNFhqaPD8zj+4qV1TxoPYTV
+         inJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=+prxwIPLyH+3qfUxR26q6/ynXr5WzZBCORfLDri/oCA=;
-        b=Vq3Wr1AsphYrDRg1toH3h2S8ewEbtt025WUEHDojSMckD+FLWl2Wzr64J01PAdr85s
-         c0YLaqpDBo4l2XtktFewXi7JgLwNmmanUfRF4xCtlLv8cwQ+wJdfLUQOeH+Ry8p2uHRd
-         /5YpZYRGPxrrffvFgwDgPhgrZbS54cevPaRSTgEjeczx/bB06A+J5wE563sLmUV+tNsL
-         IXdvj5g0biSDbaZHwxsP5GX/YAyNdX6uYbmucoUPq2gnVWDAZQQbRNsCqD9/GvNYyVUj
-         7ZL8C02hXdIJOOugOySRrBOVDj66VhjeNVaFXW2AIVUxg9rGOEcyZ8v7cUm6jX3EXmtx
-         pOgw==
-X-Gm-Message-State: AOAM531X4WWY04x3GUKNBa/yzZyF7fOScRqkqM/RmT3thqfK9g9WfW0+
-        XUEvpH0T3PU2vz2kW/gaZ6c=
-X-Google-Smtp-Source: ABdhPJzD0DrRCiMj7ZmuFP2rBT5d2xzi46pGPp4NHRWQStyA/70o3PZ+/dPElOEhLdO60oWH4FBaBQ==
-X-Received: by 2002:a17:902:c942:b029:10f:b651:4fa9 with SMTP id i2-20020a170902c942b029010fb6514fa9mr16424048pla.83.1623090389454;
-        Mon, 07 Jun 2021 11:26:29 -0700 (PDT)
-Received: from [192.168.1.41] (096-040-190-174.res.spectrum.com. [96.40.190.174])
-        by smtp.gmail.com with ESMTPSA id iq15sm129315pjb.53.2021.06.07.11.26.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Jun 2021 11:26:28 -0700 (PDT)
-Subject: Re: KASAN: use-after-free Read in hci_chan_del
-To:     Greg KH <greg@kroah.com>, "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     syzbot <syzbot+305a91e025a73e4fd6ce@syzkaller.appspotmail.com>,
-        davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        kernel-hardening@lists.openwall.com
-References: <000000000000adea7f05abeb19cf@google.com>
- <2fb47714-551c-f44b-efe2-c6708749d03f@gmail.com> <YL3zGGMRwmD7fNK+@zx2c4.com>
- <YL4BAKHPZqH6iPdP@kroah.com>
-From:   SyzScope <syzscope@gmail.com>
-Message-ID: <dd3094fa-9cb8-91c2-7631-a69c34eac387@gmail.com>
-Date:   Mon, 7 Jun 2021 11:26:26 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+0Qwo32Oi1nv9vlDwm2eqEKRAzjcx7HfOAwXOuTbk10=;
+        b=jW6psxBFMKhk1iKEiIBTxybnIJdwaBLq3/q1YYrPvLOn85ozEyFR+owxexmERUlLSQ
+         drmE3MO7I9gajTsxv7lSBNSlLtNmNDisAD/Qp0DVF9S9oIvKbdpRbp6gdLXWruvWzboU
+         dbJWof/wa4yu6YaF7fZkVRN6Sn+f9LLCdTdVuX3EBHiWMgotuUhzKdwW6MHcALpNfnJ6
+         9DvEciLA2Jz11UWNxajmrahwj0t21pcWzrrRPpI5NN/U0XWl65IS0l7EFy0ETpEyFZoY
+         IndAs+T5bON/Q5nWJkG7wuI9/YELEfDT7PbY4BcuVQ2DGKt2J2Cc4uNjcIGNhNZK+Km4
+         IZeA==
+X-Gm-Message-State: AOAM530mwXFqukd/1VgaMTVDtJGJksZOAgbpAi3zPj7sJ7CJMMJrog8s
+        8SCL2GcE5WVBff+R5zrIVVA2ru/l5FB70BiaxDAD5Q==
+X-Google-Smtp-Source: ABdhPJx4ohpuDTQlAgei1fDf+QUU1Eup7/GocO0IFqPbGVqFWzeZ/RLaM84MwQQ0WMsv8U3PsPPUtwU5EN/gSw2/i5s=
+X-Received: by 2002:a25:e741:: with SMTP id e62mr26818800ybh.484.1623090458346;
+ Mon, 07 Jun 2021 11:27:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YL4BAKHPZqH6iPdP@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <CAFJ_xbq06nfaEWtVNLtg7XCJrQeQ9wCs4Zsoi5Y_HP3Dx0iTRA@mail.gmail.com>
+ <20210604205018.2238778-1-ndesaulniers@google.com> <CAKwvOdmhg2tj8cKe-XitoZXGKaoOhgTsCEdVXubt+LiY9+46rw@mail.gmail.com>
+ <20210604235046.w3hazgcpsg4oefex@google.com> <YLtUO/thYUp2wU7k@hirez.programming.kicks-ass.net>
+ <CAFP8O3+ggR8N-ffsaYSMPX7s2XgrzzTQQjOgCwUe9smyos-waA@mail.gmail.com> <YL5jQ6wMo9WeQDYJ@hirez.programming.kicks-ass.net>
+In-Reply-To: <YL5jQ6wMo9WeQDYJ@hirez.programming.kicks-ass.net>
+From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Date:   Mon, 7 Jun 2021 11:27:27 -0700
+Message-ID: <CAFP8O3KEqSsknL7YwvAhXLu=R6GHR4=SB_Fix0=rR8KiwBKSnA@mail.gmail.com>
+Subject: Re: [PATCH v3 16/16] objtool,x86: Rewrite retpoline thunk calls
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, lma@semihalf.com,
+        Guenter Roeck <groeck@google.com>,
+        Juergen Gross <jgross@suse.com>, lb@semihalf.com,
+        LKML <linux-kernel@vger.kernel.org>, mbenes@suse.com,
+        =?UTF-8?Q?Rados=C5=82aw_Biernacki?= <rad@semihalf.com>,
+        upstream@semihalf.com,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
-We are really thankful for all the suggestions and concerns. We are 
-definitely interested in continuing this line of research.
+On Mon, Jun 7, 2021 at 11:19 AM Peter Zijlstra <peterz@infradead.org> wrote=
+:
+>
+> On Sat, Jun 05, 2021 at 06:58:39PM -0700, F=C4=81ng-ru=C3=AC S=C3=B2ng wr=
+ote:
+>
+> > You may use https://github.com/llvm/llvm-project/blob/main/llvm/tools/l=
+lvm-objcopy/ELF/Object.cpp#L843
+> > as a reference.
+>
+> BTW, Error::success(), is that a successfull error, or an erroneous
+> success? :-))
 
-Just to clarify:  SyzScope is an ongoing research project that is 
-currently under submission, which has an anonymity requirement. 
-Therefore we chose to use a gmail address initially in the public 
-channel. Since Greg asked, we did reveal our university affiliation and 
-email address, as well as cross-referenced a private email (again using 
-university address) to security@kernel.org. We are sorry for the chaos 
-of using several different email addresses. In the future, we will try 
-to use our university address directly (we checked with other 
-researchers and it seems to be okay).
-
-On 6/7/2021 4:20 AM, Greg KH wrote:
-> On Mon, Jun 07, 2021 at 12:21:12PM +0200, Jason A. Donenfeld wrote:
->> Hi SyzScope,
->>
->> On Fri, May 28, 2021 at 02:12:01PM -0700, SyzScope wrote:
->>   
->>> The bug was reported by syzbot first in Aug 2020. Since it remains
->>> unpatched to this date, we have conducted some analysis to determine its
->>> security impact and root causes, which hopefully can help with the
->>> patching decisions.
->>> Specifically, we find that even though it is labeled as "UAF read" by
->>> syzbot, it can in fact lead to double free and control flow hijacking as
->>> well. Here is our analysis below (on this kernel version:
->>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=af5043c89a8ef6b6949a245fff355a552eaed240)
->>>
->>> ----------------------------- Root cause analysis:
->>> --------------------------
->>> The use-after-free bug happened because the object has two different
->>> references. But when it was freed, only one reference was removed,
->>> allowing the other reference to be used incorrectly.
->>> [...]
->> Thank you very much for your detailed analysis. I think this is very
->> valuable work, and I appreciate you doing it. I wanted to jump in to
->> this thread here so as not to discourage you, following Greg's hasty
->> dismissal. The bad arguments made I've seen have been something like:
->>
->> - Who cares about the impact? Bugs are bugs and these should be fixed
->>    regardless. Severity ratings are a waste of time.
->> - Spend your time writing patches, not writing tools to discover
->>    security issues.
->> - This doesn't help my interns.
->> - "research project" scare quotes.
->>
->> I think this entire set of argumentation is entirely bogus, and I really
->> hope it doesn't dissuade you from continuing to conduct useful research
->> on the kernel.
-> Ok, I'd like to apologize if that was the attitude that came across
-> here, as I did not mean it that way.
->
-> What I saw here was an anonymous email, saying "here is a whole bunch of
-> information about a random syzbot report that means you should fix this
-> sooner!"  When there's a dump this big of "information", but no patch,
-> that's almost always a bad sign that the information really isn't all
-> that good, otherwise the author would have just sent a patch to fix it.
->
-> We are drowning in syzbot bugs at the moment, with almost no one helping
-> to fix them.  So much so that the only people I know of working on this
-> are the interns with with the LF has funded because no other company
-> seems willing to help out with this task.
->
-> That's not the syzbot author's fault, it's the fault of every other
-> company that relies on Linux at the moment.  By not providing time for
-> their engineers to fix these found bugs, and only add new features, it's
-> not going to get any better.
->
-> So this combined two things I'm really annoyed at, anonymous
-> contributions combined with "why are you not fixing this" type of
-> a report.  Neither of which were, in the end, actually helpful to us.
->
-> I'm not asking for any help for my interns, nor am I telling anyone what
-> to work on.  I am saying please don't annoy the maintainers who are
-> currently overwhelmed at the moment with additional reports of this type
-> when they obviously can not handle the ones that we have.
->
-> Working with the syzbot people to provide a more indepth analysis of the
-> problem is wonderful, and will go a long way toward helping being able
-> to do semi-automatic fixing of problems like this, which would be
-> wonderful.  But how were we supposed to know this anonymous gmail
-> account, with a half-completed google pages web site was not just a
-> troll trying to waste our time?
->
-> What proof did we have that this really was a correct report if a real
-> person didn't even provide their name to it?
->
-> thanks,
->
-> greg k-h
+A success (no error). Error::success() is a factory member function.
+Its purpose is to create an "unchecked" Error instance and require the
+caller to explicitly check for the error state.
