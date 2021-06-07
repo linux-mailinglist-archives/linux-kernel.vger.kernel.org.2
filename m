@@ -2,110 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB29139D777
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F71C39D779
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbhFGIe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 04:34:58 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3080 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbhFGIe5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 04:34:57 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fz62Q6jcgzWstj;
-        Mon,  7 Jun 2021 16:28:14 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 16:33:04 +0800
-Received: from [127.0.0.1] (10.174.177.72) by dggpemm500006.china.huawei.com
- (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 7 Jun 2021
- 16:33:03 +0800
-Subject: Re: [PATCH 1/1] lib: devres: Add error information printing for
- __devm_ioremap_resource()
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-References: <20210428063203.691-1-thunder.leizhen@huawei.com>
- <CAMuHMdWX7rC2zswHoo6aFf3CYp3NKAfJ7E0x4W2wbVkybGa84g@mail.gmail.com>
- <d8d98365-98f6-d0a4-233e-279172004f51@huawei.com>
- <CAMuHMdWeJkDvhf-J-S4dLqKmSvqnkf+AcWdjyPNu-G8zu2jOkA@mail.gmail.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <2c0a1977-2f87-7fd5-13db-e9524f0fed80@huawei.com>
-Date:   Mon, 7 Jun 2021 16:33:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S230265AbhFGIfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 04:35:09 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:36899 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229657AbhFGIfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 04:35:07 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fz68922BMz9sWX;
+        Mon,  7 Jun 2021 18:33:13 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623054795;
+        bh=9p+Av8F0aPojXCwhbDUXUsk9H/DCl9kIjbUFn6SBCj8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=UBRqXIb1SdeKPrK/Npkrb2SyBLfhxfQe8wW93N4Bfv1dJvbe8LeUGeB8RG5OKH9SI
+         9ucQbENxzhp02DmK+u0y7y3JxrojQjx+sryXENOQ5EYonLB34Gpo16+JpkN/zT10WK
+         p1hwilOaRGFfxWsanMNnu/znrkrvAqiuDJ7TbkpXzUKJAmlsvj5Lgx19jzuMQbPgLz
+         VWIRi6tItxZdUJUwZb+uw9QjhhxzHgAg+nS8hW3Asf5WcpyS8H9mHNsdyeuAYWan/8
+         yt6IUlCYG7IZRy0l44Msf1vRHRJjCkaKZ/D1CulIL62VvS5Pz2aipmmGzj2t6pC3xZ
+         SiYnRhxjzyPtA==
+Date:   Mon, 7 Jun 2021 18:33:12 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux-foundation.org>,
+        Ingo Molnar <mingo@elte.hu>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Waiman Long <longman@redhat.com>
+Subject: linux-next: manual merge of the akpm-current tree with the percpu
+ tree
+Message-ID: <20210607183312.7dec0330@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdWeJkDvhf-J-S4dLqKmSvqnkf+AcWdjyPNu-G8zu2jOkA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/pLzONwVgcST6aCrqYSrJ9a4";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/pLzONwVgcST6aCrqYSrJ9a4
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 2021/6/7 16:15, Geert Uytterhoeven wrote:
-> Hi Leizhen,
-> 
-> On Mon, Jun 7, 2021 at 9:11 AM Leizhen (ThunderTown)
-> <thunder.leizhen@huawei.com> wrote:
->> On 2021/5/17 15:04, Geert Uytterhoeven wrote:
->>> On Wed, Apr 28, 2021 at 8:33 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
->>>> Ensure that all error handling branches print error information. In this
->>>> way, when this function fails, the upper-layer functions can directly
->>>> return an error code without missing debugging information. Otherwise,
->>>> the error message will be printed redundantly or missing.
->>>>
->>>> Fixes: 35bd8c07db2c ("devres: keep both device name and resource name in pretty name")
->>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->>>
->>> Thanks for your patch, which is now commit 5c3e241f5246445d ("lib:
->>> devres: Add error information printing for __devm_ioremap_resource()")
->>> in driver-core-next.
->>>
->>>> --- a/lib/devres.c
->>>> +++ b/lib/devres.c
->>>> @@ -157,8 +157,10 @@ __devm_ioremap_resource(struct device *dev, const struct resource *res,
->>>>                                              dev_name(dev), res->name);
->>>>         else
->>>>                 pretty_name = devm_kstrdup(dev, dev_name(dev), GFP_KERNEL);
->>>> -       if (!pretty_name)
->>>> +       if (!pretty_name) {
->>>> +               dev_err(dev, "can't generate pretty name for resource %pR\n", res);
->>>
->>> If the above fails, it is due to a memory allocation failure, and the
->>> memory allocation core will have already printed an error message.
->>> So there is no need to print a second message.
->>> Hence IMHO this commit should be reverted.
->>
->> If the memory allocation fails, only the 'size' is printed, but the start address of
->> the 'res' is not printed. So the printing here is not repeated. The start address is
->> the more critical help information.
-> 
-> Does that actually matter?
-> What can the user or developer do to fix this problem, with the
-> additional knowledge of the resource's start address?
+Today's linux-next merge of the akpm-current tree got a conflict in:
 
-Oh, you're right.
+  mm/memcontrol.c
 
-> 
->>>>                 return IOMEM_ERR_PTR(-ENOMEM);
->>>> +       }
->>>>
->>>>         if (!devm_request_mem_region(dev, res->start, size, pretty_name)) {
->>>>                 dev_err(dev, "can't request region for resource %pR\n", res);
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
+between commit:
 
+  0f0cace35fa6 ("mm, memcg: mark cgroup_memory_nosocket, nokmem and noswap =
+as __ro_after_init")
+
+from the percpu tree and commits:
+
+  dfe14954c6e4 ("mm: memcg/slab: don't create kmalloc-cg caches with cgroup=
+.memory=3Dnokmem")
+  3fd971b13287 ("mm-memcg-slab-create-a-new-set-of-kmalloc-cg-n-caches-v5")
+  53270d6d0c1f ("mm-memcg-slab-create-a-new-set-of-kmalloc-cg-n-caches-v5-f=
+ix")
+
+from the akpm-current tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+Andrew, you may want to look at commit
+
+  4d5c8aedc8aa ("mm, memcg: introduce mem_cgroup_kmem_disabled()")
+
+from the percpu tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc mm/memcontrol.c
+index 3c1641c67122,b9a6db6a7d4f..000000000000
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@@ -80,10 -80,10 +80,10 @@@ struct mem_cgroup *root_mem_cgroup __re
+  DEFINE_PER_CPU(struct mem_cgroup *, int_active_memcg);
+ =20
+  /* Socket memory accounting disabled? */
+ -static bool cgroup_memory_nosocket;
+ +static bool cgroup_memory_nosocket __ro_after_init;
+ =20
+  /* Kernel memory accounting disabled? */
+- static bool cgroup_memory_nokmem __ro_after_init;
+ -bool cgroup_memory_nokmem;
+++bool cgroup_memory_nokmem __ro_after_init;
+ =20
+  /* Whether the swap controller is active */
+  #ifdef CONFIG_MEMCG_SWAP
+
+--Sig_/pLzONwVgcST6aCrqYSrJ9a4
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC92cgACgkQAVBC80lX
+0GyS0wgAo/qg1w5c6lrco4AGFcKz9NsO/GWY9jNptcSQRi0Zk5qHF+TnW9BhcHnu
+lWx+0YRkaCoRu7IaNf20LOJDWSSD7AyiForLCYYPmC2WfRTG/B1ebm824WNImS3S
++oD8UT8O/hamRsL/DGX39CRwQPTVLPgggRxGhZXaYmapdGNfWYaS+IL6Tkps4k6q
+hTXUiN6R8hN3kOSPJXIMHGl8j+zM6SDSrr7KuTadXMoAvWMSzLoIOk8/2NQzzc0o
+05sGrCZkFaZPFTVASj4E2kqpAcr5LiNxiN3crnKNgEgkN7vAV0kYuQwfKs0Lj14Q
+itXggMvegJ6qxJdex6JeGOHa8MaGPA==
+=cO6c
+-----END PGP SIGNATURE-----
+
+--Sig_/pLzONwVgcST6aCrqYSrJ9a4--
