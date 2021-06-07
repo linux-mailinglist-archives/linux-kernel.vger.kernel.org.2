@@ -2,51 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D74D39D89D
+	by mail.lfdr.de (Postfix) with ESMTP id AA62539D89E
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhFGJZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:25:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42596 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230127AbhFGJZP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:25:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6705860232;
-        Mon,  7 Jun 2021 09:23:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623057805;
-        bh=A4zAYvAyANbFqhltJKq2zyoNqrB3rlfLtGKwOWMjzTs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bpt7xkkvmewiElQQWNxsRbWGWMDyRcMFFSBuUq7jYs9pNInxR1c8kEUT6qBYhOB5b
-         iEkhfZbmpWeJgyPPhVfFHkqG51sWeQdv17qm5qesWti+UnV29W55AeiV2sA9fM5F0g
-         MYaya5iNBq8fBy4KzX12+khVuzgl6OXwhWa9tLbs=
-Date:   Mon, 7 Jun 2021 11:23:22 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Wenli Looi <wlooi@ucalgary.ca>, linux-staging@lists.linux.dev,
+        id S230287AbhFGJZU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Jun 2021 05:25:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230306AbhFGJZQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 05:25:16 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B37DC061766
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 02:23:25 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lqBTf-0005q9-NM; Mon, 07 Jun 2021 11:23:23 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lqBTf-0000J6-Er; Mon, 07 Jun 2021 11:23:23 +0200
+Message-ID: <b3c26d2f29715bdd2771246b26b070fba1d457fe.camel@pengutronix.de>
+Subject: Re: [PATCH -next] reset: lantiq: use
+ devm_reset_controller_register()
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Yang Yingliang <yangyingliang@huawei.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8723bs: Fix uninitialized variable
-Message-ID: <YL3lih8OqGOLjVBf@kroah.com>
-References: <20210606070021.116284-1-wlooi@ucalgary.ca>
- <20210607083316.GO1955@kadam>
+Date:   Mon, 07 Jun 2021 11:23:23 +0200
+In-Reply-To: <20210517032648.2969609-1-yangyingliang@huawei.com>
+References: <20210517032648.2969609-1-yangyingliang@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607083316.GO1955@kadam>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 11:33:17AM +0300, Dan Carpenter wrote:
-> Greg asked about struct holes and the answer is "= {}" will zero out
-> struct holes but it's not important in this case.  The "= {}" is a GCC
-> extension for zeroing structs and it's not part of the C standard.
-> The struct has a kernel pointer in it so we had better not be shairing
-> it to user space.
+On Mon, 2021-05-17 at 11:26 +0800, Yang Yingliang wrote:
+> Use devm_reset_controller_register() for the reset controller
+> registration.
+> 
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  drivers/reset/reset-lantiq.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/reset/reset-lantiq.c b/drivers/reset/reset-lantiq.c
+> index ac41d093de13..b936cfe85641 100644
+> --- a/drivers/reset/reset-lantiq.c
+> +++ b/drivers/reset/reset-lantiq.c
+> @@ -186,7 +186,7 @@ static int lantiq_rcu_reset_probe(struct platform_device *pdev)
+>  	priv->rcdev.of_xlate = lantiq_rcu_reset_xlate;
+>  	priv->rcdev.of_reset_n_cells = 2;
+>  
+> -	return reset_controller_register(&priv->rcdev);
+> +	return devm_reset_controller_register(&pdev->dev, &priv->rcdev);
+>  }
+>  
+>  static const struct of_device_id lantiq_rcu_reset_dt_ids[] = {
 
-I thought we proved that "= {}" will _NOT_ zero out holes in structures.
-Or did we really prove that?  I can't remember now, do you?
+Thank you, applied to reset/next.
 
-thanks,
-
-greg k-h
+regards
+Philipp
