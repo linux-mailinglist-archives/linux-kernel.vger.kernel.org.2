@@ -2,83 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E98139D32A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 04:54:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97DDE39D32D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 04:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbhFGC4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 22:56:11 -0400
-Received: from ZXSHCAS2.zhaoxin.com ([203.148.12.82]:24429 "EHLO
-        ZXSHCAS2.zhaoxin.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbhFGC4J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 22:56:09 -0400
-Received: from zxbjmbx2.zhaoxin.com (10.29.252.164) by ZXSHCAS2.zhaoxin.com
- (10.28.252.162) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Mon, 7 Jun
- 2021 10:54:16 +0800
-Received: from zx.zhaoxin.com (10.28.64.91) by zxbjmbx2.zhaoxin.com
- (10.29.252.164) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Mon, 7 Jun
- 2021 10:54:15 +0800
-From:   Cody Yao-oc <CodyYao-oc@zhaoxin.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>, <tglx@linutronix.de>,
-        <bp@alien8.de>, <hpa@zytor.com>, <x86@kernel.org>
-CC:     <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <shyaololo@163.com>, CodyYao-oc <CodyYao-oc@zhaoxin.com>
-Subject: [PATCH] x86/perf: Fixed obtaining address error about performance monitor MSR on old Inel CPU.
-Date:   Mon, 7 Jun 2021 10:53:35 +0800
-Message-ID: <20210607025335.9643-1-CodyYao-oc@zhaoxin.com>
-X-Mailer: git-send-email 2.17.1
+        id S230203AbhFGC5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 22:57:25 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:22499 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230183AbhFGC5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 22:57:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623034533; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=KJV8f/5MUtIQ+OIjIwk4fwm9EsA/WiuotihBkKF1cpI=;
+ b=mpS+eQmlXa7hXFjzcZN5ap90TGN21KbtCwp/HsowdTw9+uCtQnEBukzO/mXVeOMn0urMADxS
+ yFX742Ky6snvzTtZTxuFhB78Qnvek/llZmuFUIb/T1UV+MMz5BkVJRbskE3gZd3W2tXPGdaj
+ aA1Uh5u5ikwZZjyi0Wfadtyesf0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 60bd8aa58491191eb3c3f02e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 07 Jun 2021 02:55:33
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E1EE8C43460; Mon,  7 Jun 2021 02:55:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 19236C433D3;
+        Mon,  7 Jun 2021 02:55:31 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.28.64.91]
-X-ClientProxiedBy: ZXSHCAS1.zhaoxin.com (10.28.252.161) To
- zxbjmbx2.zhaoxin.com (10.29.252.164)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 07 Jun 2021 08:25:30 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Rob Clark <robdclark@gmail.com>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        saiprakash.ranjan=codeaurora.org@codeaurora.org
+Subject: Re: [PATCHv3 0/2] iommu/arm-smmu-qcom: Add SC7280 support
+In-Reply-To: <664abf04654d78b08b118d11c7c03d99@codeaurora.org>
+References: <cover.1618898456.git.saiprakash.ranjan@codeaurora.org>
+ <664abf04654d78b08b118d11c7c03d99@codeaurora.org>
+Message-ID: <8eee199f10daa93407914f58bfefd6c1@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: CodyYao-oc <CodyYao-oc@zhaoxin.com>
+Hi Will,
 
-Fix "obtain wrong msr address" bug in function nmi_perfctr_msr_to_bit
-and nmi_eventsel_msr_to_bit. In X86_VENDOR_INTEL switch branch, if all
-of the check conditions are not met, code flow will slip to
-X86_VENDOR_ZHAOXIN branch which may lead to incorrect information.
+On 2021-05-24 08:13, Sai Prakash Ranjan wrote:
+> Hi Will,
+> 
+> On 2021-04-20 11:34, Sai Prakash Ranjan wrote:
+>> Patch 1 adds the sc7280 smmu compatible.
+>> Patch 2 moves the adreno smmu check before apss smmu to enable
+>> adreno smmu specific implementation.
+>> 
+>> Note that dt-binding for sc7280 is already merged.
+>> 
+>> Changes in v3:
+>>  * Collect acks and reviews
+>>  * Rebase on top of for-joerg/arm-smmu/updates
+>> 
+>> Changes in v2:
+>>  * Add a comment to make sure this order is not changed in future 
+>> (Jordan)
+>> 
+>> Sai Prakash Ranjan (2):
+>>   iommu/arm-smmu-qcom: Add SC7280 SMMU compatible
+>>   iommu/arm-smmu-qcom: Move the adreno smmu specific impl earlier
+>> 
+>>  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 14 +++++++++++---
+>>  1 file changed, 11 insertions(+), 3 deletions(-)
+> 
+> Gentle Ping!
+> 
 
-Using fallthrough instead of break was completely unintentional,
-therefore, "fallthrough" should be changed to "break".
+Is this going to be taken for 5.14 or needs one more release cycle?
 
-Fixes: 3a4ac121c2ca ("x86/perf: Add hardware performance events support for Zhaoxin CPU.")
+Thanks,
+Sai
 
-Signed-off-by: CodyYao-oc <CodyYao-oc@zhaoxin.com>
----
- arch/x86/kernel/cpu/perfctr-watchdog.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/perfctr-watchdog.c b/arch/x86/kernel/cpu/perfctr-watchdog.c
-index 3ef5868ac588..7aecb2fc3186 100644
---- a/arch/x86/kernel/cpu/perfctr-watchdog.c
-+++ b/arch/x86/kernel/cpu/perfctr-watchdog.c
-@@ -63,7 +63,7 @@ static inline unsigned int nmi_perfctr_msr_to_bit(unsigned int msr)
- 		case 15:
- 			return msr - MSR_P4_BPU_PERFCTR0;
- 		}
--		fallthrough;
-+		break;
- 	case X86_VENDOR_ZHAOXIN:
- 	case X86_VENDOR_CENTAUR:
- 		return msr - MSR_ARCH_PERFMON_PERFCTR0;
-@@ -96,7 +96,7 @@ static inline unsigned int nmi_evntsel_msr_to_bit(unsigned int msr)
- 		case 15:
- 			return msr - MSR_P4_BSU_ESCR0;
- 		}
--		fallthrough;
-+		break;
- 	case X86_VENDOR_ZHAOXIN:
- 	case X86_VENDOR_CENTAUR:
- 		return msr - MSR_ARCH_PERFMON_EVENTSEL0;
 -- 
-2.17.1
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
