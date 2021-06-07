@@ -2,90 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F59539DA23
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F4439DA43
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbhFGKxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 06:53:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42784 "EHLO mail.kernel.org"
+        id S231343AbhFGKyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 06:54:55 -0400
+Received: from comms.puri.sm ([159.203.221.185]:53166 "EHLO comms.puri.sm"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230215AbhFGKxa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 06:53:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4C7C60FDA;
-        Mon,  7 Jun 2021 10:51:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623063099;
-        bh=i0XQNJYxQaqmmDQoZDk8J9PTxBJKV9BhW0RKaQP+lP0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bHrnrbfddswK+S1j4C42LhenrJnyZz8UOTxrgN3YF3wyeoVCG6OQWsgTr/IjKhoJn
-         ERbu8T9RJahz6h/t91glP9JYPjgNjDYX4V25Um/a25NEcNoG3TV4vhSQk3IYZCBCX0
-         K8veW/Sk2qjS5tAv586p2y63jVNOcVh8IOw4ttuW16ZJALshA+J/thRn7+2vy0JV3m
-         yJlbI82t4IJ/JYWqnhKC6nefiGfB4TlUuLkrDFd5AFuv/JRPZfrh4YV6Qx9cyJR96/
-         ai+OgIGQyppbYEsFX2PBppGU7A3bxONEKc3ZFo3zrpaNz21ZhHi31JM2TY24Ni0UY1
-         Xc8ejs8iyrAvw==
-Date:   Mon, 7 Jun 2021 13:51:36 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Adit Ranadive <aditr@vmware.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Christian Benvenuti <benve@cisco.com>,
-        clang-built-linux@googlegroups.com,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Gal Pressman <galpress@amazon.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next v1 10/15] RDMA/cm: Use an attribute_group on
- the ib_port_attribute intead of kobj's
-Message-ID: <YL36OFkmlxJiqjvc@unreal>
-References: <cover.1623053078.git.leonro@nvidia.com>
- <00e578937f557954d240bc0856f45b3f752d6cba.1623053078.git.leonro@nvidia.com>
- <YL3z/xpm5EYHFuZs@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YL3z/xpm5EYHFuZs@kroah.com>
+        id S231243AbhFGKyu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 06:54:50 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id 1CF70E0012;
+        Mon,  7 Jun 2021 03:52:29 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id diGtBasROJRc; Mon,  7 Jun 2021 03:52:27 -0700 (PDT)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     martin.kepplinger@puri.sm, krzysztof.kozlowski@canonical.com,
+        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
+        paul.kocialkowski@bootlin.com, pavel@ucw.cz
+Cc:     devicetree@vger.kernel.org, kernel@puri.sm,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        phone-devel@vger.kernel.org, robh@kernel.org, shawnx.tu@intel.com
+Subject: [PATCH v4 0/5] Add support for the Hynix Hi-846 camera
+Date:   Mon,  7 Jun 2021 12:52:08 +0200
+Message-Id: <20210607105213.1211722-1-martin.kepplinger@puri.sm>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 12:25:03PM +0200, Greg KH wrote:
-> On Mon, Jun 07, 2021 at 11:17:35AM +0300, Leon Romanovsky wrote:
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > 
-> > This code is trying to attach a list of counters grouped into 4 groups to
-> > the ib_port sysfs. Instead of creating a bunch of kobjects simply express
-> > everything naturally as an ib_port_attribute and add a single
-> > attribute_groups list.
-> > 
-> > Remove all the naked kobject manipulations.
-> 
-> Much nicer.
-> 
-> But why do you need your counters to be atomic in the first place?  What
-> are they counting that requires this?  Given that they are just a
-> statistic for userspace, making them be a u64 should work just the same,
-> right?
+hi,
 
-The statistic counters are per-port, while the cm.c flows run in
-asynchronically in parallel for every CM connection.
+This patchset adds support for the SK Hynix Hi-846 CMOS images sensor.
+It includes dt-bindings and the driver.
 
-We need atomic variable to ensure that "write to u64" is not
-interrupted.
+Patches 4 and 5 are basically optional: if i2c-cardlist is deprecated,
+ignore it and act on it appropriately, and the arm64 defconfig is just
+convenience for now.
 
-Thanks
+best wishes,
+
+                              martin
+
+revision history
+----------------
+v4: (thank you Laurent, Sakari and Rob) many driver changes, see v3 review for
+details. they include:
+* add get_selection(), remove open() callback
+* use gpiod API
+* use regulator_bulk API
+* fix power supply timing sequence and bindings
+
+v3: (thank you, Laurent)
+* use do_div() for divisions
+* reset-gpios DT property name instead of rst-gpios
+* improve the dt-bindings
+* add the phone-devel list
+* https://lore.kernel.org/linux-media/20210531120737.168496-1-martin.kepplinger@puri.sm/
+
+v2:
+sent a bit early due to stupid mistakes
+* fix build issues
+* fix dtschema issues
+* add enable for arm64 defconfig
+* https://lore.kernel.org/linux-media/20210530212337.GA15366@duo.ucw.cz/T/#t
+
+v1:
+* https://lore.kernel.org/linux-media/20210527091221.3335998-1-martin.kepplinger@puri.sm/
+
+
+Martin Kepplinger (5):
+  dt-bindings: vendor-prefixes: Add SK Hynix Inc.
+  dt-bindings: media: document SK Hynix Hi-846 MIPI CSI-2 8M pixel
+    sensor
+  media: i2c: add driver for the SK Hynix Hi-846 8M pixel camera
+  arm64: defconfig: enable VIDEO_HI846
+  Documentation: i2c-cardlist: add the Hynix hi846 sensor
+
+ .../admin-guide/media/i2c-cardlist.rst        |    1 +
+ .../bindings/media/i2c/hynix,hi846.yaml       |  105 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+ MAINTAINERS                                   |    6 +
+ arch/arm64/configs/defconfig                  |    1 +
+ drivers/media/i2c/Kconfig                     |   13 +
+ drivers/media/i2c/Makefile                    |    1 +
+ drivers/media/i2c/hi846.c                     | 2117 +++++++++++++++++
+ 8 files changed, 2246 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
+ create mode 100644 drivers/media/i2c/hi846.c
+
+-- 
+2.30.2
+
