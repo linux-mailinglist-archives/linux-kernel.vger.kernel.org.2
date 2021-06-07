@@ -2,173 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 193B239D914
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B1EC39D912
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230394AbhFGJwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:52:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51806 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230173AbhFGJwn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:52:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28DFD611BE;
-        Mon,  7 Jun 2021 09:50:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623059452;
-        bh=JE9YmLu1XcCh2IdiKUhtfnOei95qmgTeBXzlr2OSs5U=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DfpEj+7Jk2U92sWwP3npSY4c5Up9o6rqkZHAdIDdytRl6i4N+gby7GRq/smungUVO
-         0vhwLULcopfuk/WqYIcGYUBavLNLrRMQ5xooklERJjzzypO/GUcpVOA9KFha9zO3nA
-         QPat5j1no34Vch7tvNC+2/PEojw8p0VMLS19KqySapcSkJmoUtaK0zzgVExj7LI3K1
-         zAVqGwAYNRPL9J7cbL5gO/8s1twL1RNlWRatR3Jn6LH2jFS006a3hGXspLzFbfjTkl
-         S5hA1Rpllhszmu8M46JCoQJGhrlzIB98REL/dT1bXnyFnO/lSG2xoCrg2E8Gfx0QQc
-         J6UsQh7JOTJ4w==
-Received: by mail-ot1-f47.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso16093040otu.10;
-        Mon, 07 Jun 2021 02:50:52 -0700 (PDT)
-X-Gm-Message-State: AOAM5307Njk2NkpvZCuOqOHV3qNoJz2XuSALBELwUYyWcxXiPaByrext
-        6D61yhCPyY47yKbqpE71xk6pHft9PtIpOCRq1Kk=
-X-Google-Smtp-Source: ABdhPJwBcZO3+EJo10iM+TtSxwhwjmCAV3817RPdz1/FU9dXzT2GEqhh9BNYlRt6h/snGjjy0s4uCKxjFa8oCQ/sXzQ=
-X-Received: by 2002:a9d:6d0e:: with SMTP id o14mr6760139otp.90.1623059451515;
- Mon, 07 Jun 2021 02:50:51 -0700 (PDT)
+        id S230412AbhFGJwg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Jun 2021 05:52:36 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:19451 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230173AbhFGJwf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 05:52:35 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 3CA3624000B;
+        Mon,  7 Jun 2021 09:50:42 +0000 (UTC)
+Date:   Mon, 7 Jun 2021 11:50:41 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Md Sadre Alam <mdalam@codeaurora.org>
+Cc:     mani@kernel.org, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
+Subject: Re: [PATCH V3] mtd: rawnand: qcom: avoid writing to obsolete
+ register
+Message-ID: <20210607115041.21e21e19@xps13>
+In-Reply-To: <1623059017-5058-1-git-send-email-mdalam@codeaurora.org>
+References: <1623059017-5058-1-git-send-email-mdalam@codeaurora.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210607074258.32322-1-mark-pk.tsai@mediatek.com> <20210607080626.32612-1-mark-pk.tsai@mediatek.com>
-In-Reply-To: <20210607080626.32612-1-mark-pk.tsai@mediatek.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 7 Jun 2021 11:50:40 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGCoME4Wy4e3FNAjWLY=G56ivHzFTLrXRE0mLtnaBVEDQ@mail.gmail.com>
-Message-ID: <CAMj1kXGCoME4Wy4e3FNAjWLY=G56ivHzFTLrXRE0mLtnaBVEDQ@mail.gmail.com>
-Subject: Re: [PATCH] recordmcount: avoid using ABS symbol as reference
-To:     Mark-PK Tsai <mark-pk.tsai@mediatek.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Matt Helsley <mhelsley@vmware.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Sami Tolvanen <samitolvanen@google.com>, yj.chiang@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Jun 2021 at 10:06, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
->
-> > > On Mon, 7 Jun 2021 at 08:59, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
-> > > >
-> > > > > > On Mon, 7 Jun 2021 at 04:42, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
-> > > > > >
-> > > > > > Avoid using ABS symbol, which won't be relocate, as reference.
-> > > > > >
-> > > > > > On arm64 platform, if there's shndx equals SHN_ABS(0xfff1).
-> > > > > >
-> > > > > > Section Headers:
-> > > > > > [Nr]    Name                         Type      Address          Off      Size   ES  Flg Lk     Inf    Al
-> > > > > > [65521] .text.n_tty_receive_buf      PROGBITS  0000000000000000 3cdab520 000054 00  AX  0      0      4
-> > > > > > [65522] .rela.text.n_tty_receive_buf RELA      0000000000000000 3cdab578 000030 18  I   152076 65521  8
-> > > > > >
-> > > > >
-> > > > > A RELA section's r_info field points to the section to which it
-> > > > > applies. This is why in the example above section #65522 points to
-> > > > > section #65521. This has nothing to do with the numerical value of
-> > > > > SHN_ABS.
-> > > >
-> > > > If the r_info of RELA section is 65521(0xfff1),
-> >
-> > Oh sorry, I mean sh_info here.
-> >
-> > > > find_secsym_ndx() will use it to find the base symbol.
-> > > >
-> > >
-> > > But what does that have to do with the sh_info field of the RELA
-> > > section's Elf_Shdr struct? IOW, what is the relevance of section
-> > > #65521 here?
-> > >
-> >
-> > So what I mean is the problem occur if the sh_info of a RELA section
-> > is #65521.
->
-> Actually the problem occur if the sh_info of a RELA section is in
-> the special section index range(SHN_LORESERVE ~ SHN_HIRESERVE).
-> Maybe I should add a is_shndx_special() to check this like
-> scripts/mod/modpost.h did?
->
+Hello,
 
-So if I understand all of this correctly, we are running into a
-fundamental issue here, where the linker emits more sections than the
-sh_info field can describe, overflowing into the reserved range.
+Md Sadre Alam <mdalam@codeaurora.org> wrote on Mon,  7 Jun 2021
+15:13:37 +0530:
 
-I don't think papering over it like this is going to be maintainable
-going forward.
+> QPIC_EBI2_ECC_BUF_CFG register got obsolete from QPIC V2.0 onwards.
+> Avoid writing this register if QPIC version is V2.0 or newer.
+> 
+> Also fixed nandc undeclared issue reported by,
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+
+This tag should only be added when you fix something that is already in
+mainline. The Reported-by here points to v2, which makes no sense.
+Please drop it.
+
+> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+> ---
+> [V3]
+>  * Fixed nandc undeclared issue.
+>  drivers/mtd/nand/raw/qcom_nandc.c | 18 ++++++++++++------
+>  1 file changed, 12 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+> index a64fb6c..ee5985d 100644
+> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> @@ -734,6 +734,7 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read, i
+>  {
+>  	struct nand_chip *chip = &host->chip;
+>  	u32 cmd, cfg0, cfg1, ecc_bch_cfg;
+> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+>  
+>  	if (read) {
+>  		if (host->use_ecc)
+> @@ -762,7 +763,8 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read, i
+>  	nandc_set_reg(chip, NAND_DEV0_CFG0, cfg0);
+>  	nandc_set_reg(chip, NAND_DEV0_CFG1, cfg1);
+>  	nandc_set_reg(chip, NAND_DEV0_ECC_CFG, ecc_bch_cfg);
+> -	nandc_set_reg(chip, NAND_EBI2_ECC_BUF_CFG, host->ecc_buf_cfg);
+> +	if (!nandc->props->qpic_v2)
+> +		nandc_set_reg(chip, NAND_EBI2_ECC_BUF_CFG, host->ecc_buf_cfg);
+>  	nandc_set_reg(chip, NAND_FLASH_STATUS, host->clrflashstatus);
+>  	nandc_set_reg(chip, NAND_READ_STATUS, host->clrreadstatus);
+>  	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
+> @@ -1133,7 +1135,8 @@ static void config_nand_page_read(struct nand_chip *chip)
+>  
+>  	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
+>  	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
+> -	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
+> +	if (!nandc->props->qpic_v2)
+> +		write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
+>  	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1, 0);
+>  	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1,
+>  		      NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
+> @@ -1191,8 +1194,9 @@ static void config_nand_page_write(struct nand_chip *chip)
+>  
+>  	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
+>  	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
+> -	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1,
+> -		      NAND_BAM_NEXT_SGL);
+> +	if (!nandc->props->qpic_v2)
+> +		write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1,
+> +			      NAND_BAM_NEXT_SGL);
+>  }
+>  
+>  /*
+> @@ -1248,7 +1252,8 @@ static int nandc_param(struct qcom_nand_host *host)
+>  					| 2 << WR_RD_BSY_GAP
+>  					| 0 << WIDE_FLASH
+>  					| 1 << DEV0_CFG1_ECC_DISABLE);
+> -	nandc_set_reg(chip, NAND_EBI2_ECC_BUF_CFG, 1 << ECC_CFG_ECC_DISABLE);
+> +	if (!nandc->props->qpic_v2)
+> +		nandc_set_reg(chip, NAND_EBI2_ECC_BUF_CFG, 1 << ECC_CFG_ECC_DISABLE);
+>  
+>  	/* configure CMD1 and VLD for ONFI param probing in QPIC v1 */
+>  	if (!nandc->props->qpic_v2) {
+> @@ -2689,7 +2694,8 @@ static int qcom_nand_attach_chip(struct nand_chip *chip)
+>  				| ecc_mode << ECC_MODE
+>  				| host->ecc_bytes_hw << ECC_PARITY_SIZE_BYTES_BCH;
+>  
+> -	host->ecc_buf_cfg = 0x203 << NUM_STEPS;
+> +	if (!nandc->props->qpic_v2)
+> +		host->ecc_buf_cfg = 0x203 << NUM_STEPS;
+>  
+>  	host->clrflashstatus = FS_READY_BSY_N;
+>  	host->clrreadstatus = 0xc0;
 
 
-
-> >
-> > > > And in the symbol search loop in find_secsym_ndx(), get_symindex will
-> > > > return 0xfff1 if the symbol is in ABS section.
-> > > >
-> > > > In this case, find_secsym_ndx() will return a absolute symbol as
-> > > > base, which won't be relocate, if an ABS symbol is found before the
-> > > > real symbol in section 65521.
-> > > >
-> > >
-> > > I see your point here.
-> > >
-> > > > >
-> > > > > > find_secsym_ndx, which use r_info in rela section to find the reference
-> >
-> > sh_info.
-> >
-> > > > > > symbol, may take ABS symbol as base.
-> > > > > >
-> > > > > > Symbol table '.symtab' contains 453285 entries:
-> > > > > >    Num:    Value          Size Type    Bind   Vis       Ndx Name
-> > > > > >      6: 0000000000000002     0 NOTYPE  LOCAL  DEFAULT   ABS section_count
-> > > > > >
-> > > > > > Which cause an invalid address in __mcount_loc.
-> > > > > >
-> > > > >
-> > > > > Could you give a better account of the error you are trying to address?
-> > > > >
-> > > > > Also, arm64 no longer defines a section_count symbol (since v5.11), so
-> > > > > please make sure that the diagnostics of the issue you are addressing
-> > > > > are accurate for mainline.
-> > > > >
-> > > >
-> > > > My kernel version is 5.4.61.
-> > > > But as I explained, I suppose mainline also have this issue.
-> > > >
-> > >
-> > > Mainline is what we work on. So please base your changes (and your
-> > > commit log) on mainline.
-> > >
-> >
-> > I understand it.
-> > But the platform I can reproduce the problem is only support to 5.4 LTS now.
-> > And port it to the latest mainline kernel have much more work to do, can I just
-> > keep this commit log? Or just remove the example I posted in the commit messsage?
-> >
-> > >
-> > > > >
-> > > > > > Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-> > > > > > ---
-> > > > > >  scripts/recordmcount.h | 4 ++++
-> > > > > >  1 file changed, 4 insertions(+)
-> > > > > >
-> > > > > > diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
-> > > > > > index f9b19524da11..9b69167fb7ff 100644
-> > > > > > --- a/scripts/recordmcount.h
-> > > > > > +++ b/scripts/recordmcount.h
-> > > > > > @@ -526,6 +526,10 @@ static int find_secsym_ndx(unsigned const txtndx,
-> > > > > >         for (symp = sym0, t = nsym; t; --t, ++symp) {
-> > > > > >                 unsigned int const st_bind = ELF_ST_BIND(symp->st_info);
-> > > > > >
-> > > > > > +               /* avoid absolute symbols */
-> > > > > > +               if (symp->st_shndx == SHN_ABS)
-> > > > > > +                       continue;
-> > > > > > +
-> > > > > >                 if (txtndx == get_symindex(symp, symtab, symtab_shndx)
-> > > > > >                         /* avoid STB_WEAK */
-> > > > > >                     && (STB_LOCAL == st_bind || STB_GLOBAL == st_bind)) {
-> >
+Thanks,
+Miquèl
