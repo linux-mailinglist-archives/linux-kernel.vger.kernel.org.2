@@ -2,155 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E92C39E166
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D4B39E164
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231338AbhFGQDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 12:03:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231284AbhFGQDg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 12:03:36 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 260E3C061766;
-        Mon,  7 Jun 2021 09:01:32 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id r198so23794745lff.11;
-        Mon, 07 Jun 2021 09:01:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FfTfNqfGgiJF7i6Kth2DAqp+9bynWd1MeZa/bRlf+HM=;
-        b=TwTvF7ArgyQ4xqG4cH6oBzEOtyHOqZlkLzUV7qyyBkeUKA8/BDpvCvs+BmSYmyF9AV
-         rRP8UMOc5+6I6gwvUgmcRlifEJ2h7Y8NNyOWBaOIWFg2ggzJbE9U+3CM5H4tbYr4fbtw
-         FDqp6C4NLjH3zBrb0cRoaPbVkNEwMwiU+CHjNvCjQa9nga0iWLX0mfPEvJZ+/wxnfqLq
-         9JzVWOAgy7CySe4OjVR9RzclBOZCvyIx3Q3Y+XC2+YwHsmhNPyfcGPcd/ovzd7RJSYC6
-         c23CifDhStaIhHBniI/q9OpaRcz932OdGRLA8lfESrRPWOqbh8CqTanH2rusfrPAIyKD
-         V4Cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FfTfNqfGgiJF7i6Kth2DAqp+9bynWd1MeZa/bRlf+HM=;
-        b=pwjFr7/oLrZNKDPaSsfZYE3lAqwnnvTAhvjl7l5K1FrJY2dlLpKJnjl3lAmIkax74y
-         EQcQkK9wiiIazx/jIj4EsD025tlQCDWNR7FO+fBif2j9+w65uEqQYmS4k3if5FZ2GA9l
-         M5rjWfjzFF9/yiRng/57tvP5tfFukvX7EOJhD+8sJD//xW9TanPs6Sq3qJc2C0KgzTg6
-         1+EmRlIOJKq9Rl272xWBoCaserXIedN9LcLUhiZUR4HDWkn//i/DY/9qt6BYX6evszHn
-         1EqsoVddj8jdogigos//I8PGfAtBtjqLFbre+Hcdl1/w+/d8OmB4nhAZB+e/UNnQ7m1W
-         oZwA==
-X-Gm-Message-State: AOAM530LSFOWeAqJCCopz4VIfLEq/v9ZqPnNeY9QnqEQpWGT912S/eP8
-        IcV8VsRo1vG/MKhrW58ug+37NQS7RBa/zp/Thjw=
-X-Google-Smtp-Source: ABdhPJz499SKsQIIbh4r2JtmI+ERb/ExBl8VzFeBie1M2ODzVoQQxX0viJ52D1FwF0Otp/1vaQTuOmNLaCrLjhf3DAY=
-X-Received: by 2002:a05:6512:1184:: with SMTP id g4mr12508214lfr.553.1623081688934;
- Mon, 07 Jun 2021 09:01:28 -0700 (PDT)
+        id S231266AbhFGQDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 12:03:31 -0400
+Received: from mail-bn7nam10on2073.outbound.protection.outlook.com ([40.107.92.73]:28033
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230197AbhFGQD3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 12:03:29 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jgWGeNsElcdOFKUX29Bd7fj9glMF2xmCcVvk8gIciUE5nMBRwT8ABZkvhzDmePLCeLg/6a3q96uteylJzKP0MA70gNHqyCB6knye31aBJWy1jI9cBGez2Ja3hDrd068zlYKgD7k6wGV7HJrSLQaHEArAjJnRLvMJKHd1KO+0LMbEjm89hQJDE6da4puuHGstHYShC1o+E8oaMnFZijpqT4qL5ez8IO8umA/lKuqr9zzVIcBTTlOvax55o04GMVdAX3wYlZWprEtBVMNb1rkhu7uLKO7NEVBSMhPlimJdN2uwGgfqu/t571oLttHNRg+AjtNcSfkPEWRuXKhnsLPMZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nigzNm5cyzQaoGM5+FMvArHv7x9fVEDrN6XpO3PS1Dw=;
+ b=nMHCbZgcj3tfvR3Ch6FfIzgtSbjlPZH+YK7NDw/Mk3NZCu30nmonorg49tHbtVqkRN49Ti67juAoVcx7Npcw1Zt9xKQVl14NzO3UF2ZJ9mqYt7VOWOqpTgOpTzwpSnmeNQvOuYRnvtcLNuGUMNGVmmR+poR+Rxmwfm2IokBn8noSGl3n32rKJG7+K1Mx9dZ0zLwDak488pUPrsi5BVyGYUkEkoWSB6vHmeTUrxo3T+WgJ8rgGgv00TF+wWbIxg5+iu0vtv/9Qp0ki0HvDPU62sct9DbjsgfgdnMyhzFIZPw5GZ/Krk0Iw1pgxU5cpOb3M3fpSHyy2ssP0qo6TGnaoA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nigzNm5cyzQaoGM5+FMvArHv7x9fVEDrN6XpO3PS1Dw=;
+ b=bN5+j2K6rKhjl+eMCK89s8rHtRwh4xBeIIA1nYmp4HPi1sJTsh9jOUUrjHJZpeYvFEso42lLPz7q+ObD1K1+G+qhB3Cstw7KwPL8PpO/5V4eLHuaysCNzjmtJrTtT7BHtLXnaaBqjFv3j5ysNO9tSgYwXcfgsjEJQTAmZOYAUZo=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SA0PR12MB4557.namprd12.prod.outlook.com (2603:10b6:806:9d::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22; Mon, 7 Jun
+ 2021 16:01:35 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::a8a9:2aac:4fd1:88fa]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::a8a9:2aac:4fd1:88fa%3]) with mapi id 15.20.4195.030; Mon, 7 Jun 2021
+ 16:01:35 +0000
+Cc:     brijesh.singh@amd.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
+        npmccallum@redhat.com
+Subject: Re: [PATCH Part1 RFC v3 06/22] x86/sev: check SEV-SNP features
+ support
+To:     Borislav Petkov <bp@alien8.de>
+References: <20210602140416.23573-1-brijesh.singh@amd.com>
+ <20210602140416.23573-7-brijesh.singh@amd.com> <YL4zJT1v6OuH+tvI@zn.tnic>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <57fce362-ba9a-2f04-6958-870fd4f8be5c@amd.com>
+Date:   Mon, 7 Jun 2021 11:01:32 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
+In-Reply-To: <YL4zJT1v6OuH+tvI@zn.tnic>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [70.112.153.56]
+X-ClientProxiedBy: SA9PR13CA0028.namprd13.prod.outlook.com
+ (2603:10b6:806:21::33) To SN6PR12MB2718.namprd12.prod.outlook.com
+ (2603:10b6:805:6f::22)
 MIME-Version: 1.0
-References: <20210607081727.4723-1-cnsztl@gmail.com> <9258ab23-ef65-2c3d-f0d2-ca5f77d7c12a@gmail.com>
- <CAGb2v65ck=LV+UCdQoaUtEjFaTaHr9-wmGmpkCCkebUOuYtikw@mail.gmail.com> <f085da86-8b6d-ba99-2d0a-736ec02424db@gmail.com>
-In-Reply-To: <f085da86-8b6d-ba99-2d0a-736ec02424db@gmail.com>
-From:   Tianling Shen <cnsztl@gmail.com>
-Date:   Tue, 8 Jun 2021 00:01:17 +0800
-Message-ID: <CAOP2_TiHwYhLVLOEx-Vgx6k3XmHgNsiyR8CqrWyABnP0AidMBg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: rockchip: add EEPROM node for NanoPi R4S
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     Chen-Yu Tsai <wens@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Marty Jones <mj8263788@gmail.com>, Pavel Machek <pavel@ucw.cz>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Brijeshs-MacBook-Pro.local (70.112.153.56) by SA9PR13CA0028.namprd13.prod.outlook.com (2603:10b6:806:21::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.9 via Frontend Transport; Mon, 7 Jun 2021 16:01:33 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8de45b26-7110-4410-599f-08d929cd8640
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4557:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB4557F7BACE3B9364C191CF6AE5389@SA0PR12MB4557.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2331;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9dzT5SYogq8ajn0HIED7Pa8DS3+NX2MyK7E2cPoVIbWQI3oaSo+j/OmgoiAAHwiTGgEfgT9FRtO9+CeSvtxaZ0dlqx+uQtjpVSgT0wLCMR+pfdeCizJyL29UZIL2hw9QXFwON5O0PaI0fi1iiQsddMtbZfZuPFubBvPNwLlOYQMnMNovB0u8CFElS1/mX+4SM/Q7EIribqeSSIU2jLM761iM5ZLRquaxkw0ogi25g6v5pDTaZ/w3rVtQpBaB8N+H/tVMP50w/y5MUog1E/sCKh2Fi06X0xdWB3yIUAQQ2/mUDxuxe4nKxIReIbQkk8PDMOeBmbByEWHCKTMV4AfqzYg8VWepUSwAIQ9XS65/B4ZiT+hcToL6gt2kBakQZ+4y8K+WEe9c9rwka51Tn6+74fe0SnlBLZQNbWi9Pw98pmK77JfyCBZGo4cOgFvgfKh5KuyG9ZqAfZaKyj6MR2FAi/fBfcW9B6+Bff42NhGNmV3H1pp5wIU8NSG1BCJZhyMgamW0SDkLqD4Otx6ikCJN7oY9QBOEhEPSSQsPjlqeaggUWGh+JBoL8qp585eMaVbVJ4++HyobVisfhX1tmgSFXS/aL2Uji97TLv8tNJJEsWceGO9pRQ075EUIA15zK1CseR8LEVUGxw5alrcYVuvJp2OAKLV9qYc5kgPvXnrnPXLf9u/ra0LnVifaJkNmhXQifaikl+CeWEgzB56DB/VW0kRhFC7OmK4g5AInL9Ne+vs=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(366004)(376002)(136003)(39860400002)(6512007)(53546011)(6506007)(52116002)(4744005)(8676002)(956004)(2906002)(8936002)(44832011)(316002)(26005)(5660300002)(66556008)(66946007)(36756003)(478600001)(7416002)(31686004)(38100700002)(38350700002)(86362001)(4326008)(31696002)(186003)(54906003)(6486002)(16526019)(66476007)(2616005)(6916009)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?b1hsVU5GQVBSeUtLUHZObGpzTlBWMDlYUEIyekZpUDI1b0pJNWhsUUNRdld1?=
+ =?utf-8?B?SWh2OEpBYXNPOU5hWTRHdWlwTi9KOGRzL2ZIMlZLNmpDeGVXQW14VEU1SCto?=
+ =?utf-8?B?cUM3K1kzTDF5VWFnTksyV0tFazdQMGZPRFd5WHF4SHpoSUI3UFhpWHU1YWVu?=
+ =?utf-8?B?cWIzUHJMSkh1RDBCR2c0TGN4elNWT3RIUHBSL0Q0NkpLcXZPTlhrbm5BSzI4?=
+ =?utf-8?B?UlR6a2hIU1E3OWVJY1VzaEJCRmFTNE91SXFKMmp5djFVb2g5SkYyMEdHcjhY?=
+ =?utf-8?B?WkN0cmk4dWlySDl1MUU1alRNMjVZaEhJRFVXb1diR3BWVW9NYjAvRTdickwx?=
+ =?utf-8?B?ZlArYk1XRzhjVCtkeVkvaVVKQ094b2dQUVpKcmc5YjRySUpjbzZrQ3Q2dVE5?=
+ =?utf-8?B?dTNLQStYTitLMG51aWVmUG1TVC82cTR4RFRJYnMva0JFYUFNNXpzanpVeXFG?=
+ =?utf-8?B?NTg0c3NyNGhDYSswYlJsMWJXbkpPSCswbVd1c0ZhWnVhUEZCaCtCT2xWaDBm?=
+ =?utf-8?B?Sjl2d3AvZWpySzlMdHp3eXVOZTFJVWI0ZjVRbGxkeDJxODFmMGQ2NExyZC9h?=
+ =?utf-8?B?RiszYVY4Z3JETG1xMGJwcmEzZ2xUMCtZYVZUYWlOYThjMGhWMmluQ1l2ZUZ3?=
+ =?utf-8?B?MzM0SUdDU1c0bFVZYWNOQ3dqZDl3VWI4ZlFFbEJObEpCNUFtRjNnM0FyVTdT?=
+ =?utf-8?B?ZlhSS1Jma3B6QUlrMFdScGZiei9wQVg0RTl0OElhR1kxYkxUWHpVSW10N0xz?=
+ =?utf-8?B?NWVxQmZnc3ladWlFRnM5eVFnWU9adjlUU1dNL0R5a3U3STN2cG1SRFkzRmJT?=
+ =?utf-8?B?N1ZCdjA0TWlVY0dVZGV1NjNWNjMvbUFHNHkvcVVUN1dpUTRsOXJYT3JzWHZv?=
+ =?utf-8?B?QStMKzlQRGlHREZZeWZxamI0eklVTllrQ2E0MmcrYmZtcXNlU2VZL3hBYnRz?=
+ =?utf-8?B?NUFNOGJRSzVycUtZcS9DTVFIZGRoQjVET29aNnhZNlNCMTdJRG5RWjJDUTlV?=
+ =?utf-8?B?b1djK0xKcVpVTjFZbGRhbThiU1NiQTUvaFV5dE5EOStDc2l4M2FzclVaTDJX?=
+ =?utf-8?B?Z3NXeXdvVVBlbnBDZVFmL1VRMmxTeHdMZnczZHlHT1ozNFJRNHZGb0NlTnVU?=
+ =?utf-8?B?ZG92R3k0SFJXU0RpY2lLWWI5UThGNFhNckp2WXJnZWRQM05wRk1OODdCRys0?=
+ =?utf-8?B?ZXpGZ01xUnVTYjhLOGlGZHF2eHZqQkNzVStCcnYvSG5aSFJlQnRWQzBuaEtW?=
+ =?utf-8?B?MENkM1Vsd2hFVU9FNW5JYkk5NWwrWjQwcWRibTNzWE4vVEtydWU0MEdFN1pz?=
+ =?utf-8?B?bzUydDNjcEZ2bGtBSWR2UVJHRTlpNDlkMDhyVHZPY1FGUG5sdnB0dUY4UWFo?=
+ =?utf-8?B?STJMNktFRU1xY0pMdVF5Vmp5YXJxUmFMY2dLTnBGYzdVSnMzS1BIblNiOHlT?=
+ =?utf-8?B?UHpZbk9QMWpNWXRHZVAvVE51bW1VbS9FTmxNeDJ2UEtaU2RxcnlMenk2MkU0?=
+ =?utf-8?B?a2NKWUdiaktvN1c2czQwcUtnVCtwaEJWeGxRWCthVzZROUNDa2k3SlZET20v?=
+ =?utf-8?B?aW9Na3k2UW96OVgzbGtOTTBlZ1NKTlJSa1ZuekZGTUFzT3RHOC9EZVBnSlVs?=
+ =?utf-8?B?c3FpcmhpYTFNUGVCd0VSeXdzWFI5dDZIYlFkcEhVclpWY2QzZzZzbHdMYzlG?=
+ =?utf-8?B?M29tRm8yVFcrdG81bHp1RmxSbTd5Mnd2YVE2bU9FT05wcDlTK281QjJITUti?=
+ =?utf-8?Q?IpkXkasbjkTudfmxQ1UsEVThI6/mre5Iiy7AFjH?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8de45b26-7110-4410-599f-08d929cd8640
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2021 16:01:35.1092
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6ycDPXuIoDI+tl/vZWaxIe0n5Q7EYAUNMv/DTJgNoFc+/qrMgej2zxvRf/J71K0RX84Tqx4pwVoD7Oqy1/N2kw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4557
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Johan,
 
-On Mon, Jun 7, 2021 at 6:26 PM Johan Jonker <jbx6244@gmail.com> wrote:
+On 6/7/21 9:54 AM, Borislav Petkov wrote:
+> On Wed, Jun 02, 2021 at 09:04:00AM -0500, Brijesh Singh wrote:
+>>  static bool early_setup_sev_es(void)
+> This function is doing SNP init now too, so it should be called
+> something generic like
 >
-> Hi Chen-Yu,
+> 	do_early_sev_setup()
 >
-> On 6/7/21 11:40 AM, Chen-Yu Tsai wrote:
-> > On Mon, Jun 7, 2021 at 5:31 PM Johan Jonker <jbx6244@gmail.com> wrote:
-> >>
-> >> Hi Tianling,
-> >>
-> >> On 6/7/21 10:17 AM, Tianling Shen wrote:
-> >>> NanoPi R4S has a EEPROM attached to the 2nd I2C bus (U92), which
-> >>> stores the MAC address.
-> >>>
-> >>> Signed-off-by: Tianling Shen <cnsztl@gmail.com>
-> >>> ---
-> >>>  arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts | 9 +++++++++
-> >>>  1 file changed, 9 insertions(+)
-> >>>
-> >>> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-> >>> index cef4d18b599d..4a82f50a07c5 100644
-> >>> --- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-> >>> +++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-> >>> @@ -68,6 +68,15 @@
-> >>>       status = "disabled";
-> >>>  };
-> >>>
-> >>> +&i2c2 {
-> >>> +     eeprom@51 {
-> >>> +             compatible = "microchip,24c02", "atmel,24c02";
-> >>> +             reg = <0x51>;
-> >>> +             pagesize = <16>;
-> >>
-> >>> +             read-only; /* This holds our MAC */
-> >>
-> >> The mainline dts files should be generic I think.
-> >> Any comment about "use", partitions or write ability should be avoided.
-> >> It's up the user.
-> >
->
-> > Per the datasheet for this specific EEPROM, the latter half (128 bytes)
-> > is read-only in hardware by design though.
->
-> The 24AA02XEXX is programmed at the factory with a
-> globally unique node address stored in the upper half
-> of the array and permanently write-protected. The
-> remaining 1,024 bits are available for application use.
->
+> or so.
 
-In my opinion, as this contains data programmed by the factory, would
-it be okay to keep it read-only?
+Okay, noted.
 
-> Just a question...
->
->     nvmem-cells = <&mac_address>;
->     nvmem-cells-names = "mac-address";
->
-> Which part does this point to?
->
-> Can we use the lower part to store/rewrite this too?
->
-> ===
->
-> From at24.yaml:
->
->             items:
->               - pattern:
-> "^(atmel|catalyst|microchip|nxp|ramtron|renesas|rohm|st),(24(c|cs|lc|mac)[0-9]+|spd)$"
->               - pattern: "^atmel,(24(c|cs|mac)[0-9]+|spd)$"
->
-> How does Microchip 24AA025E48 fit the regex?
-> What compatible would you advise?
 
-It seems that 24AA025E48 is a variant of 24MAC402 [1], and
-`atmel,24c02` will be okay in this case.
-1. https://lkml.org/lkml/2018/1/24/494
+>>  #define GHCB_SEV_ES_GEN_REQ		0
+>>  #define GHCB_SEV_ES_PROT_UNSUPPORTED	1
+>> +#define GHCB_SEV_ES_SNP_UNSUPPORTED	2
+> GHCB_SNP_UNSUPPORTED
 
-Thanks,
-Tianling.
+Noted.
+
 
 >
-> ===
+>> +static bool __init sev_snp_check_hypervisor_features(void)
+> check_hv_features()
 >
-> Johan
+> is nice and short.
+
+Noted.
+
+
+>> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+>> index 77a754365ba9..9b70b7332614 100644
+>> --- a/arch/x86/kernel/sev.c
+>> +++ b/arch/x86/kernel/sev.c
+>> @@ -609,6 +609,10 @@ static bool __init sev_es_setup_ghcb(void)
+> Ditto for this one: setup_ghcb()
+
+Noted.
+
+
 >
-> >
-> > ChenYu
-> >
+> Thx.
+>
