@@ -2,88 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 920D639D5DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E043739D5D8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbhFGHXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 03:23:35 -0400
-Received: from mail-pj1-f41.google.com ([209.85.216.41]:46914 "EHLO
-        mail-pj1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhFGHXd (ORCPT
+        id S230200AbhFGHWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 03:22:18 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:32820 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229923AbhFGHWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 03:23:33 -0400
-Received: by mail-pj1-f41.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso9801264pjb.5;
-        Mon, 07 Jun 2021 00:21:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=OC8PsyFHXhJlNVBTSitgcnGkSPQg05VER4L54PiarWk=;
-        b=BLP7nIx2+RA4xMdb1wch9+kPqtJFTu84QDLM0/dfVOMXRlqFrkRDib2cx5EjAi/g8f
-         8wdzgri55tcmCApEUYacPNAq0TbIFZ6L6CiQX21McBJS5GhtMqu0/g6taKYdnmuXldNt
-         Ik0TC3HUG0xSVO6Frr8EW54sX/6qy1+t9cNnTozV9pi1+Dfm9tE6Mf8fsqL1xaDNvjrO
-         YVNQs+AyKodHIvYH0vXPxTY84Bw2fvpdR9u8Uy74fhWDo/nvwvif3jQbSccHzQRhULQC
-         7T/NhA9f+mTXx1m2dTGATNhK3MjIHJCb4iSPa3xhVi2Eu2PcZTbDgc+vbXNvAaaKw6hk
-         q6bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=OC8PsyFHXhJlNVBTSitgcnGkSPQg05VER4L54PiarWk=;
-        b=tgoaWUGetv/gaqDtIGqQ8pYe4iJjjCjJ/4sO5v3ofbbG6HTBF0Cq6mQIzGnJ7XWk4H
-         1XPqSMBTupUhuj88e0hM2XEWmix2mJpNiuYB5mzmho6bXzvTLymbVLlqWLp3s/tM9Ngj
-         L7xRnY/lNqEslVN5qw71L5YBb4W53z+3Oh/kyEA0qe86B+I6e/7wZVD2k0mnu60E4qdv
-         4rwXsg4TqM8K0o4iGobGgG+Uz+ZMlGpYduuehW3s88Nw7+xiphEKvucWlTh2k0YPwNLv
-         WjhnDLmhRm1wRGH4w1pwYLXZqBXHdXqBqfQRkCXufsk+OmlLrCwuHxoITbvGsGu1xigl
-         zQ4Q==
-X-Gm-Message-State: AOAM533BwGjNdG5KORUB+irDYpJBJl+6IzjmsumcpHiwUTUja+Rg5v7c
-        cJat4oaVt4zvctDCfsYKnxd4gEx2yUo=
-X-Google-Smtp-Source: ABdhPJyIlTGgSn22HgWeistANnthzANP1Oh7++Qhyctx5nVh0iy1oHkXz0LitYEqNHvxrdqjAlNypQ==
-X-Received: by 2002:a17:902:c404:b029:10e:21e8:759c with SMTP id k4-20020a170902c404b029010e21e8759cmr16807097plk.44.1623050442846;
-        Mon, 07 Jun 2021 00:20:42 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.61])
-        by smtp.googlemail.com with ESMTPSA id f3sm10797137pjo.3.2021.06.07.00.20.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 07 Jun 2021 00:20:42 -0700 (PDT)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: [PATCH v2 3/3] KVM: X86: Let's harden the ipi fastpath condition edge-trigger mode
-Date:   Mon,  7 Jun 2021 00:19:45 -0700
-Message-Id: <1623050385-100988-3-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1623050385-100988-1-git-send-email-wanpengli@tencent.com>
-References: <1623050385-100988-1-git-send-email-wanpengli@tencent.com>
+        Mon, 7 Jun 2021 03:22:17 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15779kDh074430;
+        Mon, 7 Jun 2021 07:20:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=qhPAhUr5YAF0o4ASCE+IuS5a+VZymq5evsuGWrWm9XA=;
+ b=ytF4eeP96vil5Jtivp6h2u78o+Q43vEcwf2Yt+iAXCMXdT+ns3n8udflMh5D8HCwsd/2
+ wIQJSYgcYSUWGcdkY/h3ZLdZWyZc37lLneYYBnihAeoDL5NZgUCJZF5JEs/bXxwf5wU9
+ cozAPyQCbu7Oj1OXDiBYMThEdRU6XivrAiYNRbtTG2bY4s0Fj8AG6FxahsT8i7BG6kR0
+ flvuyYg8v5XHvp7Iq+o+TH8UXCLtkUv3jBC5kJDQUq6phzD1VM3wIEBvvSisy2ZGMuXb
+ e5rGIjUm7f5oB7d6d/J+99bsuxK/T53XAjDeX0FFUUpdj7doWJmuX5NxUXSzDvTXAYMy zw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 39017na1wc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 07 Jun 2021 07:20:13 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1577AJXY077676;
+        Mon, 7 Jun 2021 07:20:12 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 38yxctnasu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 07 Jun 2021 07:20:12 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1577KBeJ099409;
+        Mon, 7 Jun 2021 07:20:11 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 38yxctnask-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 07 Jun 2021 07:20:11 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1577K7qj027060;
+        Mon, 7 Jun 2021 07:20:08 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 07 Jun 2021 00:20:05 -0700
+Date:   Mon, 7 Jun 2021 10:19:58 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/9] staging: rtl8188eu: remove RT_TRACE and DBG_88E
+ prints from usb_ops_linux.c
+Message-ID: <20210607071958.GN1955@kadam>
+References: <20210605165858.3175-1-martin@kaiser.cx>
+ <20210605165858.3175-6-martin@kaiser.cx>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210605165858.3175-6-martin@kaiser.cx>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: lmfaHgLbDUepcqMFZn2Hz_0XvECWgG3F
+X-Proofpoint-ORIG-GUID: lmfaHgLbDUepcqMFZn2Hz_0XvECWgG3F
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10007 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 spamscore=0
+ mlxlogscore=999 phishscore=0 impostorscore=0 suspectscore=0 clxscore=1015
+ mlxscore=0 malwarescore=0 priorityscore=1501 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106070057
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+On Sat, Jun 05, 2021 at 06:58:55PM +0200, Martin Kaiser wrote:
+> @@ -464,14 +403,8 @@ u32 usb_read_port(struct adapter *adapter, u32 addr, struct recv_buf *precvbuf)
+>  			  precvbuf);/* context is precvbuf */
+>  
+>  	err = usb_submit_urb(purb, GFP_ATOMIC);
+> -	if ((err) && (err != (-EPERM))) {
+> -		RT_TRACE(_module_hci_ops_os_c_, _drv_err_,
+> -			 ("cannot submit rx in-token(err=0x%.8x), URB_STATUS =0x%.8x",
+> -			 err, purb->status));
+> -		DBG_88E("cannot submit rx in-token(err = 0x%08x),urb_status = %d\n",
+> -			err, purb->status);
+> +	if ((err) && (err != (-EPERM)))
+>  		ret = _FAIL;
 
-Let's harden the ipi fastpath condition edge-trigger mode.
+Not related to your patch but why is -EPERM treated differently?  It's
+not immediately clear that -EPERM is even something that usb_submit_urb()
+returns...
 
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
----
- arch/x86/kvm/x86.c | 1 +
- 1 file changed, 1 insertion(+)
+> -	}
+>  
+>  	return ret;
+>  }
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index b594275..dbd3e9d 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -1922,6 +1922,7 @@ static int handle_fastpath_set_x2apic_icr_irqoff(struct kvm_vcpu *vcpu, u64 data
- 		return 1;
- 
- 	if (((data & APIC_SHORT_MASK) == APIC_DEST_NOSHORT) &&
-+		((data & APIC_INT_LEVELTRIG) == 0) &&
- 		((data & APIC_DEST_MASK) == APIC_DEST_PHYSICAL) &&
- 		((data & APIC_MODE_MASK) == APIC_DM_FIXED) &&
- 		((u32)(data >> 32) != X2APIC_BROADCAST)) {
--- 
-2.7.4
+regards,
+dan carpenter
 
