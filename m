@@ -2,196 +2,462 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD3F39D452
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 07:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9261739D43F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 07:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbhFGF0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 01:26:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbhFGF0s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 01:26:48 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A4E7C061766
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 22:24:57 -0700 (PDT)
-Received: by ozlabs.org (Postfix, from userid 1007)
-        id 4Fz1yt0gLrz9sVt; Mon,  7 Jun 2021 15:24:54 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=gibson.dropbear.id.au; s=201602; t=1623043494;
-        bh=JAc5YQzpeD5lW7Z9BAWmTNGY3yGElPglJxBgcJp9NPI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=la5gMiMVqFDI3LD2ipJ1hTo5ZfOcV1F8BSn40ZV9xHLJ0hhkfnpIZSMFEPGkgSb0s
-         mbLES8oEurirxBwaJzlkoYGqWM8ACE3Xz5WH+/TVZWXnFEMa5G++tfoZ/Od7v+q4Xf
-         NzWhQHJuoLEWcPvPKx9cNbitSY9TnON0cJYuPHJE=
-Date:   Mon, 7 Jun 2021 15:02:38 +1000
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Leonardo Bras <leobras.c@gmail.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] powerpc/mm/hash: Avoid resizing-down HPT on first
- memory hotplug
-Message-ID: <YL2obsnp4rWbW6CV@yekko>
-References: <20210430143607.135005-1-leobras.c@gmail.com>
- <20210430143607.135005-2-leobras.c@gmail.com>
+        id S230127AbhFGFKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 01:10:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46720 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229449AbhFGFKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 01:10:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B11E26124B;
+        Mon,  7 Jun 2021 05:08:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623042530;
+        bh=ePvPoJu7u2KF56QW4Q7kJycD7Jjr2uDNDzVglnc3XU0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=o9lsnnTyWoR4siDcA7FUyweDVqt9Ajkftze8FaZhREHtUNakOlJZcj5Q7sjIZhZDj
+         WsfvZDoL7XzszCbx1DB+b32Tsobfkw+cWhf2k+eAQ6VWI6o3tcNJPDHTHCS/PNIF3y
+         vBU4w9tHCGrsSviywD9w73T0sKIAPXY1E7DTCYnUZ2dn2JCMOdaTRCRofHoWkmMlKD
+         YReEw06rGftHBqO2pD5PonOQzAOCSU3/CwHXWKgE0qfkr3DLIWnGQezjUknXqh53dL
+         95XpdsB8O/diiCUSXgS68pkFHmdU4WE0B1jmQrrOSZmWwVrlJ7kZRqI9EG5H0zGs4s
+         rkQYYrZ6EBapQ==
+Received: by mail-lj1-f181.google.com with SMTP id e2so20429142ljk.4;
+        Sun, 06 Jun 2021 22:08:50 -0700 (PDT)
+X-Gm-Message-State: AOAM533I0QC+OE4Oc39ynYuo2yHr6Fy8XyQcQHIRmQRPfvgRNRqkRi3i
+        9xTXw779SugKu/ce5udHpwlKzsTAxLbF3xqzTxQ=
+X-Google-Smtp-Source: ABdhPJwrbAiToCZ36Puj+93fheIEDlSZSjWJWUuQx1ObP9tpcF0aS0MdXZsUIPy3dkcMXDwBigg12WU2xvjTqL6lYS4=
+X-Received: by 2002:a05:651c:502:: with SMTP id o2mr13427682ljp.105.1623042528848;
+ Sun, 06 Jun 2021 22:08:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="TVn+HWIGqqi/A3Yw"
-Content-Disposition: inline
-In-Reply-To: <20210430143607.135005-2-leobras.c@gmail.com>
+References: <mhng-a5f8374f-350b-4c13-86e8-c6aa5e697454@palmerdabbelt-glaptop>
+ <mhng-c0406cea-776b-49d2-a223-13a83d3a7433@palmerdabbelt-glaptop>
+ <CO6PR04MB7812D8905C6EEBDE8513866F8D3C9@CO6PR04MB7812.namprd04.prod.outlook.com>
+ <CAJF2gTRH6OVB1RrOyp88LDvX3fV0doJxNTM61trWxJsLaX0X0g@mail.gmail.com>
+ <CO6PR04MB7812614750AE3CA78D49C0AD8D389@CO6PR04MB7812.namprd04.prod.outlook.com>
+ <CAJF2gTSgC2+ULpfSQKvan7phPf8VT+nxUiekfpHELNjsQYo=CA@mail.gmail.com> <CO6PR04MB7812D075519BCFBAF744DE7D8D389@CO6PR04MB7812.namprd04.prod.outlook.com>
+In-Reply-To: <CO6PR04MB7812D075519BCFBAF744DE7D8D389@CO6PR04MB7812.namprd04.prod.outlook.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Mon, 7 Jun 2021 13:08:36 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTSdPgpr-X=dQbHNTp8uTdWzXD1XP6aCD60kq_4HULvjWw@mail.gmail.com>
+Message-ID: <CAJF2gTSdPgpr-X=dQbHNTp8uTdWzXD1XP6aCD60kq_4HULvjWw@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
+To:     Anup Patel <Anup.Patel@wdc.com>
+Cc:     Atish Patra <atishp@atishpatra.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        "anup@brainfault.org" <anup@brainfault.org>,
+        "drew@beagleboard.org" <drew@beagleboard.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "wefu@redhat.com" <wefu@redhat.com>,
+        "lazyparser@gmail.com" <lazyparser@gmail.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-sunxi@lists.linux.dev" <linux-sunxi@lists.linux.dev>,
+        "guoren@linux.alibaba.com" <guoren@linux.alibaba.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 7, 2021 at 12:47 PM Anup Patel <Anup.Patel@wdc.com> wrote:
+>
+>
+>
+> > -----Original Message-----
+> > From: Guo Ren <guoren@kernel.org>
+> > Sent: 07 June 2021 09:52
+> > To: Anup Patel <Anup.Patel@wdc.com>
+> > Cc: Atish Patra <atishp@atishpatra.org>; Palmer Dabbelt
+> > <palmer@dabbelt.com>; anup@brainfault.org; drew@beagleboard.org;
+> > Christoph Hellwig <hch@lst.de>; wefu@redhat.com; lazyparser@gmail.com;
+> > linux-riscv@lists.infradead.org; linux-kernel@vger.kernel.org; linux-
+> > arch@vger.kernel.org; linux-sunxi@lists.linux.dev; guoren@linux.alibaba.com;
+> > Paul Walmsley <paul.walmsley@sifive.com>
+> > Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
+> >
+> > Hi Anup,
+> >
+> > On Mon, Jun 7, 2021 at 11:38 AM Anup Patel <Anup.Patel@wdc.com> wrote:
+> > >
+> > >
+> > >
+> > > > -----Original Message-----
+> > > > From: Guo Ren <guoren@kernel.org>
+> > > > Sent: 06 June 2021 22:42
+> > > > To: Anup Patel <Anup.Patel@wdc.com>; Atish Patra
+> > > > <atishp@atishpatra.org>
+> > > > Cc: Palmer Dabbelt <palmer@dabbelt.com>; anup@brainfault.org;
+> > > > drew@beagleboard.org; Christoph Hellwig <hch@lst.de>;
+> > > > wefu@redhat.com; lazyparser@gmail.com;
+> > > > linux-riscv@lists.infradead.org; linux- kernel@vger.kernel.org;
+> > > > linux-arch@vger.kernel.org; linux- sunxi@lists.linux.dev;
+> > > > guoren@linux.alibaba.com; Paul Walmsley <paul.walmsley@sifive.com>
+> > > > Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
+> > > >
+> > > > Hi Anup and Atish,
+> > > >
+> > > > On Thu, Jun 3, 2021 at 2:00 PM Anup Patel <Anup.Patel@wdc.com>
+> > wrote:
+> > > > >
+> > > > >
+> > > > >
+> > > > > > -----Original Message-----
+> > > > > > From: Palmer Dabbelt <palmer@dabbelt.com>
+> > > > > > Sent: 03 June 2021 09:43
+> > > > > > To: guoren@kernel.org
+> > > > > > Cc: anup@brainfault.org; drew@beagleboard.org; Christoph Hellwig
+> > > > > > <hch@lst.de>; Anup Patel <Anup.Patel@wdc.com>;
+> > wefu@redhat.com;
+> > > > > > lazyparser@gmail.com; linux-riscv@lists.infradead.org; linux-
+> > > > > > kernel@vger.kernel.org; linux-arch@vger.kernel.org; linux-
+> > > > > > sunxi@lists.linux.dev; guoren@linux.alibaba.com; Paul Walmsley
+> > > > > > <paul.walmsley@sifive.com>
+> > > > > > Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
+> > > > > >
+> > > > > > On Sat, 29 May 2021 17:30:18 PDT (-0700), Palmer Dabbelt wrote:
+> > > > > > > On Fri, 21 May 2021 17:36:08 PDT (-0700), guoren@kernel.org
+> > wrote:
+> > > > > > >> On Wed, May 19, 2021 at 3:15 PM Anup Patel
+> > > > > > >> <anup@brainfault.org>
+> > > > > > wrote:
+> > > > > > >>>
+> > > > > > >>> On Wed, May 19, 2021 at 12:24 PM Drew Fustini
+> > > > > > <drew@beagleboard.org> wrote:
+> > > > > > >>> >
+> > > > > > >>> > On Wed, May 19, 2021 at 08:06:17AM +0200, Christoph
+> > > > > > >>> > Hellwig
+> > > > > > wrote:
+> > > > > > >>> > > On Wed, May 19, 2021 at 02:05:00PM +0800, Guo Ren
+> > wrote:
+> > > > > > >>> > > > Since the existing RISC-V ISA cannot solve this
+> > > > > > >>> > > > problem, it is better to provide some configuration
+> > > > > > >>> > > > for the SOC vendor to
+> > > > > > customize.
+> > > > > > >>> > >
+> > > > > > >>> > > We've been talking about this problem for close to five years.
+> > > > > > >>> > > So no, if you don't manage to get the feature into the
+> > > > > > >>> > > ISA it can't be supported.
+> > > > > > >>> >
+> > > > > > >>> > Isn't it a good goal for Linux to support the capabilities
+> > > > > > >>> > present in the SoC that a currently being fab'd?
+> > > > > > >>> >
+> > > > > > >>> > I believe the CMO group only started last year [1] so the
+> > > > > > >>> > RV64GC SoCs that are going into mass production this year
+> > > > > > >>> > would not have had the opporuntiy of utilizing any RISC-V
+> > > > > > >>> > ISA extension for handling cache management.
+> > > > > > >>>
+> > > > > > >>> The current Linux RISC-V policy is to only accept patches
+> > > > > > >>> for frozen or ratified ISA specs.
+> > > > > > >>> (Refer, Documentation/riscv/patch-acceptance.rst)
+> > > > > > >>>
+> > > > > > >>> This means even if emulate CMO instructions in OpenSBI, the
+> > > > > > >>> Linux patches won't be taken by Palmer because CMO
+> > > > > > >>> specification is still in draft stage.
+> > > > > > >> Before CMO specification release, could we use a sbi_ecall to
+> > > > > > >> solve the current problem? This is not against the
+> > > > > > >> specification, when CMO is ready we could let users choose to
+> > > > > > >> use the new CMO in
+> > > > Linux.
+> > > > > > >>
+> > > > > > >> From a tech view, CMO trap emulation is the same as sbi_ecall.
+> > > > > > >>
+> > > > > > >>>
+> > > > > > >>> Also, we all know how much time it takes for RISCV
+> > > > > > >>> international to freeze some spec. Judging by that we are
+> > > > > > >>> looking at another
+> > > > > > >>> 3-4 years at minimum.
+> > > > > > >
+> > > > > > > Sorry for being slow here, this thread got buried.
+> > > > > > >
+> > > > > > > I've been trying to work with a handful of folks at the RISC-V
+> > > > > > > foundation to try and get a subset of the various
+> > > > > > > in-development specifications (some simple CMOs, something
+> > > > > > > about non-caching in the page tables, and some way to prevent
+> > > > > > > speculative accesse from generating coherence traffic that will break
+> > non-coherent systems).
+> > > > > > > I'm not sure we can get this together quickly, but I'd prefer
+> > > > > > > to at least try before we jump to taking vendor-specificed behavior
+> > here.
+> > > > > > > It's obviously an up-hill battle to try and get specifications
+> > > > > > > through the process and I'm certainly not going to promise it
+> > > > > > > will work, but I'm hoping that the impending need to avoid
+> > > > > > > forking the ISA will be sufficient to get people behind
+> > > > > > > producing some specifications in a timely
+> > > > > > fashion.
+> > > > > > >
+> > > > > > > I wasn't aware than this chip had non-coherent devices until I
+> > > > > > > saw this thread, so we'd been mostly focused on the Beagle V chip.
+> > > > > > > That was in a sense an easier problem because the SiFive IP in
+> > > > > > > it was never designed to have non-coherent devices so we'd
+> > > > > > > have to make anything work via a series of slow workarounds,
+> > > > > > > which would make emulating the eventually standardized
+> > > > > > > behavior reasonable in terms of performance (ie, everything
+> > > > > > > would be super slow so who really
+> > > > cares).
+> > > > > > >
+> > > > > > > I don't think relying on some sort of SBI call for the CMOs
+> > > > > > > whould be such a performance hit that it would prevent these
+> > > > > > > systems from being viable, but assuming you have reasonable
+> > > > > > > performance on your non-cached accesses then that's probably
+> > > > > > > not going to be viable to trap and emulate.  At that point it
+> > > > > > > really just becomes silly to pretend that we're still making
+> > > > > > > things work by emulating the eventually ratified behavior, as
+> > > > > > > anyone who actually tries to use this thing to do IO would
+> > > > > > > need out of tree patches.  I'm not sure exactly what the plan
+> > > > > > > is for the page table bits in the specification right now, but
+> > > > > > > if you can give me a pointer to some documentation then I'm
+> > > > > > > happy to try and push for something
+> > > > compatible.
+> > > > > > >
+> > > > > > > If we can't make the process work at the foundation then I'd
+> > > > > > > be strongly in favor of just biting the bullet and starting to
+> > > > > > > take vendor-specific code that's been implemented in hardware
+> > > > > > > and is necessarry to make things work acceptably.  That's
+> > > > > > > obviously a sub-optimal solution as it'll lead to a bunch of
+> > > > > > > ISA fragmentation, but at least we'll be able to keep the
+> > > > > > > software stack
+> > > > together.
+> > > > > > >
+> > > > > > > Can you tell us when these will be in the hands of users?
+> > > > > > > That's pretty important here, as I don't want to be blocking
+> > > > > > > real users from having their hardware work.  IIRC there were
+> > > > > > > some plans to distribute early boards, but it looks like the
+> > > > > > > foundation got involved and I guess I lost the thread at that point.
+> > > > > > >
+> > > > > > > Sorry this is all such a headache, but hopefully we can get
+> > > > > > > things sorted out.
+> > > > > >
+> > > > > > I talked with some of the RISC-V foundation folks, we're not
+> > > > > > going to have an ISA specification for the non-coherent stuff
+> > > > > > any time soon.  I took a look at this code and I definately
+> > > > > > don't want to take it as is, but I'm not opposed to taking
+> > > > > > something that makes the
+> > > > hardware work as long as it's a lot cleaner.
+> > > > > > We've already got two of these non-coherent chips, I'm sure more
+> > > > > > will come, and I'd rather have the extra headaches than make
+> > > > > > everyone fork the software stack.
+> > > > >
+> > > > > Thanks for confirming. The CMO extension is still in early stages
+> > > > > so it will certainly take more time for them. After CMO extension
+> > > > > is finalized, it will take some more time to have actual RISC-V
+> > > > > platforms with
+> > > > CMO implemented.
+> > > > >
+> > > > > >
+> > > > > > After talking to Atish it looks like there's likely to be an SBI
+> > > > > > extension to handle the CMOs, which should let us avoid the bulk
+> > > > > > of the vendor-specific behavior in the kernel.  I know some
+> > > > > > people are worried about adding to the SBI surface.  I'm worried
+> > > > > > about that too, but that's way better than sticking a bunch of
+> > > > > > vendor-specific instructions into the kernel.  The SBI extension
+> > > > > > should make for a straight-forward cache flush implementation in
+> > > > > > Linux, so let's just plan on
+> > > > that getting through quickly (as has been done before).
+> > > > >
+> > > > > Yes, I agree. We can have just a single SBI call which is meant
+> > > > > for DMA sync purpose only which means it will flush/invalidate
+> > > > > pages from all cache levels irrespective of the cache hierarchy (i.e.
+> > > > > flush/invalidate to RAM). The CMO extension might more generic
+> > > > > cache operations which can target any cache level.
+> > > > >
+> > > > > I am already preparing a write-up for SBI DMA sync call in SBI
+> > > > > spec. I will share it with you separately as well.
+> > > > >
+> > > > > >
+> > > > > > Unfortunately we've yet to come up with a way to handle the
+> > > > > > non-cacheable mappings without introducing a degree of
+> > > > > > vendor-specific behavior or seriously impacting performance
+> > > > > > (mark them as not valid and deal with them in the trap handler).
+> > > > > > I'm not really sure it counts as supporting the hardware if it's
+> > > > > > massively slow, so that really leaves us with vendor-specific
+> > > > > > mappings as the only
+> > > > option to make these chips work.
+> > > > >
+> > > > > A RISC-V platform can have non-cacheable mappings is following
+> > > > > possible
+> > > > > ways:
+> > > > > 1) Fixed physical address range as non-cacheable using PMAs
+> > > > > 2) Custom page table attributes
+> > > > > 3) Svpmbt extension being defined by RVI
+> > > > >
+> > > > > Atish and me both think it is possible to have RISC-V specific DMA
+> > > > > ops implementation which can handle all above case. Atish is
+> > > > > already working on DMA ops implementation for RISC-V.
+> > > > Not only DMA ops, but also icache_sync & __vdso_icache_sync. Please
+> > > > have a look at:
+> > > > https://lore.kernel.org/linux-riscv/1622970249-50770-12-git-send-ema
+> > > > il-
+> > > > guoren@kernel.org/T/#u
+> > >
+> > > The icache_sync and __vdso_icache_sync will have to be addressed
+> > > differently. The SBI DMA sync extension cannot address this.
+> > Agree
+> >
+> > >
+> > > It seems Allwinner D1 have more non-standard stuff:
+> > > 1) Custom PTE bits for IO-coherent access
+> > > 2) Custom data cache flush/invalidate for DMA sync
+> > > 3) Custom icache flush/invalidate
+> > Yes, but 3) is a performance optimization, not critical for running.
+> >
+> > >
+> > > Other hand, BeagleV has only two problems:
+> > > 1) Custom physical address range for IO-coherent access
+> > > 2) Custom L2 cache flush/invalidate for DMA sync
+> > https://github.com/starfive-
+> > tech/linux/commit/d4c4044c08134dca8e5eaaeb6d3faf97dc453b6d
+> >
+> > Currently, they still use DMA sync with DMA descriptor, are you sure they
+> > have minor memory physical address.
+> >
+> > >
+> > > From above #2, can be solved by SBI DMA sync call and Linux DMA ops
+> > > for both BeagleV and Allwinner D1
+> > >
+> > > On BeagleV, issue #1 can be solved using "dma-ranges".
+> > >
+> > > On Allwinner D1, issues #1 and #3 need to be addressed separately.
+> > >
+> > > I think supporting BeagleV in upstream Linux is relatively easy
+> > > compared to Allwinner D1.
+> > >
+> > > @Guo, please check if you can reserve dedicated physical address range
+> > > for IO-coherent access (just like BeagleV). If yes, then we can tackle
+> > > issue #1 for Allwinner
+> > > D1 using "dma-ranges" DT property.
+> > There is no dedicated physical address range for IO-coherent access in D1. But
+> > the solution you mentioned couldn't solve all requirements.
+> > Only one mirror physical address range is not enough, we need at least three
+> > (Normal, DMA desc, frame buffer).
+>
+> How many non-coherent devices you really have?
+>
+> I am guess lot of critical devices on Allwinner D1 are not coherent with CPU.
+> The problem for Allwinner D1 is even worst than I thought. If such critical
+> high through-put devices are not cache coherent with CPU then I am
+> speechless about Allwinner D1 situation.
+Allwinner D1 is a cost-down product and there is no cache coherent
+device at all. Cache coherent interconnect will increase the chip
+design cost and the performance is enough in their scenario.
 
---TVn+HWIGqqi/A3Yw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So that why we need Srong Order + noncache & Weak Order + noncache to
+optimization.
 
-On Fri, Apr 30, 2021 at 11:36:06AM -0300, Leonardo Bras wrote:
-> Because hypervisors may need to create HPTs without knowing the guest
-> page size, the smallest used page-size (4k) may be chosen, resulting in
-> a HPT that is possibly bigger than needed.
->=20
-> On a guest with bigger page-sizes, the amount of entries for HTP may be
-> too high, causing the guest to ask for a HPT resize-down on the first
-> hotplug.
->=20
-> This becomes a problem when HPT resize-down fails, and causes the
-> HPT resize to be performed on every LMB added, until HPT size is
-> compatible to guest memory size, causing a major slowdown.
->=20
-> So, avoiding HPT resizing-down on hot-add significantly improves memory
-> hotplug times.
->=20
-> As an example, hotplugging 256GB on a 129GB guest took 710s without this
-> patch, and 21s after applied.
->=20
-> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
+From T-HEAD side we could privide two kinds of solution of DMA coherent.
+ - Let SOC vendor update coherent interconnect, and our CPU could
+support coherent protocal.
+ - Let SOC vendor connect their DMA device with our CPU LL cache
+coherent interface.
 
-Sorry it's taken me so long to look at these
+But we can't force them do that. They want how my origin soc works
+then make it work with your RV core. They know trade off coherency or
+non-coherency in their busisness scenario.
 
-I don't love the extra statefulness that the 'shrinking' parameter
-adds, but I can't see an elegant way to avoid it, so:
+>
+> > And that will triple the memory physical address which can't be accepted by
+> > our users from the hardware design cost view.
+> >
+> >  "dma-ranges" DT property is a big early MIPS smell. ARM SOC users can't
+> > accept it. (They just say replace the CPU, but don't touch anything other.)
+> >
+> > PTE attributes are the non-coherent solution for many years. MIPS also
+> > follows that now:
+> > ref arch/mips/include/asm/pgtable-bits.h &
+> > arch/mips/include/asm/pgtable.h
+>
+> RISC-V is in the process of standardizing Svpmbt extension.
+>
+> Unfortunately, the higher order bits which your implementation uses is
+> not for SoC vendor use as-per the RISC-V privilege spec.
+For a while, I had placed my hopes on C-bit, but my fantasy was
+disillusioned. -_-!
 
-Reviewed-by: David Gibson <david@gibson.dropbear.id.au>
+>
+> >
+> > #ifndef _CACHE_CACHABLE_NO_WA
+> > #define _CACHE_CACHABLE_NO_WA           (0<<_CACHE_SHIFT)
+> > #endif
+> > #ifndef _CACHE_CACHABLE_WA
+> > #define _CACHE_CACHABLE_WA              (1<<_CACHE_SHIFT)
+> > #endif
+> > #ifndef _CACHE_UNCACHED
+> > #define _CACHE_UNCACHED                 (2<<_CACHE_SHIFT)
+> > #endif
+> > #ifndef _CACHE_CACHABLE_NONCOHERENT
+> > #define _CACHE_CACHABLE_NONCOHERENT     (3<<_CACHE_SHIFT)
+> > #endif
+> > #ifndef _CACHE_CACHABLE_CE
+> > #define _CACHE_CACHABLE_CE              (4<<_CACHE_SHIFT)
+> > #endif
+> > #ifndef _CACHE_CACHABLE_COW
+> > #define _CACHE_CACHABLE_COW             (5<<_CACHE_SHIFT)
+> > #endif
+> > #ifndef _CACHE_CACHABLE_CUW
+> > #define _CACHE_CACHABLE_CUW             (6<<_CACHE_SHIFT)
+> > #endif
+> > #ifndef _CACHE_UNCACHED_ACCELERATED
+> > #define _CACHE_UNCACHED_ACCELERATED     (7<<_CACHE_SHIFT)
+> >
+> > We can't force our users to double/triplicate their physical memory regions.
+>
+> We are trying to find a workable solution here so that we don't have
+> to deal with custom PTE attributes which are reserved for RISC-V priv
+> specification only.
+Thank you for your hard work in this regard, sincerely.
 
-> ---
->  arch/powerpc/mm/book3s64/hash_utils.c | 36 ++++++++++++++++-----------
->  1 file changed, 21 insertions(+), 15 deletions(-)
->=20
-> diff --git a/arch/powerpc/mm/book3s64/hash_utils.c b/arch/powerpc/mm/book=
-3s64/hash_utils.c
-> index 581b20a2feaf..608e4ed397a9 100644
-> --- a/arch/powerpc/mm/book3s64/hash_utils.c
-> +++ b/arch/powerpc/mm/book3s64/hash_utils.c
-> @@ -795,7 +795,7 @@ static unsigned long __init htab_get_table_size(void)
->  }
-> =20
->  #ifdef CONFIG_MEMORY_HOTPLUG
-> -static int resize_hpt_for_hotplug(unsigned long new_mem_size)
-> +static int resize_hpt_for_hotplug(unsigned long new_mem_size, bool shrin=
-king)
->  {
->  	unsigned target_hpt_shift;
-> =20
-> @@ -804,19 +804,25 @@ static int resize_hpt_for_hotplug(unsigned long new=
-_mem_size)
-> =20
->  	target_hpt_shift =3D htab_shift_for_mem_size(new_mem_size);
-> =20
-> -	/*
-> -	 * To avoid lots of HPT resizes if memory size is fluctuating
-> -	 * across a boundary, we deliberately have some hysterisis
-> -	 * here: we immediately increase the HPT size if the target
-> -	 * shift exceeds the current shift, but we won't attempt to
-> -	 * reduce unless the target shift is at least 2 below the
-> -	 * current shift
-> -	 */
-> -	if (target_hpt_shift > ppc64_pft_size ||
-> -	    target_hpt_shift < ppc64_pft_size - 1)
-> -		return mmu_hash_ops.resize_hpt(target_hpt_shift);
-> +	if (shrinking) {
-> =20
-> -	return 0;
-> +		/*
-> +		 * To avoid lots of HPT resizes if memory size is fluctuating
-> +		 * across a boundary, we deliberately have some hysterisis
-> +		 * here: we immediately increase the HPT size if the target
-> +		 * shift exceeds the current shift, but we won't attempt to
-> +		 * reduce unless the target shift is at least 2 below the
-> +		 * current shift
-> +		 */
-> +
-> +		if (target_hpt_shift >=3D ppc64_pft_size - 1)
-> +			return 0;
-> +
-> +	} else if (target_hpt_shift <=3D ppc64_pft_size) {
-> +		return 0;
-> +	}
-> +
-> +	return mmu_hash_ops.resize_hpt(target_hpt_shift);
->  }
-> =20
->  int hash__create_section_mapping(unsigned long start, unsigned long end,
-> @@ -829,7 +835,7 @@ int hash__create_section_mapping(unsigned long start,=
- unsigned long end,
->  		return -1;
->  	}
-> =20
-> -	resize_hpt_for_hotplug(memblock_phys_mem_size());
-> +	resize_hpt_for_hotplug(memblock_phys_mem_size(), false);
-> =20
->  	rc =3D htab_bolt_mapping(start, end, __pa(start),
->  			       pgprot_val(prot), mmu_linear_psize,
-> @@ -848,7 +854,7 @@ int hash__remove_section_mapping(unsigned long start,=
- unsigned long end)
->  	int rc =3D htab_remove_mapping(start, end, mmu_linear_psize,
->  				     mmu_kernel_ssize);
-> =20
-> -	if (resize_hpt_for_hotplug(memblock_phys_mem_size()) =3D=3D -ENOSPC)
-> +	if (resize_hpt_for_hotplug(memblock_phys_mem_size(), true) =3D=3D -ENOS=
-PC)
->  		pr_warn("Hash collision while resizing HPT\n");
-> =20
->  	return rc;
+>
+> Regards,
+> Anup
+>
+> >
+> > >
+> > > Regards,
+> > > Anup
+> > >
+> > > >
+> > > >
+> > > > >
+> > > > > >
+> > > > > > This implementation, which adds some Kconfig entries that
+> > > > > > control page table bits, definately isn't suitable for upstream.
+> > > > > > Allowing users to set arbitrary page table bits will eventually
+> > > > > > conflict with the standard, and is just going to be a mess.
+> > > > > > It'll also lead to kernels that are only compatible with
+> > > > > > specific designs, which we're trying very hard to avoid.  At a
+> > > > > > bare minimum we'll need some way to detect systems with these
+> > > > > > page table bits before setting them, and some description of
+> > > > > > what the bits actually do so we can reason about
+> > > > them.
+> > > > >
+> > > > > Yes, vendor specific Kconfig options are strict NO NO. We can't
+> > > > > give-up the goal of unified kernel image for all platforms.
+> > > > >
+> > > > > Regards,
+> > > > > Anup
+> > > >
+> > > >
+> > > >
+> > > > --
+> > > > Best Regards
+> > > >  Guo Ren
+> > > >
+> > > > ML: https://lore.kernel.org/linux-csky/
+> >
+> >
+> >
+> > --
+> > Best Regards
+> >  Guo Ren
+> >
+> > ML: https://lore.kernel.org/linux-csky/
 
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
 
---TVn+HWIGqqi/A3Yw
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+-- 
+Best Regards
+ Guo Ren
 
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmC9qGsACgkQbDjKyiDZ
-s5JPbg//RGtldhbo5pK+Rz/xEmNtdPSemDKF3FMVpDcpq6Khn673HgaimTHLrLVL
-Jf6zp0vSROpSF1l4oy+TP3xORDxjf69/q1Uen95NWzYlbw2Wm97gdt2jWjErPSeL
-dmtGmA4+VuGZMExX3kOFqkl3f2IB2C/fyf6DW39OCinjlFOewOX+dNhdxP1MTnqs
-F22VN8kEiwsfloVYeD8NkHuXBDvcBic6lE67sYJTOmfUDT2kkzbz2QeqzZvJzV9Y
-ZEBZuIYR9wxiKZDunbmW+cVjp75l3KmO3QhJLOaJstF48tvtiitIJd2PnqPM5wlU
-b9S/NazPpbgAssrJYuJl0qwVYwDIhPyrg8SMxOqJ8AUtboZ37PLz0smhuSn+zO5s
-o8jOIPt/Xod2SgYgSbTD8a6pdKuKKeS4kfwW/sS8afxBkZFJ3u7kMoqrBNEsyHMJ
-YlokVD8BuksKGVrfaXJnE7UiioPilOT4PwcPjcN8nSGATx0jajl+Rw1l4WUnbgbp
-14RwAxMRKsgKfaWx0i5wOvPWGGCUUpYCeZgIrHIcMqO09x0wL4t1y28Cu64fBbJI
-PpOpwnnKDkC55YVGBJn2htLPOVQEN4dt8qoVzpPuUZ9eO4cYH1auA6fzzs4DlU9u
-IOFnl64i2q9K696dxDDAb8ZNjgti1OsSGZ5YXd5vSpVTMbM8Eh8=
-=tKLo
------END PGP SIGNATURE-----
-
---TVn+HWIGqqi/A3Yw--
+ML: https://lore.kernel.org/linux-csky/
