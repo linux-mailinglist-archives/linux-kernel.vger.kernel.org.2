@@ -2,229 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD74339D414
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 06:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 985A939D41B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 06:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbhFGEiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 00:38:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39884 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229498AbhFGEiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 00:38:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA36F6121F;
-        Mon,  7 Jun 2021 04:36:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623040580;
-        bh=im2gzm66A8fxb/16kOAjLznX7/J53Tnzbnd+6PWnKNM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kuaZth230TL4sF0sr51/3RjnXx/PFlnOJSE2wEap3G0FYbcwboZ9ZEfaxdbPI3kO4
-         zx9leRfBo/KM6muuTk3kjc/bEtwwdcSI1tB4xjg6U5dJ0aNJ1RGS+/1e0DLRsorRPO
-         u4mBpsKFEyAmap+NhxLPkNdb80dY4VrJlwEFD/vQu6vaUZii+lGq+tjw+30igON8Ty
-         Wh59DN6/o/YKSt47Du4tNAja4AFk5Jn8cus0wmAloU1kn/nnKTQe4Au9YkxBR2vDmv
-         m0u75OmYLhdtcKxvVNc9w6HGiNMLRsqN9zmvfOmzNFDlkA3TRsCx2aFA22ptjktWB1
-         w42mvQ9kRwrEw==
-Received: by mail-lf1-f51.google.com with SMTP id m21so8304124lfg.13;
-        Sun, 06 Jun 2021 21:36:20 -0700 (PDT)
-X-Gm-Message-State: AOAM532wOmqjb1uxDTM4tY9tL3M528Bxci3T1He9PCajxR0z5aagnaUH
-        MUfLJt7Fi/d3001VviqdCf1Q2dLg9w1SOs6GuCY=
-X-Google-Smtp-Source: ABdhPJzCJwuyh33/n2ptWxi8MoWxCk4WJq3GGiXzTMUpqQBQ96IZaBNQOONe348qpbkgI10hWLQulLRc/pxO3pHczqY=
-X-Received: by 2002:ac2:5389:: with SMTP id g9mr10192844lfh.557.1623040579170;
- Sun, 06 Jun 2021 21:36:19 -0700 (PDT)
+        id S230233AbhFGEko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 00:40:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229458AbhFGEkm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 00:40:42 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AB80C061766
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 21:38:51 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id h8so15942666wrz.8
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 21:38:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=E1wc2vADYmdO4VfcTB00D2pdpcFUyCevP9KOOTbdqQo=;
+        b=TP7AMNDQjPj+ycKu4IHrzlxJg0CnCoWTObFUzD4A3sdqJDkvIOxdHF98JttTRmu2i5
+         RcayfRsPj1AZzwg85v2M53KOpWjxLq9P77f0FTV01pybFYK5hgl2yTqSFQhSOllVYplf
+         5CguxbqSGEBTXJs0lpZvt48u2AmrXvWJo4QksoEwyij+Y21h2CxbJUBxaJAr9DK4iYPh
+         02MNHeCRaTDmLfDy61H36fGDHNO5bgY6wIE62rwTiuZIj7p3UCz0/xBWpZiVjNSlNFsd
+         ipzgA0tJ06V/Pa6seQrX8yywdKJSf42vtzloOP/GPE5r3i/NUmMeY9YUdSlxYDCual6m
+         GnLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=E1wc2vADYmdO4VfcTB00D2pdpcFUyCevP9KOOTbdqQo=;
+        b=s4W41c3jSFm+Lqp8C0efeW254PmDj4grfo1nDxrU4G+BmT27G1Uwx+Q+mIUf/srUW3
+         /69Z460nJHepZhywR2gtBUHNo7ltoNl85DjC1uFlabYWwx7WH/0ZPvQVtgXtswdjK8xT
+         X/bTEoca18Pzj6O3q9mwhvKg3nltdfLNqRUpCzpXHr+OwsOLvQnnHXzg22JcQ2fIQKLI
+         I1jSZ+vTEnVoxfYdChv7hvoWdcR7s8uzBUDyByZsoCLEwdORtGtby7Ty3JerAWld60er
+         gtCn1/JlNSFjO/e8umHpVuUFmcgiBhcekEkkmUyYmJzhtR0HVVA6cw24K+UIPMG9h0T8
+         rCHg==
+X-Gm-Message-State: AOAM531Guc9Ef0DU6FrDDCG99KO09k+MIY7DA/jW+rMibi47oi5F3Y4E
+        t6sINdClmy6qQGC6OHKpmjy6AA==
+X-Google-Smtp-Source: ABdhPJxjF4LIaqtRC95Oq3bA26T3W0QYwrHnNU6vQou645Gz9dMKs+jbPgxyJMgLG2P0F5/igqamtQ==
+X-Received: by 2002:a5d:4681:: with SMTP id u1mr7857513wrq.268.1623040729275;
+        Sun, 06 Jun 2021 21:38:49 -0700 (PDT)
+Received: from Iliass-MBP (ppp-94-66-57-185.home.otenet.gr. [94.66.57.185])
+        by smtp.gmail.com with ESMTPSA id u2sm14299429wrn.38.2021.06.06.21.38.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Jun 2021 21:38:48 -0700 (PDT)
+Date:   Mon, 7 Jun 2021 07:38:43 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Tariq Toukan <ttoukan.linux@gmail.com>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>,
+        David Ahern <dsahern@gmail.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>, netdev@vger.kernel.org,
+        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Subject: Re: [PATCH net-next v6 3/5] page_pool: Allow drivers to hint on SKB
+ recycling
+Message-ID: <YL2i0wcXcqluttNx@Iliass-MBP>
+References: <20210521161527.34607-1-mcroce@linux.microsoft.com>
+ <20210521161527.34607-4-mcroce@linux.microsoft.com>
+ <badedf51-ce74-061d-732c-61d0678180b3@huawei.com>
+ <YLnnaRLMlnm+LKwX@iliass-mbp>
+ <722e5567-d8ee-228c-978e-9d5966257bb1@gmail.com>
+ <CAFnufp3rWwFgknBUBy9mHB36zpTKRiTeUAFeJXKVvp2DzvG3bw@mail.gmail.com>
+ <63a4ea45-9938-3106-9eda-0f7e8fe079ce@gmail.com>
 MIME-Version: 1.0
-References: <1622970249-50770-1-git-send-email-guoren@kernel.org> <CO6PR04MB7812C5A068EEDB4D5A2348458D389@CO6PR04MB7812.namprd04.prod.outlook.com>
-In-Reply-To: <CO6PR04MB7812C5A068EEDB4D5A2348458D389@CO6PR04MB7812.namprd04.prod.outlook.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Mon, 7 Jun 2021 12:36:07 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSBR76_6RjCxPj-k4bTnA84F9c9L-sGbO45bPnMiuvAFQ@mail.gmail.com>
-Message-ID: <CAJF2gTSBR76_6RjCxPj-k4bTnA84F9c9L-sGbO45bPnMiuvAFQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 00/11] riscv: Add DMA_COHERENT support for
- Allwinner D1
-To:     Anup Patel <Anup.Patel@wdc.com>
-Cc:     "palmerdabbelt@google.com" <palmerdabbelt@google.com>,
-        "arnd@arndb.de" <arnd@arndb.de>, "wens@csie.org" <wens@csie.org>,
-        "maxime@cerno.tech" <maxime@cerno.tech>,
-        "drew@beagleboard.org" <drew@beagleboard.org>,
-        "liush@allwinnertech.com" <liush@allwinnertech.com>,
-        "lazyparser@gmail.com" <lazyparser@gmail.com>,
-        "wefu@redhat.com" <wefu@redhat.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-sunxi@lists.linux.dev" <linux-sunxi@lists.linux.dev>,
-        Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <63a4ea45-9938-3106-9eda-0f7e8fe079ce@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anup,
+Hi Tariq,
 
-On Mon, Jun 7, 2021 at 11:44 AM Anup Patel <Anup.Patel@wdc.com> wrote:
->
->
->
-> > -----Original Message-----
-> > From: guoren@kernel.org <guoren@kernel.org>
-> > Sent: 06 June 2021 14:34
-> > To: guoren@kernel.org; Anup Patel <Anup.Patel@wdc.com>;
-> > palmerdabbelt@google.com; arnd@arndb.de; wens@csie.org;
-> > maxime@cerno.tech; drew@beagleboard.org; liush@allwinnertech.com;
-> > lazyparser@gmail.com; wefu@redhat.com
-> > Cc: linux-riscv@lists.infradead.org; linux-kernel@vger.kernel.org; linux-
-> > arch@vger.kernel.org; linux-sunxi@lists.linux.dev; Guo Ren
-> > <guoren@linux.alibaba.com>
-> > Subject: [RFC PATCH v2 00/11] riscv: Add DMA_COHERENT support for
-> > Allwinner D1
-> >
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> >
-> > The RISC-V ISA doesn't yet specify how to query or modify PMAs, so let
-> > vendors define the custom properties of memory regions in PTE.
-> >
-> > This patchset helps SOC vendors to support their own custom interconnect
-> > coherent solution with PTE attributes.
-> >
-> > For example, allwinner D1[1] uses T-HEAD C906 as main processor, C906 has
-> > two modes in MMU:
-> >  - Compatible mode, the same as the definitions in spec.
-> >  - Enhanced mode, add custom DMA_COHERENT attribute bits in PTE which
-> >    not mentioned in spec.
-> >
-> > Allwinner D1 needs the enhanced mode to support the DMA type device with
-> > non-coherent interconnect in its SOC. C906 uses BITS(63 - 59) as custom
-> > attribute bits in PTE.
-> >
-> > The patchset contain 4 parts (asid, pgtable, cmo, soc) which have been tested
-> > on D1:
-> >  - asid: T-HEAD C906 of D1 contains full asid hw facilities which has no
-> >    conflict with RISC-V spec, and hope these patches soon could be
-> >    approved.
-> >  - pgtable: Using a image-hdr to pass vendor specific information and
-> >    setup custom PTE attributes in a global struct variable during boot
-> >    stage. Also it needs define custom protection_map in linux/mm.
-> >  - cmo: We need deal with dma_sync & icache_sync & __vdso_icache_sync.
-> >    In this patchset, I just show you how T-HEAD C9xx work, and seems Atish
-> >    is working for the DMA infrustructure, please let me know the idea.
-> >  - soc: Add allwinner gmac driver & dts & Kconfig for sunxi test.
-> >
-> > The patchset could work with linux-5.13-rc4, here is the steps for D1:
-> >  - Download linux-5.13-rc4 and apply the patchset
-> >  - make ARCH=riscv CROSS_COMPILE=riscv64-linux- defconfig
-> >  - make ARCH=riscv CROSS_COMPILE=riscv64-linux- Image modules dtbs
-> >  - mkimage -A riscv -O linux -T kernel -C none -a 0x00200000 -e 0x00200000 -
-> > n Linux -d arch/riscv/boot/Image uImage
-> >  - Download newest opensbi [2], build with [3], and get fw_dynamic.bin
-> >  - Copy uImage, fw_dynamic.bin, allwinner-d1-nezha-kit.dtb into boot
-> >    partition of TF card.
-> >  - Plugin the TF card and power on D1.
-> >
-> > Link: https://linux-sunxi.org/D1 [1]
-> > Link: https://github.com/riscv/opensbi branch:master [2]
-> > Link: https://github.com/riscv/opensbi/blob/master/docs/platform/thead-
-> > c9xx.md [3]
-> >
-> > Changes since v1:
-> >  - Rebase on linux-5.13-rc4
-> >  - Support defconfig for different PTE attributes
-> >  - Support C906 icache_sync
-> >  - Add Allwinner D1 dts & Kconfig & gmac for testing
-> >  - Add asid optimization for D1 usage
-> >
-> > Guo Ren (10):
-> >   riscv: asid: Use global mappings for kernel pages
-> >   riscv: asid: Add ASID-based tlbflushing methods
-> >   riscv: asid: Optimize tlbflush coding convention
-> >   riscv: pgtable: Fixup _PAGE_CHG_MASK usage
-> >   riscv: pgtable: Add custom protection_map init
-> >   riscv: pgtable: Add DMA_COHERENT with custom PTE attributes
-> >   riscv: cmo: Add dma-noncoherency support
-> >   riscv: cmo: Add vendor custom icache sync
-> >   riscv: soc: Initial DTS for Allwinner D1 NeZha board
-> >   riscv: soc: Add Allwinner SoC kconfig option
->
-> The series cover letter says DMA_COHERENT support but
-> it is doing lot of stuff not related to DMA.
->
-> Please keep the first three patches separate. They belong
-> to your ASID series.
-I just want to give out a whole view of how allwinner D1 works, which
-could help soc folks run their mini system.
+> > > > 
+> > > > Yes the comment is there to prohibit people (mlx5 only actually) to add the
+> > > > recycling bit on their driver.  Because if they do it will *probably* work
+> > > > but they might get random corrupted packets which will be hard to debug.
+> > > > 
+> > > 
+> > > What's the complexity for getting it to work with split page model?
+> > > Since 1500 is the default MTU, requiring a page per packet means a lot
+> > > of wasted memory.
+> > 
+> > We could create a new memory model, e.g. MEM_TYPE_PAGE_SPLIT, and
+> > restore the behavior present in the previous versions of this serie,
+> > which is, save xdp_mem_info in struct page.
+> > As this could slightly impact the performances, this can be added in a
+> > future change when the drivers which are doing it want to use this
+> > recycling api.
+> > 
+> 
+> page-split model doesn't only help reduce memory waste, but increase
+> cache-locality, especially for aggregated GRO SKBs.
+> 
+> I'm looking forward to integrating the page-pool SKB recycling API into
+> mlx5e datapath. For this we need it to support the page-split model.
+> 
+> Let's see what's missing and how we can help making this happen.
 
-Christoph Hellwig has helped to update the ASID series, and I've given
-the tested-by on my hardware 4*910 SMP & 906 D1
-https://lore.kernel.org/linux-riscv/20210606152050.636038-1-hch@lst.de/T/#t
+Yes that's the final goal.  As I said I don't think adding the page split
+model will fundamentally change the current patchset.  So imho we should
+get this in first, make sure that everything is fine, and then add code for
+the mlx cards.
 
-Ok, you won't see it in the next version patchset.
-
->
-> I also dislike the fact that you are continuously sending
-> SBI DMA sync patches without any discussion on the
-> UnixPlatform mailing list for SBI spec changes.
-SBI DMA sync is not critical for us, I could follow your definition
-when you are ready. Even CBO trap emulation is okay for me.
-
->
-> Regards,
-> Anup
->
-> >
-> > liush (1):
-> >   riscv: soc: Allwinner D1 GMAC driver only for temp use
-> >
-> >  arch/riscv/Kconfig                                 |    9 +
-> >  arch/riscv/Kconfig.socs                            |   12 +
-> >  arch/riscv/boot/dts/Makefile                       |    1 +
-> >  arch/riscv/boot/dts/allwinner/Makefile             |    2 +
-> >  .../boot/dts/allwinner/allwinner-d1-nezha-kit.dts  |   29 +
-> >  arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi    |  100 +
-> >  arch/riscv/configs/defconfig                       |    1 +
-> >  arch/riscv/include/asm/cacheflush.h                |   48 +-
-> >  arch/riscv/include/asm/mmu_context.h               |    2 +
-> >  arch/riscv/include/asm/pgtable-64.h                |    8 +-
-> >  arch/riscv/include/asm/pgtable-bits.h              |   20 +-
-> >  arch/riscv/include/asm/pgtable.h                   |   44 +-
-> >  arch/riscv/include/asm/sbi.h                       |   15 +
-> >  arch/riscv/include/asm/soc.h                       |    1 +
-> >  arch/riscv/include/asm/tlbflush.h                  |   22 +
-> >  arch/riscv/include/asm/vendorid_list.h             |    1 +
-> >  arch/riscv/kernel/sbi.c                            |   19 +
-> >  arch/riscv/kernel/soc.c                            |   22 +
-> >  arch/riscv/kernel/vdso/flush_icache.S              |   33 +-
-> >  arch/riscv/mm/Makefile                             |    1 +
-> >  arch/riscv/mm/cacheflush.c                         |    3 +-
-> >  arch/riscv/mm/context.c                            |    2 +-
-> >  arch/riscv/mm/dma-mapping.c                        |   53 +
-> >  arch/riscv/mm/init.c                               |   26 +
-> >  arch/riscv/mm/tlbflush.c                           |   57 +-
-> >  drivers/net/ethernet/Kconfig                       |    1 +
-> >  drivers/net/ethernet/Makefile                      |    1 +
-> >  drivers/net/ethernet/allwinnertmp/Kconfig          |   17 +
-> >  drivers/net/ethernet/allwinnertmp/Makefile         |    7 +
-> >  drivers/net/ethernet/allwinnertmp/sunxi-gmac-ops.c |  690 ++++++
-> >  drivers/net/ethernet/allwinnertmp/sunxi-gmac.c     | 2240
-> > ++++++++++++++++++++
-> >  drivers/net/ethernet/allwinnertmp/sunxi-gmac.h     |  258 +++
-> >  drivers/net/phy/realtek.c                          |    2 +-
-> >  mm/mmap.c                                          |    4 +
-> >  34 files changed, 3714 insertions(+), 37 deletions(-)  create mode 100644
-> > arch/riscv/boot/dts/allwinner/Makefile
-> >  create mode 100644 arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-
-> > kit.dts
-> >  create mode 100644 arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi
-> >  create mode 100644 arch/riscv/mm/dma-mapping.c  create mode 100644
-> > drivers/net/ethernet/allwinnertmp/Kconfig
-> >  create mode 100644 drivers/net/ethernet/allwinnertmp/Makefile
-> >  create mode 100644 drivers/net/ethernet/allwinnertmp/sunxi-gmac-ops.c
-> >  create mode 100644 drivers/net/ethernet/allwinnertmp/sunxi-gmac.c
-> >  create mode 100644 drivers/net/ethernet/allwinnertmp/sunxi-gmac.h
-> >
-> > --
-> > 2.7.4
->
-
-
--- 
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
+Regards
+/Ilias
