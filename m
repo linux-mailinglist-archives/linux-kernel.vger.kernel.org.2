@@ -2,129 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CBAF39D42C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 06:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D9F39D42E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 06:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbhFGEt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 00:49:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230192AbhFGEtq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 00:49:46 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D32F5C061787
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 21:47:42 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id k7so9036537pjf.5
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 21:47:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=t83CoRT70i5x93MDZL3zD/Wyg9e/rIbO96dXM25y8Dk=;
-        b=q6c3ljZ+B497ioExVAaGV9G8aiqtHkHXitdctjXbOq1Y055WWMWyuGIPwmFD07b1Zh
-         k/y+bopMGOtiPBCa/+51Aa1CXzJly49kQkBX4rS4SaU8smnZjgAoOtoYs2Uzr/43lTn8
-         adaqlbhLKCS+LtUrRYPZmm8CfgKRmr4FQ/YtKXUtMX9RpJQDyx0m8iog4R8WT/dT8Pwq
-         4c8E7cU0jBeQJWthd7eUCeJT8dgPt1vtg6+k/ofPy9ZWkkustUbyz0XGBBIT76LuS1E1
-         1nG+bvDfIw+6W9JNIKRJbV6OXbkPLfXTNflQ+awmF/YkwzGi1U3znMBktMlPqnRacSNy
-         np1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=t83CoRT70i5x93MDZL3zD/Wyg9e/rIbO96dXM25y8Dk=;
-        b=J4Z7vpfOF7x/x5g7Qj6cIR+P6Rv8N4cbe2V5m62dxGyfMCqqaOGfQraokf8wFArHN8
-         KrJhdvmzv48lkr8ajWM3ipfCgTyWERrFg9J/72p5YMPp1t42LhO9AIKJlEmKKsC++QTV
-         DLW/l8BZzVn3czzw/KJZQIKWV1I8n/iqhb+LP79BgDTsMeJPqgOJQ48VeIYnwQyVM1+R
-         Cu03jG2eDWgiAacMoT9/g/kbmwH8iYO/h2E2xsC4y+3qrcneYAlCZRadjAkayaKUKPNH
-         Z5W/Ar+QcYqhmU30//7TUobWPpv26AOttwgSZiX1eXEDAbfxfwLPNsDowE1yunK2YPNX
-         0bmw==
-X-Gm-Message-State: AOAM531jIcE7iBqOS90nM6w/j0tqd3BWRQ5ex+liuXJg9SaXTsSY+NAP
-        AaWR/kyTmRbFOzMWSmuCo2rgfw==
-X-Google-Smtp-Source: ABdhPJziRLKNEhluonlkD4YA9qyW5UZ+raMTyKHdMSHJ+m8XjUMk/07yOHATGkQMUA7RljTZ61ct5Q==
-X-Received: by 2002:a17:90a:ce02:: with SMTP id f2mr29929553pju.45.1623041262206;
-        Sun, 06 Jun 2021 21:47:42 -0700 (PDT)
-Received: from localhost ([136.185.169.128])
-        by smtp.gmail.com with ESMTPSA id p36sm7505315pgm.74.2021.06.06.21.47.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Jun 2021 21:47:41 -0700 (PDT)
-Date:   Mon, 7 Jun 2021 10:17:38 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/4] PM: domains: Drop/restore performance state votes
- for devices at runtime PM
-Message-ID: <20210607044738.3aec6o4imq6u3x6e@vireshk-i7>
-References: <20210603093438.138705-1-ulf.hansson@linaro.org>
- <20210603093438.138705-4-ulf.hansson@linaro.org>
- <20210603095538.b2t3cq25tq7v7kih@vireshk-i7>
- <CAPDyKFqNNeeMo6+gKgaPtPvgC_NuMxxYKkr+TzyP3vjYoHoDOw@mail.gmail.com>
- <CAPDyKFofsuY_RAMGsRLtKo=JxJ11DgGqOijZEEf1HEANCvomzg@mail.gmail.com>
- <20210604035312.jp2gshfigsodwvcg@vireshk-i7>
- <CAPDyKFq=mGOqYrX5322JOmJXm6Yg-zNh+g66BdaVVfE5JgciAQ@mail.gmail.com>
+        id S230200AbhFGEu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 00:50:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55508 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229436AbhFGEu5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 00:50:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3280D61185;
+        Mon,  7 Jun 2021 04:48:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623041334;
+        bh=EWyASbRXeuLyxVdzAPa97YHDjp/K/i7H5bcZUa7jljs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WnLdW8LoBAa0MrYdVR1Z8eF8Nm/M8UlEQCVEKVa4ukP3fszY3wLYromhnHTL4fBIa
+         sWg+d0p2kg5t04KdEQM51GrYdW5jDFJYIZ7w0QYXcF2zKsDxaUGDfgzpK1UPzOkvLP
+         KJRXp0ik4WpaLGaGvAiDp7nKPoXXHNe6aMFsTFFs=
+Date:   Mon, 7 Jun 2021 06:48:49 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ricky WU <ricky_wu@realtek.com>
+Cc:     "arnd@arndb.de" <arnd@arndb.de>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "rui_feng@realsil.com.cn" <rui_feng@realsil.com.cn>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "vaibhavgupta40@gmail.com" <vaibhavgupta40@gmail.com>,
+        "yang.lee@linux.alibaba.com" <yang.lee@linux.alibaba.com>,
+        "keitasuzuki.park@sslab.ics.keio.ac.jp" 
+        <keitasuzuki.park@sslab.ics.keio.ac.jp>,
+        "chris.chiu@canonical.com" <chris.chiu@canonical.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] misc: rtsx: separate aspm mode into MODE_REG and MODE_CFG
+Message-ID: <YL2lMWusp3ISYHJu@kroah.com>
+References: <20210604144211.6470-1-ricky_wu@realtek.com>
+ <YLo9O/gGOuFIsVH0@kroah.com>
+ <3b0e8f86e1d04552beece07b61709734@realtek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPDyKFq=mGOqYrX5322JOmJXm6Yg-zNh+g66BdaVVfE5JgciAQ@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <3b0e8f86e1d04552beece07b61709734@realtek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04-06-21, 09:45, Ulf Hansson wrote:
-> Starting calls from the subsystem/driver:
+On Mon, Jun 07, 2021 at 02:34:36AM +0000, Ricky WU wrote:
+> > -----Original Message-----
+> > From: Greg KH [mailto:gregkh@linuxfoundation.org]
+> > Sent: Friday, June 4, 2021 10:48 PM
+> > To: Ricky WU
+> > Cc: arnd@arndb.de; bhelgaas@google.com; rui_feng@realsil.com.cn;
+> > ulf.hansson@linaro.org; vaibhavgupta40@gmail.com;
+> > yang.lee@linux.alibaba.com; keitasuzuki.park@sslab.ics.keio.ac.jp;
+> > chris.chiu@canonical.com; linux-kernel@vger.kernel.org
+> > Subject: Re: [PATCH] misc: rtsx: separate aspm mode into MODE_REG and
+> > MODE_CFG
+> > 
+> > On Fri, Jun 04, 2021 at 10:42:11PM +0800, ricky_wu@realtek.com wrote:
+> > > From: Ricky Wu <ricky_wu@realtek.com>
+> > >
+> > > Divide Realtek Card Reader Group into two different modes
+> > > ASPM_MODE_CFG: 8411 5209 5227 5229 5249 5250 Change back to use
+> > > original way to control aspm
+> > 
+> > What is "aspm"?
+> > 
+> Active State Power Management (ASPM)
+
+Great, please spell it out in the changelog text when you resubmit this.
+
+> rtsx_comm_set_aspm: ASPM control function for our driver
+> to make sure not enter power saving in process of init and card_detcct
+
+Ok, can you please say all of this in the changelog text?
+
+> > > +#define ASPM_MODE_CFG		0x01
+> > > +#define ASPM_MODE_REG		0x02
+> > > +	u8				aspm_mode;
+> > 
+> > Why not use an enum?
+> > 
 > 
-> ------
-> dev_pm_genpd_set_performance_state(dev, 100);
-> "run a use case with device runtime resumed"
-> ...
-> "use case ends"
-> dev_pm_genpd_set_performance_state(dev, 0);
-> pm_runtime_put()
->     ->genpd_runtime_suspend()
->     gpd_data->performance_state == 0, -> gpd_data->rpm_pstate = 0;
-> ...
-> "new use case start"
-> dev_pm_genpd_set_performance_state(dev, 100);
-> pm_runtime_get_sync()
->     ->genpd_runtime_resume()
->     gpd_data->performance_state == 100, -> gpd_data->rpm_pstate = 0;
-> (This is where we need to check for "zero" to not override the value)
-> .....
-> ------
-> 
-> I wouldn't say that the above is the way how I see the calls to
-> dev_pm_genpd_set_performance_state (or actually
-> dev_pm_opp_set_rate|opp()) being deployed. The calls should rather be
-> done from the subsystem/driver's ->runtime_suspend|resume() callback,
-> then the path above would work in the way you suggest.
-> 
-> Although, as we currently treat performance states and power states in
-> genpd orthogonally, I wanted to make sure we could cope with both
-> situations.
+> It is ok, we can have a V2 to use enum
 
-I think letting the drivers to call
-dev_pm_genpd_set_performance_state(dev, 0) from suspend/resume makes
-it really ugly/racy as both depend on the gpd_data->performance_state
-for this. It doesn't look nice. And we shouldn't try to protect such
-drivers.
+Please do so.
 
-Anyway, your call :)
+thanks,
 
-> Did this help? :-)
-
-Yes :)
-
--- 
-viresh
+greg k-h
