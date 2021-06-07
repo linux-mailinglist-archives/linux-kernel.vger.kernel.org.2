@@ -2,51 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2DFA39D4D9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8377339D4E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbhFGGVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 02:21:14 -0400
-Received: from verein.lst.de ([213.95.11.211]:44476 "EHLO verein.lst.de"
+        id S230262AbhFGGYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 02:24:45 -0400
+Received: from m12-12.163.com ([220.181.12.12]:45456 "EHLO m12-12.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229436AbhFGGVN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 02:21:13 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id BD91467373; Mon,  7 Jun 2021 08:19:18 +0200 (CEST)
-Date:   Mon, 7 Jun 2021 08:19:18 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Nick Kossifidis <mick@ics.forth.gr>
-Cc:     guoren@kernel.org, anup.patel@wdc.com, palmerdabbelt@google.com,
-        arnd@arndb.de, wens@csie.org, maxime@cerno.tech,
-        drew@beagleboard.org, liush@allwinnertech.com,
-        lazyparser@gmail.com, wefu@redhat.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [RFC PATCH v2 06/11] riscv: pgtable: Add DMA_COHERENT with
- custom PTE attributes
-Message-ID: <20210607061918.GA24060@lst.de>
-References: <1622970249-50770-1-git-send-email-guoren@kernel.org> <1622970249-50770-10-git-send-email-guoren@kernel.org> <610849b6f66e8d5a9653c9f62f46c48d@mailhost.ics.forth.gr>
+        id S230127AbhFGGYp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 02:24:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Qrrb1
+        rsPUF0AKmUKmPEmEGlMM3yy0iINcnL1U/Z5Su8=; b=YkFT7L1vlLQo7lyv7Q5PV
+        vUvYoBQSqgLpJXxbeXKipbZnAdhXOv2XS+jHqsM0FeT2QUBLBjcK3AqCIJdxKQn5
+        b76xzq5bbKu0+YS7qDQZDDBA+pC6oz0xVdG/0wVRzfZ1z0o/D2C4AKkI2cOxdK5z
+        WsYsEguPpJoiUqW/n7OOd0=
+Received: from localhost.localdomain (unknown [218.17.89.92])
+        by smtp8 (Coremail) with SMTP id DMCowABHT6P9ur1gmagdIg--.2995S2;
+        Mon, 07 Jun 2021 14:21:51 +0800 (CST)
+From:   lijian_8010a29@163.com
+To:     viro@zeniv.linux.org.uk, bcrl@kvack.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
+        linux-kernel@vger.kernel.org, lijian <lijian@yulong.com>
+Subject: [PATCH] fs: aio: Fix a typo
+Date:   Mon,  7 Jun 2021 14:20:49 +0800
+Message-Id: <20210607062049.189901-1-lijian_8010a29@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <610849b6f66e8d5a9653c9f62f46c48d@mailhost.ics.forth.gr>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+X-CM-TRANSID: DMCowABHT6P9ur1gmagdIg--.2995S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWruryrKrW8Jr13Xw43KF47twb_yoW8JF1UpF
+        4qk3WFkFWrCr12v3Wftryj9FySk39Y9FsFqaykAw1DArs5Xr1ruF4UtayDWFykWryxAFW3
+        Za9Fqas8tw1kZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jl38nUUUUU=
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbiSh+qUFPAOmbpDQAAsE
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 06, 2021 at 08:22:14PM +0300, Nick Kossifidis wrote:
-> This patch violates the Privilege Spec section 4.4.1 that clearly states:
->
-> "Bits63–54 are reserved for future standard use and must be zeroed by 
-> software for forward compatibility"
->
-> Standard use means that valid values can only be defined by the Priv. Spec, 
-> not by the vendor (otherwise they'd be marked as "custom use" or "platform 
-> use"), and since they "must" be zeroed by software we 'll be violating the 
-> Privilege Spec if we do otherwise.
+From: lijian <lijian@yulong.com>
 
-Yes, that is why I think it is a no-go.
+Change 'submited' to 'submitted', and
+change 'peformance' to 'performance'.
+
+Signed-off-by: lijian <lijian@yulong.com>
+---
+ fs/aio.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/aio.c b/fs/aio.c
+index e499cbcef117..2ddcabcaa370 100644
+--- a/fs/aio.c
++++ b/fs/aio.c
+@@ -850,7 +850,7 @@ static int kill_ioctx(struct mm_struct *mm, struct kioctx *ctx,
+ 
+ /*
+  * exit_aio: called when the last user of mm goes away.  At this point, there is
+- * no way for any new requests to be submited or any of the io_* syscalls to be
++ * no way for any new requests to be submitted or any of the io_* syscalls to be
+  * called on the context.
+  *
+  * There may be outstanding kiocbs, but free_ioctx() will explicitly wait on
+@@ -1181,7 +1181,7 @@ static long aio_read_events_ring(struct kioctx *ctx,
+ 	 * The mutex can block and wake us up and that will cause
+ 	 * wait_event_interruptible_hrtimeout() to schedule without sleeping
+ 	 * and repeat. This should be rare enough that it doesn't cause
+-	 * peformance issues. See the comment in read_events() for more detail.
++	 * performance issues. See the comment in read_events() for more detail.
+ 	 */
+ 	sched_annotate_sleep();
+ 	mutex_lock(&ctx->ring_lock);
+-- 
+2.25.1
+
+
