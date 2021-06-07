@@ -2,93 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C52CB39DA13
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE5639DA14
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbhFGKtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 06:49:11 -0400
-Received: from mail-wm1-f44.google.com ([209.85.128.44]:42890 "EHLO
-        mail-wm1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbhFGKtI (ORCPT
+        id S230250AbhFGKt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 06:49:59 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:50306 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230178AbhFGKt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 06:49:08 -0400
-Received: by mail-wm1-f44.google.com with SMTP id l7-20020a05600c1d07b02901b0e2ebd6deso1593212wms.1;
-        Mon, 07 Jun 2021 03:47:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=KcIhVJsL3yrPFMmj6Xxxh1AoiEa6qKo1bMNhV5zzVU4=;
-        b=nIfQIgvwVppIuEFSzUQVquUbbMHHEiotd+EFEBy2MJDMpTxLbCzIJy3aL/h4WE87Kn
-         PZmaBHFFRSEyEXosjbP2EZuixX75V/ZhtvLfb3tXHHCLT8xBRROW5+nSD0zJLEcmoeVN
-         No3BFvOuW2XoLcusEFKJVtfhw1/tV5mRmIZHmZJRb8Pp2eAcrbsrB0OQ5rgbeMGngY0n
-         F5UJPn7xyZ2uBXdwMD5qm2oaerqyfBROtOylfHWUtzoeD5hz2o7dCgiBLTpn1poBCd0B
-         DR0ZcEROaNyxZCGESxd5MgNG1KMlm08QE/eQ64AeQ500Wr/hrblXZHFYrAjA34LZIh3F
-         1T6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=KcIhVJsL3yrPFMmj6Xxxh1AoiEa6qKo1bMNhV5zzVU4=;
-        b=cc1JVZIxKZW0a+djyAqq/rFlHGk635qzYj2jb2ueJ60SxYojxsxGxmen//TutYh4ac
-         vmGT0K7lElurg/w8mWrTODV94HmvJVCNVsqATPz9St22v8ytiu6inWHc8pmr4u0kA80V
-         eYENLcsCz/X0AODTKH9ZLQmPLeM8J3RrC3F6jGVmhI0mHcuIHdT4Vq74Uy7rx+RnQn8f
-         5hYW0kLA5srN5X4dk+3QAL/cyUS0Nz0SOpkrt326P7Y3Ypz35G0ajDu474J/ElCf7ryA
-         d9xTW8+LrSLdWdOIS2jy3awRLaz6lqsHzOku+bHsRE9FE3KduZIeX+JH8BOCUtsV1PZR
-         958A==
-X-Gm-Message-State: AOAM530W0qnuTWheOwa2XCPJeI6vIfdjo0PDySMdsf0VguiLXuYFMtMY
-        Y4rI/PEzKWNKQH3TW3Z898wLWAHZLsk=
-X-Google-Smtp-Source: ABdhPJz5mNoADFlUvoQOZLVGYoQSWnoQIBz5yANTWqTzpJFPZOVBzoohGEELM71BXZ+Lolragqs//Q==
-X-Received: by 2002:a05:600c:5122:: with SMTP id o34mr8135390wms.168.1623062776700;
-        Mon, 07 Jun 2021 03:46:16 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:ce67:4e4d:875d:ffeb? ([2a02:908:1252:fb60:ce67:4e4d:875d:ffeb])
-        by smtp.gmail.com with ESMTPSA id v7sm17854646wrf.82.2021.06.07.03.46.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Jun 2021 03:46:16 -0700 (PDT)
-Subject: Re: [PATCH] drm/amdgpu: Fix a a typo in a comment
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        alexander.deucher@amd.com, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@linux.ie, daniel@ffwll.ch
-Cc:     kernel-janitors@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <ea7ecbef546a03ef71d65bfe82608bb347e6f3c2.1622883895.git.christophe.jaillet@wanadoo.fr>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <99a5eba3-2d2a-65a8-9b03-a3d4043c5ec5@gmail.com>
-Date:   Mon, 7 Jun 2021 12:46:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 7 Jun 2021 06:49:59 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 70F4C1FDA5;
+        Mon,  7 Jun 2021 10:48:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623062887; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Iwf+7I0qD+iYIYXypUMOZrY7NC8vYclySCnJ8RyP60E=;
+        b=l0clv/Ey9u3JZcTSd4VMItu30ryfflQQMXORRwcAoT9s8jGZjRD6lL1BUUHmG4jB5dyJjQ
+        KB4LsUEK/Vi4I4G0/Qs0sH5wOHkmgJ6P5v+FZ95njukRQRzI+stjMeBFy8h/dgMFejrpv4
+        OzE91MBBRtjPqN8fzlApaDwf4tTLtXQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623062887;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Iwf+7I0qD+iYIYXypUMOZrY7NC8vYclySCnJ8RyP60E=;
+        b=s8PK2PDR0jd+mwiLOwUioxBTHpWcDNRA6zDXnrKq1sS6mGNI4NJOwK+Zrsip2zLiHMfQf3
+        tvIvXPDLNisnNSCQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 2FFC6118DD;
+        Mon,  7 Jun 2021 10:48:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623062887; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Iwf+7I0qD+iYIYXypUMOZrY7NC8vYclySCnJ8RyP60E=;
+        b=l0clv/Ey9u3JZcTSd4VMItu30ryfflQQMXORRwcAoT9s8jGZjRD6lL1BUUHmG4jB5dyJjQ
+        KB4LsUEK/Vi4I4G0/Qs0sH5wOHkmgJ6P5v+FZ95njukRQRzI+stjMeBFy8h/dgMFejrpv4
+        OzE91MBBRtjPqN8fzlApaDwf4tTLtXQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623062887;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Iwf+7I0qD+iYIYXypUMOZrY7NC8vYclySCnJ8RyP60E=;
+        b=s8PK2PDR0jd+mwiLOwUioxBTHpWcDNRA6zDXnrKq1sS6mGNI4NJOwK+Zrsip2zLiHMfQf3
+        tvIvXPDLNisnNSCQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id BcxtCGf5vWCIQQAALh3uQQ
+        (envelope-from <lhenriques@suse.de>); Mon, 07 Jun 2021 10:48:07 +0000
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id 6266486c;
+        Mon, 7 Jun 2021 10:48:06 +0000 (UTC)
+Date:   Mon, 7 Jun 2021 11:48:06 +0100
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Peter Oberparleiter <oberpar@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] gcov: add basic gcov_info validation to gcov
+ initialization
+Message-ID: <YL35Zuk1urUn086g@suse.de>
+References: <YLZYwgs5hyzFZMlw@suse.de>
+ <20210602102455.11724-1-lhenriques@suse.de>
+ <f0148fb8-1779-a18e-315c-87df31d3154f@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <ea7ecbef546a03ef71d65bfe82608bb347e6f3c2.1622883895.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <f0148fb8-1779-a18e-315c-87df31d3154f@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 05.06.21 um 11:06 schrieb Christophe JAILLET:
-> s/than/then/
->
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+On Mon, Jun 07, 2021 at 11:59:45AM +0200, Peter Oberparleiter wrote:
+> On 02.06.2021 12:24, Luis Henriques wrote:
+> > Add a basic gcov_info struct validation helper to gcc to ensure we have
+> > sane from the compiler.
+> > 
+> > Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> > ---
+> > Hi!
+> > 
+> > I know this won't really validate the gcov_info struct, but it will at
+> > least prevent kernel crashes in simple scenarios (such as the one I'm
+> > seeing with gcc 9.3.1).
+> 
+> Thanks for your suggestion of adding validity checking for the gcov_info
+> struct. The goal you aim at is definitely something that we want to have
+> to reduce the impact of fallout from changes to GCC's gcov_info struct.
+> 
+> In my opinion though the approach you described - looking at the
+> contents of specific fields in gcov_info - isn't the correct way to go
+> forward. Since you cannot know how gcov_info changed, accessing any data
+> in it is very dangerous. Even if there's no out-of-bounds access (if the
+> struct's size was reduced) the field you are checking could have moved
+> elsewhere so the meaningfulness of the check is very limited.
+> 
+> In a previous discussion on the same topic I proposed a different
+> approach for a build-time check that would fully check the compatibility
+> of kernel code and GCC-emitted gcov-related data structures. See:
+> 
+> https://lore.kernel.org/patchwork/patch/1393585/#1592411
+> 
 
-Acked-by: Christian KÃ¶nig <christian.koenig@amd.com>
+Thanks, I see the problem is way more complex and I understand that my
+patch is just wrong.  Thanks for pointing me at this thread.
 
-> ---
->   drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
-> index 89ebbf363e27..1476236f5c7c 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
-> @@ -662,7 +662,7 @@ static int amdgpu_cs_sync_rings(struct amdgpu_cs_parser *p)
->    * @error:	error number
->    * @backoff:	indicator to backoff the reservation
->    *
-> - * If error is set than unvalidate buffer, otherwise just free memory
-> + * If error is set then unvalidate buffer, otherwise just free memory
->    * used by parsing context.
->    **/
->   static void amdgpu_cs_parser_fini(struct amdgpu_cs_parser *parser, int error,
+> Unfortunately I have not yet found the time to implement this approach
+> but it's still on my to-do-list.
+> 
+> Regarding the cause of the error you're seeing I'll have a look at the
+> corresponding GCC source to see if there's anything that could be
+> causing the issue.
 
+Great, thanks.  Let me know if you need me to provide more info or
+testing.  I'll be glad to help.
+
+Cheers,
+--
+Luís
