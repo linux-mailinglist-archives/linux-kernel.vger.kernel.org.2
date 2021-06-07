@@ -2,103 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E66D939D9CB
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F016439D9BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbhFGKhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 06:37:34 -0400
-Received: from mail-qk1-f177.google.com ([209.85.222.177]:39719 "EHLO
-        mail-qk1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbhFGKhd (ORCPT
+        id S230252AbhFGKge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 06:36:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230198AbhFGKgc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 06:37:33 -0400
-Received: by mail-qk1-f177.google.com with SMTP id j184so16084653qkd.6
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 03:35:42 -0700 (PDT)
+        Mon, 7 Jun 2021 06:36:32 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249A7C061789
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 03:34:40 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id i13so19724659edb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 03:34:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=W1Z9gEhrO+dFGwff9bZiaB/Edk6g694l5FTvX8TnmqE=;
-        b=iTtdkG5oAQc1PJs6q76R+08BA/t3w7Wq0B5q0H3ufJUid+AhdIEg3Y7fEh5tvg+XdW
-         59gjhb2UQezoRRcs6jsnQry+7KjS/8g6IMni8HGD16dE51trmOBjXRtipOnNlpsv21H/
-         4gB311yqb4F57DW8p98BkOuLBxbWB/QMW/ct8ycdrOesNpXpOqGaHtOf//MeCDDjrH5q
-         uF0ze7KA5EuIxV5OEmz2vTKb7IYQSVhse9ZIsA0utfTlmx1u3ZfETfQW9jpk4VhCu02/
-         unJalB4bnrHV3OiWEs7dCHEm4b8l0JftUBB4lDcwiHZZ79ZbMqv7OGCPzQTCU5xdEPmM
-         dSig==
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=vgsncdvLmdHsU/1c1h0SAn08txT9+pvHmgBRKaZGxnU=;
+        b=Y5+sYcP12AU9+nSL0rR24Tm+WCMD6ByYuo/k6ES3uomE0fKDJ/gtc+GnLCYf94OkVJ
+         Pa/ZWB+1ueMshsQimx8jXXo0KRg+sJUVw06w70HBb8XxnsUIo/d3SR9Paj/RQl4iWHrh
+         9v+my4x8gN/HM4sM4tYv43PL5E1eE+V0emvn7dwRmvES4wNzRE/nO7+YAkhfbHPsk456
+         8OgFqIMuTToDbniBWzoBh0CfMmPnJ28IBjr+J55l7Pz+Qd8lNeyJQ/R9vHc1zY9fX+Z+
+         o5HtIT965jQ5byQEsVpuShiPD3KUiomQeUeQ3OGw+Mk8VgvA3qlWZCb9cIlJetM7yoJP
+         +0eA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=W1Z9gEhrO+dFGwff9bZiaB/Edk6g694l5FTvX8TnmqE=;
-        b=qovYarC78GWRBh3iRErVpBauZqvjrg2qqEZ+LG2CC9gdqzCxV2KZEr9FGe+o3GBYAf
-         REs1hicgGMRNV34XKjLZwOYw88P93L/unlnCr7pmQ1nKk+CNDHLnOF948LcwvKWqO3L/
-         m4ktKcYvT4GbxHdS0iyNl1oYzV8fJU9pK69+mg6LaY+s+sof6NGp3cOzDBNjTy/SrmZ2
-         S9RZQC5UC3gbMbDRGkt7etjPA3waCvH/6b+/8v7r1enItLUdC4j2W9624BHFhHn1iYo1
-         mqDW5rvhM9qKHYzzh4TKngeYkqfpobKt8hYqw/MgxxRZSTylptgS0bx4tKzeuyZ4QNSW
-         caZw==
-X-Gm-Message-State: AOAM530/2wbbjjbqG8zaqdpWX+F+FA0VV0F8Wa/B3dpO3aA4SpGzhu27
-        MwHSV/4ouPjpa3A7ZSa7SgXnT154eGG+iVdiRIC8NQ==
-X-Google-Smtp-Source: ABdhPJzTaPg9Os78/lByEqsfjEnL/w2wMnrVZ00vCZM9WGJQ9q3qi9YoIFwEozZ90r1enDNg908KqoHmNpKV1LanaKs=
-X-Received: by 2002:a37:4694:: with SMTP id t142mr16089543qka.265.1623062081807;
- Mon, 07 Jun 2021 03:34:41 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=vgsncdvLmdHsU/1c1h0SAn08txT9+pvHmgBRKaZGxnU=;
+        b=ZwjUKbvAdBXjUrOzStw6m5TThmu1ip4/h7DBLKmdbkDtUsSbnyG095J+qDRWYvj4uC
+         0+YBDtMzCIiX/zg8OfJ9oehZcq7PA4t5JDHuM42xFXr3EGH8w20iicglySBrJbuIefV7
+         RGrAQZ7mZJdUY90LTeqs5aeD1XXGqlHYjfRoH4FsRwUffEDCVJLwpURBrm/5mPmu0mhC
+         tBA5DBejb2BJrnDgLoRGEiuON3XMsFEPy1st5CeLoFhuONPL4KaXYNhLp+Yu5NQy7tdi
+         3pSAS03OCALy9BtfP8UFdtR9vKukPbvMFjDwLkdQxSLeww4QKA9JiJftD6CZTrt60mfY
+         VOhA==
+X-Gm-Message-State: AOAM533ZDW7E5x0ihoHBFrA0RTeDNqGsBDwK7+vjCr71jCKZxoHTDN96
+        YGbnegj9zwMc48sujZXjnBSufg==
+X-Google-Smtp-Source: ABdhPJz+jLvE5NKH5gEqXje/mFle1nM9LSCeJiOfsSqvHNWYSi82AU4IlfFsbyKOw0XIedpyBsljuQ==
+X-Received: by 2002:a50:ee18:: with SMTP id g24mr19439130eds.11.1623062078574;
+        Mon, 07 Jun 2021 03:34:38 -0700 (PDT)
+Received: from localhost.localdomain (dh207-96-76.xnet.hr. [88.207.96.76])
+        by smtp.googlemail.com with ESMTPSA id b25sm7521037edv.9.2021.06.07.03.34.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 03:34:38 -0700 (PDT)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     robh+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
+        corbet@lwn.net, trivial@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Cc:     luka.perkov@sartura.hr, jmp@epiphyte.org, pmenzel@molgen.mpg.de,
+        buczek@molgen.mpg.de, Robert Marko <robert.marko@sartura.hr>
+Subject: [PATCH v4 2/3] dt-bindings: trivial-devices: Add Delta DPS920AB
+Date:   Mon,  7 Jun 2021 12:34:30 +0200
+Message-Id: <20210607103431.2039073-2-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210607103431.2039073-1-robert.marko@sartura.hr>
+References: <20210607103431.2039073-1-robert.marko@sartura.hr>
 MIME-Version: 1.0
-References: <000000000000f3fc9305c2e24311@google.com> <87v9737pt8.ffs@nanos.tec.linutronix.de>
- <0f6e6423-f93a-5d96-f452-4e08dbad9b23@redhat.com> <87sg277muh.ffs@nanos.tec.linutronix.de>
- <CANRm+CxaJ2Wu-f0Ys-1Fi7mo4FY9YBXNymdt142poSuND-K36A@mail.gmail.com>
-In-Reply-To: <CANRm+CxaJ2Wu-f0Ys-1Fi7mo4FY9YBXNymdt142poSuND-K36A@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 7 Jun 2021 12:34:30 +0200
-Message-ID: <CACT4Y+YDtBf1GebeAA=twsfuv9e0HN+w7Lt5ZqDJhMJ5-PWYXQ@mail.gmail.com>
-Subject: Re: [syzbot] WARNING in x86_emulate_instruction
-To:     Wanpeng Li <kernellwp@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        syzkaller <syzkaller@googlegroups.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        syzbot <syzbot+71271244f206d17f6441@syzkaller.appspotmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, jarkko@kernel.org,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kan.liang@linux.intel.com,
-        kvm <kvm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        linux-sgx@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>, steve.wahl@hpe.com,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 2:34 AM Wanpeng Li <kernellwp@gmail.com> wrote:
->
-> On Fri, 28 May 2021 at 08:31, Thomas Gleixner <tglx@linutronix.de> wrote:
-> >
-> > On Fri, May 28 2021 at 01:21, Paolo Bonzini wrote:
-> > > On 28/05/21 00:52, Thomas Gleixner wrote:
-> > >>
-> > >> So this is stale for a week now. It's fully reproducible and nobody
-> > >> can't be bothered to look at that?
-> > >>
-> > >> What's wrong with you people?
-> > >
-> > > Actually there's a patch on list ("KVM: X86: Fix warning caused by stale
-> > > emulation context").  Take care.
-> >
-> > That's useful, but does not change the fact that nobody bothered to
-> > reply to this report ...
->
-> Will do it next time. Have a nice evening, guys!
+Add trivial device entry for Delta DPS920AB PSU.
 
-There was an idea to do this automatically by syzbot:
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+---
+Changes in v2:
+* Drop custom bindings file and use trivial-devices
 
-dashboard/app: notify bug report about fix patches
-https://github.com/google/syzkaller/issues/1574
+ Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Namely: if syzbot discovers a fix anywhere (by the hash), it could
-send a notification email to the bug report email thread.
-The downside is that the robot sends even more emails, so I am not
-sure how it will be accepted. Any opinions?
+diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
+index a327130d1faa..1cb6c1fc0903 100644
+--- a/Documentation/devicetree/bindings/trivial-devices.yaml
++++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+@@ -68,6 +68,8 @@ properties:
+           - dallas,ds4510
+             # Digital Thermometer and Thermostat
+           - dallas,ds75
++          # Delta Electronics DPS920AB 920W 54V Power Supply
++          - delta,dps920ab
+             # 1/4 Brick DC/DC Regulated Power Module
+           - delta,q54sj108a2
+             # Devantech SRF02 ultrasonic ranger in I2C mode
+-- 
+2.31.1
+
