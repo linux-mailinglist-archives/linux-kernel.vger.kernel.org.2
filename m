@@ -2,128 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CDB939DE2F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 810A939DE36
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:59:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbhFGOAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 10:00:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30495 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230193AbhFGOAR (ORCPT
+        id S230375AbhFGOAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 10:00:53 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:42230 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230209AbhFGOAv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 10:00:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623074305;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qaZbcAf5eiKLkS93+DRSvuWGnuST7UIbnXTeiPSRJ1s=;
-        b=GoQ4kFS2iDH3JHRcY1DDdeGU5nmcNfbBnkKWg+mPmz57N0PrXLArpwDxKDfLy54WX4A/1e
-        04nQA3XYNzS30PCAryywRYlRxslaGUUq3UG4AGbkA/6CntwSYCfoLxa4xGPrsl7r/a5vBh
-        PkDoMyWmiUEOtxEPhsF/OnEj6VIogZ0=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-356-G_UKrx-GNz6ZJI-0cNbN4w-1; Mon, 07 Jun 2021 09:58:24 -0400
-X-MC-Unique: G_UKrx-GNz6ZJI-0cNbN4w-1
-Received: by mail-wr1-f71.google.com with SMTP id n2-20020adfb7420000b029010e47b59f31so7823385wre.9
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 06:58:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qaZbcAf5eiKLkS93+DRSvuWGnuST7UIbnXTeiPSRJ1s=;
-        b=c13TaXMNoPsayLIUeBEMb9c3AIDoyoZF4djVhW6Be3y/b4pnG0CDkvN4wWS4Hn2xdu
-         qA955Xe7CXMKKQUWMjlqRxjyUeqmXLVq48XRB259FVQ913Uki/vHvbVa73MQMPh2II5p
-         PTRTYO/NoBV1tp0tSYETQV005dI0p4X4Z7HtxgLv7647VRDCqeQjg4h1yIdLJhcL8R5T
-         zjsQ1aKNxFVMaGshwWqsXw6Dqx29wcUqA4pd0rRcvpyZFRwoNvK5blswY8MVtiC2MvK4
-         Klts49YAlgYI5T4vFXFtK/1tn1VeFFeHKRKmotd+YECDZLDB1luV//zAM1gFKPFtcQ8o
-         hBpg==
-X-Gm-Message-State: AOAM5312/LQB4a1NAGJV/kt6WWStsqbzH26IlXEg9E/U/ZjqVQm1QkCW
-        eXoupryL5hYdzewFjSF3QUAxX+OwO2axqYcYtVdSNQ3pmzYdXkcUtw0uWTZyIor+1BlCqeklh7X
-        Pwbs8aztFOxasgzaQfRM+vzPs
-X-Received: by 2002:adf:f043:: with SMTP id t3mr16841798wro.422.1623074301930;
-        Mon, 07 Jun 2021 06:58:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz1MZD6Vvun57JTNyHHjVmCPd//9h6LSDBCJGLlCz6Ek50lE2EWGyJmwHb5DdxDm7nOe7TD0w==
-X-Received: by 2002:adf:f043:: with SMTP id t3mr16841771wro.422.1623074301708;
-        Mon, 07 Jun 2021 06:58:21 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id o18sm6406465wrx.59.2021.06.07.06.58.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Jun 2021 06:58:21 -0700 (PDT)
-Subject: Re: [syzbot] WARNING in x86_emulate_instruction
-To:     Dmitry Vyukov <dvyukov@google.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        syzkaller <syzkaller@googlegroups.com>
-Cc:     syzbot <syzbot+71271244f206d17f6441@syzkaller.appspotmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, jarkko@kernel.org,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kan.liang@linux.intel.com,
-        kvm <kvm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        linux-sgx@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>, steve.wahl@hpe.com,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        the arch/x86 maintainers <x86@kernel.org>
-References: <000000000000f3fc9305c2e24311@google.com>
- <87v9737pt8.ffs@nanos.tec.linutronix.de>
- <0f6e6423-f93a-5d96-f452-4e08dbad9b23@redhat.com>
- <87sg277muh.ffs@nanos.tec.linutronix.de>
- <CANRm+CxaJ2Wu-f0Ys-1Fi7mo4FY9YBXNymdt142poSuND-K36A@mail.gmail.com>
- <CACT4Y+YDtBf1GebeAA=twsfuv9e0HN+w7Lt5ZqDJhMJ5-PWYXQ@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <fa3c04ea-f27f-eeb2-d118-77f8fb805a8a@redhat.com>
-Date:   Mon, 7 Jun 2021 15:58:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Mon, 7 Jun 2021 10:00:51 -0400
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+        by linux.microsoft.com (Postfix) with ESMTPSA id E2F5620B83E2;
+        Mon,  7 Jun 2021 06:58:59 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E2F5620B83E2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1623074339;
+        bh=RJbR6n7tHj/RCUL2D5DbLcr8QLAchc6CH5JQTYC4VdU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LQbkQMdP+nmBliT3UwZstLqlQwOPVfdPgbreKMa1weAEhwkoovfn7EdWQ14mVYrMi
+         Ryz5slXCdq3r55mkT2FqK6bIbGYqZ/84qXLieDUnWoDdFsXM3x6okJuOJKNUxAw4oY
+         gMeyoLL9ns5WqboirBnyKATj+9vxTL4gOHn1etjk=
+Received: by mail-pf1-f169.google.com with SMTP id s14so12243255pfd.9;
+        Mon, 07 Jun 2021 06:58:59 -0700 (PDT)
+X-Gm-Message-State: AOAM531bBCjQcvxNlLB8bB31ROVhxu0d5w9vJqDCkRXC4upLNoOdonjU
+        Wua/VQ/aRvQCyVcsi3nlhKkSZW24ftJ9QmF7Q7M=
+X-Google-Smtp-Source: ABdhPJzrHLqPChd08nP1N0FnCsUSWppo+7N/IfO51VOEQxz8ChUp/9waJhKWDPkGBpNi/mUbAds+1gb+BPlL1TqNxko=
+X-Received: by 2002:aa7:900f:0:b029:2ec:82d2:d23 with SMTP id
+ m15-20020aa7900f0000b02902ec82d20d23mr15780817pfo.16.1623074339484; Mon, 07
+ Jun 2021 06:58:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACT4Y+YDtBf1GebeAA=twsfuv9e0HN+w7Lt5ZqDJhMJ5-PWYXQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210604183349.30040-1-mcroce@linux.microsoft.com>
+ <20210604183349.30040-2-mcroce@linux.microsoft.com> <YLp6D7mEh85vL+pY@casper.infradead.org>
+ <CAFnufp2jGRsr9jexBLFRZfJu9AwGO0ghzExT1R4bJdscwHqSnQ@mail.gmail.com>
+ <YLuK9P+loeKwUUK3@casper.infradead.org> <CAFnufp1e893Yz+KTjDvX4tyA8ngqmnMVudf1v0cBPdi9d_2zLw@mail.gmail.com>
+ <YL4kpntfzMBXGSfV@casper.infradead.org>
+In-Reply-To: <YL4kpntfzMBXGSfV@casper.infradead.org>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Mon, 7 Jun 2021 15:58:23 +0200
+X-Gmail-Original-Message-ID: <CAFnufp1fF5NtM_NzhVG6MmRwkvDot+usPdAOhHdfQUVCHhV75w@mail.gmail.com>
+Message-ID: <CAFnufp1fF5NtM_NzhVG6MmRwkvDot+usPdAOhHdfQUVCHhV75w@mail.gmail.com>
+Subject: Re: [PATCH net-next v7 1/5] mm: add a signature in struct page
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/06/21 12:34, Dmitry Vyukov wrote:
-> On Fri, May 28, 2021 at 2:34 AM Wanpeng Li <kernellwp@gmail.com> wrote:
->>
->> On Fri, 28 May 2021 at 08:31, Thomas Gleixner <tglx@linutronix.de> wrote:
->>>
->>> On Fri, May 28 2021 at 01:21, Paolo Bonzini wrote:
->>>> On 28/05/21 00:52, Thomas Gleixner wrote:
->>>>>
->>>>> So this is stale for a week now. It's fully reproducible and nobody
->>>>> can't be bothered to look at that?
->>>>>
->>>>> What's wrong with you people?
->>>>
->>>> Actually there's a patch on list ("KVM: X86: Fix warning caused by stale
->>>> emulation context").  Take care.
->>>
->>> That's useful, but does not change the fact that nobody bothered to
->>> reply to this report ...
->>
->> Will do it next time. Have a nice evening, guys!
-> 
-> There was an idea to do this automatically by syzbot:
-> 
-> dashboard/app: notify bug report about fix patches
-> https://github.com/google/syzkaller/issues/1574
-> 
-> Namely: if syzbot discovers a fix anywhere (by the hash), it could
-> send a notification email to the bug report email thread.
-> The downside is that the robot sends even more emails, so I am not
-> sure how it will be accepted. Any opinions?
+On Mon, Jun 7, 2021 at 3:53 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Sun, Jun 06, 2021 at 03:50:54AM +0200, Matteo Croce wrote:
+> > And change all the *_pfmemalloc functions to use page->lru.next like this?
+> >
+> > @@ -1668,10 +1668,12 @@ struct address_space *page_mapping(struct page *page);
+> > static inline bool page_is_pfmemalloc(const struct page *page)
+> > {
+> >        /*
+> > -        * Page index cannot be this large so this must be
+> > -        * a pfmemalloc page.
+> > +        * This is not a tail page; compound_head of a head page is unused
+> > +        * at return from the page allocator, and will be overwritten
+> > +        * by callers who do not care whether the page came from the
+> > +        * reserves.
+> >         */
+>
+> The comment doesn't make a lot of sense if we're switching to use
+> lru.next.  How about:
+>
+>         /*
+>          * lru.next has bit 1 set if the page is allocated from the
+>          * pfmemalloc reserves.  Callers may simply overwrite it if
+>          * they do not need to preserve that information.
+>          */
 
-I would like it.  Usually somebody replies _before_ they start working 
-on it, but sometimes they send a patch right away.
+Sounds good!
 
-Paolo
-
+-- 
+per aspera ad upstream
