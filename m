@@ -2,77 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE2339DE7C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3C339DE6B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhFGOTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 10:19:06 -0400
-Received: from gate.crashing.org ([63.228.1.57]:34547 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230197AbhFGOTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 10:19:04 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 157ECiL5002016;
-        Mon, 7 Jun 2021 09:12:44 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 157ECgwD002012;
-        Mon, 7 Jun 2021 09:12:42 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Mon, 7 Jun 2021 09:12:42 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <20210607141242.GD18427@gate.crashing.org>
-References: <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1> <20210606012903.GA1723421@rowland.harvard.edu> <20210606115336.GS18427@gate.crashing.org> <CAHk-=wjgzAn9DfR9DpU-yKdg74v=fvyzTJMD8jNjzoX4kaUBHQ@mail.gmail.com> <20210606184021.GY18427@gate.crashing.org> <CAHk-=wjEHbGifWgA+04Y4_m43s-o+3bXpL5qPQL3ECg+86XuLg@mail.gmail.com> <20210606195242.GA18427@gate.crashing.org> <CAHk-=wgd+Gx9bcmTwxhHbPq=RYb_A_gf=GcmUNOU3vYR1RBxbA@mail.gmail.com> <20210606202616.GC18427@gate.crashing.org> <20210606233729.GN4397@paulmck-ThinkPad-P17-Gen-1>
-Mime-Version: 1.0
+        id S230231AbhFGOP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 10:15:59 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:56244 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230197AbhFGOP5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 10:15:57 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id AC9D5218ED;
+        Mon,  7 Jun 2021 14:14:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623075245; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=REeQyiyjgnC3iKPNizUEY82J3vFED92KnvEldVrJWQI=;
+        b=BExgBTx8zykLIBjX9hBZH/ScB1tJtiIWfiGbybCePSoVMatYGZfGtxmf1ddINs1dSFTGiW
+        UsQBGfS9VdOQyZeDd/dmVisE83iVJA7Yv+YUEvEvNSDRX1fi9804gIJqnqeEMeYLGJwfP8
+        tJ/BobECj3w7p5LK/iTG9Us7Xo7laxQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623075245;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=REeQyiyjgnC3iKPNizUEY82J3vFED92KnvEldVrJWQI=;
+        b=eHyZNDOyhmz6gOwoMqPWfYgjDWAbA/42xhdyq6u6EOs4QWu06zw33hUVL77SLd+xp5XcH6
+        oFq8XkvD2fe/7vDA==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 5912A118DD;
+        Mon,  7 Jun 2021 14:14:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623075245; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=REeQyiyjgnC3iKPNizUEY82J3vFED92KnvEldVrJWQI=;
+        b=BExgBTx8zykLIBjX9hBZH/ScB1tJtiIWfiGbybCePSoVMatYGZfGtxmf1ddINs1dSFTGiW
+        UsQBGfS9VdOQyZeDd/dmVisE83iVJA7Yv+YUEvEvNSDRX1fi9804gIJqnqeEMeYLGJwfP8
+        tJ/BobECj3w7p5LK/iTG9Us7Xo7laxQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623075245;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=REeQyiyjgnC3iKPNizUEY82J3vFED92KnvEldVrJWQI=;
+        b=eHyZNDOyhmz6gOwoMqPWfYgjDWAbA/42xhdyq6u6EOs4QWu06zw33hUVL77SLd+xp5XcH6
+        oFq8XkvD2fe/7vDA==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id rNYFFK0pvmCuPQAALh3uQQ
+        (envelope-from <jroedel@suse.de>); Mon, 07 Jun 2021 14:14:05 +0000
+Date:   Mon, 7 Jun 2021 16:14:03 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] PCI/APCI: Move acpi_pci_osc_support() check to
+ negotiation phase
+Message-ID: <YL4pq0oJyZfSWeTV@suse.de>
+References: <20210603205047.GA2135380@bjorn-Precision-5520>
+ <20210604170938.GA2218177@bjorn-Precision-5520>
+ <CAJZ5v0iDxpYxz3_8RrWSJkM7cf=xS298agXcULm3EqRC++GD2g@mail.gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210606233729.GN4397@paulmck-ThinkPad-P17-Gen-1>
-User-Agent: Mutt/1.4.2.3i
+In-Reply-To: <CAJZ5v0iDxpYxz3_8RrWSJkM7cf=xS298agXcULm3EqRC++GD2g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 06, 2021 at 04:37:29PM -0700, Paul E. McKenney wrote:
-> > > The barrier() thing can work - all we need to do is to simply make it
-> > > impossible for gcc to validly create anything but a conditional
-> > > branch.
-> > 
-> > And the only foolproof way of doing that is by writing a branch.
-
-[ ... ]
-
-> > I am saying that if you depend on that some C code you write will result
-> > in some particular machine code, without actually *forcing* the compiler
-> > to output that exact machine code, then you will be disappointed.  Maybe
-> > not today, and maybe it will take years, if you are lucky.
-> > 
-> > (s/forcing/instructing/ of course, compilers have feelings too!)
+On Mon, Jun 07, 2021 at 02:56:24PM +0200, Rafael J. Wysocki wrote:
+> On Fri, Jun 4, 2021 at 7:09 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> >  If either "pcie_ports_disabled" or Linux doesn't support everything in
+> > ACPI_PCIE_REQ_SUPPORT, we will never evaluate _OSC at all, so
+> > the platform won't know that Linux has OSC_PCI_SEGMENT_GROUPS_SUPPORT,
+> > OSC_PCI_HPX_TYPE_3_SUPPORT, OSC_PCI_EXT_CONFIG_SUPPORT, etc.
 > 
-> OK, I will bite...
-> 
-> What would you suggest as a way of instructing the compiler to emit the
-> conditional branch that we are looking for?
+> Right.
 
-You write it in the assembler code.
+Thanks Bjorn and Rafael. So I think the important thing to do is to
+issue at least one _OSC call even when Linux is not trying to take
+control of anything.
 
-Yes, it sucks.  But it is the only way to get a branch if you really
-want one.  Now, you do not really need one here anyway, so there may be
-some other way to satisfy the actual requirements.
+I look into a clean way to do this and get the kernel messages right.
+One thing to change is probably only calculating 'control' if
+!pcie_ports_disabled in negotiate_os_control().
 
+Regards,
 
-Segher
+	Joerg
