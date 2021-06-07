@@ -2,137 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E5839D930
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53B5039D934
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbhFGKAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 06:00:15 -0400
-Received: from forward102p.mail.yandex.net ([77.88.28.102]:44464 "EHLO
-        forward102p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230193AbhFGKAP (ORCPT
+        id S230311AbhFGKBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 06:01:44 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:7636 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230194AbhFGKBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 06:00:15 -0400
-Received: from forward101q.mail.yandex.net (forward101q.mail.yandex.net [IPv6:2a02:6b8:c0e:4b:0:640:4012:bb98])
-        by forward102p.mail.yandex.net (Yandex) with ESMTP id 15EC154C28A4;
-        Mon,  7 Jun 2021 12:58:19 +0300 (MSK)
-Received: from vla5-d4be149c9aa7.qloud-c.yandex.net (vla5-d4be149c9aa7.qloud-c.yandex.net [IPv6:2a02:6b8:c18:3485:0:640:d4be:149c])
-        by forward101q.mail.yandex.net (Yandex) with ESMTP id 110CBCF40023;
-        Mon,  7 Jun 2021 12:58:19 +0300 (MSK)
-Received: from vla5-445dc1c4c112.qloud-c.yandex.net (vla5-445dc1c4c112.qloud-c.yandex.net [2a02:6b8:c18:3609:0:640:445d:c1c4])
-        by vla5-d4be149c9aa7.qloud-c.yandex.net (mxback/Yandex) with ESMTP id RdnaOXaVse-wIK0wVwT;
-        Mon, 07 Jun 2021 12:58:19 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1623059899;
-        bh=pri2U53hHSTg+Row1G0suIH2TvQb+Kxs4Vlq7p1ILLE=;
-        h=In-Reply-To:Cc:To:From:Subject:Message-ID:References:Date;
-        b=wHcZ1vs58rVgLbR2DByIGdLucNJo2xshM7eNbZT+yQjwSJuuwUEXV5NrQE32AIQ7f
-         TsBpYGu9f6Ruj3i7d2EWwwml942vSBoOeh8QzZWjCZVjvhH0IqDSog389sVx/E4eAa
-         mnUptL6vZfLH95U0epcgBLfSO3pVpbnShNCvoHZM=
-Authentication-Results: vla5-d4be149c9aa7.qloud-c.yandex.net; dkim=pass header.i=@yandex.ru
-Received: by vla5-445dc1c4c112.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id tvWRgfBwki-wIM8Col6;
-        Mon, 07 Jun 2021 12:58:18 +0300
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client certificate not present)
-Message-ID: <79d5bffd63b46bb7d54ebcef4765cfca28f76ff0.camel@yandex.ru>
-Subject: Re: [PATCH] audit: Rename enum audit_state constants to avoid
- AUDIT_DISABLED redefinition
-From:   Sergey Nazarov <s-nazarov@yandex.ru>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     linux-kernel@vger.kernel.org, linux-audit@redhat.com,
-        Eric Paris <eparis@redhat.com>
-Date:   Mon, 07 Jun 2021 12:58:13 +0300
-In-Reply-To: <CAHC9VhTvp3Z26JbXJdq8p4T7w3GZk-1CFWY328o75-AqqUbNTg@mail.gmail.com>
-References: <ba47c2acb7bee9102bb6a85e9ba8b5918fa3610b.camel@yandex.ru>
-         <CAHC9VhTvp3Z26JbXJdq8p4T7w3GZk-1CFWY328o75-AqqUbNTg@mail.gmail.com>
-Content-Type: text/plain; charset="koi8-r"
-X-Mailer: Evolution 3.28.5 (3.28.5-10.el7) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 7 Jun 2021 06:01:42 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1579WwUI007233;
+        Mon, 7 Jun 2021 05:59:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=dw7MVFGoNgek+G2LBkaQJaC2KNjLwfxxCkZI53VrBJU=;
+ b=P6sNZLIUmaSocdAYghfq0JPueYzVtMBzuQJDwm097v8Cx044UGiF1EiVCzptkLz6a/qQ
+ Dx5rIKWGBJ2VLli+3RUQvExtYBMWe47HCVWMQyAus9rhE1N+fxmN+pM4IKoGLF2GKIAl
+ urlr/3aOrwwbAI24tgLNG57LE9wjtwIUxttXuNXlHlRPtqII23o+JpUwtr4/IB9AELGf
+ +LoG1dtq/Y7wmkmBnaSNOlOfyaqMeLNN00TyDdWDQ/B1C6RnZHNCRPJe/8tAx6IBnSlL
+ vuGT3vrvcphusah4Bqex1wFVPirbKsTyRseKGhXU1Y5LOBgpk5zBLBNIY1gjYkfVk/My iw== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 391c190kb6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Jun 2021 05:59:49 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1579rKgc010266;
+        Mon, 7 Jun 2021 09:59:48 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06ams.nl.ibm.com with ESMTP id 3900hhrtvd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Jun 2021 09:59:47 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1579xj1426476942
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 7 Jun 2021 09:59:45 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B7F405204F;
+        Mon,  7 Jun 2021 09:59:45 +0000 (GMT)
+Received: from [9.145.172.247] (unknown [9.145.172.247])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 94F9252051;
+        Mon,  7 Jun 2021 09:59:45 +0000 (GMT)
+Subject: Re: [RFC PATCH] gcov: add basic gcov_info validation to gcov
+ initialization
+To:     Luis Henriques <lhenriques@suse.de>
+Cc:     linux-kernel@vger.kernel.org
+References: <YLZYwgs5hyzFZMlw@suse.de>
+ <20210602102455.11724-1-lhenriques@suse.de>
+From:   Peter Oberparleiter <oberpar@linux.ibm.com>
+Message-ID: <f0148fb8-1779-a18e-315c-87df31d3154f@linux.ibm.com>
+Date:   Mon, 7 Jun 2021 11:59:45 +0200
+In-Reply-To: <20210602102455.11724-1-lhenriques@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: -6WPxLfW4V6SXPmpCDF7oqT4PzvtdEDS
+X-Proofpoint-ORIG-GUID: -6WPxLfW4V6SXPmpCDF7oqT4PzvtdEDS
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-07_07:2021-06-04,2021-06-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ clxscore=1015 spamscore=0 mlxscore=0 malwarescore=0 suspectscore=0
+ adultscore=0 bulkscore=0 mlxlogscore=999 phishscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106070074
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Paul!
-I think this could be easer. It's enouth to rename AUDIT_DISABLE only.
-enum audit_state deals with per-task syscalls audit context, so we can
-use AUDIT_CONTEXT_DISABLED for example. If it's okay, I can send a new
-patch version.
+On 02.06.2021 12:24, Luis Henriques wrote:
+> Add a basic gcov_info struct validation helper to gcc to ensure we have
+> sane from the compiler.
+> 
+> Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> ---
+> Hi!
+> 
+> I know this won't really validate the gcov_info struct, but it will at
+> least prevent kernel crashes in simple scenarios (such as the one I'm
+> seeing with gcc 9.3.1).
 
-В Сб, 05/06/2021 в 22:40 -0400, Paul Moore пишет:
-> On Fri, Jun 4, 2021 at 7:21 AM Sergey Nazarov <s-nazarov@yandex.ru>
-> wrote:
-> > 
-> > AUDIT_DISABLED defined in kernel/audit.h as element of enum
-> > audit_state
-> > and redefined in kernel/audit.c. This produces a warning when
-> > kernel builds
-> > with syscalls audit disabled and brokes kernel build if -Werror
-> > used.
-> > enum audit_state used in syscall audit code only. This patch
-> > changes
-> > enum audit_state constants prefix AUDIT to AUDITSC to avoid
-> > AUDIT_DISABLED
-> > redefinition.
-> > 
-> > Signed-off-by: Sergey Nazarov <s-nazarov@yandex.ru>
-> > ---
-> >  kernel/audit.h   |  8 ++++----
-> >  kernel/auditsc.c | 34 +++++++++++++++++-----------------
-> >  2 files changed, 21 insertions(+), 21 deletions(-)
-> 
-> Hi Sergey,
-> 
-> Thanks for sending a patch to fix this problem.  One comment below
-> ...
-> 
-> > diff --git a/kernel/audit.h b/kernel/audit.h
-> > index 1522e10..ee81f20 100644
-> > --- a/kernel/audit.h
-> > +++ b/kernel/audit.h
-> > @@ -21,16 +21,16 @@
-> >     a per-task filter.  At syscall entry, the audit_state is
-> > augmented by
-> >     the syscall filter. */
-> >  enum audit_state {
-> > -       AUDIT_DISABLED,         /* Do not create per-task
-> > audit_context.
-> > +       AUDITSC_DISABLED,       /* Do not create per-task
-> > audit_context.
-> >                                  * No syscall-specific audit
-> > records can
-> >                                  * be generated. */
-> > -       AUDIT_BUILD_CONTEXT,    /* Create the per-task
-> > audit_context,
-> > +       AUDITSC_BUILD_CONTEXT,  /* Create the per-task
-> > audit_context,
-> >                                  * and fill it in at syscall
-> >                                  * entry time.  This makes a full
-> >                                  * syscall record available if some
-> >                                  * other part of the kernel decides
-> > it
-> >                                  * should be recorded. */
-> > -       AUDIT_RECORD_CONTEXT    /* Create the per-task
-> > audit_context,
-> > +       AUDITSC_RECORD_CONTEXT  /* Create the per-task
-> > audit_context,
-> >                                  * always fill it in at syscall
-> > entry
-> >                                  * time, and always write out the
-> > audit
-> >                                  * record at syscall exit time.  */
-> 
-> I believe that just as the AUDIT_ prefix proved to be a bit too
-> generic, I think that the AUDITSC_ prefix is also not the best
-> choice.
-> Would you object to using the AUDIT_STATE_ prefix?  As that may get a
-> bit long, I might suggest dropping the _CONTEXT from the enums too
-> such that you would end up with the following:
-> 
->   enum audit_state {
->     AUDIT_STATE_DISABLED,
->     AUDIT_STATE_BUILD,
->     AUDIT_STATE_RECORD,
->   };
-> 
-> Thoughts?
-> 
+Thanks for your suggestion of adding validity checking for the gcov_info
+struct. The goal you aim at is definitely something that we want to have
+to reduce the impact of fallout from changes to GCC's gcov_info struct.
 
+In my opinion though the approach you described - looking at the
+contents of specific fields in gcov_info - isn't the correct way to go
+forward. Since you cannot know how gcov_info changed, accessing any data
+in it is very dangerous. Even if there's no out-of-bounds access (if the
+struct's size was reduced) the field you are checking could have moved
+elsewhere so the meaningfulness of the check is very limited.
+
+In a previous discussion on the same topic I proposed a different
+approach for a build-time check that would fully check the compatibility
+of kernel code and GCC-emitted gcov-related data structures. See:
+
+https://lore.kernel.org/patchwork/patch/1393585/#1592411
+
+Unfortunately I have not yet found the time to implement this approach
+but it's still on my to-do-list.
+
+Regarding the cause of the error you're seeing I'll have a look at the
+corresponding GCC source to see if there's anything that could be
+causing the issue.
+
+
+Regards,
+  Peter Oberparleiter
+
+-- 
+Peter Oberparleiter
+Linux on Z Development - IBM Germany
