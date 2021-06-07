@@ -2,141 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE54439D51D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AAF739D522
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:41:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbhFGGlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 02:41:08 -0400
-Received: from mail-dm6nam12on2084.outbound.protection.outlook.com ([40.107.243.84]:4129
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229498AbhFGGlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 02:41:06 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a7w8HGVxXtgKbcgZU48BaLGUSv+qZCJki73F76UT8nvPGELTVJy8GKVzxApTLI0Ku/8ggCSWsnY8fvltssLsS+q58+gLLsNevvnrub7YNHqoQ97DNV3XI7dh5+rG9nkpx7IPZ1pV6EB/ts57DpO+uGmOxpcXh3Ww6B0P7Y+RO+IetwsHwucXkbFlAtDZmLxYBnZ2oZxYqyzwsB6Zp357F9y2nAR+XpaSonSVO6wQieshDsZaHaFGY6U6m5/CdGrfLPQ6NLuyEW39kMbVKRiZHRdXigtRAAsmgL4TsL05FzcT3ygobJ+ERVxUoKs6nOf6oPr0+4nRcQewtM/T8zE+9g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z1UirDCLmU/THde+MiVhO1dhwwjHBSaf2aToOCNvdAI=;
- b=VA4bFTZfp9iSXJFQuooRjNFno1t5JRjoBGhB6yHB4daLJY58N6XnfvoEPOHCj89UbzLHUgGuMMV2iThEp9M5GNHwculdK+PbbWbeIgQtmhG9ENbz7i4Y6dAZ+5lx2m832vhc5cX8rgyIbxe/PPeyRHh1n81xdbWGujC80JqS5vdNp/PkSphvzmEcSHSDgmU/vTt0BZF2+vEZub542aZS2Bzwg5v8sVj3uPT0jF23aWb3G9skBy7sKB3WEbCoHgocGp47MXAS/v9TkjCzGlZcQk3STKB+ExmwEa0pGk7Yn0ZdY974RAWVh+BwRuDVp8PXHkXA5HHxl3SO5pdrHiiX4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z1UirDCLmU/THde+MiVhO1dhwwjHBSaf2aToOCNvdAI=;
- b=Nq8vBfe6s//p5zV8PaD83jTLbe9bqrtpcTcsVLzHclpT8borxetZIWeE8j5elcNUcaNRzgf+lRGOGeS1ikO5rQsegKJqRmFHXZZ/xN6oTiDZMZlSPsyfpHNen+Jx81t7qbEw92jJDPXB6ENpZITvRKovYtoG5G5tXHIaHJY0SMc=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by BL0PR12MB4708.namprd12.prod.outlook.com (2603:10b6:208:8d::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20; Mon, 7 Jun
- 2021 06:39:09 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6d4d:4674:1cf6:8d34]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6d4d:4674:1cf6:8d34%6]) with mapi id 15.20.4195.030; Mon, 7 Jun 2021
- 06:39:09 +0000
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210607123302.446ccbbb@canb.auug.org.au>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <013d9f93-e0b0-67f0-691e-5e713256d42a@amd.com>
-Date:   Mon, 7 Jun 2021 08:39:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-In-Reply-To: <20210607123302.446ccbbb@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:ce67:4e4d:875d:ffeb]
-X-ClientProxiedBy: PR3P195CA0002.EURP195.PROD.OUTLOOK.COM
- (2603:10a6:102:b6::7) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S230207AbhFGGnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 02:43:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59402 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229545AbhFGGnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 02:43:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7CF26121E;
+        Mon,  7 Jun 2021 06:41:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623048087;
+        bh=WJHQdy4sxhvqgS0MC5lUqEPV39/gM84OpLAauZzAMsQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=miti1pGf4X8JSTw+5bAKnmC6J/Oj62GADAh/qU5LGizT3e/mguJHZYM/HqQjB9JIC
+         kYOIigfg/o2c0kby0ih2HYmQpm24HYwopDiL3sUY0tLTvmmNznCaAsgxm9GLV4Mbis
+         mZqLvmGJc7YlE5ocLu7KjJC0SKVop1urwUZyAaQHglZKXQnQTyz1DsATFehEIwFyv3
+         UjfoQ5iT8ItqzGwLGejyyPOHpU5BdHQGHEMs4OdvfqtyUQhg/N/R4GEYNMQJGqzZjk
+         6UyPivlChb4tunck8+dpZSp+s8/dW/A9h/CokwsPzzfa40Gn2ysp0dFXDHvrn2f+dr
+         8QEa7lrAA4jAA==
+Received: by mail-lf1-f51.google.com with SMTP id v22so23103384lfa.3;
+        Sun, 06 Jun 2021 23:41:27 -0700 (PDT)
+X-Gm-Message-State: AOAM532VbGqkfmPt5AnfBI5y5u/+q90dviPrAoYCGpsKtV2PWb9PpYkw
+        nDdCzppWJfU8BdsjCXxn9l1M57Io8QqyLh+cCjo=
+X-Google-Smtp-Source: ABdhPJzQw6LHnGrCaA99WogkWxVtNvLnTm9mlFy3domKzPtpc2G5ul39vIh3zn+wlblu5LdVLL4Gofw9oNvf17vVTj0=
+X-Received: by 2002:a05:6512:987:: with SMTP id w7mr10846468lft.41.1623048085938;
+ Sun, 06 Jun 2021 23:41:25 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:ce67:4e4d:875d:ffeb] (2a02:908:1252:fb60:ce67:4e4d:875d:ffeb) by PR3P195CA0002.EURP195.PROD.OUTLOOK.COM (2603:10a6:102:b6::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.15 via Frontend Transport; Mon, 7 Jun 2021 06:39:07 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0c59f518-fb43-452f-c3e1-08d9297ef426
-X-MS-TrafficTypeDiagnostic: BL0PR12MB4708:
-X-Microsoft-Antispam-PRVS: <BL0PR12MB47080D6FE6AF3C775D75A9FE83389@BL0PR12MB4708.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:873;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: I6nJzq1uID4uwIl1XEI9CxugIAlVpiv15ljoykOahKj+F7uFIrB590wgGizFlE5rmBEUUGrxXqpKpITGW0fAGWkZU+a7Ai1oxr1cWtvQdyPW3Vqyy+9rB3pNeo6p03KRI2o1OnvpWt5IVQLZzHmL8xxjSaAikG2MSK80o7ZNjobrYYva5MV++N+bdaNt8XJ1lB48mU6AjB5gDRSpqhMgt43zz118zInD3pDMYkKgAvyncLsJgK12RFqHuItvZ3+/ewdu3cMockGn1I+bZOwawEnWfgOFQU9qW6eo3pUS8JU7dV1uJeEH00q0xVsrNZoDnURJTwNH2WQMK+FNpg/9ziLHDcY5o526JOlU3EuJWODWuhm6sMm+GhNKAffqda/gCBoemv+T/PYZWaCxiRsVz9TqVD95X/tra/21TQecrsFPirKFv7vyxRjAKIAnk6krd2uPy/9WtzKDwYvmpY+z+8LFyuKkAep3gZ6mG38aOGAjSNnWLos7WnnMDQC/GiQXkqBirMwgyIY5Ws/iqVcvEKgHEKgQxMBQ5faGXdXq/lHFXKvPhF44rHLnl5QZFQ3DRO9OthPtltJWeyfV2znPiuawGoQkxcfr9cA/DijowJoL89UizxIrNhANZixBmzu9v3bFYxJK2zFgMrzri0ltzVFV2z15fU28dZxv7x1yvFP6N71W2dAWHSIZGoe1gy6p
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(346002)(376002)(366004)(38100700002)(478600001)(2906002)(31686004)(5660300002)(8936002)(8676002)(2616005)(4326008)(66476007)(66556008)(66946007)(6486002)(83380400001)(16526019)(186003)(31696002)(36756003)(86362001)(6666004)(54906003)(110136005)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?04WvKOT0RjowdLjJkK1V8upBqvBkAQH2E0izDgutI1g3DTLY3TtvRmdh?=
- =?Windows-1252?Q?xhZuN5CG6Qxfe0unxiRpS8spTAOjHAjdaIsXphbthu1OBlXBOsgGKpWi?=
- =?Windows-1252?Q?6g1TEWceczce9lxQWP0qwf3E4D26tEasTWSHjIKcj+TDpjV0Oc0fS6iN?=
- =?Windows-1252?Q?niU61iJpgqQR4tQvIySsyEHxXhJqw6JkA8EjsjV71SUyYm2jZAG4WClP?=
- =?Windows-1252?Q?M75Ab1/b1IJB7clPa9o7Y6tf/g9H9V7O3/waEMrlEE37Npo7EIUhmucK?=
- =?Windows-1252?Q?MvvlsDUalHOUYQTtB6BLLdKhWxVoFomBhGJJffEGZFrf82lEf3ult7Fh?=
- =?Windows-1252?Q?AdteXLC3/HPBUNr0d3/b0tVtVoMVUgtFpuZKTrHHzlHb/k9qn/SQ1GxS?=
- =?Windows-1252?Q?I1mTRHKOJ6nS9DaVZt0YVW9kZIfNPD1jrGxhQUPRH3LeColAutPtIZw8?=
- =?Windows-1252?Q?QyGrOmrVpad7VK+S19DTwUy1Kdc0mJVRRlN1DW8L6/QGOPGsbYYlj1cL?=
- =?Windows-1252?Q?Yn9TFo1I5MZPDT0ZnNwm3RHn0ZHPS28hvJ/zsa22RN3JL39QIAkJLY6Z?=
- =?Windows-1252?Q?/VJEIDLO5sz7FcHW3oH665Xy852G/8hHyBtQ66ujtz52wvx0+VGitsKE?=
- =?Windows-1252?Q?7TApZZs39uSYRbYzSYknx+l7QYVBqJtCGRw33VSDnfBrzDpuozGeB9X7?=
- =?Windows-1252?Q?bFdED32dn+qDfn64d2JpoYzWv6VlDrE4vHgpu+3EI5sIxxTGvQe5elFd?=
- =?Windows-1252?Q?DSgbf1XbJD7zRPwZI5iVUiMPmWvB4N6xJxKjO34TFbv/BCvLC9n0ycGb?=
- =?Windows-1252?Q?tOUvKFYmp8QHoU5NhW8oPNkr4+Dmc6KXggD/uRtfbmGrJ8kU2Kd7W9RK?=
- =?Windows-1252?Q?eiabKnD724XziRO/4uR8nrvW6mcVOLZvcsuGeAlBPjqAFaGT2zFhztXt?=
- =?Windows-1252?Q?vB451s+bxTuF6Pp6DvBx0tvbMUtl5UaxZFqz2tvB28O1D/OJOKEaILDm?=
- =?Windows-1252?Q?A0EuUJypBSYzknRA7C15fMeoyjGZkYIYgvHHtjY6wOlbeImqZ9p1qdan?=
- =?Windows-1252?Q?x3LMRHBWoWHJ3E7YdRQJAMuJrtK0rM20YVyb7GD4TMvfpU7ajyFi+6c4?=
- =?Windows-1252?Q?w5a46Yd4vYexQt8icxyIuybwhnvSKFEYkPqEmnbJtFGGYIC7DQkIQ2JF?=
- =?Windows-1252?Q?MlBhJEFvB4FxtwcqYgCDVs6XlcuaJ9BXPZ3L+HvfEX1OYYCVKHLuBs3x?=
- =?Windows-1252?Q?x/uzVn2JcOwrZN7158X2l11EjbvK+XqpA4Akk+SvRIT/tE0q20cJWOxN?=
- =?Windows-1252?Q?mX+lCrKIwWcZs+ZAebm0OMUdf86NYZH9mm8WCPSrQpaQUECHnpI7kzjN?=
- =?Windows-1252?Q?NY6ZdpYN2F+ZP3P5tfgJ7Kpfg+EKTJ5Iw7GmTXQcY7cvtqQIPRR0F5TZ?=
- =?Windows-1252?Q?xXqDuWpLGIgX8PLz9yTs9p+M/c/YKikJByDqnzJz16dqkM9aHWsUbFJW?=
- =?Windows-1252?Q?KVEIRn7D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0c59f518-fb43-452f-c3e1-08d9297ef426
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2021 06:39:09.6620
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: i3JbkySaJxAVEKFxkY+R8/p/ltY7n9eAoqO288yrUq7oSMzRNKWsEernaR9UMEdH
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4708
+References: <1621400656-25678-1-git-send-email-guoren@kernel.org>
+ <20210519052048.GA24853@lst.de> <CAJF2gTTjwB4U-NxCtfgMA5aR2HzoQtA8a51W5UM1LHGRbjz9pg@mail.gmail.com>
+ <20210519064435.GA3076809@x1> <20210519065352.GA31590@lst.de>
+ <CAJF2gTR4FXRbp7oky-ypdVJba6btFHpp-+dPyJStRaQX_-5rzg@mail.gmail.com>
+ <29733b0931d9dd6a2f0b6919067c7efe@mailhost.ics.forth.gr> <CAJF2gTTpSbNWS4VLHAu4XsV5-Vos=6R9MmPOx8-yzMFJu=wX4A@mail.gmail.com>
+ <a8f2e68dcc1a6eb1ff3b95fcb8d0d0d2@mailhost.ics.forth.gr> <CAJF2gTQuQ5bE6HeGSoNaDynA0o3+KEo4snwft42YGzE=+DjKOQ@mail.gmail.com>
+ <20210607062701.GB24060@lst.de>
+In-Reply-To: <20210607062701.GB24060@lst.de>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Mon, 7 Jun 2021 14:41:14 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTRZuER5YbTD=0xWLU0Np6eD8L_z3rZH0i_WXgENUD3nbQ@mail.gmail.com>
+Message-ID: <CAJF2gTRZuER5YbTD=0xWLU0Np6eD8L_z3rZH0i_WXgENUD3nbQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Nick Kossifidis <mick@ics.forth.gr>,
+        Drew Fustini <drew@beagleboard.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>, wefu@redhat.com,
+        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Benjamin Koch <snowball@c3pb.de>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        Wei Fu <tekkamanninja@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ah, yes. I've forgot to include the infiniband subdir in the automated 
-rename. I should have done that treewide.
+On Mon, Jun 7, 2021 at 2:27 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Mon, Jun 07, 2021 at 11:19:03AM +0800, Guo Ren wrote:
+> > >From Linux non-coherency view, we need:
+> >  - Non-cache + Strong Order PTE attributes to deal with drivers' DMA descriptors
+> >  - Non-cache + weak order to deal with framebuffer drivers
+> >  - CMO dma_sync to sync cache with DMA devices
+>
+> This is not strictly true.  At the very minimum you only need cache
+> invalidation and writeback instructions.  For example early parisc
+> CPUs and some m68knommu SOCs have no support for uncached areas at all,
+> and Linux works.  But to be fair this is very painful and supports only
+> very limited periphals.  So for modern full Linux support some uncahed
+> memory is advisable.  But that doesn't have to be using PTE attributes.
+> It could also be physical memory regions that are either totally fixed
+Double/Triple the size of physical memory regions can't be accepted by
+SOC vendors, because it wastes HW resources.
+Some cost-down soc interconnects only have 32bit~34bit width of
+physical address, are you sure you could force them to expand it? (I
+can't)
 
-Going to provide a fix in a minute, sorry for the noise.
+> or somewhat dynamic.
+How can HW implement with dynamic modifying PMA? What's the granularity?
 
-Christian.
 
-Am 07.06.21 um 04:33 schrieb Stephen Rothwell:
-> Hi all,
->
-> After merging the drm-misc tree, today's linux-next build (powerpc
-> ppc64_defconfig) failed like this:
->
-> drivers/infiniband/core/umem_dmabuf.c: In function 'ib_umem_dmabuf_map_pages':
-> drivers/infiniband/core/umem_dmabuf.c:69:10: error: implicit declaration of function 'dma_resv_get_excl'; did you mean 'dma_resv_get_fences'? [-Werror=implicit-function-declaration]
->     69 |  fence = dma_resv_get_excl(umem_dmabuf->attach->dmabuf->resv);
->        |          ^~~~~~~~~~~~~~~~~
->        |          dma_resv_get_fences
-> drivers/infiniband/core/umem_dmabuf.c:69:8: warning: assignment to 'struct dma_fence *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
->     69 |  fence = dma_resv_get_excl(umem_dmabuf->attach->dmabuf->resv);
->        |        ^
->
-> Caused by commit
->
->    6edbd6abb783 ("dma-buf: rename and cleanup dma_resv_get_excl v3")
->
-> I have used the drm-misc tree from next-20210604 for today.
->
 
+-- 
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
