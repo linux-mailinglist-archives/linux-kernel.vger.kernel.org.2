@@ -2,77 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5408F39DEE7
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C7539DEE9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbhFGOiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 10:38:05 -0400
-Received: from mga12.intel.com ([192.55.52.136]:6488 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230213AbhFGOiD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 10:38:03 -0400
-IronPort-SDR: ShV0/11HTYcLLl524PdDMZ4s5r2i9PtKLTiMkkomfp410kK9XOlHBq4ll5mdonphBsvvpI4IWM
- rcFauRd6Obxg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="184315546"
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
-   d="scan'208";a="184315546"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 07:36:08 -0700
-IronPort-SDR: Y37UMWScXJDZ303soo6I9Yqr9mSsORiTUXT9IqjmD+0FVepK7Jy9XZkXULa3tOZNWgoCVRrEsz
- 1RYnHBCHWJTA==
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
-   d="scan'208";a="484794854"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 07:36:05 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lqGME-000HEt-Dk; Mon, 07 Jun 2021 17:36:02 +0300
-Date:   Mon, 7 Jun 2021 17:36:02 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Flavio Suligoi <f.suligoi@asem.it>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PWM List <linux-pwm@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Subject: Re: [PATCH v3 1/6] docs: firmware-guide: ACPI: Add a PWM example
-Message-ID: <YL4u0iPs3WbWulV8@smile.fi.intel.com>
-References: <20210607122458.40073-1-andriy.shevchenko@linux.intel.com>
- <CAJZ5v0jNWTzy37rX_V6LF7y7LOdy=KUokkVZ+25zj4+AZ244OQ@mail.gmail.com>
+        id S230314AbhFGOi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 10:38:28 -0400
+Received: from mail-vs1-f43.google.com ([209.85.217.43]:42977 "EHLO
+        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230211AbhFGOiZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 10:38:25 -0400
+Received: by mail-vs1-f43.google.com with SMTP id l25so9014179vsb.9;
+        Mon, 07 Jun 2021 07:36:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pIEuZnR+0pmXVTw7szVUo35cG2jdA3wDrXhvKfhXtfw=;
+        b=MYWo4n5/V0cE9jW9vhsOU3soporjzpABamtmErooD//Rm9pABY9QRuI7ccOvF64cFF
+         l6qWRUOBCP9w50lrRSdVzH6S4in16tWiAs4IE6OCXiXs2dydkE0pp39OeW0VclJTB27p
+         A8Zf8ZMbSg2OMmhX7p1/NN58feXXnmlD2vEK3xjxGAINKrlVUKEnImIKDm67I1U0qRK7
+         aXv3O41NsLKhicogVYeK9STnYCsIUCe7P+XeqRA273/lpJ9oWsaGsiGqIGnDA7kdxfjt
+         jS+Ayds4+U4UDaGcjw5k4chDIjk+SqIFKbrzzEM0Kdn/iWuiIEEN3Id0V+p9V3rQOxZk
+         Y4Cw==
+X-Gm-Message-State: AOAM532AJK2Pq/F2cm3E4/eT8y3zqBbeVRCVy6NzAKFY7th5PPv1u3Ki
+        4L35muQMYkE9zuK2a2SbC80aqAIJvTQ7Zzs6y3g=
+X-Google-Smtp-Source: ABdhPJyAB7LObhZVr6DP0FIXQJk11mzn8e1kVEmnHMYa9jjp3/mzqxniD/pQfzoaiVG47ccHD0gA31WHIrO2gUawgA8=
+X-Received: by 2002:a05:6102:c4c:: with SMTP id y12mr4961726vss.18.1623076594247;
+ Mon, 07 Jun 2021 07:36:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0jNWTzy37rX_V6LF7y7LOdy=KUokkVZ+25zj4+AZ244OQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210527001251.8529-1-rdunlap@infradead.org> <CAMuHMdWxBDM6za4_zPrkPGja8K6vy47gfdzYMNjJ-i1n1ySsHA@mail.gmail.com>
+ <YLcF8k71w1mhN9OX@google.com>
+In-Reply-To: <YLcF8k71w1mhN9OX@google.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 7 Jun 2021 16:36:23 +0200
+Message-ID: <CAMuHMdUYDHQB2gv9sfbB+xt_9H9EwaOLnycORVRctbqPJGJzvA@mail.gmail.com>
+Subject: Re: [PATCH v2] MOUSE_ATARI: fix kconfig unmet dependency warning
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michael Schmitz <schmitz@debian.org>,
+        Roman Zippel <zippel@linux-m68k.org>,
+        linux-input <linux-input@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Michael Schmitz <schmitzmic@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 02:38:26PM +0200, Rafael J. Wysocki wrote:
-> On Mon, Jun 7, 2021 at 2:24 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > When PWM support for ACPI has been added into the kernel, it missed
-> > the documentation update. Hence update documentation here.
-> >
-> > Fixes: 4a6ef8e37c4d ("pwm: Add support referencing PWMs from ACPI")
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> and I'm assuming this to go in via PWM.
+Hi Dmitry,
 
-Yes, thanks for your tags!
+On Wed, Jun 2, 2021 at 6:15 AM Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
+> On Thu, May 27, 2021 at 08:56:30AM +0200, Geert Uytterhoeven wrote:
+> > On Thu, May 27, 2021 at 2:12 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> > > Since the code for ATARI_KBD_CORE does not use drivers/input/keyboard/
+> > > code, just move ATARI_KBD_CORE to arch/m68k/Kconfig.machine to remove
+> > > this dependency.
+> > >
+> > > Removes this kconfig warning:
+> > >
+> > > WARNING: unmet direct dependencies detected for ATARI_KBD_CORE
+> > >   Depends on [n]: !UML && INPUT [=y] && INPUT_KEYBOARD [=n]
+> > >   Selected by [y]:
+> > >   - MOUSE_ATARI [=y] && !UML && INPUT [=y] && INPUT_MOUSE [=y] && ATARI [=y]
+> > >
+> > > Fixes: c04cb856e20a ("m68k: Atari keyboard and mouse support.")
+> > > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> > > Cc: Michael Schmitz <schmitz@debian.org>
+> > > Cc: Roman Zippel <zippel@linux-m68k.org>
+> > > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> > > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > > Cc: linux-input@vger.kernel.org
+> > > Cc: linux-m68k@lists.linux-m68k.org
+> > > Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > > Suggested-by: Michael Schmitz <schmitzmic@gmail.com>
+> >
+> > > ---
+> > > v2: move the symbol outside of INPUT_KEYBOARD (Geert) -- all the way
+> > >     to Kconfig.machine (Michael). Thanks.
+> >
+> > Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> >
+> > I'm willing to queue this in the m68k for-v5.14 branch, if Dmitry agrees.
+>
+> Sure, works for me.
+>
+> Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+
+Thanks,  queue in the m68k for-v5.14 branch.
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
