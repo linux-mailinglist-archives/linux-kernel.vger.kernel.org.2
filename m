@@ -2,130 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B4039E7AB
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 21:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1162639E7AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 21:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231539AbhFGTnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 15:43:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231265AbhFGTnS (ORCPT
+        id S231572AbhFGTn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 15:43:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21038 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231569AbhFGTnY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 15:43:18 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB627C061574;
-        Mon,  7 Jun 2021 12:41:15 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id e11so23759596ljn.13;
-        Mon, 07 Jun 2021 12:41:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Z8D7EP2ZXRo81V/Iibvxl9tc2KeLwiTlPeliqLE5Xwg=;
-        b=Sqb1NYOa8vHwXP3ElbXmXIQUG9dhhuJtAdEv1ZZa1iQF+yHfhAwGBWXzd4x0FSrF5i
-         xc4u7/dPLXxCCamCLIYTyx9HoXPBV/+EdFlDOfPHqWRWL5qE/1LWYlita4PVUw4nHhzA
-         XhF3NbLx+eJ0ItCMTma0mkNDUbm72PyewEw9Yqc/nLCugMghg/CNkZSxkST9e60HnQ3c
-         1rCv/ClYQrZOAyKYCq9AZiUa8CuC7Tuy6n8w3mNfI6O0he9dvS79olfTvUbF2UumoTJD
-         Xb2SJvIt97DysKYl2475kcoR+tji2SVDzU81StRI5uTXR1nJLzEhOxXZT/GUQbaER9y0
-         F7uQ==
+        Mon, 7 Jun 2021 15:43:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623094893;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ktL5nWqTPLu4372fp6dA+Wp9VnIRyo2M4rsP7gUhK4E=;
+        b=EVk2TVFCGDkipQQlqkRYZWUnj7in/jGtPpzJiDYylQ39c/nutF0BcpH8V8rZIHwEGz2JbT
+        5Aw7z69Zf0UIS5aAnOsx4OdcaNqTh/9zQ8hUYFc3g+XqoXeCtkgHNfbGwLqmnbaWIhRwZM
+        Iz46Svi5x3g7FDXvD6j1qpop0biPaeI=
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
+ [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-508-XSNH4H0sOYywdQY4hIDm-Q-1; Mon, 07 Jun 2021 15:41:30 -0400
+X-MC-Unique: XSNH4H0sOYywdQY4hIDm-Q-1
+Received: by mail-ot1-f72.google.com with SMTP id x2-20020a9d62820000b02902e4ff743c4cso12228113otk.8
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 12:41:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Z8D7EP2ZXRo81V/Iibvxl9tc2KeLwiTlPeliqLE5Xwg=;
-        b=el6kLLHEGb4BFHPVeYcnFc3lkxIifkw7toSc66VUBcZ+VokWdUqPJ+sjzCUi4LIvbx
-         /KCILDrgkWPd9ouegr3B4x9zYWfSYzQUt1h5n3VRTEgWnTlyrYM8feCoakFBWGujKp8A
-         0eamnZzEc1hHs+AtLJdgYi1BqarNuBO5M2qVfUvyF4jr6Rgm2VjPCSnUCw0F4tfeGnAp
-         pOi6WV2mhZjEUDX2GFos9uY/e3fQJbZKuosYgm+U2UBE6MN+dG4+YTEmvJ9BVDYhM4wZ
-         UUK+JrrazWCbj7Z4XJmZtq2K6He98khVI83HhXq8PgI8OFf+DbFlNApTRSdEnrxxPrlZ
-         r9dw==
-X-Gm-Message-State: AOAM530SxLdqeSkLZWhYi4lZC7vqeCgaxtcM+g7Bbzg7t74M2X3cf+LC
-        G4oQZF591K5f7KjK+jedPHI=
-X-Google-Smtp-Source: ABdhPJw0gv5os//4zZ7uIHsRUPvsAoxDmXosX1GUW6X5G9iPQpPEnuEUpRJig52/WV+foGZSojv2cg==
-X-Received: by 2002:a2e:9e57:: with SMTP id g23mr15942260ljk.123.1623094874132;
-        Mon, 07 Jun 2021 12:41:14 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.224.40])
-        by smtp.gmail.com with ESMTPSA id k10sm1118272ljm.39.2021.06.07.12.41.13
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ktL5nWqTPLu4372fp6dA+Wp9VnIRyo2M4rsP7gUhK4E=;
+        b=eRBD/Ge4ULu6Eye/zDx7uqIzHE4HoHFddGjMzLIOplWHG5Z0cIeDgxZ5+T8gY82rw2
+         /mcoZp9QKP0LL7fODZoRoLBk+VOaRNxTJl4Zffh18Sgq97xXU2YY19cVLksoVy4lEb5Q
+         +vc6/oZE4/zUopGrHoR61NvKYDPimirIyOSNXPGzrgbDCLPjD3J1Yc5AqtsiwtjHwZ0A
+         /xt/0klfnqSmHn6tlKW7CxY5HFBrspmUQNGNvFpjnE9FTmC8D6/VCAnPwJ4tW6BnF4qe
+         rfW24bcgktEmRHWZdqdBhZXq4hUfm8fDo3YIMCcOJkWGR3iM7xTxlbBUqS7imrMv1yhs
+         pHRw==
+X-Gm-Message-State: AOAM533J1RDm2lvZrNE5NvNQp0dAMpXRMi2M+H5F14DTJibXS8hzth1W
+        iG02Kcm3Gp479EVVG8ENafPirfy/8e9n7ohAR8//BxqHAZqn+mL5nimLbU5lfTy6wLsDuzXSbrO
+        1t+4MMGjNfptB8R09uHk8vDH6
+X-Received: by 2002:aca:3102:: with SMTP id x2mr537469oix.1.1623094890138;
+        Mon, 07 Jun 2021 12:41:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwFosBz4IUOZGFguQH5//THCuRP/IrBVZiu1yVwVFAaZQAbRyF2bu+8LlE0J5GnSsN+9iyoow==
+X-Received: by 2002:aca:3102:: with SMTP id x2mr537457oix.1.1623094889890;
+        Mon, 07 Jun 2021 12:41:29 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id r83sm2421065oih.48.2021.06.07.12.41.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 12:41:13 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     santosh.shilimkar@oracle.com, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+5134cdf021c4ed5aaa5f@syzkaller.appspotmail.com
-Subject: [PATCH] net: rds: fix memory leak in rds_recvmsg
-Date:   Mon,  7 Jun 2021 22:41:02 +0300
-Message-Id: <20210607194102.2883-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Mon, 07 Jun 2021 12:41:29 -0700 (PDT)
+Date:   Mon, 7 Jun 2021 13:41:28 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jason Wang <jasowang@redhat.com>
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+Message-ID: <20210607134128.58c2ea31.alex.williamson@redhat.com>
+In-Reply-To: <20210607190802.GO1002214@nvidia.com>
+References: <20210604155016.GR1002214@nvidia.com>
+        <30e5c597-b31c-56de-c75e-950c91947d8f@redhat.com>
+        <20210604160336.GA414156@nvidia.com>
+        <2c62b5c7-582a-c710-0436-4ac5e8fd8b39@redhat.com>
+        <20210604172207.GT1002214@nvidia.com>
+        <20210604152918.57d0d369.alex.williamson@redhat.com>
+        <20210604230108.GB1002214@nvidia.com>
+        <20210607094148.7e2341fc.alex.williamson@redhat.com>
+        <20210607181858.GM1002214@nvidia.com>
+        <20210607125946.056aafa2.alex.williamson@redhat.com>
+        <20210607190802.GO1002214@nvidia.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot reported memory leak in rds. The problem
-was in unputted refcount in case of error.
+On Mon, 7 Jun 2021 16:08:02 -0300
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-int rds_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
-		int msg_flags)
-{
-...
+> On Mon, Jun 07, 2021 at 12:59:46PM -0600, Alex Williamson wrote:
+> 
+> > > It is up to qemu if it wants to proceed or not. There is no issue with
+> > > allowing the use of no-snoop and blocking wbinvd, other than some
+> > > drivers may malfunction. If the user is certain they don't have
+> > > malfunctioning drivers then no issue to go ahead.  
+> > 
+> > A driver that knows how to use the device in a coherent way can
+> > certainly proceed, but I suspect that's not something we can ask of
+> > QEMU.  QEMU has no visibility to the in-use driver and sketchy ability
+> > to virtualize the no-snoop enable bit to prevent non-coherent DMA from
+> > the device.  There might be an experimental ("x-" prefixed) QEMU device
+> > option to allow user override, but QEMU should disallow the possibility
+> > of malfunctioning drivers by default.  If we have devices that probe as
+> > supporting no-snoop, but actually can't generate such traffic, we might
+> > need a quirk list somewhere.  
+> 
+> Compatibility is important, but when I look in the kernel code I see
+> very few places that call wbinvd(). Basically all DRM for something
+> relavent to qemu.
+> 
+> That tells me that the vast majority of PCI devices do not generate
+> no-snoop traffic.
 
-	if (!rds_next_incoming(rs, &inc)) {
-		...
-	}
+Unfortunately, even just looking at devices across a couple laptops
+most devices do support and have NoSnoop+ set by default.  I don't
+notice anything in the kernel that actually tries to set this enable (a
+handful that actively disable), so I assume it's done by the firmware.
+It's not safe for QEMU to make an assumption that only GPUs will
+actually make use of it.
 
-After this "if" inc refcount incremented and
+> > > I think it makes the software design much simpler if the security
+> > > check is very simple. Possessing a suitable device in an ioasid fd
+> > > container is enough to flip on the feature and we don't need to track
+> > > changes from that point on. We don't need to revoke wbinvd if the
+> > > ioasid fd changes, for instance. Better to keep the kernel very simple
+> > > in this regard.  
+> > 
+> > You're suggesting that a user isn't forced to give up wbinvd emulation
+> > if they lose access to their device?    
+> 
+> Sure, why do we need to be stricter? It is the same logic I gave
+> earlier, once an attacker process has access to wbinvd an attacker can
+> just keep its access indefinitely.
+> 
+> The main use case for revokation assumes that qemu would be
+> compromised after a device is hot-unplugged and you want to block off
+> wbinvd. But I have a hard time seeing that as useful enough to justify
+> all the complicated code to do it...
 
-	if (rds_cmsg_recv(inc, msg, rs)) {
-		ret = -EFAULT;
-		goto out;
-	}
-...
-out:
-	return ret;
-}
+It's currently just a matter of the kvm-vfio device holding a reference
+to the group so that it cannot be used elsewhere so long as it's being
+used to elevate privileges on a given KVM instance.  If we conclude that
+access to a device with the right capability is required to gain a
+privilege, I don't really see how we can wave aside that the privilege
+isn't lost with the device.
 
-in case of rds_cmsg_recv() fail the refcount won't be
-decremented. And it's easy to see from ftrace log, that
-rds_inc_addref() don't have rds_inc_put() pair in
-rds_recvmsg() after rds_cmsg_recv()
+> For KVM qemu can turn on/off on hot plug events as it requires to give
+> VM security. It doesn't need to rely on the kernel to control this.
 
- 1)               |  rds_recvmsg() {
- 1)   3.721 us    |    rds_inc_addref();
- 1)   3.853 us    |    rds_message_inc_copy_to_user();
- 1) + 10.395 us   |    rds_cmsg_recv();
- 1) + 34.260 us   |  }
+Yes, QEMU can reject a hot-unplug event, but then QEMU retains the
+privilege that the device grants it.  Releasing the device and
+retaining the privileged gained by it seems wrong.  Thanks,
 
-Fixes: bdbe6fbc6a2f ("RDS: recv.c")
-Reported-and-tested-by: syzbot+5134cdf021c4ed5aaa5f@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- net/rds/recv.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/net/rds/recv.c b/net/rds/recv.c
-index 4db109fb6ec2..3fa16c339bfe 100644
---- a/net/rds/recv.c
-+++ b/net/rds/recv.c
-@@ -714,7 +714,7 @@ int rds_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 
- 		if (rds_cmsg_recv(inc, msg, rs)) {
- 			ret = -EFAULT;
--			goto out;
-+			goto out_put;
- 		}
- 		rds_recvmsg_zcookie(rs, msg);
- 
-@@ -740,6 +740,7 @@ int rds_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 		break;
- 	}
- 
-+out_put:
- 	if (inc)
- 		rds_inc_put(inc);
- 
--- 
-2.31.1
+Alex
 
