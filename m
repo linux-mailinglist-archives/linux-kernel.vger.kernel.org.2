@@ -2,145 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3B539D636
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E082839D633
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbhFGHmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 03:42:37 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:63427 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhFGHmf (ORCPT
+        id S230207AbhFGHmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 03:42:33 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:39617 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229545AbhFGHmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 03:42:35 -0400
-Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 1577e4cr029736;
-        Mon, 7 Jun 2021 16:40:05 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 1577e4cr029736
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1623051605;
-        bh=EKJEqB3Q6tIfy2A4ywMNYaG/WTIqmzMmTredZAM1eyY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rCbmr+PJtfqOvYdx+tg6tNe+ulGgWc8DM4wPOwDOMxO464uhW3SM4YIp8ouiWr6D2
-         yFDq3SUMr6K9d+k5CD8oaK0+wjbbkRKpgzxm5gU6Jt6sHwUJgPukt+Ie+EUJidvouB
-         QCipHwGMraBCrfZK+6+YKhTBqf1Ry9qjyiqwPM/8++rBqeoo5ZmqM3pP0yXVOqriyR
-         KAOmcpss4ARyFtb8cITGpqkbe3DgZZR7YsNJvfFhcNz9GrjTi5d/JwxNdvLO3yrTJ5
-         Pw7WfuQyhmz6+DkHWz7V0TVVxdSewlTy3Q2hCQmMNnHwBP8yFWvNhLBsudkRKgWHHz
-         To5r+JyNQhNtg==
-X-Nifty-SrcIP: [209.85.217.51]
-Received: by mail-vs1-f51.google.com with SMTP id j15so8412318vsf.2;
-        Mon, 07 Jun 2021 00:40:04 -0700 (PDT)
-X-Gm-Message-State: AOAM530ilV7x9BOYsxhMHcnwVwqHaih58l/6kueGfJCzvVlGiGTj+8dd
-        PXKRy3Ke8jMTTkQathvLHaRFAv3O3xAwgDA5ZIY=
-X-Google-Smtp-Source: ABdhPJwPmFut2nTxArXa07v4xPlHzxrJ0sLjVDtvrdtLChTFpKiR9239Z6WTj44UnleODc79Z+HXDtosElosU9UFvGs=
-X-Received: by 2002:aa7:99c9:0:b029:2e9:e084:e1de with SMTP id
- v9-20020aa799c90000b02902e9e084e1demr15812551pfi.80.1623051593156; Mon, 07
- Jun 2021 00:39:53 -0700 (PDT)
+        Mon, 7 Jun 2021 03:42:32 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 6B764580834;
+        Mon,  7 Jun 2021 03:40:41 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Mon, 07 Jun 2021 03:40:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=nq7E0TCtn3bqp2hAkNThKCjEhjj
+        Q30HBjKbfLIDNz5Q=; b=N/ZMqksN9XtxE/zJBMhC868H5VHJCkn7LmMr7eq/too
+        7YeVQXt7Sj6RYkCXVZEQmQ+PHp8vohwiZFne4Oa43g7mxWREK+3nFfL0SnHJ5O9l
+        J3ebdpU/jIzTET+t6g6gIE2Z6FgysWb2R8OaRly8s3JdUOBqupfgFjflsDTZQua4
+        5Y1KZjn81/Rudk4sP76huOdp/fprF36mB4jUwGOPF0qehioDUHyYmhPiflvJfbME
+        /gr45G3tZXBgTtZjajE1EuBKzjfOMsnfneBstMDb0cWtp7KcpzC+TZkhHaRgie++
+        8su2NmckIhH9ROJ/U6kvRg+fDVGQGNTbA36QG3sLQZA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=nq7E0T
+        Ctn3bqp2hAkNThKCjEhjjQ30HBjKbfLIDNz5Q=; b=A5eVwM3/pJF3UwKbBWJngX
+        uJbXb7+LWwiBgcpfBHvD5c6Vgs7R3N9ExoVud1JlS9oh2lMw0svAXfXqhxjtNaFz
+        Km2A4cdfeZZvoVyACo9GpY3lXs7jSyCPbEs4hUv4nVB0Q0aR+cWAc4+zwYk5HeQj
+        OF8tEw4WsllUT40R4KCkzWcEzXaWNvjtnp17ib8R0Va/Gdpe9Ju13L4Qj6ksFuZd
+        wApHljX+ID3LXqLa6munYuj8YdJb7zypXZmykfijHI5dk+VeXxhD4HGVOSd3IbRH
+        dPCoYCGMM0KjpVoX8h/4viT2nyRImpySoqiYqqGUp2RmepGOFtcVv2B8UdAXAGRw
+        ==
+X-ME-Sender: <xms:d829YBymgtLXAL7zDrNKq18v27CKcD83QgboMqrvm3Dr8ThFEOn34g>
+    <xme:d829YBT-o7Q-KInpV-NISiudGEr-49TLRFKK54U5UDFlOwWPOCd0k-4LjT78gxmFv
+    FLNHdpFnu2Avk7HX9A>
+X-ME-Received: <xmr:d829YLV-6cnlIfc_qvqYkMYG48Edyqqa_kWzDnJHgAUxs5GxNu7ju-E_FAs0gppgm8uXh3EnvxCFgHOwV0LRTOF95k26MxWlN0Gb>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtiedguddulecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpeevveefffduveeitdegtefhhfetueffteefffdvheevvdehteethedvleff
+    gfejvdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggt
+    hh
+X-ME-Proxy: <xmx:d829YDj9AMoTlsTXrX4mEaFT9pm33fKEufhEtZuTXhCNjXNqmfgfiQ>
+    <xmx:d829YDDlzyF-N8z0-v6VS7SO3yoTeO24z_8LVE2ssi4FWrPleqqzYg>
+    <xmx:d829YMJRlJZ3Y1f-hj9UbQad9alHi42v7QAPTgxvAG24Z4moTS6GmA>
+    <xmx:ec29YLbAYjQfUquabT22JxVb-WZU7-TI6Pg6pVqEWsGUnmNuDSxk6Q>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 7 Jun 2021 03:40:38 -0400 (EDT)
+Date:   Mon, 7 Jun 2021 09:40:37 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Werner Sembach <wse@tuxedocomputers.com>
+Cc:     harry.wentland@amd.com, sunpeng.li@amd.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
+        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org
+Subject: Re: [PATCH 2/4] drm/uAPI: Add "active bpc" as feedback channel for
+ "max bpc" drm property
+Message-ID: <20210607074037.oxm7qbhcx7gsg6yd@gilmour>
+References: <20210604171723.10276-1-wse@tuxedocomputers.com>
+ <20210604171723.10276-3-wse@tuxedocomputers.com>
 MIME-Version: 1.0
-References: <20210227183910.221873-1-masahiroy@kernel.org> <CAK7LNASL_X43_nMTz1CZQB+jiLCRAJbh-wQdc23QV0pWceL_Lw@mail.gmail.com>
- <20210228064936.zixrhxlthyy6fmid@24bbad8f3778>
-In-Reply-To: <20210228064936.zixrhxlthyy6fmid@24bbad8f3778>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 7 Jun 2021 16:39:16 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASY_+_38XEMLZAf7txr4EdukkcFL8pnGGe2XyhQ9F4oDQ@mail.gmail.com>
-Message-ID: <CAK7LNASY_+_38XEMLZAf7txr4EdukkcFL8pnGGe2XyhQ9F4oDQ@mail.gmail.com>
-Subject: Re: [PATCH RFC] x86: remove toolchain check for X32 ABI capability
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Fangrui Song <maskray@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "H . J . Lu" <hjl.tools@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Brian Gerst <brgerst@gmail.com>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Chao Yu <chao@kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Kees Cook <keescook@chromium.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="p3wy26msisgyobg2"
+Content-Disposition: inline
+In-Reply-To: <20210604171723.10276-3-wse@tuxedocomputers.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 28, 2021 at 3:49 PM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> On Sun, Feb 28, 2021 at 12:15:16PM +0900, Masahiro Yamada wrote:
-> > On Sun, Feb 28, 2021 at 3:41 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > >
-> > > This commit reverts 0bf6276392e9 ("x32: Warn and disable rather than
-> > > error if binutils too old").
-> > >
-> > > The help text in arch/x86/Kconfig says enabling the X32 ABI support
-> > > needs binutils 2.22 or later. This is met because the minimal binutils
-> > > version is 2.23 according to Documentation/process/changes.rst.
-> > >
-> > > I would not say I am not familiar with toolchain configuration, but
-> >
-> > I mean:
-> > I would not say I am familiar ...
-> > That is why I added RFC.
-> >
-> > I appreciate comments from people who are familiar
-> > with toolchains (binutils, llvm).
-> >
-> > If this change is not safe,
-> > we can move this check to Kconfig at least.
->
-> Hi Masahiro,
->
-> As Fangrui pointed out, there are two outstanding issues with x32 with
-> LLVM=1, both seemingly related to LLVM=1.
 
-Is this still a problem for Clang built Linux?
+--p3wy26msisgyobg2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi,
 
+On Fri, Jun 04, 2021 at 07:17:21PM +0200, Werner Sembach wrote:
+> Add a new general drm property "active bpc" which can be used by graphic =
+drivers
+> to report the applied bit depth per pixel back to userspace.
 
-> https://github.com/ClangBuiltLinux/linux/issues/514
+Just a heads up, we'll need an open source project that has accepted it
+before merging it.
 
-I am not tracking the status.
-What was the conclusion?
+See https://www.kernel.org/doc/html/latest/gpu/drm-uapi.html#open-source-us=
+erspace-requirements
 
-> https://github.com/ClangBuiltLinux/linux/issues/1141
+> While "max bpc" can be used to change the color depth, there was no way t=
+o check
+> which one actually got used. While in theory the driver chooses the best/=
+highest
+> color depth within the max bpc setting a user might not be fully aware wh=
+at his
+> hardware is or isn't capable off. This is meant as a quick way to double =
+check
+> the setup.
+>=20
+> In the future, automatic color calibration for screens might also depend =
+on this
+> information available.
+>=20
+> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> ---
+>  drivers/gpu/drm/drm_atomic_uapi.c |  2 ++
+>  drivers/gpu/drm/drm_connector.c   | 40 +++++++++++++++++++++++++++++++
+>  include/drm/drm_connector.h       | 15 ++++++++++++
+>  3 files changed, 57 insertions(+)
+>=20
+> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atom=
+ic_uapi.c
+> index 268bb69c2e2f..7ae4e40936b5 100644
+> --- a/drivers/gpu/drm/drm_atomic_uapi.c
+> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
+> @@ -873,6 +873,8 @@ drm_atomic_connector_get_property(struct drm_connecto=
+r *connector,
+>  		*val =3D 0;
+>  	} else if (property =3D=3D connector->max_bpc_property) {
+>  		*val =3D state->max_requested_bpc;
+> +	} else if (property =3D=3D connector->active_bpc_property) {
+> +		*val =3D state->active_bpc;
+>  	} else if (connector->funcs->atomic_get_property) {
+>  		return connector->funcs->atomic_get_property(connector,
+>  				state, property, val);
+> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connec=
+tor.c
+> index 7631f76e7f34..5f42a5be5822 100644
+> --- a/drivers/gpu/drm/drm_connector.c
+> +++ b/drivers/gpu/drm/drm_connector.c
+> @@ -1195,6 +1195,13 @@ static const struct drm_prop_enum_list dp_colorspa=
+ces[] =3D {
+>   *	drm_connector_attach_max_bpc_property() to create and attach the
+>   *	property to the connector during initialization.
+>   *
+> + * active bpc:
+> + *	This read-only range property is used by userspace check the bit depth
+> + *	actually applied by the GPU driver after evaluation all hardware
 
+                                ^ display
 
-This got marked "unreproducible"
+Depending on the system, the display component might have a GPU attached
+or not, and the GPU might have a display component or not.
 
->
-> Additionally, there appears to be one from Arnd as well but that one has
-> received no triage yet.
->
-> https://github.com/ClangBuiltLinux/linux/issues/1205
+> + *	capabilities and max bpc. Drivers to use the function
+> + *	drm_connector_attach_active_bpc_property() to create and attach the
+> + *	property to the connector during initialization.
+> + *
+>   * Connectors also have one standardized atomic property:
+>   *
+>   * CRTC_ID:
+> @@ -2150,6 +2157,39 @@ int drm_connector_attach_max_bpc_property(struct d=
+rm_connector *connector,
+>  }
+>  EXPORT_SYMBOL(drm_connector_attach_max_bpc_property);
+> =20
+> +/**
+> + * drm_connector_attach_active_bpc_property - attach "active bpc" proper=
+ty
+> + * @connector: connector to attach active bpc property on.
+> + * @min: The minimum bit depth supported by the connector.
+> + * @max: The maximum bit depth supported by the connector.
+> + *
+> + * This is used to check the applied bit depth on a connector.
+> + *
+> + * Returns:
+> + * Zero on success, negative errno on failure.
+> + */
+> +int drm_connector_attach_active_bpc_property(struct drm_connector *conne=
+ctor,
+> +					  int min, int max)
+> +{
+> +	struct drm_device *dev =3D connector->dev;
+> +	struct drm_property *prop;
+> +
+> +	prop =3D connector->active_bpc_property;
+> +	if (!prop) {
+> +		prop =3D drm_property_create_range(dev, 0, "active bpc", min, max);
+> +		if (!prop)
+> +			return -ENOMEM;
+> +
+> +		connector->active_bpc_property =3D prop;
+> +	}
+> +
+> +	drm_object_attach_property(&connector->base, prop, 0);
+> +	connector->state->active_bpc =3D 0;
 
-Same as well.
+I guess we want to default to 8?
 
+Maxime
 
->
-> I intend to test this patch as well as a few others at some point in the
-> coming week although I am having to play sysadmin due to moving servers
-> so I might not be able to get to it until later in the week.
->
-> Cheers,
-> Nathan
->
+--p3wy26msisgyobg2
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Best Regards
-Masahiro Yamada
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYL3NdQAKCRDj7w1vZxhR
+xW9iAQCqBVy+34/6/7fZGJk9fSwKmxPEOrt3Z64pKzVhYa+2XQEAxB7WeGQsnb8V
+xKwe4pgJJQ+NMocJbxmxYRV5QZGhYAQ=
+=O0Ys
+-----END PGP SIGNATURE-----
+
+--p3wy26msisgyobg2--
