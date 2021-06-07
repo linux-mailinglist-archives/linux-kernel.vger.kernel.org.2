@@ -2,114 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2426139D555
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B01539D55B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbhFGGtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 02:49:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhFGGtC (ORCPT
+        id S230254AbhFGGuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 02:50:05 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:51988 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230128AbhFGGuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 02:49:02 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 224EBC061766
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 23:47:01 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id f17so9265953wmf.2
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 23:47:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LyNlPC6SvU+YECxldU/+nmnU2jmNOyDHdj+cAyQpUdQ=;
-        b=VNnDBdIbSunXj3BlZ20vTALlSHAbmEgZ0P4e7WN+Fz05Uvxt8m8HGXKiGwkzzpCE3X
-         CxLs8IjCq+tUrreQj+uBMoejPEv/58BXgxKqa6lq50AKlUNyS6P1jNIujZ2xccnLIjQB
-         GpbR0zi83u2ihVdCFzb83nw80R9uvgl8j80kiTE0p+aedodkKd1WONg5u5NVbKXeoQIH
-         LPp6uQP4Z13v/g4GMSY667/PUOW0RFxd5IH+8t3L2en+sH2JEaVx5cpFSj1ZnM5oMaFz
-         hbQMxetCdXkk9rZfP/S3i9o3PeElGEIa2TagZzlMsfcFu1En6pimn6Ybd5hwo1lUM6Rz
-         Maug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=LyNlPC6SvU+YECxldU/+nmnU2jmNOyDHdj+cAyQpUdQ=;
-        b=S8ErFfMJ3MQCfvwwT/79euFcXwdkuXeSvPq9N71xzu9wpXp8yVsA64jYR2FFNaJjT7
-         ZUrjPqm3mA6Ll/wk+0ibSHjWpiM0VWulHMRE6zrDfdcwT7AXrxKHBOjlJ0yQ3Us4nuPr
-         nXKSO0oUAPcIoMiAGu0CyWr4QLXT6ZUf+6FD0oxFv00zLXaWQggkS7fvrnUFVm0AfI2/
-         eOo8Ms0jI71pPH4mvM7qsq+uXxXwSlur45/Lp/ui+IZiuFX/GeCXGM6pIdzWl9MYz/Ue
-         zsobbM1Y6c84eg2CRpTUhs3R3+vr/7WqKxzf+MYJwbHhkWajU/O9AKMl1K1NFo4SSM38
-         CaIw==
-X-Gm-Message-State: AOAM531NVy6Ny00pzgs8JRNh14O7IlxXwurIlFUXnz61PBoVl1v71CEk
-        GTlPBTaJlPxkj0SeAeGpj3MMJqu61TTg2L1g
-X-Google-Smtp-Source: ABdhPJw5EbYL7clbh4WzOVLWSO8ZoKWq7YxoCQjQVjk/WAJdMjJGM4XQe8l11NIDxs+AOBU4fst2Cg==
-X-Received: by 2002:a05:600c:4a09:: with SMTP id c9mr15133013wmp.162.1623048419104;
-        Sun, 06 Jun 2021 23:46:59 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:90c:e290:7c1f:1c9f:555e:7398? ([2a01:e0a:90c:e290:7c1f:1c9f:555e:7398])
-        by smtp.gmail.com with ESMTPSA id l31sm1655289wms.31.2021.06.06.23.46.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 06 Jun 2021 23:46:58 -0700 (PDT)
-Subject: Re: [PATCH] usb: dwc3-meson-g12a: fix usb2 PHY glue init when phy0 is
- disabled
-To:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     balbi@kernel.org, linux-usb@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210601084830.260196-1-narmstrong@baylibre.com>
- <YLoHSJIOSRTyF0r1@kroah.com> <20210604150742.bssvnhm4gv72uw4h@nitro.local>
- <20210604164601.hrlgkrsghhqtho6m@nitro.local>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <66daad75-3340-bc11-1f6f-32bbb0b2e3fa@baylibre.com>
-Date:   Mon, 7 Jun 2021 08:46:57 +0200
+        Mon, 7 Jun 2021 02:50:02 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1576lqB9078633;
+        Mon, 7 Jun 2021 01:47:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1623048472;
+        bh=/egmoX3I90I/Gz07AopX4CzQsPsjx31j/llTXwlpz7k=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=gjgnBH8tml4Bd6Gtid2iJiD+FAUlPT6zRZzAYE38nYEP3rKJ0Stc2zQukVBNMo+Fp
+         1cT6DEgeohrgO5IvoAKRCT5o/pmAl9LdpfDX5n/WcPkB7rHoAnjdul8vhZr2wR5hzW
+         8ur05ZF/VudvEuwvqDtbFTVfPip7gCRN/Xc1mRoE=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1576lq6s056325
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 7 Jun 2021 01:47:52 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 7 Jun
+ 2021 01:47:52 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 7 Jun 2021 01:47:52 -0500
+Received: from [10.250.234.148] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1576ln8D086300;
+        Mon, 7 Jun 2021 01:47:50 -0500
+Subject: Re: [PATCH v5 3/5] mtd: spi-nor: otp: return -EROFS if region is
+ read-only
+To:     Michael Walle <michael@walle.cc>
+CC:     <Tudor.Ambarus@microchip.com>, <linux-mtd@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <p.yadav@ti.com>,
+        <miquel.raynal@bootlin.com>, <richard@nod.at>
+References: <20210604100252.9975-1-michael@walle.cc>
+ <20210604100252.9975-4-michael@walle.cc>
+ <c2b58dcc-5a60-792c-30ac-a3db327a85ed@microchip.com>
+ <e117bc50b9f9e10549c25602b66cfe26@walle.cc>
+ <1549db61-500a-e5df-9303-823b41457861@ti.com>
+ <4ba7994b0cc8d436012a776ca14addca@walle.cc>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <3e46bc75-6ace-f7c0-1b14-aae812554ac9@ti.com>
+Date:   Mon, 7 Jun 2021 12:17:48 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210604164601.hrlgkrsghhqtho6m@nitro.local>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <4ba7994b0cc8d436012a776ca14addca@walle.cc>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/06/2021 18:46, Konstantin Ryabitsev wrote:
-> On Fri, Jun 04, 2021 at 11:07:42AM -0400, Konstantin Ryabitsev wrote:
->>> Odd that DKIM didn't work for baylibre-com, but hey, I'll take a real
->>> signature over DKIM anyday!
+
+
+On 6/7/21 11:38 AM, Michael Walle wrote:
+> Am 2021-06-07 07:46, schrieb Vignesh Raghavendra:
+>> On 6/4/21 6:45 PM, Michael Walle wrote:
+>>> Am 2021-06-04 15:07, schrieb Tudor.Ambarus@microchip.com:
+>>>> On 6/4/21 1:02 PM, Michael Walle wrote:
+>>>>> EXTERNAL EMAIL: Do not click links or open attachments unless you
+>>>>> know the content is safe
+>>>>>
+>>>>> SPI NOR flashes will just ignore program commands if the OTP region is
+>>>>> locked. Thus, a user might not notice that the intended write
+>>>>> didn't end
+>>>>> up in the flash. Return -EROFS to the user in this case. From what
+>>>>> I can
+>>>>> tell, chips/cfi_cmdset_0001.c also return this error code.
+>>>>>
+>>>>> One could optimize spi_nor_mtd_otp_range_is_locked() to read the
+>>>>> status
+>>>>> register only once and not for every OTP region, but for that we would
+>>>>> need some more invasive changes. Given that this is
+>>>>> one-time-programmable memory and the normal access mode is reading, we
+>>>>> just live with the small overhead.
+>>>>>
+>>>>> Fixes: 069089acf88b ("mtd: spi-nor: add OTP support")
+>>>>> Signed-off-by: Michael Walle <michael@walle.cc>
+>>>>> Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+>>>>> ---
+>>>>>  drivers/mtd/spi-nor/otp.c | 36 ++++++++++++++++++++++++++++++++++++
+>>>>>  1 file changed, 36 insertions(+)
+>>>>>
+>>>>> diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
+>>>>> index 3898ed67ba1c..063f8fb68649 100644
+>>>>> --- a/drivers/mtd/spi-nor/otp.c
+>>>>> +++ b/drivers/mtd/spi-nor/otp.c
+>>>>> @@ -249,6 +249,32 @@ static int spi_nor_mtd_otp_info(struct mtd_info
+>>>>> *mtd, size_t len,
+>>>>>         return ret;
+>>>>>  }
+>>>>>
+>>>>> +static int spi_nor_mtd_otp_range_is_locked(struct spi_nor *nor,
+>>>>> loff_t ofs,
+>>>>> +                                          size_t len)
+>>>>> +{
+>>>>> +       const struct spi_nor_otp_ops *ops = nor->params->otp.ops;
+>>>>> +       unsigned int region;
+>>>>> +       int locked;
+>>>>> +
+>>>>> +       if (!len)
+>>>>> +               return 0;
+>>>>> +
+>>>>
+>>>> You won't need this if you put patch 4/5 before this one. With this:
+>>>
+>>> This patch will get backported to the stable kernels. Patch 4 on the
+>>> other hand does not.
+>>>
 >>
->> That lookup happened to grab the thread from linux-amlogic, which is
->> mailman2-managed and is known to break DKIM. I'll try to fix our configuration
->> so that known-DKIM-friendly sources are given priority. This way, when a thread
->> exists on multiple lists, you'll get the one more likely to pass DKIM checks.
+>> I don't see why 4/5 cannot be marked for backport too as it makes 3/5
+>> much cleaner?
 > 
-> This is now in place -- lore will now prefer results from DKIM-friendly
-> sources. E.g. grabbing the same message-id will now return the thread from
-> linux-usb (via vger) instead of linux-amlogic (via infradead).
-> 
->     $ b4 am -o/tmp 20210601084830.260196-1-narmstrong@baylibre.com
->     Looking up https://lore.kernel.org/r/20210601084830.260196-1-narmstrong%40baylibre.com
->     Grabbing thread from lore.kernel.org/linux-usb/20210601084830.260196-1-narmstrong%40baylibre.com/t.mbox.gz
->     Analyzing 4 messages in the thread
->     Checking attestation on all messages, may take a moment...
->     ---
->       ✓ [PATCH] usb: dwc3-meson-g12a: fix usb2 PHY glue init when phy0 is disabled
->         + Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com> (✓ DKIM/googlemail.com)
->       ---
->       ✓ Signed: openpgp/narmstrong@baylibre.com
->       ✓ Signed: DKIM/baylibre-com.20150623.gappssmtp.com (From: narmstrong@baylibre.com)
->     ---
->     Total patches: 1
->     ---
->      Link: https://lore.kernel.org/r/20210601084830.260196-1-narmstrong@baylibre.com
->      Base: not found
->            git am /tmp/20210601_narmstrong_usb_dwc3_meson_g12a_fix_usb2_phy_glue_init_when_phy0_is_disabled.mbx
-> 
-> -K
+> What kind of problem does 4/5 fix? I can't see how that patch would
+> apply to any rule in Documentation/process/stable-kernel-rules.rst.
 > 
 
-Nice, thanks for this !
+Looking further, I don't see the need for 4/5 to be a separate patch.
+Patch 4/5 is simplifying spi_nor_mtd_otp_range_is_locked() by ensuring
+'len' passed is never 0 which can be done in 3/5 when introducing
+spi_nor_mtd_otp_range_is_locked().
 
-Neil
+So why not squashed it into 3/5.
+
+> But sure, adding the same Fixes: tag, I can swap those two.
+> 
+> -michael
