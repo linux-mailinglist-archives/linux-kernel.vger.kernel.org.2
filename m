@@ -2,111 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B7939D46B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 07:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB3E39D46D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 07:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhFGFoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 01:44:34 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:44982 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhFGFoc (ORCPT
+        id S230225AbhFGFpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 01:45:12 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:44870 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhFGFpJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 01:44:32 -0400
-Received: by mail-io1-f69.google.com with SMTP id p20-20020a6bce140000b029049372849df8so11424081iob.11
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 22:42:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=chDCS4Sw6hIOP5jVhuCgufB3GV+DZAnpj3zjAvH362g=;
-        b=SC42uAzQq7F2yf8Y3lVb3AUhZxbywyDTJOGLSCoDzW0WPxNL2GUPhtCuKrzSjFr1DL
-         uH5e/pd3j/Pch664U28oI8TbIlfGCiUP2ZxHOim8aU4/GIcsHPq5BQzIqzUMB6r2y3WA
-         o/X4A9nwF0X25zbrYQthPsQ/qcdKlS6Sx+8B41IUyxtObvKZJ85fqezSoit2F8MSF7+A
-         L/E6Kwndb4GaEKS64Lv9un68jqZkbjvv41uTYqg6v6ALHb9Tcyfvj4YyqH+shkTEGMoG
-         diAZCfsS6nUxNAOboIBMcWYRlqDWZThrlN6Jp9wgRkF6VQXa1N3/vvCJDirnLD2XYH2d
-         WqGQ==
-X-Gm-Message-State: AOAM532mDbpqkJawDqSYejP7Tk2vy1EqBHm3t34rpLpciL8UXN6XjYKD
-        UxT1mBGousjjZqp2mNzx4Q+8O5YiLRSgOrfKvmbHh/B6QPfe
-X-Google-Smtp-Source: ABdhPJyPwqn6qaZM4S2rLPIghV3fGanVCqaU/MsNC7X/B4zODjd5OdOWsmUgMS9PI927BzDE1v7daxxxk0CB3IF4URjjgXhqXM7k
+        Mon, 7 Jun 2021 01:45:09 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210607054317epoutp01a425332988fa37280080d681e7bab560~GNnY08xrO2889528895epoutp01J
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 05:43:17 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210607054317epoutp01a425332988fa37280080d681e7bab560~GNnY08xrO2889528895epoutp01J
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1623044597;
+        bh=MoJyC+uuKbsYuYmo5748mB+SMcm0t68y/fvqVnsRbVI=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=YsEwRBpueQgCwVcfoKLKHxRn/AiSwf170UnsWma1l1pMHs/ezmeJt1FTwW1Fvn7/C
+         vM1MNBAxhtx8K1i5Zi9wWQ5ngXktS8jYzMzYZFzGeHDgkZqezk0sr+GcNVTiyClUEA
+         qx/vI30BclanrbjZ//X0kxDp4a52XmdJzNLtnnA8=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210607054316epcas1p15426f5a6027fb0e8d0405345fb49aa5d~GNnYa2Eo92979529795epcas1p18;
+        Mon,  7 Jun 2021 05:43:16 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.164]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4Fz2N323Fcz4x9Pw; Mon,  7 Jun
+        2021 05:43:15 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        1B.8D.09578.3F1BDB06; Mon,  7 Jun 2021 14:43:15 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210607054314epcas1p1ef3bd42647373eca219042744ab18d28~GNnWy3KE62979529795epcas1p11;
+        Mon,  7 Jun 2021 05:43:14 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210607054314epsmtrp175f40551bc48ce1c7b4e8a5742da1be8~GNnWyJvdv1236512365epsmtrp1U;
+        Mon,  7 Jun 2021 05:43:14 +0000 (GMT)
+X-AuditID: b6c32a35-fb9ff7000000256a-5e-60bdb1f308b8
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        4A.50.08163.2F1BDB06; Mon,  7 Jun 2021 14:43:14 +0900 (KST)
+Received: from namjaejeon01 (unknown [10.89.31.77]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210607054314epsmtip107d4f80888076d89716100939626ecf0~GNnWhYrDi3196431964epsmtip1V;
+        Mon,  7 Jun 2021 05:43:14 +0000 (GMT)
+From:   "Namjae Jeon" <namjae.jeon@samsung.com>
+To:     "'Wan Jiabing'" <wanjiabing@vivo.com>
+Cc:     "'Sergey Senozhatsky'" <sergey.senozhatsky@gmail.com>,
+        "'Steve French'" <sfrench@samba.org>,
+        "'Hyunchul Lee'" <hyc.lee@gmail.com>, <linux-cifs@vger.kernel.org>,
+        <linux-cifsd-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>
+In-Reply-To: <20210607045432.19359-1-wanjiabing@vivo.com>
+Subject: RE: [PATCH] [-next] cifsd: remove duplicated argument
+Date:   Mon, 7 Jun 2021 14:43:14 +0900
+Message-ID: <006901d75b60$02696a90$073c3fb0$@samsung.com>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:e303:: with SMTP id u3mr14127750ioc.177.1623044546513;
- Sun, 06 Jun 2021 22:42:26 -0700 (PDT)
-Date:   Sun, 06 Jun 2021 22:42:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a6561705c42681d8@google.com>
-Subject: [syzbot] general protection fault in nfsd_reply_cache_free_locked (2)
-From:   syzbot <syzbot+314d9a0380418b51606b@syzkaller.appspotmail.com>
-To:     bfields@fieldses.org, chuck.lever@oracle.com,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQKgw/UDu7t2X4eU8t0FLIkoC8uhyQDTq2rLqW6amcA=
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBJsWRmVeSWpSXmKPExsWy7bCmge7njXsTDD6/4rK4dv89u8WL/7uY
+        LX7+/85ocXnXHDaLtZ8fs1t0vDzKbNE89Q+LA7vHzll32T12L/jM5DF3Vx+jx+dNch4bPnUw
+        B7BG5dhkpCampBYppOYl56dk5qXbKnkHxzvHm5oZGOoaWlqYKynkJeam2iq5+AToumXmAJ2h
+        pFCWmFMKFApILC5W0rezKcovLUlVyMgvLrFVSi1IySkwNCjQK07MLS7NS9dLzs+1MjQwMDIF
+        qkzIybi0dDdrwRaminmbz7M0MP5j7GLk5JAQMJH4P+MNaxcjF4eQwA5GiYeHp0I5nxgllj1s
+        ZYdwPjNKbNpxhx2m5fj0CywQiV2MEtMvLmUGSQgJvGCUmP1UEMRmE9CV+PdnPxuILSKgKbGm
+        rZcZpIFZ4AujRMPhJ6wgCU4BS4m1k36BTRUWsJNY17sMzGYRUJGY2nGdBcTmBarZ13ufEcIW
+        lDg58wlYnFlAXmL72znMEBcpSPx8uowVYpmVxJr7a5khakQkZne2gS2WEJjLIXHjw1WoBheJ
+        yRdb2SBsYYlXx7dAvSYl8bK/Dcoulzhx8hcThF0jsWHePqA4B5BtLNHzogTEZAZ6bP0ufYgK
+        RYmdv+cyQqzlk3j3tYcVoppXoqNNCKJEVaLv0mGogdISXe0f2CcwKs1C8tgsJI/NQvLALIRl
+        CxhZVjGKpRYU56anFhsWGCJH9iZGcBLVMt3BOPHtB71DjEwcjIcYJTiYlUR4vWT2JAjxpiRW
+        VqUW5ccXleakFh9iNAUG9URmKdHkfGAazyuJNzQ1MjY2tjAxMzczNVYS5013rk4QEkhPLEnN
+        Tk0tSC2C6WPi4JRqYMo39DoVuPjyAuazf5vC016+f/HVL8Lm7bqnG9Yf6nl7tPGNDmOfZnZZ
+        /t2uWWaMTG2O1R4P324Ke9t39Pb9Z1MWl9RFnYnPi02MiHT2PtPYdq364F0ZvTffj0S/Wnl6
+        +e4cI88jlTNa/skz7bvf2bTV67TgpTtxT7UDP4icf1z7N/GNryQjn8DVfusHM6fVl7rOSaq8
+        52TuIiD/vVjkpebSJ7/PzzwsIsqndCZz+a93J4skrvL8uOz6d/HXqS/tmuc82ysu+cRg3WEL
+        nhX5rzoWfTj5bWbyCQ52DkFnywmNL25OvrXsvvMWDsE4ZZ3k3wJhc8+6B7O/kCtJaPI23mEg
+        PfH0Nl/p2LW9j9aenR+ixFKckWioxVxUnAgAQgdR9SsEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpkkeLIzCtJLcpLzFFi42LZdlhJTvfTxr0JBrsfa1lcu/+e3eLF/13M
+        Fj//f2e0uLxrDpvF2s+P2S06Xh5ltmie+ofFgd1j56y77B67F3xm8pi7q4/R4/MmOY8NnzqY
+        A1ijuGxSUnMyy1KL9O0SuDIuLd3NWrCFqWLe5vMsDYz/GLsYOTkkBEwkjk+/wNLFyMUhJLCD
+        UeLEkzZWiIS0xLETZ5i7GDmAbGGJw4eLQcJCAs8YJea+ZgKx2QR0Jf792c8GYosIaEqsaetl
+        BpnDLPCDUWLJnmPMEEO7GCWWHT4NVsUpYCmxdtIvdhBbWMBOYl3vMjCbRUBFYmrHdRYQmxeo
+        Zl/vfUYIW1Di5MwnLCBHMAvoSbRtBAszC8hLbH87hxniTgWJn0+XsUIcYSWx5v5aZogaEYnZ
+        nW3MExiFZyGZNAth0iwkk2Yh6VjAyLKKUTK1oDg3PbfYsMAoL7Vcrzgxt7g0L10vOT93EyM4
+        lrS0djDuWfVB7xAjEwfjIUYJDmYlEV4vmT0JQrwpiZVVqUX58UWlOanFhxilOViUxHkvdJ2M
+        FxJITyxJzU5NLUgtgskycXBKNTBZ/Ql3OZzDtLyMYW/wk6IeyXdHtuhX2LFP2SgSOcXxkaP6
+        vcVLv88IjHBaaXfQ77xd5XIpDo5N8zfdrvE9mquw/SdT9HTB7G37Pn93vVvsca5jrVMN69Nr
+        n75rrTwbGMkUFfWm4fkjZ9lmI6G1Em6s89k51r0Qv/Uk9/KDA7qNyx95/fzow3v/sta1OZHr
+        IqT3Wiy0azwu1Lvcs5rBKnVmttTZXAZb8WjGjHrHgLA1049EXJ/Rm3WFP2Npvt+vGe8+J3NI
+        nlnw+IBeybvgg6J+TBkdS76oNfYz1P7/03l2sq2i7mO+sgW79838rPBsX+C2zsN/J+xv3Lti
+        0t2vzXUy7i2zysWUdzasry1495xBiaU4I9FQi7moOBEAU72CmxQDAAA=
+X-CMS-MailID: 20210607054314epcas1p1ef3bd42647373eca219042744ab18d28
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210607045501epcas1p169d50fec8f89cc86b83a4672be75098f
+References: <CGME20210607045501epcas1p169d50fec8f89cc86b83a4672be75098f@epcas1p1.samsung.com>
+        <20210607045432.19359-1-wanjiabing@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+> Fix the following coccicheck warning:
+> ./fs/cifsd/smb2pdu.c:1713:27-41: duplicated argument to & or |
+> 
+> FILE_DELETE_LE is duplicated. Remove one and reorder argument to make coding style reasonable.
+> 
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+I will apply it, Thanks for your patch!
 
-syzbot found the following issue on:
-
-HEAD commit:    231bc539 Merge branch 'for-linus' of git://git.kernel.org/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=101f596bd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8a9e9956ca52a5f6
-dashboard link: https://syzkaller.appspot.com/bug?extid=314d9a0380418b51606b
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+314d9a0380418b51606b@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc0000000002: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000010-0x0000000000000017]
-CPU: 0 PID: 25304 Comm: kworker/u4:12 Not tainted 5.13.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: netns cleanup_net
-RIP: 0010:nfsd_reply_cache_free_locked+0x31/0x3b0 fs/nfsd/nfscache.c:123
-Code: 54 49 89 fc 55 48 89 f5 53 48 89 d3 48 83 ec 08 e8 94 f5 1c ff 48 8d 7d 61 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 48 89 fa 83 e2 07 38 d0 7f 08 84 c0 0f 85 c3 02 00 00
-RSP: 0018:ffffc90017a07b68 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: ffff888017997000 RCX: 0000000000000000
-RDX: 0000000000000002 RSI: ffffffff8257e6ec RDI: 0000000000000011
-RBP: ffffffffffffffb0 R08: 0000000000000800 R09: ffffffff902278af
-R10: ffffffff8257f56e R11: 0000000000084087 R12: ffff888000118680
-R13: 0000000000018680 R14: ffffed10000230d1 R15: ffff888000118680
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffe0630ed17 CR3: 0000000017232000 CR4: 00000000001526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- nfsd_reply_cache_shutdown+0x153/0x2d0 fs/nfsd/nfscache.c:222
- nfsd_exit_net+0x15f/0x490 fs/nfsd/nfsctl.c:1503
- ops_exit_list+0xb0/0x160 net/core/net_namespace.c:175
- cleanup_net+0x4ea/0xb10 net/core/net_namespace.c:595
- process_one_work+0x98d/0x1600 kernel/workqueue.c:2276
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2422
- kthread+0x3b1/0x4a0 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Modules linked in:
----[ end trace 0af87ae802e1324a ]---
-RIP: 0010:nfsd_reply_cache_free_locked+0x31/0x3b0 fs/nfsd/nfscache.c:123
-Code: 54 49 89 fc 55 48 89 f5 53 48 89 d3 48 83 ec 08 e8 94 f5 1c ff 48 8d 7d 61 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 48 89 fa 83 e2 07 38 d0 7f 08 84 c0 0f 85 c3 02 00 00
-RSP: 0018:ffffc90017a07b68 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: ffff888017997000 RCX: 0000000000000000
-RDX: 0000000000000002 RSI: ffffffff8257e6ec RDI: 0000000000000011
-RBP: ffffffffffffffb0 R08: 0000000000000800 R09: ffffffff902278af
-R10: ffffffff8257f56e R11: 0000000000084087 R12: ffff888000118680
-R13: 0000000000018680 R14: ffffed10000230d1 R15: ffff888000118680
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005618fcbf1160 CR3: 000000001518e000 CR4: 00000000001526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
