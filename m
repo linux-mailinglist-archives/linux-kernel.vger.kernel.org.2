@@ -2,90 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB0039D8F8
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA9F039D8FF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbhFGJmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:42:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48110 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230127AbhFGJmL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:42:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28AA461130;
-        Mon,  7 Jun 2021 09:40:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623058820;
-        bh=dMkA7yzKDAeneap0OuN2Vstxla6Z28FLe6DXYuZEa04=;
-        h=References:In-Reply-To:Reply-To:From:Date:Subject:To:Cc:From;
-        b=uGT5UbIFKs0CskDKD4TxNsCUBNZylywLGUDNrTLHk6c2D0WnTGwB6DjJmk8AXCISu
-         PWpLoU7Ull6mcducoMHM+YSQu45MIDWQpMNF5ygDaHMp8vuqybZj/LXq/cAiUMasUe
-         yS4Vo+42QouyL3I5ZacGxF3uiYXDycRF/YglKUi8Nnt3a+ATluPfTbbat0YDXEqGfS
-         fmkInv73TTzj1D2B8eOYEP/dpoII59MMFrH15RlwQQzIwmK8mjrx77bdlNT2RVLoJC
-         Q1abQPA04R1oYpP/4Rj7le/p00JFiFcHyj1RrXWSQ+Xyiel6AmZHOYYnNtnjI1/2Y4
-         0FwnCRQMh70kw==
-Received: by mail-lj1-f170.google.com with SMTP id u18so1111089lju.12;
-        Mon, 07 Jun 2021 02:40:20 -0700 (PDT)
-X-Gm-Message-State: AOAM532h5+X0ZsLrpOhFN96mHR51daj4KubBTro+v0Yn2xdq4E7FapYV
-        MkzsfqvJw7L8wnJbdvmJNmPRkBc2s1sUQ13dF5I=
-X-Google-Smtp-Source: ABdhPJwtnCxXRODVLvwSZYHacPCSYfKjqwYa1aRIPYbWYZ28HuJpG9cpmfbQQr1W0d32g/V56ITtxAED2434k/gmzUo=
-X-Received: by 2002:a2e:a717:: with SMTP id s23mr13994339lje.282.1623058818373;
- Mon, 07 Jun 2021 02:40:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210607081727.4723-1-cnsztl@gmail.com> <9258ab23-ef65-2c3d-f0d2-ca5f77d7c12a@gmail.com>
-In-Reply-To: <9258ab23-ef65-2c3d-f0d2-ca5f77d7c12a@gmail.com>
-Reply-To: wens@kernel.org
-From:   Chen-Yu Tsai <wens@kernel.org>
-Date:   Mon, 7 Jun 2021 17:40:06 +0800
-X-Gmail-Original-Message-ID: <CAGb2v65ck=LV+UCdQoaUtEjFaTaHr9-wmGmpkCCkebUOuYtikw@mail.gmail.com>
-Message-ID: <CAGb2v65ck=LV+UCdQoaUtEjFaTaHr9-wmGmpkCCkebUOuYtikw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: rockchip: add EEPROM node for NanoPi R4S
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     Tianling Shen <cnsztl@gmail.com>, Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Marty Jones <mj8263788@gmail.com>, Pavel Machek <pavel@ucw.cz>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S230228AbhFGJpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:45:49 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:61743 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230173AbhFGJps (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 05:45:48 -0400
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 07 Jun 2021 02:43:57 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 07 Jun 2021 02:43:56 -0700
+X-QCInternal: smtphost
+Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 07 Jun 2021 15:13:41 +0530
+Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
+        id 93E78220D9; Mon,  7 Jun 2021 15:13:39 +0530 (IST)
+From:   Md Sadre Alam <mdalam@codeaurora.org>
+To:     miquel.raynal@bootlin.com, mani@kernel.org,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     mdalam@codeaurora.org, sricharan@codeaurora.org
+Subject: [PATCH V3] mtd: rawnand: qcom: avoid writing to obsolete register
+Date:   Mon,  7 Jun 2021 15:13:37 +0530
+Message-Id: <1623059017-5058-1-git-send-email-mdalam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 5:31 PM Johan Jonker <jbx6244@gmail.com> wrote:
->
-> Hi Tianling,
->
-> On 6/7/21 10:17 AM, Tianling Shen wrote:
-> > NanoPi R4S has a EEPROM attached to the 2nd I2C bus (U92), which
-> > stores the MAC address.
-> >
-> > Signed-off-by: Tianling Shen <cnsztl@gmail.com>
-> > ---
-> >  arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-> > index cef4d18b599d..4a82f50a07c5 100644
-> > --- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-> > +++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-> > @@ -68,6 +68,15 @@
-> >       status = "disabled";
-> >  };
-> >
-> > +&i2c2 {
-> > +     eeprom@51 {
-> > +             compatible = "microchip,24c02", "atmel,24c02";
-> > +             reg = <0x51>;
-> > +             pagesize = <16>;
->
-> > +             read-only; /* This holds our MAC */
->
-> The mainline dts files should be generic I think.
-> Any comment about "use", partitions or write ability should be avoided.
-> It's up the user.
+QPIC_EBI2_ECC_BUF_CFG register got obsolete from QPIC V2.0 onwards.
+Avoid writing this register if QPIC version is V2.0 or newer.
 
-Per the datasheet for this specific EEPROM, the latter half (128 bytes)
-is read-only in hardware by design though.
+Also fixed nandc undeclared issue reported by,
 
-ChenYu
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+---
+[V3]
+ * Fixed nandc undeclared issue.
+ drivers/mtd/nand/raw/qcom_nandc.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index a64fb6c..ee5985d 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -734,6 +734,7 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read, i
+ {
+ 	struct nand_chip *chip = &host->chip;
+ 	u32 cmd, cfg0, cfg1, ecc_bch_cfg;
++	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+ 
+ 	if (read) {
+ 		if (host->use_ecc)
+@@ -762,7 +763,8 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read, i
+ 	nandc_set_reg(chip, NAND_DEV0_CFG0, cfg0);
+ 	nandc_set_reg(chip, NAND_DEV0_CFG1, cfg1);
+ 	nandc_set_reg(chip, NAND_DEV0_ECC_CFG, ecc_bch_cfg);
+-	nandc_set_reg(chip, NAND_EBI2_ECC_BUF_CFG, host->ecc_buf_cfg);
++	if (!nandc->props->qpic_v2)
++		nandc_set_reg(chip, NAND_EBI2_ECC_BUF_CFG, host->ecc_buf_cfg);
+ 	nandc_set_reg(chip, NAND_FLASH_STATUS, host->clrflashstatus);
+ 	nandc_set_reg(chip, NAND_READ_STATUS, host->clrreadstatus);
+ 	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
+@@ -1133,7 +1135,8 @@ static void config_nand_page_read(struct nand_chip *chip)
+ 
+ 	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
+ 	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
+-	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
++	if (!nandc->props->qpic_v2)
++		write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
+ 	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1, 0);
+ 	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1,
+ 		      NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
+@@ -1191,8 +1194,9 @@ static void config_nand_page_write(struct nand_chip *chip)
+ 
+ 	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
+ 	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
+-	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1,
+-		      NAND_BAM_NEXT_SGL);
++	if (!nandc->props->qpic_v2)
++		write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1,
++			      NAND_BAM_NEXT_SGL);
+ }
+ 
+ /*
+@@ -1248,7 +1252,8 @@ static int nandc_param(struct qcom_nand_host *host)
+ 					| 2 << WR_RD_BSY_GAP
+ 					| 0 << WIDE_FLASH
+ 					| 1 << DEV0_CFG1_ECC_DISABLE);
+-	nandc_set_reg(chip, NAND_EBI2_ECC_BUF_CFG, 1 << ECC_CFG_ECC_DISABLE);
++	if (!nandc->props->qpic_v2)
++		nandc_set_reg(chip, NAND_EBI2_ECC_BUF_CFG, 1 << ECC_CFG_ECC_DISABLE);
+ 
+ 	/* configure CMD1 and VLD for ONFI param probing in QPIC v1 */
+ 	if (!nandc->props->qpic_v2) {
+@@ -2689,7 +2694,8 @@ static int qcom_nand_attach_chip(struct nand_chip *chip)
+ 				| ecc_mode << ECC_MODE
+ 				| host->ecc_bytes_hw << ECC_PARITY_SIZE_BYTES_BCH;
+ 
+-	host->ecc_buf_cfg = 0x203 << NUM_STEPS;
++	if (!nandc->props->qpic_v2)
++		host->ecc_buf_cfg = 0x203 << NUM_STEPS;
+ 
+ 	host->clrflashstatus = FS_READY_BSY_N;
+ 	host->clrreadstatus = 0xc0;
+-- 
+2.7.4
+
