@@ -2,72 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F3239E41B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFB5339E37A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233092AbhFGQbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 12:31:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234157AbhFGQZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 12:25:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA8CE614A7;
-        Mon,  7 Jun 2021 16:16:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623082583;
-        bh=neb5ROBYa47fFc5s+CGlSPmaX5MjjpwlK7QkKoslZ0c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uI9bX8NhBvWKf3gLJdFmWHs8jDho5L6Ewa0vSLgR4Si1LkJNcvqrQSnn2seW/Ckcw
-         aYQ2wmHelasMXu3aaguOM/cvegrcSphFL2wbyFxuYoUZgjuOVAMhcAasYhdKTfSpFk
-         M+cMPL0JM6LAdAin5Vcvwc3txdmV9KnvBjMSqRECUMik9uZkmI08G4Y3V2waEmy/vH
-         oQWZnqSEA0RAPOiz3co5lsp1+p3Qkrmse28NZGXn02UomsAw+XoTUJ66fq2B4ipxjO
-         708JM5wMQeKlUEiprZ4TdxE1whgJSfzq+heLLcfW2ON8EdKJxq54WGCXf4gGJA5t3j
-         //LBPdDiIBBgg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zheng Yongjun <zhengyongjun3@huawei.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 14/14] fib: Return the correct errno code
-Date:   Mon,  7 Jun 2021 12:16:05 -0400
-Message-Id: <20210607161605.3584954-14-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210607161605.3584954-1-sashal@kernel.org>
-References: <20210607161605.3584954-1-sashal@kernel.org>
+        id S231863AbhFGQ0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 12:26:18 -0400
+Received: from mail-io1-f52.google.com ([209.85.166.52]:38537 "EHLO
+        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233062AbhFGQWX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 12:22:23 -0400
+Received: by mail-io1-f52.google.com with SMTP id b25so18912953iot.5
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 09:20:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=VJQtUziQQOmirURcTe7echHKsqVLuwIGsSiIYyW3kwA=;
+        b=PKRlzUUtjkfar2pm9yhdQpJhbwQKFsgD1IOvv4aJik49t9UTvCgkLl+zJTs1I6QMhv
+         S/C6B64HEax+sY9q/pv2OFAD5SdH8UiEL6r5N7jROeqIRRzBTS0V7VXEAydZHeiGuyGh
+         uFLJe3zhCRf0bB/S/6IK3YM9EBMO9PfbBS84c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=VJQtUziQQOmirURcTe7echHKsqVLuwIGsSiIYyW3kwA=;
+        b=mc85nHUJS1xVDbqtCsZub1BsRpWU3mNfgeHvrdK4EIKWLfNT7rsNDPLQ3jEGOIdouV
+         tIZrw2M0VjDS5zQYxnoWa6JydW9/tkjAcs2IWLYMUBW8QMJHZjFNE6t4bXE4y3sT5BoR
+         FNNPf/SnmEJQYJtPVP0eQzy3pnpYyCGbUEk4RyDWFraaJttCENzDL+MsWSubEn6CEte3
+         Lm+hKbzniQeqBj+uKyEOX6tyA2q15jt/irhyxwSbEKYq8fMMtNqOgIOK5TNw4om0SVEZ
+         Riz3LvmIIX1MoKWLnXQ5Ym6ZAVmepZOzvsWjHU45cTMhb+wE7Gy14HuZjNduSW/A6V23
+         /VRw==
+X-Gm-Message-State: AOAM533n2qFKXk/1ync3wNDWvMamliHb1L/HVoYX3GANp5y2eFBAqDtH
+        szYR1Y/Sg6DBlcR6UedhKZTgtV9X79NW656Gkj+xiw==
+X-Google-Smtp-Source: ABdhPJyL+rkd0abCmJ4+7UipXZRX+AUq9ft0/5i1qGgM5E0dOUTH1Gb+92xF0TSM888MrUSM4h6JH9yaGk5l5A/RmPI=
+X-Received: by 2002:a05:6638:5ad:: with SMTP id b13mr17403785jar.42.1623082751898;
+ Mon, 07 Jun 2021 09:19:11 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Mon, 7 Jun 2021 12:19:01 -0400
+Message-ID: <CAEXW_YTcO=hbmdq3nOx2RJfT2yPyoFnQx5niB38R2Lzpsp38bA@mail.gmail.com>
+Subject: iowait boost is broken
+To:     Beata Michalska <beata.michalska@arm.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheng Yongjun <zhengyongjun3@huawei.com>
+Hi all,
+Looks like iowait boost is completely broken upstream. Just
+documenting my findings of iowait boost issues:
 
-[ Upstream commit 59607863c54e9eb3f69afc5257dfe71c38bb751e ]
+1. If a CPU requests iowait boost in a cluster, another CPU can go
+ahead and reset very quickly it since it thinks there's no new request
+for the iowait boosting CPU
+2. If the iowait is longer than a tick, then successive iowait boost
+doubling does not happen. So heavy I/O waiting code never gets a
+boost.
+3. update_load_avg() is triggered right after the the iowait boost
+request which makes another cpufreq update request, this request is a
+non-iowait boost one so it ends up resetting the iowait boost request
+(in the same path!).
+4. Same as #3 but due the update_blocked_averages from new idle balance path.
 
-When kalloc or kmemdup failed, should return ENOMEM rather than ENOBUF.
+Here is a patch that tries to address these problems and I see better
+cpufreq boosting happening, however it is just a test broken patch to
+highlight the issues:
+https://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git/commit/?h=sched/5.4/iowait-boost-debug-1&id=3627d896d499d168fef9a388e5d6b3359acc3423
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/core/fib_rules.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think we ought to rewrite the whole mess instead of fixing it since
+a lot has changed in scheduler code over time it feels. Beata is
+working on rewriting the whole iowait boost infra, I am glad she has
+started the work on this and looking forward to helping with the
+patches.
 
-diff --git a/net/core/fib_rules.c b/net/core/fib_rules.c
-index 2fd4aae8f285..b9cbab73d0de 100644
---- a/net/core/fib_rules.c
-+++ b/net/core/fib_rules.c
-@@ -695,7 +695,7 @@ static void notify_rule_change(int event, struct fib_rule *rule,
- {
- 	struct net *net;
- 	struct sk_buff *skb;
--	int err = -ENOBUFS;
-+	int err = -ENOMEM;
- 
- 	net = ops->fro_net;
- 	skb = nlmsg_new(fib_rule_nlmsg_size(ops, rule), GFP_KERNEL);
--- 
-2.30.2
-
+thanks,
+ - Joel
