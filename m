@@ -2,115 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA35439E539
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 19:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A22AB39E535
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 19:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231359AbhFGRXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 13:23:37 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:42815 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230241AbhFGRXf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 13:23:35 -0400
-Received: by mail-ot1-f50.google.com with SMTP id w23-20020a9d5a970000b02903d0ef989477so13066357oth.9;
-        Mon, 07 Jun 2021 10:21:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wIsZEzKuedmNrkE8sWmADzsVq5Ce7bsvNlcNsZxTnRY=;
-        b=g13yFXluOkzEJmOZQmZQEQXcaP5WqUhlO0+vdTKZ+lHxSMjjYXxAPEbAfNwkDboqTH
-         qb1kOYOjC10Rb2yEMyYhFHgRGH5aqUBpJqrCgamlEp/drI181Kw1NC0eP/fbQaUGqgjf
-         lhQ8uJNbtt3vMqD3kalgHbYJAztqVaWdAjhcwZHYRliQfsbFSc0aS426zQ9y/5lo9Z1a
-         cHbJ/l3t/8ToWpcggpaX0kcdYI3JX8mUD09TUlFI4VsveMbMVQtazwsktniMjcPPIjXy
-         mpaTh0FgX2P8TbVNDNi7o4rKHl2X3RFUUSKXmkWi3FtgMaVF018evvpg0idGYoIzmrcn
-         nXAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wIsZEzKuedmNrkE8sWmADzsVq5Ce7bsvNlcNsZxTnRY=;
-        b=P1lvlSDAFLh+xRxIcR8BnxLvYV4qQAvSj6Uz+J0IzdBneUQKc94hDExQWW5Ip5HkJt
-         LIoXwucTU9QLGsqF4OQ5HF2MeIQOxHqEOK8cKpJdZSiwLHhXydcHvBL2LjIh5ps/c/VY
-         XB1+WdXmUNwARkHnMbTJ4FqtjjmXYl7DfrF49LThk1LXKaEPmoN7vCTKEFIy1+qcK5Hh
-         lRZIJtB6lncd4j8O/KRUonSS36/aD2slARzvU3fEg3mS4IjU23qorbO5QI8wpM9OupSl
-         9M9FsslzQCIj6ryVpNL0S8YN7uT+3MWRi0xqJcBa0ecFYH+VrUsfq3j+a5AED84+7dWi
-         /QvA==
-X-Gm-Message-State: AOAM5323jiXtHFIioZvRp3RO9xerd5mjXaZvYkCrymCyxQfoDLc1XHGZ
-        Ofkx5OxN0mVMcuZfmDgaNLN72ftgKQCx5V6oUuQ=
-X-Google-Smtp-Source: ABdhPJyEPIh1daP/HlBQeYnqMwlKB+lCnze26NeJPRgO+gQi876Ow+pkdIucW4umZTuqTIDRv1izuUb+vrRu7TofTFU=
-X-Received: by 2002:a9d:6548:: with SMTP id q8mr14588598otl.311.1623086431533;
- Mon, 07 Jun 2021 10:20:31 -0700 (PDT)
+        id S230435AbhFGRWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 13:22:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48250 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230197AbhFGRWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 13:22:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF91C6102A;
+        Mon,  7 Jun 2021 17:20:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623086449;
+        bh=r9h4o/kynCaZiF+M69kKU6MUtwBfrU3/DUmwvrKAtmo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LO/fr8cnIuG5uhhmbCDNb9ilsVm6t8t2jCNSthItfooM9ejP4ia8DEGz7vPtxRSi3
+         Zq+5VjYMHwSdxh81XqBHlVf61sYG7uGIedqHg05ag03t0OrknA+fFjY7yBKlUzUzzB
+         uCPKRci0Ad8pjPpeBP4UkRwg6b8DbPbTx+S9/2r3ahAozYgW7BOOHSYuwnCsLPmuHV
+         UFjK0wuYVVMLtEf/6aDU2FUoA1P+EkTRX8TfU/Lb57+xeDpjfQPzUvDtfa2sQ+09Dg
+         5rV3yyfX03KLKMUqIwvRWy8m574kqyat4T+8EjqkagUKJ8GswcpirZCoIHvCTVyQD2
+         XVv6+p1KNXhcg==
+Date:   Mon, 7 Jun 2021 18:20:42 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        kernel-team@android.com, Li Zefan <lizefan@huawei.com>
+Subject: Re: [PATCH v8 06/19] cpuset: Don't use the cpu_possible_mask as a
+ last resort for cgroup v1
+Message-ID: <20210607172042.GB7650@willie-the-truck>
+References: <20210602164719.31777-1-will@kernel.org>
+ <20210602164719.31777-7-will@kernel.org>
+ <877dj9ees8.mognet@arm.com>
 MIME-Version: 1.0
-References: <20210607115615.83162-1-colin.king@canonical.com>
-In-Reply-To: <20210607115615.83162-1-colin.king@canonical.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 7 Jun 2021 13:20:20 -0400
-Message-ID: <CADnq5_N=++KR_YjOO2DURYfe4Hp3b5=eDVh4Gp7xpcfPXFF8_w@mail.gmail.com>
-Subject: Re: [PATCH][next] drm/amd/display: Fix two spelling mistakes, clean
- wide lines
-To:     Colin King <colin.king@canonical.com>
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        xinhui pan <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877dj9ees8.mognet@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On Fri, Jun 04, 2021 at 06:11:03PM +0100, Valentin Schneider wrote:
+> On 02/06/21 17:47, Will Deacon wrote:
+> > @@ -3322,9 +3322,13 @@ void cpuset_cpus_allowed(struct task_struct *tsk, struct cpumask *pmask)
+> >
+> >  void cpuset_cpus_allowed_fallback(struct task_struct *tsk)
+> >  {
+> > +	const struct cpumask *cs_mask;
+> > +	const struct cpumask *possible_mask = task_cpu_possible_mask(tsk);
+> > +
+> >       rcu_read_lock();
+> > -	do_set_cpus_allowed(tsk, is_in_v2_mode() ?
+> > -		task_cs(tsk)->cpus_allowed : cpu_possible_mask);
+> > +	cs_mask = task_cs(tsk)->cpus_allowed;
+> > +	if (is_in_v2_mode() && cpumask_subset(cs_mask, possible_mask))
+> > +		do_set_cpus_allowed(tsk, cs_mask);
+> 
+> Since the task will still go through the is_cpu_allowed() loop in
+> select_fallback_rq() after this, is the subset check actually required
+> here?
 
-Alex
+Yes, I think it's needed. do_set_cpus_allowed() doesn't do any checking
+against the task_cpu_possible_mask, so if we returned to
+select_fallback_rq() with a mask containing a mixture of 32-bit-capable and
+64-bit-only CPUs then we'd end up setting an affinity mask for a 32-bit
+task which contains 64-bit-only cores.
 
-On Mon, Jun 7, 2021 at 7:58 AM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> There are two spelling mistakes in dml_print messages, fix these and
-> clear up checkpatch warning on overly wide line length.
->
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  .../drm/amd/display/dc/dml/dcn31/display_mode_vba_31.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn31/display_mode_vba_31.c b/drivers/gpu/drm/amd/display/dc/dml/dcn31/display_mode_vba_31.c
-> index c725160a095b..d655655baaba 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dml/dcn31/display_mode_vba_31.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dml/dcn31/display_mode_vba_31.c
-> @@ -1494,10 +1494,11 @@ static bool CalculatePrefetchSchedule(
->                 dml_print(
->                                 "DML:  Tsw: %fus = time to fetch enough pixel data and cursor data to feed the scalers init position and detile\n",
->                                 (double) LinesToRequestPrefetchPixelData * LineTime);
-> -               dml_print("DML: To: %fus - time for propogation from scaler to optc\n", (*DSTYAfterScaler + ((double) (*DSTXAfterScaler) / (double) myPipe->HTotal)) * LineTime);
-> +               dml_print("DML: To: %fus - time for propagation from scaler to optc\n",
-> +                         (*DSTYAfterScaler + ((double) (*DSTXAfterScaler) /
-> +                         (double) myPipe->HTotal)) * LineTime);
->                 dml_print("DML: Tvstartup - TSetup - Tcalc - Twait - Tpre - To > 0\n");
-> -               dml_print(
-> -                               "DML: Tslack(pre): %fus - time left over in schedule\n",
-> +               dml_print("DML: Tslack(pre): %fus - time left over in schedule\n",
->                                 VStartup * LineTime - TimeForFetchingMetaPTE - 2 * TimeForFetchingRowInVBlank
->                                                 - (*DSTYAfterScaler + ((double) (*DSTXAfterScaler) / (double) myPipe->HTotal)) * LineTime - TWait - TCalc - *TSetup);
->                 dml_print("DML: row_bytes = dpte_row_bytes (per_pipe) = PixelPTEBytesPerRow = : %d\n", PixelPTEBytesPerRow);
-> @@ -3023,7 +3024,8 @@ static void DISPCLKDPPCLKDCFCLKDeepSleepPrefetchParametersWatermarksAndPerforman
->                         for (k = 0; k < v->NumberOfActivePlanes; ++k) {
->                                 if (v->ImmediateFlipSupportedForPipe[k] == false) {
->  #ifdef __DML_VBA_DEBUG__
-> -                                       dml_print("DML::%s: Pipe %0d not supporing iflip\n", __func__, k);
-> +                                       dml_print("DML::%s: Pipe %0d not supporting iflip\n",
-> +                                                 __func__, k);
->  #endif
->                                         v->ImmediateFlipSupported = false;
->                                 }
-> --
-> 2.31.1
->
+> It would have more merit if cpuset_cpus_allowed_fallback() returned whether
+> it actually changed the allowed mask or not, in which case we could branch
+> either to the is_cpu_allowed() loop (as we do unconditionally now), or to
+> the 'state == possible' switch case.
+
+I think this is a cleanup, so I can include it as a separate patch (see
+below).
+
+Will
+
+--->8
+
+diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+index 414a8e694413..d2b9c41c8edf 100644
+--- a/include/linux/cpuset.h
++++ b/include/linux/cpuset.h
+@@ -59,7 +59,7 @@ extern void cpuset_wait_for_hotplug(void);
+ extern void cpuset_read_lock(void);
+ extern void cpuset_read_unlock(void);
+ extern void cpuset_cpus_allowed(struct task_struct *p, struct cpumask *mask);
+-extern void cpuset_cpus_allowed_fallback(struct task_struct *p);
++extern bool cpuset_cpus_allowed_fallback(struct task_struct *p);
+ extern nodemask_t cpuset_mems_allowed(struct task_struct *p);
+ #define cpuset_current_mems_allowed (current->mems_allowed)
+ void cpuset_init_current_mems_allowed(void);
+@@ -188,8 +188,9 @@ static inline void cpuset_cpus_allowed(struct task_struct *p,
+        cpumask_copy(mask, task_cpu_possible_mask(p));
+ }
+ 
+-static inline void cpuset_cpus_allowed_fallback(struct task_struct *p)
++static inline bool cpuset_cpus_allowed_fallback(struct task_struct *p)
+ {
++       return false;
+ }
+ 
+ static inline nodemask_t cpuset_mems_allowed(struct task_struct *p)
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 4e7c271e3800..a6bab2259f98 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -3327,17 +3327,22 @@ void cpuset_cpus_allowed(struct task_struct *tsk, struct cpumask *pmask)
+  * which will not contain a sane cpumask during cases such as cpu hotplugging.
+  * This is the absolute last resort for the scheduler and it is only used if
+  * _every_ other avenue has been traveled.
++ *
++ * Returns true if the affinity of @tsk was changed, false otherwise.
+  **/
+ 
+-void cpuset_cpus_allowed_fallback(struct task_struct *tsk)
++bool cpuset_cpus_allowed_fallback(struct task_struct *tsk)
+ {
+        const struct cpumask *cs_mask;
++       bool changed = false;
+        const struct cpumask *possible_mask = task_cpu_possible_mask(tsk);
+ 
+        rcu_read_lock();
+        cs_mask = task_cs(tsk)->cpus_allowed;
+-       if (is_in_v2_mode() && cpumask_subset(cs_mask, possible_mask))
++       if (is_in_v2_mode() && cpumask_subset(cs_mask, possible_mask)) {
+                do_set_cpus_allowed(tsk, cs_mask);
++               changed = true;
++       }
+        rcu_read_unlock();
+ 
+        /*
+@@ -3357,6 +3362,7 @@ void cpuset_cpus_allowed_fallback(struct task_struct *tsk)
+         * select_fallback_rq() will fix things ups and set cpu_possible_mask
+         * if required.
+         */
++       return changed;
+ }
+ 
+ void __init cpuset_init_current_mems_allowed(void)
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index fc7de4f955cf..9d7a74a07632 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2951,8 +2951,7 @@ static int select_fallback_rq(int cpu, struct task_struct *p)
+                /* No more Mr. Nice Guy. */
+                switch (state) {
+                case cpuset:
+-                       if (IS_ENABLED(CONFIG_CPUSETS)) {
+-                               cpuset_cpus_allowed_fallback(p);
++                       if (cpuset_cpus_allowed_fallback(p)) {
+                                state = possible;
+                                break;
+                        }
+
