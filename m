@@ -2,194 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0BE539D430
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 06:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E96DB39D434
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 06:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbhFGExu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 00:53:50 -0400
-Received: from mail-dm6nam11on2078.outbound.protection.outlook.com ([40.107.223.78]:34625
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229470AbhFGExt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 00:53:49 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FQIAKrDMg9F/cv4rktTy9bixv10rHQ7scgIPm0sl5RUuv6Lpf15gqYWRdMjNn9ADDZbMdXgem+CAVFZ2tp2WLY9xG37zANnf1yj9tGiIJ7DaQGn0MQcnHkV/5aY1w5j/+XxJS39/m1I+lewNu06c6eleXPkVXiZQCkmJM9FERsJAleLyU2ZfGWdWKmePAY/cxM/WjCB1+dMfyZivzMgUR28hbTIvuIq1N7Ya1EVMJjHBQuUb0ng+PM5iqZ7cnAlcMVXTvU2jFBg2u7mAg4D9tL7gbFyFHJ0U9GHt5Nh1+G+SkBtBaUi+GKy64EL0ndcuybUZ7/9HM2KmceoGLjam3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T2/byoBwdC2h9pNW6zbZQbdza3bZBkthu/VEq8LzkX4=;
- b=G5oO7JViANOkN+uxYMC72kagfs8Vt2D+9vyWWu0A35gN9CQReyES6yW6a5Oqxk6YoncNOJYQD1OACAb7BIdeZHgyitriZpbEI/sVDDwxx1K8qnOu/8AAAjXO3JFf6zQdlLfauQTBD8w1se2DFFH8xHYW633jO9xq1QH3jXSVerRPIyXw33kQrO427vsTt887OD48V/DjYVFPDWpY6TPi/xwzeAh+tF/EGtSUdgk/jx84xdaNOnIeMy03UanXGVMpswaAw0L3/+ckNF6GcYlx3aEI4tUVja8TiSfwKO9VCuWsqS5wMhTdc07jBV3vuKOJ99c2CHv1JNL9nYNAZ5TnAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=infradead.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T2/byoBwdC2h9pNW6zbZQbdza3bZBkthu/VEq8LzkX4=;
- b=srlvSOuBseddjcVtVAXFw6r9Ee/dXRytjWUGMBVsUcq86wHvr7QT4Ln1N2BWZH8X9liq3omN2Q5cO45WNvGssVeXb7B5nLQo/g3pQjZp6YM4lfelg3isVPZhReLTqNtuWU/exg9Mc3ZCw1gfxqnqa7X2BtCxHfa51e+kMa2QLuvYdPwmXZVI5/FZ7CUD/I1GICRhtR+hD7eySgLiYPVFhHIW7n0N2ZHck9+q+ZV1jEUX7L9SLknVl4Khtp/aF6AtljRRyk5TpciaSPGTg9C+FJiDaJBNEgrGwFGOqyePSUQqVr9Knbm0x7X3ybeDHphpV1lHN+wWIGspJzztrKUcxw==
-Received: from DM3PR14CA0149.namprd14.prod.outlook.com (2603:10b6:0:53::33) by
- SN1PR12MB2446.namprd12.prod.outlook.com (2603:10b6:802:26::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4195.24; Mon, 7 Jun 2021 04:51:56 +0000
-Received: from DM6NAM11FT055.eop-nam11.prod.protection.outlook.com
- (2603:10b6:0:53:cafe::a2) by DM3PR14CA0149.outlook.office365.com
- (2603:10b6:0:53::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20 via Frontend
- Transport; Mon, 7 Jun 2021 04:51:56 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT055.mail.protection.outlook.com (10.13.173.103) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4195.22 via Frontend Transport; Mon, 7 Jun 2021 04:51:56 +0000
-Received: from nvdebian.localnet (172.20.187.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 7 Jun
- 2021 04:51:52 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Shakeel Butt <shakeelb@google.com>
-CC:     Liam Howlett <liam.howlett@oracle.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
-        "bskeggs@redhat.com" <bskeggs@redhat.com>,
-        "rcampbell@nvidia.com" <rcampbell@nvidia.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "jhubbard@nvidia.com" <jhubbard@nvidia.com>,
-        "bsingharora@gmail.com" <bsingharora@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "jglisse@redhat.com" <jglisse@redhat.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "hughd@google.com" <hughd@google.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v9 03/10] mm/rmap: Split try_to_munlock from try_to_unmap
-Date:   Mon, 7 Jun 2021 14:51:50 +1000
-Message-ID: <6621654.gmDyfcmpjF@nvdebian>
-In-Reply-To: <CALvZod6myLUu0j13=nn2vCbH7kQJ4yXs06=0+pZYie2ZN13Mxw@mail.gmail.com>
-References: <20210524132725.12697-1-apopple@nvidia.com> <20210604204934.sbspsmwdqdtmz73d@revolver> <CALvZod6myLUu0j13=nn2vCbH7kQJ4yXs06=0+pZYie2ZN13Mxw@mail.gmail.com>
+        id S230194AbhFGEyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 00:54:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229470AbhFGEyB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 00:54:01 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86950C061789
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 21:52:03 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id y7so11340897wrh.7
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 21:52:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GSrkzkz7xM597OmtYCnt2HUmLY0/0lkG7FOWLrVNAms=;
+        b=FHl4f2ZMNz83wbOOximW+hD3upYQGy1AuGocMMiFVdvqnDQaqr0v5s4QckDZNIRw+G
+         fXR/saqHsOXCJX/B+NJqEvCwCHsZUFAQa5eTqGBit32iZWBABoWo9dW9UGuHlucHyYEn
+         Hv/YFYR54d5IddJbd2vEnZ28MlHEQG6/RAJpJgohGxMDsGtPLO6DPPu3sBlJqBszMErr
+         tSpH4uoPeh5eTTm1tOJPWyRY/0yc9Ls3NRMfQDSUJqd0qrFQ8SZ6S88tIO44S4HPIaoh
+         RZmcqSUQpMJ+YHXuDmOVZ8XvROg5CDwAO3rVuqJ1a/LEtaMI8DY45It6NF9hG71vJu0h
+         F3rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GSrkzkz7xM597OmtYCnt2HUmLY0/0lkG7FOWLrVNAms=;
+        b=GMASN0GPRWvCQj/2BvRJr8nDGvVQ2lHeKABCvnmaJEmIFJRIllqaEPARv+/ldWA3Hc
+         EMkrKOkAJqaVGxXtc9w088UzJF7zeacG8pOyRbMToCifS1gadj2K4ihGfjFK4+IIPGYS
+         +/GInlilhDxFLSJRsO77VUIqHYrOF5tHdiia4mvqqvI62sXj/RrhCGHLKSlVPsF98RfU
+         pjkc7RUuN86HOo5Ejz312/vH0Tc3Po8O6eX9w2e55en3jiFKxRosQp07S8dFEYxbXZYA
+         sUwNIthNCUTi9kckg6K0EyP9HQl80hx4CljC4mIA8JfRoNlx2hkmX6WTqTXKd32H98K2
+         NM1Q==
+X-Gm-Message-State: AOAM531WVzq6nsG2FlhlzXu8dHWRXx+2oOu5Mm7Sn7KosjxKszXXMspu
+        DZUnX1QTCGiVzZbt+0rTbX4zvQ==
+X-Google-Smtp-Source: ABdhPJyH2kD08IkD4rO54NrYaJ6NqrZO0rrFvYt+XutsC9lnfAjdURf0mdSoSNbTp3YUeEf2+VNTpg==
+X-Received: by 2002:a5d:6b09:: with SMTP id v9mr15195054wrw.297.1623041521972;
+        Sun, 06 Jun 2021 21:52:01 -0700 (PDT)
+Received: from Iliass-MBP (ppp-94-66-57-185.home.otenet.gr. [94.66.57.185])
+        by smtp.gmail.com with ESMTPSA id n2sm15303342wmb.32.2021.06.06.21.51.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Jun 2021 21:52:01 -0700 (PDT)
+Date:   Mon, 7 Jun 2021 07:51:56 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
+        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Subject: Re: [PATCH net-next v7 3/5] page_pool: Allow drivers to hint on SKB
+ recycling
+Message-ID: <YL2l7OxN4m7+d303@Iliass-MBP>
+References: <20210604183349.30040-1-mcroce@linux.microsoft.com>
+ <20210604183349.30040-4-mcroce@linux.microsoft.com>
+ <YLqCAEVG+aLNGlIi@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2661580d-df10-4089-c88b-08d9296ffa4b
-X-MS-TrafficTypeDiagnostic: SN1PR12MB2446:
-X-Microsoft-Antispam-PRVS: <SN1PR12MB244686FA0BB22340547058AFDF389@SN1PR12MB2446.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bREJYlVucOR5VgWvBpAdYok/RHT2qWR4CCmcKv4a3vkpQJcNZihPl5AYeHXS1XbL4gDpP4DHtxqsDqJQoEcPY+90HVyiBxCwYSn3fsWdclIYSAdR5g8RBvwwa5vd4e2/oYW0iNMe3e/KcfRixNwp4ctvFW49q+5k6gDkvdwPG3qcY99WfmxgVApwNlpe0UjPH6rph5q2eobrTBubPf8/qRcfvRI0AiWUrlev/e+1/cgYmu0CvFog6GCMhDw34rMEWStpVD0j32sRbdb3o0vkLAElORFfWSyctaIPS3uCIaS3Xl7H/7oZbRMGkUHtNMy8ATuEVQBYTIDNhfTWOrSWnjV3/dxszpnE7SM44zy2Sj/J6Y6XDY8vsWC4SF0Y/ZH6eMUb/MgPbD6rioknOON9hps/FietFCPSCYYvNG0mlxXIdcYE1LECrUpKESgtJn0BnGoAFWaSCuKPji4P8flzxUXv9D73IhAEaXxwdaoh+quFxnKfRT6SUXZwT2wMYDmP+fHxiyauhOoIo3pGQRu+PF6YFnidAdG/Le7xYn8bDFfNFPs7kENjNkhXU2pBMgeCPv6pFT1m9rRm+sfp3eypAs6CA3j+u/7XNTWEX89TEp/CUyiVYcUnquKiP+IGtdVOXluj69BMiA/SnRqkZlkx2M1R1rzVzZA/jszWVkoMxAo=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(396003)(39860400002)(36840700001)(46966006)(7636003)(426003)(26005)(6916009)(9686003)(336012)(2906002)(7416002)(8936002)(9576002)(36860700001)(83380400001)(8676002)(186003)(70586007)(316002)(70206006)(478600001)(54906003)(47076005)(4326008)(82740400003)(53546011)(36906005)(33716001)(82310400003)(356005)(16526019)(5660300002)(86362001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2021 04:51:56.5965
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2661580d-df10-4089-c88b-08d9296ffa4b
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT055.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2446
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLqCAEVG+aLNGlIi@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday, 5 June 2021 10:41:03 AM AEST Shakeel Butt wrote:
-> External email: Use caution opening links or attachments
+On Fri, Jun 04, 2021 at 08:41:52PM +0100, Matthew Wilcox wrote:
+> On Fri, Jun 04, 2021 at 08:33:47PM +0200, Matteo Croce wrote:
+> > diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> > index 7fcfea7e7b21..057b40ad29bd 100644
+> > --- a/include/linux/skbuff.h
+> > +++ b/include/linux/skbuff.h
+> > @@ -40,6 +40,9 @@
+> >  #if IS_ENABLED(CONFIG_NF_CONNTRACK)
+> >  #include <linux/netfilter/nf_conntrack_common.h>
+> >  #endif
+> > +#ifdef CONFIG_PAGE_POOL
+> > +#include <net/page_pool.h>
+> > +#endif
 > 
-> 
-> On Fri, Jun 4, 2021 at 1:49 PM Liam Howlett <liam.howlett@oracle.com> wrote:
-> >
-> > * Shakeel Butt <shakeelb@google.com> [210525 19:45]:
-> > > On Tue, May 25, 2021 at 11:40 AM Liam Howlett <liam.howlett@oracle.com> 
-wrote:
-> > > >
-> > > [...]
-> > > > >
-> > > > > +/*
-> > > > > + * Walks the vma's mapping a page and mlocks the page if any locked 
-vma's are
-> > > > > + * found. Once one is found the page is locked and the scan can be 
-terminated.
-> > > > > + */
-> > > >
-> > > > Can you please add that this requires the mmap_sem() lock to the
-> > > > comments?
-> > > >
-> > >
-> > > Why does this require mmap_sem() lock? Also mmap_sem() lock of which 
-mm_struct?
-> >
-> >
-> > Doesn't the mlock_vma_page() require the mmap_sem() for reading?  The
-> > mm_struct in vma->vm_mm;
-> >
-> 
-> We are traversing all the vmas where this page is mapped of possibly
-> different mm_structs. I don't think we want to take mmap_sem() of all
-> those mm_structs. The commit b87537d9e2fe ("mm: rmap use pte lock not
-> mmap_sem to set PageMlocked") removed exactly that.
-> 
-> >
-> > From what I can see, at least the following paths have mmap_lock held
-> > for writing:
-> >
-> > munlock_vma_pages_range() from __do_munmap()
-> > munlokc_vma_pages_range() from remap_file_pages()
-> >
-> 
-> The following path does not hold mmap_sem:
-> 
-> exit_mmap() -> munlock_vma_pages_all() -> munlock_vma_pages_range().
-> 
-> I would really suggest all to carefully read the commit message of
-> b87537d9e2fe ("mm: rmap use pte lock not mmap_sem to set
-> PageMlocked").
-> 
-> Particularly the following paragraph:
-> ...
->     Vlastimil Babka points out another race which this patch protects 
-against.
->      try_to_unmap_one() might reach its mlock_vma_page() TestSetPageMlocked 
-a
->     moment after munlock_vma_pages_all() did its Phase 1 
-TestClearPageMlocked:
->     leaving PageMlocked and unevictable when it should be evictable.  
-mmap_sem
->     is ineffective because exit_mmap() does not hold it; page lock 
-ineffective
->     because __munlock_pagevec() only takes it afterwards, in Phase 2; pte 
-lock
->     is effective because __munlock_pagevec_fill() takes it to get the page,
->     after VM_LOCKED was cleared from vm_flags, so visible to 
-try_to_unmap_one.
-> ...
->
-> Alistair, please bring back the VM_LOCKED check with pte lock held and
-> the comment "Holding pte lock, we do *not* need mmap_lock here".
+> I'm not a huge fan of conditional includes ... any reason to not include
+> it always?
 
-Actually thanks for highlighting that paragraph. I have gone back through the 
-code again in munlock_vma_pages_range() and think I have a better 
-understanding of it now. So now I agree - the check of VM_LOCKED under the PTL 
-is important to ensure mlock_vma_page() does not run after VM_LOCKED has been 
-cleared and __munlock_pagevec_fill() has run.
+I think we can. I'll check and change it. 
 
-Will post v10 to fix this and the try_to_munlock reference pointed out by Liam 
-which I missed for v9. Thanks Shakeel for taking the time to point this out.
+> 
+> > @@ -3088,7 +3095,13 @@ static inline void skb_frag_ref(struct sk_buff *skb, int f)
+> >   */
+> >  static inline void __skb_frag_unref(skb_frag_t *frag, bool recycle)
+> >  {
+> > -	put_page(skb_frag_page(frag));
+> > +	struct page *page = skb_frag_page(frag);
+> > +
+> > +#ifdef CONFIG_PAGE_POOL
+> > +	if (recycle && page_pool_return_skb_page(page_address(page)))
+> > +		return;
+> 
+> It feels weird to have a page here, convert it back to an address,
+> then convert it back to a head page in page_pool_return_skb_page().
+> How about passing 'page' here, calling compound_head() in
+> page_pool_return_skb_page() and calling virt_to_page() in skb_free_head()?
+> 
 
-> One positive outcome of this cleanup patch is the removal of
-> unnecessary invalidation (unmapping for kvm case) of secondary mmus.
+Sure, sounds reasonable. 
+
+> > @@ -251,4 +253,11 @@ static inline void page_pool_ring_unlock(struct page_pool *pool)
+> >  		spin_unlock_bh(&pool->ring.producer_lock);
+> >  }
+> >  
+> > +/* Store mem_info on struct page and use it while recycling skb frags */
+> > +static inline
+> > +void page_pool_store_mem_info(struct page *page, struct page_pool *pp)
+> > +{
+> > +	page->pp = pp;
+> 
+> I'm not sure this wrapper needs to exist.
+> 
+> > +}
+> > +
+> >  #endif /* _NET_PAGE_POOL_H */
+> > diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> > index e1321bc9d316..a03f48f45696 100644
+> > --- a/net/core/page_pool.c
+> > +++ b/net/core/page_pool.c
+> > @@ -628,3 +628,26 @@ void page_pool_update_nid(struct page_pool *pool, int new_nid)
+> >  	}
+> >  }
+> >  EXPORT_SYMBOL(page_pool_update_nid);
+> > +
+> > +bool page_pool_return_skb_page(void *data)
+> > +{
+> > +	struct page_pool *pp;
+> > +	struct page *page;
+> > +
+> > +	page = virt_to_head_page(data);
+> > +	if (unlikely(page->pp_magic != PP_SIGNATURE))
+> > +		return false;
+> > +
+> > +	pp = (struct page_pool *)page->pp;
+> 
+> You don't need the cast any more.
+> 
+
+True
+
+> > +	/* Driver set this to memory recycling info. Reset it on recycle.
+> > +	 * This will *not* work for NIC using a split-page memory model.
+> > +	 * The page will be returned to the pool here regardless of the
+> > +	 * 'flipped' fragment being in use or not.
+> > +	 */
+> > +	page->pp = NULL;
+> > +	page_pool_put_full_page(pp, page, false);
+> > +
+> > +	return true;
+> > +}
+> > +EXPORT_SYMBOL(page_pool_return_skb_page);
+> > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> > index 12b7e90dd2b5..f769f08e7b32 100644
+> > --- a/net/core/skbuff.c
+> > +++ b/net/core/skbuff.c
+> > @@ -70,6 +70,9 @@
+> >  #include <net/xfrm.h>
+> >  #include <net/mpls.h>
+> >  #include <net/mptcp.h>
+> > +#ifdef CONFIG_PAGE_POOL
+> > +#include <net/page_pool.h>
+> > +#endif
+> >  
+> >  #include <linux/uaccess.h>
+> >  #include <trace/events/skb.h>
+> > @@ -645,10 +648,15 @@ static void skb_free_head(struct sk_buff *skb)
+> >  {
+> >  	unsigned char *head = skb->head;
+> >  
+> > -	if (skb->head_frag)
+> > +	if (skb->head_frag) {
+> > +#ifdef CONFIG_PAGE_POOL
+> > +		if (skb->pp_recycle && page_pool_return_skb_page(head))
+> > +			return;
+> > +#endif
+> 
+> put this in a header file:
+> 
+> static inline bool skb_pp_recycle(struct sk_buff *skb, void *data)
+> {
+> 	if (!IS_ENABLED(CONFIG_PAGE_POOL) || !skb->pp_recycle)
+> 		return false;
+> 	return page_pool_return_skb_page(virt_to_page(data));
+> }
+> 
+> then this becomes:
+> 
+> 	if (skb->head_frag) {
+> 		if (skb_pp_recycle(skb, head))
+> 			return;
+> >  		skb_free_frag(head);
+> > -	else
+> > +	} else {
+> >  		kfree(head);
+> > +	}
+> >  }
+> >  
+
+ok
 
 
+Thanks for having a look
 
+Cheers
+/Ilias
