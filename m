@@ -2,80 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD05B39DCCB
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CDEA39DCCE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbhFGMpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 08:45:50 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7130 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230254AbhFGMpt (ORCPT
+        id S231180AbhFGMqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 08:46:35 -0400
+Received: from lucky1.263xmail.com ([211.157.147.133]:47772 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230173AbhFGMqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 08:45:49 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FzCfC0LcLzYsVC;
-        Mon,  7 Jun 2021 20:41:07 +0800 (CST)
-Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 20:43:55 +0800
-Received: from [10.174.185.226] (10.174.185.226) by
- dggpemm500009.china.huawei.com (7.185.36.225) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 20:43:54 +0800
-To:     Joerg Roedel <joro@8bytes.org>
-CC:     <robh@kernel.org>, <will@kernel.org>, <helgaas@kernel.org>,
-        <robh+dt@kernel.org>, <gregkh@linuxfoundation.org>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>, <xieyingtai@huawei.com>
-References: <1621566204-37456-1-git-send-email-wangxingang5@huawei.com>
- <YLpIcwdWDGKpw39s@8bytes.org>
-From:   Xingang Wang <wangxingang5@huawei.com>
-Subject: Re: [PATCH v4] iommu/of: Fix pci_request_acs() before enumerating PCI
- devices
-Message-ID: <9054b39b-a73c-f5b4-cd61-9af4449a0649@huawei.com>
-Date:   Mon, 7 Jun 2021 20:43:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
-MIME-Version: 1.0
-In-Reply-To: <YLpIcwdWDGKpw39s@8bytes.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.185.226]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500009.china.huawei.com (7.185.36.225)
-X-CFilter-Loop: Reflected
+        Mon, 7 Jun 2021 08:46:34 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 51B3DCD909;
+        Mon,  7 Jun 2021 20:44:41 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P32529T140357062862592S1623069879715065_;
+        Mon, 07 Jun 2021 20:44:41 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <c4426c6a166534113fff4fb9becc834b>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: linux-spi@vger.kernel.org
+X-RCPT-COUNT: 17
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Jon Lin <jon.lin@rock-chips.com>
+To:     linux-spi@vger.kernel.org
+Cc:     jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
+        heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
+        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
+        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+        p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Chris Morgan <macromorgan@hotmail.com>
+Subject: [PATCH v5 5/8] arm: dts: rockchip: Add SFC to RK3036
+Date:   Mon,  7 Jun 2021 20:44:34 +0800
+Message-Id: <20210607124437.4143-1-jon.lin@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210607124303.22393-1-jon.lin@rock-chips.com>
+References: <20210607124303.22393-1-jon.lin@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/4 23:36, Joerg Roedel wrote:
-> On Fri, May 21, 2021 at 03:03:24AM +0000, Wang Xingang wrote:
->> From: Xingang Wang <wangxingang5@huawei.com>
->>
->> When booting with devicetree, the pci_request_acs() is called after the
->> enumeration and initialization of PCI devices, thus the ACS is not
->> enabled. And ACS should be enabled when IOMMU is detected for the
->> PCI host bridge, so add check for IOMMU before probe of PCI host and call
->> pci_request_acs() to make sure ACS will be enabled when enumerating PCI
->> devices.
->>
->> Fixes: 6bf6c24720d33 ("iommu/of: Request ACS from the PCI core when
->> configuring IOMMU linkage")
->> Signed-off-by: Xingang Wang <wangxingang5@huawei.com>
->> ---
->>   drivers/iommu/of_iommu.c | 1 -
->>   drivers/pci/of.c         | 8 +++++++-
->>   2 files changed, 7 insertions(+), 2 deletions(-)
-> 
-> Should probably go through the PCI tree, so
-> 
-> Acked-by: Joerg Roedel <jroedel@suse.de>
-> 
-> .
-> 
+From: Chris Morgan <macromorgan@hotmail.com>
 
-Thanks
+Add a devicetree entry for the Rockchip SFC for the RK3036 SOC.
 
-.
+Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+---
+
+Changes in v5: None
+Changes in v4: None
+Changes in v3: None
+Changes in v2: None
+Changes in v1: None
+
+ arch/arm/boot/dts/rk3036.dtsi | 42 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
+
+diff --git a/arch/arm/boot/dts/rk3036.dtsi b/arch/arm/boot/dts/rk3036.dtsi
+index e24230d50a78..0dba2956dfb8 100644
+--- a/arch/arm/boot/dts/rk3036.dtsi
++++ b/arch/arm/boot/dts/rk3036.dtsi
+@@ -206,6 +206,17 @@
+ 		status = "disabled";
+ 	};
+ 
++	sfc: spi@10208000 {
++		compatible = "rockchip,rk3036-sfc";
++		reg = <0x10208000 0x4000>;
++		interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru HCLK_SFC>, <&cru SCLK_SFC>;
++		clock-names = "ahb", "sfc";
++		pinctrl-0 = <&sfc_clk &sfc_cs0 &sfc_bus4>;
++		pinctrl-names = "default";
++		status = "disabled";
++	};
++
+ 	sdmmc: mmc@10214000 {
+ 		compatible = "rockchip,rk3036-dw-mshc", "rockchip,rk3288-dw-mshc";
+ 		reg = <0x10214000 0x4000>;
+@@ -684,6 +695,37 @@
+ 			};
+ 		};
+ 
++		serial_flash {
++			sfc_bus4: sfc-bus4 {
++				rockchip,pins =
++					<1 RK_PD0 3 &pcfg_pull_none>,
++					<1 RK_PD1 3 &pcfg_pull_none>,
++					<1 RK_PD2 3 &pcfg_pull_none>,
++					<1 RK_PD3 3 &pcfg_pull_none>;
++			};
++
++			sfc_bus2: sfc-bus2 {
++				rockchip,pins =
++					<1 RK_PD0 3 &pcfg_pull_none>,
++					<1 RK_PD1 3 &pcfg_pull_none>;
++			};
++
++			sfc_cs0: sfc-cs0 {
++				rockchip,pins =
++					<2 RK_PA2 3 &pcfg_pull_none>;
++			};
++
++			sfc_cs1: sfc-cs1 {
++				rockchip,pins =
++					<2 RK_PA3 3 &pcfg_pull_none>;
++			};
++
++			sfc_clk: sfc-clk {
++				rockchip,pins =
++					<2 RK_PA4 3 &pcfg_pull_none>;
++			};
++		};
++
+ 		emac {
+ 			emac_xfer: emac-xfer {
+ 				rockchip,pins = <2 RK_PB2 1 &pcfg_pull_default>, /* crs_dvalid */
+-- 
+2.17.1
+
+
+
