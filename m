@@ -2,206 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3CDC39D661
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77DED39D664
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbhFGHza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 03:55:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55092 "EHLO mail.kernel.org"
+        id S230225AbhFGH50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 03:57:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229436AbhFGHz2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 03:55:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 678746120F;
-        Mon,  7 Jun 2021 07:53:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623052417;
-        bh=bZf1oPujuHjZMOhIewYXXJEcGVTtrINZZrYSSOjle5w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NNznX+gSK1ubk2X3/IRC/NKUHBNtUpj3pIv/4c2uJBBiJUtAV/KhZcOXzgKlTc197
-         JoaqNhfMIWWrKQn+ytYhGSXvaYtI570te4Vf2QyUsmIwnEioZqlYZoWTtD3s/olZ1r
-         zXU5lkoWfLDBysgxbwtN+RMG+JJ6rSHG187xSFhIHkUpAhqI91/h8j7NLXHV+zL4Ya
-         kzZSX1foXTx99yEqWn2UEdMCZtAFdYIHFVjM5lYuzSOaV0RKUi40RbmSeLfz2PBK7X
-         uWdUT9XRikixdbajY+xQgkc2hyki1enBqAao5zY2bxSkhf1xV+/LbpZIJLfCEA4My/
-         KUsm9jil4LFGg==
-Received: by mail-lj1-f182.google.com with SMTP id d2so16745867ljj.11;
-        Mon, 07 Jun 2021 00:53:37 -0700 (PDT)
-X-Gm-Message-State: AOAM531rfeZGcq1+kM3rTS3rfR4v1pQcp+FkSr78r5f2nc3rP68Z5sD3
-        oo5ksIIUIQJbSowZ8hfeK7+gE0YSgenWzg9cllk=
-X-Google-Smtp-Source: ABdhPJwH/bIcZcv9bYZevLpASI9avmmDzuyYLA4C+R6RK/v/ZYHyxwKOcgETDO+RRKacBwp8wDxom+B3t+B9y1ptv1M=
-X-Received: by 2002:a2e:3506:: with SMTP id z6mr14531480ljz.238.1623052415598;
- Mon, 07 Jun 2021 00:53:35 -0700 (PDT)
+        id S229436AbhFGH5Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 03:57:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8E2E60238;
+        Mon,  7 Jun 2021 07:55:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623052534;
+        bh=qlaXBBljfuNy9WKbCWLsVZBe2CUbxsFeGMx1HeZlRao=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r0TrbnG7uOmzox7WYNlVPtv2R0PIW2dzfzFoCoabl0Z/vTQV1kgLsyHchCLxNLcQI
+         4baEnybEh4BAZGia/iNRJL6FTBI6PRj415vAikhogurOMkyqAWafpp0HcGQN3zFxYJ
+         C7gcq62LUzHRziw7Qd7xiJPtbmaNoLi8xVGHOjPQ=
+Date:   Mon, 7 Jun 2021 09:55:31 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Leon Romanovsky <leon@kernel.org>, SyzScope <syzscope@gmail.com>,
+        davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: KASAN: use-after-free Read in hci_chan_del
+Message-ID: <YL3Q848EVIdkUrF4@kroah.com>
+References: <000000000000adea7f05abeb19cf@google.com>
+ <c2004663-e54a-7fbc-ee19-b2749549e2dd@gmail.com>
+ <YLn24sFxJqGDNBii@kroah.com>
+ <0f489a64-f080-2f89-6e4a-d066aeaea519@gmail.com>
+ <YLsrLz7otkQAkIN7@kroah.com>
+ <20210606085004.12212-1-hdanton@sina.com>
+ <20210607074828.3259-1-hdanton@sina.com>
 MIME-Version: 1.0
-References: <1622970249-50770-1-git-send-email-guoren@kernel.org>
- <1622970249-50770-13-git-send-email-guoren@kernel.org> <2490489.OUOj5N01qN@jernej-laptop>
- <CAJF2gTTDVy89R-gvWUS0sgpX=B14LnH5rDoGP7pv1=OSyJq28Q@mail.gmail.com> <20210607072709.ul4jdvtyspj6t4c6@gilmour>
-In-Reply-To: <20210607072709.ul4jdvtyspj6t4c6@gilmour>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Mon, 7 Jun 2021 15:53:23 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTS9+JYBg2dPEwQccNGku4_z_tv0qwgWQiFN8dQcQ=WweQ@mail.gmail.com>
-Message-ID: <CAJF2gTS9+JYBg2dPEwQccNGku4_z_tv0qwgWQiFN8dQcQ=WweQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 09/11] riscv: soc: Initial DTS for Allwinner D1
- NeZha board
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     =?UTF-8?Q?Jernej_=C5=A0krabec?= <jernej.skrabec@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
-        Drew Fustini <drew@beagleboard.org>, liush@allwinnertech.com,
-        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
-        wefu@redhat.com, linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210607074828.3259-1-hdanton@sina.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thx for the clarification.
-
-On Mon, Jun 7, 2021 at 3:27 PM Maxime Ripard <maxime@cerno.tech> wrote:
->
-> On Mon, Jun 07, 2021 at 11:44:03AM +0800, Guo Ren wrote:
-> > On Mon, Jun 7, 2021 at 12:26 AM Jernej =C5=A0krabec <jernej.skrabec@gma=
-il.com> wrote:
-> > >
-> > > Hi!
-> > >
-> > > I didn't go through all details. After you fix all comments below, yo=
-u should
-> > > run "make dtbs_check" and fix all reported warnings too.
-> > >
-> > > Dne nedelja, 06. junij 2021 ob 11:04:07 CEST je guoren@kernel.org nap=
-isal(a):
-> > > > From: Guo Ren <guoren@linux.alibaba.com>
-> > > >
-> > > > Add initial DTS for Allwinner D1 NeZha board having only essential
-> > > > devices (uart, dummy, clock, reset, clint, plic, etc).
-> > > >
-> > > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > > > Co-Developed-by: Liu Shaohua <liush@allwinnertech.com>
-> > > > Signed-off-by: Liu Shaohua <liush@allwinnertech.com>
-> > > > Cc: Anup Patel <anup.patel@wdc.com>
-> > > > Cc: Atish Patra <atish.patra@wdc.com>
-> > > > Cc: Christoph Hellwig <hch@lst.de>
-> > > > Cc: Chen-Yu Tsai <wens@csie.org>
-> > > > Cc: Drew Fustini <drew@beagleboard.org>
-> > > > Cc: Maxime Ripard <maxime@cerno.tech>
-> > > > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> > > > Cc: Wei Fu <wefu@redhat.com>
-> > > > Cc: Wei Wu <lazyparser@gmail.com>
-> > > > ---
-> > > >  arch/riscv/boot/dts/Makefile                       |  1 +
-> > > >  arch/riscv/boot/dts/allwinner/Makefile             |  2 +
-> > > >  .../boot/dts/allwinner/allwinner-d1-nezha-kit.dts  | 29 ++++++++
-> > > >  arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi    | 84
-> > > > ++++++++++++++++++++++ 4 files changed, 116 insertions(+)
-> > > >  create mode 100644 arch/riscv/boot/dts/allwinner/Makefile
-> > > >  create mode 100644 arch/riscv/boot/dts/allwinner/allwinner-d1-nezh=
-a-kit.dts
-> > > > create mode 100644 arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi
-> > > >
-> > > > diff --git a/arch/riscv/boot/dts/Makefile b/arch/riscv/boot/dts/Mak=
-efile
-> > > > index fe996b8..3e7b264 100644
-> > > > --- a/arch/riscv/boot/dts/Makefile
-> > > > +++ b/arch/riscv/boot/dts/Makefile
-> > > > @@ -2,5 +2,6 @@
-> > > >  subdir-y +=3D sifive
-> > > >  subdir-$(CONFIG_SOC_CANAAN_K210_DTB_BUILTIN) +=3D canaan
-> > > >  subdir-y +=3D microchip
-> > > > +subdir-y +=3D allwinner
-> > > >
-> > > >  obj-$(CONFIG_BUILTIN_DTB) :=3D $(addsuffix /, $(subdir-y))
-> > > > diff --git a/arch/riscv/boot/dts/allwinner/Makefile
-> > > > b/arch/riscv/boot/dts/allwinner/Makefile new file mode 100644
-> > > > index 00000000..4adbf4b
-> > > > --- /dev/null
-> > > > +++ b/arch/riscv/boot/dts/allwinner/Makefile
-> > > > @@ -0,0 +1,2 @@
-> > > > +# SPDX-License-Identifier: GPL-2.0
-> > > > +dtb-$(CONFIG_SOC_SUNXI) +=3D allwinner-d1-nezha-kit.dtb
-> > > > diff --git a/arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-kit.d=
-ts
-> > > > b/arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-kit.dts new file=
- mode
-> > > > 100644
-> > > > index 00000000..cd9f7c9
-> > > > --- /dev/null
-> > > > +++ b/arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-kit.dts
-> > >
-> > > Board DT names are comprised of soc name and board name, in this case=
- it would
-> > > be "sun20i-d1-nezha-kit.dts"
-> > >
-> > > > @@ -0,0 +1,29 @@
-> > > > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> > >
-> > > Usually copyrights are added below spdx id.
-> > >
-> > > > +
-> > > > +/dts-v1/;
-> > > > +
-> > > > +#include "allwinner-d1.dtsi"
-> > > > +
-> > > > +/ {
-> > > > +     #address-cells =3D <2>;
-> > > > +     #size-cells =3D <2>;
-> > >
-> > > This should be part of SoC level DTSI.
-> > >
-> > > > +     model =3D "Allwinner D1 NeZha Kit";
-> > > > +     compatible =3D "allwinner,d1-nezha-kit";
-> > >
-> > > Board specific compatible string should be followed with SoC compatib=
-le, in
-> > > this case "allwinner,sun20i-d1".  You should document it too.
-> > >
-> > > > +
-> > > > +     chosen {
-> > > > +             bootargs =3D "console=3DttyS0,115200";
-> > >
-> > > Above line doesn't belong here. If anything, it should be added dynam=
-ically by
-> > > bootloader.
+On Mon, Jun 07, 2021 at 03:48:28PM +0800, Hillf Danton wrote:
+> On Sun, 6 Jun 2021 11:54:22 +0200 Greg KH wrote:
+> >On Sun, Jun 06, 2021 at 04:50:04PM +0800, Hillf Danton wrote:
+> >> 
+> >> To fix the uaf reported, add reference count to hci channel to track users.
+> >> Then only channels with zero users will be released.
+> >> 
+> >> It is now only for thoughts.
+> >> 
+> >> +++ x/include/net/bluetooth/hci_core.h
+> >> @@ -704,6 +704,7 @@ struct hci_chan {
+> >>  	struct sk_buff_head data_q;
+> >>  	unsigned int	sent;
+> >>  	__u8		state;
+> >> +	atomic_t ref;
 > >
-> > After discussion, we still want to keep a default value here.
-> > Sometimes we could boot with jtag and parse dtb is hard for gdbinit
-> > script.
-> >
-> > >
-> > > > +             stdout-path =3D &serial0;
-> > > > +     };
-> > > > +
-> > > > +     memory@40000000 {
-> > > > +             device_type =3D "memory";
-> > > > +             reg =3D <0x0 0x40000000 0x0 0x20000000>;
-> > > > +     };
-> > >
-> > > Ditto for whole memory node.
-> >
-> > Ditto
->
-> The thing is that there's never a good value for a default. Let's take
-> the memory node here: what would be a good default? If we want to make
-> it work everywhere it's going to be the lowest amount of memory
-> available on the D1 boards. It's going to be hard to maintain and very
-> likely to be overlooked, resulting in broken boards anyway.
->
-> If someone is savvy enough to use JTAG, it's not really difficult to
-> modify the DT for their board when they need it.
-okay, I see. I'll follow the rule in the next version of the patchset.
+> >Please no, never use "raw" atomic variables.  Especially for something
+> >like this, use a kref.
+> 
+> Fair, thanks for taking a look at it.
+> 
+> Spin with care for the race the added ref fails to cut.
 
->
-> Maxime
+I do not understand what you mean here.
 
+> To ease review the full syzreport is also attached.
+> 
+> To fix uaf, add user track to hci channel and we will only release channel if
+> its user hits zero. And a dryrun mechanism is also added to take care of the
+> race user track fails to cut.
+> 
+> 	CPU0			CPU1
+> 	----			----
+> 	hci_chan_del		l2cap_conn_del
+> 				chan->user = 0;
+> 
+> 	if (chan->user != 0)
+> 		return;
+> 	synchronize_rcu();
+> 	kfree(chan);
+> 
+> 				hci_chan_del();
+> 
+> It is now only for thoughts.
+> 
+> +++ x/include/net/bluetooth/hci_core.h
+> @@ -704,6 +704,10 @@ struct hci_chan {
+>  	struct sk_buff_head data_q;
+>  	unsigned int	sent;
+>  	__u8		state;
+> +	__u8		user;
 
+No.
 
---=20
-Best Regards
- Guo Ren
+> +	__u8		release;
 
-ML: https://lore.kernel.org/linux-csky/
+No please no.
+
+> +
+> +#define HCHAN_RELEASE_DRYRUN 1
+>  };
+>  
+>  struct hci_conn_params {
+> +++ x/net/bluetooth/l2cap_core.c
+> @@ -1903,6 +1903,12 @@ static void l2cap_conn_del(struct hci_co
+>  
+>  	mutex_unlock(&conn->chan_lock);
+>  
+> +	/* see comment in hci_chan_del() */
+> +	conn->hchan->release = HCHAN_RELEASE_DRYRUN;
+> +	smp_wmb();
+> +	conn->hchan->user--;
+
+And the reason you are open-coding a kref is why???
+
+Please again no.
+
+> +	hci_chan_del(conn->hchan);
+> +	conn->hchan->release = 0;
+>  	hci_chan_del(conn->hchan);
+>  
+>  	if (conn->info_state & L2CAP_INFO_FEAT_MASK_REQ_SENT)
+> @@ -7716,6 +7722,8 @@ static struct l2cap_conn *l2cap_conn_add
+>  	kref_init(&conn->ref);
+>  	hcon->l2cap_data = conn;
+>  	conn->hcon = hci_conn_get(hcon);
+> +	/* dec in l2cap_conn_del() */
+> +	hchan->user++;
+
+{sigh}
+
+No, there is a reason we wrote kref many _decades_ ago.  Please use it,
+your original attempt with an atomic was just fine, just use the proper
+data structures the kernel provides you as this is obviously a reference
+counted object.
+
+thanks,
+
+greg k-h
