@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A6E39D33C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 05:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DB839D33E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 05:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230209AbhFGDDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 23:03:52 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:4328 "EHLO
+        id S230246AbhFGDE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 23:04:27 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:4329 "EHLO
         szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbhFGDDv (ORCPT
+        with ESMTP id S230147AbhFGDE0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 23:03:51 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FyyhQ1Jsvz1BJnL;
-        Mon,  7 Jun 2021 10:57:10 +0800 (CST)
+        Sun, 6 Jun 2021 23:04:26 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Fyyj51S6Dz1BJnb;
+        Mon,  7 Jun 2021 10:57:45 +0800 (CST)
 Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 11:01:58 +0800
+ 15.1.2176.2; Mon, 7 Jun 2021 11:02:33 +0800
 Received: from linux-lmwb.huawei.com (10.175.103.112) by
  dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 7 Jun 2021 11:01:58 +0800
+ 15.1.2176.2; Mon, 7 Jun 2021 11:02:32 +0800
 From:   Zou Wei <zou_wei@huawei.com>
-To:     <vkoul@kernel.org>, <mripard@kernel.org>, <wens@csie.org>,
-        <jernej.skrabec@gmail.com>
-CC:     <dmaengine@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-sunxi@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+To:     <jdelvare@suse.com>
+CC:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] dmaengine: sun4i: Use list_move_tail instead of list_del/list_add_tail
-Date:   Mon, 7 Jun 2021 11:20:35 +0800
-Message-ID: <1623036035-30614-1-git-send-email-zou_wei@huawei.com>
+Subject: [PATCH -next] i2c: Fix missing pci_disable_device() on error in ali1535_setup()
+Date:   Mon, 7 Jun 2021 11:21:08 +0800
+Message-ID: <1623036068-30668-1-git-send-email-zou_wei@huawei.com>
 X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -44,30 +41,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using list_move_tail() instead of list_del() + list_add_tail().
+Fix the missing pci_disable_device() before return
+from ali1535_setup() in the error handling case.
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
- drivers/dma/sun4i-dma.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/i2c/busses/i2c-ali1535.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/dma/sun4i-dma.c b/drivers/dma/sun4i-dma.c
-index e8b6633..93f1645 100644
---- a/drivers/dma/sun4i-dma.c
-+++ b/drivers/dma/sun4i-dma.c
-@@ -1042,9 +1042,8 @@ static irqreturn_t sun4i_dma_interrupt(int irq, void *dev_id)
- 			 * Move the promise into the completed list now that
- 			 * we're done with it
- 			 */
--			list_del(&vchan->processing->list);
--			list_add_tail(&vchan->processing->list,
--				      &contract->completed_demands);
-+			list_move_tail(&vchan->processing->list,
-+				       &contract->completed_demands);
+diff --git a/drivers/i2c/busses/i2c-ali1535.c b/drivers/i2c/busses/i2c-ali1535.c
+index fb93152..bdbaf79 100644
+--- a/drivers/i2c/busses/i2c-ali1535.c
++++ b/drivers/i2c/busses/i2c-ali1535.c
+@@ -206,6 +206,7 @@ static int ali1535_setup(struct pci_dev *dev)
+ exit_free:
+ 	release_region(ali1535_smba, ALI1535_SMB_IOSIZE);
+ exit:
++	pci_disable_device(dev);
+ 	return retval;
+ }
  
- 			/*
- 			 * Cyclic DMA transfers are special:
 -- 
 2.6.2
 
