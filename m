@@ -2,121 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FBA639E138
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 17:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 237D739E140
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 17:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbhFGPvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 11:51:40 -0400
-Received: from mail-pl1-f173.google.com ([209.85.214.173]:33406 "EHLO
-        mail-pl1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230351AbhFGPvi (ORCPT
+        id S230390AbhFGPxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 11:53:24 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:34814 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230197AbhFGPxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 11:51:38 -0400
-Received: by mail-pl1-f173.google.com with SMTP id c13so8949468plz.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 08:49:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gateworks-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1cSDyRqs4/waFFpp4XK4bTohmPsgMHDek8V3s+9aWfY=;
-        b=XWcJ8Pq86ApEWUqDjcMFt4Szfu0Nm0jhb7uS/2rKv98XxQ+xxglNjfhSE8FoDQoNEw
-         fViBV2ca32xN8SjCgrGv6tSSLoXEnD51WyXXWAX2r+5l17aXo56RfMJkjrX4/+UV//3H
-         tNF1di6YqKjDDUqGgn/yaIwnVWu2Ps4RygiRMXvFrpheucbHR+6720sYEkP1q48gQ0SQ
-         2pttc+Z+rJNdbsh1xbi2OhLsJJjPA64jPuy90nPnq8JYjfNnJz3RJr2twUeyBvKwXX+e
-         gqxw/nWFjNuF7JGWOZgpA2fZsuScGx996opkk1yHJkzehKS+q94wNAtT1dZEcwIlk0xC
-         w6Tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1cSDyRqs4/waFFpp4XK4bTohmPsgMHDek8V3s+9aWfY=;
-        b=holpswY1366FrDjH0Eccy264KH7HEK1gdNulEzTGjSZDg2MyJris2LJQh0AwljwStu
-         xp2yYSXFob7CrjhOG9KqoCfaIOx8gDk2wcJr1K0B2oog/ed8YSZhlewQ/G4pAgmZaDXF
-         oX+x9PhIXf0fvDrsdr7vWMPHyfpWAFW39JAT/8PV8KRz4jgB9WxQ/+qHiaY+iIHV41xx
-         VKGVeJTMcltmAGDiBWBP76Xg29qhTEfyP3tmm0R3VJecf8YwU13oj9SJdSo6FlgOqzuX
-         GZDlxZVg8D7Tr01SW0lZ69R+BdsXjF3zdqAGeyC7HPJoJd0IcoVUsXT9jeHAeY9l/7/1
-         avMg==
-X-Gm-Message-State: AOAM530kOj2l+NT9Bmo2gAUGLoq0MY+P7TQmtSW14U9Z6lMbDrVHDZW3
-        LNCtA6zSknBRXe6oEe8Nnhinii29GzZu07tY0WPGog==
-X-Google-Smtp-Source: ABdhPJxGKfRV0ji63pJPz9hHFaeq12NxQqk8execz6yLGOqYuB9j2xv+69NDpQc+eKeCiqFKb8blcRd0GJXmxAnv7W0=
-X-Received: by 2002:a17:903:1241:b029:10f:ff8c:a3fe with SMTP id
- u1-20020a1709031241b029010fff8ca3femr14775019plh.13.1623080910612; Mon, 07
- Jun 2021 08:48:30 -0700 (PDT)
+        Mon, 7 Jun 2021 11:53:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=4claKpMmrc3WERETeGcJn3zlM3eZGEqhAb7GXJGJFUo=; b=KZWC9QwJwXpfgtO5Pbi3C9D6hb
+        w11CbVtyoLTNY4knF7tXLjbD/o7MNV+jWLeuskQttepQzBMACKANLRFixONav89MRxs1Aj7B0hB0i
+        UbZ84dUhdqdru1DM4RH0WiFkMpiG0CoMyU8AuzmQ+tqo3wW6T3MqYCBf6yu5mNOcetgcr6LYkGQSE
+        0Mj6fXWcTHtUrOihiZY2CvwSsLWH87mSM+12tsJWiEhLDxsj/IF/0Wntne326JZheqbRgDQKV2EzM
+        impwF2yhSiymE+ol95TbQI1wJ15n6l3TeGpDsRDTAK5m72EFVAzAg+bauotvry21XSO2N4vfaVMi8
+        CYooDmUg==;
+Received: from guinness.priv.deltatee.com ([172.16.1.162])
+        by ale.deltatee.com with esmtp (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1lqHXG-0007rq-Up; Mon, 07 Jun 2021 09:51:31 -0600
+To:     Yang Li <yang.lee@linux.alibaba.com>, jdmason@kudzu.us
+Cc:     dave.jiang@intel.com, allenbh@gmail.com,
+        linux-ntb@googlegroups.com, linux-kernel@vger.kernel.org
+References: <1623045380-125394-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <9182a6e0-541b-e350-d760-06623cb06855@deltatee.com>
+Date:   Mon, 7 Jun 2021 09:51:29 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <m3sg1uq6xu.fsf@t19.piap.pl> <dbb99d7b-18eb-317c-911a-b982486848fa@xs4all.nl>
- <m3eeddhora.fsf@t19.piap.pl>
-In-Reply-To: <m3eeddhora.fsf@t19.piap.pl>
-From:   Tim Harvey <tharvey@gateworks.com>
-Date:   Mon, 7 Jun 2021 08:48:19 -0700
-Message-ID: <CAJ+vNU0E_0pB-1T+VpdmjJNVirAwCUNjKVbEV4wEbqHOzURj_A@mail.gmail.com>
-Subject: Re: [PATCH] TDA1997x: enable EDID support
-To:     =?UTF-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1623045380-125394-1-git-send-email-yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 172.16.1.162
+X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-ntb@googlegroups.com, allenbh@gmail.com, dave.jiang@intel.com, jdmason@kudzu.us, yang.lee@linux.alibaba.com
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: Re: [PATCH v2] NTB: Fix an error code in ntb_msit_probe()
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 4:56 AM Krzysztof Ha=C5=82asa <khalasa@piap.pl> wrot=
-e:
->
-> Hi Hans,
->
-> Hans Verkuil <hverkuil@xs4all.nl> writes:
->
-> >> Without this patch, the TDA19971 chip's EDID is inactive.
-> >
-> > Was this wrong from the very beginning? How can this ever have been tes=
-ted
-> > without an EDID?
->
-> It seems so. I suspect it might have worked in tests because this
-> register isn't cleared on reboot. I.e., setting it once after power up
-> makes it work to the next power up.
-> Or, maybe, the HDMI signal source didn't need EDID.
->
 
-Krzysztof,
 
-Most likely it was that the HDMI signal source I tested with didn't
-need EDID. I primarily used a V-SG4K HMDI signal generator in my
-testing and development of the driver
-(http://www.marshall-usa.com/monitors/model/V-SG4K-HDI.php) which
-definitely doesn't need it. Other devices I tested with were another
-Gateworks board with HDMI out (which also didn't need EDID) and
-occasionally a 1st gen Google Chromecast and Amazon Fire stick (which
-I'm not sure about).
+On 2021-06-06 11:56 p.m., Yang Li wrote:
+> When the value of nm->isr_ctx is false, the value of ret is 0.
+> So, we set ret to -ENOMEM to indicate this error.
+> 
+> Clean up smatch warning:
+> drivers/ntb/test/ntb_msi_test.c:373 ntb_msit_probe() warn: missing
+> error code 'ret'.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-> I'm looking at the previous version of this driver from Gateworks and it
-> contains:
->
->      /* Configure EDID
->       *
->       * EDID_ENABLE bits:
->       *  7 - nack_off
->       *  6 - edid_only
->       *  1 - edid_b_en
->       *  0 - edid_a_en
->       */
->      reg =3D io_read(REG_EDID_ENABLE);
->      if (!tda1997x->internal_edid)
->          reg &=3D ~0x83; /* EDID Nack ON */
->      else
->          reg |=3D 0x83;  /* EDID Nack OFF */
->      io_write(REG_EDID_ENABLE, reg);
->
-> Not sure what the "non-internal" EDID could be - a separate I2C EEPROM
-> chip? I'm using this on Gateworks' GW54xx boards and I can't see any
-> such EEPROM in the vicinity of the TDA19971, but I don't know how it is
-> wired - perhaps Tim has some idea?
+Thanks!
 
-Not sure where the source above is from (this was all so long ago) but
-my guess is that 'internal_edid' meant an EDID had been provided via
-software and the else case meant there was no EDID available. There is
-no support on that chip for an external EEPROM.
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
 
-Tim
+> ---
+> 
+> Change in v2:
+> --revise typo
+> 
+>  drivers/ntb/test/ntb_msi_test.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/ntb/test/ntb_msi_test.c b/drivers/ntb/test/ntb_msi_test.c
+> index 7095ecd..4e18e08 100644
+> --- a/drivers/ntb/test/ntb_msi_test.c
+> +++ b/drivers/ntb/test/ntb_msi_test.c
+> @@ -369,8 +369,10 @@ static int ntb_msit_probe(struct ntb_client *client, struct ntb_dev *ntb)
+>  	if (ret)
+>  		goto remove_dbgfs;
+>  
+> -	if (!nm->isr_ctx)
+> +	if (!nm->isr_ctx) {
+> +		ret = -ENOMEM;
+>  		goto remove_dbgfs;
+> +	}
+>  
+>  	ntb_link_enable(ntb, NTB_SPEED_AUTO, NTB_WIDTH_AUTO);
+>  
+> 
