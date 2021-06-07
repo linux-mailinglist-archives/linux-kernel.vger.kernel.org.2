@@ -2,102 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE2D39D581
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B1D39D582
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbhFGHBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 03:01:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhFGHBW (ORCPT
+        id S230267AbhFGHBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 03:01:45 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:54761 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229436AbhFGHBo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 03:01:22 -0400
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A8AC061766
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 23:59:31 -0700 (PDT)
-Received: by mail-ua1-x929.google.com with SMTP id c17so9137977uao.1
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 23:59:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8go6xRc0aBiej5IJzY7Bxzao9xX1kdd2uVB1Pbd1SXM=;
-        b=N7zNnuWp7VyoRUAqAcO7Ei/BilDAEcsV4rQxHdVqm/Aw2lAQCN+fVjcP0TzxN5QYlD
-         /mNSccs7mIgXxjkUjG145KToYQk+2UaH17TNcDWl/D5pUdU9fBu8Zr+Oliqz+W1HaOVT
-         8SUvRROEiXLOh9X0Zgfa/5M0TEu/rrLBaLxmA91LUQ9oetMyGD+0aZ9TNYad+F4EUv18
-         UT3o/IIj4x7Vd/dqCKjXp/5I/twXikVVSIOtscACaROzTGszgnBZM/L5WFpgnd+GDlJ3
-         98XgsQc3F54ENtZo/YsrOUqsI8JbrE4pl2wkafZLDfEyi8HMXi8C7yvNruSVFnzDwegl
-         XfLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8go6xRc0aBiej5IJzY7Bxzao9xX1kdd2uVB1Pbd1SXM=;
-        b=L3CQ4hPhG4HWWreElLNpkF4idi/myK/4FZS+ToTP/lRPbmI0wJvcVwLj4KXzCssdF5
-         LKSpoV0t5XBHpeCnADtQcfvasNKo8QTQErT9Qedwp4y+r9F/M4nW0xOysheRX/gq8/Tn
-         3MyyWNXQKmZB6IVzb2ZVSNGghpLfDwruEKQRcJSloKi8E0vf1VL1SDaJ5eM7vC/CjHDA
-         sNc8ZdIQgndyiFdbkwfTkxvJ3ltyzK3rsFXisyMJEFKtEpdSnbjDUjC73GDtCJVPmdq8
-         WxxXUqZeg+pQkQ+Rl9vkGLPQo96Ovqr5Dal4z88Wwgi7YCWHueErpqFP62ab6VTXkJZ5
-         J0Wg==
-X-Gm-Message-State: AOAM53141KkyM8WNiKtT4LgYrTKpUVrMCUD55id06fWutAOfy8VaWd/2
-        kfz3tVGw3py3vSz6ZBeqRDxB8g6tB8vafhdbq5Q=
-X-Google-Smtp-Source: ABdhPJyn0G40vkF00f9FMmTSW2dXYgPINXqDM6wh1HjEyCrjt75uPki5UekC7UymRHTOGBv5plEYJABxhWmGeylXfCQ=
-X-Received: by 2002:ab0:1464:: with SMTP id c33mr8016762uae.118.1623049170722;
- Sun, 06 Jun 2021 23:59:30 -0700 (PDT)
+        Mon, 7 Jun 2021 03:01:44 -0400
+X-UUID: e2d4cd33c0544e2c9a862bef06d87a8e-20210607
+X-UUID: e2d4cd33c0544e2c9a862bef06d87a8e-20210607
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <mark-pk.tsai@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1830994713; Mon, 07 Jun 2021 14:59:49 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 7 Jun 2021 14:59:48 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 7 Jun 2021 14:59:47 +0800
+From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+To:     <ardb@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <mark-pk.tsai@mediatek.com>,
+        <matthias.bgg@gmail.com>, <mhelsley@vmware.com>,
+        <rostedt@goodmis.org>, <samitolvanen@google.com>,
+        <yj.chiang@mediatek.com>
+Subject: Re: [PATCH] recordmcount: avoid using ABS symbol as reference
+Date:   Mon, 7 Jun 2021 14:59:48 +0800
+Message-ID: <20210607065948.31632-1-mark-pk.tsai@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <CAMj1kXE3faN7nSSdoSU=ed+OPruefD_vJuhyRnsMuNiRygZZbg@mail.gmail.com>
+References: <CAMj1kXE3faN7nSSdoSU=ed+OPruefD_vJuhyRnsMuNiRygZZbg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210605121838.8357-1-bernard@vivo.com>
-In-Reply-To: <20210605121838.8357-1-bernard@vivo.com>
-From:   Christian Gmeiner <christian.gmeiner@gmail.com>
-Date:   Mon, 7 Jun 2021 08:59:25 +0200
-Message-ID: <CAH9NwWdKvX3SN=StUMRcmavvOwoMotjkiVzrWxrJutGEe+Ha2w@mail.gmail.com>
-Subject: Re: [PATCH] drm/etnaviv: remove NULL check which is not needed
-To:     Bernard Zhao <bernard@vivo.com>
-Cc:     Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        The etnaviv authors <etnaviv@lists.freedesktop.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Sa., 5. Juni 2021 um 14:18 Uhr schrieb Bernard Zhao <bernard@vivo.com>:
+> > On Mon, 7 Jun 2021 at 04:42, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
+> >
+> > Avoid using ABS symbol, which won't be relocate, as reference.
+> >
+> > On arm64 platform, if there's shndx equals SHN_ABS(0xfff1).
+> >
+> > Section Headers:
+> > [Nr]    Name                         Type      Address          Off      Size   ES  Flg Lk     Inf    Al
+> > [65521] .text.n_tty_receive_buf      PROGBITS  0000000000000000 3cdab520 000054 00  AX  0      0      4
+> > [65522] .rela.text.n_tty_receive_buf RELA      0000000000000000 3cdab578 000030 18  I   152076 65521  8
+> >
 >
-> NULL check before kvfree functions is not needed.
+> A RELA section's r_info field points to the section to which it
+> applies. This is why in the example above section #65522 points to
+> section #65521. This has nothing to do with the numerical value of
+> SHN_ABS.
+
+If the r_info of RELA section is 65521(0xfff1),
+find_secsym_ndx() will use it to find the base symbol.
+
+And in the symbol search loop in find_secsym_ndx(), get_symindex will
+return 0xfff1 if the symbol is in ABS section.
+
+In this case, find_secsym_ndx() will return a absolute symbol as
+base, which won't be relocate, if an ABS symbol is found before the
+real symbol in section 65521.
+
 >
-> Signed-off-by: Bernard Zhao <bernard@vivo.com>
-> ---
->  drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+> > find_secsym_ndx, which use r_info in rela section to find the reference
+> > symbol, may take ABS symbol as base.
+> >
+> > Symbol table '.symtab' contains 453285 entries:
+> >    Num:    Value          Size Type    Bind   Vis       Ndx Name
+> >      6: 0000000000000002     0 NOTYPE  LOCAL  DEFAULT   ABS section_count
+> >
+> > Which cause an invalid address in __mcount_loc.
+> >
 >
-> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c b/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
-> index b390dd4d60b7..d741b1d735f7 100644
-> --- a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
-> +++ b/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
-> @@ -80,8 +80,7 @@ static void etnaviv_gem_prime_release(struct etnaviv_gem_object *etnaviv_obj)
->         /* Don't drop the pages for imported dmabuf, as they are not
->          * ours, just free the array we allocated:
->          */
-> -       if (etnaviv_obj->pages)
-> -               kvfree(etnaviv_obj->pages);
-> +       kvfree(etnaviv_obj->pages);
+> Could you give a better account of the error you are trying to address?
 >
->         drm_prime_gem_destroy(&etnaviv_obj->base, etnaviv_obj->sgt);
->  }
-> --
-> 2.31.0
+> Also, arm64 no longer defines a section_count symbol (since v5.11), so
+> please make sure that the diagnostics of the issue you are addressing
+> are accurate for mainline.
 >
 
-Thanks for the patch, but there is an other one queued up in
-etnaviv/next that fixes the same issue:
-https://git.pengutronix.de/cgit/lst/linux/commit/?h=etnaviv/next&id=7d614ab2f20503ed8766363d41f8607337571adf
+My kernel version is 5.4.61.
+But as I explained, I suppose mainline also have this issue.
 
--- 
-greets
---
-Christian Gmeiner, MSc
-
-https://christian-gmeiner.info/privacypolicy
+>
+> > Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+> > ---
+> >  scripts/recordmcount.h | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
+> > index f9b19524da11..9b69167fb7ff 100644
+> > --- a/scripts/recordmcount.h
+> > +++ b/scripts/recordmcount.h
+> > @@ -526,6 +526,10 @@ static int find_secsym_ndx(unsigned const txtndx,
+> >         for (symp = sym0, t = nsym; t; --t, ++symp) {
+> >                 unsigned int const st_bind = ELF_ST_BIND(symp->st_info);
+> >
+> > +               /* avoid absolute symbols */
+> > +               if (symp->st_shndx == SHN_ABS)
+> > +                       continue;
+> > +
+> >                 if (txtndx == get_symindex(symp, symtab, symtab_shndx)
+> >                         /* avoid STB_WEAK */
+> >                     && (STB_LOCAL == st_bind || STB_GLOBAL == st_bind)) {
