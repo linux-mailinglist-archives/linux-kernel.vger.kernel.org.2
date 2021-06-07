@@ -2,78 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7CA39D857
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13A3939D85B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbhFGJNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:13:30 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3085 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbhFGJN2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:13:28 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fz6tv0TRLzWt1v;
-        Mon,  7 Jun 2021 17:06:47 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 17:11:36 +0800
-Received: from [10.174.179.129] (10.174.179.129) by
- dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 7 Jun 2021 17:11:36 +0800
-Subject: Re: [PATCH] agp: remove set but not used variable 'current_size'
-From:   "yukuai (C)" <yukuai3@huawei.com>
-To:     <airlied@linux.ie>
-CC:     <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
-References: <20210514062210.3534108-1-yukuai3@huawei.com>
- <e44124e2-fc8b-e726-8bb2-d39095155d0d@huawei.com>
-Message-ID: <c40f9df5-0637-4c47-1f79-ff4b5bedbab1@huawei.com>
-Date:   Mon, 7 Jun 2021 17:11:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S230284AbhFGJQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:16:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:55782 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229966AbhFGJQQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 05:16:16 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F216C31B;
+        Mon,  7 Jun 2021 02:14:24 -0700 (PDT)
+Received: from [10.57.1.61] (unknown [10.57.1.61])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 379F43F719;
+        Mon,  7 Jun 2021 02:14:22 -0700 (PDT)
+Subject: Re: [PATCH 2/3] arm64: perf: Improve compat perf_callchain_user() for
+ clang leaf functions
+To:     Douglas Anderson <dianders@chromium.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Seth LaForge <sethml@google.com>,
+        Ricky Liang <jcliang@chromium.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        clang-built-linux@googlegroups.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Alexandre Truong <alexandre.truong@arm.com>,
+        Wilco Dijkstra <wilco.dijkstra@arm.com>,
+        Al Grant <Al.Grant@arm.com>
+References: <20210507205513.640780-1-dianders@chromium.org>
+ <20210507135509.2.Ib54050e4091679cc31b04d52d7ef200f99faaae5@changeid>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <47a95789-ca75-70a5-9d65-a2d3e9c651bc@arm.com>
+Date:   Mon, 7 Jun 2021 12:14:20 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <e44124e2-fc8b-e726-8bb2-d39095155d0d@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.129]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210507135509.2.Ib54050e4091679cc31b04d52d7ef200f99faaae5@changeid>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping ...
 
-On 2021/05/29 17:05, yukuai (C) wrote:
-> ping...
+
+On 07/05/2021 23:55, Douglas Anderson wrote:
+> It turns out that even when you compile code with clang with
+> "-fno-omit-frame-pointer" that it won't generate a frame pointer for
+> leaf functions (those that don't call any sub-functions). Presumably
+> clang does this to reduce the overhead of frame pointers. In a leaf
+> function you don't really need frame pointers since the Link Register
+> (LR) is guaranteed to always point to the caller> 
+[...]
 > 
-> On 2021/05/14 14:22, Yu Kuai wrote:
->> Fixes gcc '-Wunused-but-set-variable' warning:
->>
->> drivers/char/agp/via-agp.c:131:28: warning: variable ‘current_size’
->> set but not used [-Wunused-but-set-variable]
->>
->> It is never used, and so can be removed.
->>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->>   drivers/char/agp/via-agp.c | 3 ---
->>   1 file changed, 3 deletions(-)
->>
->> diff --git a/drivers/char/agp/via-agp.c b/drivers/char/agp/via-agp.c
->> index 87a92a044570..dc594f4eca38 100644
->> --- a/drivers/char/agp/via-agp.c
->> +++ b/drivers/char/agp/via-agp.c
->> @@ -128,9 +128,6 @@ static int via_fetch_size_agp3(void)
->>   static int via_configure_agp3(void)
->>   {
->>       u32 temp;
->> -    struct aper_size_info_16 *current_size;
->> -
->> -    current_size = A_SIZE_16(agp_bridge->current_size);
->>       /* address to map to */
->>       agp_bridge->gart_bus_addr = pci_bus_address(agp_bridge->dev,
->>
+>  arch/arm64/kernel/perf_callchain.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+> diff --git a/arch/arm64/kernel/perf_callchain.c b/arch/arm64/kernel/perf_callchain.c
+> index e5ce5f7965d1..b3cd9f371469 100644
+> --- a/arch/arm64/kernel/perf_callchain.c
+> +++ b/arch/arm64/kernel/perf_callchain.c
+> @@ -326,6 +326,20 @@ static void compat_perf_callchain_user(struct perf_callchain_entry_ctx *entry,
+>  	while ((entry->nr < entry->max_stack) && fp && !(fp & 0x3)) {
+>  		err = compat_perf_trace_1(&fp, &pc, leaf_lr);
+>  
+> +		/*
+> +		 * If this is the first trace and it didn't find the LR then
+> +		 * let's throw it in the trace first. This isn't perfect but
+> +		 * is the best we can do for handling clang leaf functions (or
+> +		 * the case where we're right at the start of the function
+> +		 * before the new frame has been pushed). In the worst case
+> +		 * this can cause us to throw an extra entry that will be some
+> +		 * location in the same function as the PC. That's not
+> +		 * amazing but shouldn't really hurt. It seems better than
+> +		 * throwing away the LR.
+> +		 */
+
+Hi Douglas,
+
+I think the behaviour with GCC is also similar. We were working on this change
+(https://lore.kernel.org/lkml/20210304163255.10363-4-alexandre.truong@arm.com/)
+in userspace Perf which addresses the same issue.
+
+The basic concept of our version is to record only the link register
+(as in --user-regs=lr). Then use the existing dwarf based unwind
+to determine if the link register is valid for that frame, and then if
+it is and it doesn't already exist on the stack then insert it.
+
+You mention that your version isn't perfect, do you think that saving the
+LR and using something like libunwind in a post process could be better?
+
+Thanks
+James
