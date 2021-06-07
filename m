@@ -2,66 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE15739D72E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C9939D758
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbhFGI2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 04:28:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhFGI2l (ORCPT
+        id S230291AbhFGI3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 04:29:04 -0400
+Received: from router.aksignal.cz ([62.44.4.214]:56156 "EHLO
+        router.aksignal.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230139AbhFGI3C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 04:28:41 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83EA6C061766;
-        Mon,  7 Jun 2021 01:26:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Gm/Z4ZEed7fwYvc2lrsvQUFJOpzqbnReZh3AcOm9gYM=; b=I2WarOQvkgsFqNSXPKcah6GQKq
-        jeBgdpqKK12q7hvx9wBGPxm0WF2ziLRAM13cchy7N0XoaQFj60Oms2wN7vOUoZop31TAr/CpEGDE1
-        WVh0S8Q0z8rnEi2nxIg1c7C8lmB82PX/0spN3ewh3XfKU0wZYrsSuM1HiEFtraeRnlHB3Nrnh9WBa
-        J+PYkXN3ukUXz+LSQ1Ax/FN0G5Ia1WrwxvB0SegWTzymw8QUoZJL92sgtPiKnZmA/kKjhXLR4Hwuo
-        78NIpBQ7E20T+t83m3NQHnOtw3aj55onG1ks81EiR5nz1iKutFFNsPyOw3sxOc2+TA7JmJ0V9xxuC
-        QoULjKTQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lqAaW-00FWsl-Qa; Mon, 07 Jun 2021 08:26:26 +0000
-Date:   Mon, 7 Jun 2021 09:26:24 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Adrian Sun <a.sun@sun.com>,
-        Alan Cox <alan@lxorguk.ukuu.org.uk>,
-        Andre Hedrick <andre@linux-ide.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Benoit Poulot-Cazajous <poulot@chorus.fr>,
-        Christian Brunner <chb@muc.de>,
-        "Christopher J. Reimer" <reimer@doe.carleton.ca>,
-        CJ <cjtsai@ali.com.tw>, Clear Zhang <Clear.Zhang@ali.com.tw>,
-        "David S. Miller" <davem@davemloft.net>,
-        Duncan Laurie <void@sun.com>,
-        Erik Andersen <andersee@debian.org>,
-        Frank Tiernan <frankt@promise.com>,
-        Gadi Oxman <gadio@netvision.net.il>,
-        Jens Axboe <axboe@suse.de>, linux-ide@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, Mark Lord <mlord@pobox.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Mike Waychison <crlf@sun.com>, or <source@mvista.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Robert Bringman <rob@mars.trion.com>,
-        Scott Snyder <snyder@fnald0.fnal.gov>,
-        Sergei Shtylyov <sshtylyov@ru.mvista.com>,
-        Tim Hockin <thockin@sun.com>
-Subject: Re: [PATCH 00/21] Rid W=1 warnings from IDE
-Message-ID: <YL3YMGl9kmtv55B/@infradead.org>
-References: <20210602101722.2276638-1-lee.jones@linaro.org>
+        Mon, 7 Jun 2021 04:29:02 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by router.aksignal.cz (Postfix) with ESMTP id 79572419AF;
+        Mon,  7 Jun 2021 10:26:59 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at router.aksignal.cz
+Received: from router.aksignal.cz ([127.0.0.1])
+        by localhost (router.aksignal.cz [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id 2kircaCE3r5X; Mon,  7 Jun 2021 10:26:59 +0200 (CEST)
+Received: from pc-gameroom.prchals.tk (unknown [83.240.30.185])
+        (Authenticated sender: jiri.prchal@aksignal.cz)
+        by router.aksignal.cz (Postfix) with ESMTPSA id A2190418EE;
+        Mon,  7 Jun 2021 10:26:58 +0200 (CEST)
+From:   Jiri Prchal <jiri.prchal@aksignal.cz>
+To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Christian Eggers <ceggers@arri.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Prchal <jiri.prchal@aksignal.cz>
+Subject: [PATCH v6 0/5] add support for FRAM
+Date:   Mon,  7 Jun 2021 10:26:33 +0200
+Message-Id: <20210607082638.52409-1-jiri.prchal@aksignal.cz>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602101722.2276638-1-lee.jones@linaro.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please don't touch this code as it is about to be removed entirely.
+Adds support for Cypress FRAMs.
+
+Jiri Prchal (5):
+  nvmem: eeprom: at25: prepare basics for FRAM support
+  nvmem: eeprom: at25: add support for FRAM
+  nvmem: eeprom: add documentation for FRAM
+  nvmem: eeprom: at25: export FRAM serial num
+  nvmem: eeprom: add documentation of sysfs sernum file
+
+ .../ABI/testing/sysfs-class-spi-eeprom        |   6 +
+ .../devicetree/bindings/eeprom/at25.yaml      |  31 +++-
+ drivers/misc/eeprom/Kconfig                   |   5 +-
+ drivers/misc/eeprom/at25.c                    | 167 ++++++++++++++----
+ drivers/nvmem/core.c                          |   4 +
+ include/linux/nvmem-provider.h                |   1 +
+ 6 files changed, 176 insertions(+), 38 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-class-spi-eeprom
+
+-- 
+2.25.1
+
