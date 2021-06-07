@@ -2,115 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A43439D336
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 04:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 958E439D30A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 04:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbhFGDAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 23:00:31 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:4327 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbhFGDAa (ORCPT
+        id S230177AbhFGCpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 22:45:08 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3441 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230127AbhFGCpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 23:00:30 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FyycT5zh8z1BJhT;
-        Mon,  7 Jun 2021 10:53:45 +0800 (CST)
-Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
+        Sun, 6 Jun 2021 22:45:07 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FyyJs5Db8z6vwS;
+        Mon,  7 Jun 2021 10:40:13 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
  dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 10:58:34 +0800
-Received: from ubuntu1804.huawei.com (10.67.174.61) by
- dggpemm000003.china.huawei.com (7.185.36.128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 10:58:34 +0800
-From:   Yang Jihong <yangjihong1@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <yangjihong1@huawei.com>
-Subject: [PATCH v2] perf annotate: Add itrace options support
-Date:   Mon, 7 Jun 2021 10:59:18 +0800
-Message-ID: <20210607025918.118603-1-yangjihong1@huawei.com>
-X-Mailer: git-send-email 2.30.GIT
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 10:43:12 +0800
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 10:43:12 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <benh@kernel.crashing.org>, <aik@ozlabs.ru>,
+        <rdunlap@infradead.org>, <unixbhaskar@gmail.com>,
+        <mpe@ellerman.id.au>
+CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] macintosh: Use for_each_child_of_node() macro
+Date:   Mon, 7 Jun 2021 11:01:48 +0800
+Message-ID: <1623034908-30525-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.61]
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm000003.china.huawei.com (7.185.36.128)
+ dggemi762-chm.china.huawei.com (10.1.198.148)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "auxtrace_info" and "auxtrace" functions are not set in "tool" member of
-"annotate". As a result, perf annotate does not support parsing itrace data.
+Use for_each_child_of_node() macro instead of open coding it.
 
-A simple example is as follows:
-
-  # perf record -e arm_spe_0/branch_filter=1/ -a sleep 1
-  [ perf record: Woken up 9 times to write data ]
-  [ perf record: Captured and wrote 20.874 MB perf.data ]
-  # perf annotate --stdio
-  Error:
-  The perf.data data has no samples!
-
-Solution:
-1.Add itrace options in help,
-2.Set hook functions of "auxtrace_info" and "auxtrace" in perf_tool.
-
-Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
+ drivers/macintosh/macio_asic.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Changes since v1:
- - Adjust spaces to maintain alignment in "tool".
-
- tools/perf/builtin-annotate.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
-index 49627a7bed7c..8f87658eff31 100644
---- a/tools/perf/builtin-annotate.c
-+++ b/tools/perf/builtin-annotate.c
-@@ -474,6 +474,8 @@ int cmd_annotate(int argc, const char **argv)
- 			.attr	= perf_event__process_attr,
- 			.build_id = perf_event__process_build_id,
- 			.tracing_data   = perf_event__process_tracing_data,
-+			.auxtrace_info	= perf_event__process_auxtrace_info,
-+			.auxtrace	= perf_event__process_auxtrace,
- 			.feature	= process_feature_event,
- 			.ordered_events = true,
- 			.ordering_requires_timestamps = true,
-@@ -483,6 +485,9 @@ int cmd_annotate(int argc, const char **argv)
- 	struct perf_data data = {
- 		.mode  = PERF_DATA_MODE_READ,
- 	};
-+	struct itrace_synth_opts itrace_synth_opts = {
-+		.set = 0,
-+	};
- 	struct option options[] = {
- 	OPT_STRING('i', "input", &input_name, "file",
- 		    "input file name"),
-@@ -547,6 +552,9 @@ int cmd_annotate(int argc, const char **argv)
- 	OPT_CALLBACK(0, "percent-type", &annotate.opts, "local-period",
- 		     "Set percent type local/global-period/hits",
- 		     annotate_parse_percent_type),
-+	OPT_CALLBACK_OPTARG(0, "itrace", &itrace_synth_opts, NULL, "opts",
-+			    "Instruction Tracing options\n" ITRACE_HELP,
-+			    itrace_parse_synth_opts),
+diff --git a/drivers/macintosh/macio_asic.c b/drivers/macintosh/macio_asic.c
+index 49af60b..f552c7c 100644
+--- a/drivers/macintosh/macio_asic.c
++++ b/drivers/macintosh/macio_asic.c
+@@ -474,7 +474,7 @@ static void macio_pci_add_devices(struct macio_chip *chip)
+ 	root_res = &rdev->resource[0];
  
- 	OPT_END()
- 	};
-@@ -591,6 +599,8 @@ int cmd_annotate(int argc, const char **argv)
- 	if (IS_ERR(annotate.session))
- 		return PTR_ERR(annotate.session);
- 
-+	annotate.session->itrace_synth_opts = &itrace_synth_opts;
-+
- 	annotate.has_br_stack = perf_header__has_feat(&annotate.session->header,
- 						      HEADER_BRANCH_STACK);
- 
+ 	/* First scan 1st level */
+-	for (np = NULL; (np = of_get_next_child(pnode, np)) != NULL;) {
++	for_each_child_of_node(pnode, np) {
+ 		if (macio_skip_device(np))
+ 			continue;
+ 		of_node_get(np);
+@@ -491,7 +491,7 @@ static void macio_pci_add_devices(struct macio_chip *chip)
+ 	/* Add media bay devices if any */
+ 	if (mbdev) {
+ 		pnode = mbdev->ofdev.dev.of_node;
+-		for (np = NULL; (np = of_get_next_child(pnode, np)) != NULL;) {
++		for_each_child_of_node(pnode, np) {
+ 			if (macio_skip_device(np))
+ 				continue;
+ 			of_node_get(np);
+@@ -504,7 +504,7 @@ static void macio_pci_add_devices(struct macio_chip *chip)
+ 	/* Add serial ports if any */
+ 	if (sdev) {
+ 		pnode = sdev->ofdev.dev.of_node;
+-		for (np = NULL; (np = of_get_next_child(pnode, np)) != NULL;) {
++		for_each_child_of_node(pnode, np) {
+ 			if (macio_skip_device(np))
+ 				continue;
+ 			of_node_get(np);
 -- 
-2.30.GIT
+2.6.2
 
