@@ -2,96 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D04CA39EA63
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 01:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6718339EA66
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 01:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbhFGXvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 19:51:11 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:35055 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230183AbhFGXvJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 19:51:09 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id C28B158056A;
-        Mon,  7 Jun 2021 19:49:16 -0400 (EDT)
-Received: from imap43 ([10.202.2.93])
-  by compute2.internal (MEProxy); Mon, 07 Jun 2021 19:49:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm3; bh=ftd1wQj/z6/pwKmUrvqwIr0/STXPEvr
-        2JxgGS6MVzjc=; b=l6z0Gr9ywWgB4cD0mG1R6qklLXlwcF8xSYPDrvNZpVavmH1
-        9892zn8p0TngINVj6sKfNTkM5R05sR4BTNFqcZqV1mg5HgujdkpbX3HpYTExK9qD
-        pV5WBdKCyN3RbG6mYrYz99SDIUaN0YmAR3zSNMUrMlSAvt4O4//Fxc0scHZSGUiQ
-        jVYfPeUwQ03s0+Ev6m4EGQkvmKdYPY+HNMRJQSdDPXqOOqgdlpBVw8vfmhKuEZFW
-        dS7EjeOjfWefyKNkChcVxCTxWpw2Y/A1iw0cbY1zeoZiCEnNP3UJxyqCz4MEI20B
-        vqOv6SD8b+jwDXUmfniQHF4sgiLcr0IRardgrSw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ftd1wQ
-        j/z6/pwKmUrvqwIr0/STXPEvr2JxgGS6MVzjc=; b=vELRD1ZYHbELpLRRnqPNE6
-        gws5mQj72mx1yZgdp4bJInAvtvmoXH0dJbF7Vomps1NSCNdzY35LNNWoURTWmSMR
-        02Ec1hNAHUUVR1znR02sFxCfCA7Uv0FLcUQMDpdIR9a3TNkF+4CNLRC1Cnk4jPBL
-        9CFY6viRJgXtXU0Y2lIQdi7smmH8s+pz86Qt25UMqaE0S/QSrZz/8Q6raxOCtyZL
-        3HOXtE2ULX0Bhm9bKYNZ7CK0n0VUDgPZmGkDu6XAccxpuN+lCq8KsyQAag9AKO1P
-        QwxD80R4PvXroKXKkTyxknulcEqaoiF5Fo4jGpMX2GbyjLKjxX5Vu8rP/s8PUlPQ
-        ==
-X-ME-Sender: <xms:ebC-YIafmIvzv_bMUrujeDJas1yTeLyiv0zds0WsF7s267FUKSuG_g>
-    <xme:ebC-YDZszBq0gSIC39UnMI9Rl_WvvOmTHQCM4lYKQwdaXCXToIGMgiz2L8wx-FbTI
-    BkBK2XVCuJk3Qjk8Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtkedgudejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhephefhfeekgfekudevheffheeihedujeefjeevjeefudfgfeeutdeuvdeh
-    hfevueffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:ebC-YC_vap9e8qxNOaDUxH3PX0ix6v-JWKIPE9Hu-yYFeXLBwyaeWw>
-    <xmx:ebC-YCp9o3nC82Fueo3nusZisZiTBhobAPSI1_ImbhP2pjtkdH61YA>
-    <xmx:ebC-YDrLC7hG-K7eonoSICQSGf2DCBEabrIkGMKK4YTNhZ0Ss-fr2w>
-    <xmx:fLC-YAigQzk7FLwe5RPRrVZx8JrOeb9omCOVZ3zbEjrG109A9nBiVg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id C3E44AC0062; Mon,  7 Jun 2021 19:49:13 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
+        id S230481AbhFGXvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 19:51:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40190 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230389AbhFGXvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 19:51:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56A56610E7;
+        Mon,  7 Jun 2021 23:49:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1623109775;
+        bh=wxUVyz8qev8tVhu8PQWcp+37ij3S9w/4BeA7vonLCSk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=asVX63awTfqg/iMMlsQL0INhiGLCFajgpBC0a1YCIfWFg/m2ij2+9NeD5Q5ip2hTT
+         TAAVAn85Gr+4WdPiHXwr6HZhgU3/9wd+ld+G27FnFkb+JtAFkzEnmbfbBfq53rBeKg
+         MzmrWw6bOnh6JWFKPU8ptpSBevb3gFf+L8saSdT8=
+Date:   Mon, 7 Jun 2021 16:49:34 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-mm@kvack.org, Anton Blanchard <anton@ozlabs.org>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCH v4 1/4] lazy tlb: introduce lazy mm refcount helper
+ functions
+Message-Id: <20210607164934.d453adcc42473e84beb25db3@linux-foundation.org>
+In-Reply-To: <20210605014216.446867-2-npiggin@gmail.com>
+References: <20210605014216.446867-1-npiggin@gmail.com>
+        <20210605014216.446867-2-npiggin@gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
-Message-Id: <27d1ae78-a58c-4e40-b844-2bbd4bda15f4@www.fastmail.com>
-In-Reply-To: <20210607071514.11727-6-steven_lee@aspeedtech.com>
-References: <20210607071514.11727-1-steven_lee@aspeedtech.com>
- <20210607071514.11727-6-steven_lee@aspeedtech.com>
-Date:   Tue, 08 Jun 2021 09:18:52 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Steven Lee" <steven_lee@aspeedtech.com>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Joel Stanley" <joel@jms.id.au>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        "open list" <linux-kernel@vger.kernel.org>
-Cc:     "Hongwei Zhang" <Hongweiz@ami.com>,
-        "Ryan Chen" <ryan_chen@aspeedtech.com>,
-        "Billy Tsai" <billy_tsai@aspeedtech.com>
-Subject: Re: [PATCH v4 5/7] gpio: gpio-aspeed-sgpio: Add set_config function
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat,  5 Jun 2021 11:42:13 +1000 Nicholas Piggin <npiggin@gmail.com> wrote:
 
-
-On Mon, 7 Jun 2021, at 16:45, Steven Lee wrote:
-> AST SoC supports *retain pin state* function when wdt reset.
-> The patch adds set_config function for handling sgpio reset tolerance
-> register.
+> Add explicit _lazy_tlb annotated functions for lazy mm refcounting.
+> This makes lazy mm references more obvious, and allows explicit
+> refcounting to be removed if it is not used.
 > 
-> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+> ...
+>
+> --- a/kernel/kthread.c
+> +++ b/kernel/kthread.c
+> @@ -1314,14 +1314,14 @@ void kthread_use_mm(struct mm_struct *mm)
+>  	WARN_ON_ONCE(!(tsk->flags & PF_KTHREAD));
+>  	WARN_ON_ONCE(tsk->mm);
+>  
+> +	mmgrab(mm);
+> +
+>  	task_lock(tsk);
+>  	/* Hold off tlb flush IPIs while switching mm's */
+>  	local_irq_disable();
+>  	active_mm = tsk->active_mm;
+> -	if (active_mm != mm) {
+> -		mmgrab(mm);
+> +	if (active_mm != mm)
+>  		tsk->active_mm = mm;
+> -	}
 
-Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+Looks like a functional change.  What's happening here?
+
+
