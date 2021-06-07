@@ -2,86 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958E439D30A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 04:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 314D539D343
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 05:09:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbhFGCpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 22:45:08 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3441 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbhFGCpH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 22:45:07 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FyyJs5Db8z6vwS;
-        Mon,  7 Jun 2021 10:40:13 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 10:43:12 +0800
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 7 Jun 2021 10:43:12 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <benh@kernel.crashing.org>, <aik@ozlabs.ru>,
-        <rdunlap@infradead.org>, <unixbhaskar@gmail.com>,
-        <mpe@ellerman.id.au>
-CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] macintosh: Use for_each_child_of_node() macro
-Date:   Mon, 7 Jun 2021 11:01:48 +0800
-Message-ID: <1623034908-30525-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S230196AbhFGDKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 23:10:48 -0400
+Received: from m12-18.163.com ([220.181.12.18]:33842 "EHLO m12-18.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230127AbhFGDKq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 23:10:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=NJyv4
+        cJvzWTV0Z6UppUARpGUFXFp+OeC5caDPgArcl4=; b=Dm+0O/73UR+TxReruze0h
+        2Ptm/HOqAB637CF7sIZB72cy/QAlfk8TDBd2e/kzzKeOkUXSB9mKRQIJ+D7OVHQ2
+        FUGbc/hxaStqTQHrKvBeK4yqKjhNm7WBqNPUXqDu+ckyZCqMbRaQQ70DcsEZiLMA
+        ekMjmXeeaTH9v6TLPtNAEo=
+Received: from ubuntu.localdomain (unknown [218.17.89.92])
+        by smtp14 (Coremail) with SMTP id EsCowAB3feW7jb1gKwrcnw--.39184S2;
+        Mon, 07 Jun 2021 11:08:44 +0800 (CST)
+From:   13145886936@163.com
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gushengxian <gushengxian@yulong.com>
+Subject: [PATCH] vlan: Avoid crashing the kernel
+Date:   Sun,  6 Jun 2021 20:08:39 -0700
+Message-Id: <20210607030839.374323-1-13145886936@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EsCowAB3feW7jb1gKwrcnw--.39184S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWruF1kZF15Zw18urW8KF17KFg_yoWDArg_W3
+        97Kr1UKw4DAan2yw45W3yIvr9rAw109r4xX3WxArW7try8ArZ0kr18Z3W3Jr1a9rW8ur9r
+        GFn2vr93Cr97tjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUeGFAJUUUUU==
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/1tbiQhyqg1aD-Kmt2QAAsD
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use for_each_child_of_node() macro instead of open coding it.
+From: gushengxian <gushengxian@yulong.com>
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Avoid crashing the kernel, try using WARN_ON & recovery code
+rather than BUG() or BUG_ON().
+
+Signed-off-by: gushengxian <gushengxian@yulong.com>
 ---
- drivers/macintosh/macio_asic.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/8021q/vlan.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/macintosh/macio_asic.c b/drivers/macintosh/macio_asic.c
-index 49af60b..f552c7c 100644
---- a/drivers/macintosh/macio_asic.c
-+++ b/drivers/macintosh/macio_asic.c
-@@ -474,7 +474,7 @@ static void macio_pci_add_devices(struct macio_chip *chip)
- 	root_res = &rdev->resource[0];
+diff --git a/net/8021q/vlan.c b/net/8021q/vlan.c
+index 4cdf8416869d..6e784fd8795b 100644
+--- a/net/8021q/vlan.c
++++ b/net/8021q/vlan.c
+@@ -97,7 +97,7 @@ void unregister_vlan_dev(struct net_device *dev, struct list_head *head)
+ 	ASSERT_RTNL();
  
- 	/* First scan 1st level */
--	for (np = NULL; (np = of_get_next_child(pnode, np)) != NULL;) {
-+	for_each_child_of_node(pnode, np) {
- 		if (macio_skip_device(np))
- 			continue;
- 		of_node_get(np);
-@@ -491,7 +491,7 @@ static void macio_pci_add_devices(struct macio_chip *chip)
- 	/* Add media bay devices if any */
- 	if (mbdev) {
- 		pnode = mbdev->ofdev.dev.of_node;
--		for (np = NULL; (np = of_get_next_child(pnode, np)) != NULL;) {
-+		for_each_child_of_node(pnode, np) {
- 			if (macio_skip_device(np))
- 				continue;
- 			of_node_get(np);
-@@ -504,7 +504,7 @@ static void macio_pci_add_devices(struct macio_chip *chip)
- 	/* Add serial ports if any */
- 	if (sdev) {
- 		pnode = sdev->ofdev.dev.of_node;
--		for (np = NULL; (np = of_get_next_child(pnode, np)) != NULL;) {
-+		for_each_child_of_node(pnode, np) {
- 			if (macio_skip_device(np))
- 				continue;
- 			of_node_get(np);
+ 	vlan_info = rtnl_dereference(real_dev->vlan_info);
+-	BUG_ON(!vlan_info);
++	WARN_ON(!vlan_info);
+ 
+ 	grp = &vlan_info->grp;
+ 
+@@ -163,7 +163,7 @@ int register_vlan_dev(struct net_device *dev, struct netlink_ext_ack *extack)
+ 
+ 	vlan_info = rtnl_dereference(real_dev->vlan_info);
+ 	/* vlan_info should be there now. vlan_vid_add took care of it */
+-	BUG_ON(!vlan_info);
++	WARN_ON(!vlan_info);
+ 
+ 	grp = &vlan_info->grp;
+ 	if (grp->nr_vlan_devs == 0) {
 -- 
-2.6.2
+2.25.1
+
 
