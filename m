@@ -2,106 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973E239DD74
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF59539DD78
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbhFGNTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 09:19:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51018 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230127AbhFGNTB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 09:19:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C214861164;
-        Mon,  7 Jun 2021 13:17:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623071830;
-        bh=SGYTD9jGwwVnbXxZJo2IMmz6s1Wuu6sgPJY01wB0hj8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dPCoPQPpVQTmPC46OSxK1YTNM4Rp6aENDRN4jpV6sOt92dlgCTNDtvdIKKhAOh//3
-         7SrSB3TObM5qhZbsm4W8IHxTQFzgHQhiMyQMLjPpEawn++uhYu095w3YgbX8lb8H5O
-         aZRBIAlEEPPBQC7dsVKW5uR2jUOXZh9P+woU4bzxO7usIMoDV16K2DSPEP1Dl3oPNg
-         aP2Mp5L2uvW2dDYx7tobV4I6XjWu+onEc6DCtfPLqcEqK1CnlOIb09/ubR5+JdSKm5
-         vVCljfmvgD8uqf2fgJ/akVABNFRLJUWejC+qX13dt4XDXUXT2LgdsVp58xuwlzagOL
-         KJ+GHtyCIwDWQ==
-Received: by mail-ej1-f52.google.com with SMTP id he7so7182705ejc.13;
-        Mon, 07 Jun 2021 06:17:10 -0700 (PDT)
-X-Gm-Message-State: AOAM5312a9/O8TZ6nJazTrI+3F5QPTj4no4w5rrPNXXiKm7DaUwj4xEF
-        3NRacmcWIQbqHDfAf4AE3w5kPER/MPdoHi0C3A==
-X-Google-Smtp-Source: ABdhPJyB2mu2p0Vz6GuEA33/JHz9vO2OJC5SpaUCqz5KbM1IIo7ajKUdT/3rQ7GMquBx8tQt0gQr02DtW31fRQgs5vQ=
-X-Received: by 2002:a17:906:fa13:: with SMTP id lo19mr18291724ejb.468.1623071829381;
- Mon, 07 Jun 2021 06:17:09 -0700 (PDT)
+        id S230255AbhFGNTH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Jun 2021 09:19:07 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:37005 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230231AbhFGNTG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 09:19:06 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-232-PLAYMgjKODCUrXQ11EE9cw-1; Mon, 07 Jun 2021 14:17:12 +0100
+X-MC-Unique: PLAYMgjKODCUrXQ11EE9cw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.18; Mon, 7 Jun 2021 14:17:11 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Mon, 7 Jun 2021 14:17:11 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Andrew Lunn' <andrew@lunn.ch>
+CC:     'Koba Ko' <koba.ko@canonical.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] r8169: introduce polling method for link change
+Thread-Topic: [PATCH] r8169: introduce polling method for link change
+Thread-Index: AQHXW1Z1J4XkbqR7K0q4sy48RuQacKsIelDA///1bwCAABSCIA==
+Date:   Mon, 7 Jun 2021 13:17:11 +0000
+Message-ID: <85afdf3eb2de443da78f6c10c8eb4dc7@AcuMS.aculab.com>
+References: <20210603025414.226526-1-koba.ko@canonical.com>
+ <3d2e7a11-92ad-db06-177b-c6602ef1acd4@gmail.com>
+ <CAJB-X+V4vpLoNt2C_i=3mS4UtFnDdro5+hgaFXHWxcvobO=pzg@mail.gmail.com>
+ <f969a075-25a1-84ba-daad-b4ed0e7f75f5@gmail.com>
+ <CAJB-X+U5VEeSNS4sF0DBxc-p0nxA6QLVVrORHsscZuY37rGJ7w@mail.gmail.com>
+ <bfc68450-422d-1968-1316-64f7eaa7cbe9@gmail.com>
+ <CAJB-X+UDRK5-fKEGc+PS+_02HePmb34Pw_+tMyNr_iGGeE+jbQ@mail.gmail.com>
+ <16f24c21776a4772ac41e6d3e0a9150c@AcuMS.aculab.com>
+ <YL4V6jak3TYxDPg8@lunn.ch>
+In-Reply-To: <YL4V6jak3TYxDPg8@lunn.ch>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20210601164800.7670-1-jbx6244@gmail.com> <20210601164800.7670-2-jbx6244@gmail.com>
- <YLhukPL7jSx3+dBj@vkoul-mobl> <3601774.Dhsi8hcfAM@diego>
-In-Reply-To: <3601774.Dhsi8hcfAM@diego>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 7 Jun 2021 08:16:58 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+xE7UfXcr-RTkxB8gZej8M52Fk-yM3yYA3KA7mMn50ng@mail.gmail.com>
-Message-ID: <CAL_Jsq+xE7UfXcr-RTkxB8gZej8M52Fk-yM3yYA3KA7mMn50ng@mail.gmail.com>
-Subject: Re: [PATCH v7 1/5] dt-bindings: phy: rename phy nodename in phy-rockchip-inno-usb2.yaml
-To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Johan Jonker <jbx6244@gmail.com>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Tobias Schramm <t.schramm@manjaro.org>,
-        linux-phy@lists.infradead.org,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        devicetree@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 3:58 AM Heiko St=C3=BCbner <heiko@sntech.de> wrote:
->
-> Hi Vinod,
->
-> Am Donnerstag, 3. Juni 2021, 07:54:24 CEST schrieb Vinod Koul:
-> > On 01-06-21, 18:47, Johan Jonker wrote:
-> > > The pattern: "^(|usb-|usb2-|usb3-|pci-|pcie-|sata-)phy(@[0-9a-f,]+)*$=
-"
-> > > in phy-provider.yaml has required "#phy-cells" for phy nodes.
-> > > The "phy-cells" in rockchip-inno-usb2 nodes are located in subnodes.
-> > > Rename the nodename to pattern "usb2phy@[0-9a-f]+$" to prevent
-> > > notifications. Remove unneeded "#phy-cells" from parent node.
-> > > Also sort example.
-> > >
-> > > make ARCH=3Darm dtbs_check
-> > > DT_SCHEMA_FILES=3D~/.local/lib/python3.5/site-packages/dtschema/schem=
-as/
-> > > phy/phy-provider.yaml
-> > >
-> > > Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> > > Acked-by: Rob Herring <robh@kernel.org>
-> > > ---
-> > >  .../devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml       | 11 +=
-++--------
-> > >  Documentation/devicetree/bindings/soc/rockchip/grf.yaml       |  4 +=
-+--
+From: Andrew Lunn
+> Sent: 07 June 2021 13:50
+> 
+> On Mon, Jun 07, 2021 at 12:32:29PM +0000, David Laight wrote:
+> > From: Koba Ko
+> > > Sent: 07 June 2021 05:35
+> > ...
+> > > After consulting with REALTEK, I can identify RTL8106e by PCI_VENDOR
+> > > REALTEK, DEVICE 0x8136, Revision 0x7.
+> > > I would like to make PHY_POLL as default for RTL8106E on V2.
+> > > because there's no side effects besides the cpu usage rate would be a
+> > > little higher,
+> > > How do you think?
 > >
-> > I dont have grf.yaml, I guess it would be easier to split this into two
-> > or apply this thru rockchip tree. If you prefer latter:
-> >
-> > Acked-By: Vinod Koul <vkoul@kernel.org>
->
-> before we do any more rounds, I'll just do that with your Ack, thanks :-)
+> > If reading the PHY registers involves a software bit-bang
+> > of an MII register (rather than, say, a sleep for interrupt
+> > while the MAC unit does the bit-bang) then you can clobber
+> > interrupt latency because of all the time spent spinning.
+> 
+> That is not what PHY IRQ/POLL means in the PHY subsystem.
+> 
+> Many PHYs don't actually have there interrupt output connected to a
+> GPIO. This is partially because 803.2 C22 and C45 standards don't
+> define interrupts. Each vendor which supports interrupts uses
+> proprietary registers. So by default, the PHY subsystem will poll the
+> status of the PHY once per second to see if the link has changed
+> state. If the combination of PHY hardware, board hardware and PHY
+> driver does have interrupts, the PHY subsystem will not poll, but wait
+> for an interrupt, and then check the status of the link.
 
-This is generating warnings on linux-next now:
+I know. I might be 30 years since I wrote anything to read MII
+but I don't remember seeing anything that made it less horrid.
 
-/builds/robherring/linux-dt/Documentation/devicetree/bindings/soc/rockchip/=
-grf.example.dt.yaml:
-syscon@ff770000: usb2phy@e450: '#phy-cells' does not match any of the
-regexes: 'pinctrl-[0-9]+'
-From schema: /builds/robherring/linux-dt/Documentation/devicetree/bindings/=
-soc/rockchip/grf.yaml
-/builds/robherring/linux-dt/Documentation/devicetree/bindings/soc/rockchip/=
-grf.example.dt.yaml:
-usb2phy@e450: '#phy-cells' does not match any of the regexes:
-'pinctrl-[0-9]+'
-From schema: /builds/robherring/linux-dt/Documentation/devicetree/bindings/=
-phy/phy-rockchip-inno-usb2.yaml
+One of the MAC units (probably AMD lance based) could be configured
+to repeatedly read one PHY register and generate a MAC interrupt
+if it changed - but I've not seen that on some later MAC chips.
 
-Rob
+> As for MII bus masters, i only know of one which is interrupt driven,
+> rather than polled IO, for completion. The hardware is clocking out 64
+> bits at 2.5MHz. So it is done rather quickly. I profiled that one
+> using interrupts, and the overhead of dealing with the interrupt is
+> bigger than polling.
+
+64 bits at 2.5MHz is some 64000 cpu clocks - not inconsiderable.
+
+It has to be said that I don't know how to solve the delays
+associated with software bit-bang (apart from persuading the
+hardware engineers it isn't a good idea).
+With my 'hardware engineer' hat on (I'm currently (ir)responsible
+for some FPGA internals as well as the drivers) the logic to
+do things like I2C (etc) reads and writes from fpga memory
+sits in a tiny corner of a modern device.
+
+One possibility for 'slow polls' is to do them slowly!
+One edge per timer tick - although 'tickless' probably
+kills that.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
