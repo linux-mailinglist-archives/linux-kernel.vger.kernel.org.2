@@ -2,71 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3080839D925
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23EF839D929
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbhFGJ5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:57:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53108 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230127AbhFGJ5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:57:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 530EE6008E;
-        Mon,  7 Jun 2021 09:55:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623059740;
-        bh=VpiaPJbhhIcgtoDeUX/ziiaSfilXdpI7+CrehsiN4tQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AVbYgirrv0f14aId0ukds9/2fCavM0VHvrPpsuN8lw54NpczPthBTn1ysioMLwnRm
-         mXee38XO1G3LerArnEg/0I2HJwYK0QJw47O+fiwLrJzMaHHudhqhmPZSZ3+by7lcwi
-         K5PpvLcTXi39LrUH7au4n8lSmIU7/6yUUierI+QVXWNiqKrH9gSDsnGpfkVAqVzMhu
-         QEI8nZ1EsSsREmgHseDb/ODbGVplMkE9KOB+N9UeDDy5bkEODaupCJolCBQ1du3PkS
-         +9QWK+r5/0DbeKmzFEoFbl03ddAyKpSEJcO9r9+UElgkmE8VcWrsqUQ5AMn1wgZY3A
-         /HVlU/2VAn+7Q==
-Date:   Mon, 7 Jun 2021 11:55:35 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 19/34] docs: driver-api: surface_aggregator: avoid using
- ReSt :doc:`foo` markup
-Message-ID: <20210607115535.0181e679@coco.lan>
-In-Reply-To: <1663da2c-571f-cf7d-a0ca-ea7031515b40@redhat.com>
-References: <cover.1622898327.git.mchehab+huawei@kernel.org>
-        <c42fe427e6538ce7914645468ef63f83254c26d7.1622898327.git.mchehab+huawei@kernel.org>
-        <91d72412-3bba-8a50-4527-7c8fb9fa54c4@gmail.com>
-        <1663da2c-571f-cf7d-a0ca-ea7031515b40@redhat.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S230348AbhFGJ6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:58:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230127AbhFGJ6S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 05:58:18 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 371EFC061766;
+        Mon,  7 Jun 2021 02:56:13 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a11so24939942ejf.3;
+        Mon, 07 Jun 2021 02:56:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=AvcnTN1BHdD3Kt4RvDykE6ZAznmWeLO+Zb93ck1zaJM=;
+        b=YZXBhqajoh4npRPJENJ7kH/mbGbbRTaTW0ky0sLDEHNyCTWciqHZthrVlsxXLWv0tM
+         K32YA8IMM8Bo3oAAaPy2rrzBBxn/jtZ6LlcgqUM7Dj0Um2TviYjyj/2nCDmreyCUCn/F
+         gpznxPlICcar4NJeC3BuXXb8JrxBGSpTvjiQJ3v+ZQaJvHUZEgDEKMpzUmC0PSJU4oTL
+         dorkA27Gkhi5Sm6siw8WJLn8Ygp96NJU33+Drijf5GzjnzLEC7gqSxGoM/O/btKzLrkB
+         stjqqLDUVWVLRWxhSfUyvzAOxfqihWB5J68qZkYkCevnw+uIXTdhz2L/ND52a4G0Ct7h
+         hIJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=AvcnTN1BHdD3Kt4RvDykE6ZAznmWeLO+Zb93ck1zaJM=;
+        b=ajFgg9ixC6Q2mBgY+HNLddASAFO0hDRYNtOUvEjElVh5wWSho4qiiA6KALsgZCvMnv
+         Q4jMIXFPIHelLO4OMOk6lUXk3K3qsSH9aF4fZuUYf7XW7i7nyMRcc7rBbNGL9p+qFXAf
+         nys6Xir9+w34F3MggzLqlOII2k2nzv9GZ1LTT+tSsYIGwNMykBxRLptE1bOBxxfJV+F2
+         Qu8WDTBxd/i682+jigE2n33KMjGXjImZV2Mhtyh2M8YalUqlDInLwGtYUr5QKi5Y1zd9
+         TQtjE3CMIRYQ5Z7S0oTrVPLLke2dKI4Epi91m7ruv1xL6ckBSPiIYqyUy8KN5LqsK85r
+         w6Xw==
+X-Gm-Message-State: AOAM53100eab9pQEXxDQNkYwQx7sXnmzl7zUTyPEecMb5I7d7nu+WWMI
+        58SJnUXwiZ5hWJ1H5gtI/a2GXWj04x77xD5D9UU=
+X-Google-Smtp-Source: ABdhPJzFfoswyH7JwPtkE63RJU+Sfbhdn3mp/4t02QbPN4nzkfnKGuiwz31ebyn909ixLI8DyqOkLxZkF6yP23pyNx4=
+X-Received: by 2002:a17:906:c212:: with SMTP id d18mr17293083ejz.291.1623059770488;
+ Mon, 07 Jun 2021 02:56:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From:   Marius Cirsta <mforce2@gmail.com>
+Date:   Mon, 7 Jun 2021 12:55:59 +0300
+Message-ID: <CANO0Vk5++yd2TmJ9xDPe0-=gpeD5wXpdJpKVVibNVkQW4_czOQ@mail.gmail.com>
+Subject: Re: [PATCH v26 00/10] NTFS read-write driver GPL implementation by
+ Paragon Software
+To:     almaz.alexandrovich@paragon-software.com
+Cc:     aaptel@suse.com, andy.lavr@gmail.com, anton@tuxera.com,
+        dan.carpenter@oracle.com, dsterba@suse.cz, ebiggers@kernel.org,
+        hch@lst.de, joe@perches.com, kari.argillander@gmail.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, mark@harmstone.com,
+        nborisov@suse.com, oleksandr@natalenko.name, pali@kernel.org,
+        rdunlap@infradead.org, viro@zeniv.linux.org.uk, willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+I am just a user of the kernel but for me the ntfs support is really
+important as I have shared drives that are in NTFS format and ntfs-3g
+is not really the best as it has a high CPU usage.
 
-Em Mon, 7 Jun 2021 11:31:49 +0200
-Hans de Goede <hdegoede@redhat.com> escreveu:
+What happened to this review ? I am not sure what the process is but
+is no one really interested ?
 
-> Hi,
-> 
-> On 6/5/21 4:14 PM, Maximilian Luz wrote:
-> > On 6/5/21 3:18 PM, Mauro Carvalho Chehab wrote:  
-> >> The :doc:`foo` tag is auto-generated via automarkup.py.
-> >> So, use the filename at the sources, instead of :doc:`foo`.
-> >>
-> >> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
-> > 
-> > Acked-by: Maximilian Luz <luzmaximilian@gmail.com>  
-> 
-> Mauro, I assume that you are going to take care of sending this
-> to Linus, or do you want me to merge this patch into the pdx86 tree?
-
-Whatever works best for you and Jon, as it should either be merged
-via each maintainers' tree or at the docs tree ;-)
-
-Regards,
-Mauro
+I saw there were some comments initially but if those were solved then
+is it ready for integration ? Is more testing required? I could help
+with that if needed.
