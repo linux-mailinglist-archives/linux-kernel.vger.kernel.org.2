@@ -2,68 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7F139DED3
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5408F39DEE7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230446AbhFGOdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 10:33:47 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:5273 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbhFGOdp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 10:33:45 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FzG0N3T3Lz1BJmG;
-        Mon,  7 Jun 2021 22:27:00 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 22:31:50 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 7 Jun 2021
- 22:31:49 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <mw@semihalf.com>, <davem@davemloft.net>, <kuba@kernel.org>
-Subject: [PATCH net-next] net: mvpp2: check return value after calling platform_get_resource()
-Date:   Mon, 7 Jun 2021 22:36:02 +0800
-Message-ID: <20210607143602.4000092-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S230322AbhFGOiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 10:38:05 -0400
+Received: from mga12.intel.com ([192.55.52.136]:6488 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230213AbhFGOiD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 10:38:03 -0400
+IronPort-SDR: ShV0/11HTYcLLl524PdDMZ4s5r2i9PtKLTiMkkomfp410kK9XOlHBq4ll5mdonphBsvvpI4IWM
+ rcFauRd6Obxg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="184315546"
+X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
+   d="scan'208";a="184315546"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 07:36:08 -0700
+IronPort-SDR: Y37UMWScXJDZ303soo6I9Yqr9mSsORiTUXT9IqjmD+0FVepK7Jy9XZkXULa3tOZNWgoCVRrEsz
+ 1RYnHBCHWJTA==
+X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
+   d="scan'208";a="484794854"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 07:36:05 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lqGME-000HEt-Dk; Mon, 07 Jun 2021 17:36:02 +0300
+Date:   Mon, 7 Jun 2021 17:36:02 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Flavio Suligoi <f.suligoi@asem.it>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PWM List <linux-pwm@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Subject: Re: [PATCH v3 1/6] docs: firmware-guide: ACPI: Add a PWM example
+Message-ID: <YL4u0iPs3WbWulV8@smile.fi.intel.com>
+References: <20210607122458.40073-1-andriy.shevchenko@linux.intel.com>
+ <CAJZ5v0jNWTzy37rX_V6LF7y7LOdy=KUokkVZ+25zj4+AZ244OQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0jNWTzy37rX_V6LF7y7LOdy=KUokkVZ+25zj4+AZ244OQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It will cause null-ptr-deref if platform_get_resource() returns NULL,
-we need check the return value.
+On Mon, Jun 07, 2021 at 02:38:26PM +0200, Rafael J. Wysocki wrote:
+> On Mon, Jun 7, 2021 at 2:24 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > When PWM support for ACPI has been added into the kernel, it missed
+> > the documentation update. Hence update documentation here.
+> >
+> > Fixes: 4a6ef8e37c4d ("pwm: Add support referencing PWMs from ACPI")
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> and I'm assuming this to go in via PWM.
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Yes, thanks for your tags!
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index d4fb620f53f3..b0066f64be98 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -7377,6 +7377,10 @@ static int mvpp2_probe(struct platform_device *pdev)
- 			return PTR_ERR(priv->lms_base);
- 	} else {
- 		res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-+		if (!res) {
-+			dev_err(&pdev->dev, "Invalid resource\n");
-+			return -EINVAL;
-+		}
- 		if (has_acpi_companion(&pdev->dev)) {
- 			/* In case the MDIO memory region is declared in
- 			 * the ACPI, it can already appear as 'in-use'
 -- 
-2.25.1
+With Best Regards,
+Andy Shevchenko
+
 
