@@ -2,93 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A57F039D911
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 193B239D914
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbhFGJvk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Jun 2021 05:51:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230173AbhFGJvj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:51:39 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2258EC061766
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 02:49:48 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1lqBtC-00016G-MT; Mon, 07 Jun 2021 11:49:46 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1lqBtB-000355-RN; Mon, 07 Jun 2021 11:49:45 +0200
-Message-ID: <562cabc4162d9f2c0fb3a307213ec1c5b4bb5535.camel@pengutronix.de>
-Subject: Re: [PATCH] reset: berlin: support module build
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc:     linux-kernel@vger.kernel.org
-Date:   Mon, 07 Jun 2021 11:49:45 +0200
-In-Reply-To: <20210607174445.3d532e6b@xhacker.debian>
-References: <20210520171316.395de63e@xhacker.debian>
-         <9f5bee632ed493b150c47f3127242c259a385192.camel@pengutronix.de>
-         <20210607174445.3d532e6b@xhacker.debian>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        id S230394AbhFGJwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:52:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51806 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230173AbhFGJwn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 05:52:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28DFD611BE;
+        Mon,  7 Jun 2021 09:50:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623059452;
+        bh=JE9YmLu1XcCh2IdiKUhtfnOei95qmgTeBXzlr2OSs5U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DfpEj+7Jk2U92sWwP3npSY4c5Up9o6rqkZHAdIDdytRl6i4N+gby7GRq/smungUVO
+         0vhwLULcopfuk/WqYIcGYUBavLNLrRMQ5xooklERJjzzypO/GUcpVOA9KFha9zO3nA
+         QPat5j1no34Vch7tvNC+2/PEojw8p0VMLS19KqySapcSkJmoUtaK0zzgVExj7LI3K1
+         zAVqGwAYNRPL9J7cbL5gO/8s1twL1RNlWRatR3Jn6LH2jFS006a3hGXspLzFbfjTkl
+         S5hA1Rpllhszmu8M46JCoQJGhrlzIB98REL/dT1bXnyFnO/lSG2xoCrg2E8Gfx0QQc
+         J6UsQh7JOTJ4w==
+Received: by mail-ot1-f47.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso16093040otu.10;
+        Mon, 07 Jun 2021 02:50:52 -0700 (PDT)
+X-Gm-Message-State: AOAM5307Njk2NkpvZCuOqOHV3qNoJz2XuSALBELwUYyWcxXiPaByrext
+        6D61yhCPyY47yKbqpE71xk6pHft9PtIpOCRq1Kk=
+X-Google-Smtp-Source: ABdhPJwBcZO3+EJo10iM+TtSxwhwjmCAV3817RPdz1/FU9dXzT2GEqhh9BNYlRt6h/snGjjy0s4uCKxjFa8oCQ/sXzQ=
+X-Received: by 2002:a9d:6d0e:: with SMTP id o14mr6760139otp.90.1623059451515;
+ Mon, 07 Jun 2021 02:50:51 -0700 (PDT)
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210607074258.32322-1-mark-pk.tsai@mediatek.com> <20210607080626.32612-1-mark-pk.tsai@mediatek.com>
+In-Reply-To: <20210607080626.32612-1-mark-pk.tsai@mediatek.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 7 Jun 2021 11:50:40 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGCoME4Wy4e3FNAjWLY=G56ivHzFTLrXRE0mLtnaBVEDQ@mail.gmail.com>
+Message-ID: <CAMj1kXGCoME4Wy4e3FNAjWLY=G56ivHzFTLrXRE0mLtnaBVEDQ@mail.gmail.com>
+Subject: Re: [PATCH] recordmcount: avoid using ABS symbol as reference
+To:     Mark-PK Tsai <mark-pk.tsai@mediatek.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Matt Helsley <mhelsley@vmware.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Sami Tolvanen <samitolvanen@google.com>, yj.chiang@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-06-07 at 17:44 +0800, Jisheng Zhang wrote:
-> On Mon, 07 Jun 2021 11:23:57 +0200
-> Philipp Zabel <p.zabel@pengutronix.de> wrote:
-> 
-> 
-> > 
-> > On Thu, 2021-05-20 at 17:13 +0800, Jisheng Zhang wrote:
-> > > Make reset-berlin driver to be tristate module, support to build as
-> > > a module, this is useful for GKI.
-> > > 
-> > > Partially revert commit ed4dba99cae8 ("reset: berlin: make it
-> > > explicitly non-modular")
-> > > 
-> > > Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-> > > ---
-> > >  drivers/reset/Kconfig        |  4 ++--
-> > >  drivers/reset/reset-berlin.c | 10 ++++++++--
-> > >  2 files changed, 10 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-> > > index 3e7f55e44d84..1e7443a4dae1 100644
-> > > --- a/drivers/reset/Kconfig
-> > > +++ b/drivers/reset/Kconfig
-> > > @@ -43,8 +43,8 @@ config RESET_BCM6345
-> > >         This enables the reset controller driver for BCM6345 SoCs.
-> > > 
-> > >  config RESET_BERLIN
-> > > -     bool "Berlin Reset Driver" if COMPILE_TEST
-> > > -     default ARCH_BERLIN
-> > > +     tristate "Berlin Reset Driver"
-> > > +     depends on ARCH_BERLIN || COMPILE_TEST  
-> > 
-> > Is there a reason not to keep "default ARCH_BERLIN"?
-> > 
-> 
-> Hi,
-> 
-> After this patch, the reset driver will be built as module in most cases
-> so I removed default ARCH_BERLIN
+On Mon, 7 Jun 2021 at 10:06, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
+>
+> > > On Mon, 7 Jun 2021 at 08:59, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
+> > > >
+> > > > > > On Mon, 7 Jun 2021 at 04:42, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
+> > > > > >
+> > > > > > Avoid using ABS symbol, which won't be relocate, as reference.
+> > > > > >
+> > > > > > On arm64 platform, if there's shndx equals SHN_ABS(0xfff1).
+> > > > > >
+> > > > > > Section Headers:
+> > > > > > [Nr]    Name                         Type      Address          Off      Size   ES  Flg Lk     Inf    Al
+> > > > > > [65521] .text.n_tty_receive_buf      PROGBITS  0000000000000000 3cdab520 000054 00  AX  0      0      4
+> > > > > > [65522] .rela.text.n_tty_receive_buf RELA      0000000000000000 3cdab578 000030 18  I   152076 65521  8
+> > > > > >
+> > > > >
+> > > > > A RELA section's r_info field points to the section to which it
+> > > > > applies. This is why in the example above section #65522 points to
+> > > > > section #65521. This has nothing to do with the numerical value of
+> > > > > SHN_ABS.
+> > > >
+> > > > If the r_info of RELA section is 65521(0xfff1),
+> >
+> > Oh sorry, I mean sh_info here.
+> >
+> > > > find_secsym_ndx() will use it to find the base symbol.
+> > > >
+> > >
+> > > But what does that have to do with the sh_info field of the RELA
+> > > section's Elf_Shdr struct? IOW, what is the relevance of section
+> > > #65521 here?
+> > >
+> >
+> > So what I mean is the problem occur if the sh_info of a RELA section
+> > is #65521.
+>
+> Actually the problem occur if the sh_info of a RELA section is in
+> the special section index range(SHN_LORESERVE ~ SHN_HIRESERVE).
+> Maybe I should add a is_shndx_special() to check this like
+> scripts/mod/modpost.h did?
+>
 
-I see, how about "default m if ARCH_BERLIN" then?
+So if I understand all of this correctly, we are running into a
+fundamental issue here, where the linker emits more sections than the
+sh_info field can describe, overflowing into the reserved range.
 
-I'd just like to avoid anybody getting surprised by a suddenly
-deactivated reset controller driver.
+I don't think papering over it like this is going to be maintainable
+going forward.
 
-regards
-Philipp
+
+
+> >
+> > > > And in the symbol search loop in find_secsym_ndx(), get_symindex will
+> > > > return 0xfff1 if the symbol is in ABS section.
+> > > >
+> > > > In this case, find_secsym_ndx() will return a absolute symbol as
+> > > > base, which won't be relocate, if an ABS symbol is found before the
+> > > > real symbol in section 65521.
+> > > >
+> > >
+> > > I see your point here.
+> > >
+> > > > >
+> > > > > > find_secsym_ndx, which use r_info in rela section to find the reference
+> >
+> > sh_info.
+> >
+> > > > > > symbol, may take ABS symbol as base.
+> > > > > >
+> > > > > > Symbol table '.symtab' contains 453285 entries:
+> > > > > >    Num:    Value          Size Type    Bind   Vis       Ndx Name
+> > > > > >      6: 0000000000000002     0 NOTYPE  LOCAL  DEFAULT   ABS section_count
+> > > > > >
+> > > > > > Which cause an invalid address in __mcount_loc.
+> > > > > >
+> > > > >
+> > > > > Could you give a better account of the error you are trying to address?
+> > > > >
+> > > > > Also, arm64 no longer defines a section_count symbol (since v5.11), so
+> > > > > please make sure that the diagnostics of the issue you are addressing
+> > > > > are accurate for mainline.
+> > > > >
+> > > >
+> > > > My kernel version is 5.4.61.
+> > > > But as I explained, I suppose mainline also have this issue.
+> > > >
+> > >
+> > > Mainline is what we work on. So please base your changes (and your
+> > > commit log) on mainline.
+> > >
+> >
+> > I understand it.
+> > But the platform I can reproduce the problem is only support to 5.4 LTS now.
+> > And port it to the latest mainline kernel have much more work to do, can I just
+> > keep this commit log? Or just remove the example I posted in the commit messsage?
+> >
+> > >
+> > > > >
+> > > > > > Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+> > > > > > ---
+> > > > > >  scripts/recordmcount.h | 4 ++++
+> > > > > >  1 file changed, 4 insertions(+)
+> > > > > >
+> > > > > > diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
+> > > > > > index f9b19524da11..9b69167fb7ff 100644
+> > > > > > --- a/scripts/recordmcount.h
+> > > > > > +++ b/scripts/recordmcount.h
+> > > > > > @@ -526,6 +526,10 @@ static int find_secsym_ndx(unsigned const txtndx,
+> > > > > >         for (symp = sym0, t = nsym; t; --t, ++symp) {
+> > > > > >                 unsigned int const st_bind = ELF_ST_BIND(symp->st_info);
+> > > > > >
+> > > > > > +               /* avoid absolute symbols */
+> > > > > > +               if (symp->st_shndx == SHN_ABS)
+> > > > > > +                       continue;
+> > > > > > +
+> > > > > >                 if (txtndx == get_symindex(symp, symtab, symtab_shndx)
+> > > > > >                         /* avoid STB_WEAK */
+> > > > > >                     && (STB_LOCAL == st_bind || STB_GLOBAL == st_bind)) {
+> >
