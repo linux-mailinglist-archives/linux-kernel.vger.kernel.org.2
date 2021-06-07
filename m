@@ -2,129 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B61F39D9E9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A3C39D9E7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230323AbhFGKn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 06:43:28 -0400
-Received: from mail-io1-f49.google.com ([209.85.166.49]:41890 "EHLO
-        mail-io1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbhFGKn1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 06:43:27 -0400
-Received: by mail-io1-f49.google.com with SMTP id p66so15899136iod.8
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 03:41:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=frqaxGMAkJEQAuZ/tJXzTA+WvhXTF9BfhxoU4WYTb2k=;
-        b=p6IGs0SA13VrJLKJ+xDgTb9AqH8xXm9Ul9GMgdJwfsAELNHb+tkky/fQ4lc7sMHXdL
-         qdkEVXJULjOpXqhZPMUr0Q2AS2Kl19Mv71jo9SjQSt1Pypo8NraZuKrRM6VqBM/ylz36
-         4cR5TMAIFTBEvKL4qgOzbOlv7+4g24nhLgazXv6TKmJpRWlNXrshGEVRAxy64adfeIbe
-         dw07T+Vw3Pvo4sr0VO4Qw3LMNIyJsb/KkWpQy2FswJcx5v7IsrFV3IzHBJ3oMo0+vTIX
-         moGc19IBep7rGYVW/APXmF5zWx2gUmhQEe5B1xFYDwoTkOXR/5FMZnkSm4h+CwHiS9ye
-         IntQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=frqaxGMAkJEQAuZ/tJXzTA+WvhXTF9BfhxoU4WYTb2k=;
-        b=oMNLl++qE73yXuAiFGNp4uKDE6ZEB38y28Q/xREcAKvJqRjry5q0+LvtFKcOOuAAkj
-         RrpWxiK5Kb6EFmxQzxgGBZneEO0GZJUyYSU1k2V6IMWG05alvvV6crFksQphPfX21QpJ
-         +QGYxxDk8kPPkbpY8iNwu6uKlnx34MyqznSWwf/jVFDtvKSozY8bIXmYImdv1DgFoITi
-         BOtHUVYe2WalX86wV8tmNsPTVPdTLr8tCPemeAVEDmVthA/VuBANZem2/nIar0Dwe6a1
-         3+J9fk1YujqDDakPHTbV9mHa8QS8+HCazSOsCKMpfIV/xbmak9U298dj0UvmofXqorkC
-         Hz+Q==
-X-Gm-Message-State: AOAM5307JGPVwRSeYyZzRoAtc24BF6WpVSAi/n5HbhgcqJ71hOeDYLlq
-        LdsCaD+RYaNwUmGttk7jkiYADxYO0Pr/uhEOIUCgqw==
-X-Google-Smtp-Source: ABdhPJxWAwxZMctyeQ+om2eZkWgu1RcVW4YnItSFwAHwO0bcHTomlwOedkny1vYuvwXNPZph6YXez8T7mMrwJWB7lAs=
-X-Received: by 2002:a05:6638:634:: with SMTP id h20mr15743491jar.14.1623062423730;
- Mon, 07 Jun 2021 03:40:23 -0700 (PDT)
+        id S230262AbhFGKnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 06:43:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230219AbhFGKnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 06:43:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C759C610A2;
+        Mon,  7 Jun 2021 10:41:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623062471;
+        bh=RvCE1NevIKsTueP7A+FGWPnBFH81BXVCV3Y+zXw8HPQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UEnlUtxiM3Y1pRllAkTQE9RR7M0PgTxlBVbr5YBwmIEycKGWpoRqHfqMurjix03SW
+         ZqAuOzxOzAXXBKxRJW8SM03J1cGkx1LmorVDPJe4V6FdjgL+NuLkmzFTDpcdhjBb2E
+         5P/5Yco0jbSj0KpVHb/XVV0OgEzr3O+bcR+WliwM=
+Date:   Mon, 7 Jun 2021 12:41:08 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Julian Wiedmann <jwi@linux.ibm.com>
+Cc:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH wq/for-next 2/2] workqueue: let device core create the
+ WQ_UNBOUND attributes
+Message-ID: <YL33xPXWlaLkWFne@kroah.com>
+References: <20210607094420.2054403-1-jwi@linux.ibm.com>
+ <20210607094420.2054403-2-jwi@linux.ibm.com>
+ <YL30jJsS+xWMjGVa@kroah.com>
+ <7b9366c0-13d9-a5ef-1a29-dd3510a831c0@linux.ibm.com>
 MIME-Version: 1.0
-References: <20210602122439.2084775-1-robert.marko@sartura.hr>
- <20210602122439.2084775-4-robert.marko@sartura.hr> <df76ecd3748a055085fe62f3119eaebc7f2c16bd.camel@pengutronix.de>
-In-Reply-To: <df76ecd3748a055085fe62f3119eaebc7f2c16bd.camel@pengutronix.de>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Mon, 7 Jun 2021 12:40:13 +0200
-Message-ID: <CA+HBbNHQuMf5z3teqgbn4aY6z+AydCwn1THeMJWCp3RafGXv8w@mail.gmail.com>
-Subject: Re: [PATCH v4 4/6] reset: Add Delta TN48M CPLD reset controller
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        robh+dt@kernel.org, Lee Jones <lee.jones@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7b9366c0-13d9-a5ef-1a29-dd3510a831c0@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 11:23 AM Philipp Zabel <p.zabel@pengutronix.de> wrote:
->
-> Hi Robert,
->
-> On Wed, 2021-06-02 at 14:24 +0200, Robert Marko wrote:
-> > Delta TN48M CPLD exposes resets for the following:
-> > * 88F7040 SoC
-> > * 88F6820 SoC
-> > * 98DX3265 switch MAC-s
-> > * 88E1680 PHY-s
-> > * 88E1512 PHY
-> > * PoE PSE controller
-> >
-> > Controller supports only self clearing resets.
-> >
-> > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > ---
-> >  drivers/reset/Kconfig       |   9 +++
-> >  drivers/reset/Makefile      |   1 +
-> >  drivers/reset/reset-tn48m.c | 128 ++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 138 insertions(+)
-> >  create mode 100644 drivers/reset/reset-tn48m.c
-> >
-> > diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-> > index 4171c6f76385..14e179cda58c 100644
-> > --- a/drivers/reset/Kconfig
-> > +++ b/drivers/reset/Kconfig
-> > @@ -237,6 +237,15 @@ config RESET_TI_SYSCON
-> >         you wish to use the reset framework for such memory-mapped devices,
-> >         say Y here. Otherwise, say N.
-> >
-> > +config RESET_TN48M_CPLD
-> > +     tristate "Delta Networks TN48M switch CPLD reset controller"
-> > +     depends on MFD_TN48M_CPLD
->
-> Let's make this
->
->         depends on MFD_TN48M_CPLD || COMPILE_TEST
->         default MFD_TN48M_CPLD
+On Mon, Jun 07, 2021 at 01:34:49PM +0300, Julian Wiedmann wrote:
+> On 07.06.21 13:27, Greg Kroah-Hartman wrote:
+> > On Mon, Jun 07, 2021 at 11:44:20AM +0200, Julian Wiedmann wrote:
+> >> Wrap the attributes for a WQ_UNBOUND workqueue in ATTRIBUTE_GROUPS(),
+> >> and wire them up in dev->groups so that the device core can manage them
+> >> for us.
+> >>
+> >> As device_add() will add such attributes _prior_ to raising the KOBJ_ADD
+> >> uevent, this also makes the initial uevent suppression unnecessary.
+> >>
+> >> Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+> >> ---
+> >>  kernel/workqueue.c | 51 ++++++++++++++++++++--------------------------
+> >>  1 file changed, 22 insertions(+), 29 deletions(-)
+> >>
+> >> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+> >> index 817dc2d7438a..629859ac5262 100644
+> >> --- a/kernel/workqueue.c
+> >> +++ b/kernel/workqueue.c
+> >> @@ -5449,6 +5449,9 @@ static ssize_t wq_pool_ids_show(struct device *dev,
+> >>  	return written;
+> >>  }
+> >>  
+> >> +static struct device_attribute wq_sysfs_unbound_attr_pool_ids =
+> >> +	__ATTR(pool_ids, 0444, wq_pool_ids_show, NULL);
+> > 
+> > __ATTR_RO() please.
+> > 
+> 
+> I did consider using DEVICE_ATTR_*(), yes. But renaming all the _show and _store
+> functions added too much unrelated churn for my taste. So let's maybe do this
+> as a follow-on?
 
-Sure, I will change that and send a v5.
->
-> unless there is a reason not to enable the reset driver by default when
-> the MFD driver is activated.
+Wait, oops, yes, do NOT use __ATTR() for a device attribute, use
+DEVICE_ATTR_RO() please.
 
-No, it's just a habit of making everything optional.
+And yes, if you want to do it as a pater patch in this series that is
+fine, just say you are moving the attribute definitions closer to the
+callbacks in this patch.
 
-Regards,
-Robert
->
-> Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
->
-> regards
-> Philipp
+thanks,
 
-
-
--- 
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+greg k-h
