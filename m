@@ -2,65 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98D4B39DE8B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF8A39DE92
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:19:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbhFGOUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 10:20:46 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:50764 "EHLO gloria.sntech.de"
+        id S230389AbhFGOV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 10:21:27 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:35712 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230323AbhFGOUq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 10:20:46 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1lqG5X-0002M3-Ev; Mon, 07 Jun 2021 16:18:47 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     jbx6244@gmail.com
-Cc:     robh+dt@kernel.org, vkoul@kernel.org, kishon@ti.com,
-        t.schramm@manjaro.org, linux-phy@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Heiko Stuebner <heiko@sntech.de>
-Subject: [PATCH] dt-bindings: soc: rockchip: drop unnecessary #phy-cells from grf.yaml
-Date:   Mon,  7 Jun 2021 16:18:45 +0200
-Message-Id: <20210607141845.3331910-1-heiko@sntech.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <e7e09072-9cac-413e-dca2-e2a668c1807e@gmail.com>
-References: <e7e09072-9cac-413e-dca2-e2a668c1807e@gmail.com>
+        id S230207AbhFGOVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 10:21:25 -0400
+Received: from zn.tnic (p200300ec2f0b4f00688e10502b12273b.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:4f00:688e:1050:2b12:273b])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id ED9091EC0489;
+        Mon,  7 Jun 2021 16:19:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1623075572;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=5TOa8tTbEmXIDseKo1WMd9o3+qoCmHgbWPGnV+1d5GU=;
+        b=NjlTa0dZ0y50eG51qkp+v3j0oFZvigFNu8CDo3PSR+Gs6GrZSDorNmrNCo9sUqrP58FrNq
+        odyBUy92t/Xmg4PU61LzGhliThhDMpkF5NfW81n/WRqEqtK8g+D7By7xHCRJ61fQGNwG6h
+        +tZ1KH6wNLEt1OXRWI/3UsXC7KVr1zo=
+Date:   Mon, 7 Jun 2021 16:19:26 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
+        npmccallum@redhat.com
+Subject: Re: [PATCH Part1 RFC v3 05/22] x86/sev: Add support for hypervisor
+ feature VMGEXIT
+Message-ID: <YL4q7jHYu65I11bZ@zn.tnic>
+References: <20210602140416.23573-1-brijesh.singh@amd.com>
+ <20210602140416.23573-6-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210602140416.23573-6-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The recent yaml conversion of the grf and inno-usb2-phy bindings
-left the #phy-cells in place in the main usb2phy node inside the
-example in grf.yaml, causing new warnings.
+On Wed, Jun 02, 2021 at 09:03:59AM -0500, Brijesh Singh wrote:
+> diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
+> index 70f181f20d92..94957c5bdb51 100644
+> --- a/arch/x86/kernel/sev-shared.c
+> +++ b/arch/x86/kernel/sev-shared.c
 
-Drop it to make the bindingcheck happy.
+I'm guessing this is in sev-shared.c because it is going to be used by
+both stages?
 
-Fixes: e71ccdff376b ("dt-bindings: phy: rename phy nodename in phy-rockchip-inno-usb2.yaml")
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
----
-Like this I guess?
+> @@ -20,6 +20,7 @@
+>   * out when the .bss section is later cleared.
+>   */
+>  static u16 ghcb_version __section(".data");
 
- Documentation/devicetree/bindings/soc/rockchip/grf.yaml | 1 -
- 1 file changed, 1 deletion(-)
+State what this is:
 
-diff --git a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
-index 8c1c46fef157..62fa72cfea34 100644
---- a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
-+++ b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
-@@ -242,7 +242,6 @@ examples:
-         clock-names = "phyclk";
-         #clock-cells = <0>;
-         clock-output-names = "clk_usbphy0_480m";
--        #phy-cells = <0>;
- 
-         u2phy0_host: host-port {
-           #phy-cells = <0>;
+/* Bitmap of SEV features supported by the hypervisor */
+
+> +static u64 hv_features __section(".data");
+
+Also, I'm assuming that bitmap remains immutable during the guest
+lifetime so you can do:
+
+static u64 hv_features __ro_after_init;
+
+instead, which will do:
+
+static u64 hv_features __attribute__((__section__(".data..ro_after_init")));
+
+and it'll be in the data section and then also marked read-only after
+init, after mark_rodata_ro() more specifically.
+
+Thx.
+
 -- 
-2.29.2
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
