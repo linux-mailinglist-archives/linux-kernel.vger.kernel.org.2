@@ -2,67 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0972539D2BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 03:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F2239D2B9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 03:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbhFGBwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 21:52:24 -0400
-Received: from m12-11.163.com ([220.181.12.11]:53177 "EHLO m12-11.163.com"
+        id S230150AbhFGBvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 21:51:33 -0400
+Received: from mga12.intel.com ([192.55.52.136]:50559 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230105AbhFGBwX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 21:52:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=KASRf
-        sJZfB0R3HcXymPXFzkDkoz+t+ibdyfUWbvlin8=; b=PVbVqFFV0sJTm3MgUQlbF
-        fq2uOpi3Ui1FtObHQK3POZDd+aImxVdHSMy/iulhhCRWO4knTVk6VJXDEFTd5mNr
-        Tr5WG66EiSMZHGGXp1UMmBKVsJ6kZdR+lJhFBF/ClVVqy3Q3H4224lUKoVG6vDkK
-        tAUYeFIW/GijxaaJaceHGc=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp7 (Coremail) with SMTP id C8CowADXwYlme71gwUmNgg--.202S2;
-        Mon, 07 Jun 2021 09:50:31 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lijian <lijian@yulong.com>
-Subject: [PATCH] fs: namei: deleted the repeated word
-Date:   Mon,  7 Jun 2021 09:49:33 +0800
-Message-Id: <20210607014933.20329-1-lijian_8010a29@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S230112AbhFGBvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 21:51:32 -0400
+IronPort-SDR: rHSB8WGY3zj89GDzz0HPFAeRC6zHXi95P3kll0QyxAPAkVkO3Z7mpOgxv5FNapDX30xMwrD9Fm
+ h1Sw5EYxXrCQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="184228572"
+X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
+   d="scan'208";a="184228572"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 18:49:41 -0700
+IronPort-SDR: 3PUzMW2jkoWSM/qOdA+Fl+k07nVjPV4EcfDX3+4V/seeO66ik3CWRopufaoE8IWxuWckxM16Bu
+ c4IC/M7e6MbQ==
+X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
+   d="scan'208";a="481348673"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 18:49:36 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andrea Parri <andrea.parri@amarulasolutions.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Omar Sandoval <osandov@fb.com>,
+        Paul McKenney <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Miaohe Lin <linmiaohe@huawei.com>
+Subject: Re: [PATCH -V2] mm, swap: Remove unnecessary smp_rmb() in
+ swap_type_to_swap_info()
+References: <20210520073301.1676294-1-ying.huang@intel.com>
+        <20210602160351.GG31179@willie-the-truck>
+Date:   Mon, 07 Jun 2021 09:49:35 +0800
+In-Reply-To: <20210602160351.GG31179@willie-the-truck> (Will Deacon's message
+        of "Wed, 2 Jun 2021 17:03:52 +0100")
+Message-ID: <87mts24f68.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: C8CowADXwYlme71gwUmNgg--.202S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZF4kKw1rJrW3ury8uw4kZwb_yoWfXrgEya
-        ykXF48WayrG3Wakay5Gw4fJrySqa1F9r1jkas5tF9rWa45JrW5JFsYgw10qrWUWFy5Xasr
-        uFn7X3s29F4FgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5b_-JUUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbiSgeqUFPAOmNSWAAAs3
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
+Hi, Will,
 
-deleted the repeated word 'to' in the comments
+Will Deacon <will@kernel.org> writes:
 
-Signed-off-by: lijian <lijian@yulong.com>
----
- fs/namei.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Thu, May 20, 2021 at 03:33:01PM +0800, Huang Ying wrote:
+>> Before commit c10d38cc8d3e ("mm, swap: bounds check swap_info array
+>> accesses to avoid NULL derefs"), the typical code to reference the
+>> swap_info[] is as follows,
+>> 
+>>   type = swp_type(swp_entry);
+>>   if (type >= nr_swapfiles)
+>>           /* handle invalid swp_entry */;
+>>   p = swap_info[type];
+>>   /* access fields of *p.  OOPS! p may be NULL! */
+>> 
+>> Because the ordering isn't guaranteed, it's possible that
+>> swap_info[type] is read before "nr_swapfiles".  And that may result
+>> in NULL pointer dereference.
+>> 
+>> So after commit c10d38cc8d3e, the code becomes,
+>> 
+>>   struct swap_info_struct *swap_type_to_swap_info(int type)
+>>   {
+>> 	  if (type >= READ_ONCE(nr_swapfiles))
+>> 		  return NULL;
+>> 	  smp_rmb();
+>> 	  return READ_ONCE(swap_info[type]);
+>>   }
+>> 
+>>   /* users */
+>>   type = swp_type(swp_entry);
+>>   p = swap_type_to_swap_info(type);
+>>   if (!p)
+>> 	  /* handle invalid swp_entry */;
+>>   /* dereference p */
+>> 
+>> Where the value of swap_info[type] (that is, "p") is checked to be
+>> non-zero before being dereferenced.  So, the NULL deferencing
+>> becomes impossible even if "nr_swapfiles" is read after
+>> swap_info[type].  Therefore, the "smp_rmb()" becomes unnecessary.
+>> 
+>> And, we don't even need to read "nr_swapfiles" here.  Because the
+>> non-zero checking for "p" is sufficient.  We just need to make sure we
+>> will not access out of the boundary of the array.  With the change,
+>> nr_swapfiles will only be accessed with swap_lock held, except in
+>> swapcache_free_entries().  Where the absolute correctness of the value
+>> isn't needed, as described in the comments.
+>> 
+>> We still need to guarantee swap_info[type] is read before being
+>> dereferenced.  That can be satisfied via the data dependency ordering
+>> enforced by READ_ONCE(swap_info[type]).  This needs to be paired with
+>> proper write barriers.  So smp_store_release() is used in
+>> alloc_swap_info() to guarantee the fields of *swap_info[type] is
+>> initialized before swap_info[type] itself being written.  Note that
+>> the fields of *swap_info[type] is initialized to be 0 via kvzalloc()
+>> firstly.  The assignment and deferencing of swap_info[type] is like
+>> rcu_assign_pointer() and rcu_dereference().
+>> 
+>> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+>> Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
+>> Cc: Dan Carpenter <dan.carpenter@oracle.com>
+>> Cc: Andrea Parri <andrea.parri@amarulasolutions.com>
+>> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+>> Cc: Andi Kleen <ak@linux.intel.com>
+>> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+>> Cc: Omar Sandoval <osandov@fb.com>
+>> Cc: Paul McKenney <paulmck@kernel.org>
+>> Cc: Tejun Heo <tj@kernel.org>
+>> Cc: Will Deacon <will.deacon@arm.com>
+>> Cc: Miaohe Lin <linmiaohe@huawei.com>
+>> 
+>> v2:
+>> 
+>> - Revise the patch description and comments per Peter's comments.
+>> 
+>> ---
+>>  mm/swapfile.c | 15 ++++++---------
+>>  1 file changed, 6 insertions(+), 9 deletions(-)
+>> 
+>> diff --git a/mm/swapfile.c b/mm/swapfile.c
+>> index 2aad85751991..65dd979a0f94 100644
+>> --- a/mm/swapfile.c
+>> +++ b/mm/swapfile.c
+>> @@ -100,11 +100,10 @@ atomic_t nr_rotate_swap = ATOMIC_INIT(0);
+>>  
+>>  static struct swap_info_struct *swap_type_to_swap_info(int type)
+>>  {
+>> -	if (type >= READ_ONCE(nr_swapfiles))
+>> +	if (type >= MAX_SWAPFILES)
+>>  		return NULL;
+>>  
+>> -	smp_rmb();	/* Pairs with smp_wmb in alloc_swap_info. */
+>> -	return READ_ONCE(swap_info[type]);
+>> +	return READ_ONCE(swap_info[type]); /* rcu_dereference() */
+>>  }
+>>  
+>>  static inline unsigned char swap_count(unsigned char ent)
+>> @@ -2884,14 +2883,12 @@ static struct swap_info_struct *alloc_swap_info(void)
+>>  	}
+>>  	if (type >= nr_swapfiles) {
+>>  		p->type = type;
+>> -		WRITE_ONCE(swap_info[type], p);
+>>  		/*
+>> -		 * Write swap_info[type] before nr_swapfiles, in case a
+>> -		 * racing procfs swap_start() or swap_next() is reading them.
+>> -		 * (We never shrink nr_swapfiles, we never free this entry.)
+>> +		 * Publish the swap_info_struct after initializing it.
+>> +		 * Note that kvzalloc() above zeroes all its fields.
+>>  		 */
+>> -		smp_wmb();
+>> -		WRITE_ONCE(nr_swapfiles, nr_swapfiles + 1);
+>> +		smp_store_release(&swap_info[type], p); /* rcu_assign_pointer() */
+>> +		nr_swapfiles++;
+>
+> Although I like this change, I comment you are removing refers to some
+> dodgy-looking code. For example, swap_start() has this loop:
+>
+> 	for (type = 0; (si = swap_type_to_swap_info(type)); type++) {
+> 		if (!(si->flags & SWP_USED) || !si->swap_map)
+> 			continue;
+>
+> so won't this just end up dereferencing NULL if nr_swapfiles < MAX_SWAPFILES?
 
-diff --git a/fs/namei.c b/fs/namei.c
-index 79b0ff9b151e..4062c00827fd 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -770,7 +770,7 @@ static bool try_to_unlazy(struct nameidata *nd)
-  * @seq: seq number to check @dentry against
-  * Returns: true on success, false on failure
-  *
-- * Similar to to try_to_unlazy(), but here we have the next dentry already
-+ * Similar to try_to_unlazy(), but here we have the next dentry already
-  * picked by rcu-walk and want to legitimize that in addition to the current
-  * nd->path and nd->root for ref-walk mode.  Must be called from rcu-walk context.
-  * Nothing should touch nameidata between try_to_unlazy_next() failure and
--- 
-2.25.1
+ 	for (type = 0; (si = swap_type_to_swap_info(type)); type++) {
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Because this is the second sub-statement inside "for ()", I think that "si"
+will be checked to be non-NULL before executing the statements inside
+"{}" follows "for ()"?
+
+
+> I think you need to check all callers of swap_type_to_swap_info() are
+> either validating the 'type' they pass in or check the returned pointer.
+
+Yes.  I have checked all callers of swap_type_to_swap_info().  One
+suspecting caller is swap_cluster_readahead().  But after the following
+patch in mmotm tree,
+
+mm/swapfile: use percpu_ref to serialize against concurrent swapoff
+
+get/put_swap_device() will enclose the swap_cluster_readahead() to
+check the swap entry beforehand.
+
+Best Regards,
+Huang, Ying
