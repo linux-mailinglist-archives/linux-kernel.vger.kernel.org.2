@@ -2,129 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6F239D50A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4177639D513
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbhFGGhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 02:37:40 -0400
-Received: from lucky1.263xmail.com ([211.157.147.134]:44014 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhFGGhj (ORCPT
+        id S230403AbhFGGi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 02:38:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230193AbhFGGiY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 02:37:39 -0400
-Received: from localhost (unknown [192.168.167.235])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 072CFC7FE0;
-        Mon,  7 Jun 2021 14:35:19 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P31748T140095280056064S1623047691557189_;
-        Mon, 07 Jun 2021 14:35:19 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <29eb2e0c2790adcd07c244f9d7a566aa>
-X-RL-SENDER: jon.lin@rock-chips.com
-X-SENDER: jon.lin@rock-chips.com
-X-LOGIN-NAME: jon.lin@rock-chips.com
-X-FST-TO: broonie@kernel.org
-X-RCPT-COUNT: 7
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jon Lin <jon.lin@rock-chips.com>
-To:     broonie@kernel.org
-Cc:     Jon Lin <jon.lin@rock-chips.com>, Heiko Stuebner <heiko@sntech.de>,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v4 4/6] spi: rockchip: Wait for STB status in slave mode tx_xfer
-Date:   Mon,  7 Jun 2021 14:34:46 +0800
-Message-Id: <20210607063448.29589-5-jon.lin@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210607063448.29589-1-jon.lin@rock-chips.com>
-References: <20210607063448.29589-1-jon.lin@rock-chips.com>
+        Mon, 7 Jun 2021 02:38:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F18EC061766;
+        Sun,  6 Jun 2021 23:36:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Zg3Z5zg3zGE7efXmuaQFxaAI12lHroFjA1H1ShFPy3s=; b=TIBLuF9+KKCV6cBbPMYH8ikhVZ
+        IR6tjJMCeklxGkFm5ZM3FtmR3KUBv4noW129cD6e7so/Cijd6+jdzs3DQZYN3Z4M5lrwMqmPIL2+1
+        +X7HEGc8qCvCkV2Ilz06IMo9EHU+xsoVd5tNDi3xWfJoVB6iXvD8SGr2+atumIrHYeh08vktzEuw+
+        dV0oozBDRcMO0B4xdczG04FaaijvmQ6ALlcct3gw17wmkEhOwanNFhcPS5R4JyWf+1dFdPvIK5tiy
+        J1FKtGCCEeAqR4zptmCxzFueEtB9DbbELoTnfqRoz0ZasdREnC/309myai9kP8QSp5ZnlN0JLcqWE
+        xPQbNbdA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lq8qs-00FRjs-0C; Mon, 07 Jun 2021 06:35:14 +0000
+Date:   Mon, 7 Jun 2021 07:35:09 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Changheun Lee <nanich.lee@samsung.com>, damien.lemoal@wdc.com,
+        Avri.Altman@wdc.com, Johannes.Thumshirn@wdc.com,
+        alex_y_xu@yahoo.ca, alim.akhtar@samsung.com,
+        asml.silence@gmail.com, axboe@kernel.dk, bgoncalv@redhat.com,
+        cang@codeaurora.org, gregkh@linuxfoundation.org, hch@infradead.org,
+        jaegeuk@kernel.org, jejb@linux.ibm.com, jisoo2146.oh@samsung.com,
+        junho89.kim@samsung.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, ming.lei@redhat.com,
+        mj0123.lee@samsung.com, osandov@fb.com, patchwork-bot@kernel.org,
+        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
+        tj@kernel.org, tom.leiming@gmail.com, woosung2.lee@samsung.com,
+        yi.zhang@redhat.com, yt0928.kim@samsung.com
+Subject: Re: [PATCH v12 1/3] bio: control bio max size
+Message-ID: <YL2+HeyKVMHsLNe2@infradead.org>
+References: <DM6PR04MB70812AF342F46F453696A447E73B9@DM6PR04MB7081.namprd04.prod.outlook.com>
+ <CGME20210604075331epcas1p13bb57f9ddfc7b112dec1ba8cf40fdc74@epcas1p1.samsung.com>
+ <20210604073459.29235-1-nanich.lee@samsung.com>
+ <63afd2d3-9fa3-9f90-a2b3-37235739f5e2@acm.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <63afd2d3-9fa3-9f90-a2b3-37235739f5e2@acm.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After ROCKCHIP_SPI_VER2_TYPE2, SR->STB is a more accurate judgment
-bit for spi slave transmition.
+On Fri, Jun 04, 2021 at 07:52:35AM -0700, Bart Van Assche wrote:
+>  Damien is right. bd_disk can be NULL. From
 
-Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
----
-
-Changes in v4: None
-Changes in v3: None
-
- drivers/spi/spi-rockchip.c | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/spi/spi-rockchip.c b/drivers/spi/spi-rockchip.c
-index c4eff9a8a14d..4dfff91b2743 100644
---- a/drivers/spi/spi-rockchip.c
-+++ b/drivers/spi/spi-rockchip.c
-@@ -116,13 +116,14 @@
- #define BAUDR_SCKDV_MIN				2
- #define BAUDR_SCKDV_MAX				65534
- 
--/* Bit fields in SR, 5bit */
--#define SR_MASK						0x1f
-+/* Bit fields in SR, 6bit */
-+#define SR_MASK						0x3f
- #define SR_BUSY						(1 << 0)
- #define SR_TF_FULL					(1 << 1)
- #define SR_TF_EMPTY					(1 << 2)
- #define SR_RF_EMPTY					(1 << 3)
- #define SR_RF_FULL					(1 << 4)
-+#define SR_SLAVE_TX_BUSY				(1 << 5)
- 
- /* Bit fields in ISR, IMR, ISR, RISR, 5bit */
- #define INT_MASK					0x1f
-@@ -197,13 +198,19 @@ static inline void spi_enable_chip(struct rockchip_spi *rs, bool enable)
- 	writel_relaxed((enable ? 1U : 0U), rs->regs + ROCKCHIP_SPI_SSIENR);
- }
- 
--static inline void wait_for_idle(struct rockchip_spi *rs)
-+static inline void wait_for_tx_idle(struct rockchip_spi *rs, bool slave_mode)
- {
- 	unsigned long timeout = jiffies + msecs_to_jiffies(5);
- 
- 	do {
--		if (!(readl_relaxed(rs->regs + ROCKCHIP_SPI_SR) & SR_BUSY))
--			return;
-+		if (slave_mode) {
-+			if (!(readl_relaxed(rs->regs + ROCKCHIP_SPI_SR) & SR_SLAVE_TX_BUSY) &&
-+			    !((readl_relaxed(rs->regs + ROCKCHIP_SPI_SR) & SR_BUSY)))
-+				return;
-+		} else {
-+			if (!(readl_relaxed(rs->regs + ROCKCHIP_SPI_SR) & SR_BUSY))
-+				return;
-+		}
- 	} while (!time_after(jiffies, timeout));
- 
- 	dev_warn(rs->dev, "spi controller is in busy state!\n");
-@@ -383,7 +390,7 @@ static void rockchip_spi_dma_txcb(void *data)
- 		return;
- 
- 	/* Wait until the FIFO data completely. */
--	wait_for_idle(rs);
-+	wait_for_tx_idle(rs, ctlr->slave);
- 
- 	spi_enable_chip(rs, false);
- 	spi_finalize_current_transfer(ctlr);
-@@ -545,7 +552,7 @@ static int rockchip_spi_config(struct rockchip_spi *rs,
- 	else
- 		writel_relaxed(rs->fifo_len / 2 - 1, rs->regs + ROCKCHIP_SPI_RXFTLR);
- 
--	writel_relaxed(rs->fifo_len / 2, rs->regs + ROCKCHIP_SPI_DMATDLR);
-+	writel_relaxed(rs->fifo_len / 2 - 1, rs->regs + ROCKCHIP_SPI_DMATDLR);
- 	writel_relaxed(rockchip_spi_calc_burst_size(xfer->len / rs->n_bytes) - 1,
- 		       rs->regs + ROCKCHIP_SPI_DMARDLR);
- 	writel_relaxed(dmacr, rs->regs + ROCKCHIP_SPI_DMACR);
--- 
-2.17.1
-
-
-
+bd_disk is initialized in bdev_alloc, so it should never be NULL.
+bi_bdev OTOH is only set afer bio_add_page in various places or not at
+all in case of passthrough bios.  Which is a bit of a mess and I have
+plans to fix it.
