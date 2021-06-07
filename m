@@ -2,60 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9028A39D54B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9422339D50F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbhFGGr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 02:47:57 -0400
-Received: from verein.lst.de ([213.95.11.211]:44650 "EHLO verein.lst.de"
+        id S230389AbhFGGhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 02:37:50 -0400
+Received: from mga12.intel.com ([192.55.52.136]:7552 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230198AbhFGGr4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 02:47:56 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 619F368AFE; Mon,  7 Jun 2021 08:46:03 +0200 (CEST)
-Date:   Mon, 7 Jun 2021 08:46:03 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Tianyu Lan <ltykernel@gmail.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        arnd@arndb.de, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, akpm@linux-foundation.org,
-        kirill.shutemov@linux.intel.com, rppt@kernel.org,
-        hannes@cmpxchg.org, cai@lca.pw, krish.sadhukhan@oracle.com,
-        saravanand@fb.com, Tianyu.Lan@microsoft.com,
-        konrad.wilk@oracle.com, hch@lst.de, m.szyprowski@samsung.com,
-        robin.murphy@arm.com, boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, joro@8bytes.org, will@kernel.org,
-        xen-devel@lists.xenproject.org, davem@davemloft.net,
-        kuba@kernel.org, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, thomas.lendacky@amd.com,
-        brijesh.singh@amd.com, sunilmut@microsoft.com
-Subject: Re: [RFC PATCH V3 11/11] HV/Storvsc: Add Isolation VM support for
- storvsc driver
-Message-ID: <20210607064603.GD24478@lst.de>
-References: <20210530150628.2063957-1-ltykernel@gmail.com> <20210530150628.2063957-12-ltykernel@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210530150628.2063957-12-ltykernel@gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S230242AbhFGGht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 02:37:49 -0400
+IronPort-SDR: kMCDUTvk8kbnronzQhDqgJttRqyrJHx6c83qPjaHQklYrswcVsMd36Ohpaw3DkxpvBgldWLRIs
+ 9+szFXdutzJQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="184251047"
+X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
+   d="scan'208";a="184251047"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 23:35:58 -0700
+IronPort-SDR: 6JFMm9SbdzYxAcjOvzePy8ttAA9IqZryiTGG/ecPFtj+XccTZ5uxjRgdx49KaVHi+PtLCjIXZb
+ /n32W2dzru7A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
+   d="scan'208";a="447379235"
+Received: from power-sh.sh.intel.com ([10.239.48.130])
+  by orsmga008.jf.intel.com with ESMTP; 06 Jun 2021 23:35:55 -0700
+From:   Zhang Rui <rui.zhang@intel.com>
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org
+Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kan.liang@linux.intel.com, artem.bityutskiy@linux.intel.com,
+        ak@linux.intel.com, yao.jin@intel.com
+Subject: [PATCH] perf/x86/cstate: Add ICELAKE_X and ICELAKE_D support
+Date:   Mon,  7 Jun 2021 14:46:03 +0800
+Message-Id: <20210607064603.26354-1-rui.zhang@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 30, 2021 at 11:06:28AM -0400, Tianyu Lan wrote:
-> +				for (i = 0; i < request->hvpg_count; i++)
-> +					dma_unmap_page(&device->device,
-> +							request->dma_range[i].dma,
-> +							request->dma_range[i].mapping_size,
-> +							request->vstor_packet.vm_srb.data_in
-> +							     == READ_TYPE ?
-> +							DMA_FROM_DEVICE : DMA_TO_DEVICE);
-> +				kfree(request->dma_range);
+Introduce icx_cstates for ICELAKE_X and ICELAKE_D, and also update the
+comments.
 
-Unreadably long lines.  You probably want to factor the quoted code into
-a little readable helper and do the same for the map side.
+On ICELAKE_X and ICELAKE_D, Core C1, Core C6, Package C2 and Package C6
+Residency MSRs are supported.
+
+This patch has been tested on real hardware.
+
+Signed-off-by: Zhang Rui <rui.zhang@intel.com>
+Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+---
+ arch/x86/events/intel/cstate.c | 23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
+
+diff --git a/arch/x86/events/intel/cstate.c b/arch/x86/events/intel/cstate.c
+index 433399069e27..c6262b154c3a 100644
+--- a/arch/x86/events/intel/cstate.c
++++ b/arch/x86/events/intel/cstate.c
+@@ -40,7 +40,7 @@
+  * Model specific counters:
+  *	MSR_CORE_C1_RES: CORE C1 Residency Counter
+  *			 perf code: 0x00
+- *			 Available model: SLM,AMT,GLM,CNL,TNT,ADL
++ *			 Available model: SLM,AMT,GLM,CNL,ICX,TNT,ADL
+  *			 Scope: Core (each processor core has a MSR)
+  *	MSR_CORE_C3_RESIDENCY: CORE C3 Residency Counter
+  *			       perf code: 0x01
+@@ -50,8 +50,8 @@
+  *	MSR_CORE_C6_RESIDENCY: CORE C6 Residency Counter
+  *			       perf code: 0x02
+  *			       Available model: SLM,AMT,NHM,WSM,SNB,IVB,HSW,BDW,
+- *						SKL,KNL,GLM,CNL,KBL,CML,ICL,TGL,
+- *						TNT,RKL,ADL
++ *						SKL,KNL,GLM,CNL,KBL,CML,ICL,ICX,
++ *						TGL,TNT,RKL,ADL
+  *			       Scope: Core
+  *	MSR_CORE_C7_RESIDENCY: CORE C7 Residency Counter
+  *			       perf code: 0x03
+@@ -61,7 +61,7 @@
+  *	MSR_PKG_C2_RESIDENCY:  Package C2 Residency Counter.
+  *			       perf code: 0x00
+  *			       Available model: SNB,IVB,HSW,BDW,SKL,KNL,GLM,CNL,
+- *						KBL,CML,ICL,TGL,TNT,RKL,ADL
++ *						KBL,CML,ICL,ICX,TGL,TNT,RKL,ADL
+  *			       Scope: Package (physical package)
+  *	MSR_PKG_C3_RESIDENCY:  Package C3 Residency Counter.
+  *			       perf code: 0x01
+@@ -72,8 +72,8 @@
+  *	MSR_PKG_C6_RESIDENCY:  Package C6 Residency Counter.
+  *			       perf code: 0x02
+  *			       Available model: SLM,AMT,NHM,WSM,SNB,IVB,HSW,BDW,
+- *						SKL,KNL,GLM,CNL,KBL,CML,ICL,TGL,
+- *						TNT,RKL,ADL
++ *						SKL,KNL,GLM,CNL,KBL,CML,ICL,ICX,
++ *						TGL,TNT,RKL,ADL
+  *			       Scope: Package (physical package)
+  *	MSR_PKG_C7_RESIDENCY:  Package C7 Residency Counter.
+  *			       perf code: 0x03
+@@ -566,6 +566,14 @@ static const struct cstate_model icl_cstates __initconst = {
+ 				  BIT(PERF_CSTATE_PKG_C10_RES),
+ };
+ 
++static const struct cstate_model icx_cstates __initconst = {
++	.core_events		= BIT(PERF_CSTATE_CORE_C1_RES) |
++				  BIT(PERF_CSTATE_CORE_C6_RES),
++
++	.pkg_events		= BIT(PERF_CSTATE_PKG_C2_RES) |
++				  BIT(PERF_CSTATE_PKG_C6_RES),
++};
++
+ static const struct cstate_model adl_cstates __initconst = {
+ 	.core_events		= BIT(PERF_CSTATE_CORE_C1_RES) |
+ 				  BIT(PERF_CSTATE_CORE_C6_RES) |
+@@ -664,6 +672,9 @@ static const struct x86_cpu_id intel_cstates_match[] __initconst = {
+ 
+ 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_L,		&icl_cstates),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE,		&icl_cstates),
++	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,		&icx_cstates),
++	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_D,		&icx_cstates),
++
+ 	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE_L,		&icl_cstates),
+ 	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE,		&icl_cstates),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ROCKETLAKE,		&icl_cstates),
+-- 
+2.17.1
+
