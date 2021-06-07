@@ -2,108 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D13B039E053
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 17:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 019E439E05D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 17:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230475AbhFGPaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 11:30:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36598 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230212AbhFGP36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 11:29:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A633B61107;
-        Mon,  7 Jun 2021 15:28:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623079686;
-        bh=+irQ4OfSn/B6So3CGtbHcUXwW+NtMEimNFyHIBqUBjs=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=erJwQ9z21n0vQpmOSUgxYBNBRUEQljLOQvTy2TcYiCKL1RW//dElzpi2Yi1NBQb1m
-         eq3fBeN/ewjvsZPQ8WDg3vzFO+uSci2boCnj77F8B5stCgacfJsc4kKwAjuO8zulOl
-         HfimBd9N/Y5xGG6ywtecZYe9d63Cif0IhTyPdp2j92FTiDp7U8UysdARbOFR/IWp48
-         5mkUT23BvsIn0iLOXNtCDeIU68dVuhKEHM7zJMXue1ZWWV6uXq5sdT27gVCJRtW5hB
-         NjrDbSYlid9UZFpcuKcNIAkvuthDlhXHJpXJxIkRdmqnMarz5MhIBB7EyHAwW9ZDBM
-         thMmYpaZoKpUA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 7E6175C0395; Mon,  7 Jun 2021 08:28:06 -0700 (PDT)
-Date:   Mon, 7 Jun 2021 08:28:06 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Alexander Monakov <amonakov@ispras.ru>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <20210607152806.GS4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210605145739.GB1712909@rowland.harvard.edu>
- <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1>
- <20210606012903.GA1723421@rowland.harvard.edu>
- <CAHk-=wgUsReyz4uFymB8mmpphuP0vQ3DktoWU_x4u6impbzphg@mail.gmail.com>
- <20210606185922.GF7746@tucnak>
- <CAHk-=wis8zq3WrEupCY6wcBeW3bB0WMOzaUkXpb-CsKuxM=6-w@mail.gmail.com>
- <alpine.LNX.2.20.13.2106070017070.7184@monopod.intra.ispras.ru>
- <CAHk-=wjwXs5+SOZGTaZ0bP9nsoA+PymAcGE4CBDVX3edGUcVRg@mail.gmail.com>
- <alpine.LNX.2.20.13.2106070956310.7184@monopod.intra.ispras.ru>
- <CANpmjNMwq6ENUtBunP-rw9ZSrJvZnQw18rQ47U3JuqPEQZsaXA@mail.gmail.com>
+        id S230514AbhFGPbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 11:31:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230239AbhFGPbE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 11:31:04 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711D1C06178B
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 08:29:00 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id l9so1315971wms.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 08:29:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TBonzj0wK2eMrUMd6BSIQ0dwX/RR5Bz8ilFeFxR/TGA=;
+        b=nMKso3FMfmrhSU5hrDKlPqTBzag4qyRAim1CmknzGmK5CZlXJ+8ldGm4nuY0CrK/KK
+         bL8JqkIY2YQGFKimMKeKOzdpOhcKrx29sAYIF7W9LnjDkIof9Y/+/U8MkuJPygjnC9a5
+         MbjPoB6hGVc5YnZprRBRfT/R8p1YvMzIMUMbG6SlJ8xLFIqlJls7VaEzc4Q1AEcO5q9A
+         NaScyNR0yMa7iUnhmilLklRiN75V6zgulkErXd3uHaQqQ/Lcr1eL14UWLn4jlls+Qd++
+         I1dgb7vkcyYiLVLtmDzH+x9XCiPPfNDcI/QCNx3OY5zxntGDbtU0i+eV49leyXH3HSPb
+         d/rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TBonzj0wK2eMrUMd6BSIQ0dwX/RR5Bz8ilFeFxR/TGA=;
+        b=IqC9sMqxbWVEtl1CCAiVawbEvsBE1MZkWtLIBIOuCELWV4jKkKoHE8a+2e2ZrAigSw
+         OuTxPgp+aPpaxk0F0gEH+V1htahExUfpkltdz0qJTj42KeXSjafcGp0UaBFVbwwSce9u
+         w56WYY15cehFBd9qoWo8qtJtENxA96vMS2Unps1r8mNpGOZeJhdyQVar9ZITq2ELQNr7
+         3rwizFeHyb2M5xl69YT2JZ6NviKaLgZJraid/WgMvac0nFI40s8eZ3HAB9vzwGe90V5r
+         oH9bPvRIv9E03JE/ZXmcDbNe+G+58rGNOck1y8ag7+DrPjhsS7gmUlniwrS+NuPNcIq/
+         xOMw==
+X-Gm-Message-State: AOAM530Cd1nYEQskyaE1Vl6xHCoyDxF3Lj/MikzFfW47IASH7+BzfemW
+        FE7ujg3wum1uDGf+fHWwVvE9vg==
+X-Google-Smtp-Source: ABdhPJxelM/QH7inYspnHoMLYLDbqxeuvm6+AOcdZUrk/uvppwrSz4H2RTVphX+KnCvHPmpiUGZ3Aw==
+X-Received: by 2002:a7b:c19a:: with SMTP id y26mr17394049wmi.132.1623079738917;
+        Mon, 07 Jun 2021 08:28:58 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id q3sm16370170wrr.43.2021.06.07.08.28.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 08:28:58 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     bjorn.andersson@linaro.org, broonie@kernel.org
+Cc:     plai@codeaurora.org, tiwai@suse.de, robh@kernel.org,
+        devicetree@vger.kernel.org, perex@perex.cz,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        lgirdwood@gmail.com, bgoswami@codeaurora.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [RFC PATCH 00/13] ASoC: qcom: Add AudioReach support
+Date:   Mon,  7 Jun 2021 16:28:23 +0100
+Message-Id: <20210607152836.17154-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNMwq6ENUtBunP-rw9ZSrJvZnQw18rQ47U3JuqPEQZsaXA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 10:27:10AM +0200, Marco Elver wrote:
-> On Mon, 7 Jun 2021 at 10:02, Alexander Monakov <amonakov@ispras.ru> wrote:
-> > On Sun, 6 Jun 2021, Linus Torvalds wrote:
-> [...]
-> > > On Sun, Jun 6, 2021 at 2:19 PM Alexander Monakov <amonakov@ispras.ru> wrote:
-> [...]
-> > > Btw, since we have compiler people on line, the suggested 'barrier()'
-> > > isn't actually perfect for this particular use:
-> > >
-> > >    #define barrier() __asm__ __volatile__("" : : "i" (__COUNTER__) : "memory")
-> > >
-> > > in the general barrier case, we very much want to have that "memory"
-> > > clobber, because the whole point of the general barrier case is that
-> > > we want to make sure that the compiler doesn't cache memory state
-> > > across it (ie the traditional use was basically what we now use
-> > > "cpu_relax()" for, and you would use it for busy-looping on some
-> > > condition).
-> > >
-> > > In the case of "volatile_if()", we actually would like to have not a
-> > > memory clobber, but a "memory read". IOW, it would be a barrier for
-> > > any writes taking place, but reads can move around it.
-> > >
-> > > I don't know of any way to express that to the compiler. We've used
-> > > hacks for it before (in gcc, BLKmode reads turn into that kind of
-> > > barrier in practice, so you can do something like make the memory
-> > > input to the asm be a big array). But that turned out to be fairly
-> > > unreliable, so now we use memory clobbers even if we just mean "reads
-> > > random memory".
-> >
-> > So the barrier which is a compiler barrier but not a machine barrier is
-> > __atomic_signal_fence(model), but internally GCC will not treat it smarter
-> > than an asm-with-memory-clobber today.
-> 
-> FWIW, Clang seems to be cleverer about it, and seems to do the optimal
-> thing if I use a __atomic_signal_fence(__ATOMIC_RELEASE):
-> https://godbolt.org/z/4v5xojqaY
+This patchset adds ASoC driver support to configure signal processing
+framework ("AudioReach") which is integral part of Qualcomm next
+generation audio SDK and will be deployed on upcoming Qualcomm chipsets.
+It makes use of ASoC Topology to load graphs on to the DSP which is then
+managed by APM (Audio Processing Manager) service to prepare/start/stop.
 
-Indeed it does!  But I don't know of a guarantee for that helpful
-behavior.
+Here is simpified high-level block diagram of AudioReach:
 
-							Thanx, Paul
+ ___________________________________________________________
+|                 CPU (Application Processor)               |
+|  +---------+          +---------+         +---------+     |
+|  |  q6apm  |          |  q6apm  |         | q6afe   |     |
+|  |   dais  | <------> |         | <-----> | bedais  |     |
+|  +---------+          +---------+         +---------+     |
+|                            ^  ^                           |
+|                            |  |           +---------+     |
+|  +---------+               v  +---------->|topology |     |
+|  | q6prm   |          +---------+         |         |     |
+|  |         |<-------->|   GPR   |         +---------+     |
+|  +---------+          +---------+                         |
+|                            ^                              |
+|____________________________|______________________________|
+                             |  
+                             | RPMSG (IPC over GLINK)              
+ ____________________________|______________________________
+|                            |                              |
+|    +-----------------------+                              |
+|    |                       |                              |
+|    v                       v              q6 (Audio DSP)  |
+|+-----+    +----------------------------------+            |
+|| PRM |    | APM (Audio Processing Manager)   |            |
+|+-----+    |  . Graph Management              |            |  
+|           |  . Command Handing               |            |  
+|           |  . Event Management              |            |  
+|           |  ...                             |            |  
+|           +----------------------------------+            |  
+|                            ^                              |
+|____________________________|______________________________|
+                             |  
+                             |   LPASS AIF
+ ____________________________|______________________________
+|                            |            Audio I/O         |
+|                            v                              |
+|   +--------------------------------------------------+    |
+|    |                Audio devices                     |   |
+|    | CODEC | HDMI-TX | PCM  | SLIMBUS | I2S |MI2S |...|   |
+|    |                                                  |   |
+|    +--------------------------------------------------+   |
+|___________________________________________________________|
+
+AudioReach has constructs of sub-graph, container and modules.
+Each sub-graph can have N containers and each Container can have N Modules
+and connections between them can be linear or non-linear.
+An audio function can be realized with one or many connected
+sub-graphs. There are also control/event paths between modules that can
+be wired up while building graph to achieve various control mechanism
+between modules. These concepts of Sub-Graph, Containers and Modules
+are represented in ASoC topology.
+
+Here is simple I2S graph with a Write Shared Memory and a
+Volume control module within a single Subgraph (1) with one Container (1)
+and 5 modules.
+
+  ____________________________________________________________
+ |                        Sub-Graph [1]                       |
+ |  _______________________________________________________   |
+ | |                       Container [1]                   |  |
+ | | [WR_SH] -> [PCM DEC] -> [PCM CONV] -> [VOL]-> [I2S-EP]|  |
+ | |_______________________________________________________|  |
+ |____________________________________________________________|
+
+For now this graph is split into two subgraphs to achieve dpcm like below:
+ ________________________________________________    _________________
+|                Sub-Graph [1]                   |  |  Sub-Graph [2]  |
+|  ____________________________________________  |  |  _____________  |
+| |              Container [1]                 | |  | |Container [2]| |
+| | [WR_SH] -> [PCM DEC] -> [PCM CONV] -> [VOL]| |  | |   [I2S-EP]  | |
+| |____________________________________________| |  | |_____________| |
+|________________________________________________|  |_________________|
+
+                                                      _________________
+                                                    |  Sub-Graph [3]  |
+                                                    |  _____________  |
+                                                    | |Container [3]| |
+                                                    | |  [DMA-EP]   | |
+                                                    | |_____________| |
+                                                    |_________________|
+
+
+This patchset adds very minimal support for AudioReach which includes
+supporting sub-graphs containing CODEC DMA ports and simple PCM
+Decoder/Encoder and Logger Modules. Additional capabilities will
+be built over time to expose features offered by AudioReach. 
+
+This patchset is Tested on SM8250 SoC based Qualcomm Robotics Platform RB5
+and SM9250 MTP with WSA881X Smart Speaker Amplifiers, DMICs connected via
+VA Macro and WCD938x Codec connected via TX and RX Macro.
+
+Sample WIP ASoC graphs are available at 
+https://git.linaro.org/people/srinivas.kandagatla/audioreach-topology.git/
+
+Thanks,
+srini
+
+Srinivas Kandagatla (13):
+  soc: dt-bindings: qcom: add gpr bindings
+  soc: qcom: add gpr driver support
+  ASoC: qcom: dt-bindings: add bindings Audio Processing manager
+  ASoC: qcom: audioreach: add basic pkt alloc support
+  ASoC: qcom: audioreach: add q6apm support
+  ASoC: qcom: audioreach: add module configuration command helpers
+  ASoC: qcom: audioreach: add topology support
+  ASoC: qcom: audioreach: add q6apm-dai support
+  ASoC: qcom: audioreach: add bedai support
+  ASoC: qcom: dt-bindings: add bindings for Proxy Resource Manager
+  ASoC: qcom: audioreach: add q6prm support
+  ASoC: qcom: dt-bindings: add audioreach soundcard compatibles
+  ASoC: qcom: sm8250: Add audioreach support
+
+ .../bindings/soc/qcom/qcom,gpr.yaml           |   74 ++
+ .../devicetree/bindings/sound/qcom,q6apm.yaml |   72 ++
+ .../devicetree/bindings/sound/qcom,q6prm.yaml |   43 +
+ .../bindings/sound/qcom,sm8250.yaml           |   43 +
+ drivers/soc/qcom/Kconfig                      |    9 +
+ drivers/soc/qcom/Makefile                     |    1 +
+ drivers/soc/qcom/gpr.c                        |  487 ++++++++
+ include/dt-bindings/soc/qcom,gpr.h            |   18 +
+ include/dt-bindings/sound/qcom,q6apm.h        |  215 ++++
+ include/dt-bindings/sound/qcom,q6prm.h        |  205 ++++
+ include/linux/soc/qcom/gpr.h                  |  127 ++
+ include/uapi/sound/snd_ar_tokens.h            |  200 +++
+ sound/soc/qcom/Kconfig                        |   20 +
+ sound/soc/qcom/Makefile                       |    1 +
+ sound/soc/qcom/audioreach/Makefile            |   12 +
+ sound/soc/qcom/audioreach/audioreach.c        | 1082 +++++++++++++++++
+ sound/soc/qcom/audioreach/audioreach.h        |  649 ++++++++++
+ sound/soc/qcom/audioreach/q6apm-bedai.c       |  377 ++++++
+ sound/soc/qcom/audioreach/q6apm-dai.c         |  494 ++++++++
+ sound/soc/qcom/audioreach/q6apm.c             |  962 +++++++++++++++
+ sound/soc/qcom/audioreach/q6apm.h             |  171 +++
+ sound/soc/qcom/audioreach/q6prm.c             |  412 +++++++
+ sound/soc/qcom/audioreach/topology.c          |  848 +++++++++++++
+ sound/soc/qcom/sm8250.c                       |  144 ++-
+ 24 files changed, 6665 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,gpr.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6apm.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6prm.yaml
+ create mode 100644 drivers/soc/qcom/gpr.c
+ create mode 100644 include/dt-bindings/soc/qcom,gpr.h
+ create mode 100644 include/dt-bindings/sound/qcom,q6apm.h
+ create mode 100644 include/dt-bindings/sound/qcom,q6prm.h
+ create mode 100644 include/linux/soc/qcom/gpr.h
+ create mode 100644 include/uapi/sound/snd_ar_tokens.h
+ create mode 100644 sound/soc/qcom/audioreach/Makefile
+ create mode 100644 sound/soc/qcom/audioreach/audioreach.c
+ create mode 100644 sound/soc/qcom/audioreach/audioreach.h
+ create mode 100644 sound/soc/qcom/audioreach/q6apm-bedai.c
+ create mode 100644 sound/soc/qcom/audioreach/q6apm-dai.c
+ create mode 100644 sound/soc/qcom/audioreach/q6apm.c
+ create mode 100644 sound/soc/qcom/audioreach/q6apm.h
+ create mode 100644 sound/soc/qcom/audioreach/q6prm.c
+ create mode 100644 sound/soc/qcom/audioreach/topology.c
+
+-- 
+2.21.0
+
