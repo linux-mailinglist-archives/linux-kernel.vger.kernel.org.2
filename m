@@ -2,51 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A3939D85B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BBF839D866
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:15:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230284AbhFGJQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:16:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:55782 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229966AbhFGJQQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:16:16 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F216C31B;
-        Mon,  7 Jun 2021 02:14:24 -0700 (PDT)
-Received: from [10.57.1.61] (unknown [10.57.1.61])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 379F43F719;
-        Mon,  7 Jun 2021 02:14:22 -0700 (PDT)
-Subject: Re: [PATCH 2/3] arm64: perf: Improve compat perf_callchain_user() for
- clang leaf functions
-To:     Douglas Anderson <dianders@chromium.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Seth LaForge <sethml@google.com>,
-        Ricky Liang <jcliang@chromium.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        clang-built-linux@googlegroups.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Alexandre Truong <alexandre.truong@arm.com>,
-        Wilco Dijkstra <wilco.dijkstra@arm.com>,
-        Al Grant <Al.Grant@arm.com>
-References: <20210507205513.640780-1-dianders@chromium.org>
- <20210507135509.2.Ib54050e4091679cc31b04d52d7ef200f99faaae5@changeid>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <47a95789-ca75-70a5-9d65-a2d3e9c651bc@arm.com>
-Date:   Mon, 7 Jun 2021 12:14:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230194AbhFGJRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:17:37 -0400
+Received: from mail-ej1-f51.google.com ([209.85.218.51]:33604 "EHLO
+        mail-ej1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230139AbhFGJRd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 05:17:33 -0400
+Received: by mail-ej1-f51.google.com with SMTP id g20so25538329ejt.0;
+        Mon, 07 Jun 2021 02:15:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UZrq5VlhmQW6JZmMPrVakR8M/Jz/bAVYPXpHBFjrH1c=;
+        b=KLn0ZlNqWao86EIujuLqufe3OtsEytKF0ws/B3wc3/r7n3np7VmGBbtKzL47joK9cC
+         DPxaG75RV5SEQARuDIlNwRb2azNgabL9fbK890DZu2A2bpgyBCS0L1/JqQVbBDSqjPRI
+         mEPPkB0MsUv3koqXOXp0hq7dSZARqaJ6//+uxLvfEIJErcQ6ua+Cp54rfNOZrqroLQSc
+         gK73DjWJriG2Vpjv2DPaUymgpmJH5SkHboVw3C8E+scOFq+DS+p2PdoP20SMeoqGNh7j
+         81uAGcyJTM5jMRevo01ap3EaAGIoj7qngHGu5IQLKtGMCtUgqV9OmhxIcEUTRbk6mvWf
+         a0lQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UZrq5VlhmQW6JZmMPrVakR8M/Jz/bAVYPXpHBFjrH1c=;
+        b=rN7Yt2Wc3QBHdRRKRQVivnYnyPykVpWdy0BcSFvM5cJ1MMF32bnHrhEB8Tl2msksy1
+         MCErahdR7IVVVAFcWONKBEDlyKnPMYkDfqDCTgk+fJwUR/Hq3xEXnDaNp5YbI1zdqALR
+         P8cVK9/Npmv2QXaWlCm7wSuCf4CutALwfIhhlgf+e1Z5FwjS4uiW+TEhSbMk1+OFlrx+
+         gMey4gcsN6oRdahVF3MdLT752fQSFXz4va9hbomsr1kBU6XyKA+ztpHcrIswKKCq6b4l
+         JHSrYyWmmLQ88oMcJArU/6wd8mKfWSTnEpPGCqWeNZogpx7b7SYS+YAjKk+R5NgOksuJ
+         nMFA==
+X-Gm-Message-State: AOAM531nIzq0sJL+AowTKZfjatVO86Sai/WZbP7X4S8gy/zbOrDxAsGs
+        8+ETOcV4wuoM7AvGK1nAfeYmVVjDoS/QEg==
+X-Google-Smtp-Source: ABdhPJzXK2A9L9nkflnok98q7PG7rX1Tcr7XYduvR8sIGZiKEBv2cHiQo0Pymrmm8SJyMG5RlEkWxw==
+X-Received: by 2002:a17:906:f8d0:: with SMTP id lh16mr17075823ejb.331.1623057265308;
+        Mon, 07 Jun 2021 02:14:25 -0700 (PDT)
+Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id gx28sm6320117ejc.107.2021.06.07.02.14.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Jun 2021 02:14:25 -0700 (PDT)
+Subject: Re: [PATCH] arm64: dts: rockchip: add EEPROM node for NanoPi R4S
+To:     Tianling Shen <cnsztl@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Marty Jones <mj8263788@gmail.com>, Pavel Machek <pavel@ucw.cz>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210607081727.4723-1-cnsztl@gmail.com>
+From:   Johan Jonker <jbx6244@gmail.com>
+Message-ID: <9258ab23-ef65-2c3d-f0d2-ca5f77d7c12a@gmail.com>
+Date:   Mon, 7 Jun 2021 11:14:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210507135509.2.Ib54050e4091679cc31b04d52d7ef200f99faaae5@changeid>
+In-Reply-To: <20210607081727.4723-1-cnsztl@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -54,53 +67,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Tianling,
 
-
-On 07/05/2021 23:55, Douglas Anderson wrote:
-> It turns out that even when you compile code with clang with
-> "-fno-omit-frame-pointer" that it won't generate a frame pointer for
-> leaf functions (those that don't call any sub-functions). Presumably
-> clang does this to reduce the overhead of frame pointers. In a leaf
-> function you don't really need frame pointers since the Link Register
-> (LR) is guaranteed to always point to the caller> 
-[...]
+On 6/7/21 10:17 AM, Tianling Shen wrote:
+> NanoPi R4S has a EEPROM attached to the 2nd I2C bus (U92), which
+> stores the MAC address.
 > 
->  arch/arm64/kernel/perf_callchain.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
+> Signed-off-by: Tianling Shen <cnsztl@gmail.com>
+> ---
+>  arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
-> diff --git a/arch/arm64/kernel/perf_callchain.c b/arch/arm64/kernel/perf_callchain.c
-> index e5ce5f7965d1..b3cd9f371469 100644
-> --- a/arch/arm64/kernel/perf_callchain.c
-> +++ b/arch/arm64/kernel/perf_callchain.c
-> @@ -326,6 +326,20 @@ static void compat_perf_callchain_user(struct perf_callchain_entry_ctx *entry,
->  	while ((entry->nr < entry->max_stack) && fp && !(fp & 0x3)) {
->  		err = compat_perf_trace_1(&fp, &pc, leaf_lr);
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
+> index cef4d18b599d..4a82f50a07c5 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
+> +++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
+> @@ -68,6 +68,15 @@
+>  	status = "disabled";
+>  };
 >  
-> +		/*
-> +		 * If this is the first trace and it didn't find the LR then
-> +		 * let's throw it in the trace first. This isn't perfect but
-> +		 * is the best we can do for handling clang leaf functions (or
-> +		 * the case where we're right at the start of the function
-> +		 * before the new frame has been pushed). In the worst case
-> +		 * this can cause us to throw an extra entry that will be some
-> +		 * location in the same function as the PC. That's not
-> +		 * amazing but shouldn't really hurt. It seems better than
-> +		 * throwing away the LR.
-> +		 */
+> +&i2c2 {
+> +	eeprom@51 {
+> +		compatible = "microchip,24c02", "atmel,24c02";
+> +		reg = <0x51>;
+> +		pagesize = <16>;
 
-Hi Douglas,
+> +		read-only; /* This holds our MAC */
 
-I think the behaviour with GCC is also similar. We were working on this change
-(https://lore.kernel.org/lkml/20210304163255.10363-4-alexandre.truong@arm.com/)
-in userspace Perf which addresses the same issue.
+The mainline dts files should be generic I think.
+Any comment about "use", partitions or write ability should be avoided.
+It's up the user.
 
-The basic concept of our version is to record only the link register
-(as in --user-regs=lr). Then use the existing dwarf based unwind
-to determine if the link register is valid for that frame, and then if
-it is and it doesn't already exist on the stack then insert it.
+Johan
 
-You mention that your version isn't perfect, do you think that saving the
-LR and using something like libunwind in a post process could be better?
-
-Thanks
-James
+> +	};
+> +};
+> +
+>  &i2c4 {
+>  	status = "disabled";
+>  };
+> 
