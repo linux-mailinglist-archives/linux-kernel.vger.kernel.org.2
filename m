@@ -2,157 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B4939E638
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3706039E645
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhFGSKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 14:10:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54302 "EHLO mail.kernel.org"
+        id S230436AbhFGSPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 14:15:01 -0400
+Received: from mga06.intel.com ([134.134.136.31]:42931 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230479AbhFGSKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 14:10:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A1186100B;
-        Mon,  7 Jun 2021 18:08:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623089306;
-        bh=NwgiKp1vePEOmgz/sNu7+oR/y96zqS8ePq3897GVbuc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ID4Iv5JGnQ9ws3tx5Mf86eop9S5Ra2xHBeozexaeDzzX8Q8ZVFt3Jxr7AeFPX8RfX
-         RRHGNlK5gsUj2PbS5KFZ9JAO6TGAd9uaFuSVvfCdJj5LGzdTJViMHAAxRUv2RqjRxk
-         KARkNZx+bstLIhbvsU6exw01mVC+ZMGFIAy9mmeO8XR1Bj+nc/5BEkL+NWWuPCZBY6
-         JDpprBeKOybKKGnFpdynlxqixFSXRDcIXmo0M0qSsA8905+JpmoyW8X4kLR14GOf3/
-         uMf6/YDCJgJ568KTSi9WO02WfR0aD322D937wC6a/8kJI8FU+GmGZpf/pX2L3/jXyH
-         KAgSY2tgIPerg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 496BC5C0395; Mon,  7 Jun 2021 11:08:26 -0700 (PDT)
-Date:   Mon, 7 Jun 2021 11:08:26 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <20210607180826.GV4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1>
- <20210606012903.GA1723421@rowland.harvard.edu>
- <20210606115336.GS18427@gate.crashing.org>
- <CAHk-=wjgzAn9DfR9DpU-yKdg74v=fvyzTJMD8jNjzoX4kaUBHQ@mail.gmail.com>
- <20210606182213.GA1741684@rowland.harvard.edu>
- <CAHk-=whDrTbYT6Y=9+XUuSd5EAHWtB9NBUvQLMFxooHjxtzEGA@mail.gmail.com>
- <YL34NZ12mKoiSLvu@hirez.programming.kicks-ass.net>
- <20210607115234.GA7205@willie-the-truck>
- <20210607152533.GQ4397@paulmck-ThinkPad-P17-Gen-1>
- <20210607160252.GA7580@willie-the-truck>
+        id S230212AbhFGSPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 14:15:00 -0400
+IronPort-SDR: kbd/gQAzlRg1JA/4B2nWs+C93cFgZUw5RcWdh+diQdRM8Y2xs8bHtYnxMwusLpu487wtyXPOJP
+ K9d90jD2LRRg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="265829732"
+X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
+   d="scan'208";a="265829732"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 11:13:07 -0700
+IronPort-SDR: wtR2fYWE5JseIRz4cHWWznciS2BtWxi0Wg6Q1fbUHif2u2USJlGDbkh9vPeuypSZcakMIzA4xS
+ mRrVcl+Yi5uQ==
+X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
+   d="scan'208";a="440146197"
+Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.213.188.150]) ([10.213.188.150])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 11:13:05 -0700
+Subject: Re: [PATCH v6 00/20] Add VFIO mediated device support and DEV-MSI
+ support for the idxd driver
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+References: <162164243591.261970.3439987543338120797.stgit@djiang5-desk3.ch.intel.com>
+ <20210523232219.GG1002214@nvidia.com>
+ <86cde154-37c7-c00d-b0c6-06b15b50dbf7@intel.com>
+ <20210602231747.GK1002214@nvidia.com>
+ <MWHPR11MB188664D9E7CA60782B75AC718C3C9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210603014932.GN1002214@nvidia.com>
+ <MWHPR11MB1886D613948986530E9B61CB8C3C9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210603214009.68fac0c4.alex.williamson@redhat.com>
+ <MWHPR11MB18861FBE62D10E1FC77AB6208C389@MWHPR11MB1886.namprd11.prod.outlook.com>
+From:   Dave Jiang <dave.jiang@intel.com>
+Message-ID: <168ee05a-faf4-3fce-e278-d783104fc442@intel.com>
+Date:   Mon, 7 Jun 2021 11:13:04 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607160252.GA7580@willie-the-truck>
+In-Reply-To: <MWHPR11MB18861FBE62D10E1FC77AB6208C389@MWHPR11MB1886.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 05:02:53PM +0100, Will Deacon wrote:
-> Hi Paul,
-> 
-> On Mon, Jun 07, 2021 at 08:25:33AM -0700, Paul E. McKenney wrote:
-> > On Mon, Jun 07, 2021 at 12:52:35PM +0100, Will Deacon wrote:
-> > > It's the conditional instructions that are more fun. For example, the CSEL
-> > > instruction:
-> > > 
-> > > 	CSEL	X0, X1, X2, <cond>
-> > > 
-> > > basically says:
-> > > 
-> > > 	if (cond)
-> > > 		X0 = X1;
-> > > 	else
-> > > 		X0 = X2;
-> > > 
-> > > these are just register-register operations, but the idea is that the CPU
-> > > can predict that "branching event" inside the CSEL instruction and
-> > > speculatively rename X0 while waiting for the condition to resolve.
-> > > 
-> > > So then you can add loads and stores to the mix along the lines of:
-> > > 
-> > > 	LDR	X0, [X1]		// X0 = *X1
-> > > 	CMP	X0, X2
-> > > 	CSEL	X3, X4, X5, EQ		// X3 = (X0 == X2) ? X4 : X5
-> > > 	STR	X3, [X6]		// MUST BE ORDERED AFTER THE LOAD
-> > > 	STR	X7, [X8]		// Can be reordered
-> > > 
-> > > (assuming X1, X6, X8 all point to different locations in memory)
-> > > 
-> > > So now we have a dependency from the load to the first store, but the
-> > > interesting part is that the last store is _not_ ordered wrt either of the
-> > > other two memory accesses, whereas it would be if we used a conditional
-> > > branch instead of the CSEL. Make sense?
-> > 
-> > And if I remember correctly, this is why LKMM orders loads in the
-> > "if" condition only with stores in the "then" and "else" clauses,
-> > not with stores after the end of the "if" statement.  Or is there
-> > some case that I am missing?
-> 
-> It's not clear to me that such a restriction prevents the compiler from
-> using any of the arm64 conditional instructions in place of the conditional
-> branch in such a way that you end up with an "independent" store in the
-> assembly output constructed from two stores on the "then" and "else" paths
-> which the compiler determined where the same.
-> 
-> > > Now, obviously the compiler is blissfully unaware that conditional
-> > > data processing instructions can give rise to dependencies than
-> > > conditional branches, so the question really is how much do we need to
-> > > care in the kernel?
-> > > 
-> > > My preference is to use load-acquire instead of control dependencies so
-> > > that we don't have to worry about this, or any future relaxations to the
-> > > CPU architecture, at all.
-> > 
-> > From what I can see, ARMv8 has DMB(LD) and DMB(ST).  Does it have
-> > something like a DMB(LD,ST) that would act something like powerpc lwsync?
-> > 
-> > Or are you proposing rewriting the "if" conditions to upgrade
-> > READ_ONCE() to smp_load_acquire()?  Or something else?
-> > 
-> > Just trying to find out exactly what you are proposing.  ;-)
-> 
-> Some options are:
-> 
->  (1) Do nothing until something actually goes wrong (and hope we spot/debug it)
-> 
->  (2) Have volatile_if force a conditional branch, assuming that it solves
->      the problem and doesn't hurt codegen (I still haven't convinced myself
->      for either case)
-> 
->  (3) Upgrade READ_ONCE() to RCpc acquire, relaxed atomic RMWs to RCsc
->      acquire on arm64
-> 
->  (4) Introduce e.g. READ_ONCE_CTRL(), atomic_add_return_ctrl() etc
->      specifically for control dependencies and upgrade only those for
->      arm64
-> 
->  (5) Work to get toolchain support for dependency ordering and use that
-> 
-> I'm suggesting (3) or (4) because, honestly, it feels like we're being
-> squeezed from both sides with both the compiler and the hardware prepared
-> to break control dependencies.
 
-I will toss out this as well:
+On 6/6/2021 11:22 PM, Tian, Kevin wrote:
+> Hi, Alex,
+>
+> Thanks for sharing your thoughts.
+>
+>> From: Alex Williamson <alex.williamson@redhat.com>
+>> Sent: Friday, June 4, 2021 11:40 AM
+>>
+>> On Thu, 3 Jun 2021 05:52:58 +0000
+>> "Tian, Kevin" <kevin.tian@intel.com> wrote:
+>>
+>>>> From: Jason Gunthorpe <jgg@nvidia.com>
+>>>> Sent: Thursday, June 3, 2021 9:50 AM
+>>>>
+>>>> On Thu, Jun 03, 2021 at 01:11:37AM +0000, Tian, Kevin wrote:
+>>>>
+>>>>> Jason, can you clarify your attitude on mdev guid stuff? Are you
+>>>>> completely against it or case-by-case? If the former, this is a big
+>>>>> decision thus it's better to have consensus with Alex/Kirti. If the
+>>>>> latter, would like to hear your criteria for when it can be used
+>>>>> and when not...
+>>>> I dislike it generally, but it exists so <shrug>. I know others feel
+>>>> more strongly about it being un-kernely and the wrong way to use sysfs.
+>>>>
+>>>> Here I was remarking how the example in the cover letter made the mdev
+>>>> part seem totally pointless. If it is pointless then don't do it.
+>>> Is your point about that as long as a mdev requires pre-config
+>>> through driver specific sysfs then it doesn't make sense to use
+>>> mdev guid interface anymore?
+>> Can you describe exactly what step 1. is doing in this case from the
+>> original cover letter ("Enable wq with "mdev" wq type")?  That does
+>> sound a bit like configuring something to use mdev then separately
+>> going to the trouble of creating the mdev.  As Jason suggests, if a wq
+>> is tagged for mdev/vfio, it could just register itself as a vfio bus
+>> driver.
+> I'll leave to Dave to explain the exact detail in step 1.
 
-  (6) Create a volatile_if() that does not support an "else" clause,
-      thus covering all current use cases and avoiding some of the
-      same-store issues.  Which in the end might or might not help,
-      but perhaps worth looking into.
+So in step 1, we 'tag' the wq to be dedicated to guest usage and put the 
+hardware wq into enable state. For a dedicated mode wq, we can 
+definitely just register directly and skip the mdev step. For a shared 
+wq mode, we can have multiple mdev running on top of a single wq. So we 
+need some way to create more mdevs. We can either go with the existing 
+established creation path by mdev, or invent something custom for the 
+driver as Jason suggested to accomodate additional virtual devices for 
+guests. We implemented the mdev path originally with consideration of 
+mdev is established and has a known interface already.
 
-							Thanx, Paul
+>
+>> But if we want to use mdev, why doesn't available_instances for your
+>> mdev type simply report all unassigned wq and the `echo $UUID > create`
+>> grabs a wq for mdev?  That would remove this pre-config contention,
+>> right?
+> This way could also work. It sort of changes pre-config to post-config,
+> i.e. after an unassigned wq is grabbed for mdev, the admin then
+> configures additional vendor specific parameters (not initialized by
+> parent driver) before this mdev is assigned to a VM. Looks this is also
+> what NVIDIA is doing for their vGPU, with a cmdline tool (nvidia-smi)
+> and nvidia sysfs node for setting plugin parameters:
+>
+>          https://docs.nvidia.com/grid/latest/pdf/grid-vgpu-user-guide.pdf
+>
+> But I'll leave to Dave again as there must be a reason why they choose
+> pre-config in the first place.
+
+I think things become more complicated when we go from a dedicated wq to 
+shared wq where the relationship of wq : mdev is 1 : 1 goes to 1 : N. 
+Also needing to keep a consistent user config experience is desired, 
+especially we already have such behavior since kernel 5.6 for host 
+usages. So we really need try to avoid doing wq configuration 
+differently just for "mdev" wqs. In the case suggested above, we 
+basically just flipped the configuration steps. Mdev is first created 
+through mdev sysfs interface. And then the device paramters are 
+configured. Where for us, we configure the device parameter first, and 
+then create the mdev. But in the end, it's still the hybrid mdev setup 
+right?
+
+
+>>> The value of mdev guid interface is providing a vendor-agnostic
+>>> interface for mdev life-cycle management which allows one-
+>>> enable-fit-all in upper management stack. Requiring vendor
+>>> specific pre-config does blur the boundary here.
+>> We need to be careful about using work-avoidance in the upper
+>> management stack as a primary use case for an interface though.
+> ok
+>
+>>> Alex/Kirt/Cornelia, what about your opinion here? It's better
+>>> we can have an consensus on when and where the existing
+>>> mdev sysfs could be used, as this will affect every new mdev
+>>> implementation from now on.
+>> I have a hard time defining some fixed criteria for using mdev.  It's
+>> essentially always been true that vendors could write their own vfio
+>> "bus driver", like vfio-pci or vfio-platform, specific to their device.
+>> Mdevs were meant to be a way for the (non-vfio) driver of a device to
+>> expose portions of the device through mediation for use with vfio.  It
+>> seems like that's largely being done here.
+>>
+>> What I think has changed recently is this desire to make it easier to
+>> create those vendor drivers and some promise of making module binding
+>> work to avoid the messiness around picking a driver for the device.  In
+>> the auxiliary bus case that I think Jason is working on, it sounds like
+>> the main device driver exposes portions of itself on an auxiliary bus
+>> where drivers on that bus can integrate into the vfio subsystem.  It
+>> starts to get pretty fuzzy with what mdev already does, but it's also a
+>> more versatile interface.  Is it right for everyone?  Probably not.
+> idxd is also moving toward this model per Jason's suggestion. Although
+> auxiliar bus is not directly used, idxd driver has its own bus for exposing
+> portion of its resources. From this angle, all the motivation around mdev
+> bus does get fuzzy...
+>
+>> Is the pre-configuration issue here really a push vs pull problem?  I
+>> can see the requirement in step 1. is dedicating some resources to an
+>> mdev use case, so at that point it seems like the argument is whether we
+>> should just create aux bus devices that get automatically bound to a
+>> vendor vfio-pci variant and we avoid the mdev lifecycle, which is both
+>> convenient and ugly.  On the other hand, mdev has more of a pull
+>> interface, ie. here are a bunch of device types and how many of each we
+>> can support, use create to pull what you need.
+> I see your point. Looks what idxd is toward now is a mixed model. The
+> parent driver uses a push interface to initialize a pool of instances
+> which are then managed through mdev in a pull mode.
+>
+>>>> Remember we have stripped away the actual special need to use
+>>>> mdev. You don't *have* to use mdev anymore to use vfio. That is a
+>>>> significant ideology change even from a few months ago.
+>>>>
+>>> Yes, "don't have to" but if there is value of doing so  it's
+>>> not necessary to blocking it? One point in my mind is that if
+>>> we should minimize vendor-specific contracts for user to
+>>> manage mdev or subdevice...
+>> Again, this in itself is not a great justification for using mdev,
+>> we're creating vendor specific device types with vendor specific
+>> additional features, that could all be done via some sort of netlink
+>> interface too.  The thing that pushes this more towards mdev for me is
+>> that I don't think each of these wqs appear as devices to the host,
+>> they're internal resources of the parent device and we want to compose
+>> them in ways that are slightly more amenable to traditional mdevs... I
+>> think.  Thanks,
+>>
+> Yes, this is one reason going toward mdev.
+>
+> btw I'm not clear what the netlink interface will finally be, especially
+> about whether any generic cmd should be defined cross devices given
+> that subdevice management still has large generality. Jason, do you have
+> an example somewhere which we can take a look regarding to mlx
+> netlink design?
+>
+> Thanks
+> Kevin
