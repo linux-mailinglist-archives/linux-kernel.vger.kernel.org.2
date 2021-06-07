@@ -2,68 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1323139D300
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 04:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD99739D2F9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 04:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbhFGCjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 22:39:04 -0400
-Received: from m12-12.163.com ([220.181.12.12]:55873 "EHLO m12-12.163.com"
+        id S230213AbhFGCd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 22:33:58 -0400
+Received: from mga11.intel.com ([192.55.52.93]:42307 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230169AbhFGCjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 22:39:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=OfzJG
-        36BQSalpQwM1+OlG2qFTfDa7OWPrE8r5mmHEd0=; b=ns2gVlWkQlnsjkJ678uPU
-        1UxKPeQ1i2F4IwrVTojr2ji8U6quCGbaflb8LI6mybr2F2LzVtd/iWz76mm6A7P7
-        jfyQyHD3MKpm5HtCLgYl5BKK4xCC/d/wszH9854NxTFNF37VhA3PvizXKiBJXCO7
-        rblFRIMoegwCvaBUSaJA/U=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp8 (Coremail) with SMTP id DMCowAAnI2BUhr1gwDUAIg--.368S2;
-        Mon, 07 Jun 2021 10:37:10 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lijian <lijian@yulong.com>
-Subject: [PATCH] fs: direct-io: Fix a typo
-Date:   Mon,  7 Jun 2021 10:36:11 +0800
-Message-Id: <20210607023611.81413-1-lijian_8010a29@163.com>
+        id S230133AbhFGCd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 22:33:56 -0400
+IronPort-SDR: gPo2bU+kI09WyJ4/eGCnbFlSKnjfouGN6fjaLPQmO7wBqlOiD7eETF4wYsbO1wi+TfAoZG0Rgi
+ RDYLq2FC9AzQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="201529669"
+X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
+   d="scan'208";a="201529669"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 19:32:06 -0700
+IronPort-SDR: xacJE92Mzk0/Sc3cfFlgel8bTGGFYfbFldpaixql4Taf+123qagviLyUed53V2f66y8JqFjcJU
+ UV3xXuk+bYhw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
+   d="scan'208";a="551745168"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga001.fm.intel.com with ESMTP; 06 Jun 2021 19:32:06 -0700
+Received: from glass.png.intel.com (glass.png.intel.com [10.158.65.69])
+        by linux.intel.com (Postfix) with ESMTP id 81228580973;
+        Sun,  6 Jun 2021 19:32:04 -0700 (PDT)
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH net-next 1/1] net: phy: probe for C45 PHYs that return PHY ID of zero in C22 space
+Date:   Mon,  7 Jun 2021 10:36:45 +0800
+Message-Id: <20210607023645.2958840-1-vee.khee.wong@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DMCowAAnI2BUhr1gwDUAIg--.368S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKF17ur4xWFykuFWkKr4kWFg_yoW3Cwc_Ww
-        n2yayv9FykCFZxCay3Xr4fXFs29w1rAF45CF4FgF13t345Jay0y3ZFyr9FvrnIgrW7X343
-        WFn7uryqyr1xWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnKg43UUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/xtbBERaqUFaEEoaETQAAsy
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
+PHY devices such as the Marvell Alaska 88E2110 does not return a valid
+PHY ID when probed using Clause-22. The current implementation treats
+PHY ID of zero as a non-error and valid PHY ID, and causing the PHY
+device failed to bind to the Marvell driver.
 
-Change 'submition' to 'submission'.
+For such devices, we do an additional probe in the Clause-45 space,
+if a valid PHY ID is returned, we then proceed to attach the PHY
+device to the matching PHY ID driver.
 
-Signed-off-by: lijian <lijian@yulong.com>
+Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
 ---
- fs/direct-io.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/phy/phy_device.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/fs/direct-io.c b/fs/direct-io.c
-index b2e86e739d7a..dea9ad204acb 100644
---- a/fs/direct-io.c
-+++ b/fs/direct-io.c
-@@ -86,7 +86,7 @@ struct dio_submit {
- 	sector_t final_block_in_request;/* doesn't change */
- 	int boundary;			/* prev block is at a boundary */
- 	get_block_t *get_block;		/* block mapping function */
--	dio_submit_t *submit_io;	/* IO submition function */
-+	dio_submit_t *submit_io;	/* IO submission function */
+diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+index 1539ea021ac0..495d86b4af7c 100644
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -870,6 +870,18 @@ struct phy_device *get_phy_device(struct mii_bus *bus, int addr, bool is_c45)
+ 	if (r)
+ 		return ERR_PTR(r);
  
- 	loff_t logical_offset_in_bio;	/* current first logical block in bio */
- 	sector_t final_block_in_bio;	/* current final block in bio + 1 */
++	/* PHY device such as the Marvell Alaska 88E2110 will return a PHY ID
++	 * of 0 when probed using get_phy_c22_id() with no error. Proceed to
++	 * probe with C45 to see if we're able to get a valid PHY ID in the C45
++	 * space, if successful, create the C45 PHY device.
++	 */
++	if (!is_c45 && phy_id == 0 && bus->probe_capabilities >= MDIOBUS_C45) {
++		r = get_phy_c45_ids(bus, addr, &c45_ids);
++		if (!r)
++			return phy_device_create(bus, addr, phy_id,
++						 true, &c45_ids);
++	}
++
+ 	return phy_device_create(bus, addr, phy_id, is_c45, &c45_ids);
+ }
+ EXPORT_SYMBOL(get_phy_device);
 -- 
 2.25.1
-
 
