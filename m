@@ -2,82 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 477A739E872
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 22:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEBF239E873
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 22:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231443AbhFGUcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 16:32:12 -0400
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:8956 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230251AbhFGUcM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 16:32:12 -0400
-Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 07 Jun 2021 13:30:20 -0700
-X-QCInternal: smtphost
-Received: from gurus-linux.qualcomm.com ([10.134.64.25])
-  by ironmsg02-sd.qualcomm.com with ESMTP; 07 Jun 2021 13:30:19 -0700
-Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
-        id A3DE4210F1; Mon,  7 Jun 2021 13:30:19 -0700 (PDT)
-Date:   Mon, 7 Jun 2021 13:30:19 -0700
-From:   Guru Das Srinagesh <gurus@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Yang Yingliang <yangyingliang@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        lee.jones@linaro.org, agross@kernel.org,
-        dmitry.baryshkov@linaro.org
-Subject: Re: [PATCH net-next v3] mfd: pm8008: Fix return value check in
- pm8008_probe()
-Message-ID: <20210607203019.GA11347@codeaurora.org>
-References: <20210605022446.4119978-1-yangyingliang@huawei.com>
- <YLxCGLALLlO4i14n@builder.lan>
+        id S231481AbhFGUdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 16:33:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230251AbhFGUdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 16:33:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AF6D61139;
+        Mon,  7 Jun 2021 20:31:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623097872;
+        bh=pPJBqBlQGXvfAld1PUvVv5IJNwFjE/rO5W6JlS1cXrU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=kODygim17HTj9MZtf/1L5Umw+L256UX+5IukHOU8+Imp1NX53aO03JrJSGiruIBKN
+         jHjTGGJ97JPUg9Zojj4T8J1O/yo4QKhjqDLJY0chP71mjYCm1LwJzGxgGp9okUq2pM
+         TVVnIPzZig4viPX2cNfav+KGBs74T84oR4jNdF75Yg35V5/CRkgGfW6Eu8RdF4Bs9p
+         1xrcA6TyrFX2YPj/Z7i8XWoZm4ed+I34rjgVeI/pB3Fabp/M6w2mBnMWm7yw0soHVf
+         VIt0gRAPF9M+zNenNQaXXn4gr7TGaR5VBb5t1hH3/3GAAfK8+eIxS1Ry0hu2QZ4hR1
+         oah4RLjVBy4Ng==
+Date:   Mon, 7 Jun 2021 15:32:29 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Subject: [PATCH][next] drm/i915/gem: Fix fall-through warning for Clang
+Message-ID: <20210607203229.GA60476@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YLxCGLALLlO4i14n@builder.lan>
-User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 05, 2021 at 10:33:44PM -0500, Bjorn Andersson wrote:
-> On Fri 04 Jun 21:24 CDT 2021, Yang Yingliang wrote:
-> 
-> > In case of error, the function devm_regmap_init_i2c() returns ERR_PTR()
-> > and never returns NULL. The NULL test in the return value check
-> > should be replaced with IS_ERR().
-> > 
-> > Fixes: 6b149f3310a4 ("mfd: pm8008: Add driver for QCOM PM8008 PMIC")
-> > Reported-by: Hulk Robot <hulkci@huawei.com>
-> > Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> 
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+In preparation to enable -Wimplicit-fallthrough for Clang, fix a
+warning by explicitly adding a fallthrough; statement.
 
-Acked-by: Guru Das Srinagesh <gurus@codeaurora.org>
+Link: https://github.com/KSPP/linux/issues/115
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+JFYI: We had thousands of these sorts of warnings and now we are down
+      to just 13 in linux-next(20210607). This is one of those last
+      remaining warnings. :)
 
-> 
-> > ---
-> > v3:
-> >   return PTR_ERR(chip->regmap) instead of ENODEV
-> > ---
-> >  drivers/mfd/qcom-pm8008.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/mfd/qcom-pm8008.c b/drivers/mfd/qcom-pm8008.c
-> > index c472d7f8103c..fb8915a682ad 100644
-> > --- a/drivers/mfd/qcom-pm8008.c
-> > +++ b/drivers/mfd/qcom-pm8008.c
-> > @@ -228,8 +228,8 @@ static int pm8008_probe(struct i2c_client *client)
-> >  
-> >  	chip->dev = &client->dev;
-> >  	chip->regmap = devm_regmap_init_i2c(client, &qcom_mfd_regmap_cfg);
-> > -	if (!chip->regmap)
-> > -		return -ENODEV;
-> > +	if (IS_ERR(chip->regmap))
-> > +		return PTR_ERR(chip->regmap);
-> >  
-> >  	i2c_set_clientdata(client, chip);
-> >  
-> > -- 
-> > 2.25.1
-> > 
+ drivers/gpu/drm/i915/gem/i915_gem_shrinker.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/gpu/drm/i915/gem/i915_gem_shrinker.c b/drivers/gpu/drm/i915/gem/i915_gem_shrinker.c
+index f4fb68e8955a..17714da24033 100644
+--- a/drivers/gpu/drm/i915/gem/i915_gem_shrinker.c
++++ b/drivers/gpu/drm/i915/gem/i915_gem_shrinker.c
+@@ -62,6 +62,7 @@ static void try_to_writeback(struct drm_i915_gem_object *obj,
+ 	switch (obj->mm.madv) {
+ 	case I915_MADV_DONTNEED:
+ 		i915_gem_object_truncate(obj);
++		fallthrough;
+ 	case __I915_MADV_PURGED:
+ 		return;
+ 	}
+-- 
+2.27.0
+
