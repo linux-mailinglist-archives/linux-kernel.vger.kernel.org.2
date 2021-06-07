@@ -2,157 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F01739DB10
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91B6739DB13
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbhFGLW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 07:22:28 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:59161 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230215AbhFGLW1 (ORCPT
+        id S231393AbhFGLWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 07:22:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230215AbhFGLWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 07:22:27 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 6B89D58070A;
-        Mon,  7 Jun 2021 07:20:36 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Mon, 07 Jun 2021 07:20:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=3oCX7TrAVsmjzv5OoyW+OP4QSCu
-        VE7NZRspF0CF6xjk=; b=HHS+8buUuKym3nfeN7FWSG1Dk0moaO5kprrASs7T0uD
-        /nl9/1p5XKPb7gbbvHREDDgUoFSH52QD9ntUC8hdw1F1YEGGeuPrKmKlJoYUgCjB
-        U3Ct8GXlI2tTt6dPMf4ORWZAJIIDREcQYT9xupSnYhJv4/fn84cS7SmWaI7ogQ1g
-        n9szgC+S72jlhpnyGjGDEl7ZZTnzY82iyKnDu9bFZP/5NQboqoVZFYEManJVG5De
-        SYtBhp58XCWGwtzkk942Ri3vEFJUeoF39lKZuUnm97865PRfBH/UzJXMxqvll4VA
-        QqvjJJKhMLuto23ERDg7bUVUlL2pJSdjc2hS41WvDJw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=3oCX7T
-        rAVsmjzv5OoyW+OP4QSCuVE7NZRspF0CF6xjk=; b=J9LGohqP/3UcZzJ39CBjCf
-        bUBFGsbA4LH70ypDTUhrYruzzex6PivkO/u9Fh5RG5FrIIUkxy5YOWLqx1JLV9OX
-        mrfGXNhwIBAP/niWtCvLCy5TwapO4Io9kp82t3HBNUhRQqH1olg/0cYWdy/CDOJ6
-        0HBnuCX0zEigiY2sXSVoJD9h079GNbWB5vn7NHmfRqvGWah8+XHwVc4hO2tz0EhG
-        hc67XFMiAdIMGtBT2l6iDzS/N694rRk9wigaNhmSY50vGbqxiuruGLnt7rRwgoQj
-        eXB+Kbd5kg1x899hztM/J2Ix3Hne+/zUCV+bi09HLJDP8fPcZHk3pMcx1fuH/cFg
-        ==
-X-ME-Sender: <xms:AgG-YO6XIE6wb0zbugckGlgAg6MDKbc8OocUC6hSbUNKHfiHOjrIkg>
-    <xme:AgG-YH6gvkdR9pPtp5kzIEOMLs5xroBEfpjFvl2mDMukH3MS2vreAWPN2Lzdhi-qO
-    sBXZvUwT1SNKQ>
-X-ME-Received: <xmr:AgG-YNfh4_-hQrnyNDuugR449PX_YSNnG7wbY9vozb_wMWwjCeOpAZ61zOOXR-fuBCLc8eOLUUbJPykddxvzfMsMTTttGXJQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtjedgfeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeeuleeltd
-    ehkeeltefhleduuddvhfffuedvffduveegheekgeeiffevheegfeetgfenucffohhmrghi
-    nhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:AgG-YLK-BZoNafSfNpOCftqqvK5Tc0JhnFeEjlEVFh9Xw5SwAQLnzQ>
-    <xmx:AgG-YCLiISKsreqbh22vdGr0ByiMfzWpRdo5EXkoZRZtAVktA1mKLg>
-    <xmx:AgG-YMxw1m2Ckqu8mBL7RDD7I7ikQ7JWqkaQh1vF8OKyOjOpay6o8A>
-    <xmx:BAG-YC5BlunxLm-CShEPPrQ2KS0D94mqpB6yenVrDik5NXGdKDpoIA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 7 Jun 2021 07:20:34 -0400 (EDT)
-Date:   Mon, 7 Jun 2021 13:20:32 +0200
-From:   Greg KH <greg@kroah.com>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     SyzScope <syzscope@gmail.com>,
-        syzbot <syzbot+305a91e025a73e4fd6ce@syzkaller.appspotmail.com>,
-        davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        kernel-hardening@lists.openwall.com
-Subject: Re: KASAN: use-after-free Read in hci_chan_del
-Message-ID: <YL4BAKHPZqH6iPdP@kroah.com>
-References: <000000000000adea7f05abeb19cf@google.com>
- <2fb47714-551c-f44b-efe2-c6708749d03f@gmail.com>
- <YL3zGGMRwmD7fNK+@zx2c4.com>
+        Mon, 7 Jun 2021 07:22:34 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158DCC061766;
+        Mon,  7 Jun 2021 04:20:43 -0700 (PDT)
+Received: from [IPv6:2a01:e0a:4cb:a870:6b79:f23c:29c1:895d] (unknown [IPv6:2a01:e0a:4cb:a870:6b79:f23c:29c1:895d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id B526E1F42359;
+        Mon,  7 Jun 2021 12:20:39 +0100 (BST)
+Subject: Re: [PATCH 0/8] Additional features for Hantro HEVC
+To:     Ezequiel Garcia <ezequiel@collabora.com>, hverkuil@xs4all.nl,
+        p.zabel@pengutronix.de, mchehab@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, festevam@gmail.com,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
+        andrzej.p@collabora.com, jc@kynesim.co.uk
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210604130619.491200-1-benjamin.gaignard@collabora.com>
+ <d0e28e5b7ca686162116148c2b94a8e19520bc1b.camel@collabora.com>
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Message-ID: <74858817-e122-4731-3163-ed20c8b9df33@collabora.com>
+Date:   Mon, 7 Jun 2021 13:20:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YL3zGGMRwmD7fNK+@zx2c4.com>
+In-Reply-To: <d0e28e5b7ca686162116148c2b94a8e19520bc1b.camel@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 12:21:12PM +0200, Jason A. Donenfeld wrote:
-> Hi SyzScope,
-> 
-> On Fri, May 28, 2021 at 02:12:01PM -0700, SyzScope wrote:
->  
-> > The bug was reported by syzbot first in Aug 2020. Since it remains 
-> > unpatched to this date, we have conducted some analysis to determine its 
-> > security impact and root causes, which hopefully can help with the 
-> > patching decisions.
-> > Specifically, we find that even though it is labeled as "UAF read" by 
-> > syzbot, it can in fact lead to double free and control flow hijacking as 
-> > well. Here is our analysis below (on this kernel version: 
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=af5043c89a8ef6b6949a245fff355a552eaed240)
-> > 
-> > ----------------------------- Root cause analysis: 
-> > --------------------------
-> > The use-after-free bug happened because the object has two different 
-> > references. But when it was freed, only one reference was removed, 
-> > allowing the other reference to be used incorrectly.
-> > [...]
-> 
-> Thank you very much for your detailed analysis. I think this is very
-> valuable work, and I appreciate you doing it. I wanted to jump in to
-> this thread here so as not to discourage you, following Greg's hasty
-> dismissal. The bad arguments made I've seen have been something like:
-> 
-> - Who cares about the impact? Bugs are bugs and these should be fixed
->   regardless. Severity ratings are a waste of time.
-> - Spend your time writing patches, not writing tools to discover
->   security issues.
-> - This doesn't help my interns.
-> - "research project" scare quotes.
-> 
-> I think this entire set of argumentation is entirely bogus, and I really
-> hope it doesn't dissuade you from continuing to conduct useful research
-> on the kernel.
 
-Ok, I'd like to apologize if that was the attitude that came across
-here, as I did not mean it that way.
+Le 04/06/2021 à 18:49, Ezequiel Garcia a écrit :
+> Hi Benjamin,
+>
+> Thanks for posting this so quickly.
+>
+> On Fri, 2021-06-04 at 15:06 +0200, Benjamin Gaignard wrote:
+>> Basic HEVC support has been added to Hantro driver in this pull request:
+>> https://www.spinics.net/lists/linux-media/msg193744.html
+>>
+>> Thanks to that it is now possible to support more features for this driver.
+>>
+>> The first patch allow to log the hardware performance per macroblock.
+>> The second patch makes the driver use compressed reference frames to
+>> reduce memory bandwidth consumption.
+> As I commented, it would be nice to do some measurements here
 
-What I saw here was an anonymous email, saying "here is a whole bunch of
-information about a random syzbot report that means you should fix this
-sooner!"  When there's a dump this big of "information", but no patch,
-that's almost always a bad sign that the information really isn't all
-that good, otherwise the author would have just sent a patch to fix it.
+The performances measured by the first patch (the number of macroblock per cycle) remain
+the same because the goal of using compressed frames is to save memory bandwidth.
+That doesn't impact what is measure by the Hantro hardware block itself.
+To give you an example that is the result of decoding one of the fluster reference file.
 
-We are drowning in syzbot bugs at the moment, with almost no one helping
-to fix them.  So much so that the only people I know of working on this
-are the interns with with the LF has funded because no other company
-seems willing to help out with this task.
+gst-launch-1.0 filesrc location=AMP_A_Samsung_7.hevc ! h265parse ! v4l2slh265dec ! fakesink
 
-That's not the syzbot author's fault, it's the fault of every other
-company that relies on Linux at the moment.  By not providing time for
-their engineers to fix these found bugs, and only add new features, it's
-not going to get any better.
+cat /sys/kernel/debug/tracing/trace
+#
+# entries-in-buffer/entries-written: 17/17   #P:4
+#
+#                                _-----=> irqs-off
+#                               / _----=> need-resched
+#                              | / _---=> hardirq/softirq
+#                              || / _--=> preempt-depth
+#                              ||| /     delay
+#           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
+#              | |         |   ||||      |         |
+           <idle>-0       [000] d.h1   143.745124: hantro_hevc_perf: minor = 1,      180 cycles / mb
+           <idle>-0       [000] d.h1   143.758086: hantro_hevc_perf: minor = 1,      172 cycles / mb
+           <idle>-0       [000] d.h1   143.770829: hantro_hevc_perf: minor = 1,      167 cycles / mb
+           <idle>-0       [000] d.h1   143.782757: hantro_hevc_perf: minor = 1,      166 cycles / mb
+           <idle>-0       [000] d.h1   143.794866: hantro_hevc_perf: minor = 1,      165 cycles / mb
+           <idle>-0       [000] d.h1   143.808012: hantro_hevc_perf: minor = 1,      165 cycles / mb
+           <idle>-0       [000] d.h1   143.818225: hantro_hevc_perf: minor = 1,      166 cycles / mb
+           <idle>-0       [000] d.h1   143.828063: hantro_hevc_perf: minor = 1,      165 cycles / mb
+           <idle>-0       [000] d.h1   143.838217: hantro_hevc_perf: minor = 1,      165 cycles / mb
+           <idle>-0       [000] d.h1   143.848728: hantro_hevc_perf: minor = 1,      172 cycles / mb
+           <idle>-0       [000] d.h1   143.858677: hantro_hevc_perf: minor = 1,      167 cycles / mb
+           <idle>-0       [000] d.h1   143.868576: hantro_hevc_perf: minor = 1,      166 cycles / mb
+           <idle>-0       [000] d.h1   143.878431: hantro_hevc_perf: minor = 1,      165 cycles / mb
+           <idle>-0       [000] d.h1   143.888684: hantro_hevc_perf: minor = 1,      165 cycles / mb
+           <idle>-0       [000] d.h1   143.898827: hantro_hevc_perf: minor = 1,      166 cycles / mb
+           <idle>-0       [000] d.h1   143.908645: hantro_hevc_perf: minor = 1,      165 cycles / mb
+           <idle>-0       [000] d.h1   143.918772: hantro_hevc_perf: minor = 1,      165 cycles / mb
 
-So this combined two things I'm really annoyed at, anonymous
-contributions combined with "why are you not fixing this" type of
-a report.  Neither of which were, in the end, actually helpful to us.
+>
+>> Patches 3 to 5 allow to decode and produce 10-bits P010 frames.
+> I suppose this means that some 10-bit test vectors in Fluster HEVC
+> test suite are now passing?
+>
+>> Patch 6 make usage of G2 post processor to scale down the frames.
+>> Patches 7 and 8 add the support of HEVC scaling matrix by adding a new
+>> control.
+>>
+> Ditto, the test vectors with scaling lists should now pass, any chance
+> you post the test suite run before and after this series, just for reference?
 
-I'm not asking for any help for my interns, nor am I telling anyone what
-to work on.  I am saying please don't annoy the maintainers who are
-currently overwhelmed at the moment with additional reports of this type
-when they obviously can not handle the ones that we have.
+Files like SLIST_A_Sony_5, SLIST_B_Sony_9, SLIST_C_Sony_4, SLIST_D_Sony_9 or
+DBLK_A_MAIN10_VIXS_4 are now decoded by the driver.
 
-Working with the syzbot people to provide a more indepth analysis of the
-problem is wonderful, and will go a long way toward helping being able
-to do semi-automatic fixing of problems like this, which would be
-wonderful.  But how were we supposed to know this anonymous gmail
-account, with a half-completed google pages web site was not just a
-troll trying to waste our time?
+fluster score is 70/147.
+I think it could be better but, in few cases, it seems that the last frames
+isn't retrieved by the userland stack but that need to be verify and debug
+in an other series ;-)
 
-What proof did we have that this really was a correct report if a real
-person didn't even provide their name to it?
+Benjamin
 
-thanks,
-
-greg k-h
+>
+> Thanks again,
+> Ezequiel
+>
+>> All these patches enhance the HEVC support for Hantro (G2) hardware.
+>> Unluckily they almost all touch the same pieces of code, where buffer
+>> size, offset and addresses are set, so they have to be in this order.
+>> They depend of the series pushed in this pull request:
+>> https://www.spinics.net/lists/linux-media/msg193744.html
+>>
+>> Benjamin
+>>
+>> Benjamin Gaignard (8):
+>>    media: hantro: Trace hevc hw cycles performance register
+>>    media: hantro: Add support of compressed reference buffers
+>>    media: hantro: hevc: Allow 10-bits encoded streams
+>>    media: Add P010 video format
+>>    media: hantro: hevc: Allow to produce 10-bit frames
+>>    media: hantro: enumerate scaled output formats
+>>    media: hevc: Add scaling matrix control
+>>    media: hantro: Add scaling lists feature
+>>
+>>   .../media/v4l/ext-ctrls-codec.rst             |  45 +++++
+>>   .../media/v4l/pixfmt-yuv-planar.rst           |   8 +
+>>   .../media/v4l/vidioc-queryctrl.rst            |   6 +
+>>   drivers/media/v4l2-core/v4l2-common.c         |   1 +
+>>   drivers/media/v4l2-core/v4l2-ctrls-core.c     |   6 +
+>>   drivers/media/v4l2-core/v4l2-ctrls-defs.c     |   4 +
+>>   drivers/media/v4l2-core/v4l2-ioctl.c          |   1 +
+>>   drivers/staging/media/hantro/hantro.h         |   4 +
+>>   drivers/staging/media/hantro/hantro_drv.c     |  32 +++-
+>>   .../staging/media/hantro/hantro_g2_hevc_dec.c | 175 ++++++++++++++++--
+>>   drivers/staging/media/hantro/hantro_g2_regs.h |  12 ++
+>>   drivers/staging/media/hantro/hantro_hevc.c    |  60 +++++-
+>>   drivers/staging/media/hantro/hantro_hw.h      |   7 +
+>>   drivers/staging/media/hantro/hantro_v4l2.c    |  10 +-
+>>   drivers/staging/media/hantro/imx8m_vpu_hw.c   |   6 +
+>>   drivers/staging/media/hantro/trace.h          |  40 ++++
+>>   include/media/hevc-ctrls.h                    |  11 ++
+>>   include/uapi/linux/videodev2.h                |   1 +
+>>   18 files changed, 407 insertions(+), 22 deletions(-)
+>>   create mode 100644 drivers/staging/media/hantro/trace.h
+>>
+>
