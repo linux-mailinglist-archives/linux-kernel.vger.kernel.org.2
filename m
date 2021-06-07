@@ -2,91 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD7A39E93A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 23:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C09339E940
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 00:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231185AbhFGWBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 18:01:01 -0400
-Received: from mail-pf1-f181.google.com ([209.85.210.181]:43795 "EHLO
-        mail-pf1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230359AbhFGWBA (ORCPT
+        id S231244AbhFGWDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 18:03:46 -0400
+Received: from mail-pf1-f176.google.com ([209.85.210.176]:34697 "EHLO
+        mail-pf1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230359AbhFGWDo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 18:01:00 -0400
-Received: by mail-pf1-f181.google.com with SMTP id m7so1208136pfa.10;
-        Mon, 07 Jun 2021 14:59:08 -0700 (PDT)
+        Mon, 7 Jun 2021 18:03:44 -0400
+Received: by mail-pf1-f176.google.com with SMTP id g6so14151527pfq.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 15:01:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WNKMrasHpNaeqwrkhFMNAE+AW6y2Sn1+mKflF4XxOjI=;
+        b=juxKJR2pYcBkxm6GQEluwpShhxejA60z1ZPl2HLmHbUEwOJS5iXYbJaq59h/t0GSGP
+         EBtpna7T8KPL6XiN0ev5nb19j7lwWTi+fmq9CfcNEiDE3WNRZJu4mR4R2wHLuzsAsYjm
+         eSb6kHU+KCHR6FeSpdi7rWai/CTxR/3pNVg6j0pcujQw/35Q4fT3R7fDiwKHpVgExo2c
+         p9KSntyeOBMLiseLdSDnrzo18Jz9yHJ4ZcUPHVRtflxsAZRcGGvXVxr8ORVPkD9GOT8T
+         XWGc/7OoO9gtXAUkbcEiQN92+MEEx8oxey3vBcVYmCf4luXGrMDt+Kd6Hal68+VBSNqp
+         xmsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9jTPa0UY0tGM691xkf4yxBu/UIOdvQ3MoXTrDLCVE28=;
-        b=Ch8sEKrmHBy5Hd1vYzfP481OFkYaKiGGy9aJEPSgPBSYo8nRDMP7YpNrqsj+VB8MDh
-         2aJOxUxSn3hm9sW5nsx8aa6nDbJulupfnbuWR7EtcKoczsJBgt7/rhZIqlTv9oayeOcs
-         B7kSxzBtqTTNpgwJL45zvCSf/RfLbje9bfeGqssBlKnawh91BxUb1VlTQFbFatbTyMpM
-         uRwXKJyMweLggHETbQcyfiXiLUQu20VgjADfeIoB/bwCvG+378f7+CsoaHAOFtIGQSnw
-         4rkuJTjSvlQQ6tF06WdoqUjMIb8RqixtK12coN8OrkwGHDdsearY8Eo1RMgiZ/F5LD91
-         FdxQ==
-X-Gm-Message-State: AOAM530W0ZZd5XJmgNwGQ6gB7WxBnSv+AaWC7UeOoTPGgyg8tG8+QO7z
-        Wf7rExlWO23CoM0jfH5KfcU=
-X-Google-Smtp-Source: ABdhPJwEMED3BT+2G+KRaSnckuwCNQr48LAlsO0xt0KeqSs5tL2hlvV+se5oBw6uhM8ZSwyY8v1M8Q==
-X-Received: by 2002:a62:dd83:0:b029:2e8:e511:c32f with SMTP id w125-20020a62dd830000b02902e8e511c32fmr18934441pff.49.1623103148070;
-        Mon, 07 Jun 2021 14:59:08 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id n23sm9170372pff.93.2021.06.07.14.59.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 14:59:07 -0700 (PDT)
-Date:   Mon, 7 Jun 2021 14:59:06 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     trix@redhat.com
-Cc:     hao.wu@intel.com, mdf@kernel.org, michal.simek@xilinx.com,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/7] fpga: wrappers for fpga_manager_ops
-Message-ID: <YL6WqqUYHkhj+tEj@epycbox.lan>
-References: <20210607172402.2938697-1-trix@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WNKMrasHpNaeqwrkhFMNAE+AW6y2Sn1+mKflF4XxOjI=;
+        b=T9APFqtYKHcdkCnxoLLqfIuBmfmtjpn+wXgoQ0gAG6pFGE4LFiC+vRaJKE9ML5oyMJ
+         Nsx7UkRl2OSd3/Igq1i41EtQAO/0s+VBeVFImSkhh+cbGh4CFiiQ8F9xIBf8AAKggEzW
+         IQWXI+ISKlyZyL136Ypfmsw6CUHAjoIWVj89spKg50cMCW0jfRtHr/sL8cr2qtjNur2L
+         tH91EP2HjOwwkopdcgaJ9NR/ecNcI78RgSPo3/ijJWRndA+yzQkMHnxqvrxf4Mnuv0T6
+         T2mTMrpaZaceoxWy1Ed1LsLxZ8aS/bXMgykWUXCEnWTAcQF8WGUZ8bp8UM54jC6dvO6e
+         9heQ==
+X-Gm-Message-State: AOAM5331oPNfVOYWGrz20iJ74edyttJ7n8KiBvLncEdsFCGoHVXkSNZj
+        +IuSucPx0GBAQqim3AE/1bk5kAmCOs1Edt54ZAZbEg==
+X-Google-Smtp-Source: ABdhPJzPbGt8/wXF/96caXRzHEOcivZyfKxaqWHThUrS3ewjWNcAWLNrIi5/92hT67Wgefec7ypzix49+nJZAp3m8Uc=
+X-Received: by 2002:a63:5c4a:: with SMTP id n10mr11952006pgm.279.1623103252950;
+ Mon, 07 Jun 2021 15:00:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607172402.2938697-1-trix@redhat.com>
+References: <CAPcyv4gBNqDFQEYjWqYTckPg-yy=LrvMw_FNY+tUuEwD35CfyA@mail.gmail.com>
+ <20210527042356.3983284-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210527042356.3983284-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAPcyv4jRCZwoJoKGP4v3e8V6u4Y+1VZo_k=umQuh-rrAoMKg4Q@mail.gmail.com>
+ <ca836226-46e1-389c-e5c8-c5f1c91130ea@linux.intel.com> <CAPcyv4gmokd5YTbL0X8w3KKV6EEO0xraaB-OEFJyncjaHQUUuw@mail.gmail.com>
+ <2aba694b-ec36-d57f-06e0-a269f9953bb3@linux.intel.com> <CAPcyv4iOJJjghTPTLCkvT-Y_SJOhCbfm66m_NO5Ue+eVr_0NZA@mail.gmail.com>
+ <cd4983e4-a3e8-7c33-3197-dd3f7e8f7538@linux.intel.com>
+In-Reply-To: <cd4983e4-a3e8-7c33-3197-dd3f7e8f7538@linux.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 7 Jun 2021 15:00:42 -0700
+Message-ID: <CAPcyv4hBiDNOQ-2b5zxaUUyHo9k2h5UOQvM_wGtw_XTok-BmAQ@mail.gmail.com>
+Subject: Re: [RFC v2-fix-v1 3/3] x86/tdx: Handle port I/O
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tom,
+On Mon, Jun 7, 2021 at 2:52 PM Kuppuswamy, Sathyanarayanan
+<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+>
+>
+>
+> On 6/7/21 10:17 AM, Dan Williams wrote:
+> >> Did it answer your query?
+> > Yes, all but the concern of printk recursion.
+>
+> I think recursion is not possible because printk will
+> handle it (using console_lock). If another print is
+> triggered during the current printk handling, it will
+> be directed to logbuf and delayed.
+>
+> https://elixir.bootlin.com/linux/latest/source/kernel/printk/printk_safe.c#L382
 
-On Mon, Jun 07, 2021 at 10:23:55AM -0700, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> As followup from
-> https://lore.kernel.org/linux-fpga/06301910-10a1-0e62-45a0-d28ab5a787ed@redhat.com/
-> 
-> Boards should not be required to have noop functions.
-> So improve or create fpga-mgr wrappers for the fpga_manager_ops.  
-> Remove the noop functions.
-> Refactor fpga-mgr to use the wrappers.
-> 
-> write_sg op was not wrapped on purpose.  Its checking / use in
-> fpga_mgr_buf_load_sg() did not warrant a wrapper.
-> 
-> Tom Rix (7):
->   fpga: wrap the write_init() op
->   fpga: make write_complete() op optional
->   fpga: wrap the write() op
->   fpga: wrap the status() op
->   fpga: wrap the state() op
->   fpga: wrap the fpga_remove() op
->   fpga: collect wrappers and change to inline
-> 
->  drivers/fpga/dfl-fme-mgr.c   |   6 ---
->  drivers/fpga/fpga-mgr.c      | 102 +++++++++++++++++++++++------------
->  drivers/fpga/stratix10-soc.c |   6 ---
->  drivers/fpga/ts73xx-fpga.c   |   6 ---
->  drivers/fpga/zynqmp-fpga.c   |   7 ---
->  5 files changed, 67 insertions(+), 60 deletions(-)
-> 
-> -- 
-> 2.26.3
-> 
-
-Thanks for doing this, will take a look tonight!
-
-- Moritz
+That depends on printk_nmi_direct_enter() to set the context, wouldn't
+an equivalent printk_ve_direct_enter() context flag be needed as well?
