@@ -2,133 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF1E39D475
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 07:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A39F39D477
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 07:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230173AbhFGFuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 01:50:52 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:23881 "EHLO pegase1.c-s.fr"
+        id S230175AbhFGFvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 01:51:49 -0400
+Received: from mga06.intel.com ([134.134.136.31]:53857 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229449AbhFGFus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 01:50:48 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4Fz2Vc3ZsszB9cJ;
-        Mon,  7 Jun 2021 07:48:56 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id vyaOJDm2hiAi; Mon,  7 Jun 2021 07:48:56 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Fz2Vc2XHVzB9Zm;
-        Mon,  7 Jun 2021 07:48:56 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 436848B77F;
-        Mon,  7 Jun 2021 07:48:56 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id KgJWM97gaIvs; Mon,  7 Jun 2021 07:48:56 +0200 (CEST)
-Received: from [172.25.230.103] (po15451.idsi0.si.c-s.fr [172.25.230.103])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E86C38B763;
-        Mon,  7 Jun 2021 07:48:55 +0200 (CEST)
-Subject: Re: [PATCH v2 00/15] init_mm: cleanup ARCH's text/data/brk setup code
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Mike Rapoport <rppt@kernel.org>
-Cc:     uclinux-h8-devel@lists.sourceforge.jp, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-mm@kvack.org,
-        linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20210604070633.32363-1-wangkefeng.wang@huawei.com>
- <YL0+Jargm+y9aqx1@kernel.org>
- <481056ab-686e-9f42-3b8a-b31941f58af6@huawei.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <006eb573-5a20-1ac7-6234-338d11346a08@csgroup.eu>
-Date:   Mon, 7 Jun 2021 07:48:54 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229436AbhFGFvs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 01:51:48 -0400
+IronPort-SDR: irHnXsaUUTEKTA3MnukcCLFw1CiuQmrmOq3YkdNg1VoCM8ArcwhokpBGOVb26NcAueQGX9c4Bl
+ w6rALgEnhBLg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="265721044"
+X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
+   d="scan'208";a="265721044"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 22:49:57 -0700
+IronPort-SDR: lQ00SA89qr/8ioWr0e4vWpuL3dWyO9LlAFM76uMxweheumsRiJLqJmCJzZAmgnuSFBvNgztGTb
+ Jn9evhL2u6Zg==
+X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
+   d="scan'208";a="447367664"
+Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 22:49:56 -0700
+Subject: Re: [kbuild-all] Re: kernel/trace/trace.c:3634:2: warning: function
+ might be possible candidate for 'gnu_printf' format attribute
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+References: <202106041958.XB0yCLBn-lkp@intel.com>
+ <20210604164838.2da06df3@oasis.local.home>
+From:   Rong Chen <rong.a.chen@intel.com>
+Message-ID: <5a50cb60-f184-0d6e-723b-5bad4b5fd14a@intel.com>
+Date:   Mon, 7 Jun 2021 13:49:39 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <481056ab-686e-9f42-3b8a-b31941f58af6@huawei.com>
+In-Reply-To: <20210604164838.2da06df3@oasis.local.home>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kefeng,
 
-Le 07/06/2021 à 02:55, Kefeng Wang a écrit :
-> 
-> On 2021/6/7 5:29, Mike Rapoport wrote:
->> Hello Kefeng,
+
+On 6/5/21 4:48 AM, Steven Rostedt wrote:
+> On Fri, 4 Jun 2021 19:12:03 +0800
+> kernel test robot <lkp@intel.com> wrote:
+>
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>> head:   f88cd3fb9df228e5ce4e13ec3dbad671ddb2146e
+>> commit: 9a6944fee68e25084130386c608c5ac8db487581 tracing: Add a verifier to check string pointers for trace events
+>> date:   3 months ago
+>> config: x86_64-rhel (attached as .config)
+>> compiler: gcc-6 (Ubuntu 6.4.0-17ubuntu1) 6.4.0 20180424
+>> reproduce (this is a W=1 build):
+>>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9a6944fee68e25084130386c608c5ac8db487581
+>>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>          git fetch --no-tags linus master
+>>          git checkout 9a6944fee68e25084130386c608c5ac8db487581
+>>          # save the attached .config to linux build tree
+>>          make W=1 ARCH=x86_64
 >>
->> On Fri, Jun 04, 2021 at 03:06:18PM +0800, Kefeng Wang wrote:
->>> Add setup_initial_init_mm() helper, then use it
->>> to cleanup the text, data and brk setup code.
->>>
->>> v2:
->>> - change argument from "char *" to "void *" setup_initial_init_mm()
->>>    suggested by Geert Uytterhoeven
->>> - use NULL instead of (void *)0 on h8300 and m68k
->>> - collect ACKs
->>>
->>> Cc: linux-snps-arc@lists.infradead.org
->>> Cc: linux-arm-kernel@lists.infradead.org
->>> Cc: linux-csky@vger.kernel.org
->>> Cc: uclinux-h8-devel@lists.sourceforge.jp
->>> Cc: linux-m68k@lists.linux-m68k.org
->>> Cc: openrisc@lists.librecores.org
->>> Cc: linuxppc-dev@lists.ozlabs.org
->>> Cc: linux-riscv@lists.infradead.org
->>> Cc: linux-sh@vger.kernel.org
->>> Cc: linux-s390@vger.kernel.org
->>> Kefeng Wang (15):
->>>    mm: add setup_initial_init_mm() helper
->>>    arc: convert to setup_initial_init_mm()
->>>    arm: convert to setup_initial_init_mm()
->>>    arm64: convert to setup_initial_init_mm()
->>>    csky: convert to setup_initial_init_mm()
->>>    h8300: convert to setup_initial_init_mm()
->>>    m68k: convert to setup_initial_init_mm()
->>>    nds32: convert to setup_initial_init_mm()
->>>    nios2: convert to setup_initial_init_mm()
->>>    openrisc: convert to setup_initial_init_mm()
->>>    powerpc: convert to setup_initial_init_mm()
->>>    riscv: convert to setup_initial_init_mm()
->>>    s390: convert to setup_initial_init_mm()
->>>    sh: convert to setup_initial_init_mm()
->>>    x86: convert to setup_initial_init_mm()
->> I might be missing something, but AFAIU the init_mm.start_code and other
->> fields are not used really early so the new setup_initial_init_mm()
->> function can be called in the generic code outside setup_arch(), e.g in
->> mm_init().
-> 
-> Hi Mike， each architecture has their own value, not the same, eg m68K and
-> 
-> h8300, also the name of the text/code/brk is different in some arch, so I keep
-> 
-> unchanged.
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> All warnings (new ones prefixed by >>):
+>>
+>>     kernel/trace/trace.c: In function 'test_can_verify_check':
+>>>> kernel/trace/trace.c:3634:2: warning: function might be possible candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
+>>       vsnprintf(buf, 16, "%d", ap);
+>>       ^~~~~~~~~
+> "test_can_verify_check" is not a generic function that needs a printf
+> format check. This is a bogus warning. Please remove it as being an issue.
+>
+> -- Steve
+>
 
-What you could do is to define a __weak function that architectures can override and call that 
-function from mm_init() as suggested by Mike,
+Hi Steve,
 
-Something like:
+Thanks for the feedback, we'll ignore the commit to avoid new reports 
+for this warning.
 
-void __weak setup_initial_init_mm(void)
-{
-	init_mm.start_code = (unsigned long)_stext;
-	init_mm.end_code = (unsigned long)_etext;
-	init_mm.end_data = (unsigned long)_edata;
-	init_mm.brk = (unsigned long)_end;
-}
+Best Regards,
+Rong Chen
 
-Then only the few architecture that are different would override it.
+>
+>>     kernel/trace/trace.c: In function 'trace_check_vprintf':
+>>     kernel/trace/trace.c:3717:3: warning: function might be possible candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
+>>        trace_seq_vprintf(&iter->seq, iter->fmt, ap);
+>>        ^~~~~~~~~~~~~~~~~
+>>     kernel/trace/trace.c:3756:3: warning: function might be possible candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
+>>        trace_seq_vprintf(&iter->seq, p, ap);
+>>        ^~~~~~~~~~~~~~~~~
+>>
+>>
+>> vim +/gnu_printf +3634 kernel/trace/trace.c
+>>
+>>    3617	
+>>    3618	static int test_can_verify_check(const char *fmt, ...)
+>>    3619	{
+>>    3620		char buf[16];
+>>    3621		va_list ap;
+>>    3622		int ret;
+>>    3623	
+>>    3624		/*
+>>    3625		 * The verifier is dependent on vsnprintf() modifies the va_list
+>>    3626		 * passed to it, where it is sent as a reference. Some architectures
+>>    3627		 * (like x86_32) passes it by value, which means that vsnprintf()
+>>    3628		 * does not modify the va_list passed to it, and the verifier
+>>    3629		 * would then need to be able to understand all the values that
+>>    3630		 * vsnprintf can use. If it is passed by value, then the verifier
+>>    3631		 * is disabled.
+>>    3632		 */
+>>    3633		va_start(ap, fmt);
+>>> 3634		vsnprintf(buf, 16, "%d", ap);
+>>    3635		ret = va_arg(ap, int);
+>>    3636		va_end(ap);
+>>    3637	
+>>    3638		return ret;
+>>    3639	}
+>>    3640	
+>>
+>> ---
+>> 0-DAY CI Kernel Test Service, Intel Corporation
+>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> _______________________________________________
+> kbuild-all mailing list -- kbuild-all@lists.01.org
+> To unsubscribe send an email to kbuild-all-leave@lists.01.org
 
-I see a few archictectures are usigne PAGE_OFFSET to set .start_code, but it is likely that this is 
-equivalent to _stext.
-
-Christophe
