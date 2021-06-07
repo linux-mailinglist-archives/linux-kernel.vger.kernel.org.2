@@ -2,100 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4ED639DD5C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C9939DD70
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbhFGNOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 09:14:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbhFGNO3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 09:14:29 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68373C061766;
-        Mon,  7 Jun 2021 06:12:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=mzx+toA+I5GhMZJQ4bshpMENsBCltPEDS9fQ3Twfj7g=; b=bd0/P2zv8OxN2aVXSWnOUmYg/
-        aAmWH4AskdREZQW0GRs6yatKOr8pzi8lUzSILehQ1+JrS469ZEehPY66eojybpFjQcaFuQIATEL1G
-        smkIGo30rk+3bnoIdEWQn1nLjOBIgeewLXNrg75mpVuaANWFym9dPQlraYGiex+6ZtpDlzK0zhsH7
-        gg0CCwD7Lm4LAl6tcmC5SfXNVMqLHF8K5kE4DTtyJH7QA5kQgpdP2kvB2Nl60FdgDIToKC+LbNfKV
-        wFDsi20DA506bpZ3g2fAoooHoCR8x+iD2uAYipfJ048acaFGSssrrrtLZyxqZtV4oI1NgucOXF6vE
-        xreUBIc5w==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44794)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lqF3Q-0000YM-At; Mon, 07 Jun 2021 14:12:32 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lqF3P-0005xU-Vc; Mon, 07 Jun 2021 14:12:31 +0100
-Date:   Mon, 7 Jun 2021 14:12:31 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Steen Hegelund <steen.hegelund@microchip.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Mark Einon <mark.einon@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Simon Horman <simon.horman@netronome.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>
-Subject: Re: [PATCH net-next v3 04/10] net: sparx5: add port module support
-Message-ID: <20210607131231.GF22278@shell.armlinux.org.uk>
-References: <20210604085600.3014532-1-steen.hegelund@microchip.com>
- <20210604085600.3014532-5-steen.hegelund@microchip.com>
- <20210607092136.GA22278@shell.armlinux.org.uk>
- <d5ffe24ce7fbe5dd4cc0b98449b0594b086e3ba9.camel@microchip.com>
+        id S230414AbhFGNQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 09:16:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49592 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230390AbhFGNQ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 09:16:26 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C62276108D;
+        Mon,  7 Jun 2021 13:14:34 +0000 (UTC)
+Date:   Mon, 7 Jun 2021 09:14:32 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Ingo Molnar <mingo@redhat.com>, kernel@axis.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tracing: Export tracing_start() and tracing_stop()
+Message-ID: <20210607091432.667ff0ba@oasis.local.home>
+In-Reply-To: <YL3X7yRr1+yW/PHU@infradead.org>
+References: <20210602080118.21627-1-vincent.whitchurch@axis.com>
+        <YL3X7yRr1+yW/PHU@infradead.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d5ffe24ce7fbe5dd4cc0b98449b0594b086e3ba9.camel@microchip.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, 7 Jun 2021 09:25:19 +0100
+Christoph Hellwig <hch@infradead.org> wrote:
 
-On Mon, Jun 07, 2021 at 02:46:44PM +0200, Steen Hegelund wrote:
-> Hi Russell,
-> 
-> Thanks for your comments.
-> 
-> On Mon, 2021-06-07 at 10:21 +0100, Russell King (Oracle) wrote:
-> > It looks to me like the phylink code in your patch series is based on
-> > an older version of phylink and hasn't been updated for the split PCS
-> > support - you seem to be munging the PCS parts in with the MAC
-> > callbacks. If so, please update to the modern way of dealing with this.
+> On Wed, Jun 02, 2021 at 10:01:18AM +0200, Vincent Whitchurch wrote:
+> > tracing_stop() is very useful during hands-on debugging for getting the
+> > trace to stop exactly when the problem is detected.  Export this to
+> > modules.
 > > 
-> > If that isn't the case, please explain why you are not using the split
-> > PCS support.
+> > Personally, I haven't yet found the need to use tracing_start() from
+> > code since I usually start tracing via tracefs, but export that too for
+> > symmetry since it may have its uses together with tracing_stop().  
 > 
-> I need to be able to let the user set the speed to get the link up.
-> 
-> So far I have only been able to get the user configured speeds via the mac_ops, but if this is also
-> possible via the pcs_ops, there should not anything preventing me from using these ops instead.
-> 
-> Will the pcs_ops also support this?
+> NAK, no exports for unused symbols.
 
-I really don't understand what you're saying here, so I can't answer.
+Normally I would NAK this NAK because this is not normal functionality
+that modules could use. It's for debugging, similar to trace_printk(),
+and there should be no used symbols in any modules. This is something
+for debugging purposes only and should never be in shipped kernels.
 
-What exactly do you mean "user configured speeds" ? Please give
-examples of exactly what you're wanting to do.
+That said though, tracing_stop() is probably not what is wanted
+(unless its for a suspend to ram thing). According to the above
+description, the author really wants to use "tracing_off()" and not
+"tracing_stop()" as tracing_off() is faster and can be turned back on
+in user-space with the "tracing_on" file in tracefs, where as,
+tracing_stop() can not be. tracing_stop() needs a tracing_start() to
+get it going again.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+And tracing_off() is already EXPORT_SYMBOL_GPL() (as it is commonly
+used for debugging of modules). Again, it shouldn't have any in-kernel
+users in modules, because, like I stated above, it's similar to
+trace_printk() which should be removed before pushing to Linus.
+
+I'll NAK this patch for a different reason. Use tracing_off() instead.
+
+-- Steve
