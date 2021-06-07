@@ -2,117 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4FF39DBBA
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6020939DBBD
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231462AbhFGLu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 07:50:59 -0400
-Received: from mga06.intel.com ([134.134.136.31]:47165 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231283AbhFGLu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 07:50:58 -0400
-IronPort-SDR: wZgmnU9c3Jj/iwFIBNdjyA+3lOM3UpCHFqxlCpz1zYn9eGyXqJ8azfV6rzO1FA+xKYrPZ3jihU
- 9T+V2xp9Lrow==
-X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="265761217"
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
-   d="scan'208";a="265761217"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 04:49:06 -0700
-IronPort-SDR: u17BKXvx/hUR46TzWYEH1/SrBnug8cLVNtgUOpARTkwSnngROQ/OLo6pqeQujI435LdHyJ1dTj
- ScM475RMOI1A==
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
-   d="scan'208";a="484747647"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 04:49:03 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lqDkb-000FDV-3n; Mon, 07 Jun 2021 14:49:01 +0300
-Date:   Mon, 7 Jun 2021 14:49:01 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Flavio Suligoi <f.suligoi@asem.it>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Subject: Re: [PATCH v2 2/7] pwm: core: Always require PWM flags to be provided
-Message-ID: <YL4HrZTb+fmW4UTf@smile.fi.intel.com>
-References: <20210531194947.10770-1-andriy.shevchenko@linux.intel.com>
- <20210531194947.10770-2-andriy.shevchenko@linux.intel.com>
- <20210606213054.bmqgs5hehbowa62d@pengutronix.de>
- <YL3grTQ00lFCXyCp@smile.fi.intel.com>
- <20210607095324.yaiu5lzb5zgoejpa@pengutronix.de>
- <YL3xuJyAcbPLW7yG@smile.fi.intel.com>
- <YL3zDUWsY9mUW0eQ@smile.fi.intel.com>
+        id S230258AbhFGLvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 07:51:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230175AbhFGLvq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 07:51:46 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED8FAC061766;
+        Mon,  7 Jun 2021 04:49:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=b4rAFiRR6q1QLHaHBT6xTI6OSbNTFacSG20JPRHmTxs=; b=MPpQcj7PWyNMrqEm5VP13UzEw
+        GkMawcXFxqJfN6qmOAGuoj0FZMZuFmCwSxI6kN+K0mOCLlk5WNG0uZMf8jbG2bp2QKvcWOcSAsla/
+        VXfb3T4N1o7XNs/AAY4GVcBWJbr7fpM5tVO5R+lOr8YVVjMn0gVifIt4M+PwXK96RSBdSprPZY8qe
+        c9FOU2BhTkBPBh1zm5HGRouKnW9C873OP1CWe5dw8XXDyTfJerFOj1yUBJboAm6kvmlqu9x2boAma
+        z5hbgoyw6O5rUO18o0vNa/5Wp5D23cluz8e7IdKzSP4LeXjmBaxCyfu5WyqAYPCpq06bauQKhcMCQ
+        +wbpWuKXA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44786)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lqDlP-0000T6-Mt; Mon, 07 Jun 2021 12:49:51 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lqDlM-0005tb-T2; Mon, 07 Jun 2021 12:49:49 +0100
+Date:   Mon, 7 Jun 2021 12:49:48 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the arm tree
+Message-ID: <20210607114946.GD22278@shell.armlinux.org.uk>
+References: <20210604081503.2229b376@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YL3zDUWsY9mUW0eQ@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210604081503.2229b376@canb.auug.org.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 01:21:01PM +0300, Andy Shevchenko wrote:
-> On Mon, Jun 07, 2021 at 01:15:20PM +0300, Andy Shevchenko wrote:
-> > On Mon, Jun 07, 2021 at 11:53:24AM +0200, Uwe Kleine-König wrote:
-> > > On Mon, Jun 07, 2021 at 12:02:37PM +0300, Andy Shevchenko wrote:
-> > > > On Sun, Jun 06, 2021 at 11:30:54PM +0200, Uwe Kleine-König wrote:
-> > > > > On Mon, May 31, 2021 at 10:49:42PM +0300, Andy Shevchenko wrote:
-> > > > > > It makes little sense to make PWM flags optional since in case
-> > > > > > of multi-channel consumer the flags can be optional only for
-> > > > > > the last listed channel.
-> > > > > 
-> > > > > I think the same holds true for dt references.
-> > > > 
-> > > > Can you elaborate this? I haven't got what you are talking about, not a DT
-> > > > expert here.
-> > > 
-> > > Ah no, I mixed that up. While the function that parses the phandle is
-> > > flexible, for each pwm controller the number of arguments is fixed, so
-> > > 
-> > > 	pwms = <&pwm1 100000 &pwm2 100000 &pwm3 1000000>;
-> > > 
-> > > cannot be interpreted as 3-argument references to two PWMs. This is
-> > > different to ACPI (I guess, not an ACPI expert here :-) because &pwm1
-> > > "knows" if it needs 1 or 2 additional parameters (#pwm-cells).
-> > 
-> > It's not about ACPI, it's about "the ACPI glue layer in Linux kernel".
-> > Used API is a part of it and it does allow only two cases, either NULL entry
-> > (by having 0 as an argument) or full-length supplied tuple (in case of PWM it's
-> > 3, so, means 4 parameters.
-> > 
-> > Let's consider examples:
-> > 
-> > (0, 0, x3, y3, z3, t3) // NULL, NULL, PWM3
-> > (x1, y1, z1, t1, 0, x3, y3, z3, t3) // PWM1, NULL, PWM3
-> > 
-> > So, making last parameter "flexible" will work only for the last tuple in the
-> > array.
-> > 
-> > Read this [1] for further information.
-> > 
-> > [1]: https://elixir.bootlin.com/linux/latest/source/drivers/acpi/property.c#L629
+On Fri, Jun 04, 2021 at 08:15:03AM +1000, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Hmm... I have read the actual implementation and it seems it's possible to have
-> flexible array, so this patch needs to be reconsidered.
+> Commit
+> 
+>   aafc8eb78635 ("ARM: update __swp_entry_to_pte() to use PTE_TYPE_FAULT")
+> 
+> is missing a Signed-off-by from its author and committer.
 
-I was thinking more about it and what we have here is positional-dependent
-arguments. Either way we might end up in the same situation (when we need to
-parse arguments based on their positions, rather than always have them being
-present). So, while I won't change documentation example (to be more stricter
-there), I will drop this change.
+For the record... as mentioned on irc, this looks perfectly fine to me:
 
-Also, the PWM initial state doesn't include duty cycle. Any explanations why is
-that?
+commit aafc8eb78635a2ecb612653f57f1e86e9030b5d9
+Author:     Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+AuthorDate: Thu May 13 11:53:17 2021 +0100
+Commit:     Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+CommitDate: Thu Jun 3 11:39:02 2021 +0100
+...
+    Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+
+It seems that the author and committer do indeed have the appropriate
+sign-off in place on this commit.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
