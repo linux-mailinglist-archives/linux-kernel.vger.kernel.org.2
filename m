@@ -2,118 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A8939DDDF
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00DB739DDE7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230395AbhFGNmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 09:42:50 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:46242 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbhFGNms (ORCPT
+        id S230425AbhFGNnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 09:43:52 -0400
+Received: from mail-pj1-f47.google.com ([209.85.216.47]:39881 "EHLO
+        mail-pj1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230194AbhFGNnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 09:42:48 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 157DelfA065132;
-        Mon, 7 Jun 2021 08:40:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623073247;
-        bh=XIRhjm6c/H5np6FKJM7OWMRS5z/xWNTKW2NoHX5pFUI=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=hjrdjGA4/mkgRgErxkgA2WbdfJpaYYWTf4X8uwNvMU4pHOmBxmA41kpQmxR3A8q23
-         4dLEFWqc1WTQ8D1NlphXCOH/t7vE3CLlpZI5sgLI/heahqpOtC0wp6qqZafd3rjd9l
-         ipSqo9w48mfKlyb4JXBrvsDqumxXQ+KchqU5bn9U=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 157DelkS087488
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 7 Jun 2021 08:40:47 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 7 Jun
- 2021 08:40:47 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 7 Jun 2021 08:40:47 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 157DeleB040758;
-        Mon, 7 Jun 2021 08:40:47 -0500
-Date:   Mon, 7 Jun 2021 08:40:47 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-CC:     Lokesh Vutla <lokeshvutla@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Tero Kristo <kristo@kernel.org>, <linux-spi@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 3/5] arm64: dts: ti: am65: align ti,pindir-d0-out-d1-in
- property with dt-shema
-Message-ID: <20210607134047.isfuedgjxpubpcb5@ungloved>
-References: <20210602123416.20378-1-a-govindraju@ti.com>
- <20210602123416.20378-4-a-govindraju@ti.com>
+        Mon, 7 Jun 2021 09:43:51 -0400
+Received: by mail-pj1-f47.google.com with SMTP id o17-20020a17090a9f91b029015cef5b3c50so11953879pjp.4;
+        Mon, 07 Jun 2021 06:42:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=TabZxb1NwLVIi4AmcGpz96U9X0thI3NBq2NIc46D/Mk=;
+        b=g7/zXtMNiRVgyA3/TSPMreXeT57/rw163vuLVdt/yBW0GSVd64JP5NFGMCO60I/eCq
+         sjp10OKVswAnMajtcdOx2olu64q1kP4c+F9kpG++dzteCUiNUEzo5C0+S+K8Fh/0YKsh
+         usEC5pFWWE1Mhie+9IQF9+cVFjMRUXuSQND4HOTbAMeC+/AAxXAXeKlmstQYuuPMTILD
+         bY4ZV3XfNLpmfSGfcuyeiYi0uvdctkYp0GnRAYWtdFWy9a+Zkd+AJlP2o8gYIF00xGdo
+         4yMORoSCyOHzKjCcacOsmFq73Z06tLF3aOJ0pUBxMEXqTH+OX6lFO26ri8EH1tV1QWyb
+         sOOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=TabZxb1NwLVIi4AmcGpz96U9X0thI3NBq2NIc46D/Mk=;
+        b=Sx5kwonkxcdXIVBPl0TDDwAMLktIdwCnly3D4ixwbhXGkSst9P0El6uxb6MVDdlC3s
+         uM+bAZ+faYokH4Qd3JO/WlMCvroK6uU2eQS0B1cUAfp/0QMitQnpKMQTUAEhEB8ogQ2e
+         oIedwCQqZfY3Y+lF7pP+fH7lRh1KwJzIdDD//w0qPCOHUKClqg9nV+g6ocCaA31PT/MF
+         PopePcZ5jdg4QwNAjRIxZMrXR/bNyyY3efVsdb3qQUPS1Uq26Il1MrEfZJseiYh6fkqr
+         uAHb6hU//slAn3KQFc+Bxjcf/NuyZKd91FcLVHp5KaMpKZExQWK6ajrN+YysXWqXI3Mz
+         crtQ==
+X-Gm-Message-State: AOAM5306WRridNQ0+PM8/SJXoI53LaNtf0dvuGjH+Lnm0Ux3jl+CyZUS
+        TcvQB0yj/6Ql3vgufKgp1OHriDHPjX0UYB7MGjE=
+X-Google-Smtp-Source: ABdhPJzuRAF6GK8QdHeQ5JtaIsqPPo9mPq35fdUzWrrNp6TrNGpfLGxMTJQsdehZp9z7COz5J7WxBxcniS7I9+RCLho=
+X-Received: by 2002:a17:90b:1888:: with SMTP id mn8mr33522785pjb.179.1623073259794;
+ Mon, 07 Jun 2021 06:40:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210602123416.20378-4-a-govindraju@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210607093433.39160-1-src.res@email.cn>
+In-Reply-To: <20210607093433.39160-1-src.res@email.cn>
+From:   teng sterling <sterlingteng@gmail.com>
+Date:   Mon, 7 Jun 2021 21:40:49 +0800
+Message-ID: <CAMU9jJrkxTUgS0P3tpr-Udw9WqUgqCJ2D0G+ja5UX=B+4DRw7g@mail.gmail.com>
+Subject: Re: [PATCH] docs/zh_CN: add a translation for index
+To:     Hu Haowen <src.res@email.cn>
+Cc:     Alex Shi <alexs@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yanteng Si <siyanteng@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18:04-20210602, Aswath Govindraju wrote:
-> ti,pindir-d0-out-d1-in property is expected to be of type boolean.
-> Therefore, fix the property accordingly.
-> 
-> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-No need for Fixes?
-
-Also please split up the patches per maintainer so that we are'nt
-confused on who should pick what etc..
-
-> ---
->  arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi | 2 +-
->  arch/arm64/boot/dts/ti/k3-am654-base-board.dts     | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
-> index f4ec9ed52939..23d51b6a9cf2 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
-> @@ -575,7 +575,7 @@
->  
->  	#address-cells = <1>;
->  	#size-cells= <0>;
-> -	ti,pindir-d0-out-d1-in = <1>;
-> +	ti,pindir-d0-out-d1-in;
->  };
->  
->  &tscadc0 {
-> diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-> index eddb2ffb93ca..1b947e2c2e74 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-> @@ -299,7 +299,7 @@
->  	pinctrl-0 = <&main_spi0_pins_default>;
->  	#address-cells = <1>;
->  	#size-cells= <0>;
-> -	ti,pindir-d0-out-d1-in = <1>;
-> +	ti,pindir-d0-out-d1-in;
->  
->  	flash@0{
->  		compatible = "jedec,spi-nor";
-> -- 
-> 2.17.1
-> 
-
-
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Q0Mgc2l5YW50ZW5nQGxvb25nc29uLmNuDQpIdSBIYW93ZW4gPHNyYy5yZXNAZW1haWwuY24+IOS6
+jjIwMjHlubQ25pyIN+aXpeWRqOS4gCDkuIvljYg1OjM35YaZ6YGT77yaDQo+DQo+IFRoZSBvcmln
+aW5hbCBmaWxlIGhhcyBhZGRlZCBhIGZvcm1lciBpbnRybyBpbiBjb21taXQgYjUxMjA4ZDQxYzZh
+NGU3ZmMyZjANCj4gKCJkb2NzOiBUd2VhayB0aGUgdG9wLWxldmVsIFNwaGlueCBwYWdlIikgYW5k
+IGhlbmNlIHVwZGF0ZSB0aGUgQ2hpbmVzZQ0KPiB2ZXJzaW9uIGZvciBpdC4NCj4NCj4gU2lnbmVk
+LW9mZi1ieTogSHUgSGFvd2VuIDxzcmMucmVzQGVtYWlsLmNuPg0KPiAtLS0NCj4gIERvY3VtZW50
+YXRpb24vdHJhbnNsYXRpb25zL3poX0NOL2luZGV4LnJzdCB8IDUgKysrKysNCj4gIDEgZmlsZSBj
+aGFuZ2VkLCA1IGluc2VydGlvbnMoKykNCj4NCj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24v
+dHJhbnNsYXRpb25zL3poX0NOL2luZGV4LnJzdCBiL0RvY3VtZW50YXRpb24vdHJhbnNsYXRpb25z
+L3poX0NOL2luZGV4LnJzdA0KPiBpbmRleCAxZjk1M2QzNDM5YTUuLjAwMzEyNmFiYzBkNiAxMDA2
+NDQNCj4gLS0tIGEvRG9jdW1lbnRhdGlvbi90cmFuc2xhdGlvbnMvemhfQ04vaW5kZXgucnN0DQo+
+ICsrKyBiL0RvY3VtZW50YXRpb24vdHJhbnNsYXRpb25zL3poX0NOL2luZGV4LnJzdA0KPiBAQCAt
+MTcsNiArMTcsMTEgQEANCj4gICAgICoq57+76K+R6K6h5YiSOioqDQo+ICAgICDlhoXmoLjkuK3m
+lofmlofmoaPmrKLov47ku7vkvZXnv7vor5HmipXnqL/vvIznibnliKvmmK/lhbPkuo7lhoXmoLjn
+lKjmiLflkoznrqHnkIblkZjmjIfljZfpg6jliIbjgIINCj4NCj4gK+i/meaYr+WGheaguOaWh+ah
+o+agkeeahOmhtue6p+ebruW9leOAguWGheaguOaWh+aho++8jOWwseWDj+WGheaguOacrOi6q+S4
+gOagt++8jOWcqOW+iOWkp+eoi+W6puS4iuaYr+S4gOmhueatow0KaG93IGFib3V0Og0KDQrov5nm
+mK/kuK3mloflhoXmoLjmlofmoaPmoJHnmoTpobbnuqfnm67lvZXjgIINCj4gK+WcqOi/m+ihjOea
+hOW3peS9nO+8m+W9k+aIkeS7rOWKquWKm+WwhuiuuOWkmuWIhuaVo+eahOaWh+S7tuaVtOWQiOaI
+kOS4gOS4qui/nui0r+eahOaVtOS9k+aXtuWwpOWFtuWmguatpOOAguWPpg0KPiAr5aSW77yM6ZqP
+5pe25qyi6L+O5oKo5a+55YaF5qC45paH5qGj6L+b6KGM5pS56L+b77yb5aaC5p6c5oKo5oOz5o+Q
+5L6b5biu5Yqp77yM6K+35Yqg5YWldmdlci5rZXJuZWwub3JnDQrkuK3mloflhoXmoLjmlofmoaPo
+v5vooYzmlLnov5vvvJsNCj4gK+S4iueahGxpbnV4LWRvY+mCruS7tuWIl+ihqOOAgg0K5LiK55qE
+bGludXgtZG9j6YKu5Lu25YiX6KGo77yM5YWI5pS56L+b5Y6f5aeL6Iux5paH5paH5qGj77yM5YaN
+5bCG5YW257+76K+R5Li65Lit5paH5ZCO77yM5pu05paw55u45bqU55qE5Lit5paH5paH5qGj44CC
+DQo+ICsNCj4gIOiuuOWPr+ivgeaWh+ahow0KPiAgLS0tLS0tLS0tLQ0KPg0KPiAtLQ0KPiAyLjI1
+LjENCj4NCkJUVywgSSB0aGluayB0aGVzZSBhcmUgc2ltaWxhciB0byAiZGlzY2xhaW1lci16aF9D
+TiIsIGJ1dCBub3QgYXMgZ29vZA0KYXMgdGhlIGxhdHRlci4NCg0KQWxleCBhbmQgWGlhbmdjaGVu
+Zywgd2hhdCBkbyB5b3UgdGhpbms/DQoNClRoYW5rcywNCllhbnRlbmcNCg==
