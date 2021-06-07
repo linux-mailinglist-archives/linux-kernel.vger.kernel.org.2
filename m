@@ -2,241 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 721E739D811
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E1839D815
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbhFGJAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:00:38 -0400
-Received: from vps.xff.cz ([195.181.215.36]:45604 "EHLO vps.xff.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230127AbhFGJAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:00:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1623056323; bh=lx4WjbYpgHV1MIIv4k7kyeAxqy0SibVzs7GI7EB73yc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=SdoFiFfk/MUPGNIX3Vn+xmzA0C99HAJyVvT8CvaaWx/GeELYOWoIP8ur2+HEvE2M/
-         sRMnxkVlgQy8FIl7fnMedk41b7Q1ttam23YrajA59ruDfjK0SYUhNRGS5HSsLlx4oH
-         KTIFVdXGjwXppFoCwlS/ME+N6poxT1/wPYLEaEm4=
-From:   Ondrej Jirman <megous@megous.com>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR ALLWINNER DE2
-        AND DE3 ENGINE),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Allwinner
-        sunXi SoC support),
-        linux-sunxi@lists.linux.dev (open list:ARM/Allwinner sunXi SoC support),
-        linux-kernel@vger.kernel.org (open list)
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Ondrej Jirman <megous@megous.com>
-Subject: [PATCH v2] drm/sun4i: dw-hdmi: Make HDMI PHY into a platform device
-Date:   Mon,  7 Jun 2021 10:58:36 +0200
-Message-Id: <20210607085836.2827429-1-megous@megous.com>
+        id S230254AbhFGJCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:02:43 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:39942 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229545AbhFGJCm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 05:02:42 -0400
+Received: from relay2.suse.de (unknown [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 0E2811FDA1;
+        Mon,  7 Jun 2021 09:00:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623056451; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DFwjE+z0lEnHuGuwIYHSS4DoT9tAvhOIoQsNTyBPlnM=;
+        b=VuRCo59JDusjwHbv+PStigZT0YwYXb/tebQ1vXZ0UVQnqBo5rqB/hFPdQ06Fqg6AjxPWcy
+        8bps4sK7FRMUnTGuDqO04nD55v4L9g4AY4+h5uRRVh4RDXRHeZFrFiilL41cMM1FJzDX2Z
+        fTvU4dBVVGT3u1yvLS8spxbEpBVSz9A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623056451;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DFwjE+z0lEnHuGuwIYHSS4DoT9tAvhOIoQsNTyBPlnM=;
+        b=dvuqxgkOnkTb3+9ojbmnjKhQmf56EjBAmcKknZ9R4oLVY96dmknVeGlsSgs+dH/VdzYupR
+        tktAfWrOLyy6DfCQ==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id D23F9A3B89;
+        Mon,  7 Jun 2021 09:00:50 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id AC05B1F2CA8; Mon,  7 Jun 2021 11:00:50 +0200 (CEST)
+Date:   Mon, 7 Jun 2021 11:00:50 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Dennis Zhou <dennis@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>, cgroups@vger.kernel.org
+Subject: Re: [PATCH v7 5/6] writeback, cgroup: support switching multiple
+ inodes at once
+Message-ID: <20210607090050.GB30275@quack2.suse.cz>
+References: <20210604013159.3126180-1-guro@fb.com>
+ <20210604013159.3126180-6-guro@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604013159.3126180-6-guro@fb.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Saravana Kannan <saravanak@google.com>
+On Thu 03-06-21 18:31:58, Roman Gushchin wrote:
+> Currently only a single inode can be switched to another writeback
+> structure at once. That means to switch an inode a separate
+> inode_switch_wbs_context structure must be allocated, and a separate
+> rcu callback and work must be scheduled.
+> 
+> It's fine for the existing ad-hoc switching, which is not happening
+> that often, but sub-optimal for massive switching required in order to
+> release a writeback structure. To prepare for it, let's add a support
+> for switching multiple inodes at once.
+> 
+> Instead of containing a single inode pointer, inode_switch_wbs_context
+> will contain a NULL-terminated array of inode pointers.
+> inode_do_switch_wbs() will be called for each inode.
+> 
+> To optimize the locking bdi->wb_switch_rwsem, old_wb's and new_wb's
+> list_locks will be acquired and released only once altogether for all
+> inodes. wb_wakeup() will be also be called only once. Instead of
+> calling wb_put(old_wb) after each successful switch, wb_put_many()
+> is introduced and used.
+> 
+> Signed-off-by: Roman Gushchin <guro@fb.com>
 
-On sunxi boards that use HDMI output, HDMI device probe keeps being
-avoided indefinitely with these repeated messages in dmesg:
+Looks good except for one small issue:
 
-  platform 1ee0000.hdmi: probe deferral - supplier 1ef0000.hdmi-phy
-    not ready
+> +	for (inodep = isw->inodes; *inodep; inodep++) {
+> +		WARN_ON_ONCE((*inodep)->i_wb != old_wb);
+> +		if (inode_do_switch_wbs(*inodep, old_wb, new_wb))
+> +			nr_switched++;
+> +		iput(*inodep);
+> +	}
 
-There's a fwnode_link being created with fw_devlink=on between hdmi
-and hdmi-phy nodes, because both nodes have 'compatible' property set.
+You have to be careful here as iput() can be dropping last inode reference
+and in that case it can sleep and do a lot of heavylifting (which cannot
+happen under the locks you hold). So you need another loop after dropping
+all the locks to do iput() on all inodes. After fixing this feel free to
+add:
 
-Fw_devlink code assumes that nodes that have compatible property
-set will also have a device associated with them by some driver
-eventually. This is not the case with the current sun8i-hdmi
-driver.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-This commit makes sun8i-hdmi-phy into a proper platform device
-and fixes the display pipeline probe on sunxi boards that use HDMI.
-
-More context: https://lkml.org/lkml/2021/5/16/203
-
-Signed-off-by: Saravana Kannan <saravanak@google.com>
-Signed-off-by: Ondrej Jirman <megous@megous.com>
----
-v2: Fix building as a module (phy and hdmi are part of the same module, so
-module init callbacks need to be shared)
-
- drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c  | 31 ++++++++++++++++---
- drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h  |  5 ++--
- drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c | 41 ++++++++++++++++++++++----
- 3 files changed, 66 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-index bbdfd5e26ec88..f75fb157f2ff7 100644
---- a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-+++ b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-@@ -209,7 +209,7 @@ static int sun8i_dw_hdmi_bind(struct device *dev, struct device *master,
- 		goto err_disable_clk_tmds;
- 	}
- 
--	ret = sun8i_hdmi_phy_probe(hdmi, phy_node);
-+	ret = sun8i_hdmi_phy_get(hdmi, phy_node);
- 	of_node_put(phy_node);
- 	if (ret) {
- 		dev_err(dev, "Couldn't get the HDMI PHY\n");
-@@ -242,7 +242,6 @@ static int sun8i_dw_hdmi_bind(struct device *dev, struct device *master,
- 
- cleanup_encoder:
- 	drm_encoder_cleanup(encoder);
--	sun8i_hdmi_phy_remove(hdmi);
- err_disable_clk_tmds:
- 	clk_disable_unprepare(hdmi->clk_tmds);
- err_assert_ctrl_reset:
-@@ -263,7 +262,6 @@ static void sun8i_dw_hdmi_unbind(struct device *dev, struct device *master,
- 	struct sun8i_dw_hdmi *hdmi = dev_get_drvdata(dev);
- 
- 	dw_hdmi_unbind(hdmi->hdmi);
--	sun8i_hdmi_phy_remove(hdmi);
- 	clk_disable_unprepare(hdmi->clk_tmds);
- 	reset_control_assert(hdmi->rst_ctrl);
- 	gpiod_set_value(hdmi->ddc_en, 0);
-@@ -320,7 +318,32 @@ static struct platform_driver sun8i_dw_hdmi_pltfm_driver = {
- 		.of_match_table = sun8i_dw_hdmi_dt_ids,
- 	},
- };
--module_platform_driver(sun8i_dw_hdmi_pltfm_driver);
-+
-+static int __init sun8i_dw_hdmi_init(void)
-+{
-+	int ret;
-+
-+	ret = platform_driver_register(&sun8i_dw_hdmi_pltfm_driver);
-+	if (ret)
-+		return ret;
-+
-+	ret = platform_driver_register(&sun8i_hdmi_phy_driver);
-+	if (ret) {
-+		platform_driver_unregister(&sun8i_dw_hdmi_pltfm_driver);
-+		return ret;
-+	}
-+
-+	return ret;
-+}
-+
-+static void __exit sun8i_dw_hdmi_exit(void)
-+{
-+	platform_driver_unregister(&sun8i_dw_hdmi_pltfm_driver);
-+	platform_driver_unregister(&sun8i_hdmi_phy_driver);
-+}
-+
-+module_init(sun8i_dw_hdmi_init);
-+module_exit(sun8i_dw_hdmi_exit);
- 
- MODULE_AUTHOR("Jernej Skrabec <jernej.skrabec@siol.net>");
- MODULE_DESCRIPTION("Allwinner DW HDMI bridge");
-diff --git a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h
-index d4b55af0592f8..74f6ed0e25709 100644
---- a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h
-+++ b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h
-@@ -195,14 +195,15 @@ struct sun8i_dw_hdmi {
- 	struct gpio_desc		*ddc_en;
- };
- 
-+extern struct platform_driver sun8i_hdmi_phy_driver;
-+
- static inline struct sun8i_dw_hdmi *
- encoder_to_sun8i_dw_hdmi(struct drm_encoder *encoder)
- {
- 	return container_of(encoder, struct sun8i_dw_hdmi, encoder);
- }
- 
--int sun8i_hdmi_phy_probe(struct sun8i_dw_hdmi *hdmi, struct device_node *node);
--void sun8i_hdmi_phy_remove(struct sun8i_dw_hdmi *hdmi);
-+int sun8i_hdmi_phy_get(struct sun8i_dw_hdmi *hdmi, struct device_node *node);
- 
- void sun8i_hdmi_phy_init(struct sun8i_hdmi_phy *phy);
- void sun8i_hdmi_phy_set_ops(struct sun8i_hdmi_phy *phy,
-diff --git a/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c b/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c
-index 9994edf675096..c9239708d398c 100644
---- a/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c
-+++ b/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c
-@@ -5,6 +5,7 @@
- 
- #include <linux/delay.h>
- #include <linux/of_address.h>
-+#include <linux/of_platform.h>
- 
- #include "sun8i_dw_hdmi.h"
- 
-@@ -597,10 +598,30 @@ static const struct of_device_id sun8i_hdmi_phy_of_table[] = {
- 	{ /* sentinel */ }
- };
- 
--int sun8i_hdmi_phy_probe(struct sun8i_dw_hdmi *hdmi, struct device_node *node)
-+int sun8i_hdmi_phy_get(struct sun8i_dw_hdmi *hdmi, struct device_node *node)
-+{
-+	struct platform_device *pdev = of_find_device_by_node(node);
-+	struct sun8i_hdmi_phy *phy;
-+
-+	if (!pdev)
-+		return -EPROBE_DEFER;
-+
-+	phy = platform_get_drvdata(pdev);
-+	if (!phy)
-+		return -EPROBE_DEFER;
-+
-+	hdmi->phy = phy;
-+
-+	put_device(&pdev->dev);
-+
-+	return 0;
-+}
-+
-+static int sun8i_hdmi_phy_probe(struct platform_device *pdev)
- {
- 	const struct of_device_id *match;
--	struct device *dev = hdmi->dev;
-+	struct device *dev = &pdev->dev;
-+	struct device_node *node = dev->of_node;
- 	struct sun8i_hdmi_phy *phy;
- 	struct resource res;
- 	void __iomem *regs;
-@@ -704,7 +725,7 @@ int sun8i_hdmi_phy_probe(struct sun8i_dw_hdmi *hdmi, struct device_node *node)
- 		clk_prepare_enable(phy->clk_phy);
- 	}
- 
--	hdmi->phy = phy;
-+	platform_set_drvdata(pdev, phy);
- 
- 	return 0;
- 
-@@ -728,9 +749,9 @@ int sun8i_hdmi_phy_probe(struct sun8i_dw_hdmi *hdmi, struct device_node *node)
- 	return ret;
- }
- 
--void sun8i_hdmi_phy_remove(struct sun8i_dw_hdmi *hdmi)
-+static int sun8i_hdmi_phy_remove(struct platform_device *pdev)
- {
--	struct sun8i_hdmi_phy *phy = hdmi->phy;
-+	struct sun8i_hdmi_phy *phy = platform_get_drvdata(pdev);
- 
- 	clk_disable_unprepare(phy->clk_mod);
- 	clk_disable_unprepare(phy->clk_bus);
-@@ -744,4 +765,14 @@ void sun8i_hdmi_phy_remove(struct sun8i_dw_hdmi *hdmi)
- 	clk_put(phy->clk_pll1);
- 	clk_put(phy->clk_mod);
- 	clk_put(phy->clk_bus);
-+	return 0;
- }
-+
-+struct platform_driver sun8i_hdmi_phy_driver = {
-+	.probe  = sun8i_hdmi_phy_probe,
-+	.remove = sun8i_hdmi_phy_remove,
-+	.driver = {
-+		.name = "sun8i-hdmi-phy",
-+		.of_match_table = sun8i_hdmi_phy_of_table,
-+	},
-+};
+								Honza
 -- 
-2.31.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
