@@ -2,122 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3394039D7F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E4539D801
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbhFGIzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 04:55:13 -0400
-Received: from mail-ua1-f50.google.com ([209.85.222.50]:38531 "EHLO
-        mail-ua1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230252AbhFGIzL (ORCPT
+        id S230235AbhFGI6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 04:58:33 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3081 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229545AbhFGI6c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 04:55:11 -0400
-Received: by mail-ua1-f50.google.com with SMTP id d13so8588144uav.5;
-        Mon, 07 Jun 2021 01:53:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y7XwbZyFAy9rqQo5J7t8DRS+d/mueoOLl5p+cSQb+8Y=;
-        b=c1QgfpCrjDUVTkAyyBp8WpGyHfrCmwlqwtVXwHahbmua8An8O/eClybf1j+oMHclTg
-         rMIvMWrYrB9Gj2TD3pRIwvdsxkB7d9icqIhx+1ZvDF7Hagiw9U5kXikrzk61x3JjITC7
-         8pG70uh9P/71b9Fu0L2APErbzHJ58IttG/qzIbOqza9sBBKYsJ3QPxRl1kmblPcGDkaK
-         NPkTJVaQoCn/VaRb1KszZ/Q39MTWlQvqB+mnpFRoIOjOQUQjsnSYUteF7Dj4qVL9u+Xb
-         ECq++QQ7vbqY3EDwo1oBHc8szh/J74Mct3oP7UWWUTuzXWOG+5vhy1QPhID0bwAgs6ws
-         QMyA==
-X-Gm-Message-State: AOAM532XV40qPaFsEC/GJkAhhxOwX05CIufouWf1JTWpIJDVLxJyQyBP
-        gmz4WkdAf7f5Mky/jxlESS/KPFB5bvNH7j6p8/o=
-X-Google-Smtp-Source: ABdhPJw70xfmNroh3KIu5QGmqKsYwQ+PKLyHQ50n7DeatYgE4iGl6TNz+FWGTOL2BBcrgRRRH99rMYwIPPT469OpB6M=
-X-Received: by 2002:ab0:63d9:: with SMTP id i25mr6682382uap.106.1623055999326;
- Mon, 07 Jun 2021 01:53:19 -0700 (PDT)
+        Mon, 7 Jun 2021 04:58:32 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fz6Yc3PWszWstB;
+        Mon,  7 Jun 2021 16:51:48 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 16:56:37 +0800
+Received: from [127.0.0.1] (10.174.177.72) by dggpemm500006.china.huawei.com
+ (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 7 Jun 2021
+ 16:56:36 +0800
+Subject: Re: [PATCH 1/1] lib/test: Fix spelling mistakes
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210607031537.12366-1-thunder.leizhen@huawei.com>
+ <CAHp75VdcCQ_ZxBg8Ot+9k2kPFSTwxG+x0x1C+PBRgA3p8MsbBw@mail.gmail.com>
+ <658d4369-06ce-a2e6-151d-5fcb1b527e7e@huawei.com>
+Message-ID: <829eedee-609a-1b5f-8fbc-84ba0d2f794b@huawei.com>
+Date:   Mon, 7 Jun 2021 16:56:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-References: <20210604064916.26580-1-rppt@kernel.org> <20210604064916.26580-9-rppt@kernel.org>
-In-Reply-To: <20210604064916.26580-9-rppt@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 7 Jun 2021 10:53:08 +0200
-Message-ID: <CAMuHMdVa29gUQAdHjKh-qDNpOJaoGwXtUkBM2qnOTi1DWV70xA@mail.gmail.com>
-Subject: Re: [PATCH v2 8/9] mm: replace CONFIG_NEED_MULTIPLE_NODES with CONFIG_NUMA
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matt Turner <mattst88@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Vineet Gupta <vgupta@synopsys.com>, kexec@lists.infradead.org,
-        alpha <linux-alpha@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        arcml <linux-snps-arc@lists.infradead.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        sparclinux <sparclinux@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <658d4369-06ce-a2e6-151d-5fcb1b527e7e@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
 
-On Fri, Jun 4, 2021 at 8:50 AM Mike Rapoport <rppt@kernel.org> wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
->
-> After removal of DISCINTIGMEM the NEED_MULTIPLE_NODES and NUMA
-> configuration options are equivalent.
->
-> Drop CONFIG_NEED_MULTIPLE_NODES and use CONFIG_NUMA instead.
->
-> Done with
->
->         $ sed -i 's/CONFIG_NEED_MULTIPLE_NODES/CONFIG_NUMA/' \
->                 $(git grep -wl CONFIG_NEED_MULTIPLE_NODES)
->         $ sed -i 's/NEED_MULTIPLE_NODES/NUMA/' \
->                 $(git grep -wl NEED_MULTIPLE_NODES)
->
-> with manual tweaks afterwards.
->
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 
-Thanks for your patch!
+On 2021/6/7 16:52, Leizhen (ThunderTown) wrote:
+> 
+> 
+> On 2021/6/7 16:39, Andy Shevchenko wrote:
+>> On Mon, Jun 7, 2021 at 6:21 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+>>
+>>> Fix some spelling mistakes in comments:
+>>> thats ==> that's
+>>> unitialized ==> uninitialized
+>>> panicing ==> panicking
+>>> sucess ==> success
+>>> possitive ==> positive
+>>> intepreted ==> interpreted
+>>
+>> Thanks for the fix! Is it done with the help of the codespell tool? If
+>> not, can you run it and check if it suggests more fixes?
+> 
+> Yes, it's detected by codespell tool. But to avoid too many changes in one patch, I tried
+> breaking it down into smaller patches(If it can be classified) to make it easier to review.
+> In fact, the other patch I just posted included the rest.
 
-As you dropped the following hunk from v2 of PATCH 5/9, there's now
-one reference left of CONFIG_NEED_MULTIPLE_NODES
-(plus the discontigmem comment):
+https://lkml.org/lkml/2021/6/7/151
 
--diff --git a/mm/memory.c b/mm/memory.c
--index f3ffab9b9e39157b..fd0ebb63be3304f5 100644
----- a/mm/memory.c
--+++ b/mm/memory.c
--@@ -90,8 +90,7 @@
-- #warning Unfortunate NUMA and NUMA Balancing config, growing
-page-frame for last_cpupid.
-- #endif
--
---#ifndef CONFIG_NEED_MULTIPLE_NODES
---/* use the per-pgdat data instead for discontigmem - mbligh */
--+#ifdef CONFIG_FLATMEM
-- unsigned long max_mapnr;
-- EXPORT_SYMBOL(max_mapnr);
--
+All the remaining spelling mistakes are fixed by the patch above. I can combine the two of
+them into one patch if you think it's necessary.
 
-Gr{oetje,eeting}s,
+> 
+> 
+> 
+> 
+>>
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
