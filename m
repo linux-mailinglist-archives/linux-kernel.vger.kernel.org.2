@@ -2,230 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8FE939D9B1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F08CC39D9B7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230387AbhFGKde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 06:33:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55740 "EHLO mail.kernel.org"
+        id S230435AbhFGKd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 06:33:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230127AbhFGKdc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 06:33:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C5CE6105A;
-        Mon,  7 Jun 2021 10:31:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623061901;
-        bh=QDWSZEpNc4xQ1VqsobtEpkvi3gCs9U7824XDo8S/V0s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eXIR3lMLCBk7NJht1nSrHju2Frq/LgW/B8BpcT02rUIUPWPdsrv5it5e9cUHhmtUx
-         qaqzswAdLGb7OHW3atgH0QGH15ZiARmTErCFdxXyRbPoT5Ues9L8chwdMQX6u+KHAc
-         zVNOo+8HPjFWzmRdET6Fu0Nx+NCAWQih+nq32M+Y=
-Date:   Mon, 7 Jun 2021 12:31:39 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Leon Romanovsky <leon@kernel.org>, SyzScope <syzscope@gmail.com>,
-        davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: KASAN: use-after-free Read in hci_chan_del
-Message-ID: <YL31i98CpOO/AjKY@kroah.com>
-References: <000000000000adea7f05abeb19cf@google.com>
- <c2004663-e54a-7fbc-ee19-b2749549e2dd@gmail.com>
- <YLn24sFxJqGDNBii@kroah.com>
- <0f489a64-f080-2f89-6e4a-d066aeaea519@gmail.com>
- <YLsrLz7otkQAkIN7@kroah.com>
- <20210606085004.12212-1-hdanton@sina.com>
- <20210607074828.3259-1-hdanton@sina.com>
- <20210607100201.3345-1-hdanton@sina.com>
+        id S230390AbhFGKdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 06:33:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3448361153;
+        Mon,  7 Jun 2021 10:31:50 +0000 (UTC)
+Date:   Mon, 7 Jun 2021 12:31:47 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Menglong Dong <menglong8.dong@gmail.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>, johan@kernel.org,
+        ojeda@kernel.org, jeyu@kernel.org, masahiroy@kernel.org,
+        joe@perches.com, Menglong Dong <dong.menglong@zte.com.cn>,
+        Jan Kara <jack@suse.cz>, hare@suse.de,
+        Jens Axboe <axboe@kernel.dk>, tj@kernel.org,
+        gregkh@linuxfoundation.org, song@kernel.org,
+        NeilBrown <neilb@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Barret Rhoden <brho@google.com>, f.fainelli@gmail.com,
+        palmerdabbelt@google.com, wangkefeng.wang@huawei.com,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>, vbabka@suse.cz,
+        Alexander Potapenko <glider@google.com>, pmladek@suse.com,
+        johannes.berg@intel.com,
+        "Eric W. Biederman" <ebiederm@xmission.com>, jojing64@gmail.com,
+        terrelln@fb.com, geert@linux-m68k.org,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>, arnd@arndb.de,
+        Chris Down <chris@chrisdown.name>, mingo@kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Josh Triplett <josh@joshtriplett.org>
+Subject: Re: [PATCH v6 2/2] init/do_mounts.c: create second mount for
+ initramfs
+Message-ID: <20210607103147.yhniqeulw4pmvjdr@wittgenstein>
+References: <20210605034447.92917-1-dong.menglong@zte.com.cn>
+ <20210605034447.92917-3-dong.menglong@zte.com.cn>
+ <20210605115019.umjumoasiwrclcks@wittgenstein>
+ <CADxym3bs1r_+aPk9Z_5Y7QBBV_RzUbW9PUqSLB7akbss_dJi_g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210607100201.3345-1-hdanton@sina.com>
+In-Reply-To: <CADxym3bs1r_+aPk9Z_5Y7QBBV_RzUbW9PUqSLB7akbss_dJi_g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 06:02:01PM +0800, Hillf Danton wrote:
-> On Mon, 7 Jun 2021 09:55:31 +0200 Greg KH wrote:
-> >On Mon, Jun 07, 2021 at 03:48:28PM +0800, Hillf Danton wrote:
-> >> On Sun, 6 Jun 2021 11:54:22 +0200 Greg KH wrote:
-> >> >On Sun, Jun 06, 2021 at 04:50:04PM +0800, Hillf Danton wrote:
-> >> >> 
-> >> >> To fix the uaf reported, add reference count to hci channel to track users.
-> >> >> Then only channels with zero users will be released.
-> >> >> 
-> >> >> It is now only for thoughts.
-> >> >> 
-> >> >> +++ x/include/net/bluetooth/hci_core.h
-> >> >> @@ -704,6 +704,7 @@ struct hci_chan {
-> >> >>  	struct sk_buff_head data_q;
-> >> >>  	unsigned int	sent;
-> >> >>  	__u8		state;
-> >> >> +	atomic_t ref;
-> >> >
-> >> >Please no, never use "raw" atomic variables.  Especially for something
-> >> >like this, use a kref.
-> >> 
-> >> Fair, thanks for taking a look at it.
-> >> 
-> >> Spin with care for the race the added ref fails to cut.
-> >
-> >I do not understand what you mean here.
-> >
-> >> To ease review the full syzreport is also attached.
-> >> 
-> >> To fix uaf, add user track to hci channel and we will only release channel if
-> >> its user hits zero. And a dryrun mechanism is also added to take care of the
-> >> race user track fails to cut.
-> >> 
-> >> 	CPU0			CPU1
-> >> 	----			----
-> >> 	hci_chan_del		l2cap_conn_del
-> >> 				chan->user = 0;
-> >> 
-> >> 	if (chan->user != 0)
-> >> 		return;
-> >> 	synchronize_rcu();
-> >> 	kfree(chan);
-> >> 
-> >> 				hci_chan_del();
-> >> 
-> >> It is now only for thoughts.
-> >> 
-> >> +++ x/include/net/bluetooth/hci_core.h
-> >> @@ -704,6 +704,10 @@ struct hci_chan {
-> >>  	struct sk_buff_head data_q;
-> >>  	unsigned int	sent;
-> >>  	__u8		state;
-> >> +	__u8		user;
-> >
-> >No.
-> >
-> >> +	__u8		release;
-> >
-> >No please no.
-> >
-> >> +
-> >> +#define HCHAN_RELEASE_DRYRUN 1
-> >>  };
-> >>  
-> >>  struct hci_conn_params {
-> >> +++ x/net/bluetooth/l2cap_core.c
-> >> @@ -1903,6 +1903,12 @@ static void l2cap_conn_del(struct hci_co
-> >>  
-> >>  	mutex_unlock(&conn->chan_lock);
-> >>  
-> >> +	/* see comment in hci_chan_del() */
-> >> +	conn->hchan->release = HCHAN_RELEASE_DRYRUN;
-> >> +	smp_wmb();
-> >> +	conn->hchan->user--;
-> >
-> >And the reason you are open-coding a kref is why???
-> >
-> >Please again no.
-> >
-> >> +	hci_chan_del(conn->hchan);
-> >> +	conn->hchan->release = 0;
-> >>  	hci_chan_del(conn->hchan);
-> >>  
-> >>  	if (conn->info_state & L2CAP_INFO_FEAT_MASK_REQ_SENT)
-> >> @@ -7716,6 +7722,8 @@ static struct l2cap_conn *l2cap_conn_add
-> >>  	kref_init(&conn->ref);
-> >>  	hcon->l2cap_data = conn;
-> >>  	conn->hcon = hci_conn_get(hcon);
-> >> +	/* dec in l2cap_conn_del() */
-> >> +	hchan->user++;
-> >
-> >{sigh}
-> >
-> >No, there is a reason we wrote kref many _decades_ ago.  Please use it,
-> >your original attempt with an atomic was just fine, just use the proper
-> >data structures the kernel provides you as this is obviously a reference
-> >counted object.
+On Sat, Jun 05, 2021 at 10:47:07PM +0800, Menglong Dong wrote:
+> Hello,
 > 
-> I see your concern. I thought this is a simpler user track than kref and
-> open coded a couple of lines. I see it is incorrect. Sorry for that.
+> On Sat, Jun 5, 2021 at 7:50 PM Christian Brauner
+> <christian.brauner@ubuntu.com> wrote:
+> >
+> > On Sat, Jun 05, 2021 at 11:44:47AM +0800, menglong8.dong@gmail.com wrote:
+> > > From: Menglong Dong <dong.menglong@zte.com.cn>
+> > >
+> > > If using container platforms such as Docker, upon initialization it
+> > > wants to use pivot_root() so that currently mounted devices do not
+> > > propagate to containers. An example of value in this is that
+> > > a USB device connected prior to the creation of a containers on the
+> > > host gets disconnected after a container is created; if the
+> > > USB device was mounted on containers, but already removed and
+> > > umounted on the host, the mount point will not go away until all
+> > > containers unmount the USB device.
+> > >
+> > > Another reason for container platforms such as Docker to use pivot_root
+> > > is that upon initialization the net-namspace is mounted under
+> > > /var/run/docker/netns/ on the host by dockerd. Without pivot_root
+> > > Docker must either wait to create the network namespace prior to
+> > > the creation of containers or simply deal with leaking this to each
+> > > container.
+> > >
+> > > pivot_root is supported if the rootfs is a initrd or block device, but
+> > > it's not supported if the rootfs uses an initramfs (tmpfs). This means
+> > > container platforms today must resort to using block devices if
+> > > they want to pivot_root from the rootfs. A workaround to use chroot()
+> > > is not a clean viable option given every container will have a
+> > > duplicate of every mount point on the host.
+> > >
+> > > In order to support using container platforms such as Docker on
+> > > all the supported rootfs types we must extend Linux to support
+> > > pivot_root on initramfs as well. This patch does the work to do
+> > > just that.
+> > >
+> > > pivot_root will unmount the mount of the rootfs from its parent mount
+> > > and mount the new root to it. However, when it comes to initramfs, it
+> > > donesn't work, because the root filesystem has not parent mount, which
+> > > makes initramfs not supported by pivot_root.
+> > >
+> > > In order to make pivot_root supported on initramfs, we create a second
+> > > mount with type of rootfs before unpacking cpio, and change root to
+> > > this mount after unpacking.
+> > >
+> > > While mounting the second rootfs, 'rootflags' is passed, and it means
+> > > that we can set options for the mount of rootfs in boot cmd now.
+> > > For example, the size of tmpfs can be set with 'rootflags=size=1024M'.
+> > >
+> > > Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+> > > ---
+> > >  init/do_mounts.c | 44 ++++++++++++++++++++++++++++++++++++++++++++
+> > >  init/do_mounts.h | 17 ++++++++++++++++-
+> > >  init/initramfs.c |  8 ++++++++
+> > >  usr/Kconfig      | 10 ++++++++++
+> > >  4 files changed, 78 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/init/do_mounts.c b/init/do_mounts.c
+> > > index a78e44ee6adb..715bdaa89b81 100644
+> > > --- a/init/do_mounts.c
+> > > +++ b/init/do_mounts.c
+> > > @@ -618,6 +618,49 @@ void __init prepare_namespace(void)
+> > >  }
+> > >
+> > >  static bool is_tmpfs;
+> > > +#ifdef CONFIG_INITRAMFS_MOUNT
+> > > +
+> > > +/*
+> > > + * Give systems running from the initramfs and making use of pivot_root a
+> > > + * proper mount so it can be umounted during pivot_root.
+> > > + */
+> > > +int __init prepare_mount_rootfs(void)
+> > > +{
+> > > +     char *rootfs = "ramfs";
+> > > +
+> > > +     if (is_tmpfs)
+> > > +             rootfs = "tmpfs";
+> > > +
+> > > +     return do_mount_root(rootfs, rootfs,
+> > > +                          root_mountflags & ~MS_RDONLY,
+> > > +                          root_mount_data);
+> > > +}
+> > > +
+> > > +/*
+> > > + * Revert to previous mount by chdir to '/' and unmounting the second
+> > > + * mount.
+> > > + */
+> > > +void __init revert_mount_rootfs(void)
+> > > +{
+> > > +     init_chdir("/");
+> > > +     init_umount(".", MNT_DETACH);
+> > > +}
+> > > +
+> > > +/*
+> > > + * Change root to the new rootfs that mounted in prepare_mount_rootfs()
+> > > + * if cpio is unpacked successfully and 'ramdisk_execute_command' exist.
+> > > + */
+> > > +void __init finish_mount_rootfs(void)
+> > > +{
+> > > +     init_mount(".", "/", NULL, MS_MOVE, NULL);
+> > > +     if (likely(ramdisk_exec_exist()))
+> > > +             init_chroot(".");
+> > > +     else
+> > > +             revert_mount_rootfs();
+> > > +}
+> > > +
+> > > +#define rootfs_init_fs_context ramfs_init_fs_context
+> >
+> > Sorry, I think we're nearly there. What's the rationale for using ramfs
+> > when unconditionally when a separate mount for initramfs is requested?
+> > Meaning, why do we need this define at all?
 > 
-> After taking another look at the added user track, I realised that it serves
-> no more than a one-off state word that prevents channel from being released.
-> Then the race behind the uaf can be fixed by adding a state on top of the
-> dryrun introduced even without tracking users.
+> I think it's necessary, as I explained in the third patch. When the rootfs
+> is a block device, ramfs is used in init_mount_tree() unconditionally,
+> which can be seen from the enable of is_tmpfs.
 > 
-> The state machine works as the following,
-> 1) it is initialised to be backoff that means channel cannot be released
->    at the moment.
-> 2) it is changed to be dryrun on releasing to cut the race that survived
->    backoff.
-> 3) it is finally set to zero for release after cutting the chance for race.
-
-Adding another state on top of this feels rough, does it really solve
-the race here?  Normally a reference count should be enough to properly
-tear things down when needed, rolling back from a "can I try this now"
-state still seems racy without the needed lock somewhere.
-
-
+> That makes sense, because rootfs will not become the root if a block
+> device is specified by 'root' in boot cmd, so it makes no sense to use
+> tmpfs, because ramfs is more simple.
 > 
-> 
-> +++ x/include/net/bluetooth/hci_core.h
-> @@ -704,6 +704,10 @@ struct hci_chan {
->  	struct sk_buff_head data_q;
->  	unsigned int	sent;
->  	__u8		state;
-> +	__u8		release;
-> +
-> +#define HCHAN_RELEASE_DRYRUN  1
-> +#define HCHAN_RELEASE_BACKOFF 2
->  };
->  
->  struct hci_conn_params {
-> +++ x/net/bluetooth/l2cap_core.c
-> @@ -1903,6 +1903,10 @@ static void l2cap_conn_del(struct hci_co
->  
->  	mutex_unlock(&conn->chan_lock);
->  
-> +	/* see comment in hci_chan_del() */
-> +	conn->hchan->release = HCHAN_RELEASE_DRYRUN;
-> +	hci_chan_del(conn->hchan);
-> +	conn->hchan->release = 0;
->  	hci_chan_del(conn->hchan);
->  
->  	if (conn->info_state & L2CAP_INFO_FEAT_MASK_REQ_SENT)
-> @@ -7716,6 +7720,8 @@ static struct l2cap_conn *l2cap_conn_add
->  	kref_init(&conn->ref);
->  	hcon->l2cap_data = conn;
->  	conn->hcon = hci_conn_get(hcon);
-> +	/* release is changed in l2cap_conn_del() */
-> +	hchan->release = HCHAN_RELEASE_BACKOFF;
->  	conn->hchan = hchan;
->  
->  	BT_DBG("hcon %p conn %p hchan %p", hcon, conn, hchan);
-> +++ x/net/bluetooth/hci_conn.c
-> @@ -1769,12 +1769,26 @@ void hci_chan_del(struct hci_chan *chan)
->  	struct hci_conn *conn = chan->conn;
->  	struct hci_dev *hdev = conn->hdev;
->  
-> +	if (chan->release == HCHAN_RELEASE_BACKOFF)
-> +		return;
-> +
->  	BT_DBG("%s hcon %p chan %p", hdev->name, conn, chan);
->  
-> -	list_del_rcu(&chan->list);
-> +	if (!list_empty(&chan->list))
-> +		list_del_rcu(&chan->list);
->  
->  	synchronize_rcu();
->  
-> +	if (chan->release == HCHAN_RELEASE_DRYRUN) {
-> +		/*
-> +		 * after list_del chan is only visible to the owner of dryrun,
-> +		 * which is needed to cut the race that survived backoff,
-> +		 * and simply return to owner. 
+> Here, I make rootfs as ramfs for the same reason: the first mount is not
+> used as the root, so make it ramfs which is more simple.
 
-checkpatch will ding you for this not being the proper format for
-networking, it hit me last week as well :)
-
-thanks,
-
-greg k-h
+Ok. If you don't mind I'd like to pull and test this before moving
+further. (Btw, I talked about this at Plumbers before btw.)
+What did you use for testing this? Any way you can share it?
