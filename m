@@ -2,235 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D3F539DBEA
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA77339DBEE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhFGMJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 08:09:43 -0400
-Received: from mail-pf1-f173.google.com ([209.85.210.173]:33543 "EHLO
-        mail-pf1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbhFGMJm (ORCPT
+        id S230313AbhFGMKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 08:10:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25262 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230265AbhFGMKH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 08:09:42 -0400
-Received: by mail-pf1-f173.google.com with SMTP id p13so3342312pfw.0;
-        Mon, 07 Jun 2021 05:07:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zhhWGl26esEc98p9IGGGWCO8sKM0FckJ4uKbj2A/oOU=;
-        b=vC0i5LswQU6RKt+tyGxvqEHjcgH8Nc4Ql0B0vgB4nKRbocjkbtELyX6JH1mM7iq0aW
-         f+PO/adUAO7+RrXaOENCvngxMYsqHbsS6FyTrLUR+Mzfj49373FV3HNzYzOtwjjMetAS
-         ALHNxWxMqSBIgdn3nO1VKQfABrR+TYftSaLB8EpIdn3qk23B5fgYbMi/9TQ2lAn4dUtt
-         5ZCjn8bCq6ChvJG8WzUpB++pRb4aVrKDuMCX9EGpEFy+fBrUkoIVTsI8A6xzZpGMunIS
-         K3lY6OKccNBKZUdvgWA7BK1UZMLCJdFcXuv6dbETiCjbK0/xBJ1vuC7CHSjfH9lmN8/I
-         3H8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zhhWGl26esEc98p9IGGGWCO8sKM0FckJ4uKbj2A/oOU=;
-        b=Y4Y6EmzPm71GK2RTgTSkMMsyB0lUIYp1vuacgbGmUMgkdwOD963sKe7Id/VZeJuhn9
-         tjDqEvF/wzH0XBC4qXOZCd+kpEs/651mA4a2uu1XsJ0ABL1UEUsKNCsNpn2n0TLenEch
-         negiMr1X3iRm6PfueGTSf1dIw6JGsEsUcLRuk/tu0paUfDEcjabWTtGS6oo6q6Jl1k2e
-         Au+7P8rQ3JjJGGnjAzg6WX+G1ZMc8ECrf4Q5a02SMLy1WV3miGw4mpFMZmOmhzaqh5Pq
-         W6ndzkP0IRBMSszxsSLNcMDh6LTNFMlWLhey/C4xsbeybX8zXqhgyt7ZEWuU79Ao3Btm
-         THVg==
-X-Gm-Message-State: AOAM532/mhuVHXEO/ETm9Fb4uFjbCiIbZ+KM2bH/uS4ALDTnj4RGg/BZ
-        0XIi4ysa+FaC3jAF7cQMTvICrd6Ch+y2Q/AtQpI=
-X-Google-Smtp-Source: ABdhPJwRDQ49Jwel4k+NI3J4zL1wl40Xfc2l/hhi8hdg20koj8hrsXitFV7VWeYlRWGcgHyzO9McPph+l1TxIyAhSWM=
-X-Received: by 2002:a63:b507:: with SMTP id y7mr17587622pge.74.1623067604406;
- Mon, 07 Jun 2021 05:06:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210607105122.2047212-1-robert.marko@sartura.hr> <20210607105122.2047212-2-robert.marko@sartura.hr>
-In-Reply-To: <20210607105122.2047212-2-robert.marko@sartura.hr>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 7 Jun 2021 15:06:28 +0300
-Message-ID: <CAHp75Vfkn-fSJrLFfswzLdZPJwe+x24rntCPO2VKK0RHfN0y=Q@mail.gmail.com>
-Subject: Re: [PATCH v5 2/6] gpio: Add Delta TN48M CPLD GPIO driver
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
-        Paul Menzel <pmenzel@molgen.mpg.de>, buczek@molgen.mpg.de
+        Mon, 7 Jun 2021 08:10:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623067695;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8QGLdO+kv/jW8ufpWMkRJSndfrnRcVbvYkVOClFgST8=;
+        b=FEds+zka5l4jcIX0AuMvr0Y/glgQ6aKRWZc0hKUvw2h5kRd3f638qIzBFz66awHxkVra72
+        bQKFThg5CwQLx8UHNxhZkC4QRdVgwK9rRouR4ggeGkYTFicCQ+rbi1bvYIXmSK3KwgCAIy
+        7h232Yhxd9JWyjxLW+//Vb4Bd3xWDY4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-496-VnwgPKSSNWOcqeBkRaLJpg-1; Mon, 07 Jun 2021 08:08:11 -0400
+X-MC-Unique: VnwgPKSSNWOcqeBkRaLJpg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 208601084854;
+        Mon,  7 Jun 2021 12:07:54 +0000 (UTC)
+Received: from starship (unknown [10.40.194.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A6A27756C8;
+        Mon,  7 Jun 2021 12:07:50 +0000 (UTC)
+Message-ID: <1f0697693e956b1a136209b874771efe96226365.camel@redhat.com>
+Subject: Re: [PATCH v6 09/11] KVM: X86: Add vendor callbacks for writing the
+ TSC multiplier
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Ilias Stamatis <ilstam@amazon.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pbonzini@redhat.com
+Cc:     seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, zamsden@gmail.com,
+        mtosatti@redhat.com, dwmw@amazon.co.uk
+Date:   Mon, 07 Jun 2021 15:07:49 +0300
+In-Reply-To: <20210607105438.16541-1-ilstam@amazon.com>
+References: <20210607105438.16541-1-ilstam@amazon.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 1:51 PM Robert Marko <robert.marko@sartura.hr> wrote:
->
-> Delta TN48M CPLD is used as a GPIO expander for the SFP GPIOs.
->
-> It is a mix of input only and output only pins.
->
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-Couple of small issues below.
-Otherwise looks good!
-
+On Mon, 2021-06-07 at 11:54 +0100, Ilias Stamatis wrote:
+> Currently vmx_vcpu_load_vmcs() writes the TSC_MULTIPLIER field of the
+> VMCS every time the VMCS is loaded. Instead of doing this, set this
+> field from common code on initialization and whenever the scaling ratio
+> changes.
+> 
+> Additionally remove vmx->current_tsc_ratio. This field is redundant as
+> vcpu->arch.tsc_scaling_ratio already tracks the current TSC scaling
+> ratio. The vmx->current_tsc_ratio field is only used for avoiding
+> unnecessary writes but it is no longer needed after removing the code
+> from the VMCS load path.
+> 
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Ilias Stamatis <ilstam@amazon.com>
 > ---
-> Changes in v2:
-> * Rewrite to use simple I2C MFD and GPIO regmap
-> * Drop DT bindings for pin numbering
->
->  drivers/gpio/Kconfig      | 12 ++++++
->  drivers/gpio/Makefile     |  1 +
->  drivers/gpio/gpio-tn48m.c | 89 +++++++++++++++++++++++++++++++++++++++
->  3 files changed, 102 insertions(+)
->  create mode 100644 drivers/gpio/gpio-tn48m.c
->
-> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-> index e3607ec4c2e8..472f7764508e 100644
-> --- a/drivers/gpio/Kconfig
-> +++ b/drivers/gpio/Kconfig
-> @@ -1310,6 +1310,18 @@ config GPIO_TIMBERDALE
->         help
->         Add support for the GPIO IP in the timberdale FPGA.
->
-> +config GPIO_TN48M_CPLD
-> +       tristate "Delta Networks TN48M switch CPLD GPIO driver"
-> +       depends on MFD_TN48M_CPLD
-> +       select GPIO_REGMAP
-> +       help
-> +         This enables support for the GPIOs found on the Delta
-> +         Networks TN48M switch CPLD.
-> +         They are used for inputs and outputs on the SFP slots.
-> +
-> +         This driver can also be built as a module. If so, the
-> +         module will be called gpio-tn48m.
-> +
->  config GPIO_TPS65086
->         tristate "TI TPS65086 GPO"
->         depends on MFD_TPS65086
-> diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
-> index c58a90a3c3b1..271fb806475e 100644
-> --- a/drivers/gpio/Makefile
-> +++ b/drivers/gpio/Makefile
-> @@ -145,6 +145,7 @@ obj-$(CONFIG_GPIO_TEGRA186)         += gpio-tegra186.o
->  obj-$(CONFIG_GPIO_TEGRA)               += gpio-tegra.o
->  obj-$(CONFIG_GPIO_THUNDERX)            += gpio-thunderx.o
->  obj-$(CONFIG_GPIO_TIMBERDALE)          += gpio-timberdale.o
-> +obj-$(CONFIG_GPIO_TN48M_CPLD)          += gpio-tn48m.o
->  obj-$(CONFIG_GPIO_TPIC2810)            += gpio-tpic2810.o
->  obj-$(CONFIG_GPIO_TPS65086)            += gpio-tps65086.o
->  obj-$(CONFIG_GPIO_TPS65218)            += gpio-tps65218.o
-> diff --git a/drivers/gpio/gpio-tn48m.c b/drivers/gpio/gpio-tn48m.c
-> new file mode 100644
-> index 000000000000..41484c002826
-> --- /dev/null
-> +++ b/drivers/gpio/gpio-tn48m.c
-> @@ -0,0 +1,89 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Delta TN48M CPLD GPIO driver
-> + *
-> + * Copyright 2021 Sartura Ltd
-> + *
-> + * Author: Robert Marko <robert.marko@sartura.hr>
-> + */
-> +
-> +#include <linux/device.h>
-> +#include <linux/gpio/driver.h>
-> +#include <linux/gpio/regmap.h>
+> 
+> Just moved the kvm_set_tsc_khz() call further within kvm_arch_vcpu_create()
+> (instead of kvm_arch_vcpu_postcreate() like in v5) as Sean suggested.
 
-> +#include <linux/kernel.h>
+I just reviewed the V5. Oh well, I won't bother with any more nitpicks.
 
-What is this header for?
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
 
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/regmap.h>
-> +
-> +enum tn48m_gpio_type {
-> +       TN48M_SFP_TX_DISABLE = 1,
-> +       TN48M_SFP_PRESENT,
-> +       TN48M_SFP_LOS,
-> +};
-> +
-> +static int tn48m_gpio_probe(struct platform_device *pdev)
+Thanks!
+Best regards,
+	Maxim Levitsky
+
+> 
+> https://lore.kernel.org/kvm/9caefa1ad707fdb61448234b37716f89643aca86.camel@amazon.com/T/
+> 
+>  arch/x86/include/asm/kvm-x86-ops.h |  1 +
+>  arch/x86/include/asm/kvm_host.h    |  1 +
+>  arch/x86/kvm/svm/svm.c             |  6 ++++++
+>  arch/x86/kvm/vmx/nested.c          |  9 ++++-----
+>  arch/x86/kvm/vmx/vmx.c             | 11 ++++++-----
+>  arch/x86/kvm/vmx/vmx.h             |  8 --------
+>  arch/x86/kvm/x86.c                 | 30 +++++++++++++++++++++++-------
+>  7 files changed, 41 insertions(+), 25 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
+> index 029c9615378f..34ad7a17458a 100644
+> --- a/arch/x86/include/asm/kvm-x86-ops.h
+> +++ b/arch/x86/include/asm/kvm-x86-ops.h
+> @@ -90,6 +90,7 @@ KVM_X86_OP_NULL(has_wbinvd_exit)
+>  KVM_X86_OP(get_l2_tsc_offset)
+>  KVM_X86_OP(get_l2_tsc_multiplier)
+>  KVM_X86_OP(write_tsc_offset)
+> +KVM_X86_OP(write_tsc_multiplier)
+>  KVM_X86_OP(get_exit_info)
+>  KVM_X86_OP(check_intercept)
+>  KVM_X86_OP(handle_exit_irqoff)
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index f099277b993d..a334ce7741ab 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1308,6 +1308,7 @@ struct kvm_x86_ops {
+>  	u64 (*get_l2_tsc_offset)(struct kvm_vcpu *vcpu);
+>  	u64 (*get_l2_tsc_multiplier)(struct kvm_vcpu *vcpu);
+>  	void (*write_tsc_offset)(struct kvm_vcpu *vcpu, u64 offset);
+> +	void (*write_tsc_multiplier)(struct kvm_vcpu *vcpu, u64 multiplier);
+>  
+>  	/*
+>  	 * Retrieve somewhat arbitrary exit information.  Intended to be used
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 8dfb2513b72a..cb701b42b08b 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -1103,6 +1103,11 @@ static void svm_write_tsc_offset(struct kvm_vcpu *vcpu, u64 offset)
+>  	vmcb_mark_dirty(svm->vmcb, VMCB_INTERCEPTS);
+>  }
+>  
+> +static void svm_write_tsc_multiplier(struct kvm_vcpu *vcpu, u64 multiplier)
 > +{
-> +       struct gpio_regmap_config config = {0};
-> +       enum tn48m_gpio_type type;
-> +       struct regmap *regmap;
-> +       u32 base;
-> +       int ret;
-> +
-> +       if (!pdev->dev.parent)
-> +               return -ENODEV;
-> +
-> +       type = (uintptr_t)device_get_match_data(&pdev->dev);
-> +       if (!type)
-> +               return -ENODEV;
-> +
-> +       ret = device_property_read_u32(&pdev->dev, "reg", &base);
-> +       if (ret)
-
-> +               return -EINVAL;
-
-return ret;
-
-> +       regmap = dev_get_regmap(pdev->dev.parent, NULL);
-> +       if (!regmap)
-> +               return -ENODEV;
-> +
-> +       config.regmap = regmap;
-> +       config.parent = &pdev->dev;
-> +       config.ngpio = 4;
-> +
-> +       switch (type) {
-> +       case TN48M_SFP_TX_DISABLE:
-> +               config.reg_set_base = base;
-> +               break;
-> +       case TN48M_SFP_PRESENT:
-> +               config.reg_dat_base = base;
-> +               break;
-> +       case TN48M_SFP_LOS:
-> +               config.reg_dat_base = base;
-> +               break;
-> +       default:
-> +               dev_err(&pdev->dev, "unknown type %d\n", type);
-> +               return -ENODEV;
-> +       }
-> +
-> +       return PTR_ERR_OR_ZERO(devm_gpio_regmap_register(&pdev->dev, &config));
+> +	wrmsrl(MSR_AMD64_TSC_RATIO, multiplier);
 > +}
 > +
-> +static const struct of_device_id tn48m_gpio_of_match[] = {
-> +       { .compatible = "delta,tn48m-gpio-sfp-tx-disable", .data = (void *)TN48M_SFP_TX_DISABLE },
-> +       { .compatible = "delta,tn48m-gpio-sfp-present", .data = (void *)TN48M_SFP_PRESENT },
-> +       { .compatible = "delta,tn48m-gpio-sfp-los", .data = (void *)TN48M_SFP_LOS },
-> +       { }
-> +};
-> +MODULE_DEVICE_TABLE(of, tn48m_gpio_of_match);
+>  /* Evaluate instruction intercepts that depend on guest CPUID features. */
+>  static void svm_recalc_instruction_intercepts(struct kvm_vcpu *vcpu,
+>  					      struct vcpu_svm *svm)
+> @@ -4528,6 +4533,7 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
+>  	.get_l2_tsc_offset = svm_get_l2_tsc_offset,
+>  	.get_l2_tsc_multiplier = svm_get_l2_tsc_multiplier,
+>  	.write_tsc_offset = svm_write_tsc_offset,
+> +	.write_tsc_multiplier = svm_write_tsc_multiplier,
+>  
+>  	.load_mmu_pgd = svm_load_mmu_pgd,
+> 
+
+>  
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index 6058a65a6ede..239154d3e4e7 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -2533,9 +2533,8 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
+>  	}
+>  
+>  	vmcs_write64(TSC_OFFSET, vcpu->arch.tsc_offset);
+> -
+>  	if (kvm_has_tsc_control)
+> -		decache_tsc_multiplier(vmx);
+> +		vmcs_write64(TSC_MULTIPLIER, vcpu->arch.tsc_scaling_ratio);
+>  
+>  	nested_vmx_transition_tlb_flush(vcpu, vmcs12, true);
+>  
+> @@ -4501,12 +4500,12 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 vm_exit_reason,
+>  	vmcs_write32(VM_EXIT_MSR_LOAD_COUNT, vmx->msr_autoload.host.nr);
+>  	vmcs_write32(VM_ENTRY_MSR_LOAD_COUNT, vmx->msr_autoload.guest.nr);
+>  	vmcs_write64(TSC_OFFSET, vcpu->arch.tsc_offset);
+> +	if (kvm_has_tsc_control)
+> +		vmcs_write64(TSC_MULTIPLIER, vcpu->arch.tsc_scaling_ratio);
 > +
-> +static struct platform_driver tn48m_gpio_driver = {
-> +       .driver = {
-> +               .name = "delta-tn48m-gpio",
-> +               .of_match_table = tn48m_gpio_of_match,
-> +       },
-> +       .probe = tn48m_gpio_probe,
-> +};
-> +module_platform_driver(tn48m_gpio_driver);
+>  	if (vmx->nested.l1_tpr_threshold != -1)
+>  		vmcs_write32(TPR_THRESHOLD, vmx->nested.l1_tpr_threshold);
+>  
+> -	if (kvm_has_tsc_control)
+> -		decache_tsc_multiplier(vmx);
+> -
+>  	if (vmx->nested.change_vmcs01_virtual_apic_mode) {
+>  		vmx->nested.change_vmcs01_virtual_apic_mode = false;
+>  		vmx_set_virtual_apic_mode(vcpu);
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 4b70431c2edd..bf845a08995e 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -1390,11 +1390,6 @@ void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu,
+>  
+>  		vmx->loaded_vmcs->cpu = cpu;
+>  	}
+> -
+> -	/* Setup TSC multiplier */
+> -	if (kvm_has_tsc_control &&
+> -	    vmx->current_tsc_ratio != vcpu->arch.tsc_scaling_ratio)
+> -		decache_tsc_multiplier(vmx);
+>  }
+>  
+>  /*
+> @@ -1813,6 +1808,11 @@ static void vmx_write_tsc_offset(struct kvm_vcpu *vcpu, u64 offset)
+>  	vmcs_write64(TSC_OFFSET, offset);
+>  }
+>  
+> +static void vmx_write_tsc_multiplier(struct kvm_vcpu *vcpu, u64 multiplier)
+> +{
+> +	vmcs_write64(TSC_MULTIPLIER, multiplier);
+> +}
 > +
-> +MODULE_AUTHOR("Robert Marko <robert.marko@sartura.hr>");
-> +MODULE_DESCRIPTION("Delta TN48M CPLD GPIO driver");
-> +MODULE_LICENSE("GPL");
-> --
-> 2.31.1
->
+>  /*
+>   * nested_vmx_allowed() checks whether a guest should be allowed to use VMX
+>   * instructions and MSRs (i.e., nested VMX). Nested VMX is disabled for
+> @@ -7707,6 +7707,7 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
+>  	.get_l2_tsc_offset = vmx_get_l2_tsc_offset,
+>  	.get_l2_tsc_multiplier = vmx_get_l2_tsc_multiplier,
+>  	.write_tsc_offset = vmx_write_tsc_offset,
+> +	.write_tsc_multiplier = vmx_write_tsc_multiplier,
+>  
+>  	.load_mmu_pgd = vmx_load_mmu_pgd,
+>  
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index aa97c82e3451..3eaa86a0ba3e 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -322,8 +322,6 @@ struct vcpu_vmx {
+>  	/* apic deadline value in host tsc */
+>  	u64 hv_deadline_tsc;
+>  
+> -	u64 current_tsc_ratio;
+> -
+>  	unsigned long host_debugctlmsr;
+>  
+>  	/*
+> @@ -532,12 +530,6 @@ static inline struct vmcs *alloc_vmcs(bool shadow)
+>  			      GFP_KERNEL_ACCOUNT);
+>  }
+>  
+> -static inline void decache_tsc_multiplier(struct vcpu_vmx *vmx)
+> -{
+> -	vmx->current_tsc_ratio = vmx->vcpu.arch.tsc_scaling_ratio;
+> -	vmcs_write64(TSC_MULTIPLIER, vmx->current_tsc_ratio);
+> -}
+> -
+>  static inline bool vmx_has_waitpkg(struct vcpu_vmx *vmx)
+>  {
+>  	return vmx->secondary_exec_control &
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 801fa1e8e915..b56afc2f6724 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -2179,14 +2179,15 @@ static u32 adjust_tsc_khz(u32 khz, s32 ppm)
+>  	return v;
+>  }
+>  
+> +static void kvm_vcpu_write_tsc_multiplier(struct kvm_vcpu *vcpu, u64 l1_multiplier);
+> +
+>  static int set_tsc_khz(struct kvm_vcpu *vcpu, u32 user_tsc_khz, bool scale)
+>  {
+>  	u64 ratio;
+>  
+>  	/* Guest TSC same frequency as host TSC? */
+>  	if (!scale) {
+> -		vcpu->arch.l1_tsc_scaling_ratio = kvm_default_tsc_scaling_ratio;
+> -		vcpu->arch.tsc_scaling_ratio = kvm_default_tsc_scaling_ratio;
+> +		kvm_vcpu_write_tsc_multiplier(vcpu, kvm_default_tsc_scaling_ratio);
+>  		return 0;
+>  	}
+>  
+> @@ -2212,7 +2213,7 @@ static int set_tsc_khz(struct kvm_vcpu *vcpu, u32 user_tsc_khz, bool scale)
+>  		return -1;
+>  	}
+>  
+> -	vcpu->arch.l1_tsc_scaling_ratio = vcpu->arch.tsc_scaling_ratio = ratio;
+> +	kvm_vcpu_write_tsc_multiplier(vcpu, ratio);
+>  	return 0;
+>  }
+>  
+> @@ -2224,8 +2225,7 @@ static int kvm_set_tsc_khz(struct kvm_vcpu *vcpu, u32 user_tsc_khz)
+>  	/* tsc_khz can be zero if TSC calibration fails */
+>  	if (user_tsc_khz == 0) {
+>  		/* set tsc_scaling_ratio to a safe value */
+> -		vcpu->arch.l1_tsc_scaling_ratio = kvm_default_tsc_scaling_ratio;
+> -		vcpu->arch.tsc_scaling_ratio = kvm_default_tsc_scaling_ratio;
+> +		kvm_vcpu_write_tsc_multiplier(vcpu, kvm_default_tsc_scaling_ratio);
+>  		return -1;
+>  	}
+>  
+> @@ -2383,6 +2383,23 @@ static void kvm_vcpu_write_tsc_offset(struct kvm_vcpu *vcpu, u64 l1_offset)
+>  	static_call(kvm_x86_write_tsc_offset)(vcpu, vcpu->arch.tsc_offset);
+>  }
+>  
+> +static void kvm_vcpu_write_tsc_multiplier(struct kvm_vcpu *vcpu, u64 l1_multiplier)
+> +{
+> +	vcpu->arch.l1_tsc_scaling_ratio = l1_multiplier;
+> +
+> +	/* Userspace is changing the multiplier while L2 is active */
+> +	if (is_guest_mode(vcpu))
+> +		vcpu->arch.tsc_scaling_ratio = kvm_calc_nested_tsc_multiplier(
+> +			l1_multiplier,
+> +			static_call(kvm_x86_get_l2_tsc_multiplier)(vcpu));
+> +	else
+> +		vcpu->arch.tsc_scaling_ratio = l1_multiplier;
+> +
+> +	if (kvm_has_tsc_control)
+> +		static_call(kvm_x86_write_tsc_multiplier)(
+> +			vcpu, vcpu->arch.tsc_scaling_ratio);
+> +}
+> +
+>  static inline bool kvm_check_tsc_unstable(void)
+>  {
+>  #ifdef CONFIG_X86_64
+> @@ -10343,8 +10360,6 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
+>  	else
+>  		vcpu->arch.mp_state = KVM_MP_STATE_UNINITIALIZED;
+>  
+> -	kvm_set_tsc_khz(vcpu, max_tsc_khz);
+> -
+>  	r = kvm_mmu_create(vcpu);
+>  	if (r < 0)
+>  		return r;
+> @@ -10412,6 +10427,7 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
+>  	vcpu->arch.msr_platform_info = MSR_PLATFORM_INFO_CPUID_FAULT;
+>  	kvm_vcpu_mtrr_init(vcpu);
+>  	vcpu_load(vcpu);
+> +	kvm_set_tsc_khz(vcpu, max_tsc_khz);
+>  	kvm_vcpu_reset(vcpu, false);
+>  	kvm_init_mmu(vcpu, false);
+>  	vcpu_put(vcpu);
 
 
--- 
-With Best Regards,
-Andy Shevchenko
