@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD4D39E144
+	by mail.lfdr.de (Postfix) with ESMTP id AE00F39E145
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 17:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230266AbhFGP5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 11:57:33 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:36365 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbhFGP5b (ORCPT
+        id S230355AbhFGP5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 11:57:34 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:52872 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230197AbhFGP5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 7 Jun 2021 11:57:31 -0400
-Received: by mail-io1-f69.google.com with SMTP id i15-20020a6bee0f0000b029043af67da217so12426112ioh.3
+Received: by mail-il1-f198.google.com with SMTP id d7-20020a056e020c07b02901d77a47ab82so12905252ile.19
         for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 08:55:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=bwM2mKUfaXdskIPcxHEhMPAzQ7H5OmyLgOGugyfd8JY=;
-        b=dJHRhv2b7bmZw6BCbULhD/Y9xVDUr12FAegndritb1KLgA8jnVVXac8Iz0rYmnfThw
-         1V7TXod3sQIKM047HOd/+nTCHntwS3Y6DcnJskDA/kHJpsGxvq5KKgO5TJfXsh79Q4ys
-         1vVWCjbp4EOa+MAALmowZQPJCV2cI1RQcmsnjBbabfykoVr0SC10Hfg1nObniDobc7j9
-         RTruja/2M3rEg8wpLZFn8vpKxzEu5LproI974cp/H9ng4xhEtNrqw+zuKOAPSZ9uHiXr
-         84gPpbo/6pnDJfbQy9AoidGp9NddNTWNvAWvwflwmDhYRrH6aM/PWjKKQNc0rKuheLct
-         P8vA==
-X-Gm-Message-State: AOAM5315X+tEkWSvH75p+4sq3jAh35iqaOw2LdnkGfVDuOMPlxx5zzGd
-        oYF5292dhbTTZZvWD/KjxB726H/CWwy8HwFy6TwRS9NbB5nV
-X-Google-Smtp-Source: ABdhPJyRYbTV/wpcqHWSf+m2QKrFTHaDpzKIEueeDvrdI4q57z9VV6yFKxyR01tJdE+/cBJOSVxXHrlAhQsJkzZ/dLrymiOeTXzO
+        bh=BIRhCu9kguwqfAp9PM7fW5YRv9fKXTa5XKHr55t7eGk=;
+        b=aEyIXqcFrvPIwScIWQFO+meZWy+t6ljCb5fTGMbiQj1G4/bxOyF7LqOtUQRIXTqZIS
+         mkKW9iUR0ol0fBvL+5JUH76e7xOa9T170bLmnGcD1UQsuR+204/oyhd4t3vAP0eRiV9a
+         eiAKdEOdo6ZVySA76NL244PLfQW/AiZF/Yvt1qHjqG1f3TnzU99duF9/QEBRHowUUkhG
+         1VHQEC6qpk2tnNvOgVrypzzVM3lHVJ7pl+wX07k27o40o/Zdu6BFNj4YC4/2R9jp+WmQ
+         2zhR+Da1L/l4ZkU4ykYOZQi1llEIia69+DSPIKPweNab7XX9LGCNawnFiLy6awiQ87Mb
+         ZO1A==
+X-Gm-Message-State: AOAM533haZMSlUobg9zOp1aXp/+pmwH/VleZFTZGnd+/mCYFpZFQCNM8
+        6AFLZC5aU03mg0O3GQFu3+pp+NNohWigOaptPLgUzuiAF0i5
+X-Google-Smtp-Source: ABdhPJz9IWgnyqpBPyQBilfpBHww/agsU90l3F//WV9MpcdKqR01PrT811CNf7oq6mZd/SCQSW1F8PB7LfYzOC8kKf64umOaA0/c
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:ec8:: with SMTP id i8mr3677812ilk.197.1623081325517;
+X-Received: by 2002:a6b:e90b:: with SMTP id u11mr6120811iof.35.1623081325746;
  Mon, 07 Jun 2021 08:55:25 -0700 (PDT)
 Date:   Mon, 07 Jun 2021 08:55:25 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d9622305c42f11db@google.com>
-Subject: [syzbot] KASAN: use-after-free Read in ntfs_iget (2)
-From:   syzbot <syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com>
-To:     anton@tuxera.com, linux-kernel@vger.kernel.org,
-        linux-ntfs-dev@lists.sourceforge.net,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000dce34f05c42f110c@google.com>
+Subject: [syzbot] KASAN: use-after-free Read in snd_seq_timer_interrupt (2)
+From:   syzbot <syzbot+ddc1260a83ed1cbf6fb5@syzkaller.appspotmail.com>
+To:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,114 +47,191 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    a1f92694 Add linux-next specific files for 20210518
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15b2bf2fd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d612e75ffd53a6d3
-dashboard link: https://syzkaller.appspot.com/bug?extid=213ac8bb98f7f4420840
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17375177d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16cf273dd00000
+HEAD commit:    e5220dd1 Merge branch 'akpm' (patches from Andrew)
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1186bbb5d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8a9e9956ca52a5f6
+dashboard link: https://syzkaller.appspot.com/bug?extid=ddc1260a83ed1cbf6fb5
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=134cdf77d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=118dfc33d00000
 
 Bisection is inconclusive: the issue happens on the oldest tested release.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16f8db40300000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=15f8db40300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=11f8db40300000
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=164950c7d00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=154950c7d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=114950c7d00000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com
+Reported-by: syzbot+ddc1260a83ed1cbf6fb5@syzkaller.appspotmail.com
 
-loop0: detected capacity change from 0 to 8185
 ==================================================================
-BUG: KASAN: use-after-free in ntfs_is_extended_system_file fs/ntfs/inode.c:484 [inline]
-BUG: KASAN: use-after-free in ntfs_read_locked_inode+0x5714/0x5af0 fs/ntfs/inode.c:1023
-Read of size 8 at addr ffff888036d2cdb8 by task syz-executor965/8517
+BUG: KASAN: use-after-free in snd_seq_timer_interrupt+0x316/0x380 sound/core/seq/seq_timer.c:130
+Read of size 8 at addr ffff888145c1a458 by task syz-executor463/11439
 
-CPU: 0 PID: 8517 Comm: syz-executor965 Not tainted 5.13.0-rc2-next-20210518-syzkaller #0
+CPU: 0 PID: 11439 Comm: syz-executor463 Not tainted 5.13.0-rc4-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x13e/0x1d6 lib/dump_stack.c:129
- print_address_description.constprop.0.cold+0x6c/0x309 mm/kasan/report.c:233
+ <IRQ>
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:233
  __kasan_report mm/kasan/report.c:419 [inline]
- kasan_report.cold+0x83/0xdf mm/kasan/report.c:436
- ntfs_is_extended_system_file fs/ntfs/inode.c:484 [inline]
- ntfs_read_locked_inode+0x5714/0x5af0 fs/ntfs/inode.c:1023
- ntfs_iget+0x12d/0x180 fs/ntfs/inode.c:177
- load_and_init_upcase fs/ntfs/super.c:1655 [inline]
- load_system_files fs/ntfs/super.c:1810 [inline]
- ntfs_fill_super+0x1f75/0x84e0 fs/ntfs/super.c:2893
- mount_bdev+0x34d/0x410 fs/super.c:1368
- legacy_get_tree+0x105/0x220 fs/fs_context.c:592
- vfs_get_tree+0x89/0x2f0 fs/super.c:1498
- do_new_mount fs/namespace.c:2905 [inline]
- path_mount+0x132a/0x1fa0 fs/namespace.c:3235
- do_mount fs/namespace.c:3248 [inline]
- __do_sys_mount fs/namespace.c:3456 [inline]
- __se_sys_mount fs/namespace.c:3433 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3433
- do_syscall_64+0x31/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x44876a
-Code: 48 c7 c2 c0 ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d2 e8 a8 00 00 00 0f 1f 84 00 00 00 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd48f43638 EFLAGS: 00000286 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffd48f43690 RCX: 000000000044876a
-RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007ffd48f43650
-RBP: 00007ffd48f43650 R08: 00007ffd48f43690 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000286 R12: 0000000020001fa0
-R13: 0000000000000003 R14: 0000000000000004 R15: 000000000000013c
-
-The buggy address belongs to the page:
-page:ffffea0000db4b00 refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 pfn:0x36d2c
-flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000000000 ffffea0000bbb148 ffffea0000d195c8 0000000000000000
-raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as freed
-page last allocated via order 0, migratetype Movable, gfp_mask 0x100cca(GFP_HIGHUSER_MOVABLE), pid 8464, ts 63337994321, free_ts 68380784236
- prep_new_page mm/page_alloc.c:2377 [inline]
- get_page_from_freelist+0x125c/0x2ed0 mm/page_alloc.c:4038
- __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5239
- alloc_pages_vma+0xdd/0x770 mm/mempolicy.c:2236
- wp_page_copy+0x1bf/0x2270 mm/memory.c:2897
- do_wp_page+0x2cb/0x1ad0 mm/memory.c:3204
- handle_pte_fault mm/memory.c:4395 [inline]
- __handle_mm_fault+0x236b/0x5200 mm/memory.c:4512
- handle_mm_fault+0x1b9/0x7e0 mm/memory.c:4610
- do_user_addr_fault+0x483/0x1210 arch/x86/mm/fault.c:1390
- handle_page_fault arch/x86/mm/fault.c:1475 [inline]
- exc_page_fault+0x9e/0x180 arch/x86/mm/fault.c:1531
- asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:577
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1305 [inline]
- free_pcp_prepare+0x217/0x300 mm/page_alloc.c:1349
- free_unref_page_prepare mm/page_alloc.c:3272 [inline]
- free_unref_page_list+0x19f/0x1050 mm/page_alloc.c:3340
- release_pages+0x824/0x20b0 mm/swap.c:972
+ kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:436
+ snd_seq_timer_interrupt+0x316/0x380 sound/core/seq/seq_timer.c:130
+ snd_timer_process_callbacks+0x1f9/0x2c0 sound/core/timer.c:797
+ snd_timer_interrupt.part.0+0x644/0xcf0 sound/core/timer.c:920
+ snd_timer_interrupt sound/core/timer.c:1155 [inline]
+ snd_timer_s_function+0x14b/0x200 sound/core/timer.c:1155
+ call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1431
+ expire_timers kernel/time/timer.c:1476 [inline]
+ __run_timers.part.0+0x67c/0xa50 kernel/time/timer.c:1745
+ __run_timers kernel/time/timer.c:1726 [inline]
+ run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1758
+ __do_softirq+0x29b/0x9f6 kernel/softirq.c:559
+ invoke_softirq kernel/softirq.c:433 [inline]
+ __irq_exit_rcu+0x136/0x200 kernel/softirq.c:637
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:649
+ sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:647
+RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:161 [inline]
+RIP: 0010:_raw_spin_unlock_irqrestore+0x38/0x70 kernel/locking/spinlock.c:191
+Code: 74 24 10 e8 3a 46 41 f8 48 89 ef e8 d2 be 41 f8 81 e3 00 02 00 00 75 25 9c 58 f6 c4 02 75 2d 48 85 db 74 01 fb bf 01 00 00 00 <e8> a3 b4 35 f8 65 8b 05 8c b6 e8 76 85 c0 74 0a 5b 5d c3 e8 00 b3
+RSP: 0018:ffffc9000c63fa10 EFLAGS: 00000206
+RAX: 0000000000000006 RBX: 0000000000000200 RCX: 1ffffffff1b925d9
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000001
+RBP: ffffffff908fce60 R08: 0000000000000001 R09: 0000000000000001
+R10: ffffffff817aec78 R11: 0000000000000000 R12: 1ffffffff211f9cb
+R13: 0000000000000000 R14: dead000000000100 R15: dffffc0000000000
+ __debug_check_no_obj_freed lib/debugobjects.c:997 [inline]
+ debug_check_no_obj_freed+0x20c/0x420 lib/debugobjects.c:1018
+ free_pages_prepare mm/page_alloc.c:1303 [inline]
+ __free_pages_ok+0x254/0xce0 mm/page_alloc.c:1572
+ release_pages+0x813/0x2120 mm/swap.c:948
  tlb_batch_pages_flush mm/mmu_gather.c:49 [inline]
  tlb_flush_mmu_free mm/mmu_gather.c:242 [inline]
  tlb_flush_mmu mm/mmu_gather.c:249 [inline]
  tlb_finish_mmu+0x165/0x8c0 mm/mmu_gather.c:340
- exit_mmap+0x1ea/0x620 mm/mmap.c:3203
+ exit_mmap+0x2c2/0x590 mm/mmap.c:3210
  __mmput+0x122/0x470 kernel/fork.c:1096
  mmput+0x58/0x60 kernel/fork.c:1117
  exit_mm kernel/exit.c:502 [inline]
- do_exit+0xb0a/0x2a70 kernel/exit.c:813
+ do_exit+0xb0a/0x2a60 kernel/exit.c:813
  do_group_exit+0x125/0x310 kernel/exit.c:923
  __do_sys_exit_group kernel/exit.c:934 [inline]
  __se_sys_exit_group kernel/exit.c:932 [inline]
  __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:932
- do_syscall_64+0x31/0xb0 arch/x86/entry/common.c:47
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x43eca9
+Code: Unable to access opcode bytes at RIP 0x43ec7f.
+RSP: 002b:00007fff33a2e668 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 00000000004b02f0 RCX: 000000000043eca9
+RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffffffffffc0 R09: 0000000000000001
+R10: 0000000000000001 R11: 0000000000000246 R12: 00000000004b02f0
+R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
+
+Allocated by task 11435:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:428 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:507 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:466 [inline]
+ __kasan_kmalloc+0x9b/0xd0 mm/kasan/common.c:516
+ kmalloc include/linux/slab.h:556 [inline]
+ kzalloc include/linux/slab.h:686 [inline]
+ queue_new sound/core/seq/seq_queue.c:100 [inline]
+ snd_seq_queue_alloc+0x51/0x560 sound/core/seq/seq_queue.c:172
+ snd_seq_ioctl_create_queue+0xa5/0x380 sound/core/seq/seq_clientmgr.c:1547
+ snd_seq_ioctl+0x202/0x3e0 sound/core/seq/seq_clientmgr.c:2156
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:1069 [inline]
+ __se_sys_ioctl fs/ioctl.c:1055 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
+Freed by task 11435:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
+ ____kasan_slab_free mm/kasan/common.c:360 [inline]
+ ____kasan_slab_free mm/kasan/common.c:325 [inline]
+ __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:368
+ kasan_slab_free include/linux/kasan.h:212 [inline]
+ slab_free_hook mm/slub.c:1582 [inline]
+ slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1607
+ slab_free mm/slub.c:3167 [inline]
+ kfree+0xe5/0x7f0 mm/slub.c:4217
+ snd_seq_queue_client_leave+0x37/0x1a0 sound/core/seq/seq_queue.c:552
+ seq_free_client1.part.0+0x10a/0x260 sound/core/seq/seq_clientmgr.c:280
+ seq_free_client1 sound/core/seq/seq_clientmgr.c:273 [inline]
+ seq_free_client+0x7b/0xf0 sound/core/seq/seq_clientmgr.c:301
+ snd_seq_release+0x4d/0xe0 sound/core/seq/seq_clientmgr.c:382
+ __fput+0x288/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ exit_task_work include/linux/task_work.h:32 [inline]
+ do_exit+0xbfc/0x2a60 kernel/exit.c:826
+ do_group_exit+0x125/0x310 kernel/exit.c:923
+ __do_sys_exit_group kernel/exit.c:934 [inline]
+ __se_sys_exit_group kernel/exit.c:932 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:932
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The buggy address belongs to the object at ffff888145c1a400
+ which belongs to the cache kmalloc-512 of size 512
+The buggy address is located 88 bytes inside of
+ 512-byte region [ffff888145c1a400, ffff888145c1a600)
+The buggy address belongs to the page:
+page:ffffea0005170600 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x145c18
+head:ffffea0005170600 order:2 compound_mapcount:0 compound_pincount:0
+flags: 0x57ff00000010200(slab|head|node=1|zone=2|lastcpupid=0x7ff)
+raw: 057ff00000010200 ffffea000518eb00 0000000200000002 ffff888011041c80
+raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 2, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 1, ts 8363542072, free_ts 0
+ prep_new_page mm/page_alloc.c:2358 [inline]
+ get_page_from_freelist+0x1033/0x2b60 mm/page_alloc.c:3994
+ __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5200
+ alloc_page_interleave+0x1e/0x1d0 mm/mempolicy.c:2147
+ alloc_pages+0x238/0x2a0 mm/mempolicy.c:2270
+ alloc_slab_page mm/slub.c:1645 [inline]
+ allocate_slab+0x2c5/0x4c0 mm/slub.c:1785
+ new_slab mm/slub.c:1848 [inline]
+ new_slab_objects mm/slub.c:2594 [inline]
+ ___slab_alloc+0x4a1/0x810 mm/slub.c:2757
+ __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2797
+ slab_alloc_node mm/slub.c:2879 [inline]
+ slab_alloc mm/slub.c:2921 [inline]
+ kmem_cache_alloc_trace+0x2a3/0x2c0 mm/slub.c:2938
+ kmalloc include/linux/slab.h:556 [inline]
+ kzalloc include/linux/slab.h:686 [inline]
+ device_private_init drivers/base/core.c:3166 [inline]
+ device_add+0x1155/0x2100 drivers/base/core.c:3216
+ tty_register_device_attr+0x395/0x7b0 drivers/tty/tty_io.c:3285
+ tty_register_device drivers/tty/tty_io.c:3219 [inline]
+ tty_register_driver+0x428/0x800 drivers/tty/tty_io.c:3490
+ legacy_pty_init drivers/tty/pty.c:604 [inline]
+ pty_init+0x66c/0xe58 drivers/tty/pty.c:970
+ do_one_initcall+0x103/0x650 init/main.c:1249
+ do_initcall_level init/main.c:1322 [inline]
+ do_initcalls init/main.c:1338 [inline]
+ do_basic_setup init/main.c:1358 [inline]
+ kernel_init_freeable+0x6c4/0x74d init/main.c:1560
+ kernel_init+0xd/0x1b8 init/main.c:1447
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+page_owner free stack trace missing
+
 Memory state around the buggy address:
- ffff888036d2cc80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff888036d2cd00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->ffff888036d2cd80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                                        ^
- ffff888036d2ce00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff888036d2ce80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff888145c1a300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888145c1a380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff888145c1a400: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                    ^
+ ffff888145c1a480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888145c1a500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
 ==================================================================
 
 
