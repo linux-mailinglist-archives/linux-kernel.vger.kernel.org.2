@@ -2,180 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C4439DDB1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0C739DDAC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbhFGNdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 09:33:05 -0400
-Received: from mail-lj1-f177.google.com ([209.85.208.177]:37493 "EHLO
-        mail-lj1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230291AbhFGNc6 (ORCPT
+        id S230377AbhFGNcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 09:32:51 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:42137 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230220AbhFGNcp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 09:32:58 -0400
-Received: by mail-lj1-f177.google.com with SMTP id e2so22244778ljk.4
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 06:30:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7pMeBbJnHe0dT56aBjX+SG8tgBkU1RFs5WrTELGr21w=;
-        b=S/bfEag7I89zOTS/86dOO6jC4cob1/NUn22kCuKmb2B1z8hvctiuJzA9rY/gEG4b46
-         uCDehsvTljcTN45kv7qc+PiPfHVPLL33aKkCVYW/hhbHPi2NrIb3HgmuwO+aZyB5ziJm
-         vrMfArzkFmt32vDk+p2RNUzAwaFvWldu76G9Bf3//0WUXjZdOOrGYavx+pit0/8fi/PM
-         12vAMOuBoy/HAMNETrGn8p//nNwKorc6LgGQxYNygMcA4kbAytF8+YXmaYqzSgKFTnKs
-         NVw2ENxozeJigZymVLo63ReaHlbvhwZDm9gfh2YrzMoB/olyKutSLj7kYbGLimIy1Y6o
-         90lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7pMeBbJnHe0dT56aBjX+SG8tgBkU1RFs5WrTELGr21w=;
-        b=UHXDu7y1JbjVFT4gJkVbZOykcHwFGQCXuyyx7kts7CbJaF8gUyeUKnIMbF0Q2C0xzq
-         8ByTwQ8d0lff1Oi9qVfELScb/T2S86I9Hdh/yXM/zC7hLDXsltWbELse5PHFQcjLMV3P
-         7q4y6He887n03M+3tuS3vegjd9FPyuICdFis5KHRUrkxY2on3kNRens0SQ4IWcNf4hNG
-         8QOAql5+N9D2x4KnwLPSdyNXGEy+bmjw213yIxojLdTFqLXtVyyns0M3H0B9G6Dhp7k7
-         aqOISKMwPjID2VxJz6SZJkdCW2STfAiinaRJ2eJhNBwrQ8bMdcq8f8chJPmv5AR2250X
-         Ly8Q==
-X-Gm-Message-State: AOAM531RpGKXuElZWsWj5Bbzk9kdWvHGul8qSrwCS+sd4tc0WN9JaNsh
-        o0Kchnx6qFzzmBEkjlxvGZak4+l4XCCs5nTVGtheNQ==
-X-Google-Smtp-Source: ABdhPJyynPB60BGVh3pTGL9cuYERwmpP/tCiHXNF18eK0N8QEvX+6+NT5menbwA+NAmxn9IyhLYNKn5DboBOEdFSVRU=
-X-Received: by 2002:a2e:858a:: with SMTP id b10mr14594374lji.445.1623072591497;
- Mon, 07 Jun 2021 06:29:51 -0700 (PDT)
+        Mon, 7 Jun 2021 09:32:45 -0400
+Received: from [192.168.1.155] ([77.9.164.246]) by mrelayeu.kundenserver.de
+ (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MDhth-1lg6BL1jZ1-00AmyS; Mon, 07 Jun 2021 15:30:24 +0200
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+To:     Jason Gunthorpe <jgg@nvidia.com>, Jason Wang <jasowang@redhat.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Liu Yi L <yi.l.liu@linux.intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Alex Williamson (alex.williamson@redhat.com)\"\"" 
+        <alex.williamson@redhat.com>, David Woodhouse <dwmw2@infradead.org>
+References: <20210601113152.6d09e47b@yiliu-dev>
+ <164ee532-17b0-e180-81d3-12d49b82ac9f@redhat.com>
+ <64898584-a482-e6ac-fd71-23549368c508@linux.intel.com>
+ <429d9c2f-3597-eb29-7764-fad3ec9a934f@redhat.com>
+ <MWHPR11MB1886FC7A46837588254794048C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <05d7f790-870d-5551-1ced-86926a0aa1a6@redhat.com>
+ <MWHPR11MB1886269E2B3DE471F1A9A7618C3E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <42a71462-1abc-0404-156c-60a7ee1ad333@redhat.com>
+ <20210601173138.GM1002214@nvidia.com>
+ <f69137e3-0f60-4f73-a0ff-8e57c79675d5@redhat.com>
+ <20210602172154.GC1002214@nvidia.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <51e060a3-fc59-0a13-5955-71692b14eed8@metux.net>
+Date:   Mon, 7 Jun 2021 15:30:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <20210604102314.697749-1-odin@uged.al>
-In-Reply-To: <20210604102314.697749-1-odin@uged.al>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 7 Jun 2021 15:29:40 +0200
-Message-ID: <CAKfTPtDHrD_QGoLeUkR0ALRakWH+KOopHZk=29fyi-oonerd9g@mail.gmail.com>
-Subject: Re: [PATCH v4] sched/fair: Correctly insert cfs_rq's to list on unthrottle
-To:     Odin Ugedal <odin@uged.al>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210602172154.GC1002214@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:0cHgvfvkcENeZcwWOdSnMY5OBsLQc+AHnAcYsiTQDwQzV8yGses
+ BzhxD4cYyw748yK6N/P0nmJV8sW+l4B3uSreGFp/ZH44u5wZ7MaIBt0puYo9H6CTlkkSCpD
+ r4aJTDd5BK/w2FdPrZ18SR5dS3R3LHVHU6xk7rIJbyOMOb5GKVOegP5pyC9SfzDF6IHFOit
+ UCQz3Yv97nhVDnbAb1IQA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:0b78p2Fmx6c=:HhyzpkVQ7uJoDa9fEVb7F6
+ xFsLe61+6cSl2oyH7zj5A4CrjvXvb7KOqKLmktH3ZbUW1fICP/UosO75+xU7E8hc5+pzc92VW
+ LR/LjD80hvYUrCXbe017LZX/bfUnX4iZh/cSkhdx9zvaD9B4wT5uCKFiRN+/Wav2yCLrJvjsL
+ cjOZ2hVolWapI/aaKjqSAv9n/VM644SA5c1DfW4pfDVDo9++KvqChAyaSubd+mkw1E7zGgk40
+ bfww55mSUZo3QJLPzISQt8UMxjUVnI0+ag/zrptFmAUE1VzXaU21p2vQ1INWR7/mBGuTCmXRI
+ zqtvzllXx6M57EsJbqrHzgQywOI2yoFgXEr8y7NLkFdoqVl3Hfq2u0DP3nzTLoHMufwoCj4jc
+ vOzRhqKSiix+6zsxGDwISIp38M8erlQsz4YzoFJcWSS2FBSTbyJGUSU1C0Xi0yjMjCV2aBQH4
+ e9JA8vdQoGpUfNiaEYe89HFY9isMuEvE4jzZzwHxxJcM8TOdD6nJ4VTt11FTqxA6vE11NAxW+
+ FyX744HLunXQ18m0eR0ZMw=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Jun 2021 at 12:26, Odin Ugedal <odin@uged.al> wrote:
->
-> This fixes an issue where fairness is decreased since cfs_rq's can
-> end up not being decayed properly. For two sibling control groups with
-> the same priority, this can often lead to a load ratio of 99/1 (!!).
->
-> This happen because when a cfs_rq is throttled, all the descendant cfs_rq's
-> will be removed from the leaf list. When they initial cfs_rq is
-> unthrottled, it will currently only re add descendant cfs_rq's if they
-> have one or more entities enqueued. This is not a perfect heuristic.
->
-> Instead, we insert all cfs_rq's that contain one or more enqueued
-> entities, or it its load is not completely decayed.
->
-> Can often lead to situations like this for equally weighted control
-> groups:
->
-> $ ps u -C stress
-> USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-> root       10009 88.8  0.0   3676   100 pts/1    R+   11:04   0:13 stress --cpu 1
-> root       10023  3.0  0.0   3676   104 pts/1    R+   11:04   0:00 stress --cpu 1
->
-> Fixes: 31bc6aeaab1d ("sched/fair: Optimize update_blocked_averages()")
-> Signed-off-by: Odin Ugedal <odin@uged.al>
-> ---
-> Changes since v1:
->  - Replaced cfs_rq field with using tg_load_avg_contrib
->  - Went from 3 to 1 patches; one is merged and one is replaced
->    by a new patchset.
-> Changes since v2:
->  - Use !cfs_rq_is_decayed() instead of tg_load_avg_contrib
->  - Moved cfs_rq_is_decayed to above its new use
-> Changes since v3:
->  - (hopefully) Fix config for !CONFIG_SMP
->  kernel/sched/fair.c | 40 +++++++++++++++++++++-------------------
->  1 file changed, 21 insertions(+), 19 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 794c2cb945f8..eec32f214ff8 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -712,6 +712,25 @@ static u64 sched_vslice(struct cfs_rq *cfs_rq, struct sched_entity *se)
->         return calc_delta_fair(sched_slice(cfs_rq, se), se);
->  }
->
-> +static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+On 02.06.21 19:21, Jason Gunthorpe wrote:
 
-It's not the best place for this function:
-- pelt.h header file is included below but cfs_rq_is_decayed() uses PELT
-- CONFIG_SMP is already defined few lines below
-- cfs_rq_is_decayed() is only used with CONFIG_FAIR_GROUP_SCHED and
-now with CONFIG_CFS_BANDWIDTH which depends on the former
+Hi,
 
-so moving cfs_rq_is_decayed() just above update_tg_load_avg() with
-other functions used for propagating and updating tg load seems a
-better place
+> Not really, once one thing in an applicate uses a large number FDs the
+> entire application is effected. If any open() can return 'very big
+> number' then nothing in the process is allowed to ever use select.
 
-> +{
-> +       if (cfs_rq->load.weight)
-> +               return false;
-> +
-> +#ifdef CONFIG_SMP
-> +       if (cfs_rq->avg.load_sum)
-> +               return false;
-> +
-> +       if (cfs_rq->avg.util_sum)
-> +               return false;
-> +
-> +       if (cfs_rq->avg.runnable_sum)
-> +               return false;
-> +#endif
-> +
-> +       return true;
-> +}
-> +
->  #include "pelt.h"
->  #ifdef CONFIG_SMP
->
-> @@ -4719,8 +4738,8 @@ static int tg_unthrottle_up(struct task_group *tg, void *data)
->                 cfs_rq->throttled_clock_task_time += rq_clock_task(rq) -
->                                              cfs_rq->throttled_clock_task;
->
-> -               /* Add cfs_rq with already running entity in the list */
-> -               if (cfs_rq->nr_running >= 1)
-> +               /* Add cfs_rq with load or one or more already running entities to the list */
-> +               if (!cfs_rq_is_decayed(cfs_rq) || cfs_rq->nr_running)
->                         list_add_leaf_cfs_rq(cfs_rq);
->         }
->
-> @@ -7895,23 +7914,6 @@ static bool __update_blocked_others(struct rq *rq, bool *done)
->
->  #ifdef CONFIG_FAIR_GROUP_SCHED
->
-> -static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
-> -{
-> -       if (cfs_rq->load.weight)
-> -               return false;
-> -
-> -       if (cfs_rq->avg.load_sum)
-> -               return false;
-> -
-> -       if (cfs_rq->avg.util_sum)
-> -               return false;
-> -
-> -       if (cfs_rq->avg.runnable_sum)
-> -               return false;
-> -
-> -       return true;
-> -}
-> -
->  static bool __update_blocked_fair(struct rq *rq, bool *done)
->  {
->         struct cfs_rq *cfs_rq, *pos;
-> --
-> 2.31.1
->
+isn't that a bug in select() ?
+
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
