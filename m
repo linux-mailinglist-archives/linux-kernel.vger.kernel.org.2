@@ -2,149 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 276DE39DD7D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3631739DD81
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbhFGNUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 09:20:49 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:59335 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230227AbhFGNUr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 09:20:47 -0400
-X-UUID: d3af28efdb4e4da797687b36306ea06b-20210607
-X-UUID: d3af28efdb4e4da797687b36306ea06b-20210607
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <mark-pk.tsai@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1502342600; Mon, 07 Jun 2021 21:18:53 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 7 Jun 2021 21:18:51 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 7 Jun 2021 21:18:45 +0800
-From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-To:     <peterz@infradead.org>
-CC:     <ardb@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-toolchains@vger.kernel.org>, <mark-pk.tsai@mediatek.com>,
-        <matthias.bgg@gmail.com>, <mhelsley@vmware.com>,
-        <rostedt@goodmis.org>, <samitolvanen@google.com>,
-        <yj.chiang@mediatek.com>
-Subject: Re: [PATCH] recordmcount: avoid using ABS symbol as reference
-Date:   Mon, 7 Jun 2021 21:18:45 +0800
-Message-ID: <20210607131845.3118-1-mark-pk.tsai@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <YL4GlbfMJiuLkRhR@hirez.programming.kicks-ass.net>
-References: <YL4GlbfMJiuLkRhR@hirez.programming.kicks-ass.net>
+        id S230373AbhFGNVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 09:21:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52334 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230323AbhFGNVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 09:21:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E6CD611BD;
+        Mon,  7 Jun 2021 13:19:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623071956;
+        bh=J61pmu1j6ryUYserdHWBlYXXfYgPMBBoZsm7N71ZXTo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=luDGpmoMaPqOz6JQKS2C869/LKwIckgqB98U7tTCwqBtuuE29lcxn0qFaGPJvG5hb
+         Lc/r7hiFU/49WgjIepztF13Mtg1P6vHbsLx3fAWYEu6Jl7U+T91r5HGpubKgTyH8DZ
+         +Pf6AiJhIqcSfZhUGrUY3uI7Nm5VrzMaY9CxhqZyY9TPTPsviEuiHHP8+su2eo2doq
+         Kr7ldUKVElE/SQVFfuQ9fCyyCdPBFn77FuyGDsmzz/V3/0Ho3RftrJ70F3gt6AzCbx
+         B0aav7Ojadb5A+PFUGzng6SKqMaO5LAK/0iuYPSnUTWAuiuiXWaEgDWLq4i4BZIULa
+         0CI/SIIgWMCqA==
+Received: by mail-ed1-f44.google.com with SMTP id t3so20323813edc.7;
+        Mon, 07 Jun 2021 06:19:16 -0700 (PDT)
+X-Gm-Message-State: AOAM53075j79UzFu9Yq2yjJcrdOz23YW7XtCZY7OSnsMEfnPbHOOpXTE
+        nB4xZ1LUV81NTRtMmO5oImbAovQQcTFSn+stPw==
+X-Google-Smtp-Source: ABdhPJxzNlBS2VOpGlScoot1ij4UCYezPM7U/GRvFvlIEwgG7TrZboNzbJF0wUeqhr9QzxmTbA30S0QW1GcfIlRBKQY=
+X-Received: by 2002:a05:6402:1d0f:: with SMTP id dg15mr17392452edb.137.1623071954956;
+ Mon, 07 Jun 2021 06:19:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <20210603144216.10327-1-s-anna@ti.com>
+In-Reply-To: <20210603144216.10327-1-s-anna@ti.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 7 Jun 2021 08:19:03 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+mhJgFZniXYTVf5ZEM84APhm2w_ozLJg_pFtgz+W_wYw@mail.gmail.com>
+Message-ID: <CAL_Jsq+mhJgFZniXYTVf5ZEM84APhm2w_ozLJg_pFtgz+W_wYw@mail.gmail.com>
+Subject: Re: [RFC PATCH] dt-bindings: hwlock: sun6i: Fix various warnings in binding
+To:     Suman Anna <s-anna@ti.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Wilken Gottwalt <wilken.gottwalt@posteo.net>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, devicetree@vger.kernel.org,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>, linux-sunxi@lists.linux.dev,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Mon, Jun 07, 2021 at 11:50:40AM +0200, Ard Biesheuvel wrote:
-> > On Mon, 7 Jun 2021 at 10:06, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
-> > >
-> > > > > On Mon, 7 Jun 2021 at 08:59, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
-> > > > > >
-> > > > > > > > On Mon, 7 Jun 2021 at 04:42, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
-> > > > > > > >
-> > > > > > > > Avoid using ABS symbol, which won't be relocate, as reference.
-> > > > > > > >
-> > > > > > > > On arm64 platform, if there's shndx equals SHN_ABS(0xfff1).
-> > > > > > > >
-> > > > > > > > Section Headers:
-> > > > > > > > [Nr]    Name                         Type      Address          Off      Size   ES  Flg Lk     Inf    Al
-> > > > > > > > [65521] .text.n_tty_receive_buf      PROGBITS  0000000000000000 3cdab520 000054 00  AX  0      0      4
-> > > > > > > > [65522] .rela.text.n_tty_receive_buf RELA      0000000000000000 3cdab578 000030 18  I   152076 65521  8
-> > > > > > > >
-> > > > > > >
-> > > > > > > A RELA section's r_info field points to the section to which it
-> > > > > > > applies. This is why in the example above section #65522 points to
-> > > > > > > section #65521. This has nothing to do with the numerical value of
-> > > > > > > SHN_ABS.
-> > > > > >
-> > > > > > If the r_info of RELA section is 65521(0xfff1),
-> > > >
-> > > > Oh sorry, I mean sh_info here.
-> > > >
-> > > > > > find_secsym_ndx() will use it to find the base symbol.
-> > > > > >
-> > > > >
-> > > > > But what does that have to do with the sh_info field of the RELA
-> > > > > section's Elf_Shdr struct? IOW, what is the relevance of section
-> > > > > #65521 here?
-> > > > >
-> > > >
-> > > > So what I mean is the problem occur if the sh_info of a RELA section
-> > > > is #65521.
-> > >
-> > > Actually the problem occur if the sh_info of a RELA section is in
-> > > the special section index range(SHN_LORESERVE ~ SHN_HIRESERVE).
-> > > Maybe I should add a is_shndx_special() to check this like
-> > > scripts/mod/modpost.h did?
-> > >
-> >
-> > So if I understand all of this correctly, we are running into a
-> > fundamental issue here, where the linker emits more sections than the
-> > sh_info field can describe, overflowing into the reserved range.
-> >
-> > I don't think papering over it like this is going to be maintainable
-> > going forward.
+On Thu, Jun 3, 2021 at 9:42 AM Suman Anna <s-anna@ti.com> wrote:
 >
-> There's an extended section header index section for just that. And
-> recordmcount actually seems to use that as well.
+> The allwinner,sun6i-a31-hwspinlock.yaml binding has a mismatched
+> $id and fails to compile the example due to undefined args specifier
+> values for clocks and resets. Fix both of these issues.
 >
-> I can't seem to find enough of the thread to figure out what the actual
-> problem is though. The lore archive doesn't have anything prior to this
-> message.
+> Fixes: f9e784dcb63f ("dt-bindings: hwlock: add sun6i_hwspinlock")
+> Signed-off-by: Suman Anna <s-anna@ti.com>
+> ---
+> Hi Wilken,
 >
-> One should only use st_shndx when >SHN_UDEF and <SHN_LORESERVE. When
-> SHN_XINDEX, then use .symtab_shndx.
+> This fixes the warnings for now on linux-next, but I think the example
+> should be including sun6i-a31-ccu.h files instead to be accurate, and
+> those files are missing the definitions for CLK_BUS_SPINLOCK and
+> RST_BUS_SPINLOCK. Feel free to send a newer version or do an incremental
+> patch on top.
 >
-> Apparently you've found a case where neither is true? In that case
+> regards
+> Suman
+>
+>  .../bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml      | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 
-Yes, that's what my mean.
-get_symindex returns st_shndx directly even if st_shndx is in the reserve range.
-So either do not use get_symindex for those symbols or do extra handling
-for it like the patch you provide will solve the problem.
-
-> objtool seems to use shndx 0. A matching recordmcount patch would be
-> something like this.
->
->
-> diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
-> index f9b19524da11..d99cc0aed6fe 100644
-> --- a/scripts/recordmcount.h
-> +++ b/scripts/recordmcount.h
-> @@ -194,13 +194,18 @@ static unsigned int get_symindex(Elf_Sym const *sym, Elf32_Word const *symtab,
->  	unsigned long offset;
->  	int index;
->
-> -	if (sym->st_shndx != SHN_XINDEX)
-> +	if (sym->st_shndx > SHN_UDEF &&
-> +	    sym->st_shndx < SHN_LORESERVE)
->  		return w2(sym->st_shndx);
->
-> -	offset = (unsigned long)sym - (unsigned long)symtab;
-> -	index = offset / sizeof(*sym);
-> +	if (sym->st_shndx == SHN_XINDEX) {
-> +		offset = (unsigned long)sym - (unsigned long)symtab;
-> +		index = offset / sizeof(*sym);
->
-> -	return w(symtab_shndx[index]);
-> +		return w(symtab_shndx[index]);
-> +	}
-> +
-> +	return 0;
->  }
->
->  static unsigned int get_shnum(Elf_Ehdr const *ehdr, Elf_Shdr const *shdr0)
-
-Thanks for the suggestion.
-Skip all the symbols in the special sections seems fine because
-those sections should not be processed here.
+Acked-by: Rob Herring <robh@kernel.org>
