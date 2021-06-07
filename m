@@ -2,84 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D5839EA0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 01:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 233C839EA11
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 01:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230272AbhFGXXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 19:23:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbhFGXXo (ORCPT
+        id S230361AbhFGXYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 19:24:44 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:56549 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230237AbhFGXYm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 19:23:44 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28076C061574;
-        Mon,  7 Jun 2021 16:21:52 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FzTsV176Lz9sW6;
-        Tue,  8 Jun 2021 09:21:50 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1623108110;
-        bh=341u1WcBu3uL5xHi1SKjECS16kRSGYLl7VyY3/khpAk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=itSg0ui2ZPSHUwWqZe/bK/N6AeId5dtuyFWpXfAz4dST5K5Iea59ywKPzeFGUlcja
-         a66qxkFuDsXGprjdyi6R0CHsSgoWlGx24qxgYD7K5gZifovHskk7XBHTl28H22Vphu
-         GEUN7/nXIzSa28Rz+aNF/7tYf0gOC4x9BaqF1BtimWl2wKbo6REdlhnrDKda74Wbcb
-         SLik7cyr0dgCIDf3fMOnwtBFWwJfjqk7DJhDSEZpya2BnUI47ncgSESmdJOzhGJX2I
-         P88vz2qgqHrvhPebFfuF4GosDiCN5nGbWBB3TksOWE6eMa9tFLvw0yItKPsEE1LgAz
-         CP2cEfSsgb1tA==
-Date:   Tue, 8 Jun 2021 09:21:48 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the irqchip tree
-Message-ID: <20210608092148.4304e644@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/6Hc8th9/TjCAIwso3Vw=733";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Mon, 7 Jun 2021 19:24:42 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 28BCB5803A8;
+        Mon,  7 Jun 2021 19:22:50 -0400 (EDT)
+Received: from imap43 ([10.202.2.93])
+  by compute2.internal (MEProxy); Mon, 07 Jun 2021 19:22:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm3; bh=QICwXEloCx6aw2/RCotid55ESt9TMAU
+        7Fh6aVjperoc=; b=Qc0M7i9qAyYrzxXWgXuC95IXot+t6pTavyAWIdEeKVrFCUY
+        RKtyVKM6aYP32csgFYUEIOZO6Pi97kYKTIlAWwljoB5/UlOe97YGZ2AmZpKAwCt9
+        5qq56pefkTWmU7KGJ2ZAZrfQiBYOUrhhu1dE229jgPB4sHgjOOV71qZctGncC+LC
+        HeGf2FLzT8EWS/Wrdwc264HZJp32Qcpj7RMJRg3ZE+s5fc3h9zpQ4YAuulEGEgpJ
+        /RO6CUI20XVW/pVtGMonfL/odnniSNc7i7QIaOhSnkGp/8IOIX2c1HvHUg1n6Qxo
+        lkFpsYGzxw0V8pGLnaGRT4zYJKm66DPfwh+WYJA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=QICwXE
+        loCx6aw2/RCotid55ESt9TMAU7Fh6aVjperoc=; b=ubFTo3by9lSkT2+k7Fhzzt
+        TX6lstx2njF6lqoexmHlcHwL601VjcpdSJKJi5RXvxcy3V5RbvuJk9Lb0wVF94Mg
+        FkiROCrcliDuWinqknBv83XCq1vjP04hwadCXtwcnEllpYQoZ5kJXM/gntcWtpiu
+        HAvO25XT7KK3jbv6y/GUh7Bc0agjk7mlYEDVC5OwdPHonaZCReU+aEO23cAZ6FWF
+        1Mi8k7UFYzhg7lkGYbfKFe7TvJRywOz2l3Y05P5CN3nC2DCHrPaYDdQRohUX6p5t
+        OnixvDrn6DdMCOuzmDKz0o9kjy+1jjLyprqkDz2lE7NErcrwziJ7/9rz/8VRXnlA
+        ==
+X-ME-Sender: <xms:R6q-YMo-JJfZP-iql89XEhlPDyMPh6gAwAj6YcDCSnPrwuSRxHGLPA>
+    <xme:R6q-YCpUBkETy0EM1nQn8EXJQiMR13To0TX8bjFwOKYqdk_JGpHoJ01Lo1wDFbLn0
+    rRoZb1W-z2QAc8Z8g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtkedguddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
+    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:R6q-YBPqZ1lazXFrW8PmanqwwsBTsPNw9C5km0c0eKsczulqoeNRKg>
+    <xmx:R6q-YD4o8_XdUnH1u1ykjxToir9lzpaiwD2F591RXcQfr94jYSJNmw>
+    <xmx:R6q-YL6aG0jp2HljAXfFVxhxyQJ1Cuf7UMw85czeJ3Cv9iiRC4niVQ>
+    <xmx:Sqq-YIxYtnS-BsfMWXfDqPIIYKzY4sSNrGqKWCvTbm_RWh4ujtdD2g>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 27546AC0062; Mon,  7 Jun 2021 19:22:47 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
+Mime-Version: 1.0
+Message-Id: <578c8522-a182-427f-8587-746fc8ec93d5@www.fastmail.com>
+In-Reply-To: <20210607071514.11727-3-steven_lee@aspeedtech.com>
+References: <20210607071514.11727-1-steven_lee@aspeedtech.com>
+ <20210607071514.11727-3-steven_lee@aspeedtech.com>
+Date:   Tue, 08 Jun 2021 08:52:26 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Steven Lee" <steven_lee@aspeedtech.com>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        "open list" <linux-kernel@vger.kernel.org>
+Cc:     "Hongwei Zhang" <Hongweiz@ami.com>,
+        "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        "Billy Tsai" <billy_tsai@aspeedtech.com>
+Subject: =?UTF-8?Q?Re:_[PATCH_v4_2/7]_dt-bindings:_aspeed-sgpio:_Add_ast2600_sgpi?=
+ =?UTF-8?Q?o_compatibles.?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/6Hc8th9/TjCAIwso3Vw=733
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-After merging the irqchip tree, yesterday's linux-next build (htmldocs)
-produced this warning:
+On Mon, 7 Jun 2021, at 16:45, Steven Lee wrote:
+> AST2600 SoC has 2 SGPIO master interfaces one with 128 pins another one
+> with 80 pins. Add ast2600-sgpiom0-80 and ast2600-sgpiom-128 compatibles
+> and update descriptions to introduce the max number of available gpio
+> pins that AST2600 supported.
+> 
+> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
 
-include/linux/interrupt.h:131: warning: Function parameter or member 'desc'=
- not described in 'irqaction'
-
-Introduced by commit
-
-  bb33916b527f ("genirq: Replace irqaction:irq with a pointer to the irqdes=
-c")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/6Hc8th9/TjCAIwso3Vw=733
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC+qgwACgkQAVBC80lX
-0GxNVAf+PMRL+IBNolwf0vClJ884rxT+BKRNYv+TEzBFgZK2yN3NRmmynKYdX4uN
-l6Vqh/3ddIwSfKXgJ+U7zE136UqXXPtYz2/fgAW/3raNYgW+JKr74tP0v53r1A3Z
-NxicTrArgOKtdX1uJ9tGUXCrUXwADvr924qBCdWTZcxYKdpa2OxOXcCreQ8Sq7d/
-RTnhe8vqHpgzLEkfC2IMFCMyrn0ynMSashW17vyP3kUTxhQtNk17ZvNVMrB29JPp
-zQrOT801TsltPqS6E4zDYPzTzuWgDgXLftYU28y8G1rkmqoin4RE9eDTzWGxzu0g
-c1TUSMWRURX3VDyc+B6AgZzi6g18Rg==
-=MguI
------END PGP SIGNATURE-----
-
---Sig_/6Hc8th9/TjCAIwso3Vw=733--
+Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
