@@ -2,65 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8175139E86D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 22:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A23939E870
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 22:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbhFGUbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 16:31:47 -0400
-Received: from mail-lf1-f45.google.com ([209.85.167.45]:37577 "EHLO
-        mail-lf1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230251AbhFGUbp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 16:31:45 -0400
-Received: by mail-lf1-f45.google.com with SMTP id f11so28305010lfq.4
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 13:29:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=wXlM84FluN2UpgMb6u6wrJYBp2bd2Nn6sITa/h9v8sc=;
-        b=XK8NNpCzoqNSBViLp4IIw6nfUWkHcNQXjbNlylhlBbRHY9no/sbMKqG3dmsbjqi4b+
-         CmTs67zqOzzzNa6szplAKF7I6v1QyhT9fn4ZvM93QqhTZA7Vgg7Q+CF1lIIRnJjOuqQx
-         EyNWsIhSCPSA0o/6z6xVa5Sy55NRaBpMuPnUV2+OPv6P1B79i+80JW/VV1It0cLeWTnr
-         GW8f7bzDureUVE5Mm322hY4g6zjh9K8u39rdWTVHjc8nR+ZbnCmcVplztSUzXdfwTYWX
-         Clti+juxh0jwSmLNEs4Z9U5YkNVjo45xqeXTStuJnH0w/t5rURvL8Le+qtLdD2RuoaQw
-         59Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=wXlM84FluN2UpgMb6u6wrJYBp2bd2Nn6sITa/h9v8sc=;
-        b=LbQjmMuLVAgO75gljkuEUNyQHPStFN7jdIJzDltVGWTYKB2DbP3ZZ8SdT9xejKQTlD
-         uXgH9o0FeHZ74Swsq8PVrPHgVZ7hkFqixCkgsrGVdlxycpq+0nRmFjH/oQe7HK1UyzYl
-         kHtirdXeUsJxK2je9LttG36wURxuTTNDaT/KHzoAWQCOmcqWXxVuc+ZV6zK+CCGptE/M
-         bfPbgZDl2YneB5lwEWAJ5dw56VNiF+zT3T5Vf9J/rbwELL3uungsLuEsqhCy6+DOR6hT
-         6EWzjuh/W4G1LJ3ghCPOuqSfZjsfAGwL65Ui36OYqMY4k3Vbew9Sxi7I5Nqj436Jai3Q
-         efLA==
-X-Gm-Message-State: AOAM530emEcImtwUhOMlCxNknMLGOXQtLDYmN3J6DY9w9spvyAJcGugW
-        mJr0+cpVIDK6L69u88PbgX3tWr13nnZW8RXXnUE=
-X-Google-Smtp-Source: ABdhPJwrou441aV9yTqLw2UI1LZF/WU9CgVcXFXVajTSz+Q44qq6Q5Ih932460wohHDIW0fsUZvybNrVUiK2nb4i1rs=
-X-Received: by 2002:a05:6512:1326:: with SMTP id x38mr12710882lfu.62.1623097732838;
- Mon, 07 Jun 2021 13:28:52 -0700 (PDT)
+        id S231360AbhFGUb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 16:31:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230251AbhFGUbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 16:31:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 18BAC61139;
+        Mon,  7 Jun 2021 20:30:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623097804;
+        bh=Hf5W9L/jvScCtlagXjZ889wFRVocf7tcyh5gFLCdZ68=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Tcjv1NV4IueAhWNAHoknvZwQ+lnNyCDW54uGLWsEuj0P7DW6HHJzAO/BEvYa4doUp
+         g94/du+Zgm/PJBThxZ2AFKVLvd4Qf7TqrFf8UTWTHwaUKvzmWeaVgQ8VMUsiS0+OvT
+         n30V5bl3KWZWMKiTeoQjd6CxlUk3LGXF9wC/zGgfjQVlwPVjdEXEKHgunVNRZqaSmE
+         SwLOlfR7Tem7Wy7nvx8lSVEoGbwNGjBRcWIuYY4gmyR7bqDzeAojXfyRHxZAWfBh3I
+         Eaxhmv4pkmdKUmnFdUBAvFVcRa0Y3hvFIlR9dOuVTpnHG+bvc5zIxbTUkNosU9LzJI
+         8zX58MbAQ6eWg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0CE4460283;
+        Mon,  7 Jun 2021 20:30:04 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Reply-To: dear00stefan@gmail.com
-Sender: homurabba@gmail.com
-Received: by 2002:a9a:79cc:0:b029:f4:ef1f:dadf with HTTP; Mon, 7 Jun 2021
- 13:28:52 -0700 (PDT)
-From:   Stef <dearr00stefan@gmail.com>
-Date:   Mon, 7 Jun 2021 21:28:52 +0100
-X-Google-Sender-Auth: L3QBPRLPvPPNhQOUCstJvKaNe1Q
-Message-ID: <CAFpiVOGrdL4dYL2+V+XLdMib3+8whJtFU8U96JGTe6KvjJ9-Nw@mail.gmail.com>
-Subject: Hi
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v3] net: gemini: Use
+ devm_platform_get_and_ioremap_resource()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162309780404.13544.15986317200547289285.git-patchwork-notify@kernel.org>
+Date:   Mon, 07 Jun 2021 20:30:04 +0000
+References: <20210607081145.1617593-1-yangyingliang@huawei.com>
+In-Reply-To: <20210607081145.1617593-1-yangyingliang@huawei.com>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        ulli.kroll@googlemail.com, linus.walleij@linaro.org,
+        davem@davemloft.net, kuba@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hello:
 
-Sorry invading your privacy, I'm Stef, looking and hoping for a mutual
-friendship. Please would you mind telling me about yourself? I believe
-a day is quite enough to get to know a stranger.
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-Kiss
-Stef
+On Mon, 7 Jun 2021 16:11:45 +0800 you wrote:
+> Use devm_platform_get_and_ioremap_resource() to simplify
+> code.
+> 
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+> v3:
+>   remove netdev_info(...) in gemini_ethernet_port_probe()
+> v2:
+>   Also use devm_platform_get_and_ioremap_resource() in gemini_ethernet_probe().
+>   Keep the error message to distinguish remap which address failed in
+>   gemini_ethernet_port_probe().
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,v3] net: gemini: Use devm_platform_get_and_ioremap_resource()
+    https://git.kernel.org/netdev/net-next/c/ef91f7981036
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
