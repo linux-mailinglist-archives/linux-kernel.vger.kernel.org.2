@@ -2,65 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3D439E680
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:23:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B0039E6A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbhFGSZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 14:25:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33704 "EHLO mail.kernel.org"
+        id S231214AbhFGS3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 14:29:44 -0400
+Received: from gate.crashing.org ([63.228.1.57]:40897 "EHLO gate.crashing.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230458AbhFGSZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 14:25:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68A6A61105;
-        Mon,  7 Jun 2021 18:23:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623090192;
-        bh=F0DNX6ITtcI6m/H/+t3QDmlYTYmBnAWD7soN/1G1bsc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VG9qnWR3MLjiTJGUVrFvCVxS6Bt73Grqpj11dLWkT12noG2TqiQPKAEqgVYNR95v0
-         o05QNEpPz98iW3Ptj9WDy1jspiZl3mMJSUPrm1t16PjH0kENzBOja8MzDnU4XJbZpZ
-         q1DYNH4YzTyzGgnvo8MDLx9/c5EDyzhXcKz7YMolFiSLYR1DXwycrIA1Co7GOLYpEc
-         ObywgJR/DU4eIzoGZGm9HnrHXr0JkM15aXeQSf4liWTIn/1aFx9FcyNHdgl2OTu6E8
-         bB6ncJeM6g6m5QL2B00K6uGYSri0KbfIvHemDmVVqyIO+P9SSVKE15vv0fZzDOGqnH
-         Rf9LX3DKktzng==
-Date:   Mon, 7 Jun 2021 23:53:07 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Viresh Kumar <vireshk@kernel.org>
-Subject: Re: [PATCH v1 1/1] dmaengine: dw: Program xBAR hardware for Elkhart
- Lake
-Message-ID: <YL5kC1gg9vdXb9xz@vkoul-mobl>
-References: <20210602085604.21933-1-andriy.shevchenko@linux.intel.com>
- <YL4EYb35GOVYxdQO@vkoul-mobl>
- <YL4RVEIJrSMy+Slf@smile.fi.intel.com>
-MIME-Version: 1.0
+        id S230514AbhFGS3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 14:29:42 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 157INap3017668;
+        Mon, 7 Jun 2021 13:23:36 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 157INZNS017666;
+        Mon, 7 Jun 2021 13:23:35 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Mon, 7 Jun 2021 13:23:35 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <20210607182335.GI18427@gate.crashing.org>
+References: <20210606115336.GS18427@gate.crashing.org> <CAHk-=wjgzAn9DfR9DpU-yKdg74v=fvyzTJMD8jNjzoX4kaUBHQ@mail.gmail.com> <20210606184021.GY18427@gate.crashing.org> <CAHk-=wjEHbGifWgA+04Y4_m43s-o+3bXpL5qPQL3ECg+86XuLg@mail.gmail.com> <20210606195242.GA18427@gate.crashing.org> <CAHk-=wgd+Gx9bcmTwxhHbPq=RYb_A_gf=GcmUNOU3vYR1RBxbA@mail.gmail.com> <20210606202616.GC18427@gate.crashing.org> <20210606233729.GN4397@paulmck-ThinkPad-P17-Gen-1> <20210607141242.GD18427@gate.crashing.org> <20210607152712.GR4397@paulmck-ThinkPad-P17-Gen-1>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YL4RVEIJrSMy+Slf@smile.fi.intel.com>
+In-Reply-To: <20210607152712.GR4397@paulmck-ThinkPad-P17-Gen-1>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07-06-21, 15:30, Andy Shevchenko wrote:
-> On Mon, Jun 07, 2021 at 05:04:57PM +0530, Vinod Koul wrote:
-> > On 02-06-21, 11:56, Andy Shevchenko wrote:
+On Mon, Jun 07, 2021 at 08:27:12AM -0700, Paul E. McKenney wrote:
+> > > > > The barrier() thing can work - all we need to do is to simply make it
+> > > > > impossible for gcc to validly create anything but a conditional
+> > > > > branch.
 
-> > > +	case DMA_DEV_TO_DEV:
-> > > +	default:
-> > > +		value |= CTL_CH_WR_NON_SNOOP_BIT | CTL_CH_RD_NON_SNOOP_BIT;
-> > > +		value |= CTL_CH_TRANSFER_MODE_S2S;
-> > > +		break;
+> > > What would you suggest as a way of instructing the compiler to emit the
+> > > conditional branch that we are looking for?
 > > 
-> > aha, how did you test this...
+> > You write it in the assembler code.
+> > 
+> > Yes, it sucks.  But it is the only way to get a branch if you really
+> > want one.  Now, you do not really need one here anyway, so there may be
+> > some other way to satisfy the actual requirements.
 > 
-> Not sure what the question is about. You are talking about last two cases
-> or the entire switch? Last two weren't tested, just filed for the sake of
-> being documented. First two were tested with SPI host controllers.
+> Hmmm...  What do you see Peter asking for that is different than what
+> I am asking for?  ;-)
 
-Last one is Device to device which is not supported by dmaengine and
-cannot be tested right now!
+I don't know what you are referring to, sorry?
 
--- 
-~Vinod
+I know what you asked for: literally some way to tell the compiler to
+emit a conditional branch.  If that is what you want, the only way to
+make sure that is what you get is by writing exactly that in assembler.
+
+
+Segher
