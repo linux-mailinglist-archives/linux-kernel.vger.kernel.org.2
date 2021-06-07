@@ -2,122 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3408A39D9F8
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC8839DA00
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbhFGKrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 06:47:02 -0400
-Received: from fanzine.igalia.com ([178.60.130.6]:59664 "EHLO
-        fanzine.igalia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbhFGKrB (ORCPT
+        id S230443AbhFGKr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 06:47:57 -0400
+Received: from mail-wr1-f54.google.com ([209.85.221.54]:34693 "EHLO
+        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230127AbhFGKrz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 06:47:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com; s=20170329;
-        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From; bh=2lMi81G2fDmQw6ckho/NNRsj7fiqWF9oqLRYD59RpkI=;
-        b=es/Kvqwi+9pCzIl/xVmVEVRwavirXQT8yhMlyRFLzWtj8Z076OlCuxTUlBMbXIdUx3ZXk5sLG2BzLlVE57p2pgJk3wHW2foEtKytcKtwJUdMW94Pr1LUVIvE3TtK1JbnSgEM7JWPe2hCcx9FuIoBlegxbCUpL8ktJ8tgBdXEvIN3DR1vfBgEGNrSL1gD0NuXR5o/SLm966j+kajpkUOUZ81ZZHmjDAaVPzGGCGfCPOMhlcOAcACMVZjTp6k/2SEiE/XW8fSG/fUdvWswCoo0bw9qr5XJ9kAWJZhz3V7l1yEu1+WJwseQw359rQ6r1DyL7Ucz8PG+ZkGChhX40JvpVA==;
-Received: from 1.pool85-50-22.dynamic.orange.es ([85.50.22.1] helo=localhost.localdomain)
-        by fanzine.igalia.com with esmtpsa 
-        (Cipher TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim)
-        id 1lqCkf-0004BB-JJ; Mon, 07 Jun 2021 12:45:01 +0200
-From:   Samuel Iglesias Gonsalvez <siglesias@igalia.com>
-To:     freedreno@lists.freedesktop.org
-Cc:     Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/msm: export hangcheck_period in debugfs
-Date:   Mon,  7 Jun 2021 12:44:41 +0200
-Message-Id: <20210607104441.184700-1-siglesias@igalia.com>
-X-Mailer: git-send-email 2.30.2
+        Mon, 7 Jun 2021 06:47:55 -0400
+Received: by mail-wr1-f54.google.com with SMTP id q5so17058265wrm.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 03:46:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aqlB3nweefXMBd+1n3TfVg5Imk7mqG7GGko5Cn1Ypjk=;
+        b=fokBrG+2G1fkq/XmZlW8Qn8gNsGVee/kxIBq16SYHHcihUEHhxAiLiYioDzjZCKPWV
+         9QEZOxcXx7fkFSqzCPab9ejYwiSWHFrBFKIvS4T83XVPbmSdXZpWw/7QLttpVgGupn7M
+         FoWs2xbakjWUMbWyKY9toPvBiRJY2NSMoomhdLwJgft1TVJGXI1KGV/tNqHpK+0t4K/c
+         ssThtjIQ5Gd6U2Vgt07NOm/v5UajEDZu6QDpCKD4dz0UaryRPm6OwVwk+zBYdDwhZepP
+         9jCgvqxA0rUhD0TtVGl/Sk+NMb0qRwm6JS3LOkQ+swNNoK5wt0XeTzNUgGulkw29L99w
+         ZQaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aqlB3nweefXMBd+1n3TfVg5Imk7mqG7GGko5Cn1Ypjk=;
+        b=icObjEVh3qtUu9lvCYc2dRTEVigkrJnPhsYmrcdf7MLiWDZO9GIOcM3u7Hf1LQ2Hhi
+         iZPuDpZif039nTR/X4nG+Xk+6Uy2z6wtMdLiVV6RS/pdzvioybAHMnvfW6Af5Taaieab
+         7FeQsqf+CjyiE2B0ACSAB15VXcfB35lhDVofAgVRPC1JUTAfh4xzgvDk5QfwGhZBIIsi
+         zHLoFjGPoirxt0oqnfgs2+vJShVexqr4Lw6e9xGsCV5t8r06rPt1vo9WYJfo4z1QwRvB
+         bshCfQMOhKlY6AXGv9LWvsdL9ihC3bbx8Rtyvg+QSgjP3YmaT/IHNV6jrAawU5qB33LJ
+         LShQ==
+X-Gm-Message-State: AOAM531LLRvjY11bxcZ7BkKIAtx7+dgpr9dIO2bw1eX42Wlc12q/MnUK
+        ZilBMOUGOh//ESIiKZoqEGdDRA==
+X-Google-Smtp-Source: ABdhPJwqNBSGH0k0cJir/i3kAe7gRK7bFBO/b5hmcAfd7Z+SvyV8tZwYe+ey/npaVItqY9949tYt3w==
+X-Received: by 2002:a05:6000:1563:: with SMTP id 3mr16068224wrz.59.1623062703694;
+        Mon, 07 Jun 2021 03:45:03 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id p16sm16000678wrs.52.2021.06.07.03.45.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 03:45:03 -0700 (PDT)
+Date:   Mon, 7 Jun 2021 11:45:00 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+        kgdb-bugreport@lists.sourceforge.net,
+        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
+        rcu@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org
+Subject: Re: [PATCH 6/6] sched: Change task_struct::state
+Message-ID: <20210607104500.sopvslejuoxwzhrs@maple.lan>
+References: <20210602131225.336600299@infradead.org>
+ <20210602133040.587042016@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210602133040.587042016@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While keeping the previous default value for hangcheck period,
-we allow now the possibility of configuring its value via
-debugfs.
+On Wed, Jun 02, 2021 at 03:12:31PM +0200, Peter Zijlstra wrote:
+> Change the type and name of task_struct::state. Drop the volatile and
+> shrink it to an 'unsigned int'. Rename it in order to find all uses
+> such that we can use READ_ONCE/WRITE_ONCE as appropriate.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  ...
+>  kernel/debug/kdb/kdb_support.c |   18 +++++++------
+>  ...
+> --- a/kernel/debug/kdb/kdb_support.c
+> +++ b/kernel/debug/kdb/kdb_support.c
+> @@ -609,23 +609,25 @@ unsigned long kdb_task_state_string(cons
+>   */
+>  char kdb_task_state_char (const struct task_struct *p)
+>  {
+> -	int cpu;
+> -	char state;
+> +	unsigned int p_state;
+>  	unsigned long tmp;
+> +	char state;
+> +	int cpu;
+>  
+>  	if (!p ||
+>  	    copy_from_kernel_nofault(&tmp, (char *)p, sizeof(unsigned long)))
+>  		return 'E';
+>  
+>  	cpu = kdb_process_cpu(p);
+> -	state = (p->state == 0) ? 'R' :
+> -		(p->state < 0) ? 'U' :
+> -		(p->state & TASK_UNINTERRUPTIBLE) ? 'D' :
+> -		(p->state & TASK_STOPPED) ? 'T' :
+> -		(p->state & TASK_TRACED) ? 'C' :
+> +	p_state = READ_ONCE(p->__state);
+> +	state = (p_state == 0) ? 'R' :
+> +		(p_state < 0) ? 'U' :
 
-Signed-off-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
----
- drivers/gpu/drm/msm/msm_debugfs.c | 3 +++
- drivers/gpu/drm/msm/msm_drv.c     | 1 +
- drivers/gpu/drm/msm/msm_drv.h     | 3 +++
- drivers/gpu/drm/msm/msm_gpu.c     | 3 ++-
- drivers/gpu/drm/msm/msm_gpu.h     | 3 +--
- 5 files changed, 10 insertions(+), 3 deletions(-)
+Looks like the U here stands for Unreachable since this patch makes it
+more obvious that this clause is (and previously was) exactly that!
 
-diff --git a/drivers/gpu/drm/msm/msm_debugfs.c b/drivers/gpu/drm/msm/msm_debugfs.c
-index d611cc8e54a4..6be5fdbea2f1 100644
---- a/drivers/gpu/drm/msm/msm_debugfs.c
-+++ b/drivers/gpu/drm/msm/msm_debugfs.c
-@@ -226,6 +226,9 @@ void msm_debugfs_init(struct drm_minor *minor)
- 	debugfs_create_file("gpu", S_IRUSR, minor->debugfs_root,
- 		dev, &msm_gpu_fops);
- 
-+	debugfs_create_u32("hangcheck_period_ms", 0600, minor->debugfs_root,
-+		&priv->hangcheck_period);
-+
- 	if (priv->kms && priv->kms->funcs->debugfs_init)
- 		priv->kms->funcs->debugfs_init(priv->kms, minor);
- }
-diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-index 3476ece0c08f..15a9e7a9b158 100644
---- a/drivers/gpu/drm/msm/msm_drv.c
-+++ b/drivers/gpu/drm/msm/msm_drv.c
-@@ -459,6 +459,7 @@ static int msm_drm_init(struct device *dev, const struct drm_driver *drv)
- 	mdss = priv->mdss;
- 
- 	priv->wq = alloc_ordered_workqueue("msm", 0);
-+	priv->hangcheck_period = DRM_MSM_HANGCHECK_DEFAULT_PERIOD;
- 
- 	INIT_LIST_HEAD(&priv->objects);
- 	mutex_init(&priv->obj_lock);
-diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
-index 3352125ce428..ce9983001b55 100644
---- a/drivers/gpu/drm/msm/msm_drv.h
-+++ b/drivers/gpu/drm/msm/msm_drv.h
-@@ -244,6 +244,9 @@ struct msm_drm_private {
- 	struct shrinker shrinker;
- 
- 	struct drm_atomic_state *pm_state;
-+
-+	/* For hang detection, in ms */
-+	unsigned int hangcheck_period;
- };
- 
- struct msm_format {
-diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
-index 9dd1c58430ab..4ee8ba09b762 100644
---- a/drivers/gpu/drm/msm/msm_gpu.c
-+++ b/drivers/gpu/drm/msm/msm_gpu.c
-@@ -561,8 +561,9 @@ static void recover_worker(struct kthread_work *work)
- 
- static void hangcheck_timer_reset(struct msm_gpu *gpu)
- {
-+	struct msm_drm_private *priv = gpu->dev->dev_private;
- 	mod_timer(&gpu->hangcheck_timer,
--			round_jiffies_up(jiffies + DRM_MSM_HANGCHECK_JIFFIES));
-+			round_jiffies_up(jiffies + msecs_to_jiffies(priv->hangcheck_period)));
- }
- 
- static void hangcheck_handler(struct timer_list *t)
-diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
-index 18baf935e143..f631c2777ad5 100644
---- a/drivers/gpu/drm/msm/msm_gpu.h
-+++ b/drivers/gpu/drm/msm/msm_gpu.h
-@@ -131,8 +131,7 @@ struct msm_gpu {
- 	 */
- #define DRM_MSM_INACTIVE_PERIOD   66 /* in ms (roughly four frames) */
- 
--#define DRM_MSM_HANGCHECK_PERIOD 500 /* in ms */
--#define DRM_MSM_HANGCHECK_JIFFIES msecs_to_jiffies(DRM_MSM_HANGCHECK_PERIOD)
-+#define DRM_MSM_HANGCHECK_DEFAULT_PERIOD 500 /* in ms */
- 	struct timer_list hangcheck_timer;
- 
- 	/* work for handling GPU recovery: */
--- 
-2.30.2
+Dropping the U state would be good since I guess this will show up as a
+"new" warning in some tools. However it was a preexisting problem so with
+or without this cleaned up:
+Acked-by: Daniel Thompson <daniel.thompson@linaro.org>
 
+
+Daniel.
+
+> +		(p_state & TASK_UNINTERRUPTIBLE) ? 'D' :
+> +		(p_state & TASK_STOPPED) ? 'T' :
+> +		(p_state & TASK_TRACED) ? 'C' :
+>  		(p->exit_state & EXIT_ZOMBIE) ? 'Z' :
+>  		(p->exit_state & EXIT_DEAD) ? 'E' :
+> -		(p->state & TASK_INTERRUPTIBLE) ? 'S' : '?';
+> +		(p_state & TASK_INTERRUPTIBLE) ? 'S' : '?';
+>  	if (is_idle_task(p)) {
+>  		/* Idle task.  Is it really idle, apart from the kdb
+>  		 * interrupt? */
