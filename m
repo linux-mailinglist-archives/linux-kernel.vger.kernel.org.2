@@ -2,170 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7825039DE32
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A8939DDDF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbhFGOAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 10:00:25 -0400
-Received: from mga09.intel.com ([134.134.136.24]:17126 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230328AbhFGOAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 10:00:23 -0400
-IronPort-SDR: 4JD6xIvLxFgEuMb8r1OqzqT34dgj/hC9G87UY67DViwk8lkeIGDIndUnJTMS5vh8sKlPm/pSVO
- IpKAUrLLXR5w==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="204594342"
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
-   d="scan'208";a="204594342"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 06:58:31 -0700
-IronPort-SDR: PMgHgFA2Pq/OzjyuHeOKRoET1itANVY6jX8ucvGI1shsQ8DmFZ0LxBPMfR/smLxxJFrKaSPKU/
- Bogf+fx4AIKQ==
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
-   d="scan'208";a="401636390"
-Received: from flobatol-mobl1.amr.corp.intel.com (HELO [10.209.152.154]) ([10.209.152.154])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 06:58:29 -0700
-Subject: Re: [PATCH 3/4] ASoC: intel: sof_cs42l42: add support for
- jsl_cs4242_mx98360a
-To:     Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
+        id S230395AbhFGNmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 09:42:50 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:46242 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230127AbhFGNms (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 09:42:48 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 157DelfA065132;
+        Mon, 7 Jun 2021 08:40:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1623073247;
+        bh=XIRhjm6c/H5np6FKJM7OWMRS5z/xWNTKW2NoHX5pFUI=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=hjrdjGA4/mkgRgErxkgA2WbdfJpaYYWTf4X8uwNvMU4pHOmBxmA41kpQmxR3A8q23
+         4dLEFWqc1WTQ8D1NlphXCOH/t7vE3CLlpZI5sgLI/heahqpOtC0wp6qqZafd3rjd9l
+         ipSqo9w48mfKlyb4JXBrvsDqumxXQ+KchqU5bn9U=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 157DelkS087488
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 7 Jun 2021 08:40:47 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 7 Jun
+ 2021 08:40:47 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 7 Jun 2021 08:40:47 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 157DeleB040758;
+        Mon, 7 Jun 2021 08:40:47 -0500
+Date:   Mon, 7 Jun 2021 08:40:47 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
         Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Rander Wang <rander.wang@intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        linux-kernel@vger.kernel.org,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Dharageswari R <dharageswari.r@intel.com>,
-        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Naveen Manohar <naveen.m@intel.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Tzung-Bi Shih <tzungbi@google.com>
-References: <20210606004102.26190-1-brent.lu@intel.com>
- <20210606004102.26190-4-brent.lu@intel.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <505c7e46-316c-9fa1-feaa-115f4561ed19@linux.intel.com>
-Date:   Mon, 7 Jun 2021 08:40:44 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Rob Herring <robh+dt@kernel.org>,
+        =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Tero Kristo <kristo@kernel.org>, <linux-spi@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 3/5] arm64: dts: ti: am65: align ti,pindir-d0-out-d1-in
+ property with dt-shema
+Message-ID: <20210607134047.isfuedgjxpubpcb5@ungloved>
+References: <20210602123416.20378-1-a-govindraju@ti.com>
+ <20210602123416.20378-4-a-govindraju@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20210606004102.26190-4-brent.lu@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210602123416.20378-4-a-govindraju@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/5/21 7:41 PM, Brent Lu wrote:
-> This patch adds driver data for jsl_cs4242_mx98360a which supports two
-> max98360a speaker amplifiers on SSP1 and cs42l42 headphone codec on
-> SSP0 running on JSL platform. DAI format is leveraged from sof_rt5682
-> machine driver to reuse the topology.
-
-This also looks like we have two topologies configuring the same DAIs 
-differently on different platforms.
-
-Why can't we pick one configuration that would work in all cases?
-
-> Also use module device table to replace module alias.
-
-Humm, this looks like a missing dependency, I modified this a while ago.
-
+On 18:04-20210602, Aswath Govindraju wrote:
+> ti,pindir-d0-out-d1-in property is expected to be of type boolean.
+> Therefore, fix the property accordingly.
 > 
-> Signed-off-by: Brent Lu <brent.lu@intel.com>
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+No need for Fixes?
+
+Also please split up the patches per maintainer so that we are'nt
+confused on who should pick what etc..
+
 > ---
->   sound/soc/intel/boards/sof_cs42l42.c          | 22 +++++++++++++++----
->   .../intel/common/soc-acpi-intel-jsl-match.c   |  8 +++++++
->   2 files changed, 26 insertions(+), 4 deletions(-)
+>  arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi | 2 +-
+>  arch/arm64/boot/dts/ti/k3-am654-base-board.dts     | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/sound/soc/intel/boards/sof_cs42l42.c b/sound/soc/intel/boards/sof_cs42l42.c
-> index e3171242f612..d712cfb91fd1 100644
-> --- a/sound/soc/intel/boards/sof_cs42l42.c
-> +++ b/sound/soc/intel/boards/sof_cs42l42.c
-> @@ -36,7 +36,9 @@
->   #define SOF_CS42L42_NUM_HDMIDEV_MASK		(GENMASK(9, 7))
->   #define SOF_CS42L42_NUM_HDMIDEV(quirk)	\
->   	(((quirk) << SOF_CS42L42_NUM_HDMIDEV_SHIFT) & SOF_CS42L42_NUM_HDMIDEV_MASK)
-> -#define SOF_MAX98357A_SPEAKER_AMP_PRESENT	BIT(10)
-> +#define SOF_CS42L42_BCLK_2400000		BIT(10)
-> +#define SOF_MAX98357A_SPEAKER_AMP_PRESENT	BIT(11)
-> +#define SOF_MAX98360A_SPEAKER_AMP_PRESENT	BIT(12)
->   
->   /* Default: SSP2 */
->   static unsigned long sof_cs42l42_quirk = SOF_CS42L42_SSP_CODEC(2);
-> @@ -122,7 +124,10 @@ static int sof_cs42l42_hw_params(struct snd_pcm_substream *substream,
->   	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
->   	int clk_freq, ret;
->   
-> -	clk_freq = 3072000; /* BCLK freq */
-> +	if (sof_cs42l42_quirk & SOF_CS42L42_BCLK_2400000)
-> +		clk_freq = 2400000; /* BCLK freq */
-> +	else
-> +		clk_freq = 3072000; /* BCLK freq */
->   
->   	/* Configure sysclk for codec */
->   	ret = snd_soc_dai_set_sysclk(codec_dai, 0,
-> @@ -281,6 +286,8 @@ static int create_spk_amp_dai_links(struct device *dev,
->   
->   	if (sof_cs42l42_quirk & SOF_MAX98357A_SPEAKER_AMP_PRESENT) {
->   		max_98357a_dai_link(&links[*id]);
-> +	} else if (sof_cs42l42_quirk & SOF_MAX98360A_SPEAKER_AMP_PRESENT) {
-> +		max_98360a_dai_link(&links[*id]);
->   	} else {
->   		dev_err(dev, "no amp defined\n");
->   		ret = -EINVAL;
-> @@ -584,8 +591,17 @@ static const struct platform_device_id board_ids[] = {
->   					SOF_MAX98357A_SPEAKER_AMP_PRESENT |
->   					SOF_CS42L42_SSP_AMP(1)),
->   	},
-> +	{
-> +		.name = "jsl_cs4242_mx98360a",
-> +		.driver_data = (kernel_ulong_t)(SOF_CS42L42_SSP_CODEC(0) |
-> +					SOF_SPEAKER_AMP_PRESENT |
-> +					SOF_MAX98360A_SPEAKER_AMP_PRESENT |
-> +					SOF_CS42L42_SSP_AMP(1)) |
-> +					SOF_CS42L42_BCLK_2400000,
-> +	},
->   	{ }
->   };
-> +MODULE_DEVICE_TABLE(platform, board_ids);
->   
->   static struct platform_driver sof_audio = {
->   	.probe = sof_audio_probe,
-> @@ -601,7 +617,5 @@ module_platform_driver(sof_audio)
->   MODULE_DESCRIPTION("SOF Audio Machine driver for CS42L42");
->   MODULE_AUTHOR("Brent Lu <brent.lu@intel.com>");
->   MODULE_LICENSE("GPL");
-> -MODULE_ALIAS("platform:sof_cs42l42");
-> -MODULE_ALIAS("platform:glk_cs4242_max98357a");
->   MODULE_IMPORT_NS(SND_SOC_INTEL_HDA_DSP_COMMON);
->   MODULE_IMPORT_NS(SND_SOC_INTEL_SOF_MAXIM_COMMON);
-> diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-> index 73fe4f89a82d..8e86476d48de 100644
-> --- a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-> +++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-> @@ -73,6 +73,14 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
->   		.quirk_data = &mx98360a_spk,
->   		.sof_tplg_filename = "sof-jsl-rt5682-mx98360a.tplg",
->   	},
-> +	{
-> +		.id = "10134242",
-> +		.drv_name = "jsl_cs4242_mx98360a",
-> +		.sof_fw_filename = "sof-jsl.ri",
-> +		.machine_quirk = snd_soc_acpi_codec_list,
-> +		.quirk_data = &mx98360a_spk,
-> +		.sof_tplg_filename = "sof-jsl-rt5682-mx98360a.tplg",
-> +	},
->   	{},
->   };
->   EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_jsl_machines);
+> diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+> index f4ec9ed52939..23d51b6a9cf2 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+> @@ -575,7 +575,7 @@
+>  
+>  	#address-cells = <1>;
+>  	#size-cells= <0>;
+> -	ti,pindir-d0-out-d1-in = <1>;
+> +	ti,pindir-d0-out-d1-in;
+>  };
+>  
+>  &tscadc0 {
+> diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+> index eddb2ffb93ca..1b947e2c2e74 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+> @@ -299,7 +299,7 @@
+>  	pinctrl-0 = <&main_spi0_pins_default>;
+>  	#address-cells = <1>;
+>  	#size-cells= <0>;
+> -	ti,pindir-d0-out-d1-in = <1>;
+> +	ti,pindir-d0-out-d1-in;
+>  
+>  	flash@0{
+>  		compatible = "jedec,spi-nor";
+> -- 
+> 2.17.1
 > 
+
+
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
