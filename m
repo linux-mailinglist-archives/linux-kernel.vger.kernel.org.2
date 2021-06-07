@@ -2,179 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E11D039DD86
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:20:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A74239DD8A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbhFGNWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 09:22:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52990 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230239AbhFGNWS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 09:22:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1389E61153;
-        Mon,  7 Jun 2021 13:20:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623072027;
-        bh=o3kGqcgRA7pGA6vhHOS2lBK9GrMCiVtqJGaYEdbAMNw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Oh6HIdN1VZKdci8pYkMcfgQZwACR2UURtKBf0ZUX8FZWBh+PXevNsj3uBt5VF/gO2
-         kB+qUNJcA+maXC5IqRB5/sFhktAnIGjPcyGdjvmpRHNADdnW3/5aTvervTSP/vsGMa
-         fyVeKLQsIvG+RPyIDgb80G6kc58kysIB9wV1QFlwfn0Jar4T/kDAUsw3TOFzY8y6hF
-         xtO4oIpRpj/fbaXtXimNp1sWJlURhrqbny9uiO8VASC8TwuTEsaCFQPbak0wyvU7TV
-         n7jDUfkj8KMVmX+wOuboKdDp/wTWX9ZfQint6DyHQbpy+WBp2+RqtBkU1tNarzmt/i
-         DW5DgwdbNd3Gg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 4E43840B1A; Mon,  7 Jun 2021 10:20:24 -0300 (-03)
-Date:   Mon, 7 Jun 2021 10:20:24 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Parallelizing vmlinux BTF encoding. was Re: [RFT] Testing 1.22
-Message-ID: <YL4dGFsfb0ZzgxlR@kernel.org>
-References: <YK+41f972j25Z1QQ@kernel.org>
- <CAEf4BzaTP_jULKMN_hx6ZOqwESOmsR6_HxWW-LnrA5xwRNtSWg@mail.gmail.com>
- <4615C288-2CFD-483E-AB98-B14A33631E2F@gmail.com>
- <CAEf4BzaQmv1+1bPF=1aO3dcmNu2Mx0EFhK+ZU6UFsMjv3v6EZA@mail.gmail.com>
- <4901AF88-0354-428B-9305-2EDC6F75C073@gmail.com>
- <CAEf4BzZk8bcSZ9hmFAmgjbrQt0Yj1usCHmuQTfU-pwZkYQgztA@mail.gmail.com>
- <YLFIW9fd9ZqbR3B9@kernel.org>
- <CAEf4BzYCCWM0WBz0w+vL1rVBjGvLZ7wVtgJCUVr3D-NmVK0MEg@mail.gmail.com>
- <YLjtwB+nGYvcCfgC@kernel.org>
- <CAEf4BzbQ9w2smTMK5uwGGjyZ_mjDy-TGxd6m8tiDd3T_nJ7khQ@mail.gmail.com>
+        id S230250AbhFGNYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 09:24:55 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:46241 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230127AbhFGNYx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 09:24:53 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 81482580579;
+        Mon,  7 Jun 2021 09:23:01 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 07 Jun 2021 09:23:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=eIGEOso5WV+AOgirZtfFc6JFRhs
+        xePWMObTrGPYzxdE=; b=hI86DV35aCBf34dHf9ILs9hXUs/wgUb0aZnNxSVWnPF
+        Sk7M/gj6gaF3I9oVhXOU9cVftfwtViGnN6RZID2gjPJicHP8oXKDteZCcNrwL16f
+        DOj3krZtgCFrRzUF5AxZ6PlDMEsNyhJLU8fPdOdbeaXeAmx/CmYXhsNpcAu8RqN3
+        J1JO0l75btousxw2qdROB45k5mzLn4ltAA50YjElVSeo2144Mna5On9enYlcaAiA
+        D1CUHbkvL5jOyqg0nyo7UfJIy7r4FZmyT/bzGHlC6vCjqKGptqO/Sf/qY2IXeFst
+        frQKGtqzqQYqHd685HMUdkkiBIEAv0wB+ZVKk85I1hQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=eIGEOs
+        o5WV+AOgirZtfFc6JFRhsxePWMObTrGPYzxdE=; b=QsetC05r8jv/tx2c6VYG1o
+        ySKTHkDnhdO97GXt/MrI8F+Bd/AJPyeiQPC6EoCXRcUrM3zgGiByemEtwsgJmRBk
+        vdxn7jY6RPoS27CULafVmDCJY987tkFQkY6P7rsvFw/vk8exjkNEcGyBiKEwII9Y
+        eFFhbWP1rkhtsICJGOfxK0Im7V08sPPdIGTcjHmvQXB0e7ERmQXt7DluY0w5e/8+
+        A/goRUvkYJLKYP1vU6rU546N5BTN6JjDTGc2IwIykVpVbj0Oas21YwT5bN/+gcxY
+        myAlzSNkgw2VWpAkXtPLGFYaFmheydfM2YvEknQtwNcZ/E+l9u1SFi3sskRQ0oBQ
+        ==
+X-ME-Sender: <xms:sh2-YKb3d4Xd5RLDWWUCTqXFsmredhExw1N0IdEU6Mi3wCvWZ8ZPkQ>
+    <xme:sh2-YNaxkSVQgkvsZr_u218E8-Wd4rHUTG2DqDX37IdLDEdpoXAlc6-WkgGJrXXiS
+    33O-_KHhS42IbPRyqw>
+X-ME-Received: <xmr:sh2-YE9Ud2Ei4GQy5ldpkLjRkKWgcnokR-PAPRDLNnjpZQXo5OXBCCyD9eBzpyYdYWE1Dg2z3UQFORTqS9qhuXG0i4_KtvgBH3SY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtjedgieefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:sh2-YMpLRTV_9DQG505QhkLWlE7WFpIZ3Cq9a0kCHa7aVe4pojPy7g>
+    <xmx:sh2-YFqFFDdAp6-890Gg7wl4ChKLDB_EP2EFWJ3gawE_BxIMEZqyzw>
+    <xmx:sh2-YKQ_al-qaoCiDwvhKLYeI-y3a7_kpOEy9aOpIpPl8cJ_5qdItg>
+    <xmx:tR2-YG6s32D0mQGsspz303hd6NGkhWAC0EJOfxbFHKIcsEEVIx6nsA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 7 Jun 2021 09:22:58 -0400 (EDT)
+Date:   Mon, 7 Jun 2021 15:22:55 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
+        Samuel Holland <samuel@sholland.org>,
+        Ondrej Jirman <megous@megous.com>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, linux-phy@lists.infradead.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH v6 12/17] phy: sun4i-usb: Introduce port2 SIDDQ quirk
+Message-ID: <20210607132255.7fa75a7k7ud2g7ux@gilmour>
+References: <20210519104152.21119-1-andre.przywara@arm.com>
+ <20210519104152.21119-13-andre.przywara@arm.com>
+ <20210524115946.jwsasjbr3biyixhz@gilmour>
+ <20210525122901.778bfccd@slackpad.fritz.box>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="y2gxgfnqjc5ew5rx"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzbQ9w2smTMK5uwGGjyZ_mjDy-TGxd6m8tiDd3T_nJ7khQ@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210525122901.778bfccd@slackpad.fritz.box>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Jun 04, 2021 at 07:55:17PM -0700, Andrii Nakryiko escreveu:
-> On Thu, Jun 3, 2021 at 7:57 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> > Em Sat, May 29, 2021 at 05:40:17PM -0700, Andrii Nakryiko escreveu:
 
-> > > At some point it probably would make sense to formalize
-> > > "btf_encoder" as a struct with its own state instead of passing in
-> > > multiple variables. It would probably also
+--y2gxgfnqjc5ew5rx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > Take a look at the tmp.master branch at:
+Hi,
 
-> > https://git.kernel.org/pub/scm/devel/pahole/pahole.git/log/?h=tmp.master
- 
-> Oh wow, that's a lot of commits! :) Great that you decided to do this
-> refactoring, thanks!
- 
-> > that btf_elf class isn't used anymore by btf_loader, that uses only
-> > libbpf's APIs, and now we have a btf_encoder class with all the globals,
-> > etc, more baby steps are needed to finally ditch btf_elf altogether and
-> > move on to the parallelization.
- 
-> So do you plan to try to parallelize as a next step? I'm pretty
+On Tue, May 25, 2021 at 12:29:01PM +0100, Andre Przywara wrote:
+> On Mon, 24 May 2021 13:59:46 +0200
+> Maxime Ripard <maxime@cerno.tech> wrote:
+>=20
+> Hi Maxime,
+>=20
+> > On Wed, May 19, 2021 at 11:41:47AM +0100, Andre Przywara wrote:
+> > > At least the Allwinner H616 SoC requires a weird quirk to make most
+> > > USB PHYs work: Only port2 works out of the box, but all other ports
+> > > need some help from this port2 to work correctly: The CLK_BUS_PHY2 and
+> > > RST_USB_PHY2 clock and reset need to be enabled, and the SIDDQ bit in
+> > > the PMU PHY control register needs to be cleared. For this register to
+> > > be accessible, CLK_BUS_ECHI2 needs to be ungated. Don't ask ....
+> > >=20
+> > > Instead of disguising this as some generic feature, do exactly that
+> > > in our PHY init:
+> > > If the quirk bit is set, and we initialise a PHY other than PHY2, ung=
+ate
+> > > this one special clock, and clear the SIDDQ bit. We can pull in the
+> > > other required clocks via the DT.
+> > >=20
+> > > Signed-off-by: Andre Przywara <andre.przywara@arm.com> =20
+> >=20
+> > What is this SIDDQ bit doing exactly?
+>=20
+> I probably know as much as you do, but as Jernej pointed out, in some
+> Rockchip code it's indeed documented as some analogue PHY supply switch:
+> ($ git grep -i siddq drivers/phy/rockchip)
+>=20
+> In fact we had this pin/bit for ages, it was just hidden as BIT(1) in
+> our infamous PMU_UNK1 register. Patch 10/17 drags that into the light.
 
-So, I haven't looked at details but what I thought would be interesting
-to investigate is to see if we can piggyback DWARF generation with BTF
-one, i.e. when we generate a .o file with -g we encode the DWARF info,
-so, right after this, we could call pahole as-is and encode BTF, then,
-when vmlinux is linked, we would do the dedup.
+Ok
 
-I.e. when generating ../build/v5.13.0-rc4+/kernel/fork.o, that comes
-with:
+> > I guess we could also expose this using a power-domain if it's relevant?
+>=20
+> Mmmh, interesting idea. So are you thinking about registering a genpd
+> provider in sun4i_usb_phy_probe(), then having a power-domains property
+> in the ehci/ohci nodes, pointing to the PHY node? And if yes, should
+> the provider be a subnode of the USB PHY node, with a separate
+> compatible? That sounds a bit more involved, but would have the
+> advantage of allowing us to specify the resets and clocks from PHY2
+> there, and would look a bit cleaner than hacking them into the
+> other EHCI/OHCI nodes.
 
-⬢[acme@toolbox perf]$ readelf -SW ../build/v5.13.0-rc4+/kernel/fork.o | grep debug
-  [78] .debug_info       PROGBITS        0000000000000000 00daec 032968 00      0   0  1
-  [79] .rela.debug_info  RELA            0000000000000000 040458 053b68 18   I 95  78  8
-  [80] .debug_abbrev     PROGBITS        0000000000000000 093fc0 0012e9 00      0   0  1
-  [81] .debug_loclists   PROGBITS        0000000000000000 0952a9 00aa43 00      0   0  1
-  [82] .rela.debug_loclists RELA         0000000000000000 09fcf0 009d98 18   I 95  81  8
-  [83] .debug_aranges    PROGBITS        0000000000000000 0a9a88 000080 00      0   0  1
-  [84] .rela.debug_aranges RELA          0000000000000000 0a9b08 0000a8 18   I 95  83  8
-  [85] .debug_rnglists   PROGBITS        0000000000000000 0a9bb0 001509 00      0   0  1
-  [86] .rela.debug_rnglists RELA         0000000000000000 0ab0c0 001bc0 18   I 95  85  8
-  [87] .debug_line       PROGBITS        0000000000000000 0acc80 0086b7 00      0   0  1
-  [88] .rela.debug_line  RELA            0000000000000000 0b5338 002550 18   I 95  87  8
-  [89] .debug_str        PROGBITS        0000000000000000 0b7888 0177ad 01  MS  0   0  1
-  [90] .debug_line_str   PROGBITS        0000000000000000 0cf035 001308 01  MS  0   0  1
-  [93] .debug_frame      PROGBITS        0000000000000000 0d0370 000e38 00      0   0  8
-  [94] .rela.debug_frame RELA            0000000000000000 0d11a8 000e70 18   I 95  93  8
-⬢[acme@toolbox perf]$
+I'm not sure we need a separate device node, we could just register the
+phy driver as a genpd provider, and then with an arg (so with
+of_genpd_add_provider_onecell?) the index of the USB controller we want
+to power up.
 
-We would do:
+> I would not touch the existing SoCs (even though it seems to apply to
+> them as well, just not in the exact same way), but I can give it a
+> try for the H616. It seems like the other SIDDQ bits (in the other
+> PHYs) are still needed for operation, but the PD provide could actually
+> take care of this as well.
+>=20
+> Does that make sense or is this a bit over the top for just clearing an
+> extra bit?
 
-⬢[acme@toolbox perf]$ pahole -J ../build/v5.13.0-rc4+/kernel/fork.o
-⬢[acme@toolbox perf]$
+Using what I described above should be fairly simple, so if we can fit
+in an available and relevant abstraction, yeah, I guess :)
 
-Which would get us to have:
+Maxime
 
-⬢[acme@toolbox perf]$ readelf -SW ../build/v5.13.0-rc4+/kernel/fork.o | grep BTF
-  [103] .BTF              PROGBITS        0000000000000000 0db658 030550 00      0   0  1
-⬢[acme@toolbox perf]
+--y2gxgfnqjc5ew5rx
+Content-Type: application/pgp-signature; name="signature.asc"
 
-⬢[acme@toolbox perf]$ pahole -F btf -C hlist_node ../build/v5.13.0-rc4+/kernel/fork.o 
-struct hlist_node {
-	struct hlist_node *        next;                 /*     0     8 */
-	struct hlist_node * *      pprev;                /*     8     8 */
+-----BEGIN PGP SIGNATURE-----
 
-	/* size: 16, cachelines: 1, members: 2 */
-	/* last cacheline: 16 bytes */
-};
-⬢[acme@toolbox perf]$ 
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYL4drwAKCRDj7w1vZxhR
+xd7TAQDncN/zcz+Z9eSgAJaMRWNdzFFjpQWl9G5zj8Ywa1FdIAEAqsVgmYFPss9l
+yFRreCSeCDL8U8Q4q9q5CcNgKG6geQ0=
+=WN4y
+-----END PGP SIGNATURE-----
 
-So, a 'pahole --dedup_btf vmlinux' would just go on looking at:
-
-⬢[acme@toolbox perf]$ readelf -wi ../build/v5.13.0-rc4+/vmlinux | grep -A10 DW_TAG_compile_unit | grep -w DW_AT_name | grep fork
-    <f220eb>   DW_AT_name        : (indirect line string, offset: 0x62e7): /var/home/acme/git/linux/kernel/fork.c
-
-To go there and go on extracting those ELF sections to combine and
-dedup.
-
-This combine thing could be done even by the linker, I think, when all
-the DWARF data in the .o file are combined into vmlinux, we could do it
-for the .BTF sections as well, that way would be even more elegant, I
-think. Then, the combined vmlinux .BTF section would be read and fed in
-one go to libbtf's dedup arg.
-
-This way the encoding of BTF would be as paralellized as the kernel build
-process, following the same logic (-j NR_PROCESSORS).
-
-wdyt?
-
-If this isn't the case, we can process vmlinux as is today and go on
-creating N threads and feeding each with a DW_TAG_compile_unit
-"container", i.e. each thread would consume all the tags below each
-DW_TAG_compile_unit and produce a foo.BTF file that in the end would be
-combined and deduped by libbpf.
-
-Doing it as my first sketch above would take advantage of locality of
-reference, i.e. the DWARF data would be freshly produced and in the
-cache hierarchy when we first encode BTF, later, when doing the
-combine+dedup we wouldn't be touching the more voluminous DWARF data.
-
-- Arnaldo
-
-> confident about BTF encoding part: dump each CU into its own BTF, use
-> btf__add_type() to merge multiple BTFs together. Just need to re-map
-> IDs (libbpf internally has API to visit each field that contains
-> type_id, it's well-defined enough to expose that as a public API, if
-> necessary). Then final btf_dedup().
- 
-> But the DWARF loading and parsing part is almost a black box to me, so
-> I'm not sure how much work it would involve.
-
-> > I'm doing 'pahole -J vmlinux && btfdiff' after each cset and doing it
-> > very piecemeal as I'm doing will help bisecting any subtle bug this may
-> > introduce.
-
-> > > allow to parallelize BTF generation, where each CU would proceed in
-> > > parallel generating local BTF, and then the final pass would merge and
-> > > dedup BTFs. Currently reading and processing DWARF is the slowest part
-> > > of the DWARF-to-BTF conversion, parallelization and maybe some other
-> > > optimization seems like the only way to speed the process up.
-
-> > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-> > Thanks!
+--y2gxgfnqjc5ew5rx--
