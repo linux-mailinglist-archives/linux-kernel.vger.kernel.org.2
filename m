@@ -2,154 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 990D639D6A0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 803A539D6AA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbhFGICj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 04:02:39 -0400
-Received: from srv6.fidu.org ([159.69.62.71]:38652 "EHLO srv6.fidu.org"
+        id S230383AbhFGIDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 04:03:35 -0400
+Received: from mail.ispras.ru ([83.149.199.84]:44152 "EHLO mail.ispras.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230175AbhFGICh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 04:02:37 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id CFDD9C800A2;
-        Mon,  7 Jun 2021 10:00:44 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
-        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id Vz3RaQVqPJhP; Mon,  7 Jun 2021 10:00:44 +0200 (CEST)
-Received: from [IPv6:2003:e3:7f4f:6000:f5f4:4cdd:8015:9770] (p200300E37F4f6000F5f44cdD80159770.dip0.t-ipconnect.de [IPv6:2003:e3:7f4f:6000:f5f4:4cdd:8015:9770])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPSA id 480A0C800E6;
-        Mon,  7 Jun 2021 10:00:31 +0200 (CEST)
-Subject: Re: [PATCH 2/4] drm/uAPI: Add "active bpc" as feedback channel for
- "max bpc" drm property
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     tzimmermann@suse.de, intel-gfx@lists.freedesktop.org,
-        sunpeng.li@amd.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, airlied@linux.ie,
-        amd-gfx@lists.freedesktop.org, rodrigo.vivi@intel.com,
-        alexander.deucher@amd.com, christian.koenig@amd.com
-References: <20210604171723.10276-1-wse@tuxedocomputers.com>
- <20210604171723.10276-3-wse@tuxedocomputers.com>
- <20210607074037.oxm7qbhcx7gsg6yd@gilmour>
-From:   Werner Sembach <wse@tuxedocomputers.com>
-Message-ID: <55a45d9e-9784-0288-fc1f-144f99dc6c19@tuxedocomputers.com>
-Date:   Mon, 7 Jun 2021 10:00:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230155AbhFGIDe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 04:03:34 -0400
+Received: from monopod.intra.ispras.ru (unknown [10.10.3.121])
+        by mail.ispras.ru (Postfix) with ESMTPS id D692440594EB;
+        Mon,  7 Jun 2021 08:01:39 +0000 (UTC)
+Date:   Mon, 7 Jun 2021 11:01:39 +0300 (MSK)
+From:   Alexander Monakov <amonakov@ispras.ru>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     Jakub Jelinek <jakub@redhat.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+In-Reply-To: <CAHk-=wjwXs5+SOZGTaZ0bP9nsoA+PymAcGE4CBDVX3edGUcVRg@mail.gmail.com>
+Message-ID: <alpine.LNX.2.20.13.2106070956310.7184@monopod.intra.ispras.ru>
+References: <CAHk-=wiuLpmOGJyB385UyQioWMVKT6wN9UtyVXzt48AZittCKg@mail.gmail.com> <CAHk-=wik7T+FoDAfqFPuMGVp6HxKYOf8UeKt3+EmovfivSgQ2Q@mail.gmail.com> <20210604205600.GB4397@paulmck-ThinkPad-P17-Gen-1> <CAHk-=wgmUbU6XPHz=4NFoLMxH7j_SR-ky4sKzOBrckmvk5AJow@mail.gmail.com>
+ <20210604214010.GD4397@paulmck-ThinkPad-P17-Gen-1> <CAHk-=wg0w5L7-iJU_kvEh9stXZoh2srRF4jKToKmSKyHv-njvA@mail.gmail.com> <20210605145739.GB1712909@rowland.harvard.edu> <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1> <20210606012903.GA1723421@rowland.harvard.edu>
+ <CAHk-=wgUsReyz4uFymB8mmpphuP0vQ3DktoWU_x4u6impbzphg@mail.gmail.com> <20210606185922.GF7746@tucnak> <CAHk-=wis8zq3WrEupCY6wcBeW3bB0WMOzaUkXpb-CsKuxM=6-w@mail.gmail.com> <alpine.LNX.2.20.13.2106070017070.7184@monopod.intra.ispras.ru>
+ <CAHk-=wjwXs5+SOZGTaZ0bP9nsoA+PymAcGE4CBDVX3edGUcVRg@mail.gmail.com>
+User-Agent: Alpine 2.20.13 (LNX 116 2015-12-14)
 MIME-Version: 1.0
-In-Reply-To: <20210607074037.oxm7qbhcx7gsg6yd@gilmour>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 6 Jun 2021, Linus Torvalds wrote:
 
-Am 07.06.21 um 09:40 schrieb Maxime Ripard:
-> Hi,
->
-> On Fri, Jun 04, 2021 at 07:17:21PM +0200, Werner Sembach wrote:
->> Add a new general drm property "active bpc" which can be used by graphic drivers
->> to report the applied bit depth per pixel back to userspace.
-> Just a heads up, we'll need an open source project that has accepted it
-> before merging it.
->
-> See https://www.kernel.org/doc/html/latest/gpu/drm-uapi.html#open-source-userspace-requirements
-Yes, I know.
->
->> While "max bpc" can be used to change the color depth, there was no way to check
->> which one actually got used. While in theory the driver chooses the best/highest
->> color depth within the max bpc setting a user might not be fully aware what his
->> hardware is or isn't capable off. This is meant as a quick way to double check
->> the setup.
->>
->> In the future, automatic color calibration for screens might also depend on this
->> information available.
->>
->> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
->> ---
->>   drivers/gpu/drm/drm_atomic_uapi.c |  2 ++
->>   drivers/gpu/drm/drm_connector.c   | 40 +++++++++++++++++++++++++++++++
->>   include/drm/drm_connector.h       | 15 ++++++++++++
->>   3 files changed, 57 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atomic_uapi.c
->> index 268bb69c2e2f..7ae4e40936b5 100644
->> --- a/drivers/gpu/drm/drm_atomic_uapi.c
->> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
->> @@ -873,6 +873,8 @@ drm_atomic_connector_get_property(struct drm_connector *connector,
->>   		*val = 0;
->>   	} else if (property == connector->max_bpc_property) {
->>   		*val = state->max_requested_bpc;
->> +	} else if (property == connector->active_bpc_property) {
->> +		*val = state->active_bpc;
->>   	} else if (connector->funcs->atomic_get_property) {
->>   		return connector->funcs->atomic_get_property(connector,
->>   				state, property, val);
->> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
->> index 7631f76e7f34..5f42a5be5822 100644
->> --- a/drivers/gpu/drm/drm_connector.c
->> +++ b/drivers/gpu/drm/drm_connector.c
->> @@ -1195,6 +1195,13 @@ static const struct drm_prop_enum_list dp_colorspaces[] = {
->>    *	drm_connector_attach_max_bpc_property() to create and attach the
->>    *	property to the connector during initialization.
->>    *
->> + * active bpc:
->> + *	This read-only range property is used by userspace check the bit depth
->> + *	actually applied by the GPU driver after evaluation all hardware
->                                  ^ display
->
-> Depending on the system, the display component might have a GPU attached
-> or not, and the GPU might have a display component or not.
-Ok, I try to bee more clear in the wording
->
->> + *	capabilities and max bpc. Drivers to use the function
->> + *	drm_connector_attach_active_bpc_property() to create and attach the
->> + *	property to the connector during initialization.
->> + *
->>    * Connectors also have one standardized atomic property:
->>    *
->>    * CRTC_ID:
->> @@ -2150,6 +2157,39 @@ int drm_connector_attach_max_bpc_property(struct drm_connector *connector,
->>   }
->>   EXPORT_SYMBOL(drm_connector_attach_max_bpc_property);
->>   
->> +/**
->> + * drm_connector_attach_active_bpc_property - attach "active bpc" property
->> + * @connector: connector to attach active bpc property on.
->> + * @min: The minimum bit depth supported by the connector.
->> + * @max: The maximum bit depth supported by the connector.
->> + *
->> + * This is used to check the applied bit depth on a connector.
->> + *
->> + * Returns:
->> + * Zero on success, negative errno on failure.
->> + */
->> +int drm_connector_attach_active_bpc_property(struct drm_connector *connector,
->> +					  int min, int max)
->> +{
->> +	struct drm_device *dev = connector->dev;
->> +	struct drm_property *prop;
->> +
->> +	prop = connector->active_bpc_property;
->> +	if (!prop) {
->> +		prop = drm_property_create_range(dev, 0, "active bpc", min, max);
->> +		if (!prop)
->> +			return -ENOMEM;
->> +
->> +		connector->active_bpc_property = prop;
->> +	}
->> +
->> +	drm_object_attach_property(&connector->base, prop, 0);
->> +	connector->state->active_bpc = 0;
-> I guess we want to default to 8?
->
-> Maxime
-The default state should only be active when no display is connected or 
-the display is off, so I thought 0 makes more sense, as no active 
-display = no active bpc.
+> On Sun, Jun 6, 2021 at 2:19 PM Alexander Monakov <amonakov@ispras.ru> wrote:
+> >
+> > > So yeah, that seems like a nice solution to the issue, and should make
+> > > the barriers all unique to the compiler.
+> >
+> > It also plants a nice LTO time-bomb (__COUNTER__ values will be unique
+> > only within each LTO input unit, not across all of them).
+> 
+> That could be an issue in other circumstances, but for at least
+> volatile_if() that doesn't much matter. The decision there is purely
+> local, and it's literally about the two sides of the conditional not
+> being merged.
+> 
+> Now, an optimizing linker or assembler can of course do anything at
+> all in theory: and if that ends up being an issue we'd have to have
+> some way to actually propagate the barrier from being just a compiler
+> thing. Right now gcc doesn't even output the barrier in the assembly
+> code, so it's invisible to any optimizing assembler/linker thing.
+> 
+> But I don't think that's an issue with what _currently_ goes on in an
+> assembler or linker - not even a smart one like LTO.
+> 
+> And such things really are independent of "volatile_if()". We use
+> barriers for other things where we need to force some kind of
+> operation ordering, and right now the only thing that re-orders
+> accesses etc is the compiler.
+
+Uhh... I was not talking about some (non-existent) "optimizing linker".
+LTO works by relaunching the compiler from the linker and letting it
+consume multiple translation units (which are fully preprocessed by that
+point). So the very thing you wanted to avoid -- such barriers appearing
+in close proximity where they can be deduplicated -- may arise after a
+little bit of cross-unit inlining.
+
+My main point here is that using __COUNTER__ that way (making things
+"unique" for the compiler) does not work in general when LTO enters the
+picture. As long as that is remembered, I'm happy.
+
+> Btw, since we have compiler people on line, the suggested 'barrier()'
+> isn't actually perfect for this particular use:
+> 
+>    #define barrier() __asm__ __volatile__("" : : "i" (__COUNTER__) : "memory")
+> 
+> in the general barrier case, we very much want to have that "memory"
+> clobber, because the whole point of the general barrier case is that
+> we want to make sure that the compiler doesn't cache memory state
+> across it (ie the traditional use was basically what we now use
+> "cpu_relax()" for, and you would use it for busy-looping on some
+> condition).
+> 
+> In the case of "volatile_if()", we actually would like to have not a
+> memory clobber, but a "memory read". IOW, it would be a barrier for
+> any writes taking place, but reads can move around it.
+> 
+> I don't know of any way to express that to the compiler. We've used
+> hacks for it before (in gcc, BLKmode reads turn into that kind of
+> barrier in practice, so you can do something like make the memory
+> input to the asm be a big array). But that turned out to be fairly
+> unreliable, so now we use memory clobbers even if we just mean "reads
+> random memory".
+
+So the barrier which is a compiler barrier but not a machine barrier is
+__atomic_signal_fence(model), but internally GCC will not treat it smarter
+than an asm-with-memory-clobber today.
+
+> Example: variable_test_bit(), which generates a "bt" instruction, does
+> 
+>                      : "m" (*(unsigned long *)addr), "Ir" (nr) : "memory");
+> 
+> and the memory clobber is obviously wrong: 'bt' only *reads* memory,
+> but since the whole reason we use it is that it's not just that word
+> at address 'addr', in order to make sure that any previous writes are
+> actually stable in memory, we use that "memory" clobber.
+> 
+> It would be much nicer to have a "memory read" marker instead, to let
+> the compiler know "I need to have done all pending writes to memory,
+> but I can still cache read values over this op because it doesn't
+> _change_ memory".
+> 
+> Anybody have ideas or suggestions for something like that?
+
+In the specific case of 'bt', the offset cannot be negative, so I think you
+can simply spell out the extent of the array being accessed:
+
+    : "m" *(unsigned long (*)[-1UL / 8 / sizeof(long) + 1])addr
+
+In the general case (possibility of negative offsets, or no obvious base to
+supply), have you considered adding a "wild read" through a char pointer
+that is initialized in a non-transparent way? Like this:
+
+  char *wild_pointer;
+
+  asm(""
+      : "=X"(wild_pointer)
+      : "X"(base1)
+      , "X"(base2)); // unknown value related to given base pointers
+
+  asm("pattern"
+      : // normal outputs
+      : // normal inputs
+      , "m"(*wild_pointer));
+
+The "X" constraint in theory should not tie up neither a register nor a stack
+slot.
+
+Alexander
