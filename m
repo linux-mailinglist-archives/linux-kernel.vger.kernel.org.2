@@ -2,75 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C91639EA5F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 01:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D04CA39EA63
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 01:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbhFGXue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 19:50:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38480 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230303AbhFGXud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 19:50:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D21660E0B;
-        Mon,  7 Jun 2021 23:48:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623109721;
-        bh=v4XGwm1bFkqdysT1pXCIPTptFnI6B+Bk7EfjNiRUQuQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SposmXyYh4UeoO+ia4kd+yHm1tkWD+hb4iWpzX2pc8+0lF10BdFLPeThWQ+dFp50x
-         62akqtNA9BBGxwGizt/fxls3iSS6VrdsNc9yjylYnEG49bLHLrhePtvu7XGj0QwpaQ
-         thH/0X6VHKW/xTWxFJ5BMHMZt0d+tXa4X2s/we7lm3tmomdxcqAW67ILtR+r4JOcYu
-         SYo/TQ+rB5X/XDoCg0wwd8aYwTn6FOH1GtfqeKtb1lh2nfMJKDPYa+36JTB4SKTmiY
-         DEfeP8uIxGhBjNi8WhIPwjz8WE+p1CnhdjZY5qkXad/uesBZUk/28KowIxOlrySh8c
-         FDU2n4fynhalg==
-Date:   Mon, 7 Jun 2021 19:48:40 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org, fw@strlen.de,
-        pablo@netfilter.org
-Subject: Re: 4.19 queue: netfilter: conntrack: unregister ipv4 sockopts on
- error unwind
-Message-ID: <YL6wWOHYzBXjNTpD@sashalap>
-References: <20210607223854.GA12130@amd>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210607223854.GA12130@amd>
+        id S230356AbhFGXvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 19:51:11 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:35055 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230183AbhFGXvJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 19:51:09 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id C28B158056A;
+        Mon,  7 Jun 2021 19:49:16 -0400 (EDT)
+Received: from imap43 ([10.202.2.93])
+  by compute2.internal (MEProxy); Mon, 07 Jun 2021 19:49:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm3; bh=ftd1wQj/z6/pwKmUrvqwIr0/STXPEvr
+        2JxgGS6MVzjc=; b=l6z0Gr9ywWgB4cD0mG1R6qklLXlwcF8xSYPDrvNZpVavmH1
+        9892zn8p0TngINVj6sKfNTkM5R05sR4BTNFqcZqV1mg5HgujdkpbX3HpYTExK9qD
+        pV5WBdKCyN3RbG6mYrYz99SDIUaN0YmAR3zSNMUrMlSAvt4O4//Fxc0scHZSGUiQ
+        jVYfPeUwQ03s0+Ev6m4EGQkvmKdYPY+HNMRJQSdDPXqOOqgdlpBVw8vfmhKuEZFW
+        dS7EjeOjfWefyKNkChcVxCTxWpw2Y/A1iw0cbY1zeoZiCEnNP3UJxyqCz4MEI20B
+        vqOv6SD8b+jwDXUmfniQHF4sgiLcr0IRardgrSw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ftd1wQ
+        j/z6/pwKmUrvqwIr0/STXPEvr2JxgGS6MVzjc=; b=vELRD1ZYHbELpLRRnqPNE6
+        gws5mQj72mx1yZgdp4bJInAvtvmoXH0dJbF7Vomps1NSCNdzY35LNNWoURTWmSMR
+        02Ec1hNAHUUVR1znR02sFxCfCA7Uv0FLcUQMDpdIR9a3TNkF+4CNLRC1Cnk4jPBL
+        9CFY6viRJgXtXU0Y2lIQdi7smmH8s+pz86Qt25UMqaE0S/QSrZz/8Q6raxOCtyZL
+        3HOXtE2ULX0Bhm9bKYNZ7CK0n0VUDgPZmGkDu6XAccxpuN+lCq8KsyQAag9AKO1P
+        QwxD80R4PvXroKXKkTyxknulcEqaoiF5Fo4jGpMX2GbyjLKjxX5Vu8rP/s8PUlPQ
+        ==
+X-ME-Sender: <xms:ebC-YIafmIvzv_bMUrujeDJas1yTeLyiv0zds0WsF7s267FUKSuG_g>
+    <xme:ebC-YDZszBq0gSIC39UnMI9Rl_WvvOmTHQCM4lYKQwdaXCXToIGMgiz2L8wx-FbTI
+    BkBK2XVCuJk3Qjk8Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtkedgudejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhephefhfeekgfekudevheffheeihedujeefjeevjeefudfgfeeutdeuvdeh
+    hfevueffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:ebC-YC_vap9e8qxNOaDUxH3PX0ix6v-JWKIPE9Hu-yYFeXLBwyaeWw>
+    <xmx:ebC-YCp9o3nC82Fueo3nusZisZiTBhobAPSI1_ImbhP2pjtkdH61YA>
+    <xmx:ebC-YDrLC7hG-K7eonoSICQSGf2DCBEabrIkGMKK4YTNhZ0Ss-fr2w>
+    <xmx:fLC-YAigQzk7FLwe5RPRrVZx8JrOeb9omCOVZ3zbEjrG109A9nBiVg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id C3E44AC0062; Mon,  7 Jun 2021 19:49:13 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
+Mime-Version: 1.0
+Message-Id: <27d1ae78-a58c-4e40-b844-2bbd4bda15f4@www.fastmail.com>
+In-Reply-To: <20210607071514.11727-6-steven_lee@aspeedtech.com>
+References: <20210607071514.11727-1-steven_lee@aspeedtech.com>
+ <20210607071514.11727-6-steven_lee@aspeedtech.com>
+Date:   Tue, 08 Jun 2021 09:18:52 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Steven Lee" <steven_lee@aspeedtech.com>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        "open list" <linux-kernel@vger.kernel.org>
+Cc:     "Hongwei Zhang" <Hongweiz@ami.com>,
+        "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        "Billy Tsai" <billy_tsai@aspeedtech.com>
+Subject: Re: [PATCH v4 5/7] gpio: gpio-aspeed-sgpio: Add set_config function
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 12:38:54AM +0200, Pavel Machek wrote:
->Hi!
->
->That patch is wrong for 4.19. Wrong version is 066585c43 in stable
->queue.
->
->    netfilter: conntrack: unregister ipv4 sockopts on error unwind
->
->    [ Upstream commit 22cbdbcfb61acc78d5fc21ebb13ccc0d7e29f793 ]
->
->    When ipv6 sockopt register fails, the ipv4 one needs to be
->    removed.
->
->...
->
->+++ b/net/netfilter/nf_conntrack_proto.c
->@@ -962,7 +962,7 @@ int nf_conntrack_proto_init(void)
-> nf_unregister_sockopt(&so_getorigdst);
-> #if IS_ENABLED(CONFIG_IPV6)
->cleanup_sockopt:
-> -       nf_unregister_sockopt(&so_getorigdst6);
-> +       nf_unregister_sockopt(&so_getorigdst);
-> #endif
-> return ret;
->
->Note the context. cleanup_sockopt2: needs to do
->nf_unregister_sockopt(&so_getorigdst6);, otherwise we end up
->unregistering the same pointer twice.
 
-Good catch! I've dropped it from 4.19, the rest of the trees look ok.
 
--- 
-Thanks,
-Sasha
+On Mon, 7 Jun 2021, at 16:45, Steven Lee wrote:
+> AST SoC supports *retain pin state* function when wdt reset.
+> The patch adds set_config function for handling sgpio reset tolerance
+> register.
+> 
+> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+
+Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
