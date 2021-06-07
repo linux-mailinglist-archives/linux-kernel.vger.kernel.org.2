@@ -2,161 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C007B39E7A6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 21:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B4039E7AB
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 21:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231492AbhFGTme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 15:42:34 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:38510 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230435AbhFGTmd (ORCPT
+        id S231539AbhFGTnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 15:43:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231265AbhFGTnS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 15:42:33 -0400
-Received: by mail-ot1-f47.google.com with SMTP id j11-20020a9d738b0000b02903ea3c02ded8so4322576otk.5;
-        Mon, 07 Jun 2021 12:40:25 -0700 (PDT)
+        Mon, 7 Jun 2021 15:43:18 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB627C061574;
+        Mon,  7 Jun 2021 12:41:15 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id e11so23759596ljn.13;
+        Mon, 07 Jun 2021 12:41:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Z8D7EP2ZXRo81V/Iibvxl9tc2KeLwiTlPeliqLE5Xwg=;
+        b=Sqb1NYOa8vHwXP3ElbXmXIQUG9dhhuJtAdEv1ZZa1iQF+yHfhAwGBWXzd4x0FSrF5i
+         xc4u7/dPLXxCCamCLIYTyx9HoXPBV/+EdFlDOfPHqWRWL5qE/1LWYlita4PVUw4nHhzA
+         XhF3NbLx+eJ0ItCMTma0mkNDUbm72PyewEw9Yqc/nLCugMghg/CNkZSxkST9e60HnQ3c
+         1rCv/ClYQrZOAyKYCq9AZiUa8CuC7Tuy6n8w3mNfI6O0he9dvS79olfTvUbF2UumoTJD
+         Xb2SJvIt97DysKYl2475kcoR+tji2SVDzU81StRI5uTXR1nJLzEhOxXZT/GUQbaER9y0
+         F7uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=VaKySZ70jJSosJvHgjAP/lh8fDMXa9AHRHPivIYz6bo=;
-        b=f6kWHrtUfifGW/Y07F+bJ2auaVn6N2Rz+mOuoLylLTRovfIdXMwjzztDatNUUbjqqJ
-         4q8Yop1F0/T+VnF7wp86caf4/BAdAuuows5AVlFz6Wv7pEeZRdb5HELYOIzwnmEBp7MC
-         KMc68jQS2KuXIED3VB4X9IsPY/Xb8dEL3KTC5mEH/80fdRi8mHLg0g9AVFErQo4QkB3z
-         GKKV60vpwi16uuLszFwphrDGX28AX/Y3wEsLKCMZdK9YtLJjnDH91niiNbMQKC6JUaMc
-         pUQcPdZ+SYhTndFdaHrow532EKSmx8VohIbLtZjDAJajtadsrUQeA4T93ar9XQ9RSboY
-         wJcA==
-X-Gm-Message-State: AOAM531qqFrY83sHPNllX4IaCzgwXg9TvpJoE+XPxBwCsV/y8HDLEZed
-        lNs4+VrCOdlzFEw1VapG4g==
-X-Google-Smtp-Source: ABdhPJx6W/m9cTOYX0LJh7RyB5Ur43rwvEjFPssjDCqG6ZwCliNJOMvlNL0EYOnYEUN6BAEztsaGGQ==
-X-Received: by 2002:a9d:6d8c:: with SMTP id x12mr11893377otp.121.1623094825080;
-        Mon, 07 Jun 2021 12:40:25 -0700 (PDT)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id o8sm2192047oif.52.2021.06.07.12.40.23
+        bh=Z8D7EP2ZXRo81V/Iibvxl9tc2KeLwiTlPeliqLE5Xwg=;
+        b=el6kLLHEGb4BFHPVeYcnFc3lkxIifkw7toSc66VUBcZ+VokWdUqPJ+sjzCUi4LIvbx
+         /KCILDrgkWPd9ouegr3B4x9zYWfSYzQUt1h5n3VRTEgWnTlyrYM8feCoakFBWGujKp8A
+         0eamnZzEc1hHs+AtLJdgYi1BqarNuBO5M2qVfUvyF4jr6Rgm2VjPCSnUCw0F4tfeGnAp
+         pOi6WV2mhZjEUDX2GFos9uY/e3fQJbZKuosYgm+U2UBE6MN+dG4+YTEmvJ9BVDYhM4wZ
+         UUK+JrrazWCbj7Z4XJmZtq2K6He98khVI83HhXq8PgI8OFf+DbFlNApTRSdEnrxxPrlZ
+         r9dw==
+X-Gm-Message-State: AOAM530SxLdqeSkLZWhYi4lZC7vqeCgaxtcM+g7Bbzg7t74M2X3cf+LC
+        G4oQZF591K5f7KjK+jedPHI=
+X-Google-Smtp-Source: ABdhPJw0gv5os//4zZ7uIHsRUPvsAoxDmXosX1GUW6X5G9iPQpPEnuEUpRJig52/WV+foGZSojv2cg==
+X-Received: by 2002:a2e:9e57:: with SMTP id g23mr15942260ljk.123.1623094874132;
+        Mon, 07 Jun 2021 12:41:14 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.224.40])
+        by smtp.gmail.com with ESMTPSA id k10sm1118272ljm.39.2021.06.07.12.41.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 12:40:23 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Fu Wei <fu.wei@linaro.org>, linux-watchdog@vger.kernel.org
-Subject: [PATCH] dt-bindings: watchdog: Convert arm,sbsa-gwdt to DT schema
-Date:   Mon,  7 Jun 2021 14:40:22 -0500
-Message-Id: <20210607194022.3095736-1-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Mon, 07 Jun 2021 12:41:13 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     santosh.shilimkar@oracle.com, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+5134cdf021c4ed5aaa5f@syzkaller.appspotmail.com
+Subject: [PATCH] net: rds: fix memory leak in rds_recvmsg
+Date:   Mon,  7 Jun 2021 22:41:02 +0300
+Message-Id: <20210607194102.2883-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the arm,sbsa-gwdt binding to DT schema format.
+Syzbot reported memory leak in rds. The problem
+was in unputted refcount in case of error.
 
-Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Fu Wei <fu.wei@linaro.org>
-Cc: linux-watchdog@vger.kernel.org
-Signed-off-by: Rob Herring <robh@kernel.org>
+int rds_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
+		int msg_flags)
+{
+...
+
+	if (!rds_next_incoming(rs, &inc)) {
+		...
+	}
+
+After this "if" inc refcount incremented and
+
+	if (rds_cmsg_recv(inc, msg, rs)) {
+		ret = -EFAULT;
+		goto out;
+	}
+...
+out:
+	return ret;
+}
+
+in case of rds_cmsg_recv() fail the refcount won't be
+decremented. And it's easy to see from ftrace log, that
+rds_inc_addref() don't have rds_inc_put() pair in
+rds_recvmsg() after rds_cmsg_recv()
+
+ 1)               |  rds_recvmsg() {
+ 1)   3.721 us    |    rds_inc_addref();
+ 1)   3.853 us    |    rds_message_inc_copy_to_user();
+ 1) + 10.395 us   |    rds_cmsg_recv();
+ 1) + 34.260 us   |  }
+
+Fixes: bdbe6fbc6a2f ("RDS: recv.c")
+Reported-and-tested-by: syzbot+5134cdf021c4ed5aaa5f@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 ---
- .../bindings/watchdog/arm,sbsa-gwdt.yaml      | 51 +++++++++++++++++++
- .../bindings/watchdog/sbsa-gwdt.txt           | 31 -----------
- 2 files changed, 51 insertions(+), 31 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/watchdog/arm,sbsa-gwdt.yaml
- delete mode 100644 Documentation/devicetree/bindings/watchdog/sbsa-gwdt.txt
+ net/rds/recv.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/watchdog/arm,sbsa-gwdt.yaml b/Documentation/devicetree/bindings/watchdog/arm,sbsa-gwdt.yaml
-new file mode 100644
-index 000000000000..6bfa46353c4e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/watchdog/arm,sbsa-gwdt.yaml
-@@ -0,0 +1,51 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/watchdog/arm,sbsa-gwdt.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: SBSA (Server Base System Architecture) Generic Watchdog
-+
-+maintainers:
-+  - Fu Wei <fu.wei@linaro.org>
-+
-+description: |
-+  The SBSA Generic Watchdog Timer is used to force a reset of the system after
-+  two stages of timeout have elapsed. A detailed definition of the watchdog
-+  timer can be found in the ARM document: ARM-DEN-0029 - Server Base System
-+  Architecture (SBSA)
-+
-+allOf:
-+  - $ref: watchdog.yaml#
-+
-+properties:
-+  compatible:
-+    const: arm,sbsa-gwdt
-+
-+  reg:
-+    items:
-+      - description: Watchdog control frame
-+      - description: Refresh frame
-+
-+  interrupts:
-+    description: The Watchdog Signal 0 (WS0) SPI (Shared Peripheral Interrupt)
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+
-+    watchdog@2a440000 {
-+        compatible = "arm,sbsa-gwdt";
-+        reg = <0x2a440000 0x1000>,
-+              <0x2a450000 0x1000>;
-+        interrupts = <0 27 4>;
-+        timeout-sec = <30>;
-+    };
-+...
-diff --git a/Documentation/devicetree/bindings/watchdog/sbsa-gwdt.txt b/Documentation/devicetree/bindings/watchdog/sbsa-gwdt.txt
-deleted file mode 100644
-index 6f2d5f91964d..000000000000
---- a/Documentation/devicetree/bindings/watchdog/sbsa-gwdt.txt
-+++ /dev/null
-@@ -1,31 +0,0 @@
--* SBSA (Server Base System Architecture) Generic Watchdog
--
--The SBSA Generic Watchdog Timer is used to force a reset of the system
--after two stages of timeout have elapsed.  A detailed definition of the
--watchdog timer can be found in the ARM document: ARM-DEN-0029 - Server
--Base System Architecture (SBSA)
--
--Required properties:
--- compatible: Should at least contain "arm,sbsa-gwdt".
--
--- reg: Each entry specifies the base physical address of a register frame
--  and the length of that frame; currently, two frames must be defined,
--  in this order:
--  1: Watchdog control frame;
--  2: Refresh frame.
--
--- interrupts: Should contain the Watchdog Signal 0 (WS0) SPI (Shared
--  Peripheral Interrupt) number of SBSA Generic Watchdog.
--
--Optional properties
--- timeout-sec: Watchdog timeout values (in seconds).
--
--Example for FVP Foundation Model v8:
--
--watchdog@2a440000 {
--	compatible = "arm,sbsa-gwdt";
--	reg = <0x0 0x2a440000 0 0x1000>,
--	      <0x0 0x2a450000 0 0x1000>;
--	interrupts = <0 27 4>;
--	timeout-sec = <30>;
--};
+diff --git a/net/rds/recv.c b/net/rds/recv.c
+index 4db109fb6ec2..3fa16c339bfe 100644
+--- a/net/rds/recv.c
++++ b/net/rds/recv.c
+@@ -714,7 +714,7 @@ int rds_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 
+ 		if (rds_cmsg_recv(inc, msg, rs)) {
+ 			ret = -EFAULT;
+-			goto out;
++			goto out_put;
+ 		}
+ 		rds_recvmsg_zcookie(rs, msg);
+ 
+@@ -740,6 +740,7 @@ int rds_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 		break;
+ 	}
+ 
++out_put:
+ 	if (inc)
+ 		rds_inc_put(inc);
+ 
 -- 
-2.27.0
+2.31.1
 
