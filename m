@@ -2,118 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 601F439D883
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AFF439D87D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbhFGJVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:21:03 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3447 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbhFGJU6 (ORCPT
+        id S230258AbhFGJU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:20:57 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3086 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhFGJU4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:20:58 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fz75b0byhz6wHk;
-        Mon,  7 Jun 2021 17:16:03 +0800 (CST)
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 17:19:05 +0800
-Received: from SWX921481.china.huawei.com (10.126.200.77) by
- dggemi761-chm.china.huawei.com (10.1.198.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 7 Jun 2021 17:18:56 +0800
-From:   Barry Song <song.bao.hua@hisilicon.com>
-To:     <akpm@linux-foundation.org>, <hpa@zytor.com>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <bp@alien8.de>, <hca@linux.ibm.com>,
-        <gor@linux.ibm.com>, <borntraeger@de.ibm.com>,
-        <naveen.n.rao@linux.ibm.com>, <anil.s.keshavamurthy@intel.com>,
-        <davem@davemloft.net>, <mhiramat@kernel.org>,
-        <linux-s390@vger.kernel.org>, <x86@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: [PATCH v2] kprobes: remove duplicated strong free_insn_page in x86 and s390
-Date:   Mon, 7 Jun 2021 21:18:54 +1200
-Message-ID: <20210607091854.31580-1-song.bao.hua@hisilicon.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        Mon, 7 Jun 2021 05:20:56 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fz73T2xQrzWt0T;
+        Mon,  7 Jun 2021 17:14:13 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 17:19:02 +0800
+Received: from [127.0.0.1] (10.174.177.72) by dggpemm500006.china.huawei.com
+ (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 7 Jun 2021
+ 17:19:01 +0800
+Subject: Re: [PATCH 1/1] lib/test: Fix spelling mistakes
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210607031537.12366-1-thunder.leizhen@huawei.com>
+ <CAHp75VdcCQ_ZxBg8Ot+9k2kPFSTwxG+x0x1C+PBRgA3p8MsbBw@mail.gmail.com>
+ <658d4369-06ce-a2e6-151d-5fcb1b527e7e@huawei.com>
+ <829eedee-609a-1b5f-8fbc-84ba0d2f794b@huawei.com>
+ <CAHp75VczLpKB4jnXO1be96nZYGrUWRwidj=LCLV=JuTqBpcM3g@mail.gmail.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <769f678b-4501-87a8-98ca-708d0bb594b0@huawei.com>
+Date:   Mon, 7 Jun 2021 17:18:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.126.200.77]
+In-Reply-To: <CAHp75VczLpKB4jnXO1be96nZYGrUWRwidj=LCLV=JuTqBpcM3g@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.72]
 X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggemi761-chm.china.huawei.com (10.1.198.147)
+ dggpemm500006.china.huawei.com (7.185.36.236)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-free_insn_page() in x86 and s390 are same with the common weak function
-in kernel/kprobes.c.
-Plus, the comment "Recover page to RW mode before releasing it" in x86
-seems insensible to be there since resetting mapping is done by common
-code in vfree() of module_memfree().
-So drop these two duplicated strong functions and related comment, then
-mark the common one in kernel/kprobes.c strong.
 
-Cc: Christoph Hellwig <hch@infradead.org>
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
----
- -v2:
- remove free_insn_page in s390 as well and remove the __weak in common
- code according to Christoph's comment;
 
- arch/s390/kernel/kprobes.c     | 5 -----
- arch/x86/kernel/kprobes/core.c | 6 ------
- kernel/kprobes.c               | 2 +-
- 3 files changed, 1 insertion(+), 12 deletions(-)
+On 2021/6/7 17:06, Andy Shevchenko wrote:
+> On Mon, Jun 7, 2021 at 11:56 AM Leizhen (ThunderTown)
+> <thunder.leizhen@huawei.com> wrote:
+>> On 2021/6/7 16:52, Leizhen (ThunderTown) wrote:
+>>> On 2021/6/7 16:39, Andy Shevchenko wrote:
+>>>> On Mon, Jun 7, 2021 at 6:21 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+>>>>
+>>>>> Fix some spelling mistakes in comments:
+>>>>> thats ==> that's
+>>>>> unitialized ==> uninitialized
+>>>>> panicing ==> panicking
+>>>>> sucess ==> success
+>>>>> possitive ==> positive
+>>>>> intepreted ==> interpreted
+>>>>
+>>>> Thanks for the fix! Is it done with the help of the codespell tool? If
+>>>> not, can you run it and check if it suggests more fixes?
+>>>
+>>> Yes, it's detected by codespell tool. But to avoid too many changes in one patch, I tried
+>>> breaking it down into smaller patches(If it can be classified) to make it easier to review.
+>>> In fact, the other patch I just posted included the rest.
+>>
+>> https://lkml.org/lkml/2021/6/7/151
+>>
+>> All the remaining spelling mistakes are fixed by the patch above. I can combine the two of
+>> them into one patch if you think it's necessary.
+> 
+> No, it's good to keep them split. What I meant is to use the tool
+> against the same subset of the files you have done your patch for. But
+> please mention in the commit message that you have used that tool, so
+> reviewers will not waste time on the comments like mine.
 
-diff --git a/arch/s390/kernel/kprobes.c b/arch/s390/kernel/kprobes.c
-index aae24dc75df6..60cfbd24229b 100644
---- a/arch/s390/kernel/kprobes.c
-+++ b/arch/s390/kernel/kprobes.c
-@@ -44,11 +44,6 @@ void *alloc_insn_page(void)
- 	return page;
- }
- 
--void free_insn_page(void *page)
--{
--	module_memfree(page);
--}
--
- static void *alloc_s390_insn_page(void)
- {
- 	if (xchg(&insn_page_in_use, 1) == 1)
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index d3d65545cb8b..3bce67d3a03c 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -422,12 +422,6 @@ void *alloc_insn_page(void)
- 	return page;
- }
- 
--/* Recover page to RW mode before releasing it */
--void free_insn_page(void *page)
--{
--	module_memfree(page);
--}
--
- /* Kprobe x86 instruction emulation - only regs->ip or IF flag modifiers */
- 
- static void kprobe_emulate_ifmodifiers(struct kprobe *p, struct pt_regs *regs)
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 745f08fdd7a6..ddb643f3879f 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -106,7 +106,7 @@ void __weak *alloc_insn_page(void)
- 	return module_alloc(PAGE_SIZE);
- }
- 
--void __weak free_insn_page(void *page)
-+void free_insn_page(void *page)
- {
- 	module_memfree(page);
- }
--- 
-2.25.1
+Okay, thanks for the advice.
+
+> 
+> 
 
