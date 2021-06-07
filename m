@@ -2,70 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEB7839D88A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC29639D88C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhFGJV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:21:56 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:46494 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229966AbhFGJVz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:21:55 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=yaohuiwang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UbaGHXf_1623057601;
-Received: from localhost(mailfrom:yaohuiwang@linux.alibaba.com fp:SMTPD_---0UbaGHXf_1623057601)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 07 Jun 2021 17:20:01 +0800
-From:   Yaohui Wang <yaohuiwang@linux.alibaba.com>
-To:     dave.hansen@linux.intel.com
-Cc:     luto@kernel.org, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, yaohuiwang@linux.alibaba-inc.com,
-        luoben@linux.alibaba.com, Yahui Wang <yaohuiwang@linux.alibaba.com>
-Subject: [PATCH] mm: fix pfn calculation mistake in __ioremap_check_ram
-Date:   Mon,  7 Jun 2021 17:19:39 +0800
-Message-Id: <20210607091938.47960-1-yaohuiwang@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        id S230291AbhFGJWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:22:13 -0400
+Received: from mga03.intel.com ([134.134.136.65]:36156 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229966AbhFGJWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 05:22:12 -0400
+IronPort-SDR: oqGam3Kis1j8g0gcDTRMb6xwoTFuVz771MdcQz+mGneCsCdCyLw5a3i1tpTfDuMq/GsZMrSUjS
+ Rv6nm71e3Hdw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="204610344"
+X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
+   d="scan'208";a="204610344"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 02:20:21 -0700
+IronPort-SDR: z4C20yGvCTYUWBw0FSST4DuxuboqnJjtaHIEIzZAUosGdxQVwZg1AqwQuW1gWV8yFsxfTxYNJQ
+ 7NiU36d6CZyQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
+   d="scan'208";a="551816159"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 07 Jun 2021 02:20:18 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 07 Jun 2021 12:20:17 +0300
+Date:   Mon, 7 Jun 2021 12:20:17 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Kyle Tso <kyletso@google.com>
+Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org, badhri@google.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: typec: tcpm: Do not finish VDM AMS for retrying
+ Responses
+Message-ID: <YL3k0aot51j3ntNY@kuha.fi.intel.com>
+References: <20210606081452.764032-1-kyletso@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210606081452.764032-1-kyletso@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to the source code in function
-arch/x86/mm/ioremap.c:__ioremap_caller, after __ioremap_check_mem, if the
-mem range is IORES_MAP_SYSTEM_RAM, then __ioremap_caller should fail. But
-because of the pfn calculation problem, __ioremap_caller can success
-on IORES_MAP_SYSTEM_RAM region when the @size parameter is less than
-PAGE_SIZE. This may cause misuse of the ioremap function and raise the
-risk of performance issues. For example, ioremap(phys, PAGE_SIZE-1) may
-cause the direct memory mapping of @phys to be uncached, and iounmap won't
-revert this change. This patch fixes this issue.
+On Sun, Jun 06, 2021 at 04:14:52PM +0800, Kyle Tso wrote:
+> If the VDM responses couldn't be sent successfully, it doesn't need to
+> finish the AMS until the retry count reaches the limit.
+> 
+> Fixes: 0908c5aca31e ("usb: typec: tcpm: AMS and Collision Avoidance")
+> Signed-off-by: Kyle Tso <kyletso@google.com>
 
-In arch/x86/mm/ioremap.c:__ioremap_check_ram, start_pfn should wrap down
-the res->start address, and end_pfn should wrap up the res->end address.
-This makes the check more strict and should be more reasonable.
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-Signed-off-by: Ben Luo <luoben@linux.alibaba.com>
-Signed-off-by: Yahui Wang <yaohuiwang@linux.alibaba.com>
----
- arch/x86/mm/ioremap.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 0db685d5d9c0..08fabe1fc31d 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -1965,6 +1965,9 @@ static void vdm_run_state_machine(struct tcpm_port *port)
+>  			tcpm_log(port, "VDM Tx error, retry");
+>  			port->vdm_retries++;
+>  			port->vdm_state = VDM_STATE_READY;
+> +			if (PD_VDO_SVDM(vdo_hdr) && PD_VDO_CMDT(vdo_hdr) == CMDT_INIT)
+> +				tcpm_ams_finish(port);
+> +		} else {
+>  			tcpm_ams_finish(port);
+>  		}
+>  		break;
+> -- 
+> 2.32.0.rc1.229.g3e70b5a671-goog
 
-diff --git a/arch/x86/mm/ioremap.c b/arch/x86/mm/ioremap.c
-index 9e5ccc56f..79adf0d2d 100644
---- a/arch/x86/mm/ioremap.c
-+++ b/arch/x86/mm/ioremap.c
-@@ -74,8 +74,8 @@ static unsigned int __ioremap_check_ram(struct resource *res)
- 	if ((res->flags & IORESOURCE_SYSTEM_RAM) != IORESOURCE_SYSTEM_RAM)
- 		return 0;
- 
--	start_pfn = (res->start + PAGE_SIZE - 1) >> PAGE_SHIFT;
--	stop_pfn = (res->end + 1) >> PAGE_SHIFT;
-+	start_pfn = res->start >> PAGE_SHIFT;
-+	stop_pfn = (res->end + PAGE_SIZE) >> PAGE_SHIFT;
- 	if (stop_pfn > start_pfn) {
- 		for (i = 0; i < (stop_pfn - start_pfn); ++i)
- 			if (pfn_valid(start_pfn + i) &&
 -- 
-2.25.1
-
+heikki
