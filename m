@@ -2,81 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2010639D8F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E83A39D8EF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:36:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbhFGJiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:38:12 -0400
-Received: from m34-101.88.com ([104.250.34.101]:52587 "EHLO 88.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230284AbhFGJiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:38:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=From:To:Date; bh=l0wKGJ2zoLHVTembanf89c4h1niJUqu/rSL9m
-        cX+JDs=; b=FziX+dKlf7MSocefDSXQBjxiTIPXj/8jvT3rpe9258mW0KBPataKk
-        xOlx0JrmfkSs4twaMCmweJX6SHe++Y6YJHl+xp+ambS8XzAnnKyKvoZJi1mDZCy1
-        TncPJgDMlGCPYOjOslqwip1rVSEFferQQmhS/Xx5eDFkizfKli8rno=
-Received: from localhost.localdomain (unknown [113.251.8.115])
-        by v_coremail2-frontend-1 (Coremail) with SMTP id LCKnCgCnQzcs6L1gZe0CAA--.10613S2;
-        Mon, 07 Jun 2021 17:34:37 +0800 (CST)
-From:   Hu Haowen <src.res@email.cn>
-To:     alexs@kernel.org, corbet@lwn.net
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hu Haowen <src.res@email.cn>
-Subject: [PATCH] docs/zh_CN: add a translation for index
-Date:   Mon,  7 Jun 2021 17:34:33 +0800
-Message-Id: <20210607093433.39160-1-src.res@email.cn>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LCKnCgCnQzcs6L1gZe0CAA--.10613S2
-X-Coremail-Antispam: 1UD129KBjvJXoWrZFWUuw1xJw1xXw45uryrXrb_yoW8Jr13pF
-        1qkryxK3Z8Aw15Cr1vga47GF4UJ3Z7Ga13GrWjqwnaqrs8ArZ2grsxtr95ta4xXrWfJF98
-        XF4SvrWkGa4aywUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUgK1xkIjI8I6I8E6xAIw20EY4v20xvaj40_JFC_Wr1l8cAvFVAK
-        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4
-        x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l
-        84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8w
-        Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E74AGY7Cv6cx26F4UJr1UMcvjeVCFs4IE7xkE
-        bVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67
-        AK6r4fMxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Cr1UJr1l4I8I3I0E4IkC
-        6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWw
-        C2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_
-        JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJV
-        WUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBI
-        daVFxhVjvjDU0xZFpf9x0Jj46wZUUUUU=
-X-Originating-IP: [113.251.8.115]
-X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
+        id S230302AbhFGJhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:37:39 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:50717 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229436AbhFGJhi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 05:37:38 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=chengshuyi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UbaGK7H_1623058536;
+Received: from localhost(mailfrom:chengshuyi@linux.alibaba.com fp:SMTPD_---0UbaGK7H_1623058536)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 07 Jun 2021 17:35:44 +0800
+From:   Shuyi Cheng <chengshuyi@linux.alibaba.com>
+To:     chengshuyi@linux.alibaba.com, edumazet@google.com,
+        davem@davemloft.net, kuba@kernel.org, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH net-next] net: tcp:  Updating MSS, when the sending window is smaller than MSS.
+Date:   Mon,  7 Jun 2021 17:35:34 +0800
+Message-Id: <1623058534-78782-1-git-send-email-chengshuyi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The original file has added a former intro in commit b51208d41c6a4e7fc2f0
-("docs: Tweak the top-level Sphinx page") and hence update the Chinese
-version for it.
+When the lo network card is used for communication, the tcp server
+reduces the size of the receiving buffer, causing the tcp client
+to have a delay of 200ms. Examples are as follows:
 
-Signed-off-by: Hu Haowen <src.res@email.cn>
+Suppose that the MTU of the lo network card is 65536, and the tcp server
+sets the receive buffer size to 42KB. According to the
+tcp_bound_to_half_wnd function, the MSS of the server and client is
+21KB. Then, the tcp server sets the buffer size of the connection to
+16KB. At this time, the MSS of the server is 8KB, and the MSS of the
+client is still 21KB. But it will cause the client to fail to send the
+message, that is, tcp_write_xmit fails. Mainly because tcp_snd_wnd_test
+failed, and then entered the zero window detection phase, resulting in a
+200ms delay.
+
+Therefore, we mainly modify two places. One is the tcp_current_mss
+function. When the sending window is smaller than the current mss, mss
+needs to be updated. The other is the tcp_bound_to_half_wnd function.
+When the sending window is smaller than the current mss, the mss value
+should be calculated according to the current sending window, not
+max_window.
+
+Signed-off-by: Shuyi Cheng <chengshuyi@linux.alibaba.com>
 ---
- Documentation/translations/zh_CN/index.rst | 5 +++++
- 1 file changed, 5 insertions(+)
+ include/net/tcp.h     | 11 ++++++++---
+ net/ipv4/tcp_output.c |  3 ++-
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/translations/zh_CN/index.rst b/Documentation/translations/zh_CN/index.rst
-index 1f953d3439a5..003126abc0d6 100644
---- a/Documentation/translations/zh_CN/index.rst
-+++ b/Documentation/translations/zh_CN/index.rst
-@@ -17,6 +17,11 @@
-    **翻译计划:**
-    内核中文文档欢迎任何翻译投稿，特别是关于内核用户和管理员指南部分。
- 
-+这是内核文档树的顶级目录。内核文档，就像内核本身一样，在很大程度上是一项正
-+在进行的工作；当我们努力将许多分散的文件整合成一个连贯的整体时尤其如此。另
-+外，随时欢迎您对内核文档进行改进；如果您想提供帮助，请加入vger.kernel.org
-+上的linux-doc邮件列表。
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index e668f1b..fcdef16 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -641,6 +641,11 @@ static inline void tcp_clear_xmit_timers(struct sock *sk)
+ static inline int tcp_bound_to_half_wnd(struct tcp_sock *tp, int pktsize)
+ {
+ 	int cutoff;
++	int window;
 +
- 许可证文档
- ----------
++	window = tp->max_window;
++	if (tp->snd_wnd && tp->snd_wnd < pktsize)
++		window = tp->snd_wnd;
+ 
+ 	/* When peer uses tiny windows, there is no use in packetizing
+ 	 * to sub-MSS pieces for the sake of SWS or making sure there
+@@ -649,10 +654,10 @@ static inline int tcp_bound_to_half_wnd(struct tcp_sock *tp, int pktsize)
+ 	 * On the other hand, for extremely large MSS devices, handling
+ 	 * smaller than MSS windows in this way does make sense.
+ 	 */
+-	if (tp->max_window > TCP_MSS_DEFAULT)
+-		cutoff = (tp->max_window >> 1);
++	if (window > TCP_MSS_DEFAULT)
++		cutoff = (window >> 1);
+ 	else
+-		cutoff = tp->max_window;
++		cutoff = window;
+ 
+ 	if (cutoff && pktsize > cutoff)
+ 		return max_t(int, cutoff, 68U - tp->tcp_header_len);
+diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+index bde781f..88dcdf2 100644
+--- a/net/ipv4/tcp_output.c
++++ b/net/ipv4/tcp_output.c
+@@ -1833,7 +1833,8 @@ unsigned int tcp_current_mss(struct sock *sk)
+ 
+ 	if (dst) {
+ 		u32 mtu = dst_mtu(dst);
+-		if (mtu != inet_csk(sk)->icsk_pmtu_cookie)
++		if (mtu != inet_csk(sk)->icsk_pmtu_cookie ||
++		    (tp->snd_wnd && tp->snd_wnd < mss_now))
+ 			mss_now = tcp_sync_mss(sk, mtu);
+ 	}
  
 -- 
-2.25.1
+1.8.3.1
 
