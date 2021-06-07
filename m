@@ -2,86 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70AD639E6B0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2834139E6A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbhFGSat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 14:30:49 -0400
-Received: from mail-yb1-f181.google.com ([209.85.219.181]:41702 "EHLO
-        mail-yb1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230253AbhFGSaq (ORCPT
+        id S231253AbhFGS3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 14:29:48 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:34210 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231171AbhFGS3o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 14:30:46 -0400
-Received: by mail-yb1-f181.google.com with SMTP id q21so26348193ybg.8
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 11:28:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+0Qwo32Oi1nv9vlDwm2eqEKRAzjcx7HfOAwXOuTbk10=;
-        b=lkaKgvYp2UoBsbN0mkUg7ioP3c5jqxct7eqLECGRJveesvW4KC2u1BWVhzfqxf6FSt
-         HhQixNRJpZH3+7y0A2oZg1XSElp+Dr2IA308Z7sOrS3VRG/gY9in2SoimvKMgqoWKpgO
-         ek1/b7A3Qwz5EYIi/CY12UoCeXWU2z/+bfhzPd+/c55NF9kmPQapkxknUHefsJ393eD+
-         Df6jsV7q4u4MRXOqpNXEOh64c2G6CvR71F9RajfCGEfYIy6549eKKO4h6gFD+z5NceXk
-         TaRHXRGLjE8gsKm2Cn/9AjIFDWWNuPoZlFzV82pLgrFA2jNFhqaPD8zj+4qV1TxoPYTV
-         inJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+0Qwo32Oi1nv9vlDwm2eqEKRAzjcx7HfOAwXOuTbk10=;
-        b=jW6psxBFMKhk1iKEiIBTxybnIJdwaBLq3/q1YYrPvLOn85ozEyFR+owxexmERUlLSQ
-         drmE3MO7I9gajTsxv7lSBNSlLtNmNDisAD/Qp0DVF9S9oIvKbdpRbp6gdLXWruvWzboU
-         dbJWof/wa4yu6YaF7fZkVRN6Sn+f9LLCdTdVuX3EBHiWMgotuUhzKdwW6MHcALpNfnJ6
-         9DvEciLA2Jz11UWNxajmrahwj0t21pcWzrrRPpI5NN/U0XWl65IS0l7EFy0ETpEyFZoY
-         IndAs+T5bON/Q5nWJkG7wuI9/YELEfDT7PbY4BcuVQ2DGKt2J2Cc4uNjcIGNhNZK+Km4
-         IZeA==
-X-Gm-Message-State: AOAM530mwXFqukd/1VgaMTVDtJGJksZOAgbpAi3zPj7sJ7CJMMJrog8s
-        8SCL2GcE5WVBff+R5zrIVVA2ru/l5FB70BiaxDAD5Q==
-X-Google-Smtp-Source: ABdhPJx4ohpuDTQlAgei1fDf+QUU1Eup7/GocO0IFqPbGVqFWzeZ/RLaM84MwQQ0WMsv8U3PsPPUtwU5EN/gSw2/i5s=
-X-Received: by 2002:a25:e741:: with SMTP id e62mr26818800ybh.484.1623090458346;
- Mon, 07 Jun 2021 11:27:38 -0700 (PDT)
+        Mon, 7 Jun 2021 14:29:44 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lqJya-00GKWZ-4h; Mon, 07 Jun 2021 12:27:52 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lqJyK-009rTo-DI; Mon, 07 Jun 2021 12:27:51 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Ian Kent <raven@themaw.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Al Viro <viro@ZenIV.linux.org.uk>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Carlos Maiolino <cmaiolino@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <162306058093.69474.2367505736322611930.stgit@web.messagingengine.com>
+        <162306072498.69474.16160057168984328507.stgit@web.messagingengine.com>
+Date:   Mon, 07 Jun 2021 13:27:29 -0500
+In-Reply-To: <162306072498.69474.16160057168984328507.stgit@web.messagingengine.com>
+        (Ian Kent's message of "Mon, 07 Jun 2021 18:12:05 +0800")
+Message-ID: <87lf7lil7y.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <CAFJ_xbq06nfaEWtVNLtg7XCJrQeQ9wCs4Zsoi5Y_HP3Dx0iTRA@mail.gmail.com>
- <20210604205018.2238778-1-ndesaulniers@google.com> <CAKwvOdmhg2tj8cKe-XitoZXGKaoOhgTsCEdVXubt+LiY9+46rw@mail.gmail.com>
- <20210604235046.w3hazgcpsg4oefex@google.com> <YLtUO/thYUp2wU7k@hirez.programming.kicks-ass.net>
- <CAFP8O3+ggR8N-ffsaYSMPX7s2XgrzzTQQjOgCwUe9smyos-waA@mail.gmail.com> <YL5jQ6wMo9WeQDYJ@hirez.programming.kicks-ass.net>
-In-Reply-To: <YL5jQ6wMo9WeQDYJ@hirez.programming.kicks-ass.net>
-From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
-Date:   Mon, 7 Jun 2021 11:27:27 -0700
-Message-ID: <CAFP8O3KEqSsknL7YwvAhXLu=R6GHR4=SB_Fix0=rR8KiwBKSnA@mail.gmail.com>
-Subject: Re: [PATCH v3 16/16] objtool,x86: Rewrite retpoline thunk calls
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, lma@semihalf.com,
-        Guenter Roeck <groeck@google.com>,
-        Juergen Gross <jgross@suse.com>, lb@semihalf.com,
-        LKML <linux-kernel@vger.kernel.org>, mbenes@suse.com,
-        =?UTF-8?Q?Rados=C5=82aw_Biernacki?= <rad@semihalf.com>,
-        upstream@semihalf.com,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-XM-SPF: eid=1lqJyK-009rTo-DI;;;mid=<87lf7lil7y.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+BKBqvpHqVOC8NchFOFOsF2zTFLLCvskI=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Ian Kent <raven@themaw.net>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 15036 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 10 (0.1%), b_tie_ro: 9 (0.1%), parse: 0.94 (0.0%),
+         extract_message_metadata: 12 (0.1%), get_uri_detail_list: 1.44 (0.0%),
+         tests_pri_-1000: 3.3 (0.0%), tests_pri_-950: 1.38 (0.0%),
+        tests_pri_-900: 1.03 (0.0%), tests_pri_-90: 121 (0.8%), check_bayes:
+        120 (0.8%), b_tokenize: 8 (0.1%), b_tok_get_all: 7 (0.0%),
+        b_comp_prob: 2.4 (0.0%), b_tok_touch_all: 95 (0.6%), b_finish: 0.92
+        (0.0%), tests_pri_0: 6319 (42.0%), check_dkim_signature: 0.87 (0.0%),
+        check_dkim_adsp: 6008 (40.0%), poll_dns_idle: 14555 (96.8%),
+        tests_pri_10: 2.1 (0.0%), tests_pri_500: 8561 (56.9%), rewrite_mail:
+        0.00 (0.0%)
+Subject: Re: [PATCH v5 3/6] kernfs: use VFS negative dentry caching
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 11:19 AM Peter Zijlstra <peterz@infradead.org> wrote=
-:
->
-> On Sat, Jun 05, 2021 at 06:58:39PM -0700, F=C4=81ng-ru=C3=AC S=C3=B2ng wr=
-ote:
->
-> > You may use https://github.com/llvm/llvm-project/blob/main/llvm/tools/l=
-lvm-objcopy/ELF/Object.cpp#L843
-> > as a reference.
->
-> BTW, Error::success(), is that a successfull error, or an erroneous
-> success? :-))
+Ian Kent <raven@themaw.net> writes:
 
-A success (no error). Error::success() is a factory member function.
-Its purpose is to create an "unchecked" Error instance and require the
-caller to explicitly check for the error state.
+> If there are many lookups for non-existent paths these negative lookups
+> can lead to a lot of overhead during path walks.
+>
+> The VFS allows dentries to be created as negative and hashed, and caches
+> them so they can be used to reduce the fairly high overhead alloc/free
+> cycle that occurs during these lookups.
+>
+> Use the kernfs node parent revision to identify if a change has been
+> made to the containing directory so that the negative dentry can be
+> discarded and the lookup redone.
+>
+> Signed-off-by: Ian Kent <raven@themaw.net>
+> ---
+>  fs/kernfs/dir.c |   53 +++++++++++++++++++++++++++++++----------------------
+>  1 file changed, 31 insertions(+), 22 deletions(-)
+>
+> diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+> index b88432c48851f..5ae95e8d1aea1 100644
+> --- a/fs/kernfs/dir.c
+> +++ b/fs/kernfs/dir.c
+> @@ -1039,13 +1039,32 @@ static int kernfs_dop_revalidate(struct dentry *dentry, unsigned int flags)
+>  	if (flags & LOOKUP_RCU)
+>  		return -ECHILD;
+>  
+> -	/* Always perform fresh lookup for negatives */
+> -	if (d_really_is_negative(dentry))
+> -		goto out_bad_unlocked;
+> -
+>  	kn = kernfs_dentry_node(dentry);
+>  	mutex_lock(&kernfs_mutex);
+>  
+> +	/* Negative hashed dentry? */
+> +	if (!kn) {
+> +		struct dentry *d_parent = dget_parent(dentry);
+> +		struct kernfs_node *parent;
+> +
+> +		/* If the kernfs parent node has changed discard and
+> +		 * proceed to ->lookup.
+> +		 */
+> +		parent = kernfs_dentry_node(d_parent);
+> +		if (parent) {
+> +			if (kernfs_dir_changed(parent, dentry)) {
+> +				dput(d_parent);
+> +				goto out_bad;
+> +			}
+> +		}
+> +		dput(d_parent);
+> +
+> +		/* The kernfs node doesn't exist, leave the dentry
+> +		 * negative and return success.
+> +		 */
+> +		goto out;
+> +	}
+
+What part of this new negative hashed dentry check needs the
+kernfs_mutex?
+
+I guess it is the reading of kn->dir.rev.
+
+Since all you are doing is comparing if two fields are equal it
+really should not matter.  Maybe somewhere there needs to be a
+sprinkling of primitives like READ_ONCE.
+
+It just seems like such a waste to put all of that under kernfs_mutex
+on the off chance kn->dir.rev will change while it is being read.
+
+Eric
