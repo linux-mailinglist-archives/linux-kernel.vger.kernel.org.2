@@ -2,91 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7CF39DEA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC82D39DEAC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbhFGO0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 10:26:45 -0400
-Received: from mga09.intel.com ([134.134.136.24]:19330 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230198AbhFGO0o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 10:26:44 -0400
-IronPort-SDR: sbMYfQTA+IAwvhJDTDVb+E5viHmbCFJO2mooUQjklefImMa4b5FFVSepFmFoDD0KDJr7zap6Js
- XFvvThv5TQAw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="204599635"
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
-   d="scan'208";a="204599635"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 07:24:49 -0700
-IronPort-SDR: 3B2pL0UoeC87KJNkTDSWxwQc9k2MwVDXcmwJIidvMEs4Vz39dLyXrg6Ugd9hk9PFwdsiGKnqZJ
- E3Nintv3vikA==
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
-   d="scan'208";a="551901946"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 07:24:47 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lqGBI-000H6N-Ok; Mon, 07 Jun 2021 17:24:44 +0300
-Date:   Mon, 7 Jun 2021 17:24:44 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        wsa@kernel.org
-Subject: Re: [PATCH resend v1 1/3] units: Add SI metric prefix definitions
-Message-ID: <YL4sLLQ/Y+GafaeH@smile.fi.intel.com>
-References: <20210603160433.35816-1-andriy.shevchenko@linux.intel.com>
- <0466dab7-f2d2-3b7c-52a6-a12a6b09a67f@linux.intel.com>
+        id S230329AbhFGO05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 10:26:57 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3088 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230198AbhFGO04 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 10:26:56 -0400
+Received: from dggeme759-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FzFrX64V8zWsDT;
+        Mon,  7 Jun 2021 22:20:12 +0800 (CST)
+Received: from dggeme760-chm.china.huawei.com (10.3.19.106) by
+ dggeme759-chm.china.huawei.com (10.3.19.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 22:25:02 +0800
+Received: from dggeme760-chm.china.huawei.com ([10.6.80.70]) by
+ dggeme760-chm.china.huawei.com ([10.6.80.70]) with mapi id 15.01.2176.012;
+ Mon, 7 Jun 2021 22:25:02 +0800
+From:   zhengyongjun <zhengyongjun3@huawei.com>
+To:     David Ahern <dsahern@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>,
+        "dsahern@kernel.org" <dsahern@kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggbmV0LW5leHRdIG5ldDogaXB2NDogdXNlIEJVR19P?=
+ =?utf-8?Q?N_instead_of_if_condition_followed_by_BUG?=
+Thread-Topic: [PATCH net-next] net: ipv4: use BUG_ON instead of if condition
+ followed by BUG
+Thread-Index: AQHXW3s1hXims0p6KUeYFOmb1rqaBqsH/OYAgACdybA=
+Date:   Mon, 7 Jun 2021 14:25:02 +0000
+Message-ID: <08e628dd41ac4e3cb8720daf11b7ba11@huawei.com>
+References: <20210607091131.2766890-1-zhengyongjun3@huawei.com>
+ <6b84747d-80a9-08d8-c4e3-c91cdaa99330@gmail.com>
+In-Reply-To: <6b84747d-80a9-08d8-c4e3-c91cdaa99330@gmail.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.64]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0466dab7-f2d2-3b7c-52a6-a12a6b09a67f@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 03:33:31PM +0300, Jarkko Nikula wrote:
-> On 6/3/21 7:04 PM, Andy Shevchenko wrote:
-> > Sometimes it's useful to have well-defined SI metric prefix to be used
-> > to self-describe the formulas or equations.
-> > 
-> > List most popular ones in the units.h.
-
-...
-
-> > +/* Metric prefixes in accordance with Système international (d'unités) */
-> > +#define PETA	1000000000000000LL
-> > +#define TERA	1000000000000LL
-> > +#define GIGA	1000000000L
-> > +#define MEGA	1000000L
-> > +#define KILO	1000L
-> > +#define HECTO	100L
-> > +#define DECA	10L
-> > +#define DECI	10L
-> > +#define CENTI	100L
-> > +#define MILLI	1000L
-> > +#define MICRO	1000000L
-> > +#define NANO	1000000000L
-> > +#define PICO	1000000000000LL
-> > +#define FEMTO	1000000000000000LL
-> 
-> For me milli is always 1/1000.
-
-For me as well. Kernel does not operate with float point numbers.
-That's why it's ordered like this.
-
-> Might lead to confusion with these defines if
-> idea is to multiply with KILO but divide with MILLI?
-
-If the author of the hypothetical driver doesn't understand this, maybe
-they can ask first, but I am an optimist here and I assume that whoever
-writes the driver for a sensor / etc has a minimum education to see
-what's needed for the certain case.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+VGhhbmtzIGZvciB5b3VyIGFkdmljZSwgSSB3aWxsIGRvIGFzIHlvdXIgYWR2aWNlIGFuZCBzZW5k
+IHBhdGNoICcgMDAwMS1uZXQtaXB2NC1SZW1vdmUtdW5uZWVkLUJVRy1mdW5jdGlvbi5wYXRjaCAn
+IDopDQoNCi0tLS0t6YKu5Lu25Y6f5Lu2LS0tLS0NCuWPkeS7tuS6ujogRGF2aWQgQWhlcm4gW21h
+aWx0bzpkc2FoZXJuQGdtYWlsLmNvbV0gDQrlj5HpgIHml7bpl7Q6IDIwMjHlubQ25pyIN+aXpSAy
+MTowMA0K5pS25Lu25Lq6OiB6aGVuZ3lvbmdqdW4gPHpoZW5neW9uZ2p1bjNAaHVhd2VpLmNvbT47
+IGRhdmVtQGRhdmVtbG9mdC5uZXQ7IHlvc2hmdWppQGxpbnV4LWlwdjYub3JnOyBkc2FoZXJuQGtl
+cm5lbC5vcmc7IGt1YmFAa2VybmVsLm9yZzsgbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgbGludXgt
+a2VybmVsQHZnZXIua2VybmVsLm9yZw0K5Li76aKYOiBSZTogW1BBVENIIG5ldC1uZXh0XSBuZXQ6
+IGlwdjQ6IHVzZSBCVUdfT04gaW5zdGVhZCBvZiBpZiBjb25kaXRpb24gZm9sbG93ZWQgYnkgQlVH
+DQoNCk9uIDYvNy8yMSAzOjExIEFNLCBaaGVuZyBZb25nanVuIHdyb3RlOg0KPiBVc2UgQlVHX09O
+IGluc3RlYWQgb2YgaWYgY29uZGl0aW9uIGZvbGxvd2VkIGJ5IEJVRyBpbiBpbmV0X3NldF9saW5r
+X2FmLg0KPiANCj4gVGhpcyBpc3N1ZSB3YXMgZGV0ZWN0ZWQgd2l0aCB0aGUgaGVscCBvZiBDb2Nj
+aW5lbGxlLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogWmhlbmcgWW9uZ2p1biA8emhlbmd5b25nanVu
+M0BodWF3ZWkuY29tPg0KPiAtLS0NCj4gIG5ldC9pcHY0L2RldmluZXQuYyB8IDMgKy0tDQo+ICAx
+IGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDIgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZm
+IC0tZ2l0IGEvbmV0L2lwdjQvZGV2aW5ldC5jIGIvbmV0L2lwdjQvZGV2aW5ldC5jIGluZGV4IA0K
+PiAyZTM1ZjY4ZGE0MGEuLmUzZTFlOGE2MDBlZiAxMDA2NDQNCj4gLS0tIGEvbmV0L2lwdjQvZGV2
+aW5ldC5jDQo+ICsrKyBiL25ldC9pcHY0L2RldmluZXQuYw0KPiBAQCAtMTk4OCw4ICsxOTg4LDcg
+QEAgc3RhdGljIGludCBpbmV0X3NldF9saW5rX2FmKHN0cnVjdCBuZXRfZGV2aWNlICpkZXYsIGNv
+bnN0IHN0cnVjdCBubGF0dHIgKm5sYSwNCj4gIAlpZiAoIWluX2RldikNCj4gIAkJcmV0dXJuIC1F
+QUZOT1NVUFBPUlQ7DQo+ICANCj4gLQlpZiAobmxhX3BhcnNlX25lc3RlZF9kZXByZWNhdGVkKHRi
+LCBJRkxBX0lORVRfTUFYLCBubGEsIE5VTEwsIE5VTEwpIDwgMCkNCj4gLQkJQlVHKCk7DQo+ICsJ
+QlVHX09OKG5sYV9wYXJzZV9uZXN0ZWRfZGVwcmVjYXRlZCh0YiwgSUZMQV9JTkVUX01BWCwgbmxh
+LCBOVUxMLCANCj4gK05VTEwpIDwgMCk7DQo+ICANCj4gIAlpZiAodGJbSUZMQV9JTkVUX0NPTkZd
+KSB7DQo+ICAJCW5sYV9mb3JfZWFjaF9uZXN0ZWQoYSwgdGJbSUZMQV9JTkVUX0NPTkZdLCByZW0p
+DQo+IA0KDQpubyByZWFzb24gdG8gaGF2ZSBhIEJVRyBoZXJlIGF0IGFsbC4gQ2F0Y2ggdGhlIGVy
+cm9yIGFuZCByZXR1cm4uDQo=
