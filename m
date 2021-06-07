@@ -2,158 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2DA39E924
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 23:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F99839E92C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 23:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhFGVfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 17:35:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51202 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230359AbhFGVfl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 17:35:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623101629;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Ne0sdd3NZl98G4gVbRdymPLZj6j1uGmDFhwuH8srjsM=;
-        b=hqQSjSYvpqBzNCAIHFl24rlfsdiqCIayT9cBO3ZRFfIrhSpc2yN3/YrgheTSbJQtUyWffP
-        bJFtBnPxlTyhaaPdXYCmX9dSK717gBn6ISFmhP8Y6mO4Qjgbm/IzZEZhlIj2ic+ApyRCFf
-        7s4dJPv6xryDZPogjKcx1oRkHKyZIZY=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-532-ksTGdOzCOWKvEqe-JIIR3w-1; Mon, 07 Jun 2021 17:33:48 -0400
-X-MC-Unique: ksTGdOzCOWKvEqe-JIIR3w-1
-Received: by mail-wm1-f69.google.com with SMTP id f186-20020a1c1fc30000b02901aaa08ad8f4so347611wmf.8
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 14:33:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ne0sdd3NZl98G4gVbRdymPLZj6j1uGmDFhwuH8srjsM=;
-        b=DrTn/kJYwygSjXeULzgTNxBR676/vTRIbnKJLqWOtdMOdyX3QryzsGofjCpznZyF4b
-         zWfBnBPF/lNDM2kTRZpuPEua5EqhKYIWlyA706c5JeHSRWTR7q3Qtf1F/PEBbmFeX9aq
-         2qDkJOTfILtV/Cdqu3vP9GplrB68jHAYdmLR2vFDwSBacGZQpqnH5cdJ7lxwKbIY0i9U
-         J5IYWzoaNn4XsJVhaQG0csnNfXs9eUXr8y8VMeDoHdhfcEAlpXAQyA9uyA+XyhuywpxN
-         1C+bfU3p+F95w7O/DQBdL+YFAr0dBeLTMlbF/0IP2ahkSkL/+YkFj6BnDaOhlp1kVwq5
-         FD5Q==
-X-Gm-Message-State: AOAM533HjLSr2QEH3omQ14x8GG/G12+imzby8d1Cw1iczpMMljZjOEcW
-        NsGKACNd0vsEdqkFW8N5J4DmrvsBoGyWcUt+mj/OsdQoFxcNHT9hfnuGPcCJBJG6nX9wvDhEsDN
-        E5iJnME9BcCGKSWYgkxaVcfrCB4CKTBOJpiM3Z/CzWuYt2XZkCm8LlP6rbEUXyyEj7MRtPUV3TQ
-        s=
-X-Received: by 2002:a7b:c24e:: with SMTP id b14mr19012456wmj.6.1623101627247;
-        Mon, 07 Jun 2021 14:33:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy4ll9t3EwcCKy3igwdQwoTdXU//20aYaO8amkuTKLrzZN/i3Xio/esdoJJJge80qbLcxBnjQ==
-X-Received: by 2002:a7b:c24e:: with SMTP id b14mr19012434wmj.6.1623101626926;
-        Mon, 07 Jun 2021 14:33:46 -0700 (PDT)
-Received: from minerva.home ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id q5sm17659319wrm.15.2021.06.07.14.33.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 14:33:46 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Javier Martinez Canillas <javierm@redhat.com>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-rockchip@lists.infradead.org
-Subject: [PATCH] PCI: rockchip: Avoid accessing PCIe registers with clocks gated
-Date:   Mon,  7 Jun 2021 23:33:28 +0200
-Message-Id: <20210607213328.1711570-1-javierm@redhat.com>
-X-Mailer: git-send-email 2.31.1
+        id S231220AbhFGVl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 17:41:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230359AbhFGVl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 17:41:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3BC9261245;
+        Mon,  7 Jun 2021 21:40:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623102004;
+        bh=1Ynso/1KIAIG5yOFhl1gYy9VV5KZHL8N+eirf9uSnCw=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=VIONcEN/8K1PNtXW8znF2A3C1mZQV9k0cvMRFkaUQKTOxAQNxwwIRieJDZktyGSkH
+         iZ49tAd/JYvDaqvUrXBs59KzybGP+6QcBwoRqiQJ9VCPOIz/RqvQp606HDs7IPyAmp
+         gGFPeszGws5jyA5yOHlPHiFcxBxvTFAUorGiomapx7HViq5wG4SsYmTH2piG4ZeCEQ
+         LbvtdN9mL0BmbQQTN36J+W0vnkai9OQJ/CObc2t4fzEYDdZPDHp+0oCkrfVnQwXqds
+         cN8Z74cebO4y7grOqAEldV12UGzvnkA4rS2BegefVJuqEpErYjvHczF0Jn8klMGLW8
+         cZlui9jiLSPFg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1D34860BE2;
+        Mon,  7 Jun 2021 21:40:04 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v8 0/5] page_pool: recycle buffers
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162310200411.11768.6205430346849160444.git-patchwork-notify@kernel.org>
+Date:   Mon, 07 Jun 2021 21:40:04 +0000
+References: <20210607190240.36900-1-mcroce@linux.microsoft.com>
+In-Reply-To: <20210607190240.36900-1-mcroce@linux.microsoft.com>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
+        ayush.sawal@chelsio.com, vinay.yadav@chelsio.com,
+        rohitm@chelsio.com, davem@davemloft.net, kuba@kernel.org,
+        thomas.petazzoni@bootlin.com, mw@semihalf.com,
+        linux@armlinux.org.uk, mlindner@marvell.com,
+        stephen@networkplumber.org, tariqt@nvidia.com, hawk@kernel.org,
+        ilias.apalodimas@linaro.org, ast@kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, borisp@nvidia.com, arnd@arndb.de,
+        akpm@linux-foundation.org, peterz@infradead.org, vbabka@suse.cz,
+        yuzhao@google.com, will@kernel.org, fenghua.yu@intel.com,
+        guro@fb.com, hughd@google.com, peterx@redhat.com, jgg@ziepe.ca,
+        jonathan.lemon@gmail.com, alobakin@pm.me, cong.wang@bytedance.com,
+        wenxu@ucloud.cn, haokexin@gmail.com, jakub@cloudflare.com,
+        elver@google.com, willemb@google.com, linmiaohe@huawei.com,
+        linyunsheng@huawei.com, gnault@redhat.com,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, willy@infradead.org, edumazet@google.com,
+        dsahern@gmail.com, lorenzo@kernel.org, saeedm@nvidia.com,
+        andrew@lunn.ch, pabeni@redhat.com, sven.auhagen@voleatech.de,
+        yhs@fb.com, walken@google.com, kpsingh@kernel.org,
+        andrii@kernel.org, kafai@fb.com, david@redhat.com,
+        songliubraving@fb.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IRQ handlers that are registered for shared interrupts can be called at
-any time after have been registered using the request_irq() function.
+Hello:
 
-It's up to drivers to ensure that's always safe for these to be called.
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-Both the "pcie-sys" and "pcie-client" interrupts are shared, but since
-their handlers are registered very early in the probe function, an error
-later can lead to these handlers being executed before all the required
-have been properly setup.
+On Mon,  7 Jun 2021 21:02:35 +0200 you wrote:
+> From: Matteo Croce <mcroce@microsoft.com>
+> 
+> This is a respin of [1]
+> 
+> This patchset shows the plans for allowing page_pool to handle and
+> maintain DMA map/unmap of the pages it serves to the driver. For this
+> to work a return hook in the network core is introduced.
+> 
+> [...]
 
-For example, the rockchip_pcie_read() function used by these IRQ handlers
-expects that some PCIe clocks will already be enabled, otherwise trying
-to access the PCIe registers causes the read to hang and never return.
+Here is the summary with links:
+  - [net-next,v8,1/5] mm: add a signature in struct page
+    https://git.kernel.org/netdev/net-next/c/c07aea3ef4d4
+  - [net-next,v8,2/5] skbuff: add a parameter to __skb_frag_unref
+    https://git.kernel.org/netdev/net-next/c/c420c98982fa
+  - [net-next,v8,3/5] page_pool: Allow drivers to hint on SKB recycling
+    https://git.kernel.org/netdev/net-next/c/6a5bcd84e886
+  - [net-next,v8,4/5] mvpp2: recycle buffers
+    https://git.kernel.org/netdev/net-next/c/133637fcfab2
+  - [net-next,v8,5/5] mvneta: recycle buffers
+    https://git.kernel.org/netdev/net-next/c/e4017570daee
 
-The CONFIG_DEBUG_SHIRQ option tests if drivers are able to cope with their
-shared interrupt handlers being called, by generating a spurious interrupt
-just before a shared interrupt handler is unregistered.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-But this means that if the option is enabled, any error in the probe path
-of this driver could lead to one of the IRQ handlers to be executed.
-
-In a rockpro64 board, the following sequence of events happens:
-
-  1) "pcie-sys" IRQ is requested and its handler registered.
-  2) "pcie-client" IRQ is requested and its handler registered.
-  3) probe later fails due readl_poll_timeout() returning a timeout.
-  4) the "pcie-sys" IRQ is unregistered.
-  5) CONFIG_DEBUG_SHIRQ triggers a spurious interrupt.
-  6) "pcie-client" IRQ handler is called for this spurious interrupt.
-  7) IRQ handler tries to read PCIE_CLIENT_INT_STATUS with clocks gated.
-  8) the machine hangs because rockchip_pcie_read() call never returns.
-
-To avoid cases like this, the handlers don't have to be registered until
-very late in the probe function, once all the resources have been setup.
-
-So let's just move all the IRQ init before the pci_host_probe() call, that
-will prevent issues like this and seems to be the correct thing to do too.
-
-Reported-by: Peter Robinson <pbrobinson@gmail.com>
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
----
-
- drivers/pci/controller/pcie-rockchip-host.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/pci/controller/pcie-rockchip-host.c b/drivers/pci/controller/pcie-rockchip-host.c
-index f1d08a1b159..78d04ac29cd 100644
---- a/drivers/pci/controller/pcie-rockchip-host.c
-+++ b/drivers/pci/controller/pcie-rockchip-host.c
-@@ -592,10 +592,6 @@ static int rockchip_pcie_parse_host_dt(struct rockchip_pcie *rockchip)
- 	if (err)
- 		return err;
- 
--	err = rockchip_pcie_setup_irq(rockchip);
--	if (err)
--		return err;
--
- 	rockchip->vpcie12v = devm_regulator_get_optional(dev, "vpcie12v");
- 	if (IS_ERR(rockchip->vpcie12v)) {
- 		if (PTR_ERR(rockchip->vpcie12v) != -ENODEV)
-@@ -973,8 +969,6 @@ static int rockchip_pcie_probe(struct platform_device *pdev)
- 	if (err)
- 		goto err_vpcie;
- 
--	rockchip_pcie_enable_interrupts(rockchip);
--
- 	err = rockchip_pcie_init_irq_domain(rockchip);
- 	if (err < 0)
- 		goto err_deinit_port;
-@@ -992,6 +986,12 @@ static int rockchip_pcie_probe(struct platform_device *pdev)
- 	bridge->sysdata = rockchip;
- 	bridge->ops = &rockchip_pcie_ops;
- 
-+	err = rockchip_pcie_setup_irq(rockchip);
-+	if (err)
-+		goto err_remove_irq_domain;
-+
-+	rockchip_pcie_enable_interrupts(rockchip);
-+
- 	err = pci_host_probe(bridge);
- 	if (err < 0)
- 		goto err_remove_irq_domain;
--- 
-2.31.1
 
