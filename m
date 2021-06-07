@@ -2,75 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0B739E665
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD5739E671
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbhFGSVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 14:21:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230363AbhFGSVx (ORCPT
+        id S230443AbhFGSXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 14:23:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23391 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230316AbhFGSXF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 14:21:53 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB471C061766
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 11:20:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=ZUrYE4B+hFTWCtUpmjnHWEzCGxeHF3UiBJxJAFGwgfo=; b=kiF+wabN/0ukTTW0ObpV9zWpoz
-        63XIfEYn5r1x7NgEJuAR/o2criyQPF4o87q3nkYDLBCTFbGh9HYhyxOKEEAUMuzHxdf3r5R3Xb+nq
-        CevV+poQrFWIQGL2D97bir3OG5R3+G0D+Ov3Opnugrd4+AEz9lp69x52owYtOhUO+NlezMQ10JuLc
-        MKprYP38W7ZMHlDzdaF9HlUonAkIXqjUTskv2Jqdz4xm3x5Pz538xiQseqtEgYtZhduRLHLtWEYRl
-        8G7D4Cin+tNy/29hzPIl2nDuxfv3PcV+iNR2io4nU/kl+SZUDIIkj9xkDMGE8KhAoyYBcmrnlP4Mc
-        zYrON3IA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lqJqg-004UOz-NN; Mon, 07 Jun 2021 18:19:49 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9D1453001E3;
-        Mon,  7 Jun 2021 20:19:47 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8370A2DC8FF13; Mon,  7 Jun 2021 20:19:47 +0200 (CEST)
-Date:   Mon, 7 Jun 2021 20:19:47 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, lma@semihalf.com,
-        Guenter Roeck <groeck@google.com>,
-        Juergen Gross <jgross@suse.com>, lb@semihalf.com,
-        LKML <linux-kernel@vger.kernel.org>, mbenes@suse.com,
-        =?utf-8?B?UmFkb3PFgmF3?= Biernacki <rad@semihalf.com>,
-        upstream@semihalf.com,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>
-Subject: Re: [PATCH v3 16/16] objtool,x86: Rewrite retpoline thunk calls
-Message-ID: <YL5jQ6wMo9WeQDYJ@hirez.programming.kicks-ass.net>
-References: <CAFJ_xbq06nfaEWtVNLtg7XCJrQeQ9wCs4Zsoi5Y_HP3Dx0iTRA@mail.gmail.com>
- <20210604205018.2238778-1-ndesaulniers@google.com>
- <CAKwvOdmhg2tj8cKe-XitoZXGKaoOhgTsCEdVXubt+LiY9+46rw@mail.gmail.com>
- <20210604235046.w3hazgcpsg4oefex@google.com>
- <YLtUO/thYUp2wU7k@hirez.programming.kicks-ass.net>
- <CAFP8O3+ggR8N-ffsaYSMPX7s2XgrzzTQQjOgCwUe9smyos-waA@mail.gmail.com>
+        Mon, 7 Jun 2021 14:23:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623090073;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type;
+        bh=9ZstW4Az4zorBABR/Nkvgl7+MNQoaeykacQwAk1yjwo=;
+        b=MmigASRH9yPCQhFTfRzv4Hf3OeN4qXe8Aq3S3N2g1rsdS3901sE24kLLFUiaqZIqgeVFxC
+        li/YzkhTPXGCo1245JWsg5DMIFxkL4TY0S0159zV+us+wshBQMLKj43015GNx3ovqzXBAB
+        VnbIySGd9QZi3oI7NtHQJLgH2TuViIY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-264-1mgUvy8eOMOF4FTV-c4SmQ-1; Mon, 07 Jun 2021 14:21:12 -0400
+X-MC-Unique: 1mgUvy8eOMOF4FTV-c4SmQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8CD29800FF3;
+        Mon,  7 Jun 2021 18:21:10 +0000 (UTC)
+Received: from lclaudio.dyndns.org (ovpn-119-82.rdu2.redhat.com [10.10.119.82])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9DD475D6D5;
+        Mon,  7 Jun 2021 18:21:09 +0000 (UTC)
+Received: by lclaudio.dyndns.org (Postfix, from userid 1000)
+        id CEE913C0174; Mon,  7 Jun 2021 15:21:07 -0300 (-03)
+Date:   Mon, 7 Jun 2021 15:21:07 -0300
+From:   "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <daniel.wagner@suse.com>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>,
+        Luis Goncalves <lgoncalv@redhat.com>
+Subject: [ANNOUNCE] 4.9.268-rt180
+Message-ID: <162308986436.368951.10865950937928205599@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFP8O3+ggR8N-ffsaYSMPX7s2XgrzzTQQjOgCwUe9smyos-waA@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 05, 2021 at 06:58:39PM -0700, Fāng-ruì Sòng wrote:
+Hello RT-list!
 
-> You may use https://github.com/llvm/llvm-project/blob/main/llvm/tools/llvm-objcopy/ELF/Object.cpp#L843
-> as a reference.
+I'm pleased to announce the 4.9.268-rt180 stable release.
 
-BTW, Error::success(), is that a successfull error, or an erroneous
-success? :-))
+You can get this release via the git tree at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+
+  branch: v4.9-rt
+  Head SHA1: 638b7f082fa5d11c2b1375f9d32eca9b2d162cd9
+
+Or to build 4.9.268-rt180 directly, the following patches should be applied:
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.9.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.9.268.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.9/patch-4.9.268-rt180.patch.xz
+
+
+Enjoy!
+Luis
+
+Changes from v4.9.268-rt179:
+---
+
+Ben Hutchings (1):
+      futex: Fix mis-merge of 4.9-stable changes with 4.9-rt
+
+Luis Claudio R. Goncalves (1):
+      Linux 4.9.268-rt180
+
+Oleg Nesterov (1):
+      ptrace: fix ptrace_unfreeze_traced() race with rt-lock
+---
+kernel/futex.c                  | 39 ++++++++++++++-------------------------
+ kernel/locking/rtmutex.c        |  3 +--
+ kernel/locking/rtmutex_common.h |  1 -
+ kernel/ptrace.c                 | 23 +++++++++++++++--------
+ localversion-rt                 |  2 +-
+ 5 files changed, 31 insertions(+), 37 deletions(-)
+---
+diff --git a/kernel/futex.c b/kernel/futex.c
+index 93f2fb5b21b2d..7679831ed8094 100644
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -2465,9 +2465,9 @@ static void unqueue_me_pi(struct futex_q *q)
+ static int __fixup_pi_state_owner(u32 __user *uaddr, struct futex_q *q,
+ 				  struct task_struct *argowner)
+ {
+-	u32 uval, uninitialized_var(curval), newval, newtid;
+ 	struct futex_pi_state *pi_state = q->pi_state;
+ 	struct task_struct *oldowner, *newowner;
++	u32 uval, curval, newval, newtid;
+ 	int err = 0;
+ 
+ 	oldowner = pi_state->owner;
+@@ -3005,9 +3005,10 @@ static int futex_lock_pi(u32 __user *uaddr, unsigned int flags,
+ 	 * and BUG when futex_unlock_pi() interleaves with this.
+ 	 *
+ 	 * Therefore acquire wait_lock while holding hb->lock, but drop the
+-	 * latter before calling rt_mutex_start_proxy_lock(). This still fully
+-	 * serializes against futex_unlock_pi() as that does the exact same
+-	 * lock handoff sequence.
++	 * latter before calling __rt_mutex_start_proxy_lock(). This
++	 * interleaves with futex_unlock_pi() -- which does a similar lock
++	 * handoff -- such that the latter can observe the futex_q::pi_state
++	 * before __rt_mutex_start_proxy_lock() is done.
+ 	 */
+ 	raw_spin_lock_irq(&q.pi_state->pi_mutex.wait_lock);
+ 	/*
+@@ -3019,6 +3020,11 @@ static int futex_lock_pi(u32 __user *uaddr, unsigned int flags,
+ 	migrate_disable();
+ 
+ 	spin_unlock(q.lock_ptr);
++	/*
++	 * __rt_mutex_start_proxy_lock() unconditionally enqueues the @rt_waiter
++	 * such that futex_unlock_pi() is guaranteed to observe the waiter when
++	 * it sees the futex_q::pi_state.
++	 */
+ 	ret = __rt_mutex_start_proxy_lock(&q.pi_state->pi_mutex, &rt_waiter, current);
+ 	raw_spin_unlock_irq(&q.pi_state->pi_mutex.wait_lock);
+ 	migrate_enable();
+@@ -3037,10 +3043,10 @@ static int futex_lock_pi(u32 __user *uaddr, unsigned int flags,
+ cleanup:
+ 	spin_lock(q.lock_ptr);
+ 	/*
+-	 * If we failed to acquire the lock (signal/timeout), we must
++	 * If we failed to acquire the lock (deadlock/signal/timeout), we must
+ 	 * first acquire the hb->lock before removing the lock from the
+-	 * rt_mutex waitqueue, such that we can keep the hb and rt_mutex
+-	 * wait lists consistent.
++	 * rt_mutex waitqueue, such that we can keep the hb and rt_mutex wait
++	 * lists consistent.
+ 	 *
+ 	 * In particular; it is important that futex_unlock_pi() can not
+ 	 * observe this inconsistency.
+@@ -3061,13 +3067,6 @@ static int futex_lock_pi(u32 __user *uaddr, unsigned int flags,
+ 	if (res)
+ 		ret = (res < 0) ? res : 0;
+ 
+-	/*
+-	 * If fixup_owner() faulted and was unable to handle the fault, unlock
+-	 * it and return the fault to userspace.
+-	 */
+-	if (ret && (rt_mutex_owner(&q.pi_state->pi_mutex) == current))
+-		rt_mutex_futex_unlock(&q.pi_state->pi_mutex);
+-
+ 	/* Unqueue and drop the lock */
+ 	unqueue_me_pi(&q);
+ 
+@@ -3170,7 +3169,7 @@ static int futex_unlock_pi(u32 __user *uaddr, unsigned int flags)
+ 		migrate_disable();
+ 		spin_unlock(&hb->lock);
+ 
+-		/* Drops pi_state->pi_mutex.wait_lock */
++		/* drops pi_state->pi_mutex.wait_lock */
+ 		ret = wake_futex_pi(uaddr, uval, pi_state);
+ 
+ 		migrate_enable();
+@@ -3460,8 +3459,6 @@ static int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
+ 			spin_lock(&hb2->lock);
+ 			BUG_ON(&hb2->lock != q.lock_ptr);
+ 			ret = fixup_pi_state_owner(uaddr2, &q, current);
+-			if (ret && rt_mutex_owner(&q.pi_state->pi_mutex) == current)
+-				rt_mutex_futex_unlock(&q.pi_state->pi_mutex);
+ 			/*
+ 			 * Drop the reference to the pi state which
+ 			 * the requeue_pi() code acquired for us.
+@@ -3504,14 +3501,6 @@ static int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
+ 		if (res)
+ 			ret = (res < 0) ? res : 0;
+ 
+-		/*
+-		 * If fixup_pi_state_owner() faulted and was unable to handle
+-		 * the fault, unlock the rt_mutex and return the fault to
+-		 * userspace.
+-		 */
+-		if (ret && rt_mutex_owner(pi_mutex) == current)
+-			rt_mutex_futex_unlock(pi_mutex);
+-
+ 		/* Unqueue and drop the lock. */
+ 		unqueue_me_pi(&q);
+ 	}
+diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
+index 9816892558b82..a7f971a601919 100644
+--- a/kernel/locking/rtmutex.c
++++ b/kernel/locking/rtmutex.c
+@@ -2397,7 +2397,7 @@ int rt_mutex_start_proxy_lock(struct rt_mutex *lock,
+ 
+ 	raw_spin_lock_irq(&lock->wait_lock);
+ 	ret = __rt_mutex_start_proxy_lock(lock, waiter, task);
+-	if (unlikely(ret))
++	if (ret && rt_mutex_has_waiters(lock))
+ 		remove_waiter(lock, waiter);
+ 	raw_spin_unlock_irq(&lock->wait_lock);
+ 
+@@ -2526,7 +2526,6 @@ bool rt_mutex_cleanup_proxy_lock(struct rt_mutex *lock,
+ 		remove_waiter(lock, waiter);
+ 		cleanup = true;
+ 	}
+-
+ 	/*
+ 	 * try_to_take_rt_mutex() sets the waiter bit unconditionally. We might
+ 	 * have to fix that up.
+diff --git a/kernel/locking/rtmutex_common.h b/kernel/locking/rtmutex_common.h
+index 750bad6849e21..98debc11953fb 100644
+--- a/kernel/locking/rtmutex_common.h
++++ b/kernel/locking/rtmutex_common.h
+@@ -119,7 +119,6 @@ extern int rt_mutex_wait_proxy_lock(struct rt_mutex *lock,
+ 			       struct rt_mutex_waiter *waiter);
+ extern bool rt_mutex_cleanup_proxy_lock(struct rt_mutex *lock,
+ 				 struct rt_mutex_waiter *waiter);
+-
+ extern int rt_mutex_futex_trylock(struct rt_mutex *l);
+ extern int __rt_mutex_futex_trylock(struct rt_mutex *l);
+ 
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index 7245160f37801..809840af4ab60 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -187,8 +187,8 @@ static bool ptrace_freeze_traced(struct task_struct *task)
+ 
+ static void ptrace_unfreeze_traced(struct task_struct *task)
+ {
+-	if (task->state != __TASK_TRACED)
+-		return;
++	unsigned long flags;
++	bool frozen = true;
+ 
+ 	WARN_ON(!task->ptrace || task->parent != current);
+ 
+@@ -197,12 +197,19 @@ static void ptrace_unfreeze_traced(struct task_struct *task)
+ 	 * Recheck state under the lock to close this race.
+ 	 */
+ 	spin_lock_irq(&task->sighand->siglock);
+-	if (task->state == __TASK_TRACED) {
+-		if (__fatal_signal_pending(task))
+-			wake_up_state(task, __TASK_TRACED);
+-		else
+-			task->state = TASK_TRACED;
+-	}
++
++	raw_spin_lock_irqsave(&task->pi_lock, flags);
++	if (task->state == __TASK_TRACED)
++		task->state = TASK_TRACED;
++	else if (task->saved_state == __TASK_TRACED)
++		task->saved_state = TASK_TRACED;
++	else
++		frozen = false;
++	raw_spin_unlock_irqrestore(&task->pi_lock, flags);
++
++	if (frozen && __fatal_signal_pending(task))
++		wake_up_state(task, __TASK_TRACED);
++
+ 	spin_unlock_irq(&task->sighand->siglock);
+ }
+ 
+diff --git a/localversion-rt b/localversion-rt
+index 326e314b799eb..bcba77f19f793 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt179
++-rt180
+
