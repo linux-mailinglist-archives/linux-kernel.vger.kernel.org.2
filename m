@@ -2,154 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F386639DF29
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 345BC39DF1F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbhFGOua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 10:50:30 -0400
-Received: from mail-qt1-f172.google.com ([209.85.160.172]:33639 "EHLO
-        mail-qt1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230434AbhFGOu1 (ORCPT
+        id S230519AbhFGOto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 10:49:44 -0400
+Received: from router.aksignal.cz ([62.44.4.214]:49766 "EHLO
+        router.aksignal.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230483AbhFGOtl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 10:50:27 -0400
-Received: by mail-qt1-f172.google.com with SMTP id e3so1147252qte.0;
-        Mon, 07 Jun 2021 07:48:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HSQgsaptdM1U/OrEHO8BXoNOmtXhejE81vLfj3GS23c=;
-        b=fWxMBOVFykGdXAe2iKr2FHE1m3D0g87jNdHXvEItyd+66nCYQSQuS4JW4unMo39grk
-         1PVbTbLhKn86IL+QKfOX6EqSrNJNehJ3QdKU6NGU4tp/cfccxG2eBDyKIkQKsbTa1TDg
-         PPA9i/H6iAxT4W/vt+x3OsjVmTMYwn5r8/9tO+XCqEiHb43ThOX/MnWqtWo0kk1bKmbp
-         YacYL2dPv7MiLJylEsGLMCp2y/Gsn44fcDTueMX/rF0wOmTA8rmRjDA5StrvpdNYQGKi
-         wu6V9Q4UfkhDnbiQiuXAIrNeqIBlqb/b9nn8+DvOHJGz8NeSVW8gjohAnpOihlnKq1aY
-         ckdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HSQgsaptdM1U/OrEHO8BXoNOmtXhejE81vLfj3GS23c=;
-        b=Jf5w+2xUtSOM0eiBS9LaXQLzQB14O+62PvKRXJMQONgqizMrm9Yndj1e5UxWVbpnZK
-         FtcKH/IMtgJly2kRrq06NTulm9NP/LE72hk2y5Cw2Z92n3/KrCoXkKicq/wtzH+ZhT1W
-         Z4+XQBYyNiiRRUUrLjDkutnocNMP7wNieFhNOek4efpbDEvJGEGYQyOYP8c5XkcrFLt6
-         Qdjp3Ccl7wDY2NnuROITK8aX7wLJixcnbuMNwhzTAy2tgVozGBZcD6p447PMoBuE52NI
-         gonTak6c+BYQ0cwh84MtogtHw+U9IGu7oorxop7FmaaWntArlypwMrCSH2z0g6+l3cFS
-         Uubw==
-X-Gm-Message-State: AOAM532AvC4ovOj1iNwmwl4UnJralTbefUiQFIJX4d0vHSKtx0JohpsV
-        qtxNIrR418PMVbZicRlBPV0=
-X-Google-Smtp-Source: ABdhPJwGs04xG7xD+h/nfK60BqL9dbRT47cBMwCFsiUXIM+7HZIrIYwKk3q9M3CeQFpM0Yg8+2IAzQ==
-X-Received: by 2002:ac8:58d6:: with SMTP id u22mr16595953qta.81.1623077256074;
-        Mon, 07 Jun 2021 07:47:36 -0700 (PDT)
-Received: from shaak.xiphos.ca (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id s7sm4157855qkp.35.2021.06.07.07.47.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 07:47:35 -0700 (PDT)
-From:   Liam Beguin <liambeguin@gmail.com>
-To:     liambeguin@gmail.com, peda@axentia.se, jic23@kernel.org,
-        lars@metafoo.de, pmeerw@pmeerw.net
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-Subject: [PATCH v2 8/8] dt-bindings: iio: afe: add binding for temperature-sense-amplifier
-Date:   Mon,  7 Jun 2021 10:47:18 -0400
-Message-Id: <20210607144718.1724413-9-liambeguin@gmail.com>
-X-Mailer: git-send-email 2.30.1.489.g328c10930387
-In-Reply-To: <20210607144718.1724413-1-liambeguin@gmail.com>
-References: <20210607144718.1724413-1-liambeguin@gmail.com>
+        Mon, 7 Jun 2021 10:49:41 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by router.aksignal.cz (Postfix) with ESMTP id 2FF20443B4;
+        Mon,  7 Jun 2021 16:47:46 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at router.aksignal.cz
+Received: from router.aksignal.cz ([127.0.0.1])
+        by localhost (router.aksignal.cz [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id YQcUhtKgRNN1; Mon,  7 Jun 2021 16:47:45 +0200 (CEST)
+Received: from [172.25.161.48] (unknown [83.240.30.185])
+        (Authenticated sender: jiri.prchal@aksignal.cz)
+        by router.aksignal.cz (Postfix) with ESMTPSA id 3A4FC443B2;
+        Mon,  7 Jun 2021 16:47:45 +0200 (CEST)
+Subject: Re: [PATCH v7 4/5] nvmem: eeprom: at25: export FRAM serial num
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Christian Eggers <ceggers@arri.de>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <20210607122640.143582-1-jiri.prchal@aksignal.cz>
+ <20210607122640.143582-5-jiri.prchal@aksignal.cz>
+ <YL4S2/hlfRwRM+Ug@kroah.com>
+From:   =?UTF-8?B?SmnFmcOtIFByY2hhbA==?= <jiri.prchal@aksignal.cz>
+Message-ID: <56f088fe-8db2-54d4-bef3-72e5f893a414@aksignal.cz>
+Date:   Mon, 7 Jun 2021 16:47:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YL4S2/hlfRwRM+Ug@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liam Beguin <lvb@xiphos.com>
 
-An ADC is often used to measure other quantities indirectly. This
-binding describe such a use case, the measurement of a temperature
-through an analog front end connected to a voltage channel.
 
-Signed-off-by: Liam Beguin <lvb@xiphos.com>
----
- .../iio/afe/temperature-sense-amplifier.yaml  | 57 +++++++++++++++++++
- MAINTAINERS                                   |  1 +
- 2 files changed, 58 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/afe/temperature-sense-amplifier.yaml
+On 07. 06. 21 14:36, Greg Kroah-Hartman wrote:
+> On Mon, Jun 07, 2021 at 02:26:39PM +0200, Jiri Prchal wrote:
+>> +	return sysfs_emit(buf, "%016llx\n", *(unsigned long long *)at25->sernum);
+> 
+> That's a horrid hack, why not use the %*phN modifier?
 
-diff --git a/Documentation/devicetree/bindings/iio/afe/temperature-sense-amplifier.yaml b/Documentation/devicetree/bindings/iio/afe/temperature-sense-amplifier.yaml
-new file mode 100644
-index 000000000000..08f97f052a91
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/afe/temperature-sense-amplifier.yaml
-@@ -0,0 +1,57 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/afe/temperature-sense-amplifier.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Temperature Sense Amplifier
-+
-+maintainers:
-+  - Liam Beguin <lvb@xiphos.com>
-+
-+description: |
-+  When an io-channel measures the output voltage of a temperature analog front
-+  end such as an RTD (resistance thermometer) or a temperature to current
-+  sensor, the interesting measurement is almost always the corresponding
-+  temperature, not the voltage output. This binding describes such a circuit.
-+
-+properties:
-+  compatible:
-+    const: temperature-sense-amplifier
-+
-+  io-channels:
-+    maxItems: 1
-+    description: |
-+      Channel node of a voltage io-channel.
-+
-+  '#io-channel-cells':
-+    const: 1
-+
-+  sense-gain-mult:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Amplifier gain multiplier. The default is <1>.
-+
-+  sense-gain-div:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Amplifier gain divider. The default is <1>.
-+
-+  sense-offset-millicelsius:
-+    description: Amplifier offset. The default is <0>.
-+
-+additionalProperties: false
-+required:
-+  - compatible
-+  - io-channels
-+
-+examples:
-+  - |
-+    pt1000_1: temperature-sensor {
-+        compatible = "temperature-sense-amplifier";
-+        #io-channel-cells = <1>;
-+        io-channels = <&temp_adc 3>;
-+
-+        sense-gain-mult = <1000000>;
-+        sense-gain-div = <3908>;
-+        sense-offset-millicelsius = <(-255885)>;
-+    };
-+...
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e679d422b472..4f7b4ee9f19b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8887,6 +8887,7 @@ L:	linux-iio@vger.kernel.org
- S:	Maintained
- F:	Documentation/devicetree/bindings/iio/afe/current-sense-amplifier.yaml
- F:	Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml
-+F:	Documentation/devicetree/bindings/iio/afe/temperature-sense-amplifier.yaml
- F:	Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
- F:	drivers/iio/afe/iio-rescale.c
- 
--- 
-2.30.1.489.g328c10930387
+Prints as little endian, is that OK?
+
+Jiri
 
