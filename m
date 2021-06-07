@@ -2,165 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE9739DA7C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CFA239DA83
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231312AbhFGLCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 07:02:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48988 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230390AbhFGLCU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 07:02:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25AAB60FDA;
-        Mon,  7 Jun 2021 11:00:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623063629;
-        bh=6bMsVqbjM3++t48Qy6Kp7HdeCZdhuDq84Ibcb57h3cc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UeoyKq7nK1d24iFE9saVFY/HYwebI1+iEUwBoEHw6MYPdCPdV3i6cyRJEtSPG0N40
-         tNN+rWvYgDtV1Brk/6ZbVvUJp2ce7xxARktYxSaq4IFv7ST4VxuWUlGAMCvCUcJsCy
-         8N/foYQ+CQpwPBSQYjDcuE4Vn3NZwrMBVVsoY6kxDq+kqQwCK+DnKyg268+w7sGojd
-         DkikBp2TjdE0SSuLKd3oUt2D5sEVer899LH6wNdJ/jFykwoU/Ehh6ekbujtOKHQJWw
-         HYilPjP6jFSw3hM98+3yDGv5H216YLaIqNp5u/JubhD59YcOHG9Rgvy6pApjmMOJqA
-         A+UmnH8JSu7Og==
-Date:   Mon, 7 Jun 2021 14:00:26 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Adit Ranadive <aditr@vmware.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Christian Benvenuti <benve@cisco.com>,
-        clang-built-linux@googlegroups.com,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Gal Pressman <galpress@amazon.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next v1 02/15] RDMA/core: Replace the ib_port_data
- hw_stats pointers with a ib_port pointer
-Message-ID: <YL38SpQ3+mXAvp67@unreal>
-References: <cover.1623053078.git.leonro@nvidia.com>
- <6477a29059b1b4d92ea003e3b801a8d1df6d516d.1623053078.git.leonro@nvidia.com>
- <YL3zmzSTJ8nE1yr6@kroah.com>
+        id S231208AbhFGLDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 07:03:21 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:60910 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230215AbhFGLDT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 07:03:19 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210607110126epoutp026f9b1264b1f88f3eb0d5acc2e27643a3~GR9LCFOAx3132831328epoutp02y
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 11:01:26 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210607110126epoutp026f9b1264b1f88f3eb0d5acc2e27643a3~GR9LCFOAx3132831328epoutp02y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1623063686;
+        bh=AVOhpAfM7Gqoiqsr+s5cR3shUV/6+9dn/S7Zad+fUTs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=YbcAoBxjXdb+ELGj4YSrPL5WCDHW7oe9KufqyaVdyG9WORN4nRMCLklcZoAb2CP1v
+         MLVkv8UhtrSflvQfjbwyvEA/CEyaEt8PC++GA43E0+R5CIlO5As75gWbEShMWmX+iH
+         EMmnHp5AlPaFMKfxMWf4MsNUhKWGCr7tP4rI6wK8=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20210607110125epcas1p320529af5cfd885aea527f64a4fddf74e~GR9J_YbEe2589325893epcas1p3T;
+        Mon,  7 Jun 2021 11:01:25 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.159]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4Fz9R757Kmz4x9Pv; Mon,  7 Jun
+        2021 11:01:23 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        AB.4A.10258.38CFDB06; Mon,  7 Jun 2021 20:01:23 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20210607110122epcas1p4557bcbc7abac791f2557cc0d317214fd~GR9Hvvv0x2088020880epcas1p4Z;
+        Mon,  7 Jun 2021 11:01:22 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210607110122epsmtrp16e2f431b0d99e066731e189dc28c3b99~GR9HuZjtn3235632356epsmtrp1V;
+        Mon,  7 Jun 2021 11:01:22 +0000 (GMT)
+X-AuditID: b6c32a38-42fff70000002812-f2-60bdfc831fd2
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        FF.E8.08163.28CFDB06; Mon,  7 Jun 2021 20:01:22 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.99.105]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210607110122epsmtip2b92bf6c4921eac392a0d40221db4c9ee~GR9HWrwTd0048400484epsmtip2l;
+        Mon,  7 Jun 2021 11:01:22 +0000 (GMT)
+From:   Changheun Lee <nanich.lee@samsung.com>
+To:     hch@infradead.org
+Cc:     Johannes.Thumshirn@wdc.com, alex_y_xu@yahoo.ca,
+        alim.akhtar@samsung.com, asml.silence@gmail.com,
+        avri.altman@wdc.com, axboe@kernel.dk, bgoncalv@redhat.com,
+        bvanassche@acm.org, cang@codeaurora.org, damien.lemoal@wdc.com,
+        gregkh@linuxfoundation.org, jaegeuk@kernel.org, jejb@linux.ibm.com,
+        jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
+        ming.lei@redhat.com, mj0123.lee@samsung.com,
+        nanich.lee@samsung.com, osandov@fb.com, patchwork-bot@kernel.org,
+        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
+        tj@kernel.org, tom.leiming@gmail.com, woosung2.lee@samsung.com,
+        yi.zhang@redhat.com, yt0928.kim@samsung.com
+Subject: Re: [PATCH v12 1/3] bio: control bio max size
+Date:   Mon,  7 Jun 2021 19:42:48 +0900
+Message-Id: <20210607104248.17035-1-nanich.lee@samsung.com>
+X-Mailer: git-send-email 2.29.0
+In-Reply-To: <YL29gP0j1qmVuzyy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YL3zmzSTJ8nE1yr6@kroah.com>
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Ta0xTZxjOd045p3XpduS2L8S4UiGOewsUPgQWEpg5zpmQwNyCS6DCSSGU
+        0rR087I5sjLuKxAISGmFIQFTmVVwDTBQxkXjBAnjzgbIgAkMkEHQgSgrLWT8ey/P8z7v8375
+        2LhtE+nETpKlMQqZWMonDrFMnW4CL/V2W5ygMdcV3fqjnkRPr5kIpDOYAFrYHCLQzYkCArX0
+        VwJUurqJozVjrQ36LusFhtTXjQR6XFiNoVmjFkfVoyYM5c9+a4Ne505iaGNaidrGPdBAi45A
+        eSNNBKp7+AZDHcVqDJU16nA0PNVDos7JIRaarinC0ZNHazbo2kwY2qrrBuj5vyMk+rWpGEcj
+        T0oJZGzbJMJ49MDgaXpA8z1GF6lXSLpZO0HSjTfc6YFeFd1gyCHowup2QN/X15P0P3PjLPr5
+        vSGC1tw1AHq94Sid1Z6H0R0dtXjkOzHSkERGnMAoeIwsPjUhSSYJ5Z+Oig2PFQUIhF7CIBTI
+        58nEKUwoP+LjSK+TSVLzvfi8L8RSlbkUKVYq+T4fhChSVWkMLzFVmRbKZ+QJUrlQIPdWilOU
+        KpnEOz415YRQIPAVmZFx0sSlsTZMfpt1wdBbiqeDdjwXcNiQ8oeaP/vIXHCIbUs1AViRvQSs
+        yRqAG78bCGuyDmB35QNyn1JU0bCHagGwILMf221YUH/3CHdjgvKEmuVxYje2pxzgZNmghYBT
+        KzZwILeFtduwowJgyYTeErMoVzjbOmcGsdlcKhh2r0mtYu/B7al8y64cygv2d+ktMZc6DB+V
+        z1qouBmj/qkC350Pqb848I6ugWUlR8Cs1cY9o3Zw8eHdPQdOcKEgk7QS8gBUZ1YCa1IIYM2z
+        WsyK8oNr6+uWjXDKDRpbfKxlZ9j8Sg+sym/DlY18m10IpLgwO9PWCnGBPRlT+L7Wsx+b9ybS
+        sPp+P269XDqAW1VVZCHgaQ8Y0h4wpP1fuQrgBuDIyJUpEkYplPsffOMGYPlC7qgJ6JdXvTsA
+        xgYdALJxvj33oyOtcbbcBPHFS4wiNVahkjLKDiAyX7sId3KITzX/QVlarFDk6+fnh/wDAgNE
+        fvx3uZLwy3G2lEScxiQzjJxR7PMwNscpHQs6N9J2rjHRM0U0efnWkZWF6MUHPM6XcCfwaXOA
+        do560c531MVsdy5297vsxEQrnKXi3zSqT1xfD+hKOkM4F02nPu29UHabdX2RHP1h6tKrN6bz
+        wxHhUzHHr0QH14VraYmdUT1zSj7aNb/zzWC5h+fI2a/LeuelreUFyWPHtru0w2fuXHWbvTJz
+        PLTvBr3gs/l5xlS740sRqMkx7ARu6ZayxhrxkqiaCu/pY/NONgthZ8s9StaDnHMqDjsMhajf
+        evzZzFdnRuz7m6LY5LaLX8pNfWbxtuP7Is1JlT5Y97OWW31+01dQn5F9tPmXHP1scnbXibIP
+        w18ajaPLg30CcG+yjM9SJoqF7rhCKf4PjG5+cMsEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrPIsWRmVeSWpSXmKPExsWy7bCSvG7Tn70JBpuny1usu7OG3eLBvG1s
+        FnNWbWO0ePnzKpvF6rv9bBa7Ls5ntJj24Sezxaf1y1gtWtu/MVk0L17PZnF6wiImiyfrZzFb
+        LLqxjcmi50kTq8XfrntMFl8fFlvsvaVtcXnXHDaL7us72CyWH//HZHFocjOTxfTNc5gtrt0/
+        w25x+N5VFouHSyYyW5w7+YnVYt5jB4tfy48yWrz/cZ3d4tSOycwW189NY7NYv/cnm4OCx+Ur
+        3h6X+3qZPCY2v2P32DnrLrvH5hVaHpfPlnpsWtXJ5jFh0QFGj/1z17B7fHx6i8Xj/b6rbB59
+        W1YxenzeJOfRfqCbyePQoWXMAfxRXDYpqTmZZalF+nYJXBlvbu5lKtjAUrHq7DTmBsYDzF2M
+        nBwSAiYSE2dvYuxi5OIQEtjBKLHh1zd2iISUxPETb1m7GDmAbGGJw4eLIWo+Mkrs+f6TFaSG
+        TUBHou/tLTYQW0RAVOLe9Ctgg5gFprFJbHtzC2yDsICZxJS7c1lAbBYBVYkne54yggzlFbCW
+        OPopB2KXvMSf+z1g5ZwCuhIXj8wFs4WA5rdtm88IYvMKCEqcnPkEbAwzUH3z1tnMExgFZiFJ
+        zUKSWsDItIpRMrWgODc9t9iwwCgvtVyvODG3uDQvXS85P3cTIzhNaGntYNyz6oPeIUYmDsZD
+        jBIczEoivF4yexKEeFMSK6tSi/Lji0pzUosPMUpzsCiJ817oOhkvJJCeWJKanZpakFoEk2Xi
+        4JRqYKq7a8u6RLtkZfYE69yowMKcdunwgnSRnNBsidIH5ZXvaiwnJ/r9sj1pumNawrnFDUpf
+        Cz7tivv5elatUMCdYpUpr5OXm5f/ruh5LK97sPW0jnSTLMtDZb8XE6uyzEPSnzx6qXTsZuTH
+        3fNb/JIOX7rqaO7+TNYoZ97Rx9+kfHyjMqSF96X1/tiut0Vy33ZJu4TWfpX/M16diW5j8Xv8
+        Nsip8U6f6eczPEvy9feY5qcKW6UwsURMWX+hM1Ogz08inCOa8VxmQcUbQ6sCuetv19wJuJwc
+        w7NobfLKw2lFkal9C0RyJ634uPQIb2vJ9SRJr60busvZ2NT6pl45vF6dYxGrb4hYUdmesF4B
+        ZwslluKMREMt5qLiRABLjTUTggMAAA==
+X-CMS-MailID: 20210607110122epcas1p4557bcbc7abac791f2557cc0d317214fd
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210607110122epcas1p4557bcbc7abac791f2557cc0d317214fd
+References: <YL29gP0j1qmVuzyy@infradead.org>
+        <CGME20210607110122epcas1p4557bcbc7abac791f2557cc0d317214fd@epcas1p4.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 12:23:23PM +0200, Greg KH wrote:
-> On Mon, Jun 07, 2021 at 11:17:27AM +0300, Leon Romanovsky wrote:
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > 
-> > It is much saner to store a pointer to the kobject structure that contains
-> > the cannonical stats pointer than to copy the stats pointers into a public
-> > structure.
-> > 
-> > Future patches will require the sysfs pointer for other purposes.
-> > 
-> > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
-> >  drivers/infiniband/core/core_priv.h |  1 +
-> >  drivers/infiniband/core/nldev.c     |  8 ++------
-> >  drivers/infiniband/core/sysfs.c     | 14 +++++++++++---
-> >  include/rdma/ib_verbs.h             |  3 ++-
-> >  4 files changed, 16 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
-> > index 29809dd30041..ec5c2c3db423 100644
-> > --- a/drivers/infiniband/core/core_priv.h
-> > +++ b/drivers/infiniband/core/core_priv.h
-> > @@ -378,6 +378,7 @@ struct net_device *rdma_read_gid_attr_ndev_rcu(const struct ib_gid_attr *attr);
-> >  
-> >  void ib_free_port_attrs(struct ib_core_device *coredev);
-> >  int ib_setup_port_attrs(struct ib_core_device *coredev);
-> > +struct rdma_hw_stats *ib_get_hw_stats_port(struct ib_device *ibdev, u32 port_num);
-> >  
-> >  int rdma_compatdev_set(u8 enable);
-> >  
-> > diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-> > index 01316926cef6..e9b4b2cccaa0 100644
-> > --- a/drivers/infiniband/core/nldev.c
-> > +++ b/drivers/infiniband/core/nldev.c
-> > @@ -2066,7 +2066,8 @@ static int stat_get_doit_default_counter(struct sk_buff *skb,
-> >  	}
-> >  
-> >  	port = nla_get_u32(tb[RDMA_NLDEV_ATTR_PORT_INDEX]);
-> > -	if (!rdma_is_port_valid(device, port)) {
-> > +	stats = ib_get_hw_stats_port(device, port);
-> > +	if (!stats) {
-> >  		ret = -EINVAL;
-> >  		goto err;
-> >  	}
-> > @@ -2088,11 +2089,6 @@ static int stat_get_doit_default_counter(struct sk_buff *skb,
-> >  		goto err_msg;
-> >  	}
-> >  
-> > -	stats = device->port_data ? device->port_data[port].hw_stats : NULL;
-> > -	if (stats == NULL) {
-> > -		ret = -EINVAL;
-> > -		goto err_msg;
-> > -	}
-> >  	mutex_lock(&stats->lock);
-> >  
-> >  	num_cnts = device->ops.get_hw_stats(device, stats, port, 0);
-> > diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
-> > index d11ceff2b4e4..b153dee1e0fa 100644
-> > --- a/drivers/infiniband/core/sysfs.c
-> > +++ b/drivers/infiniband/core/sysfs.c
-> > @@ -1031,8 +1031,6 @@ static void setup_hw_stats(struct ib_device *device, struct ib_port *port,
-> >  			goto err;
-> >  		port->hw_stats_ag = hsag;
-> >  		port->hw_stats = stats;
-> > -		if (device->port_data)
-> > -			device->port_data[port_num].hw_stats = stats;
-> >  	} else {
-> >  		struct kobject *kobj = &device->dev.kobj;
-> >  		ret = sysfs_create_group(kobj, hsag);
-> > @@ -1053,6 +1051,14 @@ static void setup_hw_stats(struct ib_device *device, struct ib_port *port,
-> >  	kfree(stats);
-> >  }
-> >  
-> > +struct rdma_hw_stats *ib_get_hw_stats_port(struct ib_device *ibdev,
-> > +					   u32 port_num)
-> > +{
-> > +	if (!ibdev->port_data || !rdma_is_port_valid(ibdev, port_num))
-> > +		return NULL;
-> > +	return ibdev->port_data[port_num].sysfs->hw_stats;
-> > +}
-> > +
-> >  static int add_port(struct ib_core_device *coredev, int port_num)
-> >  {
-> >  	struct ib_device *device = rdma_device_to_ibdev(&coredev->dev);
-> > @@ -1171,6 +1177,8 @@ static int add_port(struct ib_core_device *coredev, int port_num)
-> >  		setup_hw_stats(device, p, port_num);
-> >  
-> >  	list_add_tail(&p->kobj.entry, &coredev->port_list);
-> > +	if (device->port_data && is_full_dev)
-> > +		device->port_data[port_num].sysfs = p;
-> 
-> You are saving off a pointer to a reference counted structure without
-> incrementing the reference count on it?  That's brave, and really wrong.
+> NAK.  As discussed countless time we already have an actual limit.
+> And we can look it as advisory before building ever bigger bios,
+> but the last thing we need is yet another confusing limit.
 
-This is done to ensure that device->port_data[port_num].sysfs is not set
-before "p" is properly configured. From reference point of view  "sysfs"
-is equal to "p" and the latter already initialized.
+Thank you for your review and feedback. I has thought proper bio size control
+with proper interface might be good, and can be helpful to the other module
+beside issued performance problem. Providing of common interface to control
+bio size in block layer might be good I think even though current patch is
+not accepted.
 
-Thanks
+Thanks for all,
+Changheun Lee
