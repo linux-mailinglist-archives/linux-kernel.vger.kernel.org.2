@@ -2,143 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D2039E584
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 19:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 940BB39E59A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 19:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbhFGReM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 13:34:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59578 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231177AbhFGReK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 13:34:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7871661090;
-        Mon,  7 Jun 2021 17:32:16 +0000 (UTC)
-Date:   Mon, 7 Jun 2021 18:32:14 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: Re: [PATCH v14 8/8] KVM: arm64: Document MTE capability and ioctl
-Message-ID: <20210607173213.GC17957@arm.com>
-References: <20210607110816.25762-1-steven.price@arm.com>
- <20210607110816.25762-9-steven.price@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607110816.25762-9-steven.price@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S230313AbhFGRjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 13:39:55 -0400
+Received: from mail-wr1-f100.google.com ([209.85.221.100]:42703 "EHLO
+        mail-wr1-f100.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229997AbhFGRjz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 13:39:55 -0400
+Received: by mail-wr1-f100.google.com with SMTP id c5so18518665wrq.9
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 10:38:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=flowbird.group; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=cQ0HCecLBzhbySylNjeEx08B0uL27TMXk9h3b7u59u8=;
+        b=IKZ39F3MtKcHSODjiGeVlgghGWdYJpIvhLIwqnMiLNI2IAME2p1/clgRDOsLBARP3o
+         I/QMQVZHsvccukjM/ZCqNoQJivLFJat8c2KXlE/2Jr5t8RPMoYJJiY8yTv5qVK8rKwn7
+         /JWPKj3yOWf4S5Enu4EqGOgOUyib6I9TON9n3yElHpZ1a/ek/elsfaPTAf8jFQpeXFGZ
+         4EFbt+RvanRD17t185mxnlFYQ6Pb25QPoXR7YO9aCAIA4dKyI+pB/hLhZdokppTUCIol
+         gd4yhcFqyyYrBRyhQJ9xXrAGjvsQTBifWAyA9ON5H5f1peURrYLBwuyyCknUmJ6CxNnD
+         gryg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=cQ0HCecLBzhbySylNjeEx08B0uL27TMXk9h3b7u59u8=;
+        b=te60ydyMjkS40FHhY0Jh+cKPz8Et6MKT7uibDtk987xlhY9RCCoSRVfHwui+s3i7fn
+         y/mecRN3W88NRmOrVfRN8HTG1FmGz+MFGWknPHysT8oWr7QwB++cnXKd6KspfRk6Q8Us
+         BlElhoP5N5Dk8N2Xxo6/8N3b9cK4cMaElRiA6K50dZ98DPO5pfbLOpAZ6Ctf8qQKN3YF
+         jp2yRN/IjilGSTBPUDuVDzZvJOacknfD3gwGLVI4Vzzd6HoWMcqJB6MeewohxegIznBn
+         /vaHoI44DZIGgoROpAqCWFTdjTV/+Idbk/caZ9/hyAZ4esRKE4iNvKYkv22bw55b3tnl
+         bifQ==
+X-Gm-Message-State: AOAM531uVypuMMbUuzC5rGQw8/kApSz3YCThXTp587RFrpvprIdd4wTN
+        pEQ6id9S/zEUXtre/B9tNHNc36/yp676rmY6GWhWzeE7udBj
+X-Google-Smtp-Source: ABdhPJz/FE6FN3pJLi6cmrgl515irLBG83lTgyOd3htyaW4LLOC1eozKZN2fgQXMpbtxmtiMenJRLmx2yMdP
+X-Received: by 2002:adf:c392:: with SMTP id p18mr18476789wrf.373.1623087422760;
+        Mon, 07 Jun 2021 10:37:02 -0700 (PDT)
+Received: from mta1.parkeon.com ([185.149.63.251])
+        by smtp-relay.gmail.com with ESMTPS id s4sm1131512wrv.91.2021.06.07.10.37.02
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Mon, 07 Jun 2021 10:37:02 -0700 (PDT)
+X-Relaying-Domain: flowbird.group
+Received: from [172.16.14.190] (port=40436 helo=PC12445-BES.dynamic.besancon.parkeon.com)
+        by mta1.parkeon.com with esmtp (Exim 4.71)
+        (envelope-from <martin.fuzzey@flowbird.group>)
+        id 1lqJBO-0004zR-EB; Mon, 07 Jun 2021 19:37:02 +0200
+From:   Martin Fuzzey <martin.fuzzey@flowbird.group>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Martin Fuzzey <martin.fuzzey@flowbird.group>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Amelie Delaunay <amelie.delaunay@st.com>,
+        linux-rtc@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] rtc: stm32: Fix unbalanced clk_disable_unprepare() on probe error path
+Date:   Mon,  7 Jun 2021 19:36:40 +0200
+Message-Id: <1623087421-19722-1-git-send-email-martin.fuzzey@flowbird.group>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 12:08:16PM +0100, Steven Price wrote:
-> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-> index 22d077562149..fc6f0cbc30b3 100644
-> --- a/Documentation/virt/kvm/api.rst
-> +++ b/Documentation/virt/kvm/api.rst
-> @@ -5034,6 +5034,42 @@ see KVM_XEN_VCPU_SET_ATTR above.
->  The KVM_XEN_VCPU_ATTR_TYPE_RUNSTATE_ADJUST type may not be used
->  with the KVM_XEN_VCPU_GET_ATTR ioctl.
->  
-> +4.130 KVM_ARM_MTE_COPY_TAGS
-> +---------------------------
-> +
-> +:Capability: KVM_CAP_ARM_MTE
-> +:Architectures: arm64
-> +:Type: vm ioctl
-> +:Parameters: struct kvm_arm_copy_mte_tags
-> +:Returns: number of bytes copied, < 0 on error
+The STM32MP1 RTC may have 2 clocks, the pclk and the rtc_ck.
 
-I guess you can be a bit more specific here, -EINVAL on incorrect
-arguments, -EFAULT if the guest memory cannot be accessed.
+If clk_prepare_enable() fails for the second clock (rtc_ck) we must only
+call clk_disable_unprepare() for the first clock (pclk) but currently we
+call it on both leading to a WARN:
 
-> +
-> +::
-> +
-> +  struct kvm_arm_copy_mte_tags {
-> +	__u64 guest_ipa;
-> +	__u64 length;
-> +	void __user *addr;
-> +	__u64 flags;
-> +	__u64 reserved[2];
-> +  };
-> +
-> +Copies Memory Tagging Extension (MTE) tags to/from guest tag memory. The
-> +``guest_ipa`` and ``length`` fields must be ``PAGE_SIZE`` aligned. The ``addr``
-> +fieldmust point to a buffer which the tags will be copied to or from.
+[   15.629568] WARNING: CPU: 0 PID: 146 at drivers/clk/clk.c:958 clk_core_disable+0xb0/0xc8
+[   15.637620] ck_rtc already disabled
+[   15.663322] CPU: 0 PID: 146 Comm: systemd-udevd Not tainted 5.4.77-pknbsp-svn5759-atag-v5.4.77-204-gea4235203137-dirty #2413
+[   15.674510] Hardware name: STM32 (Device Tree Support)
+[   15.679658] [<c0111148>] (unwind_backtrace) from [<c010c0b8>] (show_stack+0x10/0x14)
+[   15.687371] [<c010c0b8>] (show_stack) from [<c0ab3d28>] (dump_stack+0xc0/0xe0)
+[   15.694574] [<c0ab3d28>] (dump_stack) from [<c012360c>] (__warn+0xc8/0xf0)
+[   15.701428] [<c012360c>] (__warn) from [<c0123694>] (warn_slowpath_fmt+0x60/0x94)
+[   15.708894] [<c0123694>] (warn_slowpath_fmt) from [<c053b518>] (clk_core_disable+0xb0/0xc8)
+[   15.717230] [<c053b518>] (clk_core_disable) from [<c053c190>] (clk_core_disable_lock+0x18/0x24)
+[   15.725924] [<c053c190>] (clk_core_disable_lock) from [<bf0adc44>] (stm32_rtc_probe+0x124/0x5e4 [rtc_stm32])
+[   15.735739] [<bf0adc44>] (stm32_rtc_probe [rtc_stm32]) from [<c05f7d4c>] (platform_drv_probe+0x48/0x98)
+[   15.745095] [<c05f7d4c>] (platform_drv_probe) from [<c05f5cec>] (really_probe+0x1f0/0x458)
+[   15.753338] [<c05f5cec>] (really_probe) from [<c05f61c4>] (driver_probe_device+0x70/0x1c4)
+[   15.761584] [<c05f61c4>] (driver_probe_device) from [<c05f6580>] (device_driver_attach+0x58/0x60)
+[   15.770439] [<c05f6580>] (device_driver_attach) from [<c05f6654>] (__driver_attach+0xcc/0x170)
+[   15.779032] [<c05f6654>] (__driver_attach) from [<c05f40d8>] (bus_for_each_dev+0x58/0x7c)
+[   15.787191] [<c05f40d8>] (bus_for_each_dev) from [<c05f4ffc>] (bus_add_driver+0xdc/0x1f8)
+[   15.795352] [<c05f4ffc>] (bus_add_driver) from [<c05f6ed8>] (driver_register+0x7c/0x110)
+[   15.803425] [<c05f6ed8>] (driver_register) from [<c01027bc>] (do_one_initcall+0x70/0x1b8)
+[   15.811588] [<c01027bc>] (do_one_initcall) from [<c01a1094>] (do_init_module+0x58/0x1f8)
+[   15.819660] [<c01a1094>] (do_init_module) from [<c01a0074>] (load_module+0x1e58/0x23c8)
+[   15.827646] [<c01a0074>] (load_module) from [<c01a0860>] (sys_finit_module+0xa0/0xd4)
+[   15.835459] [<c01a0860>] (sys_finit_module) from [<c01011e0>] (__sys_trace_return+0x0/0x20)
 
-s/fieldmust/field must/
+Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
+Fixes: 4e64350f42e2 ("rtc: add STM32 RTC driver")
+Cc: stable@vger.kernel.org
+---
+ drivers/rtc/rtc-stm32.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-> +
-> +``flags`` specifies the direction of copy, either ``KVM_ARM_TAGS_TO_GUEST`` or
-> +``KVM_ARM_TAGS_FROM_GUEST``.
-> +
-> +The size of the buffer to store the tags is ``(length / 16)`` bytes
-> +(granules in MTE are 16 bytes long). Each byte contains a single tag
-> +value. This matches the format of ``PTRACE_PEEKMTETAGS`` and
-> +``PTRACE_POKEMTETAGS``.
+diff --git a/drivers/rtc/rtc-stm32.c b/drivers/rtc/rtc-stm32.c
+index 75a8924..ac9e228 100644
+--- a/drivers/rtc/rtc-stm32.c
++++ b/drivers/rtc/rtc-stm32.c
+@@ -754,7 +754,7 @@ static int stm32_rtc_probe(struct platform_device *pdev)
+ 
+ 	ret = clk_prepare_enable(rtc->rtc_ck);
+ 	if (ret)
+-		goto err;
++		goto err_no_rtc_ck;
+ 
+ 	if (rtc->data->need_dbp)
+ 		regmap_update_bits(rtc->dbp, rtc->dbp_reg,
+@@ -830,10 +830,12 @@ static int stm32_rtc_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	return 0;
++
+ err:
++	clk_disable_unprepare(rtc->rtc_ck);
++err_no_rtc_ck:
+ 	if (rtc->data->has_pclk)
+ 		clk_disable_unprepare(rtc->pclk);
+-	clk_disable_unprepare(rtc->rtc_ck);
+ 
+ 	if (rtc->data->need_dbp)
+ 		regmap_update_bits(rtc->dbp, rtc->dbp_reg, rtc->dbp_mask, 0);
+-- 
+1.9.1
 
-One difference I think with ptrace() is that iov_len (length here) is
-the actual buffer size. But for kvm I think this works better since
-length is tied to the guest_ipa.
-
-> +
-> +If an error occurs before any data is copied then a negative error code is
-> +returned. If some tags have been copied before an error occurs then the number
-> +of bytes successfully copied is returned. If the call completes successfully
-> +then ``length`` is returned.
-> +
->  5. The kvm_run structure
->  ========================
->  
-> @@ -6362,6 +6398,27 @@ default.
->  
->  See Documentation/x86/sgx/2.Kernel-internals.rst for more details.
->  
-> +7.26 KVM_CAP_ARM_MTE
-> +--------------------
-> +
-> +:Architectures: arm64
-> +:Parameters: none
-> +
-> +This capability indicates that KVM (and the hardware) supports exposing the
-> +Memory Tagging Extensions (MTE) to the guest. It must also be enabled by the
-> +VMM before creating any VCPUs to allow the guest access. Note that MTE is only
-> +available to a guest running in AArch64 mode and enabling this capability will
-> +cause attempts to create AArch32 VCPUs to fail.
-> +
-> +When enabled the guest is able to access tags associated with any memory given
-> +to the guest. KVM will ensure that the pages are flagged ``PG_mte_tagged`` so
-> +that the tags are maintained during swap or hibernation of the host; however
-
-I'd drop PG_mte_tagged here, that's just how the implementation handles
-it, not necessary for describing the API. You can just say "KVM will
-ensure that the tags are maintained during swap or hibernation of the
-host"
-
-> +the VMM needs to manually save/restore the tags as appropriate if the VM is
-> +migrated.
-> +
-> +When enabled the VMM may make use of the ``KVM_ARM_MTE_COPY_TAGS`` ioctl to
-> +perform a bulk copy of tags to/from the guest.
-> +
->  8. Other capabilities.
->  ======================
->  
-> -- 
-> 2.20.1
-
-Otherwise, feel free to add:
-
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
