@@ -2,135 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9CC39D35C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 05:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EFD839D35E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 05:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbhFGDUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 23:20:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25716 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230169AbhFGDUg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 23:20:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623035925;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ABnq2QuOpr7byvnRGusIkVvj+20PbgeaIPvM27YKhg4=;
-        b=NYm6lC/x5w+kG1yUkFR90+hzVOMxnCkewRQicenItQsa2e5MtntXQ2aq5+AeY8MguVe0bs
-        5DGG+DtAaxOapbqTQoebSL2HpXHRq9Ji+SsuwUZ4p6LlbykKOAuG7XU0TIcR7VO9ny38Uo
-        dTymUwE3t6A3I/OVwheVwARLq4pmbc0=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-238-Zc2mFRReOM6qUMBE4y2WgQ-1; Sun, 06 Jun 2021 23:18:44 -0400
-X-MC-Unique: Zc2mFRReOM6qUMBE4y2WgQ-1
-Received: by mail-pj1-f69.google.com with SMTP id om12-20020a17090b3a8cb029016a4ee7d56fso10486679pjb.7
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 20:18:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=ABnq2QuOpr7byvnRGusIkVvj+20PbgeaIPvM27YKhg4=;
-        b=B3DLqXjEkcWYK2hP9ydWn/Q5Y4TOVgzh3Qr6e7dKg21jLht9qTRYkEeRDkVb4GilPR
-         61lJiczBK36YwZYGWGgf1nD13aFWjAzCLy4BgJJdcO0JnRdjYpcLppzqkDJPg0aFPHJo
-         vpN4MuEpf3Q2e2ArAILlpjvp/bbNblS7UPMdAbwtkSV43x+cony0XCFzTWRwwUQaRnwQ
-         Fr6TnO8+eoo+uYi9E4vURCfG9Dg/vue1IUHn1PbM81TxL13eXgLfjWKHSbwOBRobwWqz
-         NlFgdun/AO8AZFH9pRkS8oSqNnatT6T3n4njnIQsu76slJw8flm5frzl8sUm1pcloew/
-         /CVA==
-X-Gm-Message-State: AOAM531FU+DEBmo6Mz5SlqmdjApkVIV9bl9hmltWTs6YV4ztBSpdaA36
-        m2MBWr+Cltzigg52JXIgHXveUqqYj/tzq4gipruEI9rWEbuozA410n6r9+gw8Wx8NJQik1rUK2D
-        j1WveWumdKQ0Qs0UCIIwPOtFb
-X-Received: by 2002:a17:90a:390d:: with SMTP id y13mr18291776pjb.52.1623035922897;
-        Sun, 06 Jun 2021 20:18:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzxyhCGMAJgmD0wCDBmip4ixPdmhcn5mWCmYZELjB4tRm0TDYopxIzBxkopd2Rpl9Ugu+p2EA==
-X-Received: by 2002:a17:90a:390d:: with SMTP id y13mr18291758pjb.52.1623035922656;
-        Sun, 06 Jun 2021 20:18:42 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id w10sm6719572pfg.196.2021.06.06.20.18.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 06 Jun 2021 20:18:42 -0700 (PDT)
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        David Woodhouse <dwmw2@infradead.org>
-References: <20210602111117.026d4a26.alex.williamson@redhat.com>
- <20210602173510.GE1002214@nvidia.com>
- <20210602120111.5e5bcf93.alex.williamson@redhat.com>
- <20210602180925.GH1002214@nvidia.com>
- <20210602130053.615db578.alex.williamson@redhat.com>
- <20210602195404.GI1002214@nvidia.com>
- <20210602143734.72fb4fa4.alex.williamson@redhat.com>
- <6a9426d7-ed55-e006-9c4c-6b7c78142e39@redhat.com>
- <20210603130927.GZ1002214@nvidia.com>
- <65614634-1db4-7119-1a90-64ba5c6e9042@redhat.com>
- <20210604115805.GG1002214@nvidia.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <895671cc-5ef8-bc1a-734c-e9e2fdf03652@redhat.com>
-Date:   Mon, 7 Jun 2021 11:18:33 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        id S230245AbhFGDVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 23:21:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47834 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230256AbhFGDVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 23:21:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3B7F61245;
+        Mon,  7 Jun 2021 03:19:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623035956;
+        bh=0p29jn++tsF+vUnK/OLUKwo6pJis8eT6cbc/e0CPuzk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=B3DZEPCFHj/v5Wh0eE3Hrq81HmDqteDzAiErp79q286leKgx+z/elA3Gbf72nRXQB
+         zaixflaXhEyrZss+CvXpW9BjFbENrt3H+Yq34C8eXLfPkdv0KNozsbGtTdJ9FHIoZr
+         loQz21dNQobrRvPsJV4pJOpvl89V0jvJ8ydPmziQosrL0I6FATFynyjTISeHWJ/Wha
+         EahD8/MbLA6lAQs90DU0SaXc6zzssLCcIO7uTcvFu+d8xmysLhAYpKZUT6pm+SMjne
+         4hdXgZZesmaKVv2kqk6NDesMBFJvyw5Wzkxtg+Y8oQyd52Ko04rnb+WC3xdryV93pd
+         A5hPljwlG1kRg==
+Received: by mail-lj1-f177.google.com with SMTP id m3so20074026lji.12;
+        Sun, 06 Jun 2021 20:19:16 -0700 (PDT)
+X-Gm-Message-State: AOAM530J8fhciu2GVo+VgGgUgvWxuvybf3q73Q9M5Sz/yeyriVwuE0wU
+        J91HvIiUnwDlxlblBrKsn+0ZAZT03BUeiTd2a8Q=
+X-Google-Smtp-Source: ABdhPJw+Lf6RNVJ73c+UaqPihugKlQLGVtOJWsQyqACS35169cmAKldJM+82/gsj1c1RaDuUMLbnT9jy5ePND/KI3k8=
+X-Received: by 2002:a05:651c:1314:: with SMTP id u20mr13696451lja.18.1623035954992;
+ Sun, 06 Jun 2021 20:19:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210604115805.GG1002214@nvidia.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <1621400656-25678-1-git-send-email-guoren@kernel.org>
+ <20210519052048.GA24853@lst.de> <CAJF2gTTjwB4U-NxCtfgMA5aR2HzoQtA8a51W5UM1LHGRbjz9pg@mail.gmail.com>
+ <20210519064435.GA3076809@x1> <20210519065352.GA31590@lst.de>
+ <CAJF2gTR4FXRbp7oky-ypdVJba6btFHpp-+dPyJStRaQX_-5rzg@mail.gmail.com>
+ <29733b0931d9dd6a2f0b6919067c7efe@mailhost.ics.forth.gr> <CAJF2gTTpSbNWS4VLHAu4XsV5-Vos=6R9MmPOx8-yzMFJu=wX4A@mail.gmail.com>
+ <a8f2e68dcc1a6eb1ff3b95fcb8d0d0d2@mailhost.ics.forth.gr>
+In-Reply-To: <a8f2e68dcc1a6eb1ff3b95fcb8d0d0d2@mailhost.ics.forth.gr>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Mon, 7 Jun 2021 11:19:03 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQuQ5bE6HeGSoNaDynA0o3+KEo4snwft42YGzE=+DjKOQ@mail.gmail.com>
+Message-ID: <CAJF2gTQuQ5bE6HeGSoNaDynA0o3+KEo4snwft42YGzE=+DjKOQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
+To:     Nick Kossifidis <mick@ics.forth.gr>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Drew Fustini <drew@beagleboard.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>, wefu@redhat.com,
+        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Benjamin Koch <snowball@c3pb.de>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        Wei Fu <tekkamanninja@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-ÔÚ 2021/6/4 ÏÂÎç7:58, Jason Gunthorpe Ð´µÀ:
-> On Fri, Jun 04, 2021 at 09:11:03AM +0800, Jason Wang wrote:
->>> nor do any virtio drivers implement the required platform specific
->>> cache flushing to make no-snoop TLPs work.
->> I don't get why virtio drivers needs to do that. I think DMA API should hide
->> those arch/platform specific stuffs from us.
-> It is not arch/platform stuff. If the device uses no-snoop then a
-> very platform specific recovery is required in the device driver.
+On Mon, Jun 7, 2021 at 10:16 AM Nick Kossifidis <mick@ics.forth.gr> wrote:
 >
-> It is not part of the normal DMA API, it is side APIs like
-> flush_agp_cache() or wbinvd() that are used by GPU drivers only.
-
-
-Yes and virtio doesn't support AGP.
-
+> =CE=A3=CF=84=CE=B9=CF=82 2021-06-07 03:04, Guo Ren =CE=AD=CE=B3=CF=81=CE=
+=B1=CF=88=CE=B5:
+> > On Mon, Jun 7, 2021 at 2:14 AM Nick Kossifidis <mick@ics.forth.gr>
+> > wrote:
+> >>
+> >> =CE=A3=CF=84=CE=B9=CF=82 2021-05-20 04:45, Guo Ren =CE=AD=CE=B3=CF=81=
+=CE=B1=CF=88=CE=B5:
+> >> > On Wed, May 19, 2021 at 2:53 PM Christoph Hellwig <hch@lst.de> wrote=
+:
+> >> >>
+> >> >> On Tue, May 18, 2021 at 11:44:35PM -0700, Drew Fustini wrote:
+> >> >> > This patch series looks like it might be useful for the StarFive =
+JH7100
+> >> >> > [1] [2] too as it has peripherals on a non-coherent interconnect.=
+ GMAC,
+> >> >> > USB and SDIO require that the L2 cache must be manually flushed a=
+fter
+> >> >> > DMA operations if the data is intended to be shared with U74 core=
+s [2].
+> >> >>
+> >> >> Not too much, given that the SiFive lineage CPUs have an uncached
+> >> >> window, that is a totally different way to allocate uncached memory=
+.
+> >> > It's a very big MIPS smell. What's the attribute of the uncached
+> >> > window? (uncached + strong-order/ uncached + weak, most vendors stil=
+l
+> >> > use AXI interconnect, how to deal with a bufferable attribute?) In
+> >> > fact, customers' drivers use different ways to deal with DMA memory =
+in
+> >> > non-coherent SOC. Most riscv SOC vendors are from ARM, so giving the=
+m
+> >> > the same way in DMA memory is a smart choice. So using PTE attribute=
+s
+> >> > is more suitable.
+> >> >
+> >> > See:
+> >> > https://github.com/riscv/virtual-memory/blob/main/specs/611-virtual-=
+memory-diff.pdf
+> >> > 4.4.1
+> >> > The draft supports custom attribute bits in PTE.
+> >> >
+> >>
+> >> Not only it doesn't support custom attributes on PTEs:
+> >>
+> >> "Bits63=E2=80=9354 are reserved for future standard use and must be ze=
+roed by
+> >> software for forward compatibility."
+> >>
+> >> It also goes further to say that:
+> >>
+> >> "if any of these bits are set, a page-fault exception is raised"
+> >
+> > In RISC-V VM TG, A C-bit discussion is raised. So it's a comm idea to
+> > support it.
+> >
+>
+> The C-bit was recently dropped, there is a new proposal for Page Based
+> Memory Attributes (PBMT) that we can work on / push for.
+C-bit still needs discussion, we shouldn't drop it directly.
 
 >
-> If drivers/virtio doesn't explicitly call these things it doesn't
-> support no-snoop - hence no VDPA device can ever use no-snoop.
-
-
-Note that no drivers call these things doesn't meant it was not 
-supported by the spec.
-
-Actually, spec doesn't forbid the non coherent DMA, anyway we can raise 
-a new thread in the virtio mailing list to discuss about that.
-
-But consider virtio has already supported GPU, crypto and sound device, 
-and the devices like codec and video are being proposed. It doesn't help 
-if we mandate coherent DMA now.
-
-Thanks
-
-
+> > Let Linux support custom PTE attributes won't get any side effect in
+> > practice.
+> >
+> > IMO:
+> > We needn't waste a bit in PTE, but the custom idea in PTE reserved
+> > bits is necessary. Because Allwinner D1 needs custom PTE bits in
+> > reserved bits to work around.
+> > So I recommend just remove the "C" bit in PTE, but allow vendors to
+> > define their own PTE attributes in reserved bits. I've found a way to
+> > compact different PTE attributes of different vendors during the Linux
+> > boot stage. That means we still could use One Image for all vendors in
+> > Linux
 >
-> Since VIRTIO_F_ACCESS_PLATFORM doesn't trigger wbinvd on x86 it has
-> nothing to do with no-snoop.
->
-> Jason
->
+> The spec is clear, those attributes are for standard use only, not for
+> custom/platform use. It's one thing to implement custom CMOs where the
+> ISA doesn't have anything for it and doesn't prevent you to do so (so
+> you are not violating anything, it's just a custom extension), and we
+> can hide them behind SBI calls etc, and another to violate the current
+> Privilege Spec by using bits on PTEs that are reserved for standard use
+> only. The intentions of the VM TG are clear, not only those bits are
+> reserved but if software uses them the hw will result a page fault in
+> future revisions of the spec. What's the idea here, to support
+> non-compliant implementations on mainline ?
+Raise a page fault won't solve anything. We still need access to the
+page with proper performance.
 
+> I'm sure you have a good
+> idea on how to make this work, but as long as it violates the spec it
+> can't go in IMHO.
+
+We need PTEs to provide a non-coherency solution, and only CMO
+instructions are not enough. We can't modify so many Linux drivers to
+fit it.
+From Linux non-coherency view, we need:
+ - Non-cache + Strong Order PTE attributes to deal with drivers' DMA descri=
+ptors
+ - Non-cache + weak order to deal with framebuffer drivers
+ - CMO dma_sync to sync cache with DMA devices
+ - Userspace icache_sync solution, which prevents calls to S-mode with
+IPI fence.i. (Necessary to JIT java scenarios.)
+
+All above are not in spec, but the real chips are done.
+(Actually, these have been talked about for more than five years, we
+still haven't the uniform idea.)
+
+The idea of C-bit is really important for us which prevents our chips
+violates the spec.
+
+--=20
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
