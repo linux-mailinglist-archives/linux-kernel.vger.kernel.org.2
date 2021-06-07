@@ -2,66 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CDA439D286
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 03:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B1139D28F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 03:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbhFGBSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 21:18:08 -0400
-Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:37736 "EHLO
-        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229894AbhFGBSH (ORCPT
+        id S230132AbhFGBZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 21:25:33 -0400
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:37796 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229932AbhFGBZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 21:18:07 -0400
-Received: from dread.disaster.area (pa49-179-138-183.pa.nsw.optusnet.com.au [49.179.138.183])
-        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id 800B3109E49;
-        Mon,  7 Jun 2021 11:16:00 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1lq3rz-009pM0-82; Mon, 07 Jun 2021 11:15:59 +1000
-Date:   Mon, 7 Jun 2021 11:15:59 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the xfs tree
-Message-ID: <20210607011559.GA664593@dread.disaster.area>
-References: <20210607104819.2c032c75@canb.auug.org.au>
+        Sun, 6 Jun 2021 21:25:32 -0400
+Received: by mail-oi1-f176.google.com with SMTP id h9so16478056oih.4;
+        Sun, 06 Jun 2021 18:23:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=K+6yDkXys1JzDEdCq9xIHVfhWVlTrD1kEuu/cjBEdAM=;
+        b=LE0V03IiabLksBAANK0//K8bEg1f10YTENY8BkdupzT0o5c2vTtKAaBrF54JxvIOFa
+         rYiY7q+SoFP/iFgThulho2FeVmhKbvlybbjHH36QYeD/P135/dxGQeuECh7y/3LGlQqn
+         UXTHY0+YXQZ4GIRKkVy5yIGYIYuSNqpvEM37jQeM+YhIvoyDiB/2nXuBNB599p55PQpC
+         GAKlXy4yklfpayo5V8AHWoc+VNLAdSRouS8JV/upUG/ZRojP1wB7aAPCNAlEmEcZJNz7
+         tYN4HqicZKzYULjx8f8rps/XJIEPrAw7Gfxj8HIQQlrBIYfaXH3/7h7bGekC5VFfegGY
+         YZuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=K+6yDkXys1JzDEdCq9xIHVfhWVlTrD1kEuu/cjBEdAM=;
+        b=Lq6+rTzZqyTDle5nfx5BlZTD2/YQ8kXHEG1eh4a+9vL/e1bWFoS027ZV1kShiAQJOk
+         mJYzJMJMcjmSHg4sfoGJAwIqDy9XwKMAtoxjEEt7r8/cAnz5VedGNdBGuv5atzfgTMeM
+         6YIcDw4D/Hij5wx3ZoRmjeP9poCAKtEWBIG5rEsgS7Q/LPvuNj7np9jfFbQWrisDFoP/
+         pBk6IA2md6+rFnhO7cvP999lcEg42y07o0OPj8H3CDp8amNLb+oynOrMNUJFX9xKVTM9
+         KyvvWMXI7SKL+QL/eEzMFRslryOcqQk0GGH4t53tX5K221wdylRq0LyZRa3qEDcaBK7p
+         J2Qg==
+X-Gm-Message-State: AOAM5314kglwNvwvUcaDPx09n2dwOEvh2gvWeyb0gFhOABLwfsqMtin4
+        gO/NsZAMnx6KpGI9v2+7bJU=
+X-Google-Smtp-Source: ABdhPJwTyJHHp0jvVvxSntdBRZJiJ9G3+AIejmHZidj5T1ZXpOXNCw5w1K93M0tVKTsP32ecWATKrg==
+X-Received: by 2002:a54:4d98:: with SMTP id y24mr10363321oix.18.1623028945066;
+        Sun, 06 Jun 2021 18:22:25 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id g24sm2044425otp.17.2021.06.06.18.22.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Jun 2021 18:22:24 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sun, 6 Jun 2021 18:22:22 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     wim@linux-watchdog.org, martyn.welch@gefanuc.com,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] watchdog: gef_wdt:  Fix an error handling path in
+ 'gef_wdt_probe()'
+Message-ID: <20210607012222.GA1269917@roeck-us.net>
+References: <3d775a5ac7e26fa5dd4c47f75fef6d5f336de1e3.1622990863.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210607104819.2c032c75@canb.auug.org.au>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0
-        a=MnllW2CieawZLw/OcHE/Ng==:117 a=MnllW2CieawZLw/OcHE/Ng==:17
-        a=kj9zAlcOel0A:10 a=r6YtysWOX24A:10 a=7-415B0cAAAA:8
-        a=NWAoBSUOnvqdeyLw_2IA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <3d775a5ac7e26fa5dd4c47f75fef6d5f336de1e3.1622990863.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 10:48:19AM +1000, Stephen Rothwell wrote:
-> Hi all,
+On Sun, Jun 06, 2021 at 04:49:18PM +0200, Christophe JAILLET wrote:
+> If an error occurs after a successful 'of_iomap()' call, it must be undone
+> by a corresponding 'iounmap()' call, as already done in the remove
+> function.
 > 
-> After merging the xfs tree, today's linux-next build (powerpc_ppc64
-> defconfig) produced this warning:
-> 
-> fs/xfs/libxfs/xfs_ialloc.c: In function 'xfs_difree_finobt':
-> fs/xfs/libxfs/xfs_ialloc.c:2032:20: warning: unused variable 'agi' [-Wunused-variable]
->  2032 |  struct xfs_agi   *agi = agbp->b_addr;
->       |                    ^~~
-> 
-> Not sure how this came about, but somehow DEBUG has been turned off
-> which exposes this.
+> Fixes: 3268b5618f38 ("[WATCHDOG] Basic support for GE Fanuc's FPGA based watchdog timer")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-I think I replaced all the agi->agi_seqno usages in that function
-with pag->pag_agno and so now the agi structure is only accessed via
-debug functions. The debug code should now pass perag structures
-rather than raw AGI structures to check the free inode counts....
+<Formletter>  
+Please do not submit patches for old-style watchdog drivers unless you
+have access to the hardware. If you do have access to the hardware, please
+convert the driver to a new-style watchdog driver. I'll be happy to assist
+with the conversion if necessary.
+</Formletter>
 
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Thanks,
+Guenter
