@@ -2,157 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65DA239D871
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:17:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2301B39D885
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230211AbhFGJSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:18:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230246AbhFGJSo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:18:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A2AC61002;
-        Mon,  7 Jun 2021 09:16:49 +0000 (UTC)
-Date:   Mon, 7 Jun 2021 11:16:47 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Changbin Du <changbin.du@gmail.com>
-Cc:     Cong Wang <xiyou.wangcong@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        David Laight <David.Laight@aculab.com>
-Subject: Re: [PATCH] nsfs: fix oops when ns->ops is not provided
-Message-ID: <20210607091647.pzqyarxbupvnbxyw@wittgenstein>
-References: <20210531153410.93150-1-changbin.du@gmail.com>
- <20210531220128.26c0cb36@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <CAM_iQpUEjBDK44=mD5shkmmoDYhmHQaSZtR34rLRkgd9wSWiQQ@mail.gmail.com>
- <20210602091451.kbdul6nhobilwqvi@wittgenstein>
- <CAM_iQpUqgeoY_mA6cazUPCWwMK6yw9SaD6DRg-Ja4r6r_zOmLg@mail.gmail.com>
- <20210604095451.nkfgpsibm5nrqt3f@wittgenstein>
- <20210606224322.yxr47tgdqis35dcl@mail.google.com>
+        id S230348AbhFGJVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:21:07 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:51757 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230239AbhFGJVF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 05:21:05 -0400
+Received: from mail-wm1-f45.google.com ([209.85.128.45]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1Mw8cU-1lXH1B0kXE-00s5Rz; Mon, 07 Jun 2021 11:19:13 +0200
+Received: by mail-wm1-f45.google.com with SMTP id f20so5322833wmg.0;
+        Mon, 07 Jun 2021 02:19:13 -0700 (PDT)
+X-Gm-Message-State: AOAM530SJlhYovTtiwvFqWI4UZl/5bCSvQ9o1nBA9r7Vr+L2q1SSNOIx
+        YnFdAjYD6ExLC/gXrI7aEuKfdN6M5lxiVmOm8oM=
+X-Google-Smtp-Source: ABdhPJzcvd+A9rZtmx0hzRTGYQ0hqEKpsP4vMx0uVDfDg39fUB6bq9wPd4cZ0VuBPozn4Ngt2FUxKpC/JFTJQAj8hTQ=
+X-Received: by 2002:a1c:7d15:: with SMTP id y21mr15665529wmc.120.1623057552858;
+ Mon, 07 Jun 2021 02:19:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210606224322.yxr47tgdqis35dcl@mail.google.com>
+References: <20210607061751.89752-1-sven@svenpeter.dev> <CAK8P3a0vbyq-90pUQ6-0Ed=DadR3Pnf0juupLQ70psQSuu_1nw@mail.gmail.com>
+ <23348bfc-aad7-4e5f-83b1-e69463e618e5@www.fastmail.com> <CAK8P3a0j=vowKpdJxt-GBsFuwqNJZv-dB-XoZihg=XHey1VoCg@mail.gmail.com>
+ <5b1431bc-64e3-4ecc-a498-eda8e46d5a95@www.fastmail.com>
+In-Reply-To: <5b1431bc-64e3-4ecc-a498-eda8e46d5a95@www.fastmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 7 Jun 2021 11:17:24 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1v1LB8-k7Ak_U23WxCbDbqCJGyCXGsXKJ-dW4QwO-dmw@mail.gmail.com>
+Message-ID: <CAK8P3a1v1LB8-k7Ak_U23WxCbDbqCJGyCXGsXKJ-dW4QwO-dmw@mail.gmail.com>
+Subject: Re: [PATCH v3] usb: dwc3: support 64 bit DMA in platform driver
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     USB list <linux-usb@vger.kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:+xUF/QijDCdzh/EcoIz1p3tOSkCu6/DihfxelY73cBlT8sG/yzP
+ rdJN7iDEJRCk/nKIN/fGBlf35ShBUVfHQIcasjopvFhAuj1FNM4GHNQimcK1CcX/VQO9LNO
+ bRmF6Zgl0nhlu9NnlO58Q4irEuObXtlivBqB6wGQHvIXKEecff0QxyzWLHTOEywqjYQR/iw
+ gb1/y2ZI8fjKEznsy2TGA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:SZKk04KpVVQ=:NdoMkavpJiAk4p3mYCAHB9
+ 8+ZsenxgxIAaOe5vFN+CS5bffEL8/EmPgj8TNQ4Y18xvJ4d5Mc1Ci1sdamKiFggdaIiFNiGKJ
+ eoNngKCllCbCrUB2/d0YZliaxv5Z4St+V1VipwB7kyYO3CoZNvTWnIrSlTwkOUSv9WIqafTgR
+ L55YSzzu8nSSLAzDQUr0BaLM07HW9YCETavGrA/kIwhcl7f8kSepiLtRwwD8jUELF3C3+0Umg
+ OLoFOVUVmhiZleHgD1VE/OktLnvcHu+egslG0MYTNFH++eeyIdwfZZpw4J1kFhTrWYurk1lyc
+ 5GGd8pUa+y6OuPIDNMOMu2vP3GU0ZaNE4pz8wBvZ7lCLwfj4ohWDfdu+pF1wnw7EVzVqiE1Ic
+ EPQB38eD0LHO5i2tR2crXJU0Csctn0M/WsEDbWdqaHDcMUk5tKPLMYkix6Gyj64ngCS1PvOGp
+ EIT6YUDzytJa7g3en0lMWGC910gzjzf9jLh3seyl0SizuG2mLvG9yg5VL/zFkMkCOUbKvVLkA
+ VoiHKHhpxspNKOrZvULWysmw/KpIGYcBTuxeKu0OfHnQ8FVRLKYkdUyn4YElMFzaWy45aZpiX
+ oxv0fQraz+abItVmLe/oMWWelR1eFh8XqZfqrpGXxBDgGsMdWY0B50oL6V8g0KnauPwjssOxn
+ 0Dmk=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 06:43:41AM +0800, Changbin Du wrote:
-> On Fri, Jun 04, 2021 at 11:54:51AM +0200, Christian Brauner wrote:
-> > On Thu, Jun 03, 2021 at 03:52:29PM -0700, Cong Wang wrote:
-> > > On Wed, Jun 2, 2021 at 2:14 AM Christian Brauner
-> > > <christian.brauner@ubuntu.com> wrote:
-> > > > But the point is that ns->ops should never be accessed when that
-> > > > namespace type is disabled. Or in other words, the bug is that something
-> > > > in netns makes use of namespace features when they are disabled. If we
-> > > > handle ->ops being NULL we might be tapering over a real bug somewhere.
-> > > 
-> > > It is merely a protocol between fs/nsfs.c and other namespace users,
-> > > so there is certainly no right or wrong here, the only question is which
-> > > one is better.
-> > > 
-> > > >
-> > > > Jakub's proposal in the other mail makes sense and falls in line with
-> > > > how the rest of the netns getters are implemented. For example
-> > > > get_net_ns_fd_fd():
-> > > 
-> > > It does not make any sense to me. get_net_ns() merely increases
-> > > the netns refcount, which is certainly fine for init_net too, no matter
-> > > CONFIG_NET_NS is enabled or disabled. Returning EOPNOTSUPP
-> > > there is literally saying we do not support increasing init_net refcount,
-> > > which is of course false.
-> > > 
-> > > > struct net *get_net_ns_by_fd(int fd)
-> > > > {
-> > > >         return ERR_PTR(-EINVAL);
-> > > > }
-> > > 
-> > > There is a huge difference between just increasing netns refcount
-> > > and retrieving it by fd, right? I have no idea why you bring this up,
-> > > calling them getters is missing their difference.
-> > 
-> > This argument doesn't hold up. All netns helpers ultimately increase the
-> > reference count of the net namespace they find. And if any of them
-> > perform operations where they are called in environments wherey they
-> > need CONFIG_NET_NS they handle this case at compile time.
-> > 
-> > (Pluse they are defined in a central place in net/net_namespace.{c,h}.
-> > That includes the low-level get_net() function and all the others.
-> > get_net_ns() is the only one that's defined out of band. So get_net_ns()
-> > currently is arguably also misplaced.)
-> > 
-> Ihe get_net_ns() was a static helper function and then sb made it exported
-> but didn't move it. See commit d8d211a2a0 ('net: Make extern and export get_net_ns()').
-> 
-> > The problem I have with fixing this in nsfs is that it gives the
-> > impression that this is a bug in nsfs whereas it isn't and it
-> > potentially helps tapering over other bugs.
-> > 
-> > get_net_ns() is only called for codepaths that call into nsfs via
-> > open_related_ns() and it's the only namespace that does this. But
-> > open_related_ns() is only well defined if CONFIG_<NAMESPACE_TYPE> is
-> > set. For example, none of the procfs namespace f_ops will be set for
-> > !CONFIG_NET_NS. So clearly the socket specific getter here is buggy as
-> > it doesn't account for !CONFIG_NET_NS and it should be fixed.
-> I agree with Cong that a pure getter returns a generic error is a bit weird.
-> And get_net_ns() is to get the ns_common which always exists indepent of
-> CONFIG_NET_NS. For get_net_ns_by_fd(), I think it is a 'findder + getter'.
-> 
-> So maybe we can rollback to patch V1 to fix all code called into
-> open_related_ns()?
-> https://lore.kernel.org/netdev/CAM_iQpWwApLVg39rUkyXxnhsiP0SZf=0ft6vsq=VxFtJ2SumAQ@mail.gmail.com/T/
-> 
-> --- a/net/socket.c
-> +++ b/net/socket.c
-> @@ -1149,11 +1149,15 @@ static long sock_ioctl(struct file *file, unsigned cmd, unsigned long arg)
->  			mutex_unlock(&vlan_ioctl_mutex);
->  			break;
->  		case SIOCGSKNS:
-> +#ifdef CONFIG_NET_NS
->  			err = -EPERM;
->  			if (!ns_capable(net->user_ns, CAP_NET_ADMIN))
->  				break;
->  
->  			err = open_related_ns(&net->ns, get_net_ns);
-> +#else
-> +			err = -ENOTSUPP;
-> +#endif
+On Mon, Jun 7, 2021 at 11:06 AM Sven Peter <sven@svenpeter.dev> wrote:
+> On Mon, Jun 7, 2021, at 10:22, Arnd Bergmann wrote:
+>
+> I've looked at Documentation/core-api/dma-api-howto.rst again which mentions that
+>
+>         By default, the kernel assumes that your device can address 32-bits of DMA
+>         addressing.  For a 64-bit capable device, this needs to be increased, and for
+>         a device with limitations, it needs to be decreased.
+>         [...]
+>         These calls usually return zero to indicated your device can perform DMA
+>         properly on the machine given the address mask you provided, but they might
+>         return an error if the mask is too small to be supportable on the given
+>         system.  If it returns non-zero, your device cannot perform DMA properly on
+>         this platform, and attempting to do so will result in undefined behavior.
+>         You must not use DMA on this device unless the dma_set_mask family of
+>         functions has returned success.
+>
+> which, unless I'm reading this incorrectly, should mean that asking for a 64bit
+> mask is always fine. In the worst case the mask will just be downgraded to
+> 32bit if the bus is correctly annotated (the places I looked at that use the mask
+> take the min of that one and dev->bus_dma_limit).
+> Only asking for a mask that is too small would be bad.
+>
+> I have also found [1],[2] which made changes to that documentation and that also
+> seems to confirm that it's fine to just ask for a 64 bit mask either way.
 
-If Jakub is fine with it I don't really care much but then you need to
-fix the other places in tun.c as well.
-I'm just not sure what's so special about get_net_ns() that it can't
-simply get an ifdef !CONFIG_NET_NS section.
-But it seems that there's magic semantics deeply hidden in this helper
-that btw only exists for open_related_ns() that makes this necessary:
+Indeed, I forgot about that change, this does make it easier.
 
-drivers/net/tun.c:              return open_related_ns(&net->ns, get_net_ns);
-drivers/net/tun.c:              ret = open_related_ns(&net->ns, get_net_ns);
-include/linux/socket.h:extern struct ns_common *get_net_ns(struct ns_common *ns);
-net/socket.c: * get_net_ns - increment the refcount of the network namespace
-net/socket.c:struct ns_common *get_net_ns(struct ns_common *ns)
-net/socket.c:EXPORT_SYMBOL_GPL(get_net_ns);
-net/socket.c:                   err = open_related_ns(&net->ns, get_net_ns);
-tools/perf/trace/beauty/include/linux/socket.h:extern struct ns_common *get_net_ns(struct ns_common *ns);
+> So for these cases
+>
+> > > > This will now  fail on machines with dwc3 connected to a 32-bit bus (or a
+> > > > bus that is accidentally not annotated as supporting 64-bit) when there is
+> > > > some memory that is not addressable through that bus.
+>
+> the call should return success but the final mask used for allocations should
+> remain at 32bit. Before the change no memory above the 32bit limit was used by
+> the dwc3 core and after the change we still can't use any memory above the
+> 32bit limit.
 
-> 
-> > 
-> > Plus your fix leaks references to init netns without fixing get_net_ns()
-> > too.
-> > You succeed to increase the refcount of init netns in get_net_ns() but
-> > then you return in __ns_get_path() because ns->ops aren't set before
-> > ns->ops->put() can be called.  But you also _can't_ call it since it's
-> > not set because !CONFIG_NET_NS. So everytime you call any of those
-> > ioctls you increas the refcount of init net ns without decrementing it
-> > on failure. So the fix is buggy as it is too and would suggest you to
-> > fixup get_net_ns() too.
-> Yes, it is a problem. Can be put a BUG_ON() in nsfs so that such bug (calling
-> into nsfs without ops) can be catched early?
+Right.
 
-Maybe place a WARN_ON() in there.
+> Now if we had a dwc3 controller with
+>  * a quirk that only allows 32bit DMA for the core dwc3 controller
+>  * but support for >32bit DMA for xhci buffers (xhci already asks for a 64bit mask)
+>  * on a bus that's otherwise annotated to support 64bit
+> this change will break that.
+>
+> But that's unrelated to the dma_set_mask_and_coherent return value since
+> just calling it with a 64bit mask will already cause trouble (and also be successful!).
+>
+> The problem I see is that we likely wouldn't know about devices with a quirk like this
+> since so far everything has been working fine there. I'm not really sure how to guard
+> against that either since we would only notice on the first DMA transfer above the 32bit
+> limit. I'm also not sure how likely the existence of such a weird device is.
+>
+> This hypothetical dwc3 controller should probably either be confined to a bus with a
+> proper 32bit limit or get a quirk that enforces allocations from ZONE_DMA32. Doesn't
+> change the fact that they used to work but would now break after this patch.
 
-Christian
+Makes sense, so for your v3 patch:
+
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
