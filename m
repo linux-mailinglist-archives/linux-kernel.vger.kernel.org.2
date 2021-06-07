@@ -2,101 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6FE639DD4C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AB139DD4E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbhFGNKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 09:10:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230194AbhFGNKc (ORCPT
+        id S230267AbhFGNLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 09:11:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48442 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230197AbhFGNK4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 09:10:32 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95FDAC061766;
-        Mon,  7 Jun 2021 06:08:40 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id k5-20020a05600c1c85b02901affeec3ef8so2304222wms.0;
-        Mon, 07 Jun 2021 06:08:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=Blqm8HDtxq2DCywo/otFV5fX8E6HMxdWztbHqtnhcQ4=;
-        b=cYn0h2r3Og5Kv2IB6Ch8Nef2WtD0NS5tR8Qkw7JnR14mhvVUZDuDHssVmMhj9L7cYM
-         ux8F7ZiQjdEfpB7ImquMEGAMOO65OGLlqggEBz9eRIDUfv5FNxNMNFtq7SMVxcdrn+eB
-         UPaGR6Izbcnzx9JvyoY7OKihWxzQBIlrk04+lXeF+HdpjaWOStxVMBmr5lDj5NjTfwbA
-         R1YoRphDY+m5urDxK7QGmBpLHuLinklwEgs5sLY/xvZgexrKqWIW14C0db3nI6Mkdmme
-         Oesv6G8v+nLJ4gK5h2fSBchW3xDqbEt5dwAdi80/koq05EzZR2Q8Nfxvj2LG69YHoWwZ
-         rCSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=Blqm8HDtxq2DCywo/otFV5fX8E6HMxdWztbHqtnhcQ4=;
-        b=eNJZbj5GgLVxTGDxJIb3XvbVRGaWbnyOgFcZyn/aj/VkGm3irJFe8eX/l9kamANwev
-         3RKbcZBKWWA9sEazQYMuZDATI6H0jDHrdy8j4ZzXe9QLMLgPyzM83pDsw6hFwYvVDCVa
-         CK2buQixwtZOqgozbSQ3QE4vAdwG+munxeQfLxV+Dt8SKSh2CrBFgd32kA2SXvoLRHpT
-         LAO9ZguOJh2nm9w82cyW5IDgQnW27MmXfEzz1srBN0aCWVjZ3YzaeYdzY9bG+U8YINBF
-         IRH7EtxiLgKPlUdxsW62vFPREXLIrfY9ppwuMfSQXR8B2CbhBvYr0nJ8HWl++zLLU0Kf
-         C40Q==
-X-Gm-Message-State: AOAM5314P+jntL59w+UWd3XpPdniiECRAMQOwa9bFUJ0MO+VncLNvcyV
-        V8d8VD3aBmm069O9x8RKwPo=
-X-Google-Smtp-Source: ABdhPJxeGzMQVek2rzeTsU89oXk+OB6CMX7fRQTS8ECgarjAh0DmuwMBrb4/CptbA5tB8XsMg8do3Q==
-X-Received: by 2002:a05:600c:204:: with SMTP id 4mr13651408wmi.95.1623071317518;
-        Mon, 07 Jun 2021 06:08:37 -0700 (PDT)
-Received: from linux-dev (host81-153-178-248.range81-153.btcentralplus.com. [81.153.178.248])
-        by smtp.gmail.com with ESMTPSA id p187sm14802839wmp.28.2021.06.07.06.08.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 06:08:37 -0700 (PDT)
-Date:   Mon, 7 Jun 2021 14:08:35 +0100
-From:   Kev Jackson <foamdino@gmail.com>
-To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] libbpf: Fixes incorrect rx_ring_setup_done
-Message-ID: <YL4aU4f3Aaik7CN0@linux-dev>
+        Mon, 7 Jun 2021 09:10:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623071344;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H2K8Jw3CiaykrguwZiAlFM0Svs+MuPSnZvZJ7a9wNHQ=;
+        b=iJqmRFHNUtm6/NmAfqlv3wKGBNOlY/5aytIs1Agle4qzIrqlpwLPMKtg6qsCqIXt8bdA2Z
+        jrPctI3wtXbPDrnqn6c+63BleD7PzGkdHL4J5s4nfQRRmh+mSBQVYpEOdCc2WojVQgUhgC
+        6gtGh/vrC+hXiccRgmI+Yp64blbOfGE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-591-SxdSqh9bOBCCdrG4RjsFmg-1; Mon, 07 Jun 2021 09:08:59 -0400
+X-MC-Unique: SxdSqh9bOBCCdrG4RjsFmg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C392501E5;
+        Mon,  7 Jun 2021 13:08:57 +0000 (UTC)
+Received: from redhat.com (ovpn-113-26.rdu2.redhat.com [10.10.113.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1754160C17;
+        Mon,  7 Jun 2021 13:08:53 +0000 (UTC)
+Date:   Mon, 7 Jun 2021 09:08:52 -0400
+From:   Joe Lawrence <joe.lawrence@redhat.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Suraj Jitindar Singh <surajjs@amazon.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        live-patching@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, broonie@kernel.org, madvenka@linux.microsoft.com,
+        duwe@lst.de, sjitindarsingh@gmail.com, benh@kernel.crashing.org
+Subject: Re: [RFC PATCH 1/1] arm64: implement live patching
+Message-ID: <YL4aZCMmouLCQlJr@redhat.com>
+References: <20210604235930.603-1-surajjs@amazon.com>
+ <20210607102058.GB97489@C02TD0UTHF1T.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210607102058.GB97489@C02TD0UTHF1T.local>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When calling xsk_socket__create_shared(), the logic at line 1097 marks a
-boolean flag true within the xsk_umem structure to track setup progress
-in order to support multiple calls to the function.  However, instead of
-marking umem->tx_ring_setup_done, the code incorrectly sets
-umem->rx_ring_setup_done.  This leads to improper behaviour when
-creating and destroying xsk and umem structures.
+On Mon, Jun 07, 2021 at 11:20:58AM +0100, Mark Rutland wrote:
+> On Fri, Jun 04, 2021 at 04:59:30PM -0700, Suraj Jitindar Singh wrote:
+> > It's my understanding that the two pieces of work required to enable live
+> > patching on arm are in flight upstream;
+> > - Reliable stack traces as implemented by Madhavan T. Venkataraman [1]
+> > - Objtool as implemented by Julien Thierry [2]
+> 
+> We also need to rework the arm64 patching code to not rely on any code
+> which may itself be patched. Currently there's a reasonable amount of
+> patching code that can either be patched directly, or can be
+> instrumented by code that can be patched.
+> 
+> I have some WIP patches for that at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=arm64/patching/rework
+> 
+> ... but there's still a lot to do, and it's not clear to me if there's
+> other stuff we need to rework to make patch-safe.
+> 
+> Do we have any infrastructure for testing LIVEPATCH?
+> 
 
-Multiple calls to this function is documented as supported.
+Hi Mark,
 
-Signed-off-by: Kev Jackson <foamdino@gmail.com>
----
- tools/lib/bpf/xsk.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If you're looking for a high level sanity check, there are livepatching
+integration selftests in tools/testing/selftests/livepatch.  Let me know
+if you have any questions about those.
 
-diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-index 6061431ee04c..e9b619aa0cdf 100644
---- a/tools/lib/bpf/xsk.c
-+++ b/tools/lib/bpf/xsk.c
-@@ -1094,7 +1094,7 @@ int xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
- 			goto out_put_ctx;
- 		}
- 		if (xsk->fd == umem->fd)
--			umem->rx_ring_setup_done = true;
-+			umem->tx_ring_setup_done = true;
- 	}
- 
- 	err = xsk_get_mmap_offsets(xsk->fd, &off);
--- 
-2.30.2
+Regards,
+
+-- Joe
 
