@@ -2,91 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8CEE39DBCF
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFBBB39DBD8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbhFGL6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 07:58:20 -0400
-Received: from ni.piap.pl ([195.187.100.5]:55290 "EHLO ni.piap.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230177AbhFGL6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 07:58:19 -0400
-Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
-        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ni.piap.pl (Postfix) with ESMTPSA id E3B25444267;
-        Mon,  7 Jun 2021 13:56:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl E3B25444267
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
-        t=1623066985; bh=RThC5tsnWT+d2Y9LB+HdF4WLkbKitBQLeYlAH9yKOcs=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=Aybt25zqljokccbujawefkQKfJ6iY4bViRwqLV0EYtQzSC4SWv8+3ebzw61WC+OBu
-         nU5qtWc1SoBf7pLChw7+dPWqzh+maORn3bj0vuGYRLQ/1NvuFFdYH2oSxJJHStsz50
-         ZSUcPZg7lQIazxTP7HDQUEyUZGfXIpi1cgk4hqD0=
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Tim Harvey <tharvey@gateworks.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] TDA1997x: enable EDID support
-References: <m3sg1uq6xu.fsf@t19.piap.pl>
-        <dbb99d7b-18eb-317c-911a-b982486848fa@xs4all.nl>
-Sender: khalasa@piap.pl
-Date:   Mon, 07 Jun 2021 13:56:25 +0200
-In-Reply-To: <dbb99d7b-18eb-317c-911a-b982486848fa@xs4all.nl> (Hans Verkuil's
-        message of "Mon, 7 Jun 2021 13:11:54 +0200")
-Message-ID: <m3eeddhora.fsf@t19.piap.pl>
+        id S230251AbhFGMBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 08:01:04 -0400
+Received: from mail-pf1-f180.google.com ([209.85.210.180]:37408 "EHLO
+        mail-pf1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230127AbhFGMBC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 08:01:02 -0400
+Received: by mail-pf1-f180.google.com with SMTP id y15so12885909pfl.4;
+        Mon, 07 Jun 2021 04:59:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xkWMYgreNs4FoJqpSjqW/hTbdY/R1Pbk1QYq7eymfWA=;
+        b=Oqh+Ku4/AV3qvBUgClIWyUzJeaGXkXkmGeDC2fW27FUBL3lYEhkH99zj12DZtQziV9
+         LsXstrZ105TdejRGo8EN07n9O9Mg3mp9+X97Zk2wobmjqQ0ysWzOsuPw2N67Sk3uHM82
+         WUDF5Wqt/ozYFMii8ptV5Nl5cXHrp5gZzGm0H85zT/P8AwPkR8QMWycqkpd9wCR5J8Db
+         5oyPM+82oOSVCul4/8PWY8RrQBQNp8lnH9NJ1asfAEDVwdK5cQtDrLX5bf11ABA1ouIy
+         S0ibywqrI1ICrTMIFTyL+3MWyNUomC4nOXTI9EmVvj1RLMdjy6pG0fRfEUZZZV8moPu9
+         8uQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xkWMYgreNs4FoJqpSjqW/hTbdY/R1Pbk1QYq7eymfWA=;
+        b=eSzWTqI+hqGA4Y6jeQQ75PZfvGIGoPErYGESxr9UWWRwoqrnZ+GXgohqKuSzwQ+t82
+         N2FTcE61e5wfNuEASyvLS0nhdxTO7raTIgn7nlM0gTxysLLtQg7NE8c1WKfWpRuAtz3B
+         tre+8QdDky6vAL6OSd218gm+vbb9a2JtRX+qUFEvOfhyhhnHmM/2DSQ2O6ASlPs/Hb0G
+         TI1IIs1SeHHcw/2yinYfIVFlsNg5T8AIhm1Edg8rSGSJOpEuLgJjgFoMYXgWnkjDPO+T
+         BldOh6PLNL9Q962IQPT72MempoKdbYgXAU4FHjgaoVI6OeTwrwGzaQ7cBxghqkPQ8qft
+         pDYg==
+X-Gm-Message-State: AOAM533zdeWdADvVuhTG+ddrENPRx22WxSJulh67sP+l/nSPdCoylizg
+        u5UY++3JwIyNFlA9mUBASMC0HqwRdEEaEU286PZu8nR66VM=
+X-Google-Smtp-Source: ABdhPJxBoHk1eWAy7Bm/ZDKhdzjoD0dMSMjIZvJM+vliwkEJxvZ1gu5g/w8Nf6rNzmvEJ8m7ufjYrUHWS8wEnFcxs2Q=
+X-Received: by 2002:a63:79c3:: with SMTP id u186mr17416326pgc.203.1623067081386;
+ Mon, 07 Jun 2021 04:58:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-KLMS-Rule-ID: 4
-X-KLMS-Message-Action: skipped
-X-KLMS-AntiSpam-Status: not scanned, whitelist
-X-KLMS-AntiPhishing: not scanned, whitelist
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
+References: <20210606225037.26130-1-chrisrblake93@gmail.com>
+In-Reply-To: <20210606225037.26130-1-chrisrblake93@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 7 Jun 2021 14:57:45 +0300
+Message-ID: <CAHp75VchKgVwxKq5OP=LrLaDhg-_rpwYnYz2Op9PQm4+N9Tn7g@mail.gmail.com>
+Subject: Re: [PATCH v2] mfd: lpc_ich: Enable GPIO driver for DH89xxCC
+To:     Chris Blake <chrisrblake93@gmail.com>
+Cc:     ptyser@xes-inc.com, Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christian Lamparter <chunkeey@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
-
-Hans Verkuil <hverkuil@xs4all.nl> writes:
-
->> Without this patch, the TDA19971 chip's EDID is inactive.
+On Mon, Jun 7, 2021 at 1:52 AM Chris Blake <chrisrblake93@gmail.com> wrote:
 >
-> Was this wrong from the very beginning? How can this ever have been tested
-> without an EDID?
+> Based on the Intel Datasheet for the DH89xxCC PCH, the GPIO driver
+> is the same as ICH_v5_GPIO, minus the fact the DH89xxCC also has
+> blink support. However, blink support isn't supported by the GPIO
+> driver so we should use ICH_v5_GPIO. Tested and working on a Meraki
+> MX100-HW.
 
-It seems so. I suspect it might have worked in tests because this
-register isn't cleared on reboot. I.e., setting it once after power up
-makes it work to the next power up.
-Or, maybe, the HDMI signal source didn't need EDID.
+Thanks for your contribution!
 
-I'm looking at the previous version of this driver from Gateworks and it
-contains:
+> V2: Updated commit message, and added Christian Lamparter as a
+> contributor.
 
-     /* Configure EDID
-      *
-      * EDID_ENABLE bits:
-      *  7 - nack_off
-      *  6 - edid_only
-      *  1 - edid_b_en
-      *  0 - edid_a_en
-      */
-     reg =3D io_read(REG_EDID_ENABLE);
-     if (!tda1997x->internal_edid)
-         reg &=3D ~0x83; /* EDID Nack ON */
-     else
-         reg |=3D 0x83;  /* EDID Nack OFF */
-     io_write(REG_EDID_ENABLE, reg);
+First of all, changelog is placed after the cutter '---' line below.
 
-Not sure what the "non-internal" EDID could be - a separate I2C EEPROM
-chip? I'm using this on Gateworks' GW54xx boards and I can't see any
-such EEPROM in the vicinity of the TDA19971, but I don't know how it is
-wired - perhaps Tim has some idea?
---=20
-Krzysztof Ha=C5=82asa
+> Signed-off-by: Chris Blake <chrisrblake93@gmail.com>
+> Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
 
-Sie=C4=87 Badawcza =C5=81ukasiewicz
-Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
+Second, please utilize the Co-developed-by tag.
+
+> ---
+
+(changelog)
+
+>  drivers/mfd/lpc_ich.c | 1 +
+>  1 file changed, 1 insertion(+)
+
+-- 
+With Best Regards,
+Andy Shevchenko
