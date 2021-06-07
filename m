@@ -2,60 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2028A39DA8B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:02:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DEF539DA8E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbhFGLEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 07:04:45 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:54944 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230131AbhFGLEl (ORCPT
+        id S231165AbhFGLE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 07:04:57 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:45783 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230131AbhFGLEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 07:04:41 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R391e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=liangyan.peng@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Ubb.crK_1623063753;
-Received: from localhost(mailfrom:liangyan.peng@linux.alibaba.com fp:SMTPD_---0Ubb.crK_1623063753)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 07 Jun 2021 19:02:49 +0800
-From:   Liangyan <liangyan.peng@linux.alibaba.com>
-To:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Xunlei Pang <xlpang@linux.alibaba.com>, yinbinbin@alibabacloud.com,
-        wetp <wetp.zy@linux.alibaba.com>,
-        Liangyan <liangyan.peng@linux.alibaba.com>
-Subject: [PATCH] tracing: Correct the length check in use of filter buffer
-Date:   Mon,  7 Jun 2021 19:02:31 +0800
-Message-Id: <20210607110231.1713929-1-liangyan.peng@linux.alibaba.com>
-X-Mailer: git-send-email 2.14.4.44.g2045bb6
+        Mon, 7 Jun 2021 07:04:55 -0400
+Received: by mail-ot1-f42.google.com with SMTP id 6-20020a9d07860000b02903e83bf8f8fcso3252867oto.12;
+        Mon, 07 Jun 2021 04:03:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4PwEOhhSgqcDZBccS2qEUl6w+mHR3TrhOJ8GYWHqr8k=;
+        b=Vv72F61pOdy43bSOAo02JOdeatweILpN5RDVKHy7/ksKYe9Jq/aJPTFEVPFc7AqriL
+         9NN9UT57a0jh6kRQYal0O3aI75uDxnP63+bhjccMvGaXOJa+fByvuSAelIkflQvFkglA
+         UDpUSwSDbvRTJxSrwnfQx9N4v8giZ802knd1+5FPy38jD+KsK0t9qw/qv2Mos1DVP3yu
+         XZu3BIJHd5BC1pDuomf+rBcaprGyM6Yw/ru02clb9OOAnuKfzK1e99kq//Ts8AUF1v/l
+         DypFulHpImlXinTjP57E7kAXLCvj4L38uhCXafqZMoNZhOKnmJ5koj7PEmAaEg5G94pz
+         F2MA==
+X-Gm-Message-State: AOAM5330M0tkGqO2agunF26PZMy8DWACPfr/7undCHyH+D1pLRm04kv1
+        D4eBYIFqmlpigGCfgTzknNJNmmwHWbbZrj5CWY0=
+X-Google-Smtp-Source: ABdhPJx0vTAAkAXC/7vq4L1/cquuDBIgdiJwnp5HSGhecElAafjL4hrPr0xNCKmZpnyVm6ZpLmVLwsU8YMuo22bWtro=
+X-Received: by 2002:a9d:6c4d:: with SMTP id g13mr10038001otq.321.1623063784342;
+ Mon, 07 Jun 2021 04:03:04 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210521221906.199436-1-kyle.meyer@hpe.com> <CAJZ5v0iJUhUyucYEDHXKqXrsy6=3dGUz0uy1pDpx+kKOi_NB2w@mail.gmail.com>
+ <CAOh2x==tXk2Lt_f14_azHNYG2mZzMb9-1b2YUVj=+i=-JLemdg@mail.gmail.com>
+In-Reply-To: <CAOh2x==tXk2Lt_f14_azHNYG2mZzMb9-1b2YUVj=+i=-JLemdg@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 7 Jun 2021 13:02:46 +0200
+Message-ID: <CAJZ5v0g-NMLa1UVYKpF2ehgk=6dJkKRonUY0AGw6HyRCDaQMmw@mail.gmail.com>
+Subject: Re: [PATCH] acpi-cpufreq: Skip initialization if a cpufreq driver exists
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Takashi Iwai <tiwai@suse.de>, Kyle Meyer <kyle.meyer@hpe.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>, linux-acpi@vegr.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit b220c049d519 ("tracing: Check length before giving out
-the filter buffer") adds length check to protect trace data overflow
-introduced in 0fc1b09ff1ff, seems that this fix can't prevent
-overflow entirely, the length check should also take the sizeof
-entry->array[0] into account, since this array[0] is filled the
-length of trace data and occupy addtional space and risk overflow.
+On Mon, Jun 7, 2021 at 9:26 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> Hi Rafael,
+>
+> On Mon, May 24, 2021 at 7:47 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > On Sat, May 22, 2021 at 12:19 AM Kyle Meyer <kyle.meyer@hpe.com> wrote:
+>
+> > > diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
+> > > index 7e7450453714..e79a945369d1 100644
+> > > --- a/drivers/cpufreq/acpi-cpufreq.c
+> > > +++ b/drivers/cpufreq/acpi-cpufreq.c
+> > > @@ -1003,7 +1003,7 @@ static int __init acpi_cpufreq_init(void)
+> > >
+> > >         /* don't keep reloading if cpufreq_driver exists */
+> > >         if (cpufreq_get_current_driver())
+> > > -               return -EEXIST;
+> > > +               return 0;
+> > >
+> > >         pr_debug("%s\n", __func__);
+> > >
+> > > --
+> >
+> > Applied as 5.14 material with some edits in the subject and changelog, thanks!
+>
+> I am not sure how this is supposed to work. If we return 0 from
+> acpi_cpufreq_init(),
+> then the driver will never be used, since it's acpi_cpufreq_init()
+> will never get
+> called again later.
 
-Fixes: 0fc1b09ff1ff ("tracing: Use temp buffer when filtering events")
-Signed-off-by: Liangyan <liangyan.peng@linux.alibaba.com>
----
- kernel/trace/trace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Unless the module is unloaded and loaded again, that is.
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index a21ef9cd2aae..9299057feb56 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2736,7 +2736,7 @@ trace_event_buffer_lock_reserve(struct trace_buffer **current_rb,
- 	    (entry = this_cpu_read(trace_buffered_event))) {
- 		/* Try to use the per cpu buffer first */
- 		val = this_cpu_inc_return(trace_buffered_event_cnt);
--		if ((len < (PAGE_SIZE - sizeof(*entry))) && val == 1) {
-+		if ((len < (PAGE_SIZE - sizeof(*entry) - sizeof(entry->array[0]))) && val == 1) {
- 			trace_event_setup(entry, type, trace_ctx);
- 			entry->array[0] = len;
- 			return entry;
--- 
-2.14.4.44.g2045bb6
+> cpufreq drivers don't follow the generic device/driver model where a driver gets
+> probed again if a device appears and so this is broken.
 
+It is broken anyway as per the changelog of this patch.
+
+On systems with several hundred logical CPUs this really can be troublesome.
+
+> Please revert this patch.
+
+Well, you can argue that the problem at hand is outside the kernel and
+so it's not a kernel's business to address it.
+
+After all, systemd-udevd could learn to avoid attempting to load the
+module again if it fails with -EEXIST, but I'm not sure how different
+that really would be from what this patch does, in practice.
