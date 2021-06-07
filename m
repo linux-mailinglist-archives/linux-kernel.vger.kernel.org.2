@@ -2,120 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0CE939D470
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 07:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF1E39D475
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 07:49:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbhFGFsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 01:48:22 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:49986 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhFGFsV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 01:48:21 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1575kBLg005472;
-        Mon, 7 Jun 2021 00:46:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623044771;
-        bh=b3YribPsLsUNBcVX/uBU0uUtAjN0H/Dr6M1HW8UYZKg=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=Rmu6KxldSL3T4RDaoN0NsYS+xvbdRRySK3B9EF9dwUXuFSLe7Wao3hpmkudAxDvXj
-         QIj8bhXEUlL4q6ELOVBbrrGxsMOedRR/kGI60ALuLsqfqKD3KUUmGctEipKKN4UK2N
-         q1QIJoKWuy56VwePeBFtsXY+0lIvl3U8TGepuEOA=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1575kB1H106501
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 7 Jun 2021 00:46:11 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 7 Jun
- 2021 00:46:11 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 7 Jun 2021 00:46:11 -0500
-Received: from [10.250.234.148] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1575k8o2089338;
-        Mon, 7 Jun 2021 00:46:09 -0500
-Subject: Re: [PATCH v5 3/5] mtd: spi-nor: otp: return -EROFS if region is
- read-only
-To:     Michael Walle <michael@walle.cc>, <Tudor.Ambarus@microchip.com>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <p.yadav@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>
-References: <20210604100252.9975-1-michael@walle.cc>
- <20210604100252.9975-4-michael@walle.cc>
- <c2b58dcc-5a60-792c-30ac-a3db327a85ed@microchip.com>
- <e117bc50b9f9e10549c25602b66cfe26@walle.cc>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <1549db61-500a-e5df-9303-823b41457861@ti.com>
-Date:   Mon, 7 Jun 2021 11:16:07 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230173AbhFGFuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 01:50:52 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:23881 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229449AbhFGFus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 01:50:48 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4Fz2Vc3ZsszB9cJ;
+        Mon,  7 Jun 2021 07:48:56 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id vyaOJDm2hiAi; Mon,  7 Jun 2021 07:48:56 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Fz2Vc2XHVzB9Zm;
+        Mon,  7 Jun 2021 07:48:56 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 436848B77F;
+        Mon,  7 Jun 2021 07:48:56 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id KgJWM97gaIvs; Mon,  7 Jun 2021 07:48:56 +0200 (CEST)
+Received: from [172.25.230.103] (po15451.idsi0.si.c-s.fr [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E86C38B763;
+        Mon,  7 Jun 2021 07:48:55 +0200 (CEST)
+Subject: Re: [PATCH v2 00/15] init_mm: cleanup ARCH's text/data/brk setup code
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Mike Rapoport <rppt@kernel.org>
+Cc:     uclinux-h8-devel@lists.sourceforge.jp, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-mm@kvack.org,
+        linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210604070633.32363-1-wangkefeng.wang@huawei.com>
+ <YL0+Jargm+y9aqx1@kernel.org>
+ <481056ab-686e-9f42-3b8a-b31941f58af6@huawei.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <006eb573-5a20-1ac7-6234-338d11346a08@csgroup.eu>
+Date:   Mon, 7 Jun 2021 07:48:54 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <e117bc50b9f9e10549c25602b66cfe26@walle.cc>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+In-Reply-To: <481056ab-686e-9f42-3b8a-b31941f58af6@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Kefeng,
 
-
-On 6/4/21 6:45 PM, Michael Walle wrote:
-> Am 2021-06-04 15:07, schrieb Tudor.Ambarus@microchip.com:
->> On 6/4/21 1:02 PM, Michael Walle wrote:
->>> EXTERNAL EMAIL: Do not click links or open attachments unless you
->>> know the content is safe
->>>
->>> SPI NOR flashes will just ignore program commands if the OTP region is
->>> locked. Thus, a user might not notice that the intended write didn't end
->>> up in the flash. Return -EROFS to the user in this case. From what I can
->>> tell, chips/cfi_cmdset_0001.c also return this error code.
->>>
->>> One could optimize spi_nor_mtd_otp_range_is_locked() to read the status
->>> register only once and not for every OTP region, but for that we would
->>> need some more invasive changes. Given that this is
->>> one-time-programmable memory and the normal access mode is reading, we
->>> just live with the small overhead.
->>>
->>> Fixes: 069089acf88b ("mtd: spi-nor: add OTP support")
->>> Signed-off-by: Michael Walle <michael@walle.cc>
->>> Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
->>> ---
->>>  drivers/mtd/spi-nor/otp.c | 36 ++++++++++++++++++++++++++++++++++++
->>>  1 file changed, 36 insertions(+)
->>>
->>> diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
->>> index 3898ed67ba1c..063f8fb68649 100644
->>> --- a/drivers/mtd/spi-nor/otp.c
->>> +++ b/drivers/mtd/spi-nor/otp.c
->>> @@ -249,6 +249,32 @@ static int spi_nor_mtd_otp_info(struct mtd_info
->>> *mtd, size_t len,
->>>         return ret;
->>>  }
->>>
->>> +static int spi_nor_mtd_otp_range_is_locked(struct spi_nor *nor,
->>> loff_t ofs,
->>> +                                          size_t len)
->>> +{
->>> +       const struct spi_nor_otp_ops *ops = nor->params->otp.ops;
->>> +       unsigned int region;
->>> +       int locked;
->>> +
->>> +       if (!len)
->>> +               return 0;
->>> +
+Le 07/06/2021 à 02:55, Kefeng Wang a écrit :
+> 
+> On 2021/6/7 5:29, Mike Rapoport wrote:
+>> Hello Kefeng,
 >>
->> You won't need this if you put patch 4/5 before this one. With this:
+>> On Fri, Jun 04, 2021 at 03:06:18PM +0800, Kefeng Wang wrote:
+>>> Add setup_initial_init_mm() helper, then use it
+>>> to cleanup the text, data and brk setup code.
+>>>
+>>> v2:
+>>> - change argument from "char *" to "void *" setup_initial_init_mm()
+>>>    suggested by Geert Uytterhoeven
+>>> - use NULL instead of (void *)0 on h8300 and m68k
+>>> - collect ACKs
+>>>
+>>> Cc: linux-snps-arc@lists.infradead.org
+>>> Cc: linux-arm-kernel@lists.infradead.org
+>>> Cc: linux-csky@vger.kernel.org
+>>> Cc: uclinux-h8-devel@lists.sourceforge.jp
+>>> Cc: linux-m68k@lists.linux-m68k.org
+>>> Cc: openrisc@lists.librecores.org
+>>> Cc: linuxppc-dev@lists.ozlabs.org
+>>> Cc: linux-riscv@lists.infradead.org
+>>> Cc: linux-sh@vger.kernel.org
+>>> Cc: linux-s390@vger.kernel.org
+>>> Kefeng Wang (15):
+>>>    mm: add setup_initial_init_mm() helper
+>>>    arc: convert to setup_initial_init_mm()
+>>>    arm: convert to setup_initial_init_mm()
+>>>    arm64: convert to setup_initial_init_mm()
+>>>    csky: convert to setup_initial_init_mm()
+>>>    h8300: convert to setup_initial_init_mm()
+>>>    m68k: convert to setup_initial_init_mm()
+>>>    nds32: convert to setup_initial_init_mm()
+>>>    nios2: convert to setup_initial_init_mm()
+>>>    openrisc: convert to setup_initial_init_mm()
+>>>    powerpc: convert to setup_initial_init_mm()
+>>>    riscv: convert to setup_initial_init_mm()
+>>>    s390: convert to setup_initial_init_mm()
+>>>    sh: convert to setup_initial_init_mm()
+>>>    x86: convert to setup_initial_init_mm()
+>> I might be missing something, but AFAIU the init_mm.start_code and other
+>> fields are not used really early so the new setup_initial_init_mm()
+>> function can be called in the generic code outside setup_arch(), e.g in
+>> mm_init().
 > 
-> This patch will get backported to the stable kernels. Patch 4 on the
-> other hand does not.
+> Hi Mike， each architecture has their own value, not the same, eg m68K and
 > 
+> h8300, also the name of the text/code/brk is different in some arch, so I keep
+> 
+> unchanged.
 
-I don't see why 4/5 cannot be marked for backport too as it makes 3/5
-much cleaner?
+What you could do is to define a __weak function that architectures can override and call that 
+function from mm_init() as suggested by Mike,
 
-Regards
-Vignesh
+Something like:
+
+void __weak setup_initial_init_mm(void)
+{
+	init_mm.start_code = (unsigned long)_stext;
+	init_mm.end_code = (unsigned long)_etext;
+	init_mm.end_data = (unsigned long)_edata;
+	init_mm.brk = (unsigned long)_end;
+}
+
+Then only the few architecture that are different would override it.
+
+I see a few archictectures are usigne PAGE_OFFSET to set .start_code, but it is likely that this is 
+equivalent to _stext.
+
+Christophe
