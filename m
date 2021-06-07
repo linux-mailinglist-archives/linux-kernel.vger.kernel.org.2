@@ -2,78 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF2AE39E12C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 17:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FBA639E138
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 17:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbhFGPuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 11:50:21 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:34459 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230226AbhFGPuU (ORCPT
+        id S231321AbhFGPvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 11:51:40 -0400
+Received: from mail-pl1-f173.google.com ([209.85.214.173]:33406 "EHLO
+        mail-pl1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230351AbhFGPvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 11:50:20 -0400
-Received: by mail-oi1-f178.google.com with SMTP id u11so18518258oiv.1;
-        Mon, 07 Jun 2021 08:48:17 -0700 (PDT)
+        Mon, 7 Jun 2021 11:51:38 -0400
+Received: by mail-pl1-f173.google.com with SMTP id c13so8949468plz.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 08:49:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gateworks-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=1cSDyRqs4/waFFpp4XK4bTohmPsgMHDek8V3s+9aWfY=;
+        b=XWcJ8Pq86ApEWUqDjcMFt4Szfu0Nm0jhb7uS/2rKv98XxQ+xxglNjfhSE8FoDQoNEw
+         fViBV2ca32xN8SjCgrGv6tSSLoXEnD51WyXXWAX2r+5l17aXo56RfMJkjrX4/+UV//3H
+         tNF1di6YqKjDDUqGgn/yaIwnVWu2Ps4RygiRMXvFrpheucbHR+6720sYEkP1q48gQ0SQ
+         2pttc+Z+rJNdbsh1xbi2OhLsJJjPA64jPuy90nPnq8JYjfNnJz3RJr2twUeyBvKwXX+e
+         gqxw/nWFjNuF7JGWOZgpA2fZsuScGx996opkk1yHJkzehKS+q94wNAtT1dZEcwIlk0xC
+         w6Tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GPvwNDXxveM7WvcIICOfOWncBvlog3gstf62jTYMMds=;
-        b=jeF5Ma6BQ5C7npYESN0TWwnoLR4CXxiYmvbqUxEihZ3z7NIi44qRp4iC0rjdj3ItPd
-         M642fzX5xjznfZduL3GkgtQ0APAc6IcnG6PPBgAGoxwi2KlkEeaGPTjF+0zqFDJBpe+4
-         qmKDmrBRdDyOi7b4P4kOMECoMK5tvQJUNxQG150eYPfFP8r0JaNTR2JiCURnVwwNd4wH
-         ZAlF5fTA/ggopX5glMOpVZ13cSrMAHk8fBfjO0fegi9Cr3ONFRGOAJSfOwqnKh/TrFJj
-         UUZ3flQ1VqCahZ6fJRwrCqHlGJ3/kk8WvNP3d5PApS3NKMnFiNbYgc1RDuYitLvGEVTx
-         pyDw==
-X-Gm-Message-State: AOAM530h3PA+Y9w0ToDpef48D8R7gYMU2/6IpQ6wFIle4Ls+Cm5pPtNQ
-        iW5Ai57GYM0xr6aUKAaqKvIM7S9MZ7ZeLWqvZRc=
-X-Google-Smtp-Source: ABdhPJxP16Qu0fj4N3ExB40QCYrAreA9thdjxDCBWKRQdvwtM+7ghjwsMC2iFuaRODH9D8ePpEZkxHB7o+tA4bkXwJs=
-X-Received: by 2002:aca:b406:: with SMTP id d6mr11781753oif.71.1623080897693;
- Mon, 07 Jun 2021 08:48:17 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1cSDyRqs4/waFFpp4XK4bTohmPsgMHDek8V3s+9aWfY=;
+        b=holpswY1366FrDjH0Eccy264KH7HEK1gdNulEzTGjSZDg2MyJris2LJQh0AwljwStu
+         xp2yYSXFob7CrjhOG9KqoCfaIOx8gDk2wcJr1K0B2oog/ed8YSZhlewQ/G4pAgmZaDXF
+         oX+x9PhIXf0fvDrsdr7vWMPHyfpWAFW39JAT/8PV8KRz4jgB9WxQ/+qHiaY+iIHV41xx
+         VKGVeJTMcltmAGDiBWBP76Xg29qhTEfyP3tmm0R3VJecf8YwU13oj9SJdSo6FlgOqzuX
+         GZDlxZVg8D7Tr01SW0lZ69R+BdsXjF3zdqAGeyC7HPJoJd0IcoVUsXT9jeHAeY9l/7/1
+         avMg==
+X-Gm-Message-State: AOAM530kOj2l+NT9Bmo2gAUGLoq0MY+P7TQmtSW14U9Z6lMbDrVHDZW3
+        LNCtA6zSknBRXe6oEe8Nnhinii29GzZu07tY0WPGog==
+X-Google-Smtp-Source: ABdhPJxGKfRV0ji63pJPz9hHFaeq12NxQqk8execz6yLGOqYuB9j2xv+69NDpQc+eKeCiqFKb8blcRd0GJXmxAnv7W0=
+X-Received: by 2002:a17:903:1241:b029:10f:ff8c:a3fe with SMTP id
+ u1-20020a1709031241b029010fff8ca3femr14775019plh.13.1623080910612; Mon, 07
+ Jun 2021 08:48:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210603135752.30162-1-liuhailongg6@163.com> <20210604034709.kxqy6vcfvtxf5rje@vireshk-i7>
-In-Reply-To: <20210604034709.kxqy6vcfvtxf5rje@vireshk-i7>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 7 Jun 2021 17:48:06 +0200
-Message-ID: <CAJZ5v0he09ttX-EnXukHcqk4okdp1ag7dEH3BQQ_AsPOMMOBpg@mail.gmail.com>
-Subject: Re: [PATCH] CPUFREQ: loongson2: Remove unused linux/sched.h headers
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Hailong Liu <liuhailongg6@163.com>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        linux-mips@vger.kernel.org, Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hailong Liu <liu.hailong6@zte.com.cn>
+References: <m3sg1uq6xu.fsf@t19.piap.pl> <dbb99d7b-18eb-317c-911a-b982486848fa@xs4all.nl>
+ <m3eeddhora.fsf@t19.piap.pl>
+In-Reply-To: <m3eeddhora.fsf@t19.piap.pl>
+From:   Tim Harvey <tharvey@gateworks.com>
+Date:   Mon, 7 Jun 2021 08:48:19 -0700
+Message-ID: <CAJ+vNU0E_0pB-1T+VpdmjJNVirAwCUNjKVbEV4wEbqHOzURj_A@mail.gmail.com>
+Subject: Re: [PATCH] TDA1997x: enable EDID support
+To:     =?UTF-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 4, 2021 at 5:48 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+On Mon, Jun 7, 2021 at 4:56 AM Krzysztof Ha=C5=82asa <khalasa@piap.pl> wrot=
+e:
 >
-> On 03-06-21, 21:57, Hailong Liu wrote:
-> > From: Hailong Liu <liu.hailong6@zte.com.cn>
-> >
-> > Since commit 759f534e93ac(CPUFREQ: Loongson2: drop set_cpus_allowed_ptr()),
-> > the header <linux/sched.h> is useless in oongson2_cpufreq.c, so remove it.
-> >
-> > Signed-off-by: Hailong Liu <liu.hailong6@zte.com.cn>
-> > ---
-> >  drivers/cpufreq/loongson2_cpufreq.c | 1 -
-> >  1 file changed, 1 deletion(-)
-> >
-> > diff --git a/drivers/cpufreq/loongson2_cpufreq.c b/drivers/cpufreq/loongson2_cpufreq.c
-> > index d05e761d9572..afc59b292153 100644
-> > --- a/drivers/cpufreq/loongson2_cpufreq.c
-> > +++ b/drivers/cpufreq/loongson2_cpufreq.c
-> > @@ -16,7 +16,6 @@
-> >  #include <linux/cpufreq.h>
-> >  #include <linux/module.h>
-> >  #include <linux/err.h>
-> > -#include <linux/sched.h>     /* set_cpus_allowed() */
-> >  #include <linux/delay.h>
-> >  #include <linux/platform_device.h>
+> Hi Hans,
 >
-> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Hans Verkuil <hverkuil@xs4all.nl> writes:
+>
+> >> Without this patch, the TDA19971 chip's EDID is inactive.
+> >
+> > Was this wrong from the very beginning? How can this ever have been tes=
+ted
+> > without an EDID?
+>
+> It seems so. I suspect it might have worked in tests because this
+> register isn't cleared on reboot. I.e., setting it once after power up
+> makes it work to the next power up.
+> Or, maybe, the HDMI signal source didn't need EDID.
+>
 
-Applied as 5.14 material, thanks!
+Krzysztof,
+
+Most likely it was that the HDMI signal source I tested with didn't
+need EDID. I primarily used a V-SG4K HMDI signal generator in my
+testing and development of the driver
+(http://www.marshall-usa.com/monitors/model/V-SG4K-HDI.php) which
+definitely doesn't need it. Other devices I tested with were another
+Gateworks board with HDMI out (which also didn't need EDID) and
+occasionally a 1st gen Google Chromecast and Amazon Fire stick (which
+I'm not sure about).
+
+> I'm looking at the previous version of this driver from Gateworks and it
+> contains:
+>
+>      /* Configure EDID
+>       *
+>       * EDID_ENABLE bits:
+>       *  7 - nack_off
+>       *  6 - edid_only
+>       *  1 - edid_b_en
+>       *  0 - edid_a_en
+>       */
+>      reg =3D io_read(REG_EDID_ENABLE);
+>      if (!tda1997x->internal_edid)
+>          reg &=3D ~0x83; /* EDID Nack ON */
+>      else
+>          reg |=3D 0x83;  /* EDID Nack OFF */
+>      io_write(REG_EDID_ENABLE, reg);
+>
+> Not sure what the "non-internal" EDID could be - a separate I2C EEPROM
+> chip? I'm using this on Gateworks' GW54xx boards and I can't see any
+> such EEPROM in the vicinity of the TDA19971, but I don't know how it is
+> wired - perhaps Tim has some idea?
+
+Not sure where the source above is from (this was all so long ago) but
+my guess is that 'internal_edid' meant an EDID had been provided via
+software and the else case meant there was no EDID available. There is
+no support on that chip for an external EEPROM.
+
+Tim
