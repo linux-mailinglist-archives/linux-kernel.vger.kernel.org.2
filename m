@@ -2,77 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68CEC39D4FA
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8C439D4FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230203AbhFGGfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 02:35:17 -0400
-Received: from m12-14.163.com ([220.181.12.14]:52593 "EHLO m12-14.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229545AbhFGGfQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 02:35:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=y/X18
-        uRpnqtljL+RMDssIh68K1hPqzLYkK1yRT0fxe0=; b=MNmOj8bZHGTAuUb24U3J8
-        iDn24Fn9OfpAL5z0gZE6f2++oHAiGZfoawDH+YYfeDys53yZtSauTyB51mVf5l3p
-        eBnGq00GSl0fllz+Md4In1bKSZ39/gGPVuIqOIMO5KQUVnmxQ2ryBk1hxDDFOFic
-        bF0xqF37oeppYDGGa8H6rg=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp10 (Coremail) with SMTP id DsCowAAnGoWzvb1gwCN2NQ--.44785S2;
-        Mon, 07 Jun 2021 14:33:23 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lijian <lijian@yulong.com>
-Subject: [PATCH] fs: inode: Fix a typo
-Date:   Mon,  7 Jun 2021 14:32:26 +0800
-Message-Id: <20210607063226.205255-1-lijian_8010a29@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S230225AbhFGGfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 02:35:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229498AbhFGGfw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 02:35:52 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1326AC061766;
+        Sun,  6 Jun 2021 23:34:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5RUpGXMX4B3J1RSt3/98n+4qt36B8ax16+0GdPzXMoI=; b=L4cMz+FEqGPW0DmtDY5xEENsd+
+        sHdAbCAOIcpym5MyutP4pNh7zTpt1QJeU3WwVtrbSkpzDaKHLYJKW5dX11Vq80FgMWC4voPTF/m5+
+        msvmuXJnAZFX4tBvcJZDvS+P3xdsZM9RVODI2uLTAJpdFWSmwWmryQK9GCcURedpAuA5z8ZHFwxq8
+        U9qwGrRR6LoeHm6Sk0qMoJI3zRK/x765or9BB9Q7oKwG0VKNUYQgzckerLiF9weRs8ALGuhV7vTNW
+        b/1oAciZG6tx7wzDQs6veKdu41mn5BPA0J3lrAF0D5UOFn5ZcjvIyrtcKYkW0hXRQK90MjU02uOtH
+        gKVYP1Ew==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lq8oK-00FRbT-UF; Mon, 07 Jun 2021 06:32:39 +0000
+Date:   Mon, 7 Jun 2021 07:32:32 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Changheun Lee <nanich.lee@samsung.com>
+Cc:     Johannes.Thumshirn@wdc.com, alex_y_xu@yahoo.ca,
+        asml.silence@gmail.com, axboe@kernel.dk, bgoncalv@redhat.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        cang@codeaurora.org, avri.altman@wdc.com, alim.akhtar@samsung.com,
+        bvanassche@acm.org, damien.lemoal@wdc.com,
+        gregkh@linuxfoundation.org, hch@infradead.org, jaegeuk@kernel.org,
+        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ming.lei@redhat.com, osandov@fb.com,
+        patchwork-bot@kernel.org, tj@kernel.org, tom.leiming@gmail.com,
+        yi.zhang@redhat.com, jisoo2146.oh@samsung.com,
+        junho89.kim@samsung.com, mj0123.lee@samsung.com,
+        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
+        woosung2.lee@samsung.com, yt0928.kim@samsung.com
+Subject: Re: [PATCH v12 1/3] bio: control bio max size
+Message-ID: <YL29gP0j1qmVuzyy@infradead.org>
+References: <20210604050324.28670-1-nanich.lee@samsung.com>
+ <CGME20210604052159epcas1p4370bee98aad882ab335dda1565db94fb@epcas1p4.samsung.com>
+ <20210604050324.28670-2-nanich.lee@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DsCowAAnGoWzvb1gwCN2NQ--.44785S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZrWDKry5WF1rZF15tr43Jrb_yoWkCFX_tF
-        yxJ34xW34UXwn2va9rC3Z8Jasa9r4kuF15uanYqr98Ga4Uta9rur4DCrZ7ur4UCF47ua90
-        vF1kWFyxGr12qjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUeb6pJUUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbiqxSqUFUMZuiXVQAAsQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604050324.28670-2-nanich.lee@samsung.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
-
-Change 'funtion' to 'function', and
-change 'priviledges' to 'privileges'.
-
-Signed-off-by: lijian <lijian@yulong.com>
----
- fs/inode.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/fs/inode.c b/fs/inode.c
-index c93500d84264..fd00657184f2 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -1429,7 +1429,7 @@ EXPORT_SYMBOL(ilookup);
-  * function must never block --- find_inode() can block in
-  * __wait_on_freeing_inode() --- or when the caller can not increment
-  * the reference count because the resulting iput() might cause an
-- * inode eviction.  The tradeoff is that the @match funtion must be
-+ * inode eviction.  The tradeoff is that the @match function must be
-  * very carefully implemented.
-  */
- struct inode *find_inode_nowait(struct super_block *sb,
-@@ -1926,7 +1926,7 @@ static int __remove_privs(struct user_namespace *mnt_userns,
- }
- 
- /*
-- * Remove special file priviledges (suid, capabilities) when file is written
-+ * Remove special file privileges (suid, capabilities) when file is written
-  * to or truncated.
-  */
- int file_remove_privs(struct file *file)
--- 
-2.25.1
-
+NAK.  As discussed countless time we already have an actual limit.
+And we can look it as advisory before building ever bigger bios,
+but the last thing we need is yet another confusing limit.
