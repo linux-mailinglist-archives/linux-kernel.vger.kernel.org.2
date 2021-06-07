@@ -2,130 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7953839DBA8
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B7639DBAB
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231586AbhFGLno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 07:43:44 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:38243 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230463AbhFGLnn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 07:43:43 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 1F34E5C004D;
-        Mon,  7 Jun 2021 07:41:52 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Mon, 07 Jun 2021 07:41:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=G5Ws2mdv15PvC68TLAqW5lgwuqX
-        ZpoJNGuY6oJsLBA8=; b=3tRyPHtyeXaFQftLKvhJoTkFW51BVly26aSE6sSJI+R
-        IoB1DpfQ47ZDZJRU6QS6J4+0tISxsn/zU4Y+gXSbtSjqikD2risJg6UIm0SYWpEy
-        OrALQsrSV32mV54JbKzINJvk16OBmCq7VRM63RLYZ69rb0LdQrS2DNrNqy5rCb8L
-        KUsUilvadarIzaHCh4SCleujYPmfbHvSHQL0sKfVfOl0aefR6S1RTlKzLiak3teL
-        qpJTLrl46YLcEI3ciCKYgetk1GCiZe7vrPKvHoE4fZDJ9N3oPmf/GmJIVPHwhk8V
-        zYpinUefpNcbjw+MMj5WUhRmovJBwAM6ChEO3lCwjtQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=G5Ws2m
-        dv15PvC68TLAqW5lgwuqXZpoJNGuY6oJsLBA8=; b=ein3MXW5EAS7eaYMMuhBtd
-        cneBPNnvS/L3YRnF3N/degKzLXVryCMneXOCg23tdXcRzekEsRqk7p5ziTyLpT7k
-        CkSaZ/2oI1KdFX2Cmvl9+eNmHUOJiI1/ROE8wxiL1S2bDyP8x6oZpouHriLXzmSE
-        JhU5RHEQr8GMx8R45ZY0ti+MWQw+9ClGJ/7gZt50jkUsfcRxStCEfcKs6tHuLxDD
-        AwZthKqOgP0P8Iiu7e2OhN35S2P11pp5AWXNkUtbMMDNZdhPr2nj5xmYVWo1UWXl
-        s6fA+iTFTGSDm2bvF6QY/wiFEVMTbiR15a+BbVvDrd6lM8R1/D+qzlfpFMddQbdw
-        ==
-X-ME-Sender: <xms:_QW-YPL6pMGk8TJMk-zTM29PAGcZYasbjgr8OmTJ8lNXWahD0-dhTg>
-    <xme:_QW-YDJhwidlZb6p4_PXhfq8phUHDCbhdBrYJ1pmnlS9Gbw4V_Wmpj36eiOWQwvLw
-    ozTwP2DR9IvhP3fVZY>
-X-ME-Received: <xmr:_QW-YHumjn6lyCpBZJkSc-g9v83X-9V_JJTEgFuf2jTPS_93no5pqFQqqNsf1kHOvvpDZ5l6faKUb-PBof8ZWAR4YWH5eLYUsvBK>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtjedggeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepfefhhfehieekffffgfdutdevhfehffdvtedtfeeugffggedtudeivdehgffh
-    uedunecuffhomhgrihhnpehlkhhmlhdrohhrghenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:_QW-YIbQlnTgAWwZJonFgPgKXxYSEwaJZWA3H_iectFg8HKcWz35Cw>
-    <xmx:_QW-YGbxWs9wDkr3JcxlTDLJ28Ef_pIVYj6C1XfKb1vAAcnHhGxTnw>
-    <xmx:_QW-YMAIiX3-Dg4s4Htkf1RQeNL6DaSGPDDBInuoNYtekze33S9qHg>
-    <xmx:AAa-YMMj8AbTZogx7CGTsth4upd75pVGpUsh0krHQgUO-UsOfxEQhQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 7 Jun 2021 07:41:48 -0400 (EDT)
-Date:   Mon, 7 Jun 2021 13:41:46 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Ondrej Jirman <megous@megous.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVER FOR ALLWINNER DE2 AND DE3 ENGINE" 
-        <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Allwinner sunXi SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Allwinner sunXi SoC support" 
-        <linux-sunxi@lists.linux.dev>,
-        open list <linux-kernel@vger.kernel.org>,
-        Saravana Kannan <saravanak@google.com>
-Subject: Re: [PATCH v2] drm/sun4i: dw-hdmi: Make HDMI PHY into a platform
- device
-Message-ID: <20210607114146.ohiqf4ousibfu4wm@gilmour>
-References: <20210607085836.2827429-1-megous@megous.com>
+        id S231435AbhFGLo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 07:44:56 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:22473 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230289AbhFGLoz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 07:44:55 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623066184; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=97EjolioTr/dzk8Rhja2FM2bBWL8D1t49C3Tr8J/VBM=;
+ b=Z2SLjx6c0HaSOL34hzWkz//xSRG6SNSNlxgO8ke5qTL9f1H7OrEc2D7pJw3Szt5O1VbMqsg5
+ c3bsS0bljblKhT4vg4JJ4VcqapTCzEOO3wH65gA+t4vsJr8GMiEvUEoyANitJ++cL1I1DFtr
+ CnXc6VW8qeN/FEyoxexWjS+o2z0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60be0622f726fa41886b7a42 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 07 Jun 2021 11:42:26
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 38B9BC43460; Mon,  7 Jun 2021 11:42:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2C05BC433F1;
+        Mon,  7 Jun 2021 11:42:24 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="go2u3onasjnikotj"
-Content-Disposition: inline
-In-Reply-To: <20210607085836.2827429-1-megous@megous.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 07 Jun 2021 17:12:24 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Deepak Kumar Singh <deesin@codeaurora.org>
+Cc:     bjorn.andersson@linaro.org, clew@codeaurora.org,
+        manivannan.sadhasivam@linaro.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        deesin=codeaurora.org@codeaurora.org
+Subject: Re: [PATCH V3 1/2] soc: qcom: aoss: Expose send for generic usecase
+In-Reply-To: <1620320818-2206-2-git-send-email-deesin@codeaurora.org>
+References: <1620320818-2206-1-git-send-email-deesin@codeaurora.org>
+ <1620320818-2206-2-git-send-email-deesin@codeaurora.org>
+Message-ID: <80c85e9a6f2ac5c3b8c77a1c9a18b9cc@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hey Deepak,
 
---go2u3onasjnikotj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks for the patch!
 
-On Mon, Jun 07, 2021 at 10:58:36AM +0200, Ondrej Jirman wrote:
-> From: Saravana Kannan <saravanak@google.com>
->=20
-> On sunxi boards that use HDMI output, HDMI device probe keeps being
-> avoided indefinitely with these repeated messages in dmesg:
->=20
->   platform 1ee0000.hdmi: probe deferral - supplier 1ef0000.hdmi-phy
->     not ready
->=20
-> There's a fwnode_link being created with fw_devlink=3Don between hdmi
-> and hdmi-phy nodes, because both nodes have 'compatible' property set.
->=20
-> Fw_devlink code assumes that nodes that have compatible property
-> set will also have a device associated with them by some driver
-> eventually. This is not the case with the current sun8i-hdmi
-> driver.
->=20
-> This commit makes sun8i-hdmi-phy into a proper platform device
-> and fixes the display pipeline probe on sunxi boards that use HDMI.
->=20
-> More context: https://lkml.org/lkml/2021/5/16/203
->=20
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> Signed-off-by: Ondrej Jirman <megous@megous.com>
+On 2021-05-06 22:36, Deepak Kumar Singh wrote:
+> Not all upcoming usecases will have an interface to allow the aoss
+> driver to hook onto. Expose the send api and create a get function to
+> enable drivers to send their own messages to aoss.
+> 
+> Signed-off-by: Chris Lew <clew@codeaurora.org>
+> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
+> ---
+>  drivers/soc/qcom/qcom_aoss.c       | 70 
+> ++++++++++++++++++++++++++++++++++++--
+>  include/linux/soc/qcom/qcom_aoss.h | 33 ++++++++++++++++++
+>  2 files changed, 101 insertions(+), 2 deletions(-)
+>  create mode 100644 include/linux/soc/qcom/qcom_aoss.h
+> 
+> diff --git a/drivers/soc/qcom/qcom_aoss.c 
+> b/drivers/soc/qcom/qcom_aoss.c
+> index 53acb94..cd75d4d 100644
+> --- a/drivers/soc/qcom/qcom_aoss.c
+> +++ b/drivers/soc/qcom/qcom_aoss.c
+> @@ -8,10 +8,12 @@
+>  #include <linux/io.h>
+>  #include <linux/mailbox_client.h>
+>  #include <linux/module.h>
+> +#include <linux/of_platform.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_domain.h>
+>  #include <linux/thermal.h>
+>  #include <linux/slab.h>
+> +#include <linux/soc/qcom/qcom_aoss.h>
+> 
+>  #define QMP_DESC_MAGIC			0x0
+>  #define QMP_DESC_VERSION		0x4
+> @@ -61,6 +63,7 @@ struct qmp_cooling_device {
+>   * @mbox_chan: mailbox channel used to ring the doorbell on transmit
+>   * @offset: offset within @msgram where messages should be written
+>   * @size: maximum size of the messages to be transmitted
+> + * @orphan: tarcks whether qmp handle is valid
+>   * @event: wait_queue for synchronization with the IRQ
+>   * @tx_lock: provides synchronization between multiple callers of 
+> qmp_send()
+>   * @qdss_clk: QDSS clock hw struct
+> @@ -76,6 +79,8 @@ struct qmp {
+> 
+>  	size_t offset;
+>  	size_t size;
+> +	atomic_t  orphan;
+> +	struct kref refcount;
+> 
+>  	wait_queue_head_t event;
+> 
+> @@ -223,11 +228,17 @@ static bool qmp_message_empty(struct qmp *qmp)
+>   *
+>   * Return: 0 on success, negative errno on failure
+>   */
+> -static int qmp_send(struct qmp *qmp, const void *data, size_t len)
+> +int qmp_send(struct qmp *qmp, const void *data, size_t len)
+>  {
+>  	long time_left;
+>  	int ret;
+> 
+> +	if (WARN_ON(IS_ERR_OR_NULL(qmp) || !data))
+> +		return -EINVAL;
+> +
+> +	if (atomic_read(&qmp->orphan))
+> +		return -EINVAL;
+> +
+>  	if (WARN_ON(len + sizeof(u32) > qmp->size))
+>  		return -EINVAL;
+> 
+> @@ -261,6 +272,7 @@ static int qmp_send(struct qmp *qmp, const void
+> *data, size_t len)
+> 
+>  	return ret;
+>  }
+> +EXPORT_SYMBOL(qmp_send);
+> 
+>  static int qmp_qdss_clk_prepare(struct clk_hw *hw)
+>  {
+> @@ -515,6 +527,54 @@ static void qmp_cooling_devices_remove(struct qmp 
+> *qmp)
+>  		thermal_cooling_device_unregister(qmp->cooling_devs[i].cdev);
+>  }
+> 
+> +/**
+> + * qmp_get() - get a qmp handle from a device
+> + * @dev: client device pointer
+> + *
+> + * Return: handle to qmp device on success, ERR_PTR() on failure
+> + */
+> +struct qmp *qmp_get(struct device *dev)
+> +{
+> +	struct platform_device *pdev;
+> +	struct device_node *np;
+> +	struct qmp *qmp;
+> +
+> +	if (!dev || !dev->of_node)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	np = of_parse_phandle(dev->of_node, "qcom,qmp", 0);
+> +	if (!np)
+> +		return ERR_PTR(-ENODEV);
+> +
+> +	pdev = of_find_device_by_node(np);
+> +	of_node_put(np);
+> +	if (!pdev)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	qmp = platform_get_drvdata(pdev);
+> +	platform_device_put(pdev);
+> +
+> +	if (qmp)
+> +		kref_get(&qmp->refcount);
+> +
+> +	return qmp ? qmp : ERR_PTR(-EPROBE_DEFER);
+> +}
+> +EXPORT_SYMBOL(qmp_get);
+> +
+> +static void qmp_handle_release(struct kref *ref)
+> +{
+> +	struct qmp *qmp = container_of(ref, struct qmp, refcount);
+> +
+> +	kfree(qmp);
+> +}
+> +
+> +void qmp_put(struct qmp *qmp)
+> +{
+> +	if (!IS_ERR_OR_NULL(qmp))
+> +		kref_put(&qmp->refcount, qmp_handle_release);
+> +}
+> +EXPORT_SYMBOL(qmp_put);
+> +
+>  static int qmp_probe(struct platform_device *pdev)
+>  {
+>  	struct resource *res;
+> @@ -522,13 +582,14 @@ static int qmp_probe(struct platform_device 
+> *pdev)
+>  	int irq;
+>  	int ret;
+> 
+> -	qmp = devm_kzalloc(&pdev->dev, sizeof(*qmp), GFP_KERNEL);
+> +	qmp = kzalloc(sizeof(*qmp), GFP_KERNEL);
+>  	if (!qmp)
+>  		return -ENOMEM;
+> 
+>  	qmp->dev = &pdev->dev;
+>  	init_waitqueue_head(&qmp->event);
+>  	mutex_init(&qmp->tx_lock);
+> +	kref_init(&qmp->refcount);
+> 
+>  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>  	qmp->msgram = devm_ioremap_resource(&pdev->dev, res);
+> @@ -569,6 +630,8 @@ static int qmp_probe(struct platform_device *pdev)
+> 
+>  	platform_set_drvdata(pdev, qmp);
+> 
+> +	atomic_set(&qmp->orphan, 0);
+> +
+>  	return 0;
+> 
+>  err_remove_qdss_clk:
+> @@ -577,6 +640,7 @@ static int qmp_probe(struct platform_device *pdev)
+>  	qmp_close(qmp);
+>  err_free_mbox:
+>  	mbox_free_channel(qmp->mbox_chan);
+> +	kfree(qmp);
+> 
+>  	return ret;
+>  }
+> @@ -590,7 +654,9 @@ static int qmp_remove(struct platform_device *pdev)
+>  	qmp_cooling_devices_remove(qmp);
+> 
+>  	qmp_close(qmp);
+> +	atomic_set(&qmp->orphan, 1);
+>  	mbox_free_channel(qmp->mbox_chan);
+> +	kref_put(&qmp->refcount, qmp_handle_release);
+> 
+>  	return 0;
+>  }
+> diff --git a/include/linux/soc/qcom/qcom_aoss.h
+> b/include/linux/soc/qcom/qcom_aoss.h
+> new file mode 100644
+> index 0000000..27d00f7
+> --- /dev/null
+> +++ b/include/linux/soc/qcom/qcom_aoss.h
+> @@ -0,0 +1,33 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (c) 2020, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +#ifndef __QCOM_AOSS_H__
+> +#define __QCOM_AOSS_H__
+> +
+> +#include <linux/err.h>
+> +#include <linux/device.h>
+> +
+> +struct qmp;
+> +
+> +#if IS_ENABLED(CONFIG_QCOM_AOSS_QMP)
+> +
+> +int qmp_send(struct qmp *qmp, const void *data, size_t len);
+> +struct qmp *qmp_get(struct device *dev);
 
-Applied, thanks
-Maxime
+missed adding qmp_put.
 
---go2u3onasjnikotj
-Content-Type: application/pgp-signature; name="signature.asc"
+> +
+> +#else
+> +
+> +static inline int qmp_send(struct qmp *qmp, const void *data, size_t 
+> len)
+> +{
+> +	return -ENODEV;
+> +}
+> +
+> +static inline struct qmp *qmp_get(struct device *dev)
+> +{
+> +	return ERR_PTR(-ENODEV);
+> +}
 
------BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYL4F+gAKCRDj7w1vZxhR
-xQEfAP9vP3jokTFEfVVEzY9r1WA2vwZlSzf/+NvOVPNtT5JpAwD/bqlz7iyVFUtu
-CEYuLVjcA1hWAZsRTGT2RlI5eDbqnQQ=
-=y6rg
------END PGP SIGNATURE-----
+missed adding qmp_put.
 
---go2u3onasjnikotj--
+> +
+> +#endif
+> +
+> +#endif
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
