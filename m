@@ -2,94 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D8739DE96
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E63839DE79
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbhFGOXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 10:23:05 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:38667 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230220AbhFGOXC (ORCPT
+        id S230322AbhFGOS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 10:18:58 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3453 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230253AbhFGOSz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 10:23:02 -0400
-Received: by mail-ot1-f48.google.com with SMTP id j11-20020a9d738b0000b02903ea3c02ded8so3256675otk.5;
-        Mon, 07 Jun 2021 07:21:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HAsSjfj2SNggq5aDpsaUA7NHuq0dKKwyDcbMekujl4w=;
-        b=RwmEGdHhjtG0Ivih9NCEP+hGNcyJsoH82gd2d3yrlgkapOcv/Y6VYlRwORqZkRepWG
-         UUD+Ubnfszilv/FAYAJYs5JDEqD8M+oPd8KKU11u7ciq500un/D1EpREHhhqazLtxSHF
-         cvguzUpVWu0HIKEmrShScSVrz8JbcY1QHSPF8qQ2yqWnVbwNi3dofBJPvbx1oA/6PdCk
-         n+Ua4oO2/4immTHvi24UnuMSKkip9zLJib+oqwHWcBWgODIZ7KjpCSzPKhDkmuHx+S7X
-         JxyUd1Hwo59IUTjH25/tSFXeXy7m4Eq536VCqKx7KdhgPmJdzXgCyMq5PUBJB4otXHYT
-         eHIQ==
-X-Gm-Message-State: AOAM532ZFKmOhPgMWRYPOLL8RFY8fq/mLAsmKpJeut2CsBdU6CiCYMor
-        v7zaf9LxjSx4WQGNhi15pPLWLJyxHmhA3wkop5E=
-X-Google-Smtp-Source: ABdhPJxxciMU1F+M/NaskPlAZGSFxCEC6DOsxcE1ZgSCqkbP2bWW1JV0lYdePueYXcrZa9fPGHKbLuiXSTVb9OFSlao=
-X-Received: by 2002:a9d:63cd:: with SMTP id e13mr14542961otl.206.1623075659890;
- Mon, 07 Jun 2021 07:20:59 -0700 (PDT)
+        Mon, 7 Jun 2021 10:18:55 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FzFjL1hgGz6x4J;
+        Mon,  7 Jun 2021 22:13:58 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 22:16:57 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 7 Jun 2021
+ 22:16:56 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <rafal@milecki.pl>, <davem@davemloft.net>, <kuba@kernel.org>
+Subject: [PATCH net-next] net: ethernet: bgmac: Use devm_platform_ioremap_resource_byname
+Date:   Mon, 7 Jun 2021 22:21:09 +0800
+Message-ID: <20210607142109.3992446-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210603091204.355720-1-liushixin2@huawei.com>
-In-Reply-To: <20210603091204.355720-1-liushixin2@huawei.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 7 Jun 2021 16:20:48 +0200
-Message-ID: <CAJZ5v0jTqE+h3L3od2i7Y8xTTsKTz=26PQzVO8ZWugUJ0uhZDA@mail.gmail.com>
-Subject: Re: [PATCH -next v2] ACPI: LPSS: Replaced simple_strtol() with kstrtol()
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 10:39 AM Liu Shixin <liushixin2@huawei.com> wrote:
->
-> The simple_strtol() function is deprecated in some situation since
-> it does not check for the range overflow. Use kstrtol() instead.
->
-> As the variables status and shared_host are valid only when the uid
-> is not zero(default to zero). If uid_str is NULL or kstrtol() failed
-> or uid is assigned to zero, related operations can be skipped.
->
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> ---
-> v1->v2: The previous description is inaccurate, so modified it.
->
->  drivers/acpi/acpi_lpss.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/acpi_lpss.c
-> index ca742f16a507..1b46e00cad3a 100644
-> --- a/drivers/acpi/acpi_lpss.c
-> +++ b/drivers/acpi/acpi_lpss.c
-> @@ -186,13 +186,12 @@ static void byt_i2c_setup(struct lpss_private_data *pdata)
->         long uid = 0;
->
->         /* Expected to always be true, but better safe then sorry */
-> -       if (uid_str)
-> -               uid = simple_strtol(uid_str, NULL, 10);
-> -
-> -       /* Detect I2C bus shared with PUNIT and ignore its d3 status */
-> -       status = acpi_evaluate_integer(handle, "_SEM", NULL, &shared_host);
-> -       if (ACPI_SUCCESS(status) && shared_host && uid)
-> -               pmc_atom_d3_mask &= ~(BIT_LPSS2_F1_I2C1 << (uid - 1));
-> +       if (uid_str && !kstrtol(uid_str, 10, &uid)) {
-> +               /* Detect I2C bus shared with PUNIT and ignore its d3 status */
-> +               status = acpi_evaluate_integer(handle, "_SEM", NULL, &shared_host);
-> +               if (ACPI_SUCCESS(status) && shared_host && uid)
-> +                       pmc_atom_d3_mask &= ~(BIT_LPSS2_F1_I2C1 << (uid - 1));
-> +       }
->
->         lpss_deassert_reset(pdata);
->
-> --
+Use the devm_platform_ioremap_resource_byname() helper instead of
+calling platform_get_resource_byname() and devm_ioremap_resource()
+separately.
 
-I've applied this as 5.14 material, but I made some changes to it,
-including a subject and changelog rewrite.
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ .../net/ethernet/broadcom/bgmac-platform.c    | 21 +++++++------------
+ 1 file changed, 7 insertions(+), 14 deletions(-)
 
-Thanks!
+diff --git a/drivers/net/ethernet/broadcom/bgmac-platform.c b/drivers/net/ethernet/broadcom/bgmac-platform.c
+index 9834b77cf4b6..4ab5bf64d353 100644
+--- a/drivers/net/ethernet/broadcom/bgmac-platform.c
++++ b/drivers/net/ethernet/broadcom/bgmac-platform.c
+@@ -172,7 +172,6 @@ static int bgmac_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct bgmac *bgmac;
+-	struct resource *regs;
+ 	int ret;
+ 
+ 	bgmac = bgmac_alloc(&pdev->dev);
+@@ -206,21 +205,15 @@ static int bgmac_probe(struct platform_device *pdev)
+ 	if (IS_ERR(bgmac->plat.base))
+ 		return PTR_ERR(bgmac->plat.base);
+ 
+-	regs = platform_get_resource_byname(pdev, IORESOURCE_MEM, "idm_base");
+-	if (regs) {
+-		bgmac->plat.idm_base = devm_ioremap_resource(&pdev->dev, regs);
+-		if (IS_ERR(bgmac->plat.idm_base))
+-			return PTR_ERR(bgmac->plat.idm_base);
++	bgmac->plat.idm_base = devm_platform_ioremap_resource_byname(pdev, "idm_base");
++	if (IS_ERR(bgmac->plat.idm_base))
++		return PTR_ERR(bgmac->plat.idm_base);
++	else
+ 		bgmac->feature_flags &= ~BGMAC_FEAT_IDM_MASK;
+-	}
+ 
+-	regs = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nicpm_base");
+-	if (regs) {
+-		bgmac->plat.nicpm_base = devm_ioremap_resource(&pdev->dev,
+-							       regs);
+-		if (IS_ERR(bgmac->plat.nicpm_base))
+-			return PTR_ERR(bgmac->plat.nicpm_base);
+-	}
++	bgmac->plat.nicpm_base = devm_platform_ioremap_resource_byname(pdev, "nicpm_base");
++	if (IS_ERR(bgmac->plat.nicpm_base))
++		return PTR_ERR(bgmac->plat.nicpm_base);
+ 
+ 	bgmac->read = platform_bgmac_read;
+ 	bgmac->write = platform_bgmac_write;
+-- 
+2.25.1
+
