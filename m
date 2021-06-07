@@ -2,176 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A8739D95B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52ACD39D95D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230481AbhFGKN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 06:13:59 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:56642 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230446AbhFGKN4 (ORCPT
+        id S231143AbhFGKON convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Jun 2021 06:14:13 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:57840 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230522AbhFGKOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 06:13:56 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        Mon, 7 Jun 2021 06:14:12 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-363-IlQ4XzviN4SAgc_tkftXBw-1; Mon, 07 Jun 2021 06:12:15 -0400
+X-MC-Unique: IlQ4XzviN4SAgc_tkftXBw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E065F21A6C;
-        Mon,  7 Jun 2021 10:12:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623060724; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tZFfZGuTAFS1TquvApI1+CiK8J/Pij4y4hPO/LGf4RI=;
-        b=KXf0D21g/8C9XmrVp61JJq/W8aEHtJJhgANM4xoKYVhS6M+dfqSZbrA7iMIczG5YQxi3SL
-        VII+TIZd67tSHdXR5ZaoeIrl100ZiLEc+I8tMAVeXcF+jw87e7Cs2Wu4tiTD8OsnXX5X+w
-        zscuK6f8zydM4t2WK7edTrNwQ9ceR7Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623060724;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tZFfZGuTAFS1TquvApI1+CiK8J/Pij4y4hPO/LGf4RI=;
-        b=/Xvg3qiuRA0/+G8iqXVLPBWNSe/nUknS+Dilj+gGjMur/haz2KaDhVhE9xdQDL5cvYETRf
-        FNEdbI9j+9zueGAg==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id B704D118DD;
-        Mon,  7 Jun 2021 10:12:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623060724; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tZFfZGuTAFS1TquvApI1+CiK8J/Pij4y4hPO/LGf4RI=;
-        b=KXf0D21g/8C9XmrVp61JJq/W8aEHtJJhgANM4xoKYVhS6M+dfqSZbrA7iMIczG5YQxi3SL
-        VII+TIZd67tSHdXR5ZaoeIrl100ZiLEc+I8tMAVeXcF+jw87e7Cs2Wu4tiTD8OsnXX5X+w
-        zscuK6f8zydM4t2WK7edTrNwQ9ceR7Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623060724;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tZFfZGuTAFS1TquvApI1+CiK8J/Pij4y4hPO/LGf4RI=;
-        b=/Xvg3qiuRA0/+G8iqXVLPBWNSe/nUknS+Dilj+gGjMur/haz2KaDhVhE9xdQDL5cvYETRf
-        FNEdbI9j+9zueGAg==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id UBgmLPTwvWAgLAAALh3uQQ
-        (envelope-from <vbabka@suse.cz>); Mon, 07 Jun 2021 10:12:04 +0000
-To:     Faiyaz Mohammed <faiyazm@codeaurora.org>, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, greg@kroah.com, glittao@gmail.com
-Cc:     vinmenon@codeaurora.org
-References: <1622996045-25826-1-git-send-email-faiyazm@codeaurora.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v10] mm: slub: move sysfs slab alloc/free interfaces to
- debugfs
-Message-ID: <c12f642f-0f04-5a58-0966-41cbeb74c066@suse.cz>
-Date:   Mon, 7 Jun 2021 12:12:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9833C106BAE7;
+        Mon,  7 Jun 2021 10:12:13 +0000 (UTC)
+Received: from web.messagingengine.com (ovpn-116-49.sin2.redhat.com [10.67.116.49])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 918945E26F;
+        Mon,  7 Jun 2021 10:12:06 +0000 (UTC)
+Subject: [PATCH v5 3/6] kernfs: use VFS negative dentry caching
+From:   Ian Kent <raven@themaw.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>
+Cc:     Eric Sandeen <sandeen@sandeen.net>, Fox Chen <foxhlchen@gmail.com>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Al Viro <viro@ZenIV.linux.org.uk>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Carlos Maiolino <cmaiolino@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Mon, 07 Jun 2021 18:12:05 +0800
+Message-ID: <162306072498.69474.16160057168984328507.stgit@web.messagingengine.com>
+In-Reply-To: <162306058093.69474.2367505736322611930.stgit@web.messagingengine.com>
+References: <162306058093.69474.2367505736322611930.stgit@web.messagingengine.com>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-In-Reply-To: <1622996045-25826-1-git-send-email-faiyazm@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=raven@themaw.net
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: themaw.net
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/6/21 6:14 PM, Faiyaz Mohammed wrote:
-> alloc_calls and free_calls implementation in sysfs have two issues,
-> one is PAGE_SIZE limitiation of sysfs and other is it does not adhere
-> to "one value per file" rule.
-> 
-> To overcome this issues, move the alloc_calls and free_calls implemeation
-> to debugfs.
-> 
-> Debugfs cache will be created if SLAB_STORE_USER flag is set.
-> 
-> Rename the alloc_calls/free_calls to alloc_traces/free_traces,
-> to be inline with what it does.
-> 
-> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
-> ---
->  mm/slab.h        |   8 ++
->  mm/slab_common.c |   2 +
->  mm/slub.c        | 292 +++++++++++++++++++++++++++++++++++++------------------
->  3 files changed, 209 insertions(+), 93 deletions(-)
-> 
+If there are many lookups for non-existent paths these negative lookups
+can lead to a lot of overhead during path walks.
 
-...
+The VFS allows dentries to be created as negative and hashed, and caches
+them so they can be used to reduce the fairly high overhead alloc/free
+cycle that occurs during these lookups.
 
-> +static int slab_debug_trace_open(struct inode *inode, struct file *filep)
-> +{
-> +
-> +	struct kmem_cache_node *n;
-> +	enum track_item alloc;
-> +	int node;
-> +	struct loc_track *t = __seq_open_private(filep, &slab_debugfs_sops,
-> +						sizeof(struct loc_track));
-> +	struct kmem_cache *s = file_inode(filep)->i_private;
-> +
-> +	if (strcmp(filep->f_path.dentry->d_name.name, "alloc_traces") == 0)
-> +		alloc =  TRACK_ALLOC;
+Use the kernfs node parent revision to identify if a change has been
+made to the containing directory so that the negative dentry can be
+discarded and the lookup redone.
 
-			^ extra space here?
+Signed-off-by: Ian Kent <raven@themaw.net>
+---
+ fs/kernfs/dir.c |   53 +++++++++++++++++++++++++++++++----------------------
+ 1 file changed, 31 insertions(+), 22 deletions(-)
 
-> +	else
-> +		alloc =  TRACK_FREE;
+diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+index b88432c48851f..5ae95e8d1aea1 100644
+--- a/fs/kernfs/dir.c
++++ b/fs/kernfs/dir.c
+@@ -1039,13 +1039,32 @@ static int kernfs_dop_revalidate(struct dentry *dentry, unsigned int flags)
+ 	if (flags & LOOKUP_RCU)
+ 		return -ECHILD;
+ 
+-	/* Always perform fresh lookup for negatives */
+-	if (d_really_is_negative(dentry))
+-		goto out_bad_unlocked;
+-
+ 	kn = kernfs_dentry_node(dentry);
+ 	mutex_lock(&kernfs_mutex);
+ 
++	/* Negative hashed dentry? */
++	if (!kn) {
++		struct dentry *d_parent = dget_parent(dentry);
++		struct kernfs_node *parent;
++
++		/* If the kernfs parent node has changed discard and
++		 * proceed to ->lookup.
++		 */
++		parent = kernfs_dentry_node(d_parent);
++		if (parent) {
++			if (kernfs_dir_changed(parent, dentry)) {
++				dput(d_parent);
++				goto out_bad;
++			}
++		}
++		dput(d_parent);
++
++		/* The kernfs node doesn't exist, leave the dentry
++		 * negative and return success.
++		 */
++		goto out;
++	}
++
+ 	/* The kernfs node has been deactivated */
+ 	if (!kernfs_active(kn))
+ 		goto out_bad;
+@@ -1062,12 +1081,11 @@ static int kernfs_dop_revalidate(struct dentry *dentry, unsigned int flags)
+ 	if (kn->parent && kernfs_ns_enabled(kn->parent) &&
+ 	    kernfs_info(dentry->d_sb)->ns != kn->ns)
+ 		goto out_bad;
+-
++out:
+ 	mutex_unlock(&kernfs_mutex);
+ 	return 1;
+ out_bad:
+ 	mutex_unlock(&kernfs_mutex);
+-out_bad_unlocked:
+ 	return 0;
+ }
+ 
+@@ -1082,30 +1100,21 @@ static struct dentry *kernfs_iop_lookup(struct inode *dir,
+ 	struct dentry *ret;
+ 	struct kernfs_node *parent = dir->i_private;
+ 	struct kernfs_node *kn;
+-	struct inode *inode;
++	struct inode *inode = NULL;
+ 	const void *ns = NULL;
+ 
+ 	mutex_lock(&kernfs_mutex);
+-
+ 	if (kernfs_ns_enabled(parent))
+ 		ns = kernfs_info(dir->i_sb)->ns;
+ 
+ 	kn = kernfs_find_ns(parent, dentry->d_name.name, ns);
+-
+-	/* no such entry */
+-	if (!kn || !kernfs_active(kn)) {
+-		ret = NULL;
+-		goto out_unlock;
+-	}
+-
+ 	/* attach dentry and inode */
+-	inode = kernfs_get_inode(dir->i_sb, kn);
+-	if (!inode) {
+-		ret = ERR_PTR(-ENOMEM);
+-		goto out_unlock;
++	if (kn && kernfs_active(kn)) {
++		inode = kernfs_get_inode(dir->i_sb, kn);
++		if (!inode)
++			inode = ERR_PTR(-ENOMEM);
+ 	}
+-
+-	/* instantiate and hash dentry */
++	/* instantiate and hash (possibly negative) dentry */
+ 	ret = d_splice_alias(inode, dentry);
+ 	if (!IS_ERR(ret)) {
+ 		if (unlikely(ret))
+@@ -1113,8 +1122,8 @@ static struct dentry *kernfs_iop_lookup(struct inode *dir,
+ 		else
+ 			kernfs_set_rev(parent, dentry);
+ 	}
+- out_unlock:
+ 	mutex_unlock(&kernfs_mutex);
++
+ 	return ret;
+ }
+ 
 
-same here
 
-> +
-> +	if (!alloc_loc_track(t, PAGE_SIZE / sizeof(struct location), GFP_KERNEL)) {
-> +		pr_err("Out of memory\n");
-
-Hm I would remove this. It doesn't print any context, so it's not useful to let
-users know where/why we ran out of memory. Also if a GFP_KERNEL allocation
-fails, there will be a big warning including stacktrace from the page allocator
-anyway.
-
-> +		return -ENOMEM;
-> +	}
-> +
-> +	/* Push back cpu slabs */
-> +	flush_all(s);
-> +
-> +	for_each_kmem_cache_node(s, node, n) {
-> +		unsigned long flags;
-> +		struct page *page;
-> +
-> +		if (!atomic_long_read(&n->nr_slabs))
-> +			continue;
-> +
-> +		spin_lock_irqsave(&n->list_lock, flags);
-> +		list_for_each_entry(page, &n->partial, slab_list)
-> +			process_slab(t, s, page, alloc);
-> +		list_for_each_entry(page, &n->full, slab_list)
-> +			process_slab(t, s, page, alloc);
-> +			spin_unlock_irqrestore(&n->list_lock, flags);
-
-At least this is not Python, so it's just a visual flaw :)
-
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int slab_debug_trace_release(struct inode *inode, struct file *file)
-> +{
-> +	struct seq_file *seq = file->private_data;
-> +	struct loc_track *t = seq->private;
-> +
-> +	free_loc_track(t);
-> +	kfree(seq->private);
-> +	seq->private = NULL;
-> +	return seq_release(inode, file);
-
-You can call seq_release_private() instead and deal just with free_loc_track here.
-
-Thanks!
-Vlastimil
