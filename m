@@ -2,117 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26DA39E6B6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EFFA39E6B5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230435AbhFGSfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 14:35:25 -0400
-Received: from mail-pg1-f180.google.com ([209.85.215.180]:40649 "EHLO
-        mail-pg1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230289AbhFGSfY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 14:35:24 -0400
-Received: by mail-pg1-f180.google.com with SMTP id j12so14491146pgh.7
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 11:33:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+e6j0DkhXs3c5ZQ2veNO7IXOw8xfMmU+JwFBGETHbB4=;
-        b=esS2wXIpTMmyEb3BcLL2uwFPK4JYIbUbezpQ27/MnSETF/F3Gop/j2gmnXPCAuC/uf
-         fT4y+JvbR7iro7flaDlpjc+EVcGkOK7qNbU743WYVTUcXtriGZYuWI4NzJg0ebkdcUrN
-         Mj+9aJSqhRSVt6et3akwqFQx8WIjDRQ/DpjoE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+e6j0DkhXs3c5ZQ2veNO7IXOw8xfMmU+JwFBGETHbB4=;
-        b=rJxyS/15WQenNgmvhPRqLGE2RTI1rSS1Eve9JgWARckSJQ3P21hlzEgzRUME4ZxRsp
-         XZsYYhmApjDS78nkh9tsFaMRIvuVmf2ekYA890UgNrjUjEUl/s79dPYdSgGSPJoj2oC7
-         BD9SGdbtAcedyaIxx9c3JNRsAgPe8/symYJojo/Qx5EUXIGykxgKAF1p7kPU4H0H31sn
-         jzRrIml8TptWbwCW9uZpeuYAIwKlax9Jcd/B+tawA6kS5+99V66dy1S34cGugGLEocJ3
-         BC+XYRST4WqH5VbTzoy+WFgDtcRqjQFlr409c0znY25DhsGBplELqo7WBWBvoj3g2hCO
-         MEkw==
-X-Gm-Message-State: AOAM532AL+Su59H8QzEa+kUpQOvJH034Rm4ThObcuhk9Kfsa2B6mg0Yz
-        C4tCjorSpeLV3TXdkar2cmssaQ==
-X-Google-Smtp-Source: ABdhPJzi3DYzJwI/BVZMs7JCqw91yLvsX1cRd0demFVjrZqacogwt7V3Qh18aO2T3hK84psz9cWdNA==
-X-Received: by 2002:a63:e316:: with SMTP id f22mr18654277pgh.100.1623090752641;
-        Mon, 07 Jun 2021 11:32:32 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:312d:da15:9317:e223])
-        by smtp.gmail.com with UTF8SMTPSA id l3sm9504603pgb.77.2021.06.07.11.32.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Jun 2021 11:32:32 -0700 (PDT)
-Date:   Mon, 7 Jun 2021 11:32:31 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     kernel test robot <lkp@intel.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        kbuild-all@lists.01.org, Michal Simek <monstr@monstr.eu>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        linux-usb@vger.kernel.org, Bastien Nocera <hadess@hadess.net>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v11 2/5] USB: misc: Add onboard_usb_hub driver
-Message-ID: <YL5mP4lGoiHNjAYN@google.com>
-References: <20210604144027.v11.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
- <202106050751.uNo0uAEm-lkp@intel.com>
- <YL5cvT4NvMLIuH+C@google.com>
- <YL5kL38o8JLDp8LK@kroah.com>
+        id S230414AbhFGSel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 14:34:41 -0400
+Received: from mga04.intel.com ([192.55.52.120]:16994 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230253AbhFGSek (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 14:34:40 -0400
+IronPort-SDR: WqmQKrKM9Ymsgp+O5W66LhrlQPkXDiSdduksF2hqg/ePcjTGV4jiCzJ4yf/5uQzH866aIQV9FB
+ Tlv8jfgXNoUA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="202820972"
+X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
+   d="scan'208";a="202820972"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 11:32:48 -0700
+IronPort-SDR: hEZZQyqiJNNcgEl8G32to+qOaYgO6xuSYnKHeqp+pMk/0Q4uq1MkZuWkewh+e6OKbXz4HSPqu8
+ i9roS/djGXHg==
+X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
+   d="scan'208";a="447585633"
+Received: from dsanc15x-mobl3.amr.corp.intel.com (HELO [10.251.138.253]) ([10.251.138.253])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 11:32:46 -0700
+Subject: Re: [PATCH 3/4] ASoC: intel: sof_cs42l42: add support for
+ jsl_cs4242_mx98360a
+To:     "Lu, Brent" <brent.lu@intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc:     "Nujella, Sathyanarayana" <sathyanarayana.nujella@intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        "Rojewski, Cezary" <cezary.rojewski@intel.com>,
+        "R, Dharageswari" <dharageswari.r@intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        Mark Brown <broonie@kernel.org>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        "M, Naveen" <naveen.m@intel.com>,
+        "Wang, Rander" <rander.wang@intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        "Gopal, Vamshi Krishna" <vamshi.krishna.gopal@intel.com>,
+        "Zhi, Yong" <yong.zhi@intel.com>
+References: <20210606004102.26190-1-brent.lu@intel.com>
+ <20210606004102.26190-4-brent.lu@intel.com>
+ <505c7e46-316c-9fa1-feaa-115f4561ed19@linux.intel.com>
+ <DM6PR11MB36421AD935E4A2B8EBD0FE6197389@DM6PR11MB3642.namprd11.prod.outlook.com>
+ <cb76f83c-e9d1-9726-ff8d-8d48a4de8e26@linux.intel.com>
+ <DM6PR11MB364231AEC2208EAF5F898B7A97389@DM6PR11MB3642.namprd11.prod.outlook.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <f8fa92bf-29eb-5ea4-55cc-4bb99db3b0d7@linux.intel.com>
+Date:   Mon, 7 Jun 2021 13:32:44 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YL5kL38o8JLDp8LK@kroah.com>
+In-Reply-To: <DM6PR11MB364231AEC2208EAF5F898B7A97389@DM6PR11MB3642.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 08:23:43PM +0200, Greg Kroah-Hartman wrote:
-> On Mon, Jun 07, 2021 at 10:51:57AM -0700, Matthias Kaehlcke wrote:
-> > On Sat, Jun 05, 2021 at 07:18:38AM +0800, kernel test robot wrote:
-> > > Hi Matthias,
-> > > 
-> > > I love your patch! Perhaps something to improve:
-> > > 
-> > > [auto build test WARNING on next-20210604]
-> > > [also build test WARNING on v5.13-rc4]
-> > > [cannot apply to usb/usb-testing robh/for-next char-misc/char-misc-testing driver-core/driver-core-testing linus/master v5.13-rc4 v5.13-rc3 v5.13-rc2]
-> > > [If your patch is applied to the wrong git tree, kindly drop us a note.
-> > > And when submitting patch, we suggest to use '--base' as documented in
-> > > https://git-scm.com/docs/git-format-patch]
-> > > 
-> > > url:    https://github.com/0day-ci/linux/commits/Matthias-Kaehlcke/USB-misc-Add-onboard_usb_hub-driver/20210605-054213
-> > > base:    ccc252d2e818f6a479441119ad453c3ce7c7c461
-> > > config: arc-allyesconfig (attached as .config)
-> > > compiler: arceb-elf-gcc (GCC) 9.3.0
-> > > reproduce (this is a W=1 build):
-> > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> > >         chmod +x ~/bin/make.cross
-> > >         # https://github.com/0day-ci/linux/commit/7107f99a12058b7147342c6f763d026102bd6606
-> > >         git remote add linux-review https://github.com/0day-ci/linux
-> > >         git fetch --no-tags linux-review Matthias-Kaehlcke/USB-misc-Add-onboard_usb_hub-driver/20210605-054213
-> > >         git checkout 7107f99a12058b7147342c6f763d026102bd6606
-> > >         # save the attached .config to linux build tree
-> > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=arc 
-> > > 
-> > > If you fix the issue, kindly add following tag as appropriate
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > 
-> > > All warnings (new ones prefixed by >>):
-> > > 
-> > > >> drivers/usb/misc/onboard_usb_hub.c:400:6: warning: no previous prototype for 'onboard_hub_create_pdevs' [-Wmissing-prototypes]
-> > >      400 | void onboard_hub_create_pdevs(struct usb_device *parent_hub, struct list_head *pdev_list)
-> > >          |      ^~~~~~~~~~~~~~~~~~~~~~~~
-> > > >> drivers/usb/misc/onboard_usb_hub.c:458:6: warning: no previous prototype for 'onboard_hub_destroy_pdevs' [-Wmissing-prototypes]
-> > >      458 | void onboard_hub_destroy_pdevs(struct list_head *pdev_list)
-> > >          |      ^~~~~~~~~~~~~~~~~~~~~~~~~
-> > 
-> > Oh, I wasn't aware that prototypes are required for public functions.
-> 
-> How else can they be called?
 
-Well, there are prototypes in include/linux/usb/onboard_hub.h, however this
-header isn't included (anymore) by the driver itself to avoid conflicts
-when COMPILE_TEST=y (see https://lkml.org/lkml/2021/5/25/975).
+
+On 6/7/21 11:28 AM, Lu, Brent wrote:
+>>>>
+>>>> This also looks like we have two topologies configuring the same DAIs
+>>>> differently on different platforms.
+>>>>
+>>>> Why can't we pick one configuration that would work in all cases?
+>>>>
+>>>
+>>> The comment just say we are reusing rt5685's sof-jsl-rt5682-mx98360a.tplg.
+>>> This patch does not care about the dai sequence. Maybe I should reword
+>>> the commit log.
+>>
+>> I was referring to the bclk frequency, one case uses 2.4 and the other
+>> 3.072MHz.
+> 
+> The 2.4MHz setting isn't ready when we enabled this codec so we selected
+> 3.072MHz. Since we are updating topology for PLL issue soon, we can change
+> bclk frequency to 2.4MHz as well. How do you think?
+
+The 3.072MHz clock will require the 24.576MHz PLL to be on on the 
+SOC/PCH. If you can use 2.4 MHz without any loss of quality and the 
+codec can deal with 25 bit slots with 24-bit data it's better power-wise.
+
+We try to use 64.fs only when it's absolutely mandatory, e.g. if the 
+codec or amplifier doesn't support the 25/24 configuration. IIRC this 
+was the case with TI PCM512x and Maxim amps.
+
+We've also used the 3.072 MHz bit clock when there are constraints on 
+the clock sources and selectors. This isn't the case on GLK but the SOF 
+commit 0a97c1a92f2d93bd4d45bc99d61e362cd214748c clarified the clock 
+selection for newer platforms, including JSL. In the end we may be 
+forced to use the 3.072 MHz PLL, you'd need to look at the various 
+topologies used with this machine driver.
 
