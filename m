@@ -2,96 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9B5739D6EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4258D39D709
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbhFGIT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 04:19:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbhFGIT0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 04:19:26 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07567C061766;
-        Mon,  7 Jun 2021 01:17:36 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id p66so15544494iod.8;
-        Mon, 07 Jun 2021 01:17:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=czqKwG1LbZCbqfUJ6Cb3XGLmd8Y0lJGxTGZrfP4Cg5s=;
-        b=N3stUPjGoubypJQgu04Oyf22jW/skTo5MTOFz6+4r5D8ssVlhgcy5hYj0Az3VXwL4T
-         A+m36C1QCoQljTAHR+MRofkPqkBbYfvo3grr8CNdI3EoU28Whg3prHYYVnlC+/ewOJz2
-         MXqTuE5xqN5KEAsaEgIbCFVLH7tiIqhyFFinwzfUkHgmXmY3I1VuO5GhNxIt92lVB9E0
-         acS1QIlCQzuQh1aORBMmbN5IiZwhSLKmaH8skDcy+9lV4YvFgwp4qIMleD5D1rx03ENf
-         kSsroitGGXS5KEHs5NUBfwQVww4+QMBzmvxb0wUDih0vB9ABvty8FpYxahKB6QVaNtzr
-         nT7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=czqKwG1LbZCbqfUJ6Cb3XGLmd8Y0lJGxTGZrfP4Cg5s=;
-        b=rpU971s172CaJgtptZ7qC5xB0NDHpY2MKTJ+AeOSgBms26K8UcS2/Ach22UanTtlm+
-         yz4X6CLCSm0z+n3o/ORpslRipYuVFBp12NVryVFLhp3KvgSPkF7aKROO1/U3/l7qXw3n
-         clr9G/f/zzDEuZINS6xWUdIFMrY3izNl7rBQs83a25HDtHxdFNiqRarJeMap3wixsFAX
-         uyAz6v9xPPnbfeidMI6oCO87eAyNfwfQq0yCCd/n3gR0cE94mnQ/rHBBxCCk1abfjt79
-         MpICIvB2FJeOt7GqdQ+o+3W1+nliTTP8YyWn7Euvw4ap6Vk+WxqKCo6HF9qCJO3ItHot
-         ykBQ==
-X-Gm-Message-State: AOAM532QcZ19+oB2uTYbu3oJTUJrxLFxiFw6nGWpGMBQ33+ptXUZ0wfz
-        PrhVRWveFpodmQFaP9FrMUY=
-X-Google-Smtp-Source: ABdhPJz/1MBOkzpS7y6WmKk0MVpl+kk6nIuutlGTZhOsXT0acxa5zyI/XQl59SaKwe79Qw7azZ26kg==
-X-Received: by 2002:a02:9109:: with SMTP id a9mr15389804jag.93.1623053854155;
-        Mon, 07 Jun 2021 01:17:34 -0700 (PDT)
-Received: from localhost.localdomain (tunnel525895-pt.tunnel.tserv15.lax1.ipv6.he.net. [2001:470:c:1200::2])
-        by smtp.googlemail.com with ESMTPSA id k9sm8416936ioa.13.2021.06.07.01.17.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 01:17:33 -0700 (PDT)
-From:   Tianling Shen <cnsztl@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-        Tianling Shen <cnsztl@gmail.com>,
-        Marty Jones <mj8263788@gmail.com>, Pavel Machek <pavel@ucw.cz>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: rockchip: add EEPROM node for NanoPi R4S
-Date:   Mon,  7 Jun 2021 16:17:27 +0800
-Message-Id: <20210607081727.4723-1-cnsztl@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        id S230258AbhFGIUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 04:20:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230203AbhFGIUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 04:20:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B18CE61029;
+        Mon,  7 Jun 2021 08:18:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623053893;
+        bh=MQNmsMRLh50u5YgoPb0WTwWwP+h/W0qOGpxA6Rzdt/I=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ckvA+xDLma9x6c3nHTl3HfV2BTv/WG6l+sMMvcWDryf21JJyAwNjEzSVvAkymDmxh
+         IJLBCw+oDzzmLDATSFQVKl9/aWHN/uufpKr+OvzF1te+5VxdeJCB7gm097mIQ+T05n
+         /bSZm59nxzhIcdDDTEwDDrpoHXsJR6+OooS0IiyaReMD9Tigdqe98y0e4B2FhLrX/5
+         UcsLyQg22ufOWtGuVyfHT7ukBaz/vtBA7GociuLSdhZsMmDhMINpOllmlG2o/nD/rd
+         JJBu3Cp/LZhNS1Bi0DpnmF+t4JWFMX9W8gWbJtLssqfyTV5kTv4WM6siKjjrUMJNPp
+         yd7wi2Znmrsog==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        clang-built-linux@googlegroups.com,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Gal Pressman <galpress@amazon.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: [PATCH rdma-next v1 02/15] RDMA/core: Replace the ib_port_data hw_stats pointers with a ib_port pointer
+Date:   Mon,  7 Jun 2021 11:17:27 +0300
+Message-Id: <6477a29059b1b4d92ea003e3b801a8d1df6d516d.1623053078.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1623053078.git.leonro@nvidia.com>
+References: <cover.1623053078.git.leonro@nvidia.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-NanoPi R4S has a EEPROM attached to the 2nd I2C bus (U92), which
-stores the MAC address.
+From: Jason Gunthorpe <jgg@nvidia.com>
 
-Signed-off-by: Tianling Shen <cnsztl@gmail.com>
+It is much saner to store a pointer to the kobject structure that contains
+the cannonical stats pointer than to copy the stats pointers into a public
+structure.
+
+Future patches will require the sysfs pointer for other purposes.
+
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/infiniband/core/core_priv.h |  1 +
+ drivers/infiniband/core/nldev.c     |  8 ++------
+ drivers/infiniband/core/sysfs.c     | 14 +++++++++++---
+ include/rdma/ib_verbs.h             |  3 ++-
+ 4 files changed, 16 insertions(+), 10 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-index cef4d18b599d..4a82f50a07c5 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-@@ -68,6 +68,15 @@
- 	status = "disabled";
+diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
+index 29809dd30041..ec5c2c3db423 100644
+--- a/drivers/infiniband/core/core_priv.h
++++ b/drivers/infiniband/core/core_priv.h
+@@ -378,6 +378,7 @@ struct net_device *rdma_read_gid_attr_ndev_rcu(const struct ib_gid_attr *attr);
+ 
+ void ib_free_port_attrs(struct ib_core_device *coredev);
+ int ib_setup_port_attrs(struct ib_core_device *coredev);
++struct rdma_hw_stats *ib_get_hw_stats_port(struct ib_device *ibdev, u32 port_num);
+ 
+ int rdma_compatdev_set(u8 enable);
+ 
+diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
+index 01316926cef6..e9b4b2cccaa0 100644
+--- a/drivers/infiniband/core/nldev.c
++++ b/drivers/infiniband/core/nldev.c
+@@ -2066,7 +2066,8 @@ static int stat_get_doit_default_counter(struct sk_buff *skb,
+ 	}
+ 
+ 	port = nla_get_u32(tb[RDMA_NLDEV_ATTR_PORT_INDEX]);
+-	if (!rdma_is_port_valid(device, port)) {
++	stats = ib_get_hw_stats_port(device, port);
++	if (!stats) {
+ 		ret = -EINVAL;
+ 		goto err;
+ 	}
+@@ -2088,11 +2089,6 @@ static int stat_get_doit_default_counter(struct sk_buff *skb,
+ 		goto err_msg;
+ 	}
+ 
+-	stats = device->port_data ? device->port_data[port].hw_stats : NULL;
+-	if (stats == NULL) {
+-		ret = -EINVAL;
+-		goto err_msg;
+-	}
+ 	mutex_lock(&stats->lock);
+ 
+ 	num_cnts = device->ops.get_hw_stats(device, stats, port, 0);
+diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
+index d11ceff2b4e4..b153dee1e0fa 100644
+--- a/drivers/infiniband/core/sysfs.c
++++ b/drivers/infiniband/core/sysfs.c
+@@ -1031,8 +1031,6 @@ static void setup_hw_stats(struct ib_device *device, struct ib_port *port,
+ 			goto err;
+ 		port->hw_stats_ag = hsag;
+ 		port->hw_stats = stats;
+-		if (device->port_data)
+-			device->port_data[port_num].hw_stats = stats;
+ 	} else {
+ 		struct kobject *kobj = &device->dev.kobj;
+ 		ret = sysfs_create_group(kobj, hsag);
+@@ -1053,6 +1051,14 @@ static void setup_hw_stats(struct ib_device *device, struct ib_port *port,
+ 	kfree(stats);
+ }
+ 
++struct rdma_hw_stats *ib_get_hw_stats_port(struct ib_device *ibdev,
++					   u32 port_num)
++{
++	if (!ibdev->port_data || !rdma_is_port_valid(ibdev, port_num))
++		return NULL;
++	return ibdev->port_data[port_num].sysfs->hw_stats;
++}
++
+ static int add_port(struct ib_core_device *coredev, int port_num)
+ {
+ 	struct ib_device *device = rdma_device_to_ibdev(&coredev->dev);
+@@ -1171,6 +1177,8 @@ static int add_port(struct ib_core_device *coredev, int port_num)
+ 		setup_hw_stats(device, p, port_num);
+ 
+ 	list_add_tail(&p->kobj.entry, &coredev->port_list);
++	if (device->port_data && is_full_dev)
++		device->port_data[port_num].sysfs = p;
+ 
+ 	kobject_uevent(&p->kobj, KOBJ_ADD);
+ 	return 0;
+@@ -1361,7 +1369,7 @@ void ib_free_port_attrs(struct ib_core_device *coredev)
+ 			free_hsag(&port->kobj, port->hw_stats_ag);
+ 		kfree(port->hw_stats);
+ 		if (device->port_data && is_full_dev)
+-			device->port_data[port->port_num].hw_stats = NULL;
++			device->port_data[port->port_num].sysfs = NULL;
+ 
+ 		if (port->pma_table)
+ 			sysfs_remove_group(p, port->pma_table);
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 849a06441e29..7a4cb7022f91 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -50,6 +50,7 @@ struct ib_uqp_object;
+ struct ib_usrq_object;
+ struct ib_uwq_object;
+ struct rdma_cm_id;
++struct ib_port;
+ 
+ extern struct workqueue_struct *ib_wq;
+ extern struct workqueue_struct *ib_comp_wq;
+@@ -2182,7 +2183,7 @@ struct ib_port_data {
+ 	struct net_device __rcu *netdev;
+ 	struct hlist_node ndev_hash_link;
+ 	struct rdma_port_counter port_counter;
+-	struct rdma_hw_stats *hw_stats;
++	struct ib_port *sysfs;
  };
  
-+&i2c2 {
-+	eeprom@51 {
-+		compatible = "microchip,24c02", "atmel,24c02";
-+		reg = <0x51>;
-+		pagesize = <16>;
-+		read-only; /* This holds our MAC */
-+	};
-+};
-+
- &i2c4 {
- 	status = "disabled";
- };
+ /* rdma netdev type - specifies protocol type */
 -- 
-2.17.1
+2.31.1
 
