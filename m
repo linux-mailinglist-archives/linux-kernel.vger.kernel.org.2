@@ -2,113 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39FA139DBF8
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD2239DBFC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:09:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbhFGMKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 08:10:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40416 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230227AbhFGMKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 08:10:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC51661249;
-        Mon,  7 Jun 2021 12:08:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623067710;
-        bh=paaH3iQ+5TS/ajt9upTenr9LFIEQSXfHeNWCORxZ058=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=smkIfRggyd0GC9wNAjW0pusmX4byoVwFg1plBd3NAdLvn8vU8EbKRVxllwnEY+1Lf
-         DiWl8N9gGAqKfO9TzKVERfe8JHA0ZcA3WOOoweR0mr0jrQZ0ky45gHSPNquvW6kb+j
-         Lg1vdB8Iz+vLEwpbWs9YmCKqsLdy6CrXge1GA45U=
-Date:   Mon, 7 Jun 2021 14:08:27 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Adit Ranadive <aditr@vmware.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Christian Benvenuti <benve@cisco.com>,
-        clang-built-linux@googlegroups.com,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Gal Pressman <galpress@amazon.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next v1 10/15] RDMA/cm: Use an attribute_group on
- the ib_port_attribute intead of kobj's
-Message-ID: <YL4MOyxQi1O3dog5@kroah.com>
-References: <cover.1623053078.git.leonro@nvidia.com>
- <00e578937f557954d240bc0856f45b3f752d6cba.1623053078.git.leonro@nvidia.com>
- <YL3z/xpm5EYHFuZs@kroah.com>
- <YL36OFkmlxJiqjvc@unreal>
- <YL4Bcm2dOyWKLGJ7@kroah.com>
- <YL4E7C7tVUMy3poz@unreal>
+        id S230356AbhFGMLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 08:11:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230127AbhFGMLH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 08:11:07 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A081AC061766;
+        Mon,  7 Jun 2021 05:09:16 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id g6so12924997pfq.1;
+        Mon, 07 Jun 2021 05:09:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VfaKSpOPN68fbunxi9Wd1CjX2Xd/IeFmWOOjECL1YQI=;
+        b=vH3dDKe027sR8HHni53Akruq6MuPmUvEgsFtR1Agr2oSjVXdccvY3DWahH6hnV9lS1
+         8r2N8scuNHRwhKyI3dFyhbZJF3FwqonfrpJtHm8OJiiBQscuNEvl5kMyc70det5hfoma
+         fzOwK1DyMDO8YrR3O8uGFftWId2DnPpb8ZCvJs4Cup4ocm0dvMZBheFiRG9+fZrgAmU+
+         BNzQ53h8eIyNNMWaIgnOeIvtIQoSWq3T/yIlnCXR5ZVzCGaB5fP13lXkd01S7iMK4cyW
+         KwJI1EdcrVXDFEwqBR7ETlWW+eoJ3rrqI0nShm4AlG8TFpt0+qebKQXO2Xhk/qVVJRWI
+         ugBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VfaKSpOPN68fbunxi9Wd1CjX2Xd/IeFmWOOjECL1YQI=;
+        b=baIhjzmWJKm8zwbfuf3OE2kxvoxs4hn8nb9St0HIEXWyhT458OS8nSu7YDuxgYAgez
+         jlJlyB5KEZjWK5wt199hwD7zG38ax5aatYk3mHVTPR7Dt9XJRNixlVmYsxqQ3GnsyiTf
+         7wyYMsqDyJ/XF0njOCOcPr35z/5zT92C8krYaDeZhYDgWTzFwihZ8jWEhsnv+d43Fuv2
+         CNoLGLVIsD75AtqIzPCrtf7vuJ/ZXt3lb33yNkQrjRPB/NSACBtbby2OLxPtWLiGnNDr
+         v5PBE8CnfkZDKjIRM4Kss69CSEEjGwqleBHqoiSj1iTqkqPZo69IC/vc9Qqe46yMoSl5
+         nTEg==
+X-Gm-Message-State: AOAM531/z5AaUuDa4Okh+bT9A+OTfpW6dqrXKzrhxbY1+mEgt2MRvuP+
+        T2P82D5w3o3HZ9Qmd7QTpRF/0oWQaEgUK+Qyjf4=
+X-Google-Smtp-Source: ABdhPJy0MxSyT8V/S1IJrEDeletyhYpO1Vhhq/88aagD+5il4xJ0URp8rE7mlJZ7lKCT/s+XSCwAtSSXIeun13lRm2Y=
+X-Received: by 2002:a62:e404:0:b029:2ee:f086:726f with SMTP id
+ r4-20020a62e4040000b02902eef086726fmr6738641pfh.7.1623067756139; Mon, 07 Jun
+ 2021 05:09:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YL4E7C7tVUMy3poz@unreal>
+References: <20210607113840.15435-1-bhupesh.sharma@linaro.org> <20210607113840.15435-5-bhupesh.sharma@linaro.org>
+In-Reply-To: <20210607113840.15435-5-bhupesh.sharma@linaro.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 7 Jun 2021 15:09:00 +0300
+Message-ID: <CAHp75Vd7z6ivOxHikqP5j+yPtV7C8GBogwVUAziLznSatH+8EA@mail.gmail.com>
+Subject: Re: [PATCH 4/8] regulator: qcom-rpmh: Add new regulator types found
+ on SA8155p adp board
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        bhupesh.linux@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 02:37:16PM +0300, Leon Romanovsky wrote:
-> On Mon, Jun 07, 2021 at 01:22:26PM +0200, Greg KH wrote:
-> > On Mon, Jun 07, 2021 at 01:51:36PM +0300, Leon Romanovsky wrote:
-> > > On Mon, Jun 07, 2021 at 12:25:03PM +0200, Greg KH wrote:
-> > > > On Mon, Jun 07, 2021 at 11:17:35AM +0300, Leon Romanovsky wrote:
-> > > > > From: Jason Gunthorpe <jgg@nvidia.com>
-> > > > > 
-> > > > > This code is trying to attach a list of counters grouped into 4 groups to
-> > > > > the ib_port sysfs. Instead of creating a bunch of kobjects simply express
-> > > > > everything naturally as an ib_port_attribute and add a single
-> > > > > attribute_groups list.
-> > > > > 
-> > > > > Remove all the naked kobject manipulations.
-> > > > 
-> > > > Much nicer.
-> > > > 
-> > > > But why do you need your counters to be atomic in the first place?  What
-> > > > are they counting that requires this?  Given that they are just a
-> > > > statistic for userspace, making them be a u64 should work just the same,
-> > > > right?
-> > > 
-> > > The statistic counters are per-port, while the cm.c flows run in
-> > > asynchronically in parallel for every CM connection.
-> > > 
-> > > We need atomic variable to ensure that "write to u64" is not
-> > > interrupted.
-> > 
-> > On what system is "write to u64" interruptable? 
-> 
-> On 32 bits, and yes, we have a customer who still uses such system.
+On Mon, Jun 7, 2021 at 2:41 PM Bhupesh Sharma <bhupesh.sharma@linaro.org> wrote:
+>
+> SA8155p-adp board has two new regulator types - pmm8155au_1 and
+> pmm8155au_2.
+>
+> The output power management circuits in these regulators include:
+> - FTS510 smps,
+> - HFS510 smps, and
+> - LDO510 linear regulators
 
-So you will see what, a "tear"?  Or a stale value?
+...
 
-> > As these are per-port, do multiple threads try to increment these at
-> > the same time?  
-> 
-> Yes, CM connection can be seen as thread. Bottom line everything in parallel.
-> 
-> > And even if they do, what happens if one is 'dropped' somehow because of this?
-> 
-> Probably nothing, we increment the statistics only.
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: devicetree@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-gpio@vger.kernel.org
+> Cc: bhupesh.linux@gmail.com
 
-So you are hitting cache lines for no good reason, probably not a good
-idea, you are wasting cpu cycles for nothing :(
+Use --cc or similar option when run `git send-email`, no need to
+pollute the commit message with these.
 
-thanks,
+...
 
-greg k-h
+> +static const struct rpmh_vreg_init_data pmm8155au_1_vreg_data[] = {
+
+
+> +       {},
+
+Comma is not needed in the terminator line.
+
+> +};
+
+-- 
+With Best Regards,
+Andy Shevchenko
