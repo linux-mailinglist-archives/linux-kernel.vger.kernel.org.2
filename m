@@ -2,89 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 723A739DDC4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:36:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA67439DDCD
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbhFGNiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 09:38:46 -0400
-Received: from mga18.intel.com ([134.134.136.126]:27432 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230127AbhFGNip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 09:38:45 -0400
-IronPort-SDR: M78Uuh8itRJIFK1ryhVLGdOjIJQ5O/gBP7LjYh5KF6JHb2VFZZ45PZs941Yq+ZnVwaXMwG10yM
- bCZMFOvzSW4w==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="191949578"
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
-   d="scan'208";a="191949578"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 06:36:53 -0700
-IronPort-SDR: /W9+aDYV4uMaEdr1mZOfXOm7Rfd9BjVLQwFrJiAMEPAHT4xxYEIqCXn4Eorea4kXMQQK/I2oit
- 5rX9ivU7H21A==
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
-   d="scan'208";a="481526543"
-Received: from mjkachma-mobl.amr.corp.intel.com (HELO [10.212.201.234]) ([10.212.201.234])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 06:36:52 -0700
-Subject: Re: [patch V2 00/14] x86/fpu: Mop up XSAVES and related damage
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-References: <20210605234742.712464974@linutronix.de>
- <87h7i9zv3r.ffs@nanos.tec.linutronix.de>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <eca0add1-849e-6a1a-8ea6-f6b72650c9c8@intel.com>
-Date:   Mon, 7 Jun 2021 06:36:48 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230319AbhFGNj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 09:39:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230127AbhFGNjz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 09:39:55 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D46FC061766;
+        Mon,  7 Jun 2021 06:37:51 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id v8so26296234lft.8;
+        Mon, 07 Jun 2021 06:37:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lRMehmfHZcYJAVx0WUyZKmSVgdj8BgTPYFpCBqlVyAU=;
+        b=rZEHcwZRuiTW+TaagQbAr7mjVuRphBFC01PEJwE+EUppCA1xXx42ulg0nRQt5rxAHY
+         69hF/uBfIqPRYVfKV1F0/NMptfdbB5W6KpNx4hpMmeNlXXDhISFogZsTtFYTOsaQvHDz
+         dASsSNyx4mHGXzQqFz0IBZ7CVV4ZI02F049tSIwdII0aOWmqkvM38SiMJ5O1Jqf75FKE
+         MyRo5V7f1PwkPq0DCQBIBM3AJEDArOe6YLBxWbfx04ZIHu+OpoqgtO+6rYdewSilgW5M
+         0GxC/xiU/t+U1JVAHsndoO7rWDADBidFwI9nR/lRIZK+ojQ0Dl2SW26wBKvA5rBs3LyZ
+         76BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lRMehmfHZcYJAVx0WUyZKmSVgdj8BgTPYFpCBqlVyAU=;
+        b=HlbX4M33RtQZx+la8E+2Ls+T6i1EnkivT4eunoa1YsTClKZJ8kyoF5WqBZFvkzKWHh
+         E4dtn0zc6SZsEkU67dUj9VrXTkj+c27K15Fpmi5pGKWDUjEY9Q9Fo5NPprKwHzndBx5T
+         wXJc7QOaT7ep8nL7J8P56110l2C+MFWgaXjKVBZiWFtXnSQ3w67dtPBzP9w6mL8z5PO8
+         5TGHLrUvPVjGNPKX09BKp3TpwC4NvVsAIikCNQOPO60IbUGVhCDeXVsVjeFrDBXy9LgZ
+         oU1q59NJt3e3xdr8GgmXFH+745hCGri0/pYEY+Z9ygqzX5O3nsQo62R43yPx5LWMAbLs
+         UxYg==
+X-Gm-Message-State: AOAM5303TU18URC9tm4FhIElaNrSWWltttfS6IkI3nU3wOCLJ0EMdXQo
+        0MuawutbHGmZabwLmN3uH1pKfrEcywU=
+X-Google-Smtp-Source: ABdhPJzkzlNBtcYquNR2vxBLPNUWLG3xsnTOuRRZMqFwkQkI4FHVi23K45sFGd+1RfVBkmVY37dImQ==
+X-Received: by 2002:a19:dc5e:: with SMTP id f30mr12132778lfj.318.1623073068322;
+        Mon, 07 Jun 2021 06:37:48 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-1-103.dynamic.spd-mgts.ru. [94.29.1.103])
+        by smtp.googlemail.com with ESMTPSA id d27sm647075lfv.261.2021.06.07.06.37.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Jun 2021 06:37:48 -0700 (PDT)
+Subject: Re: [PATCH v6 08/14] memory: tegra: Enable compile testing for all
+ drivers
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        =?UTF-8?Q?Nikola_Milosavljevi=c4=87?= <mnidza@outlook.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Paul Fertser <fercerpav@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-clk@vger.kernel.org
+References: <20210601023119.22044-1-digetx@gmail.com>
+ <20210601023119.22044-9-digetx@gmail.com>
+ <41899ef4-bb16-6c3a-035c-1e840a993bec@canonical.com>
+ <YL4gwxWopKT7LomG@orome.fritz.box>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <c4839740-09d3-0f2b-e115-67bd74ad336d@gmail.com>
+Date:   Mon, 7 Jun 2021 16:37:47 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <87h7i9zv3r.ffs@nanos.tec.linutronix.de>
+In-Reply-To: <YL4gwxWopKT7LomG@orome.fritz.box>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -92,33 +88,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/7/21 6:02 AM, Thomas Gleixner wrote:
-> On Sun, Jun 06 2021 at 01:47, Thomas Gleixner wrote:
->> P.S: I picked up Dave's PKRU series from
-> and while looking deeper at that I found the following existing
-> inconsistency vs. PKRU:
+07.06.2021 16:36, Thierry Reding пишет:
+> On Mon, Jun 07, 2021 at 08:01:28AM +0200, Krzysztof Kozlowski wrote:
+>> On 01/06/2021 04:31, Dmitry Osipenko wrote:
+>>> Enable compile testing for all Tegra memory drivers.
+>>>
+>>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>> ---
+>>>  drivers/memory/tegra/Kconfig | 16 ++++++++++------
+>>>  1 file changed, 10 insertions(+), 6 deletions(-)
+>>>
+>>
+>> Hi Dmitry,
+>>
+>> This fails on x86_64 and i386:
+>> https://krzk.eu/#/builders/38/builds/260
+>> https://krzk.eu/#/builders/40/builds/261
+>>
+>> /bin/ld: warning: orphan section `__reservedmem_of_table' from `drivers/memory/tegra/tegra210-emc-table.o' being placed in section `__reservedmem_of_table'
+>> /bin/ld: drivers/memory/tegra/mc.o: in function `tegra_mc_probe':
+>> mc.c:(.text+0x87a): undefined reference to `reset_controller_register'
+>> make[1]: *** [/home/buildbot/worker/builddir/build/Makefile:1191: vmlinux] Error 1
+>>
+>> It's a defconfig with:
+>> scripts/config --file out/.config -e COMPILE_TEST -e OF -e SRAM -e
+>> MEMORY -e PM_DEVFREQ -e ARM_PL172_MPMC -e ATMEL_SDRAMC -e ATMEL_EBI -e
+>> BRCMSTB_DPFE -e BT1_L2_CTL -e TI_AEMIF -e TI_EMIF -e OMAP_GPMC -e
+>> TI_EMIF_SRAM -e MVEBU_DEVBUS -e FSL_CORENET_CF -e FSL_IFC -e JZ4780_NEMC
+>> -e MTK_SMI -e DA8XX_DDRCTL -e PL353_SMC -e RENESAS_RPCIF -e
+>> STM32_FMC2_EBI -e SAMSUNG_MC -e EXYNOS5422_DMC -e EXYNOS_SROM -e
+>> TEGRA_MC -e TEGRA20_EMC -e TEGRA30_EMC -e TEGRA124_EMC -e
+>> TEGRA210_EMC_TABLE -e TEGRA210_EMC
 > 
-> On exec() the kernel sets PKRU to the default value which is as
-> restrictive as possible.
+> Ugh... that's exactly one of the reasons why I dislike COMPILE_TEST...
+> though admittedly it does point out a missing dependency here. I think
+> we need to add && RESET_CONTROLLER to that || branch of the depends on
+> to fix that. ARCH_TEGRA selects RESET_CONTROLLER explicitly, so the
+> COMPILE_TEST branch needs to mirror that.
 > 
-> But on sigrestore PKRU when the init optimization is used PKRU is reset
-> to the hardware default (0), which is as permissive as possible:
-> 
->   1) On XRSTOR from user and the signal handler cleared the PKRU feature
->      bit in xsave.header.xfeatures. That's true for the fast and the
->      slow path.
-> 
->   2) For the fx_only case which loads the init_fpstate (with my fixes
->      applied that's not longer the case)
-> 
-> So that's inconsistent at best.
-> 
-> As the kernel defines the "init" behaviour of PKRU as non-permissive
-> on exec() it should do so consequently in sigrestore as well.
+> Either that, or I suppose we could add the depends on RESET_CONTROLLER
+> explicitly to TEGRA_MC, or perhaps even select it (although that could
+> cause conflicts down the road, but should be fine right now because
+> RESET_CONTROLLER doesn't have any other dependencies right now).
 
-Agreed.  The kernel has essentially picked its own init value for PKRU,
-separate from the hardware init value.  It should be applied consistently.
+The select will work.
 
-By the way, are you talking specifically about the _error_ paths where
-the kernel is unable to XRSTOR the signal XSAVE buffer for some reason,
-and tries to apply either init_fpu or the hardware init state instead?
+The other option is to add stubs for the reset controller API.
+
