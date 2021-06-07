@@ -2,94 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 033F639D8AF
+	by mail.lfdr.de (Postfix) with ESMTP id C229D39D8B1
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbhFGJ1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:27:09 -0400
-Received: from ozlabs.org ([203.11.71.1]:60513 "EHLO ozlabs.org"
+        id S230355AbhFGJ1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:27:23 -0400
+Received: from mga05.intel.com ([192.55.52.43]:47347 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230245AbhFGJ1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:27:08 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fz7JC6R35z9sVt;
-        Mon,  7 Jun 2021 19:25:15 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1623057916;
-        bh=bNqIFMJPc+04k7q2Gwt3wp1dT/xvraql9Gx6txMSa6w=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ahfP8ozGM6Ic3dHf1EknXpyWBU8UfDitLmW048j9WXxqHpXXoN1hoKkdBBgn5y64Z
-         ZnoPcnKd1M69TqRjvI9cNeC91JxpDt/yUnLPkkL/fv43ESh6j6k7O8Dp5C+LDogwtC
-         YglJKd7xdHRS9OsjHw7ogaIhlE2mu/w8f0v1RQmkP8enD1dYc+grEp5yrfYDdFkFR0
-         14FzQdXOnUvaea7BhVIDz9RXiDLp3xRVWWYyO2uNZfmmdASlG1voMFwNdYiScSAls8
-         qcxQFoDN3OPADT69JHs5qRc4SnMLAo9/qHnrYzKfmpXCJHtcHy93xJsAa7wywIBdgp
-         KVQ+riq6Ju8ug==
-Date:   Mon, 7 Jun 2021 19:25:13 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Peter Collingbourne <pcc@google.com>
-Subject: linux-next: manual merge of the akpm tree with the arm64 tree
-Message-ID: <20210607192513.466770c0@canb.auug.org.au>
+        id S230219AbhFGJ1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 05:27:20 -0400
+IronPort-SDR: Rl+CPIDUk1thvbycKcgg4aTi7bcq7/X5h+HaRY6GU3eZyThcBnQ/2+X385ii4pPiP8oajE/oz8
+ Xzqo99Xqo13w==
+X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="290216544"
+X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
+   d="scan'208";a="290216544"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 02:25:28 -0700
+IronPort-SDR: +cVm1EzLf/U3RD/QzvtEIyFhGCOG/EClA6h2zvq4EVYueCfLhcG05Wb4o7zjffg9m10QQsfTY+
+ OYVhnKMEiA6A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
+   d="scan'208";a="551817200"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 07 Jun 2021 02:25:26 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 07 Jun 2021 12:25:24 +0300
+Date:   Mon, 7 Jun 2021 12:25:24 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/3] usb: typec: intel_pmc_mux: Add missed error check
+ for devm_ioremap_resource()
+Message-ID: <YL3mBPDLK5PNG8cm@kuha.fi.intel.com>
+References: <20210606200911.32076-1-andy.shevchenko@gmail.com>
+ <20210606200911.32076-2-andy.shevchenko@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/WY_B+bXhS_lbP6S+0QLPZZx";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210606200911.32076-2-andy.shevchenko@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/WY_B+bXhS_lbP6S+0QLPZZx
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, Jun 06, 2021 at 11:09:10PM +0300, Andy Shevchenko wrote:
+> devm_ioremap_resource() can return an error, add missed check for it.
+> 
+> Fixes: 43d596e32276 ("usb: typec: intel_pmc_mux: Check the port status before connect")
+> Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Hi all,
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+> ---
+>  drivers/usb/typec/mux/intel_pmc_mux.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/usb/typec/mux/intel_pmc_mux.c b/drivers/usb/typec/mux/intel_pmc_mux.c
+> index 134325444e6a..de40276cc18b 100644
+> --- a/drivers/usb/typec/mux/intel_pmc_mux.c
+> +++ b/drivers/usb/typec/mux/intel_pmc_mux.c
+> @@ -586,6 +586,11 @@ static int pmc_usb_probe_iom(struct pmc_usb *pmc)
+>  		return -ENOMEM;
+>  	}
+>  
+> +	if (IS_ERR(pmc->iom_base)) {
+> +		put_device(&adev->dev);
+> +		return PTR_ERR(pmc->iom_base);
+> +	}
+> +
+>  	pmc->iom_adev = adev;
+>  
+>  	return 0;
+> -- 
+> 2.31.1
 
-  arch/arm64/include/asm/page.h
-
-between commits:
-
-  92638b4e1b47 ("mm: arch: remove indirection level in alloc_zeroed_user_hi=
-ghpage_movable()")
-  7a3b83537188 ("kasan: use separate (un)poison implementation for integrat=
-ed init")
-  013bb59dbb7c ("arm64: mte: handle tags zeroing at page allocation time")
-  c275c5c6d50a ("kasan: disable freed user page poisoning with HW tags")
-
-from the arm64 tree and (more or less) duplicated patches in the akpm tree.
-
-I fixed it up (I dropped the patches form the akpm tree) and can carry the
-fix as necessary. This is now fixed as far as linux-next is concerned,
-but any non trivial conflicts should be mentioned to your upstream
-maintainer when your tree is submitted for merging.  You may also want
-to consider cooperating with the maintainer of the conflicting tree to
-minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/WY_B+bXhS_lbP6S+0QLPZZx
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC95fkACgkQAVBC80lX
-0GwZzQf8Ck5o30nv5rxU7w/a2WLyZgrtziSaD/aYX5uV2dI3FpPbO+RxWOuFSD5D
-1e2oE+N3Deda2NgHkOJ1IYX81Iqdaw+JVEYcbe1fJfsRmypeqT8HKclDNiKAWxYS
-GoCjYUXOmDERnfY4uQtnymYwA/AQ6QwOhyELVJywIdRWTzwzUlhGP1T+VK0hZliv
-X4a1I4Z1ONn7lTCT52sFREX7gAA+xbhrwCdUH+t6fGdEf/Q52URN2sAbIivjxSCN
-x8QP0L+s8DIow1DU376O5tYyu+/gqSlivXywKOHIdR6FEhgS2pa5d80LYcex2PI+
-nSKUa1G/5iEXuT3QqJ6sNVoDWH4kfQ==
-=afjR
------END PGP SIGNATURE-----
-
---Sig_/WY_B+bXhS_lbP6S+0QLPZZx--
+-- 
+heikki
