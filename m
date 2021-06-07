@@ -2,162 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 036D239DEB3
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 694C239DEB8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230395AbhFGO2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 10:28:22 -0400
-Received: from mail-lf1-f45.google.com ([209.85.167.45]:42524 "EHLO
-        mail-lf1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230207AbhFGO2V (ORCPT
+        id S230288AbhFGOac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 10:30:32 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:47594 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230203AbhFGOaa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 10:28:21 -0400
-Received: by mail-lf1-f45.google.com with SMTP id a2so26574400lfc.9;
-        Mon, 07 Jun 2021 07:26:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=mJLzHt2uyypGgw28MtCkK4vZD5HTfCu45L8FZnJ+cNQ=;
-        b=KPPQSHzpDv58F8Kod5YWysLMFfni97aKEiyR891Ai1gUKsxNUS5PbJM8vtsgIqxzZu
-         f3+ozE1fxH9+B9uGNP4tP9H+1YhpNBA/j5WR0+UyF9XOAaikpVtoMT9wMysxn11Iq0MH
-         tr6Lw3R6LJV0mIYC4yMSEMvqQHMqJrOYPTEFcBPWkK2xFhEKVT3zWZuYw6HGz2ZFVqbD
-         fCtKqrOhEaBrQROTnTRSNDcCpIo7AsCfouEe7/kLzHqQ4qE9WRgTeAz6lboT5i97wncN
-         SkXXINbnn4fPP6ANBo2fQcj7tui8VerlfN09T/v0KOhmXDZs3lF7KwjyQTz6eLlYbmhG
-         9TNA==
-X-Gm-Message-State: AOAM530JVGL5ar/x7ABe2eqtZBFUAQHTVQd3aVHeXcw35GNNwuj75Yt8
-        EPvNGczi4z3nM2ho3i0dGtBOlYSSWw4UPw==
-X-Google-Smtp-Source: ABdhPJzC+8e51YVwQKLh+adfAc9Vqb5dViqN8KESf+7nhKc5G8X202tzSrWp5HvatI7TZvxKtTaaXA==
-X-Received: by 2002:a19:ed05:: with SMTP id y5mr11749328lfy.408.1623075975230;
-        Mon, 07 Jun 2021 07:26:15 -0700 (PDT)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id p28sm1507373lfa.74.2021.06.07.07.26.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Jun 2021 07:26:14 -0700 (PDT)
-Received: by mail-lf1-f46.google.com with SMTP id w33so26616739lfu.7;
-        Mon, 07 Jun 2021 07:26:14 -0700 (PDT)
-X-Received: by 2002:a05:6512:20f:: with SMTP id a15mr12194697lfo.618.1623075973924;
- Mon, 07 Jun 2021 07:26:13 -0700 (PDT)
+        Mon, 7 Jun 2021 10:30:30 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 157ESX5l000979;
+        Mon, 7 Jun 2021 09:28:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1623076113;
+        bh=Nhs2lIlWeop94Amwvao7E7V8u+v21TJc0yLbaW7eKJE=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=GW7oEZq1Swpcelylec9UqMFBKXoPdWsaSscRMwF+7xBFQACqjczZjZR0m+TvwoH88
+         9VWyAfppBHAU6vAKIPesjCg+I2PARvAymCJpvnUTv3o7tMT0oO5ZDEVzI8NE5nv+sO
+         8GyHp+D9FOuCm+33HEDBoaGHrxgWOpkEaXvRJXB8=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 157ESXbu028338
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 7 Jun 2021 09:28:33 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 7 Jun
+ 2021 09:28:33 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 7 Jun 2021 09:28:33 -0500
+Received: from [10.250.235.117] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 157ESRvW130926;
+        Mon, 7 Jun 2021 09:28:29 -0500
+Subject: Re: [PATCH v4 0/5] AM64: EVM/SK: Enable PCIe and USB
+To:     Kishon Vijay Abraham I <kishon@ti.com>, Nishanth Menon <nm@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+References: <20210603142251.14563-1-kishon@ti.com>
+From:   Aswath Govindraju <a-govindraju@ti.com>
+Message-ID: <a5cefbed-9553-66e6-2d1f-684814dea4ce@ti.com>
+Date:   Mon, 7 Jun 2021 19:58:26 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210519104152.21119-1-andre.przywara@arm.com>
- <20210519104152.21119-13-andre.przywara@arm.com> <20210524115946.jwsasjbr3biyixhz@gilmour>
- <20210525122901.778bfccd@slackpad.fritz.box> <20210607132255.7fa75a7k7ud2g7ux@gilmour>
- <20210607151742.2f05ff95@slackpad.fritz.box>
-In-Reply-To: <20210607151742.2f05ff95@slackpad.fritz.box>
-Reply-To: wens@csie.org
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Mon, 7 Jun 2021 22:26:02 +0800
-X-Gmail-Original-Message-ID: <CAGb2v66mFAWzM_mqT8GiP5NmPNXjEsKq8C6cn8EHSjK82etjyg@mail.gmail.com>
-Message-ID: <CAGb2v66mFAWzM_mqT8GiP5NmPNXjEsKq8C6cn8EHSjK82etjyg@mail.gmail.com>
-Subject: Re: [linux-sunxi] Re: [PATCH v6 12/17] phy: sun4i-usb: Introduce
- port2 SIDDQ quirk
-To:     =?UTF-8?Q?Andr=C3=A9_Przywara?= <andre.przywara@arm.com>
-Cc:     Maxime Ripard <maxime@cerno.tech>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
-        Samuel Holland <samuel@sholland.org>,
-        Ondrej Jirman <megous@megous.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>,
-        linux-sunxi@lists.linux.dev,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, linux-phy@lists.infradead.org,
-        linux-usb <linux-usb@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210603142251.14563-1-kishon@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 03/06/21 7:52 pm, Kishon Vijay Abraham I wrote:
+> AM642 EVM has one PCIe slot (no USB slot) and AM642 SK has one USB slot
+> (no PCIe slot).
+> AM64 SoC has one SERDES module which can be used by either PCIe or USB.
+> 
+> Add DT nodes to represent and enable SERDES/PCIe/USB modules in EVM/SK.
+> 
+> Changes from v3:
+> 1) Limit the lines to < 100
+> 
+> Changes from v2:
+> 1) Dropped "dt-bindings: mux: Convert reg-mux DT bindings to YAML" as
+> it's handled by a different series from Rob
+> 2) Rename "mux" DT node to a standard "mux-controller" DT node.
+> 
+> Changes from v1:
+> 1) Add a patch to convert reg-mux DT bindings to YAML
+> 2) Use generic names for clock node names
+> 3) Remove redundant status = "okay" for serdes_wiz0
+> 
+> v1: http://lore.kernel.org/r/20210512150107.26793-1-kishon@ti.com
+> v2: http://lore.kernel.org/r/20210517061739.5762-1-kishon@ti.com
+> v3: http://lore.kernel.org/r/20210526142921.12127-1-kishon@ti.com
+> 
 
-On Mon, Jun 7, 2021 at 10:17 PM Andre Przywara <andre.przywara@arm.com> wrote:
->
-> On Mon, 7 Jun 2021 15:22:55 +0200
-> Maxime Ripard <maxime@cerno.tech> wrote:
->
-> Hi Maxime,
->
-> > On Tue, May 25, 2021 at 12:29:01PM +0100, Andre Przywara wrote:
-> > > On Mon, 24 May 2021 13:59:46 +0200
-> > > Maxime Ripard <maxime@cerno.tech> wrote:
-> > >
-> > > Hi Maxime,
-> > >
-> > > > On Wed, May 19, 2021 at 11:41:47AM +0100, Andre Przywara wrote:
-> > > > > At least the Allwinner H616 SoC requires a weird quirk to make most
-> > > > > USB PHYs work: Only port2 works out of the box, but all other ports
-> > > > > need some help from this port2 to work correctly: The CLK_BUS_PHY2 and
-> > > > > RST_USB_PHY2 clock and reset need to be enabled, and the SIDDQ bit in
-> > > > > the PMU PHY control register needs to be cleared. For this register to
-> > > > > be accessible, CLK_BUS_ECHI2 needs to be ungated. Don't ask ....
-> > > > >
-> > > > > Instead of disguising this as some generic feature, do exactly that
-> > > > > in our PHY init:
-> > > > > If the quirk bit is set, and we initialise a PHY other than PHY2, ungate
-> > > > > this one special clock, and clear the SIDDQ bit. We can pull in the
-> > > > > other required clocks via the DT.
-> > > > >
-> > > > > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> > > >
-> > > > What is this SIDDQ bit doing exactly?
-> > >
-> > > I probably know as much as you do, but as Jernej pointed out, in some
-> > > Rockchip code it's indeed documented as some analogue PHY supply switch:
-> > > ($ git grep -i siddq drivers/phy/rockchip)
-> > >
-> > > In fact we had this pin/bit for ages, it was just hidden as BIT(1) in
-> > > our infamous PMU_UNK1 register. Patch 10/17 drags that into the light.
-> >
-> > Ok
-> >
-> > > > I guess we could also expose this using a power-domain if it's relevant?
-> > >
-> > > Mmmh, interesting idea. So are you thinking about registering a genpd
-> > > provider in sun4i_usb_phy_probe(), then having a power-domains property
-> > > in the ehci/ohci nodes, pointing to the PHY node? And if yes, should
-> > > the provider be a subnode of the USB PHY node, with a separate
-> > > compatible? That sounds a bit more involved, but would have the
-> > > advantage of allowing us to specify the resets and clocks from PHY2
-> > > there, and would look a bit cleaner than hacking them into the
-> > > other EHCI/OHCI nodes.
-> >
-> > I'm not sure we need a separate device node, we could just register the
-> > phy driver as a genpd provider, and then with an arg (so with
-> > of_genpd_add_provider_onecell?) the index of the USB controller we want
-> > to power up.
->
-> Yeah, I figured that myself meanwhile ;-) I now have a fairly nice
-> implementation, which does away with the extra clocks and resets from
-> the EHCI/OHCI nodes, and just adds one extra clock to the PHY node. The
-> rest is power domains properties.
+For the whole series,
 
-I'm wondering, since SIDDQ refers to the analog power for USB, it shouldn't
-really affect the HCIs, only the PHYs. Is there any way to model it like
-this and test it?
+Reviewed-by: Aswath Govindraju <a-govindraju@ti.com>
 
-ChenYu
+Thanks,
+Aswath
 
-> > > I would not touch the existing SoCs (even though it seems to apply to
-> > > them as well, just not in the exact same way), but I can give it a
-> > > try for the H616. It seems like the other SIDDQ bits (in the other
-> > > PHYs) are still needed for operation, but the PD provide could actually
-> > > take care of this as well.
-> > >
-> > > Does that make sense or is this a bit over the top for just clearing an
-> > > extra bit?
-> >
-> > Using what I described above should be fairly simple, so if we can fit
-> > in an available and relevant abstraction, yeah, I guess :)
->
-> Thanks!
-> I will post what I have, just need to find some solution for the RTC
-> clock bits.
->
-> Cheers,
-> Andre
->
-> --
-> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe@googlegroups.com.
-> To view this discussion on the web, visit https://groups.google.com/d/msgid/linux-sunxi/20210607151742.2f05ff95%40slackpad.fritz.box.
+> Kishon Vijay Abraham I (5):
+>   arm64: dts: ti: k3-am64-main: Add SERDES DT node
+>   arm64: dts: ti: k3-am64-main: Add PCIe DT node
+>   arm64: dts: ti: k3-am642-evm: Enable PCIe and SERDES
+>   arm64: dts: ti: k3-am642-sk: Enable USB Super-Speed HOST port
+>   arm64: dts: ti: k3-am642-sk: Disable PCIe
+> 
+>  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 107 +++++++++++++++++++++++
+>  arch/arm64/boot/dts/ti/k3-am642-evm.dts  |  30 +++++++
+>  arch/arm64/boot/dts/ti/k3-am642-sk.dts   |  43 +++++++++
+>  3 files changed, 180 insertions(+)
+> 
+
