@@ -2,125 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883D539DDEB
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1F0C39DDED
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230207AbhFGNoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 09:44:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42790 "EHLO
+        id S230328AbhFGNpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 09:45:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230194AbhFGNoy (ORCPT
+        with ESMTP id S230261AbhFGNpk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 09:44:54 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3EC0C061766
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 06:42:52 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id t40so5058093oiw.8
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 06:42:52 -0700 (PDT)
+        Mon, 7 Jun 2021 09:45:40 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DEDC061766;
+        Mon,  7 Jun 2021 06:43:48 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id o12so5313952plk.8;
+        Mon, 07 Jun 2021 06:43:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=PBl1oQb0REvQQKwpKMpTQoTdXm5nunxZT4Ar8PjX/i4=;
-        b=APbMb91gD1zIPIZTawQsDQLPOx+rb2op11WQRTpSn+xBFsVowr7scb7WdSPA9hWZUJ
-         AC3VYMUhRCmedN6If9GhtwC5ZFepZqexOxHytKONlL57LU+YqPMVe9JDo76vt/rCiSlp
-         CISlolqHTQk5Cp5lXyaOOYYWvKUziDDRZjPuNqB1kBGJAS2RsIgBk2peV+42ra2UrUtQ
-         ald8PqhSl2dM3avyYWumR/QZAxFySDdVsO4oymrNMw2G3RPfo+17GEO2vynXMaY1Dbs9
-         eBdxr8vFkVqYhcjNXLIaf1HuVgHtOz6qmoNKVQ0fmcBIbKGQeEXA9py239srn67H+ntB
-         7yRQ==
+        bh=k+196/sAn9PjLH1T5WW09ZALSStxAC7P96OlISkNyw4=;
+        b=pTV90WVFF9qU4vzTLK+t4NmsQ9lU6B2DH8dYKBwoB+kiarSMsXud3wStglYk+EkgHF
+         HDC4WW+EYNawMdStyFsC5rMkNa3TVII21iiAp8zh+yxYdfswNOziX8yp8VaVzGKDgUjv
+         eHsogDuRH61eAtK3JORdj/5f9sprtaPzX6VTtEyiKYZOeEpEBEBrv1F6fTV5NV2dvSgv
+         YlIhjZ+cN6jlZ2Ar+o98QfaEgJi1E5YIAiDxt2PgTVAdCTCg8ob9bjL03PyJ2d+9yNaw
+         BxLAxzKWl+Br22SLn4Q2vH3CJCLbzz9y7pdaPK1F2OioGiu0+c4NvylSUx2exXVQc/Jz
+         9f7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PBl1oQb0REvQQKwpKMpTQoTdXm5nunxZT4Ar8PjX/i4=;
-        b=dj/kBpPpa7qKInuXKF+O8L+FXgrR0KV8WClBQgc7PHh7gl0jTf1hQ0nRNwZg2noYhX
-         FcUGk58/VRe+WboQdFpTjQhtLgM1GO3kFrbl+4RFlsXvoqYkD9fWYsIgGQX3QltASMrX
-         KkMdF9NZPtPJQCTRGYbBu/rtQH+ajcJuAXag28kU+cdy17NZ1P7sD9md2ybHKKzMhkGb
-         V7oy9zbuFM2n/h6QIMwAobTh3atrMTq6Q+cxp3lPg+UfIHnldmY8WwRTsM8RumMbR7eE
-         qEQckoXeWTJsnxNU+En1mxJ6Cy+4bJK6wJ68SIK9F53nyDk4oP50ZGl6ZrjPxkYetrEG
-         dJqg==
-X-Gm-Message-State: AOAM532zrbE933BNoEWbSIEnCVZUz41aGZS3Gb6tAz8Et3Cx6c8yubb7
-        zTz+yY+4NEjxk0J0yArIR3kS5tNGrsFvcW207O07P6hC
-X-Google-Smtp-Source: ABdhPJyJai1JHNwwk+/qjkmNo3l3kzPLjZMtG9Ot8j4cMwfxFgwzzQTR0Mg4g027PYF+cdH5DFhuKuTjlhKOBZkQvTE=
-X-Received: by 2002:a05:6808:c3:: with SMTP id t3mr2097628oic.5.1623073370050;
- Mon, 07 Jun 2021 06:42:50 -0700 (PDT)
+        bh=k+196/sAn9PjLH1T5WW09ZALSStxAC7P96OlISkNyw4=;
+        b=ohj5Bnl3NSzXoRJ1PRfU1fxauW9FDEBSkzl3TtX3sLG1jQJ6B4zK2KdUN9CwJURVPz
+         F+Zq2UGwol08aO49Fa0l95gwkt0LrdcTMVR+gFEP7bafAQj/eN7ZIsX1fYeTaKLtcWJo
+         TYQryJY/Ycco3MPribFyVMHxGbmpYGJXk8ysevu9tuFCIOrnMt2s47M8Dc+ap7Hycai2
+         nePQzznlj07LPpQ5vcXBBTU23k0XzCQqmlMLNB6toDIYHjxWF7RmtcYK4YsKYRoX/J4j
+         aMfTH2fsy1H5IqgezHmO7/dbUG9bzK/Cje87St5jNwbsoPTl83CBw4frTI4ZIvJn46Nx
+         Z8Ug==
+X-Gm-Message-State: AOAM5337NPr4CMjzwZ4qHlTKGnhQg9mBiKnMZTXQoQkc/iLe7MkPYft1
+        mbcik2Q3np3Vof2zSg0l9eTSU6bUqQwuISB0wX/SP5mVdmyFZaZx
+X-Google-Smtp-Source: ABdhPJy6SuwabGiADaimFaR8cD2sz6Mucq0y3VUEU634hCJz4KYCm4l1FgnLyiWVwHgcRzDQsXBk9Suv3NoEvqgHoKM=
+X-Received: by 2002:a17:90a:2f22:: with SMTP id s31mr14785587pjd.62.1623073428380;
+ Mon, 07 Jun 2021 06:43:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <1623068820-2479-1-git-send-email-yangtiezhu@loongson.cn> <0d1b517f-797f-e87d-4edd-8474b16993ed@amd.com>
-In-Reply-To: <0d1b517f-797f-e87d-4edd-8474b16993ed@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 7 Jun 2021 09:42:39 -0400
-Message-ID: <CADnq5_PvZRu0h60dn-=4v0aXBOaNy=s0KjmeuSndDzU3C8qFog@mail.gmail.com>
-Subject: Re: [PATCH] drm/radeon: Always call radeon_suspend_kms() in radeon_pci_shutdown()
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jianmin Lv <lvjianmin@loongson.cn>,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210607093433.39160-1-src.res@email.cn> <CAMU9jJrkxTUgS0P3tpr-Udw9WqUgqCJ2D0G+ja5UX=B+4DRw7g@mail.gmail.com>
+In-Reply-To: <CAMU9jJrkxTUgS0P3tpr-Udw9WqUgqCJ2D0G+ja5UX=B+4DRw7g@mail.gmail.com>
+From:   teng sterling <sterlingteng@gmail.com>
+Date:   Mon, 7 Jun 2021 21:43:37 +0800
+Message-ID: <CAMU9jJq5ykLjZK2NFo98FxuKDmJnSCcUGn2-N53ioX9nspBSLA@mail.gmail.com>
+Subject: Re: [PATCH] docs/zh_CN: add a translation for index
+To:     Hu Haowen <src.res@email.cn>
+Cc:     Alex Shi <alexs@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yanteng Si <siyanteng@loongson.cn>, "Wu X.C." <bobwxc@email.cn>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 8:30 AM Christian K=C3=B6nig <christian.koenig@amd.c=
-om> wrote:
->
-> Am 07.06.21 um 14:27 schrieb Tiezhu Yang:
-> > radeon_suspend_kms() puts the hw in the suspend state (all asics),
-> > it should always call radeon_suspend_kms() in radeon_pci_shutdown(),
-> > this is a normal cleanup process to avoid more operations on radeon,
-> > just remove #ifdef CONFIG_PPC64 and the related comments.
->
-> Well NAK.
->
-> Alex knows more about the details but suspending should not be part of
-> the pci shotdown process at all.
->
-> We just add that here to enforce a GPU reset on PPC64 boards for some
-> reason.
-
-Everything in the comment still applies.
-
-Alex
-
->
-> Regards,
-> Christian.
->
-> >
-> > Co-developed-by: Jianmin Lv <lvjianmin@loongson.cn>
-> > Signed-off-by: Jianmin Lv <lvjianmin@loongson.cn>
-> > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> > ---
-> >   drivers/gpu/drm/radeon/radeon_drv.c | 9 ---------
-> >   1 file changed, 9 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/rade=
-on/radeon_drv.c
-> > index efeb115..0b1f43d 100644
-> > --- a/drivers/gpu/drm/radeon/radeon_drv.c
-> > +++ b/drivers/gpu/drm/radeon/radeon_drv.c
-> > @@ -386,16 +386,7 @@ radeon_pci_shutdown(struct pci_dev *pdev)
-> >       if (radeon_device_is_virtual())
-> >               radeon_pci_remove(pdev);
-> >
-> > -#ifdef CONFIG_PPC64
-> > -     /*
-> > -      * Some adapters need to be suspended before a
-> > -      * shutdown occurs in order to prevent an error
-> > -      * during kexec.
-> > -      * Make this power specific becauase it breaks
-> > -      * some non-power boards.
-> > -      */
-> >       radeon_suspend_kms(pci_get_drvdata(pdev), true, true, false);
-> > -#endif
-> >   }
-> >
-> >   static int radeon_pmops_suspend(struct device *dev)
->
+Q0MgWGlhbmdjaGVuZw0KDQp0ZW5nIHN0ZXJsaW5nIDxzdGVybGluZ3RlbmdAZ21haWwuY29tPiDk
+uo4yMDIx5bm0NuaciDfml6XlkajkuIAg5LiL5Y2IOTo0MOWGmemBk++8mg0KPg0KPiBDQyBzaXlh
+bnRlbmdAbG9vbmdzb24uY24NCj4gSHUgSGFvd2VuIDxzcmMucmVzQGVtYWlsLmNuPiDkuo4yMDIx
+5bm0NuaciDfml6XlkajkuIAg5LiL5Y2INTozN+WGmemBk++8mg0KPiA+DQo+ID4gVGhlIG9yaWdp
+bmFsIGZpbGUgaGFzIGFkZGVkIGEgZm9ybWVyIGludHJvIGluIGNvbW1pdCBiNTEyMDhkNDFjNmE0
+ZTdmYzJmMA0KPiA+ICgiZG9jczogVHdlYWsgdGhlIHRvcC1sZXZlbCBTcGhpbnggcGFnZSIpIGFu
+ZCBoZW5jZSB1cGRhdGUgdGhlIENoaW5lc2UNCj4gPiB2ZXJzaW9uIGZvciBpdC4NCj4gPg0KPiA+
+IFNpZ25lZC1vZmYtYnk6IEh1IEhhb3dlbiA8c3JjLnJlc0BlbWFpbC5jbj4NCj4gPiAtLS0NCj4g
+PiAgRG9jdW1lbnRhdGlvbi90cmFuc2xhdGlvbnMvemhfQ04vaW5kZXgucnN0IHwgNSArKysrKw0K
+PiA+ICAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspDQo+ID4NCj4gPiBkaWZmIC0tZ2l0
+IGEvRG9jdW1lbnRhdGlvbi90cmFuc2xhdGlvbnMvemhfQ04vaW5kZXgucnN0IGIvRG9jdW1lbnRh
+dGlvbi90cmFuc2xhdGlvbnMvemhfQ04vaW5kZXgucnN0DQo+ID4gaW5kZXggMWY5NTNkMzQzOWE1
+Li4wMDMxMjZhYmMwZDYgMTAwNjQ0DQo+ID4gLS0tIGEvRG9jdW1lbnRhdGlvbi90cmFuc2xhdGlv
+bnMvemhfQ04vaW5kZXgucnN0DQo+ID4gKysrIGIvRG9jdW1lbnRhdGlvbi90cmFuc2xhdGlvbnMv
+emhfQ04vaW5kZXgucnN0DQo+ID4gQEAgLTE3LDYgKzE3LDExIEBADQo+ID4gICAgICoq57+76K+R
+6K6h5YiSOioqDQo+ID4gICAgIOWGheaguOS4reaWh+aWh+aho+asoui/juS7u+S9lee/u+ivkeaK
+leeov++8jOeJueWIq+aYr+WFs+S6juWGheaguOeUqOaIt+WSjOeuoeeQhuWRmOaMh+WNl+mDqOWI
+huOAgg0KPiA+DQo+ID4gK+i/meaYr+WGheaguOaWh+aho+agkeeahOmhtue6p+ebruW9leOAguWG
+heaguOaWh+aho++8jOWwseWDj+WGheaguOacrOi6q+S4gOagt++8jOWcqOW+iOWkp+eoi+W6puS4
+iuaYr+S4gOmhueatow0KPiBob3cgYWJvdXQ6DQo+DQo+IOi/meaYr+S4reaWh+WGheaguOaWh+ah
+o+agkeeahOmhtue6p+ebruW9leOAgg0KPiA+ICvlnKjov5vooYznmoTlt6XkvZzvvJvlvZPmiJHk
+u6zliqrlipvlsIborrjlpJrliIbmlaPnmoTmlofku7bmlbTlkIjmiJDkuIDkuKrov57otK/nmoTm
+lbTkvZPml7blsKTlhbblpoLmraTjgILlj6YNCj4gPiAr5aSW77yM6ZqP5pe25qyi6L+O5oKo5a+5
+5YaF5qC45paH5qGj6L+b6KGM5pS56L+b77yb5aaC5p6c5oKo5oOz5o+Q5L6b5biu5Yqp77yM6K+3
+5Yqg5YWldmdlci5rZXJuZWwub3JnDQo+IOS4reaWh+WGheaguOaWh+aho+i/m+ihjOaUuei/m++8
+mw0KPiA+ICvkuIrnmoRsaW51eC1kb2Ppgq7ku7bliJfooajjgIINCj4g5LiK55qEbGludXgtZG9j
+6YKu5Lu25YiX6KGo77yM5YWI5pS56L+b5Y6f5aeL6Iux5paH5paH5qGj77yM5YaN5bCG5YW257+7
+6K+R5Li65Lit5paH5ZCO77yM5pu05paw55u45bqU55qE5Lit5paH5paH5qGj44CCDQo+ID4gKw0K
+PiA+ICDorrjlj6/or4HmlofmoaMNCj4gPiAgLS0tLS0tLS0tLQ0KPiA+DQo+ID4gLS0NCj4gPiAy
+LjI1LjENCj4gPg0KPiBCVFcsIEkgdGhpbmsgdGhlc2UgYXJlIHNpbWlsYXIgdG8gImRpc2NsYWlt
+ZXItemhfQ04iLCBidXQgbm90IGFzIGdvb2QNCj4gYXMgdGhlIGxhdHRlci4NCj4NCj4gQWxleCBh
+bmQgWGlhbmdjaGVuZywgd2hhdCBkbyB5b3UgdGhpbms/DQo+DQo+IFRoYW5rcywNCj4gWWFudGVu
+Zw0K
