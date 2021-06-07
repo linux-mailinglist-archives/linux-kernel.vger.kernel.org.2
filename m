@@ -2,137 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C39A39E1C6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F50439E252
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231359AbhFGQOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 12:14:11 -0400
-Received: from router.aksignal.cz ([62.44.4.214]:50668 "EHLO
-        router.aksignal.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230344AbhFGQOC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 12:14:02 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by router.aksignal.cz (Postfix) with ESMTP id D238344411;
-        Mon,  7 Jun 2021 18:12:06 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at router.aksignal.cz
-Received: from router.aksignal.cz ([127.0.0.1])
-        by localhost (router.aksignal.cz [127.0.0.1]) (amavisd-new, port 10026)
-        with LMTP id H0H9a3Z84_bB; Mon,  7 Jun 2021 18:12:05 +0200 (CEST)
-Received: from pc-gameroom.prchals.tk (unknown [83.240.30.185])
-        (Authenticated sender: jiri.prchal@aksignal.cz)
-        by router.aksignal.cz (Postfix) with ESMTPSA id 495B744415;
-        Mon,  7 Jun 2021 18:12:05 +0200 (CEST)
-From:   Jiri Prchal <jiri.prchal@aksignal.cz>
-To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Christian Eggers <ceggers@arri.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Prchal <jiri.prchal@aksignal.cz>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v8 3/5] dt-bindings: nvmem: at25: add for FRAM support
-Date:   Mon,  7 Jun 2021 18:11:59 +0200
-Message-Id: <20210607161201.223697-4-jiri.prchal@aksignal.cz>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210607161201.223697-1-jiri.prchal@aksignal.cz>
-References: <20210607161201.223697-1-jiri.prchal@aksignal.cz>
+        id S232331AbhFGQQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 12:16:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48406 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231633AbhFGQOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 12:14:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46A63613C1;
+        Mon,  7 Jun 2021 16:12:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623082377;
+        bh=a4TIiWANEKxTnYf+JVI7YM6TQKyxchagbhSFNk43bco=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=hLOj15/QpYGro4DGmFAWafvkSKls60ZtEmsXHX276HPjJ73pR+hpFIcQ5kzRpf7iR
+         OnBHr/9MCk1aMidl/e2VEv4CC1u39K1rEW67vkR3JUD58C3daKE284lQZniMI0nDIo
+         9el4/wJX50+bFANaMXs6BDGybMBTbr8+OB4eOfZxkyA9mzjdKMswc0TGrTXMrCO9v7
+         o35Rg3OXEPFtEjMn6QgwO/7+agV5XRKiUJqnBonmrnJDkHubPdTaGTX1u2vto9cyNM
+         GkMuEUAp1Bc6l2ArHu+yn+T/+35GkHGc3ImTRuD+mCuSFRH4RJc+RRFjemRtLkQ0H3
+         GFcak0hhSBmMQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Daniel Wagner <dwagner@suse.de>, Javed Hasan <jhasan@marvell.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.12 33/49] scsi: qedf: Do not put host in qedf_vport_create() unconditionally
+Date:   Mon,  7 Jun 2021 12:11:59 -0400
+Message-Id: <20210607161215.3583176-33-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210607161215.3583176-1-sashal@kernel.org>
+References: <20210607161215.3583176-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added dt binding documentation.
+From: Daniel Wagner <dwagner@suse.de>
 
-Signed-off-by: Jiri Prchal <jiri.prchal@aksignal.cz>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
-v2: fixed dt_binding_check warnings thanks to Rob Herring
-v3: resend and added more recipients
-v4: resend
-v5: no change here
-v6: no change here
-v7: no change here
-v8: changed subject
----
- .../devicetree/bindings/eeprom/at25.yaml      | 31 +++++++++++++++----
- 1 file changed, 25 insertions(+), 6 deletions(-)
+[ Upstream commit 79c932cd6af9829432888c4a0001d01793a09f12 ]
 
-diff --git a/Documentation/devicetree/bindings/eeprom/at25.yaml b/Documentation/devicetree/bindings/eeprom/at25.yaml
-index 121a601db22e..840ee7a83a14 100644
---- a/Documentation/devicetree/bindings/eeprom/at25.yaml
-+++ b/Documentation/devicetree/bindings/eeprom/at25.yaml
-@@ -4,14 +4,16 @@
- $id: "http://devicetree.org/schemas/eeprom/at25.yaml#"
- $schema: "http://devicetree.org/meta-schemas/core.yaml#"
+Do not drop reference count on vn_port->host in qedf_vport_create()
+unconditionally. Instead drop the reference count in qedf_vport_destroy().
+
+Link: https://lore.kernel.org/r/20210521143440.84816-1-dwagner@suse.de
+Reported-by: Javed Hasan <jhasan@marvell.com>
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/scsi/qedf/qedf_main.c | 20 +++++++++-----------
+ 1 file changed, 9 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/scsi/qedf/qedf_main.c b/drivers/scsi/qedf/qedf_main.c
+index e5076f09d5ed..16a0470aedfc 100644
+--- a/drivers/scsi/qedf/qedf_main.c
++++ b/drivers/scsi/qedf/qedf_main.c
+@@ -1827,22 +1827,20 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
+ 		fcoe_wwn_to_str(vport->port_name, buf, sizeof(buf));
+ 		QEDF_WARN(&(base_qedf->dbg_ctx), "Failed to create vport, "
+ 			   "WWPN (0x%s) already exists.\n", buf);
+-		goto err1;
++		return rc;
+ 	}
  
--title: SPI EEPROMs compatible with Atmel's AT25
-+title: SPI EEPROMs or FRAMs compatible with Atmel's AT25
+ 	if (atomic_read(&base_qedf->link_state) != QEDF_LINK_UP) {
+ 		QEDF_WARN(&(base_qedf->dbg_ctx), "Cannot create vport "
+ 			   "because link is not up.\n");
+-		rc = -EIO;
+-		goto err1;
++		return -EIO;
+ 	}
  
- maintainers:
-   - Christian Eggers <ceggers@arri.de>
+ 	vn_port = libfc_vport_create(vport, sizeof(struct qedf_ctx));
+ 	if (!vn_port) {
+ 		QEDF_WARN(&(base_qedf->dbg_ctx), "Could not create lport "
+ 			   "for vport.\n");
+-		rc = -ENOMEM;
+-		goto err1;
++		return -ENOMEM;
+ 	}
  
- properties:
-   $nodename:
--    pattern: "^eeprom@[0-9a-f]{1,2}$"
-+    anyOf:
-+      - pattern: "^eeprom@[0-9a-f]{1,2}$"
-+      - pattern: "^fram@[0-9a-f]{1,2}$"
+ 	fcoe_wwn_to_str(vport->port_name, buf, sizeof(buf));
+@@ -1866,7 +1864,7 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
+ 	if (rc) {
+ 		QEDF_ERR(&(base_qedf->dbg_ctx), "Could not allocate memory "
+ 		    "for lport stats.\n");
+-		goto err2;
++		goto err;
+ 	}
  
-   # There are multiple known vendors who manufacture EEPROM chips compatible
-   # with Atmel's AT25. The compatible string requires two items where the
-@@ -31,6 +33,7 @@ properties:
-               - microchip,25lc040
-               - st,m95m02
-               - st,m95256
-+              - cypress,fm25
+ 	fc_set_wwnn(vn_port, vport->node_name);
+@@ -1884,7 +1882,7 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
+ 	if (rc) {
+ 		QEDF_WARN(&base_qedf->dbg_ctx,
+ 			  "Error adding Scsi_Host rc=0x%x.\n", rc);
+-		goto err2;
++		goto err;
+ 	}
  
-           - const: atmel,at25
+ 	/* Set default dev_loss_tmo based on module parameter */
+@@ -1925,9 +1923,10 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
+ 	vport_qedf->dbg_ctx.host_no = vn_port->host->host_no;
+ 	vport_qedf->dbg_ctx.pdev = base_qedf->pdev;
  
-@@ -48,7 +51,7 @@ properties:
-     $ref: /schemas/types.yaml#/definitions/uint32
-     enum: [1, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072]
-     description:
--      Size of the eeprom page.
-+      Size of the eeprom page. FRAMs don't have pages.
- 
-   size:
-     $ref: /schemas/types.yaml#/definitions/uint32
-@@ -101,9 +104,19 @@ required:
-   - compatible
-   - reg
-   - spi-max-frequency
--  - pagesize
--  - size
--  - address-width
+-err2:
++	return 0;
 +
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          not:
-+            contains:
-+              const: cypress,fm25
-+    then:
-+      required:
-+        - pagesize
-+        - size
-+        - address-width
++err:
+ 	scsi_host_put(vn_port->host);
+-err1:
+ 	return rc;
+ }
  
- additionalProperties: false
+@@ -1968,8 +1967,7 @@ static int qedf_vport_destroy(struct fc_vport *vport)
+ 	fc_lport_free_stats(vn_port);
  
-@@ -126,4 +139,10 @@ examples:
-             size = <32768>;
-             address-width = <16>;
-         };
-+
-+        fram@1 {
-+            compatible = "cypress,fm25", "atmel,at25";
-+            reg = <1>;
-+            spi-max-frequency = <40000000>;
-+        };
-     };
+ 	/* Release Scsi_Host */
+-	if (vn_port->host)
+-		scsi_host_put(vn_port->host);
++	scsi_host_put(vn_port->host);
+ 
+ out:
+ 	return 0;
 -- 
-2.25.1
+2.30.2
 
