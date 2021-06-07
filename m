@@ -2,57 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCD539D6E8
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D0D39D6F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbhFGISb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 04:18:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230211AbhFGISa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 04:18:30 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76FBC061766
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 01:16:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Wpsm446VyaKPzhp5TMpr9XEEcJZ06UFuqrM7pz71NoY=; b=vMChmujZeDPt614cftbApytsqe
-        48Ti5sSTUqJZ3rUjuuzB3/IOzlHiqEU5FTIzvlyl+M2Tz49ftyXSumJYVjO/CUsLQvjy1pQieL//v
-        AVlUDEiVfeNzIMP/4swU920El6RPKMSMGOrZKNsryBYJrjhB9tI1AwSEYYQM3TneDwAxWccFkJgkO
-        pcPVnpFlrCszm7GZUm8fOLURVWBDAApZJjZdC6PEx2WNkiMKhV9z/G5Sm60E4vUNNlAt1nXR2mIeg
-        6NfJro6H5xfUdz2XVyUBSKWt8wB5xcxhbbtWBAsmVvUZme7YoyeJ2g5AzwnkoCLmdSCXVonCnjwV/
-        LioFt8nQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lqAQL-00FWKe-DM; Mon, 07 Jun 2021 08:15:56 +0000
-Date:   Mon, 7 Jun 2021 09:15:53 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Barry Song <song.bao.hua@hisilicon.com>
-Cc:     hpa@zytor.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/kprobes: remove free_insn_page since it is same with
- the common weak function
-Message-ID: <YL3VuU/GQl6HWGq7@infradead.org>
-References: <20210601040856.22080-1-song.bao.hua@hisilicon.com>
+        id S230193AbhFGITz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 04:19:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229436AbhFGITy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 04:19:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D17DE61205;
+        Mon,  7 Jun 2021 08:18:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623053883;
+        bh=rcNYVbMyXafr9ZPeLGrjEbrvpNK5tT6ia0SsufJVmzk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SKlOT+R7SNtF0XK1O4xH620h0QsH0T7g+8cn4p1H2nwjwDy4riCOWuxM2fVPREPzK
+         cXDrQ74468qT9gdGrsiJy+3W18fGtzzWmi3AE/b1vXZeeShY88Dp3ZYJVVV6qjubGs
+         V6amFAU9fEdrhowYIDoLDwUDLe9Wv3iIz4smN4AtClVj3ldVQhunzRhuZTGcGhyRHL
+         AuQlhnmQbxaAbpA3z6gk4W9JimdgOMbUK8S/vOLrJWbsk15MiH0QMNQq9KAGthCLRU
+         bC5kjUhZpxd8FOKkhjfeaww1usR0m2uzMDcOUaCVklF5obeqgY2MbCDo8XpL3GrXJE
+         PM9uuQ6RMTkKA==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        clang-built-linux@googlegroups.com,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Gal Pressman <galpress@amazon.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: [PATCH rdma-next v1 00/15] Reorganize sysfs file creation for struct ib_devices
+Date:   Mon,  7 Jun 2021 11:17:25 +0300
+Message-Id: <cover.1623053078.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210601040856.22080-1-song.bao.hua@hisilicon.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 04:08:56PM +1200, Barry Song wrote:
-> free_insn_page() in x86 is same with the common weak function in
-> kernel/kprobes.c. Plus, its comment "Recover page to RW mode before
-> releasing it" seems insensible to be there since resetting mapping
-> is done by common code in vfree() of module_memfree().
-> So drop the strong function and its comment in x86 totally.
-> 
-> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-It also is the same for s390, so please remove that as well and remove
-the __weak.
+Chagelog:
+v1:
+ * Added two new patches to the series
+     RDMA/core: Allow port_groups to be used with namespaces
+     RDMA: Remove rdma_set_device_sysfs_group()
+ * Fixed missing ops definition in device.c
+ * Passed proper internal validation and review
+ * changed EXPORT_SYMBOL to be EXPORT_SYMBOL_GPL for the ib_port_sysfs_create_groups
+ * qib was converted to use .is_visible() callback together with static
+   attribute_group declaration.
+v0: https://lore.kernel.org/linux-rdma/0-v1-34c90fa45f1c+3c7b0-port_sysfs_jgg@nvidia.com/
+
+-------------------------------------------------------------------------------
+From Jason,
+
+IB has a complex sysfs with a deep nesting of attributes. Nathan and Kees
+recently noticed this was not even slightly sane with how it was handling
+attributes and a deeper inspection shows the whole thing is a pretty
+"ick" coding style.
+
+Further review shows the ick extends outward from the ib_port sysfs and
+basically everything is pretty crazy.
+
+Simplify all of it:
+
+ - Organize the ib_port and gid_attr's kobj's to have clear setup/destroy
+   function pairings that work only on their own kobjs.
+
+ - All memory allocated in service of a kobject's attributes is freed as
+   part of the kobj release function. Thus all the error handling defers
+   the memory frees to a put.
+
+ - Build up lists of groups for every kobject and add the entire group
+   list as a one-shot operation as the last thing in setup function.
+
+ - Remove essentially all the error cleanup. The final kobject_put() will
+   always free any memory allocated or do an internal kobject_del() if
+   required. The new ordering eliminates all the other cleanup cases.
+
+ - Make all attributes use proper typing for the kobj they are attached
+   to. Split device and port hw_stats handling.
+
+ - Create a ib_port_attribute type and change hfi1, qib and the CM code to
+   work with attribute lists of ib_port_attribute type instead of building
+   their own kobject madness
+
+Thanks
+
+Jason Gunthorpe (15):
+  RDMA: Split the alloc_hw_stats() ops to port and device variants
+  RDMA/core: Replace the ib_port_data hw_stats pointers with a ib_port
+    pointer
+  RDMA/core: Split port and device counter sysfs attributes
+  RDMA/core: Split gid_attrs related sysfs from add_port()
+  RDMA/core: Simplify how the gid_attrs sysfs is created
+  RDMA/core: Simplify how the port sysfs is created
+  RDMA/core: Create the device hw_counters through the normal groups
+    mechanism
+  RDMA/core: Remove the kobject_uevent() NOP
+  RDMA/core: Expose the ib port sysfs attribute machinery
+  RDMA/cm: Use an attribute_group on the ib_port_attribute intead of
+    kobj's
+  RDMA/qib: Use attributes for the port sysfs
+  RDMA/hfi1: Use attributes for the port sysfs
+  RDMA: Change ops->init_port to ops->port_groups
+  RDMA/core: Allow port_groups to be used with namespaces
+  RDMA: Remove rdma_set_device_sysfs_group()
+
+ drivers/infiniband/core/cm.c                  |  227 ++--
+ drivers/infiniband/core/core_priv.h           |   13 +-
+ drivers/infiniband/core/counters.c            |    4 +-
+ drivers/infiniband/core/device.c              |   30 +-
+ drivers/infiniband/core/nldev.c               |   10 +-
+ drivers/infiniband/core/sysfs.c               | 1095 ++++++++---------
+ drivers/infiniband/hw/bnxt_re/hw_counters.c   |    7 +-
+ drivers/infiniband/hw/bnxt_re/hw_counters.h   |    4 +-
+ drivers/infiniband/hw/bnxt_re/main.c          |    4 +-
+ drivers/infiniband/hw/cxgb4/provider.c        |   11 +-
+ drivers/infiniband/hw/efa/efa.h               |    3 +-
+ drivers/infiniband/hw/efa/efa_main.c          |    3 +-
+ drivers/infiniband/hw/efa/efa_verbs.c         |   11 +-
+ drivers/infiniband/hw/hfi1/hfi.h              |    7 +-
+ drivers/infiniband/hw/hfi1/sysfs.c            |  529 +++-----
+ drivers/infiniband/hw/hfi1/verbs.c            |   92 +-
+ drivers/infiniband/hw/irdma/verbs.c           |   11 +-
+ drivers/infiniband/hw/mlx4/main.c             |   27 +-
+ drivers/infiniband/hw/mlx5/counters.c         |   42 +-
+ drivers/infiniband/hw/mlx5/main.c             |    2 +-
+ drivers/infiniband/hw/mthca/mthca_provider.c  |    2 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_main.c    |    2 +-
+ drivers/infiniband/hw/qedr/main.c             |    2 +-
+ drivers/infiniband/hw/qib/qib.h               |    8 +-
+ drivers/infiniband/hw/qib/qib_sysfs.c         |  616 ++++------
+ drivers/infiniband/hw/qib/qib_verbs.c         |    6 +-
+ drivers/infiniband/hw/usnic/usnic_ib_main.c   |    3 +-
+ .../infiniband/hw/vmw_pvrdma/pvrdma_main.c    |    2 +-
+ drivers/infiniband/sw/rdmavt/vt.c             |    2 +-
+ drivers/infiniband/sw/rxe/rxe_hw_counters.c   |    7 +-
+ drivers/infiniband/sw/rxe/rxe_hw_counters.h   |    4 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.c         |    4 +-
+ include/rdma/ib_sysfs.h                       |   37 +
+ include/rdma/ib_verbs.h                       |   68 +-
+ 34 files changed, 1313 insertions(+), 1582 deletions(-)
+ create mode 100644 include/rdma/ib_sysfs.h
+
+-- 
+2.31.1
+
