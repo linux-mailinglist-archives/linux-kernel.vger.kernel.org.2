@@ -2,153 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E6C439DC74
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6082439DC77
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbhFGMeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 08:34:05 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:41382 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbhFGMeE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S230363AbhFGMeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 08:34:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230241AbhFGMeE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 7 Jun 2021 08:34:04 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id AC30121A9C;
-        Mon,  7 Jun 2021 12:32:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623069131; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xujXttsQ0h26rg4aNmqeVpzzpa7x113gO557TuV5pLU=;
-        b=AOhl595vrgfKnAuXC5yvPCYMOxddB+q6+wK49+ct7AYPQUkx/0zBcNCAQJzxvq8qWokKOP
-        mVHJHpvtfIAgpshbP3/W4g6nnmmhtphWInomCkYyXTNM0QR0Eg9ACv5P2x1rPEvUxAByey
-        Fn24mCj4lpOtLMgS1WSSNqG1XOjRwG4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623069131;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xujXttsQ0h26rg4aNmqeVpzzpa7x113gO557TuV5pLU=;
-        b=Q6QdDGjPM6FGK235oEnTf/9V5KBfqby9x10xj/mrFAevp8uDDnWeduhr7ssq5Ua4gl6QGO
-        +iV5XDN1tawZUEBw==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 60569118DD;
-        Mon,  7 Jun 2021 12:32:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623069131; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xujXttsQ0h26rg4aNmqeVpzzpa7x113gO557TuV5pLU=;
-        b=AOhl595vrgfKnAuXC5yvPCYMOxddB+q6+wK49+ct7AYPQUkx/0zBcNCAQJzxvq8qWokKOP
-        mVHJHpvtfIAgpshbP3/W4g6nnmmhtphWInomCkYyXTNM0QR0Eg9ACv5P2x1rPEvUxAByey
-        Fn24mCj4lpOtLMgS1WSSNqG1XOjRwG4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623069131;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xujXttsQ0h26rg4aNmqeVpzzpa7x113gO557TuV5pLU=;
-        b=Q6QdDGjPM6FGK235oEnTf/9V5KBfqby9x10xj/mrFAevp8uDDnWeduhr7ssq5Ua4gl6QGO
-        +iV5XDN1tawZUEBw==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id ZFn9CMURvmDlfQAALh3uQQ
-        (envelope-from <colyli@suse.de>); Mon, 07 Jun 2021 12:32:05 +0000
-Subject: Re: [PATCH v5 2/2] bcache: avoid oversized read request in cache
- missing code path
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     axboe@kernel.dk, linux-bcache@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexander Ullrich <ealex1979@gmail.com>,
-        Diego Ercolani <diego.ercolani@gmail.com>,
-        Jan Szubiak <jan.szubiak@linuxpolska.pl>,
-        Marco Rebhan <me@dblsaiko.net>,
-        Matthias Ferdinand <bcache@mfedv.net>,
-        Victor Westerhuis <victor@westerhu.is>,
-        Vojtech Pavlik <vojtech@suse.cz>,
-        Rolf Fokkens <rolf@rolffokkens.nl>,
-        Thorsten Knabe <linux@thorsten-knabe.de>,
-        stable@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Nix <nix@esperi.org.uk>, Takashi Iwai <tiwai@suse.com>
-References: <20210607103539.12823-1-colyli@suse.de>
- <20210607103539.12823-3-colyli@suse.de> <20210607110657.GB6729@lst.de>
- <6d08d23b-b778-4e5f-a5f3-7106a42e26a1@suse.de>
- <20210607120822.GA11665@lst.de>
-From:   Coly Li <colyli@suse.de>
-Message-ID: <d7848f93-4acc-031f-b8ae-6fc2a4742fe7@suse.de>
-Date:   Mon, 7 Jun 2021 20:31:59 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210607120822.GA11665@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87DF3610E7;
+        Mon,  7 Jun 2021 12:32:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623069133;
+        bh=T4Z14wIFK7gWUQjB62xSZCX/tmsIcTCzew9mUok/E2c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FTJjQLzFbWiOTBIXQdtOhHbpc4nwI6xdVDWxdGul9Uc3onX/+qQHoaGwVCf/QGJJD
+         L6jg7CAj2Wu6GCL5FbehCdmGRxATzPVdGfAJmdmQ1SbFMARhaUXUZ6/mbB+LJWZflC
+         K0m5jW82PSxt8QVEVHHLYDE9XBNs2bZstM2ZAZia56XywdOWzyhT5JbJ00sSZdKSWi
+         6DRPScorVyEgCsM+8R6Qjx926ZcHnTq3ET4ZTclKgNOZ51AvGSX/ShVc+nNJNLco0Z
+         9c4MVnP5Wj+7TL2d3DaTGtHbDQBUNUgT6RpbWYM86b3BVSsUKNGr+/LRe6jNStVzsZ
+         UcDQtAFhhkrMw==
+Date:   Mon, 7 Jun 2021 21:32:08 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Barry Song <song.bao.hua@hisilicon.com>
+Cc:     <akpm@linux-foundation.org>, <hpa@zytor.com>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <bp@alien8.de>, <hca@linux.ibm.com>,
+        <gor@linux.ibm.com>, <borntraeger@de.ibm.com>,
+        <naveen.n.rao@linux.ibm.com>, <anil.s.keshavamurthy@intel.com>,
+        <davem@davemloft.net>, <linux-s390@vger.kernel.org>,
+        <x86@kernel.org>, <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v2] kprobes: remove duplicated strong free_insn_page in
+ x86 and s390
+Message-Id: <20210607213208.b6d4bbda578a1f3aea93a9cb@kernel.org>
+In-Reply-To: <20210607091854.31580-1-song.bao.hua@hisilicon.com>
+References: <20210607091854.31580-1-song.bao.hua@hisilicon.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/7/21 8:08 PM, Christoph Hellwig wrote:
-> On Mon, Jun 07, 2021 at 07:55:22PM +0800, Coly Li wrote:
->> On 6/7/21 7:06 PM, Christoph Hellwig wrote:
->>> On Mon, Jun 07, 2021 at 06:35:39PM +0800, Coly Li wrote:
->>>> +	/* Limitation for valid replace key size and cache_bio bvecs number */
->>>> +	size_limit = min_t(unsigned int, bio_max_segs(UINT_MAX) * PAGE_SECTORS,
->>>> +			   (1 << KEY_SIZE_BITS) - 1);
->>> bio_max_segs kaps the argument to BIO_MAX_VECS, so you might as well
->> It was suggested to not directly access BIO_MAX_VECS by you, maybe I
->> misunderstood you.
-> Yes, drivers really should not care about it.  But hiding that behind
-> a tiny wrapper doesn't help either.
+On Mon, 7 Jun 2021 21:18:54 +1200
+Barry Song <song.bao.hua@hisilicon.com> wrote:
 
-OK, I change back to BIO_MAX_VECS.
->>> directly write BIO_MAX_VECS.  Can you explain the PAGE_SECTORS here a bit
->>> more? Does this code path use discontiguous per-sector allocations?
->>> Preferably in a comment.
->>
->> It is just because bch_bio_map() assume the maximum bio size is 1MB. It
->> was not true since the multiple pages bvecs
->> was merged in mainline kernel.
->>  
->> The PAGE_SECTORS part is legacy for 1MB maximum size bio (256*4KB), it
->> should be fixed/improved later to
->> use multiple pages for bio size > 1MB and replace bch_bio_map().
-> bch_bio_map and bch_bio_alloc_pages that poke directly into the bio are
-> the root cause of a lot of these problems.
->
-> I had a series fixing some of that but Kent did not like it.  Drivers must
-> not diretly access bi_vcnt or directly build bios.
+> free_insn_page() in x86 and s390 are same with the common weak function
+> in kernel/kprobes.c.
+> Plus, the comment "Recover page to RW mode before releasing it" in x86
+> seems insensible to be there since resetting mapping is done by common
+> code in vfree() of module_memfree().
+> So drop these two duplicated strong functions and related comment, then
+> mark the common one in kernel/kprobes.c strong.
 
-Last time when you posted the series, Ming Lei's multipages bvecs were
-not merged yet.
+Hm, OK. Actually riscv and arm64 uses __vmalloc() but anyway
+since module_memfree() calls vfree(). So it has no problem.
 
-But the bcache code has kind of implicit restriction, e.g.
-cached_dev_cache_miss(), the refill
-cache missing 'cache_bio' must be a single bio and not chained,
-otherwise the following
-cached_dev_read_done() will have problem. Therefore I give up to fix
-such thing in this
-series, maybe there is no unique way to fix, and I also need to improve
-the bio related stuffs
-case by case.
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you,
+
+> 
+> Cc: Christoph Hellwig <hch@infradead.org>
+> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+> ---
+>  -v2:
+>  remove free_insn_page in s390 as well and remove the __weak in common
+>  code according to Christoph's comment;
+> 
+>  arch/s390/kernel/kprobes.c     | 5 -----
+>  arch/x86/kernel/kprobes/core.c | 6 ------
+>  kernel/kprobes.c               | 2 +-
+>  3 files changed, 1 insertion(+), 12 deletions(-)
+> 
+> diff --git a/arch/s390/kernel/kprobes.c b/arch/s390/kernel/kprobes.c
+> index aae24dc75df6..60cfbd24229b 100644
+> --- a/arch/s390/kernel/kprobes.c
+> +++ b/arch/s390/kernel/kprobes.c
+> @@ -44,11 +44,6 @@ void *alloc_insn_page(void)
+>  	return page;
+>  }
+>  
+> -void free_insn_page(void *page)
+> -{
+> -	module_memfree(page);
+> -}
+> -
+>  static void *alloc_s390_insn_page(void)
+>  {
+>  	if (xchg(&insn_page_in_use, 1) == 1)
+> diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+> index d3d65545cb8b..3bce67d3a03c 100644
+> --- a/arch/x86/kernel/kprobes/core.c
+> +++ b/arch/x86/kernel/kprobes/core.c
+> @@ -422,12 +422,6 @@ void *alloc_insn_page(void)
+>  	return page;
+>  }
+>  
+> -/* Recover page to RW mode before releasing it */
+> -void free_insn_page(void *page)
+> -{
+> -	module_memfree(page);
+> -}
+> -
+>  /* Kprobe x86 instruction emulation - only regs->ip or IF flag modifiers */
+>  
+>  static void kprobe_emulate_ifmodifiers(struct kprobe *p, struct pt_regs *regs)
+> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> index 745f08fdd7a6..ddb643f3879f 100644
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -106,7 +106,7 @@ void __weak *alloc_insn_page(void)
+>  	return module_alloc(PAGE_SIZE);
+>  }
+>  
+> -void __weak free_insn_page(void *page)
+> +void free_insn_page(void *page)
+>  {
+>  	module_memfree(page);
+>  }
+> -- 
+> 2.25.1
+> 
 
 
->> Not any more. Now the line limit is 100 characters. Though I still
->> prefer 80 characters, place 86 characters in single line
->> makes the change more obvious.
-> It makes it really hard to read in a normal terminal.
-
-I don't know you still use 80 characters terminal for coding. Sure you
-have my respect and I will serve your
-request in next post.
-
-Thanks.
-
-Coly Li
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
