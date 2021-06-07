@@ -2,113 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0AA339D891
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1BD39D898
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbhFGJXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:23:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41134 "EHLO
+        id S230262AbhFGJYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:24:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbhFGJXf (ORCPT
+        with ESMTP id S230203AbhFGJYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:23:35 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BDA6C061766;
-        Mon,  7 Jun 2021 02:21:44 -0700 (PDT)
+        Mon, 7 Jun 2021 05:24:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD5AC061789
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 02:22:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=Agga5W3RV+Q845HFQCq/AGFYgszYt9H13vWhRIwVD8g=; b=Guc4lcrFvFrMfRY4qa013BS93
-        XytBl518zllAM6lNB/ix34vQT7CJWfnUgI4MMGZNxSePQ3nt8anB/enQjGq5m3IfynYSL2F6WFuJA
-        5rKxULJlO5uNXUHK0ChFfUU9/qz2tOplHbojPj1JOVGOb9uE74T6UJOTxg84KoAbncoaIL5bTu9BK
-        /lcsqcT9PQBjNU0TzHDIGAvP6/uBb/0S3LwV5h+wEVcoNQ5UKSyrbeop/8oP2t4+RY1+R1X2FljLn
-        WYjXb37iWUXoPXR1MSxiLr7AEKaZVaQcwUX/FM+ltbAkwK464McDjhch+xGC/76TOwpCkR1XuC1BO
-        h3M2CANSw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44780)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lqBRx-0000DQ-0G; Mon, 07 Jun 2021 10:21:37 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lqBRw-0005nY-6D; Mon, 07 Jun 2021 10:21:36 +0100
-Date:   Mon, 7 Jun 2021 10:21:36 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Steen Hegelund <steen.hegelund@microchip.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Mark Einon <mark.einon@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Simon Horman <simon.horman@netronome.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>
-Subject: Re: [PATCH net-next v3 04/10] net: sparx5: add port module support
-Message-ID: <20210607092136.GA22278@shell.armlinux.org.uk>
-References: <20210604085600.3014532-1-steen.hegelund@microchip.com>
- <20210604085600.3014532-5-steen.hegelund@microchip.com>
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=7UNlj+FWBEeACCbOEiLMCdZwBprY1+ow/vEJ/vwRuwk=; b=wUfPXZ6F9OhgnIF0VXeCQY4Nwr
+        +DofzgeIpIg14E17XpuwZ38q0GgMQ49xqAT/HCoIOVB5qIsam7d3oCByMy8oDqCe2XmN+/Mpb23Qy
+        8de/EwGMHzN+HVdioolFui2rYPp+O1j67XVOZWoZo+if2LaERH7wgXaZQIJmhZJAeja0XOIw72zKM
+        zbifJl5+IOj/+rwBTU4JXnqMs1kb77wFZkSuaj55Dz8truCJqz3WMG0c31m4A4yvBSlw1jUfpdpV1
+        Fr4ASg2Zw9Nd6XeoWxpuxySW70vLoa2QfuIOcXHGOa7fgD4B+NzETnKnHyqx2Y+6XaLkmmY1H8lHw
+        EqC8OVgw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lqBSW-00FZjV-Ce; Mon, 07 Jun 2021 09:22:17 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 468723001E3;
+        Mon,  7 Jun 2021 11:22:11 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2D0982CEABC0F; Mon,  7 Jun 2021 11:22:11 +0200 (CEST)
+Date:   Mon, 7 Jun 2021 11:22:11 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, lma@semihalf.com,
+        Guenter Roeck <groeck@google.com>,
+        Juergen Gross <jgross@suse.com>, lb@semihalf.com,
+        LKML <linux-kernel@vger.kernel.org>, mbenes@suse.com,
+        =?utf-8?B?UmFkb3PFgmF3?= Biernacki <rad@semihalf.com>,
+        upstream@semihalf.com,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>
+Subject: Re: [PATCH v3 16/16] objtool,x86: Rewrite retpoline thunk calls
+Message-ID: <YL3lQ5QdNV2qwLR/@hirez.programming.kicks-ass.net>
+References: <CAFJ_xbq06nfaEWtVNLtg7XCJrQeQ9wCs4Zsoi5Y_HP3Dx0iTRA@mail.gmail.com>
+ <20210604205018.2238778-1-ndesaulniers@google.com>
+ <CAKwvOdmhg2tj8cKe-XitoZXGKaoOhgTsCEdVXubt+LiY9+46rw@mail.gmail.com>
+ <20210604235046.w3hazgcpsg4oefex@google.com>
+ <YLtUO/thYUp2wU7k@hirez.programming.kicks-ass.net>
+ <CAFP8O3+ggR8N-ffsaYSMPX7s2XgrzzTQQjOgCwUe9smyos-waA@mail.gmail.com>
+ <YL3RQCJGIw9835Y1@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210604085600.3014532-5-steen.hegelund@microchip.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YL3RQCJGIw9835Y1@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 10:55:54AM +0200, Steen Hegelund wrote:
-> This add configuration of the Sparx5 port module instances.
+On Mon, Jun 07, 2021 at 09:56:48AM +0200, Peter Zijlstra wrote:
+> On Sat, Jun 05, 2021 at 06:58:39PM -0700, Fāng-ruì Sòng wrote:
+> > On Sat, Jun 5, 2021 at 3:39 AM Peter Zijlstra <peterz@infradead.org> wrote:
 > 
-> Sparx5 has in total 65 logical ports (denoted D0 to D64) and 33
-> physical SerDes connections (S0 to S32).  The 65th port (D64) is fixed
-> allocated to SerDes0 (S0). The remaining 64 ports can in various
-> multiplexing scenarios be connected to the remaining 32 SerDes using
-> QSGMII, or USGMII or USXGMII extenders. 32 of the ports can have a 1:1
-> mapping to the 32 SerDes.
+> > > I think you've absolutely nailed it; but would you have more information
+> > > or a code reference to what you're speaking about? My complete ELF
+> > > and libelf knowledge is very limited and as demonstrated here, I'm not
+> > > at all sure how all that extended index stuff is supposed to work.
+> > 
+> > The section index field of an Elf{32,64}_Sym (st_shndx) is 16-bit, so
+> > it cannot represent a section index greater than 0xffff.
+> > ELF actually reserves values in 0xff00~0xff00 for other purposes, so
+> > st_shndx cannot represent a section whose index is greater or equal to
+> > 0xff00.
 > 
-> Some additional ports (D65 to D69) are internal to the device and do not
-> connect to port modules or SerDes macros. For example, internal ports are
-> used for frame injection and extraction to the CPU queues.
-> 
-> The 65 logical ports are split up into the following blocks.
-> 
-> - 13 x 5G ports (D0-D11, D64)
-> - 32 x 2G5 ports (D16-D47)
-> - 12 x 10G ports (D12-D15, D48-D55)
-> - 8 x 25G ports (D56-D63)
-> 
-> Each logical port supports different line speeds, and depending on the
-> speeds supported, different port modules (MAC+PCS) are needed. A port
-> supporting 5 Gbps, 10 Gbps, or 25 Gbps as maximum line speed, will have a
-> DEV5G, DEV10G, or DEV25G module to support the 5 Gbps, 10 Gbps (incl 5
-> Gbps), or 25 Gbps (including 10 Gbps and 5 Gbps) speeds. As well as, it
-> will have a shadow DEV2G5 port module to support the lower speeds
-> (10/100/1000/2500Mbps). When a port needs to operate at lower speed and the
-> shadow DEV2G5 needs to be connected to its corresponding SerDes
-> 
-> Not all interface modes are supported in this series, but will be added at
-> a later stage.
+> Right, that's about as far as I got, but never could find details on how
+> the extension worked in detail, and I clearly muddled it :/
 
-It looks to me like the phylink code in your patch series is based on
-an older version of phylink and hasn't been updated for the split PCS
-support - you seem to be munging the PCS parts in with the MAC
-callbacks. If so, please update to the modern way of dealing with this.
+OK, so I'm all confused again...
 
-If that isn't the case, please explain why you are not using the split
-PCS support.
+So a .symtab entry has:
 
-Thanks.
+	st_name  -- strtab offset for the name string
+	st_value -- where this symbol lives
+	st_size  -- size of symbol in bytes
+	st_shndx -- section index to interpret the @st_value above
+	st_info  -- type+bind
+	st_other -- visibility
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+The thing is, we're adding UNDEF symbols, for the linker to resolve.
+UNDEF has:
+
+	st_value := 0
+	st_size  := 0
+	st_shndx := 0
+	st_info  := GLOBAL + NOTYPE
+	st_other := 0
+
+Per that, sh_shndx isn't >= SHN_LORESERVE, and I figured we all good.
+
+
+Is the problem that .symtab_shndx is expected to contain the exact same
+number of entries as .symtab? And I'm adding to .symtab and not to
+.symtab_shndx, hence getting them out of sync?
+
+Let me try adding 0s to .symtab_shndx. See if that makes readelf
+happier.
+
