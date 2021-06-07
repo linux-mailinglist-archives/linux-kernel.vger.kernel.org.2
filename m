@@ -2,92 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1693839E828
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 22:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E28D39E830
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 22:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231401AbhFGUPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 16:15:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231263AbhFGUPm (ORCPT
+        id S231532AbhFGURf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 16:17:35 -0400
+Received: from mail-pg1-f177.google.com ([209.85.215.177]:41884 "EHLO
+        mail-pg1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231224AbhFGURd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 16:15:42 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE2DC061574
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 13:13:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=OBlblsyEe9K54zWGafAt4RwuSBoICXx4jdQjxUflQZ4=; b=yo0tvdzCkg83moiAVunxBlnbUy
-        rFMxyHL+WXFdMigSvftvLj/W88r1TbH/IuST2xQ8fbEGp+2Z4d0Gfm1wy527QN81HseSEuhNfv1cP
-        hrLMtcPYqWl5gDnU0+4DDw5TqrO/yB5YevWkW2ydMR4WMdld9tfN2nZIxU4n5VVmcDRnrrEsx8Inx
-        7j3+Shw4QNHCTLkgzRFNA6QHqqgIqkt0KzwLZkl+tYov6roJ70vk+Po3D6yC0o4o4oCLZrQyNNE/G
-        t7u1qnBPHjbIKm1DFyM/UTxAi0CQkyaKGPBIghVeaRITRzCtBIBYv4QTQN+VAut8J0R7BEi1HJcgv
-        VHfHq9gQ==;
-Received: from [2601:1c0:6280:3f0::bd57]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lqLd7-005Hys-4z; Mon, 07 Jun 2021 20:13:49 +0000
-Subject: Re: [PATCH v2] mtd: rawnand: marvell: Minor documentation correction
-To:     Souptick Joarder <jrdr.linux@gmail.com>, miquel.raynal@bootlin.com,
-        richard@nod.at, vigneshr@ti.com
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-References: <20210607193736.4654-1-jrdr.linux@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <560cdf7c-c3aa-b102-95f9-b9930dc94b08@infradead.org>
-Date:   Mon, 7 Jun 2021 13:13:47 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Mon, 7 Jun 2021 16:17:33 -0400
+Received: by mail-pg1-f177.google.com with SMTP id r1so14699440pgk.8
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 13:15:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L7rpankvGLItroXIy6lBPDNJd2uTfY22CCQPQ/XjOqw=;
+        b=D4+dK8IR3YTVfzG/TXJ7zk/9sZWwjoSz+w+pbNpf62hi2i64DAyD0x5Sw0Awu48SEw
+         tEmEwpTou/M6xrq3m8/EIxaQ0kli67rT9g/dH63ahpj7sGjT+mZNZWdUSwoidLKJCNni
+         SSRuIZ70/Svn2YCnMtEfMVx9ITWcpBN05YM6BurUupEYDaW8/R1bZEefCaCgbZ4ER+dp
+         i9ZV7IRigciiqx4POmv+JD85qZGr16tNzrp2t368bwyhIiS0pnLwDv5NaVEmVLws9Fok
+         FMARqnrbxSs1uR3IV+thlGXifoe68/ac8wRrjjmsROVh3D7dAcLBmYIJkAjorc/gl5lu
+         1Gzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L7rpankvGLItroXIy6lBPDNJd2uTfY22CCQPQ/XjOqw=;
+        b=Y4iuB5N8m46rvkAAIUW0wbXLcqIzNdyO8elsb+1WkkSzjTC3K/4pFuFGT46uYS2vGG
+         w8Vqv8edD0CwL5BMTf6TOHxkg1oBZLO4eqVfYZfjOtctKF7i5wf4fe/rApHpV3q+bUeb
+         ynJB1bQqoQ6W0teJhUYVQWAxVyzlWgy8Qf/o3skrQ1Ehl0uF9oTHgorUWat6jfOX70v5
+         au/Wil3m7enwpNYUSvVr4wfFuqLOR7iNINIZ8IZa+0VhdJyyLNeK+A+U7jfgI22HWWpF
+         9bdIFw9SJQBHJkn6H2q3OrYvSRnt8KnW0iU8Chd2kxfCAW99RbxAdQ3ogJg+vaxldXZ8
+         zpIw==
+X-Gm-Message-State: AOAM533CaOx8ZJ8mnBdFD22ykW64eSTzPJ/dofv/ttDJyUufr8ckX0VT
+        aBuYfI47nPSBlKEaAVV4qrnjAKAm81ydUuf834gDvQ==
+X-Google-Smtp-Source: ABdhPJzEw8cm/NrkBFDUDuy7jVAtclHleIKn0U4xudYPyuV1EIQL8Sj2oL1noGD8zsxB8+Luzqlj6umWBD2LDr8hSbg=
+X-Received: by 2002:a63:d0d:: with SMTP id c13mr5466147pgl.384.1623096866188;
+ Mon, 07 Jun 2021 13:14:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210607193736.4654-1-jrdr.linux@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1622898327.git.mchehab+huawei@kernel.org> <08ac283ac5bdc2664255a7ad34514e50d3ed85d8.1622898327.git.mchehab+huawei@kernel.org>
+In-Reply-To: <08ac283ac5bdc2664255a7ad34514e50d3ed85d8.1622898327.git.mchehab+huawei@kernel.org>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Mon, 7 Jun 2021 13:14:15 -0700
+Message-ID: <CAFd5g45i-TPESs-cDosU29vcvjnjr1L0WvNqX6ZgD_-QvHW82Q@mail.gmail.com>
+Subject: Re: [PATCH 02/34] docs: dev-tools: kunit: don't use a table for docs name
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/7/21 12:37 PM, Souptick Joarder wrote:
-> Kernel test robot throws below warning ->
-> drivers/mtd/nand/raw/marvell_nand.c:454: warning: This comment starts
-> with '/**', but isn't a kernel-doc comment. Refer
-> Documentation/doc-guide/kernel-doc.rst
-> 
-> Minor documentation correction.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-> Cc: Randy Dunlap <rdunlap@infradead.org>
+On Sat, Jun 5, 2021 at 6:18 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> We'll be replacing :doc:`foo` references to
+> Documentation/foo.rst. Yet, here it happens inside a table.
+> Doing a search-and-replace would break it.
+>
+> Yet, as there's no good reason to use a table there,
+> let's just convert it into a list.
+>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-LGTM. Thanks.
+Thanks!
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-
-> ---
-> v2:
-> 	Address review comment.
-> 
->  drivers/mtd/nand/raw/marvell_nand.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-> index 79da6b02e209..f4efdb59467d 100644
-> --- a/drivers/mtd/nand/raw/marvell_nand.c
-> +++ b/drivers/mtd/nand/raw/marvell_nand.c
-> @@ -451,7 +451,7 @@ struct marvell_nfc_timings {
->  };
->  
->  /**
-> - * Derives a duration in numbers of clock cycles.
-> + * TO_CYCLES() - Derives a duration in numbers of clock cycles.
->   *
->   * @ps: Duration in pico-seconds
->   * @period_ns:  Clock period in nano-seconds
-> 
-
-
--- 
-~Randy
-
+Acked-by: Brendan Higgins <brendanhiggins@google.com>
