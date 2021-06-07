@@ -2,78 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE01939E479
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61DF139E490
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231222AbhFGQuW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Jun 2021 12:50:22 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3163 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230416AbhFGQuU (ORCPT
+        id S231506AbhFGQyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 12:54:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231147AbhFGQyc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 12:50:20 -0400
-Received: from fraeml708-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FzJwv2g6Sz6887F;
-        Tue,  8 Jun 2021 00:39:11 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml708-chm.china.huawei.com (10.206.15.36) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 18:48:27 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
- Mon, 7 Jun 2021 18:48:27 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Mimi Zohar <zohar@linux.vnet.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Linux Next Mailing List" <linux-next@vger.kernel.org>
-Subject: RE: linux-next: build warning after merge of the integrity tree
-Thread-Topic: linux-next: build warning after merge of the integrity tree
-Thread-Index: AQHXWbq5Ml5972yWWEqYgAkUVJwrLKsIxgUQ
-Date:   Mon, 7 Jun 2021 16:48:27 +0000
-Message-ID: <d6ebdfe45590466886c76f7475dcc9a8@huawei.com>
-References: <20210605132719.3b984ed0@canb.auug.org.au>
-In-Reply-To: <20210605132719.3b984ed0@canb.auug.org.au>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.221.98.153]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Mon, 7 Jun 2021 12:54:32 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B373C061766
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 09:52:25 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id r11so21161238edt.13
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 09:52:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=piuzvh+WATuDoi0VnCZDJuZVA8Lq1gkoxAyrgcRzpJw=;
+        b=TT37jEpKqS7kalX3UJGOJtqjDAi+vGiOy5MNriE++AHONeMuM2CCFajTRWL6fK6hgB
+         o02NaUnrsAFiOzULcrFBHT/l5GZhs4LFmFcOuE3Zc2fvQDUH2TH5759tIVMdRy4+n+F2
+         sACqdZiWsMuFjWRSKmYyjH/zDM8Oiuw5o89fqyblm1NiwSHRYdizDTah/aTs3dChPDpy
+         9hObD0kuyEU/8RunmlYQNd9wfQOCtlFVcTWS3CWH9ckeP9+9ODzVKPQWKMJifPAKYDTQ
+         W5lvO3RD/8AlOQaGiolWNx3dU4pIdJTFurU1kB4i0o3aqRR/dR//3nj9N4YTbZS718AD
+         zguw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=piuzvh+WATuDoi0VnCZDJuZVA8Lq1gkoxAyrgcRzpJw=;
+        b=aubNuo7kfg/6Mk4CahgG36Lo4vcj2NZlRvC3oJJOp+iqEGvQ1wtXTifYKUDXzeXZ6c
+         ENo7Fqx6/9FskFt7BMMSiGxPxSt/La0QDe6FVS6PU+cubH+kMaFgDjzYrkICO/MG5Gw6
+         QPnApWwt9Nw7XnWhaaFXSp1GLuDl+5W3TVM/H4hDtwGS4eyQ1VTxHTSb89O2w87D+tbM
+         qwozL4osMlkXcLVlivhHSO9Mx97JAhPVMYr4k54UaB261U36W76ZwFl/VcxYMcAVcSJy
+         3csHbp+rrQD0H1aOo/9BBpXsVxXI5NQ77IRvzRvJHN4MPggpQwQYie5/pBaeOAXQx+jX
+         PPYQ==
+X-Gm-Message-State: AOAM531OAslpTo6p/xq6F/Br1lGwYcw1YqpphdU8Qcw2FDwVsjrQVGY3
+        UVoHB3bAJhicKoW6PpVMyunAVHViB+YD/HeUEDI=
+X-Google-Smtp-Source: ABdhPJwrmYsEK1zkNnRoqsmNRvSQ7DlfyD++Isr88sx1tovj4dpaNWDJoo5TY9NaKtuyXCnLZ9Yet6Y8JQwHaPljr2E=
+X-Received: by 2002:aa7:dd0b:: with SMTP id i11mr20569911edv.51.1623084741996;
+ Mon, 07 Jun 2021 09:52:21 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Received: by 2002:a17:906:a0d5:0:0:0:0 with HTTP; Mon, 7 Jun 2021 09:52:21
+ -0700 (PDT)
+Reply-To: mrschantalawrence75@gmail.com
+From:   mrs chantal <mr.sssss.aaaaaa000@gmail.com>
+Date:   Mon, 7 Jun 2021 09:52:21 -0700
+Message-ID: <CABgQ3iCfr8vGoroaW3zaXz+qM9wWrK5DCjBSCJYj6xhyWC9xQw@mail.gmail.com>
+Subject: Good day To You,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Stephen Rothwell [mailto:sfr@canb.auug.org.au]
-> Sent: Saturday, June 5, 2021 5:27 AM
-> Hi all,
-> 
-> After merging the integrity tree, today's linux-next build (htmldocs)
-> produced this warning:
-> 
-> Documentation/security/IMA-templates.rst:81: WARNING: Inline
-> substitution_reference start-string without end-string.
-> 
-> Introduced by commit
-> 
->   8314b6732ae4 ("ima: Define new template fields xattrnames, xattrlengths
-> and xattrvalues")
+-- 
+hello....
 
-Hi Stephen
 
-I will provide a patch for this issue soon.
+You have been compensated with the sum of 5.7 million dollars in this
+united nation the payment will be issue into atm visa card and send to
+you from the santander bank we need your address and your whatsapp
+number
 
-Thanks
 
-Roberto
-
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Li Jian, Shi Yanli
-
-> --
-> Cheers,
-> Stephen Rothwell
+here is my email address   mrschantalawrence75@gmail.com
