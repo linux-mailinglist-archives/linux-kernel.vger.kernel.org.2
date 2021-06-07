@@ -2,178 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3039739DC20
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C556E39DC27
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbhFGMYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 08:24:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbhFGMYN (ORCPT
+        id S230213AbhFGM0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 08:26:20 -0400
+Received: from mail-io1-f52.google.com ([209.85.166.52]:43546 "EHLO
+        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230145AbhFGM0T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 08:24:13 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479CCC061787;
-        Mon,  7 Jun 2021 05:22:22 -0700 (PDT)
-Date:   Mon, 07 Jun 2021 12:22:19 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623068540;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e4YF7i8fPhT93+G8nSyug521WM/6VNQsMBLcpi8HbGQ=;
-        b=iWaZk01jw5k4YNzI0WT23RnAW6XIhMkY3aUiPc1Pk/d4FnQZoY8S5jb2jb3/lwj/OokNAX
-        xABTKkYWZMjwYQ6ClzuRnMBckQ5mwl7q0utgodUGb/c72zq423W8LTWYbpy1CcflJWuduP
-        ACDRztVK/OXC/mCByIUvfgIiUprN5S5n9xUlKOBvAgZMIsS4eofq/aUZd0mcJLmC8x09f7
-        3lJz6fFRcIi0Ha8BrD0f6pZmkIJWu/tniCnZkbRI+3wTCRZDBLBIS6XSoKHIxU7mukQ+pZ
-        3tqxCQtOImImKcl+DKGDx1ftiw++A2kH6B6Tjzj/X4ZoB6DE/BkBwKyvoU+LOQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623068540;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e4YF7i8fPhT93+G8nSyug521WM/6VNQsMBLcpi8HbGQ=;
-        b=WwlDxuI2NYMD3qJiOGhRkde9lusIe+uENZi2gJrOgG/WLIZz4otvbC7Bortv7Tzt+4o7/9
-        J6Qollv/M0NjoMBg==
-From:   "tip-bot2 for Mike Rapoport" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/setup: Remove CONFIG_X86_RESERVE_LOW and
- reservelow= options
-Cc:     Mike Rapoport <rppt@linux.ibm.com>, Borislav Petkov <bp@suse.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210601075354.5149-3-rppt@kernel.org>
-References: <20210601075354.5149-3-rppt@kernel.org>
+        Mon, 7 Jun 2021 08:26:19 -0400
+Received: by mail-io1-f52.google.com with SMTP id k16so18016596ios.10
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 05:24:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Iye2hzlZMm4k3ArCLqkXWazy2rFbkKnKpyJHx0+74tg=;
+        b=LP2p8ISrR9G7MhZN6U7AQHnQVN3Tbd7xXje8AcuRgY4RPS6Xi6uRGuKGnc9ggopera
+         qqTpY1lZA9cxPHbDBesr2D3Wvo1U7d3UkZ2ZReTT7iYeKTCG73U89v5GWfdmGjK1pK96
+         c/MM5Ua+2FHL2zLrUFWUtJqgSWw2z5uBgltqU4zRw2aBFQTlbzyf8HqEepz1K/0EbxVA
+         wCwuX/qGXX0aBWHEaEZbdQdDh1lzrRVu/EH5sZFM1Uc2QjontSSSX6hyDsy2Orgf6gxF
+         wZeRGkprn0K7QLFFoHBPytTCgcV6kyo9QfFayNjK9idy6aPeps0766YbH9wJb9lxaxJD
+         Pl/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Iye2hzlZMm4k3ArCLqkXWazy2rFbkKnKpyJHx0+74tg=;
+        b=UChQxNiIyor+fMoTM9e3fjFD/61y5iX8U+wHP12tIW7rgs/SJBPTn1oAwgOX2h3mhd
+         zcFdgqVYTNtbIlcJQFZjjlVy0lmlZ/e7M/K4kaXJHy8owVpl9cA/8K6jDrnGq+cDTccH
+         nb6GTkyU6kqMjrV7ZnaQ4SuYaVxw92+C6xTqIjLTvE1w8jxkHGD07qp1NiDXFh3Xg4N6
+         JPVZph9jtprMKrm7+sIZPIK/ZkZmtHA4NtsNmRz8dXKjzjTpE8Yuvmg4r4Dsu1hKLpGv
+         H/FL17+nIQcoXJ+6hRSRCXHoPK8XPfSsvoqFuMktMZd38Y8e2JiJlShyDZ4PUDUpkgPV
+         UQkg==
+X-Gm-Message-State: AOAM533Fw4phORIt1pYjAcBDqX0t520/bsa2IPkErBc+GtzyyyeVQqkN
+        g6HiTyxPbDaRdHFdSeZ0Qs/oNkR2smBYqMAohkwjFQ==
+X-Google-Smtp-Source: ABdhPJzpyr6l2dZ2J7xBcePLM41BDXcGM1ASNQ0L1Z98BU7Zzps+KqlvxZjeIdUG5ANVErPokhu0osYL2Sy46qHp/D8=
+X-Received: by 2002:a05:6638:634:: with SMTP id h20mr16097279jar.14.1623068591470;
+ Mon, 07 Jun 2021 05:23:11 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <162306853936.29796.12058741996675426246.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20210607105122.2047212-1-robert.marko@sartura.hr>
+ <20210607105122.2047212-2-robert.marko@sartura.hr> <CAHp75Vfkn-fSJrLFfswzLdZPJwe+x24rntCPO2VKK0RHfN0y=Q@mail.gmail.com>
+In-Reply-To: <CAHp75Vfkn-fSJrLFfswzLdZPJwe+x24rntCPO2VKK0RHfN0y=Q@mail.gmail.com>
+From:   Robert Marko <robert.marko@sartura.hr>
+Date:   Mon, 7 Jun 2021 14:23:00 +0200
+Message-ID: <CA+HBbNH9suWNFgFE8V4SLesF6aHkEOrxVGSRsL9XVU2eorwruQ@mail.gmail.com>
+Subject: Re: [PATCH v5 2/6] gpio: Add Delta TN48M CPLD GPIO driver
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Donald Buczek <buczek@molgen.mpg.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
+On Mon, Jun 7, 2021 at 2:06 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Mon, Jun 7, 2021 at 1:51 PM Robert Marko <robert.marko@sartura.hr> wrote:
+> >
+> > Delta TN48M CPLD is used as a GPIO expander for the SFP GPIOs.
+> >
+> > It is a mix of input only and output only pins.
+> >
+> > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> > Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>
+> Couple of small issues below.
+> Otherwise looks good!
+>
+> > ---
+> > Changes in v2:
+> > * Rewrite to use simple I2C MFD and GPIO regmap
+> > * Drop DT bindings for pin numbering
+> >
+> >  drivers/gpio/Kconfig      | 12 ++++++
+> >  drivers/gpio/Makefile     |  1 +
+> >  drivers/gpio/gpio-tn48m.c | 89 +++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 102 insertions(+)
+> >  create mode 100644 drivers/gpio/gpio-tn48m.c
+> >
+> > diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+> > index e3607ec4c2e8..472f7764508e 100644
+> > --- a/drivers/gpio/Kconfig
+> > +++ b/drivers/gpio/Kconfig
+> > @@ -1310,6 +1310,18 @@ config GPIO_TIMBERDALE
+> >         help
+> >         Add support for the GPIO IP in the timberdale FPGA.
+> >
+> > +config GPIO_TN48M_CPLD
+> > +       tristate "Delta Networks TN48M switch CPLD GPIO driver"
+> > +       depends on MFD_TN48M_CPLD
+> > +       select GPIO_REGMAP
+> > +       help
+> > +         This enables support for the GPIOs found on the Delta
+> > +         Networks TN48M switch CPLD.
+> > +         They are used for inputs and outputs on the SFP slots.
+> > +
+> > +         This driver can also be built as a module. If so, the
+> > +         module will be called gpio-tn48m.
+> > +
+> >  config GPIO_TPS65086
+> >         tristate "TI TPS65086 GPO"
+> >         depends on MFD_TPS65086
+> > diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
+> > index c58a90a3c3b1..271fb806475e 100644
+> > --- a/drivers/gpio/Makefile
+> > +++ b/drivers/gpio/Makefile
+> > @@ -145,6 +145,7 @@ obj-$(CONFIG_GPIO_TEGRA186)         += gpio-tegra186.o
+> >  obj-$(CONFIG_GPIO_TEGRA)               += gpio-tegra.o
+> >  obj-$(CONFIG_GPIO_THUNDERX)            += gpio-thunderx.o
+> >  obj-$(CONFIG_GPIO_TIMBERDALE)          += gpio-timberdale.o
+> > +obj-$(CONFIG_GPIO_TN48M_CPLD)          += gpio-tn48m.o
+> >  obj-$(CONFIG_GPIO_TPIC2810)            += gpio-tpic2810.o
+> >  obj-$(CONFIG_GPIO_TPS65086)            += gpio-tps65086.o
+> >  obj-$(CONFIG_GPIO_TPS65218)            += gpio-tps65218.o
+> > diff --git a/drivers/gpio/gpio-tn48m.c b/drivers/gpio/gpio-tn48m.c
+> > new file mode 100644
+> > index 000000000000..41484c002826
+> > --- /dev/null
+> > +++ b/drivers/gpio/gpio-tn48m.c
+> > @@ -0,0 +1,89 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * Delta TN48M CPLD GPIO driver
+> > + *
+> > + * Copyright 2021 Sartura Ltd
+> > + *
+> > + * Author: Robert Marko <robert.marko@sartura.hr>
+> > + */
+> > +
+> > +#include <linux/device.h>
+> > +#include <linux/gpio/driver.h>
+> > +#include <linux/gpio/regmap.h>
+>
+> > +#include <linux/kernel.h>
+>
+> What is this header for?
 
-Commit-ID:     1a6a9044b96729abacede172d7591c714a5b81d1
-Gitweb:        https://git.kernel.org/tip/1a6a9044b96729abacede172d7591c714a5b81d1
-Author:        Mike Rapoport <rppt@linux.ibm.com>
-AuthorDate:    Tue, 01 Jun 2021 10:53:53 +03:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 07 Jun 2021 11:12:25 +02:00
+Its not being actually used,
+I will drop it.
+>
+> > +#include <linux/mod_devicetable.h>
+> > +#include <linux/module.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/regmap.h>
+> > +
+> > +enum tn48m_gpio_type {
+> > +       TN48M_SFP_TX_DISABLE = 1,
+> > +       TN48M_SFP_PRESENT,
+> > +       TN48M_SFP_LOS,
+> > +};
+> > +
+> > +static int tn48m_gpio_probe(struct platform_device *pdev)
+> > +{
+> > +       struct gpio_regmap_config config = {0};
+> > +       enum tn48m_gpio_type type;
+> > +       struct regmap *regmap;
+> > +       u32 base;
+> > +       int ret;
+> > +
+> > +       if (!pdev->dev.parent)
+> > +               return -ENODEV;
+> > +
+> > +       type = (uintptr_t)device_get_match_data(&pdev->dev);
+> > +       if (!type)
+> > +               return -ENODEV;
+> > +
+> > +       ret = device_property_read_u32(&pdev->dev, "reg", &base);
+> > +       if (ret)
+>
+> > +               return -EINVAL;
+>
+> return ret;
 
-x86/setup: Remove CONFIG_X86_RESERVE_LOW and reservelow= options
+Will fix this and send v6 in a couple of minutes.
 
-The CONFIG_X86_RESERVE_LOW build time and reservelow= command line option
-allowed to control the amount of memory under 1M that would be reserved at
-boot to avoid using memory that can be potentially clobbered by BIOS.
+Thanks,
+Robert
+>
+> > +       regmap = dev_get_regmap(pdev->dev.parent, NULL);
+> > +       if (!regmap)
+> > +               return -ENODEV;
+> > +
+> > +       config.regmap = regmap;
+> > +       config.parent = &pdev->dev;
+> > +       config.ngpio = 4;
+> > +
+> > +       switch (type) {
+> > +       case TN48M_SFP_TX_DISABLE:
+> > +               config.reg_set_base = base;
+> > +               break;
+> > +       case TN48M_SFP_PRESENT:
+> > +               config.reg_dat_base = base;
+> > +               break;
+> > +       case TN48M_SFP_LOS:
+> > +               config.reg_dat_base = base;
+> > +               break;
+> > +       default:
+> > +               dev_err(&pdev->dev, "unknown type %d\n", type);
+> > +               return -ENODEV;
+> > +       }
+> > +
+> > +       return PTR_ERR_OR_ZERO(devm_gpio_regmap_register(&pdev->dev, &config));
+> > +}
+> > +
+> > +static const struct of_device_id tn48m_gpio_of_match[] = {
+> > +       { .compatible = "delta,tn48m-gpio-sfp-tx-disable", .data = (void *)TN48M_SFP_TX_DISABLE },
+> > +       { .compatible = "delta,tn48m-gpio-sfp-present", .data = (void *)TN48M_SFP_PRESENT },
+> > +       { .compatible = "delta,tn48m-gpio-sfp-los", .data = (void *)TN48M_SFP_LOS },
+> > +       { }
+> > +};
+> > +MODULE_DEVICE_TABLE(of, tn48m_gpio_of_match);
+> > +
+> > +static struct platform_driver tn48m_gpio_driver = {
+> > +       .driver = {
+> > +               .name = "delta-tn48m-gpio",
+> > +               .of_match_table = tn48m_gpio_of_match,
+> > +       },
+> > +       .probe = tn48m_gpio_probe,
+> > +};
+> > +module_platform_driver(tn48m_gpio_driver);
+> > +
+> > +MODULE_AUTHOR("Robert Marko <robert.marko@sartura.hr>");
+> > +MODULE_DESCRIPTION("Delta TN48M CPLD GPIO driver");
+> > +MODULE_LICENSE("GPL");
+> > --
+> > 2.31.1
+> >
+>
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
 
-Since the entire range under 1M is always reserved there is no need for
-these options anymore and they can be removed.
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210601075354.5149-3-rppt@kernel.org
----
- Documentation/admin-guide/kernel-parameters.txt |  5 +---
- arch/x86/Kconfig                                | 29 +----------------
- arch/x86/kernel/setup.c                         | 24 +-------------
- 3 files changed, 58 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index cb89dbd..d7d8130 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4775,11 +4775,6 @@
- 			Reserves a hole at the top of the kernel virtual
- 			address space.
- 
--	reservelow=	[X86]
--			Format: nn[K]
--			Set the amount of memory to reserve for BIOS at
--			the bottom of the address space.
--
- 	reset_devices	[KNL] Force drivers to reset the underlying device
- 			during initialization.
- 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 0045e1b..86dae42 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1693,35 +1693,6 @@ config X86_BOOTPARAM_MEMORY_CORRUPTION_CHECK
- 	  Set whether the default state of memory_corruption_check is
- 	  on or off.
- 
--config X86_RESERVE_LOW
--	int "Amount of low memory, in kilobytes, to reserve for the BIOS"
--	default 64
--	range 4 640
--	help
--	  Specify the amount of low memory to reserve for the BIOS.
--
--	  The first page contains BIOS data structures that the kernel
--	  must not use, so that page must always be reserved.
--
--	  By default we reserve the first 64K of physical RAM, as a
--	  number of BIOSes are known to corrupt that memory range
--	  during events such as suspend/resume or monitor cable
--	  insertion, so it must not be used by the kernel.
--
--	  You can set this to 4 if you are absolutely sure that you
--	  trust the BIOS to get all its memory reservations and usages
--	  right.  If you know your BIOS have problems beyond the
--	  default 64K area, you can set this to 640 to avoid using the
--	  entire low memory range.
--
--	  If you have doubts about the BIOS (e.g. suspend/resume does
--	  not work or there's kernel crashes after certain hardware
--	  hotplug events) then you might want to enable
--	  X86_CHECK_BIOS_CORRUPTION=y to allow the kernel to check
--	  typical corruption patterns.
--
--	  Leave this to the default value of 64 if you are unsure.
--
- config MATH_EMULATION
- 	bool
- 	depends on MODIFY_LDT_SYSCALL
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 1e72062..7638ac6 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -695,30 +695,6 @@ static void __init e820_add_kernel_range(void)
- 	e820__range_add(start, size, E820_TYPE_RAM);
- }
- 
--static unsigned reserve_low = CONFIG_X86_RESERVE_LOW << 10;
--
--static int __init parse_reservelow(char *p)
--{
--	unsigned long long size;
--
--	if (!p)
--		return -EINVAL;
--
--	size = memparse(p, &p);
--
--	if (size < 4096)
--		size = 4096;
--
--	if (size > 640*1024)
--		size = 640*1024;
--
--	reserve_low = size;
--
--	return 0;
--}
--
--early_param("reservelow", parse_reservelow);
--
- static void __init early_reserve_memory(void)
- {
- 	/*
+-- 
+Robert Marko
+Staff Embedded Linux Engineer
+Sartura Ltd.
+Lendavska ulica 16a
+10000 Zagreb, Croatia
+Email: robert.marko@sartura.hr
+Web: www.sartura.hr
