@@ -2,163 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00CEA39D95A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A8739D95B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230458AbhFGKN4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Jun 2021 06:13:56 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:32272 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230420AbhFGKNz (ORCPT
+        id S230481AbhFGKN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 06:13:59 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:56642 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230446AbhFGKN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 06:13:55 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-518-NXXZWSTrMd2nfJ8Azb3ccA-1; Mon, 07 Jun 2021 06:12:01 -0400
-X-MC-Unique: NXXZWSTrMd2nfJ8Azb3ccA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Mon, 7 Jun 2021 06:13:56 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9B61F6A2A1;
-        Mon,  7 Jun 2021 10:11:59 +0000 (UTC)
-Received: from web.messagingengine.com (ovpn-116-49.sin2.redhat.com [10.67.116.49])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 728265C1C2;
-        Mon,  7 Jun 2021 10:11:52 +0000 (UTC)
-Subject: [PATCH v5 2/6] kernfs: add a revision to identify directory node
- changes
-From:   Ian Kent <raven@themaw.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>
-Cc:     Eric Sandeen <sandeen@sandeen.net>, Fox Chen <foxhlchen@gmail.com>,
-        Brice Goglin <brice.goglin@gmail.com>,
-        Al Viro <viro@ZenIV.linux.org.uk>,
-        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Carlos Maiolino <cmaiolino@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Mon, 07 Jun 2021 18:11:50 +0800
-Message-ID: <162306071065.69474.8064509709844383785.stgit@web.messagingengine.com>
-In-Reply-To: <162306058093.69474.2367505736322611930.stgit@web.messagingengine.com>
-References: <162306058093.69474.2367505736322611930.stgit@web.messagingengine.com>
-User-Agent: StGit/0.23
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E065F21A6C;
+        Mon,  7 Jun 2021 10:12:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623060724; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tZFfZGuTAFS1TquvApI1+CiK8J/Pij4y4hPO/LGf4RI=;
+        b=KXf0D21g/8C9XmrVp61JJq/W8aEHtJJhgANM4xoKYVhS6M+dfqSZbrA7iMIczG5YQxi3SL
+        VII+TIZd67tSHdXR5ZaoeIrl100ZiLEc+I8tMAVeXcF+jw87e7Cs2Wu4tiTD8OsnXX5X+w
+        zscuK6f8zydM4t2WK7edTrNwQ9ceR7Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623060724;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tZFfZGuTAFS1TquvApI1+CiK8J/Pij4y4hPO/LGf4RI=;
+        b=/Xvg3qiuRA0/+G8iqXVLPBWNSe/nUknS+Dilj+gGjMur/haz2KaDhVhE9xdQDL5cvYETRf
+        FNEdbI9j+9zueGAg==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id B704D118DD;
+        Mon,  7 Jun 2021 10:12:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623060724; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tZFfZGuTAFS1TquvApI1+CiK8J/Pij4y4hPO/LGf4RI=;
+        b=KXf0D21g/8C9XmrVp61JJq/W8aEHtJJhgANM4xoKYVhS6M+dfqSZbrA7iMIczG5YQxi3SL
+        VII+TIZd67tSHdXR5ZaoeIrl100ZiLEc+I8tMAVeXcF+jw87e7Cs2Wu4tiTD8OsnXX5X+w
+        zscuK6f8zydM4t2WK7edTrNwQ9ceR7Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623060724;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tZFfZGuTAFS1TquvApI1+CiK8J/Pij4y4hPO/LGf4RI=;
+        b=/Xvg3qiuRA0/+G8iqXVLPBWNSe/nUknS+Dilj+gGjMur/haz2KaDhVhE9xdQDL5cvYETRf
+        FNEdbI9j+9zueGAg==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id UBgmLPTwvWAgLAAALh3uQQ
+        (envelope-from <vbabka@suse.cz>); Mon, 07 Jun 2021 10:12:04 +0000
+To:     Faiyaz Mohammed <faiyazm@codeaurora.org>, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, greg@kroah.com, glittao@gmail.com
+Cc:     vinmenon@codeaurora.org
+References: <1622996045-25826-1-git-send-email-faiyazm@codeaurora.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v10] mm: slub: move sysfs slab alloc/free interfaces to
+ debugfs
+Message-ID: <c12f642f-0f04-5a58-0966-41cbeb74c066@suse.cz>
+Date:   Mon, 7 Jun 2021 12:12:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: themaw.net
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <1622996045-25826-1-git-send-email-faiyazm@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a revision counter to kernfs directory nodes so it can be used
-to detect if a directory node has changed.
+On 6/6/21 6:14 PM, Faiyaz Mohammed wrote:
+> alloc_calls and free_calls implementation in sysfs have two issues,
+> one is PAGE_SIZE limitiation of sysfs and other is it does not adhere
+> to "one value per file" rule.
+> 
+> To overcome this issues, move the alloc_calls and free_calls implemeation
+> to debugfs.
+> 
+> Debugfs cache will be created if SLAB_STORE_USER flag is set.
+> 
+> Rename the alloc_calls/free_calls to alloc_traces/free_traces,
+> to be inline with what it does.
+> 
+> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+> ---
+>  mm/slab.h        |   8 ++
+>  mm/slab_common.c |   2 +
+>  mm/slub.c        | 292 +++++++++++++++++++++++++++++++++++++------------------
+>  3 files changed, 209 insertions(+), 93 deletions(-)
+> 
 
-There's an assumption that sizeof(unsigned long) <= sizeof(pointer)
-on all architectures and as far as I know that assumption holds.
+...
 
-So adding a revision counter to the struct kernfs_elem_dir variant of
-the kernfs_node type union won't increase the size of the kernfs_node
-struct. This is because struct kernfs_elem_dir is at least
-sizeof(pointer) smaller than the largest union variant. It's tempting
-to make the revision counter a u64 but that would increase the size of
-kernfs_node on archs where sizeof(pointer) is smaller than the revision
-counter.
+> +static int slab_debug_trace_open(struct inode *inode, struct file *filep)
+> +{
+> +
+> +	struct kmem_cache_node *n;
+> +	enum track_item alloc;
+> +	int node;
+> +	struct loc_track *t = __seq_open_private(filep, &slab_debugfs_sops,
+> +						sizeof(struct loc_track));
+> +	struct kmem_cache *s = file_inode(filep)->i_private;
+> +
+> +	if (strcmp(filep->f_path.dentry->d_name.name, "alloc_traces") == 0)
+> +		alloc =  TRACK_ALLOC;
 
-Signed-off-by: Ian Kent <raven@themaw.net>
----
- fs/kernfs/dir.c             |    8 ++++++++
- fs/kernfs/kernfs-internal.h |   24 ++++++++++++++++++++++++
- include/linux/kernfs.h      |    5 +++++
- 3 files changed, 37 insertions(+)
+			^ extra space here?
 
-diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-index 33166ec90a112..b88432c48851f 100644
---- a/fs/kernfs/dir.c
-+++ b/fs/kernfs/dir.c
-@@ -372,6 +372,7 @@ static int kernfs_link_sibling(struct kernfs_node *kn)
- 	/* successfully added, account subdir number */
- 	if (kernfs_type(kn) == KERNFS_DIR)
- 		kn->parent->dir.subdirs++;
-+	kernfs_inc_rev(kn->parent);
- 
- 	return 0;
- }
-@@ -394,6 +395,7 @@ static bool kernfs_unlink_sibling(struct kernfs_node *kn)
- 
- 	if (kernfs_type(kn) == KERNFS_DIR)
- 		kn->parent->dir.subdirs--;
-+	kernfs_inc_rev(kn->parent);
- 
- 	rb_erase(&kn->rb, &kn->parent->dir.children);
- 	RB_CLEAR_NODE(&kn->rb);
-@@ -1105,6 +1107,12 @@ static struct dentry *kernfs_iop_lookup(struct inode *dir,
- 
- 	/* instantiate and hash dentry */
- 	ret = d_splice_alias(inode, dentry);
-+	if (!IS_ERR(ret)) {
-+		if (unlikely(ret))
-+			kernfs_set_rev(parent, ret);
-+		else
-+			kernfs_set_rev(parent, dentry);
-+	}
-  out_unlock:
- 	mutex_unlock(&kernfs_mutex);
- 	return ret;
-diff --git a/fs/kernfs/kernfs-internal.h b/fs/kernfs/kernfs-internal.h
-index ccc3b44f6306f..1536002584fc4 100644
---- a/fs/kernfs/kernfs-internal.h
-+++ b/fs/kernfs/kernfs-internal.h
-@@ -81,6 +81,30 @@ static inline struct kernfs_node *kernfs_dentry_node(struct dentry *dentry)
- 	return d_inode(dentry)->i_private;
- }
- 
-+static inline void kernfs_set_rev(struct kernfs_node *kn,
-+				  struct dentry *dentry)
-+{
-+	if (kernfs_type(kn) == KERNFS_DIR)
-+		dentry->d_time = kn->dir.rev;
-+}
-+
-+static inline void kernfs_inc_rev(struct kernfs_node *kn)
-+{
-+	if (kernfs_type(kn) == KERNFS_DIR)
-+		kn->dir.rev++;
-+}
-+
-+static inline bool kernfs_dir_changed(struct kernfs_node *kn,
-+				      struct dentry *dentry)
-+{
-+	if (kernfs_type(kn) == KERNFS_DIR) {
-+		/* Not really a time bit it does what's needed */
-+		if (time_after(kn->dir.rev, dentry->d_time))
-+			return true;
-+	}
-+	return false;
-+}
-+
- extern const struct super_operations kernfs_sops;
- extern struct kmem_cache *kernfs_node_cache, *kernfs_iattrs_cache;
- 
-diff --git a/include/linux/kernfs.h b/include/linux/kernfs.h
-index 9e8ca8743c268..7947acb1163d7 100644
---- a/include/linux/kernfs.h
-+++ b/include/linux/kernfs.h
-@@ -98,6 +98,11 @@ struct kernfs_elem_dir {
- 	 * better directly in kernfs_node but is here to save space.
- 	 */
- 	struct kernfs_root	*root;
-+	/*
-+	 * Monotonic revision counter, used to identify if a directory
-+	 * node has changed during revalidation.
-+	 */
-+	unsigned long rev;
- };
- 
- struct kernfs_elem_symlink {
+> +	else
+> +		alloc =  TRACK_FREE;
 
+same here
 
+> +
+> +	if (!alloc_loc_track(t, PAGE_SIZE / sizeof(struct location), GFP_KERNEL)) {
+> +		pr_err("Out of memory\n");
+
+Hm I would remove this. It doesn't print any context, so it's not useful to let
+users know where/why we ran out of memory. Also if a GFP_KERNEL allocation
+fails, there will be a big warning including stacktrace from the page allocator
+anyway.
+
+> +		return -ENOMEM;
+> +	}
+> +
+> +	/* Push back cpu slabs */
+> +	flush_all(s);
+> +
+> +	for_each_kmem_cache_node(s, node, n) {
+> +		unsigned long flags;
+> +		struct page *page;
+> +
+> +		if (!atomic_long_read(&n->nr_slabs))
+> +			continue;
+> +
+> +		spin_lock_irqsave(&n->list_lock, flags);
+> +		list_for_each_entry(page, &n->partial, slab_list)
+> +			process_slab(t, s, page, alloc);
+> +		list_for_each_entry(page, &n->full, slab_list)
+> +			process_slab(t, s, page, alloc);
+> +			spin_unlock_irqrestore(&n->list_lock, flags);
+
+At least this is not Python, so it's just a visual flaw :)
+
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int slab_debug_trace_release(struct inode *inode, struct file *file)
+> +{
+> +	struct seq_file *seq = file->private_data;
+> +	struct loc_track *t = seq->private;
+> +
+> +	free_loc_track(t);
+> +	kfree(seq->private);
+> +	seq->private = NULL;
+> +	return seq_release(inode, file);
+
+You can call seq_release_private() instead and deal just with free_loc_track here.
+
+Thanks!
+Vlastimil
