@@ -2,89 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1802839E68F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 154F239E69D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbhFGSZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 14:25:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34364 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231258AbhFGSZ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 14:25:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 848D66100B;
-        Mon,  7 Jun 2021 18:23:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623090228;
-        bh=3qwQjke9SsTYx5f2eASEV9qw21YlAZykyJ/j3df/k/Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n+NCTiHtUaVhv4TT5TlzNFuevIV1NtcnocTXkHj0DW77u4R/8iV318yPf+et5nukK
-         iVlqz+gBTOA83lrF2bB2TJmfG6b/uvoZoDVhZTtX8iBBTroIdWjEO4jVut7N+Cy08/
-         W8K5BaZZf1lqMEr92kp2ZVU8E4AG8ZvYOdKJxPSk=
-Date:   Mon, 7 Jun 2021 20:23:43 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     kernel test robot <lkp@intel.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        kbuild-all@lists.01.org, Michal Simek <monstr@monstr.eu>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        linux-usb@vger.kernel.org, Bastien Nocera <hadess@hadess.net>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v11 2/5] USB: misc: Add onboard_usb_hub driver
-Message-ID: <YL5kL38o8JLDp8LK@kroah.com>
-References: <20210604144027.v11.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
- <202106050751.uNo0uAEm-lkp@intel.com>
- <YL5cvT4NvMLIuH+C@google.com>
+        id S230517AbhFGS1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 14:27:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230365AbhFGS1m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 14:27:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5D6C061766
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 11:25:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=8uaV7xI/+irpdecqa7C0H89FvUwfwt/YmJnM9tKmEOc=; b=hyjsdw95BYy4GQny/6wGgb4lq4
+        7/+mEmtVgX1PyuHCy4nUDU+R4FNsEJQuPrMI9XRPYiDSt/k04mkM4IfReWZnk1xue5I5xfFnD1UDc
+        zRE49wEEI9pkS5V63sxyzsOBR3duu/wgwvVfomb79pz8oHlmf0GXs7VDzMEwvZC0QlNIcAC7kAHKU
+        ouhV4dQMMeLadiuTPv2w5pKWt10I4UZ/kOu2GVcSpEelJNkYOi/XxRkVbAXTsQLv1pJXhyTmw2WoB
+        it/mxTT0GKlU/+pS09jhQnPtx6sakRa2i/NK3sjJohgTkEDKpKawWQw9zM9R1mrmSDP2SFHXw6dqR
+        8CPwpjKg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lqJvw-00G7Ec-Ig; Mon, 07 Jun 2021 18:25:11 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B4766300258;
+        Mon,  7 Jun 2021 20:25:07 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9BA942DC8FF14; Mon,  7 Jun 2021 20:25:07 +0200 (CEST)
+Date:   Mon, 7 Jun 2021 20:25:07 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, lma@semihalf.com,
+        Guenter Roeck <groeck@google.com>,
+        Juergen Gross <jgross@suse.com>, lb@semihalf.com,
+        LKML <linux-kernel@vger.kernel.org>, mbenes@suse.com,
+        =?utf-8?B?UmFkb3PFgmF3?= Biernacki <rad@semihalf.com>,
+        upstream@semihalf.com,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>
+Subject: Re: [PATCH v3 16/16] objtool,x86: Rewrite retpoline thunk calls
+Message-ID: <YL5kgx53yQeoJua3@hirez.programming.kicks-ass.net>
+References: <CAFJ_xbq06nfaEWtVNLtg7XCJrQeQ9wCs4Zsoi5Y_HP3Dx0iTRA@mail.gmail.com>
+ <20210604205018.2238778-1-ndesaulniers@google.com>
+ <CAKwvOdmhg2tj8cKe-XitoZXGKaoOhgTsCEdVXubt+LiY9+46rw@mail.gmail.com>
+ <20210604235046.w3hazgcpsg4oefex@google.com>
+ <YLtUO/thYUp2wU7k@hirez.programming.kicks-ass.net>
+ <CAFP8O3+ggR8N-ffsaYSMPX7s2XgrzzTQQjOgCwUe9smyos-waA@mail.gmail.com>
+ <YL3RQCJGIw9835Y1@hirez.programming.kicks-ass.net>
+ <YL3lQ5QdNV2qwLR/@hirez.programming.kicks-ass.net>
+ <YL3q1qFO9QIRL/BA@hirez.programming.kicks-ass.net>
+ <20210607172311.ynnrzihgz74vdyjq@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YL5cvT4NvMLIuH+C@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210607172311.ynnrzihgz74vdyjq@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 10:51:57AM -0700, Matthias Kaehlcke wrote:
-> On Sat, Jun 05, 2021 at 07:18:38AM +0800, kernel test robot wrote:
-> > Hi Matthias,
-> > 
-> > I love your patch! Perhaps something to improve:
-> > 
-> > [auto build test WARNING on next-20210604]
-> > [also build test WARNING on v5.13-rc4]
-> > [cannot apply to usb/usb-testing robh/for-next char-misc/char-misc-testing driver-core/driver-core-testing linus/master v5.13-rc4 v5.13-rc3 v5.13-rc2]
-> > [If your patch is applied to the wrong git tree, kindly drop us a note.
-> > And when submitting patch, we suggest to use '--base' as documented in
-> > https://git-scm.com/docs/git-format-patch]
-> > 
-> > url:    https://github.com/0day-ci/linux/commits/Matthias-Kaehlcke/USB-misc-Add-onboard_usb_hub-driver/20210605-054213
-> > base:    ccc252d2e818f6a479441119ad453c3ce7c7c461
-> > config: arc-allyesconfig (attached as .config)
-> > compiler: arceb-elf-gcc (GCC) 9.3.0
-> > reproduce (this is a W=1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # https://github.com/0day-ci/linux/commit/7107f99a12058b7147342c6f763d026102bd6606
-> >         git remote add linux-review https://github.com/0day-ci/linux
-> >         git fetch --no-tags linux-review Matthias-Kaehlcke/USB-misc-Add-onboard_usb_hub-driver/20210605-054213
-> >         git checkout 7107f99a12058b7147342c6f763d026102bd6606
-> >         # save the attached .config to linux build tree
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=arc 
-> > 
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > 
-> > All warnings (new ones prefixed by >>):
-> > 
-> > >> drivers/usb/misc/onboard_usb_hub.c:400:6: warning: no previous prototype for 'onboard_hub_create_pdevs' [-Wmissing-prototypes]
-> >      400 | void onboard_hub_create_pdevs(struct usb_device *parent_hub, struct list_head *pdev_list)
-> >          |      ^~~~~~~~~~~~~~~~~~~~~~~~
-> > >> drivers/usb/misc/onboard_usb_hub.c:458:6: warning: no previous prototype for 'onboard_hub_destroy_pdevs' [-Wmissing-prototypes]
-> >      458 | void onboard_hub_destroy_pdevs(struct list_head *pdev_list)
-> >          |      ^~~~~~~~~~~~~~~~~~~~~~~~~
+On Mon, Jun 07, 2021 at 10:23:11AM -0700, Fāng-ruì Sòng wrote:
+> On 2021-06-07, Peter Zijlstra wrote:
+
+> > That does indeed seem to do the trick. Bit daft if you ask me, anybody
+> > reading that file ought to have a handy bucket of 0s available, but
+> > whatever.
 > 
-> Oh, I wasn't aware that prototypes are required for public functions.
+> Does the representation use the section index directly? (sym->sym.st_shndx)
+> This can be fragile when the number of sections changes..., e.g. elf_add_section
 
-How else can they be called?
+No, things are supposed to use sym->sec, which is a pointer to our
+struct section representation.
 
+> So in llvm-objcopy's representation, the section index is represented as
+> the section object.
+> 
+> struct Symbol {
+>   ...
+>   SectionBase *DefinedIn = nullptr;
+>   ...
+> };
+
+Somewhat like that.
+
+> In the writer stage, sections are assigned 32-bit indexes and the writer
+> knows that an SHN_XINDEX for a symbol is needed if the index is >= 0xff00.
+
+I think we only ever append sections, so pre-existing section numbers
+stay correct. If libelf somehow does something else, we rely on it to
+then keep the section numbers internally consistent.
+
+And the only symbol write is this append of undef symbols, which are
+always on section 0.
