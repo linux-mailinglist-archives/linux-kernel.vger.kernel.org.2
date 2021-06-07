@@ -2,270 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E021A39D31B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 04:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E59B39D325
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 04:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbhFGCtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 22:49:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56217 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230133AbhFGCtC (ORCPT
+        id S230203AbhFGCvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 22:51:40 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3442 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230172AbhFGCvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 22:49:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623034031;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Mr3tocRxWL7KHdg8awV/zpzMwDBrih+hXjg05z6CBzk=;
-        b=drLTDpCuX5HGGbbaJJem9ZCgnDXVJXNuOmofwoVhczaoeIpXU09WuDGpuEyFPUnId0zNPA
-        CLrmiSOaFCdcMk6n/O+MfWQC3rhxdMgNhLp0P6gpSNk1fVLDCybr8fMgpmVnK69N9YqteS
-        qwtV5UxlHsDDUqGdq9OUhcsfsa9Fq78=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-144-LM2xpoDGOiKbhPuGjjsZNg-1; Sun, 06 Jun 2021 22:47:09 -0400
-X-MC-Unique: LM2xpoDGOiKbhPuGjjsZNg-1
-Received: by mail-pl1-f200.google.com with SMTP id x15-20020a170902e04fb02900f5295925dbso7053609plx.9
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 19:47:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Mr3tocRxWL7KHdg8awV/zpzMwDBrih+hXjg05z6CBzk=;
-        b=cU6EuUhaZraectKX77GjXcAAa+FGKFg9K3nYeRYvq8Z67fS4l82AjEXJKGjvJNG2Xw
-         oI3f8LAw00qGVON1CExjW80tWOlXgIZsl62581GTsc+1hgn+SwuYUmKNuvwVDSccp9Cf
-         Fj5v4jQRA6kMXFg47JWqPRtbEurVmutqP9T4ewJcQ2R1tJgSqXRJZWxaRoJ6ct7LVBGp
-         bZq/eL4GQ3bsHXUwUSw8wayIjS/8cyaIoQ9Ah129fVjOmR2rb3z0LOTnuSuaPj1vunWV
-         SrcwthFFEUqDfDcgqcKNYF3O55Zjcw9+9kA9xB9VnaN8xjdEWaG4WpMal+3z0YxwGQOc
-         j6hw==
-X-Gm-Message-State: AOAM533x+O33XFcoMf01308Q0dy3yE+ObPhv9EFLgHhWO1/sA+3bVGXo
-        ZpkoUz7kbBzK4PS64m8sg5PP3iGFSMWddXHr6ZvjSKMldrQI+V331ug/iM5OlBdDy+rU5+yO6eX
-        UdXAB/LFQ1djFFtGzdzlWFwn/
-X-Received: by 2002:a17:90a:a512:: with SMTP id a18mr10789093pjq.215.1623034028454;
-        Sun, 06 Jun 2021 19:47:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxp6+IFTDaA+xiekaXr4IMEzKNt6UmxaapTPVHbpvF501mj9bOPvGKBHxi8b6knZswIY52v0A==
-X-Received: by 2002:a17:90a:a512:: with SMTP id a18mr10789078pjq.215.1623034028146;
-        Sun, 06 Jun 2021 19:47:08 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id z134sm6704296pfc.209.2021.06.06.19.47.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 06 Jun 2021 19:47:07 -0700 (PDT)
-Subject: Re: [RFC PATCH 0/7] Untrusted device support for virtio
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, xieyongji@bytedance.com,
-        stefanha@redhat.com, file@sect.tu-berlin.de, ashish.kalra@amd.com,
-        martin.radev@aisec.fraunhofer.de, kvm@vger.kernel.org
-References: <20210421032117.5177-1-jasowang@redhat.com>
- <YInOQt1l/59zzPJK@Konrads-MacBook-Pro.local>
- <9b089e3b-7d7a-b9d6-a4a1-81a6eff2e425@redhat.com>
- <e8a35789-5001-3e17-1546-80fa9daa5ab1@oracle.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <b4f25e0e-5115-2d58-e433-1839651d747f@redhat.com>
-Date:   Mon, 7 Jun 2021 10:46:59 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        Sun, 6 Jun 2021 22:51:39 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FyySN5lZ3z6vxD;
+        Mon,  7 Jun 2021 10:46:44 +0800 (CST)
+Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 10:49:46 +0800
+Received: from [10.67.103.212] (10.67.103.212) by
+ dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 10:49:46 +0800
+Subject: Re: [PATCH v2 4/4] crypto: hisilicon/sec - modify the SEC request
+ structure
+To:     <herbert@gondor.apana.org.au>
+References: <1622770289-21588-1-git-send-email-yekai13@huawei.com>
+ <1622770289-21588-5-git-send-email-yekai13@huawei.com>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wangzhou1@hisilicon.com>
+From:   "yekai(A)" <yekai13@huawei.com>
+Message-ID: <8cdd2476-fd6b-fc1d-45e6-fdcf90bbdf3b@huawei.com>
+Date:   Mon, 7 Jun 2021 10:49:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-In-Reply-To: <e8a35789-5001-3e17-1546-80fa9daa5ab1@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <1622770289-21588-5-git-send-email-yekai13@huawei.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.103.212]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-在 2021/6/4 下午11:17, Konrad Rzeszutek Wilk 写道:
-> On 4/29/21 12:16 AM, Jason Wang wrote:
->>
->> 在 2021/4/29 上午5:06, Konrad Rzeszutek Wilk 写道:
->>> On Wed, Apr 21, 2021 at 11:21:10AM +0800, Jason Wang wrote:
->>>> Hi All:
->>>>
->>>> Sometimes, the driver doesn't trust the device. This is usually
->>>> happens for the encrtpyed VM or VDUSE[1]. In both cases, technology
->>>> like swiotlb is used to prevent the poking/mangling of memory from the
->>>> device. But this is not sufficient since current virtio driver may
->>>> trust what is stored in the descriptor table (coherent mapping) for
->>>> performing the DMA operations like unmap and bounce so the device may
->>>> choose to utilize the behaviour of swiotlb to perform attacks[2].
->>> We fixed it in the SWIOTLB. That is it saves the expected length
->>> of the DMA operation. See
->>>
->>> commit daf9514fd5eb098d7d6f3a1247cb8cc48fc94155
->>> Author: Martin Radev <martin.b.radev@gmail.com>
->>> Date:   Tue Jan 12 16:07:29 2021 +0100
->>>
->>>      swiotlb: Validate bounce size in the sync/unmap path
->>>      The size of the buffer being bounced is not checked if it happens
->>>      to be larger than the size of the mapped buffer. Because the size
->>>      can be controlled by a device, as it's the case with virtio 
->>> devices,
->>>      this can lead to memory corruption.
->>
->>
->> Good to know this, but this series tries to protect at different 
->> level. And I believe such protection needs to be done at both levels.
->>
+
+On 2021/6/4 9:31, Kai Ye wrote:
+> Modify the SEC request structure, combines two common parameters of the
+> SEC request into one parameter.
 >
-> My apologies for taking so long to respond, somehow this disappeared 
-> in one of the folders.
-
-
-No problem.
-
-
->>
->>>> For double insurance, to protect from a malicous device, when DMA API
->>>> is used for the device, this series store and use the descriptor
->>>> metadata in an auxiliay structure which can not be accessed via
->>>> swiotlb instead of the ones in the descriptor table. Actually, we've
->>> Sorry for being dense here, but how wold SWIOTLB be utilized for
->>> this attack?
->>
->>
->> So we still behaviors that is triggered by device that is not 
->> trusted. Such behavior is what the series tries to avoid. We've 
->> learnt a lot of lessons to eliminate the potential attacks via this. 
->> And it would be too late to fix if we found another issue of SWIOTLB.
->>
->> Proving "the unexpected device triggered behavior is safe" is very 
->> hard (or even impossible) than "eliminating the unexpected device 
->> triggered behavior totally".
->>
->> E.g I wonder whether something like this can happen: Consider the DMA 
->> direction of unmap is under the control of device. The device can 
->> cheat the SWIOTLB by changing the flag to modify the device read only 
->> buffer. 
+> Signed-off-by: Kai Ye <yekai13@huawei.com>
+> ---
+>  drivers/crypto/hisilicon/sec2/sec.h        |  7 ++++--
+>  drivers/crypto/hisilicon/sec2/sec_crypto.c | 34 +++++++++++++++---------------
+>  2 files changed, 22 insertions(+), 19 deletions(-)
 >
-> <blinks> Why would you want to expose that to the device? And wouldn't 
-> that be specific to Linux devices - because surely Windows DMA APIs 
-> are different and this 'flag' seems very Linux-kernel specific?
-
-
-Just to make sure we are in the same page. The "flag" I actually mean 
-the virtio descriptor flag which could be modified by the device. And 
-driver deduce the DMA API flag from the descriptor flag.
-
-
+> diff --git a/drivers/crypto/hisilicon/sec2/sec.h b/drivers/crypto/hisilicon/sec2/sec.h
+> index 3fe7875..018415b 100644
+> --- a/drivers/crypto/hisilicon/sec2/sec.h
+> +++ b/drivers/crypto/hisilicon/sec2/sec.h
+> @@ -21,8 +21,6 @@ struct sec_alg_res {
 >
->> If yes, it is really safe?
+>  /* Cipher request of SEC private */
+>  struct sec_cipher_req {
+> -	struct hisi_acc_hw_sgl *c_in;
+> -	dma_addr_t c_in_dma;
+>  	struct hisi_acc_hw_sgl *c_out;
+>  	dma_addr_t c_out_dma;
+>  	u8 *c_ivin;
+> @@ -49,6 +47,11 @@ struct sec_req {
+>  	struct sec_ctx *ctx;
+>  	struct sec_qp_ctx *qp_ctx;
 >
-> Well no? But neither is rm -Rf / but we still allow folks to do that.
->>
->> The above patch only log the bounce size but it doesn't log the flag. 
+> +	/**
+> +	 * Common parameter of the SEC request.
+> +	 */
+> +	struct hisi_acc_hw_sgl *in;
+> +	dma_addr_t in_dma;
+>  	struct sec_cipher_req c_req;
+>  	struct sec_aead_req aead_req;
+>  	struct list_head backlog_head;
+> diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
+> index 75122f0..f23af61 100644
+> --- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
+> +++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
+> @@ -871,8 +871,8 @@ static int sec_cipher_pbuf_map(struct sec_ctx *ctx, struct sec_req *req,
+>  		memcpy(a_req->out_mac, mac_offset, authsize);
+>  	}
 >
-> It logs and panics the system.
-
-
-Good to know that.
-
-
+> -	c_req->c_in_dma = qp_ctx->res[req_id].pbuf_dma;
+> -	c_req->c_out_dma = c_req->c_in_dma;
+> +	req->in_dma = qp_ctx->res[req_id].pbuf_dma;
+> +	c_req->c_out_dma = req->in_dma;
 >
->> Even if it logs the flag, SWIOTLB still doesn't know how each buffer 
->> is used and when it's the appropriate(safe) time to unmap the buffer, 
->> only the driver that is using the SWIOTLB know them.
+>  	return 0;
+>  }
+> @@ -950,14 +950,13 @@ static int sec_cipher_map(struct sec_ctx *ctx, struct sec_req *req,
+>  		a_req->out_mac_dma = res->out_mac_dma;
+>  	}
 >
-> Fair enough. Is the intent to do the same thing for all the other 
-> drivers that could be running in an encrypted guest and would require 
-> SWIOTLB.
+> -	c_req->c_in = hisi_acc_sg_buf_map_to_hw_sgl(dev, src,
+> -						    qp_ctx->c_in_pool,
+> -						    req->req_id,
+> -						    &c_req->c_in_dma);
+> -
+> -	if (IS_ERR(c_req->c_in)) {
+> +	req->in = hisi_acc_sg_buf_map_to_hw_sgl(dev, src,
+> +						qp_ctx->c_in_pool,
+> +						req->req_id,
+> +						&req->in_dma);
+> +	if (IS_ERR(req->in)) {
+>  		dev_err(dev, "fail to dma map input sgl buffers!\n");
+> -		return PTR_ERR(c_req->c_in);
+> +		return PTR_ERR(req->in);
+>  	}
 >
-> Like legacy devices that KVM can expose (floppy driver?, SVGA driver)?
-
-
-My understanding is that we shouldn't enable the legacy devices at all 
-in this case.
-
-Note that virtio has been extended to various types of devices (we can 
-boot qemu without PCI and legacy devices (e.g the micro VM))
-
-- virtio input
-- virtio gpu
-- virtio sound
-...
-
-I'm not sure whether we need floppy, but it's not hard to have a 
-virtio-floppy if necessary
-
-So it would be sufficient for us to audit/harden the virtio drivers.
-
-
+>  	if (!c_req->encrypt && ctx->alg_type == SEC_AEAD) {
+> @@ -967,9 +966,10 @@ static int sec_cipher_map(struct sec_ctx *ctx, struct sec_req *req,
+>  			return ret;
+>  		}
+>  	}
+> +
+>  	if (dst == src) {
+> -		c_req->c_out = c_req->c_in;
+> -		c_req->c_out_dma = c_req->c_in_dma;
+> +		c_req->c_out = req->in;
+> +		c_req->c_out_dma = req->in_dma;
+>  	} else {
+>  		c_req->c_out = hisi_acc_sg_buf_map_to_hw_sgl(dev, dst,
+>  							     qp_ctx->c_out_pool,
+> @@ -978,7 +978,7 @@ static int sec_cipher_map(struct sec_ctx *ctx, struct sec_req *req,
 >
->>
->> So I think we need to consolidate on both layers instead of solely 
->> depending on the SWIOTLB.
+>  		if (IS_ERR(c_req->c_out)) {
+>  			dev_err(dev, "fail to dma map output sgl buffers!\n");
+> -			hisi_acc_sg_buf_unmap(dev, src, c_req->c_in);
+> +			hisi_acc_sg_buf_unmap(dev, src, req->in);
+>  			return PTR_ERR(c_req->c_out);
+>  		}
+>  	}
+> @@ -996,7 +996,7 @@ static void sec_cipher_unmap(struct sec_ctx *ctx, struct sec_req *req,
+>  		sec_cipher_pbuf_unmap(ctx, req, dst);
+>  	} else {
+>  		if (dst != src)
+> -			hisi_acc_sg_buf_unmap(dev, src, c_req->c_in);
+> +			hisi_acc_sg_buf_unmap(dev, src, req->in);
 >
-> Please make sure that this explanation is in part of the cover letter
-> or in the commit/Kconfig.
-
-
-I will do that if the series needs a respin.
-
-
+>  		hisi_acc_sg_buf_unmap(dev, dst, c_req->c_out);
+>  	}
+> @@ -1236,7 +1236,7 @@ static int sec_skcipher_bd_fill(struct sec_ctx *ctx, struct sec_req *req)
 >
-> Also, are you aware of the patchset than Andi been working on that 
-> tries to make the DMA code to have extra bells and whistles for this 
-> purpose?
-
-
-Yes, but as described above they are not duplicated. Protection at both 
-levels would be optimal.
-
-Another note is that this series is not only for DMA/swiotlb stuffs, it 
-eliminate all the possible attacks via the descriptor ring.
-
-(One example is the attack via descriptor.next)
-
-Thanks
-
-
+>  	sec_sqe->type2.c_key_addr = cpu_to_le64(c_ctx->c_key_dma);
+>  	sec_sqe->type2.c_ivin_addr = cpu_to_le64(c_req->c_ivin_dma);
+> -	sec_sqe->type2.data_src_addr = cpu_to_le64(c_req->c_in_dma);
+> +	sec_sqe->type2.data_src_addr = cpu_to_le64(req->in_dma);
+>  	sec_sqe->type2.data_dst_addr = cpu_to_le64(c_req->c_out_dma);
 >
-> Thank you.
->> Thanks
->>
->>
->>>
->>>> almost achieved that through packed virtqueue and we just need to fix
->>>> a corner case of handling mapping errors. For split virtqueue we just
->>>> follow what's done in the packed.
->>>>
->>>> Note that we don't duplicate descriptor medata for indirect
->>>> descriptors since it uses stream mapping which is read only so it's
->>>> safe if the metadata of non-indirect descriptors are correct.
->>>>
->>>> The behaivor for non DMA API is kept for minimizing the performance
->>>> impact.
->>>>
->>>> Slightly tested with packed on/off, iommu on/of, swiotlb force/off in
->>>> the guest.
->>>>
->>>> Please review.
->>>>
->>>> [1] 
->>>> https://lore.kernel.org/netdev/fab615ce-5e13-a3b3-3715-a4203b4ab010@redhat.com/T/ 
->>>>
->>>> [2] 
->>>> https://yhbt.net/lore/all/c3629a27-3590-1d9f-211b-c0b7be152b32@redhat.com/T/#mc6b6e2343cbeffca68ca7a97e0f473aaa871c95b 
->>>>
->>>>
->>>> Jason Wang (7):
->>>>    virtio-ring: maintain next in extra state for packed virtqueue
->>>>    virtio_ring: rename vring_desc_extra_packed
->>>>    virtio-ring: factor out desc_extra allocation
->>>>    virtio_ring: secure handling of mapping errors
->>>>    virtio_ring: introduce virtqueue_desc_add_split()
->>>>    virtio: use err label in __vring_new_virtqueue()
->>>>    virtio-ring: store DMA metadata in desc_extra for split virtqueue
->>>>
->>>>   drivers/virtio/virtio_ring.c | 189 
->>>> ++++++++++++++++++++++++++---------
->>>>   1 file changed, 141 insertions(+), 48 deletions(-)
->>>>
->>>> -- 
->>>> 2.25.1
->>>>
->>
+>  	sec_sqe->type2.icvw_kmode |= cpu_to_le16(((u16)c_ctx->c_mode) <<
+> @@ -1263,7 +1263,7 @@ static int sec_skcipher_bd_fill(struct sec_ctx *ctx, struct sec_req *req)
+>
+>  	sec_sqe->sdm_addr_type |= da_type;
+>  	scene = SEC_COMM_SCENE << SEC_SCENE_OFFSET;
+> -	if (c_req->c_in_dma != c_req->c_out_dma)
+> +	if (req->in_dma != c_req->c_out_dma)
+>  		de = 0x1 << SEC_DE_OFFSET;
+>
+>  	sec_sqe->sds_sa_type = (de | scene | sa_type);
+> @@ -1286,7 +1286,7 @@ static int sec_skcipher_bd_fill_v3(struct sec_ctx *ctx, struct sec_req *req)
+>
+>  	sec_sqe3->c_key_addr = cpu_to_le64(c_ctx->c_key_dma);
+>  	sec_sqe3->no_scene.c_ivin_addr = cpu_to_le64(c_req->c_ivin_dma);
+> -	sec_sqe3->data_src_addr = cpu_to_le64(c_req->c_in_dma);
+> +	sec_sqe3->data_src_addr = cpu_to_le64(req->in_dma);
+>  	sec_sqe3->data_dst_addr = cpu_to_le64(c_req->c_out_dma);
+>
+>  	sec_sqe3->c_mode_alg = ((u8)c_ctx->c_alg << SEC_CALG_OFFSET_V3) |
+> @@ -1309,7 +1309,7 @@ static int sec_skcipher_bd_fill_v3(struct sec_ctx *ctx, struct sec_req *req)
+>  	}
+>
+>  	bd_param |= SEC_COMM_SCENE << SEC_SCENE_OFFSET_V3;
+> -	if (c_req->c_in_dma != c_req->c_out_dma)
+> +	if (req->in_dma != c_req->c_out_dma)
+>  		bd_param |= 0x1 << SEC_DE_OFFSET_V3;
+>
+>  	bd_param |= SEC_BD_TYPE3;
 >
 
+Hi Herbert
+please ignore the v2 in 4/4 title.
+
+sincere thanks
+Kai
