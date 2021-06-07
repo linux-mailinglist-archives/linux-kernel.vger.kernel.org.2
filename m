@@ -2,98 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA4C39E14E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 17:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3337639E159
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbhFGP7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 11:59:09 -0400
-Received: from mga18.intel.com ([134.134.136.126]:40134 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230197AbhFGP7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 11:59:07 -0400
-IronPort-SDR: x2OkIVTSiRqXAUxR4TbRXg6dqvlr8d9Tzg9zWXTRKTKOPrLI/9ynccbyspHe02SlHAU6RcJRMG
- QXh7wwmnHnaQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="191976191"
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
-   d="scan'208";a="191976191"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 08:57:15 -0700
-IronPort-SDR: Mjg2ogYAsPiGswkaDtMJ8xZZa5NW5nWMk2JGKsvQc1jmoc2pVOR5/TX8TS1B4Vlt1OStTfaGP5
- I884SzezzcwA==
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
-   d="scan'208";a="449136178"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 08:57:13 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lqHck-000INZ-MJ; Mon, 07 Jun 2021 18:57:10 +0300
-Date:   Mon, 7 Jun 2021 18:57:10 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        wsa@kernel.org
-Subject: Re: [PATCH v2 1/3] units: Add SI metric prefix definitions
-Message-ID: <YL5B1tIPNpQiWrQ/@smile.fi.intel.com>
-References: <20210607152344.57458-1-andriy.shevchenko@linux.intel.com>
- <dbcd926e934dc66e17cc35c4c0d2b867474379e5.camel@perches.com>
+        id S231163AbhFGQBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 12:01:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230254AbhFGQBw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 12:01:52 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAF69C061766;
+        Mon,  7 Jun 2021 09:00:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=KBGLaC2sxDi2TgP5A87e+zrE0ZBFQFcgfy0ErG7XGd4=; b=lLxM9giupcKjQNjrxgGZxnGavb
+        Sq5oJmkSMQJclCVnVoXdn49dKYr70RyUWRvyiSWjVlmzVqrsNehwEOVrCL6yfWeUyx/QdpekZAyY+
+        b0JfFvYQONqJ2+Xjl9zJBoMzw7frYAhmlEqL+MVQ1MUFEIQp62PbidBN9Hk0P0sfuWUxDjYwP37F3
+        Yk+XmQKv0K/4WoFaU+xL5Mj2qxX1gXc/08b8y7rd1LS0/p3yX4bPlPjIB097bvjIgYvs/9SHftAQT
+        9dv/PR9HL2tzQu9wwdaKCM+VnBrGCkBZB5/+DFCfGBbD18dZqaq+s85JNPZU/gwmWiATMlmcRpWEJ
+        Mv9CkjYQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lqHeg-00FyIH-U8; Mon, 07 Jun 2021 15:59:13 +0000
+Date:   Mon, 7 Jun 2021 16:59:10 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        David Howells <dhowells@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: [RFC][PATCHSET] iov_iter work
+Message-ID: <YL5CTiR94f5DYPFK@infradead.org>
+References: <YL0dCEVEiVL+NwG6@zeniv-ca.linux.org.uk>
+ <CAHk-=wj6ZiTgqbeCPtzP+5tgHjur6Amag66YWub_2DkGpP9h-Q@mail.gmail.com>
+ <CAHk-=wiYPhhieXHBtBku4kZWHfLUTU7VZN9_zg0LTxcYH+0VRQ@mail.gmail.com>
+ <YL3mxdEc7uw4rhjn@infradead.org>
+ <YL4wnMbSmy3507fk@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dbcd926e934dc66e17cc35c4c0d2b867474379e5.camel@perches.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <YL4wnMbSmy3507fk@zeniv-ca.linux.org.uk>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 08:43:02AM -0700, Joe Perches wrote:
-> On Mon, 2021-06-07 at 18:23 +0300, Andy Shevchenko wrote:
-> > Sometimes it's useful to have well-defined SI metric prefix to be used
-> > to self-describe the formulas or equations.
-
-...
-
-> > +/* Metric prefixes in accordance with Système international (d'unités) */
-> > +#define PETA	1000000000000000LL
-> > +#define TERA	1000000000000LL
-> > +#define GIGA	1000000000L
-> > +#define MEGA	1000000L
-> > +#define KILO	1000L
-> > +#define HECTO	100L
-> > +#define DECA	10L
-> > +#define DECI	10L
-> > +#define CENTI	100L
-> > +#define MILLI	1000L
-> > +#define MICRO	1000000L
-> > +#define NANO	1000000000L
-> > +#define PICO	1000000000000LL
-> > +#define FEMTO	1000000000000000LL
-
-> Somewhat surprisingly to me, this seems safe.
+On Mon, Jun 07, 2021 at 02:43:40PM +0000, Al Viro wrote:
+> > It can't even happen for the legacy architectures, given that the
+> > remaining set_fs() areas are small and never do iov_iter based I/O.
 > 
-> (though I suggest using UL and ULL rather than L and LL)
+> 	Umm...  It's a bit trickier than that - e.g. a kernel thread on
+> a CONFIG_SET_FS target passing a kernel pointer to vfs_read() could've
+> ended up with new_sync_write() hitting iov_iter_init().
 
-Okay.
+Yes, that is a possbility, but rather unlikely - it would require an
+arch-specific thread using iov_iter_init.  iov_iter_init instances are
+rather fewer, and only very few in arch code.
 
-> The only use of any of these seems to be:
-> 
-> sound/pcmcia/vx/vxp_ops.c:      [VX_MICRO]      = 0x0c,         // MICRO
-> sound/pcmcia/vx/vxp_ops.c:              vx_outb(chip, MICRO, level);
-> sound/pcmcia/vx/vxp_ops.c:                      vx_outb(chip, MICRO, vx_compute_mic_level(chip->mic_level));
-> 
-> and these vx_outb uses are themselves macros that prepend VX_ to the 2nd arg.
+> 	AFAICS, we don't have any instances of that, but it's not
+> as simple as "we don't do any iov_iter work under set_fs(KERNEL_DS)"
 
-Is it a real issue there?
-
-(Yes, I saw it, but I didn't check compilation in the assumption that units.h
- is not anyhow included in that file).
-
-Okay, I have compiled it, no problems registered.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Indeed.
