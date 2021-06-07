@@ -2,103 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E1839D815
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A4AF39D805
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbhFGJCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:02:43 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:39942 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhFGJCm (ORCPT
+        id S230363AbhFGI7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 04:59:16 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:4377 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230299AbhFGI7P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:02:42 -0400
-Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 0E2811FDA1;
-        Mon,  7 Jun 2021 09:00:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623056451; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DFwjE+z0lEnHuGuwIYHSS4DoT9tAvhOIoQsNTyBPlnM=;
-        b=VuRCo59JDusjwHbv+PStigZT0YwYXb/tebQ1vXZ0UVQnqBo5rqB/hFPdQ06Fqg6AjxPWcy
-        8bps4sK7FRMUnTGuDqO04nD55v4L9g4AY4+h5uRRVh4RDXRHeZFrFiilL41cMM1FJzDX2Z
-        fTvU4dBVVGT3u1yvLS8spxbEpBVSz9A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623056451;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DFwjE+z0lEnHuGuwIYHSS4DoT9tAvhOIoQsNTyBPlnM=;
-        b=dvuqxgkOnkTb3+9ojbmnjKhQmf56EjBAmcKknZ9R4oLVY96dmknVeGlsSgs+dH/VdzYupR
-        tktAfWrOLyy6DfCQ==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id D23F9A3B89;
-        Mon,  7 Jun 2021 09:00:50 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id AC05B1F2CA8; Mon,  7 Jun 2021 11:00:50 +0200 (CEST)
-Date:   Mon, 7 Jun 2021 11:00:50 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dennis Zhou <dennis@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>, cgroups@vger.kernel.org
-Subject: Re: [PATCH v7 5/6] writeback, cgroup: support switching multiple
- inodes at once
-Message-ID: <20210607090050.GB30275@quack2.suse.cz>
-References: <20210604013159.3126180-1-guro@fb.com>
- <20210604013159.3126180-6-guro@fb.com>
+        Mon, 7 Jun 2021 04:59:15 -0400
+Received: from dggeme760-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Fz6bd1tlQz6tsN;
+        Mon,  7 Jun 2021 16:53:33 +0800 (CST)
+Received: from localhost.localdomain (10.175.104.82) by
+ dggeme760-chm.china.huawei.com (10.3.19.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 16:57:21 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <davem@davemloft.net>, <yoshfuji@linux-ipv6.org>,
+        <dsahern@kernel.org>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH] ping: Check return value of function 'ping_queue_rcv_skb'
+Date:   Mon, 7 Jun 2021 17:10:58 +0800
+Message-ID: <20210607091058.2766648-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604013159.3126180-6-guro@fb.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggeme760-chm.china.huawei.com (10.3.19.106)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 03-06-21 18:31:58, Roman Gushchin wrote:
-> Currently only a single inode can be switched to another writeback
-> structure at once. That means to switch an inode a separate
-> inode_switch_wbs_context structure must be allocated, and a separate
-> rcu callback and work must be scheduled.
-> 
-> It's fine for the existing ad-hoc switching, which is not happening
-> that often, but sub-optimal for massive switching required in order to
-> release a writeback structure. To prepare for it, let's add a support
-> for switching multiple inodes at once.
-> 
-> Instead of containing a single inode pointer, inode_switch_wbs_context
-> will contain a NULL-terminated array of inode pointers.
-> inode_do_switch_wbs() will be called for each inode.
-> 
-> To optimize the locking bdi->wb_switch_rwsem, old_wb's and new_wb's
-> list_locks will be acquired and released only once altogether for all
-> inodes. wb_wakeup() will be also be called only once. Instead of
-> calling wb_put(old_wb) after each successful switch, wb_put_many()
-> is introduced and used.
-> 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
+Function 'ping_queue_rcv_skb' not always return success, which will
+also return fail. If not check the wrong return value of it, lead to function
+`ping_rcv` return success.
 
-Looks good except for one small issue:
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ net/ipv4/ping.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-> +	for (inodep = isw->inodes; *inodep; inodep++) {
-> +		WARN_ON_ONCE((*inodep)->i_wb != old_wb);
-> +		if (inode_do_switch_wbs(*inodep, old_wb, new_wb))
-> +			nr_switched++;
-> +		iput(*inodep);
-> +	}
-
-You have to be careful here as iput() can be dropping last inode reference
-and in that case it can sleep and do a lot of heavylifting (which cannot
-happen under the locks you hold). So you need another loop after dropping
-all the locks to do iput() on all inodes. After fixing this feel free to
-add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
+diff --git a/net/ipv4/ping.c b/net/ipv4/ping.c
+index 1c9f71a37258..8e84cde95011 100644
+--- a/net/ipv4/ping.c
++++ b/net/ipv4/ping.c
+@@ -968,10 +968,11 @@ bool ping_rcv(struct sk_buff *skb)
+ 		struct sk_buff *skb2 = skb_clone(skb, GFP_ATOMIC);
+ 
+ 		pr_debug("rcv on socket %p\n", sk);
+-		if (skb2)
+-			ping_queue_rcv_skb(sk, skb2);
++		if (skb2 && !ping_queue_rcv_skb(sk, skb2)) {
++			sock_put(sk);
++			return true;
++		}
+ 		sock_put(sk);
+-		return true;
+ 	}
+ 	pr_debug("no socket, dropping\n");
+ 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.25.1
+
