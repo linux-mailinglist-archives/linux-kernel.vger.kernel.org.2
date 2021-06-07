@@ -2,93 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD8439D5A5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F3339D5AC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbhFGHOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 03:14:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhFGHOW (ORCPT
+        id S230177AbhFGHQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 03:16:20 -0400
+Received: from mail-yb1-f171.google.com ([209.85.219.171]:34346 "EHLO
+        mail-yb1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhFGHQT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 03:14:22 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B65A7C061766;
-        Mon,  7 Jun 2021 00:12:16 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso15763512otu.10;
-        Mon, 07 Jun 2021 00:12:16 -0700 (PDT)
+        Mon, 7 Jun 2021 03:16:19 -0400
+Received: by mail-yb1-f171.google.com with SMTP id i6so8865254ybm.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 00:14:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4laDKWizxMRTWJeK1bmtcZo8viWJSxK47fdeYF6K918=;
-        b=YLLpsZnf3HZnm8LmxGahyfPr4u6yFkot1cfYVSVPpCO2MpvA4Y7PxR6JlzzU0xiU+j
-         O9M0oWIXf/cBZVK+6e+JX5+Vd5Y5VJo8bBVuC+IXmlxPfW5jLyeBlUkwwFI6OwYM45HP
-         iHaWfJav0phhM+OE14+mmPzonbtyTVbmH7zL2oZ+lQr063TPy/hlucGwgn9IboxWDM/J
-         +mGBa5i1a8Ivpy0hqX6tCscEQlD90oDGLBc8i1Ea2i/h6k1iU7yMPFlRtLVeOyuVB3i8
-         RH5R4m3y/1XmFY0+x3riK6kPGGs2CeZ5al3/ZZ+1ctKG5F+vaf2e9I9ipKMypsuHv4tD
-         SVqQ==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=Lcb9Jcod6GLY84gSlwgtlrw4cij9QYZr+2pTn+iIc1I=;
+        b=EBZgG6XSiLJnQhUIUXSCgP3C0lfu3GMOqeX4AY0EbXFcMwr7nLE191tPRwXcP+VKkS
+         nAkPlEAx15KgNRrmyKnnqJy8aaNPGbPZva6CyvXGiJJpqNCMbm6AXAhJqavyqzwUPAv4
+         xLJaTvE2i6e8JSjFCsU6DrhHgFofKrHTjeasQ4J9lTmLjgL/p/XXtxVPVc55FM2qJp/K
+         KCWJvE33AC5MskkM9aKwjVPj0XhGwq3HjKwER4OzDKcyAbBxFVS/KPwxDXdNa4WTbnN8
+         84ZHfL34IeOyT8PJWNEiWxk1CLzsBkOjzd8cTmLWttZY6AlvM78IRNCAIvmb00uVY//Q
+         1SiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4laDKWizxMRTWJeK1bmtcZo8viWJSxK47fdeYF6K918=;
-        b=BMyGTBZyowhZTe2/6AEDRsa5D2y88gSdzasNZ+wVCJgTedBDFssWxyy/j9trK5/6zk
-         T3VhuH1SSOw1tBzkErURJuoibO/ZQX6SFlFWfTmAxIwUMLDO6KCy0umnwF1yfc3Eod+b
-         GE33lyfRMID03ro4Pt3hDcvpGLHBlJHL4Xtu47BEdVP3olt5gZdRohYDvBz4BxWJeEu2
-         IgO0uv3+R6IBBlZz06Lg4OFnyssFv/IZTj9djbEx3Ha6yhoZB5N4MvNBmXBvDWZKEuPB
-         XPRc6INhKe16fuHzZVdY4a7HG8mS9HkVVTqWhJ74yzixwvqMrNQhJ0gPGGZsTsm79a8K
-         vBtw==
-X-Gm-Message-State: AOAM532fPz0OoJT+Ug4rP9XpUp8LWKTCz7iOXlH+oFCEK6iWBToytvt1
-        HRpRI5NyVR82BgaMMG4ZKt9NkQ08Dpl+Jxi9CdkMAHz/MXE=
-X-Google-Smtp-Source: ABdhPJza2sXXp8y/aoj4BcEn4Gs/f1mRIKtiVhnDLh90E3441M+NY5kHL2KdYO0iRpA4HCCarFx6FT4jXH4+JHtoYMU=
-X-Received: by 2002:a9d:4592:: with SMTP id x18mr12612447ote.74.1623049936152;
- Mon, 07 Jun 2021 00:12:16 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=Lcb9Jcod6GLY84gSlwgtlrw4cij9QYZr+2pTn+iIc1I=;
+        b=k+gBKwxruiAioKzvQ/ydLu2ZiIunWGfg7FLKGDfPKN7E+uiEIINfQdwpapIi37jM8P
+         YfqW8OXgSzwJjpF+LM+7f2nz4udB0yuhgUT9Lbhq+I1PE51Xbjkj8oz+4BRhzVRmPWXq
+         vwHlxF9tVslRJFyP2/T8HMrTsreNTjIcxbTImtIR+SsZQJ9SgWZncMjNTjvFh1i4RGPp
+         JHyBtiHnkguXj4jYCtoHgSWe0eQSdrgY7pneetLqPJcwCYsdSnmvkeT88VTjdiGVzqTZ
+         lWwwCjBNEXSGbutYjVG+KakbeRptcpT2PDilESA8CF+78AV7h5dWXABf6Vb+n9hj9rHv
+         QX5g==
+X-Gm-Message-State: AOAM532wUzzH7s3p+McpJ+h8cXREcQ1qay5hjvveqkl/QOqpWwhkVowx
+        lRKYexqwvlhJ5uD2IzAAsl1qAoM2AFWX2A19hiU=
+X-Google-Smtp-Source: ABdhPJzkvfX2ZYrptXhapWM+nyQy1QwqXbNFYqomqoyU6cpWDuBbxzfTkh8JnfrtURw0ZdRQ/VUQ9pmo1RyLwCBfpZU=
+X-Received: by 2002:a25:ef42:: with SMTP id w2mr20888308ybm.34.1623049993098;
+ Mon, 07 Jun 2021 00:13:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210604055536.20606-1-sergio.paracuellos@gmail.com> <CACRpkdbmu32csSoptceUcaVYxXSFwk316k5Ru09KCodvLXMOPA@mail.gmail.com>
-In-Reply-To: <CACRpkdbmu32csSoptceUcaVYxXSFwk316k5Ru09KCodvLXMOPA@mail.gmail.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Mon, 7 Jun 2021 09:12:05 +0200
-Message-ID: <CAMhs-H9q4ZX_wpO1m6Dk-+LJtXBHiHVcfdE20GB3-u_49===+g@mail.gmail.com>
-Subject: Re: [PATCH v2] pinctrl: ralink: pinctrl-rt2880: avoid to error in
- calls if pin is already enabled
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+Received: by 2002:a05:7010:7808:b029:b1:3756:370a with HTTP; Mon, 7 Jun 2021
+ 00:13:12 -0700 (PDT)
+Reply-To: davidbojana20@gmail.com
+From:   davidbojana <aadia084@gmail.com>
+Date:   Mon, 7 Jun 2021 07:13:12 +0000
+Message-ID: <CAA-c2iU0OS4hpmMOL=2Q7xK-EC9Zj3coRA1qR4fkMPfhdwqOyQ@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-
-On Mon, Jun 7, 2021 at 9:10 AM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Fri, Jun 4, 2021 at 7:55 AM Sergio Paracuellos
-> <sergio.paracuellos@gmail.com> wrote:
->
-> > In 'rt2880_pmx_group_enable' driver is printing an error and returning
-> > -EBUSY if a pin has been already enabled. This becomes in anoying messages
-> > in the caller when this happens like the following:
-> >
-> > rt2880-pinmux pinctrl: pcie is already enabled
-> > mt7621-pci 1e140000.pcie: Error applying setting, reverse things back
-> >
-> > To avoid this just print the already enabled message in the pinctrl
-> > driver and return 0 instead to don't confuse the user with a real
-> > bad problem.
-> >
-> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> > ---
-> > Changes in v2:
-> >     - Fix commit message s/is/if
->
-> I just fixed up the commit manually instead, no big deal.
-
-Oh, I see :)
-
-Thanks!!
-    Sergio Paracuellos
->
-> Thanks!
-> Linus Walleij
+0JfQtNGA0LDQstC10LnRgtC1LCDQm9GO0LHQtdC30L3QviDQktC4INC40L3RhNC+0YDQvNC40YDQ
+sNC80LUsINGH0LUg0YLQvtC30Lgg0LjQvNC10LnQuywg0LrQvtC50YLQviDQtSDQtNC+0YHRgtC4
+0LPQvdCw0Lsg0LTQvg0K0LLQsNGI0LDRgtCwINC/0L7RidC10L3RgdC60LAg0LrRg9GC0LjRjywg
+0L3QtSDQtSDQs9GA0LXRiNC60LAsINCwINC1INC90LDRgdC+0YfQtdC9INC60YrQvCDQstCw0YEu
+INCY0LzQsNC8DQrQv9GA0LXQtNC70L7QttC10L3QuNC1ICg3IDUwMCAwMDAsMDAg0LTQvtC70LDR
+gNCwKSwg0L7RgdGC0LDQstC10L3QviDQvtGCINC80L7RjyDQv9C+0YfQuNC90LDQuyDQutC70LjQ
+tdC90YIsDQrQuNC90LbQtdC90LXRgCDQmtCw0YDQu9C+0YEsINC60L7QudGC0L4g0L3QvtGB0Lgg
+0YHRitGJ0L7RgtC+INC40LzQtSwg0LrQvtC50YLQviDQvdGP0LrQvtCz0LAg0LUg0YDQsNCx0L7R
+gtC40Lsg0Lgg0LUNCtC20LjQstGP0Lsg0YLRg9C6INCyINCb0L7QvNC1INCi0L7Qs9C+LiDQnNC+
+0Y/RgiDQv9C+0YfQuNC90LDQuyDQutC70LjQtdC90YIg0Lgg0YHQtdC80LXQudGB0YLQstC+INGB
+0LAg0YPRh9Cw0YHRgtCy0LDQu9C4INCyDQrQsNCy0YLQvtC80L7QsdC40LvQvdCwINC60LDRgtCw
+0YHRgtGA0L7RhNCwLCDQvtGC0L3QtdC70LAg0LbQuNCy0L7RgtCwINC40LwuINCp0LUg0YHQtSDR
+gdCy0YrRgNC20LAg0YEg0LLQsNGBINC60LDRgtC+DQrQvdCw0Lkt0LHQu9C40LfQutC40Y8g0YDQ
+vtC00L3QuNC90LAg0L3QsCDQv9C+0YfQuNC90LDQu9C40Y8sINC30LAg0LTQsCDQvNC+0LbQtdGC
+0LUg0LTQsCDQv9C+0LvRg9GH0LjRgtC1INGB0YDQtdC00YHRgtCy0LAg0LfQsA0K0LjRgdC60L7Q
+stC10YLQtS4g0KHQu9C10LQg0LHRitGA0Lcg0L7RgtCz0L7QstC+0YAg0YnQtSDQstC4INC40L3R
+hNC+0YDQvNC40YDQsNC8INC30LAg0L3QsNGH0LjQvdC40YLQtSDQt9CwINC/0YDQuNC70LDQs9Cw
+0L3QtQ0K0L3QsCDRgtC+0LfQuCDQt9Cw0LLQtdGCLCDQvNC+0LvRjywg0YHQstGK0YDQttC10YLQ
+tSDRgdC1INGBINC80LXQvSDQv9C+INGC0L7Qt9C4INCy0YrQv9GA0L7RgQ0KKGRhdmlkYm9qYW5h
+MjBAZ21haWwuY29tKQ0K
