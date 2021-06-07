@@ -2,119 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF53039D7E7
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA9539D7DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230207AbhFGIwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 04:52:07 -0400
-Received: from mail-wm1-f46.google.com ([209.85.128.46]:53119 "EHLO
-        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbhFGIwG (ORCPT
+        id S230299AbhFGIu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 04:50:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53230 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229436AbhFGIu4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 04:52:06 -0400
-Received: by mail-wm1-f46.google.com with SMTP id f17so9492469wmf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 01:50:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=R2ZopsQZZdXEYjl6azm31E2MzYfojsymg///Se/cAKM=;
-        b=RxBciWEa0mOrwTDqwBl7XhVt1Z3tGfff3KVAXfjjxbhvucwuitAYpCjW2AiOfmc4hY
-         MW0YwzUHKGA/WeKdlYLraPeOhx4a5uKzxp6v4lLraANt7WimKeIInnK9T/6eWrQjXCT9
-         WjObcZ+HYZ3Go8GMia3x24cyu5tbYPVgn1JDv/sRYAPZlA5vtodNND9A/q6x8y8UnXk6
-         SuJuhS9v8M4MwoSC+c+Tx7H+ePDwkcKPvy620Tt8pc5u8pj0IFei8NsOk08p/27eHLhl
-         SoI75OyhpQKO1uzn4yXdmbM/CqtG6q0nD58HzKEwZj7xuk0c/z3vpR8i7Mvpj1PS7VyY
-         r5YA==
+        Mon, 7 Jun 2021 04:50:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623055745;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Nx1hUYYHMW5mVqvLvMchsGATtVkY4GJZG/k/SnbIt4M=;
+        b=I+bSR8u3LOjT9crRaIeczl0KlFyDs0QVGwLh3R81IiEiKaPDQRzLpJNYQOZ9QyCQLaJt8J
+        NjgqbIRZzA8aVJPJK/Mq8/dmZ+X+n80lsmVuJ/Sc6MLCxDsD824ZwxcbHQ77kPgyFLg/1f
+        lkm1JBs5NhemSYb3zYTedijAdPTYrYc=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-226-JeQ9pT0BN_eQWqjtJ7bv9g-1; Mon, 07 Jun 2021 04:49:03 -0400
+X-MC-Unique: JeQ9pT0BN_eQWqjtJ7bv9g-1
+Received: by mail-wr1-f72.google.com with SMTP id g14-20020a5d698e0000b0290117735bd4d3so7479786wru.13
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 01:49:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=R2ZopsQZZdXEYjl6azm31E2MzYfojsymg///Se/cAKM=;
-        b=TsLJEUBkOTahCEJ9jNfL1+wRKACI4I7lEz5VAyCknDom0jJJH29TPptmiW57XyY+sB
-         4mHbO903aBUg1iUrwzpoKmRBEsyIgi9rsrrmRiFmp/j0Ax4j1pGKXb2ufEHe2vGarNE5
-         xrPazUf5Ln1O7GDlps9Tj8ZYgm9mU5DClssToue1FwtbPbcyRMJOhzxtqOLCA325aSZ+
-         ZmsImDIs1+2Q4chw8d1l9daazon2tFflGj+seHp412MxuKhD4f4u3QK3mysQ8EQFJWCr
-         1fC+8frYsmyG6H/YJ/fBDFmrcMiG5ykADg3SvCqK3dYVpVEZEcYjwtm68C7LVIRPlGSd
-         apyw==
-X-Gm-Message-State: AOAM5306lvFN/WdGvc8nV/PUOEaOwa3+6J1zWf3jJqJtKpqXMlw14JUA
-        ml4YzMyyAs9LaLXrLjI/JnwTXw==
-X-Google-Smtp-Source: ABdhPJyurKzta3z2CeRnxFd2iiCVeQi8uEXKlJF0ITFMul63PvHyfT+ViQ4DZznWDHGoSIMfaenzLQ==
-X-Received: by 2002:a05:600c:21d1:: with SMTP id x17mr15424695wmj.167.1623055754959;
-        Mon, 07 Jun 2021 01:49:14 -0700 (PDT)
-Received: from myrica (adsl-84-226-111-173.adslplus.ch. [84.226.111.173])
-        by smtp.gmail.com with ESMTPSA id o18sm5415514wrx.59.2021.06.07.01.49.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 01:49:14 -0700 (PDT)
-Date:   Mon, 7 Jun 2021 10:48:55 +0200
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "julien.thierry.kdev@gmail.com" <julien.thierry.kdev@gmail.com>,
-        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-        Alexandru Elisei <Alexandru.Elisei@arm.com>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [RFC PATCH 0/3] kvm/arm: New VMID allocator based on asid(2nd
- approach)
-Message-ID: <YL3ddwlSOsv16F1g@myrica>
-References: <20210506165232.1969-1-shameerali.kolothum.thodi@huawei.com>
- <e62829990c50479292af94c4152011fc@huawei.com>
- <87sg1xzqea.wl-maz@kernel.org>
- <95bb84ffdb0f4db3b64b38cc3b651f90@huawei.com>
- <87lf7ptztg.wl-maz@kernel.org>
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Nx1hUYYHMW5mVqvLvMchsGATtVkY4GJZG/k/SnbIt4M=;
+        b=OEA6kVzwv+cz/Xg1pz5p/q3PIBLc2r8uGI00GlKlQcbInxgO2vgHdNVL2TKh99rHnk
+         AyHTN6T2ve5wAN6s6PbhOnpcu0yXKoko9Ne9X0tI2aTEtzTzrzCzq9Ll7/Wz3A/DGezU
+         fW5FRZPazrcpmZhna07cfwZybEM/5DxKmgWca34j7lQqDD9AiKenWfQVJBeJ4OpaHtgy
+         /rbmG13R2/jC9oaN2pWEhvFraDF8bU4oHD2AEgTXJeDvO4Qf0JM5k2BxgWX/jJhqQE1t
+         jJqLct7ksVWBLuaV22gwbVnBqjbuSKvuQEW3fnTAOVaE8MOry6nKZ/x8mhlR7AfDUGVs
+         RAdg==
+X-Gm-Message-State: AOAM531ld43iu9YmW+++HzagO/Bk6VizcR83GCEDNL1hgOydc7cBSS6X
+        B4lRY4DvI1LZ2GL+EwfCEsmSQxg5hD5ij7zxnfvhtPs9mVZ310JA2D2D6S8ek9gnTb51yf0Svir
+        oJr8Xe5kG2R1cP6Mqv22LRgV8iNEqzfpQi44sTGdcAQZQpEsHdPLlmQBo8AOPZrbwS3EsplUe
+X-Received: by 2002:a05:600c:2e43:: with SMTP id q3mr15540795wmf.11.1623055742162;
+        Mon, 07 Jun 2021 01:49:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJycIys+K+NqaWblC8ffIhXoXJK4nnHDTg1/8VoHCspmMrc4ul0z/0IKf84x1B6XBJwe1Mbt0w==
+X-Received: by 2002:a05:600c:2e43:: with SMTP id q3mr15540758wmf.11.1623055741887;
+        Mon, 07 Jun 2021 01:49:01 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6188.dip0.t-ipconnect.de. [91.12.97.136])
+        by smtp.gmail.com with ESMTPSA id u6sm16338315wre.76.2021.06.07.01.49.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Jun 2021 01:49:01 -0700 (PDT)
+To:     Oscar Salvador <osalvador@suse.de>, Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210602091457.17772-1-osalvador@suse.de>
+ <20210602091457.17772-2-osalvador@suse.de>
+ <39473305-6e91-262d-bcc2-76b745a5b14a@redhat.com>
+ <ed17a39ad61edeb19b04c0f4308d5d36@suse.de>
+ <YLiVAAsCTR7B6Db9@localhost.localdomain> <YLjO2YU2G5fTVB3x@dhcp22.suse.cz>
+ <20210604074140.GA25063@linux> <20210607075147.GA10554@linux>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v2 1/3] mm,page_alloc: Use {get,put}_online_mems() to get
+ stable zone's values
+Message-ID: <85984701-55ae-dfa5-2a8d-f637051b612d@redhat.com>
+Date:   Mon, 7 Jun 2021 10:49:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87lf7ptztg.wl-maz@kernel.org>
+In-Reply-To: <20210607075147.GA10554@linux>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 04:27:39PM +0100, Marc Zyngier wrote:
-> > > Plus, I've found this nugget:
-> > > 
-> > > <quote
-> > > 	max_pinned_vmids = NUM_USER_VMIDS - num_possible_cpus() - 2;
-> > > </quote>
-> > > 
-> > > What is this "- 2"? My hunch is that it should really be "- 1" as VMID
-> > > 0 is reserved, and we have no equivalent of KPTI for S2.
-> > 
-> > I think this is more related to the "pinned vmid" stuff and was borrowed from
-> > the asid_update_limit() fn in arch/arm64/mm/context.c. But I missed the
-> > comment that explains the reason behind it. It says,
-> > 
-> > ---x---
-> > 	/*
-> > 	 * There must always be an ASID available after rollover. Ensure that,
-> > 	 * even if all CPUs have a reserved ASID and the maximum number of ASIDs
-> > 	 * are pinned, there still is at least one empty slot in the ASID map.
-> > 	 */
-> > 	max_pinned_asids = num_available_asids - num_possible_cpus() - 2;
-> > ---x---
-> > 
-> > So this is to make sure we will have at least one VMID available
-> > after rollover in case we have pinned the max number of VMIDs. I
-> > will include that comment to make it clear.
+On 07.06.21 09:52, Oscar Salvador wrote:
+> On Fri, Jun 04, 2021 at 09:41:45AM +0200, Oscar Salvador wrote:
+>> On Thu, Jun 03, 2021 at 02:45:13PM +0200, Michal Hocko wrote:
+>>> I believe we need to define the purpose of the locking first. The
+>>
+>> If you ask me, this locking would be meant to make sure zone's zone_start_pfn
+>> or spanned_pages do not change under us, in case we __need__ the value to be
+>> stable.
+>>
+>>> existing locking doesn't serve much purpose, does it? The state might
+>>
+>> Well, half-way. Currently, the locking is taken in write mode whenever
+>> the zone is expanded or shrinked, and in read mode when called from
+>> bad_range()->page_outside_zone_boundaries() (only on VM_DEBUG).
+>>
+>> But as you pointed out, such state might change right after the locking is
+>> released and all the work would be for nothing.
+>> So indeed, the __whole__ operation should be envolved by the lock in the caller
+>> The way that stands right now is not optimal.
+>>
+>>> change right after the lock is released and the caller cannot really
+>>> rely on the result. So aside of the current implementation, I would
+>>> argue that any locking has to be be done on the caller layer.
+>>>
+>>> But the primary question is whether anybody actually cares about
+>>> potential races in the first place.
+>>
+>> I have been checking move_freepages_block() and alloc_contig_pages(), which
+>> are two of the functions that call zone_spans_pfn().
+>>
+>> move_freepages_block() uses it in a way to align the given pfn to pageblock
+>> top and bottom, and then check that aligned pfns are still within the same zone.
+>>  From a memory-hotplug perspective that's ok as we know that we are offlining
+>> PAGES_PER_SECTION (which implies whole pageblocks).
+>>
+>> alloc_contig_pages() (used by the hugetlb gigantic allocator) runs through a
+>> node's zonelist and checks whether zone->zone_start_pfn + nr_pages stays within
+>> the same zone.
+>> IMHO, the race with zone_spans_last_pfn() vs mem-hotplug would not be that bad,
+>> as it will be caught afters by e.g: __alloc_contig_pages when pages cannot be
+>> isolated because they are offline etc.
+>>
+>> So, I would say we do not really need the lock, but I might be missing something.
+>> But if we chose to care about this, then the locking should be done right, not
+>> half-way as it is right now.
 > 
-> That doesn't really explain the -2. Or is that that we have one for
-> the extra empty slot, and one for the reserved?
 > 
-> Jean-Philippe?
+> Any thoughts on this? :-)
 
-Yes, -2 is for ASID#0 and the extra empty slot. A comment higher in
-asids_update_limit() hints at that, but it could definitely be clearer
+I'd like to point out that I think the seqlock is not in place to 
+synchronize with actual growing/shrinking but to get consistent zone 
+ranges -- like using atomics, but we have two inter-dependent values here.
 
-        /*
-         * Expect allocation after rollover to fail if we don't have at least
-         * one more ASID than CPUs. ASID #0 is reserved for init_mm.
-         */
+If you obtain the zone ranges that way and properly use 
+pfn_to_online_page(), there is hardly something that can go wrong in 
+practice. If the zone grew in the meantime, most probably you can just 
+live with not processing that part for now. If the zone shrunk in the 
+meantime, pfn_to_online_page() will make you skip that part (it was 
+offlined either way, so you most probably don't really care about that 
+part).
 
+[pfn_to_online_page() is racy as well, but the race window is very small 
+and we never saw a problem in practice really]
+
+Without the seqlock, you might just get a garbage zone range and have 
+either false/positive negatives when just testing for a simple range not 
+in an hot(un)plugged range [which is the usual case when talking about 
+compaction etc.].
+
+-- 
 Thanks,
-Jean
+
+David / dhildenb
+
