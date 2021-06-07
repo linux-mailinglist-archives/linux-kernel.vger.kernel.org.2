@@ -2,73 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C1F39E425
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F6239E37B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232838AbhFGQcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 12:32:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59120 "EHLO mail.kernel.org"
+        id S232671AbhFGQ0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 12:26:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232943AbhFGQX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 12:23:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C471C61946;
-        Mon,  7 Jun 2021 16:15:38 +0000 (UTC)
+        id S233108AbhFGQW1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 12:22:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77B7361922;
+        Mon,  7 Jun 2021 16:15:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623082539;
-        bh=+p6Ru1HAnt4vdsR80m3zPO30bLQzBT3Pqydpwqgfn60=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lQXazXEO6t1nKmljZL8u+ekzJbGG2VIK+ObhqHLS2zCpODkdQ5sEt4DKfMf8tPkuU
-         7FDmmRMFOAsi8nv+aQHtOtADaNCoicg9G11JtLUzm1IJ9eA3YwgTkkgQCFZsEX+llh
-         q3bUJf2Yidk0hqW227PcEGmyCyPQ91T7y7rGlWLl1QhR0wut8fx/5RPuPBlyMDLv56
-         ntuDfl/laIThLIyYWLq1eRcXyPfUXIetZG154+VaQTu7RPSsuoQLiAkjsq3UEMDZ/1
-         1lsHM7R4GjM7qyW+f8Z7sTWeA9Ac+/GlDK2zTM2PEILa/UNdPSE5+KR5vXALKguXWl
-         3BqIXZkjdNdIg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zheng Yongjun <zhengyongjun3@huawei.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, linux-x25@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 16/18] net/x25: Return the correct errno code
-Date:   Mon,  7 Jun 2021 12:15:14 -0400
-Message-Id: <20210607161517.3584577-16-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210607161517.3584577-1-sashal@kernel.org>
-References: <20210607161517.3584577-1-sashal@kernel.org>
+        s=k20201202; t=1623082516;
+        bh=PDrSDWqJK08hzrvryP+C2U4KMYcUrGcWbd+BDrHDCdI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=jaAm026jBYSQTqGZkG0y6bYor/w4P/pMTBgv1Ad25MEeTol+68Zn3lZdAiNTgHeJ+
+         Ln/CLnpyKeYC8+E/TGjJlOtK3O/1gncy6Tthl4cKvqUUZ0UrykIlPa8hclODWk/N+m
+         9Nows2ysfgvBX5nEDhGz9gdmANukJ/JBo+aKVxITtYvZU5h+S+6d3T8Hs161TY/rHd
+         7Ys23L6b6IhFxScm6uHt5M1JszHhoIj61sKoGF0FbmKP4f84KGqwNbseYEAx+eFECF
+         FMKHVOKF9iRQ0F/BLz6ys4A6gmjiFlRDD17zdsvAcHCGSghy55tq73Nc0i+HqNwXAJ
+         h7+SDAuH32KKw==
+Date:   Mon, 7 Jun 2021 11:15:15 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Dejin Zheng <zhengdejin5@gmail.com>, corbet@lwn.net,
+        jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
+        rric@kernel.org, bhelgaas@google.com, wsa@kernel.org,
+        linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexander Gordeev <agordeev@redhat.com>,
+        Jonathan Derrick <jonathan.derrick@intel.com>,
+        Kurt Schwemmer <kurt.schwemmer@microsemi.com>,
+        Logan Gunthorpe <logang@deltatee.com>
+Subject: Re: [PATCH v5 1/4] PCI: Introduce pcim_alloc_irq_vectors()
+Message-ID: <20210607161515.GA2495140@bjorn-Precision-5520>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLdGfmrk6+FbTbNN@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheng Yongjun <zhengyongjun3@huawei.com>
+On Wed, Jun 02, 2021 at 11:51:10AM +0300, Andy Shevchenko wrote:
+> On Thu, May 06, 2021 at 12:27:16AM +0800, Dejin Zheng wrote:
+> > On Tue, Mar 23, 2021 at 05:47:10PM -0500, Bjorn Helgaas wrote:
+> > > [+cc Christoph, Thomas, Alexander, in case you're interested]
+> > > [+cc Jonathan, Kurt, Logan: vmd.c and switchtec.c use managed resources
+> > > and pci_alloc_irq_vectors()]
+> 
+> > > On Fri, Feb 26, 2021 at 11:50:53PM +0800, Dejin Zheng wrote:
+> > > > Introduce pcim_alloc_irq_vectors(), a device-managed version of
+> > > > pci_alloc_irq_vectors(). Introducing this function can simplify
+> > > > the error handling path in many drivers.
+> > > > 
+> > > > And use pci_free_irq_vectors() to replace some code in pcim_release(),
+> > > > they are equivalent, and no functional change. It is more explicit
+> > > > that pcim_alloc_irq_vectors() is a device-managed function.
+> > > > 
+> > > > Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > > Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+> > > 
+> > > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> > > 
+> > > Let me know if you'd like me to take the series.
+> > >
+> > Hi Bjorn,
+> > 
+> > These patches are still invisible on the mainline, could you help me to
+> > take it? Thanks very much!
+> 
+> I guess you have to rebase them on top of the latest rc (or PCI for-next) and
+> send with a cover letter.
 
-[ Upstream commit d7736958668c4facc15f421e622ffd718f5be80a ]
+No need to rebase them.  The ideal is to base them on the "main" branch
+from https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git/
+(currently v5.13-rc) because that's what I base topic branches on.
+But I can deal with whatever your current base is.
 
-When kalloc or kmemdup failed, should return ENOMEM rather than ENOBUF.
+Thanks for the reminder; I'll take a look at your v7 posting.
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/x25/af_x25.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/x25/af_x25.c b/net/x25/af_x25.c
-index 987e5f8cafbe..fd0a6c6c77b6 100644
---- a/net/x25/af_x25.c
-+++ b/net/x25/af_x25.c
-@@ -550,7 +550,7 @@ static int x25_create(struct net *net, struct socket *sock, int protocol,
- 	if (protocol)
- 		goto out;
- 
--	rc = -ENOBUFS;
-+	rc = -ENOMEM;
- 	if ((sk = x25_alloc_socket(net, kern)) == NULL)
- 		goto out;
- 
--- 
-2.30.2
-
+Bjorn
