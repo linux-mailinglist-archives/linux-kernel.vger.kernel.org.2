@@ -2,108 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 384E039D53A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A59BC39D53E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230272AbhFGGqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 02:46:39 -0400
-Received: from lucky1.263xmail.com ([211.157.147.135]:51852 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbhFGGqi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 02:46:38 -0400
-Received: from localhost (unknown [192.168.167.16])
-        by lucky1.263xmail.com (Postfix) with ESMTP id C5A55AD0D3;
-        Mon,  7 Jun 2021 14:44:45 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P32529T140357020903168S1623048283531022_;
-        Mon, 07 Jun 2021 14:44:46 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <6a353039b07003a315a0ea3022898f88>
-X-RL-SENDER: jon.lin@rock-chips.com
-X-SENDER: jon.lin@rock-chips.com
-X-LOGIN-NAME: jon.lin@rock-chips.com
-X-FST-TO: broonie@kernel.org
-X-RCPT-COUNT: 7
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jon Lin <jon.lin@rock-chips.com>
-To:     broonie@kernel.org
-Cc:     jon.lin@rock-chips.com, heiko@sntech.de,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v4 6/6] spi: rockchip: Support SPI_CS_HIGH
-Date:   Mon,  7 Jun 2021 14:44:40 +0800
-Message-Id: <20210607064440.31616-2-jon.lin@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210607064440.31616-1-jon.lin@rock-chips.com>
-References: <20210607063448.29589-1-jon.lin@rock-chips.com>
- <20210607064440.31616-1-jon.lin@rock-chips.com>
+        id S230320AbhFGGqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 02:46:48 -0400
+Received: from verein.lst.de ([213.95.11.211]:44619 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230212AbhFGGqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 02:46:47 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id B14DA68AFE; Mon,  7 Jun 2021 08:44:53 +0200 (CEST)
+Date:   Mon, 7 Jun 2021 08:44:53 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Tianyu Lan <ltykernel@gmail.com>, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com, arnd@arndb.de,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
+        rppt@kernel.org, hannes@cmpxchg.org, cai@lca.pw,
+        krish.sadhukhan@oracle.com, saravanand@fb.com,
+        Tianyu.Lan@microsoft.com, konrad.wilk@oracle.com, hch@lst.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com, jgross@suse.com,
+        sstabellini@kernel.org, joro@8bytes.org, will@kernel.org,
+        xen-devel@lists.xenproject.org, davem@davemloft.net,
+        kuba@kernel.org, jejb@linux.ibm.com, martin.petersen@oracle.com,
+        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, thomas.lendacky@amd.com,
+        brijesh.singh@amd.com, sunilmut@microsoft.com
+Subject: Re: [RFC PATCH V3 09/11] HV/IOMMU: Enable swiotlb bounce buffer
+ for Isolation VM
+Message-ID: <20210607064453.GC24478@lst.de>
+References: <20210530150628.2063957-1-ltykernel@gmail.com> <20210530150628.2063957-10-ltykernel@gmail.com> <9488c114-81ad-eb67-79c0-5ed319703d3e@oracle.com> <a023ee3f-ce85-b54f-79c3-146926bf3279@gmail.com> <d6714e8b-dcb6-798b-59a4-5bb68f789564@oracle.com> <1cdf4e6e-6499-e209-d499-7ab82992040b@gmail.com> <099f311b-9614-dac5-ce05-6dad988f8a62@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <099f311b-9614-dac5-ce05-6dad988f8a62@oracle.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1.Add standard spi-cs-high support
-2.Refer to spi-controller.yaml for details
-
-Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
----
-
-Changes in v4: None
-Changes in v3: None
-
- drivers/spi/spi-rockchip.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/spi/spi-rockchip.c b/drivers/spi/spi-rockchip.c
-index be7d90e18a3f..4b08be25c33d 100644
---- a/drivers/spi/spi-rockchip.c
-+++ b/drivers/spi/spi-rockchip.c
-@@ -108,6 +108,8 @@
- #define CR0_OPM_MASTER				0x0
- #define CR0_OPM_SLAVE				0x1
- 
-+#define CR0_SOI_OFFSET				23
-+
- #define CR0_MTM_OFFSET				0x21
- 
- /* Bit fields in SER, 2bit */
-@@ -238,7 +240,7 @@ static void rockchip_spi_set_cs(struct spi_device *spi, bool enable)
- {
- 	struct spi_controller *ctlr = spi->controller;
- 	struct rockchip_spi *rs = spi_controller_get_devdata(ctlr);
--	bool cs_asserted = !enable;
-+	bool cs_asserted = spi->mode & SPI_CS_HIGH ? enable : !enable;
- 
- 	/* Return immediately for no-op */
- 	if (cs_asserted == rs->cs_asserted[spi->chip_select])
-@@ -509,6 +511,8 @@ static int rockchip_spi_config(struct rockchip_spi *rs,
- 	cr0 |= (spi->mode & 0x3U) << CR0_SCPH_OFFSET;
- 	if (spi->mode & SPI_LSB_FIRST)
- 		cr0 |= CR0_FBM_LSB << CR0_FBM_OFFSET;
-+	if (spi->mode & SPI_CS_HIGH)
-+		cr0 |= BIT(spi->chip_select) << CR0_SOI_OFFSET;
- 
- 	if (xfer->rx_buf && xfer->tx_buf)
- 		cr0 |= CR0_XFM_TR << CR0_XFM_OFFSET;
-@@ -787,7 +791,7 @@ static int rockchip_spi_probe(struct platform_device *pdev)
- 
- 	ctlr->auto_runtime_pm = true;
- 	ctlr->bus_num = pdev->id;
--	ctlr->mode_bits = SPI_CPOL | SPI_CPHA | SPI_LOOP | SPI_LSB_FIRST;
-+	ctlr->mode_bits = SPI_CPOL | SPI_CPHA | SPI_LOOP | SPI_LSB_FIRST | SPI_CS_HIGH;
- 	if (slave_mode) {
- 		ctlr->mode_bits |= SPI_NO_CS;
- 		ctlr->slave_abort = rockchip_spi_slave_abort;
--- 
-2.17.1
-
-
-
+Honestly, we really need to do away with the concept of hypervisor-
+specific swiotlb allocations and just add a hypervisor hook to remap the
+"main" buffer. That should remove a lot of code and confusion not just
+for Xen but also any future addition like hyperv.
