@@ -2,89 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0030439E110
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 17:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F21E39E113
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 17:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231640AbhFGPo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 11:44:58 -0400
-Received: from smtprelay0029.hostedemail.com ([216.40.44.29]:41378 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231582AbhFGPo5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 11:44:57 -0400
-Received: from omf08.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 24B06837F24A;
-        Mon,  7 Jun 2021 15:43:05 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf08.hostedemail.com (Postfix) with ESMTPA id 1BA771A29F9;
-        Mon,  7 Jun 2021 15:43:03 +0000 (UTC)
-Message-ID: <dbcd926e934dc66e17cc35c4c0d2b867474379e5.camel@perches.com>
-Subject: Re: [PATCH v2 1/3] units: Add SI metric prefix definitions
-From:   Joe Perches <joe@perches.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        wsa@kernel.org
-Date:   Mon, 07 Jun 2021 08:43:02 -0700
-In-Reply-To: <20210607152344.57458-1-andriy.shevchenko@linux.intel.com>
-References: <20210607152344.57458-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S231268AbhFGPpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 11:45:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52820 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230350AbhFGPpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 11:45:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FCC761029;
+        Mon,  7 Jun 2021 15:43:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623080637;
+        bh=embE+av5DCb18g6eagqQwnFEILspD+IVcIITWOKcWRM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Haof8aH+QNGg8uw/Her4PB5ur4jRXFKM9TpwE6Xl64hFzgPmA6sghWyvxcZbifk2T
+         utGtL9q0ftz5VLpcOCs9WH/F1KbkvE11Nwjndl+eiBIol8RGauDPqdgw0rC0AdJlAb
+         JTYpdfblkZq6rWCuKyMREkkIQzx6iZXBKtOu47o/emzgWNm0SnBMBCDjhqgcirvLne
+         msrTxfpzg2zhDTyw3pX6Xz46bfECCVklDy3wIQAQhkpS21Ve+gRAl2Lm6pJbvytVUi
+         BWrOk6sX8yicVTUg8CcyPIz+K4FT6tc6dwG4Kcdtqe4AcYUaQOttAfo4ih9koGcvL8
+         4ZiL6wAZq0dFw==
+Date:   Mon, 7 Jun 2021 10:43:56 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Joerg Roedel <jroedel@suse.de>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, rjw@rjwysocki.net,
+        Len Brown <lenb@kernel.org>, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI/APCI: Move acpi_pci_osc_support() check to
+ negotiation phase
+Message-ID: <20210607154356.GA2492093@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.90
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: 1BA771A29F9
-X-Stat-Signature: mrgkembcckokhd5c6m9siy7a4ij7piwc
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+dXr/s0DMQTspylw0p8uO+ItJW9kzTZv0=
-X-HE-Tag: 1623080583-985749
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YL4o1pJyIm74Lwz3@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-06-07 at 18:23 +0300, Andy Shevchenko wrote:
-> Sometimes it's useful to have well-defined SI metric prefix to be used
-> to self-describe the formulas or equations.
+On Mon, Jun 07, 2021 at 04:10:30PM +0200, Joerg Roedel wrote:
+> Hi Bjorn,
 > 
-> List most popular ones in the units.h.
-[]
-> diff --git a/include/linux/units.h b/include/linux/units.h
-[]
-> @@ -4,6 +4,22 @@
->  
->  #include <linux/math.h>
->  
-> +/* Metric prefixes in accordance with Système international (d'unités) */
-> +#define PETA	1000000000000000LL
-> +#define TERA	1000000000000LL
-> +#define GIGA	1000000000L
-> +#define MEGA	1000000L
-> +#define KILO	1000L
-> +#define HECTO	100L
-> +#define DECA	10L
-> +#define DECI	10L
-> +#define CENTI	100L
-> +#define MILLI	1000L
-> +#define MICRO	1000000L
-> +#define NANO	1000000000L
-> +#define PICO	1000000000000LL
-> +#define FEMTO	1000000000000000LL
-> +
->  #define MILLIWATT_PER_WATT	1000L
->  #define MICROWATT_PER_MILLIWATT	1000L
->  #define MICROWATT_PER_WATT	1000000L
+> On Thu, Jun 03, 2021 at 03:50:47PM -0500, Bjorn Helgaas wrote:
+> > On Thu, Jun 03, 2021 at 02:48:14PM +0200, Joerg Roedel wrote:
+> 
+> > If instead you mean that the OS has *not* been granted DPC control,
+> > but does _OSC(Query, SUPPORT=x, CONTROL=0), I think that means the OS
+> > is telling the platform what it supports but not requesting anything.
+> > That sounds legal to me, so if firmware complains about it, I would
+> > say it's a firmware problem.
+> 
+> I think it depends on how you look at it. The machine I was working with
+> has a BIOS setting where one can configure that DPC is controlled by the
+> OS. When it is configured that way, then the BIOS will issue an error
+> when an _OSC query is made with control set to 0. This is because it
+> indicates to the BIOS that the OS does not take control over DPC and
+> thus that the OS does not support it. The BIOS will issue a warning into
+> its log and when the Linux later takes control the warning is already
+> there.
 
-Somewhat surprisingly to me, this seems safe.
+I think that BIOS setting is misguided.  _OSC is designed around the
+assumption that features in the Control field start out being
+controlled by the platform, and they stay that way until the OS
+requests control of a feature and the platform grants it.
 
-(though I suggest using UL and ULL rather than L and LL)
+It makes no sense to me to configure the BIOS in advance to say "the
+OS controls DPC."  The BIOS has no control over what the OS will do,
+and it can't behave as though the OS controls DPC until the OS
+actually requests that.
 
-The only use of any of these seems to be:
+I also think the warning is overly aggressive.  _OSC is clearly
+designed to be evaluated multiple times, and the OS is allowed to
+request control of more features each time (ACPI v6.3, sec 6.2.11.1.1,
+6.2.11.1.3).
 
-sound/pcmcia/vx/vxp_ops.c:      [VX_MICRO]      = 0x0c,         // MICRO
-sound/pcmcia/vx/vxp_ops.c:              vx_outb(chip, MICRO, level);
-sound/pcmcia/vx/vxp_ops.c:                      vx_outb(chip, MICRO, vx_compute_mic_level(chip->mic_level));
-
-and these vx_outb uses are themselves macros that prepend VX_ to the 2nd arg.
-
-
+Bjorn
