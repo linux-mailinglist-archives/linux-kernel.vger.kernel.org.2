@@ -2,101 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FFC739D627
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D705839D631
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230311AbhFGHge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 03:36:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49798 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230289AbhFGHgb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 03:36:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B9CF60720;
-        Mon,  7 Jun 2021 07:34:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623051280;
-        bh=KSBak37M4ZNaKQDb2ZGdFQVWV6/LUhEK3kiybd0AK+g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uIusRuzdLnAN62qHAprxQB3QfW16uJ5EUCoJmzHb3n80mFnPKoED8ieIuWVNIJrkK
-         bFjjG1QCVX7abQ0wmxOjn7Vby8Wip4xjRbm30Sad8X1Q+TdQBOMdQU0SttI5GhqgPw
-         PUB4wP9rzkuP0hUdXyeB8NGrMmmWxI1W53VT9VVSdkvoZ5+jI10iy5/TkJeRA5x24F
-         KGRq7xmcQwHxzf7apBA6XmQmzLV3O+CnLBIOMaceA/micH5srwyJQPLiNASTjbZIBl
-         O4FmnYhY/9L7s0qIHjesoyXV/rmasaHSEoXkoBcpWwGppaQWvtWKkUCk1jnJ3o2WgP
-         Sxt4uophlVbuQ==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1lq9mK-0004AW-J9; Mon, 07 Jun 2021 09:34:33 +0200
-Date:   Mon, 7 Jun 2021 09:34:32 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+faf11bbadc5a372564da@syzkaller.appspotmail.com,
-        stable@vger.kernel.org, Antti Palosaari <crope@iki.fi>
-Subject: Re: [PATCH 3/3] media: rtl28xxu: fix zero-length control request
-Message-ID: <YL3MCGY5wTsW2kEF@hovoldconsulting.com>
-References: <20210524110920.24599-1-johan@kernel.org>
- <20210524110920.24599-4-johan@kernel.org>
- <YLSWeyy1skooTmqD@hovoldconsulting.com>
+        id S230198AbhFGHlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 03:41:47 -0400
+Received: from mail-qt1-f172.google.com ([209.85.160.172]:35347 "EHLO
+        mail-qt1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229545AbhFGHlq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 03:41:46 -0400
+Received: by mail-qt1-f172.google.com with SMTP id k19so11956423qta.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 00:39:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FkDnZkLm7S26Fub+7GJQrbQgH8zlz9fkqHVVt8EUVII=;
+        b=nHm4WK6cYXy60WGLih3X49PfQoCmkrbdxEffYKfbL3/RwZaUJn+ZpFlw1f4qhBKOsh
+         ahRqwNfz/pELzJOgvhEH7fSmrENCdPGqiDPPnxASXGD5q9sd6Dk5WUdbdBbPUArWSpgz
+         YhjtWV0vG8EhX7zQlQ+lNbW/aFKCucpeFKWsmDvBb4gvT3urI0A7KLePEk+N9605Vxec
+         pkm2nZH26PbCFEe3Rt8MWK2GYZWEhX1zJkTawVJymWS9/t+exzEZtixnPBaQ3CKp7qxO
+         KJPc74KVXSeqk4iHCZH7tGPVflFVx/UFdpy6RZ1xAkh+rjGRzUNDiP+yZ5nLQUld/tUh
+         Nh2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FkDnZkLm7S26Fub+7GJQrbQgH8zlz9fkqHVVt8EUVII=;
+        b=WWVXShGi89owH1f857HBZlcroSld9mAvOs6Rb8gSlxHQPnN2/O0BqI8nBrbW0ZvDeD
+         FDjOvvMhVANurkbqsDGpVbaKzrkWV4HmfIXXhWKq69jCsa6c0LrmQqVDvn450zQvNRP/
+         4soXJJ1lHFCZv9/MuLkBeqfaZV62OF/yqDynadpPeaIJM9m+2B8L3+DhKy0zvrYwRIBE
+         BSPrrBPLo3EJVIUoj39Fa1fiL67jQ5PuNIgKc1SE8DEMH2H4r1d1AdVDrH+o4Xz9rBj6
+         YRmEW3eKXDV24gYkKjY8fsP5mzPUPcdihgEAUiqOAHtrfF5xBHPIYwL9QfuDQ/Hs9Gat
+         U3eA==
+X-Gm-Message-State: AOAM531wQMBYKn7mxlm1qeE4I3F7JID/5HEsfAcAw7HHllqp2O7FCzcs
+        jhWlo7CRDyEPVHGyMTFxeIXr74JXsm12E0iVMkuX0g==
+X-Google-Smtp-Source: ABdhPJw+kgwDX9eCqL8hOPDdudAvKTGNSsQ1Stvnfjs7IZaa/qdT3iEe5T8MNwE87hz52U2sn3g3U6qP7w8/LoXc35w=
+X-Received: by 2002:ac8:7c4e:: with SMTP id o14mr14825948qtv.290.1623051534847;
+ Mon, 07 Jun 2021 00:38:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLSWeyy1skooTmqD@hovoldconsulting.com>
+References: <000000000000c2987605be907e41@google.com> <20210602212726.7-1-fuzzybritches0@gmail.com>
+ <YLhd8BL3HGItbXmx@kroah.com> <87609-531187-curtm@phaethon>
+ <6a392b66-6f26-4532-d25f-6b09770ce366@fb.com> <CAADnVQKexxZQw0yK_7rmFOdaYabaFpi2EmF6RGs5bXvFHtUQaA@mail.gmail.com>
+In-Reply-To: <CAADnVQKexxZQw0yK_7rmFOdaYabaFpi2EmF6RGs5bXvFHtUQaA@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 7 Jun 2021 09:38:43 +0200
+Message-ID: <CACT4Y+b=si6NCx=nRHKm_pziXnVMmLo-eSuRajsxmx5+Hy_ycg@mail.gmail.com>
+Subject: Re: [PATCH v4] bpf: core: fix shift-out-of-bounds in ___bpf_prog_run
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>,
+        Kurt Manucredo <fuzzybritches0@gmail.com>,
+        syzbot+bed360704c521841c85d@syzkaller.appspotmail.com,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        nathan@kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 09:55:39AM +0200, Johan Hovold wrote:
-> On Mon, May 24, 2021 at 01:09:20PM +0200, Johan Hovold wrote:
-> > The direction of the pipe argument must match the request-type direction
-> > bit or control requests may fail depending on the host-controller-driver
-> > implementation.
-> > 
-> > Control transfers without a data stage are treated as OUT requests by
-> > the USB stack and should be using usb_sndctrlpipe(). Failing to do so
-> > will now trigger a warning.
-> > 
-> > Fix the zero-length i2c-read request used for type detection by
-> > attempting to read a single byte instead.
-> > 
-> > Reported-by: syzbot+faf11bbadc5a372564da@syzkaller.appspotmail.com
-> > Fixes: d0f232e823af ("[media] rtl28xxu: add heuristic to detect chip type")
-> > Cc: stable@vger.kernel.org      # 4.0
-> > Cc: Antti Palosaari <crope@iki.fi>
-> > Signed-off-by: Johan Hovold <johan@kernel.org>
-> > ---
-> >  drivers/media/usb/dvb-usb-v2/rtl28xxu.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/media/usb/dvb-usb-v2/rtl28xxu.c b/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
-> > index 97ed17a141bb..2c04ed8af0e4 100644
-> > --- a/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
-> > +++ b/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
-> > @@ -612,8 +612,9 @@ static int rtl28xxu_read_config(struct dvb_usb_device *d)
-> >  static int rtl28xxu_identify_state(struct dvb_usb_device *d, const char **name)
-> >  {
-> >  	struct rtl28xxu_dev *dev = d_to_priv(d);
-> > +	u8 buf[1];
-> >  	int ret;
-> > -	struct rtl28xxu_req req_demod_i2c = {0x0020, CMD_I2C_DA_RD, 0, NULL};
-> > +	struct rtl28xxu_req req_demod_i2c = {0x0020, CMD_I2C_DA_RD, 1, buf};
-> >  
-> >  	dev_dbg(&d->intf->dev, "\n");
-> 
-> As reported here
-> 
-> 	https://lore.kernel.org/r/YLSVsrhMZ2oOL1vM@hovoldconsulting.com
-> 
-> this patch is causing the chip type to no longer be detected correctly,
-> so please drop this one for now until this has been resolved.
+On Sat, Jun 5, 2021 at 9:10 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+> On Sat, Jun 5, 2021 at 10:55 AM Yonghong Song <yhs@fb.com> wrote:
+> > On 6/5/21 8:01 AM, Kurt Manucredo wrote:
+> > > Syzbot detects a shift-out-of-bounds in ___bpf_prog_run()
+> > > kernel/bpf/core.c:1414:2.
+> >
+> > This is not enough. We need more information on why this happens
+> > so we can judge whether the patch indeed fixed the issue.
+> >
+> > >
+> > > I propose: In adjust_scalar_min_max_vals() move boundary check up to avoid
+> > > missing them and return with error when detected.
+> > >
+> > > Reported-and-tested-by: syzbot+bed360704c521841c85d@syzkaller.appspotmail.com
+> > > Signed-off-by: Kurt Manucredo <fuzzybritches0@gmail.com>
+> > > ---
+> > >
+> > > https://syzkaller.appspot.com/bug?id=edb51be4c9a320186328893287bb30d5eed09231
+> > >
+> > > Changelog:
+> > > ----------
+> > > v4 - Fix shift-out-of-bounds in adjust_scalar_min_max_vals.
+> > >       Fix commit message.
+> > > v3 - Make it clearer what the fix is for.
+> > > v2 - Fix shift-out-of-bounds in ___bpf_prog_run() by adding boundary
+> > >       check in check_alu_op() in verifier.c.
+> > > v1 - Fix shift-out-of-bounds in ___bpf_prog_run() by adding boundary
+> > >       check in ___bpf_prog_run().
+> > >
+> > > thanks
+> > >
+> > > kind regards
+> > >
+> > > Kurt
+> > >
+> > >   kernel/bpf/verifier.c | 30 +++++++++---------------------
+> > >   1 file changed, 9 insertions(+), 21 deletions(-)
+> > >
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index 94ba5163d4c5..ed0eecf20de5 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -7510,6 +7510,15 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
+> > >       u32_min_val = src_reg.u32_min_value;
+> > >       u32_max_val = src_reg.u32_max_value;
+> > >
+> > > +     if ((opcode == BPF_LSH || opcode == BPF_RSH || opcode == BPF_ARSH) &&
+> > > +                     umax_val >= insn_bitness) {
+> > > +             /* Shifts greater than 31 or 63 are undefined.
+> > > +              * This includes shifts by a negative number.
+> > > +              */
+> > > +             verbose(env, "invalid shift %lld\n", umax_val);
+> > > +             return -EINVAL;
+> > > +     }
+> >
+> > I think your fix is good. I would like to move after
+>
+> I suspect such change will break valid programs that do shift by register.
+>
+> > the following code though:
+> >
+> >          if (!src_known &&
+> >              opcode != BPF_ADD && opcode != BPF_SUB && opcode != BPF_AND) {
+> >                  __mark_reg_unknown(env, dst_reg);
+> >                  return 0;
+> >          }
+> >
+> > > +
+> > >       if (alu32) {
+> > >               src_known = tnum_subreg_is_const(src_reg.var_off);
+> > >               if ((src_known &&
+> > > @@ -7592,39 +7601,18 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
+> > >               scalar_min_max_xor(dst_reg, &src_reg);
+> > >               break;
+> > >       case BPF_LSH:
+> > > -             if (umax_val >= insn_bitness) {
+> > > -                     /* Shifts greater than 31 or 63 are undefined.
+> > > -                      * This includes shifts by a negative number.
+> > > -                      */
+> > > -                     mark_reg_unknown(env, regs, insn->dst_reg);
+> > > -                     break;
+> > > -             }
+> >
+> > I think this is what happens. For the above case, we simply
+> > marks the dst reg as unknown and didn't fail verification.
+> > So later on at runtime, the shift optimization will have wrong
+> > shift value (> 31/64). Please correct me if this is not right
+> > analysis. As I mentioned in the early please write detailed
+> > analysis in commit log.
+>
+> The large shift is not wrong. It's just undefined.
+> syzbot has to ignore such cases.
 
-Looks like this one was applied to the media tree a couple of days after
-I sent this nonetheless.
+Hi Alexei,
 
-Can you drop this one in favour of the v2 posted here:
-
-	 https://lore.kernel.org/r/20210531094434.12651-4-johan@kernel.org
-
-or do you want me to send an incremental fix instead?
-
-Johan
+The report is produced by KUBSAN. I thought there was an agreement on
+cleaning up KUBSAN reports from the kernel (the subset enabled on
+syzbot at least).
+What exactly cases should KUBSAN ignore?
++linux-hardening/kasan-dev for KUBSAN false positive
