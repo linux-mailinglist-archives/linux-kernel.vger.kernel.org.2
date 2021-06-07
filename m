@@ -2,120 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AEA939D659
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF8BC39D65A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230173AbhFGHx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 03:53:26 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:43898 "EHLO
+        id S230193AbhFGHyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 03:54:12 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:43962 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhFGHxY (ORCPT
+        with ESMTP id S229436AbhFGHyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 03:53:24 -0400
-Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 52B6A21A6E;
-        Mon,  7 Jun 2021 07:51:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623052292; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        Mon, 7 Jun 2021 03:54:10 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A641C21A86;
+        Mon,  7 Jun 2021 07:52:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623052338; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=4NT4tA15Kh2qCvhPPggvZbVmruQWfYW04SuZbrBoVAs=;
-        b=STYpI1vFrANTBQnqKzXLAEPgUwzTjWefqYRZlHuDkLXe1VkAqJfoTf9bOEXOG6fH8B7wHc
-        v7AFnEz6LKr2igzamTg4DukabHg2nvjhoSACUD1tq76XpIUNTM+xjX0O6Xpk9D3nQeY/i6
-        aKbyyCxdGP/ijP1I0vnLVTGAEO5bKNI=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 2318CA3B85;
-        Mon,  7 Jun 2021 07:51:31 +0000 (UTC)
-Date:   Mon, 7 Jun 2021 09:51:30 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        bh=Bx3CBAxFcKycwSZrW3uOEUlKsBQs/nevI6APuZ3SgW0=;
+        b=KfpD/cLCVlUPO85fGKPWgXuPd2PaFZPaWuhAT3BaHOHIVvj/f3gKaZk1cb/3j4sAvWBbee
+        L1LnGQ/uFiBfb+XuD58nMae2AOQ6fYFuJv1BjWL2Z7QDJQToFTtCsEcNcvnFYMOlgqtFrb
+        0piGocUWYlD4Chz8dWcp4CqdYuaMtGk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623052338;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bx3CBAxFcKycwSZrW3uOEUlKsBQs/nevI6APuZ3SgW0=;
+        b=BIO/RR9WAdgv2OluegLCFUY02E1tppLr5R0PQNdE6p1PZNL7VN0odR6cG727Wy5plc6AXi
+        iWH00zNPYRG+riBw==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 1B58D118DD;
+        Mon,  7 Jun 2021 07:52:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623052338; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bx3CBAxFcKycwSZrW3uOEUlKsBQs/nevI6APuZ3SgW0=;
+        b=KfpD/cLCVlUPO85fGKPWgXuPd2PaFZPaWuhAT3BaHOHIVvj/f3gKaZk1cb/3j4sAvWBbee
+        L1LnGQ/uFiBfb+XuD58nMae2AOQ6fYFuJv1BjWL2Z7QDJQToFTtCsEcNcvnFYMOlgqtFrb
+        0piGocUWYlD4Chz8dWcp4CqdYuaMtGk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623052338;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bx3CBAxFcKycwSZrW3uOEUlKsBQs/nevI6APuZ3SgW0=;
+        b=BIO/RR9WAdgv2OluegLCFUY02E1tppLr5R0PQNdE6p1PZNL7VN0odR6cG727Wy5plc6AXi
+        iWH00zNPYRG+riBw==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id LJyBAzLQvWDVXQAALh3uQQ
+        (envelope-from <osalvador@suse.de>); Mon, 07 Jun 2021 07:52:18 +0000
+Date:   Mon, 7 Jun 2021 09:52:16 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     David Hildenbrand <david@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
         Anshuman Khandual <anshuman.khandual@arm.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v1] memory-hotplug.rst: complete admin-guide overhaul
-Message-ID: <YL3QApMe/9R/xfLU@dhcp22.suse.cz>
-References: <20210525102604.8770-1-david@redhat.com>
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] mm,page_alloc: Use {get,put}_online_mems() to get
+ stable zone's values
+Message-ID: <20210607075147.GA10554@linux>
+References: <20210602091457.17772-1-osalvador@suse.de>
+ <20210602091457.17772-2-osalvador@suse.de>
+ <39473305-6e91-262d-bcc2-76b745a5b14a@redhat.com>
+ <ed17a39ad61edeb19b04c0f4308d5d36@suse.de>
+ <YLiVAAsCTR7B6Db9@localhost.localdomain>
+ <YLjO2YU2G5fTVB3x@dhcp22.suse.cz>
+ <20210604074140.GA25063@linux>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210525102604.8770-1-david@redhat.com>
+In-Reply-To: <20210604074140.GA25063@linux>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Sorry this somehow slipped through cracks]
-
-On Tue 25-05-21 12:26:04, David Hildenbrand wrote:
-> The memory hot(un)plug documentation is outdated and incomplete. Most of
-> the content dates back to 2007, so it's time for a major overhaul.
+On Fri, Jun 04, 2021 at 09:41:45AM +0200, Oscar Salvador wrote:
+> On Thu, Jun 03, 2021 at 02:45:13PM +0200, Michal Hocko wrote:
+> > I believe we need to define the purpose of the locking first. The
 > 
-> Let's rewrite, reorganize and update most parts of the documentation. In
-> addition to memory hot(un)plug, also add some details regarding
-> ZONE_MOVABLE, with memory hotunplug being one of its main consumers.
+> If you ask me, this locking would be meant to make sure zone's zone_start_pfn
+> or spanned_pages do not change under us, in case we __need__ the value to be
+> stable.
 > 
-> The style of the document is also properly fixed that e.g., "restview"
-> renders it cleanly now.
+> > existing locking doesn't serve much purpose, does it? The state might
 > 
-> In the future, we might add some more details about virt users like
-> virtio-mem, the XEN balloon, the Hyper-V balloon and ppc64 dlpar.
+> Well, half-way. Currently, the locking is taken in write mode whenever
+> the zone is expanded or shrinked, and in read mode when called from
+> bad_range()->page_outside_zone_boundaries() (only on VM_DEBUG).
+> 
+> But as you pointed out, such state might change right after the locking is
+> released and all the work would be for nothing.
+> So indeed, the __whole__ operation should be envolved by the lock in the caller
+> The way that stands right now is not optimal.
+> 
+> > change right after the lock is released and the caller cannot really
+> > rely on the result. So aside of the current implementation, I would
+> > argue that any locking has to be be done on the caller layer.
+> > 
+> > But the primary question is whether anybody actually cares about
+> > potential races in the first place.
+> 
+> I have been checking move_freepages_block() and alloc_contig_pages(), which
+> are two of the functions that call zone_spans_pfn().
+> 
+> move_freepages_block() uses it in a way to align the given pfn to pageblock
+> top and bottom, and then check that aligned pfns are still within the same zone.
+> From a memory-hotplug perspective that's ok as we know that we are offlining
+> PAGES_PER_SECTION (which implies whole pageblocks).
+> 
+> alloc_contig_pages() (used by the hugetlb gigantic allocator) runs through a
+> node's zonelist and checks whether zone->zone_start_pfn + nr_pages stays within
+> the same zone.
+> IMHO, the race with zone_spans_last_pfn() vs mem-hotplug would not be that bad,
+> as it will be caught afters by e.g: __alloc_contig_pages when pages cannot be
+> isolated because they are offline etc.
+> 
+> So, I would say we do not really need the lock, but I might be missing something.
+> But if we chose to care about this, then the locking should be done right, not
+> half-way as it is right now.
 
-I haven't really checked the diff but rather looked at the final
-outcome. I have to say I like it a lot. Some places are going a bit too
-technical for an admin-guide but they are in minority (e.g. locking or
-altmap reference). If somebody feels strong then this could get into its
-own file but I wouldn't lose sleep over that.
 
-I would make one thing slightly more explicit though
-diff --git a/Documentation/admin-guide/mm/memory-hotplug.rst b/Documentation/admin-guide/mm/memory-hotplug.rst
-index c95f5c2b30dd..5b462aba89cc 100644
---- a/Documentation/admin-guide/mm/memory-hotplug.rst
-+++ b/Documentation/admin-guide/mm/memory-hotplug.rst
-@@ -568,6 +568,10 @@ Even with ZONE_MOVABLE, there are some corner cases where offlining a memory
- Further, when running into out of memory situations while migrating pages, or
- when still encountering permanently unmovable pages within ZONE_MOVABLE
- (-> BUG), memory offlining will keep retrying until it eventually succeeds.
-+The offlining context can be terminated by a fatal signal. A timeout based
-+offlining can be easily implemented by 
-+        
-+        % timeout $TIMEOUT offline_block | failure_handling
+Any thoughts on this? :-)
+
  
- Locking Internals
- =================
 
-
-In the future I would find some examples of a failure cases we have seen
-so far. E.g. offlining failure with dump_page example.
-
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Mike Kravetz <mike.kravetz@oracle.com>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Muchun Song <songmuchun@bytedance.com>
-> Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-> Cc: linux-doc@vger.kernel.org
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-Thanks a lot David!
 -- 
-Michal Hocko
-SUSE Labs
+Oscar Salvador
+SUSE L3
