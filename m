@@ -2,181 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D705839D631
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3B539D636
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbhFGHlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 03:41:47 -0400
-Received: from mail-qt1-f172.google.com ([209.85.160.172]:35347 "EHLO
-        mail-qt1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhFGHlq (ORCPT
+        id S230241AbhFGHmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 03:42:37 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:63427 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229545AbhFGHmf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 03:41:46 -0400
-Received: by mail-qt1-f172.google.com with SMTP id k19so11956423qta.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 00:39:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FkDnZkLm7S26Fub+7GJQrbQgH8zlz9fkqHVVt8EUVII=;
-        b=nHm4WK6cYXy60WGLih3X49PfQoCmkrbdxEffYKfbL3/RwZaUJn+ZpFlw1f4qhBKOsh
-         ahRqwNfz/pELzJOgvhEH7fSmrENCdPGqiDPPnxASXGD5q9sd6Dk5WUdbdBbPUArWSpgz
-         YhjtWV0vG8EhX7zQlQ+lNbW/aFKCucpeFKWsmDvBb4gvT3urI0A7KLePEk+N9605Vxec
-         pkm2nZH26PbCFEe3Rt8MWK2GYZWEhX1zJkTawVJymWS9/t+exzEZtixnPBaQ3CKp7qxO
-         KJPc74KVXSeqk4iHCZH7tGPVflFVx/UFdpy6RZ1xAkh+rjGRzUNDiP+yZ5nLQUld/tUh
-         Nh2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FkDnZkLm7S26Fub+7GJQrbQgH8zlz9fkqHVVt8EUVII=;
-        b=WWVXShGi89owH1f857HBZlcroSld9mAvOs6Rb8gSlxHQPnN2/O0BqI8nBrbW0ZvDeD
-         FDjOvvMhVANurkbqsDGpVbaKzrkWV4HmfIXXhWKq69jCsa6c0LrmQqVDvn450zQvNRP/
-         4soXJJ1lHFCZv9/MuLkBeqfaZV62OF/yqDynadpPeaIJM9m+2B8L3+DhKy0zvrYwRIBE
-         BSPrrBPLo3EJVIUoj39Fa1fiL67jQ5PuNIgKc1SE8DEMH2H4r1d1AdVDrH+o4Xz9rBj6
-         YRmEW3eKXDV24gYkKjY8fsP5mzPUPcdihgEAUiqOAHtrfF5xBHPIYwL9QfuDQ/Hs9Gat
-         U3eA==
-X-Gm-Message-State: AOAM531wQMBYKn7mxlm1qeE4I3F7JID/5HEsfAcAw7HHllqp2O7FCzcs
-        jhWlo7CRDyEPVHGyMTFxeIXr74JXsm12E0iVMkuX0g==
-X-Google-Smtp-Source: ABdhPJw+kgwDX9eCqL8hOPDdudAvKTGNSsQ1Stvnfjs7IZaa/qdT3iEe5T8MNwE87hz52U2sn3g3U6qP7w8/LoXc35w=
-X-Received: by 2002:ac8:7c4e:: with SMTP id o14mr14825948qtv.290.1623051534847;
- Mon, 07 Jun 2021 00:38:54 -0700 (PDT)
+        Mon, 7 Jun 2021 03:42:35 -0400
+Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 1577e4cr029736;
+        Mon, 7 Jun 2021 16:40:05 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 1577e4cr029736
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1623051605;
+        bh=EKJEqB3Q6tIfy2A4ywMNYaG/WTIqmzMmTredZAM1eyY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rCbmr+PJtfqOvYdx+tg6tNe+ulGgWc8DM4wPOwDOMxO464uhW3SM4YIp8ouiWr6D2
+         yFDq3SUMr6K9d+k5CD8oaK0+wjbbkRKpgzxm5gU6Jt6sHwUJgPukt+Ie+EUJidvouB
+         QCipHwGMraBCrfZK+6+YKhTBqf1Ry9qjyiqwPM/8++rBqeoo5ZmqM3pP0yXVOqriyR
+         KAOmcpss4ARyFtb8cITGpqkbe3DgZZR7YsNJvfFhcNz9GrjTi5d/JwxNdvLO3yrTJ5
+         Pw7WfuQyhmz6+DkHWz7V0TVVxdSewlTy3Q2hCQmMNnHwBP8yFWvNhLBsudkRKgWHHz
+         To5r+JyNQhNtg==
+X-Nifty-SrcIP: [209.85.217.51]
+Received: by mail-vs1-f51.google.com with SMTP id j15so8412318vsf.2;
+        Mon, 07 Jun 2021 00:40:04 -0700 (PDT)
+X-Gm-Message-State: AOAM530ilV7x9BOYsxhMHcnwVwqHaih58l/6kueGfJCzvVlGiGTj+8dd
+        PXKRy3Ke8jMTTkQathvLHaRFAv3O3xAwgDA5ZIY=
+X-Google-Smtp-Source: ABdhPJwPmFut2nTxArXa07v4xPlHzxrJ0sLjVDtvrdtLChTFpKiR9239Z6WTj44UnleODc79Z+HXDtosElosU9UFvGs=
+X-Received: by 2002:aa7:99c9:0:b029:2e9:e084:e1de with SMTP id
+ v9-20020aa799c90000b02902e9e084e1demr15812551pfi.80.1623051593156; Mon, 07
+ Jun 2021 00:39:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <000000000000c2987605be907e41@google.com> <20210602212726.7-1-fuzzybritches0@gmail.com>
- <YLhd8BL3HGItbXmx@kroah.com> <87609-531187-curtm@phaethon>
- <6a392b66-6f26-4532-d25f-6b09770ce366@fb.com> <CAADnVQKexxZQw0yK_7rmFOdaYabaFpi2EmF6RGs5bXvFHtUQaA@mail.gmail.com>
-In-Reply-To: <CAADnVQKexxZQw0yK_7rmFOdaYabaFpi2EmF6RGs5bXvFHtUQaA@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 7 Jun 2021 09:38:43 +0200
-Message-ID: <CACT4Y+b=si6NCx=nRHKm_pziXnVMmLo-eSuRajsxmx5+Hy_ycg@mail.gmail.com>
-Subject: Re: [PATCH v4] bpf: core: fix shift-out-of-bounds in ___bpf_prog_run
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>,
-        Kurt Manucredo <fuzzybritches0@gmail.com>,
-        syzbot+bed360704c521841c85d@syzkaller.appspotmail.com,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        nathan@kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        kasan-dev <kasan-dev@googlegroups.com>
+References: <20210227183910.221873-1-masahiroy@kernel.org> <CAK7LNASL_X43_nMTz1CZQB+jiLCRAJbh-wQdc23QV0pWceL_Lw@mail.gmail.com>
+ <20210228064936.zixrhxlthyy6fmid@24bbad8f3778>
+In-Reply-To: <20210228064936.zixrhxlthyy6fmid@24bbad8f3778>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 7 Jun 2021 16:39:16 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASY_+_38XEMLZAf7txr4EdukkcFL8pnGGe2XyhQ9F4oDQ@mail.gmail.com>
+Message-ID: <CAK7LNASY_+_38XEMLZAf7txr4EdukkcFL8pnGGe2XyhQ9F4oDQ@mail.gmail.com>
+Subject: Re: [PATCH RFC] x86: remove toolchain check for X32 ABI capability
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Fangrui Song <maskray@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "H . J . Lu" <hjl.tools@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Brian Gerst <brgerst@gmail.com>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Chao Yu <chao@kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Kees Cook <keescook@chromium.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 5, 2021 at 9:10 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
-> On Sat, Jun 5, 2021 at 10:55 AM Yonghong Song <yhs@fb.com> wrote:
-> > On 6/5/21 8:01 AM, Kurt Manucredo wrote:
-> > > Syzbot detects a shift-out-of-bounds in ___bpf_prog_run()
-> > > kernel/bpf/core.c:1414:2.
-> >
-> > This is not enough. We need more information on why this happens
-> > so we can judge whether the patch indeed fixed the issue.
-> >
-> > >
-> > > I propose: In adjust_scalar_min_max_vals() move boundary check up to avoid
-> > > missing them and return with error when detected.
-> > >
-> > > Reported-and-tested-by: syzbot+bed360704c521841c85d@syzkaller.appspotmail.com
-> > > Signed-off-by: Kurt Manucredo <fuzzybritches0@gmail.com>
-> > > ---
-> > >
-> > > https://syzkaller.appspot.com/bug?id=edb51be4c9a320186328893287bb30d5eed09231
-> > >
-> > > Changelog:
-> > > ----------
-> > > v4 - Fix shift-out-of-bounds in adjust_scalar_min_max_vals.
-> > >       Fix commit message.
-> > > v3 - Make it clearer what the fix is for.
-> > > v2 - Fix shift-out-of-bounds in ___bpf_prog_run() by adding boundary
-> > >       check in check_alu_op() in verifier.c.
-> > > v1 - Fix shift-out-of-bounds in ___bpf_prog_run() by adding boundary
-> > >       check in ___bpf_prog_run().
-> > >
-> > > thanks
-> > >
-> > > kind regards
-> > >
-> > > Kurt
-> > >
-> > >   kernel/bpf/verifier.c | 30 +++++++++---------------------
-> > >   1 file changed, 9 insertions(+), 21 deletions(-)
-> > >
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index 94ba5163d4c5..ed0eecf20de5 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -7510,6 +7510,15 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
-> > >       u32_min_val = src_reg.u32_min_value;
-> > >       u32_max_val = src_reg.u32_max_value;
-> > >
-> > > +     if ((opcode == BPF_LSH || opcode == BPF_RSH || opcode == BPF_ARSH) &&
-> > > +                     umax_val >= insn_bitness) {
-> > > +             /* Shifts greater than 31 or 63 are undefined.
-> > > +              * This includes shifts by a negative number.
-> > > +              */
-> > > +             verbose(env, "invalid shift %lld\n", umax_val);
-> > > +             return -EINVAL;
-> > > +     }
-> >
-> > I think your fix is good. I would like to move after
+On Sun, Feb 28, 2021 at 3:49 PM Nathan Chancellor <nathan@kernel.org> wrote:
 >
-> I suspect such change will break valid programs that do shift by register.
+> On Sun, Feb 28, 2021 at 12:15:16PM +0900, Masahiro Yamada wrote:
+> > On Sun, Feb 28, 2021 at 3:41 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > >
+> > > This commit reverts 0bf6276392e9 ("x32: Warn and disable rather than
+> > > error if binutils too old").
+> > >
+> > > The help text in arch/x86/Kconfig says enabling the X32 ABI support
+> > > needs binutils 2.22 or later. This is met because the minimal binutils
+> > > version is 2.23 according to Documentation/process/changes.rst.
+> > >
+> > > I would not say I am not familiar with toolchain configuration, but
+> >
+> > I mean:
+> > I would not say I am familiar ...
+> > That is why I added RFC.
+> >
+> > I appreciate comments from people who are familiar
+> > with toolchains (binutils, llvm).
+> >
+> > If this change is not safe,
+> > we can move this check to Kconfig at least.
 >
-> > the following code though:
-> >
-> >          if (!src_known &&
-> >              opcode != BPF_ADD && opcode != BPF_SUB && opcode != BPF_AND) {
-> >                  __mark_reg_unknown(env, dst_reg);
-> >                  return 0;
-> >          }
-> >
-> > > +
-> > >       if (alu32) {
-> > >               src_known = tnum_subreg_is_const(src_reg.var_off);
-> > >               if ((src_known &&
-> > > @@ -7592,39 +7601,18 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
-> > >               scalar_min_max_xor(dst_reg, &src_reg);
-> > >               break;
-> > >       case BPF_LSH:
-> > > -             if (umax_val >= insn_bitness) {
-> > > -                     /* Shifts greater than 31 or 63 are undefined.
-> > > -                      * This includes shifts by a negative number.
-> > > -                      */
-> > > -                     mark_reg_unknown(env, regs, insn->dst_reg);
-> > > -                     break;
-> > > -             }
-> >
-> > I think this is what happens. For the above case, we simply
-> > marks the dst reg as unknown and didn't fail verification.
-> > So later on at runtime, the shift optimization will have wrong
-> > shift value (> 31/64). Please correct me if this is not right
-> > analysis. As I mentioned in the early please write detailed
-> > analysis in commit log.
+> Hi Masahiro,
 >
-> The large shift is not wrong. It's just undefined.
-> syzbot has to ignore such cases.
+> As Fangrui pointed out, there are two outstanding issues with x32 with
+> LLVM=1, both seemingly related to LLVM=1.
 
-Hi Alexei,
+Is this still a problem for Clang built Linux?
 
-The report is produced by KUBSAN. I thought there was an agreement on
-cleaning up KUBSAN reports from the kernel (the subset enabled on
-syzbot at least).
-What exactly cases should KUBSAN ignore?
-+linux-hardening/kasan-dev for KUBSAN false positive
+
+
+> https://github.com/ClangBuiltLinux/linux/issues/514
+
+I am not tracking the status.
+What was the conclusion?
+
+> https://github.com/ClangBuiltLinux/linux/issues/1141
+
+
+This got marked "unreproducible"
+
+>
+> Additionally, there appears to be one from Arnd as well but that one has
+> received no triage yet.
+>
+> https://github.com/ClangBuiltLinux/linux/issues/1205
+
+Same as well.
+
+
+>
+> I intend to test this patch as well as a few others at some point in the
+> coming week although I am having to play sysadmin due to moving servers
+> so I might not be able to get to it until later in the week.
+>
+> Cheers,
+> Nathan
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
