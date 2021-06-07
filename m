@@ -2,68 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D0B39D9B6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26E0639D9AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbhFGKd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 06:33:56 -0400
-Received: from m12-15.163.com ([220.181.12.15]:39447 "EHLO m12-15.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230233AbhFGKdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 06:33:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=o81iM
-        2yaKW4GFjiu9Xno55x0ouWw1HIlF2M5RhpAFis=; b=IswmJiD5b+p3VqqBHxqEy
-        6+EGM7dHhQvlJ1ng4d3hLxXotkJGDveSldRoaxBNvxIvhii60iPMuXZXgrh/Cnpj
-        1AjoHzXpyEnvSyO2bj7oY3g5Csyv+76/juycyWfpqZtpe0hWZETdLNC3fy5fdnwT
-        KQNOFsIaoT3LEXUwNTVKd0=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp11 (Coremail) with SMTP id D8CowADnnNFDmb1g2xQYAA--.11S2;
-        Mon, 07 Jun 2021 11:58:04 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lijian <lijian@yulong.com>
-Subject: [PATCH v2] fs: file_table: Fix a typo
-Date:   Mon,  7 Jun 2021 11:56:58 +0800
-Message-Id: <20210607035658.143153-1-lijian_8010a29@163.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: D8CowADnnNFDmb1g2xQYAA--.11S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7JrWUJr1kAr15JF1UWFW3Wrg_yoW3CrX_tF
-        Wkt3yDurZ8JryIvryxCanxZrykJ3W5CF1rtw43Kr9xtw45J397ursrur1xWw42qF4UtFyk
-        GF1kur15Cr1IkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnDKsUUUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbiSg2qUFPAOmUm5gAAsx
+        id S230365AbhFGKdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 06:33:18 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:34763 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230194AbhFGKdP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 06:33:15 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Ubb.YZi_1623061880;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Ubb.YZi_1623061880)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 07 Jun 2021 18:31:22 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     aelior@marvell.com
+Cc:     GR-everest-linux-l2@marvell.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] qed: Fix duplicate included linux/kernel.h
+Date:   Mon,  7 Jun 2021 18:31:14 +0800
+Message-Id: <1623061874-35234-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
+Clean up the following includecheck warning:
 
-Change 'happend' to 'happen'.
+./drivers/net/ethernet/qlogic/qed/qed_nvmetcp_fw_funcs.h: linux/kernel.h
+is included more than once.
 
-Signed-off-by: lijian <lijian@yulong.com>
+No functional change.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
-v2: change 'happend' to 'happened'.
- fs/file_table.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/qlogic/qed/qed_nvmetcp_fw_funcs.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/fs/file_table.c b/fs/file_table.c
-index 4891f267b69a..f40df305dd3b 100644
---- a/fs/file_table.c
-+++ b/fs/file_table.c
-@@ -121,7 +121,7 @@ static struct file *__alloc_file(int flags, const struct cred *cred)
- }
- 
- /* Find an unused file structure and return a pointer to it.
-- * Returns an error pointer if some error happen e.g. we over file
-+ * Returns an error pointer if some error happened e.g. we over file
-  * structures limit, run out of memory or operation is not permitted.
-  *
-  * Be very careful using this.  You are responsible for
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_nvmetcp_fw_funcs.h b/drivers/net/ethernet/qlogic/qed/qed_nvmetcp_fw_funcs.h
+index 4c7ac2b..1d5ddc2 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_nvmetcp_fw_funcs.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_nvmetcp_fw_funcs.h
+@@ -7,7 +7,6 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/pci.h>
+-#include <linux/kernel.h>
+ #include <linux/list.h>
+ #include <linux/mm.h>
+ #include <linux/types.h>
 -- 
-2.25.1
+1.8.3.1
 
