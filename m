@@ -2,127 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4002339E193
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4972439E25B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230508AbhFGQOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 12:14:05 -0400
-Received: from router.aksignal.cz ([62.44.4.214]:50656 "EHLO
-        router.aksignal.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230313AbhFGQOB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 12:14:01 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by router.aksignal.cz (Postfix) with ESMTP id 84B4644413;
-        Mon,  7 Jun 2021 18:12:06 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at router.aksignal.cz
-Received: from router.aksignal.cz ([127.0.0.1])
-        by localhost (router.aksignal.cz [127.0.0.1]) (amavisd-new, port 10026)
-        with LMTP id Sb2xD9NikW5u; Mon,  7 Jun 2021 18:12:06 +0200 (CEST)
-Received: from pc-gameroom.prchals.tk (unknown [83.240.30.185])
-        (Authenticated sender: jiri.prchal@aksignal.cz)
-        by router.aksignal.cz (Postfix) with ESMTPSA id 72FD044411;
-        Mon,  7 Jun 2021 18:12:05 +0200 (CEST)
-From:   Jiri Prchal <jiri.prchal@aksignal.cz>
-To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Christian Eggers <ceggers@arri.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Prchal <jiri.prchal@aksignal.cz>
-Subject: [PATCH v8 4/5] nvmem: eeprom: at25: export FRAM serial num
-Date:   Mon,  7 Jun 2021 18:12:00 +0200
-Message-Id: <20210607161201.223697-5-jiri.prchal@aksignal.cz>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210607161201.223697-1-jiri.prchal@aksignal.cz>
-References: <20210607161201.223697-1-jiri.prchal@aksignal.cz>
+        id S232126AbhFGQQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 12:16:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48832 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231707AbhFGQOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 12:14:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85970613CA;
+        Mon,  7 Jun 2021 16:12:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623082378;
+        bh=n0qypTD4bUxG/tpPZRl4lP3zf6bhg7tf8aDMqqAWjSo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=uZoT+Ul+nsQ0iKUc9Ah7fbcZzOKhglgck1eibC0CcDWIOpib4za1UbOVN7Wc1Dt6C
+         aIpbZOQDeW+C4A3Yehe/D0KOwZGFOWGlap2unLTjupotfKzTp3pI0WEwp5gfjF+Sc6
+         gL8lAYFldUbCcu2+zK4W12soqJoygqP+N1Hrvfn+YRgjXB0fww9Kf8lBUPJsNCiPLV
+         pILgPf1BXTFJf7DMSlfj/D3xr5NDE8US74zhOSi3etFWv0Wi0UxxPzNbXklg+HlNNz
+         SYkeRUyV40ChfAL9IgE+V4iMpkCdn2P8BANcJSrr8keTDBegBMy0mzLxFzt+OvWfKR
+         tCk7ew32+PVBw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-bluetooth@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.12 34/49] Bluetooth: Add a new USB ID for RTL8822CE
+Date:   Mon,  7 Jun 2021 12:12:00 -0400
+Message-Id: <20210607161215.3583176-34-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210607161215.3583176-1-sashal@kernel.org>
+References: <20210607161215.3583176-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This exports serial number of FRAM in sysfs file named "sernum".
-Formatted in hex, each byte separated by space.
-Example:
-$ cat /sys/class/spi_master/spi0/spi0.0/sernum
-0000a43644f2ae6c
+From: Larry Finger <Larry.Finger@lwfinger.net>
 
-Signed-off-by: Jiri Prchal <jiri.prchal@aksignal.cz>
----
-v2: no change here
-v3: resend and added more recipients
-v4: resend
-v5: reworked up on Greg comments: no spaces in string, sysfs done correctly
-v6: no change here
-v7: moved FM25_SN_LEN, static array, used sysfs_emit, DEVICE_ATTR_RO
-v8: clarify sysfs_emit format
----
- drivers/misc/eeprom/at25.c | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+[ Upstream commit 4d96d3b0efee6416ef0d61b76aaac6f4a2e15b12 ]
 
-diff --git a/drivers/misc/eeprom/at25.c b/drivers/misc/eeprom/at25.c
-index e25cec7c474b..4a47a7e2d90d 100644
---- a/drivers/misc/eeprom/at25.c
-+++ b/drivers/misc/eeprom/at25.c
-@@ -31,6 +31,7 @@
-  *   AT25M02, AT25128B
-  */
+Some models of the RTL8822ce utilize a different USB ID. Add this
+new one to the Bluetooth driver.
+
+Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/bluetooth/btusb.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 4a901508e48e..ddc7b86725cd 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -388,6 +388,8 @@ static const struct usb_device_id blacklist_table[] = {
+ 	/* Realtek 8822CE Bluetooth devices */
+ 	{ USB_DEVICE(0x0bda, 0xb00c), .driver_info = BTUSB_REALTEK |
+ 						     BTUSB_WIDEBAND_SPEECH },
++	{ USB_DEVICE(0x0bda, 0xc822), .driver_info = BTUSB_REALTEK |
++						     BTUSB_WIDEBAND_SPEECH },
  
-+#define	FM25_SN_LEN	8		/* serial number length */
- struct at25_data {
- 	struct spi_device	*spi;
- 	struct mutex		lock;
-@@ -39,6 +40,7 @@ struct at25_data {
- 	struct nvmem_config	nvmem_config;
- 	struct nvmem_device	*nvmem;
- 	int has_sernum;
-+	u8 sernum[FM25_SN_LEN];
- };
- 
- #define	AT25_WREN	0x06		/* latch the write enable */
-@@ -172,6 +174,21 @@ static int fm25_aux_read(struct at25_data *at25, u8 *buf, uint8_t command,
- 	return status;
- }
- 
-+static ssize_t sernum_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	struct at25_data *at25;
-+
-+	at25 = dev_get_drvdata(dev);
-+	return sysfs_emit(buf, "%*phN\n", sizeof at25->sernum, at25->sernum);
-+}
-+static DEVICE_ATTR_RO(sernum);
-+
-+static struct attribute *sernum_attrs[] = {
-+	&dev_attr_sernum.attr,
-+	NULL,
-+};
-+ATTRIBUTE_GROUPS(sernum);
-+
- static int at25_ee_write(void *priv, unsigned int off, void *val, size_t count)
- {
- 	struct at25_data *at25 = priv;
-@@ -416,8 +433,10 @@ static int at25_probe(struct spi_device *spi)
- 		else
- 			at25->chip.flags |= EE_ADDR2;
- 
--		if (id[8])
-+		if (id[8]) {
- 			at25->has_sernum = 1;
-+			fm25_aux_read(at25, at25->sernum, FM25_RDSN, FM25_SN_LEN);
-+		}
- 		else
- 			at25->has_sernum = 0;
- 
-@@ -471,6 +490,7 @@ static struct spi_driver at25_driver = {
- 	.driver = {
- 		.name		= "at25",
- 		.of_match_table = at25_of_match,
-+		.dev_groups	= sernum_groups,
- 	},
- 	.probe		= at25_probe,
- };
+ 	/* Realtek 8852AE Bluetooth devices */
+ 	{ USB_DEVICE(0x0bda, 0xc852), .driver_info = BTUSB_REALTEK |
 -- 
-2.25.1
+2.30.2
 
