@@ -2,95 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB9639DBB6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE4FF39DBBA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231158AbhFGLuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 07:50:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230237AbhFGLuo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 07:50:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B75A9C061766;
-        Mon,  7 Jun 2021 04:48:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2PdD+uZkEIFyxVLFUWbMDdnRWGm9uGD+q1DCn4KEBK4=; b=XKFQnZaVgxCnah3Wz+h3maJZqX
-        0LDGmKOJlx8eg9N4zZRzZXA77bXMfxzDuxZtVHDk3kXz9TlupQ8oIlMQ9A1AAO7DpTCCf6yQlVd6U
-        xgCMD2PzA4RihWKDCwjKQQqDjWpl58WBDQnEvYa+60o+1sCZo6y4vC8uGFVHX7/sW6M9MIAJ4Bq1w
-        rhHf9mMy8gZYoODWKFnmaJrRAkU5GHjltQsF3bwLMWVIIcjXvfgXAJ5NRc6K9ioRKXynxqJ8GQ7Wq
-        lvJsLFGblWWUEpHhcTPYv57SXoUvOlMV1WH38fvlD0crItxycJyvW3p5JY8qBcH8krpdAllCjo4CM
-        RAslP1Zg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lqDk4-00Fh8A-0r; Mon, 07 Jun 2021 11:48:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EFA2230018A;
-        Mon,  7 Jun 2021 13:48:26 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9B1162DBA4A0B; Mon,  7 Jun 2021 13:48:26 +0200 (CEST)
-Date:   Mon, 7 Jun 2021 13:48:26 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Andres Freund <andres@anarazel.de>,
-        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 4/4] io_uring: implement futex wait
-Message-ID: <YL4Hiq+2rMGYrQAH@hirez.programming.kicks-ass.net>
-References: <cover.1622558659.git.asml.silence@gmail.com>
- <e91af9d8f8d6e376635005fd111e9fe7a1c50fea.1622558659.git.asml.silence@gmail.com>
- <bd824ec8-48af-b554-67a1-7ce20fcf608c@kernel.dk>
- <409a624c-de75-0ee5-b65f-ee09fff34809@gmail.com>
- <bdc55fcd-b172-def4-4788-8bf808ccf6d6@kernel.dk>
- <5ab4c8bd-3e82-e87b-1ae8-3b32ced72009@gmail.com>
- <87sg211ccj.ffs@nanos.tec.linutronix.de>
- <20210603190338.gfykgkc7ac2akvdt@alap3.anarazel.de>
- <87v96tywcb.ffs@nanos.tec.linutronix.de>
- <131a59af-a625-27b3-433e-ff8b7c36753e@gmail.com>
+        id S231462AbhFGLu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 07:50:59 -0400
+Received: from mga06.intel.com ([134.134.136.31]:47165 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231283AbhFGLu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 07:50:58 -0400
+IronPort-SDR: wZgmnU9c3Jj/iwFIBNdjyA+3lOM3UpCHFqxlCpz1zYn9eGyXqJ8azfV6rzO1FA+xKYrPZ3jihU
+ 9T+V2xp9Lrow==
+X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="265761217"
+X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
+   d="scan'208";a="265761217"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 04:49:06 -0700
+IronPort-SDR: u17BKXvx/hUR46TzWYEH1/SrBnug8cLVNtgUOpARTkwSnngROQ/OLo6pqeQujI435LdHyJ1dTj
+ ScM475RMOI1A==
+X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
+   d="scan'208";a="484747647"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 04:49:03 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lqDkb-000FDV-3n; Mon, 07 Jun 2021 14:49:01 +0300
+Date:   Mon, 7 Jun 2021 14:49:01 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Flavio Suligoi <f.suligoi@asem.it>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Subject: Re: [PATCH v2 2/7] pwm: core: Always require PWM flags to be provided
+Message-ID: <YL4HrZTb+fmW4UTf@smile.fi.intel.com>
+References: <20210531194947.10770-1-andriy.shevchenko@linux.intel.com>
+ <20210531194947.10770-2-andriy.shevchenko@linux.intel.com>
+ <20210606213054.bmqgs5hehbowa62d@pengutronix.de>
+ <YL3grTQ00lFCXyCp@smile.fi.intel.com>
+ <20210607095324.yaiu5lzb5zgoejpa@pengutronix.de>
+ <YL3xuJyAcbPLW7yG@smile.fi.intel.com>
+ <YL3zDUWsY9mUW0eQ@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <131a59af-a625-27b3-433e-ff8b7c36753e@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YL3zDUWsY9mUW0eQ@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 12:31:48PM +0100, Pavel Begunkov wrote:
-> On 6/5/21 1:43 AM, Thomas Gleixner wrote:
-> > Andres,
+On Mon, Jun 07, 2021 at 01:21:01PM +0300, Andy Shevchenko wrote:
+> On Mon, Jun 07, 2021 at 01:15:20PM +0300, Andy Shevchenko wrote:
+> > On Mon, Jun 07, 2021 at 11:53:24AM +0200, Uwe Kleine-König wrote:
+> > > On Mon, Jun 07, 2021 at 12:02:37PM +0300, Andy Shevchenko wrote:
+> > > > On Sun, Jun 06, 2021 at 11:30:54PM +0200, Uwe Kleine-König wrote:
+> > > > > On Mon, May 31, 2021 at 10:49:42PM +0300, Andy Shevchenko wrote:
+> > > > > > It makes little sense to make PWM flags optional since in case
+> > > > > > of multi-channel consumer the flags can be optional only for
+> > > > > > the last listed channel.
+> > > > > 
+> > > > > I think the same holds true for dt references.
+> > > > 
+> > > > Can you elaborate this? I haven't got what you are talking about, not a DT
+> > > > expert here.
+> > > 
+> > > Ah no, I mixed that up. While the function that parses the phandle is
+> > > flexible, for each pwm controller the number of arguments is fixed, so
+> > > 
+> > > 	pwms = <&pwm1 100000 &pwm2 100000 &pwm3 1000000>;
+> > > 
+> > > cannot be interpreted as 3-argument references to two PWMs. This is
+> > > different to ACPI (I guess, not an ACPI expert here :-) because &pwm1
+> > > "knows" if it needs 1 or 2 additional parameters (#pwm-cells).
 > > 
-> > On Thu, Jun 03 2021 at 12:03, Andres Freund wrote:
-> >> On 2021-06-01 23:53:00 +0200, Thomas Gleixner wrote:
-> >>> You surely made your point that this is well thought out.
-> >>
-> >> Really impressed with your effort to generously interpret the first
-> >> version of a proof of concept patch that explicitly was aimed at getting
-> >> feedback on the basic design and the different use cases.
+> > It's not about ACPI, it's about "the ACPI glue layer in Linux kernel".
+> > Used API is a part of it and it does allow only two cases, either NULL entry
+> > (by having 0 as an argument) or full-length supplied tuple (in case of PWM it's
+> > 3, so, means 4 parameters.
 > > 
-> > feedback on what?
+> > Let's consider examples:
 > > 
-> > There is absolutely no description of design and obviously there is no
-> > use case either. So what do you expect me to be generous about?
+> > (0, 0, x3, y3, z3, t3) // NULL, NULL, PWM3
+> > (x1, y1, z1, t1, 0, x3, y3, z3, t3) // PWM1, NULL, PWM3
+> > 
+> > So, making last parameter "flexible" will work only for the last tuple in the
+> > array.
+> > 
+> > Read this [1] for further information.
+> > 
+> > [1]: https://elixir.bootlin.com/linux/latest/source/drivers/acpi/property.c#L629
 > 
-> That's a complete fallacy, the very RFC is about clarifying a
-> use case that I was hinted about, not mentioning those I described
-> you in a reply. Obviously
+> Hmm... I have read the actual implementation and it seems it's possible to have
+> flexible array, so this patch needs to be reconsidered.
 
-Then consider this:
+I was thinking more about it and what we have here is positional-dependent
+arguments. Either way we might end up in the same situation (when we need to
+parse arguments based on their positions, rather than always have them being
+present). So, while I won't change documentation example (to be more stricter
+there), I will drop this change.
 
-Nacked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Also, the PWM initial state doesn't include duty cycle. Any explanations why is
+that?
 
-for anything touching futex.c, until such time that you can provide a
-coherent description of what and why you're doing things.
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
