@@ -2,178 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 273D739DEC2
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B25B39DEC6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230344AbhFGObX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 10:31:23 -0400
-Received: from mga02.intel.com ([134.134.136.20]:45139 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230255AbhFGObV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 10:31:21 -0400
-IronPort-SDR: Uw11XymvTBo8H+wxGzD56u3XR3dUQBzXehZQ02/pjELKxT2/QtnomEQws2FmiX24aFvj/NgpN4
- CJYg6bDEgJbA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="191740666"
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
-   d="scan'208";a="191740666"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 07:29:29 -0700
-IronPort-SDR: 4iJvu9y84FuHTNBQqCaNPbm1rXJ9w/ai+HxnS6UIA0A++8D5hNeRXW1a00MG4yB6L+/JRmWK7Z
- Hg9GYriSo6KA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
-   d="scan'208";a="484792750"
-Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
-  by fmsmga002.fm.intel.com with ESMTP; 07 Jun 2021 07:29:28 -0700
-Received: from orsmsx604.amr.corp.intel.com (10.22.229.17) by
- ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Mon, 7 Jun 2021 07:29:28 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
- via Frontend Transport; Mon, 7 Jun 2021 07:29:28 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.4; Mon, 7 Jun 2021 07:29:15 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Rt/qmUALe1tavQzMou9mONYs+qBVkjQ1i5qDRszc7ZaGvgx+glW9LGmkw00vQDiIFhKiy3KIXhCuzvGgUlm7IlHiI9MizrOLT636TtZvGXOSpFPtDZleJui/YCrEUpC12GMHaoFM5H/JrKMj4va+vTLzMHkGu17gYCL/nNZKBd/Je4fSzmgiNC5RNy9InJ+IewBR+FZciHksnxiVXm5y7WVjFjHPI0yVU66HU2k7Bes3h/b5N/FfG/7aVHSj01XDAXkAcRdlaEUjCztZ2Blgp7E68p1diYpFhn13CL600Crq9rAQ1yvGW2Ctrq9ODgshJm8xvfG1UOckiCJRk6t3dg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RXDd+F0dM1T68WH17k1s5v6dpxTQTLj3aMT7ynj18uM=;
- b=VXWogOICoUFWaUWg1qL2ApqSeqVUo2hePKPCjnZhhQpAkUj0ZKPsFQU+9E/fmW5Afga1rMguQ3gu56eDA6On8NHgkV5mmScLMGVJt5rHALUBM+WS5OpTUL4XzrlVOSgdJnr8+D6OD/bVhvCHLYjLUwRXPnGF38ewmIVfJcvUujlg2ZkNc0u4pNwZaaNQfKrPKCHaDYQ+9jCgkDVRZtrjvhoQfHQ9zrOT0+Gqe94ckFK3K5jPgv6dY6GIkPe/fp5OrFQLLeNCE0qbEBnKVhDdCK18xHpUvgvFYHAnLzjebrtlMq1uU7PoXtoepK4NVDJAcnY0Ow79cxeH/w4Qk28Ltg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RXDd+F0dM1T68WH17k1s5v6dpxTQTLj3aMT7ynj18uM=;
- b=qHPjFM/DXe0qobkIk+htQcbQieOKwlmkihe3u0EcbEQqpSHqu2s3CNeCdgj+3TEUkHVwQi01A383JheC7OkOp1n8bkq+eroigftE1h7C5+FLTGOysQOlgFP0ePtxqv2j+2k07oRqzdtfVlpRi2JQcSX0y17wg1kynVEl8wPtQpE=
-Received: from DM6PR11MB3642.namprd11.prod.outlook.com (2603:10b6:5:138::26)
- by DM5PR11MB1323.namprd11.prod.outlook.com (2603:10b6:3:14::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4195.22; Mon, 7 Jun 2021 14:29:12 +0000
-Received: from DM6PR11MB3642.namprd11.prod.outlook.com
- ([fe80::f890:381e:1e24:a6d9]) by DM6PR11MB3642.namprd11.prod.outlook.com
- ([fe80::f890:381e:1e24:a6d9%7]) with mapi id 15.20.4195.030; Mon, 7 Jun 2021
- 14:29:12 +0000
-From:   "Lu, Brent" <brent.lu@intel.com>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-CC:     "Rojewski, Cezary" <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        "Mark Brown" <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "Wang, Rander" <rander.wang@intel.com>,
-        "Guennadi Liakhovetski" <guennadi.liakhovetski@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Ranjani Sridharan" <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        "R, Dharageswari" <dharageswari.r@intel.com>,
-        "Nujella, Sathyanarayana" <sathyanarayana.nujella@intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        "M, Naveen" <naveen.m@intel.com>, "Zhi, Yong" <yong.zhi@intel.com>,
-        "Gopal, Vamshi Krishna" <vamshi.krishna.gopal@intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Tzung-Bi Shih <tzungbi@google.com>
-Subject: RE: [PATCH 3/4] ASoC: intel: sof_cs42l42: add support for
- jsl_cs4242_mx98360a
-Thread-Topic: [PATCH 3/4] ASoC: intel: sof_cs42l42: add support for
- jsl_cs4242_mx98360a
-Thread-Index: AQHXWm+BSRbfqtjemkyMcQgR/Pdi8asIkI4AgAAMh9A=
-Date:   Mon, 7 Jun 2021 14:29:11 +0000
-Message-ID: <DM6PR11MB36421AD935E4A2B8EBD0FE6197389@DM6PR11MB3642.namprd11.prod.outlook.com>
-References: <20210606004102.26190-1-brent.lu@intel.com>
- <20210606004102.26190-4-brent.lu@intel.com>
- <505c7e46-316c-9fa1-feaa-115f4561ed19@linux.intel.com>
-In-Reply-To: <505c7e46-316c-9fa1-feaa-115f4561ed19@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [36.230.1.79]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 499e4fa7-32da-4c78-2ba5-08d929c09ea2
-x-ms-traffictypediagnostic: DM5PR11MB1323:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM5PR11MB132384B1A6E6FBFC1BC16BE297389@DM5PR11MB1323.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2MdbghhgmU+RrmgBWVckdwTDfOteXuT2a3PTDqccN1+JopjRLAkK1g5m1WRckaStautJAb9kqOoXuhjDy0eBRwbP25UwuwdXGt21omXgIN/Cy2SvRJGbWuvdIQrfKlL12QVPl/0c7QW9+OKt600R8i4O6vd+Ym/8NVnJhrAevg0RcOgpkbrkRilI+3Jr5otsAXtYY14HQWJWSTtUNLZRTAX72c19IFbmPYQvVdBZ7L/9b4thBfi2tRwZM39pD5nh0LXbgOENpvKGI9+h2V74zW7K6qOVg9/yKaouRTCW9wHPsLW4iwqZWJKsE5vewJeecBrijj+pD1SFxbYp/A22/StX9ucrhKl4z8pj3suq+/WrLNR+m9kn8MIyOVTm8fk7HyQ35NLfbU893HDsuVOq9DLAG2sid4oSboJwBgLJS2EMn1KT/jzVrvgkGREn4hThmlzSv0GE+LY1p9cGkFU0NsPYKk/rAdyE39Ioje2ChUHu415gopgAAd+ljqwlrO4Fvk3ozr+aaLnKMSxNMrtcExWqd+8KUymYQSyBvjOE3RWQ/+h/GNPjN+d9uRPAue0BOqTEzirM5Pb/E+HdA/M6ZtgLY2cIUwp1JHLwhSRRbXs=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3642.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(396003)(136003)(376002)(346002)(55016002)(110136005)(86362001)(316002)(54906003)(52536014)(5660300002)(7696005)(53546011)(33656002)(6506007)(4744005)(186003)(38100700002)(8676002)(2906002)(66556008)(66946007)(76116006)(64756008)(66476007)(9686003)(66446008)(8936002)(71200400001)(122000001)(478600001)(4326008)(7416002)(26005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?ejBuRlRiZnByS3dYL1pNdktLQ2JIZDdqTGVBVVl1Z0NmcjVuNTVRZjZnemRr?=
- =?utf-8?B?b1N5L0RyNlVSb0xTczhEYzNvU2tYSmhvcnRNaE9tZmpJbko1ajNUempXM1dW?=
- =?utf-8?B?RHg0Y1VNL3pLSllOUjRlN0l1OHYvRnVPYnllY0tHWnh3Vi9UTkNlVjRxdE5w?=
- =?utf-8?B?S2dLL284MlFFVGMwbWhlRGlpUXdockpzMXUxalFXRS9GVWREVURKVlBpb3B6?=
- =?utf-8?B?NUlaSXdOd3NHYVp3WjZZMFc1RGFtMkVmWXZBNklsaUc1TCtwWEhZSklTZUY2?=
- =?utf-8?B?eUljcUtPUXZleEQxdVMwczF6algrdGVveVZ1VDdMSjUzQm4zSkxzRjRoNU5l?=
- =?utf-8?B?MGRPejFMT2Zuckd2VWxUaTByQTRaclNKK3lPU1ZHbFF5V2xmUkpGTGFIVzJZ?=
- =?utf-8?B?RXlnMmNpRHRPZ2lxSzRFSkhHT21jdTQ4RTAzUllHd093QTZKcVd1VHNRSDR5?=
- =?utf-8?B?SlFBSWJST0RwZENKSGFmVHQzeDJhWHJXMTBVazVGUXZ5YnVTd09Oc3BhU0hW?=
- =?utf-8?B?eWNMblVlMnZJeG1CZnVZSXVDWnlBcEtFNng5VmVBRHpjcWs2R01uSGp1a3lI?=
- =?utf-8?B?N1NjRVEwbjJ4ZEE3bElKZDdGeVJsOWYxM1o2YmRnaTVmdVNzUlRtVmxhVG03?=
- =?utf-8?B?UWs3d0p5bksxdE9va25CdVR3Q2JreUxWWE1COFF0U2hxaWYwYzlBeGRhMTE3?=
- =?utf-8?B?T0RlMkVlcGViMjFHRHZ2SlVVY1M2c0FteStLNlNmQ3YrTEd5T0dWYkxqaUZL?=
- =?utf-8?B?WVYvQXBLanB2aVQ0Z3o1bHlxWlVkVVNVLzhjRi9QcTZRbHNBRTlzUXlJM21T?=
- =?utf-8?B?RGdVVk5oS3Jya1lHcENteFpHK2p2SHVEd29KMjdBWXNMR24vT2dlbVVucmpR?=
- =?utf-8?B?MTRWa1YxTU1HUmRPajYvTUZSTUlSVEc1R1ArbGt0bUNNTUU5TzZyYzQ2aHZW?=
- =?utf-8?B?WUlHMFZOaDBtdGxTRFg0QTBkM3IxUEkzZzZhS1AvQktzSlRrRGtTb1BtTkNT?=
- =?utf-8?B?VGFQYTgrWExnbFA0YVkyR0xUUVc3QkY1c3ZrZlVnVi9BUFYrbmRKZmFEOWIv?=
- =?utf-8?B?Vk5ua0tHVzJyNzRRUlprbUhLcXd6dVhRY0F1Mk5BaVdrWXFKZ2VZSkxTc25V?=
- =?utf-8?B?d2I4QSsrU05kUXl6UWtlV0NaRll6UzN5ZERWeWxaM3hMczlGRGVzWXQ1WDkx?=
- =?utf-8?B?VHNJbU5tMHIxdjNmUUR1dnRYVFY2OFYwVjByQzRkQ2NvNk1wZWhGbldDVlRS?=
- =?utf-8?B?dVA4SElUbTZ3Z2xwQnRqM3RsRzd4YjRpL05uelZXN2E3RHlXNlZGRWlod25P?=
- =?utf-8?B?Wk9NUG01MjNUNUNXQWk4YVFyWFU2UkVhODhSQnNqTkNJK3djMEpSaXg5bmxq?=
- =?utf-8?B?TVJrR1cwZlNQdTMydkhKUlRQdW1yeTgwTVV5MDcvcjNzKzJQZHdsMCtMQTg0?=
- =?utf-8?B?TzFCMXB5ZnFCTEZlUnV1WWJXakY1MWxuR1F0T29jVW5uWkdqbmttVTFESi9Z?=
- =?utf-8?B?ZGNVaXFWT2hxV2xaOTJyNDJjWENVZCtZeDNMVWtvdEp1UkJpYjR3Q0tuMmdl?=
- =?utf-8?B?Rk9qNDRwQTZOS3ZUZUJrRzNpeURTYStoQUZUMFVkRDl1YjJzRkpPT2dwbnBC?=
- =?utf-8?B?bm9IOGhUSTR5NW1TdVIxdmpQdUVDRkJiU3kxNHZjc01RUzQvZm8rcElKMHNa?=
- =?utf-8?B?NjlOa2RmN3VrWnpydXhmK29FWjFSQldVL0JEaG9xUUZHSlhCVlFhWGtCdUF5?=
- =?utf-8?Q?x8qo6knk4RJRZcb8X8=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S230398AbhFGOcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 10:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230255AbhFGOcD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 10:32:03 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D593CC061766
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 07:30:11 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id k5so9986650pjj.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 07:30:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ingics-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=heUcwk6RLkDmJ0M6ypyJnPOAPSW1cdec38S8tqQPi9A=;
+        b=Whp1cP/7IEt7+ZtE2SrMd7D74YEK/JRoo/7HV0YOIhT7WM3/UE6c1mDLP4InpYPEzr
+         JnyjaVhpq0+LIrmrUXTjW048OFiHf/gYlPLzzbGqfCiVic/HK5I1vvBEgWE2k+BC+s+L
+         NbDuhtPLCOlPteA2Cn30G+k2bUk77P7POqT9bMT5mjZCxp8LmTNZcF7zYmgdob6ugoiZ
+         xUJT3jrpTpeDfowRKNd64UMXHqhzHAGQp2qQ1GvkIDI7NE+18F0cYNcy81NRmHQmwKwS
+         ajVC32H6Sk7Z0++4XG2qZBr+dSsk8Xwk98EwHbq4unFdPfYatXNBAzd8C8+WBngYRv3h
+         qjhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=heUcwk6RLkDmJ0M6ypyJnPOAPSW1cdec38S8tqQPi9A=;
+        b=RWDx0eNWp1/c2L+1MAoz+tGPf2MA6G3jnPbwmvxpHwByQljKBP1HY6CwU+8ixmbMoP
+         +cj/wXCi153o+m7nL6+Pr8yVA7se+O+CzH9wEVjmc7QC/w6G0qKCLg0SWp65dBSO8H1G
+         WfbAoWal84JEj9FVH7DwZJNC/q2txeZ4ghwFHh0cDqQBamdL1odM8Mv4mbhMs19yR4f4
+         E1z198UeRbqS9FlSzudCFS86gFSWPf2uv+ECRMsWKtx0yxIbatbfzcOcstNPovcpkjYw
+         QEu5SETODnVkGScVdumkZBg/WjxMUfYAj9iro6X82u4Rvtz6GVi8i9iAZk6BBJpv54Dq
+         tYFw==
+X-Gm-Message-State: AOAM532+vTg68rA+32pEfw0PQeUQ2fKBDeLlz+l2TTFCx6rn7pNienoO
+        MUf5coW9ITVtJ4UD+81VCv45dA==
+X-Google-Smtp-Source: ABdhPJxz+pJ/HKElGJqRpPnxGdQBgTf44ggdGNGpVs3soKlPEM0fp600QP5/C28IOJvjhWY+2ClrPg==
+X-Received: by 2002:a17:90b:3e89:: with SMTP id rj9mr20148520pjb.114.1623076211180;
+        Mon, 07 Jun 2021 07:30:11 -0700 (PDT)
+Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
+        by smtp.gmail.com with ESMTPSA id m5sm9203560pgl.75.2021.06.07.07.30.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 07:30:10 -0700 (PDT)
+From:   Axel Lin <axel.lin@ingics.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        linux-power@fi.rohmeurope.com, Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] regulator: bd71815: Get rid of struct bd71815_pmic
+Date:   Mon,  7 Jun 2021 22:30:02 +0800
+Message-Id: <20210607143002.1600017-1-axel.lin@ingics.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3642.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 499e4fa7-32da-4c78-2ba5-08d929c09ea2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jun 2021 14:29:11.6386
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: x7ZAwtG1B0yP9QZwRZP1kFJkgYJ/X59lsnh3AhywVHBHwpdej6YcdSfdNM5Bsd0IA48+TGb3xngdDuiWrphUDw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1323
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBPbiA2LzUvMjEgNzo0MSBQTSwgQnJlbnQgTHUgd3JvdGU6DQo+ID4gVGhpcyBwYXRjaCBhZGRz
-IGRyaXZlciBkYXRhIGZvciBqc2xfY3M0MjQyX214OTgzNjBhIHdoaWNoIHN1cHBvcnRzIHR3bw0K
-PiA+IG1heDk4MzYwYSBzcGVha2VyIGFtcGxpZmllcnMgb24gU1NQMSBhbmQgY3M0Mmw0MiBoZWFk
-cGhvbmUgY29kZWMgb24NCj4gPiBTU1AwIHJ1bm5pbmcgb24gSlNMIHBsYXRmb3JtLiBEQUkgZm9y
-bWF0IGlzIGxldmVyYWdlZCBmcm9tIHNvZl9ydDU2ODINCj4gPiBtYWNoaW5lIGRyaXZlciB0byBy
-ZXVzZSB0aGUgdG9wb2xvZ3kuDQo+IA0KPiBUaGlzIGFsc28gbG9va3MgbGlrZSB3ZSBoYXZlIHR3
-byB0b3BvbG9naWVzIGNvbmZpZ3VyaW5nIHRoZSBzYW1lIERBSXMNCj4gZGlmZmVyZW50bHkgb24g
-ZGlmZmVyZW50IHBsYXRmb3Jtcy4NCj4gDQo+IFdoeSBjYW4ndCB3ZSBwaWNrIG9uZSBjb25maWd1
-cmF0aW9uIHRoYXQgd291bGQgd29yayBpbiBhbGwgY2FzZXM/DQo+IA0KDQpUaGUgY29tbWVudCBq
-dXN0IHNheSB3ZSBhcmUgcmV1c2luZyBydDU2ODUncyBzb2YtanNsLXJ0NTY4Mi1teDk4MzYwYS50
-cGxnLg0KVGhpcyBwYXRjaCBkb2VzIG5vdCBjYXJlIGFib3V0IHRoZSBkYWkgc2VxdWVuY2UuIE1h
-eWJlIEkgc2hvdWxkIHJld29yZCB0aGUNCmNvbW1pdCBsb2cuDQoNCg0KUmVnYXJkcywNCkJyZW50
-DQoNCj4gPiBBbHNvIHVzZSBtb2R1bGUgZGV2aWNlIHRhYmxlIHRvIHJlcGxhY2UgbW9kdWxlIGFs
-aWFzLg0KPiANCj4gSHVtbSwgdGhpcyBsb29rcyBsaWtlIGEgbWlzc2luZyBkZXBlbmRlbmN5LCBJ
-IG1vZGlmaWVkIHRoaXMgYSB3aGlsZSBhZ28uDQo+IA0KDQoNCg==
+The content of bd71815_regulators is never changed, no need to duplicate
+it, thus remove descs[BD71815_REGULATOR_CNT].
+The *regmap, *dev and *rdev[BD71815_REGULATOR_CNT] are not really needed.
+The *gps is unused.
+
+Thus the struct bd71815_pmic can be removed.
+
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ drivers/regulator/bd71815-regulator.c | 57 +++++++++------------------
+ 1 file changed, 19 insertions(+), 38 deletions(-)
+
+diff --git a/drivers/regulator/bd71815-regulator.c b/drivers/regulator/bd71815-regulator.c
+index 4dd21ac24ddf..16edd9062ca9 100644
+--- a/drivers/regulator/bd71815-regulator.c
++++ b/drivers/regulator/bd71815-regulator.c
+@@ -28,14 +28,6 @@ struct bd71815_regulator {
+ 	const struct rohm_dvs_config *dvs;
+ };
+ 
+-struct bd71815_pmic {
+-	struct bd71815_regulator descs[BD71815_REGULATOR_CNT];
+-	struct regmap *regmap;
+-	struct device *dev;
+-	struct gpio_descs *gps;
+-	struct regulator_dev *rdev[BD71815_REGULATOR_CNT];
+-};
+-
+ static const int bd7181x_wled_currents[] = {
+ 	10, 20, 30, 50, 70, 100, 200, 300, 500, 700, 1000, 2000, 3000, 4000,
+ 	5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000,
+@@ -302,14 +294,13 @@ static int bd7181x_led_set_current_limit(struct regulator_dev *rdev,
+ 
+ static int bd7181x_buck12_get_voltage_sel(struct regulator_dev *rdev)
+ {
+-	struct bd71815_pmic *pmic = rdev_get_drvdata(rdev);
+ 	int rid = rdev_get_id(rdev);
+ 	int ret, regh, regl, val;
+ 
+ 	regh = BD71815_REG_BUCK1_VOLT_H + rid * 0x2;
+ 	regl = BD71815_REG_BUCK1_VOLT_L + rid * 0x2;
+ 
+-	ret = regmap_read(pmic->regmap, regh, &val);
++	ret = regmap_read(rdev->regmap, regh, &val);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -321,7 +312,7 @@ static int bd7181x_buck12_get_voltage_sel(struct regulator_dev *rdev)
+ 	 * by BD71815_BUCK_DVSSEL bit
+ 	 */
+ 	if ((!(val & BD71815_BUCK_STBY_DVS)) && (!(val & BD71815_BUCK_DVSSEL)))
+-		ret = regmap_read(pmic->regmap, regl, &val);
++		ret = regmap_read(rdev->regmap, regl, &val);
+ 
+ 	if (ret)
+ 		return ret;
+@@ -335,14 +326,13 @@ static int bd7181x_buck12_get_voltage_sel(struct regulator_dev *rdev)
+ static int bd7181x_buck12_set_voltage_sel(struct regulator_dev *rdev,
+ 					  unsigned int sel)
+ {
+-	struct bd71815_pmic *pmic = rdev_get_drvdata(rdev);
+ 	int rid = rdev_get_id(rdev);
+ 	int ret, val, reg, regh, regl;
+ 
+ 	regh = BD71815_REG_BUCK1_VOLT_H + rid*0x2;
+ 	regl = BD71815_REG_BUCK1_VOLT_L + rid*0x2;
+ 
+-	ret = regmap_read(pmic->regmap, regh, &val);
++	ret = regmap_read(rdev->regmap, regh, &val);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -352,7 +342,7 @@ static int bd7181x_buck12_set_voltage_sel(struct regulator_dev *rdev,
+ 	 * voltages at runtime is not supported by this driver.
+ 	 */
+ 	if (((val & BD71815_BUCK_STBY_DVS))) {
+-		return regmap_update_bits(pmic->regmap, regh, BD71815_VOLT_MASK,
++		return regmap_update_bits(rdev->regmap, regh, BD71815_VOLT_MASK,
+ 					  sel);
+ 	}
+ 	/* Update new voltage to the register which is not selected now */
+@@ -361,12 +351,13 @@ static int bd7181x_buck12_set_voltage_sel(struct regulator_dev *rdev,
+ 	else
+ 		reg = regh;
+ 
+-	ret = regmap_update_bits(pmic->regmap, reg, BD71815_VOLT_MASK, sel);
++	ret = regmap_update_bits(rdev->regmap, reg, BD71815_VOLT_MASK, sel);
+ 	if (ret)
+ 		return ret;
+ 
+ 	/* Select the other DVS register to be used */
+-	return regmap_update_bits(pmic->regmap, regh, BD71815_BUCK_DVSSEL, ~val);
++	return regmap_update_bits(rdev->regmap, regh, BD71815_BUCK_DVSSEL,
++				  ~val);
+ }
+ 
+ static const struct regulator_ops bd7181x_ldo_regulator_ops = {
+@@ -524,7 +515,7 @@ static const struct regulator_ops bd7181x_led_regulator_ops = {
+ 		.dvs = (_dvs),						\
+ 	}
+ 
+-static struct bd71815_regulator bd71815_regulators[] = {
++static const struct bd71815_regulator bd71815_regulators[] = {
+ 	BD71815_BUCK12_REG(buck1, BD71815_BUCK1, BD71815_REG_BUCK1_VOLT_H,
+ 			   BD71815_REG_BUCK1_MODE, 800000, 2000000, 25000,
+ 			   &buck1_dvs),
+@@ -570,24 +561,16 @@ static struct bd71815_regulator bd71815_regulators[] = {
+ 
+ static int bd7181x_probe(struct platform_device *pdev)
+ {
+-	struct bd71815_pmic *pmic;
+ 	struct regulator_config config = {};
+ 	int i, ret;
+ 	struct gpio_desc *ldo4_en;
++	struct regmap *regmap;
+ 
+-	pmic = devm_kzalloc(&pdev->dev, sizeof(*pmic), GFP_KERNEL);
+-	if (!pmic)
+-		return -ENOMEM;
+-
+-	memcpy(pmic->descs, bd71815_regulators,	sizeof(pmic->descs));
+-
+-	pmic->dev = &pdev->dev;
+-	pmic->regmap = dev_get_regmap(pdev->dev.parent, NULL);
+-	if (!pmic->regmap) {
+-		dev_err(pmic->dev, "No parent regmap\n");
++	regmap = dev_get_regmap(pdev->dev.parent, NULL);
++	if (!regmap) {
++		dev_err(&pdev->dev, "No parent regmap\n");
+ 		return -ENODEV;
+ 	}
+-	platform_set_drvdata(pdev, pmic);
+ 	ldo4_en = devm_gpiod_get_from_of_node(&pdev->dev,
+ 					      pdev->dev.parent->of_node,
+ 						 "rohm,vsel-gpios", 0,
+@@ -601,23 +584,23 @@ static int bd7181x_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	/* Disable to go to ship-mode */
+-	ret = regmap_update_bits(pmic->regmap, BD71815_REG_PWRCTRL,
+-				 RESTARTEN, 0);
++	ret = regmap_update_bits(regmap, BD71815_REG_PWRCTRL, RESTARTEN, 0);
+ 	if (ret)
+ 		return ret;
+ 
+ 	config.dev = pdev->dev.parent;
+-	config.regmap = pmic->regmap;
++	config.regmap = regmap;
+ 
+ 	for (i = 0; i < BD71815_REGULATOR_CNT; i++) {
+-		struct regulator_desc *desc;
++		const struct regulator_desc *desc;
+ 		struct regulator_dev *rdev;
+ 
+-		desc = &pmic->descs[i].desc;
++		desc = &bd71815_regulators[i].desc;
++
+ 		if (i == BD71815_LDO4)
+ 			config.ena_gpiod = ldo4_en;
+-
+-		config.driver_data = pmic;
++		else
++			config.ena_gpiod = NULL;
+ 
+ 		rdev = devm_regulator_register(&pdev->dev, desc, &config);
+ 		if (IS_ERR(rdev)) {
+@@ -626,8 +609,6 @@ static int bd7181x_probe(struct platform_device *pdev)
+ 				desc->name);
+ 			return PTR_ERR(rdev);
+ 		}
+-		config.ena_gpiod = NULL;
+-		pmic->rdev[i] = rdev;
+ 	}
+ 	return 0;
+ }
+-- 
+2.25.1
+
