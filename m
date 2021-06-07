@@ -2,71 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 796F439DDDB
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:40:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C16439DDD9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230311AbhFGNma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 09:42:30 -0400
-Received: from m12-17.163.com ([220.181.12.17]:59191 "EHLO m12-17.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230207AbhFGNm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 09:42:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=pTa78
-        3sBoKjxfjRbRwQN/1Zc1yoVx1pZib+9+2C+uI4=; b=myQtrhL/9CZwcuPQM0k8q
-        n59M35z7DQXY+WgKQFlJ2M7qbzVm3g1v/Y3c84O1QpslmAm045mUQGP2E3NWZgte
-        AxAYAsbZBh/6x7quUOkzYEaEov1CRBGYsoRlK94WSUrnHGuI7+1DGwov1cQTt1iV
-        YQPc+27vEL4+PPyxZOUFaE=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp13 (Coremail) with SMTP id EcCowADX45OVIb5gdpPe5w--.51940S2;
-        Mon, 07 Jun 2021 21:39:34 +0800 (CST)
-From:   Xuezhi Zhang <llyz108@163.com>
-To:     liviu.dudau@arm.com, brian.starkey@arm.com, airlied@linux.ie,
-        daniel@ffwll.ch
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Xuezhi Zhang <zhangxuezhi1@yulong.com>
-Subject: [PATCH] drm/malidp: convert sysfs snprintf to sysfs_emit
-Date:   Mon,  7 Jun 2021 13:39:31 +0000
-Message-Id: <20210607133931.52403-1-llyz108@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S230394AbhFGNls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 09:41:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230378AbhFGNlr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 09:41:47 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 259FFC061766
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 06:39:56 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id y2so24920126ybq.13
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 06:39:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VlXDuzHKluTkhD5zvNM3nuwm1YIsxipLM0a14l1XdN4=;
+        b=n8zru0ajQmXsS/hEV3K5YVM3VTbwv84fG1iqwEZFzABWmUcpIeP4t4ig/EFDRd9yDA
+         eZB48b6Ly6VNPnXr73amlDSMG0r/VezuhvcsKSFpah8S2e7lKfvs/qGWGGamaPumOifr
+         zFEqSwx6HmC+e/Bpv1U5ZgvSEffPWaOh4aOlFeOS0Nzc2+bb4K9M4ZW0pTnKzlRp/YBr
+         SqrS4PmCxyL1Rdwj8rOA9V/hbBEuNKtYHvq4VvrLr+7CRk1fzh7Ow23flTk5JsDw1v/2
+         noPrzfDIyrwMiyxoRJruQXw3fpyOwEEg1+KQZl9NLomTE/ZYSQkVpi4CXrsguCnf+cib
+         oy1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VlXDuzHKluTkhD5zvNM3nuwm1YIsxipLM0a14l1XdN4=;
+        b=Odj2lKqaT/+6h203prlLyHjxNAY/00B8TDsPLiPOSpJb/7Gn5hfUgucojGlDom6aCa
+         B3j3P+xGWgZT5dCZaUiQTExGyPcSSK7nb1PdrfTV/SNqGSbhQ2+I1Po+gpVBWIGY8Nxg
+         l0j8SzcPqWk97gTuBocRPtvwJ2NS+5jbHTbYfBs6yziQnfOLaAo168pyKuhknv6BUPen
+         Fo/ACh2UJ5GAYAs3kESPhQ2zh+ZfWI3l1gKoDSDdFAph4E1pmnioOI6AwNxXDOp4oPU9
+         Dy9dySu2h5kMxOu+ug5RL53zFz1oRYfeYezkiXSSz7lYDn3mC4cM1bCtmArmAstX6io+
+         xUXw==
+X-Gm-Message-State: AOAM533dCc5dNbw8zbyjX7b92Bs7Ob/KTO5B+/I9kcOvXa4g4ddSuDlh
+        BYpaSkb8X6ISq8efXbvAiAwUHnRsDx0BlCKzj2a/ZQ==
+X-Google-Smtp-Source: ABdhPJzKoUs8qoJEnd+R+x3/KSsW2OZ2yeBPW9osZaSI2IxCBvJQovcJAFCC/EHEVBIfwR4ko42JMpDGASzHS094hfM=
+X-Received: by 2002:a25:1ec2:: with SMTP id e185mr23958988ybe.23.1623073195494;
+ Mon, 07 Jun 2021 06:39:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EcCowADX45OVIb5gdpPe5w--.51940S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7GrWfXF1UWFy5tw45uw47twb_yoWfuFb_CF
-        10qr47Xr40yw1v9ry7CF4fZryIkFWF9Fs5Xr48ta4SvF4qqrnrZryv9r10qryUJF47AF9r
-        A3WkWr45JrnrGjkaLaAFLSUrUUUUbb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5aZX5UUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: xoo16iiqy6il2tof0z/1tbiMhaqhVWBuNc9+QAAs0
+References: <20210604225857.18694-1-michael@walle.cc>
+In-Reply-To: <20210604225857.18694-1-michael@walle.cc>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 7 Jun 2021 15:39:44 +0200
+Message-ID: <CAMpxmJWQf6JYy9CBD0Avp_KP5KqL6ew05ohGLmHyzX62hu1f3A@mail.gmail.com>
+Subject: Re: [PATCH v2] gpio: regmap: move drvdata to config data
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xuezhi Zhang <zhangxuezhi1@yulong.com>
+On Sat, Jun 5, 2021 at 1:01 AM Michael Walle <michael@walle.cc> wrote:
+>
+> Drop gpio_regmap_set_drvdata() and instead add it to the configuration
+> data passed to gpio_regmap_register().
+>
+> gpio_regmap_set_drvdata() can't really be used in a race free way. This
+> is because the gpio_regmap object which is needed by _set_drvdata() is
+> returned by gpio_regmap_register(). On the other hand, the callbacks
+> which use the drvdata might already be called right after the
+> gpiochip_add() call in gpio_regmap_register(). Therefore, we have to
+> provide the drvdata early before we call gpiochip_add().
+>
+> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
 
-Fix the following coccicheck warning:
-drivers/gpu/drm/arm/malidp_drv.c:657:8-16:
-WARNING: use scnprintf or sprintf
+Applied, thanks!
 
-Signed-off-by: Xuezhi Zhang <zhangxuezhi1@yulong.com>
----
- drivers/gpu/drm/arm/malidp_drv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/arm/malidp_drv.c b/drivers/gpu/drm/arm/malidp_drv.c
-index de59f3302516..d1af23f0704d 100644
---- a/drivers/gpu/drm/arm/malidp_drv.c
-+++ b/drivers/gpu/drm/arm/malidp_drv.c
-@@ -654,7 +654,7 @@ static ssize_t core_id_show(struct device *dev, struct device_attribute *attr,
- 	struct drm_device *drm = dev_get_drvdata(dev);
- 	struct malidp_drm *malidp = drm->dev_private;
- 
--	return snprintf(buf, PAGE_SIZE, "%08x\n", malidp->core_id);
-+	return sysfs_emit(buf, "%08x\n", malidp->core_id);
- }
- 
- static DEVICE_ATTR_RO(core_id);
--- 
-2.25.1
-
-
+Bart
