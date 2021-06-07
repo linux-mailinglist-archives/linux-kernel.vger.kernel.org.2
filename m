@@ -2,126 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DE0B39DD22
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3F339DD26
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbhFGM7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 08:59:36 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:55764 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230194AbhFGM7g (ORCPT
+        id S230507AbhFGNAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 09:00:08 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:7131 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230220AbhFGNAH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 08:59:36 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R451e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=liangyan.peng@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UbdRZ0i_1623070655;
-Received: from localhost(mailfrom:liangyan.peng@linux.alibaba.com fp:SMTPD_---0UbdRZ0i_1623070655)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 07 Jun 2021 20:57:43 +0800
-From:   Liangyan <liangyan.peng@linux.alibaba.com>
-To:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Xunlei Pang <xlpang@linux.alibaba.com>, yinbinbin@alibabacloud.com,
-        wetp <wetp.zy@linux.alibaba.com>, jnwang@linux.alibaba.com,
-        Liangyan <liangyan.peng@linux.alibaba.com>,
-        stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH] tracing: Correct the length check which causes memory corruption
-Date:   Mon,  7 Jun 2021 20:57:34 +0800
-Message-Id: <20210607125734.1770447-1-liangyan.peng@linux.alibaba.com>
-X-Mailer: git-send-email 2.14.4.44.g2045bb6
+        Mon, 7 Jun 2021 09:00:07 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FzCyj1nQbzYsb8;
+        Mon,  7 Jun 2021 20:55:25 +0800 (CST)
+Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 20:58:13 +0800
+Received: from [10.174.185.226] (10.174.185.226) by
+ dggpemm500009.china.huawei.com (7.185.36.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 20:58:12 +0800
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     <robh@kernel.org>, <will@kernel.org>, <joro@8bytes.org>,
+        <robh+dt@kernel.org>, <gregkh@linuxfoundation.org>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <xieyingtai@huawei.com>,
+        John Garry <john.garry@huawei.com>
+References: <20210604190430.GA2220179@bjorn-Precision-5520>
+From:   Xingang Wang <wangxingang5@huawei.com>
+Subject: Re: [PATCH v4] iommu/of: Fix pci_request_acs() before enumerating PCI
+ devices
+Message-ID: <7cd2f48a-8cb5-d290-7187-267d92e9a595@huawei.com>
+Date:   Mon, 7 Jun 2021 20:58:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
+MIME-Version: 1.0
+In-Reply-To: <20210604190430.GA2220179@bjorn-Precision-5520>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.185.226]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We've suffered from severe kernel crashes due to memory corruption on
-our production environment, like,
+On 2021/6/5 3:04, Bjorn Helgaas wrote:
+> [+cc John, who tested 6bf6c24720d3]
+> 
+> On Fri, May 21, 2021 at 03:03:24AM +0000, Wang Xingang wrote:
+>> From: Xingang Wang <wangxingang5@huawei.com>
+>>
+>> When booting with devicetree, the pci_request_acs() is called after the
+>> enumeration and initialization of PCI devices, thus the ACS is not
+>> enabled. And ACS should be enabled when IOMMU is detected for the
+>> PCI host bridge, so add check for IOMMU before probe of PCI host and call
+>> pci_request_acs() to make sure ACS will be enabled when enumerating PCI
+>> devices.
+> 
+> I'm happy to apply this, but I'm a little puzzled about 6bf6c24720d3
+> ("iommu/of: Request ACS from the PCI core when configuring IOMMU
+> linkage").  It was tested and fixed a problem, but I don't understand
+> how.
+> 
+> 6bf6c24720d3 added the call to pci_request_acs() in
+> of_iommu_configure() so it currently looks like this:
+> 
+>    of_iommu_configure(dev, ...)
+>    {
+>      if (dev_is_pci(dev))
+>        pci_request_acs();
+> 
+> pci_request_acs() sets pci_acs_enable, which tells us to enable ACS
+> when enumerating PCI devices in the future.  But we only call
+> pci_request_acs() if we already *have* a PCI device.
+> 
+> So maybe 6bf6c24720d3 fixed a problem for *some* PCI devices, but not
+> all?  E.g., did we call of_iommu_configure() for one PCI device before
+> enumerating the rest?
+> 
+I test the kernel on an arm platform with qemu:
 
-Call Trace:
-[1640542.554277] general protection fault: 0000 [#1] SMP PTI
-[1640542.554856] CPU: 17 PID: 26996 Comm: python Kdump: loaded Tainted:G
-[1640542.556629] RIP: 0010:kmem_cache_alloc+0x90/0x190
-[1640542.559074] RSP: 0018:ffffb16faa597df8 EFLAGS: 00010286
-[1640542.559587] RAX: 0000000000000000 RBX: 0000000000400200 RCX:
-0000000006e931bf
-[1640542.560323] RDX: 0000000006e931be RSI: 0000000000400200 RDI:
-ffff9a45ff004300
-[1640542.560996] RBP: 0000000000400200 R08: 0000000000023420 R09:
-0000000000000000
-[1640542.561670] R10: 0000000000000000 R11: 0000000000000000 R12:
-ffffffff9a20608d
-[1640542.562366] R13: ffff9a45ff004300 R14: ffff9a45ff004300 R15:
-696c662f65636976
-[1640542.563128] FS:  00007f45d7c6f740(0000) GS:ffff9a45ff840000(0000)
-knlGS:0000000000000000
-[1640542.563937] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[1640542.564557] CR2: 00007f45d71311a0 CR3: 000000189d63e004 CR4:
-00000000003606e0
-[1640542.565279] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-0000000000000000
-[1640542.566069] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-0000000000000400
-[1640542.566742] Call Trace:
-[1640542.567009]  anon_vma_clone+0x5d/0x170
-[1640542.567417]  __split_vma+0x91/0x1a0
-[1640542.567777]  do_munmap+0x2c6/0x320
-[1640542.568128]  vm_munmap+0x54/0x70
-[1640542.569990]  __x64_sys_munmap+0x22/0x30
-[1640542.572005]  do_syscall_64+0x5b/0x1b0
-[1640542.573724]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[1640542.575642] RIP: 0033:0x7f45d6e61e27
+qemu-system-aarch64 \
+  -cpu host \
+  -kernel arch/arm64/boot/Image \
+  -enable-kvm \
+  -m 8G \
+  -smp 2,sockets=2,cores=1,threads=1 	\
+  -machine virt,kernel_irqchip=on,gic-version=3,iommu=smmuv3\
+  -initrd rootfs.cpio.gz \
+  -nographic \
+  -append "rdinit=init console=ttyAMA0 earlycon=pl011,0x9000000 nokaslr" \
+  -device pcie-root-port,port=0x1,chassis=1,id=pci.1,addr=0x8 \
+  -netdev user,id=hostnet0 \
+  -device 
+virtio-net-pci,netdev=hostnet0,id=net0,mac=08:13:3a:5a:22:5b,bus=pci.1,addr=0x0 
+\
 
-James Wang has reproduced it stably on the latest 4.19 LTS.
-After some debugging, we finally proved that it's due to ftrace
-buffer out-of-bound access using a debug tool as follows:
-[   86.775200] BUG: Out-of-bounds write at addr 0xffff88aefe8b7000
-[   86.780806]  no_context+0xdf/0x3c0
-[   86.784327]  __do_page_fault+0x252/0x470
-[   86.788367]  do_page_fault+0x32/0x140
-[   86.792145]  page_fault+0x1e/0x30
-[   86.795576]  strncpy_from_unsafe+0x66/0xb0
-[   86.799789]  fetch_memory_string+0x25/0x40
-[   86.804002]  fetch_deref_string+0x51/0x60
-[   86.808134]  kprobe_trace_func+0x32d/0x3a0
-[   86.812347]  kprobe_dispatcher+0x45/0x50
-[   86.816385]  kprobe_ftrace_handler+0x90/0xf0
-[   86.820779]  ftrace_ops_assist_func+0xa1/0x140
-[   86.825340]  0xffffffffc00750bf
-[   86.828603]  do_sys_open+0x5/0x1f0
-[   86.832124]  do_syscall_64+0x5b/0x1b0
-[   86.835900]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+And find that the of_iommu_configure is called after the enumeration
+of the pcie-root-port. And this might only infect the first device, when 
+enumerating
+the rest devices, the pci_acs_enable has already be enabled.
 
-commit b220c049d519 ("tracing: Check length before giving out
-the filter buffer") adds length check to protect trace data
-overflow introduced in 0fc1b09ff1ff, seems that this fix can't prevent
-overflow entirely, the length check should also take the sizeof
-entry->array[0] into account, since this array[0] is filled the
-length of trace data and occupy addtional space and risk overflow.
+But to make sure that the pci_acs_enable will always be set before all 
+PCI devices,
+it would be better to set it in initialization of PCI bridges.
 
-Cc: stable@vger.kernel.org
-Fixes: b220c049d519 ("tracing: Check length before giving out the filter buffer")
-Signed-off-by: Liangyan <liangyan.peng@linux.alibaba.com>
-Reviewed-by: Xunlei Pang <xlpang@linux.alibaba.com>
-Reviewed-by: yinbinbin <yinbinbin@alibabacloud.com>
-Reviewed-by: Wetp Zhang <wetp.zy@linux.alibaba.com>
-Tested-by: James Wang <jnwang@linux.alibaba.com>
-Cc: Xunlei Pang <xlpang@linux.alibaba.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- kernel/trace/trace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index a21ef9cd2aae..9299057feb56 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2736,7 +2736,7 @@ trace_event_buffer_lock_reserve(struct trace_buffer **current_rb,
- 	    (entry = this_cpu_read(trace_buffered_event))) {
- 		/* Try to use the per cpu buffer first */
- 		val = this_cpu_inc_return(trace_buffered_event_cnt);
--		if ((len < (PAGE_SIZE - sizeof(*entry))) && val == 1) {
-+		if ((len < (PAGE_SIZE - sizeof(*entry) - sizeof(entry->array[0]))) && val == 1) {
- 			trace_event_setup(entry, type, trace_ctx);
- 			entry->array[0] = len;
- 			return entry;
--- 
-2.14.4.44.g2045bb6
+Xingang
 
+>> Fixes: 6bf6c24720d33 ("iommu/of: Request ACS from the PCI core when
+>> configuring IOMMU linkage")
+>> Signed-off-by: Xingang Wang <wangxingang5@huawei.com>
+>> ---
+>>   drivers/iommu/of_iommu.c | 1 -
+>>   drivers/pci/of.c         | 8 +++++++-
+>>   2 files changed, 7 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
+>> index a9d2df001149..54a14da242cc 100644
+>> --- a/drivers/iommu/of_iommu.c
+>> +++ b/drivers/iommu/of_iommu.c
+>> @@ -205,7 +205,6 @@ const struct iommu_ops *of_iommu_configure(struct device *dev,
+>>   			.np = master_np,
+>>   		};
+>>   
+>> -		pci_request_acs();
+>>   		err = pci_for_each_dma_alias(to_pci_dev(dev),
+>>   					     of_pci_iommu_init, &info);
+>>   	} else {
+>> diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+>> index da5b414d585a..2313c3f848b0 100644
+>> --- a/drivers/pci/of.c
+>> +++ b/drivers/pci/of.c
+>> @@ -581,9 +581,15 @@ static int pci_parse_request_of_pci_ranges(struct device *dev,
+>>   
+>>   int devm_of_pci_bridge_init(struct device *dev, struct pci_host_bridge *bridge)
+>>   {
+>> -	if (!dev->of_node)
+>> +	struct device_node *node = dev->of_node;
+>> +
+>> +	if (!node)
+>>   		return 0;
+>>   
+>> +	/* Detect IOMMU and make sure ACS will be enabled */
+>> +	if (of_property_read_bool(node, "iommu-map"))
+>> +		pci_request_acs();
+>> +
+>>   	bridge->swizzle_irq = pci_common_swizzle;
+>>   	bridge->map_irq = of_irq_parse_and_map_pci;
+>>   
+>> -- 
+>> 2.19.1
+>>
+> .
+> 
+
+.
