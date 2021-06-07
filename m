@@ -2,80 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1AD039DD30
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A3E39DD34
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231160AbhFGNBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 09:01:30 -0400
-Received: from foss.arm.com ([217.140.110.172]:32774 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230145AbhFGNB3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 09:01:29 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E11BE12FC;
-        Mon,  7 Jun 2021 05:59:37 -0700 (PDT)
-Received: from slackpad.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2C3213F694;
-        Mon,  7 Jun 2021 05:59:36 -0700 (PDT)
-Date:   Mon, 7 Jun 2021 13:59:27 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
-        Samuel Holland <samuel@sholland.org>,
-        Ondrej Jirman <megous@megous.com>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 14/17] arm64: dts: allwinner: Add Allwinner H616
- .dtsi file
-Message-ID: <20210607135927.65e98fc8@slackpad.fritz.box>
-In-Reply-To: <20210524120220.j73xwq7n5qbaxs4r@gilmour>
-References: <20210519104152.21119-1-andre.przywara@arm.com>
-        <20210519104152.21119-15-andre.przywara@arm.com>
-        <20210524120220.j73xwq7n5qbaxs4r@gilmour>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
+        id S231192AbhFGNBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 09:01:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231175AbhFGNBw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 09:01:52 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7777FC061766;
+        Mon,  7 Jun 2021 05:59:48 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id 5-20020a9d01050000b02903c700c45721so15510353otu.6;
+        Mon, 07 Jun 2021 05:59:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=ZZTtxObXY+nX0k3hctypzmRdrTFJu2YTSlJJnUwDmMA=;
+        b=nic8sVIKyjt9RfrctW5gp5kyA4ewBAV+BXxGI2j5NPCudG2LOEeu7WKpufsv+PA+f6
+         NC2ru2A7HfjcSqlWuzCLe+fKmv/dzwFRR0kHX9mkVduPcV9C4DwfFA4AM8qjIHEYK/Fp
+         3PSCbZzF4/ZlfVTlpa+fkC85wS847i2dKmhla2Of6sgvj40W6N5I5wqi5948eUXIdFdK
+         QuE6B+WuQTA597SuCbGZx5/ywzBiHLNjlSsK+pql8kaJsuJWBErdlIWDsvNRfaKmnmRT
+         jBHkNm2Esm9s6W/V7RigNKiSyskePOZE+bYNLbsEyp6gTCGK3wmfEULWCpqItn47xS2B
+         bm7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZZTtxObXY+nX0k3hctypzmRdrTFJu2YTSlJJnUwDmMA=;
+        b=fUfMHP/dMSQZ8zpDmaI4o6Bd6uA+DM4m8OXdpK7sNl5ovxQDO4uLHqS6BxzYHsAUGp
+         YM4hf/n2YsGGaPOb73RC6x52FtI/il+qeBj1RPXulGALbqlV1dX5v2/zQebrQAFuLgPS
+         KuhFOX/e/1rcqug5iU5Dttcoyt7R1w7h6kxuMia+twtxylQQcPwwBdDdELu/KzsgnhWp
+         pkM/e+ZP5Ch8jCMa3PI5r4KQGO8KlmpOXwMU9sXnJZ5SiZUVx3T0MBaaZxY+aAGnxrhU
+         VbsytCHTrSpvoXEYZp36oRPQ4yP2Zm3fWe8sDK3G4tOiULHwkq3k/M1C2W1PA7jjcEL5
+         EHoQ==
+X-Gm-Message-State: AOAM5316Uvk7j2Um9C5BPsFNaTZ23qqIdx16GieffvOrYHkk1grSTef+
+        2IgqZLc9uZkfgOSD4MDzSXHHFUmUeNE=
+X-Google-Smtp-Source: ABdhPJzma4xxSmnZb4Hp/qjQHRn6dhEzfTxV1hd+zbaMcWfoHWekiK5nyLkAVysixpKK8UV4y9tnpQ==
+X-Received: by 2002:a9d:554b:: with SMTP id h11mr13472271oti.4.1623070786209;
+        Mon, 07 Jun 2021 05:59:46 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.22])
+        by smtp.googlemail.com with ESMTPSA id 88sm2337416otb.7.2021.06.07.05.59.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Jun 2021 05:59:45 -0700 (PDT)
+Subject: Re: [PATCH net-next] net: ipv4: use BUG_ON instead of if condition
+ followed by BUG
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>, davem@davemloft.net,
+        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210607091131.2766890-1-zhengyongjun3@huawei.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <6b84747d-80a9-08d8-c4e3-c91cdaa99330@gmail.com>
+Date:   Mon, 7 Jun 2021 06:59:44 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210607091131.2766890-1-zhengyongjun3@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 May 2021 14:02:20 +0200
-Maxime Ripard <maxime@cerno.tech> wrote:
-
-> Hi,
+On 6/7/21 3:11 AM, Zheng Yongjun wrote:
+> Use BUG_ON instead of if condition followed by BUG in inet_set_link_af.
 > 
-> On Wed, May 19, 2021 at 11:41:49AM +0100, Andre Przywara wrote:
-> > This (relatively) new SoC is similar to the H6, but drops the (broken)
-> > PCIe support and the USB 3.0 controller. It also gets the management
-> > controller removed, which in turn removes *some*, but not all of the
-> > devices formerly dedicated to the ARISC (CPUS).
-> > And while there is still the extra sunxi interrupt controller, the
-> > package lacks the corresponding NMI pin, so no interrupts for the PMIC.
-> > 
-> > USB is a bit tricky: host controller 0, 1 and 3 depend on some help from
-> > controller and PHY 2, so we need to include one reset line and one
-> > clock gate from HCI 2 into every other HCI node, plus need some nasty
-> > quirk.
-> > 
-> > The reserved memory node is actually handled by Trusted Firmware now,
-> > but U-Boot fails to propagate this to a separately loaded DTB, so we
-> > keep it in here for now, until U-Boot learns to do this properly.
-> > 
-> > Signed-off-by: Andre Przywara <andre.przywara@arm.com>  
+> This issue was detected with the help of Coccinelle.
 > 
-> As far as I can see, the IOMMU hasn't changed between the H6 and the
-> H616, so it would be worth enabling
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  net/ipv4/devinet.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/net/ipv4/devinet.c b/net/ipv4/devinet.c
+> index 2e35f68da40a..e3e1e8a600ef 100644
+> --- a/net/ipv4/devinet.c
+> +++ b/net/ipv4/devinet.c
+> @@ -1988,8 +1988,7 @@ static int inet_set_link_af(struct net_device *dev, const struct nlattr *nla,
+>  	if (!in_dev)
+>  		return -EAFNOSUPPORT;
+>  
+> -	if (nla_parse_nested_deprecated(tb, IFLA_INET_MAX, nla, NULL, NULL) < 0)
+> -		BUG();
+> +	BUG_ON(nla_parse_nested_deprecated(tb, IFLA_INET_MAX, nla, NULL, NULL) < 0);
+>  
+>  	if (tb[IFLA_INET_CONF]) {
+>  		nla_for_each_nested(a, tb[IFLA_INET_CONF], rem)
+> 
 
-I would rather not include anything that can't be tested at this point.
-IIUC the IOMMU is still only for the video devices, which I omitted at
-all so far - the display engine definitely needs code changes (Jernej
-has something in the making).
-So I'd like to wait for the IOMMU nodes till we get DE or VE support.
-
-Cheers,
-Andre
+no reason to have a BUG here at all. Catch the error and return.
