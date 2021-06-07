@@ -2,259 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C556E39DC27
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE3039DC41
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:25:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhFGM0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 08:26:20 -0400
-Received: from mail-io1-f52.google.com ([209.85.166.52]:43546 "EHLO
-        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbhFGM0T (ORCPT
+        id S230432AbhFGM1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 08:27:02 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3449 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230313AbhFGM0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 08:26:19 -0400
-Received: by mail-io1-f52.google.com with SMTP id k16so18016596ios.10
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 05:24:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Iye2hzlZMm4k3ArCLqkXWazy2rFbkKnKpyJHx0+74tg=;
-        b=LP2p8ISrR9G7MhZN6U7AQHnQVN3Tbd7xXje8AcuRgY4RPS6Xi6uRGuKGnc9ggopera
-         qqTpY1lZA9cxPHbDBesr2D3Wvo1U7d3UkZ2ZReTT7iYeKTCG73U89v5GWfdmGjK1pK96
-         c/MM5Ua+2FHL2zLrUFWUtJqgSWw2z5uBgltqU4zRw2aBFQTlbzyf8HqEepz1K/0EbxVA
-         wCwuX/qGXX0aBWHEaEZbdQdDh1lzrRVu/EH5sZFM1Uc2QjontSSSX6hyDsy2Orgf6gxF
-         wZeRGkprn0K7QLFFoHBPytTCgcV6kyo9QfFayNjK9idy6aPeps0766YbH9wJb9lxaxJD
-         Pl/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Iye2hzlZMm4k3ArCLqkXWazy2rFbkKnKpyJHx0+74tg=;
-        b=UChQxNiIyor+fMoTM9e3fjFD/61y5iX8U+wHP12tIW7rgs/SJBPTn1oAwgOX2h3mhd
-         zcFdgqVYTNtbIlcJQFZjjlVy0lmlZ/e7M/K4kaXJHy8owVpl9cA/8K6jDrnGq+cDTccH
-         nb6GTkyU6kqMjrV7ZnaQ4SuYaVxw92+C6xTqIjLTvE1w8jxkHGD07qp1NiDXFh3Xg4N6
-         JPVZph9jtprMKrm7+sIZPIK/ZkZmtHA4NtsNmRz8dXKjzjTpE8Yuvmg4r4Dsu1hKLpGv
-         H/FL17+nIQcoXJ+6hRSRCXHoPK8XPfSsvoqFuMktMZd38Y8e2JiJlShyDZ4PUDUpkgPV
-         UQkg==
-X-Gm-Message-State: AOAM533Fw4phORIt1pYjAcBDqX0t520/bsa2IPkErBc+GtzyyyeVQqkN
-        g6HiTyxPbDaRdHFdSeZ0Qs/oNkR2smBYqMAohkwjFQ==
-X-Google-Smtp-Source: ABdhPJzpyr6l2dZ2J7xBcePLM41BDXcGM1ASNQ0L1Z98BU7Zzps+KqlvxZjeIdUG5ANVErPokhu0osYL2Sy46qHp/D8=
-X-Received: by 2002:a05:6638:634:: with SMTP id h20mr16097279jar.14.1623068591470;
- Mon, 07 Jun 2021 05:23:11 -0700 (PDT)
+        Mon, 7 Jun 2021 08:26:46 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FzCCz3dXlz6wy4;
+        Mon,  7 Jun 2021 20:21:51 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 20:24:53 +0800
+Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
+ (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 7 Jun
+ 2021 20:24:53 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <dmitry.torokhov@gmail.com>, <yuehaibing@huawei.com>
+CC:     <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] Input: tsc200x-core - Fix kobj_to_dev.cocci warnings
+Date:   Mon, 7 Jun 2021 20:24:51 +0800
+Message-ID: <20210607122451.36708-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-References: <20210607105122.2047212-1-robert.marko@sartura.hr>
- <20210607105122.2047212-2-robert.marko@sartura.hr> <CAHp75Vfkn-fSJrLFfswzLdZPJwe+x24rntCPO2VKK0RHfN0y=Q@mail.gmail.com>
-In-Reply-To: <CAHp75Vfkn-fSJrLFfswzLdZPJwe+x24rntCPO2VKK0RHfN0y=Q@mail.gmail.com>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Mon, 7 Jun 2021 14:23:00 +0200
-Message-ID: <CA+HBbNH9suWNFgFE8V4SLesF6aHkEOrxVGSRsL9XVU2eorwruQ@mail.gmail.com>
-Subject: Re: [PATCH v5 2/6] gpio: Add Delta TN48M CPLD GPIO driver
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 2:06 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Mon, Jun 7, 2021 at 1:51 PM Robert Marko <robert.marko@sartura.hr> wrote:
-> >
-> > Delta TN48M CPLD is used as a GPIO expander for the SFP GPIOs.
-> >
-> > It is a mix of input only and output only pins.
-> >
-> > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
->
-> Couple of small issues below.
-> Otherwise looks good!
->
-> > ---
-> > Changes in v2:
-> > * Rewrite to use simple I2C MFD and GPIO regmap
-> > * Drop DT bindings for pin numbering
-> >
-> >  drivers/gpio/Kconfig      | 12 ++++++
-> >  drivers/gpio/Makefile     |  1 +
-> >  drivers/gpio/gpio-tn48m.c | 89 +++++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 102 insertions(+)
-> >  create mode 100644 drivers/gpio/gpio-tn48m.c
-> >
-> > diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-> > index e3607ec4c2e8..472f7764508e 100644
-> > --- a/drivers/gpio/Kconfig
-> > +++ b/drivers/gpio/Kconfig
-> > @@ -1310,6 +1310,18 @@ config GPIO_TIMBERDALE
-> >         help
-> >         Add support for the GPIO IP in the timberdale FPGA.
-> >
-> > +config GPIO_TN48M_CPLD
-> > +       tristate "Delta Networks TN48M switch CPLD GPIO driver"
-> > +       depends on MFD_TN48M_CPLD
-> > +       select GPIO_REGMAP
-> > +       help
-> > +         This enables support for the GPIOs found on the Delta
-> > +         Networks TN48M switch CPLD.
-> > +         They are used for inputs and outputs on the SFP slots.
-> > +
-> > +         This driver can also be built as a module. If so, the
-> > +         module will be called gpio-tn48m.
-> > +
-> >  config GPIO_TPS65086
-> >         tristate "TI TPS65086 GPO"
-> >         depends on MFD_TPS65086
-> > diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
-> > index c58a90a3c3b1..271fb806475e 100644
-> > --- a/drivers/gpio/Makefile
-> > +++ b/drivers/gpio/Makefile
-> > @@ -145,6 +145,7 @@ obj-$(CONFIG_GPIO_TEGRA186)         += gpio-tegra186.o
-> >  obj-$(CONFIG_GPIO_TEGRA)               += gpio-tegra.o
-> >  obj-$(CONFIG_GPIO_THUNDERX)            += gpio-thunderx.o
-> >  obj-$(CONFIG_GPIO_TIMBERDALE)          += gpio-timberdale.o
-> > +obj-$(CONFIG_GPIO_TN48M_CPLD)          += gpio-tn48m.o
-> >  obj-$(CONFIG_GPIO_TPIC2810)            += gpio-tpic2810.o
-> >  obj-$(CONFIG_GPIO_TPS65086)            += gpio-tps65086.o
-> >  obj-$(CONFIG_GPIO_TPS65218)            += gpio-tps65218.o
-> > diff --git a/drivers/gpio/gpio-tn48m.c b/drivers/gpio/gpio-tn48m.c
-> > new file mode 100644
-> > index 000000000000..41484c002826
-> > --- /dev/null
-> > +++ b/drivers/gpio/gpio-tn48m.c
-> > @@ -0,0 +1,89 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Delta TN48M CPLD GPIO driver
-> > + *
-> > + * Copyright 2021 Sartura Ltd
-> > + *
-> > + * Author: Robert Marko <robert.marko@sartura.hr>
-> > + */
-> > +
-> > +#include <linux/device.h>
-> > +#include <linux/gpio/driver.h>
-> > +#include <linux/gpio/regmap.h>
->
-> > +#include <linux/kernel.h>
->
-> What is this header for?
+Use kobj_to_dev() instead of container_of()
 
-Its not being actually used,
-I will drop it.
->
-> > +#include <linux/mod_devicetable.h>
-> > +#include <linux/module.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/regmap.h>
-> > +
-> > +enum tn48m_gpio_type {
-> > +       TN48M_SFP_TX_DISABLE = 1,
-> > +       TN48M_SFP_PRESENT,
-> > +       TN48M_SFP_LOS,
-> > +};
-> > +
-> > +static int tn48m_gpio_probe(struct platform_device *pdev)
-> > +{
-> > +       struct gpio_regmap_config config = {0};
-> > +       enum tn48m_gpio_type type;
-> > +       struct regmap *regmap;
-> > +       u32 base;
-> > +       int ret;
-> > +
-> > +       if (!pdev->dev.parent)
-> > +               return -ENODEV;
-> > +
-> > +       type = (uintptr_t)device_get_match_data(&pdev->dev);
-> > +       if (!type)
-> > +               return -ENODEV;
-> > +
-> > +       ret = device_property_read_u32(&pdev->dev, "reg", &base);
-> > +       if (ret)
->
-> > +               return -EINVAL;
->
-> return ret;
+Generated by: scripts/coccinelle/api/kobj_to_dev.cocci
 
-Will fix this and send v6 in a couple of minutes.
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/input/touchscreen/tsc200x-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Robert
->
-> > +       regmap = dev_get_regmap(pdev->dev.parent, NULL);
-> > +       if (!regmap)
-> > +               return -ENODEV;
-> > +
-> > +       config.regmap = regmap;
-> > +       config.parent = &pdev->dev;
-> > +       config.ngpio = 4;
-> > +
-> > +       switch (type) {
-> > +       case TN48M_SFP_TX_DISABLE:
-> > +               config.reg_set_base = base;
-> > +               break;
-> > +       case TN48M_SFP_PRESENT:
-> > +               config.reg_dat_base = base;
-> > +               break;
-> > +       case TN48M_SFP_LOS:
-> > +               config.reg_dat_base = base;
-> > +               break;
-> > +       default:
-> > +               dev_err(&pdev->dev, "unknown type %d\n", type);
-> > +               return -ENODEV;
-> > +       }
-> > +
-> > +       return PTR_ERR_OR_ZERO(devm_gpio_regmap_register(&pdev->dev, &config));
-> > +}
-> > +
-> > +static const struct of_device_id tn48m_gpio_of_match[] = {
-> > +       { .compatible = "delta,tn48m-gpio-sfp-tx-disable", .data = (void *)TN48M_SFP_TX_DISABLE },
-> > +       { .compatible = "delta,tn48m-gpio-sfp-present", .data = (void *)TN48M_SFP_PRESENT },
-> > +       { .compatible = "delta,tn48m-gpio-sfp-los", .data = (void *)TN48M_SFP_LOS },
-> > +       { }
-> > +};
-> > +MODULE_DEVICE_TABLE(of, tn48m_gpio_of_match);
-> > +
-> > +static struct platform_driver tn48m_gpio_driver = {
-> > +       .driver = {
-> > +               .name = "delta-tn48m-gpio",
-> > +               .of_match_table = tn48m_gpio_of_match,
-> > +       },
-> > +       .probe = tn48m_gpio_probe,
-> > +};
-> > +module_platform_driver(tn48m_gpio_driver);
-> > +
-> > +MODULE_AUTHOR("Robert Marko <robert.marko@sartura.hr>");
-> > +MODULE_DESCRIPTION("Delta TN48M CPLD GPIO driver");
-> > +MODULE_LICENSE("GPL");
-> > --
-> > 2.31.1
-> >
->
->
-> --
-> With Best Regards,
-> Andy Shevchenko
-
-
-
+diff --git a/drivers/input/touchscreen/tsc200x-core.c b/drivers/input/touchscreen/tsc200x-core.c
+index ce2fe30d6b8a..b8d720d52013 100644
+--- a/drivers/input/touchscreen/tsc200x-core.c
++++ b/drivers/input/touchscreen/tsc200x-core.c
+@@ -338,7 +338,7 @@ static struct attribute *tsc200x_attrs[] = {
+ static umode_t tsc200x_attr_is_visible(struct kobject *kobj,
+ 				      struct attribute *attr, int n)
+ {
+-	struct device *dev = container_of(kobj, struct device, kobj);
++	struct device *dev = kobj_to_dev(kobj);
+ 	struct tsc200x *ts = dev_get_drvdata(dev);
+ 	umode_t mode = attr->mode;
+ 
 -- 
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+2.17.1
+
