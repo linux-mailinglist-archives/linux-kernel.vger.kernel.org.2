@@ -2,76 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC29639D88C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0AA339D891
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbhFGJWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:22:13 -0400
-Received: from mga03.intel.com ([134.134.136.65]:36156 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229966AbhFGJWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:22:12 -0400
-IronPort-SDR: oqGam3Kis1j8g0gcDTRMb6xwoTFuVz771MdcQz+mGneCsCdCyLw5a3i1tpTfDuMq/GsZMrSUjS
- Rv6nm71e3Hdw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="204610344"
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="204610344"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 02:20:21 -0700
-IronPort-SDR: z4C20yGvCTYUWBw0FSST4DuxuboqnJjtaHIEIzZAUosGdxQVwZg1AqwQuW1gWV8yFsxfTxYNJQ
- 7NiU36d6CZyQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="551816159"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 07 Jun 2021 02:20:18 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 07 Jun 2021 12:20:17 +0300
-Date:   Mon, 7 Jun 2021 12:20:17 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Kyle Tso <kyletso@google.com>
-Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org, badhri@google.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: typec: tcpm: Do not finish VDM AMS for retrying
- Responses
-Message-ID: <YL3k0aot51j3ntNY@kuha.fi.intel.com>
-References: <20210606081452.764032-1-kyletso@google.com>
+        id S230220AbhFGJXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:23:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229966AbhFGJXf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 05:23:35 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BDA6C061766;
+        Mon,  7 Jun 2021 02:21:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=Agga5W3RV+Q845HFQCq/AGFYgszYt9H13vWhRIwVD8g=; b=Guc4lcrFvFrMfRY4qa013BS93
+        XytBl518zllAM6lNB/ix34vQT7CJWfnUgI4MMGZNxSePQ3nt8anB/enQjGq5m3IfynYSL2F6WFuJA
+        5rKxULJlO5uNXUHK0ChFfUU9/qz2tOplHbojPj1JOVGOb9uE74T6UJOTxg84KoAbncoaIL5bTu9BK
+        /lcsqcT9PQBjNU0TzHDIGAvP6/uBb/0S3LwV5h+wEVcoNQ5UKSyrbeop/8oP2t4+RY1+R1X2FljLn
+        WYjXb37iWUXoPXR1MSxiLr7AEKaZVaQcwUX/FM+ltbAkwK464McDjhch+xGC/76TOwpCkR1XuC1BO
+        h3M2CANSw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44780)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lqBRx-0000DQ-0G; Mon, 07 Jun 2021 10:21:37 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lqBRw-0005nY-6D; Mon, 07 Jun 2021 10:21:36 +0100
+Date:   Mon, 7 Jun 2021 10:21:36 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Steen Hegelund <steen.hegelund@microchip.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Mark Einon <mark.einon@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Simon Horman <simon.horman@netronome.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>
+Subject: Re: [PATCH net-next v3 04/10] net: sparx5: add port module support
+Message-ID: <20210607092136.GA22278@shell.armlinux.org.uk>
+References: <20210604085600.3014532-1-steen.hegelund@microchip.com>
+ <20210604085600.3014532-5-steen.hegelund@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210606081452.764032-1-kyletso@google.com>
+In-Reply-To: <20210604085600.3014532-5-steen.hegelund@microchip.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 06, 2021 at 04:14:52PM +0800, Kyle Tso wrote:
-> If the VDM responses couldn't be sent successfully, it doesn't need to
-> finish the AMS until the retry count reaches the limit.
+On Fri, Jun 04, 2021 at 10:55:54AM +0200, Steen Hegelund wrote:
+> This add configuration of the Sparx5 port module instances.
 > 
-> Fixes: 0908c5aca31e ("usb: typec: tcpm: AMS and Collision Avoidance")
-> Signed-off-by: Kyle Tso <kyletso@google.com>
-
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 3 +++
->  1 file changed, 3 insertions(+)
+> Sparx5 has in total 65 logical ports (denoted D0 to D64) and 33
+> physical SerDes connections (S0 to S32).  The 65th port (D64) is fixed
+> allocated to SerDes0 (S0). The remaining 64 ports can in various
+> multiplexing scenarios be connected to the remaining 32 SerDes using
+> QSGMII, or USGMII or USXGMII extenders. 32 of the ports can have a 1:1
+> mapping to the 32 SerDes.
 > 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 0db685d5d9c0..08fabe1fc31d 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -1965,6 +1965,9 @@ static void vdm_run_state_machine(struct tcpm_port *port)
->  			tcpm_log(port, "VDM Tx error, retry");
->  			port->vdm_retries++;
->  			port->vdm_state = VDM_STATE_READY;
-> +			if (PD_VDO_SVDM(vdo_hdr) && PD_VDO_CMDT(vdo_hdr) == CMDT_INIT)
-> +				tcpm_ams_finish(port);
-> +		} else {
->  			tcpm_ams_finish(port);
->  		}
->  		break;
-> -- 
-> 2.32.0.rc1.229.g3e70b5a671-goog
+> Some additional ports (D65 to D69) are internal to the device and do not
+> connect to port modules or SerDes macros. For example, internal ports are
+> used for frame injection and extraction to the CPU queues.
+> 
+> The 65 logical ports are split up into the following blocks.
+> 
+> - 13 x 5G ports (D0-D11, D64)
+> - 32 x 2G5 ports (D16-D47)
+> - 12 x 10G ports (D12-D15, D48-D55)
+> - 8 x 25G ports (D56-D63)
+> 
+> Each logical port supports different line speeds, and depending on the
+> speeds supported, different port modules (MAC+PCS) are needed. A port
+> supporting 5 Gbps, 10 Gbps, or 25 Gbps as maximum line speed, will have a
+> DEV5G, DEV10G, or DEV25G module to support the 5 Gbps, 10 Gbps (incl 5
+> Gbps), or 25 Gbps (including 10 Gbps and 5 Gbps) speeds. As well as, it
+> will have a shadow DEV2G5 port module to support the lower speeds
+> (10/100/1000/2500Mbps). When a port needs to operate at lower speed and the
+> shadow DEV2G5 needs to be connected to its corresponding SerDes
+> 
+> Not all interface modes are supported in this series, but will be added at
+> a later stage.
+
+It looks to me like the phylink code in your patch series is based on
+an older version of phylink and hasn't been updated for the split PCS
+support - you seem to be munging the PCS parts in with the MAC
+callbacks. If so, please update to the modern way of dealing with this.
+
+If that isn't the case, please explain why you are not using the split
+PCS support.
+
+Thanks.
 
 -- 
-heikki
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
