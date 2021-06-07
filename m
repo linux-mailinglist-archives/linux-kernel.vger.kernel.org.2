@@ -2,127 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D9A39E7F9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 22:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C5439E7FD
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 22:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231448AbhFGUEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 16:04:33 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43066 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230261AbhFGUE2 (ORCPT
+        id S231532AbhFGUEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 16:04:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230502AbhFGUEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 16:04:28 -0400
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623096155;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bpPFrCt9smKItmSad0Y/rszV18a6VL+4RKyG5Pr6Zx8=;
-        b=WSSrGsGqECjc4I0tQ/FpxuPkADC/RbOWMfxcqmF4qb++NCVic8jy9Mntw31CdVmNfEeQmE
-        ikXzT9+4VsAD6/8mvYTOWLXC8AAhpc6zpO4ANefsgANET86TVTsePdK5jT3IT0YUlMuF+w
-        70S+spJyphXq55O3+M32VhLvDIoqvtUYLTULLiyCaTBmGw4D706FMH8ladHhTALBXeNEEi
-        MmW59bZupRSuw3nbqJNBP8uiSsCsG11JJaDKoU084MXf/V8Loa3oxFwyPOq9aCHevM5rK8
-        Wa+HeM2yudRYjUDhSbyeYNfL/AkZH0HAb5QFnNKTYWz3Gw/AVaB+XmzRkuUOJQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623096155;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bpPFrCt9smKItmSad0Y/rszV18a6VL+4RKyG5Pr6Zx8=;
-        b=Csrd8EJ43xdRZQuIij+l85q/uWNQ32z4q1CuDAP2gKTPTTBOWMznsC3M2vBgTo+MuFwpYF
-        6xXGEErU7SA6F2CQ==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH next v2 2/2] printk: fix cpu lock ordering
-Date:   Mon,  7 Jun 2021 22:02:32 +0200
-Message-Id: <20210607200232.22211-3-john.ogness@linutronix.de>
-In-Reply-To: <20210607200232.22211-1-john.ogness@linutronix.de>
-References: <20210607200232.22211-1-john.ogness@linutronix.de>
+        Mon, 7 Jun 2021 16:04:42 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F64DC061787
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 13:02:50 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id 69so9336048plc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 13:02:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X2XQQivzvNRkfVR3uSuxxvXJvrtUp9ycHqIQW57PEVc=;
+        b=FUJQObTw+/Sj5743vZFa+P0h1Lm/oP1FX1dHa+Jtegd7gPGGZIcatslpsMnCbbxgty
+         x8T7iwJ+hbKMaQW6gP4FuBSIKvHOG/QspuRA2lAySUNb6SGgzi8+WRrU631omy47Xhdw
+         PYEuK6nxnzR1wiUC/dqtuK14DitfffDlK/w8CVAIMVn++0Y3Qksr5DFVh3J23JBQMpOU
+         X1CfbuI8PTA02PSH6/a2xGZ5hFEG2IYEzQiC9EHjPdWrfYWKg1p0DKs5OZ2JSRzCDIY7
+         YLeffiPvPfoFvrypyX7/kTlKaKD9XfWD0OVHmFy9ZIMZ2ebmHkAd1MLYx8IQ/LA4wA0H
+         9Nuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X2XQQivzvNRkfVR3uSuxxvXJvrtUp9ycHqIQW57PEVc=;
+        b=rMEGUOD4GPl4BG5JJhTVcgXP5pYS+aMrbrnZ620Sq/DHaHNZnpXRToNVjgA70f+BpE
+         ZV6Mxs34vIJOOsBXUvaaGXITvGjfdd+aMq0NzlRsQPYrftfYSQid8Icjts0pG7Tzr8AT
+         8g53bwyellHrOMAixJygzZiS7zTL559ZDQk+rs3Hf1QotfyrfkB9ibyqGkIY2L3UDhvb
+         c5Tv7Zh2hsdthib87ChWPn2lbm3Maw/Mf3mn5Y9ZOwXSEmXTJ4htNHJGkoex1l0P0zGS
+         hGX29FlyPqsWNO2600+AGqhYRr9Ja6t3UvV3eQhwFFdaddZuIHr8prehKmIITyZ9Yi/w
+         m+fA==
+X-Gm-Message-State: AOAM53286r+jRUTNOcr1hAmu58BSD+m9l0oSm7wzghYgpn4glNzPFD8q
+        VX+4+6xWEj71JZfaOT+BgAPCCX5F9kg4SbaoOBbANtenG8ePpw==
+X-Google-Smtp-Source: ABdhPJzvxHRhWpJjs2Wf9Ov/7iB+vMzF0yxTtBqxQOHhtftZGhx8lpquxFicR0ACfQDsXLXgsM0CgtTAyTv2de9x/nQ=
+X-Received: by 2002:a17:90a:b28d:: with SMTP id c13mr854921pjr.80.1623096169879;
+ Mon, 07 Jun 2021 13:02:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210606005531.165954-1-davidgow@google.com>
+In-Reply-To: <20210606005531.165954-1-davidgow@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Mon, 7 Jun 2021 13:02:38 -0700
+Message-ID: <CAFd5g44YH5P=4U34kTnWwgTKQbT6toLtEfDNHw3bHLHqiyj8QQ@mail.gmail.com>
+Subject: Re: [PATCH v3] kasan: test: Improve failure message in KUNIT_EXPECT_KASAN_FAIL()
+To:     David Gow <davidgow@google.com>
+Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Daniel Axtens <dja@axtens.net>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cpu lock implementation uses a full memory barrier to take
-the lock, but no memory barriers when releasing the lock. This
-means that changes performed by a lock owner may not be seen by
-the next lock owner. This may have been "good enough" for use
-by dump_stack() as a serialization mechanism, but it is not
-enough to provide proper protection for a critical section.
+On Sat, Jun 5, 2021 at 5:55 PM David Gow <davidgow@google.com> wrote:
+>
+> The KUNIT_EXPECT_KASAN_FAIL() macro currently uses KUNIT_EXPECT_EQ() to
+> compare fail_data.report_expected and fail_data.report_found. This
+> always gave a somewhat useless error message on failure, but the
+> addition of extra compile-time checking with READ_ONCE() has caused it
+> to get much longer, and be truncated before anything useful is displayed.
+>
+> Instead, just check fail_data.report_found by hand (we've just set
+> report_expected to 'true'), and print a better failure message with
+> KUNIT_FAIL(). Because of this, report_expected is no longer used
+> anywhere, and can be removed.
+>
+> Beforehand, a failure in:
+> KUNIT_EXPECT_KASAN_FAIL(test, ((volatile char *)area)[3100]);
+> would have looked like:
+> [22:00:34] [FAILED] vmalloc_oob
+> [22:00:34]     # vmalloc_oob: EXPECTATION FAILED at lib/test_kasan.c:991
+> [22:00:34]     Expected ({ do { extern void __compiletime_assert_705(void) __attribute__((__error__("Unsupported access size for {READ,WRITE}_ONCE()."))); if (!((sizeof(fail_data.report_expected) == sizeof(char) || sizeof(fail_data.repp
+> [22:00:34]     not ok 45 - vmalloc_oob
+>
+> With this change, it instead looks like:
+> [22:04:04] [FAILED] vmalloc_oob
+> [22:04:04]     # vmalloc_oob: EXPECTATION FAILED at lib/test_kasan.c:993
+> [22:04:04]     KASAN failure expected in "((volatile char *)area)[3100]", but none occurred
+> [22:04:04]     not ok 45 - vmalloc_oob
+>
+> Also update the example failure in the documentation to reflect this.
+>
+> Signed-off-by: David Gow <davidgow@google.com>
 
-Correct this problem by using acquire/release memory barriers
-for lock/unlock, respectively.
+Nice work!
 
-Note that it is not necessary for a cpu lock to disable
-interrupts. However, in upcoming work this cpu lock will be used
-for emergency tasks (for example, atomic consoles during kernel
-crashes) and any interruptions should be avoided if possible.
-
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
----
- kernel/printk/printk.c | 30 ++++++++++++++++++++++++++++--
- 1 file changed, 28 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index f94babb38493..8c870581cfb4 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -3560,10 +3560,29 @@ void printk_cpu_lock_irqsave(bool *lock_flag, unsigned long *irq_flags)
- 
- 	cpu = smp_processor_id();
- 
--	old = atomic_cmpxchg(&printk_cpulock_owner, -1, cpu);
-+	/*
-+	 * Guarantee loads and stores from the previous lock owner are
-+	 * visible to this CPU once it is the lock owner. This pairs
-+	 * with cpu_unlock:B.
-+	 *
-+	 * Memory barrier involvement:
-+	 *
-+	 * If cpu_lock:A reads from cpu_unlock:B, then cpu_lock:B
-+	 * reads from cpu_unlock:A.
-+	 *
-+	 * Relies on:
-+	 *
-+	 * RELEASE from cpu_unlock:A to cpu_unlock:B
-+	 *    matching
-+	 * ACQUIRE from cpu_lock:A to cpu_lock:B
-+	 */
-+	old = atomic_cmpxchg_acquire(&printk_cpulock_owner,
-+				     -1, cpu); /* LMM(cpu_lock:A) */
- 	if (old == -1) {
- 		/* This CPU is now the owner. */
- 
-+		/* This CPU begins loading/storing data: LMM(cpu_lock:B) */
-+
- 		*lock_flag = true;
- 
- 	} else if (old == cpu) {
-@@ -3600,7 +3619,14 @@ EXPORT_SYMBOL(printk_cpu_lock_irqsave);
- void printk_cpu_unlock_irqrestore(bool lock_flag, unsigned long irq_flags)
- {
- 	if (lock_flag) {
--		atomic_set(&printk_cpulock_owner, -1);
-+		/* This CPU is finished loading/storing data: LMM(cpu_unlock:A) */
-+
-+		/*
-+		 * Guarantee loads and stores from this CPU when it was the
-+		 * lock owner are visible to the next lock owner. This pairs
-+		 * with cpu_lock:A.
-+		 */
-+		atomic_set_release(&printk_cpulock_owner, -1); /* LMM(cpu_unlock:B) */
- 
- 		local_irq_restore(irq_flags);
- 	}
--- 
-2.20.1
-
+Acked-by: Brendan Higgins <brendanhiggins@google.com>
