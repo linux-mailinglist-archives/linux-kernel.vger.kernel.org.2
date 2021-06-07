@@ -2,56 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B6D39D72B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F59839D72C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbhFGI1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 04:27:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56848 "EHLO
+        id S230227AbhFGI2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 04:28:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhFGI1l (ORCPT
+        with ESMTP id S229436AbhFGI2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 04:27:41 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 709F3C061766
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 01:25:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lYimeQvfov2wnqeOE0GNZZwploWBweMmgrN4dpYrUrQ=; b=A3j5IATMFzjKkRcSrV+SFIyuAw
-        VqoxxQWSPn6P3N3tmG8GA1YOCdTfXWYZV+EhjZEgZtVDgS1ojsq1bsll0QIu4j2ZezMJWHd9OUs6L
-        jX9uT2OE1gHCP0Z2O127GnxiUokTtQFsGe7PpMGJAOn/eUx9mMXoQPeriQZqLdUZqlgODpFHPmMpa
-        UpJAscbCUSkW4E+J/p8FsvIqatXz2vXnfmY77xMl/dlIC2Fn0lvDeuzoEGtJezOWeYEhE1E8QDlSz
-        tskoa8zxpdKrflnBqtEtJbgkdksQLi7RQsMD1KwKieNXqfZ13d8dX8+LJFRvZDW0sCX1InVKq2yMj
-        GXkM10/g==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lqAZT-00FWqx-9N; Mon, 07 Jun 2021 08:25:23 +0000
-Date:   Mon, 7 Jun 2021 09:25:19 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, kernel@axis.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tracing: Export tracing_start() and tracing_stop()
-Message-ID: <YL3X7yRr1+yW/PHU@infradead.org>
-References: <20210602080118.21627-1-vincent.whitchurch@axis.com>
+        Mon, 7 Jun 2021 04:28:09 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3948C061766
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 01:26:17 -0700 (PDT)
+Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28] helo=dude02.pengutronix.de.)
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lqAaN-0004TZ-TO; Mon, 07 Jun 2021 10:26:15 +0200
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, kernel@pengutronix.de
+Subject: [PATCH] reset: bail if try_module_get() fails
+Date:   Mon,  7 Jun 2021 10:26:15 +0200
+Message-Id: <20210607082615.15160-1-p.zabel@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602080118.21627-1-vincent.whitchurch@axis.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 10:01:18AM +0200, Vincent Whitchurch wrote:
-> tracing_stop() is very useful during hands-on debugging for getting the
-> trace to stop exactly when the problem is detected.  Export this to
-> modules.
-> 
-> Personally, I haven't yet found the need to use tracing_start() from
-> code since I usually start tracing via tracefs, but export that too for
-> symmetry since it may have its uses together with tracing_stop().
+Abort instead of returning a new reset control for a reset controller
+device that is going to have its module unloaded.
 
-NAK, no exports for unused symbols.
+Reported-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+---
+ drivers/reset/core.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/reset/core.c b/drivers/reset/core.c
+index 63852076a5a3..61e688882643 100644
+--- a/drivers/reset/core.c
++++ b/drivers/reset/core.c
+@@ -774,7 +774,10 @@ __reset_control_get_internal(struct reset_controller_dev *rcdev,
+ 	if (!rstc)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	try_module_get(rcdev->owner);
++	if (!try_module_get(rcdev->owner)) {
++		kfree(rstc);
++		return ERR_PTR(-ENODEV);
++	}
+ 
+ 	rstc->rcdev = rcdev;
+ 	list_add(&rstc->list, &rcdev->reset_control_head);
+-- 
+2.29.2
+
