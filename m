@@ -2,191 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BBFC39E79E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 21:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43BD939E7A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 21:40:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231423AbhFGTlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 15:41:35 -0400
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:37472 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231371AbhFGTlc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 15:41:32 -0400
-Received: by mail-oi1-f171.google.com with SMTP id h9so19234473oih.4;
-        Mon, 07 Jun 2021 12:39:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oOu6y7k7gvZd3NLHH6tjzjQbm5rJW9mdNwcguV3ceu8=;
-        b=d29JAxEc46/zz8shBR89B88ZvLq/rRzs8K77Sb7r3/r/MwaSlVLjWJadT3ncrLw+Jr
-         6Jquib5YfnzWtII4AAWsfF5TU1CxATse8tu1JCqUrwdROr9yt4ZhXWoaDBEJ87w2cpEh
-         J/7FjTv+ymlk/IJtD4t5YjLYM6NKG4V1Lo6HKfRjZo7vBFpMEB/fbg4ATj0c1Gol2r3q
-         r7iDVIyK3+tF0zTajGYeNMXYjIy4hAtjcF97ioMK84thDeYXccuYZBgL8seiZ54tY21n
-         1V2n0vYNYvVbemzEZjkFqcA/rywvHxcQwRm9DuD1G9UgkpxLzD4mMYUexLYxUZ9rztn6
-         3aPQ==
-X-Gm-Message-State: AOAM533Qbm2Y2WhC5aevAJWLkpfzIVcdsYWmLOPaeEJfY2PUWjMd+odM
-        gFdKp5mtgaWF7LedFF4dYg==
-X-Google-Smtp-Source: ABdhPJy1JhjUryWudKnsLW7krc1Uq81vGLcMhgev+bY//vq2cMgyAxRFYH+SxAndyNHZTgnydxsn6Q==
-X-Received: by 2002:a54:4684:: with SMTP id k4mr568744oic.20.1623094770024;
-        Mon, 07 Jun 2021 12:39:30 -0700 (PDT)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id s6sm2540201otk.71.2021.06.07.12.39.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 12:39:29 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH] dt-bindings: virtio: Convert virtio-mmio to DT schema
-Date:   Mon,  7 Jun 2021 14:39:28 -0500
-Message-Id: <20210607193928.3092186-1-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S231488AbhFGTl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 15:41:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230435AbhFGTl5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 15:41:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6C0B161185;
+        Mon,  7 Jun 2021 19:40:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623094805;
+        bh=04sozYDym0UmShT6KnGNpFHlUkKfQ04l+kP+f9TaD84=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=uvjJz/eIlijpuPuISlzHs9Zodck0mPsMmhd7UgakyLleNiJazT5bJH2gXeX06vuHM
+         +p/AMoMIQjxJhb2+Flk3Pzxazp2zwkoihBaeA0NjMJjHkx7or9rd4NBqWcxfMJbtdt
+         DcyiwKj/4aK+WAiBN6udM7LW9OOhFQd/CCtQdt0JBf7Swc8f3nT/zGoMSW2JHklMu7
+         RwqjnO1j7t33po+sc1DtiQ1brnupvjI3bK3T0P2TH9dPtEit2FYBL34zw+Fqm1XsQk
+         WdQRDtOsB65zDlDrgeuKhkCinJn6NVk8q9mexkrVYrCetPsoeRj+F/AHGNkCpQ0jro
+         tg7Q93QoKCYbw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5DF45609F1;
+        Mon,  7 Jun 2021 19:40:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 00/13] fix dox warning in net/sched/sch_htb.c
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162309480537.22793.7835105473549146742.git-patchwork-notify@kernel.org>
+Date:   Mon, 07 Jun 2021 19:40:05 +0000
+References: <20210605101845.1264706-1-yukuai3@huawei.com>
+In-Reply-To: <20210605101845.1264706-1-yukuai3@huawei.com>
+To:     yukuai (C) <yukuai3@huawei.com>
+Cc:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the virtio-mmio binding to DT schema format.
+Hello:
 
-Cc: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Jason Wang <jasowang@redhat.com>
-Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc: virtualization@lists.linux-foundation.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
-Jean-Philippe, hopefully you are okay with being listed as the 
-maintainer here. You're the only active person that's touched this 
-binding.
+This series was applied to netdev/net-next.git (refs/heads/master):
 
- .../devicetree/bindings/virtio/mmio.txt       | 47 ---------------
- .../devicetree/bindings/virtio/mmio.yaml      | 60 +++++++++++++++++++
- 2 files changed, 60 insertions(+), 47 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/virtio/mmio.txt
- create mode 100644 Documentation/devicetree/bindings/virtio/mmio.yaml
+On Sat, 5 Jun 2021 18:18:32 +0800 you wrote:
+> Yu Kuai (13):
+>   sch_htb: fix doc warning in htb_add_to_wait_tree()
+>   sch_htb: fix doc warning in htb_next_rb_node()
+>   sch_htb: fix doc warning in htb_add_class_to_row()
+>   sch_htb: fix doc warning in htb_remove_class_from_row()
+>   sch_htb: fix doc warning in htb_activate_prios()
+>   sch_htb: fix doc warning in htb_deactivate_prios()
+>   sch_htb: fix doc warning in htb_class_mode()
+>   sch_htb: fix doc warning in htb_change_class_mode()
+>   sch_htb: fix doc warning in htb_activate()
+>   sch_htb: fix doc warning in htb_deactivate()
+>   sch_htb: fix doc warning in htb_charge_class()
+>   sch_htb: fix doc warning in htb_do_events()
+>   sch_htb: fix doc warning in htb_lookup_leaf()
+> 
+> [...]
 
-diff --git a/Documentation/devicetree/bindings/virtio/mmio.txt b/Documentation/devicetree/bindings/virtio/mmio.txt
-deleted file mode 100644
-index 0a575f329f6e..000000000000
---- a/Documentation/devicetree/bindings/virtio/mmio.txt
-+++ /dev/null
-@@ -1,47 +0,0 @@
--* virtio memory mapped device
--
--See https://ozlabs.org/~rusty/virtio-spec/ for more details.
--
--Required properties:
--
--- compatible:	"virtio,mmio" compatibility string
--- reg:		control registers base address and size including configuration space
--- interrupts:	interrupt generated by the device
--
--Required properties for virtio-iommu:
--
--- #iommu-cells:	When the node corresponds to a virtio-iommu device, it is
--		linked to DMA masters using the "iommus" or "iommu-map"
--		properties [1][2]. #iommu-cells specifies the size of the
--		"iommus" property. For virtio-iommu #iommu-cells must be
--		1, each cell describing a single endpoint ID.
--
--Optional properties:
--
--- iommus:	If the device accesses memory through an IOMMU, it should
--		have an "iommus" property [1]. Since virtio-iommu itself
--		does not access memory through an IOMMU, the "virtio,mmio"
--		node cannot have both an "#iommu-cells" and an "iommus"
--		property.
--
--Example:
--
--	virtio_block@3000 {
--		compatible = "virtio,mmio";
--		reg = <0x3000 0x100>;
--		interrupts = <41>;
--
--		/* Device has endpoint ID 23 */
--		iommus = <&viommu 23>
--	}
--
--	viommu: iommu@3100 {
--		compatible = "virtio,mmio";
--		reg = <0x3100 0x100>;
--		interrupts = <42>;
--
--		#iommu-cells = <1>
--	}
--
--[1] Documentation/devicetree/bindings/iommu/iommu.txt
--[2] Documentation/devicetree/bindings/pci/pci-iommu.txt
-diff --git a/Documentation/devicetree/bindings/virtio/mmio.yaml b/Documentation/devicetree/bindings/virtio/mmio.yaml
-new file mode 100644
-index 000000000000..444bfa24affc
---- /dev/null
-+++ b/Documentation/devicetree/bindings/virtio/mmio.yaml
-@@ -0,0 +1,60 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/virtio/mmio.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: virtio memory mapped devices
-+
-+maintainers:
-+  - Jean-Philippe Brucker <jean-philippe@linaro.org>
-+
-+description:
-+  See https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=virtio for
-+  more details.
-+
-+properties:
-+  compatible:
-+    const: virtio-mmio
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  '#iommu-cells':
-+    description: Required when the node corresponds to a virtio-iommu device.
-+    const: 1
-+
-+  iommus:
-+    description: Required for devices making accesses thru an IOMMU.
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    virtio@3000 {
-+        compatible = "virtio,mmio";
-+        reg = <0x3000 0x100>;
-+        interrupts = <41>;
-+
-+        /* Device has endpoint ID 23 */
-+        iommus = <&viommu 23>;
-+    };
-+
-+    viommu: iommu@3100 {
-+        compatible = "virtio,mmio";
-+        reg = <0x3100 0x100>;
-+        interrupts = <42>;
-+
-+        #iommu-cells = <1>;
-+    };
-+
-+...
--- 
-2.27.0
+Here is the summary with links:
+  - [01/13] sch_htb: fix doc warning in htb_add_to_wait_tree()
+    https://git.kernel.org/netdev/net-next/c/4d7efa73fa26
+  - [02/13] sch_htb: fix doc warning in htb_next_rb_node()
+    https://git.kernel.org/netdev/net-next/c/274e5d0e55aa
+  - [03/13] sch_htb: fix doc warning in htb_add_class_to_row()
+    https://git.kernel.org/netdev/net-next/c/996bccc39afb
+  - [04/13] sch_htb: fix doc warning in htb_remove_class_from_row()
+    https://git.kernel.org/netdev/net-next/c/5f8c6d05f390
+  - [05/13] sch_htb: fix doc warning in htb_activate_prios()
+    https://git.kernel.org/netdev/net-next/c/876b5fc0c0fb
+  - [06/13] sch_htb: fix doc warning in htb_deactivate_prios()
+    https://git.kernel.org/netdev/net-next/c/4113be2020a8
+  - [07/13] sch_htb: fix doc warning in htb_class_mode()
+    https://git.kernel.org/netdev/net-next/c/1e9559527a9d
+  - [08/13] sch_htb: fix doc warning in htb_change_class_mode()
+    https://git.kernel.org/netdev/net-next/c/4b479e9883ce
+  - [09/13] sch_htb: fix doc warning in htb_activate()
+    https://git.kernel.org/netdev/net-next/c/8df7e8fff8da
+  - [10/13] sch_htb: fix doc warning in htb_deactivate()
+    https://git.kernel.org/netdev/net-next/c/9a034f25e472
+  - [11/13] sch_htb: fix doc warning in htb_charge_class()
+    https://git.kernel.org/netdev/net-next/c/0e5c90848a28
+  - [12/13] sch_htb: fix doc warning in htb_do_events()
+    https://git.kernel.org/netdev/net-next/c/2c3ee53ea663
+  - [13/13] sch_htb: fix doc warning in htb_lookup_leaf()
+    https://git.kernel.org/netdev/net-next/c/9977d6f56bac
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
