@@ -2,133 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AEEE39E6E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF28A39E6E7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbhFGSxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 14:53:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36507 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230426AbhFGSxF (ORCPT
+        id S231352AbhFGSyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 14:54:35 -0400
+Received: from mail-ej1-f44.google.com ([209.85.218.44]:45759 "EHLO
+        mail-ej1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230500AbhFGSyd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 14:53:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623091873;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aH3QD293Oo2Gx0DQLiXZTLoiWa9ki35zP3VJcWDnpJc=;
-        b=LfBvC2Mv8qcBDibYBlXUMsc8hyIITPdND6bcSs5T2bHx3PXZWlyHLDagYThnF6Un/y1qTP
-        x/1fTVNzG3wZTCIkOJBcH3LIFb+nruwHQi4HZklBK9PuINi/KMZYHUl28ucdH35v9MW7/n
-        GxJd9nbrybbrbaIMdzWwMXO0jZlDbhc=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-298-Ig9uDa7-NzuHy6uXgTB-zg-1; Mon, 07 Jun 2021 14:51:08 -0400
-X-MC-Unique: Ig9uDa7-NzuHy6uXgTB-zg-1
-Received: by mail-qk1-f198.google.com with SMTP id s68-20020a372c470000b0290305f75a7cecso13488675qkh.8
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 11:51:08 -0700 (PDT)
+        Mon, 7 Jun 2021 14:54:33 -0400
+Received: by mail-ej1-f44.google.com with SMTP id k7so28312231ejv.12
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 11:52:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=nametag.social; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ScXrC8JzROe4oik0nKr4Zt97X1eNIvPR3vNcHFbWFVw=;
+        b=zNYJK3b0Nb8HpGi/aABY5z2iapsdx7yAQtFWXWDFPJbKUfJQRiCc4K3VvQzVgBNVV7
+         WmcbojERHJ6iCdEs9d2RqP7whPvdiFbmY/hEO9hD7unbLU1FJCZjPcn0fa3AXh17EJvt
+         n1bDhfDzsCeih8kV5nUptWol/9UYaSzIPzwsjT6P4otB7wjamQ/cdTSrNoBOxdMm2TCw
+         nzGkMLQXg75dYNSIbXaUv9J7X2nnp+CO2+Xss/4obDx7I5daox9uJ0pE142qL5X+MKzy
+         svxWHQMtvw3F2N1yxMEHFRXR17tTdive8JPi5xi9sSzu7+c5DTerRO422bt36YGuJTMy
+         v2Qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=aH3QD293Oo2Gx0DQLiXZTLoiWa9ki35zP3VJcWDnpJc=;
-        b=bnjDPTgLMATkhEXj1lZOht8e5W+Yrx2X3KRksDlWpLmRW7X2X2HcCK9Sk18kYE7mXr
-         /sjMc5KUQ7pJmEb5LWqGRitDjaAUfYpXex73flmADZajgJx6plPICEVA9w8W8E09COOd
-         SFGwRYL4dFbjCBxtEe0YCnvK/J2cFKJ1+ZTv0jyoWXYrkiD/C+0WCp5uZ2t43Llkmp/j
-         0wlAsB8I/jriYZEht7eLZdvJRHKQENsUDs3xPeWXHjBQYpvE64OTxZ0QyQ+sT6StcKO2
-         Wa5tGHHx445u4zwT3JDMh2rwAMIHQ629L4OoXanET+y6kTsryHRHSTqBGZioql3/F77P
-         yw3A==
-X-Gm-Message-State: AOAM5306zBqhxIPDkhSHj0u1/NsvPrszpUq/ss+8vUpAnydnW8RHkql0
-        Q1+xkSTNdywS9vmkULjSOmg4DJtD5dqXxBPPF6AnH8wpQtjpwO/T8rcxOdIOqovUPw6MSOZJ8Gn
-        BDbnW0CjE9c/8wFjWOCSwZOLtqKCI6unjoY3YQ9eLimhRAeEXW3Lm1EXHmvcW/ZWMjAQPa+oY
-X-Received: by 2002:a05:620a:5b5:: with SMTP id q21mr12974275qkq.58.1623091867646;
-        Mon, 07 Jun 2021 11:51:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzAyUl3jh5QUrk9UgJcf2xIvEAWP+/yVr6OZomzEWmLoMcbAnfFWMgB/NQggg1aLvOtjaD19A==
-X-Received: by 2002:a05:620a:5b5:: with SMTP id q21mr12974248qkq.58.1623091867372;
-        Mon, 07 Jun 2021 11:51:07 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id 16sm4559409qtt.19.2021.06.07.11.51.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Jun 2021 11:51:06 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [RFC PATCH] mm/oom_kill: allow oom kill allocating task for
- non-global case
-To:     Shakeel Butt <shakeelb@google.com>, Waiman Long <llong@redhat.com>
-Cc:     Aaron Tomlin <atomlin@redhat.com>, Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210607163103.632681-1-atomlin@redhat.com>
- <c16893a9-35e2-7625-d7f3-83488f874040@redhat.com>
- <CALvZod4eUoquGTQ5AsWgbWTQyqtCNNwb-9+fRw_ZPavH-r9dbA@mail.gmail.com>
-Message-ID: <dc7f54eb-933e-5bbb-7959-815dfbfcc836@redhat.com>
-Date:   Mon, 7 Jun 2021 14:51:05 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ScXrC8JzROe4oik0nKr4Zt97X1eNIvPR3vNcHFbWFVw=;
+        b=RYO1c18XulteaStnfwqXp+KE3Kb7yJueM3v1iamInk6vYxnvdbUy30JOa3ijURg32r
+         CmDY3L5xtgSY/PE1USoIMTv5mNhoO5NzMmxk9TduJlxI13xkuzw0Xp707DlNGKhDZ7KX
+         aicq7dPiy00/z+R8/HO/IQosqfJ/mMeZQw2kuogTjSHSQaqD+mWpP29p11+geZ9u2p5O
+         RAYQP4isUedId9AWLXOBSEfNxgDnVPahekwT1KKS7QaaxhBidtblPkTe0ICPHG7MEJW0
+         8Syw8pHS524KTrsJv9c7buw78lX+gdHMFCzhWNkdaF3B+PlIxGnyx6a0Jt3Tt3G6oRct
+         Or6A==
+X-Gm-Message-State: AOAM5300TqQTnJLVEBQ60gXWqk2diZtyKsv7w9jo+R7lz4/A77m6hUsp
+        /KL74o5K5Q5JRcnbT187n0k//PXl68CBNOEnIABYFg==
+X-Google-Smtp-Source: ABdhPJzGcWFGWbIbsY89L7lxhJBfNHplKZCa8ow1UNqgMe/NUtgdE/5lRdP7v1aSFE5Cm6Z9w/5qLJg6WT/lTXHQNYY=
+X-Received: by 2002:a17:906:c010:: with SMTP id e16mr19541841ejz.214.1623091890615;
+ Mon, 07 Jun 2021 11:51:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CALvZod4eUoquGTQ5AsWgbWTQyqtCNNwb-9+fRw_ZPavH-r9dbA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <23168ac0-0f05-3cd7-90dc-08855dd275b2@gmail.com>
+In-Reply-To: <23168ac0-0f05-3cd7-90dc-08855dd275b2@gmail.com>
+From:   Victor Stewart <v@nametag.social>
+Date:   Mon, 7 Jun 2021 14:51:19 -0400
+Message-ID: <CAM1kxwjHrf74u5OLB=acP2fBy+cPG4NNxa-51O35caY4VKdkkg@mail.gmail.com>
+Subject: Re: io_uring: BPF controlled I/O
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     io-uring <io-uring@vger.kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        lsf-pc@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/7/21 2:43 PM, Shakeel Butt wrote:
-> On Mon, Jun 7, 2021 at 9:45 AM Waiman Long <llong@redhat.com> wrote:
->> On 6/7/21 12:31 PM, Aaron Tomlin wrote:
->>> At the present time, in the context of memcg OOM, even when
->>> sysctl_oom_kill_allocating_task is enabled/or set, the "allocating"
->>> task cannot be selected, as a target for the OOM killer.
->>>
->>> This patch removes the restriction entirely.
->>>
->>> Signed-off-by: Aaron Tomlin <atomlin@redhat.com>
->>> ---
->>>    mm/oom_kill.c | 6 +++---
->>>    1 file changed, 3 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
->>> index eefd3f5fde46..3bae33e2d9c2 100644
->>> --- a/mm/oom_kill.c
->>> +++ b/mm/oom_kill.c
->>> @@ -1089,9 +1089,9 @@ bool out_of_memory(struct oom_control *oc)
->>>                oc->nodemask = NULL;
->>>        check_panic_on_oom(oc);
->>>
->>> -     if (!is_memcg_oom(oc) && sysctl_oom_kill_allocating_task &&
->>> -         current->mm && !oom_unkillable_task(current) &&
->>> -         oom_cpuset_eligible(current, oc) &&
->>> +     if (sysctl_oom_kill_allocating_task && current->mm &&
->>> +            !oom_unkillable_task(current) &&
->>> +            oom_cpuset_eligible(current, oc) &&
->>>            current->signal->oom_score_adj != OOM_SCORE_ADJ_MIN) {
->>>                get_task_struct(current);
->>>                oc->chosen = current;
->> To provide more context for this patch, we are actually seeing that in a
->> customer report about OOM happened in a container where the dominating
->> task used up most of the memory and it happened to be the task that
->> triggered the OOM with the result that no killable process could be
->> found.
-> Why was there no killable process? What about the process allocating
-> the memory or is this remote memcg charging?
+On Sat, Jun 5, 2021 at 5:09 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>
+> One of the core ideas behind io_uring is passing requests via memory
+> shared b/w the userspace and the kernel, a.k.a. queues or rings. That
+> serves a purpose of reducing number of context switches or bypassing
+> them, but the userspace is responsible for controlling the flow,
+> reaping and processing completions (a.k.a. Completion Queue Entry, CQE),
+> and submitting new requests, adding extra context switches even if there
+> is not much work to do. A simple illustration is read(open()), where
+> io_uring is unable to propagate the returned fd to the read, with more
+> cases piling up.
+>
+> The big picture idea stays the same since last year, to give out some
+> of this control to BPF, allow it to check results of completed requests,
+> manipulate memory if needed and submit new requests. Apart from being
+> just a glue between two requests, it might even offer more flexibility
+> like keeping a QD, doing reduce/broadcast and so on.
+>
+> The prototype [1,2] is in a good shape but some work need to be done.
+> However, the main concern is getting an understanding what features and
+> functionality have to be added to be flexible enough. Various toy
+> examples can be found at [3] ([1] includes an overview of cases).
+>
+> Discussion points:
+> - Use cases, feature requests, benchmarking
 
-It is because the other processes have a oom_adjust_score of -1000. So 
-they are non-killable. Anyway, they don't consume that much memory and 
-killing them won't free up that much.
+hi Pavel,
 
-The other process that uses most of the memory is the one that trigger 
-the OOM kill in the first place because the memory limit has been 
-reached in new memory allocation. Based on the current logic, this 
-process cannot be killed at all even if we set the 
-oom_kill_allocating_task to 1 if the OOM happens only within the memcg 
-context, not in a global OOM situation. This patch is to allow this 
-process to be killed under this circumstance.
+coincidentally i'm tossing around in my mind at the moment an idea for
+offloading
+the PING/PONG of a QUIC server/client into the kernel via eBPF.
 
-Cheers,
-Longman
+problem being, being that QUIC is userspace run transport and that NAT-ed UDP
+mappings can't be expected to stay open longer than 30 seconds, QUIC
+applications
+bare a large cost of context switching wake-up to conduct connection lifetime
+maintenance... especially when managing a large number of mostly idle long lived
+connections. so offloading this maintenance service into the kernel
+would be a great
+efficiency boon.
 
+the main impediment is that access to the kernel crypto libraries
+isn't currently possible
+from eBPF. that said, connection wide crypto offload into the NIC is a
+frequently mentioned
+subject in QUIC circles, so one could argue better to allocate the
+time to NIC crypto offload
+and then simply conduct this PING/PONG offload in plain text.
+
+CQEs would provide a great way for the offloaded service to be able to
+wake up the
+application when it's input is required.
+
+anyway food for thought.
+
+Victor
+
+> - Userspace programming model, code reuse (e.g. liburing)
+> - BPF-BPF and userspace-BPF synchronisation. There is
+>   CQE based notification approach and plans (see design
+>   notes), however need to discuss what else might be
+>   needed.
+> - Do we need more contexts passed apart from user_data?
+>   e.g. specifying a BPF map/array/etc fd io_uring requests?
+> - Userspace atomics and efficiency of userspace reads/writes. If
+>   proved to be not performant enough there are potential ways to take
+>   on it, e.g. inlining, having it in BPF ISA, and pre-verifying
+>   userspace pointers.
+>
+> [1] https://lore.kernel.org/io-uring/a83f147b-ea9d-e693-a2e9-c6ce16659749@gmail.com/T/#m31d0a2ac6e2213f912a200f5e8d88bd74f81406b
+> [2] https://github.com/isilence/linux/tree/ebpf_v2
+> [3] https://github.com/isilence/liburing/tree/ebpf_v2/examples/bpf
+>
+>
+> -----------------------------------------------------------------------
+> Design notes:
+>
+> Instead of basing it on hooks it adds support of a new type of io_uring
+> requests as it gives a better control and let's to reuse internal
+> infrastructure. These requests run a new type of io_uring BPF programs
+> wired with a bunch of new helpers for submitting requests and dealing
+> with CQEs, are allowed to read/write userspace memory in virtue of a
+> recently added sleepable BPF feature. and also provided with a token
+> (generic io_uring token, aka user_data, specified at submission and
+> returned in an CQE), which may be used to pass a userspace pointer used
+> as a context.
+>
+> Besides running BPF programs, they are able to request waiting.
+> Currently it supports CQ waiting for a number of completions, but others
+> might be added and/or needed, e.g. futex and/or requeueing the current
+> BPF request onto an io_uring request/link being submitted. That hides
+> the overhead of creating BPF requests by keeping them alive and
+> invoking multiple times.
+>
+> Another big chunk solved is figuring out a good way of feeding CQEs
+> (potentially many) to a BPF program. The current approach
+> is to enable multiple completion queues (CQ), and specify for each
+> request to which one steer its CQE, so all the synchronisation
+> is in control of the userspace. For instance, there may be a separate
+> CQ per each in-flight BPF request, and they can work with their own
+> queues and send an CQE to the main CQ so notifying the userspace.
+> It also opens up a notification-like sync through CQE posting to
+> neighbours' CQs.
+>
+>
+> --
+> Pavel Begunkov
