@@ -2,90 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91ED139E241
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D157A39E1C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232267AbhFGQQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 12:16:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48600 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231327AbhFGQOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 12:14:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EE2F61352;
-        Mon,  7 Jun 2021 16:12:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623082372;
-        bh=cMuBQHhQV+vgwRUWp8OTz6zTtOGZM/A0iclc44jrQb0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sA2ia8G7r4YUTE7JGTXd8CWQkidocDF3rfUHPFPk1So9sC8LtPs4sDfltkWbqqC3L
-         lTRbwz9annAKWeogi1Yfr9WqmK8oO+wNFkKLV2+LvPtA5gQTH4H3e+IsV7+EkvaFcs
-         5HnC8nqfmvnpeMhwJ0xcKtx7/GRvmopbCFur+1wxKu4tT8zMz/yKlvhfVndDm97p4n
-         Iu4ARCsMx0C+/USdquMH3T/GMefHMbOFZSXVTNnmukX6BObfyx8c0RLdrh5NzoXXAn
-         XkR7D8qcYZ0CKukMk3buTLSBbPV5rxFYP6NrMcdZcUg1x1kgsFEpuULWDJDlRvSDKO
-         xPSnjOndJs3Tw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+34ba7ddbf3021981a228@syzkaller.appspotmail.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, cluster-devel@redhat.com
-Subject: [PATCH AUTOSEL 5.12 29/49] gfs2: Fix use-after-free in gfs2_glock_shrink_scan
-Date:   Mon,  7 Jun 2021 12:11:55 -0400
-Message-Id: <20210607161215.3583176-29-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210607161215.3583176-1-sashal@kernel.org>
-References: <20210607161215.3583176-1-sashal@kernel.org>
+        id S231202AbhFGQOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 12:14:09 -0400
+Received: from router.aksignal.cz ([62.44.4.214]:50610 "EHLO
+        router.aksignal.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230212AbhFGQOB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 12:14:01 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by router.aksignal.cz (Postfix) with ESMTP id 42B4A44414;
+        Mon,  7 Jun 2021 18:12:05 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at router.aksignal.cz
+Received: from router.aksignal.cz ([127.0.0.1])
+        by localhost (router.aksignal.cz [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id M7J3E-L4Pbja; Mon,  7 Jun 2021 18:12:04 +0200 (CEST)
+Received: from pc-gameroom.prchals.tk (unknown [83.240.30.185])
+        (Authenticated sender: jiri.prchal@aksignal.cz)
+        by router.aksignal.cz (Postfix) with ESMTPSA id 07E1244411;
+        Mon,  7 Jun 2021 18:12:04 +0200 (CEST)
+From:   Jiri Prchal <jiri.prchal@aksignal.cz>
+To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Christian Eggers <ceggers@arri.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Prchal <jiri.prchal@aksignal.cz>
+Subject: [PATCH v8 0/5] add support for FRAM
+Date:   Mon,  7 Jun 2021 18:11:56 +0200
+Message-Id: <20210607161201.223697-1-jiri.prchal@aksignal.cz>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hillf Danton <hdanton@sina.com>
+Adds support for Cypress FRAMs.
 
-[ Upstream commit 1ab19c5de4c537ec0d9b21020395a5b5a6c059b2 ]
+Jiri Prchal (5):
+  nvmem: prepare basics for FRAM support
+  nvmem: eeprom: at25: add support for FRAM
+  dt-bindings: nvmem: at25: add for FRAM support
+  nvmem: eeprom: at25: export FRAM serial num
+  nvmem: eeprom: add documentation of sysfs fram and sernum file
 
-The GLF_LRU flag is checked under lru_lock in gfs2_glock_remove_from_lru() to
-remove the glock from the lru list in __gfs2_glock_put().
+ .../ABI/testing/sysfs-class-spi-eeprom        |  13 ++
+ .../devicetree/bindings/eeprom/at25.yaml      |  31 +++-
+ drivers/misc/eeprom/Kconfig                   |   5 +-
+ drivers/misc/eeprom/at25.c                    | 160 ++++++++++++++----
+ drivers/nvmem/core.c                          |   4 +
+ include/linux/nvmem-provider.h                |   1 +
+ 6 files changed, 176 insertions(+), 38 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-class-spi-eeprom
 
-On the shrink scan path, the same flag is cleared under lru_lock but because
-of cond_resched_lock(&lru_lock) in gfs2_dispose_glock_lru(), progress on the
-put side can be made without deleting the glock from the lru list.
-
-Keep GLF_LRU across the race window opened by cond_resched_lock(&lru_lock) to
-ensure correct behavior on both sides - clear GLF_LRU after list_del under
-lru_lock.
-
-Reported-by: syzbot <syzbot+34ba7ddbf3021981a228@syzkaller.appspotmail.com>
-Signed-off-by: Hillf Danton <hdanton@sina.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/gfs2/glock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
-index 142f746d7b33..a99e7295e19f 100644
---- a/fs/gfs2/glock.c
-+++ b/fs/gfs2/glock.c
-@@ -1790,6 +1790,7 @@ __acquires(&lru_lock)
- 	while(!list_empty(list)) {
- 		gl = list_first_entry(list, struct gfs2_glock, gl_lru);
- 		list_del_init(&gl->gl_lru);
-+		clear_bit(GLF_LRU, &gl->gl_flags);
- 		if (!spin_trylock(&gl->gl_lockref.lock)) {
- add_back_to_lru:
- 			list_add(&gl->gl_lru, &lru_list);
-@@ -1835,7 +1836,6 @@ static long gfs2_scan_glock_lru(int nr)
- 		if (!test_bit(GLF_LOCK, &gl->gl_flags)) {
- 			list_move(&gl->gl_lru, &dispose);
- 			atomic_dec(&lru_count);
--			clear_bit(GLF_LRU, &gl->gl_flags);
- 			freed++;
- 			continue;
- 		}
 -- 
-2.30.2
+2.25.1
 
