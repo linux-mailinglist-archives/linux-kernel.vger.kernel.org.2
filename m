@@ -2,141 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD8B39D418
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 06:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD74339D414
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 06:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230214AbhFGEjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 00:39:10 -0400
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:35620 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhFGEjJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 00:39:09 -0400
-Received: by mail-wm1-f43.google.com with SMTP id k5-20020a05600c1c85b02901affeec3ef8so1321890wms.0
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 21:37:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=x9T5pBSugoXfUpXUjZ5j/66j/njzDcDs53OE8tdEeqg=;
-        b=dsbm6ZaentwbYXK1/AX02BUJNveYH454Bc8Hxkr7AuBiVrsN0BwXTGFy2clCJ3Jnaa
-         GVTrl601GfVuELPA/rENvBHO99Cy1m2KaZ8VVysBjujsFon1u+rGpWWuuR4VVwcognXg
-         jUSks59gR0/wnezCcElQ23S/7PPhUz0TUqPnzHreb7oT4TLB53lh5OGwuENgESqfyNk9
-         5CU7WXl0wn1KyvZr8sZisHG+5yxfr5M517OOBXZfBORui+ZBnTIaPD3UV1Q6xzY+ZuLv
-         WuD/vIzz5AylzaeEZmgBpvTFNQi4ZGVNTBgD+VEAaB41Pi3aX25tA3hGs7PgBHFLI4rg
-         kL7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x9T5pBSugoXfUpXUjZ5j/66j/njzDcDs53OE8tdEeqg=;
-        b=Fb/bd0tp2PjlPlwGgwDXpl3tasfJB/AYSs2PZ1lltFednGm8ycqVdKKmuzBl1SfUIJ
-         gQOJ2IUqYnPN+GEyiTpqJqhpgLZXBQwQAn6mB8Qj1k6MGWoxuesxqpDcjAGh6n8JxC/I
-         ywOaC5VdYF8l6q0uQfZMQwVPy0xD6VfTgVjG46/NwDBB+t9fNwkeArl3Xp2/7I1xuQQH
-         zgIB1Sr0FMKkD+k03qLvXulM5htpGUaFM/CThmuBacwbPNkHbcPlOoJgL6Yvzfeld+1h
-         P2C/cwDyrPH0MV8wLs2D5Ien03ewFEGVX/m+wBSuK1ZP15vdoF1GfHA9kgEjU+Rq4tpz
-         P0Sw==
-X-Gm-Message-State: AOAM530ifrAWYT+e/dRXmJcAIyQJP4Qfk2ABY8Fmwp/ItYcJB1JA5Jlk
-        m8bRMXN9Vw93HKZ/tyo/fNmFLw==
-X-Google-Smtp-Source: ABdhPJznwN3/xCvknr5BYPh40gyjYOCnx/fab+dzKNlPRZ8IkCnKQnH8Vp5zlcA8IQx74ttZF0sDKw==
-X-Received: by 2002:a1c:a3c3:: with SMTP id m186mr15287383wme.154.1623040564231;
-        Sun, 06 Jun 2021 21:36:04 -0700 (PDT)
-Received: from Iliass-MBP (ppp-94-66-57-185.home.otenet.gr. [94.66.57.185])
-        by smtp.gmail.com with ESMTPSA id o17sm13829115wrp.47.2021.06.06.21.36.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Jun 2021 21:36:03 -0700 (PDT)
-Date:   Mon, 7 Jun 2021 07:35:58 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev@vger.kernel.org, linux-mm@kvack.org,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: Re: [PATCH net-next v6 3/5] page_pool: Allow drivers to hint on SKB
- recycling
-Message-ID: <YL2iLpEp826o81Bp@Iliass-MBP>
-References: <20210521161527.34607-1-mcroce@linux.microsoft.com>
- <20210521161527.34607-4-mcroce@linux.microsoft.com>
- <badedf51-ce74-061d-732c-61d0678180b3@huawei.com>
- <YLnnaRLMlnm+LKwX@iliass-mbp>
- <722e5567-d8ee-228c-978e-9d5966257bb1@gmail.com>
+        id S230192AbhFGEiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 00:38:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39884 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229498AbhFGEiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 00:38:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA36F6121F;
+        Mon,  7 Jun 2021 04:36:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623040580;
+        bh=im2gzm66A8fxb/16kOAjLznX7/J53Tnzbnd+6PWnKNM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kuaZth230TL4sF0sr51/3RjnXx/PFlnOJSE2wEap3G0FYbcwboZ9ZEfaxdbPI3kO4
+         zx9leRfBo/KM6muuTk3kjc/bEtwwdcSI1tB4xjg6U5dJ0aNJ1RGS+/1e0DLRsorRPO
+         u4mBpsKFEyAmap+NhxLPkNdb80dY4VrJlwEFD/vQu6vaUZii+lGq+tjw+30igON8Ty
+         Wh59DN6/o/YKSt47Du4tNAja4AFk5Jn8cus0wmAloU1kn/nnKTQe4Au9YkxBR2vDmv
+         m0u75OmYLhdtcKxvVNc9w6HGiNMLRsqN9zmvfOmzNFDlkA3TRsCx2aFA22ptjktWB1
+         w42mvQ9kRwrEw==
+Received: by mail-lf1-f51.google.com with SMTP id m21so8304124lfg.13;
+        Sun, 06 Jun 2021 21:36:20 -0700 (PDT)
+X-Gm-Message-State: AOAM532wOmqjb1uxDTM4tY9tL3M528Bxci3T1He9PCajxR0z5aagnaUH
+        MUfLJt7Fi/d3001VviqdCf1Q2dLg9w1SOs6GuCY=
+X-Google-Smtp-Source: ABdhPJzCJwuyh33/n2ptWxi8MoWxCk4WJq3GGiXzTMUpqQBQ96IZaBNQOONe348qpbkgI10hWLQulLRc/pxO3pHczqY=
+X-Received: by 2002:ac2:5389:: with SMTP id g9mr10192844lfh.557.1623040579170;
+ Sun, 06 Jun 2021 21:36:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <722e5567-d8ee-228c-978e-9d5966257bb1@gmail.com>
+References: <1622970249-50770-1-git-send-email-guoren@kernel.org> <CO6PR04MB7812C5A068EEDB4D5A2348458D389@CO6PR04MB7812.namprd04.prod.outlook.com>
+In-Reply-To: <CO6PR04MB7812C5A068EEDB4D5A2348458D389@CO6PR04MB7812.namprd04.prod.outlook.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Mon, 7 Jun 2021 12:36:07 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTSBR76_6RjCxPj-k4bTnA84F9c9L-sGbO45bPnMiuvAFQ@mail.gmail.com>
+Message-ID: <CAJF2gTSBR76_6RjCxPj-k4bTnA84F9c9L-sGbO45bPnMiuvAFQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 00/11] riscv: Add DMA_COHERENT support for
+ Allwinner D1
+To:     Anup Patel <Anup.Patel@wdc.com>
+Cc:     "palmerdabbelt@google.com" <palmerdabbelt@google.com>,
+        "arnd@arndb.de" <arnd@arndb.de>, "wens@csie.org" <wens@csie.org>,
+        "maxime@cerno.tech" <maxime@cerno.tech>,
+        "drew@beagleboard.org" <drew@beagleboard.org>,
+        "liush@allwinnertech.com" <liush@allwinnertech.com>,
+        "lazyparser@gmail.com" <lazyparser@gmail.com>,
+        "wefu@redhat.com" <wefu@redhat.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-sunxi@lists.linux.dev" <linux-sunxi@lists.linux.dev>,
+        Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+Hi Anup,
 
-On Sat, Jun 05, 2021 at 10:06:30AM -0600, David Ahern wrote:
-> On 6/4/21 2:42 AM, Ilias Apalodimas wrote:
-> > [...]
-> >>> +	/* Driver set this to memory recycling info. Reset it on recycle.
-> >>> +	 * This will *not* work for NIC using a split-page memory model.
-> >>> +	 * The page will be returned to the pool here regardless of the
-> >>> +	 * 'flipped' fragment being in use or not.
-> >>> +	 */
-> >>
-> >> I am not sure I understand how does the last part of comment related
-> >> to the code below, as there is no driver using split-page memory model
-> >> will reach here because those driver will not call skb_mark_for_recycle(),
-> >> right?
-> >>
-> > 
-> > Yes the comment is there to prohibit people (mlx5 only actually) to add the
-> > recycling bit on their driver.  Because if they do it will *probably* work
-> > but they might get random corrupted packets which will be hard to debug.
-> > 
-> 
-> What's the complexity for getting it to work with split page model?
-> Since 1500 is the default MTU, requiring a page per packet means a lot
-> of wasted memory.
+On Mon, Jun 7, 2021 at 11:44 AM Anup Patel <Anup.Patel@wdc.com> wrote:
+>
+>
+>
+> > -----Original Message-----
+> > From: guoren@kernel.org <guoren@kernel.org>
+> > Sent: 06 June 2021 14:34
+> > To: guoren@kernel.org; Anup Patel <Anup.Patel@wdc.com>;
+> > palmerdabbelt@google.com; arnd@arndb.de; wens@csie.org;
+> > maxime@cerno.tech; drew@beagleboard.org; liush@allwinnertech.com;
+> > lazyparser@gmail.com; wefu@redhat.com
+> > Cc: linux-riscv@lists.infradead.org; linux-kernel@vger.kernel.org; linux-
+> > arch@vger.kernel.org; linux-sunxi@lists.linux.dev; Guo Ren
+> > <guoren@linux.alibaba.com>
+> > Subject: [RFC PATCH v2 00/11] riscv: Add DMA_COHERENT support for
+> > Allwinner D1
+> >
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > The RISC-V ISA doesn't yet specify how to query or modify PMAs, so let
+> > vendors define the custom properties of memory regions in PTE.
+> >
+> > This patchset helps SOC vendors to support their own custom interconnect
+> > coherent solution with PTE attributes.
+> >
+> > For example, allwinner D1[1] uses T-HEAD C906 as main processor, C906 has
+> > two modes in MMU:
+> >  - Compatible mode, the same as the definitions in spec.
+> >  - Enhanced mode, add custom DMA_COHERENT attribute bits in PTE which
+> >    not mentioned in spec.
+> >
+> > Allwinner D1 needs the enhanced mode to support the DMA type device with
+> > non-coherent interconnect in its SOC. C906 uses BITS(63 - 59) as custom
+> > attribute bits in PTE.
+> >
+> > The patchset contain 4 parts (asid, pgtable, cmo, soc) which have been tested
+> > on D1:
+> >  - asid: T-HEAD C906 of D1 contains full asid hw facilities which has no
+> >    conflict with RISC-V spec, and hope these patches soon could be
+> >    approved.
+> >  - pgtable: Using a image-hdr to pass vendor specific information and
+> >    setup custom PTE attributes in a global struct variable during boot
+> >    stage. Also it needs define custom protection_map in linux/mm.
+> >  - cmo: We need deal with dma_sync & icache_sync & __vdso_icache_sync.
+> >    In this patchset, I just show you how T-HEAD C9xx work, and seems Atish
+> >    is working for the DMA infrustructure, please let me know the idea.
+> >  - soc: Add allwinner gmac driver & dts & Kconfig for sunxi test.
+> >
+> > The patchset could work with linux-5.13-rc4, here is the steps for D1:
+> >  - Download linux-5.13-rc4 and apply the patchset
+> >  - make ARCH=riscv CROSS_COMPILE=riscv64-linux- defconfig
+> >  - make ARCH=riscv CROSS_COMPILE=riscv64-linux- Image modules dtbs
+> >  - mkimage -A riscv -O linux -T kernel -C none -a 0x00200000 -e 0x00200000 -
+> > n Linux -d arch/riscv/boot/Image uImage
+> >  - Download newest opensbi [2], build with [3], and get fw_dynamic.bin
+> >  - Copy uImage, fw_dynamic.bin, allwinner-d1-nezha-kit.dtb into boot
+> >    partition of TF card.
+> >  - Plugin the TF card and power on D1.
+> >
+> > Link: https://linux-sunxi.org/D1 [1]
+> > Link: https://github.com/riscv/opensbi branch:master [2]
+> > Link: https://github.com/riscv/opensbi/blob/master/docs/platform/thead-
+> > c9xx.md [3]
+> >
+> > Changes since v1:
+> >  - Rebase on linux-5.13-rc4
+> >  - Support defconfig for different PTE attributes
+> >  - Support C906 icache_sync
+> >  - Add Allwinner D1 dts & Kconfig & gmac for testing
+> >  - Add asid optimization for D1 usage
+> >
+> > Guo Ren (10):
+> >   riscv: asid: Use global mappings for kernel pages
+> >   riscv: asid: Add ASID-based tlbflushing methods
+> >   riscv: asid: Optimize tlbflush coding convention
+> >   riscv: pgtable: Fixup _PAGE_CHG_MASK usage
+> >   riscv: pgtable: Add custom protection_map init
+> >   riscv: pgtable: Add DMA_COHERENT with custom PTE attributes
+> >   riscv: cmo: Add dma-noncoherency support
+> >   riscv: cmo: Add vendor custom icache sync
+> >   riscv: soc: Initial DTS for Allwinner D1 NeZha board
+> >   riscv: soc: Add Allwinner SoC kconfig option
+>
+> The series cover letter says DMA_COHERENT support but
+> it is doing lot of stuff not related to DMA.
+>
+> Please keep the first three patches separate. They belong
+> to your ASID series.
+I just want to give out a whole view of how allwinner D1 works, which
+could help soc folks run their mini system.
 
-It boils down to 'can we re-use the page or is someone using it'.
-Yunsheng sent a patch in earlier series that implements this with
-ref counters. As Matteo mentions we can also add another page pool type.
+Christoph Hellwig has helped to update the ASID series, and I've given
+the tested-by on my hardware 4*910 SMP & 906 D1
+https://lore.kernel.org/linux-riscv/20210606152050.636038-1-hch@lst.de/T/#t
 
-In theory none of those sound too hard, but we'll have to code it and see.
+Ok, you won't see it in the next version patchset.
 
-/Ilias
+>
+> I also dislike the fact that you are continuously sending
+> SBI DMA sync patches without any discussion on the
+> UnixPlatform mailing list for SBI spec changes.
+SBI DMA sync is not critical for us, I could follow your definition
+when you are ready. Even CBO trap emulation is okay for me.
+
+>
+> Regards,
+> Anup
+>
+> >
+> > liush (1):
+> >   riscv: soc: Allwinner D1 GMAC driver only for temp use
+> >
+> >  arch/riscv/Kconfig                                 |    9 +
+> >  arch/riscv/Kconfig.socs                            |   12 +
+> >  arch/riscv/boot/dts/Makefile                       |    1 +
+> >  arch/riscv/boot/dts/allwinner/Makefile             |    2 +
+> >  .../boot/dts/allwinner/allwinner-d1-nezha-kit.dts  |   29 +
+> >  arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi    |  100 +
+> >  arch/riscv/configs/defconfig                       |    1 +
+> >  arch/riscv/include/asm/cacheflush.h                |   48 +-
+> >  arch/riscv/include/asm/mmu_context.h               |    2 +
+> >  arch/riscv/include/asm/pgtable-64.h                |    8 +-
+> >  arch/riscv/include/asm/pgtable-bits.h              |   20 +-
+> >  arch/riscv/include/asm/pgtable.h                   |   44 +-
+> >  arch/riscv/include/asm/sbi.h                       |   15 +
+> >  arch/riscv/include/asm/soc.h                       |    1 +
+> >  arch/riscv/include/asm/tlbflush.h                  |   22 +
+> >  arch/riscv/include/asm/vendorid_list.h             |    1 +
+> >  arch/riscv/kernel/sbi.c                            |   19 +
+> >  arch/riscv/kernel/soc.c                            |   22 +
+> >  arch/riscv/kernel/vdso/flush_icache.S              |   33 +-
+> >  arch/riscv/mm/Makefile                             |    1 +
+> >  arch/riscv/mm/cacheflush.c                         |    3 +-
+> >  arch/riscv/mm/context.c                            |    2 +-
+> >  arch/riscv/mm/dma-mapping.c                        |   53 +
+> >  arch/riscv/mm/init.c                               |   26 +
+> >  arch/riscv/mm/tlbflush.c                           |   57 +-
+> >  drivers/net/ethernet/Kconfig                       |    1 +
+> >  drivers/net/ethernet/Makefile                      |    1 +
+> >  drivers/net/ethernet/allwinnertmp/Kconfig          |   17 +
+> >  drivers/net/ethernet/allwinnertmp/Makefile         |    7 +
+> >  drivers/net/ethernet/allwinnertmp/sunxi-gmac-ops.c |  690 ++++++
+> >  drivers/net/ethernet/allwinnertmp/sunxi-gmac.c     | 2240
+> > ++++++++++++++++++++
+> >  drivers/net/ethernet/allwinnertmp/sunxi-gmac.h     |  258 +++
+> >  drivers/net/phy/realtek.c                          |    2 +-
+> >  mm/mmap.c                                          |    4 +
+> >  34 files changed, 3714 insertions(+), 37 deletions(-)  create mode 100644
+> > arch/riscv/boot/dts/allwinner/Makefile
+> >  create mode 100644 arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-
+> > kit.dts
+> >  create mode 100644 arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi
+> >  create mode 100644 arch/riscv/mm/dma-mapping.c  create mode 100644
+> > drivers/net/ethernet/allwinnertmp/Kconfig
+> >  create mode 100644 drivers/net/ethernet/allwinnertmp/Makefile
+> >  create mode 100644 drivers/net/ethernet/allwinnertmp/sunxi-gmac-ops.c
+> >  create mode 100644 drivers/net/ethernet/allwinnertmp/sunxi-gmac.c
+> >  create mode 100644 drivers/net/ethernet/allwinnertmp/sunxi-gmac.h
+> >
+> > --
+> > 2.7.4
+>
+
+
+-- 
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
