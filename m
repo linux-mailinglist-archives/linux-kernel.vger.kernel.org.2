@@ -2,98 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D579539DFBC
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9ECB39DFBE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:55:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231493AbhFGO4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 10:56:40 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:41070 "EHLO mail.skyhub.de"
+        id S231618AbhFGO4v convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Jun 2021 10:56:51 -0400
+Received: from mga04.intel.com ([192.55.52.120]:62085 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231503AbhFGO41 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 10:56:27 -0400
-Received: from zn.tnic (p200300ec2f0b4f0010db370b6947fb68.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:4f00:10db:370b:6947:fb68])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 54EC81EC04CC;
-        Mon,  7 Jun 2021 16:54:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1623077674;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=DkskgYhv3CpcRt1UBQdVga8YOE910b/AK0zkqCeMk5Q=;
-        b=B2WSbbvqp4seSrpi84QxtYgx7pE62m2aoNK9Z7GTfQ7mrnKEVj/yNCeFXxev9C2iGtC/O9
-        hPxvkFgHhKZVdFwdXW1vGsA7BRlvbo32+Yj4opf1oUGwt9PiLczI17X425rx4GrGI5RqqL
-        W1IWDPcZ1ymoTrJQao4ERgbBhxDRfYg=
-Date:   Mon, 7 Jun 2021 16:54:29 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
-        npmccallum@redhat.com
-Subject: Re: [PATCH Part1 RFC v3 06/22] x86/sev: check SEV-SNP features
- support
-Message-ID: <YL4zJT1v6OuH+tvI@zn.tnic>
-References: <20210602140416.23573-1-brijesh.singh@amd.com>
- <20210602140416.23573-7-brijesh.singh@amd.com>
+        id S231572AbhFGO4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 10:56:35 -0400
+IronPort-SDR: iTMHYq08JzF+VPmegVYPofRLPBePy+KwlFlW+m4u0zFrImtaegx8ckmf4hvPOTZxMPoxAvFu44
+ 7DW6YVRRyiVQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="202775041"
+X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
+   d="scan'208";a="202775041"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 07:54:37 -0700
+IronPort-SDR: gMNzRSLD6+uU62zSbbpNymDshRLYRdUq72k6ZAsvFkzl4lTnsvV+zt7zBZcBpn2KAbGUzYdAFo
+ /rl5CkP+i1iQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
+   d="scan'208";a="440074325"
+Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
+  by orsmga007.jf.intel.com with ESMTP; 07 Jun 2021 07:54:37 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Mon, 7 Jun 2021 07:54:36 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Mon, 7 Jun 2021 07:54:36 -0700
+Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
+ fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2242.008;
+ Mon, 7 Jun 2021 07:54:36 -0700
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     Joe Perches <joe@perches.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>
+CC:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: RE: irdma: utils.c typos in irdma_cqp_gather_stats_gen1 ?
+Thread-Topic: irdma: utils.c typos in irdma_cqp_gather_stats_gen1 ?
+Thread-Index: AQHXWnC6BhX5oDUlRUmhwRc1TlnwJqsHGdlA
+Date:   Mon, 7 Jun 2021 14:54:36 +0000
+Message-ID: <d41c5503b5b74996af3f3c1853a67935@intel.com>
+References: <9e07e80d8aa464447323670fd810f455d53f76f3.camel@perches.com>
+In-Reply-To: <9e07e80d8aa464447323670fd810f455d53f76f3.camel@perches.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210602140416.23573-7-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 09:04:00AM -0500, Brijesh Singh wrote:
->  static bool early_setup_sev_es(void)
+> Subject: irdma: utils.c typos in irdma_cqp_gather_stats_gen1 ?
+> 
+> There are some odd mismatches in field and access index.
+> These may be simple cut/paste typos.
+> 
+> Are these intentional?
 
-This function is doing SNP init now too, so it should be called
-something generic like
+No. Accidental. Likely cut/copy mistake. I will send a fix. Thanks Joe!
 
-	do_early_sev_setup()
+Shiraz
 
-or so.
+> 
+> ip4txfrag is set to the value from IP4RXFRAGS
+> 
+> 915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1753)  gather_stats-
+> >ip4txfrag =
+> 915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1754)          rd64(dev-
+> >hw,
+> 915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1755)               dev-
+> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_IP4RXFRAGS]
+> 915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1756)               +
+> stats_inst_offset_64);
+> 
+> ip4txfrag is set again a few lines later, so the case above is probably a defect.
+> 
+> 915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1769)  gather_stats-
+> >ip4txfrag =
+> 915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1770)          rd64(dev-
+> >hw,
+> 915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1771)               dev-
+> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_IP4TXFRAGS]
+> 915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1772)               +
+> stats_inst_offset_64);
+> 
+> And here ip6txfrag is set to the value of IP6RXFRAGS
+> 
+> 915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1785)  gather_stats-
+> >ip6txfrags =
+> 915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1786)          rd64(dev-
+> >hw,
+> 915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1787)               dev-
+> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_IP6RXFRAGS]
+> 915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1788)               +
+> stats_inst_offset_64);
+> 
 
->  #define GHCB_SEV_ES_GEN_REQ		0
->  #define GHCB_SEV_ES_PROT_UNSUPPORTED	1
-> +#define GHCB_SEV_ES_SNP_UNSUPPORTED	2
-
-GHCB_SNP_UNSUPPORTED
-
-> +static bool __init sev_snp_check_hypervisor_features(void)
-
-check_hv_features()
-
-is nice and short.
-
-> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-> index 77a754365ba9..9b70b7332614 100644
-> --- a/arch/x86/kernel/sev.c
-> +++ b/arch/x86/kernel/sev.c
-> @@ -609,6 +609,10 @@ static bool __init sev_es_setup_ghcb(void)
-
-Ditto for this one: setup_ghcb()
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
