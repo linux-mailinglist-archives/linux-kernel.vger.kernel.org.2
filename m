@@ -2,114 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FFF439DE1E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DFD739DE1A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbhFGNzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 09:55:18 -0400
-Received: from m34-101.88.com ([104.250.34.101]:2830 "EHLO 88.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230251AbhFGNzR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 09:55:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=To:From:Date; bh=FZ7dl7fMd4mO4j2KR+PoAnwlQNNdGg/FOBsgb
-        OC5jtY=; b=fBglc3bfOvg+aUYh7Jj+3LafceZU4dw/keD7ZTc2bhJoPjSm3fA9L
-        Lpk0ZlPNUz1sna1cxIHdXGwxAgeFOFn0+mp789Kp+IpUa1AUQrWcYpY2IklUHKfF
-        bUznH+zfXDp3BBA7Ngq4W+ysGzxAg83LtIUSLxmhKx/QdpgPqx5AmA=
-Received: from [0.0.0.0] (unknown [113.251.8.115])
-        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgBXLv1dJL5g2sMDAA--.11253S3;
-        Mon, 07 Jun 2021 21:51:26 +0800 (CST)
-Subject: Re: [PATCH] docs/zh_CN: add a translation for index
-To:     teng sterling <sterlingteng@gmail.com>
-Cc:     Alex Shi <alexs@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yanteng Si <siyanteng@loongson.cn>
-References: <20210607093433.39160-1-src.res@email.cn>
- <CAMU9jJrkxTUgS0P3tpr-Udw9WqUgqCJ2D0G+ja5UX=B+4DRw7g@mail.gmail.com>
-From:   Hu Haowen <src.res@email.cn>
-Message-ID: <f9418c90-fe60-b26c-18d3-ecd3e9c506ab@email.cn>
-Date:   Mon, 7 Jun 2021 21:51:24 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230255AbhFGNyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 09:54:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230193AbhFGNyx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 09:54:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 684E1C061766;
+        Mon,  7 Jun 2021 06:53:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UxlTIzPnHvNXvpvNY8WXGYTkZQTDM1BOIfqbe2VK5Js=; b=CetJfXmyZyFXZxc0ZDB2x+X1sn
+        BndDqR/iA2xddJOq735dsFYR6NNIW4H0oZtDRH3Lvl65DkNtV48y2wYQJxi00epZy1226mMZqo9+8
+        uTuSnoaPfw/xJxIA+t6dKmij2+saw0Z85Fkr6z7cpchvBSenrOhKDTuuEdahF+h7C/Y0T7DM3KvU5
+        piiz78iI7X5BnRk74yOD51w4gIb6aBSfiDmsriaMGUYvwsp4cUQvZiw2Kiz9j5lQ0ENS2QGB+xq7q
+        2tNboIvbRKReTQHf5DeLpsFLpHKAvQx97M6YLSCEZbr8rCv8yE1nh9lkAQZPDGqlnTmweOrHE13Fy
+        /L/uNugw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lqFgE-00FrLN-9D; Mon, 07 Jun 2021 13:52:40 +0000
+Date:   Mon, 7 Jun 2021 14:52:38 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Subject: Re: [PATCH net-next v7 1/5] mm: add a signature in struct page
+Message-ID: <YL4kpntfzMBXGSfV@casper.infradead.org>
+References: <20210604183349.30040-1-mcroce@linux.microsoft.com>
+ <20210604183349.30040-2-mcroce@linux.microsoft.com>
+ <YLp6D7mEh85vL+pY@casper.infradead.org>
+ <CAFnufp2jGRsr9jexBLFRZfJu9AwGO0ghzExT1R4bJdscwHqSnQ@mail.gmail.com>
+ <YLuK9P+loeKwUUK3@casper.infradead.org>
+ <CAFnufp1e893Yz+KTjDvX4tyA8ngqmnMVudf1v0cBPdi9d_2zLw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMU9jJrkxTUgS0P3tpr-Udw9WqUgqCJ2D0G+ja5UX=B+4DRw7g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: GiKnCgBXLv1dJL5g2sMDAA--.11253S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Aw18ZFyUWFWDJw4xGF15Arb_yoW8tr15pF
-        4DKrWfK3WkJrnrCwn2ga4xCF45J3Z7Ka13Wr1DK3sagr1DAr9FqrW3tF90gFyxXryIyFyq
-        qrWayrsYk3WayFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUymb7Iv0xC_Zr1lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
-        cIk0rVWUuVWrJwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
-        v20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2
-        z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcx
-        kEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6x8ErcxFaVAv8VWx
-        Jr1UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIc
-        xG8wCY02Avz4vE14v_Xr4l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VWxJr1U
-        JwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
-        vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IY
-        x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
-        xKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
-        wI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UVGQDUUUUU=
-X-Originating-IP: [113.251.8.115]
-X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFnufp1e893Yz+KTjDvX4tyA8ngqmnMVudf1v0cBPdi9d_2zLw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Jun 06, 2021 at 03:50:54AM +0200, Matteo Croce wrote:
+> And change all the *_pfmemalloc functions to use page->lru.next like this?
+> 
+> @@ -1668,10 +1668,12 @@ struct address_space *page_mapping(struct page *page);
+> static inline bool page_is_pfmemalloc(const struct page *page)
+> {
+>        /*
+> -        * Page index cannot be this large so this must be
+> -        * a pfmemalloc page.
+> +        * This is not a tail page; compound_head of a head page is unused
+> +        * at return from the page allocator, and will be overwritten
+> +        * by callers who do not care whether the page came from the
+> +        * reserves.
+>         */
 
-在 2021/6/7 下午9:40, teng sterling 写道:
-> CC siyanteng@loongson.cn
-> Hu Haowen <src.res@email.cn> 于2021年6月7日周一 下午5:37写道：
->> The original file has added a former intro in commit b51208d41c6a4e7fc2f0
->> ("docs: Tweak the top-level Sphinx page") and hence update the Chinese
->> version for it.
->>
->> Signed-off-by: Hu Haowen <src.res@email.cn>
->> ---
->>   Documentation/translations/zh_CN/index.rst | 5 +++++
->>   1 file changed, 5 insertions(+)
->>
->> diff --git a/Documentation/translations/zh_CN/index.rst b/Documentation/translations/zh_CN/index.rst
->> index 1f953d3439a5..003126abc0d6 100644
->> --- a/Documentation/translations/zh_CN/index.rst
->> +++ b/Documentation/translations/zh_CN/index.rst
->> @@ -17,6 +17,11 @@
->>      **翻译计划:*kernel's documentation*
->>      内核中文文档欢迎任何翻译投稿，特别是关于内核用户和管理员指南部分。
->>
->> +这是内核文档树的顶级目录。内核文档，就像内核本身一样，在很大程度上是一项正
-> how about:
->
-> 这是中文内核文档树的顶级目录。
+The comment doesn't make a lot of sense if we're switching to use
+lru.next.  How about:
 
-
-But the English version says "kernel's documentation". It seems that we
-should add an explanation for readers in order to drag them out of the
-dilemma on whether he or she should update En version at first, as your
-thought picking ideas from "disclaimer-zh_CN".
-
-What's your opinion, maintainers?
-
-
->> +在进行的工作；当我们努力将许多分散的文件整合成一个连贯的整体时尤其如此。另
->> +外，随时欢迎您对内核文档进行改进；如果您想提供帮助，请加入vger.kernel.org
-> 中文内核文档进行改进；
->> +上的linux-doc邮件列表。
-> 上的linux-doc邮件列表，先改进原始英文文档，再将其翻译为中文后，更新相应的中文文档。
->> +
->>   许可证文档
->>   ----------
->>
->> --
->> 2.25.1
->>
-> BTW, I think these are similar to "disclaimer-zh_CN", but not as good
-> as the latter.
->
-> Alex and Xiangcheng, what do you think?
->
-> Thanks,
-> Yanteng
-
+	/*
+	 * lru.next has bit 1 set if the page is allocated from the
+	 * pfmemalloc reserves.  Callers may simply overwrite it if
+	 * they do not need to preserve that information.
+	 */
