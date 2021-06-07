@@ -2,96 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFACD39DA1A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 648B039DA1D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbhFGKvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 06:51:03 -0400
-Received: from ni.piap.pl ([195.187.100.5]:46162 "EHLO ni.piap.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230222AbhFGKvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 06:51:02 -0400
-Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
-        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        id S230436AbhFGKwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 06:52:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230127AbhFGKwG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 06:52:06 -0400
+Received: from mout-u-204.mailbox.org (mout-u-204.mailbox.org [IPv6:2001:67c:2050:1::465:204])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B4E9C061766;
+        Mon,  7 Jun 2021 03:50:15 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by ni.piap.pl (Postfix) with ESMTPSA id 55EA0444245;
-        Mon,  7 Jun 2021 12:49:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl 55EA0444245
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
-        t=1623062947; bh=01mB1x8HJ++TEzJg3qaGHV0NBxqQ7OkjS66gWk3FY9A=;
-        h=From:To:Cc:Subject:Date:From;
-        b=eY10BgvXpYP2tldrzCX6ra5whHguExSz0LleqBud49zXYL5i2eXGP3DlKTUkbE+AW
-         ayehSU4xNLvWBdduT4oc4X0ZPL1FJX7YivO3iDzIt2/2pgRDmcY2qgdla0xZt5VbEk
-         tEQUECQGP3SrDzM2/iOBFNVbh7e/l2I5O6EGCGZM=
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     dri-devel@lists.freedesktop.org,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: [PATCH] Fix i.MX IPU-v3 offset calculations for (semi)planar U/V
- formats
-Sender: khalasa@piap.pl
-Date:   Mon, 07 Jun 2021 12:49:07 +0200
-Message-ID: <m3y2bmq7a4.fsf@t19.piap.pl>
+        by mout-u-204.mailbox.org (Postfix) with ESMTPS id 4Fz9BD6rjTzQjgl;
+        Mon,  7 Jun 2021 12:50:12 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by spamfilter01.heinlein-hosting.de (spamfilter01.heinlein-hosting.de [80.241.56.115]) (amavisd-new, port 10030)
+        with ESMTP id CCqJTFs-0X5b; Mon,  7 Jun 2021 12:50:09 +0200 (CEST)
+Subject: Re: [PATCH v5 3/3] dmaengine: altera-msgdma: add OF support
+To:     Olivier Dautricourt <olivier.dautricourt@orolia.com>,
+        Vinod Koul <vkoul@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, dmaengine@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <7d77772f49b978e3d52d3815b8743fe54c816994.1621343877.git.olivier.dautricourt@orolia.com>
+ <088a373c92bdee6e24da771c1ae2e4ed0887c0d7.1621343877.git.olivier.dautricourt@orolia.com>
+ <YL3DvQWhn+SsBqhJ@vkoul-mobl> <YL3Ynm9xBQ419qK3@orolia.com>
+ <YL3wOT1B8Qp+EXSV@vkoul-mobl> <YL343OIeVZe0Hvod@orolia.com>
+From:   Stefan Roese <sr@denx.de>
+Message-ID: <0fe0984f-7fa4-5885-47b9-db4fe6d5cd7c@denx.de>
+Date:   Mon, 7 Jun 2021 12:50:09 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-KLMS-Rule-ID: 4
-X-KLMS-Message-Action: skipped
-X-KLMS-AntiSpam-Status: not scanned, whitelist
-X-KLMS-AntiPhishing: not scanned, whitelist
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
+In-Reply-To: <YL343OIeVZe0Hvod@orolia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: de-DE
+Content-Transfer-Encoding: 7bit
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -5.62 / 15.00 / 15.00
+X-Rspamd-Queue-Id: C7D14180C
+X-Rspamd-UID: 796acd
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Video captured in 1400x1050 resolution (bytesperline aka stride =3D 1408
-bytes) is invalid. Fix it.
+On 07.06.21 12:45, Olivier Dautricourt wrote:
+> The 06/07/2021 15:38, Vinod Koul wrote:
+>> On 07-06-21, 10:28, Olivier Dautricourt wrote:
+>>> The 06/07/2021 12:29, Vinod Koul wrote:
+>>>> On 18-05-21, 15:25, Olivier Dautricourt wrote:
+>>>>> This driver had no device tree support.
+>>>>>
+>>>>> - add compatible field "altr,socfpga-msgdma"
+>>>>> - define msgdma_of_xlate, with no argument
+>>>>> - register dma controller with of_dma_controller_register
+>>>>>
+>>>>> Reviewed-by: Stefan Roese <sr@denx.de>
+>>>>> Signed-off-by: Olivier Dautricourt <olivier.dautricourt@orolia.com>
+>>>>> ---
+>>>>>
+>>>>> Notes:
+>>>>>      Changes in v2:
+>>>>>          none
+>>>>>
+>>>>>      Changes from v2 to v3:
+>>>>>          Removed CONFIG_OF #ifdef's and use if (IS_ENABLED(CONFIG_OF))
+>>>>>          only once.
+>>>>>
+>>>>>      Changes from v3 to v4
+>>>>>          Reintroduce #ifdef CONFIG_OF for msgdma_match
+>>>>>          as it produces a unused variable warning
+>>>>>
+>>>>>      Changes from v4 to v5
+>>>>>          - As per Rob's comments on patch 1/2:
+>>>>>            change compatible field from altr,msgdma to
+>>>>>            altr,socfpga-msgdma.
+>>>>>          - change commit title to fit previous commits naming
+>>>>>          - As per Vinod's comments:
+>>>>>            - use dma_get_slave_channel instead of dma_get_any_slave_channel which
+>>>>>              makes more sense.
+>>>>>            - remove if (IS_ENABLED(CONFIG_OF)) for of_dma_controller_register
+>>>>>              as it is taken care by the core
+>>>>>
+>>>>>   drivers/dma/altera-msgdma.c | 26 ++++++++++++++++++++++++++
+>>>>>   1 file changed, 26 insertions(+)
+>>>>>
+>>>>> diff --git a/drivers/dma/altera-msgdma.c b/drivers/dma/altera-msgdma.c
+>>>>> index 9a841ce5f0c5..acf0990d73ae 100644
+>>>>> --- a/drivers/dma/altera-msgdma.c
+>>>>> +++ b/drivers/dma/altera-msgdma.c
+>>>>> @@ -19,6 +19,7 @@
+>>>>>   #include <linux/module.h>
+>>>>>   #include <linux/platform_device.h>
+>>>>>   #include <linux/slab.h>
+>>>>> +#include <linux/of_dma.h>
+>>>>>
+>>>>>   #include "dmaengine.h"
+>>>>>
+>>>>> @@ -784,6 +785,14 @@ static int request_and_map(struct platform_device *pdev, const char *name,
+>>>>>        return 0;
+>>>>>   }
+>>>>>
+>>>>> +static struct dma_chan *msgdma_of_xlate(struct of_phandle_args *dma_spec,
+>>>>> +                                     struct of_dma *ofdma)
+>>>>> +{
+>>>>> +     struct msgdma_device *d = ofdma->of_dma_data;
+>>>>> +
+>>>>> +     return dma_get_slave_channel(&d->dmachan);
+>>>>> +}
+>>>>
+>>>> Why not use of_dma_simple_xlate() instead?
+>>> I guess i could, but i don't think i need to define a filter function,
+>>> also there is only one possible channel.
+>>
+>> Yeah no point in adding filter_fn. I guess we need
+>> of_dma_xlate_by_chan_id() here, I guess you are specifying channel in dts
+>> right? If not above would be okay
+> Yes i am, but as this controller has only one channel I was thinking not to fail
+> if something other than chan_id == 0 is specified. But it may not be right,
+> I could also remove the argument in the device tree but dma controller
+> schema expects at least one argument.
+> Now i think maybe it makes more sense to use of_dma_xlate_by_chan_id and
+> expect chan_id == 0 in the dt.
+>>
+>>>>
+>>>>> +
+>>>>>   /**
+>>>>>    * msgdma_probe - Driver probe function
+>>>>>    * @pdev: Pointer to the platform_device structure
+>>>>> @@ -888,6 +897,13 @@ static int msgdma_probe(struct platform_device *pdev)
+>>>>>        if (ret)
+>>>>>                goto fail;
+>>>>>
+>>>>> +     ret = of_dma_controller_register(pdev->dev.of_node,
+>>>>> +                                      msgdma_of_xlate, mdev);
+>>>>> +     if (ret) {
+>>>>> +             dev_err(&pdev->dev, "failed to register dma controller");
+>>>>> +             goto fail;
+>>>>
+>>>> Should this be treated as an error.. the probe will be invoked on non of
+>>>> systems too..
+>>> Ok, i'm a bit confused,
+>>> in v4 those lines were enclosed with 'if (IS_ENABLED(CONFIG_OF)) { }'
+>>> when you said to me that it was already taken care by the core i though
+>>> that of_dma_controller_register will return 0 on non-of systems.
+>>> Now i can add back IS_ENABLED(CONFIG_OF) or discard the ret value.
+>>
+>> Well including in CONFIG_OF sounded protection from compilation which is
+>> not required.
+>>
+>> Now the issue is that you maybe running on a system which may or maynot
+>> have DT and even on DT based systems your device may not be DT one..
+> good catch, i forgot this use-case ..
+>>
+>> So i think the return should be handled here if DT device is not present
+>> and warn that and continue for not DT modes.. Also someone who has this
+>> non DT device should test the changes
+> I can do that.
+> 
+> I think Stefan used this driver on non-DT platform but he said
+> that he has no access to the hardware anymore.
 
-Signed-off-by: Krzysztof Halasa <khalasa@piap.pl>
+Correct. Unfortunately I can't do any tests.
 
---- a/drivers/gpu/ipu-v3/ipu-cpmem.c
-+++ b/drivers/gpu/ipu-v3/ipu-cpmem.c
-@@ -585,21 +585,21 @@ static const struct ipu_rgb def_bgra_16 =3D {
- 	.bits_per_pixel =3D 16,
- };
-=20
--#define Y_OFFSET(pix, x, y)	((x) + pix->width * (y))
--#define U_OFFSET(pix, x, y)	((pix->width * pix->height) +		\
--				 (pix->width * ((y) / 2) / 2) + (x) / 2)
--#define V_OFFSET(pix, x, y)	((pix->width * pix->height) +		\
--				 (pix->width * pix->height / 4) +	\
--				 (pix->width * ((y) / 2) / 2) + (x) / 2)
--#define U2_OFFSET(pix, x, y)	((pix->width * pix->height) +		\
--				 (pix->width * (y) / 2) + (x) / 2)
--#define V2_OFFSET(pix, x, y)	((pix->width * pix->height) +		\
--				 (pix->width * pix->height / 2) +	\
--				 (pix->width * (y) / 2) + (x) / 2)
--#define UV_OFFSET(pix, x, y)	((pix->width * pix->height) +	\
--				 (pix->width * ((y) / 2)) + (x))
--#define UV2_OFFSET(pix, x, y)	((pix->width * pix->height) +	\
--				 (pix->width * y) + (x))
-+#define Y_OFFSET(pix, x, y)	((x) + pix->bytesperline * (y))
-+#define U_OFFSET(pix, x, y)	((pix->bytesperline * pix->height) +	 \
-+				 (pix->bytesperline * ((y) / 2) / 2) + (x) / 2)
-+#define V_OFFSET(pix, x, y)	((pix->bytesperline * pix->height) +	 \
-+				 (pix->bytesperline * pix->height / 4) + \
-+				 (pix->bytesperline * ((y) / 2) / 2) + (x) / 2)
-+#define U2_OFFSET(pix, x, y)	((pix->bytesperline * pix->height) +	 \
-+				 (pix->bytesperline * (y) / 2) + (x) / 2)
-+#define V2_OFFSET(pix, x, y)	((pix->bytesperline * pix->height) +	 \
-+				 (pix->bytesperline * pix->height / 2) + \
-+				 (pix->bytesperline * (y) / 2) + (x) / 2)
-+#define UV_OFFSET(pix, x, y)	((pix->bytesperline * pix->height) +	 \
-+				 (pix->bytesperline * ((y) / 2)) + (x))
-+#define UV2_OFFSET(pix, x, y)	((pix->bytesperline * pix->height) +	 \
-+				 (pix->bytesperline * y) + (x))
-=20
- #define NUM_ALPHA_CHANNELS	7
-=20
-
---=20
-Krzysztof Ha=C5=82asa
-
-Sie=C4=87 Badawcza =C5=81ukasiewicz
-Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
+Thanks,
+Stefan
