@@ -2,79 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6020939DBBD
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26AFF39DBBF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbhFGLvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 07:51:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230175AbhFGLvq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 07:51:46 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED8FAC061766;
-        Mon,  7 Jun 2021 04:49:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=b4rAFiRR6q1QLHaHBT6xTI6OSbNTFacSG20JPRHmTxs=; b=MPpQcj7PWyNMrqEm5VP13UzEw
-        GkMawcXFxqJfN6qmOAGuoj0FZMZuFmCwSxI6kN+K0mOCLlk5WNG0uZMf8jbG2bp2QKvcWOcSAsla/
-        VXfb3T4N1o7XNs/AAY4GVcBWJbr7fpM5tVO5R+lOr8YVVjMn0gVifIt4M+PwXK96RSBdSprPZY8qe
-        c9FOU2BhTkBPBh1zm5HGRouKnW9C873OP1CWe5dw8XXDyTfJerFOj1yUBJboAm6kvmlqu9x2boAma
-        z5hbgoyw6O5rUO18o0vNa/5Wp5D23cluz8e7IdKzSP4LeXjmBaxCyfu5WyqAYPCpq06bauQKhcMCQ
-        +wbpWuKXA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44786)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lqDlP-0000T6-Mt; Mon, 07 Jun 2021 12:49:51 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lqDlM-0005tb-T2; Mon, 07 Jun 2021 12:49:49 +0100
-Date:   Mon, 7 Jun 2021 12:49:48 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Signed-off-by missing for commit in the arm tree
-Message-ID: <20210607114946.GD22278@shell.armlinux.org.uk>
-References: <20210604081503.2229b376@canb.auug.org.au>
+        id S230207AbhFGLye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 07:54:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60642 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230097AbhFGLyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 07:54:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0053611AD;
+        Mon,  7 Jun 2021 11:52:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623066761;
+        bh=vwpihzZIXTIWmmZYnX4O3KxBcqJWM4KlIbiLxno6uL8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t+FRd+Im0EuGNSqThB3iZROqSeI/AhHQNNDOlvwxYvwwRplACIRU8QYUI2zERZT9h
+         FhDC9YjPAq4hC893NAZce2YMkJSwJ1pQQr7OiPeR+Ajk2bRFKanDYVGyKndi4J5xLb
+         jLaL2Nrf9Hko2SMASw1dYsJI+e/BhdjmAnEZguCoGk/hk2gTfQASpcb1tUYfjVk5YU
+         5bexnDndD70ysDi4P41ZXt3f+RvkAnDQCVLYVzi489ROJnfDg70Bov3DLNCS3J/ZRT
+         mKgBF5yjgCHRkJl18JqRnjSRRsaeCKp/V7q6fhELNyZi9o9LVFFHpJvEAIPecr2qMM
+         1xEaxf++qPvAw==
+Date:   Mon, 7 Jun 2021 12:52:35 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <20210607115234.GA7205@willie-the-truck>
+References: <20210604214010.GD4397@paulmck-ThinkPad-P17-Gen-1>
+ <CAHk-=wg0w5L7-iJU_kvEh9stXZoh2srRF4jKToKmSKyHv-njvA@mail.gmail.com>
+ <20210605145739.GB1712909@rowland.harvard.edu>
+ <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210606012903.GA1723421@rowland.harvard.edu>
+ <20210606115336.GS18427@gate.crashing.org>
+ <CAHk-=wjgzAn9DfR9DpU-yKdg74v=fvyzTJMD8jNjzoX4kaUBHQ@mail.gmail.com>
+ <20210606182213.GA1741684@rowland.harvard.edu>
+ <CAHk-=whDrTbYT6Y=9+XUuSd5EAHWtB9NBUvQLMFxooHjxtzEGA@mail.gmail.com>
+ <YL34NZ12mKoiSLvu@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210604081503.2229b376@canb.auug.org.au>
+In-Reply-To: <YL34NZ12mKoiSLvu@hirez.programming.kicks-ass.net>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 08:15:03AM +1000, Stephen Rothwell wrote:
-> Hi all,
+On Mon, Jun 07, 2021 at 12:43:01PM +0200, Peter Zijlstra wrote:
+> On Sun, Jun 06, 2021 at 11:43:42AM -0700, Linus Torvalds wrote:
+> > So while the example code is insane and pointless (and you shouldn't
+> > read *too* much into it), conceptually the notion of that pattern of
+> > 
+> >     if (READ_ONCE(a)) {
+> >         WRITE_ONCE(b,1);
+> >         .. do something ..
+> >     } else {
+> >         WRITE_ONCE(b,1);
+> >         .. do something else ..
+> >     }
 > 
-> Commit
+> This is actually more tricky than it would appear (isn't it always).
 > 
->   aafc8eb78635 ("ARM: update __swp_entry_to_pte() to use PTE_TYPE_FAULT")
+> The thing is, that normally we must avoid speculative stores, because
+> they'll result in out-of-thin-air values.
 > 
-> is missing a Signed-off-by from its author and committer.
+> *Except* in this case, where both branches emit the same store, then
+> it's a given that the store will happen and it will not be OOTA.
+> Someone's actually done the proof for that apparently (Will, you have a
+> reference to Jade's paper?)
 
-For the record... as mentioned on irc, this looks perfectly fine to me:
+I don't think there's a paper on this, but Jade and I are hoping to talk
+about aspects of it at LPC (assuming the toolchain MC gets accepted).
 
-commit aafc8eb78635a2ecb612653f57f1e86e9030b5d9
-Author:     Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-AuthorDate: Thu May 13 11:53:17 2021 +0100
-Commit:     Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-CommitDate: Thu Jun 3 11:39:02 2021 +0100
-...
-    Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> There's apparently also a competition going on who can build the
+> weakestest ARM64 implementation ever.
+> 
+> Combine the two, and you'll get a CPU that *will* emit the store early
+> :/
 
-It seems that the author and committer do indeed have the appropriate
-sign-off in place on this commit.
+So there are a lot of important details missing here and, as above, I think
+this is something worth discussing at LPC with Jade. The rough summary is
+that the arm64 memory model recently (so recently that it's not yet landed
+in the public docs) introduced something called "pick dependencies", which
+are a bit like control dependencies only they don't create order to all
+subsequent stores. These are useful for some conditional data-processing
+instructions such as CSEL and CAS, but it's important to note here that
+*conditional branch instructions behave exactly as you would expect*.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+<disclaimer; I don't work for Arm so any mistakes here are mine>
+
+To reiterate, in the code sequence at the top of this mail, if the compiler
+emits something along the lines of:
+
+	LDR
+	<conditional branch instruction>
+	STR
+
+then the load *will* be ordered before the store, even if the same store
+instruction is executed regardless of the branch direction. Yes, one can
+fantasize about a CPU that executes both taken and non-taken paths and
+figures out that the STR can be hoisted before the load, but that is not
+allowed by the architecture today.
+
+It's the conditional instructions that are more fun. For example, the CSEL
+instruction:
+
+	CSEL	X0, X1, X2, <cond>
+
+basically says:
+
+	if (cond)
+		X0 = X1;
+	else
+		X0 = X2;
+
+these are just register-register operations, but the idea is that the CPU
+can predict that "branching event" inside the CSEL instruction and
+speculatively rename X0 while waiting for the condition to resolve.
+
+So then you can add loads and stores to the mix along the lines of:
+
+	LDR	X0, [X1]		// X0 = *X1
+	CMP	X0, X2
+	CSEL	X3, X4, X5, EQ		// X3 = (X0 == X2) ? X4 : X5
+	STR	X3, [X6]		// MUST BE ORDERED AFTER THE LOAD
+	STR	X7, [X8]		// Can be reordered
+
+(assuming X1, X6, X8 all point to different locations in memory)
+
+So now we have a dependency from the load to the first store, but the
+interesting part is that the last store is _not_ ordered wrt either of the
+other two memory accesses, whereas it would be if we used a conditional
+branch instead of the CSEL. Make sense?
+
+Now, obviously the compiler is blissfully unaware that conditional
+data processing instructions can give rise to dependencies than
+conditional branches, so the question really is how much do we need to
+care in the kernel?
+
+My preference is to use load-acquire instead of control dependencies so
+that we don't have to worry about this, or any future relaxations to the
+CPU architecture, at all.
+
+Jade -- please can you correct me if I got any of this wrong?
+
+Will
