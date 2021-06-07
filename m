@@ -2,104 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8172039DF3C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1DD439DFAA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbhFGOwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 10:52:16 -0400
-Received: from smtprelay0196.hostedemail.com ([216.40.44.196]:37178 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230330AbhFGOwO (ORCPT
+        id S231564AbhFGOzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 10:55:39 -0400
+Received: from mail-qk1-f172.google.com ([209.85.222.172]:34768 "EHLO
+        mail-qk1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230343AbhFGOzV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 10:52:14 -0400
-Received: from omf08.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id EB75ADE11;
-        Mon,  7 Jun 2021 14:50:21 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf08.hostedemail.com (Postfix) with ESMTPA id ECBE71A29F8;
-        Mon,  7 Jun 2021 14:50:20 +0000 (UTC)
-Message-ID: <3d1c10d4632451fb270a847acb320acefe2d019f.camel@perches.com>
-Subject: Re: [PATCH net-next] vxlan: Return the correct errno code
-From:   Joe Perches <joe@perches.com>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
+        Mon, 7 Jun 2021 10:55:21 -0400
+Received: by mail-qk1-f172.google.com with SMTP id k11so15273774qkk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 07:53:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v1xy5+ZYgA3Gk+562MTFN//SREYWR/vvxvs31rzlarI=;
+        b=snKCRIxmZ0rEGpsysvKONFWUn0kliwg3Ig5wdFBW+1RS+z4gW7hBqVy73LUBPNr7ol
+         JSYLDNZp+ylF7vwXyqxSLGtZV5Xyx4XWn20R++hnMdjsyMcOaQ7nn1kzb2HhqXSOdavC
+         Nbm/woI4YXU+fXPm2nxMzKRxqFJd66ItKiCCwPcNUAuhewMCT18yIULD/cIek7McXq0U
+         LgDfHJOceYOUITWCtxHzEEgX1tIwS8S7kADhypnSNOXw0X0CKkXm8AB+/I+Hs2WQSm0S
+         J8v1nW+C5IDM8g3GdiJQpLRBMYvM6u0t8kfLE7/agL1u8r14wkzOV1GR0Mr7d3Lfxwbz
+         YB9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v1xy5+ZYgA3Gk+562MTFN//SREYWR/vvxvs31rzlarI=;
+        b=GFSFdiOehf8Nbod6vzEJp/6OGnIV6r52ttyLTLR5pge3YAkj79lhLNYkxD0f+LHQwW
+         j4b50Fp3YtS/cS1Li2QxKwca1t8fsSZDE2u3o3ulBoVxTA2SbGVVKGlPVSh31KOfuhzV
+         XCMKbNLBPgNpAca4JVYEjkS18tUt/TNUaOMLCWsDHbUWFakEa98P4iFr0r8C79hRKv2p
+         xARyhSkbLf9SpAdVK0dXexG+zC6YrQ1Odn42bCQTkkyFqsqNZWEJcO9G9oA6Ll56oePL
+         yqHilUihJZa6QRRZd84ItQy+qD4GSN2Hi0IBxz+tTQ/UdMrQE0SWVyKLmnEXK+lSDb6V
+         F3MQ==
+X-Gm-Message-State: AOAM5334OG+hKucRZf+nBi2QnoZNMygGtjmKjpz5+5qmLjzmmJnv++QF
+        4QUa1HFfueVpp92ZuhB11gA=
+X-Google-Smtp-Source: ABdhPJz4QjbCnJrqRNat4PLSmVCRrxZgAl1QXKvYMEjxq8Q+v/LvENYk9u9/fGOYbcmOP2qPegIRfg==
+X-Received: by 2002:a05:620a:a87:: with SMTP id v7mr2202686qkg.468.1623077549502;
+        Mon, 07 Jun 2021 07:52:29 -0700 (PDT)
+Received: from PK.localdomain ([61.152.208.153])
+        by smtp.gmail.com with ESMTPSA id o5sm9676977qkl.25.2021.06.07.07.52.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 07:52:29 -0700 (PDT)
+From:   prettykernel <prettykernel@gmail.com>
+To:     mingo@redhat.com
+Cc:     bp@alien8.de, x86@kernel.org, hpa@zytor.com, jroedel@suse.de,
+        keescook@chromium.org, prettykernel@gmail.com,
         linux-kernel@vger.kernel.org
-Date:   Mon, 07 Jun 2021 07:50:19 -0700
-In-Reply-To: <20210607144422.2848809-1-zhengyongjun3@huawei.com>
-References: <20210607144422.2848809-1-zhengyongjun3@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+Subject: [PATCH] arch/x86: remove unused enum value GATE_CALL
+Date:   Mon,  7 Jun 2021 22:52:17 +0800
+Message-Id: <20210607145217.6561-1-prettykernel@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.90
-X-Stat-Signature: j978biwnn5y7k8fyzdhi5b1919jfzjp8
-X-Rspamd-Server: rspamout02
-X-Rspamd-Queue-Id: ECBE71A29F8
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/3L6BQz5wIwlcwJM7FaUHzhg6Cy3peb8s=
-X-HE-Tag: 1623077420-873776
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-06-07 at 22:44 +0800, Zheng Yongjun wrote:
-> When kalloc or kmemdup failed, should return ENOMEM rather than ENOBUFS.
+GATE_CALL is completely unused.
+Just remove it.
 
-Why?  Where in the call chain does it matter?
-Have you inspected the entire call chain and their return value tests?
+Signed-off-by: prettykernel <prettykernel@gmail.com>
+---
+ arch/x86/include/asm/desc_defs.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-> diff --git a/drivers/net/vxlan.c b/drivers/net/vxlan.c
-[]
-> @@ -711,11 +711,11 @@ static int vxlan_fdb_append(struct vxlan_fdb *f,
->  
-> 
->  	rd = kmalloc(sizeof(*rd), GFP_ATOMIC);
-
-And this should probably use kzalloc to avoid possible uninitialized members.
-
->  	if (rd == NULL)
-> -		return -ENOBUFS;
-> +		return -ENOMEM;
->  
->  	if (dst_cache_init(&rd->dst_cache, GFP_ATOMIC)) {
->  		kfree(rd);
-> -		return -ENOBUFS;
-> +		return -ENOMEM;
->  	}
->  
->  	rd->remote_ip = *ip;
-
-The struct is:
-
-include/net/vxlan.h:struct vxlan_rdst {
-include/net/vxlan.h-    union vxlan_addr         remote_ip;
-include/net/vxlan.h-    __be16                   remote_port;
-include/net/vxlan.h-    u8                       offloaded:1;
-include/net/vxlan.h-    __be32                   remote_vni;
-include/net/vxlan.h-    u32                      remote_ifindex;
-include/net/vxlan.h-    struct net_device        *remote_dev;
-include/net/vxlan.h-    struct list_head         list;
-include/net/vxlan.h-    struct rcu_head          rcu;
-include/net/vxlan.h-    struct dst_cache         dst_cache;
-include/net/vxlan.h-};
-
-And the code is:
-
-	if (dst_cache_init(&rd->dst_cache, GFP_ATOMIC)) {
-		kfree(rd);
-		return -ENOBUFS;
-	}
-
-	rd->remote_ip = *ip;
-	rd->remote_port = port;
-	rd->offloaded = false;
-	rd->remote_vni = vni;
-	rd->remote_ifindex = ifindex;
-
-	list_add_tail_rcu(&rd->list, &f->remotes);
-
-	*rdp = rd;
-
-So it appears as if rd->remote_dev and rd->rcu are uninitialized.
-I don't know if that matters, but it seems poor form.
-
+diff --git a/arch/x86/include/asm/desc_defs.h b/arch/x86/include/asm/desc_defs.h
+index f7e7099af595..f6687e4ab78d 100644
+--- a/arch/x86/include/asm/desc_defs.h
++++ b/arch/x86/include/asm/desc_defs.h
+@@ -40,7 +40,6 @@ struct desc_struct {
+ enum {
+ 	GATE_INTERRUPT = 0xE,
+ 	GATE_TRAP = 0xF,
+-	GATE_CALL = 0xC,
+ 	GATE_TASK = 0x5,
+ };
+ 
+-- 
+2.25.1
 
