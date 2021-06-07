@@ -2,153 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C9E539D5D1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE7539D5DE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbhFGHVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 03:21:17 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:48873 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229436AbhFGHVN (ORCPT
+        id S230242AbhFGHXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 03:23:42 -0400
+Received: from mail-pl1-f169.google.com ([209.85.214.169]:45921 "EHLO
+        mail-pl1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230220AbhFGHXk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 03:21:13 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 1C2B4580859;
-        Mon,  7 Jun 2021 03:19:22 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 07 Jun 2021 03:19:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=1MtV7DMaXaVx7kK0l4uODe/8kJj
-        9XmsvH5dcusPCkGw=; b=mBnRj6qByI8qYZCklroL0lAGepN28NsxpSJjrBcB5sQ
-        Fd9Psov/izy8WWxboZMQrjOwwJviIZQ1ylCuBAHUSkt8Ao6IPLlLSKhvj6mcVRD8
-        LJ6/qMfFntNQNPLP2a62nXZUY8NH253jQVw1M4YUkv4uKkDGM1F7bo90+bh6G1x5
-        bj0aDQbh0YyqRWRUOV5GKZ4I4w9KGgTIxrOj526n2CQdqJwMlVEjkuNXa48Gyq+K
-        zyqEXFJtCh1G5QY3/g35qFlIJ8uGWKdvPASB+N6V+QlwVgonLN3gJwLlKpWGq6pb
-        CeKKGy+wRrKhZ3pmMs9Kyrb32nbI/45NJ/orDN6+Urg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=1MtV7D
-        MaXaVx7kK0l4uODe/8kJj9XmsvH5dcusPCkGw=; b=bmYOOfFKE/epxmVpWVbopE
-        VYpCQV6oGT+5CyTeUxLZFc4z0mgApPY9MACKgKEovvnmMc+RXiHaZ/Ted/Ej6fic
-        QRTnY2S4D9qWJG7LjaAvxBHEdK6X+A9vue/5+elM7kS9X0He6rmROFZkyr4Il3dH
-        HlQHhutW7aZ1sUq5xYiGY/hF7Hk9mj/PlPznoN4e764vMfHOqPagcnRw8dGbe2fa
-        FC9ghv6wu9aI8YHgTy8H2MTiZOfaSJG+FLESreO4U76f1II53+1KwmVOxt0/s2mJ
-        eqgikwj++/p8qCwqXnWrrGE3X6/W+kSvAEn8+wC/c+C3mScl/e5WMPlvs4WRWShQ
-        ==
-X-ME-Sender: <xms:dsi9YD8PzeOsxSVus-A228PvbTqQz6CohsW2u_XtbriccrxjEmgbww>
-    <xme:dsi9YPszDDIsnC2zox9UotklYx-GoY969n7JJ1qczXkkkr7vzED9qVKCAOCWl9xO6
-    wEIhIqSRpb647dNzqM>
-X-ME-Received: <xmr:dsi9YBD8qdIiGpihbYwvC6ezQsNyInmjOqpu8_IymTLXXyvPeXra5sSKLUZmbD0iptG0M7uLMPEvIvKELzgeLqeHndg8PA-f1Q3e>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtiedgudduiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
-    heegudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:dsi9YPceeu7PfbaDUqebc_9UD46Pb53aYkodLS4bjEIz3IZ0ndlDhQ>
-    <xmx:dsi9YIPdyDsxA-_m-yN06QL-5SE1TSIPJjVxMtUK-x8m8MC7QMGU-w>
-    <xmx:dsi9YBmfNDuQjipMIp48FePBz4_59Siz-Qiythf4bwfzZyjRZ9vUIA>
-    <xmx:esi9YPmxGZwoaS4mPItl7MJfZb2hP6WhKibqLCIgA54Lc7M8mE3dMQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 7 Jun 2021 03:19:18 -0400 (EDT)
-Date:   Mon, 7 Jun 2021 09:19:16 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     guoren@kernel.org
-Cc:     anup.patel@wdc.com, palmerdabbelt@google.com, arnd@arndb.de,
-        wens@csie.org, drew@beagleboard.org, liush@allwinnertech.com,
-        lazyparser@gmail.com, wefu@redhat.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [RFC PATCH v2 10/11] riscv: soc: Add Allwinner SoC kconfig option
-Message-ID: <20210607071916.kwdbtafbqp3icgia@gilmour>
-References: <1622970249-50770-1-git-send-email-guoren@kernel.org>
- <1622970249-50770-14-git-send-email-guoren@kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="jllkrmwwe7syrz3c"
-Content-Disposition: inline
-In-Reply-To: <1622970249-50770-14-git-send-email-guoren@kernel.org>
+        Mon, 7 Jun 2021 03:23:40 -0400
+Received: by mail-pl1-f169.google.com with SMTP id 11so8118757plk.12;
+        Mon, 07 Jun 2021 00:21:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=q7iHNHYs1n4324aqHEvwnEdh6pf7YebasuoN/z4QMKo=;
+        b=AmPpoDoiyKLpqVOzklXqUFTFaBJQ2LDe1AC70ynujE9fMRvPs4KKNCrHUrOzjJ3YSE
+         lMhjjJWTFXCovVM93mO0HLPBomLJmJel868NvWDCzQXyH4a+RayKzo3A7pyewET7vrGW
+         firnnK/p4PzvWrf5a9zFL9FJBhsg6DyGnm4i1rTPIXAii86v/Di3VnK63DQzr4QLs5/C
+         DDv2spiK66wjuO2ZVQSBYCwMPKZBoo0U4Ikqr+HpcjGhS8SC3DkKsJTJu7x1QDrZjtvM
+         Qqv9USU6QpG+tQi447/Sd4FhfEQE8/xc/t2bTxagkNcnnwR4ccMq6iyT+Jna03ZhG5wO
+         B30g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=q7iHNHYs1n4324aqHEvwnEdh6pf7YebasuoN/z4QMKo=;
+        b=rqPrsM+Tpap6yuA13dSVn9bnXCx7iD8f+3tJl/iHQK75JO/axghOoa86tccaSaxH1n
+         j+F3TA7a122UQPhPcRRDyCJ+MAt1sxEcfsmirLSjzJ1VfwT6dkmSq2amxLYLaQPAGMj1
+         Ww0iK+bEho40ahjplmIWJ1zzgtlyxZvHTgs0p6nBcX5wMUGPmw3RQag8WiCEJP8J7UvW
+         LfjWMkIVeOJFZqHvTvCiR9tROXk/1TD99wlddg1MYev88jkxsi0xVlZ7KeuDrmUnq5CM
+         RYbhusg0DYFWPFpRhois0iCWWrCS56O8n0Q8f32NqY+3YbKoL05DdY+BiAdLrcZ1MP85
+         nxVg==
+X-Gm-Message-State: AOAM530nxKmzgi2hduKpuzdMacp2n8LLWHWDYySc+XJhk1HvV91zqffi
+        /+cuLSqgSe4KvkzoSxIKOPWMUITlCVM=
+X-Google-Smtp-Source: ABdhPJxheeDvMX0UcGShwvAvnm5/GWjtEE+DXLEvaGwgHrxnqM6VznprnpTGFOLRg4j/g04cjPOVgQ==
+X-Received: by 2002:a17:90a:5142:: with SMTP id k2mr29661360pjm.5.1623050437069;
+        Mon, 07 Jun 2021 00:20:37 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.61])
+        by smtp.googlemail.com with ESMTPSA id f3sm10797137pjo.3.2021.06.07.00.20.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 07 Jun 2021 00:20:36 -0700 (PDT)
+From:   Wanpeng Li <kernellwp@gmail.com>
+X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: [PATCH v2 1/3] KVM: LAPIC: Write 0 to TMICT should also cancel vmx-preemption timer
+Date:   Mon,  7 Jun 2021 00:19:43 -0700
+Message-Id: <1623050385-100988-1-git-send-email-wanpengli@tencent.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Wanpeng Li <wanpengli@tencent.com>
 
---jllkrmwwe7syrz3c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+According to the SDM 10.5.4.1:
 
-Hi,
+  A write of 0 to the initial-count register effectively stops the local
+  APIC timer, in both one-shot and periodic mode.
 
-On Sun, Jun 06, 2021 at 09:04:08AM +0000, guoren@kernel.org wrote:
-> From: Guo Ren <guoren@linux.alibaba.com>
->=20
-> Add Allwinner kconfig option which selects SoC specific and common
-> drivers that is required for this SoC.
->=20
-> Allwinner D1 uses custom PTE attributes to solve non-coherency SOC
-> interconnect issues for dma synchronization, so we set the default
-> value when SOC_SUNXI selected.
->=20
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Co-Developed-by: Liu Shaohua <liush@allwinnertech.com>
-> Signed-off-by: Liu Shaohua <liush@allwinnertech.com>
-> Cc: Anup Patel <anup.patel@wdc.com>
-> Cc: Atish Patra <atish.patra@wdc.com>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Chen-Yu Tsai <wens@csie.org>
-> Cc: Drew Fustini <drew@beagleboard.org>
-> Cc: Maxime Ripard <maxime@cerno.tech>
-> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> Cc: Wei Fu <wefu@redhat.com>
-> Cc: Wei Wu <lazyparser@gmail.com>
-> ---
->  arch/riscv/Kconfig.socs      | 12 ++++++++++++
->  arch/riscv/configs/defconfig |  1 +
->  2 files changed, 13 insertions(+)
->=20
-> diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-> index ed96376..055fb3e 100644
-> --- a/arch/riscv/Kconfig.socs
-> +++ b/arch/riscv/Kconfig.socs
-> @@ -69,4 +69,16 @@ config SOC_CANAAN_K210_DTB_SOURCE
-> =20
->  endif
-> =20
-> +config SOC_SUNXI
-> +	bool "Allwinner SoCs"
-> +	depends on MMU
-> +	select DWMAC_GENERIC
-> +	select SERIAL_8250
-> +	select SERIAL_8250_CONSOLE
-> +	select SERIAL_8250_DW
-> +	select SIFIVE_PLIC
-> +	select STMMAC_ETH
-> +	help
-> +	  This enables support for Allwinner SoC platforms like the D1.
-> +
+However, the lapic timer oneshot/periodic mode which is emulated by vmx-preemption
+timer doesn't stop by writing 0 to TMICT since vmx->hv_deadline_tsc is still
+programmed and the guest will receive the spurious timer interrupt later. This
+patch fixes it by also cancelling the vmx-preemption timer when writing 0 to
+the initial-count register.
 
-We probably don't want to select DWMAC, STMMAC_ETH and the 8250 options,
-looks good otherwise.
+Reviewed-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+---
+v1 -> v2:
+ * rename to cancel_apic_timer 
+ * update patch description
 
-Maxime
+ arch/x86/kvm/lapic.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
---jllkrmwwe7syrz3c
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+index 8120e86..6d72d8f 100644
+--- a/arch/x86/kvm/lapic.c
++++ b/arch/x86/kvm/lapic.c
+@@ -1494,6 +1494,15 @@ static void limit_periodic_timer_frequency(struct kvm_lapic *apic)
+ 
+ static void cancel_hv_timer(struct kvm_lapic *apic);
+ 
++static void cancel_apic_timer(struct kvm_lapic *apic)
++{
++	hrtimer_cancel(&apic->lapic_timer.timer);
++	preempt_disable();
++	if (apic->lapic_timer.hv_timer_in_use)
++		cancel_hv_timer(apic);
++	preempt_enable();
++}
++
+ static void apic_update_lvtt(struct kvm_lapic *apic)
+ {
+ 	u32 timer_mode = kvm_lapic_get_reg(apic, APIC_LVTT) &
+@@ -1502,11 +1511,7 @@ static void apic_update_lvtt(struct kvm_lapic *apic)
+ 	if (apic->lapic_timer.timer_mode != timer_mode) {
+ 		if (apic_lvtt_tscdeadline(apic) != (timer_mode ==
+ 				APIC_LVT_TIMER_TSCDEADLINE)) {
+-			hrtimer_cancel(&apic->lapic_timer.timer);
+-			preempt_disable();
+-			if (apic->lapic_timer.hv_timer_in_use)
+-				cancel_hv_timer(apic);
+-			preempt_enable();
++			cancel_apic_timer(apic);
+ 			kvm_lapic_set_reg(apic, APIC_TMICT, 0);
+ 			apic->lapic_timer.period = 0;
+ 			apic->lapic_timer.tscdeadline = 0;
+@@ -2092,7 +2097,7 @@ int kvm_lapic_reg_write(struct kvm_lapic *apic, u32 reg, u32 val)
+ 		if (apic_lvtt_tscdeadline(apic))
+ 			break;
+ 
+-		hrtimer_cancel(&apic->lapic_timer.timer);
++		cancel_apic_timer(apic);
+ 		kvm_lapic_set_reg(apic, APIC_TMICT, val);
+ 		start_apic_timer(apic);
+ 		break;
+-- 
+2.7.4
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYL3IbwAKCRDj7w1vZxhR
-xdpIAP4ujY0W+0Oepl3WVbuQMtnV7QIHCkJ4/R3cBa41tsTA6gD/c1XIXK7VsiTZ
-YdTeyYZcEkyrsfdNoFrv3BUCBXRhlwU=
-=hNxN
------END PGP SIGNATURE-----
-
---jllkrmwwe7syrz3c--
