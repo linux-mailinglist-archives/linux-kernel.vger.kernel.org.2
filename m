@@ -2,66 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4177639D513
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B94A39D50E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbhFGGi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 02:38:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbhFGGiY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 02:38:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F18EC061766;
-        Sun,  6 Jun 2021 23:36:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Zg3Z5zg3zGE7efXmuaQFxaAI12lHroFjA1H1ShFPy3s=; b=TIBLuF9+KKCV6cBbPMYH8ikhVZ
-        IR6tjJMCeklxGkFm5ZM3FtmR3KUBv4noW129cD6e7so/Cijd6+jdzs3DQZYN3Z4M5lrwMqmPIL2+1
-        +X7HEGc8qCvCkV2Ilz06IMo9EHU+xsoVd5tNDi3xWfJoVB6iXvD8SGr2+atumIrHYeh08vktzEuw+
-        dV0oozBDRcMO0B4xdczG04FaaijvmQ6ALlcct3gw17wmkEhOwanNFhcPS5R4JyWf+1dFdPvIK5tiy
-        J1FKtGCCEeAqR4zptmCxzFueEtB9DbbELoTnfqRoz0ZasdREnC/309myai9kP8QSp5ZnlN0JLcqWE
-        xPQbNbdA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lq8qs-00FRjs-0C; Mon, 07 Jun 2021 06:35:14 +0000
-Date:   Mon, 7 Jun 2021 07:35:09 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Changheun Lee <nanich.lee@samsung.com>, damien.lemoal@wdc.com,
-        Avri.Altman@wdc.com, Johannes.Thumshirn@wdc.com,
-        alex_y_xu@yahoo.ca, alim.akhtar@samsung.com,
-        asml.silence@gmail.com, axboe@kernel.dk, bgoncalv@redhat.com,
-        cang@codeaurora.org, gregkh@linuxfoundation.org, hch@infradead.org,
-        jaegeuk@kernel.org, jejb@linux.ibm.com, jisoo2146.oh@samsung.com,
-        junho89.kim@samsung.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, ming.lei@redhat.com,
-        mj0123.lee@samsung.com, osandov@fb.com, patchwork-bot@kernel.org,
-        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
-        tj@kernel.org, tom.leiming@gmail.com, woosung2.lee@samsung.com,
-        yi.zhang@redhat.com, yt0928.kim@samsung.com
-Subject: Re: [PATCH v12 1/3] bio: control bio max size
-Message-ID: <YL2+HeyKVMHsLNe2@infradead.org>
-References: <DM6PR04MB70812AF342F46F453696A447E73B9@DM6PR04MB7081.namprd04.prod.outlook.com>
- <CGME20210604075331epcas1p13bb57f9ddfc7b112dec1ba8cf40fdc74@epcas1p1.samsung.com>
- <20210604073459.29235-1-nanich.lee@samsung.com>
- <63afd2d3-9fa3-9f90-a2b3-37235739f5e2@acm.org>
+        id S230374AbhFGGhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 02:37:48 -0400
+Received: from mga12.intel.com ([192.55.52.136]:7552 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230200AbhFGGhr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 02:37:47 -0400
+IronPort-SDR: fSfCp61OeeS7Aez2wKMG3erYGg8TOnsGB208/YwzrcFxrpogUeMllrl96lZsmOQTBwAYAfd+AK
+ 7NU5VFKiHO7w==
+X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="184251042"
+X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
+   d="scan'208";a="184251042"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 23:35:56 -0700
+IronPort-SDR: pmyJF+7EpzOpsx9iT1oeDExF58KDHI41I7OH5JdyjLwTAUK7HjTidt2EBFb8e/+KVEZBQCUKu0
+ IA41DCya19AQ==
+X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
+   d="scan'208";a="447379229"
+Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 23:35:55 -0700
+Subject: Re: [kbuild-all] Re: [irqchip: irq/irqchip-next] irqdomain: Kill
+ irq_domain_add_legacy_isa
+To:     Marc Zyngier <maz@kernel.org>, kernel test robot <lkp@intel.com>
+Cc:     irqchip-bot for Marc Zyngier <tip-bot2@linutronix.de>,
+        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
+        tglx@linutronix.de
+References: <162298343087.29796.2303741743539407585.tip-bot2@tip-bot2>
+ <202106062321.3Z0IkIka-lkp@intel.com>
+ <bebfd30fc7ba6ffb20ab0b4d4afec7ec@kernel.org>
+From:   Rong Chen <rong.a.chen@intel.com>
+Message-ID: <71261762-f3ea-1e78-6b34-ffea320d1d34@intel.com>
+Date:   Mon, 7 Jun 2021 14:35:38 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <63afd2d3-9fa3-9f90-a2b3-37235739f5e2@acm.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <bebfd30fc7ba6ffb20ab0b4d4afec7ec@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 07:52:35AM -0700, Bart Van Assche wrote:
->  Damien is right. bd_disk can be NULL. From
 
-bd_disk is initialized in bdev_alloc, so it should never be NULL.
-bi_bdev OTOH is only set afer bio_add_page in various places or not at
-all in case of passthrough bios.  Which is a bit of a mess and I have
-plans to fix it.
+
+On 6/6/21 11:15 PM, Marc Zyngier wrote:
+> On 2021-06-06 16:06, kernel test robot wrote:
+>> Hi irqchip-bot,
+>>
+>> Thank you for the patch! Perhaps something to improve:
+>>
+>> [auto build test WARNING on tip/irq/core]
+>> [also build test WARNING on linux/master linus/master v5.13-rc4 
+>> next-20210604]
+>> [If your patch is applied to the wrong git tree, kindly drop us a note.
+>> And when submitting patch, we suggest to use '--base' as documented in
+>> https://git-scm.com/docs/git-format-patch]
+>>
+>> url:
+>> https://github.com/0day-ci/linux/commits/irqchip-bot-for-Marc-Zyngier/irqdomain-Kill-irq_domain_add_legacy_isa/20210606-204659 
+>>
+>> base: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
+>> 006ae1970a8cde1d3e92da69b324d12880133a13
+>> config: powerpc-allyesconfig (attached as .config)
+>> compiler: powerpc64-linux-gcc (GCC) 9.3.0
+>> reproduce (this is a W=1 build):
+>>         wget
+>> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross
+>> -O ~/bin/make.cross
+>>         chmod +x ~/bin/make.cross
+>>         #
+>> https://github.com/0day-ci/linux/commit/7d6d9b0177b4ae53ccae4fb2c5cd387460def6ac 
+>>
+>>         git remote add linux-review https://github.com/0day-ci/linux
+>>         git fetch --no-tags linux-review
+>> irqchip-bot-for-Marc-Zyngier/irqdomain-Kill-irq_domain_add_legacy_isa/20210606-204659 
+>>
+>>         git checkout 7d6d9b0177b4ae53ccae4fb2c5cd387460def6ac
+>>         # save the attached .config to linux build tree
+>>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross
+>> ARCH=powerpc
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> All warnings (new ones prefixed by >>):
+>>
+>>    arch/powerpc/sysdev/i8259.c: In function 'i8259_init':
+>>    arch/powerpc/sysdev/i8259.c:263:15: error: implicit declaration of
+>> function 'irq_domain_add_legacy_isa'; did you mean
+>> 'irq_domain_add_legacy'? [-Werror=implicit-function-declaration]
+>>      263 |  i8259_host = irq_domain_add_legacy_isa(node, 
+>> &i8259_host_ops, NULL);
+>>          |               ^~~~~~~~~~~~~~~~~~~~~~~~~
+>>          |               irq_domain_add_legacy
+>>>> arch/powerpc/sysdev/i8259.c:263:13: warning: assignment to 'struct 
+>>>> irq_domain *' from 'int' makes pointer from integer without a cast 
+>>>> [-Wint-conversion]
+>>      263 |  i8259_host = irq_domain_add_legacy_isa(node, 
+>> &i8259_host_ops, NULL);
+>>          |             ^
+>>    cc1: some warnings being treated as errors
+>
+> This makes zero sense. At the point where this patch is applied in
+> the series, all instances of irq_domain_add_legacy_isa() have been
+> removed, except for one in the Chinese translation of the documentation:
+>
+> <quote>
+> maz@hot-poop:~/arm-platforms$ git checkout 
+> bf541b2ef87c162c8129333c55d2357bab122d8e
+> HEAD is now at bf541b2ef87c irqdomain: Kill irq_domain_add_legacy_isa
+> maz@hot-poop:~/arm-platforms$ git grep irq_domain_add_legacy_isa
+> Documentation/translations/zh_CN/core-api/irq/irq-domain.rst: 
+> irq_domain_add_legacy_isa()
+> </quote>
+>
+> Are you applying the patches out of order, by any chance?
+>
+> Thanks,
+>
+>         M.
+
+Hi Marc,
+
+Sorry for the inconvenience, we didn't identify the patch emails from 
+tip-bot2,
+we'll ignore these emails to avoid ineffective work.
+
+Best Regards,
+Rong Chen
