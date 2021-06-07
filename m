@@ -2,86 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B7F39D26B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 02:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79BF939D272
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 02:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhFGAuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 20:50:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229813AbhFGAuN (ORCPT
+        id S230172AbhFGA5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 20:57:52 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3073 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229884AbhFGA5u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 20:50:13 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F94BC061766;
-        Sun,  6 Jun 2021 17:48:23 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fyvql6pCBz9sT6;
-        Mon,  7 Jun 2021 10:48:19 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1623026900;
-        bh=aCgb5smwR4VG7B5IC1tlkCJWklGlU/VI5tAz85+63wE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Y1DZxRoDSoOyRKlHCgp7FToeE39PFUDVHfMRe4R0VAy7muVmqtw32lUl67gB58mYQ
-         SRtExHSUJKiRhjucHRmMvZ02rrJf2cZzJZrLhG2aoU8P/5GQ1VXrxnGfmBsRgEDqbH
-         hjOwnJz86hEzO6pP2V06aoEGxgt377zV+xKr3LUUPO/vUAgUkOxafzDZmIYtWaKEvJ
-         ICRZrM7JByQmEXQsMaweiFPB/GiSzVW9JGazoFbJymmfyR3r5Ajyaf30qEyDZyI5KD
-         ajJ6ZtWp1+E5VzAvx5SqwTrAZzv2oXwKzv5DeIDUAwlJ3T+2JxyHnen2WAgfEK//Ri
-         e1CcV6qLpb5rg==
-Date:   Mon, 7 Jun 2021 10:48:19 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Darrick J. Wong" <djwong@kernel.org>,
-        David Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the xfs tree
-Message-ID: <20210607104819.2c032c75@canb.auug.org.au>
+        Sun, 6 Jun 2021 20:57:50 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fyvtz02SLzWnwv;
+        Mon,  7 Jun 2021 08:51:07 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 08:55:55 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 08:55:55 +0800
+Subject: Re: [PATCH v2 00/15] init_mm: cleanup ARCH's text/data/brk setup code
+To:     Mike Rapoport <rppt@kernel.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-snps-arc@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-csky@vger.kernel.org>,
+        <uclinux-h8-devel@lists.sourceforge.jp>,
+        <linux-m68k@lists.linux-m68k.org>, <openrisc@lists.librecores.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-riscv@lists.infradead.org>,
+        <linux-sh@vger.kernel.org>, <linux-s390@vger.kernel.org>
+References: <20210604070633.32363-1-wangkefeng.wang@huawei.com>
+ <YL0+Jargm+y9aqx1@kernel.org>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <481056ab-686e-9f42-3b8a-b31941f58af6@huawei.com>
+Date:   Mon, 7 Jun 2021 08:55:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/YE+qMcNo31bYv5l4MYtG0ad";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <YL0+Jargm+y9aqx1@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/YE+qMcNo31bYv5l4MYtG0ad
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On 2021/6/7 5:29, Mike Rapoport wrote:
+> Hello Kefeng,
+>
+> On Fri, Jun 04, 2021 at 03:06:18PM +0800, Kefeng Wang wrote:
+>> Add setup_initial_init_mm() helper, then use it
+>> to cleanup the text, data and brk setup code.
+>>
+>> v2:
+>> - change argument from "char *" to "void *" setup_initial_init_mm()
+>>    suggested by Geert Uytterhoeven
+>> - use NULL instead of (void *)0 on h8300 and m68k
+>> - collect ACKs
+>>
+>> Cc: linux-snps-arc@lists.infradead.org
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-csky@vger.kernel.org
+>> Cc: uclinux-h8-devel@lists.sourceforge.jp
+>> Cc: linux-m68k@lists.linux-m68k.org
+>> Cc: openrisc@lists.librecores.org
+>> Cc: linuxppc-dev@lists.ozlabs.org
+>> Cc: linux-riscv@lists.infradead.org
+>> Cc: linux-sh@vger.kernel.org
+>> Cc: linux-s390@vger.kernel.org
+>> Kefeng Wang (15):
+>>    mm: add setup_initial_init_mm() helper
+>>    arc: convert to setup_initial_init_mm()
+>>    arm: convert to setup_initial_init_mm()
+>>    arm64: convert to setup_initial_init_mm()
+>>    csky: convert to setup_initial_init_mm()
+>>    h8300: convert to setup_initial_init_mm()
+>>    m68k: convert to setup_initial_init_mm()
+>>    nds32: convert to setup_initial_init_mm()
+>>    nios2: convert to setup_initial_init_mm()
+>>    openrisc: convert to setup_initial_init_mm()
+>>    powerpc: convert to setup_initial_init_mm()
+>>    riscv: convert to setup_initial_init_mm()
+>>    s390: convert to setup_initial_init_mm()
+>>    sh: convert to setup_initial_init_mm()
+>>    x86: convert to setup_initial_init_mm()
+> I might be missing something, but AFAIU the init_mm.start_code and other
+> fields are not used really early so the new setup_initial_init_mm()
+> function can be called in the generic code outside setup_arch(), e.g in
+> mm_init().
 
-After merging the xfs tree, today's linux-next build (powerpc_ppc64
-defconfig) produced this warning:
+Hi Mike， each architecture has their own value, not the same, eg m68K and
 
-fs/xfs/libxfs/xfs_ialloc.c: In function 'xfs_difree_finobt':
-fs/xfs/libxfs/xfs_ialloc.c:2032:20: warning: unused variable 'agi' [-Wunuse=
-d-variable]
- 2032 |  struct xfs_agi   *agi =3D agbp->b_addr;
-      |                    ^~~
+h8300, also the name of the text/code/brk is different in some arch, so 
+I keep
 
-Not sure how this came about, but somehow DEBUG has been turned off
-which exposes this.
+unchanged.
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/YE+qMcNo31bYv5l4MYtG0ad
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC9bNMACgkQAVBC80lX
-0Gz2NAgAjCv9pQa2V//07lwNVEQwbiKu29/zJuR1jT4hw/+mJaXhg8TILrg5Srpz
-W1Bx3fpv/dG/17wEmgWSG5GQziGFBZzID6OIwfHJ0k2AzdvTPo4ZGSV/W3KAVhYR
-rjb9p0T6mULCYUWdrzzN2e65aVI9lROgp6L2pHe7xPI4XaTvNnR4rUHFKmHJ4eF9
-mTnspfuUnhff4Q+EMeW5VKY7nsDCfRDnkT9LegKS7nZhQTZ47pWxuUdV02bSQ48l
-/h4j6rpBP2CjxxVBQkbp4JzOC1jedf7WpdwJEL0Dx2kJh/2qRj3b1XTiyrz5VUS7
-w7twzROcxCzA8LWQeGfmMoCkJ3nZoA==
-=nmjw
------END PGP SIGNATURE-----
-
---Sig_/YE+qMcNo31bYv5l4MYtG0ad--
+>   
+>>   arch/arc/mm/init.c                 | 5 +----
+>>   arch/arm/kernel/setup.c            | 5 +----
+>>   arch/arm64/kernel/setup.c          | 5 +----
+>>   arch/csky/kernel/setup.c           | 5 +----
+>>   arch/h8300/kernel/setup.c          | 5 +----
+>>   arch/m68k/kernel/setup_mm.c        | 5 +----
+>>   arch/m68k/kernel/setup_no.c        | 5 +----
+>>   arch/nds32/kernel/setup.c          | 5 +----
+>>   arch/nios2/kernel/setup.c          | 5 +----
+>>   arch/openrisc/kernel/setup.c       | 5 +----
+>>   arch/powerpc/kernel/setup-common.c | 5 +----
+>>   arch/riscv/kernel/setup.c          | 5 +----
+>>   arch/s390/kernel/setup.c           | 5 +----
+>>   arch/sh/kernel/setup.c             | 5 +----
+>>   arch/x86/kernel/setup.c            | 5 +----
+>>   include/linux/mm_types.h           | 8 ++++++++
+>>   16 files changed, 23 insertions(+), 60 deletions(-)
+>>
+>> -- 
+>> 2.26.2
+>>
+>>
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
