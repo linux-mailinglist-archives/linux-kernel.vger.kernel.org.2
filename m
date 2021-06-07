@@ -2,93 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A9E39E579
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 19:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE6439E580
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 19:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231512AbhFGRcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 13:32:48 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:51855 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230241AbhFGRcn (ORCPT
+        id S230215AbhFGRdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 13:33:37 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:59119 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230313AbhFGRdf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 13:32:43 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 157HLm45016429;
-        Mon, 7 Jun 2021 19:30:41 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=CDVD7M01wEBcqMQ1jQJ1wiIBy36JXvQyVTr33SbnrQA=;
- b=TCS+yIlPZ3nZHhJ2ddQo5a2U9wsmio3ScCG4ItnrJ5iZFrdWREh0RrlxhvsgfX/zfaby
- 8ZU/1+jfQrcbQH81IrC4fA1VY+NVvM8ahWMU4HEe4ZiccuAHU9qvuTOsyZHAXoToabZ+
- rBta0+2XLFzZywO7WM/zvq+X5N5bBSNumN8hJwVtAccpWbL+9uzhZlVA43FuSKXQqAvl
- RGJlHoHZRv1vAbyvtpVljHC+m3bIL42E76NwOEGL79u6YazMe+wGP40SkTkVdoPsO59G
- Kz+cgldl4UDvt5tp7/orOBIToCyhynO8wJlDsIpEsqylFY3l4gD7uYQaBop3bBRf/NLH 0w== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 391evfbb2a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Jun 2021 19:30:41 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9E77C10002A;
-        Mon,  7 Jun 2021 19:30:40 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8585D2142B6;
-        Mon,  7 Jun 2021 19:30:40 +0200 (CEST)
-Received: from localhost (10.75.127.49) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 7 Jun 2021 19:30:40
- +0200
-From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <julien.massot@iot.bzh>, <arnaud.pouliquen@foss.st.com>
-Subject: [PATCH 4/4] rpmsg: char: Return error if user tries to destroy a default endpoint.
-Date:   Mon, 7 Jun 2021 19:30:32 +0200
-Message-ID: <20210607173032.30133-5-arnaud.pouliquen@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210607173032.30133-1-arnaud.pouliquen@foss.st.com>
-References: <20210607173032.30133-1-arnaud.pouliquen@foss.st.com>
+        Mon, 7 Jun 2021 13:33:35 -0400
+X-UUID: a43f5ae8677e46038e81b1f0862970a9-20210608
+X-UUID: a43f5ae8677e46038e81b1f0862970a9-20210608
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <mark-pk.tsai@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1385272531; Tue, 08 Jun 2021 01:31:39 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 8 Jun 2021 01:31:38 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 8 Jun 2021 01:31:38 +0800
+From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+To:     <rostedt@goodmis.org>
+CC:     <ardb@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-toolchains@vger.kernel.org>, <mark-pk.tsai@mediatek.com>,
+        <matthias.bgg@gmail.com>, <mhelsley@vmware.com>,
+        <peterz@infradead.org>, <samitolvanen@google.com>,
+        <yj.chiang@mediatek.com>
+Subject: Re: [PATCH] recordmcount: avoid using ABS symbol as reference
+Date:   Tue, 8 Jun 2021 01:31:38 +0800
+Message-ID: <20210607173138.3882-1-mark-pk.tsai@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210607094433.473100d9@oasis.local.home>
+References: <20210607094433.473100d9@oasis.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-07_14:2021-06-04,2021-06-07 signatures=0
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using the RPMSG_DESTROY_EPT_IOCTL control, user application can
-destroy an endpoint. This patch prevents to destroy a default endpoint
-associated to a channel.
+> On Mon, 7 Jun 2021 13:44:21 +0200
+> Peter Zijlstra <peterz@infradead.org> wrote:
+> 
+> > There's an extended section header index section for just that. And
+> > recordmcount actually seems to use that as well.
+> > 
+> > I can't seem to find enough of the thread to figure out what the actual
+> > problem is though. The lore archive doesn't have anything prior to this
+> > message.
+> > 
+> > One should only use st_shndx when >SHN_UDEF and <SHN_LORESERVE. When
+> > SHN_XINDEX, then use .symtab_shndx.
+> > 
+> > Apparently you've found a case where neither is true? In that case
+> > objtool seems to use shndx 0. A matching recordmcount patch would be
+> > something like this.
 
-This update is needed to manage the "rpmsg-raw" channel. In this
-case a default endpoint is used, destroying it without the
-channel does not make sense.
+Hi Peter,
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
----
- drivers/rpmsg/rpmsg_char.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Should I resend the below patch as v2?
 
-diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-index 3b850b218eb0..8c78a5a192c1 100644
---- a/drivers/rpmsg/rpmsg_char.c
-+++ b/drivers/rpmsg/rpmsg_char.c
-@@ -285,6 +285,10 @@ static long rpmsg_eptdev_ioctl(struct file *fp, unsigned int cmd,
- 	if (cmd != RPMSG_DESTROY_EPT_IOCTL)
- 		return -EINVAL;
- 
-+	/* Don't allow to destroy a default endpoint. */
-+	if (!eptdev->rpdev || eptdev->ept == eptdev->rpdev->ept)
-+		return -EPERM;
-+
- 	return rpmsg_chrdev_eptdev_destroy(&eptdev->dev, NULL);
- }
- 
--- 
-2.17.1
+> 
+> Mark-PK,
+> 
+> Does the below patch fix it for you too (if you backport it to your
+> kernel). I much rather have recordmcount match objtool, as one day the
+> two will hopefully merge to one executable.
+> 
+> -- Steve
+> 
 
+Yes, this patch fix it.
+
+> 
+> > 
+> > 
+> > diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
+> > index f9b19524da11..d99cc0aed6fe 100644
+> > --- a/scripts/recordmcount.h
+> > +++ b/scripts/recordmcount.h
+> > @@ -194,13 +194,18 @@ static unsigned int get_symindex(Elf_Sym const *sym, Elf32_Word const *symtab,
+> >  	unsigned long offset;
+> >  	int index;
+> >  
+> > -	if (sym->st_shndx != SHN_XINDEX)
+> > +	if (sym->st_shndx > SHN_UDEF &&
+> > +	    sym->st_shndx < SHN_LORESERVE)
+> >  		return w2(sym->st_shndx);
+> >  
+> > -	offset = (unsigned long)sym - (unsigned long)symtab;
+> > -	index = offset / sizeof(*sym);
+> > +	if (sym->st_shndx == SHN_XINDEX) {
+> > +		offset = (unsigned long)sym - (unsigned long)symtab;
+> > +		index = offset / sizeof(*sym);
+> >  
+> > -	return w(symtab_shndx[index]);
+> > +		return w(symtab_shndx[index]);
+> > +	}
+> > +
+> > +	return 0;
+> >  }
+> >  
+> >  static unsigned int get_shnum(Elf_Ehdr const *ehdr, Elf_Shdr const *shdr0)
