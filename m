@@ -2,141 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A6739D4B1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0984939D4B3
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230211AbhFGGOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 02:14:25 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:37614 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230175AbhFGGOY (ORCPT
+        id S230183AbhFGGQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 02:16:05 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:10189 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhFGGQE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 02:14:24 -0400
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 06 Jun 2021 23:12:33 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 06 Jun 2021 23:12:32 -0700
-X-QCInternal: smtphost
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 07 Jun 2021 11:42:11 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id AF6EC21A58; Mon,  7 Jun 2021 11:42:09 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     david.brown@linaro.org, robh+dt@kernel.org, mark.rutland@arm.com,
-        devicetree@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH v3] arm64: dts: qcom: sc7280: Add venus DT node
-Date:   Mon,  7 Jun 2021 11:42:07 +0530
-Message-Id: <1623046327-1970-1-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Mon, 7 Jun 2021 02:16:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1623046455; x=1654582455;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=vuaswDbaidKLYaIA+Zp2XtKHg8qhzvV9cfCPWEkQu9E=;
+  b=JphTXmqku5dD0Fqh5etEpZt5mYidUboQv/tn/GpXgTrLyQ4sFnYY7rud
+   /CejpKdoKXrZmgnd35L4F1mnc/y67GleJEYLFpf9Bpg45/VUkWcH6t+BA
+   oJd/WwDVVA3kElxC8PnjdUzbYKgpccLF2cuAHBlxz3Y+IBchxby3vV/IH
+   xmEx/+xfdI6/5hLdy8/bWsZZRMOK6SW1XqbwOPhfuiglCBDW6Z2tcul8V
+   lwdYBXOsqonoy+kxHoDbDql25IQydcuzr+qTGEuX2hx1dfbY0TXOydsfk
+   jgW1838uI0VOtdYiid41hfq2deUzLvU8i1E4DK5NLb90SYMGdPid9TGpN
+   w==;
+IronPort-SDR: lPTetB8ep/HLWBqQ5KruA3hAeC4e7ZaVEsUr5l+mKBjD51P3xkIwWOMryy02Mh1piNy7V4AwF/
+ jrBWLoDZ0xMIIt+ayRKrqLyXiJEaqio8u9WuQ12TIAWCTMJea66D/t4FXj+8zrh6tSTC/j2KI/
+ m5mYnzDe/hRIzLj9J7hdLONprU0neIZ0U9gSk5E/Q6OqilmArhLQIcFyoqu9NWSJGdjRuGutDE
+ 20J3Hvxu9LO78tleTtSOLLgzGTlznlXpFdZyNLVcmZlM2sAwmi7cDvuUV6BjO4NCbkQFsNXlyy
+ YYk=
+X-IronPort-AV: E=Sophos;i="5.83,254,1616428800"; 
+   d="scan'208";a="274818136"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 07 Jun 2021 14:14:14 +0800
+IronPort-SDR: JRDkid2HDwpawKSyPMJF0uY5BZp9n3S8GXXWlhERJW8Sv2lLmEfJWpHSP27LgdVddQqAOaEOt7
+ OGp6Arw9/0/3Ko8ZwUUJ71VTbvNo8zIbY6uI+6r2xS6JjbJRaDkEZe5r7u2dOD5cJMZFkn2mbT
+ GRF9xdJKUmM2diygGkrIvhIcsNMjMZZk8BuefbL5QuMJwf0WZCj8TFDOpdIMzGwsoxn3/Wylgb
+ bo8wSAIFpWKGES71mo6j1ATJuz8miXmhgfA902PRGUcXpK8+Ontcw89/GjIrQ83B1AfYuYp7VX
+ mwiEizmtaZlFUtlpE4r19qnz
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 22:51:55 -0700
+IronPort-SDR: hqujrADHr8iicKa59l6VT3ScbLqzMFVWfLbMaCHMzxXwjtbwPztvs/wiznphqgTZlaORHuXgk4
+ s3hCT6q/QWlRxJaW4uhLHQ+r39Q/F4TEvOR3jMLKOIT1JC+Knwai7rCzP6GqacNcbLcAufH/IJ
+ j+/FfCb3BOnDvB4cpIYXuiNHSauiQSizVmbknn3IjONKzqzd3qYZynd6S2CoIdP6vtufbA11QM
+ 5IP1yUtctQdKD5MUJ4sG9mCiMfWfvCbVXbbhvPTJ0eTGvX1XAPtu7fEZlAbsFIAK1dtPfSvrmn
+ 4Iw=
+WDCIronportException: Internal
+Received: from bxygm33.sdcorp.global.sandisk.com ([10.0.231.247])
+  by uls-op-cesaip02.wdc.com with ESMTP; 06 Jun 2021 23:14:09 -0700
+From:   Avri Altman <avri.altman@wdc.com>
+To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, cang@codeaurora.org,
+        stanley.chu@mediatek.com, Avri Altman <avri.altman@wdc.com>
+Subject: [PATCH v10 00/12] Add Host control mode to HPB 
+Date:   Mon,  7 Jun 2021 09:13:49 +0300
+Message-Id: <20210607061401.58884-1-avri.altman@wdc.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DT entries for the sc7280 venus encoder/decoder.
+v9 -> v10:
+ - rebase on Daejun's v36
 
-Co-developed-by: Mansur Alisha Shaik <mansur@codeaurora.org>
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+v8 -> v9:
+ - Add one more patch: do not send unmap_all in host mode
+ - rebase on Daejun's v35
+ - tested on one more platform - Galaxy S21
 
-change since v2:
- - removed firmware node.
-change since v1:
- - added rpmh power domain and opp table.
----
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 71 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 71 insertions(+)
+v7 -> v8:
+ - restore Daejun atomic argument to ufshpb_get_req (v31)
+ - Add Daejun's Reviewed-by tag
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 4c44a52..7b45623 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -60,6 +60,11 @@
- 			no-map;
- 			reg = <0x0 0x80b00000 0x0 0x100000>;
- 		};
-+
-+		video_mem: memory@8b200000 {
-+			reg = <0x0 0x8b200000 0x0 0x500000>;
-+			no-map;
-+		};
- 	};
- 
- 	cpus {
-@@ -850,6 +855,72 @@
- 			interrupts = <GIC_SPI 582 IRQ_TYPE_LEVEL_HIGH>;
- 		};
- 
-+		venus: video-codec@0aa00000 {
-+			compatible = "qcom,sc7280-venus";
-+			reg = <0 0x0aa00000 0 0xd0600>;
-+			interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
-+
-+			clocks = <&videocc VIDEO_CC_MVSC_CORE_CLK>,
-+				 <&videocc VIDEO_CC_MVSC_CTL_AXI_CLK>,
-+				 <&videocc VIDEO_CC_VENUS_AHB_CLK>,
-+				 <&videocc VIDEO_CC_MVS0_CORE_CLK>,
-+				 <&videocc VIDEO_CC_MVS0_AXI_CLK>;
-+			clock-names = "core", "bus", "iface",
-+				      "vcodec_core", "vcodec_bus";
-+
-+			power-domains = <&videocc MVSC_GDSC>,
-+					<&videocc MVS0_GDSC>;
-+					<&rpmhpd SC7280_CX>;
-+			power-domain-names = "venus", "vcodec0", "cx";
-+			operating-points-v2 = <&venus_opp_table>;
-+
-+			interconnects = <&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_VENUS_CFG 0>,
-+					<&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>;
-+			interconnect-names = "cpu-cfg", "video-mem";
-+
-+			iommus = <&apps_smmu 0x2180 0x20>,
-+				 <&apps_smmu 0x2184 0x20>;
-+			memory-region = <&video_mem>;
-+
-+			video-decoder {
-+				compatible = "venus-decoder";
-+			};
-+
-+			video-encoder {
-+				compatible = "venus-encoder";
-+			};
-+
-+			venus_opp_table: venus-opp-table {
-+				compatible = "operating-points-v2";
-+
-+				opp-133330000 {
-+					opp-hz = /bits/ 64 <133330000>;
-+					required-opps = <&rpmhpd_opp_low_svs>;
-+				};
-+
-+				opp-240000000 {
-+					opp-hz = /bits/ 64 <240000000>;
-+					required-opps = <&rpmhpd_opp_svs>;
-+				};
-+
-+				opp-335000000 {
-+					opp-hz = /bits/ 64 <335000000>;
-+					required-opps = <&rpmhpd_opp_svs_l1>;
-+				};
-+
-+				opp-424000000 {
-+					opp-hz = /bits/ 64 <424000000>;
-+					required-opps = <&rpmhpd_opp_nom>;
-+				};
-+
-+				opp-460000000 {
-+					opp-hz = /bits/ 64 <460000000>;
-+					required-opps = <&rpmhpd_opp_turbo>;
-+				};
-+			};
-+
-+		};
-+
- 		videocc: clock-controller@aaf0000 {
- 			compatible = "qcom,sc7280-videocc";
- 			reg = <0 0xaaf0000 0 0x10000>;
+v6 -> v7:
+ - attend CanG's comments
+ - add one more patch to transform set_dirty to iterate_rgn
+ - rebase on Daejun's v32
+
+v5 -> v6:
+ - attend CanG's comments
+ - rebase on Daejun's v29
+
+v4 -> v5:
+ - attend Daejun's comments
+ - Control the number of inflight map requests
+
+v3 -> v4:
+ - rebase on Daejun's v25
+
+v2 -> v3:
+ - Attend Greg's and Can's comments
+ - rebase on Daejun's v21
+
+v1 -> v2:
+ - attend Greg's and Daejun's comments
+ - add patch 9 making host mode parameters configurable
+ - rebase on Daejun's v19
+
+
+The HPB spec defines 2 control modes - device control mode and host
+control mode. In oppose to device control mode, in which the host obey
+to whatever recommendation received from the device - In host control
+mode, the host uses its own algorithms to decide which regions should
+be activated or inactivated.
+
+We kept the host managed heuristic simple and concise.
+
+Aside from adding a by-spec functionality, host control mode entails
+some further potential benefits: makes the hpb logic transparent and
+readable, while allow tuning / scaling its various parameters, and
+utilize system-wide info to optimize HPB potential.
+
+This series is based on Samsung's device-control HPB2.0 driver
+
+This version was tested on Galaxy S21, Galaxy S20, and Xiaomi Mi10 pro.
+Your meticulous review and testing is mostly welcome and appreciated.
+
+Thanks,
+Avri
+
+
+Avri Altman (12):
+  scsi: ufshpb: Cache HPB Control mode on init
+  scsi: ufshpb: Add host control mode support to rsp_upiu
+  scsi: ufshpb: Transform set_dirty to iterate_rgn
+  scsi: ufshpb: Add reads counter
+  scsi: ufshpb: Make eviction depends on region's reads
+  scsi: ufshpb: Region inactivation in host mode
+  scsi: ufshpb: Add hpb dev reset response
+  scsi: ufshpb: Add "Cold" regions timer
+  scsi: ufshpb: Limit the number of inflight map requests
+  scsi: ufshpb: Do not send umap_all in host control mode
+  scsi: ufshpb: Add support for host control mode
+  scsi: ufshpb: Make host mode parameters configurable
+
+ Documentation/ABI/testing/sysfs-driver-ufs |  76 ++-
+ drivers/scsi/ufs/ufshcd.h                  |   2 +
+ drivers/scsi/ufs/ufshpb.c                  | 582 ++++++++++++++++++++-
+ drivers/scsi/ufs/ufshpb.h                  |  44 ++
+ 4 files changed, 675 insertions(+), 29 deletions(-)
+
 -- 
-2.7.4
+2.25.1
 
