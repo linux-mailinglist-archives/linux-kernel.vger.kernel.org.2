@@ -2,82 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7425539D975
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDFFA39D982
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhFGKVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 06:21:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43988 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230193AbhFGKVD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 06:21:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 728CB6108C;
-        Mon,  7 Jun 2021 10:19:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623061153;
-        bh=VTXaUpTsvgBICiL2lKaVnHTXuZH2cZNa6FWeUX+IisE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RVVTU06jgeAsSo/v/fEAlG1xId7qFWDasaTznd2qQ64Uk30/NJbygYrmH4HWiWaou
-         Nx9OEPtvZlVibiqfpvZU8qf2uIp7A/lSu+BaSGZHU0V1ky2KF3nK24EJix6mir/gkm
-         M5OuKTah7QnercdV/DgyniAVxs5A+4BkYGy6BI/CtHTsdlcO9n5EnmH7Z87tsoTMHL
-         QjpmLdSzV4/7F/ruljRn9IflXQA4J6+rfnM8SZwX2UZv5Uj2wd+PVTRAXd8uo8537i
-         chhMxB+tdfdxIMdeh2+gRz7+jrcEIO+A8a6w1d9t7insDVjhZWJJ3HHSJDtS7G9f7Z
-         GR8wQQl1SVUcQ==
-Date:   Mon, 7 Jun 2021 15:49:09 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     "yukuai (C)" <yukuai3@huawei.com>, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, michal.simek@xilinx.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, yi.zhang@huawei.com
-Subject: Re: [PATCH 2/3] dmaengine: usb-dmac: Fix PM reference leak in
- usb_dmac_probe()
-Message-ID: <YL3ynd1KiJoe9y6+@vkoul-mobl>
-References: <20210517081826.1564698-1-yukuai3@huawei.com>
- <20210517081826.1564698-3-yukuai3@huawei.com>
- <YLRfZfnuxc0+n/LN@vkoul-mobl.Dlink>
- <b6c340de-b0b5-6aad-94c0-03f062575b63@huawei.com>
- <YLSk/i6GmYWGEa9E@vkoul-mobl.Dlink>
- <YLSqD+9nZIWJpn+r@hovoldconsulting.com>
- <YLi4VGwzrat8wJHP@vkoul-mobl>
- <YL3TlDqe4KSr3ICl@hovoldconsulting.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YL3TlDqe4KSr3ICl@hovoldconsulting.com>
+        id S230353AbhFGKXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 06:23:09 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:50884 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230284AbhFGKXH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 06:23:07 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Ubb.XAl_1623061255;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Ubb.XAl_1623061255)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 07 Jun 2021 18:21:14 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     mpe@ellerman.id.au
+Cc:     benh@kernel.crashing.org, paulus@samba.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] powerpc: Fix duplicate included linux/sched/clock.h
+Date:   Mon,  7 Jun 2021 18:20:52 +0800
+Message-Id: <1623061252-29404-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07-06-21, 10:06, Johan Hovold wrote:
-> On Thu, Jun 03, 2021 at 04:39:08PM +0530, Vinod Koul wrote:
-> > On 31-05-21, 11:19, Johan Hovold wrote:
-> > > On Mon, May 31, 2021 at 02:27:34PM +0530, Vinod Koul wrote:
-> > > > On 31-05-21, 14:11, yukuai (C) wrote:
-> > > > > On 2021/05/31 12:00, Vinod Koul wrote:
-> > > > > > On 17-05-21, 16:18, Yu Kuai wrote:
-> > > > > > > pm_runtime_get_sync will increment pm usage counter even it failed.
-> > > > > > > Forgetting to putting operation will result in reference leak here.
-> > > > > > > Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-> > > > > > > counter balanced.
-> 
-> > > > Yes the rumtime_pm is disabled on failure here and the count would have
-> > > > no consequence...
-> > > 
-> > > You should still balance the PM usage counter as it isn't reset for
-> > > example when reloading the driver.
-> > 
-> > Should I driver trust that on load PM usage counter is balanced and not
-> > to be reset..?
-> 
-> Not sure what you're asking here. But a driver should never leave the PM
-> usage counter unbalanced.
+Clean up the following includecheck warning:
 
-Thinking about again, yes we should safely assume the counter is
-balanced when driver loads.. so unloading while balancing sounds better
-behaviour
+./arch/powerpc/kernel/time.c: linux/sched/clock.h is included more than
+once.
 
-Thanks
+No functional change.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ arch/powerpc/kernel/time.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/powerpc/kernel/time.c b/arch/powerpc/kernel/time.c
+index b67d93a..2c87620 100644
+--- a/arch/powerpc/kernel/time.c
++++ b/arch/powerpc/kernel/time.c
+@@ -53,7 +53,6 @@
+ #include <linux/of_clk.h>
+ #include <linux/suspend.h>
+ #include <linux/sched/cputime.h>
+-#include <linux/sched/clock.h>
+ #include <linux/processor.h>
+ #include <asm/trace.h>
+ 
 -- 
-~Vinod
+1.8.3.1
+
