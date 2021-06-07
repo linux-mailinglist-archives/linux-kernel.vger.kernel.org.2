@@ -2,155 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8AB339DBB0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0AEA39DBB4
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231496AbhFGLqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 07:46:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230237AbhFGLq3 (ORCPT
+        id S231358AbhFGLsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 07:48:10 -0400
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:36700 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230237AbhFGLsJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 07:46:29 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 469CAC061766;
-        Mon,  7 Jun 2021 04:44:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=gYCYJldAbA8a06vrFGZoYfiU547SeEAFQmvggPR/Cg8=; b=AZAhLHO36Df0PZ1FreU05zRE6I
-        35ZDAPhr4sctYJzIC4j/cXB9wNqpvxrdrU8M3F4Ym515IQRyq86YMCVWbh8HbqoEk1OmcssdyfQz3
-        oJko1p/ZhnJi6d4me2Um3nLZ9rZwHMy4s2FfTpqJhE6Mjk3MOsMJPfXmRhLceJAbM6ahrIhzPwM1p
-        KkeKvW8X4HH3QPBawquRsprt8hqzaPQ5IfbB0YUZADmn401Ug2ewnnCyc3c3+LAf6UydEA7QusaQG
-        gJNNDRYI7SmQbQ2IikJ+2RfJFGAftaGvPUcGgkBe1J8hiSZ2+wzkIupSlA4bh/bMZRlsCnpgpni5O
-        wWbdiByg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lqDg0-004NVZ-TA; Mon, 07 Jun 2021 11:44:23 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1349D300223;
-        Mon,  7 Jun 2021 13:44:22 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 013882CF3852A; Mon,  7 Jun 2021 13:44:21 +0200 (CEST)
-Date:   Mon, 7 Jun 2021 13:44:21 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Mark-PK Tsai <mark-pk.tsai@mediatek.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Matt Helsley <mhelsley@vmware.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Sami Tolvanen <samitolvanen@google.com>, yj.chiang@mediatek.com
-Subject: Re: [PATCH] recordmcount: avoid using ABS symbol as reference
-Message-ID: <YL4GlbfMJiuLkRhR@hirez.programming.kicks-ass.net>
-References: <20210607074258.32322-1-mark-pk.tsai@mediatek.com>
- <20210607080626.32612-1-mark-pk.tsai@mediatek.com>
- <CAMj1kXGCoME4Wy4e3FNAjWLY=G56ivHzFTLrXRE0mLtnaBVEDQ@mail.gmail.com>
+        Mon, 7 Jun 2021 07:48:09 -0400
+Received: by mail-oi1-f182.google.com with SMTP id a21so17742776oiw.3;
+        Mon, 07 Jun 2021 04:46:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MEl81Lqay+G30/sSfGcw7ncOc/rjW1sWcXqyvmGm4kE=;
+        b=mfhJvCXU7d3Tg80EMW0j24hIwMdw1Km9/qHuYNt0QKKUhnF4PaW8b9R1Q3yCRJNuNW
+         PkFtxibamVlrihAnMteXL82lBPbLJ8ktIG4EehtuJTJq14UWwK1wFtE8gYyp53tIEWB2
+         2bgT2I4Fracy9mmTEYZR40YF/8xTWcHd819QjGPsFQTZ5QyxSqtTgP9Mb1YR5257oszD
+         92t7YFgU3TVp5o/0qJUXJyCEu5oNtaunGCzPvK3l314F2d+LfIwHgckaMsIK/80LdhRS
+         l9gcvpBMHiLpJcEn98PI/TJhCAJLUwe+rBBye2u3v+QIw6HiK+8cqVUcj/kzy4ltVjrm
+         u9Ww==
+X-Gm-Message-State: AOAM532g/0J0NzrsVqJ7C3ZVzRumS21DuJsgw0J4jn1TswlFxW9odg1R
+        I5qOJcYIgBGSvzdq7i6y9tGeRkdFEdbuJkgk+/dICRk2
+X-Google-Smtp-Source: ABdhPJxnQI80kAlxZ34WJQqGdft4eB4yy9/QZ5tV7+lWxrd4QjKNYxghRvYBZP4WPlhQx2mAthI1kXdM0Io/tc4kQp8=
+X-Received: by 2002:aca:b406:: with SMTP id d6mr11026154oif.71.1623066361440;
+ Mon, 07 Jun 2021 04:46:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXGCoME4Wy4e3FNAjWLY=G56ivHzFTLrXRE0mLtnaBVEDQ@mail.gmail.com>
+References: <20210607065743.1596-1-qiang.zhang@windriver.com>
+In-Reply-To: <20210607065743.1596-1-qiang.zhang@windriver.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 7 Jun 2021 13:45:43 +0200
+Message-ID: <CAJZ5v0iYtNP54mUFs5VbmHxuXYjTBMrbCZ5CqfaHShnGdd+3Jg@mail.gmail.com>
+Subject: Re: [PATCH] PM: sleep: Replace read_lock/unlock(tasklist_lock) with rcu_read_lock/unlock()
+To:     qiang.zhang@windriver.com
+Cc:     Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 11:50:40AM +0200, Ard Biesheuvel wrote:
-> On Mon, 7 Jun 2021 at 10:06, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
-> >
-> > > > On Mon, 7 Jun 2021 at 08:59, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
-> > > > >
-> > > > > > > On Mon, 7 Jun 2021 at 04:42, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
-> > > > > > >
-> > > > > > > Avoid using ABS symbol, which won't be relocate, as reference.
-> > > > > > >
-> > > > > > > On arm64 platform, if there's shndx equals SHN_ABS(0xfff1).
-> > > > > > >
-> > > > > > > Section Headers:
-> > > > > > > [Nr]    Name                         Type      Address          Off      Size   ES  Flg Lk     Inf    Al
-> > > > > > > [65521] .text.n_tty_receive_buf      PROGBITS  0000000000000000 3cdab520 000054 00  AX  0      0      4
-> > > > > > > [65522] .rela.text.n_tty_receive_buf RELA      0000000000000000 3cdab578 000030 18  I   152076 65521  8
-> > > > > > >
-> > > > > >
-> > > > > > A RELA section's r_info field points to the section to which it
-> > > > > > applies. This is why in the example above section #65522 points to
-> > > > > > section #65521. This has nothing to do with the numerical value of
-> > > > > > SHN_ABS.
-> > > > >
-> > > > > If the r_info of RELA section is 65521(0xfff1),
-> > >
-> > > Oh sorry, I mean sh_info here.
-> > >
-> > > > > find_secsym_ndx() will use it to find the base symbol.
-> > > > >
-> > > >
-> > > > But what does that have to do with the sh_info field of the RELA
-> > > > section's Elf_Shdr struct? IOW, what is the relevance of section
-> > > > #65521 here?
-> > > >
-> > >
-> > > So what I mean is the problem occur if the sh_info of a RELA section
-> > > is #65521.
-> >
-> > Actually the problem occur if the sh_info of a RELA section is in
-> > the special section index range(SHN_LORESERVE ~ SHN_HIRESERVE).
-> > Maybe I should add a is_shndx_special() to check this like
-> > scripts/mod/modpost.h did?
-> >
-> 
-> So if I understand all of this correctly, we are running into a
-> fundamental issue here, where the linker emits more sections than the
-> sh_info field can describe, overflowing into the reserved range.
-> 
-> I don't think papering over it like this is going to be maintainable
-> going forward.
+On Mon, Jun 7, 2021 at 8:57 AM <qiang.zhang@windriver.com> wrote:
+>
+> From: Zqiang <qiang.zhang@windriver.com>
+>
+> Using rcu_read_lock/unlock() instead of read_lock/unlock(tasklist_lock),
+> the task list can be traversed in parallel to any list additions or
+> removals, improve concurrency.
+>
+> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
 
-There's an extended section header index section for just that. And
-recordmcount actually seems to use that as well.
+This changes the reader side only AFAICS, but what about the writer side?
 
-I can't seem to find enough of the thread to figure out what the actual
-problem is though. The lore archive doesn't have anything prior to this
-message.
+What exactly is there to ensure that the updates of the list will
+remain safe after this change?
 
-One should only use st_shndx when >SHN_UDEF and <SHN_LORESERVE. When
-SHN_XINDEX, then use .symtab_shndx.
-
-Apparently you've found a case where neither is true? In that case
-objtool seems to use shndx 0. A matching recordmcount patch would be
-something like this.
-
-
-diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
-index f9b19524da11..d99cc0aed6fe 100644
---- a/scripts/recordmcount.h
-+++ b/scripts/recordmcount.h
-@@ -194,13 +194,18 @@ static unsigned int get_symindex(Elf_Sym const *sym, Elf32_Word const *symtab,
- 	unsigned long offset;
- 	int index;
- 
--	if (sym->st_shndx != SHN_XINDEX)
-+	if (sym->st_shndx > SHN_UDEF &&
-+	    sym->st_shndx < SHN_LORESERVE)
- 		return w2(sym->st_shndx);
- 
--	offset = (unsigned long)sym - (unsigned long)symtab;
--	index = offset / sizeof(*sym);
-+	if (sym->st_shndx == SHN_XINDEX) {
-+		offset = (unsigned long)sym - (unsigned long)symtab;
-+		index = offset / sizeof(*sym);
- 
--	return w(symtab_shndx[index]);
-+		return w(symtab_shndx[index]);
-+	}
-+
-+	return 0;
- }
- 
- static unsigned int get_shnum(Elf_Ehdr const *ehdr, Elf_Shdr const *shdr0)
+> ---
+>  kernel/power/process.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/kernel/power/process.c b/kernel/power/process.c
+> index 50cc63534486..0f8dee9ee097 100644
+> --- a/kernel/power/process.c
+> +++ b/kernel/power/process.c
+> @@ -48,7 +48,7 @@ static int try_to_freeze_tasks(bool user_only)
+>
+>         while (true) {
+>                 todo = 0;
+> -               read_lock(&tasklist_lock);
+> +               rcu_read_lock();
+>                 for_each_process_thread(g, p) {
+>                         if (p == current || !freeze_task(p))
+>                                 continue;
+> @@ -56,7 +56,7 @@ static int try_to_freeze_tasks(bool user_only)
+>                         if (!freezer_should_skip(p))
+>                                 todo++;
+>                 }
+> -               read_unlock(&tasklist_lock);
+> +               rcu_read_unlock();
+>
+>                 if (!user_only) {
+>                         wq_busy = freeze_workqueues_busy();
+> @@ -97,13 +97,13 @@ static int try_to_freeze_tasks(bool user_only)
+>                         show_workqueue_state();
+>
+>                 if (!wakeup || pm_debug_messages_on) {
+> -                       read_lock(&tasklist_lock);
+> +                       rcu_read_lock();
+>                         for_each_process_thread(g, p) {
+>                                 if (p != current && !freezer_should_skip(p)
+>                                     && freezing(p) && !frozen(p))
+>                                         sched_show_task(p);
+>                         }
+> -                       read_unlock(&tasklist_lock);
+> +                       rcu_read_unlock();
+>                 }
+>         } else {
+>                 pr_cont("(elapsed %d.%03d seconds) ", elapsed_msecs / 1000,
+> @@ -206,13 +206,13 @@ void thaw_processes(void)
+>
+>         cpuset_wait_for_hotplug();
+>
+> -       read_lock(&tasklist_lock);
+> +       rcu_read_lock();
+>         for_each_process_thread(g, p) {
+>                 /* No other threads should have PF_SUSPEND_TASK set */
+>                 WARN_ON((p != curr) && (p->flags & PF_SUSPEND_TASK));
+>                 __thaw_task(p);
+>         }
+> -       read_unlock(&tasklist_lock);
+> +       rcu_read_unlock();
+>
+>         WARN_ON(!(curr->flags & PF_SUSPEND_TASK));
+>         curr->flags &= ~PF_SUSPEND_TASK;
+> @@ -233,12 +233,12 @@ void thaw_kernel_threads(void)
+>
+>         thaw_workqueues();
+>
+> -       read_lock(&tasklist_lock);
+> +       rcu_read_lock();
+>         for_each_process_thread(g, p) {
+>                 if (p->flags & PF_KTHREAD)
+>                         __thaw_task(p);
+>         }
+> -       read_unlock(&tasklist_lock);
+> +       rcu_read_unlock();
+>
+>         schedule();
+>         pr_cont("done.\n");
+> --
+> 2.17.1
+>
