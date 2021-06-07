@@ -2,64 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A59B39E4A2
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E48F39E49E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231380AbhFGRBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 13:01:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230382AbhFGRBN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 13:01:13 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A708AC061766;
-        Mon,  7 Jun 2021 09:59:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/0ZaIOrjyCTF72vAgL3TDsvmLAoA/lD5LRh6UMqpICs=; b=XW4JCqV4XZvf/afuJZZ+sk5LGp
-        zsghvaie1WTGsc2wubVPPN/CZ2c12b2tkuYofmYyyby0NHF33iNOoSqnMCG3m9YOVgHl6j7TEUm5D
-        lvEFH/iS58Gw9gG6gyb0xFND3O6ZcaKQqCzpFAeyCc4Q2xjzcJdJxBmSCkc5bjwtUGsre8eI1Wpu+
-        rG0vgqz3yIEYKiqZxOWgNX+fcOWEGB56+P9IHWr36NuYR9bBALeRkZuQTCrSJUvGCEI04JB/G1Vn8
-        sJksvP9w2hwcXo7WT+uAP9OqAB4ponJyGSZUF+Qagn0qAfohAS8o9Q5hVbDVQDS+JZ6pzCq+5MGOt
-        e/ny9mbQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lqIaG-00G2f8-Jj; Mon, 07 Jun 2021 16:58:42 +0000
-Date:   Mon, 7 Jun 2021 17:58:40 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     syzbot <syzbot+3eec59e770685e3dc879@syzkaller.appspotmail.com>
-Cc:     bjorn.andersson@linaro.org, brookebasile@gmail.com,
-        coreteam@netfilter.org, davem@davemloft.net, dsahern@kernel.org,
-        ducheng2@gmail.com, ebiggers@kernel.org, fw@strlen.de,
-        gregkh@linuxfoundation.org, kadlec@netfilter.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, manivannan.sadhasivam@linaro.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, skhan@linuxfoundation.org,
-        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
-Subject: Re: [syzbot] BUG: using smp_processor_id() in preemptible code in
- radix_tree_node_alloc
-Message-ID: <YL5QQE2GnJFWI4rB@casper.infradead.org>
-References: <000000000000a363b205a74ca6a2@google.com>
- <000000000000b9c68205c42fcacb@google.com>
+        id S231327AbhFGRBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 13:01:06 -0400
+Received: from mga06.intel.com ([134.134.136.31]:36609 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230287AbhFGRBE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 13:01:04 -0400
+IronPort-SDR: 7doATfue6PVbLF6UumkoHh6CAyQvmojjgLXBGqMynRRSLjYUwDFozR2d+PU4ab5DSYUSrdd+as
+ pLQT9zjJ+uCg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="265814342"
+X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
+   d="scan'208";a="265814342"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 09:59:12 -0700
+IronPort-SDR: MOgdgZ32XVkW3V6jQYrgfxki8Qd5VFax9bsoN2uVQHdf5fIatbXg1/F8PNdO3mbxHvV4ymvaFZ
+ rsuZTYPoE4Pw==
+X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
+   d="scan'208";a="619007404"
+Received: from ssanje1x-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.251.153.170])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 09:59:11 -0700
+Subject: Re: [PATCH v1 03/11] x86/cpufeatures: Add TDX Guest CPU feature
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+References: <20210602022136.2186759-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210602022136.2186759-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <dc064764-7736-33c7-7a32-b4dec68eb745@amd.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <f2019557-3e2a-dd91-a858-b60732c0bf23@linux.intel.com>
+Date:   Mon, 7 Jun 2021 09:59:08 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000b9c68205c42fcacb@google.com>
+In-Reply-To: <dc064764-7736-33c7-7a32-b4dec68eb745@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 09:47:07AM -0700, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 43016d02cf6e46edfc4696452251d34bba0c0435
-> Author: Florian Westphal <fw@strlen.de>
-> Date:   Mon May 3 11:51:15 2021 +0000
-> 
->     netfilter: arptables: use pernet ops struct during unregister
 
-Same wrong bisection.
 
-#syz fix: qrtr: Convert qrtr_ports from IDR to XArray
+On 6/7/21 7:32 AM, Tom Lendacky wrote:
+>> +	tdx_early_init();
+>> +
+> Just a real minor nit, but does this have to be after kasan_early_init()?
+> If not, keeping the SME/SEV/TDX calls "together" might read clearer. So
+> just moving it up before kasan_early_init() will group them.
+
+We have more patches in this series, and they are dependent on some
+boot command line options. So we will eventually move tdx_early_init()
+below copy_bootdata(__va(real_mode_data))
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
