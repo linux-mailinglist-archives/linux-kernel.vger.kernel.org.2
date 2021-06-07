@@ -2,98 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B975C39E2B6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBFD339E2BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232201AbhFGQTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 12:19:05 -0400
-Received: from mga09.intel.com ([134.134.136.24]:29221 "EHLO mga09.intel.com"
+        id S232023AbhFGQT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 12:19:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232256AbhFGQQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 12:16:03 -0400
-IronPort-SDR: pHwmMxBdgPCN6jy6rFjauZs/75xXGamXdDFLiRUrClgQ9XH57dQNWIQFo+fWJWdsrQWR7+u+sC
- YByao0CMe6jw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="204621543"
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
-   d="scan'208";a="204621543"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 09:13:11 -0700
-IronPort-SDR: LPkEaiTaEwTQYTVhOFTdUrrVJgyekxvCeyiHmd4JiWfwL+vo0huD8rTYtR/qyeyrkviPQfz3SM
- hH0k+yS4d3jQ==
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
-   d="scan'208";a="484830331"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 09:13:05 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lqHs6-000Ibv-V4; Mon, 07 Jun 2021 19:13:02 +0300
-Date:   Mon, 7 Jun 2021 19:13:02 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Dejin Zheng <zhengdejin5@gmail.com>
-Cc:     helgaas@kernel.org, corbet@lwn.net, jarkko.nikula@linux.intel.com,
-        mika.westerberg@linux.intel.com, rric@kernel.org,
-        bhelgaas@google.com, wsa@kernel.org, Sanket.Goswami@amd.com,
-        linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 2/4] Documentation: devres: Add
- pcim_alloc_irq_vectors()
-Message-ID: <YL5FjkbgKj8XpDzD@smile.fi.intel.com>
-References: <20210607153916.1021016-1-zhengdejin5@gmail.com>
- <20210607153916.1021016-3-zhengdejin5@gmail.com>
+        id S231994AbhFGQQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 12:16:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E853E61467;
+        Mon,  7 Jun 2021 16:13:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623082429;
+        bh=UqhJ3SIEBL8LVZzYQuYX/Sxg3qd2Hxfplf+mP7Pmmsk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=sDMrnFsP3yQCIjJl1z+usPOgsk6G7xXxobROEabu3sdPrCyUWBwNAna3SRVOrdY/k
+         XArp1iHVDm/DzVXjsZXIY1cNf1a2JA/6WlGzMC6vDvZIC5zOG7VQJd1PJn3Yur7pZl
+         bovTf9VszeVvLb7A2ZvAMh8V2ln4FEsTnS5v/Tw8lMkOeWwxpzCwVmFHt0fwdtgdMA
+         pLM8ydDf7GdIznJ10ErzV0dyCoqaydNHJdubGG3Kh1Aa/vzU1/mFPvf6xZTg5pq2jp
+         5Qtyy7hDeRqMfMof4HD1z1Ue1lNrajRwx7+dSpBLUDvrDYR3di8KxDyejThLkeFcHo
+         aP1TpikQ8EHcg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-bluetooth@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 24/39] Bluetooth: Add a new USB ID for RTL8822CE
+Date:   Mon,  7 Jun 2021 12:13:03 -0400
+Message-Id: <20210607161318.3583636-24-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210607161318.3583636-1-sashal@kernel.org>
+References: <20210607161318.3583636-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607153916.1021016-3-zhengdejin5@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 11:39:14PM +0800, Dejin Zheng wrote:
-> Add pcim_alloc_irq_vectors(), a device-managed version of
-> pci_alloc_irq_vectors(). introducing this function can simplify
-> the error handling path in many drivers.
+From: Larry Finger <Larry.Finger@lwfinger.net>
 
-This is good one, thanks.
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+[ Upstream commit 4d96d3b0efee6416ef0d61b76aaac6f4a2e15b12 ]
 
-> Reviewed-by: Robert Richter <rric@kernel.org>
-> Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
-> ---
-> v6 -> v7:
-> 	- rebase to PCI next branch
-> v5 -> v6:
-> 	- rebase to 5.13-rc4
-> v4 -> v5:
-> 	- No change
-> v3 -> v4:
-> 	- No change
-> v2 -> v3:
-> 	- No change
-> v1 -> v2:
-> 	- Modify some commit messages.
-> 
->  Documentation/driver-api/driver-model/devres.rst | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/driver-api/driver-model/devres.rst b/Documentation/driver-api/driver-model/devres.rst
-> index e0814d214048..fad7d26ccf35 100644
-> --- a/Documentation/driver-api/driver-model/devres.rst
-> +++ b/Documentation/driver-api/driver-model/devres.rst
-> @@ -382,6 +382,7 @@ PCI
->    devm_pci_alloc_host_bridge()  : managed PCI host bridge allocation
->    devm_pci_remap_cfgspace()	: ioremap PCI configuration space
->    devm_pci_remap_cfg_resource()	: ioremap PCI configuration space resource
-> +  pcim_alloc_irq_vectors()      : managed IRQ vectors allocation
->    pcim_enable_device()		: after success, all PCI ops become managed
->    pcim_pin_device()		: keep PCI device enabled after release
->  
-> -- 
-> 2.30.1
-> 
+Some models of the RTL8822ce utilize a different USB ID. Add this
+new one to the Bluetooth driver.
 
+Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/bluetooth/btusb.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 175cb1c0d569..b1f0b13cc8bc 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -385,6 +385,8 @@ static const struct usb_device_id blacklist_table[] = {
+ 	/* Realtek 8822CE Bluetooth devices */
+ 	{ USB_DEVICE(0x0bda, 0xb00c), .driver_info = BTUSB_REALTEK |
+ 						     BTUSB_WIDEBAND_SPEECH },
++	{ USB_DEVICE(0x0bda, 0xc822), .driver_info = BTUSB_REALTEK |
++						     BTUSB_WIDEBAND_SPEECH },
+ 
+ 	/* Realtek Bluetooth devices */
+ 	{ USB_VENDOR_AND_INTERFACE_INFO(0x0bda, 0xe0, 0x01, 0x01),
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.30.2
 
