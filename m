@@ -2,143 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3051239DCAA
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6222D39DCDF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbhFGMkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 08:40:49 -0400
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:42903 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230173AbhFGMks (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 08:40:48 -0400
-Received: by mail-oi1-f169.google.com with SMTP id v142so17431513oie.9;
-        Mon, 07 Jun 2021 05:38:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BtfBKhSIgrMbklkSEqUXIVw+9PSaocndOPsfs57pBrg=;
-        b=D5cGmo1h/808qW+9QGljx/IHtH3jhwAR9pe/dggshNn6V2xmHQHnCi/oF40saGImwq
-         Ww+lfs0LWoTvxmYWenFrLq9WAdBrPlL4txNnGjyYxioiZmIoG4I7xgFwIBIMHGnBT6x7
-         pvFs3NgbB34/ETTkG1n2RGqLZ1oJUvwsKcOZh5aN51NNzCYbPScdkMyEsWG3KBl42/y4
-         sIsz+lBcz4ynpZiUNaxieuubQyr+MabfOje8WauTPl5X7wErPBiLk7F3uJFa83Q1TRN+
-         0Yk7ZXvaGiQrZaQK+wc1sX9Zu1gPLxgzm9So8FztjHPtxPHwJlJdJg2OnCVzrdksOyVW
-         eRmg==
-X-Gm-Message-State: AOAM533gxm7rqa6UvQoypxMP+WUMa0fFq2Z+rfh3/xAU/arcp7MskZE7
-        kB/LEXdGDnS6jGlT+QqsHtcUyQqj9JMVw3qPv3Q=
-X-Google-Smtp-Source: ABdhPJzlt3b6sqN2DBSPSm7jJv8sukwRnmWDdtIqUNnxpduRN7SvDItcbm+AtfXYs1ipy0GEiB1VkCUptRMcbaCeu9o=
-X-Received: by 2002:aca:650d:: with SMTP id m13mr3041451oim.157.1623069536950;
- Mon, 07 Jun 2021 05:38:56 -0700 (PDT)
+        id S230220AbhFGMsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 08:48:16 -0400
+Received: from birdy.pmhahn.de ([88.198.22.186]:43586 "EHLO birdy.pmhahn.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230269AbhFGMsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 08:48:13 -0400
+X-Greylist: delayed 403 seconds by postgrey-1.27 at vger.kernel.org; Mon, 07 Jun 2021 08:48:12 EDT
+Received: from [IPv6:2003:e2:7701:c200:a5ae:ca72:d4d5:6724] (p200300e27701C200A5aeca72D4D56724.dip0.t-ipconnect.de [IPv6:2003:e2:7701:c200:a5ae:ca72:d4d5:6724])
+        by birdy.pmhahn.de (Postfix) with ESMTPSA id DB9562207246;
+        Mon,  7 Jun 2021 14:39:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=pmhahn.de; s=202002;
+        t=1623069575; bh=BBOoFi9HzmEh7B1OpgYxyXy8hseIid57bVC7FAkBMWE=;
+        h=To:From:Subject:Date:From;
+        b=IldtndQH66LqgCtd1zYeQWCI5owbGkaqz8YMfWxhDaLSL9HvYI8OxYSPuII/RAia5
+         YkTmp++EEFouXzNPMMlADn7E86uh3DgLlSl0rad9YToXrUPd0FbK2FrDlUwyfiJokr
+         5lq+i/KM2mEZR9X9JGPISmN6UJvWOs99fJpZwS+Vym0Z+BdHtcRjFJQ5YGnNTplBL/
+         R6KAbi+hpFei/a9uoV5GCYC7CfaKRoQ6zahgN+RvoZHEbMB6lkWk/TfSIfHL3XsVHl
+         0O4xZBMRRZ3lw2xy/0Jp/GXYFb/idwZdV908N1b6kxpikUS/ZOQLRfukW1NrLnyk8y
+         m7o9ODcFlrwyg==
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>
+From:   Philipp Hahn <pmhahn+lkml@pmhahn.de>
+Subject: Prevent inode/dentry trashing?
+Message-ID: <ce330972-78e6-4347-9735-72ee7bb21ef5@pmhahn.de>
+Date:   Mon, 7 Jun 2021 14:39:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <20210607122458.40073-1-andriy.shevchenko@linux.intel.com> <20210607122458.40073-3-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210607122458.40073-3-andriy.shevchenko@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 7 Jun 2021 14:38:46 +0200
-Message-ID: <CAJZ5v0hEHkpoyc9-fYrZ8A79B0XRd4_RUB2wcRcq1kMKXnb7Jw@mail.gmail.com>
-Subject: Re: [PATCH v3 3/6] pwm: core: Reuse fwnode_to_pwmchip() in ACPI case
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Flavio Suligoi <f.suligoi@asem.it>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PWM List <linux-pwm@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 2:24 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> In ACPI case we may use matching by fwnode as provided via
-> fwnode_to_pwmchip(). This makes device_to_pwmchip() not needed
-> anymore.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Hello,
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Similar to 
+<https://unix.stackexchange.com/questions/202586/limit-the-inode-cache-used-by-a-command> 
+I would like to prevent certain programs from trashing the inode/dentry 
+cache, which is a shared resource for all processes:
 
-> ---
-> v3: rebased on the tree without dropped patch 2/7
-> v2: no change
->  drivers/pwm/core.c | 31 +------------------------------
->  1 file changed, 1 insertion(+), 30 deletions(-)
->
-> diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
-> index f26da1a6a376..c63626c5266c 100644
-> --- a/drivers/pwm/core.c
-> +++ b/drivers/pwm/core.c
-> @@ -820,28 +820,6 @@ struct pwm_device *of_pwm_get(struct device *dev, struct device_node *np,
->  }
->  EXPORT_SYMBOL_GPL(of_pwm_get);
->
-> -#if IS_ENABLED(CONFIG_ACPI)
-> -static struct pwm_chip *device_to_pwmchip(struct device *dev)
-> -{
-> -       struct pwm_chip *chip;
-> -
-> -       mutex_lock(&pwm_lock);
-> -
-> -       list_for_each_entry(chip, &pwm_chips, list) {
-> -               struct acpi_device *adev = ACPI_COMPANION(chip->dev);
-> -
-> -               if ((chip->dev == dev) || (adev && &adev->dev == dev)) {
-> -                       mutex_unlock(&pwm_lock);
-> -                       return chip;
-> -               }
-> -       }
-> -
-> -       mutex_unlock(&pwm_lock);
-> -
-> -       return ERR_PTR(-EPROBE_DEFER);
-> -}
-> -#endif
-> -
->  /**
->   * acpi_pwm_get() - request a PWM via parsing "pwms" property in ACPI
->   * @fwnode: firmware node to get the "pwm" property from
-> @@ -862,9 +840,7 @@ static struct pwm_chip *device_to_pwmchip(struct device *dev)
->  static struct pwm_device *acpi_pwm_get(struct fwnode_handle *fwnode)
->  {
->         struct pwm_device *pwm = ERR_PTR(-ENODEV);
-> -#if IS_ENABLED(CONFIG_ACPI)
->         struct fwnode_reference_args args;
-> -       struct acpi_device *acpi;
->         struct pwm_chip *chip;
->         int ret;
->
-> @@ -874,14 +850,10 @@ static struct pwm_device *acpi_pwm_get(struct fwnode_handle *fwnode)
->         if (ret < 0)
->                 return ERR_PTR(ret);
->
-> -       acpi = to_acpi_device_node(args.fwnode);
-> -       if (!acpi)
-> -               return ERR_PTR(-EINVAL);
-> -
->         if (args.nargs < 2)
->                 return ERR_PTR(-EPROTO);
->
-> -       chip = device_to_pwmchip(&acpi->dev);
-> +       chip = fwnode_to_pwmchip(args.fwnode);
->         if (IS_ERR(chip))
->                 return ERR_CAST(chip);
->
-> @@ -894,7 +866,6 @@ static struct pwm_device *acpi_pwm_get(struct fwnode_handle *fwnode)
->
->         if (args.nargs > 2 && args.args[2] & PWM_POLARITY_INVERTED)
->                 pwm->args.polarity = PWM_POLARITY_INVERSED;
-> -#endif
->
->         return pwm;
->  }
-> --
-> 2.30.2
->
+- For example the nightly <man:updatedb(8)> used <man:find(1) > to 
+recursively walk the complete file system. As long as `d_name` and the 
+`d_type` information from <man:readdir(3)> is enough this only pollutes 
+the dentry cache.
+
+- Similar our backup software, but this also needs to <man:stat(2)> each 
+path to get the `mtime`, which additionally pollutes the inode cache.
+
+Both examples only walk the tree once (per day). In my case the caches 
+do not fit into memory completely, so the second process does not even 
+benefit from the first process filling the cache as that data is already 
+replaced again.
+
+The trashed caches affect all other processes running in parallel or the 
+first processes started each morning.
+
+Is it possible to prevent inode/dentry trashing for example by limiting 
+the cache per process(-group)?
+Something like MADV_DONTNEED from <man:madvise(2)> for IO would be nice.
+
+An external knob to limit the cache usage per process(-group) would be 
+nice, but even a hint for an API for such kind of programs to prevent 
+trashing would help me.
+
+Thank you in advance.
+Philipp
