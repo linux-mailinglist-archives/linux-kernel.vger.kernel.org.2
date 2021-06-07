@@ -2,115 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B5439D56F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:54:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D46339D576
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbhFGG4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 02:56:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230237AbhFGG4n (ORCPT
+        id S230321AbhFGG7G convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Jun 2021 02:59:06 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:35795 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhFGG7F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 02:56:43 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E49C061789
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 23:54:52 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id m18so16259300wrv.2
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 23:54:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1M00BIXNHjbYONusKxop0Uf6pH0dXi9px3pnctoNpiQ=;
-        b=rOwuFqH1U+UWA98YWVC/Z4EZh859kA8eOey/658SqyMYEf9h5/CZ8QN/soWTzMbCIF
-         +xr4OIFSMV4iqWS4qHb/416IjpqhCGs/T6FSTUPNL5nat2R5yTkZ4gKC3jYNyLjDevEc
-         XFXvFM1WoBd8PCf73ef8QxrTfZMRRPTic73IQQA7KLWMJt3fsHTdRMQAeb0CQOWpvRMG
-         TcWcRsAUFNkQEyagf8cwi1YrVN3CQvtTJPIVpbh+2RUN/cuCvFp0LyDNaTvMInGOl9GK
-         gTE/9GwKQDtP0V/drKCoPuJBjjSQFDSdHrCUcTEwaOWdurUsMF3AbpLqwlutnf79yBm9
-         gNdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1M00BIXNHjbYONusKxop0Uf6pH0dXi9px3pnctoNpiQ=;
-        b=YrEJKEVlBEk2hpY3Z6iGN7xpE2jxcVmYTBNMknOyl0iEsteRPu4vYemCXKgJEgq3ME
-         HxJw1S6mX/tzMskmf8DuNWhl6AuZnB0B/B/wUtj4VNrWFN9FCddvcVSNPfE0BbVBA8ho
-         8UZGqAv9JmRCi9J958PtT8TSuYEidseSyhgect3ZYuSgo7p3J38i2Pl04kS7v7IEETp+
-         bcYh7CwjB3JCsPx40DEAXPBDVqzNtJ0wcr41wRLViPf05XR6cCSQAx6yCwtsYGBZpAwz
-         16jmBjKGtiyO7ZTI+M2bEkkrTwVDjIfiwRyP3DADXqgPT0iw8Z2VkwVWN5hycAv8YhvG
-         vwdw==
-X-Gm-Message-State: AOAM53227Npa5jtYsVZugmTGuwhft3uP4LhSHP32Ps0SERM9gV7w3sWA
-        c1+8ehGKmzEebx/Y+CsDQjCiVw==
-X-Google-Smtp-Source: ABdhPJwU02aex0XwNNQc0sK7Gsam8Cgv6FgnPe79ajdp71dz1OvZSQfRy4FjzaCtX61dw5PZ8eX1Kw==
-X-Received: by 2002:a5d:4984:: with SMTP id r4mr15255562wrq.152.1623048891062;
-        Sun, 06 Jun 2021 23:54:51 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e0a:90c:e290:7c1f:1c9f:555e:7398])
-        by smtp.gmail.com with ESMTPSA id l5sm16145742wmi.46.2021.06.06.23.54.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Jun 2021 23:54:50 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     khilman@baylibre.com, jbrunet@baylibre.com,
-        martin.blumenstingl@googlemail.com
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        tobetter@gmail.com, Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH v2 7/7] arm64: dts: meson-sm1-odroid-c4: remove invalid hub_5v regulator
-Date:   Mon,  7 Jun 2021 08:54:35 +0200
-Message-Id: <20210607065435.577334-8-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210607065435.577334-1-narmstrong@baylibre.com>
-References: <20210607065435.577334-1-narmstrong@baylibre.com>
+        Mon, 7 Jun 2021 02:59:05 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 4E9BAE000E;
+        Mon,  7 Jun 2021 06:57:12 +0000 (UTC)
+Date:   Mon, 7 Jun 2021 08:57:11 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Colin King <colin.king@canonical.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] mtd: rawnand: ensure return variable is
+ initialized
+Message-ID: <20210607085711.65c64c58@xps13>
+In-Reply-To: <20210601121401.GY1955@kadam>
+References: <20210527145048.795954-1-colin.king@canonical.com>
+        <20210527170309.4d99bc31@xps13>
+        <20210601121401.GY1955@kadam>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1356; h=from:subject; bh=2+XB2Oss9iZD3QAWh2ekV3OVz7bGhwenvkupndMpnFA=; b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBgvcJBaa4WmHRO5GXz/nWgYW23KSV7SOX+plOr9fgU 0ZJpR+KJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCYL3CQQAKCRB33NvayMhJ0UHDD/ 9yicfv1d29ovM5jCi0kTXgGdAZnedKktOtS4zpUlBgmZgcLUkJslkuKVyZAn/EcWUvH0YhzRksYBbh Yhdy97FbJJ00y+I2qMxly8QxEMEdKO5SCpaov9SD7de2wpjXuBgJGR+x4Vn6B01Jh8H4st8ZLWehiE zexv+tt62Tu9PZXdH3/ORVnLaujXwmhuGcK6CM5qAN6t/QjO2XccBva5w+OB2JCQy0aGqh9LsCaKZl /RZjn2asSIIK2V4OKbwmlX5fi5ReeqBIazRK7JMjAjjhcriPbbMYSCaS0R38JSGXO98qo2u/NsRZOz UWzILP7TkdbzAuC3m111+mH7PtjkuiqP6KVmn4hhwbSFVsImqn4CTlMvN/Q6JgAj3+fGTyKBcdo8dz LgWHBo4yKpSvKqcjya6RVUOsmBRZf3FFLiiTT+gwmO0ZnAQkdjo8H47Vr62RcW7bVEoS9JMsr9/1lj VclXqGdxXXld3L7Lhsx0UhOV9kSc9CxdddD/HH1EsxZASkm/uqf4eSgNyth5bdgwSVKqVGVd7Oz0+A zbzqBQeuiXlwQLzxNhOGptrjpJzU6t7pZQYIxYemHyoGDTYYgOzewwRxaXX/v7pH87Pe7Pex9cHiDp LbvoZXSNRbp9tiSmzKcLQW5o/lAm+P2suyXCUX2Qi0GfVbLWeX0VQMDJLbdA==
-X-Developer-Key: i=narmstrong@baylibre.com; a=openpgp; fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the hub_5v regulator which controls the HUB Reset line with GPIOH_4 which
-is already controlled by a GPIO HOG.
+Hi Dan,
 
-Until we can properly describe how to control USB HUBs reset lines, keeping
-the GPIO HOG is an acceptable solution we use on multiple boards.
+Dan Carpenter <dan.carpenter@oracle.com> wrote on Tue, 1 Jun 2021
+15:14:02 +0300:
 
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
----
- .../boot/dts/amlogic/meson-sm1-odroid-c4.dts    | 17 -----------------
- 1 file changed, 17 deletions(-)
+> On Thu, May 27, 2021 at 05:03:09PM +0200, Miquel Raynal wrote:
+> > Hi Colin,
+> > 
+> > Colin King <colin.king@canonical.com> wrote on Thu, 27 May 2021
+> > 15:50:48 +0100:
+> >   
+> > > From: Colin Ian King <colin.king@canonical.com>
+> > > 
+> > > Currently there are corner cases where spec_times is NULL and
+> > > chip->parameters.onfi or when best_mode is zero where ret is  
+> > 
+> >                        ^
+> > something is missing here, the sentence is not clear
+> >   
+> > > not assigned a value and an uninitialized return value can be
+> > > returned. Fix this by ensuring ret is initialized to -EINVAL.  
+> > 
+> > I don't see how this situation can happen.
+> > 
+> > In both cases, no matter the value of best_mode, the for loop will
+> > always execute at least one time (mode 0) so ret will be populated.
+> > 
+> > Maybe the robot does not know that best_mode cannot be negative and
+> > should be defined unsigned, but the current patch is invalid.
+> >  
+> 
+> People think list counter unsigned is a good idea, but it's a terrible
+> idea and has caused hundreds of bugs for me to fix/report over the
+> years.  *grumble*.
+> 
+> Anyway, I was revisiting this code because it showed up as a Smatch
+> warning and the bug appears to be real.
+> 
+> 	best_mode = fls(chip->parameters.onfi->sdr_timing_modes) - 1;
+> 
+> The "onfi->sdr_timing_modes" comes from the hardware in nand_onfi_detect()
+> and nothing checks that it is non-zero so "best_mode = fls(0) - 1;" is
+> negative and "ret" is uninitialized.
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-odroid-c4.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-odroid-c4.dts
-index 8c327c03d845..8c30ce63686e 100644
---- a/arch/arm64/boot/dts/amlogic/meson-sm1-odroid-c4.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-sm1-odroid-c4.dts
-@@ -23,18 +23,6 @@ led-blue {
- 		};
- 	};
- 
--	hub_5v: regulator-hub_5v {
--		compatible = "regulator-fixed";
--		regulator-name = "HUB_5V";
--		regulator-min-microvolt = <5000000>;
--		regulator-max-microvolt = <5000000>;
--		vin-supply = <&vcc_5v>;
--
--		/* Connected to the Hub CHIPENABLE, LOW sets low power state */
--		gpio = <&gpio GPIOH_4 GPIO_ACTIVE_HIGH>;
--		enable-active-high;
--	};
--
- 	sound {
- 		model = "ODROID-C4";
- 	};
-@@ -58,8 +46,3 @@ hog-0 {
- &ir {
- 	linux,rc-map-name = "rc-odroid";
- };
--
--&usb2_phy1 {
--	/* Enable the hub which is connected to this port */
--	phy-supply = <&hub_5v>;
--};
--- 
-2.25.1
+In the ONFI specification, the sdr_timing_mode field is defined as
+follow:
 
+SDR timing mode support
+BIT  VALUE MEANING
+6-15 N/A   Reserved (0)
+5    1     supports timing mode 5
+4    1     supports timing mode 4
+3    1     supports timing mode 3
+2    1     supports timing mode 2
+1    1     supports timing mode 1
+0    1     supports timing mode 0, shall be 1
+
+IOW sdr_timing_modes *cannot* be 0, or it is a truly deep and crazily
+impacting hardware bug (so far I am not aware of any chip not returning
+the right timing mode 0 value). Hence my proposal to turn best_mode as
+unsigned. I honestly don't know what is the best option here and am
+fully open to other suggestions to silence the robot.
+
+Thanks,
+Miquèl
