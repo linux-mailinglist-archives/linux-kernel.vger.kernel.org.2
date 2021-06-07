@@ -2,96 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7261939E04B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 17:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ADEF39E04E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 17:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230405AbhFGP3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 11:29:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35828 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230212AbhFGP3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 11:29:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D884461159;
-        Mon,  7 Jun 2021 15:27:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623079632;
-        bh=PmI+g6d05m0O1sqZS4bQGeSBmZdKbeu/jEjTNOkKCYQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=oHt5JgAGzA238x0WeyI4F9gAMj3YSneDaQjSKfEyPbjJh28qL6IajagjMr3ToutrF
-         roYSM2gIMvKWeXJMdRfwfBCf25YMHRPvwJjTFnoaDWEyOdscbggyQZzc3glQMbwvSp
-         /WQdZnB1/PUMLno/OY50ga9ltb1JdG68204vhmqG8f48VzhXHEhfTM9QcbRNmlvetQ
-         tEZh/LIhGHH10fR1xoFHwl2nDaE/nPLCz2GoO1FNgIkPOzJHprNX+eHy9GzAb+azN4
-         8RDA2PBiPmGTIf1r8ob656BQpIprsnpgIFhoT/IIXnbvClyatXfNGM7T8JPQJa4NlX
-         BiTzmlZw0YpKQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B15AF5C0395; Mon,  7 Jun 2021 08:27:12 -0700 (PDT)
-Date:   Mon, 7 Jun 2021 08:27:12 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <20210607152712.GR4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210606012903.GA1723421@rowland.harvard.edu>
- <20210606115336.GS18427@gate.crashing.org>
- <CAHk-=wjgzAn9DfR9DpU-yKdg74v=fvyzTJMD8jNjzoX4kaUBHQ@mail.gmail.com>
- <20210606184021.GY18427@gate.crashing.org>
- <CAHk-=wjEHbGifWgA+04Y4_m43s-o+3bXpL5qPQL3ECg+86XuLg@mail.gmail.com>
- <20210606195242.GA18427@gate.crashing.org>
- <CAHk-=wgd+Gx9bcmTwxhHbPq=RYb_A_gf=GcmUNOU3vYR1RBxbA@mail.gmail.com>
- <20210606202616.GC18427@gate.crashing.org>
- <20210606233729.GN4397@paulmck-ThinkPad-P17-Gen-1>
- <20210607141242.GD18427@gate.crashing.org>
+        id S230434AbhFGP3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 11:29:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230212AbhFGP3e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 11:29:34 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A464C061766;
+        Mon,  7 Jun 2021 08:27:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gJrY6iiGPzs6iGJKkNIy3WHBh9VoBLb6vQTSmNqRX4M=; b=qjScuI46Voo5bgA7/vt0xcCSCz
+        rpjDXQLHNoBHCEagaipTugxCf/hT9KxBbNebPYG2QYkpHaP+6X47MSVt8pLBTmMqh5Kzn+IPVCWdt
+        gkAwSRco+ALgHAz3RroyqbGcvnJvVBepOjL0dOMXjGF5/EtWBsUmnVoD1fyir1uUqdYDujiJf4Qbl
+        gKvFtE0JjVTHV01CqTwZenT6PKYmOrFGd562ZQEp9UdjJ7Ugs9s4McvNSBS2JNvPyK7W4g5xsFYnH
+        U9zFYsap9OQWY6cvbkmlPq1N+yi8hqmzqCHQZhHxWBtJGgUknjAl+kblXvLX+UaVL+uJJinUIAX07
+        HEc+ZKmQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lqH9t-004RfL-MR; Mon, 07 Jun 2021 15:27:28 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 36C7F3001E3;
+        Mon,  7 Jun 2021 17:27:26 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E67F92D6A7343; Mon,  7 Jun 2021 17:27:25 +0200 (CEST)
+Date:   Mon, 7 Jun 2021 17:27:25 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 1/8] perf/ring_buffer: Add comment for barriers on AUX
+ ring buffer
+Message-ID: <YL463Zly9cKpSe7A@hirez.programming.kicks-ass.net>
+References: <20210602103007.184993-1-leo.yan@linaro.org>
+ <20210602103007.184993-2-leo.yan@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210607141242.GD18427@gate.crashing.org>
+In-Reply-To: <20210602103007.184993-2-leo.yan@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 09:12:42AM -0500, Segher Boessenkool wrote:
-> On Sun, Jun 06, 2021 at 04:37:29PM -0700, Paul E. McKenney wrote:
-> > > > The barrier() thing can work - all we need to do is to simply make it
-> > > > impossible for gcc to validly create anything but a conditional
-> > > > branch.
-> > > 
-> > > And the only foolproof way of doing that is by writing a branch.
+On Wed, Jun 02, 2021 at 06:30:00PM +0800, Leo Yan wrote:
+> AUX ring buffer applies almost the same barriers as perf ring buffer,
+> but there has an exception for ordering between writing the AUX trace
+> data and updating user_page::aux_head.
 > 
-> [ ... ]
+> This patch adds comment for how to use the barriers on AUX ring buffer,
+> and gives comment to ask the drivers to flush the trace data into AUX
+> ring buffer prior to updating user_page::aux_head.
 > 
-> > > I am saying that if you depend on that some C code you write will result
-> > > in some particular machine code, without actually *forcing* the compiler
-> > > to output that exact machine code, then you will be disappointed.  Maybe
-> > > not today, and maybe it will take years, if you are lucky.
-> > > 
-> > > (s/forcing/instructing/ of course, compilers have feelings too!)
-> > 
-> > OK, I will bite...
-> > 
-> > What would you suggest as a way of instructing the compiler to emit the
-> > conditional branch that we are looking for?
-> 
-> You write it in the assembler code.
-> 
-> Yes, it sucks.  But it is the only way to get a branch if you really
-> want one.  Now, you do not really need one here anyway, so there may be
-> some other way to satisfy the actual requirements.
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
 
-Hmmm...  What do you see Peter asking for that is different than what
-I am asking for?  ;-)
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-							Thanx, Paul
+> ---
+>  kernel/events/ring_buffer.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
+> index 52868716ec35..5cf6579be05e 100644
+> --- a/kernel/events/ring_buffer.c
+> +++ b/kernel/events/ring_buffer.c
+> @@ -509,6 +509,15 @@ void perf_aux_output_end(struct perf_output_handle *handle, unsigned long size)
+>  		perf_event_aux_event(handle->event, aux_head, size,
+>  				     handle->aux_flags);
+>  
+> +	/*
+> +	 * See perf_output_put_handle(), AUX ring buffer applies the same
+> +	 * barrier pairing as the perf ring buffer; except for B, since
+> +	 * AUX ring buffer is written by hardware trace, we cannot simply
+> +	 * use the generic memory barrier (like smp_wmb()) prior to update
+> +	 * user_page::aux_head, the hardware trace driver takes the
+> +	 * responsibility to ensure the trace data has been flushed into
+> +	 * the AUX buffer before calling perf_aux_output_end().
+> +	 */
+>  	WRITE_ONCE(rb->user_page->aux_head, rb->aux_head);
+>  	if (rb_need_aux_wakeup(rb))
+>  		wakeup = true;
+> -- 
+> 2.25.1
+> 
