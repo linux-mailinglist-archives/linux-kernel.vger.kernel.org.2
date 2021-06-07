@@ -2,109 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A014439DA68
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6581E39DA5A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231297AbhFGLAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 07:00:32 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:21720 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230230AbhFGLAb (ORCPT
+        id S231124AbhFGLAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 07:00:17 -0400
+Received: from lucky1.263xmail.com ([211.157.147.133]:57080 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230215AbhFGLAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 07:00:31 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 157AXHkO195101;
-        Mon, 7 Jun 2021 06:58:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=4AN2CA0GuJHNAFTpN0s5mVh7V1bwkgGdEaCEZc4EmZA=;
- b=nah15DsKNTSEuw1FTKHDGfW0Dq1Nf57uBsw4VRhljFlvewI/gak/ma4R0KE7NixQk7Mk
- 2WwlSr1geKwijnXVqT2jnxDx6mahBui0nvEaZ7/yoyAUEzSXR/4ZtYzr9zq1C1uw0H4E
- g9jChdlMALCtP+DQmgQKq7D8cLeHzvax7yVBpVjS+EeeQYqmjssnanYtuji6aAfKqixs
- Gf+IQEje/PEnkxHZ3LyOsYK6aCGOsLxTrvIRgzHUokvVi1HH6io5PgP/Oirc+7gZ6pGV
- gXeKR8jldsuSJwiktYRbYx6XHbZ8PALUIV1LCe/915IbjDqyyvoAwf6Nv0bS1/z1TbGp +Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 391db4gaab-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Jun 2021 06:58:02 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 157AguL4034323;
-        Mon, 7 Jun 2021 06:58:01 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 391db4ga9p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Jun 2021 06:58:01 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 157ArLHE026321;
-        Mon, 7 Jun 2021 10:57:59 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 3900hhruud-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Jun 2021 10:57:59 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 157AvuLE31261016
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 7 Jun 2021 10:57:56 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F19DE4203F;
-        Mon,  7 Jun 2021 10:57:55 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 58ECA42049;
-        Mon,  7 Jun 2021 10:57:55 +0000 (GMT)
-Received: from osiris (unknown [9.171.17.10])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Mon,  7 Jun 2021 10:57:55 +0000 (GMT)
-Date:   Mon, 7 Jun 2021 12:57:53 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Barry Song <song.bao.hua@hisilicon.com>
-Cc:     akpm@linux-foundation.org, hpa@zytor.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, gor@linux.ibm.com,
-        borntraeger@de.ibm.com, naveen.n.rao@linux.ibm.com,
-        anil.s.keshavamurthy@intel.com, davem@davemloft.net,
-        mhiramat@kernel.org, linux-s390@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v2] kprobes: remove duplicated strong free_insn_page in
- x86 and s390
-Message-ID: <YL37sTAUIfDulsDE@osiris>
-References: <20210607091854.31580-1-song.bao.hua@hisilicon.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607091854.31580-1-song.bao.hua@hisilicon.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: oDpWfoLYqSGBbqOS0oP66RlJBZuwVMXC
-X-Proofpoint-ORIG-GUID: fSLjZx7Pw9a_vgp9UKRPpWUchr74zUMb
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-07_07:2021-06-04,2021-06-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
- lowpriorityscore=0 adultscore=0 spamscore=0 malwarescore=0 suspectscore=0
- bulkscore=0 mlxlogscore=906 phishscore=0 priorityscore=1501 mlxscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106070081
+        Mon, 7 Jun 2021 07:00:16 -0400
+Received: from localhost (unknown [192.168.167.105])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 009E9CD662;
+        Mon,  7 Jun 2021 18:58:06 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P26721T140687081854720S1623063484717111_;
+        Mon, 07 Jun 2021 18:58:06 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <8c7099462556522c4efe0feccf8f4ae2>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: broonie@kernel.org
+X-RCPT-COUNT: 9
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Jon Lin <jon.lin@rock-chips.com>
+To:     broonie@kernel.org
+Cc:     jon.lin@rock-chips.com, heiko@sntech.de, robh+dt@kernel.org,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v5 0/6] Support ROCKCHIP SPI new feature
+Date:   Mon,  7 Jun 2021 18:57:56 +0800
+Message-Id: <20210607105802.23796-1-jon.lin@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 09:18:54PM +1200, Barry Song wrote:
-> free_insn_page() in x86 and s390 are same with the common weak function
-> in kernel/kprobes.c.
-> Plus, the comment "Recover page to RW mode before releasing it" in x86
-> seems insensible to be there since resetting mapping is done by common
-> code in vfree() of module_memfree().
-> So drop these two duplicated strong functions and related comment, then
-> mark the common one in kernel/kprobes.c strong.
-> 
-> Cc: Christoph Hellwig <hch@infradead.org>
-> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
-> ---
->  -v2:
->  remove free_insn_page in s390 as well and remove the __weak in common
->  code according to Christoph's comment;
-> 
->  arch/s390/kernel/kprobes.c     | 5 -----
->  arch/x86/kernel/kprobes/core.c | 6 ------
->  kernel/kprobes.c               | 2 +-
->  3 files changed, 1 insertion(+), 12 deletions(-)
 
-For the s390 part:
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
+
+Changes in v5:
+- Change to leave one compatible id rv1126, and rk3568 is compatible with rv1126
+
+Changes in v4:
+- Adjust the order patches
+- Simply commit massage like redundancy "application" content
+
+Changes in v3:
+- Fix compile error which is find by Sascha in [v2,2/8]
+
+Jon Lin (6):
+  dt-bindings: spi: spi-rockchip: add description for rv1126
+  spi: rockchip: add compatible string for rv1126 and rk3568
+  spi: rockchip: Set rx_fifo interrupt waterline base on transfer item
+  spi: rockchip: Wait for STB status in slave mode tx_xfer
+  spi: rockchip: Support cs-gpio
+  spi: rockchip: Support SPI_CS_HIGH
+
+ .../devicetree/bindings/spi/spi-rockchip.yaml |  1 +
+ drivers/spi/spi-rockchip.c                    | 95 +++++++++++++++----
+ 2 files changed, 80 insertions(+), 16 deletions(-)
+
+-- 
+2.17.1
+
+
+
