@@ -2,115 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 742B139E441
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F7A39E44F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230525AbhFGQou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 12:44:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29112 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230212AbhFGQot (ORCPT
+        id S230409AbhFGQsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 12:48:43 -0400
+Received: from mail-pf1-f172.google.com ([209.85.210.172]:45999 "EHLO
+        mail-pf1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230197AbhFGQsl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 12:44:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623084177;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eXX4QBwgXhnHy1g2ghKync/xPThQvIt5AbfFrJ16lew=;
-        b=YaNviOGP3Y6QO+JEJmIaFpyFHtOh2YGkDHWhtYupUMLoyUbghN35zPxai7fkn5gnMRpCGa
-        ihVXUOynMjSSJBRhjs2gkNY0UejBZwTpMZN3N2B/9kqdcOpQLrRDM3dOqBEboqS9+0QyOL
-        4zD3vKQGZc4d+MFUVPG0b1DDLzMCa+U=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-122-7KXtqxVUOSWyhuQSLAKAag-1; Mon, 07 Jun 2021 12:42:56 -0400
-X-MC-Unique: 7KXtqxVUOSWyhuQSLAKAag-1
-Received: by mail-qt1-f200.google.com with SMTP id c29-20020ac86e9d0000b0290247b267c8e4so1190839qtv.22
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 09:42:56 -0700 (PDT)
+        Mon, 7 Jun 2021 12:48:41 -0400
+Received: by mail-pf1-f172.google.com with SMTP id d16so13485407pfn.12
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 09:46:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to;
+        bh=uq2fQ11Vz41OdG5zkIrHRIiR7aFfE+CC16I7NxLqj24=;
+        b=E2OTvySK8IUlup622bua0q8Rzharg/m7tzABMDZiM5+Qmy7Nn4rhFhI0k6kh7bMRW5
+         BWhlQyLIVKItFosSUHYiGZXuKrhIOyrZbzAXUb7afvq1vPfy2cxnfhrMoVbcVxBgXvA1
+         hKYTYQUIMPMQqcNekkYOijzBKbnCXIJ9wIybI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=eXX4QBwgXhnHy1g2ghKync/xPThQvIt5AbfFrJ16lew=;
-        b=Zm4JJQDuda/Ar5hU4BzLTbgjTXYaJ1cmZmXN9yuODWqJFzZH5X1U65Sccq0+cU6NlK
-         lD018RP+JI8aEuAXFWVcWComgM170ppAss43rlCp7gwcvPpQWisppXh8ihA9dKO2O8Xc
-         8gRAsAs/z3/8dkAKXe+GsMPzyhRaLQNTVr1KWGdsVc+lnsmTjQD/h5WRAGqFb0Hsf44p
-         YuocoKUG7fLEuKPUgPz93uwnNKB3hlcuPDz0YmXoioIavhFP/umIF8Gt9KDtADDEGuu/
-         gc2+DhumPgAb/CrjF/W0oPVv3PpO/qehainWFpNkNQXFM92NntXVm7eZMWAZyxUdG1R+
-         gZuA==
-X-Gm-Message-State: AOAM533NmsYaGmyW1SggF225rc1+T7e/doXZno5SCLbYNHmEvvrmftI6
-        ehmIxISyNeIsn8mR0BvV8oAlUM1HtO2YqNbvJpXbF89iNJR2mq9j0hXSOM/8WMqUb7xbA5DKwY2
-        OZOf8Fbpr0WJm8R8K35WihSwC5ck87+kiDLXK8IqDK4gB9q4jwvgL3nbEj9SQroDvqGCFC14T
-X-Received: by 2002:ad4:458d:: with SMTP id x13mr11781810qvu.42.1623084176028;
-        Mon, 07 Jun 2021 09:42:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxwF9lNE9+upcMWy1zFhyI98fDYzgXAfplW+Th0aNYId2crCtqCvBdom2RV7sOqt0YeOHNGYw==
-X-Received: by 2002:ad4:458d:: with SMTP id x13mr11781772qvu.42.1623084175578;
-        Mon, 07 Jun 2021 09:42:55 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id c68sm10022865qkd.112.2021.06.07.09.42.54
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to;
+        bh=uq2fQ11Vz41OdG5zkIrHRIiR7aFfE+CC16I7NxLqj24=;
+        b=dr3dRcQ3EPkMuDLM6j+8CNTIYFB7LFDt9r6ysc0s51Tfqz0N9zx7qOUkzIp05VVvKA
+         62efHx2Utp2iYW3Wjdoz6+Rdb9OGLEdOgFCh3i3RYlsi47QbieVRbt/dJRl0Fu8frf3R
+         SszbVpAb7l0uCQX6AoWRN69qVaDPlzdRYlxo1LipAFu10fZWRfZRtaY5aVfbE3lpmgQp
+         fMHpCIyWzl3NwKCcvXS5cDev1u4Jh0PYVup65I1C5JBR+p9Va7f9VYFp8qSdQd4y0xP7
+         Il2tIadrV6kERZUaKNjNo54apMyj5Q7NsJ6cKE4VGUKNoWMhDrtk4or9YPY0MY4YIRno
+         yGcg==
+X-Gm-Message-State: AOAM530Q3CZJT1lJp4i3ou4t7Y4Rsfv+POxA37/EO4xBwrAxw8OJuoZD
+        wwG9kettX3mFnGzkDc3nEMM51w==
+X-Google-Smtp-Source: ABdhPJz/4IY+XutdSDHwO3UNDNLu/Z0XQy1/Y8T393+ZXPfENURUDTqVZesIn+POUmSrn81ZonvA5Q==
+X-Received: by 2002:aa7:96fc:0:b029:2e9:e827:928f with SMTP id i28-20020aa796fc0000b02902e9e827928fmr17798383pfq.49.1623084349857;
+        Mon, 07 Jun 2021 09:45:49 -0700 (PDT)
+Received: from [192.168.1.240] (d64-180-180-231.bchsia.telus.net. [64.180.180.231])
+        by smtp.gmail.com with ESMTPSA id z17sm8587106pfq.218.2021.06.07.09.45.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Jun 2021 09:42:55 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [RFC PATCH] mm/oom_kill: allow oom kill allocating task for
- non-global case
-To:     Aaron Tomlin <atomlin@redhat.com>, linux-mm@kvack.org
-Cc:     akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
-        llong@redhat.com, linux-kernel@vger.kernel.org
-References: <20210607163103.632681-1-atomlin@redhat.com>
-Message-ID: <c16893a9-35e2-7625-d7f3-83488f874040@redhat.com>
-Date:   Mon, 7 Jun 2021 12:42:54 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Mon, 07 Jun 2021 09:45:49 -0700 (PDT)
+Subject: Re: [PATCH 1/2] PCI: iproc: fix the base vector number allocation for
+ multi-MSI
+To:     Sandor Bodo-Merle <sbodomerle@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
+References: <20210606123044.31250-1-sbodomerle@gmail.com>
+From:   Ray Jui <ray.jui@broadcom.com>
+Message-ID: <89d35f7f-48b2-e117-d7b3-b1ccdec30b4e@broadcom.com>
+Date:   Mon, 7 Jun 2021 09:45:47 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210607163103.632681-1-atomlin@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+In-Reply-To: <20210606123044.31250-1-sbodomerle@gmail.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="00000000000025d07005c42fc6fe"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/7/21 12:31 PM, Aaron Tomlin wrote:
-> At the present time, in the context of memcg OOM, even when
-> sysctl_oom_kill_allocating_task is enabled/or set, the "allocating"
-> task cannot be selected, as a target for the OOM killer.
->
-> This patch removes the restriction entirely.
->
-> Signed-off-by: Aaron Tomlin <atomlin@redhat.com>
+--00000000000025d07005c42fc6fe
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+
+
+
+On 6/6/2021 5:30 AM, Sandor Bodo-Merle wrote:
+> Commit fc54bae28818 ("PCI: iproc: Allow allocation of multiple MSIs")
+> introduced multi-MSI support with a broken allocation mechanism (it failed
+> to reserve the proper number of bits from the inner domain).  Natural
+> alignment of the base vector number was also not guaranteed.
+> 
+> Fixes: fc54bae28818 ("PCI: iproc: Allow allocation of multiple MSIs")
+> Reported-by: Pali Rohár <pali@kernel.org>
+> Signed-off-by: Sandor Bodo-Merle <sbodomerle@gmail.com>
 > ---
->   mm/oom_kill.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> index eefd3f5fde46..3bae33e2d9c2 100644
-> --- a/mm/oom_kill.c
-> +++ b/mm/oom_kill.c
-> @@ -1089,9 +1089,9 @@ bool out_of_memory(struct oom_control *oc)
->   		oc->nodemask = NULL;
->   	check_panic_on_oom(oc);
->   
-> -	if (!is_memcg_oom(oc) && sysctl_oom_kill_allocating_task &&
-> -	    current->mm && !oom_unkillable_task(current) &&
-> -	    oom_cpuset_eligible(current, oc) &&
-> +	if (sysctl_oom_kill_allocating_task && current->mm &&
-> +            !oom_unkillable_task(current) &&
-> +            oom_cpuset_eligible(current, oc) &&
->   	    current->signal->oom_score_adj != OOM_SCORE_ADJ_MIN) {
->   		get_task_struct(current);
->   		oc->chosen = current;
+>  drivers/pci/controller/pcie-iproc-msi.c | 21 +++++++++++----------
+>  1 file changed, 11 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/pcie-iproc-msi.c b/drivers/pci/controller/pcie-iproc-msi.c
+> index eede4e8f3f75..557d93dcb3bc 100644
+> --- a/drivers/pci/controller/pcie-iproc-msi.c
+> +++ b/drivers/pci/controller/pcie-iproc-msi.c
+> @@ -252,18 +252,18 @@ static int iproc_msi_irq_domain_alloc(struct irq_domain *domain,
+>  
+>  	mutex_lock(&msi->bitmap_lock);
+>  
+> -	/* Allocate 'nr_cpus' number of MSI vectors each time */
+> -	hwirq = bitmap_find_next_zero_area(msi->bitmap, msi->nr_msi_vecs, 0,
+> -					   msi->nr_cpus, 0);
+> -	if (hwirq < msi->nr_msi_vecs) {
+> -		bitmap_set(msi->bitmap, hwirq, msi->nr_cpus);
+> -	} else {
+> -		mutex_unlock(&msi->bitmap_lock);
+> -		return -ENOSPC;
+> -	}
+> +	/*
+> +	 * Allocate 'nr_irqs' multiplied by 'nr_cpus' number of MSI vectors
+> +	 * each time
+> +	 */
+> +	hwirq = bitmap_find_free_region(msi->bitmap, msi->nr_msi_vecs,
+> +					order_base_2(msi->nr_cpus * nr_irqs));
+>  
+>  	mutex_unlock(&msi->bitmap_lock);
+>  
+> +	if (hwirq < 0)
+> +		return -ENOSPC;
+> +
+>  	for (i = 0; i < nr_irqs; i++) {
+>  		irq_domain_set_info(domain, virq + i, hwirq + i,
+>  				    &iproc_msi_bottom_irq_chip,
+> @@ -284,7 +284,8 @@ static void iproc_msi_irq_domain_free(struct irq_domain *domain,
+>  	mutex_lock(&msi->bitmap_lock);
+>  
+>  	hwirq = hwirq_to_canonical_hwirq(msi, data->hwirq);
+> -	bitmap_clear(msi->bitmap, hwirq, msi->nr_cpus);
+> +	bitmap_release_region(msi->bitmap, hwirq,
+> +			      order_base_2(msi->nr_cpus * nr_irqs));
+>  
+>  	mutex_unlock(&msi->bitmap_lock);
+>  
+> 
 
-To provide more context for this patch, we are actually seeing that in a 
-customer report about OOM happened in a container where the dominating 
-task used up most of the memory and it happened to be the task that 
-triggered the OOM with the result that no killable process could be 
-found. I don't see a reason why this should be limited to a global OOM only.
+Looks good to me too. Thanks.
 
-Acked-by: Waiman Long <longman@redhat.com>
+Acked-by: Ray Jui <ray.jui@broadcom.com>
 
-Cheers,
-Longman
+--00000000000025d07005c42fc6fe
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
+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
+Pi3DQoJNNR5cV1dw3cNMKQyHRziEjFTVmILshClu9AljdXzCUoHXDUbge8TIJ/fK36qTGCYWwA01
+rTB3drVX3FZq/Uqo0JnVcyP1dtYVzQIDAQABo4IB1TCCAdEwDgYDVR0PAQH/BAQDAgWgMIGjBggr
+BgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9j
+YWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUFBzABhjVodHRwOi8v
+b2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMDBNBgNVHSAERjBE
+MEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20v
+cmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRwOi8vY3JsLmdsb2Jh
+bHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAfBgNVHREEGDAWgRRyYXku
+anVpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdb
+NHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU5E1VdIocTRYIpXh6e6OnGvwfrEgwDQYJKoZIhvcNAQEL
+BQADggEBADcZteuA4mZVmXNzp/tJky+9TS87L/xAogg4z+0bFDomA2JdNGKjraV7jE3LKHUyCQzU
+Bvp8xXjxCndLBgltr+2Fn/Dna/f29iAs4mPBxgPKhqnqpQuTo2DLID2LWU1SLI9ewIlROY57UCvO
+B6ni+9NcOot0MbKF2A1TnzJjWyd127CVyU5vL3un1/tbtmjiT4Ku8ZDoBEViuuWyhdB6TTEQiwDo
+2NxZdezRkkkq+RoNek6gmtl8IKmXsmr1dKIsRBtLQ0xu+kdX+zYJbAQymI1mkq8qCmFAe5aJkrNM
+NbsYBZGZlcox4dHWayCpn4sK+41xyJsmGrygY3zghqBuHPUxggJtMIICaQIBATBrMFsxCzAJBgNV
+BAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdD
+QyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxnTAexrtwIst251kUwDQYJYIZIAWUDBAIBBQCg
+gdQwLwYJKoZIhvcNAQkEMSIEICkvHIP2RiOTPdfkG6Rn+qwRm0fTFEmvOOieybGqPx+qMBgGCSqG
+SIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIxMDYwNzE2NDU1MFowaQYJKoZI
+hvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG
+9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEF
+AASCAQAnHiHYr1kqC6Ynuy8D6JCkJihLP//f84o4MWvlY9SXuyf3HfaqnyzqIURs37xPPAClKsON
+y2c00ItBrDkC9aQcm5n8yfA2nOR5VF3GFSCc4Ht4sKGNNgKvAYYxEx/VcOHep6Sh0SG4vIfJgseC
+rzXgbeWiGhy/CHMLVCQAo2LuzZw+CIqPT0NjS3IgXdHAzfDC3pz7h2nlCRMjYvlfURphB7uxBVfM
+woLtV4qXEHDg8Mya0FXqN9abPMOfmfCmZs4CCBZA49XSl8rGG4hhlAA2p/AUXNq/BS19GzC6x/Zo
+wtjPihe05DodSvqvp6JYuhkFXM4994aJ+lf3/px5dowr
+--00000000000025d07005c42fc6fe--
