@@ -2,115 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E236939D8E9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB7439D8D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbhFGJgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:36:21 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3162 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230516AbhFGJgP (ORCPT
+        id S230428AbhFGJdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:33:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230194AbhFGJdo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:36:15 -0400
-Received: from fraeml710-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Fz7D75Pn4z6H6q6;
-        Mon,  7 Jun 2021 17:21:43 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml710-chm.china.huawei.com (10.206.15.59) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 11:34:23 +0200
-Received: from localhost.localdomain (10.69.192.58) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 10:34:21 +0100
-From:   John Garry <john.garry@huawei.com>
-To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, Luo Jiaxing <luojiaxing@huawei.com>,
-        John Garry <john.garry@huawei.com>
-Subject: [PATCH 5/5] scsi: hisi_sas: Speed up error handling when internal abort timeout occurs
-Date:   Mon, 7 Jun 2021 17:29:39 +0800
-Message-ID: <1623058179-80434-6-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1623058179-80434-1-git-send-email-john.garry@huawei.com>
-References: <1623058179-80434-1-git-send-email-john.garry@huawei.com>
+        Mon, 7 Jun 2021 05:33:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F00C061766;
+        Mon,  7 Jun 2021 02:31:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=KVqRz6ZmzerLYd7xV5qg7kf3ByX/ndWAg7ZXAC9ih5Q=; b=v780oCvswkoS9OGCd22PSGPhGL
+        I0Yo6knLveuryhDZD6s2ejz4tLzLgkyXD6cMQwUaL0C/egNWhkWE9GZYUOq/I4gqY3ywNo0JzhhWI
+        STU0TkT7YitcJVxvjUpZnfBYUyZfGljAdW10UnqD75xCUeUkzXK8rvCEDPGFjkM1/FmhrdIH1JLRX
+        2cKkZCjfSff6zje6eZxM/w6czj5WnKqWVWLLv/pi6lJoiH0lx0DZaUus3z1VyVwcpsl2ozaUeHsfa
+        Ouc/kmJjrzyufbljXzBFMYURW5q3tMZW1Kd2eggrtM6pEGv33vf9TphBDXbRCCunceot5ysCr9gOF
+        FRQ42zoA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lqBan-00Fa8A-N1; Mon, 07 Jun 2021 09:30:50 +0000
+Date:   Mon, 7 Jun 2021 10:30:45 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Barry Song <song.bao.hua@hisilicon.com>
+Cc:     akpm@linux-foundation.org, hpa@zytor.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hca@linux.ibm.com,
+        gor@linux.ibm.com, borntraeger@de.ibm.com,
+        naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
+        davem@davemloft.net, mhiramat@kernel.org,
+        linux-s390@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v2] kprobes: remove duplicated strong free_insn_page in
+ x86 and s390
+Message-ID: <YL3nRQnE3H7ogHKI@infradead.org>
+References: <20210607091854.31580-1-song.bao.hua@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210607091854.31580-1-song.bao.hua@hisilicon.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo Jiaxing <luojiaxing@huawei.com>
-
-If an internal task abort timeout occurs, the controller has developed a
-fault, and needs to be reset to be recovered.
-
-When this occurs during error handling, the current policy is to allow
-error handling to continue, and the inevitable nexus ha reset will handle
-the required reset.
-
-However various steps of error handling need to taken before this happens.
-These also involve some level of HW interaction, which will also fail with
-various timeouts.
-
-Speed up this process by recording a HW fault bit for an internal abort
-timeout - when this is set, just automatically error any HW interaction,
-and essentially go straight to clear nexus ha (to reset the controller).
-
-Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
-Signed-off-by: John Garry <john.garry@huawei.com>
----
- drivers/scsi/hisi_sas/hisi_sas.h      | 1 +
- drivers/scsi/hisi_sas/hisi_sas_main.c | 6 ++++++
- 2 files changed, 7 insertions(+)
-
-diff --git a/drivers/scsi/hisi_sas/hisi_sas.h b/drivers/scsi/hisi_sas/hisi_sas.h
-index 8f2492d0d49e..436d174f2194 100644
---- a/drivers/scsi/hisi_sas/hisi_sas.h
-+++ b/drivers/scsi/hisi_sas/hisi_sas.h
-@@ -38,6 +38,7 @@
- #define HISI_SAS_RESET_BIT	0
- #define HISI_SAS_REJECT_CMD_BIT	1
- #define HISI_SAS_PM_BIT		2
-+#define HISI_SAS_HW_FAULT_BIT	3
- #define HISI_SAS_MAX_COMMANDS (HISI_SAS_QUEUE_SLOTS)
- #define HISI_SAS_RESERVED_IPTT  96
- #define HISI_SAS_UNRESERVED_IPTT \
-diff --git a/drivers/scsi/hisi_sas/hisi_sas_main.c b/drivers/scsi/hisi_sas/hisi_sas_main.c
-index 0ad861aa5bb6..3a903e8e0384 100644
---- a/drivers/scsi/hisi_sas/hisi_sas_main.c
-+++ b/drivers/scsi/hisi_sas/hisi_sas_main.c
-@@ -1616,6 +1616,7 @@ static int hisi_sas_controller_reset(struct hisi_hba *hisi_hba)
- 	}
- 
- 	hisi_sas_controller_reset_done(hisi_hba);
-+	clear_bit(HISI_SAS_HW_FAULT_BIT, &hisi_hba->flags);
- 	dev_info(dev, "controller reset complete\n");
- 
- 	return 0;
-@@ -2079,6 +2080,9 @@ _hisi_sas_internal_task_abort(struct hisi_hba *hisi_hba,
- 	if (!hisi_hba->hw->prep_abort)
- 		return TMF_RESP_FUNC_FAILED;
- 
-+	if (test_bit(HISI_SAS_HW_FAULT_BIT, &hisi_hba->flags))
-+		return -EIO;
-+
- 	task = sas_alloc_slow_task(GFP_KERNEL);
- 	if (!task)
- 		return -ENOMEM;
-@@ -2109,6 +2113,8 @@ _hisi_sas_internal_task_abort(struct hisi_hba *hisi_hba,
- 		if (!(task->task_state_flags & SAS_TASK_STATE_DONE)) {
- 			struct hisi_sas_slot *slot = task->lldd_task;
- 
-+			set_bit(HISI_SAS_HW_FAULT_BIT, &hisi_hba->flags);
-+
- 			if (slot) {
- 				struct hisi_sas_cq *cq =
- 					&hisi_hba->cq[slot->dlvry_queue];
--- 
-2.26.2
-
+Please also mark free_insn_page static now.
