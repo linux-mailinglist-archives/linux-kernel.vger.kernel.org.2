@@ -2,157 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8033E39D2D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 04:16:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F414E39D2DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 04:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhFGCSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 22:18:34 -0400
-Received: from mailgate.ics.forth.gr ([139.91.1.2]:56546 "EHLO
-        mailgate.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbhFGCSd (ORCPT
+        id S230161AbhFGCWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 22:22:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230127AbhFGCWU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 22:18:33 -0400
-Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
-        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 1572GfeK061577
-        for <linux-kernel@vger.kernel.org>; Mon, 7 Jun 2021 05:16:41 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
-        q=dns/txt; i=@ics.forth.gr; t=1623032196; x=1625624196;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=7+nGwPamCaq87hvoY8I/2It3nzp5ksOheQ6kJN1VYpI=;
-        b=g0huyOMuZXFVoaT472uHkr9I43HoImJIsX6gS1eaNwm+W2XryaBiTe0WB5mn+9oY
-        E1O9jOv345s67n5dBeknFFDyEa7EQCm9+MkupJg7qghwhE9Y5oxX78VAos0HXB3h
-        hACLfl8UirfB5cMWySXD2Qw22YQ/phbxk+GsyU1ZyLUckU+LaOE/1aoDDrfv8Cz4
-        xlpeL6ux75qctc1hX5Hx58evx18mQXSqdsfWkh/dpCcXZ7mzYT6Ycway/+NDaQTb
-        qvE23idBtkXBfjZlEi2g9S+NVejqW4zTIDuphrgNDFHtow2okQymqMDvHT3mHKg+
-        OVE15kXjyE+LNCP9Ni2wmQ==;
-X-AuditID: 8b5b014d-962f1700000067b6-83-60bd81842d36
-Received: from enigma.ics.forth.gr (webmail.ics.forth.gr [139.91.151.35])
-        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id 08.AB.26550.4818DB06; Mon,  7 Jun 2021 05:16:36 +0300 (EEST)
-X-ICS-AUTH-INFO: Authenticated user:  at ics.forth.gr
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Mon, 07 Jun 2021 05:16:35 +0300
-From:   Nick Kossifidis <mick@ics.forth.gr>
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Nick Kossifidis <mick@ics.forth.gr>,
-        Christoph Hellwig <hch@lst.de>,
-        Drew Fustini <drew@beagleboard.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>, wefu@redhat.com,
-        =?UTF-8?Q?Wei_Wu_?= =?UTF-8?Q?=28=E5=90=B4=E4=BC=9F=29?= 
-        <lazyparser@gmail.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
+        Sun, 6 Jun 2021 22:22:20 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB741C061766;
+        Sun,  6 Jun 2021 19:20:29 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fyxt02j8Cz9sRN;
+        Mon,  7 Jun 2021 12:20:23 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623032426;
+        bh=nOcpwf8R4Sc4oE5ZtD6iiPP8HABC/Jk7x1g/OW52Zdo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Rxpj8871vndB89oo2UQOE+nFvH0TI5PiIMROvFbGAjp3LYivaXHinloxZC4OvJF0l
+         4QLCxLHy6i2hA42gHMOg0z11I8L9/4ZxbNNrLydQ2AEfx/RMDqPQl9M//bSqphtUOf
+         t8vqztQB1U7fZHV4BY/qVgf8ZhU4yEqCwlyrm10F4pzB0bu/3gzaSq7md+SL0tPVB7
+         qkXu2uMf5sZ3kUnrV8HPS7NW2EB7WlcQaiX9Dz436klHIOs5OupIF0RnSV/jji2I2u
+         NwghTctJCszDFrpnOpVxfBUpYRoN24F/twqSPBVX0JsKaRaS0+9JOyVWwX3OQXCGVB
+         aYpmfbwxF5WLg==
+Date:   Mon, 7 Jun 2021 12:20:21 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexdeucher@gmail.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Benjamin Koch <snowball@c3pb.de>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        Wei Fu <tekkamanninja@gmail.com>
-Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
-Organization: FORTH
-In-Reply-To: <CAJF2gTTpSbNWS4VLHAu4XsV5-Vos=6R9MmPOx8-yzMFJu=wX4A@mail.gmail.com>
-References: <1621400656-25678-1-git-send-email-guoren@kernel.org>
- <20210519052048.GA24853@lst.de>
- <CAJF2gTTjwB4U-NxCtfgMA5aR2HzoQtA8a51W5UM1LHGRbjz9pg@mail.gmail.com>
- <20210519064435.GA3076809@x1> <20210519065352.GA31590@lst.de>
- <CAJF2gTR4FXRbp7oky-ypdVJba6btFHpp-+dPyJStRaQX_-5rzg@mail.gmail.com>
- <29733b0931d9dd6a2f0b6919067c7efe@mailhost.ics.forth.gr>
- <CAJF2gTTpSbNWS4VLHAu4XsV5-Vos=6R9MmPOx8-yzMFJu=wX4A@mail.gmail.com>
-Message-ID: <a8f2e68dcc1a6eb1ff3b95fcb8d0d0d2@mailhost.ics.forth.gr>
-X-Sender: mick@mailhost.ics.forth.gr
-User-Agent: Roundcube Webmail/1.3.16
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrMIsWRmVeSWpSXmKPExsXSHT1dWbelcW+CwcLLKhZPPkxks7i3Yhm7
-        xYu9jSwWxx/tYrFYufook8WlL9dYLDp2fWWxuLxrDpvFts8tbBZT9u1is7j4az6jRfO7c+wW
-        WzeuY7Rom8VvMWvxbXaL++vOsVm07J/C4iDo8e73MkaPe2+fMHnsnHWX3WPBplKPh5suMXls
-        WtXJ5rHzoaXHr+1HmTw2L6n3eLF5JqPH7psNbB7v911l87jUfJ3d4/MmOY/2A91MAfxRXDYp
-        qTmZZalF+nYJXBlrLl5jL9gpVbG54RxbA+NXkS5GDg4JAROJM9vduxi5OIQEjjFKbJ40kamL
-        kRMobioxe28nI4jNKyAocXLmExYQm1nAQmLqlf2MELa8RPPW2cwgNouAqsScrc3sIDabgKbE
-        /EsHwepFgGp+H+1khaj/zCrR/4AXxBYWsJE4dGU9WJxfQFji092LYDanQKDEufkQ84UENjNL
-        bF0sAHGDi8SEqX1sELepSHz4/YAd5H5RIHvzXKUJjIKzkFw6C8mls5BcuoCReRWjQGKZsV5m
-        crFeWn5RSYZeetEmRnC8MvruYLy9+a3eIUYmDsZDjBIczEoivF4yexKEeFMSK6tSi/Lji0pz
-        UosPMUpzsCiJ8/LqTYgXEkhPLEnNTk0tSC2CyTJxcEo1MNU6JC4RlV5TtspO4USJkvELG0dj
-        puVnw0Li/6j9XZ/f2sXy5OKiSpsJO+pY/Cov8TsGCPPus/6kJzdrm7ucN/Ph5rjv7qnn3Z49
-        ffXzB19VquSDfS6FszcK7jtX/8SPe/2WzZmfvW67/9u405w3X/2X1i37S2fCPvU1XV56eUpe
-        ay9DQVXiVqcfnzctCKlvPO8nVKl7IvrEgietS+4/Mwyabh38QWGrb23V+WS1mFynZSdC+eZm
-        zOl9LbPO+Y/3lDmfOPgnSLGl2VyewHTqszB3blqZw9SQLf8MWfrUz6jOkE1duEbdWCbh9L23
-        q+osN2u9dL3wVTlgWWhxxbnsefn5q/US8zIalCslGjlilFiKMxINtZiLihMBQ+jQ5EYDAAA=
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Nirmoy Das <nirmoy.das@amd.com>
+Subject: linux-next: manual merge of the drm-misc tree with the drm and
+ amdgpu trees
+Message-ID: <20210607122021.0501d588@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/6MXQCe35s=qlf6_v.ujY2qt";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Στις 2021-06-07 03:04, Guo Ren έγραψε:
-> On Mon, Jun 7, 2021 at 2:14 AM Nick Kossifidis <mick@ics.forth.gr> 
-> wrote:
->> 
->> Στις 2021-05-20 04:45, Guo Ren έγραψε:
->> > On Wed, May 19, 2021 at 2:53 PM Christoph Hellwig <hch@lst.de> wrote:
->> >>
->> >> On Tue, May 18, 2021 at 11:44:35PM -0700, Drew Fustini wrote:
->> >> > This patch series looks like it might be useful for the StarFive JH7100
->> >> > [1] [2] too as it has peripherals on a non-coherent interconnect. GMAC,
->> >> > USB and SDIO require that the L2 cache must be manually flushed after
->> >> > DMA operations if the data is intended to be shared with U74 cores [2].
->> >>
->> >> Not too much, given that the SiFive lineage CPUs have an uncached
->> >> window, that is a totally different way to allocate uncached memory.
->> > It's a very big MIPS smell. What's the attribute of the uncached
->> > window? (uncached + strong-order/ uncached + weak, most vendors still
->> > use AXI interconnect, how to deal with a bufferable attribute?) In
->> > fact, customers' drivers use different ways to deal with DMA memory in
->> > non-coherent SOC. Most riscv SOC vendors are from ARM, so giving them
->> > the same way in DMA memory is a smart choice. So using PTE attributes
->> > is more suitable.
->> >
->> > See:
->> > https://github.com/riscv/virtual-memory/blob/main/specs/611-virtual-memory-diff.pdf
->> > 4.4.1
->> > The draft supports custom attribute bits in PTE.
->> >
->> 
->> Not only it doesn't support custom attributes on PTEs:
->> 
->> "Bits63–54 are reserved for future standard use and must be zeroed by
->> software for forward compatibility."
->> 
->> It also goes further to say that:
->> 
->> "if any of these bits are set, a page-fault exception is raised"
-> 
-> In RISC-V VM TG, A C-bit discussion is raised. So it's a comm idea to
-> support it.
-> 
+--Sig_/6MXQCe35s=qlf6_v.ujY2qt
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The C-bit was recently dropped, there is a new proposal for Page Based 
-Memory Attributes (PBMT) that we can work on / push for.
+Hi all,
 
-> Let Linux support custom PTE attributes won't get any side effect in 
-> practice.
-> 
-> IMO:
-> We needn't waste a bit in PTE, but the custom idea in PTE reserved
-> bits is necessary. Because Allwinner D1 needs custom PTE bits in
-> reserved bits to work around.
-> So I recommend just remove the "C" bit in PTE, but allow vendors to
-> define their own PTE attributes in reserved bits. I've found a way to
-> compact different PTE attributes of different vendors during the Linux
-> boot stage. That means we still could use One Image for all vendors in
-> Linux
+Today's linux-next merge of the drm-misc tree got a conflict in:
 
-The spec is clear, those attributes are for standard use only, not for 
-custom/platform use. It's one thing to implement custom CMOs where the 
-ISA doesn't have anything for it and doesn't prevent you to do so (so 
-you are not violating anything, it's just a custom extension), and we 
-can hide them behind SBI calls etc, and another to violate the current 
-Privilege Spec by using bits on PTEs that are reserved for standard use 
-only. The intentions of the VM TG are clear, not only those bits are 
-reserved but if software uses them the hw will result a page fault in 
-future revisions of the spec. What's the idea here, to support 
-non-compliant implementations on mainline ? I'm sure you have a good 
-idea on how to make this work, but as long as it violates the spec it 
-can't go in IMHO.
+  drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+
+between commits:
+
+  b453e42a6e8b ("drm/amdgpu: Add new placement for preemptible SG BOs")
+  19a1d9350be6 ("drm/amdgpu: flush gart changes after all BO recovery")
+
+from the drm and amdgpu trees and commits:
+
+  d3116756a710 ("drm/ttm: rename bo->mem and make it a pointer")
+  bfa3357ef9ab ("drm/ttm: allocate resource object instead of embedding it =
+v2")
+
+from the drm-misc tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+index 832970cff64c,53a8ab8ce2a7..000000000000
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+@@@ -460,11 -460,10 +462,11 @@@ static int amdgpu_bo_move(struct ttm_bu
+  {
+  	struct amdgpu_device *adev;
+  	struct amdgpu_bo *abo;
+- 	struct ttm_resource *old_mem =3D &bo->mem;
++ 	struct ttm_resource *old_mem =3D bo->resource;
+  	int r;
+ =20
+ -	if (new_mem->mem_type =3D=3D TTM_PL_TT) {
+ +	if (new_mem->mem_type =3D=3D TTM_PL_TT ||
+ +	    new_mem->mem_type =3D=3D AMDGPU_PL_PREEMPT) {
+  		r =3D amdgpu_ttm_backend_bind(bo->bdev, bo->ttm, new_mem);
+  		if (r)
+  			return r;
+@@@ -965,39 -962,38 +968,39 @@@ int amdgpu_ttm_alloc_gart(struct ttm_bu
+ =20
+  	addr =3D amdgpu_gmc_agp_addr(bo);
+  	if (addr !=3D AMDGPU_BO_INVALID_OFFSET) {
+- 		bo->mem.start =3D addr >> PAGE_SHIFT;
+- 	} else {
+-=20
+- 		/* allocate GART space */
+- 		placement.num_placement =3D 1;
+- 		placement.placement =3D &placements;
+- 		placement.num_busy_placement =3D 1;
+- 		placement.busy_placement =3D &placements;
+- 		placements.fpfn =3D 0;
+- 		placements.lpfn =3D adev->gmc.gart_size >> PAGE_SHIFT;
+- 		placements.mem_type =3D TTM_PL_TT;
+- 		placements.flags =3D bo->mem.placement;
+-=20
+- 		r =3D ttm_bo_mem_space(bo, &placement, &tmp, &ctx);
+- 		if (unlikely(r))
+- 			return r;
++ 		bo->resource->start =3D addr >> PAGE_SHIFT;
++ 		return 0;
++ 	}
+ =20
+- 		/* compute PTE flags for this buffer object */
+- 		flags =3D amdgpu_ttm_tt_pte_flags(adev, bo->ttm, &tmp);
++ 	/* allocate GART space */
++ 	placement.num_placement =3D 1;
++ 	placement.placement =3D &placements;
++ 	placement.num_busy_placement =3D 1;
++ 	placement.busy_placement =3D &placements;
++ 	placements.fpfn =3D 0;
++ 	placements.lpfn =3D adev->gmc.gart_size >> PAGE_SHIFT;
++ 	placements.mem_type =3D TTM_PL_TT;
++ 	placements.flags =3D bo->resource->placement;
++=20
++ 	r =3D ttm_bo_mem_space(bo, &placement, &tmp, &ctx);
++ 	if (unlikely(r))
++ 		return r;
+ =20
+- 		/* Bind pages */
+- 		gtt->offset =3D (u64)tmp.start << PAGE_SHIFT;
+- 		r =3D amdgpu_ttm_gart_bind(adev, bo, flags);
+- 		if (unlikely(r)) {
+- 			ttm_resource_free(bo, &tmp);
+- 			return r;
+- 		}
++ 	/* compute PTE flags for this buffer object */
++ 	flags =3D amdgpu_ttm_tt_pte_flags(adev, bo->ttm, tmp);
+ =20
+- 		amdgpu_gart_invalidate_tlb(adev);
+- 		ttm_resource_free(bo, &bo->mem);
+- 		bo->mem =3D tmp;
++ 	/* Bind pages */
++ 	gtt->offset =3D (u64)tmp->start << PAGE_SHIFT;
++ 	r =3D amdgpu_ttm_gart_bind(adev, bo, flags);
++ 	if (unlikely(r)) {
++ 		ttm_resource_free(bo, &tmp);
++ 		return r;
+  	}
+ =20
+++	amdgpu_gart_invalidate_tlb(adev);
++ 	ttm_resource_free(bo, &bo->resource);
++ 	ttm_bo_assign_mem(bo, tmp);
++=20
+  	return 0;
+  }
+ =20
+@@@ -1354,16 -1349,7 +1357,16 @@@ static bool amdgpu_ttm_bo_eviction_valu
+  		}
+  	}
+ =20
+- 	switch (bo->mem.mem_type) {
++ 	switch (bo->resource->mem_type) {
+ +	case AMDGPU_PL_PREEMPT:
+ +		/* Preemptible BOs don't own system resources managed by the
+ +		 * driver (pages, VRAM, GART space). They point to resources
+ +		 * owned by someone else (e.g. pageable memory in user mode
+ +		 * or a DMABuf). They are used in a preemptible context so we
+ +		 * can guarantee no deadlocks and good QoS in case of MMU
+ +		 * notifiers or DMABuf move notifiers from the resource owner.
+ +		 */
+ +		return false;
+  	case TTM_PL_TT:
+  		if (amdgpu_bo_is_amdgpu_bo(bo) &&
+  		    amdgpu_bo_encrypted(ttm_to_amdgpu_bo(bo)))
+@@@ -1942,12 -1920,7 +1945,12 @@@ int amdgpu_fill_buffer(struct amdgpu_b
+  		return -EINVAL;
+  	}
+ =20
+- 	if (bo->tbo.mem.mem_type =3D=3D AMDGPU_PL_PREEMPT) {
+++	if (bo->tbo.resource->mem_type =3D=3D AMDGPU_PL_PREEMPT) {
+ +		DRM_ERROR("Trying to clear preemptible memory.\n");
+ +		return -EINVAL;
+ +	}
+ +
+- 	if (bo->tbo.mem.mem_type =3D=3D TTM_PL_TT) {
++ 	if (bo->tbo.resource->mem_type =3D=3D TTM_PL_TT) {
+  		r =3D amdgpu_ttm_alloc_gart(&bo->tbo);
+  		if (r)
+  			return r;
+
+--Sig_/6MXQCe35s=qlf6_v.ujY2qt
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC9gmUACgkQAVBC80lX
+0GzKdwf/VgrAtDclvKEHs69tXAAZithzh+SefpouR0jFQMH3IW7NDahNp1VcbXnE
+w7Xp67S0g6SjzRmgka6oRRCz/mG/0Csw6LWEW1Ycv4fDtxSZ0FLaoypgZDyCzhNX
+lngF5lb0SbsFKmxd1oNxVP/w0m11Dka5lB49rcz2StsFCd4LJqOReX5df2qzm4ld
+/4pA3/+uTFY+A/EPnmXxQGh/cLrqHujY6GYXa8Akiwq4nzWPQm3iJBHkN+Ub9gU3
+qn3hQXka0tp0TlU18E4CZBDuYfZf8LGXgLdFBYrWvIFLR+XQgVrCLHAgOXGYHd5C
+WhgVKz1b0U7oP/e4dyohjkwNQ4dfOg==
+=/HuQ
+-----END PGP SIGNATURE-----
+
+--Sig_/6MXQCe35s=qlf6_v.ujY2qt--
