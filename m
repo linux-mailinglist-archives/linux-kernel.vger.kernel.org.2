@@ -2,372 +2,380 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E7C39D3DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 06:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E866D39D411
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 06:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbhFGEYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 00:24:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42096 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229470AbhFGEYT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 00:24:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B1ED61244;
-        Mon,  7 Jun 2021 04:22:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623039749;
-        bh=w0Tct7TLCCrzZsCnmVFxhk0rgBdL5pL2Hl2bNoy6Qgg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=UnDSNxeoqcv0/hsx2aLzTIffPPPMYcv/RSUG6CD6/DYKriUJjsZbA/q+tP77DudTo
-         VBEEcZGNgqspbxVFL8+mq490Y4jZQ0tKGYeny+JLjCVIq1PL26kppi4ZAbLpU7Ageq
-         VhKgzEKGPYD+xZ/vdL0rhZDN7tMCxluXMp0A8TSq1+td8teklCqRXxzfofsKpX5fJW
-         RIZvxIjwTPWfy/IUOcqQBlFc3+bTB7h5VPUtfGIliq2MhrbQjdu38vIXwSV7vJVAA8
-         VWjJMOOLzHAyVtKLVdeiLBPbmCq7mRhvKyF6glZ4yXfwkKtuA6/u0p52vTjeXB4Ekn
-         Zua28LPdIao5A==
-Received: by mail-lj1-f178.google.com with SMTP id n17so3144553ljg.2;
-        Sun, 06 Jun 2021 21:22:29 -0700 (PDT)
-X-Gm-Message-State: AOAM532Z+I4r4QwGt1WYR3cbkq9ocltTHI8upFqhEzbImWcElLE9nlbZ
-        ZG/XPvLzBFrrIjVFPaF5TB/C43PSEfwIXyxPoyI=
-X-Google-Smtp-Source: ABdhPJywQZATuh7ciiYZKICWSotgwqD/5go8Iab8LOhQTYgbCBGnhM+s1JtxSRM/NSUBRAltU7qg73APnt7ziEs5S50=
-X-Received: by 2002:a2e:b5d8:: with SMTP id g24mr13391275ljn.115.1623039747520;
- Sun, 06 Jun 2021 21:22:27 -0700 (PDT)
+        id S230145AbhFGEgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 00:36:39 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:59841 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhFGEgh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 00:36:37 -0400
+Received: from mail-ot1-f72.google.com ([209.85.210.72])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <koba.ko@canonical.com>)
+        id 1lq6yL-0003k4-MI
+        for linux-kernel@vger.kernel.org; Mon, 07 Jun 2021 04:34:46 +0000
+Received: by mail-ot1-f72.google.com with SMTP id k7-20020a9d4b870000b02902a5bfbbbd3bso10753379otf.18
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 21:34:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qtu4iTrpU9/kzQwEVhk1adXPjb5HoUrN2kVcPGYw1zA=;
+        b=NpRJiWLmc70uQGUiHpshPI4Z9airs08b5U9nPra1eD3YowzfweULqu7lx3my4U1Nzf
+         l8dY3QNlldaTNrzlvEI9sUbbBopS9cHEui0aLHN/h1yEM52lZp6Pc0FUm95SOskR3S8e
+         +dIKnwuvY/athh6m/iRBu2nIPjC6oHaGdlVU8LW2BOgYFR1UdulqWEYctfRV7D1i+mrw
+         yL+zaDjs6XrXVf8rrgF0tzV7KU1YZOvL6Ap93saO7+HQ9+miy3ZoNoFN8c9MlfVcUZ8d
+         CZiAtk4tAL0rB29EJueeX5MjVrfaSHLw7Rc9eJbF3IqDnb5SPO3yX0HM7yl/5/OaW3B6
+         4kOg==
+X-Gm-Message-State: AOAM531wFOOqPUxaFYhSxy6j7FrOOv+9nTNA83UpcVAr/VjZCPPPfIHu
+        Cgb8e2ZtHd4iWuLJWTBUMPKQwbFWOf4beGeaqtBwqbn8glT2am3YMq0xCvFE+zxkEIW65x8IIMa
+        wZV34Cp+YBBg7HLhtRJVZl9xd3d+r0SeM14jn/qdAG/OlUn/MWa+1b59iVA==
+X-Received: by 2002:aca:b3d5:: with SMTP id c204mr17950270oif.17.1623040484325;
+        Sun, 06 Jun 2021 21:34:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyF+pvWGAlz5BLP+XdQUyRaq6xdXzv7T8pktyNfPOrl0EkPAHMXRicNG3YKyGlYQYdM70AV5D7u90jKcEV9wkY=
+X-Received: by 2002:aca:b3d5:: with SMTP id c204mr17950262oif.17.1623040483922;
+ Sun, 06 Jun 2021 21:34:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <mhng-a5f8374f-350b-4c13-86e8-c6aa5e697454@palmerdabbelt-glaptop>
- <mhng-c0406cea-776b-49d2-a223-13a83d3a7433@palmerdabbelt-glaptop>
- <CO6PR04MB7812D8905C6EEBDE8513866F8D3C9@CO6PR04MB7812.namprd04.prod.outlook.com>
- <CAJF2gTRH6OVB1RrOyp88LDvX3fV0doJxNTM61trWxJsLaX0X0g@mail.gmail.com> <CO6PR04MB7812614750AE3CA78D49C0AD8D389@CO6PR04MB7812.namprd04.prod.outlook.com>
-In-Reply-To: <CO6PR04MB7812614750AE3CA78D49C0AD8D389@CO6PR04MB7812.namprd04.prod.outlook.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Mon, 7 Jun 2021 12:22:15 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSgC2+ULpfSQKvan7phPf8VT+nxUiekfpHELNjsQYo=CA@mail.gmail.com>
-Message-ID: <CAJF2gTSgC2+ULpfSQKvan7phPf8VT+nxUiekfpHELNjsQYo=CA@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
-To:     Anup Patel <Anup.Patel@wdc.com>
-Cc:     Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        "anup@brainfault.org" <anup@brainfault.org>,
-        "drew@beagleboard.org" <drew@beagleboard.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "wefu@redhat.com" <wefu@redhat.com>,
-        "lazyparser@gmail.com" <lazyparser@gmail.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-sunxi@lists.linux.dev" <linux-sunxi@lists.linux.dev>,
-        "guoren@linux.alibaba.com" <guoren@linux.alibaba.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>
+References: <20210603025414.226526-1-koba.ko@canonical.com>
+ <3d2e7a11-92ad-db06-177b-c6602ef1acd4@gmail.com> <CAJB-X+V4vpLoNt2C_i=3mS4UtFnDdro5+hgaFXHWxcvobO=pzg@mail.gmail.com>
+ <f969a075-25a1-84ba-daad-b4ed0e7f75f5@gmail.com> <CAJB-X+U5VEeSNS4sF0DBxc-p0nxA6QLVVrORHsscZuY37rGJ7w@mail.gmail.com>
+ <bfc68450-422d-1968-1316-64f7eaa7cbe9@gmail.com>
+In-Reply-To: <bfc68450-422d-1968-1316-64f7eaa7cbe9@gmail.com>
+From:   Koba Ko <koba.ko@canonical.com>
+Date:   Mon, 7 Jun 2021 12:34:32 +0800
+Message-ID: <CAJB-X+UDRK5-fKEGc+PS+_02HePmb34Pw_+tMyNr_iGGeE+jbQ@mail.gmail.com>
+Subject: Re: [PATCH] r8169: introduce polling method for link change
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anup,
-
-On Mon, Jun 7, 2021 at 11:38 AM Anup Patel <Anup.Patel@wdc.com> wrote:
+On Fri, Jun 4, 2021 at 7:59 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
 >
->
->
-> > -----Original Message-----
-> > From: Guo Ren <guoren@kernel.org>
-> > Sent: 06 June 2021 22:42
-> > To: Anup Patel <Anup.Patel@wdc.com>; Atish Patra <atishp@atishpatra.org>
-> > Cc: Palmer Dabbelt <palmer@dabbelt.com>; anup@brainfault.org;
-> > drew@beagleboard.org; Christoph Hellwig <hch@lst.de>; wefu@redhat.com;
-> > lazyparser@gmail.com; linux-riscv@lists.infradead.org; linux-
-> > kernel@vger.kernel.org; linux-arch@vger.kernel.org; linux-
-> > sunxi@lists.linux.dev; guoren@linux.alibaba.com; Paul Walmsley
-> > <paul.walmsley@sifive.com>
-> > Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
+> On 04.06.2021 11:08, Koba Ko wrote:
+> > On Fri, Jun 4, 2021 at 4:23 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
+> >>
+> >> On 04.06.2021 09:22, Koba Ko wrote:
+> >>> On Thu, Jun 3, 2021 at 6:00 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
+> >>>>
+> >>>> On 03.06.2021 04:54, Koba Ko wrote:
+> >>>>> For RTL8106E, it's a Fast-ethernet chip.
+> >>>>> If ASPM is enabled, the link chang interrupt wouldn't be triggered
+> >>>>> immediately and must wait a very long time to get link change interrupt.
+> >>>>> Even the link change interrupt isn't triggered, the phy link is already
+> >>>>> established.
+> >>>>>
+> >>>> At first please provide a full dmesg log and output of lspci -vv.
+> >>>> Do you have the firmware for the NIC loaded? Please provide "ethtool -i <if>"
+> >>>> output.
+> >>>
+> >>> please get the logs from here,
+> >>> https://bugzilla.kernel.org/show_bug.cgi?id=213165
+> >>>
+> >>>> Does the issue affect link-down and/or link-up detection?
+> >>>> Do you have runtime pm enabled? Then, after 10s of link-down NIC goes to
+> >>>> D3hot and link-up detection triggers a PME.
+> >>>
+> >>> Issue affect link-up.
+> >>> yes, pm runtime is enabled, but rtl8106e always stays D0 even if the
+> >>> cable isn't present.
+> >>>
+> >> Then runtime pm doesn't seem to be set to "auto". Else 10s after link loss
+> >> the chip runtime-suspends and is set to D3hot.
 > >
-> > Hi Anup and Atish,
+> > I will check this.
 > >
-> > On Thu, Jun 3, 2021 at 2:00 PM Anup Patel <Anup.Patel@wdc.com> wrote:
-> > >
-> > >
-> > >
-> > > > -----Original Message-----
-> > > > From: Palmer Dabbelt <palmer@dabbelt.com>
-> > > > Sent: 03 June 2021 09:43
-> > > > To: guoren@kernel.org
-> > > > Cc: anup@brainfault.org; drew@beagleboard.org; Christoph Hellwig
-> > > > <hch@lst.de>; Anup Patel <Anup.Patel@wdc.com>; wefu@redhat.com;
-> > > > lazyparser@gmail.com; linux-riscv@lists.infradead.org; linux-
-> > > > kernel@vger.kernel.org; linux-arch@vger.kernel.org; linux-
-> > > > sunxi@lists.linux.dev; guoren@linux.alibaba.com; Paul Walmsley
-> > > > <paul.walmsley@sifive.com>
-> > > > Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
-> > > >
-> > > > On Sat, 29 May 2021 17:30:18 PDT (-0700), Palmer Dabbelt wrote:
-> > > > > On Fri, 21 May 2021 17:36:08 PDT (-0700), guoren@kernel.org wrote:
-> > > > >> On Wed, May 19, 2021 at 3:15 PM Anup Patel <anup@brainfault.org>
-> > > > wrote:
-> > > > >>>
-> > > > >>> On Wed, May 19, 2021 at 12:24 PM Drew Fustini
-> > > > <drew@beagleboard.org> wrote:
-> > > > >>> >
-> > > > >>> > On Wed, May 19, 2021 at 08:06:17AM +0200, Christoph Hellwig
-> > > > wrote:
-> > > > >>> > > On Wed, May 19, 2021 at 02:05:00PM +0800, Guo Ren wrote:
-> > > > >>> > > > Since the existing RISC-V ISA cannot solve this problem,
-> > > > >>> > > > it is better to provide some configuration for the SOC
-> > > > >>> > > > vendor to
-> > > > customize.
-> > > > >>> > >
-> > > > >>> > > We've been talking about this problem for close to five years.
-> > > > >>> > > So no, if you don't manage to get the feature into the ISA
-> > > > >>> > > it can't be supported.
-> > > > >>> >
-> > > > >>> > Isn't it a good goal for Linux to support the capabilities
-> > > > >>> > present in the SoC that a currently being fab'd?
-> > > > >>> >
-> > > > >>> > I believe the CMO group only started last year [1] so the
-> > > > >>> > RV64GC SoCs that are going into mass production this year
-> > > > >>> > would not have had the opporuntiy of utilizing any RISC-V ISA
-> > > > >>> > extension for handling cache management.
-> > > > >>>
-> > > > >>> The current Linux RISC-V policy is to only accept patches for
-> > > > >>> frozen or ratified ISA specs.
-> > > > >>> (Refer, Documentation/riscv/patch-acceptance.rst)
-> > > > >>>
-> > > > >>> This means even if emulate CMO instructions in OpenSBI, the
-> > > > >>> Linux patches won't be taken by Palmer because CMO specification
-> > > > >>> is still in draft stage.
-> > > > >> Before CMO specification release, could we use a sbi_ecall to
-> > > > >> solve the current problem? This is not against the specification,
-> > > > >> when CMO is ready we could let users choose to use the new CMO in
-> > Linux.
-> > > > >>
-> > > > >> From a tech view, CMO trap emulation is the same as sbi_ecall.
-> > > > >>
-> > > > >>>
-> > > > >>> Also, we all know how much time it takes for RISCV international
-> > > > >>> to freeze some spec. Judging by that we are looking at another
-> > > > >>> 3-4 years at minimum.
-> > > > >
-> > > > > Sorry for being slow here, this thread got buried.
-> > > > >
-> > > > > I've been trying to work with a handful of folks at the RISC-V
-> > > > > foundation to try and get a subset of the various in-development
-> > > > > specifications (some simple CMOs, something about non-caching in
-> > > > > the page tables, and some way to prevent speculative accesse from
-> > > > > generating coherence traffic that will break non-coherent systems).
-> > > > > I'm not sure we can get this together quickly, but I'd prefer to
-> > > > > at least try before we jump to taking vendor-specificed behavior here.
-> > > > > It's obviously an up-hill battle to try and get specifications
-> > > > > through the process and I'm certainly not going to promise it will
-> > > > > work, but I'm hoping that the impending need to avoid forking the
-> > > > > ISA will be sufficient to get people behind producing some
-> > > > > specifications in a timely
-> > > > fashion.
-> > > > >
-> > > > > I wasn't aware than this chip had non-coherent devices until I saw
-> > > > > this thread, so we'd been mostly focused on the Beagle V chip.
-> > > > > That was in a sense an easier problem because the SiFive IP in it
-> > > > > was never designed to have non-coherent devices so we'd have to
-> > > > > make anything work via a series of slow workarounds, which would
-> > > > > make emulating the eventually standardized behavior reasonable in
-> > > > > terms of performance (ie, everything would be super slow so who really
-> > cares).
-> > > > >
-> > > > > I don't think relying on some sort of SBI call for the CMOs whould
-> > > > > be such a performance hit that it would prevent these systems from
-> > > > > being viable, but assuming you have reasonable performance on your
-> > > > > non-cached accesses then that's probably not going to be viable to
-> > > > > trap and emulate.  At that point it really just becomes silly to
-> > > > > pretend that we're still making things work by emulating the
-> > > > > eventually ratified behavior, as anyone who actually tries to use
-> > > > > this thing to do IO would need out of tree patches.  I'm not sure
-> > > > > exactly what the plan is for the page table bits in the
-> > > > > specification right now, but if you can give me a pointer to some
-> > > > > documentation then I'm happy to try and push for something
-> > compatible.
-> > > > >
-> > > > > If we can't make the process work at the foundation then I'd be
-> > > > > strongly in favor of just biting the bullet and starting to take
-> > > > > vendor-specific code that's been implemented in hardware and is
-> > > > > necessarry to make things work acceptably.  That's obviously a
-> > > > > sub-optimal solution as it'll lead to a bunch of ISA
-> > > > > fragmentation, but at least we'll be able to keep the software stack
-> > together.
-> > > > >
-> > > > > Can you tell us when these will be in the hands of users?  That's
-> > > > > pretty important here, as I don't want to be blocking real users
-> > > > > from having their hardware work.  IIRC there were some plans to
-> > > > > distribute early boards, but it looks like the foundation got
-> > > > > involved and I guess I lost the thread at that point.
-> > > > >
-> > > > > Sorry this is all such a headache, but hopefully we can get things
-> > > > > sorted out.
-> > > >
-> > > > I talked with some of the RISC-V foundation folks, we're not going
-> > > > to have an ISA specification for the non-coherent stuff any time
-> > > > soon.  I took a look at this code and I definately don't want to
-> > > > take it as is, but I'm not opposed to taking something that makes the
-> > hardware work as long as it's a lot cleaner.
-> > > > We've already got two of these non-coherent chips, I'm sure more
-> > > > will come, and I'd rather have the extra headaches than make
-> > > > everyone fork the software stack.
-> > >
-> > > Thanks for confirming. The CMO extension is still in early stages so
-> > > it will certainly take more time for them. After CMO extension is
-> > > finalized, it will take some more time to have actual RISC-V platforms with
-> > CMO implemented.
-> > >
-> > > >
-> > > > After talking to Atish it looks like there's likely to be an SBI
-> > > > extension to handle the CMOs, which should let us avoid the bulk of
-> > > > the vendor-specific behavior in the kernel.  I know some people are
-> > > > worried about adding to the SBI surface.  I'm worried about that
-> > > > too, but that's way better than sticking a bunch of vendor-specific
-> > > > instructions into the kernel.  The SBI extension should make for a
-> > > > straight-forward cache flush implementation in Linux, so let's just plan on
-> > that getting through quickly (as has been done before).
-> > >
-> > > Yes, I agree. We can have just a single SBI call which is meant for
-> > > DMA sync purpose only which means it will flush/invalidate pages from
-> > > all cache levels irrespective of the cache hierarchy (i.e.
-> > > flush/invalidate to RAM). The CMO extension might more generic cache
-> > > operations which can target any cache level.
-> > >
-> > > I am already preparing a write-up for SBI DMA sync call in SBI spec. I
-> > > will share it with you separately as well.
-> > >
-> > > >
-> > > > Unfortunately we've yet to come up with a way to handle the
-> > > > non-cacheable mappings without introducing a degree of
-> > > > vendor-specific behavior or seriously impacting performance (mark
-> > > > them as not valid and deal with them in the trap handler).  I'm not
-> > > > really sure it counts as supporting the hardware if it's massively
-> > > > slow, so that really leaves us with vendor-specific mappings as the only
-> > option to make these chips work.
-> > >
-> > > A RISC-V platform can have non-cacheable mappings is following
-> > > possible
-> > > ways:
-> > > 1) Fixed physical address range as non-cacheable using PMAs
-> > > 2) Custom page table attributes
-> > > 3) Svpmbt extension being defined by RVI
-> > >
-> > > Atish and me both think it is possible to have RISC-V specific DMA ops
-> > > implementation which can handle all above case. Atish is already
-> > > working on DMA ops implementation for RISC-V.
-> > Not only DMA ops, but also icache_sync & __vdso_icache_sync. Please have a
-> > look at:
-> > https://lore.kernel.org/linux-riscv/1622970249-50770-12-git-send-email-
-> > guoren@kernel.org/T/#u
->
-> The icache_sync and __vdso_icache_sync will have to be addressed
-> differently. The SBI DMA sync extension cannot address this.
-Agree
-
->
-> It seems Allwinner D1 have more non-standard stuff:
-> 1) Custom PTE bits for IO-coherent access
-> 2) Custom data cache flush/invalidate for DMA sync
-> 3) Custom icache flush/invalidate
-Yes, but 3) is a performance optimization, not critical for running.
-
->
-> Other hand, BeagleV has only two problems:
-> 1) Custom physical address range for IO-coherent access
-> 2) Custom L2 cache flush/invalidate for DMA sync
-https://github.com/starfive-tech/linux/commit/d4c4044c08134dca8e5eaaeb6d3faf97dc453b6d
-
-Currently, they still use DMA sync with DMA descriptor, are you sure
-they have minor memory physical address.
-
->
-> From above #2, can be solved by SBI DMA sync call and
-> Linux DMA ops for both BeagleV and Allwinner D1
->
-> On BeagleV, issue #1 can be solved using "dma-ranges".
->
-> On Allwinner D1, issues #1 and #3 need to be addressed
-> separately.
->
-> I think supporting BeagleV in upstream Linux is relatively
-> easy compared to Allwinner D1.
->
-> @Guo, please check if you can reserve dedicated
-> physical address range for IO-coherent access (just like
-> BeagleV). If yes, then we can tackle issue #1 for Allwinner
-> D1 using "dma-ranges" DT property.
-There is no dedicated physical address range for IO-coherent access in
-D1. But the solution you mentioned couldn't solve all requirements.
-Only one mirror physical address range is not enough, we need at least
-three (Normal, DMA desc, frame buffer).
-And that will triple the memory physical address which can't be
-accepted by our users from the hardware design cost view.
-
- "dma-ranges" DT property is a big early MIPS smell. ARM SOC users
-can't accept it. (They just say replace the CPU, but don't touch
-anything other.)
-
-PTE attributes are the non-coherent solution for many years. MIPS also
-follows that now:
-ref arch/mips/include/asm/pgtable-bits.h & arch/mips/include/asm/pgtable.h
-
-#ifndef _CACHE_CACHABLE_NO_WA
-#define _CACHE_CACHABLE_NO_WA           (0<<_CACHE_SHIFT)
-#endif
-#ifndef _CACHE_CACHABLE_WA
-#define _CACHE_CACHABLE_WA              (1<<_CACHE_SHIFT)
-#endif
-#ifndef _CACHE_UNCACHED
-#define _CACHE_UNCACHED                 (2<<_CACHE_SHIFT)
-#endif
-#ifndef _CACHE_CACHABLE_NONCOHERENT
-#define _CACHE_CACHABLE_NONCOHERENT     (3<<_CACHE_SHIFT)
-#endif
-#ifndef _CACHE_CACHABLE_CE
-#define _CACHE_CACHABLE_CE              (4<<_CACHE_SHIFT)
-#endif
-#ifndef _CACHE_CACHABLE_COW
-#define _CACHE_CACHABLE_COW             (5<<_CACHE_SHIFT)
-#endif
-#ifndef _CACHE_CACHABLE_CUW
-#define _CACHE_CACHABLE_CUW             (6<<_CACHE_SHIFT)
-#endif
-#ifndef _CACHE_UNCACHED_ACCELERATED
-#define _CACHE_UNCACHED_ACCELERATED     (7<<_CACHE_SHIFT)
-
-We can't force our users to double/triplicate their physical memory regions.
-
->
-> Regards,
-> Anup
->
+> >>
+> >>>>
+> >>>>> Introduce a polling method to watch the status of phy link and disable
+> >>>>> the link change interrupt.
+> >>>>> Also add a quirk for those realtek devices have the same issue.
+> >>>>>
+> >>>> Which are the affected chip versions? Did you check with Realtek?
+> >>>> Your patch switches to polling for all Fast Ethernet versions,
+> >>>> and that's not what we want.
+> >>>
+> >>> I don't know the exact version, only the chip name 806e(pci device id 0x8165).
+> >>> ok, Im asking Realtek to help how to identify the chip issue is observed.
+> >>>
+> >> At least your Bugzilla report refers to VER_39. PCI device id 0x8136 is shared
+> >> by all fast ethernet chip versions.
+> >> Do you know other affected chip versions apart from VER_39 ?
+> >>
+> >> In the Bugzilla report you also write the issue occurs with GBit-capable
+> >> link partners. This sounds more like an aneg problem.
+> >> The issue doesn't occur with fast ethernet link partners?
 > >
+> > Issue wouldn't be observed when the link-partner has only FE capability.
 > >
-> > >
-> > > >
-> > > > This implementation, which adds some Kconfig entries that control
-> > > > page table bits, definately isn't suitable for upstream.  Allowing
-> > > > users to set arbitrary page table bits will eventually conflict with
-> > > > the standard, and is just going to be a mess.  It'll also lead to
-> > > > kernels that are only compatible with specific designs, which we're
-> > > > trying very hard to avoid.  At a bare minimum we'll need some way to
-> > > > detect systems with these page table bits before setting them, and
-> > > > some description of what the bits actually do so we can reason about
-> > them.
-> > >
-> > > Yes, vendor specific Kconfig options are strict NO NO. We can't
-> > > give-up the goal of unified kernel image for all platforms.
-> > >
-> > > Regards,
-> > > Anup
-> >
-> >
-> >
-> > --
-> > Best Regards
-> >  Guo Ren
-> >
-> > ML: https://lore.kernel.org/linux-csky/
+> Weird. I still have no clue how FE vs. GE support at link partner and
+> ASPM could be related. I could understand that the PHY might have a
+> problem with a GE link partner and aneg takes more time than usual.
+> But this would be completely unrelated to a potential issue with
+> ASPM on the PCIe link.
+>
+> And it's also not clear how L1_1 can cause an issue if the NIC doesn't
+> support L1 sub-states. Maybe the root cause isn't with the NIC but
+> with some other component in the PCIe path (e.g. bridge).
+>
 
+I prefer that there's a interrupt issue when aspm is enabled on RTL8106e,
 
+> >>
+> >> Your bug report also includes a patch that disables L1_1 only.
+> >> Not sure how this is related because the chip version we speak about
+> >> here doesn't support L1 sub-states.
+> >
+> > I have tried to enable L0s, L1 and don't disable L1 substate,
+> > but still get the issue that interrupt can't be fired immediately but
+> > the Link status is up.
+> >
+> >>
+> >>>>
+> >>>> My suspicion would be that something is system-dependent. Else I think
+> >>>> we would have seen such a report before.
+> >>> On the mainline, the aspm is disable, so you may not observe this.
+> >>> If you enable ASPM and must wait CHIP go to power-saving mode, then
+> >>> you can observe the issue.
+> >>>>
+> >>
+> >> So what you're saying is that mainline is fine and your problem is with
+> >> a downstream kernel with re-enabled ASPM? So there's nothing broken in
+> >> mainline? In mainline you have the option to re-enable ASPM states
+> >> individually via sysfs (link subdir at pci device).
+> >
+> > If enable L1_1 on the mainline, the issue could be observed too.
+> >
+> It has a reason that ASPM is disabled per default in mainline. Different
+> chip versions have different types of issues with ASPM enabled.
+> However several chip versions work fine with ASPM (also LI sub-states),
+> therefore users can re-enable ASPM states at own risk.
 
--- 
-Best Regards
- Guo Ren
+After consulting with REALTEK, I can identify RTL8106e by PCI_VENDOR
+REALTEK, DEVICE 0x8136, Revision 0x7.
+I would like to make PHY_POLL as default for RTL8106E on V2.
+because there's no side effects besides the cpu usage rate would be a
+little higher,
+How do you think?
 
-ML: https://lore.kernel.org/linux-csky/
+> > Thanks
+> >>
+> >>>>> Signed-off-by: Koba Ko <koba.ko@canonical.com>
+> >>>>> ---
+> >>>>>  drivers/net/ethernet/realtek/r8169.h      |   2 +
+> >>>>>  drivers/net/ethernet/realtek/r8169_main.c | 112 ++++++++++++++++++----
+> >>>>>  2 files changed, 98 insertions(+), 16 deletions(-)
+> >>>>>
+> >>>>> diff --git a/drivers/net/ethernet/realtek/r8169.h b/drivers/net/ethernet/realtek/r8169.h
+> >>>>> index 2728df46ec41..a8c71adb1b57 100644
+> >>>>> --- a/drivers/net/ethernet/realtek/r8169.h
+> >>>>> +++ b/drivers/net/ethernet/realtek/r8169.h
+> >>>>> @@ -11,6 +11,8 @@
+> >>>>>  #include <linux/types.h>
+> >>>>>  #include <linux/phy.h>
+> >>>>>
+> >>>>> +#define RTL8169_LINK_TIMEOUT (1 * HZ)
+> >>>>> +
+> >>>>>  enum mac_version {
+> >>>>>       /* support for ancient RTL_GIGA_MAC_VER_01 has been removed */
+> >>>>>       RTL_GIGA_MAC_VER_02,
+> >>>>> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+> >>>>> index 2c89cde7da1e..70aacc83d641 100644
+> >>>>> --- a/drivers/net/ethernet/realtek/r8169_main.c
+> >>>>> +++ b/drivers/net/ethernet/realtek/r8169_main.c
+> >>>>> @@ -178,6 +178,11 @@ static const struct pci_device_id rtl8169_pci_tbl[] = {
+> >>>>>
+> >>>>>  MODULE_DEVICE_TABLE(pci, rtl8169_pci_tbl);
+> >>>>>
+> >>>>> +static const struct pci_device_id rtl8169_linkChg_polling_enabled[] = {
+> >>>>> +     { PCI_VDEVICE(REALTEK, 0x8136), RTL_CFG_NO_GBIT },
+> >>>>> +     { 0 }
+> >>>>> +};
+> >>>>> +
+> >>>>
+> >>>> This doesn't seem to be used.
+> >>>>
+> >>>>>  enum rtl_registers {
+> >>>>>       MAC0            = 0,    /* Ethernet hardware address. */
+> >>>>>       MAC4            = 4,
+> >>>>> @@ -618,6 +623,7 @@ struct rtl8169_private {
+> >>>>>       u16 cp_cmd;
+> >>>>>       u32 irq_mask;
+> >>>>>       struct clk *clk;
+> >>>>> +     struct timer_list link_timer;
+> >>>>>
+> >>>>>       struct {
+> >>>>>               DECLARE_BITMAP(flags, RTL_FLAG_MAX);
+> >>>>> @@ -1179,6 +1185,16 @@ static void rtl8168ep_stop_cmac(struct rtl8169_private *tp)
+> >>>>>       RTL_W8(tp, IBCR0, RTL_R8(tp, IBCR0) & ~0x01);
+> >>>>>  }
+> >>>>>
+> >>>>> +static int rtl_link_chng_polling_quirk(struct rtl8169_private *tp)
+> >>>>> +{
+> >>>>> +     struct pci_dev *pdev = tp->pci_dev;
+> >>>>> +
+> >>>>> +     if (pdev->vendor == 0x10ec && pdev->device == 0x8136 && !tp->supports_gmii)
+> >>>>> +             return 1;
+> >>>>> +
+> >>>>> +     return 0;
+> >>>>> +}
+> >>>>> +
+> >>>>>  static void rtl8168dp_driver_start(struct rtl8169_private *tp)
+> >>>>>  {
+> >>>>>       r8168dp_oob_notify(tp, OOB_CMD_DRIVER_START);
+> >>>>> @@ -4608,6 +4624,75 @@ static void rtl_task(struct work_struct *work)
+> >>>>>       rtnl_unlock();
+> >>>>>  }
+> >>>>>
+> >>>>> +static void r8169_phylink_handler(struct net_device *ndev)
+> >>>>> +{
+> >>>>> +     struct rtl8169_private *tp = netdev_priv(ndev);
+> >>>>> +
+> >>>>> +     if (netif_carrier_ok(ndev)) {
+> >>>>> +             rtl_link_chg_patch(tp);
+> >>>>> +             pm_request_resume(&tp->pci_dev->dev);
+> >>>>> +     } else {
+> >>>>> +             pm_runtime_idle(&tp->pci_dev->dev);
+> >>>>> +     }
+> >>>>> +
+> >>>>> +     if (net_ratelimit())
+> >>>>> +             phy_print_status(tp->phydev);
+> >>>>> +}
+> >>>>> +
+> >>>>> +static unsigned int
+> >>>>> +rtl8169_xmii_link_ok(struct net_device *dev)
+> >>>>> +{
+> >>>>> +     struct rtl8169_private *tp = netdev_priv(dev);
+> >>>>> +     unsigned int retval;
+> >>>>> +
+> >>>>> +     retval = (RTL_R8(tp, PHYstatus) & LinkStatus) ? 1 : 0;
+> >>>>> +
+> >>>>> +     return retval;
+> >>>>> +}
+> >>>>> +
+> >>>>> +static void
+> >>>>> +rtl8169_check_link_status(struct net_device *dev)
+> >>>>> +{
+> >>>>> +     struct rtl8169_private *tp = netdev_priv(dev);
+> >>>>> +     int link_status_on;
+> >>>>> +
+> >>>>> +     link_status_on = rtl8169_xmii_link_ok(dev);
+> >>>>> +
+> >>>>> +     if (netif_carrier_ok(dev) == link_status_on)
+> >>>>> +             return;
+> >>>>> +
+> >>>>> +     phy_mac_interrupt(tp->phydev);
+> >>>>> +
+> >>>>> +     r8169_phylink_handler (dev);
+> >>>>> +}
+> >>>>> +
+> >>>>> +static void rtl8169_link_timer(struct timer_list *t)
+> >>>>> +{
+> >>>>> +     struct rtl8169_private *tp = from_timer(tp, t, link_timer);
+> >>>>> +     struct net_device *dev = tp->dev;
+> >>>>> +     struct timer_list *timer = t;
+> >>>>> +     unsigned long flags;
+> >>>>
+> >>>> flags isn't used and triggers a compiler warning. Did you even
+> >>>> compile-test your patch?
+> >>>>
+> >>>>> +
+> >>>>> +     rtl8169_check_link_status(dev);
+> >>>>> +
+> >>>>> +     if (timer_pending(&tp->link_timer))
+> >>>>> +             return;
+> >>>>> +
+> >>>>> +     mod_timer(timer, jiffies + RTL8169_LINK_TIMEOUT);
+> >>>>> +}
+> >>>>> +
+> >>>>> +static inline void rtl8169_delete_link_timer(struct net_device *dev, struct timer_list *timer)
+> >>>>> +{
+> >>>>> +     del_timer_sync(timer);
+> >>>>> +}
+> >>>>> +
+> >>>>> +static inline void rtl8169_request_link_timer(struct net_device *dev)
+> >>>>> +{
+> >>>>> +     struct rtl8169_private *tp = netdev_priv(dev);
+> >>>>> +
+> >>>>> +     timer_setup(&tp->link_timer, rtl8169_link_timer, TIMER_INIT_FLAGS);
+> >>>>> +}
+> >>>>> +
+> >>>>>  static int rtl8169_poll(struct napi_struct *napi, int budget)
+> >>>>>  {
+> >>>>>       struct rtl8169_private *tp = container_of(napi, struct rtl8169_private, napi);
+> >>>>> @@ -4624,21 +4709,6 @@ static int rtl8169_poll(struct napi_struct *napi, int budget)
+> >>>>>       return work_done;
+> >>>>>  }
+> >>>>>
+> >>>>> -static void r8169_phylink_handler(struct net_device *ndev)
+> >>>>> -{
+> >>>>> -     struct rtl8169_private *tp = netdev_priv(ndev);
+> >>>>> -
+> >>>>> -     if (netif_carrier_ok(ndev)) {
+> >>>>> -             rtl_link_chg_patch(tp);
+> >>>>> -             pm_request_resume(&tp->pci_dev->dev);
+> >>>>> -     } else {
+> >>>>> -             pm_runtime_idle(&tp->pci_dev->dev);
+> >>>>> -     }
+> >>>>> -
+> >>>>> -     if (net_ratelimit())
+> >>>>> -             phy_print_status(tp->phydev);
+> >>>>> -}
+> >>>>> -
+> >>>>>  static int r8169_phy_connect(struct rtl8169_private *tp)
+> >>>>>  {
+> >>>>>       struct phy_device *phydev = tp->phydev;
+> >>>>> @@ -4769,6 +4839,10 @@ static int rtl_open(struct net_device *dev)
+> >>>>>               goto err_free_irq;
+> >>>>>
+> >>>>>       rtl8169_up(tp);
+> >>>>> +
+> >>>>> +     if (rtl_link_chng_polling_quirk(tp))
+> >>>>> +             mod_timer(&tp->link_timer, jiffies + RTL8169_LINK_TIMEOUT);
+> >>>>> +
+> >>>>>       rtl8169_init_counter_offsets(tp);
+> >>>>>       netif_start_queue(dev);
+> >>>>>  out:
+> >>>>> @@ -4991,7 +5065,10 @@ static const struct net_device_ops rtl_netdev_ops = {
+> >>>>>
+> >>>>>  static void rtl_set_irq_mask(struct rtl8169_private *tp)
+> >>>>>  {
+> >>>>> -     tp->irq_mask = RxOK | RxErr | TxOK | TxErr | LinkChg;
+> >>>>> +     tp->irq_mask = RxOK | RxErr | TxOK | TxErr;
+> >>>>> +
+> >>>>> +     if (!rtl_link_chng_polling_quirk(tp))
+> >>>>> +             tp->irq_mask |= LinkChg;
+> >>>>>
+> >>>>>       if (tp->mac_version <= RTL_GIGA_MAC_VER_06)
+> >>>>>               tp->irq_mask |= SYSErr | RxOverflow | RxFIFOOver;
+> >>>>> @@ -5436,6 +5513,9 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+> >>>>>       if (pci_dev_run_wake(pdev))
+> >>>>>               pm_runtime_put_sync(&pdev->dev);
+> >>>>>
+> >>>>> +     if (rtl_link_chng_polling_quirk(tp))
+> >>>>> +             rtl8169_request_link_timer(dev);
+> >>>>> +
+> >>>>>       return 0;
+> >>>>>  }
+> >>>>>
+> >>>>>
+> >>>>
+> >>>> All this isn't needed. If you want to switch to link status polling,
+> >>>> why don't you simply let phylib do it? PHY_MAC_INTERRUPT -> PHY_POLL
+> >>>
+> >>> Thanks for suggestions, I tried to use PHY_POLL, it could do the same
+> >>> thing that I did.
+> >>>
+> >>>> Your timer-based code most likely would have problems if runtime pm
+> >>>> is enabled. Then you try to read the link status whilst NIC is in
+> >>>> D3hot.
+> >>
+>
