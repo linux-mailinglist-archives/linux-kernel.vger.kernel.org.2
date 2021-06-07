@@ -2,88 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107DF39D8C4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD1739D8FC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230311AbhFGJcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:32:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhFGJcB (ORCPT
+        id S230372AbhFGJma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:42:30 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:16664 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230211AbhFGJm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:32:01 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12466C061766;
-        Mon,  7 Jun 2021 02:30:11 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id u7so8312417plq.4;
-        Mon, 07 Jun 2021 02:30:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L2JerVA1VHCTyizXqePnq3qQnv++F/TT5NpQwMNuIAo=;
-        b=JGUo/jsLGJSGL19clNMaZPJzD9DG1+PVVGHz7WaaBSUTqCrB7X1ZeTIqNEgp7SUtma
-         Yod9Qw+1oEvjvDq/rO3ftHFYe+kAWUHGK1xUT0tCTwkZByUJ/NrCi1a61hZyx2ZIW4r/
-         WvGA+AUjybNtTNCdqDDYOQ3wK5F40H1z89jxkHtzghyRYSv2gs9LOk0/zeodXgGsLTqG
-         Z9lyBvX4yYOtYifKok1oKuRFstqU12Px70X9iiQyWqgoEtkGSSOGggeLeWKXcrniUMod
-         iNe2HNKz1pVur46PlZFahgapovTuN3u7nKyVO6z8TuwzJv9Uu7b9vvkKW3rDfUjVLtt2
-         7KRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L2JerVA1VHCTyizXqePnq3qQnv++F/TT5NpQwMNuIAo=;
-        b=SKku1fxqyjbJr56m2hvyT0/cYZK2wZKnvQwoegh0cQRlNpjKG3kwmNWJD8MIHeoJGo
-         aWCfYMxPpnTMs0/XoBW9jaiVDiq4/qlDee90UivXHFOqJ9pY0UmYauVMA5uXYF0q5bEX
-         Msmz6MuGySHALEzS5GWObcRINCf0wtXDCNYX96kvntTtheIazqWW604DqGsXdetTPBz6
-         7Xf8casS5DyZIRef7EQmtEnH2psJDd5TUvwM9YRvUm074Afr2GJEL0Ka0YtCC31DsSMb
-         VKZ6jM4KWudzsi8ieFD2onadOkfGK9VQ0IoiII2K0l4fQ1tJgEyzSudDcQw/1KflBD6/
-         wf6g==
-X-Gm-Message-State: AOAM531AJR0uIH2Oegr6qCZDFfKcCAbMkG5uYNqB4CE336IQdGebqgb3
-        mF95pBfk+V+28l9tnWp0yqm6m7Y6BWomLJKdGr/7gXoZDw0=
-X-Google-Smtp-Source: ABdhPJxb3LYV/XLgT8301IX0JYp7qKmnU5PoNHx2d9CN4pqEbPUmH921akvsCKwQx5s5ta91uAEVkrGsxGcpM1yw++U=
-X-Received: by 2002:a17:90a:17ad:: with SMTP id q42mr31826816pja.181.1623058209193;
- Mon, 07 Jun 2021 02:30:09 -0700 (PDT)
+        Mon, 7 Jun 2021 05:42:28 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210607094035epoutp04b3332a6d9f321c0aaef9bbd48a708a1c~GQ2lMl-fJ2617526175epoutp04L
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 09:40:35 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210607094035epoutp04b3332a6d9f321c0aaef9bbd48a708a1c~GQ2lMl-fJ2617526175epoutp04L
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1623058835;
+        bh=5QbUxacVjicXIUqFWDDC3OxkkBRcg5dBU0ahGmISkxc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=VRt9crE4KIfg5K8Tzy3M6lokB52HhlOlBoIbcNU1hH+rCDP+6A4U1fJkDTne26ofx
+         rpyE7tPdwgu8/XnILRd5z8uMT4iEKk/LiWXgmbWeIM0Pc4pCwKHECHFP92a8umj/tp
+         9VjfImk3K9//EAlXF8C2r4kDyBHTcmhxbQi8GRqg=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210607094033epcas1p2769ecd2b169e74dbb9a9cf5cac9566c3~GQ2j0mu5m2009220092epcas1p2b;
+        Mon,  7 Jun 2021 09:40:33 +0000 (GMT)
+Received: from epsmges1p5.samsung.com (unknown [182.195.40.165]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4Fz7dr3Hlpz4x9Py; Mon,  7 Jun
+        2021 09:40:32 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A6.67.09736.099EDB06; Mon,  7 Jun 2021 18:40:32 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210607094031epcas1p1f4a9ee01eaa4652ba0e8eb6a4964c952~GQ2hwV9LS2551625516epcas1p1r;
+        Mon,  7 Jun 2021 09:40:31 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210607094031epsmtrp2ba1e4997e34ef5f4867334171326fc37~GQ2hvEmsB1681416814epsmtrp2g;
+        Mon,  7 Jun 2021 09:40:31 +0000 (GMT)
+X-AuditID: b6c32a39-8d9ff70000002608-43-60bde9909318
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        AB.43.08637.F89EDB06; Mon,  7 Jun 2021 18:40:31 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.99.105]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210607094031epsmtip16d3917880caace85b863b6dcd8582d28~GQ2hZaeAF1612816128epsmtip1Y;
+        Mon,  7 Jun 2021 09:40:31 +0000 (GMT)
+From:   Changheun Lee <nanich.lee@samsung.com>
+To:     bvanassche@acm.org
+Cc:     Johannes.Thumshirn@wdc.com, alex_y_xu@yahoo.ca,
+        alim.akhtar@samsung.com, asml.silence@gmail.com,
+        avri.altman@wdc.com, axboe@kernel.dk, bgoncalv@redhat.com,
+        cang@codeaurora.org, damien.lemoal@wdc.com,
+        gregkh@linuxfoundation.org, hch@infradead.org, jaegeuk@kernel.org,
+        jejb@linux.ibm.com, jisoo2146.oh@samsung.com,
+        junho89.kim@samsung.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, ming.lei@redhat.com,
+        mj0123.lee@samsung.com, nanich.lee@samsung.com, osandov@fb.com,
+        patchwork-bot@kernel.org, seunghwan.hyun@samsung.com,
+        sookwan7.kim@samsung.com, tj@kernel.org, tom.leiming@gmail.com,
+        woosung2.lee@samsung.com, yi.zhang@redhat.com,
+        yt0928.kim@samsung.com
+Subject: Re: [PATCH v12 3/3] ufs: set max_bio_bytes with queue max sectors
+Date:   Mon,  7 Jun 2021 18:21:56 +0900
+Message-Id: <20210607092156.16774-1-nanich.lee@samsung.com>
+X-Mailer: git-send-email 2.29.0
+In-Reply-To: <004bef40-1667-3b60-adaf-bea2b15f2514@acm.org>
 MIME-Version: 1.0
-References: <20210606200911.32076-1-andy.shevchenko@gmail.com> <YL3lomK79iIuE13f@kuha.fi.intel.com>
-In-Reply-To: <YL3lomK79iIuE13f@kuha.fi.intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 7 Jun 2021 12:29:53 +0300
-Message-ID: <CAHp75Ve5Kq4Wn0f2AxcyK3gP8Qs1s5fWvyVDjAyToqMpA5Humg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/3] usb: typec: intel_pmc_mux: Put fwnode in error
- case during ->probe()
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        USB <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Tf0xTVxTHd99rXwsR7QpjN4RJV7dsMPlRELygMBKNPsFkkM1lY1tKhbfC
+        6K+0xSkzSqiUDRBKjBg7fjhgyFAHQegKA9QSbZBSR8qvIcoYMAYbv4VRcGQtDzP+u+fcz/d+
+        zzk3h41zDSwvdqpMTSllIgmfcGUYOnz9/XVTbYlBa6Uc9OPwTRb6rcxAoJJaA0BT9j4C3XhS
+        SKCWnnKAiuftOFqsq2ai7JwVDGkq6wjUpavA0HidHkcVgwYM5Y9nMdG/uU8xtDyqQm1D7yBb
+        SwmB8gaMBLpu3sCQ6ZIGQ1dul+Cof8TCQh1P+xhotKoIR9bORSYqG4tGa9fvAzS3OsBCD42X
+        cDRgLSZQXZudiOaRtt5Y0lZwESOLNLMssln/hEXervEjbd3pZEPtNwSpq7gLyDulN1nkwsQQ
+        g5xr7yPIgsZaQC417CZz7uZhpMlUjcftSpAcTKFEyZSSR8mS5MmpMnEkP/Z94SFhaFiQwF8Q
+        jvbzeTKRlIrkHz4e538kVeKYF593SiRJd6TiRCoVPzDqoFKerqZ4KXKVOpJPKZIlCkGQIkAl
+        kqrSZeKAJLk0QhAUFBzqIBMlKYYOK6Hocj89PXIPZIJnu3IBmw05+2B/f0wucGFzOUYAH5ik
+        ucDVcV4EsOhxHYMOVgC0P75FOCmnYK31GpO+aAPwvrZyK1gC0KRZwJwUwdkLC2aGNhUeHE9o
+        e7YCnBDOmWHCekshcHq7c2Jg5eSnTobBeRPaF2ybvBvnALywoGfQbj7w+Ug+7sRdHPm5R540
+        8jLsvDq+ieAORNP0Le58HnL+cIHtpVaM1h6GP2k1W1W7w2lzI4s+e8Gl2TaCFuQBqNGWAzrQ
+        AVg1Wb2lDoGLS0ubheIcX1jXEkinX4fN66WAdt4JZ5fzmfQc3eDXWi6NvAEtF0bwF16Tt5q3
+        XiThX4XNBD2sAgBnxkZxHeDptzWk39aQ/n/nawCvBZ6UQiUVUyqBInT7DzeAzQXyCzeCKzPz
+        ASaAsYEJQDbO93CL8W5N5Loli85kUEq5UJkuoVQmEOqYdhHu9UqS3LGBMrVQEBocEhKC9oXt
+        DwsN4b/qJj70VSKXIxapqTSKUlDKFzqM7eKVieWci31QFJHicj5cG7ZT2Dk8re3d4Xvgy5qu
+        73S/W3nLtSuv5XrzWVm6mB7QdARGV73tP22eP7ZafJbnHd1YHMJzvVHs41Hf8PmHINuU/XNR
+        4Mfl4uYT8Z/9UPOwv37GKu1mLGc0nGSVLcTbuPnhf34SxTypWW8yl6whon49Stnzvdh8Lj5b
+        dOeopU9/PK0+w2d3QoN2cNy7bEq4IuvJUX7xd5k6fTrh9NmWxGDBoziVeU+r6Iw5x3hvw55m
+        ic/K8zlvX5hQJF/WtQ++d+qXw7WNV/f+80FmbLxh+GLvxAnf/EK2VX050Tj6UVXXu3vGnr+l
+        6XbpWj06FvfShqUH7Ij4tY3PUKWIBH64UiX6Dwympl7JBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrDIsWRmVeSWpSXmKPExsWy7bCSnG7/y70JBjvXSVisu7OG3eLBvG1s
+        FnNWbWO0ePnzKpvF6rv9bBa7Ls5ntJj24Sezxaf1y1gtWtu/MVk0L17PZnF6wiImiyfrZzFb
+        LLqxjcmi50kTq8XfrntMFl8fFlvsvaVtcXnXHDaL7us72CyWH//HZHFocjOTxfTNc5gtrt0/
+        w25x+N5VFouHSyYyW5w7+YnVYt5jB4tfy48yWrz/cZ3d4tSOycwW189NY7NYv/cnm4OCx+Ur
+        3h6X+3qZPCY2v2P32DnrLrvH5hVaHpfPlnpsWtXJ5jFh0QFGj/1z17B7fHx6i8Xj/b6rbB59
+        W1YxenzeJOfRfqCbyePQoWXMAfxRXDYpqTmZZalF+nYJXBnbDp9jKzgtXPHq/kHGBsYv/F2M
+        nBwSAiYSv/YsYO1i5OIQEtjNKNH4s48JIiElcfzEW6AEB5AtLHH4cDFIWEjgI6NEc382iM0m
+        oCPR9/YWG4gtIiAmcfnLN0aQOcwCU9kkZj0/wwTSKyzgJbH4eQxIDYuAqsTPj5fB6nkFrCVa
+        Ps5igVglL/Hnfg8zSDknUPz9eTEQU0jASmLf9wiIakGJkzOfgFUzA1U3b53NPIFRYBaS1Cwk
+        qQWMTKsYJVMLinPTc4sNCwzzUsv1ihNzi0vz0vWS83M3MYIThJbmDsbtqz7oHWJk4mA8xCjB
+        wawkwuslsydBiDclsbIqtSg/vqg0J7X4EKM0B4uSOO+FrpPxQgLpiSWp2ampBalFMFkmDk6p
+        BqatK+wnrfG+tW6P2/7nFiKR4R55vM9vbXbfaHFHravD8PGsv3tNYzezOLhPm6H8JdXNlmcb
+        S4b+xavK/42mnalbo2axccc+IR6n50+0eo8cTuSdsMTk/QwhsdtXfql+Tk8w+PbzTVdOztYd
+        Ju6PZ/ivel8qejSK/+fHpTJP36WyHq4Pun4tYmUG28284HsHXV2Lp7SLWf/NYg1m2vjMk8fj
+        i/0avluM13wOWG+S43AxabA98OG8368Gb2Gnx1IJ/nY/ZoQ8zFg8+6HxriAZ2f8nXli6nbC+
+        L1H24/RxmXP6SRNjGVp7ZZiPRzpfsmO3t/229EV+Q8Ph2qWJv0v1l3+YELLowtQDvq5KWdEf
+        1nUpsRRnJBpqMRcVJwIAtf7lrn8DAAA=
+X-CMS-MailID: 20210607094031epcas1p1f4a9ee01eaa4652ba0e8eb6a4964c952
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210607094031epcas1p1f4a9ee01eaa4652ba0e8eb6a4964c952
+References: <004bef40-1667-3b60-adaf-bea2b15f2514@acm.org>
+        <CGME20210607094031epcas1p1f4a9ee01eaa4652ba0e8eb6a4964c952@epcas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 12:23 PM Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
-> On Sun, Jun 06, 2021 at 11:09:09PM +0300, Andy Shevchenko wrote:
-> > device_get_next_child_node() bumps a reference counting of a returned variable.
+> On 6/3/21 10:03 PM, Changheun Lee wrote:
+> > Set max_bio_bytes same with queue max sectors. It will lead to fast bio
+> > submit when bio size is over than queue max sectors. And it might be helpful
+> > to align submit bio size in some case.
+> > 
+> > Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
+> > ---
+> >  drivers/scsi/ufs/ufshcd.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> > index 3eb54937f1d8..37365a726517 100644
+> > --- a/drivers/scsi/ufs/ufshcd.c
+> > +++ b/drivers/scsi/ufs/ufshcd.c
+> > @@ -4858,6 +4858,7 @@ static int ufshcd_slave_configure(struct scsi_device *sdev)
+> >  {
+> >  	struct ufs_hba *hba = shost_priv(sdev->host);
+> >  	struct request_queue *q = sdev->request_queue;
+> > +	unsigned int max_bio_bytes;
+> >  
+> >  	blk_queue_update_dma_pad(q, PRDT_DATA_BYTE_COUNT_PAD - 1);
+> >  	if (hba->quirks & UFSHCD_QUIRK_ALIGN_SG_WITH_PAGE_SIZE)
+> > @@ -4868,6 +4869,10 @@ static int ufshcd_slave_configure(struct scsi_device *sdev)
+> >  
+> >  	ufshcd_crypto_setup_rq_keyslot_manager(hba, q);
+> >  
+> > +	if (!check_shl_overflow(queue_max_sectors(q),
+> > +				SECTOR_SHIFT, &max_bio_bytes))
+> > +		blk_queue_max_bio_bytes(q, max_bio_bytes);
+> > +
+> >  	return 0;
+> >  }
+> 
+> Just like previous versions of this patch series, this approach will
+> trigger data corruption if dm-crypt is stacked on top of the UFS driver
+> since ufs_max_sectors << SECTOR_SHIFT = 1024 * 512 is less than the size
+> of the dm-crypt buffer (BIO_MAX_VECS << PAGE_SHIFT = 256 * 4096).
 
-...
+max_bio_bytes can't be smaller than "BIO_MAX_VECS * PAGE_SIZE". Large value
+will be selected between input parameter and  "BIO_MAX_VECS * PAGE_SIZE" in
+blk_queue_max_bio_bytes(). I think bio max size should be larger than
+"BIO_MAX_VECS * PAGE_SIZE" for kernel stability.
 
-> >  err_remove_ports:
-> > +     fwnode_handle_put(fwnode);
->
-> Wouldn't it be more clear to do that in the condition that jumps to
-> this lable?
+void blk_queue_max_bio_bytes(struct request_queue *q, unsigned int bytes)
+{
+	struct queue_limits *limits = &q->limits;
+	unsigned int max_bio_bytes = round_up(bytes, PAGE_SIZE);
 
-In this case it doesn't matter. As a general pattern, no, because this
-will help to keep this in mind in complex error handling ladders. That
-said, I prefer my variant unless there is a strong opinion to move it
-into the conditional.
+	limits->max_bio_bytes = max_t(unsigned int, max_bio_bytes,
+				      BIO_MAX_VECS * PAGE_SIZE);
+}
+EXPORT_SYMBOL(blk_queue_max_bio_bytes);
 
-> >       for (i = 0; i < pmc->num_ports; i++) {
-> >               typec_switch_unregister(pmc->port[i].typec_sw);
-> >               typec_mux_unregister(pmc->port[i].typec_mux);
+> 
+> I am not recommending to increase max_sectors for the UFS driver. We
+> need a solution that is independent of the dm-crypt internals.
+> 
+> Bart.
 
+No need to increase max_sectors in driver to set max_bio_bytes. There are
+no dependency with dm-crypt I think.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Thank you,
+Changheun Lee
