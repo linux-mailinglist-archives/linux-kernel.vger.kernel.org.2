@@ -2,97 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D1D39EB48
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130DC39EBBF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 03:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230522AbhFHBVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 21:21:43 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3457 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhFHBVl (ORCPT
+        id S231535AbhFHB6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 21:58:14 -0400
+Received: from mail-pg1-f181.google.com ([209.85.215.181]:43551 "EHLO
+        mail-pg1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231321AbhFHB6M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 21:21:41 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FzXQ444dfz6wqB;
-        Tue,  8 Jun 2021 09:16:44 +0800 (CST)
-Received: from dggpemm000001.china.huawei.com (7.185.36.245) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 09:19:47 +0800
-Received: from huawei.com (10.175.113.32) by dggpemm000001.china.huawei.com
- (7.185.36.245) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 8 Jun 2021
- 09:19:46 +0800
-From:   Nanyong Sun <sunnanyong@huawei.com>
-To:     <paul@paul-moore.com>, <davem@davemloft.net>,
-        <yoshfuji@linux-ipv6.org>, <dsahern@kernel.org>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sunnanyong@huawei.com>
-Subject: [PATCH] net: ipv4: fix memory leak in netlbl_cipsov4_add_std
-Date:   Tue, 8 Jun 2021 09:51:58 +0800
-Message-ID: <20210608015158.3848878-1-sunnanyong@huawei.com>
-X-Mailer: git-send-email 2.18.0.huawei.25
+        Mon, 7 Jun 2021 21:58:12 -0400
+Received: by mail-pg1-f181.google.com with SMTP id e22so15257636pgv.10
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 18:56:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5EEGe9Ooze4GaX83CqyBjOJjYKqAJ6kwJsMnPkif2OY=;
+        b=QbD3d+SJyUQo4eXzNBP1b/6gLP4lu/LxZQ86ATRlGCjgMCqzm3Zf9UKwZv7eaoiFkw
+         qtHrIVEMhZVcLWLxogpZnYl8pG5VjBl5NZB+HCvWbM6JgP4gdhBa3jvJsQyU3YrOk1bS
+         l7XZFeBefB6KmuwkIBOMgBFcmx2hLNxtuIPyBRksZSTimd8Gv5b2ZyXg0QZ8NVqyxW2z
+         mnHttAJRh69h79IeMRNQAnvv4OkKs5CCMI5zIHN6EM6TVtiZA0SshOVfsdTEjPpmmUT3
+         CH5VG8Hji0LiMUwKEsaT056iDzXHKSlCXD8LebsOYX6yY2G5nGmj02XP2SanbtT6idfy
+         p1KQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5EEGe9Ooze4GaX83CqyBjOJjYKqAJ6kwJsMnPkif2OY=;
+        b=ml4zZJ5tcKCy8zOaCVM5HOCGy+vHOhvlll2G2lenSjxzQXJ4EHBfV8kBKOL2cHwK9l
+         K6hTZ4hfQuLRnpqIxkRsD2h4GOoNJz4ydlyo3JtkeJkubUEPRth6X3CFRLTWN3g77fgn
+         OAjfLvoNnlb+O9xmtm/yUkj6u4egJchCFw0Gy5MIKMc7fue47rHuc3EoQrXlUN+KPWvx
+         RsfBlnWyNX3xW4NiFfPLyx2FytoGIC02wpiVaYCmrkrTPrXn9/YWaDX5sGCVNAwEOCi0
+         hR23oxtJ6Jj/ai9ydPs7W2U6A4eHlRijpl9XuNT+KEiaDBdQwMnTHUG6mVXyv8mkit6t
+         hQVg==
+X-Gm-Message-State: AOAM53279qibUehCW4Yhy7aacYSIrESA/9xOT1DAQpGqJLSLqcqZyONX
+        m2lNiD/2yxY3my7cYPmqTm4SaX+E1CGOnQ==
+X-Google-Smtp-Source: ABdhPJw3HEe1Vqciw+ZEa16TSM4Oui/l4o31zfLOYckW9DnqQPDsfThgkLzlxaSnf8dfTMVfpyUGAw==
+X-Received: by 2002:a63:fa03:: with SMTP id y3mr20520339pgh.389.1623117320402;
+        Mon, 07 Jun 2021 18:55:20 -0700 (PDT)
+Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
+        by smtp.gmail.com with ESMTPSA id s24sm9284767pfh.104.2021.06.07.18.55.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 18:55:19 -0700 (PDT)
+From:   Nadav Amit <nadav.amit@gmail.com>
+X-Google-Original-From: Nadav Amit
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Nadav Amit <namit@vmware.com>, Will Deacon <will@kernel.org>,
+        Jiajun Cao <caojiajun@vmware.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/6] iommu/amd: Enable page-selective flushes
+Date:   Mon,  7 Jun 2021 11:25:35 -0700
+Message-Id: <20210607182541.119756-1-namit@vmware.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.32]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm000001.china.huawei.com (7.185.36.245)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reported by syzkaller:
-BUG: memory leak
-unreferenced object 0xffff888105df7000 (size 64):
-comm "syz-executor842", pid 360, jiffies 4294824824 (age 22.546s)
-hex dump (first 32 bytes):
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
-backtrace:
-[<00000000e67ed558>] kmalloc include/linux/slab.h:590 [inline]
-[<00000000e67ed558>] kzalloc include/linux/slab.h:720 [inline]
-[<00000000e67ed558>] netlbl_cipsov4_add_std net/netlabel/netlabel_cipso_v4.c:145 [inline]
-[<00000000e67ed558>] netlbl_cipsov4_add+0x390/0x2340 net/netlabel/netlabel_cipso_v4.c:416
-[<0000000006040154>] genl_family_rcv_msg_doit.isra.0+0x20e/0x320 net/netlink/genetlink.c:739
-[<00000000204d7a1c>] genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
-[<00000000204d7a1c>] genl_rcv_msg+0x2bf/0x4f0 net/netlink/genetlink.c:800
-[<00000000c0d6a995>] netlink_rcv_skb+0x134/0x3d0 net/netlink/af_netlink.c:2504
-[<00000000d78b9d2c>] genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
-[<000000009733081b>] netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
-[<000000009733081b>] netlink_unicast+0x4a0/0x6a0 net/netlink/af_netlink.c:1340
-[<00000000d5fd43b8>] netlink_sendmsg+0x789/0xc70 net/netlink/af_netlink.c:1929
-[<000000000a2d1e40>] sock_sendmsg_nosec net/socket.c:654 [inline]
-[<000000000a2d1e40>] sock_sendmsg+0x139/0x170 net/socket.c:674
-[<00000000321d1969>] ____sys_sendmsg+0x658/0x7d0 net/socket.c:2350
-[<00000000964e16bc>] ___sys_sendmsg+0xf8/0x170 net/socket.c:2404
-[<000000001615e288>] __sys_sendmsg+0xd3/0x190 net/socket.c:2433
-[<000000004ee8b6a5>] do_syscall_64+0x37/0x90 arch/x86/entry/common.c:47
-[<00000000171c7cee>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+From: Nadav Amit <namit@vmware.com>
 
-The memory of doi_def->map.std pointing is allocated in
-netlbl_cipsov4_add_std, but no place has freed it. It should be
-freed in cipso_v4_doi_free which frees the cipso DOI resource.
+The previous patch, commit 268aa4548277 ("iommu/amd: Page-specific
+invalidations for more than one page") was supposed to enable
+page-selective IOTLB flushes on AMD.
 
-Fixes: 96cb8e3313c7a ("[NetLabel]: CIPSOv4 and Unlabeled packet integration")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
----
- net/ipv4/cipso_ipv4.c | 1 +
- 1 file changed, 1 insertion(+)
+Besides the bug that was already fixed by commit a017c567915f
+("iommu/amd: Fix wrong parentheses on page-specific invalidations")
+there are several remaining matters to enable and benefit from
+page-selective IOTLB flushes on AMD:
 
-diff --git a/net/ipv4/cipso_ipv4.c b/net/ipv4/cipso_ipv4.c
-index d6e3a92841e3..099259fc826a 100644
---- a/net/ipv4/cipso_ipv4.c
-+++ b/net/ipv4/cipso_ipv4.c
-@@ -471,6 +471,7 @@ void cipso_v4_doi_free(struct cipso_v4_doi *doi_def)
- 		kfree(doi_def->map.std->lvl.local);
- 		kfree(doi_def->map.std->cat.cipso);
- 		kfree(doi_def->map.std->cat.local);
-+		kfree(doi_def->map.std);
- 		break;
- 	}
- 	kfree(doi_def);
+1. Enable selective flushes on unmap (patch 1)
+2. Avoid using flush-queue on vIOMMUs (patch 2)
+3. Relaxed flushes when gathering, excluding vIOMMUs (patches 3-5)
+4. Syncing once on scatter-gather map operations (patch 6)
+
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Jiajun Cao <caojiajun@vmware.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Lu Baolu <baolu.lu@linux.intel.com>
+Cc: iommu@lists.linux-foundation.org
+Cc: linux-kernel@vger.kernel.org
+
+--- 
+
+v2->v3:
+* Rebase on v5.13-rc5
+* Refactoring (patches 4-5) [Robin]
+* Rework flush logic (patch 5): more relaxed on native
+* Syncing once on scatter-gather operations (patch 6)
+
+v1->v2:
+* Rebase on v5.13-rc3
+
+Nadav Amit (5):
+  iommu/amd: Selective flush on unmap
+  iommu/amd: Do not use flush-queue when NpCache is on
+  iommu: Factor iommu_iotlb_gather_is_disjoint() out
+  iommu/amd: Tailored gather logic for AMD
+  iommu/amd: Sync once for scatter-gather operations
+
+Robin Murphy (1):
+  iommu: Improve iommu_iotlb_gather helpers
+
+ drivers/iommu/amd/init.c  |  7 +++-
+ drivers/iommu/amd/iommu.c | 72 ++++++++++++++++++++++++++++++---
+ drivers/iommu/mtk_iommu.c |  5 +--
+ include/linux/iommu.h     | 84 +++++++++++++++++++++++++++++++++------
+ 4 files changed, 145 insertions(+), 23 deletions(-)
+
 -- 
-2.18.0.huawei.25
+2.25.1
 
