@@ -2,143 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3BD39DC00
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF9FE39DC02
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbhFGMN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 08:13:28 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:1880 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230127AbhFGMN2 (ORCPT
+        id S230233AbhFGMOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 08:14:16 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:56691 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230209AbhFGMOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 08:13:28 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 157CB8Ik004929;
-        Mon, 7 Jun 2021 12:11:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=pZLJ3N8oQ+Cwxb2RB0pk4+Uwb/hm7c91pSe9ik8C1bA=;
- b=apkfOjyhVp3Iq/O95t8eO4/YLTEwjnlqXatAFshcPbhxgKevKybb3wH9k9FYFJ8m+TN0
- HIYjG8UBquyZQU6q9coG7XMEqw2BzWnTBMia3pYxYTCbTSdkWzGsZTAJ8G/oCqoanBCh
- WKtDikiYpoMIXxPdBk/W2HW1KfNVu4Aw+lFC0l+z51bqK32GrYitgVjLhVPzVhQuiRjK
- CKCpsW9DfD8PSC8lGtN2EqE9pF1mq4FhbPrlCPvWxpB5a7Yrs0Qh7tW4mgFBHZV0FJyk
- AD10Znt+FCA0y6tYRmx74Ru3Zs2BffxFdLS/kEnrT4ndgRj1BE2ouepa7Xw2HbN8EUM0 qA== 
-Received: from oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3916ehr7jf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 07 Jun 2021 12:11:16 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 157CBFp6145451;
-        Mon, 7 Jun 2021 12:11:15 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 38yxctt86b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 07 Jun 2021 12:11:15 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 157CAO6I144209;
-        Mon, 7 Jun 2021 12:11:15 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 38yxctt85f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 07 Jun 2021 12:11:15 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 157CBDVD021659;
-        Mon, 7 Jun 2021 12:11:13 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 07 Jun 2021 05:11:13 -0700
-Date:   Mon, 7 Jun 2021 15:11:06 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>, gregkh@linuxfoundation.org,
-        hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8723bs: Use list iterators and helpers
-Message-ID: <20210607121106.GU1955@kadam>
-References: <20210428173301.149619-1-linux@roeck-us.net>
- <20210604172632.GA1526@agape.jhs>
- <20210605005422.GB255680@roeck-us.net>
- <20210607111704.GT1955@kadam>
- <20210607112648.GA314533@roeck-us.net>
- <20210607113624.GA1410@agape.jhs>
+        Mon, 7 Jun 2021 08:14:15 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.west.internal (Postfix) with ESMTP id 4D0041B0;
+        Mon,  7 Jun 2021 08:12:22 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Mon, 07 Jun 2021 08:12:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=bdOV5shNGSbudXo1jwtzb6I/I3t
+        HHcGm1Y59GzTTJXo=; b=XS6uS76xyfeS/NYAouenRxCHoyQE+SRP65aLaZGI6hw
+        IN/3lQdjW+4UtOsR0kZgl6AnVpUOsyX/hzMIBan0xQqm+0O7zLaqovNZLZ7WIy6v
+        xvacgtC1QbHSMvxaASM3CIbudxtJrO3tnRju7K0+LiGGVudFcO6ub+RLkzA5pLVe
+        AcUh7YRCXRkeRaLu0KVjZEKkvvBxnmq5YRAplF5u5Tu0iWuRT4+VCFIxEUvFPvGD
+        1xLGYUKNCVdoDqQ6VET3W74UtSHLV39x3O8+jS88AjRFsX9SAf9mSzT1MX9OVEbm
+        GDD2ji8g3pHgrefEer3mlxMTrM9jGrZyuR7DHkOP7+g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=bdOV5s
+        hNGSbudXo1jwtzb6I/I3tHHcGm1Y59GzTTJXo=; b=dcR5U7o+ZFK6ssgmBRE2NB
+        sO1tZWdllAJYK7ztLKKm9gdAB/E3jFPrR04sKRfzRKx/jQA7j/MihPOQa5+Xs74F
+        0GgXfeN+lDdU2Gs/hQze5S7koNIraVZRxH0kFQ3nT4g+mt8bO/SB7FUo2XSHkxmN
+        +1HUPFeyrWPnc+0ZQb6Qigl4qP9O+CY2zQVFRzaOp+dHkBl8A3uM+p9XIilmfIv6
+        tPIC3bSj2V0kHzqsDoYVQKGzUYy5teyVyemgE3q8sO0+GUp/J8EE5bGapw4iMMZq
+        +3l1mTOxI5Sec8kSi6w4Ile64Rh7ITXevxDPqgoXJ7yq9tGZVndaaXgwj448nnUA
+        ==
+X-ME-Sender: <xms:Iw2-YMLB4VWUqQZzO985pEpbj8o6VPd9Ci0OWGRR5TduaFbtnCuq7w>
+    <xme:Iw2-YMLnAYhJcFtmWahBrMZL9cwSSmCpjepUw4ljAhKTolbV0fl6MxzpjF2UuQUj_
+    Ofx-dARGpQODw9pHLs>
+X-ME-Received: <xmr:Iw2-YMtRQHnU45TaMtPodTCT2usv4X9A_LfYyaCeDXuZw60HTKG1KRS-EbVFXWLE2r48F_c4SYUO4fs__aq75Uk7ihgER4-JPkmT>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtjedggeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:Iw2-YJah5h_UePXZpbGIQgdSkdOOIlsEE0qjvih2CtERvBF2wh4hcw>
+    <xmx:Iw2-YDZV6xCk3oBVhlWRk3rnOA5wGtVZYY6mUEPhy2540hL-G0HPJA>
+    <xmx:Iw2-YFBocIU_-sAYpaRPrTM8PUOgjRppOnmUhcsErWx1TumMlonU2A>
+    <xmx:JQ2-YJzQhjl_JXbJxXc-wX3Klz5FnHdw4ounZ_k54XtDqOOLUDmq6ynMGVc>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 7 Jun 2021 08:12:18 -0400 (EDT)
+Date:   Mon, 7 Jun 2021 14:12:16 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
+        Drew Fustini <drew@beagleboard.org>, liush@allwinnertech.com,
+        Wei Wu =?utf-8?B?KOWQtOS8nyk=?= <lazyparser@gmail.com>,
+        wefu@redhat.com, linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [RFC PATCH v2 10/11] riscv: soc: Add Allwinner SoC kconfig option
+Message-ID: <20210607121216.ypoehirsdypul3br@gilmour>
+References: <1622970249-50770-1-git-send-email-guoren@kernel.org>
+ <1622970249-50770-14-git-send-email-guoren@kernel.org>
+ <20210607071916.kwdbtafbqp3icgia@gilmour>
+ <CAJF2gTT=aLNpwuQmOPw=L8eoezwX8DmGOunmPx0H_WzbaOpO+g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="secwxumdfbdnmyjv"
 Content-Disposition: inline
-In-Reply-To: <20210607113624.GA1410@agape.jhs>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: iXKgOpSC4WKwiBnmE6EadXG3ZdbqzY6v
-X-Proofpoint-ORIG-GUID: iXKgOpSC4WKwiBnmE6EadXG3ZdbqzY6v
+In-Reply-To: <CAJF2gTT=aLNpwuQmOPw=L8eoezwX8DmGOunmPx0H_WzbaOpO+g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 01:36:24PM +0200, Fabio Aiuto wrote:
-> On Mon, Jun 07, 2021 at 04:26:48AM -0700, Guenter Roeck wrote:
-> > On Mon, Jun 07, 2021 at 02:17:04PM +0300, Dan Carpenter wrote:
-> > > On Fri, Jun 04, 2021 at 05:54:22PM -0700, Guenter Roeck wrote:
-> > > > On Fri, Jun 04, 2021 at 07:26:33PM +0200, Fabio Aiuto wrote:
-> > > > > Hello Guenter,
-> > > > > 
-> > > > > On Wed, Apr 28, 2021 at 10:33:01AM -0700, Guenter Roeck wrote:
-> > > > > > The rtl8723bs driver manually re-implements list helper functions
-> > > > > > and macros in various ways. Replace with existing list helpers.
-> > > > > 
-> > > > > I'm testing rtl8723bs on a baytrail tablet (Lenovo Ideapad MIIX 300-10IBY)
-> > > > > and applying the tag staging-5.13-rc4, loading r8723bs makes the whole
-> > > > > system freezing while trying to connect to local AP.
-> > > > > 
-> > > > > Only a power off is allowed.
-> > > > > 
-> > > > > I found that commit b3cd518c5abd42fbc747ef55a5fdc40bf7bf01c0
-> > > > > (staging: rtl8723bs: Use list iterators and helpers)
-> > > > > introduced the bug.
-> > > > > 
-> > > > > I'm trying to find out what's wrong with this patch, have you any suggestions?
-> > > > 
-> > > > Some of the iterators needed the _safe variant which I didn't take into account.
-> > > > I thought that was fixed, but maybe some locations were missed.
-> > > 
-> > > Ah...  Crud.  As near as I can tell Martin fixed a lot of these in the driver
-> > > he is working on, rtl8188eu.  But they still aren't fixed in rtl8723bs.  I looked
-> > > at the functions and the following loops need to changed to list_for_each_safe().
-> > > (Doing a search for list_del_init() helped during review).
-> > > 
-> > 
-> > Hans wants the patch introducing the problem reverted, so I won't bother
-> > sending a fix. Sorry for the trouble. Learned a lesson (I hope).
-> > 
-> > Guenter
-> > 
-> > > expire_timeout_chk() (both loops)
-> > > rtw_acl_remove_sta()
-> > > rtw_sta_flush()
-> > > stop_ap_mode()
-> > > 
-> > > rtw_free_network_queue()
-> > > chk_bmc_sleepq_hdl()
-> > > rtw_free_all_stainfo()
-> > > rtw_free_xmitframe_queue()
-> > > dequeue_xmitframes_to_sleeping_queue()
-> > > wakeup_sta_to_xmit()  (both loops)
-> > > xmit_delivery_enabled_frames()
-> > > 
-> > > xmit_xmitframes()
-> > > cfg80211_rtw_del_station()
-> > > 
-> > > regards,
-> > > dan carpenter
-> > > 
-> > > 
-> 
-> thanks to Guenter suggestion I made the fix needed, if there's no particular
-> hurry to revert the change I'm submitting it today or tomorrow at most.
-> Will cross check with Dan's hint either.
 
-Thanks Fabio.  I feel like we can fix this.  No need to revert.  I'm
-going through the changes to rtl8188eu and I've spotted a couple
-functions which Martin missed so I'm going to send those as well.
+--secwxumdfbdnmyjv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-regards,
-dan carpenter
+On Mon, Jun 07, 2021 at 03:43:03PM +0800, Guo Ren wrote:
+> On Mon, Jun 7, 2021 at 3:19 PM Maxime Ripard <maxime@cerno.tech> wrote:
+> >
+> > Hi,
+> >
+> > On Sun, Jun 06, 2021 at 09:04:08AM +0000, guoren@kernel.org wrote:
+> > > From: Guo Ren <guoren@linux.alibaba.com>
+> > >
+> > > Add Allwinner kconfig option which selects SoC specific and common
+> > > drivers that is required for this SoC.
+> > >
+> > > Allwinner D1 uses custom PTE attributes to solve non-coherency SOC
+> > > interconnect issues for dma synchronization, so we set the default
+> > > value when SOC_SUNXI selected.
+> > >
+> > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > > Co-Developed-by: Liu Shaohua <liush@allwinnertech.com>
+> > > Signed-off-by: Liu Shaohua <liush@allwinnertech.com>
+> > > Cc: Anup Patel <anup.patel@wdc.com>
+> > > Cc: Atish Patra <atish.patra@wdc.com>
+> > > Cc: Christoph Hellwig <hch@lst.de>
+> > > Cc: Chen-Yu Tsai <wens@csie.org>
+> > > Cc: Drew Fustini <drew@beagleboard.org>
+> > > Cc: Maxime Ripard <maxime@cerno.tech>
+> > > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+> > > Cc: Wei Fu <wefu@redhat.com>
+> > > Cc: Wei Wu <lazyparser@gmail.com>
+> > > ---
+> > >  arch/riscv/Kconfig.socs      | 12 ++++++++++++
+> > >  arch/riscv/configs/defconfig |  1 +
+> > >  2 files changed, 13 insertions(+)
+> > >
+> > > diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+> > > index ed96376..055fb3e 100644
+> > > --- a/arch/riscv/Kconfig.socs
+> > > +++ b/arch/riscv/Kconfig.socs
+> > > @@ -69,4 +69,16 @@ config SOC_CANAAN_K210_DTB_SOURCE
+> > >
+> > >  endif
+> > >
+> > > +config SOC_SUNXI
+> > > +     bool "Allwinner SoCs"
+> > > +     depends on MMU
+> > > +     select DWMAC_GENERIC
+> > > +     select SERIAL_8250
+> > > +     select SERIAL_8250_CONSOLE
+> > > +     select SERIAL_8250_DW
+> > > +     select SIFIVE_PLIC
+> > > +     select STMMAC_ETH
+> > > +     help
+> > > +       This enables support for Allwinner SoC platforms like the D1.
+> > > +
+> >
+> > We probably don't want to select DWMAC, STMMAC_ETH and the 8250 options,
+> > looks good otherwise.
+> >
+> > Maxime
+> Remove DWMAC, STMMAC_ETH is okay.
+>=20
+> But I think we still need:
+> select SERIAL_8250_DW if SERIAL_8250
 
+Well, even the UART is optional. Just enable them in the defconfig
+
+Maxime
+
+--secwxumdfbdnmyjv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYL4NIAAKCRDj7w1vZxhR
+xXytAP4mGdQrlps0ZkdQRDvgGoPmv63wCOgw7ukUbY9jEwIJGAEAwSHuyXFN1JP5
+4ZeSdV0JY7fJXuRP01GiYXItu7FXhg8=
+=/iVS
+-----END PGP SIGNATURE-----
+
+--secwxumdfbdnmyjv--
