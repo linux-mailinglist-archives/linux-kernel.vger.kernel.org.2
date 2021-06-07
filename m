@@ -2,50 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8379639D772
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 128B539D776
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbhFGIch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 04:32:37 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3444 "EHLO
+        id S230220AbhFGIeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 04:34:50 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:4494 "EHLO
         szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230200AbhFGIcf (ORCPT
+        with ESMTP id S229966AbhFGIes (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 04:32:35 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fz61l5hvdz6wPm;
-        Mon,  7 Jun 2021 16:27:39 +0800 (CST)
+        Mon, 7 Jun 2021 04:34:48 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fz64b3jz7zZfBC;
+        Mon,  7 Jun 2021 16:30:07 +0800 (CST)
 Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 16:30:41 +0800
+ 15.1.2176.2; Mon, 7 Jun 2021 16:32:56 +0800
 Received: from [10.174.177.243] (10.174.177.243) by
  dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 16:30:40 +0800
-Subject: Re: [PATCH v2 00/15] init_mm: cleanup ARCH's text/data/brk setup code
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Mike Rapoport <rppt@kernel.org>
-CC:     <uclinux-h8-devel@lists.sourceforge.jp>,
-        <linux-s390@vger.kernel.org>, <linux-sh@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-csky@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-m68k@lists.linux-m68k.org>,
-        <openrisc@lists.librecores.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        <linux-snps-arc@lists.infradead.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <linux-riscv@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210604070633.32363-1-wangkefeng.wang@huawei.com>
- <YL0+Jargm+y9aqx1@kernel.org>
- <481056ab-686e-9f42-3b8a-b31941f58af6@huawei.com>
- <006eb573-5a20-1ac7-6234-338d11346a08@csgroup.eu>
+ 15.1.2176.2; Mon, 7 Jun 2021 16:32:55 +0800
+Subject: Re: [PATCH v2 7/7] ARM: mm: Fix PXN process with LPAE feature
 From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <f6051a1c-f7c3-6665-2d0a-5a3bf872fdb1@huawei.com>
-Date:   Mon, 7 Jun 2021 16:30:40 +0800
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jungseung Lee <js07.lee@gmail.com>
+References: <20210602070246.83990-1-wangkefeng.wang@huawei.com>
+ <20210602070246.83990-8-wangkefeng.wang@huawei.com>
+ <20210602105255.GK30436@shell.armlinux.org.uk>
+ <62f08378-85e7-2a07-3fd0-b287047ce1b5@huawei.com>
+ <20210602155843.GN30436@shell.armlinux.org.uk>
+ <c9c4a8ec-da51-4de9-4404-b5bf7f017441@huawei.com>
+Message-ID: <f2f533fb-ab11-f76c-85b7-20a9196c24fd@huawei.com>
+Date:   Mon, 7 Jun 2021 16:32:55 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <006eb573-5a20-1ac7-6234-338d11346a08@csgroup.eu>
+In-Reply-To: <c9c4a8ec-da51-4de9-4404-b5bf7f017441@huawei.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
@@ -57,94 +54,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Russell,  any comments, thanks.
 
-On 2021/6/7 13:48, Christophe Leroy wrote:
-> Hi Kefeng,
+On 2021/6/3 17:38, Kefeng Wang wrote:
 >
-> Le 07/06/2021 à 02:55, Kefeng Wang a écrit :
->>
->> On 2021/6/7 5:29, Mike Rapoport wrote:
->>> Hello Kefeng,
+> On 2021/6/2 23:58, Russell King (Oracle) wrote:
+>> On Wed, Jun 02, 2021 at 11:13:14PM +0800, Kefeng Wang wrote:
+>>>    IFSR format when using the Short-descriptor translation table format
 >>>
->>> On Fri, Jun 04, 2021 at 03:06:18PM +0800, Kefeng Wang wrote:
->>>> Add setup_initial_init_mm() helper, then use it
->>>> to cleanup the text, data and brk setup code.
->>>>
->>>> v2:
->>>> - change argument from "char *" to "void *" setup_initial_init_mm()
->>>>    suggested by Geert Uytterhoeven
->>>> - use NULL instead of (void *)0 on h8300 and m68k
->>>> - collect ACKs
->>>>
->>>> Cc: linux-snps-arc@lists.infradead.org
->>>> Cc: linux-arm-kernel@lists.infradead.org
->>>> Cc: linux-csky@vger.kernel.org
->>>> Cc: uclinux-h8-devel@lists.sourceforge.jp
->>>> Cc: linux-m68k@lists.linux-m68k.org
->>>> Cc: openrisc@lists.librecores.org
->>>> Cc: linuxppc-dev@lists.ozlabs.org
->>>> Cc: linux-riscv@lists.infradead.org
->>>> Cc: linux-sh@vger.kernel.org
->>>> Cc: linux-s390@vger.kernel.org
->>>> Kefeng Wang (15):
->>>>    mm: add setup_initial_init_mm() helper
->>>>    arc: convert to setup_initial_init_mm()
->>>>    arm: convert to setup_initial_init_mm()
->>>>    arm64: convert to setup_initial_init_mm()
->>>>    csky: convert to setup_initial_init_mm()
->>>>    h8300: convert to setup_initial_init_mm()
->>>>    m68k: convert to setup_initial_init_mm()
->>>>    nds32: convert to setup_initial_init_mm()
->>>>    nios2: convert to setup_initial_init_mm()
->>>>    openrisc: convert to setup_initial_init_mm()
->>>>    powerpc: convert to setup_initial_init_mm()
->>>>    riscv: convert to setup_initial_init_mm()
->>>>    s390: convert to setup_initial_init_mm()
->>>>    sh: convert to setup_initial_init_mm()
->>>>    x86: convert to setup_initial_init_mm()
->>> I might be missing something, but AFAIU the init_mm.start_code and 
->>> other
->>> fields are not used really early so the new setup_initial_init_mm()
->>> function can be called in the generic code outside setup_arch(), e.g in
->>> mm_init().
+>>>      Domain fault      01001            First level   01011     
+>>> Second level
+>>>
+>>>      Permission fault 01101            First level   01111 Second level
+>>>
+>>>    IFSR format when using the Long-descriptor translation table format
+>>>
+>>>     0011LL Permission fault. LL bits indicate levelb.
+>>>
+>>> After check the ARM spec, I think for the permission fault, we 
+>>> should panic
+>>> with or without LPAE, will change to
+>> As I explained in one of the previous patches, the page tables that get
+>> used for mapping kernel space are the _tasks_ own page tables. Any new
+>> kernel mappings are lazily copied to the task page tables - such as
+>> when a module is loaded.
 >>
->> Hi Mike， each architecture has their own value, not the same, eg m68K 
->> and
+>> The first time we touch a page, we could end up with a page translation
+>> fault. This will call do_page_fault(), and so with your proposal,
+>> loading a module will potentially cause a kernel panic in this case,
+>> probably leading to systems that panic early during userspace boot.
+>
+> Could we add some FSR_FS check， only panic when the permission fault， 
+> eg，
+>
+> +static inline bool is_permission_fault(unsigned int fsr)
+> +{
+> +       int fs = fsr_fs(fsr);
+> +#ifdef CONFIG_ARM_LPAE
+> +       if ((fs & FS_PERM_NOLL_MASK) == FS_PERM_NOLL)
+> +               return true;
+> +#else
+> +       if (fs == FS_L1_PERM || fs == FS_L2_PERM )
+> +               return true;
+> +#endif
+> +       return false;
+> +}
+> +
+>  static int __kprobes
+>  do_page_fault(unsigned long addr, unsigned int fsr, struct pt_regs 
+> *regs)
+>  {
+> @@ -255,8 +268,7 @@ do_page_fault(unsigned long addr, unsigned int 
+> fsr, struct pt_regs *regs)
+>
+>         if (fsr & FSR_LNX_PF) {
+>                 vm_flags = VM_EXEC;
+> -
+> -               if (!user_mode(regs))
+> +               if (is_permission_fault && !user_mode(regs))
+>                         die_kernel_fault("execution of memory",
+>                                          mm, addr, fsr, regs);
+>         }
+>
+> diff --git a/arch/arm/mm/fault.h b/arch/arm/mm/fault.h
+> index 9ecc2097a87a..187954b4acca 100644
+> --- a/arch/arm/mm/fault.h
+> +++ b/arch/arm/mm/fault.h
+> @@ -14,6 +14,8 @@
+>
+>  #ifdef CONFIG_ARM_LPAE
+>  #define FSR_FS_AEA             17
+> +#define FS_PERM_NOLL           0xC
+> +#define FS_PERM_NOLL_MASK      0x3C
+>
+>  static inline int fsr_fs(unsigned int fsr)
+>  {
+> @@ -21,6 +23,8 @@ static inline int fsr_fs(unsigned int fsr)
+>  }
+>  #else
+>  #define FSR_FS_AEA             22
+> +#define FS_L1_PERM             0xD
+> +#define FS_L2_PERM             0xF
+>
+> and suggestion or proper solution to solve the issue？
+>
 >>
->> h8300, also the name of the text/code/brk is different in some arch, 
->> so I keep
->>
->> unchanged.
->
-> What you could do is to define a __weak function that architectures 
-> can override and call that function from mm_init() as suggested by Mike,
->
-> Something like:
->
-> void __weak setup_initial_init_mm(void)
-> {
->     init_mm.start_code = (unsigned long)_stext;
->     init_mm.end_code = (unsigned long)_etext;
->     init_mm.end_data = (unsigned long)_edata;
->     init_mm.brk = (unsigned long)_end;
-> }
->
-> Then only the few architecture that are different would override it.
->
-> I see a few archictectures are usigne PAGE_OFFSET to set .start_code, 
-> but it is likely that this is equivalent to _stext.
-
-
-Yes,  the __weak function is option, but the change is only covered 14 
-archs, there are 7 other archs（alpha  hexagon  ia64
-
-microblaze  mips sparc  um xtensa）without related setup code. Also like 
-x86, it has own brk , maybe there are some
-
-other different in some arch, so I think let's keep unchanged for now,  
-thanks.
-
->
-> Christophe
-> .
->
