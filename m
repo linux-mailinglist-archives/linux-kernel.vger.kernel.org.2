@@ -2,128 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9162639D598
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9926B39D59B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbhFGHLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 03:11:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39982 "EHLO
+        id S230212AbhFGHMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 03:12:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhFGHLB (ORCPT
+        with ESMTP id S229436AbhFGHMv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 03:11:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A2C2C061766;
-        Mon,  7 Jun 2021 00:09:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=TuqDyFF8ffS2jCcc39LRp7FhGd3Sbm44R1NXmZ9SKuU=; b=H3Es/7FrTJ7eDudl/jWxe5zNO/
-        1At0Lm3R4OdtBubx7/5X8RZRmenGJ/p7mLSFKYzxP8i0kYg58VMARJW3lFwMexyFZ6ebE3QBXcxnB
-        WbQRWEV8ztXgEI6mTTFU+xihOHQ2VyMMGXdUilyKYXDrk18Myjv2OBtvI36Ba9a8o4U4DAgikUrrs
-        RfaIXFHsIwzDraLHgxsDe1htFrd8S0kjWbv1Rb580TM9UorUSUCt81SkGPsuR44EjyUFY6G/VSewu
-        DZtvPiq8XehZI0brOQAVen7CrJiwu3VePu11Pz92+P7JP3dQXawzj20eqirawZ+TGjPKDTZ0sRgka
-        JWm72ahg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lq9Nc-00FTGd-GQ; Mon, 07 Jun 2021 07:09:02 +0000
-Date:   Mon, 7 Jun 2021 08:09:00 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     longli@linuxonhyperv.com
-Cc:     linux-block@vger.kernel.org, Long Li <longli@microsoft.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Ming Lei <ming.lei@redhat.com>, Tejun Heo <tj@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [Patch v2] block: return the correct bvec when checking for gaps
-Message-ID: <YL3GDF5KiM9e69eW@infradead.org>
-References: <1622849839-5407-1-git-send-email-longli@linuxonhyperv.com>
+        Mon, 7 Jun 2021 03:12:51 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4C9C061766
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 00:11:00 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id a2so24547283lfc.9
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 00:11:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pJqZi3n7j9AKUs/vG9dNnCAv8v6cQQzyBgG+YQYc710=;
+        b=heIRpxVgLgVE9VbdvxJ9bVlbUFs3IX84r8llXAY0+5b8E1n7RAOm1a1166iWY/gOLD
+         XNZxJFIkJuMW8RVuznJEipdDCSQJy5E+KgniSp7IQJREoBsna8hcz1a5SNFKQPui8rlV
+         1M+8FU5U6Z8ol8maP+iXKxQbGasIkt1OOngMn6ssuSQydwLBYoEoFEhG/jB3vMor/Yg/
+         rKFedQHC1A4TagAs5f5HunysdBj4CAlO3GRJzHS8zjVg1jS4CBcmgpjm/3NKKiGdZqqz
+         G10Z2zZcFVddak+M2tb/wU6iy6I2xXgkwFQQSFPN8wyaPgHWKZem/NWPJHIrmkR+nbAp
+         U9uQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pJqZi3n7j9AKUs/vG9dNnCAv8v6cQQzyBgG+YQYc710=;
+        b=lPITopOyCQFblwntU5GZQ1NtuL2XEK+D0b6yL1VGnmRezLCtC4J+n4cR7SlxPaJSme
+         ovQpV3AHkKZu52E71mR2ZdR3kR4dYR93DSxhjMA4aflcjb58Gu7Ufxo123I3kxeiVN72
+         Wht/gOccfjixuAOLRXzpLMl4dXJsakUXE8xJzQWVD0uQgxJnOjIquvWNQEcZpvawFGTB
+         nHWgJwbBmsk7zaFKwzJdkPCiOspT+onp2KU09Aa7zELtB2HMPORONeUA2Uza0pW6Pkez
+         ekmkZ3CoBhY9qKFTvvkR3R3jHWcrPLVL4QuP65e9ja/AmSudsyNmV2SQZ8SnAq/QjSxu
+         ZiyQ==
+X-Gm-Message-State: AOAM531zldWmppNTDG+o3g7xgjnGe9c7hR+YVc5vWQtO1TcLcNKcPDAX
+        NCusY3deNOUFe8J+/Y9CDhcoX/z0myHwQ9CHiRgUQA==
+X-Google-Smtp-Source: ABdhPJwVTqQeeEbNWKQksEGrk3q9M/AgF1nnmc4hYNxFcVK0tYr6p+ohPNX2kcVIGDfNigWTl/LzEZ/LN19HxvF2LHI=
+X-Received: by 2002:a05:6512:3241:: with SMTP id c1mr11434271lfr.29.1623049858937;
+ Mon, 07 Jun 2021 00:10:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1622849839-5407-1-git-send-email-longli@linuxonhyperv.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20210604055536.20606-1-sergio.paracuellos@gmail.com>
+In-Reply-To: <20210604055536.20606-1-sergio.paracuellos@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 7 Jun 2021 09:10:47 +0200
+Message-ID: <CACRpkdbmu32csSoptceUcaVYxXSFwk316k5Ru09KCodvLXMOPA@mail.gmail.com>
+Subject: Re: [PATCH v2] pinctrl: ralink: pinctrl-rt2880: avoid to error in
+ calls if pin is already enabled
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 04:37:19PM -0700, longli@linuxonhyperv.com wrote:
-> From: Long Li <longli@microsoft.com>
-> 
-> After commit 07173c3ec276 ("block: enable multipage bvecs"), a bvec can
-> have multiple pages. But bio_will_gap() still assumes one page bvec while
-> checking for merging. If the pages in the bvec go across the
-> seg_boundary_mask, this check for merging can potentially succeed if only
-> the 1st page is tested, and can fail if all the pages are tested.
-> 
-> Later, when SCSI builds the SG list the same check for merging is done in
-> __blk_segment_map_sg_merge() with all the pages in the bvec tested. This
-> time the check may fail if the pages in bvec go across the
-> seg_boundary_mask (but tested okay in bio_will_gap() earlier, so those
-> BIOs were merged). If this check fails, we end up with a broken SG list
-> for drivers assuming the SG list not having offsets in intermediate pages.
-> This results in incorrect pages written to the disk.
-> 
-> Fix this by returning the multi-page bvec when testing gaps for merging.
-> 
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> Cc: Pavel Begunkov <asml.silence@gmail.com>
-> Cc: Ming Lei <ming.lei@redhat.com>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> Cc: Jeffle Xu <jefflexu@linux.alibaba.com>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: stable@vger.kernel.org
-> Fixes: 07173c3ec276 ("block: enable multipage bvecs")
-> Signed-off-by: Long Li <longli@microsoft.com>
+On Fri, Jun 4, 2021 at 7:55 AM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+
+> In 'rt2880_pmx_group_enable' driver is printing an error and returning
+> -EBUSY if a pin has been already enabled. This becomes in anoying messages
+> in the caller when this happens like the following:
+>
+> rt2880-pinmux pinctrl: pcie is already enabled
+> mt7621-pci 1e140000.pcie: Error applying setting, reverse things back
+>
+> To avoid this just print the already enabled message in the pinctrl
+> driver and return 0 instead to don't confuse the user with a real
+> bad problem.
+>
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 > ---
-> Change from v1: add commit details on how data corruption happens
-> 
->  include/linux/bio.h | 11 ++++-------
->  1 file changed, 4 insertions(+), 7 deletions(-)
-> 
-> diff --git a/include/linux/bio.h b/include/linux/bio.h
-> index a0b4cfdf62a4..6b2f609ccfbf 100644
-> --- a/include/linux/bio.h
-> +++ b/include/linux/bio.h
-> @@ -44,9 +44,6 @@ static inline unsigned int bio_max_segs(unsigned int nr_segs)
->  #define bio_offset(bio)		bio_iter_offset((bio), (bio)->bi_iter)
->  #define bio_iovec(bio)		bio_iter_iovec((bio), (bio)->bi_iter)
->  
-> -#define bio_multiple_segments(bio)				\
-> -	((bio)->bi_iter.bi_size != bio_iovec(bio).bv_len)
-> -
->  #define bvec_iter_sectors(iter)	((iter).bi_size >> 9)
->  #define bvec_iter_end_sector(iter) ((iter).bi_sector + bvec_iter_sectors((iter)))
->  
-> @@ -271,7 +268,7 @@ static inline void bio_clear_flag(struct bio *bio, unsigned int bit)
->  
->  static inline void bio_get_first_bvec(struct bio *bio, struct bio_vec *bv)
->  {
-> -	*bv = bio_iovec(bio);
-> +	*bv = mp_bvec_iter_bvec(bio->bi_io_vec, bio->bi_iter);
->  }
->  
->  static inline void bio_get_last_bvec(struct bio *bio, struct bio_vec *bv)
-> @@ -279,10 +276,10 @@ static inline void bio_get_last_bvec(struct bio *bio, struct bio_vec *bv)
->  	struct bvec_iter iter = bio->bi_iter;
->  	int idx;
->  
-> -	if (unlikely(!bio_multiple_segments(bio))) {
-> -		*bv = bio_iovec(bio);
-> +	/* this bio has only one bvec */
-> +	*bv = mp_bvec_iter_bvec(bio->bi_io_vec, bio->bi_iter);
-> +	if (bv->bv_len == bio->bi_iter.bi_size)
->  		return;
+> Changes in v2:
+>     - Fix commit message s/is/if
 
-Nit: I'd move the comment a bit as the current placement confused me at
-first.  Also maybe use bio_get_first_bvec here to make it even more
-obvious:
+I just fixed up the commit manually instead, no big deal.
 
-	bio_get_first_bvec(bio, bv);
-	if (bv->bv_len == bio->bi_iter.bi_size)
-		return;		/* this bio only has a single bvec */
+Thanks!
+Linus Walleij
