@@ -2,73 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3DFA39D854
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A910F39D855
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbhFGJLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:11:18 -0400
-Received: from mga06.intel.com ([134.134.136.31]:42701 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229966AbhFGJLR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:11:17 -0400
-IronPort-SDR: oNkDAjhELqPl7NqsmA4VxYwoBLvdcTYSVtRuupRWhWyzZ+9LepccKfuGqO63mxrQ/AcT/424kR
- 9wBn8f+f/9mA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="265742366"
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="265742366"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 02:09:25 -0700
-IronPort-SDR: AVf+Bb2+vvg9Pqp1PkGb97UJVhH6aGPAUc9x5fqXuyr5TF8u9ARtib7K5J6AKXFyxfSgi9gUJ4
- e0AOYsvWkdkA==
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="469023588"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 02:09:23 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lqBG4-000DMN-DN; Mon, 07 Jun 2021 12:09:20 +0300
-Date:   Mon, 7 Jun 2021 12:09:20 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Dejin Zheng <zhengdejin5@gmail.com>
-Cc:     helgaas@kernel.org, corbet@lwn.net, jarkko.nikula@linux.intel.com,
-        mika.westerberg@linux.intel.com, rric@kernel.org,
-        bhelgaas@google.com, linux-doc@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 0/4] Introduce pcim_alloc_irq_vectors()
-Message-ID: <YL3iQMNTcQrA3okH@smile.fi.intel.com>
-References: <20210606070511.778487-1-zhengdejin5@gmail.com>
+        id S230416AbhFGJMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:12:42 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3084 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229966AbhFGJMl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 05:12:41 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fz6sz6b4zzWt1P;
+        Mon,  7 Jun 2021 17:05:59 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 17:10:49 +0800
+Received: from [10.174.179.129] (10.174.179.129) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 17:10:48 +0800
+Subject: Re: [PATCH 0/2] cleanup patches for PM reference leak
+From:   "yukuai (C)" <yukuai3@huawei.com>
+To:     <emma@anholt.net>, <airlied@linux.ie>, <daniel@ffwll.ch>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>
+References: <20210517081438.1562410-1-yukuai3@huawei.com>
+ <173999eb-7e2d-107d-8602-a1a88e9f2d5a@huawei.com>
+Message-ID: <6cf25a42-5afd-8072-b3c4-a1d146737cdd@huawei.com>
+Date:   Mon, 7 Jun 2021 17:10:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210606070511.778487-1-zhengdejin5@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <173999eb-7e2d-107d-8602-a1a88e9f2d5a@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.129]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 06, 2021 at 03:05:07PM +0800, Dejin Zheng wrote:
-> Introduce pcim_alloc_irq_vectors(), a device-managed version of
-> pci_alloc_irq_vectors(), In some i2c drivers, If pcim_enable_device()
-> has been called before, then pci_alloc_irq_vectors() is actually a
-> device-managed function. It is used as a device-managed function, So
-> replace it with pcim_alloc_irq_vectors().
+ping ...
 
-Thanks!
-
-> Changelog
-> ---------
-> v5 -> v6:
-> 	- rebase to 5.13-rc4
-
-It's already rc5 and I believe you better use the subsystem tree against which
-your series is (i.e. PCI for-next or how it is called there).
-
-Besides that kbuild bot is not happy.
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+On 2021/05/29 17:11, yukuai (C) wrote:
+> ping ...
+> 
+> On 2021/05/17 16:14, Yu Kuai wrote:
+>> Yu Kuai (2):
+>>    drm/v3d: Fix PM reference leak in v3d_get_param_ioctl()
+>>    drm/v3d: Fix PM reference leak in v3d_v3d_debugfs_ident()
+>>
+>>   drivers/gpu/drm/v3d/v3d_debugfs.c | 4 ++--
+>>   drivers/gpu/drm/v3d/v3d_drv.c     | 2 +-
+>>   2 files changed, 3 insertions(+), 3 deletions(-)
+>>
