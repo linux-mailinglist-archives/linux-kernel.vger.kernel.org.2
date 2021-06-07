@@ -2,178 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F1F39E609
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 19:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D314839E610
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230520AbhFGSBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 14:01:24 -0400
-Received: from mail-dm6nam08on2076.outbound.protection.outlook.com ([40.107.102.76]:35553
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        id S231174AbhFGSCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 14:02:13 -0400
+Received: from mail-mw2nam12on2131.outbound.protection.outlook.com ([40.107.244.131]:37344
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230323AbhFGSBU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 14:01:20 -0400
+        id S230237AbhFGSCJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 14:02:09 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WKSr52yLS5rs4d0q1QV1gYjj8JQ2iTRDgXdHLZaE2Oywi0EqVDhbYgzJxbV8W+qQc2RBcsPNckzvB07PUiwglWck0AqMRo1GwWLTRzAMclws4ZvqtC3b9wOtTuk4h8K8Tph0Tj4Qpcja2ZioqG+AC2OJF80XyKIM+3OGmAmCL8lbUo5Zp0+9UtpUKDK/FBOFLz0c4mjO8CGzqar1VWLwWO2fUA31/szu/jpZjShsbP2nMuRh0aU/o5H5CUv9mThfPMbcJPKnKcxy7hFM+5FRNeP63FlERfqsGO+gnGaSrJ0XtX3EPpkH22L3PamKVQ9pxWxwv6CGFY8gMDoag4sahw==
+ b=Idt1mMJj9670TbZA5mFNubcf9ehYy3vnVo1kmEjcthnsvWrkQlQ9JP53d+WTZ9OSLh5U/2SlHtusJZ++75y5ZqxYydS8DVOq1wlF7yxH+kVSxrO8ZWEIvG/lJfXquE2lGcJtx9UORNCz5rz5kir81JeNUuKWvMjZ9+TQOuNjj1SAwrjntwThXj9SeKwRw57LgB9DtnBxvrF978n+1YLHkmsf7QsTmc4Slvj64iMfVGKwAidlSkIYgm2l4EaplHShPZkHjnBIYmhzaVAvvaZWy3ss9idGIWd0he7kFqwd85S1JWZh+aVPsin36SfL7y7L2SSzkjqbjwII/Kmzxx8+kA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZRzoU0raxfRLumkWv0fQhV5VJUNEey9cDTIygXPd6MY=;
- b=aeWXh67zs/831XQa9OEFRIGHeK0lxGVHX+svwBxaA8RfMuVKfXtGsJOg5goljTAZfSw4ZDewLuFE+jveDks+BHHcMmwAFntS/xmO592hkhvTsg7ckRuR5ILS2FF7gOFCXxnMkeiQNUp009RAHCRu0a/P7f2e1whbSfGPDzL8zmO4kpxXenDjQ8c+tFlkEgSmmXrtSQu0qU24bZIBcQC3CC4Si97+M+OEhAEDwh48xF1TTs443myo/Ixv9S8W7PTEDx7Zc721OIK5r3ODemWC7ie3dvKJY4Q2qpnU6QuNR9c1kUrMs7NSNwpUlKuzBPpHeUr2wX/TJRIQKL3/6Am6YA==
+ bh=EE6szxpOM3s2De4hYWHO5/rvQl/q67lV4GzPFAK/BQc=;
+ b=OIdlYISbVuGIUViagGZ7B0uIC0QcHWPikOwsW1WsJ1+3RhgPQ9YMylomvhY+5PRwTOV6ouSNPmZF5VW/RXSZf/DzM6HLU1AC5T+FVmVk5P8442PFPxIMKs97Upq2hreszdkAnjuLihVo20f0kr7yWFbpXBlKt1jIUzrpYbaFI7/ur0V2Cn2/YUpGBVVsrXuUAlrIhR2ZsTbIPiRYwCoLX4mmJdB5M3Cy7sEd5BOyqnWTm4+wpSdXiilq7M1BwK7S6KloV3YvLhV/JAlGy29VgTuinfPpqBKf4U534buLlOjeY94++T+NceNre770v0NAuq5oPo2sVuwzxM9pmK0gmA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZRzoU0raxfRLumkWv0fQhV5VJUNEey9cDTIygXPd6MY=;
- b=oruBtuDKODA/k8ahqZtp5iOyY6aJZlq7j13waznng/P26Si1mjX0Y/qLAzLMEVg+6U9gJHsfJHdbzV+avRHT3+K5om6Rdbt303BeVGoV0jpQENkVne7DruAxfTmo5ida2rjADHnvodHDp4R67cW8aoHT4EgIFh61eNkpRWEZPdDO2iISjQBvGUM5iq2hBpn/rgfrGzpgVtjpj3kYEdXdzXa+m0uVMSi8HmsJEfb0DV9l6OcsJnOF/9dqX9tFba/qSj3LRWWuDGGwM7KsW1PjcnShqXiVNV5gQ10wzqHmGluq4Fl0ZLD6h7E2XsSpB2vVySrJB0JmvOdzDjs5S+5tCg==
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL0PR12MB5521.namprd12.prod.outlook.com (2603:10b6:208:1c7::12) with
+ bh=EE6szxpOM3s2De4hYWHO5/rvQl/q67lV4GzPFAK/BQc=;
+ b=CPNqPdWoLboGbsPiXk3MrysA4kv8VN+U7ct6A7WaRtxB/onlVGvrI+Ragy8nn55YncT7GGu1xdJcmTmXYJ36gIj6s5JtIEmfaZnUzPdFUr7SHKMfrtC8xkcChua8reRMit6hPzAuelQG53Rxh9u8Yr+L0gMeV/ts4LIWByNl808=
+Received: from BY5PR21MB1506.namprd21.prod.outlook.com (2603:10b6:a03:23d::12)
+ by SJ0PR21MB2053.namprd21.prod.outlook.com (2603:10b6:a03:38c::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.23; Mon, 7 Jun
- 2021 17:59:27 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%6]) with mapi id 15.20.4195.030; Mon, 7 Jun 2021
- 17:59:27 +0000
-Date:   Mon, 7 Jun 2021 14:59:26 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jason Wang <jasowang@redhat.com>
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-Message-ID: <20210607175926.GJ1002214@nvidia.com>
-References: <MWHPR11MB1886469C0136C6523AB158B68C3B9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210604122830.GK1002214@nvidia.com>
- <20210604092620.16aaf5db.alex.williamson@redhat.com>
- <815fd392-0870-f410-cbac-859070df1b83@redhat.com>
- <20210604155016.GR1002214@nvidia.com>
- <30e5c597-b31c-56de-c75e-950c91947d8f@redhat.com>
- <20210604160336.GA414156@nvidia.com>
- <2c62b5c7-582a-c710-0436-4ac5e8fd8b39@redhat.com>
- <20210604172207.GT1002214@nvidia.com>
- <2d1ad075-bec6-bfb9-ce71-ed873795e973@redhat.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2d1ad075-bec6-bfb9-ce71-ed873795e973@redhat.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL1PR13CA0092.namprd13.prod.outlook.com
- (2603:10b6:208:2b9::7) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.4; Mon, 7 Jun
+ 2021 18:00:16 +0000
+Received: from BY5PR21MB1506.namprd21.prod.outlook.com
+ ([fe80::29f3:2078:6dd5:33b5]) by BY5PR21MB1506.namprd21.prod.outlook.com
+ ([fe80::29f3:2078:6dd5:33b5%9]) with mapi id 15.20.4242.008; Mon, 7 Jun 2021
+ 18:00:16 +0000
+From:   Long Li <longli@microsoft.com>
+To:     Christoph Hellwig <hch@infradead.org>,
+        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>
+CC:     "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Ming Lei <ming.lei@redhat.com>, Tejun Heo <tj@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [Patch v2] block: return the correct bvec when checking for gaps
+Thread-Topic: [Patch v2] block: return the correct bvec when checking for gaps
+Thread-Index: AQHXWZqgUzHGkML6YUeaSbBJY+ppq6sIJMUAgAC1wFA=
+Date:   Mon, 7 Jun 2021 18:00:16 +0000
+Message-ID: <BY5PR21MB15062644BF6CC83DD3ADB955CE389@BY5PR21MB1506.namprd21.prod.outlook.com>
+References: <1622849839-5407-1-git-send-email-longli@linuxonhyperv.com>
+ <YL3GDF5KiM9e69eW@infradead.org>
+In-Reply-To: <YL3GDF5KiM9e69eW@infradead.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=329f7578-a473-4d52-9b95-d1a4af35ada1;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-06-07T17:59:30Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none
+ header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 37ed22f1-216f-489b-f69b-08d929de1b38
+x-ms-traffictypediagnostic: SJ0PR21MB2053:
+x-microsoft-antispam-prvs: <SJ0PR21MB205357C0B85E45627F047FA5CE389@SJ0PR21MB2053.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: hPgYU1qLU8SJjLYXOxAX/R+APKWhJyCDHbcWMBhauaRr+PzTJ7GxWvCfuXOAoiWKCrMpkeM/6DjLiU0D9wZNXrJJky4tLcD/vKUQqZzfiJ/LgvuNjMC83gWqmhC2G1uJGY/1tmEchPm16y+3lIg/M+EA+YYQ553zGge147utTsiyPM2XduiLf4iddrGZLB6ZBrGYq9wKqyOHkcABidWXUcwSZN96+IYYPITstCoYJy/UpMpemUUUXjnuv3eoUuNfCmnyL7uaPViUr4Xz/Inlo1B9fu4adiE9GNJFIqXOeXQLzfJ/L60onQMsY8pB+37XGjJwuCpGQoQHFWrBRDIszKd07ipv9sTHsmK+/ResVXTcsnA9cuKxLtMxUJWnjkFHSbWQSFZHooQ60M0+fOvM3u4pD1qE0Imha+g+iVUGB3gY4t37sQEve+sT+2+B+sNyPmcYsRW+oqCRGg7H/Yjl1zgNoh3Dhlb9jLp0DsjR0NyML877P3hnzu4oY5w8JUytW6i+neDdE2KPP1ucRWGBW9FNg8qQlWKuO2NdBp74fUpRuKNb7KHk+O85vU5zdYGR4NO6OtvlWEemtYZnB2RbxCDqDIvTaZ3Ht1E0MJQRhNXaUGtf2dJZHxI2i3WcKppRF0a7stubQxkEMjMfrk9Uaw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR21MB1506.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(71200400001)(6506007)(478600001)(38100700002)(4326008)(8936002)(52536014)(55016002)(122000001)(10290500003)(66556008)(66446008)(86362001)(82950400001)(33656002)(82960400001)(8676002)(7696005)(186003)(66946007)(2906002)(76116006)(5660300002)(110136005)(54906003)(316002)(83380400001)(8990500004)(9686003)(7416002)(64756008)(26005)(66476007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?X6XvnoaBUUZ/G5mTiX2tAaJleZQP8a80w7Sz7qzgpTQoyZ1qNsYxIVkXtLXM?=
+ =?us-ascii?Q?3Rv7pqRGgoOnB0J827Ckx2MTk3UQTmY9D91qrU0v20+bHaDPZDCBU57r6DUG?=
+ =?us-ascii?Q?OSTajluQm+9oeU8aSC2QZ6fx0DOMzrcLuQa/uUvTJNf3ja5MIY8uSPH96V9n?=
+ =?us-ascii?Q?mHqFeFgUkphKg73D7rtK2QaLpHnN0fo6SkL+XRMaS4uxuJsBJNvTcsHLWT+O?=
+ =?us-ascii?Q?R+VpWfG+gHXPBCiOshX3jFg4Q0slrYtp+FVmJPi7YrurozrB6Nxgr9huR593?=
+ =?us-ascii?Q?BrFzAavk5QGfLv1kDztQ8lCdQ5MNqtd0bxJLv3G3k2iSOPY1darAAlicrbVs?=
+ =?us-ascii?Q?6GPM3yLyjgVxGOtpCOK1xB/rwJi6QYtKfPBNctJ7YQLGG9jofsamUXQyw+/m?=
+ =?us-ascii?Q?aUXakoxAfvf9ZjrxIJ6rnjn3ZXeApj+oCLKsqm38lf5N3tHxlB6tzImyvLMw?=
+ =?us-ascii?Q?9tNgS8qW6Ntdqm+IhVQsqQpzvUZBn8j/ayqj82tOwr+46zvYVi69dh0IIRWS?=
+ =?us-ascii?Q?oIOaAJaSY6T58eoC50xoI9rFMZQ2+UchyMAa91bq9r9P4CHre/JRoCVPbBGJ?=
+ =?us-ascii?Q?sTlmboOJiWFaH2t7VVOFn0lZy4DdYtjZDdtnP5J06SA0KwqYOeyHe/A1XLnf?=
+ =?us-ascii?Q?C/6A3+l4BoERXTl/CqsVoAQFRO8WnHMUpZlG/2elS6QRnD76t2gYOCoWOqrb?=
+ =?us-ascii?Q?ecXRg1j5wbY2jqFatETUZY6BV/d2FLBarE/oR5saUQbX5MrrApJWKDl+xDVk?=
+ =?us-ascii?Q?cGrXBsyYNfgDVt1D/IHeAMW92SdOuFXdTbR6my4SHDqITM/QTanXZCc3lwcX?=
+ =?us-ascii?Q?RIAKJgxcA8KvynQS5xfuhtd1n73kVOkm1sWmkXaQDTUy0tmBDpYmXePSFHEl?=
+ =?us-ascii?Q?R+VETp/rWiH4uylnOQChRhU/XnRpm9lqdJhBNMuMzejuXjIRmSZnBIq5v+4T?=
+ =?us-ascii?Q?5+ts/nIPnBIxP1TP3gf719PbmRDQ0JacyxpyMCvntCA8CMVbPDrRev293+7v?=
+ =?us-ascii?Q?id9DNzqo3oNwlv99IqJzXf78PAiPPLv0lX6bgr67TvE5nj+DcjfJgPIWKRpZ?=
+ =?us-ascii?Q?8WgyAkdXZLrC7SPiieUV2uf5lCsHa+cZem2dZ3KTbN/EwgbQbzh2YeFNRWf/?=
+ =?us-ascii?Q?Z4lZ6UBE4xkOTSVtjzUjaCNpZBmEW/nISbwYx6xyhFLvVEFqapfqEThec34h?=
+ =?us-ascii?Q?WRraEen3ngE3aGVCPgVF/9FfWZtyuOcxwaVysUQPreyni0MEh+8tc2sl0vnX?=
+ =?us-ascii?Q?obZ5414yS+1bcBqyybMPaHmoHuVgJcjg38l/gBJF6qkD7QMpX0HsA0TcnHQp?=
+ =?us-ascii?Q?gfY=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0092.namprd13.prod.outlook.com (2603:10b6:208:2b9::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.9 via Frontend Transport; Mon, 7 Jun 2021 17:59:27 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lqJX4-003OjS-UE; Mon, 07 Jun 2021 14:59:26 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bafa5231-9cfe-4fe1-d24c-08d929ddfe04
-X-MS-TrafficTypeDiagnostic: BL0PR12MB5521:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR12MB55214E1E6FEA171CEC254E5BC2389@BL0PR12MB5521.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OZrNt+F21iRxfMLUAdktHNhk3ATSEmp/hCcUL02yUTW3Kyzh1UQuIToEgCSDmcrFEjx/Io5P7ivmF4g8Fg2DsFGw+ru8VVYuPBMhFEr+2cDkDrzWaCfGNm7ui/eE747nmUu9BjcsZWzf9VMsS4rOPWWFQ2VR6dHeK2+KOkqYUvE5UKLLId994UC09ia0SxMffTIe86AxPKU6vEBQa9sFLfWPtJ6ER058vGDSPi70zMUJD/KzsepaAVV6WpTcRsjMc3uvxi/U9kPOUP6u2JeKzJLIVPW5kvfOj64aHOEwDZ5rvZlOwLrf/bEERjWIdm8/t9s2SPBLmlcQTyNWNfCFQFh7h8HbWNIIfrSqeV1ddsspkl7uZJ179kGW7ZpXz2Q+JbxiD2Fpy423fACjSaR98G0eGSpiDAKzt4Leu6g4ZT9izDlQmT8TE5z6DyMkL/AKlJVvL2jZuwVODXGNQA8AYNYsJ8rBMiYz2xpVdVOl7C4tTt/XjV+/j5qFL7W/ocmT3YGwzzGwpLyuJGP0yZfhJ2tEWJaAud/Ss58Qb40H+60IF/4XAsNl975uzQ3AEKITJ7+pUzxJamOdkAABQd080VVR+PQcZ1N46/37l3kHj7E=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(366004)(39860400002)(136003)(26005)(6916009)(38100700002)(53546011)(36756003)(9786002)(186003)(2906002)(4326008)(8676002)(2616005)(86362001)(83380400001)(66476007)(9746002)(5660300002)(66946007)(33656002)(478600001)(1076003)(426003)(8936002)(7416002)(316002)(54906003)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?zjeURorse2PG2j8EdRuuYMGD49D9YQIofKc4YA9+nV7pXzSJK+/dRNK9D6jC?=
- =?us-ascii?Q?0JqdZkHXZ4IWmL4j/dJQZFSqbgypYhXlBW3jfnH8elbaJvWYkgh1tN8Wz/DO?=
- =?us-ascii?Q?nQeJYC+bnG4qlMigBohXBwXpNcZkoXs8zpAzQK0IE0A3o9L8Y207rDdjQNVz?=
- =?us-ascii?Q?pmX9HBaYjyjY/jz+QDWo2xZYkBr3N/wgSzB75VGhLrfUgkWUqwAaAbVf3oUt?=
- =?us-ascii?Q?PKZo7Cn7m7sKHDsI175gUjtH9ZGOAVgrK7GvNDLaIUgb9YYbE6nS2jhLT13d?=
- =?us-ascii?Q?gw1ew2ZbBBr7U5S0PM4R8Pvr4qiBpMbPPtfXU6E1FlB3FCouiRxJ9tB0JWtW?=
- =?us-ascii?Q?AmLFIvWHzKeyzpLexaCdwMWFQKn55x1bKb4SrilJJJQR9q+p7/GplwKgSSLv?=
- =?us-ascii?Q?EckA9n2zXnWQaJdNtlUXL7cWdz6sFoXvA4oag06bidY30DLDrVPouHpOXv//?=
- =?us-ascii?Q?iNxaG7L9utzhq2O9mfrUkkR3MzmkJ513Z98CqD9AhohgTNHsa5TqiFp3cS/s?=
- =?us-ascii?Q?qf4MaaKZhMyHKNwisTmDnAtAI5a4avlM/T48lCFa/4V6IE35dEY9O0YrPpDq?=
- =?us-ascii?Q?f5SIJc0ALRV/XOYnN3ZpaOvv6uuBeUECWJ8yfN60DUD1og3yZh2dzEXmznmd?=
- =?us-ascii?Q?4m1GrdVQWlfZt1x3+aK/iaMAMDL64kCtq5eK1v4aBU3lcHgViOko+vMz06hD?=
- =?us-ascii?Q?agk13W6TicUUSxbIiJOYzfpZocFzjPTDLXFcz+vCFQ3MVuUxmdXxIAUjhwSa?=
- =?us-ascii?Q?MNO3dZqxf7H2dBr6XUb4d94qpiczQlMv1dgxdYEHVBqtgKwyyZEs714tKOJa?=
- =?us-ascii?Q?8BxSW9296FQDBettio6HNDUm+ByuspxLNxwE/l4REMzHRJn9tyhgngmid5of?=
- =?us-ascii?Q?En/2cqYC+zqDO+/SlAKEbpsP8raYMEQ8+bbPqwf7cDnagL/H1vV/8FnpI1rw?=
- =?us-ascii?Q?wM9YHwazkJp3Ee3bNh0VI9BCBThSazgHS1bNpwkprl0utMwd5QfzA3y4W/bK?=
- =?us-ascii?Q?s1IEn24XCSWKbVjA85KRC1vfqhK8sQ2neuID5uH/sFPc5ai7qSHkXezwNHUG?=
- =?us-ascii?Q?KyDeU1eYAUUofAT74N1P0L2Lsxg91ZnX0GTAIKkyqCeEYdgtmT7YtpRJfZGX?=
- =?us-ascii?Q?w+jXUoE51cUkGYucc2rT0bLmvwCST3eBF80LGljN1LphiciQnu354HbJKYTu?=
- =?us-ascii?Q?z8WaCsSxkw6vtJmik3kdUtg1v9oHRvPvaPpNhuZxfMA5PLB9K7Rkv+Q6N6+K?=
- =?us-ascii?Q?D5ePMM0AdcjpTn9jtiOg0s1t5VYBZXBLnvizvi8L6ZnaUO+PjhB8p4JcMZVx?=
- =?us-ascii?Q?TjJC+5hIBIL06iLKfdsGGJql?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bafa5231-9cfe-4fe1-d24c-08d929ddfe04
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-OriginatorOrg: microsoft.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2021 17:59:27.7508
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR21MB1506.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 37ed22f1-216f-489b-f69b-08d929de1b38
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jun 2021 18:00:16.4617
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nhbZjjTZx2zgy/9i4lnclDQHtkHidLNWFCwtmV58WgOC3T6D4UMViUf/K3FEA8Hq
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5521
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 07mB+rgdnXNA+McitYuqBiVZfZdBBF2xpLsCY6/ltYWQjjx25cZRk7Dssf2E4Lcgk8ZxM645X3BwznO3mFt5Cw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR21MB2053
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 05, 2021 at 08:22:27AM +0200, Paolo Bonzini wrote:
-> On 04/06/21 19:22, Jason Gunthorpe wrote:
-> >   4) The KVM interface is the very simple enable/disable WBINVD.
-> >      Possessing a FD that can do IOMMU_EXECUTE_WBINVD is required
-> >      to enable WBINVD at KVM.
-> 
-> The KVM interface is the same kvm-vfio device that exists already.  The
-> userspace API does not need to change at all: adding one VFIO file
-> descriptor with WBINVD enabled to the kvm-vfio device lets the VM use WBINVD
-> functionality (see kvm_vfio_update_coherency).
+> Subject: Re: [Patch v2] block: return the correct bvec when checking for =
+gaps
+>=20
+> On Fri, Jun 04, 2021 at 04:37:19PM -0700, longli@linuxonhyperv.com wrote:
+> > From: Long Li <longli@microsoft.com>
+> >
+> > After commit 07173c3ec276 ("block: enable multipage bvecs"), a bvec
+> > can have multiple pages. But bio_will_gap() still assumes one page
+> > bvec while checking for merging. If the pages in the bvec go across
+> > the seg_boundary_mask, this check for merging can potentially succeed
+> > if only the 1st page is tested, and can fail if all the pages are teste=
+d.
+> >
+> > Later, when SCSI builds the SG list the same check for merging is done
+> > in
+> > __blk_segment_map_sg_merge() with all the pages in the bvec tested.
+> > This time the check may fail if the pages in bvec go across the
+> > seg_boundary_mask (but tested okay in bio_will_gap() earlier, so those
+> > BIOs were merged). If this check fails, we end up with a broken SG
+> > list for drivers assuming the SG list not having offsets in intermediat=
+e pages.
+> > This results in incorrect pages written to the disk.
+> >
+> > Fix this by returning the multi-page bvec when testing gaps for merging=
+.
+> >
+> > Cc: Jens Axboe <axboe@kernel.dk>
+> > Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> > Cc: Pavel Begunkov <asml.silence@gmail.com>
+> > Cc: Ming Lei <ming.lei@redhat.com>
+> > Cc: Tejun Heo <tj@kernel.org>
+> > Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> > Cc: Jeffle Xu <jefflexu@linux.alibaba.com>
+> > Cc: linux-kernel@vger.kernel.org
+> > Cc: stable@vger.kernel.org
+> > Fixes: 07173c3ec276 ("block: enable multipage bvecs")
+> > Signed-off-by: Long Li <longli@microsoft.com>
+> > ---
+> > Change from v1: add commit details on how data corruption happens
+> >
+> >  include/linux/bio.h | 11 ++++-------
+> >  1 file changed, 4 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/include/linux/bio.h b/include/linux/bio.h index
+> > a0b4cfdf62a4..6b2f609ccfbf 100644
+> > --- a/include/linux/bio.h
+> > +++ b/include/linux/bio.h
+> > @@ -44,9 +44,6 @@ static inline unsigned int bio_max_segs(unsigned int
+> nr_segs)
+> >  #define bio_offset(bio)		bio_iter_offset((bio), (bio)->bi_iter)
+> >  #define bio_iovec(bio)		bio_iter_iovec((bio), (bio)->bi_iter)
+> >
+> > -#define bio_multiple_segments(bio)				\
+> > -	((bio)->bi_iter.bi_size !=3D bio_iovec(bio).bv_len)
+> > -
+> >  #define bvec_iter_sectors(iter)	((iter).bi_size >> 9)
+> >  #define bvec_iter_end_sector(iter) ((iter).bi_sector +
+> > bvec_iter_sectors((iter)))
+> >
+> > @@ -271,7 +268,7 @@ static inline void bio_clear_flag(struct bio *bio,
+> > unsigned int bit)
+> >
+> >  static inline void bio_get_first_bvec(struct bio *bio, struct bio_vec
+> > *bv)  {
+> > -	*bv =3D bio_iovec(bio);
+> > +	*bv =3D mp_bvec_iter_bvec(bio->bi_io_vec, bio->bi_iter);
+> >  }
+> >
+> >  static inline void bio_get_last_bvec(struct bio *bio, struct bio_vec
+> > *bv) @@ -279,10 +276,10 @@ static inline void bio_get_last_bvec(struct
+> bio *bio, struct bio_vec *bv)
+> >  	struct bvec_iter iter =3D bio->bi_iter;
+> >  	int idx;
+> >
+> > -	if (unlikely(!bio_multiple_segments(bio))) {
+> > -		*bv =3D bio_iovec(bio);
+> > +	/* this bio has only one bvec */
+> > +	*bv =3D mp_bvec_iter_bvec(bio->bi_io_vec, bio->bi_iter);
+> > +	if (bv->bv_len =3D=3D bio->bi_iter.bi_size)
+> >  		return;
+>=20
+> Nit: I'd move the comment a bit as the current placement confused me at
+> first.  Also maybe use bio_get_first_bvec here to make it even more
+> obvious:
+>=20
+> 	bio_get_first_bvec(bio, bv);
+> 	if (bv->bv_len =3D=3D bio->bi_iter.bi_size)
+> 		return;		/* this bio only has a single bvec */
 
-The problem is we are talking about adding a new /dev/ioasid FD and it
-won't fit into the existing KVM VFIO FD interface. There are lots of
-options here, one is to add new ioctls that specifically use the new
-FD, the other is to somehow use VFIO as a proxy to carry things to the
-/dev/ioasid FD code.
-
-> Alternatively you can add a KVM_DEV_IOASID_{ADD,DEL} pair of ioctls. But it
-> seems useless complication compared to just using what we have now, at least
-> while VMs only use IOASIDs via VFIO.
-
-The simplest is KVM_ENABLE_WBINVD(<fd security proof>) and be done
-with it.
-
-I don't need to keep track things in KVM, just flip one flag on/off
-under user control.
-
-> Either way, there should be no policy attached to the add/delete operations.
-> KVM users want to add the VFIO (or IOASID) file descriptors to the device
-> independent of WBINVD.  If userspace wants/needs to apply its own policy on
-> whether to enable WBINVD or not, they can do it on the VFIO/IOASID side:
-
-Why does KVM need to know abut IOASID's? I don't think it can do
-anything with this general information.
-
-> >  1) When the device is attached to the IOASID via VFIO_ATTACH_IOASID
-> >     it communicates its no-snoop configuration:
-> >      - 0 enable, allow WBINVD
-> >      - 1 automatic disable, block WBINVD if the platform
-> >        IOMMU can police it (what we do today)
-> >      - 2 force disable, do not allow BINVD ever
-> 
-> Though, like Alex, it's also not clear to me whether force-disable is
-> useful.  Instead userspace can query the IOMMU or the device to ensure it's
-> not enabled.
-
-"force disable" would be a way for the device to signal to whatever
-query you imagine that it is not enabled. Maybe I should have called
-it "no-snoop is never used"
-
-Jason
+Thanks! I'll send v3 with those changes.
