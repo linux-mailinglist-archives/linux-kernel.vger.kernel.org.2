@@ -2,82 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B1139D28F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 03:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D86839D29D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 03:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbhFGBZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 21:25:33 -0400
-Received: from mail-oi1-f176.google.com ([209.85.167.176]:37796 "EHLO
-        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229932AbhFGBZc (ORCPT
+        id S230142AbhFGBcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 21:32:36 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:58807 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230078AbhFGBcf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 21:25:32 -0400
-Received: by mail-oi1-f176.google.com with SMTP id h9so16478056oih.4;
-        Sun, 06 Jun 2021 18:23:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=K+6yDkXys1JzDEdCq9xIHVfhWVlTrD1kEuu/cjBEdAM=;
-        b=LE0V03IiabLksBAANK0//K8bEg1f10YTENY8BkdupzT0o5c2vTtKAaBrF54JxvIOFa
-         rYiY7q+SoFP/iFgThulho2FeVmhKbvlybbjHH36QYeD/P135/dxGQeuECh7y/3LGlQqn
-         UXTHY0+YXQZ4GIRKkVy5yIGYIYuSNqpvEM37jQeM+YhIvoyDiB/2nXuBNB599p55PQpC
-         GAKlXy4yklfpayo5V8AHWoc+VNLAdSRouS8JV/upUG/ZRojP1wB7aAPCNAlEmEcZJNz7
-         tYN4HqicZKzYULjx8f8rps/XJIEPrAw7Gfxj8HIQQlrBIYfaXH3/7h7bGekC5VFfegGY
-         YZuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=K+6yDkXys1JzDEdCq9xIHVfhWVlTrD1kEuu/cjBEdAM=;
-        b=Lq6+rTzZqyTDle5nfx5BlZTD2/YQ8kXHEG1eh4a+9vL/e1bWFoS027ZV1kShiAQJOk
-         mJYzJMJMcjmSHg4sfoGJAwIqDy9XwKMAtoxjEEt7r8/cAnz5VedGNdBGuv5atzfgTMeM
-         6YIcDw4D/Hij5wx3ZoRmjeP9poCAKtEWBIG5rEsgS7Q/LPvuNj7np9jfFbQWrisDFoP/
-         pBk6IA2md6+rFnhO7cvP999lcEg42y07o0OPj8H3CDp8amNLb+oynOrMNUJFX9xKVTM9
-         KyvvWMXI7SKL+QL/eEzMFRslryOcqQk0GGH4t53tX5K221wdylRq0LyZRa3qEDcaBK7p
-         J2Qg==
-X-Gm-Message-State: AOAM5314kglwNvwvUcaDPx09n2dwOEvh2gvWeyb0gFhOABLwfsqMtin4
-        gO/NsZAMnx6KpGI9v2+7bJU=
-X-Google-Smtp-Source: ABdhPJwTyJHHp0jvVvxSntdBRZJiJ9G3+AIejmHZidj5T1ZXpOXNCw5w1K93M0tVKTsP32ecWATKrg==
-X-Received: by 2002:a54:4d98:: with SMTP id y24mr10363321oix.18.1623028945066;
-        Sun, 06 Jun 2021 18:22:25 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g24sm2044425otp.17.2021.06.06.18.22.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Jun 2021 18:22:24 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sun, 6 Jun 2021 18:22:22 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     wim@linux-watchdog.org, martyn.welch@gefanuc.com,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] watchdog: gef_wdt:  Fix an error handling path in
- 'gef_wdt_probe()'
-Message-ID: <20210607012222.GA1269917@roeck-us.net>
-References: <3d775a5ac7e26fa5dd4c47f75fef6d5f336de1e3.1622990863.git.christophe.jaillet@wanadoo.fr>
+        Sun, 6 Jun 2021 21:32:35 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 900305C00E6;
+        Sun,  6 Jun 2021 21:30:44 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Sun, 06 Jun 2021 21:30:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
+        :to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=GRzcE4hI5AG2i78thbcMf/cB97
+        dZ01L3NdzHyw2+Nv0=; b=e57ywDicKtu87q+d8RSK+Uh9L+fpAXqXjvcuSEdrNA
+        4iHp3kY2ObBLPAtZqbbaQoNrY3Fu0qtd3G5q2F6DRnpOwCTgsK1qNs4Mvo0tiARr
+        Bnyzxq8IzTvKZC5PlVnAWHSNAB2/yVEFYp3Wr+eA5dYW1X+uSqllNBfCrOgL+sZO
+        m99glIg3eGoyH1S8TIDMfe/EFMEKv8gkrY7mgGibogV+eGPZ0SA/ZT3GBWJvonM2
+        MoW3Odv/3r5OInfFmeQzpPXUC1yR0STMXiHw4RNszb++wEDNNbpZbAIMIe0xrxSp
+        sEtXFbNteFGjeuoJ0xdpsT9LrJFmzzaWDYPJdrts6PIA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=GRzcE4hI5AG2i78th
+        bcMf/cB97dZ01L3NdzHyw2+Nv0=; b=jrfBPDSHqWTSn1tTrDWLEYuUwOHA3dRg2
+        r3x5OHNhDPozYBJj8tiGWPYrcTQtUvroc2ghN9bfxBIAjWsFwrCo92r1AFUYnFCi
+        BIBo5hgOwRTIaF283gcjpHZdoIBIwHr2nwcvN9vxa3NBVIHuLR6K70Fct1CB1XkP
+        tqh9oG79mhDBYV9bG52Wg+H5XAYZ2+R5KExo/m7qV+7oEuXW6Yf6Q60VMtBGjDYY
+        yTY9andCckGWOBT1ZI9lBNuAKyYLqovPDnuOiWtyW+2XFooce05pfBRt+cLqvkIK
+        i4lhY+l3xRT9dbFjeSNZs0QKRbeTNOXlvU1qzOFll6y5rAG4szjyQ==
+X-ME-Sender: <xms:wXa9YEWDXwXFZ6g8NYlLZY_702XFeDVqDcXqN61vA4OdvtGDD5vqAw>
+    <xme:wXa9YIn-LDtYf-omv_F4Kquy7u8LEEQ1Y1iMyHkNfLIg5mreol-J5IfL4BLGsK8nD
+    BigXcdMJ5GE2iMrHw>
+X-ME-Received: <xmr:wXa9YIbOgwrK3i4IsRFBsD2AHpHvLd1Vgl_naaekebiFIZpr6wyN1sFZctMZicU73zF8-YmsprQUX2MioLZOspj1aFld352E2Sc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtiedggeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomheptehnughrvgifucflvghffhgvrhihuceorghnughrvgifsegrjhdr
+    ihgurdgruheqnecuggftrfgrthhtvghrnhepkefhieffjeevfeevhedtieeihfefvdejle
+    dvvddthefftedujeethfeuueelfedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghr
+    rghmpehmrghilhhfrhhomheprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:wXa9YDW_FsLN34ITeOFGjIeUOTXP3_6AE6GpQAYsYLqgC5f8my6Jgg>
+    <xmx:wXa9YOnLmIp8wO6HSs98XjMzbLoyEgoTDkZSnkh4R-hUXYKZ8fw1cQ>
+    <xmx:wXa9YIfE9NN3M8bUSqsZfw_sf9fUhZiipvyQY7pJYvRzl06OLFvb3w>
+    <xmx:xHa9YMZD-CLNWEsaYLvqgHtO2oNiOxVYIBaF_Dsn2Kv0788WEYsX0Q>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 6 Jun 2021 21:30:38 -0400 (EDT)
+From:   Andrew Jeffery <andrew@aj.id.au>
+To:     linux-mmc@vger.kernel.org
+Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org, joel@jms.id.au,
+        linux-aspeed@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        steven_lee@aspeedtech.com
+Subject: [PATCH] mmc: sdhci-of-aspeed: Turn down a phase correction warning
+Date:   Mon,  7 Jun 2021 11:00:20 +0930
+Message-Id: <20210607013020.85885-1-andrew@aj.id.au>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3d775a5ac7e26fa5dd4c47f75fef6d5f336de1e3.1622990863.git.christophe.jaillet@wanadoo.fr>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 06, 2021 at 04:49:18PM +0200, Christophe JAILLET wrote:
-> If an error occurs after a successful 'of_iomap()' call, it must be undone
-> by a corresponding 'iounmap()' call, as already done in the remove
-> function.
-> 
-> Fixes: 3268b5618f38 ("[WATCHDOG] Basic support for GE Fanuc's FPGA based watchdog timer")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+The card timing and the bus frequency are not changed atomically with
+respect to calls to the set_clock() callback in the driver. The result
+is the driver sees a transient state where there's a mismatch between
+the two and thus the inputs to the phase correction calculation
+formula are garbage.
 
-<Formletter>  
-Please do not submit patches for old-style watchdog drivers unless you
-have access to the hardware. If you do have access to the hardware, please
-convert the driver to a new-style watchdog driver. I'll be happy to assist
-with the conversion if necessary.
-</Formletter>
+Switch from dev_warn() to dev_dbg() to avoid noise in the normal case,
+though the change does make bad configurations less likely to be
+noticed.
 
-Thanks,
-Guenter
+Reported-by: Joel Stanley <joel@jms.id.au>
+Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+---
+ drivers/mmc/host/sdhci-of-aspeed.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mmc/host/sdhci-of-aspeed.c b/drivers/mmc/host/sdhci-of-aspeed.c
+index d001c51074a0..e4665a438ec5 100644
+--- a/drivers/mmc/host/sdhci-of-aspeed.c
++++ b/drivers/mmc/host/sdhci-of-aspeed.c
+@@ -150,7 +150,7 @@ static int aspeed_sdhci_phase_to_tap(struct device *dev, unsigned long rate_hz,
+ 
+ 	tap = div_u64(phase_period_ps, prop_delay_ps);
+ 	if (tap > ASPEED_SDHCI_NR_TAPS) {
+-		dev_warn(dev,
++		dev_dbg(dev,
+ 			 "Requested out of range phase tap %d for %d degrees of phase compensation at %luHz, clamping to tap %d\n",
+ 			 tap, phase_deg, rate_hz, ASPEED_SDHCI_NR_TAPS);
+ 		tap = ASPEED_SDHCI_NR_TAPS;
+-- 
+2.30.2
+
