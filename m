@@ -2,80 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D2139D600
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1791939D5FC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:27:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbhFGH3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 03:29:46 -0400
-Received: from mail-pl1-f174.google.com ([209.85.214.174]:46824 "EHLO
-        mail-pl1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbhFGH3p (ORCPT
+        id S230262AbhFGH3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 03:29:09 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:49437 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229923AbhFGH3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 03:29:45 -0400
-Received: by mail-pl1-f174.google.com with SMTP id e1so8126866pld.13
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 00:27:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=UH4ITteZ0Gxnyn4y+x9sWM2vqjBorgoraSHazduYHes=;
-        b=Vi/O2uI3D/XIoi5FEulXYwE/WTB9L4hz/zxp5mTrNXmZKWthsYzk5+EggOkpfIwUkb
-         LvT5G/82KCA32xeDgvcYcF5gYVt3mkGsrKZIHuh62jfWHLKAXl4bNCeA2evK97k2Ksh1
-         AZiicUW4KjpxhA43L8fvpKdHQELjJA/HX2nchQU43pDuNU2oB5Mhc/FbxXgvLm9tpkHh
-         3eR9T5EXf5MXaJSCREAMSmg7BZPIy3k1XgqG8onvgWz1gi3kw2b8dSmt5L5cnREIdH/W
-         RPWgHqoxy8jjho9di0z7p/fSqemE/zRn8D5Amjg/De6BgRQxZlIg7YFC86FtuI+FJ9q9
-         kJLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=UH4ITteZ0Gxnyn4y+x9sWM2vqjBorgoraSHazduYHes=;
-        b=Ch6gmMYlFTgRs9FgiEWLLl6ZpkbtJk7yJdxVxWH9ujdl912QSIsTCe7R5kv/4Fd5Vh
-         vkSDAWiHAzLiK2Q3hsZGhLgriPcb9spTrPoSM1A1SPPMUN/EWkvxDw8kX7/exIZb+P6i
-         ZZbefE04y/pEwuJIaeSPvuNlAbmlQJ3XPgGvn+R2E8rFghOIX4sbhkLQEiytpDGT1APp
-         VdFqzGdt1A+67PutTCPyAxfa7Jzjln1UyA+km4CUfWGcOdrUCtjNoCpIRmFbwFbILAqM
-         s3LM36DpzZAFljGrVQ51dU3FeQc7C4A5T4zG0b1qAlIWzI7Z5dnnBxLyY93GWnM3uHjt
-         AnqA==
-X-Gm-Message-State: AOAM530NRN5SLQHZTsmSUdXAAp9lXQqSfINqm+8f6VQSR2CRhgK5NFDJ
-        Q36w3zJ0+Vh/fxCPNbsX5/HoXg==
-X-Google-Smtp-Source: ABdhPJzTMrIyipw4qtNzpiN3xMLwN8qa1zPVA0HvJmlnl+IqGFBhPPAzSA1q7Fgs3WmypBcMsKzgOA==
-X-Received: by 2002:a17:902:b482:b029:10f:39f1:67de with SMTP id y2-20020a170902b482b029010f39f167demr15552688plr.19.1623050799941;
-        Mon, 07 Jun 2021 00:26:39 -0700 (PDT)
-Received: from localhost ([136.185.169.128])
-        by smtp.gmail.com with ESMTPSA id k25sm7396690pfk.33.2021.06.07.00.26.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 00:26:39 -0700 (PDT)
-Date:   Mon, 7 Jun 2021 12:56:37 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     kyle.meyer@hpe.com, rjw@rjwysocki.net,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-acpi@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH] acpi-cpufreq: Skip cleanup if initialization didn't occur
-Message-ID: <20210607072637.b5mwcalab7y2vikx@vireshk-i7>
-References: <20210604170500.46875-1-kyle.meyer@hpe.com>
- <20210607032550.qdnl2sxnny42rtwa@vireshk-i7>
- <s5h35tuf8qd.wl-tiwai@suse.de>
+        Mon, 7 Jun 2021 03:29:07 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id E671958038E;
+        Mon,  7 Jun 2021 03:27:15 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Mon, 07 Jun 2021 03:27:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=Be4vlGBp5Tgplypsgu9j1asWrWc
+        1rZBo7Tlnzeyv74k=; b=QgC4K9mH2QUkot7hdydmZnYXPxowrbwBDzmlg4FBB2L
+        qSuelat0c2L7OvaD8a8I1sN3b6/TaNNkJwnxrPKe+uvfqGoc+1JXefSL2zkqHQ8+
+        K6B8tjwcKpnpJ22xhmINs4lc+SI0LyhbGIT2mI1tKJ4ok1lUPuCKzDHxsdtEHP03
+        Q12yrcUpZuW9C6bK5Ru5F8hnh04k/DEBm5qDzhIm81jCxJlEwGSiOHJp1BYVFj3H
+        waGFis1qb8HTH6hNWpw40C9yxRcdfLtoYXs9cXvPNS8+HtBmlC3KZDBC3zFOrLNa
+        k3KShdhKiSqhZJLizVJ+7h9wNE17qaKXI7xu/GMSmRA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Be4vlG
+        Bp5Tgplypsgu9j1asWrWc1rZBo7Tlnzeyv74k=; b=V6V/lcTv12rc702uKGKDFq
+        VLov3E51TFZUwFT1UyD6nkAjWhyHfvqezDmKABdO4fZRh8P5eFV/pFCtNQzy/Usv
+        EtFclhiw4UiQ3T9hBO41WQJkhnJEeLsZ2GPfmUqlr7qHRhOPgtBnB3zzwik/EqRV
+        lx3wKEwNWhuch6HB+tjurY3h2tUBhiOP1G0ubpUIPQHzjhuOBPwoPLQ2OyOyrpr/
+        Wpo0paW641XzL0Toft8MOgYQH9NqaGyMsqFYOZAy5sYdeeHLG4heXcsknCMM6P4Y
+        XcNzID7vC2WJ46bKul5dksWeDGrYSijo1ixvxR6nNgs0jUhG94xFntsSFmjgWsog
+        ==
+X-ME-Sender: <xms:UMq9YJk5sHWj7wy7-S_VyhB6Pw7yqJo5h5gatBHzdsm9AkJdIdtSKA>
+    <xme:UMq9YE0Yyn6bzVniNy8s-0gvKiFMlZ_thpZXaj284_CSxKhtewWd_TOhgtyDcH3vN
+    s20Cvamk-BnalnaB2w>
+X-ME-Received: <xmr:UMq9YPrePbLL48qYi5My2tdYfAA5jqHie8S9aCHBb0aRUndWyN3kYEgABFOeqnHdNhxP9imMiB1OxjeB62o8F3f__Kj9StBSI6Xi>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtiedguddujecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtjeenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpeeutdfgjeeuudehvefgvedvtedtudelfffgffekledtffekgedukeejueev
+    ieegudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:UMq9YJn4BxpDbDfsD0cuUIUAiYIC4K21THlfs-A9J_P8b7PDHrQ-rg>
+    <xmx:UMq9YH0TDlZyqGUCt0PUraiciRQ0i_ohz7aKrIvJPi-3Eyu20AnCCg>
+    <xmx:UMq9YIs2oyfyoPRgMfTdiGJeD5EvA9g3oYmvQpkkKuGbCS1Qs5cUvQ>
+    <xmx:U8q9YO0rEX9A1a-22i6EHE5F3gU4WE2Vcissfx7TnGWPu7Ac4NJTHg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 7 Jun 2021 03:27:12 -0400 (EDT)
+Date:   Mon, 7 Jun 2021 09:27:09 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
+        Drew Fustini <drew@beagleboard.org>, liush@allwinnertech.com,
+        Wei Wu =?utf-8?B?KOWQtOS8nyk=?= <lazyparser@gmail.com>,
+        wefu@redhat.com, linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [RFC PATCH v2 09/11] riscv: soc: Initial DTS for Allwinner D1
+ NeZha board
+Message-ID: <20210607072709.ul4jdvtyspj6t4c6@gilmour>
+References: <1622970249-50770-1-git-send-email-guoren@kernel.org>
+ <1622970249-50770-13-git-send-email-guoren@kernel.org>
+ <2490489.OUOj5N01qN@jernej-laptop>
+ <CAJF2gTTDVy89R-gvWUS0sgpX=B14LnH5rDoGP7pv1=OSyJq28Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="dkq7vhizxit3oxmd"
 Content-Disposition: inline
-In-Reply-To: <s5h35tuf8qd.wl-tiwai@suse.de>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <CAJF2gTTDVy89R-gvWUS0sgpX=B14LnH5rDoGP7pv1=OSyJq28Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07-06-21, 09:13, Takashi Iwai wrote:
-> The missing key information is that it's a fix for the recent change
-> for 5.14, i.e. 
-> Fixes: c1d6d2fd2f64 ("cpufreq: acpi-cpufreq: Skip initialization if cpufreq driver is present")
-> 
-> The change made the module left even if it exits before registering
-> the cpufreq driver object.
 
-The original patch looks buggy to me, I was never able to review it :(
+--dkq7vhizxit3oxmd
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I have replied on the original thread instead.
+On Mon, Jun 07, 2021 at 11:44:03AM +0800, Guo Ren wrote:
+> On Mon, Jun 7, 2021 at 12:26 AM Jernej =C5=A0krabec <jernej.skrabec@gmail=
+=2Ecom> wrote:
+> >
+> > Hi!
+> >
+> > I didn't go through all details. After you fix all comments below, you =
+should
+> > run "make dtbs_check" and fix all reported warnings too.
+> >
+> > Dne nedelja, 06. junij 2021 ob 11:04:07 CEST je guoren@kernel.org napis=
+al(a):
+> > > From: Guo Ren <guoren@linux.alibaba.com>
+> > >
+> > > Add initial DTS for Allwinner D1 NeZha board having only essential
+> > > devices (uart, dummy, clock, reset, clint, plic, etc).
+> > >
+> > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > > Co-Developed-by: Liu Shaohua <liush@allwinnertech.com>
+> > > Signed-off-by: Liu Shaohua <liush@allwinnertech.com>
+> > > Cc: Anup Patel <anup.patel@wdc.com>
+> > > Cc: Atish Patra <atish.patra@wdc.com>
+> > > Cc: Christoph Hellwig <hch@lst.de>
+> > > Cc: Chen-Yu Tsai <wens@csie.org>
+> > > Cc: Drew Fustini <drew@beagleboard.org>
+> > > Cc: Maxime Ripard <maxime@cerno.tech>
+> > > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+> > > Cc: Wei Fu <wefu@redhat.com>
+> > > Cc: Wei Wu <lazyparser@gmail.com>
+> > > ---
+> > >  arch/riscv/boot/dts/Makefile                       |  1 +
+> > >  arch/riscv/boot/dts/allwinner/Makefile             |  2 +
+> > >  .../boot/dts/allwinner/allwinner-d1-nezha-kit.dts  | 29 ++++++++
+> > >  arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi    | 84
+> > > ++++++++++++++++++++++ 4 files changed, 116 insertions(+)
+> > >  create mode 100644 arch/riscv/boot/dts/allwinner/Makefile
+> > >  create mode 100644 arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-=
+kit.dts
+> > > create mode 100644 arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi
+> > >
+> > > diff --git a/arch/riscv/boot/dts/Makefile b/arch/riscv/boot/dts/Makef=
+ile
+> > > index fe996b8..3e7b264 100644
+> > > --- a/arch/riscv/boot/dts/Makefile
+> > > +++ b/arch/riscv/boot/dts/Makefile
+> > > @@ -2,5 +2,6 @@
+> > >  subdir-y +=3D sifive
+> > >  subdir-$(CONFIG_SOC_CANAAN_K210_DTB_BUILTIN) +=3D canaan
+> > >  subdir-y +=3D microchip
+> > > +subdir-y +=3D allwinner
+> > >
+> > >  obj-$(CONFIG_BUILTIN_DTB) :=3D $(addsuffix /, $(subdir-y))
+> > > diff --git a/arch/riscv/boot/dts/allwinner/Makefile
+> > > b/arch/riscv/boot/dts/allwinner/Makefile new file mode 100644
+> > > index 00000000..4adbf4b
+> > > --- /dev/null
+> > > +++ b/arch/riscv/boot/dts/allwinner/Makefile
+> > > @@ -0,0 +1,2 @@
+> > > +# SPDX-License-Identifier: GPL-2.0
+> > > +dtb-$(CONFIG_SOC_SUNXI) +=3D allwinner-d1-nezha-kit.dtb
+> > > diff --git a/arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-kit.dts
+> > > b/arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-kit.dts new file m=
+ode
+> > > 100644
+> > > index 00000000..cd9f7c9
+> > > --- /dev/null
+> > > +++ b/arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-kit.dts
+> >
+> > Board DT names are comprised of soc name and board name, in this case i=
+t would
+> > be "sun20i-d1-nezha-kit.dts"
+> >
+> > > @@ -0,0 +1,29 @@
+> > > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> >
+> > Usually copyrights are added below spdx id.
+> >
+> > > +
+> > > +/dts-v1/;
+> > > +
+> > > +#include "allwinner-d1.dtsi"
+> > > +
+> > > +/ {
+> > > +     #address-cells =3D <2>;
+> > > +     #size-cells =3D <2>;
+> >
+> > This should be part of SoC level DTSI.
+> >
+> > > +     model =3D "Allwinner D1 NeZha Kit";
+> > > +     compatible =3D "allwinner,d1-nezha-kit";
+> >
+> > Board specific compatible string should be followed with SoC compatible=
+, in
+> > this case "allwinner,sun20i-d1".  You should document it too.
+> >
+> > > +
+> > > +     chosen {
+> > > +             bootargs =3D "console=3DttyS0,115200";
+> >
+> > Above line doesn't belong here. If anything, it should be added dynamic=
+ally by
+> > bootloader.
+>
+> After discussion, we still want to keep a default value here.
+> Sometimes we could boot with jtag and parse dtb is hard for gdbinit
+> script.
+>
+> >
+> > > +             stdout-path =3D &serial0;
+> > > +     };
+> > > +
+> > > +     memory@40000000 {
+> > > +             device_type =3D "memory";
+> > > +             reg =3D <0x0 0x40000000 0x0 0x20000000>;
+> > > +     };
+> >
+> > Ditto for whole memory node.
+>
+> Ditto
 
--- 
-viresh
+The thing is that there's never a good value for a default. Let's take
+the memory node here: what would be a good default? If we want to make
+it work everywhere it's going to be the lowest amount of memory
+available on the D1 boards. It's going to be hard to maintain and very
+likely to be overlooked, resulting in broken boards anyway.
+
+If someone is savvy enough to use JTAG, it's not really difficult to
+modify the DT for their board when they need it.
+
+Maxime
+
+--dkq7vhizxit3oxmd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYL3KTQAKCRDj7w1vZxhR
+xWFdAQDLzaFiCNqj57hi5iIYQrv16nkQoboc0eB4T/McOPR6fAD+IUjgmFf62NP1
+oefDLUF5Vp/JYH2eWZYcHp5G9m79Sg0=
+=eB6L
+-----END PGP SIGNATURE-----
+
+--dkq7vhizxit3oxmd--
