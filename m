@@ -2,106 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6030739E0DB
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 17:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3D5B39E0C7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 17:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231501AbhFGPmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 11:42:42 -0400
-Received: from mail-pj1-f41.google.com ([209.85.216.41]:53780 "EHLO
-        mail-pj1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231384AbhFGPm3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 11:42:29 -0400
-Received: by mail-pj1-f41.google.com with SMTP id ei4so10093418pjb.3;
-        Mon, 07 Jun 2021 08:40:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=NCCUVu48/YxKe+76n8oOpi5HhiU1MccRKkRryIWRGrY=;
-        b=OS4EcGoksInG36ZFqUT7ibl0i7seCqXy34Y1Yaqw4UU6mQnLyBhyO4oxgvwaV757eO
-         3OOVg7Etfn6Ovn5a/wyGap4jFt3oQA3YF2kBfNhNi6BzLu77XttKckkx2ww85i1apfhQ
-         ekuhbXt/9/gRFTG9/z7PmOPeVdjAZMSK9sfxC5/zv2NK7nIIQGGeorVw0T+W8sM1Vazf
-         PSiDe0Oc9zru+52WAzgE+xrwkqxcwvcCcvGYkyCeO7uLpD0B3/BWirwS1VN2DF/puR0T
-         7s4mIxBw+X+t9IRUAA9Lbdef5ch4WVMffx7hQSSIycfuyA3cG85MH9ZIPY9aGRqGsvUh
-         Z5EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NCCUVu48/YxKe+76n8oOpi5HhiU1MccRKkRryIWRGrY=;
-        b=gtzmYWu6qeFSxqEELrP3O2AD8vaGH+F5A5etAnejBILMvD4he2mTHpnCPRy/I+ETMI
-         SkNWFWPU2N9u5X97dYKW0UKFpqqXYeHNCtzzxkJF7NC8AKLJcvKr5AB8LbGKcMdP9Pci
-         ijI1OtRPii7Xrrioce/heCZBRQUfI/hUNm0lqG0aMHdnTm1ZzHqA51Tdx/SfsJXEciMm
-         5V4ylHMBJnzx8rnzp7X45xPBhVvTe9qHq7GXaZXmxA64GjvRaaReskvjNO36OqnCuPQ4
-         cVAvsBBvIff19UHdVi3n9gVhiFil5sY4rJDiF2IQf0hvJHA9oBMb3UkoG1P4GLvx9NRs
-         qzYA==
-X-Gm-Message-State: AOAM530Qdqlcl3LmnW/sWCoQIK9pGcJl2H4XIzRbyoVkV4vI+vhZ4glA
-        PqEFN7LVl/FGCrMfdpzAQlBLkAa+wKbrN3j/
-X-Google-Smtp-Source: ABdhPJwMNKP15oGyesPtOeAnFeRGAZFrCrotHvaDZsVsbwycnY7O+X2WS5POBmPAdxJocubb2Bu3KQ==
-X-Received: by 2002:a17:90a:db4e:: with SMTP id u14mr20775908pjx.43.1623080377825;
-        Mon, 07 Jun 2021 08:39:37 -0700 (PDT)
-Received: from localhost (185.212.56.112.16clouds.com. [185.212.56.112])
-        by smtp.gmail.com with ESMTPSA id j3sm8696259pfe.98.2021.06.07.08.39.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 08:39:37 -0700 (PDT)
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     helgaas@kernel.org, corbet@lwn.net, jarkko.nikula@linux.intel.com,
-        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
-        rric@kernel.org, bhelgaas@google.com, wsa@kernel.org,
-        Sanket.Goswami@amd.com, linux-doc@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Dejin Zheng <zhengdejin5@gmail.com>
-Subject: [PATCH v7 4/4] i2c: thunderx: Use pcim_alloc_irq_vectors() to allocate IRQ vectors
-Date:   Mon,  7 Jun 2021 23:39:16 +0800
-Message-Id: <20210607153916.1021016-5-zhengdejin5@gmail.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210607153916.1021016-1-zhengdejin5@gmail.com>
-References: <20210607153916.1021016-1-zhengdejin5@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231325AbhFGPm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 11:42:28 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:17820 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230406AbhFGPmV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 11:42:21 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623080430; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=64r24yEhGGQ+dTqb1abtZSvbz6qcbB+fRIjh6n4L4r8=; b=ba1yAe/lVpet3rqfOTCBCMG/844af11237Q9UpE+lghNbAYmUnibzpfXqzMXUJpVfA987cMT
+ BD+wnGgbA1NDDEalHlkQofQzpClmBfmmIPNbb0Mp7S78nXpo4tw32WOcgJ9lRokGUDyvkl3y
+ 30j64xE34CHp4V+sxwkLKYwEWec=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 60be3dd0f726fa4188cf30e2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 07 Jun 2021 15:40:00
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1D4CFC43146; Mon,  7 Jun 2021 15:40:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 19791C433D3;
+        Mon,  7 Jun 2021 15:39:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 19791C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
+        robh+dt@kernel.org, swboyd@chromium.org
+Cc:     ulf.hansson@linaro.org, rjw@rjwysocki.net, agross@kernel.org,
+        ohad@wizery.com, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dianders@chromium.org,
+        rishabhb@codeaurora.org, sidgup@codeaurora.org,
+        Sibi Sankar <sibis@codeaurora.org>
+Subject: [PATCH v2 00/13] Use qmp_send to update co-processor load state
+Date:   Mon,  7 Jun 2021 21:09:19 +0530
+Message-Id: <1623080372-13521-1-git-send-email-sibis@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pcim_alloc_irq_vectors() function, an explicit device-managed version
-of pci_alloc_irq_vectors(). If pcim_enable_device() has been called
-before, then pci_alloc_irq_vectors() is actually a device-managed
-function. It is used here as a device-managed function, So replace it
-with pcim_alloc_irq_vectors().
+The power domains exposed by the AOSS QMP driver control the load state
+resources linked to modem, adsp, cdsp remoteprocs. These are used to
+notify the Always on Subsystem (AOSS) that a particular co-processor is
+up/down. AOSS uses this information to wait for the co-processors to
+suspend before starting its sleep sequence. These co-processors enter
+low-power modes independent to that of the application processor and
+the load state resources linked to them are expected to remain unaltered
+across system suspend/resume cycles. To achieve this behavior let's stop
+modeling them as power-domains and replace them with generic qmp_send
+interface instead.
 
-Acked-by: Robert Richter <rric@kernel.org>
-Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
----
-v6 -> v7:
-	- rebase to PCI next branch
-v5 -> v6:
-	- rebase to 5.13-rc4
-v4 -> v5:
-	- Modify the subject name.
-v3 -> v4:
-	- No change.
-v2 -> v3:
-	- No change.
-v1 -> v2:
-	- Modify some commit messages.
+https://lore.kernel.org/lkml/20200913034603.GV3715@yoga/
+Previous dicussion on dropping power-domain support from AOSS QMP driver
 
- drivers/i2c/busses/i2c-thunderx-pcidrv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Depends on:
+qmp_send: https://patchwork.kernel.org/project/linux-arm-msm/cover/1620320818-2206-1-git-send-email-deesin@codeaurora.org/
+rproc,adsp_yaml: https://patchwork.kernel.org/project/linux-arm-msm/patch/20210603142639.8335-1-s-anna@ti.com/
 
-diff --git a/drivers/i2c/busses/i2c-thunderx-pcidrv.c b/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-index 12c90aa0900e..63354e9fb726 100644
---- a/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-+++ b/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-@@ -192,7 +192,7 @@ static int thunder_i2c_probe_pci(struct pci_dev *pdev,
- 	i2c->hlc_int_enable = thunder_i2c_hlc_int_enable;
- 	i2c->hlc_int_disable = thunder_i2c_hlc_int_disable;
- 
--	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_MSIX);
-+	ret = pcim_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_MSIX);
- 	if (ret < 0)
- 		goto error;
- 
+V2:
+* load_state is currently broken on mainline so be safely dropped
+   without side-effects.
+ * Rebased on top of qmp_send v3 series.
+ * Dropped R-b from Stephen and Rob on patch 3 due to the yaml
+   conversion.
+ * New patch [12] to drop unused aoss-qmp header.
+ * Commit message update [patch 1] [Rob]
+ * Reorder the series [Stephen]
+
+Sibi Sankar (13):
+  dt-bindings: soc: qcom: aoss: Drop power-domain bindings
+  dt-bindings: remoteproc: qcom: pas: Add QMP bindings
+  dt-bindings: remoteproc: qcom: Add QMP bindings
+  remoteproc: qcom: q6v5: Use qmp_send to update co-processor load state
+  arm64: dts: qcom: sc7180: Use QMP binding to control load state
+  arm64: dts: qcom: sc7280: Use QMP binding to control load state
+  arm64: dts: qcom: sdm845: Use QMP binding to control load state
+  arm64: dts: qcom: sm8150: Use QMP binding to control load state
+  arm64: dts: qcom: sm8250: Use QMP binding to control load state
+  arm64: dts: qcom: sm8350: Use QMP binding to control load state
+  soc: qcom: aoss: Drop power domain support
+  dt-bindings: msm/dp: Remove aoss-qmp header
+  dt-bindings: soc: qcom: aoss: Delete unused power-domain definitions
+
+ .../bindings/display/msm/dp-controller.yaml        |   1 -
+ .../devicetree/bindings/remoteproc/qcom,adsp.yaml  |  40 +++++---
+ .../devicetree/bindings/remoteproc/qcom,q6v5.txt   |   7 +-
+ .../devicetree/bindings/soc/qcom/qcom,aoss-qmp.txt |  16 +--
+ arch/arm64/boot/dts/qcom/sc7180.dtsi               |   9 +-
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               |   2 -
+ arch/arm64/boot/dts/qcom/sdm845.dtsi               |   8 +-
+ arch/arm64/boot/dts/qcom/sm8150.dtsi               |  28 +++---
+ arch/arm64/boot/dts/qcom/sm8250.dtsi               |  22 ++---
+ arch/arm64/boot/dts/qcom/sm8350.dtsi               |  30 +++---
+ drivers/remoteproc/qcom_q6v5.c                     |  56 ++++++++++-
+ drivers/remoteproc/qcom_q6v5.h                     |   7 +-
+ drivers/remoteproc/qcom_q6v5_adsp.c                |   7 +-
+ drivers/remoteproc/qcom_q6v5_mss.c                 |  44 ++-------
+ drivers/remoteproc/qcom_q6v5_pas.c                 |  80 ++++-----------
+ drivers/remoteproc/qcom_q6v5_wcss.c                |   4 +-
+ drivers/soc/qcom/qcom_aoss.c                       | 109 +--------------------
+ include/dt-bindings/power/qcom-aoss-qmp.h          |  14 ---
+ 18 files changed, 181 insertions(+), 303 deletions(-)
+ delete mode 100644 include/dt-bindings/power/qcom-aoss-qmp.h
+
 -- 
-2.30.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
