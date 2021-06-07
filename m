@@ -2,114 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC4439E50E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 19:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE6739E513
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 19:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbhFGRQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 13:16:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbhFGRQl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 13:16:41 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C794C061766
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 10:14:36 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id x22-20020a4a62160000b0290245cf6b7feeso4295538ooc.13
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 10:14:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/dN2t+25j0me0dqCGourrl5uxnoeiK8B9YLt2YtSFhI=;
-        b=oc2PqVHyYMlZw4hOPvYw5HlnHSiCMzNsJz8q3hg88et9M4aNH0ut2LT3sQXK1SSia5
-         PNyW+cPfH/+wxZMxyzo5v8VDwW12iGXbnGFgKbJkq6QlQgk4ZLLrndesTHBNRN6re3Z/
-         an4DWRG1ySXlS7UBuNzXzHI91u6aGBc+uq7+6PjoODBbiDkdnvcYv1zS83CbCagXw1du
-         juLzp4zWcUsnBrRiEuxD4o5eZm8fpacL0stHEJrdHHF9fNslx7nB+1MbDGwAbxjlt0Vk
-         CYeXpuDVNxJiPMT0sP1RD50TSQxX1jkBei/rjs5bSHBdf+2CIf0oKUiFCm7otqnrdm9U
-         zWFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/dN2t+25j0me0dqCGourrl5uxnoeiK8B9YLt2YtSFhI=;
-        b=qcS3mHVaqlHaz+FAkOZT4nNUrIyfB9QO5FjoF4VckXVZmB04iesIxwBGflB4eK4IbR
-         CmsLKLFjw+EfDUGmJmt/D7hDHUl8WQuDKbtG5hbYUhRQ+NXzB90AabUnD/X8QoDVJlqd
-         S4VO8BxiKDyMdwLV9KI6paXIzVkUnK45BGWRdSAPLQIh4REYEOcVr6beJLaLd9Heh/9Q
-         vLvc4++F09Db1ZQ7t9gruXbX0g3RWDvm9kN+J3OAo08WaiR+pch53tqdBJ7qli72Md5p
-         RCvyjxduxwAtCnsFbaFQcOb5iBawxiygh53tdkK70uOoChfcZJRUZO6paDhoiCd0sWoh
-         25yQ==
-X-Gm-Message-State: AOAM533Rnu3e3BiiBVZmZUgFgCy/ATPoLcU8Lf5UeHFRKdERpEZRvt5l
-        Q20DV/Iy/pOy+9UuRT4jrrB2/I8SvnQmBDpdYzg=
-X-Google-Smtp-Source: ABdhPJzy9qq/+5dPLG1VTR3jcNKRWhEs4CUDq5rywX+/7tXl9Mu6ZmbU8cYW1KilNB3jGeF2tDM4EFqq4n35dZ2viZk=
-X-Received: by 2002:a4a:8c09:: with SMTP id u9mr13947559ooj.72.1623086075022;
- Mon, 07 Jun 2021 10:14:35 -0700 (PDT)
+        id S231151AbhFGRQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 13:16:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41438 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230504AbhFGRQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 13:16:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 40FB960FF2;
+        Mon,  7 Jun 2021 17:14:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623086093;
+        bh=9jfypPKUdKJ4TKMPL0HZ70TpD4lRTMsAT/7JugcEW+g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=VVntAZBJCrFxdag/Jatlnwr8jFp5Nx5XPaS8INk7lj8ha+sgfZkm1atn0T+zkwa1o
+         WnG9n54Sk9Rc+0oErXhzgKHmhPtAb6P+w9e8Dg/RpEISs3INHv+Y6ei59mdcyL+Rmr
+         /XSOytZls8BZwBVLQfN1kMRkOc6gHeLe0SB375T6Fy9tOpG4NyQcnAEFHMzemCDNLO
+         FZfNlhzYTyPKFeDfA0kDvCL1hJYVSA0kMRgoM8imOR9kA10IXCqj7+JLEGAUAY0NUL
+         q3LX212U1Qi1A0ODnfrZezYIhRSf6vvQF3CxG1NwIm5JI4mDDUDS32qEPDGMPgFLzg
+         JeCQb3atcLEtg==
+Date:   Mon, 7 Jun 2021 12:14:51 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Dejin Zheng <zhengdejin5@gmail.com>, corbet@lwn.net,
+        jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
+        rric@kernel.org, bhelgaas@google.com, wsa@kernel.org,
+        Sanket.Goswami@amd.com, linux-doc@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v7 1/4] PCI: Introduce pcim_alloc_irq_vectors()
+Message-ID: <20210607171451.GA2507298@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20210605123137.8800-1-bernard@vivo.com>
-In-Reply-To: <20210605123137.8800-1-bernard@vivo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 7 Jun 2021 13:14:24 -0400
-Message-ID: <CADnq5_Px95C7Zosa4ADkBkmDXvPCkz=Hhns1twtixCMAx4y_dA@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: remove no need variable
-To:     Bernard Zhao <bernard@vivo.com>
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hersen Wu <hersenxs.wu@amd.com>,
-        Solomon Chiu <solomon.chiu@amd.com>,
-        "Li, Roman" <Roman.Li@amd.com>,
-        Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Charlene Liu <Charlene.Liu@amd.com>,
-        Daniel Kolesa <daniel@octaforge.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YL5FcivbsIBnVvo0@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 5, 2021 at 8:31 AM Bernard Zhao <bernard@vivo.com> wrote:
->
-> remove no need variable, just return the DC_OK
->
-> Signed-off-by: Bernard Zhao <bernard@vivo.com>
+On Mon, Jun 07, 2021 at 07:12:34PM +0300, Andy Shevchenko wrote:
+> On Mon, Jun 07, 2021 at 11:39:13PM +0800, Dejin Zheng wrote:
+> > Introduce pcim_alloc_irq_vectors(), a device-managed version of
+> > pci_alloc_irq_vectors(). Introducing this function can simplify
+> > the error handling path in many drivers.
+> > 
+> > And use pci_free_irq_vectors() to replace some code in pcim_release(),
+> > they are equivalent, and no functional change. It is more explicit
+> > that pcim_alloc_irq_vectors() is a device-managed function.
+> 
+> ...
+> 
+> > When CONFIG_PCI=n, there is no stub for pci_is_managed(), but
+> > pcim_alloc_irq_vectors() will use it, so add one like other similar stubs.
+> > Otherwise there can be build errors, as here by kernel test robot
+> > reported:
+> > include/linux/pci.h: In function 'pcim_alloc_irq_vectors':
+> > >> include/linux/pci.h:1847:7: error: implicit declaration of function 'pci_is_managed' [-Werror=implicit-function-declaration]
+> >     1847 |  if (!pci_is_managed(dev))
+> >          |       ^~~~~~~~~~~~~~
+> 
+> This is rather changelog related material. No need to pollute commit message
+> with this.
+> 
+> ...
+> 
+> > Reported-by: kernel test robot <lkp@intel.com>
+> 
+> It's new functionality. Why this tag is here?
+> Use comments (similar location than changelog) to give a credit if you wish.
 
-Applied.  Thanks!
-
-Alex
-
-> ---
->  drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c
-> index f962b905e79e..7daadb6a5233 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c
-> @@ -1266,8 +1266,6 @@ static enum dc_status dcn10_validate_global(struct dc *dc, struct dc_state *cont
->
->  static enum dc_status dcn10_patch_unknown_plane_state(struct dc_plane_state *plane_state)
->  {
-> -       enum dc_status result = DC_OK;
-> -
->         enum surface_pixel_format surf_pix_format = plane_state->format;
->         unsigned int bpp = resource_pixel_format_to_bpp(surf_pix_format);
->
-> @@ -1279,7 +1277,7 @@ static enum dc_status dcn10_patch_unknown_plane_state(struct dc_plane_state *pla
->                 swizzle = DC_SW_64KB_S;
->
->         plane_state->tiling_info.gfx9.swizzle = swizzle;
-> -       return result;
-> +       return DC_OK;
->  }
->
->  struct stream_encoder *dcn10_find_first_free_match_stream_enc_for_link(
-> --
-> 2.31.0
->
+Agreed, I'll tidy that up, so no need to repost for this.
