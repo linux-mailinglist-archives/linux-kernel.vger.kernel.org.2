@@ -2,122 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BFF39D63B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6614739D63D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbhFGHpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 03:45:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46010 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229545AbhFGHpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 03:45:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF4386127C;
-        Mon,  7 Jun 2021 07:43:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623051796;
-        bh=hTteHEOJ6fuVn0bUEkVjfhKcTXY/fr6KaN9hPRGCRE8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=XcJ16yKwRTtjOEHZTmO5sqG2EgpLlLKApCRuWSa2uNKExqjlmP6pIcZB+LR9vHoUJ
-         DlEePW9oLiXKXzeH9L9F0Wk5IlIzHnk8S8cF7e+14d2grrjRGj2z3RllwrC9qvMzWa
-         Scz54HCXmSpiKFvI9ZwujG1MOGPfRBgKd+8j2eRJwMFJcoO716/e4aO83B1Ftd1YQe
-         V/pq06VNseHS37q5seU5IeYEitCUWKFx5Ql+VG32hohITtzAdxsSYTxN01aKBmqN5n
-         3CGVqHhcrZFZq8mZbNc4pEcTK5PgFy6OsZjWB1rcYhYD4mddESSUsRyaHx2+w/2mo5
-         1OJ4M8CSeddjQ==
-Received: by mail-lj1-f178.google.com with SMTP id r16so1721296ljk.9;
-        Mon, 07 Jun 2021 00:43:16 -0700 (PDT)
-X-Gm-Message-State: AOAM531nAlEjuWKHo6t899Z8POJV3N5FjCK5VRPEGJRPJkq+0ABAiEw7
-        NquFAOaQJDhWCaX34H0zttZju6HdmcEILOPrPPc=
-X-Google-Smtp-Source: ABdhPJyKxzhukXaYzHu0eSbGrCR3t7tIBy0TIpuvAKNAzu0/rYsPgtX7UElk34zL12D4zBA67MfFr81fmeJmAptKvvA=
-X-Received: by 2002:a05:651c:502:: with SMTP id o2mr13824567ljp.105.1623051795168;
- Mon, 07 Jun 2021 00:43:15 -0700 (PDT)
+        id S230265AbhFGHpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 03:45:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229545AbhFGHpQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 03:45:16 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CDB3C061766;
+        Mon,  7 Jun 2021 00:43:26 -0700 (PDT)
+Received: from [IPv6:2a01:e0a:4cb:a870:6b79:f23c:29c1:895d] (unknown [IPv6:2a01:e0a:4cb:a870:6b79:f23c:29c1:895d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 09C031F42088;
+        Mon,  7 Jun 2021 08:43:23 +0100 (BST)
+Subject: Re: [PATCH 1/2] media: hevc: Add segment address field
+To:     Jernej Skrabec <jernej.skrabec@gmail.com>, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com
+Cc:     mchehab@kernel.org, gregkh@linuxfoundation.org, wens@csie.org,
+        hverkuil-cisco@xs4all.nl, ezequiel@collabora.com,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20210606082314.454193-1-jernej.skrabec@gmail.com>
+ <20210606082314.454193-2-jernej.skrabec@gmail.com>
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Message-ID: <82dfa0fa-995a-93af-dce7-79763e762cc3@collabora.com>
+Date:   Mon, 7 Jun 2021 09:43:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <1622970249-50770-1-git-send-email-guoren@kernel.org>
- <1622970249-50770-14-git-send-email-guoren@kernel.org> <20210607071916.kwdbtafbqp3icgia@gilmour>
-In-Reply-To: <20210607071916.kwdbtafbqp3icgia@gilmour>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Mon, 7 Jun 2021 15:43:03 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTT=aLNpwuQmOPw=L8eoezwX8DmGOunmPx0H_WzbaOpO+g@mail.gmail.com>
-Message-ID: <CAJF2gTT=aLNpwuQmOPw=L8eoezwX8DmGOunmPx0H_WzbaOpO+g@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 10/11] riscv: soc: Add Allwinner SoC kconfig option
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
-        Drew Fustini <drew@beagleboard.org>, liush@allwinnertech.com,
-        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
-        wefu@redhat.com, linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210606082314.454193-2-jernej.skrabec@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 3:19 PM Maxime Ripard <maxime@cerno.tech> wrote:
->
-> Hi,
->
-> On Sun, Jun 06, 2021 at 09:04:08AM +0000, guoren@kernel.org wrote:
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> >
-> > Add Allwinner kconfig option which selects SoC specific and common
-> > drivers that is required for this SoC.
-> >
-> > Allwinner D1 uses custom PTE attributes to solve non-coherency SOC
-> > interconnect issues for dma synchronization, so we set the default
-> > value when SOC_SUNXI selected.
-> >
-> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > Co-Developed-by: Liu Shaohua <liush@allwinnertech.com>
-> > Signed-off-by: Liu Shaohua <liush@allwinnertech.com>
-> > Cc: Anup Patel <anup.patel@wdc.com>
-> > Cc: Atish Patra <atish.patra@wdc.com>
-> > Cc: Christoph Hellwig <hch@lst.de>
-> > Cc: Chen-Yu Tsai <wens@csie.org>
-> > Cc: Drew Fustini <drew@beagleboard.org>
-> > Cc: Maxime Ripard <maxime@cerno.tech>
-> > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> > Cc: Wei Fu <wefu@redhat.com>
-> > Cc: Wei Wu <lazyparser@gmail.com>
-> > ---
-> >  arch/riscv/Kconfig.socs      | 12 ++++++++++++
-> >  arch/riscv/configs/defconfig |  1 +
-> >  2 files changed, 13 insertions(+)
-> >
-> > diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-> > index ed96376..055fb3e 100644
-> > --- a/arch/riscv/Kconfig.socs
-> > +++ b/arch/riscv/Kconfig.socs
-> > @@ -69,4 +69,16 @@ config SOC_CANAAN_K210_DTB_SOURCE
-> >
-> >  endif
-> >
-> > +config SOC_SUNXI
-> > +     bool "Allwinner SoCs"
-> > +     depends on MMU
-> > +     select DWMAC_GENERIC
-> > +     select SERIAL_8250
-> > +     select SERIAL_8250_CONSOLE
-> > +     select SERIAL_8250_DW
-> > +     select SIFIVE_PLIC
-> > +     select STMMAC_ETH
-> > +     help
-> > +       This enables support for Allwinner SoC platforms like the D1.
-> > +
->
-> We probably don't want to select DWMAC, STMMAC_ETH and the 8250 options,
-> looks good otherwise.
->
-> Maxime
-Remove DWMAC, STMMAC_ETH is okay.
 
-But I think we still need:
-select SERIAL_8250_DW if SERIAL_8250
--- 
-Best Regards
- Guo Ren
+Le 06/06/2021 à 10:23, Jernej Skrabec a écrit :
+> If HEVC frame consists of multiple slices, segment address has to be
+> known in order to properly decode it.
+>
+> Add segment address field to slice parameters.
+>
+> Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 
-ML: https://lore.kernel.org/linux-csky/
+Reviewed-by Benjamin Gaignard <benjamin.gaignard@collabora.com>
+
+> ---
+>   Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 3 +++
+>   include/media/hevc-ctrls.h                                | 3 ++-
+>   2 files changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> index 9120c5bcaf90..fac4b477da82 100644
+> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> @@ -2997,6 +2997,9 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
+>       * - __u8
+>         - ``pic_struct``
+>         -
+> +    * - __u32
+> +      - ``slice_segment_addr``
+> +      -
+>       * - __u8
+>         - ``ref_idx_l0[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
+>         - The list of L0 reference elements as indices in the DPB.
+> diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
+> index dc964ff7cd29..19f8e2ad3375 100644
+> --- a/include/media/hevc-ctrls.h
+> +++ b/include/media/hevc-ctrls.h
+> @@ -197,10 +197,11 @@ struct v4l2_ctrl_hevc_slice_params {
+>   	__u8	pic_struct;
+>   
+>   	/* ISO/IEC 23008-2, ITU-T Rec. H.265: General slice segment header */
+> +	__u32	slice_segment_addr;
+>   	__u8	ref_idx_l0[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
+>   	__u8	ref_idx_l1[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
+>   
+> -	__u8	padding[5];
+> +	__u8	padding;
+>   
+>   	/* ISO/IEC 23008-2, ITU-T Rec. H.265: Weighted prediction parameter */
+>   	struct v4l2_hevc_pred_weight_table pred_weight_table;
