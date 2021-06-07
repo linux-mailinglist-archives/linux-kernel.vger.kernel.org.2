@@ -2,109 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB6D39DA4F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2260039DA51
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbhFGK6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 06:58:11 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:2233 "EHLO pegase1.c-s.fr"
+        id S231148AbhFGK6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 06:58:23 -0400
+Received: from ni.piap.pl ([195.187.100.5]:47092 "EHLO ni.piap.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230418AbhFGK6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 06:58:04 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4Fz9K31GJdzB9X2;
-        Mon,  7 Jun 2021 12:56:07 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id knNczCCxCNDI; Mon,  7 Jun 2021 12:56:07 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Fz9K30MmCzB9Ww;
-        Mon,  7 Jun 2021 12:56:07 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id F3B718B78F;
-        Mon,  7 Jun 2021 12:56:06 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id u07wuyf3V8SH; Mon,  7 Jun 2021 12:56:06 +0200 (CEST)
-Received: from po15610vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.103])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C948A8B78D;
-        Mon,  7 Jun 2021 12:56:06 +0200 (CEST)
-Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id B1B1764C69; Mon,  7 Jun 2021 10:56:06 +0000 (UTC)
-Message-Id: <83a008a9fd6cc3f2bbcb470f592555d260ed7a3d.1623063174.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <5838caffa269e0957c5a50cc85477876220298b0.1623063174.git.christophe.leroy@csgroup.eu>
-References: <5838caffa269e0957c5a50cc85477876220298b0.1623063174.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH 3/3] powerpc/32s: Rename PTE_SIZE to PTE_T_SIZE
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon,  7 Jun 2021 10:56:06 +0000 (UTC)
+        id S230215AbhFGK6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 06:58:22 -0400
+Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ni.piap.pl (Postfix) with ESMTPSA id DA54444421E;
+        Mon,  7 Jun 2021 12:56:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl DA54444421E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
+        t=1623063390; bh=bIhGyPfdPrGhgn4HB6nQiigqBUnu3qmIFy2LxWXegeQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mtuxot/zddC0WIdM+d9zoQYOgXuLOVxOxthPRUSs2BDapRrsS4ZX4ZmQXeHAAIE8A
+         1INtF9ft+RMH6y9IVHeuJPD/CwHlW/giXAsrrHAhTMdar9c0aaDrq419eI6+70exON
+         SYdt769KprzCu9apZmy9qVtmK6/NS7vJLcYpZr5w=
+From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+To:     Tim Harvey <tharvey@gateworks.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
+Subject: [PATCH] TDA1997x: enable EDID support
+Sender: khalasa@piap.pl
+Date:   Mon, 07 Jun 2021 12:56:29 +0200
+Message-ID: <m3sg1uq6xu.fsf@t19.piap.pl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-KLMS-Rule-ID: 4
+X-KLMS-Message-Action: skipped
+X-KLMS-AntiSpam-Status: not scanned, whitelist
+X-KLMS-AntiPhishing: not scanned, whitelist
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PTE_SIZE means PTE page table size in most placed, whereas
-in hash_low.S in means size of one entry in the table.
+Without this patch, the TDA19971 chip's EDID is inactive.
 
-Rename it PTE_T_SIZE, and define it directly in hash_low.S
-instead of going through asm-offsets.
+Signed-off-by: Krzysztof Halasa <khalasa@piap.pl>
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/asm-offsets.c   | 2 --
- arch/powerpc/mm/book3s32/hash_low.S | 6 ++++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+--- a/drivers/media/i2c/tda1997x.c
++++ b/drivers/media/i2c/tda1997x.c
+@@ -2233,6 +2233,7 @@ static int tda1997x_core_init(struct v4l2_subdev *sd)
+ 	/* get initial HDMI status */
+ 	state->hdmi_status =3D io_read(sd, REG_HDMI_FLAGS);
+=20
++	io_write(sd, REG_EDID_ENABLE, EDID_ENABLE_A_EN | EDID_ENABLE_B_EN);
+ 	return 0;
+ }
+=20
 
-diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-offsets.c
-index f1b6ff14c8a0..2bd936ebcae8 100644
---- a/arch/powerpc/kernel/asm-offsets.c
-+++ b/arch/powerpc/kernel/asm-offsets.c
-@@ -361,8 +361,6 @@ int main(void)
- 	DEFINE(BUG_ENTRY_SIZE, sizeof(struct bug_entry));
- #endif
- 
--	DEFINE(PTE_SIZE, sizeof(pte_t));
--
- #ifdef CONFIG_KVM
- 	OFFSET(VCPU_HOST_STACK, kvm_vcpu, arch.host_stack);
- 	OFFSET(VCPU_HOST_PID, kvm_vcpu, arch.host_pid);
-diff --git a/arch/powerpc/mm/book3s32/hash_low.S b/arch/powerpc/mm/book3s32/hash_low.S
-index fb4233a5bdf7..6925ce998557 100644
---- a/arch/powerpc/mm/book3s32/hash_low.S
-+++ b/arch/powerpc/mm/book3s32/hash_low.S
-@@ -27,8 +27,10 @@
- #include <asm/code-patching-asm.h>
- 
- #ifdef CONFIG_PTE_64BIT
-+#define PTE_T_SIZE		8
- #define PTE_FLAGS_OFFSET	4	/* offset of PTE flags, in bytes */
- #else
-+#define PTE_T_SIZE		4
- #define PTE_FLAGS_OFFSET	0
- #endif
- 
-@@ -488,7 +490,7 @@ _GLOBAL(flush_hash_pages)
- 	bne	2f
- 	ble	cr1,19f
- 	addi	r4,r4,0x1000
--	addi	r5,r5,PTE_SIZE
-+	addi	r5,r5,PTE_T_SIZE
- 	addi	r6,r6,-1
- 	b	1b
- 
-@@ -573,7 +575,7 @@ _GLOBAL(flush_hash_pages)
- 
- 8:	ble	cr1,9f			/* if all ptes checked */
- 81:	addi	r6,r6,-1
--	addi	r5,r5,PTE_SIZE
-+	addi	r5,r5,PTE_T_SIZE
- 	addi	r4,r4,0x1000
- 	lwz	r0,0(r5)		/* check next pte */
- 	cmpwi	cr1,r6,1
--- 
-2.25.0
+--=20
+Krzysztof Ha=C5=82asa
 
+Sie=C4=87 Badawcza =C5=81ukasiewicz
+Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
