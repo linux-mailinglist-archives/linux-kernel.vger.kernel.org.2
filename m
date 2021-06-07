@@ -2,88 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C5839E96F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 00:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CBE039E976
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 00:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbhFGWUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 18:20:35 -0400
-Received: from fgw22-7.mail.saunalahti.fi ([62.142.5.83]:26151 "EHLO
-        fgw22-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230183AbhFGWUe (ORCPT
+        id S230323AbhFGWVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 18:21:46 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:36621 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230261AbhFGWVp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 18:20:34 -0400
-Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
-        by fgw22.mail.saunalahti.fi (Halon) with ESMTP
-        id 4a9ea5ed-c7de-11eb-88cb-005056bdf889;
-        Tue, 08 Jun 2021 01:18:31 +0300 (EEST)
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH v1 3/3] eeprom: idt_89hpesx: use SPDX-License-Identifier
-Date:   Tue,  8 Jun 2021 01:17:57 +0300
-Message-Id: <20210607221757.81465-3-andy.shevchenko@gmail.com>
+        Mon, 7 Jun 2021 18:21:45 -0400
+Received: from 2.general.dannf.us.vpn ([10.172.65.1] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <dann.frazier@canonical.com>)
+        id 1lqNb5-0000Hj-U1; Mon, 07 Jun 2021 22:19:52 +0000
+From:   dann frazier <dann.frazier@canonical.com>
+To:     linux-man@vger.kernel.org,
+        "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Pedro Principeza <pedro.principeza@canonical.com>
+Subject: [PATCH] kernel_lockdown.7: Remove additional text alluding to lifting via SysRq
+Date:   Mon,  7 Jun 2021 16:19:43 -0600
+Message-Id: <20210607221943.78414-1-dann.frazier@canonical.com>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210607221757.81465-1-andy.shevchenko@gmail.com>
-References: <20210607221757.81465-1-andy.shevchenko@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use SPDX-License-Identifier: GPL-2.0-only, instead of hand writing it.
+My previous patch intended to drop the docs for the lockdown lift SysRq,
+but it missed this other section that refers to lifting it via a keyboard -
+an allusion to that same SysRq.
 
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: dann frazier <dann.frazier@canonical.com>
 ---
- drivers/misc/eeprom/idt_89hpesx.c | 33 +------------------------------
- 1 file changed, 1 insertion(+), 32 deletions(-)
+ man7/kernel_lockdown.7 | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/misc/eeprom/idt_89hpesx.c b/drivers/misc/eeprom/idt_89hpesx.c
-index 3e4a594c110b..b0cff4b152da 100644
---- a/drivers/misc/eeprom/idt_89hpesx.c
-+++ b/drivers/misc/eeprom/idt_89hpesx.c
-@@ -1,38 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-- *   This file is provided under a GPLv2 license.  When using or
-- *   redistributing this file, you may do so under that license.
-- *
-- *   GPL LICENSE SUMMARY
-- *
-  *   Copyright (C) 2016 T-Platforms. All Rights Reserved.
-  *
-- *   This program is free software; you can redistribute it and/or modify it
-- *   under the terms and conditions of the GNU General Public License,
-- *   version 2, as published by the Free Software Foundation.
-- *
-- *   This program is distributed in the hope that it will be useful, but WITHOUT
-- *   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-- *   FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-- *   more details.
-- *
-- *   You should have received a copy of the GNU General Public License along
-- *   with this program; if not, it can be found <http://www.gnu.org/licenses/>.
-- *
-- *   The full GNU General Public License is included in this distribution in
-- *   the file called "COPYING".
-- *
-- *   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-- *   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-- *   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-- *   A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-- *   OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-- *   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-- *   LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-- *   DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-- *   THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-- *   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-- *   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- *
-  * IDT PCIe-switch NTB Linux driver
-  *
-  * Contact Information:
+diff --git a/man7/kernel_lockdown.7 b/man7/kernel_lockdown.7
+index b0442b3b6..0c0a9500d 100644
+--- a/man7/kernel_lockdown.7
++++ b/man7/kernel_lockdown.7
+@@ -19,9 +19,6 @@ modification of the kernel image and to prevent access to security and
+ cryptographic data located in kernel memory, whilst still permitting driver
+ modules to be loaded.
+ .PP
+-Lockdown is typically enabled during boot and may be terminated, if configured,
+-by typing a special key combination on a directly attached physical keyboard.
+-.PP
+ If a prohibited or restricted feature is accessed or used, the kernel will emit
+ a message that looks like:
+ .PP
 -- 
 2.32.0
 
