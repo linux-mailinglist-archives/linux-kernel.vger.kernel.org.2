@@ -2,49 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6425239DD27
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2BC339DD23
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbhFGNAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 09:00:11 -0400
-Received: from mail-qv1-f74.google.com ([209.85.219.74]:45695 "EHLO
-        mail-qv1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230390AbhFGNAJ (ORCPT
+        id S230478AbhFGNAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 09:00:02 -0400
+Received: from mail-wr1-f74.google.com ([209.85.221.74]:37575 "EHLO
+        mail-wr1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230220AbhFGM77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 09:00:09 -0400
-Received: by mail-qv1-f74.google.com with SMTP id n17-20020ad444b10000b02902157677ec50so13108753qvt.12
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 05:58:05 -0700 (PDT)
+        Mon, 7 Jun 2021 08:59:59 -0400
+Received: by mail-wr1-f74.google.com with SMTP id q15-20020adfc50f0000b0290111f48b865cso7809174wrf.4
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 05:58:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=n+BHm+6M37s7n8g9zZY3JE9atHfS3eOCealK8Ja+AsE=;
-        b=sRyyLxFtv2v0ZTwxiLzEIh1iIlUrL9etXUB/34Y5NRLtYmHP96rYioIzfF1k+hzk74
-         KH90eSgplygj56y1g4yORIjgagSBLZ/ZutlD4dVleOrAXKd7pdCXF9lBX4D+9/vE9tti
-         cW54+eCf8D6oy+5BCPYGEDj0NILZI4de6NgN7i7u/yMQLvYe1rQzaph9uvgoDDAm5LSt
-         Cbaa4eXiTC2YuTdRS3bIwNamAm5MOY0Fb+TNWFdRFaN18iyKbHecZKdSV+SgVC+NXj1d
-         Jbi5tXqE/nCRuHDYJXCNJa4jaD/VdTMkY+yolz5VA7V5MKEI4ZvRREznWQO//u1kufHP
-         usnA==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=kRfxWaVjYRUY5TBuAJktVRLGror0fniACZlCyQAsiGk=;
+        b=DV5h1Res/vCGi8e9qFTNxkHV061qt0xPRocmiCxArginyOjnWGDxsH0CgMzIAizjGi
+         rbDOB05JjptoucsUxpKvZpkHFRqpbk98qr9XxW2ah+4wH7P4jFUtpZe0QVW/LjroL8ff
+         VLkfSOZIUQ33q/9dLv3bggJ/QLdIpvZSmQifSNnKvDf0V9x2tu9UQ58VlgubUDf5/m0C
+         tJXgvJLb0EsFtwZje9Nvs8k9NVLufNgcOwWJBylSqc5gtO+r3tZBlgRxWAj/W7DFyCaR
+         Pqf8MCZh5jjjF7D7x7CjNhhMh7mVa7uP4mw7ekNHQc5UkX2KHA8kJSSkmtG8UjpLr0XL
+         nuKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=n+BHm+6M37s7n8g9zZY3JE9atHfS3eOCealK8Ja+AsE=;
-        b=rtpbqSOenGAnE0QlOCFMJFU3FZpcKjubnejSefZxjLkbmyDJR3xXgvQNmKAtn1mzp5
-         7CEa3g43LuOwV6s4/UZkS19lR+WveqF89plX62Bd8nz6UUG/hBxQ8I5Kfb5lTjc1P9Cs
-         xQZOycXm/yq5fNK3Eq5ZmxYGPRmfmEziK4tcAURMm9A7eL/JpmhPymprCN288wc3D5Mg
-         3XKUMT6Qc5stPCaWFNvlLZkqN2WOfRm0VAc9kEZ0AzFsn/3Y083qJP6DEYk0kFoKYhkn
-         fAXeP6gVxgfcSZeNCHb9QITz/Bt5hTfNd2J9BijsnFpv9DYttpsVPKTED2Lud8uDHlCN
-         Wk9A==
-X-Gm-Message-State: AOAM533pHHEc7KglnjzM47bZuKYjciew0XNOic5X4IXm81j56WfHStVy
-        E7wGn40f7hT9ffp0Wa2YkYK5k6QWlg==
-X-Google-Smtp-Source: ABdhPJz6+4fXZ/GCrUCTQvd/UFxSnP3BUq2wb9MCDsZ/5cVKfAQPsKdxvsQdDHRX+lbHogng50UdpM8lBg==
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=kRfxWaVjYRUY5TBuAJktVRLGror0fniACZlCyQAsiGk=;
+        b=qC3LOv4qXAGXDelKzFfNW8TFlHVbieM1sOCiCu96uY7FrSu+q83a8M7mbX0QAaHMMj
+         ySrSLFsvvCoU1iQ4eR82NMghhVn0CoHhvud1kbIyQZLajLL4zo/K8Zrmx7fqw4UdKHqN
+         eTymukLP7z4J7xSwjmiF3T8zZh8bWh35ENyDQVfP1VKfjnXkxCCPDt13S8DL7L9wLsBA
+         7EO9iZ3F808VOYvm8A2xLDxHkWeYCbJKijU+iYR/RWnUrl7vHCdl8zogCN5pmqRwlfv6
+         wYzc+Vit9H3c+2QY4jQnNDOZ1x+c7eco750LSFpAJ96RoDhiXnudNy2A4/8i0xvGRSxB
+         fE1A==
+X-Gm-Message-State: AOAM530cEFtSSf4GQYIy9pdpvxU3uSBhVsO3Tp2/wzzjCIfznKAS5nmo
+        KfZvxSUfuYxnLx3XyKn9NN96csNp4w==
+X-Google-Smtp-Source: ABdhPJxzYv1uuNCM8fdZqdq3QzRZy2No3cSxxlSxUCERnfgtyIBjerO2BNxGkQ5x1TktxXhza2OyCepRhw==
 X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:2587:50:741c:6fde])
- (user=elver job=sendgmr) by 2002:a0c:c587:: with SMTP id a7mr17495331qvj.59.1623070624677;
- Mon, 07 Jun 2021 05:57:04 -0700 (PDT)
-Date:   Mon,  7 Jun 2021 14:56:46 +0200
-Message-Id: <20210607125653.1388091-1-elver@google.com>
+ (user=elver job=sendgmr) by 2002:a7b:cb0b:: with SMTP id u11mr2583643wmj.0.1623070627116;
+ Mon, 07 Jun 2021 05:57:07 -0700 (PDT)
+Date:   Mon,  7 Jun 2021 14:56:47 +0200
+In-Reply-To: <20210607125653.1388091-1-elver@google.com>
+Message-Id: <20210607125653.1388091-2-elver@google.com>
 Mime-Version: 1.0
+References: <20210607125653.1388091-1-elver@google.com>
 X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
-Subject: [PATCH 0/7] kcsan: Introduce CONFIG_KCSAN_PERMISSIVE
+Subject: [PATCH 1/7] kcsan: Improve some Kconfig comments
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com, paulmck@kernel.org
 Cc:     boqun.feng@gmail.com, mark.rutland@arm.com, will@kernel.org,
@@ -55,78 +59,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While investigating a number of data races, we've encountered data-racy
-accesses on flags variables to be very common. The typical pattern is a
-reader masking all but one bit, and the writer setting/clearing only 1
-bit (current->flags being a frequently encountered case; mm/sl[au]b.c
-disables KCSAN for this reason currently).
+Improve comment for CC_HAS_TSAN_COMPOUND_READ_BEFORE_WRITE. Also shorten
+the comment above the "strictness" configuration options.
 
-Since these types of "trivial" data races are common (assuming they're
-intentional and hard to miscompile!), having the option to filter them
-(like we currently do for other types of data races) will avoid forcing
-everyone to mark them, and deliberately left to preference at this time.
+Signed-off-by: Marco Elver <elver@google.com>
+---
+ lib/Kconfig.kcsan | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-The primary motivation is to move closer towards more easily filtering
-interesting data races (like [1], [2], [3]) on CI systems (e.g. syzbot),
-without the churn to mark all such "trivial" data races.
-[1] https://lkml.kernel.org/r/20210527092547.2656514-1-elver@google.com
-[2] https://lkml.kernel.org/r/20210527104711.2671610-1-elver@google.com
-[3] https://lkml.kernel.org/r/20210209112701.3341724-1-elver@google.com
-
-Notably, the need for further built-in filtering has become clearer as
-we notice some other CI systems (without active moderation) trying to
-employ KCSAN, but usually have to turn it down quickly because their
-reports are quickly met with negative feedback:
-https://lkml.kernel.org/r/YHSPfiJ/h/f3ky5n@elver.google.com
-
-The rules are implemented and guarded by a new option
-CONFIG_KCSAN_PERMISSIVE. With it, we will ignore data races with only
-1-bit value changes. Please see more details in in patch 7/7.
-
-The rest of the patches are cleanups and improving configuration.
-
-I ran some experiments to see what data races we're left with. With
-CONFIG_KCSAN_PERMISSIVE=y paired with syzbot's current KCSAN config
-(minimal kernel, most permissive KCSAN options), we're "just" about ~100
-reports away to a pretty silent KCSAN kernel:
-
-  https://github.com/google/ktsan/tree/kcsan-permissive-with-dataraces
-  [ !!Disclaimer!! None of the commits are usable patches nor guaranteed
-    to be correct -- they merely resolve a data race so it wouldn't be
-    shown again and then moved on. Expect that simply marking is not
-    enough for some! ]
-
-Most of the data races look interesting enough, and only few already had
-a comment nearby explaining what's happening.
-
-All data races on current->flags, and most other flags are absent
-(unlike before). Those that were reported all had value changes with >1
-bit. A limitation is that few data races are still reported where the
-reader is only interested in 1 bit but the writer changed more than 1
-bit. A complete approach would require compiler changes in addition to
-the changes in this series -- but since that would further reduce the
-data races reported, the simpler and conservative approach is to stick
-to the value-change based rules for now.
-
-Marco Elver (7):
-  kcsan: Improve some Kconfig comments
-  kcsan: Remove CONFIG_KCSAN_DEBUG
-  kcsan: Introduce CONFIG_KCSAN_STRICT
-  kcsan: Reduce get_ctx() uses in kcsan_found_watchpoint()
-  kcsan: Rework atomic.h into permissive.h
-  kcsan: Print if strict or non-strict during init
-  kcsan: permissive: Ignore data-racy 1-bit value changes
-
- Documentation/dev-tools/kcsan.rst | 12 ++++
- kernel/kcsan/atomic.h             | 23 --------
- kernel/kcsan/core.c               | 77 ++++++++++++++++---------
- kernel/kcsan/kcsan_test.c         | 32 +++++++++++
- kernel/kcsan/permissive.h         | 94 +++++++++++++++++++++++++++++++
- lib/Kconfig.kcsan                 | 39 +++++++++----
- 6 files changed, 215 insertions(+), 62 deletions(-)
- delete mode 100644 kernel/kcsan/atomic.h
- create mode 100644 kernel/kcsan/permissive.h
-
+diff --git a/lib/Kconfig.kcsan b/lib/Kconfig.kcsan
+index 0440f373248e..6152fbd5cbb4 100644
+--- a/lib/Kconfig.kcsan
++++ b/lib/Kconfig.kcsan
+@@ -40,10 +40,14 @@ menuconfig KCSAN
+ 
+ if KCSAN
+ 
+-# Compiler capabilities that should not fail the test if they are unavailable.
+ config CC_HAS_TSAN_COMPOUND_READ_BEFORE_WRITE
+ 	def_bool (CC_IS_CLANG && $(cc-option,-fsanitize=thread -mllvm -tsan-compound-read-before-write=1)) || \
+ 		 (CC_IS_GCC && $(cc-option,-fsanitize=thread --param tsan-compound-read-before-write=1))
++	help
++	  The compiler instruments plain compound read-write operations
++	  differently (++, --, +=, -=, |=, &=, etc.), which allows KCSAN to
++	  distinguish them from other plain accesses. This is currently
++	  supported by Clang 12 or later.
+ 
+ config KCSAN_VERBOSE
+ 	bool "Show verbose reports with more information about system state"
+@@ -169,13 +173,9 @@ config KCSAN_REPORT_ONCE_IN_MS
+ 	  reporting to avoid flooding the console with reports.  Setting this
+ 	  to 0 disables rate limiting.
+ 
+-# The main purpose of the below options is to control reported data races (e.g.
+-# in fuzzer configs), and are not expected to be switched frequently by other
+-# users. We could turn some of them into boot parameters, but given they should
+-# not be switched normally, let's keep them here to simplify configuration.
+-#
+-# The defaults below are chosen to be very conservative, and may miss certain
+-# bugs.
++# The main purpose of the below options is to control reported data races, and
++# are not expected to be switched frequently by non-testers or at runtime.
++# The defaults are chosen to be conservative, and can miss certain bugs.
+ 
+ config KCSAN_REPORT_RACE_UNKNOWN_ORIGIN
+ 	bool "Report races of unknown origin"
 -- 
 2.32.0.rc1.229.g3e70b5a671-goog
 
