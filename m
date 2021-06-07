@@ -2,101 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A036339D500
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7748F39D503
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230251AbhFGGg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 02:36:58 -0400
-Received: from mga01.intel.com ([192.55.52.88]:50082 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229498AbhFGGg4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 02:36:56 -0400
-IronPort-SDR: nd3cJzKuMEXoSTML6xqIrOnMMeqB51MSPeRBhv48nf7kJzEo9ZIVQh0CdgwlMnAqBob8QQKc0b
- txvDE1NWeH7g==
-X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="225903268"
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="225903268"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 23:35:05 -0700
-IronPort-SDR: 5GiVmBqX1BL1tQNN+0dngUQblYqcnUnrxBx0LVwAaisP5TQvvwxb7uz5RD9lCY8c0Nn0fyXDRk
- JAgrwmRmeQqw==
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="447378949"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 23:35:03 -0700
-Subject: Re: [kbuild-all] Re: [irqchip: irq/irqchip-next] powerpc: Drop
- dependency between asm/irq.h and linux/irqdomain.h
-To:     Marc Zyngier <maz@kernel.org>, kernel test robot <lkp@intel.com>
-Cc:     irqchip-bot for Marc Zyngier <tip-bot2@linutronix.de>,
-        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
-        tglx@linutronix.de
-References: <162298343129.29796.10381692252026350764.tip-bot2@tip-bot2>
- <202106062241.NcVGcvw3-lkp@intel.com>
- <0daef13c3e27002d10bedb7f9719d633@kernel.org>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <1dbed936-a112-8493-aab2-bbf87aaf6cc2@intel.com>
-Date:   Mon, 7 Jun 2021 14:34:39 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-MIME-Version: 1.0
-In-Reply-To: <0daef13c3e27002d10bedb7f9719d633@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        id S230282AbhFGGhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 02:37:32 -0400
+Received: from lucky1.263xmail.com ([211.157.147.132]:41156 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229498AbhFGGha (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 02:37:30 -0400
+Received: from localhost (unknown [192.168.167.235])
+        by lucky1.263xmail.com (Postfix) with ESMTP id B3802F4BB3;
+        Mon,  7 Jun 2021 14:34:52 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P31748T140095280056064S1623047691557189_;
+        Mon, 07 Jun 2021 14:34:52 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <27b37765536e8ae34f84694187c02524>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: broonie@kernel.org
+X-RCPT-COUNT: 9
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Jon Lin <jon.lin@rock-chips.com>
+To:     broonie@kernel.org
+Cc:     Jon Lin <jon.lin@rock-chips.com>, devicetree@vger.kernel.org,
+        Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v4 0/6] Support ROCKCHIP SPI new feature
+Date:   Mon,  7 Jun 2021 14:34:42 +0800
+Message-Id: <20210607063448.29589-1-jon.lin@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 6/6/21 11:24 PM, Marc Zyngier wrote:
-> On 2021-06-06 16:00, kernel test robot wrote:
->> Hi irqchip-bot,
->>
->> Thank you for the patch! Yet something to improve:
->>
->> [auto build test ERROR on powerpc/next]
->> [also build test ERROR on linux/master linus/master v5.13-rc4 
->> next-20210604]
->> [If your patch is applied to the wrong git tree, kindly drop us a note.
->> And when submitting patch, we suggest to use '--base' as documented in
->> https://git-scm.com/docs/git-format-patch]
->>
->> url:
->> https://github.com/0day-ci/linux/commits/irqchip-bot-for-Marc-Zyngier/powerpc-Drop-dependency-between-asm-irq-h-and-linux-irqdomain-h/20210606-205106 
->>
->> base: 
->> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git next
->> config: powerpc-sbc8548_defconfig (attached as .config)
->> compiler: powerpc-linux-gcc (GCC) 9.3.0
->> reproduce (this is a W=1 build):
->>         wget
->> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross
->> -O ~/bin/make.cross
->>         chmod +x ~/bin/make.cross
->>         #
->> https://github.com/0day-ci/linux/commit/72415db4cc9ec9987380123553c3222a3568f37f 
->>
->>         git remote add linux-review https://github.com/0day-ci/linux
->>         git fetch --no-tags linux-review
->> irqchip-bot-for-Marc-Zyngier/powerpc-Drop-dependency-between-asm-irq-h-and-linux-irqdomain-h/20210606-205106 
->>
->>         git checkout 72415db4cc9ec9987380123553c3222a3568f37f
->
-> I got curious, and fetched this tree. This patch is isolated,
-> out of context in the series, and makes absolutely zero sense
-> on its own. No wonder you detect all sort of compilation issues.
->
-> If you are going to test things, please pick the whole branch,
-> and not random patches. This is a waste of everybody's time.
->
->         M.
+Changes in v4:
+- Adjust the order patches
+- Simply commit massage like redundancy "application" content
 
-Hi Marc,
+Changes in v3:
+- Fix compile error which is find by Sascha in [v2,2/8]
 
-Sorry for the inconvenience, we didn't identify the patch emails from 
-tip-bot2,
-we'll ignore these emails to avoid ineffective work.
+Jon Lin (6):
+  dt-bindings: spi: spi-rockchip: add description for rv1126 and rk3568
+  spi: rockchip: add compatible string for rv1126 and rk3568
+  spi: rockchip: Set rx_fifo interrupt waterline base on transfer item
+  spi: rockchip: Wait for STB status in slave mode tx_xfer
+  spi: rockchip: Support cs-gpio
+  spi: rockchip: Support SPI_CS_HIGH
 
-Best Regards,
-Rong Chen
+ .../devicetree/bindings/spi/spi-rockchip.yaml |  2 +
+ drivers/spi/spi-rockchip.c                    | 96 +++++++++++++++----
+ 2 files changed, 82 insertions(+), 16 deletions(-)
+
+-- 
+2.17.1
+
+
+
