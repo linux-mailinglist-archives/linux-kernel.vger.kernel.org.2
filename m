@@ -2,104 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B949739DFE4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 17:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC25B39DFED
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 17:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhFGPCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 11:02:53 -0400
-Received: from mail-pg1-f171.google.com ([209.85.215.171]:36789 "EHLO
-        mail-pg1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230198AbhFGPCw (ORCPT
+        id S230269AbhFGPFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 11:05:54 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:42128 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230226AbhFGPFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 11:02:52 -0400
-Received: by mail-pg1-f171.google.com with SMTP id 27so14017364pgy.3;
-        Mon, 07 Jun 2021 08:01:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LBQFfB81E+P58yjRe+k2+cx97sDCbuPy/V/8bIJeXkc=;
-        b=d1nEfDWwq7FWKqIFyB7wcvXzmP+qszgIuZNrjkwP3x1/yDu+sQSJ4TgOka8JMFwdpz
-         FbG95ETwwZelyW9y9nYy/fBdQQ5EpoXh41Gbn4eQmQTaoxF5map34fNshbDgQ+GKj1eQ
-         M2HNtozQY8mDF7hXNffuvHHSZK/H+HS3mDWozeDZ1wrNV7N6DSSxBit7yoz2Djn0vKsu
-         PTtFJD9Ofb3TtKRa65oNYY7gKKMzGB1TuT8lxEnUuKWvE9MiqzfZDCghwXldP+Yap8sq
-         BhmGax5uZd/Z3aYrXJPVjrW6XKPjEpwSZcuA8L3oguKgjEhjLQ9bi63V9oWBmfiZKAst
-         VQoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LBQFfB81E+P58yjRe+k2+cx97sDCbuPy/V/8bIJeXkc=;
-        b=l09nOkgcvg+YBP4lNEGOB9tR+Vf9c0s7nHnIRgSTBria6bL8V8q73onXABynKzglnE
-         MZSI08FXq+mbBnzGl7COD5OCr28+CtA/T4tqsPX4NL+SVrf27VvBSJbrVXryUD9na4aO
-         ElyCJjb+ZutONyP4NoUCo4zhJ2oRqzDH1V6c4lqiw7jNB2/s91pMHgIbq1AHHT+NWB+h
-         f6r6w1ugCYjCKhaWW0PmkJZSDcjWBEyYaa7Ue4kGWrNM71sy/2RDi6iwBD+dlrhz6oRx
-         AH6WeBowRVrimqB8tmczGkY5zLyGeQ5te80afsi6fSoaxlmuLB7/1FyZsO0nYrMG4itd
-         6QWg==
-X-Gm-Message-State: AOAM530c9LmcYFtZqp5izHbpfW1ZL6gUjeBn59s3Zb5TO3886USPtcz+
-        BmVkVHEqKJAu3ev+EwRE8O0=
-X-Google-Smtp-Source: ABdhPJxA6AxF//BtD4CX3ss9LWnlUG4jgLj+0PRFw+NP8biHDKV1XDA0j2C9BbRScevume4H06cdTA==
-X-Received: by 2002:a63:7d2:: with SMTP id 201mr18504206pgh.14.1623078000846;
-        Mon, 07 Jun 2021 08:00:00 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:1a:efea::4b1])
-        by smtp.gmail.com with ESMTPSA id x6sm8711203pfd.173.2021.06.07.07.59.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Jun 2021 08:00:00 -0700 (PDT)
-Subject: Re: [RFC PATCH V3 11/11] HV/Storvsc: Add Isolation VM support for
- storvsc driver
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        arnd@arndb.de, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, akpm@linux-foundation.org,
-        kirill.shutemov@linux.intel.com, rppt@kernel.org,
-        hannes@cmpxchg.org, cai@lca.pw, krish.sadhukhan@oracle.com,
-        saravanand@fb.com, Tianyu.Lan@microsoft.com,
-        konrad.wilk@oracle.com, m.szyprowski@samsung.com,
-        robin.murphy@arm.com, boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, joro@8bytes.org, will@kernel.org,
-        xen-devel@lists.xenproject.org, davem@davemloft.net,
-        kuba@kernel.org, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, thomas.lendacky@amd.com,
-        brijesh.singh@amd.com, sunilmut@microsoft.com
-References: <20210530150628.2063957-1-ltykernel@gmail.com>
- <20210530150628.2063957-12-ltykernel@gmail.com>
- <20210607064603.GD24478@lst.de>
-From:   Tianyu Lan <ltykernel@gmail.com>
-Message-ID: <26c771e5-a64e-f2cc-e245-fa5f130f4b18@gmail.com>
-Date:   Mon, 7 Jun 2021 22:59:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 7 Jun 2021 11:05:49 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 157F3jXQ108953;
+        Mon, 7 Jun 2021 10:03:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1623078225;
+        bh=K1ruin6irZniVUvooTwtQJ4zubzVpOKUB8MYYcJT4M0=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=YnjXHfSoBvqLxLQzwt6qA3Bl5vu8hMcci0wEPllTzRfqmZVg/RL/nFCz0O+ySDQda
+         mmjVjXek9CybYJugGnbGL+lwXVeCj2E1v10/5572zN7igFxJx+qkjQExaMGvegCaRR
+         TiKvmhoycGlx/5BPz7cm/W8BIRM+b+U8e1OCezjo=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 157F3j59128600
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 7 Jun 2021 10:03:45 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 7 Jun
+ 2021 10:03:44 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 7 Jun 2021 10:03:44 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 157F3iYL041669;
+        Mon, 7 Jun 2021 10:03:44 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+CC:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>, Suman Anna <s-anna@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v4] arm64: dts: ti: k3-am65: Add support for UHS-I modes in MMCSD1 subsystem
+Date:   Mon, 7 Jun 2021 10:03:43 -0500
+Message-ID: <162307821120.24886.4913823870361200714.b4-ty@ti.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210529033749.6250-1-a-govindraju@ti.com>
+References: <20210529033749.6250-1-a-govindraju@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20210607064603.GD24478@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/7/2021 2:46 PM, Christoph Hellwig wrote:
-> On Sun, May 30, 2021 at 11:06:28AM -0400, Tianyu Lan wrote:
->> +				for (i = 0; i < request->hvpg_count; i++)
->> +					dma_unmap_page(&device->device,
->> +							request->dma_range[i].dma,
->> +							request->dma_range[i].mapping_size,
->> +							request->vstor_packet.vm_srb.data_in
->> +							     == READ_TYPE ?
->> +							DMA_FROM_DEVICE : DMA_TO_DEVICE);
->> +				kfree(request->dma_range);
+On Sat, 29 May 2021 09:07:49 +0530, Aswath Govindraju wrote:
+> UHS-I speed modes are supported in AM65 S.R. 2.0 SoC[1].
 > 
-> Unreadably long lines.  You probably want to factor the quoted code into
-> a little readable helper and do the same for the map side.
+> Add support by removing the no-1-8-v tag and including the voltage
+> regulator device tree nodes for power cycling.
+> 
+> However, the 4 bit interface of AM65 SR 1.0 cannot be supported at 3.3 V or
+> 1.8 V because of erratas i2025 and i2026 [2]. As the SD card is the primary
+> boot mode for development usecases, continue to enable SD card and disable
+> UHS-I modes in it to minimize any ageing issues happening because of
+> erratas.
+> 
+> [...]
 
-Good suggestion. Will update.
+Hi Aswath Govindraju,
 
-Thanks.
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
+
+[1/1] arm64: dts: ti: k3-am65: Add support for UHS-I modes in MMCSD1 subsystem
+      commit: 79b08ae7c411840ea5a9fba349025d217e700576
+
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+
