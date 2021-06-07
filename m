@@ -2,135 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B94A39D50E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A2C39D534
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230374AbhFGGhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 02:37:48 -0400
-Received: from mga12.intel.com ([192.55.52.136]:7552 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230200AbhFGGhr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 02:37:47 -0400
-IronPort-SDR: fSfCp61OeeS7Aez2wKMG3erYGg8TOnsGB208/YwzrcFxrpogUeMllrl96lZsmOQTBwAYAfd+AK
- 7NU5VFKiHO7w==
-X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="184251042"
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="184251042"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 23:35:56 -0700
-IronPort-SDR: pmyJF+7EpzOpsx9iT1oeDExF58KDHI41I7OH5JdyjLwTAUK7HjTidt2EBFb8e/+KVEZBQCUKu0
- IA41DCya19AQ==
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="447379229"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 23:35:55 -0700
-Subject: Re: [kbuild-all] Re: [irqchip: irq/irqchip-next] irqdomain: Kill
- irq_domain_add_legacy_isa
-To:     Marc Zyngier <maz@kernel.org>, kernel test robot <lkp@intel.com>
-Cc:     irqchip-bot for Marc Zyngier <tip-bot2@linutronix.de>,
-        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
-        tglx@linutronix.de
-References: <162298343087.29796.2303741743539407585.tip-bot2@tip-bot2>
- <202106062321.3Z0IkIka-lkp@intel.com>
- <bebfd30fc7ba6ffb20ab0b4d4afec7ec@kernel.org>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <71261762-f3ea-1e78-6b34-ffea320d1d34@intel.com>
-Date:   Mon, 7 Jun 2021 14:35:38 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S230250AbhFGGp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 02:45:57 -0400
+Received: from regular1.263xmail.com ([211.150.70.205]:33426 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229545AbhFGGpy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 02:45:54 -0400
+X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Mon, 07 Jun 2021 02:45:53 EDT
+Received: from localhost (unknown [192.168.167.16])
+        by regular1.263xmail.com (Postfix) with ESMTP id E871C7D3;
+        Mon,  7 Jun 2021 14:35:55 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from [172.16.12.73] (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P32531T140357140461312S1623047754740766_;
+        Mon, 07 Jun 2021 14:35:55 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <7508cccd791cddd4389844d16fe8e0b2>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: kernel@esmil.dk
+X-RCPT-COUNT: 8
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+Subject: Re: [PATCH v3 3/8] dt-bindings: spi: spi-rockchip: add description
+ for rv1126
+To:     Johan Jonker <jbx6244@gmail.com>, broonie@kernel.org
+Cc:     heiko@sntech.de, linux-spi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@esmil.dk
+References: <20210605094659.13507-1-jon.lin@rock-chips.com>
+ <20210605094659.13507-3-jon.lin@rock-chips.com>
+ <4d60a524-5a54-f972-7605-25db3b825cfa@gmail.com>
+From:   Jon Lin <jon.lin@rock-chips.com>
+Message-ID: <9d6c9b33-2e56-430b-0ea7-df0ebc0a16b4@rock-chips.com>
+Date:   Mon, 7 Jun 2021 14:36:01 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <bebfd30fc7ba6ffb20ab0b4d4afec7ec@kernel.org>
+In-Reply-To: <4d60a524-5a54-f972-7605-25db3b825cfa@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 6/6/21 4:30 AM, Johan Jonker wrote:
+> Hi Jon,
+>
+> Some comments. Have a look if it's useful.
+>
+> ===
+>
+> In order to get this patch reviewed by rob+dt you must include:
+> robh+dt@kernel.org
+> devicetree@vger.kernel.org
+>
+> Check your review status here:
+> https://patchwork.ozlabs.org/project/devicetree-bindings/list/
+>
+> Get the other lists and maintainers with:
+> ./scripts/get_maintainer.pl --noroles --norolestats --nogit-fallback
+> --nogit <patch1> <patch2>
 
-On 6/6/21 11:15 PM, Marc Zyngier wrote:
-> On 2021-06-06 16:06, kernel test robot wrote:
->> Hi irqchip-bot,
->>
->> Thank you for the patch! Perhaps something to improve:
->>
->> [auto build test WARNING on tip/irq/core]
->> [also build test WARNING on linux/master linus/master v5.13-rc4 
->> next-20210604]
->> [If your patch is applied to the wrong git tree, kindly drop us a note.
->> And when submitting patch, we suggest to use '--base' as documented in
->> https://git-scm.com/docs/git-format-patch]
->>
->> url:
->> https://github.com/0day-ci/linux/commits/irqchip-bot-for-Marc-Zyngier/irqdomain-Kill-irq_domain_add_legacy_isa/20210606-204659 
->>
->> base: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
->> 006ae1970a8cde1d3e92da69b324d12880133a13
->> config: powerpc-allyesconfig (attached as .config)
->> compiler: powerpc64-linux-gcc (GCC) 9.3.0
->> reproduce (this is a W=1 build):
->>         wget
->> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross
->> -O ~/bin/make.cross
->>         chmod +x ~/bin/make.cross
->>         #
->> https://github.com/0day-ci/linux/commit/7d6d9b0177b4ae53ccae4fb2c5cd387460def6ac 
->>
->>         git remote add linux-review https://github.com/0day-ci/linux
->>         git fetch --no-tags linux-review
->> irqchip-bot-for-Marc-Zyngier/irqdomain-Kill-irq_domain_add_legacy_isa/20210606-204659 
->>
->>         git checkout 7d6d9b0177b4ae53ccae4fb2c5cd387460def6ac
->>         # save the attached .config to linux build tree
->>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross
->> ARCH=powerpc
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All warnings (new ones prefixed by >>):
->>
->>    arch/powerpc/sysdev/i8259.c: In function 'i8259_init':
->>    arch/powerpc/sysdev/i8259.c:263:15: error: implicit declaration of
->> function 'irq_domain_add_legacy_isa'; did you mean
->> 'irq_domain_add_legacy'? [-Werror=implicit-function-declaration]
->>      263 |  i8259_host = irq_domain_add_legacy_isa(node, 
->> &i8259_host_ops, NULL);
->>          |               ^~~~~~~~~~~~~~~~~~~~~~~~~
->>          |               irq_domain_add_legacy
->>>> arch/powerpc/sysdev/i8259.c:263:13: warning: assignment to 'struct 
->>>> irq_domain *' from 'int' makes pointer from integer without a cast 
->>>> [-Wint-conversion]
->>      263 |  i8259_host = irq_domain_add_legacy_isa(node, 
->> &i8259_host_ops, NULL);
->>          |             ^
->>    cc1: some warnings being treated as errors
->
-> This makes zero sense. At the point where this patch is applied in
-> the series, all instances of irq_domain_add_legacy_isa() have been
-> removed, except for one in the Chinese translation of the documentation:
->
-> <quote>
-> maz@hot-poop:~/arm-platforms$ git checkout 
-> bf541b2ef87c162c8129333c55d2357bab122d8e
-> HEAD is now at bf541b2ef87c irqdomain: Kill irq_domain_add_legacy_isa
-> maz@hot-poop:~/arm-platforms$ git grep irq_domain_add_legacy_isa
-> Documentation/translations/zh_CN/core-api/irq/irq-domain.rst: 
-> irq_domain_add_legacy_isa()
-> </quote>
->
-> Are you applying the patches out of order, by any chance?
->
-> Thanks,
->
->         M.
+done.
 
-Hi Marc,
+> ===
+>
+> Please try to order patches like:
+> (1) dt-binding - compatible addition
+> (2) driver patches
+> (3) devicetree node patches
+>
+> The script below gives a warning if the wrong order is used.
+> ./scripts/checkpatch.pl --strict <patch1> <patch2>
 
-Sorry for the inconvenience, we didn't identify the patch emails from 
-tip-bot2,
-we'll ignore these emails to avoid ineffective work.
+done.
 
-Best Regards,
-Rong Chen
+> ===
+>
+> The [PATCH v3 2/8] has duplicate Signed-off-by's.
+>
+> Signed-off-by: Jon Lin <jon.lin at rock-chips.com>
+> Signed-off-by: Jon Lin <jon.lin at rock-chips.com>
+>
+> What has changed in version 3 ?
+> Maybe add a cover letter and a change log too?
+> git format-patch -v4 -8 --cover-letter HEAD
+
+done.
+
+> ===
+>
+> The commit message in [PATCH v3 4/8] has to many "applications", so
+> maybe restyle a bit?
+>
+> Add compatible string for rv1126 to applications for potential
+> applications.
+done.
+>
+> Adding "rockchip,rv1126-spi" to rockchip_spi_dt_match[] is strictly not
+> needed when using "rockchip,rk3066-spi" as fall back string.
+> Could a maintainer advice?
+>
+> Maybe this bug of mine should revert too?? Or is it legacy? ;)
+> spi: rockchip: add compatible string for px30 rk3308 rk3328
+> https://lore.kernel.org/r/20200309151004.7780-1-jbx6244@gmail.com
+I agree with you. If the maintainer doesn't have any comments, I will use
+"rockchip,spi" as compatible names for the subsequent rk platform.
+>
+> ===
+>
+> Johan
+>
+> On 6/5/21 11:46 AM, Jon Lin wrote:
+>> The description below will be used for rv1126.dtsi in the future
+>>
+>> Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+>> ---
+>>   Documentation/devicetree/bindings/spi/spi-rockchip.yaml | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/spi/spi-rockchip.yaml b/Documentation/devicetree/bindings/spi/spi-rockchip.yaml
+>> index 1e6cf29e6388..4ed5b72a8494 100644
+>> --- a/Documentation/devicetree/bindings/spi/spi-rockchip.yaml
+>> +++ b/Documentation/devicetree/bindings/spi/spi-rockchip.yaml
+>> @@ -27,6 +27,7 @@ properties:
+>>         - items:
+>>             - enum:
+>>                 - rockchip,px30-spi
+>> +              - rockchip,rv1126-spi
+> Sort alphabetically.
+>
+>>                 - rockchip,rk3188-spi
+>>                 - rockchip,rk3288-spi
+>>                 - rockchip,rk3308-spi
+>>
+>
+>
+
+
