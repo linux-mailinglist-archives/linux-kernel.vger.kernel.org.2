@@ -2,252 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E96DB39D434
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 06:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C842B39D438
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 06:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbhFGEyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 00:54:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbhFGEyB (ORCPT
+        id S229993AbhFGE4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 00:56:37 -0400
+Received: from mail-m121144.qiye.163.com ([115.236.121.144]:24746 "EHLO
+        mail-m121144.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhFGE4g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 00:54:01 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86950C061789
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 21:52:03 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id y7so11340897wrh.7
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 21:52:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GSrkzkz7xM597OmtYCnt2HUmLY0/0lkG7FOWLrVNAms=;
-        b=FHl4f2ZMNz83wbOOximW+hD3upYQGy1AuGocMMiFVdvqnDQaqr0v5s4QckDZNIRw+G
-         fXR/saqHsOXCJX/B+NJqEvCwCHsZUFAQa5eTqGBit32iZWBABoWo9dW9UGuHlucHyYEn
-         Hv/YFYR54d5IddJbd2vEnZ28MlHEQG6/RAJpJgohGxMDsGtPLO6DPPu3sBlJqBszMErr
-         tSpH4uoPeh5eTTm1tOJPWyRY/0yc9Ls3NRMfQDSUJqd0qrFQ8SZ6S88tIO44S4HPIaoh
-         RZmcqSUQpMJ+YHXuDmOVZ8XvROg5CDwAO3rVuqJ1a/LEtaMI8DY45It6NF9hG71vJu0h
-         F3rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GSrkzkz7xM597OmtYCnt2HUmLY0/0lkG7FOWLrVNAms=;
-        b=GMASN0GPRWvCQj/2BvRJr8nDGvVQ2lHeKABCvnmaJEmIFJRIllqaEPARv+/ldWA3Hc
-         EMkrKOkAJqaVGxXtc9w088UzJF7zeacG8pOyRbMToCifS1gadj2K4ihGfjFK4+IIPGYS
-         +/GInlilhDxFLSJRsO77VUIqHYrOF5tHdiia4mvqqvI62sXj/RrhCGHLKSlVPsF98RfU
-         pjkc7RUuN86HOo5Ejz312/vH0Tc3Po8O6eX9w2e55en3jiFKxRosQp07S8dFEYxbXZYA
-         sUwNIthNCUTi9kckg6K0EyP9HQl80hx4CljC4mIA8JfRoNlx2hkmX6WTqTXKd32H98K2
-         NM1Q==
-X-Gm-Message-State: AOAM531WVzq6nsG2FlhlzXu8dHWRXx+2oOu5Mm7Sn7KosjxKszXXMspu
-        DZUnX1QTCGiVzZbt+0rTbX4zvQ==
-X-Google-Smtp-Source: ABdhPJyH2kD08IkD4rO54NrYaJ6NqrZO0rrFvYt+XutsC9lnfAjdURf0mdSoSNbTp3YUeEf2+VNTpg==
-X-Received: by 2002:a5d:6b09:: with SMTP id v9mr15195054wrw.297.1623041521972;
-        Sun, 06 Jun 2021 21:52:01 -0700 (PDT)
-Received: from Iliass-MBP (ppp-94-66-57-185.home.otenet.gr. [94.66.57.185])
-        by smtp.gmail.com with ESMTPSA id n2sm15303342wmb.32.2021.06.06.21.51.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Jun 2021 21:52:01 -0700 (PDT)
-Date:   Mon, 7 Jun 2021 07:51:56 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
-        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: Re: [PATCH net-next v7 3/5] page_pool: Allow drivers to hint on SKB
- recycling
-Message-ID: <YL2l7OxN4m7+d303@Iliass-MBP>
-References: <20210604183349.30040-1-mcroce@linux.microsoft.com>
- <20210604183349.30040-4-mcroce@linux.microsoft.com>
- <YLqCAEVG+aLNGlIi@casper.infradead.org>
+        Mon, 7 Jun 2021 00:56:36 -0400
+Received: from Wanjb.localdomain (unknown [36.152.145.182])
+        by mail-m121144.qiye.163.com (Hmail) with ESMTPA id BAA46AC01D9;
+        Mon,  7 Jun 2021 12:54:43 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Namjae Jeon <namjae.jeon@samsung.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steve French <sfrench@samba.org>,
+        Hyunchul Lee <hyc.lee@gmail.com>, linux-cifs@vger.kernel.org,
+        linux-cifsd-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Cc:     Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] [-next] cifsd: remove duplicated argument
+Date:   Mon,  7 Jun 2021 12:54:32 +0800
+Message-Id: <20210607045432.19359-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLqCAEVG+aLNGlIi@casper.infradead.org>
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQk1CGVYZTB5NSxpDTkpMHh5VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Pk06Ajo*Hz8WCQ9DDDYqChhN
+        QxNPCxdVSlVKTUlIS09KTUNPSExDVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFJSkxKNwY+
+X-HM-Tid: 0a79e4d2b1f6b039kuuubaa46ac01d9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 08:41:52PM +0100, Matthew Wilcox wrote:
-> On Fri, Jun 04, 2021 at 08:33:47PM +0200, Matteo Croce wrote:
-> > diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> > index 7fcfea7e7b21..057b40ad29bd 100644
-> > --- a/include/linux/skbuff.h
-> > +++ b/include/linux/skbuff.h
-> > @@ -40,6 +40,9 @@
-> >  #if IS_ENABLED(CONFIG_NF_CONNTRACK)
-> >  #include <linux/netfilter/nf_conntrack_common.h>
-> >  #endif
-> > +#ifdef CONFIG_PAGE_POOL
-> > +#include <net/page_pool.h>
-> > +#endif
-> 
-> I'm not a huge fan of conditional includes ... any reason to not include
-> it always?
+Fix the following coccicheck warning:
+./fs/cifsd/smb2pdu.c:1713:27-41: duplicated argument to & or |
 
-I think we can. I'll check and change it. 
+FILE_DELETE_LE is duplicated. Remove one and reorder argument to
+make coding style reasonable. 
 
-> 
-> > @@ -3088,7 +3095,13 @@ static inline void skb_frag_ref(struct sk_buff *skb, int f)
-> >   */
-> >  static inline void __skb_frag_unref(skb_frag_t *frag, bool recycle)
-> >  {
-> > -	put_page(skb_frag_page(frag));
-> > +	struct page *page = skb_frag_page(frag);
-> > +
-> > +#ifdef CONFIG_PAGE_POOL
-> > +	if (recycle && page_pool_return_skb_page(page_address(page)))
-> > +		return;
-> 
-> It feels weird to have a page here, convert it back to an address,
-> then convert it back to a head page in page_pool_return_skb_page().
-> How about passing 'page' here, calling compound_head() in
-> page_pool_return_skb_page() and calling virt_to_page() in skb_free_head()?
-> 
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ fs/cifsd/smb2pdu.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Sure, sounds reasonable. 
+diff --git a/fs/cifsd/smb2pdu.c b/fs/cifsd/smb2pdu.c
+index 3e112fbdc2d9..9a46897d39c9 100644
+--- a/fs/cifsd/smb2pdu.c
++++ b/fs/cifsd/smb2pdu.c
+@@ -1710,10 +1710,10 @@ int smb2_tree_connect(struct ksmbd_work *work)
+ 					KSMBD_TREE_CONN_FLAG_WRITABLE)) {
+ 			rsp->MaximalAccess |= FILE_WRITE_DATA_LE |
+ 				FILE_APPEND_DATA_LE | FILE_WRITE_EA_LE |
+-				FILE_DELETE_CHILD_LE | FILE_DELETE_LE |
+-				FILE_WRITE_ATTRIBUTES_LE | FILE_DELETE_LE |
+-				FILE_READ_CONTROL_LE | FILE_WRITE_DAC_LE |
+-				FILE_WRITE_OWNER_LE | FILE_SYNCHRONIZE_LE;
++				FILE_DELETE_LE | FILE_WRITE_ATTRIBUTES_LE |
++				FILE_DELETE_CHILD_LE | FILE_READ_CONTROL_LE |
++				FILE_WRITE_DAC_LE | FILE_WRITE_OWNER_LE |
++				FILE_SYNCHRONIZE_LE;
+ 		}
+ 	}
+ 
+-- 
+2.20.1
 
-> > @@ -251,4 +253,11 @@ static inline void page_pool_ring_unlock(struct page_pool *pool)
-> >  		spin_unlock_bh(&pool->ring.producer_lock);
-> >  }
-> >  
-> > +/* Store mem_info on struct page and use it while recycling skb frags */
-> > +static inline
-> > +void page_pool_store_mem_info(struct page *page, struct page_pool *pp)
-> > +{
-> > +	page->pp = pp;
-> 
-> I'm not sure this wrapper needs to exist.
-> 
-> > +}
-> > +
-> >  #endif /* _NET_PAGE_POOL_H */
-> > diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> > index e1321bc9d316..a03f48f45696 100644
-> > --- a/net/core/page_pool.c
-> > +++ b/net/core/page_pool.c
-> > @@ -628,3 +628,26 @@ void page_pool_update_nid(struct page_pool *pool, int new_nid)
-> >  	}
-> >  }
-> >  EXPORT_SYMBOL(page_pool_update_nid);
-> > +
-> > +bool page_pool_return_skb_page(void *data)
-> > +{
-> > +	struct page_pool *pp;
-> > +	struct page *page;
-> > +
-> > +	page = virt_to_head_page(data);
-> > +	if (unlikely(page->pp_magic != PP_SIGNATURE))
-> > +		return false;
-> > +
-> > +	pp = (struct page_pool *)page->pp;
-> 
-> You don't need the cast any more.
-> 
-
-True
-
-> > +	/* Driver set this to memory recycling info. Reset it on recycle.
-> > +	 * This will *not* work for NIC using a split-page memory model.
-> > +	 * The page will be returned to the pool here regardless of the
-> > +	 * 'flipped' fragment being in use or not.
-> > +	 */
-> > +	page->pp = NULL;
-> > +	page_pool_put_full_page(pp, page, false);
-> > +
-> > +	return true;
-> > +}
-> > +EXPORT_SYMBOL(page_pool_return_skb_page);
-> > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> > index 12b7e90dd2b5..f769f08e7b32 100644
-> > --- a/net/core/skbuff.c
-> > +++ b/net/core/skbuff.c
-> > @@ -70,6 +70,9 @@
-> >  #include <net/xfrm.h>
-> >  #include <net/mpls.h>
-> >  #include <net/mptcp.h>
-> > +#ifdef CONFIG_PAGE_POOL
-> > +#include <net/page_pool.h>
-> > +#endif
-> >  
-> >  #include <linux/uaccess.h>
-> >  #include <trace/events/skb.h>
-> > @@ -645,10 +648,15 @@ static void skb_free_head(struct sk_buff *skb)
-> >  {
-> >  	unsigned char *head = skb->head;
-> >  
-> > -	if (skb->head_frag)
-> > +	if (skb->head_frag) {
-> > +#ifdef CONFIG_PAGE_POOL
-> > +		if (skb->pp_recycle && page_pool_return_skb_page(head))
-> > +			return;
-> > +#endif
-> 
-> put this in a header file:
-> 
-> static inline bool skb_pp_recycle(struct sk_buff *skb, void *data)
-> {
-> 	if (!IS_ENABLED(CONFIG_PAGE_POOL) || !skb->pp_recycle)
-> 		return false;
-> 	return page_pool_return_skb_page(virt_to_page(data));
-> }
-> 
-> then this becomes:
-> 
-> 	if (skb->head_frag) {
-> 		if (skb_pp_recycle(skb, head))
-> 			return;
-> >  		skb_free_frag(head);
-> > -	else
-> > +	} else {
-> >  		kfree(head);
-> > +	}
-> >  }
-> >  
-
-ok
-
-
-Thanks for having a look
-
-Cheers
-/Ilias
