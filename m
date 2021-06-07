@@ -2,128 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9422339D50F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F2D39D554
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbhFGGhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 02:37:50 -0400
-Received: from mga12.intel.com ([192.55.52.136]:7552 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230242AbhFGGht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 02:37:49 -0400
-IronPort-SDR: kMCDUTvk8kbnronzQhDqgJttRqyrJHx6c83qPjaHQklYrswcVsMd36Ohpaw3DkxpvBgldWLRIs
- 9+szFXdutzJQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="184251047"
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="184251047"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 23:35:58 -0700
-IronPort-SDR: 6JFMm9SbdzYxAcjOvzePy8ttAA9IqZryiTGG/ecPFtj+XccTZ5uxjRgdx49KaVHi+PtLCjIXZb
- /n32W2dzru7A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="447379235"
-Received: from power-sh.sh.intel.com ([10.239.48.130])
-  by orsmga008.jf.intel.com with ESMTP; 06 Jun 2021 23:35:55 -0700
-From:   Zhang Rui <rui.zhang@intel.com>
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org
-Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kan.liang@linux.intel.com, artem.bityutskiy@linux.intel.com,
-        ak@linux.intel.com, yao.jin@intel.com
-Subject: [PATCH] perf/x86/cstate: Add ICELAKE_X and ICELAKE_D support
-Date:   Mon,  7 Jun 2021 14:46:03 +0800
-Message-Id: <20210607064603.26354-1-rui.zhang@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S230220AbhFGGsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 02:48:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229470AbhFGGsl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 02:48:41 -0400
+Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB935C061766
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 23:46:50 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id 0C3B8C800E1;
+        Mon,  7 Jun 2021 08:46:48 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id CcSs6_Du4AyO; Mon,  7 Jun 2021 08:46:47 +0200 (CEST)
+Received: from [IPv6:2003:e3:7f4f:6000:f5f4:4cdd:8015:9770] (p200300E37F4f6000F5F44cDd80159770.dip0.t-ipconnect.de [IPv6:2003:e3:7f4f:6000:f5f4:4cdd:8015:9770])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPSA id 71043C800DF;
+        Mon,  7 Jun 2021 08:46:47 +0200 (CEST)
+Subject: Re: [PATCH 2/4] drm/uAPI: Add "active bpc" as feedback channel for
+ "max bpc" drm property
+To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc:     amd-gfx@lists.freedesktop.org, tzimmermann@suse.de,
+        intel-gfx@lists.freedesktop.org, sunpeng.li@amd.com,
+        dri-devel@lists.freedesktop.org, joonas.lahtinen@linux.intel.com,
+        maarten.lankhorst@linux.intel.com, linux-kernel@vger.kernel.org,
+        mripard@kernel.org, airlied@linux.ie, jani.nikula@linux.intel.com,
+        daniel@ffwll.ch, rodrigo.vivi@intel.com, alexander.deucher@amd.com,
+        harry.wentland@amd.com, christian.koenig@amd.com
+References: <20210604171723.10276-1-wse@tuxedocomputers.com>
+ <20210604171723.10276-3-wse@tuxedocomputers.com> <YLpiVFiBrgH29rki@intel.com>
+From:   Werner Sembach <wse@tuxedocomputers.com>
+Message-ID: <bef099db-f662-9005-6e36-ce056257f537@tuxedocomputers.com>
+Date:   Mon, 7 Jun 2021 08:46:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <YLpiVFiBrgH29rki@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce icx_cstates for ICELAKE_X and ICELAKE_D, and also update the
-comments.
 
-On ICELAKE_X and ICELAKE_D, Core C1, Core C6, Package C2 and Package C6
-Residency MSRs are supported.
+Am 04.06.21 um 19:26 schrieb Ville Syrjälä:
+> On Fri, Jun 04, 2021 at 07:17:21PM +0200, Werner Sembach wrote:
+>> Add a new general drm property "active bpc" which can be used by graphic drivers
+>> to report the applied bit depth per pixel back to userspace.
+>>
+>> While "max bpc" can be used to change the color depth, there was no way to check
+>> which one actually got used. While in theory the driver chooses the best/highest
+>> color depth within the max bpc setting a user might not be fully aware what his
+>> hardware is or isn't capable off. This is meant as a quick way to double check
+>> the setup.
+>>
+>> In the future, automatic color calibration for screens might also depend on this
+>> information available.
+>>
+>> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+>> ---
+>>   drivers/gpu/drm/drm_atomic_uapi.c |  2 ++
+>>   drivers/gpu/drm/drm_connector.c   | 40 +++++++++++++++++++++++++++++++
+>>   include/drm/drm_connector.h       | 15 ++++++++++++
+>>   3 files changed, 57 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atomic_uapi.c
+>> index 268bb69c2e2f..7ae4e40936b5 100644
+>> --- a/drivers/gpu/drm/drm_atomic_uapi.c
+>> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
+>> @@ -873,6 +873,8 @@ drm_atomic_connector_get_property(struct drm_connector *connector,
+>>   		*val = 0;
+>>   	} else if (property == connector->max_bpc_property) {
+>>   		*val = state->max_requested_bpc;
+>> +	} else if (property == connector->active_bpc_property) {
+>> +		*val = state->active_bpc;
+>>   	} else if (connector->funcs->atomic_get_property) {
+>>   		return connector->funcs->atomic_get_property(connector,
+>>   				state, property, val);
+>> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+>> index 7631f76e7f34..5f42a5be5822 100644
+>> --- a/drivers/gpu/drm/drm_connector.c
+>> +++ b/drivers/gpu/drm/drm_connector.c
+>> @@ -1195,6 +1195,13 @@ static const struct drm_prop_enum_list dp_colorspaces[] = {
+>>    *	drm_connector_attach_max_bpc_property() to create and attach the
+>>    *	property to the connector during initialization.
+>>    *
+>> + * active bpc:
+>> + *	This read-only range property is used by userspace check the bit depth
+>> + *	actually applied by the GPU driver after evaluation all hardware
+>> + *	capabilities and max bpc. Drivers to use the function
+>> + *	drm_connector_attach_active_bpc_property() to create and attach the
+>> + *	property to the connector during initialization.
+>> + *
+>>    * Connectors also have one standardized atomic property:
+>>    *
+>>    * CRTC_ID:
+>> @@ -2150,6 +2157,39 @@ int drm_connector_attach_max_bpc_property(struct drm_connector *connector,
+>>   }
+>>   EXPORT_SYMBOL(drm_connector_attach_max_bpc_property);
+>>   
+>> +/**
+>> + * drm_connector_attach_active_bpc_property - attach "active bpc" property
+>> + * @connector: connector to attach active bpc property on.
+>> + * @min: The minimum bit depth supported by the connector.
+>> + * @max: The maximum bit depth supported by the connector.
+>> + *
+>> + * This is used to check the applied bit depth on a connector.
+>> + *
+>> + * Returns:
+>> + * Zero on success, negative errno on failure.
+>> + */
+>> +int drm_connector_attach_active_bpc_property(struct drm_connector *connector,
+>> +					  int min, int max)
+>> +{
+>> +	struct drm_device *dev = connector->dev;
+>> +	struct drm_property *prop;
+>> +
+>> +	prop = connector->active_bpc_property;
+>> +	if (!prop) {
+>> +		prop = drm_property_create_range(dev, 0, "active bpc", min, max);
+> Should be immutable.
+Yes. I didn't know if there is a way to do this (or just don't define a 
+set-function), but I think I found the define for this.
+>
+> Also wondering what the semantics of this should be when eg. DSC
+> is active?
+I'm unfamiliar how the inner workings of DSC (I guess Display Stream 
+Compression?) are. But doesn't it also have color depth?
 
-This patch has been tested on real hardware.
+The active bpc should be what the GPU tells the display to actually show 
+the user when he looks at just one pixel.
 
-Signed-off-by: Zhang Rui <rui.zhang@intel.com>
-Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
----
- arch/x86/events/intel/cstate.c | 23 +++++++++++++++++------
- 1 file changed, 17 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/events/intel/cstate.c b/arch/x86/events/intel/cstate.c
-index 433399069e27..c6262b154c3a 100644
---- a/arch/x86/events/intel/cstate.c
-+++ b/arch/x86/events/intel/cstate.c
-@@ -40,7 +40,7 @@
-  * Model specific counters:
-  *	MSR_CORE_C1_RES: CORE C1 Residency Counter
-  *			 perf code: 0x00
-- *			 Available model: SLM,AMT,GLM,CNL,TNT,ADL
-+ *			 Available model: SLM,AMT,GLM,CNL,ICX,TNT,ADL
-  *			 Scope: Core (each processor core has a MSR)
-  *	MSR_CORE_C3_RESIDENCY: CORE C3 Residency Counter
-  *			       perf code: 0x01
-@@ -50,8 +50,8 @@
-  *	MSR_CORE_C6_RESIDENCY: CORE C6 Residency Counter
-  *			       perf code: 0x02
-  *			       Available model: SLM,AMT,NHM,WSM,SNB,IVB,HSW,BDW,
-- *						SKL,KNL,GLM,CNL,KBL,CML,ICL,TGL,
-- *						TNT,RKL,ADL
-+ *						SKL,KNL,GLM,CNL,KBL,CML,ICL,ICX,
-+ *						TGL,TNT,RKL,ADL
-  *			       Scope: Core
-  *	MSR_CORE_C7_RESIDENCY: CORE C7 Residency Counter
-  *			       perf code: 0x03
-@@ -61,7 +61,7 @@
-  *	MSR_PKG_C2_RESIDENCY:  Package C2 Residency Counter.
-  *			       perf code: 0x00
-  *			       Available model: SNB,IVB,HSW,BDW,SKL,KNL,GLM,CNL,
-- *						KBL,CML,ICL,TGL,TNT,RKL,ADL
-+ *						KBL,CML,ICL,ICX,TGL,TNT,RKL,ADL
-  *			       Scope: Package (physical package)
-  *	MSR_PKG_C3_RESIDENCY:  Package C3 Residency Counter.
-  *			       perf code: 0x01
-@@ -72,8 +72,8 @@
-  *	MSR_PKG_C6_RESIDENCY:  Package C6 Residency Counter.
-  *			       perf code: 0x02
-  *			       Available model: SLM,AMT,NHM,WSM,SNB,IVB,HSW,BDW,
-- *						SKL,KNL,GLM,CNL,KBL,CML,ICL,TGL,
-- *						TNT,RKL,ADL
-+ *						SKL,KNL,GLM,CNL,KBL,CML,ICL,ICX,
-+ *						TGL,TNT,RKL,ADL
-  *			       Scope: Package (physical package)
-  *	MSR_PKG_C7_RESIDENCY:  Package C7 Residency Counter.
-  *			       perf code: 0x03
-@@ -566,6 +566,14 @@ static const struct cstate_model icl_cstates __initconst = {
- 				  BIT(PERF_CSTATE_PKG_C10_RES),
- };
- 
-+static const struct cstate_model icx_cstates __initconst = {
-+	.core_events		= BIT(PERF_CSTATE_CORE_C1_RES) |
-+				  BIT(PERF_CSTATE_CORE_C6_RES),
-+
-+	.pkg_events		= BIT(PERF_CSTATE_PKG_C2_RES) |
-+				  BIT(PERF_CSTATE_PKG_C6_RES),
-+};
-+
- static const struct cstate_model adl_cstates __initconst = {
- 	.core_events		= BIT(PERF_CSTATE_CORE_C1_RES) |
- 				  BIT(PERF_CSTATE_CORE_C6_RES) |
-@@ -664,6 +672,9 @@ static const struct x86_cpu_id intel_cstates_match[] __initconst = {
- 
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_L,		&icl_cstates),
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE,		&icl_cstates),
-+	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,		&icx_cstates),
-+	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_D,		&icx_cstates),
-+
- 	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE_L,		&icl_cstates),
- 	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE,		&icl_cstates),
- 	X86_MATCH_INTEL_FAM6_MODEL(ROCKETLAKE,		&icl_cstates),
--- 
-2.17.1
-
+So dithering computed on the host should not be included (aka when the 
+gpu sends a premade picture to the screen and tells it the lesser pbc), 
+while FRC dithering computed in the display firmware should be included 
+(since the GPU can't really tell the difference between FRC displays and 
+True 10-Bit displays, can't it?)
+>
+>> +		if (!prop)
+>> +			return -ENOMEM;
+>> +
+>> +		connector->active_bpc_property = prop;
+>> +	}
+>> +
+>> +	drm_object_attach_property(&connector->base, prop, 0);
+>> +	connector->state->active_bpc = 0;
+>> +
+>> +	return 0;
+>> +}
+>> +EXPORT_SYMBOL(drm_connector_attach_active_bpc_property);
+>> +
+>>   /**
+>>    * drm_connector_set_vrr_capable_property - sets the variable refresh rate
+>>    * capable property for a connector
+>> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+>> index 1922b278ffad..c58cba2b6afe 100644
+>> --- a/include/drm/drm_connector.h
+>> +++ b/include/drm/drm_connector.h
+>> @@ -781,6 +781,13 @@ struct drm_connector_state {
+>>   	 */
+>>   	u8 max_bpc;
+>>   
+>> +	/**
+>> +	 * @active_bpc: Read only property set by the GPU driver to the actually
+>> +	 * applied bit depth of the pixels after evaluating all hardware
+>> +	 * limitations.
+>> +	 */
+>> +	u8 active_bpc;
+>> +
+>>   	/**
+>>   	 * @hdr_output_metadata:
+>>   	 * DRM blob property for HDR output metadata
+>> @@ -1380,6 +1387,12 @@ struct drm_connector {
+>>   	 */
+>>   	struct drm_property *max_bpc_property;
+>>   
+>> +	/**
+>> +	 * @active_bpc_property: Default connector property for the active bpc
+>> +	 * to be driven out of the connector.
+>> +	 */
+>> +	struct drm_property *active_bpc_property;
+>> +
+>>   #define DRM_CONNECTOR_POLL_HPD (1 << 0)
+>>   #define DRM_CONNECTOR_POLL_CONNECT (1 << 1)
+>>   #define DRM_CONNECTOR_POLL_DISCONNECT (1 << 2)
+>> @@ -1698,6 +1711,8 @@ int drm_connector_set_panel_orientation_with_quirk(
+>>   	int width, int height);
+>>   int drm_connector_attach_max_bpc_property(struct drm_connector *connector,
+>>   					  int min, int max);
+>> +int drm_connector_attach_active_bpc_property(struct drm_connector *connector,
+>> +					  int min, int max);
+>>   
+>>   /**
+>>    * struct drm_tile_group - Tile group metadata
+>> -- 
+>> 2.25.1
