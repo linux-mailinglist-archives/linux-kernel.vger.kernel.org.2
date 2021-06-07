@@ -2,141 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6315A39D6E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C21139D6DC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbhFGIR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 04:17:58 -0400
-Received: from mail-pj1-f54.google.com ([209.85.216.54]:53199 "EHLO
-        mail-pj1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhFGIR4 (ORCPT
+        id S230242AbhFGIRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 04:17:33 -0400
+Received: from mail-ua1-f42.google.com ([209.85.222.42]:40897 "EHLO
+        mail-ua1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229545AbhFGIRb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 04:17:56 -0400
-Received: by mail-pj1-f54.google.com with SMTP id h16so9344558pjv.2;
-        Mon, 07 Jun 2021 01:15:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=c5tZw1PE5ja1kIfp0A9CThFtz7RTJJ96vn5JKsdn4zo=;
-        b=XoQyLvz24OoCRIOShkQNcu9DiR7bBkokC0zH2y0VsTYjxJfKw7R0siA80dncjT3YUK
-         wAQolPJ8LMP2QAHMUANfaqPmSCX0C5CGSEEQPtRRcQTl1EKUo8gRIPdRN/yizwXOvk7a
-         MyxLl0xOVUFh4CzE2lkyyns1y8zU/3BfW8wnjMepLuBa14dDIuRlcgHvnJy9KhXaOr8X
-         f1b1b3SWDcQzR8oj41QVFoJZ6XqUPNURZphda8kDAwgTk/UUkxjzRis3jA/H1Gt2YM49
-         MOGgQu1k2QTfbhGmrfPyoKrM3mYFHKWoquCiDY9UKYa1vj3gMvLKx5aFnrcD/cKhHcp4
-         J8+w==
+        Mon, 7 Jun 2021 04:17:31 -0400
+Received: by mail-ua1-f42.google.com with SMTP id e12so6560593ual.7
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 01:15:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=c5tZw1PE5ja1kIfp0A9CThFtz7RTJJ96vn5JKsdn4zo=;
-        b=U5B5//UCw1NXbo2scwqBFg38TxwRH3IiycN05CUTa6Am23xPa9mLhy3mtLnJGvNv/Q
-         s42PMnrkoWbfp7t9Ryd7RFn4aVpXpDPyvHf520aKDpkiNSL/x2OyS6CKzpxTf3Anc4zj
-         8joYLjNtX2CqCr9PmkA2D5u9Zepe5ChMRSJO/BqtlijT6+K39sUD+RTCTSET7kc44taA
-         oxwbYtndMH4dTHzRn5QfFF76fWLvJDIO25FHvtV8IrSoZASfOt94QPZjA89R0g8gWPGK
-         csXopPcXTsn7ihQwWEiPZOgMs4PxqnvEBcrgfUvrdVKUcN79twhv4Gy3vwXptmFr3X9F
-         UVzg==
-X-Gm-Message-State: AOAM531xCCSZT9paFIA/Oe0RszpZIcYjNxmBHGU3BR9sy8HQWUC3s1yC
-        0wlKPicluEu0K5glcRAQaA0=
-X-Google-Smtp-Source: ABdhPJz5DsUF3lCnv8yQA4dIwCqwn7lOEnqmDAyx9VQ48+J+hBL0/9GZGiwWD3mDm4r9zCHOflaTmA==
-X-Received: by 2002:a17:902:9a42:b029:f5:1cf7:2e52 with SMTP id x2-20020a1709029a42b02900f51cf72e52mr16701852plv.25.1623053690127;
-        Mon, 07 Jun 2021 01:14:50 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:1a:efea::4b1])
-        by smtp.gmail.com with ESMTPSA id r11sm8236573pgl.34.2021.06.07.01.14.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Jun 2021 01:14:49 -0700 (PDT)
-Subject: Re: [RFC PATCH V3 01/11] x86/HV: Initialize GHCB page in Isolation VM
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        arnd@arndb.de, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, akpm@linux-foundation.org,
-        kirill.shutemov@linux.intel.com, rppt@kernel.org,
-        hannes@cmpxchg.org, cai@lca.pw, krish.sadhukhan@oracle.com,
-        saravanand@fb.com, Tianyu.Lan@microsoft.com,
-        konrad.wilk@oracle.com, m.szyprowski@samsung.com,
-        robin.murphy@arm.com, boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, joro@8bytes.org, will@kernel.org,
-        xen-devel@lists.xenproject.org, davem@davemloft.net,
-        kuba@kernel.org, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, thomas.lendacky@amd.com,
-        brijesh.singh@amd.com, sunilmut@microsoft.com
-References: <20210530150628.2063957-1-ltykernel@gmail.com>
- <20210530150628.2063957-2-ltykernel@gmail.com>
- <20210607064142.GA24478@lst.de>
-From:   Tianyu Lan <ltykernel@gmail.com>
-Message-ID: <37260f47-bd32-08f7-b006-f75f4d3c408a@gmail.com>
-Date:   Mon, 7 Jun 2021 16:14:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ltpVj0TZnSAm7Nm7Sf6ejq98h2Pbq2EQteDLv/+/C2c=;
+        b=TYOLNeDx7B/WnpnxeD7C+Abu0z9Bh5qWBntpME3bKKaGvHWJkDRfOoFEehudkqLwmV
+         noEzg2yNEqsDqqIAuDjzF5CHOday4KXPHwzUQApB94RkYliczrgDjMN1AqwpPnT3ORzB
+         7E6HmTa+PCeLmcVt94XKrZ6ofkgYt1Qo4ZanXunPTqqrjrPfrzUHYYyYh9/AvBHCwB6F
+         soTe/veNcfKGrzn2chpZpNc5/QSjP90cHFQNjdnoS/62a1AB8MxymE+14bIlSNPFHZ6i
+         2yd91xcTDSrL/cYmQBkiyEXQbeajSglIwO/vPVIBbg6KROC5Ja/m/BkLkVc05Pzv3vKl
+         NjIQ==
+X-Gm-Message-State: AOAM533zhVeUnGqgE+g2pmRb3cq4c1QXgo8mu1K1QtcCG0Rlb08j8ElD
+        MykSxki6aP0uUQVrwqcKelD59O0qTIVPd3qB/Mc=
+X-Google-Smtp-Source: ABdhPJykJXTpBMRc+s8xp9NUTmOJPCoQNvL5RWXka8MUoLUVSI4QaQfhXcthL2Kgw76oV5hrUTHO31CogIfY+c7gxg8=
+X-Received: by 2002:ab0:b09:: with SMTP id b9mr3624984uak.58.1623053727004;
+ Mon, 07 Jun 2021 01:15:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210607064142.GA24478@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210428063203.691-1-thunder.leizhen@huawei.com>
+ <CAMuHMdWX7rC2zswHoo6aFf3CYp3NKAfJ7E0x4W2wbVkybGa84g@mail.gmail.com> <d8d98365-98f6-d0a4-233e-279172004f51@huawei.com>
+In-Reply-To: <d8d98365-98f6-d0a4-233e-279172004f51@huawei.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 7 Jun 2021 10:15:15 +0200
+Message-ID: <CAMuHMdWeJkDvhf-J-S4dLqKmSvqnkf+AcWdjyPNu-G8zu2jOkA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] lib: devres: Add error information printing for __devm_ioremap_resource()
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph:
-	Thanks for your review.
+Hi Leizhen,
 
-On 6/7/2021 2:41 PM, Christoph Hellwig wrote:
-> On Sun, May 30, 2021 at 11:06:18AM -0400, Tianyu Lan wrote:
->> +	if (ms_hyperv.ghcb_base) {
->> +		rdmsrl(MSR_AMD64_SEV_ES_GHCB, ghcb_gpa);
->> +
->> +		ghcb_va = ioremap_cache(ghcb_gpa, HV_HYP_PAGE_SIZE);
->> +		if (!ghcb_va)
->> +			return -ENOMEM;
-> 
-> Can you explain this a bit more?  We've very much deprecated
-> ioremap_cache in favor of memremap.  Why yo you need a __iomem address
-> here?  Why do we need the remap here at all? >
+On Mon, Jun 7, 2021 at 9:11 AM Leizhen (ThunderTown)
+<thunder.leizhen@huawei.com> wrote:
+> On 2021/5/17 15:04, Geert Uytterhoeven wrote:
+> > On Wed, Apr 28, 2021 at 8:33 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+> >> Ensure that all error handling branches print error information. In this
+> >> way, when this function fails, the upper-layer functions can directly
+> >> return an error code without missing debugging information. Otherwise,
+> >> the error message will be printed redundantly or missing.
+> >>
+> >> Fixes: 35bd8c07db2c ("devres: keep both device name and resource name in pretty name")
+> >> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> >
+> > Thanks for your patch, which is now commit 5c3e241f5246445d ("lib:
+> > devres: Add error information printing for __devm_ioremap_resource()")
+> > in driver-core-next.
+> >
+> >> --- a/lib/devres.c
+> >> +++ b/lib/devres.c
+> >> @@ -157,8 +157,10 @@ __devm_ioremap_resource(struct device *dev, const struct resource *res,
+> >>                                              dev_name(dev), res->name);
+> >>         else
+> >>                 pretty_name = devm_kstrdup(dev, dev_name(dev), GFP_KERNEL);
+> >> -       if (!pretty_name)
+> >> +       if (!pretty_name) {
+> >> +               dev_err(dev, "can't generate pretty name for resource %pR\n", res);
+> >
+> > If the above fails, it is due to a memory allocation failure, and the
+> > memory allocation core will have already printed an error message.
+> > So there is no need to print a second message.
+> > Hence IMHO this commit should be reverted.
+>
+> If the memory allocation fails, only the 'size' is printed, but the start address of
+> the 'res' is not printed. So the printing here is not repeated. The start address is
+> the more critical help information.
 
-GHCB physical address is an address in extra address space which is 
-above shared gpa boundary reported by Hyper-V CPUID. The addresses below
-shared gpa boundary treated as encrypted and the one above is treated as 
-decrypted. System memory is remapped in the extra address space and it 
-starts from the boundary. The shared memory with host needs to use 
-address in the extra address(pa + shared_gpa_boundary) in Linux guest.
+Does that actually matter?
+What can the user or developer do to fix this problem, with the
+additional knowledge of the resource's start address?
 
-Here is to map ghcb page for the communication operations with 
-Hypervisor(e.g, hypercall and read/write MSR) via GHCB page.
+> >>                 return IOMEM_ERR_PTR(-ENOMEM);
+> >> +       }
+> >>
+> >>         if (!devm_request_mem_region(dev, res->start, size, pretty_name)) {
+> >>                 dev_err(dev, "can't request region for resource %pR\n", res);
 
-memremap() will go through iomem_resource list and the address in extra 
-address space will not be in the list. So I used ioremap_cache(). I will
-memremap() instead of ioremap() here.
+Gr{oetje,eeting}s,
 
-> Does the data structure at this address not have any types that we
-> could use a struct for?
+                        Geert
 
-The struct will be added in the following patch. I will refresh the 
-following patch and use the struct hv_ghcb for the mapped point.
-> 
->> +
->> +		rdmsrl(MSR_AMD64_SEV_ES_GHCB, ghcb_gpa);
->> +		ghcb_va = ioremap_cache(ghcb_gpa, HV_HYP_PAGE_SIZE);
->> +		if (!ghcb_va) {
-> 
-> This seems to duplicate the above code.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-The above is to map ghcb for BSP and here does the same thing for APs
-Will add a new function to avoid the duplication.
-
-> 
->> +bool hv_isolation_type_snp(void)
->> +{
->> +	return static_branch_unlikely(&isolation_type_snp);
->> +}
->> +EXPORT_SYMBOL_GPL(hv_isolation_type_snp);
-> 
-> This probably wants a kerneldoc explaining when it should be used. >
-
-OK. I will add.
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
