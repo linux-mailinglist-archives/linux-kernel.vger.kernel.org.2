@@ -2,68 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6A839D4A5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:08:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B19639D4A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbhFGGJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 02:09:58 -0400
-Received: from m12-12.163.com ([220.181.12.12]:42034 "EHLO m12-12.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229449AbhFGGJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 02:09:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=e3HVO
-        33jWIQeAYjTiaJgSFTUeqx8JRvBeqjse2s1de8=; b=DmxaclLUdaVMkprQ5kReh
-        4+G4MYuaj94L20EOXzCJLr0o8j/e/aQQerVs8CvAKY+hF17ClGqfOKj9r0kiHhUL
-        MUQofZjsao/uB96wu6h6weNGjFxCwEeoGiGa7KppL50wE239fLlxOq/titKUd5XC
-        MM9p4qJBXS/zSqeNRkdSYk=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp8 (Coremail) with SMTP id DMCowABHECHAt71g2aYbIg--.2774S2;
-        Mon, 07 Jun 2021 14:08:01 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lijian <lijian@yulong.com>
-Subject: [PATCH] fs: read_write: Fix a typo
-Date:   Mon,  7 Jun 2021 14:07:03 +0800
-Message-Id: <20210607060703.174599-1-lijian_8010a29@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S230194AbhFGGK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 02:10:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229923AbhFGGKZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 02:10:25 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B20C061789
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 23:08:34 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lq8R2-0002CJ-Cl; Mon, 07 Jun 2021 08:08:28 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lq8R1-0001GK-Lo; Mon, 07 Jun 2021 08:08:27 +0200
+Date:   Mon, 7 Jun 2021 08:08:27 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Clemens Gruber <clemens.gruber@pqgruber.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: Re: [PATCH 1/4] pwm: core: Support new usage_power setting in PWM
+ state
+Message-ID: <20210607060827.vxdihsfqtw3otyco@pengutronix.de>
+References: <20210507131845.37605-1-clemens.gruber@pqgruber.com>
+ <20210507150317.bnluhqrqepde4xjm@pengutronix.de>
+ <YJVhLrkeNXBp6M1p@workstation.tuxnet>
+ <20210507231831.zmvyspcq7xhm25y4@pengutronix.de>
+ <YLUK8GXHaBYyVe1R@workstation.tuxnet>
+ <YLn3MZ+6HJM/UrRT@orome.fritz.box>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DMCowABHECHAt71g2aYbIg--.2774S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrur4xWryUtry8Kr4rZw1kZrb_yoW3JwcEkr
-        WIkr4vvr4qvr1xAa48uayYqw1jg3yFkFsYqanxtr98t347t34vka9Iqwn5Kr1UJr47WFyY
-        kFs2qw1rWr12vjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnunQUUUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbi3wGqUGB0GdN6SwAAsL
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="lpegus2nl7jlnljt"
+Content-Disposition: inline
+In-Reply-To: <YLn3MZ+6HJM/UrRT@orome.fritz.box>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
 
-Change 'implemenation' to 'implementation'.
+--lpegus2nl7jlnljt
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: lijian <lijian@yulong.com>
----
- fs/read_write.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hello Thierry,
 
-diff --git a/fs/read_write.c b/fs/read_write.c
-index 9db7adf160d2..ba9bf77d93f8 100644
---- a/fs/read_write.c
-+++ b/fs/read_write.c
-@@ -137,7 +137,7 @@ EXPORT_SYMBOL(generic_file_llseek_size);
-  * @offset:	file offset to seek to
-  * @whence:	type of seek
-  *
-- * This is a generic implemenation of ->llseek useable for all normal local
-+ * This is a generic implementation of ->llseek useable for all normal local
-  * filesystems.  It just updates the file offset to the value specified by
-  * @offset and @whence.
-  */
--- 
-2.25.1
+On Fri, Jun 04, 2021 at 11:49:37AM +0200, Thierry Reding wrote:
+> In the interest of making forward progress, I've applied this series.
 
+I proposed a different approach that in contrast to usage_power:
 
+ - is well defined
+   (so driver authors and consumers know what to provide or expect resp.);
+ - has good name people understand without reading documentation;
+ - fully covers the problem Clemens want to address;
+ - fully covers what the only implementing lowlevel driver does; and
+ - is easy to implement based on the patches in this series
+
+This is not what I call "forward progress". I take it personal that
+after I pointed out technical shortcomings with this patch set and even
+suggested a better concept, you didn't even made the effort to argue
+but instead simply went on applying the patches.
+
+Can you please point out what I'm missing?
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--lpegus2nl7jlnljt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmC9t9gACgkQwfwUeK3K
+7AlykAf9E4vG8VzTUHHapQAZpZPmeJORzF/1HR538KgmDa2z7gXgUnTj+/NUt5lx
+MZupuybXwOg1D/grpFsUe/BhP40VmxO2B2jL9uPpYkl2PVQnC+0Nsg43RI1grtej
+0T/Wl7QLxcCHcZMFK4g7Ps+O4Wt5f30x6l/ORdpZMGyyFiNMB/lozde3Rl9vtIEl
+1Ul70n0cO+aMj1u1EgPx1KsG1dIhh2LLC/SQgYFr0cfZOjuM5+oKOKokR6wEHDk7
+5Fw2oA5mhHfvjs8omYYsyJgGJ04gHufYqfac73H40GXHHi75GS5le5uYtGH0OrVo
+P/6r4bOaLd916u0tCqs8nwSR/CF9zw==
+=qUgw
+-----END PGP SIGNATURE-----
+
+--lpegus2nl7jlnljt--
