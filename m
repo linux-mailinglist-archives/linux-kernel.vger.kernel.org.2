@@ -2,115 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33CBA39DB7A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BABB839DB8F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230454AbhFGLjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 07:39:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50930 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231497AbhFGLjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 07:39:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54B7661130;
-        Mon,  7 Jun 2021 11:37:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623065841;
-        bh=4Fjpri+KDpM8VFQjB0uGSbfPCZvhFsguE5r75Vv3ong=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Gdkj+VvhIGp6KXf13LwzmqUnHyVMCR5w7v63D1B50WPH5SEVF+DFWMCLg1lz6Va1K
-         5nIlG0rxIIwCDdoCaIM8n3uKjZBLWGRotEiXEgn5K8dOTrugGFJT3AejRVVrqW+a3o
-         Kl3rpU/81Mr/Azzj/pmwJYt2eNwt0u+ZMl7r9g5a/p3aKEP9q8TJuwxzoJHZOLH4M8
-         itp3yCRW7fATq44rE42BXWTtLpAzk9x/YXqDX5QY6GDdZfW/6/jshBHCr3VFjK/qkh
-         y14Ae5Eon42AXv9f/0pqCyEK05oTsNInAoiEofqrQxJppQJibrYv3n9hGpa1HwuvpR
-         Dq17HJ1YRqyHg==
-Date:   Mon, 7 Jun 2021 14:37:16 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Adit Ranadive <aditr@vmware.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Christian Benvenuti <benve@cisco.com>,
-        clang-built-linux@googlegroups.com,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Gal Pressman <galpress@amazon.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next v1 10/15] RDMA/cm: Use an attribute_group on
- the ib_port_attribute intead of kobj's
-Message-ID: <YL4E7C7tVUMy3poz@unreal>
-References: <cover.1623053078.git.leonro@nvidia.com>
- <00e578937f557954d240bc0856f45b3f752d6cba.1623053078.git.leonro@nvidia.com>
- <YL3z/xpm5EYHFuZs@kroah.com>
- <YL36OFkmlxJiqjvc@unreal>
- <YL4Bcm2dOyWKLGJ7@kroah.com>
+        id S231503AbhFGLmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 07:42:00 -0400
+Received: from mail-pl1-f177.google.com ([209.85.214.177]:34525 "EHLO
+        mail-pl1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230374AbhFGLl7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 07:41:59 -0400
+Received: by mail-pl1-f177.google.com with SMTP id h1so836836plt.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 04:40:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Z6Ewiz/FJiBEreBJpRrZidhXQHm4TISHkUY9VOlUYRc=;
+        b=l49RTEObja/G+frH4vnsjVumtrn+XxXWJXi91FrnyeDTSy73kjtiat9p6kAxrZIeu+
+         B+6CRo8GnJEFtFfifrYGaXqGApGhmlA+sWXl1YXWpk8z5EKeMjkSkfF4iBIL28E/wbYa
+         XB/GkLtjMMynH7/q8drDo5lsO6PcTmWS47QwELTSmeAVccfKlp4/4bdGmtvICAnGn2Pd
+         +k3Sen4Hrytnf03azFiHy5+6qyRacmeBiI5yda7TE3rTblg0xjPzfgn931D5EOEayoO8
+         7YMGYlKnNxvAfPDXwqbpWHHPFTjwtxME7pjUi8VHz3YBRGZ4Apfotq15LgJFiAxBZd1s
+         niMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Z6Ewiz/FJiBEreBJpRrZidhXQHm4TISHkUY9VOlUYRc=;
+        b=QUJ6cJAMqgqv1VsqNk7grpLzq+X4dNclbL1InRaOKepRadJtwtIakMT+R/z0Tbl98+
+         KnwBaOAAC5A2d5JyiTm9Y9zR6M2R0LHjH8A2+Npc/HTF4TrE+4dNVAbpNesEcjfQiypH
+         UteHkBJCyBqckuNjF1hzq2oVGbKjbEI7OUbnXMZZTmoNINeSl3awodYlDsW05Fhm/3c9
+         wLwUfxGvC6zu//asIqqvjv4CJGaGjprNiHJxOxPjq7gA58NSA3ERtAUUiglDXFkMCrHG
+         L7zyN2mF/mDXLP1NJ3YBAg+UurH80gpyRvFPYA7RkW8ZnH1+rIMyiMWeRWVBi/iJEgoQ
+         cFYA==
+X-Gm-Message-State: AOAM5327ep8lMOfzIIjTi6IvczQLjVqvvhtMNBGlmnRy6WXsh/HILHLE
+        hc76z67IC278QFLGBaJo+XKk/A==
+X-Google-Smtp-Source: ABdhPJzUfAcjcqiD6DRmYHASLVohVLn7RbK703ta+Wr36NnZhdAUBzUcZ5DQEuns6LI9KVFJ3jHs0A==
+X-Received: by 2002:a17:90b:882:: with SMTP id bj2mr19631112pjb.167.1623065948131;
+        Mon, 07 Jun 2021 04:39:08 -0700 (PDT)
+Received: from localhost.localdomain.name ([122.177.177.211])
+        by smtp.gmail.com with ESMTPSA id j7sm7223939pjf.0.2021.06.07.04.39.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 04:39:07 -0700 (PDT)
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     bhupesh.sharma@linaro.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        bhupesh.linux@gmail.com
+Subject: [PATCH 0/8] arm64: dts: qcom: Add SA8155p-adp board DTS
+Date:   Mon,  7 Jun 2021 17:08:32 +0530
+Message-Id: <20210607113840.15435-1-bhupesh.sharma@linaro.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YL4Bcm2dOyWKLGJ7@kroah.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 01:22:26PM +0200, Greg KH wrote:
-> On Mon, Jun 07, 2021 at 01:51:36PM +0300, Leon Romanovsky wrote:
-> > On Mon, Jun 07, 2021 at 12:25:03PM +0200, Greg KH wrote:
-> > > On Mon, Jun 07, 2021 at 11:17:35AM +0300, Leon Romanovsky wrote:
-> > > > From: Jason Gunthorpe <jgg@nvidia.com>
-> > > > 
-> > > > This code is trying to attach a list of counters grouped into 4 groups to
-> > > > the ib_port sysfs. Instead of creating a bunch of kobjects simply express
-> > > > everything naturally as an ib_port_attribute and add a single
-> > > > attribute_groups list.
-> > > > 
-> > > > Remove all the naked kobject manipulations.
-> > > 
-> > > Much nicer.
-> > > 
-> > > But why do you need your counters to be atomic in the first place?  What
-> > > are they counting that requires this?  Given that they are just a
-> > > statistic for userspace, making them be a u64 should work just the same,
-> > > right?
-> > 
-> > The statistic counters are per-port, while the cm.c flows run in
-> > asynchronically in parallel for every CM connection.
-> > 
-> > We need atomic variable to ensure that "write to u64" is not
-> > interrupted.
-> 
-> On what system is "write to u64" interruptable? 
+This series adds DTS for SA8155p-adp board which is based on
+Qualcomm snapdragon sm8150 SoC. 
 
-On 32 bits, and yes, we have a customer who still uses such system.
+This patchset also includes DTS for the two new PMICs PMM8155AU_1
+and PMM8155AU_2 found on the adp board.
 
-> As these are per-port, do multiple threads try to increment these at
-> the same time?  
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Andy Gross <agross@kernel.org>
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-gpio@vger.kernel.org
+Cc: bhupesh.linux@gmail.com
 
-Yes, CM connection can be seen as thread. Bottom line everything in parallel.
+Bhupesh Sharma (8):
+  dt-bindings: qcom: rpmh-regulator: Add compatible for SA8155p-adp
+    board pmics
+  dt-bindings: pinctrl: qcom,pmic-gpio: Add compatible for SA8155p-adp
+  dt-bindings: arm: qcom: Add compatible for SA8155p-adp board
+  regulator: qcom-rpmh: Add new regulator types found on SA8155p adp
+    board
+  pinctrl: qcom/pinctrl-spmi-gpio: Add compatibles for pmic-gpios on
+    SA8155p-adp
+  arm64: dts: qcom: pmm8155au_1: Add base dts file
+  arm64: dts: qcom: pmm8155au_2: Add base dts file
+  arm64: dts: qcom: sa8155p-adp: Add base dts file
 
-> And even if they do, what happens if one is 'dropped' somehow because of this?
+ .../devicetree/bindings/arm/qcom.yaml         |   8 +
+ .../bindings/pinctrl/qcom,pmic-gpio.txt       |   5 +
+ .../regulator/qcom,rpmh-regulator.yaml        |   2 +
+ arch/arm64/boot/dts/qcom/Makefile             |   1 +
+ arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi     | 134 +++++++
+ arch/arm64/boot/dts/qcom/pmm8155au_2.dtsi     | 107 +++++
+ arch/arm64/boot/dts/qcom/sa8155p-adp.dts      | 375 ++++++++++++++++++
+ drivers/pinctrl/qcom/pinctrl-spmi-gpio.c      |   4 +
+ drivers/regulator/qcom-rpmh-regulator.c       |  72 ++++
+ 9 files changed, 708 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi
+ create mode 100644 arch/arm64/boot/dts/qcom/pmm8155au_2.dtsi
+ create mode 100644 arch/arm64/boot/dts/qcom/sa8155p-adp.dts
 
-Probably nothing, we increment the statistics only.
+-- 
+2.31.1
 
-> It's just a userspace statistic counter, what relies on this being
-> exact?
-
-In kernel nothing, but I have no idea what userspace does with these counters.
-
-> 
-> thanks,
-> 
-> greg k-h
