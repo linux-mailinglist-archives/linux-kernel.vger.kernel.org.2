@@ -2,198 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF80B39D902
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97FE639D903
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhFGJq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:46:26 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:8980 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230127AbhFGJqW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:46:22 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1579YCc9139542;
-        Mon, 7 Jun 2021 05:44:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=+G1ReHGJDx5qNmm+1R5bhwKuMfO71SHYJf95Mq62KV0=;
- b=HVUzTq7WFBEAPwzzAIgLQe8MYY5eGofgKB7Ljhp70e5x5JBIPZ8bhh+BkHBq89tQH2r8
- zVbQoPQ7lxoMJ109rp9TsOMhWUFbm9cXxMqOIxYOO5rbsPlX+E2w2n+dUsm+p+uVNnI7
- yPdac13YoICVC1DPdjk18HXJPG9kPPV3LZBjVlpjqAM2VuCh+TLN7gwIFsogW169TXrC
- UTxpL+ZsacAFs5KNPjRaJo06M0x4K43ViU3+3qxgMHVglu02G+Xhjv1/4x19LWYU+q0J
- SYAx5ZXN5RHVv1vIGjURbXjq1anP8EEOVHmTZuPJtmOnSM4l1TMM5wClJcwWjKpjbz7P pw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 391gd4h6pw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Jun 2021 05:44:30 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1579YGuZ139760;
-        Mon, 7 Jun 2021 05:44:30 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 391gd4h6p6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Jun 2021 05:44:30 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1579fuAl028309;
-        Mon, 7 Jun 2021 09:44:28 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 3900w88tjw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Jun 2021 09:44:28 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1579he4p37486966
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 7 Jun 2021 09:43:40 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DA3F711C04C;
-        Mon,  7 Jun 2021 09:44:25 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A67BC11C064;
-        Mon,  7 Jun 2021 09:44:25 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  7 Jun 2021 09:44:25 +0000 (GMT)
-From:   Julian Wiedmann <jwi@linux.ibm.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Julian Wiedmann <jwi@linux.ibm.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH wq/for-next 2/2] workqueue: let device core create the WQ_UNBOUND attributes
-Date:   Mon,  7 Jun 2021 11:44:20 +0200
-Message-Id: <20210607094420.2054403-2-jwi@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210607094420.2054403-1-jwi@linux.ibm.com>
-References: <20210607094420.2054403-1-jwi@linux.ibm.com>
+        id S230345AbhFGJqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:46:50 -0400
+Received: from mail-dm6nam10on2059.outbound.protection.outlook.com ([40.107.93.59]:25569
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230127AbhFGJqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 05:46:50 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Hrj8mRCAv5j3zzTBcToPbgytqjkqfuPvR4/uLPUAr2qVe2MlobIXLP5AYlAuGQ6Y9wz5xwX08dgjg6H4Tn14hF73+xEwd3pPYzm7xMigeoy6ScLoSI41P+QJCyCOf6aQhavXmqs58zx2yKdKOx8V79WCOwR3lvHnxjgzQOfai3mVT+HpM/4oQ0SFQSsuzlSDlnnSdRylZ29WOtuvsporHj3IvF6hJIdJkPsVGHDJqGoru1ju9XINeC9TV+Tau8TKFuVr+4oahHq9tH8C9zfTfuk8Zky4gupom5qkl2yWfC/NSW6x+1GNp3e3BNZsirzw9KgGvikCKJWlTXjKS2WncA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n5CLjBYU0wNySQWwbMEpgqXgg9g2t4KlGsCiYEC2jYA=;
+ b=NxUoqE63ABnGMB2+OSMPDSAeFMGZLsGdEdNO8msEtePkBbW1CVQqIn9X522mQynNlkREIlw/gMZO7mctdob7XEc6RoJWStj/6hi62eVpHxAxlhVs93OPI0WVV6AoH/URLmO+b/ECjy0lu9sWpMGxk4Gl/Uirpojq6x0RO2GPAa0OntcWqy4YH1D+c5qDIkDlgK1K4Vfb1N0Y8Q70hJIMm/njpmSARHQ2wKbm9W9pq6k6DYLqbVNsa1Nf+DxTWEPV8Y5nCyP+/XV91a6OXgdfkeInoCCeV9ljCYDWFSSaoisjqsTWHw7SKKBQuaEkAI3nHAIoiKmBiYGA9J94Key7eQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n5CLjBYU0wNySQWwbMEpgqXgg9g2t4KlGsCiYEC2jYA=;
+ b=EMmDwyzoTAjHgpQH0HRGv0lFCMmbZ1ZTc63GRRS/WVkFNQvHjvWFa79KVSXmLxfa5k1waM59BJNARzgxLkhmTp/F7nEAdjQJfgcEk1MCSscXcAMrotNTsrxkOIDZDSYoBE2M8G/JqcY0kyW8iyP/OWxk5nGqTDoADFG5Bpxw3tU=
+Authentication-Results: pengutronix.de; dkim=none (message not signed)
+ header.d=none;pengutronix.de; dmarc=none action=none
+ header.from=synaptics.com;
+Received: from BN9PR03MB6058.namprd03.prod.outlook.com (2603:10b6:408:137::15)
+ by BN6PR03MB3379.namprd03.prod.outlook.com (2603:10b6:405:40::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.29; Mon, 7 Jun
+ 2021 09:44:55 +0000
+Received: from BN9PR03MB6058.namprd03.prod.outlook.com
+ ([fe80::502a:5487:b3ee:f61c]) by BN9PR03MB6058.namprd03.prod.outlook.com
+ ([fe80::502a:5487:b3ee:f61c%3]) with mapi id 15.20.4195.030; Mon, 7 Jun 2021
+ 09:44:55 +0000
+Date:   Mon, 7 Jun 2021 17:44:45 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] reset: berlin: support module build
+Message-ID: <20210607174445.3d532e6b@xhacker.debian>
+In-Reply-To: <9f5bee632ed493b150c47f3127242c259a385192.camel@pengutronix.de>
+References: <20210520171316.395de63e@xhacker.debian>
+        <9f5bee632ed493b150c47f3127242c259a385192.camel@pengutronix.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.147.44.204]
+X-ClientProxiedBy: SJ0PR03CA0283.namprd03.prod.outlook.com
+ (2603:10b6:a03:39e::18) To BN9PR03MB6058.namprd03.prod.outlook.com
+ (2603:10b6:408:137::15)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: qM_3o7b4KxrR-oZe_1o1g3yVN17DrblS
-X-Proofpoint-ORIG-GUID: mxqrzJjG6MEmgBeERhxiTz1fMzwOuFbg
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-07_07:2021-06-04,2021-06-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 bulkscore=0 mlxscore=0 priorityscore=1501
- mlxlogscore=999 suspectscore=0 clxscore=1015 adultscore=0 phishscore=0
- malwarescore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106070074
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (192.147.44.204) by SJ0PR03CA0283.namprd03.prod.outlook.com (2603:10b6:a03:39e::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22 via Frontend Transport; Mon, 7 Jun 2021 09:44:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a58e1bed-5693-4aa7-a989-08d92998e7fe
+X-MS-TrafficTypeDiagnostic: BN6PR03MB3379:
+X-Microsoft-Antispam-PRVS: <BN6PR03MB3379ADDB12B34EFA3D9277C3ED389@BN6PR03MB3379.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5LKnCwu2T62BjuTcZEdSYYrxH9Zk5Ira/FWpHGOaM/ZQs7srHTuzD8XiJCKFuYPaTtNTP8/HaaddQ9l0TpB/1WwXTNuvAdfMsuCMs+xwDXdXKWRWxssFDIpzYTDvEelgYj1zuoSsVhWPJNwijW2wL7iloa43dG9cXRKdkYkqzvRA5UbqHGiEr9t1TJMy6WKUH/g+SIurHdBmPiu0EOgeKQ4sr7jcLJ2mnD3jFLroyd3SbU4uEXVxfQ3tzomIbGcECyyfAsPqoyJ7fvZyffXHifYgaLURSBQyu9DXL+FdREZP7qiuvNxhYbW5XkmZ/6S1+wtDw54fNAB8FMcbTdTum/bjsdOCgUMIELMx5nt6pflmCqxhyvtVCDBRVnIbK9IcjwdCV5PSqKtMuLjn/i4O0SGcep6yOr7QnxJZYPYxAzswX5j3IyvsAJzTWRsqktohoNosrzEW02wKkrMg1s5WGXQ87+wUeY1Al0LD3U5FTNGkNClhuRxbtCntdCQ4cZqFnJQTKE16BG79ds6vrBCDesWbe1QIQqyTQtaeCKWlt+gOUV3osqyJl/EWLkX2kSZStGHYuv/M/K7wV1pnjRWnDJfrSSRGfgF2z0rpJoSvmu3RHt4kjwA/5TTxQkJTOL9uUaX24soBpjaHcbhD7Sra4rmv4WVyfb8a+7h7a1ve2W0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR03MB6058.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(376002)(39860400002)(396003)(366004)(7696005)(52116002)(8936002)(83380400001)(6916009)(2906002)(6506007)(86362001)(4326008)(956004)(55016002)(66476007)(1076003)(66556008)(9686003)(26005)(478600001)(186003)(5660300002)(38350700002)(16526019)(38100700002)(316002)(6666004)(8676002)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?zeqHjZcfbwDvAqhdsCEVh4tZki0Q+hZ6m/2JKN/efuhMREpSNmKS9HE5iKg3?=
+ =?us-ascii?Q?YDeCNfPSE+dePY1k24ZiKgscwFnIRBzbN09HO4VnbVIFcTmjKTcMwBII9dyN?=
+ =?us-ascii?Q?S76STWeGBZJfPGXVhIhly0TY3NjfNPHmw/Jft0fwAsjThCxTOlwSlwxsQrdy?=
+ =?us-ascii?Q?xpsEBCYlKyUcwAp7BiA7FWpiZH7mbKUUL2MgbeWvyXw9IyFSV2YihjnkuYV+?=
+ =?us-ascii?Q?APLGKbiVOie34H+aQgaNVWz4fJq0bT+8TwAqx5uD6BY/tjCxDbFh2WK0WIIE?=
+ =?us-ascii?Q?lai6YP5Sd35M6Rpizqd0jIhQWY4rf38azugkDLsWT07mATBlJ2rsjlHUdYTq?=
+ =?us-ascii?Q?Ac82NrNksqa5zddKBUuyOiiXiB6EjODCy+z15yMqM55dgSFYRnbRynbwMHfD?=
+ =?us-ascii?Q?FjdtVv63pdizEu7zJhq15H1GIDQBp+B0xR1PnSbU6G7Ze+zOZzVouFsEDkNg?=
+ =?us-ascii?Q?QHEj8Nx1+fYCSuOAtr2SJ8q2LgCHz7KxA6PGvP7TwRMgnMPJjHKGgQz4q5wz?=
+ =?us-ascii?Q?5CMePUq1KU9H++MGawa0P+N1MaZ3TnhtCOIQciPjZkiXfH+6hlhS0XgdeYqv?=
+ =?us-ascii?Q?IkREUFhZ84/dCZNLUPoeZzxbeNBZWo7udTJ8lzYDGvAEXyVWPYefkR1dcLL0?=
+ =?us-ascii?Q?ofaGZVYA1L1lJb+ouF3UfeRl/Hif5OPHJZIsf+bZS/V4nOyYWdKwFAA17umY?=
+ =?us-ascii?Q?BAhIBlZWjq12rtSTwuGH+EAquDUUbt3iCTc07eEldycRzQD9psaYDj91lATA?=
+ =?us-ascii?Q?vyUDpcc3Y4FyRrXWCmnHcgQKDNhBTiwsxu1v7YamdbesB1bMUeaeR7ez1Jlp?=
+ =?us-ascii?Q?xJgrP9hKW9ayWRCp8/gZE8VKLrylsR32matT5CDAzgguB2fXKHdPGQcUZpNI?=
+ =?us-ascii?Q?gKhLREWAaNORAS9qUXAPY4Ohsc2fO8z/y12Cq99snhz8fgX4kweTMPj26hB4?=
+ =?us-ascii?Q?WCp0VEIVMwIT0RlKVM30lAMYqbXKKUh909X47uYSKXpUGbQnSbLGdzd7ljce?=
+ =?us-ascii?Q?Ml5HNxyZZAvdrcqNhdS9oKWooeWarMFvbXyX40lxEmPV5uMdlZzaQpZfg5iG?=
+ =?us-ascii?Q?VX+nya8wN57YK4YDYxmtl5HzYPyy38WfFheWoUQq1oMQHzsWHrXBVwYrqG9K?=
+ =?us-ascii?Q?/R+7Ia8hJ8dUiGPnk/xWbCL3gka1JDp9sqvQlIOcC7MkOsp8pifQXL0obl/s?=
+ =?us-ascii?Q?Vw4cgp3urvC1yg9K7326OS3HSkEDAnQ1bQYBwMoQ4nKj8tjKY16IZbH+t7wE?=
+ =?us-ascii?Q?XDnHO2IVdKFkJSquP8wSYd0Vu43wKCcb33y7N0LvvyynOxhD4ePcZdOGZVSt?=
+ =?us-ascii?Q?BvQaYB8cuPOCOAsTjq1Phl6J?=
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a58e1bed-5693-4aa7-a989-08d92998e7fe
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR03MB6058.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2021 09:44:55.5223
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VLLH52PclYbM8AC4kz3vA/aCTYJxujNdfNHaCutF4nrdzRshXhJZzjdMXxPsYYml8uBmAzMJoUt0TENrwYbXsA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR03MB3379
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wrap the attributes for a WQ_UNBOUND workqueue in ATTRIBUTE_GROUPS(),
-and wire them up in dev->groups so that the device core can manage them
-for us.
+On Mon, 07 Jun 2021 11:23:57 +0200
+Philipp Zabel <p.zabel@pengutronix.de> wrote:
 
-As device_add() will add such attributes _prior_ to raising the KOBJ_ADD
-uevent, this also makes the initial uevent suppression unnecessary.
 
-Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
----
- kernel/workqueue.c | 51 ++++++++++++++++++++--------------------------
- 1 file changed, 22 insertions(+), 29 deletions(-)
+> 
+> 
+> On Thu, 2021-05-20 at 17:13 +0800, Jisheng Zhang wrote:
+> > Make reset-berlin driver to be tristate module, support to build as
+> > a module, this is useful for GKI.
+> >
+> > Partially revert commit ed4dba99cae8 ("reset: berlin: make it
+> > explicitly non-modular")
+> >
+> > Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+> > ---
+> >  drivers/reset/Kconfig        |  4 ++--
+> >  drivers/reset/reset-berlin.c | 10 ++++++++--
+> >  2 files changed, 10 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+> > index 3e7f55e44d84..1e7443a4dae1 100644
+> > --- a/drivers/reset/Kconfig
+> > +++ b/drivers/reset/Kconfig
+> > @@ -43,8 +43,8 @@ config RESET_BCM6345
+> >         This enables the reset controller driver for BCM6345 SoCs.
+> >
+> >  config RESET_BERLIN
+> > -     bool "Berlin Reset Driver" if COMPILE_TEST
+> > -     default ARCH_BERLIN
+> > +     tristate "Berlin Reset Driver"
+> > +     depends on ARCH_BERLIN || COMPILE_TEST  
+> 
+> Is there a reason not to keep "default ARCH_BERLIN"?
+> 
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 817dc2d7438a..629859ac5262 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -5449,6 +5449,9 @@ static ssize_t wq_pool_ids_show(struct device *dev,
- 	return written;
- }
- 
-+static struct device_attribute wq_sysfs_unbound_attr_pool_ids =
-+	__ATTR(pool_ids, 0444, wq_pool_ids_show, NULL);
-+
- static ssize_t wq_nice_show(struct device *dev, struct device_attribute *attr,
- 			    char *buf)
- {
-@@ -5502,6 +5505,9 @@ static ssize_t wq_nice_store(struct device *dev, struct device_attribute *attr,
- 	return ret ?: count;
- }
- 
-+static struct device_attribute wq_sysfs_unbound_attr_nice =
-+	__ATTR(nice, 0644, wq_nice_show, wq_nice_store);
-+
- static ssize_t wq_cpumask_show(struct device *dev,
- 			       struct device_attribute *attr, char *buf)
- {
-@@ -5539,6 +5545,9 @@ static ssize_t wq_cpumask_store(struct device *dev,
- 	return ret ?: count;
- }
- 
-+static struct device_attribute wq_sysfs_unbound_attr_cpumask =
-+	__ATTR(cpumask, 0644, wq_cpumask_show, wq_cpumask_store);
-+
- static ssize_t wq_numa_show(struct device *dev, struct device_attribute *attr,
- 			    char *buf)
- {
-@@ -5578,13 +5587,17 @@ static ssize_t wq_numa_store(struct device *dev, struct device_attribute *attr,
- 	return ret ?: count;
- }
- 
--static struct device_attribute wq_sysfs_unbound_attrs[] = {
--	__ATTR(pool_ids, 0444, wq_pool_ids_show, NULL),
--	__ATTR(nice, 0644, wq_nice_show, wq_nice_store),
--	__ATTR(cpumask, 0644, wq_cpumask_show, wq_cpumask_store),
--	__ATTR(numa, 0644, wq_numa_show, wq_numa_store),
--	__ATTR_NULL,
-+static struct device_attribute wq_sysfs_unbound_attr_numa =
-+	__ATTR(numa, 0644, wq_numa_show, wq_numa_store);
-+
-+static struct attribute *wq_sysfs_unbound_attrs[] = {
-+	&wq_sysfs_unbound_attr_pool_ids.attr,
-+	&wq_sysfs_unbound_attr_nice.attr,
-+	&wq_sysfs_unbound_attr_cpumask.attr,
-+	&wq_sysfs_unbound_attr_numa.attr,
-+	NULL,
- };
-+ATTRIBUTE_GROUPS(wq_sysfs_unbound);
- 
- static struct bus_type wq_subsys = {
- 	.name				= "workqueue",
-@@ -5679,37 +5692,17 @@ int workqueue_sysfs_register(struct workqueue_struct *wq)
- 	wq_dev->wq = wq;
- 	wq_dev->dev.bus = &wq_subsys;
- 	wq_dev->dev.release = wq_device_release;
-+	if (wq->flags & WQ_UNBOUND)
-+		wq_dev->dev.groups = wq_sysfs_unbound_groups;
- 	dev_set_name(&wq_dev->dev, "%s", wq->name);
- 
--	/*
--	 * unbound_attrs are created separately.  Suppress uevent until
--	 * everything is ready.
--	 */
--	dev_set_uevent_suppress(&wq_dev->dev, true);
--
- 	ret = device_register(&wq_dev->dev);
- 	if (ret) {
- 		put_device(&wq_dev->dev);
- 		wq->wq_dev = NULL;
--		return ret;
--	}
--
--	if (wq->flags & WQ_UNBOUND) {
--		struct device_attribute *attr;
--
--		for (attr = wq_sysfs_unbound_attrs; attr->attr.name; attr++) {
--			ret = device_create_file(&wq_dev->dev, attr);
--			if (ret) {
--				device_unregister(&wq_dev->dev);
--				wq->wq_dev = NULL;
--				return ret;
--			}
--		}
- 	}
- 
--	dev_set_uevent_suppress(&wq_dev->dev, false);
--	kobject_uevent(&wq_dev->dev.kobj, KOBJ_ADD);
--	return 0;
-+	return ret;
- }
- 
- /**
--- 
-2.25.1
+Hi,
 
+After this patch, the reset driver will be built as module in most cases
+so I removed default ARCH_BERLIN
+
+Thanks
