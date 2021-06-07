@@ -2,100 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43BD939E7A1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 21:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C007B39E7A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 21:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231488AbhFGTl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 15:41:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48874 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230435AbhFGTl5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 15:41:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 6C0B161185;
-        Mon,  7 Jun 2021 19:40:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623094805;
-        bh=04sozYDym0UmShT6KnGNpFHlUkKfQ04l+kP+f9TaD84=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=uvjJz/eIlijpuPuISlzHs9Zodck0mPsMmhd7UgakyLleNiJazT5bJH2gXeX06vuHM
-         +p/AMoMIQjxJhb2+Flk3Pzxazp2zwkoihBaeA0NjMJjHkx7or9rd4NBqWcxfMJbtdt
-         DcyiwKj/4aK+WAiBN6udM7LW9OOhFQd/CCtQdt0JBf7Swc8f3nT/zGoMSW2JHklMu7
-         RwqjnO1j7t33po+sc1DtiQ1brnupvjI3bK3T0P2TH9dPtEit2FYBL34zw+Fqm1XsQk
-         WdQRDtOsB65zDlDrgeuKhkCinJn6NVk8q9mexkrVYrCetPsoeRj+F/AHGNkCpQ0jro
-         tg7Q93QoKCYbw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5DF45609F1;
-        Mon,  7 Jun 2021 19:40:05 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231492AbhFGTme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 15:42:34 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:38510 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230435AbhFGTmd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 15:42:33 -0400
+Received: by mail-ot1-f47.google.com with SMTP id j11-20020a9d738b0000b02903ea3c02ded8so4322576otk.5;
+        Mon, 07 Jun 2021 12:40:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VaKySZ70jJSosJvHgjAP/lh8fDMXa9AHRHPivIYz6bo=;
+        b=f6kWHrtUfifGW/Y07F+bJ2auaVn6N2Rz+mOuoLylLTRovfIdXMwjzztDatNUUbjqqJ
+         4q8Yop1F0/T+VnF7wp86caf4/BAdAuuows5AVlFz6Wv7pEeZRdb5HELYOIzwnmEBp7MC
+         KMc68jQS2KuXIED3VB4X9IsPY/Xb8dEL3KTC5mEH/80fdRi8mHLg0g9AVFErQo4QkB3z
+         GKKV60vpwi16uuLszFwphrDGX28AX/Y3wEsLKCMZdK9YtLJjnDH91niiNbMQKC6JUaMc
+         pUQcPdZ+SYhTndFdaHrow532EKSmx8VohIbLtZjDAJajtadsrUQeA4T93ar9XQ9RSboY
+         wJcA==
+X-Gm-Message-State: AOAM531qqFrY83sHPNllX4IaCzgwXg9TvpJoE+XPxBwCsV/y8HDLEZed
+        lNs4+VrCOdlzFEw1VapG4g==
+X-Google-Smtp-Source: ABdhPJx6W/m9cTOYX0LJh7RyB5Ur43rwvEjFPssjDCqG6ZwCliNJOMvlNL0EYOnYEUN6BAEztsaGGQ==
+X-Received: by 2002:a9d:6d8c:: with SMTP id x12mr11893377otp.121.1623094825080;
+        Mon, 07 Jun 2021 12:40:25 -0700 (PDT)
+Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.googlemail.com with ESMTPSA id o8sm2192047oif.52.2021.06.07.12.40.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 12:40:23 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Fu Wei <fu.wei@linaro.org>, linux-watchdog@vger.kernel.org
+Subject: [PATCH] dt-bindings: watchdog: Convert arm,sbsa-gwdt to DT schema
+Date:   Mon,  7 Jun 2021 14:40:22 -0500
+Message-Id: <20210607194022.3095736-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 00/13] fix dox warning in net/sched/sch_htb.c
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162309480537.22793.7835105473549146742.git-patchwork-notify@kernel.org>
-Date:   Mon, 07 Jun 2021 19:40:05 +0000
-References: <20210605101845.1264706-1-yukuai3@huawei.com>
-In-Reply-To: <20210605101845.1264706-1-yukuai3@huawei.com>
-To:     yukuai (C) <yukuai3@huawei.com>
-Cc:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Convert the arm,sbsa-gwdt binding to DT schema format.
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: Fu Wei <fu.wei@linaro.org>
+Cc: linux-watchdog@vger.kernel.org
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ .../bindings/watchdog/arm,sbsa-gwdt.yaml      | 51 +++++++++++++++++++
+ .../bindings/watchdog/sbsa-gwdt.txt           | 31 -----------
+ 2 files changed, 51 insertions(+), 31 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/watchdog/arm,sbsa-gwdt.yaml
+ delete mode 100644 Documentation/devicetree/bindings/watchdog/sbsa-gwdt.txt
 
-On Sat, 5 Jun 2021 18:18:32 +0800 you wrote:
-> Yu Kuai (13):
->   sch_htb: fix doc warning in htb_add_to_wait_tree()
->   sch_htb: fix doc warning in htb_next_rb_node()
->   sch_htb: fix doc warning in htb_add_class_to_row()
->   sch_htb: fix doc warning in htb_remove_class_from_row()
->   sch_htb: fix doc warning in htb_activate_prios()
->   sch_htb: fix doc warning in htb_deactivate_prios()
->   sch_htb: fix doc warning in htb_class_mode()
->   sch_htb: fix doc warning in htb_change_class_mode()
->   sch_htb: fix doc warning in htb_activate()
->   sch_htb: fix doc warning in htb_deactivate()
->   sch_htb: fix doc warning in htb_charge_class()
->   sch_htb: fix doc warning in htb_do_events()
->   sch_htb: fix doc warning in htb_lookup_leaf()
-> 
-> [...]
-
-Here is the summary with links:
-  - [01/13] sch_htb: fix doc warning in htb_add_to_wait_tree()
-    https://git.kernel.org/netdev/net-next/c/4d7efa73fa26
-  - [02/13] sch_htb: fix doc warning in htb_next_rb_node()
-    https://git.kernel.org/netdev/net-next/c/274e5d0e55aa
-  - [03/13] sch_htb: fix doc warning in htb_add_class_to_row()
-    https://git.kernel.org/netdev/net-next/c/996bccc39afb
-  - [04/13] sch_htb: fix doc warning in htb_remove_class_from_row()
-    https://git.kernel.org/netdev/net-next/c/5f8c6d05f390
-  - [05/13] sch_htb: fix doc warning in htb_activate_prios()
-    https://git.kernel.org/netdev/net-next/c/876b5fc0c0fb
-  - [06/13] sch_htb: fix doc warning in htb_deactivate_prios()
-    https://git.kernel.org/netdev/net-next/c/4113be2020a8
-  - [07/13] sch_htb: fix doc warning in htb_class_mode()
-    https://git.kernel.org/netdev/net-next/c/1e9559527a9d
-  - [08/13] sch_htb: fix doc warning in htb_change_class_mode()
-    https://git.kernel.org/netdev/net-next/c/4b479e9883ce
-  - [09/13] sch_htb: fix doc warning in htb_activate()
-    https://git.kernel.org/netdev/net-next/c/8df7e8fff8da
-  - [10/13] sch_htb: fix doc warning in htb_deactivate()
-    https://git.kernel.org/netdev/net-next/c/9a034f25e472
-  - [11/13] sch_htb: fix doc warning in htb_charge_class()
-    https://git.kernel.org/netdev/net-next/c/0e5c90848a28
-  - [12/13] sch_htb: fix doc warning in htb_do_events()
-    https://git.kernel.org/netdev/net-next/c/2c3ee53ea663
-  - [13/13] sch_htb: fix doc warning in htb_lookup_leaf()
-    https://git.kernel.org/netdev/net-next/c/9977d6f56bac
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+diff --git a/Documentation/devicetree/bindings/watchdog/arm,sbsa-gwdt.yaml b/Documentation/devicetree/bindings/watchdog/arm,sbsa-gwdt.yaml
+new file mode 100644
+index 000000000000..6bfa46353c4e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/watchdog/arm,sbsa-gwdt.yaml
+@@ -0,0 +1,51 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/watchdog/arm,sbsa-gwdt.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: SBSA (Server Base System Architecture) Generic Watchdog
++
++maintainers:
++  - Fu Wei <fu.wei@linaro.org>
++
++description: |
++  The SBSA Generic Watchdog Timer is used to force a reset of the system after
++  two stages of timeout have elapsed. A detailed definition of the watchdog
++  timer can be found in the ARM document: ARM-DEN-0029 - Server Base System
++  Architecture (SBSA)
++
++allOf:
++  - $ref: watchdog.yaml#
++
++properties:
++  compatible:
++    const: arm,sbsa-gwdt
++
++  reg:
++    items:
++      - description: Watchdog control frame
++      - description: Refresh frame
++
++  interrupts:
++    description: The Watchdog Signal 0 (WS0) SPI (Shared Peripheral Interrupt)
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++unevaluatedProperties: false
++
++examples:
++  - |
++
++    watchdog@2a440000 {
++        compatible = "arm,sbsa-gwdt";
++        reg = <0x2a440000 0x1000>,
++              <0x2a450000 0x1000>;
++        interrupts = <0 27 4>;
++        timeout-sec = <30>;
++    };
++...
+diff --git a/Documentation/devicetree/bindings/watchdog/sbsa-gwdt.txt b/Documentation/devicetree/bindings/watchdog/sbsa-gwdt.txt
+deleted file mode 100644
+index 6f2d5f91964d..000000000000
+--- a/Documentation/devicetree/bindings/watchdog/sbsa-gwdt.txt
++++ /dev/null
+@@ -1,31 +0,0 @@
+-* SBSA (Server Base System Architecture) Generic Watchdog
+-
+-The SBSA Generic Watchdog Timer is used to force a reset of the system
+-after two stages of timeout have elapsed.  A detailed definition of the
+-watchdog timer can be found in the ARM document: ARM-DEN-0029 - Server
+-Base System Architecture (SBSA)
+-
+-Required properties:
+-- compatible: Should at least contain "arm,sbsa-gwdt".
+-
+-- reg: Each entry specifies the base physical address of a register frame
+-  and the length of that frame; currently, two frames must be defined,
+-  in this order:
+-  1: Watchdog control frame;
+-  2: Refresh frame.
+-
+-- interrupts: Should contain the Watchdog Signal 0 (WS0) SPI (Shared
+-  Peripheral Interrupt) number of SBSA Generic Watchdog.
+-
+-Optional properties
+-- timeout-sec: Watchdog timeout values (in seconds).
+-
+-Example for FVP Foundation Model v8:
+-
+-watchdog@2a440000 {
+-	compatible = "arm,sbsa-gwdt";
+-	reg = <0x0 0x2a440000 0 0x1000>,
+-	      <0x0 0x2a450000 0 0x1000>;
+-	interrupts = <0 27 4>;
+-	timeout-sec = <30>;
+-};
+-- 
+2.27.0
 
