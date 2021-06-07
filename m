@@ -2,103 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D5539D938
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E6439D93B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbhFGKDH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Jun 2021 06:03:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230217AbhFGKCy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 06:02:54 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BDF4C061766
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 03:01:02 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1lqC45-0002ml-62; Mon, 07 Jun 2021 12:01:01 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1lqC44-0004iF-Ce; Mon, 07 Jun 2021 12:01:00 +0200
-Message-ID: <09cc7bc4b14b4995352bd4bd08d3aee556202c06.camel@pengutronix.de>
-Subject: Re: [PATCH] reset: berlin: support module build
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc:     linux-kernel@vger.kernel.org
-Date:   Mon, 07 Jun 2021 12:01:00 +0200
-In-Reply-To: <20210607175642.1c0e8ba4@xhacker.debian>
-References: <20210520171316.395de63e@xhacker.debian>
-         <9f5bee632ed493b150c47f3127242c259a385192.camel@pengutronix.de>
-         <20210607174445.3d532e6b@xhacker.debian>
-         <562cabc4162d9f2c0fb3a307213ec1c5b4bb5535.camel@pengutronix.de>
-         <20210607175642.1c0e8ba4@xhacker.debian>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        id S230222AbhFGKEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 06:04:32 -0400
+Received: from mga02.intel.com ([134.134.136.20]:26021 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230193AbhFGKE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 06:04:29 -0400
+IronPort-SDR: ch1mCQEfkdM6tF38UHTmJPf/otKWQ9lS+MjYVqS5EmddZxjXci8b9uD/IHt9LCbFzFd0U1xRjI
+ K7en59z6EY6g==
+X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="191702807"
+X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
+   d="scan'208";a="191702807"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 03:02:37 -0700
+IronPort-SDR: n/77u5nQ23NkboK2RAmtfAn0Ro78k9O/tBE31r6buWmyj1Zh4y4nqUH4tyaCC8JRH3VvcYUnlh
+ 9RwcHSPmZaUw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
+   d="scan'208";a="484722858"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by fmsmga002.fm.intel.com with ESMTP; 07 Jun 2021 03:02:32 -0700
+Subject: Re: [PATCH v2 5/8] perf auxtrace: Change to use SMP memory barriers
+To:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
+References: <20210602103007.184993-1-leo.yan@linaro.org>
+ <20210602103007.184993-6-leo.yan@linaro.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <f3215353-0b01-368d-56ab-00d1335639b5@intel.com>
+Date:   Mon, 7 Jun 2021 13:02:50 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210602103007.184993-6-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-06-07 at 17:56 +0800, Jisheng Zhang wrote:
-> On Mon, 07 Jun 2021 11:49:45 +0200
-> Philipp Zabel <p.zabel@pengutronix.de> wrote:
+On 2/06/21 1:30 pm, Leo Yan wrote:
+> The kernel and the userspace tool can access the AUX ring buffer head
+> and tail from different CPUs, thus SMP class of barriers are required
+> on SMP system.
 > 
+> This patch changes to use SMP barriers to replace mb() and rmb()
+> barriers.
 > 
-> > 
-> > On Mon, 2021-06-07 at 17:44 +0800, Jisheng Zhang wrote:
-> > > On Mon, 07 Jun 2021 11:23:57 +0200
-> > > Philipp Zabel <p.zabel@pengutronix.de> wrote:
-> > > 
-> > >  
-> > > > On Thu, 2021-05-20 at 17:13 +0800, Jisheng Zhang wrote:  
-> > > > > Make reset-berlin driver to be tristate module, support to build as
-> > > > > a module, this is useful for GKI.
-> > > > > 
-> > > > > Partially revert commit ed4dba99cae8 ("reset: berlin: make it
-> > > > > explicitly non-modular")
-> > > > > 
-> > > > > Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-> > > > > ---
-> > > > >  drivers/reset/Kconfig        |  4 ++--
-> > > > >  drivers/reset/reset-berlin.c | 10 ++++++++--
-> > > > >  2 files changed, 10 insertions(+), 4 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-> > > > > index 3e7f55e44d84..1e7443a4dae1 100644
-> > > > > --- a/drivers/reset/Kconfig
-> > > > > +++ b/drivers/reset/Kconfig
-> > > > > @@ -43,8 +43,8 @@ config RESET_BCM6345
-> > > > >         This enables the reset controller driver for BCM6345 SoCs.
-> > > > > 
-> > > > >  config RESET_BERLIN
-> > > > > -     bool "Berlin Reset Driver" if COMPILE_TEST
-> > > > > -     default ARCH_BERLIN
-> > > > > +     tristate "Berlin Reset Driver"
-> > > > > +     depends on ARCH_BERLIN || COMPILE_TEST  
-> > > > 
-> > > > Is there a reason not to keep "default ARCH_BERLIN"?
-> > > >  
-> > > 
-> > > Hi,
-> > > 
-> > > After this patch, the reset driver will be built as module in most cases
-> > > so I removed default ARCH_BERLIN  
-> > 
-> > I see, how about "default m if ARCH_BERLIN" then?
-> 
-> Good idea. I think "default m" is enough, because we have a "depends on
-> ARCH_BERLIN || COMPILE_TEST" above
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
 
-"default m" would also enable the module for COMPILE_TEST by default,
-which may not be what most compile testers need.
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-regards
-Philipp
+> ---
+>  tools/perf/util/auxtrace.h | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
+> index a4fbb33b7245..42b7ef811bde 100644
+> --- a/tools/perf/util/auxtrace.h
+> +++ b/tools/perf/util/auxtrace.h
+> @@ -444,7 +444,7 @@ static inline u64 auxtrace_mmap__read_snapshot_head(struct auxtrace_mmap *mm)
+>  	u64 head = READ_ONCE(pc->aux_head);
+>  
+>  	/* Ensure all reads are done after we read the head */
+> -	rmb();
+> +	smp_rmb();
+>  	return head;
+>  }
+>  
+> @@ -458,7 +458,7 @@ static inline u64 auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
+>  #endif
+>  
+>  	/* Ensure all reads are done after we read the head */
+> -	rmb();
+> +	smp_rmb();
+>  	return head;
+>  }
+>  
+> @@ -470,7 +470,7 @@ static inline void auxtrace_mmap__write_tail(struct auxtrace_mmap *mm, u64 tail)
+>  #endif
+>  
+>  	/* Ensure all reads are done before we write the tail out */
+> -	mb();
+> +	smp_mb();
+>  #if BITS_PER_LONG == 64 || !defined(HAVE_SYNC_COMPARE_AND_SWAP_SUPPORT)
+>  	pc->aux_tail = tail;
+>  #else
+> 
+
