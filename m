@@ -2,190 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C26239E9CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 00:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2532A39E9D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 00:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbhFGWyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 18:54:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60770 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230183AbhFGWyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 18:54:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82632610C7;
-        Mon,  7 Jun 2021 22:52:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623106329;
-        bh=WaNp1TylVxIDpajJun/RGMsjtK/LLdNZo+wOLZ/qvqo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KgBgiXXfTHZj3F/lf9QX3uJkrtwE7qLK9joY82TANSb5yNP44Jr9ZDtj+LAd27vxV
-         W3/ufy+GsVHIlxF63/OaUj4InNRGBTYGPr5sx0BUR2B8lUuQ8d1duPewxPSvN2P7eX
-         yRDOzBB1x6P8+ILCPqIyQVTcjqe/SRuhxD2rp3imOzzBUmFwgRanw3YywTo9tQOKuW
-         ZfPvIKebXbqh0e/zcGW3btINSdp27bSSA+RCT/qbOehNoUawXoPd0y2nNPTkPpkuOi
-         +Pln20vS4TrEUSANKWX4ahsx3wW/yAVzk1XmmlKAZHH/EMPNfmUSLjqhayJFMIXstD
-         4VKUhMxucrnEw==
-Date:   Mon, 7 Jun 2021 23:52:03 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v8 11/19] sched: Allow task CPU affinity to be restricted
- on asymmetric systems
-Message-ID: <20210607225202.GB8215@willie-the-truck>
-References: <20210602164719.31777-1-will@kernel.org>
- <20210602164719.31777-12-will@kernel.org>
- <87zgw5d05b.mognet@arm.com>
+        id S230421AbhFGWz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 18:55:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230183AbhFGWzX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 18:55:23 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D061C061574;
+        Mon,  7 Jun 2021 15:53:31 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FzTDl60tJz9sW8;
+        Tue,  8 Jun 2021 08:53:26 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623106408;
+        bh=OpKpwZ8m68IeGoA+ShA7bTpga7yosVCFfxKrGmhuWnY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ReMDG+q8g/WZuaFPnPKg9B5X6BYYlmeroVqOCENkXfVzjI/nLQKhGctpwxjf0MRP1
+         fh2ZQKT2RtF39ZKyYvbX2Arfn/CvlLiJzMErRw0cS/5rRLFZ8+L5gMhcrD3At41pp5
+         u1D2q/KL3Sd61ku2w+un+m3wsq1Jxxo/ayGkmb/hOfn+y82q/6y/EGRdM8zj9wr3Aq
+         5VPcV5invYB0kMMgdPm5yiB69m6QaUrSB3ZyCf1G9rZa9eQu9V5OcHEY9jVjnVoWvX
+         SEi9JDek4TAy1HvbBdN+tjGeFDuZcgne77NpqQTC+v711b9P4w+RyEkKaSbMB2G0iV
+         zZYKAzob2VnUQ==
+Date:   Tue, 8 Jun 2021 08:53:25 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Petr Machata <petrm@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the net tree
+Message-ID: <20210608085325.61c6056f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87zgw5d05b.mognet@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_/ytUmy.xn6sDieHYVNp2.8vF";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 06:12:32PM +0100, Valentin Schneider wrote:
-> On 02/06/21 17:47, Will Deacon wrote:
-> > +static int restrict_cpus_allowed_ptr(struct task_struct *p,
-> > +				     struct cpumask *new_mask,
-> > +				     const struct cpumask *subset_mask)
-> > +{
-> > +	struct rq_flags rf;
-> > +	struct rq *rq;
-> > +	int err;
-> > +	struct cpumask *user_mask = NULL;
-> > +
-> > +	if (!p->user_cpus_ptr) {
-> > +		user_mask = kmalloc(cpumask_size(), GFP_KERNEL);
-> > +
-> > +		if (!user_mask)
-> > +			return -ENOMEM;
-> > +	}
-> > +
-> > +	rq = task_rq_lock(p, &rf);
-> > +
-> > +	/*
-> > +	 * Forcefully restricting the affinity of a deadline task is
-> > +	 * likely to cause problems, so fail and noisily override the
-> > +	 * mask entirely.
-> > +	 */
-> > +	if (task_has_dl_policy(p) && dl_bandwidth_enabled()) {
-> > +		err = -EPERM;
-> > +		goto err_unlock;
-> > +	}
-> > +
-> > +	if (!cpumask_and(new_mask, &p->cpus_mask, subset_mask)) {
-> > +		err = -EINVAL;
-> > +		goto err_unlock;
-> > +	}
-> > +
-> > +	/*
-> > +	 * We're about to butcher the task affinity, so keep track of what
-> > +	 * the user asked for in case we're able to restore it later on.
-> > +	 */
-> > +	if (user_mask) {
-> > +		cpumask_copy(user_mask, p->cpus_ptr);
-> > +		p->user_cpus_ptr = user_mask;
-> > +	}
-> > +
-> 
-> Shouldn't that be done before any of the bailouts above, so we can
-> potentially restore the mask even if we end up forcefully expanding the
-> affinity?
+--Sig_/ytUmy.xn6sDieHYVNp2.8vF
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I don't think so. I deliberately only track the old mask if we've managed
-to take a subset for the 32-bit task. If we end up having to override the
-mask entirely, then I treat it the same way as an explicit affinity change
-(only with a warning printed) and don't then try to restore the old mask --
-it feels like we'd be overriding the affinity twice if we tried to do that.
+Hi all,
 
-> > +	return __set_cpus_allowed_ptr_locked(p, new_mask, 0, rq, &rf);
-> > +
-> > +err_unlock:
-> > +	task_rq_unlock(rq, p, &rf);
-> > +	kfree(user_mask);
-> > +	return err;
-> > +}
-> > +
-> > +/*
-> > + * Restrict the CPU affinity of task @p so that it is a subset of
-> > + * task_cpu_possible_mask() and point @p->user_cpu_ptr to a copy of the
-> > + * old affinity mask. If the resulting mask is empty, we warn and walk
-> > + * up the cpuset hierarchy until we find a suitable mask.
-> > + */
-> > +void force_compatible_cpus_allowed_ptr(struct task_struct *p)
-> > +{
-> > +	cpumask_var_t new_mask;
-> > +	const struct cpumask *override_mask = task_cpu_possible_mask(p);
-> > +
-> > +	alloc_cpumask_var(&new_mask, GFP_KERNEL);
-> > +
-> > +	/*
-> > +	 * __migrate_task() can fail silently in the face of concurrent
-> > +	 * offlining of the chosen destination CPU, so take the hotplug
-> > +	 * lock to ensure that the migration succeeds.
-> > +	 */
-> > +	cpus_read_lock();
-> 
-> I'm thinking this might not be required with:
-> 
->   http://lore.kernel.org/r/20210526205751.842360-3-valentin.schneider@arm.com
-> 
-> but then again this isn't merged yet :-)
+In commit
 
-Agreed, if that patch does what it says on the tin ;)
+  d566ed04e42b ("mlxsw: spectrum_qdisc: Pass handle, not band number to fin=
+d_class()")
 
-I need to digest your reply to me, as this is mind-bending stuff.
+Fixes tag
 
-> > +static int
-> > +__sched_setaffinity(struct task_struct *p, const struct cpumask *mask);
-> > +
-> > +/*
-> > + * Restore the affinity of a task @p which was previously restricted by a
-> > + * call to force_compatible_cpus_allowed_ptr(). This will clear (and free)
-> > + * @p->user_cpus_ptr.
-> > + */
-> > +void relax_compatible_cpus_allowed_ptr(struct task_struct *p)
-> > +{
-> > +	unsigned long flags;
-> > +	struct cpumask *mask = p->user_cpus_ptr;
-> > +
-> > +	/*
-> > +	 * Try to restore the old affinity mask. If this fails, then
-> > +	 * we free the mask explicitly to avoid it being inherited across
-> > +	 * a subsequent fork().
-> > +	 */
-> > +	if (!mask || !__sched_setaffinity(p, mask))
-> > +		return;
-> > +
-> > +	raw_spin_lock_irqsave(&p->pi_lock, flags);
-> > +	release_user_cpus_ptr(p);
-> > +	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
-> 
-> AFAICT an affinity change can happen between __sched_setaffinity() and
-> reacquiring the ->pi_lock. Right now this can't be another
-> force_compatible_cpus_allowed_ptr() because this is only driven by
-> arch_setup_new_exec() against current, so we should be fine, but here be
-> dragons.
+  Fixes: 28052e618b04 ("mlxsw: spectrum_qdisc: Track children per qdisc")
 
-That's a good point. I'll add a comment for now, since I'm not sure who
-else might end up using this in future. Generally it's pretty agnostic to
-how it's being used, but we're certainly relying on the serialisation of
-restrict/relax calls.
+has these problem(s):
 
-Will
+  - Target SHA1 does not exist
+
+Maybe you meant
+
+Fixes: 51d52ed95550 ("mlxsw: spectrum_qdisc: Track children per qdisc")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/ytUmy.xn6sDieHYVNp2.8vF
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC+o2UACgkQAVBC80lX
+0Gzmjwf/X2kNT/Ou4TkpBptu7jSl/kygnbuiTON2BD/rgyDf/tcfJbssKQdv9U4T
+Ls6zyKvhuXlJGPt6fkWnejzC56sTk+88vil8Bmrw8kDoNup9m6yIQSAdv/qz441Q
+lXkK16dO5qyN/hF7BlXFONJwk77rMB8UV+9VrjbhAGlflvgR7QTSoRe6hH7Awqu+
+UkEHnCzscmzSLKuhpxlWvTIigWjCJ8cgm93550ew1JNmV250+i0WTVGRPiRkgeY4
+A3OEpfmKZ6myt7X1vVrragmuxla3W31+uIYPwSqvpk61rC6AAMYu7PAXDYIgASJY
+xr3viCXlTrUUfqrHGdj2veUmXxzzJA==
+=fPVL
+-----END PGP SIGNATURE-----
+
+--Sig_/ytUmy.xn6sDieHYVNp2.8vF--
