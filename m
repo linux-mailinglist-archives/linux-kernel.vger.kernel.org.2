@@ -2,46 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2650C39DBC3
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7953839DBA8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbhFGLzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 07:55:49 -0400
-Received: from mail.iiec.unam.mx ([132.248.241.1]:50252 "EHLO
-        mail.iiec.unam.mx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbhFGLzr (ORCPT
+        id S231586AbhFGLno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 07:43:44 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:38243 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230463AbhFGLnn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 07:55:47 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.iiec.unam.mx (Postfix) with ESMTP id C4D2326A5F7;
-        Mon,  7 Jun 2021 06:40:27 -0500 (CDT)
-Received: from mail.iiec.unam.mx ([127.0.0.1])
-        by localhost (mail.iiec.unam.mx [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id vsRUwP6pffWf; Mon,  7 Jun 2021 06:40:23 -0500 (CDT)
-Received: from correo.iiec.unam.mx (mail.iiec.unam.mx [132.248.241.1])
-        by mail.iiec.unam.mx (Postfix) with ESMTP id BB45426A515;
-        Mon,  7 Jun 2021 06:40:05 -0500 (CDT)
+        Mon, 7 Jun 2021 07:43:43 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 1F34E5C004D;
+        Mon,  7 Jun 2021 07:41:52 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Mon, 07 Jun 2021 07:41:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=G5Ws2mdv15PvC68TLAqW5lgwuqX
+        ZpoJNGuY6oJsLBA8=; b=3tRyPHtyeXaFQftLKvhJoTkFW51BVly26aSE6sSJI+R
+        IoB1DpfQ47ZDZJRU6QS6J4+0tISxsn/zU4Y+gXSbtSjqikD2risJg6UIm0SYWpEy
+        OrALQsrSV32mV54JbKzINJvk16OBmCq7VRM63RLYZ69rb0LdQrS2DNrNqy5rCb8L
+        KUsUilvadarIzaHCh4SCleujYPmfbHvSHQL0sKfVfOl0aefR6S1RTlKzLiak3teL
+        qpJTLrl46YLcEI3ciCKYgetk1GCiZe7vrPKvHoE4fZDJ9N3oPmf/GmJIVPHwhk8V
+        zYpinUefpNcbjw+MMj5WUhRmovJBwAM6ChEO3lCwjtQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=G5Ws2m
+        dv15PvC68TLAqW5lgwuqXZpoJNGuY6oJsLBA8=; b=ein3MXW5EAS7eaYMMuhBtd
+        cneBPNnvS/L3YRnF3N/degKzLXVryCMneXOCg23tdXcRzekEsRqk7p5ziTyLpT7k
+        CkSaZ/2oI1KdFX2Cmvl9+eNmHUOJiI1/ROE8wxiL1S2bDyP8x6oZpouHriLXzmSE
+        JhU5RHEQr8GMx8R45ZY0ti+MWQw+9ClGJ/7gZt50jkUsfcRxStCEfcKs6tHuLxDD
+        AwZthKqOgP0P8Iiu7e2OhN35S2P11pp5AWXNkUtbMMDNZdhPr2nj5xmYVWo1UWXl
+        s6fA+iTFTGSDm2bvF6QY/wiFEVMTbiR15a+BbVvDrd6lM8R1/D+qzlfpFMddQbdw
+        ==
+X-ME-Sender: <xms:_QW-YPL6pMGk8TJMk-zTM29PAGcZYasbjgr8OmTJ8lNXWahD0-dhTg>
+    <xme:_QW-YDJhwidlZb6p4_PXhfq8phUHDCbhdBrYJ1pmnlS9Gbw4V_Wmpj36eiOWQwvLw
+    ozTwP2DR9IvhP3fVZY>
+X-ME-Received: <xmr:_QW-YHumjn6lyCpBZJkSc-g9v83X-9V_JJTEgFuf2jTPS_93no5pqFQqqNsf1kHOvvpDZ5l6faKUb-PBof8ZWAR4YWH5eLYUsvBK>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtjedggeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepfefhhfehieekffffgfdutdevhfehffdvtedtfeeugffggedtudeivdehgffh
+    uedunecuffhomhgrihhnpehlkhhmlhdrohhrghenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:_QW-YIbQlnTgAWwZJonFgPgKXxYSEwaJZWA3H_iectFg8HKcWz35Cw>
+    <xmx:_QW-YGbxWs9wDkr3JcxlTDLJ28Ef_pIVYj6C1XfKb1vAAcnHhGxTnw>
+    <xmx:_QW-YMAIiX3-Dg4s4Htkf1RQeNL6DaSGPDDBInuoNYtekze33S9qHg>
+    <xmx:AAa-YMMj8AbTZogx7CGTsth4upd75pVGpUsh0krHQgUO-UsOfxEQhQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 7 Jun 2021 07:41:48 -0400 (EDT)
+Date:   Mon, 7 Jun 2021 13:41:46 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Ondrej Jirman <megous@megous.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVER FOR ALLWINNER DE2 AND DE3 ENGINE" 
+        <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Allwinner sunXi SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Allwinner sunXi SoC support" 
+        <linux-sunxi@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>,
+        Saravana Kannan <saravanak@google.com>
+Subject: Re: [PATCH v2] drm/sun4i: dw-hdmi: Make HDMI PHY into a platform
+ device
+Message-ID: <20210607114146.ohiqf4ousibfu4wm@gilmour>
+References: <20210607085836.2827429-1-megous@megous.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 07 Jun 2021 04:40:05 -0700
-From:   Alfred Chow <bcolin@iiec.unam.mx>
-To:     undisclosed-recipients:;
-Subject: Proposition...
-Organization: Alfred Chow
-Reply-To: alfredchow@mail-me.com
-Mail-Reply-To: alfredchow@mail-me.com
-Message-ID: <96d71ca5c3c0a16d99e4bffb09c3a44f@iiec.unam.mx>
-X-Sender: bcolin@iiec.unam.mx
-User-Agent: Roundcube Webmail/1.3.16
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="go2u3onasjnikotj"
+Content-Disposition: inline
+In-Reply-To: <20210607085836.2827429-1-megous@megous.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--go2u3onasjnikotj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I have a business proposal of $38,980,369.00 only for you to transact 
-with me from my bank to your country.
+On Mon, Jun 07, 2021 at 10:58:36AM +0200, Ondrej Jirman wrote:
+> From: Saravana Kannan <saravanak@google.com>
+>=20
+> On sunxi boards that use HDMI output, HDMI device probe keeps being
+> avoided indefinitely with these repeated messages in dmesg:
+>=20
+>   platform 1ee0000.hdmi: probe deferral - supplier 1ef0000.hdmi-phy
+>     not ready
+>=20
+> There's a fwnode_link being created with fw_devlink=3Don between hdmi
+> and hdmi-phy nodes, because both nodes have 'compatible' property set.
+>=20
+> Fw_devlink code assumes that nodes that have compatible property
+> set will also have a device associated with them by some driver
+> eventually. This is not the case with the current sun8i-hdmi
+> driver.
+>=20
+> This commit makes sun8i-hdmi-phy into a proper platform device
+> and fixes the display pipeline probe on sunxi boards that use HDMI.
+>=20
+> More context: https://lkml.org/lkml/2021/5/16/203
+>=20
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> Signed-off-by: Ondrej Jirman <megous@megous.com>
 
-Alfred.
+Applied, thanks
+Maxime
+
+--go2u3onasjnikotj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYL4F+gAKCRDj7w1vZxhR
+xQEfAP9vP3jokTFEfVVEzY9r1WA2vwZlSzf/+NvOVPNtT5JpAwD/bqlz7iyVFUtu
+CEYuLVjcA1hWAZsRTGT2RlI5eDbqnQQ=
+=y6rg
+-----END PGP SIGNATURE-----
+
+--go2u3onasjnikotj--
