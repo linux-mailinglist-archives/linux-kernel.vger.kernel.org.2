@@ -2,172 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F5239DCD9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9268B39DCDC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbhFGMq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 08:46:59 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:12121 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230444AbhFGMq6 (ORCPT
+        id S230410AbhFGMri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 08:47:38 -0400
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:37864 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230286AbhFGMrg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 08:46:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1623069907; x=1654605907;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ldICpVmPM5K8n+s7DsP2mONAmSrUKBI+7+MXhYW78c4=;
-  b=EnV0+W0TnICFmbbAC4uwQusqsTaOcjPIiTJV0cYWp6ov3bCLwvRrs1DL
-   LyjxhssJKd74d6h5HOG47nQHLw92gp6S/570v5AxIwbBjk/Motix1SFCx
-   kqkcuD4XHIvaGWV+v2An+kfRmtW03rbxq0Au3a1cFmNstwMwEe1WxxkvT
-   ULbXyJqh6DDIQDx+0H/fiMnNj2W/a5kva1v7g1scFA8Vvh2u4oOAofMxk
-   1ztjwUr1XVGVgq2Vaf0R5t13Av2kUfVib5oMyAC4SxRCjZu4ZsHrXuT9T
-   h/ofsS9NtreNKSHjZcrcWIfp/lxr7NPg9K1nHcQlT0mmHi4phw1+r/WVM
-   g==;
-IronPort-SDR: oZj/ute6IR9BD00CRNIddzFl/huqlMOXHab8fwEw3FFzmx7AcCqtQFqdqMeGCXzNIvCiUekbQO
- q4KyHX1EnzYSKteT08iDKqB5qfYpnjso6wJV5yJ+iGxv3BV+gvuRmjkkNwr/U2vnvbIKLzV4Sv
- RxWKzJCmxzW9FGkqMuO+0CFVmVnVfq/U1O/562rnVBZBU94p/LfFgbrotlEQU38yFuR2ikQUIP
- j7i0QcjEVifSAfFZukgEzDpF+xuSl9eUzyS5ylUxfL+2QXtpBFbzZnqNQThr4J0uFPykkxV3GZ
- Pww=
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
-   d="scan'208";a="123779583"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Jun 2021 05:45:06 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 05:45:05 -0700
-Received: from den-her-m31857h.microchip.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Mon, 7 Jun 2021 05:45:02 -0700
-Message-ID: <9f4fad323e17c8ba6ebde728fcc99c87dd06fc75.camel@microchip.com>
-Subject: Re: [PATCH net-next v3 03/10] net: sparx5: add hostmode with
- phylink support
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Mark Einon <mark.einon@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Simon Horman" <simon.horman@netronome.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>
-Date:   Mon, 7 Jun 2021 14:45:01 +0200
-In-Reply-To: <20210607091536.GA30436@shell.armlinux.org.uk>
-References: <20210604085600.3014532-1-steen.hegelund@microchip.com>
-         <20210604085600.3014532-4-steen.hegelund@microchip.com>
-         <20210607091536.GA30436@shell.armlinux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        Mon, 7 Jun 2021 08:47:36 -0400
+Received: by mail-ot1-f51.google.com with SMTP id v19-20020a0568301413b0290304f00e3d88so16532581otp.4;
+        Mon, 07 Jun 2021 05:45:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ne/p4NOGCwVSG6gGyVyzO7r+FfStromPMY+PxpPNydI=;
+        b=O2Rob0cgSz/Jho0ELC9k4oJPMkqhTMMqhTQEmuyFZMQUgcXeD29eCIayPGPEGQtUmg
+         Kyl0RR+hSR1LDD7FggVckr7MFSmBOxdjXLhga0B/a6AFU6sjLpVwhwj2YvX/ZP/yFsK2
+         Jb7y5iYF9wIFbz7h/rUMXbdl5bwHDQd8z40ANCDGyu/VdvhaF5sea8UXJFivcTOM3ho6
+         9Eo80+SzPZGdz8R2Cba4OfUq1Ism5NBGOUzQW2rz3diGe53IR2NBMgyp1g8sJfDqOI1B
+         76QM+r7412H4fs5xucqyzriUxnlxh4zBHcz4PIxN4hPnooWJPt1I6Twctlc4NEmbY6Mu
+         x5fA==
+X-Gm-Message-State: AOAM533/Zm5XhQprvQfcP9f2pQ/Wa4qHYd+sq6fGF2YVXK6KAD+oIRJ3
+        ycAxIiFMT5g+VCN2HFm6JEZi8XTrGPJBklNfw9k=
+X-Google-Smtp-Source: ABdhPJy+PE0k4m3sO4C/+M2oB5Dp8/vHSk6ur8aGkSkM/rVZq77o5QtmrOm/ZEAzeGQHKTEXMYlTP/dDBrFFSjW8XnE=
+X-Received: by 2002:a9d:3e53:: with SMTP id h19mr13451517otg.260.1623069943825;
+ Mon, 07 Jun 2021 05:45:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20210604165047.13243-1-andriy.shevchenko@linux.intel.com> <20210604165047.13243-3-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210604165047.13243-3-andriy.shevchenko@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 7 Jun 2021 14:45:32 +0200
+Message-ID: <CAJZ5v0hk8BiDt5e_P=KXkj3datr_WTCUe7k2u_TkFUPjWm79Aw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] device property: Unify access to of_node
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Russell,
-
-Thanks for your comments.
-
-On Mon, 2021-06-07 at 10:15 +0100, Russell King (Oracle) wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> 
-> On Fri, Jun 04, 2021 at 10:55:53AM +0200, Steen Hegelund wrote:
-> > +static void sparx5_phylink_mac_config(struct phylink_config *config,
-> > +                                   unsigned int mode,
-> > +                                   const struct phylink_link_state *state)
-> > +{
-> > +     struct sparx5_port *port = netdev_priv(to_net_dev(config->dev));
-> > +     struct sparx5_port_config conf;
-> > +
-> > +     conf = port->conf;
-> > +     conf.power_down = false;
-> > +     conf.portmode = state->interface;
-> > +     conf.speed = state->speed;
-> > +     conf.autoneg = state->an_enabled;
-> > +     conf.pause = state->pause;
-> > +
-> > +     if (state->interface == PHY_INTERFACE_MODE_10GBASER) {
-> > +             if (state->speed == SPEED_UNKNOWN) {
-> > +                     /* When a SFP is plugged in we use capabilities to
-> > +                      * default to the highest supported speed
-> > +                      */
-> > +                     if (phylink_test(state->advertising, 25000baseSR_Full) ||
-> > +                         phylink_test(state->advertising, 25000baseCR_Full))
-> > +                             conf.speed = SPEED_25000;
-> > +                     else if (state->interface == PHY_INTERFACE_MODE_10GBASER)
-> > +                             conf.speed = SPEED_10000;
-> > +             } else if (state->speed == SPEED_2500) {
-> > +                     conf.portmode = PHY_INTERFACE_MODE_2500BASEX;
-> > +             } else if (state->speed == SPEED_1000) {
-> > +                     conf.portmode = PHY_INTERFACE_MODE_1000BASEX;
-> > +             }
-> 
-> 1) As detailed in the documentation for phylink, state->speed is not
->    guaranteed to be valid in the mac_config method.
-
-OK.  I will assume speed is not known in this callback.
-
-
-> 2) We clearly need PHY_INTERFACE_MODE_25GBASER rather than working
->    around this by testing bits in the advertising bitmap.
-
-
-Yes that would be a very useful addition.
-Should I add PHY_INTERFACE_MODE_25GBASER in this series or should that be added as a separate
-series?
-
-> 
-> 3) I really don't get what's going on with setting the port mode to
->    2500base-X and 1000base-X here when state->interface is 10GBASER.
-
-The high speed interfaces (> 2.5G) do not support any in-band signalling, so the only way that e.g a
-10G interface running at 2.5G will be able to link up with its partner is if both ends configure the
-speed manually via ethtool.
-	
-> 
-> > +             if (phylink_test(state->advertising, FIBRE))
-> > +                     conf.media = PHY_MEDIA_SR;
-> > +             else
-> > +                     conf.media = PHY_MEDIA_DAC;
-> > +     }
-> > +
-> > +     if (!port_conf_has_changed(&port->conf, &conf))
-> > +             return;
-> > +}
-> > +
-> > +static void sparx5_phylink_mac_link_up(struct phylink_config *config,
-> > +                                    struct phy_device *phy,
-> > +                                    unsigned int mode,
-> > +                                    phy_interface_t interface,
-> > +                                    int speed, int duplex,
-> > +                                    bool tx_pause, bool rx_pause)
-> > +{
-> 
-> This is the only place that the MAC is guaranteed to know the
-> negotiated speed.
-
-OK.
-
-> 
+On Fri, Jun 4, 2021 at 6:50 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> Historically we have a few variants how we access dev->fwnode
+> and dev->of_node. Some of the functions during development
+> gained different versions of the getters. Unify access to of_node
+> and as a side change slightly refactor ACPI specific branches.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+> v3: no changes
+> v2: no changes
+>  drivers/base/property.c  | 29 +++++++++++++----------------
+>  include/linux/property.h |  2 +-
+>  2 files changed, 14 insertions(+), 17 deletions(-)
+>
+> diff --git a/drivers/base/property.c b/drivers/base/property.c
+> index c26370aacdc6..d0874f6c29bb 100644
+> --- a/drivers/base/property.c
+> +++ b/drivers/base/property.c
+> @@ -759,13 +759,8 @@ EXPORT_SYMBOL_GPL(fwnode_get_next_available_child_node);
+>  struct fwnode_handle *device_get_next_child_node(struct device *dev,
+>                                                  struct fwnode_handle *child)
+>  {
+> -       struct acpi_device *adev = ACPI_COMPANION(dev);
+> -       struct fwnode_handle *fwnode = NULL, *next;
+> -
+> -       if (dev->of_node)
+> -               fwnode = of_fwnode_handle(dev->of_node);
+> -       else if (adev)
+> -               fwnode = acpi_fwnode_handle(adev);
+> +       const struct fwnode_handle *fwnode = dev_fwnode(dev);
+> +       struct fwnode_handle *next;
+>
+>         /* Try to find a child in primary fwnode */
+>         next = fwnode_get_next_child_node(fwnode, child);
+> @@ -868,28 +863,31 @@ EXPORT_SYMBOL_GPL(device_get_child_node_count);
+>
+>  bool device_dma_supported(struct device *dev)
+>  {
+> +       const struct fwnode_handle *fwnode = dev_fwnode(dev);
+> +
+>         /* For DT, this is always supported.
+>          * For ACPI, this depends on CCA, which
+>          * is determined by the acpi_dma_supported().
+>          */
+> -       if (IS_ENABLED(CONFIG_OF) && dev->of_node)
+> +       if (is_of_node(fwnode))
+>                 return true;
+>
+> -       return acpi_dma_supported(ACPI_COMPANION(dev));
+> +       return acpi_dma_supported(to_acpi_device_node(fwnode));
+>  }
+>  EXPORT_SYMBOL_GPL(device_dma_supported);
+>
+>  enum dev_dma_attr device_get_dma_attr(struct device *dev)
+>  {
+> +       const struct fwnode_handle *fwnode = dev_fwnode(dev);
+>         enum dev_dma_attr attr = DEV_DMA_NOT_SUPPORTED;
+>
+> -       if (IS_ENABLED(CONFIG_OF) && dev->of_node) {
+> -               if (of_dma_is_coherent(dev->of_node))
+> +       if (is_of_node(fwnode)) {
+> +               if (of_dma_is_coherent(to_of_node(fwnode)))
+>                         attr = DEV_DMA_COHERENT;
+>                 else
+>                         attr = DEV_DMA_NON_COHERENT;
+>         } else
+> -               attr = acpi_get_dma_attr(ACPI_COMPANION(dev));
+> +               attr = acpi_get_dma_attr(to_acpi_device_node(fwnode));
+>
+>         return attr;
+>  }
+> @@ -1007,14 +1005,13 @@ EXPORT_SYMBOL(device_get_mac_address);
+>   * Returns Linux IRQ number on success. Other values are determined
+>   * accordingly to acpi_/of_ irq_get() operation.
+>   */
+> -int fwnode_irq_get(struct fwnode_handle *fwnode, unsigned int index)
+> +int fwnode_irq_get(const struct fwnode_handle *fwnode, unsigned int index)
+>  {
+> -       struct device_node *of_node = to_of_node(fwnode);
+>         struct resource res;
+>         int ret;
+>
+> -       if (IS_ENABLED(CONFIG_OF) && of_node)
+> -               return of_irq_get(of_node, index);
+> +       if (is_of_node(fwnode))
+> +               return of_irq_get(to_of_node(fwnode), index);
+>
+>         ret = acpi_irq_get(ACPI_HANDLE_FWNODE(fwnode), index, &res);
+>         if (ret)
+> diff --git a/include/linux/property.h b/include/linux/property.h
+> index 0d876316e61d..073e680c35e2 100644
+> --- a/include/linux/property.h
+> +++ b/include/linux/property.h
+> @@ -119,7 +119,7 @@ struct fwnode_handle *device_get_named_child_node(struct device *dev,
+>  struct fwnode_handle *fwnode_handle_get(struct fwnode_handle *fwnode);
+>  void fwnode_handle_put(struct fwnode_handle *fwnode);
+>
+> -int fwnode_irq_get(struct fwnode_handle *fwnode, unsigned int index);
+> +int fwnode_irq_get(const struct fwnode_handle *fwnode, unsigned int index);
+>
+>  unsigned int device_get_child_node_count(struct device *dev);
+>
 > --
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
 
-
--- 
-BR
-Steen
-
--=-=-=-=-=-=-=-=-=-=-=-=-=-=
-steen.hegelund@microchip.com
-
-
+Applied as 5.14 material along with the [1-2/3], thanks!
