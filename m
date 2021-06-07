@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82AEB39E066
+	by mail.lfdr.de (Postfix) with ESMTP id 1635B39E065
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 17:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231244AbhFGPb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 11:31:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38388 "EHLO
+        id S231225AbhFGPbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 11:31:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231217AbhFGPbU (ORCPT
+        with ESMTP id S231173AbhFGPbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 11:31:20 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A75C0613A2
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 08:29:12 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso118787wmc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 08:29:12 -0700 (PDT)
+        Mon, 7 Jun 2021 11:31:14 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB8FC061789
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 08:29:16 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id c5so18074431wrq.9
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 08:29:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=062kWCaVu5roYw7+fRKxVE6lqqVFNCJOR9Stncm2yQo=;
-        b=jSx4qlpnJnPVBCtoopfR5EFNbMubPZQX2ES/4LBswEdMM2HWYkGf+wxNWGX7xe0pDg
-         hcFnjCMLNRNGzCN6p2Eu5DoH6mRErzYgBJCDNRklkt4qc+jkwcXdHBN1rdOA33TJS3vl
-         tdzWzCsxHvCiY7OHdWqVs4uqziyhncB7Vmry78n5LA4oyfFgA66e0ynB/1I036ObeCrz
-         z62XAKJaw40R4I7/qFLNOvAo6kYFr+8sX+nkUJQUXVWIvTUAaLs/QmLtNlunM2HHgOpm
-         nacv9fpFMyCBtSfUhkmpkue0szHwfNA2SSG2qb1jL5aydjpTkEVxfWZbSnxAbXlAV+A+
-         y4og==
+        bh=W1iJl2Pfs5N04zh5cLmR0BZtU7zADLjxFUl+4rPcNnk=;
+        b=PZvr5x8LLRtYX0iEUaExxo/EiqG7KnCAH89iSPZDz82w6vUpYSqZjPKMUNXygi1LrR
+         XLpkqkEcab1OM6cImBk5E9fPbAzM6smRJcnHu7zJ2ty0DIW1VBTV+m/yLhD4ZXHwUSR4
+         bDDL7enzp4XjJjzxa+SxpCn2btgDCNP1W5ocHC0aCd39iVLcrucLiwlDm760MIsjT6Zl
+         2lzZfYOARQg5Ci89bYQtWkfM0N/e0yeIhUKvVj3dagOmS4YP4ArT6fQsQBbtfyQmq2m/
+         GDQrAJggXTwD7xscNflS+2cAQXwOQIZ2qEIE8s77h1QJHAVU2ChtTTd9qpIZneweUYCD
+         pbZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=062kWCaVu5roYw7+fRKxVE6lqqVFNCJOR9Stncm2yQo=;
-        b=RWOVplVmBR+9WX7JhdCApDxITawp+le9ek+LNcYZJfwWDRL6KycRqD3qvutXjSfTzR
-         f7quOUpwuKoz8YiZv0CnMUfDBdAa61Kam2/7r/JE6YwZUeHmohyOXb3w6UEDgKAe6rgq
-         JneOq229sSLRDNeNGcweu0sm0zfNE/zCi8/WEZuV4fL6X878pwhassglo6ZHIRQGTcXv
-         AkJk3y/f/UBJFwoqHeNT5HOe13tVnhV07H7L3t4p3r1vYCYtEXVfHrMZx0O3HDlraA0/
-         EIdYHhNeaZnXy4H14bxEXR6ckFCHwxIpFZJSFTCSkVz4KQsnrLYDesVOV1UerOlaMIEm
-         h60A==
-X-Gm-Message-State: AOAM532Pv22XjA+nzgUzPDj1SBMUwkJZcJYpQfB1UExx72ot/JQszI0o
-        e6E0cpCcvJtKm7kLMTXBZqhhug==
-X-Google-Smtp-Source: ABdhPJxy6z6GuYPFaHo0jgd+HjQyugy1gj1Fcaum+wJKeDlSkrOoWgi7wCbIUmBEGHTiH044dKwuJA==
-X-Received: by 2002:a1c:bad6:: with SMTP id k205mr18071848wmf.171.1623079751107;
-        Mon, 07 Jun 2021 08:29:11 -0700 (PDT)
+        bh=W1iJl2Pfs5N04zh5cLmR0BZtU7zADLjxFUl+4rPcNnk=;
+        b=jqdnGrLOib8NjGPJgEaqzyaso9NBHlurlLxQrqb5+iedF+xda45AuKI1RDIZHXMr7p
+         aXkwi070myzbtlqt3/FlYIaTKqQyos+tnwTMyi2KX0iHtCArKHhHT4WKl1JbcfB6ZzsS
+         cQpMbIVxhpWgMSzbBXYoim1+wITv6cWm2RmmZngP/vkUhymxhhvnWffvh/7r+WP6UYso
+         wzo1RpjUUL/KQvSvcj5I4pJqXNM5a27Eosz9h8ZQGZ5BsdXtlZlhmONyaSgB0stFHZfA
+         YhLGvucQkm7rCj4JMNP4uXqi8uM45Tp5MjQ4GvssyulV9DSvjEuSpkV/8BieP0aUIi9r
+         vdJA==
+X-Gm-Message-State: AOAM533PCoF3B1hhJs4G7FqhLzKMEprqKxRxSakqolCGYfW3vEuteUWo
+        RSDMzZeJi9pAK733JPxRzYeBzw==
+X-Google-Smtp-Source: ABdhPJxVry44u6Yqfb8ZZZYlSIbauOYV/owsF4CO10Qh09+t1V9EpliABlCj9lCFha936gdRCM6/1g==
+X-Received: by 2002:adf:cd87:: with SMTP id q7mr17501714wrj.370.1623079754630;
+        Mon, 07 Jun 2021 08:29:14 -0700 (PDT)
 Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id q3sm16370170wrr.43.2021.06.07.08.29.09
+        by smtp.gmail.com with ESMTPSA id q3sm16370170wrr.43.2021.06.07.08.29.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 08:29:10 -0700 (PDT)
+        Mon, 07 Jun 2021 08:29:14 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     bjorn.andersson@linaro.org, broonie@kernel.org
 Cc:     plai@codeaurora.org, tiwai@suse.de, robh@kernel.org,
@@ -55,9 +55,9 @@ Cc:     plai@codeaurora.org, tiwai@suse.de, robh@kernel.org,
         alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
         lgirdwood@gmail.com, bgoswami@codeaurora.org,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [RFC PATCH 08/13] ASoC: qcom: audioreach: add q6apm-dai support
-Date:   Mon,  7 Jun 2021 16:28:31 +0100
-Message-Id: <20210607152836.17154-9-srinivas.kandagatla@linaro.org>
+Subject: [RFC PATCH 11/13] ASoC: qcom: audioreach: add q6prm support
+Date:   Mon,  7 Jun 2021 16:28:34 +0100
+Message-Id: <20210607152836.17154-12-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210607152836.17154-1-srinivas.kandagatla@linaro.org>
 References: <20210607152836.17154-1-srinivas.kandagatla@linaro.org>
@@ -67,545 +67,683 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add support to q6prm (Proxy Resource Manager) module used for clock resources
+
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/Kconfig                |   4 +
- sound/soc/qcom/audioreach/Makefile    |   2 +
- sound/soc/qcom/audioreach/q6apm-dai.c | 494 ++++++++++++++++++++++++++
- 3 files changed, 500 insertions(+)
- create mode 100644 sound/soc/qcom/audioreach/q6apm-dai.c
+ include/dt-bindings/sound/qcom,q6prm.h | 205 ++++++++++++
+ sound/soc/qcom/Kconfig                 |   4 +
+ sound/soc/qcom/audioreach/Makefile     |   2 +
+ sound/soc/qcom/audioreach/q6prm.c      | 412 +++++++++++++++++++++++++
+ 4 files changed, 623 insertions(+)
+ create mode 100644 include/dt-bindings/sound/qcom,q6prm.h
+ create mode 100644 sound/soc/qcom/audioreach/q6prm.c
 
+diff --git a/include/dt-bindings/sound/qcom,q6prm.h b/include/dt-bindings/sound/qcom,q6prm.h
+new file mode 100644
+index 000000000000..1c5f84fa573a
+--- /dev/null
++++ b/include/dt-bindings/sound/qcom,q6prm.h
+@@ -0,0 +1,205 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __DT_BINDINGS_Q6_PRM_H__
++#define __DT_BINDINGS_Q6_PRM_H__
++
++/* Audio Front End (PRM) virtual ports IDs */
++#define HDMI_RX		1
++#define SLIMBUS_0_RX    2
++#define SLIMBUS_0_TX    3
++#define SLIMBUS_1_RX    4
++#define SLIMBUS_1_TX    5
++#define SLIMBUS_2_RX    6
++#define SLIMBUS_2_TX    7
++#define SLIMBUS_3_RX    8
++#define SLIMBUS_3_TX    9
++#define SLIMBUS_4_RX    10
++#define SLIMBUS_4_TX    11
++#define SLIMBUS_5_RX    12
++#define SLIMBUS_5_TX    13
++#define SLIMBUS_6_RX    14
++#define SLIMBUS_6_TX    15
++#define PRIMARY_MI2S_RX		16
++#define PRIMARY_MI2S_TX		17
++#define SECONDARY_MI2S_RX	18
++#define SECONDARY_MI2S_TX	19
++#define TERTIARY_MI2S_RX	20
++#define TERTIARY_MI2S_TX	21
++#define QUATERNARY_MI2S_RX	22
++#define QUATERNARY_MI2S_TX	23
++#define PRIMARY_TDM_RX_0	24
++#define PRIMARY_TDM_TX_0	25
++#define PRIMARY_TDM_RX_1	26
++#define PRIMARY_TDM_TX_1	27
++#define PRIMARY_TDM_RX_2	28
++#define PRIMARY_TDM_TX_2	29
++#define PRIMARY_TDM_RX_3	30
++#define PRIMARY_TDM_TX_3	31
++#define PRIMARY_TDM_RX_4	32
++#define PRIMARY_TDM_TX_4	33
++#define PRIMARY_TDM_RX_5	34
++#define PRIMARY_TDM_TX_5	35
++#define PRIMARY_TDM_RX_6	36
++#define PRIMARY_TDM_TX_6	37
++#define PRIMARY_TDM_RX_7	38
++#define PRIMARY_TDM_TX_7	39
++#define SECONDARY_TDM_RX_0	40
++#define SECONDARY_TDM_TX_0	41
++#define SECONDARY_TDM_RX_1	42
++#define SECONDARY_TDM_TX_1	43
++#define SECONDARY_TDM_RX_2	44
++#define SECONDARY_TDM_TX_2	45
++#define SECONDARY_TDM_RX_3	46
++#define SECONDARY_TDM_TX_3	47
++#define SECONDARY_TDM_RX_4	48
++#define SECONDARY_TDM_TX_4	49
++#define SECONDARY_TDM_RX_5	50
++#define SECONDARY_TDM_TX_5	51
++#define SECONDARY_TDM_RX_6	52
++#define SECONDARY_TDM_TX_6	53
++#define SECONDARY_TDM_RX_7	54
++#define SECONDARY_TDM_TX_7	55
++#define TERTIARY_TDM_RX_0	56
++#define TERTIARY_TDM_TX_0	57
++#define TERTIARY_TDM_RX_1	58
++#define TERTIARY_TDM_TX_1	59
++#define TERTIARY_TDM_RX_2	60
++#define TERTIARY_TDM_TX_2	61
++#define TERTIARY_TDM_RX_3	62
++#define TERTIARY_TDM_TX_3	63
++#define TERTIARY_TDM_RX_4	64
++#define TERTIARY_TDM_TX_4	65
++#define TERTIARY_TDM_RX_5	66
++#define TERTIARY_TDM_TX_5	67
++#define TERTIARY_TDM_RX_6	68
++#define TERTIARY_TDM_TX_6	69
++#define TERTIARY_TDM_RX_7	70
++#define TERTIARY_TDM_TX_7	71
++#define QUATERNARY_TDM_RX_0	72
++#define QUATERNARY_TDM_TX_0	73
++#define QUATERNARY_TDM_RX_1	74
++#define QUATERNARY_TDM_TX_1	75
++#define QUATERNARY_TDM_RX_2	76
++#define QUATERNARY_TDM_TX_2	77
++#define QUATERNARY_TDM_RX_3	78
++#define QUATERNARY_TDM_TX_3	79
++#define QUATERNARY_TDM_RX_4	80
++#define QUATERNARY_TDM_TX_4	81
++#define QUATERNARY_TDM_RX_5	82
++#define QUATERNARY_TDM_TX_5	83
++#define QUATERNARY_TDM_RX_6	84
++#define QUATERNARY_TDM_TX_6	85
++#define QUATERNARY_TDM_RX_7	86
++#define QUATERNARY_TDM_TX_7	87
++#define QUINARY_TDM_RX_0	88
++#define QUINARY_TDM_TX_0	89
++#define QUINARY_TDM_RX_1	90
++#define QUINARY_TDM_TX_1	91
++#define QUINARY_TDM_RX_2	92
++#define QUINARY_TDM_TX_2	93
++#define QUINARY_TDM_RX_3	94
++#define QUINARY_TDM_TX_3	95
++#define QUINARY_TDM_RX_4	96
++#define QUINARY_TDM_TX_4	97
++#define QUINARY_TDM_RX_5	98
++#define QUINARY_TDM_TX_5	99
++#define QUINARY_TDM_RX_6	100
++#define QUINARY_TDM_TX_6	101
++#define QUINARY_TDM_RX_7	102
++#define QUINARY_TDM_TX_7	103
++#define DISPLAY_PORT_RX		104
++#define WSA_CODEC_DMA_RX_0	105
++#define WSA_CODEC_DMA_TX_0	106
++#define WSA_CODEC_DMA_RX_1	107
++#define WSA_CODEC_DMA_TX_1	108
++#define WSA_CODEC_DMA_TX_2	109
++#define VA_CODEC_DMA_TX_0	110
++#define VA_CODEC_DMA_TX_1	111
++#define VA_CODEC_DMA_TX_2	112
++#define RX_CODEC_DMA_RX_0	113
++#define TX_CODEC_DMA_TX_0	114
++#define RX_CODEC_DMA_RX_1	115
++#define TX_CODEC_DMA_TX_1	116
++#define RX_CODEC_DMA_RX_2	117
++#define TX_CODEC_DMA_TX_2	118
++#define RX_CODEC_DMA_RX_3	119
++#define TX_CODEC_DMA_TX_3	120
++#define RX_CODEC_DMA_RX_4	121
++#define TX_CODEC_DMA_TX_4	122
++#define RX_CODEC_DMA_RX_5	123
++#define TX_CODEC_DMA_TX_5	124
++#define RX_CODEC_DMA_RX_6	125
++#define RX_CODEC_DMA_RX_7	126
++
++#define LPASS_CLK_ID_PRI_MI2S_IBIT	1
++#define LPASS_CLK_ID_PRI_MI2S_EBIT	2
++#define LPASS_CLK_ID_SEC_MI2S_IBIT	3
++#define LPASS_CLK_ID_SEC_MI2S_EBIT	4
++#define LPASS_CLK_ID_TER_MI2S_IBIT	5
++#define LPASS_CLK_ID_TER_MI2S_EBIT	6
++#define LPASS_CLK_ID_QUAD_MI2S_IBIT	7
++#define LPASS_CLK_ID_QUAD_MI2S_EBIT	8
++#define LPASS_CLK_ID_SPEAKER_I2S_IBIT	9
++#define LPASS_CLK_ID_SPEAKER_I2S_EBIT	10
++#define LPASS_CLK_ID_SPEAKER_I2S_OSR	11
++#define LPASS_CLK_ID_QUI_MI2S_IBIT	12
++#define LPASS_CLK_ID_QUI_MI2S_EBIT	13
++#define LPASS_CLK_ID_SEN_MI2S_IBIT	14
++#define LPASS_CLK_ID_SEN_MI2S_EBIT	15
++#define LPASS_CLK_ID_INT0_MI2S_IBIT	16
++#define LPASS_CLK_ID_INT1_MI2S_IBIT	17
++#define LPASS_CLK_ID_INT2_MI2S_IBIT	18
++#define LPASS_CLK_ID_INT3_MI2S_IBIT	19
++#define LPASS_CLK_ID_INT4_MI2S_IBIT	20
++#define LPASS_CLK_ID_INT5_MI2S_IBIT	21
++#define LPASS_CLK_ID_INT6_MI2S_IBIT	22
++#define LPASS_CLK_ID_QUI_MI2S_OSR	23
++#define LPASS_CLK_ID_PRI_PCM_IBIT	24
++#define LPASS_CLK_ID_PRI_PCM_EBIT	25
++#define LPASS_CLK_ID_SEC_PCM_IBIT	26
++#define LPASS_CLK_ID_SEC_PCM_EBIT	27
++#define LPASS_CLK_ID_TER_PCM_IBIT	28
++#define LPASS_CLK_ID_TER_PCM_EBIT	29
++#define LPASS_CLK_ID_QUAD_PCM_IBIT	30
++#define LPASS_CLK_ID_QUAD_PCM_EBIT	31
++#define LPASS_CLK_ID_QUIN_PCM_IBIT	32
++#define LPASS_CLK_ID_QUIN_PCM_EBIT	33
++#define LPASS_CLK_ID_QUI_PCM_OSR	34
++#define LPASS_CLK_ID_PRI_TDM_IBIT	35
++#define LPASS_CLK_ID_PRI_TDM_EBIT	36
++#define LPASS_CLK_ID_SEC_TDM_IBIT	37
++#define LPASS_CLK_ID_SEC_TDM_EBIT	38
++#define LPASS_CLK_ID_TER_TDM_IBIT	39
++#define LPASS_CLK_ID_TER_TDM_EBIT	40
++#define LPASS_CLK_ID_QUAD_TDM_IBIT	41
++#define LPASS_CLK_ID_QUAD_TDM_EBIT	42
++#define LPASS_CLK_ID_QUIN_TDM_IBIT	43
++#define LPASS_CLK_ID_QUIN_TDM_EBIT	44
++#define LPASS_CLK_ID_QUIN_TDM_OSR	45
++#define LPASS_CLK_ID_MCLK_1		46
++#define LPASS_CLK_ID_MCLK_2		47
++#define LPASS_CLK_ID_MCLK_3		48
++#define LPASS_CLK_ID_MCLK_4		49
++#define LPASS_CLK_ID_INTERNAL_DIGITAL_CODEC_CORE	50
++#define LPASS_CLK_ID_INT_MCLK_0		51
++#define LPASS_CLK_ID_INT_MCLK_1		52
++#define LPASS_CLK_ID_MCLK_5		53
++#define LPASS_CLK_ID_WSA_CORE_MCLK	54
++#define LPASS_CLK_ID_WSA_CORE_NPL_MCLK	55
++#define LPASS_CLK_ID_VA_CORE_MCLK	56
++#define LPASS_CLK_ID_TX_CORE_MCLK	57
++#define LPASS_CLK_ID_TX_CORE_NPL_MCLK	58
++#define LPASS_CLK_ID_RX_CORE_MCLK	59
++#define LPASS_CLK_ID_RX_CORE_NPL_MCLK	60
++#define LPASS_CLK_ID_VA_CORE_2X_MCLK	61
++
++#define LPASS_HW_MACRO_VOTE		102
++#define LPASS_HW_DCODEC_VOTE		103
++
++#define Q6PRM_MAX_CLK_ID			104
++
++#define LPASS_CLK_ATTRIBUTE_INVALID		0x0
++#define LPASS_CLK_ATTRIBUTE_COUPLE_NO		0x1
++#define LPASS_CLK_ATTRIBUTE_COUPLE_DIVIDEND	0x2
++#define LPASS_CLK_ATTRIBUTE_COUPLE_DIVISOR	0x3
++
++#endif /* __DT_BINDINGS_Q6_PRM_H__ */
 diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index c0e7f4cb328f..258fe9ef26f3 100644
+index 4eb1b1a7c1f7..fa3ab78b125e 100644
 --- a/sound/soc/qcom/Kconfig
 +++ b/sound/soc/qcom/Kconfig
-@@ -103,10 +103,14 @@ config SND_SOC_QDSP6
- 	 audio drivers. This includes q6asm, q6adm,
- 	 q6afe interfaces to DSP using apr.
+@@ -109,12 +109,16 @@ config SND_SOC_QCOM_APM_DAI
+ config SND_SOC_QCOM_APM_BEDAI
+ 	tristate
  
-+config SND_SOC_QCOM_APM_DAI
++config SND_SOC_QCOM_PRM
 +	tristate
 +
  config SND_SOC_QCOM_AUDIOREACH
  	tristate "SoC ALSA audio drives for Qualcomm AUDIOREACH"
  	depends on QCOM_GPR
  	select SND_SOC_TOPOLOGY
-+	select SND_SOC_QCOM_APM_DAI
+ 	select SND_SOC_QCOM_APM_DAI
+ 	select SND_SOC_QCOM_APM_BEDAI
++	select SND_SOC_QCOM_PRM
  	help
  	 Support for AudioReach in QDSP
  
 diff --git a/sound/soc/qcom/audioreach/Makefile b/sound/soc/qcom/audioreach/Makefile
-index 65ea488e4cc8..7160bddbb1fb 100644
+index e8651455b206..d9904201ccf0 100644
 --- a/sound/soc/qcom/audioreach/Makefile
 +++ b/sound/soc/qcom/audioreach/Makefile
-@@ -1,6 +1,8 @@
- # SPDX-License-Identifier: GPL-2.0-only
+@@ -2,9 +2,11 @@
  snd-ar-objs := audioreach.o q6apm.o topology.o
-+snd-apm-dai-objs := q6apm-dai.o
+ snd-apm-dai-objs := q6apm-dai.o
+ snd-apm-bedai-objs := q6apm-bedai.o
++snd-prm-objs := q6prm.o
  
  obj-$(CONFIG_SND_SOC_QCOM_AUDIOREACH) += snd-ar.o
-+obj-$(CONFIG_SND_SOC_QCOM_APM_DAI) += snd-apm-dai.o
+ obj-$(CONFIG_SND_SOC_QCOM_APM_DAI) += snd-apm-dai.o
+ obj-$(CONFIG_SND_SOC_QCOM_APM_BEDAI) += snd-apm-bedai.o
++obj-$(CONFIG_SND_SOC_QCOM_PRM) += snd-prm.o
  
  
-diff --git a/sound/soc/qcom/audioreach/q6apm-dai.c b/sound/soc/qcom/audioreach/q6apm-dai.c
+diff --git a/sound/soc/qcom/audioreach/q6prm.c b/sound/soc/qcom/audioreach/q6prm.c
 new file mode 100644
-index 000000000000..ae83cac80978
+index 000000000000..84a9ca3aa7fd
 --- /dev/null
-+++ b/sound/soc/qcom/audioreach/q6apm-dai.c
-@@ -0,0 +1,494 @@
++++ b/sound/soc/qcom/audioreach/q6prm.c
+@@ -0,0 +1,412 @@
 +// SPDX-License-Identifier: GPL-2.0
 +// Copyright (c) 2021, Linaro Limited
 +
-+#include <linux/init.h>
-+#include <linux/err.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
 +#include <linux/slab.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/pcm.h>
-+#include <linux/spinlock.h>
-+#include <asm/dma.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/of_device.h>
-+#include <sound/pcm_params.h>
-+#include "q6apm.h"
++#include <linux/wait.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/delay.h>
++#include <linux/of_platform.h>
++#include <linux/clk-provider.h>
++#include <linux/jiffies.h>
++#include <linux/soc/qcom/gpr.h>
++#include <dt-bindings/soc/qcom,gpr.h>
++#include <dt-bindings/sound/qcom,q6prm.h>
++#include "audioreach.h"
 +
-+#define DRV_NAME "q6apm-dai"
-+
-+#define PLAYBACK_MIN_NUM_PERIODS    2
-+#define PLAYBACK_MAX_NUM_PERIODS   8
-+#define PLAYBACK_MAX_PERIOD_SIZE    65536
-+#define PLAYBACK_MIN_PERIOD_SIZE    128
-+#define CAPTURE_MIN_NUM_PERIODS     2
-+#define CAPTURE_MAX_NUM_PERIODS     8
-+#define CAPTURE_MAX_PERIOD_SIZE     4096
-+#define CAPTURE_MIN_PERIOD_SIZE     320
-+#define BUFFER_BYTES_MAX (PLAYBACK_MAX_NUM_PERIODS * PLAYBACK_MAX_PERIOD_SIZE)
-+#define BUFFER_BYTES_MIN (PLAYBACK_MIN_NUM_PERIODS * PLAYBACK_MIN_PERIOD_SIZE)
-+
-+#define SID_MASK_DEFAULT	0xF
-+
-+enum stream_state {
-+	Q6APM_STREAM_IDLE = 0,
-+	Q6APM_STREAM_STOPPED,
-+	Q6APM_STREAM_RUNNING,
-+};
-+
-+struct q6apm_dai_rtd {
-+	struct snd_pcm_substream *substream;
-+	struct snd_compr_stream *cstream;
-+	struct snd_compr_params codec_param;
-+	struct snd_dma_buffer dma_buffer;
-+	spinlock_t lock;
-+	phys_addr_t phys;
-+	unsigned int pcm_size;
-+	unsigned int pcm_count;
-+	unsigned int pcm_irq_pos;       /* IRQ position */
-+	unsigned int periods;
-+	unsigned int bytes_sent;
-+	unsigned int bytes_received;
-+	unsigned int copied_total;
-+	uint16_t bits_per_sample;
-+	uint16_t source; /* Encoding source bit mask */
-+	uint16_t session_id;
-+	enum stream_state state;
-+	struct q6apm_graph *graph;
-+};
-+
-+struct q6apm_dai_data {
-+	long long int sid;
-+};
-+
-+static struct snd_pcm_hardware q6apm_dai_hardware_capture = {
-+	.info =                 (SNDRV_PCM_INFO_MMAP |
-+				SNDRV_PCM_INFO_BLOCK_TRANSFER |
-+				SNDRV_PCM_INFO_MMAP_VALID |
-+				SNDRV_PCM_INFO_INTERLEAVED |
-+				SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
-+	.formats =              (SNDRV_PCM_FMTBIT_S16_LE |
-+				SNDRV_PCM_FMTBIT_S24_LE),
-+	.rates =                SNDRV_PCM_RATE_8000_48000,
-+	.rate_min =             8000,
-+	.rate_max =             48000,
-+	.channels_min =         2,
-+	.channels_max =         4	,
-+	.buffer_bytes_max =     CAPTURE_MAX_NUM_PERIODS *
-+				CAPTURE_MAX_PERIOD_SIZE,
-+	.period_bytes_min =	CAPTURE_MIN_PERIOD_SIZE,
-+	.period_bytes_max =     CAPTURE_MAX_PERIOD_SIZE,
-+	.periods_min =          CAPTURE_MIN_NUM_PERIODS,
-+	.periods_max =          CAPTURE_MAX_NUM_PERIODS,
-+	.fifo_size =            0,
-+};
-+
-+static struct snd_pcm_hardware q6apm_dai_hardware_playback = {
-+	.info =                 (SNDRV_PCM_INFO_MMAP |
-+				SNDRV_PCM_INFO_BLOCK_TRANSFER |
-+				SNDRV_PCM_INFO_MMAP_VALID |
-+				SNDRV_PCM_INFO_INTERLEAVED |
-+				SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
-+	.formats =              (SNDRV_PCM_FMTBIT_S16_LE |
-+				SNDRV_PCM_FMTBIT_S24_LE),
-+	.rates =                SNDRV_PCM_RATE_8000_192000,
-+	.rate_min =             8000,
-+	.rate_max =             192000,
-+	.channels_min =         2,
-+	.channels_max =         8,
-+	.buffer_bytes_max =     (PLAYBACK_MAX_NUM_PERIODS *
-+				PLAYBACK_MAX_PERIOD_SIZE),
-+	.period_bytes_min =	PLAYBACK_MIN_PERIOD_SIZE,
-+	.period_bytes_max =     PLAYBACK_MAX_PERIOD_SIZE,
-+	.periods_min =          PLAYBACK_MIN_NUM_PERIODS,
-+	.periods_max =          PLAYBACK_MAX_NUM_PERIODS,
-+	.fifo_size =            0,
-+};
-+
-+static void event_handler(uint32_t opcode, uint32_t token,
-+			  uint32_t *payload, void *priv)
-+{
-+	struct q6apm_dai_rtd *prtd = priv;
-+	struct snd_pcm_substream *substream = prtd->substream;
-+
-+	switch (opcode) {
-+	case APM_CLIENT_EVENT_CMD_EOS_DONE:
-+		prtd->state = Q6APM_STREAM_STOPPED;
-+		break;
-+	case APM_CLIENT_EVENT_DATA_WRITE_DONE: {
-+		prtd->pcm_irq_pos += prtd->pcm_count;
-+		snd_pcm_period_elapsed(substream);
-+		if (prtd->state == Q6APM_STREAM_RUNNING) {
-+			q6apm_write_async(prtd->graph,
-+					   prtd->pcm_count, 0, 0, NO_TIMESTAMP);
-+		}
-+
-+		break;
-+		}
-+	case APM_CLIENT_EVENT_DATA_READ_DONE:
-+		prtd->pcm_irq_pos += prtd->pcm_count;
-+		snd_pcm_period_elapsed(substream);
-+		if (prtd->state == Q6APM_STREAM_RUNNING)
-+			q6apm_read(prtd->graph);
-+
-+		break;
-+	default:
-+		break;
-+	}
-+}
-+
-+static int q6apm_dai_prepare(struct snd_soc_component *component,
-+			     struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct q6apm_dai_rtd *prtd = runtime->private_data;
-+	struct q6apm_dai_data *pdata;
-+	int ret, i;
-+
-+	pdata = snd_soc_component_get_drvdata(component);
-+	if (!pdata)
-+		return -EINVAL;
-+
-+	if (!prtd || !prtd->graph) {
-+		dev_err(component->dev, "%s: private data null or audio client freed\n",
-+			__func__);
-+		return -EINVAL;
++#define Q6PRM_CLK(id) &(struct q6prm_clk) {		\
++		.clk_id	= id,				\
++		.afe_clk_id	= Q6PRM_##id,		\
++		.name = #id,				\
++		.attributes = LPASS_CLK_ATTRIBUTE_COUPLE_NO, \
++		.rate = 19200000,			\
++		.hw.init = &(struct clk_init_data) {	\
++			.ops = &clk_q6prm_ops,		\
++			.name = #id,			\
++		},					\
 +	}
 +
-+	prtd->pcm_count = snd_pcm_lib_period_bytes(substream);
-+	prtd->pcm_irq_pos = 0;
-+	/* rate and channels are sent to audio driver */
-+	ret = q6apm_graph_media_format_shmem(prtd->graph,
-+					     substream->stream,
-+					     runtime->rate,
-+					     runtime->channels,
-+					     NULL,
-+					     prtd->bits_per_sample);
-+
-+	if (ret < 0) {
-+		dev_err(component->dev, "%s: q6apm_open_write failed\n", __func__);
-+		return ret;
++#define Q6PRM_VOTE_CLK(id, blkid) &(struct q6prm_clk) { \
++		.clk_id	= id,				\
++		.afe_clk_id = blkid,			\
++		.hw.init = &(struct clk_init_data) {	\
++			.ops = &clk_vote_q6prm_ops,	\
++			.name = #id,			\
++		},					\
 +	}
 +
-+	ret = q6apm_graph_media_format_pcm(prtd->graph,
-+					   substream->stream,
-+					   runtime->rate,
-+					   runtime->channels,
-+					   NULL,
-+					   prtd->bits_per_sample);
-+	if (ret < 0)
-+		pr_info("%s: CMD Format block failed\n", __func__);
-+
-+	ret = q6apm_map_memory_regions(prtd->graph,
-+				       substream->stream,
-+				       prtd->phys,
-+				       (prtd->pcm_size / prtd->periods),
-+				       prtd->periods);
-+
-+	if (ret < 0) {
-+		dev_err(component->dev, "Audio Start: Buffer Allocation failed rc = %d\n",
-+							ret);
-+		return -ENOMEM;
-+	}
-+
-+	ret = q6apm_graph_prepare(prtd->graph);
-+	ret = q6apm_graph_start(prtd->graph);
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-+		/* Queue the buffers */
-+		for (i = 0; i < runtime->periods; i++)
-+			q6apm_read(prtd->graph);
-+
-+	}
-+	prtd->state = Q6APM_STREAM_RUNNING;
-+
-+	return 0;
-+}
-+
-+static int q6apm_dai_trigger(struct snd_soc_component *component,
-+			     struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct q6apm_dai_rtd *prtd = runtime->private_data;
-+	int ret = 0;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			ret = q6apm_write_async(prtd->graph, prtd->pcm_count, 0, 0, NO_TIMESTAMP);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		prtd->state = Q6APM_STREAM_STOPPED;
-+		//ret = q6apm_cmd_nowait(prtd->graph, CMD_EOS);
-+		break;
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		//ret = q6apm_cmd_nowait(prtd->graph, CMD_PAUSE);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static int q6apm_dai_open(struct snd_soc_component *component,
-+			  struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(soc_prtd, 0);
-+	struct q6apm_dai_rtd *prtd;
-+	struct q6apm_dai_data *pdata;
-+	struct device *dev = component->dev;
-+	int ret;
-+	int graph_id;
-+
-+	graph_id = cpu_dai->driver->id;
-+
-+	pdata = snd_soc_component_get_drvdata(component);
-+	if (!pdata) {
-+		dev_err(component->dev, "Drv data not found ..\n");
-+		return -EINVAL;
-+	}
-+
-+	prtd = kzalloc(sizeof(struct q6apm_dai_rtd), GFP_KERNEL);
-+	if (prtd == NULL)
-+		return -ENOMEM;
-+
-+	prtd->substream = substream;
-+
-+	prtd->graph = q6apm_graph_open(dev, (q6apm_cb)event_handler,
-+				       prtd, graph_id);
-+	if (IS_ERR(prtd->graph)) {
-+		pr_info("%s: Could not allocate memory\n", __func__);
-+		ret = PTR_ERR(prtd->graph);
-+		kfree(prtd);
-+		return ret;
-+	}
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		runtime->hw = q6apm_dai_hardware_playback;
-+	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+		runtime->hw = q6apm_dai_hardware_capture;
-+
-+	/* Ensure that buffer size is a multiple of period size */
-+	ret = snd_pcm_hw_constraint_integer(runtime,
-+					    SNDRV_PCM_HW_PARAM_PERIODS);
-+	if (ret < 0)
-+		dev_err(dev, "snd_pcm_hw_constraint_integer failed\n");
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		ret = snd_pcm_hw_constraint_minmax(runtime,
-+			SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
-+			BUFFER_BYTES_MIN, BUFFER_BYTES_MAX);
-+		if (ret < 0) {
-+			dev_err(dev, "constraint for buffer bytes min max ret = %d\n",
-+									ret);
-+		}
-+	}
-+
-+	ret = snd_pcm_hw_constraint_step(runtime, 0,
-+					 SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 32);
-+	if (ret < 0) {
-+		dev_err(dev, "constraint for period bytes step ret = %d\n",
-+								ret);
-+	}
-+	ret = snd_pcm_hw_constraint_step(runtime, 0,
-+					 SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 32);
-+	if (ret < 0) {
-+		dev_err(dev, "constraint for buffer bytes step ret = %d\n",
-+								ret);
-+	}
-+
-+	runtime->private_data = prtd;
-+	runtime->dma_bytes = BUFFER_BYTES_MAX;
-+	if (pdata->sid < 0)
-+		prtd->phys = substream->dma_buffer.addr;
-+	else
-+		prtd->phys = substream->dma_buffer.addr | (pdata->sid << 32);
-+
-+	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
-+
-+	return 0;
-+}
-+
-+static int q6apm_dai_close(struct snd_soc_component *component,
-+			   struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct q6apm_dai_rtd *prtd = runtime->private_data;
-+
-+	if (prtd && prtd->graph) {
-+		q6apm_graph_stop(prtd->graph);
-+
-+		q6apm_unmap_memory_regions(prtd->graph,
-+					   substream->stream);
-+		q6apm_graph_close(prtd->graph);
-+		prtd->graph = NULL;
-+		kfree(prtd);
-+		runtime->private_data = NULL;
-+	}
-+
-+	return 0;
-+}
-+
-+static snd_pcm_uframes_t q6apm_dai_pointer(struct snd_soc_component *component,
-+					   struct snd_pcm_substream *substream)
-+{
-+
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct q6apm_dai_rtd *prtd = runtime->private_data;
-+
-+	if (prtd->pcm_irq_pos >= prtd->pcm_size)
-+		prtd->pcm_irq_pos = 0;
-+
-+	return bytes_to_frames(runtime, (prtd->pcm_irq_pos));
-+}
-+
-+static int q6apm_dai_mmap(struct snd_soc_component *component,
-+			  struct snd_pcm_substream *substream,
-+			  struct vm_area_struct *vma)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct device *dev = component->dev;
-+
-+	return dma_mmap_coherent(dev, vma,
-+			runtime->dma_area, runtime->dma_addr,
-+			runtime->dma_bytes);
-+}
-+
-+static int q6apm_dai_hw_params(struct snd_soc_component *component,
-+			       struct snd_pcm_substream *substream,
-+			       struct snd_pcm_hw_params *params)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct q6apm_dai_rtd *prtd = runtime->private_data;
-+
-+	prtd->pcm_size = params_buffer_bytes(params);
-+	prtd->periods = params_periods(params);
-+
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		prtd->bits_per_sample = 16;
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		prtd->bits_per_sample = 24;
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int q6apm_dai_pcm_new(struct snd_soc_component *component,
-+			     struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_pcm_substream *psubstream, *csubstream;
-+	struct snd_pcm *pcm = rtd->pcm;
++struct q6prm_clk {
 +	struct device *dev;
-+	int size, ret;
++	int clk_id;
++	int afe_clk_id;
++	char *name;
++	int attributes;
++	int rate;
++	uint32_t handle;
++	struct clk_hw hw;
++};
++#define to_q6prm_clk(_hw) container_of(_hw, struct q6prm_clk, hw)
 +
-+	dev = component->dev;
-+	size = BUFFER_BYTES_MAX;
-+	psubstream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
-+	if (psubstream) {
-+		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, dev, size,
-+					  &psubstream->dma_buffer);
-+		if (ret) {
-+			dev_err(dev, "Cannot allocate buffer(s)\n");
-+			return ret;
-+		}
-+	}
-+
-+	csubstream = pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream;
-+	if (csubstream) {
-+		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, dev, size,
-+					  &csubstream->dma_buffer);
-+		if (ret) {
-+			dev_err(dev, "Cannot allocate buffer(s)\n");
-+			if (psubstream)
-+				snd_dma_free_pages(&psubstream->dma_buffer);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static void q6apm_dai_pcm_free(struct snd_soc_component *component,
-+			       struct snd_pcm *pcm)
-+{
-+	struct snd_pcm_substream *substream;
-+	int i;
-+
-+	if (!pcm->streams)
-+		return;
-+
-+	for (i = 0; i < ARRAY_SIZE(pcm->streams); i++) {
-+		substream = pcm->streams[i].substream;
-+		if (substream) {
-+			snd_dma_free_pages(&substream->dma_buffer);
-+			substream->dma_buffer.area = NULL;
-+			substream->dma_buffer.addr = 0;
-+		}
-+	}
-+}
-+
-+static const struct snd_soc_component_driver q6apm_fe_dai_component = {
-+	.name		= DRV_NAME,
-+	.open		= q6apm_dai_open,
-+	.close		= q6apm_dai_close,
-+	.prepare	= q6apm_dai_prepare,
-+	.pcm_construct	= q6apm_dai_pcm_new,
-+	.pcm_destruct	= q6apm_dai_pcm_free,
-+	.mmap		= q6apm_dai_mmap,
-+	.hw_params	= q6apm_dai_hw_params,
-+	.pointer	= q6apm_dai_pointer,
-+	.trigger	= q6apm_dai_trigger,
++struct q6prm {
++	struct device *dev;
++	struct gpr_device *gdev;
++	wait_queue_head_t wait;
++	struct gpr_ibasic_rsp_result_t result;
++	struct mutex lock;
++	struct q6prm_clk **clks;
++	int num_clks;
 +};
 +
-+static int q6apm_dai_probe(struct platform_device *pdev)
++#define PRM_CMD_REQUEST_HW_RSC		0x0100100F
++#define PRM_CMD_RSP_REQUEST_HW_RSC	0x02001002
++#define PRM_CMD_RELEASE_HW_RSC		0x01001010
++#define PRM_CMD_RSP_RELEASE_HW_RSC	0x02001003
++
++#define PARAM_ID_RSC_HW_CORE		0x08001032
++#define PARAM_ID_RSC_LPASS_CORE		0x0800102B
++#define PARAM_ID_RSC_AUDIO_HW_CLK	0x0800102C
++
++#define Q6PRM_LPASS_CLK_ID_WSA_CORE_MCLK			0x305
++#define Q6PRM_LPASS_CLK_ID_WSA_CORE_NPL_MCLK			0x306
++
++#define Q6PRM_LPASS_CLK_ID_VA_CORE_MCLK				0x307
++#define Q6PRM_LPASS_CLK_ID_VA_CORE_2X_MCLK			0x308
++
++#define Q6PRM_LPASS_CLK_ID_TX_CORE_MCLK				0x30c
++#define Q6PRM_LPASS_CLK_ID_TX_CORE_NPL_MCLK			0x30d
++
++#define Q6PRM_LPASS_CLK_ID_RX_CORE_MCLK				0x30e
++#define Q6PRM_LPASS_CLK_ID_RX_CORE_NPL_MCLK			0x30f
++
++#define Q6PRM_LPASS_CLK_SRC_INTERNAL	1
++#define Q6PRM_LPASS_CLK_ROOT_DEFAULT	0
++#define Q6PRM_HW_CORE_ID_LPASS		1
++#define Q6PRM_HW_CORE_ID_DCODEC		2
++
++struct prm_cmd_request_hw_core {
++	struct apm_module_param_data param_data;
++	uint32_t hw_clk_id;
++} __packed;
++
++struct prm_cmd_request_rsc {
++	struct apm_module_param_data param_data;
++	uint32_t num_clk_id;
++	struct audio_hw_clk_cfg clock_ids[1];
++} __packed;
++
++struct prm_cmd_release_rsc {
++	struct apm_module_param_data param_data;
++	uint32_t num_clk_id;
++	struct audio_hw_clk_cfg clock_ids[1];
++} __packed;
++
++static int q6prm_send_cmd_sync(struct q6prm *prm, struct gpr_pkt *pkt,
++			uint32_t rsp_opcode)
 +{
-+	struct device *dev = &pdev->dev;
-+	struct device_node *node = dev->of_node;
-+	struct of_phandle_args args;
-+	struct q6apm_dai_data *pdata;
++	struct gpr_device *gdev = prm->gdev;
++	struct gpr_hdr *hdr = &pkt->hdr;
 +	int rc;
 +
-+	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
-+	if (!pdata)
-+		return -ENOMEM;
++	mutex_lock(&prm->lock);
++	prm->result.opcode = 0;
++	prm->result.status = 0;
 +
-+	rc = of_parse_phandle_with_fixed_args(node, "iommus", 1, 0, &args);
++	rc = gpr_send_pkt(prm->gdev, pkt);
 +	if (rc < 0)
-+		pdata->sid = -1;
++		goto err;
++
++	if (rsp_opcode)
++		rc = wait_event_timeout(prm->wait,
++					(prm->result.opcode == hdr->opcode) ||
++					(prm->result.opcode == rsp_opcode),
++					5 * HZ);
 +	else
-+		pdata->sid = args.args[0] & SID_MASK_DEFAULT;
++		rc = wait_event_timeout(prm->wait,
++					(prm->result.opcode == hdr->opcode),
++					5 * HZ);
 +
-+	dev_set_drvdata(dev, pdata);
++	if (!rc) {
++		dev_err(&gdev->dev, "CMD timeout for [%x] opcode\n",
++			hdr->opcode);
++		rc = -ETIMEDOUT;
++	} else if (prm->result.status > 0) {
++		dev_err(&gdev->dev, "DSP returned error[%x] %x\n", hdr->opcode,
++			prm->result.status);
++		rc = -EINVAL;
++	} else {
++		dev_err(&gdev->dev, "DSP returned [%x]\n",
++			prm->result.status);
++		rc = 0;
++	}
 +
-+	return devm_snd_soc_register_component(dev, &q6apm_fe_dai_component,
-+					       NULL, 0);
++err:
++	mutex_unlock(&prm->lock);
++	return rc;
 +}
 +
-+static const struct of_device_id q6apm_dai_device_id[] = {
-+	{ .compatible = "qcom,q6apm-dais" },
++static int q6prm_set_hw_core_req(struct device *dev, uint32_t hw_block_id,   bool enable)
++{
++	struct prm_cmd_request_hw_core *req;
++	struct apm_module_param_data *param_data;
++	struct gpr_pkt *pkt;
++	struct q6prm *prm = dev_get_drvdata(dev);
++	struct gpr_device *gdev  = prm->gdev;
++	void *p;
++	int rc = 0;
++	uint32_t opcode, rsp_opcode;
++
++	if (enable) {
++		opcode = PRM_CMD_REQUEST_HW_RSC;
++		rsp_opcode = PRM_CMD_RSP_REQUEST_HW_RSC;
++	} else {
++		opcode = PRM_CMD_RELEASE_HW_RSC;
++		rsp_opcode = PRM_CMD_RSP_RELEASE_HW_RSC;
++	}
++
++	p = audioreach_alloc_cmd_pkt(sizeof(*req), opcode, 0, gdev->port.id,
++				     GPR_PRM_MODULE_IID);
++	if (IS_ERR(p))
++		return -ENOMEM;
++
++	pkt = p;
++	req = p + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
++
++	param_data = &req->param_data;
++
++	param_data->module_instance_id = GPR_PRM_MODULE_IID;
++	param_data->error_code = 0;
++	param_data->param_id = PARAM_ID_RSC_HW_CORE;
++	param_data->param_size = sizeof(*req) - APM_MODULE_PARAM_DATA_SIZE;
++
++	req->hw_clk_id = hw_block_id;
++
++	q6prm_send_cmd_sync(prm, pkt, rsp_opcode);
++
++	kfree(pkt);
++
++	return rc;
++}
++
++static int q6prm_set_lpass_clock(struct device *dev, int clk_id, int clk_attr,
++				 int clk_root, unsigned int freq)
++{
++	struct prm_cmd_request_rsc *req;
++	struct apm_module_param_data *param_data;
++	struct gpr_pkt *pkt;
++	struct q6prm *prm = dev_get_drvdata(dev);
++	struct gpr_device *gdev  = prm->gdev;
++	void *p;
++	int rc = 0;
++
++	p = audioreach_alloc_cmd_pkt(sizeof(*req), PRM_CMD_REQUEST_HW_RSC,
++				     0, gdev->port.id, GPR_PRM_MODULE_IID);
++	if (IS_ERR(p))
++		return -ENOMEM;
++
++	pkt = p;
++	req = p + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
++
++	param_data = &req->param_data;
++
++	param_data->module_instance_id = GPR_PRM_MODULE_IID;
++	param_data->error_code = 0;
++	param_data->param_id = PARAM_ID_RSC_AUDIO_HW_CLK;
++	param_data->param_size = sizeof(*req) - APM_MODULE_PARAM_DATA_SIZE;
++
++	req->num_clk_id = 1;
++	req->clock_ids[0].clock_id = clk_id;
++	req->clock_ids[0].clock_freq = freq;
++	req->clock_ids[0].clock_attri = clk_attr;
++	req->clock_ids[0].clock_root = clk_root;
++
++	q6prm_send_cmd_sync(prm, pkt, PRM_CMD_RSP_REQUEST_HW_RSC);
++
++	kfree(pkt);
++
++	return rc;
++}
++
++static int prm_callback(struct gpr_resp_pkt *data, void *priv, int op)
++{
++	struct gpr_device *gdev = priv;
++	struct q6prm *prm = dev_get_drvdata(&gdev->dev);
++	struct gpr_ibasic_rsp_result_t *result;
++	struct gpr_hdr *hdr = &data->hdr;
++
++	result = data->payload;
++
++	switch (hdr->opcode) {
++	case PRM_CMD_RSP_REQUEST_HW_RSC:
++	case PRM_CMD_RSP_RELEASE_HW_RSC:
++		prm->result.opcode = hdr->opcode;
++		prm->result.status = result->status;
++		wake_up(&prm->wait);
++		break;
++	default:
++		break;
++	}
++
++	return 0;
++}
++
++static int clk_q6prm_prepare(struct clk_hw *hw)
++{
++	struct q6prm_clk *clk = to_q6prm_clk(hw);
++
++	return q6prm_set_lpass_clock(clk->dev, clk->afe_clk_id, clk->attributes,
++				     Q6PRM_LPASS_CLK_ROOT_DEFAULT, clk->rate);
++}
++
++static void clk_q6prm_unprepare(struct clk_hw *hw)
++{
++	struct q6prm_clk *clk = to_q6prm_clk(hw);
++
++	q6prm_set_lpass_clock(clk->dev, clk->afe_clk_id, clk->attributes,
++			      Q6PRM_LPASS_CLK_ROOT_DEFAULT, 0);
++}
++
++static int clk_q6prm_set_rate(struct clk_hw *hw, unsigned long rate,
++			      unsigned long parent_rate)
++{
++	struct q6prm_clk *clk = to_q6prm_clk(hw);
++
++	clk->rate = rate;
++
++	return 0;
++}
++
++static unsigned long clk_q6prm_recalc_rate(struct clk_hw *hw,
++					   unsigned long parent_rate)
++{
++	struct q6prm_clk *clk = to_q6prm_clk(hw);
++
++	return clk->rate;
++}
++
++static long clk_q6prm_round_rate(struct clk_hw *hw, unsigned long rate,
++				 unsigned long *parent_rate)
++{
++	return rate;
++}
++
++static const struct clk_ops clk_q6prm_ops = {
++	.prepare	= clk_q6prm_prepare,
++	.unprepare	= clk_q6prm_unprepare,
++	.set_rate	= clk_q6prm_set_rate,
++	.round_rate	= clk_q6prm_round_rate,
++	.recalc_rate	= clk_q6prm_recalc_rate,
++};
++
++static int clk_vote_q6prm_block(struct clk_hw *hw)
++{
++	struct q6prm_clk *clk = to_q6prm_clk(hw);
++
++	return q6prm_set_hw_core_req(clk->dev, clk->afe_clk_id, true);
++}
++
++static void clk_unvote_q6prm_block(struct clk_hw *hw)
++{
++	struct q6prm_clk *clk = to_q6prm_clk(hw);
++
++	q6prm_set_hw_core_req(clk->dev, clk->afe_clk_id, false);
++}
++
++static const struct clk_ops clk_vote_q6prm_ops = {
++	.prepare	= clk_vote_q6prm_block,
++	.unprepare	= clk_unvote_q6prm_block,
++};
++
++static struct q6prm_clk *q6prm_clks[Q6PRM_MAX_CLK_ID] = {
++	[LPASS_CLK_ID_WSA_CORE_MCLK] = Q6PRM_CLK(LPASS_CLK_ID_WSA_CORE_MCLK),
++	[LPASS_CLK_ID_WSA_CORE_NPL_MCLK] =
++				Q6PRM_CLK(LPASS_CLK_ID_WSA_CORE_NPL_MCLK),
++	[LPASS_CLK_ID_VA_CORE_MCLK] = Q6PRM_CLK(LPASS_CLK_ID_VA_CORE_MCLK),
++	[LPASS_CLK_ID_TX_CORE_MCLK] = Q6PRM_CLK(LPASS_CLK_ID_TX_CORE_MCLK),
++	[LPASS_CLK_ID_TX_CORE_NPL_MCLK] =
++			Q6PRM_CLK(LPASS_CLK_ID_TX_CORE_NPL_MCLK),
++	[LPASS_CLK_ID_RX_CORE_MCLK] = Q6PRM_CLK(LPASS_CLK_ID_RX_CORE_MCLK),
++	[LPASS_CLK_ID_RX_CORE_NPL_MCLK] =
++				Q6PRM_CLK(LPASS_CLK_ID_RX_CORE_NPL_MCLK),
++	[LPASS_CLK_ID_VA_CORE_2X_MCLK] =
++				Q6PRM_CLK(LPASS_CLK_ID_VA_CORE_2X_MCLK),
++	[LPASS_HW_MACRO_VOTE] = Q6PRM_VOTE_CLK(LPASS_HW_MACRO_VOTE,
++						Q6PRM_HW_CORE_ID_LPASS),
++	[LPASS_HW_DCODEC_VOTE] = Q6PRM_VOTE_CLK(LPASS_HW_DCODEC_VOTE,
++						Q6PRM_HW_CORE_ID_DCODEC),
++};
++
++static struct clk_hw *q6prm_of_clk_hw_get(struct of_phandle_args *clkspec,
++					  void *data)
++{
++	struct q6prm *cc = data;
++	unsigned int idx = clkspec->args[0];
++	unsigned int attr = clkspec->args[1];
++
++	if (idx >= cc->num_clks || attr > LPASS_CLK_ATTRIBUTE_COUPLE_DIVISOR) {
++		dev_err(cc->dev, "Invalid clk specifier (%d, %d)\n", idx, attr);
++		return ERR_PTR(-EINVAL);
++	}
++
++	if (cc->clks[idx]) {
++		cc->clks[idx]->attributes = attr;
++		return &cc->clks[idx]->hw;
++	}
++
++	return ERR_PTR(-ENOENT);
++}
++
++static int prm_probe(struct gpr_device *gdev)
++{
++	struct device *dev = &gdev->dev;
++	struct q6prm *cc;
++	int i, ret;
++
++	cc = devm_kzalloc(dev, sizeof(*cc), GFP_KERNEL);
++	if (!cc)
++		return -ENOMEM;
++
++	cc->dev = dev;
++	cc->gdev = gdev;
++	mutex_init(&cc->lock);
++	init_waitqueue_head(&cc->wait);
++	cc->clks = &q6prm_clks[0];
++	cc->num_clks = ARRAY_SIZE(q6prm_clks);
++	for (i = 0; i < ARRAY_SIZE(q6prm_clks); i++) {
++		if (!q6prm_clks[i])
++			continue;
++
++		q6prm_clks[i]->dev = dev;
++
++		ret = devm_clk_hw_register(dev, &q6prm_clks[i]->hw);
++		if (ret)
++			return ret;
++	}
++
++	ret = of_clk_add_hw_provider(dev->of_node, q6prm_of_clk_hw_get, cc);
++	if (ret)
++		return ret;
++
++	dev_set_drvdata(dev, cc);
++
++	return 0;
++}
++
++static const struct of_device_id prm_device_id[]  = {
++	{ .compatible = "qcom,q6prm" },
 +	{},
 +};
-+MODULE_DEVICE_TABLE(of, q6apm_dai_device_id);
++MODULE_DEVICE_TABLE(of, prm_device_id);
 +
-+static struct platform_driver q6apm_dai_platform_driver = {
++static struct gpr_driver prm_driver = {
++	.probe = prm_probe,
++	.callback = prm_callback,
 +	.driver = {
-+		.name = "q6apm-dai",
-+		.of_match_table = of_match_ptr(q6apm_dai_device_id),
++		.name = "qcom-prm",
++		.of_match_table = of_match_ptr(prm_device_id),
 +	},
-+	.probe = q6apm_dai_probe,
 +};
-+module_platform_driver(q6apm_dai_platform_driver);
 +
-+MODULE_DESCRIPTION("Q6APM dai driver");
++module_gpr_driver(prm_driver);
++MODULE_DESCRIPTION("Audio Process Manager");
 +MODULE_LICENSE("GPL v2");
 -- 
 2.21.0
