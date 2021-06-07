@@ -2,120 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9BD39D4AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5A6739D4B1
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbhFGGKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 02:10:51 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:41249 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230203AbhFGGKu (ORCPT
+        id S230211AbhFGGOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 02:14:25 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:37614 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230175AbhFGGOY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 02:10:50 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id A95F322172;
-        Mon,  7 Jun 2021 08:08:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1623046137;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DzuWySf29iNNVaJeQVLK8ftx+fbfOMCdpAMGH60BRJY=;
-        b=v6fteIE6JrovjRlc372f+PAaq6l6ffqlKryJOv8kigSsoen+hGv8D62fCjULu0BUFz/CBM
-        zv1ldaTEA+1QE00H0phE3V3sImfoWsN0ndZyvm0AEH19ZBkw/sBmIYtCTWY6YHh+UMbHP7
-        Bevb4FQD7vDAC4gOzpd9IjqdVylQb8M=
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Mon, 07 Jun 2021 08:08:56 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     Tudor.Ambarus@microchip.com, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, p.yadav@ti.com,
-        miquel.raynal@bootlin.com, richard@nod.at
-Subject: Re: [PATCH v5 3/5] mtd: spi-nor: otp: return -EROFS if region is
- read-only
-In-Reply-To: <1549db61-500a-e5df-9303-823b41457861@ti.com>
-References: <20210604100252.9975-1-michael@walle.cc>
- <20210604100252.9975-4-michael@walle.cc>
- <c2b58dcc-5a60-792c-30ac-a3db327a85ed@microchip.com>
- <e117bc50b9f9e10549c25602b66cfe26@walle.cc>
- <1549db61-500a-e5df-9303-823b41457861@ti.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <4ba7994b0cc8d436012a776ca14addca@walle.cc>
-X-Sender: michael@walle.cc
+        Mon, 7 Jun 2021 02:14:24 -0400
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 06 Jun 2021 23:12:33 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 06 Jun 2021 23:12:32 -0700
+X-QCInternal: smtphost
+Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 07 Jun 2021 11:42:11 +0530
+Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
+        id AF6EC21A58; Mon,  7 Jun 2021 11:42:09 +0530 (IST)
+From:   Dikshita Agarwal <dikshita@codeaurora.org>
+To:     david.brown@linaro.org, robh+dt@kernel.org, mark.rutland@arm.com,
+        devicetree@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
+Subject: [PATCH v3] arm64: dts: qcom: sc7280: Add venus DT node
+Date:   Mon,  7 Jun 2021 11:42:07 +0530
+Message-Id: <1623046327-1970-1-git-send-email-dikshita@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-06-07 07:46, schrieb Vignesh Raghavendra:
-> On 6/4/21 6:45 PM, Michael Walle wrote:
->> Am 2021-06-04 15:07, schrieb Tudor.Ambarus@microchip.com:
->>> On 6/4/21 1:02 PM, Michael Walle wrote:
->>>> EXTERNAL EMAIL: Do not click links or open attachments unless you
->>>> know the content is safe
->>>> 
->>>> SPI NOR flashes will just ignore program commands if the OTP region 
->>>> is
->>>> locked. Thus, a user might not notice that the intended write didn't 
->>>> end
->>>> up in the flash. Return -EROFS to the user in this case. From what I 
->>>> can
->>>> tell, chips/cfi_cmdset_0001.c also return this error code.
->>>> 
->>>> One could optimize spi_nor_mtd_otp_range_is_locked() to read the 
->>>> status
->>>> register only once and not for every OTP region, but for that we 
->>>> would
->>>> need some more invasive changes. Given that this is
->>>> one-time-programmable memory and the normal access mode is reading, 
->>>> we
->>>> just live with the small overhead.
->>>> 
->>>> Fixes: 069089acf88b ("mtd: spi-nor: add OTP support")
->>>> Signed-off-by: Michael Walle <michael@walle.cc>
->>>> Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
->>>> ---
->>>>  drivers/mtd/spi-nor/otp.c | 36 ++++++++++++++++++++++++++++++++++++
->>>>  1 file changed, 36 insertions(+)
->>>> 
->>>> diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
->>>> index 3898ed67ba1c..063f8fb68649 100644
->>>> --- a/drivers/mtd/spi-nor/otp.c
->>>> +++ b/drivers/mtd/spi-nor/otp.c
->>>> @@ -249,6 +249,32 @@ static int spi_nor_mtd_otp_info(struct mtd_info
->>>> *mtd, size_t len,
->>>>         return ret;
->>>>  }
->>>> 
->>>> +static int spi_nor_mtd_otp_range_is_locked(struct spi_nor *nor,
->>>> loff_t ofs,
->>>> +                                          size_t len)
->>>> +{
->>>> +       const struct spi_nor_otp_ops *ops = nor->params->otp.ops;
->>>> +       unsigned int region;
->>>> +       int locked;
->>>> +
->>>> +       if (!len)
->>>> +               return 0;
->>>> +
->>> 
->>> You won't need this if you put patch 4/5 before this one. With this:
->> 
->> This patch will get backported to the stable kernels. Patch 4 on the
->> other hand does not.
->> 
-> 
-> I don't see why 4/5 cannot be marked for backport too as it makes 3/5
-> much cleaner?
+Add DT entries for the sc7280 venus encoder/decoder.
 
-What kind of problem does 4/5 fix? I can't see how that patch would
-apply to any rule in Documentation/process/stable-kernel-rules.rst.
+Co-developed-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
 
-But sure, adding the same Fixes: tag, I can swap those two.
+change since v2:
+ - removed firmware node.
+change since v1:
+ - added rpmh power domain and opp table.
+---
+ arch/arm64/boot/dts/qcom/sc7280.dtsi | 71 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 71 insertions(+)
 
--michael
+diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+index 4c44a52..7b45623 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+@@ -60,6 +60,11 @@
+ 			no-map;
+ 			reg = <0x0 0x80b00000 0x0 0x100000>;
+ 		};
++
++		video_mem: memory@8b200000 {
++			reg = <0x0 0x8b200000 0x0 0x500000>;
++			no-map;
++		};
+ 	};
+ 
+ 	cpus {
+@@ -850,6 +855,72 @@
+ 			interrupts = <GIC_SPI 582 IRQ_TYPE_LEVEL_HIGH>;
+ 		};
+ 
++		venus: video-codec@0aa00000 {
++			compatible = "qcom,sc7280-venus";
++			reg = <0 0x0aa00000 0 0xd0600>;
++			interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
++
++			clocks = <&videocc VIDEO_CC_MVSC_CORE_CLK>,
++				 <&videocc VIDEO_CC_MVSC_CTL_AXI_CLK>,
++				 <&videocc VIDEO_CC_VENUS_AHB_CLK>,
++				 <&videocc VIDEO_CC_MVS0_CORE_CLK>,
++				 <&videocc VIDEO_CC_MVS0_AXI_CLK>;
++			clock-names = "core", "bus", "iface",
++				      "vcodec_core", "vcodec_bus";
++
++			power-domains = <&videocc MVSC_GDSC>,
++					<&videocc MVS0_GDSC>;
++					<&rpmhpd SC7280_CX>;
++			power-domain-names = "venus", "vcodec0", "cx";
++			operating-points-v2 = <&venus_opp_table>;
++
++			interconnects = <&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_VENUS_CFG 0>,
++					<&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>;
++			interconnect-names = "cpu-cfg", "video-mem";
++
++			iommus = <&apps_smmu 0x2180 0x20>,
++				 <&apps_smmu 0x2184 0x20>;
++			memory-region = <&video_mem>;
++
++			video-decoder {
++				compatible = "venus-decoder";
++			};
++
++			video-encoder {
++				compatible = "venus-encoder";
++			};
++
++			venus_opp_table: venus-opp-table {
++				compatible = "operating-points-v2";
++
++				opp-133330000 {
++					opp-hz = /bits/ 64 <133330000>;
++					required-opps = <&rpmhpd_opp_low_svs>;
++				};
++
++				opp-240000000 {
++					opp-hz = /bits/ 64 <240000000>;
++					required-opps = <&rpmhpd_opp_svs>;
++				};
++
++				opp-335000000 {
++					opp-hz = /bits/ 64 <335000000>;
++					required-opps = <&rpmhpd_opp_svs_l1>;
++				};
++
++				opp-424000000 {
++					opp-hz = /bits/ 64 <424000000>;
++					required-opps = <&rpmhpd_opp_nom>;
++				};
++
++				opp-460000000 {
++					opp-hz = /bits/ 64 <460000000>;
++					required-opps = <&rpmhpd_opp_turbo>;
++				};
++			};
++
++		};
++
+ 		videocc: clock-controller@aaf0000 {
+ 			compatible = "qcom,sc7280-videocc";
+ 			reg = <0 0xaaf0000 0 0x10000>;
+-- 
+2.7.4
+
