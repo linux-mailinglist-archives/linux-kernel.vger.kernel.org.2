@@ -2,452 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA4F39DE31
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE8F39DDC0
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230344AbhFGOAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 10:00:24 -0400
-Received: from mga09.intel.com ([134.134.136.24]:17126 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230302AbhFGOAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 10:00:23 -0400
-IronPort-SDR: 2rIZVuvaG3Y7hGbT7X8dscyyYIigraZtsHcE0cJoUzRIb3hMjpig5os7ZGubB9JJVAaybo4vLh
- xSExAOEpjZKQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="204594331"
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
-   d="scan'208";a="204594331"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 06:58:28 -0700
-IronPort-SDR: +2JcIQujUAtZXpchy2Yp26ILENur1Uhdww+RfZXY1IAef3zIjo7uEHX/170JgI3Fk8m+MBv8hZ
- B5OH74eJ07mA==
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
-   d="scan'208";a="401636378"
-Received: from flobatol-mobl1.amr.corp.intel.com (HELO [10.209.152.154]) ([10.209.152.154])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 06:58:25 -0700
-Subject: Re: [PATCH 1/4] ASoC: Intel: sof_cs42l42: support JSL DAI link
- sequence
-To:     Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
+        id S230289AbhFGNgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 09:36:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230264AbhFGNga (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 09:36:30 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE57C061766;
+        Mon,  7 Jun 2021 06:34:25 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id v206-20020a1cded70000b02901a586d3fa23so5921997wmg.4;
+        Mon, 07 Jun 2021 06:34:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=72Aq2IRVVuAlG+BxVmjLTJ3arbYuvMQ1+eZPQ9a8xXQ=;
+        b=oxZD6Zqnln0Io1phX+iliNpQP3rcAd/5VPQ9pTnnOMQV5bYbKZkH6nrKJjiJzXEIWy
+         CTKE16jnk5MIGtra3WVZjd6Kwpfq+ZqkT+5C9HCfYJeMLmh4OBTknBSIGvOaoX4CTHRR
+         VqteXdoHhEZ5fm5+PQ/Hnb9DbSKqYA7INxn6AOvJaGR4OUMyY9aR5e9pirME8dTs2120
+         AWO6y/0LB/Wgq4kVQQTucfpjfwuqg5CNuJvcaYbYbSbxJZ1B6y6uxU4OZkJ62IveuqPM
+         hc4q4Kbz9cRK1/mn1L5D0bAUE/3JuyvAbIsGNhEIHNs9kuem67gHHnWS/6iAUkxw+j4X
+         WaTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=72Aq2IRVVuAlG+BxVmjLTJ3arbYuvMQ1+eZPQ9a8xXQ=;
+        b=igu8TkOolpPHKkq4WWMoLBFLRNERX1XVWKxMPoB28YppxBnmvAjt+tCVDdLEw2rgqZ
+         EVAIuBa7opmg3NBI1qjYDloG8ptI3PmamZUBYOT3MON1IB/hOHPhMURdmdLVsZgz19eE
+         G82ud3slyJ3hfYAhgohCABzvz0vUgGljLs5S9A1zXc98kbymkUD2sGwZixkMVNQoMFa2
+         YIG3LwPErhmWCfKbu7oZke4L4de+15dipTLY9ScPqGW3tuLTwysHAvEOZD+fYiRxqNx7
+         xNyOH4cntzQoByHhyT1yZvq+JK5ihnvmD7Z9xwO3n32Q3vICdO6YaauByrljiJIJBDK9
+         H/OQ==
+X-Gm-Message-State: AOAM533pMIcu0csq4WvM8sILZL3LmdPKYHMksEqe1k5DXe2/J6irJio7
+        O2ubA93jrKFOtuwk1MJ64zg=
+X-Google-Smtp-Source: ABdhPJx78Hb1ow2zyDK514tMIszmaR8bb/TUHyENVmt1hS7sq8OY1P401AE2jjgHMilCoFs70oRWyQ==
+X-Received: by 2002:a7b:c34a:: with SMTP id l10mr17077892wmj.46.1623072864255;
+        Mon, 07 Jun 2021 06:34:24 -0700 (PDT)
+Received: from localhost (pd9e51d70.dip0.t-ipconnect.de. [217.229.29.112])
+        by smtp.gmail.com with ESMTPSA id u6sm17359575wre.76.2021.06.07.06.34.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 06:34:22 -0700 (PDT)
+Date:   Mon, 7 Jun 2021 15:36:03 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Nikola =?utf-8?Q?Milosavljevi=C4=87?= <mnidza@outlook.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Paul Fertser <fercerpav@gmail.com>,
         Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Rander Wang <rander.wang@intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        linux-kernel@vger.kernel.org,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Dharageswari R <dharageswari.r@intel.com>,
-        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Naveen Manohar <naveen.m@intel.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Tzung-Bi Shih <tzungbi@google.com>
-References: <20210606004102.26190-1-brent.lu@intel.com>
- <20210606004102.26190-2-brent.lu@intel.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <2ccdffb1-e905-420e-5144-ebb8356b5518@linux.intel.com>
-Date:   Mon, 7 Jun 2021 08:32:35 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH v6 08/14] memory: tegra: Enable compile testing for all
+ drivers
+Message-ID: <YL4gwxWopKT7LomG@orome.fritz.box>
+References: <20210601023119.22044-1-digetx@gmail.com>
+ <20210601023119.22044-9-digetx@gmail.com>
+ <41899ef4-bb16-6c3a-035c-1e840a993bec@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20210606004102.26190-2-brent.lu@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="aMbWj/kSYVzrzPWY"
+Content-Disposition: inline
+In-Reply-To: <41899ef4-bb16-6c3a-035c-1e840a993bec@canonical.com>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--aMbWj/kSYVzrzPWY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 6/5/21 7:40 PM, Brent Lu wrote:
-> The backend DAI link sequence of GLK platform is different from the
-> sequence of other platforms. We refactor the sof_card_dai_links_create()
-> function to support both style.
-> 
-> GLK: SPK - HP - DMIC - HDMI
-> Other: HP - DMIC - HDMI - SPK
+On Mon, Jun 07, 2021 at 08:01:28AM +0200, Krzysztof Kozlowski wrote:
+> On 01/06/2021 04:31, Dmitry Osipenko wrote:
+> > Enable compile testing for all Tegra memory drivers.
+> >=20
+> > Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> > ---
+> >  drivers/memory/tegra/Kconfig | 16 ++++++++++------
+> >  1 file changed, 10 insertions(+), 6 deletions(-)
+> >=20
+>=20
+> Hi Dmitry,
+>=20
+> This fails on x86_64 and i386:
+> https://krzk.eu/#/builders/38/builds/260
+> https://krzk.eu/#/builders/40/builds/261
+>=20
+> /bin/ld: warning: orphan section `__reservedmem_of_table' from `drivers/m=
+emory/tegra/tegra210-emc-table.o' being placed in section `__reservedmem_of=
+_table'
+> /bin/ld: drivers/memory/tegra/mc.o: in function `tegra_mc_probe':
+> mc.c:(.text+0x87a): undefined reference to `reset_controller_register'
+> make[1]: *** [/home/buildbot/worker/builddir/build/Makefile:1191: vmlinux=
+] Error 1
+>=20
+> It's a defconfig with:
+> scripts/config --file out/.config -e COMPILE_TEST -e OF -e SRAM -e
+> MEMORY -e PM_DEVFREQ -e ARM_PL172_MPMC -e ATMEL_SDRAMC -e ATMEL_EBI -e
+> BRCMSTB_DPFE -e BT1_L2_CTL -e TI_AEMIF -e TI_EMIF -e OMAP_GPMC -e
+> TI_EMIF_SRAM -e MVEBU_DEVBUS -e FSL_CORENET_CF -e FSL_IFC -e JZ4780_NEMC
+> -e MTK_SMI -e DA8XX_DDRCTL -e PL353_SMC -e RENESAS_RPCIF -e
+> STM32_FMC2_EBI -e SAMSUNG_MC -e EXYNOS5422_DMC -e EXYNOS_SROM -e
+> TEGRA_MC -e TEGRA20_EMC -e TEGRA30_EMC -e TEGRA124_EMC -e
+> TEGRA210_EMC_TABLE -e TEGRA210_EMC
 
-I am really confused here.
-The dailink sequence is whatever we want it to be. What matters is that 
-the dailink ID matches what is in the topology.
+Ugh... that's exactly one of the reasons why I dislike COMPILE_TEST...
+though admittedly it does point out a missing dependency here. I think
+we need to add && RESET_CONTROLLER to that || branch of the depends on
+to fix that. ARCH_TEGRA selects RESET_CONTROLLER explicitly, so the
+COMPILE_TEST branch needs to mirror that.
 
-Is this saying that the GLK and JSL topologies did not follow any sort 
-of convention? Can you elaborate more on what is the issue?
+Either that, or I suppose we could add the depends on RESET_CONTROLLER
+explicitly to TEGRA_MC, or perhaps even select it (although that could
+cause conflicts down the road, but should be fine right now because
+RESET_CONTROLLER doesn't have any other dependencies right now).
 
-Put differently, why can't we fix the topology instead with a reorder of 
-the dailinks?
+Not sure what to do about that orphaned __reservedmem_of_table section.
+Maybe all we need to do is to select OF_RESERVED_MEM from
+TEGRA210_EMC_TABLE?
 
-> 
-> Signed-off-by: Brent Lu <brent.lu@intel.com>
-> ---
->   sound/soc/intel/boards/sof_cs42l42.c | 318 ++++++++++++++++++---------
->   1 file changed, 208 insertions(+), 110 deletions(-)
-> 
-> diff --git a/sound/soc/intel/boards/sof_cs42l42.c b/sound/soc/intel/boards/sof_cs42l42.c
-> index 8919d3ba3c89..e3171242f612 100644
-> --- a/sound/soc/intel/boards/sof_cs42l42.c
-> +++ b/sound/soc/intel/boards/sof_cs42l42.c
-> @@ -259,133 +259,166 @@ static struct snd_soc_dai_link_component dmic_component[] = {
->   	}
->   };
->   
-> -static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
-> -							  int ssp_codec,
-> -							  int ssp_amp,
-> -							  int dmic_be_num,
-> -							  int hdmi_num)
-> +static int create_spk_amp_dai_links(struct device *dev,
-> +				    struct snd_soc_dai_link *links,
-> +				    struct snd_soc_dai_link_component *cpus,
-> +				    int *id, int ssp_amp)
->   {
-> -	struct snd_soc_dai_link_component *idisp_components;
-> -	struct snd_soc_dai_link_component *cpus;
-> -	struct snd_soc_dai_link *links;
-> -	int i, id = 0;
-> -
-> -	links = devm_kzalloc(dev, sizeof(struct snd_soc_dai_link) *
-> -			     sof_audio_card_cs42l42.num_links, GFP_KERNEL);
-> -	cpus = devm_kzalloc(dev, sizeof(struct snd_soc_dai_link_component) *
-> -			     sof_audio_card_cs42l42.num_links, GFP_KERNEL);
-> -	if (!links || !cpus)
-> -		goto devm_err;
-> +	int ret = 0;
->   
->   	/* speaker amp */
-> -	if (sof_cs42l42_quirk & SOF_SPEAKER_AMP_PRESENT) {
-> -		links[id].name = devm_kasprintf(dev, GFP_KERNEL,
-> -						"SSP%d-Codec", ssp_amp);
-> -		if (!links[id].name)
-> -			goto devm_err;
-> +	if (!(sof_cs42l42_quirk & SOF_SPEAKER_AMP_PRESENT))
-> +		return 0;
->   
-> -		links[id].id = id;
-> +	links[*id].name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d-Codec",
-> +					 ssp_amp);
-> +	if (!links[*id].name) {
-> +		ret = -ENOMEM;
-> +		goto devm_err;
-> +	}
->   
-> -		if (sof_cs42l42_quirk & SOF_MAX98357A_SPEAKER_AMP_PRESENT) {
-> -			max_98357a_dai_link(&links[id]);
-> -		} else {
-> -			dev_err(dev, "no amp defined\n");
-> -			goto devm_err;
-> -		}
-> +	links[*id].id = *id;
->   
-> -		links[id].platforms = platform_component;
-> -		links[id].num_platforms = ARRAY_SIZE(platform_component);
-> -		links[id].dpcm_playback = 1;
-> -		links[id].no_pcm = 1;
-> -		links[id].cpus = &cpus[id];
-> -		links[id].num_cpus = 1;
-> -
-> -		links[id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
-> -							  "SSP%d Pin",
-> -							  ssp_amp);
-> -		if (!links[id].cpus->dai_name)
-> -			goto devm_err;
-> +	if (sof_cs42l42_quirk & SOF_MAX98357A_SPEAKER_AMP_PRESENT) {
-> +		max_98357a_dai_link(&links[*id]);
-> +	} else {
-> +		dev_err(dev, "no amp defined\n");
-> +		ret = -EINVAL;
-> +		goto devm_err;
-> +	}
->   
-> -		id++;
-> +	links[*id].platforms = platform_component;
-> +	links[*id].num_platforms = ARRAY_SIZE(platform_component);
-> +	links[*id].dpcm_playback = 1;
-> +	links[*id].no_pcm = 1;
-> +	links[*id].cpus = &cpus[*id];
-> +	links[*id].num_cpus = 1;
-> +
-> +	links[*id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
-> +						   "SSP%d Pin", ssp_amp);
-> +	if (!links[*id].cpus->dai_name) {
-> +		ret = -ENOMEM;
-> +		goto devm_err;
->   	}
->   
-> +	(*id)++;
-> +
-> +devm_err:
-> +	return ret;
-> +}
-> +
-> +static int create_hp_codec_dai_links(struct device *dev,
-> +				     struct snd_soc_dai_link *links,
-> +				     struct snd_soc_dai_link_component *cpus,
-> +				     int *id, int ssp_codec)
-> +{
->   	/* codec SSP */
-> -	links[id].name = devm_kasprintf(dev, GFP_KERNEL,
-> -					"SSP%d-Codec", ssp_codec);
-> -	if (!links[id].name)
-> +	links[*id].name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d-Codec",
-> +					 ssp_codec);
-> +	if (!links[*id].name)
->   		goto devm_err;
->   
-> -	links[id].id = id;
-> -	links[id].codecs = cs42l42_component;
-> -	links[id].num_codecs = ARRAY_SIZE(cs42l42_component);
-> -	links[id].platforms = platform_component;
-> -	links[id].num_platforms = ARRAY_SIZE(platform_component);
-> -	links[id].init = sof_cs42l42_init;
-> -	links[id].exit = sof_cs42l42_exit;
-> -	links[id].ops = &sof_cs42l42_ops;
-> -	links[id].dpcm_playback = 1;
-> -	links[id].dpcm_capture = 1;
-> -	links[id].no_pcm = 1;
-> -	links[id].cpus = &cpus[id];
-> -	links[id].num_cpus = 1;
-> -
-> -	links[id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
-> -						  "SSP%d Pin",
-> -						  ssp_codec);
-> -	if (!links[id].cpus->dai_name)
-> +	links[*id].id = *id;
-> +	links[*id].codecs = cs42l42_component;
-> +	links[*id].num_codecs = ARRAY_SIZE(cs42l42_component);
-> +	links[*id].platforms = platform_component;
-> +	links[*id].num_platforms = ARRAY_SIZE(platform_component);
-> +	links[*id].init = sof_cs42l42_init;
-> +	links[*id].exit = sof_cs42l42_exit;
-> +	links[*id].ops = &sof_cs42l42_ops;
-> +	links[*id].dpcm_playback = 1;
-> +	links[*id].dpcm_capture = 1;
-> +	links[*id].no_pcm = 1;
-> +	links[*id].cpus = &cpus[*id];
-> +	links[*id].num_cpus = 1;
-> +
-> +	links[*id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
-> +						   "SSP%d Pin",
-> +						   ssp_codec);
-> +	if (!links[*id].cpus->dai_name)
->   		goto devm_err;
->   
-> -	id++;
-> +	(*id)++;
-> +
-> +	return 0;
-> +
-> +devm_err:
-> +	return -ENOMEM;
-> +}
-> +
-> +static int create_dmic_dai_links(struct device *dev,
-> +				 struct snd_soc_dai_link *links,
-> +				 struct snd_soc_dai_link_component *cpus,
-> +				 int *id, int dmic_be_num)
-> +{
-> +	int i;
->   
->   	/* dmic */
-> -	if (dmic_be_num > 0) {
-> -		/* at least we have dmic01 */
-> -		links[id].name = "dmic01";
-> -		links[id].cpus = &cpus[id];
-> -		links[id].cpus->dai_name = "DMIC01 Pin";
-> -		links[id].init = dmic_init;
-> -		if (dmic_be_num > 1) {
-> -			/* set up 2 BE links at most */
-> -			links[id + 1].name = "dmic16k";
-> -			links[id + 1].cpus = &cpus[id + 1];
-> -			links[id + 1].cpus->dai_name = "DMIC16k Pin";
-> -			dmic_be_num = 2;
-> -		}
-> +	if (dmic_be_num <= 0)
-> +		return 0;
-> +
-> +	/* at least we have dmic01 */
-> +	links[*id].name = "dmic01";
-> +	links[*id].cpus = &cpus[*id];
-> +	links[*id].cpus->dai_name = "DMIC01 Pin";
-> +	links[*id].init = dmic_init;
-> +	if (dmic_be_num > 1) {
-> +		/* set up 2 BE links at most */
-> +		links[*id + 1].name = "dmic16k";
-> +		links[*id + 1].cpus = &cpus[*id + 1];
-> +		links[*id + 1].cpus->dai_name = "DMIC16k Pin";
-> +		dmic_be_num = 2;
->   	}
->   
->   	for (i = 0; i < dmic_be_num; i++) {
-> -		links[id].id = id;
-> -		links[id].num_cpus = 1;
-> -		links[id].codecs = dmic_component;
-> -		links[id].num_codecs = ARRAY_SIZE(dmic_component);
-> -		links[id].platforms = platform_component;
-> -		links[id].num_platforms = ARRAY_SIZE(platform_component);
-> -		links[id].ignore_suspend = 1;
-> -		links[id].dpcm_capture = 1;
-> -		links[id].no_pcm = 1;
-> -		id++;
-> +		links[*id].id = *id;
-> +		links[*id].num_cpus = 1;
-> +		links[*id].codecs = dmic_component;
-> +		links[*id].num_codecs = ARRAY_SIZE(dmic_component);
-> +		links[*id].platforms = platform_component;
-> +		links[*id].num_platforms = ARRAY_SIZE(platform_component);
-> +		links[*id].ignore_suspend = 1;
-> +		links[*id].dpcm_capture = 1;
-> +		links[*id].no_pcm = 1;
-> +
-> +		(*id)++;
->   	}
->   
-> +	return 0;
-> +}
-> +
-> +static int create_hdmi_dai_links(struct device *dev,
-> +				 struct snd_soc_dai_link *links,
-> +				 struct snd_soc_dai_link_component *cpus,
-> +				 int *id, int hdmi_num)
-> +{
-> +	struct snd_soc_dai_link_component *idisp_components;
-> +	int i;
-> +
->   	/* HDMI */
-> -	if (hdmi_num > 0) {
-> -		idisp_components = devm_kzalloc(dev,
-> -						sizeof(struct snd_soc_dai_link_component) *
-> -						hdmi_num, GFP_KERNEL);
-> -		if (!idisp_components)
-> -			goto devm_err;
-> -	}
-> +	if (hdmi_num <= 0)
-> +		return 0;
-> +
-> +	idisp_components = devm_kzalloc(dev,
-> +					sizeof(struct snd_soc_dai_link_component) *
-> +					hdmi_num, GFP_KERNEL);
-> +	if (!idisp_components)
-> +		goto devm_err;
-> +
->   	for (i = 1; i <= hdmi_num; i++) {
-> -		links[id].name = devm_kasprintf(dev, GFP_KERNEL,
-> -						"iDisp%d", i);
-> -		if (!links[id].name)
-> +		links[*id].name = devm_kasprintf(dev, GFP_KERNEL,
-> +						 "iDisp%d", i);
-> +		if (!links[*id].name)
->   			goto devm_err;
->   
-> -		links[id].id = id;
-> -		links[id].cpus = &cpus[id];
-> -		links[id].num_cpus = 1;
-> -		links[id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
-> -							  "iDisp%d Pin", i);
-> -		if (!links[id].cpus->dai_name)
-> +		links[*id].id = *id;
-> +		links[*id].cpus = &cpus[*id];
-> +		links[*id].num_cpus = 1;
-> +		links[*id].cpus->dai_name = devm_kasprintf(dev,
-> +							   GFP_KERNEL,
-> +							   "iDisp%d Pin",
-> +							   i);
-> +		if (!links[*id].cpus->dai_name)
->   			goto devm_err;
->   
->   		idisp_components[i - 1].name = "ehdaudio0D2";
-> @@ -396,14 +429,79 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
->   		if (!idisp_components[i - 1].dai_name)
->   			goto devm_err;
->   
-> -		links[id].codecs = &idisp_components[i - 1];
-> -		links[id].num_codecs = 1;
-> -		links[id].platforms = platform_component;
-> -		links[id].num_platforms = ARRAY_SIZE(platform_component);
-> -		links[id].init = sof_hdmi_init;
-> -		links[id].dpcm_playback = 1;
-> -		links[id].no_pcm = 1;
-> -		id++;
-> +		links[*id].codecs = &idisp_components[i - 1];
-> +		links[*id].num_codecs = 1;
-> +		links[*id].platforms = platform_component;
-> +		links[*id].num_platforms = ARRAY_SIZE(platform_component);
-> +		links[*id].init = sof_hdmi_init;
-> +		links[*id].dpcm_playback = 1;
-> +		links[*id].no_pcm = 1;
-> +
-> +		(*id)++;
-> +	}
-> +
-> +	return 0;
-> +
-> +devm_err:
-> +	return -ENOMEM;
-> +}
-> +
-> +static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
-> +							  int ssp_codec,
-> +							  int ssp_amp,
-> +							  int dmic_be_num,
-> +							  int hdmi_num)
-> +{
-> +	struct snd_soc_dai_link_component *cpus;
-> +	struct snd_soc_dai_link *links;
-> +	int ret, id = 0;
-> +
-> +	links = devm_kzalloc(dev, sizeof(struct snd_soc_dai_link) *
-> +			     sof_audio_card_cs42l42.num_links, GFP_KERNEL);
-> +	cpus = devm_kzalloc(dev, sizeof(struct snd_soc_dai_link_component) *
-> +			     sof_audio_card_cs42l42.num_links, GFP_KERNEL);
-> +	if (!links || !cpus)
-> +		goto devm_err;
-> +
-> +	if (soc_intel_is_glk()) {
-> +		/* gemini lake starts from spk link */
-> +		ret = create_spk_amp_dai_links(dev, links, cpus, &id, ssp_amp);
-> +		if (ret < 0) {
-> +			dev_err(dev, "fail to create spk amp dai links, ret %d\n",
-> +				ret);
-> +			goto devm_err;
-> +		}
-> +	}
-> +
-> +	ret = create_hp_codec_dai_links(dev, links, cpus, &id, ssp_codec);
-> +	if (ret < 0) {
-> +		dev_err(dev, "fail to create hp codec dai links, ret %d\n",
-> +			ret);
-> +		goto devm_err;
-> +	}
-> +
-> +	ret = create_dmic_dai_links(dev, links, cpus, &id, dmic_be_num);
-> +	if (ret < 0) {
-> +		dev_err(dev, "fail to create dmic dai links, ret %d\n",
-> +			ret);
-> +		goto devm_err;
-> +	}
-> +
-> +	ret = create_hdmi_dai_links(dev, links, cpus, &id, hdmi_num);
-> +	if (ret < 0) {
-> +		dev_err(dev, "fail to create hdmi dai links, ret %d\n",
-> +			ret);
-> +		goto devm_err;
-> +	}
-> +
-> +	if (!soc_intel_is_glk()) {
-> +		/* other platforms end with spk link */
-> +		ret = create_spk_amp_dai_links(dev, links, cpus, &id, ssp_amp);
-> +		if (ret < 0) {
-> +			dev_err(dev, "fail to create spk amp dai links, ret %d\n",
-> +				ret);
-> +			goto devm_err;
-> +		}
->   	}
->   
->   	return links;
-> 
+Let me to a few test builds.
+
+Thierry
+
+--aMbWj/kSYVzrzPWY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmC+IMMACgkQ3SOs138+
+s6HeDw//bUmVhBYQZAdR05dHVxNlK483hLerAbOIp/XZHKTPYqPuv8Awx4UPiYWI
+tuKqP9WupRe8cBtKVxslslOpFIktT1ewJx7/lODQre4FU/qsID3MqGl9rsGWnRRO
+QGRdXJM0GTF7Ysy8Su6rM8qshfnBqgo71DgYC7QZdNLa0XFThnjmfu+fYMo9VTZN
+j6WjB3DcbY4SkXGsECgwmFkrQD2WomJR4C4aPaujp4QND7I7O6RpODJrjTDj2t+A
+5nwFhQXgCb1mKh0aivRj/FVNQJ1MZGoIG2TXmyETPbELkbCKi/uUJa2AfPEOF3J0
+XlhlIwOPyOYb2hJt4ijIvU+emlM9CYR5aY2vUMiIF7Euz+n5yyTgxgk1zF/6QFGr
+gCIqoMXcmG3BbvsNRRSpsco2LKrtTcPNtEQwKsV00lhrzp1Ez8x3XNlyyEm+g4L6
+I3xUGzOpPqxk2O5RHX8oqyh2BW9Dk6o38wZmPdpMjdvsdjuqG/EbzB68mDbt9hPo
+I7WSJLVPwdk+Jb+VfS28OrW0CvpR50HEBFoxbDbwmnOt8Ba5iWHSBUTalEhSOd5G
+a9WPFqioVzPuTGHxB1bxogH8B5V2AgzlPR7WXZCAGzvWbd9j0+7Akje6Lvjtv2Sq
+O9tm6FoPxJ9MBSL9SW5gfNLB8Y7/Sf/pqdPBzQpt4as0c+hT4+o=
+=/jof
+-----END PGP SIGNATURE-----
+
+--aMbWj/kSYVzrzPWY--
