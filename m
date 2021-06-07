@@ -2,106 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C7539DCD7
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F5239DCD9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231236AbhFGMqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 08:46:42 -0400
-Received: from lucky1.263xmail.com ([211.157.147.134]:34152 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231209AbhFGMqi (ORCPT
+        id S230198AbhFGMq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 08:46:59 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:12121 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230444AbhFGMq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 08:46:38 -0400
-Received: from localhost (unknown [192.168.167.16])
-        by lucky1.263xmail.com (Postfix) with ESMTP id D454EC8492;
-        Mon,  7 Jun 2021 20:44:44 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P32529T140357062862592S1623069879715065_;
-        Mon, 07 Jun 2021 20:44:46 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <80b9561bac60db3418677257b4859855>
-X-RL-SENDER: jon.lin@rock-chips.com
-X-SENDER: jon.lin@rock-chips.com
-X-LOGIN-NAME: jon.lin@rock-chips.com
-X-FST-TO: linux-spi@vger.kernel.org
-X-RCPT-COUNT: 17
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jon Lin <jon.lin@rock-chips.com>
-To:     linux-spi@vger.kernel.org
-Cc:     jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
-        heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
-        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
-        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
-        p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Chris Morgan <macromorgan@hotmail.com>
-Subject: [PATCH v5 8/8] arm64: dts: rockchip: Enable SFC for Odroid Go Advance
-Date:   Mon,  7 Jun 2021 20:44:37 +0800
-Message-Id: <20210607124437.4143-4-jon.lin@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210607124437.4143-1-jon.lin@rock-chips.com>
-References: <20210607124303.22393-1-jon.lin@rock-chips.com>
- <20210607124437.4143-1-jon.lin@rock-chips.com>
+        Mon, 7 Jun 2021 08:46:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1623069907; x=1654605907;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=ldICpVmPM5K8n+s7DsP2mONAmSrUKBI+7+MXhYW78c4=;
+  b=EnV0+W0TnICFmbbAC4uwQusqsTaOcjPIiTJV0cYWp6ov3bCLwvRrs1DL
+   LyjxhssJKd74d6h5HOG47nQHLw92gp6S/570v5AxIwbBjk/Motix1SFCx
+   kqkcuD4XHIvaGWV+v2An+kfRmtW03rbxq0Au3a1cFmNstwMwEe1WxxkvT
+   ULbXyJqh6DDIQDx+0H/fiMnNj2W/a5kva1v7g1scFA8Vvh2u4oOAofMxk
+   1ztjwUr1XVGVgq2Vaf0R5t13Av2kUfVib5oMyAC4SxRCjZu4ZsHrXuT9T
+   h/ofsS9NtreNKSHjZcrcWIfp/lxr7NPg9K1nHcQlT0mmHi4phw1+r/WVM
+   g==;
+IronPort-SDR: oZj/ute6IR9BD00CRNIddzFl/huqlMOXHab8fwEw3FFzmx7AcCqtQFqdqMeGCXzNIvCiUekbQO
+ q4KyHX1EnzYSKteT08iDKqB5qfYpnjso6wJV5yJ+iGxv3BV+gvuRmjkkNwr/U2vnvbIKLzV4Sv
+ RxWKzJCmxzW9FGkqMuO+0CFVmVnVfq/U1O/562rnVBZBU94p/LfFgbrotlEQU38yFuR2ikQUIP
+ j7i0QcjEVifSAfFZukgEzDpF+xuSl9eUzyS5ylUxfL+2QXtpBFbzZnqNQThr4J0uFPykkxV3GZ
+ Pww=
+X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
+   d="scan'208";a="123779583"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Jun 2021 05:45:06 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 05:45:05 -0700
+Received: from den-her-m31857h.microchip.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Mon, 7 Jun 2021 05:45:02 -0700
+Message-ID: <9f4fad323e17c8ba6ebde728fcc99c87dd06fc75.camel@microchip.com>
+Subject: Re: [PATCH net-next v3 03/10] net: sparx5: add hostmode with
+ phylink support
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Mark Einon <mark.einon@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Simon Horman" <simon.horman@netronome.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>
+Date:   Mon, 7 Jun 2021 14:45:01 +0200
+In-Reply-To: <20210607091536.GA30436@shell.armlinux.org.uk>
+References: <20210604085600.3014532-1-steen.hegelund@microchip.com>
+         <20210604085600.3014532-4-steen.hegelund@microchip.com>
+         <20210607091536.GA30436@shell.armlinux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Morgan <macromorgan@hotmail.com>
+Hi Russell,
 
-This enables the Rockchip Serial Flash Controller for the Odroid Go
-Advance. Note that while the attached SPI NOR flash and the controller
-both support quad read mode, only 2 of the required 4 pins are present.
-The rx and tx bus width is set to 2 for this reason.
+Thanks for your comments.
 
-Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
-Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
----
+On Mon, 2021-06-07 at 10:15 +0100, Russell King (Oracle) wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> 
+> On Fri, Jun 04, 2021 at 10:55:53AM +0200, Steen Hegelund wrote:
+> > +static void sparx5_phylink_mac_config(struct phylink_config *config,
+> > +                                   unsigned int mode,
+> > +                                   const struct phylink_link_state *state)
+> > +{
+> > +     struct sparx5_port *port = netdev_priv(to_net_dev(config->dev));
+> > +     struct sparx5_port_config conf;
+> > +
+> > +     conf = port->conf;
+> > +     conf.power_down = false;
+> > +     conf.portmode = state->interface;
+> > +     conf.speed = state->speed;
+> > +     conf.autoneg = state->an_enabled;
+> > +     conf.pause = state->pause;
+> > +
+> > +     if (state->interface == PHY_INTERFACE_MODE_10GBASER) {
+> > +             if (state->speed == SPEED_UNKNOWN) {
+> > +                     /* When a SFP is plugged in we use capabilities to
+> > +                      * default to the highest supported speed
+> > +                      */
+> > +                     if (phylink_test(state->advertising, 25000baseSR_Full) ||
+> > +                         phylink_test(state->advertising, 25000baseCR_Full))
+> > +                             conf.speed = SPEED_25000;
+> > +                     else if (state->interface == PHY_INTERFACE_MODE_10GBASER)
+> > +                             conf.speed = SPEED_10000;
+> > +             } else if (state->speed == SPEED_2500) {
+> > +                     conf.portmode = PHY_INTERFACE_MODE_2500BASEX;
+> > +             } else if (state->speed == SPEED_1000) {
+> > +                     conf.portmode = PHY_INTERFACE_MODE_1000BASEX;
+> > +             }
+> 
+> 1) As detailed in the documentation for phylink, state->speed is not
+>    guaranteed to be valid in the mac_config method.
 
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
-Changes in v2: None
-Changes in v1: None
+OK.  I will assume speed is not known in this callback.
 
- .../boot/dts/rockchip/rk3326-odroid-go2.dts      | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-index 49c97f76df77..f78e11dd8447 100644
---- a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-@@ -484,6 +484,22 @@
- 	status = "okay";
- };
- 
-+&sfc {
-+	pinctrl-0 = <&sfc_clk &sfc_cs0 &sfc_bus2>;
-+	pinctrl-names = "default";
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	status = "okay";
-+
-+	flash@0 {
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <108000000>;
-+		spi-rx-bus-width = <2>;
-+		spi-tx-bus-width = <2>;
-+	};
-+};
-+
- &tsadc {
- 	status = "okay";
- };
+> 2) We clearly need PHY_INTERFACE_MODE_25GBASER rather than working
+>    around this by testing bits in the advertising bitmap.
+
+
+Yes that would be a very useful addition.
+Should I add PHY_INTERFACE_MODE_25GBASER in this series or should that be added as a separate
+series?
+
+> 
+> 3) I really don't get what's going on with setting the port mode to
+>    2500base-X and 1000base-X here when state->interface is 10GBASER.
+
+The high speed interfaces (> 2.5G) do not support any in-band signalling, so the only way that e.g a
+10G interface running at 2.5G will be able to link up with its partner is if both ends configure the
+speed manually via ethtool.
+	
+> 
+> > +             if (phylink_test(state->advertising, FIBRE))
+> > +                     conf.media = PHY_MEDIA_SR;
+> > +             else
+> > +                     conf.media = PHY_MEDIA_DAC;
+> > +     }
+> > +
+> > +     if (!port_conf_has_changed(&port->conf, &conf))
+> > +             return;
+> > +}
+> > +
+> > +static void sparx5_phylink_mac_link_up(struct phylink_config *config,
+> > +                                    struct phy_device *phy,
+> > +                                    unsigned int mode,
+> > +                                    phy_interface_t interface,
+> > +                                    int speed, int duplex,
+> > +                                    bool tx_pause, bool rx_pause)
+> > +{
+> 
+> This is the only place that the MAC is guaranteed to know the
+> negotiated speed.
+
+OK.
+
+> 
+> --
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+
+
 -- 
-2.17.1
+BR
+Steen
 
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+steen.hegelund@microchip.com
 
 
