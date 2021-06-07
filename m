@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4F139E90E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 23:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BBAC39E908
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 23:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231537AbhFGVWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 17:22:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53744 "EHLO mail.kernel.org"
+        id S231364AbhFGVV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 17:21:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231160AbhFGVV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230463AbhFGVV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 7 Jun 2021 17:21:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 66AB96124C;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 4A5A361208;
         Mon,  7 Jun 2021 21:20:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1623100804;
-        bh=CEnEF+urhZePx7bgHVYDJTnN8hLuPlG/HAHmO5yJKig=;
+        bh=drDz5rzH693vO68IMto8JatvrK5kPM1PUmcH2W4U2/o=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=uvkZqZprHW2RmOm/97koo9pFHFZMVvb30e4hL3BjOgouXvEOaymhPGG7o2gST2McW
-         4cYDd8a0hYwURNITXuaw1ImEfeqIw89et5KkSDYij18uWH3Lzgy/6LCbzNZsTd8VUM
-         wd9qkLMoOhjXwuUZtNXCTmgAnfk/fKf5JVakzIOlxbIwXtEKt0QGQKHcx7mo+nPf1a
-         gKGNc5DXxjP1FqyGTIWm0FRsQd6rzPpWoodskd1zpnZM0RsOQWyGIsIIKEttbXVXOM
-         nWUayjudiCaHIQ0z4I5xBBpZEWVnbDN9eN9BqXIN2POiUbJ3PqLQbGt+LKzcOkfuYW
-         noDC9RqwokDqw==
+        b=K089cnZXaN/txOhb/fuN9Vdp/1Y+az7dtb1Z7hcGK2NddqkYtpKS26cBiJgl5KhnQ
+         VSAAoRvid/jH4tL5yO7mjZopuh9J82oSBy4cgHVVXuTSbMbviAQuiBeVoFytO3jec/
+         eb+oGFYTMmLSqm8bvZsU+cHJzYEdF9pfgu85ZC0bzwHjHLFWmFRRzw6gRtwrM3mTB8
+         /gg9TEH6nPLlNaqpb05MVU86FT4kd3gQJ1QBc6HdxSuyjafoyPCzCSTU8MsIBV1no5
+         6eTzB/aiw6rjL2KFMIoLGF0nkgXoDj7i5MKCPhgkUJyJEHFZw1Rok+LnDEBr62+n7Q
+         5q/2ylIveD8OA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5CE1D60CD1;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3EC0860A1B;
         Mon,  7 Jun 2021 21:20:04 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: moxa: Use
- devm_platform_get_and_ioremap_resource()
+Subject: Re: [PATCH net-next] ipv4: Fix spelling mistakes
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162310080437.4243.15294603650747603292.git-patchwork-notify@kernel.org>
+Message-Id: <162310080425.4243.503492647736528773.git-patchwork-notify@kernel.org>
 Date:   Mon, 07 Jun 2021 21:20:04 +0000
-References: <20210607150259.4013977-1-yangyingliang@huawei.com>
-In-Reply-To: <20210607150259.4013977-1-yangyingliang@huawei.com>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org
+References: <20210607150109.2856253-1-zhengyongjun3@huawei.com>
+In-Reply-To: <20210607150109.2856253-1-zhengyongjun3@huawei.com>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, edumazet@google.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -47,18 +47,19 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Mon, 7 Jun 2021 23:02:59 +0800 you wrote:
-> Use devm_platform_get_and_ioremap_resource() to simplify
-> code and avoid a null-ptr-deref by checking 'res' in it.
+On Mon, 7 Jun 2021 23:01:09 +0800 you wrote:
+> Fix some spelling mistakes in comments:
+> Dont  ==> Don't
+> timout  ==> timeout
+> incomming  ==> incoming
+> necesarry  ==> necessary
+> substract  ==> subtract
 > 
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->  drivers/net/ethernet/moxa/moxart_ether.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+> [...]
 
 Here is the summary with links:
-  - [net-next] net: moxa: Use devm_platform_get_and_ioremap_resource()
-    https://git.kernel.org/netdev/net-next/c/35cba15a504b
+  - [net-next] ipv4: Fix spelling mistakes
+    https://git.kernel.org/netdev/net-next/c/974d8f86cd60
 
 You are awesome, thank you!
 --
