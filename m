@@ -2,139 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E8639DB18
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8F139DB24
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbhFGLWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 07:22:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38244 "EHLO mail.kernel.org"
+        id S231281AbhFGLY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 07:24:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230194AbhFGLWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 07:22:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F212B6101A;
-        Mon,  7 Jun 2021 11:20:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623064856;
-        bh=AZv8dRcvDlfgxFi4HYEke9KgpebnK89UUq/um94nbN0=;
-        h=References:In-Reply-To:Reply-To:From:Date:Subject:To:Cc:From;
-        b=oqzDrF2hZNR9kjbIq4MZiQDYmcBwsWn0H9CudxGHMIkHbvj5lOiBlkeqFIv/NzUxT
-         4LKPyB6WEj41P4283ZZ547MIaAxBh74lxVcZ4Ky1cVS1OwKF6p0Iip0UlMToYrdoAO
-         4rsEQ+dkMRMggbR4IuIQxx9CFa0LQa83iHyNBJqE2BBwRiD98O+WXjPAdto5ko+AgC
-         lbXc+6eUjPqXalFKQz9sRKDx+eqW59YpuRxMbO71dDdyJkg2m4QT7VO/F3Q+dV2+ie
-         CbUtLtwdCDq8h+Z9DbFMrYsB3t7FVtcCSdMo5tubvSH329sb9Z3E3h/xcCyN4Mc3rZ
-         wWSA+GhY45xnw==
-Received: by mail-lf1-f49.google.com with SMTP id a2so25615480lfc.9;
-        Mon, 07 Jun 2021 04:20:55 -0700 (PDT)
-X-Gm-Message-State: AOAM530nUdHjMUjkCwa7VBIhsY/vsrkMJpqbN53Nr7c+utzp/GgayNo1
-        UGfSEFnCACx4ZwTPWHM00edfhBUCMSb900xSw/0=
-X-Google-Smtp-Source: ABdhPJzY71JZF6OCcQXGna/ln5JgqcsET8OdgsNKLv4hl+KtPLOZJc/0bZyYSKEAt0WHeW1x2OpQzrWggB0eiapDmNk=
-X-Received: by 2002:a19:f11e:: with SMTP id p30mr4920376lfh.496.1623064854255;
- Mon, 07 Jun 2021 04:20:54 -0700 (PDT)
+        id S230139AbhFGLY1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 07:24:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0672E6101A;
+        Mon,  7 Jun 2021 11:22:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623064948;
+        bh=ju0IM5bV7VcbUBVbz7i9SyId2p/5YdRiN+GBRoDwlUQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FZ493wnRr+pR16QlfjU73Dmi5e13inbxknr5dZAkpEGSQ3YeFrrvTrnRnwXdeFr7T
+         dARRejBOLt/e0F0eCAEkclhlY4x//YDFu9ZWW43VyN9SWDIXsYhBlRoW8eJkExrVBO
+         PMUuGTD4KlUJ9Vl8svq075OhdAqgbq/INFp9jXcA=
+Date:   Mon, 7 Jun 2021 13:22:26 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        clang-built-linux@googlegroups.com,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Gal Pressman <galpress@amazon.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next v1 10/15] RDMA/cm: Use an attribute_group on
+ the ib_port_attribute intead of kobj's
+Message-ID: <YL4Bcm2dOyWKLGJ7@kroah.com>
+References: <cover.1623053078.git.leonro@nvidia.com>
+ <00e578937f557954d240bc0856f45b3f752d6cba.1623053078.git.leonro@nvidia.com>
+ <YL3z/xpm5EYHFuZs@kroah.com>
+ <YL36OFkmlxJiqjvc@unreal>
 MIME-Version: 1.0
-References: <20210607081727.4723-1-cnsztl@gmail.com> <9258ab23-ef65-2c3d-f0d2-ca5f77d7c12a@gmail.com>
- <CAGb2v65ck=LV+UCdQoaUtEjFaTaHr9-wmGmpkCCkebUOuYtikw@mail.gmail.com> <f085da86-8b6d-ba99-2d0a-736ec02424db@gmail.com>
-In-Reply-To: <f085da86-8b6d-ba99-2d0a-736ec02424db@gmail.com>
-Reply-To: wens@kernel.org
-From:   Chen-Yu Tsai <wens@kernel.org>
-Date:   Mon, 7 Jun 2021 19:20:42 +0800
-X-Gmail-Original-Message-ID: <CAGb2v67trVUJuSwLgsbDXHRKVhd5keWxs4V7u5NSs8jp5-asJw@mail.gmail.com>
-Message-ID: <CAGb2v67trVUJuSwLgsbDXHRKVhd5keWxs4V7u5NSs8jp5-asJw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: rockchip: add EEPROM node for NanoPi R4S
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     Tianling Shen <cnsztl@gmail.com>, Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Marty Jones <mj8263788@gmail.com>, Pavel Machek <pavel@ucw.cz>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YL36OFkmlxJiqjvc@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Jun 07, 2021 at 01:51:36PM +0300, Leon Romanovsky wrote:
+> On Mon, Jun 07, 2021 at 12:25:03PM +0200, Greg KH wrote:
+> > On Mon, Jun 07, 2021 at 11:17:35AM +0300, Leon Romanovsky wrote:
+> > > From: Jason Gunthorpe <jgg@nvidia.com>
+> > > 
+> > > This code is trying to attach a list of counters grouped into 4 groups to
+> > > the ib_port sysfs. Instead of creating a bunch of kobjects simply express
+> > > everything naturally as an ib_port_attribute and add a single
+> > > attribute_groups list.
+> > > 
+> > > Remove all the naked kobject manipulations.
+> > 
+> > Much nicer.
+> > 
+> > But why do you need your counters to be atomic in the first place?  What
+> > are they counting that requires this?  Given that they are just a
+> > statistic for userspace, making them be a u64 should work just the same,
+> > right?
+> 
+> The statistic counters are per-port, while the cm.c flows run in
+> asynchronically in parallel for every CM connection.
+> 
+> We need atomic variable to ensure that "write to u64" is not
+> interrupted.
 
-On Mon, Jun 7, 2021 at 6:26 PM Johan Jonker <jbx6244@gmail.com> wrote:
->
-> Hi Chen-Yu,
->
-> On 6/7/21 11:40 AM, Chen-Yu Tsai wrote:
-> > On Mon, Jun 7, 2021 at 5:31 PM Johan Jonker <jbx6244@gmail.com> wrote:
-> >>
-> >> Hi Tianling,
-> >>
-> >> On 6/7/21 10:17 AM, Tianling Shen wrote:
-> >>> NanoPi R4S has a EEPROM attached to the 2nd I2C bus (U92), which
-> >>> stores the MAC address.
-> >>>
-> >>> Signed-off-by: Tianling Shen <cnsztl@gmail.com>
-> >>> ---
-> >>>  arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts | 9 +++++++++
-> >>>  1 file changed, 9 insertions(+)
-> >>>
-> >>> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-> >>> index cef4d18b599d..4a82f50a07c5 100644
-> >>> --- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-> >>> +++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-> >>> @@ -68,6 +68,15 @@
-> >>>       status = "disabled";
-> >>>  };
-> >>>
-> >>> +&i2c2 {
-> >>> +     eeprom@51 {
-> >>> +             compatible = "microchip,24c02", "atmel,24c02";
-> >>> +             reg = <0x51>;
-> >>> +             pagesize = <16>;
-> >>
-> >>> +             read-only; /* This holds our MAC */
-> >>
-> >> The mainline dts files should be generic I think.
-> >> Any comment about "use", partitions or write ability should be avoided.
-> >> It's up the user.
-> >
->
-> > Per the datasheet for this specific EEPROM, the latter half (128 bytes)
-> > is read-only in hardware by design though.
->
-> The 24AA02XEXX is programmed at the factory with a
-> globally unique node address stored in the upper half
-> of the array and permanently write-protected. The
-> remaining 1,024 bits are available for application use.
->
-> Just a question...
->
->     nvmem-cells = <&mac_address>;
->     nvmem-cells-names = "mac-address";
->
-> Which part does this point to?
+On what system is "write to u64" interruptable?  As these are per-port,
+do multiple threads try to increment these at the same time?  And even
+if they do, what happens if one is 'dropped' somehow because of this?
+It's just a userspace statistic counter, what relies on this being
+exact?
 
-In the eeprom node:
+thanks,
 
-    mac_address: mac-address@fa {
-            reg = <0xfa 0x6>;
-    };
-
-> Can we use the lower part to store/rewrite this too?
-
-If you don't set it to read only, then you could rewrite the lower
-portion. Writes to the upper portion would be ignored.
-
-> ===
->
-> From at24.yaml:
->
->             items:
->               - pattern:
-> "^(atmel|catalyst|microchip|nxp|ramtron|renesas|rohm|st),(24(c|cs|lc|mac)[0-9]+|spd)$"
->               - pattern: "^atmel,(24(c|cs|mac)[0-9]+|spd)$"
->
-> How does Microchip 24AA025E48 fit the regex?
-> What compatible would you advise?
-
-New regex: "^microchip,24aa025?e(48|64)$"
-
-
-All that was what I had around in my tree.
-
-ChenYu
+greg k-h
