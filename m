@@ -2,107 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E13EC39DB1E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB2439DAF8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231522AbhFGLXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 07:23:17 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:4338 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231184AbhFGLXN (ORCPT
+        id S231200AbhFGLUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 07:20:35 -0400
+Received: from lucky1.263xmail.com ([211.157.147.134]:50198 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230434AbhFGLUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 07:23:13 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Fz9mb36hFz1BKml;
-        Mon,  7 Jun 2021 19:16:31 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 19:21:20 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 7 Jun 2021 19:21:19 +0800
-From:   Guangbin Huang <huangguangbin2@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <salil.mehta@huawei.com>, <lipeng321@huawei.com>,
-        <huangguangbin2@huawei.com>
-Subject: [PATCH net-next 3/3] net: hns3: remove now redundant logic related to HNAE3_UNKNOWN_RESET
-Date:   Mon, 7 Jun 2021 19:18:12 +0800
-Message-ID: <1623064692-24205-4-git-send-email-huangguangbin2@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1623064692-24205-1-git-send-email-huangguangbin2@huawei.com>
-References: <1623064692-24205-1-git-send-email-huangguangbin2@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggemi759-chm.china.huawei.com (10.1.198.145)
-X-CFilter-Loop: Reflected
+        Mon, 7 Jun 2021 07:20:33 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id C96B5C8500;
+        Mon,  7 Jun 2021 19:18:39 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P32529T140357062862592S1623064720154033_;
+        Mon, 07 Jun 2021 19:18:41 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <12e3184ddaff61ebb4970c943d1e051f>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: broonie@kernel.org
+X-RCPT-COUNT: 9
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Jon Lin <jon.lin@rock-chips.com>
+To:     broonie@kernel.org
+Cc:     jon.lin@rock-chips.com, heiko@sntech.de, robh+dt@kernel.org,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v6 0/6] Support ROCKCHIP SPI new feature
+Date:   Mon,  7 Jun 2021 19:18:31 +0800
+Message-Id: <20210607111837.31074-1-jon.lin@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yufeng Mo <moyufeng@huawei.com>
 
-Earlier patches have decoupled the MSI-X conveyed error handling
-and recovery logic. This earlier concept code is no longer required.
 
-Signed-off-by: Yufeng Mo <moyufeng@huawei.com>
-Signed-off-by: Salil Mehta <salil.mehta@huawei.com>
-Signed-off-by: Jiaran Zhang <zhangjiaran@huawei.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
----
- drivers/net/ethernet/hisilicon/hns3/hnae3.h        |  1 -
- .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c    | 22 ----------------------
- 2 files changed, 23 deletions(-)
+Changes in v6:
+- Consider to compatibility, the "rockchip,rk3568-spi" is removed in
+  Series-changes v5, so the commit massage should also remove the
+  corresponding information
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.h b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-index 89b2b7fa7b8b..dc9b5bc3431b 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-@@ -243,7 +243,6 @@ enum hnae3_reset_type {
- 	HNAE3_FUNC_RESET,
- 	HNAE3_GLOBAL_RESET,
- 	HNAE3_IMP_RESET,
--	HNAE3_UNKNOWN_RESET,
- 	HNAE3_NONE_RESET,
- 	HNAE3_MAX_RESET,
- };
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index 4b1aa5c45852..45102681bd2a 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -3792,28 +3792,6 @@ static enum hnae3_reset_type hclge_get_reset_level(struct hnae3_ae_dev *ae_dev,
- 	enum hnae3_reset_type rst_level = HNAE3_NONE_RESET;
- 	struct hclge_dev *hdev = ae_dev->priv;
- 
--	/* first, resolve any unknown reset type to the known type(s) */
--	if (test_bit(HNAE3_UNKNOWN_RESET, addr)) {
--		u32 msix_sts_reg = hclge_read_dev(&hdev->hw,
--					HCLGE_MISC_VECTOR_INT_STS);
--		/* we will intentionally ignore any errors from this function
--		 *  as we will end up in *some* reset request in any case
--		 */
--		if (hclge_handle_hw_msix_error(hdev, addr))
--			dev_info(&hdev->pdev->dev, "received msix interrupt 0x%x\n",
--				 msix_sts_reg);
--
--		clear_bit(HNAE3_UNKNOWN_RESET, addr);
--		/* We defered the clearing of the error event which caused
--		 * interrupt since it was not posssible to do that in
--		 * interrupt context (and this is the reason we introduced
--		 * new UNKNOWN reset type). Now, the errors have been
--		 * handled and cleared in hardware we can safely enable
--		 * interrupts. This is an exception to the norm.
--		 */
--		hclge_enable_vector(&hdev->misc_vector, true);
--	}
--
- 	/* return the highest priority reset level amongst all */
- 	if (test_bit(HNAE3_IMP_RESET, addr)) {
- 		rst_level = HNAE3_IMP_RESET;
+Changes in v5:
+- Change to leave one compatible id rv1126, and rk3568 is compatible
+  with rv1126
+
+Changes in v4:
+- Adjust the order patches
+- Simply commit massage like redundancy "application" content
+
+Changes in v3:
+- Fix compile error which is find by Sascha in [v2,2/8]
+
+Jon Lin (6):
+  dt-bindings: spi: spi-rockchip: add description for rv1126
+  spi: rockchip: add compatible string for rv1126
+  spi: rockchip: Set rx_fifo interrupt waterline base on transfer item
+  spi: rockchip: Wait for STB status in slave mode tx_xfer
+  spi: rockchip: Support cs-gpio
+  spi: rockchip: Support SPI_CS_HIGH
+
+ .../devicetree/bindings/spi/spi-rockchip.yaml |  1 +
+ drivers/spi/spi-rockchip.c                    | 95 +++++++++++++++----
+ 2 files changed, 80 insertions(+), 16 deletions(-)
+
 -- 
-2.8.1
+2.17.1
+
+
 
