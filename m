@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA62539D89E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 344F639D89F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230287AbhFGJZU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Jun 2021 05:25:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41528 "EHLO
+        id S230374AbhFGJZ1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Jun 2021 05:25:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230306AbhFGJZQ (ORCPT
+        with ESMTP id S230321AbhFGJZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:25:16 -0400
+        Mon, 7 Jun 2021 05:25:25 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B37DC061766
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 02:23:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A4EC061787
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 02:23:35 -0700 (PDT)
 Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <p.zabel@pengutronix.de>)
-        id 1lqBTf-0005q9-NM; Mon, 07 Jun 2021 11:23:23 +0200
+        id 1lqBTk-0005qs-Qz; Mon, 07 Jun 2021 11:23:28 +0200
 Received: from pza by lupine with local (Exim 4.92)
         (envelope-from <p.zabel@pengutronix.de>)
-        id 1lqBTf-0000J6-Er; Mon, 07 Jun 2021 11:23:23 +0200
-Message-ID: <b3c26d2f29715bdd2771246b26b070fba1d457fe.camel@pengutronix.de>
-Subject: Re: [PATCH -next] reset: lantiq: use
- devm_reset_controller_register()
+        id 1lqBTk-0000JM-Gs; Mon, 07 Jun 2021 11:23:28 +0200
+Message-ID: <d222e3a93d192722099994441283193d6ed26a79.camel@pengutronix.de>
+Subject: Re: [PATCH -next] reset: mchp: sparx5: fix return value check in
+ mchp_sparx5_map_io()
 From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 07 Jun 2021 11:23:23 +0200
-In-Reply-To: <20210517032648.2969609-1-yangyingliang@huawei.com>
-References: <20210517032648.2969609-1-yangyingliang@huawei.com>
+To:     Wei Yongjun <weiyongjun1@huawei.com>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        UNGLinuxDriver@microchip.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
+Date:   Mon, 07 Jun 2021 11:23:28 +0200
+In-Reply-To: <20210519141638.3052456-1-weiyongjun1@huawei.com>
+References: <20210519141638.3052456-1-weiyongjun1@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 User-Agent: Evolution 3.30.5-1.1 
@@ -44,30 +48,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-17 at 11:26 +0800, Yang Yingliang wrote:
-> Use devm_reset_controller_register() for the reset controller
-> registration.
+On Wed, 2021-05-19 at 14:16 +0000, Wei Yongjun wrote:
+> In case of error, the function devm_platform_get_and_ioremap_resource()
+> returns ERR_PTR() and never returns NULL. The NULL test in the return
+> value check should be replaced with IS_ERR().
 > 
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->  drivers/reset/reset-lantiq.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/reset/reset-lantiq.c b/drivers/reset/reset-lantiq.c
-> index ac41d093de13..b936cfe85641 100644
-> --- a/drivers/reset/reset-lantiq.c
-> +++ b/drivers/reset/reset-lantiq.c
-> @@ -186,7 +186,7 @@ static int lantiq_rcu_reset_probe(struct platform_device *pdev)
->  	priv->rcdev.of_xlate = lantiq_rcu_reset_xlate;
->  	priv->rcdev.of_reset_n_cells = 2;
->  
-> -	return reset_controller_register(&priv->rcdev);
-> +	return devm_reset_controller_register(&pdev->dev, &priv->rcdev);
->  }
->  
->  static const struct of_device_id lantiq_rcu_reset_dt_ids[] = {
+> Fixes: 453ed4283beb ("reset: mchp: sparx5: add switch reset driver")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 
-Thank you, applied to reset/next.
+Thank you, applied to reset/fixes.
 
 regards
 Philipp
