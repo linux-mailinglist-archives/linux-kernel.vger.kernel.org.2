@@ -2,152 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7686639D6B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF5D39D6BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbhFGIIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 04:08:22 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:52318 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229545AbhFGIIW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 04:08:22 -0400
-X-UUID: 673bbc106cb44ec8aea280470bada0a3-20210607
-X-UUID: 673bbc106cb44ec8aea280470bada0a3-20210607
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <mark-pk.tsai@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1536300742; Mon, 07 Jun 2021 16:06:28 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 7 Jun 2021 16:06:26 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 7 Jun 2021 16:06:26 +0800
-From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-To:     <mark-pk.tsai@mediatek.com>
-CC:     <ardb@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <matthias.bgg@gmail.com>,
-        <mhelsley@vmware.com>, <rostedt@goodmis.org>,
-        <samitolvanen@google.com>, <yj.chiang@mediatek.com>
-Subject: Re: [PATCH] recordmcount: avoid using ABS symbol as reference
-Date:   Mon, 7 Jun 2021 16:06:26 +0800
-Message-ID: <20210607080626.32612-1-mark-pk.tsai@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210607074258.32322-1-mark-pk.tsai@mediatek.com>
-References: <20210607074258.32322-1-mark-pk.tsai@mediatek.com>
+        id S230217AbhFGIIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 04:08:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59196 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229545AbhFGIIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 04:08:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5849D6102A;
+        Mon,  7 Jun 2021 08:06:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623053212;
+        bh=xmIDJ297EbDzxkQF9obeTuoyIAjOCtz2+6Ofw+DrFXA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sM2u+WyfdldAkzzqhNEq2wVbktPE9gknkrkYPnr8/LdjYaKYBXHFiOr+U8NylodnI
+         dKCe3oCN2qVP2hFpiTEofcH0Pq0cCumErxKYvFsJMlgjmNMABEE2OdTPsV2zfG8KZA
+         r5hy6REuclAD4YTFgHZlkFFt2VpdPNzwM6wsdtfajESdm8taI/7o37jA+65CEvmp8y
+         Y3SfrV4VpNVsJttuF/Fu93gt+mfN10rkDCg+YM1BV5Jho1oqoDXosVqcXuQ8HBmBhR
+         6+O4rcp61F7naUFa5GLuo6zPA7M0I7iKcn8mc/jVvLmTPOnFU7sAaFhRo+eFqHvdpZ
+         hLfIiy8HB0bGg==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1lqAHU-0004Ne-KD; Mon, 07 Jun 2021 10:06:45 +0200
+Date:   Mon, 7 Jun 2021 10:06:44 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     "yukuai (C)" <yukuai3@huawei.com>, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@foss.st.com, michal.simek@xilinx.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, yi.zhang@huawei.com
+Subject: Re: [PATCH 2/3] dmaengine: usb-dmac: Fix PM reference leak in
+ usb_dmac_probe()
+Message-ID: <YL3TlDqe4KSr3ICl@hovoldconsulting.com>
+References: <20210517081826.1564698-1-yukuai3@huawei.com>
+ <20210517081826.1564698-3-yukuai3@huawei.com>
+ <YLRfZfnuxc0+n/LN@vkoul-mobl.Dlink>
+ <b6c340de-b0b5-6aad-94c0-03f062575b63@huawei.com>
+ <YLSk/i6GmYWGEa9E@vkoul-mobl.Dlink>
+ <YLSqD+9nZIWJpn+r@hovoldconsulting.com>
+ <YLi4VGwzrat8wJHP@vkoul-mobl>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLi4VGwzrat8wJHP@vkoul-mobl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > On Mon, 7 Jun 2021 at 08:59, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
-> > >
-> > > > > On Mon, 7 Jun 2021 at 04:42, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
-> > > > >
-> > > > > Avoid using ABS symbol, which won't be relocate, as reference.
-> > > > >
-> > > > > On arm64 platform, if there's shndx equals SHN_ABS(0xfff1).
-> > > > >
-> > > > > Section Headers:
-> > > > > [Nr]    Name                         Type      Address          Off      Size   ES  Flg Lk     Inf    Al
-> > > > > [65521] .text.n_tty_receive_buf      PROGBITS  0000000000000000 3cdab520 000054 00  AX  0      0      4
-> > > > > [65522] .rela.text.n_tty_receive_buf RELA      0000000000000000 3cdab578 000030 18  I   152076 65521  8
-> > > > >
-> > > >
-> > > > A RELA section's r_info field points to the section to which it
-> > > > applies. This is why in the example above section #65522 points to
-> > > > section #65521. This has nothing to do with the numerical value of
-> > > > SHN_ABS.
-> > >
-> > > If the r_info of RELA section is 65521(0xfff1),
->
-> Oh sorry, I mean sh_info here.
->
-> > > find_secsym_ndx() will use it to find the base symbol.
-> > >
-> >
-> > But what does that have to do with the sh_info field of the RELA
-> > section's Elf_Shdr struct? IOW, what is the relevance of section
-> > #65521 here?
-> >
->
-> So what I mean is the problem occur if the sh_info of a RELA section
-> is #65521.
+On Thu, Jun 03, 2021 at 04:39:08PM +0530, Vinod Koul wrote:
+> On 31-05-21, 11:19, Johan Hovold wrote:
+> > On Mon, May 31, 2021 at 02:27:34PM +0530, Vinod Koul wrote:
+> > > On 31-05-21, 14:11, yukuai (C) wrote:
+> > > > On 2021/05/31 12:00, Vinod Koul wrote:
+> > > > > On 17-05-21, 16:18, Yu Kuai wrote:
+> > > > > > pm_runtime_get_sync will increment pm usage counter even it failed.
+> > > > > > Forgetting to putting operation will result in reference leak here.
+> > > > > > Fix it by replacing it with pm_runtime_resume_and_get to keep usage
+> > > > > > counter balanced.
 
-Actually the problem occur if the sh_info of a RELA section is in
-the special section index range(SHN_LORESERVE ~ SHN_HIRESERVE).
-Maybe I should add a is_shndx_special() to check this like
-scripts/mod/modpost.h did?
-
->
-> > > And in the symbol search loop in find_secsym_ndx(), get_symindex will
-> > > return 0xfff1 if the symbol is in ABS section.
-> > >
-> > > In this case, find_secsym_ndx() will return a absolute symbol as
-> > > base, which won't be relocate, if an ABS symbol is found before the
-> > > real symbol in section 65521.
-> > >
-> >
-> > I see your point here.
-> >
-> > > >
-> > > > > find_secsym_ndx, which use r_info in rela section to find the reference
->
-> sh_info.
->
-> > > > > symbol, may take ABS symbol as base.
-> > > > >
-> > > > > Symbol table '.symtab' contains 453285 entries:
-> > > > >    Num:    Value          Size Type    Bind   Vis       Ndx Name
-> > > > >      6: 0000000000000002     0 NOTYPE  LOCAL  DEFAULT   ABS section_count
-> > > > >
-> > > > > Which cause an invalid address in __mcount_loc.
-> > > > >
-> > > >
-> > > > Could you give a better account of the error you are trying to address?
-> > > >
-> > > > Also, arm64 no longer defines a section_count symbol (since v5.11), so
-> > > > please make sure that the diagnostics of the issue you are addressing
-> > > > are accurate for mainline.
-> > > >
-> > >
-> > > My kernel version is 5.4.61.
-> > > But as I explained, I suppose mainline also have this issue.
-> > >
-> >
-> > Mainline is what we work on. So please base your changes (and your
-> > commit log) on mainline.
-> >
->
-> I understand it.
-> But the platform I can reproduce the problem is only support to 5.4 LTS now.
-> And port it to the latest mainline kernel have much more work to do, can I just
-> keep this commit log? Or just remove the example I posted in the commit messsage?
->
-> >
-> > > >
-> > > > > Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-> > > > > ---
-> > > > >  scripts/recordmcount.h | 4 ++++
-> > > > >  1 file changed, 4 insertions(+)
-> > > > >
-> > > > > diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
-> > > > > index f9b19524da11..9b69167fb7ff 100644
-> > > > > --- a/scripts/recordmcount.h
-> > > > > +++ b/scripts/recordmcount.h
-> > > > > @@ -526,6 +526,10 @@ static int find_secsym_ndx(unsigned const txtndx,
-> > > > >         for (symp = sym0, t = nsym; t; --t, ++symp) {
-> > > > >                 unsigned int const st_bind = ELF_ST_BIND(symp->st_info);
-> > > > >
-> > > > > +               /* avoid absolute symbols */
-> > > > > +               if (symp->st_shndx == SHN_ABS)
-> > > > > +                       continue;
-> > > > > +
-> > > > >                 if (txtndx == get_symindex(symp, symtab, symtab_shndx)
-> > > > >                         /* avoid STB_WEAK */
-> > > > >                     && (STB_LOCAL == st_bind || STB_GLOBAL == st_bind)) {
+> > > Yes the rumtime_pm is disabled on failure here and the count would have
+> > > no consequence...
+> > 
+> > You should still balance the PM usage counter as it isn't reset for
+> > example when reloading the driver.
 > 
+> Should I driver trust that on load PM usage counter is balanced and not
+> to be reset..?
+
+Not sure what you're asking here. But a driver should never leave the PM
+usage counter unbalanced.
+
+> > Using pm_runtime_resume_and_get() is one way of handling this, but
+> > alternatively you could also move the error_pm label above the
+> > pm_runtime_put() in the error path.
+> 
+> That would be a better way I think
+
+Johan
