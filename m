@@ -2,125 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1DD39E6BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB43939E6C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbhFGSgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 14:36:45 -0400
-Received: from mout.gmx.net ([212.227.17.20]:33103 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230289AbhFGSgn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 14:36:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1623090873;
-        bh=veiWrZ68/aRMVKyuCZcb9fLCipe0nVzpbd5nvowzwto=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=TiHYVZPBlxYwHuVwDkOkLhNiD+oSkKmlFe9Rub6y82Im0FhEu5jpsZckZF7yM96dD
-         VVUhOxPtUEOVn+m1zPR6t8Tzbgr15rPEFyx+aC+sCy8BJ860x9DGBNb2hUriuXARpq
-         91/RROpwDpUgsfZtTVD+K4pfHepexquY1OPPN/4Q=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [217.61.152.109] ([217.61.152.109]) by web-mail.gmx.net
- (3c-app-gmx-bs17.server.lan [172.19.170.69]) (via HTTP); Mon, 7 Jun 2021
- 20:34:33 +0200
+        id S230381AbhFGSnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 14:43:43 -0400
+Received: from mail-ua1-f47.google.com ([209.85.222.47]:42667 "EHLO
+        mail-ua1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230322AbhFGSnm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 14:43:42 -0400
+Received: by mail-ua1-f47.google.com with SMTP id w5so10260320uaq.9
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 11:41:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zN+Q8dgsMzp5svrusLksGWwBggAOjvLUcL+jRhmL2dI=;
+        b=SQVA8E6RjJLNBOL9dbK69hBHUkKdfRviB4kGidz9fKEEiBJ6C5ZZjhfjIdB1lfvKMI
+         QWGNtGaV1E7wraHhURiulfcu4vYnfkdMdJqXR2b0BfUOFdBQdc8wGaqFuTJEdujkAGx4
+         n2k+Evx8s5Cqhdn47fmyOjzQtQQW4WVifnuo5k4HWsCcJiETqIDldhAhRtyfPyE8iQB5
+         3++KbIcSDtIrL+QJ27kLeiE9oz3PHIG1yA3PvDNB0/LnqMKrRfs6iI9shhxN0SmfZB/P
+         Nx0ECO+UjFzcKKTww2Bu6Ace9rab1PQOB4BCI2mwbJ6u9GDzqw+b2uwQlMnkKhtosu9T
+         fr/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zN+Q8dgsMzp5svrusLksGWwBggAOjvLUcL+jRhmL2dI=;
+        b=T0KSac0l0LCiC8NBqpWzhsD5o+PIj5rCS2r5AGF6JAZCW1o58lVWZFduuQGR5eTCNf
+         liQvx0RyB/U1yons/AkRhKuyUM+NoWZ4Y7Unnj/xSBYJjVXbWo7mLTlkganA+LROGMl6
+         SGd9NFB11TIdDSs9/DT0r45bVEDZi9lKEBZ5zAZ2TioqcfCKPkokRkHnL/kBBEAkt6FC
+         xyueyhX4LyaDsi+YjrCiLsErqNVi8M6W6bbbFo8Pov6K74+6loFJbMqoapyXqMU2T4Uy
+         YBRn3EoPMtQ7NfgdPCIePgx0IC/ao9M5aloRs0jTqXAoiMs6npVcIcVgpq2N/xRUiIZN
+         ilxQ==
+X-Gm-Message-State: AOAM530ah2BJeFg2TiDfxU/IH2jIe/8L0InS2F6kPKzygmw+9KDgDGxb
+        tnvpQfCZeo3zFzvvmPB7NYNEN6I0SBXxOqCojzg=
+X-Google-Smtp-Source: ABdhPJzmoZOJiKTKN2ANcor0bAuDPWhU5HM92R3OmDGVNSrGSdQr6wQRhWdD5xKfwOVxUsMyDCBnTWnkBESl93cfZD8=
+X-Received: by 2002:a9f:31b1:: with SMTP id v46mr10684948uad.22.1623091236278;
+ Mon, 07 Jun 2021 11:40:36 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <trinity-663afc91-2433-4785-af9b-3ca5d4744037-1623090872989@3c-app-gmx-bs17>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Frank Wunderlich <linux@fw-web.de>
-Cc:     linux-mediatek@lists.infradead.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Aw: [PATCH v3] thermal: mediatek: add sensors-support
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 7 Jun 2021 20:34:33 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <20210420172308.134685-1-linux@fw-web.de>
-References: <20210420172308.134685-1-linux@fw-web.de>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:ip0nyvLzh2YX44Uhf9v4yvoEe2mw7J7QthU4ZFFsIRct1zSudRF6b8ECYw5mNaEH7okJ/
- z6Aw7K+oSZKQJ395RKhHpgLBd+9eGpE57z8+vzav1WvG0oLC1uIeFL9yXzoi3uKJOwhh08K5qdgg
- fv68On+lnP15Sg83+pVQW/B6V90n4c45x76Uj2s3JUpv8GUgv60GXEtWtW+vEtkfRWZwUpjfXKtR
- 6X6jE7uIlR8vUUWuyFh28oitByaAHEwCbACBsWZnCrCz8a5bC8onxKMvejxpLPeLzaShU4k5TxX9
- sM=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:le5utTWPOeM=:0ESx69M38a2u70tlVpp4p3
- cPC0x2W3F2PeIim3TIOx7NXpKt0FouzXxFLZP/apENdqQC0e05iMty/O0LcqPFcxBmvmjWrHI
- xzLgYIUU0n9OB1PeaPuucDEpnSjsmBJkKEl1Fpcrcfk6Ps1tuWWo7bTJ9iHbAfgtgMpszWJcx
- 4IOqlDq4/1DE4Ia6Gem2oaC4Lsu3baJDXw6vNr9enB/daksBvprPLb6UN/srjIR2/4GrzlGJn
- Ptmev0EWGNwqE7CngUgovjsUSLeUUtL9g1ARPqMeuS/iHjjtq1CyCm9rp6l9n0gkJ+SwAFMSN
- rn9SgnSTu2j3clYGEGx292yM3U1suyqSMKaxIvL5J0/Vnv5HJ3fWlJ54AHCpRPrtp6uM0Cjwp
- OkqvxTYwJ+Jpx0l8aied93NLgG7ZmzQIOnmrfjqjtjw01XgvI96OHZBWklloVppWZVOeSWt1p
- TuOIREVCe+JzJ7tK6/qRbqhoVJqQnAFoPrREt5bgaGxIrmNAysaIyBTbs/6AWvv26hwZBBWaU
- ei79NFnD/ZbOutVKXt8yKkWuTLLRajEewG1ThAG2BtUbNA+qfbK92tW1BxVdBN+LTNMXgNGbo
- q3OVMIIWINyHemDUpKgHh4M7YLRJ7kt5bU/y3Tr3Dv546vliTkhwfRHPabAJlEFiFOgbctLHZ
- am+L5usw8ZDwun/VjOoIPBs/4+WVpEUVEEMlbYO4xdtvJKtmioe7G0TMdXuWuO2ge6KytcyR4
- MxuNn7WGLYHX2y/78ORbb5yY9cia5GbcNDTPwwlrJZ3woHzcy7HguyWNHyqTLyWHrReli9ouf
- ykAlyTuFoNA+PGNYdB5/5r7EDRW6FStavENNM7gFpyeCVV7UAc=
-Content-Transfer-Encoding: quoted-printable
+References: <20210602080212.4992-1-jrdr.linux@gmail.com> <8027801c-5260-8b1b-c758-fdfb8c18e9a7@arm.com>
+In-Reply-To: <8027801c-5260-8b1b-c758-fdfb8c18e9a7@arm.com>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Tue, 8 Jun 2021 00:10:24 +0530
+Message-ID: <CAFqt6zYh+tAdpDzwQY7KhUSq2t-ZkMJW7P51pX6SnYACRETofQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/rockchip: defined struct rockchip_dp_dt_ids[] under CONFIG_OF
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     hjc@rock-chips.com, Heiko Stuebner <heiko@sntech.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Jun 2, 2021 at 3:37 PM Robin Murphy <robin.murphy@arm.com> wrote:
+>
+> On 2021-06-02 09:02, Souptick Joarder wrote:
+> > Kernel test robot throws below warning when CONFIG_OF
+> > is not set.
+> >
+> >>> drivers/gpu/drm/rockchip/analogix_dp-rockchip.c:457:34:
+> > warning: unused variable 'rockchip_dp_dt_ids' [-Wunused-const-variable]
+> >     static const struct of_device_id rockchip_dp_dt_ids[] = {
+> >
+> > Fixed it by defining rockchip_dp_dt_ids[] under CONFIG_OF.
+>
+> I think the __maybe_unused annotation is generally preferred over
+> #ifdefs these days. However, since these drivers only work with
+> devicetree anyway, it probably makes more sense to just remove the
+> of_match_ptr() uses which lead to these warnings in the first place.
 
-just a gentle ping ;)
-
-regards Frank
-
-
-> Gesendet: Dienstag, 20. April 2021 um 19:23 Uhr
-> Von: "Frank Wunderlich" <linux@fw-web.de>
-> An: linux-mediatek@lists.infradead.org
-> Cc: "Frank Wunderlich" <frank-w@public-files.de>, "Daniel Lezcano" <dani=
-el.lezcano@linaro.org>, "Amit Kucheria" <amitk@kernel.org>, "Matthias Brug=
-ger" <matthias.bgg@gmail.com>, linux-pm@vger.kernel.org, linux-arm-kernel@=
-lists.infradead.org, linux-kernel@vger.kernel.org
-> Betreff: [PATCH v3] thermal: mediatek: add sensors-support
+Ok. Will remove of_match_ptr().
 >
-> From: Frank Wunderlich <frank-w@public-files.de>
+> Robin.
 >
-> add HWMON-support to mediateks thermal driver to allow lm-sensors
-> userspace tools read soc temperature
->
-> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-> ---
-> v3: drop no_hwmon - now really, sorry
-> v2: drop ifdef and used devm_thermal_add_hwmon_sysfs
-> ---
->  drivers/thermal/mtk_thermal.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/drivers/thermal/mtk_thermal.c b/drivers/thermal/mtk_thermal=
-.c
-> index 149c6d7fd5a0..85964988684b 100644
-> --- a/drivers/thermal/mtk_thermal.c
-> +++ b/drivers/thermal/mtk_thermal.c
-> @@ -23,6 +23,8 @@
->  #include <linux/reset.h>
->  #include <linux/types.h>
->
-> +#include "thermal_hwmon.h"
-> +
->  /* AUXADC Registers */
->  #define AUXADC_CON1_SET_V	0x008
->  #define AUXADC_CON1_CLR_V	0x00c
-> @@ -1087,6 +1089,10 @@ static int mtk_thermal_probe(struct platform_devi=
-ce *pdev)
->  		goto err_disable_clk_peri_therm;
->  	}
->
-> +	ret =3D devm_thermal_add_hwmon_sysfs(tzdev);
-> +	if (ret)
-> +		dev_err(&pdev->dev, "error in thermal_add_hwmon_sysfs");
-> +
->  	return 0;
->
->  err_disable_clk_peri_therm:
-> --
-> 2.25.1
->
->
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> > ---
+> >   drivers/gpu/drm/rockchip/analogix_dp-rockchip.c | 2 ++
+> >   1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/rockchip/analogix_dp-rockchip.c b/drivers/gpu/drm/rockchip/analogix_dp-rockchip.c
+> > index ade2327a10e2..9b79ebaeae97 100644
+> > --- a/drivers/gpu/drm/rockchip/analogix_dp-rockchip.c
+> > +++ b/drivers/gpu/drm/rockchip/analogix_dp-rockchip.c
+> > @@ -454,12 +454,14 @@ static const struct rockchip_dp_chip_data rk3288_dp = {
+> >       .chip_type = RK3288_DP,
+> >   };
+> >
+> > +#ifdef CONFIG_OF
+> >   static const struct of_device_id rockchip_dp_dt_ids[] = {
+> >       {.compatible = "rockchip,rk3288-dp", .data = &rk3288_dp },
+> >       {.compatible = "rockchip,rk3399-edp", .data = &rk3399_edp },
+> >       {}
+> >   };
+> >   MODULE_DEVICE_TABLE(of, rockchip_dp_dt_ids);
+> > +#endif
+> >
+> >   struct platform_driver rockchip_dp_driver = {
+> >       .probe = rockchip_dp_probe,
+> >
