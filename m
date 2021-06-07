@@ -2,69 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8532B39D338
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 04:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A43439D336
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 04:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbhFGDBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 23:01:36 -0400
-Received: from m12-12.163.com ([220.181.12.12]:45644 "EHLO m12-12.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230127AbhFGDBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 23:01:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=SyLog
-        QgsUFlwI3keA+SvLLHXphH+aEl3tcIoGEni7WA=; b=cFUClBN6heqfy3G8NX78M
-        d6CbI51blUJz61Tpp6cBvsCRMf+29Ri5iYYbGQUY41f4ybeEfFs7XEabt4Zk5myh
-        8TM0ax24Cvp7y+zqVyP06PM3w8olEEekDrB9xiVmD/53GkA9ByTSeKrKd8jG6VYD
-        GsRzsRjfaGowWZRT7kO5wk=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp8 (Coremail) with SMTP id DMCowAA3P7eci71gf+YCIg--.644S2;
-        Mon, 07 Jun 2021 10:59:41 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lijian <lijian@yulong.com>
-Subject: [PATCH v2] fs: pnode: Fix a typo
-Date:   Mon,  7 Jun 2021 10:58:38 +0800
-Message-Id: <20210607025838.96841-1-lijian_8010a29@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S230228AbhFGDAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 23:00:31 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:4327 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230147AbhFGDAa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Jun 2021 23:00:30 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FyycT5zh8z1BJhT;
+        Mon,  7 Jun 2021 10:53:45 +0800 (CST)
+Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 10:58:34 +0800
+Received: from ubuntu1804.huawei.com (10.67.174.61) by
+ dggpemm000003.china.huawei.com (7.185.36.128) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 10:58:34 +0800
+From:   Yang Jihong <yangjihong1@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <yangjihong1@huawei.com>
+Subject: [PATCH v2] perf annotate: Add itrace options support
+Date:   Mon, 7 Jun 2021 10:59:18 +0800
+Message-ID: <20210607025918.118603-1-yangjihong1@huawei.com>
+X-Mailer: git-send-email 2.30.GIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DMCowAA3P7eci71gf+YCIg--.644S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Jry3WF4xWFyUtF17WrW3ZFb_yoWxuFc_Xa
-        1xuw1ru395t397Zrs3Z3yvvF9Fq39rur1Fkwn7tF9xJa4UJrs0grZrua4kZr1DAFsrXas8
-        Wa1xCrnakF12gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnpc_7UUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbiSh2qUFPAOmRIhAAAss
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.61]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm000003.china.huawei.com (7.185.36.128)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
+The "auxtrace_info" and "auxtrace" functions are not set in "tool" member of
+"annotate". As a result, perf annotate does not support parsing itrace data.
 
-Change 'accross' to 'across'.
+A simple example is as follows:
 
-Signed-off-by: lijian <lijian@yulong.com>
+  # perf record -e arm_spe_0/branch_filter=1/ -a sleep 1
+  [ perf record: Woken up 9 times to write data ]
+  [ perf record: Captured and wrote 20.874 MB perf.data ]
+  # perf annotate --stdio
+  Error:
+  The perf.data data has no samples!
+
+Solution:
+1.Add itrace options in help,
+2.Set hook functions of "auxtrace_info" and "auxtrace" in perf_tool.
+
+Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
 ---
-v2: Fix the an/a mismatch too, change 'an' to 'a'.
- fs/pnode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/pnode.c b/fs/pnode.c
-index f05f28632f5d..4d40f5a4ef7b 100644
---- a/fs/pnode.c
-+++ b/fs/pnode.c
-@@ -573,7 +573,7 @@ int propagate_umount(struct list_head *list)
- 				continue;
- 			} else if (child->mnt.mnt_flags & MNT_UMOUNT) {
- 				/*
--				 * We have come across an partially unmounted
-+				 * We have come across a partially unmounted
- 				 * mount in list that has not been visited yet.
- 				 * Remember it has been visited and continue
- 				 * about our merry way.
+Changes since v1:
+ - Adjust spaces to maintain alignment in "tool".
+
+ tools/perf/builtin-annotate.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
+index 49627a7bed7c..8f87658eff31 100644
+--- a/tools/perf/builtin-annotate.c
++++ b/tools/perf/builtin-annotate.c
+@@ -474,6 +474,8 @@ int cmd_annotate(int argc, const char **argv)
+ 			.attr	= perf_event__process_attr,
+ 			.build_id = perf_event__process_build_id,
+ 			.tracing_data   = perf_event__process_tracing_data,
++			.auxtrace_info	= perf_event__process_auxtrace_info,
++			.auxtrace	= perf_event__process_auxtrace,
+ 			.feature	= process_feature_event,
+ 			.ordered_events = true,
+ 			.ordering_requires_timestamps = true,
+@@ -483,6 +485,9 @@ int cmd_annotate(int argc, const char **argv)
+ 	struct perf_data data = {
+ 		.mode  = PERF_DATA_MODE_READ,
+ 	};
++	struct itrace_synth_opts itrace_synth_opts = {
++		.set = 0,
++	};
+ 	struct option options[] = {
+ 	OPT_STRING('i', "input", &input_name, "file",
+ 		    "input file name"),
+@@ -547,6 +552,9 @@ int cmd_annotate(int argc, const char **argv)
+ 	OPT_CALLBACK(0, "percent-type", &annotate.opts, "local-period",
+ 		     "Set percent type local/global-period/hits",
+ 		     annotate_parse_percent_type),
++	OPT_CALLBACK_OPTARG(0, "itrace", &itrace_synth_opts, NULL, "opts",
++			    "Instruction Tracing options\n" ITRACE_HELP,
++			    itrace_parse_synth_opts),
+ 
+ 	OPT_END()
+ 	};
+@@ -591,6 +599,8 @@ int cmd_annotate(int argc, const char **argv)
+ 	if (IS_ERR(annotate.session))
+ 		return PTR_ERR(annotate.session);
+ 
++	annotate.session->itrace_synth_opts = &itrace_synth_opts;
++
+ 	annotate.has_br_stack = perf_header__has_feat(&annotate.session->header,
+ 						      HEADER_BRANCH_STACK);
+ 
 -- 
-2.25.1
-
+2.30.GIT
 
