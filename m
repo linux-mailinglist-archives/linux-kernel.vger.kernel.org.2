@@ -2,161 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26AFF39DBBF
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A737439DBC2
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230207AbhFGLye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 07:54:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230097AbhFGLyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 07:54:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0053611AD;
-        Mon,  7 Jun 2021 11:52:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623066761;
-        bh=vwpihzZIXTIWmmZYnX4O3KxBcqJWM4KlIbiLxno6uL8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t+FRd+Im0EuGNSqThB3iZROqSeI/AhHQNNDOlvwxYvwwRplACIRU8QYUI2zERZT9h
-         FhDC9YjPAq4hC893NAZce2YMkJSwJ1pQQr7OiPeR+Ajk2bRFKanDYVGyKndi4J5xLb
-         jLaL2Nrf9Hko2SMASw1dYsJI+e/BhdjmAnEZguCoGk/hk2gTfQASpcb1tUYfjVk5YU
-         5bexnDndD70ysDi4P41ZXt3f+RvkAnDQCVLYVzi489ROJnfDg70Bov3DLNCS3J/ZRT
-         mKgBF5yjgCHRkJl18JqRnjSRRsaeCKp/V7q6fhELNyZi9o9LVFFHpJvEAIPecr2qMM
-         1xEaxf++qPvAw==
-Date:   Mon, 7 Jun 2021 12:52:35 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <20210607115234.GA7205@willie-the-truck>
-References: <20210604214010.GD4397@paulmck-ThinkPad-P17-Gen-1>
- <CAHk-=wg0w5L7-iJU_kvEh9stXZoh2srRF4jKToKmSKyHv-njvA@mail.gmail.com>
- <20210605145739.GB1712909@rowland.harvard.edu>
- <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1>
- <20210606012903.GA1723421@rowland.harvard.edu>
- <20210606115336.GS18427@gate.crashing.org>
- <CAHk-=wjgzAn9DfR9DpU-yKdg74v=fvyzTJMD8jNjzoX4kaUBHQ@mail.gmail.com>
- <20210606182213.GA1741684@rowland.harvard.edu>
- <CAHk-=whDrTbYT6Y=9+XUuSd5EAHWtB9NBUvQLMFxooHjxtzEGA@mail.gmail.com>
- <YL34NZ12mKoiSLvu@hirez.programming.kicks-ass.net>
+        id S230217AbhFGLzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 07:55:32 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:21260 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230209AbhFGLzb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 07:55:31 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1623066805; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=WDvHeVyb1fam9A3ae3q/u569ggyW5HiqX3vtxT7wXDVH/euXB0sggAHxARI1WTnk2K
+    9nUzJVMDF8HRXWe4cnLBdAaf21A9HJaHxvoPvwt51JrPM8WtHaQQ9rNk7hk2Bm/2EaYb
+    tr9jTi1GXhk/Rz08gaJnqSClff/QN3I5AJWhD7wH3VT1DUmC96NVe21h36alC4Aki3hP
+    zaPrAe/wk/JcVg8QOpqx75Y4vW6W/42XkXLwAYHE/UYxIiAeNya+2UPpKy/F+6QlUZnD
+    sAGS4Mdq2r+AQntk0TVa/IN8Jq+wytrvA1BFvEuAqz5o3OT43TKSyTSyNc4PB6DYqD01
+    VxbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1623066805;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=m4+ki6pyAeRftYCv5yy/aXH3P2NWvcn1Xj3msV73uKI=;
+    b=hYbWEVrWSwTJLx4WgcLTSNf7Q/UnEBLyjxZYeZ3nFcr3O0B7xhH1h1oO6Tv3e2o3rL
+    tFrX2k66X+K7NMDZeA6OJyMFuh1yLrcCX27A8xlfc6U7KcX6QKLOT3j2cz/7+fC92ajf
+    R1uRPBOGgg07WTGTAzCibdthM0R73qhB6jJX8tbqe+aN4xyvuz/Ogjs8k9oe2Et87QYV
+    Be9cOMplPONEYpo3Xxl6/DwO2JhoHaPg+HZkSTY71f5Jrs/LuFhXqNJRnonHGJfqxRlX
+    oP1Jhvl/deWNjS32GlukMJuwpqGr6oQOhy7YGQ9vhdODSvAb0Iqaar8FUUK3TtL15l2K
+    Sdmw==
+ARC-Authentication-Results: i=1; strato.com;
+    dkim=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1623066805;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=m4+ki6pyAeRftYCv5yy/aXH3P2NWvcn1Xj3msV73uKI=;
+    b=Qbwc4gjI0Wsa5klcF6JKzgwpkayOFPvNxGIBWzglD1Mxm783HpVO5F7szx8L3LCQkI
+    eGcISosEQjUxYvfnFquPFjj4vNrrFUja2RO4OxGjVjxOtpVFKydo/uv1I0Vr9iver1zz
+    /P0wdJv7OyOgquIayhl7mjGTaodn5lWzGyXKeb0mZkCE73xOZwsFsYlaNKxWSRq/se6o
+    97iUodoh6XX00BPN3R+zpAXdjct5LovoJhqhABAgSkjWsMqnDY40rZK9g0BWnJWk5Ccm
+    fpoOUh2tn3WGnCNvQhljBXDxyE376y9R53phuOrOR+llp/LNH6pkwKLftnSslFMl6ZQO
+    7oNA==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j7Ic/BBg=="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 47.27.2 DYNA|AUTH)
+    with ESMTPSA id y01375x57BrPUIE
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Mon, 7 Jun 2021 13:53:25 +0200 (CEST)
+Date:   Mon, 7 Jun 2021 13:53:23 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, He Ying <heying24@huawei.com>,
+        Arnd Bergmann <arnd@kernel.org>
+Subject: Re: [PATCH] cpuidle: ARM_QCOM_SPM_CPUIDLE should depend on
+ HAVE_ARM_SMCCC
+Message-ID: <YL4Is1LNzBuViF3/@gerhold.net>
+References: <20210606190048.689-1-rdunlap@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YL34NZ12mKoiSLvu@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210606190048.689-1-rdunlap@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 12:43:01PM +0200, Peter Zijlstra wrote:
-> On Sun, Jun 06, 2021 at 11:43:42AM -0700, Linus Torvalds wrote:
-> > So while the example code is insane and pointless (and you shouldn't
-> > read *too* much into it), conceptually the notion of that pattern of
-> > 
-> >     if (READ_ONCE(a)) {
-> >         WRITE_ONCE(b,1);
-> >         .. do something ..
-> >     } else {
-> >         WRITE_ONCE(b,1);
-> >         .. do something else ..
-> >     }
+Hi!
+
+On Sun, Jun 06, 2021 at 12:00:48PM -0700, Randy Dunlap wrote:
+> QCOM_SCM depends on HAVE_ARM_SMCCC, so ARM_QCOM_SPM_CPUIDLE should
+> also depend on HAVE_ARM_SMCCC since 'select' does not follow any
+> dependency chains.
 > 
-> This is actually more tricky than it would appear (isn't it always).
+> This fixes a kconfig warning and subsequent build errors:
 > 
-> The thing is, that normally we must avoid speculative stores, because
-> they'll result in out-of-thin-air values.
+> WARNING: unmet direct dependencies detected for QCOM_SCM
+>   Depends on [n]: (ARM [=y] || ARM64) && HAVE_ARM_SMCCC [=n]
+>   Selected by [y]:
+>   - ARM_QCOM_SPM_CPUIDLE [=y] && CPU_IDLE [=y] && (ARM [=y] || ARM64) && (ARCH_QCOM [=n] || COMPILE_TEST [=y]) && !ARM64 && MMU [=y]
 > 
-> *Except* in this case, where both branches emit the same store, then
-> it's a given that the store will happen and it will not be OOTA.
-> Someone's actually done the proof for that apparently (Will, you have a
-> reference to Jade's paper?)
-
-I don't think there's a paper on this, but Jade and I are hoping to talk
-about aspects of it at LPC (assuming the toolchain MC gets accepted).
-
-> There's apparently also a competition going on who can build the
-> weakestest ARM64 implementation ever.
+> arm-linux-gnueabi-ld: drivers/firmware/qcom_scm-smc.o: in function `__scm_smc_do_quirk':
+> qcom_scm-smc.c:(.text+0x5c): undefined reference to `__arm_smccc_smc'
+> arm-linux-gnueabi-ld: drivers/firmware/qcom_scm-legacy.o: in function `scm_legacy_call':
+> qcom_scm-legacy.c:(.text+0x140): undefined reference to `__arm_smccc_smc'
+> arm-linux-gnueabi-ld: drivers/firmware/qcom_scm-legacy.o: in function `scm_legacy_call_atomic':
+> qcom_scm-legacy.c:(.text+0x364): undefined reference to `__arm_smccc_smc'
 > 
-> Combine the two, and you'll get a CPU that *will* emit the store early
-> :/
+> Fixes: a871be6b8eee ("cpuidle: Convert Qualcomm SPM driver to a generic CPUidle driver")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Stephan Gerhold <stephan@gerhold.net>
+> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: He Ying <heying24@huawei.com>
 
-So there are a lot of important details missing here and, as above, I think
-this is something worth discussing at LPC with Jade. The rough summary is
-that the arm64 memory model recently (so recently that it's not yet landed
-in the public docs) introduced something called "pick dependencies", which
-are a bit like control dependencies only they don't create order to all
-subsequent stores. These are useful for some conditional data-processing
-instructions such as CSEL and CAS, but it's important to note here that
-*conditional branch instructions behave exactly as you would expect*.
+There was a similar patch from Arnd a while ago (which fixes another
+warning for ARM_CPU_SUSPEND?):
 
-<disclaimer; I don't work for Arm so any mistakes here are mine>
+https://lore.kernel.org/linux-pm/20210421135723.3601743-1-arnd@kernel.org/
 
-To reiterate, in the code sequence at the top of this mail, if the compiler
-emits something along the lines of:
+I'm not sure who is supposed to pick it up. :)
 
-	LDR
-	<conditional branch instruction>
-	STR
+Thanks!
+Stephan
 
-then the load *will* be ordered before the store, even if the same store
-instruction is executed regardless of the branch direction. Yes, one can
-fantasize about a CPU that executes both taken and non-taken paths and
-figures out that the STR can be hoisted before the load, but that is not
-allowed by the architecture today.
-
-It's the conditional instructions that are more fun. For example, the CSEL
-instruction:
-
-	CSEL	X0, X1, X2, <cond>
-
-basically says:
-
-	if (cond)
-		X0 = X1;
-	else
-		X0 = X2;
-
-these are just register-register operations, but the idea is that the CPU
-can predict that "branching event" inside the CSEL instruction and
-speculatively rename X0 while waiting for the condition to resolve.
-
-So then you can add loads and stores to the mix along the lines of:
-
-	LDR	X0, [X1]		// X0 = *X1
-	CMP	X0, X2
-	CSEL	X3, X4, X5, EQ		// X3 = (X0 == X2) ? X4 : X5
-	STR	X3, [X6]		// MUST BE ORDERED AFTER THE LOAD
-	STR	X7, [X8]		// Can be reordered
-
-(assuming X1, X6, X8 all point to different locations in memory)
-
-So now we have a dependency from the load to the first store, but the
-interesting part is that the last store is _not_ ordered wrt either of the
-other two memory accesses, whereas it would be if we used a conditional
-branch instead of the CSEL. Make sense?
-
-Now, obviously the compiler is blissfully unaware that conditional
-data processing instructions can give rise to dependencies than
-conditional branches, so the question really is how much do we need to
-care in the kernel?
-
-My preference is to use load-acquire instead of control dependencies so
-that we don't have to worry about this, or any future relaxations to the
-CPU architecture, at all.
-
-Jade -- please can you correct me if I got any of this wrong?
-
-Will
+> ---
+>  drivers/cpuidle/Kconfig.arm |    1 +
+>  1 file changed, 1 insertion(+)
+> 
+> --- linux-next-20210604.orig/drivers/cpuidle/Kconfig.arm
+> +++ linux-next-20210604/drivers/cpuidle/Kconfig.arm
+> @@ -108,6 +108,7 @@ config ARM_TEGRA_CPUIDLE
+>  config ARM_QCOM_SPM_CPUIDLE
+>  	bool "CPU Idle Driver for Qualcomm Subsystem Power Manager (SPM)"
+>  	depends on (ARCH_QCOM || COMPILE_TEST) && !ARM64 && MMU
+> +	depends on HAVE_ARM_SMCCC
+>  	select ARM_CPU_SUSPEND
+>  	select CPU_IDLE_MULTIPLE_DRIVERS
+>  	select DT_IDLE_STATES
