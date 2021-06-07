@@ -2,139 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF8BC39D65A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16F2539D65D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbhFGHyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 03:54:12 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:43962 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhFGHyK (ORCPT
+        id S230209AbhFGHyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 03:54:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhFGHya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 03:54:10 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A641C21A86;
-        Mon,  7 Jun 2021 07:52:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623052338; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bx3CBAxFcKycwSZrW3uOEUlKsBQs/nevI6APuZ3SgW0=;
-        b=KfpD/cLCVlUPO85fGKPWgXuPd2PaFZPaWuhAT3BaHOHIVvj/f3gKaZk1cb/3j4sAvWBbee
-        L1LnGQ/uFiBfb+XuD58nMae2AOQ6fYFuJv1BjWL2Z7QDJQToFTtCsEcNcvnFYMOlgqtFrb
-        0piGocUWYlD4Chz8dWcp4CqdYuaMtGk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623052338;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bx3CBAxFcKycwSZrW3uOEUlKsBQs/nevI6APuZ3SgW0=;
-        b=BIO/RR9WAdgv2OluegLCFUY02E1tppLr5R0PQNdE6p1PZNL7VN0odR6cG727Wy5plc6AXi
-        iWH00zNPYRG+riBw==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 1B58D118DD;
-        Mon,  7 Jun 2021 07:52:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623052338; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bx3CBAxFcKycwSZrW3uOEUlKsBQs/nevI6APuZ3SgW0=;
-        b=KfpD/cLCVlUPO85fGKPWgXuPd2PaFZPaWuhAT3BaHOHIVvj/f3gKaZk1cb/3j4sAvWBbee
-        L1LnGQ/uFiBfb+XuD58nMae2AOQ6fYFuJv1BjWL2Z7QDJQToFTtCsEcNcvnFYMOlgqtFrb
-        0piGocUWYlD4Chz8dWcp4CqdYuaMtGk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623052338;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bx3CBAxFcKycwSZrW3uOEUlKsBQs/nevI6APuZ3SgW0=;
-        b=BIO/RR9WAdgv2OluegLCFUY02E1tppLr5R0PQNdE6p1PZNL7VN0odR6cG727Wy5plc6AXi
-        iWH00zNPYRG+riBw==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id LJyBAzLQvWDVXQAALh3uQQ
-        (envelope-from <osalvador@suse.de>); Mon, 07 Jun 2021 07:52:18 +0000
-Date:   Mon, 7 Jun 2021 09:52:16 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] mm,page_alloc: Use {get,put}_online_mems() to get
- stable zone's values
-Message-ID: <20210607075147.GA10554@linux>
-References: <20210602091457.17772-1-osalvador@suse.de>
- <20210602091457.17772-2-osalvador@suse.de>
- <39473305-6e91-262d-bcc2-76b745a5b14a@redhat.com>
- <ed17a39ad61edeb19b04c0f4308d5d36@suse.de>
- <YLiVAAsCTR7B6Db9@localhost.localdomain>
- <YLjO2YU2G5fTVB3x@dhcp22.suse.cz>
- <20210604074140.GA25063@linux>
+        Mon, 7 Jun 2021 03:54:30 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F5EC061766
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 00:52:39 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id e2so20933588ljk.4
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 00:52:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=VnwLRNd5kR0LUPEcbUD7x6J+EfFd1ZumEapw+492kUI=;
+        b=M6YHQmqDQrHfqJsSaBCfrOSFeYuAx/4Wuvxqxfz55b1SM2edz/SvDqQXdLIzSnXa//
+         Pmy+lXBSk4AVN0Ua2/qwhB/5yWuvGtiQdGZnG1ZrTghgDXGH8W/pC6UPS+ZnP5yu4ocG
+         ZLj3bhWthn4w9J7LzPEyEuqZzaVSXUb9NrSsVMcW7s4i++gu2GoyImrsXh/lJFkNj+k8
+         lvLBTozTgdtSUrDcQQ+xF7yxIBLY4noTaY5vHWPsjSuOfDo2UIvVYpJEhUILYE5YpNzC
+         aCwzGGPoRoyyWSFmzpxalQLHJAFZLr/mag5V6p8Sn90DdYx6D24J3AWODazxugWCsemb
+         e4vA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=VnwLRNd5kR0LUPEcbUD7x6J+EfFd1ZumEapw+492kUI=;
+        b=B/wj+AHk0WIUDt2I+X29oRLyFb1EfLeivafSghZLNInx1FPw7UoDw6jWfDdWche+fR
+         Cdbxe2InI0RBlCZGkoh3d9LVTUKQHNILrmIWG1jT6tr64DXMpBxWw/9fw+l0FygGZnHG
+         jfm4CMfvvWbaivbdvC2tSAD3/eMFPWgQmmg60oKaeO5oq4MGm3Q0D+YbeXb9uQspSIRQ
+         /eMoEfCbQHCATU8ob9I/kbllUUmlC60Gox+yC7y7SUZ/Yc5EP0uge9b4JGGxg54LVne4
+         fIdnC/Qsy+4YCUuwk0KjjUidhhbNPTZGoe4Z51EMndo1BdDO7lBQfCZI6evirmRcuZpM
+         NwFw==
+X-Gm-Message-State: AOAM530fD2Glm1zYsIxf+ijE/4TwYUi0Jcut/0aBqR+aN7Jmo79lvZ/7
+        LmmgIs5zVnx8CMnUTiBEsRU=
+X-Google-Smtp-Source: ABdhPJz+lZIAtnEawBFkr/CaeDTWVqXJP2b4seJMifEs5d4X8i1rjyEr38elPNLJqEl0HLg7HjyMPQ==
+X-Received: by 2002:a05:651c:1138:: with SMTP id e24mr13811331ljo.403.1623052357820;
+        Mon, 07 Jun 2021 00:52:37 -0700 (PDT)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id e9sm896925lfc.144.2021.06.07.00.52.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 00:52:37 -0700 (PDT)
+Date:   Mon, 7 Jun 2021 10:52:34 +0300
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     Werner Sembach <wse@tuxedocomputers.com>
+Cc:     harry.wentland@amd.com, sunpeng.li@amd.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, jani.nikula@linux.intel.com,
+        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org
+Subject: Re: [PATCH 2/4] drm/uAPI: Add "active bpc" as feedback channel for
+ "max bpc" drm property
+Message-ID: <20210607105234.4bb8aae6@eldfell>
+In-Reply-To: <20210604171723.10276-3-wse@tuxedocomputers.com>
+References: <20210604171723.10276-1-wse@tuxedocomputers.com>
+        <20210604171723.10276-3-wse@tuxedocomputers.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604074140.GA25063@linux>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/Pr+2/0V=PQE=VGC=tSRkY=f"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 09:41:45AM +0200, Oscar Salvador wrote:
-> On Thu, Jun 03, 2021 at 02:45:13PM +0200, Michal Hocko wrote:
-> > I believe we need to define the purpose of the locking first. The
-> 
-> If you ask me, this locking would be meant to make sure zone's zone_start_pfn
-> or spanned_pages do not change under us, in case we __need__ the value to be
-> stable.
-> 
-> > existing locking doesn't serve much purpose, does it? The state might
-> 
-> Well, half-way. Currently, the locking is taken in write mode whenever
-> the zone is expanded or shrinked, and in read mode when called from
-> bad_range()->page_outside_zone_boundaries() (only on VM_DEBUG).
-> 
-> But as you pointed out, such state might change right after the locking is
-> released and all the work would be for nothing.
-> So indeed, the __whole__ operation should be envolved by the lock in the caller
-> The way that stands right now is not optimal.
-> 
-> > change right after the lock is released and the caller cannot really
-> > rely on the result. So aside of the current implementation, I would
-> > argue that any locking has to be be done on the caller layer.
-> > 
-> > But the primary question is whether anybody actually cares about
-> > potential races in the first place.
-> 
-> I have been checking move_freepages_block() and alloc_contig_pages(), which
-> are two of the functions that call zone_spans_pfn().
-> 
-> move_freepages_block() uses it in a way to align the given pfn to pageblock
-> top and bottom, and then check that aligned pfns are still within the same zone.
-> From a memory-hotplug perspective that's ok as we know that we are offlining
-> PAGES_PER_SECTION (which implies whole pageblocks).
-> 
-> alloc_contig_pages() (used by the hugetlb gigantic allocator) runs through a
-> node's zonelist and checks whether zone->zone_start_pfn + nr_pages stays within
-> the same zone.
-> IMHO, the race with zone_spans_last_pfn() vs mem-hotplug would not be that bad,
-> as it will be caught afters by e.g: __alloc_contig_pages when pages cannot be
-> isolated because they are offline etc.
-> 
-> So, I would say we do not really need the lock, but I might be missing something.
-> But if we chose to care about this, then the locking should be done right, not
-> half-way as it is right now.
+--Sig_/Pr+2/0V=PQE=VGC=tSRkY=f
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+On Fri,  4 Jun 2021 19:17:21 +0200
+Werner Sembach <wse@tuxedocomputers.com> wrote:
+
+> Add a new general drm property "active bpc" which can be used by graphic =
+drivers
+> to report the applied bit depth per pixel back to userspace.
+>=20
+> While "max bpc" can be used to change the color depth, there was no way t=
+o check
+> which one actually got used. While in theory the driver chooses the best/=
+highest
+> color depth within the max bpc setting a user might not be fully aware wh=
+at his
+> hardware is or isn't capable off. This is meant as a quick way to double =
+check
+> the setup.
+>=20
+> In the future, automatic color calibration for screens might also depend =
+on this
+> information available.
+>=20
+> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> ---
+>  drivers/gpu/drm/drm_atomic_uapi.c |  2 ++
+>  drivers/gpu/drm/drm_connector.c   | 40 +++++++++++++++++++++++++++++++
+>  include/drm/drm_connector.h       | 15 ++++++++++++
+>  3 files changed, 57 insertions(+)
+>=20
+> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atom=
+ic_uapi.c
+> index 268bb69c2e2f..7ae4e40936b5 100644
+> --- a/drivers/gpu/drm/drm_atomic_uapi.c
+> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
+> @@ -873,6 +873,8 @@ drm_atomic_connector_get_property(struct drm_connecto=
+r *connector,
+>  		*val =3D 0;
+>  	} else if (property =3D=3D connector->max_bpc_property) {
+>  		*val =3D state->max_requested_bpc;
+> +	} else if (property =3D=3D connector->active_bpc_property) {
+> +		*val =3D state->active_bpc;
+>  	} else if (connector->funcs->atomic_get_property) {
+>  		return connector->funcs->atomic_get_property(connector,
+>  				state, property, val);
+> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connec=
+tor.c
+> index 7631f76e7f34..5f42a5be5822 100644
+> --- a/drivers/gpu/drm/drm_connector.c
+> +++ b/drivers/gpu/drm/drm_connector.c
+> @@ -1195,6 +1195,13 @@ static const struct drm_prop_enum_list dp_colorspa=
+ces[] =3D {
+>   *	drm_connector_attach_max_bpc_property() to create and attach the
+>   *	property to the connector during initialization.
+>   *
+> + * active bpc:
+> + *	This read-only range property is used by userspace check the bit depth
+> + *	actually applied by the GPU driver after evaluation all hardware
+> + *	capabilities and max bpc. Drivers to use the function
+> + *	drm_connector_attach_active_bpc_property() to create and attach the
+> + *	property to the connector during initialization.
+> + *
+
+Hi Werner,
+
+the idea looks good to me, but the above doc could be a little more
+fluent. May I suggest something like:
+
+	This read-only range property tells userspace the pixel color
+	bit depth actually used by the hardware display engine on "the
+	cable" on a connector. The chosen value depends on hardware
+	capabilities, both display engine and connected monitor, and
+	the "max bpc" property. Drivers shall use
+	drm_connector_attach_active_bpc_property() to install this
+	property.
+
+There should also be something said about dithering done by the display
+engine (not monitor), but I'm not sure how that should be worded. It
+may also depend on if and how userspace can know about dithering. So if
+a dithering related property is added later, maybe add a note here too
+in that patch.
 
 
-Any thoughts on this? :-)
+Thanks,
+pq
 
- 
 
--- 
-Oscar Salvador
-SUSE L3
+>   * Connectors also have one standardized atomic property:
+>   *
+>   * CRTC_ID:
+> @@ -2150,6 +2157,39 @@ int drm_connector_attach_max_bpc_property(struct d=
+rm_connector *connector,
+>  }
+>  EXPORT_SYMBOL(drm_connector_attach_max_bpc_property);
+> =20
+> +/**
+> + * drm_connector_attach_active_bpc_property - attach "active bpc" proper=
+ty
+> + * @connector: connector to attach active bpc property on.
+> + * @min: The minimum bit depth supported by the connector.
+> + * @max: The maximum bit depth supported by the connector.
+> + *
+> + * This is used to check the applied bit depth on a connector.
+> + *
+> + * Returns:
+> + * Zero on success, negative errno on failure.
+> + */
+> +int drm_connector_attach_active_bpc_property(struct drm_connector *conne=
+ctor,
+> +					  int min, int max)
+> +{
+> +	struct drm_device *dev =3D connector->dev;
+> +	struct drm_property *prop;
+> +
+> +	prop =3D connector->active_bpc_property;
+> +	if (!prop) {
+> +		prop =3D drm_property_create_range(dev, 0, "active bpc", min, max);
+> +		if (!prop)
+> +			return -ENOMEM;
+> +
+> +		connector->active_bpc_property =3D prop;
+> +	}
+> +
+> +	drm_object_attach_property(&connector->base, prop, 0);
+> +	connector->state->active_bpc =3D 0;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(drm_connector_attach_active_bpc_property);
+> +
+>  /**
+>   * drm_connector_set_vrr_capable_property - sets the variable refresh ra=
+te
+>   * capable property for a connector
+> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+> index 1922b278ffad..c58cba2b6afe 100644
+> --- a/include/drm/drm_connector.h
+> +++ b/include/drm/drm_connector.h
+> @@ -781,6 +781,13 @@ struct drm_connector_state {
+>  	 */
+>  	u8 max_bpc;
+> =20
+> +	/**
+> +	 * @active_bpc: Read only property set by the GPU driver to the actually
+> +	 * applied bit depth of the pixels after evaluating all hardware
+> +	 * limitations.
+> +	 */
+> +	u8 active_bpc;
+> +
+>  	/**
+>  	 * @hdr_output_metadata:
+>  	 * DRM blob property for HDR output metadata
+> @@ -1380,6 +1387,12 @@ struct drm_connector {
+>  	 */
+>  	struct drm_property *max_bpc_property;
+> =20
+> +	/**
+> +	 * @active_bpc_property: Default connector property for the active bpc
+> +	 * to be driven out of the connector.
+> +	 */
+> +	struct drm_property *active_bpc_property;
+> +
+>  #define DRM_CONNECTOR_POLL_HPD (1 << 0)
+>  #define DRM_CONNECTOR_POLL_CONNECT (1 << 1)
+>  #define DRM_CONNECTOR_POLL_DISCONNECT (1 << 2)
+> @@ -1698,6 +1711,8 @@ int drm_connector_set_panel_orientation_with_quirk(
+>  	int width, int height);
+>  int drm_connector_attach_max_bpc_property(struct drm_connector *connecto=
+r,
+>  					  int min, int max);
+> +int drm_connector_attach_active_bpc_property(struct drm_connector *conne=
+ctor,
+> +					  int min, int max);
+> =20
+>  /**
+>   * struct drm_tile_group - Tile group metadata
+
+
+--Sig_/Pr+2/0V=PQE=VGC=tSRkY=f
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmC90EIACgkQI1/ltBGq
+qqdGCQ//cRerWSb24BlhxlzYGB8NQvHZrLXOSiGRs2viHwBP913JnXJGRViEDx5x
+clhIXqdHwsmh+ezmYxHhAgi6lrgNhCr+9MBkLqhX5YbHmXdwSzQBWezRibzXjbYW
+KeTvPx0z8Nvh3ViRHcb/dd4LcXflp7Ii9ksSW2avNktSJR7EZu6o+krZxTuOgKmx
+nOWXVqxEwTcLDxp/ubDbEEOTvaaYyQVpGa3wSuyOVuW4ea4i/cm9Ax+N2f0/aHCH
+Bj0F9S2qYNgGTDpGSm3myipPx2Lqd/teEqiEXH+Gxr6+vI8V+cfZz/xjoe0Ko84b
+2BEuD3t22bDLSlC6C214virxbxV7R5fWRD72XfyDmDJrILVBWV2b2ftG9pKbS4GE
+hJSbYs8eRS44o7RplbFYrJMVRf7DK3k/l8H9kpasLG36GxRMvaVtSCgrZLUBnCEb
+gMKcqvf824YjA7FWFEAASHr0lDbroSxGuzxU8Ts2wYLyuK6PCvXv9TDwc3tcMB94
+zhB3rToba+3Rmw+/lSLwp85EyHvtRTV/OrJMAZASLRVJs/mMsYCWupW1783Ueh4L
+tvRnZ/MBz48DoZpYo3bOLySG4Nb7jhGgjmYI6I9huWXHUuBcknGf4oFn7cwPXFR2
+3IOghkwAL3prSMIz80cfPeLBg7ahq2zA6C8KGj1xLU8IOST/knU=
+=6CeT
+-----END PGP SIGNATURE-----
+
+--Sig_/Pr+2/0V=PQE=VGC=tSRkY=f--
