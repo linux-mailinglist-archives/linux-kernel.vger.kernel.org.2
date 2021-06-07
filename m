@@ -2,112 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA3A39DE22
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1087139DE25
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbhFGN4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 09:56:24 -0400
-Received: from mail-vi1eur06olkn2105.outbound.protection.outlook.com ([40.92.17.105]:8673
-        "EHLO EUR06-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230200AbhFGN4X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 09:56:23 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j6pnKDU+CR34Fy81FIfuDhViZ5wbJr08Cp38/GdP9Xs+R+T31DPBrhiSYrideeXPuEBA8pT/DUZOglOT6E8DPwRmjhIPTabYKatD3zLQIvCUyJvbNY25Nd7BomO5vGdyBQrgYMyFx4MRkFAoHlL0esH+R2KjcKv2N/5IGh0jABsRA3fmJhPMLrmJttBk+OAjpzigRVLhpMK1BNz6Pk12isYB4X34DFv3BNfA1m3q+WkpI5OiNsjPlCpqDn7xr4B6AsUMM4zM41pZ6xRnf7FCHy8yg3EufJKG0KJ8Y4/HOYnJ9oyNwkpgvlwiOatM4P3GJGpC0lSzJTVrup3wg1pElw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UNwk8Sfpw55fJEBkh9T6iBhu2n0lFvthgnDEUV6/bQ4=;
- b=eyNUC0+6MIGC2yefK7nUGeckQKHe5xd+qhehwyGzbjYLZaeWZsyVtYFgwjg/PiZ8cCSxR/qRdm1mbqIZ9YyDcJ9vskOOx7dk09mwrC6zFpQi0APyo9ai03P9zGn+d0DrzkP5TRy4t3bJE3JkWFzXvFYjDY3jxAb5QB3TAS9m9F/b5N8Vxrgdv9Hk9i3oV46UCI+5eX/vIDw5oNOWJUsH/wjdvLJVOjbgiT1de+GZkfm75BKlGazRkCj6l74nC6UlTCAqBeA2ODtl1gmpbc8UUDCwXxWqVE1P6hocNtxrrSa3NgkEqwthoLT40Pt2LvzW5baAvfbJIxlkFsV1EpKmWg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from DB8EUR06FT003.eop-eur06.prod.protection.outlook.com
- (2a01:111:e400:fc35::44) by
- DB8EUR06HT140.eop-eur06.prod.protection.outlook.com (2a01:111:e400:fc35::507)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.18; Mon, 7 Jun
- 2021 13:54:30 +0000
-Received: from AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM
- (2a01:111:e400:fc35::41) by DB8EUR06FT003.mail.protection.outlook.com
- (2a01:111:e400:fc35::217) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.18 via Frontend
- Transport; Mon, 7 Jun 2021 13:54:30 +0000
-X-IncomingTopHeaderMarker: OriginalChecksum:F16B866306BA8707C32E0E54B32B37DB7B5BA275547D652D38C1AA6CF8A882BE;UpperCasedChecksum:20991EAA4F1729536F3D650F86EA2346A801013E4A3EE6C89E44074C9D11C90A;SizeAsReceived:7851;Count:45
-Received: from AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::ad12:6a2c:b949:f65d]) by AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::ad12:6a2c:b949:f65d%5]) with mapi id 15.20.4195.030; Mon, 7 Jun 2021
- 13:54:30 +0000
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Bernd Edlinger <bernd.edlinger@hotmail.de>
-Subject: [PATCH] exec: Copy oldsighand->action under spin-lock
-Message-ID: <AM8PR10MB470871DEBD1DED081F9CC391E4389@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
-Date:   Mon, 7 Jun 2021 15:54:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-Content-Type: text/plain; charset=windows-1252
+        id S230211AbhFGN5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 09:57:15 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:49641 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230200AbhFGN5O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 09:57:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623074123; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=Su/cq0k1ylesxhJXGbs0jmsD+IHmtamWDm3Jh1ynG/8=; b=MlFbveAA4nK1w2cZTqFODcMfYa9/nkOK54JjHhBw9XgpkxZkAdENVjWk0QEc0nk7mv5Oc9+Q
+ Z3XGCE6NuHfOFHA/TgBp2lxjBWQcJN4jIyU+FeD8R4LCedlhW2Te9wyhV5NcHKVzAJJ480xH
+ vASjKoXDHa3YSUh1gxb0HLulJbI=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 60be252a6ddc3305c4390d03 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 07 Jun 2021 13:54:50
+ GMT
+Sender: faiyazm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 989C2C43148; Mon,  7 Jun 2021 13:54:49 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.121.187] (unknown [27.59.137.185])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: faiyazm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0FF56C433D3;
+        Mon,  7 Jun 2021 13:54:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0FF56C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
+Subject: Re: [PATCH v10] mm: slub: move sysfs slab alloc/free interfaces to
+ debugfs
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        linux-mm <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg KH <greg@kroah.com>, glittao@gmail.com,
+        vinmenon@codeaurora.org
+References: <1622996045-25826-1-git-send-email-faiyazm@codeaurora.org>
+ <CAHp75VdM0aziN4zHaf6=z6D0Nb=+GTbjV1pdTpRZ=yxGDZRkhw@mail.gmail.com>
+From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
+Message-ID: <d5c16162-91af-40ba-66dc-02ac5a6a48ef@codeaurora.org>
+Date:   Mon, 7 Jun 2021 19:24:39 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <CAHp75VdM0aziN4zHaf6=z6D0Nb=+GTbjV1pdTpRZ=yxGDZRkhw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TMN:  [FjRsIOwsgINOyROqTRauOjJubFakRh2J]
-X-ClientProxiedBy: FR3P281CA0025.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:1c::23) To AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:20b:364::23)
-X-Microsoft-Original-Message-ID: <b4328d8a-f6ea-2429-5376-5a2ff1d1ca9e@hotmail.de>
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.101] (84.57.61.94) by FR3P281CA0025.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:1c::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.10 via Frontend Transport; Mon, 7 Jun 2021 13:54:29 +0000
-X-MS-PublicTrafficType: Email
-X-IncomingHeaderCount: 45
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-Correlation-Id: c634e32a-4053-4210-e4e7-08d929bbc571
-X-MS-TrafficTypeDiagnostic: DB8EUR06HT140:
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5ZCZ21lBDbDx++se0IjiCc3uCL6qXeYUVNu+Zdm2OvLgov/G2XZa++igTyY3yh4rCK+Btv+lTl2YC15lGCUWjOcKXdUIDeRo1tqoH/DDiJnKsDxZ5hEA3Ws6+VRi4VQzSuJzSp35zjLd+dW5ddU4ZJrAlk2zOqCZkf0jPQUTJ/MyU1RD3fguCROMIxZawT0BBMeA2q4G+OkjENAqf3EN+ZS/sCRh0Hx94qjqTRltUaGLVJRyLGwplZs3UiN8AzMsqHDLUZvOY9zf2QDZrErFrK6UjvAIEOJ3t1EomVH9Bn6WbAGNGGwJuIAcw5eZc9qXQhtWZq8VQOD//XwPEBllDtt0Zjahmz1OLVHtwL5Xzw0aMcTTg3AVzTMAl2bq9gNs/HsMeuoNtke9JEj3tCmITA==
-X-MS-Exchange-AntiSpam-MessageData: La4XL8qusWOmwusLCk/3w9E4eoiB5wIejwgikH5/Z+pGW2ynZRZC6hI4L2WGPMkaOpFQw24nY/Tu7uSiOUMCuQL64Y01jlqvrtANFWQcf4qAoY1TYPj807y56OUp7+XC+y/0gcoy82dp2r9pnnd+TA==
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c634e32a-4053-4210-e4e7-08d929bbc571
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2021 13:54:30.1896
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-AuthSource: DB8EUR06FT003.eop-eur06.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8EUR06HT140
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-unshare_sighand should only access oldsighand->action
-while holding oldsighand->siglock, to make sure that
-newsighand->action is in a consistent state.
 
-Signed-off-by: Bernd Edlinger <bernd.edlinger@hotmail.de>
----
- fs/exec.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/exec.c b/fs/exec.c
-index d8af85f..8344fba 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1193,11 +1193,11 @@ static int unshare_sighand(struct task_struct *me)
- 			return -ENOMEM;
- 
- 		refcount_set(&newsighand->count, 1);
--		memcpy(newsighand->action, oldsighand->action,
--		       sizeof(newsighand->action));
- 
- 		write_lock_irq(&tasklist_lock);
- 		spin_lock(&oldsighand->siglock);
-+		memcpy(newsighand->action, oldsighand->action,
-+		       sizeof(newsighand->action));
- 		rcu_assign_pointer(me->sighand, newsighand);
- 		spin_unlock(&oldsighand->siglock);
- 		write_unlock_irq(&tasklist_lock);
--- 
-1.9.1
+On 6/7/2021 2:01 AM, Andy Shevchenko wrote:
+> On Sun, Jun 6, 2021 at 7:16 PM Faiyaz Mohammed <faiyazm@codeaurora.org> wrote:
+>>
+>> alloc_calls and free_calls implementation in sysfs have two issues,
+>> one is PAGE_SIZE limitiation of sysfs and other is it does not adhere
+> 
+> limitation
+> 
+>> to "one value per file" rule.
+>>
+>> To overcome this issues, move the alloc_calls and free_calls implemeation
+> 
+> implementation
+> 
+>> to debugfs.
+>>
+>> Debugfs cache will be created if SLAB_STORE_USER flag is set.
+>>
+>> Rename the alloc_calls/free_calls to alloc_traces/free_traces,
+>> to be inline with what it does.
+> 
+> ...
+> 
+>> +#if defined(CONFIG_DEBUG_FS) && defined(CONFIG_SLUB_DEBUG)
+>> +void debugfs_slab_release(struct kmem_cache *);
+>> +#else
+> 
+>> +static inline void debugfs_slab_release(struct kmem_cache *s)
+>> +{
+>> +}
+> 
+> It can be one line.
+> 
+>> +#endif
+> 
+> ...
+> 
+> 
+>> +               if (l->sum_time != l->min_time) {
+>> +                       seq_printf(seq, " age=%ld/%ld/%ld",
+>> +                               l->min_time,
+> 
+>> +                               (long)div_u64(l->sum_time, l->count),
+> 
+> Hmm... Why is the cast needed here?
+> 
+>> +                               l->max_time);
+>> +               } else
+>> +                       seq_printf(seq, " age=%ld",
+>> +                               l->min_time);
+> 
+> ...
+> 
+>> +               if (num_online_cpus() > 1 &&
+>> +                               !cpumask_empty(to_cpumask(l->cpus)))
+> 
+> One line?
+> 
+I have split the line because it is crossing the 80 columns. In this
+case it's okay to cross 80 columns?
+> ...
+> 
+>> +static const struct seq_operations slab_debugfs_sops = {
+>> +       .start  = slab_debugfs_start,
+>> +       .next   = slab_debugfs_next,
+>> +       .stop   = slab_debugfs_stop,
+> 
+>> +       .show   = slab_debugfs_show
+> 
+> Leave a comma here. It might not be the last one in the future.
+> 
+>> +};
+> 
+> + blank line?
+> 
+>> +static int slab_debug_trace_open(struct inode *inode, struct file *filep)
+>> +{
+> 
+> ...
+> 
+>> +static const struct file_operations slab_debugfs_fops = {
+>> +       .open    = slab_debug_trace_open,
+>> +       .read    = seq_read,
+>> +       .llseek  = seq_lseek,
+>> +       .release = slab_debug_trace_release,
+>> +};
+>> +
+>> +
+> 
+> One blank line is enough.
+> 
+> ...
+> 
+>> +       debugfs_remove_recursive(debugfs_lookup(s->name,
+>> +                                       slab_debugfs_root));
+> 
+> One line?
+> 
+Same here!
