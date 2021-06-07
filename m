@@ -2,124 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ADB239D896
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB04E39D89C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:23:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230227AbhFGJYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:24:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41348 "EHLO
+        id S230302AbhFGJZN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Jun 2021 05:25:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhFGJYc (ORCPT
+        with ESMTP id S230127AbhFGJZK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:24:32 -0400
+        Mon, 7 Jun 2021 05:25:10 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42765C061787
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 02:22:41 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7A90C061766
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 02:23:19 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lqBSn-0005jZ-Lh; Mon, 07 Jun 2021 11:22:29 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lqBSm-0002Hg-Pz; Mon, 07 Jun 2021 11:22:28 +0200
-Date:   Mon, 7 Jun 2021 11:22:28 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Eugen.Hristev@microchip.com
-Cc:     dmitry.torokhov@gmail.com, robh+dt@kernel.org,
-        Jonathan.Cameron@Huawei.com, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        david@protonic.nl, devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 0/4] add z1 and z2 channels support for
- resistive-adc-touch driver
-Message-ID: <20210607092228.drmyvuq6ac5hswz6@pengutronix.de>
-References: <20210525054634.9134-1-o.rempel@pengutronix.de>
- <88b91dc3-efbf-51f5-51cf-3e865c0988ff@microchip.com>
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lqBTX-0005oV-76; Mon, 07 Jun 2021 11:23:15 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lqBTU-0000Ic-HL; Mon, 07 Jun 2021 11:23:12 +0200
+Message-ID: <df76ecd3748a055085fe62f3119eaebc7f2c16bd.camel@pengutronix.de>
+Subject: Re: [PATCH v4 4/6] reset: Add Delta TN48M CPLD reset controller
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Robert Marko <robert.marko@sartura.hr>, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, robh+dt@kernel.org,
+        lee.jones@linaro.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     luka.perkov@sartura.hr, jmp@epiphyte.org, pmenzel@molgen.mpg.de,
+        buczek@molgen.mpg.de
+Date:   Mon, 07 Jun 2021 11:23:12 +0200
+In-Reply-To: <20210602122439.2084775-4-robert.marko@sartura.hr>
+References: <20210602122439.2084775-1-robert.marko@sartura.hr>
+         <20210602122439.2084775-4-robert.marko@sartura.hr>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <88b91dc3-efbf-51f5-51cf-3e865c0988ff@microchip.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 11:17:51 up 186 days, 23:24, 48 users,  load average: 0.03, 0.22,
- 0.23
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Eugen,
+Hi Robert,
 
-On Wed, Jun 02, 2021 at 11:15:47AM +0000, Eugen.Hristev@microchip.com wrote:
-> On 5/25/21 8:46 AM, Oleksij Rempel wrote:
-> > changes v6:
-> > - drop other DT changes
-> > - add more Reviewed-by tags
-> > - remove redundant GRTS_CH_NONE check
-> > 
-> > changes v5:
-> > - fix validate for other DT examples.
-> > - add Reviewed-by: Rob Herring <robh@kernel.org> to some of the patches
-> > 
-> > changes v4:
-> > - resistive-adc-touch: remove unused variable
-> > 
-> > changes v3:
-> > - yaml: fix validation for channel names
-> > - yaml: add nodename validation
-> > 
-> > changes v2:
-> > - add yaml conversion patch to this series
-> > - reword commit message for the last patch
-> > - fix possible overflow on the buffer dispatcher
-> > 
-> > Oleksij Rempel (4):
-> >    dt-bindings: touchscreen: Convert resistive-adc-touch binding to json
-> >      schema
-> >    dt-bindings: touchscreen: add touchscreen-x/y-plate-ohms property
-> >    dt-bindings: touchscreen: resistive-adc-touch: add support for z1 and
-> >      z2 channels
-> >    Input: resistive-adc-touch: add support for z1 and z2 channels
-> > 
-> >   .../input/touchscreen/resistive-adc-touch.txt |  33 -----
-> >   .../touchscreen/resistive-adc-touch.yaml      |  86 +++++++++++
-> >   .../input/touchscreen/touchscreen.yaml        |   6 +
-> >   .../input/touchscreen/resistive-adc-touch.c   | 140 ++++++++++++++++--
-> >   4 files changed, 218 insertions(+), 47 deletions(-)
-> >   delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt
-> >   create mode 100644 Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml
-> > 
-> > --
-> > 2.29.2
-> > 
+On Wed, 2021-06-02 at 14:24 +0200, Robert Marko wrote:
+> Delta TN48M CPLD exposes resets for the following:
+> * 88F7040 SoC
+> * 88F6820 SoC
+> * 98DX3265 switch MAC-s
+> * 88E1680 PHY-s
+> * 88E1512 PHY
+> * PoE PSE controller
 > 
+> Controller supports only self clearing resets.
 > 
+> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> ---
+>  drivers/reset/Kconfig       |   9 +++
+>  drivers/reset/Makefile      |   1 +
+>  drivers/reset/reset-tn48m.c | 128 ++++++++++++++++++++++++++++++++++++
+>  3 files changed, 138 insertions(+)
+>  create mode 100644 drivers/reset/reset-tn48m.c
 > 
-> Hello Oleksij,
-> 
-> As I am listed in the MAINTAINERS file for this driver, why I am not 
-> even CC-ed to this patch series ?
+> diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+> index 4171c6f76385..14e179cda58c 100644
+> --- a/drivers/reset/Kconfig
+> +++ b/drivers/reset/Kconfig
+> @@ -237,6 +237,15 @@ config RESET_TI_SYSCON
+>  	  you wish to use the reset framework for such memory-mapped devices,
+>  	  say Y here. Otherwise, say N.
+>  
+> +config RESET_TN48M_CPLD
+> +	tristate "Delta Networks TN48M switch CPLD reset controller"
+> +	depends on MFD_TN48M_CPLD
 
-Sorry, I missed you by accident.
-Beside, you are not listed as maintainer for the:
-Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.*
+Let's make this
 
-> At least what I could have done is test this series on my board using 
-> this driver.
+	depends on MFD_TN48M_CPLD || COMPILE_TEST
+	default MFD_TN48M_CPLD
 
-Do you have some regressions with it?
+unless there is a reason not to enable the reset driver by default when
+the MFD driver is activated.
 
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+
+regards
+Philipp
