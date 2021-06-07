@@ -2,180 +2,438 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0DA39D9B9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2D039D9C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230390AbhFGKek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 06:34:40 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:50358 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230252AbhFGKei (ORCPT
+        id S230465AbhFGKgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 06:36:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230386AbhFGKgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 06:34:38 -0400
-X-UUID: 21e3b4fb671b435886c741f4ab05c21e-20210607
-X-UUID: 21e3b4fb671b435886c741f4ab05c21e-20210607
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
-        (envelope-from <mark-pk.tsai@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 742128182; Mon, 07 Jun 2021 18:32:44 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 7 Jun 2021 18:32:42 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 7 Jun 2021 18:32:42 +0800
-From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-To:     <ardb@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-toolchains@vger.kernel.org>, <mark-pk.tsai@mediatek.com>,
-        <matthias.bgg@gmail.com>, <mhelsley@vmware.com>,
-        <rostedt@goodmis.org>, <samitolvanen@google.com>,
-        <yj.chiang@mediatek.com>
-Subject: Re: [PATCH] recordmcount: avoid using ABS symbol as reference
-Date:   Mon, 7 Jun 2021 18:32:42 +0800
-Message-ID: <20210607103242.2480-1-mark-pk.tsai@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <CAMj1kXGCoME4Wy4e3FNAjWLY=G56ivHzFTLrXRE0mLtnaBVEDQ@mail.gmail.com>
-References: <CAMj1kXGCoME4Wy4e3FNAjWLY=G56ivHzFTLrXRE0mLtnaBVEDQ@mail.gmail.com>
+        Mon, 7 Jun 2021 06:36:47 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E89C061787
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 03:34:39 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id u24so19686172edy.11
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 03:34:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S8qFjFtY77CWgD6xHMcfYVdqAsgYbpKAyPPGBYSbTi8=;
+        b=J3fNjPwy69JWrSedpDkl2rDyaK5qIRIVYAhjdMhcM+mECiYwVqoBAqnfOqq4GM7Lya
+         s/3Wz1ghGZEUMh4YUIjTZrf+nZCuAY7fNm0CMc3SA1fLwX22qm5NqAmPGDjvTqXV4+hR
+         79SbLbgj4vf91KSN+7gfbkJrEa9fsmbxRVKfztzHJv/zNFHsIL6+BDb709ejeihEfYST
+         mqgUXPeL/n1n2UtSQA7tjzTIG/0sjPhsnWrLdFWLVE9XcjU8GjysKzwIzkAyFaHqgurE
+         +DnW1Puwe7S8gVZQqbNGsFCPnqmVdG4cg0edAzBBdPvWLYctYmN2q+W6LGkGz8WZdwqK
+         VPKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S8qFjFtY77CWgD6xHMcfYVdqAsgYbpKAyPPGBYSbTi8=;
+        b=o0suuTEgnB3hZ1rwTGCbQKYzmmOKOW47i4Oq3CHCVhEKQMp7xTbx2Ezwq7MibnmUdQ
+         YaRp5F6VYwpZxYr8q32J4UEOppf1x9kBewdomr5qbiksEn02msK20khHyEipBq0szcy4
+         +nQYYntUSuSxYbR//ASqBmlq8bTSWfnOHStFF9Z2jOC6UH7AimIGX1HyVH74jEZI08o/
+         8XF4afwo1x7Ha31IiK6vhvrjS4tSvUeIEHl5g0ifZh3QvP3yobI3DxNEw9j8iQNnL48b
+         CQ3286gh4/5nt4uPflYKEfQ9ywtxQZGdeRmAQcQCCqKStqG9CJW8QEd+vlQ1ryOLtb6S
+         b6ig==
+X-Gm-Message-State: AOAM531w9t1wC9ywIZza1YoGQDBBbzuAvWoB3YfoKwi0/+C09YGnYJEm
+        MYRGd7k8FDWPhdrPhScC9xENkQ==
+X-Google-Smtp-Source: ABdhPJx7Gv0KfJS83MdjOa9ptrArD2pPYSH1jJ6YpvueYfGljkizG/xhQXX7AALRICFin5LuV0Sz6g==
+X-Received: by 2002:a05:6402:5a:: with SMTP id f26mr19271914edu.306.1623062076836;
+        Mon, 07 Jun 2021 03:34:36 -0700 (PDT)
+Received: from localhost.localdomain (dh207-96-76.xnet.hr. [88.207.96.76])
+        by smtp.googlemail.com with ESMTPSA id b25sm7521037edv.9.2021.06.07.03.34.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 03:34:36 -0700 (PDT)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     robh+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
+        corbet@lwn.net, trivial@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Cc:     luka.perkov@sartura.hr, jmp@epiphyte.org, pmenzel@molgen.mpg.de,
+        buczek@molgen.mpg.de, Robert Marko <robert.marko@sartura.hr>
+Subject: [PATCH v4 1/3] hwmon: (pmbus) Add driver for Delta DPS-920AB PSU
+Date:   Mon,  7 Jun 2021 12:34:29 +0200
+Message-Id: <20210607103431.2039073-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Mon, 7 Jun 2021 at 10:06, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
-> >
-> > > > On Mon, 7 Jun 2021 at 08:59, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
-> > > > >
-> > > > > > > On Mon, 7 Jun 2021 at 04:42, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
-> > > > > > >
-> > > > > > > Avoid using ABS symbol, which won't be relocate, as reference.
-> > > > > > >
-> > > > > > > On arm64 platform, if there's shndx equals SHN_ABS(0xfff1).
-> > > > > > >
-> > > > > > > Section Headers:
-> > > > > > > [Nr]    Name                         Type      Address          Off      Size   ES  Flg Lk     Inf    Al
-> > > > > > > [65521] .text.n_tty_receive_buf      PROGBITS  0000000000000000 3cdab520 000054 00  AX  0      0      4
-> > > > > > > [65522] .rela.text.n_tty_receive_buf RELA      0000000000000000 3cdab578 000030 18  I   152076 65521  8
-> > > > > > >
-> > > > > >
-> > > > > > A RELA section's r_info field points to the section to which it
-> > > > > > applies. This is why in the example above section #65522 points to
-> > > > > > section #65521. This has nothing to do with the numerical value of
-> > > > > > SHN_ABS.
-> > > > >
-> > > > > If the r_info of RELA section is 65521(0xfff1),
-> > >
-> > > Oh sorry, I mean sh_info here.
-> > >
-> > > > > find_secsym_ndx() will use it to find the base symbol.
-> > > > >
-> > > >
-> > > > But what does that have to do with the sh_info field of the RELA
-> > > > section's Elf_Shdr struct? IOW, what is the relevance of section
-> > > > #65521 here?
-> > > >
-> > >
-> > > So what I mean is the problem occur if the sh_info of a RELA section
-> > > is #65521.
-> >
-> > Actually the problem occur if the sh_info of a RELA section is in
-> > the special section index range(SHN_LORESERVE ~ SHN_HIRESERVE).
-> > Maybe I should add a is_shndx_special() to check this like
-> > scripts/mod/modpost.h did?
-> >
->
-> So if I understand all of this correctly, we are running into a
-> fundamental issue here, where the linker emits more sections than the
-> sh_info field can describe, overflowing into the reserved range.
+This adds support for the Delta DPS-920AB PSU.
 
-Actually the problem is about comparing st_shndx and sh_info.
+Only missing feature is fan control which the PSU supports.
 
-When the st_shndx is larger than SHN_LORESERVE, the linker mark
-it as SHN_XINDEX, and get_symindex() will handle it.
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+---
+Changes in v4:
+* Alphabetically order documentation in index.rst
+* Null terminate manufacturer and mode ID-s
+* Drop debugfs directory and I2C clients from the
+global structure, use local variables
 
-But sh_info for a RELA section take the actual shndx which may
-be in the reserved range.
-So I suppose before compare the sh_info and st_shndx,
-we need to do more check in find_secsym_ndx().
+Changes in v3:
+* Use generic pmbus_read/write_word_data()
+* Correct word data return code
+* Cache PMBUS_MFR_ID and PMBUS_MFR_MODEL instead
+of reading them everytime that debugfs is read
 
->
-> I don't think papering over it like this is going to be maintainable
-> going forward.
->
+Changes in v2:
+* Check for Manufacturer and Model
+* Restrict word read/write to supported only
+* Update documentation to reflect driver changes
+* Add basic debugfs entries
 
-Do you have suggestion for how to deal with this problem?
+ Documentation/hwmon/dps920ab.rst |  73 +++++++++++
+ Documentation/hwmon/index.rst    |   1 +
+ drivers/hwmon/pmbus/Kconfig      |   9 ++
+ drivers/hwmon/pmbus/Makefile     |   1 +
+ drivers/hwmon/pmbus/dps920ab.c   | 207 +++++++++++++++++++++++++++++++
+ 5 files changed, 291 insertions(+)
+ create mode 100644 Documentation/hwmon/dps920ab.rst
+ create mode 100644 drivers/hwmon/pmbus/dps920ab.c
 
->
->
-> > >
-> > > > > And in the symbol search loop in find_secsym_ndx(), get_symindex will
-> > > > > return 0xfff1 if the symbol is in ABS section.
-> > > > >
-> > > > > In this case, find_secsym_ndx() will return a absolute symbol as
-> > > > > base, which won't be relocate, if an ABS symbol is found before the
-> > > > > real symbol in section 65521.
-> > > > >
-> > > >
-> > > > I see your point here.
-> > > >
-> > > > > >
-> > > > > > > find_secsym_ndx, which use r_info in rela section to find the reference
-> > >
-> > > sh_info.
-> > >
-> > > > > > > symbol, may take ABS symbol as base.
-> > > > > > >
-> > > > > > > Symbol table '.symtab' contains 453285 entries:
-> > > > > > >    Num:    Value          Size Type    Bind   Vis       Ndx Name
-> > > > > > >      6: 0000000000000002     0 NOTYPE  LOCAL  DEFAULT   ABS section_count
-> > > > > > >
-> > > > > > > Which cause an invalid address in __mcount_loc.
-> > > > > > >
-> > > > > >
-> > > > > > Could you give a better account of the error you are trying to address?
-> > > > > >
-> > > > > > Also, arm64 no longer defines a section_count symbol (since v5.11), so
-> > > > > > please make sure that the diagnostics of the issue you are addressing
-> > > > > > are accurate for mainline.
-> > > > > >
-> > > > >
-> > > > > My kernel version is 5.4.61.
-> > > > > But as I explained, I suppose mainline also have this issue.
-> > > > >
-> > > >
-> > > > Mainline is what we work on. So please base your changes (and your
-> > > > commit log) on mainline.
-> > > >
-> > >
-> > > I understand it.
-> > > But the platform I can reproduce the problem is only support to 5.4 LTS now.
-> > > And port it to the latest mainline kernel have much more work to do, can I just
-> > > keep this commit log? Or just remove the example I posted in the commit messsage?
-> > >
-> > > >
-> > > > > >
-> > > > > > > Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-> > > > > > > ---
-> > > > > > >  scripts/recordmcount.h | 4 ++++
-> > > > > > >  1 file changed, 4 insertions(+)
-> > > > > > >
-> > > > > > > diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
-> > > > > > > index f9b19524da11..9b69167fb7ff 100644
-> > > > > > > --- a/scripts/recordmcount.h
-> > > > > > > +++ b/scripts/recordmcount.h
-> > > > > > > @@ -526,6 +526,10 @@ static int find_secsym_ndx(unsigned const txtndx,
-> > > > > > >         for (symp = sym0, t = nsym; t; --t, ++symp) {
-> > > > > > >                 unsigned int const st_bind = ELF_ST_BIND(symp->st_info);
-> > > > > > >
-> > > > > > > +               /* avoid absolute symbols */
-> > > > > > > +               if (symp->st_shndx == SHN_ABS)
-> > > > > > > +                       continue;
-> > > > > > > +
-> > > > > > >                 if (txtndx == get_symindex(symp, symtab, symtab_shndx)
-> > > > > > >                         /* avoid STB_WEAK */
-> > > > > > >                     && (STB_LOCAL == st_bind || STB_GLOBAL == st_bind)) {
-> > >
+diff --git a/Documentation/hwmon/dps920ab.rst b/Documentation/hwmon/dps920ab.rst
+new file mode 100644
+index 000000000000..c33b4cdc0a60
+--- /dev/null
++++ b/Documentation/hwmon/dps920ab.rst
+@@ -0,0 +1,73 @@
++.. SPDX-License-Identifier: GPL-2.0-or-later
++
++Kernel driver dps920ab
++========================
++
++Supported chips:
++
++  * Delta DPS920AB
++
++    Prefix: 'dps920ab'
++
++    Addresses scanned: -
++
++Authors:
++    Robert Marko <robert.marko@sartura.hr>
++
++
++Description
++-----------
++
++This driver implements support for Delta DPS920AB 920W 54V DC single output
++power supply with PMBus support.
++
++The driver is a client driver to the core PMBus driver.
++Please see Documentation/hwmon/pmbus.rst for details on PMBus client drivers.
++
++
++Usage Notes
++-----------
++
++This driver does not auto-detect devices. You will have to instantiate the
++devices explicitly. Please see Documentation/i2c/instantiating-devices.rst for
++details.
++
++
++Sysfs entries
++-------------
++
++======================= ======================================================
++curr1_label		"iin"
++curr1_input		Measured input current
++curr1_alarm		Input current high alarm
++
++curr2_label		"iout1"
++curr2_input		Measured output current
++curr2_max		Maximum output current
++curr2_rated_max		Maximum rated output current
++
++in1_label		"vin"
++in1_input		Measured input voltage
++in1_alarm		Input voltage alarm
++
++in2_label		"vout1"
++in2_input		Measured output voltage
++in2_rated_min		Minimum rated output voltage
++in2_rated_max		Maximum rated output voltage
++in2_alarm		Output voltage alarm
++
++power1_label		"pin"
++power1_input		Measured input power
++power1_alarm		Input power high alarm
++
++power2_label		"pout1"
++power2_input		Measured output power
++power2_rated_max	Maximum rated output power
++
++temp[1-3]_input		Measured temperature
++temp[1-3]_alarm		Temperature alarm
++
++fan1_alarm		Fan 1 warning.
++fan1_fault		Fan 1 fault.
++fan1_input		Fan 1 speed in RPM.
++======================= ======================================================
+diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+index 8d5a2df1ecb6..8abdaf440a3c 100644
+--- a/Documentation/hwmon/index.rst
++++ b/Documentation/hwmon/index.rst
+@@ -53,6 +53,7 @@ Hardware Monitoring Kernel Drivers
+    da9055
+    dell-smm-hwmon
+    dme1737
++   dps920ab
+    drivetemp
+    ds1621
+    ds620
+diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
+index 32d2fc850621..865ade0aa205 100644
+--- a/drivers/hwmon/pmbus/Kconfig
++++ b/drivers/hwmon/pmbus/Kconfig
+@@ -66,6 +66,15 @@ config SENSORS_IBM_CFFPS
+ 	  This driver can also be built as a module. If so, the module will
+ 	  be called ibm-cffps.
+ 
++config SENSORS_DPS920AB
++	tristate "Delta DPS920AB Power Supply"
++	help
++	  If you say yes here you get hardware monitoring support for Delta
++	  DPS920AB Power Supplies.
++
++	  This driver can also be built as a module. If so, the module will
++	  be called dps920ab.
++
+ config SENSORS_INSPUR_IPSPS
+ 	tristate "INSPUR Power System Power Supply"
+ 	help
+diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
+index 6a4ba0fdc1db..f59ba0123d68 100644
+--- a/drivers/hwmon/pmbus/Makefile
++++ b/drivers/hwmon/pmbus/Makefile
+@@ -9,6 +9,7 @@ obj-$(CONFIG_SENSORS_ADM1266)	+= adm1266.o
+ obj-$(CONFIG_SENSORS_ADM1275)	+= adm1275.o
+ obj-$(CONFIG_SENSORS_BEL_PFE)	+= bel-pfe.o
+ obj-$(CONFIG_SENSORS_IBM_CFFPS)	+= ibm-cffps.o
++obj-$(CONFIG_SENSORS_DPS920AB)	+= dps920ab.o
+ obj-$(CONFIG_SENSORS_INSPUR_IPSPS) += inspur-ipsps.o
+ obj-$(CONFIG_SENSORS_IR35221)	+= ir35221.o
+ obj-$(CONFIG_SENSORS_IR38064)	+= ir38064.o
+diff --git a/drivers/hwmon/pmbus/dps920ab.c b/drivers/hwmon/pmbus/dps920ab.c
+new file mode 100644
+index 000000000000..692a86cdfb6d
+--- /dev/null
++++ b/drivers/hwmon/pmbus/dps920ab.c
+@@ -0,0 +1,207 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Driver for Delta DPS920AB PSU
++ *
++ * Copyright (C) 2021 Delta Networks, Inc.
++ * Copyright (C) 2021 Sartura Ltd.
++ */
++
++#include <linux/debugfs.h>
++#include <linux/i2c.h>
++#include <linux/module.h>
++#include <linux/of_device.h>
++#include "pmbus.h"
++
++struct dps920ab_data {
++	char *mfr_model;
++	char *mfr_id;
++};
++
++static int dps920ab_read_word_data(struct i2c_client *client, int page, int phase, int reg)
++{
++	/*
++	 * This masks commands which are not supported.
++	 * PSU advertises that all features are supported,
++	 * in reality that unfortunately is not true.
++	 * So enable only those that the datasheet confirms.
++	 */
++	switch (reg) {
++	case PMBUS_FAN_COMMAND_1:
++	case PMBUS_IOUT_OC_WARN_LIMIT:
++	case PMBUS_STATUS_WORD:
++	case PMBUS_READ_VIN:
++	case PMBUS_READ_IIN:
++	case PMBUS_READ_VOUT:
++	case PMBUS_READ_IOUT:
++	case PMBUS_READ_TEMPERATURE_1:
++	case PMBUS_READ_TEMPERATURE_2:
++	case PMBUS_READ_TEMPERATURE_3:
++	case PMBUS_READ_FAN_SPEED_1:
++	case PMBUS_READ_POUT:
++	case PMBUS_READ_PIN:
++	case PMBUS_MFR_VOUT_MIN:
++	case PMBUS_MFR_VOUT_MAX:
++	case PMBUS_MFR_IOUT_MAX:
++	case PMBUS_MFR_POUT_MAX:
++		return pmbus_read_word_data(client, page, phase, reg);
++	default:
++		return -ENXIO;
++	}
++}
++
++static int dps920ab_write_word_data(struct i2c_client *client, int page, int reg,
++				    u16 word)
++{
++	/*
++	 * This masks commands which are not supported.
++	 * PSU only has one R/W register and that is
++	 * for the fan.
++	 */
++	switch (reg) {
++	case PMBUS_FAN_COMMAND_1:
++		return pmbus_write_word_data(client, page, reg, word);
++	default:
++		return -EACCES;
++	}
++}
++
++static struct pmbus_driver_info dps920ab_info = {
++	.pages = 1,
++
++	.format[PSC_VOLTAGE_IN] = linear,
++	.format[PSC_VOLTAGE_OUT] = linear,
++	.format[PSC_CURRENT_IN] = linear,
++	.format[PSC_CURRENT_OUT] = linear,
++	.format[PSC_POWER] = linear,
++	.format[PSC_FAN] = linear,
++	.format[PSC_TEMPERATURE] = linear,
++
++	.func[0] =
++		PMBUS_HAVE_VIN | PMBUS_HAVE_IIN | PMBUS_HAVE_PIN |
++		PMBUS_HAVE_VOUT | PMBUS_HAVE_IOUT | PMBUS_HAVE_POUT |
++		PMBUS_HAVE_TEMP  | PMBUS_HAVE_TEMP2 | PMBUS_HAVE_TEMP3 |
++		PMBUS_HAVE_FAN12 | PMBUS_HAVE_STATUS_FAN12 |
++		PMBUS_HAVE_STATUS_VOUT | PMBUS_HAVE_STATUS_IOUT |
++		PMBUS_HAVE_STATUS_INPUT | PMBUS_HAVE_STATUS_TEMP,
++	.read_word_data = dps920ab_read_word_data,
++	.write_word_data = dps920ab_write_word_data,
++};
++
++static int dps920ab_mfr_id_show(struct seq_file *s, void *data)
++{
++	struct dps920ab_data *priv = s->private;
++
++	seq_printf(s, "%s\n", priv->mfr_id);
++
++	return 0;
++}
++
++DEFINE_SHOW_ATTRIBUTE(dps920ab_mfr_id);
++
++static int dps920ab_mfr_model_show(struct seq_file *s, void *data)
++{
++	struct dps920ab_data *priv = s->private;
++
++	seq_printf(s, "%s\n", priv->mfr_model);
++
++	return 0;
++}
++
++DEFINE_SHOW_ATTRIBUTE(dps920ab_mfr_model);
++
++static void dps920ab_init_debugfs(struct dps920ab_data *data, struct i2c_client *client)
++{
++	struct dentry *debugfs_dir;
++	struct dentry *root;
++
++	root = pmbus_get_debugfs_dir(client);
++	if (!root)
++		return;
++
++	debugfs_dir = debugfs_create_dir(client->name, root);
++	if (!debugfs_dir)
++		return;
++
++	debugfs_create_file("mfr_id",
++			    0400,
++			    debugfs_dir,
++			    data,
++			    &dps920ab_mfr_id_fops);
++
++	debugfs_create_file("mfr_model",
++			    0400,
++			    debugfs_dir,
++			    data,
++			    &dps920ab_mfr_model_fops);
++}
++
++static int dps920ab_probe(struct i2c_client *client)
++{
++	u8 buf[I2C_SMBUS_BLOCK_MAX + 1];
++	struct dps920ab_data *data;
++	int ret;
++
++	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
++	if (!data)
++		return -ENOMEM;
++
++	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_ID, buf);
++	if (ret < 0) {
++		dev_err(&client->dev, "Failed to read Manufacturer ID\n");
++		return ret;
++	}
++
++	buf[ret] = '\0';
++	if (ret != 5 || strncmp(buf, "DELTA", 5)) {
++		buf[ret] = '\0';
++		dev_err(&client->dev, "Unsupported Manufacturer ID '%s'\n", buf);
++		return -ENODEV;
++	}
++	data->mfr_id = devm_kstrdup(&client->dev, buf, GFP_KERNEL);
++	if (!data->mfr_id)
++		return -ENOMEM;
++
++	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_MODEL, buf);
++	if (ret < 0) {
++		dev_err(&client->dev, "Failed to read Manufacturer Model\n");
++		return ret;
++	}
++
++	buf[ret] = '\0';
++	if (ret != 11 || strncmp(buf, "DPS-920AB", 9)) {
++		dev_err(&client->dev, "Unsupported Manufacturer Model '%s'\n", buf);
++		return -ENODEV;
++	}
++	data->mfr_model = devm_kstrdup(&client->dev, buf, GFP_KERNEL);
++	if (!data->mfr_model)
++		return -ENOMEM;
++
++	ret = pmbus_do_probe(client, &dps920ab_info);
++	if (ret)
++		return ret;
++
++	dps920ab_init_debugfs(data, client);
++
++	return 0;
++}
++
++static const struct of_device_id __maybe_unused dps920ab_of_match[] = {
++	{ .compatible = "delta,dps920ab", },
++	{}
++};
++
++MODULE_DEVICE_TABLE(of, dps920ab_of_match);
++
++static struct i2c_driver dps920ab_driver = {
++	.driver = {
++		   .name = "dps920ab",
++		   .of_match_table = of_match_ptr(dps920ab_of_match),
++	},
++	.probe_new = dps920ab_probe,
++};
++
++module_i2c_driver(dps920ab_driver);
++
++MODULE_AUTHOR("Robert Marko <robert.marko@sartura.hr>");
++MODULE_DESCRIPTION("PMBus driver for Delta DPS920AB PSU");
++MODULE_LICENSE("GPL");
+-- 
+2.31.1
+
