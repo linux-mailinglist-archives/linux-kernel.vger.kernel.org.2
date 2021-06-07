@@ -2,99 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06EE39D9C1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451F539D9C2
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230468AbhFGKgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 06:36:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230210AbhFGKgc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 06:36:32 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A689C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 03:34:41 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id cb9so19749931edb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 03:34:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=18khHUA2AJ3ib5wXxPFFaQIfHWGb1QOUw5+Na90fAf4=;
-        b=n4oXtQgnDbe6I7n8UhQvti9n25PNkA+8CaB7/gRPiiU3ZyE93Zst5Lo98mfSLLITrQ
-         m+Sm2IiZ4+HBfyRQSFd1677F5fwG2ouPOfavvFFcQYOR13rX4RsL8Yz3vUBFDQQeXYMd
-         MD2zqP/28PRP+IfgT3IOgucxndZGyt6c/LIqEFq1zO1ZL9a6S8VLzo54oQFvctiQzp3s
-         sJqxCQppIhK2QaWgg6L06Mtp85vchsoV6xYDCcwx68AjI1iyw5irnFTWFujkoZTqDFcL
-         0PUk1z/BnIGy7xjf+qyFpNm9ROOAI2pXvK8nl5IVyA9Sx2ZmDaYoeRb9ZHdAuT/NVCX/
-         T72A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=18khHUA2AJ3ib5wXxPFFaQIfHWGb1QOUw5+Na90fAf4=;
-        b=AY9BZ9qgNJG5v9xKLJpa7gMKJX2m3ZLW3CoB4lv6H6zz5RNE/z4CL0TvKuIjLEnFM5
-         V+o1sREYbKdHDT/xk8NJRcjDhH0oLE+GEDensB/57F+aAWk4uFwj/AmJHhSHLx0D3uqh
-         OMOGn+kMOLYefnMSm6KW8mMkGz7oCiZmw7jo0jVFXOmrHQENiNKBuye6zsb0EPon23RQ
-         VvAC7NlHzD+ddZvrX+KM9NdhNM/EP+ig4+PM6itcGHP4BMbyPkcFi3YIeY/zEqA0gmDU
-         NGt3HuPE8nF7kbq71WTMCPTSDwg+Eg9p42AJ3I9JxqMQ00Y7dzZkTuza0NS8kV1rESj6
-         6E3A==
-X-Gm-Message-State: AOAM531kcxomI/g2gM4ndEeNiwymPGmow9KJlKXzwrzkYcTDCTnwchXu
-        Q/R8X+5DgTVVlG9Jdwb6VCGoOg==
-X-Google-Smtp-Source: ABdhPJyBBEVMU+l3zZzaxsGHeW4GrlFSXJO8KYLsFCW+34uBpPVt4npJyi0x8cFnKWTER2OPtMwc+Q==
-X-Received: by 2002:a05:6402:548:: with SMTP id i8mr19605259edx.344.1623062080229;
-        Mon, 07 Jun 2021 03:34:40 -0700 (PDT)
-Received: from localhost.localdomain (dh207-96-76.xnet.hr. [88.207.96.76])
-        by smtp.googlemail.com with ESMTPSA id b25sm7521037edv.9.2021.06.07.03.34.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 03:34:39 -0700 (PDT)
-From:   Robert Marko <robert.marko@sartura.hr>
-To:     robh+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
-        corbet@lwn.net, trivial@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Cc:     luka.perkov@sartura.hr, jmp@epiphyte.org, pmenzel@molgen.mpg.de,
-        buczek@molgen.mpg.de, Robert Marko <robert.marko@sartura.hr>
-Subject: [PATCH v4 3/3] MAINTAINERS: Add Delta DPS920AB PSU driver
-Date:   Mon,  7 Jun 2021 12:34:31 +0200
-Message-Id: <20210607103431.2039073-3-robert.marko@sartura.hr>
+        id S230503AbhFGKgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 06:36:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58654 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230255AbhFGKge (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 06:36:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADD0C611ED;
+        Mon,  7 Jun 2021 10:34:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623062083;
+        bh=cU05gedathS+r+GYw7Hqqj6yfka3rVJddSsAknXH9fg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ijCbd5gBpCOvzqed80tpJI8FK0XSO+0BphUm6x5X9PAFJqaHBOu1FhHx1MJG/77mv
+         ZADdop/J4YzzeywciixV2k2Qx/8RQu5vspDgOCuKhGkPKZiY/nMfLt6nh+NsdCAm99
+         a/fIYeUWXnf2F2I7B7v7tEfXYAISsp7QKxvHepFlslUyr8anfLv7Y4y45lHNxj8OZ9
+         N5VkZ2PArQWaFVnpnq9f8PG8dipnKJl9cAuoiDtaaFmMK6waGOfUSQvfVJdzcsaMnQ
+         2Ii+wiZB4RfGMSNEwKSJ04hFN7ICN2rXl9HZqgwAD09Oz8oL/YBbWdgrrjau95t4rz
+         vKbXZ+3VMfl/w==
+From:   matthias.bgg@kernel.org
+To:     Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     brcm80211-dev-list.pdl@broadcom.com,
+        Remi Depommier <rde@setrix.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        linux-wireless@vger.kernel.org, Amar Shankar <amsr@cypress.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        SHA-cyfmac-dev-list@infineon.com, rafal@milecki.pl,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <mbrugger@suse.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Wright Feng <wright.feng@infineon.com>
+Subject: [PATCH] brcmfmac: Add clm_blob firmware files to modinfo
+Date:   Mon,  7 Jun 2021 12:34:33 +0200
+Message-Id: <20210607103433.21022-1-matthias.bgg@kernel.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210607103431.2039073-1-robert.marko@sartura.hr>
-References: <20210607103431.2039073-1-robert.marko@sartura.hr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add maintainers entry for the Delta DPS920AB PSU driver.
+From: Matthias Brugger <mbrugger@suse.com>
 
-Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+Cypress Wi-Fi chipsets include information regarding regulatory
+constraints. These are provided to the driver through "Country Local
+Matrix" (CLM) blobs. Files present in Linux firmware repository are
+on a generic world-wide safe version with conservative power
+settings which is designed to comply with regulatory but may not
+provide best performance on all boards. Never the less, a better
+functionality can be expected with the file present, so add it to the
+modinfo of the driver.
+
+Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+
 ---
-Changes in v2:
-* Drop YAML bindings
 
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+ .../wireless/broadcom/brcm80211/brcmfmac/firmware.h  |  7 +++++++
+ .../net/wireless/broadcom/brcm80211/brcmfmac/pcie.c  |  4 ++--
+ .../net/wireless/broadcom/brcm80211/brcmfmac/sdio.c  | 12 ++++++------
+ 3 files changed, 15 insertions(+), 8 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 82d9c2943c34..0707986e9bb1 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5105,6 +5105,13 @@ F:	Documentation/devicetree/bindings/reset/delta,tn48m-reset.yaml
- F:	drivers/gpio/gpio-tn48m.c
- F:	include/dt-bindings/reset/delta,tn48m-reset.h
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.h
+index 46c66415b4a6..e290dec9c53d 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.h
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.h
+@@ -32,6 +32,13 @@ static const char BRCM_ ## fw_name ## _FIRMWARE_BASENAME[] = \
+ 	BRCMF_FW_DEFAULT_PATH fw_base; \
+ MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH fw_base ".bin")
  
-+DELTA DPS920AB PSU DRIVER
-+M:	Robert Marko <robert.marko@sartura.hr>
-+L:	linux-hwmon@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/hwmon/dps920ab.rst
-+F:	drivers/hwmon/pmbus/dps920ab.c
++/* Firmware and Country Local Matrix files */
++#define BRCMF_FW_CLM_DEF(fw_name, fw_base) \
++static const char BRCM_ ## fw_name ## _FIRMWARE_BASENAME[] = \
++	BRCMF_FW_DEFAULT_PATH fw_base; \
++MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH fw_base ".bin"); \
++MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH fw_base ".clm_blob")
 +
- DENALI NAND DRIVER
- L:	linux-mtd@lists.infradead.org
- S:	Orphan
+ #define BRCMF_FW_ENTRY(chipid, mask, name) \
+ 	{ chipid, mask, BRCM_ ## name ## _FIRMWARE_BASENAME }
+ 
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+index 143a705b5cb3..c49dd0c36ae4 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+@@ -48,8 +48,8 @@ enum brcmf_pcie_state {
+ BRCMF_FW_DEF(43602, "brcmfmac43602-pcie");
+ BRCMF_FW_DEF(4350, "brcmfmac4350-pcie");
+ BRCMF_FW_DEF(4350C, "brcmfmac4350c2-pcie");
+-BRCMF_FW_DEF(4356, "brcmfmac4356-pcie");
+-BRCMF_FW_DEF(43570, "brcmfmac43570-pcie");
++BRCMF_FW_CLM_DEF(4356, "brcmfmac4356-pcie");
++BRCMF_FW_CLM_DEF(43570, "brcmfmac43570-pcie");
+ BRCMF_FW_DEF(4358, "brcmfmac4358-pcie");
+ BRCMF_FW_DEF(4359, "brcmfmac4359-pcie");
+ BRCMF_FW_DEF(4364, "brcmfmac4364-pcie");
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+index b8788d7090a4..69cbe38f05ce 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+@@ -616,14 +616,14 @@ BRCMF_FW_DEF(43362, "brcmfmac43362-sdio");
+ BRCMF_FW_DEF(4339, "brcmfmac4339-sdio");
+ BRCMF_FW_DEF(43430A0, "brcmfmac43430a0-sdio");
+ /* Note the names are not postfixed with a1 for backward compatibility */
+-BRCMF_FW_DEF(43430A1, "brcmfmac43430-sdio");
+-BRCMF_FW_DEF(43455, "brcmfmac43455-sdio");
++BRCMF_FW_CLM_DEF(43430A1, "brcmfmac43430-sdio");
++BRCMF_FW_CLM_DEF(43455, "brcmfmac43455-sdio");
+ BRCMF_FW_DEF(43456, "brcmfmac43456-sdio");
+-BRCMF_FW_DEF(4354, "brcmfmac4354-sdio");
+-BRCMF_FW_DEF(4356, "brcmfmac4356-sdio");
++BRCMF_FW_CLM_DEF(4354, "brcmfmac4354-sdio");
++BRCMF_FW_CLM_DEF(4356, "brcmfmac4356-sdio");
+ BRCMF_FW_DEF(4359, "brcmfmac4359-sdio");
+-BRCMF_FW_DEF(4373, "brcmfmac4373-sdio");
+-BRCMF_FW_DEF(43012, "brcmfmac43012-sdio");
++BRCMF_FW_CLM_DEF(4373, "brcmfmac4373-sdio");
++BRCMF_FW_CLM_DEF(43012, "brcmfmac43012-sdio");
+ 
+ /* firmware config files */
+ MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcmfmac*-sdio.*.txt");
 -- 
 2.31.1
 
