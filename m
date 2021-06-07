@@ -2,81 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6660039D996
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D7839D998
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbhFGK1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 06:27:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230127AbhFGK1F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 06:27:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D200611AD;
-        Mon,  7 Jun 2021 10:25:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623061505;
-        bh=amHnAOUniK9QiSutr2S+7gZcLass0vkZd3TBWEJb0fo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q1KbwVFvpRKW3Dz/ZTL28TG7N9T8Aqklmazl/ndkcpoXmoHPySetgabW99iT5xJtp
-         jSO8jPT6Im1A9NM3uSVn2JKGgqIAclJGSYN3Pa5f+jNl4tR+CU96B13PGdJarN3b84
-         69FaNtD8+MhDUxybhod854s8XNFfiwz0E+GDIlVQ=
-Date:   Mon, 7 Jun 2021 12:25:03 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Adit Ranadive <aditr@vmware.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Christian Benvenuti <benve@cisco.com>,
-        clang-built-linux@googlegroups.com,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Gal Pressman <galpress@amazon.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next v1 10/15] RDMA/cm: Use an attribute_group on
- the ib_port_attribute intead of kobj's
-Message-ID: <YL3z/xpm5EYHFuZs@kroah.com>
-References: <cover.1623053078.git.leonro@nvidia.com>
- <00e578937f557954d240bc0856f45b3f752d6cba.1623053078.git.leonro@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00e578937f557954d240bc0856f45b3f752d6cba.1623053078.git.leonro@nvidia.com>
+        id S230420AbhFGK1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 06:27:16 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:38276 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230407AbhFGK1P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 06:27:15 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R531e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UbZsAbN_1623061518;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UbZsAbN_1623061518)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 07 Jun 2021 18:25:21 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     mpe@ellerman.id.au
+Cc:     benh@kernel.crashing.org, paulus@samba.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] powerpc: Fix duplicate included _clear.h
+Date:   Mon,  7 Jun 2021 18:25:12 +0800
+Message-Id: <1623061512-31651-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 11:17:35AM +0300, Leon Romanovsky wrote:
-> From: Jason Gunthorpe <jgg@nvidia.com>
-> 
-> This code is trying to attach a list of counters grouped into 4 groups to
-> the ib_port sysfs. Instead of creating a bunch of kobjects simply express
-> everything naturally as an ib_port_attribute and add a single
-> attribute_groups list.
-> 
-> Remove all the naked kobject manipulations.
+Clean up the following includecheck warning:
 
-Much nicer.
+./arch/powerpc/perf/req-gen/perf.h: _clear.h is included more than once.
 
-But why do you need your counters to be atomic in the first place?  What
-are they counting that requires this?  Given that they are just a
-statistic for userspace, making them be a u64 should work just the same,
-right?
+No functional change.
 
-thanks,
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ arch/powerpc/perf/req-gen/perf.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-greg k-h
+diff --git a/arch/powerpc/perf/req-gen/perf.h b/arch/powerpc/perf/req-gen/perf.h
+index fa9bc80..59fa588 100644
+--- a/arch/powerpc/perf/req-gen/perf.h
++++ b/arch/powerpc/perf/req-gen/perf.h
+@@ -51,7 +51,6 @@ enum CAT2(NAME_LOWER, _requests) {
+  *	r_fields
+  * };
+  */
+-#include "_clear.h"
+ #define STRUCT_NAME__(name_lower, r_name) name_lower ## _ ## r_name
+ #define STRUCT_NAME_(name_lower, r_name) STRUCT_NAME__(name_lower, r_name)
+ #define STRUCT_NAME(r_name) STRUCT_NAME_(NAME_LOWER, r_name)
+-- 
+1.8.3.1
+
