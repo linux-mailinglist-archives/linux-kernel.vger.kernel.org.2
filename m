@@ -2,85 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7318D39D848
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA1C139D84C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230478AbhFGJJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:09:08 -0400
-Received: from mga05.intel.com ([192.55.52.43]:37687 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230127AbhFGJJG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:09:06 -0400
-IronPort-SDR: Im1ncTXOQEb+4zT+eS4t40wvA3fjo/n5ppbvwT5nXlrmc3yTAnkDe9z8mfj0kOibrd539VerOT
- 0ojzufQZ/wOg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="290214597"
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="290214597"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 02:07:14 -0700
-IronPort-SDR: fWtBuoMT2YmpRsiDp/3t1jD9RY33zkoIdNpPXtYnedhKZ+PSkv8UFgK6TrLqDQNNISH2mH1RWj
- XdJwPvFNpDtQ==
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="401623618"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 02:07:11 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lqBDw-000DL0-SU; Mon, 07 Jun 2021 12:07:08 +0300
-Date:   Mon, 7 Jun 2021 12:07:08 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
-        mihai.carabas@oracle.com, akpm@linux-foundation.org,
-        yuehaibing@huawei.com, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] misc/pvpanic: Remove some dead-code
-Message-ID: <YL3hvMW3d2cd8IT1@smile.fi.intel.com>
-References: <8e425618f4042a8ab8366be4d34026972e77bd40.1622911768.git.christophe.jaillet@wanadoo.fr>
+        id S230329AbhFGJJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:09:59 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3446 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229966AbhFGJJ6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 05:09:58 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fz6rr5GXzz6vpG;
+        Mon,  7 Jun 2021 17:05:00 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 17:08:02 +0800
+Received: from [10.174.179.129] (10.174.179.129) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 17:08:02 +0800
+Subject: Re: [PATCH V2] clk: socfpga: err out if of_clk_add_provider() failed
+ in __socfpga_pll_init()
+To:     <dinguyen@kernel.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>
+CC:     <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>
+References: <162262008540.4130789.916741380026683860@swboyd.mtv.corp.google.com>
+ <20210602084259.1267768-1-yukuai3@huawei.com>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <f706a87b-fb25-8d63-43e5-9e71a0f8fec8@huawei.com>
+Date:   Mon, 7 Jun 2021 17:08:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8e425618f4042a8ab8366be4d34026972e77bd40.1622911768.git.christophe.jaillet@wanadoo.fr>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210602084259.1267768-1-yukuai3@huawei.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.129]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 05, 2021 at 06:53:47PM +0200, Christophe JAILLET wrote:
-> 'pvpanic_remove()' is referenced only by a 'devm_add_action_or_reset()'
-> call in 'devm_pvpanic_probe()'. So, we know that its parameter is non-NULL.
+ping ...
+
+On 2021/06/02 16:42, Yu Kuai wrote:
+> __socfpga_pll_init() should fail if of_clk_add_provider() failed.
+> remove 'rc' in the meantime to avoid gcc
+> '-Wunused-but-set-variable' warning.
 > 
-> Axe the unneeded check to save a few lines of code.
-
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Thanks!
-
-> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 > ---
->  drivers/misc/pvpanic/pvpanic.c | 3 ---
->  1 file changed, 3 deletions(-)
+> changes in V2:
+>   - remove 'rc' and use err' instead of 'rc'
+>   - err out if of_clk_add_provider() failed
 > 
-> diff --git a/drivers/misc/pvpanic/pvpanic.c b/drivers/misc/pvpanic/pvpanic.c
-> index 82770a088d62..02b807c788c9 100644
-> --- a/drivers/misc/pvpanic/pvpanic.c
-> +++ b/drivers/misc/pvpanic/pvpanic.c
-> @@ -66,9 +66,6 @@ static void pvpanic_remove(void *param)
->  	struct pvpanic_instance *pi_cur, *pi_next;
->  	struct pvpanic_instance *pi = param;
->  
-> -	if (!pi)
-> -		return;
-> -
->  	spin_lock(&pvpanic_lock);
->  	list_for_each_entry_safe(pi_cur, pi_next, &pvpanic_list, list) {
->  		if (pi_cur == pi) {
-> -- 
-> 2.30.2
+>   drivers/clk/socfpga/clk-pll.c | 15 +++++++++------
+>   1 file changed, 9 insertions(+), 6 deletions(-)
 > 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> diff --git a/drivers/clk/socfpga/clk-pll.c b/drivers/clk/socfpga/clk-pll.c
+> index dcb573d44034..5a9eec2eca80 100644
+> --- a/drivers/clk/socfpga/clk-pll.c
+> +++ b/drivers/clk/socfpga/clk-pll.c
+> @@ -80,7 +80,6 @@ static __init struct clk_hw *__socfpga_pll_init(struct device_node *node,
+>   	const char *parent_name[SOCFPGA_MAX_PARENTS];
+>   	struct clk_init_data init;
+>   	struct device_node *clkmgr_np;
+> -	int rc;
+>   	int err;
+>   
+>   	of_property_read_u32(node, "reg", &reg);
+> @@ -110,12 +109,16 @@ static __init struct clk_hw *__socfpga_pll_init(struct device_node *node,
+>   	hw_clk = &pll_clk->hw.hw;
+>   
+>   	err = clk_hw_register(NULL, hw_clk);
+> -	if (err) {
+> -		kfree(pll_clk);
+> -		return ERR_PTR(err);
+> -	}
+> -	rc = of_clk_add_provider(node, of_clk_src_simple_get, hw_clk);
+> +	if (err)
+> +		goto err_out;
+> +	err = of_clk_add_provider(node, of_clk_src_simple_get, hw_clk);
+> +	if (err)
+> +		goto err_out;
+>   	return hw_clk;
+> +
+> +err_out:
+> +	kfree(pll_clk);
+> +	return ERR_PTR(err);
+>   }
+>   
+>   void __init socfpga_pll_init(struct device_node *node)
+> 
