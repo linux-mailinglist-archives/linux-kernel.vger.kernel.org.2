@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4EC839D4DF
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 172FA39D4E9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbhFGGYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 02:24:00 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3078 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhFGGX6 (ORCPT
+        id S230294AbhFGGZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 02:25:57 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:4330 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229993AbhFGGZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 02:23:58 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fz37G2kFDzWsmN;
-        Mon,  7 Jun 2021 14:17:14 +0800 (CST)
+        Mon, 7 Jun 2021 02:25:56 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Fz39X2fBVz1BKBc;
+        Mon,  7 Jun 2021 14:19:12 +0800 (CST)
 Received: from dggemi758-chm.china.huawei.com (10.1.198.144) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 14:22:03 +0800
+ 15.1.2176.2; Mon, 7 Jun 2021 14:24:01 +0800
 Received: from huawei.com (10.175.101.6) by dggemi758-chm.china.huawei.com
  (10.1.198.144) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 7 Jun
- 2021 14:22:03 +0800
+ 2021 14:24:00 +0800
 From:   ChenXiaoSong <chenxiaosong2@huawei.com>
-To:     <bfields@fieldses.org>, <chuck.lever@oracle.com>,
-        <trond.myklebust@hammerspace.com>, <anna.schumaker@netapp.com>
-CC:     <linux-nfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yukuai3@huawei.com>, <yi.zhang@huawei.com>,
-        <chenxiaosong2@huawei.com>
-Subject: [PATCH -next] nfs_common: fix doc warning
-Date:   Mon, 7 Jun 2021 14:28:23 +0800
-Message-ID: <20210607062823.328716-1-chenxiaosong2@huawei.com>
+To:     <john.johansen@canonical.com>, <jmorris@namei.org>,
+        <serge@hallyn.com>
+CC:     <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
+        <yi.zhang@huawei.com>, <chenxiaosong2@huawei.com>
+Subject: [PATCH -next] apparmor: fix doc warning
+Date:   Mon, 7 Jun 2021 14:30:22 +0800
+Message-ID: <20210607063022.329320-1-chenxiaosong2@huawei.com>
 X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  dggemi758-chm.china.huawei.com (10.1.198.144)
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -46,25 +46,26 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fix gcc W=1 warning:
 
-fs/nfs_common/grace.c:91: warning: Function parameter or member 'net' not described in 'locks_in_grace'
+security/apparmor/apparmorfs.c:2125: warning: Function parameter or member 'p' not described in '__next_profile'
 
 Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
 ---
- fs/nfs_common/grace.c | 1 +
- 1 file changed, 1 insertion(+)
+ security/apparmor/apparmorfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/nfs_common/grace.c b/fs/nfs_common/grace.c
-index 26f2a50eceac..edec45831585 100644
---- a/fs/nfs_common/grace.c
-+++ b/fs/nfs_common/grace.c
-@@ -82,6 +82,7 @@ __state_in_grace(struct net *net, bool open)
+diff --git a/security/apparmor/apparmorfs.c b/security/apparmor/apparmorfs.c
+index 5bb9b9910aee..4720b8b9239c 100644
+--- a/security/apparmor/apparmorfs.c
++++ b/security/apparmor/apparmorfs.c
+@@ -2114,7 +2114,7 @@ static struct aa_profile *__first_profile(struct aa_ns *root,
  
  /**
-  * locks_in_grace
-+ * @net: network namespace
+  * __next_profile - step to the next profile in a profile tree
+- * @profile: current profile in tree (NOT NULL)
++ * @p: current profile in tree (NOT NULL)
   *
-  * Lock managers call this function to determine when it is OK for them
-  * to answer ordinary lock requests, and when they should accept only
+  * Perform a depth first traversal on the profile tree in a namespace
+  *
 -- 
 2.25.4
 
