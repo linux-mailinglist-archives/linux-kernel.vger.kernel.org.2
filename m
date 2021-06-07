@@ -2,67 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FD0B39D4AE
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 837AA39D49E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbhFGGOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 02:14:01 -0400
-Received: from m12-15.163.com ([220.181.12.15]:48642 "EHLO m12-15.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229498AbhFGGN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 02:13:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=ucIsH
-        6s5UZSTSd8u+dhiLzuICj1ex/HPmgmtvqBoX0E=; b=pqkQ5t3QBj0t4B828o/jB
-        tMCwNz+hS3ydWGhIx2uAQCaLt2w/KsO5TWqXE18IyPdufRFsxrGUHAZx/8Gg01nD
-        ZK+xcj3AbshUcAQlxDfm5q4W+FvDCa25Dqr1v5hOEBeMsKaBXu1oHa2Y6TRauFP4
-        u8wY5oBJd7vp8WyLftucuM=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp11 (Coremail) with SMTP id D8CowACnrqbvtL1glWEjAA--.48S2;
-        Mon, 07 Jun 2021 13:56:08 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lijian <lijian@yulong.com>
-Subject: [PATCH] fs: fs-writeback: Fix a typo
-Date:   Mon,  7 Jun 2021 13:55:00 +0800
-Message-Id: <20210607055500.159160-1-lijian_8010a29@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S230169AbhFGGDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 02:03:34 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:35024 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229449AbhFGGDc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 02:03:32 -0400
+Received: from mail-wm1-f70.google.com ([209.85.128.70])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lq8KT-00014y-K2
+        for linux-kernel@vger.kernel.org; Mon, 07 Jun 2021 06:01:41 +0000
+Received: by mail-wm1-f70.google.com with SMTP id v2-20020a7bcb420000b0290146b609814dso3697813wmj.0
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 23:01:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qAtq8fZxJa+xoWcGAlXfKDVfTmmln1jGGwqwLzPVz5w=;
+        b=lSZFgKMRLiw01k9wUs5WlckRsMtg3YhamW/uCCr9TPPkhdgGHqyjCcYpMBuUbMVDjU
+         ecW+pFVpe0TZGfjRZAHYeCikTcw3KtX/RChoEEpvOsPB7wf0Z5e6QVETf2gdVwW6pzES
+         /cBUs7bUiyVKrXutZebd2Xve92pjTY8hkDxdvpKdjGI1YBDJho+wthfCdoNncbyK0sbh
+         srua/4bvHmeeDA/yw04wBDLGLOfzjo+tB7shM8+hSoH/SSyJqW4L7+q9ecVWBu8j51mg
+         U4bVbD2o/kEDr6VSW7poasKi/sgVhYntB6penqNnnfdlDftoH0gSOhFhiZb+QHGx50A2
+         5mlQ==
+X-Gm-Message-State: AOAM531URTnaDh/+4AG32zAkrsLADpEW9njgEoUddhuIpah2N9cTxtmj
+        r22oemy120ge7lKm/Qi+/utl3ivm5QxRTfbVjV/43WbYCUu0WJjO9X0XFCnFZYp/BKTQCWZ/7Eb
+        Tbmld6itukPEte6FqUtv775yBVclcf/dpVnk/u9ikMA==
+X-Received: by 2002:a1c:740b:: with SMTP id p11mr14833145wmc.94.1623045690562;
+        Sun, 06 Jun 2021 23:01:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxpu7m3EIJUyOBKcObfXEeEge07GsVcQb9YzJG8QvObto+R5NJsN0+hGkmIqmu4dspK7YMSzw==
+X-Received: by 2002:a1c:740b:: with SMTP id p11mr14833107wmc.94.1623045690239;
+        Sun, 06 Jun 2021 23:01:30 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-185-9.adslplus.ch. [188.155.185.9])
+        by smtp.gmail.com with ESMTPSA id q20sm18398437wrf.45.2021.06.06.23.01.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 06 Jun 2021 23:01:29 -0700 (PDT)
+Subject: Re: [PATCH v6 08/14] memory: tegra: Enable compile testing for all
+ drivers
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        =?UTF-8?Q?Nikola_Milosavljevi=c4=87?= <mnidza@outlook.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Paul Fertser <fercerpav@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-clk@vger.kernel.org
+References: <20210601023119.22044-1-digetx@gmail.com>
+ <20210601023119.22044-9-digetx@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <41899ef4-bb16-6c3a-035c-1e840a993bec@canonical.com>
+Date:   Mon, 7 Jun 2021 08:01:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: D8CowACnrqbvtL1glWEjAA--.48S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7XrW8GrW5KrWxXw15Zry7Jrb_yoW3trc_Wr
-        4Iqr48CF4DXFW5Xr4xAFs3tryvqw1rCFyxJa1DKF4DG345Zws8Zrs8Gryqvr12qFy7Za93
-        u3ZFgrW7Zay29jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnWGQDUUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbiLxiqUFUMY1-DoQAAsK
+In-Reply-To: <20210601023119.22044-9-digetx@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
+On 01/06/2021 04:31, Dmitry Osipenko wrote:
+> Enable compile testing for all Tegra memory drivers.
+> 
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/memory/tegra/Kconfig | 16 ++++++++++------
+>  1 file changed, 10 insertions(+), 6 deletions(-)
+> 
 
-Change 'paramters' to 'parameters'.
+Hi Dmitry,
 
-Signed-off-by: lijian <lijian@yulong.com>
----
- fs/fs-writeback.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This fails on x86_64 and i386:
+https://krzk.eu/#/builders/38/builds/260
+https://krzk.eu/#/builders/40/builds/261
 
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index 7c46d1588a19..f827490a41aa 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -215,7 +215,7 @@ void wb_wait_for_completion(struct wb_completion *done)
-  * Parameters for foreign inode detection, see wbc_detach_inode() to see
-  * how they're used.
-  *
-- * These paramters are inherently heuristical as the detection target
-+ * These parameters are inherently heuristical as the detection target
-  * itself is fuzzy.  All we want to do is detaching an inode from the
-  * current owner if it's being written to by some other cgroups too much.
-  *
--- 
-2.25.1
+/bin/ld: warning: orphan section `__reservedmem_of_table' from `drivers/memory/tegra/tegra210-emc-table.o' being placed in section `__reservedmem_of_table'
+/bin/ld: drivers/memory/tegra/mc.o: in function `tegra_mc_probe':
+mc.c:(.text+0x87a): undefined reference to `reset_controller_register'
+make[1]: *** [/home/buildbot/worker/builddir/build/Makefile:1191: vmlinux] Error 1
 
+It's a defconfig with:
+scripts/config --file out/.config -e COMPILE_TEST -e OF -e SRAM -e
+MEMORY -e PM_DEVFREQ -e ARM_PL172_MPMC -e ATMEL_SDRAMC -e ATMEL_EBI -e
+BRCMSTB_DPFE -e BT1_L2_CTL -e TI_AEMIF -e TI_EMIF -e OMAP_GPMC -e
+TI_EMIF_SRAM -e MVEBU_DEVBUS -e FSL_CORENET_CF -e FSL_IFC -e JZ4780_NEMC
+-e MTK_SMI -e DA8XX_DDRCTL -e PL353_SMC -e RENESAS_RPCIF -e
+STM32_FMC2_EBI -e SAMSUNG_MC -e EXYNOS5422_DMC -e EXYNOS_SROM -e
+TEGRA_MC -e TEGRA20_EMC -e TEGRA30_EMC -e TEGRA124_EMC -e
+TEGRA210_EMC_TABLE -e TEGRA210_EMC
+
+
+Best regards,
+Krzysztof
