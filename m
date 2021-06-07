@@ -2,131 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC1039D83B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D880D39D83C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230316AbhFGJGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:06:20 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:48620 "EHLO gloria.sntech.de"
+        id S230396AbhFGJGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:06:41 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:33508 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230173AbhFGJGR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:06:17 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1lqBBH-0000nU-KF; Mon, 07 Jun 2021 11:04:23 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Jon Lin <jon.lin@rock-chips.com>, broonie@kernel.org,
-        Johan Jonker <jbx6244@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 1/6] dt-bindings: spi: spi-rockchip: add description for rv1126 and rk3568
-Date:   Mon, 07 Jun 2021 11:04:21 +0200
-Message-ID: <3681106.bcXerOTE6V@diego>
-In-Reply-To: <ef90ae6d-40bb-8389-f4f8-536a7b610fb7@gmail.com>
-References: <20210607063448.29589-1-jon.lin@rock-chips.com> <20210607063448.29589-2-jon.lin@rock-chips.com> <ef90ae6d-40bb-8389-f4f8-536a7b610fb7@gmail.com>
+        id S230173AbhFGJGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 05:06:40 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1lqBBX-0004lK-Pa; Mon, 07 Jun 2021 17:04:39 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1lqBBT-0002rF-P6; Mon, 07 Jun 2021 17:04:35 +0800
+Date:   Mon, 7 Jun 2021 17:04:35 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     steffen.klassert@secunet.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] xfrm: use BUG_ON instead of if condition
+ followed by BUG
+Message-ID: <20210607090435.GA10960@gondor.apana.org.au>
+References: <20210607091121.2766815-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210607091121.2766815-1-zhengyongjun3@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, 7. Juni 2021, 10:15:30 CEST schrieb Johan Jonker:
-> Hi Jon,
+On Mon, Jun 07, 2021 at 05:11:21PM +0800, Zheng Yongjun wrote:
+> Use BUG_ON instead of if condition followed by BUG.
 > 
-> On 6/7/21 8:34 AM, Jon Lin wrote:
-> > The description below will be used for rv1126.dtsi or rk3568.dtsi in
-> > the future
-> > 
-> > Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
-> > ---
-> > 
-> > Changes in v4:
-> > - Adjust the order patches
-> > - Simply commit massage like redundancy "application" content
-> > 
-> > Changes in v3:
-> > - Fix compile error which is find by Sascha in [v2,2/8]
-> > 
-> >  Documentation/devicetree/bindings/spi/spi-rockchip.yaml | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/spi/spi-rockchip.yaml b/Documentation/devicetree/bindings/spi/spi-rockchip.yaml
-> > index 1e6cf29e6388..2d7957f9ae0a 100644
-> > --- a/Documentation/devicetree/bindings/spi/spi-rockchip.yaml
-> > +++ b/Documentation/devicetree/bindings/spi/spi-rockchip.yaml
-> > @@ -27,12 +27,14 @@ properties:
-> >        - items:
-> >            - enum:
-> >                - rockchip,px30-spi
+> This issue was detected with the help of Coccinelle.
 > 
-> > +              - rockchip,rv1126-spi
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  net/xfrm/xfrm_policy.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> This list is sort alphabetically.
-> Move "rockchip,rv1126-spi" below "rockchip,rk3568-spi"
-> 
-> >                - rockchip,rk3188-spi
-> >                - rockchip,rk3288-spi
-> >                - rockchip,rk3308-spi
-> >                - rockchip,rk3328-spi
-> >                - rockchip,rk3368-spi
-> >                - rockchip,rk3399-spi
-> > +              - rockchip,rk3568-spi
-> 
-> 
-> >            - const: rockchip,rk3066-spi
-> >  
-> >    reg:
-> > 
-> 
-> ===
-> 
-> Your comment in [PATCH v3 3/8]:
-> >> Adding "rockchip,rv1126-spi" to rockchip_spi_dt_match[] is strictly not
-> >> needed when using "rockchip,rk3066-spi" as fall back string.
-> >> Could a maintainer advise?
-> >>
-> >> Maybe this bug of mine should revert too?? Or is it legacy?
-> >> spi: rockchip: add compatible string for px30 rk3308 rk3328
-> >> https://lore.kernel.org/r/20200309151004.7780-1-jbx6244@gmail.com
-> 
-> > I agree with you. If the maintainer doesn't have any comments, I will use
-> > "rockchip,spi" as compatible names for the subsequent rk platform.
-> 
-> Compatibility strings are supposed to be SoC orientated.
-> So generic ones like in the manufacturer tree can't be used here.
+> diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
+> index ce500f847b99..532314578151 100644
+> --- a/net/xfrm/xfrm_policy.c
+> +++ b/net/xfrm/xfrm_policy.c
+> @@ -421,8 +421,7 @@ void xfrm_policy_destroy(struct xfrm_policy *policy)
+>  {
+>  	BUG_ON(!policy->walk.dead);
+>  
+> -	if (del_timer(&policy->timer) || del_timer(&policy->polq.hold_timer))
+> -		BUG();
+> +	BUG_ON(del_timer(&policy->timer) || del_timer(&policy->polq.hold_timer));
 
-Johan ist right :-) .
-
-rockchip,spi won't work at all, especially as these controllers always change
-over time. [0]
-
-Best example is the iommu. We started with "rockchip,iommu" thinking this
-won't change over time, but with the rk3568 we get a new slightly different
-iommu.
-
-The vendor-kernel then introduces somewhat random "-vX" additions to
-distinguish them, but often they do seem to be very software-centric.
-
-Meaning, hardware-designers moved stuff around and software-developers
-then invented the versioning to differentiate between versions.
-
-The devicetree is supposed to describe the hardware though, so going with
-the relevant soc-specific compatible gives us the necessary hardware-centric
-differentiation.
-
-Also this allows to catch later issues with specific soc implementations ;-)
-Like 6 monts down the road we discover some special behaviour on the
-rk3568 and devicetree is supposed to be stable.
-
-So having the relevant compatibles in place allows us to just add driver
-fixes and have those apply on the rk3568 if that is need at some point.
-
-Heiko
-
-
-
+Nack.  Do not put statements with side effects within BUG_ON.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
