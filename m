@@ -2,166 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8769239D359
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 05:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9CC39D35C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 05:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbhFGDUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 23:20:18 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7122 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbhFGDUQ (ORCPT
+        id S230237AbhFGDUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 23:20:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25716 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230169AbhFGDUg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 23:20:16 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fyz5g1QY7zYrcy;
-        Mon,  7 Jun 2021 11:15:35 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 11:18:23 +0800
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 11:18:22 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] lib/test: Fix spelling mistakes
-Date:   Mon, 7 Jun 2021 11:15:37 +0800
-Message-ID: <20210607031537.12366-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        Sun, 6 Jun 2021 23:20:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623035925;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ABnq2QuOpr7byvnRGusIkVvj+20PbgeaIPvM27YKhg4=;
+        b=NYm6lC/x5w+kG1yUkFR90+hzVOMxnCkewRQicenItQsa2e5MtntXQ2aq5+AeY8MguVe0bs
+        5DGG+DtAaxOapbqTQoebSL2HpXHRq9Ji+SsuwUZ4p6LlbykKOAuG7XU0TIcR7VO9ny38Uo
+        dTymUwE3t6A3I/OVwheVwARLq4pmbc0=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-238-Zc2mFRReOM6qUMBE4y2WgQ-1; Sun, 06 Jun 2021 23:18:44 -0400
+X-MC-Unique: Zc2mFRReOM6qUMBE4y2WgQ-1
+Received: by mail-pj1-f69.google.com with SMTP id om12-20020a17090b3a8cb029016a4ee7d56fso10486679pjb.7
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 20:18:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=ABnq2QuOpr7byvnRGusIkVvj+20PbgeaIPvM27YKhg4=;
+        b=B3DLqXjEkcWYK2hP9ydWn/Q5Y4TOVgzh3Qr6e7dKg21jLht9qTRYkEeRDkVb4GilPR
+         61lJiczBK36YwZYGWGgf1nD13aFWjAzCLy4BgJJdcO0JnRdjYpcLppzqkDJPg0aFPHJo
+         vpN4MuEpf3Q2e2ArAILlpjvp/bbNblS7UPMdAbwtkSV43x+cony0XCFzTWRwwUQaRnwQ
+         Fr6TnO8+eoo+uYi9E4vURCfG9Dg/vue1IUHn1PbM81TxL13eXgLfjWKHSbwOBRobwWqz
+         NlFgdun/AO8AZFH9pRkS8oSqNnatT6T3n4njnIQsu76slJw8flm5frzl8sUm1pcloew/
+         /CVA==
+X-Gm-Message-State: AOAM531FU+DEBmo6Mz5SlqmdjApkVIV9bl9hmltWTs6YV4ztBSpdaA36
+        m2MBWr+Cltzigg52JXIgHXveUqqYj/tzq4gipruEI9rWEbuozA410n6r9+gw8Wx8NJQik1rUK2D
+        j1WveWumdKQ0Qs0UCIIwPOtFb
+X-Received: by 2002:a17:90a:390d:: with SMTP id y13mr18291776pjb.52.1623035922897;
+        Sun, 06 Jun 2021 20:18:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzxyhCGMAJgmD0wCDBmip4ixPdmhcn5mWCmYZELjB4tRm0TDYopxIzBxkopd2Rpl9Ugu+p2EA==
+X-Received: by 2002:a17:90a:390d:: with SMTP id y13mr18291758pjb.52.1623035922656;
+        Sun, 06 Jun 2021 20:18:42 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id w10sm6719572pfg.196.2021.06.06.20.18.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 06 Jun 2021 20:18:42 -0700 (PDT)
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        David Woodhouse <dwmw2@infradead.org>
+References: <20210602111117.026d4a26.alex.williamson@redhat.com>
+ <20210602173510.GE1002214@nvidia.com>
+ <20210602120111.5e5bcf93.alex.williamson@redhat.com>
+ <20210602180925.GH1002214@nvidia.com>
+ <20210602130053.615db578.alex.williamson@redhat.com>
+ <20210602195404.GI1002214@nvidia.com>
+ <20210602143734.72fb4fa4.alex.williamson@redhat.com>
+ <6a9426d7-ed55-e006-9c4c-6b7c78142e39@redhat.com>
+ <20210603130927.GZ1002214@nvidia.com>
+ <65614634-1db4-7119-1a90-64ba5c6e9042@redhat.com>
+ <20210604115805.GG1002214@nvidia.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <895671cc-5ef8-bc1a-734c-e9e2fdf03652@redhat.com>
+Date:   Mon, 7 Jun 2021 11:18:33 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210604115805.GG1002214@nvidia.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix some spelling mistakes in comments:
-thats ==> that's
-unitialized ==> uninitialized
-panicing ==> panicking
-sucess ==> success
-possitive ==> positive
-intepreted ==> interpreted
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- lib/test_bitops.c | 2 +-
- lib/test_bpf.c    | 2 +-
- lib/test_kasan.c  | 2 +-
- lib/test_kmod.c   | 6 +++---
- lib/test_scanf.c  | 2 +-
- 5 files changed, 7 insertions(+), 7 deletions(-)
+ÔÚ 2021/6/4 ÏÂÎç7:58, Jason Gunthorpe Ð´µÀ:
+> On Fri, Jun 04, 2021 at 09:11:03AM +0800, Jason Wang wrote:
+>>> nor do any virtio drivers implement the required platform specific
+>>> cache flushing to make no-snoop TLPs work.
+>> I don't get why virtio drivers needs to do that. I think DMA API should hide
+>> those arch/platform specific stuffs from us.
+> It is not arch/platform stuff. If the device uses no-snoop then a
+> very platform specific recovery is required in the device driver.
+>
+> It is not part of the normal DMA API, it is side APIs like
+> flush_agp_cache() or wbinvd() that are used by GPU drivers only.
 
-diff --git a/lib/test_bitops.c b/lib/test_bitops.c
-index 471141ddd691..3b7bcbee84db 100644
---- a/lib/test_bitops.c
-+++ b/lib/test_bitops.c
-@@ -15,7 +15,7 @@
-  *   get_count_order/long
-  */
- 
--/* use an enum because thats the most common BITMAP usage */
-+/* use an enum because that's the most common BITMAP usage */
- enum bitops_fun {
- 	BITOPS_4 = 4,
- 	BITOPS_7 = 7,
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index 4dc4dcbecd12..d500320778c7 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -1095,7 +1095,7 @@ static struct bpf_test tests[] = {
- 	{
- 		"RET_A",
- 		.u.insns = {
--			/* check that unitialized X and A contain zeros */
-+			/* check that uninitialized X and A contain zeros */
- 			BPF_STMT(BPF_MISC | BPF_TXA, 0),
- 			BPF_STMT(BPF_RET | BPF_A, 0)
- 		},
-diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-index cacbbbdef768..72b8e808c39c 100644
---- a/lib/test_kasan.c
-+++ b/lib/test_kasan.c
-@@ -656,7 +656,7 @@ static void kasan_global_oob(struct kunit *test)
- {
- 	/*
- 	 * Deliberate out-of-bounds access. To prevent CONFIG_UBSAN_LOCAL_BOUNDS
--	 * from failing here and panicing the kernel, access the array via a
-+	 * from failing here and panicking the kernel, access the array via a
- 	 * volatile pointer, which will prevent the compiler from being able to
- 	 * determine the array bounds.
- 	 *
-diff --git a/lib/test_kmod.c b/lib/test_kmod.c
-index 38c250fbace3..ce1589391413 100644
---- a/lib/test_kmod.c
-+++ b/lib/test_kmod.c
-@@ -286,7 +286,7 @@ static int tally_work_test(struct kmod_test_device_info *info)
-  * If this ran it means *all* tasks were created fine and we
-  * are now just collecting results.
-  *
-- * Only propagate errors, do not override with a subsequent sucess case.
-+ * Only propagate errors, do not override with a subsequent success case.
-  */
- static void tally_up_work(struct kmod_test_device *test_dev)
- {
-@@ -543,7 +543,7 @@ static int trigger_config_run(struct kmod_test_device *test_dev)
- 	 * wrong with the setup of the test. If the test setup went fine
- 	 * then userspace must just check the result of config->test_result.
- 	 * One issue with relying on the return from a call in the kernel
--	 * is if the kernel returns a possitive value using this trigger
-+	 * is if the kernel returns a positive value using this trigger
- 	 * will not return the value to userspace, it would be lost.
- 	 *
- 	 * By not relying on capturing the return value of tests we are using
-@@ -585,7 +585,7 @@ trigger_config_store(struct device *dev,
- 	 * Note: any return > 0 will be treated as success
- 	 * and the error value will not be available to userspace.
- 	 * Do not rely on trying to send to userspace a test value
--	 * return value as possitive return errors will be lost.
-+	 * return value as positive return errors will be lost.
- 	 */
- 	if (WARN_ON(ret > 0))
- 		return -EINVAL;
-diff --git a/lib/test_scanf.c b/lib/test_scanf.c
-index 48ff5747a4da..84fe09eaf55e 100644
---- a/lib/test_scanf.c
-+++ b/lib/test_scanf.c
-@@ -600,7 +600,7 @@ static void __init numbers_prefix_overflow(void)
- 	/*
- 	 * 0x prefix in a field of width 2 using %i conversion: first field
- 	 * converts to 0. Next field scan starts at the character after "0x",
--	 * which will convert if can be intepreted as decimal but will fail
-+	 * which will convert if can be interpreted as decimal but will fail
- 	 * if it contains any hex digits (since no 0x prefix).
- 	 */
- 	test_number_prefix(long long,	"0x67", "%2lli%lli", 0, 67, 2, check_ll);
--- 
-2.25.1
 
+Yes and virtio doesn't support AGP.
+
+
+>
+> If drivers/virtio doesn't explicitly call these things it doesn't
+> support no-snoop - hence no VDPA device can ever use no-snoop.
+
+
+Note that no drivers call these things doesn't meant it was not 
+supported by the spec.
+
+Actually, spec doesn't forbid the non coherent DMA, anyway we can raise 
+a new thread in the virtio mailing list to discuss about that.
+
+But consider virtio has already supported GPU, crypto and sound device, 
+and the devices like codec and video are being proposed. It doesn't help 
+if we mandate coherent DMA now.
+
+Thanks
+
+
+>
+> Since VIRTIO_F_ACCESS_PLATFORM doesn't trigger wbinvd on x86 it has
+> nothing to do with no-snoop.
+>
+> Jason
+>
 
