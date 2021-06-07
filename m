@@ -2,89 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6A8939D93E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AAC239D941
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 12:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbhFGKFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 06:05:02 -0400
-Received: from mga02.intel.com ([134.134.136.20]:26060 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230193AbhFGKFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 06:05:01 -0400
-IronPort-SDR: cm9Wjz515AL50obghruQKJGgVQsmjbo1kvlBgnIJwAQ9SvWU/ARP8BjThQ0tfEsYQFoQrfSWdA
- K9RYw4GQgbtA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="191702897"
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="191702897"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 03:03:10 -0700
-IronPort-SDR: cbVVM/RFVTOe4XSIG7lwLwdbgOmk2k7ZtwC1WPlisFYzxgfhY0yfh0NbxQ3HFRKIJ9ZCrEnjrx
- gpWRjhYPNSrA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="484723038"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by fmsmga002.fm.intel.com with ESMTP; 07 Jun 2021 03:03:06 -0700
-Subject: Re: [PATCH v2 7/8] perf auxtrace: Use WRITE_ONCE() for updating
- aux_tail
-To:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
-References: <20210602103007.184993-1-leo.yan@linaro.org>
- <20210602103007.184993-8-leo.yan@linaro.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <a2afb893-3aca-3f37-d223-c3941f5697f5@intel.com>
-Date:   Mon, 7 Jun 2021 13:03:24 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230250AbhFGKHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 06:07:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230127AbhFGKHJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 06:07:09 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F05CC061766;
+        Mon,  7 Jun 2021 03:05:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MZ7HfAxUNA4sYdVsS00Xo7tdZCEzY0DVG7Cn33xC8v8=; b=NHhzUqvjE/88wRep0AfweXDHHq
+        vnYYAd++myvzOWjWTD1II1Bu9A3TB74TCcw06wWRbySdDulZm0r3BC5HRHh5FwVnYHLO4z9+wHL6i
+        p/fa3AEMDHFi0f/uADdb2db4WU0b/tVYdZkvuJVV2jzlPEmTG12zqHCUCGed3eIE1/mvODLVu00T0
+        QI+8vDW7g89u5JHsF0bUh84188OOlx6o6NwAxbhdwX9xYRFzvLo+lbash0Cc+J4J8yDtenNzRhvig
+        vKVSjTmZzDd2ps08y5vtKXnfo2AF7TwVW/m697YlTu61FYuLh/9A6HAEkZJwceEi7F0NrzyAMXDeU
+        qBachZ0Q==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lqC7s-00FbrF-Tg; Mon, 07 Jun 2021 10:05:01 +0000
+Date:   Mon, 7 Jun 2021 11:04:56 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Sven Peter <sven@svenpeter.dev>,
+        USB list <linux-usb@vger.kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] usb: dwc3: support 64 bit DMA in platform driver
+Message-ID: <YL3vSPK5DXTNvgdx@infradead.org>
+References: <20210607061751.89752-1-sven@svenpeter.dev>
+ <CAK8P3a0vbyq-90pUQ6-0Ed=DadR3Pnf0juupLQ70psQSuu_1nw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210602103007.184993-8-leo.yan@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a0vbyq-90pUQ6-0Ed=DadR3Pnf0juupLQ70psQSuu_1nw@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/06/21 1:30 pm, Leo Yan wrote:
-> Use WRITE_ONCE() for updating aux_tail, so can avoid unexpected memory
-> behaviour.
-> 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+On Mon, Jun 07, 2021 at 09:25:43AM +0200, Arnd Bergmann wrote:
+> This will now  fail on machines with dwc3 connected to a 32-bit bus (or a
+> bus that is accidentally not annotated as supporting 64-bit) when there is
+> some memory that is not addressable through that bus.
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-
-> ---
->  tools/perf/util/auxtrace.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
-> index e625bc76cdde..abc4282f5272 100644
-> --- a/tools/perf/util/auxtrace.h
-> +++ b/tools/perf/util/auxtrace.h
-> @@ -458,7 +458,7 @@ static inline void auxtrace_mmap__write_tail(struct auxtrace_mmap *mm, u64 tail)
->  
->  	/* Ensure all reads are done before we write the tail out */
->  	smp_mb();
-> -	pc->aux_tail = tail;
-> +	WRITE_ONCE(pc->aux_tail, tail);
->  }
->  
->  int auxtrace_mmap__mmap(struct auxtrace_mmap *mm,
-> 
-
+No, it won't.  dma_set_mask_and_coherent with a 64-bit mask will never
+fail if dev->dma_mask is non-NULL.
