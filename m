@@ -2,74 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A23939E870
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 22:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 477A739E872
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 22:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbhFGUb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 16:31:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51152 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230251AbhFGUbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 16:31:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 18BAC61139;
-        Mon,  7 Jun 2021 20:30:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623097804;
-        bh=Hf5W9L/jvScCtlagXjZ889wFRVocf7tcyh5gFLCdZ68=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Tcjv1NV4IueAhWNAHoknvZwQ+lnNyCDW54uGLWsEuj0P7DW6HHJzAO/BEvYa4doUp
-         g94/du+Zgm/PJBThxZ2AFKVLvd4Qf7TqrFf8UTWTHwaUKvzmWeaVgQ8VMUsiS0+OvT
-         n30V5bl3KWZWMKiTeoQjd6CxlUk3LGXF9wC/zGgfjQVlwPVjdEXEKHgunVNRZqaSmE
-         SwLOlfR7Tem7Wy7nvx8lSVEoGbwNGjBRcWIuYY4gmyR7bqDzeAojXfyRHxZAWfBh3I
-         Eaxhmv4pkmdKUmnFdUBAvFVcRa0Y3hvFIlR9dOuVTpnHG+bvc5zIxbTUkNosU9LzJI
-         8zX58MbAQ6eWg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0CE4460283;
-        Mon,  7 Jun 2021 20:30:04 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231443AbhFGUcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 16:32:12 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:8956 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230251AbhFGUcM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 16:32:12 -0400
+Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 07 Jun 2021 13:30:20 -0700
+X-QCInternal: smtphost
+Received: from gurus-linux.qualcomm.com ([10.134.64.25])
+  by ironmsg02-sd.qualcomm.com with ESMTP; 07 Jun 2021 13:30:19 -0700
+Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
+        id A3DE4210F1; Mon,  7 Jun 2021 13:30:19 -0700 (PDT)
+Date:   Mon, 7 Jun 2021 13:30:19 -0700
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        lee.jones@linaro.org, agross@kernel.org,
+        dmitry.baryshkov@linaro.org
+Subject: Re: [PATCH net-next v3] mfd: pm8008: Fix return value check in
+ pm8008_probe()
+Message-ID: <20210607203019.GA11347@codeaurora.org>
+References: <20210605022446.4119978-1-yangyingliang@huawei.com>
+ <YLxCGLALLlO4i14n@builder.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v3] net: gemini: Use
- devm_platform_get_and_ioremap_resource()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162309780404.13544.15986317200547289285.git-patchwork-notify@kernel.org>
-Date:   Mon, 07 Jun 2021 20:30:04 +0000
-References: <20210607081145.1617593-1-yangyingliang@huawei.com>
-In-Reply-To: <20210607081145.1617593-1-yangyingliang@huawei.com>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        ulli.kroll@googlemail.com, linus.walleij@linaro.org,
-        davem@davemloft.net, kuba@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLxCGLALLlO4i14n@builder.lan>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (refs/heads/master):
-
-On Mon, 7 Jun 2021 16:11:45 +0800 you wrote:
-> Use devm_platform_get_and_ioremap_resource() to simplify
-> code.
+On Sat, Jun 05, 2021 at 10:33:44PM -0500, Bjorn Andersson wrote:
+> On Fri 04 Jun 21:24 CDT 2021, Yang Yingliang wrote:
 > 
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
-> v3:
->   remove netdev_info(...) in gemini_ethernet_port_probe()
-> v2:
->   Also use devm_platform_get_and_ioremap_resource() in gemini_ethernet_probe().
->   Keep the error message to distinguish remap which address failed in
->   gemini_ethernet_port_probe().
+> > In case of error, the function devm_regmap_init_i2c() returns ERR_PTR()
+> > and never returns NULL. The NULL test in the return value check
+> > should be replaced with IS_ERR().
+> > 
+> > Fixes: 6b149f3310a4 ("mfd: pm8008: Add driver for QCOM PM8008 PMIC")
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 > 
-> [...]
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Here is the summary with links:
-  - [net-next,v3] net: gemini: Use devm_platform_get_and_ioremap_resource()
-    https://git.kernel.org/netdev/net-next/c/ef91f7981036
+Acked-by: Guru Das Srinagesh <gurus@codeaurora.org>
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> 
+> > ---
+> > v3:
+> >   return PTR_ERR(chip->regmap) instead of ENODEV
+> > ---
+> >  drivers/mfd/qcom-pm8008.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/mfd/qcom-pm8008.c b/drivers/mfd/qcom-pm8008.c
+> > index c472d7f8103c..fb8915a682ad 100644
+> > --- a/drivers/mfd/qcom-pm8008.c
+> > +++ b/drivers/mfd/qcom-pm8008.c
+> > @@ -228,8 +228,8 @@ static int pm8008_probe(struct i2c_client *client)
+> >  
+> >  	chip->dev = &client->dev;
+> >  	chip->regmap = devm_regmap_init_i2c(client, &qcom_mfd_regmap_cfg);
+> > -	if (!chip->regmap)
+> > -		return -ENODEV;
+> > +	if (IS_ERR(chip->regmap))
+> > +		return PTR_ERR(chip->regmap);
+> >  
+> >  	i2c_set_clientdata(client, chip);
+> >  
+> > -- 
+> > 2.25.1
+> > 
