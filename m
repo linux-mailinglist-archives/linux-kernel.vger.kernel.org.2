@@ -2,100 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EBB539E6DE
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4268939E6DB
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbhFGSv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 14:51:59 -0400
-Received: from mail-pl1-f176.google.com ([209.85.214.176]:45625 "EHLO
-        mail-pl1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230316AbhFGSv6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 14:51:58 -0400
-Received: by mail-pl1-f176.google.com with SMTP id 11so9219147plk.12
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 11:49:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3yUHFhWCcq/kgRCGJHT5yo1C2JrDTMIOj65kvK76Gco=;
-        b=TqQyJo8zyp5yld5/QbvhnU3CAEFB28B+nTFE0duD3TYzp9FeaHLWO0XG2vdFDua6mh
-         BfHOFGJrWZ/Jrq3oAS6JuQ3a2RZv8NSw8a9J1LgWfy5RQj7ZsIz15Q7Exrlu/9NbQcih
-         N5cIq18cmNsh2TuHr7CZSg87Z4an02b2IyzUva+1dDTRkqJ1U5Esmyj94ktjG88r3PaV
-         hpTS8GvrNDtGvzyKtmKfbWauHXWdUpJ0znEGNUDxqf7QY5qle3TbaUGITegWQG9dGzj3
-         AjilalI8QsQXQcPXQBlM72MtW+WBJkUUSEFLNtch9/vAmtoMIIriGJXJYPaeabazpJF8
-         Rkyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3yUHFhWCcq/kgRCGJHT5yo1C2JrDTMIOj65kvK76Gco=;
-        b=UNhy5U6sBnk0HtO4ziYn/lvwq2WXhdLp/Q1MKxjh9j77EPAKIfyi4HwSileLJ8QHv1
-         lmp3A95PPB0ufWW+WAJghKKEdaOm8ofsFEFzygznFOlO4c4tofwofCtkHqLqsgd1KUTs
-         RuWHfj2ixEIYv8oMxV+eRI65KpRW3Qa+aQitF7cPIBV0hpfhG91wejvcSX2P40s/2TyV
-         t1Ff1Ro0467243mRb6xWJrO1MVfPz9g+6sIr/BBYVHnqVcEKat4TAwfQ4NWGIB6TQdKf
-         nf79aBuYtSH8QlrIoplYFFVfO2PClFlkYFhbuKAfiA8+zSyFVyPk0tcZY4obKApF8zxL
-         YV2g==
-X-Gm-Message-State: AOAM531i/7xaY7OCpeYLsV8ZBsY9NlLt1u8K2h2DhEGO0vjeOi9Rql0E
-        j8+cle6CYFPOqFBkAcXm8cE=
-X-Google-Smtp-Source: ABdhPJwtDWvQmpvtg2U50J55aazoPkaU18pviaJHRPmbRx1Jb7DUydJLScDmTuvMgIlA72tNanFNAg==
-X-Received: by 2002:a17:90a:9e5:: with SMTP id 92mr22405507pjo.34.1623091733324;
-        Mon, 07 Jun 2021 11:48:53 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:9005:8001:a09b:9c7c:331d:38fe])
-        by smtp.gmail.com with ESMTPSA id a23sm8628028pff.43.2021.06.07.11.48.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 11:48:52 -0700 (PDT)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     hjc@rock-chips.com, heiko@sntech.de, airlied@linux.ie,
-        daniel@ffwll.ch
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        kernel test robot <lkp@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: [PATCH v2] drm/rockchip: remove of_match_ptr()
-Date:   Tue,  8 Jun 2021 00:18:36 +0530
-Message-Id: <20210607184836.3502-1-jrdr.linux@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S231200AbhFGSuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 14:50:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230316AbhFGSuy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 14:50:54 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B47996108C;
+        Mon,  7 Jun 2021 18:49:01 +0000 (UTC)
+Date:   Mon, 7 Jun 2021 14:48:45 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: x86: Ensure liveliness of nested VM-Enter fail
+ tracepoint message
+Message-ID: <20210607144845.74a893d6@oasis.local.home>
+In-Reply-To: <20210607175748.674002-1-seanjc@google.com>
+References: <20210607175748.674002-1-seanjc@google.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel test robot throws below warning when CONFIG_OF
-is not set.
+On Mon,  7 Jun 2021 10:57:48 -0700
+Sean Christopherson <seanjc@google.com> wrote:
 
->> drivers/gpu/drm/rockchip/analogix_dp-rockchip.c:457:34:
-warning: unused variable 'rockchip_dp_dt_ids' [-Wunused-const-variable]
-   static const struct of_device_id rockchip_dp_dt_ids[] = {
+> Use the __string() machinery provided by the tracing subystem to make a
+> copy of the string literals consumed by the "nested VM-Enter failed"
+> tracepoint.  A complete copy is necessary to ensure that the tracepoint
+> can't outlive the data/memory it consumes and deference stale memory.
+> 
+> Because the tracepoint itself is defined by kvm, if kvm-intel and/or
+> kvm-amd are built as modules, the memory holding the string literals
+> defined by the vendor modules will be freed when the module is unloaded,
+> whereas the tracepoint and its data in the ring buffer will live until
+> kvm is unloaded (or "indefinitely" if kvm is built-in).
+> 
+> This bug has existed since the tracepoint was added, but was recently
+> exposed by a new check in tracing to detect exactly this type of bug.
+> 
+>   fmt: '%s%s
+>   ' current_buffer: ' vmx_dirty_log_t-140127  [003] ....  kvm_nested_vmenter_failed: '
+>   WARNING: CPU: 3 PID: 140134 at kernel/trace/trace.c:3759 trace_check_vprintf+0x3be/0x3e0
+>   CPU: 3 PID: 140134 Comm: less Not tainted 5.13.0-rc1-ce2e73ce600a-req #184
+>   Hardware name: ASUS Q87M-E/Q87M-E, BIOS 1102 03/03/2014
+>   RIP: 0010:trace_check_vprintf+0x3be/0x3e0
+>   Code: <0f> 0b 44 8b 4c 24 1c e9 a9 fe ff ff c6 44 02 ff 00 49 8b 97 b0 20
+>   RSP: 0018:ffffa895cc37bcb0 EFLAGS: 00010282
+>   RAX: 0000000000000000 RBX: ffffa895cc37bd08 RCX: 0000000000000027
+>   RDX: 0000000000000027 RSI: 00000000ffffdfff RDI: ffff9766cfad74f8
+>   RBP: ffffffffc0a041d4 R08: ffff9766cfad74f0 R09: ffffa895cc37bad8
+>   R10: 0000000000000001 R11: 0000000000000001 R12: ffffffffc0a041d4
+>   R13: ffffffffc0f4dba8 R14: 0000000000000000 R15: ffff976409f2c000
+>   FS:  00007f92fa200740(0000) GS:ffff9766cfac0000(0000) knlGS:0000000000000000
+>   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>   CR2: 0000559bd11b0000 CR3: 000000019fbaa002 CR4: 00000000001726e0
+>   Call Trace:
+>    trace_event_printf+0x5e/0x80
+>    trace_raw_output_kvm_nested_vmenter_failed+0x3a/0x60 [kvm]
+>    print_trace_line+0x1dd/0x4e0
+>    s_show+0x45/0x150
+>    seq_read_iter+0x2d5/0x4c0
+>    seq_read+0x106/0x150
+>    vfs_read+0x98/0x180
+>    ksys_read+0x5f/0xe0
+>    do_syscall_64+0x40/0xb0
+>    entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Fixes: 380e0055bc7e ("KVM: nVMX: trace nested VM-Enter failures detected by H/W")
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>
 
-Fixed it by removing of_match_ptr().
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-Cc: Robin Murphy <robin.murphy@arm.com> 
----
-v2:
-	Address review comment from Robin.
-	updated change logs and subject line.
-
- drivers/gpu/drm/rockchip/analogix_dp-rockchip.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/rockchip/analogix_dp-rockchip.c b/drivers/gpu/drm/rockchip/analogix_dp-rockchip.c
-index ade2327a10e2..8abb5ac26807 100644
---- a/drivers/gpu/drm/rockchip/analogix_dp-rockchip.c
-+++ b/drivers/gpu/drm/rockchip/analogix_dp-rockchip.c
-@@ -467,6 +467,6 @@ struct platform_driver rockchip_dp_driver = {
- 	.driver = {
- 		   .name = "rockchip-dp",
- 		   .pm = &rockchip_dp_pm_ops,
--		   .of_match_table = of_match_ptr(rockchip_dp_dt_ids),
-+		   .of_match_table = rockchip_dp_dt_ids,
- 	},
- };
--- 
-2.25.1
-
+-- Steve
