@@ -2,87 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC39C39D787
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF4539D78E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:39:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230359AbhFGIiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 04:38:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59436 "EHLO
+        id S230219AbhFGIlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 04:41:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230313AbhFGIiv (ORCPT
+        with ESMTP id S229545AbhFGIlb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 04:38:51 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C23F0C061766
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 01:37:00 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lqAkl-0007B7-4f; Mon, 07 Jun 2021 10:36:59 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lqAkk-00061i-QQ; Mon, 07 Jun 2021 10:36:58 +0200
-Date:   Mon, 7 Jun 2021 10:36:58 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH] reset: bail if try_module_get() fails
-Message-ID: <20210607083658.d7r52g7dwxyyckgj@pengutronix.de>
-References: <20210607082615.15160-1-p.zabel@pengutronix.de>
+        Mon, 7 Jun 2021 04:41:31 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC1AC061766;
+        Mon,  7 Jun 2021 01:39:40 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id e20so1339081pgg.0;
+        Mon, 07 Jun 2021 01:39:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=seI9VhZLWITb73hRF+sNSy2Lz+CzoknsjVZsKb1Ga38=;
+        b=O7E3S+vRu7hn5GJjj0pCWPL5dnKpVmdC5ZbapPxuVWuxllsv+b8MPNqcKt1vdIqN5f
+         aHLz//DdSsQIxt72pZvlIzpComYRDfSCPJ8/97bedGxdoFosI2EXaZFc6448fHr4cMVF
+         Ex1hQoUFRQpQfNxBBFtXfZN5Ly42u5VHo/OYzqJNdvOXnTqYeWQK77M/WSyL8DNdR/B3
+         Z2M1k8F4h4AMJ2SEX1G7P36b0g2t19/yMDMZB9zfzCAbFUPqEO6RlWYilDdGE1Z+4f4X
+         HiVzMg9ZUfjkWzta3Q3A9LB7eQoGbQcS+IFRA+jgUSKvxS6aYaPJPKX5RTSLsMctsNgA
+         vpxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=seI9VhZLWITb73hRF+sNSy2Lz+CzoknsjVZsKb1Ga38=;
+        b=eTwe7VC+2Zf66MFE2bheUK6y6k23kWBBCD3JqW3t1NAQHyWCtGTBV8tz6KkukfcNnt
+         rlPVzRouTXEdhne0d78i4wZA93RyNEhwIeF2IEANloU4STldXCIc8Z7n+JIBa32rXx24
+         Piy+gXf4xurz4H05aRpi+w4U3hu39PhUmuwSUG/18Wpnmh+0zxDllLtZQ90etrmoeOLB
+         RpmdJL5VgUZTD0XzhjaeJxtkUJs55uIV9gDdsoEPq7NzpQXhNgv0XLPL9Yd7frt6pzc+
+         svrJTahsZExlfM/Q9Olw+1kbvKoEEguqR+e4JrrPZsvCZSLxdyoA3K28kWxiQ6FZw4xX
+         V7aA==
+X-Gm-Message-State: AOAM532tSjMznDLEzVM5oM9IXFGcNdytYtuZUbc0HDZKS/mr+G9f8Uwa
+        E+hJIG2j7+0AAPQyk5xLpOfvNbvPkp7qIs7l/cw=
+X-Google-Smtp-Source: ABdhPJzq/O0oFw/CaGu48C6AIP65OYI0zjliR7a85XZXOvUqZMcIi7bo7MjHM0TYHjm2HJ9qM6vgKqKL+z4656ZLNwo=
+X-Received: by 2002:a05:6a00:a1e:b029:2e2:89d8:5c87 with SMTP id
+ p30-20020a056a000a1eb02902e289d85c87mr16205964pfh.73.1623055179249; Mon, 07
+ Jun 2021 01:39:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wsftedyz2nptrgs7"
-Content-Disposition: inline
-In-Reply-To: <20210607082615.15160-1-p.zabel@pengutronix.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210607031537.12366-1-thunder.leizhen@huawei.com>
+In-Reply-To: <20210607031537.12366-1-thunder.leizhen@huawei.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 7 Jun 2021 11:39:23 +0300
+Message-ID: <CAHp75VdcCQ_ZxBg8Ot+9k2kPFSTwxG+x0x1C+PBRgA3p8MsbBw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] lib/test: Fix spelling mistakes
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 7, 2021 at 6:21 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
 
---wsftedyz2nptrgs7
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Fix some spelling mistakes in comments:
+> thats ==> that's
+> unitialized ==> uninitialized
+> panicing ==> panicking
+> sucess ==> success
+> possitive ==> positive
+> intepreted ==> interpreted
 
-On Mon, Jun 07, 2021 at 10:26:15AM +0200, Philipp Zabel wrote:
-> Abort instead of returning a new reset control for a reset controller
-> device that is going to have its module unloaded.
->=20
-> Reported-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Thanks for the fix! Is it done with the help of the codespell tool? If
+not, can you run it and check if it suggests more fixes?
 
-LGTM:
-
-Fixes: 61fc41317666 ("reset: Add reset controller API")
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-
-Thanks for picking up my report from irc :-)
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---wsftedyz2nptrgs7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmC92qcACgkQwfwUeK3K
-7Amjhgf9EqMIq7gcqmFNbO/sI5GgpRzMoz2K1Bv1j/RZQtM/5PM0YXuGi1+F4fd7
-LTx3noCuSgEIYrTVuhiNpoFslfvJTwaaJVGdRtc0aT7Hnj0WiqkyeSqwiekzXOxN
-OkYks6ATTMTGHj689QJVytNtgv3r6F6Kqw7+EzBWhCvkWk1UhJz0i+l5WZVW4Iec
-ztqROmAJBLfBe80AD36/NQD04ua9iXbZwLd+D6/8UN9mUbZplxj7hSd73gNkwwGW
-j2jf3UP9AjZRDwk529HHbLpWjXJx02A2qrTbSLxn8/f+oFaE6oT48CNIf51h7kAl
-zS/dCPCoPNE5CoB91tDytjeORFAJmA==
-=fnMr
------END PGP SIGNATURE-----
-
---wsftedyz2nptrgs7--
+-- 
+With Best Regards,
+Andy Shevchenko
