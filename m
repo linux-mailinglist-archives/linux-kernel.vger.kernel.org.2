@@ -2,94 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0A839D82A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:03:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CC1039D83B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230514AbhFGJEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:04:37 -0400
-Received: from mga17.intel.com ([192.55.52.151]:52280 "EHLO mga17.intel.com"
+        id S230316AbhFGJGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:06:20 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:48620 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230479AbhFGJEf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:04:35 -0400
-IronPort-SDR: /sJNLeNMCdh0gBwGoltttUtAcrC8v/EBrclop4iYdAnIKRoOZHxKS78IUSnox1gZ8LFItZG01f
- I2ho0F9Pychg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="184957542"
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="184957542"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 02:02:44 -0700
-IronPort-SDR: hGIn9itGSSU60y8NlEbk6Qd8VRhRGVXX+B74XXOmTcpMycJ22YtwjKudMOJlvY3W1lWLgfnCzI
- uDMKLZtwIx9Q==
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="418439215"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 02:02:40 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lqB9Z-000DHw-HD; Mon, 07 Jun 2021 12:02:37 +0300
-Date:   Mon, 7 Jun 2021 12:02:37 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Flavio Suligoi <f.suligoi@asem.it>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Subject: Re: [PATCH v2 2/7] pwm: core: Always require PWM flags to be provided
-Message-ID: <YL3grTQ00lFCXyCp@smile.fi.intel.com>
-References: <20210531194947.10770-1-andriy.shevchenko@linux.intel.com>
- <20210531194947.10770-2-andriy.shevchenko@linux.intel.com>
- <20210606213054.bmqgs5hehbowa62d@pengutronix.de>
+        id S230173AbhFGJGR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 05:06:17 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1lqBBH-0000nU-KF; Mon, 07 Jun 2021 11:04:23 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Jon Lin <jon.lin@rock-chips.com>, broonie@kernel.org,
+        Johan Jonker <jbx6244@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 1/6] dt-bindings: spi: spi-rockchip: add description for rv1126 and rk3568
+Date:   Mon, 07 Jun 2021 11:04:21 +0200
+Message-ID: <3681106.bcXerOTE6V@diego>
+In-Reply-To: <ef90ae6d-40bb-8389-f4f8-536a7b610fb7@gmail.com>
+References: <20210607063448.29589-1-jon.lin@rock-chips.com> <20210607063448.29589-2-jon.lin@rock-chips.com> <ef90ae6d-40bb-8389-f4f8-536a7b610fb7@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210606213054.bmqgs5hehbowa62d@pengutronix.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 06, 2021 at 11:30:54PM +0200, Uwe Kleine-König wrote:
-> Hello Andy,
+Am Montag, 7. Juni 2021, 10:15:30 CEST schrieb Johan Jonker:
+> Hi Jon,
 > 
-> On Mon, May 31, 2021 at 10:49:42PM +0300, Andy Shevchenko wrote:
-> > It makes little sense to make PWM flags optional since in case
-> > of multi-channel consumer the flags can be optional only for
-> > the last listed channel.
+> On 6/7/21 8:34 AM, Jon Lin wrote:
+> > The description below will be used for rv1126.dtsi or rk3568.dtsi in
+> > the future
+> > 
+> > Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+> > ---
+> > 
+> > Changes in v4:
+> > - Adjust the order patches
+> > - Simply commit massage like redundancy "application" content
+> > 
+> > Changes in v3:
+> > - Fix compile error which is find by Sascha in [v2,2/8]
+> > 
+> >  Documentation/devicetree/bindings/spi/spi-rockchip.yaml | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/spi/spi-rockchip.yaml b/Documentation/devicetree/bindings/spi/spi-rockchip.yaml
+> > index 1e6cf29e6388..2d7957f9ae0a 100644
+> > --- a/Documentation/devicetree/bindings/spi/spi-rockchip.yaml
+> > +++ b/Documentation/devicetree/bindings/spi/spi-rockchip.yaml
+> > @@ -27,12 +27,14 @@ properties:
+> >        - items:
+> >            - enum:
+> >                - rockchip,px30-spi
 > 
-> I think the same holds true for dt references.
-
-Can you elaborate this? I haven't got what you are talking about, not a DT
-expert here.
-
-> > Thus always require PWM flags to be provided.
+> > +              - rockchip,rv1126-spi
 > 
-> I'm not sure I want to follow that conclusion. Most consumers only need
-> a single PWM and then not providing flags is fine, isn't it? Or does
-> this change fix an error?
+> This list is sort alphabetically.
+> Move "rockchip,rv1126-spi" below "rockchip,rk3568-spi"
+> 
+> >                - rockchip,rk3188-spi
+> >                - rockchip,rk3288-spi
+> >                - rockchip,rk3308-spi
+> >                - rockchip,rk3328-spi
+> >                - rockchip,rk3368-spi
+> >                - rockchip,rk3399-spi
+> > +              - rockchip,rk3568-spi
+> 
+> 
+> >            - const: rockchip,rk3066-spi
+> >  
+> >    reg:
+> > 
+> 
+> ===
+> 
+> Your comment in [PATCH v3 3/8]:
+> >> Adding "rockchip,rv1126-spi" to rockchip_spi_dt_match[] is strictly not
+> >> needed when using "rockchip,rk3066-spi" as fall back string.
+> >> Could a maintainer advise?
+> >>
+> >> Maybe this bug of mine should revert too?? Or is it legacy?
+> >> spi: rockchip: add compatible string for px30 rk3308 rk3328
+> >> https://lore.kernel.org/r/20200309151004.7780-1-jbx6244@gmail.com
+> 
+> > I agree with you. If the maintainer doesn't have any comments, I will use
+> > "rockchip,spi" as compatible names for the subsequent rk platform.
+> 
+> Compatibility strings are supposed to be SoC orientated.
+> So generic ones like in the manufacturer tree can't be used here.
 
-The current ACPI DSD implementation in the Linux kernel doesn't allow to use
-variadic arguments in the list of tuples.
+Johan ist right :-) .
 
-So, the current code states that we may use (x, y, z) or (x, y, z, t).
-That's true as long as that is the last tuple in the array (*). However,
-the case (x1, y1, z1, x2, y2, z2, t2) is not supported. It can be either
-(x1, y1, z1, t1, x2, y2, z2) or (x1, y1, z1, t1, x2, y2, z2, t2).
-But this makes a little sense and Linux APIs in use and first ABI that uses
-that API (GPIO) has never been designed for a such. What is allowed is to skip
-tuple in a form of NULL:ifying, like (0, x2, y2, z2, t2).
+rockchip,spi won't work at all, especially as these controllers always change
+over time. [0]
 
-*) Yes, the comments said that PWM supports only a single reference, but this
-may be expanded in the future and this patch allows to do that (it's not a fix
-per se, but rather a good clarification to the APIs/ABIs).
+Best example is the iommu. We started with "rockchip,iommu" thinking this
+won't change over time, but with the rk3568 we get a new slightly different
+iommu.
 
--- 
-With Best Regards,
-Andy Shevchenko
+The vendor-kernel then introduces somewhat random "-vX" additions to
+distinguish them, but often they do seem to be very software-centric.
+
+Meaning, hardware-designers moved stuff around and software-developers
+then invented the versioning to differentiate between versions.
+
+The devicetree is supposed to describe the hardware though, so going with
+the relevant soc-specific compatible gives us the necessary hardware-centric
+differentiation.
+
+Also this allows to catch later issues with specific soc implementations ;-)
+Like 6 monts down the road we discover some special behaviour on the
+rk3568 and devicetree is supposed to be stable.
+
+So having the relevant compatibles in place allows us to just add driver
+fixes and have those apply on the rk3568 if that is need at some point.
+
+Heiko
+
 
 
