@@ -2,147 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9737D39DD84
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E11D039DD86
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 15:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhFGNVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 09:21:53 -0400
-Received: from mail-sn1anam02on2046.outbound.protection.outlook.com ([40.107.96.46]:46427
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230255AbhFGNVq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 09:21:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iAOSpVShLfqXFCFDtcx+IbvKvlhaCZVYmpQCfRsYwxHQoKSFU+ITEI899Tsbsw01cZ0HJQNJCdOg5v08Be2Hps/PWMDIDV1uzf4XOWUszg1HHNCQj47p96cF8puQrXZndc82Jf2r1s7kTQ40OsN5H6zJzJl9kgTTkcohTHQbvQbf5nF2wWIgVj0vDCvoSI1+DI/35xQNA8R3bVZqopKsM8NQ2Gq+LLlboGayaF8VU+HMow6NHNEpbOKBml3hD7UC50vCeDmRsynINwrh/0lIo72DYmWL1U2npxN2qnP7VJD0GQuoAd58J4xXfWF5aSHN9987gfT0KrwaHsp+X4fwOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k61OScfR8zCh4liHmnVuexzePxIZHP5CkmGC6HJlvk0=;
- b=F0T2hqXuf5DrZGJ6aSmiTZI6VOXearEdh4D14+dKbU8/ImNgmur1kfBOyq2z8yQPtJnVwOyiYftnT8hROLgfeFgfab8zwjvAcX2OVPpHWClF7R0Zr14vrRHuUYTjh2CuKWua7qTMjlp+XgvpUs1ga5SOiTziiuhtViD1+4Pu363da53UgZSf3C8zDrSQwYXUxNkFHjAykrVdU0bOYozjXt4zmJ4lnv/uxfSfQNyiVNKEXaXFtGlt/wOSb4Tb5seCKqXuTbvdVZPDzJUD+1wfWC29RhfWfWLp/Uh2Z7rMuBdOj+Wn2Pz4Fxjjs6cY3+4JSC1CXyoMMXPwUskcOfosHQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k61OScfR8zCh4liHmnVuexzePxIZHP5CkmGC6HJlvk0=;
- b=YmUxuzpHshazi/t1E/eaEL3A6zATr/Qi8McYSloSOixyuOWfrVQBKulhOgsBSMWF8pWqX7bZi5S4OFmo1M60VdFVJDlZ1IE9qC4ikRdunDW4sAc7nOBuIj35hXJRJooKz2PuBam8/vQMMCI/iHRTWI5QnXy8Vt4mlBMMR58oRXg=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from BN9PR12MB5129.namprd12.prod.outlook.com (2603:10b6:408:136::12)
- by BN9PR12MB5162.namprd12.prod.outlook.com (2603:10b6:408:11b::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Mon, 7 Jun
- 2021 13:19:52 +0000
-Received: from BN9PR12MB5129.namprd12.prod.outlook.com
- ([fe80::3c78:e58b:fba7:b8dd]) by BN9PR12MB5129.namprd12.prod.outlook.com
- ([fe80::3c78:e58b:fba7:b8dd%6]) with mapi id 15.20.4195.030; Mon, 7 Jun 2021
- 13:19:52 +0000
-Subject: Re: [PATCH] drm/amdkfd: remove duplicate include of kfd_svm.h
-To:     Wan Jiabing <wanjiabing@vivo.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20210605025406.14058-1-wanjiabing@vivo.com>
-From:   Felix Kuehling <felix.kuehling@amd.com>
-Message-ID: <8c03bb1b-d14a-81d8-b2bc-c44df34f43f6@amd.com>
-Date:   Mon, 7 Jun 2021 09:19:49 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-In-Reply-To: <20210605025406.14058-1-wanjiabing@vivo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [142.116.203.225]
-X-ClientProxiedBy: YT1PR01CA0092.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2d::31) To BN9PR12MB5129.namprd12.prod.outlook.com
- (2603:10b6:408:136::12)
+        id S230356AbhFGNWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 09:22:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52990 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230239AbhFGNWS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 09:22:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1389E61153;
+        Mon,  7 Jun 2021 13:20:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623072027;
+        bh=o3kGqcgRA7pGA6vhHOS2lBK9GrMCiVtqJGaYEdbAMNw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Oh6HIdN1VZKdci8pYkMcfgQZwACR2UURtKBf0ZUX8FZWBh+PXevNsj3uBt5VF/gO2
+         kB+qUNJcA+maXC5IqRB5/sFhktAnIGjPcyGdjvmpRHNADdnW3/5aTvervTSP/vsGMa
+         fyVeKLQsIvG+RPyIDgb80G6kc58kysIB9wV1QFlwfn0Jar4T/kDAUsw3TOFzY8y6hF
+         xtO4oIpRpj/fbaXtXimNp1sWJlURhrqbny9uiO8VASC8TwuTEsaCFQPbak0wyvU7TV
+         n7jDUfkj8KMVmX+wOuboKdDp/wTWX9ZfQint6DyHQbpy+WBp2+RqtBkU1tNarzmt/i
+         DW5DgwdbNd3Gg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 4E43840B1A; Mon,  7 Jun 2021 10:20:24 -0300 (-03)
+Date:   Mon, 7 Jun 2021 10:20:24 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Parallelizing vmlinux BTF encoding. was Re: [RFT] Testing 1.22
+Message-ID: <YL4dGFsfb0ZzgxlR@kernel.org>
+References: <YK+41f972j25Z1QQ@kernel.org>
+ <CAEf4BzaTP_jULKMN_hx6ZOqwESOmsR6_HxWW-LnrA5xwRNtSWg@mail.gmail.com>
+ <4615C288-2CFD-483E-AB98-B14A33631E2F@gmail.com>
+ <CAEf4BzaQmv1+1bPF=1aO3dcmNu2Mx0EFhK+ZU6UFsMjv3v6EZA@mail.gmail.com>
+ <4901AF88-0354-428B-9305-2EDC6F75C073@gmail.com>
+ <CAEf4BzZk8bcSZ9hmFAmgjbrQt0Yj1usCHmuQTfU-pwZkYQgztA@mail.gmail.com>
+ <YLFIW9fd9ZqbR3B9@kernel.org>
+ <CAEf4BzYCCWM0WBz0w+vL1rVBjGvLZ7wVtgJCUVr3D-NmVK0MEg@mail.gmail.com>
+ <YLjtwB+nGYvcCfgC@kernel.org>
+ <CAEf4BzbQ9w2smTMK5uwGGjyZ_mjDy-TGxd6m8tiDd3T_nJ7khQ@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.2.100] (142.116.203.225) by YT1PR01CA0092.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2d::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.25 via Frontend Transport; Mon, 7 Jun 2021 13:19:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f6000661-d7f5-4296-aa97-08d929b6ef16
-X-MS-TrafficTypeDiagnostic: BN9PR12MB5162:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN9PR12MB51624FE1335817C61C6D97AE92389@BN9PR12MB5162.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:605;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XsGK7JVDHbCgrrVG6s9DBuYLNF1Ne98SGxEDYBsjIptxui+HFR/OrwEy/vZ7+bpZ3wt3BG0+rmLVf3HPfxK5IkQoi4RB2kOeNJq7ajnJEGECVTUY9hfnW/LMMKB1ssxgwr2mm/hUEFUmlmxpidijw/lG4DIrMC2Jflc90oYsKh6vxsx6XIYVRD2mHtbDmfd3Cl2VmyX+sAuvPcyKGDhy0iYj3UScxvncI3XxU01BFEn1VO2NzL+Kwk8M7jLa76bdT6DpoYtS4UCEe6wVPR2V6mn7FaU6kecahYy/KglXyOXyK46whIHznEsupeFfkXj2xrpYCTI1BZRfRZN0PHWraDKq8MPO95pWaRytu5NQzF9a8N6YNHiD7JG0deNlniHV4obXfI78k2aMQvcNGOYQbWAkLlCAxI5bt+csGsowrxWX8n0XgN2bMhHU+2KufhdC1GZ1VeghHN3WRXH2dWnoHHHC3vnVhR4gKhs6iPzJ22ew6qe8OtpDCiMu7WJi+s4xQOrTswHo8VnYBRXq+PnSkr42qqxH570Wa/4z32EGsQAIqbjJF+G4h0zMtfoBcU1VDcPd0x2tbcT5xqovvG5TOZ69zSnXssfcNlXUvekLRaVjidqfRKSFt8S95DXpA5AnTO7qDxZUZP7cRTRhXEigE1IqggyHBMib+AENboVkWqtMfXM/ZMU3jIf4/kWkit1gKscHLP7yIw+3SlCITTULDA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5129.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(66946007)(66556008)(66476007)(110136005)(16576012)(5660300002)(956004)(26005)(31686004)(16526019)(921005)(31696002)(8676002)(8936002)(36756003)(6486002)(2906002)(38100700002)(186003)(498600001)(2616005)(83380400001)(44832011)(4744005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UzkzWWE1ZFRxZVNSZFRHL3c1anhJNDRXOEUwakt3UHFtMzFuQlVxSThrSnB2?=
- =?utf-8?B?YnhDeHB1c2x1TUplRk5nUUtReGlwb2N6SVFBazF4UkM4c3NHcU02QTF6cDVJ?=
- =?utf-8?B?YSt2WVBKaC9LVFd4VThoUFo1TCtvZStIdmxYb21KeUxrVmVDSndSZmc4TFJT?=
- =?utf-8?B?byt4emxxTHgwbHJCQmgyc3FrT0ZNTWJ0OGxtTUphRGVXM1ZQNUtGZnUrbUpr?=
- =?utf-8?B?eDczWjg4czVuSXEyYTRQU3NHR0VFa0dBNjRCaVJtM05URnlDOUNud1FGTUtX?=
- =?utf-8?B?SUlIcVkzMkdHallBU2NwUFBhem5MNGRKSmxHR2xIVDhUdzFRNEFyQ2Z1VlM3?=
- =?utf-8?B?dlZrSlp0ZUh0SDN1N1UyUjY1YnRaVWVPRmdva2lCZmtHeXlkRDlteVdnNElW?=
- =?utf-8?B?Q0JlV01od2wxUnBSODBHL0RoSmtIL1M3WVpUOFk0UFpkd1VIOFYzOUpxNHRL?=
- =?utf-8?B?WmVtVjZvek55czcySTJRcDFrK3o2Zk1HYnZaVWdPK2RLRTNLVFRCTXNpZGwv?=
- =?utf-8?B?L2owWTNrMlE5aUtkanY1Y3U3U05KN3dFM2JCVHlsVU9tUjFSblhudllmM3VE?=
- =?utf-8?B?a3M4dzVOOS9UYXV6NE9NSkpBT2dmQ3dZNENxaTEzdmdJUEY1cmV3ZERpd2xP?=
- =?utf-8?B?Z2kzbzk4Zm9rZDRDZnFXVWV1VW1GSEVqNVdZR1lNVklpLzZsSXJ5Um00eEtQ?=
- =?utf-8?B?ZllRNXpEZ3IwN2N0d2phS1JSRW1Xa2FpRHJYVUpGUS9wOUNzSllOc01zZVN0?=
- =?utf-8?B?Rlg5TW1jSXR5eFAxS3RpckNFTFFCY2ZiYXdXNnlGRm5rRW1lQXBxWk5paXlo?=
- =?utf-8?B?QWVweXE1VUZYRUs1aTJaSDY5dDc2Wk1GMUxWMUlPQU5ZbUhDc3hvanRLNjE1?=
- =?utf-8?B?aE1qUElOY2JmTHdLSnI3N3h2VnNQc1pRcXRuQTZnNUh5aEV2YzlhazVrVWJ6?=
- =?utf-8?B?bGNoNGtmSUhuMm82ZlJnbFZLTncwczNXSFVTa0gwV0JOSXk3ckFrNUpCaTZk?=
- =?utf-8?B?K0plMW5nZFFtbGxsVHhrcER5VGRldDJ5T3NNMldDRVVhK3V6NUVkb0pvc2Zl?=
- =?utf-8?B?VXY1VVRlaUxxckNUbFdzc3NkSHA3ZVN5TE8vS1ptZ3dMQzBVemhvSDI3YVNL?=
- =?utf-8?B?Nk5yMjFGU09SL2dpWDVBdFE0WFRuYXNURlFjZXNjSnhYbTNGYzR0c240ejJV?=
- =?utf-8?B?ZkhBS2FkZjFQSzJxK2tDNWE2VVRPTXc2Z3BUbmhkOHVaNVczbWhXU2RGajZZ?=
- =?utf-8?B?VVNaZi9XbTlYZWdEYTlvb2UzK1JjbTFLeDM3OEpCdGVXR3JDd1NOdm5TdDFv?=
- =?utf-8?B?cUFNM3VObEd3Sk94aDlqWG4vY2RYOVRMemdwRmh4cHl2QXpUbVZROGZKSGxy?=
- =?utf-8?B?dEh1U1pZM3hFTGlqYmEzOWY0RzY3YXQ0OFF6VG1QSHBnc0J5eEJKSXEvMVRV?=
- =?utf-8?B?eHFUTWhETlM4UnNBUkZjL00yTlBmMU44LzZIT1VyWGRQRjBOaEtNQjlNVFB2?=
- =?utf-8?B?MGdYeXkrSTRNOTl2L1p6S2hFTyt1cEtxY2JlUkQ0MDJZNHJ4eEtPdThzNTAw?=
- =?utf-8?B?Y3hmTzY3QmlQWWQwaEEzU2tvNllhN2NUT2lkUDlrdmhWYlhkM29ibVVZTDYy?=
- =?utf-8?B?eUpHTEdQVDlGVEQzQkxkNTRZa0xsM2lYRmhiNHdpRDVXNjV2V0xLcHZkY09N?=
- =?utf-8?B?TDVaWHpnMHNSZjd5UWc4cjMyb3lGOE54WllwV3V5TkFNa3oyckJQUVZSVVQz?=
- =?utf-8?Q?el5IuhYyP7urpgdg4LCrr1U3zCTiSY2BTHj0Z7u?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f6000661-d7f5-4296-aa97-08d929b6ef16
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5129.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2021 13:19:52.3315
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HNbAEDps3Cqv3KwVQ4bTaP81+9bbjlAPax7TMX/N0FtihaV1xeykOt9aaeyXhnT3wbzOsRR7fBCtSIeHb7sREQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5162
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzbQ9w2smTMK5uwGGjyZ_mjDy-TGxd6m8tiDd3T_nJ7khQ@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-06-04 um 10:54 p.m. schrieb Wan Jiabing:
-> kfd_svm.h is included duplicately in commit 42de677f79999
-> ("drm/amdkfd: register svm range"). 
->
-> After checking possible related header files,
-> remove the former one to make the code format more reasonable.
->
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+Em Fri, Jun 04, 2021 at 07:55:17PM -0700, Andrii Nakryiko escreveu:
+> On Thu, Jun 3, 2021 at 7:57 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > Em Sat, May 29, 2021 at 05:40:17PM -0700, Andrii Nakryiko escreveu:
 
-Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+> > > At some point it probably would make sense to formalize
+> > > "btf_encoder" as a struct with its own state instead of passing in
+> > > multiple variables. It would probably also
 
-I will apply the patch to amd-staging-drm-next. Thanks.
+> > Take a look at the tmp.master branch at:
 
-> ---
->  drivers/gpu/drm/amd/amdkfd/kfd_process.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process.c b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-> index bfa6c4cd2f44..f1f40bba5c60 100644
-> --- a/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-> @@ -35,7 +35,6 @@
->  #include <linux/pm_runtime.h>
->  #include "amdgpu_amdkfd.h"
->  #include "amdgpu.h"
-> -#include "kfd_svm.h"
->  
->  struct mm_struct;
->  
+> > https://git.kernel.org/pub/scm/devel/pahole/pahole.git/log/?h=tmp.master
+ 
+> Oh wow, that's a lot of commits! :) Great that you decided to do this
+> refactoring, thanks!
+ 
+> > that btf_elf class isn't used anymore by btf_loader, that uses only
+> > libbpf's APIs, and now we have a btf_encoder class with all the globals,
+> > etc, more baby steps are needed to finally ditch btf_elf altogether and
+> > move on to the parallelization.
+ 
+> So do you plan to try to parallelize as a next step? I'm pretty
+
+So, I haven't looked at details but what I thought would be interesting
+to investigate is to see if we can piggyback DWARF generation with BTF
+one, i.e. when we generate a .o file with -g we encode the DWARF info,
+so, right after this, we could call pahole as-is and encode BTF, then,
+when vmlinux is linked, we would do the dedup.
+
+I.e. when generating ../build/v5.13.0-rc4+/kernel/fork.o, that comes
+with:
+
+⬢[acme@toolbox perf]$ readelf -SW ../build/v5.13.0-rc4+/kernel/fork.o | grep debug
+  [78] .debug_info       PROGBITS        0000000000000000 00daec 032968 00      0   0  1
+  [79] .rela.debug_info  RELA            0000000000000000 040458 053b68 18   I 95  78  8
+  [80] .debug_abbrev     PROGBITS        0000000000000000 093fc0 0012e9 00      0   0  1
+  [81] .debug_loclists   PROGBITS        0000000000000000 0952a9 00aa43 00      0   0  1
+  [82] .rela.debug_loclists RELA         0000000000000000 09fcf0 009d98 18   I 95  81  8
+  [83] .debug_aranges    PROGBITS        0000000000000000 0a9a88 000080 00      0   0  1
+  [84] .rela.debug_aranges RELA          0000000000000000 0a9b08 0000a8 18   I 95  83  8
+  [85] .debug_rnglists   PROGBITS        0000000000000000 0a9bb0 001509 00      0   0  1
+  [86] .rela.debug_rnglists RELA         0000000000000000 0ab0c0 001bc0 18   I 95  85  8
+  [87] .debug_line       PROGBITS        0000000000000000 0acc80 0086b7 00      0   0  1
+  [88] .rela.debug_line  RELA            0000000000000000 0b5338 002550 18   I 95  87  8
+  [89] .debug_str        PROGBITS        0000000000000000 0b7888 0177ad 01  MS  0   0  1
+  [90] .debug_line_str   PROGBITS        0000000000000000 0cf035 001308 01  MS  0   0  1
+  [93] .debug_frame      PROGBITS        0000000000000000 0d0370 000e38 00      0   0  8
+  [94] .rela.debug_frame RELA            0000000000000000 0d11a8 000e70 18   I 95  93  8
+⬢[acme@toolbox perf]$
+
+We would do:
+
+⬢[acme@toolbox perf]$ pahole -J ../build/v5.13.0-rc4+/kernel/fork.o
+⬢[acme@toolbox perf]$
+
+Which would get us to have:
+
+⬢[acme@toolbox perf]$ readelf -SW ../build/v5.13.0-rc4+/kernel/fork.o | grep BTF
+  [103] .BTF              PROGBITS        0000000000000000 0db658 030550 00      0   0  1
+⬢[acme@toolbox perf]
+
+⬢[acme@toolbox perf]$ pahole -F btf -C hlist_node ../build/v5.13.0-rc4+/kernel/fork.o 
+struct hlist_node {
+	struct hlist_node *        next;                 /*     0     8 */
+	struct hlist_node * *      pprev;                /*     8     8 */
+
+	/* size: 16, cachelines: 1, members: 2 */
+	/* last cacheline: 16 bytes */
+};
+⬢[acme@toolbox perf]$ 
+
+So, a 'pahole --dedup_btf vmlinux' would just go on looking at:
+
+⬢[acme@toolbox perf]$ readelf -wi ../build/v5.13.0-rc4+/vmlinux | grep -A10 DW_TAG_compile_unit | grep -w DW_AT_name | grep fork
+    <f220eb>   DW_AT_name        : (indirect line string, offset: 0x62e7): /var/home/acme/git/linux/kernel/fork.c
+
+To go there and go on extracting those ELF sections to combine and
+dedup.
+
+This combine thing could be done even by the linker, I think, when all
+the DWARF data in the .o file are combined into vmlinux, we could do it
+for the .BTF sections as well, that way would be even more elegant, I
+think. Then, the combined vmlinux .BTF section would be read and fed in
+one go to libbtf's dedup arg.
+
+This way the encoding of BTF would be as paralellized as the kernel build
+process, following the same logic (-j NR_PROCESSORS).
+
+wdyt?
+
+If this isn't the case, we can process vmlinux as is today and go on
+creating N threads and feeding each with a DW_TAG_compile_unit
+"container", i.e. each thread would consume all the tags below each
+DW_TAG_compile_unit and produce a foo.BTF file that in the end would be
+combined and deduped by libbpf.
+
+Doing it as my first sketch above would take advantage of locality of
+reference, i.e. the DWARF data would be freshly produced and in the
+cache hierarchy when we first encode BTF, later, when doing the
+combine+dedup we wouldn't be touching the more voluminous DWARF data.
+
+- Arnaldo
+
+> confident about BTF encoding part: dump each CU into its own BTF, use
+> btf__add_type() to merge multiple BTFs together. Just need to re-map
+> IDs (libbpf internally has API to visit each field that contains
+> type_id, it's well-defined enough to expose that as a public API, if
+> necessary). Then final btf_dedup().
+ 
+> But the DWARF loading and parsing part is almost a black box to me, so
+> I'm not sure how much work it would involve.
+
+> > I'm doing 'pahole -J vmlinux && btfdiff' after each cset and doing it
+> > very piecemeal as I'm doing will help bisecting any subtle bug this may
+> > introduce.
+
+> > > allow to parallelize BTF generation, where each CU would proceed in
+> > > parallel generating local BTF, and then the final pass would merge and
+> > > dedup BTFs. Currently reading and processing DWARF is the slowest part
+> > > of the DWARF-to-BTF conversion, parallelization and maybe some other
+> > > optimization seems like the only way to speed the process up.
+
+> > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+> > Thanks!
