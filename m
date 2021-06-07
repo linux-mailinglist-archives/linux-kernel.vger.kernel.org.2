@@ -2,109 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0876039E6CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B3339E6D4
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 20:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbhFGSqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 14:46:37 -0400
-Received: from mail-lj1-f181.google.com ([209.85.208.181]:34420 "EHLO
-        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230183AbhFGSqe (ORCPT
+        id S231124AbhFGStH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 14:49:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230183AbhFGStH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 14:46:34 -0400
-Received: by mail-lj1-f181.google.com with SMTP id bn21so23608909ljb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 11:44:31 -0700 (PDT)
+        Mon, 7 Jun 2021 14:49:07 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B74C061766;
+        Mon,  7 Jun 2021 11:47:00 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id o8so23635148ljp.0;
+        Mon, 07 Jun 2021 11:47:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9B3Sx0V5Yfw+vtWDBKV2BfxkUflJbs+2GKJxnszO55Y=;
-        b=JVjhJug0KdhaJOBiBHpFvDeRVhgV0Ul6evOlc+aRMWWUbUNSFW3lOXdde7k4daaLg0
-         wQB/N5wqPD4Og71CI6zSqWbK+MK7XDWK7hlPbyCWMftSlB28YgyUOnLBPmIEw7uSj7Iv
-         g0yyuf5bNvBLryh8AAgJrOY9yKHD7mHu1OcjGMaox/aRqja9dX0M/3ulloZ+eBBzEDG4
-         7V/A/7wVr/Ywi4+M1PHGyXhsbLxSIK+lfzoltUKaSntmOPcKM9oF59Qhc4KhTmcfJLvg
-         ytDz4Y23NI5Sga5/V0sKt67h1p/blm/DkPGezDsTaYBfYimNV2DENBiHI2/mmhPt1eFb
-         lt0Q==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=RnVSYa8KmSC+D4hybHKk0N49dZJgKOnqAO4kqqQejg4=;
+        b=iUk1eWS24K6tQyGg/c7OF9rrUprxfqed1/+TJ4wlWwyrdr862kG/xi5D/UFutwfYzj
+         oYCK5udNGILB87uB4QfbKOIWjeq2yrISMF3NtEdyNz7l//IOeWDNFbPATWBBhsXfgx3D
+         euuZxcqU0bKQgM2C2mQ6Zu+z/YR8ngbCN23KhzUgVIWnua5zydZhbh+zVjJ2ptfSWGCN
+         PoE4ErhAqsCb9GUjHHAZfzXDg2zwyT7ur5mnuo5dkd8pXBhFcl5ZfVOYfxcM8q80ZqGX
+         tzT4gssII4BUOookNlCc0hbF2MIBavz3GBCESX+V1viC3WY1OIR/vDniczcz9WeaAVli
+         H8kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9B3Sx0V5Yfw+vtWDBKV2BfxkUflJbs+2GKJxnszO55Y=;
-        b=keRZGUJHV8j4nKl6i8fU+EY6RAtGtyMTam2MPfC2M5B7QrnDhw2RmTNsEGZtIFgWOH
-         245Aa/l2IUeHqAW1wTTjitKvToR3woQBtvwNirpCnBaJealSyfQQM9V1yeLmNVLe06Dt
-         N9RjaC+hjJ375pdAj8nCW+YL2nkRLFysBL8rGlluFy6Dc8GpGa0MwYJkt2r1KsKYvIYO
-         o3XUIt0RAGcVehuPbZdJSVj5VX4ZJ0/GuhEeqtiowpsK643NpXResZfUwNQjbxu6N9IY
-         sjOM9FV4hdl3y9WcEpwDI8zMT5T+kbEDkg/skO7Yct2RA92zXcTHCGxZ5/HzLNMbIPSG
-         xI0A==
-X-Gm-Message-State: AOAM530qoUrnWN8sNbRaCU5jFp4r8A1s/rzh6jzRznnvyu/i6fL5f+4U
-        df0qV3P5ohbi6ZvlvX4ZG/lw/R3QkJjrdpg3cIeuYIFoW5Q=
-X-Google-Smtp-Source: ABdhPJyvqnABqg6mvaB/IbD/smKfWMJZsFMwS1ZAqErX+JwSU0e7UktY4aOeeU9ILrsrfbcqpnXh5UkwWjrXTTlySGo=
-X-Received: by 2002:a05:651c:b1f:: with SMTP id b31mr16093698ljr.0.1623091410157;
- Mon, 07 Jun 2021 11:43:30 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=RnVSYa8KmSC+D4hybHKk0N49dZJgKOnqAO4kqqQejg4=;
+        b=B/0r+1ERotv7L5n+rtJAuT3sCDZScR6UpBgR4niBX2+/O9klI8gMzbLwietVA2D7K3
+         B9RmxGDDhyZadIhX34CBjJVr12X+yxJNXFy1YUUTSqcWhr7no4HjJjT3ULLvKz3ayPU7
+         0KNg3qNcOOrw6q9EX+HEhCN5jtSDowaDaO118I+uR8uJv5tKnRYRowpN5JfJXpt3JDbW
+         iw3VNs9tUKL0kYKeULSlInLEXlpY0ZiNAJiMeLYfsHuk11MRkS78x6LKg0DXybZHRLbL
+         ArZ2siFOliZkxiOlQX/sdw9FzxkhbBs7c11pT8RHRURWt1TK88bicgF7Nzex4+rpdAMV
+         U7FQ==
+X-Gm-Message-State: AOAM533yijdamRn+s0XjYXeHIxdlN1fxZSDnQfb6sMKLnm9PWU/IKl9+
+        5HOTWNIp00xI9+nsYN1Cq8I=
+X-Google-Smtp-Source: ABdhPJy5hxakMNChRHCPYJLBM9n75f4qTZnN+Sh4MwyJV+PnHFrP73qK/cUoYhh92y9MkTp+CxnbhQ==
+X-Received: by 2002:a2e:a612:: with SMTP id v18mr6541693ljp.358.1623091618494;
+        Mon, 07 Jun 2021 11:46:58 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.224.40])
+        by smtp.gmail.com with ESMTPSA id y26sm1583098lfj.298.2021.06.07.11.46.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 11:46:57 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, matthieu.baerts@tessares.net
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+65badd5e74ec62cb67dc@syzkaller.appspotmail.com
+Subject: [PATCH v2] revert "net: kcm: fix memory leak in kcm_sendmsg"
+Date:   Mon,  7 Jun 2021 21:46:23 +0300
+Message-Id: <20210607184623.6914-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210607172015.19265-1-paskripkin@gmail.com>
+References: <20210607172015.19265-1-paskripkin@gmail.com>
 MIME-Version: 1.0
-References: <20210607163103.632681-1-atomlin@redhat.com> <c16893a9-35e2-7625-d7f3-83488f874040@redhat.com>
-In-Reply-To: <c16893a9-35e2-7625-d7f3-83488f874040@redhat.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 7 Jun 2021 11:43:19 -0700
-Message-ID: <CALvZod4eUoquGTQ5AsWgbWTQyqtCNNwb-9+fRw_ZPavH-r9dbA@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm/oom_kill: allow oom kill allocating task for
- non-global case
-To:     Waiman Long <llong@redhat.com>
-Cc:     Aaron Tomlin <atomlin@redhat.com>, Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 9:45 AM Waiman Long <llong@redhat.com> wrote:
->
-> On 6/7/21 12:31 PM, Aaron Tomlin wrote:
-> > At the present time, in the context of memcg OOM, even when
-> > sysctl_oom_kill_allocating_task is enabled/or set, the "allocating"
-> > task cannot be selected, as a target for the OOM killer.
-> >
-> > This patch removes the restriction entirely.
-> >
-> > Signed-off-by: Aaron Tomlin <atomlin@redhat.com>
-> > ---
-> >   mm/oom_kill.c | 6 +++---
-> >   1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> > index eefd3f5fde46..3bae33e2d9c2 100644
-> > --- a/mm/oom_kill.c
-> > +++ b/mm/oom_kill.c
-> > @@ -1089,9 +1089,9 @@ bool out_of_memory(struct oom_control *oc)
-> >               oc->nodemask = NULL;
-> >       check_panic_on_oom(oc);
-> >
-> > -     if (!is_memcg_oom(oc) && sysctl_oom_kill_allocating_task &&
-> > -         current->mm && !oom_unkillable_task(current) &&
-> > -         oom_cpuset_eligible(current, oc) &&
-> > +     if (sysctl_oom_kill_allocating_task && current->mm &&
-> > +            !oom_unkillable_task(current) &&
-> > +            oom_cpuset_eligible(current, oc) &&
-> >           current->signal->oom_score_adj != OOM_SCORE_ADJ_MIN) {
-> >               get_task_struct(current);
-> >               oc->chosen = current;
->
-> To provide more context for this patch, we are actually seeing that in a
-> customer report about OOM happened in a container where the dominating
-> task used up most of the memory and it happened to be the task that
-> triggered the OOM with the result that no killable process could be
-> found.
+In commit c47cc304990a ("net: kcm: fix memory leak in kcm_sendmsg")
+I misunderstood the root case of the memory leak and came up with
+completely broken fix.
 
-Why was there no killable process? What about the process allocating
-the memory or is this remote memcg charging?
+So, simply revert this commit to avoid GPF reported by
+syzbot.
 
-> I don't see a reason why this should be limited to a global OOM only.
->
-> Acked-by: Waiman Long <longman@redhat.com>
->
-> Cheers,
-> Longman
->
+Im so sorry for this situation.
+
+Fixes: c47cc304990a ("net: kcm: fix memory leak in kcm_sendmsg")
+Reported-by: syzbot+65badd5e74ec62cb67dc@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+
+Changes in v2:
+	Added Fixes tag
+	Improved commit message
+
+---
+ net/kcm/kcmsock.c | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/net/kcm/kcmsock.c b/net/kcm/kcmsock.c
+index 1c572c8daced..6201965bd822 100644
+--- a/net/kcm/kcmsock.c
++++ b/net/kcm/kcmsock.c
+@@ -1066,11 +1066,6 @@ static int kcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+ 		goto partial_message;
+ 	}
+ 
+-	if (skb_has_frag_list(head)) {
+-		kfree_skb_list(skb_shinfo(head)->frag_list);
+-		skb_shinfo(head)->frag_list = NULL;
+-	}
+-
+ 	if (head != kcm->seq_skb)
+ 		kfree_skb(head);
+ 
+-- 
+2.31.1
+
