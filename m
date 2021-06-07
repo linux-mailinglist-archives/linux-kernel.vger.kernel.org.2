@@ -2,66 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E44B39D48E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 07:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FD0B39D4AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbhFGF6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 01:58:23 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:39452 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229578AbhFGF6V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 01:58:21 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R981e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UbWDIvI_1623045387;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UbWDIvI_1623045387)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 07 Jun 2021 13:56:29 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     jdmason@kudzu.us
-Cc:     dave.jiang@intel.com, allenbh@gmail.com, logang@deltatee.com,
-        linux-ntb@googlegroups.com, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH v2] NTB: Fix an error code in ntb_msit_probe()
-Date:   Mon,  7 Jun 2021 13:56:20 +0800
-Message-Id: <1623045380-125394-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S230169AbhFGGOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 02:14:01 -0400
+Received: from m12-15.163.com ([220.181.12.15]:48642 "EHLO m12-15.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229498AbhFGGN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 02:13:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=ucIsH
+        6s5UZSTSd8u+dhiLzuICj1ex/HPmgmtvqBoX0E=; b=pqkQ5t3QBj0t4B828o/jB
+        tMCwNz+hS3ydWGhIx2uAQCaLt2w/KsO5TWqXE18IyPdufRFsxrGUHAZx/8Gg01nD
+        ZK+xcj3AbshUcAQlxDfm5q4W+FvDCa25Dqr1v5hOEBeMsKaBXu1oHa2Y6TRauFP4
+        u8wY5oBJd7vp8WyLftucuM=
+Received: from localhost.localdomain (unknown [218.17.89.92])
+        by smtp11 (Coremail) with SMTP id D8CowACnrqbvtL1glWEjAA--.48S2;
+        Mon, 07 Jun 2021 13:56:08 +0800 (CST)
+From:   lijian_8010a29@163.com
+To:     viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lijian <lijian@yulong.com>
+Subject: [PATCH] fs: fs-writeback: Fix a typo
+Date:   Mon,  7 Jun 2021 13:55:00 +0800
+Message-Id: <20210607055500.159160-1-lijian_8010a29@163.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: D8CowACnrqbvtL1glWEjAA--.48S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7XrW8GrW5KrWxXw15Zry7Jrb_yoW3trc_Wr
+        4Iqr48CF4DXFW5Xr4xAFs3tryvqw1rCFyxJa1DKF4DG345Zws8Zrs8Gryqvr12qFy7Za93
+        u3ZFgrW7Zay29jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnWGQDUUUUU==
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbiLxiqUFUMY1-DoQAAsK
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the value of nm->isr_ctx is false, the value of ret is 0.
-So, we set ret to -ENOMEM to indicate this error.
+From: lijian <lijian@yulong.com>
 
-Clean up smatch warning:
-drivers/ntb/test/ntb_msi_test.c:373 ntb_msit_probe() warn: missing
-error code 'ret'.
+Change 'paramters' to 'parameters'.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Signed-off-by: lijian <lijian@yulong.com>
 ---
+ fs/fs-writeback.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Change in v2:
---revise typo
-
- drivers/ntb/test/ntb_msi_test.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/ntb/test/ntb_msi_test.c b/drivers/ntb/test/ntb_msi_test.c
-index 7095ecd..4e18e08 100644
---- a/drivers/ntb/test/ntb_msi_test.c
-+++ b/drivers/ntb/test/ntb_msi_test.c
-@@ -369,8 +369,10 @@ static int ntb_msit_probe(struct ntb_client *client, struct ntb_dev *ntb)
- 	if (ret)
- 		goto remove_dbgfs;
- 
--	if (!nm->isr_ctx)
-+	if (!nm->isr_ctx) {
-+		ret = -ENOMEM;
- 		goto remove_dbgfs;
-+	}
- 
- 	ntb_link_enable(ntb, NTB_SPEED_AUTO, NTB_WIDTH_AUTO);
- 
+diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+index 7c46d1588a19..f827490a41aa 100644
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -215,7 +215,7 @@ void wb_wait_for_completion(struct wb_completion *done)
+  * Parameters for foreign inode detection, see wbc_detach_inode() to see
+  * how they're used.
+  *
+- * These paramters are inherently heuristical as the detection target
++ * These parameters are inherently heuristical as the detection target
+  * itself is fuzzy.  All we want to do is detaching an inode from the
+  * current owner if it's being written to by some other cgroups too much.
+  *
 -- 
-1.8.3.1
+2.25.1
 
