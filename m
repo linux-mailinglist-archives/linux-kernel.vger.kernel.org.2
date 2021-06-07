@@ -2,89 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3DD39E8FB
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 23:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B6839E8FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 23:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhFGVR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 17:17:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55883 "EHLO
+        id S231177AbhFGVTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 17:19:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30600 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230359AbhFGVRz (ORCPT
+        by vger.kernel.org with ESMTP id S230359AbhFGVTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 17:17:55 -0400
+        Mon, 7 Jun 2021 17:19:42 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623100563;
+        s=mimecast20190719; t=1623100670;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=A+QzMHSr7n2QYrg6dy0pAA83S+etUHMxpNVRGxxeZWk=;
-        b=TtT1+4fDHCTQO2fXTUjiqC0uq+PqhfRhXquACBHk52BN23aAztfAqTIyQgF8tcJm2qpz2J
-        H5WXgUnjJazfJpucIaYWvUbFxFHXBTtUCxODgv+VtMwzW8wnFByzkAUZDOkxil0w4NPdK7
-        PLp3PeC68vIPTY414k3pRynAMTFsrHU=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-262-TtkK49JpOEme9ZGDoNXWWQ-1; Mon, 07 Jun 2021 17:16:02 -0400
-X-MC-Unique: TtkK49JpOEme9ZGDoNXWWQ-1
-Received: by mail-wm1-f71.google.com with SMTP id n2-20020a05600c3b82b02901aeb7a4ac06so341038wms.5
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 14:16:02 -0700 (PDT)
+        bh=dohUA8RCeDZydOVy8aFiF2oJKRXDAPHwnSuvVV684WU=;
+        b=X/XCRRi0EbADjCdbJsqqU8e8GotIUZXzh6osmcHPsLXS2E5ubmV78mRl8vgXCl7CVkSCme
+        3JX++ANo16kbeSJABa51TSUFSE7U4hjmiRdy/XeW/lE2UdtVhIOcVh/qgyNdJaBeCIWAEY
+        aJVXiJ5/zXOUuCmQ22XAIpRbdU31oTY=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-122-HGrk-L_FPHafEY03u4hgbw-1; Mon, 07 Jun 2021 17:17:49 -0400
+X-MC-Unique: HGrk-L_FPHafEY03u4hgbw-1
+Received: by mail-wr1-f70.google.com with SMTP id x9-20020a5d49090000b0290118d8746e06so8396341wrq.10
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 14:17:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=A+QzMHSr7n2QYrg6dy0pAA83S+etUHMxpNVRGxxeZWk=;
-        b=TFac1QubEHuJcpSPOW799kDVhYj7Vxwj/btNpZMqzTixbv+IaXy7hqGdIAE+hvPxQo
-         e4nI32w7cdbcXs2LuPHW4kVwI/mT9xpkOcOMGKYN9ouzD88nlav3f2yEIj8aj1IE1u1v
-         heI3P/9/uxZx+MEsLszcNoSmG9YIZwEo+lK2sP8jQ9K5mB4toDEs/kc8SVKQA5bn+h3t
-         9+fG4nSugGPizrH8R59qgXxt25Y2J3EOEgWT4ehW+yp67E2C9RVG9J5418pyqSgCRC1F
-         YiWIBDS4NzGSBzhuVdu5a991QlpPZtOyeJRWsUly9s5jpc60uaOzCg6OTgxPxNaecuao
-         /6nA==
-X-Gm-Message-State: AOAM532FIa9s++2nMsLD7MsIBTyNaO2OYa93+XrvcuoE1wktnbaLLKLr
-        GezJUygJEUKo/HSYKnuomfmgrHikS5FegD/rxewJuS3/W2dPjlxHItvBliRK72TLVMXL7MCXkOK
-        RLOF7lwWmfEqwHaRWT9Y7qCs=
-X-Received: by 2002:a05:600c:4fd0:: with SMTP id o16mr941164wmq.50.1623100561409;
-        Mon, 07 Jun 2021 14:16:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw3V+zuUDialUWMMqBnkiTOsZ4fl0eGLPMuveDftvGRavXQ3gAgJaZiJrZ5XrNITr1JOQ5oUw==
-X-Received: by 2002:a05:600c:4fd0:: with SMTP id o16mr941155wmq.50.1623100561211;
-        Mon, 07 Jun 2021 14:16:01 -0700 (PDT)
+        bh=dohUA8RCeDZydOVy8aFiF2oJKRXDAPHwnSuvVV684WU=;
+        b=d/fcHl2zfmtfQdXNWGywSR9z/uYy1GOqcoaTn/Xkvw4Dv2w6sgKma7pDlZXaKeUBIa
+         Pgg6r4VduWzgj3R9t9J6i8UeAw8Y7aHbJWpa4Hp7Nt9FdvZU4LknfLXafXt1A9DK+uZR
+         CSbMNiUiVcG9Gylwxed9qqeQmU/xHFnci5FGA4D6hIMP1ND9iiY0H8BVfQKFAP0IQ2Iu
+         sfRZDjA4TrK08GayCTQO+8GbsWf3StYDLWX0xoTWh6I9dNFI5bNDC4b9SzVZXDftUjTB
+         sm6BRUJY4T2qxJPEr5QfqnfcYdwNUdBEgtayt0e3EC1jXaSFiULNR6tllB1ed1+tCMmH
+         uyig==
+X-Gm-Message-State: AOAM530A2punPKFbKCTC8IdAZTPjVNkmczZG5ntLP67WHxb3glKi3Jhn
+        CjSfhblM0nCCh8qnjdnl1VzJkHK5QeZrX7Ybj8mjAaoPWnaKn9ZjQgZWEUMxzwHP6wnAEj69L01
+        YVEsxPdA5mnqX/JS9RaZohL0=
+X-Received: by 2002:adf:a503:: with SMTP id i3mr19151878wrb.334.1623100668297;
+        Mon, 07 Jun 2021 14:17:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzOM1m3XdKCQPa4Wc1inRlTNUQJkAuNUqBejh8q9mDu7ZlYc/bUjJLCXAAeRgOv6JzSm2lmyA==
+X-Received: by 2002:adf:a503:: with SMTP id i3mr19151872wrb.334.1623100668129;
+        Mon, 07 Jun 2021 14:17:48 -0700 (PDT)
 Received: from localhost (cpc111743-lutn13-2-0-cust979.9-3.cable.virginm.net. [82.17.115.212])
-        by smtp.gmail.com with ESMTPSA id n1sm7999008wms.18.2021.06.07.14.16.00
+        by smtp.gmail.com with ESMTPSA id m23sm16133510wmc.29.2021.06.07.14.17.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 14:16:00 -0700 (PDT)
-Date:   Mon, 7 Jun 2021 22:16:00 +0100
+        Mon, 07 Jun 2021 14:17:47 -0700 (PDT)
+Date:   Mon, 7 Jun 2021 22:17:47 +0100
 From:   Aaron Tomlin <atomlin@redhat.com>
-To:     Waiman Long <llong@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Shakeel Butt <shakeelb@google.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
+        llong@redhat.com, linux-kernel@vger.kernel.org
 Subject: Re: [RFC PATCH] mm/oom_kill: allow oom kill allocating task for
  non-global case
-Message-ID: <20210607211600.yki3byc7i73ij7ra@ava.usersys.com>
+Message-ID: <20210607211747.raco7udwu4dbut3i@ava.usersys.com>
 X-PGP-Key: http://pgp.mit.edu/pks/lookup?search=atomlin%40redhat.com
 X-PGP-Fingerprint: 7906 84EB FA8A 9638 8D1E  6E9B E2DE 9658 19CC 77D6
 References: <20210607163103.632681-1-atomlin@redhat.com>
- <c16893a9-35e2-7625-d7f3-83488f874040@redhat.com>
- <CALvZod4eUoquGTQ5AsWgbWTQyqtCNNwb-9+fRw_ZPavH-r9dbA@mail.gmail.com>
- <dc7f54eb-933e-5bbb-7959-815dfbfcc836@redhat.com>
- <YL5tqdw+iWLLavxV@dhcp22.suse.cz>
- <6d23ce58-4c4b-116a-6d74-c2cf4947492b@redhat.com>
- <YL51Tp/3jVHUrpuj@dhcp22.suse.cz>
- <a25c980a-2c26-2df4-9375-3ca91d677099@redhat.com>
+ <YL5tBQ3utMzUkHF3@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <a25c980a-2c26-2df4-9375-3ca91d677099@redhat.com>
+In-Reply-To: <YL5tBQ3utMzUkHF3@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2021-06-07 16:42 -0400, Waiman Long wrote:
-> Right. I don't know why the current cannot be selected. I think we may need
-> to enhance the OOM but no killable process report to list the reason a task
-> is skipped other than oom_score_adj.
+On Mon 2021-06-07 21:01 +0200, Michal Hocko wrote:
+> On Mon 07-06-21 17:31:03, Aaron Tomlin wrote:
+> This is a global oom policy not a memcg specific one so a historical
+> behavior would change. So I do not think we can change that.
 
-Actually, this might be a good idea.
+I see. Fair enough.
+
 
 -- 
 Aaron Tomlin
