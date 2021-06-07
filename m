@@ -2,176 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48BE539E883
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 22:34:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 997BF39E8AD
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 22:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231504AbhFGUfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 16:35:54 -0400
-Received: from srv6.fidu.org ([159.69.62.71]:41150 "EHLO srv6.fidu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230436AbhFGUfw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 16:35:52 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id ABF33C800EB;
-        Mon,  7 Jun 2021 22:33:59 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
-        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id m8ADLpTJUMYx; Mon,  7 Jun 2021 22:33:59 +0200 (CEST)
-Received: from [IPv6:2003:e3:7f4f:6000:f5f4:4cdd:8015:9770] (p200300e37F4f6000F5F44cDd80159770.dip0.t-ipconnect.de [IPv6:2003:e3:7f4f:6000:f5f4:4cdd:8015:9770])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPSA id E768CC800E8;
-        Mon,  7 Jun 2021 22:33:57 +0200 (CEST)
-From:   Werner Sembach <wse@tuxedocomputers.com>
-Subject: Re: [PATCH 4/4] drm/i915/display: Add handling for new "active bpc"
- property
-To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Cc:     mripard@kernel.org, daniel@ffwll.ch, sunpeng.li@amd.com,
-        intel-gfx@lists.freedesktop.org, joonas.lahtinen@linux.intel.com,
-        maarten.lankhorst@linux.intel.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, airlied@linux.ie,
-        jani.nikula@linux.intel.com, amd-gfx@lists.freedesktop.org,
-        tzimmermann@suse.de, rodrigo.vivi@intel.com,
-        alexander.deucher@amd.com, harry.wentland@amd.com,
-        christian.koenig@amd.com
-References: <20210604171723.10276-1-wse@tuxedocomputers.com>
- <20210604171723.10276-5-wse@tuxedocomputers.com> <YLpjTMegcjT22vQE@intel.com>
- <bd6a27e7-3ae5-ecb1-2fef-e5f8c1b6a2ac@tuxedocomputers.com>
-Message-ID: <96d10ed0-f8a2-1d0b-62dd-9d6173722506@tuxedocomputers.com>
-Date:   Mon, 7 Jun 2021 22:33:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230345AbhFGUpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 16:45:54 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:37834 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230251AbhFGUpw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 16:45:52 -0400
+Received: by mail-ot1-f41.google.com with SMTP id v19-20020a0568301413b0290304f00e3d88so18098105otp.4
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 13:44:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZMWLwrT3tzkNROjejSZHkSJGqtLsxOXJijLmp+N+WUA=;
+        b=UAeMsV9yT+XI9c0oZrU2PdwjsPV8qukzfoBfkKTnSO101uHR1/4EyiiyPkXZtUErQM
+         3rWNQux76ijI9+CBDFUEfG5VMI0VnM5IxE3ZwutiGpuhujp4iZHBHDd4LKpU3jDi/VFo
+         UEpjKLKfNzzk0hew56IaTQl3XJwkffgoMu1+M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZMWLwrT3tzkNROjejSZHkSJGqtLsxOXJijLmp+N+WUA=;
+        b=BDG3o1CGWlypANHJEw56QvOXe4gwd3xyG+hcjyR58aYmv21RJrcuzuHzlNse5JnQb0
+         tc+TWoaes1zIGeoHtt7Ff0mESo5//3EmSpIY49ULBmhWncnShOTduIzNSgonPtwbrSkA
+         DqmIqvndHNH/fEWR3R/JBirrCxM/OcNXMNzPaoZfHxuO5J3EMKe5Fx7iI/y0PT7Cadb6
+         TmKUCAOXTzRAWRZB+VtDDOudOAJGyzKhED6t+EbFgRQQGv5T4t+15S3sDhUcPD4kUC4U
+         FQ0+zjBy4EV+orZS7HtzUdNw17w1GYDtwhm0gvr7kQCDWkC0Yfu+2alWJiy6u8q0EDyO
+         jq7A==
+X-Gm-Message-State: AOAM533bk9WnA9M+z5rRgogzJVV0FX+v6da0vr/sZvw7Q0wM+rMlk02H
+        g9U+5uJNw+38YoLInR7H+iFY0jIzIg2+LA==
+X-Google-Smtp-Source: ABdhPJxECDutEJJ5ecwEfhV8fL+0P4/o9jx8M+8f0OW9JGx1PCdfXUXc+SMcGOP2a68HHOxIVzgrlw==
+X-Received: by 2002:a9d:206:: with SMTP id 6mr16093969otb.31.1623098579708;
+        Mon, 07 Jun 2021 13:42:59 -0700 (PDT)
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com. [209.85.161.46])
+        by smtp.gmail.com with ESMTPSA id k8sm168237ool.5.2021.06.07.13.42.59
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Jun 2021 13:42:59 -0700 (PDT)
+Received: by mail-oo1-f46.google.com with SMTP id k10-20020a4abd8a0000b0290249ed2f2919so719481oop.4
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 13:42:59 -0700 (PDT)
+X-Received: by 2002:a5b:54a:: with SMTP id r10mr26455324ybp.476.1623098107901;
+ Mon, 07 Jun 2021 13:35:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <bd6a27e7-3ae5-ecb1-2fef-e5f8c1b6a2ac@tuxedocomputers.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210507205513.640780-1-dianders@chromium.org> <20210602175559.GC31957@willie-the-truck>
+In-Reply-To: <20210602175559.GC31957@willie-the-truck>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 7 Jun 2021 13:34:56 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=X1XjyfEG5H+OsCBZb_Acf1Z3PsSTUvO8sKcSD4BWsNbw@mail.gmail.com>
+Message-ID: <CAD=FV=X1XjyfEG5H+OsCBZb_Acf1Z3PsSTUvO8sKcSD4BWsNbw@mail.gmail.com>
+Subject: Re: [PATCH 0/3] arm64: perf: Make compat tracing better
+To:     Will Deacon <will@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Seth LaForge <sethml@google.com>,
+        Ricky Liang <jcliang@chromium.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 07.06.21 um 08:47 schrieb Werner Sembach:
+Hi,
+
+On Wed, Jun 2, 2021 at 10:56 AM Will Deacon <will@kernel.org> wrote:
 >
-> Am 04.06.21 um 19:30 schrieb Ville Syrjälä:
->> On Fri, Jun 04, 2021 at 07:17:23PM +0200, Werner Sembach wrote:
->>> This commits implements the "active bpc" drm property for the Intel 
->>> GPU driver.
->>>
->>> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
->>> ---
->>>   drivers/gpu/drm/i915/display/intel_display.c | 13 +++++++++++++
->>>   drivers/gpu/drm/i915/display/intel_dp.c      |  8 ++++++--
->>>   drivers/gpu/drm/i915/display/intel_dp_mst.c  |  4 +++-
->>>   drivers/gpu/drm/i915/display/intel_hdmi.c    |  4 +++-
->>>   4 files changed, 25 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/i915/display/intel_display.c 
->>> b/drivers/gpu/drm/i915/display/intel_display.c
->>> index 64e9107d70f7..f7898d9d7438 100644
->>> --- a/drivers/gpu/drm/i915/display/intel_display.c
->>> +++ b/drivers/gpu/drm/i915/display/intel_display.c
->>> @@ -10164,6 +10164,8 @@ static void intel_atomic_commit_tail(struct 
->>> intel_atomic_state *state)
->>>       struct drm_i915_private *dev_priv = to_i915(dev);
->>>       struct intel_crtc_state *new_crtc_state, *old_crtc_state;
->>>       struct intel_crtc *crtc;
->>> +    struct drm_connector *connector;
->>> +    struct drm_connector_state *new_conn_state;
->>>       u64 put_domains[I915_MAX_PIPES] = {};
->>>       intel_wakeref_t wakeref = 0;
->>>       int i;
->>> @@ -10324,6 +10326,17 @@ static void intel_atomic_commit_tail(struct 
->>> intel_atomic_state *state)
->>>       }
->>>       intel_runtime_pm_put(&dev_priv->runtime_pm, state->wakeref);
->>>   +    /* Extract information from crtc to communicate it to 
->>> userspace as connector properties */
->>> +    for_each_new_connector_in_state(&state->base, connector, 
->>> new_conn_state, i) {
->>> +        struct drm_crtc *crtc = new_conn_state->crtc;
->>> +        if (crtc) {
->>> +            new_crtc_state = 
->>> to_intel_crtc_state(drm_atomic_get_new_crtc_state(&state->base, crtc));
->> intel_atomic_get_new_crtc_state()
-> Thanks, will use that.
->>
->>> + new_conn_state->active_bpc = new_crtc_state->pipe_bpp / 3;
->>> +        }
->>> +        else
->>> +            new_conn_state->active_bpc = 0;
->>> +    }
->> This also seems too late. I think the whole thing should be
->> done somewhere around the normal swap_state() stuff.
-> Ok, will look into it.
-So I tried to put it in intel_atomic_commit() after 
-drm_atomic_helper_swap_state() and before 
-INIT_WORK(&state->base.commit_work, intel_atomic_commit_work) (which 
-creates a worker for intel_atomic_commit_tail), but somewhere in 
-between, the connector_state seems to change: The bpc written with the 
-for_each_new_connector_in_state() loop, gets discarded.
->>
->>> +
->>>       /*
->>>        * Defer the cleanup of the old state to a separate worker to not
->>>        * impede the current task (userspace for blocking modesets) that
->>> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c 
->>> b/drivers/gpu/drm/i915/display/intel_dp.c
->>> index 642c60f3d9b1..67826ba976ed 100644
->>> --- a/drivers/gpu/drm/i915/display/intel_dp.c
->>> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
->>> @@ -4671,10 +4671,14 @@ intel_dp_add_properties(struct intel_dp 
->>> *intel_dp, struct drm_connector *connect
->>>           intel_attach_force_audio_property(connector);
->>>         intel_attach_broadcast_rgb_property(connector);
->>> -    if (HAS_GMCH(dev_priv))
->>> +    if (HAS_GMCH(dev_priv)) {
->>>           drm_connector_attach_max_bpc_property(connector, 6, 10);
->>> -    else if (DISPLAY_VER(dev_priv) >= 5)
->>> +        drm_connector_attach_active_bpc_property(connector, 6, 10);
->>> +    }
->>> +    else if (DISPLAY_VER(dev_priv) >= 5) {
->>>           drm_connector_attach_max_bpc_property(connector, 6, 12);
->>> +        drm_connector_attach_active_bpc_property(connector, 6, 12);
->>> +    }
->>>         /* Register HDMI colorspace for case of lspcon */
->>>       if (intel_bios_is_lspcon_present(dev_priv, port)) {
->>> diff --git a/drivers/gpu/drm/i915/display/intel_dp_mst.c 
->>> b/drivers/gpu/drm/i915/display/intel_dp_mst.c
->>> index 2daa3f67791e..5a1869dc2210 100644
->>> --- a/drivers/gpu/drm/i915/display/intel_dp_mst.c
->>> +++ b/drivers/gpu/drm/i915/display/intel_dp_mst.c
->>> @@ -844,8 +844,10 @@ static struct drm_connector 
->>> *intel_dp_add_mst_connector(struct drm_dp_mst_topolo
->>>        */
->>>       connector->max_bpc_property =
->>> intel_dp->attached_connector->base.max_bpc_property;
->>> -    if (connector->max_bpc_property)
->>> +    if (connector->max_bpc_property) {
->>>           drm_connector_attach_max_bpc_property(connector, 6, 12);
->>> +        drm_connector_attach_active_bpc_property(connector, 6, 12);
->>> +    }
->>>         return connector;
->>>   diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c 
->>> b/drivers/gpu/drm/i915/display/intel_hdmi.c
->>> index d69f0a6dc26d..8af78b27b6ce 100644
->>> --- a/drivers/gpu/drm/i915/display/intel_hdmi.c
->>> +++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
->>> @@ -2463,8 +2463,10 @@ intel_hdmi_add_properties(struct intel_hdmi 
->>> *intel_hdmi, struct drm_connector *c
->>>           drm_object_attach_property(&connector->base,
->>> connector->dev->mode_config.hdr_output_metadata_property, 0);
->>>   -    if (!HAS_GMCH(dev_priv))
->>> +    if (!HAS_GMCH(dev_priv)) {
->>>           drm_connector_attach_max_bpc_property(connector, 8, 12);
->>> +        drm_connector_attach_active_bpc_property(connector, 8, 12);
->>> +    }
->>>   }
->>>     /*
->>> -- 
->>> 2.25.1
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+> Hi Doug,
+>
+> Thanks for posting this, and sorry for the delay in getting to it.
+>
+> On Fri, May 07, 2021 at 01:55:10PM -0700, Douglas Anderson wrote:
+> > The goal for this series is to improve "perf" behavior when 32-bit
+> > userspace code is involved. This turns out to be fairly important for
+> > Chrome OS which still runs 32-bit userspace for the time being (long
+> > story there).
+>
+> Watch out, your days are numbered! See [1].
+
+Yeah, folks on the Chrome OS team are aware and we're trying our
+darndest to move away. It's been an unfortunate set of circumstances
+that has kept us on 32-bit this long. :( BTW: I like your suggestion
+of "retirement" as a solution to dealing with this problem, but I'm
+not quite ready to retire yet.
+
+
+> > I won't repeat everything said in the individual patches since since
+> > they are wordy enough as it is.
+> >
+> > Please enjoy and I hope this isn't too ugly/hacky for inclusion in
+> > mainline.
+> >
+> > Thanks to Nick Desaulniers for his early review of these patches and
+> > to Ricky for the super early prototype that some of this is based on.
+>
+> I can see that you've put a lot of effort into this, but I'm not thrilled
+> with the prospect of maintaining these heuristics in the kernel. The
+> callchain behaviour is directly visible to userspace, and all we'll be able
+> to do is throw more heuristics at it if faced with any regression reports.
+> Every assumption made about userspace behaviour results in diminishing
+> returns where some set of programs no longer fall into the "supported"
+> bucket and, on balance, I don't think the trade-off is worth it.
+>
+> If we were to do this in the kernel, then I'd like to see a spec for how
+> frame-pointer based unwinding should work for Thumb and have it agreed
+> upon and implemented by both GCC and LLVM. That way, we can implement
+> the unwinder according to that spec and file bug reports against the
+> compiler if it goes wrong.
+
+Given how long this has been going on, I'd somewhat guess that getting
+this implemented in GCC and LLVM is 1+ year out. Presumably Chrome OS
+will be transitioned off 32-bit ARM by then.
+
+
+> In lieu of that, I think we must defer to userspace to unwind using DWARF.
+> Perf supports this via PERF_SAMPLE_STACK_USER and PERF_SAMPLE_REGS_USER,
+> which allows libunwind to be used to create the callchain. You haven't
+> mentioned that here, so I'd be interested to know why not.
+
+Good point. So I guess I didn't mention it because:
+
+a) I really know very little about perf. I got roped in this because I
+understand stack unwinding, not because I know how to use perf well.
+:-P So I personally have no idea how to set this up.
+
+b) In the little bit of reading I did about this, people seemed to say
+that using libunwind for perf sampling was just too slow / too much
+overhead.
+
+
+> Finally, you've probably noticed that our unwinding code for compat tasks
+> is basically identical to the code in arch/arm/. If the functionality is
+> going to be extended, it should be done there first and then we will follow
+> to be compatible.
+
+That's fair. I doubt that submitting patches to this area of code for
+arm32 would be enjoyable, so I'll pass if it's all the same.
+
+Given your feedback, I think it's fair to consider ${SUBJECT} patch
+abandoned then. I'll see if people want to land it as a private patch
+in the Chrome OS tree for the time being until we can more fully
+abandon arm32 support or until the ARM teams working on gcc and clang
+come up with a standard that we can support more properly.
+
+In the meantime, if anyone cares to pick this patch up and move
+forward, feel free to do so with my blessing.
+
+-Doug
