@@ -2,212 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7CC39E4A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 19:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09ECA39E4AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 19:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231462AbhFGRCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 13:02:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42758 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230331AbhFGRCR (ORCPT
+        id S231465AbhFGREK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 13:04:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231266AbhFGRED (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 13:02:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623085224;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TImFWC0HTGVlVbnQIUSZh0jMNDwAtpjYOcXi7DdGfsg=;
-        b=MIQwGDOo8RX1/nksDoCa3lWLSRbfpOsqTTf0TG0g37/4DtxW+EH3mPoGX4STXsfFeDGPOM
-        RbM6DDTWt0xp6n6QV8f8rejdGEf5CWi3e6h2pygiywrE5ecfsZINB0lhVIG0tOGM4G0Mov
-        xhDN/2lLOCjDNKOGZ9U+lF3EgtHREsI=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-119-KCVOE2aWPNWYIe_3i-c-eg-1; Mon, 07 Jun 2021 13:00:19 -0400
-X-MC-Unique: KCVOE2aWPNWYIe_3i-c-eg-1
-Received: by mail-lj1-f199.google.com with SMTP id w8-20020a05651c1028b02900f6e4f47184so7179345ljm.5
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 10:00:18 -0700 (PDT)
+        Mon, 7 Jun 2021 13:04:03 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C580AC061766;
+        Mon,  7 Jun 2021 10:01:56 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id n12so14258173pgs.13;
+        Mon, 07 Jun 2021 10:01:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RjCxjDlrlLynEb+yw+GoLNzt+VVxFzwoaUFMjIpzrHs=;
+        b=qqTDVemq1yaU8/V9qCRwZ5TYLdHXZ8V6fMWLnr6DHnlb6Vkyy205I9frO5pznWZUf9
+         LsKRHjNWiYSY8VFrfz5muhZyCb+4kd0O44/WHfiQ0nal+rLLeOMbDZCvxKZzC8Ot24+m
+         Ze3GXdYsBekmz6KSvfJIp42h3k1Hf48FqzOqM4ahccpiiU6WpgAwiHu2i9hfU5p28Mre
+         x6gJCmwlBmGAKweuQTXBJXIOihn12AF8kgwaYH2Qxba6MbZ2ZUPUI8+jC0/FvGVVG2UL
+         HRC8U+VfhfjRco5ODiqNUp5HyKquFEf4VRVRTAtIpqwz0DmlHr1YZffiUSl+xJBmlKzi
+         YQow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TImFWC0HTGVlVbnQIUSZh0jMNDwAtpjYOcXi7DdGfsg=;
-        b=QluJadHaz4CW+WVJ/qe6s5vZknfDzmxDS8QYld/HNF91yQOTPyxq70SpaLa/+ryWVv
-         TTaGtMxsRyVQyZmb6EtHu0ayZyxGogiDQ4IqUm3P69Zxb7Vs3RUG58H8WqX3WE51Voac
-         IpJUt1kDguuI7s4D5akKaTdEmD928SkLUYiRQ5PXpfNLGatoaFisEbke9FdwEGO/mKEN
-         2Ds+FEtiGmOXw7GInGGLCt9+g912fklFhFp+fdp2glcbIZx5Wf4KBALcYsmpsMWSV7Tg
-         AOqmWsKL0u+xeyR6tyqfZ4ZyaS3cW6Lp+5KqQfl/6pPWSIFDPX5n5UsAC3E7h1zt6v/7
-         LNcw==
-X-Gm-Message-State: AOAM5306JHTb3QwCMAjfLtPFYRbHiRCc1oQ7XCOJg2P7ALupnbsGJSju
-        DvLyajiTounbRh0z+Mnoxvi4WpqtMq0s6C7/fdFqkHktiWNNsO+qlVbT2gGXa6SNZmmba2Bx9mg
-        I323P+bTD/Lsmaq8sr+kA27A9m4C8nF4gXbzOaKk1
-X-Received: by 2002:a2e:580e:: with SMTP id m14mr7269747ljb.197.1623085217110;
-        Mon, 07 Jun 2021 10:00:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwTkhzmxCJi6PS7y4jmDE+BJDdiD5YSK4954D2dCrGy7KysHZPt6B2LiTHdtA/lDYEXA8GWz+cruQBsawKJZwc=
-X-Received: by 2002:a2e:580e:: with SMTP id m14mr7269730ljb.197.1623085216890;
- Mon, 07 Jun 2021 10:00:16 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RjCxjDlrlLynEb+yw+GoLNzt+VVxFzwoaUFMjIpzrHs=;
+        b=ubb1jaVY0TZoXE15aWqk3x/d4oCX6ACBsWAmqB3h//SaWBINhi3EpgRsAb/YsSd0M1
+         B/fZ+2Urxi3d/07JDPOnKzasCmSw8V3HThm3HCjRWXMI13OdaK856ZQ88WxdILkgJyaQ
+         iX+Is+HkQZSf6fmkqf2TnFybGAZjAHVmAW20O82p2f3kJeXvR6/i6+cO0jrtfgCLwnKG
+         oSqzz21t3H9ntZsUoHQxMOXmFu7bbmiXg+NYDON22LGPNCPLMWVidd0sVYI9C+pmGzbP
+         GJ/gVPRdRpTf8RPGTJh/rcvJXSbvwHcfI1xm5VXDNbFwAkCalUXxBC7NUq7FL9oGRegN
+         c1vw==
+X-Gm-Message-State: AOAM531Pp+cpQSjoBCBVaBnD9SFehZfHRBBJHBJLpKT6c3BK3CFBWVm/
+        YareLZLB614wD+l+d0kBYPnsqUcVkOY=
+X-Google-Smtp-Source: ABdhPJxqS9Ou+5Tp0fMaPdQcRa52qSvS9busmOE38h3DrgnZkS5qYtt1ilT442LTB4niDZ1JS4qiwg==
+X-Received: by 2002:a62:9203:0:b029:2f1:e21a:c545 with SMTP id o3-20020a6292030000b02902f1e21ac545mr1339531pfd.60.1623085315722;
+        Mon, 07 Jun 2021 10:01:55 -0700 (PDT)
+Received: from [10.1.10.189] (c-69-181-195-191.hsd1.ca.comcast.net. [69.181.195.191])
+        by smtp.gmail.com with ESMTPSA id s11sm36280pjz.42.2021.06.07.10.01.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Jun 2021 10:01:55 -0700 (PDT)
+Subject: Re: [RFC PATCH net-next] net: dsa: tag_qca: Check for upstream VLAN
+ tag
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Matthew Hagan <mnhagan88@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210605193749.730836-1-mnhagan88@gmail.com>
+ <YLvgI1e3tdb+9SQC@lunn.ch> <ed3940ec-5636-63db-a36b-dc6c2220b51d@gmail.com>
+ <20210606005335.iuqi4yelxr5irmqg@skbuf>
+ <2556ab13-ae7f-ed68-3f09-7bf5359f7801@gmail.com>
+ <20210606093810.klwyly5qqhkmfwqx@skbuf>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <66a78a9e-cc33-07dd-d82b-00b04780e4da@gmail.com>
+Date:   Mon, 7 Jun 2021 10:01:49 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <20210504092340.00006c61@intel.com> <87pmxpdr32.ffs@nanos.tec.linutronix.de>
- <CAFki+Lkjn2VCBcLSAfQZ2PEkx-TR0Ts_jPnK9b-5ne3PUX37TQ@mail.gmail.com>
- <87im3gewlu.ffs@nanos.tec.linutronix.de> <CAFki+L=gp10W1ygv7zdsee=BUGpx9yPAckKr7pyo=tkFJPciEg@mail.gmail.com>
- <CAFki+L=eQoMq+mWhw_jVT-biyuDXpxbXY5nO+F6HvCtpbG9V2w@mail.gmail.com>
- <CAFki+LkB1sk3mOv4dd1D-SoPWHOs28ZwN-PqL_6xBk=Qkm40Lw@mail.gmail.com>
- <87zgwo9u79.ffs@nanos.tec.linutronix.de> <87wnrs9tvp.ffs@nanos.tec.linutronix.de>
-In-Reply-To: <87wnrs9tvp.ffs@nanos.tec.linutronix.de>
-From:   Nitesh Lal <nilal@redhat.com>
-Date:   Mon, 7 Jun 2021 13:00:05 -0400
-Message-ID: <CAFki+L=QTOu_O=1uNobVMi2s9mbcxXgSdTLADCpeBWBoPAikgQ@mail.gmail.com>
-Subject: Re: [PATCH] genirq: Provide new interfaces for affinity hints
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, jbrandeb@kernel.org,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        Alex Belits <abelits@marvell.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "stephen@networkplumber.org" <stephen@networkplumber.org>,
-        "rppt@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
-        "jinyuqi@huawei.com" <jinyuqi@huawei.com>,
-        "zhangshaokun@hisilicon.com" <zhangshaokun@hisilicon.com>,
-        netdev@vger.kernel.org, chris.friesen@windriver.com,
-        Marc Zyngier <maz@kernel.org>,
-        Neil Horman <nhorman@tuxdriver.com>, pjwaskiewicz@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210606093810.klwyly5qqhkmfwqx@skbuf>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 8:03 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> The discussion about removing the side effect of irq_set_affinity_hint() of
-> actually applying the cpumask (if not NULL) as affinity to the interrupt,
-> unearthed a few unpleasantries:
->
->   1) The modular perf drivers rely on the current behaviour for the very
->      wrong reasons.
->
->   2) While none of the other drivers prevents user space from changing
->      the affinity, a cursorily inspection shows that there are at least
->      expectations in some drivers.
->
-> #1 needs to be cleaned up anyway, so that's not a problem
->
-> #2 might result in subtle regressions especially when irqbalanced (which
->    nowadays ignores the affinity hint) is disabled.
->
-> Provide new interfaces:
->
->   irq_update_affinity_hint() - Only sets the affinity hint pointer
->   irq_apply_affinity_hint()  - Set the pointer and apply the affinity to
->                                the interrupt
->
-> Make irq_set_affinity_hint() a wrapper around irq_apply_affinity_hint() and
-> document it to be phased out.
->
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Link: https://lore.kernel.org/r/20210501021832.743094-1-jesse.brandeburg@intel.com
-> ---
-> Applies on:
->    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
-> ---
->  include/linux/interrupt.h |   41 ++++++++++++++++++++++++++++++++++++++++-
->  kernel/irq/manage.c       |    8 ++++----
->  2 files changed, 44 insertions(+), 5 deletions(-)
->
-> --- a/include/linux/interrupt.h
-> +++ b/include/linux/interrupt.h
-> @@ -328,7 +328,46 @@ extern int irq_force_affinity(unsigned i
->  extern int irq_can_set_affinity(unsigned int irq);
->  extern int irq_select_affinity(unsigned int irq);
->
-> -extern int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m);
-> +extern int __irq_apply_affinity_hint(unsigned int irq, const struct cpumask *m,
-> +                                    bool setaffinity);
-> +
-> +/**
-> + * irq_update_affinity_hint - Update the affinity hint
-> + * @irq:       Interrupt to update
-> + * @cpumask:   cpumask pointer (NULL to clear the hint)
-> + *
-> + * Updates the affinity hint, but does not change the affinity of the interrupt.
-> + */
-> +static inline int
-> +irq_update_affinity_hint(unsigned int irq, const struct cpumask *m)
-> +{
-> +       return __irq_apply_affinity_hint(irq, m, true);
-> +}
-> +
-> +/**
-> + * irq_apply_affinity_hint - Update the affinity hint and apply the provided
-> + *                          cpumask to the interrupt
-> + * @irq:       Interrupt to update
-> + * @cpumask:   cpumask pointer (NULL to clear the hint)
-> + *
-> + * Updates the affinity hint and if @cpumask is not NULL it applies it as
-> + * the affinity of that interrupt.
-> + */
-> +static inline int
-> +irq_apply_affinity_hint(unsigned int irq, const struct cpumask *m)
-> +{
-> +       return __irq_apply_affinity_hint(irq, m, true);
-> +}
-> +
-> +/*
-> + * Deprecated. Use irq_update_affinity_hint() or irq_apply_affinity_hint()
-> + * instead.
-> + */
-> +static inline int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m)
-> +{
-> +       return irq_apply_affinity_hint(irq, cpumask);
+Hello Vladimir,
 
-Another change required here, the above should be 'm' instead of 'cpumask'.
+On 6/6/2021 2:38 AM, Vladimir Oltean wrote:
+> Hi Florian,
+> 
+> On Sat, Jun 05, 2021 at 08:34:06PM -0700, Florian Fainelli wrote:
+>> On 6/5/2021 5:53 PM, Vladimir Oltean wrote:
+>>> Hi Matthew,
+>>>
+>>> On Sat, Jun 05, 2021 at 11:39:24PM +0100, Matthew Hagan wrote:
+>>>> On 05/06/2021 21:35, Andrew Lunn wrote:
+>>>>
+>>>>>> The tested case is a Meraki MX65 which features two QCA8337 switches with
+>>>>>> their CPU ports attached to a BCM58625 switch ports 4 and 5 respectively.
+>>>>> Hi Matthew
+>>>>>
+>>>>> The BCM58625 switch is also running DSA? What does you device tree
+>>>>> look like? I know Florian has used two broadcom switches in cascade
+>>>>> and did not have problems.
+>>>>>
+>>>>>     Andrew
+>>>>
+>>>> Hi Andrew
+>>>>
+>>>> I did discuss this with Florian, who recommended I submit the changes. Can
+>>>> confirm the b53 DSA driver is being used. The issue here is that tagging
+>>>> must occur on all ports. We can't selectively disable for ports 4 and 5
+>>>> where the QCA switches are attached, thus this patch is required to get
+>>>> things working.
+>>>>
+>>>> Setup is like this:
+>>>>                        sw0p2     sw0p4            sw1p2     sw1p4 
+>>>>     wan1    wan2  sw0p1  +  sw0p3  +  sw0p5  sw1p1  +  sw1p3  +  sw1p5
+>>>>      +       +      +    |    +    |    +      +    |    +    |    +
+>>>>      |       |      |    |    |    |    |      |    |    |    |    |
+>>>>      |       |    +--+----+----+----+----+-+ +--+----+----+----+----+-+
+>>>>      |       |    |         QCA8337        | |        QCA8337         |
+>>>>      |       |    +------------+-----------+ +-----------+------------+
+>>>>      |       |             sw0 |                     sw1 |
+>>>> +----+-------+-----------------+-------------------------+------------+
+>>>> |    0       1    BCM58625     4                         5            |
+>>>> +----+-------+-----------------+-------------------------+------------+
+>>>
+>>> It is a bit unconventional for the upstream Broadcom switch, which is a
+>>> DSA master of its own, to insert a VLAN ID of zero out of the blue,
+>>> especially if it operates in standalone mode. Supposedly sw0 and sw1 are
+>>> not under a bridge net device, are they?
+>>
+>> This is because of the need (or desire) to always tag the CPU port
+>> regardless of the untagged VLAN that one of its downstream port is being
+>> added to. Despite talking with Matthew about this before, I had not
+>> realized that dsa_port_is_cpu() will return true for ports 4 and 5 when
+>> a VLAN is added to one of the two QCA8337 switches because from the
+>> perspective of that switch, those ports have been set as DSA_PORT_TYPE_CPU.
+> 
+> It will not, the ports maintain the same roles regardless of whether
+> there is another switch attached to them or not. For the BCM58625
+> switch, ports 4 and 5 are user ports with net devices that each happen
+> to be DSA masters for 2 QCA8337 switches, and port 8 is the CPU port.
 
-> +}
-> +
->  extern int irq_update_affinity_desc(unsigned int irq,
->                                     struct irq_affinity_desc *affinity);
->
-> --- a/kernel/irq/manage.c
-> +++ b/kernel/irq/manage.c
-> @@ -487,7 +487,8 @@ int irq_force_affinity(unsigned int irq,
->  }
->  EXPORT_SYMBOL_GPL(irq_force_affinity);
->
-> -int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m)
-> +int __irq_apply_affinity_hint(unsigned int irq, const struct cpumask *m,
-> +                             bool setaffinity)
->  {
->         unsigned long flags;
->         struct irq_desc *desc = irq_get_desc_lock(irq, &flags, IRQ_GET_DESC_CHECK_GLOBAL);
-> @@ -496,12 +497,11 @@ int irq_set_affinity_hint(unsigned int i
->                 return -EINVAL;
->         desc->affinity_hint = m;
->         irq_put_desc_unlock(desc, flags);
-> -       /* set the initial affinity to prevent every interrupt being on CPU0 */
-> -       if (m)
-> +       if (m && setaffinity)
->                 __irq_set_affinity(irq, m, false);
->         return 0;
->  }
-> -EXPORT_SYMBOL_GPL(irq_set_affinity_hint);
-> +EXPORT_SYMBOL_GPL(__irq_apply_affinity_hint);
->
->  static void irq_affinity_notify(struct work_struct *work)
->  {
->
+Right, I was not thinking properly while submitting that counter
+proposal it does not make sense and neither did my explanation, I was
+just too keen on thinking that the problem would be that one of the user
+facing port (even if they happen to be the "CPU" port of another switch)
+would be adding the tag on egress when the problem is that the CPU port
+is egress tagged to begin with. This is not a problem for normal user
+ports as you say because the network stack has all smarts about dealing
+with that. I would like to get a proper tcpdump capture of the DSA
+master first to make sure
 
+> 
+> When a DSA user port is a DSA master for another switch, tag stacking
+> takes place - first the rcv() from tag_brcm.c runs, then the rcv() from
+> tag_qca.c runs - you taught me this, in fact.
+> 
+> My point is that the Broadcom switch should leave the packet in a state
+> where tag_qca.c can work with it without being aware that it has been
+> first processed by another switch. This is why I asked Matthew whether
+> he configured any bridging between BCM58625 ports 4 and 5, and any
+> bridge VLANs. I am not completely sure we should start modifying our DSA
+> taggers under the assumption that VLANs might just pop up everywhere -
+> I simply don't see a compelling use case to let that happen and justify
+> the complexity.
+> 
+> In this case, my suspicion is that the root of the issue is the
+> resolution from commit d965a5432d4c ("net: dsa: b53: Ensure the default
+> VID is untagged"). It seems like it wanted to treat VID 0 as untagged if
+> it's the pvid, but it only treats it as untagged in one direction.
 
+We only have control over the egress tagging attribute on Broadcom
+switches and there is no "egress unmodified" unlike Marvell switches, so
+we do indeed have an asymmetrical configuration in that the following
+happens:
+
+- user port egress untagged -> egress tagged towards CPU port
+- CPU port egress untagged frame -> egress untagged towards user port
+
+The CPU port, by virtue of using Broadcom tags can override any VLAN
+membership.
+
+> 
+> For the network stack, I think there are checks scattered in
+> __netif_receive_skb_core that make it treat a skb with VID == 0 as if it
+> was untagged, so the fact that untagged packets are sent as egress-tagged
+> with VID=0 by the Broadcom CPU port (8) towards the system, and received
+> as VLAN-tagged by tag_brcm.c, is not that big of a problem. The problem
+> only appears when there is another DSA switch downstream of it, because
+> it shifts the expected position of the DSA tag in tag_qca.c.
+> 
+> DSA switch drivers don't normally send all packets as egress-tagged
+> towards the CPU. If they do, they ought to be more careful and not let
+> VLAN tags escape their tagging driver, if there was no VLAN tag to begin
+> with in the packet as seen on the wire.
+> 
+> We might make a justifiable exception in the case where DSA_TAG_PROTO_NONE
+> is used, but in this case, my understanding is that BCM58625 uses
+> DSA_TAG_PROTO_BRCM_PREPEND, so I'm not sure why sending packets towards
+> the CPU with VID=0 instead of untagged makes that big of a difference.
+
+I don't think there is any justification for doing what b53 does
+anymore. Let me sleep on it for a day and submit a patch for Matthew to
+try out.
 -- 
-Thanks
-Nitesh
-
+Florian
