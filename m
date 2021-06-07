@@ -2,140 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B01539D55B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D9839D559
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 08:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbhFGGuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 02:50:05 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:51988 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230128AbhFGGuC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 02:50:02 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1576lqB9078633;
-        Mon, 7 Jun 2021 01:47:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623048472;
-        bh=/egmoX3I90I/Gz07AopX4CzQsPsjx31j/llTXwlpz7k=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=gjgnBH8tml4Bd6Gtid2iJiD+FAUlPT6zRZzAYE38nYEP3rKJ0Stc2zQukVBNMo+Fp
-         1cT6DEgeohrgO5IvoAKRCT5o/pmAl9LdpfDX5n/WcPkB7rHoAnjdul8vhZr2wR5hzW
-         8ur05ZF/VudvEuwvqDtbFTVfPip7gCRN/Xc1mRoE=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1576lq6s056325
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 7 Jun 2021 01:47:52 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 7 Jun
- 2021 01:47:52 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 7 Jun 2021 01:47:52 -0500
-Received: from [10.250.234.148] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1576ln8D086300;
-        Mon, 7 Jun 2021 01:47:50 -0500
-Subject: Re: [PATCH v5 3/5] mtd: spi-nor: otp: return -EROFS if region is
- read-only
-To:     Michael Walle <michael@walle.cc>
-CC:     <Tudor.Ambarus@microchip.com>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <p.yadav@ti.com>,
-        <miquel.raynal@bootlin.com>, <richard@nod.at>
-References: <20210604100252.9975-1-michael@walle.cc>
- <20210604100252.9975-4-michael@walle.cc>
- <c2b58dcc-5a60-792c-30ac-a3db327a85ed@microchip.com>
- <e117bc50b9f9e10549c25602b66cfe26@walle.cc>
- <1549db61-500a-e5df-9303-823b41457861@ti.com>
- <4ba7994b0cc8d436012a776ca14addca@walle.cc>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <3e46bc75-6ace-f7c0-1b14-aae812554ac9@ti.com>
-Date:   Mon, 7 Jun 2021 12:17:48 +0530
+        id S230127AbhFGGtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 02:49:49 -0400
+Received: from srv6.fidu.org ([159.69.62.71]:34902 "EHLO srv6.fidu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229436AbhFGGts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 02:49:48 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id 671CDC800E1;
+        Mon,  7 Jun 2021 08:47:56 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id PWdw0pNodT0v; Mon,  7 Jun 2021 08:47:56 +0200 (CEST)
+Received: from [IPv6:2003:e3:7f4f:6000:f5f4:4cdd:8015:9770] (p200300E37F4f6000F5F44cDd80159770.dip0.t-ipconnect.de [IPv6:2003:e3:7f4f:6000:f5f4:4cdd:8015:9770])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPSA id 09E4FC800DF;
+        Mon,  7 Jun 2021 08:47:56 +0200 (CEST)
+Subject: Re: [PATCH 4/4] drm/i915/display: Add handling for new "active bpc"
+ property
+To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc:     amd-gfx@lists.freedesktop.org, tzimmermann@suse.de,
+        intel-gfx@lists.freedesktop.org, sunpeng.li@amd.com,
+        dri-devel@lists.freedesktop.org, joonas.lahtinen@linux.intel.com,
+        maarten.lankhorst@linux.intel.com, linux-kernel@vger.kernel.org,
+        mripard@kernel.org, airlied@linux.ie, jani.nikula@linux.intel.com,
+        daniel@ffwll.ch, rodrigo.vivi@intel.com, alexander.deucher@amd.com,
+        harry.wentland@amd.com, christian.koenig@amd.com
+References: <20210604171723.10276-1-wse@tuxedocomputers.com>
+ <20210604171723.10276-5-wse@tuxedocomputers.com> <YLpjTMegcjT22vQE@intel.com>
+From:   Werner Sembach <wse@tuxedocomputers.com>
+Message-ID: <bd6a27e7-3ae5-ecb1-2fef-e5f8c1b6a2ac@tuxedocomputers.com>
+Date:   Mon, 7 Jun 2021 08:47:55 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <4ba7994b0cc8d436012a776ca14addca@walle.cc>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+In-Reply-To: <YLpjTMegcjT22vQE@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 6/7/21 11:38 AM, Michael Walle wrote:
-> Am 2021-06-07 07:46, schrieb Vignesh Raghavendra:
->> On 6/4/21 6:45 PM, Michael Walle wrote:
->>> Am 2021-06-04 15:07, schrieb Tudor.Ambarus@microchip.com:
->>>> On 6/4/21 1:02 PM, Michael Walle wrote:
->>>>> EXTERNAL EMAIL: Do not click links or open attachments unless you
->>>>> know the content is safe
->>>>>
->>>>> SPI NOR flashes will just ignore program commands if the OTP region is
->>>>> locked. Thus, a user might not notice that the intended write
->>>>> didn't end
->>>>> up in the flash. Return -EROFS to the user in this case. From what
->>>>> I can
->>>>> tell, chips/cfi_cmdset_0001.c also return this error code.
->>>>>
->>>>> One could optimize spi_nor_mtd_otp_range_is_locked() to read the
->>>>> status
->>>>> register only once and not for every OTP region, but for that we would
->>>>> need some more invasive changes. Given that this is
->>>>> one-time-programmable memory and the normal access mode is reading, we
->>>>> just live with the small overhead.
->>>>>
->>>>> Fixes: 069089acf88b ("mtd: spi-nor: add OTP support")
->>>>> Signed-off-by: Michael Walle <michael@walle.cc>
->>>>> Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
->>>>> ---
->>>>>  drivers/mtd/spi-nor/otp.c | 36 ++++++++++++++++++++++++++++++++++++
->>>>>  1 file changed, 36 insertions(+)
->>>>>
->>>>> diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
->>>>> index 3898ed67ba1c..063f8fb68649 100644
->>>>> --- a/drivers/mtd/spi-nor/otp.c
->>>>> +++ b/drivers/mtd/spi-nor/otp.c
->>>>> @@ -249,6 +249,32 @@ static int spi_nor_mtd_otp_info(struct mtd_info
->>>>> *mtd, size_t len,
->>>>>         return ret;
->>>>>  }
->>>>>
->>>>> +static int spi_nor_mtd_otp_range_is_locked(struct spi_nor *nor,
->>>>> loff_t ofs,
->>>>> +                                          size_t len)
->>>>> +{
->>>>> +       const struct spi_nor_otp_ops *ops = nor->params->otp.ops;
->>>>> +       unsigned int region;
->>>>> +       int locked;
->>>>> +
->>>>> +       if (!len)
->>>>> +               return 0;
->>>>> +
->>>>
->>>> You won't need this if you put patch 4/5 before this one. With this:
->>>
->>> This patch will get backported to the stable kernels. Patch 4 on the
->>> other hand does not.
->>>
+Am 04.06.21 um 19:30 schrieb Ville Syrjälä:
+> On Fri, Jun 04, 2021 at 07:17:23PM +0200, Werner Sembach wrote:
+>> This commits implements the "active bpc" drm property for the Intel GPU driver.
 >>
->> I don't see why 4/5 cannot be marked for backport too as it makes 3/5
->> much cleaner?
-> 
-> What kind of problem does 4/5 fix? I can't see how that patch would
-> apply to any rule in Documentation/process/stable-kernel-rules.rst.
-> 
-
-Looking further, I don't see the need for 4/5 to be a separate patch.
-Patch 4/5 is simplifying spi_nor_mtd_otp_range_is_locked() by ensuring
-'len' passed is never 0 which can be done in 3/5 when introducing
-spi_nor_mtd_otp_range_is_locked().
-
-So why not squashed it into 3/5.
-
-> But sure, adding the same Fixes: tag, I can swap those two.
-> 
-> -michael
+>> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+>> ---
+>>   drivers/gpu/drm/i915/display/intel_display.c | 13 +++++++++++++
+>>   drivers/gpu/drm/i915/display/intel_dp.c      |  8 ++++++--
+>>   drivers/gpu/drm/i915/display/intel_dp_mst.c  |  4 +++-
+>>   drivers/gpu/drm/i915/display/intel_hdmi.c    |  4 +++-
+>>   4 files changed, 25 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/i915/display/intel_display.c b/drivers/gpu/drm/i915/display/intel_display.c
+>> index 64e9107d70f7..f7898d9d7438 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_display.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_display.c
+>> @@ -10164,6 +10164,8 @@ static void intel_atomic_commit_tail(struct intel_atomic_state *state)
+>>   	struct drm_i915_private *dev_priv = to_i915(dev);
+>>   	struct intel_crtc_state *new_crtc_state, *old_crtc_state;
+>>   	struct intel_crtc *crtc;
+>> +	struct drm_connector *connector;
+>> +	struct drm_connector_state *new_conn_state;
+>>   	u64 put_domains[I915_MAX_PIPES] = {};
+>>   	intel_wakeref_t wakeref = 0;
+>>   	int i;
+>> @@ -10324,6 +10326,17 @@ static void intel_atomic_commit_tail(struct intel_atomic_state *state)
+>>   	}
+>>   	intel_runtime_pm_put(&dev_priv->runtime_pm, state->wakeref);
+>>   
+>> +	/* Extract information from crtc to communicate it to userspace as connector properties */
+>> +	for_each_new_connector_in_state(&state->base, connector, new_conn_state, i) {
+>> +		struct drm_crtc *crtc = new_conn_state->crtc;
+>> +		if (crtc) {
+>> +			new_crtc_state = to_intel_crtc_state(drm_atomic_get_new_crtc_state(&state->base, crtc));
+> intel_atomic_get_new_crtc_state()
+Thanks, will use that.
+>
+>> +			new_conn_state->active_bpc = new_crtc_state->pipe_bpp / 3;
+>> +		}
+>> +		else
+>> +			new_conn_state->active_bpc = 0;
+>> +	}
+> This also seems too late. I think the whole thing should be
+> done somewhere around the normal swap_state() stuff.
+Ok, will look into it.
+>
+>> +
+>>   	/*
+>>   	 * Defer the cleanup of the old state to a separate worker to not
+>>   	 * impede the current task (userspace for blocking modesets) that
+>> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+>> index 642c60f3d9b1..67826ba976ed 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_dp.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
+>> @@ -4671,10 +4671,14 @@ intel_dp_add_properties(struct intel_dp *intel_dp, struct drm_connector *connect
+>>   		intel_attach_force_audio_property(connector);
+>>   
+>>   	intel_attach_broadcast_rgb_property(connector);
+>> -	if (HAS_GMCH(dev_priv))
+>> +	if (HAS_GMCH(dev_priv)) {
+>>   		drm_connector_attach_max_bpc_property(connector, 6, 10);
+>> -	else if (DISPLAY_VER(dev_priv) >= 5)
+>> +		drm_connector_attach_active_bpc_property(connector, 6, 10);
+>> +	}
+>> +	else if (DISPLAY_VER(dev_priv) >= 5) {
+>>   		drm_connector_attach_max_bpc_property(connector, 6, 12);
+>> +		drm_connector_attach_active_bpc_property(connector, 6, 12);
+>> +	}
+>>   
+>>   	/* Register HDMI colorspace for case of lspcon */
+>>   	if (intel_bios_is_lspcon_present(dev_priv, port)) {
+>> diff --git a/drivers/gpu/drm/i915/display/intel_dp_mst.c b/drivers/gpu/drm/i915/display/intel_dp_mst.c
+>> index 2daa3f67791e..5a1869dc2210 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_dp_mst.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_dp_mst.c
+>> @@ -844,8 +844,10 @@ static struct drm_connector *intel_dp_add_mst_connector(struct drm_dp_mst_topolo
+>>   	 */
+>>   	connector->max_bpc_property =
+>>   		intel_dp->attached_connector->base.max_bpc_property;
+>> -	if (connector->max_bpc_property)
+>> +	if (connector->max_bpc_property) {
+>>   		drm_connector_attach_max_bpc_property(connector, 6, 12);
+>> +		drm_connector_attach_active_bpc_property(connector, 6, 12);
+>> +	}
+>>   
+>>   	return connector;
+>>   
+>> diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
+>> index d69f0a6dc26d..8af78b27b6ce 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_hdmi.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
+>> @@ -2463,8 +2463,10 @@ intel_hdmi_add_properties(struct intel_hdmi *intel_hdmi, struct drm_connector *c
+>>   		drm_object_attach_property(&connector->base,
+>>   			connector->dev->mode_config.hdr_output_metadata_property, 0);
+>>   
+>> -	if (!HAS_GMCH(dev_priv))
+>> +	if (!HAS_GMCH(dev_priv)) {
+>>   		drm_connector_attach_max_bpc_property(connector, 8, 12);
+>> +		drm_connector_attach_active_bpc_property(connector, 8, 12);
+>> +	}
+>>   }
+>>   
+>>   /*
+>> -- 
+>> 2.25.1
