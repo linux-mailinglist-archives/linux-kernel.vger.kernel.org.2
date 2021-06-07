@@ -2,133 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A39F39D477
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 07:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A6F39D47A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 07:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhFGFvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 01:51:49 -0400
-Received: from mga06.intel.com ([134.134.136.31]:53857 "EHLO mga06.intel.com"
+        id S230173AbhFGFx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 01:53:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229436AbhFGFvs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 01:51:48 -0400
-IronPort-SDR: irHnXsaUUTEKTA3MnukcCLFw1CiuQmrmOq3YkdNg1VoCM8ArcwhokpBGOVb26NcAueQGX9c4Bl
- w6rALgEnhBLg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="265721044"
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="265721044"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 22:49:57 -0700
-IronPort-SDR: lQ00SA89qr/8ioWr0e4vWpuL3dWyO9LlAFM76uMxweheumsRiJLqJmCJzZAmgnuSFBvNgztGTb
- Jn9evhL2u6Zg==
-X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="447367664"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 22:49:56 -0700
-Subject: Re: [kbuild-all] Re: kernel/trace/trace.c:3634:2: warning: function
- might be possible candidate for 'gnu_printf' format attribute
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-References: <202106041958.XB0yCLBn-lkp@intel.com>
- <20210604164838.2da06df3@oasis.local.home>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <5a50cb60-f184-0d6e-723b-5bad4b5fd14a@intel.com>
-Date:   Mon, 7 Jun 2021 13:49:39 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S229436AbhFGFxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 01:53:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C840E6121D;
+        Mon,  7 Jun 2021 05:52:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623045124;
+        bh=a4Lg+JUPxxsJc/eOTxfRRMHpv5LjKRVeKemBpbGWIDM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RHM8rB/mlV328H1xAE61n5jsu0XfeToCJbIOMtvG/VU2srJ6FQVAGeF5KV1VZq7q9
+         trPVnOCbCfDHXN06WSjktBmAI7j9G3R+6A4v7HMJGydwzj4qnsWOl0LhVROIIiNkj8
+         6v8V8DfhFpDWeUDmimOUU6hduL1KByIPOwok5ulFwyCbFMWFW2ck4y9B11WEgdddrd
+         LDX/cW4G/bln15fenJ1ef7oUzeWV2QvXe0GZB6ctRsOoGnEOdPAFnf3/j0U9oQkizD
+         shLELQ82kWJlWhFkQYaNGuTE4FuOWHIWX3XhXp/fCAIluryxWgYSu3Lj4i/Sveja2r
+         c8VvkRzbouW6Q==
+Date:   Mon, 7 Jun 2021 08:51:59 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     Eli Cohen <elic@nvidia.com>, mst@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vdp/mlx5: Fix setting the correct dma_device
+Message-ID: <YL2z/4RT/nwHscYE@unreal>
+References: <20210603112215.69259-1-elic@nvidia.com>
+ <864e8d21-22d4-7735-817b-f88ec0126f87@redhat.com>
+ <YLpNc5WsBWQ5f4cl@unreal>
+ <c083f4b2-aa0a-ad3c-7a16-fe1c7dbda92d@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210604164838.2da06df3@oasis.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c083f4b2-aa0a-ad3c-7a16-fe1c7dbda92d@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 07, 2021 at 10:30:42AM +0800, Jason Wang wrote:
+> 
+> 在 2021/6/4 下午11:57, Leon Romanovsky 写道:
+> > On Fri, Jun 04, 2021 at 10:35:59AM +0800, Jason Wang wrote:
+> > > 在 2021/6/3 下午7:22, Eli Cohen 写道:
+> > > > Before SF support was introduced, the DMA device was equal to
+> > > > mdev->device which was in essence equal to pdev->dev;
+> > > > With SF introduction this is no longer true. It has already been
+> > > > handled for vhost_vdpa since the reference to the dma device can from
+> > > > within mlx5_vdpa. With virtio_vdpa this broke. To fix this we set the
+> > > > real dma device when initializing the device.
+> > > > 
+> > > > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+> > > 
+> > > Note sure this is correct, according to the commit log it should be the
+> > > patch that introduces the SF or aux bus support for vDPA.
+> > Where did you see that?
+> > 
+> > git log -p drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > 
+> > ...
+> > +       mvdev->vdev.dma_dev = mdev->device;
+> > +       err = mlx5_vdpa_alloc_resources(&ndev->mvdev);
+> > ...
+> >   comes from commit 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+> 
+> 
+> If I read the commit log and code correctly:
+> 
+> "
+> 
+> With SF introduction this is no longer true.
+> 
+> "
+> 
+> It works before SF is introduced.
 
+Yes, you are right, sorry for the noise.
 
-On 6/5/21 4:48 AM, Steven Rostedt wrote:
-> On Fri, 4 Jun 2021 19:12:03 +0800
-> kernel test robot <lkp@intel.com> wrote:
->
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->> head:   f88cd3fb9df228e5ce4e13ec3dbad671ddb2146e
->> commit: 9a6944fee68e25084130386c608c5ac8db487581 tracing: Add a verifier to check string pointers for trace events
->> date:   3 months ago
->> config: x86_64-rhel (attached as .config)
->> compiler: gcc-6 (Ubuntu 6.4.0-17ubuntu1) 6.4.0 20180424
->> reproduce (this is a W=1 build):
->>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9a6944fee68e25084130386c608c5ac8db487581
->>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>          git fetch --no-tags linus master
->>          git checkout 9a6944fee68e25084130386c608c5ac8db487581
->>          # save the attached .config to linux build tree
->>          make W=1 ARCH=x86_64
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All warnings (new ones prefixed by >>):
->>
->>     kernel/trace/trace.c: In function 'test_can_verify_check':
->>>> kernel/trace/trace.c:3634:2: warning: function might be possible candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
->>       vsnprintf(buf, 16, "%d", ap);
->>       ^~~~~~~~~
-> "test_can_verify_check" is not a generic function that needs a printf
-> format check. This is a bogus warning. Please remove it as being an issue.
->
-> -- Steve
->
-
-Hi Steve,
-
-Thanks for the feedback, we'll ignore the commit to avoid new reports 
-for this warning.
-
-Best Regards,
-Rong Chen
-
->
->>     kernel/trace/trace.c: In function 'trace_check_vprintf':
->>     kernel/trace/trace.c:3717:3: warning: function might be possible candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
->>        trace_seq_vprintf(&iter->seq, iter->fmt, ap);
->>        ^~~~~~~~~~~~~~~~~
->>     kernel/trace/trace.c:3756:3: warning: function might be possible candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
->>        trace_seq_vprintf(&iter->seq, p, ap);
->>        ^~~~~~~~~~~~~~~~~
->>
->>
->> vim +/gnu_printf +3634 kernel/trace/trace.c
->>
->>    3617	
->>    3618	static int test_can_verify_check(const char *fmt, ...)
->>    3619	{
->>    3620		char buf[16];
->>    3621		va_list ap;
->>    3622		int ret;
->>    3623	
->>    3624		/*
->>    3625		 * The verifier is dependent on vsnprintf() modifies the va_list
->>    3626		 * passed to it, where it is sent as a reference. Some architectures
->>    3627		 * (like x86_32) passes it by value, which means that vsnprintf()
->>    3628		 * does not modify the va_list passed to it, and the verifier
->>    3629		 * would then need to be able to understand all the values that
->>    3630		 * vsnprintf can use. If it is passed by value, then the verifier
->>    3631		 * is disabled.
->>    3632		 */
->>    3633		va_start(ap, fmt);
->>> 3634		vsnprintf(buf, 16, "%d", ap);
->>    3635		ret = va_arg(ap, int);
->>    3636		va_end(ap);
->>    3637	
->>    3638		return ret;
->>    3639	}
->>    3640	
->>
->> ---
->> 0-DAY CI Kernel Test Service, Intel Corporation
->> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> _______________________________________________
-> kbuild-all mailing list -- kbuild-all@lists.01.org
-> To unsubscribe send an email to kbuild-all-leave@lists.01.org
-
+> 
+> Thanks
+> 
+> 
+> > 
+> > Thanks
+> > 
+> > > 
+> > > > Signed-off-by: Eli Cohen <elic@nvidia.com>
+> > > 
+> > > Patch looks correct.
+> > > 
+> > > Thanks
+> > > 
+> > > 
+> > > > ---
+> > > >    drivers/vdpa/mlx5/net/mlx5_vnet.c | 2 +-
+> > > >    1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > index bc33f2c523d3..a4ff158181e0 100644
+> > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > @@ -2046,7 +2046,7 @@ static int mlx5_vdpa_dev_add(struct vdpa_mgmt_dev *v_mdev, const char *name)
+> > > >    	if (err)
+> > > >    		goto err_mtu;
+> > > > -	mvdev->vdev.dma_dev = mdev->device;
+> > > > +	mvdev->vdev.dma_dev = &mdev->pdev->dev;
+> > > >    	err = mlx5_vdpa_alloc_resources(&ndev->mvdev);
+> > > >    	if (err)
+> > > >    		goto err_mtu;
+> > > _______________________________________________
+> > > Virtualization mailing list
+> > > Virtualization@lists.linux-foundation.org
+> > > https://lists.linuxfoundation.org/mailman/listinfo/virtualization
+> 
