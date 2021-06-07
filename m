@@ -2,98 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF9439D602
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:29:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F87339D60B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbhFGHbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 03:31:01 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:48689 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhFGHbA (ORCPT
+        id S230194AbhFGHel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 03:34:41 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:54309 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229436AbhFGHek (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 03:31:00 -0400
-Received: from mail-wm1-f48.google.com ([209.85.128.48]) by
- mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MC3L9-1ldoQz0pDx-00CTKF; Mon, 07 Jun 2021 09:29:08 +0200
-Received: by mail-wm1-f48.google.com with SMTP id l7-20020a05600c1d07b02901b0e2ebd6deso1193106wms.1;
-        Mon, 07 Jun 2021 00:29:08 -0700 (PDT)
-X-Gm-Message-State: AOAM531BZmiG3BBkO1ugwt2mFupnLmbH3U1YdziQqKp7pN643959Kl0B
-        rtp7AEjtIUdEjtG2xDJ9FyrAqcrTdy5EkpKSOk4=
-X-Google-Smtp-Source: ABdhPJx1sZM7+jb/Er05kwck+NjL97VzTgij1Tl9s8181a57Xul7USu5v5ud860aYtGnhwYz/l+yS+/2ilFrTbwmUPQ=
-X-Received: by 2002:a1c:c90f:: with SMTP id f15mr15633427wmb.142.1623050947892;
- Mon, 07 Jun 2021 00:29:07 -0700 (PDT)
+        Mon, 7 Jun 2021 03:34:40 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id BD815580824;
+        Mon,  7 Jun 2021 03:32:49 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 07 Jun 2021 03:32:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=iTa+y0N0gtlf3iHx3Vp8wzEBwfT
+        M+qphJDAO6uaASDk=; b=upXtelfGNP4zIkMuLQpQEsegBbThlmVmchEKWtxbGoI
+        DbpbUXAt1tQ/vBZqn1KZNCNVKEDgZeG4Yr32OevpE+Pc8LY2YS/pfSqeqPD2miey
+        p89N1hlHZ/e5KiofGpiF/BLYGriNyjhApzu73FdBxojeQxNgcelY27Ho1Td/LgpD
+        PXLU3ren+wP1jSI2xabAA78ZhIX4ifoWngcyEFdSPf6cNBro24rPHes6SpqK8haV
+        zEAsG2kkhmzzV68+DBqu95JMg/NqgxB4NBXIULywPIle/+ysINymLjB6bO7LNXNx
+        fxeyxPxjOw/GoM5T7y7vOKTFSAtX/hpDeciNqvf/Drg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=iTa+y0
+        N0gtlf3iHx3Vp8wzEBwfTM+qphJDAO6uaASDk=; b=EypXqm8rV0BrBA2F3FKF6z
+        TUGmbapnyaXzcFLShcoTjZUXwqppz0Oeq4M1eFCtXH/uIxedklWDVNIikSBiFPEs
+        kRfEoiKEPM4Uul+wRaEtZMzuYMVPFX9QRR/nd3LKzNHMEI3L8wRrK01AkKpYahGA
+        FU//+Byv5Lh/Mb2KcT1xZK2MKuX4NS8fZlvczRkQmV3s6uPqX9gCTAmKtCdoD5HK
+        ed4bwnR7+PuOBnp3KE2eWNNWfcaU+oE76UjQyTJcdT/205qDRC5LxSW7lFPdZPmV
+        +wHkzwJff9FSph12mhBril4XssjaMl2sF671G20tyBGfN/08cevCD9SkBQMLNGxA
+        ==
+X-ME-Sender: <xms:n8u9YP_0jGV94TZMsWl3i_qcuooEMplT1aUoLA8CCd7n3d_b_nazSg>
+    <xme:n8u9YLuGKyZkKHFKavdvaTHghZ6_cmQBXjj_DZyQOJw_NJtWTy2w5jDImt-qkn2Tj
+    qqZGY2oGtYeptNnIvo>
+X-ME-Received: <xmr:n8u9YNC3WLH8UeNQM5bZ9d0kARcnSgYVi4D7_3ZzBpsbLNZ3o1n_AK0RhylPsZHwF3haPFklS5-ragIuWoUVUOaTmJSGTOW7r8pN>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtiedguddukecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
+    heegudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:n8u9YLePjlAzVN30h5uAMqKHeJ8au3vWM_275hcZP4zwni2J2jEhgw>
+    <xmx:n8u9YENfyczcV_kQWztFDVWTpWIhQUfLl_YZJx3bkth8loxs5VdxIw>
+    <xmx:n8u9YNld_onC3lp-hEAjqNl797OJ-v1Xl8VoCrzxy_Q3LVmV__R_Cg>
+    <xmx:ocu9YAmOifJ6GcjoOetI8bKrnlDqnOdJwFWKBSq7stqy-cBVpCJTwQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 7 Jun 2021 03:32:46 -0400 (EDT)
+Date:   Mon, 7 Jun 2021 09:32:45 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Eric Anholt <eric@anholt.net>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hans Verkuil <hans.verkuil@cisco.com>
+Subject: Re: [PATCH 2/2] drm/vc4: hdmi: Convert to gpiod
+Message-ID: <20210607073245.dhzoqhlrwtfpx2kq@gilmour>
+References: <20210524131852.263883-1-maxime@cerno.tech>
+ <20210524131852.263883-2-maxime@cerno.tech>
+ <CACRpkdbVyMBEAr0n1+d3KSwV5J3spgfW6US9vwz1=2f34Ep3dQ@mail.gmail.com>
+ <20210604080139.sccm3fggd3jvkkpa@gilmour>
+ <CACRpkdb0Wg8MoOrJxvjkTkncpyOHE1E7oYWWMOzJoxTxWN2R=Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <1622970249-50770-1-git-send-email-guoren@kernel.org>
- <1622970249-50770-14-git-send-email-guoren@kernel.org> <20210607071916.kwdbtafbqp3icgia@gilmour>
-In-Reply-To: <20210607071916.kwdbtafbqp3icgia@gilmour>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 7 Jun 2021 09:27:19 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0YVh5T8MmUcAAjhxGBhNm_OeZq9S=rwAsZVMJNAttyOw@mail.gmail.com>
-Message-ID: <CAK8P3a0YVh5T8MmUcAAjhxGBhNm_OeZq9S=rwAsZVMJNAttyOw@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 10/11] riscv: soc: Add Allwinner SoC kconfig option
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Guo Ren <guoren@kernel.org>, Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Drew Fustini <drew@beagleboard.org>, liush@allwinnertech.com,
-        lazyparser@gmail.com, wefu@redhat.com,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:aPORLvlDH2w1f7tqUEyZq9BKSn4Ke4GvGyAB0NAbwN/1c+7HBli
- 5MsSf94ln9B6Wd0Ft6H5lQnka0dfZpn7qO9o5DGjBFU72G42HJ5insnQvwfqZBUDz2c2nzI
- f+a0CvwSh0nVcRibRdkcVTQ/utCUWKUgYLcVZ8+5fXhRbdPGD+eisz49An4VgmBpYNT0i7h
- TqdBAO81qikdIkv1Snx1g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:MWdlhbDtBRM=:d0hcH6YAbdet5Q3OmXW0BJ
- C32ztU+0DGgK+p5d/VbcZBcikRaJXRixLIp69CnaepxXucsVlQzo0QGFPiRr+cko71dtZm02x
- c5Au5Du5BklwGXW1WVZgAIsNUIhOc03zRnYrGEkrlOM+E7Ldrcq6cQSd101DFuveBqJzobuyf
- o2ATD21SIkUCpmKMJD25f/euyNXjSsSeK0cGvh/zh8h7nXwrzlTxGbSw2Sot7W/XenJpiHRXc
- MwSUSLidPJCvsB1T19wDskvF/5ihto3tZm0a+pHcNoYu2b/YbNC+/KUtrcDgytCNKG2vFTcFd
- UENHM0DHY2Dlh2CCPjFGRDu3iZdaJQQRuqFBU6gspLLbuvVUYLONra/YmtL2XZ1q3hN7IGAUN
- BDvwzF1D+cQIj/iwJSmNDQtoS+LXQ5OXM5deV0FwUPEm75ob3FGUdjfoovRPwgHGZZ5IFs6m+
- 4N1LTA7UbPHQLv2CRpuWKW5nz7KbNpfexs6riXirdioj/NxQrPy+0nvG8OeghtJMTZf/JvCH2
- iMZmakLV4ywE6Ihq8O0S9DVTFugR8KAjQGbbq9hIGSnV9eITPd1JYxuWA3IjTWyFJsbW2oRxo
- PWzm+eMM5FrAfW0F5+tCsvgOsPjET2VkRoTJgr5s2g75T0YoaantdVI8Zr0374XpEnvsv8EpY
- 3a7o=
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="tpvvduoxobevavxs"
+Content-Disposition: inline
+In-Reply-To: <CACRpkdb0Wg8MoOrJxvjkTkncpyOHE1E7oYWWMOzJoxTxWN2R=Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 9:20 AM Maxime Ripard <maxime@cerno.tech> wrote:
-> On Sun, Jun 06, 2021 at 09:04:08AM +0000, guoren@kernel.org wrote:
 
-> > diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-> > index ed96376..055fb3e 100644
-> > --- a/arch/riscv/Kconfig.socs
-> > +++ b/arch/riscv/Kconfig.socs
-> > @@ -69,4 +69,16 @@ config SOC_CANAAN_K210_DTB_SOURCE
+--tpvvduoxobevavxs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Jun 04, 2021 at 11:45:36PM +0200, Linus Walleij wrote:
+> On Fri, Jun 4, 2021 at 10:01 AM Maxime Ripard <maxime@cerno.tech> wrote:
+> > On Fri, May 28, 2021 at 01:57:56AM +0200, Linus Walleij wrote:
+> > > On Mon, May 24, 2021 at 3:19 PM Maxime Ripard <maxime@cerno.tech> wro=
+te:
+> > >
+> > > > The new gpiod interface takes care of parsing the GPIO flags and to
+> > > > return the logical value when accessing an active-low GPIO, so swit=
+ching
+> > > > to it simplifies a lot the driver.
+> > > >
+> > > > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> > >
+> > > Thanks for fixing this!
+> > > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 > >
-> >  endif
-> >
-> > +config SOC_SUNXI
-> > +     bool "Allwinner SoCs"
-> > +     depends on MMU
-> > +     select DWMAC_GENERIC
-> > +     select SERIAL_8250
-> > +     select SERIAL_8250_CONSOLE
-> > +     select SERIAL_8250_DW
-> > +     select SIFIVE_PLIC
-> > +     select STMMAC_ETH
-> > +     help
-> > +       This enables support for Allwinner SoC platforms like the D1.
-> > +
->
-> We probably don't want to select DWMAC, STMMAC_ETH and the 8250 options,
-> looks good otherwise.
+> > Is it for both patches or just this one?
+>=20
+> I went and added Reviewed-by: to 1/2 as well so you can merge the
+> patches. Was simple enough even though I'm not a VC4 expert.
 
-Correct: those subsystems may be completely disabled, which would lead to a
-build failure, and a platform should not force-enable drivers or
-subsystems unless
-those are build time dependencies.
+Thanks :)
 
-       Arnd
+Applied both
+
+Maxime
+
+--tpvvduoxobevavxs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYL3LnQAKCRDj7w1vZxhR
+xe/2AQCEpsPhJ7q9jqxliErOEw41mpGow27Jlohb2I9sdAC6FAEAoufdgysTtl0S
+5PF0gBMgWyBSMUuc1dyJbwXw6En4BAc=
+=1cdn
+-----END PGP SIGNATURE-----
+
+--tpvvduoxobevavxs--
