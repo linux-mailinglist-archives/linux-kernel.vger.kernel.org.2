@@ -2,112 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52F439DE5A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 963CF39DE5F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 16:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbhFGOKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 10:10:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbhFGOKg (ORCPT
+        id S230252AbhFGOMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 10:12:25 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:55782 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230193AbhFGOMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 10:10:36 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB763C061787
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 07:08:45 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623074922;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Mon, 7 Jun 2021 10:12:24 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 98F7F21AA0;
+        Mon,  7 Jun 2021 14:10:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623075032; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=AuQ9EP9vP1aMzOrAkT0RHCOfBg5YJvgEV+4gSQnHRE4=;
-        b=itY2EYq4oU0QzzOoeNPlmqaS+fMqbnFDUN5I25PsjQKfH0Cvh0bq02lJh/dUcWND4VjqJL
-        h970Klr36FwNEqv0RPx938+WSIzGGfUiX//kbc7TzAxaFtRapqgQuygStlFmX9EHsMzUS7
-        EQu9hcUvI+etDSvpg8ZGUu4dRjPbe45yhCSl2qmUc9AdGXoY5h927k+cN59G3UkcIUOE34
-        zQn7gjqBMzJwtJAxuF9gy3JsMIuO/jb06k8MDgVn7jkgqcdu7wEbdNKt0SkqwPZsyhPkpc
-        1fet8bXeSbIF00QPb+IzpAOnFGi8xu457MZp1p/fxDoEJiqit1oyh7tCkuDGnw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623074922;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        bh=yrrcDqwAUjI/Du1NgfJql1DxePl50i9q1z/v2S1/PjU=;
+        b=yd+IGWFeVIzcWkH4CvAPf2cEyuzXDp4clwAPfcyvHi5LZW0PkbrpaSM/pPgQxXqShourjH
+        UROju8kpwC5ucMYaLkUCY16/GW36p5+QtGgQJ3SvnGxXk95zvdcCIBZpiP76Y6L4pH08Zy
+        ub2ZVCxIJeIxdDUCHfkshUbg7QOi2ts=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623075032;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=AuQ9EP9vP1aMzOrAkT0RHCOfBg5YJvgEV+4gSQnHRE4=;
-        b=jf0KWuhBMl9/ogfTMEVA9kxISGVHFp5dGULf0s5DFbL1G9jXIUVlv2BVRvs5NM9rVDJGXg
-        WTEzrsKN7HH12CCQ==
-To:     Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [patch V2 00/14] x86/fpu: Mop up XSAVES and related damage
-In-Reply-To: <eca0add1-849e-6a1a-8ea6-f6b72650c9c8@intel.com>
-References: <20210605234742.712464974@linutronix.de> <87h7i9zv3r.ffs@nanos.tec.linutronix.de> <eca0add1-849e-6a1a-8ea6-f6b72650c9c8@intel.com>
-Date:   Mon, 07 Jun 2021 16:08:42 +0200
-Message-ID: <87eeddzs0l.ffs@nanos.tec.linutronix.de>
+        bh=yrrcDqwAUjI/Du1NgfJql1DxePl50i9q1z/v2S1/PjU=;
+        b=5GCOfx0xyGHUY6Wh7ScIDhdgMv3eermx6Z1Jcx5JoRoC2w2vDh0jZ+4IOeymqA40G8FnJW
+        TBxe0jyqUYPAakAQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 4A7D8118DD;
+        Mon,  7 Jun 2021 14:10:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623075032; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yrrcDqwAUjI/Du1NgfJql1DxePl50i9q1z/v2S1/PjU=;
+        b=yd+IGWFeVIzcWkH4CvAPf2cEyuzXDp4clwAPfcyvHi5LZW0PkbrpaSM/pPgQxXqShourjH
+        UROju8kpwC5ucMYaLkUCY16/GW36p5+QtGgQJ3SvnGxXk95zvdcCIBZpiP76Y6L4pH08Zy
+        ub2ZVCxIJeIxdDUCHfkshUbg7QOi2ts=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623075032;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yrrcDqwAUjI/Du1NgfJql1DxePl50i9q1z/v2S1/PjU=;
+        b=5GCOfx0xyGHUY6Wh7ScIDhdgMv3eermx6Z1Jcx5JoRoC2w2vDh0jZ+4IOeymqA40G8FnJW
+        TBxe0jyqUYPAakAQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id lofQD9govmCrOwAALh3uQQ
+        (envelope-from <jroedel@suse.de>); Mon, 07 Jun 2021 14:10:32 +0000
+Date:   Mon, 7 Jun 2021 16:10:30 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, rjw@rjwysocki.net,
+        Len Brown <lenb@kernel.org>, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI/APCI: Move acpi_pci_osc_support() check to
+ negotiation phase
+Message-ID: <YL4o1pJyIm74Lwz3@suse.de>
+References: <20210603124814.19654-1-joro@8bytes.org>
+ <20210603205047.GA2135380@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210603205047.GA2135380@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07 2021 at 06:36, Dave Hansen wrote:
-> On 6/7/21 6:02 AM, Thomas Gleixner wrote:
->> On exec() the kernel sets PKRU to the default value which is as
->> restrictive as possible.
->> 
->> But on sigrestore PKRU when the init optimization is used PKRU is reset
->> to the hardware default (0), which is as permissive as possible:
->> 
->>   1) On XRSTOR from user and the signal handler cleared the PKRU feature
->>      bit in xsave.header.xfeatures. That's true for the fast and the
->>      slow path.
->> 
->>   2) For the fx_only case which loads the init_fpstate (with my fixes
->>      applied that's not longer the case)
->> 
->> So that's inconsistent at best.
->> 
->> As the kernel defines the "init" behaviour of PKRU as non-permissive
->> on exec() it should do so consequently in sigrestore as well.
->
-> Agreed.  The kernel has essentially picked its own init value for PKRU,
-> separate from the hardware init value.  It should be applied consistently.
->
-> By the way, are you talking specifically about the _error_ paths where
-> the kernel is unable to XRSTOR the signal XSAVE buffer for some reason,
-> and tries to apply either init_fpu or the hardware init state instead?
+Hi Bjorn,
 
-1) Successful XRSTOR from user if the PKRU feature bit in the
-   sigframe xsave.header.xfeatures is cleared. Both fast and slow path.
+On Thu, Jun 03, 2021 at 03:50:47PM -0500, Bjorn Helgaas wrote:
+> On Thu, Jun 03, 2021 at 02:48:14PM +0200, Joerg Roedel wrote:
 
-2) Successful XRSTOR from user if the PKRU feature bit is cleared in
-   fx_sw_user.xfeatures as that loads init_fpstate which is busted in
-   mainline. Both fast and slow path. Patch 4/14 of this series fixes this.
+> If instead you mean that the OS has *not* been granted DPC control,
+> but does _OSC(Query, SUPPORT=x, CONTROL=0), I think that means the OS
+> is telling the platform what it supports but not requesting anything.
+> That sounds legal to me, so if firmware complains about it, I would
+> say it's a firmware problem.
 
-3) fx_only both in the fast and slow path are broken without 4/14
+I think it depends on how you look at it. The machine I was working with
+has a BIOS setting where one can configure that DPC is controlled by the
+OS. When it is configured that way, then the BIOS will issue an error
+when an _OSC query is made with control set to 0. This is because it
+indicates to the BIOS that the OS does not take control over DPC and
+thus that the OS does not support it. The BIOS will issue a warning into
+its log and when the Linux later takes control the warning is already
+there.
 
-4) The error handling path (failed restore) is actually doing the right
-   thing.
+> But please help me out if I'm misunderstanding something above.  I'm
+> never confident that I really understand _OSC.
 
-The slow path and the fx_only/fx_sw_user.xfeaturers cases are trivial
-to fix.
+I am also not an _OSC expert, but you an Rafael already provided good
+feedback on the necessity of at least one _OSC call, even when Linux
+does not want to take control.
 
-The fast path not so much because XRSTOR operates directly on the
-sigframe and there is no information about the header.xfeatures
-content. So to fix this, we need to get header.xfeatures from user
-before the XRSTOR and then handle the case then the PKRU bit is clear.
+> Unrelated to *this* patch, but I don't understand the point of
+> OSC_PCI_SUPPORT_MASKS and OSC_PCI_CONTROL_MASKS.  These are all
+> internal static functions and it looks like pointless work to apply
+> masks here and in acpi_pci_osc_control_set().
 
-Thanks
+Okay, I will add a separate patch removing thos after this change.
 
-        tglx
-  
+> >  	status = acpi_pci_run_osc(root->device->handle, capbuf, &result);
+> >  	if (ACPI_SUCCESS(status)) {
+> 
+> We can also drop the "if (control)" check inside the ACPI_SUCCESS()
+> block, can't we?
 
+Right, fixed that up.
 
+Regards,
 
+	Joerg
 
-
-   
