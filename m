@@ -2,214 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 971C939EA1F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 01:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82DA039EA22
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 01:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbhFGXb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 19:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230209AbhFGXbx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 19:31:53 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38F78C061574;
-        Mon,  7 Jun 2021 16:29:45 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id o17-20020a17090a9f91b029015cef5b3c50so12907846pjp.4;
-        Mon, 07 Jun 2021 16:29:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WVAzmK8H3W9Ri9Nc0aJ9dVosaDkdeeCrZdMPkV9t51c=;
-        b=TSwk/OCzSVNhW1q1RK9oYL0/x69CBqintCn+wmoqN/5K1k42H6oe0dXfRF4lJ+V7hj
-         JhFoZqBQN1FugeNnXXadvBEq4v06/iTSHQSnEeE74Tz3mWILMrrpY1gRsZcon0d3zuLf
-         Z+v39bZ3My8pOjFkoI4IMMx4lSW7qwZdpdaQI1jD9d+65xB6QUa2m72r5gkfdV591AIR
-         tX8PeRJeLEpMAhumKISaEcU3ETInCyQ0JCgHxf+sS5qGZVa6EnfdhuLYItdJ+R43I9Zo
-         DuM2epq54rWm2auKfH76lWhyvWVlb9UsZdYZMlPdCover6orq5nKoeVntSwunlcFkJJl
-         C3bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WVAzmK8H3W9Ri9Nc0aJ9dVosaDkdeeCrZdMPkV9t51c=;
-        b=HT7mXB+nwE+zSq0kYm2IsUqOfMQCCacTlf2t2tmrGxSnupEDTLp9SQiL15EpU7D1FC
-         Ksm4pROi+u88fiwiMQ3RQIB660EFWXV4aDDkC20ZjSxA/GysQqivE6RDH7J1QtdfNBgq
-         UfiBiWlIwVpEZ2/mfPxHmQWJIgwColNhcQD+U+alZOX1eWuUpQON0kdEQPIa5XMqU+WI
-         AdPOJ8/A0uUTBUtnJZtlgAyDEMk6SVkzNs/CuRNl0ThsZmZMVGmX5hmelY/S5XuBeT+E
-         yeUl4do05avk4DjLofDdUrfbQAGsybs1Uo5lM5duT8ccd99ZM0tFdErvXdkf1/fz5age
-         XoAg==
-X-Gm-Message-State: AOAM530l0MDRv+1DEW0PfZK9jNb6HGXEmmVj4nH1cTQOzD0lC9Gt8glb
-        UNIJ2fJeDYQnII2Os6uqWio=
-X-Google-Smtp-Source: ABdhPJya5OJVM2Mfsaay/R4SFeWneiJ01QSSkim3v7mHmS6BJwsa27qAY2XoMyRy0/H1AjB1O2Pkzw==
-X-Received: by 2002:a17:90a:540d:: with SMTP id z13mr23503575pjh.159.1623108580881;
-        Mon, 07 Jun 2021 16:29:40 -0700 (PDT)
-Received: from mail.google.com ([141.164.41.4])
-        by smtp.gmail.com with ESMTPSA id i74sm421694pgc.85.2021.06.07.16.29.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 16:29:40 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 07:29:29 +0800
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Changbin Du <changbin.du@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        David Laight <David.Laight@aculab.com>
-Subject: Re: [PATCH] nsfs: fix oops when ns->ops is not provided
-Message-ID: <20210607232929.2usugccbcospdk5g@mail.google.com>
-References: <20210531153410.93150-1-changbin.du@gmail.com>
- <20210531220128.26c0cb36@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <CAM_iQpUEjBDK44=mD5shkmmoDYhmHQaSZtR34rLRkgd9wSWiQQ@mail.gmail.com>
- <20210602091451.kbdul6nhobilwqvi@wittgenstein>
- <CAM_iQpUqgeoY_mA6cazUPCWwMK6yw9SaD6DRg-Ja4r6r_zOmLg@mail.gmail.com>
- <20210604095451.nkfgpsibm5nrqt3f@wittgenstein>
- <20210606224322.yxr47tgdqis35dcl@mail.google.com>
- <20210607091647.pzqyarxbupvnbxyw@wittgenstein>
+        id S230405AbhFGXcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 19:32:36 -0400
+Received: from mga18.intel.com ([134.134.136.126]:11509 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230251AbhFGXce (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 19:32:34 -0400
+IronPort-SDR: 2SfYvf3OnZD+Lp7o2XKaOpNGiWDL9S+0rkiZ2a2deoY21PKlOvkGLP/Q3Vxl+/hQLjdplCP3G9
+ 4yBeWOGFPknQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="192063004"
+X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; 
+   d="scan'208";a="192063004"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 16:30:40 -0700
+IronPort-SDR: XmtRVo0ifH6H/cQB+6ZK+Iq5Le3rbstmpbWjRjCZtZw+tw9qoNq2RBtjlGPVBYMSTScBCFt8hw
+ btBtua6mt1Hg==
+X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; 
+   d="scan'208";a="637448884"
+Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.209.69.116]) ([10.209.69.116])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 16:30:37 -0700
+Subject: Re: [PATCH] x86: kernel: cpu: resctrl: Fix kernel-doc in
+ pseudo_lock.c
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+References: <20210602222326.7765-1-fmdefrancesco@gmail.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+Message-ID: <017e9a77-d17e-effd-5639-72a06abc4fc3@intel.com>
+Date:   Mon, 7 Jun 2021 16:30:34 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607091647.pzqyarxbupvnbxyw@wittgenstein>
+In-Reply-To: <20210602222326.7765-1-fmdefrancesco@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 11:16:47AM +0200, Christian Brauner wrote:
-> On Mon, Jun 07, 2021 at 06:43:41AM +0800, Changbin Du wrote:
-> > On Fri, Jun 04, 2021 at 11:54:51AM +0200, Christian Brauner wrote:
-> > > On Thu, Jun 03, 2021 at 03:52:29PM -0700, Cong Wang wrote:
-> > > > On Wed, Jun 2, 2021 at 2:14 AM Christian Brauner
-> > > > <christian.brauner@ubuntu.com> wrote:
-> > > > > But the point is that ns->ops should never be accessed when that
-> > > > > namespace type is disabled. Or in other words, the bug is that something
-> > > > > in netns makes use of namespace features when they are disabled. If we
-> > > > > handle ->ops being NULL we might be tapering over a real bug somewhere.
-> > > > 
-> > > > It is merely a protocol between fs/nsfs.c and other namespace users,
-> > > > so there is certainly no right or wrong here, the only question is which
-> > > > one is better.
-> > > > 
-> > > > >
-> > > > > Jakub's proposal in the other mail makes sense and falls in line with
-> > > > > how the rest of the netns getters are implemented. For example
-> > > > > get_net_ns_fd_fd():
-> > > > 
-> > > > It does not make any sense to me. get_net_ns() merely increases
-> > > > the netns refcount, which is certainly fine for init_net too, no matter
-> > > > CONFIG_NET_NS is enabled or disabled. Returning EOPNOTSUPP
-> > > > there is literally saying we do not support increasing init_net refcount,
-> > > > which is of course false.
-> > > > 
-> > > > > struct net *get_net_ns_by_fd(int fd)
-> > > > > {
-> > > > >         return ERR_PTR(-EINVAL);
-> > > > > }
-> > > > 
-> > > > There is a huge difference between just increasing netns refcount
-> > > > and retrieving it by fd, right? I have no idea why you bring this up,
-> > > > calling them getters is missing their difference.
-> > > 
-> > > This argument doesn't hold up. All netns helpers ultimately increase the
-> > > reference count of the net namespace they find. And if any of them
-> > > perform operations where they are called in environments wherey they
-> > > need CONFIG_NET_NS they handle this case at compile time.
-> > > 
-> > > (Pluse they are defined in a central place in net/net_namespace.{c,h}.
-> > > That includes the low-level get_net() function and all the others.
-> > > get_net_ns() is the only one that's defined out of band. So get_net_ns()
-> > > currently is arguably also misplaced.)
-> > > 
-> > Ihe get_net_ns() was a static helper function and then sb made it exported
-> > but didn't move it. See commit d8d211a2a0 ('net: Make extern and export get_net_ns()').
-> > 
-> > > The problem I have with fixing this in nsfs is that it gives the
-> > > impression that this is a bug in nsfs whereas it isn't and it
-> > > potentially helps tapering over other bugs.
-> > > 
-> > > get_net_ns() is only called for codepaths that call into nsfs via
-> > > open_related_ns() and it's the only namespace that does this. But
-> > > open_related_ns() is only well defined if CONFIG_<NAMESPACE_TYPE> is
-> > > set. For example, none of the procfs namespace f_ops will be set for
-> > > !CONFIG_NET_NS. So clearly the socket specific getter here is buggy as
-> > > it doesn't account for !CONFIG_NET_NS and it should be fixed.
-> > I agree with Cong that a pure getter returns a generic error is a bit weird.
-> > And get_net_ns() is to get the ns_common which always exists indepent of
-> > CONFIG_NET_NS. For get_net_ns_by_fd(), I think it is a 'findder + getter'.
-> > 
-> > So maybe we can rollback to patch V1 to fix all code called into
-> > open_related_ns()?
-> > https://lore.kernel.org/netdev/CAM_iQpWwApLVg39rUkyXxnhsiP0SZf=0ft6vsq=VxFtJ2SumAQ@mail.gmail.com/T/
-> > 
-> > --- a/net/socket.c
-> > +++ b/net/socket.c
-> > @@ -1149,11 +1149,15 @@ static long sock_ioctl(struct file *file, unsigned cmd, unsigned long arg)
-> >  			mutex_unlock(&vlan_ioctl_mutex);
-> >  			break;
-> >  		case SIOCGSKNS:
-> > +#ifdef CONFIG_NET_NS
-> >  			err = -EPERM;
-> >  			if (!ns_capable(net->user_ns, CAP_NET_ADMIN))
-> >  				break;
-> >  
-> >  			err = open_related_ns(&net->ns, get_net_ns);
-> > +#else
-> > +			err = -ENOTSUPP;
-> > +#endif
-> 
-> If Jakub is fine with it I don't really care much but then you need to
-> fix the other places in tun.c as well.
-> I'm just not sure what's so special about get_net_ns() that it can't
-> simply get an ifdef !CONFIG_NET_NS section.
-> But it seems that there's magic semantics deeply hidden in this helper
-> that btw only exists for open_related_ns() that makes this necessary:
-> 
-> drivers/net/tun.c:              return open_related_ns(&net->ns, get_net_ns);
-> drivers/net/tun.c:              ret = open_related_ns(&net->ns, get_net_ns);
-> include/linux/socket.h:extern struct ns_common *get_net_ns(struct ns_common *ns);
-> net/socket.c: * get_net_ns - increment the refcount of the network namespace
-> net/socket.c:struct ns_common *get_net_ns(struct ns_common *ns)
-> net/socket.c:EXPORT_SYMBOL_GPL(get_net_ns);
-> net/socket.c:                   err = open_related_ns(&net->ns, get_net_ns);
-> tools/perf/trace/beauty/include/linux/socket.h:extern struct ns_common *get_net_ns(struct ns_common *ns);
->
-Yes, all these must be fixed, too. I can do that if Jakub agrees.
+Hi Fabio,
 
-> > 
-> > > 
-> > > Plus your fix leaks references to init netns without fixing get_net_ns()
-> > > too.
-> > > You succeed to increase the refcount of init netns in get_net_ns() but
-> > > then you return in __ns_get_path() because ns->ops aren't set before
-> > > ns->ops->put() can be called.  But you also _can't_ call it since it's
-> > > not set because !CONFIG_NET_NS. So everytime you call any of those
-> > > ioctls you increas the refcount of init net ns without decrementing it
-> > > on failure. So the fix is buggy as it is too and would suggest you to
-> > > fixup get_net_ns() too.
-> > Yes, it is a problem. Can be put a BUG_ON() in nsfs so that such bug (calling
-> > into nsfs without ops) can be catched early?
+Thank you very much for catching these. I am curious what your goal is 
+because when I ran a kernel-doc check on the resctrl area there were 
+many more warnings than are not addressed in this patch. Also, while 
+this patch claims to fix the kernel-doc in pseudo_lock.c there seems to 
+be a few more that are not addressed. Are you planning to submit more 
+patches to do a cleanup of kernel-doc or are these the only ones 
+bothering you for some reason?
+
+Could you please fixup the subject to conform to this area:
+"x86/resctrl: Fix kernel-doc in pseudo_lock.c"
+
+For this subject to be accurate though it should fix all the kernel-doc 
+warnings found in pseudo_lock.c - or if not it would be helpful to 
+explain what the criteria for fixes are. I tested this by running:
+$ scripts/kernel-doc -v -none arch/x86/kernel/cpu/resctrl/*
+
+On 6/2/2021 3:23 PM, Fabio M. De Francesco wrote:
+> Fixed sparse warnings about the descriptions of some function
+> parameters.
 > 
-> Maybe place a WARN_ON() in there.
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> ---
+>   arch/x86/kernel/cpu/resctrl/pseudo_lock.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-How about below change? We need to avoid oops if we can.
--- a/fs/nsfs.c
-+++ b/fs/nsfs.c
-@@ -62,6 +62,10 @@ static int __ns_get_path(struct path *path, struct ns_common *ns)
-        struct inode *inode;
-        unsigned long d;
+> diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+> index f6451abddb09..c3629db90570 100644
+> --- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+> +++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+> @@ -520,7 +520,7 @@ static int pseudo_lock_fn(void *_rdtgrp)
+>   
+>   /**
+>    * rdtgroup_monitor_in_progress - Test if monitoring in progress
+> - * @r: resource group being queried
+> + * @rdtgrp: resource group being queried
+>    *
+>    * Return: 1 if monitor groups have been created for this resource
+>    * group, 0 otherwise.
+> @@ -1140,6 +1140,8 @@ static int measure_l3_residency(void *_plr)
+>   
+>   /**
+>    * pseudo_lock_measure_cycles - Trigger latency measure to pseudo-locked region
+> + * @rdtgrp: resource group to which the pseudo-locked region belongs
+> + * @sel: cache level selector
 
-+       /* In case the namespace is not actually enabled. */
-+       if (WARN_ON(!ns->ops))
-+               return -EINVAL;
-+
-        rcu_read_lock();
+This is not correct. A more accurate description could be:
+"select which measurement to perform on pseudo-locked region"
 
-> Christian
+>    *
+>    * The measurement of latency to access a pseudo-locked region should be
+>    * done from a cpu that is associated with that pseudo-locked region.
+> 
 
--- 
-Cheers,
-Changbin Du
+Reinette
