@@ -2,126 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 291EA39DC7E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE59639DC84
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 14:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbhFGMel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 08:34:41 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:41484 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230173AbhFGMek (ORCPT
+        id S230435AbhFGMfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 08:35:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230333AbhFGMfa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 08:34:40 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 9E9B121A96;
-        Mon,  7 Jun 2021 12:32:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623069168; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bYe/q0XZrVntCLS9h05Nia2rO3f+wWzh6PGpj/Yy9h4=;
-        b=vmT5v5q/BU0n/R6rlUEaXiMI6am6a1Gbh2ifEElQ1Zk4VYqib346fXY7X1D55/N/vTjNV5
-        +rhizXMk/rJ78j7EOyNcd75/Sx3lYuocO301AWY915eup811E9dlbxb7onyGXRU+MZMHK9
-        sfDxefgyDE9Ouri0c5rwtSVL0IzRQtM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623069168;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bYe/q0XZrVntCLS9h05Nia2rO3f+wWzh6PGpj/Yy9h4=;
-        b=QSFj2kiJ7Dp/neGZN2xzbOkvYe6O7s2l7vzZICVAR8gf/8cX9RyNiaSF/jXqUfgW2ki1De
-        gockk7eDEIrK2/CQ==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 827B3118DD;
-        Mon,  7 Jun 2021 12:32:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623069168; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bYe/q0XZrVntCLS9h05Nia2rO3f+wWzh6PGpj/Yy9h4=;
-        b=vmT5v5q/BU0n/R6rlUEaXiMI6am6a1Gbh2ifEElQ1Zk4VYqib346fXY7X1D55/N/vTjNV5
-        +rhizXMk/rJ78j7EOyNcd75/Sx3lYuocO301AWY915eup811E9dlbxb7onyGXRU+MZMHK9
-        sfDxefgyDE9Ouri0c5rwtSVL0IzRQtM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623069168;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bYe/q0XZrVntCLS9h05Nia2rO3f+wWzh6PGpj/Yy9h4=;
-        b=QSFj2kiJ7Dp/neGZN2xzbOkvYe6O7s2l7vzZICVAR8gf/8cX9RyNiaSF/jXqUfgW2ki1De
-        gockk7eDEIrK2/CQ==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id 6StMH/ARvmBNfgAALh3uQQ
-        (envelope-from <vbabka@suse.cz>); Mon, 07 Jun 2021 12:32:48 +0000
-To:     Muchun Song <songmuchun@bytedance.com>, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210606041750.69403-1-songmuchun@bytedance.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] mm: slub: replace local_irq_save with local_irq_disable
-Message-ID: <028651d9-5e3b-8348-00af-e6acf8ea4ced@suse.cz>
-Date:   Mon, 7 Jun 2021 14:32:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Mon, 7 Jun 2021 08:35:30 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88DBEC061766
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 05:33:25 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id my49so9676282ejc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 05:33:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s1McyNikPeBkyMCxJJKhjGXbmzHmFRGVfiDXNrONCTw=;
+        b=Tlmrp/Lx1rETQeuEkLjcveKpE8NsDZh8QzPT4p3h4hUhxqjaccqSnzx+/PHSH5esO5
+         XINlc86HFGLDMTtYWAJARJYsvJ7T9lfbWKIOHIvKhyysmPSymmI1cBqMbj56XfWB+VDe
+         mtI2oq30yKsRxr7Cm134ccAzHlKvAA4RKezpbId4VLWTG4dMr+NRJ/Tdw7yheXYtOJAd
+         BHop/MGWI454lK9IeTas5NM/skSNcRIyyV8FL2YH8+TAKgJCpDmf+GvkCmHlhIZn3ylp
+         LdAmtMvQbDV+qTT1TTvc/KuGCa3qCpvtfQmY6jQqugLPOUjAHj9PIcemDforVBeLbzI5
+         dRmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s1McyNikPeBkyMCxJJKhjGXbmzHmFRGVfiDXNrONCTw=;
+        b=N2/HT6X9PBV7jEDx3vasWQl4lbPCibxOkFi6rs8YvwWtcLWzPYkjnQL2wODH1z6Zg7
+         sMVmZoPCi44NazhxAiqD/UBDHsvZ1mDnwZquy4XIgvXYbtof+eiOb9GCyIjEL0b+Bo6m
+         oSRQ5o3yC4wrSa2csx+eDxaBmYrkm0P5FwvaigQ4hwaYmkXVHK4ShzvkzNt7p/MWuTZu
+         5NlaVPO1bqAjAfjj4/8g7o4ZfwNaVlq5o0GWlOrwZR36lkv4QrUNM0n1WItEf5BFniz9
+         aw5gR1v3x55oCHcCx4vgbXC8uSf/hi8jc+qM5G+pBJQgb4MBgDl+uhKmxEeH4V4OAbDT
+         ajiw==
+X-Gm-Message-State: AOAM5303sKBIcnAcqsPpo6GLDMvsT+cprD0f/92MdUdxGS0DqcalG/zt
+        D8rxdZ6fS5Xvb5pMFeZovmGzLQ==
+X-Google-Smtp-Source: ABdhPJyx9+fVGPQO13neftlKAK7lNRGKMnjjOGyvp7SqnC0fIqlkQaJhv43Ypu8J0r8Ze57YVS7hVA==
+X-Received: by 2002:a17:906:3485:: with SMTP id g5mr17369204ejb.174.1623069204108;
+        Mon, 07 Jun 2021 05:33:24 -0700 (PDT)
+Received: from localhost.localdomain (dh207-96-76.xnet.hr. [88.207.96.76])
+        by smtp.googlemail.com with ESMTPSA id f18sm6471000ejz.119.2021.06.07.05.33.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 05:33:23 -0700 (PDT)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        robh+dt@kernel.org, lee.jones@linaro.org, p.zabel@pengutronix.de,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     luka.perkov@sartura.hr, jmp@epiphyte.org, pmenzel@molgen.mpg.de,
+        buczek@molgen.mpg.de, Robert Marko <robert.marko@sartura.hr>
+Subject: [PATCH v6 1/6] mfd: simple-mfd-i2c: Add Delta TN48M CPLD support
+Date:   Mon,  7 Jun 2021 14:33:12 +0200
+Message-Id: <20210607123317.3242031-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210606041750.69403-1-songmuchun@bytedance.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/6/21 6:17 AM, Muchun Song wrote:
-> The caller of slub_cpu_dead cannot be irq disabled (because slab_mutex is
-> holding during the processing), there is no need to use irq_save. Just use
-> irq_disable directly.
+Delta TN48M switches have a Lattice CPLD that serves
+multiple purposes including being a GPIO expander.
 
-Well, we shouldn't need to disable irq at all. We are cleaning up for a dead
-cpu, so there's nobody else accesing the data. irq save/disable will protect
-only the local cpu's data, not of the cpu we are flushing. But we can't simply
-remove the irq disable/enable because there are some nested
-VM_BUG_ON(!irqs_disabled()) under __flush_cpu_slab(). We basically only disable
-irqs here to avoid those from triggering.
+So, lets use the simple I2C MFD driver to provide the MFD core.
 
-My series [1] addresses this completely (among other things), but it's early
-stage RFC (v2 should be soon). Your patch is not wrong, but also not urgent or
-perf critical. So with that context I'll leave the decision to others :)
+Also add a virtual symbol which pulls in the simple-mfd-i2c driver and
+provide a common symbol on which the subdevice drivers can depend on.
 
-[1] https://lore.kernel.org/lkml/20210524233946.20352-1-vbabka@suse.cz/
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+---
+Changes in v2:
+* Drop the custom MFD driver and header
+* Use simple I2C MFD driver
 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  mm/slub.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index ee51857d8e9b..fbf592ef14ff 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -2529,13 +2529,12 @@ static void flush_all(struct kmem_cache *s)
->  static int slub_cpu_dead(unsigned int cpu)
->  {
->  	struct kmem_cache *s;
-> -	unsigned long flags;
->  
->  	mutex_lock(&slab_mutex);
->  	list_for_each_entry(s, &slab_caches, list) {
-> -		local_irq_save(flags);
-> +		local_irq_disable();
->  		__flush_cpu_slab(s, cpu);
-> -		local_irq_restore(flags);
-> +		local_irq_enable();
->  	}
->  	mutex_unlock(&slab_mutex);
->  	return 0;
-> 
+ drivers/mfd/Kconfig          | 10 ++++++++++
+ drivers/mfd/simple-mfd-i2c.c |  1 +
+ 2 files changed, 11 insertions(+)
+
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index b74efa469e90..733c2f9adb15 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -297,6 +297,16 @@ config MFD_ASIC3
+ 	  This driver supports the ASIC3 multifunction chip found on many
+ 	  PDAs (mainly iPAQ and HTC based ones)
+ 
++config MFD_TN48M_CPLD
++	tristate "Delta Networks TN48M switch CPLD driver"
++	depends on I2C
++	select MFD_SIMPLE_MFD_I2C
++	help
++	  Select this option to enable support for Delta Networks TN48M switch
++	  CPLD. It consists of reset and GPIO drivers. CPLD provides GPIOS-s
++	  for the SFP slots as well as power supply related information.
++	  SFP support depends on the GPIO driver being selected.
++
+ config PMIC_DA903X
+ 	bool "Dialog Semiconductor DA9030/DA9034 PMIC Support"
+ 	depends on I2C=y
+diff --git a/drivers/mfd/simple-mfd-i2c.c b/drivers/mfd/simple-mfd-i2c.c
+index 87f684cff9a1..af8e91781417 100644
+--- a/drivers/mfd/simple-mfd-i2c.c
++++ b/drivers/mfd/simple-mfd-i2c.c
+@@ -39,6 +39,7 @@ static int simple_mfd_i2c_probe(struct i2c_client *i2c)
+ 
+ static const struct of_device_id simple_mfd_i2c_of_match[] = {
+ 	{ .compatible = "kontron,sl28cpld" },
++	{ .compatible = "delta,tn48m-cpld" },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, simple_mfd_i2c_of_match);
+-- 
+2.31.1
 
