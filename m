@@ -2,103 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D744039E860
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 22:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8175139E86D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 22:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbhFGU0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 16:26:52 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:40098 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230422AbhFGU0v (ORCPT
+        id S231199AbhFGUbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 16:31:47 -0400
+Received: from mail-lf1-f45.google.com ([209.85.167.45]:37577 "EHLO
+        mail-lf1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230251AbhFGUbp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 16:26:51 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 157KOtqb003693;
-        Mon, 7 Jun 2021 15:24:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1623097495;
-        bh=soaO8j6FeW+HBW6qIKwrpmt+kh6ODk1iTx9WHdjq7J0=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=anyt0Jvfd4rh5v8/d3gqR51gobNXklYkl/fiGPoq69zsNpgbYny/riM/DByfHEPAY
-         Qc8qpCM44B1A+Kl0/pdWzn2TezAeIevBSOBNOOU6qwq0gjuSot3k7uIIE06vnuzTfV
-         MiLyx+6I+qd+AHRM14yk8Qfkvy5X5aRpUL7+Ogsg=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 157KOt7r037883
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 7 Jun 2021 15:24:55 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 7 Jun
- 2021 15:24:54 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 7 Jun 2021 15:24:54 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 157KOsZK127941;
-        Mon, 7 Jun 2021 15:24:54 -0500
-Date:   Mon, 7 Jun 2021 15:24:54 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-CC:     Lokesh Vutla <lokeshvutla@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Tero Kristo <kristo@kernel.org>, <linux-spi@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 3/5] arm64: dts: ti: am65: align ti,pindir-d0-out-d1-in
- property with dt-shema
-Message-ID: <20210607202454.7rhc7ufiphgrhqqx@rejoice>
-References: <20210602123416.20378-1-a-govindraju@ti.com>
- <20210602123416.20378-4-a-govindraju@ti.com>
- <20210607134047.isfuedgjxpubpcb5@ungloved>
- <9e27bd14-e16a-4177-bba8-d5d0e5638f04@ti.com>
+        Mon, 7 Jun 2021 16:31:45 -0400
+Received: by mail-lf1-f45.google.com with SMTP id f11so28305010lfq.4
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 13:29:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=wXlM84FluN2UpgMb6u6wrJYBp2bd2Nn6sITa/h9v8sc=;
+        b=XK8NNpCzoqNSBViLp4IIw6nfUWkHcNQXjbNlylhlBbRHY9no/sbMKqG3dmsbjqi4b+
+         CmTs67zqOzzzNa6szplAKF7I6v1QyhT9fn4ZvM93QqhTZA7Vgg7Q+CF1lIIRnJjOuqQx
+         EyNWsIhSCPSA0o/6z6xVa5Sy55NRaBpMuPnUV2+OPv6P1B79i+80JW/VV1It0cLeWTnr
+         GW8f7bzDureUVE5Mm322hY4g6zjh9K8u39rdWTVHjc8nR+ZbnCmcVplztSUzXdfwTYWX
+         Clti+juxh0jwSmLNEs4Z9U5YkNVjo45xqeXTStuJnH0w/t5rURvL8Le+qtLdD2RuoaQw
+         59Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=wXlM84FluN2UpgMb6u6wrJYBp2bd2Nn6sITa/h9v8sc=;
+        b=LbQjmMuLVAgO75gljkuEUNyQHPStFN7jdIJzDltVGWTYKB2DbP3ZZ8SdT9xejKQTlD
+         uXgH9o0FeHZ74Swsq8PVrPHgVZ7hkFqixCkgsrGVdlxycpq+0nRmFjH/oQe7HK1UyzYl
+         kHtirdXeUsJxK2je9LttG36wURxuTTNDaT/KHzoAWQCOmcqWXxVuc+ZV6zK+CCGptE/M
+         bfPbgZDl2YneB5lwEWAJ5dw56VNiF+zT3T5Vf9J/rbwELL3uungsLuEsqhCy6+DOR6hT
+         6EWzjuh/W4G1LJ3ghCPOuqSfZjsfAGwL65Ui36OYqMY4k3Vbew9Sxi7I5Nqj436Jai3Q
+         efLA==
+X-Gm-Message-State: AOAM530emEcImtwUhOMlCxNknMLGOXQtLDYmN3J6DY9w9spvyAJcGugW
+        mJr0+cpVIDK6L69u88PbgX3tWr13nnZW8RXXnUE=
+X-Google-Smtp-Source: ABdhPJwrou441aV9yTqLw2UI1LZF/WU9CgVcXFXVajTSz+Q44qq6Q5Ih932460wohHDIW0fsUZvybNrVUiK2nb4i1rs=
+X-Received: by 2002:a05:6512:1326:: with SMTP id x38mr12710882lfu.62.1623097732838;
+ Mon, 07 Jun 2021 13:28:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <9e27bd14-e16a-4177-bba8-d5d0e5638f04@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Reply-To: dear00stefan@gmail.com
+Sender: homurabba@gmail.com
+Received: by 2002:a9a:79cc:0:b029:f4:ef1f:dadf with HTTP; Mon, 7 Jun 2021
+ 13:28:52 -0700 (PDT)
+From:   Stef <dearr00stefan@gmail.com>
+Date:   Mon, 7 Jun 2021 21:28:52 +0100
+X-Google-Sender-Auth: L3QBPRLPvPPNhQOUCstJvKaNe1Q
+Message-ID: <CAFpiVOGrdL4dYL2+V+XLdMib3+8whJtFU8U96JGTe6KvjJ9-Nw@mail.gmail.com>
+Subject: Hi
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19:18-20210607, Aswath Govindraju wrote:
-> Hi Nishanth,
-> 
-> On 07/06/21 7:10 pm, Nishanth Menon wrote:
-> > On 18:04-20210602, Aswath Govindraju wrote:
-> >> ti,pindir-d0-out-d1-in property is expected to be of type boolean.
-> >> Therefore, fix the property accordingly.
-> >>
-> >> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-> > No need for Fixes?
-> > 
-> 
-> Functionality wise this is not a bug as the driver only checks for the
-> presence of the property. This is the reason why I did not include fixes.
-> 
+Hello,
 
-Argument was based on device tree is considered independent of what or
-what not a driver does.
+Sorry invading your privacy, I'm Stef, looking and hoping for a mutual
+friendship. Please would you mind telling me about yourself? I believe
+a day is quite enough to get to know a stranger.
 
-> > Also please split up the patches per maintainer so that we are'nt
-> > confused on who should pick what etc..
-> > 
-> 
-> okay. Will be aware of this from next time.
-> 
-
-Actually, I have dropped this off my list. I am assuming you'd want the
-bindings to be merged after the dts cleanup is done.
-
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Kiss
+Stef
