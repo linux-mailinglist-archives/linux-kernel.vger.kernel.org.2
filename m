@@ -2,263 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2EF39D5E4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D0D39D5E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 09:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbhFGHZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 03:25:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhFGHZV (ORCPT
+        id S230194AbhFGH0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 03:26:31 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:48285 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229545AbhFGH03 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 03:25:21 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1234EC061766;
-        Mon,  7 Jun 2021 00:23:30 -0700 (PDT)
-Received: from [IPv6:2a01:e0a:4cb:a870:6b79:f23c:29c1:895d] (unknown [IPv6:2a01:e0a:4cb:a870:6b79:f23c:29c1:895d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 356041F41FA4;
-        Mon,  7 Jun 2021 08:23:26 +0100 (BST)
-Subject: Re: [PATCH 7/8] media: hevc: Add scaling matrix control
-To:     =?UTF-8?Q?Jernej_=c5=a0krabec?= <jernej.skrabec@gmail.com>,
-        hverkuil@xs4all.nl, ezequiel@collabora.com, p.zabel@pengutronix.de,
-        mchehab@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        festevam@gmail.com, gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
-        andrzej.p@collabora.com, jc@kynesim.co.uk
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210604130619.491200-1-benjamin.gaignard@collabora.com>
- <20210604130619.491200-8-benjamin.gaignard@collabora.com>
- <2618802.xq3rs0cueg@kista>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Message-ID: <ec4f601e-9c21-2b46-91c9-e798a18e909e@collabora.com>
-Date:   Mon, 7 Jun 2021 09:23:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 7 Jun 2021 03:26:29 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id D6E9258079D;
+        Mon,  7 Jun 2021 03:24:38 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 07 Jun 2021 03:24:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=npy2EWSBZQkD+7QAo6OmKOU0JWy
+        D1F5O8A85rULxr7U=; b=iOGGyA6K5vLhIVd9R7XZSsJ/52MYAKnKrX1ygQ2ozpX
+        5ZifqVqhFux2c3lLOjSEa3rXLpRqYWQx3Nhkx1oQ1MxSjW7gIpWZzM0IdeQoUyV4
+        73oPh/ABFbcyCa303FsFMnFDjfalau7YkevPHyga+0+F9ObnHAUTU4Kka56JO2d0
+        AHR6paY3ZCBa4adVLAGe5FexL65/gL7swg4BPZlFaqy/ObqOP2pxcljkH6oI8qfM
+        VJlJcP6bFkFBTdOpvQW5m6cGZAk43zX0nPnN3JdliEwcZ4AKsr3T7f/LjDOUqZie
+        WicXZWJqgUBn63KCJVaWrbDf6IvkbFyeUoMGqnvrqJA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=npy2EW
+        SBZQkD+7QAo6OmKOU0JWyD1F5O8A85rULxr7U=; b=OgSRVCswkQ5nLq8tXl8E7U
+        O71YCnLyoyVQodFLxY2bQyVBuebED27X0dfe4vRpf462JyLIP9nP8HZlz247pNSL
+        fUV3o7FqG5BvfiRMNceJgBpYLCIoPFkO7DMLDd7hmjBREUXPft3fwAggheUvFoCC
+        Mf4RchFi9jzOZVtpCjQVlSk0mCvX2kR33HVBlNgmeA36LBifSis71sqzNomioJlY
+        R9Hyn3uZZPrXNRCpe7YTy1giKGddq9x/YtJtLtqbNP7xtBJJDNyB1KVP2d47WC07
+        FXkQZhHKWC+S9E0Lk6wTMXLVmCiZDLvs9XoJ2S+WLTbADkqOQ+IpObBpuXBpy7jw
+        ==
+X-ME-Sender: <xms:tMm9YA4kLfv-JLF2sBbl4fnug_K7P2UWkGsavopWtTV8GY3QZMRY9g>
+    <xme:tMm9YB4KeynpGL2GqENTXtvXXR3cXsC8Rd5fNuleAOyyAp68yq446BLe7Vx2R6xwE
+    cslc2f6TLv8t_5oGE8>
+X-ME-Received: <xmr:tMm9YPeagoP_ZcUGdv6tZwDcu327e-dmuSRsjT_6fhCcf4uXUg4exwqc4pXrXe6zvLLT9ZMSNOcfIGe8yKusZEFAU05sNG9YCGia>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtiedguddujecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
+    heegudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:tMm9YFJRbaipaRJETHt57jUU0IfUD0rmi60Xm2v6OrTwvnFPn-LUNg>
+    <xmx:tMm9YEIQdz26dGRAC0Ach-2KyKic8-WprH7osj5KznWMrYyJt6bcGg>
+    <xmx:tMm9YGzUC97fXMd5tHrc0rMOMJHAqo2lxtOmMSjbo_PUKo0g75iJUQ>
+    <xmx:tsm9YGg7r53owZ2q3Fdm15OO2D5SwfwNgSlGZYzVI_dnLS8aEeoeJg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 7 Jun 2021 03:24:35 -0400 (EDT)
+Date:   Mon, 7 Jun 2021 09:24:34 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     guoren@kernel.org
+Cc:     anup.patel@wdc.com, palmerdabbelt@google.com, arnd@arndb.de,
+        wens@csie.org, drew@beagleboard.org, liush@allwinnertech.com,
+        lazyparser@gmail.com, wefu@redhat.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [RFC PATCH v2 09/11] riscv: soc: Initial DTS for Allwinner D1
+ NeZha board
+Message-ID: <20210607072434.3g3bqxdlpxjirg6k@gilmour>
+References: <1622970249-50770-1-git-send-email-guoren@kernel.org>
+ <1622970249-50770-13-git-send-email-guoren@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <2618802.xq3rs0cueg@kista>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="fsxrp47ju6oajdor"
+Content-Disposition: inline
+In-Reply-To: <1622970249-50770-13-git-send-email-guoren@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Le 06/06/2021 à 09:49, Jernej Škrabec a écrit :
-> Hi!
->
-> Dne petek, 04. junij 2021 ob 15:06:18 CEST je Benjamin Gaignard napisal(a):
->> HEVC scaling lists are used for the scaling process for transform
->> coefficients.
->> V4L2_HEVC_SPS_FLAG_SCALING_LIST_ENABLED has to set when they are
->> encoded in the bitstream.
->>
->> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->> ---
->>   .../media/v4l/ext-ctrls-codec.rst             | 45 +++++++++++++++++++
->>   .../media/v4l/vidioc-queryctrl.rst            |  6 +++
->>   drivers/media/v4l2-core/v4l2-ctrls-core.c     |  6 +++
->>   drivers/media/v4l2-core/v4l2-ctrls-defs.c     |  4 ++
->>   include/media/hevc-ctrls.h                    | 11 +++++
->>   5 files changed, 72 insertions(+)
->>
->> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/
-> Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> index 9120c5bcaf90..a4512b7cb520 100644
->> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> @@ -3065,6 +3065,51 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
->>   
->>       \normalsize
->>   
->> +``V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX (struct)``
->> +    Specifies the HEVC scaling matrix parameters used for the scaling
-> process
->> +    for transform coefficients.
->> +    These matrix and parameters are defined according to :ref:`hevc`.
->> +    They are described in section 7.4.5 "Scaling list data semantics" of
->> +    the specification.
->> +
->> +.. c:type:: v4l2_ctrl_hevc_scaling_matrix
->> +
->> +.. raw:: latex
->> +
->> +    \scriptsize
->> +
->> +.. tabularcolumns:: |p{5.4cm}|p{6.8cm}|p{5.1cm}|
->> +
->> +.. cssclass:: longtable
->> +
->> +.. flat-table:: struct v4l2_ctrl_hevc_slice_params
-> ^ copy paste error? It should be v4l2_ctrl_hevc_scaling_matrix.
+--fsxrp47ju6oajdor
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes I will fix it in the next version.
-Thanks
+Hi,
 
-Benjamin
+Thanks for the patches
 
->
-> Best regards,
-> Jernej
->
->> +    :header-rows:  0
->> +    :stub-columns: 0
->> +    :widths:       1 1 2
->> +
->> +    * - __u8
->> +      - ``scaling_list_4x4[6][16]``
->> +      -
->> +    * - __u8
->> +      - ``scaling_list_8x8[6][64]``
->> +      -
->> +    * - __u8
->> +      - ``scaling_list_16x16[6][64]``
->> +      -
->> +    * - __u8
->> +      - ``scaling_list_32x32[2][64]``
->> +      -
->> +    * - __u8
->> +      - ``scaling_list_dc_coef_16x16[6]``
->> +      -
->> +    * - __u8
->> +      - ``scaling_list_dc_coef_32x32[2]``
->> +      -
->> +
->> +.. raw:: latex
->> +
->> +    \normalsize
->> +
->>   .. c:type:: v4l2_hevc_dpb_entry
->>   
->>   .. raw:: latex
->> diff --git a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst b/
-> Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
->> index f9ecf6276129..2f491c17dd5d 100644
->> --- a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
->> +++ b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
->> @@ -495,6 +495,12 @@ See also the examples in :ref:`control`.
->>         - n/a
->>         - A struct :c:type:`v4l2_ctrl_hevc_slice_params`, containing HEVC
->>   	slice parameters for stateless video decoders.
->> +    * - ``V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX``
->> +      - n/a
->> +      - n/a
->> +      - n/a
->> +      - A struct :c:type:`v4l2_ctrl_hevc_scaling_matrix`, containing HEVC
->> +	scaling matrix for stateless video decoders.
->>       * - ``V4L2_CTRL_TYPE_VP8_FRAME``
->>         - n/a
->>         - n/a
->> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-
-> core/v4l2-ctrls-core.c
->> index c4b5082849b6..70adfc1b9c81 100644
->> --- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
->> +++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
->> @@ -687,6 +687,9 @@ static int std_validate_compound(const struct v4l2_ctrl
-> *ctrl, u32 idx,
->>   
->>   		break;
->>   
->> +	case V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX:
->> +		break;
->> +
->>   	case V4L2_CTRL_TYPE_AREA:
->>   		area = p;
->>   		if (!area->width || !area->height)
->> @@ -1240,6 +1243,9 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct
-> v4l2_ctrl_handler *hdl,
->>   	case V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS:
->>   		elem_size = sizeof(struct v4l2_ctrl_hevc_slice_params);
->>   		break;
->> +	case V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX:
->> +		elem_size = sizeof(struct
-> v4l2_ctrl_hevc_scaling_matrix);
->> +		break;
->>   	case V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS:
->>   		elem_size = sizeof(struct
-> v4l2_ctrl_hevc_decode_params);
->>   		break;
->> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-
-> core/v4l2-ctrls-defs.c
->> index b6344bbf1e00..cb29c2a7fabe 100644
->> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
->> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
->> @@ -996,6 +996,7 @@ const char *v4l2_ctrl_get_name(u32 id)
->>   	case V4L2_CID_MPEG_VIDEO_HEVC_SPS:			
-> return "HEVC Sequence Parameter Set";
->>   	case V4L2_CID_MPEG_VIDEO_HEVC_PPS:			
-> return "HEVC Picture Parameter Set";
->>   	case V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS:		return
-> "HEVC Slice Parameters";
->> +	case V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX:		
-> return "HEVC Scaling Matrix";
->>   	case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS:		
-> return "HEVC Decode Parameters";
->>   	case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_MODE:		return "HEVC
-> Decode Mode";
->>   	case V4L2_CID_MPEG_VIDEO_HEVC_START_CODE:		return
-> "HEVC Start Code";
->> @@ -1488,6 +1489,9 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum
-> v4l2_ctrl_type *type,
->>   	case V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS:
->>   		*type = V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS;
->>   		break;
->> +	case V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX:
->> +		*type = V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX;
->> +		break;
->>   	case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS:
->>   		*type = V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS;
->>   		break;
->> diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
->> index dc964ff7cd29..da6189ef7ab4 100644
->> --- a/include/media/hevc-ctrls.h
->> +++ b/include/media/hevc-ctrls.h
->> @@ -19,6 +19,7 @@
->>   #define V4L2_CID_MPEG_VIDEO_HEVC_SPS		(V4L2_CID_CODEC_BASE +
-> 1008)
->>   #define V4L2_CID_MPEG_VIDEO_HEVC_PPS		(V4L2_CID_CODEC_BASE +
-> 1009)
->>   #define V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS	(V4L2_CID_CODEC_BASE +
-> 1010)
->> +#define V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX	(V4L2_CID_CODEC_BASE +
-> 1011)
->>   #define V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS	(V4L2_CID_CODEC_BASE +
-> 1012)
->>   #define V4L2_CID_MPEG_VIDEO_HEVC_DECODE_MODE	(V4L2_CID_CODEC_BASE +
-> 1015)
->>   #define V4L2_CID_MPEG_VIDEO_HEVC_START_CODE	(V4L2_CID_CODEC_BASE +
-> 1016)
->> @@ -27,6 +28,7 @@
->>   #define V4L2_CTRL_TYPE_HEVC_SPS 0x0120
->>   #define V4L2_CTRL_TYPE_HEVC_PPS 0x0121
->>   #define V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS 0x0122
->> +#define V4L2_CTRL_TYPE_HEVC_SCALING_MATRIX 0x0123
->>   #define V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS 0x0124
->>   
->>   enum v4l2_mpeg_video_hevc_decode_mode {
->> @@ -225,6 +227,15 @@ struct v4l2_ctrl_hevc_decode_params {
->>   	__u64	flags;
->>   };
->>   
->> +struct v4l2_ctrl_hevc_scaling_matrix {
->> +	__u8	scaling_list_4x4[6][16];
->> +	__u8	scaling_list_8x8[6][64];
->> +	__u8	scaling_list_16x16[6][64];
->> +	__u8	scaling_list_32x32[2][64];
->> +	__u8	scaling_list_dc_coef_16x16[6];
->> +	__u8	scaling_list_dc_coef_32x32[2];
->> +};
->> +
->>   /*  MPEG-class control IDs specific to the Hantro driver as defined by V4L2
-> */
->>   #define V4L2_CID_CODEC_HANTRO_BASE				
-> (V4L2_CTRL_CLASS_CODEC | 0x1200)
->>   /*
->>
->
+On Sun, Jun 06, 2021 at 09:04:07AM +0000, guoren@kernel.org wrote:
+> From: Guo Ren <guoren@linux.alibaba.com>
+>=20
+> Add initial DTS for Allwinner D1 NeZha board having only essential
+> devices (uart, dummy, clock, reset, clint, plic, etc).
+>=20
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Co-Developed-by: Liu Shaohua <liush@allwinnertech.com>
+> Signed-off-by: Liu Shaohua <liush@allwinnertech.com>
+> Cc: Anup Patel <anup.patel@wdc.com>
+> Cc: Atish Patra <atish.patra@wdc.com>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Chen-Yu Tsai <wens@csie.org>
+> Cc: Drew Fustini <drew@beagleboard.org>
+> Cc: Maxime Ripard <maxime@cerno.tech>
+> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+> Cc: Wei Fu <wefu@redhat.com>
+> Cc: Wei Wu <lazyparser@gmail.com>
+> ---
+>  arch/riscv/boot/dts/Makefile                       |  1 +
+>  arch/riscv/boot/dts/allwinner/Makefile             |  2 +
+>  .../boot/dts/allwinner/allwinner-d1-nezha-kit.dts  | 29 ++++++++
+>  arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi    | 84 ++++++++++++++++=
+++++++
+
+Can you add the riscv folder to our MAINTAINERS entry as well?
+
+>  4 files changed, 116 insertions(+)
+>  create mode 100644 arch/riscv/boot/dts/allwinner/Makefile
+>  create mode 100644 arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-kit.=
+dts
+>  create mode 100644 arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi
+>=20
+> diff --git a/arch/riscv/boot/dts/Makefile b/arch/riscv/boot/dts/Makefile
+> index fe996b8..3e7b264 100644
+> --- a/arch/riscv/boot/dts/Makefile
+> +++ b/arch/riscv/boot/dts/Makefile
+> @@ -2,5 +2,6 @@
+>  subdir-y +=3D sifive
+>  subdir-$(CONFIG_SOC_CANAAN_K210_DTB_BUILTIN) +=3D canaan
+>  subdir-y +=3D microchip
+> +subdir-y +=3D allwinner
+
+I assume they should be ordered alphabetically?
+
+>  obj-$(CONFIG_BUILTIN_DTB) :=3D $(addsuffix /, $(subdir-y))
+> diff --git a/arch/riscv/boot/dts/allwinner/Makefile b/arch/riscv/boot/dts=
+/allwinner/Makefile
+> new file mode 100644
+> index 00000000..4adbf4b
+> --- /dev/null
+> +++ b/arch/riscv/boot/dts/allwinner/Makefile
+> @@ -0,0 +1,2 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +dtb-$(CONFIG_SOC_SUNXI) +=3D allwinner-d1-nezha-kit.dtb
+> diff --git a/arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-kit.dts b/a=
+rch/riscv/boot/dts/allwinner/allwinner-d1-nezha-kit.dts
+> new file mode 100644
+> index 00000000..cd9f7c9
+> --- /dev/null
+> +++ b/arch/riscv/boot/dts/allwinner/allwinner-d1-nezha-kit.dts
+> @@ -0,0 +1,29 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +
+> +/dts-v1/;
+> +
+> +#include "allwinner-d1.dtsi"
+> +
+> +/ {
+> +	#address-cells =3D <2>;
+> +	#size-cells =3D <2>;
+> +	model =3D "Allwinner D1 NeZha Kit";
+> +	compatible =3D "allwinner,d1-nezha-kit";
+> +
+> +	chosen {
+> +		bootargs =3D "console=3DttyS0,115200";
+> +		stdout-path =3D &serial0;
+> +	};
+> +
+> +	memory@40000000 {
+> +		device_type =3D "memory";
+> +		reg =3D <0x0 0x40000000 0x0 0x20000000>;
+> +	};
+> +
+> +	soc {
+> +	};
+> +};
+> +
+> +&serial0 {
+> +	status =3D "okay";
+> +};
+> diff --git a/arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi b/arch/riscv=
+/boot/dts/allwinner/allwinner-d1.dtsi
+> new file mode 100644
+> index 00000000..11cd938
+> --- /dev/null
+> +++ b/arch/riscv/boot/dts/allwinner/allwinner-d1.dtsi
+> @@ -0,0 +1,84 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> +
+> +/dts-v1/;
+> +
+> +/ {
+> +	#address-cells =3D <2>;
+> +	#size-cells =3D <2>;
+> +	model =3D "Allwinner D1 Soc";
+> +	compatible =3D "allwinner,d1-nezha-kit";
+> +
+> +	chosen {
+> +	};
+> +
+> +	cpus {
+> +		#address-cells =3D <1>;
+> +		#size-cells =3D <0>;
+> +		timebase-frequency =3D <2400000>;
+> +		cpu@0 {
+> +			device_type =3D "cpu";
+> +			reg =3D <0>;
+> +			status =3D "okay";
+> +			compatible =3D "riscv";
+> +			riscv,isa =3D "rv64imafdcv";
+> +			mmu-type =3D "riscv,sv39";
+> +			cpu0_intc: interrupt-controller {
+> +				#interrupt-cells =3D <1>;
+> +				compatible =3D "riscv,cpu-intc";
+> +				interrupt-controller;
+> +			};
+> +		};
+> +	};
+> +
+> +	soc {
+> +		#address-cells =3D <2>;
+> +		#size-cells =3D <2>;
+> +		compatible =3D "simple-bus";
+> +		ranges;
+> +
+> +		reset: reset-sample {
+> +			compatible =3D "thead,reset-sample";
+> +			plic-delegate =3D <0x0 0x101ffffc>;
+> +		};
+
+This compatible is not documented anywhere?
+
+Maxime
+
+--fsxrp47ju6oajdor
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYL3JsgAKCRDj7w1vZxhR
+xfeYAQCQjrUn1ueYXDlTtlHb4vbQ+cWzt+OSYY2p+uPeJZsJBQD+MAaXRiaGN/Xf
+/u9es7GVOVAV6tXcL8oApZ4kgXfIvgY=
+=RKXH
+-----END PGP SIGNATURE-----
+
+--fsxrp47ju6oajdor--
