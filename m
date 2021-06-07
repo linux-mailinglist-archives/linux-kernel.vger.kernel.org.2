@@ -2,126 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F60239E9BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 00:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0918839E9CB
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 00:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230366AbhFGWpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 18:45:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58756 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230237AbhFGWpx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 18:45:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71CE161090;
-        Mon,  7 Jun 2021 22:43:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623105841;
-        bh=Yw5rjpX5d8vEagOcYCPCOfcNKG/SO6zfojyqFIO0VpQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Kj880acHv3Vytdnt5xZudPfN553KUXCz4cahjcyMHdadvOGWIVI9FmIRWTUw9JRGp
-         UyIfvRdP+q+VF0GgnSHzUWZKOAUY9aH5rmnZJzm0NqJcPHCZS348HKZq3F4g2vASd7
-         ZdzXCG9CxLQECgGCtU4phuPwgKbPayRAI9o3fJdqecxvo9J2YZVXJI8YoTpkvSqfc8
-         3CIDCUFggWYJe4BvreAWuifea/Lso8Nrnk1rOzXRhsOLx6NcgcerzHFOX9UB96L3SK
-         Bz5tSW3jhZkGXYPm0IgCsKO0hb0LvJUutO3v4HcZdbkz6dZFDe1j+/idbvE7x7UF5z
-         kZ2jNacR+xIUA==
-Date:   Mon, 7 Jun 2021 23:43:55 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v8 08/19] sched: Reject CPU affinity changes based on
- task_cpu_possible_mask()
-Message-ID: <20210607224354.GA8215@willie-the-truck>
-References: <20210602164719.31777-1-will@kernel.org>
- <20210602164719.31777-9-will@kernel.org>
- <874kedeeqv.mognet@arm.com>
+        id S230323AbhFGWxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 18:53:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230183AbhFGWxt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 18:53:49 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7542BC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 15:51:57 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1623106314;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W+8HBkwXUWfaFKpTzso1FY801jIhgYorVwNTnXLAV3E=;
+        b=Tmj9s2iMl0le/X3DsXCKKBdrGrCDU0kV4ejfQ4OxU+OvxZl3K8jJkXhH6P4goH9sn65zTo
+        BTZ0t9XGQnCG3tuRO2Es5sqLXZgYNmfKRSUIXGL2k0j++TvK1vAJfPslgDB5scTY5voiXG
+        5EdQt2onj9d63IpFBI1L+oznHwVl+gVW7PY3UGoylsmmiQV93xMGIo0oW4Myt+1BV/LXmW
+        r6huiUfHkGuMEKZV6IhRl8sMIaxukd0pO1KeiW85BXAuCDfGCDG7Gfum746eaTBCF+t3Mu
+        yD+wBqXOUh1OBV1RjXIsk2QBZLf/DKaFviQxYs2EfFYSYECwCBKLpLPd77v9rw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1623106314;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W+8HBkwXUWfaFKpTzso1FY801jIhgYorVwNTnXLAV3E=;
+        b=CFdZCbmooEGfEe73dNd2jYublkOyyD1BP7iawQK5xYIroGVVmoL+V+dNLXeEmqFoAmJVlS
+        WcnNfwb086nOEPCw==
+To:     Dave Hansen <dave.hansen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [patch V2 00/14] x86/fpu: Mop up XSAVES and related damage
+In-Reply-To: <37df631f-9d3d-3035-6eeb-85ef33e580d5@intel.com>
+References: <20210605234742.712464974@linutronix.de> <87h7i9zv3r.ffs@nanos.tec.linutronix.de> <eca0add1-849e-6a1a-8ea6-f6b72650c9c8@intel.com> <87eeddzs0l.ffs@nanos.tec.linutronix.de> <37df631f-9d3d-3035-6eeb-85ef33e580d5@intel.com>
+Date:   Tue, 08 Jun 2021 00:51:54 +0200
+Message-ID: <87bl8hz3sl.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <874kedeeqv.mognet@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 06:11:52PM +0100, Valentin Schneider wrote:
-> On 02/06/21 17:47, Will Deacon wrote:
-> > Reject explicit requests to change the affinity mask of a task via
-> > set_cpus_allowed_ptr() if the requested mask is not a subset of the
-> > mask returned by task_cpu_possible_mask(). This ensures that the
-> > 'cpus_mask' for a given task cannot contain CPUs which are incapable of
-> > executing it, except in cases where the affinity is forced.
-> >
-> > Reviewed-by: Quentin Perret <qperret@google.com>
-> > Signed-off-by: Will Deacon <will@kernel.org>
-> 
-> One comment/observation below, but regardless:
-> 
-> Reviewed-by: Valentin Schneider <Valentin.Schneider@arm.com>
+On Mon, Jun 07 2021 at 09:38, Dave Hansen wrote:
+> On 6/7/21 7:08 AM, Thomas Gleixner wrote:
+>>> By the way, are you talking specifically about the _error_ paths where
+>>> the kernel is unable to XRSTOR the signal XSAVE buffer for some reason,
+>>> and tries to apply either init_fpu or the hardware init state instead?
+>>=20
+>> 1) Successful XRSTOR from user if the PKRU feature bit in the
+>>    sigframe xsave.header.xfeatures is cleared. Both fast and slow path.
+>
+> It seems like the suggestion here is to inject 'init_pkru_value' in all
+> cases where the kernel would be injecting the hardware init value.  I
+> don't think we should go that far.
+>
+> If a signal handler sets xsave.header.xfeatures[PKRU]=3D0, I can't imagine
+> any other intent than wanting the hardware init value.
+>
+> The error cases don't have intent and the kernel is pretty free to
+> inject whatever sanity it deems fit to make forward progress.
+>
+>> 2) Successful XRSTOR from user if the PKRU feature bit is cleared in
+>>    fx_sw_user.xfeatures as that loads init_fpstate which is busted in
+>>    mainline. Both fast and slow path. Patch 4/14 of this series fixes th=
+is.
+>
+> This comes down to what happens when "xsave.header.xfeatures !=3D
+> fx_sw_user.xfeatures".  I honestly don't have the foggiest idea, and
+> seriously doubt anyone cares.  I'm fine with where 4/14 lands.
+>
+>> 3) fx_only both in the fast and slow path are broken without 4/14
+>
+> fx_only to me means that XSAVE doesn't work, either because the hardware
+> doesn't support it, or userspace mucked with the buffer enough so XSAVE
+> doesn't work.  That's pretty close to the error case, and I'm fine with
+> the kernel doing what it wants.
+>
+> BTW, we currently zap X86_FEATURE_PKU if XSAVE is disabled.  That gets
+> rid of at least a few of the nasty fx_only cases.
 
-Thanks!
+So as we further discussed on IRC:
 
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index 0c1b6f1a6c91..b23c7f0ab31a 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -2347,15 +2347,17 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
-> >                                 u32 flags)
-> >  {
-> >       const struct cpumask *cpu_valid_mask = cpu_active_mask;
-> > +	const struct cpumask *cpu_allowed_mask = task_cpu_possible_mask(p);
-> >       unsigned int dest_cpu;
-> >       struct rq_flags rf;
-> >       struct rq *rq;
-> >       int ret = 0;
-> > +	bool kthread = p->flags & PF_KTHREAD;
-> >
-> >       rq = task_rq_lock(p, &rf);
-> >       update_rq_clock(rq);
-> >
-> > -	if (p->flags & PF_KTHREAD || is_migration_disabled(p)) {
-> > +	if (kthread || is_migration_disabled(p)) {
-> >               /*
-> >                * Kernel threads are allowed on online && !active CPUs,
-> >                * however, during cpu-hot-unplug, even these might get pushed
-> > @@ -2369,6 +2371,11 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
-> >               cpu_valid_mask = cpu_online_mask;
-> >       }
-> >
-> > +	if (!kthread && !cpumask_subset(new_mask, cpu_allowed_mask)) {
-> > +		ret = -EINVAL;
-> > +		goto out;
-> > +	}
-> > +
-> 
-> IIUC this wouldn't be required if guarantee_online_cpus() couldn't build a
-> mask that extends beyond task_cpu_possible_mask(p): if the new mask doesn't
-> intersect with that possible mask, it means we're carrying an empty cpumask
-> and the cpumask_any_and_distribute() below would return nr_cpu_ids, so we'd
-> bail with -EINVAL.
-> 
-> I don't really see a way around it though due to the expectations behind
-> guarantee_online_cpus() :/
+We have an hen and egg problem because the hardware init value is 0
+(maximum permissive) and the kernel initial PKRU value is minimal
+permissive.
 
-Mostly agreed. I started out hacking SCA and only then started knocking the
-callers on the head. However, given how many callers there are for this
-thing, I'm much more comfortable having the mask check there to ensure that
-we return an error if the requested mask contains CPUs on which we're unable
-to run, and yes, guarantee_online_cpus() is one such caller.
+Of course we cannot make this consistent ever because the hardware does
+not provide a mechanism to set a default PKRU init value, e.g. via the
+obviously useful MSR_PKRU_INIT.
 
-Will
+So what ever we do, we end up being inconsistent because a user space
+XRSTOR behaves different from a sigreturn restore in many ways, some of
+them are historical nonsense, i.e. the completely obscure
+fpx_sw_bytes.xfeatures handling.
+
+Unless we revert acd547b29880 ("x86/pkeys: Default to a restrictive init
+PKRU") there is no real consistent solution. But that revert makes no
+sense either because that would put the burden on user space to come up
+with some sensible default when initializing an application (think
+libraries) and still would not give any meaningful values for the XRSTOR
+case with the PKRU bit disabled in xfeatures.
+
+Now a real useful way out of this is to remove PKRU from xsaves
+alltogether, i.e. disable it in XCR0 as XSAVES managed state.
+
+That solves a couple of problems:
+
+  1) The issue that PKRU has to be context switched contrary to the rest
+     of XSTATE which conflicts with the restore XSTATE only on return to
+     user space approach.
+
+  2) The signal restore would get rid of all consistency issues in one
+     go.
+
+  3) init_fpstate would become __ro_after_init and not involved in all
+     of that
+
+That opens up the opportunity to:
+
+  1) Make the PKRU value on the signal frame independent of XSAVE init
+     issues
+
+  2) To provide a per process or task defined PKRU default value which
+     can be used for e.g. the signal handling path which makes a lot of
+     sense on it's own.
+=20=20
+But it creates a few new problems:
+
+  1) Where to put the PKRU value in the sigframe?
+
+     For 64bit sigframes that's easy as there is padding space, for
+     32bit sigframes that's a problem because there is no space.
+
+  2) Backward compatibility
+
+     As much as we wish to have a time machine there is a rule not to
+     break existing user space.
+
+Now fortunately there is a way out:
+
+  1) User space cannot rely on PKRU being XSTATE managed unless PKRU is
+     enabled in XCR0. XCR0 enablement is part of the UABI so any
+     complaint about missing XCR0 support is futile
+
+  2) As documented in pkey_alloc(2):
+
+     "pkey_alloc() is always safe to call regardless of whether or not
+      the operating system supports protection keys.  It can be used in
+      lieu of any other mechanism for detecting pkey support and will
+      simply fail with the error ENOSPC if the operating system has no
+      pkey support.
+
+      The kernel guarantees that the contents of the hardware rights
+      register (PKRU) will be preserved only for allocated protec=E2=80=90 =
+tion
+      keys.  Any time a key is unallocated (either before the first call
+      returning that key from pkey_alloc() or after it is freed via
+      pkey_free()), the kernel may make arbitrary changes to the parts
+      of the rights register affecting access to that key."
+
+Stupidly the pkeys(7) man page says:
+
+      "This signal behavior is unusual and is due to the fact that the
+       x86 PKRU register (which stores protection key access rights) is
+       managed with the same hardware mechanism (XSAVE) that manages
+       floating-point registers.  The signal behavior is the same as
+       that of floating-point registers."
+
+But that's not a show stopper IMO because the signal behaviour of XSTATE
+managed floating point registers is documented that it only contains the
+register state which is actually XSTATE managed, i.e. the corresponding
+bit is set in XCR0 which user space can retrieve via XEGTBV and which is
+fortunately part of the *kinda* documented ABI.
+
+So the proposed solution is to:
+
+   A) Exclude PKRU from XSTATE managed state, i.e. do not set the PKRU
+      bit in XCR0
+
+   B) Exclude 32bit applications on 64bit kernels from using PKEYS by
+      returning an error code from pkey_alloc(). That's fine because the
+      man page requires them to handle the fail which they need to do
+      anyway because 32bit kernel do not support PKEYS and never will.
+
+   C) Replace the current context switch mechanism which is partially
+      XSAVE based by a software managed one.
+
+   D) Store the PKRU value in one of the reserved slots of the 64bit
+      signal frame which is possible because of #B so that a signal
+      handler has the chance to override the interrupted task's PKRU
+      setting.
+
+Thoughts?
+
+Thanks,
+
+        tglx
+
+
+=20=20=20=20=20=20
