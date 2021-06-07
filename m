@@ -2,194 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0E339D450
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 07:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB44239D441
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 07:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbhFGF0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 01:26:46 -0400
-Received: from ozlabs.org ([203.11.71.1]:47783 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229923AbhFGF0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 01:26:46 -0400
-Received: by ozlabs.org (Postfix, from userid 1007)
-        id 4Fz1yt10WVz9sT6; Mon,  7 Jun 2021 15:24:54 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=gibson.dropbear.id.au; s=201602; t=1623043494;
-        bh=Q0ZAhkp7FWQOcYxPVObgHiqPp39qCkjQY7r+Qe59/6A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XK4QdSXh+s20cVuUWTtzi8COPKgAo/qyMsQvlJ+ez0bh/V5dMND5DAp4oiQwFwR2k
-         ug/yiJ30A80nCG5Q8mHWJmA590AcTbbo9vJcoNcgQ3KZDjFiBMaNCYnLeKcIRhEJUG
-         qffgrXCubOapMfwgHDHVG8L3+Yf2QaFPDbHPSBL4=
-Date:   Mon, 7 Jun 2021 15:10:00 +1000
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Leonardo Bras <leobras.c@gmail.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] powerpc/mm/hash: Avoid multiple HPT resize-ups on
- memory hotplug
-Message-ID: <YL2qKPhC2TrsFn6e@yekko>
-References: <20210430143607.135005-1-leobras.c@gmail.com>
- <20210430143607.135005-3-leobras.c@gmail.com>
+        id S230155AbhFGFNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 01:13:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhFGFNa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 01:13:30 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91583C061766
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Jun 2021 22:11:24 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id i4so23178773ybe.2
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Jun 2021 22:11:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v8zWBu7PGNThrMwSPRIxZY/nfLOXlD38qeZwCIAD4+U=;
+        b=Q2/775qbl2IBlSvLbip6amggplkjpk4dZgq1uMBfVH8vaqxNHWmgN4C26wNJHjuHY9
+         u1qiiTdPvoAHTBzHBzcsSPrq9aN/b+W2PZjDSAAaevAYB9sP1vxJVAdCn1yfaCMSGZdJ
+         Xd9lvL4xnYCBbSu6vBIAxNj/GLfDCeK91+CTayUC7D0ACvkC2GPYidjOZAxhn8fNDqIu
+         kZBQk5c1yMmZ/1/5iwkOLhrxq+9GNE663UGmqDety4EzPEixJLn9Jl4ZNj1ASXuBGCe0
+         y+ku/XLQM6tUE/2nLgWer9Jp9W4zHuDuiXQbWI5yGKHJhXxLqqUtsXuHVQuHeNSS40rT
+         qVuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v8zWBu7PGNThrMwSPRIxZY/nfLOXlD38qeZwCIAD4+U=;
+        b=TnGIMyyX1N9bSS9hLan+ntQx6XcDjSCh8FIfdgiXw585AxFzOvs2kLh1EUytx/NF2q
+         tQRLfDjGagkdlFQYoYFaoRzY5JTpn4EKP0hfQZ9GobjxsfR+67ixhXcF1bRVdMebmXEc
+         F1mTR5XbF3zOnTxzrxisHqMf+tnOiwr6SlmCPnCvZDFI/QrJYm1pRoWAQAa5aQYuIcJR
+         RHBKe6FjkX1pOI4Rw+jzfjydzgfrNEtlRCm0KpueqoQEAHyGq+2ZsSCkSGrpcdPn+qR+
+         srnu8mjkN4/R2RUn14l0uk0KtE6CnXvj9WER7F81NeBn4Cc0WRl5lln00PQFgGgPBKpy
+         bZyA==
+X-Gm-Message-State: AOAM532vmdon/E6nOvGWhwpJGi0hHgk/RGpaI3ZoEJvddskEYk/mYIRt
+        nyxVYc5sPE5oP8ouk9vIpXdRy6AS1lsN4q1r2MjuiRw7Vj2Bjg==
+X-Google-Smtp-Source: ABdhPJzB9rWgNjMK5jJsSxplxIQXrOG91u3vk1SLbSrM0USEcI+LAQPVd+WAjT1xizdBKsNTwHFVU3dSG1Qh91w/KMU=
+X-Received: by 2002:a25:8385:: with SMTP id t5mr22221990ybk.151.1623042683605;
+ Sun, 06 Jun 2021 22:11:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="+e3T6L8B4PjNfYWV"
-Content-Disposition: inline
-In-Reply-To: <20210430143607.135005-3-leobras.c@gmail.com>
+References: <20210605191754.28165-1-dwaipayanray1@gmail.com> <0c0bdfa2c0c1f2c7ebdcbe7d4a1366c1697ce57a.camel@perches.com>
+In-Reply-To: <0c0bdfa2c0c1f2c7ebdcbe7d4a1366c1697ce57a.camel@perches.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Mon, 7 Jun 2021 07:11:12 +0200
+Message-ID: <CAKXUXMyoiEaYaqK9PX3PnUDV94RnVc_A4d6W7JkPOdr_1RCF2g@mail.gmail.com>
+Subject: Re: [PATCH] checkpatch: do not allow using -f/--file option without a filename
+To:     Joe Perches <joe@perches.com>
+Cc:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Jun 5, 2021 at 9:32 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Sun, 2021-06-06 at 00:47 +0530, Dwaipayan Ray wrote:
+> > When checkpatch is run without a filename, it reads from stdin.
+> > But if --file option is used along with that, it may generate
 
---+e3T6L8B4PjNfYWV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+But if the --file option is used...
 
-On Fri, Apr 30, 2021 at 11:36:08AM -0300, Leonardo Bras wrote:
-> Every time a memory hotplug happens, and the memory limit crosses a 2^n
-> value, it may be necessary to perform HPT resizing-up, which can take
-> some time (over 100ms in my tests).
->=20
-> It usually is not an issue, but it can take some time if a lot of memory
-> is added to a guest with little starting memory:
-> Adding 256G to a 2GB guest, for example will require 8 HPT resizes.
->=20
-> Perform an HPT resize before memory hotplug, updating HPT to its
-> final size (considering a successful hotplug), taking the number of
-> HPT resizes to at most one per memory hotplug action.
->=20
-> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
+> > false positives.
+> >
+> > Consider the following test file:
+> > $cat test.c
+> > int x = a - b;
+> >
+> > $cat test.c | ./scripts/checkpatch.pl -f
+> > WARNING: It's generally not useful to have the filename in the file
+> > +int x = a - b;
+> >
+> > This is a false positive and occurs because $realfile is set to "-".
+> > Also since checkpatch relies on the file's extension to run specific
+> > checks for c files, assembly files, etc, most of the checks are
+> > not run as well.
+> >
+> > So it is better to disable -f/--file option when checkpatch is
+> > run without a filename.
+>
+> That's a reasonable commit message, thanks.
+>
 
-Reviewed-by: David Gibson <david@gibson.dropbear.id.au>
+That can be shortened to:
 
-> ---
->  arch/powerpc/include/asm/book3s/64/hash.h     |  2 ++
->  arch/powerpc/mm/book3s64/hash_utils.c         | 20 +++++++++++++++++++
->  .../platforms/pseries/hotplug-memory.c        |  9 +++++++++
->  3 files changed, 31 insertions(+)
->=20
-> diff --git a/arch/powerpc/include/asm/book3s/64/hash.h b/arch/powerpc/inc=
-lude/asm/book3s/64/hash.h
-> index d959b0195ad9..fad4af8b8543 100644
-> --- a/arch/powerpc/include/asm/book3s/64/hash.h
-> +++ b/arch/powerpc/include/asm/book3s/64/hash.h
-> @@ -255,6 +255,8 @@ int hash__create_section_mapping(unsigned long start,=
- unsigned long end,
->  				 int nid, pgprot_t prot);
->  int hash__remove_section_mapping(unsigned long start, unsigned long end);
-> =20
-> +void hash_batch_expand_prepare(unsigned long newsize);
-> +
->  #endif /* !__ASSEMBLY__ */
->  #endif /* __KERNEL__ */
->  #endif /* _ASM_POWERPC_BOOK3S_64_HASH_H */
-> diff --git a/arch/powerpc/mm/book3s64/hash_utils.c b/arch/powerpc/mm/book=
-3s64/hash_utils.c
-> index 608e4ed397a9..3fa395b3fe57 100644
-> --- a/arch/powerpc/mm/book3s64/hash_utils.c
-> +++ b/arch/powerpc/mm/book3s64/hash_utils.c
-> @@ -859,6 +859,26 @@ int hash__remove_section_mapping(unsigned long start=
-, unsigned long end)
-> =20
->  	return rc;
->  }
-> +
-> +void hash_batch_expand_prepare(unsigned long newsize)
-> +{
-> +	const u64 starting_size =3D ppc64_pft_size;
-> +
-> +	/*
-> +	 * Resizing-up HPT should never fail, but there are some cases system s=
-tarts with higher
-> +	 * SHIFT than required, and we go through the funny case of resizing HP=
-T down while
-> +	 * adding memory
-> +	 */
-> +
-> +	while (resize_hpt_for_hotplug(newsize, false) =3D=3D -ENOSPC) {
-> +		newsize *=3D 2;
-> +		pr_warn("Hash collision while resizing HPT\n");
-> +
-> +		/* Do not try to resize to the starting size, or bigger value */
-> +		if (htab_shift_for_mem_size(newsize) >=3D starting_size)
-> +			break;
-> +	}
-> +}
->  #endif /* CONFIG_MEMORY_HOTPLUG */
-> =20
->  static void __init hash_init_partition_table(phys_addr_t hash_table,
-> diff --git a/arch/powerpc/platforms/pseries/hotplug-memory.c b/arch/power=
-pc/platforms/pseries/hotplug-memory.c
-> index 8377f1f7c78e..48b2cfe4ce69 100644
-> --- a/arch/powerpc/platforms/pseries/hotplug-memory.c
-> +++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
-> @@ -13,6 +13,7 @@
->  #include <linux/memory.h>
->  #include <linux/memory_hotplug.h>
->  #include <linux/slab.h>
-> +#include <linux/pgtable.h>
-> =20
->  #include <asm/firmware.h>
->  #include <asm/machdep.h>
-> @@ -671,6 +672,10 @@ static int dlpar_memory_add_by_count(u32 lmbs_to_add)
->  	if (lmbs_available < lmbs_to_add)
->  		return -EINVAL;
-> =20
-> +	if (!radix_enabled())
-> +		hash_batch_expand_prepare(memblock_phys_mem_size() +
-> +						 lmbs_to_add * drmem_lmb_size());
-> +
->  	for_each_drmem_lmb(lmb) {
->  		if (lmb->flags & DRCONF_MEM_ASSIGNED)
->  			continue;
-> @@ -788,6 +793,10 @@ static int dlpar_memory_add_by_ic(u32 lmbs_to_add, u=
-32 drc_index)
->  	if (lmbs_available < lmbs_to_add)
->  		return -EINVAL;
-> =20
-> +	if (!radix_enabled())
-> +		hash_batch_expand_prepare(memblock_phys_mem_size() +
-> +					  lmbs_to_add * drmem_lmb_size());
-> +
->  	for_each_drmem_lmb_in_range(lmb, start_lmb, end_lmb) {
->  		if (lmb->flags & DRCONF_MEM_ASSIGNED)
->  			continue;
+Disable -f/--file option when checkpatch is run without a filename.
 
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
+How about adding a description in the checkpatch Documentation on this
+topic as well, as part of this patch?
 
---+e3T6L8B4PjNfYWV
-Content-Type: application/pgp-signature; name="signature.asc"
+Lukas
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmC9qicACgkQbDjKyiDZ
-s5Jdqw//RczgBrNyU1kIqVO7/FiFsNT63ohCuxllQ8p7j075vP50I4I/e3GUovQB
-DRLF2Zv3OOVxqhU7AEDxGAFj7wOzMoGrvuEAn8vRoilpL9SK1XzWzl71uVi6jE3W
-LfL+LVoP6rL/Aqp/LapU0E2GVDQWiBhckSFP7cEoy1eO1VlPZu/o2NbzIXo6rSf2
-rLIV8lubVuJjx5EPvmwUUrZG/kfmCOeZ7Fu2ym1VzFoj54JZppHLs6BZoDE4oSUa
-d15AV4LtAMyIPbYzPFEw5q3QfYbo1tLdYJ7blPkFGlYYtERtmGidtqlDIf9+yu+D
-Zr04CtmgA3IB0aW8OHJkHCpgovqQ0xwvFHxnNx9Ta59J5+qgLV1wHPDM7JgrW5bW
-mI0KFgE1uKcVK+T00TGNK1r8qiuwbQEWBcx0GrtoC1/wYt5f7AlNUJHhEZsUKcaN
-jYUOw9roHR+m+ccnkGvLTQb/OCkshLld/xdj5NBhKyc479dFQ8w6Wonx/c01O+9S
-nkunjt22DOumTWONk01cSYAzRCmdsaMOktfNITqxp8XU26DNsJdBiyOCvwZG8ieu
-Gl+QFaQD4PO+AHxWCP6upQzlHedgxU9WoYyQN+VP8NX1kJVBsGfcuq9neMyqDcR+
-obFfkY8ODfoFq8focOl3j9GZuA62bsCy7J5d7M/OqLkAtEX/z8s=
-=OPXK
------END PGP SIGNATURE-----
-
---+e3T6L8B4PjNfYWV--
+> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> []
+> > @@ -331,6 +331,7 @@ help(0) if ($help);
+> >
+> >
+> >  die "$P: --git cannot be used with --file or --fix\n" if ($git && ($file || $fix));
+> >  die "$P: --verbose cannot be used with --terse\n" if ($verbose && $terse);
+> > +die "$P: -f/--file requires at least one filename\n" if ($file && $#ARGV < 0);
+> >
+> >  if ($color =~ /^[01]$/) {
+> >       $color = !$color;
+>
+>
