@@ -2,45 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1D539D44E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 07:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD78F39D467
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 07:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbhFGFZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 01:25:23 -0400
-Received: from mga18.intel.com ([134.134.136.126]:19226 "EHLO mga18.intel.com"
+        id S230145AbhFGFmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 01:42:00 -0400
+Received: from mga17.intel.com ([192.55.52.151]:39788 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229436AbhFGFZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 01:25:22 -0400
-IronPort-SDR: w+iOvDCHYQcTvuxuePSYcnAiDVJDa8c0WrvWRjMIJx/ntSDuN/+TjNfUK770qJsHlaZBJKqoyc
- FOC39kVkG7sg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="191891204"
+        id S229436AbhFGFl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 01:41:59 -0400
+IronPort-SDR: dauNcn8pKuUYeR+uQGB4UodWnCZOlPVl9bNBgd5b/jL2S7jSjeL3AmdEZSz2QxN0gZ8uFt7F93
+ UsDGfaEvVtqw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="184935481"
 X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="191891204"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 22:23:31 -0700
-IronPort-SDR: IthmsF4H3q5l/sZxKPvmXYrNmi+xLuCHM3lfklFbGjvDYfO2e8S3KPNZ2vuRsDkzSJGy4cMjrS
- caUVbjfvvwlg==
+   d="scan'208";a="184935481"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 22:40:08 -0700
+IronPort-SDR: jRd36pt5vFdy2P3pwEOW3+6OukIOoSfDZkH02krN8iAJQbu93/12VkSo5D/xavwHC/ExtjcPxq
+ lcsMPjQFtF5g==
 X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
-   d="scan'208";a="481388126"
-Received: from unknown (HELO [10.238.130.222]) ([10.238.130.222])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 22:23:30 -0700
-Subject: Re: [PATCH RFC 4/7] kvm: x86: Add new ioctls for XSAVE extension
-From:   "Liu, Jing2" <jing2.liu@linux.intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jing2.liu@intel.com
-References: <20210207154256.52850-1-jing2.liu@linux.intel.com>
- <20210207154256.52850-5-jing2.liu@linux.intel.com>
- <YKwfsIT5DuE+L+4M@google.com>
- <920df897-56d8-1f81-7ce2-0050fb744bd7@linux.intel.com>
- <YK5egUs+Wl2d+wWz@google.com>
- <a65656e7-adab-dd9d-7f9d-b25a96e7accd@linux.intel.com>
-Message-ID: <7cbcbcf6-770d-8ac3-e7f3-6fed3331aa00@linux.intel.com>
-Date:   Mon, 7 Jun 2021 13:23:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+   d="scan'208";a="447365402"
+Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2021 22:40:07 -0700
+Subject: Re: [kbuild-all] Re: net/bpf/test_run.c:154:14: warning: no previous
+ prototype for 'bpf_fentry_test7'
+To:     Yonghong Song <yhs@fb.com>, kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>
+References: <202106041511.4rHRCtw2-lkp@intel.com>
+ <b45f82d0-8bc1-7050-a939-4f5791c6981e@fb.com>
+From:   Rong Chen <rong.a.chen@intel.com>
+Message-ID: <dffb1503-b9f8-14de-5730-bc6f5b83f42e@intel.com>
+Date:   Mon, 7 Jun 2021 13:39:50 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <a65656e7-adab-dd9d-7f9d-b25a96e7accd@linux.intel.com>
+In-Reply-To: <b45f82d0-8bc1-7050-a939-4f5791c6981e@fb.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
@@ -50,93 +47,100 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 6/1/2021 6:24 PM, Liu, Jing2 wrote:
+On 6/4/21 11:52 PM, Yonghong Song wrote:
 >
 >
-> On 5/26/2021 10:43 PM, Sean Christopherson wrote:
->> On Wed, May 26, 2021, Liu, Jing2 wrote:
->>> On 5/25/2021 5:50 AM, Sean Christopherson wrote:
->>>> On Sun, Feb 07, 2021, Jing Liu wrote:
->>>>> The static xstate buffer kvm_xsave contains the extended register
->>>>> states, but it is not enough for dynamic features with large state.
->>>>>
->>>>> Introduce a new capability called KVM_CAP_X86_XSAVE_EXTENSION to
->>>>> detect if hardware has XSAVE extension (XFD). Meanwhile, add two
->>>>> new ioctl interfaces to get/set the whole xstate using struct
->>>>> kvm_xsave_extension buffer containing both static and dynamic
->>>>> xfeatures. Reuse fill_xsave and load_xsave for both cases.
->>>>>
->>>>> Signed-off-by: Jing Liu <jing2.liu@linux.intel.com>
->>>>> ---
->>>>>    arch/x86/include/uapi/asm/kvm.h |  5 +++
->>>>>    arch/x86/kvm/x86.c              | 70 
->>>>> +++++++++++++++++++++++++--------
->>>>>    include/uapi/linux/kvm.h        |  8 ++++
->>>>>    3 files changed, 66 insertions(+), 17 deletions(-)
->>>>>
->>>>> diff --git a/arch/x86/include/uapi/asm/kvm.h 
->>>>> b/arch/x86/include/uapi/asm/kvm.h
->>>>> index 89e5f3d1bba8..bf785e89a728 100644
->>>>> --- a/arch/x86/include/uapi/asm/kvm.h
->>>>> +++ b/arch/x86/include/uapi/asm/kvm.h
->>>>> @@ -362,6 +362,11 @@ struct kvm_xsave {
->>>>>        __u32 region[1024];
->> Hold up a sec.  How big is the AMX data?
-> AMX tileconfig size is 64B, but tiledata size is 8K.
->> The existing size is 4096 bytes, not
->> 1024 bytes.  IIRC, AMX is >4k, so we still need a new ioctl(),
-> Yep, kvm_xsave can hold 4KB state. We need a new ioctl, holding all 
-> the states,
-> not only AMX. And once KVM supports AMX, the size will >4096 so qemu need
-> use kvm_xsave2 instead, otherwise, cannot save/restore whole AMX state.
->> but we should be
->> careful to mentally adjust for the __u32 when mentioning the sizes.
+> On 6/4/21 12:50 AM, kernel test robot wrote:
+>> Hi Yonghong,
 >>
->>>>>    };
->>>>> +/* for KVM_CAP_XSAVE_EXTENSION */
->>>>> +struct kvm_xsave_extension {
->>>>> +    __u32 region[3072];
->>>> Fool me once, shame on you (Intel).  Fool me twice, shame on me (KVM).
->>>>
->>>> As amusing as kvm_xsave_really_extended would be, the required size 
->>>> should be
->>>> discoverable, not hardcoded.
->>> Thanks for reviewing the patch.  When looking at current kvm_xsave 
->>> structure,
->>> I felt confusing about the static hardcoding of 1024 bytes, but 
->>> failed to
->>> find clue for its final decision in 2010[1].
->> Simplicitly and lack of foresight :-)
+>> FYI, the error/warning still remains.
 >>
->>> So we'd prefer to changing the way right? Please correct me if I 
->>> misunderstood.
->> Sadly, we can't fix the existing ioctl() without breaking userspace.  
->> But for
->> the new ioctl(), yes, its size should not be hardcoded.
+>> tree: 
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 
+>> master
+>> head:   f88cd3fb9df228e5ce4e13ec3dbad671ddb2146e
+>> commit: d923021c2ce12acb50dc7086a1bf66eed82adf6a bpf: Add tests for 
+>> PTR_TO_BTF_ID vs. null comparison
+>> date:   11 months ago
+>> config: x86_64-rhel (attached as .config)
+>> compiler: gcc-6 (Ubuntu 6.4.0-17ubuntu1) 6.4.0 20180424
+>> reproduce (this is a W=1 build):
+>>          # 
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d923021c2ce12acb50dc7086a1bf66eed82adf6a
+>>          git remote add linus 
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>          git fetch --no-tags linus master
+>>          git checkout d923021c2ce12acb50dc7086a1bf66eed82adf6a
+>>          # save the attached .config to linux build tree
+>>          make W=1 ARCH=x86_64
 >>
->>>> Nothing prevents a hardware vendor from inventing a newfangled 
->>>> feature that
->>>> requires yet more space.  As an alternative to adding a dedicated
->>>> capability, can we leverage GET_SUPPORTED_CPUID, leaf CPUID.0xD,
->>> Yes, this is a good way to avoid a dedicated capability. Thanks for the
->>> suggestion.  Use 0xD.1.EBX for size of enabled xcr0|xss if supposing
->>> kvm_xsave cares both.
-I think kvm_xsave ioctl only cares user states because supervisor states 
-should
-always use compacted format. When trying to think about how to get/set 
-supervisor
-states, I think it can not reuse current design (qemu talks with kvm via 
-a buffer
-and set/get to/from qemu's env->some_feature one by one according to the 
-offset).
-So do we need handle supervisor states and change the way?
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> All warnings (new ones prefixed by >>):
+>>
+>>     net/bpf/test_run.c:120:14: warning: no previous prototype for 
+>> 'bpf_fentry_test1' [-Wmissing-prototypes]
+>>      int noinline bpf_fentry_test1(int a)
+>>                   ^~~~~~~~~~~~~~~~
+>>     net/bpf/test_run.c:125:14: warning: no previous prototype for 
+>> 'bpf_fentry_test2' [-Wmissing-prototypes]
+>>      int noinline bpf_fentry_test2(int a, u64 b)
+>>                   ^~~~~~~~~~~~~~~~
+>>     net/bpf/test_run.c:130:14: warning: no previous prototype for 
+>> 'bpf_fentry_test3' [-Wmissing-prototypes]
+>>      int noinline bpf_fentry_test3(char a, int b, u64 c)
+>>                   ^~~~~~~~~~~~~~~~
+>>     net/bpf/test_run.c:135:14: warning: no previous prototype for 
+>> 'bpf_fentry_test4' [-Wmissing-prototypes]
+>>      int noinline bpf_fentry_test4(void *a, char b, int c, u64 d)
+>>                   ^~~~~~~~~~~~~~~~
+>>     net/bpf/test_run.c:140:14: warning: no previous prototype for 
+>> 'bpf_fentry_test5' [-Wmissing-prototypes]
+>>      int noinline bpf_fentry_test5(u64 a, void *b, short c, int d, 
+>> u64 e)
+>>                   ^~~~~~~~~~~~~~~~
+>>     net/bpf/test_run.c:145:14: warning: no previous prototype for 
+>> 'bpf_fentry_test6' [-Wmissing-prototypes]
+>>      int noinline bpf_fentry_test6(u64 a, void *b, short c, int d, 
+>> void *e, u64 f)
+>>                   ^~~~~~~~~~~~~~~~
+>>>> net/bpf/test_run.c:154:14: warning: no previous prototype for 
+>>>> 'bpf_fentry_test7' [-Wmissing-prototypes]
+>>      int noinline bpf_fentry_test7(struct bpf_fentry_test_t *arg)
+>>                   ^~~~~~~~~~~~~~~~
+>>>> net/bpf/test_run.c:159:14: warning: no previous prototype for 
+>>>> 'bpf_fentry_test8' [-Wmissing-prototypes]
+>>      int noinline bpf_fentry_test8(struct bpf_fentry_test_t *arg)
+>>                   ^~~~~~~~~~~~~~~~
+>>     net/bpf/test_run.c:164:14: warning: no previous prototype for 
+>> 'bpf_modify_return_test' [-Wmissing-prototypes]
+>>      int noinline bpf_modify_return_test(int a, int *b)
+>>                   ^~~~~~~~~~~~~~~~~~~~~~
+>
+> I think this has been discussed earlier.
+>
+> In net/bpf/test_run.c, we have,
+>
+> __diag_push();
+> __diag_ignore(GCC, 8, "-Wmissing-prototypes",
+>               "Global functions as their definitions will be in 
+> vmlinux BTF");
+> int noinline bpf_fentry_test1(int a)
+> {
+>         return a + 1;
+> }
+> ...
+>
+> Unfortunately, the __diag_ignore macro only effective for gcc8 and later.
+>
+> So for gcc6, the above warning will be emitted. Is it possible for the 
+> tool to check and ignore this error if the gcc version is less than 8?
+>
 
-For kvm_xsave2 which expands to >4096B, if reuse and expand current way, 
-it only
-detects xcr0 from 0xD.0.EBX.
+Hi Yonghong,
 
-[...]
+Thanks for the advice, we'll ignore this error later.
 
-Thanks,
-Jing
-
+Best Regards,
+Rong Chen
