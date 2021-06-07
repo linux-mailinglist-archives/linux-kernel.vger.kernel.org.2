@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7002539E2B5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 200CA39E2B9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232181AbhFGQTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 12:19:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48704 "EHLO mail.kernel.org"
+        id S232547AbhFGQTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 12:19:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231909AbhFGQPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 12:15:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CA8561442;
-        Mon,  7 Jun 2021 16:13:41 +0000 (UTC)
+        id S232259AbhFGQQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 12:16:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E078613D5;
+        Mon,  7 Jun 2021 16:13:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623082422;
-        bh=b5BGenhf/Ak7a40yAaF7XyNoqm56O3ussUahGFJTdJI=;
+        s=k20201202; t=1623082423;
+        bh=uFSqM+u+PdeG678lxbL5/rlnxIa/seABvi6BwrnXeIg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k7NZzB4yhVTIkWOxB6eSDBUTreMvQVd/5YJ2CyCrtCYhyGxTw3LR/DgiYuAx3NeQ/
-         837PVPDUZMEmBf/VibHZuljHg4eIfY1VfezsWH7PqojDf0HTB7i99/zzNLnJmmy6AH
-         M/nKts0l7m5QIP/x2vU03/LiWdMXVZ/NkM+viFRmy19gFLNIy446QShwDYXI07GMfw
-         YPtRHQUBPmuAWyNXoBCTuXQIk+j92lfrKXxzPAQ+e1DW0G4mg4+tzX4Gwp44/jBpuI
-         uDO+Kq9RcxJNb3zfap0FfZ8tRyL2enrqDyfaxjuiZ9gv6JQ6Ep4t/npa7SejQRWlRn
-         5zyLibvym1ZSQ==
+        b=e3OPlbxldYZBZd9WduzVG/J2T9yUAsRUzOUy+Bb+mGQo449EuBVjMJrHp2VgX/SHd
+         fD//td+PxupwcbvHpkwOC0dQ0yuDaSS01IZG9NBYFvyqiUeTZv9D19+f1QrSzOzpxM
+         TRG6uYpSm4z/yoQTzwaurMTh0gOxNM9qF0JOYTBEfSDHhlI/120sW1onfoCifGT3Cn
+         2gw6Rys5nGFLrOTTnE30SRRfW3U8/t8vO6gd6UFrwdRMliRWIR+Ax+JEGi1lOJaA3x
+         OII6snZYeCZjRDqG8eaoX2U8jsznAuF6CPC6x2AmNKMgMaPJiPHlBsLiDlA/tIP2OL
+         fHgOyYIyQE59A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Khem Raj <raj.khem@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-riscv@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.10 18/39] riscv: Use -mno-relax when using lld linker
-Date:   Mon,  7 Jun 2021 12:12:57 -0400
-Message-Id: <20210607161318.3583636-18-sashal@kernel.org>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+34ba7ddbf3021981a228@syzkaller.appspotmail.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, cluster-devel@redhat.com
+Subject: [PATCH AUTOSEL 5.10 19/39] gfs2: Fix use-after-free in gfs2_glock_shrink_scan
+Date:   Mon,  7 Jun 2021 12:12:58 -0400
+Message-Id: <20210607161318.3583636-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210607161318.3583636-1-sashal@kernel.org>
 References: <20210607161318.3583636-1-sashal@kernel.org>
@@ -44,49 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Khem Raj <raj.khem@gmail.com>
+From: Hillf Danton <hdanton@sina.com>
 
-[ Upstream commit ec3a5cb61146c91f0f7dcec8b7e7157a4879a9ee ]
+[ Upstream commit 1ab19c5de4c537ec0d9b21020395a5b5a6c059b2 ]
 
-lld does not implement the RISCV relaxation optimizations like GNU ld
-therefore disable it when building with lld, Also pass it to
-assembler when using external GNU assembler ( LLVM_IAS != 1 ), this
-ensures that relevant assembler option is also enabled along. if these
-options are not used then we see following relocations in objects
+The GLF_LRU flag is checked under lru_lock in gfs2_glock_remove_from_lru() to
+remove the glock from the lru list in __gfs2_glock_put().
 
-0000000000000000 R_RISCV_ALIGN     *ABS*+0x0000000000000002
+On the shrink scan path, the same flag is cleared under lru_lock but because
+of cond_resched_lock(&lru_lock) in gfs2_dispose_glock_lru(), progress on the
+put side can be made without deleting the glock from the lru list.
 
-These are then rejected by lld
-ld.lld: error: capability.c:(.fixup+0x0): relocation R_RISCV_ALIGN requires unimplemented linker relaxation; recompile with -mno-relax but the .o is already compiled with -mno-relax
+Keep GLF_LRU across the race window opened by cond_resched_lock(&lru_lock) to
+ensure correct behavior on both sides - clear GLF_LRU after list_del under
+lru_lock.
 
-Signed-off-by: Khem Raj <raj.khem@gmail.com>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Reported-by: syzbot <syzbot+34ba7ddbf3021981a228@syzkaller.appspotmail.com>
+Signed-off-by: Hillf Danton <hdanton@sina.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/Makefile | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ fs/gfs2/glock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index 0289a97325d1..e241e0e85ac8 100644
---- a/arch/riscv/Makefile
-+++ b/arch/riscv/Makefile
-@@ -36,6 +36,15 @@ else
- 	KBUILD_LDFLAGS += -melf32lriscv
- endif
- 
-+ifeq ($(CONFIG_LD_IS_LLD),y)
-+	KBUILD_CFLAGS += -mno-relax
-+	KBUILD_AFLAGS += -mno-relax
-+ifneq ($(LLVM_IAS),1)
-+	KBUILD_CFLAGS += -Wa,-mno-relax
-+	KBUILD_AFLAGS += -Wa,-mno-relax
-+endif
-+endif
-+
- # ISA string setting
- riscv-march-$(CONFIG_ARCH_RV32I)	:= rv32ima
- riscv-march-$(CONFIG_ARCH_RV64I)	:= rv64ima
+diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
+index 5feb8f01de8a..3fd55d4961cd 100644
+--- a/fs/gfs2/glock.c
++++ b/fs/gfs2/glock.c
+@@ -1782,6 +1782,7 @@ __acquires(&lru_lock)
+ 	while(!list_empty(list)) {
+ 		gl = list_first_entry(list, struct gfs2_glock, gl_lru);
+ 		list_del_init(&gl->gl_lru);
++		clear_bit(GLF_LRU, &gl->gl_flags);
+ 		if (!spin_trylock(&gl->gl_lockref.lock)) {
+ add_back_to_lru:
+ 			list_add(&gl->gl_lru, &lru_list);
+@@ -1827,7 +1828,6 @@ static long gfs2_scan_glock_lru(int nr)
+ 		if (!test_bit(GLF_LOCK, &gl->gl_flags)) {
+ 			list_move(&gl->gl_lru, &dispose);
+ 			atomic_dec(&lru_count);
+-			clear_bit(GLF_LRU, &gl->gl_flags);
+ 			freed++;
+ 			continue;
+ 		}
 -- 
 2.30.2
 
