@@ -2,136 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CFA239DA83
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A174739DA88
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 13:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231208AbhFGLDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 07:03:21 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:60910 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbhFGLDT (ORCPT
+        id S231266AbhFGLDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 07:03:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230215AbhFGLD2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 07:03:19 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210607110126epoutp026f9b1264b1f88f3eb0d5acc2e27643a3~GR9LCFOAx3132831328epoutp02y
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 11:01:26 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210607110126epoutp026f9b1264b1f88f3eb0d5acc2e27643a3~GR9LCFOAx3132831328epoutp02y
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1623063686;
-        bh=AVOhpAfM7Gqoiqsr+s5cR3shUV/6+9dn/S7Zad+fUTs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YbcAoBxjXdb+ELGj4YSrPL5WCDHW7oe9KufqyaVdyG9WORN4nRMCLklcZoAb2CP1v
-         MLVkv8UhtrSflvQfjbwyvEA/CEyaEt8PC++GA43E0+R5CIlO5As75gWbEShMWmX+iH
-         EMmnHp5AlPaFMKfxMWf4MsNUhKWGCr7tP4rI6wK8=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20210607110125epcas1p320529af5cfd885aea527f64a4fddf74e~GR9J_YbEe2589325893epcas1p3T;
-        Mon,  7 Jun 2021 11:01:25 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.159]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4Fz9R757Kmz4x9Pv; Mon,  7 Jun
-        2021 11:01:23 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        AB.4A.10258.38CFDB06; Mon,  7 Jun 2021 20:01:23 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210607110122epcas1p4557bcbc7abac791f2557cc0d317214fd~GR9Hvvv0x2088020880epcas1p4Z;
-        Mon,  7 Jun 2021 11:01:22 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210607110122epsmtrp16e2f431b0d99e066731e189dc28c3b99~GR9HuZjtn3235632356epsmtrp1V;
-        Mon,  7 Jun 2021 11:01:22 +0000 (GMT)
-X-AuditID: b6c32a38-42fff70000002812-f2-60bdfc831fd2
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        FF.E8.08163.28CFDB06; Mon,  7 Jun 2021 20:01:22 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.99.105]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210607110122epsmtip2b92bf6c4921eac392a0d40221db4c9ee~GR9HWrwTd0048400484epsmtip2l;
-        Mon,  7 Jun 2021 11:01:22 +0000 (GMT)
-From:   Changheun Lee <nanich.lee@samsung.com>
-To:     hch@infradead.org
-Cc:     Johannes.Thumshirn@wdc.com, alex_y_xu@yahoo.ca,
-        alim.akhtar@samsung.com, asml.silence@gmail.com,
-        avri.altman@wdc.com, axboe@kernel.dk, bgoncalv@redhat.com,
-        bvanassche@acm.org, cang@codeaurora.org, damien.lemoal@wdc.com,
-        gregkh@linuxfoundation.org, jaegeuk@kernel.org, jejb@linux.ibm.com,
-        jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
-        ming.lei@redhat.com, mj0123.lee@samsung.com,
-        nanich.lee@samsung.com, osandov@fb.com, patchwork-bot@kernel.org,
-        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
-        tj@kernel.org, tom.leiming@gmail.com, woosung2.lee@samsung.com,
-        yi.zhang@redhat.com, yt0928.kim@samsung.com
-Subject: Re: [PATCH v12 1/3] bio: control bio max size
-Date:   Mon,  7 Jun 2021 19:42:48 +0900
-Message-Id: <20210607104248.17035-1-nanich.lee@samsung.com>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <YL29gP0j1qmVuzyy@infradead.org>
+        Mon, 7 Jun 2021 07:03:28 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C51C061766;
+        Mon,  7 Jun 2021 04:01:24 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id y2so24224355ybq.13;
+        Mon, 07 Jun 2021 04:01:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eOk28QuplFXUqfx4Omxl+hHoy7+LeKbRcCFQxR2HiDg=;
+        b=kcacTHFqZjpKgAGn83h6ZcGEfrTYMF4xHxvDO5D+aKf7yGAl7SNutkJU/dns5/0Toi
+         L1W8p4oMYhasUQYqMU3QnzwgkEIv+DbUoxv9IC7jrGZbbZV+fePV+frtSgJ9Qw+iPqrS
+         XycjgZ8aFN+QD8jSPmFNukQqU8gDo5BI04Qwfprk7lkMu67Lb3z8v4maNZfxpaffu/I6
+         UfEzizAUmMdxjMkqnALnuKmQfjeh0nhAAEuYXSeDuTLT+m6fv8R8Bn/EwtbDTAUwVhAQ
+         d1Y9eV8XiMghf2xI3ujnzpwSIbNOUJWpiQPSg3qaAU6nW+GvWgs5KQyazogzhF4M1H3l
+         xFfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eOk28QuplFXUqfx4Omxl+hHoy7+LeKbRcCFQxR2HiDg=;
+        b=QFSApm/SQRZHC6hN2PD5ykOOHY24BrPXulTPHnW6Nf7Pd5yIGDwvw/ThpMMlNHbf+U
+         2JSTk1AghR9DnDvNwdAdDKOAOaRfdbQPSlOCq+oEBCVO7sr+Qhtb6vqhKdEXw0VruEyC
+         Fn/QGIxYxJJu78hIktFXXiRr1dUl6vSMpTKcd4xq3N8pI0XUrQXjSABF9ZDxupaD2PH+
+         lSCbAjEMq/6QtR5jvZknKztiUuQdG2e2q2ryfHbK6qJPg5hPNTCXGZGJZg51v08DtaW+
+         chcEJlIntsi4iBe7XFin74L0Ot9sVlxmPKR8E5Hmt+ctxDq2BImOB+Xi3GyV4f4kLxXe
+         8juA==
+X-Gm-Message-State: AOAM533jKo1lGgj5odiLR9+iFcyYsVnLiYeYaqE1nUbmVPcjainfra5G
+        L2j4ndSOcRSg/AW20+lPgGNCXAOrBjUbUp66iV0=
+X-Google-Smtp-Source: ABdhPJxsAO4O7+1PJKJdXSJWiRnllFxvdUp/lmPmeLed0v6u2MYw19nOBSus4DzafHPuZRqHHk1Z52A1NP3Si7Ogius=
+X-Received: by 2002:a25:a26a:: with SMTP id b97mr23644097ybi.62.1623063683489;
+ Mon, 07 Jun 2021 04:01:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Ta0xTZxjOd045p3XpduS2L8S4UiGOewsUPgQWEpg5zpmQwNyCS6DCSSGU
-        0rR087I5sjLuKxAISGmFIQFTmVVwDTBQxkXjBAnjzgbIgAkMkEHQgSgrLWT8ey/P8z7v8375
-        2LhtE+nETpKlMQqZWMonDrFMnW4CL/V2W5ygMdcV3fqjnkRPr5kIpDOYAFrYHCLQzYkCArX0
-        VwJUurqJozVjrQ36LusFhtTXjQR6XFiNoVmjFkfVoyYM5c9+a4Ne505iaGNaidrGPdBAi45A
-        eSNNBKp7+AZDHcVqDJU16nA0PNVDos7JIRaarinC0ZNHazbo2kwY2qrrBuj5vyMk+rWpGEcj
-        T0oJZGzbJMJ49MDgaXpA8z1GF6lXSLpZO0HSjTfc6YFeFd1gyCHowup2QN/X15P0P3PjLPr5
-        vSGC1tw1AHq94Sid1Z6H0R0dtXjkOzHSkERGnMAoeIwsPjUhSSYJ5Z+Oig2PFQUIhF7CIBTI
-        58nEKUwoP+LjSK+TSVLzvfi8L8RSlbkUKVYq+T4fhChSVWkMLzFVmRbKZ+QJUrlQIPdWilOU
-        KpnEOz415YRQIPAVmZFx0sSlsTZMfpt1wdBbiqeDdjwXcNiQ8oeaP/vIXHCIbUs1AViRvQSs
-        yRqAG78bCGuyDmB35QNyn1JU0bCHagGwILMf221YUH/3CHdjgvKEmuVxYje2pxzgZNmghYBT
-        KzZwILeFtduwowJgyYTeErMoVzjbOmcGsdlcKhh2r0mtYu/B7al8y64cygv2d+ktMZc6DB+V
-        z1qouBmj/qkC350Pqb848I6ugWUlR8Cs1cY9o3Zw8eHdPQdOcKEgk7QS8gBUZ1YCa1IIYM2z
-        WsyK8oNr6+uWjXDKDRpbfKxlZ9j8Sg+sym/DlY18m10IpLgwO9PWCnGBPRlT+L7Wsx+b9ybS
-        sPp+P269XDqAW1VVZCHgaQ8Y0h4wpP1fuQrgBuDIyJUpEkYplPsffOMGYPlC7qgJ6JdXvTsA
-        xgYdALJxvj33oyOtcbbcBPHFS4wiNVahkjLKDiAyX7sId3KITzX/QVlarFDk6+fnh/wDAgNE
-        fvx3uZLwy3G2lEScxiQzjJxR7PMwNscpHQs6N9J2rjHRM0U0efnWkZWF6MUHPM6XcCfwaXOA
-        do560c531MVsdy5297vsxEQrnKXi3zSqT1xfD+hKOkM4F02nPu29UHabdX2RHP1h6tKrN6bz
-        wxHhUzHHr0QH14VraYmdUT1zSj7aNb/zzWC5h+fI2a/LeuelreUFyWPHtru0w2fuXHWbvTJz
-        PLTvBr3gs/l5xlS740sRqMkx7ARu6ZayxhrxkqiaCu/pY/NONgthZ8s9StaDnHMqDjsMhajf
-        evzZzFdnRuz7m6LY5LaLX8pNfWbxtuP7Is1JlT5Y97OWW31+01dQn5F9tPmXHP1scnbXibIP
-        w18ajaPLg30CcG+yjM9SJoqF7rhCKf4PjG5+cMsEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrPIsWRmVeSWpSXmKPExsWy7bCSvG7Tn70JBpuny1usu7OG3eLBvG1s
-        FnNWbWO0ePnzKpvF6rv9bBa7Ls5ntJj24Sezxaf1y1gtWtu/MVk0L17PZnF6wiImiyfrZzFb
-        LLqxjcmi50kTq8XfrntMFl8fFlvsvaVtcXnXHDaL7us72CyWH//HZHFocjOTxfTNc5gtrt0/
-        w25x+N5VFouHSyYyW5w7+YnVYt5jB4tfy48yWrz/cZ3d4tSOycwW189NY7NYv/cnm4OCx+Ur
-        3h6X+3qZPCY2v2P32DnrLrvH5hVaHpfPlnpsWtXJ5jFh0QFGj/1z17B7fHx6i8Xj/b6rbB59
-        W1YxenzeJOfRfqCbyePQoWXMAfxRXDYpqTmZZalF+nYJXBlvbu5lKtjAUrHq7DTmBsYDzF2M
-        nBwSAiYSE2dvYuxi5OIQEtjBKLHh1zd2iISUxPETb1m7GDmAbGGJw4eLIWo+Mkrs+f6TFaSG
-        TUBHou/tLTYQW0RAVOLe9Ctgg5gFprFJbHtzC2yDsICZxJS7c1lAbBYBVYkne54yggzlFbCW
-        OPopB2KXvMSf+z1g5ZwCuhIXj8wFs4WA5rdtm88IYvMKCEqcnPkEbAwzUH3z1tnMExgFZiFJ
-        zUKSWsDItIpRMrWgODc9t9iwwCgvtVyvODG3uDQvXS85P3cTIzhNaGntYNyz6oPeIUYmDsZD
-        jBIczEoivF4yexKEeFMSK6tSi/Lji0pzUosPMUpzsCiJ817oOhkvJJCeWJKanZpakFoEk2Xi
-        4JRqYKq7a8u6RLtkZfYE69yowMKcdunwgnSRnNBsidIH5ZXvaiwnJ/r9sj1pumNawrnFDUpf
-        Cz7tivv5elatUMCdYpUpr5OXm5f/ruh5LK97sPW0jnSTLMtDZb8XE6uyzEPSnzx6qXTsZuTH
-        3fNb/JIOX7rqaO7+TNYoZ97Rx9+kfHyjMqSF96X1/tiut0Vy33ZJu4TWfpX/M16diW5j8Xv8
-        Nsip8U6f6eczPEvy9feY5qcKW6UwsURMWX+hM1Ogz08inCOa8VxmQcUbQ6sCuetv19wJuJwc
-        w7NobfLKw2lFkal9C0RyJ634uPQIb2vJ9SRJr60busvZ2NT6pl45vF6dYxGrb4hYUdmesF4B
-        ZwslluKMREMt5qLiRABLjTUTggMAAA==
-X-CMS-MailID: 20210607110122epcas1p4557bcbc7abac791f2557cc0d317214fd
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210607110122epcas1p4557bcbc7abac791f2557cc0d317214fd
-References: <YL29gP0j1qmVuzyy@infradead.org>
-        <CGME20210607110122epcas1p4557bcbc7abac791f2557cc0d317214fd@epcas1p4.samsung.com>
+References: <20210603221758.10305-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210603221758.10305-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Mon, 7 Jun 2021 12:00:57 +0100
+Message-ID: <CA+V-a8syJ=ea9Bhu1gBr=LgEc9ie0j9WmtvmbW285XxjJqE5XA@mail.gmail.com>
+Subject: Re: [PATCH v2 00/12] Add new Renesas RZ/G2L SoC and Renesas RZ/G2L
+ SMARC EVK support
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> NAK.  As discussed countless time we already have an actual limit.
-> And we can look it as advisory before building ever bigger bios,
-> but the last thing we need is yet another confusing limit.
+Hi Geert,
 
-Thank you for your review and feedback. I has thought proper bio size control
-with proper interface might be good, and can be helpful to the other module
-beside issued performance problem. Providing of common interface to control
-bio size in block layer might be good I think even though current patch is
-not accepted.
+On Thu, Jun 3, 2021 at 11:18 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+>
+> Hi All,
+>
+> This patch series adds initial support for Renesas RZ/G2L SoC and
+> Renesas RZ/G2L SMARC EVK.
+>
+> Initial patches enables minimal peripherals on Renesas RZ/G2L
+> SMARC EVK and booted via initramfs.
+> * Documentation for RZ/G2{L,LC,UL} SoC variants
+> * SoC identification support
+> * CPG core support
+> * Minimal SoC DTSi
+> * Minimal DTS for SMARC EVK
+>
+> Changes for v2:
+> * Included type-2 RZ/G2Ul SoC in binding doc
+> * Added single entry for SMARC EVK "renesas,smarc-evk"
+> * Renamed ARCH_R9A07G044L to ARCH_R9A07G044 and
+>   dropped ARCH_R9A07G044LC config
+> * Dropped SoC identification changes will post them as
+>   separate patch.
+> * Updated comment in sh-sci.c
+> * Binding documentation patch for serial driver has been
+>   accepted so dropped the patch from this series
+> * Incorporated changes requested by Geert for CPG core
+> * Fixed dtbs_check errors
+> * Dropped 'clock-names'/'clocks'/'power-domains'/'resets'
+>   properties from GIC node and will include them in a separate
+>   patch along with arm,gic-v3.yaml binding updates
+> * Included ACK's from Rob
+>
+> Patches are based on top of [1] master branch.
+>
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git/
+>
+> Cheers,
+> Prabhakar
+>
+> Biju Das (1):
+>   serial: sh-sci: Add support for RZ/G2L SoC
+>
+> Lad Prabhakar (11):
+>   dt-bindings: arm: renesas: Document Renesas RZ/G2UL SoC
+>   dt-bindings: arm: renesas: Document Renesas RZ/G2{L,LC} SoC variants
+>   dt-bindings: arm: renesas: Document SMARC EVK
+>   soc: renesas: Add ARCH_R9A07G044 for the new RZ/G2L SoC's
+>   arm64: defconfig: Enable ARCH_R9A07G044
+>   clk: renesas: Define RZ/G2L CPG Clock Definitions
+>   dt-bindings: clock: renesas: Document RZ/G2L SoC CPG driver
+>   clk: renesas: Add CPG core wrapper for RZ/G2L SoC
+>   clk: renesas: Add support for R9A07G044 SoC
+>   arm64: dts: renesas: Add initial DTSI for RZ/G2{L,LC} SoC's
+>   arm64: dts: renesas: Add initial device tree for RZ/G2L SMARC EVK
+>
+Biju pointed out USB/ADC isn't working with the current implementation
+on upstream kernel, I'll have to re-structure to accommodate this
+use-case. I'll send a v3 fixing the issue.
 
-Thanks for all,
-Changheun Lee
+Sorry for the inconvenience.
+
+Cheers,
+Prabhakar
+
+>  .../devicetree/bindings/arm/renesas.yaml      |  18 +
+>  .../bindings/clock/renesas,rzg2l-cpg.yaml     |  80 ++
+>  arch/arm64/boot/dts/renesas/Makefile          |   2 +
+>  arch/arm64/boot/dts/renesas/r9a07g044.dtsi    | 119 +++
+>  arch/arm64/boot/dts/renesas/r9a07g044l1.dtsi  |  25 +
+>  .../boot/dts/renesas/r9a07g044l2-smarc.dts    |  21 +
+>  arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi  |  27 +
+>  arch/arm64/configs/defconfig                  |   1 +
+>  drivers/clk/renesas/Kconfig                   |   9 +
+>  drivers/clk/renesas/Makefile                  |   2 +
+>  drivers/clk/renesas/r9a07g044-cpg.c           | 372 +++++++
+>  drivers/clk/renesas/renesas-rzg2l-cpg.c       | 979 ++++++++++++++++++
+>  drivers/clk/renesas/renesas-rzg2l-cpg.h       | 217 ++++
+>  drivers/soc/renesas/Kconfig                   |   5 +
+>  drivers/tty/serial/sh-sci.c                   |  12 +-
+>  drivers/tty/serial/sh-sci.h                   |   1 +
+>  include/dt-bindings/clock/r9a07g044-cpg.h     |  89 ++
+>  17 files changed, 1978 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/devicetree/bindings/clock/renesas,rzg2l-cpg.yaml
+>  create mode 100644 arch/arm64/boot/dts/renesas/r9a07g044.dtsi
+>  create mode 100644 arch/arm64/boot/dts/renesas/r9a07g044l1.dtsi
+>  create mode 100644 arch/arm64/boot/dts/renesas/r9a07g044l2-smarc.dts
+>  create mode 100644 arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi
+>  create mode 100644 drivers/clk/renesas/r9a07g044-cpg.c
+>  create mode 100644 drivers/clk/renesas/renesas-rzg2l-cpg.c
+>  create mode 100644 drivers/clk/renesas/renesas-rzg2l-cpg.h
+>  create mode 100644 include/dt-bindings/clock/r9a07g044-cpg.h
+>
+> --
+> 2.17.1
+>
