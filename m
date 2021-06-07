@@ -2,46 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8AA539E83B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 22:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1CA39E846
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 22:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbhFGUVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 16:21:06 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:53190 "EHLO
-        mail.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230502AbhFGUVF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 16:21:05 -0400
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id 360524F66C255;
-        Mon,  7 Jun 2021 13:19:12 -0700 (PDT)
-Date:   Mon, 07 Jun 2021 13:18:49 -0700 (PDT)
-Message-Id: <20210607.131849.385731094335120916.davem@davemloft.net>
-To:     13145886936@163.com
-Cc:     kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gushengxian@yulong.com
-Subject: Re: [PATCH] net/atm/common.c fix a spelling mistake
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20210607063819.377166-1-13145886936@163.com>
-References: <20210607063819.377166-1-13145886936@163.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Mon, 07 Jun 2021 13:19:12 -0700 (PDT)
+        id S231710AbhFGUWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 16:22:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231576AbhFGUVz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 16:21:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3F3C8611BD;
+        Mon,  7 Jun 2021 20:20:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623097204;
+        bh=ah//rITmD8l8j3hYYYq4hJIc2/tES3W55o2hZs5N/vM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=dmHyqQZU8knhSygJI3JQ6/giisKCdpcm8zbrn32lGALKtlFVTGiaMJpGELoy8j8BR
+         nvopFx2SKWngfyetzubhyQw/JKkkXakSh4IucQPLRzSA534BhdLzUuGt8ul3T9CelN
+         VWVY+TX9gNxlA4LiL5MxhteSDqPUJa1WKnhUOZd199YX1XWpz1WuTtoyf6TiQlv0TA
+         AtG4mu0oqibL4kFhvIcJpY1r6lfLkGWq1xzLRnDBZdwm0FELiyMfDPXoRbxuQiy9Bd
+         d3dn+b7ik4GB3XnYGK7PJ4KFMrVsR53T1HBeAichJYjx34eQ1fWdTCIg94Pi3s2bU+
+         eOBDVVCIY+4tw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3359B60283;
+        Mon,  7 Jun 2021 20:20:04 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] pktgen: add pktgen_handle_all_threads() for the same code
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162309720420.9512.14035963799887435600.git-patchwork-notify@kernel.org>
+Date:   Mon, 07 Jun 2021 20:20:04 +0000
+References: <1623033461-3003-1-git-send-email-yejune.deng@gmail.com>
+In-Reply-To: <1623033461-3003-1-git-send-email-yejune.deng@gmail.com>
+To:     Yejune Deng <yejune.deng@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, yebin10@huawei.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: 13145886936@163.com
-Date: Sun,  6 Jun 2021 23:38:19 -0700
+Hello:
 
-> From: gushengxian <gushengxian@yulong.com>
+This patch was applied to netdev/net-next.git (refs/heads/master):
+
+On Mon,  7 Jun 2021 10:37:41 +0800 you wrote:
+> The pktgen_{run, reset, stop}_all_threads() has the same code,
+> so add pktgen_handle_all_threads() for it.
 > 
-> iff should be changed to if.
-> 
-> Signed-off-by: gushengxian <gushengxian@yulong.com>
+> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+> ---
+>  net/core/pktgen.c | 38 +++++++++++++-------------------------
+>  1 file changed, 13 insertions(+), 25 deletions(-)
 
-'iff' is the canonical way to say 'if and only if'.
+Here is the summary with links:
+  - pktgen: add pktgen_handle_all_threads() for the same code
+    https://git.kernel.org/netdev/net-next/c/cda9de0b8daf
 
-I'm not applying this, sorry.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
