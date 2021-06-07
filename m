@@ -2,171 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0172539D266
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 02:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B7F39D26B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 02:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbhFGAk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Jun 2021 20:40:58 -0400
-Received: from mail-pg1-f178.google.com ([209.85.215.178]:33653 "EHLO
-        mail-pg1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbhFGAkz (ORCPT
+        id S230145AbhFGAuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Jun 2021 20:50:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229813AbhFGAuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Jun 2021 20:40:55 -0400
-Received: by mail-pg1-f178.google.com with SMTP id e20so593954pgg.0;
-        Sun, 06 Jun 2021 17:38:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BhyIEJR3nChTbrHZqmUAy7TeMp1NR81AY1C+mI8Wo5w=;
-        b=CWYiO1KP83T0IsRKn1QMS3LzHYuzKeraoS+zY+9stRMeqTU/QawI/cXPX1GsYiaNwM
-         ErNvLOOIG5GbvdDV5e/V3fpHpp/tWIAfbeFb1g5wWAue492QId7XvxdUXKa6GE6Tdh/x
-         20Xyn9yAOB+rTnqGf9uvrxjwhAquFLuIPtCF/FNSx1aVgV5a5zF9CyZC10xbGTeFjyJr
-         6XXl51cVBaxYirDF4wY0whtEZf3XSLpyAG+iPRpmpdk5hrPH43bDlByAse3ofRX05GCr
-         Gt4whNUx3OnUIw2Cgyi4XITOMLI9ayVVgnnbrl7ciVqzgZ1roUYtOJmUsuCDEo8r0nOF
-         UMTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BhyIEJR3nChTbrHZqmUAy7TeMp1NR81AY1C+mI8Wo5w=;
-        b=bnskK6KR2BfguykN1IAlK6VGdpT511wdqpwrmmeo/Qja006gaIb/EWZvX3baxOqk9s
-         kfacGIFFRmFNoAyutSwYHEBpUvDhEQY63cfdkbDDIVQ3hNab0FxSi0UcKTvdc+fKa5OF
-         PLuIw6uYby/+/Xt6MyLJwrw076tmRa8RG2sLNDx+SdOK5hjKg6n5WYhenAWc3vlyq5z2
-         IlIRqnff4mzdaT7O0ArshZq6gA2oKdarj/b3coXnHpVy4FdrkZvOVb+kUjBCOgXjsd5y
-         R0ltCBcIRUzDbzj5P+6oQk5gPBZO+DfsS/ZFKBCwYu07Nf4ZbXX8ry0tZQvKvj0v8ICs
-         7tUQ==
-X-Gm-Message-State: AOAM531ujpkje3I0JhATOUKB6XOS6PyhDVswA83GgPzGP0yLY/Wl15bE
-        /TvKVlfCNjrOMFu8Ixnz4+bYGIiVfj+LQhTOEclfywHrgGChtw==
-X-Google-Smtp-Source: ABdhPJzuvBMg7egK8k5L+PkFrO+ZvQzvq6MygAgiCjcVVvRSQOFNzHTdxJdTiCpuUvBHM3A/EiXdnN3tgJJkKfGqsag=
-X-Received: by 2002:a62:31c7:0:b029:2e9:2c05:52d3 with SMTP id
- x190-20020a6231c70000b02902e92c0552d3mr14607993pfx.78.1623026271508; Sun, 06
- Jun 2021 17:37:51 -0700 (PDT)
+        Sun, 6 Jun 2021 20:50:13 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F94BC061766;
+        Sun,  6 Jun 2021 17:48:23 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fyvql6pCBz9sT6;
+        Mon,  7 Jun 2021 10:48:19 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623026900;
+        bh=aCgb5smwR4VG7B5IC1tlkCJWklGlU/VI5tAz85+63wE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Y1DZxRoDSoOyRKlHCgp7FToeE39PFUDVHfMRe4R0VAy7muVmqtw32lUl67gB58mYQ
+         SRtExHSUJKiRhjucHRmMvZ02rrJf2cZzJZrLhG2aoU8P/5GQ1VXrxnGfmBsRgEDqbH
+         hjOwnJz86hEzO6pP2V06aoEGxgt377zV+xKr3LUUPO/vUAgUkOxafzDZmIYtWaKEvJ
+         ICRZrM7JByQmEXQsMaweiFPB/GiSzVW9JGazoFbJymmfyR3r5Ajyaf30qEyDZyI5KD
+         ajJ6ZtWp1+E5VzAvx5SqwTrAZzv2oXwKzv5DeIDUAwlJ3T+2JxyHnen2WAgfEK//Ri
+         e1CcV6qLpb5rg==
+Date:   Mon, 7 Jun 2021 10:48:19 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Darrick J. Wong" <djwong@kernel.org>,
+        David Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the xfs tree
+Message-ID: <20210607104819.2c032c75@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210531153410.93150-1-changbin.du@gmail.com> <20210531220128.26c0cb36@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <CAM_iQpUEjBDK44=mD5shkmmoDYhmHQaSZtR34rLRkgd9wSWiQQ@mail.gmail.com>
- <20210602091451.kbdul6nhobilwqvi@wittgenstein> <CAM_iQpUqgeoY_mA6cazUPCWwMK6yw9SaD6DRg-Ja4r6r_zOmLg@mail.gmail.com>
- <20210604095451.nkfgpsibm5nrqt3f@wittgenstein>
-In-Reply-To: <20210604095451.nkfgpsibm5nrqt3f@wittgenstein>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Sun, 6 Jun 2021 17:37:40 -0700
-Message-ID: <CAM_iQpUqp1PRKfS6WcsZ16yjF4jjOrkTHX7Zdhrqo0nrE2VH1Q@mail.gmail.com>
-Subject: Re: [PATCH] nsfs: fix oops when ns->ops is not provided
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Changbin Du <changbin.du@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        David Laight <David.Laight@aculab.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/YE+qMcNo31bYv5l4MYtG0ad";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 4, 2021 at 2:54 AM Christian Brauner
-<christian.brauner@ubuntu.com> wrote:
->
-> On Thu, Jun 03, 2021 at 03:52:29PM -0700, Cong Wang wrote:
-> > On Wed, Jun 2, 2021 at 2:14 AM Christian Brauner
-> > <christian.brauner@ubuntu.com> wrote:
-> > > But the point is that ns->ops should never be accessed when that
-> > > namespace type is disabled. Or in other words, the bug is that something
-> > > in netns makes use of namespace features when they are disabled. If we
-> > > handle ->ops being NULL we might be tapering over a real bug somewhere.
-> >
-> > It is merely a protocol between fs/nsfs.c and other namespace users,
-> > so there is certainly no right or wrong here, the only question is which
-> > one is better.
-> >
-> > >
-> > > Jakub's proposal in the other mail makes sense and falls in line with
-> > > how the rest of the netns getters are implemented. For example
-> > > get_net_ns_fd_fd():
-> >
-> > It does not make any sense to me. get_net_ns() merely increases
-> > the netns refcount, which is certainly fine for init_net too, no matter
-> > CONFIG_NET_NS is enabled or disabled. Returning EOPNOTSUPP
-> > there is literally saying we do not support increasing init_net refcount,
-> > which is of course false.
-> >
-> > > struct net *get_net_ns_by_fd(int fd)
-> > > {
-> > >         return ERR_PTR(-EINVAL);
-> > > }
-> >
-> > There is a huge difference between just increasing netns refcount
-> > and retrieving it by fd, right? I have no idea why you bring this up,
-> > calling them getters is missing their difference.
->
-> This argument doesn't hold up. All netns helpers ultimately increase the
-> reference count of the net namespace they find. And if any of them
-> perform operations where they are called in environments wherey they
-> need CONFIG_NET_NS they handle this case at compile time.
+--Sig_/YE+qMcNo31bYv5l4MYtG0ad
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Let me explain it in this more straight way: what is the protocol here
-for indication of !CONFIG_XXX_NS? Clearly it must be ns->ops==NULL,
-because all namespaces use the following similar pattern:
+Hi all,
 
-#ifdef CONFIG_NET_NS
-        net->ns.ops = &netns_operations;
-#endif
+After merging the xfs tree, today's linux-next build (powerpc_ppc64
+defconfig) produced this warning:
 
-Now you are arguing the protocol is not this, but it is the getter of
-open_related_ns() returns an error pointer.
+fs/xfs/libxfs/xfs_ialloc.c: In function 'xfs_difree_finobt':
+fs/xfs/libxfs/xfs_ialloc.c:2032:20: warning: unused variable 'agi' [-Wunuse=
+d-variable]
+ 2032 |  struct xfs_agi   *agi =3D agbp->b_addr;
+      |                    ^~~
 
->
-> (Pluse they are defined in a central place in net/net_namespace.{c,h}.
-> That includes the low-level get_net() function and all the others.
-> get_net_ns() is the only one that's defined out of band. So get_net_ns()
-> currently is arguably also misplaced.)
+Not sure how this came about, but somehow DEBUG has been turned off
+which exposes this.
 
-Of course they do, only struct ns_common is generic. What's your
-point? Each ns.ops is defined by each namespace too.
+--=20
+Cheers,
+Stephen Rothwell
 
->
-> The problem I have with fixing this in nsfs is that it gives the
-> impression that this is a bug in nsfs whereas it isn't and it
-> potentially helps tapering over other bugs.
+--Sig_/YE+qMcNo31bYv5l4MYtG0ad
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Like I keep saying, this is just a protocol, there is no right or
-wrong here. If the protocol is just ops==NULL, then there is nothing
-wrong use it.
+-----BEGIN PGP SIGNATURE-----
 
-(BTW, we have a lot of places that use ops==NULL as a protocol,
-they work really well.)
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmC9bNMACgkQAVBC80lX
+0Gz2NAgAjCv9pQa2V//07lwNVEQwbiKu29/zJuR1jT4hw/+mJaXhg8TILrg5Srpz
+W1Bx3fpv/dG/17wEmgWSG5GQziGFBZzID6OIwfHJ0k2AzdvTPo4ZGSV/W3KAVhYR
+rjb9p0T6mULCYUWdrzzN2e65aVI9lROgp6L2pHe7xPI4XaTvNnR4rUHFKmHJ4eF9
+mTnspfuUnhff4Q+EMeW5VKY7nsDCfRDnkT9LegKS7nZhQTZ47pWxuUdV02bSQ48l
+/h4j6rpBP2CjxxVBQkbp4JzOC1jedf7WpdwJEL0Dx2kJh/2qRj3b1XTiyrz5VUS7
+w7twzROcxCzA8LWQeGfmMoCkJ3nZoA==
+=nmjw
+-----END PGP SIGNATURE-----
 
->
-> get_net_ns() is only called for codepaths that call into nsfs via
-> open_related_ns() and it's the only namespace that does this. But
-
-I am pretty sure userns does the same:
-
-197         case NS_GET_USERNS:
-198                 return open_related_ns(ns, ns_get_owner);
-
-
-> open_related_ns() is only well defined if CONFIG_<NAMESPACE_TYPE> is
-> set. For example, none of the procfs namespace f_ops will be set for
-> !CONFIG_NET_NS. So clearly the socket specific getter here is buggy as
-> it doesn't account for !CONFIG_NET_NS and it should be fixed.
-
-If the protocol is just ops==NULL, then the core part should just check
-ops==NULL. Pure and simple. I have no idea why you do not admit the
-fact that every namespace intentionally leaves ops as NULL when its
-config is disabled.
-
->
-> Plus your fix leaks references to init netns without fixing get_net_ns()
-> too.
-
-I thought it is 100% clear that this patch is not from me?
-
-Plus, the PoC patch from me actually suggests to change
-open_related_ns(), not __ns_get_path(). I have no idea why you
-both miss it.
-
-Thanks.
+--Sig_/YE+qMcNo31bYv5l4MYtG0ad--
