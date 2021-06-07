@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1820139E8ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 23:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E18C39E8E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 23:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231517AbhFGVMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 17:12:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47416 "EHLO mail.kernel.org"
+        id S231295AbhFGVMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 17:12:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230385AbhFGVL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230333AbhFGVL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 7 Jun 2021 17:11:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id B51DE6124B;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9EEE26120F;
         Mon,  7 Jun 2021 21:10:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1623100205;
-        bh=8njfDxxSsDzit8jkUYvGeehk1lwT6z0FX5PBRXc0rXM=;
+        bh=NYMQLaCxBytQK9uw8wHYuzMpYL6Xz6SauNgfeumC7hY=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=s3DREzRSrXVWZrq7RhZTRCAWpwrB8xkLZyYTclOqgmbmSJScOEN+T5Dl7ArxQPwJW
-         LLw/mBaRAJV9tNXZ368C18g3M/TNDgWMsr1zt62tDQClsrbWxxtFbvgi8dqTxAIseM
-         UBqI2rT5NhAe5DA8Fgwd6viJOU0veNZ0gZD1vHlHM2Unkc2NGCFNmsKCG1EvshEwCC
-         sh65jtzN7mN7nkFHiUJj2X6pwCAvCZCTA0UcLCxC83LeoEGsmcXTLRX1GZCHX4Y+9Z
-         uoC1rI5lg6+yGwRkG76XOAbVRFhLUN3dOFfu5vzwqtOdQLZsqT/R/wkSmlxrgdA2rf
-         T6fuI3hBJzWuQ==
+        b=UNekh9qvqzLCN3f6hI4w9Px02KSS7w1EkoKJMdV1QWEg+7gliueJ0kEqfQ1lNLNH+
+         MqH+wMhE4VzJVcv4x8KI2MdlYKl80z6clBZov91LQTFn4dl/kYkAk4gOEnm/+i6Lnu
+         tVJMkJdfvD2JlbV6UYr2pnoVCsL68oX3489lEmmP6JNNl6I1M51X/ffI8qUWtyy3OQ
+         ttnE6LhXv/ArUC2AzPX5vKyF4OAheXLlbkOG8ky3491oh8s+pkoP78MXbm+9n8G6zt
+         v0mz5r59mQvRM9pj8UBsa3l5xn5g6NfSP6Z7EUIHF18i5lnSRSq9ezO3T2II0BEOk8
+         V7lQGVQULxq6w==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AA0A6609F1;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8C84F60CD1;
         Mon,  7 Jun 2021 21:10:05 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] qed: Fix duplicate included linux/kernel.h
+Subject: Re: [PATCH net-next] net: enetc: Use
+ devm_platform_get_and_ioremap_resource()
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162310020569.31357.4028012659215741108.git-patchwork-notify@kernel.org>
+Message-Id: <162310020557.31357.10427446540643483901.git-patchwork-notify@kernel.org>
 Date:   Mon, 07 Jun 2021 21:10:05 +0000
-References: <1623061874-35234-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1623061874-35234-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     aelior@marvell.com, GR-everest-linux-l2@marvell.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20210607135714.3979032-1-yangyingliang@huawei.com>
+In-Reply-To: <20210607135714.3979032-1-yangyingliang@huawei.com>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        claudiu.manoil@nxp.com, davem@davemloft.net, kuba@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -47,19 +47,18 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Mon,  7 Jun 2021 18:31:14 +0800 you wrote:
-> Clean up the following includecheck warning:
+On Mon, 7 Jun 2021 21:57:14 +0800 you wrote:
+> Use devm_platform_get_and_ioremap_resource() to simplify
+> code.
 > 
-> ./drivers/net/ethernet/qlogic/qed/qed_nvmetcp_fw_funcs.h: linux/kernel.h
-> is included more than once.
-> 
-> No functional change.
-> 
-> [...]
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  drivers/net/ethernet/freescale/enetc/enetc_ierb.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 
 Here is the summary with links:
-  - qed: Fix duplicate included linux/kernel.h
-    https://git.kernel.org/netdev/net-next/c/ca4e2b94eb98
+  - [net-next] net: enetc: Use devm_platform_get_and_ioremap_resource()
+    https://git.kernel.org/netdev/net-next/c/b5d64b43f8cc
 
 You are awesome, thank you!
 --
