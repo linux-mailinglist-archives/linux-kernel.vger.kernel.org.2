@@ -2,109 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AFF439D87D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B36439D889
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 11:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbhFGJU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 05:20:57 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3086 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhFGJU4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 05:20:56 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fz73T2xQrzWt0T;
-        Mon,  7 Jun 2021 17:14:13 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 17:19:02 +0800
-Received: from [127.0.0.1] (10.174.177.72) by dggpemm500006.china.huawei.com
- (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 7 Jun 2021
- 17:19:01 +0800
-Subject: Re: [PATCH 1/1] lib/test: Fix spelling mistakes
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210607031537.12366-1-thunder.leizhen@huawei.com>
- <CAHp75VdcCQ_ZxBg8Ot+9k2kPFSTwxG+x0x1C+PBRgA3p8MsbBw@mail.gmail.com>
- <658d4369-06ce-a2e6-151d-5fcb1b527e7e@huawei.com>
- <829eedee-609a-1b5f-8fbc-84ba0d2f794b@huawei.com>
- <CAHp75VczLpKB4jnXO1be96nZYGrUWRwidj=LCLV=JuTqBpcM3g@mail.gmail.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <769f678b-4501-87a8-98ca-708d0bb594b0@huawei.com>
-Date:   Mon, 7 Jun 2021 17:18:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S230372AbhFGJVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 05:21:24 -0400
+Received: from mga06.intel.com ([134.134.136.31]:43396 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230239AbhFGJVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 05:21:22 -0400
+IronPort-SDR: khPzT3tuV3/Yv/91MYRl5+PI4RkxVxtEXzVdLQg2VTvvh/Nm45N9CZM6HfvkzAUlqtugkw8GAN
+ 3JpdQ4bRGarA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10007"; a="265743711"
+X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
+   d="scan'208";a="265743711"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 02:19:31 -0700
+IronPort-SDR: D+TGh23U+FT9mUuSbPOMyIJcYIgbZrdRiQdCzlaWOigvRHKUm99Jb1DgoATUgo0+2f6UiYA6/9
+ 2skc/Ujq0NNA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,254,1616482800"; 
+   d="scan'208";a="551815937"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 07 Jun 2021 02:19:28 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 07 Jun 2021 12:19:27 +0300
+Date:   Mon, 7 Jun 2021 12:19:27 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Kyle Tso <kyletso@google.com>
+Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 4/4] usb: typec: tcpm: Fix misuses of AMS invocation
+Message-ID: <YL3kn3C0/3bdNPwi@kuha.fi.intel.com>
+References: <20210601123151.3441914-1-kyletso@google.com>
+ <20210601123151.3441914-5-kyletso@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VczLpKB4jnXO1be96nZYGrUWRwidj=LCLV=JuTqBpcM3g@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210601123151.3441914-5-kyletso@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/6/7 17:06, Andy Shevchenko wrote:
-> On Mon, Jun 7, 2021 at 11:56 AM Leizhen (ThunderTown)
-> <thunder.leizhen@huawei.com> wrote:
->> On 2021/6/7 16:52, Leizhen (ThunderTown) wrote:
->>> On 2021/6/7 16:39, Andy Shevchenko wrote:
->>>> On Mon, Jun 7, 2021 at 6:21 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
->>>>
->>>>> Fix some spelling mistakes in comments:
->>>>> thats ==> that's
->>>>> unitialized ==> uninitialized
->>>>> panicing ==> panicking
->>>>> sucess ==> success
->>>>> possitive ==> positive
->>>>> intepreted ==> interpreted
->>>>
->>>> Thanks for the fix! Is it done with the help of the codespell tool? If
->>>> not, can you run it and check if it suggests more fixes?
->>>
->>> Yes, it's detected by codespell tool. But to avoid too many changes in one patch, I tried
->>> breaking it down into smaller patches(If it can be classified) to make it easier to review.
->>> In fact, the other patch I just posted included the rest.
->>
->> https://lkml.org/lkml/2021/6/7/151
->>
->> All the remaining spelling mistakes are fixed by the patch above. I can combine the two of
->> them into one patch if you think it's necessary.
+On Tue, Jun 01, 2021 at 08:31:51PM +0800, Kyle Tso wrote:
+> tcpm_ams_start is used to initiate an AMS as well as checking Collision
+> Avoidance conditions but not for flagging passive AMS (initiated by the
+> port partner). Fix the misuses of tcpm_ams_start in tcpm_pd_svdm.
 > 
-> No, it's good to keep them split. What I meant is to use the tool
-> against the same subset of the files you have done your patch for. But
-> please mention in the commit message that you have used that tool, so
-> reviewers will not waste time on the comments like mine.
-
-Okay, thanks for the advice.
-
+> ATTENTION doesn't need responses so the AMS flag is not needed here.
 > 
-> 
+> Fixes: 0bc3ee92880d ("usb: typec: tcpm: Properly interrupt VDM AMS")
+> Signed-off-by: Kyle Tso <kyletso@google.com>
 
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 11 +++++------
+>  1 file changed, 5 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index ebe490949fa0..c4b02a6ca3d7 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -1583,7 +1583,7 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
+>  				svdm_version = PD_VDO_SVDM_VER(p[0]);
+>  			}
+>  
+> -			tcpm_ams_start(port, DISCOVER_IDENTITY);
+> +			port->ams = DISCOVER_IDENTITY;
+>  			/*
+>  			 * PD2.0 Spec 6.10.3: respond with NAK as DFP (data host)
+>  			 * PD3.1 Spec 6.4.4.2.5.1: respond with NAK if "invalid field" or
+> @@ -1604,19 +1604,18 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
+>  			}
+>  			break;
+>  		case CMD_DISCOVER_SVID:
+> -			tcpm_ams_start(port, DISCOVER_SVIDS);
+> +			port->ams = DISCOVER_SVIDS;
+>  			break;
+>  		case CMD_DISCOVER_MODES:
+> -			tcpm_ams_start(port, DISCOVER_MODES);
+> +			port->ams = DISCOVER_MODES;
+>  			break;
+>  		case CMD_ENTER_MODE:
+> -			tcpm_ams_start(port, DFP_TO_UFP_ENTER_MODE);
+> +			port->ams = DFP_TO_UFP_ENTER_MODE;
+>  			break;
+>  		case CMD_EXIT_MODE:
+> -			tcpm_ams_start(port, DFP_TO_UFP_EXIT_MODE);
+> +			port->ams = DFP_TO_UFP_EXIT_MODE;
+>  			break;
+>  		case CMD_ATTENTION:
+> -			tcpm_ams_start(port, ATTENTION);
+>  			/* Attention command does not have response */
+>  			*adev_action = ADEV_ATTENTION;
+>  			return 0;
+> -- 
+> 2.32.0.rc0.204.g9fa02ecfa5-goog
+
+-- 
+heikki
