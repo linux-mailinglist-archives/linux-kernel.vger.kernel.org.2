@@ -2,86 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8680839D79A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B22F139D79B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 10:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230316AbhFGIoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 04:44:05 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:38480 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhFGIoE (ORCPT
+        id S229966AbhFGIok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 04:44:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230128AbhFGIoi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 04:44:04 -0400
-Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 2F6A61FDA5;
-        Mon,  7 Jun 2021 08:42:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623055333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M3F3FHeKDWylfF8W6AMh3TTuaGg9ATjr41pkU+HFOFE=;
-        b=RIPGit61ezH96kAndMRXb4M5TOkS+gxNEvLG1rSI3+s3MLKdUHScGPSnXEYMwvP9Ks2lpq
-        +6NSYxvxLgcS5HV6Uj+/Cp6cdf3lo8JtV9uZt9SpuJQWJOPwvllrgMImXmf9/hP1GVF946
-        O7oqNiIOh7DC6WkxcDk009kn2rkW9bc=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id ED786A3B88;
-        Mon,  7 Jun 2021 08:42:12 +0000 (UTC)
-Date:   Mon, 7 Jun 2021 10:42:12 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] mm,page_alloc: Use {get,put}_online_mems() to get
- stable zone's values
-Message-ID: <YL3b5HGqfIW23TJh@dhcp22.suse.cz>
-References: <20210602091457.17772-1-osalvador@suse.de>
- <20210602091457.17772-2-osalvador@suse.de>
- <39473305-6e91-262d-bcc2-76b745a5b14a@redhat.com>
- <ed17a39ad61edeb19b04c0f4308d5d36@suse.de>
- <YLiVAAsCTR7B6Db9@localhost.localdomain>
- <YLjO2YU2G5fTVB3x@dhcp22.suse.cz>
- <20210604074140.GA25063@linux>
+        Mon, 7 Jun 2021 04:44:38 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB697C061766
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Jun 2021 01:42:47 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d16so12527451pfn.12
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Jun 2021 01:42:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=wDg8/aI1PuYOAa2UFE+KVmLp+L8E9j1GBJnNz/20160=;
+        b=DnqQNTiXccMXKvEMdxBrWrV1+npUmpiZFOKUaNbe9s4kwc4oWESXEWzfdu8kukfLjY
+         xYAb2QgLbef6ca/V6V7077rRzvgq8Ccpb0noOcuvGk+oYahrooyUdLORTJnl7iiEB/5r
+         tq1wFnBqX62mqQmZyTg3CVtRwTYnqKAz1Q7Okcfl5fTnYyk+RpRE02iR+ohVbBKrszFu
+         izakVi+NLWDUakCZ47YE7Zw7C9RGgipWLHBOvHm3QYlEEDOkRFSW/vqbSFh6KUxx21VZ
+         Skd4K8MihUztx6gKSJ8xHZRnOrhGXAdp7xzXnkvs6UbGq9lSd1JabwYR7A3SYUKc/yvN
+         fotg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wDg8/aI1PuYOAa2UFE+KVmLp+L8E9j1GBJnNz/20160=;
+        b=PRhCz0WzofumySWf9dD1KYeB0phTZ2FHRbx/uzBq5gbiC+N+PKb+SsjRuUTp5+wW5k
+         18IQJJ3cT8EvBvf6OfqBE/Er/5s6vJAUFY6iLjKX9DdJs/qSemEkAp/L+vya3LerMqUU
+         naI+tVY7GGFHPphFVVh/FhoRuqreYG2G15QhuCf6Gk3I1x7B9IQHmuPS3VXFN2CVwRzG
+         1019PGECMRNEK0Y6r4UKsY6TFEc1iVyHoHTRPtBdKY02JEz8+KZe0lOPjMjQAgR1fCe+
+         5avfnx4jSpP2RKarQKjhG6tPCoaX3rvRaBYzsAIHUIxsfWUr7lhTogn6PqXx8CV4b45W
+         e2dA==
+X-Gm-Message-State: AOAM532zaNZEBl8xe+e0IEmYGHqwMGJbFMrujhOgCJMovWT1ZiR+vCMX
+        834l2YavPBzvxvWFABjURltyDxXxMbo0ipYkj/g=
+X-Google-Smtp-Source: ABdhPJzFEb94kqJTu/BGex0Ss8ROGxSRDb7v248+ug+o6gMFoBTJnzzyhTyFlJW6S6wdIo/LvRo0u0sGUmhWlC6aOZE=
+X-Received: by 2002:a63:79c3:: with SMTP id u186mr16809558pgc.203.1623055367160;
+ Mon, 07 Jun 2021 01:42:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604074140.GA25063@linux>
+References: <1622996045-25826-1-git-send-email-faiyazm@codeaurora.org>
+ <CAHp75VdM0aziN4zHaf6=z6D0Nb=+GTbjV1pdTpRZ=yxGDZRkhw@mail.gmail.com> <dd0e3e4e-7eba-039f-7b2b-3fb3131ce2eb@codeaurora.org>
+In-Reply-To: <dd0e3e4e-7eba-039f-7b2b-3fb3131ce2eb@codeaurora.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 7 Jun 2021 11:42:31 +0300
+Message-ID: <CAHp75VfQz4WGF3FvpPGLeYHtjEfWFB7gMUpWN7DHjgi1fc1X0w@mail.gmail.com>
+Subject: Re: [PATCH v10] mm: slub: move sysfs slab alloc/free interfaces to debugfs
+To:     Faiyaz Mohammed <faiyazm@codeaurora.org>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        linux-mm <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg KH <greg@kroah.com>, glittao@gmail.com,
+        vinmenon@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 04-06-21 09:41:45, Oscar Salvador wrote:
-> On Thu, Jun 03, 2021 at 02:45:13PM +0200, Michal Hocko wrote:
-[...]
-> > But the primary question is whether anybody actually cares about
-> > potential races in the first place.
-> 
-> I have been checking move_freepages_block() and alloc_contig_pages(), which
-> are two of the functions that call zone_spans_pfn().
-> 
-> move_freepages_block() uses it in a way to align the given pfn to pageblock
-> top and bottom, and then check that aligned pfns are still within the same zone.
-> From a memory-hotplug perspective that's ok as we know that we are offlining
-> PAGES_PER_SECTION (which implies whole pageblocks).
-> 
-> alloc_contig_pages() (used by the hugetlb gigantic allocator) runs through a
-> node's zonelist and checks whether zone->zone_start_pfn + nr_pages stays within
-> the same zone.
-> IMHO, the race with zone_spans_last_pfn() vs mem-hotplug would not be that bad,
-> as it will be caught afters by e.g: __alloc_contig_pages when pages cannot be
-> isolated because they are offline etc.
-> 
-> So, I would say we do not really need the lock, but I might be missing something.
-> But if we chose to care about this, then the locking should be done right, not
-> half-way as it is right now.
+On Mon, Jun 7, 2021 at 5:40 AM Faiyaz Mohammed <faiyazm@codeaurora.org> wro=
+te:
+> On 6/7/2021 2:01 AM, Andy Shevchenko wrote:
+> > On Sun, Jun 6, 2021 at 7:16 PM Faiyaz Mohammed <faiyazm@codeaurora.org>=
+ wrote:
 
-That is my understanding as well.
--- 
-Michal Hocko
-SUSE Labs
+...
+
+> >> +               if (l->sum_time !=3D l->min_time) {
+> >> +                       seq_printf(seq, " age=3D%ld/%ld/%ld",
+> >> +                               l->min_time,
+> >
+> >> +                               (long)div_u64(l->sum_time, l->count),
+> >
+> > Hmm... Why is the cast needed here?
+> >
+> To avoid below warning while preparing build for arm/32 bit,
+> "format =E2=80=98%ld=E2=80=99 expects argument of type =E2=80=98long int=
+=E2=80=99, but argument 4 has
+> type =E2=80=98u64 {aka long long unsigned int}" .
+
+Perhaps use %llu?
+
+> >> +                               l->max_time);
+> >> +               } else
+> >> +                       seq_printf(seq, " age=3D%ld",
+> >> +                               l->min_time);
+
+--=20
+With Best Regards,
+Andy Shevchenko
