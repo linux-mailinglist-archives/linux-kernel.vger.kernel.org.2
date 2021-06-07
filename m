@@ -2,147 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4129A39E16B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A47D039E173
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 18:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231409AbhFGQEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 12:04:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38578 "EHLO mail.kernel.org"
+        id S231419AbhFGQHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 12:07:02 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:38878 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230294AbhFGQEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 12:04:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3CB76108E;
-        Mon,  7 Jun 2021 16:02:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623081779;
-        bh=QS7X75IN+igUoh1ptcIfo9XF7KyeMHZPP9cfmN4i6vg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ByQC6QohKF5NbpdJsLjBDos9tGrBfUNfROouf5Wv6sJwMLkrKDcIVUkFbcwBDzxe3
-         GaJnCcYKqaW3reykXCzDW5fZX3tYWWg8RWmuWG0ZOR3YPEr6Tgp3Ttng6lusnts3WO
-         AJB7x2NEAIqqwGmQjYf1oPtFMoCn26YrE2+uu1rDDGvZZtgwu6qtrNDUmYx6nFwCdI
-         edvob/e1tS0HkyCOZ4LVCz5HHMycMEdOHu2VP3mtoF/Qb2l9li42+Y5GEPv05LHO5l
-         oKGNF3C1cKbPEz6+DnWxroKBChCTvQcwArfAa2JiFDR0/eyN9OyDNjZZO5t2mtxRez
-         ShSt1jop8LwPQ==
-Date:   Mon, 7 Jun 2021 17:02:53 +0100
-From:   Will Deacon <will@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <20210607160252.GA7580@willie-the-truck>
-References: <20210605145739.GB1712909@rowland.harvard.edu>
- <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1>
- <20210606012903.GA1723421@rowland.harvard.edu>
- <20210606115336.GS18427@gate.crashing.org>
- <CAHk-=wjgzAn9DfR9DpU-yKdg74v=fvyzTJMD8jNjzoX4kaUBHQ@mail.gmail.com>
- <20210606182213.GA1741684@rowland.harvard.edu>
- <CAHk-=whDrTbYT6Y=9+XUuSd5EAHWtB9NBUvQLMFxooHjxtzEGA@mail.gmail.com>
- <YL34NZ12mKoiSLvu@hirez.programming.kicks-ass.net>
- <20210607115234.GA7205@willie-the-truck>
- <20210607152533.GQ4397@paulmck-ThinkPad-P17-Gen-1>
+        id S230287AbhFGQHA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 12:07:00 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623081909; h=In-Reply-To: Content-Transfer-Encoding:
+ Content-Type: MIME-Version: References: Message-ID: Subject: Cc: To:
+ From: Date: Sender; bh=Hu7hZRn9/CiOlHP4zv466pCsqGDUOMHQFg60eY5w1oY=; b=LxuCGtkbfVNWbrjzt51qnOIkjRbMZGC+xkJntsspT2OHhErNiPRgNaIyWtJa6WCr70LR7ZzZ
+ VwsltPiBeoPf2DMTYMtLo+fckQ/xCQx/D6wUdpVR46IFNbqOzR/QIoXkWJ5mGI+i7aVI81Ob
+ LeAehlOvxrZ2zdGhPdWPIs9G+VU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 60be439c265e7370f70a8781 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 07 Jun 2021 16:04:44
+ GMT
+Sender: jackp=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 05A7BC43460; Mon,  7 Jun 2021 16:04:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from jackp-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: jackp)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BEB5AC433D3;
+        Mon,  7 Jun 2021 16:04:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BEB5AC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jackp@codeaurora.org
+Date:   Mon, 7 Jun 2021 09:04:38 -0700
+From:   Jack Pham <jackp@codeaurora.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Wesley Cheng <wcheng@codeaurora.org>, balbi@kernel.org,
+        agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Thinh.Nguyen@synopsys.com
+Subject: Re: [PATCH v9 0/5] Re-introduce TX FIFO resize for larger EP bursting
+Message-ID: <20210607160438.GA2975@jackp-linux.qualcomm.com>
+References: <1621410561-32762-1-git-send-email-wcheng@codeaurora.org>
+ <YLoUiO8tpRpmvcyU@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210607152533.GQ4397@paulmck-ThinkPad-P17-Gen-1>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YLoUiO8tpRpmvcyU@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+Hey Wesley,
 
-On Mon, Jun 07, 2021 at 08:25:33AM -0700, Paul E. McKenney wrote:
-> On Mon, Jun 07, 2021 at 12:52:35PM +0100, Will Deacon wrote:
-> > It's the conditional instructions that are more fun. For example, the CSEL
-> > instruction:
-> > 
-> > 	CSEL	X0, X1, X2, <cond>
-> > 
-> > basically says:
-> > 
-> > 	if (cond)
-> > 		X0 = X1;
-> > 	else
-> > 		X0 = X2;
-> > 
-> > these are just register-register operations, but the idea is that the CPU
-> > can predict that "branching event" inside the CSEL instruction and
-> > speculatively rename X0 while waiting for the condition to resolve.
-> > 
-> > So then you can add loads and stores to the mix along the lines of:
-> > 
-> > 	LDR	X0, [X1]		// X0 = *X1
-> > 	CMP	X0, X2
-> > 	CSEL	X3, X4, X5, EQ		// X3 = (X0 == X2) ? X4 : X5
-> > 	STR	X3, [X6]		// MUST BE ORDERED AFTER THE LOAD
-> > 	STR	X7, [X8]		// Can be reordered
-> > 
-> > (assuming X1, X6, X8 all point to different locations in memory)
-> > 
-> > So now we have a dependency from the load to the first store, but the
-> > interesting part is that the last store is _not_ ordered wrt either of the
-> > other two memory accesses, whereas it would be if we used a conditional
-> > branch instead of the CSEL. Make sense?
+On Fri, Jun 04, 2021 at 01:54:48PM +0200, Greg KH wrote:
+> On Wed, May 19, 2021 at 12:49:16AM -0700, Wesley Cheng wrote:
+> > Changes in V9:
+> >  - Fixed incorrect patch in series.  Removed changes in DTSI, as dwc3-qcom will
+> >    add the property by default from the kernel.
 > 
-> And if I remember correctly, this is why LKMM orders loads in the
-> "if" condition only with stores in the "then" and "else" clauses,
-> not with stores after the end of the "if" statement.  Or is there
-> some case that I am missing?
-
-It's not clear to me that such a restriction prevents the compiler from
-using any of the arm64 conditional instructions in place of the conditional
-branch in such a way that you end up with an "independent" store in the
-assembly output constructed from two stores on the "then" and "else" paths
-which the compiler determined where the same.
-
-> > Now, obviously the compiler is blissfully unaware that conditional
-> > data processing instructions can give rise to dependencies than
-> > conditional branches, so the question really is how much do we need to
-> > care in the kernel?
-> > 
-> > My preference is to use load-acquire instead of control dependencies so
-> > that we don't have to worry about this, or any future relaxations to the
-> > CPU architecture, at all.
+> This patch series has one build failure and one warning added:
 > 
-> From what I can see, ARMv8 has DMB(LD) and DMB(ST).  Does it have
-> something like a DMB(LD,ST) that would act something like powerpc lwsync?
-> 
-> Or are you proposing rewriting the "if" conditions to upgrade
-> READ_ONCE() to smp_load_acquire()?  Or something else?
-> 
-> Just trying to find out exactly what you are proposing.  ;-)
+> drivers/usb/dwc3/gadget.c: In function ‘dwc3_gadget_calc_tx_fifo_size’:
+> drivers/usb/dwc3/gadget.c:653:45: warning: passing argument 1 of ‘dwc3_mdwidth’ makes pointer from integer without a cast [-Wint-conversion]
+>   653 |         mdwidth = dwc3_mdwidth(dwc->hwparams.hwparams0);
+>       |                                ~~~~~~~~~~~~~^~~~~~~~~~
+>       |                                             |
+>       |                                             u32 {aka unsigned int}
+> In file included from drivers/usb/dwc3/debug.h:14,
+>                  from drivers/usb/dwc3/gadget.c:25:
+> drivers/usb/dwc3/core.h:1493:45: note: expected ‘struct dwc3 *’ but argument is of type ‘u32’ {aka ‘unsigned int’}
+>  1493 | static inline u32 dwc3_mdwidth(struct dwc3 *dwc)
+>       |                                ~~~~~~~~~~~~~^~~
 
-Some options are:
+I'm guessing you were previously using the DWC3_MDWIDTH macro which
+operated on the 'hwparams0' reg value directly, but probably had to
+switch it to the dwc3_mdwidth() inline function that Thinh had replaced
+it with recently. Forgot to compile-test I bet? :)
 
- (1) Do nothing until something actually goes wrong (and hope we spot/debug it)
+> drivers/usb/dwc3/dwc3-qcom.c: In function ‘dwc3_qcom_of_register_core’:
+> drivers/usb/dwc3/dwc3-qcom.c:660:23: error: implicit declaration of function ‘of_add_property’; did you mean ‘of_get_property’? [-Werror=implicit-function-declaration]
+>   660 |                 ret = of_add_property(dwc3_np, prop);
+>       |                       ^~~~~~~~~~~~~~~
+>       |                       of_get_property
 
- (2) Have volatile_if force a conditional branch, assuming that it solves
-     the problem and doesn't hurt codegen (I still haven't convinced myself
-     for either case)
+Scratched my head on this one a bit, since 'of_add_property' is clearly
+declared in <linux/of.h> which dwc3-qcom.c directly includes. Then I
+looked closer and saw the declaration only in case of #ifdef CONFIG_OF
+and noticed it doesn't have a corresponding no-op static inline
+definition in the case of !CONFIG_OF. Again I'm guessing here that Greg
+must have built on a non-OF config.  We should probably include a patch
+that adds the stub.
 
- (3) Upgrade READ_ONCE() to RCpc acquire, relaxed atomic RMWs to RCsc
-     acquire on arm64
-
- (4) Introduce e.g. READ_ONCE_CTRL(), atomic_add_return_ctrl() etc
-     specifically for control dependencies and upgrade only those for
-     arm64
-
- (5) Work to get toolchain support for dependency ordering and use that
-
-I'm suggesting (3) or (4) because, honestly, it feels like we're being
-squeezed from both sides with both the compiler and the hardware prepared
-to break control dependencies.
-
-Will
+Thanks,
+Jack
+-- 
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
