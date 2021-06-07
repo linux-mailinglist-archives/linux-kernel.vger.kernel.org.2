@@ -2,97 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC77A39E533
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 19:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA35439E539
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Jun 2021 19:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhFGRW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 13:22:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbhFGRWY (ORCPT
+        id S231359AbhFGRXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 13:23:37 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:42815 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230241AbhFGRXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 13:22:24 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C0FC061766;
-        Mon,  7 Jun 2021 10:20:21 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id r198so24209754lff.11;
-        Mon, 07 Jun 2021 10:20:21 -0700 (PDT)
+        Mon, 7 Jun 2021 13:23:35 -0400
+Received: by mail-ot1-f50.google.com with SMTP id w23-20020a9d5a970000b02903d0ef989477so13066357oth.9;
+        Mon, 07 Jun 2021 10:21:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Y2ro6T0qqojf4blqEYp6j8bNJdFK/yK6RngDggYxJQ8=;
-        b=ioxSVn6ocOUUCeFsK89IAZxzVuvn35J3Fj7YPLaWRe6Rd9CXH8IwOSM5U5LYqjfFsV
-         lcoHRBUuGzlUJbf/9cpn3YqryqB1sTrV0hWFsscK1wR6LRhClmJLy72J1I+zHy72E524
-         XSZhcRCKWzZYP5ou9VbGEOlpvUlhg5oVzQKTu6dV2CLTkDc/+xVSoQ+aDAeGp9DkCl0H
-         7QdrfAooIhLcPF6YmLUwg0ECUMKEY103PxSjpVN+/RxtmW2+Jxr/sEtwzNY2sJRujufb
-         gLXgBKDzWaVBr85wcu0v8359UuVYSWIWhkhZilcNRIiUtmqT4d87u5DjnKlZ/ABi0Vo1
-         01qA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wIsZEzKuedmNrkE8sWmADzsVq5Ce7bsvNlcNsZxTnRY=;
+        b=g13yFXluOkzEJmOZQmZQEQXcaP5WqUhlO0+vdTKZ+lHxSMjjYXxAPEbAfNwkDboqTH
+         qb1kOYOjC10Rb2yEMyYhFHgRGH5aqUBpJqrCgamlEp/drI181Kw1NC0eP/fbQaUGqgjf
+         lhQ8uJNbtt3vMqD3kalgHbYJAztqVaWdAjhcwZHYRliQfsbFSc0aS426zQ9y/5lo9Z1a
+         cHbJ/l3t/8ToWpcggpaX0kcdYI3JX8mUD09TUlFI4VsveMbMVQtazwsktniMjcPPIjXy
+         mpaTh0FgX2P8TbVNDNi7o4rKHl2X3RFUUSKXmkWi3FtgMaVF018evvpg0idGYoIzmrcn
+         nXAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Y2ro6T0qqojf4blqEYp6j8bNJdFK/yK6RngDggYxJQ8=;
-        b=LYOLjFRjWQsJazhMIufS45Vz2zED18Izq9d3f5pSLpuM/jM5jYNTTCZG9bcMchtCr/
-         97+XB9UoQ++DP7pPh1dDYuE0D9eEJ/6U8cvt0Ai8uz3Jb5gr1qwDfb3QCxlaCOLKji5k
-         e4DI7ygNZYZhyPNKeDc1WYbn+JA/W53kq7lP5Yq9DzwfAnPo8/UGoE7PHEWEppuvxt4J
-         eyOtQ7IlxphvIQ4Lj+2lnUbUItzx7wqJL7eCouOC/UY+LKI79jomGvYv7h70jFK9drBm
-         G6/JGP3WB26ky/YxFKdcDveLqBwJ0XOVYHDY9BcG/hsEo9PElEgCFkM8GUW/3Stb1quL
-         mQng==
-X-Gm-Message-State: AOAM531vCdmi37hV+aSxmVJIXfPfHWqET1HdhI/y3MMfGNHaJhoimRoX
-        yKcVh5SeHLdn288nXgxSY2gU91+fmaU=
-X-Google-Smtp-Source: ABdhPJyPsUkq6BesCer/N77aEXiYiusKsN2vOkBOUTT1MS4jEYu6LljDHOeMGAVrfa8LFKfXNPDjqA==
-X-Received: by 2002:ac2:5d4f:: with SMTP id w15mr12427499lfd.348.1623086419489;
-        Mon, 07 Jun 2021 10:20:19 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.224.40])
-        by smtp.gmail.com with ESMTPSA id w24sm1560402lfa.143.2021.06.07.10.20.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 10:20:19 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, matthieu.baerts@tessares.net
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+65badd5e74ec62cb67dc@syzkaller.appspotmail.com
-Subject: [PATCH] revert "net: kcm: fix memory leak in kcm_sendmsg"
-Date:   Mon,  7 Jun 2021 20:20:15 +0300
-Message-Id: <20210607172015.19265-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wIsZEzKuedmNrkE8sWmADzsVq5Ce7bsvNlcNsZxTnRY=;
+        b=P1lvlSDAFLh+xRxIcR8BnxLvYV4qQAvSj6Uz+J0IzdBneUQKc94hDExQWW5Ip5HkJt
+         LIoXwucTU9QLGsqF4OQ5HF2MeIQOxHqEOK8cKpJdZSiwLHhXydcHvBL2LjIh5ps/c/VY
+         XB1+WdXmUNwARkHnMbTJ4FqtjjmXYl7DfrF49LThk1LXKaEPmoN7vCTKEFIy1+qcK5Hh
+         lRZIJtB6lncd4j8O/KRUonSS36/aD2slARzvU3fEg3mS4IjU23qorbO5QI8wpM9OupSl
+         9M9FsslzQCIj6ryVpNL0S8YN7uT+3MWRi0xqJcBa0ecFYH+VrUsfq3j+a5AED84+7dWi
+         /QvA==
+X-Gm-Message-State: AOAM5323jiXtHFIioZvRp3RO9xerd5mjXaZvYkCrymCyxQfoDLc1XHGZ
+        Ofkx5OxN0mVMcuZfmDgaNLN72ftgKQCx5V6oUuQ=
+X-Google-Smtp-Source: ABdhPJyEPIh1daP/HlBQeYnqMwlKB+lCnze26NeJPRgO+gQi876Ow+pkdIucW4umZTuqTIDRv1izuUb+vrRu7TofTFU=
+X-Received: by 2002:a9d:6548:: with SMTP id q8mr14588598otl.311.1623086431533;
+ Mon, 07 Jun 2021 10:20:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210607115615.83162-1-colin.king@canonical.com>
+In-Reply-To: <20210607115615.83162-1-colin.king@canonical.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 7 Jun 2021 13:20:20 -0400
+Message-ID: <CADnq5_N=++KR_YjOO2DURYfe4Hp3b5=eDVh4Gp7xpcfPXFF8_w@mail.gmail.com>
+Subject: Re: [PATCH][next] drm/amd/display: Fix two spelling mistakes, clean
+ wide lines
+To:     Colin King <colin.king@canonical.com>
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        xinhui pan <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit c47cc304990a ("net: kcm: fix memory leak in kcm_sendmsg")
-I misunderstand the root case of memory leak and came up
-completely broken fix.
+Applied.  Thanks!
 
-So, simply revert this commit to avoid GPF.
+Alex
 
-Im so sorry about this one.
-
-Reported-by: syzbot+65badd5e74ec62cb67dc@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- net/kcm/kcmsock.c | 5 -----
- 1 file changed, 5 deletions(-)
-
-diff --git a/net/kcm/kcmsock.c b/net/kcm/kcmsock.c
-index 1c572c8daced..6201965bd822 100644
---- a/net/kcm/kcmsock.c
-+++ b/net/kcm/kcmsock.c
-@@ -1066,11 +1066,6 @@ static int kcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
- 		goto partial_message;
- 	}
- 
--	if (skb_has_frag_list(head)) {
--		kfree_skb_list(skb_shinfo(head)->frag_list);
--		skb_shinfo(head)->frag_list = NULL;
--	}
--
- 	if (head != kcm->seq_skb)
- 		kfree_skb(head);
- 
--- 
-2.31.1
-
+On Mon, Jun 7, 2021 at 7:58 AM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> There are two spelling mistakes in dml_print messages, fix these and
+> clear up checkpatch warning on overly wide line length.
+>
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  .../drm/amd/display/dc/dml/dcn31/display_mode_vba_31.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn31/display_mode_vba_31.c b/drivers/gpu/drm/amd/display/dc/dml/dcn31/display_mode_vba_31.c
+> index c725160a095b..d655655baaba 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dml/dcn31/display_mode_vba_31.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dml/dcn31/display_mode_vba_31.c
+> @@ -1494,10 +1494,11 @@ static bool CalculatePrefetchSchedule(
+>                 dml_print(
+>                                 "DML:  Tsw: %fus = time to fetch enough pixel data and cursor data to feed the scalers init position and detile\n",
+>                                 (double) LinesToRequestPrefetchPixelData * LineTime);
+> -               dml_print("DML: To: %fus - time for propogation from scaler to optc\n", (*DSTYAfterScaler + ((double) (*DSTXAfterScaler) / (double) myPipe->HTotal)) * LineTime);
+> +               dml_print("DML: To: %fus - time for propagation from scaler to optc\n",
+> +                         (*DSTYAfterScaler + ((double) (*DSTXAfterScaler) /
+> +                         (double) myPipe->HTotal)) * LineTime);
+>                 dml_print("DML: Tvstartup - TSetup - Tcalc - Twait - Tpre - To > 0\n");
+> -               dml_print(
+> -                               "DML: Tslack(pre): %fus - time left over in schedule\n",
+> +               dml_print("DML: Tslack(pre): %fus - time left over in schedule\n",
+>                                 VStartup * LineTime - TimeForFetchingMetaPTE - 2 * TimeForFetchingRowInVBlank
+>                                                 - (*DSTYAfterScaler + ((double) (*DSTXAfterScaler) / (double) myPipe->HTotal)) * LineTime - TWait - TCalc - *TSetup);
+>                 dml_print("DML: row_bytes = dpte_row_bytes (per_pipe) = PixelPTEBytesPerRow = : %d\n", PixelPTEBytesPerRow);
+> @@ -3023,7 +3024,8 @@ static void DISPCLKDPPCLKDCFCLKDeepSleepPrefetchParametersWatermarksAndPerforman
+>                         for (k = 0; k < v->NumberOfActivePlanes; ++k) {
+>                                 if (v->ImmediateFlipSupportedForPipe[k] == false) {
+>  #ifdef __DML_VBA_DEBUG__
+> -                                       dml_print("DML::%s: Pipe %0d not supporing iflip\n", __func__, k);
+> +                                       dml_print("DML::%s: Pipe %0d not supporting iflip\n",
+> +                                                 __func__, k);
+>  #endif
+>                                         v->ImmediateFlipSupported = false;
+>                                 }
+> --
+> 2.31.1
+>
