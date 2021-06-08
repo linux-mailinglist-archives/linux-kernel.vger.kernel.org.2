@@ -2,80 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A1F3A05A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 23:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885A33A05AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 23:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233954AbhFHVYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 17:24:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbhFHVYh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 17:24:37 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B4EAC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 14:22:33 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id d5-20020a17090ab305b02901675357c371so141496pjr.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 14:22:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=071Uzgb9AY+jh540o5fVaKWqKER6FWRCb0I4nIFdjJE=;
-        b=TKjkBp9vgc4xMse6tHrX/f3ZDC8j76Em477PbsmPyUVQ7nH+4VC5ZxOg4PReHbo/NH
-         lxuNaMX1h04Jx/bod2jnFQy+ao3Q8bSxG1DeCUA6RxgVUK8FNhTL2+Ave95+vZ/bN6Pc
-         +xIQY9/0NXfrgFUU7wEyUBQpFUXgluDifoyPx5VqkLZXC7aC1zV4/XarSse38ZX+3t8b
-         qD1lYQ3ZxzVn3LedPy2rNclyJFH5bR0UbNqZveFwqRzJ/TZJM/Pdew27EtB6cfLiqalW
-         FTc2g//nGSc9UZ9bWOEIzZZ7hsuDM0+DoK9YaJP2wYXqJPGhS4Zw/k/IQjyyhMAfZNe8
-         h2fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=071Uzgb9AY+jh540o5fVaKWqKER6FWRCb0I4nIFdjJE=;
-        b=CAf7g6n5H2VFmBVKBlYBn102qp6wpWj6a/LLyTg4TVhahMyIjSJ1R21HJFH0fTIksa
-         DB7BykhnMM4asmhsdlgHH9j1Py6nBo/ymJbYxTaWzFtsaqLlgK37ClReZhJDE87bKVMs
-         7uUzMpUG6zZDUJrPYl8nVoV3a3vqrAEhx4XJO5+ZhtriZyLe6bfBRJUDv6wSJbTnMnhV
-         YSH+AGFxkLN0wKD3MlB2aezoPiK0Fho2qO5JGpfmlTCqHRJP9pL3AHh0WONEccSc2kel
-         gn5XCBqhJKeDfObcoO6u2LLOB0zmKfsTJdT6hCmdwvo0Rgy/vioN7vdR1KM9XYNK06Q6
-         0sPw==
-X-Gm-Message-State: AOAM530E24ccid66ChjDsfxMlnWYdBCTqHnV7vBEq91GV2EIt2oTjVAP
-        8RqTtVxrwYklDPJVt7o/ttPudqlfOEHRJ+Q8rusAyA==
-X-Google-Smtp-Source: ABdhPJxTN0nT9qC3EjgYzKw7fEO3F799lJjsHiLV+0TAjjn5yW4tlFXulzVcdqGfplgk14yWVWBPIB0xEWl2tgDe9lE=
-X-Received: by 2002:a17:90b:47c4:: with SMTP id kc4mr385967pjb.217.1623187352663;
- Tue, 08 Jun 2021 14:22:32 -0700 (PDT)
+        id S234075AbhFHVZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 17:25:22 -0400
+Received: from mga05.intel.com ([192.55.52.43]:4271 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229753AbhFHVZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 17:25:20 -0400
+IronPort-SDR: gj3fsiNWltRd+nevzd99v6A4aMr2gIgQEbAoVE/YKL/pyaQYwnvTl0BdFKP3dEdBYSU7VTCUkS
+ qPj3GRJWf7xA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="290572221"
+X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
+   d="scan'208";a="290572221"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 14:23:27 -0700
+IronPort-SDR: mBheP2NNJomVXZhQ+Lj6qxkKbNi/cUQCm/X0YuBfVJ/Lwy+dswVQsam18InQOeSUkO2dbqiyHy
+ lQwCaOn6QDyg==
+X-IronPort-AV: E=Sophos;i="5.83,259,1616482800"; 
+   d="scan'208";a="482120515"
+Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.209.87.156]) ([10.209.87.156])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 14:23:27 -0700
+Subject: Re: [PATCH] x86: kernel: cpu: resctrl: Fix kernel-doc in
+ pseudo_lock.c
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+References: <20210602222326.7765-1-fmdefrancesco@gmail.com>
+ <017e9a77-d17e-effd-5639-72a06abc4fc3@intel.com>
+ <1711024.RBxhUqbo4a@linux.local>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+Message-ID: <a63931e6-b01e-bb26-d8e9-2d89493db4c1@intel.com>
+Date:   Tue, 8 Jun 2021 14:23:26 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210608064852.609327-1-davidgow@google.com> <20210608065111.610297-1-davidgow@google.com>
-In-Reply-To: <20210608065111.610297-1-davidgow@google.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Tue, 8 Jun 2021 14:22:21 -0700
-Message-ID: <CAFd5g45PkKjU5mH2n9EJcJGLDnjJ6XZJ6HLxPP5a3pw6qQ=g5A@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] kunit: test: Add example tests which are always skipped
-To:     David Gow <davidgow@google.com>
-Cc:     Alan Maguire <alan.maguire@oracle.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Marco Elver <elver@google.com>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1711024.RBxhUqbo4a@linux.local>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 11:51 PM David Gow <davidgow@google.com> wrote:
->
-> Add two new tests to the example test suite, both of which are always
-> skipped. This is used as an example for how to write tests which are
-> skipped, and to demonstrate the difference between kunit_skip() and
-> kunit_mark_skipped().
->
-> Note that these tests are enabled by default, so a default run of KUnit
-> will have two skipped tests.
->
-> Signed-off-by: David Gow <davidgow@google.com>
-> Reviewed-by: Daniel Latypov <dlatypov@google.com>
+Hi Fabio,
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+On 6/8/2021 1:12 PM, Fabio M. De Francesco wrote:
+> On Tuesday, June 8, 2021 1:30:34 AM CEST Reinette Chatre wrote:
+>> Hi Fabio,
+>>
+> Hi Reinette,
+>>
+>> Thank you very much for catching these. I am curious what your goal is
+>> because when I ran a kernel-doc check on the resctrl area there were
+>> many more warnings than are not addressed in this patch. Also, while
+>> this patch claims to fix the kernel-doc in pseudo_lock.c there seems to
+>> be a few more that are not addressed.
+>>
+> Actually this patch was just a preliminary test for checking if my
+> contributions to this subsystem would be taken into consideration or
+> completely ignored. That is the real reason why I just started with trying to
+> fix only a couple of kernel-doc issues in pseudo_lock.c.
+
+Your submissions are appreciated and will be taken into consideration.
+
+>> Are you planning to submit more
+>> patches to do a cleanup of kernel-doc or are these the only ones
+>> bothering you for some reason?
+>>
+> I'd like to submit more cleanup patches of kernel-doc, because I always read
+> carefully the kernel-doc above the functions I want to understand. I have a
+> long term plan to study the Linux code and try to contribute the better I can.
+> I'm into Linux developing since about two months, so I'm a newcomer and I
+> still have a lot to learn.
+>>
+>> Could you please fixup the subject to conform to this area:
+>> "x86/resctrl: Fix kernel-doc in pseudo_lock.c"
+>>
+> Sure. I was inadvertently using the drivers/staging convention I've used for
+> the patches I've submitted there.
+
+Unfortunately the kernel is not consistent in this regard.
+>> For this subject to be accurate though it should fix all the kernel-doc
+>> warnings found in pseudo_lock.c - or if not it would be helpful to
+>> explain what the criteria for fixes are. I tested this by running:
+>> $ scripts/kernel-doc -v -none arch/x86/kernel/cpu/resctrl/*
+>>
+> I've just run the above script and I see that there are a lot more warnings
+> that I was expecting.
+> 
+> I want to fix as much as I can. Unfortunately I'm pretty sure I won't be able
+> to fix them all, just because the inner working and the purpose of some
+> functions are a bit obscure to me (at least until I get more knowledge of x86
+> architecture - it may take a lot of time because I'm also studying other
+> subsystems at the same time).
+
+...
+
+> region
+>>>
+>>> + * @rdtgrp: resource group to which the pseudo-locked region belongs
+>>> + * @sel: cache level selector
+>>
+>> This is not correct. A more accurate description could be:
+>> "select which measurement to perform on pseudo-locked region"
+>>
+> Here it is an example of my lack of knowledge/experience. Obviously, I'll
+> rewrite it according to your review.
+> 
+> To summarize: as soon as possible I'll submit a v2 patch with the kernel-doc
+> fixes that I think I can understand. I am pretty sure that some fixes will not
+> be to your standards and that for what regards some others I will not even be
+> able to attempt to fix them :(
+> 
+
+Thank you for giving me insight into your status and plans. Your 
+approach sounds reasonable to me. When you submit fixes to parts you 
+understand I can provide feedback based on my understandings to 
+collaborate towards improved kernel-doc in this area.
+
+Thank you
+
+Reinette
+
+
