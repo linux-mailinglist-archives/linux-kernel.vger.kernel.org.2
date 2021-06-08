@@ -2,131 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E76DF39FAA2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85F0639FAA4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231539AbhFHP3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 11:29:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231192AbhFHP25 (ORCPT
+        id S231902AbhFHP3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 11:29:12 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:29674 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231572AbhFHP3I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 11:28:57 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8E6C061574;
-        Tue,  8 Jun 2021 08:27:03 -0700 (PDT)
-Date:   Tue, 08 Jun 2021 15:26:59 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623166020;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WD6WzbVvKHAouB0+n4t355RPUO7++TOwM69JL7NosEM=;
-        b=n59MJXQyc+HMUmDhCmB8JlDa+8QluRo7+SEYh/DOZv/AB0V8fsBU68CG9UKV3xOQWbEDKe
-        ZpOcRrjOeTYla5P+79pwVBp/DB9NtMehr7FrFYmMljSh+xrJr3SrVhTgl7vYg/lHdVwi9o
-        2opdo1bGkf3j4jxtseD8VdfCKhdkyOLPblEw6HACr0vV5LHt7KxtYjQJZrGq6VjlUgKnZP
-        2mQ7n/0aD+3+KpPdWppt7Z97aE+hxlymjDLA2+OZlU28aQRM6FNqxtSISc6+oruzHtXd+F
-        FTxFOeiHNz0LVrDkSbmccntnNhymtZcG9I1seiZYZ6GnpUUOsv2sq3MGIh9Jmg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623166020;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WD6WzbVvKHAouB0+n4t355RPUO7++TOwM69JL7NosEM=;
-        b=H/n0abvCYuMyfVy6WhhJMdu0F5D5EN98XuASvrQ8VhpmnHW0LM6prtXmGBqIzwkT7U3A4/
-        9pjmsVdAMDy2lpAA==
-From:   "tip-bot2 for Tom Lendacky" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/ioremap: Map EFI-reserved memory as encrypted for SEV
-Cc:     Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Borislav Petkov <bp@suse.de>, <stable@vger.kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210608095439.12668-2-joro@8bytes.org>
-References: <20210608095439.12668-2-joro@8bytes.org>
+        Tue, 8 Jun 2021 11:29:08 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 158F7rtn014083;
+        Tue, 8 Jun 2021 17:27:04 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=jYLpiPCQZpM+0HyeyUk4ri/5ofGA2P0gEQQY/BP7RWM=;
+ b=OCJHJhG9UpOQC1DJUAneIwnMrPUM9YBg7kSmvpxuiRBmK4rsDtkV0ne8MUCS4ibmM+3V
+ MjiYSyzKIrPZ2MkX9uWAXlSGCM8bCGTGa2peEtx6FTY6t8/R6iKivt1WHSQTJobUqzE/
+ 8l1v3TW9HvQ0kaM7+CHyFGR4Vd4Ws8sN8CXY9tZkyD/DHbK75isVNLaQB1Jb2ZzHmRfc
+ VheJmdXn9ULIu17ka056WcytpGFBcqRCuNvT21J3hEx1/p6hzM0dZxLOrgx1IO+0M0ek
+ pdiuIKyxbc0IpUGHV5cI2sZdiQPhsn5YYyc6skD0f3AGbsAZHeobcfI/A9EOobUJZDNl Lg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 39257v2bxb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Jun 2021 17:27:04 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6141210002A;
+        Tue,  8 Jun 2021 17:27:03 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2F45B2291B0;
+        Tue,  8 Jun 2021 17:27:03 +0200 (CEST)
+Received: from lmecxl0889.lme.st.com (10.75.127.47) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 8 Jun
+ 2021 17:27:02 +0200
+Subject: Re: [PATCH 0/4] rpmsg: char: introduce the rpmsg-raw channel
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Julien Massot <julien.massot@iot.bzh>
+References: <20210607173032.30133-1-arnaud.pouliquen@foss.st.com>
+ <CANLsYkxAXiKTD=KB-45O+V7DAY4dbzd_Q3WdPoDrd=UdFqtw4w@mail.gmail.com>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Message-ID: <3a554f3e-71c1-3073-038f-0a4f7cc2d94a@foss.st.com>
+Date:   Tue, 8 Jun 2021 17:27:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Message-ID: <162316601954.29796.2695101519177924974.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+In-Reply-To: <CANLsYkxAXiKTD=KB-45O+V7DAY4dbzd_Q3WdPoDrd=UdFqtw4w@mail.gmail.com>
 Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-08_10:2021-06-04,2021-06-08 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+Hi Mathieu,
 
-Commit-ID:     8d651ee9c71bb12fc0c8eb2786b66cbe5aa3e43b
-Gitweb:        https://git.kernel.org/tip/8d651ee9c71bb12fc0c8eb2786b66cbe5aa3e43b
-Author:        Tom Lendacky <thomas.lendacky@amd.com>
-AuthorDate:    Tue, 08 Jun 2021 11:54:33 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 08 Jun 2021 16:26:55 +02:00
 
-x86/ioremap: Map EFI-reserved memory as encrypted for SEV
+On 6/8/21 4:26 PM, Mathieu Poirier wrote:
+> Hi Arnaud,
+> 
+> Between remoteproc/RPMSG and CoreSight, I have 6 patchsets to review
+> (including some of your work) before getting to this one.  As such it
+> will take a little while.
 
-Some drivers require memory that is marked as EFI boot services
-data. In order for this memory to not be re-used by the kernel
-after ExitBootServices(), efi_mem_reserve() is used to preserve it
-by inserting a new EFI memory descriptor and marking it with the
-EFI_MEMORY_RUNTIME attribute.
+No worries, i knew you have already some patchsets in your pipe.
+As i used this series to test the rpmsg_ctrl [1], both were ready at the same time.
+So i decided to push it because it can also help you to perform tests on the
+series [1].
 
-Under SEV, memory marked with the EFI_MEMORY_RUNTIME attribute needs to
-be mapped encrypted by Linux, otherwise the kernel might crash at boot
-like below:
+[1] https://patchwork.kernel.org/project/linux-remoteproc/list/?series=494021
 
-  EFI Variables Facility v0.08 2004-May-17
-  general protection fault, probably for non-canonical address 0x3597688770a868b2: 0000 [#1] SMP NOPTI
-  CPU: 13 PID: 1 Comm: swapper/0 Not tainted 5.12.4-2-default #1 openSUSE Tumbleweed
-  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-  RIP: 0010:efi_mokvar_entry_next
-  [...]
-  Call Trace:
-   efi_mokvar_sysfs_init
-   ? efi_mokvar_table_init
-   do_one_initcall
-   ? __kmalloc
-   kernel_init_freeable
-   ? rest_init
-   kernel_init
-   ret_from_fork
+Thanks,
+Arnaud
 
-Expand the __ioremap_check_other() function to additionally check for
-this other type of boot data reserved at runtime and indicate that it
-should be mapped encrypted for an SEV guest.
-
- [ bp: Massage commit message. ]
-
-Fixes: 58c909022a5a ("efi: Support for MOK variable config table")
-Reported-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Tested-by: Joerg Roedel <jroedel@suse.de>
-Cc: <stable@vger.kernel.org> # 5.10+
-Link: https://lkml.kernel.org/r/20210608095439.12668-2-joro@8bytes.org
----
- arch/x86/mm/ioremap.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/mm/ioremap.c b/arch/x86/mm/ioremap.c
-index 12c686c..60ade7d 100644
---- a/arch/x86/mm/ioremap.c
-+++ b/arch/x86/mm/ioremap.c
-@@ -118,7 +118,9 @@ static void __ioremap_check_other(resource_size_t addr, struct ioremap_desc *des
- 	if (!IS_ENABLED(CONFIG_EFI))
- 		return;
- 
--	if (efi_mem_type(addr) == EFI_RUNTIME_SERVICES_DATA)
-+	if (efi_mem_type(addr) == EFI_RUNTIME_SERVICES_DATA ||
-+	    (efi_mem_type(addr) == EFI_BOOT_SERVICES_DATA &&
-+	     efi_mem_attributes(addr) & EFI_MEMORY_RUNTIME))
- 		desc->flags |= IORES_MAP_ENCRYPTED;
- }
- 
+> 
+> Thanks,
+> Mathieu
+> 
+> On Mon, 7 Jun 2021 at 11:30, Arnaud Pouliquen
+> <arnaud.pouliquen@foss.st.com> wrote:
+>>
+>> Purpose:
+>>   Allow the remote processor to instantiate a /dev/rpmsgX interface relying on the NS announcement
+>>   of the "rpmsg-raw" service.
+>>   This patchet is extracted from  the series [1] with rework to add rpmsg_create_default_ept helper.
+>>
+>>
+>> Aim:
+>>   There is no generic sysfs interface based on RPMsg that allows a user application to communicate
+>>   with a remote processor in a simple way.
+>>   The rpmsg_char dev solves a part of this problem by allowing an endpoint to be created on the
+>>   local side. But it does not take advantage of the NS announcement mechanism implemented for some
+>>   backends such as the virtio backend. So it is not possible to probe it from  a remote initiative.
+>>   Extending the char rpmsg device to support NS announcement makes the rpmsg_char more generic.
+>>   By announcing a "rpmg-raw" service, the firmware of a remote processor will be able to
+>>   instantiate a /dev/rpmsgX interface providing to the user application a basic link to communicate
+>>   with it without any knowledge of the rpmsg protocol.
+>>
+>> Implementation details:
+>>   - Register a rpmsg driver for the rpmsg_char driver, associated to the "rpmsg-raw" channel service.
+>>   - In case of rpmsg char device instantiated by the rpmsg bus (on NS announcement) manage the
+>>     channel default endpoint to ensure a stable default endpoint address, for communication with
+>>     the remote processor.
+>>
+>> How to test it:
+>>   - This series can be applied on git/andersson/remoteproc.git for-next branch (dc0e14fa833b)
+>>     + the "Restructure the rpmsg char to decorrelate the control part" series[2]
+>>
+>> [1] https://patchwork.kernel.org/project/linux-remoteproc/list/?series=475217
+>> [2] https://patchwork.kernel.org/project/linux-remoteproc/list/?series=483793
+>>
+>>
+>>
+>> Arnaud Pouliquen (4):
+>>   rpmsg: Introduce rpmsg_create_default_ept function
+>>   rpmsg: char: Add possibility to create and reuse default endpoint
+>>   rpmsg: char: Introduce the "rpmsg-raw" channel
+>>   rpmsg: char: Return error if user tries to destroy a default endpoint.
+>>
+>>  drivers/rpmsg/rpmsg_char.c | 92 +++++++++++++++++++++++++++++++++++---
+>>  drivers/rpmsg/rpmsg_core.c | 51 +++++++++++++++++++++
+>>  include/linux/rpmsg.h      | 14 ++++++
+>>  3 files changed, 151 insertions(+), 6 deletions(-)
+>>
+>> --
+>> 2.17.1
+>>
