@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A0C39F0C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A258939F0D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 10:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230333AbhFHI1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 04:27:48 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3792 "EHLO
+        id S231294AbhFHI16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 04:27:58 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3793 "EHLO
         szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhFHI1q (ORCPT
+        with ESMTP id S230389AbhFHI1v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 04:27:46 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fzjqf0gZpzWsj1;
-        Tue,  8 Jun 2021 16:21:02 +0800 (CST)
+        Tue, 8 Jun 2021 04:27:51 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fzjqk3LPtzWspY;
+        Tue,  8 Jun 2021 16:21:06 +0800 (CST)
 Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 16:25:52 +0800
+ 15.1.2176.2; Tue, 8 Jun 2021 16:25:53 +0800
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
  dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -26,11 +26,21 @@ Received: from localhost.localdomain.localdomain (10.175.113.25) by
 From:   Kefeng Wang <wangkefeng.wang@huawei.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         <linux-kernel@vger.kernel.org>
-CC:     <linux-mm@kvack.org>, Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v3 resend 00/15] init_mm: cleanup ARCH's text/data/brk setup code
-Date:   Tue, 8 Jun 2021 16:34:03 +0800
-Message-ID: <20210608083418.137226-1-wangkefeng.wang@huawei.com>
+CC:     <linux-mm@kvack.org>, Kefeng Wang <wangkefeng.wang@huawei.com>,
+        <linux-snps-arc@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-csky@vger.kernel.org>,
+        <uclinux-h8-devel@lists.sourceforge.jp>,
+        <linux-m68k@lists.linux-m68k.org>, <openrisc@lists.librecores.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-riscv@lists.infradead.org>,
+        <linux-sh@vger.kernel.org>, <linux-s390@vger.kernel.org>,
+        <x86@kernel.org>
+Subject: [PATCH v3 resend 01/15] mm: add setup_initial_init_mm() helper
+Date:   Tue, 8 Jun 2021 16:34:04 +0800
+Message-ID: <20210608083418.137226-2-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210608083418.137226-1-wangkefeng.wang@huawei.com>
+References: <20210608083418.137226-1-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -42,56 +52,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add setup_initial_init_mm() helper, then use it
-to cleanup the text, data and brk setup code.
+Add setup_initial_init_mm() helper to setup kernel text,
+data and brk.
 
-v3:
-- resend all and fix x86 warning
-- make helper declaration in mm.h, implemention in init-mm.c, suggested
-  by Mike
-- collect ACKs
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-csky@vger.kernel.org
+Cc: uclinux-h8-devel@lists.sourceforge.jp
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: openrisc@lists.librecores.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-sh@vger.kernel.org
+Cc: linux-s390@vger.kernel.org
+Cc: x86@kernel.org
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+---
+ include/linux/mm.h | 3 +++
+ mm/init-mm.c       | 9 +++++++++
+ 2 files changed, 12 insertions(+)
 
-v2:
-- change argument from "char *" to "void *" setup_initial_init_mm()
-  suggested by Geert Uytterhoeven
-- use NULL instead of (void *)0 on h8300 and m68k
-
-Kefeng Wang (15):
-  mm: add setup_initial_init_mm() helper
-  arc: convert to setup_initial_init_mm()
-  arm: convert to setup_initial_init_mm()
-  arm64: convert to setup_initial_init_mm()
-  csky: convert to setup_initial_init_mm()
-  h8300: convert to setup_initial_init_mm()
-  m68k: convert to setup_initial_init_mm()
-  nds32: convert to setup_initial_init_mm()
-  nios2: convert to setup_initial_init_mm()
-  openrisc: convert to setup_initial_init_mm()
-  powerpc: convert to setup_initial_init_mm()
-  riscv: convert to setup_initial_init_mm()
-  s390: convert to setup_initial_init_mm()
-  sh: convert to setup_initial_init_mm()
-  x86: convert to setup_initial_init_mm()
-
- arch/arc/mm/init.c                 | 5 +----
- arch/arm/kernel/setup.c            | 5 +----
- arch/arm64/kernel/setup.c          | 5 +----
- arch/csky/kernel/setup.c           | 5 +----
- arch/h8300/kernel/setup.c          | 5 +----
- arch/m68k/kernel/setup_mm.c        | 5 +----
- arch/m68k/kernel/setup_no.c        | 5 +----
- arch/nds32/kernel/setup.c          | 5 +----
- arch/nios2/kernel/setup.c          | 5 +----
- arch/openrisc/kernel/setup.c       | 5 +----
- arch/powerpc/kernel/setup-common.c | 5 +----
- arch/riscv/kernel/setup.c          | 5 +----
- arch/s390/kernel/setup.c           | 5 +----
- arch/sh/kernel/setup.c             | 5 +----
- arch/x86/kernel/setup.c            | 5 +----
- include/linux/mm.h                 | 3 +++
- mm/init-mm.c                       | 9 +++++++++
- 17 files changed, 27 insertions(+), 60 deletions(-)
-
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index c274f75efcf9..02aa057540b7 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -244,6 +244,9 @@ int __add_to_page_cache_locked(struct page *page, struct address_space *mapping,
+ 
+ #define lru_to_page(head) (list_entry((head)->prev, struct page, lru))
+ 
++void setup_initial_init_mm(void *start_code, void *end_code,
++			   void *end_data, void *brk);
++
+ /*
+  * Linux kernel virtual memory manager primitives.
+  * The idea being to have a "virtual" mm in the same way
+diff --git a/mm/init-mm.c b/mm/init-mm.c
+index 153162669f80..b4a6f38fb51d 100644
+--- a/mm/init-mm.c
++++ b/mm/init-mm.c
+@@ -40,3 +40,12 @@ struct mm_struct init_mm = {
+ 	.cpu_bitmap	= CPU_BITS_NONE,
+ 	INIT_MM_CONTEXT(init_mm)
+ };
++
++void setup_initial_init_mm(void *start_code, void *end_code,
++			   void *end_data, void *brk)
++{
++	init_mm.start_code = (unsigned long)start_code;
++	init_mm.end_code = (unsigned long)end_code;
++	init_mm.end_data = (unsigned long)end_data;
++	init_mm.brk = (unsigned long)brk;
++}
 -- 
 2.26.2
 
