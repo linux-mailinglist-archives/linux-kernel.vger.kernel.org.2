@@ -2,201 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0E93A019C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 799523A01AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236686AbhFHSzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:55:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22487 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235459AbhFHSs6 (ORCPT
+        id S234098AbhFHSzn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 8 Jun 2021 14:55:43 -0400
+Received: from hosting.gsystem.sk ([212.5.213.30]:45190 "EHLO
+        hosting.gsystem.sk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235988AbhFHStk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:48:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623178024;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pggYjn7HE949Eh1AF224q4uHAjKMVRVQ+Yp3GK12w3I=;
-        b=edKWUDwWFj2YSp0aVES1AheyWNX3eft6ZQjAIsMhYFbJEPoB0fAdRL2Rjuzh30XSfPzG8S
-        ZkmaJOwjTFkpv48oLm4x2s3QmS+BMyRBRtp1JCJcOjid3dYCsQ2y1t3SJBzZG9ZSdDS8MH
-        xJXZzNWa7J2BlRcp951lZAzLKxfWje8=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-511-yBXqk7AJOfSaCcrbtjQu1g-1; Tue, 08 Jun 2021 14:47:03 -0400
-X-MC-Unique: yBXqk7AJOfSaCcrbtjQu1g-1
-Received: by mail-ot1-f71.google.com with SMTP id i25-20020a9d4a990000b0290304f00e3e3aso14543591otf.15
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 11:47:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=pggYjn7HE949Eh1AF224q4uHAjKMVRVQ+Yp3GK12w3I=;
-        b=sxyfs4J7LT1NN1JfbSzDzM3IIRv8fP2NXxvItsM6A6Oq7UQ0MW8Zsy0wg59j1rh5kg
-         UECi7GvI0WAB6rx6pixApc3wIKaf9qqs/OGzGhQzFajvjBQAf+ZOuE2+Ha1Uvnlrm5JM
-         WgFuwRFN2k1GdTwA7WSQ2iXY5hM3NGYY/tJM/BYdYd6WrJCDcQQ7G19UtMrz5qg9xFpC
-         R/kS4p9mIUFsSReNCUePdxSgMOAUVS2K/afj6/f2QW48/BMoJ0e45ohZxfwI6mDAvUXb
-         yk8xJBtmOFT518LcpVov2ci2XO9cgUHJwjWFXbuIy/D39/rercLYhdBLgvcJhdq+g7oF
-         jQhw==
-X-Gm-Message-State: AOAM533bDiNg9ocUFjPDpX+SWrm4hs7ezIB6bVA+gyJqyDv20oFugZyp
-        1mFe4V005kJWncpZM4BE4zuCbmjjlxnPNem3u067FxIENSBQbBVqXi/7lQR50e5yGdPyjxj+xJ0
-        OHPS8zdMdlOjWjQUKyK7n9HMQ
-X-Received: by 2002:aca:4cc3:: with SMTP id z186mr3803994oia.73.1623178022612;
-        Tue, 08 Jun 2021 11:47:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzZf1O0f0pw+40XtUuaOyogPurrGiPr1ylVHW3rYzYXfGQXFHlVRWz1CKnFUzJnCqpweUhXgA==
-X-Received: by 2002:aca:4cc3:: with SMTP id z186mr3803972oia.73.1623178022326;
-        Tue, 08 Jun 2021 11:47:02 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id 3sm336679oob.1.2021.06.08.11.47.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 11:47:02 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 12:47:00 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jason Wang <jasowang@redhat.com>
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-Message-ID: <20210608124700.7b9aa5a6.alex.williamson@redhat.com>
-In-Reply-To: <89d30977-119c-49f3-3bf6-d3f7104e07d8@redhat.com>
-References: <20210604092620.16aaf5db.alex.williamson@redhat.com>
-        <815fd392-0870-f410-cbac-859070df1b83@redhat.com>
-        <20210604155016.GR1002214@nvidia.com>
-        <30e5c597-b31c-56de-c75e-950c91947d8f@redhat.com>
-        <20210604160336.GA414156@nvidia.com>
-        <2c62b5c7-582a-c710-0436-4ac5e8fd8b39@redhat.com>
-        <20210604172207.GT1002214@nvidia.com>
-        <2d1ad075-bec6-bfb9-ce71-ed873795e973@redhat.com>
-        <20210607175926.GJ1002214@nvidia.com>
-        <fdb2f38c-da1f-9c12-af44-22df039fcfea@redhat.com>
-        <20210608131547.GE1002214@nvidia.com>
-        <89d30977-119c-49f3-3bf6-d3f7104e07d8@redhat.com>
-Organization: Red Hat
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Tue, 8 Jun 2021 14:49:40 -0400
+Received: from [192.168.0.2] (188-167-68-178.dynamic.chello.sk [188.167.68.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by hosting.gsystem.sk (Postfix) with ESMTPSA id 427CF7A014A;
+        Tue,  8 Jun 2021 20:47:45 +0200 (CEST)
+From:   Ondrej Zary <linux@zary.sk>
+To:     Ben Skeggs <bskeggs@redhat.com>
+Subject: Re: nouveau broken on Riva TNT2 in 5.13.0-rc4: NULL pointer dereference in nouveau_bo_sync_for_device
+Date:   Tue, 8 Jun 2021 20:47:42 +0200
+User-Agent: KMail/1.9.10
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Christian =?iso-8859-1?q?K=F6nig?= <christian.koenig@amd.com>
+References: <202106052143.52488.linux@zary.sk> <202106062316.03369.linux@zary.sk> <202106072258.43836.linux@zary.sk>
+In-Reply-To: <202106072258.43836.linux@zary.sk>
+X-KMail-QuotePrefix: > 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Content-Disposition: inline
+Message-Id: <202106082047.42658.linux@zary.sk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Jun 2021 15:44:26 +0200
-Paolo Bonzini <pbonzini@redhat.com> wrote:
-
-> On 08/06/21 15:15, Jason Gunthorpe wrote:
-> > On Tue, Jun 08, 2021 at 09:56:09AM +0200, Paolo Bonzini wrote:
-> >   
-> >>>> Alternatively you can add a KVM_DEV_IOASID_{ADD,DEL} pair of ioctls. But it
-> >>>> seems useless complication compared to just using what we have now, at least
-> >>>> while VMs only use IOASIDs via VFIO.  
-> >>>
-> >>> The simplest is KVM_ENABLE_WBINVD(<fd security proof>) and be done
-> >>> with it.  
-
-Even if we were to relax wbinvd access to any device (capable of
-no-snoop or not) in any IOMMU configuration (blocking no-snoop or not),
-I think as soon as we say "proof" is required to gain this access then
-that proof should be ongoing for the life of the access.
-
-That alone makes this more than a "I want this feature, here's my
-proof", one-shot ioctl.  Like the groupfd enabling a path for KVM to
-ask if that group is non-coherent and holding a group reference to
-prevent the group from being used to authorize multiple KVM instances,
-the ioasidfd proof would need to minimally validate that devices are
-present and provide some reference to enforce that model as ongoing, or
-notifier to indicate an end of that authorization.  I don't think we
-can simplify that out of the equation or we've essentially invalidated
-that the proof is really required.
-
-> >>
-> >> The simplest one is KVM_DEV_VFIO_GROUP_ADD/DEL, that already exists and also
-> >> covers hot-unplug.  The second simplest one is KVM_DEV_IOASID_ADD/DEL.  
+On Monday 07 June 2021 22:58:43 Ondrej Zary wrote:
+> On Sunday 06 June 2021 23:16:03 Ondrej Zary wrote:
+> > On Saturday 05 June 2021 23:34:23 Ondrej Zary wrote:
+> > > On Saturday 05 June 2021 21:43:52 Ondrej Zary wrote:
+> > > > Hello,
+> > > > I'm testing 5.13.0-rc4 and nouveau crashes with NULL pointer dereference in nouveau_bo_sync_for_device.
+> > > > Found various reports like this but that was back in februaryso that should be fixed now.
+> > > 
+> > > So it is the same bug. Broken since 5.11. This revert fixes it in 5.11:
+> > > https://lists.freedesktop.org/archives/dri-devel/2021-February/298531.html
+> > > 
+> > > Added some debug printks to nouveau_bo_sync_for_device:
+> > > [   22.225048] ttm_dma=fc33b500
+> > > [   22.225066] ttm_dma->num_pages=18
+> > > [   22.225071] i=0 num_pages=16
+> > > [   22.225077] ttm_dma->dma_address=00000000
+> > > [   22.225094] BUG: kernel NULL pointer dereference, address: 00000000
+> > > 
+> > > So ttm->dma_address is NULL.
+> > > 
 > > 
-> > This isn't the same thing, this is back to trying to have the kernel
-> > set policy for userspace.  
+> > Tested reverting f295c8cfec833c2707ff1512da10d65386dde7af again and it does not work...
+> > Not sure what I did before.
+> > 
+> > Bisecting between 5.10 and 5.11 is impossible - I keep hitting neverending stream of bugs.
+> > As always with nouveau...
 > 
-> If you want a userspace policy then there would be three states:
+> e34b8feeaa4b65725b25f49c9b08a0f8707e8e86 seems to be the first bad commit
+> Going back one commit makes it crash in a different way:
 > 
-> * WBINVD enabled because a WBINVD-enabled VFIO device is attached.
-> 
-> * WBINVD potentially enabled but no WBINVD-enabled VFIO device attached
-> 
-> * WBINVD forcefully disabled
-> 
-> KVM_DEV_VFIO_GROUP_ADD/DEL can still be used to distinguish the first 
-> two.  Due to backwards compatibility, those two describe the default 
-> behavior; disabling wbinvd can be done easily with a new sub-ioctl of 
-> KVM_ENABLE_CAP and doesn't require any security proof.
+> [   55.444208] BUG: kernel NULL pointer dereference, address: 000001b0
+> [   55.444219] #PF: supervisor read access in kernel mode
+> [   55.444222] #PF: error_code(0x0000) - not-present page
+> [   55.444225] *pde = 00000000
+> [   55.444231] Oops: 0000 [#1] SMP
+> [   55.444237] CPU: 0 PID: 1740 Comm: Xorg Not tainted 5.9.0-rc5+ #361
+> [   55.444240] Hardware name:  /848P-ICH5, BIOS 6.00 PG 02/03/2005
+> [   55.444321] EIP: nouveau_bo_wr16+0x8/0x27 [nouveau]
+> [   55.444326] Code: 85 ff 74 0d 80 7d f3 00 74 07 80 a6 f4 01 00 00 fe 89 f0 e8 0c ef ff ff 8d 65 f4 89 f8 5b 5e 5f 5d c3 55 01 d2 89 e5 53 89 c3 <03> 93 b0 01 00 00 0f b7 c1 f6 83 b8 01 00 00 80 74 07 e8 40 49 69
+> [   55.444330] EAX: 00000000 EBX: 00000000 ECX: 00000000 EDX: 00000000
+> [   55.444334] ESI: 00000020 EDI: e7a14400 EBP: e786fd98 ESP: e786fd94
+> [   55.444338] DS: 007b ES: 007b FS: 00d8 GS: 0033 SS: 0068 EFLAGS: 00210246
+> [   55.444341] CR0: 80050033 CR2: 000001b0 CR3: 27896000 CR4: 00000690
+> [   55.444344] Call Trace:
+> [   55.444395]  nv04_crtc_cursor_set+0x148/0x1d8 [nouveau]
+> [   55.444442]  ? ttm_bo_reserve.constprop.15+0x1c/0x1c [nouveau]
+> [   55.444451]  drm_mode_cursor_common+0x13b/0x1ad
+> [   55.444497]  ? ttm_bo_reserve.constprop.15+0x1c/0x1c [nouveau]
+> [   55.444504]  drm_mode_cursor_ioctl+0x2e/0x36
+> [   55.444509]  ? drm_mode_setplane+0x203/0x203
+> [   55.444514]  drm_ioctl_kernel+0x66/0x99
+> [   55.444518]  drm_ioctl+0x211/0x2d8
+> [   55.444522]  ? drm_mode_setplane+0x203/0x203
+> [   55.444529]  ? _cond_resched+0x1e/0x22
+> [   55.444533]  ? mutex_lock+0xb/0x24
+> [   55.444582]  ? nouveau_bo_add_io_reserve_lru+0x53/0x58 [nouveau]
+> [   55.444589]  ? rpm_resume.part.13+0x72/0x365
+> [   55.444594]  ? ktime_get_mono_fast_ns+0x5e/0xf2
+> [   55.444598]  ? __pm_runtime_resume+0x5b/0x63
+> [   55.444647]  nouveau_drm_ioctl+0x65/0x81 [nouveau]
+> [   55.444696]  ? nouveau_cli_work+0xc3/0xc3 [nouveau]
+> [   55.444702]  vfs_ioctl+0x1a/0x24
+> [   55.444706]  __ia32_sys_ioctl+0x583/0x59d
+> [   55.444711]  ? doublefault_shim+0x120/0x120
+> [   55.444717]  ? exit_to_user_mode_prepare+0x71/0xba
+> [   55.444721]  do_int80_syscall_32+0x2c/0x39
+> [   55.444725]  entry_INT80_32+0xf0/0xf0
+> [   55.444729] EIP: 0xb7fb2092
+> [   55.444733] Code: 00 00 00 e9 90 ff ff ff ff a3 24 00 00 00 68 30 00 00 00 e9 80 ff ff ff ff a3 e8 ff ff ff 66 90 00 00 00 00 00 00 00 00 cd 80 <c3> 8d b4 26 00 00 00 00 8d b6 00 00 00 00 8b 1c 24 c3 8d b4 26 00
+> [   55.444737] EAX: ffffffda EBX: 0000000e ECX: c01c64a3 EDX: bfe89750
+> [   55.444741] ESI: 02580b40 EDI: c01c64a3 EBP: 0000000e ESP: bfe89704
+> [   55.444744] DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b EFLAGS: 00200292
+> [   55.444748] Modules linked in: i2c_dev nouveau serial_cs snd_intel8x0 snd_ac97_codec wmi hwmon ttm ac97_bus 8139cp snd_pcm pcmcia snd_timer snd sg soundcore psmouse yenta_socket serio_raw pcmcia_rsrc pcmcia_core intel_agp parport_pc parport
+> [   55.444769] CR2: 00000000000001b0
+> [   55.444774] ---[ end trace e2b0d4c3c2e4e488 ]---
+> [   55.444827] EIP: nouveau_bo_wr16+0x8/0x27 [nouveau]
+> [   55.444831] Code: 85 ff 74 0d 80 7d f3 00 74 07 80 a6 f4 01 00 00 fe 89 f0 e8 0c ef ff ff 8d 65 f4 89 f8 5b 5e 5f 5d c3 55 01 d2 89 e5 53 89 c3 <03> 93 b0 01 00 00 0f b7 c1 f6 83 b8 01 00 00 80 74 07 e8 40 49 69
+> [   55.444835] EAX: 00000000 EBX: 00000000 ECX: 00000000 EDX: 00000000
+> [   55.444838] ESI: 00000020 EDI: e7a14400 EBP: e786fd98 ESP: e786fd94
+> [   55.444842] DS: 007b ES: 007b FS: 00d8 GS: 0033 SS: 0068 EFLAGS: 00210246
+> [   55.444845] CR0: 80050033 CR2: 000001b0 CR3: 27896000 CR4: 00000690
 
-That seems like a good model, use the kvm-vfio device for the default
-behavior and extend an existing KVM ioctl if QEMU still needs a way to
-tell KVM to assume all DMA is coherent, regardless of what the kvm-vfio
-device reports.
+Bisected this crash:
+# first bad commit: [141b15e59175aa174ca1f7596188bd15a7ca17ba] drm/nouveau: move io_reserve_lru handling into the driver v5
 
-If feels like we should be able to support a backwards compatibility
-mode using the vfio group, but I expect long term we'll want to
-transition the kvm-vfio device from a groupfd to an ioasidfd.
+Adding Christian König to CC.
 
-> The meaning of WBINVD-enabled is "won't return -ENXIO for the wbinvd 
-> ioctl", nothing more nothing less.  If all VFIO devices are going to be 
-> WBINVD-enabled, then that will reflect on KVM as well, and I won't have 
-> anything to object if there's consensus on the device assignment side of 
-> things that the wbinvd ioctl won't ever fail.
 
-If we create the IOMMU vs device coherency matrix:
-
-            \ Device supports
-IOMMU blocks \   no-snoop
-  no-snoop    \  yes | no  |
----------------+-----+-----+
-           yes |  1  |  2  |
----------------+-----+-----+
-           no  |  3  |  4  |
----------------+-----+-----+
-
-DMA is always coherent in boxes {1,2,4} (wbinvd emulation is not
-needed).  VFIO will currently always configure the IOMMU for {1,2} when
-the feature is supported.  Boxes {3,4} are where we'll currently
-emulate wbinvd.  The best we could do, not knowing the guest or
-insights into the guest driver would be to only emulate wbinvd for {3}.
-
-The majority of devices appear to report no-snoop support {1,3}, but
-the claim is that it's mostly unused outside of GPUs, effectively {2,4}.
-I'll speculate that most IOMMUs support enforcing coherency (amd, arm,
-fsl unconditionally, intel conditionally) {1,2}.
-
-I think that means we're currently operating primarily in Box {1},
-which does not seem to lean towards unconditional wbinvd access with
-device ownership.
-
-I think we have a desire with IOASID to allow user policy to operate
-certain devices in {3} and I think the argument there is that a
-specific software enforced coherence sync is more efficient on the bus
-than the constant coherence enforcement by the IOMMU.
-
-I think that the disable mode Jason proposed is essentially just a way
-to move a device from {3} to {4}, ie. the IOASID support or
-configuration does not block no-snoop and the device claims to support
-no-snoop, but doesn't use it.  How we'd determine this to be true for
-a device without a crystal ball of driver development or hardware
-errata that no-snoop transactions are not possible regardless of the
-behavior of the enable bit, I'm not sure.  If we're operating a device
-in {3}, but the device does not generate no-snoop transactions, then
-presumably the guest driver isn't generating wbinvd instructions for us
-to emulate, so where are the wbinvd instructions that this feature
-would prevent being emulated coming from?  Thanks,
-
-Alex
-
+-- 
+Ondrej Zary
