@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB0939FB0B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ABF639FB07
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232214AbhFHPmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 11:42:43 -0400
+        id S231947AbhFHPmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 11:42:33 -0400
 Received: from mga11.intel.com ([192.55.52.93]:7767 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231996AbhFHPme (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 11:42:34 -0400
-IronPort-SDR: d3aRzP+3S6sFUd5uQDtuxTRPDKd45Qo7IAdy7Qfgvv5KlGNLiaDvfmlRYioVbc4q2GxrhmneaK
- AUq+MzirG/iA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="201849037"
+        id S230460AbhFHPm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 11:42:28 -0400
+IronPort-SDR: z6a/4M3uS3E648rmqolDWt4nCnOcuNmlNoizf/6MhpRswAoljn4hRjRbki17CcrLVfDCi+JZof
+ BjelkoVfZJGw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="201849038"
 X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
-   d="scan'208";a="201849037"
+   d="scan'208";a="201849038"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 08:40:30 -0700
-IronPort-SDR: YpOV4FO2hhJwyS1M3ho7/A8lj2Od4mrDRlaSd8geubsNCZjd9LS6TXZXsQbMDjnEqSKd/D3T3y
- ynWY9o6OXWzw==
+IronPort-SDR: +GYRRZHink+JcLfuUobGYig3Syc9MAfdEbXVAH7BZvhhyjLQaoq8cRNiEH50I9nG4yikPkvJ5l
+ ILOztZsQDImw==
 X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
-   d="scan'208";a="552314839"
+   d="scan'208";a="552314843"
 Received: from ticela-az-103.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.36.77])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 08:40:29 -0700
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 08:40:30 -0700
 From:   Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
@@ -39,12 +39,12 @@ Cc:     Andi Kleen <ak@linux.intel.com>,
         linux-kernel@vger.kernel.org,
         Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: [RFC v2-fix-v2 0/3] x86/tdx: Handle port I/O
-Date:   Tue,  8 Jun 2021 08:40:20 -0700
-Message-Id: <cover.1623165571.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [RFC v2-fix-v2 1/3] x86/tdx: Handle port I/O in decompression code
+Date:   Tue,  8 Jun 2021 08:40:21 -0700
+Message-Id: <e743d11960f58f1694ced91edd1b262ce7eb82db.1623165571.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CAPcyv4iOJJjghTPTLCkvT-Y_SJOhCbfm66m_NO5Ue+eVr_0NZA@mail.gmail.com>
-References: <CAPcyv4iOJJjghTPTLCkvT-Y_SJOhCbfm66m_NO5Ue+eVr_0NZA@mail.gmail.com>
+In-Reply-To: <cover.1623165571.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <cover.1623165571.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -52,54 +52,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset addresses the review comments in the patch titled
-"[RFC v2 14/32] x86/tdx: Handle port I/O". Since it requires
-patch split, sending these together.
+Add support to replace in/out instructions in
+decompression code with TDX IO hypercalls.
 
-Changes since RFC v2-fix-v1:
- * Splitted TDX decompression IO support into a seperate patch.
- * Implemented tdg_handle_io() and tdx_early_io() in the similar
-   way as per review suggestion.
- * Added VE_IS_IO_OUT() macro as per review suggestion.
- * Added VE_IS_IO_STRING() to check the string I/O case in
-   tdx_early_io()
- * Removed helper function tdg_in() and tdg_out() and directly
-   called IO hypercall to make the implementation uniform in
-   decompression code, early IO code and normal IO handler code.
+TDX cannot do port IO directly. The TDX module triggers
+a #VE exception to let the guest kernel to emulate port
+I/O, by converting them into TDX hypercalls to call the
+host.
 
-Changes since RFC v2:
- * Removed assembly implementation of port IO emulation code
-   and modified __in/__out IO helpers to directly call C function
-   for in/out instruction emulation in decompression code.
- * Added helper function tdx_get_iosize() to make it easier for
-   calling tdg_out/tdg_int() C functions from decompression code.
- * Added support for early exception handler to support IO
-   instruction emulation in early boot kernel code.
- * Removed alternative_ usage and made kernel only use #VE based
-   IO instruction emulation support outside the decompression module.
- * Added support for protection_guest_has() API to generalize
-   AMD SEV/TDX specific initialization code in common drivers.
- * Fixed commit log and comments as per review comments.
+But for the really early code in the decompressor, #VE
+cannot be used because the IDT needed for handling the
+exception is not set-up, and some other infrastructure
+needed by the handler is missing. So to support port IO
+in decompressor code, directly replace in/out instructions
+with TDX IO hypercalls. This can beeasily achieved by
+modifying __in/__out macros.
 
+Also, since TDX IO hypercall requires an IO size parameter,
+modify __in/__out macros to accept size as input parameter.
 
-Andi Kleen (1):
-  x86/tdx: Handle early IO operations
-
-Kirill A. Shutemov (1):
-  x86/tdx: Handle port I/O
-
-Kuppuswamy Sathyanarayanan (1):
-  x86/tdx: Handle port I/O in decompression code
-
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+---
  arch/x86/boot/compressed/Makefile |  1 +
  arch/x86/boot/compressed/tdcall.S |  3 ++
- arch/x86/include/asm/io.h         | 15 +++---
- arch/x86/include/asm/tdx.h        | 54 ++++++++++++++++++++
- arch/x86/kernel/head64.c          |  3 ++
- arch/x86/kernel/tdx.c             | 84 +++++++++++++++++++++++++++++++
- 6 files changed, 154 insertions(+), 6 deletions(-)
+ arch/x86/include/asm/io.h         |  9 +++---
+ arch/x86/include/asm/tdx.h        | 48 +++++++++++++++++++++++++++++++
+ 4 files changed, 57 insertions(+), 4 deletions(-)
  create mode 100644 arch/x86/boot/compressed/tdcall.S
 
+diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
+index 22a2a6cc2ab4..1bfe30ebadbe 100644
+--- a/arch/x86/boot/compressed/Makefile
++++ b/arch/x86/boot/compressed/Makefile
+@@ -99,6 +99,7 @@ endif
+ 
+ vmlinux-objs-$(CONFIG_ACPI) += $(obj)/acpi.o
+ vmlinux-objs-$(CONFIG_INTEL_TDX_GUEST) += $(obj)/tdx.o
++vmlinux-objs-$(CONFIG_INTEL_TDX_GUEST) += $(obj)/tdcall.o
+ 
+ vmlinux-objs-$(CONFIG_EFI_MIXED) += $(obj)/efi_thunk_$(BITS).o
+ efi-obj-$(CONFIG_EFI_STUB) = $(objtree)/drivers/firmware/efi/libstub/lib.a
+diff --git a/arch/x86/boot/compressed/tdcall.S b/arch/x86/boot/compressed/tdcall.S
+new file mode 100644
+index 000000000000..aafadc136c88
+--- /dev/null
++++ b/arch/x86/boot/compressed/tdcall.S
+@@ -0,0 +1,3 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#include "../../kernel/tdcall.S"
+diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
+index be96bf1e667a..391205dace98 100644
+--- a/arch/x86/include/asm/io.h
++++ b/arch/x86/include/asm/io.h
+@@ -40,6 +40,7 @@
+ 
+ #include <linux/string.h>
+ #include <linux/compiler.h>
++#include <linux/protected_guest.h>
+ #include <asm/page.h>
+ #include <asm/early_ioremap.h>
+ #include <asm/pgtable_types.h>
+@@ -272,25 +273,25 @@ static inline bool sev_key_active(void) { return false; }
+ #endif /* CONFIG_AMD_MEM_ENCRYPT */
+ 
+ #ifndef __out
+-#define __out(bwl, bw)							\
++#define __out(bwl, bw, sz)						\
+ 	asm volatile("out" #bwl " %" #bw "0, %w1" : : "a"(value), "Nd"(port))
+ #endif
+ 
+ #ifndef __in
+-#define __in(bwl, bw)							\
++#define __in(bwl, bw, sz)						\
+ 	asm volatile("in" #bwl " %w1, %" #bw "0" : "=a"(value) : "Nd"(port))
+ #endif
+ 
+ #define BUILDIO(bwl, bw, type)						\
+ static inline void out##bwl(unsigned type value, int port)		\
+ {									\
+-	__out(bwl, bw);							\
++	__out(bwl, bw, sizeof(type));					\
+ }									\
+ 									\
+ static inline unsigned type in##bwl(int port)				\
+ {									\
+ 	unsigned type value;						\
+-	__in(bwl, bw);							\
++	__in(bwl, bw, sizeof(type));					\
+ 	return value;							\
+ }									\
+ 									\
+diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+index cbfe7479f2a3..ac38ed5b50db 100644
+--- a/arch/x86/include/asm/tdx.h
++++ b/arch/x86/include/asm/tdx.h
+@@ -9,6 +9,8 @@
+ 
+ #include <asm/cpufeature.h>
+ #include <linux/types.h>
++#include <vdso/limits.h>
++#include <asm/vmx.h>
+ 
+ /*
+  * Used in __tdx_module_call() helper function to gather the
+@@ -73,6 +75,52 @@ u64 __tdx_hypercall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15,
+ 
+ bool tdx_protected_guest_has(unsigned long flag);
+ 
++/*
++ * To support I/O port access in decompressor or early kernel init
++ * code, since #VE exception handler cannot be used, use paravirt
++ * model to implement __in/__out macros which will in turn be used
++ * by in{b,w,l}()/out{b,w,l} I/O helper macros used in kernel. You
++ * can find the __in/__out macro usage in arch/x86/include/asm/io.h
++ */
++#ifdef BOOT_COMPRESSED_MISC_H
++
++/*
++ * Helper function used for making hypercall for "in"
++ * instruction. It will be called from __in IO macro
++ * If IO is failed, it will return all 1s.
++ */
++static inline unsigned int tdg_in(int size, int port)
++{
++	struct tdx_hypercall_output out = {0};
++	int err;
++
++	err = __tdx_hypercall(EXIT_REASON_IO_INSTRUCTION, size, 0,
++			      port, 0, &out);
++
++	return err ? UINT_MAX : out.r11;
++}
++
++#define __out(bwl, bw, sz)						\
++do {									\
++	if (is_tdx_guest()) {						\
++		__tdx_hypercall(EXIT_REASON_IO_INSTRUCTION, sz, 1,	\
++				port, value, NULL);			\
++	} else {							\
++		asm volatile("out" #bwl " %" #bw "0, %w1" : :		\
++				"a"(value), "Nd"(port));		\
++	}								\
++} while (0)
++#define __in(bwl, bw, sz)						\
++do {									\
++	if (is_tdx_guest()) {						\
++		value = tdg_in(sz, port);				\
++	} else {							\
++		asm volatile("in" #bwl " %w1, %" #bw "0" :		\
++				"=a"(value) : "Nd"(port));		\
++	}								\
++} while (0)
++#endif
++
+ #else // !CONFIG_INTEL_TDX_GUEST
+ 
+ static inline bool is_tdx_guest(void)
 -- 
 2.25.1
 
