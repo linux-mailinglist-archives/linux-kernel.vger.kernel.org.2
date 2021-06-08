@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 098603A0082
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6788D3A0084
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234628AbhFHSoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:44:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37964 "EHLO mail.kernel.org"
+        id S235555AbhFHSoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:44:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235433AbhFHSkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:40:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54E3A61430;
-        Tue,  8 Jun 2021 18:34:39 +0000 (UTC)
+        id S234992AbhFHSkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:40:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3E1361431;
+        Tue,  8 Jun 2021 18:34:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177279;
-        bh=ATPf7tFlhfCJ1Qfzzr2ACHGvl/bKWnRzbqDzavCRM70=;
+        s=korg; t=1623177282;
+        bh=ktYLYuoRoAEez/WUzBLMjmNRLkIJzzILQ6ei3vA66fE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r/4vZkruWBlZS2sH89AK3YuETi4PqHenM7ywE4Lt549Fs3MqVJzpXZ8fazEWMEeZR
-         iMqRFXlJ358Vdkw85PSjGjOUHlBO1TWpxUfTgfKbiBWFhnr0uB8fhPSwmD7++cON2Z
-         8+4eNGtjUwUCEEFvGwFq59skIZuBKkKdcaIxOts8=
+        b=eq3zdy1rI1jd4+KDeEGap8Q6EGMO2mCR4r1P95BwPrSPoNzna78J36BykWj4E6gRS
+         qhgOrDsK5yoOua0w7K3QEKoBeOiDaNhdsJTy1WGxZWMmwe+BebnQfgLwLPdk23olva
+         D6j3RX8AaA0t8zBgtMRgdY1YFiGgE1/6K32MmbFo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ricardo Koller <ricarkol@google.com>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 4.19 54/58] KVM: arm64: Fix debug register indexing
-Date:   Tue,  8 Jun 2021 20:27:35 +0200
-Message-Id: <20210608175934.054225351@linuxfoundation.org>
+        stable@vger.kernel.org, Erik Schmauss <erik.schmauss@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        =?UTF-8?q?Lauren=C8=9Biu=20P=C4=83ncescu?= <lpancescu@gmail.com>,
+        Salvatore Bonaccorso <carnil@debian.org>
+Subject: [PATCH 4.19 55/58] ACPI: probe ECDT before loading AML tables regardless of module-level code flag
+Date:   Tue,  8 Jun 2021 20:27:36 +0200
+Message-Id: <20210608175934.090869155@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
 References: <20210608175932.263480586@linuxfoundation.org>
@@ -39,208 +41,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Erik Schmauss <erik.schmauss@intel.com>
 
-commit cb853ded1d25e5b026ce115dbcde69e3d7e2e831 upstream.
+commit d737f333b211361b6e239fc753b84c3be2634aaa upstream.
 
-Commit 03fdfb2690099 ("KVM: arm64: Don't write junk to sysregs on
-reset") flipped the register number to 0 for all the debug registers
-in the sysreg table, hereby indicating that these registers live
-in a separate shadow structure.
+It was discovered that AML tables were loaded before or after the
+ECDT depending on acpi_gbl_execute_tables_as_methods. According to
+the ACPI spec, the ECDT should be loaded before the namespace is
+populated by loading AML tables (DSDT and SSDT). Since the ECDT
+should be loaded early in the boot process, this change moves the
+ECDT probing to acpi_early_init.
 
-However, the author of this patch failed to realise that all the
-accessors are using that particular index instead of the register
-encoding, resulting in all the registers hitting index 0. Not quite
-a valid implementation of the architecture...
-
-Address the issue by fixing all the accessors to use the CRm field
-of the encoding, which contains the debug register index.
-
-Fixes: 03fdfb2690099 ("KVM: arm64: Don't write junk to sysregs on reset")
-Reported-by: Ricardo Koller <ricarkol@google.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Cc: stable@vger.kernel.org
+Signed-off-by: Erik Schmauss <erik.schmauss@intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Cc: Laurențiu Păncescu <lpancescu@gmail.com>
+Cc: Salvatore Bonaccorso <carnil@debian.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/kvm/sys_regs.c |   42 +++++++++++++++++++++---------------------
- 1 file changed, 21 insertions(+), 21 deletions(-)
+ drivers/acpi/bus.c |   44 ++++++++++++++++----------------------------
+ 1 file changed, 16 insertions(+), 28 deletions(-)
 
---- a/arch/arm64/kvm/sys_regs.c
-+++ b/arch/arm64/kvm/sys_regs.c
-@@ -426,14 +426,14 @@ static bool trap_bvr(struct kvm_vcpu *vc
- 		     struct sys_reg_params *p,
- 		     const struct sys_reg_desc *rd)
- {
--	u64 *dbg_reg = &vcpu->arch.vcpu_debug_state.dbg_bvr[rd->reg];
-+	u64 *dbg_reg = &vcpu->arch.vcpu_debug_state.dbg_bvr[rd->CRm];
+--- a/drivers/acpi/bus.c
++++ b/drivers/acpi/bus.c
+@@ -1054,15 +1054,17 @@ void __init acpi_early_init(void)
+ 		goto error0;
+ 	}
  
- 	if (p->is_write)
- 		reg_to_dbg(vcpu, p, dbg_reg);
- 	else
- 		dbg_to_reg(vcpu, p, dbg_reg);
+-	if (!acpi_gbl_execute_tables_as_methods &&
+-	    acpi_gbl_group_module_level_code) {
+-		status = acpi_load_tables();
+-		if (ACPI_FAILURE(status)) {
+-			printk(KERN_ERR PREFIX
+-			       "Unable to load the System Description Tables\n");
+-			goto error0;
+-		}
+-	}
++	/*
++	 * ACPI 2.0 requires the EC driver to be loaded and work before
++	 * the EC device is found in the namespace (i.e. before
++	 * acpi_load_tables() is called).
++	 *
++	 * This is accomplished by looking for the ECDT table, and getting
++	 * the EC parameters out of that.
++	 *
++	 * Ignore the result. Not having an ECDT is not fatal.
++	 */
++	status = acpi_ec_ecdt_probe();
  
--	trace_trap_reg(__func__, rd->reg, p->is_write, *dbg_reg);
-+	trace_trap_reg(__func__, rd->CRm, p->is_write, *dbg_reg);
+ #ifdef CONFIG_X86
+ 	if (!acpi_ioapic) {
+@@ -1133,25 +1135,11 @@ static int __init acpi_bus_init(void)
  
- 	return true;
- }
-@@ -441,7 +441,7 @@ static bool trap_bvr(struct kvm_vcpu *vc
- static int set_bvr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *rd,
- 		const struct kvm_one_reg *reg, void __user *uaddr)
- {
--	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_bvr[rd->reg];
-+	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_bvr[rd->CRm];
+ 	acpi_os_initialize1();
  
- 	if (copy_from_user(r, uaddr, KVM_REG_SIZE(reg->id)) != 0)
- 		return -EFAULT;
-@@ -451,7 +451,7 @@ static int set_bvr(struct kvm_vcpu *vcpu
- static int get_bvr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *rd,
- 	const struct kvm_one_reg *reg, void __user *uaddr)
- {
--	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_bvr[rd->reg];
-+	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_bvr[rd->CRm];
+-	/*
+-	 * ACPI 2.0 requires the EC driver to be loaded and work before
+-	 * the EC device is found in the namespace (i.e. before
+-	 * acpi_load_tables() is called).
+-	 *
+-	 * This is accomplished by looking for the ECDT table, and getting
+-	 * the EC parameters out of that.
+-	 */
+-	status = acpi_ec_ecdt_probe();
+-	/* Ignore result. Not having an ECDT is not fatal. */
+-
+-	if (acpi_gbl_execute_tables_as_methods ||
+-	    !acpi_gbl_group_module_level_code) {
+-		status = acpi_load_tables();
+-		if (ACPI_FAILURE(status)) {
+-			printk(KERN_ERR PREFIX
+-			       "Unable to load the System Description Tables\n");
+-			goto error1;
+-		}
++	status = acpi_load_tables();
++	if (ACPI_FAILURE(status)) {
++		printk(KERN_ERR PREFIX
++		       "Unable to load the System Description Tables\n");
++		goto error1;
+ 	}
  
- 	if (copy_to_user(uaddr, r, KVM_REG_SIZE(reg->id)) != 0)
- 		return -EFAULT;
-@@ -461,21 +461,21 @@ static int get_bvr(struct kvm_vcpu *vcpu
- static void reset_bvr(struct kvm_vcpu *vcpu,
- 		      const struct sys_reg_desc *rd)
- {
--	vcpu->arch.vcpu_debug_state.dbg_bvr[rd->reg] = rd->val;
-+	vcpu->arch.vcpu_debug_state.dbg_bvr[rd->CRm] = rd->val;
- }
- 
- static bool trap_bcr(struct kvm_vcpu *vcpu,
- 		     struct sys_reg_params *p,
- 		     const struct sys_reg_desc *rd)
- {
--	u64 *dbg_reg = &vcpu->arch.vcpu_debug_state.dbg_bcr[rd->reg];
-+	u64 *dbg_reg = &vcpu->arch.vcpu_debug_state.dbg_bcr[rd->CRm];
- 
- 	if (p->is_write)
- 		reg_to_dbg(vcpu, p, dbg_reg);
- 	else
- 		dbg_to_reg(vcpu, p, dbg_reg);
- 
--	trace_trap_reg(__func__, rd->reg, p->is_write, *dbg_reg);
-+	trace_trap_reg(__func__, rd->CRm, p->is_write, *dbg_reg);
- 
- 	return true;
- }
-@@ -483,7 +483,7 @@ static bool trap_bcr(struct kvm_vcpu *vc
- static int set_bcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *rd,
- 		const struct kvm_one_reg *reg, void __user *uaddr)
- {
--	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_bcr[rd->reg];
-+	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_bcr[rd->CRm];
- 
- 	if (copy_from_user(r, uaddr, KVM_REG_SIZE(reg->id)) != 0)
- 		return -EFAULT;
-@@ -494,7 +494,7 @@ static int set_bcr(struct kvm_vcpu *vcpu
- static int get_bcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *rd,
- 	const struct kvm_one_reg *reg, void __user *uaddr)
- {
--	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_bcr[rd->reg];
-+	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_bcr[rd->CRm];
- 
- 	if (copy_to_user(uaddr, r, KVM_REG_SIZE(reg->id)) != 0)
- 		return -EFAULT;
-@@ -504,22 +504,22 @@ static int get_bcr(struct kvm_vcpu *vcpu
- static void reset_bcr(struct kvm_vcpu *vcpu,
- 		      const struct sys_reg_desc *rd)
- {
--	vcpu->arch.vcpu_debug_state.dbg_bcr[rd->reg] = rd->val;
-+	vcpu->arch.vcpu_debug_state.dbg_bcr[rd->CRm] = rd->val;
- }
- 
- static bool trap_wvr(struct kvm_vcpu *vcpu,
- 		     struct sys_reg_params *p,
- 		     const struct sys_reg_desc *rd)
- {
--	u64 *dbg_reg = &vcpu->arch.vcpu_debug_state.dbg_wvr[rd->reg];
-+	u64 *dbg_reg = &vcpu->arch.vcpu_debug_state.dbg_wvr[rd->CRm];
- 
- 	if (p->is_write)
- 		reg_to_dbg(vcpu, p, dbg_reg);
- 	else
- 		dbg_to_reg(vcpu, p, dbg_reg);
- 
--	trace_trap_reg(__func__, rd->reg, p->is_write,
--		vcpu->arch.vcpu_debug_state.dbg_wvr[rd->reg]);
-+	trace_trap_reg(__func__, rd->CRm, p->is_write,
-+		vcpu->arch.vcpu_debug_state.dbg_wvr[rd->CRm]);
- 
- 	return true;
- }
-@@ -527,7 +527,7 @@ static bool trap_wvr(struct kvm_vcpu *vc
- static int set_wvr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *rd,
- 		const struct kvm_one_reg *reg, void __user *uaddr)
- {
--	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_wvr[rd->reg];
-+	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_wvr[rd->CRm];
- 
- 	if (copy_from_user(r, uaddr, KVM_REG_SIZE(reg->id)) != 0)
- 		return -EFAULT;
-@@ -537,7 +537,7 @@ static int set_wvr(struct kvm_vcpu *vcpu
- static int get_wvr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *rd,
- 	const struct kvm_one_reg *reg, void __user *uaddr)
- {
--	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_wvr[rd->reg];
-+	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_wvr[rd->CRm];
- 
- 	if (copy_to_user(uaddr, r, KVM_REG_SIZE(reg->id)) != 0)
- 		return -EFAULT;
-@@ -547,21 +547,21 @@ static int get_wvr(struct kvm_vcpu *vcpu
- static void reset_wvr(struct kvm_vcpu *vcpu,
- 		      const struct sys_reg_desc *rd)
- {
--	vcpu->arch.vcpu_debug_state.dbg_wvr[rd->reg] = rd->val;
-+	vcpu->arch.vcpu_debug_state.dbg_wvr[rd->CRm] = rd->val;
- }
- 
- static bool trap_wcr(struct kvm_vcpu *vcpu,
- 		     struct sys_reg_params *p,
- 		     const struct sys_reg_desc *rd)
- {
--	u64 *dbg_reg = &vcpu->arch.vcpu_debug_state.dbg_wcr[rd->reg];
-+	u64 *dbg_reg = &vcpu->arch.vcpu_debug_state.dbg_wcr[rd->CRm];
- 
- 	if (p->is_write)
- 		reg_to_dbg(vcpu, p, dbg_reg);
- 	else
- 		dbg_to_reg(vcpu, p, dbg_reg);
- 
--	trace_trap_reg(__func__, rd->reg, p->is_write, *dbg_reg);
-+	trace_trap_reg(__func__, rd->CRm, p->is_write, *dbg_reg);
- 
- 	return true;
- }
-@@ -569,7 +569,7 @@ static bool trap_wcr(struct kvm_vcpu *vc
- static int set_wcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *rd,
- 		const struct kvm_one_reg *reg, void __user *uaddr)
- {
--	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_wcr[rd->reg];
-+	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_wcr[rd->CRm];
- 
- 	if (copy_from_user(r, uaddr, KVM_REG_SIZE(reg->id)) != 0)
- 		return -EFAULT;
-@@ -579,7 +579,7 @@ static int set_wcr(struct kvm_vcpu *vcpu
- static int get_wcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *rd,
- 	const struct kvm_one_reg *reg, void __user *uaddr)
- {
--	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_wcr[rd->reg];
-+	__u64 *r = &vcpu->arch.vcpu_debug_state.dbg_wcr[rd->CRm];
- 
- 	if (copy_to_user(uaddr, r, KVM_REG_SIZE(reg->id)) != 0)
- 		return -EFAULT;
-@@ -589,7 +589,7 @@ static int get_wcr(struct kvm_vcpu *vcpu
- static void reset_wcr(struct kvm_vcpu *vcpu,
- 		      const struct sys_reg_desc *rd)
- {
--	vcpu->arch.vcpu_debug_state.dbg_wcr[rd->reg] = rd->val;
-+	vcpu->arch.vcpu_debug_state.dbg_wcr[rd->CRm] = rd->val;
- }
- 
- static void reset_amair_el1(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r)
+ 	status = acpi_enable_subsystem(ACPI_NO_ACPI_ENABLE);
 
 
