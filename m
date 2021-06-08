@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037853A02D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3353A0182
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238051AbhFHTKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:10:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34092 "EHLO mail.kernel.org"
+        id S235526AbhFHSxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:53:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237552AbhFHTAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:00:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 302DD61864;
-        Tue,  8 Jun 2021 18:44:03 +0000 (UTC)
+        id S235107AbhFHSrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:47:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A95E6613C3;
+        Tue,  8 Jun 2021 18:37:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177843;
-        bh=IWzbsvazQ/Rv68RMwi2/R6ZolNNYvus/0NQQowmYP0o=;
+        s=korg; t=1623177476;
+        bh=jqKA3ceQSt2X0YUX2MLM3uyTurwTYgRVoeoavKSo7Gk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zmUGyUW+PM92v6GS6Q/lU839q3zdz5fZzw5+u990u5IsjNIvooh/DG53n3qjUqpgH
-         OYXBtCjHlzzk+KZ5kwmVZcVsbipssdlzCeDWjNGJZZbXPgCiYADr77z/83iTyKe+Tm
-         RO5+wjEVEW+2rMVKCIlE0/KxXj6MDPJjpKzLfvoI=
+        b=cbCKoLqUe1p3BAjZTO72mrb9/4B7Wkbo1op1d1OT127c5JF9MLESrReq4L98SGfVc
+         xUhXuqjYFfoJyq07KqtGpcxnvCAXXK6mpDbH+grdyCBkSSF17cnDptHbQCfG0vUCue
+         ZyTazzV7c39+mIc+lCinjfxacKD+4lAkqbnyPNxA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pu Wen <puwen@hygon.cn>,
-        Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: [PATCH 5.10 113/137] x86/sev: Check SME/SEV support in CPUID first
+        stable@vger.kernel.org, Michael Chan <michael.chan@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 5.4 64/78] bnxt_en: Remove the setting of dev_port.
 Date:   Tue,  8 Jun 2021 20:27:33 +0200
-Message-Id: <20210608175946.204461984@linuxfoundation.org>
+Message-Id: <20210608175937.432125502@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
-References: <20210608175942.377073879@linuxfoundation.org>
+In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
+References: <20210608175935.254388043@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,69 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pu Wen <puwen@hygon.cn>
+From: Michael Chan <michael.chan@broadcom.com>
 
-commit 009767dbf42ac0dbe3cf48c1ee224f6b778aa85a upstream.
+commit 1d86859fdf31a0d50cc82b5d0d6bfb5fe98f6c00 upstream.
 
-The first two bits of the CPUID leaf 0x8000001F EAX indicate whether SEV
-or SME is supported, respectively. It's better to check whether SEV or
-SME is actually supported before accessing the MSR_AMD64_SEV to check
-whether SEV or SME is enabled.
+The dev_port is meant to distinguish the network ports belonging to
+the same PCI function.  Our devices only have one network port
+associated with each PCI function and so we should not set it for
+correctness.
 
-This is both a bare-metal issue and a guest/VM issue. Since the first
-generation Hygon Dhyana CPU doesn't support the MSR_AMD64_SEV, reading that
-MSR results in a #GP - either directly from hardware in the bare-metal
-case or via the hypervisor (because the RDMSR is actually intercepted)
-in the guest/VM case, resulting in a failed boot. And since this is very
-early in the boot phase, rdmsrl_safe()/native_read_msr_safe() can't be
-used.
-
-So check the CPUID bits first, before accessing the MSR.
-
- [ tlendacky: Expand and improve commit message. ]
- [ bp: Massage commit message. ]
-
-Fixes: eab696d8e8b9 ("x86/sev: Do not require Hypervisor CPUID bit for SEV guests")
-Signed-off-by: Pu Wen <puwen@hygon.cn>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: <stable@vger.kernel.org> # v5.10+
-Link: https://lkml.kernel.org/r/20210602070207.2480-1-puwen@hygon.cn
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/mm/mem_encrypt_identity.c |   11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/arch/x86/mm/mem_encrypt_identity.c
-+++ b/arch/x86/mm/mem_encrypt_identity.c
-@@ -504,10 +504,6 @@ void __init sme_enable(struct boot_param
- #define AMD_SME_BIT	BIT(0)
- #define AMD_SEV_BIT	BIT(1)
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -7003,7 +7003,6 @@ static int __bnxt_hwrm_func_qcaps(struct
  
--	/* Check the SEV MSR whether SEV or SME is enabled */
--	sev_status   = __rdmsr(MSR_AMD64_SEV);
--	feature_mask = (sev_status & MSR_AMD64_SEV_ENABLED) ? AMD_SEV_BIT : AMD_SME_BIT;
--
- 	/*
- 	 * Check for the SME/SEV feature:
- 	 *   CPUID Fn8000_001F[EAX]
-@@ -519,11 +515,16 @@ void __init sme_enable(struct boot_param
- 	eax = 0x8000001f;
- 	ecx = 0;
- 	native_cpuid(&eax, &ebx, &ecx, &edx);
--	if (!(eax & feature_mask))
-+	/* Check whether SEV or SME is supported */
-+	if (!(eax & (AMD_SEV_BIT | AMD_SME_BIT)))
- 		return;
- 
- 	me_mask = 1UL << (ebx & 0x3f);
- 
-+	/* Check the SEV MSR whether SEV or SME is enabled */
-+	sev_status   = __rdmsr(MSR_AMD64_SEV);
-+	feature_mask = (sev_status & MSR_AMD64_SEV_ENABLED) ? AMD_SEV_BIT : AMD_SME_BIT;
-+
- 	/* Check if memory encryption is enabled */
- 	if (feature_mask == AMD_SME_BIT) {
- 		/*
+ 		pf->fw_fid = le16_to_cpu(resp->fid);
+ 		pf->port_id = le16_to_cpu(resp->port_id);
+-		bp->dev->dev_port = pf->port_id;
+ 		memcpy(pf->mac_addr, resp->mac_address, ETH_ALEN);
+ 		pf->first_vf_id = le16_to_cpu(resp->first_vf_id);
+ 		pf->max_vfs = le16_to_cpu(resp->max_vfs);
 
 
