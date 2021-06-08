@@ -2,36 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D20003A047B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2308F3A044A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236707AbhFHTf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:35:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38704 "EHLO mail.kernel.org"
+        id S235789AbhFHT2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:28:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237766AbhFHTTD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:19:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C63E861430;
-        Tue,  8 Jun 2021 18:52:06 +0000 (UTC)
+        id S237376AbhFHTPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:15:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5975D613CC;
+        Tue,  8 Jun 2021 18:50:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178327;
-        bh=MbsscMw7MYl62lVCu41/poMHHkHLkqFTbvMqYnPY72Y=;
+        s=korg; t=1623178239;
+        bh=4bEVfWOBX9Bqwr3rHrdsMVUU1FS/6k6K982NYR/RsDQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WSqVeZ/BHwcvgq72fAj+QKOFrj/olNZVpXXtlaVF71PmcR+Bv3D1M7SOP8T9yNC4H
-         a3KwmpiJFp3/LFDWDgHdOOWoGVEf/TiF/VEyzer4s9JpXNVlz8vo7+kC6BrGqSaYvQ
-         aHoQ1Loce7quDgBVZD0TW2FPsViuds/8F+yxDq/0=
+        b=XHbMZCcPyjI+D+4fswxP1ii0dJMFHiQ/u/quAJYvUFz45B1qr5UTJarIiabG/8h2P
+         paHhbnFm8cWCS0Q91OajYYKXqTpwO6lo7ySayOewbDkmhxaKgFm9VZ2Nzj2ZO1wxOo
+         vrhGHLfvG4+QEvniRrU7SVQeHKxB39OShmDpa1Ec=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ding Hui <dinghui@sangfor.com.cn>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.12 128/161] mm/page_alloc: fix counting of free pages after take off from buddy
-Date:   Tue,  8 Jun 2021 20:27:38 +0200
-Message-Id: <20210608175949.771631072@linuxfoundation.org>
+        stable@vger.kernel.org, James Smart <jsmart2021@gmail.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.12 129/161] scsi: lpfc: Fix failure to transmit ABTS on FC link
+Date:   Tue,  8 Jun 2021 20:27:39 +0200
+Message-Id: <20210608175949.808960830@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
 References: <20210608175945.476074951@linuxfoundation.org>
@@ -43,60 +39,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ding Hui <dinghui@sangfor.com.cn>
+From: James Smart <jsmart2021@gmail.com>
 
-commit bac9c6fa1f929213bbd0ac9cdf21e8e2f0916828 upstream.
+commit 696770e72f2b42b92ea0a4a98087fb2ba376417a upstream.
 
-Recently we found that there is a lot MemFree left in /proc/meminfo
-after do a lot of pages soft offline, it's not quite correct.
+The abort_cmd_ia flag in an abort wqe describes whether an ABTS basic link
+service should be transmitted on the FC link or not.  Code added in
+lpfc_sli4_issue_abort_iotag() set the abort_cmd_ia flag incorrectly,
+surpressing ABTS transmission.
 
-Before Oscar's rework of soft offline for free pages [1], if we soft
-offline free pages, these pages are left in buddy with HWPoison flag,
-and NR_FREE_PAGES is not updated immediately.  So the difference between
-NR_FREE_PAGES and real number of available free pages is also even big
-at the beginning.
+A previous LPFC change to build an abort wqe inverted prior logic that
+determined whether an ABTS was to be issued on the FC link.
 
-However, with the workload running, when we catch HWPoison page in any
-alloc functions subsequently, we will remove it from buddy, meanwhile
-update the NR_FREE_PAGES and try again, so the NR_FREE_PAGES will get
-more and more closer to the real number of available free pages.
-(regardless of unpoison_memory())
+Revert this logic to its proper state.
 
-Now, for offline free pages, after a successful call
-take_page_off_buddy(), the page is no longer belong to buddy allocator,
-and will not be used any more, but we missed accounting NR_FREE_PAGES in
-this situation, and there is no chance to be updated later.
-
-Do update in take_page_off_buddy() like rmqueue() does, but avoid double
-counting if some one already set_migratetype_isolate() on the page.
-
-[1]: commit 06be6ff3d2ec ("mm,hwpoison: rework soft offline for free pages")
-
-Link: https://lkml.kernel.org/r/20210526075247.11130-1-dinghui@sangfor.com.cn
-Fixes: 06be6ff3d2ec ("mm,hwpoison: rework soft offline for free pages")
-Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
-Suggested-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
-Acked-by: David Hildenbrand <david@redhat.com>
-Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Link: https://lore.kernel.org/r/20210528212240.11387-1-jsmart2021@gmail.com
+Fixes: db7531d2b377 ("scsi: lpfc: Convert abort handling to SLI-3 and SLI-4 handlers")
+Cc: <stable@vger.kernel.org> # v5.11+
+Signed-off-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/page_alloc.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/scsi/lpfc/lpfc_sli.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -8951,6 +8951,8 @@ bool take_page_off_buddy(struct page *pa
- 			del_page_from_free_list(page_head, zone, page_order);
- 			break_down_buddy_pages(zone, page_head, page, 0,
- 						page_order, migratetype);
-+			if (!is_migrate_isolate(migratetype))
-+				__mod_zone_freepage_state(zone, -1, migratetype);
- 			ret = true;
- 			break;
- 		}
+--- a/drivers/scsi/lpfc/lpfc_sli.c
++++ b/drivers/scsi/lpfc/lpfc_sli.c
+@@ -20591,10 +20591,8 @@ lpfc_sli4_issue_abort_iotag(struct lpfc_
+ 	abtswqe = &abtsiocb->wqe;
+ 	memset(abtswqe, 0, sizeof(*abtswqe));
+ 
+-	if (lpfc_is_link_up(phba))
++	if (!lpfc_is_link_up(phba))
+ 		bf_set(abort_cmd_ia, &abtswqe->abort_cmd, 1);
+-	else
+-		bf_set(abort_cmd_ia, &abtswqe->abort_cmd, 0);
+ 	bf_set(abort_cmd_criteria, &abtswqe->abort_cmd, T_XRI_TAG);
+ 	abtswqe->abort_cmd.rsrvd5 = 0;
+ 	abtswqe->abort_cmd.wqe_com.abort_tag = xritag;
 
 
