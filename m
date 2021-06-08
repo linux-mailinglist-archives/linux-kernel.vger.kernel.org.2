@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E23CC3A02C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F6B3A0160
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234367AbhFHTI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:08:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39006 "EHLO mail.kernel.org"
+        id S235440AbhFHSvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:51:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237303AbhFHTAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:00:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9148613CE;
-        Tue,  8 Jun 2021 18:43:25 +0000 (UTC)
+        id S236035AbhFHSqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:46:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00BD561449;
+        Tue,  8 Jun 2021 18:37:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177806;
-        bh=6Gabgy4UiKFla4967rw6B0OVHHOOlpCUIr2yB9sfypU=;
+        s=korg; t=1623177450;
+        bh=s0YyBVXtSIcGth2gdcY+Bu3GJBOB093AGJ/x5nJAp+E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aiN4L0FVQbi/5hbhmaeDz6szC/BXQW1GV4+85psYaJxikIrdUkH+QGpIeoeDOGVV7
-         u9VytSWPQ0Q4KtO/Mwrmon4S7Wjvd7YTOZv5ZuUbxX1t2qQVOX89y03Fe192g2Z5y3
-         mfHW5vg7AwVWp84j+jp9UYS59eaD3roLNIiexNc8=
+        b=RK9t+NVcOh5Hhu8uLD+81y7ohiSgIELby9CAYwqBVPZxM1iWV4tpxZQM5V5cW81d5
+         WXWMSdBNc/T2qlTqR9bjmAeXcbRmqEhIrGblCqczGw1MV+lxw1+m4kiIewnt6l7rge
+         F4L2UbFGsI69NCNXOYMiZbknsAeCcgb0wyjlZxHo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+aa12d6106ea4ca1b6aae@syzkaller.appspotmail.com,
-        Phillip Potter <phil@philpotter.co.uk>, stable@kernel.org,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.10 105/137] ext4: fix memory leak in ext4_mb_init_backend on error path.
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.4 56/78] drm/amdgpu: Dont query CE and UE errors
 Date:   Tue,  8 Jun 2021 20:27:25 +0200
-Message-Id: <20210608175945.941826056@linuxfoundation.org>
+Message-Id: <20210608175937.169766702@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
-References: <20210608175942.377073879@linuxfoundation.org>
+In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
+References: <20210608175935.254388043@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,33 +42,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phillip Potter <phil@philpotter.co.uk>
+From: Luben Tuikov <luben.tuikov@amd.com>
 
-commit a8867f4e3809050571c98de7a2d465aff5e4daf5 upstream.
+commit dce3d8e1d070900e0feeb06787a319ff9379212c upstream.
 
-Fix a memory leak discovered by syzbot when a file system is corrupted
-with an illegally large s_log_groups_per_flex.
+On QUERY2 IOCTL don't query counts of correctable
+and uncorrectable errors, since when RAS is
+enabled and supported on Vega20 server boards,
+this takes insurmountably long time, in O(n^3),
+which slows the system down to the point of it
+being unusable when we have GUI up.
 
-Reported-by: syzbot+aa12d6106ea4ca1b6aae@syzkaller.appspotmail.com
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-Cc: stable@kernel.org
-Link: https://lore.kernel.org/r/20210412073837.1686-1-phil@philpotter.co.uk
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Fixes: ae363a212b14 ("drm/amdgpu: Add a new flag to AMDGPU_CTX_OP_QUERY_STATE2")
+Cc: Alexander Deucher <Alexander.Deucher@amd.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Luben Tuikov <luben.tuikov@amd.com>
+Reviewed-by: Alexander Deucher <Alexander.Deucher@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ext4/mballoc.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c |   16 ----------------
+ 1 file changed, 16 deletions(-)
 
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -2738,7 +2738,7 @@ static int ext4_mb_init_backend(struct s
- 		 */
- 		if (sbi->s_es->s_log_groups_per_flex >= 32) {
- 			ext4_msg(sb, KERN_ERR, "too many log groups per flexible block group");
--			goto err_freesgi;
-+			goto err_freebuddy;
- 		}
- 		sbi->s_mb_prefetch = min_t(uint, 1 << sbi->s_es->s_log_groups_per_flex,
- 			BLK_MAX_SEGMENT_SIZE >> (sb->s_blocksize_bits - 9));
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c
+@@ -351,7 +351,6 @@ static int amdgpu_ctx_query2(struct amdg
+ {
+ 	struct amdgpu_ctx *ctx;
+ 	struct amdgpu_ctx_mgr *mgr;
+-	unsigned long ras_counter;
+ 
+ 	if (!fpriv)
+ 		return -EINVAL;
+@@ -376,21 +375,6 @@ static int amdgpu_ctx_query2(struct amdg
+ 	if (atomic_read(&ctx->guilty))
+ 		out->state.flags |= AMDGPU_CTX_QUERY2_FLAGS_GUILTY;
+ 
+-	/*query ue count*/
+-	ras_counter = amdgpu_ras_query_error_count(adev, false);
+-	/*ras counter is monotonic increasing*/
+-	if (ras_counter != ctx->ras_counter_ue) {
+-		out->state.flags |= AMDGPU_CTX_QUERY2_FLAGS_RAS_UE;
+-		ctx->ras_counter_ue = ras_counter;
+-	}
+-
+-	/*query ce count*/
+-	ras_counter = amdgpu_ras_query_error_count(adev, true);
+-	if (ras_counter != ctx->ras_counter_ce) {
+-		out->state.flags |= AMDGPU_CTX_QUERY2_FLAGS_RAS_CE;
+-		ctx->ras_counter_ce = ras_counter;
+-	}
+-
+ 	mutex_unlock(&mgr->lock);
+ 	return 0;
+ }
 
 
