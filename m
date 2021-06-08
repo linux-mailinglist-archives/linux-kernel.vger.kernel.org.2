@@ -2,235 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC41139FB91
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 18:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A8639FBA2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 18:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233684AbhFHQDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 12:03:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23818 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232688AbhFHQDD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 12:03:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623168070;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ny0GQOcOMIJ9f9GtQNBSHCKyJm/TZJpAh/jRCTYyLxE=;
-        b=IvXUmP3ziGgphFSY30Wb2ZoQ4EwuIBF3MSjeOa1xl4rG+2aB0/eAYS1mFzTVjXo/QWUSuu
-        6g3VwIvxmOgfdVS8gSGxBsEfQnQHLa+8E2MfmUYsucOxJaGXDMg7xGsia14UsUI750YnKe
-        FwNaPcBXdLUek8126TnmJPtgjof6daI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-8-4Lo9xQCRPVGWI_y5gK4qVQ-1; Tue, 08 Jun 2021 12:01:08 -0400
-X-MC-Unique: 4Lo9xQCRPVGWI_y5gK4qVQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EB2EC501F4;
-        Tue,  8 Jun 2021 16:01:04 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-115-132.ams2.redhat.com [10.36.115.132])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F1584189C7;
-        Tue,  8 Jun 2021 16:00:49 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Rolf Eike Beer <eike-kernel@sf-tec.de>,
-        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-arch@vger.kernel.org, Linux API <linux-api@vger.kernel.org>
-Subject: [PATCH] madvise.2: Document MADV_POPULATE_READ and MADV_POPULATE_WRITE
-Date:   Tue,  8 Jun 2021 18:00:49 +0200
-Message-Id: <20210608160049.24685-1-david@redhat.com>
-In-Reply-To: <20210511081534.3507-1-david@redhat.com>
-References: <20210511081534.3507-1-david@redhat.com>
+        id S233313AbhFHQE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 12:04:58 -0400
+Received: from mga02.intel.com ([134.134.136.20]:17023 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233622AbhFHQEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 12:04:55 -0400
+IronPort-SDR: UHCdbKtlyzn3buLIOFpjiMite/E6YmGfQSrTuAX3WrHcW8fKHYlE5ST5LBak4pbGyJ6PCcrl2W
+ TIb14BK3Lbpg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="191983999"
+X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
+   d="scan'208";a="191983999"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 09:03:00 -0700
+IronPort-SDR: 3Hkk1m8f8AkixH/gVJ42Gf9agNRzt/9wcUiKjw6Zx6w4TBo3blVm+7zkpmi4pC5MWmUIocTLNv
+ 2QHbM8wlTNuA==
+X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
+   d="scan'208";a="449574835"
+Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.254.189.206]) ([10.254.189.206])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 09:02:59 -0700
+Subject: Re: [PATCH v6 00/20] Add VFIO mediated device support and DEV-MSI
+ support for the idxd driver
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+References: <162164243591.261970.3439987543338120797.stgit@djiang5-desk3.ch.intel.com>
+ <20210523232219.GG1002214@nvidia.com>
+ <86cde154-37c7-c00d-b0c6-06b15b50dbf7@intel.com>
+ <20210602231747.GK1002214@nvidia.com>
+ <MWHPR11MB188664D9E7CA60782B75AC718C3C9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210603014932.GN1002214@nvidia.com>
+ <MWHPR11MB1886D613948986530E9B61CB8C3C9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210603214009.68fac0c4.alex.williamson@redhat.com>
+ <MWHPR11MB18861FBE62D10E1FC77AB6208C389@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <168ee05a-faf4-3fce-e278-d783104fc442@intel.com>
+ <20210607191126.GP1002214@nvidia.com>
+From:   Dave Jiang <dave.jiang@intel.com>
+Message-ID: <bb39b5d4-093b-ded4-8ff1-73bbd472d905@intel.com>
+Date:   Tue, 8 Jun 2021 09:02:58 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20210607191126.GP1002214@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's document MADV_POPULATE_READ and MADV_POPULATE_WRITE behavior and
-error conditions.
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Jann Horn <jannh@google.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Dave Hansen <dave.hansen@intel.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Rik van Riel <riel@surriel.com>
-Cc: Michael S. Tsirkin <mst@redhat.com>
-Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Richard Henderson <rth@twiddle.net>
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: Matt Turner <mattst88@gmail.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Cc: linux-alpha@vger.kernel.org
-Cc: linux-mips@vger.kernel.org
-Cc: linux-parisc@vger.kernel.org
-Cc: linux-xtensa@linux-xtensa.org
-Cc: linux-arch@vger.kernel.org
-Cc: Linux API <linux-api@vger.kernel.org>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
+On 6/7/2021 12:11 PM, Jason Gunthorpe wrote:
+> On Mon, Jun 07, 2021 at 11:13:04AM -0700, Dave Jiang wrote:
+>
+>> So in step 1, we 'tag' the wq to be dedicated to guest usage and put the
+>> hardware wq into enable state. For a dedicated mode wq, we can definitely
+>> just register directly and skip the mdev step. For a shared wq mode, we can
+>> have multiple mdev running on top of a single wq. So we need some way to
+>> create more mdevs. We can either go with the existing established creation
+>> path by mdev, or invent something custom for the driver as Jason suggested
+>> to accomodate additional virtual devices for guests. We implemented the mdev
+>> path originally with consideration of mdev is established and has a known
+>> interface already.
+> It sounds like you could just as easially have a 'create new vfio'
+> file under the idxd sysfs.. Especially since you already have a bus
+> and dynamic vfio specific things being created on this bus.
 
-Not for upstream man pages yet, only for linux-mm and linux-api review
-purposes. Once/if the linux changes are merged upstream, I'll send it to
-the proper man list/maintainers.
+Will explore this and using of 'struct vfio_device' without mdev.
 
----
- man2/madvise.2 | 80 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 80 insertions(+)
 
-diff --git a/man2/madvise.2 b/man2/madvise.2
-index f1f384c0c..3ec8c53a7 100644
---- a/man2/madvise.2
-+++ b/man2/madvise.2
-@@ -469,6 +469,59 @@ If a page is file-backed and dirty, it will be written back to the backing
- storage.
- The advice might be ignored for some pages in the range when it is not
- applicable.
-+.TP
-+.BR MADV_POPULATE_READ " (since Linux 5.14)
-+Populate (prefault) page tables readable for the whole range without actually
-+reading. Depending on the underlying mapping, map the shared zeropage,
-+preallocate memory or read the underlying file; files with holes might or
-+might not preallocate blocks.
-+Do not generate
-+.B SIGBUS
-+when populating fails, return an error instead.
-+.IP
-+If
-+.B MADV_POPULATE_READ
-+succeeds, all page tables have been populated (prefaulted) readable once.
-+If
-+.B MADV_POPULATE_READ
-+fails, some page tables might have been populated.
-+.IP
-+.B MADV_POPULATE_READ
-+cannot be applied to mappings without read permissions
-+and special mappings marked with the kernel-internal
-+.B VM_PFNMAP
-+and
-+.BR VM_IO .
-+.IP
-+Note that with
-+.BR MADV_POPULATE_READ ,
-+the process can be killed at any moment when the system runs out of memory.
-+.TP
-+.BR MADV_POPULATE_WRITE " (since Linux 5.14)
-+Populate (prefault) page tables writable for the whole range without actually
-+writing. Depending on the underlying mapping, preallocate memory or read the
-+underlying file; files with holes will preallocate blocks.
-+Do not generate
-+.B SIGBUS
-+when populating fails, return an error instead.
-+.IP
-+If
-+.B MADV_POPULATE_WRITE
-+succeeds, all page tables have been populated (prefaulted) writable once.
-+If
-+.B MADV_POPULATE_WRITE
-+fails, some page tables might have been populated.
-+.IP
-+.B MADV_POPULATE_WRITE
-+cannot be applied to mappings without write permissions
-+and special mappings marked with the kernel-internal
-+.B VM_PFNMAP
-+and
-+.BR VM_IO .
-+.IP
-+Note that
-+.BR MADV_POPULATE_WRITE ,
-+the process can be killed at any moment when the system runs out of memory.
- .SH RETURN VALUE
- On success,
- .BR madvise ()
-@@ -533,6 +586,17 @@ or
- .BR VM_PFNMAP
- ranges.
- .TP
-+.B EINVAL
-+.I advice
-+is
-+.B MADV_POPULATE_READ
-+or
-+.BR MADV_POPULATE_WRITE ,
-+but the specified address range includes ranges with insufficient permissions,
-+.B VM_IO
-+or
-+.BR VM_PFNMAP.
-+.TP
- .B EIO
- (for
- .BR MADV_WILLNEED )
-@@ -548,6 +612,14 @@ Not enough memory: paging in failed.
- Addresses in the specified range are not currently
- mapped, or are outside the address space of the process.
- .TP
-+.B ENOMEM
-+.I advice
-+is
-+.B MADV_POPULATE_READ
-+or
-+.BR MADV_POPULATE_WRITE ,
-+but populating (prefaulting) page tables failed.
-+.TP
- .B EPERM
- .I advice
- is
-@@ -555,6 +627,14 @@ is
- but the caller does not have the
- .B CAP_SYS_ADMIN
- capability.
-+.TP
-+.B EHWPOISON
-+.I advice
-+is
-+.B MADV_POPULATE_READ
-+or
-+.BR MADV_POPULATE_WRITE ,
-+and a HW poisoned page is encountered.
- .SH VERSIONS
- Since Linux 3.18,
- .\" commit d3ac21cacc24790eb45d735769f35753f5b56ceb
--- 
-2.31.1
 
+>
+> Have you gone over this with Dan?
+>
+>> I think things become more complicated when we go from a dedicated wq to
+>> shared wq where the relationship of wq : mdev is 1 : 1 goes to 1 : N. Also
+>> needing to keep a consistent user config experience is desired, especially
+>> we already have such behavior since kernel 5.6 for host usages. So we really
+>> need try to avoid doing wq configuration differently just for "mdev" wqs. In
+>> the case suggested above, we basically just flipped the configuration steps.
+>> Mdev is first created through mdev sysfs interface. And then the device
+>> paramters are configured. Where for us, we configure the device parameter
+>> first, and then create the mdev. But in the end, it's still the hybrid mdev
+>> setup right?
+> So you don't even use mdev to configure anything? Yuk.
+>
+> Jason
