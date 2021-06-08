@@ -2,83 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3278139F4ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E9339F4F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231955AbhFHL3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 07:29:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47474 "EHLO
+        id S231987AbhFHLbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 07:31:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231895AbhFHL3p (ORCPT
+        with ESMTP id S231959AbhFHLbB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 07:29:45 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6336C061574;
-        Tue,  8 Jun 2021 04:27:52 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lqZtb-005pZ8-0X; Tue, 08 Jun 2021 11:27:47 +0000
-Date:   Tue, 8 Jun 2021 11:27:46 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        David Howells <dhowells@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: [RFC][PATCHSET] iov_iter work
-Message-ID: <YL9UMk9SppN7Pk06@zeniv-ca.linux.org.uk>
-References: <YL0dCEVEiVL+NwG6@zeniv-ca.linux.org.uk>
- <CAHk-=wj6ZiTgqbeCPtzP+5tgHjur6Amag66YWub_2DkGpP9h-Q@mail.gmail.com>
- <CAHk-=wiYPhhieXHBtBku4kZWHfLUTU7VZN9_zg0LTxcYH+0VRQ@mail.gmail.com>
- <YL3mxdEc7uw4rhjn@infradead.org>
- <YL4wnMbSmy3507fk@zeniv-ca.linux.org.uk>
- <YL5CTiR94f5DYPFK@infradead.org>
- <YL6KdoHzYiBOsu5t@zeniv-ca.linux.org.uk>
- <CAHk-=wgr3o6cKTNpU9wg7fj_+OUh5kFwrD29Lg0n2=-1nhvoZA@mail.gmail.com>
- <CAHk-=wjxkH79DcqVrZbETWERxLFU4xoPSzXkJOxfkxYKbjUaiw@mail.gmail.com>
+        Tue, 8 Jun 2021 07:31:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68F8C061574;
+        Tue,  8 Jun 2021 04:29:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=zD2ExAJSzKWT1fRzORsMdPpoWV1NnIEMM18+LgdwN5c=; b=t/0M9Yxf4QMDT5+XGU+7u6mdaF
+        u/0jpmk/FzUCYhvTW01w/pRduj49SPqBAduc022BsFFgTTa2pTyiZ+3HIA9RJbNycW3BGb0sQAM0V
+        sqxTTfXZ/lGjxGJDon0ruO8SgCn3jIbyBAH8r9XGbqPye0amChsyMG1f663dmzS1+JZBGqrHaKoXo
+        h/LL/Kr6vcZiWkmkKczq2MuL4TCwm809ZRo4kWWgcVjxmKnHXAws68ZT0cCc7H474kwxD7Lm4PhgC
+        4bbPQikbiUk7F76/OosiXm61I16j5tAuntUalj0xPYEartkuyYkYBHfTKDoexGPbEwEicv2ZLeUlR
+        UgBtV5QQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lqZuR-00GsP0-Rk; Tue, 08 Jun 2021 11:28:43 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 79781300258;
+        Tue,  8 Jun 2021 13:28:39 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3A8CF20245F9F; Tue,  8 Jun 2021 13:28:39 +0200 (CEST)
+Date:   Tue, 8 Jun 2021 13:28:39 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [PATCH] tools/perf: Do not set a variable unless it will be used
+Message-ID: <YL9UZzjqz8gHLbfo@hirez.programming.kicks-ass.net>
+References: <20210604092638.985694-1-ribalda@chromium.org>
+ <YLn0D+1R2QHZYRVV@hirez.programming.kicks-ass.net>
+ <CANiDSCu4Brz7FZX5oa57kNLG9h_1EASX=bdQij4+apg0ZwW8QA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wjxkH79DcqVrZbETWERxLFU4xoPSzXkJOxfkxYKbjUaiw@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <CANiDSCu4Brz7FZX5oa57kNLG9h_1EASX=bdQij4+apg0ZwW8QA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 04:35:46PM -0700, Linus Torvalds wrote:
-> On Mon, Jun 7, 2021 at 3:01 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
+On Fri, Jun 04, 2021 at 09:24:23PM +0200, Ricardo Ribalda wrote:
+> Hi Peter
+> 
+> On Fri, 4 Jun 2021 at 11:36, Peter Zijlstra <peterz@infradead.org> wrote:
 > >
-> >  (b) on all the common non-SET_FS architectures, kernel threads using
-> > iov_iter_init() wouldn't work anyway, because on those architectures
-> > it would always fill the thing in with an iov, not a kvec.
-> 
-> Thinking more about this thing, I think it means that what we *should*
-> do is simply just
-> 
->   void iov_iter_init(struct iov_iter *i, unsigned int direction,
->                         const struct iovec *iov, unsigned long nr_segs,
->                         size_t count)
->   {
->         WARN_ON_ONCE(direction & ~(READ | WRITE));
->         iWARN_ON_ONCE(uaccess_kernel());
->         *i = (struct iov_iter) {
->                 .iter_type = ITER_IOVEC,
->                 .data_source = direction,
->                 .iov = iov,
->                 .nr_segs = nr_segs,
->                 .iov_offset = 0,
->                 .count = count
->         };
->   }
-> 
-> because filling it with a kvec is simply wrong. It's wrong exactly due
-> to the fact that *if* we have a kernel thread, all the modern
-> non-SET_FS architectures will just ignore that entirely, and always
-> use the iov meaning.
+> > On Fri, Jun 04, 2021 at 11:26:38AM +0200, Ricardo Ribalda wrote:
+> > > clang-13 triggers the following warning:
+> > >
+> > > bench/inject-buildid.c:351:6: error: variable 'len' set but not used [-Werror,-Wunused-but-set-variable]
+                                                                         clue here: ^^^^^^^^^^^^^
 
-Updated and pushed out...
+> > >         u64 len = 0;
+> > >
+> > > This patch sets the value to len only if it will be used afterwards.
+> >
+> > My vote would be to kill that warning, what absolute shite.
+> 
+> My knowledge of llvm codebase is close to NULL, so it is much easier
+> for me to "fix" the code.
+
+That's what -Wno-unused-but-set-variable is for, which is trivial to add
+to the Makefile.
