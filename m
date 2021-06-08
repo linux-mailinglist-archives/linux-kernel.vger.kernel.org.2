@@ -2,162 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF97E39F60F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A2CE39F613
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232116AbhFHMLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 08:11:25 -0400
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:36568 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231330AbhFHMLX (ORCPT
+        id S232145AbhFHMMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 08:12:34 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:4525 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231330AbhFHMMd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 08:11:23 -0400
-Received: by mail-wm1-f43.google.com with SMTP id h11-20020a05600c350bb02901b59c28e8b4so1292239wmq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 05:09:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DbVC8wJA9F4nF7dQEdTB61GzcQ3IOcOmMh55KiS4SzM=;
-        b=PA1QPgaHAJ0VQyDLb/FrPX2KdvLXPGSl5uM0PEB8h2jNjjwhDZM9599GvrKipFWL6N
-         Ou/rc6S+j/5sIyJ2TJjkmEIXqTlJvRjhUpFDLgGc2puSrIM7T8b0S4ufACfwzU0w9SD7
-         8O3KIuS+G07A0Gmjd4mAe6KBidcdQcneCLKvGS9cY3nYHD6Y/SAkxvAZ+POVg4EveYkr
-         q37OnNOVhjn2pLtAM6kzCoA2hQATjs6CiGceDm83dMiyS67ATyuonAaJj6bMDfzbIwz8
-         7MqI1EqkW0jbvIKwci8k0ftFkiVt2dkVasgCZGr3ZGaNAPFbcAewkt1aCSAfkSgmQDAl
-         qiLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DbVC8wJA9F4nF7dQEdTB61GzcQ3IOcOmMh55KiS4SzM=;
-        b=AzMyPZ5Mt6fZPS9cTIWnvGqxOzIa1npQzoULE+p34n0097EUKJALp/Vgisly0ViNLQ
-         0/kl+lLp49I+a4qYY+pbgwVduN2n/xhhaMu4GzV0yFv2tGd0h/DPmr7M39/+1E62lwUl
-         h6wDFdjHfsyfy0iJfrtfz1X9p8WGjLAfnpzm8f9nkCztKBu2zqx6TjNQXg0ubg89PJt/
-         T0SyZ6wx9mDv7t25d0IVsUUqva/9on6KfJHS3LuX6FDkKi979Tt7TZ66IeL6qo7ikXP5
-         EFLML8INYrkQuiRHFDRki/lOUawKYv7YmsGqTK8KD/NGJN/smAIGwidEFB0A7FEBrIwC
-         Q5fQ==
-X-Gm-Message-State: AOAM5325hzzTOMJe3vSv71vDlnmeRiDoNpECkHMjg5NVoanvB1RdCjec
-        uMXcZO6akwykK4s34CxSVQOUChCEbbxZcvfe
-X-Google-Smtp-Source: ABdhPJyDTOg+FvhgA+m0IpvBbmyX606kD79oGBeXw/FJohgM0gODYpRMNjJ+OYJWuRApaeAl+UJxvQ==
-X-Received: by 2002:a7b:cc87:: with SMTP id p7mr3975819wma.85.1623154109398;
-        Tue, 08 Jun 2021 05:08:29 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:f4ed:83e3:926a:9eb7? ([2a01:e34:ed2f:f020:f4ed:83e3:926a:9eb7])
-        by smtp.googlemail.com with ESMTPSA id p5sm20518776wrd.25.2021.06.08.05.08.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Jun 2021 05:08:28 -0700 (PDT)
-Subject: =?UTF-8?B?UmU6IOetlOWkjTogW1BBVENIXSBjbG9ja3NvdXJjZS9kcml2ZXJzL3Nw?=
- =?UTF-8?Q?rd=3a_Remove_the_dependency_between_sprd_timer_and_SPRD_arch?=
-To:     =?UTF-8?B?5p+P5bm056aPIChOaWFuZnUgQmFpKQ==?= 
-        <nianfu.bai@unisoc.com>, Nianfu Bai <bnf20061983@gmail.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?5byg55Ge5bOwIChSdWlmZW5nIFpoYW5nLzEwMDQwKQ==?= 
-        <Ruifeng.Zhang1@unisoc.com>
-References: <1620716925-4329-1-git-send-email-bnf20061983@gmail.com>
- <aac6c6a3-6666-075a-6901-7e3c3b2ae01d@linaro.org>
- <1623120924545.61863@unisoc.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <cde99078-c13d-4454-cdcb-990239571ecc@linaro.org>
-Date:   Tue, 8 Jun 2021 14:08:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 8 Jun 2021 08:12:33 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FzpsK2d3RzZf1T;
+        Tue,  8 Jun 2021 20:07:49 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 20:10:38 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Tue, 8 Jun 2021
+ 20:10:38 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Subject: Re: [RFC net-next 0/8] Introducing subdev bus and devlink extension
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     moyufeng <moyufeng@huawei.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Parav Pandit <parav@mellanox.com>,
+        Or Gerlitz <gerlitz.or@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "michal.lkml@markovi.net" <michal.lkml@markovi.net>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "lipeng (Y)" <lipeng321@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        <shenjian15@huawei.com>, "chenhao (DY)" <chenhao288@hisilicon.com>,
+        Jiaran Zhang <zhangjiaran@huawei.com>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+References: <1551418672-12822-1-git-send-email-parav@mellanox.com>
+ <20190304174551.2300b7bc@cakuba.netronome.com>
+ <VI1PR0501MB22718228FC8198C068EFC455D1720@VI1PR0501MB2271.eurprd05.prod.outlook.com>
+ <76785913-b1bf-f126-a41e-14cd0f922100@huawei.com>
+ <20210531223711.19359b9a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <7c591bad-75ed-75bc-5dac-e26bdde6e615@huawei.com>
+ <20210601143451.4b042a94@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <cf961f69-c559-eaf0-e168-b014779a1519@huawei.com>
+ <20210602093440.15dc5713@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <857e7a19-1559-b929-fd15-05e8f38e9d45@huawei.com>
+ <20210603105311.27bb0c4d@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <c9afecb5-3c0e-6421-ea58-b041d8173636@huawei.com>
+ <20210604114109.3a7ada85@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <4e7a41ed-3f4d-d55d-8302-df3bc42dedd4@huawei.com>
+ <20210607124643.1bb1c6a1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+Message-ID: <530ff54c-3cee-0eb6-30b0-b607826f68cf@huawei.com>
+Date:   Tue, 8 Jun 2021 20:10:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-In-Reply-To: <1623120924545.61863@unisoc.com>
-Content-Type: text/plain; charset=gbk
+In-Reply-To: <20210607124643.1bb1c6a1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme709-chm.china.huawei.com (10.1.199.105) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Nianfu,
-
-On 08/06/2021 04:55, 柏年福 (Nianfu Bai) wrote:
-> On 11/05/2021 09:08, Nianfu Bai wrote:
->> From: Nianfu Bai <nianfu.bai@unisoc.com>
+On 2021/6/8 3:46, Jakub Kicinski wrote:
+> On Mon, 7 Jun 2021 09:36:38 +0800 Yunsheng Lin wrote:
+>> On 2021/6/5 2:41, Jakub Kicinski wrote:
+>>> On Fri, 4 Jun 2021 09:18:04 +0800 Yunsheng Lin wrote:  
+>>>> My initial thinking is a id from a global IDA pool, which indeed may
+>>>> change on every boot.
+>>>>
+>>>> I am not really thinking much deeper about the controller id, just
+>>>> mirroring the bus identifiers for pcie device and ifindex for netdev,  
+>>>
+>>> devlink instance id seems fine, but there's already a controller
+>>> concept in devlink so please steer clear of that naming.  
+>> I am not sure if controller concept already existed is reusable for
+>> the devlink instance representing problem for multi-function which
+>> shares common resource in the same ASIC. If not, we do need to pick
+>> up other name.
 >>
->> Tick broadcast installed by insmod cannot switch to oneshot mode correctly
->> caused by linux timer framework, need to build in kernel image.
-> 
-> What timer is compiled as a module?
->> We want to compile sprd timer  as a module.
-> 
-> Why the timer framework does not allow to switch to it ?
->> Pls refer to the patch description deblow:
-> https://lore.kernel.org/lkml/161860007587.29796.7100262021118685563.tip-bot2@tip-bot2/
-
-Thanks for the pointer I understand the bug.
-
-However the description does not refer to this fix. It tells the timer
-is a module and then tells it depends on the sprd arch.
-
-What are the connection between all these points?
-
-On the other side, the email format is not text, replies are not
-correctly put inline, it is hard to follow the discussion.
-
-Please, take the time to read the documentation about submitting patches
-[1] and then provide a clear Changelog, no need to refer the timer is
-loaded after because it is a module, the Kconfig says the opposite.
-
-Thanks
-
-  -- Daniel
-
-[1] Documentation/process/*
-
->> SPRD_TIMER
->> has been selected by SPRD arch, we have to enable SPRD arch when we build
->> sprd timer in kernel image, this action conflicts with general kernel image,
-> 
-> Why this is conflicting with general kernel image?
-> 
->> so we need to remove the dependency between sprd timer and SPRD arch.
-> 
-> Can you rephrase the changelog, I'm not getting the point.
-> 
->> Signed-off-by: Nianfu Bai <nianfu.bai@unisoc.com>
->> Signed-off-by: Ruifeng Zhang <ruifeng.zhang1@unisoc.com>
->> ---
->>  drivers/clocksource/Kconfig | 4 +---
->>  1 file changed, 1 insertion(+), 3 deletions(-)
+>> Another thing I am not really think throught is how is the VF represented
+>> by the devlink instance when VF is passed through to a VM.
+>> I was thinking about VF is represented as devlink port, just like PF(with
+>> different port flavour), and VF devlink port only exist on the same host
+>> as PF(which assumes PF is never passed through to a VM), so it may means
+>> the PF is responsible for creating the devlink port for VF when VF is passed
+>> through to a VM?
 >>
->> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
->> index 39aa21d..04b333c 100644
->> --- a/drivers/clocksource/Kconfig
->> +++ b/drivers/clocksource/Kconfig
->> @@ -447,10 +447,8 @@ config MTK_TIMER
->>         Support for Mediatek timer driver.
+>> Or do we need to create a devlink instance for VF in the VM too when the
+>> VF is passed through to a VM? Or more specificly, does user need to query
+>> or configure devlink info or configuration in a VM? If not, then devlink
+>> instance in VM seems unnecessary?
+> 
+> I believe the current best practice is to create a devlink instance for
+> the VF with a devlink port of type "virtual". Such instance represents
+> a "virtualized" view of the device.
+
+Afer discussion with Parav in other thread, I undersood it was the current
+practice, but I am not sure I understand why it is current *best* practice.
+
+If we allow all PF of a ASCI to register to the same devlink instance, does
+it not make sense that all VF under one PF also register to the same devlink
+instance that it's PF is registering to when they are in the same host?
+
+For eswitch legacy mode, whether VF and PF are the same host or not, the VF
+can also provide the serial number of a ASIC to register to the devlink instance,
+if that devlink instance does not exist yet, just create that devlink instance
+according to the serial number, just like PF does.
+
+For eswitch DEVLINK_ESWITCH_MODE_SWITCHDEV mode, the flavour type for devlink
+port instance representing the netdev of VF function is FLAVOUR_VIRTUAL, the
+flavour type for devlink port instance representing the representor netdev of
+VF is FLAVOUR_PCI_VF, which are different type, so they can register to the same
+devlink instance even when both of the devlink port instance is in the same host?
+
+Is there any reason why VF use its own devlink instance?
+
+> 
+>>>> which may change too if the device is pluged into different pci slot
+>>>> on every boot?  
+>>>
+>>> Heh. What is someone reflashes the part to change it's serial number? :)
+>>> pci slot is reasonably stable, as proven by years of experience trying
+>>> to find stable naming for netdevs.  
 >>
->>  config SPRD_TIMER
->> -     bool "Spreadtrum timer driver" if EXPERT
->> +     bool "Spreadtrum timer driver" if COMPILE_TEST
->>       depends on HAS_IOMEM
->> -     depends on (ARCH_SPRD || COMPILE_TEST)
->> -     default ARCH_SPRD
->>       select TIMER_OF
->>       help
->>         Enables support for the Spreadtrum timer driver.
+>> I suppose that requires a booting to take effect and a vendor tool
+>> to reflash the serial number, it seems reasonable the vendor/user will
+>> try their best to not mess the serial number, otherwise service and
+>> maintenance based on serial number will not work?
+>> I was thinking about adding the vendor name besides the serial number
+>> to indicate a devlink instance, to avoid that case that two hw from
+>> different vendor having the same serial number accidentally.
+> 
+> I'm not opposed to the use of attributes such as serial number for
+> selecting instance, in principle. I was just trying to prove that PCI
+> slot/PCI device name is as stable as any other attribute. 
+> 
+> In fact for mass-produced machines using PCI slot is far more
+> convenient than globally unique identifiers because it can be used 
+> to talk to a specific device in a server for all machines of a given
+> model, hence easing automation.
+
+Make sense.
+
+> 
+>>>> We could still allow devlink instances to have multiple names,
+>>>> which seems to be more like devlink tool problem?
+>>>>
+>>>> For example, devlink tool could use the id or the vendor_info/
+>>>> serial_number to indicate a devlink instance according to user's
+>>>> request.  
+>>>
+>>> Typing serial numbers seems pretty painful.
+>>>   
+>>>> Aliase could be allowed too as long as devlink core provide a
+>>>> field and ops to set/get the field mirroring the ifalias for
+>>>> netdevice?  
+>>>
+>>> I don't understand.  
 >>
+>> I meant we could still allow the user to provide a more meaningful
+>> name to indicate a devlink instance besides the id.
 > 
+> To clarify/summarize my statement above serial number may be a useful
+> addition but PCI device names should IMHO remain the primary
+> identifiers, even if it means devlink instances with multiple names.
+
+I am not sure I understand what does it mean by "devlink instances with
+multiple names"?
+
+Does that mean whenever a devlink port instance is registered to a devlink
+instance, that devlink instance get a new name according to the PCI device
+which the just registered devlink port instance corresponds to?
+
 > 
-> --
-> <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+> In addition I don't think that user-controlled names/aliases are
+> necessarily a great idea for devlink.
 > 
-> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-> <http://twitter.com/#!/linaroorg> Twitter |
-> <http://www.linaro.org/linaro-blog/> Blog
-> ________________________________
->  This email (including its attachments) is intended only for the person or entity to which it is addressed and may contain information that is privileged, confidential or otherwise protected from disclosure. Unauthorized use, dissemination, distribution or copying of this email or the information herein or taking any action in reliance on the contents of this email or the information herein, by anyone other than the intended recipient, or an employee or agent responsible for delivering the message to the intended recipient, is strictly prohibited. If you are not the intended recipient, please do not read, copy, use or disclose any part of this e-mail to others. Please notify the sender immediately and permanently delete this e-mail and any attachments if you received it in error. Internet communications cannot be guaranteed to be timely, secure, error-free or virus-free. The sender does not accept liability for any errors or omissions.
-> 本邮件及其附件具有保密性质，受法律保护不得泄露，仅发送给本邮件所指特定收件人。严禁非经授权使用、宣传、发布或复制本邮件或其内容。若非该特定收件人，请勿阅读、复制、 使用或披露本邮件的任何内容。若误收本邮件，请从系统中永久性删除本邮件及所有附件，并以回复邮件的方式即刻告知发件人。无法保证互联网通信及时、安全、无误或防毒。发件人对任何错漏均不承担责任。
+> .
 > 
 
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
