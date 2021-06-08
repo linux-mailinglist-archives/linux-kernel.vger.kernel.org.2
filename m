@@ -2,320 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBC9539ED5D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 06:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9898739ED69
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 06:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229556AbhFHEJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 00:09:35 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:45297 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229455AbhFHEJe (ORCPT
+        id S229942AbhFHENO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 00:13:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229462AbhFHENN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 00:09:34 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 4456B580622;
-        Tue,  8 Jun 2021 00:07:42 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Tue, 08 Jun 2021 00:07:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com.au;
-         h=from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm3; bh=ZXRH+YluM1mHCS1EWUiCY/Sg8O
-        LccfHe1oW5iAay6y8=; b=dLzuZ6dBYf7ZA8tWLOBFZYLi7ERsGe/4vnMXG+ovvb
-        dNBO0+SaFGwoqYSFrfq/TeyHfKyvxrA7+LCdopIuT4abpLHxtRwtRiafQcDYCPat
-        qJIqOZO+wCZC5S9Jc1OP7+t1FviGpgevqIMotci37P+RWc5u3AweMzFljZk90E8C
-        uorV6rXagD+OssJQzllRnAIK88+rOAC9ZyXv2gWxy4d1HSCwSWgzx2vnV9CNp918
-        YC/3tiHas9krbrPIaAsdBROr7Bvoe/ShRRzruKRuvZVgg5NN90vX+/5ZjI8u04GM
-        p2bWCbC62CP6wlcgDaz+c/Sgr5ITd2GPENJsHfqmLRBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ZXRH+YluM1mHCS1EW
-        UiCY/Sg8OLccfHe1oW5iAay6y8=; b=nSRGsW+CQ2Zx1RVpIUu8W/VD/k5P+32BW
-        5k2ltd+UhI3dfldBPzHrYiOP/IJqGkNW+V+rHASacW/vFygnaZoxNjRYKnOsu+26
-        wb2yK3jpl6lsNTg3N1Z4XJrYY2lf9H29DMFbhC67l0PTc050rcZk4XsKTLAlv14Q
-        VA4WREYSaX/4IN4O+ES4TMq0a/3gKZh6nvbbJXbsXfK0WlSHTGZtZmW3fyrqvbXa
-        t+R7L8vvqWvwls0pV+Sn8LeQqb7+A69w0UOnuznjkcA3sCc2YehcHbxcUEnMH+9N
-        bxOjmIDeg9/4X/829tUWUJiLhE5SFmQZ1P6oFtmbWoLrDz0ZJIVBw==
-X-ME-Sender: <xms:C-2-YD2uka4HsA6gcdsV2Ia7vebY4Yjp9E8q7KBMb54jnAzGL7-67Q>
-    <xme:C-2-YCEaxASy5VlcrvNO_jLFpMDGkFCRsuVNuZGEQsiRZygk8jPHWq7unPjeT6uYS
-    2pUP6PrTQ2rggjEIg>
-X-ME-Received: <xmr:C-2-YD4exeK49N_YZWWf2BWDhVyCbCY3wwvjTyDOFxeugx7Jg08pzMUToo9oJjrBpcVTaA3kbfk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtkedgjeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeflohhhnhcuvfhh
-    ohhmshhonhcuoehgihhtsehjohhhnhhthhhomhhsohhnrdhfrghsthhmrghilhdrtghomh
-    drrghuqeenucggtffrrghtthgvrhhnpefffeeihfdukedtuedufeetieeuudfhhefhkefh
-    tefgtdeuffekffelleetveduieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehgihhtsehjohhhnhhthhhomhhsohhnrdhfrghsthhmrghilhdr
-    tghomhdrrghu
-X-ME-Proxy: <xmx:C-2-YI0AJZGjcB3wIbI9BoC9X8VNl4i9A7cQnBkvwZ25czWJlkKCLw>
-    <xmx:C-2-YGGufw99T-O81-FeiSyEruv6_Pr0IHFhspQdxjv5k1VFTZ0lzQ>
-    <xmx:C-2-YJ8BW7DhSDSCEAPSJWrwh_hHP79qreTZtWh_kOUwSh1c0MMlAg>
-    <xmx:Du2-YJBeX2Fg9oFZVXGwEJ1ZrZnXHiAqNON8tbpzquYgcm2o_LM48g>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 8 Jun 2021 00:07:35 -0400 (EDT)
-From:   John Thomson <git@johnthomson.fastmail.com.au>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Michael Walle <michael@walle.cc>,
-        Pratyush Yadav <p.yadav@ti.com>, linux-mtd@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        John Thomson <git@johnthomson.fastmail.com.au>,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] mtd: spi-nor: write support for minor aligned partitions
-Date:   Tue,  8 Jun 2021 14:07:19 +1000
-Message-Id: <20210608040719.14431-1-git@johnthomson.fastmail.com.au>
-X-Mailer: git-send-email 2.31.1
+        Tue, 8 Jun 2021 00:13:13 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05914C061574;
+        Mon,  7 Jun 2021 21:11:10 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id c13so9946315plz.0;
+        Mon, 07 Jun 2021 21:11:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=fujJUO0q2KI09Gf2Ts/MK4OrEH1MH3pS5M4uIA8d5KY=;
+        b=tcYZlrbvJ6bwWx5hOtunH5FlXCQSIc1mB7bzpNZe23fnuXN0P1B9qK3liym3q2fqMF
+         TUBPyWK1ZOMpCS5yddkJ84bAoIVftpAefDggUsr/uTdyBxgzLoSfNQgO8rOiBSXxqygT
+         GFbGXnJNu5IgI+IGstU3e+dbZmSTU3+aKi63tb64KMuXH0FHCXbVV3RvKJg36CCH1FMk
+         IKqtLtxeEw6JgGPC948jypG9g07rOnFHiNY01N8t+NBzZqm0DAIvsdbIQqiGg0jLoAB9
+         iXjAI2gZS5Du/dCK9shEQibTPfE88qR6UO3ZkZNZMTDFXB7KAlo11gDoRr6gyUtrDQRk
+         cREA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=fujJUO0q2KI09Gf2Ts/MK4OrEH1MH3pS5M4uIA8d5KY=;
+        b=lyp0nEeugNPQDkSNoB5i8cCpGK4eF+7B+XHv+gPeapeVnGkRsNbayHWnhNuHCLYbPs
+         NX3BeQfEjiwQJFKjXND/07u2gQq3+0eqN9Iv6pYu2fW7VJKhijxpQyhql76qSKDukser
+         6h0HjFSc7ls9l5ttt/6hvRf+TJ1E8Vsz9e2cx/mZ2bEb5q9Mn7u8Rl38P7UoWYMJIULH
+         zMmbw+h79yZYxg/kWqw+/sUpxSd5mdYYjo3ytwMvOK6C25JxydrMC7CN5rY6mFJb/w0F
+         alfz4luD5q6E5iLEwNa0iFSy8FrP3fVw4jkd5gXp1MxxierDG3prd08jQkj9J8+HNea0
+         Yp9w==
+X-Gm-Message-State: AOAM531iSXMFwg05ph41Rzo5KuIiv7ziY2R8H6tqoei6iyyDubWwvk+l
+        afGaD8hvg1EUEB5gS1iNhPQ=
+X-Google-Smtp-Source: ABdhPJxfxri2+uhmnYtzY5IcP7B7q38QCMIjrONmVg0s3CUrHRF1z33+8Ff6Hymls1OmPLXdOM7vxA==
+X-Received: by 2002:a17:90a:8b0d:: with SMTP id y13mr4219564pjn.88.1623125469552;
+        Mon, 07 Jun 2021 21:11:09 -0700 (PDT)
+Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
+        by smtp.gmail.com with ESMTPSA id w79sm2876301pff.21.2021.06.07.21.11.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 21:11:09 -0700 (PDT)
+Date:   Tue, 08 Jun 2021 14:11:04 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v4 1/4] lazy tlb: introduce lazy mm refcount helper
+ functions
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Anton Blanchard <anton@ozlabs.org>, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org, Andy Lutomirski <luto@kernel.org>,
+        =?iso-8859-1?q?Randy=0A?= Dunlap <rdunlap@infradead.org>
+References: <20210605014216.446867-1-npiggin@gmail.com>
+        <20210605014216.446867-2-npiggin@gmail.com>
+        <20210607164934.d453adcc42473e84beb25db3@linux-foundation.org>
+        <1623116020.vyls9ehp49.astroid@bobo.none>
+        <20210607184805.eddf8eb26b80e8af85d5777e@linux-foundation.org>
+In-Reply-To: <20210607184805.eddf8eb26b80e8af85d5777e@linux-foundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <1623125298.bx63h3mopj.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not prevent writing to mtd partitions where a partition boundary sits
-on a minor erasesize boundary.
-This addresses a FIXME that has been present since the start of the
-linux git history:
-/* Doesn't start on a boundary of major erase size */
-/* FIXME: Let it be writable if it is on a boundary of
- * _minor_ erase size though */
+Excerpts from Andrew Morton's message of June 8, 2021 11:48 am:
+> On Tue, 08 Jun 2021 11:39:56 +1000 Nicholas Piggin <npiggin@gmail.com> wr=
+ote:
+>=20
+>> > Looks like a functional change.  What's happening here?
+>>=20
+>> That's kthread_use_mm being clever about the lazy tlb mm. If it happened=
+=20
+>> that the kthread had inherited a the lazy tlb mm that happens to be the=20
+>> one we want to use here, then we already have a refcount to it via the=20
+>> lazy tlb ref.
+>>=20
+>> So then it doesn't have to touch the refcount, but rather just converts
+>> it from the lazy tlb ref to the returned reference. If the lazy tlb mm
+>> doesn't get a reference, we can't do that.
+>=20
+> Please cover this in the changelog and perhaps a code comment.
+>=20
 
-Allow a uniform erase region spi-nor device to be configured
-to use the non-uniform erase regions code path for an erase with:
-CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE=y
+Yeah fair enough, I'll even throw in a bug fix as well (your nose was right=
+,=20
+and it was too clever for me by half...)
 
-On supporting hardware (SECT_4K: majority of current SPI-NOR device)
-provide the facility for an erase to use the least number
-of SPI-NOR operations, as well as access to 4K erase without
-requiring CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
+Thanks,
+Nick
 
-Introduce erasesize_minor to the mtd struct,
-the smallest erasesize supported by the device
+--
+Fix a refcounting bug in kthread_use_mm (the mm reference is increased
+unconditionally now, but the lazy tlb refcount is still only dropped only
+if mm !=3D active_mm).
 
-On existing devices, this is useful where write support is wanted
-for data on a 4K partition, such as some u-boot-env partitions,
-or RouterBoot soft_config, while still netting the performance
-benefits of using 64K sectors
+And an update for the changelog:
 
-Performance:
-time mtd erase firmware
-OpenWrt 5.10 ramips MT7621 w25q128jv 0xfc0000 partition length
+If a kernel thread's current lazy tlb mm happens to be the one it wants to
+use, then kthread_use_mm() cleverly transfers the mm refcount from the
+lazy tlb mm reference to the returned reference. If the lazy tlb mm
+reference is no longer identical to a normal reference, this trick does not
+work, so that is changed to be explicit about the two references.
 
-Without this patch
-MTD_SPI_NOR_USE_4K_SECTORS=y	|n
-real    2m 11.66s		|0m 50.86s
-user    0m 0.00s		|0m 0.00s
-sys     1m 56.20s		|0m 50.80s
-
-With this patch
-MTD_SPI_NOR_USE_VARIABLE_ERASE=n|y		|4K_SECTORS=y
-real    0m 51.68s		|0m 50.85s	|2m 12.89s
-user    0m 0.00s		|0m 0.00s	|0m 0.01s
-sys     0m 46.94s		|0m 50.38s	|2m 12.46s
-
-Signed-off-by: John Thomson <git@johnthomson.fastmail.com.au>
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
 ---
-Have not tested on variable erase regions device.
+ kernel/kthread.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-checkpatch does not like the printk(KERN_WARNING
-these should be changed separately beforehand?
-
-Changes RFC -> v1:
-Fix uninitialized variable smatch warning
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/mtd/mtdpart.c       | 52 ++++++++++++++++++++++++++++---------
- drivers/mtd/spi-nor/Kconfig | 10 +++++++
- drivers/mtd/spi-nor/core.c  | 10 +++++--
- include/linux/mtd/mtd.h     |  2 ++
- 4 files changed, 60 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 665fd9020b76..fe7626b5020e 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -38,10 +38,11 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
- 	struct mtd_info *master = mtd_get_master(parent);
- 	int wr_alignment = (parent->flags & MTD_NO_ERASE) ?
- 			   master->writesize : master->erasesize;
-+	int wr_alignment_minor = 0;
- 	u64 parent_size = mtd_is_partition(parent) ?
- 			  parent->part.size : parent->size;
- 	struct mtd_info *child;
--	u32 remainder;
-+	u32 remainder, remainder_minor;
- 	char *name;
- 	u64 tmp;
- 
-@@ -143,6 +144,7 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
- 		int i, max = parent->numeraseregions;
- 		u64 end = child->part.offset + child->part.size;
- 		struct mtd_erase_region_info *regions = parent->eraseregions;
-+		uint32_t erasesize_minor = child->erasesize;
- 
- 		/* Find the first erase regions which is part of this
- 		 * partition. */
-@@ -153,15 +155,24 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
- 		if (i > 0)
- 			i--;
- 
--		/* Pick biggest erasesize */
- 		for (; i < max && regions[i].offset < end; i++) {
-+			/* Pick biggest erasesize */
- 			if (child->erasesize < regions[i].erasesize)
- 				child->erasesize = regions[i].erasesize;
-+			/* Pick smallest non-zero erasesize */
-+			if ((erasesize_minor > regions[i].erasesize) && (regions[i].erasesize > 0))
-+				erasesize_minor = regions[i].erasesize;
- 		}
-+
-+		if (erasesize_minor < child->erasesize)
-+			child->erasesize_minor = erasesize_minor;
-+
- 		BUG_ON(child->erasesize == 0);
- 	} else {
- 		/* Single erase size */
- 		child->erasesize = master->erasesize;
-+		if (master->erasesize_minor)
-+			child->erasesize_minor = master->erasesize_minor;
- 	}
- 
- 	/*
-@@ -169,26 +180,43 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
- 	 * exposes several regions with different erasesize. Adjust
- 	 * wr_alignment accordingly.
+diff --git a/kernel/kthread.c b/kernel/kthread.c
+index b70e28431a01..5e9797b2d06e 100644
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -1314,6 +1314,11 @@ void kthread_use_mm(struct mm_struct *mm)
+ 	WARN_ON_ONCE(!(tsk->flags & PF_KTHREAD));
+ 	WARN_ON_ONCE(tsk->mm);
+=20
++	/*
++	 * It's possible that tsk->active_mm =3D=3D mm here, but we must
++	 * still mmgrab(mm) and mmdrop_lazy_tlb(active_mm), because lazy
++	 * mm may not have its own refcount (see mmgrab/drop_lazy_tlb()).
++	 */
+ 	mmgrab(mm);
+=20
+ 	task_lock(tsk);
+@@ -1338,12 +1343,9 @@ void kthread_use_mm(struct mm_struct *mm)
+ 	 * memory barrier after storing to tsk->mm, before accessing
+ 	 * user-space memory. A full memory barrier for membarrier
+ 	 * {PRIVATE,GLOBAL}_EXPEDITED is implicitly provided by
+-	 * mmdrop(), or explicitly with smp_mb().
++	 * mmdrop_lazy_tlb().
  	 */
--	if (!(child->flags & MTD_NO_ERASE))
-+	if (!(child->flags & MTD_NO_ERASE)) {
- 		wr_alignment = child->erasesize;
-+		if (IS_ENABLED(CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE) && child->erasesize_minor)
-+			wr_alignment_minor = child->erasesize_minor;
-+	}
- 
- 	tmp = mtd_get_master_ofs(child, 0);
- 	remainder = do_div(tmp, wr_alignment);
- 	if ((child->flags & MTD_WRITEABLE) && remainder) {
--		/* Doesn't start on a boundary of major erase size */
--		/* FIXME: Let it be writable if it is on a boundary of
--		 * _minor_ erase size though */
--		child->flags &= ~MTD_WRITEABLE;
--		printk(KERN_WARNING"mtd: partition \"%s\" doesn't start on an erase/write block boundary -- force read-only\n",
--			part->name);
-+		if (wr_alignment_minor) {
-+			tmp = mtd_get_master_ofs(child, 0);
-+			remainder_minor = do_div(tmp, wr_alignment_minor);
-+			if (remainder_minor == 0)
-+				child->erasesize = child->erasesize_minor;
-+		}
-+
-+		if ((!wr_alignment_minor) || (wr_alignment_minor && remainder_minor != 0)) {
-+			child->flags &= ~MTD_WRITEABLE;
-+			printk(KERN_WARNING"mtd: partition \"%s\" doesn't start on an erase/write block boundary -- force read-only\n",
-+				part->name);
-+		}
- 	}
- 
- 	tmp = mtd_get_master_ofs(child, 0) + child->part.size;
- 	remainder = do_div(tmp, wr_alignment);
- 	if ((child->flags & MTD_WRITEABLE) && remainder) {
--		child->flags &= ~MTD_WRITEABLE;
--		printk(KERN_WARNING"mtd: partition \"%s\" doesn't end on an erase/write block -- force read-only\n",
--			part->name);
-+		if (wr_alignment_minor) {
-+			tmp = mtd_get_master_ofs(child, 0) + child->part.size;
-+			remainder_minor = do_div(tmp, wr_alignment_minor);
-+			if (remainder_minor == 0)
-+				child->erasesize = child->erasesize_minor;
-+		}
-+		if ((!wr_alignment_minor) || (wr_alignment_minor && remainder_minor != 0)) {
-+			child->flags &= ~MTD_WRITEABLE;
-+			printk(KERN_WARNING"mtd: partition \"%s\" doesn't end on an erase/write block -- force read-only\n",
-+				part->name);
-+		}
- 	}
- 
- 	child->size = child->part.size;
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index 24cd25de2b8b..09df9f1a8127 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -10,6 +10,16 @@ menuconfig MTD_SPI_NOR
- 
- if MTD_SPI_NOR
- 
-+config MTD_SPI_NOR_USE_VARIABLE_ERASE
-+	bool "Disable uniform_erase to allow use of all hardware supported erasesizes"
-+	depends on !MTD_SPI_NOR_USE_4K_SECTORS
-+	default n
-+	help
-+	  Allow mixed use of all hardware supported erasesizes,
-+	  by forcing spi_nor to use the multiple eraseregions code path.
-+	  For example: A 68K erase will use one 64K erase, and one 4K erase
-+	  on supporting hardware.
-+
- config MTD_SPI_NOR_USE_4K_SECTORS
- 	bool "Use small 4096 B erase sectors"
- 	default y
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index bd2c7717eb10..43d9b54e7edd 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -1262,6 +1262,8 @@ static u8 spi_nor_convert_3to4_erase(u8 opcode)
- 
- static bool spi_nor_has_uniform_erase(const struct spi_nor *nor)
- {
-+	if (IS_ENABLED(CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE))
-+		return false;
- 	return !!nor->params->erase_map.uniform_erase_type;
+-	if (active_mm !=3D mm)
+-		mmdrop_lazy_tlb(active_mm);
+-	else
+-		smp_mb();
++	mmdrop_lazy_tlb(active_mm);
+=20
+ 	to_kthread(tsk)->oldfs =3D force_uaccess_begin();
  }
- 
-@@ -2381,6 +2383,7 @@ static int spi_nor_select_erase(struct spi_nor *nor)
- {
- 	struct spi_nor_erase_map *map = &nor->params->erase_map;
- 	const struct spi_nor_erase_type *erase = NULL;
-+	const struct spi_nor_erase_type *erase_minor = NULL;
- 	struct mtd_info *mtd = &nor->mtd;
- 	u32 wanted_size = nor->info->sector_size;
- 	int i;
-@@ -2413,8 +2416,9 @@ static int spi_nor_select_erase(struct spi_nor *nor)
- 	 */
- 	for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
- 		if (map->erase_type[i].size) {
--			erase = &map->erase_type[i];
--			break;
-+			if (!erase)
-+				erase = &map->erase_type[i];
-+			erase_minor = &map->erase_type[i];
- 		}
- 	}
- 
-@@ -2422,6 +2426,8 @@ static int spi_nor_select_erase(struct spi_nor *nor)
- 		return -EINVAL;
- 
- 	mtd->erasesize = erase->size;
-+	if (erase_minor && erase_minor->size < erase->size)
-+		mtd->erasesize_minor = erase_minor->size;
- 	return 0;
- }
- 
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index a89955f3cbc8..33eafa27da50 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -243,6 +243,8 @@ struct mtd_info {
- 	 * information below if they desire
- 	 */
- 	uint32_t erasesize;
-+	/* "Minor" (smallest) erase size supported by the whole device */
-+	uint32_t erasesize_minor;
- 	/* Minimal writable flash unit size. In case of NOR flash it is 1 (even
- 	 * though individual bits can be cleared), in case of NAND flash it is
- 	 * one NAND page (or half, or one-fourths of it), in case of ECC-ed NOR
--- 
-2.31.1
+--=20
+2.23.0
 
