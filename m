@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BACA53A03B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C76D3A0270
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239199AbhFHTVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:21:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58908 "EHLO mail.kernel.org"
+        id S236804AbhFHTD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:03:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237416AbhFHTJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:09:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6C976141E;
-        Tue,  8 Jun 2021 18:48:21 +0000 (UTC)
+        id S236980AbhFHS4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:56:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B86B6615A0;
+        Tue,  8 Jun 2021 18:41:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178102;
+        s=korg; t=1623177700;
         bh=2051omGRCgbqyD5yjue/gMMoDodud1d4XeCDfFUHNZ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hwoeW6rp7zuobR3cFyEvFiyqErntUp+5y5saixox62Gsu8S5tUjeQOpdpuCcbosIX
-         bGDNdi3okFpt+YzutNuoT9poaO1STRRHfIJgoOlz+OUK0W58gdU3ModTmaIWtAjJTn
-         epbJOsC86/RhRA6BpRgCMFFJxXsgIGyyms+3FPyg=
+        b=Ib0ekq46mm/pd2ax36LM3BnASfs5P7Ias26I9clsApJbctpcjbVeRquWuHE0ISKVO
+         /1llIr4bO2EQflLagMUpFw4ojYUV75IMdjStAbXNu1izz0GSEPlMo7XXijCJB1+2Cr
+         +vyAGl7Yj3D56qqILnhsHKaeE3MRJO4JB7d1ixDw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,12 +28,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 076/161] ARM: dts: imx: emcon-avari: Fix nxp,pca8574 #gpio-cells
-Date:   Tue,  8 Jun 2021 20:26:46 +0200
-Message-Id: <20210608175948.019730976@linuxfoundation.org>
+Subject: [PATCH 5.10 067/137] ARM: dts: imx: emcon-avari: Fix nxp,pca8574 #gpio-cells
+Date:   Tue,  8 Jun 2021 20:26:47 +0200
+Message-Id: <20210608175944.635928792@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
-References: <20210608175945.476074951@linuxfoundation.org>
+In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
+References: <20210608175942.377073879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
