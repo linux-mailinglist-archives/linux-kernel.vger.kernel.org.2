@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD28639F98F
+	by mail.lfdr.de (Postfix) with ESMTP id 6019F39F98E
 	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233652AbhFHOvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:51:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233615AbhFHOvY (ORCPT
+        id S233643AbhFHOv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:51:29 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:48434 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233605AbhFHOvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Jun 2021 10:51:24 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A9C2C061787
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 07:49:30 -0700 (PDT)
-Message-Id: <20210608144345.912645927@linutronix.de>
+Message-Id: <20210608144346.045616965@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1623163769;
+        s=2020; t=1623163770;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=4LgZtohgq2ySESHc02//du52iwoTx7HELfTV7M2CNOk=;
-        b=DrBNLsLASRQA1MXui6Wz8ql7fIb+Xn7iAIE2pgTvQZR+Tkxo7VjttWsbyNOdUfrf2VIVxY
-        t06nRKO0xpNG4I7W894ucQE5WB31QIEavEJF5eMPlIscT4N1/r0u2xJOR1ubeY/RgP/kdV
-        mOZW9Xn4uJmuGtfGRoBvz8SDAIxy2sZxeEp2T1DnkO9maWdZ53VhTfnTNVcvgzWfeo7S1Q
-        BpbEJeybhIwMFlQK0RD0DPTMbaVQKImtPHiMK2zcdKpb5Q9cv+XFwjryEetEy5bLQT5qxC
-        t1SOuM+aNASTQENnSPaOr6AgLtaiaPoWjzjtUAsoA3pc1i3djXw2pCzM/6R+yA==
+        bh=7O85/tFcthcFjZKj3FL4XnZphychvCI4giAeYfOTUQc=;
+        b=VILxw9/U1btBgQ8MDD92kKuNX9Ph8/HKVi5HOnskZR1b9dlWv3zC+nenaJpbmYRHWtLHfL
+        a7OodYgQcYjfZQbqv6x4LMk3ErnR8EOaBYErO/FlFKZWPL3H007pu9g7X3aE/uK63cw71N
+        9zgS2Y+FCe1W24UkFj9/8Vl8546/8boolnCIa2jCNYb0vKfNVZnpAR97mRpKWvdLZ+/XlB
+        fxNH4XjxI/Qs2ujMpjuDuo5nFQ3cKa1KoqT3j3HObHZ0DJrxlortwhagkSi1d+MYmhGkmX
+        /7BxH1Lktk617wVGnPOffvMCl+97zJWfAkRSzO2CXWqGgPyDgkuW1bPKaMi7rw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1623163769;
+        s=2020e; t=1623163770;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=4LgZtohgq2ySESHc02//du52iwoTx7HELfTV7M2CNOk=;
-        b=R7AjCCNpSzRzMAYzkaVkBCKWz2MaLTk1KEAP5csC1RK6euycc4RmCJpULajQHi8+NQ3LKO
-        2WrHt5S+bbFdwHCA==
-Date:   Tue, 08 Jun 2021 16:36:20 +0200
+        bh=7O85/tFcthcFjZKj3FL4XnZphychvCI4giAeYfOTUQc=;
+        b=dCzyUlNYB1YLaXOlACqKfnAiMD4WoYHsBmbDTAbW2Xe+eYjoSTZqBwA+CiyTa3pOdlN14t
+        lFG9oosCMC/+pzDQ==
+Date:   Tue, 08 Jun 2021 16:36:21 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
@@ -45,8 +42,7 @@ Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
         Yu-cheng Yu <yu-cheng.yu@intel.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Rik van Riel <riel@surriel.com>, Borislav Petkov <bp@suse.de>
-Subject: [patch V3 3/6] x86/process: Check PF_KTHREAD and not current->mm for
- kernel threads
+Subject: [patch V3 4/6] x86/pkru: Make PKRU=0 actually work
 References: <20210608143617.565868844@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -55,29 +51,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-switch_fpu_finish() checks current->mm as indicator for kernel threads.
-That's wrong because kernel threads can temporarily use a mm of a user
-process via kthread_use_mm().
+When user space brings PKRU into init state, then the kernel handling is
+broken:
 
-Check the task flags for PF_KTHREAD instead.
+  T1 user space
+     xsave(state)
+     state.header.xfeatures &= ~XFEATURE_MASK_PKRU;
+     xrstor(state)
+
+  T1 -> kernel
+     schedule()
+       XSAVE(S) -> T1->xsave.header.xfeatures[PKRU] == 0
+       T1->flags |= TIF_NEED_FPU_LOAD;
+
+       wrpkru();
+
+     schedule()
+       ...
+       pk = get_xsave_addr(&T1->fpu->state.xsave, XFEATURE_PKRU);
+       if (pk)
+	 wrpkru(pk->pkru);
+       else
+	 wrpkru(DEFAULT_PKRU);
+
+Because the xfeatures bit is 0 and therefore the value in the xsave storage
+is not valid, get_xsave_addr() returns NULL and switch_to() writes the
+default PKRU. -> FAIL #1!
+
+So that wreckages any copy_to/from_user() on the way back to user space
+which hits memory which is protected by the default PKRU value.
+
+Assumed that this does not fail (pure luck) then T1 goes back to user
+space and because TIF_NEED_FPU_LOAD is set it ends up in
+
+switch_fpu_return()
+    __fpregs_load_activate()
+      if (!fpregs_state_valid()) {
+	 load_XSTATE_from_task();
+      }
+
+But if nothing touched the FPU between T1 scheduling out and in the
+fpregs_state is valid so switch_fpu_return() does nothing and just clears
+TIF_NEED_FPU_LOAD. Back to user space with DEFAULT_PKRU loaded. -> FAIL #2!
+
+The fix is simple: if get_xsave_addr() returns NULL then set the PKRU value
+to 0 instead of the restrictive default PKRU value.
 
 Fixes: 0cecca9d03c9 ("x86/fpu: Eager switch PKRU state")
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Cc: Rik van Riel <riel@surriel.com>
 Cc: stable@vger.kernel.org
 ---
- arch/x86/include/asm/fpu/internal.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/include/asm/fpu/internal.h |   11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
 --- a/arch/x86/include/asm/fpu/internal.h
 +++ b/arch/x86/include/asm/fpu/internal.h
-@@ -578,7 +578,7 @@ static inline void switch_fpu_finish(str
- 	 * PKRU state is switched eagerly because it needs to be valid before we
+@@ -579,9 +579,16 @@ static inline void switch_fpu_finish(str
  	 * return to userland e.g. for a copy_to_user() operation.
  	 */
--	if (current->mm) {
-+	if (!(current->flags & PF_KTHREAD)) {
+ 	if (!(current->flags & PF_KTHREAD)) {
++		/*
++		 * If the PKRU bit in xsave.header.xfeatures is not set,
++		 * then the PKRU compoment was in init state, which means
++		 * XRSTOR will set PKRU to 0. If the bit is not set then
++		 * get_xsave_addr() will return NULL because the PKRU value
++		 * in memory is not valid. This means pkru_val has to be
++		 * set to 0 and not to init_pkru_value.
++		 */
  		pk = get_xsave_addr(&new_fpu->state.xsave, XFEATURE_PKRU);
- 		if (pk)
- 			pkru_val = pk->pkru;
+-		if (pk)
+-			pkru_val = pk->pkru;
++		pkru_val = pk ? pk->pkru : 0;
+ 	}
+ 	__write_pkru(pkru_val);
+ }
 
