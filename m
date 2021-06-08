@@ -2,208 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F416339F8CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED21D39F8D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:18:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233221AbhFHOTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:19:52 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:36211 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233116AbhFHOTv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:19:51 -0400
-Received: from mail-oi1-f200.google.com ([209.85.167.200])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <koba.ko@canonical.com>)
-        id 1lqcYH-000091-Rd
-        for linux-kernel@vger.kernel.org; Tue, 08 Jun 2021 14:17:57 +0000
-Received: by mail-oi1-f200.google.com with SMTP id l189-20020acabbc60000b02901f566a77bb8so23974oif.7
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 07:17:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h/dP9kDCGHXSb65kdSXP5AItS/KTfUnWsoRKm3qRZ+g=;
-        b=hmfqbehWm7Ssdsew3OOO555MhH+lqRPnX1zJiSWezeEau6tj1dlxszfr0ESDoiDWeM
-         ymsKVSZ/GsuWRo9hDJA+7HxGMv9WPbwmtn57Gv2WlQx2xj/fa9sng7lGiNp//XvWPXpk
-         WJ/WBncLlMH8OB0c7GZ/UajTmF3sGIY2uRXzCpHuxKb1zXQb4kLHKvfs1YCbK/Vye+Yh
-         D7mSgRmZ/LOO+sR9QbkdL0UvVKlH5+1ptdE+ldyNOOom4fOrtyYXoUKE6mgLi7R5eImw
-         VwbKSFPv5nNuD7cPzmZtmEWBRSP8cWsqL05OFOlAPp/eDoJEOeoxBZm3Bnrw/ovhjvF6
-         uD1g==
-X-Gm-Message-State: AOAM532usvLg4ADuXs+/foJibPdv0SyrW7qTKiG2/U4NOD8FLcuNuOvP
-        3d+n97EFaYLdfqkzr4TGuuyK6dDvQbmr22C750PFM89nAm54g6K+Ep65yYkaEJ5jD0kFc3GF/6K
-        95XdHdqnxlbCp6D4R64kWRq5nwxvK5DwHg4xR+gizF4C/UIen68pZJQ/+PQ==
-X-Received: by 2002:a9d:6291:: with SMTP id x17mr18390686otk.326.1623161876769;
-        Tue, 08 Jun 2021 07:17:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy/ucwh5DCrY/vnvb2VDJ7BrG3PiRu2GdGM7xoDW3kdj0Lcq3aHdJYExNB691sNu6OLtJzJE3eCX+fYYhfUGO0=
-X-Received: by 2002:a9d:6291:: with SMTP id x17mr18390661otk.326.1623161876449;
- Tue, 08 Jun 2021 07:17:56 -0700 (PDT)
+        id S233282AbhFHOUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:20:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47808 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233116AbhFHOUV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 10:20:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE79A6135A;
+        Tue,  8 Jun 2021 14:18:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623161908;
+        bh=Q6x8I0zp47PbSqGK06LBfPKboxhDlMOF9EKsflzM3z0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HG9P0de34pb9jF7an+voga1Dbd4cWjUjiFSl1XICorhOHOIyJ/qcfxmdLN5MZQ9zD
+         P/xqUtE2yYpRoMaZ9YZ39rRGfmIERiQVJOewrlOiQSQ1yNlOyOl4r8z/RqyrsjOlKI
+         2XOZqigf7dl1H3Ajx4rQIFaTg9Ecj6l5eTZt4YFHLKyeVJpzyQkhvg2HaM7pAB/5RM
+         tQ8T8QqNNTPfHTisi8Ad8SEIKHlS8T5rAJpTyLHsiuWKt7Mx9Uh0+02y+EVWCnrOzZ
+         MhcCB74YNqadL9wnBl8M4brr/ji00twvVC9AsZnYYDW9tZl0e/sT8NzGzffApyuAB4
+         mzbyDThXvVs/A==
+Date:   Tue, 8 Jun 2021 17:18:19 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v1] memory-hotplug.rst: complete admin-guide overhaul
+Message-ID: <YL98K4QcKPIp4gkM@kernel.org>
+References: <20210525102604.8770-1-david@redhat.com>
+ <YL4Ek6AqMUyiDrxY@kernel.org>
+ <5e01bd6f-4073-1ebb-489d-2e5c529909a2@redhat.com>
 MIME-Version: 1.0
-References: <20210608032207.2923574-1-koba.ko@canonical.com>
- <84eb168e-58ff-0350-74e2-c55249eb258c@gmail.com> <CAJB-X+XFYa1cZgtJEL1KCNWviL3Y4X6EbN--rE8CD_9oD9EFyA@mail.gmail.com>
- <7a36c032-38fa-6aa6-fa0f-c3664850d8ea@gmail.com>
-In-Reply-To: <7a36c032-38fa-6aa6-fa0f-c3664850d8ea@gmail.com>
-From:   Koba Ko <koba.ko@canonical.com>
-Date:   Tue, 8 Jun 2021 22:17:45 +0800
-Message-ID: <CAJB-X+V78kUM97AZQp9ZQbp=tzWwD9FQWEcFS6VnVRZnSHkb7g@mail.gmail.com>
-Subject: Re: [PATCH] [v2] r8169: Use PHY_POLL when RTL8106E enable ASPM
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5e01bd6f-4073-1ebb-489d-2e5c529909a2@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 8, 2021 at 9:45 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
->
-> On 08.06.2021 12:43, Koba Ko wrote:
-> > On Tue, Jun 8, 2021 at 4:00 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
-> >>
-> >> On 08.06.2021 05:22, Koba Ko wrote:
-> >>> For RTL8106E, it's a Fast-ethernet chip.
-> >>> If ASPM is enabled, the link chang interrupt wouldn't be triggered
-> >>> immediately and must wait a very long time to get link change interrupt.
-> >>> Even the link change interrupt isn't triggered, the phy link is already
-> >>> established.
-> >>>
-> >>> Use PHY_POLL to watch the status of phy link and disable
-> >>> the link change interrupt when ASPM is enabled on RTL8106E.
-> >>>
-> >>> v2: Instead use PHY_POLL and identify 8106E by RTL_GIGA_MAC_VER_39.
-> >>>
-> >>
-> >> Still the issue description doesn't convince me that it's a hw bug
-> >> with the respective chip version. What has been stated so far:
-> >>
-> >> 1. (and most important) Issue doesn't occur in mainline because ASPM
-> >>    is disabled in mainline for r8169. Issue occurs only with a
-> >>    downstream kernel with ASPM enabled for r8169.
-> >
-> > mainline kernel and enable L1, the issue is also observed.
-> >
-> Yes, but enabling L1 via sysfs is at own risk.
+On Tue, Jun 08, 2021 at 03:04:19PM +0200, David Hildenbrand wrote:
 
-but we could have a workaround if hw have an aspm issue.
+...
 
->
-> >> 2. Issue occurs only with ASPM L1.1 not disabled, even though this chip
-> >>    version doesn't support L1 sub-states. Just L0s/L1 don't trigger
-> >>    the issue.
-> >>    The NIC doesn't announce L1.1 support, therefore PCI core won't
-> >>    enable L1 sub-states on the PCIe link between NIC and upstream
-> >>    PCI bridge.
-> >
-> > More precisely, when L1 is enabled, the issue would be triggered.
-> > For RTL8106E,
-> > 1. Only disable L0s, pcie_aspm_enabled return 1, issue is triggered.
-> > 2. Only disable L1_1, pcie_aspm_enabled return 1, issue is triggered.
-> >
-> > 3. Only disable L1, pcie_aspm_enabled return 0, issue is not triggered.
-> >
-> >>
-> >> 3. Issue occurs only with a GBit-capable link partner. 100MBit link
-> >>    partners are fine. Not clear whether issue occurs with a specific
-> >>    Gbit link partner only or with GBit-capable link partners in general.
-> >>
-> >> 4. Only link-up interrupt is affected. Not link-down and not interrupts
-> >>    triggered by other interrupt sources.
-> >>
-> >> 5. Realtek couldn't confirm that there's such a hw bug on RTL8106e.
-> >>
-> >> One thing that hasn't been asked yet:
-> >> Does issue occur always if you re-plug the cable? Or only on boot?
-> >> I'm asking because in the dmesg log you attached to the bugzilla issue
-> >> the following looks totally ok.
-> >>
-> >> [   61.651643] r8169 0000:01:00.0 enp1s0: Link is Down
-> >> [   63.720015] r8169 0000:01:00.0 enp1s0: Link is Up - 100Mbps/Full - flow control rx/tx
-> >> [   66.685499] r8169 0000:01:00.0 enp1s0: Link is Down
-> >
-> > Once the link is up,
-> > 1. If cable is unplug&plug immediately,  you wouldn't see the issue.
-> > 2. Unplug cable and wait a long time (~1Mins), then plug the cable,
-> > the issue appears again.
-> >
-> This sounds runtime-pm-related. After 10s the NIC runtime-suspends,
-> and once the cable is re-plugged a PME is triggered that lets the
-> PCI core return the PCIe link from D3hot to D0.
-> If you re-plug the cable after such a longer time, do you see the
-> PCIe PME immediately in /proc/interrupts?
-
-I don't know which irq number is for RTL8106e PME, but check all PME
-in /proc/interrupt,
-
-There's no interrupt increase on all PME entries and rtl8106e irq entry(irq 32).
-
->
-> And if you set /sys/class/net/<if>/power/control to "on", does the
-> issue still occur?
-
-Yes, after echo "on" to /sys/class/net/<if>/power/control and
-replugging the cable, the issue is still caught.
->
-> >>
-> >>> Signed-off-by: Koba Ko <koba.ko@canonical.com>
-> >>> ---
-> >>>  drivers/net/ethernet/realtek/r8169_main.c | 21 +++++++++++++++++++--
-> >>>  1 file changed, 19 insertions(+), 2 deletions(-)
-> >>>
-> >>> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-> >>> index 2c89cde7da1e..a59cbaef2839 100644
-> >>> --- a/drivers/net/ethernet/realtek/r8169_main.c
-> >>> +++ b/drivers/net/ethernet/realtek/r8169_main.c
-> >>> @@ -4914,6 +4914,19 @@ static const struct dev_pm_ops rtl8169_pm_ops = {
-> >>>
-> >>>  #endif /* CONFIG_PM */
-> >>>
-> >>> +static int rtl_phy_poll_quirk(struct rtl8169_private *tp)
-> >>> +{
-> >>> +     struct pci_dev *pdev = tp->pci_dev;
-> >>> +
-> >>> +     if (!pcie_aspm_enabled(pdev))
-> >>
-> >> That's the wrong call. According to what you said earlier you want to
-> >> check for L1 sub-states, not for ASPM in general.
-> >
-> > As per described above, that's why use pcie_aspm_enabled here.
-> >
-> >>
-> >>> +             return 0;
-> >>> +
-> >>> +     if (tp->mac_version == RTL_GIGA_MAC_VER_39)
-> >>> +             return 1;
-> >>> +
-> >>> +     return 0;
-> >>> +}
-> >>> +
-> >>>  static void rtl_wol_shutdown_quirk(struct rtl8169_private *tp)
-> >>>  {
-> >>>       /* WoL fails with 8168b when the receiver is disabled. */
-> >>> @@ -4991,7 +5004,10 @@ static const struct net_device_ops rtl_netdev_ops = {
-> >>>
-> >>>  static void rtl_set_irq_mask(struct rtl8169_private *tp)
-> >>>  {
-> >>> -     tp->irq_mask = RxOK | RxErr | TxOK | TxErr | LinkChg;
-> >>> +     tp->irq_mask = RxOK | RxErr | TxOK | TxErr;
-> >>> +
-> >>> +     if (!rtl_phy_poll_quirk(tp))
-> >>> +             tp->irq_mask |= LinkChg;
-> >>>
-> >>>       if (tp->mac_version <= RTL_GIGA_MAC_VER_06)
-> >>>               tp->irq_mask |= SYSErr | RxOverflow | RxFIFOOver;
-> >>> @@ -5085,7 +5101,8 @@ static int r8169_mdio_register(struct rtl8169_private *tp)
-> >>>       new_bus->name = "r8169";
-> >>>       new_bus->priv = tp;
-> >>>       new_bus->parent = &pdev->dev;
-> >>> -     new_bus->irq[0] = PHY_MAC_INTERRUPT;
-> >>> +     new_bus->irq[0] =
-> >>> +             (rtl_phy_poll_quirk(tp) ? PHY_POLL : PHY_MAC_INTERRUPT);
-> >>>       snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x", pci_dev_id(pdev));
-> >>>
-> >>>       new_bus->read = r8169_mdio_read_reg;
-> >>>
-> >>
->
+> > > +--------------
+> > > -You can offline a memory block by using the same sysfs interface that was used
+> > > -in memory onlining::
+> > > +We usually expect that a large portion of available system RAM will actually
+> > > +be consumed by user space, either directly or indirectly via the page cache. In
+> > > +the normal case, ZONE_MOVABLE can be used when allocating such pages just fine.
+> > > -	% echo offline > /sys/devices/system/memory/memoryXXX/state
+> > > +With that in mind, it makes sense that we can have a big portion of system RAM
+> > > +managed by ZONE_MOVABLE. However, there are some things to consider when
+> > > +using ZONE_MOVABLE, especially when fine-tuning zone ratios:
+> > > -If offline succeeds, the state of the memory block is changed to be "offline".
+> > > -If it fails, some error core (like -EBUSY) will be returned by the kernel.
+> > > -Even if a memory block does not belong to ZONE_MOVABLE, you can try to offline
+> > > -it.  If it doesn't contain 'unmovable' memory, you'll get success.
+> > > +- Having a lot of offline memory blocks. Even offline memory blocks consume
+> > > +  memory for metadata and page tables in the direct map; having a lot of
+> > > +  offline memory blocks is not a typical case, though.
+> > > +
+> > > +- Memory ballooning. Some memory ballooning implementations, such as
+> > > +  the Hyper-V balloon, the XEN balloon, the vbox balloon and the VMWare
+> > 
+> > So, everyone except virtio-mem? ;-)
+> 
+> Well, virtio-mem does not classify as memory balloon in that sense, as it
+> only operates on own device memory ;)
+> 
+> virtio-balloon and pseries CMM support balloon compaction.
+> 
+> > I'd drop the names because if some of those will implement balloon
+> > compaction they surely will forget to update the docs.
+ 
+> I can do the opposite and mention the ones that already do. Some most
+> probably will never support it.
+> 
+> "Memory ballooning without balloon compaction is incompatible with
+> ZONE_MOVABLE. Only some implementations, such as virtio-balloon and pseries
+> CMM, fully support balloon compaction."
+ 
+Sounds good.
+ 
+-- 
+Sincerely yours,
+Mike.
