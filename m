@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B443A017F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 037853A02D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234857AbhFHSxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:53:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44348 "EHLO mail.kernel.org"
+        id S238051AbhFHTKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:10:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234350AbhFHSrN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:47:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E3FC613DD;
-        Tue,  8 Jun 2021 18:37:52 +0000 (UTC)
+        id S237552AbhFHTAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:00:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 302DD61864;
+        Tue,  8 Jun 2021 18:44:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177473;
-        bh=L17dMDqViDJjliDQM2ImeP0qsqt21qLjtnutnvdm9kY=;
+        s=korg; t=1623177843;
+        bh=IWzbsvazQ/Rv68RMwi2/R6ZolNNYvus/0NQQowmYP0o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gsEvYUAGlXOHkGmFXCBAxAYSROzjx20lD8+Bqk1iHzMqnJnEO6WaSIi+qyEUbXsm8
-         b1iUzUPSWEnziFcVGW1TMCZW4IhbHWe7Wk6jSW77+2PkvvVUJYs0v6nIUWZEFIC2Rl
-         wpsSAdxOWSNEf4rIL+QbSGjnIpYZ//O/DAPY1D+M=
+        b=zmUGyUW+PM92v6GS6Q/lU839q3zdz5fZzw5+u990u5IsjNIvooh/DG53n3qjUqpgH
+         OYXBtCjHlzzk+KZ5kwmVZcVsbipssdlzCeDWjNGJZZbXPgCiYADr77z/83iTyKe+Tm
+         RO5+wjEVEW+2rMVKCIlE0/KxXj6MDPJjpKzLfvoI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mina Almasry <almasrymina@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 63/78] mm, hugetlb: fix simple resv_huge_pages underflow on UFFDIO_COPY
-Date:   Tue,  8 Jun 2021 20:27:32 +0200
-Message-Id: <20210608175937.401008718@linuxfoundation.org>
+        stable@vger.kernel.org, Pu Wen <puwen@hygon.cn>,
+        Borislav Petkov <bp@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: [PATCH 5.10 113/137] x86/sev: Check SME/SEV support in CPUID first
+Date:   Tue,  8 Jun 2021 20:27:33 +0200
+Message-Id: <20210608175946.204461984@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
-References: <20210608175935.254388043@linuxfoundation.org>
+In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
+References: <20210608175942.377073879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,82 +40,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mina Almasry <almasrymina@google.com>
+From: Pu Wen <puwen@hygon.cn>
 
-[ Upstream commit d84cf06e3dd8c5c5b547b5d8931015fc536678e5 ]
+commit 009767dbf42ac0dbe3cf48c1ee224f6b778aa85a upstream.
 
-The userfaultfd hugetlb tests cause a resv_huge_pages underflow.  This
-happens when hugetlb_mcopy_atomic_pte() is called with !is_continue on
-an index for which we already have a page in the cache.  When this
-happens, we allocate a second page, double consuming the reservation,
-and then fail to insert the page into the cache and return -EEXIST.
+The first two bits of the CPUID leaf 0x8000001F EAX indicate whether SEV
+or SME is supported, respectively. It's better to check whether SEV or
+SME is actually supported before accessing the MSR_AMD64_SEV to check
+whether SEV or SME is enabled.
 
-To fix this, we first check if there is a page in the cache which
-already consumed the reservation, and return -EEXIST immediately if so.
+This is both a bare-metal issue and a guest/VM issue. Since the first
+generation Hygon Dhyana CPU doesn't support the MSR_AMD64_SEV, reading that
+MSR results in a #GP - either directly from hardware in the bare-metal
+case or via the hypervisor (because the RDMSR is actually intercepted)
+in the guest/VM case, resulting in a failed boot. And since this is very
+early in the boot phase, rdmsrl_safe()/native_read_msr_safe() can't be
+used.
 
-There is still a rare condition where we fail to copy the page contents
-AND race with a call for hugetlb_no_page() for this index and again we
-will underflow resv_huge_pages.  That is fixed in a more complicated
-patch not targeted for -stable.
+So check the CPUID bits first, before accessing the MSR.
 
-Test:
+ [ tlendacky: Expand and improve commit message. ]
+ [ bp: Massage commit message. ]
 
-  Hacked the code locally such that resv_huge_pages underflows produce a
-  warning, then:
-
-  ./tools/testing/selftests/vm/userfaultfd hugetlb_shared 10
-	2 /tmp/kokonut_test/huge/userfaultfd_test && echo test success
-  ./tools/testing/selftests/vm/userfaultfd hugetlb 10
-	2 /tmp/kokonut_test/huge/userfaultfd_test && echo test success
-
-Both tests succeed and produce no warnings.  After the test runs number
-of free/resv hugepages is correct.
-
-[mike.kravetz@oracle.com: changelog fixes]
-
-Link: https://lkml.kernel.org/r/20210528004649.85298-1-almasrymina@google.com
-Fixes: 8fb5debc5fcd ("userfaultfd: hugetlbfs: add hugetlb_mcopy_atomic_pte for userfaultfd support")
-Signed-off-by: Mina Almasry <almasrymina@google.com>
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Axel Rasmussen <axelrasmussen@google.com>
-Cc: Peter Xu <peterx@redhat.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: eab696d8e8b9 ("x86/sev: Do not require Hypervisor CPUID bit for SEV guests")
+Signed-off-by: Pu Wen <puwen@hygon.cn>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: <stable@vger.kernel.org> # v5.10+
+Link: https://lkml.kernel.org/r/20210602070207.2480-1-puwen@hygon.cn
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/hugetlb.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ arch/x86/mm/mem_encrypt_identity.c |   11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 3b08e34a775d..fe15e7d8220a 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -4338,10 +4338,20 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
- 	struct page *page;
+--- a/arch/x86/mm/mem_encrypt_identity.c
++++ b/arch/x86/mm/mem_encrypt_identity.c
+@@ -504,10 +504,6 @@ void __init sme_enable(struct boot_param
+ #define AMD_SME_BIT	BIT(0)
+ #define AMD_SEV_BIT	BIT(1)
  
- 	if (!*pagep) {
--		ret = -ENOMEM;
-+		/* If a page already exists, then it's UFFDIO_COPY for
-+		 * a non-missing case. Return -EEXIST.
-+		 */
-+		if (vm_shared &&
-+		    hugetlbfs_pagecache_present(h, dst_vma, dst_addr)) {
-+			ret = -EEXIST;
-+			goto out;
-+		}
+-	/* Check the SEV MSR whether SEV or SME is enabled */
+-	sev_status   = __rdmsr(MSR_AMD64_SEV);
+-	feature_mask = (sev_status & MSR_AMD64_SEV_ENABLED) ? AMD_SEV_BIT : AMD_SME_BIT;
+-
+ 	/*
+ 	 * Check for the SME/SEV feature:
+ 	 *   CPUID Fn8000_001F[EAX]
+@@ -519,11 +515,16 @@ void __init sme_enable(struct boot_param
+ 	eax = 0x8000001f;
+ 	ecx = 0;
+ 	native_cpuid(&eax, &ebx, &ecx, &edx);
+-	if (!(eax & feature_mask))
++	/* Check whether SEV or SME is supported */
++	if (!(eax & (AMD_SEV_BIT | AMD_SME_BIT)))
+ 		return;
+ 
+ 	me_mask = 1UL << (ebx & 0x3f);
+ 
++	/* Check the SEV MSR whether SEV or SME is enabled */
++	sev_status   = __rdmsr(MSR_AMD64_SEV);
++	feature_mask = (sev_status & MSR_AMD64_SEV_ENABLED) ? AMD_SEV_BIT : AMD_SME_BIT;
 +
- 		page = alloc_huge_page(dst_vma, dst_addr, 0);
--		if (IS_ERR(page))
-+		if (IS_ERR(page)) {
-+			ret = -ENOMEM;
- 			goto out;
-+		}
- 
- 		ret = copy_huge_page_from_user(page,
- 						(const void __user *) src_addr,
--- 
-2.30.2
-
+ 	/* Check if memory encryption is enabled */
+ 	if (feature_mask == AMD_SME_BIT) {
+ 		/*
 
 
