@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF0DF39FFCF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 061F53A008F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234388AbhFHSgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:36:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57090 "EHLO mail.kernel.org"
+        id S235789AbhFHSpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:45:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234546AbhFHSen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:34:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 263F161376;
-        Tue,  8 Jun 2021 18:31:56 +0000 (UTC)
+        id S234901AbhFHSky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:40:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CE1E61435;
+        Tue,  8 Jun 2021 18:34:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177116;
-        bh=GzbMRsUzb729PgDmzp73frCqNVg0mWy6WDCmh0rqdYQ=;
+        s=korg; t=1623177292;
+        bh=2pFcPZItDWmiWl6oTayWIQ/fes7yNRaMSMigEXO5N5M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jukmADJ4o2/n4D+YoFrK11jc2Q9E77dmn8Aravoc5qX0UP6CN9wYPeVb4Hzvs73Dt
-         I1XsJa1+f3eXaTdkqu/k3MoPMrkv5xWthyMpJBKTNge7py+sr4DRu51YTlPpw3lWfc
-         qSXAYgxr4MemyLVYV6knmv+HuEFpr9ANN2eQY62w=
+        b=kIdDFx89ab3gBQ9fRtLM0AS87VuvPsnQiap7pjfQM1tQbD2TgxwTG+ifB0KPmUVTr
+         +ve0ycny9E5tVdX4cKbrUN5DCznF9SJOmfFs8NpLfEeYqFLeFHdYSiD2v345nnu5S3
+         RiEOUIMVHJ2qgq4OCFGyAeAOCoLWXJZCktK628/4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel test robot <xiaolong.ye@intel.com>,
+        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH 4.14 38/47] selftests/bpf: fix test_align
-Date:   Tue,  8 Jun 2021 20:27:21 +0200
-Message-Id: <20210608175931.727183559@linuxfoundation.org>
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: [PATCH 4.19 41/58] bpf: test make sure to run unpriv test cases in test_verifier
+Date:   Tue,  8 Jun 2021 20:27:22 +0200
+Message-Id: <20210608175933.627022745@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175930.477274100@linuxfoundation.org>
-References: <20210608175930.477274100@linuxfoundation.org>
+In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
+References: <20210608175932.263480586@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +40,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexei Starovoitov <ast@fb.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-commit 2b36047e7889b7efee22c11e17f035f721855731 upstream.
+commit 832c6f2c29ec519b766923937f4f93fb1008b47d upstream
 
-since commit 82abbf8d2fc4 the verifier rejects the bit-wise
-arithmetic on pointers earlier.
-The test 'dubious pointer arithmetic' now has less output to match on.
-Adjust it.
+Right now unprivileged tests are never executed as a BPF test run,
+only loaded. Allow for running them as well so that we can check
+the outcome and probe for regressions.
 
-Fixes: 82abbf8d2fc4 ("bpf: do not allow root to mangle valid pointers")
-Reported-by: kernel test robot <xiaolong.ye@intel.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/testing/selftests/bpf/test_align.c |   22 +---------------------
- 1 file changed, 1 insertion(+), 21 deletions(-)
+ tools/testing/selftests/bpf/test_verifier.c |   71 +++++++++++++++-------------
+ 1 file changed, 40 insertions(+), 31 deletions(-)
 
---- a/tools/testing/selftests/bpf/test_align.c
-+++ b/tools/testing/selftests/bpf/test_align.c
-@@ -474,27 +474,7 @@ static struct bpf_align_test tests[] = {
- 		.result = REJECT,
- 		.matches = {
- 			{4, "R5=pkt(id=0,off=0,r=0,imm=0)"},
--			/* ptr & 0x40 == either 0 or 0x40 */
--			{5, "R5=inv(id=0,umax_value=64,var_off=(0x0; 0x40))"},
--			/* ptr << 2 == unknown, (4n) */
--			{7, "R5=inv(id=0,smax_value=9223372036854775804,umax_value=18446744073709551612,var_off=(0x0; 0xfffffffffffffffc))"},
--			/* (4n) + 14 == (4n+2).  We blow our bounds, because
--			 * the add could overflow.
--			 */
--			{8, "R5=inv(id=0,var_off=(0x2; 0xfffffffffffffffc))"},
--			/* Checked s>=0 */
--			{10, "R5=inv(id=0,umin_value=2,umax_value=9223372036854775806,var_off=(0x2; 0x7ffffffffffffffc))"},
--			/* packet pointer + nonnegative (4n+2) */
--			{12, "R6=pkt(id=1,off=0,r=0,umin_value=2,umax_value=9223372036854775806,var_off=(0x2; 0x7ffffffffffffffc))"},
--			{14, "R4=pkt(id=1,off=4,r=0,umin_value=2,umax_value=9223372036854775806,var_off=(0x2; 0x7ffffffffffffffc))"},
--			/* NET_IP_ALIGN + (4n+2) == (4n), alignment is fine.
--			 * We checked the bounds, but it might have been able
--			 * to overflow if the packet pointer started in the
--			 * upper half of the address space.
--			 * So we did not get a 'range' on R6, and the access
--			 * attempt will fail.
--			 */
--			{16, "R6=pkt(id=1,off=0,r=0,umin_value=2,umax_value=9223372036854775806,var_off=(0x2; 0x7ffffffffffffffc))"},
-+			/* R5 bitwise operator &= on pointer prohibited */
- 		}
+--- a/tools/testing/selftests/bpf/test_verifier.c
++++ b/tools/testing/selftests/bpf/test_verifier.c
+@@ -70,7 +70,7 @@ struct bpf_test {
+ 	int fixup_cgroup_storage[MAX_FIXUPS];
+ 	const char *errstr;
+ 	const char *errstr_unpriv;
+-	uint32_t retval;
++	uint32_t retval, retval_unpriv;
+ 	enum {
+ 		UNDEF,
+ 		ACCEPT,
+@@ -2986,6 +2986,8 @@ static struct bpf_test tests[] = {
+ 		.fixup_prog1 = { 2 },
+ 		.result = ACCEPT,
+ 		.retval = 42,
++		/* Verifier rewrite for unpriv skips tail call here. */
++		.retval_unpriv = 2,
  	},
  	{
+ 		"stack pointer arithmetic",
+@@ -12811,6 +12813,33 @@ static void do_test_fixup(struct bpf_tes
+ 	}
+ }
+ 
++static int set_admin(bool admin)
++{
++	cap_t caps;
++	const cap_value_t cap_val = CAP_SYS_ADMIN;
++	int ret = -1;
++
++	caps = cap_get_proc();
++	if (!caps) {
++		perror("cap_get_proc");
++		return -1;
++	}
++	if (cap_set_flag(caps, CAP_EFFECTIVE, 1, &cap_val,
++				admin ? CAP_SET : CAP_CLEAR)) {
++		perror("cap_set_flag");
++		goto out;
++	}
++	if (cap_set_proc(caps)) {
++		perror("cap_set_proc");
++		goto out;
++	}
++	ret = 0;
++out:
++	if (cap_free(caps))
++		perror("cap_free");
++	return ret;
++}
++
+ static void do_test_single(struct bpf_test *test, bool unpriv,
+ 			   int *passes, int *errors)
+ {
+@@ -12819,6 +12848,7 @@ static void do_test_single(struct bpf_te
+ 	struct bpf_insn *prog = test->insns;
+ 	int map_fds[MAX_NR_MAPS];
+ 	const char *expected_err;
++	uint32_t expected_val;
+ 	uint32_t retval;
+ 	int i, err;
+ 
+@@ -12836,6 +12866,8 @@ static void do_test_single(struct bpf_te
+ 		       test->result_unpriv : test->result;
+ 	expected_err = unpriv && test->errstr_unpriv ?
+ 		       test->errstr_unpriv : test->errstr;
++	expected_val = unpriv && test->retval_unpriv ?
++		       test->retval_unpriv : test->retval;
+ 
+ 	reject_from_alignment = fd_prog < 0 &&
+ 				(test->flags & F_NEEDS_EFFICIENT_UNALIGNED_ACCESS) &&
+@@ -12869,16 +12901,20 @@ static void do_test_single(struct bpf_te
+ 		__u8 tmp[TEST_DATA_LEN << 2];
+ 		__u32 size_tmp = sizeof(tmp);
+ 
++		if (unpriv)
++			set_admin(true);
+ 		err = bpf_prog_test_run(fd_prog, 1, test->data,
+ 					sizeof(test->data), tmp, &size_tmp,
+ 					&retval, NULL);
++		if (unpriv)
++			set_admin(false);
+ 		if (err && errno != 524/*ENOTSUPP*/ && errno != EPERM) {
+ 			printf("Unexpected bpf_prog_test_run error\n");
+ 			goto fail_log;
+ 		}
+-		if (!err && retval != test->retval &&
+-		    test->retval != POINTER_VALUE) {
+-			printf("FAIL retval %d != %d\n", retval, test->retval);
++		if (!err && retval != expected_val &&
++		    expected_val != POINTER_VALUE) {
++			printf("FAIL retval %d != %d\n", retval, expected_val);
+ 			goto fail_log;
+ 		}
+ 	}
+@@ -12921,33 +12957,6 @@ static bool is_admin(void)
+ 	return (sysadmin == CAP_SET);
+ }
+ 
+-static int set_admin(bool admin)
+-{
+-	cap_t caps;
+-	const cap_value_t cap_val = CAP_SYS_ADMIN;
+-	int ret = -1;
+-
+-	caps = cap_get_proc();
+-	if (!caps) {
+-		perror("cap_get_proc");
+-		return -1;
+-	}
+-	if (cap_set_flag(caps, CAP_EFFECTIVE, 1, &cap_val,
+-				admin ? CAP_SET : CAP_CLEAR)) {
+-		perror("cap_set_flag");
+-		goto out;
+-	}
+-	if (cap_set_proc(caps)) {
+-		perror("cap_set_proc");
+-		goto out;
+-	}
+-	ret = 0;
+-out:
+-	if (cap_free(caps))
+-		perror("cap_free");
+-	return ret;
+-}
+-
+ static void get_unpriv_disabled()
+ {
+ 	char buf[2];
 
 
