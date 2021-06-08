@@ -2,102 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD9839EF81
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 09:27:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B7039EF9A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 09:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbhFHH3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 03:29:31 -0400
-Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:37275 "EHLO
-        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229507AbhFHH30 (ORCPT
+        id S230436AbhFHHb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 03:31:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229556AbhFHHb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 03:29:26 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id qW8ylrCJ5hg8ZqW93l7CNL; Tue, 08 Jun 2021 09:27:29 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1623137249; bh=Q7hh9gRx3Ux+4QdoF45Yv4KNeVoIs/48lD80JxvEO2s=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=FHI8svZ6h5MkTxZ3DfRgv0I3eig0DQmc3dh0WvYoKSz3tjWOg9VPCnmGye4Q6c5bn
-         abbT0Z6EkLz7JZcdvPbA2OeHGjl1KHFtIU7Zsky9Brqjx74BFbtMuZKfhJchaFGWC3
-         MsqOu3KslnDhpZtGbjgZ8Dfv7Svcx5SzHGm1X+jiRea6rTtRMdIJnnJsb/6EPAQPhO
-         toDROQLKdLpIL+CX832WxLvOM5hnnEIHfBhErF372AleLmPDfgPepKQ8R+z1vWeXQJ
-         Vt1GAKXm2LpnUETDMsN2REuvizBlPomh5y8FMMpg22N1KbXvNw/pMRM2OEMnX6FDJT
-         C6b7H9SyBrChA==
-Subject: Re: [PATCH] TDA1997x: enable EDID support
-To:     =?UTF-8?Q?Krzysztof_Ha=c5=82asa?= <khalasa@piap.pl>,
-        Tim Harvey <tharvey@gateworks.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-References: <m3sg1uq6xu.fsf@t19.piap.pl>
- <dbb99d7b-18eb-317c-911a-b982486848fa@xs4all.nl> <m3eeddhora.fsf@t19.piap.pl>
- <CAJ+vNU0E_0pB-1T+VpdmjJNVirAwCUNjKVbEV4wEbqHOzURj_A@mail.gmail.com>
- <m3k0n57y72.fsf@t19.piap.pl>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <e9acc316-54c4-0387-eaaf-18dfb4dce34e@xs4all.nl>
-Date:   Tue, 8 Jun 2021 09:27:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <m3k0n57y72.fsf@t19.piap.pl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfJ24cG//JXre495N2nXQjCXFY1+2ufdW66QbEWC8fkXL8mLZNED5sWy1vUK8+Gy6OtrB9vbELVwHRd2LTgDCWglkzqbUULJlAY/KQQfht3PlMtbTKTzl
- QORN8j+0aiqK0M0dn01KKCZgWI+sGkzxvKTS9eU+sZBjfX/deijhkGt8p8m7TJsVdTqvk+Ugz8Nki/7pS1nQUd+bpvH+iGJW9LMtCcuZHzFDye3KvH0v9D1P
- UhYjJVB6DlPZ4zovNArt/QdCMs+UOWKbqpSfjPpucREbbeMP4gG8SX6acNIsBjEM1348PIqaXNyeGee91t2gFFl88rdqPTt+QBERThSLMTQ=
+        Tue, 8 Jun 2021 03:31:56 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FECEC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 00:29:52 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id b15-20020a17090a550fb029015dad75163dso1721269pji.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 00:29:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id;
+        bh=A1FVdBLroLku9q9ilLiRJwe+Pjc9CxTsM6tUd9JMzio=;
+        b=WwrMIJm/AGIvcQSZdNNALddGnCqfVUn2saoi2X0NHxQqbTomV5y2hM0pPbV9k8oZ/S
+         WZDNrZdQsOVhdwyUKlsg44nGpc1TxFyEs+67yl3Wrzflf5j+AluRQc+avWS2R6KhVmxp
+         8/2aY4Eg1hU9aQciO1Qrpc+kk8sAbsu8NzZXbH4YcIT2lkcPnEEo+zyahdr5Tw/xHARG
+         +ZlJ8Ip+KXsBHzMvOzcq5Rx0XmISsJkYxORMZ12atdFpPT9OTl7YKuTljeS31k6PgiyW
+         YwQvlMXLyZFbwG4NDbzGz54mJ+9w5gLtc58xoi2Wv9blpnNp+GzKdh79FawoM4NwJk9+
+         5V5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=A1FVdBLroLku9q9ilLiRJwe+Pjc9CxTsM6tUd9JMzio=;
+        b=L3yM9nXEL9EjRglJhXzNcR3KldZe+O0mOcAyNuv5xIeYRPnS5s48AQXM8I0UK66RPP
+         jlKQ6nqVUbLK9I/Wot3Ja+wvX6KEQko7uUpemr6gQr10AYQJtDRjZCapKiX1LdEyHDgk
+         OnqByFQZPjP9/CltK7b5p3lt44fZmEP2vduk1N0sp1SQ/7KfPHbEEdqQicw7/j7ik3yY
+         5qSjfHmM3uVsYPpkEWir9sOd/fNFgDAZJe1pVJtbstfY4N7K7a3O42ncE6T5fQH2c54y
+         B6R4uzBM2MHqPZJK8lAPIHr0clNXu2e2aR9Sh1163rVxOss3BuknSoCGJ/U0gVBenk8g
+         bzHA==
+X-Gm-Message-State: AOAM532mR6MgGl3c2VuxeRAacAx2S4KVt9tF4/U70WkWQktIQdHh/05e
+        Yd3KRr9nqSaHZWtnf3LtV1M=
+X-Google-Smtp-Source: ABdhPJwiUnjNauhfySzvfF5dovb7omM5q58TCIclGTS9zR86etrocbOAuHA3NRGCMGaGfNJ9kfujGQ==
+X-Received: by 2002:a17:90b:1e0b:: with SMTP id pg11mr3304270pjb.173.1623137391677;
+        Tue, 08 Jun 2021 00:29:51 -0700 (PDT)
+Received: from bj03382pcu.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id o10sm13807080pjr.2.2021.06.08.00.29.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 08 Jun 2021 00:29:51 -0700 (PDT)
+From:   Huangzhaoyang <huangzhaoyang@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Nitin Gupta <ngupta@vflare.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: [PATCH] mm: zram: amend SLAB_RECLAIM_ACCOUNT on zspage_cachep
+Date:   Tue,  8 Jun 2021 15:28:17 +0800
+Message-Id: <1623137297-29685-1-git-send-email-huangzhaoyang@gmail.com>
+X-Mailer: git-send-email 1.7.9.5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
-On 08/06/2021 06:54, Krzysztof Hałasa wrote:
-> Tim,
-> 
-> Tim Harvey <tharvey@gateworks.com> writes:
-> 
->>> I'm looking at the previous version of this driver from Gateworks and it
->>> contains:
->>>
->>>      /* Configure EDID
->>>       *
->>>       * EDID_ENABLE bits:
->>>       *  7 - nack_off
->>>       *  6 - edid_only
->>>       *  1 - edid_b_en
->>>       *  0 - edid_a_en
->>>       */
->>>      reg = io_read(REG_EDID_ENABLE);
->>>      if (!tda1997x->internal_edid)
->>>          reg &= ~0x83; /* EDID Nack ON */
->>>      else
->>>          reg |= 0x83;  /* EDID Nack OFF */
->>>      io_write(REG_EDID_ENABLE, reg);
-> 
->> Not sure where the source above is from (this was all so long ago) but
-> 
-> That's your gateworks_fslc_3.14_1.0.x_ga branch (3.14 is the kernel and
-> 1.0.x_ga is IIRC some Freescale versioning) :-)
-> 
->> my guess is that 'internal_edid' meant an EDID had been provided via
->> software and the else case meant there was no EDID available.
->> There is no support on that chip for an external EEPROM.
-> 
-> Right. I guess the else meant it was available and &= ~83 meant no
-> EDID... Anyway one could simply drop a 24c02 or a similar chip directly
-> to SDA/SCL HDMI lines, that's what the monitor makers had been doing for
-> a long time. Then, I guess, you would need the internal_edid = 0
-> (otherwise the TDA chip would be fighting the EEPROM on the SDA line).
-> Not that I know of any such design using this driver, I guess we can
-> safely skip this part.
-> 
+Zspage_cachep is found be merged with other kmem cache during test, which
+is not good for debug things(zs_pool->zspage_cachep present to be another
+kmem cache in memory dumpfile). It is also neccessary to do so as shrinker has
+been registered for zspage. Amending this flag can help kernel to calculate
+SLAB_RECLAIMBLE correctly.
 
-OK, I think the history is clear. Can you post a v2 with a Fixes tag and
-comment a bit on why this was not caught before?
+Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+---
+ mm/zsmalloc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards,
+diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
+index 19b563b..0b0addd 100644
+--- a/mm/zsmalloc.c
++++ b/mm/zsmalloc.c
+@@ -328,7 +328,7 @@ static int create_cache(struct zs_pool *pool)
+ 		return 1;
+ 
+ 	pool->zspage_cachep = kmem_cache_create("zspage", sizeof(struct zspage),
+-					0, 0, NULL);
++					0, SLAB_RECLAIM_ACCOUNT, NULL);
+ 	if (!pool->zspage_cachep) {
+ 		kmem_cache_destroy(pool->handle_cachep);
+ 		pool->handle_cachep = NULL;
+-- 
+1.9.1
 
-	Hans
