@@ -2,94 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC7F39F86F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF23539F881
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233190AbhFHOHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:07:11 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:51784 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233176AbhFHOHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:07:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=omHxetGSf7WvvYJIz4CtL+xJtQiHSODIemCHft0cr2A=; b=iE
-        OybeMN7wY1+wMg1xRqw8c16xMPRhSuDIhcUcDTwMJdmkOASe08GQKjpV+1qKSiyUxhixe74HQ/NWH
-        /sTZWkqQZ2IPJUnW/HdNOP3honl1nn/7H4XQOqNIsTpv1YEuLGaQhqdwtTxSWnoSfzZjh2sHqweVt
-        Sgnkf6lyJ2kutWc=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lqcLe-008Lsy-Lx; Tue, 08 Jun 2021 16:04:54 +0200
-Date:   Tue, 8 Jun 2021 16:04:54 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
-        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, mcoquelin.stm32@gmail.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
-        sernia.zhou@foxmail.com, paul@crapouillou.net
-Subject: Re: [PATCH 2/2] net: stmmac: Add Ingenic SoCs MAC support.
-Message-ID: <YL95BgJTv/jyAYr1@lunn.ch>
-References: <1623086867-119039-1-git-send-email-zhouyanjie@wanyeetech.com>
- <1623086867-119039-3-git-send-email-zhouyanjie@wanyeetech.com>
- <YL6zYgGdqxqL9c0j@lunn.ch>
- <6532a195-65db-afb3-37a2-f68bfed9d908@wanyeetech.com>
- <YL9gr2QQ/YEXNUmP@lunn.ch>
- <62ad605f-3689-cab3-e43e-9b6954da8df3@wanyeetech.com>
+        id S233146AbhFHOMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:12:40 -0400
+Received: from mail-vs1-f48.google.com ([209.85.217.48]:33422 "EHLO
+        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232341AbhFHOMh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 10:12:37 -0400
+Received: by mail-vs1-f48.google.com with SMTP id f11so10934001vst.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 07:10:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Qp8WuOu/yqqzZGYlja6yQLelD5XFkPHgD8DhKXXS7ro=;
+        b=Ngez4LhsjD28ltuqAm67nRZDKVF0T8J9PHugigwnNrmTxUHfMqTDp7mdwQxshrZqs8
+         whMzQb8hIZzN+OzjXWH10zkPKDlsTf+I1ONzkoGm5abJtoU9OBojooe6bclXynCUydPU
+         +up+5mXXKfUBp7UnAvGp5h5Xfwt7mar+OYTkSQp5wi944GEh5z6dVros9yBcdHtegrOn
+         D9pav/S4qjO2w1DHioqQZLoO5SBUGZlDRkqswLf2Mc0aLXowisHzfO315npQq+yIH5eO
+         BOILkMHrMJnz9c1W9BgfAcrZiSZWrAyPYjtQ5+Uv9iTT3x39aaBek8aMSmM7Z5yfHm8L
+         O+tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Qp8WuOu/yqqzZGYlja6yQLelD5XFkPHgD8DhKXXS7ro=;
+        b=DcUqnZJMKmn+LUfnNihu7nG+xgvc041h6LE5+Cjpw/bkDDODF9YA92JPvN0Mjm56fL
+         0KroYrjToQdYLNtTMaZZJow/sdguB1kKTefY9R3/tRPLlCmQbVNYRgbmNZ1UEEfLarTm
+         MIRwZRVtS38ctoYmBY36L3dpyi9Ojhoo/Gl6p/nAcczoZ8Q7YU7zggSBAchAKTp320zl
+         kUw6a1S7XSUWbMq8pTHANrVUZ50AlWuUnCnWyNZ/n367q0pdKypkhQF+4i6deIwtayIy
+         zNUvdP1DwHOPugaPqp5Cg/V/ScyFECaGa+fGJcgh6PBxQl9NR2BPUtZCZKQSLEKDu6hU
+         QQ8A==
+X-Gm-Message-State: AOAM5303oZdNxX0ja1VCvwh3g/SCetS5FCDs+9+k2bngRc/1xFTFg3Ap
+        BkmA/Q6fPF5bJM28NvJl1XurzqgCmNsJ11FCvs/lAw==
+X-Google-Smtp-Source: ABdhPJz+8aUtsghoOR4YkaB8PUCKU90IQgYbzEXPK69sfo2EEUdG6HSiOPmbxfCMbM/C+gjLqvF+otkfXEba8huQRaY=
+X-Received: by 2002:a05:6102:7c1:: with SMTP id y1mr232062vsg.34.1623161372065;
+ Tue, 08 Jun 2021 07:09:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <62ad605f-3689-cab3-e43e-9b6954da8df3@wanyeetech.com>
+References: <20210603093438.138705-1-ulf.hansson@linaro.org>
+ <20210603093438.138705-5-ulf.hansson@linaro.org> <CAPDyKFp2dKFQpLMgazXumCxf=FHQ9bdadXUkGsjiAwniF8p2dw@mail.gmail.com>
+ <YL9oMVqox7GVASen@gerhold.net>
+In-Reply-To: <YL9oMVqox7GVASen@gerhold.net>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 8 Jun 2021 16:08:55 +0200
+Message-ID: <CAPDyKFrvrikCZLX1EvmLZumeCnfAxUUssO2OWc130TG8oey=qw@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] PM: domains: Drop/restore performance state votes
+ for devices at system PM
+To:     Stephan Gerhold <stephan@gerhold.net>,
+        Mark Brown <broonie@kernel.org>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 09:48:38PM +0800, Zhou Yanjie wrote:
-> Hello Andrew,
-> 
-> On 2021/6/8 下午8:21, Andrew Lunn wrote:
-> > Please wrap your text to around 75 characters per line.
-> 
-> 
-> Sure.
-> 
-> 
-> > 
-> > I suspect you don't understand RGMII delays. As i said, normally, the
-> > MAC does not add delays, the PHY does. Please take a closer look at
-> > this.
-> 
-> 
-> According to the description of ethernet-controller.yaml, "rgmii" seems
-> 
-> to allow MAC to add TX delay (the description in ethernet-controller.yaml
-> 
-> is "RX and TX delays are added by the MAC when required"), while rgmii-id
-> 
-> and rgmii-txid do not allow MAC to add delay (the description in
-> 
-> ethernet-controller.yaml is"RGMII with internal RX and TX delays provided
-> 
-> by the PHY, the MAC should not add the RX or TX delays in this case" and
-> 
-> "RGMII with internal TX delay provided by the PHY, the MAC should not add
-> 
-> an TX delay in this case"), I will add support for the other three RGMII
-> modes
-> 
-> in the next version (I forgot to reply to this in the previous email).
+On Tue, 8 Jun 2021 at 14:53, Stephan Gerhold <stephan@gerhold.net> wrote:
+>
+> Hi,
+>
+> On Thu, Jun 03, 2021 at 12:20:57PM +0200, Ulf Hansson wrote:
+> > + Mark Brown, Dmitry Baryshkov
+> >
+> > On Thu, 3 Jun 2021 at 11:34, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > >
+> > > Recent changes in genpd drops and restore performance state votes for
+> > > devices during runtime PM.
+> > >
+> > > For the similar reasons, but to avoid the same kind of boilerplate code in
+> > > device PM callbacks for system sleep in subsystems/drivers, let's drop and
+> > > restore performance states votes in genpd for the attached devices during
+> > > system sleep.
+> > >
+> > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> >
+> > After a second thought, it looks like we maybe should defer to apply
+> > this final patch of the series. At least until we figured out how to
+> > address the below issue:
+> >
+> > So, I noticed that we have things like "regulator-fixed-domain", that
+> > uses "required-opps" to enable/disable a regulator through the
+> > dev_pm_set_performance_state() interface.
+>
+> Not directly related to your concern, but related to another discussion
+> we had recently: To me, this looks mostly like another solution for
+> voting for performance states without doing full DVFS, also known as
+> assigned-performance-states [1] or required-opps on devices [2]. :)
+>
+> It's just wrapped in a regulator interface here. Actually, if we
+> implement [2], the regulator-fixed-domain should mostly just become some
+> sort of simple wrapper around runtime PM for the regulator device, since
+> the required-opp might be applied automatically then.
 
-Please follow the code all the way through. What gets passed to
-phylink_create() is very important. If you have both the MAC and the
-PHY adding delays, bad things will happen.
+Honestly, I am not sure about what the regulator-fixed-domain intends
+to model, but I assume it's something that fits well to be modelled as
+a plain regulator, to start with.
 
-    Andrew
+Perhaps Mark can chime in and spread some light over this?
+
+>
+> [1]: https://lore.kernel.org/linux-arm-msm/1622095949-2014-1-git-send-email-rnayak@codeaurora.org/
+> [2]: https://lore.kernel.org/linux-arm-msm/YLYV3ov%2FiBffZMg4@gerhold.net/
+>
+> > We likely don't want to drop the performance state internally in genpd
+> > when genpd_suspend_noirq() gets called, for the corresponding struct
+> > device for the regulator.
+> >
+>
+> So your concern is that the performance state is dropped during suspend
+> even though the regulator core thinks the regulator stays enabled?
+
+Yes.
+
+>
+> I played with regulator-fixed-domain a bit and I would say this is
+> already broken (unless you rely on one of the side effects I mentioned
+> in [3]). The power domain gets powered off entirely during system
+> suspend, and then the performance state won't have any effect either.
+
+Right, I get your point.
+
+Although, this isn't a problem, because the on/off and performance
+states are today considered as orthogonal in gendp. Well, at least
+currently until/if we decide to change this.
+
+>
+> I guess we would need some way to say that this device should only be
+> managed through runtime PM and never automatically suspended during
+> system suspend?
+
+Yes!
+
+For the on/off state, genpd uses the system wakeup interface to
+understand whether the device is used in a wakeup path, see the call
+to device_wakeup_path() in genpd_finish_suspend().
+If that's the case the PM domain stays powered on during system suspend.
+
+Potentially we could use the same interface (or something similar) to
+support these kinds of cases.
+
+>
+> Stephan
+>
+> [3]: https://lore.kernel.org/linux-pm/YLkOAyydZMnxkEy+@gerhold.net/
+
+Kind regards
+Uffe
