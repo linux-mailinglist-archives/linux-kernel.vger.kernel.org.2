@@ -2,124 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B756139FA11
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3564639FA13
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233354AbhFHPOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 11:14:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233710AbhFHPOF (ORCPT
+        id S233576AbhFHPO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 11:14:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47676 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233809AbhFHPOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 11:14:05 -0400
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 728B2C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 08:11:59 -0700 (PDT)
-Received: by mail-vs1-xe35.google.com with SMTP id c1so4621947vsh.8
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 08:11:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=MSjX3nK0GtynqqM9iCd6zkIVV24QDnb4NX+dYBZ1IiE=;
-        b=NZLM6u04LG7nwTw6PryrH38vcL6MJPJbpbyRCidi51cIdv94dnze5cgvX/h8Li8EUo
-         SZtNHDQdv53sOUQIrSNi95dlL0BmjNBfkXDZfj6sFwYulYYqwnFr9kNy3yaM7UTsB5eA
-         JjSN667e9IehHycBa4rQEw98ooWGeUrZA+JxBFa52bDrH8uNhPQ4nC2prvi5hQErPR1s
-         31MdlAdpxfOFJ6KnUMPfsg8C3csLwWt0vi9M6HP2EtTkb0rwlsWXUmIuiWSqFIdr17Um
-         WS+if7PN0r407S08u1Q4W3j6+7d+bhX623cYMeq2mDa2/qHdiVBEA/vWdEUXqXoXilBn
-         TNvg==
+        Tue, 8 Jun 2021 11:14:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623165141;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ma+Y7/rVHYJ+wDRQx2MNgyshZEcsANdp8Rhdd7Nu3l0=;
+        b=c9vvJGVkqkcS/SBPlm3VXRNaRtFd3X9NsXD6rS5ZX8KrB6zcrbWIrfrm6cP76rRZJmnWhw
+        JdJmT7t1WDz17jfrmy8Wb/l3RHuM66sg9TryrqCH225Sk3PSnAqSuUJZDywQinIilL3TBp
+        wTdlpHoI2k15vn8qCkMA5SZQxh+Lp6Q=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-256-5htNlHeXOc-C36xxVGYa7A-1; Tue, 08 Jun 2021 11:12:18 -0400
+X-MC-Unique: 5htNlHeXOc-C36xxVGYa7A-1
+Received: by mail-wr1-f72.google.com with SMTP id s8-20020adff8080000b0290114e1eeb8c6so9564794wrp.23
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 08:12:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MSjX3nK0GtynqqM9iCd6zkIVV24QDnb4NX+dYBZ1IiE=;
-        b=om6Wn3UQXt4XSpXIW/i4f9AJ58H0LNFK3Z/9rMG6oQYzBAX30E+61aVHcWCYtmuuBR
-         1awd4WBd9brff0Cbu2ZWh1XboiGzHOdstAtyidx6Eu4fWi6LLJosYCtO6Tgj9y5QNisN
-         ZAi1B0Wxw34QxpfTo2CXDlnLqXdzRq8Z0upEwxM2RyA1kH6t0RZY1RTSIChp2L7dPvr9
-         aCo10YlFD+YIyfydb1ZufchhYsUJLdIGJjgn/4yNg8yJ1td2m+rl6zWhdLGLhK8Y5a+m
-         Vs5JkQ7kNlxTSSdCZm9vVnqbKyUVoMh7wdHiIvqlfN4niGoIwaB2XVLISTpIJEDsG2UL
-         d3vQ==
-X-Gm-Message-State: AOAM531oBI8wnu7dau1MxcvFjq1m1BDQvKcNyeMNS8ktQaru30WYo5Xx
-        09dCC66WNFzc6xVQOj6Q0iNfuF78Gnftq1aGD0U=
-X-Google-Smtp-Source: ABdhPJxVExwpG2PuPqzwrJCiVhc2Ij6CRz8h+gU2c0qgiChMP52og2D5WbQzG29HrvxPuo43oT6jGStUz/wdM5QZZls=
-X-Received: by 2002:a67:7cc7:: with SMTP id x190mr647069vsc.30.1623165118611;
- Tue, 08 Jun 2021 08:11:58 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Ma+Y7/rVHYJ+wDRQx2MNgyshZEcsANdp8Rhdd7Nu3l0=;
+        b=pMAl2wm1fcG0Jk9E0AXRLvcsYHN0xzbHJG5IsfYD6svQelqCT+WytWBgLeUBC/Llfi
+         A0tFX6mYycD3ETHYYXFN31J9OxdfOOZO4WdqalOGCdetkuYCE/k0GSRem7gAtJgznKs0
+         tqoErI33Cxmiy4NTzJGQxODbLtRsgMLQgxm6mCDKHwJ4HsJs4BJbq1ZbTr9t1u04+4zp
+         B11qZ0sTFfcak/F3NbllLP62V+/RVvQIxwsXX82MMxJD4zBTv9x1D8IekkpdiaR/YZgR
+         eQB3jhPpA9FNGLm+J97iI+hCJ+EbAEPMKeFCky8KMxMVwjM0Xp1dzy6w6ViVrdLE6SJ0
+         n1qw==
+X-Gm-Message-State: AOAM532bvAuJfup8neYLCNu4jOLTeZdOBiKkdSYZVqFoyUNvwHM9Vj22
+        wCP9lD5awJbC2E1ClicAoULGVr4U0fstcwZmTskVSN0BcmlOEf06N8BZAPIMsXqOYhw9r9IPajS
+        IjG2tg7aw7Png6CcouytdJ2eB
+X-Received: by 2002:adf:f28b:: with SMTP id k11mr22343315wro.89.1623165136964;
+        Tue, 08 Jun 2021 08:12:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwAPeOeqX15noJQRyOaa2NEx/vRR2eMPJsfDOGcNDSbualMJ4uzJxyHFbfEx0XnIoGz8rW2pA==
+X-Received: by 2002:adf:f28b:: with SMTP id k11mr22343295wro.89.1623165136814;
+        Tue, 08 Jun 2021 08:12:16 -0700 (PDT)
+Received: from dresden.str.redhat.com ([2a02:908:1e46:160:b272:8083:d5:bc7d])
+        by smtp.gmail.com with ESMTPSA id f14sm19791658wry.40.2021.06.08.08.12.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Jun 2021 08:12:16 -0700 (PDT)
+Subject: Re: [PATCH v2 3/7] fuse: Fix infinite loop in sget_fc()
+To:     Greg Kurz <groug@kaod.org>, Miklos Szeredi <miklos@szeredi.hu>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        virtio-fs@redhat.com, Vivek Goyal <vgoyal@redhat.com>,
+        stable@vger.kernel.org
+References: <20210604161156.408496-1-groug@kaod.org>
+ <20210604161156.408496-4-groug@kaod.org>
+From:   Max Reitz <mreitz@redhat.com>
+Message-ID: <1fc488d8-91b8-9613-8127-a8b34ddb4744@redhat.com>
+Date:   Tue, 8 Jun 2021 17:12:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210608083418.137226-1-wangkefeng.wang@huawei.com>
- <20210608083418.137226-12-wangkefeng.wang@huawei.com> <CAFqt6zZWanzsy=F4LVUkovQE-wqKd0CNG-n=Sx7SBddord6Gcg@mail.gmail.com>
- <215985fd-67d5-731f-743c-ea446b55bb8d@csgroup.eu>
-In-Reply-To: <215985fd-67d5-731f-743c-ea446b55bb8d@csgroup.eu>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Tue, 8 Jun 2021 20:41:47 +0530
-Message-ID: <CAFqt6zbk3rYPx9Qa+pZ3Q5XNLfQZ4w01CCGuq7LYhVYDwweYpw@mail.gmail.com>
-Subject: Re: [PATCH v3 resend 11/15] powerpc: convert to setup_initial_init_mm()
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        linux-kernel@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210604161156.408496-4-groug@kaod.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 8, 2021 at 8:24 PM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
+On 04.06.21 18:11, Greg Kurz wrote:
+> We don't set the SB_BORN flag on submounts. This is wrong as these
+> superblocks are then considered as partially constructed or dying
+> in the rest of the code and can break some assumptions.
 >
+> One such case is when you have a virtiofs filesystem with submounts
+> and you try to mount it again : virtio_fs_get_tree() tries to obtain
+> a superblock with sget_fc(). The logic in sget_fc() is to loop until
+> it has either found an existing matching superblock with SB_BORN set
+> or to create a brand new one. It is assumed that a superblock without
+> SB_BORN is transient and the loop is restarted. Forgetting to set
+> SB_BORN on submounts hence causes sget_fc() to retry forever.
 >
+> Setting SB_BORN requires special care, i.e. a write barrier for
+> super_cache_count() which can check SB_BORN without taking any lock.
+> We should call vfs_get_tree() to deal with that but this requires
+> to have a proper ->get_tree() implementation for submounts, which
+> is a bigger piece of work. Go for a simple bug fix in the meatime.
 >
-> Le 08/06/2021 =C3=A0 16:36, Souptick Joarder a =C3=A9crit :
-> > On Tue, Jun 8, 2021 at 1:56 PM Kefeng Wang <wangkefeng.wang@huawei.com>=
- wrote:
-> >>
-> >> Use setup_initial_init_mm() helper to simplify code.
-> >>
-> >> Note klimit is (unsigned long) _end, with new helper,
-> >> will use _end directly.
-> >
-> > With this change klimit left with no user in this file and can be
-> > moved to some appropriate header.
-> > But in a separate series.
->
-> I have a patch to remove klimit, see
-> https://patchwork.ozlabs.org/project/linuxppc-dev/patch/9fa9ba6807c17f93f=
-35a582c199c646c4a8bfd9c.1622800638.git.christophe.leroy@csgroup.eu/
+> Fixes: bf109c64040f ("fuse: implement crossmounts")
+> Cc: mreitz@redhat.com
+> Cc: stable@vger.kernel.org # v5.10+
+> Signed-off-by: Greg Kurz <groug@kaod.org>
+> ---
+>   fs/fuse/dir.c | 11 +++++++++++
+>   1 file changed, 11 insertions(+)
 
-Got it. Thanks :)
+Reviewed-by: Max Reitz <mreitz@redhat.com>
 
->
-> Christophe
->
->
-> >
-> >>
-> >> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> >> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> >> Cc: linuxppc-dev@lists.ozlabs.org
-> >> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> >> ---
-> >>   arch/powerpc/kernel/setup-common.c | 5 +----
-> >>   1 file changed, 1 insertion(+), 4 deletions(-)
-> >>
-> >> diff --git a/arch/powerpc/kernel/setup-common.c b/arch/powerpc/kernel/=
-setup-common.c
-> >> index 74a98fff2c2f..96697c6e1e16 100644
-> >> --- a/arch/powerpc/kernel/setup-common.c
-> >> +++ b/arch/powerpc/kernel/setup-common.c
-> >> @@ -927,10 +927,7 @@ void __init setup_arch(char **cmdline_p)
-> >>
-> >>          klp_init_thread_info(&init_task);
-> >>
-> >> -       init_mm.start_code =3D (unsigned long)_stext;
-> >> -       init_mm.end_code =3D (unsigned long) _etext;
-> >> -       init_mm.end_data =3D (unsigned long) _edata;
-> >> -       init_mm.brk =3D klimit;
-> >> +       setup_initial_init_mm(_stext, _etext, _edata, _end);
-> >>
-> >>          mm_iommu_init(&init_mm);
-> >>          irqstack_early_init();
-> >> --
-> >> 2.26.2
-> >>
-> >>
