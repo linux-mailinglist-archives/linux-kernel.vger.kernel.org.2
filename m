@@ -2,174 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A9539F4C9
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA5C39F4C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 13:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231865AbhFHLTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 07:19:48 -0400
-Received: from foss.arm.com ([217.140.110.172]:56144 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231409AbhFHLTr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 07:19:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3BB461396;
-        Tue,  8 Jun 2021 04:17:54 -0700 (PDT)
-Received: from bogus (unknown [10.57.73.170])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A4B8C3F694;
-        Tue,  8 Jun 2021 04:17:52 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 12:17:08 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        f.fainelli@gmail.com, etienne.carriere@linaro.org,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
-Subject: Re: [RFC PATCH 01/10] firmware: arm_scmi: Reset properly xfer SCMI
- status
-Message-ID: <20210608111708.lxgjkszrvq4au6bm@bogus>
-References: <20210606221232.33768-1-cristian.marussi@arm.com>
- <20210606221232.33768-2-cristian.marussi@arm.com>
- <20210607173809.et6fzayvubsosvso@bogus>
- <20210607180137.GB40811@e120937-lin>
- <20210607182754.3wsmhc2t5mh36ycm@bogus>
- <20210608101048.GD40811@e120937-lin>
+        id S231811AbhFHLTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 07:19:41 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:47354 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231409AbhFHLTk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 07:19:40 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1623151066;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5T+GMiDIBmF3KCptbG4LCBZPtno08qjjlXw+ihnp/3U=;
+        b=JAFMmN8ZsbfhOh9eH/fDvii4UPfJpAv/zlezyK2IK64AdfkGiq8W4VyUxtF7HIK2pbQR/y
+        Y3kn8g83ahP9p8xb0GQh0NBr9OzhdGCkO52GOg3y+tSfhpRIo9DXGVuwVHtY0U9c21kqMh
+        qWX24B7lpExr52tgzt1khiFrcY6RtiwlNWYaveOwryGMyOuNfJiat1fGK4zW0+ODl+TUIl
+        VNg0h3GLtDOUKkLcn0d90C4x8/5+TJYf2qOr6PNmBorGbHbs2Ss8G4PRGOCH/tPLJAgoJD
+        kmZ4RFaUo1XKnAXvpi+i2CwgkIklbwqbBaUY5bmhMWEH35PHahP2meBweUf9gA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1623151066;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5T+GMiDIBmF3KCptbG4LCBZPtno08qjjlXw+ihnp/3U=;
+        b=CdLoEFPSKH3zNAFOGbH32Xi2iM5UlzLOWX/1UBVyBPQLt7KNoXnzp8UxApo+eMHTg7jpSa
+        dIFiGGKEdoOx7rCw==
+To:     Dave Hansen <dave.hansen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [patch V2 00/14] x86/fpu: Mop up XSAVES and related damage
+In-Reply-To: <37df631f-9d3d-3035-6eeb-85ef33e580d5@intel.com>
+References: <20210605234742.712464974@linutronix.de> <87h7i9zv3r.ffs@nanos.tec.linutronix.de> <eca0add1-849e-6a1a-8ea6-f6b72650c9c8@intel.com> <87eeddzs0l.ffs@nanos.tec.linutronix.de> <37df631f-9d3d-3035-6eeb-85ef33e580d5@intel.com>
+Date:   Tue, 08 Jun 2021 13:17:46 +0200
+Message-ID: <878s3kzjtx.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210608101048.GD40811@e120937-lin>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 11:10:48AM +0100, Cristian Marussi wrote:
-> Hi Sudeep,
-> 
-> On Mon, Jun 07, 2021 at 07:27:54PM +0100, Sudeep Holla wrote:
-> > On Mon, Jun 07, 2021 at 07:01:37PM +0100, Cristian Marussi wrote:
-> > > On Mon, Jun 07, 2021 at 06:38:09PM +0100, Sudeep Holla wrote:
-> > > > On Sun, Jun 06, 2021 at 11:12:23PM +0100, Cristian Marussi wrote:
-> > > > > When an SCMI command transfer fails due to some protocol issue an SCMI
-> > > > > error code is reported inside the SCMI message payload itself and it is
-> > > > > then retrieved and transcribed by the specific transport layer into the
-> > > > > xfer.hdr.status field by transport specific .fetch_response().
-> > > > >
-> > > > > The core SCMI transport layer never explicitly reset xfer.hdr.status,
-> > > > > so when an xfer is reused, if a transport misbehaved in handling such
-> > > > > status field, we risk to see an invalid ghost error code.
-> > > > >
-> > > > > Reset xfer.hdr.status to SCMI_SUCCESS right before each transfer is
-> > > > > started.
-> > > > >
-> > > >
-> > > > Any particular reason why it can't be part of xfer_get_init which has other
-> > > > initialisations ? If none, please move it there.
-> > > >
-> > >
-> > > Well it was there initially then I moved it here.
-> > >
-> > > The reason is mostly the same as the reason for the other patch in this
-> > > series that adds a reinit_completion() in this same point: the core does
-> > > not forbid to reuse an xfer multiple times, once obtained with xfer_get()
-> > > or xfer_get_init(), and indeed some protocols do such a thing: they
-> > > implements such do_xfer looping and bails out on error.
-> > >
-> > 
-> > Makes sense. But it is okay to retain xfer->transfer_id for every transfer
-> > in such a loop ?
-> > 
-> No you are right and indeed I saw that anomaly, but I have not addressed
-> it since, even if wrong, it is harmless and transfer_id is really used
-> only for debugging/profiling, while the missing reinit_completion is
-> potentially broken.
+On Mon, Jun 07 2021 at 09:38, Dave Hansen wrote:
+> On 6/7/21 7:08 AM, Thomas Gleixner wrote:
+>>> By the way, are you talking specifically about the _error_ paths where
+>>> the kernel is unable to XRSTOR the signal XSAVE buffer for some reason,
+>>> and tries to apply either init_fpu or the hardware init state instead?
+>> 
+>> 1) Successful XRSTOR from user if the PKRU feature bit in the
+>>    sigframe xsave.header.xfeatures is cleared. Both fast and slow path.
 >
-
-No agreed, just wanted to make it clear that if do_xfer is used in loops
-the transfer_id remains same. I am fine with that.
-
-> > > In the way that it is implemented now in protocols poses no problem
-> > > indeed because the do_xfer loop bails out on error and the xfer is put,
-> > > but as soon as some protocol is implemented that violates this common
-> > > practice and it just keeps on reuse an xfer after an error fo other
-> > > do_xfers() this breaks...so it seemed more defensive to just reinit the
-> > > completion and the status before each send.
-> > 
-> > Fair enough. But they use it to send same message I guess, may be if it
-> > gave error or something ? I would like to really know such a sequence
-> > instead of assisting that 😉. 
-> > 
-> 
-> So the current real 'looping do_xfer' behavior is safe and so this missing
-> reinit is only potentially broken in the future, and we cannot really
-> know now in advance about some future protocol needs, but it seems as of now
-> wrong that you'll want to keep going on and reuse an xfer for the same command
-> after an error in your loop.
+> It seems like the suggestion here is to inject 'init_pkru_value' in all
+> cases where the kernel would be injecting the hardware init value.  I
+> don't think we should go that far.
 >
+> If a signal handler sets xsave.header.xfeatures[PKRU]=0, I can't imagine
+> any other intent than wanting the hardware init value.
 
-Fair enough.
+Fine. But PKRU=0 is broken today...
 
-> On the other side we allow such behaviour, so I thought was good to
-> provide a safe net if it is misused.
->
+T1 in user space
+     wrpkru(0)
 
-Agreed.
+T1 -> kernel
+     schedule()
+       XSAVE(S) -> T1->xsave.header.xfeatures[PKRU] == 0
+       T1->flags |= TIF_NEED_FPU_LOAD;
+       
+       wrpkru();
 
-> But, beside this patches, that, as said, are more defensive that strictly
-> needed as of now, I think now it's worth mentioning that this same 'issue'
-> affects also, as an example, the new mechanism I introduced later in this
-> same series to always use monotonically increasing sequence number for
-> outgoing messages.
->
+     schedule()
+       ...
+       pk = get_xsave_addr(&T1->fpu->state.xsave, XFEATURE_PKRU);
+       if (pk)
+         wrpkru(pk->pkru);
+       else
+         wrpkru(DEFAULT_PKRU);
 
-OK, I haven't seen that yet.
+But because PKRU of T1 was 0, the xfeatures bit is 0 and therefore the
+value in the xsave storage is not valid. Which makes get_xsave_addr()
+return NULL and switch_to() writes the default PKRU.
 
-> In that case I stick to the current behavior and I assign such monotonically
-> increasing sequence numbers to message during xfer_get, but the potential
-> issue is the same: if a do_xfer loop is used you end up reusing the same
-> seq_num for multiple do_xfers (so defeating really the mechanism itself
-> that aims not to reuse immediately the most recently used seq_num).
->
+So that wreckages any copy_to/from_user() on the way back to user space
+which hits memory which is protected by the default PKRU value.
 
-I assumed the do_xfer loop is to avoid those overheads with compromise of
-reusing seq_num.
+Assumed that this does not fail (pure luck) then T1 goes back to user
+space and because TIF_NEED_FPU_LOAD is set it ends up in
 
-> In that case I did this to keep it simple and to avoid placing more burden
-> on tx path by picking and assigning a seq_num upon each transfer...but, again,
-> also this behavior of picking a seq_num only at xfer_get is NOT really broken
-> as of now even for do_xfer loops since we bail out on error and you won't
-> really reuse that xfer.
->
+switch_fpu_return()
+    __fpregs_load_activate()
+      if (!fpregs_state_valid()) {
+         load_XSTATE_from_task();
+      }
 
-OK.
+But because nothing touched the FPU between schedule out and schedule in
+of T1 the fpregs_state is valid so switch_fpu_return() does nothing and
+just clears TIF_NEED_FPU_LOAD. Back to user space with DEFAULT_PKRU
+loaded. FAIL!
 
-> It's just that in this seq_num selection case seems to add a lot of burden
-> and complexity if moved to the do_xfer phase, while status/reinit seemed
-> to me cheaper to move it in the do_xfer so I tried to play defensive.
->
+XSTATE sucks.
 
-I assumed the same as mentioned above.
+Thanks,
 
-> At the end, in general I would say that all of these ops (status/reinit/
-> seq_nums/transfer_id) DO really belong logically to the do_xfer phase more than
-> to the xfer_get/xfer_get_init, but in reality we can cope with having them
-> @xfer_get/get_init and this keeps things simple and reduce burden, especially
-> in the monotonic seq_nums case: so I am not so sure anymore if it is fine to
-> move reinit/status to the do_xfer, as proposed here, while keeping seq_nums
-> (for good reasons) to the xfer_get phase, because we'd use 2 different strategies
-> to address similar issues.
->
-
-I almost agreed with the change just to read here you think otherwise now 😄.
-
-> I would say: just keep reinit and status in the xfer_get phase instead and
-> maybe warn somehow if a failed xfer is detected being reused. (but this
-> would anyway need a check in every tx transaction to see if status != SUCCESS
-> so is it worth ?)
-
-I have started thinking why do we need to reset the status. Since it is
-always read from the shmem, do we really have to ?
-
---
-Regards,
-Sudeep
+        tglx
