@@ -2,85 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A5139F7EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CBB39F7F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232792AbhFHNkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 09:40:07 -0400
-Received: from mail-vk1-f178.google.com ([209.85.221.178]:46734 "EHLO
-        mail-vk1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231162AbhFHNkD (ORCPT
+        id S232950AbhFHNlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 09:41:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23886 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232771AbhFHNlB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 09:40:03 -0400
-Received: by mail-vk1-f178.google.com with SMTP id 184so163439vkz.13;
-        Tue, 08 Jun 2021 06:37:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sFBGRyF0SVyL5gp+laaTF2trM1KaVtWovTdNQuQCpaI=;
-        b=kmR0Gn148hehCkYfzLDMf/tBX1ZJAn9isGxrv1CT2fllCax8TylhJl4x0wSrckp9fu
-         or4IwDE93KeMy9w+9iUy03+gtn47uKX3bG7bdoEgpXmwwB5Wr59II7Cr9pdGZMnI43VT
-         TjwLbQZ39gFn9ih6UbpPJ0MlD2duJkvyQ0CRsAOV303SXMf8yr+Gb50CVdhgkCXCjFYv
-         sP9GLOiWpmrdZR2VzmrR3g/YUfeb1dHeq90BvgiMjlwvz6PmCrgjrg2geEUp32vsapFp
-         u+eX8qnl9JX0rsCWPYBaVqsTbs+Z6zjKK8DG0bZx9VxPul91y4Io77xYRhmjlXfQpGjJ
-         l7tQ==
-X-Gm-Message-State: AOAM530GOa1G4U4YQS7Gb219D7OtIXZzo1KYr5n6Y34NjHFz6DHj7zL0
-        Qd1nLOWWcxFFW2b9t1L7Ekebj7ZsW+Sc1Fa91gHjjee+1G4=
-X-Google-Smtp-Source: ABdhPJzZpyfnwLGoBlfNX9l9wAC4rUovi8VQg3eXsLNLgoL0OHDkqdxJ2vRdBZLHTWRUeXJBZZqNSzFEalIOgTNWy2E=
-X-Received: by 2002:a1f:ac45:: with SMTP id v66mr10780808vke.1.1623159478179;
- Tue, 08 Jun 2021 06:37:58 -0700 (PDT)
+        Tue, 8 Jun 2021 09:41:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623159547;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=YPEs2BmRjgx9g9QFJpd6q3Ix4xUqzYCzviDHIJ0QF+M=;
+        b=h1zN0g/bk9Yw78sFtVF9EMrza7eh8FhXdeq9JTBO7XIDuIHo84rF4katPXiwFCkON8kSnS
+        PZQL4YgvzxE6IrMnJQQZM7grCSKMnF8HvTfE1lPWqrgB268DwZMSd/+zYC4NHDJPoXq9fX
+        9SOtZqFA8iFWPmkUgagCzUv8GF+9bOQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-168-PN8ax6qCOA2b1bLIGTmxWg-1; Tue, 08 Jun 2021 09:39:06 -0400
+X-MC-Unique: PN8ax6qCOA2b1bLIGTmxWg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 80CFB101F7D7;
+        Tue,  8 Jun 2021 13:39:04 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-115-132.ams2.redhat.com [10.36.115.132])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C862019C66;
+        Tue,  8 Jun 2021 13:38:56 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH v2 0/2] memory-hotplug.rst: complete admin-guide overhaul
+Date:   Tue,  8 Jun 2021 15:38:53 +0200
+Message-Id: <20210608133855.20397-1-david@redhat.com>
 MIME-Version: 1.0
-References: <39b1a3684880e1d85ef76e34403886e8f1d22508.1623149635.git.geert+renesas@glider.be>
- <20210608121925.GA24201@lst.de>
-In-Reply-To: <20210608121925.GA24201@lst.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 8 Jun 2021 15:37:47 +0200
-Message-ID: <CAMuHMdWgLf8GJfOaRUyx=AvOTnuOs8FS-2=C+OCk02OLDCyrDg@mail.gmail.com>
-Subject: Re: [PATCH] nvme: NVME_TCP_OFFLOAD should not default to m
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Omkar Kulkarni <okulkarni@marvell.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Dean Balandin <dbalandin@marvell.com>,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Shai Malin <smalin@marvell.com>,
-        Petr Mladek <pmladek@suse.com>, linux-nvme@lists.infradead.org,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+This is v2 of the memory hot(un)plug admin-guide overhaul.
 
-On Tue, Jun 8, 2021 at 2:19 PM Christoph Hellwig <hch@lst.de> wrote:
-> On Tue, Jun 08, 2021 at 12:56:09PM +0200, Geert Uytterhoeven wrote:
-> > The help text for the symbol controlling support for the NVM Express
-> > over Fabrics TCP offload common layer suggests to not enable this
-> > support when unsure.
-> >
-> > Hence drop the "default m", which actually means "default y" if
-> > CONFIG_MODULES is not enabled.
-> >
-> > Fixes: f0e8cb6106da2703 ("nvme-tcp-offload: Add nvme-tcp-offload - NVMeTCP HW offload ULP")
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
->
-> Err, where did this appear from?  This code has not been accepted into
-> the NVMe tree and is indeed not acceptable in this form.
+v1 -> v2:
+- Added "memory-hotplug.rst: remove locking details from admin-guide"
+- Incorporated all feedback from Mike and Michal (thanks!)
+- Compressed some lines to make full use of 80 chars.
+- Added details regarding 64bit/supported archs to the introduction.
+- Added KASAN to the list of sizing considerations.
 
-It was applied to net-next.
+David Hildenbrand (2):
+  memory-hotplug.rst: remove locking details from admin-guide
+  memory-hotplug.rst: complete admin-guide overhaul
 
-Gr{oetje,eeting}s,
-
-                        Geert
+ .../admin-guide/mm/memory-hotplug.rst         | 793 ++++++++++--------
+ 1 file changed, 448 insertions(+), 345 deletions(-)
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.31.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
