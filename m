@@ -2,75 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFFA139F6C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E7C039F6CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 14:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232763AbhFHMeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 08:34:14 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:5335 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232762AbhFHMeM (ORCPT
+        id S232683AbhFHMfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 08:35:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232635AbhFHMfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 08:34:12 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FzqK63sn7z6tsc;
-        Tue,  8 Jun 2021 20:28:26 +0800 (CST)
-Received: from dggpeml500019.china.huawei.com (7.185.36.137) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 20:32:16 +0800
-Received: from [10.174.179.189] (10.174.179.189) by
- dggpeml500019.china.huawei.com (7.185.36.137) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 20:32:16 +0800
-Subject: Re: [PATCH] nvme-multipath: combine grpid and ANA state checks in
- nvme_parse_ana_log()
-To:     Christoph Hellwig <hch@lst.de>
-CC:     <kbusch@kernel.org>, <axboe@fb.com>, <sagi@grimberg.me>,
-        <linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linfeilong@huawei.com>
-References: <1623125616-629270-1-git-send-email-wubo40@huawei.com>
- <20210608052320.GA13828@lst.de>
-From:   Wu Bo <wubo40@huawei.com>
-Message-ID: <0f672080-671b-c1b8-18d5-3ddad90f53c4@huawei.com>
-Date:   Tue, 8 Jun 2021 20:32:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Tue, 8 Jun 2021 08:35:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7B3C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 05:33:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YSGQEI1WX6YiXANPfcZHnOB1Uu7nxLS3hbjqa7fmpSI=; b=NqHKRKUraLAIML21HZSAmknZ4F
+        VU5XAZc1pxC1JYcy9gVMgNVLmzW0kR8IhWQOQCr2WAc8FpmKcoi/Lv+Sj0J3I61+d5r3FQXyk2gar
+        I/HUhvhoeZr/WgTYH6NnOvkdF8J4uCni+tx1Z0TXe+I36WvE/Yjt0M8y7C7lwOOwOi3OYL3TiHGm5
+        KSomQovXbqyDh8p9A3jwiJkkNpowT3Xae/S61GX7UFaTq23bBlPF/1GxUz/xxODH2dqV2AiC+SAx8
+        +KpXfOtPcWdWemeJ0sglnemOGsPokjv2ywQSdycZUwXg/bq4LK6QqJLG9eXh8cBdU//QVm4mFRJkH
+        z19eDUYw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lqau6-00Gw37-10; Tue, 08 Jun 2021 12:32:33 +0000
+Date:   Tue, 8 Jun 2021 13:32:21 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Xu Yu <xuyu@linux.alibaba.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, hughd@google.com,
+        akpm@linux-foundation.org, gavin.dg@linux.alibaba.com
+Subject: Re: [PATCH v2] mm, thp: use head page in __migration_entry_wait
+Message-ID: <YL9jVYgWYBydOYst@casper.infradead.org>
+References: <b9836c1dd522e903891760af9f0c86a2cce987eb.1623144009.git.xuyu@linux.alibaba.com>
+ <20210608120026.ugfh72ydjeba44bo@box.shutemov.name>
 MIME-Version: 1.0
-In-Reply-To: <20210608052320.GA13828@lst.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.189]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500019.china.huawei.com (7.185.36.137)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210608120026.ugfh72ydjeba44bo@box.shutemov.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/8 13:23, Christoph Hellwig wrote:
-> On Tue, Jun 08, 2021 at 12:13:36PM +0800, Wu Bo wrote:
->> -		if (WARN_ON_ONCE(desc->grpid == 0))
->> +		if (WARN_ON_ONCE(desc->grpid == 0 ||
->> +			le32_to_cpu(desc->grpid) > ctrl->anagrpmax))
->>   			return -EINVAL;
->> -		if (WARN_ON_ONCE(le32_to_cpu(desc->grpid) > ctrl->anagrpmax))
->> -			return -EINVAL;
->> -		if (WARN_ON_ONCE(desc->state == 0))
->> -			return -EINVAL;
->> -		if (WARN_ON_ONCE(desc->state > NVME_ANA_CHANGE))
->> +		if (WARN_ON_ONCE(desc->state == 0 ||
->> +			desc->state > NVME_ANA_CHANGE))
-> 
-> So besides making the code impossibl to read due to the incorrect
-> indentation this also makes each WARN_ON_ONCE cover multiple conditions.
-> Not very useful for debugging.
-> .
-> 
+On Tue, Jun 08, 2021 at 03:00:26PM +0300, Kirill A. Shutemov wrote:
+> But there's one quirk: if split succeed we effectively wait on wrong
+> page to be unlocked. And it may take indefinite time if split_huge_page()
+> was called on the head page.
 
-Indeed, not very useful for debugging, please ignore this patch.
-
-Thanks,
-Wu Bo
+Hardly indefinite time ... callers of split_huge_page_to_list() usually
+unlock the page soon after.  Actually, I can't find one that doesn't call
+unlock_page() within a few lines of calling split_huge_page_to_list().
 
