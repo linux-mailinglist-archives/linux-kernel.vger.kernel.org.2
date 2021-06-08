@@ -2,133 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C386B39F3BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D10F739F3C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:40:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231548AbhFHKkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 06:40:39 -0400
-Received: from mail-bn8nam11on2086.outbound.protection.outlook.com ([40.107.236.86]:43104
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231283AbhFHKki (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 06:40:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c9qBzqlHKoYfPy8ZaZi6MIrZFy6FMpjxwLZuX9KQRop1lTKdDIjoAVhqKiGwUUMiTw3a6wyWn2u35ml1Dk8GltMJN+Lbhamu4AKl2KfGSAM4c2tvXGPXNQv9tLIvN0XfE5htZIOimXEdH0MhFr/yYMzZF9amFPSA1UYu8XMJLX7J4gILndlWqZLdxjLeNcOfDcKZ71OvMB69iIayyxKNT8zEoO0MFTIPzMwTTcUoXjEj+u84Y1JT98aH7HCULTwTWow/pSb3ATldHCrW6c7WM9YiPRfoQBULCFChRuGaUn3/kY2vHz10LA/3hr8oWuSpVsG0oOHe2X70IOTfUOGeug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LCZq4ykMjVmKZEB1toYi/uNgfrttYiIHJ7H45pLZnLQ=;
- b=lQE7FzUgtnvTsA8ee1c2Sp1Hsrb8ZU5oRNjFQxrvhRfCMLWD14FnJGqYqsL4myRIsmhcXybLP+eF8rp9YGvq9lkmsuTs2LLOefPaYz+xDCwG+SqCq5x61EwPm4/rE0je6eQ/zKa5sYF6JmoiS550qHoQGDXNJIkPbsUA8tEM1MnaMnjOiE3Qr9M1EUYJvkXefGnLhu7Av0syuenSq8VBcw6QKEAVWiaVFNFt2SC51I7M7shkSAYx3R8+PD4NVC1iUSB7pOCNmIRimTYk1X4xuluD+5ghSzldDOR2SbX4ybQO+dT0TyFzAdZLB42uMK7tnzY3CkmUqC1s9ZWtq22/2w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=arm.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LCZq4ykMjVmKZEB1toYi/uNgfrttYiIHJ7H45pLZnLQ=;
- b=TlqBv6ubYYyJURqbGk88caoCWy4c7F7a2VxyLEFVeRIbJ054wqg6t+KBvwR6Gk1gHU426Y773XxHsyXmLsT9VvSS7Rp4NyWau0ts0b0pFySZmwHLNX50/mDbc1s+2H3HZeD10XT4Azbp9aGPLCZYx2taJqQiqvMgEdWqKpTGigLk933XpdzMIxvfDJVWuNqQ1q/S8iWysEyF2DH9V+M0rgxWubkOI46I2n4ofJ0Ywj4i0I13/vPSe6wQ3+zGVwjyg+xEJ+0lVp/XErWdanEw44wbIQ0FdFyDNQjh0fCVTjHKf51cM7OLD6R2Mun/Ye7+29RJFm6kRygAJbA4IFcEqw==
-Received: from BN6PR21CA0019.namprd21.prod.outlook.com (2603:10b6:404:8e::29)
- by BN6PR12MB1345.namprd12.prod.outlook.com (2603:10b6:404:18::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22; Tue, 8 Jun
- 2021 10:38:44 +0000
-Received: from BN8NAM11FT055.eop-nam11.prod.protection.outlook.com
- (2603:10b6:404:8e:cafe::92) by BN6PR21CA0019.outlook.office365.com
- (2603:10b6:404:8e::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.4 via Frontend
- Transport; Tue, 8 Jun 2021 10:38:44 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; arm.com; dkim=none (message not signed)
- header.d=none;arm.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT055.mail.protection.outlook.com (10.13.177.62) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4195.22 via Frontend Transport; Tue, 8 Jun 2021 10:38:44 +0000
-Received: from [10.25.75.134] (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 8 Jun
- 2021 10:38:40 +0000
-Subject: Re: [PATCH V2 5/5] PCI: tegra: Cleanup unused code
-To:     Om Prakash Singh <omp@nvidia.com>, <kw@linux.com>,
-        <helgaas@kernel.org>, <lorenzo.pieralisi@arm.com>,
-        <bhelgaas@google.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>
-CC:     <linux-tegra@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kthota@nvidia.com>,
-        <mmaddireddy@nvidia.com>
-References: <20210606082204.14222-1-omp@nvidia.com>
- <20210606082204.14222-6-omp@nvidia.com>
-From:   Vidya Sagar <vidyas@nvidia.com>
-Message-ID: <b72e09de-68ee-6ed3-3114-9a19779cb601@nvidia.com>
-Date:   Tue, 8 Jun 2021 16:08:37 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230321AbhFHKmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 06:42:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43990 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230190AbhFHKl5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 06:41:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623148804;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nYNCs3JrvkX8VAnIEcTWaVkYHbhrJx9YKWDfXBQ1+cM=;
+        b=TWPwvKYSGixwMeu/0zRoWV7tV8HTU52Q2W7PIswov44LJ4lwmIQgeMXAJtzOmHqkqnomlF
+        2MHvjmDm5IwX/oZWIMgN12wtJZbJwBXsoWtRnYGK+pxXf8De0ML2i2z96VT3lUy5mjZPgo
+        YspubmuInlbt3OD51mPhDGkqP2uK+WA=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-464-cUErK9cSOgSkdy-yTImGYQ-1; Tue, 08 Jun 2021 06:40:03 -0400
+X-MC-Unique: cUErK9cSOgSkdy-yTImGYQ-1
+Received: by mail-ej1-f69.google.com with SMTP id a25-20020a1709064a59b0290411db435a1eso2659703ejv.11
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 03:40:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=nYNCs3JrvkX8VAnIEcTWaVkYHbhrJx9YKWDfXBQ1+cM=;
+        b=QVVGAgc3n0MnmzdpClxMRiTxLfNDOl96ahZVGUAuUuByp/amfq6Dx1B2TYjT8urllk
+         2djpUeCfVGxSeG/ZYOCQT/YcpI42tDJ3b2fHbJVOeYropS8CqI9vTLfY5XWJUUfDYyql
+         5qY3djUdXtqO/WTQZmpu8OwcOcAgYzqQwRGEXfCSvycVfdCGfga9iQzI7TtvCq/D+93X
+         Pj5DTmtTgQYhuRG9zHKjf19XQ6PXX6A0qaVPot7pANeoohqZL4gZt6SHuDnlJHX+mRZI
+         8ZKZ5fuvlVUKj14Bk+2uWzMCC+Py6pm5loz57wrZTom9S78ADvkbvXjRAwQxavruraHV
+         hEGg==
+X-Gm-Message-State: AOAM531H0PWRy7ZrDI0ieZGwn/SroApdtnUtJC9d4JqC2fkGjmxK3CyZ
+        Ih1386CPs+3m/reqOHvAwV5XmKYmaMxvWMtVLHQGeFBR3GG0i7gYX7GyI5SHSeCefxN9ffMCcvh
+        7ickFZrMfcZbqgHNuPM6LHKUr
+X-Received: by 2002:aa7:d590:: with SMTP id r16mr25088237edq.355.1623148801777;
+        Tue, 08 Jun 2021 03:40:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwlQjlTOLOUv+CTcpQo85ShyVO8Hm6Jf6YQcKP01+YfXsWs3sS1DIB86mFlcYsubeJp29IuCA==
+X-Received: by 2002:aa7:d590:: with SMTP id r16mr25088212edq.355.1623148801544;
+        Tue, 08 Jun 2021 03:40:01 -0700 (PDT)
+Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
+        by smtp.gmail.com with ESMTPSA id g11sm8789689edt.85.2021.06.08.03.40.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 03:40:01 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 12:39:58 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+Subject: Re: [PATCH v10 11/18] virtio/vsock: dequeue callback for
+ SOCK_SEQPACKET
+Message-ID: <20210608103958.5oqkqr2ydanfxx2s@steredhat>
+References: <20210603144513.ryjzauq7abnjogu3@steredhat>
+ <6b833ccf-ea93-db6a-4743-463ac1cfe817@kaspersky.com>
+ <20210604150324.winiikx5h3p6gsyy@steredhat>
+ <a81ae3cb-439f-7621-4ae6-bccd2c25b7e4@kaspersky.com>
+ <20210607110421.wkx4dj7wipwsqztj@steredhat>
+ <8e2eb802-7c5d-70b0-82b5-ec8de4fdc046@kaspersky.com>
+ <20210608082320.vs2tzgpxgr2dhxye@steredhat>
+ <3c35f04a-8406-d26f-27d0-becbd3c43c1b@kaspersky.com>
+ <20210608101952.6meiasy7zqp474sf@steredhat>
+ <8ca7fe68-81b7-8984-bf0f-db2384985988@kaspersky.com>
 MIME-Version: 1.0
-In-Reply-To: <20210606082204.14222-6-omp@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4a939b42-ee36-4ee0-969e-08d92a699700
-X-MS-TrafficTypeDiagnostic: BN6PR12MB1345:
-X-Microsoft-Antispam-PRVS: <BN6PR12MB1345DA8880CB16AB026BBF6CB8379@BN6PR12MB1345.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:327;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wuROlBHbUm5aHG+eUFEEYNyI8BLY6sXX21iU1OzWKMjcH8RG+qGpKWEENA7cVG/65tJqQIpi6LxI6lF24xQBGQye/Sn7JEakzUXGpvBS8ArF36dNEKvcLqBoNjj3aG9Bf0vJrfEtDkkSIeS6l8lDIvVfhsCAoYaNHkNS3P9oEn+NmqiZXRbZoY8FxRtVnXO1J8ld2Oc1JQZVjkW6P9OI3OED27jGgdS0H1jRNgm62QEpPMU+WbmzbsVhI/grOh/zKBLwEqc/IAFpzR8RhGFjXdG5MTLW2DQzNCYY8Ck/0wvduwYu9VoeV+HDl2bq6H2V7HvJpherqG+Oz17viQwKU2CZaQc/VrhugeOMyz9JEIf7ZHtKlfm76t3e1O7LmNJXhbqoDsrbupXSrlxVgnW17i4ySJbq3T8GBfWtrjUDKsxyvxva/9J/5nNMrilJnySUGsTe7RqpAc5PYpiNWlqm7LQXEaP3fA7+W2fkMIVSb4P6AFqFJC/R84xwszCK1dL6X3R9FQgPh/z/mPpx7N3ev5tjiy52cfkwkTJ2OmUy4jT9sFzYLuLB0RAscQQ7agA5VwrizYb57M65CpyGHx/fwQpJhgvIl5aCITpJA2bSISLSId8Ab3hO2p5iH5QOcbmGIeBoHvp9M2dHgI9gzsOqhCeQ52ePcW67D2UmZPOtvV+j4s8/VYl7sWnMphtO8kp7
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(39860400002)(376002)(346002)(136003)(46966006)(36840700001)(6636002)(2906002)(16576012)(31686004)(82740400003)(26005)(107886003)(7636003)(478600001)(36906005)(316002)(8936002)(36756003)(110136005)(83380400001)(4326008)(82310400003)(53546011)(70206006)(16526019)(70586007)(356005)(5660300002)(336012)(36860700001)(186003)(47076005)(31696002)(6666004)(54906003)(426003)(2616005)(8676002)(4744005)(86362001)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2021 10:38:44.0987
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a939b42-ee36-4ee0-969e-08d92a699700
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT055.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1345
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8ca7fe68-81b7-8984-bf0f-db2384985988@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 08, 2021 at 01:24:58PM +0300, Arseny Krasnov wrote:
+>
+>On 08.06.2021 13:19, Stefano Garzarella wrote:
+>> On Tue, Jun 08, 2021 at 12:40:39PM +0300, Arseny Krasnov wrote:
+>>> On 08.06.2021 11:23, Stefano Garzarella wrote:
+>>>> On Mon, Jun 07, 2021 at 04:18:38PM +0300, Arseny Krasnov wrote:
+>>>>> On 07.06.2021 14:04, Stefano Garzarella wrote:
+>>>>>> On Fri, Jun 04, 2021 at 09:03:26PM +0300, Arseny Krasnov wrote:
+>>>>>>> On 04.06.2021 18:03, Stefano Garzarella wrote:
+>>>>>>>> On Fri, Jun 04, 2021 at 04:12:23PM +0300, Arseny Krasnov wrote:
+>>>>>>>>> On 03.06.2021 17:45, Stefano Garzarella wrote:
+>>>>>>>>>> On Thu, May 20, 2021 at 10:17:58PM +0300, Arseny Krasnov wrote:
+>>>>>>>>>>> Callback fetches RW packets from rx queue of socket until whole record
+>>>>>>>>>>> is copied(if user's buffer is full, user is not woken up). This is done
+>>>>>>>>>>> to not stall sender, because if we wake up user and it leaves syscall,
+>>>>>>>>>>> nobody will send credit update for rest of record, and sender will wait
+>>>>>>>>>>> for next enter of read syscall at receiver's side. So if user buffer is
+>>>>>>>>>>> full, we just send credit update and drop data.
+>>>>>>>>>>>
+>>>>>>>>>>> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>>>>>>>>>>> ---
+>>>>>>>>>>> v9 -> v10:
+>>>>>>>>>>> 1) Number of dequeued bytes incremented even in case when
+>>>>>>>>>>>    user's buffer is full.
+>>>>>>>>>>> 2) Use 'msg_data_left()' instead of direct access to 'msg_hdr'.
+>>>>>>>>>>> 3) Rename variable 'err' to 'dequeued_len', in case of error
+>>>>>>>>>>>    it has negative value.
+>>>>>>>>>>>
+>>>>>>>>>>> include/linux/virtio_vsock.h            |  5 ++
+>>>>>>>>>>> net/vmw_vsock/virtio_transport_common.c | 65 +++++++++++++++++++++++++
+>>>>>>>>>>> 2 files changed, 70 insertions(+)
+>>>>>>>>>>>
+>>>>>>>>>>> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+>>>>>>>>>>> index dc636b727179..02acf6e9ae04 100644
+>>>>>>>>>>> --- a/include/linux/virtio_vsock.h
+>>>>>>>>>>> +++ b/include/linux/virtio_vsock.h
+>>>>>>>>>>> @@ -80,6 +80,11 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
+>>>>>>>>>>> 			       struct msghdr *msg,
+>>>>>>>>>>> 			       size_t len, int flags);
+>>>>>>>>>>>
+>>>>>>>>>>> +ssize_t
+>>>>>>>>>>> +virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
+>>>>>>>>>>> +				   struct msghdr *msg,
+>>>>>>>>>>> +				   int flags,
+>>>>>>>>>>> +				   bool *msg_ready);
+>>>>>>>>>>> s64 virtio_transport_stream_has_data(struct vsock_sock *vsk);
+>>>>>>>>>>> s64 virtio_transport_stream_has_space(struct vsock_sock *vsk);
+>>>>>>>>>>>
+>>>>>>>>>>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+>>>>>>>>>>> index ad0d34d41444..61349b2ea7fe 100644
+>>>>>>>>>>> --- a/net/vmw_vsock/virtio_transport_common.c
+>>>>>>>>>>> +++ b/net/vmw_vsock/virtio_transport_common.c
+>>>>>>>>>>> @@ -393,6 +393,59 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+>>>>>>>>>>> 	return err;
+>>>>>>>>>>> }
+>>>>>>>>>>>
+>>>>>>>>>>> +static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
+>>>>>>>>>>> +						 struct msghdr *msg,
+>>>>>>>>>>> +						 int flags,
+>>>>>>>>>>> +						 bool *msg_ready)
+>>>>>>>>>>> +{
+>>>>>>>>>>> +	struct virtio_vsock_sock *vvs = vsk->trans;
+>>>>>>>>>>> +	struct virtio_vsock_pkt *pkt;
+>>>>>>>>>>> +	int dequeued_len = 0;
+>>>>>>>>>>> +	size_t user_buf_len = msg_data_left(msg);
+>>>>>>>>>>> +
+>>>>>>>>>>> +	*msg_ready = false;
+>>>>>>>>>>> +	spin_lock_bh(&vvs->rx_lock);
+>>>>>>>>>>> +
+>>>>>>>>>>> +	while (!*msg_ready && !list_empty(&vvs->rx_queue) && dequeued_len >= 0) {
+>>>>>>>>>> I'
+>>>>>>>>>>
+>>>>>>>>>>> +		size_t bytes_to_copy;
+>>>>>>>>>>> +		size_t pkt_len;
+>>>>>>>>>>> +
+>>>>>>>>>>> +		pkt = list_first_entry(&vvs->rx_queue, struct virtio_vsock_pkt, list);
+>>>>>>>>>>> +		pkt_len = (size_t)le32_to_cpu(pkt->hdr.len);
+>>>>>>>>>>> +		bytes_to_copy = min(user_buf_len, pkt_len);
+>>>>>>>>>>> +
+>>>>>>>>>>> +		if (bytes_to_copy) {
+>>>>>>>>>>> +			/* sk_lock is held by caller so no one else can dequeue.
+>>>>>>>>>>> +			 * Unlock rx_lock since memcpy_to_msg() may sleep.
+>>>>>>>>>>> +			 */
+>>>>>>>>>>> +			spin_unlock_bh(&vvs->rx_lock);
+>>>>>>>>>>> +
+>>>>>>>>>>> +			if (memcpy_to_msg(msg, pkt->buf, bytes_to_copy))
+>>>>>>>>>>> +				dequeued_len = -EINVAL;
+>>>>>>>>>> I think here is better to return the error returned by memcpy_to_msg(),
+>>>>>>>>>> as we do in the other place where we use memcpy_to_msg().
+>>>>>>>>>>
+>>>>>>>>>> I mean something like this:
+>>>>>>>>>> 			err = memcpy_to_msgmsg, pkt->buf, bytes_to_copy);
+>>>>>>>>>> 			if (err)
+>>>>>>>>>> 				dequeued_len = err;
+>>>>>>>>> Ack
+>>>>>>>>>>> +			else
+>>>>>>>>>>> +				user_buf_len -= bytes_to_copy;
+>>>>>>>>>>> +
+>>>>>>>>>>> +			spin_lock_bh(&vvs->rx_lock);
+>>>>>>>>>>> +		}
+>>>>>>>>>>> +
+>>>>>>>>>> Maybe here we can simply break the cycle if we have an error:
+>>>>>>>>>> 		if (dequeued_len < 0)
+>>>>>>>>>> 			break;
+>>>>>>>>>>
+>>>>>>>>>> Or we can refactor a bit, simplifying the while() condition and also the
+>>>>>>>>>> code in this way (not tested):
+>>>>>>>>>>
+>>>>>>>>>> 	while (!*msg_ready && !list_empty(&vvs->rx_queue)) {
+>>>>>>>>>> 		...
+>>>>>>>>>>
+>>>>>>>>>> 		if (bytes_to_copy) {
+>>>>>>>>>> 			int err;
+>>>>>>>>>>
+>>>>>>>>>> 			/* ...
+>>>>>>>>>> 			*/
+>>>>>>>>>> 			spin_unlock_bh(&vvs->rx_lock);
+>>>>>>>>>> 			err = memcpy_to_msgmsg, pkt->buf, bytes_to_copy);
+>>>>>>>>>> 			if (err) {
+>>>>>>>>>> 				dequeued_len = err;
+>>>>>>>>>> 				goto out;
+>>>>>>>>>> 			}
+>>>>>>>>>> 			spin_lock_bh(&vvs->rx_lock);
+>>>>>>>>>>
+>>>>>>>>>> 			user_buf_len -= bytes_to_copy;
+>>>>>>>>>> 		}
+>>>>>>>>>>
+>>>>>>>>>> 		dequeued_len += pkt_len;
+>>>>>>>>>>
+>>>>>>>>>> 		if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOR)
+>>>>>>>>>> 			*msg_ready = true;
+>>>>>>>>>>
+>>>>>>>>>> 		virtio_transport_dec_rx_pkt(vvs, pkt);
+>>>>>>>>>> 		list_del(&pkt->list);
+>>>>>>>>>> 		virtio_transport_free_pkt(pkt);
+>>>>>>>>>> 	}
+>>>>>>>>>>
+>>>>>>>>>> out:
+>>>>>>>>>> 	spin_unlock_bh(&vvs->rx_lock);
+>>>>>>>>>>
+>>>>>>>>>> 	virtio_transport_send_credit_update(vsk);
+>>>>>>>>>>
+>>>>>>>>>> 	return dequeued_len;
+>>>>>>>>>> }
+>>>>>>>>> I think we can't do 'goto out' or break, because in case of error,
+>>>>>>>>> we still need
+>>>>>>>>> to free packet.
+>>>>>>>> Didn't we have code that remove packets from a previous message?
+>>>>>>>> I don't see it anymore.
+>>>>>>>>
+>>>>>>>> For example if we have 10 packets queued for a message (the 10th
+>>>>>>>> packet
+>>>>>>>> has the EOR flag) and the memcpy_to_msg() fails on the 2nd packet, with
+>>>>>>>> you proposal we are freeing only the first 2 packets, the rest is there
+>>>>>>>> and should be freed when reading the next message, but I don't see that
+>>>>>>>> code.
+>>>>>>>>
+>>>>>>>> The same can happen if the recvmsg syscall is interrupted. In that case
+>>>>>>>> we report that nothing was copied, but we freed the first N packets, so
+>>>>>>>> they are lost but the other packets are still in the queue.
+>>>>>>>>
+>>>>>>>> Please check also the patch where we implemented
+>>>>>>>> __vsock_seqpacket_recvmsg().
+>>>>>>>>
+>>>>>>>> I thinks we should free packets only when we are sure we copied them to
+>>>>>>>> the user space.
+>>>>>>> Hm, yes, this is problem. To solve it i can restore previous approach
+>>>>>>> with seqbegin/seqend. In that case i can detect unfinished record and
+>>>>>>> drop it's packets. Seems seqbegin will be a bit like
+>>>>>>> VIRTIO_VSOCK_SEQ_EOR in flags
+>>>>>>> field of header(e.g. VIRTIO_VSOCK_SEQ_BEGIN). Message id and length are
+>>>>>>> unneeded,
+>>>>>>> as channel considedered lossless. What do You think?
+>>>>>>>
+>>>>>> I think VIRTIO_VSOCK_SEQ_BEGIN is redundant, using only EOR should be
+>>>>>> fine.
+>>>>>>
+>>>>>> When we receive EOR we know that this is the last packet on this message
+>>>>>> and the next packet will be the first of a new message.
+>>>>>>
+>>>>>> What we should do is check that we have all the fragments of a packet
+>>>>>> and return them all together, otherwise we have to say we have nothing.
+>>>>>>
+>>>>>> For example as we process packets from the vitqueue and queue them in
+>>>>>> the rx_queue we could use a counter of how many EORs are in the
+>>>>>> rx_queue, which we decrease in virtio_transport_seqpacket_do_dequeue()
+>>>>>> when we copied all the fragments.
+>>>>>>
+>>>>>> If the counter is 0, we don't remove anything from the queue and
+>>>>>> virtio_transport_seqpacket_do_dequeue() returns 0.
+>>>>>>
+>>>>>> So .seqpacket_dequeue should return 0 if there is not at least one
+>>>>>> complete message, or return the entire message. A partial message should
+>>>>>> never return.
+>>>>>>
+>>>>>> What do you think?
+>>>>> I like it, i've implemented this approach in some early pre v1 versions.
+>>>>>
+>>>>> But in this case, credit update logic will be changed - in current implementation
+>>>>>
+>>>>> (both seqpacket and stream) credit update reply is sent when data is copied
+>>>>>
+>>>>> to user's buffer(e.g. we copy data somewhere, free packet and ready to process
+>>>>>
+>>>>> new packet). But if we don't touch user's buffer and keeping incoming packet in rx queue
+>>>>>
+>>>>> until whole record is ready, when to send credit update?
+>>>> I think the best approach could be to send credit updates when we remove
+>>>> them from the rx_queue.
+>>> In that case, it will be impossible to send message bigger than size of rx buffer
+>>>
+>>> (e.g. credit allowed size), because packet will be queued without credit update
+>>>
+>>> reply until credit allowed reach 0.
+>>>
+>> Yep, but I think it is a reasonable limit for a datagram socket.
+>>
+>> Maybe we can add a check on the TX side, since we know this value and
+>> return an error to the user.
+>
+>E.g., to before sending message  using SEQPACKET socket,
+>
+>i need to call setsockopt with SO_VM_SOCKETS_BUFFER_MAX_SIZE/
+>
+>SO_VM_SOCKETS_BUFFER_SIZE params to setup maximum message size,
+>
+>if user tries to send message bigger than it, return -EMSGSIZE ?
+>
 
+Yep, I mean the receiver side must set it (IIRC default is 256K).
 
-On 6/6/2021 1:52 PM, Om Prakash Singh wrote:
-> Remove unused code from function tegra_pcie_config_ep.
-> 
-> Signed-off-by: Om Prakash Singh <omp@nvidia.com>
-> ---
-> 
-> Changes in V2:
-> 	- No change
-> 
->   drivers/pci/controller/dwc/pcie-tegra194.c | 7 -------
->   1 file changed, 7 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-> index ae4c0a29818d..e9d573c850dd 100644
-> --- a/drivers/pci/controller/dwc/pcie-tegra194.c
-> +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-> @@ -2045,13 +2045,6 @@ static int tegra_pcie_config_ep(struct tegra_pcie_dw *pcie,
->   		return ret;
->   	}
->   
-> -	name = devm_kasprintf(dev, GFP_KERNEL, "tegra_pcie_%u_ep_work",
-> -			      pcie->cid);
-> -	if (!name) {
-> -		dev_err(dev, "Failed to create PCIe EP work thread string\n");
-> -		return -ENOMEM;
-> -	}
-> -
->   	pm_runtime_enable(dev);
->   
->   	ret = dw_pcie_ep_init(ep);
-> 
-Acked-by: Vidya Sagar <vidyas@nvidia.com>
+In the transmitter side we can check it using `vvs->peer_buf_alloc` and 
+return the error.
+
+Stefano
+
