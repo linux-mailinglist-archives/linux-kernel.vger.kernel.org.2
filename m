@@ -2,194 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 674063A0532
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 22:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6013A0534
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 22:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234743AbhFHUk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 16:40:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57132 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234000AbhFHUk0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 16:40:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 41BA06127A;
-        Tue,  8 Jun 2021 20:38:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623184713;
-        bh=7QkX7aGJfBWOcOv4hu/tTv+UzURk46Al8Om+qNr0hhE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=pCDFpGqEtkJeweZI7A9UqadRSZspUIBjpRXjC635xW11WGJb6ad60h+pVRQjWcB6+
-         3xckjs9vx4NAt9ihESEf2MUsZQz+wNk8C6e2OICMxSy2Af2XKzdnMIDKtemecSRV99
-         KQX9+NatBQmlkLouHlpbyiGnwANmf90y9gO+s1tY8dPN5oej77/mSLslvCaYrR9T39
-         Xkuyta/YjMjSWJx0JjHqoTLn3kEZiWANY2KbH+u3SsKxl8pmds6nxAemYrqp/X3EIA
-         ySGDvQBRS1XTSV+6PfFv90537CcVOwvw5j9XMsTDv9BAkcXmk1luDNrx9kWItai0Ve
-         GD5GN8I7CDLhg==
-Received: by pali.im (Postfix)
-        id CEF917CC; Tue,  8 Jun 2021 22:38:30 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH] PCI: aardvark: Fix kernel panic during PIO transfer
-Date:   Tue,  8 Jun 2021 22:36:55 +0200
-Message-Id: <20210608203655.31228-1-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S235092AbhFHUn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 16:43:26 -0400
+Received: from mail-yb1-f180.google.com ([209.85.219.180]:42774 "EHLO
+        mail-yb1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234000AbhFHUnW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 16:43:22 -0400
+Received: by mail-yb1-f180.google.com with SMTP id g142so12787591ybf.9
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 13:41:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G5rt0SuV4v7HioKPjTFjsxj4kEbwteAs2JcYkML14m8=;
+        b=bQYUegfmqqQTD4hYvYL9VlKvkTAVaf8zqi+SrxfSvcBvwIPq7S+QpRyqxwsejqv7rf
+         COASdedYItD7EdJ5TDMohqNB0NCfFU8NNkoFRM0EL/YvcNr/+mowmQ3Ctuujr5bnx5QD
+         rY5Hy4wBcgWdfLSCblG9fFDkI6ELzyBfwCTIB3LnTuEqitVmqjzgBt9RJfGaGg3VFesF
+         5WIKEQdINL9nq3RwQPc/ORsZhuiS4tQpSFPNF7YYLLptyOEZffyGK+Im2X/nNDfUpq0d
+         r1nFWrc9vISr2E4Z8Qrl2Q8KQ3FvKZVxINMtZVW5NTiQ4jKIxrCt5rex2ms4uKtcv258
+         +jTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G5rt0SuV4v7HioKPjTFjsxj4kEbwteAs2JcYkML14m8=;
+        b=X4b/y/pNXKvRu16djQWYnf5GkC97KAXnX88IpXxPRr9rrZ9iQEKutACDad7dhkEBWH
+         QvrgZLOVGGEpcuk8vfLENKiE3xkMf0XgQOWgF4EMrsWF7oZw6btTcMr44DgUbGojDGBP
+         dD0GQWhubzkh7B+IHHFxslyMvbW4ODX8A38euOVVbSDIYmTxnvyIr5caa/GQMevh0sSU
+         fdKbkqc6xVUr+yA+SEnPsIzPJ4/PzhIxFs9IB48xktLhqMfSPTa5zSmFv0jvkpv2IhyB
+         OH5cQwIqJeNxKvBxJ4fDvTtKgDMxmLXHN+kwTNs1jySHlTvJiqKjm5zkLYoz7YzQ0vlK
+         WfxQ==
+X-Gm-Message-State: AOAM533uxwFpFTZAMMT2LozlaXHA3KRcJHVl2OTheNRDwcMJ1ezLSneS
+        0C7A1Kco2pf7zSCSz+nkHfi9cOlsMf7ZT80bcmrpk8nn5qU=
+X-Google-Smtp-Source: ABdhPJwlO8LYVjwOc0QYpj/Rmf9RP2Sw03lwpE0L3/J+PO1muXVT45xI/OjeU130cY7E5bLIUFZrZD5R6+3liipzkSY=
+X-Received: by 2002:a25:1ec2:: with SMTP id e185mr33876545ybe.23.1623184828403;
+ Tue, 08 Jun 2021 13:40:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210608190452.77486-1-hannes@cmpxchg.org>
+In-Reply-To: <20210608190452.77486-1-hannes@cmpxchg.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 8 Jun 2021 13:40:17 -0700
+Message-ID: <CAJuCfpH_AAgGdgpCuCaz9b511FSoN9F7r-WWE18DhdusHkau-w@mail.gmail.com>
+Subject: Re: [PATCH] psi: clean up time collection functions
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Trying to start a new PIO transfer by writing value 0 in PIO_START register
-when previous transfer has not yet completed (which is indicated by value 1
-in PIO_START) causes an External Abort on CPU, which results in kernel
-panic:
+On Tue, Jun 8, 2021 at 12:04 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> The functions to read the per-cpu time buckets and aggregate them
+> don't have the greatest names and an awkward calling convention. Clean
+> this up to make things a bit more readable:
+>
+> - Rename get_recent_times() to read_cpu_states() to make it clearer
+>   this is about extracting psi state from one cpu, and not just the
+>   times, either. Remove the pchanged_states return parameter and make
+>   it the function's return value; rename the local variable 'states',
+>   as it doesn't reflect changed states, but currently active ones.
+>
+> - rename collect_percpu_times() to aggregate_cpus(), to indicate that
+>   actual data processing happens there
+>
+> - move calc_avgs() out of the way, closer to where it's being used.
+>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-    SError Interrupt on CPU0, code 0xbf000002 -- SError
-    Kernel panic - not syncing: Asynchronous SError Interrupt
+Reviewed-by: Suren Baghdasaryan <surenb@google.com>
 
-To prevent kernel panic, it is required to reject a new PIO transfer when
-previous one has not finished yet.
-
-If previous PIO transfer is not finished yet, the kernel may issue a new
-PIO request only if the previous PIO transfer timed out.
-
-In the past the root cause of this issue was incorrectly identified (as it
-often happens during link retraining or after link down event) and special
-hack was implemented in Trusted Firmware to catch all SError events in EL3,
-to ignore errors with code 0xbf000002 and not forwarding any other errors
-to kernel and instead throw panic from EL3 Trusted Firmware handler.
-
-Links to discussion and patches about this issue:
-https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git/commit/?id=3c7dcdac5c50
-https://lore.kernel.org/linux-pci/20190316161243.29517-1-repk@triplefau.lt/
-https://lore.kernel.org/linux-pci/971be151d24312cc533989a64bd454b4@www.loen.fr/
-https://review.trustedfirmware.org/c/TF-A/trusted-firmware-a/+/1541
-
-But the real cause was the fact that during link retraning or after link
-down event the PIO transfer may take longer time, up to the 1.44s until it
-times out. This increased probability that a new PIO transfer would be
-issued by kernel while previous one has not finished yet.
-
-After applying this change into the kernel, it is possible to revert the
-mentioned TF-A hack and SError events do not have to be caught in TF-A EL3.
-
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Cc: stable@vger.kernel.org # 7fbcb5da811b ("PCI: aardvark: Don't rely on jiffies while holding spinlock")
----
-I have sent this patch for review month ago [1] as part of "PCI: aardvark:
-Various driver fixes" series [2] and asked for reviewing it and merging it
-into 5.13 kernel as it fixed kernel panic. I have not received any
-reaction for this patch, so I'm resending it alone again. Could you
-please review it?
-
-[1] - https://lore.kernel.org/linux-pci/20210506153153.30454-2-pali@kernel.org/
-[2] - https://lore.kernel.org/linux-pci/20210506153153.30454-1-pali@kernel.org/
----
- drivers/pci/controller/pci-aardvark.c | 49 ++++++++++++++++++++++-----
- 1 file changed, 40 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-index 051b48bd7985..e3f5e7ab7606 100644
---- a/drivers/pci/controller/pci-aardvark.c
-+++ b/drivers/pci/controller/pci-aardvark.c
-@@ -514,7 +514,7 @@ static int advk_pcie_wait_pio(struct advk_pcie *pcie)
- 		udelay(PIO_RETRY_DELAY);
- 	}
- 
--	dev_err(dev, "config read/write timed out\n");
-+	dev_err(dev, "PIO read/write transfer time out\n");
- 	return -ETIMEDOUT;
- }
- 
-@@ -657,6 +657,35 @@ static bool advk_pcie_valid_device(struct advk_pcie *pcie, struct pci_bus *bus,
- 	return true;
- }
- 
-+static bool advk_pcie_pio_is_running(struct advk_pcie *pcie)
-+{
-+	struct device *dev = &pcie->pdev->dev;
-+
-+	/*
-+	 * Trying to start a new PIO transfer when previous has not completed
-+	 * cause External Abort on CPU which results in kernel panic:
-+	 *
-+	 *     SError Interrupt on CPU0, code 0xbf000002 -- SError
-+	 *     Kernel panic - not syncing: Asynchronous SError Interrupt
-+	 *
-+	 * Functions advk_pcie_rd_conf() and advk_pcie_wr_conf() are protected
-+	 * by raw_spin_lock_irqsave() at pci_lock_config() level to prevent
-+	 * concurrent calls at the same time. But because PIO transfer may take
-+	 * about 1.5s when link is down or card is disconnected, it means that
-+	 * advk_pcie_wait_pio() does not always have to wait for completion.
-+	 *
-+	 * Some versions of ARM Trusted Firmware handles this External Abort at
-+	 * EL3 level and mask it to prevent kernel panic. Relevant TF-A commit:
-+	 * https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git/commit/?id=3c7dcdac5c50
-+	 */
-+	if (advk_readl(pcie, PIO_START)) {
-+		dev_err(dev, "Previous PIO read/write transfer is still running\n");
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
- static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
- 			     int where, int size, u32 *val)
- {
-@@ -673,9 +702,10 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
- 		return pci_bridge_emul_conf_read(&pcie->bridge, where,
- 						 size, val);
- 
--	/* Start PIO */
--	advk_writel(pcie, 0, PIO_START);
--	advk_writel(pcie, 1, PIO_ISR);
-+	if (advk_pcie_pio_is_running(pcie)) {
-+		*val = 0xffffffff;
-+		return PCIBIOS_SET_FAILED;
-+	}
- 
- 	/* Program the control register */
- 	reg = advk_readl(pcie, PIO_CTRL);
-@@ -694,7 +724,8 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
- 	/* Program the data strobe */
- 	advk_writel(pcie, 0xf, PIO_WR_DATA_STRB);
- 
--	/* Start the transfer */
-+	/* Clear PIO DONE ISR and start the transfer */
-+	advk_writel(pcie, 1, PIO_ISR);
- 	advk_writel(pcie, 1, PIO_START);
- 
- 	ret = advk_pcie_wait_pio(pcie);
-@@ -734,9 +765,8 @@ static int advk_pcie_wr_conf(struct pci_bus *bus, u32 devfn,
- 	if (where % size)
- 		return PCIBIOS_SET_FAILED;
- 
--	/* Start PIO */
--	advk_writel(pcie, 0, PIO_START);
--	advk_writel(pcie, 1, PIO_ISR);
-+	if (advk_pcie_pio_is_running(pcie))
-+		return PCIBIOS_SET_FAILED;
- 
- 	/* Program the control register */
- 	reg = advk_readl(pcie, PIO_CTRL);
-@@ -763,7 +793,8 @@ static int advk_pcie_wr_conf(struct pci_bus *bus, u32 devfn,
- 	/* Program the data strobe */
- 	advk_writel(pcie, data_strobe, PIO_WR_DATA_STRB);
- 
--	/* Start the transfer */
-+	/* Clear PIO DONE ISR and start the transfer */
-+	advk_writel(pcie, 1, PIO_ISR);
- 	advk_writel(pcie, 1, PIO_START);
- 
- 	ret = advk_pcie_wait_pio(pcie);
--- 
-2.20.1
-
+> ---
+>  kernel/sched/psi.c | 90 ++++++++++++++++++++++------------------------
+>  1 file changed, 42 insertions(+), 48 deletions(-)
+>
+> diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+> index 9d647d974f55..1faf383f6ec4 100644
+> --- a/kernel/sched/psi.c
+> +++ b/kernel/sched/psi.c
+> @@ -238,17 +238,15 @@ static bool test_state(unsigned int *tasks, enum psi_states state)
+>         }
+>  }
+>
+> -static void get_recent_times(struct psi_group *group, int cpu,
+> -                            enum psi_aggregators aggregator, u32 *times,
+> -                            u32 *pchanged_states)
+> +static u32 snapshot_cpu_states(struct psi_group *group, int cpu,
+> +                              enum psi_aggregators aggregator, u32 *times)
+>  {
+>         struct psi_group_cpu *groupc = per_cpu_ptr(group->pcpu, cpu);
+>         u64 now, state_start;
+>         enum psi_states s;
+>         unsigned int seq;
+>         u32 state_mask;
+> -
+> -       *pchanged_states = 0;
+> +       u32 states = 0;
+>
+>         /* Snapshot a coherent view of the CPU state */
+>         do {
+> @@ -279,37 +277,18 @@ static void get_recent_times(struct psi_group *group, int cpu,
+>
+>                 times[s] = delta;
+>                 if (delta)
+> -                       *pchanged_states |= (1 << s);
+> +                       states |= (1 << s);
+>         }
+> -}
+>
+> -static void calc_avgs(unsigned long avg[3], int missed_periods,
+> -                     u64 time, u64 period)
+> -{
+> -       unsigned long pct;
+> -
+> -       /* Fill in zeroes for periods of no activity */
+> -       if (missed_periods) {
+> -               avg[0] = calc_load_n(avg[0], EXP_10s, 0, missed_periods);
+> -               avg[1] = calc_load_n(avg[1], EXP_60s, 0, missed_periods);
+> -               avg[2] = calc_load_n(avg[2], EXP_300s, 0, missed_periods);
+> -       }
+> -
+> -       /* Sample the most recent active period */
+> -       pct = div_u64(time * 100, period);
+> -       pct *= FIXED_1;
+> -       avg[0] = calc_load(avg[0], EXP_10s, pct);
+> -       avg[1] = calc_load(avg[1], EXP_60s, pct);
+> -       avg[2] = calc_load(avg[2], EXP_300s, pct);
+> +       return states;
+>  }
+>
+> -static void collect_percpu_times(struct psi_group *group,
+> -                                enum psi_aggregators aggregator,
+> -                                u32 *pchanged_states)
+> +static u32 aggregate_cpus(struct psi_group *group,
+> +                         enum psi_aggregators aggregator)
+>  {
+>         u64 deltas[NR_PSI_STATES - 1] = { 0, };
+>         unsigned long nonidle_total = 0;
+> -       u32 changed_states = 0;
+> +       u32 states = 0;
+>         int cpu;
+>         int s;
+>
+> @@ -324,11 +303,8 @@ static void collect_percpu_times(struct psi_group *group,
+>         for_each_possible_cpu(cpu) {
+>                 u32 times[NR_PSI_STATES];
+>                 u32 nonidle;
+> -               u32 cpu_changed_states;
+>
+> -               get_recent_times(group, cpu, aggregator, times,
+> -                               &cpu_changed_states);
+> -               changed_states |= cpu_changed_states;
+> +               states |= snapshot_cpu_states(group, cpu, aggregator, times);
+>
+>                 nonidle = nsecs_to_jiffies(times[PSI_NONIDLE]);
+>                 nonidle_total += nonidle;
+> @@ -354,15 +330,34 @@ static void collect_percpu_times(struct psi_group *group,
+>                 group->total[aggregator][s] +=
+>                                 div_u64(deltas[s], max(nonidle_total, 1UL));
+>
+> -       if (pchanged_states)
+> -               *pchanged_states = changed_states;
+> +       return states;
+> +}
+> +
+> +static void calc_avgs(unsigned long avg[3], int missed_periods,
+> +                     u64 time, u64 period)
+> +{
+> +       unsigned long pct;
+> +
+> +       /* Fill in zeroes for periods of no activity */
+> +       if (missed_periods) {
+> +               avg[0] = calc_load_n(avg[0], EXP_10s, 0, missed_periods);
+> +               avg[1] = calc_load_n(avg[1], EXP_60s, 0, missed_periods);
+> +               avg[2] = calc_load_n(avg[2], EXP_300s, 0, missed_periods);
+> +       }
+> +
+> +       /* Sample the most recent active period */
+> +       pct = div_u64(time * 100, period);
+> +       pct *= FIXED_1;
+> +       avg[0] = calc_load(avg[0], EXP_10s, pct);
+> +       avg[1] = calc_load(avg[1], EXP_60s, pct);
+> +       avg[2] = calc_load(avg[2], EXP_300s, pct);
+>  }
+>
+>  static void update_averages(struct psi_group *group)
+>  {
+>         unsigned long missed_periods = 0;
+>         u64 now, expires, period;
+> -       u32 changed_states;
+> +       u32 states;
+>         int s;
+>
+>         /* avgX= */
+> @@ -402,7 +397,7 @@ static void update_averages(struct psi_group *group)
+>         group->avg_last_update = now;
+>         group->avg_next_update = expires + ((1 + missed_periods) * psi_period);
+>
+> -       collect_percpu_times(group, PSI_AVGS, &changed_states);
+> +       states = aggregate_cpus(group, PSI_AVGS);
+>         for (s = 0; s < NR_PSI_STATES - 1; s++) {
+>                 u32 sample;
+>
+> @@ -430,7 +425,7 @@ static void update_averages(struct psi_group *group)
+>                 calc_avgs(group->avg[s], missed_periods, sample, period);
+>         }
+>
+> -       if (changed_states & (1 << PSI_NONIDLE)) {
+> +       if (states & (1 << PSI_NONIDLE)) {
+>                 unsigned long delay;
+>
+>                 delay = nsecs_to_jiffies(group->avg_next_update - now) + 1;
+> @@ -585,24 +580,24 @@ static void psi_schedule_poll_work(struct psi_group *group, unsigned long delay)
+>
+>  static void psi_poll_work(struct psi_group *group)
+>  {
+> -       u32 changed_states;
+> +       unsigned long delay;
+> +       u32 states;
+>         u64 now;
+>
+>         mutex_lock(&group->trigger_lock);
+>
+>         now = sched_clock();
+> +       states = aggregate_cpus(group, PSI_POLL);
+>
+> -       collect_percpu_times(group, PSI_POLL, &changed_states);
+> -
+> -       if (changed_states & group->poll_states) {
+> +       if (states & group->poll_states) {
+>                 /* Initialize trigger windows when entering polling mode */
+>                 if (now > group->polling_until)
+>                         init_triggers(group, now);
+>
+>                 /*
+> -                * Keep the monitor active for at least the duration of the
+> -                * minimum tracking window as long as monitor states are
+> -                * changing.
+> +                * Keep the monitor active for at least the duration
+> +                * of the minimum tracking window after a polled state
+> +                * has been observed.
+>                  */
+>                 group->polling_until = now +
+>                         group->poll_min_period * UPDATES_PER_WINDOW;
+> @@ -616,9 +611,8 @@ static void psi_poll_work(struct psi_group *group)
+>         if (now >= group->polling_next_update)
+>                 group->polling_next_update = update_triggers(group, now);
+>
+> -       psi_schedule_poll_work(group,
+> -               nsecs_to_jiffies(group->polling_next_update - now) + 1);
+> -
+> +       delay = nsecs_to_jiffies(group->polling_next_update - now) + 1;
+> +       psi_schedule_poll_work(group, delay);
+>  out:
+>         mutex_unlock(&group->trigger_lock);
+>  }
+> --
+> 2.32.0
+>
