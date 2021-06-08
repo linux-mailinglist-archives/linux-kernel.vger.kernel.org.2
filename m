@@ -2,192 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8BE39EEA4
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 08:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4DC639EEA7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 08:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbhFHGZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 02:25:00 -0400
-Received: from mail-eopbgr30114.outbound.protection.outlook.com ([40.107.3.114]:48384
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        id S230324AbhFHGZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 02:25:12 -0400
+Received: from mail-mw2nam12on2045.outbound.protection.outlook.com ([40.107.244.45]:4705
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229797AbhFHGY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 02:24:58 -0400
+        id S230289AbhFHGZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 02:25:09 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OVKsvJFBrwJ5kwcjona9xSD2KsBIiZF8pUZbFTzEAciLjQPWAc77vqOB8gLW82k18fTRSMcjjKsw9IaT/mt6lUq8bctpcahZgzQMF5F2HYrrL+XKUoiQ6qRh0V0H3ObgdQD0+aZtDssNf11vkZRYcPyLxXwCO4o2f/s8EzoOoYmSwzcrd2t6VXBdo+vKaJAwWuto/c1d9vkOnZauyumqD6tk7HgN8T2rP+MYi4pWKzZa+OU2pH1yTXQxreQenJcn2VOoTVjqEjJ4VQML6iaUsMQNkUZ9b9lCISl5KDyCOw5Ypm2Woa3tLSrT5HkoFVzy5V0T8fYijMSyuESaI1vo7w==
+ b=jLBLA8Reh9hEveAhkJdjlFMfNhlJ4bxbAalLANCW6NlQogCd+clbJC2/O7VGp7SHKPphd4A0ywYAU0sJipfw9aGyF4i66+LQBTpzU//Ml9Y/qn3GyDyxOWWtzMDKmpNkorQnD4FxccOhXorzmP3SV9jI40SefNk5Rq7tqNSxYKdXWz8M7D511pzbU5a6NIaXbC0joX22zmErk0f/YYBZKWjFVBZO6XD0CowFAiJ6CSiiRAMFHrf9R0B1UTeGTXt4TgU6kgwYppsgarUdlMnoNDTQMSA9GPqX4TT7dn2J+zryb74g3LqWVYD7Am2JnpDRH0n01gdzUEEM8lZU2452sA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/eKC+bwIB69XTQEKa1mywTRxsXvB2q2Ewmqt2REvXtI=;
- b=aK03f+zUuJ7ogAQ7lkNKK8HHtHeX42rEY1xTRBxQiHFlfqsHLqLylOFjD08w1LjP17uYiJ9hNxNzNQtzGCPkXW4PNtdel6Rx9ZmAuc4hVqFFCBtm1IH8p231tHID5loKENcxmQhn93AcF0Z2WuhULqA99TS2Z896gHRG7ZsTTLfov/buJnMDQrwCiMGODjwhgdJ9UP/BFfGys5oJpr4wFZS76zT36k15aT9zMI++uNXcDV/YuNLspROefxPOVDi1LuUoKW6RA5JMRJFyNDC5EcdG7sknWfZ4BHaAgjlgLqNEY6neohZePMXe/F0u5sICXX1KuvGl3IBYfvdoc5LetQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=silicom.dk; dmarc=pass action=none header.from=silicom.dk;
- dkim=pass header.d=silicom.dk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=SILICOMLTD.onmicrosoft.com; s=selector2-SILICOMLTD-onmicrosoft-com;
+ bh=rN6egOLREeb92qmNz+XP3TkvZFXZQV/9vo5ukzVu+bQ=;
+ b=M4BuMSgdIh+tD1mezFtrXj3Kh7oeO+mrGYmMjIPUw857oVVOT5k6MhswY/0Y8rR9b+ep9cspuXMpKj7WRb61lcc+b5ro9Qpd8Hq6iHD2uZQGs1fIg2Z9wv1sTYuwABtBAGz28XwY/r6I/oishayb1857oN+1uwxQgjmR36TLE+d8F+smdQTLauR9ys0RaCOuaol3RDdeC3jkxxIQ//8Zu6n3YUMHI2PXgIagkBaiK8glS1rEA2K6nVXpIKDkiwVM3zxrUGdOgZrAzd9NIOI7di4F7w2F8DiZDvKTJJZtzaZufbB3daXXvDFbDtt2U60sVpjlvXNRYVShP0Nprt/reA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/eKC+bwIB69XTQEKa1mywTRxsXvB2q2Ewmqt2REvXtI=;
- b=M4kruOeuSqbMm5Q10jGFkY3WULDjOh6xLuXvxOiFik9kKO7Ocz0XtrbMoisRpN/lJCne7unbn9/sq6d9OXVyS1HkFPIw3LvS1FbLKjvOx5neKb4Jd6d004sNSlQm04o5S8gdFywV2RcbA2b8xBsi9CcjUFeUAK1gVhk/wjzyJXU=
-Authentication-Results: lists.infradead.org; dkim=none (message not signed)
- header.d=none;lists.infradead.org; dmarc=none action=none
- header.from=silicom.dk;
-Received: from AM0PR0402MB3426.eurprd04.prod.outlook.com
- (2603:10a6:208:22::15) by AM4PR0401MB2338.eurprd04.prod.outlook.com
- (2603:10a6:200:50::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.29; Tue, 8 Jun
- 2021 06:23:04 +0000
-Received: from AM0PR0402MB3426.eurprd04.prod.outlook.com
- ([fe80::50fd:f133:3592:292e]) by AM0PR0402MB3426.eurprd04.prod.outlook.com
- ([fe80::50fd:f133:3592:292e%7]) with mapi id 15.20.4173.029; Tue, 8 Jun 2021
- 06:23:04 +0000
-Subject: Re: [PATCH 1/7] fpga: wrap the write_init() op
-To:     Moritz Fischer <mdf@kernel.org>, trix@redhat.com
-Cc:     hao.wu@intel.com, michal.simek@xilinx.com,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20210607172402.2938697-1-trix@redhat.com>
- <20210607172402.2938697-2-trix@redhat.com> <YL6fUSD0KLP0l80g@epycbox.lan>
-From:   =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <mhu@silicom.dk>
-Message-ID: <2faf6ccb-005b-063a-a2a3-e177082c4b3c@silicom.dk>
-Date:   Tue, 8 Jun 2021 08:23:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <YL6fUSD0KLP0l80g@epycbox.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US-large
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [85.184.138.169]
-X-ClientProxiedBy: AM5PR0701CA0051.eurprd07.prod.outlook.com
- (2603:10a6:203:2::13) To AM0PR0402MB3426.eurprd04.prod.outlook.com
- (2603:10a6:208:22::15)
+ bh=rN6egOLREeb92qmNz+XP3TkvZFXZQV/9vo5ukzVu+bQ=;
+ b=JSZ19edi3uGa5Ydj6uFlWPGWsL4WJQJmlSBh3nMHVmvzs+cB9ixfj8rdzPR9t3nrfN06LEP3JXfjRNRRSYojdgz1Tc1cAP9go97WcLG7zuhpffgoNXRXsxZjOB9tq2ul47IF68Qg3TvTvb6cbh39lZtknK0aF85sZRGtKIojJsNRiU9m+LG995uSb4tO7/aKTMbaxNl7xuVbTy0hbcqsIbVt4YcR9P5Ss2CHcBZCOrK49ouotGbJsp34Pzbm/HUoK3E1v7qCDlkaOlstPMoUGGp6xT7USZOJ0OR0h0dCK+chxPzlZZzFOe10W+L+mZ6b7mJppQHFos1T7HB1TAdQ9A==
+Received: from MWHPR14CA0004.namprd14.prod.outlook.com (2603:10b6:300:ae::14)
+ by BN8PR12MB3348.namprd12.prod.outlook.com (2603:10b6:408:47::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Tue, 8 Jun
+ 2021 06:23:15 +0000
+Received: from CO1NAM11FT057.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:ae:cafe::83) by MWHPR14CA0004.outlook.office365.com
+ (2603:10b6:300:ae::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.15 via Frontend
+ Transport; Tue, 8 Jun 2021 06:23:15 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT057.mail.protection.outlook.com (10.13.174.205) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4195.22 via Frontend Transport; Tue, 8 Jun 2021 06:23:15 +0000
+Received: from localhost (172.20.187.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 8 Jun
+ 2021 06:23:14 +0000
+Date:   Tue, 8 Jun 2021 09:23:11 +0300
+From:   Ido Schimmel <idosch@nvidia.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+CC:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Petr Machata <petrm@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tag needs some work in the net tree
+Message-ID: <YL8Mz573gNRktQTh@shredder>
+References: <20210608085325.61c6056f@canb.auug.org.au>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.8.20] (85.184.138.169) by AM5PR0701CA0051.eurprd07.prod.outlook.com (2603:10a6:203:2::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.9 via Frontend Transport; Tue, 8 Jun 2021 06:23:03 +0000
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210608085325.61c6056f@canb.auug.org.au>
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8e42fed0-2ff2-4c90-46d3-08d92a45df46
-X-MS-TrafficTypeDiagnostic: AM4PR0401MB2338:
-X-Microsoft-Antispam-PRVS: <AM4PR0401MB2338DE6D880595001DAA55FFD5379@AM4PR0401MB2338.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Office365-Filtering-Correlation-Id: 1403c89b-a653-43ff-e511-08d92a45e66e
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3348:
+X-Microsoft-Antispam-PRVS: <BN8PR12MB3348F192523160115B6F3122B2379@BN8PR12MB3348.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:134;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aRP0Cfne3cZbwhrf8VKu2ocxTVmQqQ6gGY61Vb8mK9R8KbX6xCcDt8bjZ1Q1+3GJCNMmn/MuwGKsDo7SZQdfkcbuUwQnEd9AOkm6VK4J4OksfuotoCog5CiQBeidJ3Gf9vmxROSSJe8HcdyvqWaZPb8lQi7QmhUBAEXzJVKEyhzSFTubQWWv4/Ve6zdBDmrszITjaQ0ExFa/q13jyhWiU9rhyVYNFwLwPF/IypKWLAZjnj2176taaG0ULD92utmYngidUbqrd7CPBjUefME+PR5fOJPrI+GLy9E9/Apxpkal+uJEgeKuO4dtmmfRUHyG0rdqg75rN4qX9pwxn4s3onqRwokCTzqiRC8+jw1tKNG9HefswoUqcmUxP5iPzYbD9pYrIKqZ/6qGI7QBnuwhviM2dJk1cIKlGjpWYxswXVzjpXTv6+XXPqESHRiRKIRqDWU2SVc9PkijQCYBodMBiKVjanhr1g581jB+buQtgNdGowMIsxzcgDxIPeaqY9zsnGvnwwfUl8Y71SEloao8b8lu+MR3gJvxigYgeh/6fL3yLkoletgvzZT/Uvno38WN2O5ssx7SnBLeO5bydutSr0iZ1EBy963iYmEbzB4B+WQa6SyT86DQBemY/VExntVVGI/8UKhq0PMC2vlkZYdpNiZjl1zm/TrwDPP7tdHXhOmRSp3NWlWRbHWEQWvMCHkf
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR0402MB3426.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39840400004)(366004)(396003)(376002)(136003)(16576012)(86362001)(2906002)(31686004)(5660300002)(66946007)(16526019)(38100700002)(316002)(186003)(31696002)(8936002)(4326008)(8976002)(2616005)(956004)(8676002)(478600001)(66476007)(26005)(36756003)(66556008)(83380400001)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?N0FkMEE1MHdsNlhoSXBWQ3ZXVXNzWmIzNHVVNVZ2RWVpZmROM3kwSU9xRGFC?=
- =?utf-8?B?ZS83NlREa1FRTG9YQW52TENwWHM5ejJoaXR5ZlVoMVhnSk15bTdVUCtnT2g4?=
- =?utf-8?B?Zit6aHd3S1IxdXVQeFhNSzFIcWdRZnM5c0w0ckhvVjcwSnRNZ2cxQmw1RWox?=
- =?utf-8?B?RW9oVVAvSWh3ZWNaTGY2bEpjZ1Bvek9ZZUZxMmlSbTlEOGJHV00yMUZJR3p4?=
- =?utf-8?B?ZEVEWnplRU9ha3VEYXY1eDdsMVA1Q3JUUENWbmVLQXQ0NUIzUDRFQ0ZpUmtH?=
- =?utf-8?B?TG1pTEtmOExHQ29CTlRvd056ekVjaDZSNE9xWGRldmlENVJVV0EzVnpJQUwy?=
- =?utf-8?B?dnV3UVo0emNSanlid3VKNFBXQXhUSHB6YVlxVmVGSTZrSG1aWlQyV1VDVEVw?=
- =?utf-8?B?d1VRa0YyTWM5VHJyMmpXUmsrMjVVV1BOSzRUa1NMam5tMUZRMnN5SFBCbENP?=
- =?utf-8?B?RzIzRHlocGduV1VSSmdFQlVFN3AyY2xsajF6YUdmaWVKWUNENjBWdkVHaG92?=
- =?utf-8?B?MVJMamovL2hDN1NTZGM5TmVnbHMyVmtLKytBUVhmdGRwWmpRakUvVm1BeEZS?=
- =?utf-8?B?STZla3BJNWNqNXFBaUxnU1ZmekRBT21DU1UwRWpzRXVVczQzV28ySFQ3TTZW?=
- =?utf-8?B?TGt4cHd5NWZJckg3ZWZKa3NhU3NoQUdVSWNWNGUwSlVEUENOdUNEMlF5VVFE?=
- =?utf-8?B?TitkWUxvcFZPMFBwVjRkL2wyTGZQWmFJQ2JaU0hlVFI4Ni9mbVpQQUx4SHgr?=
- =?utf-8?B?dnhDMFByUkdQY2cvVERSbHliRkF6aHg0TjU4MGxDWWgyTy83Vmk1aGxDQVFo?=
- =?utf-8?B?UmRHdFJPaXdtdS8vM21TSWJXUnpOWFlIYmE5YTJNVmo0QWx6T2pCS1pJODNG?=
- =?utf-8?B?bVFDeWdkUnZKL2MxVUVqelBvVFFsS1FoN0loTFI5UTRYK0MzQ1JZSWdaSTRN?=
- =?utf-8?B?czNsc1RqSVVVYmRHUFJiSzFxNER4VnJMNWQzSmVSOXNPZ1R3dXEvY0NUb0Jq?=
- =?utf-8?B?Ty82bUF6bGFUQ2ppa0wvcFFiMFJFSFRxNTM5UmZodXdNSk9xTzJoZ3lOWHBT?=
- =?utf-8?B?dFYvak80U2JQMU5GSEs2UmdMNUtRNDdDNk45Vm45SW51dnp1Wk9WM1Z5S0ps?=
- =?utf-8?B?QlVtdWxsTjFrWWdPeGNESDdEcjJBelhNSlVQSnE3L3hBSVdRdXFJaTY3QjJH?=
- =?utf-8?B?VHkrYW5TTFp3a09aZ21ScC9WMm9GUkhYbngvekthbVpINm1oNXZLcWcrbVFq?=
- =?utf-8?B?ZjlEeGU2TGFDYzVBNm0zS2UrN2lsNnp1YVVOdGlFZktocXVMUnNBVHkyYUxm?=
- =?utf-8?B?SDNweVRhN1BYMjdBcmU2cmdtSDVDRzIwT3FDazN6Y2xsanpQQ011RXpWcTNT?=
- =?utf-8?B?ZjJqSWJtNE5TK1FnNnM4SFJadUVhNTNKeExneEVqL0NpYWRtMWxwaldYdXRJ?=
- =?utf-8?B?ZE1jT1ZpVjRyQ2V3eTBoSUNFT0wyQ1ZqODdJN2F3OFFlZ2hNcStYMEpINGhB?=
- =?utf-8?B?aTFYbW9FemQ4aHZQS3dsdldpMDREeEFiNVRteS8zTlBVM1dkbXZ6cWIwWHBN?=
- =?utf-8?B?ZnRGSTFVWjk3OHNSano4V0hDYXhDc0xvOEhhTksvUk9wd1RyS0pVSDI5SlRF?=
- =?utf-8?B?MXNneUk0aXc3Tmo1WGdtRjgvcENvY3k4czNxVGNGbnZmYUFpbGNkQTJOWS9D?=
- =?utf-8?B?azhISzNqNWxlVW1VN2Q5WEJ4VFA0SU80dkNvbjN3aWtFR01zT0ZMOWd3OUhG?=
- =?utf-8?Q?h7+FGU2MFrkgvdcDIZ73i0OHDcV/m+QHwESDpNZ?=
-X-OriginatorOrg: silicom.dk
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8e42fed0-2ff2-4c90-46d3-08d92a45df46
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR0402MB3426.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2021 06:23:03.9868
+X-Microsoft-Antispam-Message-Info: 8gTJcLczDcY6EB5cDd0MGUTS15DPk+3vUfARdCAm15CVadf12kg6ykKeNE0abrKWZPKPCNGEY3yi2cgVCKjUBce1wDg3kA+XOqSbll6ccnJgKoW0ik4QT5zI+7+bNWs/pNBiA0erheg23pdYi26xRHyLYcTtn4UqoOazpa3IsBB1FmZ9C8XlO4VUlOvTxJnKEKT3KVo4A58hKA/kwkjMftDgNSJozItuPO6CXbdtoOWDNVVqToIgo1jnzCFM2JMH2EzdtqrsWSziVS8+OMaMagl5zjQpEncsNCjnCO2LEtahND52H565/hUip30AqErExTKwytn50tJRsx3Vt5luv3bx7vMr1N9W6WcRAbRrO7o4vHQzrijNwL3t1dHBPWT8wG0jtTUk9A1g3eCMH841B7axrP4Oc552fHdwQYdXB5r+blxENT9GuNvLpYJq3pIXxQjZylx1WwMn+GEyr5Gvas1kDDRXaPPyTX/pQGvxR2W88nlRMaXcEeV6zEXfP/vyJ5BZs5YMWtrrBaLZxreiEAYwanNjJcvtN18SGe6ojd9jvtcR/HOp441SXJnfwhYhqsDmS2IvogpjEHPRADJ5vufXcJSqa6OxTyTE+J2T5WhPb6VxOHEE9kdIT3hElscT3UzwGvLU9bbtXWOtdDc5ww==
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(7916004)(4636009)(376002)(396003)(346002)(39860400002)(136003)(36840700001)(46966006)(70206006)(6666004)(86362001)(82310400003)(33716001)(36906005)(70586007)(316002)(6916009)(82740400003)(47076005)(426003)(54906003)(356005)(5660300002)(336012)(26005)(16526019)(8676002)(4326008)(7636003)(2906002)(8936002)(36860700001)(186003)(478600001)(9686003)(4744005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2021 06:23:15.5773
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: c9e326d8-ce47-4930-8612-cc99d3c87ad1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vg2nPPuInyAeha6kiMhMSFmCvPdNnFjNvVuMIGVJ61ssGt/a6fdKH16TLdqewx/1
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR0401MB2338
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1403c89b-a653-43ff-e511-08d92a45e66e
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT057.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3348
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 08/06/2021 00.36, Moritz Fischer wrote:
-> On Mon, Jun 07, 2021 at 10:23:56AM -0700, trix@redhat.com wrote:
->> From: Tom Rix <trix@redhat.com>
->>
->> The board should not be required to provide a
-> Nit: Can you turn these into for whole series:
-> A FPGA Manager should not be ...
-
-Nit nit: should be:
-An FPGA Manager should not be ...
-
-// Martin
-
+On Tue, Jun 08, 2021 at 08:53:25AM +1000, Stephen Rothwell wrote:
+> Hi all,
 > 
->> write_init() op if there is nothing for it do.
->> So add a wrapper and move the op checking.
->> Default to success.
->>
->> Signed-off-by: Tom Rix <trix@redhat.com>
->> ---
->>   drivers/fpga/fpga-mgr.c | 14 +++++++++++---
->>   1 file changed, 11 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
->> index b85bc47c91a9..24547e36a56d 100644
->> --- a/drivers/fpga/fpga-mgr.c
->> +++ b/drivers/fpga/fpga-mgr.c
->> @@ -69,6 +69,14 @@ void fpga_image_info_free(struct fpga_image_info *info)
->>   }
->>   EXPORT_SYMBOL_GPL(fpga_image_info_free);
->>   
->> +static int fpga_mgr_write_init(struct fpga_manager *mgr,
->> +			       struct fpga_image_info *info,
->> +			       const char *buf, size_t count)
->> +{
->> +	if (mgr->mops && mgr->mops->write_init)
->> +		return  mgr->mops->write_init(mgr, info, buf, count);
->> +	return 0;
->> +}
->>   /*
->>    * Call the low level driver's write_init function.  This will do the
->>    * device-specific things to get the FPGA into the state where it is ready to
->> @@ -83,9 +91,9 @@ static int fpga_mgr_write_init_buf(struct fpga_manager *mgr,
->>   
->>   	mgr->state = FPGA_MGR_STATE_WRITE_INIT;
->>   	if (!mgr->mops->initial_header_size)
->> -		ret = mgr->mops->write_init(mgr, info, NULL, 0);
->> +		ret = fpga_mgr_write_init(mgr, info, NULL, 0);
->>   	else
->> -		ret = mgr->mops->write_init(
->> +		ret = fpga_mgr_write_init(
->>   		    mgr, info, buf, min(mgr->mops->initial_header_size, count));
->>   
->>   	if (ret) {
->> @@ -569,7 +577,7 @@ struct fpga_manager *fpga_mgr_create(struct device *dev, const char *name,
->>   	int id, ret;
->>   
->>   	if (!mops || !mops->write_complete || !mops->state ||
->> -	    !mops->write_init || (!mops->write && !mops->write_sg) ||
->> +	    (!mops->write && !mops->write_sg) ||
->>   	    (mops->write && mops->write_sg)) {
->>   		dev_err(dev, "Attempt to register without fpga_manager_ops\n");
->>   		return NULL;
->> -- 
->> 2.26.3
->>
+> In commit
 > 
-> Can you change the subjects to "fpga: fpga-mgr: ..."
+>   d566ed04e42b ("mlxsw: spectrum_qdisc: Pass handle, not band number to find_class()")
 > 
-> Otherwise series looks good.
+> Fixes tag
 > 
-> - Moritz
+>   Fixes: 28052e618b04 ("mlxsw: spectrum_qdisc: Track children per qdisc")
 > 
+> has these problem(s):
+> 
+>   - Target SHA1 does not exist
+> 
+> Maybe you meant
+> 
+> Fixes: 51d52ed95550 ("mlxsw: spectrum_qdisc: Track children per qdisc")
+
+Yes, correct. Sorry about that. The first was an internal tag. Will
+double-check next time.
