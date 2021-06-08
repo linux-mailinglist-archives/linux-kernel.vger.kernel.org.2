@@ -2,48 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC9B39F7B5
+	by mail.lfdr.de (Postfix) with ESMTP id 9889C39F7B6
 	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 15:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232996AbhFHNYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 09:24:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57644 "EHLO mail.kernel.org"
+        id S233009AbhFHNYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 09:24:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232934AbhFHNX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 09:23:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01E986124B;
-        Tue,  8 Jun 2021 13:22:03 +0000 (UTC)
+        id S232775AbhFHNYB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 09:24:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 053F86134F;
+        Tue,  8 Jun 2021 13:22:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623158526;
-        bh=26tDlzaqRmpxPofcTFO2IiT4LsDm38K8gdTl72KaM3g=;
+        s=k20201202; t=1623158528;
+        bh=gSLXIWErNqPCOIq4EymkmaGyvZ2+ap9lSrJEHlf0/gE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lyKsXvu9MbIV9BLRfCaGTCFEbW+1ah5q9kIPXSui1PlBDI6v5i2WhAUGGMHUgVq6J
-         8mPWn6F55uT4x1VF9iOzYelAgi0ZP4NGcrx4c+hBhFm2SKflqh/RCgreANi3Vzs4c7
-         GQPQxqfWQjVji0VPcmXwvyQItBFaln+IrQ/UQrbvWznzxiQOvGmdCHfTWH5S8g3ipn
-         AoVHqaYUEofmYohF6AYN3QT9iexXo+Fju6/ROT5zHu1LHDBmf6LZYOXvqsTO47dhUL
-         bXido5hBepcu8JK6KtiZiCkF4XqP+Nf2/w++gduwAP+dsChBl8d5RvTMJW2uFRsOKF
-         RkSN9qgHqfIPA==
+        b=lQoOXl0rFX0sgzUIlOt45yFdSl5UTCUW3UW1V4uTmC6JM5xX2A5T483O7wte28ltC
+         HUq9QCghZIgX+1FBc+/oS95bZS1vb7ixmtQuEKspj9sag4jR4L2tRGABYa6Trjf6lq
+         9qLWlAOoYaGcmSkxKZJRRc5xEomMfML/5QiyP//mKfaAo0qi3nHcy5nTQsiomoOhjz
+         S1g5L+HDn/w3A72uurhMNEUbXaDkZ2ClOPusakB+KoeOCp9Q0WOjXOAGei2hbNZFA3
+         ndqYjwYnD5HezeAEwHH3+LoPC9H6S+BEDgOTYseHmj7XArEx2o9LQhfioX7kHd8xu6
+         w0R8tA6nDvqxA==
 From:   Will Deacon <will@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>
 Cc:     catalin.marinas@arm.com, kernel-team@android.com,
         Will Deacon <will@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-kbuild@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Elliot Berman <eberman@quicinc.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Fangrui Song <maskray@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] Makefile: fix GDB warning with CONFIG_RELR
-Date:   Tue,  8 Jun 2021 14:21:53 +0100
-Message-Id: <162315417458.2255276.14036371169273697927.b4-ty@kernel.org>
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf/hisi: Constify static attribute_group structs
+Date:   Tue,  8 Jun 2021 14:21:54 +0100
+Message-Id: <162315299460.2245867.18275324199731980593.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210522012626.2811297-1-ndesaulniers@google.com>
-References: <CAK7LNAS_LpZnweujqVwZ1kL0eDYR726k35U_yx1djqNE0bk6Rw@mail.gmail.com> <20210522012626.2811297-1-ndesaulniers@google.com>
+In-Reply-To: <20210605221514.73449-1-rikard.falkeborn@gmail.com>
+References: <20210605221514.73449-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -51,21 +43,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021 18:26:24 -0700, Nick Desaulniers wrote:
-> GDB produces the following warning when debugging kernels built with
-> CONFIG_RELR:
-> 
-> BFD: /android0/linux-next/vmlinux: unknown type [0x13] section `.relr.dyn'
-> 
-> when loading a kernel built with CONFIG_RELR into GDB. It can also
-> prevent debugging symbols using such relocations.
-> 
-> [...]
+On Sun, 6 Jun 2021 00:15:14 +0200, Rikard Falkeborn wrote:
+> These are only put in an array of pointers to const attribute_group
+> structs. Make them const like the other static attribute_group structs
+> to allow the compiler to put them in read-only memory.
 
-Applied to arm64 (for-next/build), thanks!
+Applied to will (for-next/perf), thanks!
 
-[1/1] Makefile: fix GDB warning with CONFIG_RELR
-      https://git.kernel.org/arm64/c/27f2a4db76e8
+[1/1] perf/hisi: Constify static attribute_group structs
+      https://git.kernel.org/will/c/59d697a99daa
 
 Cheers,
 -- 
