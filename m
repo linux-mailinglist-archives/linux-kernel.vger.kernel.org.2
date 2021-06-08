@@ -2,196 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E068A3A0610
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 23:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 192613A0614
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 23:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234132AbhFHVdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 17:33:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32683 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229753AbhFHVdi (ORCPT
+        id S234302AbhFHVfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 17:35:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233936AbhFHVfg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 17:33:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623187905;
+        Tue, 8 Jun 2021 17:35:36 -0400
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656C8C061574;
+        Tue,  8 Jun 2021 14:33:43 -0700 (PDT)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4G03QB4MylzQk73;
+        Tue,  8 Jun 2021 23:33:38 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hauke-m.de; s=MBO0001;
+        t=1623188016;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CvrEi2GE2Atbb4rbk+xVX4b+a6jCFTVxrl2QJI/S3oA=;
-        b=MkTMLKT0euwrsra2PeZvfPWDRX70qnJeqHsLifSPDJlPk4/7J8o1O835FbRiXiaYYzHnj5
-        2L4UeGdmzv2kpYqD0zTMslncnFOZplIYr9XR2V/Orl25FV+Fe4l7EjFvWXRkABNZJZeTH1
-        Irxe8JLtYVQEA/fpwBLNVgli5C7nud4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-367-lXWMaEruOr2w0-fOhiPbsw-1; Tue, 08 Jun 2021 17:31:43 -0400
-X-MC-Unique: lXWMaEruOr2w0-fOhiPbsw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 814376D246;
-        Tue,  8 Jun 2021 21:31:41 +0000 (UTC)
-Received: from starship (unknown [10.40.194.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E692060C04;
-        Tue,  8 Jun 2021 21:31:36 +0000 (UTC)
-Message-ID: <e68ca103927cc376b5132ea42ceb43420e2b93a0.camel@redhat.com>
-Subject: Re: [PATCH V2] KVM: X86: fix tlb_flush_guest()
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-Date:   Wed, 09 Jun 2021 00:31:35 +0300
-In-Reply-To: <YL6z5sv7cnsbZhvT@google.com>
-References: <4c3ef411ba68ca726531a379fb6c9d16178c8513.camel@redhat.com>
-         <20210531172256.2908-1-jiangshanlai@gmail.com>
-         <9d457b982c3fcd6e7413065350b9f860d45a6e47.camel@redhat.com>
-         <YL6z5sv7cnsbZhvT@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        bh=fSz0m9sPraTKMTobrCNgkrd/L6fxdcYg957KRk67d7E=;
+        b=OPlIvgtJPoNGUNB+gv9VjjjPHWnzOKNOQB0M+ydjt6mcLVSPDz5jvS6JnTM6uKZv7ADMZX
+        GXa/dj9WLC9sS0memtYy6VlMrAWQ2+AiUcTEE7XkyvdXBf3m3H1za4untJTnrvv8g8z7Z1
+        uE5O1PGp3vg56hZF/dzMEZ8/lt/94H4rRgiobb5JmD48m1f+3LgvYwzg6tKbdHXU/eIE7s
+        DD+hKK/2oGjrcMDhZHpt36YXfJMEW4uIfeWiqhX+L9VLfB0LMmwhiuP6CcNYvQ7JrLQgAN
+        EypAWT744ewduY8JgQSWy5DIP1i6ewugimbsfRkFQdqDZoHJxxdHp4p/ZjQFfQ==
+Received: from smtp1.mailbox.org ([80.241.60.240])
+        by spamfilter01.heinlein-hosting.de (spamfilter01.heinlein-hosting.de [80.241.56.115]) (amavisd-new, port 10030)
+        with ESMTP id W8K3dG3pOehM; Tue,  8 Jun 2021 23:33:35 +0200 (CEST)
+Subject: Re: [PATCH net] net: lantiq: disable interrupt before sheduling NAPI
+To:     Aleksander Jan Bajkowski <olek2@wp.pl>, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210608212107.222690-1-olek2@wp.pl>
+From:   Hauke Mehrtens <hauke@hauke-m.de>
+Message-ID: <c951fd28-443e-9445-0be3-b134c888f4dc@hauke-m.de>
+Date:   Tue, 8 Jun 2021 23:33:34 +0200
 MIME-Version: 1.0
+In-Reply-To: <20210608212107.222690-1-olek2@wp.pl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -5.11 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 8F21B1857
+X-Rspamd-UID: 9c61b0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-06-08 at 00:03 +0000, Sean Christopherson wrote:
-> On Tue, Jun 08, 2021, Maxim Levitsky wrote:
-> > So this patch *does* fix the windows boot without TDP!
+On 6/8/21 11:21 PM, Aleksander Jan Bajkowski wrote:
+> This patch fixes TX hangs with threaded NAPI enabled. The scheduled
+> NAPI seems to be executed in parallel with the interrupt on second
+> thread. Sometimes it happens that ltq_dma_disable_irq() is executed
+> after xrx200_tx_housekeeping(). The symptom is that TX interrupts
+> are disabled in the DMA controller. As a result, the TX hangs after
+> a few seconds of the iperf test. Scheduling NAPI after disabling
+> interrupts fixes this issue.
 > 
-> Woot!
+> Tested on Lantiq xRX200 (BT Home Hub 5A).
 > 
-> > Tested-by: Maxim Levitsky <mlevitsk@redhat.com>
-> > Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
-> 
-> Lai,
-> 
-> I have a reworded version of your patch sitting in a branch that leverages this
-> path to fix similar bugs and do additional cleanup.  Any objection to me gathering
-> Maxim's tags and posting the version below?  I'm more than happy to hold off if
-> you'd prefer to send your own version, but I don't want to send my own series
-> without this fix as doing so would introduce bugs.
-> 
-> Thanks!
-> 
-> Author: Lai Jiangshan <laijs@linux.alibaba.com>
-> Date:   Tue Jun 1 01:22:56 2021 +0800
-> 
->     KVM: x86: Unload MMU on guest TLB flush if TDP disabled to force MMU sync
->     
->     When using shadow paging, unload the guest MMU when emulating a guest TLB
->     flush to all roots are synchronized.  From the guest's perspective,
->     flushing the TLB ensures any and all modifications to its PTEs will be
->     recognized by the CPU.
->     
->     Note, unloading the MMU is overkill, but is done to mirror KVM's existing
->     handling of INVPCID(all) and ensure the bug is squashed.  Future cleanup
->     can be done to more precisely synchronize roots when servicing a guest
->     TLB flush.
->     
->     If TDP is enabled, synchronizing the MMU is unnecessary even if nested
->     TDP is in play, as a "legacy" TLB flush from L1 does not invalidate L1's
->     TDP mappgins.  For EPT, an explicit INVEPT is required to invalidate
->     guest-physical mappings.  For NPT, guest mappings are always tagged with
->     an ASID and thus can only be invalidated via the VMCB's ASID control.
->     
->     This bug has existed since the introduction of KVM_VCPU_FLUSH_TLB, but
->     was only recently exposed after Linux guests stopped flushing the local
->     CPU's TLB prior to flushing remote TLBs (see commit 4ce94eabac16,
->     "x86/mm/tlb: Flush remote and local TLBs concurrently").
->     
->     Tested-by: Maxim Levitsky <mlevitsk@redhat.com>
->     Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
->     Fixes: f38a7b75267f ("KVM: X86: support paravirtualized help for TLB shootdowns")
->     Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
->     [sean: massaged comment and changelog]
->     Signed-off-by: Sean Christopherson <seanjc@google.com>
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 1cd6d4685932..3b02528d5ee8 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -3072,6 +3072,18 @@ static void kvm_vcpu_flush_tlb_all(struct kvm_vcpu *vcpu)
->  static void kvm_vcpu_flush_tlb_guest(struct kvm_vcpu *vcpu)
->  {
->         ++vcpu->stat.tlb_flush;
-> +
-> +       if (!tdp_enabled) {
-> +               /*
-> +                * Unload the entire MMU to force a sync of the shadow page
-> +                * tables.  A TLB flush on behalf of the guest is equivalent
-> +                * to INVPCID(all), toggling CR4.PGE, etc...  Note, loading the
-> +                * MMU will also do an actual TLB flush.
-> +                */
-> +               kvm_mmu_unload(vcpu);
-> +               return;
-> +       }
-> +
->         static_call(kvm_x86_tlb_flush_guest)(vcpu);
->  }
->  
-> 
-> > More notes from the testing I just did:
-> >  
-> > 1. On AMD with npt=0, the windows VM boots very slowly, and then in the task manager
-> > I see that it booted with 1 CPU, although I configured it for 3-28 vCPUs (doesn't matter how many)
-> > I tested this with several win10 VMs, same pattern repeats.
-> 
-> That's very odd.  Maybe it's so slow that the guest gives up on the AP and marks
-> it as dead?  That seems unlikely though, I can't imagine waking APs would be
-> _that_ slow.
+> Fixes: 9423361da523 ("net: lantiq: Disable IRQs only if NAPI gets scheduled ")
+> Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
 
-I also can't say that it is that slow, but it is possible that a live lock like situation
-similar to what I see with the nag screen causes an AP bootup to timeout.
-I also see that using my old workaround to boot with NPT=0 which was to always keep shadow
-MMU in sync, also causes windows to see a single vCPU.
+Acked-by: Hauke Mehrtens <hauke@hauke-m.de>
 
-I will when I have some time for this to try to artificially slow windows down in some other way
-and see if it still fails to bring up more than one vCPU.
-
-
+> ---
+>   drivers/net/ethernet/lantiq_xrx200.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> > 2. The windows nag screen about "we beg you to open a microsoft account" makes the VM enter a live lock.
-> > I see about half million at least VM exits per second due to page faults and it is stuck in 'please wait' screen
-> > while with NPT=1 it shows up instantly. The VM has 12 GB of ram so I don't think RAM is an issue.
-> >  
-> > It's likely that those are just result of unoptimized code in regard to TLB flushes,
-> > and timeouts in windows.
-> > On my Intel laptop, the VM is way faster with EPT=0 and it boots with 3 vCPUs just fine
-> > (the laptop has just dual core CPU, so I can't really give more that 3 vCPU to the VM)
+> diff --git a/drivers/net/ethernet/lantiq_xrx200.c b/drivers/net/ethernet/lantiq_xrx200.c
+> index 36dc3e5f6218..0e10d8aeffe1 100644
+> --- a/drivers/net/ethernet/lantiq_xrx200.c
+> +++ b/drivers/net/ethernet/lantiq_xrx200.c
+> @@ -352,8 +352,8 @@ static irqreturn_t xrx200_dma_irq(int irq, void *ptr)
+>   	struct xrx200_chan *ch = ptr;
+>   
+>   	if (napi_schedule_prep(&ch->napi)) {
+> -		__napi_schedule(&ch->napi);
+>   		ltq_dma_disable_irq(&ch->dma);
+> +		__napi_schedule(&ch->napi);
+>   	}
+>   
+>   	ltq_dma_ack_irq(&ch->dma);
 > 
-> Any chance your Intel CPU has PCID?  Although the all-contexts INVPCID emulation
-> nukes everything, the single-context INVPCID emulation in KVM is optimized to
-> (a) sync the current MMU (if necessary) instead of unloading it and (b) free
-> only roots with the matching PCID.  I believe all other forms of TLB flushing
-> that are likely to be used by the guest will lead to KVM unloading the entire
-> MMU and rebuilding it from scratch.
-
-Yes it has it. It is relatively recent Kabylake processor (i7-7600U),
-so this could be it. I'll try to disable it as well when I have some time for
-this.
-
-
-Finally about my testing of running HyperV nested. This patch can't fix it,
-since it only changes the non TDP code path, but we also have another patch on
-the list that is shadow paging related 
-"KVM: X86: MMU: Use the correct inherited permissions to get shadow page"
-
-Sadly the VM still did eventually bluescreen (with 'critical process died' after about 400
-migration cycles this time. No luck this time.
-
-Best regards,
-	Maxim Levitsky
-
-
 
