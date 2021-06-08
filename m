@@ -2,33 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35B423A0302
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25E463A0320
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236620AbhFHTLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:11:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35576 "EHLO mail.kernel.org"
+        id S237913AbhFHTND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:13:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237653AbhFHTBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:01:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E48B161447;
-        Tue,  8 Jun 2021 18:44:35 +0000 (UTC)
+        id S236226AbhFHTBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:01:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B8116191B;
+        Tue,  8 Jun 2021 18:44:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177876;
-        bh=vyHJYnG2qoS8RnWbiLtKmAFXvq3PZfCU94joUpERWzM=;
+        s=korg; t=1623177879;
+        bh=/JvAONqyA66hhoYpZQiVNqwbAw6VUa0IyNRHjMCvyVA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p+nifue4XoCC+2c1b7mkbR2PL7koSPjjmtj6fEGpAdqdxUpxep8iC48udZeJDOIKa
-         0DtR+rMczDMFzj9C1qi8SedG37cSTLK2akn9/4bhr6bHP5Z+PELe2bMVL657u7p/qa
-         +K6qgHQCvgos7rQ6kjvfYGj8JRXJ9vhMXQDk6hx0=
+        b=eEkp9pCpB8O2C/x2fzybBpBft8Vo/SLQxFystmEJPttPd89M//aozJt3jDCKHXOFr
+         9ckAPWtf6fd+as7VIkjd7O3zgcgfrGXXjbZVkjToKJ93kRgVay5K7rIvowEEQjvWY0
+         //kfr4aLj8qCzDeInXp8t7ojKqDk85qHFhe6gNT4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH 5.10 132/137] x86/kvm: Disable all PV features on crash
-Date:   Tue,  8 Jun 2021 20:27:52 +0200
-Message-Id: <20210608175946.851679427@linuxfoundation.org>
+        stable@vger.kernel.org, Gao Xiang <hsiangkao@redhat.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Yann Collet <yann.collet.73@gmail.com>,
+        Miao Xie <miaoxie@huawei.com>, Chao Yu <yuchao0@huawei.com>,
+        Li Guifu <bluce.liguifu@huawei.com>,
+        Guo Xuenan <guoxuenan@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>
+Subject: [PATCH 5.10 133/137] lib/lz4: explicitly support in-place decompression
+Date:   Tue,  8 Jun 2021 20:27:53 +0200
+Message-Id: <20210608175946.881796219@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175942.377073879@linuxfoundation.org>
 References: <20210608175942.377073879@linuxfoundation.org>
@@ -40,198 +46,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vitaly Kuznetsov <vkuznets@redhat.com>
+From: Gao Xiang <hsiangkao@redhat.com>
 
-commit 3d6b84132d2a57b5a74100f6923a8feb679ac2ce upstream.
+commit 89b158635ad79574bde8e94d45dad33f8cf09549 upstream.
 
-Crash shutdown handler only disables kvmclock and steal time, other PV
-features remain active so we risk corrupting memory or getting some
-side-effects in kdump kernel. Move crash handler to kvm.c and unify
-with CPU offline.
+LZ4 final literal copy could be overlapped when doing
+in-place decompression, so it's unsafe to just use memcpy()
+on an optimized memcpy approach but memmove() instead.
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Message-Id: <20210414123544.1060604-5-vkuznets@redhat.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Upstream LZ4 has updated this years ago [1] (and the impact
+is non-sensible [2] plus only a few bytes remain), this commit
+just synchronizes LZ4 upstream code to the kernel side as well.
+
+It can be observed as EROFS in-place decompression failure
+on specific files when X86_FEATURE_ERMS is unsupported,
+memcpy() optimization of commit 59daa706fbec ("x86, mem:
+Optimize memcpy by avoiding memory false dependece") will
+be enabled then.
+
+Currently most modern x86-CPUs support ERMS, these CPUs just
+use "rep movsb" approach so no problem at all. However, it can
+still be verified with forcely disabling ERMS feature...
+
+arch/x86/lib/memcpy_64.S:
+        ALTERNATIVE_2 "jmp memcpy_orig", "", X86_FEATURE_REP_GOOD, \
+-                     "jmp memcpy_erms", X86_FEATURE_ERMS
++                     "jmp memcpy_orig", X86_FEATURE_ERMS
+
+We didn't observe any strange on arm64/arm/x86 platform before
+since most memcpy() would behave in an increasing address order
+("copy upwards" [3]) and it's the correct order of in-place
+decompression but it really needs an update to memmove() for sure
+considering it's an undefined behavior according to the standard
+and some unique optimization already exists in the kernel.
+
+[1] https://github.com/lz4/lz4/commit/33cb8518ac385835cc17be9a770b27b40cd0e15b
+[2] https://github.com/lz4/lz4/pull/717#issuecomment-497818921
+[3] https://sourceware.org/bugzilla/show_bug.cgi?id=12518
+
+Link: https://lkml.kernel.org/r/20201122030749.2698994-1-hsiangkao@redhat.com
+Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
+Reviewed-by: Nick Terrell <terrelln@fb.com>
+Cc: Yann Collet <yann.collet.73@gmail.com>
+Cc: Miao Xie <miaoxie@huawei.com>
+Cc: Chao Yu <yuchao0@huawei.com>
+Cc: Li Guifu <bluce.liguifu@huawei.com>
+Cc: Guo Xuenan <guoxuenan@huawei.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/kvm_para.h |    6 -----
- arch/x86/kernel/kvm.c           |   44 +++++++++++++++++++++++++++++-----------
- arch/x86/kernel/kvmclock.c      |   21 -------------------
- 3 files changed, 32 insertions(+), 39 deletions(-)
+ lib/lz4/lz4_decompress.c |    6 +++++-
+ lib/lz4/lz4defs.h        |    1 +
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
---- a/arch/x86/include/asm/kvm_para.h
-+++ b/arch/x86/include/asm/kvm_para.h
-@@ -92,7 +92,6 @@ unsigned int kvm_arch_para_hints(void);
- void kvm_async_pf_task_wait_schedule(u32 token);
- void kvm_async_pf_task_wake(u32 token);
- u32 kvm_read_and_reset_apf_flags(void);
--void kvm_disable_steal_time(void);
- bool __kvm_handle_async_pf(struct pt_regs *regs, u32 token);
+--- a/lib/lz4/lz4_decompress.c
++++ b/lib/lz4/lz4_decompress.c
+@@ -263,7 +263,11 @@ static FORCE_INLINE int LZ4_decompress_g
+ 				}
+ 			}
  
- DECLARE_STATIC_KEY_FALSE(kvm_async_pf_enabled);
-@@ -137,11 +136,6 @@ static inline u32 kvm_read_and_reset_apf
- 	return 0;
- }
+-			LZ4_memcpy(op, ip, length);
++			/*
++			 * supports overlapping memory regions; only matters
++			 * for in-place decompression scenarios
++			 */
++			LZ4_memmove(op, ip, length);
+ 			ip += length;
+ 			op += length;
  
--static inline void kvm_disable_steal_time(void)
--{
--	return;
--}
--
- static __always_inline bool kvm_handle_async_pf(struct pt_regs *regs, u32 token)
+--- a/lib/lz4/lz4defs.h
++++ b/lib/lz4/lz4defs.h
+@@ -146,6 +146,7 @@ static FORCE_INLINE void LZ4_writeLE16(v
+  * environments. This is needed when decompressing the Linux Kernel, for example.
+  */
+ #define LZ4_memcpy(dst, src, size) __builtin_memcpy(dst, src, size)
++#define LZ4_memmove(dst, src, size) __builtin_memmove(dst, src, size)
+ 
+ static FORCE_INLINE void LZ4_copy8(void *dst, const void *src)
  {
- 	return false;
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -38,6 +38,7 @@
- #include <asm/tlb.h>
- #include <asm/cpuidle_haltpoll.h>
- #include <asm/ptrace.h>
-+#include <asm/reboot.h>
- #include <asm/svm.h>
- 
- DEFINE_STATIC_KEY_FALSE(kvm_async_pf_enabled);
-@@ -375,6 +376,14 @@ static void kvm_pv_disable_apf(void)
- 	pr_info("Unregister pv shared memory for cpu %d\n", smp_processor_id());
- }
- 
-+static void kvm_disable_steal_time(void)
-+{
-+	if (!has_steal_clock)
-+		return;
-+
-+	wrmsr(MSR_KVM_STEAL_TIME, 0, 0);
-+}
-+
- static void kvm_pv_guest_cpu_reboot(void *unused)
- {
- 	/*
-@@ -417,14 +426,6 @@ static u64 kvm_steal_clock(int cpu)
- 	return steal;
- }
- 
--void kvm_disable_steal_time(void)
--{
--	if (!has_steal_clock)
--		return;
--
--	wrmsr(MSR_KVM_STEAL_TIME, 0, 0);
--}
--
- static inline void __set_percpu_decrypted(void *ptr, unsigned long size)
- {
- 	early_set_memory_decrypted((unsigned long) ptr, size);
-@@ -461,13 +462,14 @@ static bool pv_tlb_flush_supported(void)
- 
- static DEFINE_PER_CPU(cpumask_var_t, __pv_cpu_mask);
- 
--static void kvm_guest_cpu_offline(void)
-+static void kvm_guest_cpu_offline(bool shutdown)
- {
- 	kvm_disable_steal_time();
- 	if (kvm_para_has_feature(KVM_FEATURE_PV_EOI))
- 		wrmsrl(MSR_KVM_PV_EOI_EN, 0);
- 	kvm_pv_disable_apf();
--	apf_task_wake_all();
-+	if (!shutdown)
-+		apf_task_wake_all();
- 	kvmclock_disable();
- }
- 
-@@ -613,7 +615,7 @@ static int kvm_cpu_down_prepare(unsigned
- 	unsigned long flags;
- 
- 	local_irq_save(flags);
--	kvm_guest_cpu_offline();
-+	kvm_guest_cpu_offline(false);
- 	local_irq_restore(flags);
- 	return 0;
- }
-@@ -622,7 +624,7 @@ static int kvm_cpu_down_prepare(unsigned
- 
- static int kvm_suspend(void)
- {
--	kvm_guest_cpu_offline();
-+	kvm_guest_cpu_offline(false);
- 
- 	return 0;
- }
-@@ -637,6 +639,20 @@ static struct syscore_ops kvm_syscore_op
- 	.resume		= kvm_resume,
- };
- 
-+/*
-+ * After a PV feature is registered, the host will keep writing to the
-+ * registered memory location. If the guest happens to shutdown, this memory
-+ * won't be valid. In cases like kexec, in which you install a new kernel, this
-+ * means a random memory location will be kept being written.
-+ */
-+#ifdef CONFIG_KEXEC_CORE
-+static void kvm_crash_shutdown(struct pt_regs *regs)
-+{
-+	kvm_guest_cpu_offline(true);
-+	native_machine_crash_shutdown(regs);
-+}
-+#endif
-+
- static void kvm_flush_tlb_others(const struct cpumask *cpumask,
- 			const struct flush_tlb_info *info)
- {
-@@ -705,6 +721,10 @@ static void __init kvm_guest_init(void)
- 	kvm_guest_cpu_init();
- #endif
- 
-+#ifdef CONFIG_KEXEC_CORE
-+	machine_ops.crash_shutdown = kvm_crash_shutdown;
-+#endif
-+
- 	register_syscore_ops(&kvm_syscore_ops);
- 
- 	/*
---- a/arch/x86/kernel/kvmclock.c
-+++ b/arch/x86/kernel/kvmclock.c
-@@ -20,7 +20,6 @@
- #include <asm/hypervisor.h>
- #include <asm/mem_encrypt.h>
- #include <asm/x86_init.h>
--#include <asm/reboot.h>
- #include <asm/kvmclock.h>
- 
- static int kvmclock __initdata = 1;
-@@ -204,23 +203,6 @@ static void kvm_setup_secondary_clock(vo
- }
- #endif
- 
--/*
-- * After the clock is registered, the host will keep writing to the
-- * registered memory location. If the guest happens to shutdown, this memory
-- * won't be valid. In cases like kexec, in which you install a new kernel, this
-- * means a random memory location will be kept being written. So before any
-- * kind of shutdown from our side, we unregister the clock by writing anything
-- * that does not have the 'enable' bit set in the msr
-- */
--#ifdef CONFIG_KEXEC_CORE
--static void kvm_crash_shutdown(struct pt_regs *regs)
--{
--	native_write_msr(msr_kvm_system_time, 0, 0);
--	kvm_disable_steal_time();
--	native_machine_crash_shutdown(regs);
--}
--#endif
--
- void kvmclock_disable(void)
- {
- 	native_write_msr(msr_kvm_system_time, 0, 0);
-@@ -350,9 +332,6 @@ void __init kvmclock_init(void)
- #endif
- 	x86_platform.save_sched_clock_state = kvm_save_sched_clock_state;
- 	x86_platform.restore_sched_clock_state = kvm_restore_sched_clock_state;
--#ifdef CONFIG_KEXEC_CORE
--	machine_ops.crash_shutdown  = kvm_crash_shutdown;
--#endif
- 	kvm_get_preset_lpj();
- 
- 	/*
 
 
