@@ -2,206 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35CD53A0477
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6662E3A0445
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239284AbhFHTfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:35:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41714 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238801AbhFHTUG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:20:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F2E26108E;
-        Tue,  8 Jun 2021 18:56:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623178600;
-        bh=UvBrc/sDGCOjUp74mJfP8xJ6BdpUE/I+lMYBd9oQwnQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=khVOw5siKCz3bJ7RxEaHWrVyLbnoTddnQEWV2JncUIAgRwjShdIod63jJBWk3N3Xy
-         L9buy6KDKYgK5F0TUd7oKyDOFILdEZBj8h+gEasNHZXLg4GfjMkYUpm5dDHCivw1y4
-         +CDER2aIZd5MLmivYR4N2hUGhUh9uNRitC+uwZ1K0rx9bKG71wYtA4gms1bTXT4nfX
-         EHlhQIMTOFLigR88od/a1ejK/RX7rvjbCVj8r+aUqJ94LCOFOdmLLVU6im7AD9KaRY
-         Kyle3oj0S8dxm+Edbzb1TY6yxCHwbW7ecGGcz3WY0vmb2OraCfvGVDVpTRNR3OLk8/
-         l7vWyMwcKcfbg==
-Date:   Wed, 9 Jun 2021 00:26:35 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Sanjay R Mehta <Sanju.Mehta@amd.com>
-Cc:     gregkh@linuxfoundation.org, dan.j.williams@intel.com,
-        Thomas.Lendacky@amd.com, Shyam-sundar.S-k@amd.com,
-        Nehal-bakulchandra.Shah@amd.com, robh@kernel.org,
-        mchehab+samsung@kernel.org, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
-Subject: Re: [PATCH v9 2/3] dmaengine: ptdma: register PTDMA controller as a
- DMA resource
-Message-ID: <YL+9Y8U8XQ2FSV8Q@vkoul-mobl>
-References: <1622654551-9204-1-git-send-email-Sanju.Mehta@amd.com>
- <1622654551-9204-3-git-send-email-Sanju.Mehta@amd.com>
+        id S237365AbhFHT2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:28:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238160AbhFHTNc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:13:32 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE54C0619F6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 12:05:51 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1623179148;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W+w9OZSy/tuT6bCBI/BxcA4l48P6W/e1+AUtLckclNk=;
+        b=ORlE5DdYHnuqJ040MrRE95bCLJ3L3lPfXeXN7pyRLfnU1mp7qC8jGFX06TIggIXu47EJE/
+        ogdcApksdTeP/YQ2fZ9hN582jhES0c2u8iiVxZ1ucltIIxfcDn9++MsJGhlWjhfZEUuhMw
+        U9rERpnzajMmTfa9KMqTI+wnzeiYMFjZWRYxHt886wg7AQRA8g0QyqJfMtbgf3CJLjsnDU
+        CvRqxyi1XCiuqgkkIZ8AY4K+uwflfnEzbEeGsX3kSpseZgCtYdoP4IfEn2xOo7BuUpb2iR
+        BvlV1xIw7OzZhHssHNeRsczPhHmQLe/18M/0Pf/oiP5Y7zv8CpBr3ePuTkT3Hw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1623179148;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W+w9OZSy/tuT6bCBI/BxcA4l48P6W/e1+AUtLckclNk=;
+        b=oukyLLGYebLr6ejvRS0iux+t4yiroZCouqL4iG1zFxDzxY6P06Xo7FuBTfQkxxnMtBwX3I
+        jPs/jSbDSaZO0XCw==
+To:     liangjs <liangjs@pku.edu.cn>, Dave Hansen <dave.hansen@intel.com>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: arch_set_user_pkey_access only works on the current task_struct
+In-Reply-To: <774b6e6c8cb1be4923048bb1bb18753a6854758f.camel@pku.edu.cn>
+References: <b3762e3bc45d77869231271ffe0e259be118ad57.camel@pku.edu.cn> <a9d538c4-b4aa-9a5b-5f8e-1a7baf8424b8@intel.com> <774b6e6c8cb1be4923048bb1bb18753a6854758f.camel@pku.edu.cn>
+Date:   Tue, 08 Jun 2021 21:05:48 +0200
+Message-ID: <87zgw0xjlf.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1622654551-9204-3-git-send-email-Sanju.Mehta@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02-06-21, 12:22, Sanjay R Mehta wrote:
+On Tue, Jun 08 2021 at 11:16, liangjs wrote:
+> On Mon, 2021-06-07 at 10:52 -0700, Dave Hansen wrote:
+>> On 6/5/21 6:10 AM, Jiashuo Liang wrote:
+>> > I am learning the kernel implementation of the x86 PKU feature. I find=
+ the
+>> > arch_set_user_pkey_access function in arch/x86/kernel/fpu/xstate.c doe=
+s not
+>> > use its first parameter. So it is perhaps a bug?
+>>=20
+>> I wouldn't really call it a bug.=C2=A0 But, yes, it is something we shou=
+ld
+>> clean up.
+>
+> Should we remove the tsk parameter, or allow it to change the PKRU of tsk?
+>
+> By the way, we are calling write_pkru, which changes both the CPU's PKRU
+> and the xsave one. Why is this necessary?
 
-> +static void pt_do_cmd_complete(unsigned long data)
-> +{
-> +	struct pt_tasklet_data *tdata = (struct pt_tasklet_data *)data;
-> +	struct pt_cmd *cmd = tdata->cmd;
-> +	struct pt_cmd_queue *cmd_q = &cmd->pt->cmd_q;
-> +	u32 tail;
-> +
-> +	tail = lower_32_bits(cmd_q->qdma_tail + cmd_q->qidx * Q_DESC_SIZE);
+Because PKRU is xstate managed and there is the requirement to keep both
+up to to date. There is work in progress to clean this up.
 
-why extract tail in non error case?
+> If I want to change PKRU of a task_struct other than current, do I still
+> need to call __write_pkru?
 
-> +static int pt_issue_next_cmd(struct pt_dma_desc *desc)
-> +{
-> +	struct pt_passthru_engine *pt_engine;
-> +	struct pt_dma_cmd *cmd;
-> +	struct pt_device *pt;
-> +	struct pt_cmd *pt_cmd;
-> +	struct pt_cmd_queue *cmd_q;
-> +
-> +	cmd = list_first_entry(&desc->cmdlist, struct pt_dma_cmd, entry);
-> +	desc->issued_to_hw = 1;
+Of course not, but you _cannot_ safely update a different tasks PKRU
+value except through ptrace which guarantees that the task is scheduled
+out and stays that way until ptrace releases it again.
 
-Why do you need this, the descriptor should be in vc.desc_issued list
+So tsk !=3D current cannot work which means the function argument can just
+go away.
 
-> +static void pt_free_active_cmd(struct pt_dma_desc *desc)
-> +{
-> +	struct pt_dma_cmd *cmd = NULL;
-> +
-> +	if (desc->issued_to_hw)
-> +		cmd = list_first_entry_or_null(&desc->cmdlist, struct pt_dma_cmd,
-> +					       entry);
+Thanks,
 
-single line pls and use lists provided..
-
-
-> +static struct pt_dma_desc *pt_handle_active_desc(struct pt_dma_chan *chan,
-> +						 struct pt_dma_desc *desc)
-> +{
-> +	struct dma_async_tx_descriptor *tx_desc;
-> +	struct virt_dma_desc *vd;
-> +	unsigned long flags;
-> +
-> +	/* Loop over descriptors until one is found with commands */
-> +	do {
-> +		if (desc) {
-> +			/* Remove the DMA command from the list and free it */
-> +			pt_free_active_cmd(desc);
-> +			if (!desc->issued_to_hw) {
-> +				/* No errors, keep going */
-> +				if (desc->status != DMA_ERROR)
-> +					return desc;
-> +				/* Error, free remaining commands and move on */
-> +				pt_free_cmd_resources(desc->pt,
-> +						      &desc->cmdlist);
-
-single line again
-
-> +static struct pt_dma_desc *pt_alloc_dma_desc(struct pt_dma_chan *chan,
-> +					     unsigned long flags)
-> +{
-> +	struct pt_dma_desc *desc;
-> +
-> +	desc = kmem_cache_zalloc(chan->pt->dma_desc_cache, GFP_NOWAIT);
-> +	if (!desc)
-> +		return NULL;
-> +
-> +	vchan_tx_prep(&chan->vc, &desc->vd, flags);
-> +
-> +	desc->pt = chan->pt;
-> +	desc->issued_to_hw = 0;
-> +	INIT_LIST_HEAD(&desc->cmdlist);
-
-why do you need your own list, the lists in vc should suffice?
-
-> +static int pt_resume(struct dma_chan *dma_chan)
-> +{
-> +	struct pt_dma_chan *chan = to_pt_chan(dma_chan);
-> +	struct pt_dma_desc *desc = NULL;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&chan->vc.lock, flags);
-> +	pt_start_queue(&chan->pt->cmd_q);
-> +	desc = __pt_next_dma_desc(chan);
-> +	spin_unlock_irqrestore(&chan->vc.lock, flags);
-> +
-> +	/* If there was something active, re-start */
-> +	if (desc)
-> +		pt_cmd_callback(desc, 0);
-
-this doesn't sound correct. In pause yoy stop the queue, so start of the
-queue should be done here... Why grab a descriptor?
-
-> +static int pt_terminate_all(struct dma_chan *dma_chan)
-> +{
-> +	struct pt_dma_chan *chan = to_pt_chan(dma_chan);
-> +
-> +	vchan_free_chan_resources(&chan->vc);
-
-what about the descriptors, are you not going to clear the lists and
-free them..
-
-> +int pt_dmaengine_register(struct pt_device *pt)
-> +{
-> +	struct pt_dma_chan *chan;
-> +	struct dma_device *dma_dev = &pt->dma_dev;
-> +	char *cmd_cache_name;
-> +	char *desc_cache_name;
-> +	int ret;
-> +
-> +	pt->pt_dma_chan = devm_kzalloc(pt->dev, sizeof(*pt->pt_dma_chan),
-> +				       GFP_KERNEL);
-> +	if (!pt->pt_dma_chan)
-> +		return -ENOMEM;
-> +
-> +	cmd_cache_name = devm_kasprintf(pt->dev, GFP_KERNEL,
-> +					"%s-dmaengine-cmd-cache",
-> +					pt->name);
-> +	if (!cmd_cache_name)
-> +		return -ENOMEM;
-> +
-> +	pt->dma_cmd_cache = kmem_cache_create(cmd_cache_name,
-> +					      sizeof(struct pt_dma_cmd),
-> +					      sizeof(void *),
-> +					      SLAB_HWCACHE_ALIGN, NULL);
-> +	if (!pt->dma_cmd_cache)
-> +		return -ENOMEM;
-> +
-> +	desc_cache_name = devm_kasprintf(pt->dev, GFP_KERNEL,
-> +					 "%s-dmaengine-desc-cache",
-> +					 pt->name);
-> +	if (!desc_cache_name) {
-> +		ret = -ENOMEM;
-> +		goto err_cache;
-> +	}
-> +
-> +	pt->dma_desc_cache = kmem_cache_create(desc_cache_name,
-> +					       sizeof(struct pt_dma_desc),
-> +					       sizeof(void *),
-
-sizeof void ptr?
-
-> +					       SLAB_HWCACHE_ALIGN, NULL);
-> +	if (!pt->dma_desc_cache) {
-> +		ret = -ENOMEM;
-> +		goto err_cache;
-> +	}
-> +
-> +	dma_dev->dev = pt->dev;
-> +	dma_dev->src_addr_widths = DMA_SLAVE_BUSWIDTH_64_BYTES;
-> +	dma_dev->dst_addr_widths = DMA_SLAVE_BUSWIDTH_64_BYTES;
-> +	dma_dev->directions = DMA_MEM_TO_MEM;
-> +	dma_dev->residue_granularity = DMA_RESIDUE_GRANULARITY_DESCRIPTOR;
-> +	dma_cap_set(DMA_MEMCPY, dma_dev->cap_mask);
-> +	dma_cap_set(DMA_INTERRUPT, dma_dev->cap_mask);
-> +	dma_cap_set(DMA_PRIVATE, dma_dev->cap_mask);
-
-Why DMA_PRIVATE ? this is a dma mempcy controller ...
--- 
-~Vinod
+        tglx
