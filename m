@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37EB83A0173
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B3C3A017A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235520AbhFHSwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:52:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44020 "EHLO mail.kernel.org"
+        id S236167AbhFHSwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:52:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235163AbhFHSqt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:46:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FD2461457;
-        Tue,  8 Jun 2021 18:37:41 +0000 (UTC)
+        id S235366AbhFHSqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:46:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38A0D61458;
+        Tue,  8 Jun 2021 18:37:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177462;
-        bh=MkMB8LnhR/wQ2FgkNkkfsqVwkK5F68zjorlKDzb9t8A=;
+        s=korg; t=1623177464;
+        bh=okPnwSyk/eDFRpJneyrocSJ+HJF7uB8oW6Q2IjRwK9E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=deLvTEdKsDxFZXRgEIvl4WwKe7y1MgM4Ar46A2YvjFGzZ4t8y6fGeN0g9qJet4KFN
-         nhL5ddS3okZjSX+hFgtOmpNwXIQWwwQ2IeybTQ04oIEJBCsctKjRxWjcgwZsFIKaiP
-         z8NXVzr+G0tgIz5+ye29QP8fx2EoaqPAW6xCqalg=
+        b=ZIvPMNB6EvCYClznNYze63kHk0YNFA62/qpGopkUUGlzuWs5BybNpKT770Y/u2H98
+         p9mLIImRNEecYskeLEd2E/p8cV38gZqXxUpUQ647fkcxaLtgmHvsI+wozLwqwLDEUJ
+         GYUGFsNy4wb8JTyOIdP/irQLpg9G9UcTLcFuuGjM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
         Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.4 60/78] btrfs: fix error handling in btrfs_del_csums
-Date:   Tue,  8 Jun 2021 20:27:29 +0200
-Message-Id: <20210608175937.302704632@linuxfoundation.org>
+Subject: [PATCH 5.4 61/78] btrfs: return errors from btrfs_del_csums in cleanup_ref_head
+Date:   Tue,  8 Jun 2021 20:27:30 +0200
+Message-Id: <20210608175937.334295481@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
 References: <20210608175935.254388043@linuxfoundation.org>
@@ -42,91 +42,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Josef Bacik <josef@toxicpanda.com>
 
-commit b86652be7c83f70bf406bed18ecf55adb9bfb91b upstream.
+commit 856bd270dc4db209c779ce1e9555c7641ffbc88e upstream.
 
-Error injection stress would sometimes fail with checksums on disk that
-did not have a corresponding extent.  This occurred because the pattern
-in btrfs_del_csums was
-
-	while (1) {
-		ret = btrfs_search_slot();
-		if (ret < 0)
-			break;
-	}
-	ret = 0;
-out:
-	btrfs_free_path(path);
-	return ret;
-
-If we got an error from btrfs_search_slot we'd clear the error because
-we were breaking instead of goto out.  Instead of using goto out, simply
-handle the cases where we may leave a random value in ret, and get rid
-of the
-
-	ret = 0;
-out:
-
-pattern and simply allow break to have the proper error reporting.  With
-this fix we properly abort the transaction and do not commit thinking we
-successfully deleted the csum.
+We are unconditionally returning 0 in cleanup_ref_head, despite the fact
+that btrfs_del_csums could fail.  We need to return the error so the
+transaction gets aborted properly, fix this by returning ret from
+btrfs_del_csums in cleanup_ref_head.
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
-CC: stable@vger.kernel.org # 4.4+
+CC: stable@vger.kernel.org # 4.19+
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/file-item.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ fs/btrfs/extent-tree.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/btrfs/file-item.c
-+++ b/fs/btrfs/file-item.c
-@@ -599,7 +599,7 @@ int btrfs_del_csums(struct btrfs_trans_h
- 	u64 end_byte = bytenr + len;
- 	u64 csum_end;
- 	struct extent_buffer *leaf;
--	int ret;
-+	int ret = 0;
- 	u16 csum_size = btrfs_super_csum_size(fs_info->super_copy);
- 	int blocksize_bits = fs_info->sb->s_blocksize_bits;
- 
-@@ -618,6 +618,7 @@ int btrfs_del_csums(struct btrfs_trans_h
- 		path->leave_spinning = 1;
- 		ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
- 		if (ret > 0) {
-+			ret = 0;
- 			if (path->slots[0] == 0)
- 				break;
- 			path->slots[0]--;
-@@ -674,7 +675,7 @@ int btrfs_del_csums(struct btrfs_trans_h
- 			ret = btrfs_del_items(trans, root, path,
- 					      path->slots[0], del_nr);
- 			if (ret)
--				goto out;
-+				break;
- 			if (key.offset == bytenr)
- 				break;
- 		} else if (key.offset < bytenr && csum_end > end_byte) {
-@@ -718,8 +719,9 @@ int btrfs_del_csums(struct btrfs_trans_h
- 			ret = btrfs_split_item(trans, root, path, &key, offset);
- 			if (ret && ret != -EAGAIN) {
- 				btrfs_abort_transaction(trans, ret);
--				goto out;
-+				break;
- 			}
-+			ret = 0;
- 
- 			key.offset = end_byte - 1;
- 		} else {
-@@ -729,8 +731,6 @@ int btrfs_del_csums(struct btrfs_trans_h
- 		}
- 		btrfs_release_path(path);
- 	}
--	ret = 0;
--out:
- 	btrfs_free_path(path);
- 	return ret;
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -1879,7 +1879,7 @@ static int cleanup_ref_head(struct btrfs
+ 	trace_run_delayed_ref_head(fs_info, head, 0);
+ 	btrfs_delayed_ref_unlock(head);
+ 	btrfs_put_delayed_ref_head(head);
+-	return 0;
++	return ret;
  }
+ 
+ static struct btrfs_delayed_ref_head *btrfs_obtain_ref_head(
 
 
