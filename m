@@ -2,141 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 612C139F8F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71CC439F8FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 16:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233213AbhFHO0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 10:26:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232911AbhFHO0N (ORCPT
+        id S233338AbhFHO0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 10:26:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30056 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233339AbhFHO0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:26:13 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E2B2C061574;
-        Tue,  8 Jun 2021 07:24:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=zX96ZCzY0JGSNUdiiISobh0w3iM3b3UNKsSwCK2HxCg=; b=M38agAJKM8aiWMzD70AXWY3S8U
-        W5wMAqOSDFjpolL3ie5PXgz6XDfW/wRTD6gmGSLi1Yhlrmh9ea7S9vP3tIFWKwc/rgJqt0dCT2Bh/
-        b31OlbNmT0wkihlkkWmFS56ImyhPYLyWIoL0deuSVF1j7fV4/qR7dU91QTNfMPJmnxhp0LzBzBaIp
-        Wf5Hs4oSz8OW1UwhVApSybo0beem1fbvXS/LOmSH/+z8cwq8nCiTvdpOGhu6jPDDkLbU5mE99XfFk
-        zl+DuddP0VPWOvr4tvF6B7bMRWfGqKLlA8+MT9fmWqzPA+6fNGnCPezNhIkqNQoUni/ywbHMT5mHy
-        hfvKwNFg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lqcdp-004m6Q-07; Tue, 08 Jun 2021 14:23:47 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E64A830015A;
-        Tue,  8 Jun 2021 16:23:45 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C5D9D201DE6E9; Tue,  8 Jun 2021 16:23:45 +0200 (CEST)
-Date:   Tue, 8 Jun 2021 16:23:45 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>,
-        Nicholas Piggin <npiggin@gmail.com>, acme@kernel.org,
-        Andrey Semashev <andrey.semashev@gmail.com>, corbet@lwn.net,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Darren Hart <dvhart@infradead.org>, fweimer@redhat.com,
-        joel@joelfernandes.org, kernel@collabora.com,
-        krisman@collabora.com, libc-alpha@sourceware.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, malteskarupke@fastmail.fm,
-        Ingo Molnar <mingo@redhat.com>, pgriffais@valvesoftware.com,
-        Peter Oskolkov <posk@posk.io>,
-        Steven Rostedt <rostedt@goodmis.org>, shuah@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>, z.figura12@gmail.com
-Subject: Re: [PATCH v4 00/15] Add futex2 syscalls
-Message-ID: <YL99cR0H+7xgU8L1@hirez.programming.kicks-ass.net>
-References: <20210603195924.361327-1-andrealmeid@collabora.com>
- <1622799088.hsuspipe84.astroid@bobo.none>
- <fb85fb20-5421-b095-e68b-955afa105467@collabora.com>
- <1622853816.mokf23xgnt.astroid@bobo.none>
- <22137ccd-c5e6-9fcc-a176-789558e9ab1e@collabora.com>
- <20210608122622.oxf662ruaawrtyrd@linutronix.de>
+        Tue, 8 Jun 2021 10:26:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623162289;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tEi3Rd6QEWk4RIuQqPyKGWZpdRlhfTcltszbR5N5ITU=;
+        b=Bt10VUzTt0d6wyTm0XjppoNvjzup2ivj40LKStfjODzYyPkcZYk6+ilt69KRbF4hQiDTcx
+        IEHBCDE9SLilgno0VBk7WncD/s4Mp6+wWwIiAW70ZR6vzQm5DT2fyEzbWUMeY9/7qmB6p7
+        Vy6lE8E4inDkNqwnCv0/JpfrrcRFip0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-99-d84TgJEiNruct7uiXptoiA-1; Tue, 08 Jun 2021 10:24:47 -0400
+X-MC-Unique: d84TgJEiNruct7uiXptoiA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5A5208049CB;
+        Tue,  8 Jun 2021 14:24:44 +0000 (UTC)
+Received: from localhost (ovpn-12-148.pek2.redhat.com [10.72.12.148])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4704F19C45;
+        Tue,  8 Jun 2021 14:24:35 +0000 (UTC)
+Date:   Tue, 8 Jun 2021 22:24:32 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        akpm@linux-foundation.org, Kazuhito Hagio <k-hagio@ab.jp.nec.com>,
+        Dave Young <dyoung@redhat.com>, Boris Petkov <bp@alien8.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        James Morse <james.morse@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Dave Anderson <anderson@redhat.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        kexec@lists.infradead.org, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] crash_core, vmcoreinfo: Append 'SECTION_SIZE_BITS' to
+ vmcoreinfo
+Message-ID: <20210608142432.GA587883@MiWiFi-R3L-srv>
+References: <20210608103359.84907-1-kernelfans@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210608122622.oxf662ruaawrtyrd@linutronix.de>
+In-Reply-To: <20210608103359.84907-1-kernelfans@gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 02:26:22PM +0200, Sebastian Andrzej Siewior wrote:
-> On 2021-06-07 12:40:54 [-0300], André Almeida wrote:
-> > 
-> > When I first read Thomas proposal for per table process, I thought that
-> > the main goal there was to solve NUMA locality issues, not RT latency,
-> > but I think you are right. However, re-reading the thread at [0], it
-> > seems that the RT problems where not completely solved in that
-> > interface, maybe the people involved with that patchset can help to shed
-> > some light on it.
-> > 
-> > Otherwise, this same proposal could be integrated in futex2, given that
-> > we would only need to provide to userland some extra flags and add some
-> > `if`s around the hash table code (in a very similar way the NUMA code
-> > will be implemented in futex2).
+On 06/08/21 at 06:33am, Pingfan Liu wrote:
+> As mentioned in kernel commit 1d50e5d0c505 ("crash_core, vmcoreinfo:
+> Append 'MAX_PHYSMEM_BITS' to vmcoreinfo"), SECTION_SIZE_BITS in the
+> formula:
+>     #define SECTIONS_SHIFT    (MAX_PHYSMEM_BITS - SECTION_SIZE_BITS)
 > 
-> There are slides at [0] describing some attempts and the kernel tree [1]
-> from that time.
+> Besides SECTIONS_SHIFT, SECTION_SIZE_BITS is also used to calculate
+> PAGES_PER_SECTION in makedumpfile just like kernel.
 > 
-> The process-table solves the problem to some degree that two random
-> process don't collide on the same hash bucket. But as Peter Zijlstra
-> pointed out back then two threads from the same task could collide on
-> the same hash bucket (and with ASLR not always). So the collision is
-> there but limited and this was not perfect.
+> Unfortunately, this arch-dependent macro SECTION_SIZE_BITS changes, e.g.
+> recently in kernel commit f0b13ee23241 ("arm64/sparsemem: reduce
+> SECTION_SIZE_BITS"). But user space wants a stable interface to get this
+> info. Such info is impossible to be deduced from a crashdump vmcore.
+> Hence append SECTION_SIZE_BITS to vmcoreinfo.
+
 > 
-> All the attempts with API extensions didn't go well because glibc did
-> not want to change a bit. This starts with a mutex that has a static
-> initializer which has to work (I don't remember why the first
-> pthread_mutex_lock() could not fail with -ENOMEM but there was
-> something) and ends with glibc's struct mutex which is full and has no
-> room for additional data storage.
+> Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> Cc: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> Cc: Kazuhito Hagio <k-hagio@ab.jp.nec.com>
+> Cc: Dave Young <dyoung@redhat.com>
+> Cc: Baoquan He <bhe@redhat.com>
+> Cc: Boris Petkov <bp@alien8.de>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: James Morse <james.morse@arm.com>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Dave Anderson <anderson@redhat.com>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: kexec@lists.infradead.org
+> Cc: x86@kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+
+
+Add the discussion of the original thread in kexec ML for reference:
+http://lists.infradead.org/pipermail/kexec/2021-June/022676.html
+
+This looks good to me.
+
+Acked-by: Baoquan He <bhe@redhat.com>
+
+> ---
+>  kernel/crash_core.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> The additional data in user's struct mutex + init would have the benefit
-> that instead uaddr (which is hashed for the in-kernel lookup) a cookie
-> could be used for the hash-less lookup (and NUMA pointer where memory
-> should be stored).
+> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+> index 825284baaf46..684a6061a13a 100644
+> --- a/kernel/crash_core.c
+> +++ b/kernel/crash_core.c
+> @@ -464,6 +464,7 @@ static int __init crash_save_vmcoreinfo_init(void)
+>  	VMCOREINFO_LENGTH(mem_section, NR_SECTION_ROOTS);
+>  	VMCOREINFO_STRUCT_SIZE(mem_section);
+>  	VMCOREINFO_OFFSET(mem_section, section_mem_map);
+> +	VMCOREINFO_NUMBER(SECTION_SIZE_BITS);
+>  	VMCOREINFO_NUMBER(MAX_PHYSMEM_BITS);
+>  #endif
+>  	VMCOREINFO_STRUCT_SIZE(page);
+> -- 
+> 2.29.2
 > 
-> So. We couldn't change a thing back then so nothing did happen. We
-> didn't want to create a new interface and a library implementing it plus
-> all the functionality around it (like pthread_cond, phtread_barrier, …).
-> Not to mention that if glibc continues to use the "old" locking
-> internally then the application is still affected by the hash-collision
-> locking (or the NUMA problem) should it block on the lock.
-
-There's more futex users than glibc, and some of them are really hurting
-because of the NUMA issue. Oracle used to (I've no idea what they do or
-do not do these days) use sysvsem because the futex hash table was a
-massive bottleneck for them.
-
-And as Nick said, other vendors are having the same problems.
-
-And if you don't extend the futex to store the nid you put the waiter in
-(see all the problems above) you will have to do wakeups on all nodes,
-which is both slower than it is today, and scales possibly even worse.
-
-The whole numa-aware qspinlock saga is in part because of futex.
-
-
-That said; if we're going to do the whole futex-vector thing, we really
-do need a new interface, because the futex multiplex monster is about to
-crumble (see the fun wrt timeouts for example).
-
-And if we're going to do a new interface, we ought to make one that can
-solve all these problems. Now, ideally glibc will bring forth some
-opinions, but if they don't want to play, we'll go back to the good old
-days of non-standard locking libraries.. we're halfway there already due
-to glibc not wanting to break with POSIX were we know POSIX was just
-dead wrong broken.
-
-See: https://github.com/dvhart/librtpi
-
 
