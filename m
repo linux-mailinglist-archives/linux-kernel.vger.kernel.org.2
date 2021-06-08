@@ -2,102 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B97539FE4D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5265439FE4E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 19:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233995AbhFHSAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:00:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233983AbhFHSAX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:00:23 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01851C061787
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 10:58:30 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lqfzZ-0006nr-Gj; Tue, 08 Jun 2021 19:58:21 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lqfzY-0003Cp-AE; Tue, 08 Jun 2021 19:58:20 +0200
-Date:   Tue, 8 Jun 2021 19:58:20 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Colin King <colin.king@canonical.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2][next] net: usb: asix: Fix less than zero comparison
- of a u16
-Message-ID: <20210608175820.fxeaotpomtsywwfh@pengutronix.de>
-References: <20210608152249.160333-1-colin.king@canonical.com>
+        id S234000AbhFHSA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:00:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:36724 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233983AbhFHSAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:00:51 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A908FD6E;
+        Tue,  8 Jun 2021 10:58:57 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8B18A3F694;
+        Tue,  8 Jun 2021 10:58:56 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 18:58:47 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>, sudeep.holla@arm.com
+Subject: Re: [RFC PATCH v2 00/10] irqchip/irq-gic: Optimize masking by
+ leveraging EOImode=1
+Message-ID: <20210608175840.GA15997@lpieralisi>
+References: <20210525173255.620606-1-valentin.schneider@arm.com>
+ <87zgwgs9x0.wl-maz@kernel.org>
+ <87tumhg9vm.mognet@arm.com>
+ <87a6o0z86t.wl-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210608152249.160333-1-colin.king@canonical.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 19:57:08 up 188 days,  8:03, 50 users,  load average: 0.02, 0.02,
- 0.00
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <87a6o0z86t.wl-maz@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 04:22:48PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The comparison of the u16 priv->phy_addr < 0 is always false because
-> phy_addr is unsigned. Fix this by assigning the return from the call
-> to function asix_read_phy_addr to int ret and using this for the
-> less than zero error check comparison.
-> 
-> Addresses-Coverity: ("Unsigned compared against 0")
-> Fixes: e532a096be0e ("net: usb: asix: ax88772: add phylib support")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/net/usb/asix_devices.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/usb/asix_devices.c b/drivers/net/usb/asix_devices.c
-> index 57dafb3262d9..211c5a87eb15 100644
-> --- a/drivers/net/usb/asix_devices.c
-> +++ b/drivers/net/usb/asix_devices.c
-> @@ -704,9 +704,10 @@ static int ax88772_init_phy(struct usbnet *dev)
->  	struct asix_common_private *priv = dev->driver_priv;
->  	int ret;
->  
-> -	priv->phy_addr = asix_read_phy_addr(dev, true);
-> -	if (priv->phy_addr < 0)
-> +	ret = asix_read_phy_addr(dev, true);
-> +	if (ret < 0)
->  		return priv->phy_addr;
+[+Sudeep]
 
-please add new line here
-> +	priv->phy_addr = ret;
->  
->  	snprintf(priv->phy_name, sizeof(priv->phy_name), PHY_ID_FMT,
->  		 priv->mdio->id, priv->phy_addr);
+On Tue, Jun 08, 2021 at 04:29:14PM +0100, Marc Zyngier wrote:
+> [+Mark, since we discussed about this on IRC]
+> 
+> Hi Valentin,
+> 
+> On Tue, 01 Jun 2021 11:25:01 +0100,
+> Valentin Schneider <valentin.schneider@arm.com> wrote:
+> > 
+> > On 27/05/21 12:17, Marc Zyngier wrote:
+> > > On Tue, 25 May 2021 18:32:45 +0100,
+> > > Valentin Schneider <valentin.schneider@arm.com> wrote:
+> > >> I've tested this on my Ampere eMAG, which uncovered "fun" interactions with
+> > >> the MSI domains. Did the same trick as the Juno with the pl011.
+> > >>
+> > >> pNMIs cause said eMAG to freeze, but that's true even without my patches. I
+> > >> did try them out under QEMU+KVM and that looked fine, although that means I
+> > >> only got to test EOImode=0. I'll try to dig into this when I get some more
+> > >> cycles.
+> > >
+> > > That's interesting/worrying. As far as I remember, this machine uses
+> > > GIC500, which is a well known quantity. If pNMIs are causing issues,
+> > > that'd probably be a CPU interface problem. Can you elaborate on how
+> > > you tried to test that part? Just using the below benchmark?
+> > >
+> > 
+> > Not even that, it would hang somewhere at boot. Julien suggested offline
+> > that it might be a problem with the secondaries' PMR initial value, but I
+> > really never got to do dig into it.
+> 
+> I just hit a similar problem on an Altra box, which seems to be
+> related to using PSCI for idle. PSCI has no idea about priority
+> masking, and enters CPU suspend with interrupt masked at the PMR
+> level. Good luck waking up from that.
+
+Gah. If we can manage to understand which path in
+psci_cpu_suspend_enter() is causing this problem that'd
+be great too (it can be both, for different reasons):
+
+if (!psci_power_state_loses_context(state))
+(1)	ret = psci_ops.cpu_suspend(state, 0);
+else
+(2)	ret = cpu_suspend(state, psci_suspend_finisher);
+
+I'd like to understand if the problem is on idle entry or
+exit (or both depending on the state we are entering).
+
+On (1) we would return from the call with the CPU state
+retained on (2) with CPU context restored (but it rebooted
+from reset - so the PMR value is gone).
+
+I am asking about (2) because I am trying to understand what
+the power controller does wrt PMR and wake-up IRQs (ie and
+whether the PMR plays a role in that). Reworded: trying to
+understand how the PMR behaviour is playing with the power
+controller wake-up capabilities.
+
+Thoughts appreciated.
+
+I am sorry that you had to debug this, thank you for that.
+
+Lorenzo
+
+> I've pushed a test branch at [1]. It'd be really good if you could
+> have a quick look and let me know if that helps in your case (it
+> certainly does on the box I have access to).
+> 
+> Thanks,
+> 
+> 	M.
+> 
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=arm64/nmi-idle
+> 
 > -- 
-> 2.31.1
-> 
-
-Thank you!
-
-Reviewed-by: Oleksij Rempel <o.rempel@pengutronix.de>
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> Without deviation from the norm, progress is not possible.
