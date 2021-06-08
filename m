@@ -2,175 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79FA839F430
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E986139F44F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232043AbhFHKwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 06:52:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39262 "EHLO
+        id S229942AbhFHKz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 06:55:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232014AbhFHKw2 (ORCPT
+        with ESMTP id S229937AbhFHKzZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 06:52:28 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 461ABC061574;
-        Tue,  8 Jun 2021 03:50:35 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fzn7y5K2nz9sWD;
-        Tue,  8 Jun 2021 20:50:22 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1623149433;
-        bh=NVJds1JqDdvUNi6IIF04B9NNA8p7bimnBo/PySiuSGY=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=dmWfdjkq3B0tQV5U9PlicwvqK+CzZtXQo+RWOkJMobSguyPCdaxH8FOB0P0xSNwGG
-         kzBmLIL/3l1d5Lx9v0p32+Xp7rdshT87UFxKDJww54QibI+qq4dmXFlavK1KPW8Tsz
-         dUKZXqG2GwRnDynud4L7w4YtXmgdcXNy+qE6biXfnBwJHQW3APgGUseowAb7Phc/J1
-         RtcfvLp/YiY4LeCxXv+MSoNodSETzNtOKwxhTJMHwXnGR7TkvnT3KIK5zxfAMuMfBO
-         6yW38YAPuyM3sra+BhVQpgjmnPJiZLGZj8ZV+9x0I5LTEki8Itf4nuvmZFrThs88Kv
-         9SqrvDJWcNdUA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Marek Kedzierski <mkedzier@redhat.com>,
-        Hui Zhu <teawater@gmail.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        linux-acpi@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Baoquan He <bhe@redhat.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Sergei Trofimovich <slyfox@gentoo.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Michel Lespinasse <michel@lespinasse.org>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Joe Perches <joe@perches.com>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Jia He <justin.he@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org
-Subject: Re: [PATCH v1 04/12] mm/memory_hotplug: remove nid parameter from
- arch_remove_memory()
-In-Reply-To: <20210607195430.48228-5-david@redhat.com>
-References: <20210607195430.48228-1-david@redhat.com>
- <20210607195430.48228-5-david@redhat.com>
-Date:   Tue, 08 Jun 2021 20:50:21 +1000
-Message-ID: <871r9cfx5e.fsf@mpe.ellerman.id.au>
+        Tue, 8 Jun 2021 06:55:25 -0400
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C89A7C061574;
+        Tue,  8 Jun 2021 03:53:21 -0700 (PDT)
+Received: by mail-vs1-xe32.google.com with SMTP id f11so10622454vst.0;
+        Tue, 08 Jun 2021 03:53:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=f5hP7X6WI56JdWoZLZrHxXTsaf70BoFuMh2uY4QI6S4=;
+        b=LtYm5V66dJuNk679QaZ5fIyWD337d6fOpiB7Y4mezsS6QugxkFtku5M3hyvsbX5Sys
+         ivbLuZ6i2/nMGWsmHKJNaSOBCmLHCpT05UQnAJw+efD7BdKE32+PqvT32ao4q7hE2WAX
+         KGXDuc+25FVyAS5YCtByzAyirgdTi/6D0woMJfCDWown50xIYpPig0J/3k8NBOXqYQB8
+         E3r05M3F9s1So1sPla51axX4PgtHU831zjeKxu6XOgOpUyYgvOdNn/p68M7umNKjkA3j
+         D5IeBzchDKc5uxGVLqNr9kJvMFu6+O+eayxssP+McNCQ5EG9Lf+cRHBNZLlyPuKd3hz0
+         owtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=f5hP7X6WI56JdWoZLZrHxXTsaf70BoFuMh2uY4QI6S4=;
+        b=C/MhfI3vqlJ9qi/enNwyPw/uaEEHwX1Eyc+TTU2BUcTOXHiSpRNE12adcXoB42qpLD
+         kIJrtG4Rz9OFqpxT9vIlG/HzBPNK5rLGMlbN2bmFeualn9+904g4q1Vm8KI4FupAINAj
+         CgG+uZXHYFGuqaSsICIE5XWjbMQiwPY1bn6DGEgwECZKuocSThiK5NyIRpBMzUZU/isx
+         AOJLbRqIrCj7ISKwDuFZ4LTMvwjxeul5mM+tDtK6P3SnMbSLY3CKRj9R2UiM9PAvsDCv
+         T+HAWuKYBWBuDGgovdObXsYAR46/60dk6HQ5oMbCM3oWNNoJz4nwrT/Tdwg6lte30ZSt
+         AqCQ==
+X-Gm-Message-State: AOAM531GyC+GHXonoIQXldth2VQExUsnRqGm/ySMHPFjyFREiwpDkD7E
+        iNBqjj1ObAy1UOtTd35GH6BsMkxXqH2gwIBd7vksL1Bqa7A=
+X-Google-Smtp-Source: ABdhPJyG59a8KqGRbarb/eR+TeduAtdCFsrlWRNdkI+s3hH8Asm9jcZu7gVPVmO/VwH+PCpBU4daVYl/UUx849iuVMs=
+X-Received: by 2002:a67:cd08:: with SMTP id u8mr3988866vsl.18.1623149601020;
+ Tue, 08 Jun 2021 03:53:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210608202748.06334136@canb.auug.org.au>
+In-Reply-To: <20210608202748.06334136@canb.auug.org.au>
+From:   Hyunchul Lee <hyc.lee@gmail.com>
+Date:   Tue, 8 Jun 2021 19:53:09 +0900
+Message-ID: <CANFS6baQi_PDM+4XHNn6MnFtmvbP3JUDJJgw7fvkGDYja4=ELg@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the cifs tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Steve French <smfrench@gmail.com>,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Namjae Jeon <linkinjeon@kernel.org>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Hildenbrand <david@redhat.com> writes:
+Hello,
 
-> The parameter is unused, let's remove it.
+2021=EB=85=84 6=EC=9B=94 8=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 7:27, St=
+ephen Rothwell <sfr@canb.auug.org.au>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
 >
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> Cc: Rich Felker <dalias@libc.org>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: x86@kernel.org
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Nicholas Piggin <npiggin@gmail.com>
-> Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
-> Cc: Baoquan He <bhe@redhat.com>
-> Cc: Laurent Dufour <ldufour@linux.ibm.com>
-> Cc: Sergei Trofimovich <slyfox@gentoo.org>
-> Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
-> Cc: Michel Lespinasse <michel@lespinasse.org>
-> Cc: Christophe Leroy <christophe.leroy@c-s.fr>
-> Cc: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-> Cc: Thiago Jung Bauermann <bauerman@linux.ibm.com>
-> Cc: Joe Perches <joe@perches.com>
-> Cc: Pierre Morel <pmorel@linux.ibm.com>
-> Cc: Jia He <justin.he@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-ia64@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-s390@vger.kernel.org
-> Cc: linux-sh@vger.kernel.org
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  arch/arm64/mm/mmu.c            | 3 +--
->  arch/ia64/mm/init.c            | 3 +--
->  arch/powerpc/mm/mem.c          | 3 +--
->  arch/s390/mm/init.c            | 3 +--
->  arch/sh/mm/init.c              | 3 +--
->  arch/x86/mm/init_32.c          | 3 +--
->  arch/x86/mm/init_64.c          | 3 +--
->  include/linux/memory_hotplug.h | 3 +--
->  mm/memory_hotplug.c            | 4 ++--
->  mm/memremap.c                  | 5 +----
->  10 files changed, 11 insertions(+), 22 deletions(-)
+> Hi all,
 >
-...
-> diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
-> index 043bbeaf407c..fc5c36189c26 100644
-> --- a/arch/powerpc/mm/mem.c
-> +++ b/arch/powerpc/mm/mem.c
-> @@ -115,8 +115,7 @@ int __ref arch_add_memory(int nid, u64 start, u64 size,
->  	return rc;
->  }
->  
-> -void __ref arch_remove_memory(int nid, u64 start, u64 size,
-> -			      struct vmem_altmap *altmap)
-> +void __ref arch_remove_memory(u64 start, u64 size, struct vmem_altmap *altmap)
->  {
->  	unsigned long start_pfn = start >> PAGE_SHIFT;
->  	unsigned long nr_pages = size >> PAGE_SHIFT;
+> After merging the cifs tree, today's linux-next build (powerpc
+> allyesconfig) failed like this:
+>
+> ld: fs/cifsd/spnego_negtokeninit.asn1.o:(.rodata.spnego_negtokeninit_deco=
+der+0x0): multiple definition of `spnego_negtokeninit_decoder'; fs/cifs/spn=
+ego_negtoken
+> init.asn1.o:(.rodata.spnego_negtokeninit_decoder+0x0): first defined here
+> ld: fs/cifsd/asn1.o:(.opd+0xa8): multiple definition of `gssapi_this_mech=
+'; fs/cifs/asn1.o:(.opd+0x18): first defined here
+> ld: fs/cifsd/asn1.o: in function `.gssapi_this_mech':
+> asn1.c:(.text.gssapi_this_mech+0x0): multiple definition of `.gssapi_this=
+_mech'; fs/cifs/asn1.o:asn1.c:(.text.gssapi_this_mech+0x0): first defined h=
+ere
+> ld: fs/cifsd/asn1.o:(.opd+0xc0): multiple definition of `neg_token_init_m=
+ech_type'; fs/cifs/asn1.o:(.opd+0x30): first defined here
+> ld: fs/cifsd/asn1.o: in function `.neg_token_init_mech_type':
+> asn1.c:(.text.neg_token_init_mech_type+0x0): multiple definition of `.neg=
+_token_init_mech_type'; fs/cifs/asn1.o:asn1.c:(.text.neg_token_init_mech_ty=
+pe+0x0): first defined here
+>
+> Caused by commit
+>
+>   4a957ba6daf6 ("cifs: decoding negTokenInit with generic ASN1 decoder")
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+I missed functions and structures generated from the ASN1 compiler
+aren't static.
 
-cheers
+Steve, and Namjae,
+We need to rename *.asn1 files and decoder's callback functions. Is it bett=
+er
+to change cifs's code?
+
+Thanks,
+Hyunchul
+
+>
+> interacting with commit
+>
+>   fad4161b5cd0 ("cifsd: decoding gss token using lib/asn1_decoder.c")
+>
+> from the cifsd tree.
+>
+> I have reverted that cifs tree commit for today.
+>
+> --
+> Cheers,
+> Stephen Rothwell
