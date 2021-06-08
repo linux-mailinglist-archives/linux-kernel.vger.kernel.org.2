@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D7A3A0730
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 00:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E113A072D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Jun 2021 00:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235395AbhFHWlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 18:41:09 -0400
-Received: from mail-qk1-f175.google.com ([209.85.222.175]:34714 "EHLO
-        mail-qk1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235365AbhFHWk6 (ORCPT
+        id S235442AbhFHWlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 18:41:06 -0400
+Received: from mail-qt1-f173.google.com ([209.85.160.173]:44629 "EHLO
+        mail-qt1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235361AbhFHWky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 18:40:58 -0400
-Received: by mail-qk1-f175.google.com with SMTP id k11so20289674qkk.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 15:38:50 -0700 (PDT)
+        Tue, 8 Jun 2021 18:40:54 -0400
+Received: by mail-qt1-f173.google.com with SMTP id t17so16534978qta.11
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 15:38:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=marek-ca.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=pBISRGXcYaTjdyy7zFRwXRZ/Xqtc0LVrOOtyDwss3eg=;
-        b=02f0lZJ5PP3Eiylz/zR/mouRFgBT9n4kVgKwIm5HemxQLen0zBBwqlvzZ7tt3c6jdk
-         44M3xC65Ss+GGObi0v41j7qIMTbZ4ofRsUSfE6ORIYiC9iSURdabjKZ1ZXSwWRnyw+UE
-         JHdTPrpKfY2MjFPD0aAc3W4tv6gV6uX+WG0nImNQiX51ak7LRj2Dn9ljPVn31qZtacNw
-         DButh6ySOFQlQ/OecgdHyt6HT9kZP+OM5ofR/oIGYd3pk4jCXo9+hSVdI/jX7UsGmPiP
-         FSH4yLiy0wAAJD9Mj37rd2MUFFtyjJSMPMTf6vi4C237AcEHtXTfMeBX8cLEyy5kWG5U
-         kFwA==
+        bh=t2aDM1URYTj/cZhUOY8AnySlXR+xZP1ewZ8+fSzahOs=;
+        b=NM30DSAhLHVqVz4KXkiSrd53diDP2xzYLxrbDTuzjnQ1LK88wi5T91JOoSc/3sPe7O
+         rYgBNOrwogUwZql5V2jqtPSD5kMTrupX+/Q9HjJIAhWFC74m9uPp4GyhToyukiOj6qdY
+         o6019JAic3YW7BDky/cv2WjvBWTtASIIexqP045kXtPxMc/jBtO1HvucqCknwLqh5knG
+         7EQ9/icMOpOfanLjcPr8iRJqUl8CbgycFljqMRfENl2r0UoTDNwT0UtJ6aBnn1vRxQV9
+         xCrT8RC3MFH3dTN+I1+7pw4MOFe3lOLEQ3pRQs/WvcAEm3jbbYN2YUGbFAO2JIIG2nTD
+         pYsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=pBISRGXcYaTjdyy7zFRwXRZ/Xqtc0LVrOOtyDwss3eg=;
-        b=hf62DtaonUcr9R5JqKtUOoN8Ydgm9U62gvPdlLUmbGcZPKtQx1ukFcf2TaCw70wtNj
-         Qri5IovMWxKzxVtVadxTdB7ptpfFvARGKZAf3yd08c6dS4gmaSw4B7YdfIlp5y5k5Jfa
-         Lo/+urJrDVEJwpivr3yI8aj1XkGu/wcQve7niL0M0SVpwMz/FQmjL05naSOAd90+YlUb
-         XwQ/ZfpMvhuJhnaFnwzDFgoIhGveNWYdWvasQBtH4QyacdwNoM8EMic2D8HDEHfhkd/h
-         ffoNOhccYX8cxMwDs/vL6bpi5qvKg0U9EU+ImlSfRDqrvWbaNCGKmXxl26ZO/w9mr3BQ
-         JABA==
-X-Gm-Message-State: AOAM5307SUvCj82xPHbW/IotkhueaZGCdDobyuD5kC86Oo7RCsb191w0
-        9yFgB1nXz2Qc+DC+avgf/awnWw==
-X-Google-Smtp-Source: ABdhPJzYn15uMI1dfCue0mox6oIAlMHImpKRCx4PXqnoGK4XIj1dR517BqHINIa26ujrL+u+9S1Fbw==
-X-Received: by 2002:a37:b3c5:: with SMTP id c188mr24031804qkf.242.1623191870438;
-        Tue, 08 Jun 2021 15:37:50 -0700 (PDT)
+        bh=t2aDM1URYTj/cZhUOY8AnySlXR+xZP1ewZ8+fSzahOs=;
+        b=s/b4HQ4rm2dVGfcLvRaEHGEYCd8TrpMr6nKBbcLy/Ndghr50slkdHXiqJAANAhYz3U
+         5GWaxv3G1MOHcyYRUNeCUkOMh76TCC8wMz12mgPYMcebYZp4IO+x5bWfsx5+oFWRm9zq
+         sD+LFDmfhodAZF/qPuLmwgr4OVo7Sh74qAIhcQbdt89cWCRfxbGEKARkIEGhDKkW5Zvg
+         5TRQsy1nVk+i9ujy6EO3U8VXaSFpnqqbrku1Dl2h21CMjKlAq8YSzpluXoC1E3vIXErv
+         m8AwlXKCs37YZD3oKk+oeSFumfgQ/T+148ODTwqeqc6BIYGXwGJDJQU6cyVGik5VerHc
+         5f0Q==
+X-Gm-Message-State: AOAM533gTtflaxID0oVFZPcpqH9vsrLoUF9SQQxybDygRNz9nBE7XP3z
+        B4wGNPL/6E8R4TI3qKU56P2xoA==
+X-Google-Smtp-Source: ABdhPJwd3il/U7qh7jj3TzEJIbC6nFaBQQsU/l+UiqmN5Dq8sArZPapbPRL18OhU44Y+bE61KW1ENQ==
+X-Received: by 2002:ac8:647:: with SMTP id e7mr23334269qth.156.1623191871678;
+        Tue, 08 Jun 2021 15:37:51 -0700 (PDT)
 Received: from localhost.localdomain (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
-        by smtp.gmail.com with ESMTPSA id m3sm2324266qkh.135.2021.06.08.15.37.49
+        by smtp.gmail.com with ESMTPSA id m3sm2324266qkh.135.2021.06.08.15.37.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 15:37:49 -0700 (PDT)
+        Tue, 08 Jun 2021 15:37:51 -0700 (PDT)
 From:   Jonathan Marek <jonathan@marek.ca>
 To:     linux-arm-msm@vger.kernel.org
 Cc:     robert.foss@linaro.org, andrey.konovalov@linaro.org,
@@ -55,9 +55,9 @@ Cc:     robert.foss@linaro.org, andrey.konovalov@linaro.org,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         linux-media@vger.kernel.org (open list:QUALCOMM CAMERA SUBSYSTEM DRIVER),
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 04/17] media: camss: csid-170: fix non-10bit formats
-Date:   Tue,  8 Jun 2021 18:34:53 -0400
-Message-Id: <20210608223513.23193-5-jonathan@marek.ca>
+Subject: [PATCH 05/17] media: camss: csid-170: don't enable unused irqs
+Date:   Tue,  8 Jun 2021 18:34:54 -0400
+Message-Id: <20210608223513.23193-6-jonathan@marek.ca>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20210608223513.23193-1-jonathan@marek.ca>
 References: <20210608223513.23193-1-jonathan@marek.ca>
@@ -67,40 +67,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the decode_format/data_type from the "format" struct instead of a
-hardcoded 10-bit format.
+csid_isr() only checks for the reset irq, so enabling any other irqs
+doesn't make sense. The "RDI irq" comment is also wrong, the register
+should be CSID_CSI2_RDIN_IRQ_MASK. Without this fix there may be an
+excessive amount of irqs.
 
 Fixes: eebe6d00e9bf ("media: camss: Add support for CSID hardware version Titan 170")
 Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 Reviewed-by: Robert Foss <robert.foss@linaro.org>
 ---
- drivers/media/platform/qcom/camss/camss-csid-170.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/media/platform/qcom/camss/camss-csid-170.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
 diff --git a/drivers/media/platform/qcom/camss/camss-csid-170.c b/drivers/media/platform/qcom/camss/camss-csid-170.c
-index ac22ff29d2a9f..aa65043c33037 100644
+index aa65043c33037..a006c8dbceb13 100644
 --- a/drivers/media/platform/qcom/camss/camss-csid-170.c
 +++ b/drivers/media/platform/qcom/camss/camss-csid-170.c
-@@ -366,7 +366,7 @@ static void csid_configure_stream(struct csid_device *csid, u8 enable)
- 			val |= input_format->width & 0x1fff << TPG_DT_n_CFG_0_FRAME_WIDTH;
- 			writel_relaxed(val, csid->base + CSID_TPG_DT_n_CFG_0(0));
+@@ -444,12 +444,6 @@ static void csid_configure_stream(struct csid_device *csid, u8 enable)
+ 	val |= 1 << CSI2_RX_CFG1_MISR_EN;
+ 	writel_relaxed(val, csid->base + CSID_CSI2_RX_CFG1); // csi2_vc_mode_shift_val ?
  
--			val = DATA_TYPE_RAW_10BIT << TPG_DT_n_CFG_1_DATA_TYPE;
-+			val = format->data_type << TPG_DT_n_CFG_1_DATA_TYPE;
- 			writel_relaxed(val, csid->base + CSID_TPG_DT_n_CFG_1(0));
- 
- 			val = tg->mode << TPG_DT_n_CFG_2_PAYLOAD_MODE;
-@@ -382,8 +382,9 @@ static void csid_configure_stream(struct csid_device *csid, u8 enable)
- 		val = 1 << RDI_CFG0_BYTE_CNTR_EN;
- 		val |= 1 << RDI_CFG0_FORMAT_MEASURE_EN;
- 		val |= 1 << RDI_CFG0_TIMESTAMP_EN;
-+		/* note: for non-RDI path, this should be format->decode_format */
- 		val |= DECODE_FORMAT_PAYLOAD_ONLY << RDI_CFG0_DECODE_FORMAT;
--		val |= DATA_TYPE_RAW_10BIT << RDI_CFG0_DATA_TYPE;
-+		val |= format->data_type << RDI_CFG0_DATA_TYPE;
- 		val |= vc << RDI_CFG0_VIRTUAL_CHANNEL;
- 		val |= dt_id << RDI_CFG0_DT_ID;
- 		writel_relaxed(val, csid->base + CSID_RDI_CFG0(0));
+-	/* error irqs start at BIT(11) */
+-	writel_relaxed(~0u, csid->base + CSID_CSI2_RX_IRQ_MASK);
+-
+-	/* RDI irq */
+-	writel_relaxed(~0u, csid->base + CSID_TOP_IRQ_MASK);
+-
+ 	val = 1 << RDI_CTRL_HALT_CMD;
+ 	writel_relaxed(val, csid->base + CSID_RDI_CTRL(0));
+ }
 -- 
 2.26.1
 
