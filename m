@@ -2,130 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EF0F3A04F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 22:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC043A0501
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 22:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234668AbhFHUMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 16:12:13 -0400
-Received: from mail-bn7nam10on2065.outbound.protection.outlook.com ([40.107.92.65]:34144
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232764AbhFHUMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 16:12:12 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P708VbeL9F4LIQ9ZhN5y7OaJCxqhi6OjhfPsE3RnFCnZaWDFZ8M3XJ71An2uSboWTubb4/6IrHkfYFyaoIaodkHzNA4I0ypolthA5VjehY3OaOdybMPbYFKTobhiX9RlxUWOZpkjT3fV5hErqBhz1sBPlmV82oKsYm6Fqq8u0JMVd1fUouvN7+H27K2o9BqEb/3Wv7RXQW76Xk8JwTu65C0bzI8lCQtfDcEhFBaVWPAFOe4DAYqBiIcEvRmSNuPxUYp8hemrvzi3T9+ZeBVEfVMm7WjIk0zhSUiA2qwolKmxAzVuALHFhn18Yc88SSjCkdtpv49nD4vedE2wTMu+oQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Vm1EgulWJmBpZqP+jAMCOLTl7nD4hpJyNHWRCRbPxPk=;
- b=UeanpJ+kxap9tOJQEg0hPkSqhtQdnTKpAEu11M+FQ9bxw8Y/mO12FbZdKoC9N6ECPjM2BhEd4mpJQp5jORItFNq2UDB2/HMQ/vCJE9ThoIv4qB68xlaUhmcafYZhWDOyUva7s0X0UDHgZ7xujFUbUjUFzhRXCi+y3GN4Wq0qSMogFApxD9f1eu+K6j2N9EgdaLH0ZLRSfIV6wfJk5PXElo8dHHfdcd/QJOyTKg16kQPmh5zCI5cqmAVRKiPdxiTcZwQXa/Y8qor0WV9R+xpRzfRGRDo5BnI0lisvamStigfbOM9+W12DyGxx0IzrK4tIyZsXVqXy17+4ym95LCFJtg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Vm1EgulWJmBpZqP+jAMCOLTl7nD4hpJyNHWRCRbPxPk=;
- b=IO0k7E+B9wD0XNgdXv4eQsj99q8/nTcm1RI9v+SlduiJTeWcf+OC3JELfotNyFNmJq44EBa0yTSGKRnP8dCDHXbfTZakGxFwGVIq18+tXtYfR0Qu1ZTd096JjuCf6Ip7gTZqN/R+yxoXzgHWRpreX0LTD1oNtlZ6B6t96qqnzaJXpQD67/730cU8nR9m9HD/wNNXHXkEYeQs64EAHpsSkmK/OC0TUmpEF4m2LrVx03QlQdY+FP2xZqBOz0lqS6zg/RCjckLiVnxQbRJa7iIzOqeWUsH4k4aNLDhNSdyMkD38PGAqPI8tvG2GEOrJ7SBq3jXfy2lUqXCo/WmxkxP42Q==
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5031.namprd12.prod.outlook.com (2603:10b6:208:31a::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Tue, 8 Jun
- 2021 20:10:18 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4219.021; Tue, 8 Jun 2021
- 20:10:17 +0000
-Date:   Tue, 8 Jun 2021 17:10:16 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>, Mark Bloch <mbloch@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Maor Gottlieb <maorg@nvidia.com>
-Subject: Re: [PATCH rdma-rc] RDMA/mlx5: Block FDB rules when not in switchdev
- mode
-Message-ID: <20210608201016.GA992876@nvidia.com>
-References: <e928ae7c58d07f104716a2a8d730963d1bd01204.1623052923.git.leonro@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e928ae7c58d07f104716a2a8d730963d1bd01204.1623052923.git.leonro@nvidia.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: MN2PR01CA0060.prod.exchangelabs.com (2603:10b6:208:23f::29)
- To BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+        id S234754AbhFHUPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 16:15:23 -0400
+Received: from mail-wr1-f54.google.com ([209.85.221.54]:35701 "EHLO
+        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232764AbhFHUPU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 16:15:20 -0400
+Received: by mail-wr1-f54.google.com with SMTP id m18so22927873wrv.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 13:13:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ZP3aBzUi/5cQACwp3bX0PrMjlyKsunXb6wYJH3vRGbM=;
+        b=cVlV7YESKjEz/22UoQ7sPPpRmY0zwU9x4R2c45rMfrxVoRTilcZYD9/doU0lzJw7vl
+         zM1m22VE2zKpRyPWehEYCXKtNsYMwgI3rJ22ri1PUgHzshyeswF/8JFbBvnzPHo5oApx
+         bgcdDfWy/T9RapCwVfzKHf6vkc1fqwUE0ZdEFpw3h+Ycj8+qF7qiQV42Bkf08GqD2SnX
+         tRMzLQIsjCeTwIJhhaVKoDCFDltEpLaA2SH2dajL2qM2w/oo6DfvtYRkXoWMRmL/8wV4
+         rMGrlYdDF2d9neM0AQtybapX4ddEOG46Y+/pimE59hDb50Fv/NRhBjBdbCbBD7Kr375V
+         EACg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ZP3aBzUi/5cQACwp3bX0PrMjlyKsunXb6wYJH3vRGbM=;
+        b=mR9nngyKKN4Eg/MMhLwqlBY9L7tgzZlp3FUt4K/x9S4131BmRRAduniKdmoFHZDtNs
+         DpFMsomDGKQu6UMcn404HkaQY4YYCapd1FVBRyPKdrjDj2vv5a0tlYdaEclyRhBZ0auB
+         p5Lvk4jaVmOhf+RlCBd8gl7IANmnLr3JW/wRJ6h0WHgDaA5OSPJOYwK4/qxD/WgSo9+1
+         LdTtsRSzH9vkLAKoBvffmXhxf9pf1SwQ0142r0pStJT+U5uHu68lI1uF95wRCOBe5NVp
+         xmyAJ0jDUhlXpIPHM+103c5VREabyveCgZf3kUO+hJrd3TW46BzhsIeOLh4GfoMHAX9h
+         BvVA==
+X-Gm-Message-State: AOAM532gKGVjuiF7LNGN6OC0hJ0hMOYwT5bRNA1AQzNMN7+P7OSRfd00
+        ju91dX/a5pobM+kV1hJ7MxM=
+X-Google-Smtp-Source: ABdhPJxhnK3pWqjpRD+CzHWOMYvCHvcGoUUvTjbPjVpJpbVfWkc5YZ1Nf5FPZogAkZ7DXAZnYqPSWg==
+X-Received: by 2002:a5d:64a4:: with SMTP id m4mr13760986wrp.185.1623183145959;
+        Tue, 08 Jun 2021 13:12:25 -0700 (PDT)
+Received: from linux.local (host-82-59-55-132.retail.telecomitalia.it. [82.59.55.132])
+        by smtp.gmail.com with ESMTPSA id a15sm25599756wrs.63.2021.06.08.13.12.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 13:12:25 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+Cc:     linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH] x86: kernel: cpu: resctrl: Fix kernel-doc in pseudo_lock.c
+Date:   Tue, 08 Jun 2021 22:12:23 +0200
+Message-ID: <1711024.RBxhUqbo4a@linux.local>
+In-Reply-To: <017e9a77-d17e-effd-5639-72a06abc4fc3@intel.com>
+References: <20210602222326.7765-1-fmdefrancesco@gmail.com> <017e9a77-d17e-effd-5639-72a06abc4fc3@intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR01CA0060.prod.exchangelabs.com (2603:10b6:208:23f::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22 via Frontend Transport; Tue, 8 Jun 2021 20:10:17 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lqi3E-004AJ3-SJ; Tue, 08 Jun 2021 17:10:16 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3418ff55-9b04-4986-2244-08d92ab96f81
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5031:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5031BB912FA0CC5CC4C176AAC2379@BL1PR12MB5031.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: npWYd4VOVwIScDV1nYhuN2znKKYAVj82HV+jJcfCiYCLzYPdaBlKVzV3iADEcPXQuJE4Uct4XR0JgEDJw8aJeI9iv2Zk9BjVIT8rgxFGLpkiVPfPvwYDQiQpV/120hCXgdbcATMYvGpBduNMX11lAh52AkGoQQqQ0jFnUh6tPKjzs3l0285PbF6XWP3oomtF6uA5jbdovMpij5UUcirf/D6ByWy4Cvxw4p0xJ5UsPIsDQZ6gEvz8d689YquuoxYSm0u7QsAiVsDiulYljyTEuEwzCt4B3+QgRtskj2NVdnsqtP0f+xxqcAFIac29GJnDZ7ZpoCpisbexx7aQP6hveUEOOhpC+CXOR1g6uI760K1s2zJJZ0RLIB/ORPY5qgUbfx9gwlfC2jZqXNC8vb5zdrj6MOqi/YkAd80VPk7LBZMsi0Xs7sCmuFtRTOTbQCYDc1HhshfqOGTOR466dnZXv7KIVkmOufVnYj1V9ajyfFMdVxTFD0o7I+wSN+HQN9qvTpwymgeoD70K1j050nP5bOHYAVtIK6GIc5gHkd0Xazi7FmWH9rKCAqZuESLYDphNiolSKwkDxcR+hnUYrqyOnc9Z+r6cyYmxOP+m8VpxMx12lVO5vyFveT5BtrJSMbSyQq6NQ2cCCL3yB6a6TuoxdhUiXXyD7vs4gGmOHS5q8gE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(396003)(366004)(136003)(426003)(478600001)(5660300002)(86362001)(66556008)(4744005)(66946007)(66476007)(2616005)(8676002)(38100700002)(107886003)(36756003)(6916009)(2906002)(9746002)(8936002)(4326008)(316002)(54906003)(9786002)(26005)(186003)(1076003)(33656002)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/DO0jaGFofxj5gD9z6EbNjRlzkPSZZev2dkjHjUp0m6SpRU4p2ZEoID6R8C2?=
- =?us-ascii?Q?xm23fct5bpd5GL/sXgS5/dPxQ0AavfDb+v4wipfMZxURDpkl1znStN61+8wl?=
- =?us-ascii?Q?Nsuo7MJGEwgn8JJ/NzBjvIEvttCwO++jTitpASRkYKEssmSoTp7ihZllMaiS?=
- =?us-ascii?Q?JLzPq3u87+iL3FXV1ZXdl4PTZfDsPpruXHlGnkLe9geHIYiRv5PXzMhEF+Oq?=
- =?us-ascii?Q?9jat/u763F+naMUUN7hhm700J8cggJvgXuy7hMnD28FQbekG6NZ1jYqgnBos?=
- =?us-ascii?Q?ePp6LTYrGN5C/y/q0EpwR5Wr9X4LPeZ88hKiolAr2WIioJHsO2OIBwcdMGMK?=
- =?us-ascii?Q?Ze3M8czqLDNg8Oj29w9ZOCT/TBzeY8Hr7hhTULBM1BfohfV9xEFYulaPqLSB?=
- =?us-ascii?Q?tNZIK+bcYhPHAx5Hinos2Zm2COUN5kNhwtYausSqHkD0JzYqLyf+uqZ+Mg5h?=
- =?us-ascii?Q?NJGVMLVacbZgcAW5S4s9dht9tdNHoTfiqRd6xV7KeSE/wvVT/QNFRsyIHodY?=
- =?us-ascii?Q?Jjf1v+aEBb+l6MqGHy6A1Aa+Xiz1ssSWNZgRVdorFOgWimdcXD9hOFYIqMfU?=
- =?us-ascii?Q?i7UoTmVSXiVAMLs7LYwHbjtclSI+BHUErhnyN7Fialji0IYQXbwnWGxioUH8?=
- =?us-ascii?Q?4jtH6wr7QqiyJILTKZe3rAICIaYsZbsDqJbleOC+ZJFaK6tf8zftZ/tGceqd?=
- =?us-ascii?Q?wE1edgCP1xEMKHEy/mmIQdkBtZoV5e8+14eNXKUZU3oaOVcM9R72TuL9KULS?=
- =?us-ascii?Q?Jci18tIqgfgI3r1zo9YuVBGoEIk+qigpxmsX1kvbSlezxo6Hedy7QA46O0Yw?=
- =?us-ascii?Q?/93RRgaVmlMtI9hs9BPAMmAY/0MVAGjmLbX54jsylXVJ8dqMkRnYk8e6gMe+?=
- =?us-ascii?Q?LOXby4IOxx5wADmQ1IU9O63/dAnitlzCbDnXqDVazBVgrOmJEHqCp2T+cRbF?=
- =?us-ascii?Q?66xOvOxNmAgqHW//Tfhkc4O5YLF/7hRazY0NKN80HM9RY8nBC+75DdcOwzap?=
- =?us-ascii?Q?LH8F8hZhXP8T8JSAE7sjCLdp1uOqwZdXK4v44oNSBXJL/kOAqWnz1j1UxgV3?=
- =?us-ascii?Q?8QczfW5osK+Nf5zwTtlV4kFitBHu8P7/eoBzQgCLU+3oI4nfoU0yATN35SfJ?=
- =?us-ascii?Q?di30HIKdtpMf05tq1cYwZ8j/Pm+e3dbRsLotZuSDn8wPhvrnnUg1AmYuNIj4?=
- =?us-ascii?Q?TfBlRG0uenPQO65sk4dpuGq27z4SLKlL0CFKTe+oQ7jbkXmBdaeaDqbOEKQq?=
- =?us-ascii?Q?ASp9+7apetHfEtLMTN8ZaIt8FiuPrP9CC7sq2pxn4kGLh+RtyD/S0AQigJmj?=
- =?us-ascii?Q?ZYk06M3n6c1eCoEVG7baRDTp?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3418ff55-9b04-4986-2244-08d92ab96f81
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2021 20:10:17.8621
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Z2icBcyb/30rheYivF58WJ4GfdDBWaIoveC45NE76ml0F8Q5T6iMg8SXo4ll3FWu
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5031
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 11:03:12AM +0300, Leon Romanovsky wrote:
-> From: Mark Bloch <mbloch@nvidia.com>
+On Tuesday, June 8, 2021 1:30:34 AM CEST Reinette Chatre wrote:
+> Hi Fabio,
+>
+Hi Reinette,
 > 
-> Allow creating FDB steering rules only when in switchdev mode.
+> Thank you very much for catching these. I am curious what your goal is
+> because when I ran a kernel-doc check on the resctrl area there were
+> many more warnings than are not addressed in this patch. Also, while
+> this patch claims to fix the kernel-doc in pseudo_lock.c there seems to
+> be a few more that are not addressed.
+>
+Actually this patch was just a preliminary test for checking if my 
+contributions to this subsystem would be taken into consideration or 
+completely ignored. That is the real reason why I just started with trying to 
+fix only a couple of kernel-doc issues in pseudo_lock.c.
 > 
-> The only software model where a userspace application can manipulate
-> FDB entries is when it manages the eswitch. This is only possible in
-> switchdev mode where we expose a single RDMA device with representors
-> for all the vports that are connected to the eswitch.
+> Are you planning to submit more
+> patches to do a cleanup of kernel-doc or are these the only ones
+> bothering you for some reason?
+>
+I'd like to submit more cleanup patches of kernel-doc, because I always read 
+carefully the kernel-doc above the functions I want to understand. I have a 
+long term plan to study the Linux code and try to contribute the better I can. 
+I'm into Linux developing since about two months, so I'm a newcomer and I 
+still have a lot to learn.
 > 
-> Fixes: 52438be44112 ("RDMA/mlx5: Allow inserting a steering rule to the FDB")
-> Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
-> Signed-off-by: Mark Bloch <mbloch@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/infiniband/hw/mlx5/fs.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+> Could you please fixup the subject to conform to this area:
+> "x86/resctrl: Fix kernel-doc in pseudo_lock.c"
+> 
+Sure. I was inadvertently using the drivers/staging convention I've used for 
+the patches I've submitted there.
+>
+> For this subject to be accurate though it should fix all the kernel-doc
+> warnings found in pseudo_lock.c - or if not it would be helpful to
+> explain what the criteria for fixes are. I tested this by running:
+> $ scripts/kernel-doc -v -none arch/x86/kernel/cpu/resctrl/*
+> 
+I've just run the above script and I see that there are a lot more warnings 
+that I was expecting.
 
-Applied to for-rc, thanks
+I want to fix as much as I can. Unfortunately I'm pretty sure I won't be able 
+to fix them all, just because the inner working and the purpose of some 
+functions are a bit obscure to me (at least until I get more knowledge of x86 
+architecture - it may take a lot of time because I'm also studying other 
+subsystems at the same time).
 
-Jason
+> On 6/2/2021 3:23 PM, Fabio M. De Francesco wrote:
+> > Fixed sparse warnings about the descriptions of some function
+> > parameters.
+> > 
+> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > ---
+> > 
+> >   arch/x86/kernel/cpu/resctrl/pseudo_lock.c | 4 +++-
+> >   1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+> > b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c index 
+f6451abddb09..c3629db90570 100644
+> > --- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+> > +++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+> > @@ -520,7 +520,7 @@ static int pseudo_lock_fn(void *_rdtgrp)
+> > 
+> >   /**
+> >   
+> >    * rdtgroup_monitor_in_progress - Test if monitoring in progress
+> > 
+> > - * @r: resource group being queried
+> > + * @rdtgrp: resource group being queried
+> > 
+> >    *
+> >    * Return: 1 if monitor groups have been created for this resource
+> >    * group, 0 otherwise.
+> > 
+> > @@ -1140,6 +1140,8 @@ static int measure_l3_residency(void *_plr)
+> > 
+> >   /**
+> >   
+> >    * pseudo_lock_measure_cycles - Trigger latency measure to pseudo-locked 
+region
+> > 
+> > + * @rdtgrp: resource group to which the pseudo-locked region belongs
+> > + * @sel: cache level selector
+> 
+> This is not correct. A more accurate description could be:
+> "select which measurement to perform on pseudo-locked region"
+>
+Here it is an example of my lack of knowledge/experience. Obviously, I'll 
+rewrite it according to your review.
+
+To summarize: as soon as possible I'll submit a v2 patch with the kernel-doc 
+fixes that I think I can understand. I am pretty sure that some fixes will not 
+be to your standards and that for what regards some others I will not even be 
+able to attempt to fix them :(
+
+Thanks you very much for your kind reply,
+
+Fabio
+> 
+> >    *
+> >    * The measurement of latency to access a pseudo-locked region should be
+> >    * done from a cpu that is associated with that pseudo-locked region.
+> 
+> Reinette
+
+
+
+
