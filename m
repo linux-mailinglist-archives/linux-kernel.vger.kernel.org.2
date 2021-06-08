@@ -2,313 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6965639EAD6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 02:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B744C39EADE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 02:38:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbhFHAjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Jun 2021 20:39:20 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:40637 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230209AbhFHAjT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Jun 2021 20:39:19 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 7906B5804E0;
-        Mon,  7 Jun 2021 20:37:26 -0400 (EDT)
-Received: from imap43 ([10.202.2.93])
-  by compute2.internal (MEProxy); Mon, 07 Jun 2021 20:37:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm3; bh=yBCq6nwjdfe7dMAcZu21nIyfwfagBbY
-        E5SfivjE0NBU=; b=QSG4Mf75bxuMOTWUpZLd9hfuWWOhffwrvIJdl565GGjCbHp
-        FsU/7cSnExk40ZcBxkU4a9XkPl0iKlEToNVoHVXqwocPPeb4J2z/V4mePE6K915l
-        pMDyg1rdAf6f2Gp/cne8qGMnf11FKyvOngVN9xB/8MZsA/X+ONPJT2G7Om+EnClz
-        jDLcHbY9z/eYW47SNeudU3KIPsrHWjHkmxJuAFl0vrwJHmVcgQbV2dMr4f08IpRz
-        Mf9n/fbCsLGUC7K5Z9FaGDcAEpMOei6t3Mo/a4SrMefdV1QZnQ2IMGvhNp0MdA0H
-        9wdtpsOJ6VhgnsBYYluf/3ajcunepAc68MfqOJw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=yBCq6n
-        wjdfe7dMAcZu21nIyfwfagBbYE5SfivjE0NBU=; b=GKrgIZP3/n9Xx79RGsKT1O
-        VGQqsMJlMsaYa05QKQjaSamCw1Qcsq5VsqpAuqzoc9bbrVO3IyuUj3bQR8vxzriI
-        1CtRfjisuZ9kQN1eqcbwPWdm7sWd78RC9eSa6p86ZhHNZiOxzgUw+YAh7zBySiWp
-        d2egvck1aaDulnz8IDLxXbSWae+Kp9KVtDSMH0pMnFzMUOafeSQ3Z9JqSWDUd3CI
-        nUMc6IS1McTHctyxaOquHrq5yrlChOR1mibAZFLZeMNjaekwY2V/TrQ5Tkeb6Na4
-        bxS6geXmDrFeE7/m5+DW4tBKjazd6FeBXFHHGw7b6/V9dDv3w1SXGOvmNmowayZQ
-        ==
-X-ME-Sender: <xms:xLu-YBopTqB2dHRusQmnc8xMm339jxIG5CGsr0RNHSTc8vFFZKnKZg>
-    <xme:xLu-YDr4IjKNVs8Jojt5CbuO-cmePj0V7YnUjXwnhEn23hGBuv4llzhohHv1OP1CP
-    7hDRnhjxuQq_7K82w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtkedgvdejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhephefhfeekgfekudevheffheeihedujeefjeevjeefudfgfeeutdeuvdeh
-    hfevueffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:xbu-YOMkwNwc0C9j_2CKSsL2gtGPLkPlg3RxFQ25C-9uXyy9vFEb5w>
-    <xmx:xbu-YM4SG7_n6L9M0g36gv1G2hhqsAplYKawS_XdFDI2DmbtQlDaNw>
-    <xmx:xbu-YA7al-d1FCGZoyUpWS-4VJlLiOKyqrvsv4fg7Tj_UwdxmO7RjQ>
-    <xmx:xru-YLK4_1AZSuHhbJYGcOqzqkiPLPBPQwHt3OmPim1BWdG1lTMWXw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id EE4F0AC0062; Mon,  7 Jun 2021 20:37:24 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-519-g27a961944e-fm-20210531.001-g27a96194
-Mime-Version: 1.0
-Message-Id: <15bfe16d-a9a1-464b-bb23-c59ac91b41a8@www.fastmail.com>
-In-Reply-To: <YKdfP6br29Te0VZ6@packtop>
-References: <20210510054213.1610760-1-andrew@aj.id.au>
- <20210510054213.1610760-12-andrew@aj.id.au> <YKdfP6br29Te0VZ6@packtop>
-Date:   Tue, 08 Jun 2021 10:07:03 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Zev Weiss" <zweiss@equinix.com>
-Cc:     "openipmi-developer@lists.sourceforge.net" 
-        <openipmi-developer@lists.sourceforge.net>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "Corey Minyard" <minyard@acm.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "Tomer Maimon" <tmaimon77@gmail.com>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "Avi Fishman" <avifishman70@gmail.com>,
-        "Patrick Venture" <venture@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Tali Perry" <tali.perry1@gmail.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "Benjamin Fair" <benjaminfair@google.com>,
-        "Arnd Bergmann" <arnd@arndb.de>
-Subject: Re: [PATCH v3 11/16] ipmi: kcs_bmc: Add serio adaptor
-Content-Type: text/plain
+        id S230516AbhFHAkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Jun 2021 20:40:07 -0400
+Received: from mga01.intel.com ([192.55.52.88]:63759 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230209AbhFHAkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Jun 2021 20:40:06 -0400
+IronPort-SDR: 4W9U8ECziSZU1ScDGlgOKBhg4yKFPJgIxV0pN5B0w4AnVyjOUg67l4oEkZOi9mr3XczhZ+sEZD
+ 4gmlfdTi9B2w==
+X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="226086133"
+X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; 
+   d="scan'208";a="226086133"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 17:38:14 -0700
+IronPort-SDR: s95zH8NAbUU0BR+idcxClf6YJ18jainXzWii12i/px4J2/vnUAiQtHgH99Jsx8FefISjaJHHdd
+ Ty7I0+35YM+A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; 
+   d="scan'208";a="551418168"
+Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 07 Jun 2021 17:38:12 -0700
+Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lqPkx-0008dM-Vk; Tue, 08 Jun 2021 00:38:11 +0000
+Date:   Tue, 08 Jun 2021 08:37:09 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/cleanups] BUILD SUCCESS
+ 23721c8e92f73f9f89e7362c50c2996a5c9ad483
+Message-ID: <60bebbb5.k4YxU46FNufye3a1%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
+branch HEAD: 23721c8e92f73f9f89e7362c50c2996a5c9ad483  x86/crash: Remove crash_reserve_low_1M()
 
+elapsed time: 732m
 
-On Fri, 21 May 2021, at 16:50, Zev Weiss wrote:
-> On Mon, May 10, 2021 at 12:42:08AM CDT, Andrew Jeffery wrote:
-> >kcs_bmc_serio acts as a bridge between the KCS drivers in the IPMI
-> >subsystem and the existing userspace interfaces available through the
-> >serio subsystem. This is useful when userspace would like to make use of
-> >the BMC KCS devices for purposes that aren't IPMI.
-> >
-> >Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-> >---
-> > drivers/char/ipmi/Kconfig         |  14 +++
-> > drivers/char/ipmi/Makefile        |   1 +
-> > drivers/char/ipmi/kcs_bmc_serio.c | 151 ++++++++++++++++++++++++++++++
-> > 3 files changed, 166 insertions(+)
-> > create mode 100644 drivers/char/ipmi/kcs_bmc_serio.c
-> >
-> >diff --git a/drivers/char/ipmi/Kconfig b/drivers/char/ipmi/Kconfig
-> >index bc5f81899b62..249b31197eea 100644
-> >--- a/drivers/char/ipmi/Kconfig
-> >+++ b/drivers/char/ipmi/Kconfig
-> >@@ -137,6 +137,20 @@ config IPMI_KCS_BMC_CDEV_IPMI
-> > 	  This support is also available as a module. The module will be
-> > 	  called kcs_bmc_cdev_ipmi.
-> >
-> >+config IPMI_KCS_BMC_SERIO
-> >+	depends on IPMI_KCS_BMC && SERIO
-> >+	tristate "SerIO adaptor for BMC KCS devices"
-> >+	help
-> >+	  Adapts the BMC KCS device for the SerIO subsystem. This allows users
-> >+	  to take advantage of userspace interfaces provided by SerIO where
-> >+	  appropriate.
-> >+
-> >+	  Say YES if you wish to expose KCS devices on the BMC via SerIO
-> >+	  interfaces.
-> >+
-> >+	  This support is also available as a module. The module will be
-> >+	  called kcs_bmc_serio.
-> >+
-> > config ASPEED_BT_IPMI_BMC
-> > 	depends on ARCH_ASPEED || COMPILE_TEST
-> > 	depends on REGMAP && REGMAP_MMIO && MFD_SYSCON
-> >diff --git a/drivers/char/ipmi/Makefile b/drivers/char/ipmi/Makefile
-> >index fcfa676afddb..84f47d18007f 100644
-> >--- a/drivers/char/ipmi/Makefile
-> >+++ b/drivers/char/ipmi/Makefile
-> >@@ -23,6 +23,7 @@ obj-$(CONFIG_IPMI_POWERNV) += ipmi_powernv.o
-> > obj-$(CONFIG_IPMI_WATCHDOG) += ipmi_watchdog.o
-> > obj-$(CONFIG_IPMI_POWEROFF) += ipmi_poweroff.o
-> > obj-$(CONFIG_IPMI_KCS_BMC) += kcs_bmc.o
-> >+obj-$(CONFIG_IPMI_KCS_BMC_SERIO) += kcs_bmc_serio.o
-> > obj-$(CONFIG_IPMI_KCS_BMC_CDEV_IPMI) += kcs_bmc_cdev_ipmi.o
-> > obj-$(CONFIG_ASPEED_BT_IPMI_BMC) += bt-bmc.o
-> > obj-$(CONFIG_ASPEED_KCS_IPMI_BMC) += kcs_bmc_aspeed.o
-> >diff --git a/drivers/char/ipmi/kcs_bmc_serio.c b/drivers/char/ipmi/kcs_bmc_serio.c
-> >new file mode 100644
-> >index 000000000000..30a2b7ab464b
-> >--- /dev/null
-> >+++ b/drivers/char/ipmi/kcs_bmc_serio.c
-> >@@ -0,0 +1,151 @@
-> >+// SPDX-License-Identifier: GPL-2.0-or-later
-> >+/* Copyright (c) 2021 IBM Corp. */
-> >+
-> >+#include <linux/delay.h>
-> >+#include <linux/device.h>
-> >+#include <linux/errno.h>
-> >+#include <linux/list.h>
-> >+#include <linux/module.h>
-> >+#include <linux/sched/signal.h>
-> >+#include <linux/serio.h>
-> >+#include <linux/slab.h>
-> >+
-> >+#include "kcs_bmc_client.h"
-> >+
-> >+struct kcs_bmc_serio {
-> >+	struct list_head entry;
-> >+
-> >+	struct kcs_bmc_client client;
-> >+	struct serio *port;
-> >+
-> >+	spinlock_t lock;
-> >+};
-> >+
-> >+static inline struct kcs_bmc_serio *client_to_kcs_bmc_serio(struct kcs_bmc_client *client)
-> >+{
-> >+	return container_of(client, struct kcs_bmc_serio, client);
-> >+}
-> >+
-> >+static irqreturn_t kcs_bmc_serio_event(struct kcs_bmc_client *client)
-> >+{
-> >+	struct kcs_bmc_serio *priv;
-> >+	u8 handled = IRQ_NONE;
-> >+	u8 status;
-> >+
-> >+	priv = client_to_kcs_bmc_serio(client);
-> >+
-> >+	spin_lock(&priv->lock);
-> >+
-> >+	status = kcs_bmc_read_status(client->dev);
-> >+
-> >+	if (status & KCS_BMC_STR_IBF)
-> >+		handled = serio_interrupt(priv->port, kcs_bmc_read_data(client->dev), 0);
-> >+
-> >+	spin_unlock(&priv->lock);
-> >+
-> >+	return handled;
-> >+}
-> >+
-> >+static const struct kcs_bmc_client_ops kcs_bmc_serio_client_ops = {
-> >+	.event = kcs_bmc_serio_event,
-> >+};
-> >+
-> >+static int kcs_bmc_serio_open(struct serio *port)
-> >+{
-> >+	struct kcs_bmc_serio *priv = port->port_data;
-> >+
-> >+	return kcs_bmc_enable_device(priv->client.dev, &priv->client);
-> >+}
-> >+
-> >+static void kcs_bmc_serio_close(struct serio *port)
-> >+{
-> >+	struct kcs_bmc_serio *priv = port->port_data;
-> >+
-> >+	kcs_bmc_disable_device(priv->client.dev, &priv->client);
-> >+}
-> >+
-> >+static DEFINE_SPINLOCK(kcs_bmc_serio_instances_lock);
-> >+static LIST_HEAD(kcs_bmc_serio_instances);
-> >+
-> >+static int kcs_bmc_serio_add_device(struct kcs_bmc_device *kcs_bmc)
-> >+{
-> >+	struct kcs_bmc_serio *priv;
-> >+	struct serio *port;
-> >+
-> >+	priv = devm_kzalloc(kcs_bmc->dev, sizeof(*priv), GFP_KERNEL);
-> >+	port = kzalloc(sizeof(*port), GFP_KERNEL);
-> 
-> Is there a particular reason to allocate port with a raw kzalloc()
-> instead of another devm_kzalloc()?
+configs tested: 198
+configs skipped: 3
 
-Yes, because it causes pointer confusion on remove. We get the following backtrace:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-[   95.018845] Backtrace: 
-[   95.019162] [<802e1fb0>] (___cache_free) from [<802e31cc>] (kfree+0xc0/0x1e8)
-[   95.019658]  r10:00000081 r9:8667c000 r8:80100284 r7:81000b40 r6:a0000013 r5:80640bd4
-[   95.020032]  r4:82a5ec40
-[   95.020206] [<802e310c>] (kfree) from [<80640bd4>] (serio_release_port+0x1c/0x28)
-[   95.020571]  r7:00000000 r6:819c1540 r5:86acf480 r4:82a5ed70
-[   95.020818] [<80640bb8>] (serio_release_port) from [<80565e00>] (device_release+0x40/0xb4)
-[   95.021387] [<80565dc0>] (device_release) from [<804a0bcc>] (kobject_put+0xc8/0x210)
-[   95.021961]  r5:80c77c30 r4:82a5ed70
-[   95.022141] [<804a0b04>] (kobject_put) from [<80566078>] (put_device+0x20/0x24)
-[   95.022537]  r7:80c820cc r6:82a5ec40 r5:80c820e4 r4:82a5ed70
-[   95.023017] [<80566058>] (put_device) from [<80640a58>] (serio_destroy_port+0x12c/0x140)
-[   95.023719] [<8064092c>] (serio_destroy_port) from [<80640b3c>] (serio_unregister_port+0x34/0x44)
-[   95.024326]  r7:7f0012b4 r6:7f002024 r5:80c820e4 r4:82a5ec40
-[   95.024792] [<80640b08>] (serio_unregister_port) from [<7f0100b8>] (kcs_bmc_serio_remove_device+0x90/0xbc [kcs_bmc_serio])
-[   95.026951]  r5:8668b7c0 r4:86acf0c0
-[   95.027390] [<7f010028>] (kcs_bmc_serio_remove_device [kcs_bmc_serio]) from [<7f00048c>] (kcs_bmc_unregister_driver+0x60/0xbd4 [kcs_bmc])
-[   95.028443]  r5:7f012018 r4:8668b7c0
-[   95.028634] [<7f00042c>] (kcs_bmc_unregister_driver [kcs_bmc]) from [<7f0102c4>] (kcs_bmc_serio_exit+0x1c/0xd58 [kcs_bmc_serio])
-[   95.029165]  r7:00000081 r6:80cd0dac r5:00000000 r4:7f012040
-[   95.029397] [<7f0102a8>] (kcs_bmc_serio_exit [kcs_bmc_serio]) from [<801cbab0>] (sys_delete_module+0x140/0x280)
-[   95.029875] [<801cb970>] (sys_delete_module) from [<80100080>] (ret_fast_syscall+0x0/0x58)
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                     loongson2k_defconfig
+sh                          r7780mp_defconfig
+arc                    vdk_hs38_smp_defconfig
+arm                      pxa255-idp_defconfig
+arm                         assabet_defconfig
+arc                          axs103_defconfig
+arm                     davinci_all_defconfig
+powerpc64                           defconfig
+powerpc                     sbc8548_defconfig
+arm                       versatile_defconfig
+arm                        oxnas_v6_defconfig
+powerpc                 mpc836x_mds_defconfig
+powerpc                     akebono_defconfig
+openrisc                  or1klitex_defconfig
+powerpc                       ppc64_defconfig
+arm                        multi_v7_defconfig
+powerpc                    sam440ep_defconfig
+m68k                         amcore_defconfig
+arm                           viper_defconfig
+sh                     sh7710voipgw_defconfig
+s390                          debug_defconfig
+arc                            hsdk_defconfig
+mips                            e55_defconfig
+powerpc                 mpc85xx_cds_defconfig
+mips                          rm200_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                           omap1_defconfig
+sh                             sh03_defconfig
+sh                          sdk7780_defconfig
+sparc64                          alldefconfig
+h8300                    h8300h-sim_defconfig
+powerpc                     ksi8560_defconfig
+s390                                defconfig
+powerpc                 xes_mpc85xx_defconfig
+arm                           sama5_defconfig
+mips                        omega2p_defconfig
+s390                             alldefconfig
+sh                            migor_defconfig
+openrisc                         alldefconfig
+powerpc                    mvme5100_defconfig
+mips                  decstation_64_defconfig
+mips                          ath79_defconfig
+powerpc                      ppc44x_defconfig
+m68k                            q40_defconfig
+powerpc                 mpc8272_ads_defconfig
+arm                             ezx_defconfig
+riscv             nommu_k210_sdcard_defconfig
+sh                           se7343_defconfig
+arc                     nsimosci_hs_defconfig
+mips                      pic32mzda_defconfig
+riscv                            alldefconfig
+arm                        cerfcube_defconfig
+mips                      malta_kvm_defconfig
+arm                          ep93xx_defconfig
+alpha                            allyesconfig
+powerpc                mpc7448_hpc2_defconfig
+sh                        sh7757lcr_defconfig
+powerpc                  mpc866_ads_defconfig
+sh                 kfr2r09-romimage_defconfig
+x86_64                           allyesconfig
+arm                            lart_defconfig
+mips                           ip32_defconfig
+riscv                          rv32_defconfig
+powerpc                   motionpro_defconfig
+arm                      jornada720_defconfig
+arm                        realview_defconfig
+m68k                            mac_defconfig
+x86_64                            allnoconfig
+powerpc                     tqm8548_defconfig
+powerpc                     tqm8540_defconfig
+arm                           sunxi_defconfig
+powerpc                 mpc834x_itx_defconfig
+powerpc                    adder875_defconfig
+x86_64                           alldefconfig
+arm                            hisi_defconfig
+arm                             pxa_defconfig
+arm                        shmobile_defconfig
+sh                   sh7770_generic_defconfig
+m68k                                defconfig
+xtensa                           allyesconfig
+mips                       bmips_be_defconfig
+powerpc                      pasemi_defconfig
+mips                           ci20_defconfig
+riscv                    nommu_k210_defconfig
+arc                              allyesconfig
+sh                          rsk7264_defconfig
+arm                             mxs_defconfig
+um                             i386_defconfig
+powerpc                      ppc6xx_defconfig
+arm                         axm55xx_defconfig
+mips                         db1xxx_defconfig
+arm                      footbridge_defconfig
+h8300                     edosk2674_defconfig
+nds32                             allnoconfig
+mips                           jazz_defconfig
+arm                        mvebu_v5_defconfig
+arc                        nsimosci_defconfig
+xtensa                  nommu_kc705_defconfig
+powerpc                 mpc832x_mds_defconfig
+sh                             espt_defconfig
+arc                           tb10x_defconfig
+powerpc                         wii_defconfig
+powerpc                    ge_imp3a_defconfig
+powerpc                         ps3_defconfig
+powerpc                     mpc5200_defconfig
+m68k                       m5208evb_defconfig
+sparc                       sparc64_defconfig
+powerpc                 canyonlands_defconfig
+sh                          lboxre2_defconfig
+sh                               alldefconfig
+mips                           mtx1_defconfig
+powerpc                          g5_defconfig
+arm                         mv78xx0_defconfig
+um                           x86_64_defconfig
+s390                       zfcpdump_defconfig
+sh                            hp6xx_defconfig
+powerpc                 mpc836x_rdk_defconfig
+arm                            qcom_defconfig
+arm                         s5pv210_defconfig
+powerpc                 linkstation_defconfig
+ia64                        generic_defconfig
+powerpc                     taishan_defconfig
+arm                         palmz72_defconfig
+arm                         lpc32xx_defconfig
+sh                      rts7751r2d1_defconfig
+sh                                  defconfig
+powerpc                        warp_defconfig
+powerpc                 mpc8315_rdb_defconfig
+powerpc                          allmodconfig
+arm                          lpd270_defconfig
+powerpc               mpc834x_itxgp_defconfig
+powerpc                        fsp2_defconfig
+x86_64                              defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+csky                                defconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20210607
+i386                 randconfig-a006-20210607
+i386                 randconfig-a004-20210607
+i386                 randconfig-a001-20210607
+i386                 randconfig-a002-20210607
+i386                 randconfig-a005-20210607
+x86_64               randconfig-a015-20210607
+x86_64               randconfig-a011-20210607
+x86_64               randconfig-a014-20210607
+x86_64               randconfig-a012-20210607
+x86_64               randconfig-a016-20210607
+x86_64               randconfig-a013-20210607
+i386                 randconfig-a015-20210607
+i386                 randconfig-a013-20210607
+i386                 randconfig-a011-20210607
+i386                 randconfig-a016-20210607
+i386                 randconfig-a014-20210607
+i386                 randconfig-a012-20210607
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+um                            kunit_defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-> 
-> >+	if (!(priv && port))
-> >+		return -ENOMEM;
-> >+
-> >+	port->id.type = SERIO_8042;
-> >+	port->open = kcs_bmc_serio_open;
-> >+	port->close = kcs_bmc_serio_close;
-> >+	port->port_data = priv;
-> >+	port->dev.parent = kcs_bmc->dev;
-> >+
-> >+	spin_lock_init(&priv->lock);
-> >+	priv->port = port;
-> >+	priv->client.dev = kcs_bmc;
-> >+	priv->client.ops = &kcs_bmc_serio_client_ops;
-> >+
-> >+	spin_lock_irq(&kcs_bmc_serio_instances_lock);
-> >+	list_add(&priv->entry, &kcs_bmc_serio_instances);
-> >+	spin_unlock_irq(&kcs_bmc_serio_instances_lock);
-> >+
-> >+	serio_register_port(port);
-> >+
-> >+	dev_info(kcs_bmc->dev, "Initialised serio client for channel %d", kcs_bmc->channel);
-> >+
-> >+	return 0;
-> >+}
-> >+
-> >+static int kcs_bmc_serio_remove_device(struct kcs_bmc_device *kcs_bmc)
-> >+{
-> >+	struct kcs_bmc_serio *priv = NULL, *pos;
-> >+
-> >+	spin_lock_irq(&kcs_bmc_serio_instances_lock);
-> >+	list_for_each_entry(pos, &kcs_bmc_serio_instances, entry) {
-> >+		if (pos->client.dev == kcs_bmc) {
-> >+			priv = pos;
-> >+			list_del(&pos->entry);
-> >+			break;
-> >+		}
-> >+	}
-> >+	spin_unlock_irq(&kcs_bmc_serio_instances_lock);
-> >+
-> >+	if (!priv)
-> >+		return -ENODEV;
-> >+
-> >+	serio_unregister_port(priv->port);
-> >+	kcs_bmc_disable_device(kcs_bmc, &priv->client);
-> >+	devm_kfree(priv->client.dev->dev, priv);
-> 
-> Looks like the priv->port allocation would leak here I think?
+clang tested configs:
+x86_64               randconfig-b001-20210607
+x86_64               randconfig-a002-20210607
+x86_64               randconfig-a004-20210607
+x86_64               randconfig-a003-20210607
+x86_64               randconfig-a006-20210607
+x86_64               randconfig-a005-20210607
+x86_64               randconfig-a001-20210607
 
-No, because port's released through serio_unregister_port(). It's not super obvious though, so I'll add a comment next to the kzalloc().
-
-> 
-> Also, is the asymmetry of having kcs_bmc_disable_device() here but no
-> corresponding kcs_bmc_enable_device() in kcs_bmc_serio_add_device()
-> intentional?  If so, an explanatory comment of some sort might be nice
-> to add.
-
-It's intentional to make sure the device isn't left registered as enabled in the core. kcs_bmc_enable_device() is called in the open() path.
-
-Andrew
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
