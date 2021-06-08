@@ -2,98 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC7639F30C
+	by mail.lfdr.de (Postfix) with ESMTP id EF99F39F30F
 	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 11:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231589AbhFHJ45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 05:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55002 "EHLO
+        id S231472AbhFHJ5E convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 8 Jun 2021 05:57:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231409AbhFHJ4m (ORCPT
+        with ESMTP id S231542AbhFHJ5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 05:56:42 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B43EC061787;
-        Tue,  8 Jun 2021 02:54:50 -0700 (PDT)
-Received: from cap.home.8bytes.org (p4ff2ba7c.dip0.t-ipconnect.de [79.242.186.124])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id 0E26A4CA;
-        Tue,  8 Jun 2021 11:54:48 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     x86@kernel.org
-Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
-        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-Subject: [PATCH v3 7/7] x86/sev-es: Propagate #GP if getting linear instruction address failed
-Date:   Tue,  8 Jun 2021 11:54:39 +0200
-Message-Id: <20210608095439.12668-8-joro@8bytes.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210608095439.12668-1-joro@8bytes.org>
-References: <20210608095439.12668-1-joro@8bytes.org>
+        Tue, 8 Jun 2021 05:57:00 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F66C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 02:55:08 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lqYRr-0002kc-Dt; Tue, 08 Jun 2021 11:55:03 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lqYRr-0002l8-4e; Tue, 08 Jun 2021 11:55:03 +0200
+Message-ID: <7ff9ab255bc95ae7400b77bef6e0a2949858f04c.camel@pengutronix.de>
+Subject: Re: [PATCH RESENT] MEDIA CODA: Fix NULL ptr dereference in the
+ encoder.
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Krzysztof Halasa <khalasa@piap.pl>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 08 Jun 2021 11:55:03 +0200
+In-Reply-To: <m3k0n6gciy.fsf@t19.piap.pl>
+References: <m3k0n6gciy.fsf@t19.piap.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+Hi Krzysztof,
 
-When an instruction is fetched from user-space, segmentation needs to
-be taken into account. This means that getting the linear address of
-an instruction can fail. Hardware would raise a #GP
-exception in that case, but the #VC exception handler would emulate it
-as a page-fault.
+thank you for the patch.
 
-The insn_fetch_from_user*() functions now provide the relevant
-information in case of an failure. Use that and propagate a #GP when
-the linear address of an instruction to fetch could not be calculated.
+On Mon, 2021-06-07 at 13:05 +0200, Krzysztof Halasa wrote:
+> ctx->mb_err_cnt_ctrl could be NULL in case of failed initialization
+> (on decoders), and encoders don't use it at all.
+> 
+> Fixes: b2d3bef1aa78 ("media: coda: Add a V4L2 user for control error macroblocks count")
+> Signed-off-by: Krzysztof Halasa <khalasa@piap.pl>
+> Cc: stable@vger.kernel.org # 5.11+
+> 
+> diff --git a/drivers/media/platform/coda/coda-bit.c b/drivers/media/platform/coda/coda-bit.c
+> index 2f42808c43a4..26e37cbfe8dd 100644
+> --- a/drivers/media/platform/coda/coda-bit.c
+> +++ b/drivers/media/platform/coda/coda-bit.c
+> @@ -2373,8 +2373,10 @@ static void coda_finish_decode(struct coda_ctx *ctx)
+>  	if (err_mb > 0) {
+>  		if (__ratelimit(&dev->mb_err_rs))
+>  			coda_dbg(1, ctx, "errors in %d macroblocks\n", err_mb);
+> -		v4l2_ctrl_s_ctrl(ctx->mb_err_cnt_ctrl,
+> -				 v4l2_ctrl_g_ctrl(ctx->mb_err_cnt_ctrl) + err_mb);
+> +		if (ctx->mb_err_cnt_ctrl)
+> +			v4l2_ctrl_s_ctrl(ctx->mb_err_cnt_ctrl,
+> +					 v4l2_ctrl_g_ctrl(ctx->mb_err_cnt_ctrl)
+> +					 + err_mb);
+>  	}
+>  
+>  	if (dev->devtype->product == CODA_HX4 ||
 
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- arch/x86/kernel/sev.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+I don't think this is required though. If v4l2_ctrl_new_custom() fails
+in coda_ctrls_setup(), ctx->ctrls.error is set and the function returns
+-EINVAL, causing coda_open() to fail with the error message "failed to
+setup coda controls". I see no way to reach coda_finish_decode() without
+ctx->mb_err_cnt_ctrl being set correctly.
 
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index 2b499affb2fb..737d7198aab1 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -270,11 +270,18 @@ static enum es_result __vc_decode_user_insn(struct es_em_ctxt *ctxt)
- 	int insn_bytes;
- 
- 	insn_bytes = insn_fetch_from_user_inatomic(ctxt->regs, buffer);
--	if (insn_bytes <= 0) {
-+	if (insn_bytes == 0) {
-+		/* Nothing could be copied */
- 		ctxt->fi.vector     = X86_TRAP_PF;
- 		ctxt->fi.error_code = X86_PF_INSTR | X86_PF_USER;
- 		ctxt->fi.cr2        = ctxt->regs->ip;
- 		return ES_EXCEPTION;
-+	} else if (insn_bytes == -EINVAL) {
-+		/* Effective RIP could not be calculated */
-+		ctxt->fi.vector     = X86_TRAP_GP;
-+		ctxt->fi.error_code = 0;
-+		ctxt->fi.cr2        = 0;
-+		return ES_EXCEPTION;
- 	}
- 
- 	if (!insn_decode_from_regs(&ctxt->insn, ctxt->regs, buffer, insn_bytes))
--- 
-2.31.1
+> diff --git a/drivers/media/platform/coda/coda-common.c b/drivers/media/platform/coda/coda-common.c
+> index 96802b8f47ea..285c80f87b65 100644
+> --- a/drivers/media/platform/coda/coda-common.c
+> +++ b/drivers/media/platform/coda/coda-common.c
+> @@ -2062,7 +2062,8 @@ static int coda_start_streaming(struct vb2_queue *q, unsigned int count)
+>  	if (q_data_dst->fourcc == V4L2_PIX_FMT_JPEG)
+>  		ctx->params.gop_size = 1;
+>  	ctx->gopcounter = ctx->params.gop_size - 1;
+> -	v4l2_ctrl_s_ctrl(ctx->mb_err_cnt_ctrl, 0);
+> +	if (ctx->mb_err_cnt_ctrl)
+> +		v4l2_ctrl_s_ctrl(ctx->mb_err_cnt_ctrl, 0);
+>  
+>  	ret = ctx->ops->start_streaming(ctx);
+>  	if (ctx->inst_type == CODA_INST_DECODER) {
 
+This is already fixed by [1] in media-tree/master.
+
+[1] 0b276e470a4d ("media: coda: fix macroblocks count control usage")
+
+regards
+Philipp
