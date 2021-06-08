@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83ECF3A0448
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C81603A0443
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 21:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236986AbhFHT2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 15:28:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37984 "EHLO mail.kernel.org"
+        id S236129AbhFHT1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 15:27:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237237AbhFHTPt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 15:15:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16F9F61953;
-        Tue,  8 Jun 2021 18:50:33 +0000 (UTC)
+        id S238414AbhFHTO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 15:14:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E610061467;
+        Tue,  8 Jun 2021 18:50:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623178234;
-        bh=+wQ8+LE8IG7lh9L8LyganhbGoLUbeFd4VZGjTbTX/E8=;
+        s=korg; t=1623178226;
+        bh=/TP5nYJ4HyxCrCMaY6p0KHNwF6cbf8MV53uNimr1lCg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DiszrmjOzRVA2COPLjyGZ/dZVK3JyhR1auKghbovu640qANpQv0Ms+OS+oYdiaYiL
-         aYJ27u1jQTMJHAlkZXs7c26d7RK41IAF87BW3Z3USQp636yUPSUObRx+pFBLftxEW9
-         b4VZ3+WTwnEc33u8OAj1gCU8f4xrVAF35RbIxGAU=
+        b=lFjddGJAHrj/L5E4UoUot5V7APMn8iKB3tmYWx3ZpI3JHzvcVeZ/DF2YXYKxeBCFT
+         9N+Zn09gg/xWd3ZcYiAiWSXPh6OnClitvrNSgKoIQrldokdzMIvTqA7xqJEJmfzjUS
+         R42GWEknoiLDxwcVGBDc140gQXb3OhHRRp5kEVrk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jisheng Zhang <jszhang@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
+        stable@vger.kernel.org, James Zhu <James.Zhu@amd.com>,
+        Leo Liu <leo.liu@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 082/161] riscv: vdso: fix and clean-up Makefile
-Date:   Tue,  8 Jun 2021 20:26:52 +0200
-Message-Id: <20210608175948.212710173@linuxfoundation.org>
+Subject: [PATCH 5.12 089/161] drm/amdgpu/vcn3: add cancel_delayed_work_sync before power gate
+Date:   Tue,  8 Jun 2021 20:26:59 +0200
+Message-Id: <20210608175948.444152748@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210608175945.476074951@linuxfoundation.org>
 References: <20210608175945.476074951@linuxfoundation.org>
@@ -40,72 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jisheng Zhang <jszhang@kernel.org>
+From: James Zhu <James.Zhu@amd.com>
 
-[ Upstream commit 772d7891e8b3b0baae7bb88a294d61fd07ba6d15 ]
+[ Upstream commit 4a62542ae064e3b645d6bbf2295a6c05136956c6 ]
 
-Running "make" on an already compiled kernel tree will rebuild the
-kernel even without any modifications:
+Add cancel_delayed_work_sync before set power gating state
+to avoid race condition issue when power gating.
 
-  CALL    linux/scripts/checksyscalls.sh
-  CALL    linux/scripts/atomic/check-atomics.sh
-  CHK     include/generated/compile.h
-  SO2S    arch/riscv/kernel/vdso/vdso-syms.S
-  AS      arch/riscv/kernel/vdso/vdso-syms.o
-  AR      arch/riscv/kernel/vdso/built-in.a
-  AR      arch/riscv/kernel/built-in.a
-  AR      arch/riscv/built-in.a
-  GEN     .version
-  CHK     include/generated/compile.h
-  UPD     include/generated/compile.h
-  CC      init/version.o
-  AR      init/built-in.a
-  LD      vmlinux.o
-
-The reason is "Any target that utilizes if_changed must be listed in
-$(targets), otherwise the command line check will fail, and the target
-will always be built" as explained by Documentation/kbuild/makefiles.rst
-
-Fix this build bug by adding vdso-syms.S to $(targets)
-
-At the same time, there are two trivial clean up modifications:
-
-- the vdso-dummy.o is not needed any more after so remove it.
-
-- vdso.lds is a generated file, so it should be prefixed with
-  $(obj)/ instead of $(src)/
-
-Fixes: c2c81bb2f691 ("RISC-V: Fix the VDSO symbol generaton for binutils-2.35+")
+Signed-off-by: James Zhu <James.Zhu@amd.com>
+Reviewed-by: Leo Liu <leo.liu@amd.com>
+Acked-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/kernel/vdso/Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
-index ca2b40dfd24b..24d936c147cd 100644
---- a/arch/riscv/kernel/vdso/Makefile
-+++ b/arch/riscv/kernel/vdso/Makefile
-@@ -23,7 +23,7 @@ ifneq ($(c-gettimeofday-y),)
- endif
+diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c b/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
+index ebbc04ff5da0..90138469648a 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
+@@ -367,15 +367,14 @@ done:
+ static int vcn_v3_0_hw_fini(void *handle)
+ {
+ 	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
+-	struct amdgpu_ring *ring;
+ 	int i;
  
- # Build rules
--targets := $(obj-vdso) vdso.so vdso.so.dbg vdso.lds vdso-dummy.o
-+targets := $(obj-vdso) vdso.so vdso.so.dbg vdso.lds vdso-syms.S
- obj-vdso := $(addprefix $(obj)/, $(obj-vdso))
++	cancel_delayed_work_sync(&adev->vcn.idle_work);
++
+ 	for (i = 0; i < adev->vcn.num_vcn_inst; ++i) {
+ 		if (adev->vcn.harvest_config & (1 << i))
+ 			continue;
  
- obj-y += vdso.o vdso-syms.o
-@@ -41,7 +41,7 @@ KASAN_SANITIZE := n
- $(obj)/vdso.o: $(obj)/vdso.so
- 
- # link rule for the .so file, .lds has to be first
--$(obj)/vdso.so.dbg: $(src)/vdso.lds $(obj-vdso) FORCE
-+$(obj)/vdso.so.dbg: $(obj)/vdso.lds $(obj-vdso) FORCE
- 	$(call if_changed,vdsold)
- LDFLAGS_vdso.so.dbg = -shared -s -soname=linux-vdso.so.1 \
- 	--build-id=sha1 --hash-style=both --eh-frame-hdr
+-		ring = &adev->vcn.inst[i].ring_dec;
+-
+ 		if (!amdgpu_sriov_vf(adev)) {
+ 			if ((adev->pg_flags & AMD_PG_SUPPORT_VCN_DPG) ||
+ 					(adev->vcn.cur_state != AMD_PG_STATE_GATE &&
 -- 
 2.30.2
 
