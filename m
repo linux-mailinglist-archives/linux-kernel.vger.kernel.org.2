@@ -2,82 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65BC539FA95
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:26:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFC039FA98
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232948AbhFHP1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 11:27:38 -0400
-Received: from mail-vk1-f180.google.com ([209.85.221.180]:43539 "EHLO
-        mail-vk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232956AbhFHP1C (ORCPT
+        id S231371AbhFHP17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 11:27:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59527 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233167AbhFHP1d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 11:27:02 -0400
-Received: by mail-vk1-f180.google.com with SMTP id d13so240842vkl.10;
-        Tue, 08 Jun 2021 08:24:55 -0700 (PDT)
+        Tue, 8 Jun 2021 11:27:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623165932;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Br1rr7QBQj6YS5zJZEG2ZfZMvTHbAXZUz7RdIVHg2ZE=;
+        b=QlwGOHE77Gmj7GZS2CnyKE1OXoaP/lB3tdU4QUGzCW6KtwWReNgwCU935RCVfaFKxl1Lq/
+        0aJgI3IF9j1lC3u3TReCkMNzpCA+cTATwIFxyz7A5lbocfn2CGrl3qmGCOhxoNfrMVP6zN
+        W+jVzI/gU7BKBGWAJAiEQavot7IJ7cI=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-387-yvl2-GesMsyNxXTKn1c7hg-1; Tue, 08 Jun 2021 11:25:31 -0400
+X-MC-Unique: yvl2-GesMsyNxXTKn1c7hg-1
+Received: by mail-wr1-f69.google.com with SMTP id m27-20020a056000025bb0290114d19822edso9586754wrz.21
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 08:25:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ad+EBgofQNw1MfBBcdhLWexkoajVnv5JnIhLXQOx13o=;
-        b=YJW+iaoLs9yoJlGZqtEHZx7VHsyIN94S4n91m4BeScx519XZJkEy3sVT/FtSwoHVoe
-         457eIheSXiL4Ylwn7TdQh7+GO0UQINg4rr5L+SlmtTKL2+odSyqghVtbAI3KlerZ/BTq
-         S8UBKXoqsVqUHff5J/EIiU24XxMm85fNxdY7WQ73r1QgH8/XQNqLXBOZj1ag+kdyTO5l
-         vG/6q/ezNXIhMITBpZ19QxrFTP6Zo4pgYM5Uaoj/DUfgzrGvlJ4oS81URCiRuxO8zVBz
-         4SQpE1bvWdpvHQHsBFMFkW1eBjokb+XSHVQ3Q4jZZaEh5HPcxub2UbtZw2LMeznEOFyo
-         jTXg==
-X-Gm-Message-State: AOAM531KiRZFU4VyZSIw1bJXTYVymhOIaWZKX5NBYI52R0lf6hrImDDt
-        gi3mRCmS54VtG6u9jgJmXPsYI+x6NyeYMb/04jE=
-X-Google-Smtp-Source: ABdhPJxFvJflEZlUr55+YSzTOMgbS4a7skjPqZXcucnn5AZVvlKzPy0Ni14TW7ujM4pgHc4clcRKAeENUXDtTdCvKRQ=
-X-Received: by 2002:a1f:b4c5:: with SMTP id d188mr396167vkf.5.1623165894383;
- Tue, 08 Jun 2021 08:24:54 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Br1rr7QBQj6YS5zJZEG2ZfZMvTHbAXZUz7RdIVHg2ZE=;
+        b=fBrUJBApPX77j4Z+MhVkcLnfyqNWreLexGZYK/d1oEako3ejo5IOeicziC9tVtJ9Oh
+         eQ+APoUq9UaDtcZdYIxflt7dnMYvK64FoA14o0uojteUXKwgqV8VVYT9KKRPNq2QBHeq
+         TpSNeMqHwPyagAlgyUrxZ7fnUjPKsfTVuOpWHyZReLeoNU18uBIyCPQawtUJeTlnKgrZ
+         x/SloL9KNS9J1LH+VBLhCj0+5WSsGLE2tl5/eQBSxMVTvYZDS8atWPwtH+yYvkrfyBvv
+         PSQ+3OpT+qqqy0n5UFP1/Cr3auwNpOZ8CxnKW3eXt+tNq5S2J9kYKGBT1BScB71n5YpZ
+         41xA==
+X-Gm-Message-State: AOAM530FdXp1DT7o4OCPZ8fHE35FPa5iYFnIh7x3CGm0qDtfmOvvXRiC
+        umz0iALMtoTBjTjbulmdfELX1PTIT8BS3GSgFXFT6dc/lsm0CYwgG96HJz+sJNkobKesNeT/5bE
+        LOGUG2pN4/1l/SfcAAExUd3C5
+X-Received: by 2002:adf:f207:: with SMTP id p7mr17509463wro.275.1623165930408;
+        Tue, 08 Jun 2021 08:25:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwmC1Lyls5BEV3cQOjm5iHNO4inyBWR7jW6utYjAybKyvaHNOJsr9hBv2b5dFrZgWVD7tUMVA==
+X-Received: by 2002:adf:f207:: with SMTP id p7mr17509455wro.275.1623165930303;
+        Tue, 08 Jun 2021 08:25:30 -0700 (PDT)
+Received: from dresden.str.redhat.com ([2a02:908:1e46:160:b272:8083:d5:bc7d])
+        by smtp.gmail.com with ESMTPSA id b188sm4379485wmh.18.2021.06.08.08.25.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Jun 2021 08:25:30 -0700 (PDT)
+Subject: Re: [PATCH v2 4/7] fuse: Add dedicated filesystem context ops for
+ submounts
+To:     Greg Kurz <groug@kaod.org>, Miklos Szeredi <miklos@szeredi.hu>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        virtio-fs@redhat.com, Vivek Goyal <vgoyal@redhat.com>
+References: <20210604161156.408496-1-groug@kaod.org>
+ <20210604161156.408496-5-groug@kaod.org>
+From:   Max Reitz <mreitz@redhat.com>
+Message-ID: <233b722a-4794-6905-f9d9-c0445ae24812@redhat.com>
+Date:   Tue, 8 Jun 2021 17:25:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210603221758.10305-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210603221758.10305-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210603221758.10305-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 8 Jun 2021 17:24:42 +0200
-Message-ID: <CAMuHMdUqJFnkK=0tX10ud-3vZFyaQ7p8oKxxuWnrY8Z6cbM2qA@mail.gmail.com>
-Subject: Re: [PATCH v2 05/12] arm64: defconfig: Enable ARCH_R9A07G044
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210604161156.408496-5-groug@kaod.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 4, 2021 at 12:18 AM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Enable the Renesas RZ/G2L SoC variants in the ARM64 defconfig.
+On 04.06.21 18:11, Greg Kurz wrote:
+> The creation of a submount is open-coded in fuse_dentry_automount().
+> This brings a lot of complexity and we recently had to fix bugs
+> because we weren't setting SB_BORN or because we were unlocking
+> sb->s_umount before sb was fully configured. Most of these could
+> have been avoided by using the mount API instead of open-coding.
 >
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> Basically, this means coming up with a proper ->get_tree()
+> implementation for submounts and call vfs_get_tree(), or better
+> fc_mount().
+>
+> The creation of the superblock for submounts is quite different from
+> the root mount. Especially, it doesn't require to allocate a FUSE
+> filesystem context, nor to parse parameters.
+>
+> Introduce a dedicated context ops for submounts to make this clear.
+> This is just a placeholder for now, fuse_get_tree_submount() will
+> be populated in a subsequent patch.
+>
+> Only visible change is that we stop allocating/freeing a useless FUSE
+> filesystem context with submounts.
+>
+> Signed-off-by: Greg Kurz <groug@kaod.org>
+> ---
+>   fs/fuse/fuse_i.h    |  5 +++++
+>   fs/fuse/inode.c     | 16 ++++++++++++++++
+>   fs/fuse/virtio_fs.c |  3 +++
+>   3 files changed, 24 insertions(+)
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Max Reitz <mreitz@redhat.com>
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
