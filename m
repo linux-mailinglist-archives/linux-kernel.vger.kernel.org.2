@@ -2,119 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E986139F44F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A39FD39F46A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 12:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229942AbhFHKz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 06:55:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39866 "EHLO
+        id S232048AbhFHK6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 06:58:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229937AbhFHKzZ (ORCPT
+        with ESMTP id S232029AbhFHK6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 06:55:25 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C89A7C061574;
-        Tue,  8 Jun 2021 03:53:21 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id f11so10622454vst.0;
-        Tue, 08 Jun 2021 03:53:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=f5hP7X6WI56JdWoZLZrHxXTsaf70BoFuMh2uY4QI6S4=;
-        b=LtYm5V66dJuNk679QaZ5fIyWD337d6fOpiB7Y4mezsS6QugxkFtku5M3hyvsbX5Sys
-         ivbLuZ6i2/nMGWsmHKJNaSOBCmLHCpT05UQnAJw+efD7BdKE32+PqvT32ao4q7hE2WAX
-         KGXDuc+25FVyAS5YCtByzAyirgdTi/6D0woMJfCDWown50xIYpPig0J/3k8NBOXqYQB8
-         E3r05M3F9s1So1sPla51axX4PgtHU831zjeKxu6XOgOpUyYgvOdNn/p68M7umNKjkA3j
-         D5IeBzchDKc5uxGVLqNr9kJvMFu6+O+eayxssP+McNCQ5EG9Lf+cRHBNZLlyPuKd3hz0
-         owtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=f5hP7X6WI56JdWoZLZrHxXTsaf70BoFuMh2uY4QI6S4=;
-        b=C/MhfI3vqlJ9qi/enNwyPw/uaEEHwX1Eyc+TTU2BUcTOXHiSpRNE12adcXoB42qpLD
-         kIJrtG4Rz9OFqpxT9vIlG/HzBPNK5rLGMlbN2bmFeualn9+904g4q1Vm8KI4FupAINAj
-         CgG+uZXHYFGuqaSsICIE5XWjbMQiwPY1bn6DGEgwECZKuocSThiK5NyIRpBMzUZU/isx
-         AOJLbRqIrCj7ISKwDuFZ4LTMvwjxeul5mM+tDtK6P3SnMbSLY3CKRj9R2UiM9PAvsDCv
-         T+HAWuKYBWBuDGgovdObXsYAR46/60dk6HQ5oMbCM3oWNNoJz4nwrT/Tdwg6lte30ZSt
-         AqCQ==
-X-Gm-Message-State: AOAM531GyC+GHXonoIQXldth2VQExUsnRqGm/ySMHPFjyFREiwpDkD7E
-        iNBqjj1ObAy1UOtTd35GH6BsMkxXqH2gwIBd7vksL1Bqa7A=
-X-Google-Smtp-Source: ABdhPJyG59a8KqGRbarb/eR+TeduAtdCFsrlWRNdkI+s3hH8Asm9jcZu7gVPVmO/VwH+PCpBU4daVYl/UUx849iuVMs=
-X-Received: by 2002:a67:cd08:: with SMTP id u8mr3988866vsl.18.1623149601020;
- Tue, 08 Jun 2021 03:53:21 -0700 (PDT)
+        Tue, 8 Jun 2021 06:58:17 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 246D8C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Jun 2021 03:56:19 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:c184:ea65:c3d6:a616])
+        by albert.telenet-ops.be with bizsmtp
+        id EawC250031G4u2S06awCew; Tue, 08 Jun 2021 12:56:17 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lqZP1-00EOq1-D6; Tue, 08 Jun 2021 12:56:11 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lqZP0-008IPP-RD; Tue, 08 Jun 2021 12:56:10 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Omkar Kulkarni <okulkarni@marvell.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Dean Balandin <dbalandin@marvell.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Shai Malin <smalin@marvell.com>
+Cc:     Petr Mladek <pmladek@suse.com>, linux-nvme@lists.infradead.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] nvme: NVME_TCP_OFFLOAD should not default to m
+Date:   Tue,  8 Jun 2021 12:56:09 +0200
+Message-Id: <39b1a3684880e1d85ef76e34403886e8f1d22508.1623149635.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210608202748.06334136@canb.auug.org.au>
-In-Reply-To: <20210608202748.06334136@canb.auug.org.au>
-From:   Hyunchul Lee <hyc.lee@gmail.com>
-Date:   Tue, 8 Jun 2021 19:53:09 +0900
-Message-ID: <CANFS6baQi_PDM+4XHNn6MnFtmvbP3JUDJJgw7fvkGDYja4=ELg@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the cifs tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Steve French <smfrench@gmail.com>,
-        Namjae Jeon <namjae.jeon@samsung.com>,
-        Namjae Jeon <linkinjeon@kernel.org>
-Cc:     CIFS <linux-cifs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The help text for the symbol controlling support for the NVM Express
+over Fabrics TCP offload common layer suggests to not enable this
+support when unsure.
 
-2021=EB=85=84 6=EC=9B=94 8=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 7:27, St=
-ephen Rothwell <sfr@canb.auug.org.au>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> Hi all,
->
-> After merging the cifs tree, today's linux-next build (powerpc
-> allyesconfig) failed like this:
->
-> ld: fs/cifsd/spnego_negtokeninit.asn1.o:(.rodata.spnego_negtokeninit_deco=
-der+0x0): multiple definition of `spnego_negtokeninit_decoder'; fs/cifs/spn=
-ego_negtoken
-> init.asn1.o:(.rodata.spnego_negtokeninit_decoder+0x0): first defined here
-> ld: fs/cifsd/asn1.o:(.opd+0xa8): multiple definition of `gssapi_this_mech=
-'; fs/cifs/asn1.o:(.opd+0x18): first defined here
-> ld: fs/cifsd/asn1.o: in function `.gssapi_this_mech':
-> asn1.c:(.text.gssapi_this_mech+0x0): multiple definition of `.gssapi_this=
-_mech'; fs/cifs/asn1.o:asn1.c:(.text.gssapi_this_mech+0x0): first defined h=
-ere
-> ld: fs/cifsd/asn1.o:(.opd+0xc0): multiple definition of `neg_token_init_m=
-ech_type'; fs/cifs/asn1.o:(.opd+0x30): first defined here
-> ld: fs/cifsd/asn1.o: in function `.neg_token_init_mech_type':
-> asn1.c:(.text.neg_token_init_mech_type+0x0): multiple definition of `.neg=
-_token_init_mech_type'; fs/cifs/asn1.o:asn1.c:(.text.neg_token_init_mech_ty=
-pe+0x0): first defined here
->
-> Caused by commit
->
->   4a957ba6daf6 ("cifs: decoding negTokenInit with generic ASN1 decoder")
+Hence drop the "default m", which actually means "default y" if
+CONFIG_MODULES is not enabled.
 
-I missed functions and structures generated from the ASN1 compiler
-aren't static.
+Fixes: f0e8cb6106da2703 ("nvme-tcp-offload: Add nvme-tcp-offload - NVMeTCP HW offload ULP")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ drivers/nvme/host/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-Steve, and Namjae,
-We need to rename *.asn1 files and decoder's callback functions. Is it bett=
-er
-to change cifs's code?
+diff --git a/drivers/nvme/host/Kconfig b/drivers/nvme/host/Kconfig
+index 9c6f4d776daf14cf..f76cc4690bfc37bc 100644
+--- a/drivers/nvme/host/Kconfig
++++ b/drivers/nvme/host/Kconfig
+@@ -88,7 +88,6 @@ config NVME_TCP
+ 
+ config NVME_TCP_OFFLOAD
+ 	tristate "NVM Express over Fabrics TCP offload common layer"
+-	default m
+ 	depends on BLOCK
+ 	depends on INET
+ 	select NVME_CORE
+-- 
+2.25.1
 
-Thanks,
-Hyunchul
-
->
-> interacting with commit
->
->   fad4161b5cd0 ("cifsd: decoding gss token using lib/asn1_decoder.c")
->
-> from the cifsd tree.
->
-> I have reverted that cifs tree commit for today.
->
-> --
-> Cheers,
-> Stephen Rothwell
