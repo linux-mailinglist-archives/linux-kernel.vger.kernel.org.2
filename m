@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF1939FF8E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DEDD3A00BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234687AbhFHSd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:33:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58040 "EHLO mail.kernel.org"
+        id S235356AbhFHSqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:46:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234282AbhFHScv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:32:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B89EE613CB;
-        Tue,  8 Jun 2021 18:30:41 +0000 (UTC)
+        id S234777AbhFHSmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:42:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02225613F4;
+        Tue,  8 Jun 2021 18:35:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177042;
-        bh=HkpylNl/oX0EwpUXPbrxhDQDIMWj9P9nZwwWM6tSgo8=;
+        s=korg; t=1623177333;
+        bh=mK9oZJ63NEvf2bb3kDoNayCskitowaBCxNQ6yoI0JZs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pgpUGUpagi9aoDY+OyYW5cr6PMFulStU1NusRRsDDZYLBnI7xm9imacBdOloEUfDX
-         UWtnuPPlbgWQUfMusQg5e2JtNsWBIgzGXtem2PGZNC4SNhVrJ++UduCBoFRXphYKiK
-         cTzlGufvFbwx0rjqHLUj+6M8vqL7O2Ixt8WKacSY=
+        b=X56DyvT9ZA8piby4HtOpMbUmMp0TxOW53Tw9TRKkahgOvgkVyD0eSHTPuPCfFhyAa
+         mFIN0yjWg8/PVsLlmq8F/JO0t8xVmASndkLcljwBhoAs9PgG5NecjZxfdWu6G+iMTy
+         AIgttKTzih5AfYcZ168QDC574U3kEbNlHICory/M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Grant Grundler <grundler@chromium.org>,
-        Hayes Wang <hayeswang@realtek.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 01/47] net: usb: cdc_ncm: dont spew notifications
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 15/78] HID: i2c-hid: fix format string mismatch
 Date:   Tue,  8 Jun 2021 20:26:44 +0200
-Message-Id: <20210608175930.527223517@linuxfoundation.org>
+Message-Id: <20210608175935.790810148@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175930.477274100@linuxfoundation.org>
-References: <20210608175930.477274100@linuxfoundation.org>
+In-Reply-To: <20210608175935.254388043@linuxfoundation.org>
+References: <20210608175935.254388043@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,110 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grant Grundler <grundler@chromium.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit de658a195ee23ca6aaffe197d1d2ea040beea0a2 ]
+[ Upstream commit dc5f9f55502e13ba05731d5046a14620aa2ff456 ]
 
-RTL8156 sends notifications about every 32ms.
-Only display/log notifications when something changes.
+clang doesn't like printing a 32-bit integer using %hX format string:
 
-This issue has been reported by others:
-	https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1832472
-	https://lkml.org/lkml/2020/8/27/1083
+drivers/hid/i2c-hid/i2c-hid-core.c:994:18: error: format specifies type 'unsigned short' but the argument has type '__u32' (aka 'unsigned int') [-Werror,-Wformat]
+                 client->name, hid->vendor, hid->product);
+                               ^~~~~~~~~~~
+drivers/hid/i2c-hid/i2c-hid-core.c:994:31: error: format specifies type 'unsigned short' but the argument has type '__u32' (aka 'unsigned int') [-Werror,-Wformat]
+                 client->name, hid->vendor, hid->product);
+                                            ^~~~~~~~~~~~
 
-...
-[785962.779840] usb 1-1: new high-speed USB device number 5 using xhci_hcd
-[785962.929944] usb 1-1: New USB device found, idVendor=0bda, idProduct=8156, bcdDevice=30.00
-[785962.929949] usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=6
-[785962.929952] usb 1-1: Product: USB 10/100/1G/2.5G LAN
-[785962.929954] usb 1-1: Manufacturer: Realtek
-[785962.929956] usb 1-1: SerialNumber: 000000001
-[785962.991755] usbcore: registered new interface driver cdc_ether
-[785963.017068] cdc_ncm 1-1:2.0: MAC-Address: 00:24:27:88:08:15
-[785963.017072] cdc_ncm 1-1:2.0: setting rx_max = 16384
-[785963.017169] cdc_ncm 1-1:2.0: setting tx_max = 16384
-[785963.017682] cdc_ncm 1-1:2.0 usb0: register 'cdc_ncm' at usb-0000:00:14.0-1, CDC NCM, 00:24:27:88:08:15
-[785963.019211] usbcore: registered new interface driver cdc_ncm
-[785963.023856] usbcore: registered new interface driver cdc_wdm
-[785963.025461] usbcore: registered new interface driver cdc_mbim
-[785963.038824] cdc_ncm 1-1:2.0 enx002427880815: renamed from usb0
-[785963.089586] cdc_ncm 1-1:2.0 enx002427880815: network connection: disconnected
-[785963.121673] cdc_ncm 1-1:2.0 enx002427880815: network connection: disconnected
-[785963.153682] cdc_ncm 1-1:2.0 enx002427880815: network connection: disconnected
-...
+Use an explicit cast to truncate it to the low 16 bits instead.
 
-This is about 2KB per second and will overwrite all contents of a 1MB
-dmesg buffer in under 10 minutes rendering them useless for debugging
-many kernel problems.
-
-This is also an extra 180 MB/day in /var/logs (or 1GB per week) rendering
-the majority of those logs useless too.
-
-When the link is up (expected state), spew amount is >2x higher:
-...
-[786139.600992] cdc_ncm 2-1:2.0 enx002427880815: network connection: connected
-[786139.632997] cdc_ncm 2-1:2.0 enx002427880815: 2500 mbit/s downlink 2500 mbit/s uplink
-[786139.665097] cdc_ncm 2-1:2.0 enx002427880815: network connection: connected
-[786139.697100] cdc_ncm 2-1:2.0 enx002427880815: 2500 mbit/s downlink 2500 mbit/s uplink
-[786139.729094] cdc_ncm 2-1:2.0 enx002427880815: network connection: connected
-[786139.761108] cdc_ncm 2-1:2.0 enx002427880815: 2500 mbit/s downlink 2500 mbit/s uplink
-...
-
-Chrome OS cannot support RTL8156 until this is fixed.
-
-Signed-off-by: Grant Grundler <grundler@chromium.org>
-Reviewed-by: Hayes Wang <hayeswang@realtek.com>
-Link: https://lore.kernel.org/r/20210120011208.3768105-1-grundler@chromium.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 9ee3e06610fd ("HID: i2c-hid: override HID descriptors for certain devices")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/cdc_ncm.c  | 12 +++++++++++-
- include/linux/usb/usbnet.h |  2 ++
- 2 files changed, 13 insertions(+), 1 deletion(-)
+ drivers/hid/i2c-hid/i2c-hid-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/usb/cdc_ncm.c b/drivers/net/usb/cdc_ncm.c
-index eef1412c058d..468db50eb5e7 100644
---- a/drivers/net/usb/cdc_ncm.c
-+++ b/drivers/net/usb/cdc_ncm.c
-@@ -1591,6 +1591,15 @@ cdc_ncm_speed_change(struct usbnet *dev,
- 	uint32_t rx_speed = le32_to_cpu(data->DLBitRRate);
- 	uint32_t tx_speed = le32_to_cpu(data->ULBitRate);
+diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+index 96898983db99..f67817819f9a 100644
+--- a/drivers/hid/i2c-hid/i2c-hid-core.c
++++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+@@ -1114,8 +1114,8 @@ static int i2c_hid_probe(struct i2c_client *client,
+ 	hid->vendor = le16_to_cpu(ihid->hdesc.wVendorID);
+ 	hid->product = le16_to_cpu(ihid->hdesc.wProductID);
  
-+	/* if the speed hasn't changed, don't report it.
-+	 * RTL8156 shipped before 2021 sends notification about every 32ms.
-+	 */
-+	if (dev->rx_speed == rx_speed && dev->tx_speed == tx_speed)
-+		return;
-+
-+	dev->rx_speed = rx_speed;
-+	dev->tx_speed = tx_speed;
-+
- 	/*
- 	 * Currently the USB-NET API does not support reporting the actual
- 	 * device speed. Do print it instead.
-@@ -1634,7 +1643,8 @@ static void cdc_ncm_status(struct usbnet *dev, struct urb *urb)
- 		 * USB_CDC_NOTIFY_NETWORK_CONNECTION notification shall be
- 		 * sent by device after USB_CDC_NOTIFY_SPEED_CHANGE.
- 		 */
--		usbnet_link_change(dev, !!event->wValue, 0);
-+		if (netif_carrier_ok(dev->net) != !!event->wValue)
-+			usbnet_link_change(dev, !!event->wValue, 0);
- 		break;
+-	snprintf(hid->name, sizeof(hid->name), "%s %04hX:%04hX",
+-		 client->name, hid->vendor, hid->product);
++	snprintf(hid->name, sizeof(hid->name), "%s %04X:%04X",
++		 client->name, (u16)hid->vendor, (u16)hid->product);
+ 	strlcpy(hid->phys, dev_name(&client->dev), sizeof(hid->phys));
  
- 	case USB_CDC_NOTIFY_SPEED_CHANGE:
-diff --git a/include/linux/usb/usbnet.h b/include/linux/usb/usbnet.h
-index e87a805cbfef..5df465dc7af8 100644
---- a/include/linux/usb/usbnet.h
-+++ b/include/linux/usb/usbnet.h
-@@ -82,6 +82,8 @@ struct usbnet {
- #		define EVENT_LINK_CHANGE	11
- #		define EVENT_SET_RX_MODE	12
- #		define EVENT_NO_IP_ALIGN	13
-+	u32			rx_speed;	/* in bps - NOT Mbps */
-+	u32			tx_speed;	/* in bps - NOT Mbps */
- };
- 
- static inline struct usb_driver *driver_of(struct usb_interface *intf)
+ 	ihid->quirks = i2c_hid_lookup_quirk(hid->vendor, hid->product);
 -- 
 2.30.2
 
