@@ -2,92 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7709939FA03
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA6D39FA0A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233813AbhFHPKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 11:10:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42574 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233740AbhFHPKe (ORCPT
+        id S233824AbhFHPKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 11:10:52 -0400
+Received: from mail-vs1-f43.google.com ([209.85.217.43]:37629 "EHLO
+        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233538AbhFHPKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 11:10:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623164921;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5hU1CMqJ4P0JXH4l8c0cSd/V5cHxhvWTupYmzCD3I2c=;
-        b=eHKYetZzBvkRk5/U4/7DzBGz19n0at81HsLEzRpYZiePqQ4bQRKlCBrmKwwfGCu/Cf4KGa
-        +nFVQayPnVgamHujB/wkNM3QjgYeGJ0dGxnLZV884TZ8Mi+2L9SrOR3d6DSRinUbNxcyNW
-        Z9PoNKaeJCK1ZEUU1oD9h07pzbB44Eo=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-92-_-5FfqPxNSi6uE3fn6ONuQ-1; Tue, 08 Jun 2021 11:08:39 -0400
-X-MC-Unique: _-5FfqPxNSi6uE3fn6ONuQ-1
-Received: by mail-wr1-f71.google.com with SMTP id z4-20020adfe5440000b0290114f89c9931so9525202wrm.17
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Jun 2021 08:08:39 -0700 (PDT)
+        Tue, 8 Jun 2021 11:10:50 -0400
+Received: by mail-vs1-f43.google.com with SMTP id f21so9319456vsl.4;
+        Tue, 08 Jun 2021 08:08:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=5hU1CMqJ4P0JXH4l8c0cSd/V5cHxhvWTupYmzCD3I2c=;
-        b=hgonS+prOKY0U+7StXGYFEWF5ZkUXHZs62WwE/AdoZuPrXZJfA3XEFwYudPnIujmIx
-         vqltf8HMwBKKghuy01UDFWBM/+u/R45x/WfC7X3zFpB1eRjY8HZeAgtplZ0vwSCmeEvH
-         ZblMD/4fQQ9r0KzVja8aqQV/crjf4Kw/VvFVczpxlzbpGIPCn0tKUmcpP4TIwHajtpXl
-         I7FqyOpwUbwAdWaXxX/VJN9uV31c2EnBA5chzZcYNplac93VYsUpVESb0PFEoev12DGL
-         z06Wly3JPcPHYFh/ZsgN3utQ+9UmzgvPfKLhcVbDIZ4tJVGdHvUC0DGf2ZXlU86mZ5Gl
-         zThA==
-X-Gm-Message-State: AOAM530LYKeBE/zA6qpEPZ5V5EDD6wEBTSB3u+zhylPY7tQ3iFcYBSSE
-        f/XO/nJMM+FtI0+5plStswFpG6eKuJwBIdQNflOe8Wq9xKrrU5QZd5V8u0HyD6oBlSSHJuzi+OE
-        isNUFBi0zLtFZmq+p/X83oTED
-X-Received: by 2002:a1c:7c13:: with SMTP id x19mr4818689wmc.96.1623164918480;
-        Tue, 08 Jun 2021 08:08:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJziiUeOeVRaBQHznAWmWWEt/KVEstO5XqQa3xElfZkGfdt3L++vaw8Vnidve53mT64ljzbqQA==
-X-Received: by 2002:a1c:7c13:: with SMTP id x19mr4818667wmc.96.1623164918286;
-        Tue, 08 Jun 2021 08:08:38 -0700 (PDT)
-Received: from dresden.str.redhat.com ([2a02:908:1e46:160:b272:8083:d5:bc7d])
-        by smtp.gmail.com with ESMTPSA id n1sm10560444wms.18.2021.06.08.08.08.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Jun 2021 08:08:37 -0700 (PDT)
-Subject: Re: [PATCH v2 2/7] fuse: Fix crash if superblock of submount gets
- killed early
-To:     Greg Kurz <groug@kaod.org>, Miklos Szeredi <miklos@szeredi.hu>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        virtio-fs@redhat.com, Vivek Goyal <vgoyal@redhat.com>
-References: <20210604161156.408496-1-groug@kaod.org>
- <20210604161156.408496-3-groug@kaod.org>
-From:   Max Reitz <mreitz@redhat.com>
-Message-ID: <0daa30dc-ea49-dbe3-eac5-4b47dceb54eb@redhat.com>
-Date:   Tue, 8 Jun 2021 17:08:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kDiaD0QpBOMcE0PMxzMhL3MWciIvjsNbxKoMrmcmJ1E=;
+        b=DVIaPQiMT2f6/br4gxxxljYR9VsAw4ZfIxPyT2aAhnwyi3mPEWB7PhWXxg4kAH1kGK
+         oo86pgy8/CzYjycUqzFS10DmvMcWZTrX4h8RBLoz+4vu9MzOvWunrPT+oF26UvsL9Tz2
+         ugxtYYzsrHSqWyHh40yrf2CgZa9Kdz779HvYKVlylIRKM/eqxWgdrRX8PYRdhPQBjfMT
+         FwzKgZswvbvYWp07vf4eecz2/8vI7VwAPl2awEAZqmO9V2nwYy0P8u+Cm236mH/gg9tb
+         EyDC3zEMzLZMBjTAwVP9KA/DyOHi/JtXjQbahdtoWdDAdlaT5Jv4StvlUSKZ4J1BaeNo
+         zguA==
+X-Gm-Message-State: AOAM532ryh2M3DYsGVgV3a/f7Rf8iA/RnXdchhfaD2PZAt+z2aDstZ6l
+        9F/w2gXxVjBDtVKnh5FXYlUWsSdj/z2gtZSAX1o=
+X-Google-Smtp-Source: ABdhPJxAAAqyrSL7AqH/7wFzHGB8g+Yzzx+HqBzJkZEZm1+whye88TFNXKhkrTDet/pSlZsQRcuT0CIkeZGOE4ejWC4=
+X-Received: by 2002:a05:6102:c4c:: with SMTP id y12mr658970vss.18.1623164936724;
+ Tue, 08 Jun 2021 08:08:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210604161156.408496-3-groug@kaod.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210603221758.10305-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210603221758.10305-8-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210603221758.10305-8-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 8 Jun 2021 17:08:45 +0200
+Message-ID: <CAMuHMdX9En43TvWt_e5JyUOd7rV2AhMJsFqGi9OUnPs00jc=AQ@mail.gmail.com>
+Subject: Re: [PATCH v2 07/12] dt-bindings: clock: renesas: Document RZ/G2L SoC
+ CPG driver
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.06.21 18:11, Greg Kurz wrote:
-> As soon as fuse_dentry_automount() does up_write(&sb->s_umount), the
-> superblock can theoretically be killed. If this happens before the
-> submount was added to the &fc->mounts list, fuse_mount_remove() later
-> crashes in list_del_init() because it assumes the submount to be
-> already there.
->
-> Add the submount before dropping sb->s_umount to fix the inconsistency.
-> It is okay to nest fc->killsb under sb->s_umount, we already do this
-> on the ->kill_sb() path.
->
-> Signed-off-by: Greg Kurz <groug@kaod.org>
-> ---
->   fs/fuse/dir.c | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
+Hi Prabhakar,
 
-Reviewed-by: Max Reitz <mreitz@redhat.com>
+On Fri, Jun 4, 2021 at 12:18 AM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Document the device tree bindings of the Renesas RZ/G2L SoC clock
+> driver in Documentation/devicetree/bindings/clock/renesas,rzg2l-cpg.yaml.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> Acked-by: Rob Herring <robh@kernel.org>
 
+IIRC, Rob gave his R-b, not his A-b.
+
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/renesas,rzg2l-cpg.yaml
+> @@ -0,0 +1,80 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/clock/renesas,rzg2l-cpg.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Renesas RZ/G2L Clock Pulse Generator / Module Standby Mode
+> +
+> +maintainers:
+> +  - Geert Uytterhoeven <geert+renesas@glider.be>
+> +
+> +description: |
+> +  On Renesas RZ/G2L SoC, the CPG (Clock Pulse Generator) and Module
+> +  Standby Mode share the same register block.
+> +
+> +  They provide the following functionalities:
+> +    - The CPG block generates various core clocks,
+> +    - The Module Standby Mode block provides two functions:
+> +        1. Module Stop, providing a Clock Domain to control the clock supply
+> +           to individual SoC devices,
+> +        2. Reset Control, to perform a software reset of individual SoC devices.
+> +
+> +properties:
+> +  compatible:
+> +    const: renesas,r9a07g044-cpg  # RZ/G2{L,LC,UL}
+
+Shouldn't RZ/G2UL use renesas,r9a07g043-cpg?
+
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    const: extal
+> +
+> +  '#clock-cells':
+> +    description: |
+> +      - For CPG core clocks, the two clock specifier cells must be "CPG_CORE"
+> +        and a core clock reference, as defined in
+> +        <dt-bindings/clock/r9a07g044l-cpg.h>
+
+r9a07g044-cpg.h
+
+> +      - For module clocks, the two clock specifier cells must be "CPG_MOD" and
+> +        a module number, as defined in the <dt-bindings/clock/r9a07g044l-cpg.h>.
+
+r9a07g044-cpg.h
+
+> +    const: 2
+> +
+> +  '#power-domain-cells':
+> +    description:
+> +      SoC devices that are part of the CPG/Module Standby Mode Clock Domain and
+> +      can be power-managed through Module Stop should refer to the CPG device
+
+Module Standby
+
+> +      node in their "power-domains" property, as documented by the generic PM
+> +      Domain bindings in Documentation/devicetree/bindings/power/power-domain.yaml.
+> +    const: 0
+> +
+> +  '#reset-cells':
+> +    description:
+> +      The single reset specifier cell must be the module number, as defined in
+> +      the <dt-bindings/clock/r9a07g044l-cpg.h>.
+
+r9a07g044-cpg.h
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
