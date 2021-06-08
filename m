@@ -2,95 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D71E39FA22
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC6439FA1C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 17:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232487AbhFHPRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 11:17:51 -0400
-Received: from mail-pl1-f179.google.com ([209.85.214.179]:35534 "EHLO
-        mail-pl1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231906AbhFHPRt (ORCPT
+        id S232376AbhFHPQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 11:16:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232116AbhFHPQb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 11:17:49 -0400
-Received: by mail-pl1-f179.google.com with SMTP id x19so3664949pln.2;
-        Tue, 08 Jun 2021 08:15:45 -0700 (PDT)
+        Tue, 8 Jun 2021 11:16:31 -0400
+Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88BF9C061574;
+        Tue,  8 Jun 2021 08:14:21 -0700 (PDT)
+Received: by mail-vk1-xa36.google.com with SMTP id k71so234426vka.11;
+        Tue, 08 Jun 2021 08:14:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RYZFzOuf0dBVfSWqlNZ+PwU9Y527Caprq03EBTp/hQc=;
-        b=X9FAaZBhybTDaOcaSSavLBR5xhEZ8GbxQ1eYD4vzXVRcwB/YoItvawAv+t8s59xk25
-         cy4qTolIajfE7JiorUaS3gOeH4c15SRWEkFVPXCeyy03i16my/JgKcBJgoq3D5VrQNfl
-         CBCbajyc10W0/dM9iAe06KBsg+/6ciPvkL50A0b0e3yXS/NSsuMNfhsuz6EOwdCt9MU5
-         HmiTouhB7bO5BLzZhpOKgNDbkWX1uSezsNQ9siF5O+a+bwRWi/Wy8dsXz2wVBKZoCt5p
-         Q28F1F6Uv1kDireZk9/0gXZ7swnJ36+3G/X21lcZhMf+YiaIEABxbFzHOWNUhsBFZldm
-         y1pg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=O1gHl02oivo3RqMJKlwA/A5dzOE7PgpnMHshZI9Ylrs=;
+        b=q/pGziiOz9jkwf1xpb1EEOjAPz/8OP9lR8P5rwugXRCKdIw+1wS1ArDWbo56DTgYcO
+         2xIIfHxWOdAkxjck+U0UFvbyJXLOxqC0e39gdVGuoyznrtl6Kqsbm0vXEM9F9Ph6UxlB
+         rR5msRf1tYIkQmYvAoVpDNmbWTNV7I44HNDPmtNDKlNk0+jSHN0zTfRpSQal7ClgWNKL
+         nt58hzE/ILIPgRy01To/yIbhd4Nn1FvYEU+6H+m4XZ6Yl5ZdcJKv99WcwWeAt69su8a1
+         jHh7JWQyepBhzoAemaPXbFi97EGcaWlnBbUsAZgHFnVI4KURGRzpgTzD9HaiwUKNr0lJ
+         8aOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RYZFzOuf0dBVfSWqlNZ+PwU9Y527Caprq03EBTp/hQc=;
-        b=jGXY1j8IL/oA3bVyvYDnvllI2nVoHtpkXj/05ZTqUhDXr6FRxdksz5faBtYpPbHmX9
-         Ln6pZBq8qpm9yjjR59EVZRo5xVrP6pXeIBFBd6Coj96AaKEGjzqKqOYV5AZ77IMSp8Ct
-         NPG/7M0PKGoj72MHASlDuGaEplkIzyuwdWKYbknCWewLtAQ0R5bpXtv2y7fiaMjTbfRQ
-         rT/MvUW2b855k/WzUvaEEw1z5CmxH1ZTJRa9NlHaut3lSWSvTnE9tVusbw9zRz7wj7Le
-         B42zZCFJYZgdAqq86BqhbYTFh2jysa+TCC8YK0+CauoglvcA7b+TqP7uvPQkUEtd47OJ
-         ey+Q==
-X-Gm-Message-State: AOAM531heRq7sgCBNRQuHexKgwGQak62DeZXDY1drPhjcwvoj+Wqb/qV
-        38TmcVGvxFu78zS7myIe2aA=
-X-Google-Smtp-Source: ABdhPJwAk+ydJxes2ggQrBQC5AM+k4o94mm9LV5/fMtmHegyUDh/chiJY0hrTZq1QKQ7ZEk9uy0BbQ==
-X-Received: by 2002:a17:90b:3001:: with SMTP id hg1mr5336095pjb.169.1623165284846;
-        Tue, 08 Jun 2021 08:14:44 -0700 (PDT)
-Received: from localhost.members.linode.com ([2400:8902::f03c:92ff:fe55:8c1e])
-        by smtp.gmail.com with ESMTPSA id q12sm2705620pgc.25.2021.06.08.08.14.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 08 Jun 2021 08:14:44 -0700 (PDT)
-From:   zpershuai <zpershuai@gmail.com>
-To:     Radu Pirea <radu_nicolae.pirea@upb.ro>,
-        Mark Brown <broonie@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     zpershuai <zpershuai@gmail.com>
-Subject: [PATCH] =?UTF-8?q?spi:=20spi-at91-usart:=C2=A0Fix=20wrong=20goto?= =?UTF-8?q?=20jump=20label=20when=20spi=5Falloc=5Fmaster()=20returns=20err?= =?UTF-8?q?or.?=
-Date:   Tue,  8 Jun 2021 23:14:07 +0800
-Message-Id: <1623165248-24038-1-git-send-email-zpershuai@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=O1gHl02oivo3RqMJKlwA/A5dzOE7PgpnMHshZI9Ylrs=;
+        b=KbbPBs6QDzECgm96/DOsRDjdmqUJnnO6UBzF975xszySLWG7M9rJxY7YJrBBv+01rQ
+         71E/+mqQcsOEKCi/6ye9gfy/kKTSJ0MnsrL1P9Vr1VDEgvDT6OgpevXWv/QX9hW2vSyC
+         HdoCYhn8/g2M7a5EoOVVzmcWemx3czdH9AkPD2FDAWlc9YQeaP/yPiFv3ntlNJqu94Fu
+         bwM4qQ64NRJCYqwlkxNG1cjKH2QmoT2YatfYt/Fi/S2R13espuSrFKCfxhb3s9XKq8iu
+         k711qvgchVCQaIMgXaPyFy9e1/FQ1DJfgtJXsfFxHN+LiLdNfvIOiQ5LO/Gd2P/0IV0C
+         xzhQ==
+X-Gm-Message-State: AOAM532deFgQB6epF4q8ySf/ObUt/UXMCjB58Ydlk+/S9NAhY8n1jJ+A
+        iCd327Lb/AjV1ga1Pkh1zGDHT92frSzcdA23qhs=
+X-Google-Smtp-Source: ABdhPJzvEmzWuahJjCnq+ZMJixhpkm3KNp6kok+q20Al/eAGM2mP9WokEC+P56s7XJVWAW/iqzmnjaTihV1wlYq26Ug=
+X-Received: by 2002:a05:6122:a1b:: with SMTP id 27mr387134vkn.23.1623165260736;
+ Tue, 08 Jun 2021 08:14:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210608083418.137226-1-wangkefeng.wang@huawei.com>
+ <20210608083418.137226-2-wangkefeng.wang@huawei.com> <CAFqt6zYmCQ=wxEjnOJ6fgJWYQyFajBuxWD=UT_D-WjWUS_4pcw@mail.gmail.com>
+ <34f88fdc-1842-7954-bccc-0142a8d66eea@csgroup.eu>
+In-Reply-To: <34f88fdc-1842-7954-bccc-0142a8d66eea@csgroup.eu>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Tue, 8 Jun 2021 20:44:08 +0530
+Message-ID: <CAFqt6zbV32+FsEFywqb6vk90tQ442S63CO+bh=2h8OxxutYQEQ@mail.gmail.com>
+Subject: Re: [PATCH v3 resend 01/15] mm: add setup_initial_init_mm() helper
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        uclinux-h8-devel@lists.sourceforge.jp, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, X86 ML <x86@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+        Linux-MM <linux-mm@kvack.org>, linux-m68k@lists.linux-m68k.org,
+        openrisc@lists.librecores.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When spi_alloc_master() returns null pointer, it’s no need to use
-spi_master_put() to release the memory, although spi_master_put()
-function has null pointer checks.
+On Tue, Jun 8, 2021 at 8:27 PM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
+>
+>
+>
+> Le 08/06/2021 =C3=A0 16:53, Souptick Joarder a =C3=A9crit :
+> > On Tue, Jun 8, 2021 at 1:56 PM Kefeng Wang <wangkefeng.wang@huawei.com>=
+ wrote:
+> >>
+> >> Add setup_initial_init_mm() helper to setup kernel text,
+> >> data and brk.
+> >>
+> >> Cc: linux-snps-arc@lists.infradead.org
+> >> Cc: linux-arm-kernel@lists.infradead.org
+> >> Cc: linux-csky@vger.kernel.org
+> >> Cc: uclinux-h8-devel@lists.sourceforge.jp
+> >> Cc: linux-m68k@lists.linux-m68k.org
+> >> Cc: openrisc@lists.librecores.org
+> >> Cc: linuxppc-dev@lists.ozlabs.org
+> >> Cc: linux-riscv@lists.infradead.org
+> >> Cc: linux-sh@vger.kernel.org
+> >> Cc: linux-s390@vger.kernel.org
+> >> Cc: x86@kernel.org
+> >> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> >> ---
+> >>   include/linux/mm.h | 3 +++
+> >>   mm/init-mm.c       | 9 +++++++++
+> >>   2 files changed, 12 insertions(+)
+> >>
+> >> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> >> index c274f75efcf9..02aa057540b7 100644
+> >> --- a/include/linux/mm.h
+> >> +++ b/include/linux/mm.h
+> >> @@ -244,6 +244,9 @@ int __add_to_page_cache_locked(struct page *page, =
+struct address_space *mapping,
+> >>
+> >>   #define lru_to_page(head) (list_entry((head)->prev, struct page, lru=
+))
+> >>
+> >> +void setup_initial_init_mm(void *start_code, void *end_code,
+> >> +                          void *end_data, void *brk);
+> >> +
+> >
+> > Gentle query -> is there any limitation to add inline functions in
+> > setup_arch() functions ?
+>
+> Kefeng just followed comment from Mike I guess, see
+> https://patchwork.ozlabs.org/project/linuxppc-dev/patch/20210604070633.32=
+363-2-wangkefeng.wang@huawei.com/#2696253
 
-Signed-off-by: zpershuai <zpershuai@gmail.com>
----
- drivers/spi/spi-at91-usart.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/spi/spi-at91-usart.c b/drivers/spi/spi-at91-usart.c
-index 8c83526..c8136dc 100644
---- a/drivers/spi/spi-at91-usart.c
-+++ b/drivers/spi/spi-at91-usart.c
-@@ -533,8 +533,10 @@ static int at91_usart_spi_probe(struct platform_device *pdev)
- 
- 	ret = -ENOMEM;
- 	controller = spi_alloc_master(&pdev->dev, sizeof(*aus));
--	if (!controller)
--		goto at91_usart_spi_probe_fail;
-+	if (!controller) {
-+		dev_err(&pdev->dev, "Error allocating SPI controller\n");
-+		return -ENOMEM;
-+	}
- 
- 	ret = at91_usart_gpio_setup(pdev);
- 	if (ret)
--- 
-2.7.4
-
+Ok.
+>
+> Christophe
+>
