@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D5139FFC1
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FED93A0060
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Jun 2021 20:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234718AbhFHSfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Jun 2021 14:35:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56100 "EHLO mail.kernel.org"
+        id S234144AbhFHSmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Jun 2021 14:42:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234327AbhFHSd7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:33:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC72A61027;
-        Tue,  8 Jun 2021 18:31:39 +0000 (UTC)
+        id S235223AbhFHSjX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:39:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FC40610A2;
+        Tue,  8 Jun 2021 18:33:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623177100;
-        bh=swranWKbJfXXxA87ZrGrbZM4uxnWLlUQHpSNll+jfu4=;
+        s=korg; t=1623177232;
+        bh=iLquYFQGc36tzS2IGf49pFhAqIJlBaSmQNEKjYqIFG0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1YRcpephlGCXBDB8HVNCnp3AROZr6I1BcwUIOJbSyq74YJkSUBpYKOTT8kcGXi52j
-         hqktpSag3gdhfmy1tuMMgkPPQsEeYrcWbKRScgwrMntTvQeSodfgEiXC/zAmpQDEsk
-         WeWjMbag48RiIXsuSGEoL1kdTN2ScvE/qF1YVzyg=
+        b=vjhCA+B9gbiKhPVvzfbTf0iS7t1VO3+3HM1K4gICRlyT6H+awqPvjc89jav32xNVQ
+         OSt5xBlkqYTF4SrIXAsZqaDXFJIM/fgXX46bbbC0Lmt3Yng2J4d2CJCoLkZPSM20iZ
+         2aJnZFX0/RptRAL8HNTL4pVO6PdBhCt6/ijalXNc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Frank van der Linden <fllinden@amazon.com>
-Subject: [PATCH 4.14 32/47] bpf: Refactor and streamline bounds check into helper
+        stable@vger.kernel.org, Imran Khan <imran.f.khan@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH 4.19 34/58] x86/apic: Mark _all_ legacy interrupts when IO/APIC is missing
 Date:   Tue,  8 Jun 2021 20:27:15 +0200
-Message-Id: <20210608175931.530429217@linuxfoundation.org>
+Message-Id: <20210608175933.402993436@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210608175930.477274100@linuxfoundation.org>
-References: <20210608175930.477274100@linuxfoundation.org>
+In-Reply-To: <20210608175932.263480586@linuxfoundation.org>
+References: <20210608175932.263480586@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,92 +40,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-commit 073815b756c51ba9d8384d924c5d1c03ca3d1ae4 upstream.
+commit 7d65f9e80646c595e8c853640a9d0768a33e204c upstream.
 
-Move the bounds check in adjust_ptr_min_max_vals() into a small helper named
-sanitize_check_bounds() in order to simplify the former a bit.
+PIC interrupts do not support affinity setting and they can end up on
+any online CPU. Therefore, it's required to mark the associated vectors
+as system-wide reserved. Otherwise, the corresponding irq descriptors
+are copied to the secondary CPUs but the vectors are not marked as
+assigned or reserved. This works correctly for the IO/APIC case.
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: John Fastabend <john.fastabend@gmail.com>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
-[fllinden@amazon.com: backport to 4.14]
-Signed-off-by: Frank van der Linden <fllinden@amazon.com>
+When the IO/APIC is disabled via config, kernel command line or lack of
+enumeration then all legacy interrupts are routed through the PIC, but
+nothing marks them as system-wide reserved vectors.
+
+As a consequence, a subsequent allocation on a secondary CPU can result in
+allocating one of these vectors, which triggers the BUG() in
+apic_update_vector() because the interrupt descriptor slot is not empty.
+
+Imran tried to work around that by marking those interrupts as allocated
+when a CPU comes online. But that's wrong in case that the IO/APIC is
+available and one of the legacy interrupts, e.g. IRQ0, has been switched to
+PIC mode because then marking them as allocated will fail as they are
+already marked as system vectors.
+
+Stay consistent and update the legacy vectors after attempting IO/APIC
+initialization and mark them as system vectors in case that no IO/APIC is
+available.
+
+Fixes: 69cde0004a4b ("x86/vector: Use matrix allocator for vector assignment")
+Reported-by: Imran Khan <imran.f.khan@oracle.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/20210519233928.2157496-1-imran.f.khan@oracle.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/bpf/verifier.c |   54 ++++++++++++++++++++++++++++++++++----------------
- 1 file changed, 37 insertions(+), 17 deletions(-)
+ arch/x86/include/asm/apic.h   |    1 +
+ arch/x86/kernel/apic/apic.c   |    1 +
+ arch/x86/kernel/apic/vector.c |   20 ++++++++++++++++++++
+ 3 files changed, 22 insertions(+)
 
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2206,6 +2206,41 @@ static int sanitize_err(struct bpf_verif
- 	return -EACCES;
+--- a/arch/x86/include/asm/apic.h
++++ b/arch/x86/include/asm/apic.h
+@@ -172,6 +172,7 @@ static inline int apic_is_clustered_box(
+ extern int setup_APIC_eilvt(u8 lvt_off, u8 vector, u8 msg_type, u8 mask);
+ extern void lapic_assign_system_vectors(void);
+ extern void lapic_assign_legacy_vector(unsigned int isairq, bool replace);
++extern void lapic_update_legacy_vectors(void);
+ extern void lapic_online(void);
+ extern void lapic_offline(void);
+ 
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -2507,6 +2507,7 @@ void __init apic_bsp_setup(bool upmode)
+ 	end_local_APIC_setup();
+ 	irq_remap_enable_fault_handling();
+ 	setup_IO_APIC();
++	lapic_update_legacy_vectors();
  }
  
-+static int sanitize_check_bounds(struct bpf_verifier_env *env,
-+				 const struct bpf_insn *insn,
-+				 const struct bpf_reg_state *dst_reg)
+ #ifdef CONFIG_UP_LATE_INIT
+--- a/arch/x86/kernel/apic/vector.c
++++ b/arch/x86/kernel/apic/vector.c
+@@ -682,6 +682,26 @@ void lapic_assign_legacy_vector(unsigned
+ 	irq_matrix_assign_system(vector_matrix, ISA_IRQ_VECTOR(irq), replace);
+ }
+ 
++void __init lapic_update_legacy_vectors(void)
 +{
-+	u32 dst = insn->dst_reg;
++	unsigned int i;
 +
-+	/* For unprivileged we require that resulting offset must be in bounds
-+	 * in order to be able to sanitize access later on.
++	if (IS_ENABLED(CONFIG_X86_IO_APIC) && nr_ioapics > 0)
++		return;
++
++	/*
++	 * If the IO/APIC is disabled via config, kernel command line or
++	 * lack of enumeration then all legacy interrupts are routed
++	 * through the PIC. Make sure that they are marked as legacy
++	 * vectors. PIC_CASCADE_IRQ has already been marked in
++	 * lapic_assign_system_vectors().
 +	 */
-+	if (env->allow_ptr_leaks)
-+		return 0;
-+
-+	switch (dst_reg->type) {
-+	case PTR_TO_STACK:
-+		if (check_stack_access(env, dst_reg, dst_reg->off +
-+				       dst_reg->var_off.value, 1)) {
-+			verbose("R%d stack pointer arithmetic goes out of range, "
-+				"prohibited for !root\n", dst);
-+			return -EACCES;
-+		}
-+		break;
-+	case PTR_TO_MAP_VALUE:
-+		if (check_map_access(env, dst, dst_reg->off, 1)) {
-+			verbose("R%d pointer arithmetic of map value goes out of range, "
-+				"prohibited for !root\n", dst);
-+			return -EACCES;
-+		}
-+		break;
-+	default:
-+		break;
++	for (i = 0; i < nr_legacy_irqs(); i++) {
++		if (i != PIC_CASCADE_IR)
++			lapic_assign_legacy_vector(i, true);
 +	}
-+
-+	return 0;
 +}
 +
- /* Handles arithmetic on a pointer and a scalar: computes new min/max and var_off.
-  * Caller should also handle BPF_MOV case separately.
-  * If we return -EACCES, caller may want to try again treating pointer as a
-@@ -2421,23 +2456,8 @@ static int adjust_ptr_min_max_vals(struc
- 	__reg_deduce_bounds(dst_reg);
- 	__reg_bound_offset(dst_reg);
- 
--	/* For unprivileged we require that resulting offset must be in bounds
--	 * in order to be able to sanitize access later on.
--	 */
--	if (!env->allow_ptr_leaks) {
--		if (dst_reg->type == PTR_TO_MAP_VALUE &&
--		    check_map_access(env, dst, dst_reg->off, 1)) {
--			verbose("R%d pointer arithmetic of map value goes out of range, "
--				"prohibited for !root\n", dst);
--			return -EACCES;
--		} else if (dst_reg->type == PTR_TO_STACK &&
--			   check_stack_access(env, dst_reg, dst_reg->off +
--					      dst_reg->var_off.value, 1)) {
--			verbose("R%d stack pointer arithmetic goes out of range, "
--				"prohibited for !root\n", dst);
--			return -EACCES;
--		}
--	}
-+	if (sanitize_check_bounds(env, insn, dst_reg) < 0)
-+		return -EACCES;
- 
- 	return 0;
- }
+ void __init lapic_assign_system_vectors(void)
+ {
+ 	unsigned int i, vector = 0;
 
 
